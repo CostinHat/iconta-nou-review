@@ -1,0 +1,454 @@
+            ORDONANŢĂ DE URGENŢĂ Nr. 120/2021 din 4 octombrie 2021
+   privind administrarea, funcţionarea şi implementarea sistemului naţional privind
+factura electronică RO e-Factura şi factura electronică în România, precum şi pentru
+completarea Ordonanţei Guvernului nr. 78/2000 privind omologarea, eliberarea cărţii
+ de identitate a vehiculului şi certificarea autenticităţii vehiculelor rutiere în vederea
+ introducerii pe piaţă, punerii la dispoziţie pe piaţă, înmatriculării sau înregistrării în
+               România, precum şi supravegherea pieţei pentru acestea
+
+    Având în vedere necesitatea instituirii unor reguli clare şi suficiente cu privire la
+facturarea electronică, cu rol determinant în stabilitatea şi eficienţa legislativă naţională,
+inclusiv prin înlăturarea unor insuficienţe legislative care nu permit aplicarea prevederilor
+Directivei 2014/55/UE a Parlamentului European şi a Consiliului din 16 aprilie 2014 privind
+facturarea electronică în domeniul achiziţiilor publice, transpusă în legislaţia naţională prin
+Legea nr. 199/2020 privind facturarea electronică în domeniul achiziţiilor publice,
+    luând în considerare faptul că nereglementarea legislativă a mecanismului prin care
+România se asigură că autorităţile şi entităţile contractante primesc şi prelucrează facturi
+electronice conforme cu standardul european privind facturarea electronică îngrădeşte
+dreptul operatorilor economici în procesul de achiziţie publică,
+    întrucât adoptarea acestui act normativ corespunde politicii publice în domeniul e-
+guvernării şi a obiectivelor asumate prin Raportul privind situaţia macroeconomică pe anul
+2021 şi proiecţia acesteia pe anii 2022 - 2024, elaborat de Ministerul Finanţelor în baza
+art. 35 alin. (2) din Legea nr. 500/2002 privind finanţele publice, cu modificările şi
+completările ulterioare,
+   în considerarea faptului că reglementările asigură instituirea unui mecanism eficient de
+gestionare a resurselor bugetare alocate instituţiilor şi autorităţilor publice şi contribuie la
+întărirea capacităţii administrative şi a creşterii gradului de colectare a impozitelor şi
+taxelor prin redefinirea proceselor şi folosirea tehnologiei,
+     deoarece promovarea acestui act normativ este determinată şi de necesitatea
+concentrării materiei la care face referire, respectiv reglementarea unică a facturării
+electronice, cu luarea în considerare a unui nivel de predictibilitate faţă de mediul de
+afaceri şi comensurarea beneficiilor viitoare,
+    întrucât cadrul intern şi internaţional puternic marcat de criza pandemică impune o
+viziune adaptată realităţilor şi nevoilor curente, determinând facilitarea accesării serviciilor
+publice printr-o digitalizare extinsă a interacţiunilor cu administraţia publică, respectiv o
+tranziţie din forma actuală la o formă electronică ce va permite reducerea sarcinilor
+administrative şi a impactului asupra mediului,
+   ţinând cont de necesitatea alinierii la dezideratele Uniunii Europene privind strategia în
+domeniul e-guvernării şi adoptarea de către Guvernul României a politicii publice în
+domeniul e-guvernării,
+   având în vedere planurile de acţiune existente la nivelul Uniunii Europene cu directă
+aplicare în România care abordează subiecte precum e-achiziţii şi e-facturare, cu rol în
+relansarea economiei europene şi naţionale prin valorificarea la maxim a tehnologiilor
+digitale şi nevoia de anticipare a factorilor care pot perturba dezvoltarea sustenabilă a
+economiei,
+   deoarece prevederile Legii nr. 199/2020 nu pot fi aplicate în lipsa unor reglementări şi
+reguli operaţionale care să asigure procesul de transmitere, primire şi prelucrare a
+facturilor electronice de către autorităţile şi entităţile contractante, în conformitate cu
+standardele europene prevăzute în achiziţiile publice,
+    în considerarea faptului că există vulnerabilităţi majore în ducerea la îndeplinire a
+prevederilor acestei legi ceea ce ar putea echivala, pe cale de consecinţă, cu
+nerespectarea prevederilor din directivă, fiind posibilă declanşarea unor proceduri de
+infringement şi condamnarea pecuniară a statului,
+   având în vedere contextul european privind strategia în domeniul digitalizării şi politicilor
+fiscale, precum şi perspectiva utilizării facturării electronice asupra întregii activităţi
+economice ca element strategic pentru tranzacţiile economice, aspect reiterat şi de
+Comisia Europeană,
+   deoarece este necesară crearea unui cadru general de reglementare şi operaţionalizare
+a facturii electronice în România, inclusiv pentru atingerea obiectivelor strategice
+prevăzute în Raportul privind situaţia macroeconomică pe anul 2021 şi proiecţia acesteia
+pe anii 2022 - 2024, elaborat de Ministerul Finanţelor în baza art. 35 alin (2) din Legea nr.
+500/2002, cu modificările şi completările ulterioare, şi Strategia naţională împotriva
+criminalităţii organizate 2021 - 2024, aprobată prin Hotărârea Guvernului nr. 930/2021,
+   ţinând cont de faptul că reglementarea sistemului naţional privind factura electronică în
+România reprezintă un obiectiv strategic în ecuaţia momentului, generat de schimbările
+paradigmei economice în conjunctura pandemică internaţională şi nevoia realizării unor
+pârghii de anticipare şi reglare a mecanismelor economice şi a politicilor fiscal-bugetare,
+     având în vedere faptul că anticiparea vulnerabilităţilor viitoare şi capacitatea de
+adaptare la prezent necesită un cadru legal care să permită României alinierea la planurile
+de acţiune ale Uniunii Europene, oferind un răspuns ferm şi în dinamică provocărilor
+economice şi sociale,
+     deoarece sunt necesare reglementarea structurii facturii electronice în strictă
+concordanţă cu standardul european de facturare electronică şi crearea cadrului realizării
+specificaţiilor tehnice de bază ale facturii electronice în România, care să facă posibilă
+aplicarea prevederilor Directivei 2014/55/UE a Parlamentului European şi a Consiliului din
+16 aprilie 2014 privind facturarea electronică în domeniul achiziţiilor publice,
+   ţinând cont de faptul că, în lipsa acestor reglementări, cerinţele tehnice privind facturile
+electronice ar constitui bariere în calea accesului operatorilor economici la contractele de
+achiziţii publice şi obstacole în calea comerţului, fiind de natură a împiedica exercitarea
+libertăţilor fundamentale, având, prin urmare, un efect direct asupra funcţionării pieţei
+interne,
+    întrucât măsurile descrise anterior vizează interesul public de asigurare a funcţionării
+unui serviciu public esenţial pentru mediul de afaceri, acestea constituind situaţii de
+urgenţă şi extraordinare, a căror reglementare nu poate fi amânată, în contextul evoluţiei
+imprevizibile a pandemiei în perioada următoare şi al prelungirii stării de alertă,
+     întrucât combaterea fraudei în domeniul comerţului cu autoturisme rulate de
+provenienţă intracomunitară reprezintă una dintre liniile prioritare de acţiune la nivelul
+Agenţiei Naţionale de Administrare Fiscală, cazuistica a demonstrat că prejudiciile cauzate
+bugetului general al statului sunt semnificative şi, în multe cazuri TVA rămâne
+nerecuperabilă.
+   În temeiul art. 115 alin. (4) din Constituţia României, republicată,
+
+  Guvernul României adoptă prezenta ordonanţă de urgenţă.
+   CAPITOLUL I
+   Administrarea, funcţionarea şi implementarea sistemului naţional privind factura
+electronică RO e-Factura şi factura electronică în România
+
+  SECŢIUNEA 1
+  Dispoziţii generale
+
+   ART. 1
+     Dispoziţiile prezentului capitol reglementează sistemul naţional privind factura
+electronică RO e-Factura, precum şi factura electronică la nivel naţional.
+   ART. 2
+    (1) În sensul prezentului capitol, termenii şi expresiile de mai jos au următoarele
+semnificaţii:
+    a) factură electronică - factura emisă, transmisă şi primită într-un format electronic
+structurat de tip XML, care permite prelucrarea sa electronică şi automată;
+   b) operator economic - orice entitate care desfăşoară o activitate economică constând
+în executarea de lucrări, livrarea de bunuri/produse şi/sau prestarea de servicii;
+    c) emitent al facturii electronice - operatorul economic care emite factura electronică
+către destinatar şi o transmite în sistemul naţional privind factura electronică RO e-
+Factura;
+    d) destinatar al facturii electronice - operatorul economic, autoritatea contractantă,
+entitatea contractantă şi orice altă entitate care primeşte factura electronică însoţită de
+semnătura electronică a Ministerului Finanţelor în sistemul naţional privind factura
+electronică RO e-Factura;
+    e) elemente principale ale unei facturi electronice - un ansamblu de componente
+esenţiale de informaţii pe care trebuie să le conţină o factură electronică pentru a permite
+interoperabilitatea transfrontalieră, inclusiv informaţiile necesare pentru a asigura
+conformitatea juridică;
+   f) model de date semantice - un set de termeni structuraţi şi interconectaţi în mod logic,
+precum şi semnificaţiile acestora, care precizează elementele principale ale unei facturi
+electronice în conformitate cu standardul european privind factura electronică;
+   g) sintaxă - limbajul sau dialectul care poate fi citit automat, utilizat pentru reprezentarea
+elementelor de date incluse într-o factură electronică, în conformitate cu standardul
+european privind factura electronică;
+   h) legături sintactice - orientări cu privire la modul în care un model de date semantice
+pentru o factură electronică ar putea fi reprezentat în diferitele sintaxe;
+   i) standard internaţional privind factura electronică - un standard internaţional astfel cum
+este definit la art. 2 alin. (1) lit. a) din Regulamentul (UE) nr. 1.025/2012 al Parlamentului
+European şi al Consiliului din 25 octombrie 2012 privind standardizarea europeană, de
+modificare a Directivelor 89/686/CEE şi 93/15/CEE ale Consiliului şi a Directivelor
+94/9/CE, 94/25/CE, 95/16/CE, 97/23/CE, 98/34/CE, 2004/22/CE, 2007/23/CE, 2009/23/CE
+şi 2009/105/CE ale Parlamentului European şi ale Consiliului şi de abrogare a Deciziei
+87/95/CEE a Consiliului şi a Deciziei nr. 1.673/2006/CE a Parlamentului European şi a
+Consiliului;
+    j) standard european privind factura electronică - standard european special pentru
+modelul de date semantice privind elementele esenţiale ale unei facturi electronice, astfel
+cum este definit la art. 2 alin. (1) lit. b) din Regulamentul (UE) nr. 1.025/2012;
+    k) specificaţiile naţionale de utilizare a facturii electronice - RO_CIUS - specificaţii
+tehnice de utilizare a elementelor de bază ale facturii electronice aşa cum sunt prevăzute
+în standardul european SR EN 16931-1, aplicabile la nivel naţional;
+   l) subcontractant/subantreprenor - operatorul economic definit la art. 3 alin. (1) lit. yy)
+din Legea nr. 98/2016 privind achiziţiile publice, cu modificările şi completările ulterioare,
+art. 3 alin. (1) lit. zz) din Legea nr. 99/2016 privind achiziţiile sectoriale, cu modificările şi
+completările ulterioare, respectiv art. 5 alin. (1) lit. gg) din Legea nr. 100/2016 privind
+concesiunile de lucrări şi concesiunile de servicii, cu modificările şi completările ulterioare,
+care şi-a exprimat opţiunea de a fi plătit direct în condiţiile art. 218 din Legea nr. 98/2016,
+cu modificările şi completările ulterioare, respectiv ale art. 232 din Legea nr. 99/2016, cu
+modificările şi completările ulterioare, şi ale art. 97 din Legea nr. 100/2016, cu modificările
+şi completările ulterioare;
+    m) relaţia dintre un operator economic şi autorităţi contractante, respectiv entităţi
+contractante - B2G - tranzacţia dintre un operator economic care are calitatea de
+contractant sau subcontractant/subantreprenor în temeiul Legii nr. 98/2016, cu modificările
+şi completările ulterioare, Legii nr. 99/2016, cu modificările şi completările ulterioare, Legii
+nr. 100/2016, cu modificările şi completările ulterioare, şi al Ordonanţei de urgenţă a
+Guvernului nr. 114/2011 privind atribuirea anumitor contracte de achiziţii publice în
+domeniile apărării şi securităţii, aprobată cu modificări şi completări prin Legea nr.
+195/2012, cu modificările şi completările ulterioare, şi autorităţi contractante sau entităţi
+contractante care primesc şi prelucrează facturi electronice;
+   n) relaţia comercială dintre doi operatori economici - B2B - tranzacţia având ca obiect
+execuţia de lucrări, livrarea de bunuri/produse şi/sau prestarea de servicii dintre doi
+operatori economici;
+    o) emitentul unei facturi electronice în relaţia B2G - operatorul economic aflat într-o
+relaţie definită la lit. m) care emite, în baza unui angajament legal, factura electronică şi o
+transmite în sistemul naţional privind factura electronică RO e-Factura;
+   p) destinatarul unei facturi electronice emise în relaţia B2G - autoritatea contractantă,
+entitatea contractantă sau unitatea de achiziţii centralizate cu atribuţii în acest sens potrivit
+legii, care primeşte factura electronică însoţită de semnătura electronică a Ministerului
+Finanţelor în sistemul naţional privind factura electronică RO e-Factura.
+   (2) Definiţiile de la alin. (1) se completează cu cele existente în Legea nr. 98/2016, cu
+modificările şi completările ulterioare, Legea nr. 99/2016, cu modificările şi completările
+ulterioare, Legea nr. 100/2016, cu modificările şi completările ulterioare, Ordonanţa de
+urgenţă a Guvernului nr. 114/2011, aprobată cu modificări şi completări prin Legea nr.
+195/2012, cu modificările şi completările ulterioare.
+
+   SECŢIUNEA a 2-a
+   Sistemul naţional privind factura electronică RO e-Factura şi factura electronică
+în România
+
+  ART. 3
+    (1) Ministerul Finanţelor, prin Centrul Naţional pentru Informaţii Financiare, creează,
+dezvoltă şi administrează sistemul naţional privind factura electronică RO e-Factura.
+   (2) Sistemul naţional privind factura electronică RO e-Factura reprezintă ansamblul de
+principii, reguli şi aplicaţii informatice având drept scop primirea facturii electronice de la
+emitent cu respectarea structurii facturii electronice prevăzute la art. 4 alin. (1), stocarea
+prin mijloace electronice a facturilor şi transmiterea către destinatar.
+    (3) Sistemul naţional privind factura electronică RO e-Factura devine operaţional în
+termen de maximum 30 de zile de la data intrării în vigoare a prezentei ordonanţe de
+urgenţă.
+   (4) Procedura de utilizare şi funcţionare a sistemului naţional privind factura electronică
+RO e-Factura se aprobă prin ordin al ministrului finanţelor în termen de 15 zile de la data
+publicării prezentei ordonanţe de urgenţă în Monitorul Oficial al României, Partea I.
+   ART. 4
+   (1) Structura facturii electronice respectă:
+   a) specificaţiile tehnice şi de utilizare a elementelor de bază ale facturii electronice aşa
+cum sunt prevăzute în standardul european SR EN 16931-1, care sunt aplicabile la nivel
+naţional;
+    b) specificaţiile tehnice şi de utilizare a elementelor de bază ale facturii electronice -
+RO_CIUS - şi regulile operaţionale specifice aplicabile la nivel naţional;
+    c) conţinutul semantic aşa cum este descris în standardul SR EN 16931-1, sintaxele
+identificate în CEN/TS 16931-2, în conformitate cu art. 2 alin. (1) lit. j), şi corelarea
+adecvată definită în subpartea aplicabilă a CEN/TS 16931-3.
+   (2) Elemente principale ale facturii electronice sunt:
+   a) identificatorii de proces şi de factură;
+   b) data facturii;
+   c) informaţii privind identificarea operatorului economic care a livrat bunurile/produsele,
+a prestat serviciile sau a executat lucrările;
+   d) informaţii privind destinatarul facturii electronice;
+   e) informaţii privind beneficiarul plăţii;
+   f) informaţii privind reprezentantul fiscal al emitentului;
+   g) identificarea tipului de bunuri/produse livrate, servicii prestate sau lucrări executate;
+    h) referirea la contractul de achiziţii publice/sectoriale, de concesiune de lucrări şi
+servicii, precum şi, după caz, la contractul de achiziţii publice în domeniile apărării şi
+securităţii;
+    i) detalii privind executarea lucrărilor, livrarea bunurilor/ produselor sau prestarea
+serviciilor;
+   j) instrucţiuni de plată;
+   k) informaţii privind creditări sau debitări;
+   l) informaţii privind poziţiile de pe factură;
+   m) defalcarea TVA;
+   n) totalul facturii.
+   (3) Factura electronică se transmite de către emitent în sistemul naţional privind factura
+electronică RO e-Factura.
+   (4) În situaţia în care factura electronică transmisă respectă structura prevăzută la alin.
+(1), se aplică semnătura electronică a Ministerului Finanţelor şi se comunică de îndată
+destinatarului. Aplicarea semnăturii electronice a Ministerului Finanţelor atestă primirea
+acesteia în sistemul naţional privind factura electronică RO e-Factura.
+    (5) În situaţia în care factura electronică transmisă nu respectă structura prevăzută la
+alin. (1), emitentul primeşte mesaj cu erorile identificate. După corectarea erorilor
+identificate, factura electronică se transmite în cadrul aceluiaşi sistem naţional privind
+factura electronică RO e-Factura.
+    (6) Exemplarul original al facturii electronice se consideră fişierul de tip XML însoţit de
+semnătura electronică a Ministerului Finanţelor.
+     (7) Data comunicării facturii electronice către destinatar se consideră data la care
+factura electronică este disponibilă acestuia pentru descărcare din sistemul naţional
+privind factura electronică RO e-Factura. Destinatarul este notificat cu privire la facturile
+electronice primite în sistemul naţional privind factura electronică RO e-Factura conform
+procedurii prevăzute la art. 3 alin. (4). Data comunicării este accesibilă în sistem şi
+emitentului facturii electronice.
+     (8) Factura electronică comunicată destinatarului nu se poate returna în sistemul
+naţional privind factura electronică RO e-Factura.
+    (9) În situaţia unei facturi electronice asupra căreia destinatarul are obiecţii, acesta
+înştiinţează emitentul facturii electronice, inclusiv în sistemul naţional privind factura
+electronică RO e-Factura, prin înscrierea unui mesaj în acest sens.
+    (10) Corecţia facturii electronice comunicată destinatarului în sistemul RO e-Factura se
+efectuează conform art. 330 din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi
+completările ulterioare. Factura electronică corectată se transmite în cadrul aceluiaşi
+sistem naţional privind factura electronică RO e-Factura.
+     (11) Prin ordin al ministrului finanţelor se reglementează specificaţiile tehnice şi de
+utilizare a elementelor de bază ale facturii electronice - RO_CIUS - şi regulile operaţionale
+specifice aplicabile la nivel naţional în termen de 15 zile de la data publicării prezentei
+ordonanţe de urgenţă în Monitorul Oficial al României, Partea I.
+
+  SECŢIUNEA a 3-a
+  Facturarea electronică în domeniul achiziţiilor publice
+
+   ART. 5
+   Facturarea electronică în domeniul achiziţiilor publice se aplică în cazul existenţei unei
+relaţii B2G, definită conform art. 2 alin. (1) lit. m), în situaţia în care operatorii economici
+optează pentru utilizarea sistemului naţional privind factura electronică RO e-Factura.
+   ART. 6
+   Prevederile prezentului capitol nu se aplică facturilor electronice emise ca urmare a
+executării contractelor clasificate potrivit legii sau în cazul în care atribuirea şi executarea
+contractului de achiziţie publică au necesitat impunerea, potrivit dispoziţiilor legale, a unor
+măsuri speciale de securitate pentru protejarea unor interese esenţiale de securitate ale
+statului.
+   ART. 7
+   (1) În situaţia în care operatorul economic a optat pentru utilizarea sistemului naţional
+privind factura electronică RO e-Factura în conformitate cu prevederile art. 5, acesta are
+obligaţia de a emite doar facturi electronice şi de a utiliza acest sistem pentru transmiterea
+acestora către toţi destinatarii definiţi la art. 2 alin. (1) lit. p), cu excepţia facturilor
+electronice prevăzute la art. 6.
+    (2) În situaţia în care operatorul economic transmite factura electronică în sistemul
+naţional privind factura electronică RO e-Factura, destinatarul facturii electronice emise în
+relaţia B2G are următoarele obligaţii:
+   a) să primească şi să descarce factura electronică prin intermediul sistemului naţional
+privind factura electronică RO e-Factura;
+   b) să prelucreze factura electronică;
+     c) să verifice legalitatea, conformitatea şi regularitatea facturii electronice, în
+conformitate cu prevederile legale în vigoare.
+   ART. 8
+   (1) Prelucrarea facturii electronice se poate realiza exclusiv în format electronic utilizând
+aplicaţiile informatice disponibile la nivelul destinatarilor facturilor electronice emise în
+relaţia B2G. Prin prelucrarea facturii electronice se înţelege inclusiv parcurgerea fazelor
+execuţiei bugetare.
+   (2) În situaţia în care factura nu poate fi prelucrată în format electronic se poate utiliza
+un document obţinut prin conversia informaţiilor din factura electronică care permite citirea
+şi listarea. Aplicaţia prin care se realizează conversia trebuie să asigure integritatea
+conţinutului facturii electronice.
+   (3) Destinatarii facturilor electronice emise în relaţia B2G care nu dispun de o aplicaţie
+de conversie pot utiliza aplicaţia informatică pusă la dispoziţie de Ministerul Finanţelor, prin
+Centrul Naţional pentru Informaţii Financiare, la momentul operaţionalizării sistemului
+naţional privind factura electronică RO e-Factura.
+   (4) Factura electronică sau documentul prevăzut la alin. (2) se utilizează în parcurgerea
+fazelor execuţiei bugetare a cheltuielilor prevăzute de Legea nr. 500/2002, cu modificările
+şi completările ulterioare, şi Legea nr. 273/2006 privind finanţele publice locale, cu
+modificările şi completările ulterioare, precum şi pentru înregistrarea în contabilitate a
+operaţiunilor la nivelul autorităţilor contractante, entităţilor contractante sau unităţii de
+achiziţii centralizate cu atribuţii în acest sens potrivit legii, dobândind calitatea de
+document justificativ.
+   ART. 9
+    (1) Procedura de primire şi descărcare a facturii electronice de către destinatarii
+facturilor electronice emise în relaţia B2G în sistemul naţional privind factura electronică
+RO e-Factura se aprobă prin ordinul ministrului finanţelor prevăzut la art. 3 alin. (4).
+    (2) Modalitatea de prelucrare şi gestionare a facturii electronice se stabileşte prin
+proceduri proprii ale autorităţilor contractante şi entităţilor contractante.
+
+  SECŢIUNEA a 4-a
+  Facturarea electronică în relaţia B2B
+
+   ART. 10
+    (1) În relaţia comercială B2B emitentul facturii electronice poate opta pentru
+transmiterea acesteia către destinatar utilizând sistemul naţional privind factura electronică
+RO e-Factura cu respectarea prevederilor art. 4 alin. (1).
+   (2) În situaţia în care emitentul facturii electronice optează pentru transmiterea acesteia
+în sistemul naţional privind factura electronică RO e-Factura, acesta este obligat să fie
+înregistrat în Registrul operatorilor care au optat pentru utilizarea sistemului naţional
+privind factura electronică RO e-Factura, denumit în continuare Registrul RO e-Factura.
+   (3) Operatorul economic care a optat pentru utilizarea sistemului naţional privind factura
+electronică RO e-Factura este înscris în Registrul RO e-Factura începând cu data de 1 a
+lunii următoare exercitării opţiunii. De la momentul înscrierii în Registrul RO e-Factura,
+emitentul dobândeşte şi calitatea de destinatar.
+    (4) În vederea utilizării sistemului naţional privind factura electronică RO e-Factura,
+emitentul şi destinatarul trebuie să fie înregistraţi în Registrul RO e-Factura.
+   (5) Procedura privind organizarea şi înscrierea în cadrul Registrului RO e-Factura se
+stabileşte prin ordin al preşedintelui Agenţiei Naţionale de Administrare Fiscală în termen
+de 15 zile de la data publicării prezentei ordonanţe de urgenţă în Monitorul Oficial al
+României, Partea I. Registrul RO e-Factura este public şi se afişează pe site-ul Agenţiei
+Naţionale de Administrare Fiscală.
+   ART. 11
+   În cazul în care emitentul şi destinatarul facturii electronice sunt înregistraţi în Registrul
+RO e-Factura prevăzut la art. 10, utilizarea facturii electronice este considerată acceptată
+la data comunicării în sistemul naţional privind factura electronică RO e-Factura.
+   ART. 12
+   Pentru facturile emise de către operatorii economici înscrişi în Registrul RO e-Factura
+către destinatari care nu sunt înscrişi în Registrul RO e-Factura se aplică prevederile art.
+319 din Legea nr. 227/2015, cu modificările şi completările ulterioare.
+
+  SECŢIUNEA a 5-a
+  Dispoziţii finale
+
+   ART. 13
+    Operatorii economici nerezidenţi pot opta pentru utilizarea sistemului naţional privind
+factura electronică RO e-Factura în relaţia comercială B2B sau în relaţia B2G, potrivit
+procedurii stabilite prin ordin al preşedintelui Agenţiei Naţionale de Administrare Fiscală
+emis în termen de 15 zile de la data publicării prezentei ordonanţe de urgenţă în Monitorul
+Oficial al României, Partea I.
+   ART. 14
+   (1) Prevederile prezentului capitol nu aduc atingere legislaţiei privind protecţia datelor cu
+caracter personal.
+   (2) Datele cu caracter personal obţinute în scopul prelucrării facturilor electronice pot fi
+folosite exclusiv în acest scop sau în scopuri compatibile cu acesta, cu respectarea
+legislaţiei privind protecţia datelor cu caracter personal.
+    (3) Modalităţile de publicare, în scopul asigurării transparenţei şi a tragerii la
+răspundere, a datelor cu caracter personal care au fost colectate în cadrul sistemului
+naţional privind factura electronică RO e-Factura trebuie să fie în concordanţă cu scopul
+publicării şi protecţiei sferei private.
+   ART. 15
+    (1) Ministerul Finanţelor şi Agenţia Naţională de Administrare Fiscală asigură
+managementul datelor şi informaţiilor existente în sistemul naţional privind factura
+electronică RO e-Factura, cu păstrarea secretului fiscal.
+   (2) Datele şi informaţiile din factura electronică sunt folosite exclusiv de către Ministerul
+Finanţelor şi structurile subordonate, conform competenţelor, pentru îndeplinirea atribuţiilor
+specifice şi cu respectarea prevederilor alin. (1).
+   ART. 16
+   Sistemul naţional privind factura electronică RO e-Factura asigură interoperabilitatea cu
+sistemele de facturare ale operatorilor economici.
+   ART. 17
+   Fără a aduce atingere prevederilor art. 1 - 16, pentru facturile electronice transmise în
+sistemul naţional privind factura electronică RO e-Factura se aplică în mod corespunzător
+prevederile art. 319 din Legea nr. 227/2015, cu modificările şi completările ulterioare, şi ale
+Normelor metodologice de aplicare a Legii nr. 227/2015 privind Codul fiscal, aprobate prin
+Hotărârea Guvernului nr. 1/2016, cu modificările şi completările ulterioare.
+   ART. 18
+   Ministerul Finanţelor asigură resursele necesare şi ia toate măsurile pentru funcţionarea
+sistemului naţional privind factura electronică RO e-Factura.
+
+  CAPITOLUL II
+  Completarea şi abrogarea unor acte normative
+
+   ART. 19
+   Ordonanţa Guvernului nr. 78/2000 privind omologarea, eliberarea cărţii de identitate a
+vehiculului şi certificarea autenticităţii vehiculelor rutiere în vederea introducerii pe piaţă,
+punerii la dispoziţie pe piaţă, înmatriculării sau înregistrării în România, precum şi
+supravegherea pieţei pentru acestea, publicată în Monitorul Oficial al României, Partea I,
+nr. 412 din 30 august 2000, aprobată cu modificări şi completări prin Legea nr. 230/2003,
+cu modificările şi completările ulterioare, se completează după cum urmează:
+   1. La articolul 1, după alineatul (9) se introduce un nou alineat, alineatul (9^1), cu
+următorul cuprins:
+   "(9^1) Pentru vehiculele rutiere provenite din ţări membre UE, R.A.R. transmite către
+Agenţia Naţională de Administrare Fiscală, în format electronic, documentele prezentate
+de persoana care a efectuat achiziţia intracomunitară, inclusiv documentele de
+provenienţă, anterior eliberării cărţii de identitate a vehiculului. Procedura de aplicare a
+prezentului alineat se stabileşte prin protocol încheiat între cele două instituţii."
+   2. La articolul 1^1, după punctul 16 se introduce un nou punct, punctul 17, cu
+următorul cuprins:
+    "17. persoana care a efectuat achiziţia intracomunitară - persoana fizică sau juridică
+care a achiziţionat vehiculul rutier dintr-o ţară membră UE şi care este menţionată pe
+documentele aferente vehiculului, respectiv pe documentele de provenienţă."
+   3. La articolul 11 alineatul (1), după litera h) se introduce o nouă literă, litera i), cu
+următorul cuprins:
+   "i) în cazul în care vehiculul rutier provine din ţări membre UE, solicitarea este realizată
+direct sau prin împuternicit, de către persoana care a efectuat achiziţia intracomunitară a
+vehiculului."
+   4. La articolul 11, după alineatul (1) se introduce un nou alineat, alineatul (1^1), cu
+următorul cuprins:
+   "(1^1) Eliberarea cărţii de identitate a vehiculelor rutiere poate fi suspendată pe o
+perioadă de maximum 5 zile la solicitarea motivată a Agenţiei Naţionale de Administrare
+Fiscală. Procedura de eliberare a cărţii de identitate a vehiculului va fi reluată din oficiu
+după expirarea acestui termen."
+  ART. 20
+   La data intrării în vigoare a prezentei ordonanţe de urgenţă, Legea nr. 199/2020 privind
+facturarea electronică în domeniul achiziţiilor publice, publicată în Monitorul Oficial al
+României, Partea I, nr. 825 din 9 septembrie 2020, se abrogă.
+
+                    *
+
+   Prevederile cap. I transpun integral Directiva 2014/55/UE a Parlamentului European şi a
+Consiliului din 16 aprilie 2014 privind facturarea electronică în domeniul achiziţiilor publice,
+publicată în Jurnalul Oficial al Uniunii Europene, seria L, nr. 133 din data de 6 mai 2014 şi
+reglementează mecanismul prin care se asigură primirea şi prelucrarea facturilor
+electronice conforme cu standardul european privind facturarea electronică de către
+autorităţile contractante şi entităţile contractante.
+
+                    PRIM-MINISTRU
+                    FLORIN-VASILE CÎŢU
+
+                    Contrasemnează:
+                    Ministrul finanţelor,
+                    Dan Vîlceanu
+
+                    Ministrul afacerilor externe,
+                    Bogdan Lucian Aurescu
+
+                    p. Ministrul cercetării, inovării şi digitalizării, interimar,
+                    Iulian-Vasile Popescu,
+                    secretar de stat
+
+                    Ministrul dezvoltării, lucrărilor publice şi administraţiei,
+                    Cseke Attila Zoltán
+
+                    p. Ministrul economiei, antreprenoriatului şi turismului, interimar,
+                    Daniela Nicolescu,
+                    secretar de stat
+
+                    Ministrul apărării naţionale,
+                    Nicolae-Ionel Ciucă
+
+                    Ministrul afacerilor interne,
+                    Lucian Nicolae Bode
+
+  Bucureşti, 4 octombrie 2021.
+Nr. 120.

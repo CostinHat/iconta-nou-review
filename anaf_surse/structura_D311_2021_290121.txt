@@ -1,0 +1,206 @@
+  Structura fişier XML pentru D311 pentru an >= 2016
+  Conform OPANAF 188/22.01.2018
+  Conform OPANAF 795/2016
+  Conform OPANAF 76/ 21.01.2010
+  declaratie:v2 v1
+
+  Data      Nr. crt.   Elemente/                        Denumire câmp                  Tip şi     Câmp
+modificării            atribute                                                      lungime    obligatoriu       Formule şi restricţii                    Erori
+                                                                                       câmp
+                 1.    <declaratie311>
+                 2.                                                                                           1<=luna <=12
+                       luna              Perioada de raportare – Luna                 N(2)         DA                                        ERR - luna raportare
+                 3.    an                Perioada de raportare - An                   N(4)         DA         an >= 2016                     ERR - an raportare
+                 4.                                                                   N(1)         DA         d_rec in (0,1) unde
+                                                                                                              1=Rectificativa , 0=Initiala
+
+                                                                                                              Se raporteaza toata initiala
+                                                                                                              corectata
+
+                                                                                                              If d_rec=0 then
+                       d_rec             Declaratie rectificativa                                             OB_51+OB_52+
+                                                                                                              OB_61+OB_62>0
+
+                                                                                                              If d_rec=1 then
+                                                                                                              OB_51+OB_52+
+                                                                                                              OB_61+OB_62>=0
+
+                 5.    d_anulare         Declaraţie depusă/ corectata după            N(1)         DA         d_anulare = 0(nebifat), 1      ERR - camp d_anulare
+                                         anularea rezervei verificării ulterioare.                            (bifat)                        necompletat/ invalid
+                 6.    temei             Temeiul legal pentru corectarea              N(1)                    temei # null daca              ERR - camp Temei
+                                         declarației                                                          d_anulare=1 (bifat)            necompletat pentru
+                                                                                                                                             d_anulare=1 (bifat)
+                                                                                                              1-->a) art.105 alin(6)
+                                                                                                              lit.a) din Legea
+                                                                                                              nr.207/2015 (în situaţia
+                                                                                                              în care corecţia se
+                                                                                                              datorează îndeplinirii sau
+                                                                                                              neîndeplinirii unei condiţii
+
+
+
+
+                                                                                                                                                                    1
+                                                                              prevăzute de lege care
+                                                                              impune corectarea bazei
+                                                                              de impozitare şi/sau a
+                                                                              creanţei fiscale aferente)
+
+
+                                                                              2-->b) art.105 alin(6)
+                                                                              lit.b) din Legea
+                                                                              nr.207/2015 (în situaţia
+                                                                              în care prin hotărâri
+                                                                              judecătoreşti definitive s-
+                                                                              au stabilit în sarcina
+                                                                              plătitorului obligaţii de
+                                                                              plată reprezentând venituri
+                                                                              sau diferenţe de venituri
+                                                                              către beneficiarii acestora
+                                                                              care generează obligaţii
+                                                                              fiscale aferente unor
+                                                                              perioade pentru care s-a
+                                                                              anulat rezerva verificării
+                                                                              ulterioare.)
+
+6a    cifS             Cod de identificare fiscală              N(13)         Verificare CF sau CNP        ERR - cif succesor invalid
+                       succesor
+7.                                                                                                          ERR - nume declarant
+      nume_declar      Nume declarant                           C(75)    DA                                 necompletat
+8.                                                                                                          ERR - prenume declarant
+      prenume_declar   Prenume declarant                        C(75)    DA                                 necompletat
+9.                                                                                                          ERR – functie declarant
+      functie_declar   Functie declarant                        C(50)    DA                                 necompletată
+10.                    Cod de înregistrare în scopuri de tva   N(10)
+      cui              Cod de identificare fiscala
+                                                                         DA   Verificare cif (cui / CNP)    ERR - cif invalid sau inexistent
+                                                               N(13)
+11.   den              Denumire sau Nume şi Prenume            C(200)    DA                                 ERR - denumire necompletată
+12.   adresa           Adresă domiciliu fiscal                 C(1000)   DA                                 ERR – adresă necompletată
+
+
+
+
+                                                                                                                                               2
+13.   telefon        Telefon domiciliu fiscal                               C(15)
+14.   fax            Fax domiciliu fiscal                                   C(15)
+15.   mail           E-mail domiciliu fiscal                                C(200)
+16.                                                                                       Format ZZ.LL.AAAA
+
+      Data_A         1. Data anulării înregistrării în scopuri de TVA       D(10)         Data_A si Data_I se exclud
+                                                                                          reciproc : daca Data_A <>null
+                                                                                          atunci Data_I = null
+17.                                                                                       d_anul1 se completeaza
+                                                                                          numai daca Data_A<>null
+
+                                                                                          d_anul1=(0,1)
+                     2.1 Anularea înregistrării în scopuri de TVA, din
+                                                                                          0-nebifata
+      d_anul1        oficiu, conform art. 316 alin. (11) lit. a) - e) sau    N(1)         1-bifata
+                     h) din Codul fiscal
+                                                                                          d_anul1 si d_anul2 se exclud
+                                                                                          reciproc : daca d_anul1=1
+                                                                                          atunci d_anul2=0
+18.                                                                                       d_anul2 se completeaza
+                                                                                          numai daca Data_A<>null
+
+                     2.2 Anularea înregistrării în scopuri de TVA, la                     d_anul1=(0,1)
+                     cerere, conform art. 316 alin. (11) lit. g) din                      0-nebifata
+      d_anul2        Codul fiscal a persoanelor impozabile care au
+                                                                             N(1)         1-bifata
+                     aplicat sistemul TVA la încasare
+                                                                                          d_anul1 si d_anul2 se exclud
+                                                                                          reciproc : daca d_anul2=1
+                                                                                          atunci d_anul1=0
+18a                                                                                       Format ZZ.LL.AAAA
+                     3. Data înregistrării în scopuri de TVA conform
+      Data_I         art. 316 alin. (12) din Codul fiscal
+                                                                            D(10)         Data_A si Data_I se exclud
+                                                                                          reciproc : daca Data_I <>null
+                                                                                          atunci Data_A = null
+19.                                                                                       totalPlata_A =
+      totalPlata_A   Suma de control                                        N(15)    DA   OB_51+OB_52+                    ERR - calcul
+                                                                                          OB_61+OB_62
+20.   <OBLIG>        1 aparitie
+                     IV. DATE PRIVIND OBLIGAȚIA DE PLATĂ -
+                                                                                          Sectiunea IV. (campurile
+                     pentru persoanele impozabile care, după
+                                                                                          OB_11 la OB_52) se
+                     anularea înregistrării în scopuri de TVA, au
+                                                                                          completeaza numai daca
+                     fost înregistrate conform art. 316 alin. (12)
+                                                                                          Data_A<>null
+                     din Codul fiscal
+                     A.Operațiuni efectuate după anularea, din
+                     oficiu, a înregistrării în scopuri de TVA în
+                     condițiile art. 316 alin. (11) lit. a) - e) sau h)
+                     din Codul fiscal
+
+
+
+
+                                                                                                                                         3
+21.                     1. Livrări de bunuri și/sau prestări de servicii
+      OB_11                                                                    N(15)        OB_11>=0
+22.   OB_12                                                                    N(15)        OB_12>=0
+23.                     2. Achiziții de bunuri și/sau de servicii pentru
+      OB_21             care sunt persoană obligată la plata taxei, în         N(15)        OB_21>=0
+                        condițiile legii
+24.   OB_22                                                                    N(15)        OB_22>=0
+25.   OB_31             Subtotal A (rd.03=01+02)                               N(15)        OB_31= OB_11 + OB_21
+26.   OB_32                                                                    N(15)        OB_32= OB_12 + OB_22
+27.                     B. Livrări de bunuri și/sau prestări de servicii
+                        efectuate înaintea anulării înregistrării în
+                        scopuri de TVA în condițiile art.316 alin. (11) lit.
+      OB_41             a) - e), g) sau h) din Codul fiscal, dar a căror       N(15)        OB_41>=0
+                        exigibilitate intervine, potrivit sistemului TVA la
+                        încasare, în perioada în care persoana
+                        impozabilă nu are cod valabil de TVA
+28.   OB_42                                                                    N(15)        OB_42>=0
+29.   OB_51             Total (A+B) (rd.05=03+04)                              N(15)   DA   OB_51= OB_31 + OB_41
+30.   OB_52                                                                    N(15)   DA   OB_52= OB_32 + OB_42
+                        V. DATE PRIVIND OBLIGAȚIA DE PLATĂ -
+                                                                                            Sectiunea V. (campurile
+                        pentru persoanele impozabile care, după
+                                                                                            OB_61 si OB_62) se
+                        anularea înregistrării în scopuri de TVA, au
+                                                                                            completeaza numai daca
+                        fost înregistrate conform art. 316 alin. (12)
+                                                                                            Data_I<>null
+                        din Codul fiscal
+                        Operațiuni efectuate după anularea, din
+                        oficiu, a înregistrării în scopuri de TVA în
+                        condițiile art. 316 alin. (11) lit. a) - e) sau h)
+                        din Codul fiscal, pentru care au fost/nu au
+                        fost emise facturi și pentru care nu a fost
+                        colectată TVA aferentă acestora în perioada
+                        în care persoana impozabilă a avut codul de
+                        înregistrare în scopuri de TVA anulat
+31.                      Livrări de bunuri și/sau prestări de servicii
+      OB_61             taxabile.
+                                                                               N(15)        OB_61>=0
+32.   OB_62                                                                    N(15)        OB_62>=0
+33.     </OBLIG>
+34.   </declaratie311
+             >
+
+
+
+
+                                                                                                                      4
+Completari posibile
+(altfel se da EROARE - Nu aveti completata una din cele 2 scheme :
+'1) data1,bifa2.1/bifa2.2,sect.IV'        sau      '2) data3,sect.V'.
+
+Data_A        Data_I       d_anul1      d_anul_2         IV *)          V *)     Conditie
+  DA           NU             1            0              DA            NU     OB_51+OB_52>0
+  DA           NU             0            1              DA            NU     OB_51+OB_52>0
+  NU           DA            null         null            NU            DA     OB_61+OB_62>0
+
+
+*) DA pentru tabelele IV si V inseamna valori >=0.
+
+
+
+
+                                                                                               5

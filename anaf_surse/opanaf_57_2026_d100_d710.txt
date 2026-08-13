@@ -1,0 +1,174 @@
+Agenţia Naţională de Administrare Fiscală
+
+                                                  ORDIN Nr. 57
+                                               din 19 ianuarie 2026
+
+ privind modificarea şi completarea Ordinului preşedintelui Agenţiei Naţionale de Administrare Fiscală
+    nr. 587/2016 pentru aprobarea modelului şi conţinutului formularelor utilizate pentru declararea
+           impozitelor şi taxelor cu regim de stabilire prin autoimpunere sau reţinere la sursă
+
+Publicat în: Monitorul Oficial Nr. 55 din 23 ianuarie 2026
+
+   Având în vedere prevederile art. XXII alin. (1), (8) şi (17) din Legea nr. 239/2025 privind stabilirea unor
+măsuri de redresare şi eficientizare a resurselor publice şi pentru modificarea şi completarea unor acte
+normative, cu modificările şi completările ulterioare, ale art. 461, art. 462 şi art. 439 alin. (2) lit. g) din Legea
+nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare, ale art. 101 din Legea nr. 207/2015
+privind Codul de procedură fiscală, cu modificările şi completările ulterioare, precum şi avizul conform al
+Ministerului Finanţelor comunicat prin Adresa nr. 838.283 din 16.01.2026,
+   în temeiul prevederilor art. XXII alin. (15) din Legea nr. 239/2025, cu modificările şi completările ulterioare,
+ale art. 342 alin. (1) din Legea nr. 207/2015 privind Codul de procedură fiscală, cu modificările şi completările
+ulterioare, şi ale art. 11 alin. (3) din Hotărârea Guvernului nr. 520/2013 privind organizarea şi funcţionarea
+Agenţiei Naţionale de Administrare Fiscală, cu modificările şi completările ulterioare,
+
+  preşedintele Agenţiei Naţionale de Administrare Fiscală emite următorul ordin:
+
+   Art. I - Ordinul preşedintelui Agenţiei Naţionale de Administrare Fiscală nr. 587/2016 pentru aprobarea
+modelului şi conţinutului formularelor utilizate pentru declararea impozitelor şi taxelor cu regim de stabilire
+prin autoimpunere sau reţinere la sursă, publicat în Monitorul Oficial al României, Partea I, nr. 94 din 8
+februarie 2016, cu modificările şi completările ulterioare, se modifică şi se completează după cum urmează:
+   1. Anexa nr. 1 "Declaraţie privind obligaţiile de plată la bugetul de stat" se modifică şi se înlocuieşte cu
+anexa care face parte integrantă din prezentul ordin.
+   2. La anexa nr. 3 "Nomenclatorul obligaţiilor de plată la bugetul de stat", după poziţia 112 se introduc două
+noi poziţii, poziţiile 113 şi 114, cu următorul cuprins:
+
+ Nr.      Denumirea creanţei fiscale                                     Temeiul legal
+ crt.
+"113 Taxă logistică pentru gestionarea art. XXII din Legea nr. 239/2025 privind stabilirea unor măsuri de
+     fluxurilor de bunuri              redresare şi eficientizare a resurselor publice şi pentru modificarea şi
+     extracomunitare                   completarea unor acte normative, cu modificările şi completările
+                                       ulterioare
+ 114 Accize pentru tutunuri pentru     art. 439 alin. (2) lit. g) şi art. 446 din Legea nr. 227/2015 privind
+     mestecat şi tutunuri pentru uz    Codul fiscal, cu modificările şi completările ulterioare"
+     nazal
+
+  3. Anexa nr. 4 "Instrucţiuni de completare a formularului 100 «Declaraţie privind obligaţiile de plată la
+bugetul de stat», cod 14.13.01.99/bs" se modifică şi se completează după cum urmează:
+  a) La capitolul I "Depunerea declaraţiei", punctul 1 "Termenul de depunere a declaraţiei:" subpunctul 1.1
+"Lunar, pentru obligaţiile de plată reprezentând:", după litera ş) se introduce o nouă literă, lit. t), cu următorul
+cuprins:
+  "t) taxa logistică pentru gestionarea fluxurilor de bunuri extracomunitare."
+   b) Capitolul II "Completarea declaraţiei" se modifică şi se completează după cum urmează:
+   (i) La punctul 3 "Secţiunea B «Date privind creanţa fiscală»", după subpunctul 3.1.13 se introduce un nou
+subpunct, subpunctul 3.1.14, cu următorul cuprins:
+   "3.1.14. Obligaţiile prevăzute la poziţiile 94 «Impozit specific pe cifra de afaceri datorat de instituţiile de
+credit - persoane juridice române şi sucursalele din România ale instituţiilor de credit - persoane juridice
+străine» şi 95 «Impozit specific pe cifra de afaceri datorat de persoanele juridice care desfăşoară activităţi în
+sectoarele petrol şi gaze naturale» din Nomenclatorul obligaţiilor de plată la bugetul de stat se declară de către
+contribuabilii prevăzuţi la art. 461 şi 462 din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi
+completările ulterioare, la secţiunea B I.2, după cum urmează:
+   Rândul 1 «Suma datorată» - se înscrie suma reprezentând impozitul specific pe cifra de afaceri calculat
+cumulat de la începutul anului fiscal.
+   Rândul 2 «Suma datorată anterior» - se înscrie suma reprezentând impozitul pe cifra de afaceri datorat pentru
+perioada anterioară celei de calcul.
+   Rândul 3 «Suma de plată» - se înscrie suma de la rândul 1 sau diferenţa dintre suma înscrisă la rândul 1 şi
+suma înscrisă la rândul 2, după caz.
+   Rândul 4 «Suma de restituit» - se înscrie suma de restituit sau diferenţa dintre suma înscrisă la rândul 2 şi
+suma înscrisă la rândul 1, după caz."
+   (ii) La subpunctul 3.2, primul paragraf se modifică şi va avea următorul cuprins:
+   "3.2. Tabelul de la pct. II «Impozite, taxe şi alte obligaţii care nu se plătesc în contul unic» din anexa nr. 1 la
+ordin se completează pentru declararea obligaţiilor de plată prevăzute la poziţiile 11, 25 - 27, 29 - 51, 57 - 63,
+65 - 71, 74 - 77, 81 - 89, 91 - 93, 96 - 100 şi 102 - 114 din Nomenclatorul obligaţiilor de plată la bugetul de stat,
+prevăzut în anexa nr. 3 la ordin."
+   (iii) La subpunctul 3.2.2, primul paragraf se modifică şi va avea următorul cuprins:
+   "3.2.2. Obligaţiile prevăzute la poziţiile 30-51, 98-100, 102 şi 114 din Nomenclatorul obligaţiilor de plată la
+bugetul de stat, prevăzut în anexa nr. 3 la ordin, se declară de către operatorii economici, plătitori de accize,
+potrivit titlului VIII din Legea nr. 227/2015, cu modificările şi completările ulterioare, şi prevederilor Normelor
+metodologice de aplicare a Legii nr. 227/2015 privind Codul fiscal, aprobate prin Hotărârea Guvernului nr.
+1/2016, cu modificările şi completările ulterioare, după cum urmează:".
+   (iv) După subpunctul 3.2.17 se introduce un nou subpunct, subpunctul 3.2.18, cu următorul cuprins:
+   "3.2.18. Obligaţia prevăzută la poziţia 113 «Taxă logistică pentru gestionarea fluxurilor de bunuri
+extracomunitare» din Nomenclatorul obligaţiilor de plată la bugetul de stat se declară de către furnizorii de
+servicii poştale prevăzuţi la art. 2 pct. 2 din Ordonanţa de urgenţă a Guvernului nr. 13/2013 privind serviciile
+poştale, aprobată cu modificări şi completări prin Legea nr. 187/2013, cu modificările şi completările
+ulterioare."
+   Art. II - Direcţiile de specialitate din cadrul Agenţiei Naţionale de Administrare Fiscală, Direcţia generală de
+administrare a marilor contribuabili, direcţiile generale regionale ale finanţelor publice, precum şi unităţile
+fiscale subordonate acestora vor duce la îndeplinire prevederile prezentului ordin.
+   Art. III - Prezentul ordin se publică în Monitorul Oficial al României, Partea I.
+
+                             Preşedintele Agenţiei Naţionale de Administrare Fiscală,
+                                              Adrian Nicuşor Nica
+Anexă*)
+  (Anexa nr. 1 la Ordinul nr. 587/2016)
+
+  *) Anexa este reprodusă în facsimil.
+
+          ANAF                                DECLARAŢIE
+    Agenţia Naţională de            PRIVIND OBLIGAŢIILE DE PLATĂ LA                                 100
+    Administrare Fiscală                   BUGETUL DE STAT
+
+
+|¯¯| Declaraţie depusă după anularea rezervei verificării ulterioare.                      Perioada de raportare
+    Temeiul legal pentru depunerea declaraţiei ............................            Luna |¯¯|¯¯| Anul |¯¯|¯¯|¯¯|¯¯|
+
+|¯¯| Declaraţie depusă potrivit art. 90  Cod de identificare fiscală a succesorului |¯| |¯|¯|¯|¯|¯|¯|¯|¯|¯|¯|¯|¯|¯|
+alin. (4) din Legea nr. 207/2015 privind
+Codul de procedură fiscală.
+
+  A. Date de identificare a contribuabilului/plătitorului
+Cod de identificare fiscală |¯¯¯¯¯¯¯¯¯¯¯¯¯¯| |¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|
+Denumire |¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
+Judeţ |¯¯¯¯¯¯¯¯¯| Localitate |¯¯¯¯¯¯¯¯¯¯¯| Stradă |¯¯¯¯¯¯¯¯¯¯¯| Număr |¯¯¯¯¯| Bloc |¯¯¯| Scară |
+¯¯¯|
+Ap. |¯¯¯¯| Cod poştal |¯¯¯¯¯| Sector |¯¯¯| Telefon |¯¯¯¯¯¯¯¯| Fax |¯¯¯¯¯¯¯¯¯¯| E-mail |
+¯¯¯¯¯¯¯¯¯¯|
+
+   B. Date privind creanţa fiscală
+ I. Impozite şi taxe care se plătesc în contul unic
+ I.1. Nr.        Denumire creanţă fiscală                                      Suma                          (lei)
+      crt.
+                                                     1. Datorată
+                                                     1.1. Reducere impozit conform O.U.G. nr.
+                                                     153/2020
+           |¯| Impozit pe profit stabilit la         2. De plată
+          nivelul impozitului minim pe cifra
+          de afaceri
+      Total obligaţii de plată
+
+ I.2. Nr.        Denumire creanţă fiscală                                      Suma                          (lei)
+      crt.
+                                                     1. Datorată
+                                                     2. Datorată anterior
+                                                     3. De plată (rd. 1 - rd. 2)
+                                                     4. De restituit (rd. 2 - rd. 1)
+      Total obligaţii de plată
+
+
+
+ II. Impozite, taxe şi alte obligaţii care nu se plătesc în contul unic
+
+    Nr.          Denumire creanţă fiscală                                      Suma                          (lei)
+   crt.
+                                                    1. Datorată
+                                                    2. Deductibilă/Datorată anterior/Bonificaţie
+                                                    3. De plată (rd. 1 - rd. 2)
+                                                    4. De restituit
+
+ Total obligaţii de plată
+
+
+
+ III. Impozite, taxe şi alte obligaţii scutite de la plată, potrivit legii
+
+ Nr. crt.                   Denumire creanţă fiscală                                    Suma (lei)
+
+
+
+ Total obligaţii scutite de la plată
+
+
+
+  C. Date de identificare a împuternicitului
+                                                                   Cod de identificare fiscală
+Nume, prenume/Denumire     |¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|        |¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|¯¯|
+Stradă |¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯| Număr |¯¯¯¯¯| Bloc |¯¯¯| Scară |¯¯| Etaj |¯¯¯¯| Ap. |¯¯|
+Judeţ/Sector |¯¯¯¯¯¯¯¯¯¯| Localitate |¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|      Cod poştal |¯¯¯¯¯¯¯¯¯¯|
+Telefon |¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯| Fax |¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯| E-mail |¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯|
+
+  Prezenta declaraţie reprezintă titlu de creanţă şi produce efectele juridice ale înştiinţării de plată de la data
+depunerii acesteia, în condiţiile legii.
+  Sub sancţiunile aplicate faptei de fals în declaraţii, declar că datele din această declaraţie sunt corecte şi
+complete.
+
+Semnătură contribuabil                                      Semnătură împuternicit
+                                                     _____________

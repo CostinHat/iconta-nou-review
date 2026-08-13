@@ -1,0 +1,693 @@
+                       ORDIN Nr. 705/2020 din 11 martie 2020
+   pentru aprobarea modelului şi conţinutului formularului (390 VIES) "Declaraţie
+        recapitulativă privind livrările/achiziţiile/prestările intracomunitare"
+                 EMITENT: MINISTERUL FINANŢELOR PUBLICE
+                    AGENŢIA NAŢIONALĂ DE ADMINISTRARE FISCALĂ
+          PUBLICAT ÎN: MONITORUL OFICIAL NR. 217 din 17 martie 2020
+
+   Având în vedere art. 325 din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi
+completările ulterioare, art. 342 alin. (1) din Legea nr. 207/2015 privind Codul de
+procedură fiscală, cu modificările şi completările ulterioare, precum şi avizul conform al
+Ministerului Finanţelor Publice, comunicat prin Adresa nr. 797.500 din 11.03.2020,
+   în temeiul art. 11 alin. (3) din Hotărârea Guvernului nr. 520/2013 privind organizarea şi
+funcţionarea Agenţiei Naţionale de Administrare Fiscală, cu modificările şi completările
+ulterioare,
+
+  preşedintele Agenţiei Naţionale de Administrare Fiscală emite următorul ordin:
+
+   ART. 1
+      Se aprobă modelul şi conţinutul formularului (390 VIES) "Declaraţie recapitulativă
+privind livrările/achiziţiile/prestările intracomunitare", prevăzut în anexa nr. 1.
+   ART. 2
+     Formularul prevăzut la art. 1 se completează şi se depune conform instrucţiunilor de
+completare prevăzute în anexa nr. 2.
+   ART. 3
+       Caracteristicile de tipărire, modul de difuzare, utilizare şi păstrare a formularului
+prevăzut la art. 1 sunt stabilite în anexa nr. 3.
+   ART. 4
+     Procedura de gestionare a declaraţiei recapitulative privind livrările/achiziţiile/prestările
+intracomunitare este stabilită în anexa nr. 4.
+   ART. 5
+    (1) Referirile la Codul fiscal din cuprinsul prezentului ordin reprezintă trimiteri la titlul VII
+"Taxa pe valoarea adăugată" din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi
+completările ulterioare, iar referirile la Normele metodologice reprezintă trimiteri la titlul VII
+"Taxa pe valoarea adăugată" din Normele metodologice de aplicare a Legii nr. 227/2015
+privind Codul fiscal, aprobate prin Hotărârea Guvernului nr. 1/2016, cu modificările şi
+completările ulterioare.
+     (2) Referirile la Codul de procedură fiscală din cuprinsul prezentului ordin reprezintă
+trimiteri la Legea nr. 207/2015 privind Codul de procedură fiscală, cu modificările şi
+completările ulterioare.
+   ART. 6
+   Anexele nr. 1 - 4 fac parte integrantă din prezentul ordin.
+   ART. 7
+    Declaraţia recapitulativă se completează, în mod obligatoriu, cu ajutorul programului de
+asistenţă elaborat de Agenţia Naţională de Administrare Fiscală.
+   ART. 8
+     Structurile competente din cadrul Agenţiei Naţionale de Administrare Fiscală, Direcţia
+generală de administrare a marilor contribuabili, direcţiile generale regionale ale finanţelor
+publice şi organele fiscale centrale din subordine vor lua măsuri pentru ducerea la
+îndeplinire a prevederilor prezentului ordin.
+   ART. 9
+     Formularul prevăzut la art. 1 se completează şi se depune începând cu operaţiunile
+desfăşurate în luna februarie 2020.
+  ART. 10
+  Prezentul ordin se publică în Monitorul Oficial al României, Partea I.
+
+                  Preşedintele Agenţiei Naţionale de Administrare Fiscală,
+                  Mirela Călugăreanu
+
+  Bucureşti, 11 martie 2020.
+  Nr. 705.
+
+  ANEXA 1*)
+
+  *) Anexa nr. 1 este reprodusă în facsimil.
+
+     _______________
+   |      ANAF       |        DECLARAŢIE RECAPITULATIVĂ                    390
+   | Agenţia         |      PRIVIND LIVRĂRILE/ACHIZIŢIILE/                 VIES
+   | Naţională de |           PRESTĂRILE INTRACOMUNITARE
+   | Administrare |
+   | Fiscală         |
+   |_______________|
+                               PERIOADA DE RAPORTARE
+  ______________________________
+| _                              |           _ _ _ _                _ _
+| |_| Declaraţie rectificativă |      Anul |_|_|_|_|     Perioada |_|_|
+|______________________________|
+  ____________________________________________________________________________
+|     I. DATE DE IDENTIFICARE                                                     |
+|____________________________________________________________________________|
+|                                    _ _ _ _ _ _ _ _ _ _                          |
+| Cod de identificare fiscală RO |_|_|_|_|_|_|_|_|_|_|                            |
+|                           _________________________________________________ |
+| Denumire/Nume, Prenume |_________________________________________________| |
+|                                                                                 |
+| Domiciliul fiscal                                                               |
+|         _____________                __________________            ___________ |
+| Judeţ |_____________| Localitate |__________________| Strada |___________| |
+|         __         __         __        __               ________           __ |
+| Număr |__| Bloc |__| Scara |__| Ap. |__| Cod poştal |________| Sector |__| |
+|            ______________        ________________           _________________ |
+| Telefon |______________| Fax |________________| E-mail |_________________| |
+|____________________________________________________________________________|
+  ____________________________________________________________________________
+|     II. REZUMAT DECLARAŢIE (DETALIAT ÎN ANEXA LA FORMULAR)                      |
+|____________________________________________________________________________|
+|                                                                     | _ _ _ _ |
+| NUMĂR TOTAL PAGINI ANEXĂ LA DECLARAŢIE                              | |_|_|_|_| |
+|________________________________________________________________|___________|
+|                                                  | _ _ _ _ _ _ _ _ _ _ _ _ _ |
+| NUMĂRUL TOTAL AL OPERATORILOR INTRACOMUNITARI| |_|_|_|_|_|_|_|_|_|_|_|_|_| |
+|______________________________________________|_____________________________|
+| SUMA LIVRĂRILOR/ACHIZIŢIILOR/PRESTĂRILOR INTRACOMUNITARE                        |
+|____________________________________________________________________________|
+|                                                  | _ _ _ _ _ _ _ _ _ _ _ _ _ |
+| LIVRĂRI INTRACOMUNITARE DE BUNURI                | |_|_|_|_|_|_|_|_|_|_|_|_|_| |
+|______________________________________________|_____________________________|
+| LIVRĂRI ÎN CADRUL UNEI OPERAŢIUNI                | _ _ _ _ _ _ _ _ _ _ _ _ _ |
+| TRIUNGHIULARE                                    | |_|_|_|_|_|_|_|_|_|_|_|_|_| |
+|______________________________________________|_____________________________|
+|                                                  | _ _ _ _ _ _ _ _ _ _ _ _ _ |
+| ACHIZIŢII INTRACOMUNITARE DE BUNURI              | |_|_|_|_|_|_|_|_|_|_|_|_|_| |
+|______________________________________________|_____________________________|
+|                                               | _ _ _ _ _ _ _ _ _ _ _ _ _ |
+| PRESTĂRI INTRACOMUNITARE DE SERVICII          | |_|_|_|_|_|_|_|_|_|_|_|_|_| |
+|______________________________________________|_____________________________|
+|                                               | _ _ _ _ _ _ _ _ _ _ _ _ _ |
+| ACHIZIŢII INTRACOMUNITARE DE SERVICII         | |_|_|_|_|_|_|_|_|_|_|_|_|_| |
+|______________________________________________|_____________________________|
+  ____________________________________________________________________________
+| LIVRĂRI INTRACOMUNITARE DE BUNURI EFECTUATE | _ _ _ _ _ _ _ _ _ _ _ _ _ |
+| ÎN CADRUL REGIMULUI SPECIAL PENTRU            | |_|_|_|_|_|_|_|_|_|_|_|_|_| |
+| AGRICULTORI                                   |                              |
+|______________________________________________|_____________________________|
+  ____________________________________________________________________________
+| III. TRANSFERUL DE BUNURI ÎN CADRUL REGIMULUI STOCURI LA DISPOZIŢIA          |
+| CLIENTULUI PREVĂZUT LA ART. 270^1 DIN CODUL FISCAL                           |
+|____________________________________________________________________________|
+
+    A. INFORMAŢII PRIVIND PERSOANELE IMPOZABILE DIN ALTE STATE MEMBRE CĂRORA
+    LE SUNT DESTINATE BUNURILE EXPEDIATE SAU TRANSPORTATE ÎN CADRUL REGIMULUI
+      ________________________
+    |Ţara|Cod de înregistrare|
+    |     |în scopuri de TVA |
+    |____|___________________|
+    |     | | | | | | | | | | |
+    |____|_|_|_|_|_|_|_|_|_|_|
+    |     | | | | | | | | | | |
+    |____|_|_|_|_|_|_|_|_|_|_|
+    |     | | | | | | | | | | |
+    |____|_|_|_|_|_|_|_|_|_|_|
+    |     | | | | | | | | | | |
+    |____|_|_|_|_|_|_|_|_|_|_|
+
+     B. MODIFICĂRI ALE INFORMAŢIILOR FURNIZATE
+  ________________________________________________________________
+| Date din declaraţia      |      Modificări       | Motivul       |
+| iniţială                 |                       | modificării*)|
+|________________________|________________________|                |
+|Ţara|Cod de înregistrare|Ţara|Cod de înregistrare|                |
+|     |în scopuri de TVA |     |în scopuri de TVA |                |
+|____|___________________|____|___________________|______________|
+|     | | | | | | | | | | |    | | | | | | | | | | |               |
+|____|_|_|_|_|_|_|_|_|_|_|____|_|_|_|_|_|_|_|_|_|_|______________|
+|     | | | | | | | | | | |    | | | | | | | | | | |               |
+|____|_|_|_|_|_|_|_|_|_|_|____|_|_|_|_|_|_|_|_|_|_|______________|
+|     | | | | | | | | | | |    | | | | | | | | | | |               |
+|____|_|_|_|_|_|_|_|_|_|_|____|_|_|_|_|_|_|_|_|_|_|______________|
+        *) Se va completa, după caz, cu una dintre cifrele corespunzătoare
+situaţiei:
+     1 - retur bunuri;
+     2 - înlocuire client.
+
+______________________________________________________________________________
+    Sub sancţiunile aplicate faptei de fals în declaraţii, declar că datele din
+această declaraţie sunt corecte şi complete.
+                    _____________________________                 ___________
+    Nume, Prenume: |_____________________________|    Semnătura |             |
+                    _____________________________               |             |
+    Funcţia:       |_____________________________|              |___________|
+______________________________________________________________________________
+
+    ANEXA LA FORMULAR
+                                      _ _ _ _ _ _ _ _ _ _        _ _ _ _
+    Cod de identificare fiscală   RO |_|_|_|_|_|_|_|_|_|_| Anul |_|_|_|_|
+                                            _ _         _ _ _ _
+                                  Perioada |_|_| Pag. |_|_|_|_|
+  ____________________________________________________________________________
+|                    LISTA OPERAŢIUNILOR INTRACOMUNITARE                       |
+|____________________________________________________________________________|
+| ŢARA|    COD OPERATOR      |DENUMIRE/   |TIPUL      |     BAZA IMPOZABILĂ    |
+|      |   INTRACOMUNITAR    |NUME,       |OPERAŢIUNII|                        |
+|      |                     |PRENUME     |*)         |                        |
+|      |                     |OPERATOR    |           |                        |
+|      |                     |INTRA-      |           |                        |
+|      |                     |COMUNITAR   |           |                        |
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |             |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||             |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |             |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||             |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |             |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||             |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |             |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||             |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |             |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||             |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |             |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||             |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |             |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||             |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |             |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||             |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |             |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||             |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |             |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||             |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |             |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||             |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |             |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||             |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |             |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||             |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |             |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||             |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |             |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||             |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |             |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||             |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |             |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||             |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |             |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||             |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |            |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||            |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |            |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||            |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |            |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||            |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |            |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||            |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |            |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||            |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |            |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||            |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |            |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||            |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |            |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||            |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |            |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||            |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |            |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||            |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+| _ _ | _ _ _ _ _ _ _ _ _ _ |            |           | _ _ _ _ _ _ _ _ _ _ _ |
+||_|_|||_|_|_|_|_|_|_|_|_|_||            |           ||_|_|_|_|_|_|_|_|_|_|_||
+|_____|_____________________|____________|___________|_______________________|
+|                                        |           | _ _ _ _ _ _ _ _ _ _ _ |
+|       TOTAL pagină                     |           ||_|_|_|_|_|_|_|_|_|_|_||
+|________________________________________|___________|_______________________|
+|                                        |           | _ _ _ _ _ _ _ _ _ _ _ |
+|       TOTAL GENERAL                    |           ||_|_|_|_|_|_|_|_|_|_|_||
+|________________________________________|___________|_______________________|
+     *) TIP operaţiune se completează cu: L livrare intracomunitară de bunuri, T livrare
+ulterioară în cadrul unei operaţiuni triunghiulare, A achiziţie intracomunitară de bunuri, P
+prestare intracomunitară de servicii, S achiziţie intracomunitară de servicii şi R livrare
+intracomunitară de bunuri efectuată în cadrul regimului special pentru agricultori.
+
+  ANEXA 2
+
+                    INSTRUCŢIUNI
+pentru completarea formularului (390 VIES)             "Declaraţie   recapitulativă   privind
+livrările/achiziţiile/prestările intracomunitare"
+
+    1.1. Declaraţia recapitulativă se depune lunar, în condiţiile prevăzute la art. 325 din
+Legea nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare (Codul
+fiscal), până la data de 25 inclusiv a lunii următoare unei luni calendaristice, de către
+persoanele impozabile înregistrate în scopuri de TVA conform art. 316 sau 317 din Codul
+fiscal.
+        1.2. Persoanele impozabile înregistrate în scopuri de TVA depun declaraţia
+recapitulativă numai pentru lunile calendaristice în care ia naştere exigibilitatea taxei
+pentru:
+    a) livrările intracomunitare scutite de taxă în condiţiile prevăzute la art. 294 alin. (2) lit. a)
+şi d) din Codul fiscal, pentru care exigibilitatea taxei a luat naştere în luna calendaristică
+respectivă;
+     b) livrările de bunuri efectuate în cadrul unei operaţiuni triunghiulare prevăzute la art.
+276 alin. (5) din Codul fiscal efectuate în statul membru de sosire a bunurilor şi care se
+declară drept livrări intracomunitare cu cod T, pentru care exigibilitatea de taxă a luat
+naştere în luna calendaristică respectivă;
+      c) prestările de servicii prevăzute la art. 278 alin. (2) din Codul fiscal efectuate în
+beneficiul unor persoane impozabile nestabilite în România, dar stabilite în Uniunea
+Europeană, altele decât cele scutite de TVA în statul membru în care acestea sunt
+impozabile, pentru care exigibilitatea de taxă a luat naştere în luna calendaristică
+respectivă;
+     d) achiziţiile intracomunitare de bunuri taxabile, pentru care exigibilitatea de taxă a luat
+naştere în luna calendaristică respectivă;
+      e) achiziţiile de servicii prevăzute la art. 278 alin. (2) din Codul fiscal, efectuate de
+persoane impozabile din România care au obligaţia plăţii taxei conform art. 307 alin. (2),
+pentru care exigibilitatea de taxă a luat naştere în luna calendaristică respectivă, de la
+persoane impozabile nestabilite în România, dar stabilite în Uniunea Europeană;
+    f) livrările intracomunitare de bunuri prevăzute la art. 315^1 alin. (8) lit. c) şi d) din Codul
+fiscal, pentru care exigibilitatea taxei a luat naştere în luna calendaristică respectivă.
+    1.3. Persoana impozabilă înscrie în declaraţia recapitulativă informaţii cu privire la codul
+de înregistrare în scopuri de TVA al persoanelor impozabile cărora le sunt destinate
+bunurile expediate sau transportate în cadrul regimului de stocuri la dispoziţia clientului,
+conform condiţiilor stabilite la art. 270^1 din Codul fiscal şi cu privire la orice modificare a
+informaţiilor furnizate.
+     2. Persoanele impozabile înregistrate în scopuri de TVA conform art. 316 sau 317 din
+Codul fiscal completează formularul (390 VIES) "Declaraţie recapitulativă privind
+livrările/achiziţiile/prestările intracomunitare" cu ajutorul programului de asistenţă existent
+pe portalul Agenţiei Naţionale de Administrare Fiscală, secţiunea Asistenţă contribuabili
+sau secţiunea Declaraţii electronice şi se transmite prin mijloace electronice de transmitere
+la distanţă, potrivit legii.
+
+  Modul de completare a declaraţiei recapitulative
+
+  SECŢIUNEA I
+
+   Cartuşul "Perioada de raportare" se completează cu:
+    - anul la care se referă declaraţia; se înscrie cu cifre arabe cu 4 caractere (exemplu:
+2016);
+   - perioada de raportare aferentă operaţiunilor realizate este formată din două caractere,
+respectiv cifrele aferente lunii respective (exemplu: pentru luna ianuarie se va înscrie
+"01").
+     Declaraţia depusă iniţial se rectifică prin depunerea unei noi declaraţii, pe acelaşi
+format, bifând căsuţa corespunzătoare de pe formular.
+    În declaraţia rectificativă se rectifică tranzacţii declarate în orice perioadă de raportare
+anterioară şi se completează toate rubricile formularului cu datele valabile la momentul
+declarării, indiferent dacă acestea au mai fost declarate.
+
+  ATENŢIE:
+   Informaţiile completate eronat în perioade de raportare anterioare nu se corectează prin
+înscrierea cifrei "0" la rubrica "Bază impozabilă" din declaraţia recapitulativă rectificativă.
+       Se completează câte o declaraţie rectificativă pentru fiecare perioadă de raportare
+pentru care se operează rectificări.
+      Ajustările se declară pentru luna calendaristică în care intervine exigibilitatea taxei,
+conform art. 282 alin. (9) din Codul fiscal, respectiv în luna calendaristică în care
+regularizarea a fost comunicată clientului.
+    Cartuşul "Date de identificare" conţine:
+      1. "Cod de identificare fiscală" - se înscrie codul de înregistrare în scopuri de TVA al
+persoanei impozabile din România, atribuit potrivit art. 316 sau 317 din Codul fiscal.
+    Înscrierea cifrelor în casetă se face cu aliniere la dreapta.
+       2. "Denumire/Nume, Prenume" - se înscriu, după caz, denumirea sau numele şi
+prenumele persoanei impozabile.
+     3. "Domiciliul fiscal" - se completează cu datele privind adresa domiciliului fiscal (sediul
+social, sediul sau domiciliul fiscal, după caz) al persoanei impozabile înregistrate în
+scopuri de TVA.
+     În cazul persoanelor impozabile stabilite în străinătate, înregistrate direct în scopuri de
+TVA în România, se înscrie adresa din România la care pot fi examinate evidenţele şi
+documentele ce trebuie păstrate în conformitate cu prevederile pct. 88 alin. (7) lit. a) din
+titlul VII din Normele metodologice de aplicare a Legii nr. 227/2015 privind Codul fiscal,
+aprobate prin Hotărârea Guvernului nr. 1/2016, cu modificările şi completările ulterioare
+(Normele metodologice).
+         În cazul persoanelor impozabile stabilite în străinătate, care şi-au desemnat
+reprezentant fiscal, se înscrie domiciliul fiscal al reprezentantului.
+    În cazul persoanelor impozabile care au sediul activităţii economice în afara României şi
+sunt stabilite în România prin unul sau mai multe sedii fixe fără personalitate juridică,
+conform art. 266 alin. (2) lit. b) din Codul fiscal, se înscrie domiciliul fiscal al sediului fix
+desemnat să depună decontul de taxă şi să fie responsabil pentru toate obligaţiile în
+scopuri de TVA, conform pct. 88 alin. (5) din Normele metodologice.
+
+  SECŢIUNEA a II-a
+
+   "Rezumat declaraţie (detaliat în anexa la formular)" conţine:
+   - numărul total al paginilor anexă la declaraţie;
+   - numărul total al operatorilor intracomunitari, indiferent de numărul operaţiunilor;
+     - valoarea operaţiunilor, defalcată pe tipuri: livrări intracomunitare de bunuri, livrări
+ulterioare de bunuri efectuate în cadrul operaţiunilor triunghiulare, livrări intracomunitare ce
+constau în transferuri scutite, achiziţii intracomunitare de bunuri, achiziţii intracomunitare
+asimilate, prestări intracomunitare de servicii, achiziţii intracomunitare de servicii, livrări
+intracomunitare de bunuri efectuate în cadrul regimului special pentru agricultori.
+
+  SECŢIUNEA a III-a
+
+    "Transferul de bunuri în cadrul regimului stocuri la dispoziţia clientului, prevăzut la art.
+270^1 din Codul fiscal"
+    Litera "A. Informaţii privind persoanele impozabile din alte state membre cărora le sunt
+destinate bunurile expediate sau transportate în cadrul regimului"
+   Persoanele impozabile înregistrate în scopuri de TVA, potrivit art. 316 sau 317 din Codul
+fiscal, înscriu în această secţiune informaţii privind codul de înregistrare în scopuri de TVA
+al persoanelor impozabile cărora le sunt destinate bunurile expediate sau transportate în
+cadrul regimului de stocuri la dispoziţia clientului prevăzut la art. 270^1 din Codul fiscal.
+    Coloana "Ţara" - se înscrie codul ţării care a emis codul de înregistrare în scopuri de
+TVA al persoanei impozabile căreia i-au fost expediate sau transportate bunurile în cadrul
+regimului stocuri la dispoziţia clientului.
+     Coloana "Cod de înregistrare în scopuri de TVA" - trebuie introdus fără spaţii, virgule
+sau puncte.
+    Se completează codul de înregistrare în scopuri de TVA al persoanei impozabile căreia
+i-au fost expediate sau transportate bunurile în cadrul regimului de stocuri la dispoziţia
+clientului.
+   Litera "B. Modificări ale informaţiilor furnizate"
+   Persoanele impozabile înregistrate în scopuri de TVA, potrivit art. 316 sau 317 din Codul
+fiscal, înscriu în această secţiune informaţii cu privire la modificarea informaţiilor
+completate la secţiunea a III-a, litera A a declaraţiei recapitulative pentru perioada de
+declarare sau a declaraţiei depuse pentru perioade anterioare de declarare.
+        Spre exemplificare, modificări ale informaţiilor furnizate pot apărea atunci când
+persoana impozabilă care ar fi trebuit să achiziţioneze bunurile este înlocuită cu o altă
+persoană impozabilă sau când bunurile sunt returnate în România în termenul menţionat
+la art. 270^1 alin. (4) din Codul fiscal, fără ca furnizorul să fi transferat dreptul de a dispune
+de bunuri către altă persoană impozabilă.
+    Corectarea datelor declarate eronat sau nedeclararea datelor în perioade anterioare nu
+reprezintă modificări ale informaţiilor furnizate la litera A.
+       Corectarea datelor declarate la această secţiune se efectuează cu respectarea
+prevederilor secţiunii I, prin bifarea căsuţei "Declaraţie rectificativă" de pe formular.
+      Coloana "Date din declaraţia iniţială" - se completează cu informaţiile înscrise la
+secţiunea a III-a, litera A din declaraţia recapitulativă iniţială, referitoare la ţară şi cod de
+înregistrare în scopuri de TVA ale persoanei impozabile căreia i-au fost expediate sau
+transportate bunurile în cadrul regimului de stocuri la dispoziţia clientului, pentru care au
+apărut modificări
+    Coloana "Modificări" - se înscriu informaţiile referitoare la ţară şi cod de înregistrare în
+scopuri de TVA ale persoanei impozabile, ca urmare a modificării informaţiilor furnizate
+iniţial în cadrul regimului.
+    În situaţia în care în cursul aceleiaşi perioade de raportare intervin mai multe modificări
+pentru care există obligaţia de declarare, toate acestea se înscriu pe rânduri diferite.
+     Coloana "Motivul modificării" - se completează prin înscrierea cifrei corespunzătoare
+situaţiei care generează modificarea datelor declarate iniţial, după cum urmează:
+   1 - retur bunuri;
+   2 - înlocuire client.
+
+                    INSTRUCŢIUNI
+pentru completarea anexei la formularul (390 VIES) "Declaraţie recapitulativă privind
+livrările/achiziţiile/prestările intracomunitare"
+
+   1. Se completează cu tranzacţiile intracomunitare efectuate, în următoarea ordine:
+   a) livrări intracomunitare de bunuri (L);
+   b) livrări ulterioare de bunuri efectuate în cadrul unei operaţiuni triunghiulare (T);
+   c) achiziţii intracomunitare de bunuri, achiziţii intracomunitare asimilate prevăzute la art.
+273 alin. (2) lit. a) din Codul fiscal care urmează transferurilor din alte state membre,
+achiziţii efectuate de beneficiarul livrării ulterioare în cadrul unei operaţiuni triunghiulare
+(A);
+   d) prestări intracomunitare de servicii (P);
+   e) achiziţii intracomunitare de servicii (S);
+   f) livrări intracomunitare de bunuri efectuate în cadrul regimului special pentru agricultori
+(R).
+        Fiecare pagină aferentă anexei va conţine în antet informaţii privind codul de
+înregistrare în scopuri de TVA, perioada aferentă şi numărul paginii.
+    a) "Livrări intracomunitare de bunuri" - se înscrie suma totală a livrărilor intracomunitare
+de bunuri scutite de la plata taxei în condiţiile art. 294 alin. (2) lit. a) şi d) din Codul fiscal,
+pe fiecare cumpărător, pentru care exigibilitatea taxei ia naştere în luna calendaristică
+respectivă, inclusiv sumele din facturile pentru încasări de avansuri pentru livrări
+intracomunitare de bunuri, scutite;
+     b) "Livrări ulterioare de bunuri efectuate în cadrul unei operaţiuni triunghiulare" - se
+înscrie suma totală a livrărilor de bunuri efectuate în cadrul unei operaţiuni triunghiulare,
+prevăzute la art. 276 alin. (5) din Codul fiscal, efectuate în statul membru de sosire a
+bunurilor expediate sau transportate, pe fiecare beneficiar al livrării ulterioare ce are
+desemnat un cod T, şi pentru care exigibilitatea taxei ia naştere în luna calendaristică
+respectivă, inclusiv sumele din facturile pentru încasări de avansuri pentru livrările de
+bunuri efectuate în cadrul unei operaţiuni triunghiulare.
+    Se va completa doar de către cumpărătorul revânzător prevăzut la art. 276 alin. (5) din
+Codul fiscal.
+         c) "Achiziţii intracomunitare de bunuri" - se înscrie suma totală a achiziţiilor
+intracomunitare de bunuri, pe fiecare furnizor, pentru care persoana impozabilă, care
+depune declaraţia, este obligată la plata taxei conform art. 308 din Codul fiscal şi pentru
+care exigibilitatea taxei intervine în luna calendaristică respectivă, inclusiv sumele din
+facturile primite pentru plăţi de avansuri pentru achiziţii intracomunitare de bunuri;
+    d) "Prestări intracomunitare de servicii" - se înscrie suma totală a prestărilor de servicii
+pentru care se aplică prevederile art. 278 alin. (2) din Codul fiscal, altele decât cele scutite
+de TVA în statul membru în care acestea sunt impozabile, pe fiecare client în parte, stabilit
+în Uniunea Europeană, pentru care exigibilitatea taxei ia naştere în luna calendaristică
+respectivă. Nu vor fi declarate prestările de servicii prevăzute la art. 278 alin. (2) din Codul
+fiscal dacă beneficiarul serviciului este o persoană impozabilă care nu este stabilită pe
+teritoriul Uniunii Europene;
+        e) "Achiziţii intracomunitare de servicii" - se înscrie suma totală a achiziţiilor
+intracomunitare de servicii pentru care se aplică prevederile art. 278 alin. (2) din Codul
+fiscal, altele decât cele scutite de TVA, pe fiecare prestator în parte, care este stabilit în
+Uniunea Europeană, pentru care exigibilitatea taxei intervine în luna calendaristică
+respectivă. Nu vor fi declarate prestările de servicii prevăzute la art. 278 alin. (2) din Codul
+fiscal, dacă prestatorul serviciului este o persoană impozabilă care nu este stabilită pe
+teritoriul Comunităţii;
+       f) "Livrări intracomunitare de bunuri efectuate în cadrul regimului special pentru
+agricultori" - se înscrie suma totală a livrărilor intracomunitare de bunuri prevăzute la art.
+315^1 alin. (8) lit. c) şi d) din Codul fiscal, pe fiecare cumpărător, pentru care exigibilitatea
+taxei ia naştere în luna calendaristică respectivă, inclusiv sumele din facturile pentru
+încasări de avansuri pentru astfel de livrări intracomunitare de bunuri.
+     Coloana "Ţara" - codul ţării care a emis codul de înregistrare în scopuri de TVA al
+clientului/furnizorului/prestatorului sau codul statului membru care ar fi trebuit să emită
+acest cod de înregistrare în scopuri de TVA, dar din diverse motive acesta ori nu a fost
+emis ori nu a fost comunicat.
+    Coloana "Cod operator intracomunitar" - trebuie introdus fără spaţii, virgule sau puncte
+şi se completează astfel:
+     - în cazul livrărilor intracomunitare de bunuri (L) efectuate din România - codul de
+identificare în scopuri de TVA al persoanei care achiziţionează bunurile în alt stat membru
+decât România, pe baza căruia furnizorul din România i-a efectuat o livrare
+intracomunitară scutită de TVA conform art. 294 alin. (2) lit. a) şi d) din Codul fiscal;
+    - în cazul livrărilor ulterioare de bunuri efectuate din România în cadrul unei operaţiuni
+triunghiulare (T) - codul de identificare în scopuri de TVA al persoanei beneficiare a livrării
+ulterioare, din al treilea stat membru, pe baza căruia cumpărătorul revânzător din România
+i-a efectuat livrarea ulterioară;
+      - în cazul achiziţiilor intracomunitare de bunuri, achiziţiilor intracomunitare asimilate
+prevăzute la art. 273 alin. (2) lit. a) din Codul fiscal care urmează transferurilor scutite,
+achiziţiilor efectuate de beneficiarul livrării ulterioare în cadrul unei operaţiuni triunghiulare
+(A) efectuate în România - codul de identificare în scopuri de TVA din alt stat membru
+atribuit furnizorului care efectuează livrarea intracomunitară;
+    - în cazul prestărilor intracomunitare de servicii (P) - codul de identificare în scopuri de
+TVA al persoanei care primeşte serviciile în alt stat membru decât România pe baza căruia
+prestatorul din România i-a prestat servicii prevăzute de art. 278 alin. (2) din Codul fiscal,
+altele decât cele scutite de TVA în statul membru în care acestea sunt impozabile;
+    - în cazul achiziţiilor intracomunitare de servicii (S) - codul de identificare în scopuri de
+TVA din alt stat membru atribuit prestatorului sau, după caz, doar codul statului membru în
+care este stabilit prestatorul serviciilor, în cazul în care prestatorul nu este identificat în
+scopuri de TVA, dar există indicii suficiente pentru a considera că este o persoană
+impozabilă;
+   - în cazul livrărilor intracomunitare de bunuri efectuate în cadrul regimului special pentru
+agricultori (R) efectuate din România - codul de identificare în scopuri de TVA al persoanei
+care achiziţionează bunurile în alt stat membru decât România, pe baza căruia furnizorul
+din România i-a efectuat o livrare intracomunitară de bunuri prevăzută la art. 315^1 alin.
+(8) lit. c) şi d) din Codul fiscal.
+   Coloana "Tipul operaţiunii":
+   L - pentru livrări intracomunitare de bunuri către alte state membre;
+   T - pentru livrări în cadrul unei operaţiuni triunghiulare;
+   A - pentru achiziţii intracomunitare de bunuri, achiziţii care urmează transferurilor scutite,
+achiziţii efectuate de beneficiarul livrării ulterioare în cadrul unei operaţiuni triunghiulare din
+alte state membre;
+   P - pentru prestările intracomunitare de servicii;
+   S - pentru achiziţii intracomunitare de servicii;
+       R - livrări intracomunitare de bunuri efectuate în cadrul regimului special pentru
+agricultori.
+    Coloana "Baza impozabilă" - valoarea tranzacţiei/tranzacţiilor efectuate în perioada de
+raportare cu respectivul client/furnizor (baza impozabilă pentru calculul TVA stabilită
+potrivit prevederilor art. 286 - 288 şi 290 din Codul fiscal).
+   2. În subsolul paginii se înscrie suma totală a tranzacţiilor înscrise în pagina respectivă,
+iar pe ultima pagină a declaraţiei se înscrie şi totalul general al operaţiunilor.
+   3. Toate sumele se înscriu în lei.
+
+   NOTE:
+      1. Pentru achiziţii intracomunitare de bunuri taxabile în România, în cazul în care
+furnizorul nu comunică un cod valabil de TVA, dar bunurile sunt transportate de pe
+teritoriul unui stat membru al Uniunii Europene, achiziţia se declară în declaraţia
+recapitulativă astfel:
+   Coloana "Ţara" - codul ţării membre din care s-a efectuat livrarea intracomunitară.
+   Coloana "Cod operator intracomunitar" - nu se va înscrie nimic.
+   Coloana "Denumire/Nume, prenume operator intracomunitar" - se va înscrie denumirea/
+numele, prenumele furnizorului care a emis factura.
+   Coloana "Tipul operaţiunii" - se va înscrie "A".
+    Coloana "Baza impozabilă" - valoarea tranzacţiei/tranzacţiilor efectuate în perioada de
+raportare cu respectivul furnizor (baza impozabilă pentru calculul TVA stabilită potrivit
+prevederilor titlului VII din Codul fiscal).
+    2. Pentru livrările intracomunitare de bunuri efectuate către clienţi nestabiliţi în Uniunea
+Europeană şi care au desemnat un reprezentant fiscal în Uniunea Europeană sau către
+clienţi stabiliţi în Uniunea Europeană, înregistraţi prin reprezentant fiscal în statul membru
+în care efectuează achiziţia intracomunitară de bunuri, la rubrica "Denumire operator
+intracomunitar" va fi înscrisă denumirea clientului (nu a reprezentantului fiscal), iar la
+rubrica "Cod operator intracomunitar" va fi înscris codul de înregistrare în scopuri de TVA
+atribuit persoanei străine prin reprezentant fiscal.
+     3. Pentru achiziţiile intracomunitare de bunuri care provin de la un furnizor nestabilit în
+Uniunea Europeană şi care a desemnat un reprezentant fiscal în statul membru în care
+începe transportul bunurilor sau care provin de la un furnizor stabilit în Uniunea
+Europeană, înregistrat prin reprezentant fiscal în statul membru din care efectuează
+livrarea intracomunitară de bunuri, la rubrica "Denumire operator intracomunitar" va fi
+înscrisă denumirea furnizorului (nu a reprezentantului fiscal), iar la rubrica "Cod operator
+intracomunitar" va fi înscris codul de înregistrare în scopuri de TVA atribuit persoanei
+străine prin reprezentant fiscal.
+     Similar se procedează şi în situaţia în care furnizorul nestabilit în Uniunea Europeană
+nu şi-a desemnat un reprezentant fiscal în statul membru în care începe transportul, dar
+prin aplicarea de către unele state membre a măsurilor de simplificare a declarării
+importurilor, respectiv o reprezentare globală de către o societate care poate fi, de
+exemplu, o societate de expediţie/transport, operatorul extracomunitar se consideră
+reprezentat fiscal de societatea respectivă.
+      Exemplu: O societate "A" dintr-un stat extracomunitar (X) vinde unei societăţi din
+România "B" bunuri. Bunurile sunt importate într-un stat membru al Uniunii Europene (Y)
+de către societatea de expediţie "C" şi apoi aceeaşi societate "C" declară în numele
+furnizorului "A" din statul extracomunitar (X) (dar sub propriul cod de TVA) livrarea
+intracomunitară a bunurilor din statul membru (Y) în România.
+    În astfel de situaţii se va considera drept reprezentant fiscal societatea de expediţie "C".
+În declaraţia recapitulativă privind achiziţiile intracomunitare, la rubrica "Denumire operator
+intracomunitar" va fi înscrisă denumirea furnizorului, respectiv societatea "A" din statul
+extracomunitar (X), iar la rubrica "Cod operator intracomunitar" codul din statul membru
+(Y) al societăţii de expediţie "C" care a declarat livrarea intracomunitară.
+
+  ANEXA 3
+
+               CARACTERISTICI
+de editare, modul de difuzare, utilizare şi păstrare a formularului
+
+           1. Denumirea formularului: (390 VIES) Declaraţie recapitulativă privind
+livrările/achiziţiile/prestările intracomunitare
+     2. Caracteristici de editare: se utilizează echipament informatic pentru completare şi
+editare.
+    Formularul se completează şi se editează cu ajutorul programului de asistenţă asigurat
+gratuit de către Agenţia Naţională de Administrare Fiscală.
+    3. Se utilizează la declararea operaţiunilor intracomunitare.
+     4. Se completează şi se depune de persoanele impozabile înregistrate în scopuri de
+TVA, care realizează operaţiuni intracomunitare.
+    5. Circulă în format electronic la organul fiscal central competent.
+     6. Se arhivează, în format electronic, în arhiva electronică centralizată. Termenul de
+arhivare se stabileşte prin Norme interne de arhivare electronică, elaborate de Agenţia
+Naţională de Administrare Fiscală.
+
+  ANEXA 4
+
+                PROCEDURA DE GESTIONARE
+a Declaraţiei recapitulative privind livrările/achiziţiile/prestările intracomunitare
+    În vederea îndeplinirii cerinţelor Regulamentului (UE) nr. 904/2010 al Consiliului din 7
+octombrie 2010 privind cooperarea administrativă şi combaterea fraudei în domeniul taxei
+pe valoarea adăugată, cu modificările ulterioare, persoanele impozabile înregistrate în
+scopuri de TVA, care realizează operaţiuni intracomunitare, au obligaţia să depună lunar
+formularul (390 VIES) "Declaraţia recapitulativă privind livrările/achiziţiile/prestările
+intracomunitare", potrivit dispoziţiilor art. 325 din Legea nr. 227/2015 privind Codul fiscal,
+cu modificările şi completările ulterioare (Codul fiscal).
+
+    1. Depunerea declaraţiei recapitulative
+      1.1. Declaraţia recapitulativă se depune lunar, până la data de 25 inclusiv a lunii
+următoare unei luni calendaristice, de către persoanele impozabile înregistrate în scopuri
+de TVA conform art. 316 sau 317 din Codul fiscal.
+         1.2. Persoanele impozabile înregistrate în scopuri de TVA depun declaraţia
+recapitulativă numai pentru luna de raportare în care ia naştere exigibilitatea taxei pentru
+livrările/achiziţiile/prestările intracomunitare ori pentru luna în care expediază sau
+transportă bunuri în cadrul regimului de stocuri la dispoziţia clientului.
+
+   2. Verificarea formală a declaraţiilor recapitulative
+   Pentru fiecare declaraţie recapitulativă organul fiscal competent verifică:
+   a) corectitudinea codului de înregistrare în scopuri de TVA al persoanei impozabile care
+realizează operaţiuni intracomunitare, prin verificarea datelor de identificare din declaraţie
+cu cele existente în Registrul contribuabililor;
+     b) integralitatea codurilor de înregistrare în scopuri de TVA ale operatorilor străini
+înscrişi în declaraţia recapitulativă: înscrierea corectă a codului de ţară, precum şi a
+numărului de caractere ale codului.
+
+   3. Notificarea persoanelor impozabile ca urmare a verificării formale
+   3.1. După prelucrarea declaraţiilor recapitulative vor fi identificate persoanele impozabile
+care au depus declaraţii recapitulative ce prezintă erori, potrivit pct. 2, iar pentru aceste
+persoane se emit notificări pentru corectarea declaraţiei.
+     3.2. Notificările prevăzute la subpct. 3.1 se emit în termen de cel mult două zile
+lucrătoare de la data depunerii declaraţiilor recapitulative.
+
+    4. Notificarea persoanelor impozabile pentru nedepunerea declaraţiilor recapitulative
+    4.1. După prelucrarea deconturilor de TVA, respectiv a deconturilor speciale de TVA, vor
+fi identificate persoanele impozabile care nu au depus declaraţii recapitulative, iar pentru
+aceste persoane se emit notificări pentru depunerea declaraţiei.
+       4.2. Notificările prevăzute la subpct. 4.1 se emit potrivit reglementărilor legale în
+vigoare, după expirarea termenului de depunere a deconturilor de TVA/deconturilor
+speciale de TVA.
+    4.3. Nerespectarea obligaţiilor de depunere a declaraţiilor recapitulative privind livrările/
+achiziţiile/prestările intracomunitare se sancţionează potrivit prevederilor Legii nr. 207/2015
+privind Codul de procedură fiscală, cu modificările şi completările ulterioare (Codul de
+procedură fiscală).
+
+  5. Organizarea bazei centrale de date "Declaraţii recapitulative"
+   5.1. Informaţiile din declaraţiile recapitulative depuse la termenele legale de depunere,
+precum şi cele depuse ca urmare a notificărilor transmise de organele fiscale competente
+se înscriu într-o bază de date denumită "Declaraţii recapitulative".
+  5.2. Baza de date "Declaraţii recapitulative" cuprinde 5 secţiuni:
+   - livrări - în care se înscriu toate livrările intracomunitare de bunuri (cod L), toate livrările
+ulterioare de bunuri efectuate în cadrul unei operaţiuni triunghiulare (cod T), toate livrările
+intracomunitare de bunuri efectuate în cadrul regimului special pentru agricultori (R);
+   - achiziţii - în care se înscriu achiziţiile intracomunitare de bunuri (cod A);
+   - prestări servicii - în care se înscriu prestările intracomunitare de servicii (cod P);
+   - achiziţii servicii - în care se înscriu achiziţiile intracomunitare de servicii (cod S);
+    - transferul de bunuri în cadrul regimului stocuri la dispoziţia clientului, prevăzut la art.
+270^1 din Codul fiscal.
+
+   6. Centralizarea informaţiilor din declaraţiile recapitulative
+     6.1. În termen de cel mult două zile lucrătoare de la termenul legal de depunere,
+organul fiscal competent transmite Centrului Naţional pentru Informaţii Financiare baza de
+date cuprinzând declaraţiile recapitulative depuse în luna respectivă, şi anume:
+   - declaraţiile recapitulative corecte;
+      - declaraţiile recapitulative rectificative depuse ca urmare a notificărilor transmise
+persoanelor impozabile înregistrate în scopuri de TVA; şi
+   - declaraţiile recapitulative cu erori, pentru care nu a fost efectuată corecţia ca urmare a
+notificărilor transmise persoanelor impozabile înregistrate în scopuri de TVA.
+   6.2. Organul fiscal competent este responsabil pentru completitudinea şi corectitudinea
+informaţiilor transmise.
+    6.3. Cel mai târziu în ultima zi lucrătoare a lunii următoare celei de raportare, Centrul
+Naţional pentru Informaţii Financiare pune la dispoziţia Serviciului central de legături
+datele primite de la organele fiscale teritoriale, prelucrate, în vederea transmiterii prin
+sistemul VIES.
+
+   7. Gestionarea datelor din declaraţiile recapitulative rectificative
+    7.1. Declaraţiile recapitulative rectificative se prelucrează în momentul primirii lor de la
+persoanele impozabile.
+     7.2. În termen de cel mult două zile lucrătoare de la termenul legal de depunere,
+organul fiscal competent transmite Centrului Naţional pentru Informaţii Financiare baza de
+date cuprinzând diferenţele dintre declaraţiile recapitulative rectificative depuse în luna
+respectivă şi declaraţiile recapitulative iniţiale.
+   7.3. Organul fiscal competent este responsabil pentru completitudinea şi corectitudinea
+informaţiilor transmise.

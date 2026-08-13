@@ -1,0 +1,654 @@
+                                                                                                     1
+
+
+                 Ordinul preşedintelui Agenției Naționale de Administrare Fiscală nr. 184
+          pentru modificarea Ordinului preşedintelui Agenției Naționale de Administrare Fiscală
+  nr.52/2012 pentru aprobarea modelului şi conținutului unor formulare prevăzute la Titlul III din
+                 Legea nr.571/2003 privind Codul fiscal, cu modificările ulterioare
+
+       în temeiul prevederilor:
+       ‐ art.12 alin.(3) din Hotărârea Guvernului nr.109/2009 privind organizarea şi funcționarea
+Agenției Naționale de Administrare Fiscală, cu modificările şi completările ulterioare,
+       ‐ art.5 alin.(4), art.71 alin.(3) şi art.81 din Legea nr.571/2003 privind Codul fiscal, cu
+modificările şi completările ulterioare,
+       ‐ art.228 alin.(2) din Ordonanța Guvernului nr.92/2003 privind Codul de procedură fiscală,
+republicată, cu modificările şi completările ulterioare,
+       preşedintele Agenției Naționale de Administrare Fiscală emite următorul
+
+                                                    ORDIN
+
+        ART. I – Ordinul preşedintelui Agenției Naționale de Administrare Fiscală nr.52/2012 pentru
+aprobarea modelului şi conținutului unor formulare prevăzute la Titlul III din Legea nr.571/2003
+privind Codul fiscal, cu modificările şi completările ulterioare, publicat în Monitorul Oficial al
+României, Partea I nr.72 din 30 ianuarie 2012, se modifică după cum urmează:
+        1. La Anexa 1 Formularul 220 “Declarație privind venitul estimat/norma de venit”, cod
+14.13.01.13/3p se modifică şi se înlocuieşte cu formularul prevăzut în anexa 1 la prezentul ordin.
+        2. La Anexa 1 Formularul 223 “Declarație privind veniturile estimate pentru asocierile fără
+personalitate juridică şi entități supuse regimului transparenței fiscale”, cod 14.13.01.13/1i se
+modifică şi se înlocuieşte cu formularul prevăzut în anexa 2 la prezentul ordin.
+        3. La Anexa 2 Instrucțiunile privind completarea şi depunerea formularului 220 “Declarație
+privind venitul estimat/norma de venit”, cod 14.13.01.13/3p se modifică şi se înlocuiesc cu
+instrucțiunile prevăzute în anexa 3 la prezentul ordin.
+        4. La Anexa 2 Instrucțiunile privind completarea şi depunerea formularului 223 “Declarație
+privind veniturile estimate pentru asocierile fără personalitate juridică şi entități supuse regimului
+transparenței fiscale”, cod 14.13.01.13/1i se modifică şi se înlocuiesc cu instrucțiunile prevăzute în
+anexa 4 la prezentul ordin.
+
+       ART. II ‐ Anexele nr.1 – 4 fac parte integrantă din prezentul ordin.
+
+       ART. III ‐ Direcția generală proceduri pentru administrarea veniturilor, Direcția generală de
+tehnologia informației, precum şi direcțiile generale ale finanțelor publice județene şi a municipiului
+Bucureşti vor duce la îndeplinire prevederile prezentului ordin.
+
+       ART. IV ‐ Prezentul ordin va fi publicat în Monitorul Oficial al României, Partea I.
+
+       Emis la Bucureşti, la 13.02.2013
+
+
+                     PREŞEDINTELE AGENȚIEI NAȚIONALE DE ADMINISTRARE FISCALĂ
+
+                                                 ŞERBAN POP
+2
+3
+4
+5
+                                                                                                           6
+
+
+                                                                                                    Anexa 3
+                                             INSTRUCȚIUNI
+           de completare a formularului 220 "Declarație privind venitul estimat/norma de venit"
+                                           Cod 14.13.01.13/3p
+
+        I. Depunerea declarației
+        Declarația se completează şi se depune de către persoanele fizice care realizează, în mod
+individual sau într‐o formă de asociere, venituri în bani şi/sau în natură din România, provenind din:
+                 a. Activități independente;
+                 b. Cedarea folosinței bunurilor, cu excepția veniturilor din arendă;
+                 c. Activități agricole impuse în sistem real;
+                 d. Silvicultură şi piscicultură.
+        Formularul se utilizează pentru declararea veniturilor şi cheltuielilor estimate a se realiza în
+anul de impunere, pentru exercitarea opțiunii privind modificarea modului de determinare a
+venitului net, precum şi pentru recalcularea plăților anticipate cu titlu de impozit, potrivit legii.
+        Declarația se depune şi de către contribuabilii care realizează venituri din activități
+independente impuse pe bază de norme de venit.
+        a. Activități independente
+        a.1. Declarația se completează de către contribuabilii care realizează venituri în bani şi/sau în
+natură, provenind din activități independente, inclusiv din activități adiacente, din activități
+desfăşurate în mod individual şi/sau în cadrul unei asocieri fără personalitate juridică, constituită
+între persoane fizice şi/sau în cadrul unei societăți civile cu personalitate juridică constituită potrivit
+legii speciale şi care este supusă regimului transparenței fiscale.
+        În cazul societății civile cu personalitate juridică constituită potrivit legii speciale şi care este
+supusă regimului transparenței fiscale, potrivit legii, se aplică regulile de determinare a venitului net
+din activități independente.
+        În categoria veniturilor din activități independente, pentru care există obligația depunerii
+declarației, se cuprind:
+        - venituri comerciale;
+        - venituri din profesii libere;
+        - venituri din drepturi de proprietate intelectuală.
+        Nu au obligația depunerii declarației, contribuabilii care realizează numai venituri din
+activitățile independente prevăzute la art.52 din Codul fiscal, pentru care plățile anticipate se
+stabilesc prin reținere la sursă, de către plătitorii de venituri sau care au optat pentru stabilirea
+impozitului pe venit ca impozit final.
+                 Persoanele fizice care obțin venituri din activități independente din mai multe surse
+depun câte o declarație pentru fiecare sursă şi categorie de venit.
+        a.2. Persoanele fizice care realizează venituri în cadrul unei asocieri fără personalitate juridică,
+constituită între persoane fizice sau în cadrul unei societăți civile cu personalitate juridică constituită
+potrivit legii speciale şi care este supusă regimului transparenței fiscale, potrivit legii, completează
+declarația având în vedere venitul net estimat distribuit, care le revine din asociere.
+        b. Cedarea folosinței bunurilor, cu excepția veniturilor din arendă
+        b.1. Venituri din cedarea folosinței bunurilor, altele decât cele de la subpct. b.2. şi b.3.
+        Declarația se completează de către persoanele fizice care realizează venituri în bani şi/sau în
+natură, provenind din cedarea folosinței bunurilor mobile şi imobile, obținute în calitate de
+proprietar, uzufructuar sau alt deținător legal.
+        Contribuabilii care realizează venituri din cedarea folosinței bunurilor din derularea unui
+număr de până la 5 contracte de închiriere inclusiv, bifează căsuța “Cedarea folosinței bunurilor” şi
+                                                                                                       7
+
+
+căsuța “sub 5 contracte, inclusiv” de la Secțiunea II “Date privind activitatea desfăşurată“, pct.1
+“Categoria de venit”.
+        Persoanele fizice care obțin venituri din cedarea folosinței bunurilor din mai multe surse,
+respectiv contracte de închiriere, depun câte o declarație estimativă pentru fiecare sursă.
+        În situația închirierii bunurilor deținute în comun, fiecare coproprietar completează şi depune
+câte o declarație, corespunzător cotei care îi revine din proprietate.
+        b.2. Venituri din cedarea folosinței bunurilor calificate în categoria venituri din activități
+independente
+        Declarația se depune de către contribuabilii care la sfârşitul anului precedent celui de
+impunere, realizează venituri din cedarea folosinței bunurilor din derularea unui număr mai mare de
+5 contracte de închiriere sau subînchiriere. Persoanele fizice care realizează venituri din cedarea
+folosinței bunurilor din derularea unui număr mai mare de 5 contracte de închiriere sau subînchiriere
+la sfârşitul anului fiscal, începând cu anul fiscal următor, califică aceste venituri în categoria
+veniturilor din activități independente şi le supun regulilor de stabilire a venitului net pentru această
+categorie.
+        La stabilirea numărului de contracte se iau în calcul contractele de închiriere sau subînchiriere
+aflate în derulare la data de 31 decembrie a anului precedent celui de impunere, cu excepția
+contractelor de arendare a bunurilor agricole.
+        Contribuabilii care realizează venituri din cedarea folosinței bunurilor calificate în categoria
+venituri din activități independente bifează căsuța “Cedarea folosinței bunurilor” şi căsuța “peste 5
+contracte” de la Secțiunea II “Date privind activitatea desfăşurată“, pct.1 “Categoria de venit”.
+        În cazul veniturilor din cedarea folosinței bunurilor realizate din derularea unui număr mai
+mare de 5 contracte de închiriere sau subînchiriere, calificate în categoria venituri din activități
+independente, la completarea şi depunerea formularului, se au în vedere dispozițiile Hotărârii
+Guvernului nr.44/2004 pentru aprobarea Normelor metodologice de aplicare a Legii nr.571/2003
+privind Codul fiscal, cu modificările şi completările ulterioare, precum şi alte prevederi legale în
+materie.
+        b.3. Venituri din închirierea în scop turistic
+        Declarația se completează pentru fiecare an fiscal, de către contribuabilii care realizează
+venituri din închirierea în scop turistic a camerelor situate în locuințe proprietate personală, având o
+capacitate de cazare cuprinsă între 1 şi 5 camere, inclusiv, altele decât cele care constituie structuri
+de primire turistică, potrivit legislației specifice.
+        La declarație se anexează formularul „Fişa capacității de cazare”, completată corespunzător
+situației contribuabilului, în vederea stabilirii de către organul fiscal competent a impozitului anual
+datorat.
+        Contribuabilii care realizează venituri din închirierea în scop turistic a camerelor situate în
+locuințe proprietate personală, având o capacitate de cazare cuprinsă între 1 şi 5 camere, inclusiv,
+precum şi contribuabilii care depăşesc, în cursul anului, numărul de 5 camere de închiriat, bifează
+căsuța “Cedarea folosinței bunurilor” şi căsuța “În scop turistic” de la Secțiunea II “Date privind
+activitatea desfăşurată“, pct.1 “Categoria de venit” şi menționează numărul de camere de închiriat în
+scop turistic, pentru anul în curs, situate în locuințe proprietate personală.
+        În situația în care, în cursul anului se depăşeşte numărul camerelor închiriate (peste cinci) se
+va depune un nou formular, în termen de 15 zile de la data producerii evenimentului, bifându‐se
+căsuța „Sistem real” de la Secțiunea II “Date privind activitatea desfăşurată“, pct.2 „Determinarea
+venitului net”. De la data depăşirii numărului de camere închiriate (peste cinci) şi până la sfârşitul
+anului fiscal, au obligația determinării venitului net în sistem real potrivit regulilor de stabilire
+prevăzute în categoria venituri din activități independente.
+                                                                                                          8
+
+
+         Veniturile din închirierea în scop turistic a camerelor situate în locuințe proprietate personală,
+având o capacitate de cazare mai mare de 5 camere de închiriat, se supun impunerii potrivit
+prevederilor Capitolului II „Venituri din activități independente” de la Titlul III „Impozitul pe venit” din
+Legea nr.571/2003 privind Codul fiscal, cu modificările şi completările ulterioare. Pentru aceste
+venituri sunt aplicabile regulile de impunere proprii veniturilor din activități independente, pentru
+care venitul net anual se determină pe bază de normă de venit sau în sistem real.
+         c. Activități agricole impuse în sistem real, pe baza datelor din contabilitatea în partidă
+simplă
+         Declarația se completează şi se depune de către persoanele fizice care realizează venituri din
+activități agricole impuse în sistem real, pe baza datelor din contabilitatea în partidă simplă,
+provenind din cultivarea produselor agricole vegetale, exploatarea pepinierelor viticole, pomicole şi
+altele asemenea, creşterea şi exploatarea animalelor, inclusiv din valorificarea produselor de origine
+animală, în stare naturală, realizate în mod individual sau într‐o formă de asociere.
+         Persoanele fizice care realizează venituri în cadrul unei asocieri fără personalitate juridică,
+constituită între persoane fizice, completează declarația având în vedere venitul net estimat
+distribuit, care le revine din asociere.
+         d. Silvicultură şi piscicultură
+         Declarația se completează şi se depune de către persoanele fizice care realizează venituri din
+recoltarea şi valorificarea produselor specifice fondului forestier național, respectiv a produselor
+lemnoase şi nelemnoase, precum şi cele obținute din exploatarea amenajărilor piscicole.
+         Veniturile din silvicultură şi piscicultură se supun impunerii potrivit prevederilor Capitolului II
+„Venituri din activități independente” de la Titlul III „Impozitul pe venit” din Legea nr.571/2003
+privind Codul fiscal, cu modificările şi completările ulterioare, venitul net anual fiind determinat în
+sistem real, pe baza datelor din contabilitatea în partidă simplă.
+         Pentru aceste venituri sunt aplicabile regulile de impunere proprii veniturilor din activități
+independente pentru care venitul net anual se determină în sistem real.
+         Persoanele fizice care realizează venituri în cadrul unei asocieri fără personalitate juridică,
+constituită între persoane fizice, completează declarația având în vedere venitul net estimat
+distribuit, care le revine din asociere.
+         1. Termenul de depunere a declarației
+         Declarația se depune la organul fiscal competent, astfel:
+         ‐ în termen de 15 zile de la data începerii activității, în cazul contribuabililor care realizează
+venituri din activități independente, venituri din activități agricole impuse în sistem real, venituri din
+silvicultură şi piscicultură şi care încep o activitate în cursul anului fiscal;
+         ‐ în termen de 15 zile de la data încheierii contractului între părți, odată cu înregistrarea
+acestuia la organul fiscal competent, în cazul contribuabililor care realizează venituri din cedarea
+folosinței bunurilor din derularea unui număr de până la 5 contracte de închiriere, inclusiv;
+         ‐ pentru fiecare an fiscal, până la data de 31 ianuarie inclusiv, pentru anul în curs, sau în
+termen de 15 zile de la data producerii evenimentului dacă persoanele fizice încep să realizeze
+venituri în cursul anului după data de 31 ianuarie inclusiv, în cazul contribuabililor care realizează
+venituri din închirierea în scop turistic a camerelor situate în locuințe proprietate personală, având o
+capacitate de cazare cuprinsă între 1 şi 5 camere, inclusiv;
+         ‐ în termen de 15 zile de la data producerii evenimentului, în cazul contribuabililor care
+realizează venituri din închirierea în scop turistic a camerelor situate în locuințe proprietate
+personală, având o capacitate de cazare cuprinsă între 1 şi 5 camere inclusiv, impuşi pe baza
+normelor de venit, şi care, în cursul anului fiscal, depăşesc numărul de 5 camere de închiriat;
+         ‐ până la data de 31 ianuarie inclusiv, în cazul contribuabililor care realizează venituri din
+activități independente impuse pe bază de norme de venit și care în anul fiscal anterior au înregistrat
+                                                                                                             9
+
+
+un venit brut anual mai mare decât echivalentul în lei al sumei de 100.000 euro, şi care au obligația
+determinării venitului net anual în sistem real, începând cu anul fiscal următor;
+         ‐ până la data de 25 mai a anului de impunere, odată cu declarația privind venitul realizat, în
+cazul contribuabililor care, în anul anterior, au realizat pierderi şi cei care, au realizat venituri pe
+perioade mai mici decât anul fiscal, precum şi cei care, din motive obiective, estimează că vor realiza
+venituri care diferă cu cel puțin 20% față de anul fiscal anterior.
+         2. Organul fiscal competent
+         Declarația se completează în două exemplare:
+         ‐ originalul se depune la:
+         a) organul fiscal în a cărui rază teritorială contribuabilul are adresa unde îşi are domiciliul,
+potrivit legii sau adresa unde locuieşte efectiv, în cazul în care aceasta este diferită de domiciliu,
+pentru persoanele fizice care au domiciliul fiscal în România;
+         b) organul fiscal în a cărui rază teritorială se află domiciliul fiscal al împuternicitului sau
+curatorului fiscal, după caz, în cazul persoanelor fizice care nu au domiciliul fiscal în România, pentru
+veniturile din cedarea folosinței bunurilor din derularea unui număr mai mare de 5 contracte de
+închiriere la sfârşitul anului fiscal;
+         c) organul fiscal în a cărui rază teritorială se află sursa de venit, pentru contribuabilii persoane
+fizice, fără domiciliu fiscal în România care realizează venituri, altele decât cele prevăzute la lit.b).
+         ‐ copia se păstrează de către contribuabil sau de împuternicitul/curatorul acestuia.
+         3. Modul de depunere a declarației
+         Declarația se completează pe surse şi categorii de venit, de către contribuabil sau de către
+împutenicitul acestuia, potrivit Ordonanței Guvernului nr.92/2003 privind Codul de procedură fiscală,
+republicată, cu modificările şi completările ulterioare, înscriind cu majuscule, citeț şi corect, toate
+datele prevăzute de formular.
+         Declarația se depune în format hârtie, direct la registratura organului fiscal sau la oficiul
+poştal, prin scrisoare recomandată cu confirmare de primire.
+         Declarația se pune gratuit la dispoziția contribuabilului.
+         Data depunerii declarației este data înregistrării acesteia la organul fiscal sau data depunerii
+la poştă, după caz.
+         II. Completarea declarației
+         1. Perioada de raportare
+         În rubrica “Anul” se înscrie anul pentru care se completează declarația, cu cifre arabe cu 4
+caractere (de exemplu: 2013).
+         2. Căsuța 1 “Recalcularea plăților anticipate” se bifează în următoarele situații:
+         a)      în situația contribuabililor care realizează venituri din activități independente şi/sau
+din activități agricole impuse în sistem real, silvicultură şi piscicultură şi care în cursul anului fiscal îşi
+încetează activitatea, precum şi cei care intră în suspendare temporară a activității, potrivit legislației
+în materie;
+         În vederea recalculării plăților anticipate contribuabilii vor depune declarația, însoțită de
+documente justificative, în termen de 15 zile de la data producerii evenimentului.
+         b)      în situația rezilierii, în cursul anului fiscal, a contractelor de închiriere, în care chiria
+este exprimată în lei, pentru care plățile anticipate sunt stabilite potrivit prevederilor art.63 alin.(2)
+din Legea nr.571/2003 privind Codul fiscal, cu modificările şi completările ulterioare.
+         Contribuabilii care reziliază contractele de închiriere în cursul anului vor depune declarația
+însoțită de documente justificative, în termen de 5 zile la organul fiscal competent.
+         c)      în cazul în care, în cursul anului fiscal, are loc depăşirea numărului de 5 camere de
+închiriat, pentru contribuabilii care realizează venituri din închirierea în scop turistic a camerelor
+situate în locuințe proprietate personală, având o capacitate de cazare cuprinsă între 1 şi 5 camere
+                                                                                                         10
+
+
+inclusiv, potrivit art.62^3 din Legea nr.571/2003 privind Codul fiscal, cu modificările şi completările
+ulterioare.
+         Contribuabilii care, în cursul anului fiscal, depăşesc numărul de 5 camere de închiriat vor
+depune declarația în termen de 15 zile de la data producerii evenimentului.
+         Căsuța 2 “Modificarea modului de determinare a venitului net” ‐ se bifează de către
+persoanele fizice care realizează venituri din activități independente şi cedarea folosinței bunurilor
+care optează pentru modificarea modului de determinare a venitului net: sistem real, cote forfetare
+de cheltuieli sau normă de venit, după caz.
+         Contribuabilii care optează, în condițiile legii, pentru modificarea modului de determinare a
+venitului net bifează căsuța “Modificarea modului de determinare a venitului net” şi indică sistemul
+de impunere pentru care au optat, prin bifarea căsuței corespunzătoare situației contribuabilului de
+la Secțiunea II „Date privind activitatea desfăşurată”, pct.2 ”Determinarea venitului net: ”sistem
+real”, “cote forfetare de cheltuieli” sau “normă de venit”, după caz.
+         În această situație, declarația se depune, după caz, în termen de 15 zile de la data începerii
+activității, în cazul contribuabililor care încep o activitate în cursul anului, sau până la data de 31
+ianuarie a anului fiscal, în cazul contribuabililor care au desfăşurat activitate şi în anul precedent.
+         3. Secțiunea I „Date de identificare a contribuabilului”
+         În caseta “Cod numeric personal/Număr de identificare fiscală“ ‐ se înscrie codul numeric
+personal al contribuabilului sau numărul de identificare fiscală, atribuit de către Agenția Națională de
+Administrare Fiscală, cu ocazia înregistrării fiscale, după caz, înscriindu‐se cifrele cu aliniere la
+dreapta.
+         În rubricile "Nume” şi "Prenume" se înscriu, numele şi prenumele contribuabilului.
+         Rubricile privind adresa se completează, după caz, cu datele privind adresa domiciliului fiscal
+al contribuabilului.
+         4. Secțiunea II „Date privind activitatea desfăşurată”
+         Punctul 1 „Categoria de venit” ‐ se bifează căsuța corespunzătoare categoriei de venit, după
+caz: comerciale, profesii libere, drepturi de proprietate intelectuală, cedarea folosinței bunurilor,
+activități agricole, silvicultură sau piscicultură.
+         Punctul 2 „Determinarea venitului net” ‐ se bifează căsuța corespunzătoare, în funcție de
+modul de determinare a venitului net, după caz: în sistem real, pe baza cotelor forfetare de cheltuieli
+sau pe normă de venit.
+         Punctul 3 „Forma de organizare” ‐ se bifează căsuța corespunzătoare modului de desfăşurare
+a activității: individual, asociere fără personalitate juridică, entități supuse regimului transparenței
+fiscale, modificarea modalității/formei de exercitare a activității.
+         Căsuța “Individual” se bifează de persoanele fizice care obțin venituri dintr‐o activitate
+desfăşurată în mod individual.
+         Căsuța “Asociere fără personalitate juridică“ se bifează de persoanele fizice care obțin
+venituri dintr‐o activitate desfăşurată în cadrul unei asocieri fără personalitate juridică, constituită
+între persoane fizice.
+         Căsuța “Entități supuse regimului transparenței fiscale” se bifează de persoanele fizice care
+obțin venituri dintr‐o activitate desfăşurată într‐o formă de organizare cu personalitate juridică,
+constituită potrivit legii speciale şi care este supusă regimului transparenței fiscale, potrivit legii.
+         Căsuța “Modificarea modalității/formei de exercitare a activității” se bifează de contribuabili
+în cazul schimbării modalității de exercitare a unei activități independente şi/sau transformării formei
+de exercitare a acesteia într‐o altă formă, potrivit legislației în materie, în timpul anului, în condițiile
+continuării activității.
+         Punctul 4 „Obiectul principal de activitate” ‐ se înscrie denumirea activității principale
+generatoare de venituri, desfăşurată de contribuabil, precum şi codul CAEN al activității desfăşurate.
+                                                                                                          11
+
+
+       Punctul 5 „Sediul/Datele de identificare a bunului pentru care se cedează folosința”
+       Sediul ‐ se completează adresa sediului sau locului principal de desfăşurare a activității, după
+caz.
+          În cazul în care, activitatea se desfăşoară prin mai multe puncte de lucru, se completează
+adresa sediului sau locului principal de desfăşurare a activității, după caz.
+          Persoanele fizice care realizează venituri din activități agricole vor înscrie denumirea unității
+administrativ ‐ teritoriale în a cărei rază se află terenul (terenurile), respectiv: municipiu, oraş,
+comună sau sector al municipiului Bucureşti, după caz.
+          Datele de identificare a bunului pentru care se cedează folosința ‐ se înscriu datele de
+identificare a bunului a cărui folosință este cedată. De exemplu:
+          a) pentru imobile (clădiri, terenuri): adresa completă (stradă, număr, bloc, etaj, apartament),
+suprafața totală, din care închiriată;
+          b) pentru autovehicule: tipul, anul de fabricație, numărul de înmatriculare, seria motorului,
+seria şasiului;
+          c) alte bunuri: denumirea bunului, descrierea detaliată, cu identificarea principalelor
+caracteristici care individualizează bunul.
+          Rubrica se completează numai de către contribuabilii care realizează venituri din cedarea
+folosinței bunurilor.
+          Punctul 6 ”Documentul de autorizare/Contractul de asociere/Închiriere” ‐ se înscriu numărul
+documentului care atestă dreptul contribuabilului de a desfăşura activitate independentă, potrivit
+legii şi data emiterii acestuia.
+          Contribuabilii care desfăşoară activități în cadrul unei asocieri fără personalitate juridică,
+constituită între persoane fizice şi entitățile supuse regimului transparenței fiscale completează
+numărul sub care contractul de asociere a fost înregistrat la organul fiscal, precum şi data înregistrării
+acestuia.
+          Contribuabilii care au realizat venituri din cedarea folosinței bunurilor completează numărul
+sub care a fost înregistrat la organul fiscal contractul încheiat între părți şi data înregistrării acestuia.
+          Punctul 6 nu se completează de către contribuabilii care realizează venituri din închirierea în
+scop turistic a camerelor situate în locuințe proprietate personală, având o capacitate de cazare
+cuprinsă între 1 şi 5 camere, inclusiv.
+          Punctele 7,8 „Data începerii/încetării activității” ‐ se completează de către contribuabilii care
+îşi încep/încetează activitatea în cursul anului fiscal.
+          Rubricile de la pct.7 şi pct.8 se completează numai dacă evenimentele respective se produc în
+cursul anului pentru care se depune declarația.
+          Persoanele fizice autorizate care încetează activitatea în cursul anului, înscriu data depunerii
+autorizației de funcționare la organul emitent.
+          Contribuabilii care realizează venituri din cedarea folosinței bunurilor înscriu data prevăzută
+pentru începerea derulării contractului încheiat între părți, respectiv data prevăzută pentru încetarea
+contractului încheiat între părți.
+          Contribuabilii care realizează venituri din închirierea în scop turistic a camerelor situate în
+locuințe proprietate personală, având o capacitate de cazare cuprinsă între 1 şi 5 camere, inclusiv,
+precum şi contribuabilii care depăşesc, în cursul anului, numărul de 5 camere de închiriat, înscriu
+data privind începerea, respectiv data privind încetarea activității.
+          Punctul 9 „Data suspendării activității” – se completează data suspendării activității de către
+contribuabilii care realizează venituri din activități independente şi/sau din activități agricole impuse
+în sistem real, silvicultură şi piscicultură şi care în cursul anului fiscal intră în suspendare temporară a
+activității, potrivit legislației în materie.
+                                                                                                        12
+
+
+        Punctul 9 se completează numai dacă evenimentul respectiv se produce în cursul anului
+pentru care se depune declarația.
+        5. Secțiunea III „Date privind venitul estimat”
+        a. Venituri din activități independente: activități comerciale, profesii libere, drepturi de
+proprietate intelectuală determinate în sistem real pe baza datelor din contabilitatea în partidă
+simplă.
+        a.1) Activitate desfăşurată în mod individual
+        a.1.1) În cazul persoanelor care realizează venituri din activități comerciale, din exercitarea
+unei profesii libere, din închirierea în scop turistic a camerelor situate în locuințe proprietate
+personală, având o capacitate de cazare mai mare de 5 camere şi/sau drepturi de proprietate
+intelectuală determinate în sistem real pe baza datelor din contabilitatea în partidă simplă
+        rd.1. Venit brut estimat ‐ se înscrie suma reprezentând veniturile în bani şi/sau echivalentul în
+lei al veniturilor în natură, estimate a se realiza în anul fiscal în curs de către contribuabili, atât din
+activitatea de bază, cât şi din activități adiacente.
+        rd.2. Cheltuieli deductibile estimate ‐ se înscrie suma reprezentând cheltuielile estimate a se
+efectua în anul fiscal în curs, în vederea realizării venitului brut estimat, atât din activitatea de bază,
+cât şi din activități adiacente, cum sunt: cheltuieli pentru achiziționarea de materii prime, materiale,
+obiecte de inventar etc.
+        rd.3. Venit net estimat ‐ se înscrie suma reprezentând diferența dintre venitul brut estimat şi
+cheltuielile aferente deductibile, respectiv se scade rd.2 din rd.1.
+        a.1.2) În cazul contribuabililor care realizează venituri din activități independente impuse pe
+bază de normă de venit
+        Contribuabilii care desfăşoară activități independente, în mod individual, impuşi pe bază de
+norme de venit, nu completează rândurile de la Secțiunea III „Date privind venitul estimat”.
+        Se bifează căsuța “Normă de venit” de la Secțiunea II “Date privind activitatea desfăşurată”,
+pct. 2 “Determinarea venitului net”.
+        a.2) Activitate desfăşurată într‐o formă de asociere
+        a.2.1) În cazul contribuabililor care realizează venituri din activități independente
+determinate în sistem real pe baza datelor din contabilitatea în partidă simplă
+        În cazul contribuabililor care desfăşoară activități independente în cadrul unei asocieri fără
+personalitate juridică, constituită între persoane fizice, sau în cadrul unei entități supuse regimului
+transparenței fiscale, se completează numai rd.3 „Venit net estimat” din declarație, după cum
+urmează:
+        rd.3. Venit net estimat ‐ se înscrie venitul care îi revine contribuabilului din distribuirea
+venitului net estimat al asocierii, preluat din col.5 a tabelului “Distribuția venitului net estimat pe
+asociați” din “Declarația privind veniturile estimate pentru asocierile fără personalitate juridică şi
+entități supuse regimului transparenței fiscale“, de la rândul corespunzător contribuabilului.
+        a.2.2) În cazul contribuabililor care realizează venituri din activități independente impuse pe
+bază de normă de venit
+        Contribuabilii care desfăşoară venituri din activități independente, desfăşurate într‐o formă
+de asociere, impuse pe bază de norme de venit, nu completează rândurile de la Secțiunea III „Date
+privind venitul estimat”.
+        Se bifează căsuța “Normă de venit” de la Secțiunea II “Date privind activitatea desfăşurată”,
+pct. 2 “Determinarea venitului net”.
+        b. Venituri din cedarea folosinței bunurilor
+        b.1) Cedarea folosinței bunurilor din derularea unui număr de până la 5 contracte de
+închiriere, inclusiv
+                                                                                                        13
+
+
+         rd.1. Venit brut estimat ‐ se înscrie chiria prevăzută în contractul încheiat între părți pentru
+anul fiscal de raportare, indiferent de momentul plății acesteia, majorată cu valoarea cheltuielilor ce
+cad, conform dispozițiilor legale, în sarcina proprietarului, uzufructuarului sau a altui deținător legal,
+dacă sunt efectuate de cealaltă parte contractantă.
+         rd.2. Cheltuieli deductibile estimate – se înscrie, după caz:
+         ‐ suma reprezentând cheltuielile estimate a se efectua în anul fiscal în curs, în vederea
+realizării venitului brut estimat, în situația persoanelor fizice care au optat pentru stabilirea venitului
+net în sistem real şi conduc evidență contabilă în partidă simplă;
+         ‐ suma rezultată prin aplicarea unei cote forfetare de cheltuieli de 25% la venitul brut estimat
+(rd.1), reprezentând cheltuieli deductibile aferente venitului, în cazul contribuabililor care determină
+venitul net pe baza cotelor forfetare de cheltuieli.
+         rd.3. Venit net estimat ‐ se înscrie suma reprezentând diferența dintre venitul brut estimat şi
+cheltuielile deductibile aferente, respectiv dintre datele înscrise la rd.1 şi datele înscrise la rd. 2.
+         b.2) Venituri din cedarea folosinței bunurilor calificate în categoria venituri din activități
+independente
+         Contribuabilii care realizează venituri din cedarea folosinței bunurilor calificate, în condițiile
+legii, în categoria venituri din activități independente, stabilesc venitul net, în sistem real, pe baza
+datelor din contabilitatea în partidă simplă, potrivit regulilor prevăzute pentru veniturile din activități
+independente. Veniturile şi cheltuielile luate în calcul pentru stabilirea venitului net estimat sunt cele
+de la nivelul tuturor contractelor de închiriere/subînchiriere, aflate în derulare în anul de impunere.
+         rd.1. Venit brut estimat ‐ se înscrie suma reprezentând veniturile în bani şi/sau echivalentul în
+lei al veniturilor în natură estimate a se realiza în anul fiscal de impunere de către contribuabili.
+         rd.2. Cheltuieli deductibile estimate ‐ se înscrie suma reprezentând cheltuielile estimate a se
+efectua în anul fiscal de impunere în vederea realizării venitului brut estimat.
+         rd.3. Venit net estimat ‐ se înscrie suma reprezentând diferența dintre venitul brut estimat şi
+cheltuielile aferente deductibile, respectiv se scade rd.2 din rd.1.
+         b.3) Venituri din închirierea în scop turistic a camerelor situate în locuințe proprietate
+personală, având o capacitate de cazare cuprinsă între 1 şi 5 camere inclusiv
+         b.3.1) Venituri din închirierea în scop turistic a camerelor situate în locuințe proprietate
+personală, având o capacitate de cazare cuprinsă între 1 şi 5 camere inclusiv, impuse pe bază de
+normă de venit
+         Contribuabilii care realizează venituri din închiriere în scop turistic, impuse pe bază de normă
+de venit, nu completează rândurile de la Secțiunea III „Date privind venitul estimat”.
+         Se bifează căsuța “Normă de venit” de la Secțiunea II “Date privind activitatea desfăşurată”,
+pct. 2 “Determinarea venitului net”.
+         b.3.2) Venituri din închirierea în scop turistic a camerelor situate în locuințe proprietate
+personală, având o capacitate de cazare cuprinsă între 1 şi 5 camere inclusiv, determinate în sistem
+real pe baza datelor din contabilitatea în partidă simplă
+         rd.1. Venit brut estimat ‐ se înscrie suma reprezentând veniturile în bani şi/sau echivalentul în
+lei al veniturilor în natură estimate a se realiza în anul fiscal în curs de către contribuabili.
+         rd.2. Cheltuieli deductibile estimate ‐ se înscrie suma reprezentând cheltuielile estimate a se
+efectua în anul fiscal în curs, în vederea realizării venitului.
+         rd.3. Venit net estimat ‐ se înscrie suma reprezentând diferența dintre venitul brut estimat şi
+cheltuielile aferente deductibile, respectiv se scade rd.2 din rd.1.
+         c. Venituri din activități agricole pentru care venitul net se determină în sistem real, pe baza
+datelor din contabilitatea în partidă simplă
+         c.1) Activitate desfăşurată în mod individual
+                                                                                                        14
+
+
+         rd.1. Venit brut estimat ‐ se înscrie suma reprezentând veniturile în bani şi/sau echivalentul în
+lei al veniturilor în natură estimate a se realiza în anul fiscal în curs de către contribuabili.
+         rd.2. Cheltuieli deductibile estimate ‐ se înscrie suma reprezentând cheltuielile estimate a se
+efectua în anul fiscal în curs, în vederea realizării venitului brut estimat, cum sunt: cheltuieli pentru
+achiziționarea de materii prime, materiale, obiecte de inventar etc.
+         rd.3. Venit net estimat ‐ se înscrie suma reprezentând diferența dintre venitul brut estimat şi
+cheltuielile aferente deductibile, respectiv se scade rd.2 din rd.1.
+         c.2) Activitate desfăşurată într‐o formă de asociere
+         În cazul contribuabililor care realizează venituri din activități agricole în cadrul unei asocieri
+fără personalitate juridică, constituită între persoane fizice, impuse în sistem real, se completează
+numai rd.3. „Venit net estimat” din declarație, după cum urmează:
+         rd.3. Venit net estimat ‐ se înscrie venitul care îi revine contribuabilului din distribuirea
+venitului net estimat al asocierii, preluat din col.5 a tabelului “Distribuția venitului net estimat pe
+asociați” din „Declarația privind veniturile estimate pentru asocierile fără personalitate juridică şi
+entități supuse regimului transparenței fiscale”, rândul corespunzator contribuabilului.
+
+         d. Venituri din silvicultură şi piscicultură
+         d.1) Activitate desfăşurată în mod individual
+         rd.1. Venit brut estimat ‐ se înscrie suma reprezentând veniturile în bani şi/sau echivalentul în
+lei al veniturilor în natură estimate a se realiza în anul fiscal în curs de către contribuabili.
+         rd.2. Cheltuieli deductibile estimate ‐ se înscrie suma reprezentând cheltuielile estimate a se
+efectua în anul fiscal în curs, în vederea realizării venitului brut estimat, cum sunt: cheltuieli pentru
+achiziționarea de materii prime, materiale, obiecte de inventar etc.
+         rd.3. Venit net estimat ‐ se înscrie suma reprezentând diferența dintre venitul brut estimat şi
+cheltuielile aferente deductibile, respectiv se scade rd.2 din rd.1.
+         d.2) Activitate desfăşurată într‐o formă de asociere
+         În cazul contribuabililor care realizează venituri din silvicultură şi piscicultură în cadrul unei
+asocieri fără personalitate juridică, constituită între persoane fizice, impuse în sistem real, se
+completează numai rd.3. „Venit net estimat” din declarație, după cum urmează:
+         rd.3. Venit net estimat ‐ se înscrie venitul care îi revine contribuabilului din distribuirea
+venitului net estimat al asocierii, preluat din col.5 a tabelului “Distribuția venitului net estimat pe
+asociați” din „Declarația privind veniturile estimate pentru asocierile fără personalitate juridică şi
+entități supuse regimului transparenței fiscale”, rândul corespunzator contribuabilului.
+         6. Secțiunea IV “Date de identificare a împuternicitului”
+         Se completează numai în cazul în care obligațiile de declarare a veniturilor se îndeplinesc de
+către un împuternicit, conform Ordonanței Guvernului nr.92/2003 privind Codul de procedură fiscală,
+republicată, cu modificările şi completările ulterioare, desemnat de contribuabil.
+         În caseta “Cod de identificare fiscală” ‐ se înscrie codul de identificare fiscală al
+împuternicitului, înscriindu‐se cifrele cu aliniere la dreapta.
+         În rubrica "Nume, prenume/Denumire" se înscriu, după caz, denumirea sau numele şi
+prenumele împuternicitului.
+         Rubricile privind adresa se completează, după caz, cu datele privind adresa domiciliului fiscal
+al împuternicitului.
+                                                                                                          15
+
+
+                                                                                                    Anexa 4
+
+                                                   INSTRUCȚIUNI
+          de completare a formularului 223 “Declarație privind veniturile estimate pentru asocierile
+              fără personalitate juridică şi entități supuse regimului transparenței fiscale”
+                                                Cod 14.13.01.13/1i
+        I. Depunerea declarației
+        Declarația se completează în cazul asocierilor fără personalitate juridică, constituite între
+persoane fizice care realizează venituri din activități independente ‐ comerciale şi profesii libere,
+inclusiv din activități adiacente, venituri din activități agricole pentru care venitul net anual se
+determină în sistem real pe baza contabilității în partidă simplă, precum şi venituri din silvicultură şi
+piscicultură.
+        Declarația se depune şi în cazul persoanelor fizice care obțin venituri dintr‐o activitate
+desfăşurată într‐o formă de organizare cu personalitate juridică (SPRL) constituită potrivit legii
+speciale şi care este supusă regimului transparenței fiscale, potrivit legii.
+        În cazul societății civile cu personalitate juridică constituită potrivit legii speciale şi care este
+supusă regimului transparenței fiscale, potrivit legii, se aplică regulile de determinare a venitului net
+din activități independente.
+        Persoanele fizice care obțin venituri dintr‐o activitate desfăşurată într‐o formă de organizare
+cu personalitate juridică (SPRL) constituită potrivit legii speciale şi care este supusă regimului
+transparenței fiscale, potrivit legii, au obligația să asimileze acest venit distribuit, venitului net anual
+din activități independente.
+        Asocierile în cadrul cărora se obțin venituri de natura celor mai sus menționate, din mai multe
+surse, depun câte o declarație estimativă pentru fiecare sursă, respectiv pentru fiecare categorie de
+venit.
+        Declarația nu se depune pentru:
+        ‐ asocierile fără personalitate juridică constituite între persoane fizice în cadrul cărora se
+realizează venituri din activități independente pentru care impozitul se percepe prin reținere la sursă
+de către plătitorii de venituri;
+        ‐ asocierile constituite între persoane fizice şi persoane juridice, care nu dau naştere unei
+persoane juridice, care realizează venituri din activități independente;
+        ‐ asocierile fără personalitate juridică constituite între persoane fizice în cadrul cărora se
+realizează venituri din activități agricole impuse pe baza normelor de venit, potrivit legii.
+        1. Termenul de depunere a declarației
+        Declarația se depune la organul fiscal competent, astfel:
+        ‐ în termen de 15 zile de la data începerii activității, în cazul asocierilor care încep o activitate
+în cursul anului fiscal;
+        ‐ până la data de 25 mai a anului de impunere, odată cu declarația privind venitul realizat, în
+cazul asocierilor care, în anul anterior, au realizat pierderi şi cele care, au realizat venituri pe perioade
+mai mici decât anul fiscal, precum şi cele care, din motive obiective, estimează că vor realiza venituri
+care diferă cu cel puțin 20% față de anul fiscal anterior.
+        2. Organul fiscal competent
+        Declarația se depune, în doua exemplare:
+        ‐ originalul se depune la organul fiscal la care asocierea este înregistrată în evidența fiscală;
+        ‐copia se păstrează la domiciliul fiscal al asocierii, împreună cu celelalte documente privind
+activitatea acesteia.
+        3. Modul de depunere a declarației
+                                                                                                          16
+
+
+        Declarația se completează şi se depune de către asociatul desemnat prin contractul de
+asociere să răspundă de îndeplinirea obligațiilor asocierii față de autoritățile publice, înscriind cu
+majuscule, citeț şi corect toate datele prevăzute în formular.
+         Declarația se depune în format hârtie, direct la registratura organului fiscal sau la oficiul
+poştal, prin scrisoare recomandată cu confirmare de primire
+         Data depunerii declarației este data înregistrării acesteia la organul fiscal sau data depunerii
+la poştă, după caz.
+        II. Completarea declarației
+        1. Perioada de raportare
+        În rubrica “Anul” se înscrie anul pentru care se completează declarația, cu cifre arabe cu 4
+caractere (de exemplu: 2013).
+        2. Secțiunea I “Date de identificare a asocierii”
+        În caseta “Cod de identificare fiscală” ‐ se înscrie codul de identificare fiscală atribuit asocierii
+fără personalitate juridică, înscriindu‐se cifrele cu aliniere la dreapta.
+        În cazul în care, asocierea fără personalitate juridică are calitatea de persoană impozabilă
+înregistrată în scopuri de taxă pe valoarea adăugată, codul de identificare fiscală va fi precedat de
+prefixul “RO”.
+        În rubrica "Denumire" se înscrie denumirea asocierii.
+        Rubricile privind adresa se completează, după caz, cu datele privind adresa domiciliului fiscal
+a asocierii.
+        3. Secțiunea II “Date privind activitatea desfăşurată”
+        Punctul 1 “Categoria de venit” ‐ se bifează căsuța corespunzătoare categoriei de venituri care
+urmează a se realiza în anul fiscal de impunere, după caz: comerciale, profesii libere, activități
+agricole, silvicultură, piscicultură sau alte venituri.
+        Punctul 2 “Forma de organizare” ‐ se bifează căsuța corespunzătoare modului de desfăşurare
+a activității: asociere fără personalitate juridică, entități supuse regimului transparenței fiscale,
+modificarea modalității/formei de exercitare a activității.
+        Căsuța “Asociere fără personalitate juridică“ se bifează în cazul în care activitatea se
+desfăşoară în cadrul unei asocieri fără personalitate juridică, constituită între persoane fizice.
+        Căsuța “Entități supuse regimului transparenței fiscale” se bifează în cazul în care activitatea
+se desfăşoară într‐o formă de organizare cu personalitate juridică constituită potrivit legii speciale şi
+care este supusă regimului transparenței fiscale, potrivit legii.
+        Căsuța “Modificarea modalității/formei de exercitare a activității” se bifează de contribuabili
+în cazul schimbării modalității de exercitare a unei activități independente şi/sau transformării formei
+de exercitare a acesteia într‐o altă formă, potrivit legislației în materie, în timpul anului, în condițiile
+continuării activității.
+        Punctul 3 “Determinarea venitului net” ‐ se bifează căsuța corespunzătoare în funcție de
+modul de determinare a venitului net, după caz: în sistem real sau pe normă de venit.
+        Punctul 4. “Număr asociați” ‐ se înscrie numărul de persoane care fac parte din asociere.
+        Punctul 5 “Obiectul principal de activitate” ‐ se înscrie obiectul principal de activitate prevăzut
+în autorizație sau în contractul de asociere, precum şi codul CAEN al activității desfăşurate.
+        Punctul 6 “Sediul” ‐ se completează adresa sediului acesteia sau locul unde se desfăşoară
+efectiv activitatea principală, după caz. În cazul în care activitatea se desfăşoară prin mai multe
+puncte de lucru, se completează adresa sediului sau locului principal de desfăşurare a activității, după
+caz.
+        Punctul 7. “Contract de asociere” ‐ se înscrie numărul sub care contractul de asociere a fost
+înregistrat la organul fiscal, precum şi data înregistrării acestuia.
+                                                                                                         17
+
+
+         Punctul 8. “Documentul de autorizare” ‐ se înscriu numărul şi data eliberării documentului de
+autorizare care atestă dreptul asocierii de a desfăşura activități economice pe teritoriul României.
+         Punctele 9, 10. “Data începerii/încetării activității” ‐ se înscrie data începerii /încetării
+activității, conform contractului de asociere.
+         Punctul 11. „Data suspendării activității” – se completează data suspendării activității de
+către contribuabilii care realizează venituri din activități independente şi/sau din activități agricole
+impuse în sistem real, silvicultură şi piscicultură şi care în cursul anului fiscal intră în suspendare
+temporară a activității, potrivit legislației în materie.
+         4. Secțiunea III “Date privind venitul estimat”
+         Secțiunea se completează numai de contribuabilii care determină venitul net pe baza datelor
+din contabilitatea în partidă simplă.
+         1. Venit brut estimat ‐ se înscrie suma reprezentând veniturile în bani şi/sau echivalentul în
+lei al veniturilor în natură estimate a se realiza de către asociere în anul fiscal în curs.
+         2. Cheltuieli deductibile estimate ‐ se înscrie suma reprezentând cheltuielile estimate a se
+efectua în anul fiscal în curs în vederea realizării venitului brut estimat.
+         3. Venit net estimat ‐ se înscrie suma reprezentând venitul net estimat a se realiza în anul
+fiscal în curs, determinată ca diferență între venitul brut estimat şi cheltuielile deductibile estimate,
+respectiv diferența dintre suma înscrisă la rd.1 şi suma înscrisă la rd.2.
+         5. Secțiunea IV “Date de identificare a responsabilului asocierii”
+         Se completează datele de identificare a responsabilului asocierii desemnat prin contractul de
+asociere pentru îndeplinirea obligațiilor asociației față de autoritățile publice.
+         În caseta “Cod de identificare fiscală” ‐ se înscrie codul de identificare fiscală al
+responsabilului asocierii, înscriindu‐se cifrele cu aliniere la dreapta.
+         În cazul în care, responsabilul asocierii are calitatea de persoană impozabilă înregistrată în
+scopuri de taxă pe valoarea adăugată, codul de identificare fiscală va fi precedat de prefixul “RO”.
+         În rubrica "Nume, prenume/Denumire" se înscriu, după caz, denumirea sau numele şi
+prenumele responsabilului asocierii.
+         Rubricile privind adresa se completează, după caz, cu datele privind adresa domiciliului fiscal
+al responsabilului asocierii.
+         6. Secțiunea V “Distribuția venitului net estimat pe asociați”
+         col.1. ”Nume şi prenume asociat” ‐ se înscriu numele şi prenumele asociaților, conform
+contractului de asociere.
+         col.2. “Cod numeric personal/Număr de identificare fiscală” ‐ se înscrie codul numeric
+personal al fiecărui asociat sau numărul de identificare fiscală, atribuit de către Agenția Națională de
+Administrare Fiscală, cu ocazia înregistrării fiscale, după caz.
+         col.3. ”Domiciliu” ‐ se completează adresa domiciliului fiscal.
+         col.4 “Cota de distribuire a venitului net estimat la nivelul asocierii” ‐ se înscrie cota
+procentuală de participare, corespunzătoare fiecărui asociat, la veniturile şi pierderile asocierii,
+conform contractului de asociere.
+         col.5. “Venit net estimat distribuit”‐ se înscrie, pentru fiecare asociat, suma venitului net
+estimat a se realiza în anul fiscal în curs, conform contractului de asociere.          rd. “Total” ‐ se
+înscrie suma obținută prin cumularea venitului net estimat, distribuit pe asociați. Suma astfel
+calculată va fi egală cu cea înscrisă la rd. 3 "Venit net estimat" de la Secțiunea III "Date privind venitul
+estimat".
+         Notă: În cazul asocierilor pentru care venitul net din activități comerciale se determină pe
+baza normelor de venit se completează numai datele de identificare a asociaților (col.1–3) şi cota de
+distribuire a venitului net estimat la nivelul asocierii, corespunzătoare fiecărui asociat (col.4).

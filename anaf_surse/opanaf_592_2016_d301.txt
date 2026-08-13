@@ -1,0 +1,424 @@
+                              ORDIN Nr. 592/2016 din 3 februarie 2016
+                  pentru aprobarea modelului şi conţinutului formularului (301)
+                           "Decont special de taxă pe valoarea adăugată"
+                            EMITENT: MINISTERUL FINANŢELOR PUBLICE
+                         AGENŢIA NAŢIONALĂ DE ADMINISTRARE FISCALĂ
+                  PUBLICAT ÎN: MONITORUL OFICIAL NR. 94 din 8 februarie 2016
+
+
+
+
+    În temeiul art. 11 alin. (3) din Hotărârea Guvernului nr. 520/2013 privind organizarea şi
+funcţionarea Agenţiei Naţionale de Administrare Fiscală, cu modificările şi completările ulterioare,
+al art. 324 alin. (1) şi (2) din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi completările
+ulterioare, şi al art. 342 alin. (1) din Legea nr. 207/2015 privind Codul de procedură fiscală, cu
+modificările şi completările ulterioare,
+
+
+  preşedintele Agenţiei Naţionale de Administrare Fiscală emite următorul ordin:
+
+
+  ART. 1
+  Se aprobă modelul şi conţinutul formularului (301) "Decont special de taxă pe valoarea
+adăugată", cod MFP 14.13.01.02/s, prevăzut în anexa nr. 1.
+  ART. 2
+  Formularul menţionat la art. 1 se completează şi se depune conform instrucţiunilor de
+completare prevăzute în anexa nr. 2.
+  ART. 3
+  Caracteristicile de tipărire, modul de difuzare, de utilizare şi păstrare ale formularului prevăzut la
+art. 1 sunt stabilite în anexa nr. 3.
+  ART. 4
+  Anexele nr. 1 - 3 fac parte integrantă din prezentul ordin.
+  ART. 5
+  Decontul special de taxă pe valoarea adăugată prevăzut la art. 1 se utilizează începând cu
+declararea obligaţiilor fiscale aferente lunii ianuarie 2016.
+  ART. 6
+  Prezentul ordin se publică în Monitorul Oficial al României, Partea I.
+  ART. 7
+  Direcţia generală proceduri pentru administrarea veniturilor, Direcţia generală de reglementare a
+colectării creanţelor bugetare, Direcţia generală de tehnologia informaţiei, Direcţia generală de
+administrare a marilor contribuabili, precum şi direcţiile generale regionale ale finanţelor publice şi
+unităţile fiscale subordonate acestora vor lua măsuri pentru ducerea la îndeplinire a prevederilor
+prezentului ordin.
+
+
+
+
+                 p. Preşedintele Agenţiei Naţionale de Administrare Fiscală,
+                 Mihai Gogancea-Vătăşoiu
+
+
+
+
+  Bucureşti, 3 februarie 2016.
+  Nr. 592.
+ ANEXA 1*)
+ *) Anexa nr. 1 este reprodusă în facsimil.
+
+  ______________________________________________________________________________
+|           ANAF          |              DECONT SPECIAL             |    301     |
+| Agenţia Naţională de |          DE TAXĂ PE VALOAREA ADĂUGATĂ      |            |
+| Administrare Fiscală |                                            |            |
+|________________________|_________________________________________|___________|
+   _                                             __     _
+  |_| Declaraţie pentru achiziţii pentru luna |__| |_| Declaraţie rectificativă
+      intracomunitare de mijloace              ____
+      de transport noi              anul      |____|
+
+ Temeiul legal pentru depunerea formularului 301 după anularea rezervei
+ verificării ulterioare:
+ - art. 105 alin. (6) lit. a) din Legea nr. 207/2015 privind             _
+ Codul de procedură fiscală, cu modificările şi completările ulterioare |_|
+
+ - art. 105 alin. (6) lit. b) din Legea nr. 207/2015 privind             _
+ Codul de procedură fiscală, cu modificările şi completările ulterioare |_|
+
+  DATE DE IDENTIFICARE A PERSOANEI IMPOZABILE
+  ______________________________________________________________________________
+|                               __ __________________                            |
+| Cod de identificare fiscală |__|__________________|                            |
+|                               _______________________________________________ |
+| Denumire/Nume, Prenume       |_______________________________________________||
+| Domiciliul fiscal                                                              |
+|         _____              _______          ______       _        _         _ |
+| Judeţ |_____| Localitate |_______| Strada |______| Nr. |_| Bloc |_| Scara |_||
+|       _              ____          _           ____        ____         _____ |
+| Ap. |_| Cod poştal |____| Sector |_| Telefon |____| Fax |____| E-mail |_____||
+|         ______________________________        _______________________________ |
+| Banca |______________________________| Cont |_______________________________||
+| _                                                                              |
+| |_| Persoane care nu sunt înregistrate în scopuri de TVA                       |
+| _                                                                              |
+| |_| Persoane care sunt înregistrate conform art. 317 din Legea nr. 227/2015 |
+|      privind Codul fiscal, cu modificările şi completările ulterioare          |
+|      (Codul fiscal)                                                            |
+|______________________________________________________________________________|
+
+  DATE PRIVIND OBLIGAŢIA DE PLATĂ
+  ______________________________________________________________________________
+| Secţiunea 1. Achiziţii intracomunitare de bunuri taxabile - altele decât       |
+| mijloacele de transport noi şi produsele accizabile                   - lei - |
+|______________________________________________________________________________|
+|Nr. | Document    | Valoare în | Tip valută | Curs de | Baza de      | TVA      |
+|crt.| Număr/Data | valută      |             | schimb   | impozitare | datorat |
+|____|____________|____________|_____________|__________|____________|_________|
+| 0 |        1     |      2     |       3     |     4    |      5     |     6    |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+| Total                                                  |            |          |
+|_______________________________________________________|____________|_________|
+  ______________________________________________________________________________
+| Secţiunea 2. Achiziţii intracomunitare de mijloace de transport noi - lei - |
+|______________________________________________________________________________|
+|Nr. | Document    | Valoare în | Tip valută | Curs de | Baza de      | TVA      |
+|crt.| Număr/Data | valută      |             | schimb   | impozitare | datorat |
+|____|____________|____________|_____________|__________|____________|_________|
+| 0 |        1     |      2     |       3     |     4    |      5     |     6    |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+| Total                                                  |            |          |
+|_______________________________________________________|____________|_________|
+  ______________________________________________________________________________
+| Secţiunea 3. Achiziţii intracomunitare de produse accizabile          - lei - |
+|______________________________________________________________________________|
+|Nr. | Document    | Valoare în | Tip valută | Curs de | Baza de      | TVA      |
+|crt.| Număr/Data | valută      |             | schimb   | impozitare | datorat |
+|____|____________|____________|_____________|__________|____________|_________|
+| 0 |        1     |      2     |       3     |     4    |      5     |     6    |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+| Total                                                  |            |          |
+|_______________________________________________________|____________|_________|
+  ______________________________________________________________________________
+| Secţiunea 4. Operaţiuni prevăzute la art. 307 alin. (2), (3), (5) şi (6) din |
+| Codul fiscal                                                          - lei - |
+|______________________________________________________________________________|
+|Nr. | Document    | Valoare în | Tip valută | Curs de | Baza de      | TVA      |
+|crt.| Număr/Data | valută      |             | schimb   | impozitare | datorat |
+|____|____________|____________|_____________|__________|____________|_________|
+| 0 |        1     |      2     |       3     |     4    |      5     |     6    |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+| Total                                                  |            |          |
+|_______________________________________________________|____________|_________|
+  ______________________________________________________________________________
+| Secţiunea 4.1. Achiziţii de servicii intracomunitare, pentru care              |
+| beneficiarul este obligat la plata TVA conform art. 307 alin. (2) din          |
+| Codul fiscal                                                          - lei - |
+|______________________________________________________________________________|
+|Nr. | Document    | Valoare în | Tip valută | Curs de | Baza de      | TVA      |
+|crt.| Număr/Data | valută      |             | schimb   | impozitare | datorat |
+|____|____________|____________|_____________|__________|____________|_________|
+| 0 |        1     |      2     |       3     |     4    |      5     |     6    |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |            |          |
+|____|____________|____________|_____________|__________|____________|_________|
+|     |            |            |             |          |           |         |
+|____|____________|____________|_____________|__________|____________|_________|
+| Total                                                  |           |         |
+|_______________________________________________________|____________|_________|
+                             ____________________________________
+  Nr. de evidenţă a plăţii: |____________________________________|
+
+ Prezenta declaraţie constituie titlu de creanţă şi produce efectele juridice
+ ale înştiinţării de plată de la data depunerii acesteia, în condiţiile legii.
+ _______________________________________________________________________________
+ Sub sancţiunile aplicate faptei de fals în acte publice, declar că datele din
+ această declaraţie sunt corecte şi complete.
+                 _________________________                _____________________
+ Nume, Prenume: |_________________________|    Semnătura |_____________________|
+                 _________________________
+ Funcţia:       |_________________________|
+ _______________________________________________________________________________
+                                                    _________          ________
+ Loc rezervat organului fiscal   Nr. înregistrare: |_________| Data: |________|
+
+     Număr de înregistrare ca operator de date cu caracter personal 759
+     Cod : 14.13.01.02/s
+
+
+  ANEXA 2
+
+
+                                           INSTRUCŢIUNI
+       de completare a formularului (301) "Decont special de taxă pe valoarea adăugată"
+
+
+  I. Contribuabilii care au obligaţia să depună decontul special de taxă pe valoarea adăugată
+   Secţiunea 1 "Achiziţii intracomunitare de bunuri taxabile - altele decât mijloacele de transport
+noi şi produsele accizabile" se completează numai de către persoanele înregistrate conform art.
+317 din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare, denumită
+în continuare Codul fiscal, dar care nu sunt înregistrate şi nu trebuie să se înregistreze conform art.
+316 din acelaşi cod.
+  În această categorie se cuprind:
+  - persoanele impozabile care efectuează numai livrări de bunuri sau prestări de servicii pentru
+care taxa nu este deductibilă (operaţiuni scutite conform art. 292 din Codul fiscal) şi persoanele
+impozabile supuse regimului special de scutire pentru întreprinderile mici prevăzut la art. 310 din
+acelaşi cod, care nu sunt înregistrate în scopuri de TVA şi nici nu au obligaţia de a se înregistra,
+conform art. 316 din Codul fiscal, dar care sunt înregistrate conform art. 317 din acelaşi cod;
+  - persoanele juridice neimpozabile, care sunt înregistrate în scopuri de TVA conform art. 317 din
+Codul fiscal.
+   În această secţiune, persoanele mai sus menţionate declară achiziţiile intracomunitare de bunuri
+taxabile, altele decât achiziţiile intracomunitare de mijloace de transport noi sau de produse
+accizabile, precum şi achiziţiile efectuate în cadrul unei operaţiuni triunghiulare pentru care sunt
+obligate la plata taxei conform art. 307 alin. (4) din Codul fiscal, pentru care exigibilitatea taxei
+intervine în perioada de raportare, inclusiv sumele înscrise în facturile primite pentru plăţi de
+avansuri parţiale pentru achiziţii intracomunitare de bunuri*).
+  În această secţiune se declară şi achiziţiile intracomunitare de mijloace de transport care nu sunt
+considerate noi conform art. 266 alin. (3) din Codul fiscal, efectuate de persoanele înregistrate în
+scopuri de TVA conform art. 317 din Codul fiscal, pentru care se datorează taxă pe valoarea
+adăugată în România.
+   Secţiunea 2 "Achiziţii intracomunitare de mijloace de transport noi" se completează de către
+orice persoană care nu este înregistrată şi care nu trebuie să se înregistreze conform art. 316 din
+Codul fiscal, indiferent dacă este sau nu este înregistrată conform art. 317 din acelaşi cod, care
+efectuează achiziţii intracomunitare de mijloace de transport noi, pentru care exigibilitatea taxei
+intervine în perioada de raportare, inclusiv sumele din facturile primite pentru plăţi de avansuri
+parţiale pentru achiziţiile intracomunitare de bunuri*).
+   Secţiunea 3 "Achiziţii intracomunitare de produse accizabile" se completează de către
+persoanele impozabile care nu sunt înregistrate şi care nu trebuie să se înregistreze conform art.
+316 din Codul fiscal şi persoanele juridice neimpozabile, indiferent dacă sunt sau nu sunt
+înregistrate conform art. 317 din acelaşi cod, care efectuează achiziţii intracomunitare de produse
+accizabile, pentru care exigibilitatea taxei intervine în perioada de raportare, inclusiv sumele din
+facturile primite pentru plăţi de avansuri parţiale pentru achiziţiile intracomunitare de bunuri*).
+  Secţiunea 4 "Operaţiuni prevăzute la art. 307 alin. (2), (3), (5) şi (6) din Codul fiscal" se
+completează de către:
+  - persoanele impozabile obligate la plata taxei conform art. 307 alin. (2) din Codul fiscal, care nu
+sunt înregistrate şi nu trebuie să se înregistreze conform art. 316 din Codul fiscal, indiferent dacă
+sunt sau nu sunt înregistrate conform art. 317 din Codul fiscal, şi persoanele juridice neimpozabile
+care sunt înregistrate conform art. 317 din Codul fiscal, care sunt beneficiare ale serviciilor care au
+locul prestării în România conform art. 278 alin. (2) din Codul fiscal şi care sunt furnizate de către
+persoane impozabile care nu sunt stabilite pe teritoriul României sau nu sunt considerate a fi
+stabilite pentru respectivele prestări de servicii pe teritoriul României conform prevederilor art.
+266 alin. (2) din Codul fiscal, chiar dacă sunt înregistrate în România conform art. 316 alin. (4) sau
+(6) din Codul fiscal;
+   - persoanele obligate la plata taxei conform art. 307 alin. (3) din Codul fiscal, care sunt
+înregistrate conform art. 317 din Codul fiscal şi care nu sunt înregistrate şi nu trebuie să se
+înregistreze conform art. 316 din Codul fiscal, cărora li se livrează gaze naturale sau energie
+electrică în condiţiile prevăzute la art. 275 alin. (1) lit. e) sau f) din acelaşi cod, dacă aceste livrări
+sunt realizate de persoane impozabile care nu sunt stabilite în România sau nu sunt considerate a fi
+stabilite pentru respectivele livrări de bunuri pe teritoriul României conform prevederilor art. 266
+alin. (2) din Codul fiscal, chiar dacă sunt înregistrate în scopuri de TVA în România conform art. 316
+alin. (4) sau (6) din Codul fiscal;
+   - persoanele obligate la plata taxei conform art. 307 alin. (5) din Codul fiscal, care nu sunt
+înregistrate şi nu trebuie să se înregistreze conform art. 316 din acelaşi cod, indiferent dacă sunt
+sau nu sunt înregistrate conform art. 317 din Codul fiscal şi din cauza cărora bunurile ies din
+regimurile sau situaţiile prevăzute la art. 295 alin. (1) lit. a) şi d) din Codul fiscal, cu excepţia
+situaţiei în care are loc un import de bunuri sau o achiziţie intracomunitară de bunuri;
+   - persoanele obligate la plata taxei conform art. 307 alin. (6) din Codul fiscal, care nu sunt
+înregistrate şi nu trebuie să se înregistreze conform art. 316 din Codul fiscal, indiferent dacă sunt
+sau nu sunt înregistrate conform art. 317 din Codul fiscal, şi care sunt beneficiare ale unor livrări de
+bunuri/prestări de servicii care au loc în România, conform art. 275 sau 278 din Codul fiscal, în
+cazul în care livrările de bunuri/prestările de servicii sunt realizate de persoane impozabile care nu
+sunt stabilite în România sau nu sunt considerate a fi stabilite pentru respectivele livrări de
+bunuri/prestări de servicii pe teritoriul României conform prevederilor art. 266 alin. (2) din Codul
+fiscal şi care nu sunt înregistrate în România conform art. 316 din Codul fiscal.
+   Secţiunea 4.1 "Achiziţii de servicii intracomunitare, pentru care beneficiarul este obligat la plata
+TVA conform art. 307 alin. (2) din Codul fiscal" se completează de către persoanele impozabile
+obligate la plata taxei conform art. 307 alin. (2) din Codul fiscal, care nu sunt înregistrate şi nu
+trebuie să se înregistreze conform art. 316 din Codul fiscal, indiferent dacă sunt sau nu sunt
+înregistrate conform art. 317 din Codul fiscal, şi de către persoanele juridice neimpozabile care
+sunt înregistrate conform art. 317 din Codul fiscal, care sunt beneficiare ale serviciilor care au locul
+prestării în România conform art. 278 alin. (2) din Codul fiscal şi care sunt furnizate de către
+persoane impozabile care nu sunt stabilite pe teritoriul României conform art. 266 alin. (2) din
+Codul fiscal, dar care sunt stabilite în Comunitate, chiar dacă sunt înregistrate în România conform
+art. 316 alin. (4) sau (6) din Codul fiscal.
+------------
+  *) Pentru a evita orice neconcordanţă între livrările intracomunitare de bunuri, scutite de TVA în
+statul membru de origine, şi achiziţiile intracomunitare, evidenţiate în decontul special de TVA şi în
+declaraţia recapitulativă pentru achiziţii intracomunitare, în statul membru de destinaţie,
+momentul exigibilităţii taxei intervine la data emiterii facturii prevăzute în legislaţia altui stat
+membru la articolul care transpune prevederile art. 222 din Directiva 2006/112/CE a Consiliului din
+28 noiembrie 2006 privind sistemul comun al taxei pe valoarea adăugată sau, după caz, la data
+emiterii autofacturii prevăzute la art. 319 alin. (9) din Codul fiscal ori în cea de-a 15-a zi a lunii
+următoare celei în care a intervenit faptul generator, dacă nu a fost emisă nicio factură/autofactură
+până la data respectivă.
+
+
+  II. Depunerea decontului special de taxă pe valoarea adăugată
+  Decontul special de taxă pe valoarea adăugată se depune la organul fiscal în a cărui evidenţă
+contribuabilul este înregistrat.
+  Decontul special se depune numai pentru perioadele în care ia naştere exigibilitatea taxei.
+  Formularul se întocmeşte potrivit modelului din anexa nr. 1 la ordin şi se depune după cum
+urmează:
+  a) până la data de 25 inclusiv a lunii următoare celei în care ia naştere exigibilitatea operaţiunilor
+prevăzute la secţiunile 1, 3, 4 şi 4.1 din formularul (301) "Decont special de taxă pe valoarea
+adăugată", cu excepţia achiziţiilor intracomunitare de mijloace de transport care nu sunt
+considerate noi conform art. 266 alin. (3) din Codul fiscal, pentru care se datorează taxă pe
+valoarea adăugată în România;
+   b) înainte de înmatricularea în România a unui mijloc de transport nou sau a unui mijloc de
+transport care nu este considerat nou conform art. 266 alin. (3) din Codul fiscal şi pentru care se
+datorează taxa, dar nu mai târziu de data de 25 a lunii următoare celei în care ia naştere
+exigibilitatea taxei aferentă achiziţiei intracomunitare de astfel de mijloace de transport. Dacă în
+aceeaşi lună persoana impozabilă efectuează mai multe achiziţii intracomunitare de mijloace de
+transport noi sau de mijloace de transport care nu sunt considerate noi conform art. 266 alin. (3)
+din Codul fiscal, taxabile în România, aceasta poate depune mai multe deconturi speciale de taxă
+pentru aceeaşi lună, fără a bifa căsuţa "Declaraţie rectificativă".
+  Decontul special se depune în format PDF, cu fişier XML, ataşat pe suport CD însoţit de formatul
+hârtie semnat conform legii, prin una dintre următoarele metode:
+  - la registratura organului fiscal competent;
+  - la poştă, prin scrisoare recomandată.
+  Decontul special se poate depune şi prin mijloace electronice de transmitere la distanţă, în
+conformitate cu prevederile legale în vigoare.
+
+
+  III. Completarea decontului special de taxă pe valoarea adăugată
+  Decontul special de taxă pe valoarea adăugată se completează după cum urmează:
+  Perioada de raportare:
+   În rubrica "Luna" se înscrie cu cifre arabe numărul lunii de raportare (de exemplu: 01 pentru
+ianuarie).
+  Anul pentru care se completează declaraţia se înscrie cu cifre arabe, cu 4 caractere (de exemplu:
+2016).
+  Declaraţia depusă iniţial se rectifică prin depunerea unei noi declaraţii, pe acelaşi format, bifând
+căsuţa corespunzătoare de pe formular.
+   În situaţia în care persoana impozabilă depune declaraţia după anularea rezervei verificării
+ulterioare, în condiţiile art. 105 alin. (6) din Legea nr. 207/2015 privind Codul de procedură fiscală,
+cu modificările şi completările ulterioare, se bifează, în căsuţa corespunzătoare, temeiul legal
+pentru depunerea declaraţiei.
+   Ori de câte ori prin Decontul special de taxă pe valoarea adăugată se declară o achiziţie
+intracomunitară de mijloace de transport noi se bifează căsuţa corespunzătoare de pe formularul
+respectiv.
+  1. Secţiunea "Date de identificare a persoanei impozabile"
+  Caseta "Cod de identificare fiscală" se completează astfel:
+  - contribuabilii persoane juridice, cu excepţia comercianţilor, asociaţiile sau alte entităţi fără
+personalitate juridică înscriu codul de înregistrare fiscală;
+   - comercianţii, inclusiv sucursalele comercianţilor care au sediul principal al comerţului în
+străinătate, înscriu codul unic de înregistrare;
+  - contribuabilii persoane fizice, care desfăşoară activităţi economice în mod independent sau
+exercită profesii libere, înscriu codul de înregistrare fiscală;
+  - persoanele impozabile înregistrate în scopuri de TVA conform art. 317 din Codul fiscal
+completează codul de înregistrare în scopuri de TVA;
+  - persoanele fizice înscriu codul numeric personal atribuit potrivit legii speciale;
+   - persoanele fizice care nu deţin cod numeric personal înscriu numărul de identificare fiscală
+atribuit de organul fiscal competent din subordinea Agenţiei Naţionale de Administrare Fiscală.
+  Înscrierea cifrelor în casetă se face cu aliniere la dreapta.
+   Prima căsuţă este rezervată atributului "RO" şi se completează numai de către persoanele
+înregistrate în scopuri de TVA, conform art. 317 din Codul fiscal.
+  Caseta "Denumire/Nume, Prenume" se completează cu denumirea persoanei juridice, asociaţiei
+sau a entităţii fără personalitate juridică ori cu numele şi prenumele persoanei fizice, după caz.
+   Caseta "Domiciliul fiscal" se completează cu datele privind adresa domiciliului fiscal al
+contribuabilului.
+  Caseta "Persoane care nu sunt înregistrate în scopuri de TVA" se bifează de către persoanele care
+nu sunt înregistrate în scopuri de TVA conform art. 317 din Codul fiscal.
+   Caseta "Persoane care sunt înregistrate conform art. 317 din Codul fiscal" se bifează de către
+persoanele impozabile şi persoanele juridice neimpozabile înregistrate în scopuri de TVA, conform
+art. 317 din Codul fiscal.
+  2. Secţiunea "Date privind obligaţia de plată"
+   În coloana 1 din cele 4 secţiuni "Document/număr/data" se înscriu numărul şi data facturii
+primite de către beneficiarul operaţiunilor respective sau, după caz, numărul şi data autofacturii
+emise de către beneficiari, potrivit prevederilor art. 320 alin. (1) sau (2) din Codul fiscal.
+  În coloana 2 din cele 4 secţiuni "Valoare în valută" se înscrie valoarea în valută consemnată în
+documentul înscris în coloana 1.
+  În coloana 3 din cele 4 secţiuni "Tip valută" se menţionează tipul valutei (de exemplu: USD, euro
+etc.) în care este exprimată valoarea din documentul înscris în coloana 1.
+   În coloana 4 din cele 4 secţiuni "Curs de schimb" se completează ultimul curs de schimb
+comunicat de Banca Naţională a României sau cursul de schimb utilizat de banca prin care se
+efectuează decontările, din data la care intervine exigibilitatea taxei pentru operaţiunile declarate.
+  În coloana 5 din cele 4 secţiuni "Baza de impozitare": se calculează coloana 2 x coloana 4.
+  În coloana 6 din cele 4 secţiuni "TVA datorat": se calculează coloana 5 x cota de TVA.
+   În secţiunea 4.1 se preiau din secţiunea 4 doar achiziţiile de servicii intracomunitare, pentru care
+beneficiarul este obligat la plata taxei pe valoarea adăugată conform art. 307 alin. (2) din Codul
+fiscal.
+  3. Câmpul "Nr. de evidenţă a plăţii" nu se completează, în condiţiile prevăzute de Ordinul
+ministrului finanţelor publice nr. 3.832/2015 privind modificarea şi completarea Ordinului
+ministrului finanţelor publice nr. 1.870/2004 pentru aprobarea Instrucţiunilor de completare a
+numărului de evidenţă a plăţii.
+
+
+  ANEXA 3
+
+
+  Caracteristicile de tipărire, modul de difuzare, de utilizare şi păstrare ale formularului (301)
+"Decont special de taxă pe valoarea adăugată"
+
+
+  Denumirea formularului: Decont special de taxă pe valoarea adăugată
+  Codul: 14.13.01.02/s
+  Formatul: A4/t1
+  Caracteristicile de tipărire:
+   - se utilizează echipament informatic pentru completare şi editare, cu ajutorul programului de
+asistenţă pus la dispoziţie, gratuit, de către unităţile fiscale.
+  Se difuzează gratuit.
+  Se utilizează la declararea taxei pe valoarea adăugată.
+   Se întocmeşte de persoanele prevăzute la art. 324 alin. (1) din Legea nr. 227/2015 privind Codul
+fiscal, cu modificările şi completările ulterioare.
+  Circulă:
+  - în format electronic, la organul fiscal în a cărui rază teritorială persoana impozabilă îşi are
+domiciliul fiscal;
+  - în format hârtie, în două exemplare listate, semnate, potrivit legii, din care:
+    - un exemplar la contribuabil;
+    - un exemplar la organul fiscal.
+  Se păstrează:
+  - formatul electronic, în arhiva de documente electronice;
+  - formatul hârtie, la dosarul fiscal al contribuabilului.

@@ -1,0 +1,1335 @@
+                            ORDIN Nr. 3769/2015 din 23 decembrie 2015
+     privind declararea livrărilor/prestărilor şi achiziţiilor efectuate pe teritoriul naţional de
+    persoanele înregistrate în scopuri de TVA şi pentru aprobarea modelului şi conţinutului
+declaraţiei informative privind livrările/prestările şi achiziţiile efectuate pe teritoriul naţional de
+                             persoanele înregistrate în scopuri de TVA
+                            EMITENT: MINISTERUL FINANŢELOR PUBLICE
+                         AGENŢIA NAŢIONALĂ DE ADMINISTRARE FISCALĂ
+                   PUBLICAT ÎN: MONITORUL OFICIAL NR. 11 din 7 ianuarie 2016
+
+
+    În temeiul art. 11 alin. (3) din Hotărârea Guvernului nr. 520/2013 privind organizarea şi
+funcţionarea Agenţiei Naţionale de Administrare Fiscală, cu modificările şi completările ulterioare,
+şi al art. 59 alin. (2) din Legea nr. 207/2015 privind Codul de procedură fiscală, cu modificările şi
+completările ulterioare,
+
+
+  preşedintele Agenţiei Naţionale de Administrare Fiscală emite următorul ordin:
+
+
+  ART. 1
+  Persoanele impozabile înregistrate în scopuri de TVA în România sunt obligate să declare livrările
+de bunuri, prestările de servicii şi achiziţiile de bunuri şi servicii realizate pe teritoriul României
+către/de la orice persoană, aşa cum este definită la art. 266 alin. (1) pct. 24 din Legea nr. 227/2015
+privind Codul fiscal, cu modificările şi completările ulterioare.
+  ART. 2
+  În vederea îndeplinirii obligaţiei prevăzute la art. 1, se aprobă modelul şi conţinutul formularului
+(394) "Declaraţie informativă privind livrările/prestările şi achiziţiile efectuate pe teritoriul naţional
+de persoanele înregistrate în scopuri de TVA", cod MFP 14.13.01.02/f, prevăzut în anexa nr. 1.
+  ART. 3
+   Formularul prevăzut la art. 2 se completează şi se depune conform instrucţiunilor prevăzute în
+anexa nr. 2, iar condiţiile ce trebuie respectate de către fişierul XML pentru depunerea electronică
+a declaraţiilor vor fi disponibile pe portalul Agenţiei Naţionale de Administrare Fiscală.
+  ART. 4
+  Formularul prevăzut la art. 2 se gestionează conform procedurii prevăzute în anexa nr. 3.
+  ART. 5
+  Caracteristicile de tipărire, modul de difuzare, de utilizare şi păstrare ale formularului prevăzut la
+art. 2 sunt stabilite în anexa nr. 4.
+  ART. 6
+  Anexele nr. 1 - 4 fac parte integrantă din prezentul ordin.
+  ART. 7
+   Perioada de raportare pentru formularul menţionat la art. 2 este perioada fiscală declarată
+pentru depunerea decontului de taxă pe valoarea adăugată (formularul 300), prevăzută la art. 322
+din Legea nr. 227/2015 , cu modificările şi completările ulterioare.
+  ART. 8
+  Declaraţia menţionată la art. 2 se depune până în data de 25 inclusiv a lunii următoare încheierii
+perioadei de raportare, la organul fiscal competent.
+  ART. 9
+   Direcţiile de specialitate din cadrul aparatului central al Agenţiei Naţionale de Administrare
+Fiscală, Direcţia generală de administrare a marilor contribuabili, direcţiile generale regionale ale
+finanţelor publice şi unităţile fiscale subordonate acestora vor lua măsuri pentru ducerea la
+îndeplinire a prevederilor prezentului ordin.
+  ART. 10
+  Prevederile prezentului ordin se aplică începând cu operaţiunile efectuate în trimestrul I 2016 pe
+teritoriul naţional.
+  ART. 11
+  Prezentul ordin se publică în Monitorul Oficial al României, Partea I, şi intră în vigoare la data de
+1 aprilie 2016.
+  ART. 12
+   La data intrării în vigoare a prezentului ordin se abrogă prevederile Ordinului preşedintelui
+Agenţiei Naţionale de Administrare Fiscală nr. 3.596/2011 privind declararea livrărilor/prestărilor şi
+achiziţiilor efectuate pe teritoriul naţional de persoanele înregistrate în scopuri de TVA şi pentru
+aprobarea modelului şi conţinutului declaraţiei informative privind livrările/prestările şi achiziţiile
+efectuate pe teritoriul naţional de persoanele înregistrate în scopuri de TVA, publicat în Monitorul
+Oficial al României, Partea I, nr. 927 din 28 decembrie 2011, cu modificările ulterioare.
+
+
+
+
+                 Preşedintele Agenţiei Naţionale de Administrare Fiscală,
+                 Gelu-Ştefan Diaconu
+
+
+
+
+  Bucureşti, 23 decembrie 2015.
+  Nr. 3.769.
+ ANEXA 1
+  ______________________________________________________________________________
+| Agenţia Naţională de | DECLARAŢIE INFORMATIVĂ PRIVIND LIVRĂRILE/ |                |
+| Administrare Fiscală | PRESTĂRILE ŞI ACHIZIŢIILE EFECTUATE PE          |    394   |
+|                       | TERITORIUL NAŢIONAL DE PERSOANELE              |          |
+|                       | ÎNREGISTRATE ÎN SCOPURI DE TVA                 |          |
+|______________________|___________________________________________|___________|
+|            _________________     _____________________________________________ |
+| Tip       | L - lunar        | |                   _ _ _ _          ___________ | |
+| plătitor | T - trimestrial | | Perioada: Anul |_|_|_|_| Luna |___________| | |
+|           | S - semestrial | |_____________________________________________| |
+|           | A - anual        |                                                    |
+|           |_________________|                                                     |
+|                                                __                                 |
+| sistemul normal de TVA                        |__|                                |
+|                                                __                                 |
+| sistemul de TVA la încasare                   |__|                                |
+|                                                                   _       _       |
+| Au fost efectuate operaţiuni în perioada de raportare?        DA |_| NU |_|       |
+|______________________________________________________________________________|
+  ______________________________________________________________________________
+| A. DATE DE IDENTIFICARE ALE PERSOANEI ÎNREGISTRATE ÎN SCOPURI DE TVA              |
+|                                                 _ _ _ _ _ _ _ _ _ _               |
+| COD DE ÎNREGISTRARE ÎN SCOPURI DE TVA      RO |_|_|_|_|_|_|_|_|_|_|               |
+|                                                                                   |
+| DENUMIRE/NUME ŞI PRENUME                                                          |
+| ___________________________________________________________________________ |
+| |                                                                                ||
+| |___________________________________________________________________________||
+|                                                                                   |
+| DOMICILIUL FISCAL (judeţ/sector, localitate, stradă, nr., bloc, scară, etaj, |
+| apartament, cod poştal)                                                           |
+| ___________________________________________________________________________ |
+| |                                                                                ||
+| |                                                                                ||
+| |___________________________________________________________________________||
+|           ______________________             ___________________________________ |
+| TELEFON |                         |    FAX |                                     ||
+|          |______________________|          |___________________________________||
+|           ___________________________________________________________________ |
+| E-MAIL |                                                                         ||
+|          |___________________________________________________________________||
+|______________________________________________________________________________|
+| B. DATE DE IDENTIFICARE ALE REPREZENTANTULUI FISCAL/LEGAL/ÎMPUTERNICIT            |
+|                                     _ _ _ _ _ _ _ _ _ _ _ _ _                     |
+| COD DE IDENTIFICARE FISCALĂ/CNP |_|_|_|_|_|_|_|_|_|_|_|_|_|                       |
+|                                                                                   |
+| DENUMIRE/NUME ŞI PRENUME                                                          |
+| ___________________________________________________________________________ |
+| |                                                                                ||
+| |___________________________________________________________________________||
+|                                                                                   |
+| DOMICILIUL FISCAL (judeţ/sector, localitate, stradă, nr., bloc, scară, etaj, |
+| apartament, cod poştal)                                                           |
+| ___________________________________________________________________________ |
+| |                                                                                ||
+| |                                                                                ||
+| |___________________________________________________________________________||
+|           ______________________             ___________________________________ |
+| TELEFON |                         |    FAX |                                     ||
+|          |______________________|          |___________________________________||
+|           ___________________________________________________________________ |
+| E-MAIL |                                                                         ||
+|          |___________________________________________________________________||
+|______________________________________________________________________________|
+  ______________________________________________________________________________
+| C. REZUMAT DECLARAŢIE                                                             |
+|                                                               ___________________ |
+| NUMĂRUL TOTAL AL PERSOANELOR IMPOZABILE ÎNREGISTRATE        |                    ||
+| ÎN SCOPURI DE TVA ÎN ROMÂNIA INCLUSE ÎN DECLARAŢIE         |___________________||
+|                                                                                   |
+|                                              NUMĂR DE BAZĂ                TVA*)   |
+|                                              FACTURI    IMPOZABILĂ                |
+|                                              ________     _________     _________ |
+| LIVRĂRI DE BUNURI/PRESTĂRI DE SERVICII (L) |          | |           | |          ||
+| defalcate pe fiecare cotă de TVA efectuate |________| |_________| |_________||
+| de către persoana impozabilă care aplică                                          |
+| sistemul normal de TVA cu excepţia celor                                          |
+| pentru care au fost emise facturi                                                 |
+| simplificate                                                                      |
+|                                              ________     _________     _________ |
+| LIVRĂRI DE BUNURI/PRESTĂRI DE SERVICII (L) |          | |           | |          ||
+| defalcate pe fiecare cotă de TVA efectuate |________| |_________| |_________||
+| de către persoana impozabilă care aplică                                          |
+| sistemul de TVA la încasare cu excepţia                                           |
+| celor pentru care au fost emise facturi                                           |
+| simplificate                                                                      |
+|                                              ________     _________     _________ |
+| ACHIZIŢII DE BUNURI ŞI SERVICII (A)        |          | |           | |          ||
+| defalcate pe fiecare cotă de TVA de la     |________| |_________| |_________||
+| persoane impozabile care aplică sistemul                                          |
+| normal de TVA, cu excepţia celor pentru                                           |
+| care s-au primit facturi simplificate                                             |
+|                                              ________     _________     _________ |
+| ACHIZIŢII DE BUNURI ŞI SERVICII (AÎ)       |          | |           | |          ||
+| defalcate pe fiecare cotă de TVA de la     |________| |_________| |_________||
+| persoane impozabile care aplică sistemul                                          |
+| de TVA la încasare, cu excepţia celor                                             |
+| pentru care s-au primit facturi                                                   |
+| simplificate                                                                      |
+|                                              ________     _________     _________ |
+| LIVRĂRI DE BUNURI/PRESTĂRI DE SERVICII     |          | |           | |          ||
+| EFECTUATE PENTRU CARE SE APLICĂ TAXAREA    |________| |_________| |_________||
+| INVERSĂ (V), din care:                                                            |
+|                                              ________     _________     _________ |
+| - cereale şi plante tehnice                |          | |           | |          ||
+|                                            |________| |_________| |_________||
+|                                              ________     _________     _________ |
+| - deşeuri feroase şi neferoase             |          | |           | |          ||
+|                                            |________| |_________| |_________||
+|                                              ________     _________     _________ |
+| - masă lemnoasă                            |          | |           | |          ||
+|                                            |________| |_________| |_________||
+|                                              ________     _________     _________ |
+| - certificate de emisii de gaze cu efect   |          | |           | |          ||
+| de seră                                    |________| |_________| |_________||
+|                                              ________     _________     _________ |
+| - energie electrică                        |          | |           | |          ||
+|                                            |________| |_________| |_________||
+|                                              ________     _________     _________ |
+| - certificate verzi                        |          | |           | |          ||
+|                                            |________| |_________| |_________||
+|                                              ________     _________     _________ |
+| - clădiri/terenuri                         |          | |           | |          ||
+|                                            |________| |_________| |_________||
+|                                              ________     _________     _________ |
+| - aur de investiţii                        |          | |           | |          ||
+|                                            |________| |_________| |_________||
+|                                              ________     _________     _________ |
+| - telefoane mobile                         |          | |           | |          ||
+|                                            |________| |_________| |_________||
+|                                              ________     _________     _________ |
+| - microprocesoare                          |          | |           | |          ||
+|                                            |________| |_________| |_________||
+|                                              ________     _________     _________ |
+| - console de jocuri, tablete PC şi         |          | |           | |          ||
+| laptopuri                                  |________| |_________| |_________||
+|                                              ________     _________     _________ |
+| ACHIZIŢII DE BUNURI ŞI SERVICII EFECTUATE |           | |           | |          ||
+| PENTRU CARE SE APLICĂ TAXAREA INVERSĂ (C), |________| |_________| |_________||
+| din care:                                                                             |
+|                                                  ________     _________     _________ |
+| - cereale şi plante tehnice                    |          | |           | |          ||
+|                                                |________| |_________| |_________||
+|                                                  ________     _________     _________ |
+| - deşeuri feroase şi neferoase                 |          | |           | |          ||
+|                                                |________| |_________| |_________||
+|                                                  ________     _________     _________ |
+| - masă lemnoasă                                |          | |           | |          ||
+|                                                |________| |_________| |_________||
+|                                                  ________     _________     _________ |
+| - certificate de emisii de gaze cu efect       |          | |           | |          ||
+| de seră                                        |________| |_________| |_________||
+|                                                  ________     _________     _________ |
+| - energie electrică                            |          | |           | |          ||
+|                                                |________| |_________| |_________||
+|                                                  ________     _________     _________ |
+| - certificate verzi                            |          | |           | |          ||
+|                                                |________| |_________| |_________||
+|                                                  ________     _________     _________ |
+| - clădiri/terenuri                             |          | |           | |          ||
+|                                                |________| |_________| |_________||
+|                                                  ________     _________     _________ |
+| - aur de investiţii                            |          | |           | |          ||
+|                                                |________| |_________| |_________||
+|                                                  ________     _________     _________ |
+| - telefoane mobile                             |          | |           | |          ||
+|                                                |________| |_________| |_________||
+|                                                  ________     _________     _________ |
+| - microprocesoare                              |          | |           | |          ||
+|                                                |________| |_________| |_________||
+|                                                  ________     _________     _________ |
+| - console de jocuri, tablete PC şi             |          | |           | |          ||
+| laptopuri                                      |________| |_________| |_________||
+|                                                                                       |
+| *) TVA defalcat pe cote: 20%, 9%, 5%                                                  |
+|______________________________________________________________________________|
+  ______________________________________________________________________________
+| D. REZUMAT DECLARAŢIE                                                                 |
+|                                                                 ___________________ |
+| NUMĂRUL TOTAL AL PERSOANELOR NEÎNREGISTRATE ÎN SCOPURI |                             ||
+| DE TVA INCLUSE ÎN DECLARAŢIE                                   |___________________||
+|                                                                                       |
+|                                                  NUMĂR DE BAZĂ                TVA*)   |
+|                                                  FACTURI    IMPOZABILĂ                |
+|                                                  ________     _________     _________ |
+| LIVRĂRI DE BUNURI/PRESTĂRI DE SERVICII (L) |              | |           | |          ||
+| defalcate pe fiecare cotă de TVA efectuate |________| |_________| |_________||
+| de către persoana impozabilă care aplică                                              |
+| sistemul normal de TVA cu excepţia celor                                              |
+| pentru care au fost emise facturi                                                     |
+| simplificate                                                                          |
+|                                                  ________     _________     _________ |
+| LIVRĂRI DE BUNURI/PRESTĂRI DE SERVICII (L) |              | |           | |          ||
+| defalcate pe fiecare cotă de TVA efectuate |________| |_________| |_________||
+| de către persoana impozabilă care aplică                                              |
+| sistemul de TVA la încasare cu excepţia                                               |
+| celor pentru care au fost emise facturi                                               |
+| simplificate                                                                          |
+|                                                                                       |
+|                                             NUMĂR DE FACTURI/ VALOARE ACHIZIŢII |
+|                               Bunuri**)     BORDEROURI DE                             |
+|                               Servicii      ACHIZIŢII/FILE                            |
+|                                             CARNET DE                                 |
+|                                             COMERCIALIZARE A                          |
+|                                             PRODUSELOR DIN                            |
+|                                             SECTORUL AGRICOL                          |
+|                               _________     ________________       _________________ |
+| ACHIZIŢII DE BUNURI ŞI      |           | |                    | |                   ||
+| SERVICII (N)                |_________| |________________| |_________________||
+|                                                                                   |
+| *) TVA defalcat pe cote: 20%, 9%, 5%                                              |
+| **) pentru achiziţiile de la persoane neînregistrate va fi înscrisă natura        |
+| bunurilor achiziţionate: cereale şi plante tehnice, deşeuri feroase şi            |
+| neferoase, masă lemnoasă, terenuri, clădiri, alte bunuri şi servicii              |
+|______________________________________________________________________________|
+  ______________________________________________________________________________
+| E. REZUMAT DECLARAŢIE                                                             |
+|                                                              ___________________ |
+| NUMĂRUL TOTAL AL PERSOANELOR NESTABILITE ÎN ROMÂNIA        |                     ||
+| CARE SUNT STABILITE ÎN ALT STAT MEMBRU, NEÎNREGISTRATE |___________________||
+| ŞI CARE NU SUNT OBLIGATE SĂ SE ÎNREGISTREZE                                       |
+| ÎN SCOPURI DE TVA ÎN ROMÂNIA INCLUSE ÎN DECLARAŢIE                                |
+|                                                                                   |
+|                                              NUMĂR DE BAZĂ                TVA*)   |
+|                                              FACTURI    IMPOZABILĂ                |
+|                                              ________     _________     _________ |
+| LIVRĂRI DE BUNURI/PRESTĂRI DE SERVICII (L) |          | |           | |          ||
+| defalcate pe fiecare cotă de TVA efectuate |________| |_________| |_________||
+| de către persoana impozabilă care aplică                                          |
+| sistemul normal de TVA cu excepţia celor                                          |
+| pentru care au fost emise facturi                                                 |
+| simplificate                                                                      |
+|                                              ________     _________     _________ |
+| LIVRĂRI DE BUNURI/PRESTĂRI DE SERVICII (L) |          | |           | |          ||
+| defalcate pe fiecare cotă de TVA efectuate |________| |_________| |_________||
+| de către persoana impozabilă care aplică                                          |
+| sistemul TVA la încasare cu excepţia celor                                        |
+| pentru care au fost emise facturi                                                 |
+| simplificate                                                                      |
+|                                              ________     _________     _________ |
+| ACHIZIŢII DE BUNURI ŞI SERVICII EFECTUATE |           | |           | |          ||
+| PENTRU CARE SE APLICĂ TAXAREA INVERSĂ (C) |________| |_________| |_________||
+|                                                                                   |
+| *) TVA defalcat pe cote: 20%, 9%, 5%                                              |
+|______________________________________________________________________________|
+  ______________________________________________________________________________
+| F. REZUMAT DECLARAŢIE                                                             |
+|                                                              ___________________ |
+| NUMĂRUL TOTAL AL PERSOANELOR IMPOZABILE NEÎNREGISTRATE |                         ||
+| ŞI CARE NU SUNT OBLIGATE SĂ SE ÎNREGISTREZE ÎN SCOPURI |___________________||
+| DE TVA ÎN ROMÂNIA, NESTABILITE PE TERITORIUL UNIUNII                              |
+| EUROPENE INCLUSE ÎN DECLARAŢIE                                                    |
+|                                                                                   |
+|                                              NUMĂR DE BAZĂ                TVA*)   |
+|                                              FACTURI    IMPOZABILĂ                |
+|                                              ________     _________     _________ |
+| LIVRĂRI DE BUNURI/PRESTĂRI DE SERVICII (L) |          | |           | |          ||
+| defalcate pe fiecare cotă de TVA efectuate |________| |_________| |_________||
+| de către persoana impozabilă care aplică                                          |
+| sistemul normal de TVA cu excepţia celor                                          |
+| pentru care au fost emise facturi                                                 |
+| simplificate                                                                      |
+|                                              ________     _________     _________ |
+| LIVRĂRI DE BUNURI/PRESTĂRI DE SERVICII (L) |          | |           | |          ||
+| defalcate pe fiecare cotă de TVA efectuate |________| |_________| |_________||
+| de către persoana impozabilă care aplică                                          |
+| sistemul de TVA la încasare cu excepţia                                           |
+| celor pentru care au fost emise facturi                                           |
+| simplificate                                                                      |
+|                                              ________     _________     _________ |
+| ACHIZIŢII DE BUNURI ŞI SERVICII EFECTUATE |           | |           | |          ||
+| PENTRU CARE SE APLICĂ TAXAREA INVERSĂ (C) |________| |_________| |_________||
+|                                                                                   |
+| *) TVA defalcat pe cote: 20%, 9%, 5%                                              |
+|______________________________________________________________________________|
+  ______________________________________________________________________________
+| G. REZUMAT DECLARAŢIE                                                             |
+|                                 TOTAL       TOTAL         TOTAL         TOTAL     |
+|                                  NR. BONURI ÎNCASĂRI          BAZĂ          TVA*)     |
+|                                  FISCALE                      IMPOZABILĂ              |
+|                                  _________     _________      _________     _________ |
+| ÎNCASĂRI ÎN PERIOADA DE        |           | |            | |           | |          ||
+| RAPORTARE PRIN INTERMEDIUL     |_________| |_________| |_________| |_________||
+| AMEF***) INCLUSIV ÎNCASĂRILE                                                          |
+| PRIN INTERMEDIUL BONURILOR                                                            |
+| FISCALE CARE ÎNDEPLINESC                                                              |
+| CONDIŢIILE UNEI FACTURI                                                               |
+| SIMPLIFICATE INDIFERENT DACĂ                                                          |
+| AU/NU AU ÎNSCRIS CODUL DE                                                             |
+| ÎNREGISTRARE ÎN SCOPURI DE                                                            |
+| TVA AL BENEFICIARULUI (Î1)                                                            |
+|                                                  ________     _________     _________ |
+| ÎNCASĂRI ÎN PERIOADA DE RAPORTARE              |          | |           | |          ||
+| EFECTUATE DIN ACTIVITĂŢI EXCEPTATE DE LA       |________| |_________| |_________||
+| OBLIGAŢIA UTILIZĂRII AMEF***) (Î2) CONFORM                                            |
+| PREVEDERILOR LEGALE ÎN VIGOARE**)                                                     |
+|                                                                                       |
+| *) TVA defalcat pe cote: 20%, 9%, 5%                                                  |
+| **) OUG NR. 28/1999 privind obligaţia operatorilor economici de a utiliza             |
+| aparate de marcat electronice fiscale, republicată, cu modificările şi                |
+| completările ulterioare                                                               |
+| ***) AMEF - aparate de marcat electronice fiscale                                     |
+|______________________________________________________________________________|
+  ______________________________________________________________________________
+|                                                                     _______________ |
+| H. REZUMAT DECLARAŢIE                        (sumă de control) |                     ||
+|                                                                    |_______________||
+|                                                                                       |
+|                                                  NUMĂR DE BAZĂ                TVA     |
+|                                                  FACTURI    IMPOZABILĂ        20%     |
+|                                                  ________     _________     _________ |
+| LIVRĂRI DE BUNURI/PRESTĂRI DE SERVICII         |          | |           | |          ||
+| (L + V)                                        |________| |_________| __________||
+|                                                  ________     _________     _________ |
+| ACHIZIŢII DE BUNURI ŞI SERVICII (A + C)        |          | |           | |          ||
+|                                                |________| |_________| |_________||
+|                                                  ________     _________     _________ |
+| ACHIZIŢII DE BUNURI ŞI SERVICII (AÎ)           |          | |           | |          ||
+|                                                |________| |_________| |_________||
+|                                                                                       |
+|                                                  NUMĂR DE BAZĂ                TVA     |
+|                                                  FACTURI    IMPOZABILĂ        9%      |
+|                                                  ________     _________     _________ |
+| LIVRĂRI DE BUNURI/PRESTĂRI DE SERVICII         |          | |           | |          ||
+| (L + V)                                        |________| |_________| |_________||
+|                                                  ________     _________     _________ |
+| ACHIZIŢII DE BUNURI ŞI SERVICII (A + C)        |          | |           | |          ||
+|                                                |________| |_________| |_________||
+|                                                  ________     _________     _________ |
+| ACHIZIŢII DE BUNURI ŞI SERVICII (AÎ)           |          | |           | |          ||
+|                                                |________| |_________| |_________||
+|                                                                                       |
+|                                                  NUMĂR DE BAZĂ                TVA     |
+|                                                  FACTURI    IMPOZABILĂ        5%      |
+|                                                  ________     _________     _________ |
+| LIVRĂRI DE BUNURI/PRESTĂRI DE SERVICII         |          | |           | |          ||
+| (L + V)                                        |________| |_________| |_________||
+|                                                  ________     _________     _________ |
+| ACHIZIŢII DE BUNURI ŞI SERVICII EFECTUATE |               | |           | |          ||
+| (A + C)                                        |________| |_________| |_________||
+|                                                  ________     _________     _________ |
+| ACHIZIŢII DE BUNURI ŞI SERVICII (AÎ)           |          | |           | |          ||
+|                                                |________| |_________| |_________||
+|______________________________________________________________________________|
+  ______________________________________________________________________________
+| I. ALTE INFORMAŢII:                                                                   |
+|                                                             Bază              TVA*)   |
+|                                                             impozabilă                |
+| 1.                                                       _________     _________ |
+| 1.1 Livrări de bunuri/prestări de servicii defalcate |             | |          ||
+| pe fiecare cotă de TVA pentru care s-au emis facturi |_________| |_________||
+| simplificate care au înscris codul de înregistrare în                            |
+| scopuri de TVA al beneficiarului                                                 |
+|                                                        Bază              TVA*)   |
+|                                                        impozabilă                |
+|                                                          _________     _________ |
+| 1.2 Livrări de bunuri/prestări de servicii defalcate |             | |          ||
+| pe fiecare cotă de TVA pentru care s-au emis facturi |_________| |_________||
+| simplificate fără a avea înscris codul de                                        |
+| înregistrare în scopuri de TVA al beneficiarului şi                              |
+| pentru care nu s-au emis bonuri fiscale                                          |
+|                                                        Bază              TVA*)   |
+|                                                        impozabilă                |
+|                                                          _________     _________ |
+| 1.3 Achiziţii de bunuri şi servicii defalcate pe       |           | |          ||
+| fiecare cotă de TVA pentru care s-au primit facturi    |_________| |_________||
+| simplificate de la persoane impozabile care aplică                               |
+| sistemul normal de TVA şi care au înscris codul de                               |
+| înregistrare în scopuri de TVA al beneficiarului                                 |
+|                                                        Bază              TVA*)   |
+|                                                        impozabilă                |
+|                                                          _________     _________ |
+| 1.4 Achiziţii de bunuri şi servicii defalcate pe       |           | |          ||
+| fiecare cotă de TVA pentru care s-au primit facturi    |_________| |_________||
+| simplificate de la persoane impozabile care aplică                               |
+| sistemul de TVA la încasare şi care au înscris codul                             |
+| de înregistrare în scopuri de TVA al beneficiarului                              |
+|                                                        Bază              TVA*)   |
+|                                                        impozabilă                |
+|                                                          _________     _________ |
+| 1.5 Achiziţii de bunuri şi servicii defalcate pe       |           | |          ||
+| fiecare cotă de TVA pentru care s-au primit bonuri     |_________| |_________||
+| fiscale care îndeplinesc condiţiile unei facturi                                 |
+| simplificate şi care au înscris codul de înregistrare                            |
+| în scopuri de TVA al beneficiarului                                              |
+|                                                                                  |
+| 2.                                                                               |
+| 2.1 Plaja de facturi utilizate în perioada de raportare                          |
+|              _______             _______           _______              ________ |
+| de la seria |_______| numărul |_______| la seria |_______| numărul |________||
+|                                                                                  |
+| 2.2 Număr total de facturi emise, în perioada de raportare, din plaja de         |
+|                      ___________                                                 |
+| facturi utilizate: |___________|                                                 |
+|              _______             _______           _______              ________ |
+| de la seria |_______| numărul |_______| la seria |_______| numărul |________||
+|                                                                                  |
+| din care:                                                                        |
+|                             _______           _______                            |
+| - facturi stornate seria |_______| numărul |_______|                             |
+|                             _______           _______                            |
+| - facturi anulate    seria |_______| numărul |_______|                           |
+|                                                        Bază              TVA*)   |
+|                                                        impozabilă                |
+|                             _______           _______    _________     _________ |
+| - autofacturare      seria |_______| numărul |_______| |_________| |_________||
+|                                                                                  |
+| 3. În cazul în care soldul sumei negative înregistrate în decontul de TVA        |
+| aferent perioadei de raportare este solicitat la rambursare se vor selecta       |
+| datele cu privire la natura operaţiunilor din care provine acesta:               |
+| ____________________________________       __________________________________ |
+| | Achiziţii de bunuri şi         |     |  | Livrări de bunuri imobile |         ||
+| | servicii legate direct de      |     |  |____________________________|_____||
+| | bunurile imobile din           |     |  | Livrări de bunuri, cu         |     ||
+| | următoarele categorii:         |     |  | excepţia bunurilor imobile:|        ||
+| |______________________________|_____|    |____________________________|_____||
+| | a) parcuri eoliene             |     |  | a) cu cota standard de TVA |        ||
+| |______________________________|_____|    | 20%                           |     ||
+| | b) construcţii rezidenţiale |      |   |____________________________|_____||
+| |______________________________|_____|   | b) cu cota redusă de TVA 9%|      ||
+| | c) clădiri de birouri        |     |   |____________________________|_____||
+| |______________________________|_____|   | c) cu cota redusă de TVA 5%|      ||
+| | d) construcţii industriale   |     |   |____________________________|_____||
+| |______________________________|_____|   | Livrări de bunuri scutite |       ||
+| | e) altele                    |     |   | de TVA                      |     ||
+| |______________________________|_____|   |____________________________|_____||
+| | Achiziţii de bunuri, cu      |     |   | Livrări de bunuri/prestări |      ||
+| | excepţia celor legate direct |     |   | de servicii pentru care se |      ||
+| | de bunuri imobile:           |     |   | aplică taxarea inversă      |     ||
+| |______________________________|_____|   |____________________________|_____||
+| | a) cu cota standard de TVA   |     |   | Prestări de servicii:       |     ||
+| | 20%                          |     |   |____________________________|_____||
+| |______________________________|_____|   | a) cu cota standard de TVA |      ||
+| | b) cu cota redusă de TVA 9% |      |   | 20%                         |     ||
+| |______________________________|_____|   |____________________________|_____||
+| | c) cu cota redusă de TVA 5% |      |   | b) cu cota redusă de TVA 9%|      ||
+| |______________________________|_____|   |____________________________|_____||
+| | Achiziţii de servicii, cu    |     |   | c) cu cota redusă de TVA 5%|      ||
+| | excepţia celor legate direct |     |   |____________________________|_____||
+| | de bunuri imobile:           |     |   | Prestări de servicii        |     ||
+| |______________________________|_____|   | scutite de TVA              |     ||
+| | a) cu cota standard de TVA   |     |   |____________________________|_____||
+| | 20%                          |     |   | Livrări intracomunitare de |      ||
+| |______________________________|_____|   | bunuri                      |     ||
+| | b) cu cota redusă de TVA 9% |      |   |____________________________|_____||
+| |______________________________|_____|   | Prestări intracomunitare de|      ||
+| | c) cu cota redusă de TVA 5% |      |   | servicii                    |     ||
+| |______________________________|_____|   |____________________________|_____||
+| | Importuri de bunuri          |     |   | Exporturi de bunuri         |     ||
+| |______________________________|_____|   |____________________________|_____||
+|                                          | Persoana impozabilă nu a    |     ||
+|                                          | efectuat livrări de bunuri/|      ||
+|                                          | prestări servicii în        |     ||
+|                                          | perioada de raportare       |     ||
+|                                          |____________________________|_____||
+|                                                                               |
+| 4. Date aferente operaţiunilor desfăşurate de către persoana impozabilă care |
+| aplică sistemul normal de TVA                                                 |
+|                                                                Valoare TVA*) |
+|                                                                ______________ |
+| 4.1 TVA deductibilă aferentă facturilor achitate în perioada |______________||
+| de raportare indiferent de data în care acestea au fost                       |
+| primite de la persoane impozabile care aplică sistemul de                     |
+| TVA la încasare defalcate pe fiecare cotă de TVA                              |
+|                                                                               |
+| 5. Date aferente operaţiunilor desfăşurate de către persoana impozabilă care |
+| aplică sistemul de TVA la încasare                                            |
+|                                                                Valoare TVA*) |
+|                                                                ______________ |
+| 5.1 TVA colectată aferentă facturilor încasate în perioada   |______________||
+| de raportare indiferent de data la care acestea au fost                       |
+| emise de către persoana impozabilă care aplică sistemul TVA                   |
+| la încasare defalcate pe fiecare cotă de TVA                                  |
+|                                                                Valoare TVA*) |
+|                                                                ______________ |
+| 5.2 TVA deductibilă aferentă facturilor achitate în perioada |______________||
+| indiferent de data în care acestea au fost primite de la                      |
+| persoane impozabile care aplică sistemul normal de TVA                        |
+| defalcate pe fiecare cotă de TVA                                              |
+|                                                                Valoare TVA*) |
+|                                                                ______________ |
+| 5.3 TVA deductibilă aferentă facturilor achitate în perioada |______________||
+| de raportare indiferent de data în care acestea au fost                       |
+| primite de la persoane impozabile care aplică sistemul de                     |
+| TVA la încasare defalcate pe fiecare cotă de TVA                              |
+|                                                                               |
+| 6. În situaţia în care aţi desfăşurat, în perioada de raportare, activităţi |
+| dintre cele înscrise în listă veţi selecta activitatea corespunzătoare şi     |
+| veţi înscrie valoarea livrărilor/prestărilor precum şi TVA aferentă           |
+|                                                                               |
+|          Listă                Valoarea livrărilor/            Valoare TVA*) |
+|        activităţi                 prestărilor                                 |
+|        __________                 ___________                 ______________ |
+|       |__________|               |___________|               |______________||
+|                                                                               |
+| *) TVA defalcat pe cote: 20%, 9%, 5%                                          |
+|______________________________________________________________________________|
+                                                                   ____________
+    Subsemnatul _______________ în calitate de reprezentant legal |____________|
+declar, sub sancţiunile aplicate faptei de fals în declaraţii, următoarele:
+
+    1. persoana care a întocmit prezenta declaraţie este:
+
+                             denumire    CUI       calitate
+                         _   _________   _______   ________
+    - persoana juridică |_| |_________| |_______| |________|
+
+                                                        funcţia în
+                                                        cadrul
+                                                        persoanei        altă
+                           nume şi prenume   CNP/NIF    impozabile     calitate
+                       _   _______________   _______   ____________   _________
+    - persoană fizică |_| |_______________| |_______| |____________| |_________|
+
+    2. datele înscrise în prezenta declaraţie sunt corecte şi complete şi în
+concordanţă cu datele înscrise în formularul 300 Decontul de taxă pe valoarea
+adăugată.*)
+
+    De asemenea, subsemnatul ___________________ în calitate de reprezentant
+       ____________
+legal |____________| declar:
+
+                                            _______
+    1. sunt de acord ca, pentru anul fiscal |_______| în sensul prevederilor
+art. 11 alin. (3) lit. d) din Legea nr. 207/2015 privind Codul de procedură
+fiscală, datele înscrise în prezenta declaraţie referitoare la tranzacţiile
+derulate cu fiecare persoană impozabilă (client/furnizor) înregistrată în scop
+de TVA să fie consultate de către aceasta prin intermediul aplicaţiei
+informatice pusă la dispoziţie de ANAF
+                              _             _
+                          DA |_|**)     NU |_|
+
+    2. sunt de acord cu schimbarea opţiunii, astfel ca pentru anul fiscal
+ _______
+|_______| în sensul prevederilor art. 11 alin. (3) lit. d) din Legea nr.
+207/2015 privind Codul de procedură fiscală, datele înscrise în prezenta
+declaraţie referitoare la tranzacţiile derulate cu fiecare persoană impozabilă
+(client/furnizor) înregistrată în scop de TVA să fie consultate de către aceasta
+prin intermediul aplicaţiei informatice pusă la dispoziţie de ANAF
+                              _
+                          DA |_|**)
+                                                    ____________________________
+                                                  |                              |
+                                                  |____________________________|
+
+                                                               Semnătură
+
+------------
+    *) Informaţiile rezultate din prezenta declaraţie pot face obiectul analizei
+de risc conform prevederilor din Legea nr. 207/2015 privind Codul de procedură
+fiscală.
+    **) Acordul persoanei impozabile exprimat prin DA va fi valabil pentru toate
+declaraţiile informative 394 pentru care există obligativitatea depunerii în
+anul fiscal menţionat, fără a avea posibilitatea schimbării opţiunii.
+
+  ______________________________________________________________________________
+| Se completează de personalul organului fiscal                                  |
+|                                                                                |
+| Organ fiscal _______________________________________________________________ |
+|                                                                              |
+| Număr înregistrare _______________________ Data înregistrării ______________ |
+|                                                                              |
+| Numele persoanei care a verificat __________________________________________ |
+|                                                                              |
+| Cod M.F.P. 14.13.01.02/f   Număr operator de date cu caracter personal       |
+|______________________________________________________________________________|
+
+     Cod MFP 14.13.01.02/f
+  ______________________________________________________________________________
+|     LISTA OPERAŢIUNILOR TAXABILE EFECTUATE PE TERITORIUL NAŢIONAL (lit. C)            |
+| (cu detaliere pe fiecare operaţiune cu TVA şi pe fiecare operaţiune cu                |
+| taxarea inversă pentru cereale şi plante tehnice, deşeuri feroase şi                  |
+| neferoase, certificate de emisii de gaze cu efect de seră, energie electrică,|
+| certificate verzi, clădiri, aur de investiţii, microprocesoare, console de            |
+| jocuri, tablete PC şi laptopuri)                                                      |
+|                                                                                       |
+|                                                                                 (lei) |
+|______________________________________________________________________________|
+| Nr. *) Tip       Cod de înregistrare            Denumire/Nume şi prenume              |
+| crt.             în scopuri de TVA                beneficiar/furnizor                 |
+|          L/A                                                                          |
+|          AÎ                                    Nr. de       Baza             TVA**)   |
+|          V/C                                   facturi      impozabilă                |
+|______________________________________________________________________________|
+| ____     ____     _ _ _ _ _ _ _ _ _ _    _______________________________________ |
+| | 1 | |        | | | | | | | | | | | | |                                             ||
+| |____| |____| |_|_|_|_|_|_|_|_|_|_| |_______________________________________||
+|                                               _________     _________     ___________ |
+|                                             |           | |           | |            ||
+|                                             |_________| |_________| |___________||
+|______________________________________________________________________________|
+| (în cazul selectării tip V/C se vor completa pentru fiecare furnizor/                 |
+| beneficiar, şi următoarele)                                                           |
+|                                                                                       |
+|                Bunuri/                                                                |
+| Nr. crt.       Servicii      Cod şi denumire NC produs                                |
+|______________________________________________________________________________|
+| ____           ______       ______________________________                            |
+| | 1 |        |        |   |                                  |                        |
+| |____|       |______|     |______________________________|                            |
+|______________________________________________________________________________|
+| *) Tip operaţiune: L - livrări, A - achiziţii, AÎ - achiziţii de la persoane |
+| impozabile care aplică TVA la încasare, V - livrări cu taxare inversă,                |
+| C - achiziţii cu taxare inversă                                                       |
+| **) TVA defalcată pe cote 20%, 9%, 5%                                                 |
+|______________________________________________________________________________|
+
+  ______________________________________________________________________________
+|     LISTA OPERAŢIUNILOR TAXABILE EFECTUATE PE TERITORIUL NAŢIONAL (lit. D)            |
+| (cu detaliere pe operaţiuni efectuate cu persoane neînregistrate în scopuri |
+| de TVA)                                                                               |
+|                                                                                       |
+|                                                                                 (lei) |
+|______________________________________________________________________________|
+| Nr. *) Tip CUI/ Bunuri/              Denumire/Nume şi prenume       Tip document      |
+| crt.     L     CNP/ Servicii***) beneficiar/furnizor                                  |
+|          A     NIF                                                                    |
+|                                 Nr. de facturi/              Baza impozabilă/TVA**) |
+|                                 Borderou de achiziţii/       Valoare totală           |
+|                                 Carnet de comercializare                              |
+|                                 a produselor din                                      |
+|                                 sectorul agricol                                      |
+|______________________________________________________________________________|
+| ____     ____     _ _ _ _ _ _ _ _ _ _         ___________________________________ |
+| | 1 | |       | | | | | | | | | | | |       |                                        ||
+| |____| |____| |_|_|_|_|_|_|_|_|_|_|         |___________________________________||
+|                   _______      _______        _________     _________     ___________ |
+|                 |         |  |         |    |           | |           | |            ||
+|               |_______|   |_______|     |_________| |_________| |___________||
+|______________________________________________________________________________|
+| *) Tip operaţiune: L - livrări, A - achiziţii                                |
+| **) TVA defalcată pe cote 20%, 9%, 5%                                        |
+| ***) pentru achiziţiile de la persoane neînregistrate va fi înscrisă natura |
+| bunurilor achiziţionate: cereale şi plante tehnice, deşeuri feroase şi       |
+| neferoase, masă lemnoasă, terenuri, clădiri, alte bunuri şi servicii.        |
+|______________________________________________________________________________|
+
+  ______________________________________________________________________________
+|     LISTA OPERAŢIUNILOR TAXABILE EFECTUATE PE TERITORIUL NAŢIONAL (lit. E)          |
+| (cu detaliere pe operaţiuni efectuate cu persoane impozabile nestabilite în |
+| România care sunt stabilite în alt stat membru, neînregistrate şi care nu           |
+| sunt obligate să se înregistreze în scopuri de TVA în România)                      |
+|                                                                                     |
+|                                                                               (lei) |
+|______________________________________________________________________________|
+  ______________________________________________________________________________
+| Nr. *) Tip Cod valabil de        Denumire/Nume şi prenume beneficiar/furnizor |
+| crt.      L     TVA în statul                                                       |
+|           C     membru                      Nr. de        Baza            TVA**)    |
+|                                             facturi       impozabilă                |
+|______________________________________________________________________________|
+| ____     ____    _ _ _ _ _ _ _ _ _ _        ___________________________________ |
+| | 1 | |       | | | | | | | | | | | |     |                                        ||
+| |____| |____| |_|_|_|_|_|_|_|_|_|_|       |___________________________________||
+|                                             _________     _________     ___________ |
+|                                           |           | |           | |            ||
+|                                           |_________| |_________| |___________||
+|______________________________________________________________________________|
+| *) Tip operaţiune: L - livrări, C - achiziţii cu taxare inversă                     |
+| **) TVA defalcată pe cote 20%, 9%, 5%                                               |
+|______________________________________________________________________________|
+
+  ______________________________________________________________________________
+|     LISTA OPERAŢIUNILOR TAXABILE EFECTUATE PE TERITORIUL NAŢIONAL (lit. F)          |
+| (cu detaliere pe operaţiuni efectuate cu persoane impozabile neînregistrate |
+| şi care nu sunt obligate să se înregistreze în scopuri de TVA în România,           |
+| nestabilite pe teritoriul Uniunii Europene)                                         |
+|                                                                                     |
+|                                                                               (lei) |
+|______________________________________________________________________________|
+| Nr. *) Tip Cod de                Denumire/Nume şi prenume beneficiar/furnizor |
+| crt.      L     înregistrare                                                        |
+|           C                                 Nr. de        Baza             TVA**)   |
+|                                             facturi       impozabilă                |
+|______________________________________________________________________________|
+| ____     ____    _ _ _ _ _ _ _ _ _ _        ___________________________________ |
+| | 1 | |       | | | | | | | | | | | |     |                                        ||
+| |____| |____| |_|_|_|_|_|_|_|_|_|_|       |___________________________________||
+|                                             _________     _________     ___________ |
+|                                           |           | |           | |            ||
+|                                           |_________| |_________| |___________||
+|______________________________________________________________________________|
+| *) Tip operaţiune: L - livrări, C - achiziţii cu taxare inversă                     |
+| **) TVA defalcată pe cote 20%, 9%, 5%                                               |
+|______________________________________________________________________________|
+
+  ______________________________________________________________________________
+|     LISTA OPERAŢIUNILOR TAXABILE EFECTUATE PE TERITORIUL NAŢIONAL (lit. G)     |
+| (cu detaliere pe operaţiuni efectuate prin intermediul aparatelor de marcat |
+| electronice fiscale (AMEF) precum şi pentru operaţiuni pentru care nu există |
+| obligaţia utilizării AMEF)                                                     |
+|                                                                                |
+|                                                                         (lei) |
+|______________________________________________________________________________|
+| *) Tip operaţiune                                                              |
+|     Î1                                                                         |
+|     Î2 Luna Nr. de      Nr. bonuri        Total       Baza           TVA**)    |
+|               AMEF***) fiscale***)        încasări    impozabilă               |
+|______________________________________________________________________________|
+| ___     ____     ______     __________     _________     _________     ___________ |
+| |   | |      | |        | |            | |           | |           | |            ||
+| |___| |____| |______| |__________|       |_________| |_________| |___________||
+|______________________________________________________________________________|
+| *) Tip operaţiune:                                                                 |
+| Î1 - încasări lunare prin intermediul aparatelor de marcat electronice             |
+| fiscale cu excepţia celor pentru care s-au emis facturi. Se vor declara            |
+| inclusiv încasările prin intermediul bonurilor fiscale care îndeplinesc            |
+| condiţiile unei facturi simplificate indiferent dacă au/nu au înscris codul |
+| de înregistrare în scopuri de TVA al beneficiarului.                               |
+| Î2 - încasări lunare efectuate din activităţi exceptate de la obligaţia            |
+| utilizării aparatelor de marcat electronice fiscale                                |
+| **) TVA defalcată pe cote 20%, 9%, 5%                                              |
+| ***) se va completa numai pentru Î1.                                               |
+|______________________________________________________________________________|
+
+
+
+  ANEXA 2
+
+
+              INSTRUCŢIUNI
+de depunere şi completare a formularului (394) "Declaraţie informativă privind
+livrările/prestările şi achiziţiile efectuate pe teritoriul naţional de persoanele înregistrate în
+scopuri de TVA", cod MFP 14.13.01.02/f
+
+
+  1. Declaraţia se completează şi se depune de către:
+   a) persoanele impozabile înregistrate în scopuri de TVA în România conform art. 316 din Legea
+nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare, denumită în continuare
+Codul fiscal, şi care sunt obligate la plata taxei conform art. 307 alin. (1), (2), (6) şi (7) din Codul
+fiscal, pentru operaţiuni impozabile în România conform art. 268 alin. (1) şi taxabile cu cota
+prevăzută de Codul fiscal. Declaraţia se depune pentru orice operaţiune taxabilă pentru care,
+conform titlului VII din Codul fiscal, este emisă o factură, inclusiv pentru avansuri, precum şi pentru
+operaţiunile la care se aplică sistemul TVA la încasare.
+  Declaraţia trebuie să conţină facturile care au fost emise în perioada de raportare, inclusiv cele
+care au înscrisă menţiunea "taxare inversă" sau "TVA la încasare".
+  De asemenea, în declaraţie se înscriu:
+  - baza impozabilă şi TVA aferente facturilor emise prin autofacturare conform lit. I pct. 2 din
+anexa nr. 1 la ordin;
+   - valoarea totală a bonurilor fiscale, inclusiv facturile simplificate şi bonurile fiscale care
+îndeplinesc condiţiile unei facturi simplificate conform prevederilor art. 319 alin. (12), (13) şi (21)
+din Codul fiscal, indiferent dacă au/nu au înscris codul de înregistrare în scopuri de TVA al
+beneficiarului;
+   b) persoanele impozabile înregistrate în scopuri de TVA în România conform art. 316 din Codul
+fiscal, care realizează în România achiziţii de bunuri sau servicii.
+  Declaraţia trebuie să conţină facturile care au fost primite în perioada de raportare, inclusiv cele
+care au înscrisă menţiunea "taxare inversă" sau "TVA la încasare", precum şi borderourile de
+achiziţii de bunuri şi filele din carnetele de comercializare a produselor din sectorul agricol în cazul
+achiziţiilor efectuate de la persoane fizice.
+  De asemenea, în declaraţie se înscrie valoarea totală a facturilor simplificate şi a bonurilor fiscale
+care îndeplinesc condiţiile unei facturi simplificate conform prevederilor art. 319 alin. (12), (13) şi
+(21) din Codul fiscal, dacă au înscris codul de înregistrare în scopuri de TVA al beneficiarului.
+  2. Declaraţia se depune la organul fiscal competent până în data de 25 inclusiv a lunii următoare
+încheierii perioadei de raportare declarate pentru depunerea decontului (lunar, trimestrial etc.),
+inclusiv dacă în această perioadă nu au fost realizate operaţiuni de natura celor care fac obiectul
+declaraţiei.
+   Prin excepţie, contribuabilii care au perioada fiscală luna calendaristică vor depune pentru lunile
+ianuarie şi februarie 2016 declaraţia informativă privind livrările/prestările şi achiziţiile efectuate
+pe teritoriul naţional de persoane înregistrate în scopuri de TVA, prevăzută în Ordinul preşedintelui
+Agenţiei Naţionale de Administrare Fiscală nr. 3.596/2011 privind declararea livrărilor/prestărilor şi
+achiziţiilor efectuate pe teritoriul naţional de persoanele înregistrate în scopuri de TVA şi pentru
+aprobarea modelului şi conţinutului declaraţiei informative privind livrările/prestările şi achiziţiile
+efectuate pe teritoriul naţional de persoanele înregistrate în scopuri de TVA, cu modificările
+ulterioare, urmând ca, până la data de 25 aprilie 2016 inclusiv, să depună declaraţia prevăzută în
+anexa nr. 1 la ordin pentru luna martie 2016, precum şi pentru lunile ianuarie şi februarie 2016,
+prin care vor fi înlocuite declaraţiile depuse anterior.
+  3. În cazul în care, după depunerea declaraţiei, persoana impozabilă constată existenţa unor
+omisiuni/erori în datele declarate, aceasta trebuie să depună o nouă declaraţie corect completată,
+cu operaţiunile care necesită modificarea şi/sau operaţiunile care nu au fost declarate, declaraţie
+care înlocuieşte declaraţia informativă depusă iniţial.
+  4. Declaraţia se depune în format electronic sub forma unui fişier PDF, al cărui model este
+prevăzut în anexa nr. 1 la ordin, care are ataşat fişierul XML, disponibil pe portalul Agenţiei
+Naţionale de Administrare Fiscală (ANAF).
+   4.1. Declaraţia se depune prin mijloace electronice de transmitere la distanţă, pe portalul e-
+România. Pentru depunerea declaraţiei, plătitorul trebuie să deţină un certificat calificat, eliberat
+în condiţiile Legii nr. 455/2001 privind semnătura electronică, republicată.
+  4.2. Declaraţia se poate depune şi în format electronic, pe suport electronic, însoţit de anexa nr.
+1 la ordin, în format hârtie (doar prima pagină), semnat şi ştampilat, conform legii. Declaraţia în
+format electronic, însoţită de formularul listat, semnat şi ştampilat, se depune direct la registratura
+organului fiscal competent ori se comunică prin poştă cu confirmare de primire.
+   5. Declaraţia se completează/validează cu ajutorul programelor de asistenţă. Programele de
+asistenţă sunt puse la dispoziţia contribuabililor gratuit de unităţile fiscale subordonate sau pot fi
+descărcate de pe site-ul ANAF, la adresa www.anaf.mfinante.gov.ro
+
+
+  Completarea declaraţiei
+
+
+  SECŢIUNEA 1
+
+
+  Cartuşul referitor la tipul plătitorului şi perioada de raportare se completează cu:
+   a) la tip plătitor se înscrie perioada fiscală declarată pentru depunerea decontului de taxă pe
+valoarea adăugată (formularul 300), prevăzută la art. 322 din Codul fiscal, respectiv L - lunar, T -
+trimestrial, S - semestrial, A - anual;
+  b) anul la care se referă declaraţia; se înscrie anul calendaristic cu 4 caractere (de exemplu,
+2015);
+  c) luna - se înscrie cu cifre arabe numărul aferent perioadei de raportare (de exemplu, 01 pentru
+ianuarie, 03 pentru trimestrul I, 06 pentru semestrul II, 12 pentru an);
+  d) sistem normal de TVA - se completează în cazul în care persoana impozabilă care depune
+declaraţia a optat pentru aplicarea sistemului normal de TVA;
+  e) sistem de TVA la încasare - se completează în cazul în care persoana impozabilă care depune
+declaraţia a optat pentru aplicarea sistemului de TVA la încasare;
+  f) în situaţia în care persoana impozabilă nu a desfăşurat operaţiuni în perioada de raportare, se
+va bifa căsuţa corespunzătoare.
+
+
+  A. Date de identificare ale persoanei înregistrate în scopuri de TVA
+  1. Cod de înregistrare în scopuri de TVA - se înscrie codul de înregistrare în scopuri de TVA (codul
+de identificare fiscală precedat de prefixul RO).
+  2. Denumire/nume şi prenume - se înscriu, după caz, denumirea sau numele şi prenumele
+persoanei înregistrate în scopuri de TVA.
+  3. Domiciliul fiscal - se înscrie adresa domiciliului fiscal al persoanei înregistrate în scopuri de
+TVA.
+
+
+  B. Date de identificare ale reprezentantului fiscal/legal/împuternicitului
+  1. Cod de identificare fiscală/CNP - se înscrie codul de identificare fiscală sau codul numeric
+personal al reprezentantului fiscal/legal ori al împuternicitului.
+  2. Denumire/nume şi prenume - se înscriu, după caz, denumirea sau numele şi prenumele
+persoanei impozabile care a fost desemnată ca reprezentant fiscal/legal sau împuternicit de către
+persoana impozabilă străină.
+  3. Domiciliul fiscal - se înscrie adresa domiciliului fiscal al reprezentantului fiscal.
+
+
+  C. Rezumat declaraţie privind operaţiunile desfăşurate cu persoane impozabile înregistrate în
+scopuri de TVA în România
+  Acest cartuş conţine:
+  1. numărul total al persoanelor înregistrate în scopuri de TVA incluse în declaraţie, indiferent de
+numărul operaţiunilor;
+   2. numărul total al facturilor emise pentru livrările de bunuri/prestările de servicii defalcate pe
+fiecare cotă de TVA efectuate de către persoana impozabilă care aplică sistemul normal de TVA, cu
+excepţia celor pentru care au fost emise facturi simplificate;
+  3. valoarea totală a bazei impozabile aferentă livrărilor de bunuri/prestărilor de servicii taxabile şi
+valoarea totală a TVA aferentă acestora defalcate pe cote de TVA efectuate de către persoana
+impozabilă care aplică sistemul normal de TVA, cu excepţia celor pentru care au fost emise facturi
+simplificate;
+   4. numărul total al facturilor emise pentru livrările de bunuri/prestările de servicii defalcate pe
+fiecare cotă de TVA efectuate de către persoana impozabilă care aplică sistemul de TVA la încasare,
+cu excepţia celor pentru care au fost emise facturi simplificate;
+  5. valoarea totală a bazei impozabile aferentă livrărilor de bunuri/prestărilor de servicii taxabile
+pentru care se aplică TVA la încasare şi valoarea totală a TVA aferentă acestora defalcate pe cote de
+TVA efectuate de către persoana impozabilă care aplică sistemul de TVA la încasare, cu excepţia
+celor pentru care au fost emise facturi simplificate;
+  6. numărul total al facturilor primite pentru achiziţiile de bunuri şi servicii defalcate pe fiecare
+cotă de TVA de la persoane impozabile care aplică sistemul normal de TVA, cu excepţia celor
+pentru care au fost primite facturi simplificate;
+   7. valoarea totală a bazei impozabile aferentă achiziţiilor de bunuri şi servicii taxabile şi valoarea
+totală a TVA aferentă acestora defalcate pe cote de TVA de la persoane impozabile care aplică
+sistemul normal de TVA, cu excepţia celor pentru care s-au primit facturi simplificate;
+  8. numărul total al facturilor primite pentru achiziţiile de bunuri şi servicii defalcate pe fiecare
+cotă de TVA de la persoane impozabile care aplică sistemul de TVA la încasare, cu excepţia celor
+pentru care au fost primite facturi simplificate;
+  9. valoarea totală a bazei impozabile aferentă achiziţiilor de bunuri şi servicii taxabile pentru care
+se aplică TVA la încasare şi valoarea totală a TVA aferentă acestora defalcate pe cote de TVA de la
+persoane impozabile care aplică sistemul de TVA la încasare, cu excepţia celor pentru care s-au
+primit facturi simplificate;
+  10. numărul total al facturilor emise pentru livrările de bunuri/prestările de servicii efectuate
+pentru care se aplică taxarea inversă;
+   11. valoarea totală a bazei impozabile aferentă livrărilor de bunuri/prestărilor de servicii
+efectuate pentru care se aplică taxarea inversă şi valoarea totală a TVA aferentă acestora defalcate
+pe cote de TVA şi pe categorii de bunuri/prestări de servicii pentru care se aplică taxarea inversă;
+  12. numărul total al facturilor primite aferente achiziţiilor de bunuri şi servicii pentru care se
+aplică taxarea inversă;
+  13. valoarea totală a bazei impozabile aferentă achiziţiilor de bunuri şi serviciilor efectuate
+pentru care se aplică taxarea inversă şi valoarea totală a TVA aferentă acestora defalcate pe cote de
+TVA şi pe categorii de bunuri şi servicii pentru care se aplică taxarea inversă.
+
+
+  D. Rezumat declaraţie privind operaţiuni desfăşurate cu persoane neînregistrate în scopuri de
+TVA
+  Acest cartuş conţine:
+  1. numărul total al persoanelor neînregistrate în scopuri de TVA incluse în declaraţie, indiferent
+de numărul operaţiunilor;
+   2. numărul total al facturilor emise pentru livrările de bunuri/prestările de servicii defalcate pe
+fiecare cotă de TVA efectuate de către persoana impozabilă care aplică sistemul normal de TVA, cu
+excepţia celor pentru care au fost emise facturi simplificate;
+  3. valoarea totală a bazei impozabile aferentă livrărilor de bunuri/prestărilor de servicii taxabile şi
+valoarea totală a TVA aferentă acestora defalcate pe cote de TVA efectuate de către persoana
+impozabilă care aplică sistemul normal de TVA, cu excepţia celor pentru care au fost emise facturi
+simplificate;
+  4. numărul total al facturilor emise pentru livrările de bunuri/prestările de servicii efectuate de
+către persoana impozabilă care aplică sistemul de TVA la încasare, cu excepţia celor pentru care au
+fost emise facturi simplificate;
+  5. valoarea totală a bazei impozabile aferentă livrărilor de bunuri/prestărilor de servicii taxabile
+pentru care se aplică TVA la încasare şi valoarea totală a TVA aferentă acestora defalcate pe cote de
+TVA efectuate de către persoana impozabilă care aplică sistemul de TVA la încasare, cu excepţia
+celor pentru care au fost emise facturi simplificate;
+  6. natura bunurilor/serviciilor care au fost achiziţionate de la persoane fizice, respectiv: cereale şi
+plante tehnice, deşeuri feroase şi neferoase, masă lemnoasă, terenuri, clădiri, alte bunuri, servicii;
+  7. numărul total al facturilor/borderourilor de achiziţii/filelor din carnetele de comercializare a
+produselor din sectorul agricol primite pentru achiziţiile de bunuri şi servicii efectuate de la
+persoanele neînregistrate în scopuri de TVA;
+  8. valoarea totală a achiziţiilor de bunuri şi servicii efectuate de la persoane neînregistrate în
+scopuri de TVA.
+
+
+  E. Rezumat declaraţie privind operaţiunile desfăşurate cu persoane nestabilite în România care
+sunt stabilite în alt stat membru, neînregistrate şi care nu sunt obligate să se înregistreze în
+scopuri de TVA în România
+  Acest cartuş conţine:
+  1. numărul total al persoanelor impozabile nestabilite în România, care sunt stabilite în alte state
+membre, neînregistrate şi care nu sunt obligate să se înregistreze în scopuri de TVA în România,
+indiferent de numărul operaţiunilor;
+   2. numărul total al facturilor emise pentru livrările de bunuri/prestările de servicii defalcate pe
+fiecare cotă de TVA efectuate de către persoana impozabilă care aplică sistemul normal de TVA, cu
+excepţia celor pentru care au fost emise facturi simplificate;
+  3. valoarea totală a bazei impozabile aferentă livrărilor de bunuri/prestărilor de servicii taxabile şi
+valoarea totală a TVA aferentă acestora defalcate pe cote de TVA efectuate de către persoana
+impozabilă care aplică sistemul normal de TVA, cu excepţia celor pentru care au fost emise facturi
+simplificate;
+  4. numărul total al facturilor emise pentru livrările de bunuri/prestările de servicii efectuate de
+către persoana impozabilă care aplică sistemul de TVA la încasare, cu excepţia celor pentru care au
+fost emise facturi simplificate;
+  5. valoarea totală a bazei impozabile aferentă livrărilor de bunuri/prestărilor de servicii taxabile
+pentru care se aplică TVA la încasare şi valoarea totală a TVA aferentă acestora defalcate pe cote de
+TVA efectuate de către persoana impozabilă care aplică sistemul de TVA la încasare, cu excepţia
+celor pentru care au fost emise facturi simplificate;
+  6. numărul total al facturilor primite pentru achiziţiile de bunuri şi servicii pentru care se aplică
+taxarea inversă;
+  7. valoarea totală a bazei impozabile aferentă achiziţiilor de bunuri şi servicii pentru care se
+aplică taxarea inversă şi valoarea totală a TVA aferentă acestora defalcate pe cote de TVA.
+
+
+  F. Rezumat declaraţie privind operaţiunile desfăşurate cu persoane impozabile neînregistrate şi
+care nu sunt obligate să se înregistreze în scopuri de TVA în România, nestabilite pe teritoriul
+Uniunii Europene
+  Acest cartuş conţine:
+  1. numărul total al persoanelor impozabile care nu sunt obligate să se înregistreze în scopuri de
+TVA în România, nestabilite pe teritoriul Uniunii Europene, indiferent de numărul operaţiunilor;
+   2. numărul total al facturilor emise pentru livrările de bunuri/prestările de servicii efectuate
+către persoane impozabile care nu sunt obligate să se înregistreze în scopuri de TVA în România,
+nestabilite pe teritoriul Uniunii Europene;
+  3. valoarea totală a bazei impozabile aferentă livrărilor de bunuri/prestărilor de servicii taxabile şi
+valoarea totală a TVA aferentă acestora defalcate pe cote de TVA efectuate de către persoana
+impozabilă care aplică sistemul normal de TVA, cu excepţia celor pentru care au fost emise facturi
+simplificate;
+  4. numărul total al facturilor emise pentru livrările de bunuri/prestările de servicii efectuate de
+către persoana impozabilă care aplică sistemul de TVA la încasare, cu excepţia celor pentru care au
+fost emise facturi simplificate;
+  5. valoarea totală a bazei impozabile aferentă livrărilor de bunuri/prestărilor de servicii taxabile
+pentru care se aplică TVA la încasare şi valoarea totală a TVA aferentă acestora defalcate pe cote de
+TVA efectuate de către persoana impozabilă care aplică sistemul de TVA la încasare, cu excepţia
+celor pentru care au fost emise facturi simplificate;
+  6. numărul total al facturilor primite pentru achiziţiile de bunuri şi servicii pentru care se aplică
+taxarea inversă;
+  7. valoarea totală a bazei impozabile aferentă achiziţiilor de bunuri şi servicii pentru care se
+aplică taxarea inversă şi valoarea totală a TVA aferentă acestora defalcate pe cote de TVA.
+   G. Rezumat declaraţie privind încasările lunare realizate din operaţiuni efectuate prin
+intermediul aparatelor de marcat electronice fiscale, precum şi din activităţi exceptate, conform
+prevederilor Ordonanţei de urgenţă a Guvernului nr. 28/1999 privind obligaţia operatorilor
+economici de a utiliza aparate de marcat electronice fiscale, republicată, cu modificările şi
+completările ulterioare
+  Acest cartuş conţine:
+   1. numărul total al bonurilor fiscale şi valoarea totală a încasărilor efectuate prin intermediul
+aparatelor de marcat electronice fiscale, emise în perioada de raportare, inclusiv a încasărilor prin
+intermediul bonurilor fiscale care îndeplinesc condiţiile unei facturi simplificate, indiferent dacă
+au/nu au înscris codul de TVA al beneficiarului. Nu vor fi incluse în acest cartuş bonurile fiscale
+pentru care au fost emise facturi definite la art. 319 din Codul fiscal, cu excepţia alin. (12), (13) şi
+(21) din cadrul aceluiaşi articol;
+    2. valoarea totală a bazei impozabile, în perioada de raportare, aferentă livrărilor de
+bunuri/prestărilor de servicii taxabile efectuate prin intermediul aparatelor de marcat electronice
+fiscale şi valoarea totală a TVA aferentă acestora defalcate pe cote de TVA;
+   3. valoarea totală a încasărilor, în perioada de raportare, din activităţi exceptate de la obligaţia
+utilizării aparatelor de marcat electronice fiscale conform prevederilor legale în vigoare la data
+aplicării;
+   4. valoarea totală a bazei impozabile, în perioada de raportare, aferentă activităţilor economice
+exceptate de la obligaţia utilizării aparatelor de marcat electronice fiscale, conform prevederilor
+legale în vigoare la data aplicării, şi valoarea totală a TVA aferentă acestora defalcate pe cote de
+TVA.
+
+
+  H. Rezumat declaraţie privind operaţiunile realizate pe teritoriul României
+  Acest cartuş conţine:
+  1. numărul total al facturilor emise/primite în perioada de raportare, defalcate pe cote de TVA,
+cu excepţia celor pentru care au fost emise/primite facturi simplificate;
+  2. valoarea totală a bazei impozabile aferentă livrărilor de bunuri/prestărilor de servicii taxabile
+efectuate, inclusiv cele pentru care se aplică taxarea inversă defalcată pe cote de TVA (20%, 9%,
+5%);
+   3. valoarea totală a TVA aferentă livrărilor de bunuri/prestărilor de servicii taxabile efectuate,
+inclusiv cele pentru care se aplică taxarea inversă defalcată pe cote de TVA (20%, 9%, 5%);
+  4. valoarea totală a bazei impozabile aferentă achiziţiilor de bunuri şi servicii taxabile efectuate,
+inclusiv cele pentru care se aplică taxarea inversă, precum şi cele pentru care se aplică TVA la
+încasare defalcată pe cote de TVA (20%, 9%, 5%);
+  5. valoarea totală a TVA aferentă achiziţiilor de bunuri şi servicii taxabile efectuate, inclusiv cele
+pentru care se aplică taxarea inversă, precum şi cele pentru care se aplică TVA la încasare defalcată
+pe cote de TVA (20%, 9%, 5%).
+
+
+  I. Alte informaţii
+  Acest cartuş conţine:
+  1.1. valoarea totală a bazei impozabile aferentă livrărilor de bunuri/prestărilor de servicii pentru
+care s-au emis facturi simplificate care au înscris codul de înregistrare în scopuri de TVA al
+beneficiarului şi valoarea totală a TVA aferentă acestora defalcată pe cote de TVA (20%, 9%, 5%);
+  1.2. valoarea totală a bazei impozabile aferentă livrărilor de bunuri/prestărilor de servicii pentru
+care s-au emis facturi simplificate fără a avea înscris codul de înregistrare în scopuri de TVA al
+beneficiarului şi pentru care nu au fost emise bonuri fiscale, defalcată pe cote de TVA (20%, 9%,
+5%);
+   1.3. valoarea totală a bazei impozabile aferentă achiziţiilor de bunuri şi servicii pentru care s-au
+primit facturi simplificate de la persoane impozabile care aplică sistemul normal de TVA şi care au
+înscris codul de înregistrare în scopuri de TVA al beneficiarului, defalcată pe cote de TVA (20%, 9%,
+5%);
+  1.4. valoarea totală a bazei impozabile aferentă achiziţiilor de bunuri şi servicii pentru care s-au
+primit facturi simplificate de la persoane impozabile care aplică sistemul de TVA la încasare şi care
+au înscris codul de înregistrare în scopuri de TVA al beneficiarului, defalcată pe cote de TVA (20%,
+9%, 5%);
+   1.5. valoarea totală a bazei impozabile aferentă achiziţiilor de bunuri şi servicii pentru care s-au
+primit bonuri fiscale care îndeplinesc condiţiile unei facturi simplificate şi care au înscris codul de
+înregistrare în scopuri de TVA al beneficiarului, defalcată pe cote de TVA (20%, 9%, 5%);
+  2.1. plaja de facturi utilizate în perioada de raportare de la seria nr. .../la seria nr. ...;
+  2.2. număr total de facturi emise în perioada de raportare de la seria nr. .../la seria nr. ..., din
+care:
+  2.2.1. seria şi numărul facturilor stornate;
+  2.2.2. seria şi numărul facturilor anulate;
+   2.2.3. seria şi numărul facturilor emise prin autofacturare, inclusiv baza impozabilă şi TVA
+aferente, defalcată pe fiecare cotă (20%, 9%, 5%);
+  3. descrierea operaţiunilor din care provine soldul sumei negative înregistrat în decontul de TVA
+de către persoana impozabilă care depune declaraţia şi care este solicitat la rambursare în
+perioada de raportare - se va bifa căsuţa/căsuţele corespunzătoare fiecărei operaţiuni în parte;
+  4. date aferente operaţiunilor desfăşurate de către persoana impozabilă care aplică sistemul
+normal de TVA:
+   4.1. valoarea totală a TVA deductibile aferentă facturilor achitate în perioada de raportare
+indiferent de data în care acestea au fost primite de la persoane impozabile care aplică sistemul de
+TVA la încasare defalcate pe fiecare cotă de TVA (20%, 9%, 5%);
+  5. date aferente operaţiunilor desfăşurate de către persoana impozabilă care aplică sistemul de
+TVA la încasare:
+   5.1. valoarea totală a TVA colectate aferentă facturilor încasate în perioada de raportare
+indiferent de data la care acestea au fost emise de către persoana impozabilă care aplică sistemul
+de TVA la încasare defalcate pe fiecare cotă de TVA (20%, 9%, 5%);
+   5.2. valoarea totală a TVA deductibile aferentă facturilor achitate în perioada de raportare
+indiferent de data în care acestea au fost primite de la persoane impozabile care aplică sistemul
+normal de TVA defalcate pe fiecare cotă de TVA (20%, 9%, 5%);
+   5.3. valoarea totală a TVA deductibile aferentă facturilor achitate în perioada de raportare
+indiferent de data în care acestea au fost primite de la persoane impozabile care aplică sistemul de
+TVA la încasare defalcate pe fiecare cotă de TVA (20%, 9%, 5%);
+  6. în situaţia în care persoana impozabilă a desfăşurat activitate/activităţi definită/definite
+conform listei disponibile pe portalul ANAF, se vor completa valoarea livrărilor de
+bunuri/prestărilor de servicii fără TVA, precum şi TVA aferentă defalcată pe cote (20%, 9%, 5%).
+  În cazul în care declaraţia este întocmită de:
+  - persoana juridică, se vor completa denumirea, CUI şi calitatea acesteia;
+  - persoana fizică, se vor completa numele şi prenumele, CNP/NIF, funcţia în cadrul persoanei
+impozabile, altă calitate în afara persoanei impozabile.
+  Datele înscrise în declaraţie referitoare la tranzacţiile derulate cu fiecare persoană impozabilă
+(client/furnizor) înregistrată în scop de TVA pot fi consultate de către aceasta prin intermediul
+aplicaţiei informatice puse la dispoziţie de ANAF şi cu acordul persoanei impozabile care depune
+declaraţia. Acordul va fi dat în prima declaraţie depusă de persoana impozabilă şi va fi valabil
+pentru toate declaraţiile informative 394 pentru care există obligativitatea depunerii în anul fiscal
+menţionat, fără a avea posibilitatea schimbării opţiunii.
+   În cazul în care persoana impozabilă nu şi-a exprimat acordul, aceasta are posibilitatea
+schimbării opţiunii în cursul anului. Astfel, persoana impozabilă va bifa în mod corespunzător
+căsuţa corespunzătoare schimbării opţiunii.
+   În situaţia în care persoana impozabilă nu şi-a exprimat acordul prin nicio declaraţie informativă
+depusă pe parcursul anului, aceasta nu va putea consulta datele înscrise de parteneri în declaraţiile
+informative 394, referitoare la tranzacţiile bilaterale, indiferent de opţiunea acestora.
+
+
+  SECŢIUNEA a 2-a
+
+
+  Prezenta secţiune, pentru fiecare rezumat al declaraţiei, cuprinde:
+   - valorile totale înscrise în facturile emise/primite, în borderourile de achiziţii şi în filele
+carnetelor de comercializare a produselor din sectorul agricol pentru fiecare partener de
+tranzacţie, pentru perioada de raportare, inclusiv raportul lunar al memoriei fiscale de la aparatele
+de marcat electronice fiscale, defalcate pe fiecare cotă de TVA;
+   - valorile totale înscrise în facturile emise/primite aferente tranzacţiilor pentru care se aplică
+taxarea inversă pentru cereale şi plante tehnice, deşeuri feroase şi neferoase, masă lemnoasă,
+certificate de emisii de gaze cu efect de seră, energie electrică, certificate verzi, clădiri/terenuri, aur
+de investiţii, telefoane mobile, microprocesoare, console de jocuri, tablete PC, laptopuri se
+completează separat faţă de celelalte operaţiuni, pentru fiecare cod de înregistrare în scopuri de
+TVA, categorie de bunuri/servicii supuse taxării inverse şi pentru fiecare cotă defalcată de TVA.
+  Listele operaţiunilor taxabile efectuate pe teritoriul naţional cuprind următoarele tipuri de
+operaţiuni:
+   - operaţiuni efectuate cu persoane impozabile (cu detaliere pe fiecare operaţiune cu TVA şi pe
+fiecare operaţiune cu taxare inversă pentru cereale şi plante tehnice, deşeuri feroase şi neferoase,
+masă lemnoasă, certificate de emisii de gaze cu efect de seră, energie electrică, certificate verzi,
+clădiri/terenuri, aur de investiţii, telefoane mobile, microprocesoare, console de jocuri, tablete PC,
+laptopuri);
+  - operaţiuni efectuate cu persoane neînregistrate în scopuri de TVA (cu detaliere pe fiecare
+operaţiune);
+  - operaţiuni efectuate cu persoanele impozabile nestabilite în România, care sunt stabilite în alte
+state membre, neînregistrate şi care nu sunt obligate să se înregistreze în scopuri de TVA în
+România (cu detaliere pe fiecare operaţiune);
+   - operaţiuni efectuate cu persoanele impozabile neînregistrate şi care nu sunt obligate să se
+înregistreze în scopuri de TVA în România, nestabilite pe teritoriul Uniunii Europene (cu detaliere
+pe fiecare operaţiune);
+  - operaţiuni efectuate prin intermediul aparatelor de marcat electronice fiscale, cu excepţia celor
+pentru care s-au emis facturi, inclusiv încasările prin intermediul bonurilor fiscale care îndeplinesc
+condiţiile unei facturi simplificate indiferent dacă au/nu au înscris codul de înregistrare în scopuri
+de TVA al beneficiarului;
+ - operaţiuni efectuate din activităţile economice exceptate de la obligaţia utilizării aparatelor de
+marcat electronice fiscale.
+   1. Coloana "Nr. curent" de la lit. C, D, E, F - se înscrie o singură dată numărul curent pentru
+fiecare furnizor/beneficiar.
+  2. Coloana "Tip L/A/AÎ/V/C/N/Î1/Î2" de la lit. C, D, E, F, G - se înscrie tipul operaţiunii efectuate, şi
+anume:
+  - L - livrări de bunuri/prestări de servicii pentru care au fost emise facturi, cu excepţia facturilor
+simplificate;
+   - A - achiziţii de bunuri/servicii pentru care au fost primite facturi, cu excepţia facturilor
+simplificate;
+  - AÎ - achiziţii de bunuri/servicii pentru care au fost primite facturi cu TVA la încasare;
+  - V - livrări de bunuri/prestări de servicii pentru care se aplică taxarea inversă;
+  - C - achiziţii de bunuri/servicii pentru care se aplică taxarea inversă;
+  - N - achiziţii de bunuri/servicii pentru care au fost primite facturi/borderouri de achiziţii/file din
+carnetele de comercializare a produselor din sectorul agricol de la persoane neînregistrate;
+  - Î1 - încasări realizate prin intermediul aparatelor de marcat electronice fiscale;
+ - Î2 - încasări efectuate din activităţi exceptate de la obligaţia utilizării aparatelor electronice de
+marcat fiscale.
+  3. Coloana "CUI/CNP/NIF/Cod de înregistrare în scopuri de TVA al furnizorului/beneficiarului/Cod
+valabil de TVA în statul membru/Cod de înregistrare" de la lit. C, D, E, F - se înscriu, după caz:
+  - CUI furnizor/beneficiar al persoanei impozabile neînregistrate în scopuri de TVA;
+  - CNP furnizor/beneficiar, persoană fizică;
+  - NIF furnizor/beneficiar, persoană fizică;
+  - codul de înregistrare în scopuri de TVA al furnizorului/beneficiarului;
+   - codul de înregistrare în scopuri de TVA al reprezentantului fiscal desemnat, în cazul în care
+furnizorul/beneficiarul nu este stabilit în România şi este persoană obligată la plata taxei;
+   - cod valabil de TVA în statul membru al persoanei impozabile nestabilite în România, care este
+stabilită în alt stat membru, neînregistrată şi care nu este obligată să se înregistreze în scopuri de
+TVA în România;
+  - cod de înregistrare din registrul companiilor din ţara de rezidenţă pentru persoana impozabilă
+neînregistrată şi care nu este obligată să se înregistreze în scopuri de TVA în România, nestabilită
+pe teritoriul Uniunii Europene.
+  4. Coloana "Denumire/Nume şi prenume furnizor/beneficiar" de la lit. C, D, E, F - se înscriu, după
+caz:
+  - denumirea/numele şi prenumele persoanei impozabile înregistrate/neînregistrate în scopuri de
+TVA;
+  - numele şi prenumele persoanei fizice;
+  - denumirea persoanei impozabile nestabilite în România care este stabilită în alt stat membru,
+neînregistrată şi care nu este obligată să se înregistreze în scopuri de TVA în România;
+  - denumirea persoanei impozabile neînregistrate şi care nu este obligată să se înregistreze în
+scopuri de TVA în România, nestabilită pe teritoriul Uniunii Europene;
+   - denumirea/numele şi prenumele reprezentantului fiscal desemnat, în cazul în care
+furnizorul/beneficiarul nu este stabilit în România şi este persoană obligată la plata taxei.
+  5. Coloana "Număr de facturi/borderouri de achiziţii/file carnet de comercializare a produselor
+din sectorul agricol" de la lit. C, D, E, F - se înscriu numărul total al facturilor emise/primite şi
+numărul total al borderourilor de achiziţii/filelor din carnetele de comercializare a produselor din
+sectorul agricol primite.
+  Prin excepţie, în situaţia în care în cuprinsul unei facturi emise/primite există operaţiuni cu cote
+de TVA diferite, la rubrica "număr de facturi" se vor înscrie valoarea 1 în dreptul operaţiunii cu
+valoarea cea mai mare a TVA şi valoarea 0 pentru restul operaţiunilor.
+   6. Coloana "Baza impozabilă" de la lit. C, D, E, F - se înscriu valoarea bazei impozabile, în lei,
+aferentă livrărilor/prestărilor/achiziţiilor, inclusiv cele pentru care se aplică taxarea inversă, precum
+şi valoarea bazei impozabile aferentă facturilor de stornare, defalcată pe cote de TVA (20%, 9%,
+5%). În cazul în care baza impozabilă este negativă, valoarea totală a acesteia se înscrie cu semnul
+(-).
+   7. Coloana "Taxă pe valoarea adăugată" de la lit. C, D, E, F - se înscriu valoarea TVA, în lei,
+aferentă livrărilor/prestărilor/achiziţiilor, inclusiv cele pentru care se aplică taxarea inversă, precum
+şi TVA aferentă facturilor de stornare, defalcată pe cote de TVA (20%, 9%, 5%). Dacă taxa pe
+valoarea adăugată este negativă, valoarea totală a acesteia se înscrie cu semnul (-).
+  8. Coloana "Bunuri/servicii" de la lit. C - se selectează categoria de bunuri sau servicii pentru care
+se aplică taxarea inversă.
+  9. Coloana "Cod şi denumire NC produs" de la lit. C - se înscriu bunurile din categoria cereale şi
+plante tehnice care figurează în nomenclatura combinată stabilită prin Regulamentul (CEE) nr.
+2.658/87 al Consiliului din 23 iulie 1987 privind Nomenclatura tarifară şi statistică şi Tariful vamal
+comun, modificată conform Regulamentului de punere în aplicare (UE) nr. 927/2012 al Comisiei din
+9 octombrie 2012, ce se regăseşte pe portalul ANAF.
+   10. Coloana "Bunuri/servicii" de la lit. D - se înscrie natura bunurilor/serviciilor achiziţionate de
+la persoane neînregistrate în scopuri de TVA.
+  11. Coloana "Tip document" de la lit. D - se selectează tipul documentului: factură/borderou de
+achiziţii/filă din carnetul de comercializare a produselor din sectorul agricol.
+  12. Coloana "Tip operaţiune" de la lit. G - se selectează tipul încasărilor:
+   - încasări prin intermediul aparatelor de marcat electronice fiscale, inclusiv încasările prin
+intermediul bonurilor fiscale care îndeplinesc condiţiile unei facturi simplificate, indiferent dacă
+au/nu au înscris codul de înregistrare în scopuri de TVA al beneficiarului;
+   - încasări efectuate din activităţi exceptate de la obligaţia utilizării aparatelor de marcat
+electronice fiscale, conform prevederilor legale în vigoare.
+  13. Coloana "Total încasări" de la lit. G - se înscrie totalul încasărilor, în lei, din perioada de
+raportare prin intermediul aparatelor de marcat electronice fiscale, respectiv încasări efectuate din
+activităţi exceptate de la obligaţia utilizării aparatelor de marcat electronice fiscale, conform
+prevederilor legale în vigoare.
+  14. Coloana "Total bază impozabilă" de la lit. G - se înscrie valoarea bazei impozabile, în lei, din
+perioada de raportare aferentă încasărilor, inclusiv valoarea bazei impozabile aferentă stornărilor,
+defalcată pe cote de TVA (20%, 9%, 5%).
+  15. Coloana "Taxa pe valoarea adăugată" de la lit. G - se înscrie valoarea TVA, în lei, din perioada
+de raportare aferentă încasărilor, inclusiv valoarea taxei pe valoarea adăugată aferentă stornărilor,
+defalcată pe cote de TVA (20%, 9%, 5%).
+
+
+
+
+  ANEXA 3
+
+
+   Procedura de gestiune a formularului (394) "Declaraţie informativă privind livrările/prestările
+şi achiziţiile efectuate pe teritoriul naţional de persoanele înregistrate în scopuri de TVA", cod
+MFP 14.13.01.02/f
+
+
+  1. Declaraţia se depune până în data de 25 inclusiv a lunii următoare încheierii perioadei de
+raportare, la organul fiscal competent.
+  2. Prelucrarea declaraţiei informative
+  2.1. Prelucrarea declaraţiilor informative depuse de persoanele impozabile înregistrate în scopuri
+de TVA se realizează de către organul fiscal competent, prin folosirea programului informatic de
+prelucrare pus la dispoziţie de Direcţia generală de tehnologia informaţiei, până la data de 15 a
+lunii următoare termenului de depunere a declaraţiei.
+  2.2. După prelucrare, declaraţia informativă se arhivează la dosarul fiscal al persoanei impozabile
+înregistrate în scopuri de TVA.
+  2.3. În cazul în care, după depunerea declaraţiei, persoana impozabilă constată existenţa unor
+omisiuni/erori în datele declarate, persoana impozabilă trebuie să depună o nouă declaraţie,
+corect completată, care înlocuieşte declaraţia informativă depusă iniţial.
+  2.4. Declaraţia prevăzută la pct. 2.3 se prelucrează la momentul primirii de la persoana
+impozabilă.
+  3. Verificarea declaraţiei informative
+   3.1. După primirea declaraţiei, organul fiscal va verifica îndeplinirea obligaţiei de depunere a
+declaraţiei, prin corelarea informaţiilor referitoare la persoanele impozabile care sunt înregistrate
+în scopuri de TVA şi au declarat în decontul de TVA numai operaţiuni efectuate pe teritoriul
+naţional cu informaţiile referitoare la persoanele impozabile care au depus declaraţii informative.
+  3.2. Pentru persoanele impozabile care nu au depus declaraţiile informative conform pct. 3.1 se
+emit de către organul fiscal notificări.
+   3.3. Notificările prevăzute la pct. 3.2 se emit până cel târziu la data de 15 a lunii următoare
+termenului legal de depunere a decontului de TVA.
+  3.4. Verificarea faptului că este o declaraţie corectă reprezintă un proces ulterior depunerii, care
+se desfăşoară pe serverele centrale. După depunerea prin internet sau la ghişeu a formularului
+(394) "Declaraţie informativă privind livrările/prestările şi achiziţiile efectuate pe teritoriul naţional
+de persoanele înregistrate în scopuri de TVA", cod MFP 14.13.01.02/f, denumită în continuare
+declaraţia (394), starea acesteia se poate verifica accesând portalul Agenţiei Naţionale de
+Administrare Fiscală.
+   3.5. În cazul în care pe pagina de vizualizare a stării declaraţiei (394) se afişează un mesaj cu
+erorile pe care le conţine documentul depus, contribuabilul trebuie ca, în termen de 3 zile
+lucrătoare, să corecteze toate erorile comunicate şi să reia procesul de depunere a declaraţiei
+(394).
+  4. Gestionarea declaraţiei informative
+  4.1. Informaţiile din declaraţiile informative depuse la termenele legale de depunere, precum şi
+cele depuse conform pct. 2.3 se introduc într-o bază de date.
+   4.2. Informaţiile din baza de date sunt gestionate de Direcţia generală de informaţii fiscale şi
+Direcţia generală de tehnologia informaţiei şi vor fi valorificate de către Direcţia generală
+antifraudă fiscală, Direcţia generală coordonare inspecţie fiscală, Direcţia generală de administrare
+a marilor contribuabili şi direcţiile generale regionale ale finanţelor publice.
+   4.3. Informaţiile din declaraţiile informative vor fi păstrate în baza de date pe o perioadă de 5 ani
+fiscali începând cu anul depunerii declaraţiei. După trecerea perioadei de 5 ani, informaţiile vor fi
+arhivate.
+  ANEXA 4
+
+
+  Caracteristici de tipărire, modul de difuzare, de utilizare şi păstrare a formularului
+
+
+  Denumirea formularului: "Declaraţie informativă privind livrările/prestările şi achiziţiile efectuate
+pe teritoriul naţional de persoanele înregistrate în scopuri de TVA"
+  Cod MFP: 14.13.01.02/f
+  Format: A4/t1
+  Caracteristici de tipărire:
+  - pe o singură faţă;
+   - se utilizează echipament informatic pentru completare şi editare cu ajutorul programului de
+asistenţă asigurat, gratuit, de către unităţile fiscale teritoriale sau descărcat de pe site-ul Agenţiei
+Naţionale de Administrare Fiscală, la adresa www.anaf.mfinante.gov.ro.
+  Se difuzează gratuit.
+  Se utilizează la declararea livrărilor de bunuri/prestărilor de servicii şi a achiziţiilor de bunuri şi
+servicii efectuate pe teritoriul naţional de persoanele înregistrate în scopuri de TVA în România.
+   Se depune de către persoana înregistrată în scopuri de TVA sau de către reprezentantul său
+fiscal.
+  Circulă:
+  - în format electronic, la organul fiscal competent;
+  - formularul în format hârtie, în două exemplare listate, semnate şi ştampilate conform legii: un
+exemplar la contribuabil şi un exemplar la organul fiscal competent.
+   Se arhivează la organul fiscal: formatul electronic, în arhiva de documente electronice, iar
+formularul - în format hârtie - "Declaraţie informativă privind livrările/prestările şi achiziţiile
+efectuate pe teritoriul naţional de persoanele înregistrate în scopuri de TVA" însoţitor, listat,
+semnat şi ştampilat conform legii, la dosarul fiscal al contribuabilului.

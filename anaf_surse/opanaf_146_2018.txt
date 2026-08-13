@@ -1,0 +1,2150 @@
+                             ORDIN Nr. 146/2018 din 18 ianuarie 2018
+pentru descrierea profilurilor prevăzute la art. 22 pct. J lit. a) din Normele metodologice pentru
+     aplicarea Ordonanței de urgență a Guvernului nr. 28/1999 privind obligația operatorilor
+economici de a utiliza aparate de marcat electronice fiscale, aprobate prin Hotărârea Guvernului
+    nr. 479/2003, structura XML a mesajelor de activare a acestora, structura XML a fișierelor
+   prevăzute la art. 22 pct. J lit. b) din Normele metodologice pentru aplicarea Ordonanței de
+urgență a Guvernului nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de
+     marcat electronice fiscale, aprobate prin Hotărârea Guvernului nr. 479/2003, precum și
+   categoriile de URL-uri utilizate în schimbul de informații cu sistemul informatic național de
+  supraveghere și monitorizare a datelor fiscale al Agenției Naționale de Administrare Fiscală
+                           EMITENT: MINISTERUL FINANȚELOR PUBLICE
+                         AGENȚIA NAȚIONALĂ DE ADMINISTRARE FISCALĂ
+                 PUBLICAT ÎN: MONITORUL OFICIAL NR. 87 din 30 ianuarie 2018
+
+
+   În temeiul art. 11 alin. (3) din Hotărârea Guvernului nr. 520/2013 privind organizarea și
+funcționarea Agenției Naționale de Administrare Fiscală, cu modificările și completările ulterioare,
+   având în vedere prevederile art. II alin. (4) din Hotărârea Guvernului nr. 804/2017 privind
+modificarea și completarea Normelor metodologice pentru aplicarea Ordonanței de urgență a
+Guvernului nr. 28/1999 privind obligația operatorilor economici de a utiliza aparate de marcat
+electronice fiscale, aprobate prin Hotărârea Guvernului nr. 479/2003,
+
+
+  președintele Agenției Naționale de Administrare Fiscală emite următorul ordin:
+
+
+  ART. 1
+  Se aprobă profilurile prevăzute la art. 22 pct. J lit. a) din Normele metodologice pentru aplicarea
+Ordonanței de urgență a Guvernului nr. 28/1999 privind obligația operatorilor economici de a
+utiliza aparate de marcat electronice fiscale, aprobate prin Hotărârea Guvernului nr. 479/2003,
+republicată, cu modificările și completările ulterioare, denumite în continuare norme
+metodologice, a căror descriere este prevăzută în anexa nr. 1.
+  ART. 2
+  Se aprobă structura XML a fișierelor prevăzute la art. 22 pct. J lit. b) din normele metodologice,
+precum și structura XML a mesajelor de activare a profilurilor menționate la art. 1, prevăzute în
+anexa nr. 2.
+  ART. 3
+   Se aprobă categoriile de URL-uri utilizate în schimbul de informații cu sistemul informatic
+național de supraveghere și monitorizare a datelor fiscale al Agenției Naționale de Administrare
+Fiscală, denumit în continuare sistem informatic, prevăzute în anexa nr. 3.
+  ART. 4
+   Direcția generală de informații fiscale, Direcția generală de tehnologia informației, direcțiile
+generale regionale ale finanțelor publice și Direcția generală de administrare a marilor
+contribuabili, precum și unitățile subordonate acestora vor duce la îndeplinire prevederile
+prezentului ordin.
+  ART. 5
+  Anexele nr. 1 - 3 fac parte integrantă din prezentul ordin.
+  ART. 6
+  Prezentul ordin se publică în Monitorul Oficial al României, Partea I.
+
+
+                 Președintele Agenției Naționale de Administrare Fiscală,
+                 Mirela Călugăreanu
+
+
+  București, 18 ianuarie 2018.
+  Nr. 146.
+
+
+  ANEXA 1
+
+
+   Profilurile prevăzute la art. 22 pct. J lit. a) din Normele metodologice pentru aplicarea
+Ordonanței de urgență a Guvernului nr. 28/1999 privind obligația operatorilor economici de a
+utiliza aparate de marcat electronice fiscale, aprobate prin Hotărârea Guvernului nr. 479/2003,
+republicată, cu modificările și completările ulterioare
+
+
+   Profilul 0 reprezintă profilul în care aparatul de marcat electronic fiscal nu are obligația conectării
+la sistemul informatic. Acest profil este presetat de către producător sau activat prin importul unui
+fișier XML semnat, folosind certificatul digital al Agenției Naționale de Administrare Fiscală.
+   Profilul 1 reprezintă profilul în care aparatul de marcat electronic fiscal are obligația de conectare
+și transmitere date către sistemul informatic. Acest profil este activat prin importul unui fișier XML
+semnat folosind certificatul digital al Agenției Naționale de Administrare Fiscală.
+
+
+  ANEXA 2
+
+
+   Structura XML a fișierelor prevăzute la art. 22 pct. J lit. b) din Normele metodologice pentru
+aplicarea Ordonanței de urgență a Guvernului nr. 28/1999 privind obligația operatorilor
+economici de a utiliza aparate de marcat electronice fiscale, aprobate prin Hotărârea Guvernului
+nr. 479/2003, republicată, cu modificările și completările ulterioare, precum și structura XML a
+mesajelor de activare a profilurilor
+
+
+  Secțiunea I
+
+
+  1. Structura XML a datelor prevăzute la art. 3 alin. (2) lit. a) din anexa nr. 11 la normele
+metodologice se regăsește la secțiunea II.1.
+  2. Structura XML a datelor prevăzute la art. 3 alin. (2) lit. b) din anexa nr. 11 la normele
+metodologice se regăsește la secțiunea II.2.
+  3. Structura XML a datelor prevăzute la art. 3 alin. (1) lit. a) din anexa nr. 11 la normele
+metodologice se regăsește la secțiunea II.3.
+  4. Structura XML a datelor prevăzute la art. 3 alin. (2) lit. c) din anexa nr. 11 la normele
+metodologice se regăsește la secțiunea II.4.
+  5. Structura XML a datelor prevăzute la art. 3 alin. (1) lit. b) din anexa nr. 11 la normele
+metodologice pentru:
+  a) aparate de marcat electronice fiscale utilizate în activitatea de schimb valutar se regăsește la
+secțiunea II.5;
+  b) aparate de marcat electronice fiscale utilizate în activitatea de taximetrie se regăsește la
+secțiunea II.6;
+  c) aparate de marcat electronice fiscale, altele decât cele de la lit. a) și b), se regăsește la
+secțiunea II.7.
+   6. Structura XML a informațiilor referitoare la pornirea/oprirea aparatului de marcat electronic
+fiscal, încetarea funcționării acestuia în urma unor evenimente de tipul lipsă curent electric sau
+întrerupere conexiune la internet, precum și cu privire la repunerea în funcțiune/reconectarea
+aparatului se regăsește la secțiunea II.8.
+  7. Structura XML a datelor prevăzute la art. 3 alin. (1) lit. d) din anexa nr. 11 la normele
+metodologice se regăsește la secțiunea II.9.
+  8. Structura XML a mesajului de activare a profilurilor conform art. 3 alin. (3) din anexa nr. 11 la
+normele metodologice se regăsește la secțiunea II.10.
+  9. Structura XML a mesajului de trecere din profilul 1 în profilul 0 se regăsește la secțiunea II.11.
+   10. Structura XML a mesajului registru ce conține numerele de ordine ale rapoartelor de
+închidere zilnică emise în perioada de raportare se regăsește la secțiunea II.12.
+  11. Transmiterea fișierelor XML se face conform celor prevăzute în secțiunea II.13.
+  12. Nomenclatoarele folosite în cadrul fișierelor XML se regăsesc în secțiunea II.14.
+
+
+  Secțiunea II.1
+
+
+  Semnificația coloanei A din tabelul de mai jos este următoarea:
+  A - Obligatoriu.
+  ____________________________________________________________________________
+|Nr. | Denumire     | Semnificație |Tip și |A | Validări/Formule | Observații|
+|crt.| secțiune/ | atribut         |lungime| |                    |            |
+|     | atribut     |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<msj>        |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |idM          |Identificator |c(28) |DA|NNNNNNNNNNAAAALLZZ |             |
+|     |             |unic mesaj    |       | |HHMMSSRRRR          |            |
+|     |             |              |       | |Primele 10          |            |
+|     |             |              |       | |caractere: număr    |            |
+|     |             |              |       | |unic de             |            |
+|     |             |              |       | |identificare al     |            |
+|     |             |              |       | |aparatului de       |            |
+|     |             |              |       | |marcat electronic |              |
+|     |             |              |       | |fiscal              |            |
+|     |             |              |       | |Următoarele 14      |            |
+|     |             |              |       | |caractere: data și |             |
+|     |             |              |       | |ora generării       |            |
+|     |             |              |       | |mesajului           |            |
+|     |             |              |       | |Următoarele 4       |            |
+|     |             |              |       | |caractere: numărul |             |
+|     |             |              |       | |raportului fiscal |              |
+|     |             |              |       | |de închidere        |            |
+|     |             |              |       | |zilnică             |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<bonSV>      |Secțiune      |       | |                    |Secțiunea |
+|     |             |repetitivă    |       | |                    |va avea un |
+|     |             |              |       | |                    |număr de    |
+|     |             |              |       | |                    |apariții    |
+|     |             |              |       | |                    |egal cu     |
+|     |             |              |       | |                    |numărul de |
+|     |             |              |       | |                    |bonuri      |
+|    |             |              |       | |                    |tipărite. |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |idB          |Numărul de    |C(32) |DA|NNNNNNNNNNAAAALLZZ |            |
+|    |             |identificare |        | |HHMMSSRRRRBBBB      |           |
+|    |             |al bonului    |       | |Primele 10          |           |
+|    |             |fiscal        |       | |caractere = număr |             |
+|    |             |              |       | |unic de             |           |
+|    |             |              |       | |identificare al     |           |
+|    |             |              |       | |aparatului de       |           |
+|    |             |              |       | |marcat electronic |             |
+|    |             |              |       | |fiscal              |           |
+|    |             |              |       | |Următoarele 14      |           |
+|    |             |              |       | |caractere: data și |            |
+|    |             |              |       | |ora emitere bonuri |            |
+|    |             |              |       | |Următoarele 4       |           |
+|    |             |              |       | |caractere: numărul |            |
+|    |             |              |       | |raportului fiscal |             |
+|    |             |              |       | |de închidere        |           |
+|    |             |              |       | |zilnică din care    |           |
+|    |             |              |       | |face parte bonul    |           |
+|    |             |              |       | |fiscal              |           |
+|    |             |              |       | |Următoarele 4       |           |
+|    |             |              |       | |caractere: număr de|            |
+|    |             |              |       | |ordine bon fiscal |             |
+|    |             |              |       | |la nivelul zilei de|            |
+|    |             |              |       | |lucru               |           |
+|    |             |              |       | |Trebuie să fie unic|            |
+|    |             |              |       | |pe aparatul de      |           |
+|    |             |              |       | |marcat electronic |             |
+|    |             |              |       | |fiscal.             |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |moneda_i     |Moneda în care|C(3)   |DA|Nomenclator monede |           |
+|    |             |a fost        |       | |                    |           |
+|    |             |încasată suma |       | |                    |           |
+|    |             |de la client |        | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |suma_i       |Suma încasată |N(20.2)|DA|                   |           |
+|    |             |de la client |        | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |moneda_p     |Moneda în care|C(3)   |DA|Nomenclator monede |           |
+|    |             |a fost plătită|       | |                    |           |
+|    |             |suma          |       | |                    |           |
+|    |             |clientului    |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |suma_p       |Suma plătită |N(20.2)|DA|                    |           |
+|    |             |clientului    |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |com          |Comision      |N(20.2)|DA|                   |           |
+|    |             |practicat     |       | |                    |           |
+|    |             |aferent sumei |       | |                    |           |
+|    |             |tranzacționate|       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totTva       |Valoarea      |N(20.2)|DA|Valoarea totTva    |           |
+|    |             |totală a taxei|       | |este egală cu       |           |
+|    |             |pe valoare    |       | |însumarea valorilor|            |
+|    |             |adăugată      |       | |tva din secțiunea |             |
+|    |             |              |       | |cote.               |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |<cote>       |Secțiune      |       | |Cel puțin o         |           |
+|    |             |repetitivă    |       | |apariție dacă       |           |
+|    |             |              |       | |totTva>0            |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |cota_com     |Nivel cotă TVA|N(2)   |DA|                   |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |tva          |Valoarea taxei|N(20.2)|DA|                   |           |
+|    |             |pe valoare    |       | |                    |           |
+|    |             |adăugată      |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</cote>      |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</bonSV>     |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</msj>       |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+
+
+ Secțiunea II.2
+
+
+ Semnificația coloanei A din tabelul de mai jos este următoarea:
+ A - Obligatoriu.
+  ____________________________________________________________________________
+|Nr. | Denumire     | Semnificație |Tip și |A | Validări/Formule | Observații|
+|crt.| secțiune/ | atribut         |lungime| |                    |            |
+|     | atribut     |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<msj>        |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |idM          |Identificator |c(28) |DA|NNNNNNNNNNAAAALLZZ |             |
+|     |             |unic mesaj    |       | |HHMMSSRRRR          |            |
+|     |             |              |       | |Primele 10          |            |
+|     |             |              |       | |caractere: număr    |            |
+|     |             |              |       | |unic de             |            |
+|     |             |              |       | |identificare al     |            |
+|     |             |              |       | |aparatului de       |            |
+|     |             |              |       | |marcat electronic |              |
+|     |             |              |       | |fiscal              |            |
+|     |             |              |       | |Următoarele 14      |            |
+|     |             |              |       | |caractere: dată și |             |
+|     |             |              |       | |oră emitere mesaj |              |
+|     |             |              |       | |Următoarele 4       |            |
+|     |             |              |       | |caractere: numărul |             |
+|     |             |              |       | |raportului fiscal |              |
+|     |             |              |       | |de închidere        |            |
+|     |             |              |       | |zilnică             |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<bonT>       |Secțiune      |       | |                    |Secțiunea |
+|     |             |repetitivă    |       | |                    |va avea un |
+|     |             |              |       | |                    |număr de    |
+|     |             |              |       | |                    |apariții    |
+|     |             |              |       | |                    |egal cu     |
+|     |             |              |       | |                    |numărul de |
+|     |             |              |       | |                    |bonuri      |
+|     |             |              |       | |                    |tipărite. |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |idB          |Numărul de    |C(32) |DA|NNNNNNNNNNAAAALLZZ |             |
+|     |             |identificare |        | |HHMMSSRRRRBBBB      |            |
+|     |             |al bonului    |       | |Primele 10          |            |
+|     |             |fiscal        |       | |caractere = număr |              |
+|     |             |              |       | |unic de             |            |
+|     |             |              |       | |identificare al     |            |
+|     |             |              |       | |aparatului de       |            |
+|     |             |              |       | |marcat electronic |              |
+|     |             |              |       | |fiscal              |            |
+|     |             |              |       | |Următoarele 14      |            |
+|     |             |              |       | |caractere: dată și |             |
+|     |             |              |       | |oră emitere bonuri |             |
+|     |             |              |       | |fiscale             |            |
+|     |             |              |       | |Următoarele 4       |            |
+|     |             |              |       | |caractere: numărul |             |
+|     |             |              |       | |raportului fiscal |              |
+|     |             |              |       | |de închidere        |            |
+|     |             |              |       | |zilnică din care    |            |
+|     |             |              |       | |face parte bonul    |            |
+|     |             |              |       | |fiscal              |            |
+|     |             |              |       | |Următoarele 4       |            |
+|     |             |              |       | |caractere: număr de|             |
+|     |             |              |       | |ordine bon fiscal |              |
+|     |             |              |       | |la nivelul zilei de|             |
+|     |             |              |       | |lucru               |            |
+|    |             |              |       | |Trebuie să fie unic|            |
+|    |             |              |       | |pe aparatul de      |           |
+|    |             |              |       | |marcat electronic |             |
+|    |             |              |       | |fiscal.             |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrC          |Numărul cursei|N(3)   |DA|                   |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totB         |Valoarea      |N(20.2)|DA|                   |           |
+|    |             |totală a      |       | |                    |           |
+|    |             |serviciului   |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totTva       |Valoarea      |N(20.2)|DA|Valoarea totTva    |           |
+|    |             |totală a taxei|       | |este egală cu       |           |
+|    |             |pe valoare    |       | |însumarea valorilor|            |
+|    |             |adăugată      |       | |tva din secțiunea |             |
+|    |             |              |       | |cote.               |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |<cote>       |Secțiune      |       | |                    |Se         |
+|    |             |repetitivă    |       | |                    |completează|
+|    |             |              |       | |                    |câte o     |
+|    |             |              |       | |                    |secțiune   |
+|    |             |              |       | |                    |pentru     |
+|    |             |              |       | |                    |fiecare    |
+|    |             |              |       | |                    |cotă       |
+|    |             |              |       | |                    |existentă |
+|    |             |              |       | |                    |pe bon.    |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |cota         |Nivel cotă TVA|N(2)   |DA|                   |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |tva          |Valoarea taxei|N(20.2)|DA|                   |           |
+|    |             |pe valoare    |       | |                    |           |
+|    |             |adăugată      |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</cote>      |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</bonT>      |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</msj>       |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+
+
+ Secțiunea II.3
+
+
+ Semnificația coloanei A din tabelul de mai jos este următoarea:
+ A - Obligatoriu.
+  ____________________________________________________________________________
+|Nr. | Denumire     | Semnificație |Tip și |A | Validări/Formule | Observații|
+|crt.| secțiune/ | atribut         |lungime| |                    |            |
+|     | atribut     |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<msj>        |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |idM          |Identificator |c(28) |DA|NNNNNNNNNNAAAALLZZ |             |
+|     |             |unic mesaj    |       | |HHMMSSRRRR          |            |
+|     |             |              |       | |Primele 10          |            |
+|     |             |              |       | |caractere: număr    |            |
+|     |             |              |       | |unic de             |            |
+|     |             |              |       | |identificare al     |            |
+|     |             |              |       | |aparatului de       |            |
+|     |             |              |       | |marcat electronic |              |
+|     |             |              |       | |fiscal              |            |
+|     |             |              |       | |Următoarele 14      |            |
+|     |             |              |       | |caractere: dată și |             |
+|     |             |              |       | |oră emitere mesaj |              |
+|     |             |              |       | |Următoarele 4       |            |
+|     |             |              |       | |caractere: numărul |             |
+|     |             |              |       | |raportului fiscal |              |
+|     |             |              |       | |de închidere        |            |
+|    |             |              |       | |zilnică.            |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |<bon>        |Secțiune      |       | |Secțiunea va avea |             |
+|    |             |repetitivă    |       | |un număr de         |           |
+|    |             |              |       | |apariții egal cu    |           |
+|    |             |              |       | |numărul de bonuri |             |
+|    |             |              |       | |tipărite.           |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |idB          |Numărul de    |C(32) |DA|NNNNNNNNNNAAAALLZZ |            |
+|    |             |identificare |        | |HHMMSSRRRRBBBB      |           |
+|    |             |al bonului    |       | |Primele 10          |           |
+|    |             |fiscal        |       | |caractere: număr    |           |
+|    |             |              |       | |unic de             |           |
+|    |             |              |       | |identificare al     |           |
+|    |             |              |       | |aparatului de       |           |
+|    |             |              |       | |marcat electronic |             |
+|    |             |              |       | |fiscal              |           |
+|    |             |              |       | |Următoarele 14      |           |
+|    |             |              |       | |caractere: data și |            |
+|    |             |              |       | |ora emiterii        |           |
+|    |             |              |       | |bonului fiscal      |           |
+|    |             |              |       | |Următoarele 4       |           |
+|    |             |              |       | |caractere: numărul |            |
+|    |             |              |       | |raportului fiscal |             |
+|    |             |              |       | |de închidere        |           |
+|    |             |              |       | |zilnică din care    |           |
+|    |             |              |       | |face parte bonul    |           |
+|    |             |              |       | |fiscal              |           |
+|    |             |              |       | |Următoarele 4       |           |
+|    |             |              |       | |caractere: număr de|            |
+|    |             |              |       | |ordine bon fiscal |             |
+|    |             |              |       | |la nivelul zilei de|            |
+|    |             |              |       | |lucru               |           |
+|    |             |              |       | |Trebuie să fie unic|            |
+|    |             |              |       | |pe aparatul de      |           |
+|    |             |              |       | |marcat electronic |             |
+|    |             |              |       | |fiscal.             |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totB         |Valoarea      |N(20.2)|DA|                   |           |
+|    |             |totală a      |       | |                    |           |
+|    |             |bonului fiscal|       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totTva       |Valoarea      |N(20.2)|DA|Valoarea totTva    |           |
+|    |             |totală a taxei|       | |este egală cu       |           |
+|    |             |pe valoarea   |       | |însumarea valorilor|            |
+|    |             |adăugată      |       | |TVA din secțiunea |             |
+|    |             |              |       | |cote.               |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |<cote>       |Secțiune      |       | |                    |Se         |
+|    |             |repetitivă    |       | |                    |completează|
+|    |             |              |       | |                    |câte o     |
+|    |             |              |       | |                    |secțiune   |
+|    |             |              |       | |                    |pentru     |
+|    |             |              |       | |                    |fiecare    |
+|    |             |              |       | |                    |cotă       |
+|    |             |              |       | |                    |existentă |
+|    |             |              |       | |                    |pe bon.    |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |cota         |Nivel cotă TVA|N(2)   |DA|                   |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |tva          |Valoarea taxei|N(20.2)|DA|                   |           |
+|    |             |pe valoarea   |       | |                    |           |
+|    |             |adăugată      |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</cote>      |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</bon>       |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</msj>       |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+ Secțiunea II.4
+
+
+ Semnificația coloanei A din tabelul de mai jos este următoarea:
+ A - Obligatoriu.
+  ____________________________________________________________________________
+|Nr. | Denumire     | Semnificație |Tip și |A | Validări/Formule | Observații|
+|crt.| secțiune/ | atribut         |lungime| |                    |            |
+|     | atribut     |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<msj>        |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |idM          |Identificator |c(28) |DA|NNNNNNNNNNAAAALLZZ |             |
+|     |             |unic mesaj    |       | |HHMMSSRRRR          |            |
+|     |             |              |       | |Primele 10          |            |
+|     |             |              |       | |caractere: număr    |            |
+|     |             |              |       | |unic de             |            |
+|     |             |              |       | |identificare al     |            |
+|     |             |              |       | |aparatului de       |            |
+|     |             |              |       | |marcat electronic |              |
+|     |             |              |       | |fiscal              |            |
+|     |             |              |       | |Următoarele 14      |            |
+|     |             |              |       | |caractere: dată și |             |
+|     |             |              |       | |oră emitere mesaj |              |
+|     |             |              |       | |Următoarele 4       |            |
+|     |             |              |       | |caractere: numărul |             |
+|     |             |              |       | |raportului fiscal |              |
+|     |             |              |       | |de închidere        |            |
+|     |             |              |       | |zilnică             |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<bon>        |Secțiune      |       | |Secțiunea va avea |              |
+|     |             |repetitivă    |       | |un număr de         |            |
+|     |             |              |       | |apariții egal cu    |            |
+|     |             |              |       | |numărul de bonuri |              |
+|     |             |              |       | |tipărite.           |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |idB          |Numărul de    |C(32) |DA|NNNNNNNNNNAAAALLZZ |             |
+|     |             |identificare |        | |HHMMSSRRRRBBBB      |            |
+|     |             |al bonului    |       | |Primele 10          |            |
+|     |             |fiscal        |       | |caractere: număr    |            |
+|     |             |              |       | |unic de             |            |
+|     |             |              |       | |identificare al     |            |
+|     |             |              |       | |aparatului de       |            |
+|     |             |              |       | |marcat electronic |              |
+|     |             |              |       | |fiscal              |            |
+|     |             |              |       | |Următoarele 14      |            |
+|     |             |              |       | |caractere: data și |             |
+|     |             |              |       | |ora emiterii        |            |
+|     |             |              |       | |bonului fiscal      |            |
+|     |             |              |       | |Următoarele 4       |            |
+|     |             |              |       | |caractere: numărul |             |
+|     |             |              |       | |raportului fiscal |              |
+|     |             |              |       | |de închidere        |            |
+|     |             |              |       | |zilnică din care    |            |
+|     |             |              |       | |face parte bonul    |            |
+|     |             |              |       | |fiscal              |            |
+|     |             |              |       | |Următoarele 4       |            |
+|     |             |              |       | |caractere: număr de|             |
+|     |             |              |       | |ordine bon fiscal |              |
+|     |             |              |       | |la nivelul zilei de|             |
+|     |             |              |       | |lucru               |            |
+|     |             |              |       | |Trebuie să fie unic|             |
+|     |             |              |       | |pe aparatul de      |            |
+|     |             |              |       | |marcat electronic |              |
+|     |             |              |       | |fiscal.             |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |nrC          |Numărul cursei|C(10) |DA|                    |            |
+|     |             |aeriene       |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totB         |Valoarea      |N(20.2)|DA|                   |           |
+|    |             |totală a      |       | |                    |           |
+|    |             |bonului fiscal|       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totTva       |Valoarea      |N(20.2)|DA|Valoarea totTva    |           |
+|    |             |totală a taxei|       | |este egală cu       |           |
+|    |             |pe valoare    |       | |însumarea valorilor|            |
+|    |             |adăugată      |       | |TVA din secțiunea |             |
+|    |             |              |       | |cote.               |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |<cote>       |Secțiune      |       | |                    |Se         |
+|    |             |repetitivă    |       | |                    |completează|
+|    |             |              |       | |                    |câte o     |
+|    |             |              |       | |                    |secțiune   |
+|    |             |              |       | |                    |pentru     |
+|    |             |              |       | |                    |fiecare    |
+|    |             |              |       | |                    |cotă       |
+|    |             |              |       | |                    |existentă |
+|    |             |              |       | |                    |pe bon.    |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |cota         |Nivel cotă TVA|N(2)   |DA|                   |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |tva          |Valoarea taxei|N(20.2)|DA|                   |           |
+|    |             |pe valoare    |       | |                    |           |
+|    |             |adăugată      |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</cote>      |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</bon>       |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</msj>       |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+
+
+ Secțiunea II.5
+
+
+ Semnificația coloanei A din tabelul de mai jos este următoarea:
+ A - Obligatoriu.
+  ____________________________________________________________________________
+|Nr. | Denumire     | Semnificație |Tip și |A | Validări/Formule | Observații|
+|crt.| secțiune/ | atribut         |lungime| |                    |            |
+|     | atribut     |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<msj>        |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |idM          |Identificator |c(28) |DA|NNNNNNNNNNAAAALLZZ |             |
+|     |             |unic mesaj    |       | |HHMMSSRRRR          |            |
+|     |             |              |       | |Primele 10          |            |
+|     |             |              |       | |caractere: număr    |            |
+|     |             |              |       | |unic de             |            |
+|     |             |              |       | |identificare al     |            |
+|     |             |              |       | |aparatului de       |            |
+|     |             |              |       | |marcat electronic |              |
+|     |             |              |       | |fiscal              |            |
+|     |             |              |       | |Următoarele 14      |            |
+|     |             |              |       | |caractere: dată și |             |
+|     |             |              |       | |oră generare mesaj |             |
+|     |             |              |       | |Următoarele 4       |            |
+|     |             |              |       | |caractere: numărul |             |
+|     |             |              |       | |raportului fiscal |              |
+|     |             |              |       | |de închidere        |            |
+|     |             |              |       | |zilnică             |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<rSV>        |O apariție    |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |idR          |Numărul de    |C(28) |DA|NNNNNNNNNNAAAALLZZ |             |
+|     |             |identificare |        | |HHMMSSRRRR          |            |
+|    |             |al raportului |       | |Primele 10          |           |
+|    |             |fiscal de     |       | |caractere = număr |             |
+|    |             |închidere     |       | |unic de             |           |
+|    |             |zilnică       |       | |identificare aparat|            |
+|    |             |              |       | |de marcat           |           |
+|    |             |              |       | |electronic fiscal |             |
+|    |             |              |       | |Următoarele 14      |           |
+|    |             |              |       | |caractere: dată și |            |
+|    |             |              |       | |oră emitere raport |            |
+|    |             |              |       | |fiscal de închidere|            |
+|    |             |              |       | |zilnică             |           |
+|    |             |              |       | |Următoarele 4       |           |
+|    |             |              |       | |caractere: numărul |            |
+|    |             |              |       | |raportului fiscal |             |
+|    |             |              |       | |de închidere        |           |
+|    |             |              |       | |zilnică generat     |           |
+|    |             |              |       | |Trebuie să fie unic|            |
+|    |             |              |       | |pe aparatul de      |           |
+|    |             |              |       | |marcat electronic |             |
+|    |             |              |       | |fiscal.             |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrA          |Număr avarii |N(3)    |DA|Numărul de secțiuni|           |
+|    |             |(reset RAM)   |       | |av = nrA            |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrB          |Număr bonuri |N(10) |DA|                     |           |
+|    |             |emise aferente|       | |                    |           |
+|    |             |raportului    |       | |                    |           |
+|    |             |fiscal de     |       | |                    |           |
+|    |             |închidere     |       | |                    |           |
+|    |             |zilnică       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totB         |Valoarea      |N(20.2)|DA|                   |           |
+|    |             |totală a      |       | |                    |           |
+|    |             |operațiunilor |       | |                    |           |
+|    |             |aferente      |       | |                    |           |
+|    |             |raportului    |       | |                    |           |
+|    |             |fiscal de     |       | |                    |           |
+|    |             |închidere     |       | |                    |           |
+|    |             |zilnică       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrBC         |Număr bonuri |N(10) | |                      |           |
+|    |             |emise aferente|       | |                    |           |
+|    |             |raportului    |       | |                    |           |
+|    |             |fiscal de     |       | |                    |           |
+|    |             |închidere     |       | |                    |           |
+|    |             |zilnică având |       | |                    |           |
+|    |             |înscris codul |       | |                    |           |
+|    |             |de            |       | |                    |           |
+|    |             |înregistrare |        | |                    |           |
+|    |             |fiscală în    |       | |                    |           |
+|    |             |scopuri de TVA|       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrAn         |Numărul       |N(10) |DA|                    |           |
+|    |             |operațiunilor |       | |                    |           |
+|    |             |de anulare    |       | |                    |           |
+|    |             |efectuate în |        | |                    |           |
+|    |             |timpul        |       | |                    |           |
+|    |             |tipăririi     |       | |                    |           |
+|    |             |bonurilor     |       | |                    |           |
+|    |             |fiscale       |       | |                    |           |
+|    |             |aferente      |       | |                    |           |
+|    |             |raportului    |       | |                    |           |
+|    |             |fiscal de     |       | |                    |           |
+|    |             |închidere     |       | |                    |           |
+|    |             |zilnică       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totA         |Suma totală   |N(20.2)|DA|                   |           |
+|    |             |aferentă      |       | |                    |           |
+|    |             |operațiunilor |       | |                    |           |
+|    |             |de anulare    |       | |                    |           |
+|    |             |efectuate în |        | |                    |           |
+|    |             |timpul        |       | |                    |           |
+|    |             |tipăririi     |       | |                    |           |
+|    |             |bonurilor     |       | |                    |           |
+|    |             |fiscale       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrR          |Numărul       |N(10) |DA|                    |           |
+|    |             |operațiunilor |       | |                    |           |
+|    |             |de reducere   |       | |                    |           |
+|    |             |efectuate în |        | |                    |           |
+|    |             |timpul        |       | |                    |           |
+|    |             |tipăririi     |       | |                    |           |
+|    |             |bonurilor     |       | |                    |           |
+|    |             |fiscale       |       | |                    |           |
+|    |             |aferente      |       | |                    |           |
+|    |             |raportului    |       | |                    |           |
+|    |             |fiscal de     |       | |                    |           |
+|    |             |închidere     |       | |                    |           |
+|    |             |zilnică       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totR         |Suma totală   |N(20.2)|DA|                   |           |
+|    |             |aferentă      |       | |                    |           |
+|    |             |operațiunilor |       | |                    |           |
+|    |             |de reducere   |       | |                    |           |
+|    |             |efectuate în |        | |                    |           |
+|    |             |timpul        |       | |                    |           |
+|    |             |tipăririi     |       | |                    |           |
+|    |             |bonurilor     |       | |                    |           |
+|    |             |fiscale       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrM          |Numărul       |N(10) |DA|                    |           |
+|    |             |operațiunilor |       | |                    |           |
+|    |             |de majorare   |       | |                    |           |
+|    |             |efectuate în |        | |                    |           |
+|    |             |timpul        |       | |                    |           |
+|    |             |tipăririi     |       | |                    |           |
+|    |             |bonurilor     |       | |                    |           |
+|    |             |fiscale       |       | |                    |           |
+|    |             |aferente      |       | |                    |           |
+|    |             |raportului    |       | |                    |           |
+|    |             |fiscal de     |       | |                    |           |
+|    |             |închidere     |       | |                    |           |
+|    |             |zilnică       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totM         |Suma totală   |N(20.2)|DA|                   |           |
+|    |             |aferentă      |       | |                    |           |
+|    |             |operațiunilor |       | |                    |           |
+|    |             |de majorare   |       | |                    |           |
+|    |             |efectuate în |        | |                    |           |
+|    |             |timpul        |       | |                    |           |
+|    |             |tipăririi     |       | |                    |           |
+|    |             |bonurilor     |       | |                    |           |
+|    |             |fiscale       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totTva       |Totalul taxei |N(20.2)|DA|                   |           |
+|    |             |pe valoare    |       | |                    |           |
+|    |             |adăugată      |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |sume_serv_in |Sume de       |N(20.2)|DA|                   |           |
+|    |             |serviciu      |       | |                    |           |
+|    |             |declarate la |        | |                    |           |
+|    |             |începerea     |       | |                    |           |
+|    |             |zilei de lucru|       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |sume_        |Sume de       |N(20.2)|DA|                   |           |
+|    |serv_out     |serviciu      |       | |                    |           |
+|    |             |declarate la |        | |                    |           |
+|    |             |sfârșitul     |       | |                    |           |
+|    |             |zilei de lucru|       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totC         |Totalul       |N(20.2)|DA|                   |           |
+|    |             |comisionului |        | |                    |           |
+|    |             |încasat din   |       | |                    |           |
+|    |             |cumpărare și |        | |                    |           |
+|    |             |vânzare de    |       | |                    |           |
+|    |             |valută        |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |<act>        |Secțiune      |       | |Cel puțin o         |Gruparea   |
+|    |             |repetitivă    |       | |secțiune dacă       |(tipAct,   |
+|    |             |              |       | |nrB-nrBA> 0         |mon,       |
+|    |             |              |       | |                    |cota_act) |
+|    |             |              |       | |                    |trebuie să |
+|    |             |              |       | |                    |fie unică. |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |tipAct       |Tipul         |N(1)   |DA|1 = vânzare        |           |
+|    |             |operațiunii   |       | |2 = cumpărare       |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totAct       |Totalul       |N(20.2)|DA|                   |           |
+|    |             |sumelor       |       | |                    |           |
+|    |             |încasate din |        | |                    |           |
+|    |             |cumpărarea/   |       | |                    |           |
+|    |             |vânzarea de   |       | |                    |           |
+|    |             |valută,       |       | |                    |           |
+|    |             |inclusiv      |       | |                    |           |
+|    |             |comision      |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totCom       |Total comision|N(20,2)|DA|                   |           |
+|    |             |încasat din   |       | |                    |           |
+|    |             |cumpărarea/   |       | |                    |           |
+|    |             |vânzarea de   |       | |                    |           |
+|    |             |valută        |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |mon          |Moneda        |C(3)   |DA|Nomenclator        |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |cota_act     |Nivel cotă de |N(2)   | |Dacă totCom>0       |           |
+|    |             |TVA           |       | |atunci cota_act     |           |
+|    |             |              |       | |este diferit de     |           |
+|    |             |              |       | |nul.                |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</act>       |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |<av>         |Secțiune      |       | |                    |           |
+|    |             |repetitivă    |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |data         |Oră avarie    |C(19) |DA|zz.ll.aaaa          |           |
+|    |             |              |       | |HH24:mi:ss          |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</av>        |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |<pl>         |Secțiune      |       | |                    |           |
+|    |             |repetitivă    |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |tipP         |Modalitate de |N(2)   |DA|Nomenclator        |           |
+|    |             |plată         |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |valPl        |Totalul sumei |N(20.2)|DA|                   |           |
+|    |             |plătite de    |       | |                    |           |
+|    |             |client        |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |monPl        |Moneda în care|C(3)   |DA|Nomenclator        |           |
+|    |             |s-a făcut     |       | |                    |           |
+|    |             |plata         |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</pl>        |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</rSV>       |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</msj>       |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+ Secțiunea II.6
+
+
+ Semnificația coloanei A din tabelul de mai jos este următoarea:
+ A - Obligatoriu.
+  ____________________________________________________________________________
+|Nr. | Denumire     | Semnificație |Tip și |A | Validări/Formule | Observații|
+|crt.| secțiune/ | atribut         |lungime| |                    |            |
+|     | atribut     |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<msj>        |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |idM          |Identificator |c(28) |DA|NNNNNNNNNNAAAALLZZ |             |
+|     |             |unic mesaj    |       | |HHMMSSRRRR          |            |
+|     |             |              |       | |Primele 10          |            |
+|     |             |              |       | |caractere: număr    |            |
+|     |             |              |       | |unic de             |            |
+|     |             |              |       | |identificare aparat|             |
+|     |             |              |       | |de marcat           |            |
+|     |             |              |       | |electronic fiscal |              |
+|     |             |              |       | |Următoarele 14      |            |
+|     |             |              |       | |caractere: dată și |             |
+|     |             |              |       | |oră generare mesaj |             |
+|     |             |              |       | |Următoarele 4       |            |
+|     |             |              |       | |caractere: numărul |             |
+|     |             |              |       | |raportului fiscal |              |
+|     |             |              |       | |de închidere        |            |
+|     |             |              |       | |zilnică             |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<rT>         |O apariție    |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |idR          |Numărul de    |C(28) |DA|NNNNNNNNNNAAAALLZZ |             |
+|     |             |identificare |        | |HHMMSSRRRR          |            |
+|     |             |al raportului |       | |Primele 10          |            |
+|     |             |fiscal de     |       | |caractere = număr |              |
+|     |             |închidere     |       | |de identificare     |            |
+|     |             |zilnică       |       | |aparat de marcat    |            |
+|     |             |              |       | |electronic fiscal |              |
+|     |             |              |       | |Următoarele 14      |            |
+|     |             |              |       | |caractere: dată și |             |
+|     |             |              |       | |oră emitere raport |             |
+|     |             |              |       | |fiscal de închidere|             |
+|     |             |              |       | |zilnică             |            |
+|     |             |              |       | |Următoarele 4       |            |
+|     |             |              |       | |caractere: numărul |             |
+|     |             |              |       | |raportului fiscal |              |
+|     |             |              |       | |de închidere        |            |
+|     |             |              |       | |zilnică generat     |            |
+|     |             |              |       | |Trebuie să fie unic|             |
+|     |             |              |       | |pe aparatul de      |            |
+|     |             |              |       | |marcat electronic |              |
+|     |             |              |       | |fiscal.             |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |nrAv         |Număr avarii |N(3)    |DA|nrAv este egal cu |             |
+|     |             |(reset RAM)   |       | |numărul de secțiuni|             |
+|     |             |              |       | |av.                 |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |nrB          |Număr bonuri |N(10) |DA|                     |            |
+|     |             |emise aferente|       | |                    |            |
+|     |             |raportului    |       | |                    |            |
+|     |             |fiscal de     |       | |                    |            |
+|     |             |închidere     |       | |                    |            |
+|     |             |zilnică       |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |valB         |Valoarea      |N(20.2)|DA|                   |            |
+|     |             |totală a      |       | |                    |            |
+|     |             |operațiunilor |       | |                    |            |
+|     |             |aferente      |       | |                    |            |
+|    |             |raportului    |       | |                    |           |
+|    |             |fiscal de     |       | |                    |           |
+|    |             |închidere     |       | |                    |           |
+|    |             |zilnică       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totTva       |Totalul taxei |N(20.2)|DA|                   |           |
+|    |             |pe valoarea   |       | |                    |           |
+|    |             |adăugată      |       | |                    |           |
+|    |             |rezultat din |        | |                    |           |
+|    |             |totalul       |       | |                    |           |
+|    |             |bonurilor     |       | |                    |           |
+|    |             |fiscale emise |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrBC         |Număr bonuri |N(10) |DA|                     |           |
+|    |             |emise având   |       | |                    |           |
+|    |             |înscris codul |       | |                    |           |
+|    |             |de            |       | |                    |           |
+|    |             |înregistrare |        | |                    |           |
+|    |             |fiscală în    |       | |                    |           |
+|    |             |scopuri de TVA|       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |valBC        |Valoare totală|N(20.2)|DA|                   |           |
+|    |             |a             |       | |                    |           |
+|    |             |operațiunilor |       | |                    |           |
+|    |             |din totalul   |       | |                    |           |
+|    |             |bonurilor     |       | |                    |           |
+|    |             |fiscale emise |       | |                    |           |
+|    |             |având înscris |       | |                    |           |
+|    |             |codul de      |       | |                    |           |
+|    |             |înregistrare |        | |                    |           |
+|    |             |fiscală în    |       | |                    |           |
+|    |             |scopuri de TVA|       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totTVA_cui   |Totalul taxei |N(20.2)|DA|                   |           |
+|    |             |pe valoarea   |       | |                    |           |
+|    |             |adăugată      |       | |                    |           |
+|    |             |rezultat din |        | |                    |           |
+|    |             |totalul       |       | |                    |           |
+|    |             |bonurilor     |       | |                    |           |
+|    |             |fiscale ce au |       | |                    |           |
+|    |             |înscris codul |       | |                    |           |
+|    |             |de            |       | |                    |           |
+|    |             |înregistrare |        | |                    |           |
+|    |             |fiscală în    |       | |                    |           |
+|    |             |scopuri de TVA|       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totD         |Totalul       |N(10.2)|DA|                   |           |
+|    |             |distanței     |       | |                    |           |
+|    |             |parcurse (în |        | |                    |           |
+|    |             |km)           |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totDC        |Totalul       |N(10.2)|DA|                   |           |
+|    |             |distanței     |       | |                    |           |
+|    |             |parcurse având|       | |                    |           |
+|    |             |călători (în |        | |                    |           |
+|    |             |km)           |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |<coteZ>      |Secțiune      |       | |                    |           |
+|    |             |repetitivă    |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |cota         |Nivel cotă TVA|N(2)   |DA|                   |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |tva          |Totalul taxei |N(20.2)|DA|                   |           |
+|    |             |pe valoarea   |       | |                    |           |
+|    |             |adăugată      |       | |                    |           |
+|    |             |rezultat din |        | |                    |           |
+|    |             |totalul       |       | |                    |           |
+|    |             |bonurilor     |       | |                    |           |
+|    |             |fiscale emise |       | |                    |           |
+|    |             |defalcată pe |        | |                    |           |
+|    |             |cotă de TVA   |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |tva_cui      |Totalul taxei |N(20.2)|DA|                   |           |
+|    |             |pe valoarea   |       | |                    |           |
+|    |             |adăugată      |       | |                    |           |
+|    |             |rezultat din |        | |                    |           |
+|    |             |totalul       |       | |                    |           |
+|    |             |bonurilor     |       | |                    |           |
+|    |             |fiscale ce au |       | |                    |           |
+|    |             |înscris codul |       | |                    |           |
+|    |             |de            |       | |                    |           |
+|    |             |înregistrare |        | |                    |           |
+|    |             |fiscală în    |       | |                    |           |
+|    |             |scopuri de    |       | |                    |           |
+|    |             |TVA, defalcată|       | |                    |           |
+|    |             |pe cotă de TVA|       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</coteZ>     |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |<av>         |Secțiune      |       | |                    |           |
+|    |             |repetitivă    |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |ora_avarie   |Oră avarie    |C(19) |DA|zz.ll.aaaa          |           |
+|    |             |              |       | |HH24:mi:ss          |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</av>        |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |<ut>         |Secțiune      |       | |Cel puțin o         |           |
+|    |             |repetitivă    |       | |apariție            |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |idU          |Identificator |C(5)   |DA|                   |           |
+|    |             |persoană care |       | |                    |           |
+|    |             |utilizează    |       | |                    |           |
+|    |             |taximetrul    |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totDU        |Totalul       |N(10.2)|DA|                   |           |
+|    |             |distanței     |       | |                    |           |
+|    |             |parcurse (în |        | |                    |           |
+|    |             |km) de către |        | |                    |           |
+|    |             |taximetrist   |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totDCU       |Totalul       |N(10.2)|DA|                   |           |
+|    |             |distanței     |       | |                    |           |
+|    |             |parcurse având|       | |                    |           |
+|    |             |călători de   |       | |                    |           |
+|    |             |către         |       | |                    |           |
+|    |             |taximetrist   |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totalBU      |Valoarea      |N(20.2)|DA|                   |           |
+|    |             |totală        |       | |                    |           |
+|    |             |încasată de   |       | |                    |           |
+|    |             |către         |       | |                    |           |
+|    |             |taximetrist   |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |<curse>      |Secțiune      |       | |                    |           |
+|    |             |repetitivă    |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nr_cursa     |Numărul cursei|C(20) |DA|                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</curse>     |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</ut>        |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |<set>        |Secțiune      |       | |                    |           |
+|    |             |repetitivă    |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrSet        |Număr aferent |N(1)   |DA|1 - Zi             |           |
+|    |             |setului de    |       | |2 - Noapte          |           |
+|    |             |tarif         |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |tarif        |Valoarea      |N(3.2) |DA|                   |           |
+|    |             |tarifului     |       | |                    |           |
+|    |             |aplicat       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totSet       |Totalul sumei |N(20.2)|DA|                   |           |
+|    |             |plătite de    |       | |                    |           |
+|    |             |client        |       | |                    |           |
+|    |             |aferente      |       | |                    |           |
+|    |             |tarifului     |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totDS        |Total distanță|N(10.2)|DA|                   |           |
+|    |             |parcursă având|       | |                    |           |
+|    |             |călători      |       | |                    |           |
+|    |             |aferentă      |       | |                    |           |
+|    |             |tarifului     |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</set>       |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</rT>        |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</msj>       |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+
+
+ Secțiunea II.7
+
+
+ Semnificația coloanei A din tabelul de mai jos este următoarea:
+ A - Obligatoriu.
+  ____________________________________________________________________________
+|Nr. | Denumire     | Semnificație |Tip și |A | Validări/Formule | Observații|
+|crt.| element/     | atribut      |lungime| |                    |            |
+|     | atribut     |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<msj>        |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |idM          |Identificator |c(28) |DA|NNNNNNNNNNAAAALLZZ |             |
+|     |             |unic mesaj    |       | |HHMMSSRRRR          |            |
+|     |             |              |       | |Primele 10          |            |
+|     |             |              |       | |caractere: număr    |            |
+|     |             |              |       | |unic de             |            |
+|     |             |              |       | |identificare aparat|             |
+|     |             |              |       | |de marcat           |            |
+|     |             |              |       | |electronic fiscal |              |
+|     |             |              |       | |Următoarele 14      |            |
+|     |             |              |       | |caractere: dată și |             |
+|     |             |              |       | |oră generare mesaj |             |
+|     |             |              |       | |Următoarele 4       |            |
+|     |             |              |       | |caractere: numărul |             |
+|     |             |              |       | |raportului fiscal |              |
+|     |             |              |       | |de închidere        |            |
+|     |             |              |       | |zilnică             |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<rB>         |O apariție    |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |idR          |Numărul de    |C(28) |DA|NNNNNNNNNNAAAALLZZ |             |
+|     |             |identificare |        | |HHMMSSRRRR          |            |
+|     |             |al raportului |       | |Primele 10          |            |
+|     |             |fiscal de     |       | |caractere = număr |              |
+|     |             |închidere     |       | |unic de             |            |
+|     |             |zilnică       |       | |identificare al     |            |
+|     |             |              |       | |aparatului de       |            |
+|     |             |              |       | |marcat electronic |              |
+|     |             |              |       | |fiscal              |            |
+|     |             |              |       | |Următoarele 14      |            |
+|     |             |              |       | |caractere: dată și |             |
+|     |             |              |       | |oră emitere raport |             |
+|     |             |              |       | |fiscal de închidere|             |
+|     |             |              |       | |zilnică             |            |
+|     |             |              |       | |Următoarele 4       |            |
+|     |             |              |       | |caractere: numărul |             |
+|    |             |              |       | |raportului fiscal |             |
+|    |             |              |       | |de închidere        |           |
+|    |             |              |       | |zilnică generat     |           |
+|    |             |              |       | |Trebuie să fie unic|            |
+|    |             |              |       | |pe aparatul de      |           |
+|    |             |              |       | |marcat electronic |             |
+|    |             |              |       | |fiscal.             |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrAv         |Număr avarii |N(3)    |DA|nrA este egal cu   |           |
+|    |             |(reset RAM)   |       | |numărul de secțiuni|            |
+|    |             |              |       | |av.                 |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrB          |Număr bonuri |N(10) |DA|                     |           |
+|    |             |emise aferente|       | |                    |           |
+|    |             |raportului    |       | |                    |           |
+|    |             |fiscal de     |       | |                    |           |
+|    |             |închidere     |       | |                    |           |
+|    |             |zilnică       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totB         |Valoarea      |N(20.2)|DA|                   |           |
+|    |             |totală a      |       | |                    |           |
+|    |             |operațiunilor |       | |                    |           |
+|    |             |aferente      |       | |                    |           |
+|    |             |raportului    |       | |                    |           |
+|    |             |fiscal de     |       | |                    |           |
+|    |             |închidere     |       | |                    |           |
+|    |             |zilnică       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrBC         |Număr bonuri |N(10) |DA|                     |           |
+|    |             |emise aferente|       | |                    |           |
+|    |             |raportului    |       | |                    |           |
+|    |             |fiscal de     |       | |                    |           |
+|    |             |închidere     |       | |                    |           |
+|    |             |zilnică având |       | |                    |           |
+|    |             |înscris codul |       | |                    |           |
+|    |             |de            |       | |                    |           |
+|    |             |înregistrare |        | |                    |           |
+|    |             |fiscală în    |       | |                    |           |
+|    |             |scopuri de TVA|       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totBC        |Valoare totală|N(20.2)|DA|                   |           |
+|    |             |operațiuni    |       | |                    |           |
+|    |             |rezultată din |       | |                    |           |
+|    |             |totalul       |       | |                    |           |
+|    |             |bonurilor     |       | |                    |           |
+|    |             |fiscale ce au |       | |                    |           |
+|    |             |înscris codul |       | |                    |           |
+|    |             |de            |       | |                    |           |
+|    |             |înregistrare |        | |                    |           |
+|    |             |fiscală în    |       | |                    |           |
+|    |             |scopuri de TVA|       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrA          |Numărul       |N(10) |DA|                    |           |
+|    |             |operațiunilor |       | |                    |           |
+|    |             |de anulare    |       | |                    |           |
+|    |             |efectuate în |        | |                    |           |
+|    |             |timpul        |       | |                    |           |
+|    |             |tipăririi     |       | |                    |           |
+|    |             |bonurilor     |       | |                    |           |
+|    |             |fiscale       |       | |                    |           |
+|    |             |aferente      |       | |                    |           |
+|    |             |raportului    |       | |                    |           |
+|    |             |fiscal de     |       | |                    |           |
+|    |             |închidere     |       | |                    |           |
+|    |             |zilnică       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totA         |Suma totală   |N(20.2)|DA|                   |           |
+|    |             |aferentă      |       | |                    |           |
+|    |             |operațiunilor |       | |                    |           |
+|    |             |de anulare    |       | |                    |           |
+|    |             |efectuate în |        | |                    |           |
+|    |             |timpul        |       | |                    |           |
+|    |             |tipăririi     |       | |                    |           |
+|    |             |bonurilor     |       | |                    |           |
+|    |             |fiscale       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrR          |Numărul       |N(10) |DA|                    |           |
+|    |             |operațiunilor |       | |                    |           |
+|    |             |de reducere   |       | |                    |           |
+|    |             |efectuate în |        | |                    |           |
+|    |             |timpul        |       | |                    |           |
+|    |             |tipăririi     |       | |                    |           |
+|    |             |bonurilor     |       | |                    |           |
+|    |             |fiscale       |       | |                    |           |
+|    |             |aferente      |       | |                    |           |
+|    |             |raportului    |       | |                    |           |
+|    |             |fiscal de     |       | |                    |           |
+|    |             |închidere     |       | |                    |           |
+|    |             |zilnică       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totR         |Suma totală   |N(20.2)|DA|                   |           |
+|    |             |aferentă      |       | |                    |           |
+|    |             |operațiunilor |       | |                    |           |
+|    |             |de reducere   |       | |                    |           |
+|    |             |efectuate în |        | |                    |           |
+|    |             |timpul        |       | |                    |           |
+|    |             |tipăririi     |       | |                    |           |
+|    |             |bonurilor     |       | |                    |           |
+|    |             |fiscale       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrM          |Numărul       |N(10) |DA|                    |           |
+|    |             |operațiunilor |       | |                    |           |
+|    |             |de majorare   |       | |                    |           |
+|    |             |efectuate în |        | |                    |           |
+|    |             |timpul        |       | |                    |           |
+|    |             |tipăririi     |       | |                    |           |
+|    |             |bonurilor     |       | |                    |           |
+|    |             |fiscale       |       | |                    |           |
+|    |             |aferente      |       | |                    |           |
+|    |             |raportului    |       | |                    |           |
+|    |             |fiscal de     |       | |                    |           |
+|    |             |închidere     |       | |                    |           |
+|    |             |zilnică       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totM         |Suma totală   |N(20.2)|DA|                   |           |
+|    |             |aferentă      |       | |                    |           |
+|    |             |operațiunilor |       | |                    |           |
+|    |             |de majorare   |       | |                    |           |
+|    |             |efectuate în |        | |                    |           |
+|    |             |timpul        |       | |                    |           |
+|    |             |tipăririi     |       | |                    |           |
+|    |             |bonurilor     |       | |                    |           |
+|    |             |fiscale       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totTva       |Totalul taxei |N(20.2)|DA|                   |           |
+|    |             |pe valoarea   |       | |                    |           |
+|    |             |adăugată      |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totTvaC      |Totalul taxei |N(20.2)|DA|                   |           |
+|    |             |pe valoarea   |       | |                    |           |
+|    |             |adăugată      |       | |                    |           |
+|    |             |rezultat din |        | |                    |           |
+|    |             |bonurile ce au|       | |                    |           |
+|    |             |înscris codul |       | |                    |           |
+|    |             |de            |       | |                    |           |
+|    |             |înregistrare |        | |                    |           |
+|    |             |fiscală în    |       | |                    |           |
+|    |             |scopuri de TVA|       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totTaxe      |Valoare alte |N(20.2)|DA|                    |           |
+|    |             |taxe ce nu se |       | |                    |           |
+|    |             |cuprind în    |       | |                    |           |
+|    |             |baza de       |       | |                    |           |
+|    |             |impozitare a |        | |                    |           |
+|    |             |taxei pe      |       | |                    |           |
+|    |             |valoarea      |       | |                    |           |
+|    |             |adăugată      |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |totNet       |Valoare       |N(20.2)|DA|                   |           |
+|    |             |operațiuni    |       | |                    |           |
+|    |             |scutite       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |sume_serv_in |Sume de       |N(20.2)|DA|                   |           |
+|    |             |serviciu      |       | |                    |           |
+|    |             |declarate la |        | |                    |           |
+|    |             |începerea     |       | |                    |           |
+|    |             |zilei de lucru|       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |sume_        |Sume de       |N(20.2)|DA|                   |           |
+|    |serv_out     |serviciu      |       | |                    |           |
+|    |             |declarate la |        | |                    |           |
+|    |             |sfârșitul     |       | |                    |           |
+|    |             |zilei de lucru|       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |monRef       |Moneda de     |C(3)   |DA|Nomenclator monede |           |
+|    |             |referință a   |       | |                    |           |
+|    |             |aparatului de |       | |                    |           |
+|    |             |marcat        |       | |                    |           |
+|    |             |electronic    |       | |                    |           |
+|    |             |fiscal        |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |<pl>         |Secțiune      |       | |Secțiunea are cel |             |
+|    |             |repetitivă    |       | |puțin o apariție    |           |
+|    |             |              |       | |pentru totB> 0.     |           |
+|    |             |              |       | |Altfel lipsește.    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |tipP         |Modalitate de |N(2)   |DA|Nomenclator        |           |
+|    |             |plată         |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |valPl        |Totalul sumei |N(20.2)|DA|                   |           |
+|    |             |plătite de    |       | |                    |           |
+|    |             |client        |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |monPl        |Moneda în care|C(3)   |D |A Nomenclator      |           |
+|    |             |s-a făcut     |       | |                    |           |
+|    |             |plata         |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</pl>        |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |<coteZ>      |Secțiune      |       | |Secțiunea apare     |           |
+|    |             |repetitivă    |       | |pentru fiecare cotă|            |
+|    |             |              |       | |existentă.          |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |cota         |Nivel cotă de |N(2)   |DA|                   |           |
+|    |             |TVA           |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |valOp        |Valoarea      |N(20.2)|DA|                   |           |
+|    |             |totală a      |       | |                    |           |
+|    |             |operațiunilor |       | |                    |           |
+|    |             |cărora li se |        | |                    |           |
+|    |             |aplică nivelul|       | |                    |           |
+|    |             |de cotă       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |tva          |Total tva/cotă|N(20.2)|DA|                   |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</coteZ>     |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |<av>         |Secțiune      |       | |                    |           |
+|    |             |repetitivă    |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |data         |Dată avarie   |C(19) |DA|zz.ll.aaaa          |           |
+|    |             |              |       | |HH24:mi:ss          |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</av>        |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</rB>        |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</msj>       |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+
+
+ Secțiunea II.8
+
+
+ Semnificația coloanei A din tabelul de mai jos este următoarea:
+ A - Obligatoriu.
+  ____________________________________________________________________________
+|Nr. | Denumire     | Semnificație |Tip și |A | Validări/Formule | Observații|
+|crt.| element/     | atribut      |lungime| |                    |            |
+|     | atribut     |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<msj>        |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |idM          |Identificator |C(28) |DA|NNNNNNNNNNAAAALLZZ |             |
+|     |             |unic mesaj    |       | |HHMMSSRRRR          |            |
+|     |             |              |       | |Primele 10          |            |
+|     |             |              |       | |caractere: număr    |            |
+|     |             |              |       | |unic de             |            |
+|     |             |              |       | |identificare al     |            |
+|     |             |              |       | |aparatului de       |            |
+|     |             |              |       | |marcat electronic |              |
+|     |             |              |       | |fiscal              |            |
+|     |             |              |       | |Următoarele 14      |            |
+|     |             |              |       | |caractere: dată și |             |
+|     |             |              |       | |oră generare mesaj |             |
+|     |             |              |       | |Următoarele 4       |            |
+|     |             |              |       | |caractere: numărul |             |
+|     |             |              |       | |raportului fiscal |              |
+|     |             |              |       | |de închidere        |            |
+|     |             |              |       | |zilnică             |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<mE>         |Maximum o     |       | |                    |            |
+|     |             |apariție      |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |nrB          |Număr bonuri |N(10) |DA|                     |            |
+|     |             |emise în      |       | |                    |            |
+|     |             |perioada în   |       | |                    |            |
+|     |             |care are loc |        | |                    |            |
+|     |             |evenimentul   |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<ev>         |Secțiune      |       | |Cel puțin o         |            |
+|     |             |repetitivă    |       | |apariție            |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |dataI        |Dată început |C(19) |DA|zz.ll.aaaa           |            |
+|     |             |eveniment     |       | |HH24:mi:ss          |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |dataF        |Dată sfârșit |C(19) |DA|zz.ll.aaaa           |            |
+|     |             |eveniment     |       | |HH24:mi:ss          |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |tipE         |Tipul         |N(1)   |DA|1 - lipsă curent   |            |
+|     |             |evenimentului |       | |2 - lipsă conexiune|             |
+|     |             |              |       | |internet            |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |</ev>        |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |</mE>        |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |</msj>       |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+ Secțiunea II.9
+
+
+ Semnificația coloanei A din tabelul de mai jos este următoarea:
+ A - Obligatoriu.
+  ____________________________________________________________________________
+|Nr. | Denumire     | Semnificație |Tip și |A | Validări/Formule | Observații|
+|crt.| element/     | atribut      |lungime| |                    |            |
+|     | atribut     |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<msj>        |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |idM          |Identificator |C(24) |DA|NNNNNNNNNNAAAALL    |            |
+|     |             |unic mesaj    |       | |ZZHHMMSS            |            |
+|     |             |              |       | |Primele 10          |            |
+|     |             |              |       | |caractere: număr    |            |
+|     |             |              |       | |unic de             |            |
+|     |             |              |       | |identificare al     |            |
+|     |             |              |       | |aparatului de       |            |
+|     |             |              |       | |marcat electronic |              |
+|     |             |              |       | |fiscal              |            |
+|     |             |              |       | |Următoarele 14      |            |
+|     |             |              |       | |caractere: dată și |             |
+|     |             |              |       | |oră generare mesaj |             |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |</msj>       |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+
+
+ Secțiunea II.10
+
+
+ Semnificația coloanei A din tabelul de mai jos este următoarea:
+ A - Obligatoriu.
+  ____________________________________________________________________________
+|Nr. | Denumire     | Semnificație |Tip și |A | Validări/Formule | Observații|
+|crt.| element/     | atribut      |lungime| |                    |            |
+|     | atribut     |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<mP>         |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |idM          |Identificator |C(24) |DA|NNNNNNNNNNAAAALLZZ |             |
+|     |             |unic mesaj    |       | |HHMMSS              |            |
+|     |             |              |       | |Identificator unic |             |
+|     |             |              |       | |de identificare al |             |
+|     |             |              |       | |aparatului de       |            |
+|     |             |              |       | |marcat electronic |              |
+|     |             |              |       | |fiscal, an lună zi |             |
+|     |             |              |       | |oră minut secundă |              |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |tipP         |Tipul         |N(1)   |DA|Tipul profilului pe|            |
+|     |             |profilului    |       | |care trebuie să îl |             |
+|     |             |              |       | |execute aparatul de|             |
+|     |             |              |       | |marcat electronic |              |
+|     |             |              |       | |fiscal:             |            |
+|     |             |              |       | |0 - aparatul de     |            |
+|     |             |              |       | |marcat electronic |              |
+|     |             |              |       | |fiscal nu are       |            |
+|     |             |              |       | |obligația           |            |
+|     |             |              |       | |conectării la       |            |
+|     |             |              |       | |sistemul informatic|             |
+|     |             |              |       | |național.           |            |
+|     |             |              |       | |1 - aparatul de     |            |
+|     |             |              |       | |marcat electronic |              |
+|     |             |              |       | |fiscal are          |            |
+|     |             |              |       | |obligația           |            |
+|    |             |              |       | |conectării și       |           |
+|    |             |              |       | |transmiterii        |           |
+|    |             |              |       | |datelor către       |           |
+|    |             |              |       | |sistemul informatic|            |
+|    |             |              |       | |național.           |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |data         |Data de la    |C(10) | |zz.ll.aaaa           |           |
+|    |             |care aparatul |       | |                    |           |
+|    |             |de marcat     |       | |                    |           |
+|    |             |electronic    |       | |                    |           |
+|    |             |fiscal        |       | |                    |           |
+|    |             |funcționează |        | |                    |           |
+|    |             |în profilul   |       | |                    |           |
+|    |             |stabilit      |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |afisM        |În urma       |N(1)   | |1 - prezentare      |           |
+|    |             |analizei      |       | |unitate de service.|            |
+|    |             |datelor       |       | |Altfel lipsește.    |           |
+|    |             |transmise de |        | |                    |           |
+|    |             |aparatul de   |       | |                    |           |
+|    |             |marcat        |       | |                    |           |
+|    |             |electronic    |       | |                    |           |
+|    |             |fiscal se     |       | |                    |           |
+|    |             |constată că   |       | |                    |           |
+|    |             |aparatul nu   |       | |                    |           |
+|    |             |funcționează |        | |                    |           |
+|    |             |în parametri |        | |                    |           |
+|    |             |normali.      |       | |                    |           |
+|    |             |Utilizatorul |        | |                    |           |
+|    |             |este          |       | |                    |           |
+|    |             |atenționat    |       | |                    |           |
+|    |             |asupra        |       | |                    |           |
+|    |             |necesității   |       | |                    |           |
+|    |             |prezentării la|       | |                    |           |
+|    |             |unitatea de   |       | |                    |           |
+|    |             |service.      |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |rapZ         |Aparatul de   |N(1)   | |1 - DA              |           |
+|    |             |marcat este   |       | |2 - NU, Aparatul de|            |
+|    |             |obligat să    |       | |marcat este obligat|            |
+|    |             |încerce       |       | |să încerce          |           |
+|    |             |stabilirea    |       | |stabilirea          |           |
+|    |             |conexiunii cu |       | |conexiunii cu       |           |
+|    |             |sistemul      |       | |sistemul informatic|            |
+|    |             |informatic    |       | |național și să      |           |
+|    |             |național și să|       | |transmită date la |             |
+|    |             |transmită date|       | |intervalul nrT.     |           |
+|    |             |imediat după |        | |                    |           |
+|    |             |generarea     |       | |                    |           |
+|    |             |raportului    |       | |                    |           |
+|    |             |fiscal de     |       | |                    |           |
+|    |             |închidere     |       | |                    |           |
+|    |             |zilnică.      |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrZ          |Număr zile    |N(4)   | |                    |           |
+|    |             |după care     |       | |                    |           |
+|    |             |activitatea   |       | |                    |           |
+|    |             |aparatului de |       | |                    |           |
+|    |             |marcat        |       | |                    |           |
+|    |             |electronic    |       | |                    |           |
+|    |             |fiscal se     |       | |                    |           |
+|    |             |blochează     |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrM          |Număr minute |N(6)    | |                    |           |
+|    |             |la care se    |       | |                    |           |
+|    |             |încearcă      |       | |                    |           |
+|    |             |stabilirea    |       | |                    |           |
+|    |             |conexiunii cu |       | |                    |           |
+|    |             |sistemul      |       | |                    |           |
+|    |             |informatic    |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrT          |Număr minute |N(6)    | |                    |           |
+|    |             |la care se    |       | |                    |           |
+|    |             |încearcă      |       | |                    |           |
+|    |             |stabilirea    |       | |                    |           |
+|    |             |conexiunii cu |       | |                    |           |
+|    |             |sistemul      |       | |                    |           |
+|    |             |informatic în |       | |                    |           |
+|    |             |vederea       |       | |                    |           |
+|    |             |transmiterii |        | |                    |           |
+|    |             |datelor de la |       | |                    |           |
+|    |             |art. 5 alin. |        | |                    |           |
+|    |             |(1) și (2) din|       | |                    |           |
+|    |             |anexa nr. 11 |        | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |codD         |Cod deblocare |C(1024)| |Ultimul id mesaj    |           |
+|    |             |              |       | |din mesajul         |           |
+|    |             |              |       | |registru transmis |             |
+|    |             |              |       | |către sistemul      |           |
+|    |             |              |       | |informatic național|            |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |certANAF     |Certificatul |C(4000)| |Câmpul conține       |           |
+|    |             |digital al    |       | |certificatul        |           |
+|    |             |Agenției      |       | |digital al Agenției|            |
+|    |             |Naționale de |        | |Naționale de        |           |
+|    |             |Administrare |        | |Administrare        |           |
+|    |             |Fiscală       |       | |Fiscală în format |             |
+|    |             |              |       | |PKCS7 cert only     |           |
+|    |             |              |       | |codificat base 64. |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |certA        |Schimbă       |N(1)   | |1 - DA              |           |
+|    |             |certificatul |        | |                    |           |
+|    |             |digital al    |       | |                    |           |
+|    |             |aparatului de |       | |                    |           |
+|    |             |marcat        |       | |                    |           |
+|    |             |electronic    |       | |                    |           |
+|    |             |fiscal.       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |<url>        |Secțiune      |       | |Secțiunea este      |           |
+|    |             |repetitivă    |       | |permisă numai       |           |
+|    |             |              |       | |pentru tip_profil =|            |
+|    |             |              |       | |1.                  |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |tip          |Tip url       |N(1)   |DA|Categorii URL-uri |            |
+|    |             |              |       | |din anexa nr. 3 la |            |
+|    |             |              |       | |ordin               |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |url          |Adrese        |C(50) |DA|                    |           |
+|    |             |folosite în   |       | |                    |           |
+|    |             |comunicarea   |       | |                    |           |
+|    |             |aparatului de |       | |                    |           |
+|    |             |marcat        |       | |                    |           |
+|    |             |electronic    |       | |                    |           |
+|    |             |fiscal cu     |       | |                    |           |
+|    |             |sistemul      |       | |                    |           |
+|    |             |informatic    |       | |                    |           |
+|    |             |național al   |       | |                    |           |
+|    |             |Agenției      |       | |                    |           |
+|    |             |Naționale de |        | |                    |           |
+|    |             |Administrare |        | |                    |           |
+|    |             |Fiscală       |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</url>       |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</mP>        |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+ Secțiunea II.11
+
+
+ Semnificația coloanei A din tabelul de mai jos este următoarea:
+ A - Obligatoriu.
+  ____________________________________________________________________________
+|Nr. | Denumire     | Semnificație |Tip și |A | Validări/Formule | Observații|
+|crt.| element/     | atribut      |lungime| |                    |            |
+|     | atribut     |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<mReset>     |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |idM          |Identificator |C(14) |DA|AAAALLZZHHMMSS      |            |
+|     |             |unic mesaj    |       | |an lună zi oră      |            |
+|     |             |              |       | |minut secundă       |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |tipP         |Tipul         |N(1)   |DA|tipP = 0           |            |
+|     |             |profilului    |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |dataP        |Data până la |C(10) |DA|zz.ll.aaaa           |            |
+|     |             |care aparatul |       | |După această dată |              |
+|     |             |de marcat     |       | |aparatul de marcat |             |
+|     |             |electronic    |       | |electronic fiscal |              |
+|     |             |fiscal        |       | |trece în profilul |              |
+|     |             |funcționează |        | |1.                  |            |
+|     |             |în profilul 0 |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |</mReset>    |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+
+
+ Secțiunea II.12
+
+
+ Semnificația coloanei A din tabelul de mai jos este următoarea:
+ A - Obligatoriu.
+  ____________________________________________________________________________
+|Nr. | Denumire     | Semnificație |Tip și |A | Validări/Formule | Observații|
+|crt.| element/     | atribut      |lungime| |                    |            |
+|     | atribut     |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |<mReg>       |              |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |idM          |Identificator |C(24) |DA|NNNNNNNNNNAAAALLZZ |             |
+|     |             |unic mesaj    |       | |HHMMSS              |            |
+|     |             |              |       | |Primele 10          |            |
+|     |             |              |       | |caractere: număr    |            |
+|     |             |              |       | |unic de             |            |
+|     |             |              |       | |identificare al     |            |
+|     |             |              |       | |aparatului de       |            |
+|     |             |              |       | |marcat electronic |              |
+|     |             |              |       | |fiscal              |            |
+|     |             |              |       | |Următoarele 14      |            |
+|     |             |              |       | |caractere: dată și |             |
+|     |             |              |       | |oră generare mesaj |             |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |cif          |Cod de        |N(13) |DA|                    |            |
+|     |             |identificare |        | |                    |            |
+|     |             |fiscală       |       | |                    |            |
+|     |             |utilizator    |       | |                    |            |
+|     |             |aparat de     |       | |                    |            |
+|     |             |marcat        |       | |                    |            |
+|     |             |electronic    |       | |                    |            |
+|     |             |fiscal        |       | |                    |            |
+|____|_____________|______________|_______|__|___________________|___________|
+|     |nrRapI       |Număr raport |N(4)    |DA|                   |            |
+|    |             |fiscal de     |       | |                    |           |
+|    |             |închidere     |       | |                    |           |
+|    |             |zilnică       |       | |                    |           |
+|    |             |inițial       |       | |                    |           |
+|    |             |generat în    |       | |                    |           |
+|    |             |perioada de   |       | |                    |           |
+|    |             |raportare     |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |nrRapF       |Număr raport |N(4)    |DA|                   |           |
+|    |             |fiscal de     |       | |                    |           |
+|    |             |închidere     |       | |                    |           |
+|    |             |zilnică final |       | |                    |           |
+|    |             |generat în    |       | |                    |           |
+|    |             |perioada de   |       | |                    |           |
+|    |             |raportare     |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |tip_amef     |Destinația    |C(1)   |DA|S - schimb valutar |           |
+|    |             |aparatului de |       | |T - taximetrie      |           |
+|    |             |marcat        |       | |U - uzual           |           |
+|    |             |electronic    |       | |A - Magazin         |           |
+|    |             |fiscal        |       | |aeroporturi         |           |
+|____|_____________|______________|_______|__|___________________|___________|
+|    |</mReg       |              |       | |                    |           |
+|____|_____________|______________|_______|__|___________________|___________|
+
+
+  Secțiunea II.13
+  Transmiterea fișierelor XML
+
+
+   Aparatul de marcat electronic fiscal vine presetat cu funcționarea în profilul 0. Trecerea la
+profilul 1 se face prin importul unui fișier XML prevăzut la secțiunea II.10 și care conține în mod
+obligatoriu următoarele categorii de informații:
+  - tipul profilului: 1;
+  - data de la care se trece în profilul 1;
+  - numărul de zile după care activitatea aparatului de marcat electronic fiscal se blochează;
+   - intervalul în minute la care aparatul de marcat electronic fiscal încearcă conectarea la sistemul
+informatic național de supraveghere și monitorizare a datelor fiscale;
+   - intervalul în minute la care aparatul de marcat electronic fiscal încearcă conectarea la sistemul
+informatic național de supraveghere și monitorizare a datelor fiscale în vederea transmiterii datelor
+prevăzute la art. 3 alin. (1) sau (2) din anexa nr. 11 la normele metodologice;
+  - URL-urile utilizate în comunicarea aparatului de marcat electronic fiscal cu sistemul informatic
+național de supraveghere și monitorizare a datelor fiscale;
+  - certificatul digital al Agenției Naționale de Administrare Fiscală în format PKCS#7 cert only
+codificat base 64.
+  Operațiunea de trecere de la profilul 0 la profilul 1 se efectuează exclusiv de către tehnicianul de
+service al distribuitorului autorizat sau al unității de service acreditate.
+  Trecerea de la profilul 1 la profilul 0 se face prin importul unui fișier XML semnat folosind
+certificatul digital al Agenției Naționale de Administrare Fiscală prevăzut la secțiunea II.11 și care
+conține în mod obligatoriu următoarele categorii de informații:
+  - tipul profilului: 0;
+  - data până la care aparatul de marcat electronic fiscal funcționează în profilul 0.
+  Operațiunea de trecere de la profilul 1 la profilul 0 se efectuează exclusiv de către tehnicianul de
+service al distribuitorului autorizat sau al unității de service acreditate.
+  Aparatul de marcat electronic fiscal care lucrează în profilul 1 își blochează activitatea de emitere
+și tipărire de bonuri fiscale ca urmare a atingerii/depășirii termenului stabilit potrivit art. 8 din
+anexa nr. 11 la normele metodologice. Deblocarea aparatului de marcat electronic fiscal se face
+ulterior transmiterii datelor prevăzute la art. 3 alin. (1) sau alin. (2) din anexa nr. 11 la normele
+metodologice prin importul unui fișier XML prevăzut la secțiunea II.10.
+  Fișierul conține în mod obligatoriu următoarele categorii de informații:
+  - tipul profilului;
+   - cod deblocare activitate aparat de marcat electronic fiscal, reprezentat de valoarea id mesaj al
+ultimului mesaj registru transmis.
+   În cazul aparatelor de marcat electronice fiscale care transmit online către sistemul informatic
+național datele prevăzute la art. 3 alin. (1) sau (2) din anexa nr. 11 la normele metodologice, se
+transmit unul sau mai multe fișiere XML conform secțiunilor II.1 - II. 9, după caz.
+  În cazul aparatelor de marcat electronice fiscale care transmit offline către sistemul informatic
+datele prevăzute la art. 3 alin. (1) sau (2) din anexa nr. 11 la normele metodologice, se exportă pe
+un mediu de stocare extern unul sau mai multe fișiere XML semnate cu certificatul digital al
+acestora, care conțin datele aferente fiecărei zile fiscale încheiate conform secțiunilor II.1 - II.7,
+precum și un fișier XML registru conform secțiunii II.12. Fișierele se validează și se atașează la un
+PDF folosind aplicația pusă la dispoziție pe portalul Agenției Naționale de Administrare Fiscală și se
+depune la organul fiscal folosind mijloace de transmitere la distanță.
+   Fișierul de la secțiunea II.10 conține valorile indicatorilor pe baza cărora aparatul de marcat
+electronic fiscal funcționează, este semnat folosind certificatul digital al Agenției Naționale de
+Administrare Fiscală și se transmite ca răspuns la îndeplinirea obligației aparatului de marcat
+electronic fiscal prevăzută la art. 3 alin. (1) sau (2) din anexa nr. 11 la normele metodologice.
+   În cazul aparatelor de marcat electronice fiscale care funcționează în modul de lucru offline,
+mesajul de la secțiunea II.10 ce conține atât codul de deblocare, respectiv continuare a activității,
+și/sau valorile modificate ale indicatorilor profilului se recepționează după transmiterea datelor
+prevăzute la art. 3 alin. (1) sau (2) din anexa nr. 11 la normele metodologice.
+    Comunicarea dintre aparatele de marcat electronice fiscale și sistemul informatic național de
+supraveghere și monitorizare a datelor fiscale se face prin transmiterea, respectiv recepționarea
+fișierelor prevăzute în secțiunile II.1 - II.12. Fișierele XML trebuie să conțină elementele, respectiv
+atributele marcate ca fiind obligatorii. Succesiunea elementelor este în mod obligatoriu cea
+prevăzută în cadrul fiecărei secțiuni. Atributele care în dreptul coloanei "Câmp obligatoriu" nu au
+prevăzută mențiunea "DA" se vor transmite numai în cazul în care informația respectivă există.
+Fișierele XML care se transmit offline sunt semnate, aplicându-se o semnătură inclusă conformă cu
+standardul PKCS#7 folosind algoritmul de calcul al rezumatului SHA-256 și algoritmul de semnătură
+bazat pe RSA 2048. Structura certificatului digital X.509v3 conform cu RFC 5280 are minimum
+următoarele caracteristici:
+  ____________________________________________________________________________
+|       ISSUER       |     NUMELE DISTINCTIV AL AUTORITĂȚII DE CERTIFICARE     |
+|                    |     EMITENTE (DN)                                       |
+|___________________|________________________________________________________|
+| SerialNumber       | Numărul de serie al certificatului. Acest număr este    |
+|                    | unic și va conține minimum 4 octeți cu date generate    |
+|                    | aleatoriu.                                              |
+|___________________|________________________________________________________|
+| Subject            | Numele distinctiv al entității pentru care se emite     |
+|                    | certificatul. Acesta va include informații de           |
+|                    | identificare a aparatului de marcat electronic fiscal |
+|                    | (numărul de serie al aparatului).                       |
+|___________________|________________________________________________________|
+| SignatureAlgorithm| Tipul de semnătură cu care autoritatea de certificare |
+|                    | a emis certificatul                                     |
+|___________________|________________________________________________________|
+| NotBefore          | Data începând cu care certificatul este valid           |
+|___________________|________________________________________________________|
+| NotAfter           | Data la care expiră certificatul digital                |
+|___________________|________________________________________________________|
+| Subject Key       | Identificatorul cheii subiectului                      |
+| Identifier        |                                                        |
+|___________________|________________________________________________________|
+| Authority Info    | [1]Authority Info Access                               |
+| Access            | Access Method=On-line Certificate Status Protocol      |
+|                   | (1.3.6.1.5.5.7.48.1)                                   |
+|                   | Alternative Name:                                      |
+|                   | URL = url-ul la care autoritatea de certificare pune la|
+|                   | dispoziție mecanismul de validare al certificatelor    |
+|                   | digitale OCSP conform RFC 6960                         |
+|___________________|________________________________________________________|
+| Certificate       | [1]Certificate Policy:                                 |
+| Policies          | Policy Identifier=OID-ul politicii sub care sunt emise |
+|                   | certificatele de către autoritatea de certificare      |
+|                   | [2,1]Policy Qualifier Info:                            |
+|                   | Policy Qualifier Id=CPS                                |
+|                   | Qualifier:                                             |
+|                   | url-ul unde se găsește documentul descriptiv privind   |
+|                   | emiterea certificatelor digitale de către autoritatea |
+|                   | de certificare                                         |
+|___________________|________________________________________________________|
+| CRL Distribution | url-ul unde sunt publicate CRL-urile emise de           |
+| Points            | autoritatea de certificare                             |
+|___________________|________________________________________________________|
+
+
+  Operațiunea de reînnoire se face prin generarea perechii de chei publică-privată pentru care se
+emite certificatul de către modulul criptografic al aparatului de marcat electronic fiscal folosind
+protocolul simplu de înrolare a certificatelor pe baza protocolului de comunicații IETF-CMC,
+respectând standardul RFC 5280 care guvernează bunele practici și specificațiile tehnice pentru
+acest tip de informații electronice.
+  Operațiunea de reînnoire a certificatului digital al aparatului de marcat electronic fiscal se face:
+  - la cererea sistemului informatic național de supraveghere și monitorizare a datelor fiscale al
+Agenției Naționale de Administrare Fiscală sau
+    - de către producător sau, după caz, de către distribuitorul autorizat, ca urmare a
+atingerii/depășirii perioadei de valabilitate de 10 ani a certificatului digital instalat inițial.
+
+
+  Secțiunea II.14
+
+
+     Nomenclatorul pentru tipul de plată:
+  ________________________________
+|       Semnificație      |Valoare|
+|________________________|_______|
+| Card                    |   1    |
+|________________________|_______|
+| Numerar                 |   3    |
+|________________________|_______|
+| Tichete masă            |   4    |
+|________________________|_______|
+| Bonuri/tichete valorice|    5    |
+|________________________|_______|
+| Voucher                 |   6    |
+|________________________|_______|
+| Credit                  |   7    |
+|________________________|_______|
+| Metode moderne de plată|    8    |
+|________________________|_______|
+| Alte metode             |   9    |
+|________________________|_______|
+
+    Nomenclatorul pentru valută:
+ ________________________________
+|Valoare|      Semnificație      |
+|_______|________________________|
+| AED   | DIRHAM UAE             |
+|_______|________________________|
+| AFA   | AFGANI AFGANISTAN      |
+|_______|________________________|
+| ALL   | LEKA ALBANEZ           |
+|_______|________________________|
+| AMD   | DRAM ARMENIAN          |
+|_______|________________________|
+| ANG   | GULDEN ANTILE OLAND.   |
+|_______|________________________|
+| AON   | KWANZA (NOU) ANGOLA    |
+|_______|________________________|
+| ARS   | PESO ARGENTINIAN       |
+|_______|________________________|
+| AUD   | DOLAR AUSTRALIAN       |
+|_______|________________________|
+| AWG   | FLORIN ARUBAN          |
+|_______|________________________|
+| AZM   | MANAT AZERBAIDJAN      |
+|_______|________________________|
+| BAM   | MARCA CONV. BOSNIACĂ   |
+|_______|________________________|
+| BBD   | DOLAR BARBADOS         |
+|_______|________________________|
+| BDT   | TAKA BANGLADESH        |
+|_______|________________________|
+| BGN   | LEVA BULGĂREASCĂ       |
+|_______|________________________|
+| BHD   | DINAR BAHRAINI         |
+|_______|________________________|
+| BIF   | FRANC BURUNDI          |
+|_______|________________________|
+| BMD   | DOLAR BERMUDIAN        |
+|_______|________________________|
+| BND   | DOLAR BRUNEI           |
+|_______|________________________|
+| BOB   | BOLIVIAN BOLIVIAN      |
+|_______|________________________|
+| BRL   | REAL BRAZILIAN         |
+|_______|________________________|
+| BSD   | DOLAR BAHAMAS          |
+|_______|________________________|
+| BTN   | NGULTRUM BHUTAN        |
+|_______|________________________|
+| BWP   | PULL BOTSWANA          |
+|_______|________________________|
+| BYR   | RUBLĂ BIELORUSĂ        |
+|_______|________________________|
+| BZD   | DOLAR BELIZE           |
+|_______|________________________|
+| CAD   | DOLAR CANADIAN         |
+|_______|________________________|
+| CDF   | FRANC CONGOLEZ         |
+|_______|________________________|
+| CHF   | FRANC ELVEȚIAN         |
+|_______|________________________|
+| CLP   | PESO CILIAN            |
+|_______|________________________|
+| CNY   | YUAN RENMINBI CHINA    |
+|_______|________________________|
+| COP   | PESO COLUMBIAN         |
+|_______|________________________|
+| CRC   | COLON COSTA RICA       |
+|_______|________________________|
+| CSD   | DINAR SERBIA&MUNTEN.   |
+|_______|________________________|
+| CUP   | PESO CUBANEZ           |
+|_______|________________________|
+| CVE   | ESCUDO CABOVERDIANO    |
+|_______|________________________|
+| CYP   | LIRA CIPRIOTĂ          |
+|_______|________________________|
+| CZK   | COROANA CEHĂ           |
+|_______|________________________|
+| DJF   | FRANC DJIBOUTI         |
+|_______|________________________|
+| DKK   | COROANA DANEZĂ         |
+|_______|________________________|
+| DOP   | PESO REP. DOMINICANĂ   |
+|_______|________________________|
+| DZD   | DINAR ALGERIAN         |
+|_______|________________________|
+| ECS   | SUCRE ECUADOR          |
+|_______|________________________|
+| EEK   | CORONA ESTONIANĂ       |
+|_______|________________________|
+| EGP   | LIRA EGIPTEANĂ         |
+|_______|________________________|
+| ERN   | NAKFA ERITREA          |
+|_______|________________________|
+| ETB   | BIRR ETIOPIA           |
+|_______|________________________|
+| EUR   | EURO                   |
+|_______|________________________|
+| FJD   | DOLAR FIJI             |
+|_______|________________________|
+| FKP   | LIRA FALKLAND          |
+|_______|________________________|
+| GBP   | LIRA STERLINĂ          |
+|_______|________________________|
+| GEL   | LARI GEORGIA           |
+|_______|________________________|
+| GHC   | CEDI GHANA             |
+|_______|________________________|
+| GIP   | LIRA GIBRALTAR         |
+|_______|________________________|
+| GMD   | DALASI GAMBIA          |
+|_______|________________________|
+| GTQ   | QUETZAL GUATEMALA      |
+|_______|________________________|
+| GYD   | DOLAR GUYANA           |
+|_______|________________________|
+| HKD   | DOLAR HONG KONG        |
+|_______|________________________|
+| HNL   | LEMPIRA HONDURAS       |
+|_______|________________________|
+| HRK   | KUNA CROATĂ            |
+|_______|________________________|
+| HTG   | GOURDE HAITI           |
+|_______|________________________|
+| HUF   | FORINT MAGHIAR         |
+|_______|________________________|
+| IDR   | RUPIA INDONEZIANĂ      |
+|_______|________________________|
+| ILS   | SECHEL ISRAELIAN       |
+|_______|________________________|
+| INR   | RUPIA INDIANĂ          |
+|_______|________________________|
+| IQD   | DINAR IRAQ             |
+|_______|________________________|
+| IRR   | RIAL IRANIAN           |
+|_______|________________________|
+| ISK   | COROANA ISLANDEZĂ      |
+|_______|________________________|
+| JMD   | DOLAR JAMAICA          |
+|_______|________________________|
+| JOD   | DINAR IORDANIA         |
+|_______|________________________|
+| JPY   | YEN JAPONEZ            |
+|_______|________________________|
+| KES   | SILING KENYA           |
+|_______|________________________|
+| KGS   | SOM KIRGHIZSTAN        |
+|_______|________________________|
+| KHR   | RIEL CAMBODGIA         |
+|_______|________________________|
+| KMF   | FRANC COMORIAN         |
+|_______|________________________|
+| KPW   | WON NORD-COREEAN       |
+|_______|________________________|
+| KRW   | WON SUD-COREEAN        |
+|_______|________________________|
+| KWD   | DINAR KUWEIT           |
+|_______|________________________|
+| KYD   | DOLAR INSULE CAYMAN    |
+|_______|________________________|
+| KZT   | TENGE KAZAKHSTAN       |
+|_______|________________________|
+| LAK   | KIP LAOS               |
+|_______|________________________|
+| LBP   | LIRA LIBAN             |
+|_______|________________________|
+| LKR   | RUPIA SRI LANKA        |
+|_______|________________________|
+| LRD   | DOLAR LIBERIA          |
+|_______|________________________|
+| LSL   | MALOTI LESOTHO         |
+|_______|________________________|
+| LTL   | LITU LITUANIAN         |
+|_______|________________________|
+| LVL   | LATS LETONIA           |
+|_______|________________________|
+| LYD   | DINAR LIBIA            |
+|_______|________________________|
+| MAD   | DIRHAM MAROCAN         |
+|_______|________________________|
+| MDL   | LEU MOLDOVENESC        |
+|_______|________________________|
+| MGF   | FRANC MADAGASCAR       |
+|_______|________________________|
+| MKD   | DENAR MACEDONIA        |
+|_______|________________________|
+| MMK   | KYAT MYANMAR           |
+|_______|________________________|
+| MNT   | TUGRIK MONGOLIA        |
+|_______|________________________|
+| MOP   | PATACA MACAO           |
+|_______|________________________|
+| MRO   | OUGUIYA MAURITANIA     |
+|_______|________________________|
+| MTL   | LIRA MALTEZĂ           |
+|_______|________________________|
+| MUR   | RUPIA MAURITIUS        |
+|_______|________________________|
+| MVR   | RUFIYAA MALDIVE        |
+|_______|________________________|
+| MWK   | KWACHA MALAWI          |
+|_______|________________________|
+| MXN   | PESO MEXICAN           |
+|_______|________________________|
+| MYR   | RINGGIT MALAIEZIA      |
+|_______|________________________|
+| MZM   | METICAL MOZAMBIC       |
+|_______|________________________|
+| NAD   | DOLAR NAMIBIAN         |
+|_______|________________________|
+| NGN   | NAIRA NIGERIA          |
+|_______|________________________|
+| NIO   | CORDOBA NICARAGUA      |
+|_______|________________________|
+| NOK   | COROANA NORVEGIANĂ     |
+|_______|________________________|
+| NPR   | RUPIA NEPALEZĂ         |
+|_______|________________________|
+| NZD   | DOLAR NEOZEELANDEZ     |
+|_______|________________________|
+| OMR   | RIYAL OMANI            |
+|_______|________________________|
+| PAB   | BALBOA PANAMEZĂ        |
+|_______|________________________|
+| PEN   | SOL NOU PERU           |
+|_______|________________________|
+| PGK   | KINA PAPUA&NOUA GUI.   |
+|_______|________________________|
+| PHP   | PESO FILIPINE          |
+|_______|________________________|
+| PKR   | RUPIA PAKISTAN         |
+|_______|________________________|
+| PLN   | ZLOT NOU POLONEZ       |
+|_______|________________________|
+| PYG   | GUARANI PARAGUAY       |
+|_______|________________________|
+| QAR   | RIYAL QATARI           |
+|_______|________________________|
+| RON   | LEU ROMÂNIA            |
+|_______|________________________|
+| RUB   | RUBLA RUSEASCĂ NOUĂ    |
+|_______|________________________|
+| RUR   | RUBLA RUSEASCĂ         |
+|_______|________________________|
+| RWF   | FRANC RWANDA           |
+|_______|________________________|
+| SAC   | RAND COM.SUD AFRICAN   |
+|_______|________________________|
+| SAR   | RIYAL ARABIA SAUDITĂ   |
+|_______|________________________|
+| SBD   | DOLAR INSULE SOLOMON   |
+|_______|________________________|
+| SCR   | RUPIE SEYCHELLES       |
+|_______|________________________|
+| SDP   | LIRA SUDANEZĂ          |
+|_______|________________________|
+| SEK   | COROANA SUEDEZĂ        |
+|_______|________________________|
+| SGD   | DOLAR SINGAPORE        |
+|_______|________________________|
+| SHP   | LIRA ST HELENA         |
+|_______|________________________|
+| SIT   | TOLAR SLOVENIAN        |
+|_______|________________________|
+| SKK   | COROANA SLOVACĂ        |
+|_______|________________________|
+| SLL   | LEU SIERRA LEONE       |
+|_______|________________________|
+| SOS   | SILING SOMALIA         |
+|_______|________________________|
+| SRG   | GULDEN SURINAM         |
+|_______|________________________|
+| STD   | DOBRA SAO TOME&PRINC   |
+|_______|________________________|
+| SVC   | COLON EL SALVADOR      |
+|_______|________________________|
+| SYP   | LIRA SIRIANĂ           |
+|_______|________________________|
+| SZL   | LILANGENI SWAZILAND    |
+|_______|________________________|
+| THB   | BAHT THAILANDEZ        |
+|_______|________________________|
+| TJR   | RUBLA TADJIKISTAN      |
+|_______|________________________|
+| TMM   | MANAT TURKMENISTAN     |
+|_______|________________________|
+| TND   | DINAR TUNISIAN         |
+|_______|________________________|
+| TOP   | TONGAN PA'ANGA         |
+|_______|________________________|
+| TRL   | LIRE TURCEȘTI          |
+|_______|________________________|
+| TRY   | LIRA TURCEASCĂ NOUĂ    |
+|_______|________________________|
+| TTD   | DOLAR TRINIDAD&TOBAG   |
+|_______|________________________|
+| TWD   | DOLAR NOU TAIWAN       |
+|_______|________________________|
+| TZS   | SILING TANZANIAN       |
+|_______|________________________|
+| UAH   | HRYVNA UCRAINEANĂ      |
+|_______|________________________|
+| UGX   | SILING UGANDA          |
+|_______|________________________|
+| USD   | DOLAR SUA              |
+|_______|________________________|
+| UYU   | PESO NOU URUGUAI       |
+|_______|________________________|
+| UZS   | SUM UZBEKISTAN         |
+|_______|________________________|
+| VEB   | BOLIVAR VENEZUELA      |
+|_______|________________________|
+| VND   | DONG VIETNAM           |
+|_______|________________________|
+| VUV   | VATU VANUATU           |
+|_______|________________________|
+| WST   | TALA SAMOA DE VEST     |
+|_______|________________________|
+| XAF   | FRANC COM. FINANCIARĂ |
+|_______|________________________|
+| XAU   | AUR                    |
+|_______|________________________|
+| XCD   | DOLAR CARAIBELE DE EST |
+|_______|________________________|
+| XDR   | DST                    |
+|_______|________________________|
+| XPF   | FRANC CFP              |
+|_______|________________________|
+| YER   | RIYAL YEMEN            |
+|_______|________________________|
+| YUM   | DINAR IUGOSLAV         |
+|_______|________________________|
+| ZAR   | RAND SUD-AFRICAN       |
+|_______|________________________|
+| ZMK   | KWACHA ZAMBIA          |
+|_______|________________________|
+| ZRN   | ZAIR NOU               |
+|_______|________________________|
+| ZWD   | DOLAR ZIMBABWE         |
+|_______|________________________|
+
+
+
+
+  ANEXA 3
+
+
+  Categoriile de URL-uri utilizate în schimbul de informații cu sistemul informatic național de
+supraveghere și monitorizare a datelor fiscale al Agenției Naționale de Administrare Fiscală
+
+
+    În schimbul de informații cu sistemul informatic, aparatele de marcat electronice fiscale
+utilizează următoarele categorii de URL-uri:
+  1. Adresa serverului la care se transmit datele prevăzute la art. 3 alin. (1) lit. a), b), c) și d), după
+caz, din anexa nr. 11 la normele metodologice. Această categorie de URL este codificată cu
+valoarea 1.
+   2. Adresa serverului la care se transmit datele prevăzute la art. 3 alin. (2) lit. a) și cele prevăzute
+la art. 3 alin. (1) lit. b), c) și d), după caz, din anexa nr. 11 la normele metodologice. Această
+categorie de URL este codificată cu valoarea 2.
+   3. Adresa serverului la care se transmit datele prevăzute la art. 3 alin. (2) lit. b) și cele prevăzute
+la art. 3 alin. (1) lit. b), c) și d), după caz, din anexa nr. 11 la normele metodologice. Această
+categorie de URL este codificată cu valoarea 3.
+   4. Adresa serverului la care se transmit datele prevăzute la art. 3 alin. (2) lit. c) și cele prevăzute
+la art. 3 alin. (1) lit. b), c) și d), după caz, din anexa nr. 11 la normele metodologice. Această
+categorie de URL este codificată cu valoarea 4.
+  5. Adresa serverului la care se efectuează operațiunea de reînnoire a certificatului digital al
+aparatului de marcat electronic fiscal ca urmare a cererii sistemului informatic. Această categorie
+de URL este codificată cu valoarea 5.

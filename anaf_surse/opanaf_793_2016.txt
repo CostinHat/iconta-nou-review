@@ -1,0 +1,489 @@
+                          ORDIN Nr. 793/2016 din 19 februarie 2016
+  pentru aprobarea modelului şi conţinutului formularului (307) "Declaraţie privind
+  sumele rezultate din ajustarea/corecţia ajustărilor/regularizarea taxei pe valoarea
+                                     adăugată"
+                      EMITENT:       MINISTERUL FINANŢELOR PUBLICE
+                        AGENŢIA NAŢIONALĂ DE ADMINISTRARE FISCALĂ
+
+           PUBLICAT ÎN: MONITORUL OFICIAL NR. 146 din 25 februarie 2016
+
+
+
+   În temeiul art. 11 alin. (3) din Hotărârea Guvernului nr. 520/2013 privind organizarea şi
+funcţionarea Agenţiei Naţionale de Administrare Fiscală, cu modificările şi completările
+ulterioare, al art. 270 alin. (7) şi art. 324 alin. (8) şi (9) din Legea nr. 227/2015 privind
+Codul fiscal, cu modificările şi completările ulterioare, al pct. 7 alin. (9), pct. 23 alin. (2),
+pct. 25 alin. (4), pct. 67 alin. (12), pct. 79 alin. (14) şi pct. 83 alin. (8), (9) şi (10) din titlul VII
+"Taxa pe valoarea adăugată" din Normele metodologice de aplicare a Legii nr. 227/2015
+privind Codul fiscal, aprobate prin Hotărârea Guvernului nr. 1/2016, cu modificările
+ulterioare, precum şi al art. 342 alin. (1) din Legea nr. 207/2015 privind Codul de
+procedură fiscală, cu modificările şi completările ulterioare,
+
+
+
+  preşedintele Agenţiei Naţionale de Administrare Fiscală emite următorul ordin:
+
+
+
+  ART. 1
+
+  Se aprobă modelul şi conţinutul formularului (307) "Declaraţie privind sumele rezultate
+din ajustarea/corecţia ajustărilor/regularizarea taxei pe valoarea adăugată", prevăzut în
+anexa nr. 1.
+  ART. 2
+
+  Formularul menţionat la art. 1 se completează şi se depune conform instrucţiunilor de
+completare prevăzute în anexa nr. 2.
+  ART. 3
+
+ Caracteristicile de tipărire, modul de difuzare, de utilizare şi de arhivare a formularului
+menţionat la art. 1 sunt prevăzute în anexa nr. 3.
+  ART. 4
+
+  (1) Suma reprezentând taxa pe valoarea adăugată de plată la bugetul de stat rezultată
+ca urmare a ajustărilor/corecţiei ajustărilor/regularizărilor taxei pe valoarea adăugată,
+declarată prin formularul prevăzut la art. 1, va fi achitată la bugetul de stat, potrivit
+reglementărilor legale în vigoare, în lei, în numerar, prin decontare bancară sau prin
+mandat poştal, în contul 20.A.10.01.05 "TVA de plată la bugetul de stat, pentru transferul
+unor active rezultate ca urmare a ajustărilor", deschis la unitatea Trezoreriei Statului din
+cadrul organului fiscal competent, codificat cu codul de identificare fiscală al plătitorului.
+   (2) Sumele negative rezultate ca urmare a ajustărilor/corecţiei ajustărilor/regularizărilor
+de taxă pe valoarea adăugată efectuate de persoanele impozabile a căror înregistrare în
+scopuri de TVA a fost anulată conform art. 316 alin. (11) lit. g) din Legea nr. 227/2015
+privind Codul fiscal, cu modificările şi completările ulterioare, se restituie potrivit procedurii
+legale aplicabile în materie.
+  ART. 5
+
+  Anexele nr. 1 - 3 fac parte integrantă din prezentul ordin.
+
+  ART. 6
+
+   Referirile la Codul fiscal din cuprinsul prezentului ordin reprezintă trimiteri la titlul VII
+"Taxa pe valoarea adăugată" din Legea nr. 227/2015, cu modificările şi completările
+ulterioare, iar referirile la Normele metodologice reprezintă trimiteri la titlul VII "Taxa pe
+valoarea adăugată" din Normele metodologice de aplicare a Legii nr. 227/2015 privind
+Codul fiscal, aprobate prin Hotărârea Guvernului nr. 1/2016, cu modificările ulterioare.
+  ART. 7
+
+  Prezentul ordin se publică în Monitorul Oficial al României, Partea I.
+
+  ART. 8
+
+   Direcţia generală proceduri pentru administrarea veniturilor, Direcţia generală de
+reglementare a colectării creanţelor bugetare, Direcţia generală de tehnologia informaţiei,
+Direcţia generală de administrare a marilor contribuabili, direcţiile generale regionale ale
+finanţelor publice, precum şi unităţile fiscale subordonate acestora vor lua măsuri pentru
+ducerea la îndeplinire a prevederilor prezentului ordin.
+
+
+
+                p. Preşedintele Agenţiei Naţionale de Administrare Fiscală,
+
+                Daniel Diaconescu,
+
+                vicepreşedinte
+
+
+
+  Bucureşti, 19 februarie 2016.
+
+  Nr. 793.
+
+
+
+  ANEXA 1 *1)
+
+
+
+  *1) Anexa nr. 1 este reprodusă în facsimil.
+                         _____________________________________________________________
+
+                        | Declaraţie privind sumele rezultate din        |       307         |
+
+       ANAF             | ajustarea/corecţia ajustărilor/regularizarea | Nr. de              |
+
+    Agenţia             | taxei pe valoarea adăugată                     | înregistrare |
+
+    Naţională de        |                                                | ca operator       |
+
+    Administrare        |                                                | de date cu        |
+
+    Fiscală             |                                                | caracter          |
+
+                        |                                                | personal 759 |
+
+                        |______________________________________________|______________|
+
+    ______________________________________________________________________________
+
+| Perioada de raportare                      | Luna |               | Anul |                 |
+
+|______________________________________|______|____________|______|____________|
+
+    ______________________________________________________________________________
+
+| I. FELUL DECLARAŢIEI                                                                       |
+
+|______________________________________________________________________________|
+
+|                                 _                                                          |
+
+| Declaraţie rectificativă |_|                                                               |
+
+| Temeiul legal pentru depunerea formularului 307 după anularea rezervei                     |
+
+| verificării ulterioare:                                                                    |
+
+| - art. 105 alin. (6) lit. a) din Legea nr. 207/2015 privind Codul de                  _    |
+
+| procedură fiscală, cu modificările şi completările ulterioare                        |_|   |
+
+| - art. 105 alin. (6) lit. b) din Legea nr. 207/2015, cu modificările şi               _    |
+
+| completările ulterioare                                                              |_|   |
+
+|______________________________________________________________________________|
+
+    ______________________________________________________________________________
+
+| II. DATE DE IDENTIFICARE A PERSOANEI IMPOZABILE                                            |
+
+|______________________________________________________________________________|
+
+| DENUMIRE/NUME, PRENUME |                                                                   |
+
+|________________________|_____________________________________________________|
+
+| COD DE IDENTIFICARE FISCALĂ                               | | | | | | | | | | | | | |
+
+|____________________________________________________|_|_|_|_|_|_|_|_|_|_|_|_|_|
+
+| DOMICILIUL FISCAL                                                                          |
+
+|______________________________________________________________________________|
+
+| JUDEŢ       |                    | SECTOR |     | LOCALITATE |                             |
+
+|________|___________________|________|_____|____________|_____________________|
+
+| STRADA |                                        | NR. |     | BLOC |         | SC. |       |
+
+|________|__________________________________|_____|____|______|_____|_____|____|
+
+| ET. |       | AP. |       | COD POŞTAL |        | TELEFON |                                |
+
+|_____|__|_____|______|____________|________|_________|________________________|
+| FAX            |                         | E-MAIL |                              |
+
+|______________|_________________________|________|____________________________|
+
+    ______________________________________________________________________________
+
+| III. DATE PRIVIND SUMELE REZULTATE DIN AJUSTAREA/CORECŢIA AJUSTĂRII/             |
+
+| REGULARIZAREA TVA                                                                |
+
+| În temeiul art. 270 alin. (7), art. 324 alin. (8) şi (9) din Legea               |
+
+| nr. 227/2015 privind Codul fiscal, cu modificările şi completările               |
+
+| ulterioare, al pct. 7 alin. (9), pct. 23 alin. (2), pct. 25 alin. (4),           |
+
+| pct. 67 alin. (12), pct. 79 alin. (14) şi pct. 83 alin. (8), (9) şi (10) din |
+
+| titlul VII "Taxa pe valoarea adăugată" din Normele metodologice de aplicare a|
+
+| Legii nr. 227/2015 privind Codul fiscal, aprobate prin                           |
+
+| Hotărârea Guvernului nr. 1/2016, cu modificările ulterioare, ca urmare a:        |
+
+|    _                                                                             |
+
+| |_| transferului de active,                                                      |
+
+|    _                                                                             |
+
+| |_| transferului dreptului de proprietate asupra activelor corporale fixe        |
+
+| achiziţionate printr-un contract de leasing,                                     |
+
+|    _                                                                             |
+
+| |_| anulării codului de înregistrare în scopuri de TVA conform art. 316          |
+
+| alin. (11) lit. a) - e), g) sau h) din Codul fiscal,                             |
+
+| declar că, din ajustarea/corecţia ajustărilor/regularizările taxei pe            |
+
+| valoarea adăugată, rezultă următoarele sume:                                     |
+
+| ____________________________________________________________________________ |
+
+|| Denumire/Nume, prenume        | Codul de înregistrare în   | Operaţiune| TVA   ||
+
+|| cedent/finanţator/beneficiar| scopuri de TVA al            | A/L/C*)   | (lei)||
+
+||                               | cedentului/finanţatorului/|            |       ||
+
+||                               | beneficiarului/            |           |       ||
+
+||_____________________________|___________________________|___________|______||
+
+||                               |                            |           |       ||
+
+||_____________________________|___________________________|___________|______||
+
+||                               |                            |           |       ||
+
+||_____________________________|___________________________|___________|______||
+
+||              Total            |              -             |           |       ||
+
+||_____________________________|___________________________|___________|______||
+
+|______________________________________________________________________________|
+
+    ______________________________________________________________________________
+
+| Sub sancţiunile aplicate faptei de fals în acte publice, declar că datele        |
+
+| înscrise în acest formular sunt corecte şi complete                              |
+
+|______________________________________________________________________________|
+
+    ______________________________________________________________________________
+
+| Numele persoanei care face declaraţia     |                                      |
+|_________________________________________|____________________________________|
+
+| Funcţia          |                               | Semnătura |                 |
+
+|________________|_______________________________|___________|_________________|
+
+    ______________________________________________________________________________
+
+|                 Se completează de personalul organului fiscal                  |
+
+|______________________________________________________________________________|
+
+| Organ fiscal         |                                                         |
+
+|____________________|_________________________________________________________|
+
+| Număr înregistrare |                   | Dată înregistrare | | |/| | |/| | | | |
+
+|____________________|_________________|___________________|_|_|_|_|_|_|_|_|_|_|
+
+| Numele persoanei care a verificat |                                            |
+
+|___________________________________|__________________________________________|
+
+      *) Se completează:
+
+      A - în cazul transferului de active;
+
+  L - în cazul transferului dreptului de proprietate asupra activelor corporale fixe
+achiziţionate printr-un contract de leasing;
+    C - în cazul anulării codului de înregistrare în scopuri de TVA conform art. 316 alin. (11)
+lit. a) - e), g) sau h) din Codul fiscal
+
+
+
+     Cod: 14.13.01.02/t.a.
+
+
+
+     ANEXA 2
+
+
+
+   Instrucţiuni de completare a formularului (307) "Declaraţie privind sumele
+rezultate din ajustarea/corecţia ajustărilor/regularizarea taxei pe valoarea adăugată"
+
+
+
+  Declaraţia privind sumele rezultate din ajustarea/corecţia ajustărilor/regularizarea taxei
+pe valoarea adăugată, denumită în continuare declaraţie, se completează şi se depune de
+către:
+   - persoana impozabilă, beneficiară a transferului de active prevăzut la art. 270 alin. (7)
+din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare,
+denumită în continuare Codul fiscal, în calitate de succesor al cedentului în ceea ce
+priveşte ajustarea dreptului de deducere, dacă nu este înregistrată în scopuri de TVA
+conform art. 316 din Codul fiscal şi nici nu se înregistrează în scopuri de TVA ca urmare a
+transferului;
+  - locatarul/utilizatorul activelor corporale fixe achiziţionate printr-un contract de leasing,
+dacă transferul dreptului de proprietate asupra bunurilor are loc după scoaterea din
+evidenţa persoanelor înregistrate în scopuri de TVA a locatarului/utilizatorului în baza
+prevederilor art. 310 alin. (7) din Codul fiscal;
+   - persoana impozabilă pentru care înregistrarea în scopuri de TVA a fost anulată
+conform art. 316 alin. (11) lit. a) - e) sau h) din Codul fiscal, care a efectuat ajustări
+incorecte sau nu a efectuat ajustările de taxă aferentă bunurilor de capital, potrivit pct. 79
+alin. (14) din titlul VII "Taxa pe valoarea adăugată" din Normele metodologice de aplicare a
+Legii nr. 227/2015 privind Codul fiscal, aprobate prin Hotărârea Guvernului nr. 1/2016, cu
+modificările ulterioare, denumite în continuare norme metodologice;
+  - persoana impozabilă pentru care înregistrarea în scopuri de TVA a fost anulată
+conform art. 316 alin. (11) lit. g) din Codul fiscal, care:
+  • nu a efectuat ajustările de taxă prevăzute de lege în ultimul decont depus înainte de
+scoaterea din evidenţa persoanelor înregistrate în scopuri de TVA sau a efectuat ajustări
+incorecte, conform art. 270 alin. (4), art. 304, 305 sau 332 din Codul fiscal;
+   • trebuie să efectueze regularizările/ajustările prevăzute la art. 280 alin. (6) din Codul
+fiscal şi pct. 23 alin. (2) din normele metodologice, la art. 287 din Codul fiscal şi pct. 25
+alin. (4) din normele metodologice, precum şi la pct. 67 alin. (12) din normele
+metodologice, pentru operaţiuni realizate înainte de anularea înregistrării.
+  Declaraţia se depune astfel:
+
+  - până la data de 25 inclusiv a lunii următoare celei în care are loc transferul de active;
+
+  - până la data de 25 inclusiv a lunii următoare celei în care are loc transferul dreptului de
+proprietate asupra activelor corporale fixe achiziţionate printr-un contract de leasing;
+  - până la data de 25 inclusiv a lunii următoare celei în care a intervenit obligaţia sau,
+după caz, dreptul de ajustare/corecţie a ajustărilor/regularizare a taxei pe valoarea
+adăugată privind sumele rezultate ca urmare a acestor ajustări/corecţii ale
+ajustărilor/regularizări efectuate.
+   Declaraţia se depune la organul fiscal în a cărui evidenţă persoana impozabilă este
+înregistrată ca plătitor de impozite şi taxe, astfel:
+  - direct sau prin împuternicit, la registratură; sau
+
+  - la poştă, prin scrisoare recomandată.
+
+   În situaţia în care din declaraţie rezultă taxa pe valoarea adăugată de plată la bugetul de
+stat, aceasta se achită, până la data prevăzută de lege pentru depunerea declaraţiei,
+potrivit prevederilor art. 326 din Codul fiscal, în lei, în numerar, prin decontare bancară sau
+prin mandat poştal, în contul 20.A.10.01.05 "TVA de plată la bugetul de stat, pentru
+transferul unor active rezultate ca urmare a ajustărilor", deschis la unitatea Trezoreriei
+Statului din cadrul organului fiscal competent, codificat cu codul de identificare fiscală al
+plătitorului.
+  Declaraţia se completează de către contribuabil sau de către împuternicit, înscriind cu
+majuscule, citeţ şi corect, toate datele prevăzute de formular.
+  Perioada de raportare se completează cu:
+
+  - anul şi luna în care a avut loc transferul de active, respectiv transferul dreptului de
+proprietate asupra activelor corporale fixe achiziţionate printr-un contract de leasing, în
+condiţiile art. 270 alin. (7) din Codul fiscal şi ale pct. 83 alin. (9) din normele metodologice;
+   - anul şi luna în care a intervenit obligaţia sau, după caz, dreptul de ajustare/corecţie a
+ajustărilor/regularizare a taxei pe valoarea adăugată, în condiţiile prevăzute de Codul fiscal
+şi de normele metodologice.
+
+
+
+  I. FELUL DECLARAŢIEI
+
+  Declaraţia depusă iniţial se rectifică prin depunerea unei noi declaraţii, pe acelaşi format,
+bifând căsuţa corespunzătoare de pe formular.
+   În situaţia în care persoana impozabilă depune declaraţia după anularea rezervei
+verificării ulterioare, în condiţiile art. 105 alin. (6) din Legea nr. 207/2015 privind Codul de
+procedură fiscală, cu modificările şi completările ulterioare, se bifează, în căsuţa
+corespunzătoare, temeiul legal pentru depunerea declaraţiei.
+
+
+
+  II. DATE DE IDENTIFICARE A PERSOANEI IMPOZABILE
+
+   1. Denumire/Nume, prenume - se înscrie, după caz, denumirea persoanei juridice,
+asociaţiei sau a entităţii fără personalitate juridică ori numele şi prenumele persoanei
+fizice, după caz, beneficiare a transferului de active, ale locatarului/utilizatorului activelor
+corporale fixe achiziţionate printr-un contract de leasing, respectiv ale persoanei
+impozabile a cărei înregistrare în scopuri de TVA a fost anulată în condiţiile art. 316 alin.
+(11) lit. a) - e), g) sau h) din Codul fiscal şi care nu a efectuat ajustările/a efectuat ajustări
+incorecte/efectuează regularizarea taxei pe valoarea adăugată, potrivit prevederilor
+Codului fiscal şi ale normelor metodologice.
+  2. Cod de identificare fiscală - se completează astfel:
+
+  - contribuabilii persoane juridice, asocierile şi alte entităţi fără personalitate juridică, cu
+excepţia comercianţilor, înscriu codul de înregistrare fiscală;
+   - comercianţii persoane fizice şi juridice, precum şi alte entităţi care se înregistrează
+potrivit legii speciale la registrul comerţului înscriu codul unic de înregistrare atribuit potrivit
+legii speciale;
+  - contribuabilii persoane fizice, care desfăşoară activităţi economice în mod independent
+sau exercită profesii libere, cu excepţia comercianţilor, înscriu codul de înregistrare fiscală;
+  - persoanele fizice înscriu codul numeric personal atribuit potrivit legii speciale;
+
+  - persoanele fizice care nu deţin cod numeric personal înscriu numărul de identificare
+fiscală atribuit de organul fiscal competent din subordinea Agenţiei Naţionale de
+Administrare Fiscală.
+  Înscrierea cifrelor în casetă se face cu aliniere la dreapta.
+
+  3. Domiciliul fiscal se completează cu datele privind adresa domiciliului fiscal al
+persoanei impozabile.
+
+
+
+   III. DATE PRIVIND SUMELE                  REZULTATE        DIN    AJUSTAREA/CORECŢIA
+AJUSTĂRII/REGULARIZAREA TVA
+   Se completează cu datele de identificare a persoanei impozabile cedente de la care au
+fost preluate total sau parţial activele, a finanţatorului activelor corporale fixe achiziţionate
+printr-un contract de leasing sau a beneficiarului, respectiv denumirea/numele, prenumele
+şi codul de înregistrare în scopuri de taxă pe valoarea adăugată (dacă este cazul).
+   Se declară, de asemenea, suma în lei reprezentând taxa pe valoarea adăugată de plată
+rezultată din transferul de active prevăzut la art. 270 alin. (7) din Codul fiscal sau din
+transferul dreptului de proprietate asupra activelor corporale fixe achiziţionate printr-un
+contract de leasing, în condiţiile prevăzute de pct. 83 alin. (9) din normele metodologice.
+  Se declară, după caz, suma în lei reprezentând taxă pe valoarea adăugată rezultată ca
+urmare a ajustărilor taxei aferente bunurilor de capital, de persoanele impozabile pentru
+care înregistrarea în scopuri de TVA a fost anulată conform art. 316 alin. (11) lit. a) - e) sau
+h) din Codul fiscal, conform pct. 79 alin. (14) din normele metodologice.
+  Se declară, după caz, suma în lei reprezentând taxă pe valoarea adăugată rezultată ca
+urmare a ajustărilor/corecţiilor ajustărilor/regularizărilor, pozitivă sau negativă, în funcţie de
+rezultatul acestora, efectuate de persoanele impozabile pentru care înregistrarea în
+scopuri de TVA a fost anulată conform art. 316 alin. (11) lit. g) din Codul fiscal şi care:
+  - nu au efectuat ajustările de taxă prevăzute de lege în ultimul decont depus înainte de
+scoaterea din evidenţa persoanelor înregistrate în scopuri de TVA sau au efectuat ajustări
+incorecte, conform art. 270 alin. (4), art. 304, 305 sau 332 din Codul fiscal;
+   - trebuie să efectueze regularizările/ajustările prevăzute la art. 280 alin. (6) din Codul
+fiscal şi pct. 23 alin. (2) din normele metodologice, la art. 287 din Codul fiscal şi pct. 25
+alin. (4) din normele metodologice, precum şi la pct. 67 alin. (12) din normele
+metodologice, pentru operaţiuni realizate înainte de anularea înregistrării.
+
+
+
+  ANEXA 3
+
+
+
+   Caracteristicile de tipărire, modul de difuzare, de utilizare şi de arhivare a
+formularului (307) "Declaraţie privind sumele rezultate din ajustarea/corecţia
+ajustărilor/regularizarea taxei pe valoarea adăugată"
+   1. Denumirea formularului: "Declaraţie privind sumele rezultate din ajustarea/corecţia
+ajustărilor/regularizarea taxei pe valoarea adăugată"
+  2. Cod: 14.13.01.02/t.a.
+
+  3. Format: A4/t1
+
+  4. Caracteristicile de tipărire:
+
+  - pe o singură faţă;
+
+  - se poate utiliza echipament informatic pentru editare.
+
+  5. Se utilizează la:
+
+  - declararea sumei reprezentând taxa pe valoarea adăugată de plată la bugetul de stat
+de către persoana impozabilă, neînregistrată în scopuri de TVA, beneficiară a transferului
+parţial sau total de active, sumă rezultată ca urmare a ajustărilor TVA conform art. 270 alin.
+(4), art. 304, 305 sau 332, după caz, din Legea nr. 227/2015 privind Codul fiscal, cu
+modificările şi completările ulterioare, denumită în continuare Codul fiscal;
+    - declararea sumei reprezentând taxa pe valoarea adăugată de plată la bugetul de stat
+de către locatarul/utilizatorul activelor corporale fixe achiziţionate printr-un contract de
+leasing, dacă transferul dreptului de proprietate asupra bunurilor are loc după scoaterea
+sa din evidenţa persoanelor înregistrate în scopuri de TVA, conform pct. 83 alin. (9) din
+titlul VII "Taxa pe valoarea adăugată" din Normele metodologice de aplicare a Legii nr.
+227/2015 privind Codul fiscal, aprobate prin Hotărârea Guvernului nr. 1/2016, cu
+modificările ulterioare;
+  - declararea sumei reprezentând taxa pe valoarea adăugată, pozitivă sau negativă,
+rezultată ca urmare a ajustărilor efectuate/a corecţiei ajustărilor/a regularizării taxei ca
+urmare a ajustărilor efectuate, în condiţiile art. 324 alin. (9) din Codul fiscal.
+   6. Se întocmeşte în două exemplare de către persoanele impozabile neînregistrate în
+scopuri de TVA, beneficiare ale transferului de active, de către locatarul/utilizatorul
+activelor corporale fixe achiziţionate printr-un contract de leasing, dacă transferul dreptului
+de proprietate asupra bunurilor are loc după scoaterea sa din evidenţa persoanelor
+înregistrate în scopuri de TVA, respectiv de către persoana impozabilă pentru care
+înregistrarea în scopuri de TVA a fost anulată conform art. 316 alin. (11) lit. a) - e), g) sau
+h) din Codul fiscal, care efectuează ajustarea/corecţia ajustărilor/regularizarea taxei pe
+valoarea adăugată, în condiţiile art. 324 alin. (9) din Codul fiscal.
+  7. Circulă:
+
+  - originalul la organul fiscal;
+
+  - copia la contribuabil.
+
+  8. Se arhivează la dosarul fiscal al contribuabilului.

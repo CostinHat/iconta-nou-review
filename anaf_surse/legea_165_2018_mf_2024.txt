@@ -1,0 +1,754 @@
+             LEGE Nr. 165/2018 din 10 iulie 2018
+privind acordarea biletelor de valoare
+
+  Text în vigoare începând cu data de 11 mai 2024
+  REALIZATOR: COMPANIA DE INFORMATICĂ NEAMŢ
+
+  Text actualizat prin produsul informatic legislativ LEX EXPERT în baza actelor
+normative modificatoare, publicate în Monitorul Oficial al României, Partea I,
+până la 25 aprilie 2024.
+
+  Act de bază
+#B: Legea nr. 165/2018, publicată în Monitorul Oficial al României, Partea I, nr.
+599 din 13 iulie 2018
+
+  Acte modificatoare
+#M21: Ordonanţa de urgenţă a Guvernului nr. 38/2024
+#M20: Legea nr. 87/2024
+#M19: Ordonanţa de urgenţă a Guvernului nr. 5/2024
+#M18: Hotărârea Guvernului nr. 43/2024
+#M17: Ordonanţa de urgenţă a Guvernului nr. 115/2023
+#M16: Ordonanţa de urgenţă a Guvernului nr. 69/2023
+#M15: Ordonanţa de urgenţă a Guvernului nr. 58/2023
+#M14: Legea nr. 43/2023
+#M13: Ordonanţa de urgenţă a Guvernului nr. 168/2022
+#M12: Legea nr. 187/2022
+#M11: Ordonanţa de urgenţă a Guvernului nr. 63/2022
+#M10: Legea nr. 111/2022
+#M9: Ordonanţa de urgenţă a Guvernului nr. 44/2022**
+#M8: Ordonanţa de urgenţă a Guvernului nr. 131/2021
+#M7: Ordonanţa de urgenţă a Guvernului nr. 130/2021
+#M6: Ordonanţa de urgenţă a Guvernului nr. 226/2020
+#M5: Legea nr. 59/2020**
+#M4: Legea nr. 24/2020
+#M3: Legea nr. 30/2019
+#M2: Ordonanţa de urgenţă a Guvernului nr. 114/2018
+#M1: Ordonanţa de urgenţă a Guvernului nr. 107/2018
+
+  Actele normative marcate cu două asteriscuri (**) se referă la derogări de la
+Legea nr. 165/2018 sau conţin modificări/abrogări efectuate asupra acestor
+derogări.
+   Modificările şi completările efectuate prin actul modificator sunt scrise cu font
+italic. În faţa fiecărei modificări sau completări este indicat actul normativ care a
+efectuat modificarea sau completarea respectivă, în forma #M1.
+
+#CIN
+  NOTE:
+  1. Prin Hotărârea Guvernului nr. 1045/2018 au fost aprobate Normele
+metodologice de aplicare a Legii nr. 165/2018 privind acordarea biletelor de
+valoare.
+
+   2. Conform art. IV alin. (1) din Ordonanţa de urgenţă a Guvernului nr.
+115/2023 (#M17), în anul 2024, instituţiile şi autorităţile publice, astfel cum sunt
+definite la art. 2 alin. (1) pct. 30 din Legea nr. 500/2002 şi la art. 2 alin. (1) pct. 39
+din Legea nr. 273/2006, indiferent de sistemul de finanţare şi de subordonare,
+inclusiv activităţile finanţate integral din venituri proprii, înfiinţate pe lângă
+instituţiile publice, nu acordă personalului din cadrul acestora bilete de valoare,
+cu excepţia tichetelor de creşă, reglementate de Legea nr. 165/2018.
+   Conform art. IV alin. (3) din Ordonanţa de urgenţă a Guvernului nr. 115/2023
+(#M17), în anul 2024, serviciile publice autonome de interes naţional, cu
+personalitate juridică, reglementate prin Legea nr. 41/1994, republicată, nu
+finanţează din fondurile alocate de la bugetul de stat acordarea pentru angajaţii
+proprii de bilete de valoare, cu excepţia tichetelor de creşă, reglementate de Legea
+nr. 165/2018, respectiv nu plătesc premii sau ore suplimentare din aceste fonduri.
+
+#B
+  Parlamentul României adoptă prezenta lege.
+
+  CAPITOLUL I
+  Dispoziţii generale
+
+#M3
+   ART. 1
+   (1) Prezenta lege reglementează modul de acordare, în beneficiul angajaţilor, a
+biletelor de valoare. Regimul fiscal al biletelor de valoare este prevăzut în Legea
+nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare.
+#M7
+   (2) Biletele de valoare se emit exclusiv pe suport electronic.
+#M20
+   (3) În sensul prezentei legi, prin suport electronic se înţelege orice dispozitiv
+fizic sau instrument virtual care poate fi utilizat de către beneficiarul său pentru a
+efectua operaţiuni cu biletele de valoare.
+#B
+   ART. 2
+   (1) În sensul prezentei legi, biletele de valoare care pot fi acordate sunt: tichete
+de masă, tichete cadou, tichete de creşă, tichete culturale şi vouchere de vacanţă.
+#M7
+   (2) *** Abrogat ~ #Formă anterioară
+#B
+   ART. 3
+   În sensul prezentei legi, angajatorii pot fi:
+   a) instituţiile publice centrale şi locale, aşa cum sunt definite la art. 2 pct. 30 din
+Legea nr. 500/2002 privind finanţele publice, cu modificările şi completările
+ulterioare, şi la art. 2 pct. 39 din Legea nr. 273/2006 privind finanţele publice
+locale, cu modificările şi completările ulterioare, indiferent de sistemul de finanţare
+şi de subordonare, inclusiv cele finanţate integral din venituri proprii;
+   b) operatorii economici, astfel cum sunt definiţi de Ordonanţa Guvernului nr.
+26/2013 privind întărirea disciplinei financiare la nivelul unor operatori economici
+la care statul sau unităţile administrativ-teritoriale sunt acţionari unici ori majoritari
+sau deţin direct ori indirect o participaţie majoritară, aprobată cu completări prin
+Legea nr. 47/2014, cu modificările şi completările ulterioare;
+   c) regiile autonome, societăţile şi companiile naţionale, societăţile, indiferent de
+forma juridică de organizare şi de forma de proprietate;
+   d) instituţiile financiare şi instituţiile de credit;
+   e) organizaţiile cooperatiste, societăţile agricole şi alte forme de asociere
+agricolă cu personalitate juridică;
+   f) organizaţiile nonprofit, precum şi orice altă entitate care are statutul legal de
+persoană juridică constituită potrivit legislaţiei române.
+   ART. 4
+   Biletele de valoare se acordă în limitele sumelor prevăzute cu această destinaţie
+în bugetul de stat sau, după caz, în bugetele locale, pentru unităţile din domeniul
+bugetar, şi în limitele sumelor prevăzute cu această destinaţie în bugetul de venituri
+şi cheltuieli aprobat, pentru celelalte categorii de angajatori.
+   ART. 5*)
+   (1) Biletele de valoare se emit numai de către unităţile autorizate de Ministerul
+Finanţelor Publice, denumite în continuare unităţi emitente.
+   (2) Unităţile emitente desfăşoară această activitate numai în baza autorizaţiei de
+funcţionare, acordată de Ministerul Finanţelor Publice. Autorizaţia de funcţionare
+se acordă potrivit criteriilor stabilite de către Ministerul Finanţelor Publice, prin
+ordin al ministrului, pentru fiecare tip de bilet de valoare în parte, astfel încât să se
+asigure dezvoltarea concurenţială a serviciilor prevăzute de prezenta lege.
+   (3) Pot avea calitatea de unităţi emitente persoanele juridice înfiinţate în baza
+Legii societăţilor nr. 31/1990, republicată, cu modificările şi completările
+ulterioare, precum şi instituţiile de credit, persoane juridice române şi sucursalele
+instituţiilor de credit autorizate în state membre ale Uniunii Europene şi notificate
+către Banca Naţională a României, potrivit legii, cu respectarea prevederilor alin.
+(1) şi (2).
+   (4) Unităţile emitente sunt obligate să ia măsurile necesare pentru asigurarea
+circulaţiei biletelor de valoare în condiţii de siguranţă.
+   (5) Unităţile emitente actualizează lunar sau la cererea angajatorilor lista
+operatorilor economici şi a unităţilor afiliate care acceptă bilete de valoare.
+#CIN
+   *) 1. Conform art. 24 din Ordonanţa de urgenţă a Guvernului nr. 63/2022
+privind unele măsuri temporare pentru acordarea de sprijin material categoriilor
+de persoane aflate în situaţii de risc de deprivare materială şi/sau risc de sărăcie
+extremă, suportate parţial din fonduri externe nerambursabile, precum şi unele
+măsuri de distribuire a acestuia (#M11), prin derogare de la prevederile art. 5
+alin. (2) din Legea nr. 165/2018, unităţile emitente care deţin autorizaţii de
+funcţionare potrivit legii la data intrării în vigoare a respectivei ordonanţe de
+urgenţă sunt autorizate de către Ministerul Finanţelor pentru emiterea tichetului
+social pe suport electronic asimilat bonurilor de valoare şi beneficiilor sociale,
+prin simpla notificare, depusă la Ministerul Finanţelor însoţită de documentele
+justificative pentru dovedirea calităţii de unitate emitentă, fără a mai fi necesară
+emiterea altor reglementări legale în acest sens.
+   2. Conform art. 21 din Ordonanţa de urgenţă a Guvernului nr. 58/2023 privind
+unele măsuri pentru acordarea unei prime de carieră didactică pentru personalul
+didactic şi didactic auxiliar, precum şi unei prime de carieră profesională pentru
+personalul nedidactic din învăţământul de stat, suportate din fonduri externe
+nerambursabile (#M15), prin derogare de la prevederile art. 5 alin. (2) din Legea
+nr. 165/2018, unităţile emitente care deţin autorizaţii de funcţionare potrivit legii
+la data intrării în vigoare a respectivei ordonanţe de urgenţă sunt autorizate de
+către Ministerul Finanţelor pentru emiterea măsurilor de susţinere a activităţii
+didactice pe suport electronic asimilat bonurilor de valoare şi beneficiilor sociale,
+prin notificare depusă la Ministerul Finanţelor însoţită de documentele
+justificative pentru dovedirea calităţii de unitate emitentă, fără a mai fi necesară
+emiterea altor reglementări legale în acest sens.
+
+#B
+  ART. 6
+   (1) Unităţile emitente sunt obligate să deschidă conturi sau subconturi de plăţi
+distincte, prin care se vor derula sumele reprezentând încasările şi plăţile aferente
+valorii nominale a biletelor de valoare, astfel încât să permită o evidenţă clară a
+sumelor utilizate în temeiul contractelor încheiate cu angajatorii şi cu unităţile care
+acceptă bilete de valoare.
+   (2) Unităţile emitente de bilete de valoare pe suport electronic pot organiza
+platforme pentru emiterea acestora sau pot încheia contracte cu organizaţii care
+administrează schema/aranjamentul de plată ori alte organizaţii specializate, după
+caz.
+   ART. 7
+   (1) Decontarea biletelor de valoare între unităţile care acceptă aceste bilete de
+valoare şi unităţile emitente se face numai prin intermediul unităţilor bancare sau
+prin unităţile teritoriale ale Trezoreriei Statului, după caz, potrivit legii. Acelaşi
+regim de decontare se va aplica şi în cazul relaţiei dintre angajator şi unitatea
+emitentă.
+   (2) Sumele derulate prin operaţiunile cu biletele de valoare de către unităţile
+emitente nu pot fi utilizate pentru reinvestirea în alte scopuri.
+#M7
+   ART. 8
+   (1) Costurile legate de emiterea biletelor de valoare se suportă integral de
+angajatori.
+   (2) Angajatorul care contractează cu o unitate emitentă serviciul de emitere a
+biletelor de valoare achită atât contravaloarea nominală a biletelor de valoare
+distribuite angajaţilor, cât şi costul emiterii suportului electronic.
+   (3) Valoarea nominală a biletelor de valoare acordate angajaţilor nu poate fi
+diminuată în niciun mod.
+   (4) Suportul electronic al biletelor de valoare nu permite efectuarea de
+operaţiuni de retragere de numerar sau de preschimbare în numerar.
+   (5) Biletele de valoare pot fi utilizate doar pe teritoriul României, în termenul de
+valabilitate şi numai pentru achiziţionarea bunurilor şi serviciilor pentru care au
+fost emise.
+   (6) Suportul electronic poate fi alimentat exclusiv cu valoarea nominală a
+biletelor de valoare acordate angajaţilor, stabilită conform prezentei legi.
+   (7) Biletele de valoare pot fi utilizate numai cu respectarea prevederilor alin.
+(5), inclusiv pentru plăţi online.
+#M3
+   ART. 9 *** Abrogat ~ #Formă anterioară
+#M20
+   ART. 10
+   (1) Angajatorii, împreună cu organizaţiile sindicale legal constituite sau, după
+caz, cu reprezentanţii salariaţilor, stabilesc de comun acord categoriile de bilete
+de valoare care se acordă angajaţilor, frecvenţa acordării acestora şi valoarea
+lor, acolo unde este cazul, precum şi unitatea emitentă şi modalitatea de acordare,
+respectiv prin dispozitiv fizic sau instrument virtual. La cererea salariatului,
+angajatorul care optează pentru emiterea biletelor de valoare exclusiv printr-un
+instrument virtual poate solicita oricând unităţii emitente şi emiterea dispozitivului
+fizic al biletului de valoare, conform contractului încheiat cu unitatea emitentă.
+#M7
+   (2) Unităţile emitente au obligaţia de a transmite angajatorilor lista unităţilor
+corespunzătoare reţelei utilizate la care salariaţii pot folosi biletele de valoare. La
+stabilirea acestor unităţi vor fi avute în vedere calitatea serviciilor şi un nivel
+redus al preţurilor prin practicarea unor adaosuri comerciale minime.
+   (3) Contractarea serviciilor privind emiterea biletelor de valoare de către
+angajatorii care au calitatea de autoritate contractantă în înţelesul Legii nr.
+98/2016 privind achiziţiile publice, cu modificările şi completările ulterioare, se
+realizează în condiţiile legislaţiei în vigoare.
+   (4) Biletele de valoare pot fi utilizate numai de către/la unităţi care au încheiat
+direct contracte de prestări ale serviciilor prevăzute de prezenta lege cu unităţi
+emitente, pentru fiecare categorie de bilet de valoare în parte.
+   (5) Valoarea biletelor de valoare nu poate fi transferată salariaţilor pe suportul
+electronic dacă, la data stabilită pentru transfer, angajatorii nu au achitat unităţii
+emitente, integral, contravaloarea nominală a biletelor de valoare achiziţionate,
+inclusiv costurile aferente emiterii acestora pe suport electronic.
+
+#B
+  CAPITOLUL II
+  Tichetele de masă
+
+#M7
+   ART. 11
+   (1) Tichetele de masă sunt bilete de valoare acordate angajaţilor lunar, ca
+alocaţie individuală de hrană, utilizate numai pentru achitarea mesei sau pentru
+achiziţionarea de produse alimentare.
+   (2) Tichetele de masă pot fi utilizate doar în unităţi de alimentaţie publică,
+magazine alimentare, cantine-restaurant, bufete sau orice alte tipuri de unităţi
+care comercializează produse alimentare şi care au încheiat contracte de prestare
+a serviciilor reglementate de prezenta lege cu unităţile emitente de tichete de masă
+şi trebuie să permită, în mod exclusiv, utilizarea tichetelor pentru achitarea mesei
+sau pentru achiziţionarea de produse alimentare, inclusiv pentru plata online a
+acestora.
+   (3) Debitarea sumelor corespunzătoare produselor alimentare solicitate de
+salariat se realizează la valoarea respectivelor produse alimentare.
+#M7
+   ART. 12
+   (1) Valoarea tichetelor de masă este transferată lunar salariaţilor de către
+unitatea emitentă, corespunzător numărului de zile lucrătoare din luna pentru care
+se face transferul, conform contractului încheiat de unitatea emitentă cu
+angajatorul.
+   (2) Salariatul poate utiliza lunar un număr de tichete de masă cel mult egal cu
+numărul de zile lucrate.
+   (3) Salariatul are obligaţia să restituie angajatorului, la finele fiecărei luni,
+precum şi la încetarea contractului individual de muncă, valoarea
+corespunzătoare tichetelor de masă necuvenite.
+#M7
+   ART. 13*)
+   Fiecare tichet de masă este valabil numai dacă are înscrise pe suportul
+electronic sau stocate într-un alt mod în acesta următoarele menţiuni:
+   a) numele şi adresa emitentului;
+   b) perioada de valabilitate a utilizării tichetului de masă;
+   c) interdicţia de a fi utilizat pentru achiziţionarea de ţigări sau de produse
+alcoolice;
+   d) numele, prenumele şi codul numeric personal ale salariatului care este în
+drept să utilizeze tichetul de masă.
+#CIN
+   *) Derogări de la prevederile art. 13 au fost acordate prin:
+   - art. XV alin. (1) din Ordonanţa de urgenţă a Guvernului nr. 44/2022 privind
+stabilirea unor măsuri în cadrul sistemului de sănătate, precum şi pentru
+interpretarea, modificarea şi completarea unor acte normative (#M9).
+   Precizăm că dispoziţiile de derogare menţionate mai sus sunt reproduse în pct.
+D.3 din nota D de la sfârşitul textului actualizat.
+
+#M16
+  ART. 14*)
+  (1) Începând cu data de 1 august 2023, valoarea nominală a unui tichet de masă
+nu poate depăşi suma de 35 lei.
+  (2) Începând cu data de 1 ianuarie 2024, valoarea nominală a unui tichet de
+masă nu poate depăşi suma de 40 lei.
+#CIN
+  *) Conform art. II alin. (1) din Ordonanţa de urgenţă a Guvernului nr. 69/2023
+(#M16), începând cu data de 1 august 2023, valoarea nominală prevăzută la art.
+14 alin. (1) din Legea nr. 165/2018 se va aplica până la data de 31 decembrie
+2023.
+  Conform art. II alin. (2) din Ordonanţa de urgenţă a Guvernului nr. 69/2023
+(#M16), începând cu 1 ianuarie 2024, valoarea nominală prevăzută la art. 14 alin.
+(2) din Legea nr. 165/2018 se va aplica şi pentru lunile august şi septembrie 2024.
+
+#B
+  CAPITOLUL III
+  Tichetele cadou
+
+#M7
+   ART. 15
+   (1) Tichetele cadou sunt bilete de valoare acordate ocazional angajaţilor
+proprii pentru cheltuieli sociale.
+   (2) Este interzisă acordarea de tichete cadou altor categorii de beneficiari decât
+cei prevăzuţi la alin. (1).
+#M12
+   (3) Prin excepţie de la prevederile alin. (2), organizaţiile sindicale legal
+constituite pot acorda din fonduri proprii, ocazional, tichete cadou membrilor
+proprii care nu au calitatea de angajaţi ai organizaţiei sindicale.
+   (4) Frecvenţa acordării tichetelor cadou prevăzute la alin. (3) şi valoarea lor se
+stabilesc de către conducerea organizaţiei sindicale. Prevederile referitoare la
+achiziţionarea şi emiterea tichetelor cadou se aplică în mod corespunzător.
+#M7
+   ART. 16
+   (1) Nivelul maxim al sumelor acordate sub forma tichetelor cadou pentru
+cheltuieli sociale nu poate depăşi suma stabilită conform art. 10 alin. (1).
+   (2) Valoarea nominală a unui tichet cadou acordat potrivit art. 15 alin. (1) este
+de 10 lei sau un multiplu de 10, dar nu mai mare de 50 lei.
+#M7
+   ART. 17
+   Fiecare tichet cadou este valabil numai dacă are înscrise pe suportul electronic
+sau stocate într-un alt mod în acesta următoarele menţiuni:
+   a) numele şi adresa emitentului;
+   b) perioada de valabilitate a utilizării tichetului cadou;
+   c) numele, prenumele şi codul numeric personal ale salariatului care este în
+drept să utilizeze tichetul cadou.
+#B
+  CAPITOLUL IV
+  Tichetele de creşă
+
+   ART. 18
+   (1) Tichetele de creşă sunt bilete de valoare care se acordă, lunar, angajaţilor
+care nu beneficiază de concediul şi de indemnizaţia acordate pentru creşterea
+copilului în vârstă de până la 2 ani, respectiv de până la 3 ani în cazul copilului cu
+handicap.
+   (2) Tichetele de creşă pot fi utilizate numai pentru achitarea taxelor la creşa unde
+este înscris copilul.
+   (3) Tichetele de creşă se acordă, la cerere, unuia dintre părinţi sau tutorelui
+căruia i-a fost încredinţat copilul spre creştere şi educare, pe baza livretului de
+familie.
+   (4) Nu pot beneficia de tichete de creşă asistenţii maternali profesionişti sau
+persoanele la care este găzduit copilul şi pentru care s-a instituit măsura
+plasamentului în regim de urgenţă, în temeiul Legii nr. 272/2004 privind protecţia
+şi promovarea drepturilor copilului, republicată, cu modificările şi completările
+ulterioare.
+   ART. 19
+   (1) Nivelul maxim al sumelor acordate sub forma tichetelor de creşă nu poate
+depăşi suma de 450 de lei*) pentru o lună, pentru fiecare copil aflat la creşă.
+   (2) Valoarea nominală a unui tichet de creşă este de 10 lei sau un multiplu de 10,
+dar nu mai mare de 100 lei.
+   (3) Valoarea tichetelor de creşă se cumulează cu alocaţia de stat pentru copii
+acordată conform prevederilor Legii nr. 61/1993 privind alocaţia de stat pentru
+copii, republicată, cu modificările şi completările ulterioare, şi cu stimulentul de
+inserţie care se acordă la reluarea activităţii, în conformitate cu prevederile
+Ordonanţei de urgenţă a Guvernului nr. 111/2010 privind concediul şi indemnizaţia
+lunară pentru creşterea copiilor, aprobată cu modificări prin Legea nr. 132/2011, cu
+modificările şi completările ulterioare.
+#CIN
+   *) Conform art. 1 din Ordinul ministrului finanţelor şi al ministrului muncii şi
+solidarităţii sociale nr. 497/660/2024, pentru semestrul I al anului 2024, începând
+cu luna aprilie 2024, valoarea sumei lunare care se acordă sub formă de tichete de
+creşă, stabilită potrivit prevederilor art. 33 din Normele metodologice de aplicare
+a Legii nr. 165/2018, aprobate prin Hotărârea Guvernului nr. 1045/2018, este de
+640 lei.
+   Conform art. 2 din Ordinul ministrului finanţelor şi al ministrului muncii şi
+solidarităţii sociale nr. 497/660/2024, valoarea nominală stabilită la art. 1 din
+Ordinul ministrului finanţelor şi al ministrului muncii şi solidarităţii sociale nr.
+497/660/2024 se aplică şi pentru primele 2 luni ale semestrului II al anului 2024,
+respectiv august 2024 şi septembrie 2024.
+
+#M7
+   ART. 20
+   Fiecare tichet de creşă este valabil numai dacă are înscrise pe suportul
+electronic sau stocate într-un alt mod în acesta următoarele menţiuni:
+   a) numele şi adresa emitentului;
+   b) perioada de valabilitate a utilizării tichetului de creşă;
+   c) interdicţia de a fi utilizat pentru achiziţionarea de alte bunuri/servicii decât
+cele prevăzute la art. 18 alin. (2);
+   d) numele, prenumele şi codul numeric personal ale salariatului care este în
+drept să utilizeze tichetul de creşă.
+
+#B
+  CAPITOLUL V
+  Tichetele culturale
+
+   ART. 21
+   (1) Tichetele culturale sunt bilete de valoare acordate angajaţilor, lunar sau
+ocazional, pentru achitarea contravalorii de bunuri şi servicii culturale.
+   (2) Bunurile şi serviciile culturale pot fi:
+   a) abonamente sau bilete la spectacole, concerte, proiecţii cinematografice,
+muzee, festivaluri, târguri şi expoziţii, permanente sau itinerante, parcuri tematice,
+inclusiv cele destinate copiilor;
+   b) cărţi, manuale şcolare, albume muzicale, filme, în orice format.
+   ART. 22
+   (1) Nivelul maxim al sumelor acordate sub forma tichetelor culturale nu poate
+depăşi suma de 150 de lei*) pentru tichetele acordate lunar, respectiv suma de 300
+de lei/eveniment*), pentru cele acordate ocazional.
+   (2) Valoarea nominală a unui tichet cultural este de 10 lei sau un multiplu de 10,
+dar nu mai mare de 50 lei.
+#CIN
+   *) Conform art. 1 alin. (1) din Ordinul ministrului finanţelor şi al ministrului
+culturii nr. 410/2707/2024, pentru semestrul I al anului 2024, valoarea sumei care
+se acordă lunar, respectiv ocazional, sub formă de tichete culturale, stabilită
+potrivit prevederilor art. 33 din Normele metodologice de aplicare a Legii nr.
+165/2018, aprobate prin Hotărârea Guvernului nr. 1045/2018, este de maximum
+210 lei/lună, respectiv de maximum 430 lei/eveniment.
+   Conform art. 1 alin. (2) din Ordinul ministrului finanţelor şi al ministrului
+culturii nr. 410/2707/2024, valoarea nominală stabilită la art. 1 alin. (1) din
+Ordinul ministrului finanţelor şi al ministrului culturii nr. 410/2707/2024 se aplică
+şi pentru primele 2 luni ale semestrului II al anului 2024, respectiv august 2024 şi
+septembrie 2024.
+
+#M7
+   ART. 23
+   Fiecare tichet cultural este valabil numai dacă are înscrise pe suportul
+electronic sau stocate într-un alt mod în acesta, următoarele menţiuni:
+   a) numele şi adresa emitentului;
+   b) perioada de valabilitate a utilizării tichetului;
+   c) interdicţia de a fi utilizat pentru achiziţionarea de alte bunuri/servicii decât
+cele prevăzute la art. 21 alin. (2);
+   d) numele, prenumele şi codul numeric personal ale salariatului care este în
+drept să utilizeze tichetul cultural.
+
+#B
+  CAPITOLUL VI
+  Voucherele de vacanţă
+
+   ART. 24
+   (1) Voucherele de vacanţă sunt bilete de valoare care se acordă angajaţilor
+pentru acoperirea unor cheltuieli ocazionate de efectuarea concediului de odihnă în
+regim de turism intern.
+   (2) Angajatul care beneficiază de vouchere de vacanţă nu mai beneficiază de
+primă de vacanţă în cursul anului fiscal sau de bilete de odihnă, acordate potrivit
+Legii nr. 263/2010 privind sistemul unitar de pensii publice, cu modificările şi
+completările ulterioare.
+   (3) Nivelul maxim al sumei care poate fi acordată unui angajat în decursul unui
+an fiscal sub forma voucherelor de vacanţă este de 6 salarii de bază minime brute
+pe ţară garantate în plată.
+   (4) Acordarea voucherelor de vacanţă, cu respectarea prevederilor alin. (3),
+poate fi fracţionată în maximum două tranşe, în funcţie de opţiunea angajatului
+privind efectuarea concediului de odihnă.
+   (5) Voucherele de vacanţă sunt destinate acoperirii cheltuielilor cu servicii
+turistice, de cazare, de masă şi/sau de recuperare a capacităţii de muncă.
+   (6) Voucherele de vacanţă pot fi utilizate şi pentru acoperirea cheltuielilor cu
+servicii de călătorie şi/sau de divertisment, dacă se regăsesc într-un pachet turistic.
+#M12
+   (6^1) Voucherele de vacanţă pot fi utilizate şi pentru acoperirea cheltuielilor cu
+taberele şcolare, naţionale sau tematice, organizate pe teritoriul României, la care
+participă copilul titularului. Procedura privind plata taberelor potrivit prezentului
+alineat se stabileşte prin ordin comun al ministrului educaţiei şi al ministrului
+finanţelor.
+#B
+   (7) Serviciile aferente efectuării concediului de odihnă pot fi achiziţionate ca
+pachete de servicii sau separat.
+   (8) Conţinutul minim al pachetului de servicii care se poate achiziţiona prin
+intermediul voucherelor de vacanţă se stabileşte prin normele de aplicare a
+prezentei legi, care se aprobă prin hotărâre a Guvernului.
+   (9) Voucherele de vacanţă pot fi utilizate pentru achiziţionarea de servicii de la
+operatorii economici cu activitate de turism din România, autorizaţi conform legii,
+care deţin structuri de primire turistice clasificate şi/sau agenţii de turism licenţiate
+şi care acceptă o astfel de modalitate de plată, denumite, în mod convenţional şi în
+înţelesul prezentei legi, unităţi afiliate.
+   (10) Ministerul Turismului transmite unităţilor emitente lista cu unităţile afiliate.
+   (11) Unităţile emitente vor plăti contravaloarea voucherelor de vacanţă unităţilor
+afiliate cu care au încheiat contracte pentru decontarea acestora, după prestarea
+serviciilor de turism.
+#M7
+   ART. 25
+   (1) Valoarea nominală permisă pentru un voucher de vacanţă este multiplu de
+10 lei, dar nu mai mult de 100 lei.
+   (2) Voucherul de vacanţă are perioada de valabilitate de un an de la data
+emiterii, fără a se înţelege că aceasta este perioada de valabilitate a suportului
+electronic.
+   (3) Contravaloarea serviciilor turistice prestate de către unităţile afiliate peste
+valoarea voucherelor de vacanţă se suportă de către angajat, titular al
+voucherelor de vacanţă.
+#M7
+   ART. 26
+   Fiecare voucher de vacanţă este valabil numai dacă are înscrise pe suportul
+electronic sau stocate într-un alt mod în acesta, următoarele menţiuni:
+   a) emitentul şi datele sale de identificare;
+   b) angajatorul şi datele sale de identificare;
+   c) perioada de valabilitate a utilizării voucherului de vacanţă;
+   d) interdicţia de a utiliza voucherul de vacanţă în alte locuri decât în unităţile
+afiliate;
+   e) elementele de identitate vizuală ale brandului de turism al României,
+   f) numele, prenumele şi codul numeric personal ale salariatului care este în
+drept să utilizeze voucherul de vacanţă.
+#B
+   ART. 27
+   (1) Plafonul maxim cumulat al comisionului perceput de către unităţile emitente
+de la angajator şi unitatea afiliată este de 1% din valoarea nominală a voucherului
+de vacanţă.
+   (2) Comisionul maxim perceput de agenţiile de turism, în calitate de unităţi
+afiliate, nu poate depăşi 10% din valoarea pachetului de servicii oferit titularilor
+voucherelor de vacanţă.
+   (3) Introducerea, la cererea angajatorului sau a unităţii afiliate, a altor elemente
+grafice faţă de cele minime obligatorii va fi negociată cu unităţile emitente şi nu va
+face obiectul limitării prevăzute la alin. (1).
+
+  CAPITOLUL VII
+  Contravenţii şi sancţiuni
+
+   ART. 28
+   (1) Constituie contravenţie următoarele fapte, dacă nu sunt săvârşite în astfel de
+condiţii încât, potrivit legii penale, să fie considerate infracţiuni:
+   a) utilizarea biletelor de valoare în alt scop decât cel prevăzut de prezenta lege;
+   b) solicitarea şi/sau furnizarea de numerar în schimbul biletelor de valoare sau
+pentru fracţiuni din acestea;
+   c) refuzul nejustificat al operatorilor economici şi unităţilor care acceptă bilete
+de valoare de furnizare a bunurilor sau serviciilor. Refuzul este justificat dacă
+există bănuieli întemeiate privind autenticitatea biletelor de valoare, identitatea
+dintre titularul biletelor de valoare şi beneficiarul acestora;
+   d) diminuarea valorii nominale a biletelor de valoare acordate angajaţilor;
+   e) emiterea de bilete de valoare cu alte valori nominale decât cele prevăzute de
+prezenta lege;
+   f) emiterea de bilete de valoare de către alte entităţi decât cele prevăzute la art. 5
+alin. (1);
+   g) comercializarea biletelor de valoare contra unei fracţiuni de preţ sau a altor
+bunuri/servicii decât cele stabilite prin prezenta lege;
+#M7
+   h) comercializarea de către unităţile prevăzute la art. 11 alin. (2) a unor
+produse, altele decât cele alimentare, contra tichetelor de masă;
+#B
+   i) utilizarea de către salariaţi a unui număr de tichete de masă mai mare decât
+numărul de zile lucrate.
+   (2) Contravenţiile prevăzute la alin. (1) se sancţionează după cum urmează:
+   a) cu 0,5 puncte-amendă, fapta prevăzută la alin. (1) lit. i);
+   b) cu 1,5 puncte-amendă, faptele prevăzute la alin. (1) lit. a) şi c);
+   c) cu 3 puncte-amendă, fapta prevăzută la alin. (1) lit. b);
+   d) cu 14 puncte-amendă, faptele prevăzute la alin. (1) lit. d) - h).
+#M7
+   (3) Constituie contravenţie şi se sancţionează cu 14 puncte-amendă fapta
+unităţilor emitente de a alimenta suportul electronic cu bilete de valoare, cu
+nerespectarea prevederilor art. 8 alin. (6) şi art. 11 alin. (2).
+#B
+   (4) Constituie contravenţie şi se sancţionează cu 14 puncte-amendă fapta
+unităţilor emitente de a emite bilete de valoare cu nerespectarea prevederilor art.
+13, 17, 20, 23 şi 26.
+   (5) Constituie contravenţie şi se sancţionează cu 7 puncte-amendă acceptarea de
+către unitatea afiliată de vouchere de vacanţă de la alte persoane decât titularul
+voucherului de vacanţă.
+   (6) Constituie contravenţie şi se sancţionează cu 14 puncte-amendă şi retragerea
+certificatului de clasificare, respectiv a licenţei de turism acceptarea de către
+unităţile afiliate de vouchere de vacanţă pentru achiziţionarea de servicii care nu
+îndeplinesc condiţiile pachetului minim de servicii prevăzut la art. 24 alin. (8).
+   (7) Constituie contravenţie şi se sancţionează cu 14 puncte-amendă şi retragerea
+licenţei de turism fapta agenţiei de turism de a emite, în calitate de unitate afiliată,
+pachete de servicii turistice pentru achiziţionare cu vouchere de vacanţă la un preţ
+mai mare faţă de preţul pachetului similar de servicii achiziţionat prin alte mijloace
+de plată.
+#M7
+   (7^1) Constituie contravenţie şi se sancţionează cu 14 puncte-amendă,
+nerespectarea prevederilor art. 15 alin. (2).
+#B
+   (8) Un punct-amendă reprezintă contravaloarea unui salariu de bază minim brut
+pe ţară garantat în plată, stabilit în condiţiile legii.
+   ART. 29
+   Constatarea contravenţiilor şi aplicarea sancţiunilor prevăzute la art. 28 se fac de
+către personalul cu atribuţii de control, împuternicit în acest sens, din cadrul
+Ministerului Finanţelor Publice, Ministerului Muncii şi Justiţiei Sociale,
+Ministerului Turismului, Ministerului Culturii şi Identităţii Naţionale, după caz.
+   ART. 30
+   Contravenţiilor prevăzute la art. 28 şi 29 le sunt aplicabile dispoziţiile
+Ordonanţei Guvernului nr. 2/2001 privind regimul juridic al contravenţiilor,
+aprobată cu modificări şi completări prin Legea nr. 180/2002, cu modificările şi
+completările ulterioare.
+
+  CAPITOLUL VIII
+  Dispoziţii tranzitorii şi finale
+
+   ART. 31
+   (1) Tichetele de masă şi voucherele de vacanţă prevăzute de prezenta lege nu se
+acordă personalului care beneficiază de indemnizaţie de hrană şi de indemnizaţie
+de vacanţă potrivit Legii-cadru nr. 153/2017 privind salarizarea personalului plătit
+din fonduri publice, cu modificările şi completările ulterioare.
+   (2) Tichetele de masă prevăzute de prezenta lege nu se acordă personalului care
+beneficiază de drepturi de hrană în temeiul Ordonanţei Guvernului nr. 26/1994
+privind drepturile de hrană, în timp de pace, ale personalului din sectorul de
+apărare naţională, ordine publică şi siguranţă naţională, republicată, cu modificările
+şi completările ulterioare.
+   (3) Începând cu data intrării în vigoare a prezentei legi, operatorii economici,
+astfel cum sunt definiţi de Ordonanţa Guvernului nr. 26/2013, aprobată cu
+completări prin Legea nr. 47/2014, cu modificările şi completările ulterioare, vor
+acorda angajaţilor proprii primele de vacanţă numai sub forma voucherelor de
+vacanţă, în cuantum egal cu contravaloarea unui salariu de bază minim brut pe ţară
+garantat în plată stabilit în condiţiile legii, pentru un salariat.
+   ART. 32
+   (1) Valoarea nominală maximă a biletelor de valoare prevăzute de prezenta lege
+se indexează, semestrial, după cum urmează:
+   a) în cazul tichetelor de masă, cu indicele preţurilor de consum, înregistrat la
+mărfurile alimentare, comunicat de Institutul Naţional de Statistică;
+   b) în cazul celorlalte bilete de valoare, cu indicele inflaţiei comunicat de
+Institutul Naţional de Statistică, în funcţie de evoluţia tarifelor/preţurilor la
+serviciile/bunurile a căror contravaloare poate fi achitată cu aceste bilete de
+valoare, potrivit prezentei legi.
+   (2) În cazul în care din aplicarea prevederilor alin. (1) rezultă o valoare nominală
+indexată mai mică decât ultima valoare nominală indexată, pentru perioadele
+următoare, valoarea nominală a biletului de valoare rămâne nemodificată.
+   (3) Indexarea biletelor de valoare, potrivit alin. (1), se face prin ordin comun al
+ministrului finanţelor publice şi al ministrului de resort.
+   ART. 33
+   (1) La data intrării în vigoare a prezentei legi, tichetele de masă, tichetele cadou,
+tichetele de creşă şi voucherele de vacanţă emise în temeiul Legii nr. 142/1998
+privind acordarea tichetelor de masă, cu modificările şi completările ulterioare, al
+Legii nr. 193/2006 privind acordarea tichetelor cadou şi a tichetelor de creşă, cu
+modificările ulterioare, respectiv al Ordonanţei de urgenţă a Guvernului nr. 8/2009
+privind acordarea voucherelor de vacanţă, aprobată cu modificări şi completări prin
+Legea nr. 94/2014, cu modificările şi completările ulterioare, sunt şi rămân valabile
+până la expirarea datei de valabilitate înscrise pe acestea.
+   (2) Unităţile emitente care la data intrării în vigoare a prezentei legi deţin
+autorizaţii de funcţionare valabile pot emite în continuare biletele de valoare pentru
+care sunt autorizate, în condiţiile prevăzute de lege la data autorizării, până la data
+expirării valabilităţii respectivei autorizaţii.
+#M1
+   ART. 34
+   Prezenta lege intră în vigoare la data de 1 ianuarie 2019, cu excepţia:
+#M8
+   a) art. 24 - 27, care intră în vigoare la data de 1 ianuarie 2027;
+#M1
+   b) art. 35, care intră în vigoare la 3 zile de la publicarea prezentei legi în
+Monitorul Oficial al României, Partea I.
+#M8
+   ART. 34^1
+   Până la data de 1 ianuarie 2027 prevederile prezentei legi nu se aplică
+voucherelor de vacanţă.
+#B
+   ART. 35
+   (1) În termen de 60 de zile de la intrarea în vigoare a prezentului articol se
+elaborează criteriile privind acordarea autorizaţiei de funcţionare a unităţilor
+emitente de bilete de valoare, care se aprobă prin ordin al ministrului finanţelor
+publice*).
+   (2) În termen de 60 de zile de la intrarea în vigoare a prezentului articol,
+Ministerul Finanţelor Publice, Ministerul Muncii şi Justiţiei Sociale, Ministerul
+Turismului şi Ministerul Culturii şi Identităţii Naţionale elaborează normele
+metodologice de aplicare a prezentei legi, care se aprobă prin hotărâre a
+Guvernului**).
+#CIN
+   *) A se vedea Ordinul ministrului finanţelor publice nr. 1909/2019 pentru
+aprobarea criteriilor referitoare la autorizarea funcţionării unităţilor emitente de
+bilete de valoare, a componenţei şi procedurii de lucru a Comisiei pentru
+autorizarea unităţilor emitente de bilete de valoare, precum şi a componenţei
+echipei de specialişti prevăzute la art. 22 din Normele metodologice de aplicare a
+Legii nr. 165/2018 privind acordarea biletelor de valoare, aprobate prin
+Hotărârea Guvernului nr. 1.045/2018.
+   **) A se vedea Hotărârea Guvernului nr. 1045/2018 pentru aprobarea
+Normelor metodologice de aplicare a Legii nr. 165/2018 privind acordarea
+biletelor de valoare.
+
+#M1
+   ART. 36
+   (1) La data intrării în vigoare a prezentei legi se abrogă:
+   a) Legea nr. 142/1998 privind acordarea tichetelor de masă, publicată în
+Monitorul Oficial al României, Partea I, nr. 260 din 13 iulie 1998, cu modificările
+şi completările ulterioare;
+   b) Legea nr. 193/2006 privind acordarea tichetelor cadou şi a tichetelor de
+creşă, publicată în Monitorul Oficial al României, Partea I, nr. 446 din 23 mai
+2006, cu modificările ulterioare.
+#M8
+   (2) La data de 1 ianuarie 2027 se abrogă Ordonanţa de urgenţă a Guvernului
+nr. 8/2009 privind acordarea voucherelor de vacanţă, publicată în Monitorul
+Oficial al României, Partea I, nr. 110 din 24 februarie 2009, aprobată cu
+modificări şi completări prin Legea nr. 94/2014, cu modificările şi completările
+ulterioare.
+
+#CIN
+   NOTE:
+   1. Conform art. 11 alin. (1) din Legea nr. 111/2022 privind reglementarea
+activităţii prestatorului casnic (#M10), cu modificările ulterioare, angajatorii
+prevăzuţi la art. 3 din Legea nr. 165/2018 pot acorda angajaţilor proprii sub
+formă de primă sau bonus, în afară de salariul de bază stabilit, tichete de activităţi
+casnice pe suport hârtie sau pe suport electronic, suportând valoarea nominală a
+acestora.
+
+   2.1. Conform art. 6 alin. (1) din Ordonanţa de urgenţă a Guvernului nr. 63/2022
+(#M11), tichetul social pe suport electronic este asimilat biletelor de valoare şi
+este emis de către unităţile emitente definite la art. 5 din Legea nr. 165/2018,
+conform prevederilor legale în vigoare.
+   A se vedea şi alin. (2) - (9) ale art. 6 din Ordonanţa de urgenţă a Guvernului nr.
+63/2022 (#M11).
+
+  2.2. Conform art. 9 alin. (1) din Ordonanţa de urgenţă a Guvernului nr. 58/2023
+(#M15), măsura de susţinere a activităţii didactice pe suport electronic este
+asimilată biletelor de valoare şi este emisă de către unităţile emitente.
+  A se vedea şi alin. (2) - (12) ale art. 9 din Ordonanţa de urgenţă a Guvernului
+nr. 58/2023 (#M15).
+
+  2.3. Conform art. 19^6 alin. (3) din anexa la Hotărârea Guvernului nr.
+1017/2018, cu modificările ulterioare, cardul de carburant este asimilat biletelor
+de valoare şi este emis de către unităţile emitente definite la art. 5 din Legea nr.
+165/2018, în condiţiile legislaţiei privind acordarea biletelor de valoare.
+  A se vedea şi alin. (1), (2) şi (4) - (7) ale art. 19^6 din anexa la Hotărârea
+Guvernului nr. 1017/2018.
+
+   2.4. Conform art. XLVIII alin. (11) din Ordonanţa de urgenţă a Guvernului nr.
+115/2023 (#M17), cu modificările ulterioare, tichetul social pe suport electronic
+pentru produse alimentare şi mese calde este asimilat biletelor de valoare, este
+emis de către unităţile emitente şi i se aplică regimul juridic instituit prin
+dispoziţiile Legii nr. 165/2018.
+   A se vedea şi alin. (1) - (10) ale art. XLVIII din Ordonanţa de urgenţă a
+Guvernului nr. 115/2023 (#M17).
+
+   3. Reproducem mai jos prevederile articolului unic alin. (1) din Legea nr.
+43/2023 (#M14).
+#M14
+   "(1) Se anulează diferenţele de obligaţii fiscale principale, precum şi obligaţiile
+fiscale accesorii aferente acestora, stabilite de organul fiscal prin decizie de
+impunere emisă şi comunicată contribuabilului, ca urmare a reîncadrării din
+categoria veniturilor din alte surse în categoria veniturilor din salarii şi asimilate
+salariilor, a veniturilor din tichete cadou obţinute de către persoanele fizice de la
+alte persoane decât angajatorii, pentru perioadele fiscale de la intrarea în vigoare
+a Legii nr. 193/2006 privind acordarea tichetelor cadou şi a tichetelor de creşă şi,
+respectiv, a Legii nr. 165/2018 privind acordarea biletelor de valoare, cu
+modificările şi completările ulterioare, şi până la 31 decembrie 2020 inclusiv, şi
+neachitate până la data intrării în vigoare a prezentei legi. Anularea se aplică
+inclusiv în situaţia în care tichetele cadou au fost acordate de către plătitorul de
+venit către angajatorul persoanelor fizice pentru a le distribui angajaţilor acestora
+în numele plătitorului de venit."
+#CIN
+   A se vedea şi alin. (2) - (7) ale articolului unic din Legea nr. 43/2023 (#M14).
+
+#CIN
+  D. Dispoziţiile prin care au fost acordate derogări de la prevederile Legii nr.
+165/2018 sunt reproduse mai jos.
+   D.1. Art. XVII^1 din Ordonanţa de urgenţă a Guvernului nr. 30/2020 pentru
+modificarea şi completarea unor acte normative, precum şi pentru stabilirea unor
+măsuri în domeniul protecţiei sociale în contextul situaţiei epidemiologice
+determinate de răspândirea coronavirusului SARS-CoV-2, cu modificările
+ulterioare:
+#M5
+   "ART. XVII^1
+   (1) Prin derogare de la prevederile Legii nr. 53/2003 - Codul muncii,
+republicată, cu modificările şi completările ulterioare, şi ale Legii nr. 165/2018
+privind acordarea biletelor de valoare, cu modificările şi completările ulterioare,
+angajatorii pot acorda tichete de masă salariaţilor ale căror contracte de muncă
+sunt suspendate în temeiul art. 52 alin. (1) lit. c) din Legea nr. 53/2003,
+republicată, cu modificările şi completările ulterioare, ca urmare a instituirii stării
+de urgenţă.
+   (2) Salariaţii prevăzuţi la alin. (1) primesc tichetele de masă exclusiv pe suport
+electronic. Valoarea tichetelor de masă pe suport electronic este transferată lunar
+salariaţilor de către unitatea emitentă de tichete de masă pe suport electronic,
+corespunzător numărului de zile lucrătoare din luna pentru care se face transferul,
+conform contractului încheiat de unitatea emitentă cu angajatorul."
+
+#CIN
+   D.2. Art. XV alin. (1) din Ordonanţa de urgenţă a Guvernului nr. 44/2022
+privind stabilirea unor măsuri în cadrul sistemului de sănătate, precum şi pentru
+interpretarea, modificarea şi completarea unor acte normative (#M9):
+#M9
+   "(1) Persoanele vaccinate împotriva COVID-19 cu schemă completă, până la
+data intrării în vigoare a prezentei ordonanţe de urgenţă, care nu au ridicat
+tichetele de masă pe suport hârtie prevăzute la art. 21^2*) din Legea nr. 55/2020
+privind unele măsuri pentru prevenirea şi combaterea efectelor pandemiei de
+COVID-19, cu modificările şi completările ulterioare, beneficiază de alocaţia de
+hrană, în valoare totală de 100 de lei, sub forma tichetelor de masă pe suport
+electronic, conform prevederilor Legii nr. 165/2018 privind acordarea biletelor de
+valoare, cu modificările şi completările ulterioare. Prin derogare de la prevederile
+art. 13 din Legea nr. 165/2018, cu modificările şi completările ulterioare, tichetele
+de masă se emit fără datele personale ale beneficiarilor."
+#CIN
+   *) În Monitorul Oficial al României, Partea I, nr. 373 din 14 aprilie 2022, acest
+articol era indicat, în mod eronat, ca fiind "art. 212".
+
+#B
+---------------

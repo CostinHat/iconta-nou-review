@@ -48,16 +48,75 @@ for nume, intrari in COTE.items():
             "temei": "%s %s/%s art.%s" % (t.tip, t.nr or "", t.an or "", t.art or ""),
         })
 
+
+# --- sursa + forma pentru intrarile NOI (adaugate azi). "fara ele corpusul minte" (cerut 13.08.2026) ---
+import datetime as _dt, time as _time
+
+# Marcaje OBLIGATORII: override explicit (sursa, forma, nota) - au prioritate peste detectie.
+_FORMA_OVR = {
+    "omfp_1802_2014.pdf": ("static.anaf.ro", "initiala",
+        "forma initiala 2014; NU include Ordinul 1239/2021, 4291/2022, 5378/2023, OMF 52/2024; "
+        "planul de conturi e INCOMPLET (lipsesc 467, 6053, 694, 794)"),
+    "legea_273_2006_fin_publice_locale.pdf": ("static.anaf.ro", "consolidata", "consolidare 2018, nu la zi"),
+    "oug_8_2009_acordarea_tichetelor_vacanta.html": ("legex.ro", "necunoscuta", "sursa legex.ro, neoficiala"),
+}
+
+_AZI0 = _time.mktime(_dt.date.today().timetuple())  # inceputul zilei curente
+
+
+def _forma_html(cale):
+    """Forma CITITA din eticheta fisierului just.ro (nu presupusa): 'Forma consolidata' / 'forma de baza'."""
+    try:
+        low = io.open(cale, encoding="utf-8", errors="replace").read().lower()
+    except Exception:
+        return "necunoscuta", False
+    e_justro = "portal legislativ" in low
+    if "forma consolidat" in low or "forma actualizat" in low:
+        return "consolidata", e_justro
+    if "forma de baza" in low or "forma de bază" in low:
+        return "initiala", e_justro
+    return "necunoscuta", e_justro
+
+
+def _sursa_forma(fname):
+    """(sursa, forma, nota) pentru intrarile NOI de azi; (None, None, None) altfel. Override > detectie."""
+    if fname in _FORMA_OVR:
+        return _FORMA_OVR[fname]
+    cale = os.path.join(SURSE, fname)
+    try:
+        nou = os.path.getmtime(cale) >= _AZI0
+    except OSError:
+        return None, None, None
+    if not nou:
+        return None, None, None          # doar intrarile noi primesc sursa/forma
+    if fname.lower().endswith((".html", ".htm")):
+        forma, e_justro = _forma_html(cale)
+        if e_justro:
+            return "legislatie.just.ro", forma, None
+        # html de la ANAF (ex. coduri consolidate) sau alt static
+        return "static.anaf.ro", ("consolidata" if "_consolidat" in fname or "cod_fiscal" in fname else forma), None
+    # pdf/xsd fara sursa browser -> static.anaf.ro; forma de la publicare (initiala), exceptand consolidatele
+    return "static.anaf.ro", ("consolidata" if "_consolidat" in fname else "initiala"), None
+
+
 fisiere = {}
 for fname in sorted(fisiere_pe_disc):
     if fname in ("INDEX.json",):
         continue
     intr = sorted(per_fisier.get(fname, []), key=lambda x: (x["cota"], x["data_in"]))
-    fisiere[fname] = {
+    _srs, _frm, _nota = _sursa_forma(fname)
+    _ent = {
         "exista": True,
         "tip_forma": TIP_FORMA.get(fname),
         "acopera": intr,
     }
+    if _srs:
+        _ent["sursa"] = _srs
+    if _frm:
+        _ent["forma"] = _frm
+    if _nota:
+        _ent["nota"] = _nota
+    fisiere[fname] = _ent
 
 # fisiere citate in COTE dar lipsa pe disc (nu ar trebui sa existe dupa garda 1, dar il raportam)
 citate_lipsa = sorted(set(per_fisier) - fisiere_pe_disc)

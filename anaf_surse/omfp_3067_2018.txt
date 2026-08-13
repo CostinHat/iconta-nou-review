@@ -1,0 +1,141 @@
+                          ORDIN Nr. 3067/2018 din 10 septembrie 2018
+                        pentru completarea unor reglementări contabile
+                          EMITENT: MINISTERUL FINANȚELOR PUBLICE
+                PUBLICAT ÎN: MONITORUL OFICIAL NR. 792 din 17 septembrie 2018
+
+
+
+    În temeiul art. 10 alin. (4) din Hotărârea Guvernului nr. 34/2009 privind organizarea și
+funcționarea Ministerului Finanțelor Publice, cu modificările și completările ulterioare,
+   având în vedere prevederile art. 4 alin. (1), art. 28 alin. (8^1) și ale art. 44 din Legea contabilității
+nr. 82/1991, republicată, cu modificările și completările ulterioare,
+
+  ministrul finanțelor publice emite prezentul ordin.
+
+   ART. I
+    Reglementările contabile privind situațiile financiare anuale individuale și situațiile financiare
+anuale consolidate, aprobate prin Ordinul ministrului finanțelor publice nr. 1.802/2014, publicat în
+Monitorul Oficial al României, Partea I, nr. 963 din 30 decembrie 2014, cu modificările și
+completările ulterioare, se completează, după cum urmează:
+   1. După subsecțiunea 4.13.5. "Rezultatul exercițiului financiar, rezultatul reportat, repartizarea
+profitului și acoperirea pierderii contabile" se introduce o nouă subsecțiune, subsecțiunea
+4.13.6. "Distribuirea de dividende în cursul exercițiului financiar", cu următorul cuprins:
+   "4.13.6. Distribuirea de dividende în cursul exercițiului financiar
+    423^1. - Entitățile care au optat, potrivit legii, să repartizeze dividende în cursul exercițiului
+financiar evidențiază acea repartizare în contul 463 «Creanțe reprezentând dividende repartizate în
+cursul exercițiului financiar» (articol contabil 463 «Creanțe reprezentând dividende repartizate în
+cursul exercițiului financiar» = 456 «Decontări cu acționarii/asociații privind capitalul»).
+    423^2. - Dividendele repartizate conform pct. 423^1 se regularizează pe seama dividendelor
+distribuite pe baza situațiilor financiare anuale aprobate potrivit legii (articol contabil 457
+«Dividende de plată» = 463 «Creanțe reprezentând dividende repartizate în cursul exercițiului
+financiar»)."
+    2. În Planul de conturi general cuprins la punctul 594 se introduce contul 463 "Creanțe
+reprezentând dividende repartizate în cursul exercițiului financiar" (A).
+    3. La capitolul 16 "Funcțiunea conturilor" se introduce funcțiunea contului 463 "Creanțe
+reprezentând dividende repartizate în cursul exercițiului financiar", cu următorul cuprins:
+   "Contul 463 «Creanțe reprezentând dividende repartizate în cursul exercițiului financiar»
+    Cu ajutorul acestui cont se ține evidența dividendelor repartizate, conform legii, în cursul
+exercițiului financiar și care urmează să se regularizeze după aprobarea situațiilor financiare
+anuale.
+   Contul 463 «Creanțe reprezentând dividende repartizate în cursul exercițiului financiar» este un
+cont de activ.
+    În debitul contului 463 «Creanțe reprezentând dividende repartizate în cursul exercițiului
+financiar» se înregistrează:
+   - suma dividendelor repartizate în cursul exercițiului financiar (456).
+    În creditul contului 463 «Creanțe reprezentând dividende repartizate în cursul exercițiului
+financiar» se înregistrează:
+    - suma dividendelor repartizate în cursul exercițiului financiar și regularizate pe seama
+dividendelor anuale (457);
+   - sumele încasate reprezentând restituiri de dividende datorate, conform legii (512, 531).
+   Soldul contului reprezintă sumele repartizate ca dividende, conform legii, în cursul exercițiului
+financiar."
+   4. După punctul 601 se introduce un nou punct, punctul 602, cu următorul cuprins:
+   "602. - (1) Entitățile care au optat, potrivit legii, pentru repartizarea trimestrială de dividende,
+întocmesc situații financiare interimare formate din bilanț și contul de profit și pierdere. Aceste
+componente au aceeași structură cu cea aplicabilă situațiilor financiare anuale întocmite conform
+prezentelor reglementări. Veniturile și cheltuielile astfel raportate se stabilesc cumulat de la
+începutul exercițiului financiar până la finele trimestrului pentru care entitatea a optat să
+repartizeze dividende.
+   (2) Situațiile financiare interimare se întocmesc utilizând politicile contabile aplicate de entitate
+la data întocmirii acestora. Situațiile financiare interimare sunt însoțite de politicile contabile
+semnificative."
+   ART. II
+    Reglementările contabile conforme cu Standardele Internaționale de Raportare Financiară,
+aprobate prin Ordinul ministrului finanțelor publice nr. 2.844/2016, publicat în Monitorul Oficial al
+României, Partea I, nr. 1020 și 1020 bis din 19 decembrie 2016, cu modificările și completările
+ulterioare, se completează după cum urmează:
+   1. După punctul 9 se introduce un nou punct, punctul 9^1, cu următorul cuprins:
+   "9^1. - (1) Entitățile care au optat, potrivit legii, pentru repartizarea trimestrială de dividende
+întocmesc situații financiare interimare formate din situația poziției financiare și situația
+rezultatului global. Aceste componente au aceeași structură cu cea aplicabilă situațiilor financiare
+anuale întocmite conform prezentelor reglementări. Veniturile și cheltuielile astfel raportate se
+stabilesc cumulat de la începutul exercițiului financiar până la finele trimestrului pentru care
+entitatea a optat să repartizeze dividende.
+   (2) Situațiile financiare interimare se întocmesc utilizând politicile contabile aplicate de entitate
+la data întocmirii acestora. Situațiile financiare interimare sunt însoțite de politicile contabile
+semnificative."
+    2. După punctul 173 se introduc două noi puncte, punctele 173^1 și 173^2, cu următorul
+cuprins:
+    "173^1. - Entitățile care au optat, potrivit legii, să repartizeze dividende în cursul exercițiului
+financiar evidențiază acea repartizare în contul 463 «Creanțe reprezentând dividende repartizate în
+cursul exercițiului financiar» (articol contabil 463 «Creanțe reprezentând dividende repartizate în
+cursul exercițiului financiar» = 456 «Decontări cu acționarii/asociații privind capitalul»).
+    173^2. - Dividendele repartizate conform pct. 173^1 se regularizează pe seama dividendelor
+distribuite pe baza situațiilor financiare anuale aprobate potrivit legii (articol contabil 457
+«Dividende de plătit» = 463 «Creanțe reprezentând dividende repartizate în cursul exercițiului
+financiar»)."
+   3. În planul de conturi cuprins la punctul 196 se introduce contul 463 "Creanțe reprezentând
+dividende repartizate în cursul exercițiului financiar" (A).
+    4. La capitolul 11 se introduce funcțiunea contului 463 "Creanțe reprezentând dividende
+repartizate în cursul exercițiului financiar", cu următorul cuprins:
+   "Contul 463
+    Cu ajutorul contului 463 «Creanțe reprezentând dividende repartizate în cursul exercițiului
+financiar» se ține evidența dividendelor repartizate, conform legii, în cursul exercițiului financiar, și
+care urmează să se regularizeze după aprobarea situațiilor financiare anuale.
+   Contul 463 «Creanțe reprezentând dividende repartizate în cursul exercițiului financiar» este un
+cont de activ.
+    În debitul contului 463 «Creanțe reprezentând dividende repartizate în cursul exercițiului
+financiar» se înregistrează suma dividendelor repartizate în cursul exercițiului financiar.
+    În creditul contului 463 «Creanțe reprezentând dividende repartizate în cursul exercițiului
+financiar» se înregistrează suma dividendelor repartizate în cursul exercițiului financiar și
+regularizate pe seama dividendelor anuale, precum și sumele încasate reprezentând restituiri de
+dividende datorate, conform legii.
+   Soldul contului reprezintă sumele repartizate ca dividende, conform legii, în cursul exercițiului
+financiar."
+   ART. III
+   (1) Situațiile financiare interimare reprezintă situații financiare cu scop special, fiind destinate
+repartizării de dividende în cursul exercițiului financiar.
+   (2) În vederea întocmirii situațiilor financiare interimare se procedează la efectuarea inventarierii
+elementelor de natura activelor, datoriilor și capitalurilor proprii, conform prevederilor Ordinului
+ministrului finanțelor publice nr. 2.861/2009 pentru aprobarea Normelor privind organizarea și
+efectuarea inventarierii elementelor de natura activelor, datoriilor și capitalurilor proprii, și a
+evaluării acestor elemente, potrivit reglementărilor contabile aplicabile.
+    (3) Rezultatele inventarierii și ale evaluării efectuate cu această ocazie se înregistrează în
+contabilitatea entității, potrivit reglementărilor contabile aplicabile.
+    (4) Situațiile financiare interimare se întocmesc pe baza balanței de verificare în care sunt
+cuprinse rezultatele inventarierii.
+   ART. IV
+   (1) Situațiile financiare interimare se întocmesc în limba română și în moneda națională.
+   (2) Situațiile financiare interimare sunt semnate de persoanele în drept, cuprinzând:
+   - numele și prenumele persoanei care le-a întocmit, înscrise în clar;
+   - calitatea acesteia (director economic, contabil-șef sau altă persoană desemnată prin decizie
+scrisă de administrator, persoană autorizată potrivit legii, membră a Corpului Experților Contabili și
+Contabililor Autorizați din România);
+   - numărul de înregistrare în organismul profesional, dacă este cazul.
+   ART. V
+    Situațiile financiare interimare se depun la unitățile teritoriale ale Ministerului Finanțelor
+Publice, în termen de 30 de zile de la aprobarea acestora de către adunarea generală a
+acționarilor/asociaților.
+   ART. VI
+   Prezentul ordin se publică în Monitorul Oficial al României, Partea I.
+
+
+
+                 Ministrul finanțelor publice,
+                 Eugen Orlando Teodorovici
+
+
+
+
+  București, 10 septembrie 2018.
+  Nr. 3.067.

@@ -1,0 +1,2030 @@
+ORDIN 3622 10/12/2015 - Portal Legislativ
+Portal Legislativ
+-->
+Meniu
+Meniu
+Acasă
+Despre Proiect
+Facilități Oferite
+Legături Utile
+GDPR
+Meniu
+Acasă
+Despre Proiect
+Facilități Oferite
+Legături Utile
+GDPR
+Prin portalul N-Lex se acorda acces gratuit la legislatiile nationale ale statelor membre, portalul fiind
+conceput pe baza unei tehnologii de comunicare interne, ce permite accesarea directa a bazelor de date legislative nationale,
+rezultatele cautarilor venind direct de la sursa.
+Cuprins
+Se încarcă, vă rugăm asteptati.
++
+Fișă act
+Actiuni suferite
+Actiuni Induse
+Refera pe
+Referit de
+Cuprinsul Actului
+Articolul 1
+Articolul 2
+Articolul 3
+Articolul 4
+Articolul 5
+Articolul 6
+Preşedintele Agenţiei Naţionale de Administrare Fiscală,Gelu-Ştefan Diaconu Anexa 1
+Anexa 2
+Anexa 3
+Reveniti in topul paginii
+Forma printabilă
+ORDIN nr. 3.622 din 10 decembrie 2015
+pentru aprobarea modelului şi conţinutului unor formulare utilizate în administrarea impozitului pe venit şi a contribuţiilor sociale datorate de persoanele fizice
+EMITENT
+AGENŢIA NAŢIONALĂ DE ADMINISTRARE FISCALĂ
+Publicat în
+MONITORUL OFICIAL nr. 943 din 21 decembrie 2015
+În temeiul prevederilor:
+- art. 11 alin. (3) din Hotărârea Guvernului nr. 520/2013 privind organizarea şi funcţionarea Agenţiei Naţionale de Administrare Fiscală, cu modificările ulterioare;
+- art. 5 alin. (4), art. 82, 107, 120, 121, 151, art. 169 alin. (5) şi (7), art. 173 şi 174 din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare,
+- art. 342 alin. (1) şi (4) din Legea nr. 207/2015 privind Codul de procedură fiscală, cu modificările şi completările ulterioare,
+preşedintele Agenţiei Naţionale de Administrare Fiscală emite următorul ordin:
++
+Articolul 1
+(1) Se aprobă modelul şi conţinutul următoarelor formulare, prevăzute în anexa nr. 1:
+...
+a) 220 "Declaraţie privind venitul estimat/norma de venit", cod 14.13.01.13/3p, şi "Fişa capacităţii de cazare", cod 14.13.01.13/3p;
+...
+b) 221 "Declaraţie privind veniturile din activităţi agricole impuse pe bază de norme de venit", cod 14.13.01.13/9, şi "Anexa nr. ... la Declaraţia privind veniturile din activităţi agricole impuse pe bază de norme de venit";
+...
+c) 222 "Declaraţie informativă privind începerea/încetarea activităţii persoanelor fizice care desfăşoară activitate în România şi care obţin venituri sub formă de salarii şi asimilate salariilor din străinătate", cod 14.13.01.13/5i;
+...
+d) 223 "Declaraţie privind veniturile estimate pentru asocierile fără personalitate juridică şi entităţi supuse regimului transparenţei fiscale", cod 14.13.01.13/1i;
+...
+e) 224 "Declaraţie privind veniturile sub formă de salarii şi asimilate salariilor din străinătate obţinute de către persoanele fizice care desfăşoară activitate în România şi de către persoanele fizice române angajate ale misiunilor diplomatice şi posturilor consulare acreditate în România", cod 14.13.01.13/5;
+...
+f) 260 "Decizie de impunere privind plăţile anticipate cu titlu de impozit pe venit/contribuţii de asigurări sociale de sănătate/contribuţii de asigurări sociale", cod 14.13.02.13./3a, şi anexa nr. 1 "Situaţie privind modul de stabilire a venitului net pe baza normelor de venit", respectiv anexa nr. 2 "Situaţie privind stabilirea contribuţiei lunare de asigurări sociale de sănătate/contribuţiei lunare de asigurări sociale";
+...
+g) 650 "Decizie de impunere privind plăţile anticipate cu titlu de contribuţii de asigurări sociale de sănătate pentru veniturile din cedarea folosinţei bunurilor", cod 14.13.02.15/cfb, şi anexa "Situaţie privind stabilirea contribuţiei lunare de asigurări sociale de sănătate".
+...
+(2) Formularele prevăzute la alin. (1) lit. a)-e) se completează şi se depun conform instrucţiunilor prevăzute în anexa nr. 2.
+...
++
+Articolul 2
+Formularele prevăzute la art. 1 se utilizează pentru declararea veniturilor realizate începând cu 1 ianuarie 2016 şi stabilirea plăţilor anticipate cu titlu de impozit pe venit şi contribuţii sociale.
++
+Articolul 3
+Caracteristicile de tipărire, modul de difuzare, de utilizare şi de păstrare a formularelor prevăzute la art. 1 sunt stabilite în anexa nr. 3 la prezentul ordin.
++
+Articolul 4
+Anexele nr. 1-3 fac parte integrantă din prezentul ordin.
++
+Articolul 5
+Direcţia generală proceduri pentru administrarea veniturilor, Direcţia generală de reglementare a colectării creanţelor bugetare şi Direcţia generală de tehnologia informaţiei din cadrul Agenţiei Naţionale de Administrare Fiscală, Direcţia generală de administrare a marilor contribuabili, precum şi direcţiile generale regionale ale finanţelor publice vor duce la îndeplinire prevederile prezentului ordin.
++
+Articolul 6
+Prezentul ordin se publică în Monitorul Oficial al României, Partea I.
+Preşedintele Agenţiei Naţionale de Administrare Fiscală,
+Gelu-Ştefan Diaconu
+Bucureşti, 10 decembrie 2015.
+Nr. 3.622.
++
+Anexa 1
+[] 1. Recalcularea plăţilor anticipate*)
+[] 1a. Cu titlu de impozit [] 1b. Cu titlu de contribuţii sociale
+[] 2. Modificarea modului de determinare a venitului net**)
+[] 3. Venituri din pensii din străinătate, realizate în statul: ____________
+I. DATE DE IDENTIFICARE A CONTRIBUABILULUI
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Cod numeric personal/Număr │
+│Nume ┌─────────────────────────┐ Iniţiala┌─┐ de identificare fiscală │
+│ └─────────────────────────┘ tatălui └─┘ ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐ │
+│ └─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│Prenume ┌─────────────────────────────────────┐ E-mail┌──────────────────┐ │
+│ └─────────────────────────────────────┘ └──────────────────┘ │
+│Stradă ┌────────────────────────┐ Număr ┌────┐ Telefon ┌────────────────┐ │
+│ └────────────────────────┘ └────┘ └────────────────┘ │
+│ ┌────┐ ┌──┐ ┌──┐ ┌──┐ Fax ┌────────────────┐ │
+│Bloc └────┘ Scară └──┘ Etaj └──┘ Ap.└──┘ └────────────────┘ │
+│ │
+│ ┌────────────────────┐ │
+│Judeţ/Sector └────────────────────┘ │
+│ ┌──────────────────────┐ ┌───────┐ │
+│Localitate └──────────────────────┘ Cod poştal └───────┘ │
+└──────────────────────────────────────────────────────────────────────────────┘
+II. DATE PRIVIND ACTIVITATEA DESFĂŞURATĂ
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 1. Categoria activităţi [] profesii [] cedarea [] sub 5 contracte, │
+│ de venit: de producţie, libere folosinţei inclusiv │
+│ prestări bunurilor: [] peste 5 contracte │
+│ servicii, [] în scop turistic │
+│ comerţ număr camere [] │
+│ │
+│ activităţi [] drepturi de [] │
+│ agricole proprietate │
+│ intelectuală │
+│ silvicultură [] piscicultură [] │
+│ │
+│ 2. Determinarea sistem real [] cote [] normă [] │
+│ venitului net: forfetare de venit │
+│ de cheltuieli │
+│ │
+│ 3. Forma de organizare: individual [] asociere fără [] │
+│ personalitate │
+│ juridică │
+│ │
+│ entităţi supuse [] modificarea moda- [] │
+│ regimul transparenţei lităţii/formei de │
+│ fiscale exercitare a │
+│ activităţii │
+│ │
+│ ┌───────────────────┐ ┌─┬─┬─┬─┐ │
+│ 4. Obiectul principal de activitate └───────────────────┘ Cod CAEN └─┴─┴─┴─┘ │
+│ │
+│ │
+│ 5. Sediul/Datele de identificare a ┌──────────────────────────────────────┐ │
+│ bunului pentru care se cedează │ │ │
+│ folosinţa └──────────────────────────────────────┘ │
+│ │
+│ 6. Documentul de autorizare/Contractul ┌─────────┐ ┌──────────┐ │
+│ de asociere/Închiriere Nr. └─────────┘ Data └──────────┘ │
+│ │
+│ │
+│ 7. Data începerii ┌────────┐ 8. Data încetării ┌───────┐ 9. Data ┌───────┐│
+│ activităţii └────────┘ activităţii └───────┘ suspendării└───────┘│
+│ activităţii │
+│ 10. Număr zile ┌──────────────┐ 11. Data încetării ┌────────────┐ │
+│ de scutire ***) └──────────────┘ obligaţiei de plată └────────────┘ │
+│ a CAS ****) │
+└──────────────────────────────────────────────────────────────────────────────┘
+III. DATE PRIVIND VENITUL ESTIMAT
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ (lei) │
+│ ┌───┬─────────────────────┐ │
+│ 1. Venit brut estimat .......................... │1. │ │ │ │ │ │
+│ └───┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ ┌───┬─────────────────────┐ │
+│ 2. Cheltuieli deductibile estimate ............. │2. │ │ │ │ │ │
+│ └───┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ ┌───┬─────────────────────┐ │
+│ 3. Venit net estimat ........................... │3. │ │ │ │ │ │
+│ (rd.1.-rd.2.) └───┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ │
+└──────────────────────────────────────────────────────────────────────────────┘
+IV. DATE DE IDENTIFICARE A ÎMPUTERNICITULUI
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Nume, prenume/Denumire Cod de identificare fiscală │
+│┌───────────────────────────────────┐ ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐ │
+│└───────────────────────────────────┘ └─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ ┌───────────────┐ ┌────┐ ┌──┐ ┌──┐ ┌──┐ ┌──┐ │
+│Stradă └───────────────┘ Număr └────┘ Bloc └──┘ Scară └──┘ Etaj └──┘ Ap.└──┘ │
+│ │
+│ ┌───────────┐ ┌─────────────────┐ ┌───────┐ │
+│Judeţ/Sector └───────────┘ Localitate └─────────────────┘ Cod poştal└───────┘ │
+│ │
+│ ┌─────────────────┐ ┌────────────────┐ ┌──────────────────┐ │
+│Telefon └─────────────────┘ Fax └────────────────┘ E-mail└──────────────────┘ │
+└──────────────────────────────────────────────────────────────────────────────┘
+Sub sancţiunile aplicate faptei de fals în acte publice, declar că datele
+înscrise în acest formular sunt corecte şi complete.
+┌─────────────┐ ┌─────────────┐
+Semnătură contribuabil │ │ Semnătură împuternicit │ │
+└─────────────┘ └─────────────┘
+──────────────────────────────────────────────────────────────────────────────
+Loc rezervat organului fiscal
+┌────────┐ ┌───────────┐
+Nr. înregistrare:│ │ Data:│ │
+└────────┘ └───────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ *) Se bifează în situaţia în care se solicită recalcularea plăţilor │
+│ anticipate, potrivit legii. │
+│ **) Se bifează de către contribuabilii care optează pentru modificarea │
+│ modului de determinare a venitului net. Se va indica sistemul de impunere │
+│ pentru care s-a optat, prin bifarea căsuţei corespunzătoare de la pct. 2 │
+│ Secţiunea II. │
+│ ***) Se completează de către persoanele fizice cu handicap grav ori accentuat│
+│ care realizează venituri din activităţi independente, din activităţi │
+│ agricole, silvicultură şi piscicultură, scutite de la plata impozitului pe │
+│ venit. │
+│ ****) Se completează de contribuabilii care nu se mai încadrează în │
+│ categoria persoanelor care au obligaţia plăţii contribuţiei de asigurări │
+│ sociale. │
+└──────────────────────────────────────────────────────────────────────────────┘
+Număr de înregistrare ca operator de date cu caracter personal 759
+Cod 14.13.01.13/3p
+FIŞA CAPACITĂŢII DE CAZARE
+*Font 7*
+Localitate......... Cod poştal...........
+ADRESA IMOBILULUI - locuinţă Str. .............. Nr...... Bl.... Ap....
+proprietate personală: Sc...... Etaj.... Judeţ/Sector............
+I. CARACTERISTICI CONSTRUCŢIE
+┌────┬──────────────────────────────────────────────────────────────────────┐
+│Nr. │ CRITERII PRIVIND STABILIREA NORMELOR ANUALE DE VENIT │
+│crt.│ │
+├────┼────────────────────────────────────┬─────────────────────────────────┤
+│ 1.│Situarea locuinţei │Mediu urban │
+│ │ ├─────────────────────────────────┤
+│ │ │Mediu rural │
+├────┼────────────────────────────────────┼─────────────────────────────────┤
+│ 2.│Posibilităţile de acces la resursele│Numai cu mijloace proprii de │
+│ │turistice ale persoanelor care │transport │
+│ │călătoresc în scop turistic ├─────────────────────────────────┤
+│ │ │Mijloace de transport în comun, │
+│ │ │rutiere şi feroviare etc. │
+└────┴────────────────────────────────────┴─────────────────────────────────┘
+rd. 1 şi 2 - se completează cu "X" căsuţa corespunzătoare situaţiei.
+II. CARACTERISTICI CAMERA
+┌───┬───────────────────────────┬────────────────────────────────────────────────────────────────────────────────────────────────────────┐
+│Nr │CRITERII PRIVIND STABILIREA│ CARACTERISTICI CAMERA │
+│crt│NORMELOR ANUALE DE VENIT ├────────────────────┬────────────────────┬────────────────────┬────────────────────┬────────────────────┤
+│ │ │ CAMERA 1 │ CAMERA 2 │ CAMERA 3 │ CAMERA 4 │ CAMERA 5 │
+├───┼───────────────────────────┼────────────────────┼────────────────────┼────────────────────┼────────────────────┼────────────────────┤
+│ 1.│Suprafaţă │ │ │ │ │ │
+├───┼───────────────────────────┼────────────────────┼────────────────────┼────────────────────┼────────────────────┼────────────────────┤
+│ 2.│Număr locuri cazare │ │ │ │ │ │
+├───┼───────────────────────────┼──────────────────┬─┼──────────────────┬─┼──────────────────┬─┼──────────────────┬─┼──────────────────┬─┤
+│ 3.│Materiale de construcţii │Beton │ │Beton │ │Beton │ │Beton │ │Beton │ │
+│ │ ├──────────────────┼─┼──────────────────┼─┼──────────────────┼─┼──────────────────┼─┼──────────────────┼─┤
+│ │ │Cărămidă │ │Cărămidă │ │Cărămidă │ │Cărămidă │ │Cărămidă │ │
+│ │ ├──────────────────┼─┼──────────────────┼─┼──────────────────┼─┼──────────────────┼─┼──────────────────┼─┤
+│ │ │Lemn │ │Lemn │ │Lemn │ │Lemn │ │Lemn │ │
+│ │ ├──────────────────┼─┼──────────────────┼─┼──────────────────┼─┼──────────────────┼─┼──────────────────┼─┤
+│ │ │Alte │ │Alte │ │Alte │ │Alte │ │Alte │ │
+├───┼───────────────────────────┼──────────┬───────┼─┼──────────┬───────┼─┼──────────┬───────┼─┼──────────┬───────┼─┼──────────┬───────┼─┤
+│ 4.│Dotarea cu instalaţii │Apă │Proprii│ │Apă │Proprii│ │Apă │Proprii│ │Apă │Proprii│ │Apă │Proprii│ │
+│ │ │ ├───────┼─┤ ├───────┼─┤ ├───────┼─┤ ├───────┼─┤ ├───────┼─┤
+│ │ │ │Comune │ │ │Comune │ │ │Comune │ │ │Comune │ │ │Comune │ │
+│ │ ├──────────┼───────┼─┼──────────┼───────┼─┼──────────┼───────┼─┼──────────┼───────┼─┼──────────┼───────┼─┤
+│ │ │Canalizare│Proprii│ │Canalizare│Proprii│ │Canalizare│Proprii│ │Canalizare│Proprii│ │Canalizare│Proprii│ │
+│ │ │ ├───────┼─┤ ├───────┼─┤ ├───────┼─┤ ├───────┼─┤ ├───────┼─┤
+│ │ │ │Comune │ │ │Comune │ │ │Comune │ │ │Comune │ │ │Comune │ │
+│ │ ├──────────┼───────┼─┼──────────┼───────┼─┼──────────┼───────┼─┼──────────┼───────┼─┼──────────┼───────┼─┤
+│ │ │Electrice │Proprii│ │Electrice │Proprii│ │Electrice │Proprii│ │Electrice │Proprii│ │Electrice │Proprii│ │
+│ │ │ ├───────┼─┤ ├───────┼─┤ ├───────┼─┤ ├───────┼─┤ ├───────┼─┤
+│ │ │ │Comune │ │ │Comune │ │ │Comune │ │ │Comune │ │ │Comune │ │
+│ │ ├──────────┼───────┼─┼──────────┼───────┼─┼──────────┼───────┼─┼──────────┼───────┼─┼──────────┼───────┼─┤
+│ │ │Încălzire │Proprii│ │Încălzire │Proprii│ │Încălzire │Proprii│ │Încălzire │Proprii│ │Încălzire │Proprii│ │
+│ │ │ ├───────┼─┤ ├───────┼─┤ ├───────┼─┤ ├───────┼─┤ ├───────┼─┤
+│ │ │ │Comune │ │ │Comune │ │ │Comune │ │ │Comune │ │ │Comune │ │
+├───┼───────────────────────────┼──────────┴───────┼─┼──────────┴───────┼─┼──────────┴───────┼─┼──────────┴───────┼─┼──────────┴───────┼─┤
+│ 5.│Echipare sanitară destinată│Da │ │Da │ │Da │ │Da │ │Da │ │
+│ │turiştilor, pusă în ├──────────────────┼─┼──────────────────┼─┼──────────────────┼─┼──────────────────┼─┼──────────────────┼─┤
+│ │exclusivitate la dispoziţia│Nu │ │Nu │ │Nu │ │Nu │ │Nu │ │
+│ │acestora │ │ │ │ │ │ │ │ │ │ │
+└───┴───────────────────────────┴──────────────────┴─┴──────────────────┴─┴──────────────────┴─┴──────────────────┴─┴──────────────────┴─┘
+rd. 1 - se înscrie suprafaţa pentru fiecare cameră închiriată;
+rd. 2 - se înscrie numărul locurilor de cazare pentru fiecare cameră închiriată;
+rd. 3-5 - se completează cu "X" căsuţa corespunzătoare situaţiei.
+Se completează de contribuabilii care realizează venituri din închiriere în scop turistic a camerelor situate în locuinţe
+proprietate personală, având o capacitate de cazare cuprinsă între 1 şi 5 camere, inclusiv.
+Se depune împreună cu formularul 220 "Declaraţie privind venitul estimat/norma de venit".
+Cod 14.13.01.13/3p
+[] Declaraţie rectificativă
+Se completează cu X în cazul Declar că nu fac parte dintr-o
+declaraţiilor rectificative familie beneficiară de ajutor social []
+I. DATE DE IDENTIFICARE A CONTRIBUABILULUI/ASOCIERII FĂRĂ PERSONALITATE
+JURIDICĂ
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ ┌──────────────────────────────────┐ │
+│ Nume, │ │ Cod de identificare fiscală │
+│ prenume/├──────────────────────────────────┤ ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐ │
+│ Denumire│ │ └─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ └──────────────────────────────────┘ │
+│ Stradă ┌───────────────────┐ Număr ┌────┐ E-mail┌───────────────────┐ │
+│ └───────────────────┘ └────┘ └───────────────────┘ │
+│ │
+│ ┌─┐ ┌─┐ ┌─┐ ┌─┐Judeţ/┌───────┐ Telefon┌───────────────────┐ │
+│ Bloc└─┘Scară└─┘Etaj└─┘ Ap.└─┘Sector└───────┘ └───────────────────┘ │
+│ │
+│ Localitate┌───────────────────┐ Cod ┌─────┐ Fax ┌───────────────────┐ │
+│ └───────────────────┘poştal└─────┘ └───────────────────┘ │
+└──────────────────────────────────────────────────────────────────────────────┘
+II. DATE PRIVIND ACTIVITATEA DESFĂŞURATĂ
+┌──────────────────────────────────────────────────────────────────────────────┐
+│1. Forma de organizare: Individual [] Asociere fără [] 2. Număr asociaţi []│
+│ personalitate │
+│ juridică │
+│3. Contractul de asociere: Număr [] Data [] 4. Număr zile de scutire*) [] │
+└──────────────────────────────────────────────────────────────────────────────┘
+III. DATE PENTRU STABILIREA VENITULUI IMPOZABIL
+┌──────────────────────────────────────┐┌──────────────────────────────────────┐
+│A. Activitatea desfăşurată ││B. Activitatea desfăşurată │
+│pe raza localităţii...................││pe raza localităţii...................│
+│din judeţul...........................││din judeţul...........................│
+│Opţiune privind încadrarea în limitele││Opţiune privind încadrarea în limitele│
+│veniturilor neimpozabile**) []││veniturilor neimpozabile**) []│
+│┌────┬────────────────────┬──────────┐││┌────┬────────────────────┬──────────┐│
+││Nr. │ PRODUSE VEGETALE │ Total ││││Nr. │ PRODUSE VEGETALE │ Total ││
+││crt.│ │ suprafaţă││││crt.│ │ suprafaţă││
+││ │ │ (ha) ││││ │ │ (ha) ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 0 │ 1 │ 2 ││││ 0 │ 1 │ 2 ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 1. │Cereale │ ││││ 1. │Cereale │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 2. │Plante oleaginoase │ ││││ 2. │Plante oleaginoase │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 3. │Cartof │ ││││ 3. │Cartof │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 4. │Sfeclă de zahăr │ ││││ 4. │Sfeclă de zahăr │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 5. │Tutun │ ││││ 5. │Tutun │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 6. │Hamei pe rod │ ││││ 6. │Hamei pe rod │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 7. │Legume în câmp │ ││││ 7. │Legume în câmp │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 8. │Legume în spaţii │ ││││ 8. │Legume în spaţii │ ││
+││ │protejate │ ││││ │protejate │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 9. │Leguminoase pentru │ ││││ 9. │Leguminoase pentru │ ││
+││ │boabe │ ││││ │boabe │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││10. │Pomi pe rod │ ││││10. │Pomi pe rod │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││11. │Vie pe rod │ ││││11. │Vie pe rod │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││12. │Arbuşti fructiferi │ ││││12. │Arbuşti fructiferi │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││13. │Flori şi plante │ ││││13. │Flori şi plante │ ││
+││ │ornamentale │ ││││ │ornamentale │ ││
+│└────┴────────────────────┴──────────┘││└────┴────────────────────┴──────────┘│
+│┌────┬────────────────────┬──────────┐││┌────┬────────────────────┬──────────┐│
+││Nr. │ ANIMALE │ Număr ││││Nr. │ ANIMALE │ Număr ││
+││crt.│ │ total ││││crt.│ │ total ││
+││ │ │ capete ││││ │ │ capete ││
+││ │ │animale/ ││││ │ │animale/ ││
+││ │ │familii de││││ │ │familii de││
+││ │ │ albine ││││ │ │ albine ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 0 │ 1 │ 2 ││││ 0 │ 1 │ 2 ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 1. │Vaci │ ││││ 1. │Vaci │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 2. │Bivoliţe │ ││││ 2. │Bivoliţe │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 3. │Oi │ ││││ 3. │Oi │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 4. │Capre │ ││││ 4. │Capre │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 5. │Porci pentru │ ││││ 5. │Porci pentru │ ││
+││ │îngrăşat │ ││││ │îngrăşat │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 6. │Albine │ ││││ 6. │Albine │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 7. │Păsări de curte │ ││││ 7. │Păsări de curte │ ││
+│└────┴────────────────────┴──────────┘││└────┴────────────────────┴──────────┘│
+└──────────────────────────────────────┘└──────────────────────────────────────┘
+Dacă deţineţi suprafeţe destinate producţiei agricole vegetale/animale pe
+raza unei singure localităţi, completaţi numai tabelul III.A
+*) Se completează de către persoanele fizice cu handicap grav ori accentuat
+care realizează venituri din activităţi agricole, în mod individual, scutite la
+plata impozitului pe venit.
+**) Se bifează numai de către contribuabilii care deţin suprafeţe destinate
+producţiei agricole vegetale/animale pe raza mai multor localităţi, în
+vederea stabilirii localităţii/localităţilor unde vor beneficia de încadrarea
+în limitele veniturilor neimpozabile, prevăzute pentru fiecare grupă de
+produse vegetale/animale.
+Număr de înregistrare ca operator de date cu caracter personal 759
+Cod 14.13.01.13/9
+┌──────────────────────────────────────┐┌──────────────────────────────────────┐
+│C. Activitatea desfăşurată ││D. Activitatea desfăşurată │
+│pe raza localităţii...................││pe raza localităţii...................│
+│din judeţul...........................││din judeţul...........................│
+│Opţiune privind încadrarea în limitele││Opţiune privind încadrarea în limitele│
+│veniturilor neimpozabile**) []││veniturilor neimpozabile**) []│
+│┌────┬────────────────────┬──────────┐││┌────┬────────────────────┬──────────┐│
+││Nr. │ PRODUSE VEGETALE │ Total ││││Nr. │ PRODUSE VEGETALE │ Total ││
+││crt.│ │ suprafaţă││││crt.│ │ suprafaţă││
+││ │ │ (ha) ││││ │ │ (ha) ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 0 │ 1 │ 2 ││││ 0 │ 1 │ 2 ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 1. │Cereale │ ││││ 1. │Cereale │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 2. │Plante oleaginoase │ ││││ 2. │Plante oleaginoase │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 3. │Cartof │ ││││ 3. │Cartof │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 4. │Sfeclă de zahăr │ ││││ 4. │Sfeclă de zahăr │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 5. │Tutun │ ││││ 5. │Tutun │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 6. │Hamei pe rod │ ││││ 6. │Hamei pe rod │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 7. │Legume în câmp │ ││││ 7. │Legume în câmp │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 8. │Legume în spaţii │ ││││ 8. │Legume în spaţii │ ││
+││ │protejate │ ││││ │protejate │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 9. │Leguminoase pentru │ ││││ 9. │Leguminoase pentru │ ││
+││ │boabe │ ││││ │boabe │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││10. │Pomi pe rod │ ││││10. │Pomi pe rod │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││11. │Vie pe rod │ ││││11. │Vie pe rod │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││12. │Arbuşti fructiferi │ ││││12. │Arbuşti fructiferi │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││13. │Flori şi plante │ ││││13. │Flori şi plante │ ││
+││ │ornamentale │ ││││ │ornamentale │ ││
+│└────┴────────────────────┴──────────┘││└────┴────────────────────┴──────────┘│
+│┌────┬────────────────────┬──────────┐││┌────┬────────────────────┬──────────┐│
+││Nr. │ ANIMALE │ Număr ││││Nr. │ ANIMALE │ Număr ││
+││crt.│ │ total ││││crt.│ │ total ││
+││ │ │ capete ││││ │ │ capete ││
+││ │ │animale/ ││││ │ │animale/ ││
+││ │ │familii de││││ │ │familii de││
+││ │ │ albine ││││ │ │ albine ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 0 │ 1 │ 2 ││││ 0 │ 1 │ 2 ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 1. │Vaci │ ││││ 1. │Vaci │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 2. │Bivoliţe │ ││││ 2. │Bivoliţe │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 3. │Oi │ ││││ 3. │Oi │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 4. │Capre │ ││││ 4. │Capre │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 5. │Porci pentru │ ││││ 5. │Porci pentru │ ││
+││ │îngrăşat │ ││││ │îngrăşat │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 6. │Albine │ ││││ 6. │Albine │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 7. │Păsări de curte │ ││││ 7. │Păsări de curte │ ││
+│└────┴────────────────────┴──────────┘││└────┴────────────────────┴──────────┘│
+└──────────────────────────────────────┘└──────────────────────────────────────┘
+IV. DATE PRIVIND ASOCIAŢII ŞI COTA DE DISTRIBUIRE DIN VENITUL IMPOZABIL
+CALCULAT LA NIVELUL ASOCIERII***)
+┌────┬──────────┬────────────┬────────────┬─────────────────────┬──────────────┐
+│Nr. │ Nume şi │Cod numeric │ Domiciliul │ Cota de distribuire │ Număr zile │
+│crt.│ prenume │ personal/ │ │din venitul impozabil│ de │
+│ │ asociat │ Număr de │ │ al asocierii │ scutire****) │
+│ │ │identificare│ │ (%) │ │
+│ │ │ fiscală │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 0 │ 1 │ 2 │ 3 │ 4 │ 5 │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 1.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 2.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 3.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 4.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 5.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 6.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 7.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 8.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 9.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 10.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 11.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 12.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 13.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 14.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 15.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 16.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 17.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 18.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 19.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 20.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 21.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 22.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 23.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 24.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 25.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 26.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 27.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 28.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 29.│ │ │ │ │ │
+├────┼──────────┼────────────┼────────────┼─────────────────────┼──────────────┤
+│ 30.│ │ │ │ │ │
+└────┴──────────┴────────────┴────────────┴─────────────────────┴──────────────┘
+***) Se completează în cazul asocierilor fără personalitate juridică.
+****) Se completează numărul de zile scutite de la plata impozitului pe
+venit pentru fiecare asociat, persoană fizică cu handicap grav ori accentuat
+care realizează venituri din activităţi agricole, într-o asociere fără
+personalitate juridică.
+V. DATE DE IDENTIFICARE A ÎMPUTERNICITULUI/RESPONSABILULUI ASOCIERII
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Nume, prenume/Denumire Cod de identificare fiscală │
+│┌────────────────────────────────────────┐ ┌───┐ ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐ │
+│└────────────────────────────────────────┘ └───┘ └─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ │
+│ Stradă ┌────────────────────┐ Număr ┌───┐ Bloc ┌─┐ Scară┌─┐ Etaj┌─┐ Ap.┌─┐ │
+│ └────────────────────┘ └───┘ └─┘ └─┘ └─┘ └─┘ │
+│ │
+│ ┌─────────────┐ ┌───────────┐ ┌─────────┐ │
+│ Judeţ/Sector└─────────────┘ Localitate └───────────┘ Cod poştal └─────────┘ │
+│ │
+│ Telefon ┌───────────────┐ Fax ┌───────────────┐ E-mail ┌───────────────┐ │
+│ └───────────────┘ └───────────────┘ └───────────────┘ │
+└──────────────────────────────────────────────────────────────────────────────┘
+În situaţia în care deţineţi suprafeţe destinate producţiei agricole
+vegetale/animale în mai mult de patru localităţi, completaţi şi Anexa la
+Declaraţia privind veniturile din activităţi agricole impuse pe bază de norme
+de venit.
+Anexele nr. [] - [] fac parte integrantă din prezenta declaraţie.
+┌──────────────────────────────────────────────────────────────────────────────┐
+│Sub sancţiunile aplicate faptei de fals în acte publice, declar că datele │
+│înscrise în acest formular sunt corecte şi complete. │
+│ ┌─────────────┐ ┌─────────────┐ │
+│Semnătură contribuabil │ │ Semnătură împuternicit/│ │ │
+│ └─────────────┘ responsabil asociere └─────────────┘ │
+└──────────────────────────────────────────────────────────────────────────────┘
+──────────────────────────────────────────────────────────────────────────────
+Loc rezervat organului fiscal ┌────────┐ ┌───────────┐
+Nr. înregistrare:│ │ Data:│ │
+└────────┘ └───────────┘
+Cod de identificare
+fiscală
+┌─────────────────────────┐ ┌─┬─┬─┬─┐ ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐
+│ANEXA nr. [] │ Anul │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │ │
+│la Declaraţia privind │ └─┴─┴─┴─┘ └─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘
+│veniturile din activităţi│
+│agricole impuse pe bază │
+│de norme de venit │
+└─────────────────────────┘
+III. DATE PENTRU STABILIREA VENITULUI IMPOZABIL (anexă)
+┌──────────────────────────────────────┐┌──────────────────────────────────────┐
+│Activitatea desfăşurată ││Activitatea desfăşurată │
+│pe raza localităţii...................││pe raza localităţii...................│
+│din judeţul...........................││din judeţul...........................│
+│Opţiune privind încadrarea în limitele││Opţiune privind încadrarea în limitele│
+│veniturilor neimpozabile*) []││veniturilor neimpozabile*) []│
+│┌────┬────────────────────┬──────────┐││┌────┬────────────────────┬──────────┐│
+││Nr. │ PRODUSE VEGETALE │ Total ││││Nr. │ PRODUSE VEGETALE │ Total ││
+││crt.│ │ suprafaţă││││crt.│ │ suprafaţă││
+││ │ │ (ha) ││││ │ │ (ha) ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 0 │ 1 │ 2 ││││ 0 │ 1 │ 2 ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 1. │Cereale │ ││││ 1. │Cereale │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 2. │Plante oleaginoase │ ││││ 2. │Plante oleaginoase │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 3. │Cartof │ ││││ 3. │Cartof │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 4. │Sfeclă de zahăr │ ││││ 4. │Sfeclă de zahăr │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 5. │Tutun │ ││││ 5. │Tutun │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 6. │Hamei pe rod │ ││││ 6. │Hamei pe rod │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 7. │Legume în câmp │ ││││ 7. │Legume în câmp │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 8. │Legume în spaţii │ ││││ 8. │Legume în spaţii │ ││
+││ │protejate │ ││││ │protejate │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 9. │Leguminoase pentru │ ││││ 9. │Leguminoase pentru │ ││
+││ │boabe │ ││││ │boabe │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││10. │Pomi pe rod │ ││││10. │Pomi pe rod │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││11. │Vie pe rod │ ││││11. │Vie pe rod │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││12. │Arbuşti fructiferi │ ││││12. │Arbuşti fructiferi │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││13. │Flori şi plante │ ││││13. │Flori şi plante │ ││
+││ │ornamentale │ ││││ │ornamentale │ ││
+│└────┴────────────────────┴──────────┘││└────┴────────────────────┴──────────┘│
+│┌────┬────────────────────┬──────────┐││┌────┬────────────────────┬──────────┐│
+││Nr. │ ANIMALE │ Număr ││││Nr. │ ANIMALE │ Număr ││
+││crt.│ │ total ││││crt.│ │ total ││
+││ │ │ capete ││││ │ │ capete ││
+││ │ │animale/ ││││ │ │animale/ ││
+││ │ │familii de││││ │ │familii de││
+││ │ │ albine ││││ │ │ albine ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 0 │ 1 │ 2 ││││ 0 │ 1 │ 2 ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 1. │Vaci │ ││││ 1. │Vaci │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 2. │Bivoliţe │ ││││ 2. │Bivoliţe │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 3. │Oi │ ││││ 3. │Oi │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 4. │Capre │ ││││ 4. │Capre │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 5. │Porci pentru │ ││││ 5. │Porci pentru │ ││
+││ │îngrăşat │ ││││ │îngrăşat │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 6. │Albine │ ││││ 6. │Albine │ ││
+│├────┼────────────────────┼──────────┤││├────┼────────────────────┼──────────┤│
+││ 7. │Păsări de curte │ ││││ 7. │Păsări de curte │ ││
+│└────┴────────────────────┴──────────┘││└────┴────────────────────┴──────────┘│
+└──────────────────────────────────────┘└──────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│Anexa se completează numai în situaţia în care deţineţi suprafeţe destinate │
+│producţiei agricole vegetale/animale în mai mult de patru localităţi. │
+│ │
+│Prezenta anexă face parte integrantă din formularul 221 "Declaraţie privind │
+│veniturile din activităţi agricole impuse pe bază de norme de venit". │
+│ │
+│*) Se bifează numai de către contribuabilii care deţin suprafeţe destinate │
+│producţiei agricole vegetale/animale pe raza mai multor localităţi, în vederea│
+│stabilirii localităţii/localităţilor unde vor beneficia de încadrarea în │
+│limitele veniturilor neimpozabile, prevăzute pentru fiecare grupă de produse │
+│vegetale/animale. │
+└──────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────┐
+│Sub sancţiunile aplicate faptei de fals în acte publice, declar că datele │
+│înscrise în acest formular sunt corecte şi complete. │
+│ ┌─────────────┐ ┌─────────────┐ │
+│Semnătură contribuabil │ │ Semnătură împuternicit/│ │ │
+│ └─────────────┘ responsabil asociere └─────────────┘ │
+└──────────────────────────────────────────────────────────────────────────────┘
+Număr de înregistrare ca operator de date cu caracter personal 759
+Cod 14.13.01.13/9
+I. DATE REFERITOARE LA LOCUL DESFĂŞURĂRII ACTIVITĂŢII ÎN ROMÂNIA
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Nume, prenume/Denumire Cod de identificare fiscală │
+│┌────────────────────────────────────────┐ ┌───┐ ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐ │
+│└────────────────────────────────────────┘ └───┘ └─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ │
+│ Stradă ┌────────────────────┐ Număr ┌───┐ Bloc ┌─┐ Scară┌─┐ Etaj┌─┐ Ap.┌─┐ │
+│ └────────────────────┘ └───┘ └─┘ └─┘ └─┘ └─┘ │
+│ │
+│ ┌─────────────┐ ┌───────────┐ ┌─────────┐ │
+│ Judeţ/Sector└─────────────┘ Localitate └───────────┘ Cod poştal └─────────┘ │
+│ │
+│ Telefon ┌───────────────┐ Fax ┌───────────────┐ E-mail ┌───────────────┐ │
+│ └───────────────┘ └───────────────┘ └───────────────┘ │
+└──────────────────────────────────────────────────────────────────────────────┘
+II. DATE DE IDENTIFICARE A PERSOANEI FIZICE
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Cod numeric personal/Număr│
+│ Nume Iniţiala Prenume de identificare fiscală │
+│ ┌────────────────┐ tatălui ┌──┐ ┌──────────────┐ ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐│
+│ └────────────────┘ └──┘ └──────────────┘ └─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘│
+│ │
+│ Stradă ┌────────────────────┐ Număr ┌───┐ Bloc ┌─┐ Scară┌─┐ Etaj┌─┐ Ap.┌─┐ │
+│ └────────────────────┘ └───┘ └─┘ └─┘ └─┘ └─┘ │
+│ │
+│ ┌─────────────┐ ┌───────────┐ ┌─────────┐ │
+│ Judeţ/Sector└─────────────┘ Localitate └───────────┘ Cod poştal └─────────┘ │
+│ │
+│ Telefon ┌───────────────┐ Fax ┌───────────────┐ E-mail ┌───────────────┐ │
+│ └───────────────┘ └───────────────┘ └───────────────┘ │
+└──────────────────────────────────────────────────────────────────────────────┘
+III. DATE PRIVIND SITUAŢIA PERSOANEI FIZICE
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ 1. Documentul care reglementează nr. ┌────────────┐ data ┌─────────────┐ │
+│ raportul de muncă; └────────────┘ └─────────────┘ │
+│ │
+│ 2. Data începerii activităţii ┌────────────────────┐ │
+│ └────────────────────┘ │
+│ │
+│ 3. Data încetării activităţii ┌────────────────────┐ │
+│ └────────────────────┘ │
+│ │
+│ 4. ┌──┐ Se bifează în situaţia în care, persoana fizică, persoana juridică │
+│ └──┘ sau entitatea prevăzută la Cap. I optează pentru calculul, reţinerea │
+│ şi virarea impozitului pe veniturile din salarii │
+└──────────────────────────────────────────────────────────────────────────────┘
+Sub sancţiunile aplicate faptei de fals în acte publice, declar că datele
+înscrise în acest formular sunt corecte şi complete.
+Nume, Prenume ┌────────────────────┐
+└────────────────────┘ ┌────────────────────┐
+Funcţia/Calitatea ┌────────────────────┐ Semnătură │ │
+└────────────────────┘ └────────────────────┘
+──────────────────────────────────────────────────────────────────────────────
+Loc rezervat organului fiscal ┌──────────┐ ┌──────┐
+Nr. înregistrare └──────────┘ Data:└──────┘
+──────────────────────────────────────────────────────────────────────────────
+Număr de înregistrare ca operator de date cu caracter personal 759
+Cod 14.13.01.13/5i
+*Font 8*
+┌──┬──┬──┬──┐
+Anul  │  │  │  │  │
+└──┴──┴──┴──┘
+[] Recalcularea plăţilor anticipate
+I. DATE DE IDENTIFICARE A ASOCIERII
+┌──────────────────────────────────────────────────────────────────────────────────────────────┐
+│Denumire ┌────────────────────────┐ ┌──┐ Cod de identificare ┌─┬─┬─┬─┬─┬-┬─┬─┬─┬─┬-┬─┬─┐ │
+│ └────────────────────────┘ └──┘ fiscală └─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ │
+│Stradă ┌──────────────┐ Număr ┌───┐ Bloc ┌────┐ Scară ┌──┐ Etaj ┌───┐ Ap. ┌────┐ │
+│ └──────────────┘ └───┘ └────┘ └──┘ └───┘ └────┘ │
+│Judeţ/ ┌────────────┐ Localitate ┌──────────────┐ Cod poştal ┌─────────────┐ │
+│Sector └────────────┘ └──────────────┘ └─────────────┘ │
+│Telefon ┌─────────────┐ Fax ┌─────────────────┐ E-mail ┌─────────────────────┐ │
+│ └─────────────┘ └─────────────────┘ └─────────────────────┘ │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+II. DATE PRIVIND ACTIVITATEA DESFĂŞURATĂ
+┌──────────────────────────────────────────────────────────────────────────────────────────────┐
+│1. Categoria activităţi de profesii activităţi silvi- pisci- alte │
+│ de venit: producţie, [] liberale [] agricole [] cultură [] cultură [] venituri []│
+│ prestări servicii, │
+│ comerţ │
+│2. Forma de asociere fără entităţi supuse modificarea modalităţii/ │
+│ organizare: personalitate [] regimului transparenţei [] formei de exercitare a []│
+│ juridică fiscale activităţii │
+│3. Determinarea venitului net: sistem real [] norma de venit [] │
+│4. Număr asociaţi ┌───────┐ │
+│ └───────┘ │
+│5. Obiectul principal de activitate ┌───────────────────────┐ Cod CAEN ┌──┬──┬──┬───┐ │
+│ └───────────────────────┘ └──┴──┴──┴───┘ │
+│6. Sediul ┌─────────────────────────────────────────────────────────────────────────────────┐ │
+│ └─────────────────────────────────────────────────────────────────────────────────┘ │
+│7. Contract de asociere: Nr. ┌──────────────┐ Data ┌─────────────────────┐ │
+│ └──────────────┘ └─────────────────────┘ │
+│8. Documentul de autorizare: Nr. ┌────────────┐ Data ┌─────────────────────┐ │
+│ └────────────┘ └─────────────────────┘ │
+│9. Data începerii ┌─────────┐ 10. Data încetării ┌───────────┐ 11. Data suspendării ┌────────┐│
+│activităţii └─────────┘ activităţii └───────────┘ activităţii └────────┘│
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+III. DATE PRIVIND VENITUL ESTIMAT
+┌──────────────────────────────────────────────────────────────────────────────────────────────┐
+│1. Venitul brut estimat .................................│1.│ │ │ │ │ │
+│ └──┴─┴─┴──┴──┴──┴──┴──┴──┴──┴──┴──┘ │
+│2. Cheltuieli deductibile estimate ......................│2.│ │ │ │ │ │
+│ └──┴─┴─┴──┴──┴──┴──┴──┴──┴──┴──┴──┘ │
+│3. Venit net estimat (rd. 1-rd. 2) ......................│3.│ │ │ │ │ │
+│ └──┴─┴─┴──┴──┴──┴──┴──┴──┴──┴──┴──┘ │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+IV. DATE DE IDENTIFICARE A RESPONSABILULUI ASOCIERII
+┌──────────────────────────────────────────────────────────────────────────────────────────────┐
+│Nume, prenume/ ┌────────────────────────┐ ┌──┐ Cod de identificare ┌─┬─┬─┬─┬─┬-┬─┬─┬─┬─┬-┬─┬─┐│
+│Denumire └────────────────────────┘ └──┘ fiscală └─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘│
+│ │
+│Stradă ┌──────────────┐ Număr ┌───┐ Bloc ┌────┐ Scară ┌──┐ Etaj ┌───┐ Ap. ┌────┐ │
+│ └──────────────┘ └───┘ └────┘ └──┘ └───┘ └────┘ │
+│Judeţ/ ┌────────────┐ Localitate ┌──────────────┐ Cod poştal ┌─────────────┐ │
+│Sector └────────────┘ └──────────────┘ └─────────────┘ │
+│Telefon ┌─────────────┐ Fax ┌─────────────────┐ E-mail ┌─────────────────────┐ │
+│ └─────────────┘ └─────────────────┘ └─────────────────────┘ │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+V. DISTRIBUŢIA VENITULUI NET ESTIMAT PE ASOCIAŢI (tabel verso)
+┌──────────────────────────────────────────────────────────────────────────────────────────────┐
+│Sub sancţiunile aplicate faptei de fals în acte publice, declar că datele înscrise în acest │
+│formular sunt corecte şi complete. │
+│ Semnătură responsabil asociere ┌───────────────────────────────────┐ │
+│ └───────────────────────────────────┘ │
+└──────────────────────────────────────────────────────────────────────────────────────────────┘
+Loc rezervat organului fiscal Nr. înregistrare ┌────────────────┐ Data: ┌────────────────┐
+└────────────────┘ └────────────────┘
+───────────────────────────────────────────────────────────────────────────────────────────────
+Număr de înregistrare ca operator de date cu caracter personal 759
+Cod 14.13.01.13/1i
+V. DISTRIBUŢIA VENITULUI NET ESTIMAT PE ASOCIAŢI
+┌────┬────────────────┬───────────────────┬──────────┬───────────────────────┬─────────────────┐
+│Nr. │Nume şi prenume/│Cod de identificare│Domiciliu │Cota de distribuire │Venit net estimat│
+│crt.│denumire asociat│ fiscală │ │a venitului net estimat│ distribuit │
+│ │ │ │ │la nivelul asocierii │ (lei) │
+│ │ │ │ │ (%) │ │
+├────┼────────────────┼───────────────────┼──────────┼───────────────────────┼─────────────────┤
+│ 0 │ 1 │ 2 │ 3 │ 4 │ 5 │
+├────┼────────────────┼───────────────────┼──────────┼───────────────────────┼─────────────────┤
+│ │ │ │ │ │ │
+├────┼────────────────┼───────────────────┼──────────┼───────────────────────┼─────────────────┤
+│ │ │ │ │ │ │
+├────┼────────────────┼───────────────────┼──────────┼───────────────────────┼─────────────────┤
+│ │ │ │ │ │ │
+├────┴────────────────┴───────────────────┴──────────┴───────────────────────┼─────────────────┤
+│ TOTAL │ │
+└────────────────────────────────────────────────────────────────────────────┴─────────────────┘
+┌─┬─┐ ┌─┬─┬─┬─┐
+Luna └─┴─┘ Anul └─┴─┴─┴─┘
+[] Declaraţie
+rectificativă
+Se completează cu X în
+cazul declaraţiilor
+rectificative
+I. DATE DE IDENTIFICARE A CONTRIBUABILULUI
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Iniţiala │
+│ Nume ┌───────────────────┐ tatălui ┌────┐ Cod numeric personal/Număr de │
+│ └───────────────────┘ └────┘ identificare fiscală │
+│ Prenume ┌──────────────────────────────────┐ ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐ │
+│ └──────────────────────────────────┘ └─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ Stradă ┌───────────────────┐ Număr ┌────┐ E-mail ┌───────────────────┐ │
+│ └───────────────────┘ └────┘ └───────────────────┘ │
+│ ┌─┐ ┌─┐ ┌─┐ ┌─┐Judeţ/┌───────┐ Telefon┌───────────────────┐ │
+│ Bloc└─┘Scară└─┘Etaj└─┘ Ap.└─┘Sector└───────┘ └───────────────────┘ │
+│ │
+│ Localitate┌───────────────────┐ Cod ┌─────┐ Fax ┌───────────────────┐ │
+│ └───────────────────┘poştal└─────┘ └───────────────────┘ │
+└──────────────────────────────────────────────────────────────────────────────┘
+Documentul care reglementează ┌──────────┐ număr ┌─────┐ data ┌──────┐
+raportul de muncă └──────────┘ └─────┘ └──────┘
+┌─────┐ ┌──────┐
+Perioada de activitate: de la └─────┘ până la └──────┘
+II. DATE REFERITOARE LA PERSOANA FIZICĂ SAU JURIDICĂ LA CARE ÎŞI
+DESFĂŞOARĂ ACTIVITATEA CONTRIBUABILUL
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Cod de identificare fiscală│
+│Nume, prenume/Denumire ┌─────────────────────┐ ┌──┐┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐│
+│ └─────────────────────┘ └──┘└─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘│
+│Strada ┌───────────────────────┐ Număr┌──┐ Bloc┌──┐ Scară┌──┐ Etaj┌──┐ Ap.┌──┐│
+│ └───────────────────────┘ └──┘ └──┘ └──┘ └──┘ └──┘│
+│ ┌────────┐ ┌──────────────┐ Cod poştal┌─────────┐ │
+│Judeţ/Sector └────────┘ Localitate└──────────────┘ └─────────┘ │
+│ ┌─────────────────┐ ┌─────────────────┐ ┌───────────────────┐│
+│Telefon └─────────────────┘ Fax└─────────────────┘ E-mail└───────────────────┘│
+│ │
+└──────────────────────────────────────────────────────────────────────────────┘
+III. MODUL DE CALCUL AL IMPOZITULUI PE VENITURILE SUB FORMĂ DE SALARII
+ŞI ASIMILATE SALARIILOR DIN STRĂINĂTATE
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ (lei) │
+│ ┌────┬─────────────────────┐ │
+│ 1. Venit brut ................................. │ 1.│ │ │ │ │ │
+│ └────┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ ┌────┬─────────────────────┐ │
+│ 2. Contribuţii sociale datorate potrivit legii..│ 2.│ │ │ │ │ │
+│ └────┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ ┌────┬─────────────────────┐ │
+│ 3. Venit net (rd.1.-rd.2.)..................... │ 3.│ │ │ │ │ │
+│ └────┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ ┌────┬─────────────────────┐ │
+│ 4. Deduceri personale*)........................ │ 4.│ │ │ │ │ │
+│ └────┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ ┌────┬─────────────────────┐ │
+│ 5. Cotizaţia sindicală plătită*)............... │ 5.│ │ │ │ │ │
+│ └────┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ ┌────┬─────────────────────┐ │
+│ 6. Contribuţiile la fondurile de pensii │ 6.│ │ │ │ │ │
+│ facultative*)................................└────┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ ┌────┬─────────────────────┐ │
+│ 7. Primele de asigurare voluntară de │ 7.│ │ │ │ │ │
+│ sănătate*)...................................└────┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ ┌────┬─────────────────────┐ │
+│ 8. Venit bază de calcul (rd.3-rd.4-rd.5-rd.6-...│ 8.│ │ │ │ │ │
+│ rd.7) └────┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ ┌────┬─────────────────────┐ │
+│ 9. Impozit lunar datorat .......................│ 9.│ │ │ │ │ │
+│ └────┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ ┌────┬─────────────────────┐ │
+│10. Impozit anual datorat**).....................│ 10.│ │ │ │ │ │
+│ └────┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘ │
+│ │
+│*) Se completează numai pentru funcţia de bază, conform legii. │
+│**) Se completează în declaraţia depusă pentru luna decembrie, respectiv luna │
+│ în care contribuabilul şi-a încetat raportul contractual de muncă. │
+└──────────────────────────────────────────────────────────────────────────────┘
+IV. DATE DE IDENTIFICARE A ÎMPUTERNICITULUI
+┌──────────────────────────────────────────────────────────────────────────────┐
+│ Cod de identificare fiscală│
+│Nume, prenume/Denumire ┌─────────────────────┐┌──┐ ┌─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┬─┐│
+│ └─────────────────────┘└──┘ └─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┴─┘│
+│Stradă ┌───────────────────────┐ Număr┌──┐ Bloc┌──┐ Scară┌──┐ Etaj┌──┐ Ap.┌──┐│
+│ └───────────────────────┘ └──┘ └──┘ └──┘ └──┘ └──┘│
+│ ┌────────┐ ┌──────────────┐ Cod poştal┌─────────┐ │
+│Judeţ/Sector └────────┘ Localitate└──────────────┘ └─────────┘ │
+│ ┌─────────────────┐ ┌─────────────────┐ ┌───────────────────┐│
+│Telefon └─────────────────┘ Fax└─────────────────┘ E-mail└───────────────────┘│
+│ │
+└──────────────────────────────────────────────────────────────────────────────┘
+Prezenta declaraţie reprezintă titlu de creanţă şi produce efectele
+juridice ale înştiinţării de plată de la data depunerii acesteia, în
+condiţiile legii.
+Sub sancţiunile aplicate faptei de fals în acte publice, declar că datele
+înscrise în acest formular sunt corecte şi complete.
+┌─────────────┐ ┌─────────────┐
+Semnătură contribuabil │ │ Semnătură reprezentant │ │
+└─────────────┘ împuternicit └─────────────┘
+──────────────────────────────────────────────────────────────────────────────
+Loc rezervat organului fiscal ┌────────┐ ┌───────────┐
+Nr. înregistrare:│ │ Data:│ │
+└────────┘ └───────────┘
+Număr de înregistrare ca operator de date cu caracter personal 759
+Cod 14.13.01.13/5
+*Font 8*
+SIGLA DGRFP Agenţia Naţională de Administrare Fiscală
+Direcţia Generală Regională a Finanţelor publice ______
+Unitatea fiscală ____________________________ 260
+Nr. înregistrare
+Data_____________
+DECIZIE DE IMPUNERE
+privind plăţile anticipate cu titlu de impozit pe venit/
+contribuţii de asigurări sociale de sănătate/
+contribuţii de asigurări sociale
+┌─┬─┬─┬─┐
+Anul└─┴─┴─┴─┘
+Către:
+Cod numeric personal/Număr de
+Nume____________________________________ identificare fiscală
+Prenume_________________________________ ______________________________
+Domiciliul: Localitatea_______Cod poştal____ În baza art. 121, art. 151, art. 169
+alin. (7) şi art. 174 din
+Stradă ________________ Număr ____ Bloc ____ Legea nr. 227/2015 privind Codul fiscal
+şi a Declaraţiei privind venitul estimat/
+Scara ____ Ap. ____ Judeţ(sector) __________ norma de venit/Declaraţiei privind
+veniturile realizate din România/
+Declaraţiei privind veniturile din
+activităţi agricole impuse pe bază de
+norme de venit pe anul .... nr. .... din
+data ....../Declaraţiei privind îndeplinirea
+condiţiilor de încadrare în categoria
+persoanelor asigurate obligatoriu în
+sistemul public de pensii pe anul .....
+nr. .... din data ....., se stabilesc
+plăţile anticipate cu titlu de impozit,
+pe venit/contribuţii de asigurări
+sociale de sănătate/contribuţii de asigurări
+sociale, după cum urmează:
+I. Date privind activitatea desfăşurată
+┌────────────────────────────────────────────────┬─────────────────────────────┐
+│ 1. Categoria de venit │ │
+├────────────────────────────────────────────────┼─────────────────────────────┤
+│ 2. Determinarea venitului net │ │
+├────────────────────────────────────────────────┼─────────────────────────────┤
+│ 3. Forma de organizare │ │
+├────────────────────────────────────────────────┼─────────────────────────────┤
+│ 4. Obiectul principal de activitate │ │
+├────────────────────────────────────────────────┼─────────────────────────────┤
+│ 5. Cod CAEN │ │
+├────────────────────────────────────────────────┼─────────────────────────────┤
+│ 6. Sediul/Datele de identificare a bunului │ │
+│ pentru care se cedează folosinţa │ │
+├────────────────────────────────────────────────┼─────────────────────────────┤
+│ 7. Documentul de autorizare/Contractul de │ │
+│ asociere/Închiriere/(nr./data) │ │
+├────────────────────────────────────────────────┼─────────────────────────────┤
+│ 8. Data începerii activităţii │ │
+├────────────────────────────────────────────────┼─────────────────────────────┤
+│ 9. Data încetării activităţii │ │
+├────────────────────────────────────────────────┼─────────────────────────────┤
+│10. Data suspendării activităţii │ │
+└────────────────────────────────────────────────┴─────────────────────────────┘
+II. Determinarea plăţilor anticipate cu titlu de impozit/contribuţii de
+asigurări sociale de sănătate/contribuţii de asigurări sociale
+(lei)
+┌───────────────────────────────────────────────────────────┬──────────┬───────┐
+│ Denumire indicator │ Decizie │Decizie│
+│ │anterioară│curentă│
+├───────────────────────────────────────────────────────────┼──────────┼───────┤
+│ 1. Venit brut estimat │ │ │
+├───────────────────────────────────────────────────────────┼──────────┼───────┤
+│ 2. Norma de venit*) │ │ │
+├───────────────────────────────────────────────────────────┼──────────┼───────┤
+│ 3. Cheltuieli deductibile │ │ │
+├───────────────────────────────────────────────────────────┼──────────┼───────┤
+│ 4. Venit net estimat (rd.1-rd.3)/Venit net determinat │ │ │
+│ pe baza normelor de venit │ │ │
+├───────────────────────────────────────────────────────────┼──────────┼───────┤
+│ 5. Venit net redus**) │ │ │
+├───────────────────────────────────────────────────────────┼──────────┼───────┤
+│ 6. Plăţi anticipate cu titlu de impozit │ │ │
+├───────────────────────────────────────────────────────────┼──────────┼───────┤
+│ 7. Total plăţi anticipate cu titlu de contribuţii de │ │ │
+│ asigurări sociale de sănătate***) │ │ │
+├───────────────────────────────────────────────────────────┼──────────┼───────┤
+│ 8. Total plăţi anticipate cu titlu de contribuţii de │ │ │
+│ asigurări sociale***) │ │ │
+└───────────────────────────────────────────────────────────┴──────────┴───────┘
+*) Modul stabilire a venitului net pe baza normelor de venit în cazul
+desfăşurării mai multor activităţi este prevăzut în Anexa nr. 1.
+**) Se completează în situaţia persoanelor fizice care realizează
+venituri scutite de plata impozitului, conform legii, pe fracţiuni de an.
+***) Baza lunară de calcul al contribuţiei de asigurări sociale de
+sănătate şi al contribuţiei de asigurări sociale sunt prevăzute în Anexa nr. 2.
+III. Repartizarea plăţilor anticipate cu titlu de impozit/contribuţii de asigurări
+sociale de sănătate/contribuţii de asigurări sociale, pe termene de plată
+(lei)
+┌──────┬───────────────────────────────────┬───────────────────────────────────┐
+│Termen│ Decizie anterioară │ Decizie curentă │
+│ de ├───────────────────────────────────┼───────────────────────────────────┤
+│plată │ Plăţi anticipate │ Plăţi anticipate │
+│ ├───────┬────────┬──────────────────┼───────┬────────┬──────────────────┤
+│ │Impozit│ CASS*) │ CAS**) │Impozit│ CASS │ CAS │
+├──────┼───────┼────────┼──────────────────┼───────┼────────┼──────────────────┤
+├──────┼───────┼────────┼──────────────────┼───────┼────────┼──────────────────┤
+├──────┼───────┼────────┼──────────────────┼───────┼────────┼──────────────────┤
+├──────┼───────┼────────┼──────────────────┼───────┼────────┼──────────────────┤
+│TOTAL │ │ │ │ │ │ │
+└──────┴───────┴────────┴──────────────────┴───────┴────────┴──────────────────┘
+*) Contribuţia de asigurări sociale de sănătate.
+**) Contribuţia de asigurări sociale
+Pentru obligaţiile de plată stabilite prin prezenta, neachitate până la termenele
+arătate mai sus, se vor calcula dobânzi şi penalităţi de întârziere. Împotriva
+prezentei decizii se poate face contestaţie, care se depune în termen de 45 zile
+de la comunicare, la organul fiscal emitent.
+Prezenta reprezintă titlu de creanţă şi constituie înştiinţare de plată, conform
+legii.
+Număr operator de date cu caracter personal ........
+Cod 14.13.02.13/3a
+┌────────────────────────────────────────────────────────────────────────────┐
+│Date necesare efectuării plăţii obligaţiilor fiscale │
+├───────────────────────────────────────────────┬───────┬─────────┬──────────┤
+│Obligaţia de plată │Impozit│ CASS │ CAS │
+├───────────────────────────────────────────────┼───────┼─────────┼──────────┤
+│Beneficiar │ │ │ │
+├───────────────────────────────────────────────┼───────┼─────────┼──────────┤
+│Cod de identificare fiscală beneficiar │ │ │ │
+├───────────────────────────────────────────────┼───────┼─────────┼──────────┤
+│Contul de venituri bugetare corespunzător │ │ │ │
+│obligaţiei de plată │ │ │ │
+├───────────────────────────────────────────────┼───────┼─────────┼──────────┤
+│Codul IBAN aferent contului de venituri │ │ │ │
+│bugetare │ │ │ │
+├───────────────────────────────────────────────┼───────┼─────────┼──────────┤
+│Explicaţii │ │ │ │
+├───────────────────────────────────────────────┼───────┼─────────┼──────────┤
+│Suma (lei) │ │ │ │
+└───────────────────────────────────────────────┴───────┴─────────┴──────────┘
+Informaţii privind modalităţile de plată a obligaţiei fiscale:
+Achitarea sumelor datorate bugetului de stat/bugetului Fondului naţional
+unic de asigurări sociale de sănătate/bugetului asigurărilor sociale de stat
+poate fi efectuată prin una dintre următoarele modalităţi:
+- în numerar, la unitatea Trezoreriei statului .........;
+Impozitul şi contribuţiile aferente veniturilor din activităţi agricole, se
+pot achita în numerar şi la compartimentele de specialitate ale unităţii
+administrativ-teritoriale corespunzătoare localităţii în care îşi au domiciliul
+fiscal contribuabilii unde nu există o unitate teritorială a Agenţiei Naţionale
+de Administrare Fiscală, dacă între unitatea administrativ-teritorială şi Agenţia
+Naţională de Administrare Fiscală s-a încheiat un protocol în acest scop.
+- prin mandat poştal, la subunităţile poştale ale C.N.Poşta Română S.A.;
+- prin virament, utilizând ordinul de plată, din contul propriu deschis la o
+instituţie de credit din România (bancă), inclusiv cel emis prin sisteme de plată
+electronică de tip "internet banking";
+- prin virament, utilizând contul tranzitoriu deschis pe numele Ministerului
+Finanţelor Publice. Nomenclatorul conturilor de venituri bugetare în care pot fi
+achitate sume prin intermediul contului tranzitoriu de către persoanele fizice se
+regăseşte pe site-ul Agenţiei Naţionale de Administrare Fiscală, www.anaf.ro.
+Aprobat: Verificat: Întocmit: Am primit un exemplar,
+Funcţie _______ Funcţie _______ Funcţie _______ Semnătură contribuabil ________
+Nume, prenume Nume, prenume Nume, prenume Data__/__/____ sau nr. şi
+data confirmării de primire
+Data__/__/___ Data__/__/___ Data__/__/___
++
+Anexa 1
+┌──────────────┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┐
+│ CNP/NIF │ │ │ │ │ │ │ │ │ │ │ │ │ │
+└──────────────┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┘
+Situaţie
+privind modul de stabilire a venitului net pe baza normelor de venit
+A. Activităţi de producţie, prestări servicii, comerţ*)
+┌────┬──────────┬─────────────┬───────────────┬──────────────┬─────────┐
+│Nr. │ Cod CAEN │Locul de │Norma de venit │Norma de venit│Venit net│
+│crt.│ │desfăşurare a│corespunzătoare│stabilită │redus***)│
+│ │ │activităţii │activităţii**) │pe baza │ (lei) │
+│ │ │ │ │coeficienţilor│ │
+│ │ │ │ │de corecţie │ │
+│ │ │ │ (lei) │ (lei) │ │
+├────┼──────────┼─────────────┼───────────────┼──────────────┼─────────┤
+│ 0 │ 1 │ 2 │ 3 │ 4 │ 5 │
+├────┼──────────┼─────────────┼───────────────┼──────────────┼─────────┤
+│ 1 │ │ │ │ │ │
+├────┼──────────┼─────────────┼───────────────┼──────────────┼─────────┤
+│ 2 │ │ │ │ │ │
+├────┼──────────┼─────────────┼───────────────┼──────────────┼─────────┤
+│ 3 │ │ │ │ │ │
+├────┼──────────┼─────────────┼───────────────┼──────────────┼─────────┤
+│... │ │ │ │ │ │
+├────┴──────────┴─────────────┼───────────────┼──────────────┼─────────┤
+│Total venit net determinat pe│ │ │ │
+│baza normelor de venit │ │ │ │
+└─────────────────────────────┴───────────────┴──────────────┴─────────┘
+B. Activităţi agricole*)
+┌────┬─────────┬──────────────┬───────────────┬──────────────┬────────┬──────┐
+│Nr. │Produse │Localitatea pe│Suprafaţă (ha)/│Norma de │Venit │Venit │
+│crt.│vegetale/│raza căreia se│număr capete │venit pe │anual │net │
+│ │Animale │află terenul/ │animale/familii│unitatea de │(lei) │redus │
+│ │ │animalele/ │de albine │suprafaţă │ │***) │
+│ │ │familiile de │ │(ha)/cap de │ │(lei) │
+│ │ │albine │ │animal/familie│ │ │
+│ │ │ │ │de albine │ │ │
+│ │ │ │ │(lei) │ │ │
+├────┼─────────┼──────────────┼───────────────┼──────────────┼────────┼──────┤
+│ 0 │ 1 │ 2 │ 3 │ 4 │ 5 │ 6 │
+│ │ │ │ │ │(col.3 x│ │
+│ │ │ │ │ │col.4) │ │
+├────┼─────────┼──────────────┼───────────────┼──────────────┼────────┼──────┤
+│ 1 │ │ │ │ │ │ │
+├────┼─────────┼──────────────┼───────────────┼──────────────┼────────┼──────┤
+│ 2 │ │ │ │ │ │ │
+├────┼─────────┼──────────────┼───────────────┼──────────────┼────────┼──────┤
+│ 3 │ │ │ │ │ │ │
+├────┼─────────┼──────────────┼───────────────┼──────────────┼────────┼──────┤
+│... │ │ │ │ │ │ │
+├────┴─────────┴──────────────┴───────────────┴──────────────┼────────┼──────┤
+│ Total venit anual determinat pe baza normelor de venit │ │ │
+└────────────────────────────────────────────────────────────┴────────┴──────┘
+Prezenta constituie anexă la formularul 260 "Decizie de impunere privind
+plăţile anticipate cu titlu de impozit pe venit/contribuţii de asigurări
+sociale de sănătate/contribuţii de asigurări sociale" nr. .......
+pe anul ........
+Notă
+...
+──────────
+*) Se generează, după caz, în funcţie de activitatea desfăşurată de contribuabil.
+**) Activităţi prevăzute în nomenclatorul activităţilor pentru care venitul net se poate determina pe baza normelor anuale de venit, care se aprobă prin ordin al ministrului finanţelor publice, în conformitate cu activităţile din Clasificarea activităţilor din economia naţională - CAEN, potrivit dispoziţiilor art. 69 alin. (2) din Legea nr. 227/2015 privind Codul Fiscal.
+***) Se completează în situaţia persoanelor fizice care realizează venituri scutite de la plata impozitului, conform legii, pe fracţiuni de an.
+──────────
++
+Anexa 2
+*Font 7*
+┌──────────────┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┬──┐
+│ CNP/NIF │ │ │ │ │ │ │ │ │ │ │ │ │ │
+└──────────────┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┴──┘
+Situaţie
+privind stabilirea contribuţiei lunare de asigurări
+sociale de sănătate/contribuţiei lunare de asigurări sociale
+┌─────────────┬─────────────────────────────────────────────────┬──────────────────────────────────────────────────┐
+│ │ Stabilirea contribuţiei lunare de asigurări │ Stabilirea contribuţiei lunare de asigurări │
+│ │ sociale de sănătate │ sociale │
+│ ├────────────────────────┬────────────────────────┼────────────────────────┬─────────────────────────┤
+│ Luna │ Decizie anterioară │ Decizie curentă │ Decizie anterioară │ Decizie curentă │
+│ ├──────────┬─────────────┼──────────┬─────────────┼──────────┬─────────────┼──────────┬──────────────┤
+│ │Venit bază│ Contribuţia │Venit bază│ Contribuţia │Venit bază│ Contribuţia │Venit bază│ Contribuţia │
+│ │de calcul │de asigurări │de calcul │de asigurări │de calcul │de asigurări │de calcul │ de asigurări │
+│ │ │ sociale de │ │ sociale de │ │ sociale │ │ sociale │
+│ │ │ sănătate │ │ sănătate │ *) │ │ *) │ │
+├─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼──────────────┤
+│1. Ianuarie │ │ │ │ │ │ │ │ │
+├─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼──────────────┤
+│2. Februarie │ │ │ │ │ │ │ │ │
+├─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼──────────────┤
+│3. Martie │ │ │ │ │ │ │ │ │
+├─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼──────────────┤
+│4. Aprilie │ │ │ │ │ │ │ │ │
+├─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼──────────────┤
+│5. Mai │ │ │ │ │ │ │ │ │
+├─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼──────────────┤
+│6. Iunie │ │ │ │ │ │ │ │ │
+├─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼──────────────┤
+│7. Iulie │ │ │ │ │ │ │ │ │
+├─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼──────────────┤
+│8. August │ │ │ │ │ │ │ │ │
+├─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼──────────────┤
+│9. Septembrie│ │ │ │ │ │ │ │ │
+├─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼──────────────┤
+│10. Octombrie│ │ │ │ │ │ │ │ │
+├─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼──────────────┤
+│11. Noiembrie│ │ │ │ │ │ │ │ │
+├─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼──────────────┤
+│12. Decembrie│ │ │ │ │ │ │ │ │
+├─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼─────────────┼──────────┼──────────────┤
+│TOTAL │ │ │ │ │ │ │ │ │
+└─────────────┴──────────┴─────────────┴──────────┴─────────────┴──────────┴─────────────┴──────────┴──────────────┘
+Notă
+...
+──────────
+*) În cazul persoanelor fizice care realizează venituri din activităţi independente şi care determină venitul net anual în sistem real, baza lunară de calcul al contribuţiei de asigurări sociale, în cazul plăţilor anticipate cu titlul de contribuţii de asigurări sociale, o reprezintă echivalentul a 35% din câştigul salarial mediu brut utilizat la fundamentarea bugetului asigurărilor sociale de stat. În cazul persoanelor fizice care realizează venituri din activităţi independente şi care determină venitul net anual pe baza normelor anuale de venit, baza lunară de calcul al contribuţiei de asigurări sociale o reprezintă valoarea anuală a normei de venit raportată la numărul de luni în care se desfăşoară activitatea şi nu poate fi mai mică decât echivalentul reprezentând 35% din câştigul salarial mediu brut utilizat la fundamentarea bugetului asigurărilor sociale de stat şi nici mai mare decât echivalentul a de 5 ori acest câştig.
+──────────
+Prezenta constituie anexă la formularul 260 "Decizie de impunere privind plăţile anticipate cu titlu de impozit pe venit/contribuţii de asigurări sociale de sănătate/de contribuţii de asigurări sociale" nr. ....... pe anul .... .
+*Font 8*
+Sigla DGRFP Ministerul Finanţelor Publice 650
+Agenţia Naţională de Administrare Adresa :.................
+Fiscală .........................
+Unitatea fiscală*) Tel: ....................
+................................ Fax: ....................
+Nr. înregistrare ............... e-mail: .................
+Data ......../.........
+*) Se menţionează denumirea organului fiscal emitent
+DECIZIE DE IMPUNERE
+privind plăţile anticipate cu titlu de contribuţii de asigurări
+sociale de sănătate pentru veniturile din cedarea folosinţei
+bunurilor pe anul ___________
+Către: Cod numeric personal/Număr de identificare fiscală:
+Nume: _____________________ ___________________________________________________
+Prenume: __________________
+Domiciliul: Localitate: ____________ În baza art. 173 şi art. 174 din
+Cod poştal: ________________________ Legea nr. 227/2015 privind Codul fiscal, şi a
+Str.________________________________ Declaraţiei privind venitul estimat/norma
+Nr. ____ Bl. ____ Sc. ____ Ap. _____ de venit/Declaraţiei privind veniturile realizate
+Judeţ/sector: ________ din România pe anul .... nr. ..... din data .......
+se stabilesc plăţile anticipate cu titlu de
+contribuţii de asigurări sociale de sănătate,
+după cum urmează:
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│ I. Date privind activitatea desfăşurată: │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+┌────┬─────────────────────┬────────────────────────┬────────────────────────────────────┐
+│Nr. │ Contractul de │Perioada de valabilitate│ Venit lunar bază de calcul al │
+│crt.│închiriere (nr./data)│ în anul de impunere │ CASS*) │
+├────┼─────────────────────┼────────────────────────┼────────────────────────────────────┤
+│ 1. │ │ │ │
+├────┼─────────────────────┼────────────────────────┼────────────────────────────────────┤
+│ 2. │ │ │ │
+├────┼─────────────────────┼────────────────────────┼────────────────────────────────────┤
+│ 3. │ │ │ │
+├────┼─────────────────────┼────────────────────────┼────────────────────────────────────┤
+│ 4. │ │ │ │
+├────┼─────────────────────┼────────────────────────┼────────────────────────────────────┤
+│... │ │ │ │
+└────┴─────────────────────┴────────────────────────┴────────────────────────────────────┘
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│II. Determinarea plăţilor anticipate cu titlu de contribuţii de asigurări sociale de │
+│ sănătate: │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+┌────────────────────────────────────────┬───────────────────────────────────────────────┐
+│ Decizie anterioară │ Decizie curentă │
+├───────────────────────┬────────────────┼─────────────────────────┬─────────────────────┤
+│Total bază de calcul**)│ Total CASS*) │ Total bază de calcul**) │ Total CASS*) │
+├───────────────────────┼────────────────┼─────────────────────────┼─────────────────────┤
+│ │ │ │ │
+└───────────────────────┴────────────────┴─────────────────────────┴─────────────────────┘
+*) CASS- contribuţia de asigurări sociale de sănătate, calculată conform Anexei
+**) Bazele de calcul sunt calculate pe fiecare lună, conform Anexei.
+┌────────────────────────────────────────────────────────────────────────────────────────┐
+│III. Repartizarea plăţilor anticipate cu titlu de contribuţii de asigurări sociale de │
+│ sănătate, pe termene de plată: │
+└────────────────────────────────────────────────────────────────────────────────────────┘
+┌─────────────────────────┬────────────────────────────────┬─────────────────────────────┐
+│ Termen de plată │ Decizie anterioară │ Decizie curentă │
+├─────────────────────────┼────────────────────────────────┼─────────────────────────────┤
+│ │ │ │
+├─────────────────────────┼────────────────────────────────┼─────────────────────────────┤
+│ │ │ │
+├─────────────────────────┼────────────────────────────────┼─────────────────────────────┤
+│ │ │ │
+├─────────────────────────┼────────────────────────────────┼─────────────────────────────┤
+│ │ │ │
+├─────────────────────────┼────────────────────────────────┼─────────────────────────────┤
+│ │ │ │
+├─────────────────────────┼────────────────────────────────┼─────────────────────────────┤
+│TOTAL │ │ │
+└─────────────────────────┴────────────────────────────────┴─────────────────────────────┘
+Pentru obligaţiile de plată stabilite prin prezenta, neachitate până la termenele
+arătate mai sus, se vor calcula dobânzi şi penalităţi de întârziere. Împotriva măsurilor
+dispuse prin prezenta se poate face contestaţie, care se depune în termen de 45 zile de la
+comunicare, la organul fiscal emitent. Prezenta reprezintă titlu de creanţă şi constituie
+înştiinţare de plată, conform legii.
+Aprobat: Verificat: Întocmit: Am primit un exemplar,
+Funcţie........ Funcţie........ Funcţie.......
+Nume, prenume...... Nume, prenume...... Nume, prenume Semnătură contribuabil .......
+Data ............. Data ........... Data ......... Data.../.../
+Sau nr. şi data confirmării
+de primire ..................
+Număr de operator de date cu caracter personal ..............
+Cod 14.13.02.15/cfb
++
+Anexă
+Situaţie privind stabilirea contribuţiei lunare
+de asigurări sociale de sănătate
+*Font 7*
+┌───────────┬─────────────────────────────────────────────────┬─────────────────────────────────────────────────┐
+│ │ Decizie anterioară │ Decizie curentă │
+├───────────┼──────────────┬─────────────┬──────────┬─────────┼──────────────┬─────────────┬──────────┬─────────┤
+│ Luna │Bază de calcul│Plafon maxim │ Bază de │ CASS │Bază de calcul│Plafon maxim │ Bază de │ CASS │
+│ │rezultată din │prevăzut de │ calcul │ │rezultată din │prevăzut de │ calcul │ │
+│ │contract(e) │ lege │ │ │contract(e) │ lege │ │ │
+├───────────┼──────────────┼─────────────┼──────────┼─────────┼──────────────┼─────────────┼──────────┼─────────┤
+│Ianuarie │ │ │ │ │ │ │ │ │
+├───────────┼──────────────┼─────────────┼──────────┼─────────┼──────────────┼─────────────┼──────────┼─────────┤
+│Februarie │ │ │ │ │ │ │ │ │
+├───────────┼──────────────┼─────────────┼──────────┼─────────┼──────────────┼─────────────┼──────────┼─────────┤
+│Martie │ │ │ │ │ │ │ │ │
+├───────────┼──────────────┼─────────────┼──────────┼─────────┼──────────────┼─────────────┼──────────┼─────────┤
+│Aprilie │ │ │ │ │ │ │ │ │
+├───────────┼──────────────┼─────────────┼──────────┼─────────┼──────────────┼─────────────┼──────────┼─────────┤
+│Mai │ │ │ │ │ │ │ │ │
+├───────────┼──────────────┼─────────────┼──────────┼─────────┼──────────────┼─────────────┼──────────┼─────────┤
+│Iunie │ │ │ │ │ │ │ │ │
+├───────────┼──────────────┼─────────────┼──────────┼─────────┼──────────────┼─────────────┼──────────┼─────────┤
+│Iulie │ │ │ │ │ │ │ │ │
+├───────────┼──────────────┼─────────────┼──────────┼─────────┼──────────────┼─────────────┼──────────┼─────────┤
+│August │ │ │ │ │ │ │ │ │
+├───────────┼──────────────┼─────────────┼──────────┼─────────┼──────────────┼─────────────┼──────────┼─────────┤
+│Septembrie │ │ │ │ │ │ │ │ │
+├───────────┼──────────────┼─────────────┼──────────┼─────────┼──────────────┼─────────────┼──────────┼─────────┤
+│Octombrie │ │ │ │ │ │ │ │ │
+├───────────┼──────────────┼─────────────┼──────────┼─────────┼──────────────┼─────────────┼──────────┼─────────┤
+│Noiembrie │ │ │ │ │ │ │ │ │
+├───────────┼──────────────┼─────────────┼──────────┼─────────┼──────────────┼─────────────┼──────────┼─────────┤
+│Decembrie │ │ │ │ │ │ │ │ │
+├───────────┼──────────────┼─────────────┼──────────┼─────────┼──────────────┼─────────────┼──────────┼─────────┤
+│TOTAL │ │ │ │ │ │ │ │ │
+└───────────┴──────────────┴─────────────┴──────────┴─────────┴──────────────┴─────────────┴──────────┴─────────┘
++
+Anexa 2
+INSTRUCŢIUNI
+de completare a formularului 220
+"Declaraţie privind venitul estimat/norma de venit"
+Cod 14.13.01.13/3p
+I. Depunerea declaraţiei
+1. Declaraţia se completează şi se depune de către persoanele fizice care realizează, în mod individual sau într-o formă de asociere, venituri în bani şi/sau în natură din România, supuse impozitului pe venit, provenind din:
+a) activităţi independente;
+...
+b) cedarea folosinţei bunurilor, cu excepţia veniturilor din arendă;
+...
+c) activităţi agricole impuse în sistem real;
+...
+d) silvicultură şi piscicultură.
+...
+NOTĂ:
+Persoanele fizice cu handicap grav ori accentuat care realizează venituri din activităţi independente, din activităţi agricole, silvicultură şi piscicultură, scutite de la plata impozitului pe venit, au obligaţia declarării veniturilor, prin completarea şi depunerea declaraţiei.
+2. Formularul se utilizează pentru:
+a) declararea veniturilor şi cheltuielilor estimate a se realiza în anul de impunere;
+...
+În cazul contribuabililor care desfăşoară activităţi pentru care venitul net se stabileşte pe baza normelor de venit, se vor avea în vedere dispoziţiile pct. 6.2 de la pct. 6 secţiunea II "Date privind activitatea desfăşurată";
+b) exercitarea opţiunii privind modificarea modului de determinare a venitului net;
+...
+c) recalcularea plăţilor anticipate cu titlu de impozit şi contribuţii sociale, potrivit legii.
+...
+3. Declaraţia se depune şi de către persoanele fizice care realizează venituri din pensii provenite dintr-un alt stat, cu respectarea prevederilor legislaţiei europene aplicabile în domeniul securităţii sociale, precum şi a acordurilor privind sistemele de securitate socială la care România este parte, potrivit art. 169 alin. (5) din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare.
+4. Activităţi independente
+4.1. Declaraţia se completează de către contribuabilii care realizează venituri în bani şi/sau în natură, provenind din activităţi independente, inclusiv din activităţi adiacente, desfăşurate în mod individual şi/sau în cadrul unei asocieri fără personalitate juridică, constituită între persoane fizice şi/sau în cadrul unei societăţi civile cu personalitate juridică constituită potrivit legii speciale şi care este supusă regimului transparenţei fiscale.
+4.2. În categoria veniturilor din activităţi independente, pentru care există obligaţia depunerii declaraţiei, se cuprind:
+- venituri din activităţi de producţie, comerţ, prestări de servicii;
+- venituri din profesii liberale;
+- venituri din drepturi de proprietate intelectuală, în situaţia în care plătitorii de venituri nu au obligaţia calculării şi reţinerii impozitului.
+4.3. Persoanele fizice care obţin venituri din activităţi independente din mai multe surse depun câte o declaraţie pentru fiecare sursă.
+4.4. În cazul societăţii civile cu personalitate juridică constituită potrivit legii speciale şi care este supusă regimului transparenţei fiscale, se aplică regulile de determinare a venitului net din activităţi independente.
+Persoanele fizice care realizează venituri în cadrul unei asocieri fără personalitate juridică, constituită între persoane fizice sau în cadrul unei societăţi civile cu personalitate juridică constituite potrivit legii speciale şi care este supusă regimului transparenţei fiscale, potrivit legii, completează declaraţia având în vedere venitul net estimat distribuit, care le revine din asociere, cu excepţia persoanelor fizice pentru care venitul net se determină pe baza normelor de venit sau pe baza cotelor forfetare de cheltuieli.
+5. Cedarea folosinţei bunurilor, cu excepţia veniturilor din arendă
+5.1. Venituri din cedarea folosinţei bunurilor, altele decât cele de la subpct. 5.2. şi 5.3
+5.1.1. Declaraţia se completează de către persoanele fizice care realizează venituri în bani şi/sau în natură, provenind din cedarea folosinţei bunurilor mobile şi imobile, obţinute în calitate de proprietar, uzufructuar sau alt deţinător legal, altele decât veniturile din activităţi independente.
+5.1.2. Contribuabilii care realizează venituri din cedarea folosinţei bunurilor din derularea unui număr de până la 5 contracte de închiriere, inclusiv bifează căsuţa "Cedarea folosinţei bunurilor" şi căsuţa "sub 5 contracte, inclusiv" de la secţiunea II "Date privind activitatea desfăşurată" pct. 1 "Categoria de venit".
+5.1.3. Persoanele fizice care obţin venituri din cedarea folosinţei bunurilor din mai multe surse, respectiv contracte de închiriere, depun câte o declaraţie estimativă pentru fiecare sursă.
+5.1.4. În situaţia închirierii bunurilor deţinute în comun, fiecare coproprietar completează şi depune câte o declaraţie, corespunzător cotei care îi revine din proprietate.
+5.2. Venituri din cedarea folosinţei bunurilor calificate în categoria venituri din activităţi independente
+5.2.1. Declaraţia se depune de către contribuabilii care la sfârşitul anului precedent celui de impunere realizează venituri din cedarea folosinţei bunurilor din derularea unui număr mai mare de 5 contracte de închiriere sau subînchiriere.
+5.2.2. Persoanele fizice care realizează venituri din cedarea folosinţei bunurilor din derularea unui număr mai mare de 5 contracte de închiriere sau subînchiriere la sfârşitul anului fiscal, începând cu anul fiscal următor, califică aceste venituri în categoria veniturilor din activităţi independente şi le supun regulilor de stabilire a venitului net pentru această categorie. Veniturile şi cheltuielile luate în calcul pentru stabilirea venitului net estimat sunt cele de la nivelul tuturor contractelor de închiriere/subînchiriere, aflate în derulare în anul de impunere.
+La stabilirea numărului de contracte se iau în calcul contractele de închiriere sau subînchiriere aflate în derulare la data de 31 decembrie a anului precedent celui de impunere, cu excepţia contractelor de arendare a bunurilor agricole.
+5.2.3. Contribuabilii care realizează venituri din cedarea folosinţei bunurilor calificate în categoria venituri din activităţi independente bifează căsuţa "Cedarea folosinţei bunurilor" şi căsuţa "peste 5 contracte" de la secţiunea II "Date privind activitatea desfăşurată" pct. 1 "Categoria de venit".
+5.3. Venituri din închirierea în scop turistic
+5.3.1. Declaraţia se completează pentru fiecare an fiscal de către contribuabilii care realizează venituri din închirierea în scop turistic a camerelor situate în locuinţe proprietate personală, având o capacitate de cazare cuprinsă între 1 şi 5 camere, inclusiv, altele decât cele care constituie structuri de primire turistică, potrivit legislaţiei specifice.
+La declaraţie se anexează formularul "Fişa capacităţii de cazare", completată corespunzător situaţiei contribuabilului, în vederea stabilirii de către organul fiscal competent a impozitului anual datorat.
+5.3.2. Contribuabilii care realizează venituri din închirierea în scop turistic a camerelor situate în locuinţe proprietate personală, având o capacitate de cazare cuprinsă între 1 şi 5 camere, inclusiv, precum şi contribuabilii care depăşesc, în cursul anului, numărul de 5 camere de închiriat, bifează căsuţa "Cedarea folosinţei bunurilor" şi căsuţa "În scop turistic" de la secţiunea II "Date privind activitatea desfăşurată" pct. 1 "Categoria de venit" şi menţionează numărul de camere de închiriat în scop turistic, pentru anul în curs, situate în locuinţe proprietate personală.
+5.3.3. În situaţia în care în cursul anului se depăşeşte numărul camerelor închiriate (peste 5) se va depune un nou formular, în termen de 30 de zile de la data producerii evenimentului, bifându-se căsuţa "Sistem real" de la secţiunea II "Date privind activitatea desfăşurată" pct. 2 "Determinarea venitului net". De la data depăşirii numărului de camere închiriate (peste 5) şi până la sfârşitul anului fiscal, determinarea venitului net se face în sistem real, potrivit regulilor de stabilire prevăzute pentru categoria venituri din activităţi independente.
+Veniturile din închirierea în scop turistic a camerelor situate în locuinţe proprietate personală, având o capacitate de cazare mai mare de 5 camere de închiriat, se supun impunerii potrivit prevederilor cap. II "Venituri din activităţi independente" de la titlul IV "Impozitul pe venit" din Legea nr. 227/2015 , cu modificările şi completările ulterioare. Pentru aceste venituri sunt aplicabile regulile de impunere proprii veniturilor din activităţi independente, pentru care venitul net anual se determină pe bază de normă de venit sau în sistem real, după caz.
+5.3.4. În situaţia închirierii bunurilor deţinute în comun, fiecare coproprietar completează şi depune câte o declaraţie, corespunzător cotei care îi revine din proprietate.
+6. Activităţi agricole impuse în sistem real, pe baza datelor din contabilitate
+6.1. Declaraţia se completează şi se depune de către persoanele fizice care realizează venituri din activităţi agricole pentru care nu există obligaţia stabilirii normelor de venit, provenind din cultivarea produselor agricole vegetale, exploatarea plantaţiilor viticole, pomicole, arbuştilor fructiferi şi altele asemenea, creşterea şi exploatarea animalelor, inclusiv din valorificarea produselor de origine animală, în stare naturală, realizate în mod individual sau într-o formă de asociere.
+6.2. Persoanele fizice care realizează venituri în cadrul unei asocieri fără personalitate juridică, constituită între persoane fizice, completează declaraţia având în vedere venitul net estimat distribuit, care le revine din asociere.
+7. Silvicultură şi piscicultură
+7.1. Declaraţia se completează şi se depune de către persoanele fizice care realizează venituri din recoltarea şi valorificarea produselor specifice fondului forestier naţional, respectiv a produselor lemnoase şi nelemnoase, precum şi cele obţinute din exploatarea amenajărilor piscicole.
+7.2. Veniturile din silvicultură şi piscicultură se supun impunerii potrivit prevederilor cap. II "Venituri din activităţi independente" de la titlul IV "Impozitul pe venit" din Legea nr. 227/2015 , cu modificările şi completările ulterioare, venitul net anual fiind determinat în sistem real, pe baza datelor din contabilitate.
+Pentru aceste venituri sunt aplicabile regulile de impunere proprii veniturilor din activităţi independente pentru care venitul net anual se determină în sistem real.
+7.3. Persoanele fizice care realizează venituri în cadrul unei asocieri fără personalitate juridică, constituită între persoane fizice, completează declaraţia având în vedere venitul net estimat distribuit, care le revine din asociere.
+8. Termenul de depunere a declaraţiei
+Declaraţia se depune la organul fiscal competent, astfel:
+a) în termen de 30 de zile de la data începerii activităţii, în cazul contribuabililor care realizează venituri din activităţi independente, venituri din activităţi agricole impuse în sistem real, venituri din silvicultură şi piscicultură şi care încep o activitate în cursul anului fiscal;
+...
+b) în termen de 30 de zile de la data încheierii contractului între părţi, odată cu înregistrarea acestuia la organul fiscal competent, în cazul contribuabililor care realizează venituri din cedarea folosinţei bunurilor din derularea unui număr de până la 5 contracte de închiriere, inclusiv;
+...
+c) pentru fiecare an fiscal, până la data de 31 ianuarie inclusiv, pentru anul în curs, sau în termen de 30 de zile de la data producerii evenimentului dacă persoanele fizice încep să realizeze venituri în cursul anului după data de 31 ianuarie inclusiv, în cazul contribuabililor care realizează venituri din închirierea în scop turistic a camerelor situate în locuinţe proprietate personală, având o capacitate de cazare cuprinsă între 1 şi 5 camere, inclusiv;
+...
+d) în termen de 30 de zile de la data producerii evenimentului, în cazul contribuabililor care realizează venituri din închirierea în scop turistic a camerelor situate în locuinţe proprietate personală, având o capacitate de cazare cuprinsă între 1 şi 5 camere inclusiv, impuşi pe baza normelor de venit, şi care, în cursul anului fiscal, depăşesc numărul de 5 camere de închiriat;
+...
+e) până la data de 31 ianuarie inclusiv, în cazul contribuabililor care realizează venituri din activităţi independente impuse pe bază de norme de venit şi care, în anul fiscal anterior, au înregistrat un venit brut anual mai mare decât echivalentul în lei al sumei de 100.000 euro şi au obligaţia determinării venitului net anual în sistem real, începând cu anul fiscal următor;
+...
+f) până la data de 25 mai a anului de impunere, odată cu declaraţia privind venitul realizat, în cazul contribuabililor care, în anul anterior, au realizat pierderi şi cei care au realizat venituri pe perioade mai mici decât anul fiscal, precum şi cei care, din motive obiective, estimează că vor realiza venituri care diferă cu cel puţin 20% faţă de anul fiscal anterior;
+...
+g) până la data de 31 ianuarie inclusiv, în cazul contribuabililor care în anul 2015 au realizat venituri din activităţi independente cu regim de reţinere la sursă a impozitului, altele decât veniturile din drepturi de proprietate intelectuală, iar începând cu anul 2016, prin efectul legii, pentru aceste venituri se schimbă regimul fiscal;
+...
+h) în termen de 30 de zile de la data încadrării în categoria persoanelor fizice care realizează venituri din pensii provenite dintr-un alt stat, cu respectarea prevederilor legislaţiei europene aplicabile în domeniul securităţii sociale, precum şi a acordurilor privind sistemele de securitate socială la care România este parte.
+...
+9. Organul fiscal competent
+Declaraţia se completează în două exemplare:
+- originalul se depune la:
+a) organul fiscal în a cărui rază teritorială contribuabilul are adresa unde îşi are domiciliul, potrivit legii, sau adresa unde locuieşte efectiv, în cazul în care aceasta este diferită de domiciliu, pentru persoanele fizice care au domiciliul fiscal în România;
+...
+b) organul fiscal competent, potrivit legii, pentru administrarea contribuabililor persoane fizice, fără domiciliu fiscal în România.
+...
+- copia se păstrează de către contribuabil sau de împuternicitul/curatorul acestuia.
+10. Modul de depunere a declaraţiei
+10.1. Declaraţia se completează pe surse şi categorii de venit de către contribuabil sau de către împuternicitul acestuia, potrivit Legii nr. 207/2015 privind Codul de procedură fiscală, cu modificările şi completările ulterioare, înscriind cu majuscule, citeţ şi corect toate datele prevăzute de formular.
+10.2. Declaraţia se depune în format hârtie, direct la registratura organului fiscal sau la oficiul poştal, prin scrisoare recomandată cu confirmare de primire.
+10.3. Declaraţia se pune gratuit la dispoziţia contribuabilului.
+10.4. Data depunerii declaraţiei este data înregistrării acesteia la organul fiscal sau data depunerii la poştă, după caz.
+10.5. Declaraţia poate fi depusă şi prin mijloace electronice de transmitere la distanţă, potrivit legii.
+II. Completarea declaraţiei
+1. Perioada de raportare
+În rubrica "Anul" se înscrie anul pentru care se completează declaraţia, cu cifre arabe cu 4 caractere (de exemplu: 2016).
+2. Căsuţa "Recalcularea plăţilor anticipate"
+Căsuţa "Cu titlu de impozit" se bifează în următoarele situaţii:
+a) în situaţia contribuabililor care realizează venituri din activităţi independente şi/sau din activităţi agricole impuse în sistem real, silvicultură şi piscicultură şi care în cursul anului fiscal îşi încetează activitatea, precum şi a celor care intră în suspendare temporară a activităţii, potrivit legislaţiei în materie.
+...
+În vederea recalculării plăţilor anticipate contribuabilii vor depune declaraţia, însoţită de documente justificative, în termen de 30 de zile de la data producerii evenimentului;
+b) în cazul rezilierii, în cursul anului fiscal, a contractelor de închiriere, în cazul persoanelor care realizează venituri din cedarea folosinţei bunurilor, cu excepţia veniturilor din arendă.
+...
+Contribuabilii care reziliază contractele de închiriere în cursul anului vor depune declaraţia însoţită de documente justificative, în termen de 5 zile, la organul fiscal competent;
+c) în cazul în care, în cursul anului fiscal, are loc depăşirea numărului de 5 camere de închiriat, pentru contribuabilii care realizează venituri din închirierea în scop turistic a camerelor situate în locuinţe proprietate personală, având o capacitate de cazare cuprinsă între 1 şi 5 camere inclusiv, potrivit art. 87 din Legea nr. 227/2015 , cu modificările şi completările ulterioare.
+...
+Contribuabilii care, în cursul anului fiscal, depăşesc numărul de 5 camere de închiriat vor depune declaraţia în termen de 30 de zile de la data producerii evenimentului;
+d) în cazul corecţiei normelor de venit ca urmare a încetării/întreruperii temporare a activităţii în cursul anului fiscal.
+...
+În vederea recalculării plăţilor anticipate contribuabilii vor depune declaraţia, însoţită de documente justificative, în termen de 5 zile de la data apariţiei uneia din situaţiile pentru care se poate solicita corecţia venitului net stabilit pe baza normelor de venit;
+e) în cazul completării obiectului de activitate, în cursul anului fiscal, cu una sau mai multe activităţi impuse pe baza normelor de venit de către contribuabilii care realizează venituri din activităţi independente impuse pe baza normelor de venit;
+...
+f) în cazul completării obiectului de activitate, în cursul anului fiscal, în cazul contribuabililor care realizează venituri din activităţi independente impuse pe baza normelor de venit, cu una sau mai multe activităţi care nu sunt incluse în Nomenclatorul activităţilor independente pentru care venitul net se poate determina pe baza normelor anuale de venit.
+...
+Căsuţa "Cu titlu de contribuţii sociale" se bifează în situaţia în care contribuabilii solicită recalcularea plăţilor anticipate reprezentând contribuţiile sociale, potrivit legii.
+3. Căsuţa "Modificarea modului de determinare a venitului net" - se bifează de către persoanele fizice care realizează venituri din activităţi independente şi din cedarea folosinţei bunurilor care optează pentru modificarea modului de determinare a venitului net: sistem real, cote forfetare de cheltuieli sau normă de venit, după caz.
+Contribuabilii care optează, în condiţiile legii, pentru modificarea modului de determinare a venitului net bifează căsuţa "Modificarea modului de determinare a venitului net" şi indică sistemul de impunere pentru care au optat, prin bifarea căsuţei corespunzătoare situaţiei contribuabilului de la secţiunea II "Date privind activitatea desfăşurată" pct. 2 "Determinarea venitului net": "sistem real", "cote forfetare de cheltuieli" sau "normă de venit", după caz.
+În această situaţie, declaraţia se depune, după caz, în termen de 30 de zile de la data începerii activităţii, în cazul contribuabililor care încep o activitate în cursul anului, sau până la data de 31 ianuarie a anului fiscal, în cazul contribuabililor care au desfăşurat activitate şi în anul precedent.
+4. Căsuţa "Venituri din pensii din străinătate, realizate în statul" - se bifează de persoanele fizice care realizează venituri din pensii provenite dintr-un alt stat, cu respectarea prevederilor legislaţiei europene aplicabile în domeniul securităţii sociale, precum şi ale acordurilor privind sistemele de securitate socială la care România este parte, şi se completează statul din care provine venitul.
+5. Secţiunea I "Date de identificare a contribuabilului"
+În caseta "Cod numeric personal/Număr de identificare fiscală" se înscrie codul numeric personal al contribuabilului sau numărul de identificare fiscală, atribuit de către Agenţia Naţională de Administrare Fiscală, cu ocazia înregistrării fiscale, după caz, înscriindu-se cifrele cu aliniere la dreapta.
+În rubricile "Nume" şi "Prenume" se înscriu numele şi prenumele contribuabilului.
+Rubricile privind adresa se completează, după caz, cu datele privind adresa domiciliului fiscal al contribuabilului.
+6. Secţiunea II "Date privind activitatea desfăşurată"
+6.1. "Categoria de venit" - se bifează căsuţa corespunzătoare categoriei de venit, după caz: activităţi de producţie, comerţ, prestări de servicii, profesii liberale, drepturi de proprietate intelectuală, cedarea folosinţei bunurilor, activităţi agricole, silvicultură sau piscicultură.
+6.2. "Determinarea venitului net" - se bifează căsuţa corespunzătoare, în funcţie de modul de determinare a venitului net, după caz: în sistem real, pe baza cotelor forfetare de cheltuieli sau pe normă de venit.
+6.3. "Forma de organizare" - se bifează căsuţa corespunzătoare modului de desfăşurare a activităţii: individual, asociere fără personalitate juridică, entităţi supuse regimului transparenţei fiscale, modificarea modalităţii/formei de exercitare a activităţii.
+6.3.1. Căsuţa "Individual" se bifează de persoanele fizice care obţin venituri dintr-o activitate desfăşurată în mod individual.
+6.3.2. Căsuţa "Asociere fără personalitate juridică" se bifează de persoanele fizice care obţin venituri dintr-o activitate desfăşurată în cadrul unei asocieri fără personalitate juridică, constituită între persoane fizice.
+6.3.3. Căsuţa "Entităţi supuse regimului transparenţei fiscale" se bifează de persoanele fizice care obţin venituri dintr-o activitate desfăşurată într-o formă de organizare cu personalitate juridică, constituită potrivit legii speciale şi care este supusă regimului transparenţei fiscale, potrivit legii.
+6.3.4. Căsuţa "Modificarea modalităţii/formei de exercitare a activităţii" se bifează de contribuabili în cazul schimbării modalităţii de exercitare a unei activităţi independente şi/sau transformării formei de exercitare a acesteia într-o altă formă, potrivit legislaţiei în materie, în timpul anului, în condiţiile continuării activităţii.
+6.4. "Obiectul principal de activitate" - se înscriu denumirea activităţii principale generatoare de venituri, desfăşurată de contribuabil, precum şi codul CAEN al activităţii desfăşurate.
+6.5. "Sediul/Datele de identificare a bunului pentru care se cedează folosinţa"
+6.5.1. "Sediul" - se completează adresa sediului sau locului principal de desfăşurare a activităţii, după caz.
+În cazul în care activitatea se desfăşoară prin mai multe puncte de lucru, se completează adresa sediului sau locului principal de desfăşurare a activităţii, după caz.
+Persoanele fizice care realizează venituri din activităţi agricole vor înscrie denumirea unităţii administrativ-teritoriale în a cărei rază se află terenul (terenurile), respectiv: municipiu, oraş, comună sau sector al municipiului Bucureşti, după caz.
+6.5.2. "Datele de identificare a bunului pentru care se cedează folosinţa" - se înscriu datele de identificare a bunului a cărui folosinţă este cedată. De exemplu:
+a) pentru imobile (clădiri, terenuri): adresa completă (stradă, număr, bloc, etaj, apartament), suprafaţa totală, din care închiriată;
+...
+b) pentru autovehicule: tipul, anul de fabricaţie, numărul de înmatriculare, seria motorului, seria şasiului;
+...
+c) alte bunuri: denumirea bunului, descrierea detaliată, cu identificarea principalelor caracteristici care individualizează bunul.
+...
+Rubrica se completează numai de către contribuabilii care realizează venituri din cedarea folosinţei bunurilor.
+6.6. Punctul 6 "Documentul de autorizare/Contractul de asociere/Închiriere" - se înscriu numărul documentului care atestă dreptul contribuabilului de a desfăşura activitate independentă, potrivit legii, şi data emiterii acestuia.
+Contribuabilii care desfăşoară activităţi în cadrul unei asocieri fără personalitate juridică, constituită între persoane fizice şi entităţile supuse regimului transparenţei fiscale, completează numărul sub care contractul de asociere a fost înregistrat la organul fiscal, precum şi data înregistrării acestuia.
+Contribuabilii care au realizat venituri din cedarea folosinţei bunurilor completează numărul sub care a fost înregistrat la organul fiscal contractul încheiat între părţi şi data înregistrării acestuia.
+Punctul 6 nu se completează de către contribuabilii care realizează venituri din închirierea în scop turistic a camerelor situate în locuinţe proprietate personală, având o capacitate de cazare cuprinsă între 1 şi 5 camere inclusiv.
+6.7. Punctele 7, 8 "Data începerii/încetării activităţii" - se completează de către contribuabilii care îşi încep/încetează activitatea în cursul anului fiscal.
+Rubricile de la pct. 7 şi 8 se completează numai dacă evenimentele respective se produc în cursul anului pentru care se depune declaraţia.
+Persoanele fizice autorizate care încetează activitatea în cursul anului înscriu data depunerii autorizaţiei de funcţionare la organul emitent.
+Contribuabilii care realizează venituri din cedarea folosinţei bunurilor înscriu data prevăzută pentru începerea derulării contractului încheiat între părţi, respectiv data prevăzută pentru încetarea contractului încheiat între părţi.
+Contribuabilii care realizează venituri din închirierea în scop turistic a camerelor situate în locuinţe proprietate personală, având o capacitate de cazare cuprinsă între 1 şi 5 camere inclusiv, precum şi contribuabilii care depăşesc, în cursul anului, numărul de 5 camere de închiriat înscriu data privind începerea, respectiv data privind încetarea activităţii.
+6.8. Punctul 9 "Data suspendării activităţii" - se completează data suspendării activităţii de către contribuabilii care realizează venituri din activităţi independente şi/sau din activităţi agricole impuse în sistem real, silvicultură şi piscicultură şi care în cursul anului fiscal intră în suspendare temporară a activităţii, potrivit legislaţiei în materie.
+Punctul 9 se completează numai dacă evenimentul respectiv se produce în cursul anului pentru care se depune declaraţia.
+6.9. Punctul 10 "Număr zile de scutire" - se completează numărul de zile scutite de la plata impozitului pe venit, în cazul persoanelor fizice cu handicap grav ori accentuat care realizează venituri din activităţi independente, din activităţi agricole impuse în sistem real, silvicultură şi piscicultură.
+6.10. Punctul 11 "Data încetării obligaţiei de plată a CAS" - se completează de contribuabilii care nu se mai încadrează în categoria persoanelor care au obligaţia plăţii contribuţiei de asigurări sociale, potrivit legii.
+7. Secţiunea III "Date privind venitul estimat"
+7.1. Venit net determinat în sistem real, pe baza datelor din contabilitate
+Se completează în cazul categoriilor de venit pentru care venitul net se determină în sistem real potrivit legii sau potrivit opţiunii contribuabilului de a determina venitul net în sistem real:
+- venituri din activităţi de producţie, comerţ, prestări de servicii;
+- venituri din exercitarea unei profesii liberale;
+- venituri din închirierea în scop turistic a camerelor situate în locuinţe proprietate personală, având o capacitate de cazare mai mare de 5 camere;
+- venituri din închirierea în scop turistic a camerelor situate în locuinţe proprietate personală, având o capacitate de cazare în scop turistic cuprinsă între una şi 5 camere inclusiv, care au optat pentru determinarea venitului net în sistem real sau au depăşit în cursul anului numărul de 5 camere de închiriat;
+- venituri din cedarea folosinţei bunurilor din derularea unui număr mai mare de 5 contracte de închiriere sau subînchiriere, calificate în categoria venituri din activităţi independente;
+- venituri din cedarea folosinţei bunurilor din derularea unui număr de până la 5 contracte de închiriere inclusiv;
+- venituri din drepturi de proprietate intelectuală;
+- venituri din activităţi agricole;
+- venituri din silvicultură şi piscicultură.
+a) Activitate desfăşurată în mod individual
+...
+Contribuabilii care realizează venituri în mod individual şi determină venitul net în sistem real, pe baza datelor din contabilitate, completează declaraţia după cum urmează:
+Rd. 1. Venit brut estimat - se înscrie suma reprezentând veniturile în bani şi/sau echivalentul în lei al veniturilor în natură, estimate a se realiza în anul fiscal în curs de către contribuabili, atât din activitatea de bază, cât şi din activităţi adiacente.
+Rd. 2. Cheltuieli deductibile estimate - se înscrie suma reprezentând cheltuielile estimate a se efectua în anul fiscal în curs, în vederea realizării venitului brut estimat, atât din activitatea de bază, cât şi din activităţi adiacente, specifice fiecărei activităţi.
+Rd. 3. Venit net estimat - se înscrie suma reprezentând diferenţa dintre venitul brut estimat şi cheltuielile deductibile aferente, respectiv se scade rd. 2 din rd. 1.
+b) Activitate desfăşurată într-o formă de asociere
+...
+Contribuabilii care realizează venituri în cadrul unei asocieri şi determină venitul net în sistem real, pe baza datelor din contabilitate, completează numai rd. 3 "Venit net estimat" din declaraţie, după cum urmează:
+Rd. 3. Venit net estimat - se înscrie venitul care îi revine contribuabilului din distribuirea venitului net estimat al asocierii, preluat din col. 5 a tabelului "Distribuţia venitului net estimat pe asociaţi" din "Declaraţia privind veniturile estimate pentru asocierile fără personalitate juridică şi entităţi supuse regimului transparenţei fiscale" (formular 223), de la rândul corespunzător contribuabilului.
+7.2. Venit net determinat pe baza normelor de venit
+Contribuabilii care desfăşoară următoarele activităţi în mod individual sau într-o formă de asociere şi determină venitul net pe bază de norme de venit nu completează rândurile de la secţiunea III "Date privind venitul estimat":
+- activităţi de producţie, comerţ, prestări de servicii;
+- închirierea în scop turistic a camerelor situate în locuinţe proprietate personală, având o capacitate de cazare cuprinsă între 1 şi 5 camere.
+În această situaţie se bifează căsuţa "Normă de venit" de la secţiunea II "Date privind activitatea desfăşurată" pct. 2 "Determinarea venitului net".
+7.3. Venit net determinat pe baza unor cote forfetare de cheltuieli
+Se completează în cazul activităţilor desfăşurate în mod individual şi într-o formă de asociere, pentru care venitul net se determină pe baza cotelor forfetare de cheltuieli:
+- venituri din cedarea folosinţei bunurilor din derularea unui număr de până la 5 contracte de închiriere inclusiv;
+- venituri din drepturi de proprietate intelectuală.
+Contribuabilii care determină venitul net pe baza cotelor forfetare de cheltuieli completează declaraţia după cum urmează:
+Rd. 1. Venit brut estimat - se înscrie, după caz:
+- chiria prevăzută în contractul încheiat între părţi pentru anul fiscal de raportare, indiferent de momentul plăţii acesteia, majorată cu valoarea cheltuielilor ce cad, conform dispoziţiilor legale, în sarcina proprietarului, uzufructuarului sau a altui deţinător legal, dacă sunt efectuate de cealaltă parte contractantă;
+- venitul brut din drepturi de proprietate intelectuală.
+Rd. 2. Cheltuieli deductibile estimate - se înscrie suma rezultată prin aplicarea cotei de 40% la venitul brut estimat (rd. 1), reprezentând cheltuieli deductibile aferente venitului, în cazul contribuabililor care realizează venituri din cedarea folosinţei bunurilor şi din drepturi de proprietate intelectuală, inclusiv din crearea unor lucrări de artă monumentală care determină venitul net pe baza cotelor forfetare de cheltuieli.
+Rd. 3. Venit net estimat - se înscrie suma reprezentând diferenţa dintre venitul brut estimat şi cheltuielile deductibile aferente, respectiv dintre datele înscrise la rd. 1 şi datele înscrise la rd. 2.
+7.4. În cazul exploatării de către moştenitori a drepturilor de proprietate intelectuală, precum şi în cazul remuneraţiei reprezentând dreptul de suită şi al remuneraţiei compensatorii pentru copia privată, venitul net se determină prin scăderea din venitul brut a sumelor ce revin organismelor de gestiune colectivă sau altor plătitori de asemenea venituri, potrivit legii, fără aplicarea cotei forfetare de cheltuieli.
+7.5. În cazul asocierilor fără personalitate juridică constituite între contribuabili care desfăşoară activitate individual sau contribuabili care desfăşoară activitate individual şi o asociere fără personalitate juridică şi pentru care stabilirea venitului anual pentru activitatea desfăşurată se efectuează pe baza normelor de venit sau prin utilizarea cotelor forfetare de cheltuieli, veniturile realizate în cadrul asocierii respective nu sunt considerate distribuite, în vederea impunerii, contribuabililor care datorează impozit potrivit prezentului titlu, fiind aplicabile numai regulile stabilite pentru impunerea venitului determinat pe baza normelor de venit sau stabilit pe baza cotelor forfetare.
+7.6. În cazul persoanelor fizice care realizează venituri din pensii provenite dintr-un alt stat, cu respectarea prevederilor legislaţiei europene aplicabile în domeniul securităţii sociale, precum şi ale acordurilor privind sistemele de securitate socială la care România este parte, declaraţia se completează, la rd. 1, cu venitul estimat calculat potrivit prevederilor art. 169 alin. (5) din Legea nr. 227/2015 , cu modificările şi completările ulterioare.
+8. Secţiunea IV "Date de identificare a împuternicitului"
+Se completează numai în cazul în care obligaţiile de declarare a veniturilor se îndeplinesc de către un împuternicit, conform Legii nr. 207/2015 , cu modificările şi completările ulterioare, desemnat de contribuabil.
+În caseta "Cod de identificare fiscală" se înscrie codul de identificare fiscală al împuternicitului, înscriindu-se cifrele cu aliniere la dreapta.
+În rubrica "Nume, prenume/Denumire" se înscriu, după caz, denumirea sau numele şi prenumele împuternicitului.
+Rubricile privind adresa se completează, după caz, cu datele privind adresa domiciliului fiscal al împuternicitului.
+INSTRUCŢIUNI
+de completare a formularului 221 "Declaraţie privind veniturile
+din activităţi agricole impuse pe bază de norme de venit"
+Cod 14.13.01.13/9
+I. Depunerea declaraţiei
+1. Declaraţia se completează şi se depune de către persoanele fizice care realizează, în mod individual sau într-o formă de asociere, venituri impozabile din România, din activităţi agricole pentru care venitul net se determină pe bază de norme de venit, provenind din:
+a) cultivarea produselor agricole vegetale;
+...
+b) exploatarea plantaţiilor viticole, pomicole, arbuştilor fructiferi şi altele asemenea;
+...
+c) creşterea şi exploatarea animalelor, inclusiv din valorificarea produselor de origine animală, în stare naturală.
+...
+2. În cazul în care activitatea agricolă pentru care venitul net se determină pe bază de norme de venit se desfăşoară în cadrul unei asocieri fără personalitate juridică, obligaţiile declarative revin asocierii şi se îndeplinesc de către asociatul care răspunde pentru îndeplinirea obligaţiilor asociaţiei faţă de autorităţile publice.
+3. Contribuabilii/Asocierile fără personalitate juridică care deţin suprafeţe destinate producţiei agricole vegetale/animale în localităţi/judeţe diferite vor completa la secţiunea III "Date pentru stabilirea venitului impozabil" câte un tabel pentru fiecare localitate/judeţ cu datele referitoare la activitatea desfăşurată. În situaţia în care tabelele de la secţiunea III "Date pentru stabilirea venitului impozabil" din formular nu sunt suficiente pentru declararea datelor referitoare la toate localităţile pe raza cărora se desfăşoară o activitate agricolă (contribuabilul/ asocierea fără personalitate juridică deţine suprafeţe destinate producţiei agricole vegetale/animale în mai mult de 4 localităţi), contribuabilii/asocierile fără personalitate juridică completează şi formularul "Anexa nr. .... la Declaraţia privind veniturile din activităţi agricole impuse pe bază de norme de venit", care se ataşează la declaraţie.
+4. Veniturile din activităţi agricole, impuse pe baza normelor de venit, sunt neimpozabile în limitele prevăzute la art. 105 alin. (2) din Legea nr. 227/2015 privind Codul fiscal, cu modificările şi completările ulterioare:
+┌────┬────────────────────────┬────────────────────────────────────────────────┐
+│Nr. │ │ Plafon neimpozabil (suprafeţele şi numărul de │
+│crt.│ Categoria │ animale/familii de albine, pentru care │
+│ │ │ nu există obligaţia depunerii declaraţiei) │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 0 │ 1 │ 2 │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ I.│Produse vegetale │ Suprafaţă │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 1 │Cereale │ până la 2 ha, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 2 │Plante oleaginoase │ până la 2 ha, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 3 │Cartof │ până la 2 ha, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 4 │Sfeclă de zahăr │ până la 2 ha, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 5 │Tutun │ până la 1 ha, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 6 │Hamei pe rod │ până la 2 ha, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 7 │Legume în câmp │ până la 0,5 ha, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 8 │Legume în spaţii │ │
+│ │protejate │ până la 0,2 ha, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 9 │Leguminoase pentru boabe│ până la 1,5 ha, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 10 │Pomi pe rod │ până la 1,5 ha, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 11 │Vie pe rod │ până la 1 ha, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 12 │Arbuşti fructiferi │ până la 1 ha, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 13 │Flori şi plante │ │
+│ │ornamentale │ până la 0,3 ha, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ II.│Animale │ Număr capete/număr de familii de albine │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 1 │Vaci │ până la 2, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 2 │Bivoliţe │ până la 2, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 3 │Oi │ până la 50, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 4 │Capre │ până la 25, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 5 │Porci pentru îngrăşat │ până la 6, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 6 │Albine │ până la 75 de familii, inclusiv │
+├────┼────────────────────────┼────────────────────────────────────────────────┤
+│ 7 │Păsări de curte │ până la 100, inclusiv │
+└────┼────────────────────────┼────────────────────────────────────────────────┤
+5. În vederea stabilirii regimului fiscal aplicabil veniturilor din activităţi agricole, la încadrarea în limitele stabilite pentru fiecare grupă de produse vegetale şi fiecare grupă de animale vor fi avute în vedere suprafeţele/capetele de animale/familiile de albine însumate în cadrul grupei respective.
+ATENŢIE!
+În cazul contribuabililor care obţin venituri din activităţi agricole şi îşi desfăşoară activitatea sub forma unei asocieri fără personalitate juridică, plafonul neimpozabil se acordă la nivelul asocierii.
+6. Veniturile din activităţi agricole pentru care nu există obligaţia stabilirii normelor de venit se supun impunerii potrivit prevederilor cap. II "Venituri din activităţi independente" de la titlul IV "Impozitul pe venit" din Legea nr. 227/2015 , cu modificările şi completările ulterioare.
+7. Veniturile obţinute din valorificarea produselor provenind din activităţi agricole în altă modalitate decât în stare naturală reprezintă venituri din activităţi independente şi se supun regulilor de impunere proprii categoriei respective.
+8. Veniturile din activităţi agricole determinate pe bază de norme de venit, realizate din exploatarea bunurilor (suprafeţe destinate producţiei vegetale/cap de animal/familie de albine) deţinute în comun sau în devălmăşie de proprietari, uzufructuari sau de alţi deţinători legali, înscrişi într-un document oficial, se atribuie proporţional cu cotele-părţi pe care aceştia le deţin în acea proprietate sau contribuabilului care realizează venituri din activităţi agricole, în situaţia în care acestea nu se cunosc. În cazul persoanelor fizice pentru care nu a fost finalizată procedura succesorală, veniturile corespunzătoare suprafeţelor destinate producţiei vegetale/cap de animal/familie de albine se atribuie contribuabilului care realizează venituri din activităţi agricole.
+II. Termenul de depunere a declaraţiei
+Declaraţia se depune la organul fiscal competent la următoarele termene:
+a) până la data de 25 mai inclusiv a anului fiscal, pentru anul în curs, privind suprafaţa cultivată/cap de animal/familie de albine deţinută/deţinut la data declarării. În cazul contribuabililor/asocierilor fără personalitate juridică care depun cu întârziere declaraţia pentru anul în curs, după data de 25 mai, informaţiile cuprinse în declaraţie vizează suprafeţele cultivate/capetele de animale/familiile de albine deţinute la data de 25 mai;
+...
+b) ori de câte ori contribuabilul constată erori în declaraţia depusă anterior, acesta completează şi depune o declaraţie rectificativă, situaţie în care se va înscrie "X" în căsuţa prevăzută în acest scop.
+...
+ATENŢIE!
+1. În cazul în care intervin modificări privind structura suprafeţelor destinate producţiei agricole vegetale sau numărul de capete de animale/familii de albine, declaraţia rectificativă se depune până la data de 25 mai a anului fiscal de raportare, iar informaţiile cuprinse în declaraţie vizează suprafeţele cultivate/capetele de animale/familiile de albine deţinute la data depunerii declaraţiei rectificative.
+2. În cazul în care declaraţia depusă nu reflectă suprafeţele cultivate/numărul capetelor de animale/familiilor de albine sau structura acestora la data de 25 mai a anului de impunere, contribuabilul poate depune o declaraţie rectificativă în care va declara elementele de impunere existente la data de 25 mai.
+3. Modificarea structurii suprafeţelor destinate producţiei agricole vegetale sau a numărului de capete de animale/familii de albine, intervenite după data de 25 mai, nu conduce la ajustarea normelor de venit, respectiv a venitului anual impozabil.
+III. Organul fiscal competent
+1. În situaţia în care activitatea se desfăşoară în mod individual
+Declaraţia se completează în două exemplare:
+- originalul se depune la:
+a) organul fiscal în a cărui rază teritorială contribuabilul are adresa unde îşi are domiciliul, potrivit legii, sau adresa unde locuieşte efectiv, în cazul în care aceasta este diferită de domiciliu, pentru persoanele fizice care au domiciliul fiscal în România;
+...
+b) organul fiscal competent, potrivit legii, pentru administrarea contribuabililor persoane fizice, fără domiciliu fiscal în România;
+...
+- copia se păstrează de către contribuabil sau de împuternicitul/curatorul acestuia.
+2. În situaţia în care activitatea se desfăşoară în cadrul unei asocieri fără personalitate juridică
+Declaraţia se completează în două exemplare:
+- originalul se depune la organul fiscal la care asocierea este luată în evidenţă fiscală;
+- copia se păstrează la domiciliul fiscal al asocierii, împreună cu celelalte documente privind activitatea acesteia.
+IV. Modul de depunere a declaraţiei
+1. Declaraţia se completează de către contribuabili sau de către împuterniciţii acestora, potrivit Legii nr. 207/2015 privind Codul de procedură fiscală, cu modificările şi completările ulterioare, înscriind cu majuscule, citeţ şi corect toate datele prevăzute de formular.
+2. Declaraţia cuprinde datele pentru stabilirea venitului impozabil pentru fiecare localitate/judeţ pe raza căreia/căruia contribuabilul îşi desfăşoară activitatea.
+3. Contribuabilii/Asocierile fără personalitate juridică care deţin suprafeţe destinate producţiei agricole vegetale/animale în localităţi/judeţe diferite vor completa la secţiunea III "Date pentru stabilirea venitului impozabil" câte un tabel pentru fiecare localitate/judeţ cu datele referitoare la activitatea desfăşurată. În situaţia în care tabelele de la secţiunea III "Date pentru stabilirea venitului impozabil" din formular nu sunt suficiente pentru declararea datelor referitoare la toate localităţile/judeţele pe raza cărora se desfăşoară o activitate agricolă (contribuabilul/asocierea fără personalitate juridică deţine suprafeţe destinate producţiei agricole vegetale/animale în mai mult de 4 localităţi/judeţe), contribuabilii/asocierile fără personalitate juridică completează şi formularul "Anexa nr. .... la Declaraţia privind veniturile din activităţi agricole impuse pe bază de norme de venit", care se ataşează la declaraţie.
+4. Declaraţia se depune, împreună cu anexele completate, dacă este cazul, în format hârtie, direct la registratura organului fiscal sau se comunică prin poştă cu confirmare de primire.
+5. Declaraţia se pune gratuit la dispoziţia contribuabilului.
+6. Data depunerii declaraţiei este data înregistrării acesteia la organul fiscal sau data depunerii la poştă, după caz.
+7. Nu se va depune formularul anexă la declaraţie ulterior depunerii unei declaraţii privind veniturile din activităţi agricole impuse pe bază de norme de venit. Datele necuprinse în declaraţia iniţială se declară prin depunerea unei declaraţii rectificative.
+V. Completarea declaraţiei
+1. Perioada de raportare
+În rubrica "Anul" se înscrie anul pentru care se completează declaraţia, cu cifre arabe cu 4 caractere (de exemplu: 2016).
+2. Secţiunea I "Date de identificare a contribuabilului/asocierii fără personalitate juridică"
+2.1. În caseta "Cod de identificare fiscală" se completează, după caz, înscriindu-se cifrele cu aliniere la dreapta:
+- codul numeric personal al contribuabilului sau numărul de identificare fiscală atribuit de către Agenţia Naţională de Administrare Fiscală cu ocazia înregistrării fiscale, în situaţia în care activitatea se desfăşoară în mod individual;
+- codul de identificare fiscală atribuit asocierii fără personalitate juridică, în situaţia în care activitatea se desfăşoară în cadrul unei asocieri fără personalitate juridică.
+2.2. În rubricile "Nume, prenume/Denumire" se înscriu, după caz, numele şi prenumele contribuabilului sau denumirea asocierii fără personalitate juridică.
+2.3. Rubricile privind adresa se completează, după caz, cu datele privind adresa domiciliului fiscal al contribuabilului sau adresa sediului asocierii fără personalitate juridică.
+3. Secţiunea II "Date privind activitatea desfăşurată"
+3.1. Punctul 1 "Forma de organizare" - se bifează căsuţa corespunzătoare modului de desfăşurare a activităţii: individual sau asociere fără personalitate juridică.
+3.1.1. Căsuţa "Individual" se bifează de persoanele fizice care obţin venituri dintr-o activitate desfăşurată în mod individual.
+3.1.2. Căsuţa "Asociere fără personalitate juridică" se bifează în cazul în care veniturile sunt realizate dintr-o activitate desfăşurată în cadrul unei asocieri fără personalitate juridică, constituită între persoane fizice.
+3.2. Punctul 2 "Număr asociaţi" - se înscrie numărul de persoane care fac parte din asociere.
+Rubrica se completează numai în situaţia în care activitatea se desfăşoară în cadrul unei asocieri fără personalitate juridică, constituită între persoane fizice.
+3.3. Punctul 3 "Contractul de asociere" - se înscriu numărul sub care contractul de asociere a fost înregistrat la organul fiscal, precum şi data înregistrării acestuia.
+Rubrica se completează numai în situaţia în care activitatea se desfăşoară în cadrul unei asocieri fără personalitate juridică, constituită între persoane fizice.
+3.4. Punctul 4 "Număr zile de scutire" - se completează numărul de zile scutite de la plata impozitului pe venit de către persoanele fizice cu handicap grav ori accentuat care realizează venituri din activităţi agricole, în mod individual.
+4. Secţiunea III "Date pentru stabilirea venitului impozabil"
+4.1. Se completează câte un tabel pentru fiecare localitate/judeţ.
+4.2. "Activitatea desfăşurată pe raza localităţii.... din judeţul...." - se înscriu denumirea localităţii pe raza căreia se află terenul (terenurile)/animalele/familiile de albine, precum şi judeţul pe raza căruia se află localitatea.
+4.3. "Opţiune privind încadrarea în limitele veniturilor neimpozabile" - contribuabilii, persoane fizice/asocieri fără personalitate juridică, care deţin suprafeţe destinate producţiei agricole vegetale/animale în localităţi/judeţe diferite, vor opta pentru stabilirea localităţii/judeţului sau localităţilor/judeţelor unde vor beneficia de încadrarea în limitele veniturilor neimpozabile prevăzute pentru fiecare grupă de produse vegetale/animale de la art. 105 alin. (2) din Legea nr. 227/2015 , cu modificările şi completările ulterioare. Opţiunea se exercită prin bifarea căsuţei "Opţiune privind încadrarea în limitele veniturilor neimpozabile" corespunzătoare localităţii în raza căreia se desfăşoară activitatea agricolă pentru care contribuabilul va beneficia de încadrarea în limitele veniturilor neimpozabile. Stabilirea plafonului neimpozabil se va face de organul fiscal, având în vedere limitele veniturilor neimpozabile prevăzute pentru fiecare grupă de produse vegetale/animale şi suprafeţele/numărul de animale/familii de albine declarate de contribuabil, pe fiecare localitate, în ordinea enumerată de acesta în declaraţie.
+De exemplu, un contribuabil care realizează venituri din cultivarea cerealelor pe o suprafaţă totală de 7 ha situată în raza a 3 localităţi: 0,75 ha în localitatea A, 2,9 ha în localitatea B şi 3,35 ha în localitatea C a optat pentru încadrarea în limita veniturilor neimpozabile (2 ha pentru cultura cerealelor) pentru localitatea A şi localitatea C. Stabilirea plafonului neimpozabil se va face de către organul fiscal, potrivit opţiunii contribuabilului, astfel: 0,75 ha localitatea A + 1,25 ha localitatea C. Venitul impozabil va fi stabilit pentru suprafaţa de 5 ha, astfel: 2,9 ha * norma de venit corespunzătoare localităţii B + 2,1 ha * norma de venit corespunzătoare localităţii C.
+4.4. Terminologia folosită pentru definirea grupelor de produse vegetale şi animale prevăzute la art. 105 alin. (2) din Legea nr. 227/2015 , cu modificările şi completările ulterioare, pentru care venitul se determină pe baza normelor de venit, este cea stabilită potrivit legii.
+4.5. Tabelul "Produse vegetale"
+Col. 2 "Total suprafaţă" - se înscrie, la rândul corespunzător grupei de produse vegetale, suprafaţa totală (ha) destinată producţiei vegetale aferentă fiecărei grupe, pe fiecare localitate.
+4.6. Tabelul "Animale"
+Col. 2 "Număr total capete animale/familii de albine" - se înscrie, distinct, pentru fiecare grupă de animale, numărul total de capete de animale sau de familii de albine deţinute, pe fiecare localitate.
+ATENŢIE!
+Suprafeţele destinate producţiei vegetale/Capetele de animale/Familiile de albine, deţinute în comun sau în devălmăşie de proprietari, uzufructuari ori de alţi deţinători legali, înscrişi într-un document oficial, se atribuie proporţional cu cotele-părţi pe care aceştia le deţin în acea proprietate sau contribuabilului care realizează venituri din activităţi agricole, în situaţia în care acestea nu se cunosc. În cazul persoanelor fizice pentru care nu a fost finalizată procedura succesorală, veniturile corespunzătoare suprafeţelor destinate producţiei vegetale/capetelor de animale/ familiilor de albine se atribuie contribuabilului care realizează venituri din activităţi agricole.
+5. Secţiunea IV "Date privind asociaţii şi cota de distribuire din venitul impozabil calculat la nivelul asocierii"
+5.1. Secţiunea se completează numai în situaţia în care activitatea se desfăşoară în cadrul unei asocieri fără personalitate juridică, constituită între persoane fizice.
+5.2. Col. 1 "Nume şi prenume asociat" - se înscriu numele şi prenumele asociaţilor, conform contractului de asociere.
+5.3. Col. 2 "Cod numeric personal/Număr de identificare fiscală" - se înscrie codul numeric personal din actul de identitate al fiecărui asociat sau numărul de identificare fiscală atribuit de către Agenţia Naţională de Administrare Fiscală cu ocazia înregistrării fiscale, după caz.
+5.4. Col. 3 "Domiciliul" - se completează adresa domiciliului fiscal.
+5.5. Col. 4 "Cota de distribuire din venitul impozabil al asocierii" - se înscrie cota procentuală de participare, corespunzătoare fiecărui asociat, la veniturile impozabile ale asocierii, conform contractului de asociere.
+5.6. Col. 5 "Număr zile de scutire" - se completează numărul de zile scutite de la plata impozitului pe venit pentru fiecare asociat, persoană fizică cu handicap grav ori accentuat care realizează venituri din activităţi agricole, într-o asociere fără personalitate juridică.
+6. Secţiunea V "Date de identificare a împuternicitului/ responsabilului asocierii"
+6.1. Se completează în cazul în care obligaţiile de declarare a veniturilor se îndeplinesc de către un împuternicit, conform Legii nr. 207/2015 , cu modificările şi completările ulterioare, desemnat de contribuabil.
+6.2. În situaţia în care activitatea se desfăşoară în cadrul unei asocieri fără personalitate juridică, constituită între persoane fizice, secţiunea se completează cu datele de identificare ale asociatului care răspunde pentru îndeplinirea obligaţiilor asociaţiei faţă de autorităţile publice desemnat conform contractului de asociere.
+6.3. În caseta "Cod de identificare fiscală" se înscrie codul de identificare fiscală al împuternicitului sau asociatului care răspunde pentru îndeplinirea obligaţiilor asociaţiei faţă de autorităţile publice desemnat conform contractului de asociere, înscriindu-se cifrele cu aliniere la dreapta.
+6.4. În rubrica "Nume, prenume/Denumire" se înscriu, după caz, denumirea sau numele şi prenumele împuternicitului ori numele şi prenumele asociatului care răspunde pentru îndeplinirea obligaţiilor asociaţiei faţă de autorităţile publice desemnat conform contractului de asociere.
+6.5. Rubricile privind adresa se completează, după caz, cu datele privind adresa domiciliului fiscal al împuternicitului sau asociatului care răspunde pentru îndeplinirea obligaţiilor asociaţiei faţă de autorităţile publice desemnat conform contractului de asociere.
+INSTRUCŢIUNI
+de completare a formularului 222 "Declaraţie informativă privind
+începerea/încetarea activităţii persoanelor fizice care desfăşoară
+activitate în România şi care obţin venituri sub formă de
+salarii şi asimilate salariilor din străinătate"
+Cod 14.13.01.13/5i
+I. Depunerea declaraţiei
+1. Declaraţia se completează şi se depune de către persoanele juridice, fizice sau orice altă entitate la care îşi desfăşoară activitatea persoanele fizice, care desfăşoară activitate în România şi care obţin venituri sub formă de salarii şi asimilate salariilor din străinătate.
+2. În categoria persoanelor care au obligaţia să depună declaraţia informativă sunt cuprinse: reprezentanţele din România ale unor firme, asociaţii, fundaţii sau organizaţii cu sediul în străinătate, organizaţii şi organisme internaţionale care funcţionează în România etc.
+3. Pentru fiecare contribuabil care obţine venituri sub formă de salarii şi asimilate salariilor din străinătate pentru activitatea desfăşurată în România, se completează şi se depune câte o declaraţie.
+4. Declaraţia nu se depune de către misiunile diplomatice şi posturile consulare acreditate în România, precum şi reprezentanţele organismelor internaţionale ori reprezentanţele societăţilor şi ale organizaţiilor economice străine, autorizate potrivit legii să îşi desfăşoare activitatea în România, care optează ca, pentru angajaţii acestora, care realizează venituri din salarii impozabile în România, să îndeplinească obligaţiile privind calculul, reţinerea şi plata impozitului pe veniturile din salarii.
+5. Termenul de depunere a declaraţiei
+Declaraţia se depune ori de câte ori apar modificări de natura începerii/încetării activităţii în documentele care reglementează raporturile de muncă, în termen de 30 de zile de la data producerii evenimentului.
+6. Organul fiscal competent
+Declaraţia se completează şi se depune în două exemplare:
+- originalul se depune la organul fiscal în a cărui evidenţă fiscală este înregistrată persoana fizică, juridică sau orice altă entitate la care îşi desfăşoară activitatea contribuabilul;
+- copia se păstrează de către persoana fizică, juridică sau orice altă entitate la care îşi desfăşoară activitatea contribuabilul.
+7. Modul de depunere a declaraţiei
+Declaraţia se depune în format hârtie direct la registratura organului fiscal sau la oficiul poştal prin scrisoare recomandată cu confirmare de primire.
+Declaraţia se pune gratuit la dispoziţia persoanelor fizice, juridice sau oricărei alte entităţi la care îşi desfăşoară activitatea contribuabilul.
+Data depunerii declaraţiei este şi data înregistrării acesteia la organul fiscal sau data depunerii la poştă, după caz.
+II. Completarea declaraţiei
+1. Secţiunea I "Date referitoare la locul desfăşurării activităţii în România"
+1.1. Caseta "Cod de identificare fiscală" se completează, după caz, dacă persoana fizică, juridică sau orice altă entitate la care îşi desfăşoară activitatea contribuabilul este înregistrată fiscal şi are atribuit cod de identificare fiscală, conform legislaţiei române.
+1.2. În rubrica "Nume, prenume/Denumire" se înscriu, după caz, denumirea sau numele şi prenumele persoanelor fizice, juridice sau oricărei alte entităţi la care îşi desfăşoară activitatea contribuabilul.
+1.3. Rubricile privind adresa se completează adresa domiciliului fiscal al persoanei fizice, juridice sau oricărei alte entităţi la care contribuabilul îşi desfăşoară activitatea.
+2. Secţiunea II "Date de identificare a persoanei fizice"
+2.1. În caseta "Cod numeric personal/Număr de identificare fiscală" se înscrie codul numeric personal al contribuabilului sau numărul de identificare fiscală atribuit de către Agenţia Naţională de Administrare Fiscală cu ocazia înregistrării fiscale, după caz, înscriindu-se cifrele cu aliniere la dreapta.
+2.2. În rubricile "Nume" şi "Prenume" se înscriu numele şi prenumele contribuabilului.
+2.3. Rubricile privind adresa se completează, după caz, cu datele privind adresa domiciliului fiscal al contribuabilului.
+3. Secţiunea III "Date privind situaţia persoanei fizice"
+Rd. 1. "Documentul care reglementează raportul de muncă" - se înscriu numărul şi data documentului în baza căruia contribuabilul îşi desfăşoară activitatea.
+Rd. 2. "Data începerii activităţii" - se completează în cazul unui raport de muncă nou, înscriindu-se data începerii activităţii prevăzută în documentul care reglementează raportul de muncă.
+Rd. 3. "Data încetării activităţii" - se completează în cazul încetării raportului de muncă, înscriindu-se data încetării activităţii prevăzută în documentul care reglementează raportul de muncă.
+Rd. 4. Căsuţa prevăzută în formular se bifează de către misiunile diplomatice şi posturile consulare acreditate în România, precum şi reprezentanţele organismelor internaţionale ori reprezentanţele societăţilor comerciale şi ale organizaţiilor economice străine, autorizate potrivit legii să desfăşoare activitate în România, la care îşi desfăşoară activitatea persoanele fizice, şi care optează ca pentru angajaţii acestora care realizează venituri din salarii impozabile în România să îndeplinească obligaţiile privind calculul, reţinerea şi virarea impozitului pe veniturile din salarii.
+INSTRUCŢIUNI
+de completare a formularului 223 "Declaraţie privind veniturile
+estimate pentru asocierile fără personalitate juridică şi
+entităţi supuse regimului transparenţei fiscale"
+Cod 14.13.01.13/1i
+I. Depunerea declaraţiei
+1. Declaraţia se completează în cazul asocierilor fără personalitate juridică, constituite între persoane fizice care realizează venituri din activităţi independente - activităţi de producţie, comerţ, prestări de servicii şi profesii liberale, inclusiv din activităţi adiacente, venituri din activităţi agricole pentru care venitul net anual se determină în sistem real, pe baza datelor din contabilitate, precum şi venituri din silvicultură şi piscicultură.
+Declaraţia se depune şi în cazul persoanelor fizice care obţin venituri dintr-o activitate desfăşurată într-o formă de organizare cu personalitate juridică, constituită potrivit legii speciale, societate profesională cu răspundere limitată şi care este supusă regimului transparenţei fiscale, potrivit legii.
+În cazul societăţii civile cu personalitate juridică constituite potrivit legii speciale şi care este supusă regimului transparenţei fiscale, potrivit legii, se aplică regulile de determinare a venitului net din activităţi independente.
+Persoanele fizice care obţin venituri dintr-o activitate desfăşurată într-o formă de organizare cu personalitate juridică (SPRL) constituită potrivit legii speciale şi care este supusă regimului transparenţei fiscale, potrivit legii, au obligaţia să asimileze acest venit distribuit venitului net anual din activităţi independente. Asocierile în cadrul cărora se obţin venituri de natura celor mai sus menţionate, din mai multe surse, depun câte o declaraţie estimativă pentru fiecare sursă, respectiv pentru fiecare categorie de venit.
+2. Declaraţia nu se depune pentru:
+- asocierile fără personalitate juridică constituite între persoane fizice în cadrul cărora se realizează venituri din activităţi independente pentru care impozitul se percepe prin reţinere la sursă de către plătitorii de venituri;
+- asocierile constituite între persoane fizice şi persoane juridice, care nu dau naştere unei persoane juridice, care realizează venituri din activităţi independente, pentru care impozitul se percepe prin reţinere la sursă de către plătitorii de venituri;
+- asocierile fără personalitate juridică constituite între persoane fizice în cadrul cărora se realizează venituri din activităţi agricole impuse pe baza normelor de venit, potrivit legii.
+3. Termenul de depunere a declaraţiei
+Declaraţia se depune la organul fiscal competent, astfel:
+- în termen de 30 de zile de la data începerii activităţii, în cazul asocierilor care încep o activitate în cursul anului fiscal;
+- odată cu declaraţia privind venitul realizat, în cazul asocierilor care, în anul anterior, au realizat pierderi şi al celor care au realizat venituri pe perioade mai mici decât anul fiscal, precum şi al celor care, din motive obiective, estimează că vor realiza venituri care diferă cu cel puţin 20% faţă de anul fiscal anterior.
+4. Organul fiscal competent
+Declaraţia se depune în două exemplare:
+- originalul se depune la organul fiscal la care asocierea este înregistrată în evidenţa fiscală;
+- copia se păstrează la domiciliul fiscal al asocierii, împreună cu celelalte documente privind activitatea acesteia.
+5. Modul de depunere a declaraţiei
+Declaraţia se completează şi se depune de către asociatul desemnat prin contractul de asociere să răspundă de îndeplinirea obligaţiilor asocierii faţă de autorităţile publice, înscriind cu majuscule, citeţ şi corect toate datele prevăzute în formular.
+Declaraţia se depune în format hârtie, direct la registratura organului fiscal sau la oficiul poştal, prin scrisoare recomandată cu confirmare de primire.
+Data depunerii declaraţiei este data înregistrării acesteia la organul fiscal sau data depunerii la poştă, după caz.
+Declaraţia poate fi depusă şi prin mijloace electronice de transmitere la distanţă, potrivit legii.
+II. Completarea declaraţiei
+1. Perioada de raportare
+În rubrica "Anul" se înscrie anul pentru care se completează declaraţia, cu cifre arabe cu 4 caractere (de exemplu: 2016).
+2. Secţiunea I "Date de identificare a asocierii"
+În caseta "Cod de identificare fiscală" se înscrie codul de identificare fiscală atribuit asocierii fără personalitate juridică, înscriindu-se cifrele cu aliniere la dreapta.
+În cazul în care asocierea fără personalitate juridică are calitatea de persoană impozabilă înregistrată în scopuri de taxă pe valoarea adăugată, codul de identificare fiscală va fi precedat de prefixul "RO".
+În rubrica "Denumire" se înscrie denumirea asocierii.
+Rubricile privind adresa se completează, după caz, cu datele privind adresa domiciliului fiscal a asocierii.
+3. Secţiunea II "Date privind activitatea desfăşurată"
+3.1. Punctul 1 "Categoria de venit" - se bifează căsuţa corespunzătoare categoriei de venituri care urmează a se realiza în anul fiscal de impunere, după caz: activităţi de producţie, prestări de servicii, comerţ, profesii liberale, activităţi agricole impuse în sistem real, silvicultură, piscicultură sau alte venituri pentru care există obligaţia depunerii declaraţiei, potrivit legii.
+3.2. Punctul 2 "Forma de organizare" - se bifează căsuţa corespunzătoare modului de desfăşurare a activităţii: asociere fără personalitate juridică, entităţi supuse regimului transparenţei fiscale, modificarea modalităţii/formei de exercitare a activităţii.
+3.2.1. Căsuţa "Asociere fără personalitate juridică" - se bifează în cazul în care activitatea se desfăşoară în cadrul unei asocieri fără personalitate juridică, constituită între persoane fizice.
+3.2.2. Căsuţa "Entităţi supuse regimului transparenţei fiscale" - se bifează în cazul în care activitatea se desfăşoară într-o formă de organizare cu personalitate juridică constituită potrivit legii speciale şi care este supusă regimului transparenţei fiscale, potrivit legii.
+3.2.3. Căsuţa "Modificarea modalităţii/formei de exercitare a activităţii" - se bifează de contribuabili în cazul schimbării modalităţii de exercitare a unei activităţi independente şi/sau al transformării formei de exercitare a acesteia într-o altă formă, potrivit legislaţiei în materie, în timpul anului, în condiţiile continuării activităţii.
+3.3. Punctul 3 "Determinarea venitului net" - se bifează căsuţa corespunzătoare în funcţie de modul de determinare a venitului net, după caz: în sistem real sau pe normă de venit.
+3.4. Punctul 4 "Număr asociaţi" - se înscrie numărul de persoane care fac parte din asociere.
+3.5. Punctul 5 "Obiectul principal de activitate" - se înscriu obiectul principal de activitate prevăzut în autorizaţie sau în contractul de asociere, precum şi codul CAEN al activităţii desfăşurate.
+3.6. Punctul 6 "Sediul" - se completează adresa sediului acesteia sau locul unde se desfăşoară efectiv activitatea principală, după caz. În cazul în care activitatea se desfăşoară prin mai multe puncte de lucru, se completează adresa sediului sau locului principal de desfăşurare a activităţii, după caz.
+3.7. Punctul 7 "Contract de asociere" - se înscriu numărul sub care contractul de asociere a fost înregistrat la organul fiscal, precum şi data înregistrării acestuia.
+3.8. Punctul 8 "Documentul de autorizare" - se înscriu numărul şi data eliberării documentului de autorizare care atestă dreptul asocierii de a desfăşura activităţi economice pe teritoriul României.
+3.9. Punctele 9, 10 "Data începerii/încetării activităţii" - se înscrie data începerii/încetării activităţii, conform contractului de asociere.
+3.10. Punctul 11 "Data suspendării activităţii" - se completează data suspendării activităţii de către contribuabilii care realizează venituri din activităţi independente şi/sau din activităţi agricole impuse în sistem real, silvicultură şi piscicultură şi care în cursul anului fiscal intră în suspendare temporară a activităţii, potrivit legislaţiei în materie.
+4. Secţiunea III "Date privind venitul estimat"
+1. Venit brut estimat - se înscrie suma, reprezentând veniturile în bani şi/sau echivalentul în lei al veniturilor în natură estimate a se realiza de către asociere în anul fiscal în curs.
+2. Cheltuieli deductibile estimate - se înscrie suma, reprezentând cheltuielile estimate a se efectua în anul fiscal în curs în vederea realizării venitului brut estimat.
+3. Venit net estimat - se înscrie suma, reprezentând venitul net estimat a se realiza în anul fiscal în curs, determinată ca diferenţă între venitul brut estimat şi cheltuielile deductibile estimate, respectiv diferenţa dintre suma înscrisă la rd. 1 şi suma înscrisă la rd. 2.
+5. Secţiunea IV "Date de identificare a responsabilului asocierii"
+Se completează datele de identificare a responsabilului asocierii desemnat prin contractul de asociere pentru îndeplinirea obligaţiilor asociaţiei faţă de autorităţile publice.
+În caseta "Cod de identificare fiscală" se înscrie codul de identificare fiscală al responsabilului asocierii, înscriindu-se cifrele cu aliniere la dreapta.
+În cazul în care responsabilul asocierii are calitatea de persoană impozabilă înregistrată în scopuri de taxă pe valoarea adăugată, codul de identificare fiscală va fi precedat de prefixul "RO".
+În rubrica "Nume, prenume/Denumire" se înscriu, după caz, denumirea sau numele şi prenumele responsabilului asocierii.
+Rubricile privind adresa se completează, după caz, cu datele privind adresa domiciliului fiscal al responsabilului asocierii.
+6. Secţiunea V "Distribuţia venitului net estimat pe asociaţi"
+Col. 1. "Nume şi prenume/denumire asociat" - se înscriu numele şi prenumele/denumirea asociaţilor, conform contractului de asociere.
+Col. 2. "Cod de identificare fiscală" - se înscrie pentru fiecare asociat, după caz:
+- codul numeric personal;
+- numărul de identificare fiscală, atribuit de către Agenţia Naţională de Administrare Fiscală, cu ocazia înregistrării fiscale;
+- codul de înregistrare fiscală al asociatului, entitate transparentă fiscal, cu/fără personalitate juridică.
+Col. 3. "Domiciliu" - se completează adresa domiciliului fiscal.
+Col. 4. "Cota de distribuire a venitului net estimat la nivelul asocierii" - se înscrie cota procentuală de participare, corespunzătoare fiecărui asociat, la veniturile şi pierderile asocierii, conform contractului de asociere.
+Col. 5. "Venit net estimat distribuit" - se înscrie, pentru fiecare asociat, suma venitului net estimat a se realiza în anul fiscal în curs, distribuit conform cotelor de distribuire prevăzute în contractul de asociere.
+Rd. "Total" - se înscrie suma obţinută prin cumularea venitului net estimat, distribuit pe asociaţi. Suma astfel calculată va fi egală cu cea înscrisă la rd. 3 "Venit net estimat" de la secţiunea III "Date privind venitul estimat".
+NOTĂ:
+În cazul asocierilor pentru care venitul net se determină pe baza normelor de venit se completează numai datele de identificare a asociaţilor (col. 1-3) şi cota de distribuire a venitului net estimat la nivelul asocierii, corespunzătoare fiecărui asociat (col. 4).
+INSTRUCŢIUNI
+de completare a formularului 224 "Declaraţie privind veniturile
+sub formă de salarii şi asimilate salariilor din străinătate
+obţinute de către persoanele fizice care desfăşoară activitate în
+România şi de către persoanele fizice române angajate ale misiunilor
+diplomatice şi posturilor consulare acreditate în România"
+Cod 14.13.01.13/5
+I. Depunerea declaraţiei
+1. Declaraţia se completează de către persoanele fizice care îşi desfăşoară activitatea în România şi obţin venituri supuse impozitului pe venit în România sub formă de salarii şi asimilate salariilor din străinătate, precum şi de către persoanele fizice române angajate ale misiunilor diplomatice şi ale posturilor consulare acreditate în România.
+Misiunile diplomatice şi posturile consulare acreditate în România, precum şi reprezentanţele organismelor internaţionale ori reprezentanţele societăţilor comerciale şi ale organizaţiilor economice străine, autorizate potrivit legii să îşi desfăşoare activitatea în România, pot opta ca pentru angajaţii acestora, care realizează venituri din salarii impozabile în România, să îndeplinească obligaţiile privind calculul, reţinerea şi virarea impozitului pe veniturile din salarii.
+În cazul în care opţiunea este formulată şi comunicată organului fiscal competent, beneficiarii de venituri nu mai au obligaţia depunerii formularului 224.
+2. Termen de depunere a declaraţiei
+Declaraţia se depune la organul fiscal competent, astfel:
+- lunar, până la data de 25 inclusiv a lunii următoare celei pentru care s-a realizat venitul.
+Contribuabilii care îşi prelungesc perioada de şedere în România, peste perioada menţionată în convenţia de evitare a dublei impuneri, au obligaţia să declare şi să plătească impozit pentru întreaga perioadă de desfăşurare a activităţii în România, până la data de 25 inclusiv a lunii următoare împlinirii termenului prevăzut de respectiva convenţie;
+- ori de câte ori contribuabilul constată erori în declaraţia anterioară, prin completarea unei declaraţii rectificative, situaţie în care se înscrie "X" în căsuţa special prevăzută în acest scop.
+3. Organul fiscal competent
+Declaraţia se completează în două exemplare:
+- originalul se depune la:
+a) organul fiscal în a cărui rază teritorială contribuabilul are adresa unde îşi are domiciliul, potrivit legii, sau adresa unde locuieşte efectiv, în cazul în care aceasta este diferită de domiciliu, pentru persoanele fizice care au domiciliul fiscal în România;
+...
+b) organul fiscal competent, potrivit legii, pentru administrarea contribuabililor persoane fizice, fără domiciliul fiscal în România;
+...
+- copia se păstrează de către contribuabil.
+4. Modul de depunere a declaraţiei
+Declaraţia se completează de către contribuabil sau de către împuternicitul acestuia, potrivit Legii nr. 207/2015 privind Codul de procedură fiscală, cu modificările şi completările ulterioare, înscriind cu majuscule, citeţ şi corect toate datele prevăzute de formular.
+Declaraţia se depune în format hârtie, direct la registratura organului fiscal sau la oficiul poştal, prin scrisoare recomandată cu confirmare de primire.
+Declaraţia se pune gratuit la dispoziţia contribuabilului.
+Data depunerii declaraţiei este şi data înregistrării acesteia la organul fiscal sau data depunerii la poştă, după caz.
+II. Completarea declaraţiei
+1. Perioada de raportare
+În rubrica "Luna" se înscrie luna pentru care se completează declaraţia, cu cifre arabe cu 2 caractere (de exemplu: 01)
+În rubrica "Anul" se înscrie anul pentru care se completează declaraţia, cu cifre arabe cu 4 caractere (de exemplu: 2016)
+2. Secţiunea I "Date de identificare a contribuabilului"
+2.1. În caseta "Cod numeric personal/Număr de identificare fiscală" - se înscrie codul numeric personal sau numărul de identificare fiscală, atribuit de către Agenţia Naţională de Administrare Fiscală, cu ocazia înregistrării fiscale, după caz, înscriindu-se cifrele cu aliniere la dreapta.
+2.2. În rubricile "Nume" şi "Prenume" se înscriu numele şi prenumele contribuabilului.
+2.3. Rubricile privind adresa se completează, după caz, cu adresa domiciliului fiscal al contribuabilului.
+2.4. În caseta "Documentul care reglementează raportul de muncă" - se înscriu numărul şi data documentului încheiat cu angajatorul, în baza căruia contribuabilul îşi desfăşoară activitatea.
+2.5. În caseta "Perioada de activitate" - se înscrie perioada de activitate prevăzută în documentul care reglementează raportul de muncă.
+3. Secţiunea II "Date referitoare la persoana fizică sau juridică la care îşi desfăşoară activitatea contribuabilul"
+3.1. Caseta "Cod de identificare fiscală" - se completează, după caz, dacă persoana fizică, juridică sau orice altă entitate la care îşi desfăşoară activitatea contribuabilul este înregistrată fiscal şi are atribuit cod de identificare fiscală, conform legislaţiei române.
+3.2. În rubrica "Nume, Prenume/Denumire" - se înscriu, după caz, denumirea sau numele şi prenumele persoanelor fizice, juridice sau orice altă entitate la care îşi desfăşoară activitatea contribuabilul.
+3.3. Rubricile privind adresa - se completează adresa domiciliului fiscal al persoanei fizice, juridice sau orice altă entitate la care contribuabilul îşi desfăşoară activitatea.
+4. Secţiunea III "Modul de calcul al impozitului pe veniturile sub formă de salarii şi asimilate salariilor din străinătate"
+Rd. 1. "Venit brut" - se înscrie suma veniturilor în bani şi/sau în natură realizate de contribuabil în luna de raportare.
+Rd. 2. "Contribuţii sociale datorate potrivit legii" - se înscrie suma totală a contribuţiilor obligatorii, datorate de contribuabil în luna de raportare potrivit legii şi plătite.
+Rd. 3. "Venit net" - se calculează ca diferenţă între venitul brut şi suma totală a contribuţiilor sociale datorate, potrivit legii (rd. 1-rd. 2).
+Rd. 4. "Deduceri personale" - se înscrie suma deducerilor personale cuvenite contribuabilului în luna de raportare, potrivit legii, stabilite pe baza documentelor justificative care atestă dreptul de deducere. Se completează numai de către persoanele rezidente care au dreptul la deduceri personale.
+Rd. 5. "Cotizaţia sindicală plătită" - se înscrie suma, reprezentând cotizaţia sindicală plătită în luna de raportare.
+Rd. 6. "Contribuţiile la fondurile de pensii facultative" - se înscrie suma reprezentând contribuţiile la fondurile de pensii facultative potrivit Legii nr. 204/2006 privind pensiile facultative, cu modificările şi completările ulterioare, astfel încât la nivelul anului să nu depăşească echivalentul în lei a 400 euro.
+Rd. 7. "Primele de asigurare voluntară de sănătate" - se înscrie suma reprezentând primele de asigurare voluntară de sănătate, conform Legii nr. 95/2006 privind reforma în domeniul sănătăţii, republicată, cu modificările ulterioare, suportate de angajaţi, astfel încât la nivelul anului să nu se depăşească echivalentul în lei al sumei de 400 euro.
+Rd. 8. "Venit bază de calcul":
+- pentru funcţia de bază: se înscrie suma calculată prin scăderea deducerilor personale (rd. 4), a cotizaţiei sindicale plătite (rd. 5), a contribuţiilor la fondurile de pensii facultative (rd. 6) şi a primelor de asigurare voluntară de sănătate (rd. 7) din venitul net (rd. 3);
+- în celelalte cazuri: se preia suma înscrisă la rd. 3.
+Rd. 9. "Impozit lunar datorat" - se înscrie suma impozitului calculat prin aplicarea cotei de 16% asupra venitului bază de calcul (rd. 8).
+Rd. 10. "Impozit anual datorat" - se înscrie suma impozitului anual calculată prin însumarea impozitului lunar datorat de contribuabil în luna de raportare, potrivit legii.
+Acest rând se va completa în declaraţia depusă pentru luna decembrie, respectiv luna în care contribuabilul şi-a încetat raportul contractual de muncă, după caz.
+Rubricile de la rd. 4, rd. 5, rd. 6 şi rd. 7 se completează numai la funcţia de bază.
+5. Secţiunea IV "Date de identificare a împuternicitului"
+Se completează numai în cazul în care obligaţiile de declarare a veniturilor se îndeplinesc de către un împuternicit, conform Legii nr. 207/2015 , cu modificările şi completările ulterioare, desemnat de contribuabil.
+În caseta "Cod de identificare fiscală" se înscrie codul de identificare fiscală al împuternicitului, înscriindu-se cifrele cu aliniere la dreapta.
+În rubrica "Nume, prenume/Denumire" se înscriu, după caz, denumirea sau numele şi prenumele împuternicitului.
+Rubricile privind adresa se completează, după caz, cu datele privind adresa domiciliului fiscal al împuternicitului.
++
+Anexa 3
+Caracteristicile de tipărire, modul de difuzare,
+de utilizare şi de păstrare a formularelor
+a) Denumire: "Declaraţie privind venitul estimat/norma de venit (formularul 220)"
+...
+1. Cod: 14.13.01.13/3p
+2. Format: A4/t2
+3. Caracteristici de tipărire:
+- se tipăreşte pe ambele feţe (seturi);
+- se poate utiliza şi echipament informatic pentru editare şi completare.
+4. Se difuzează gratuit.
+5. Se utilizează la:
+- declararea veniturilor şi cheltuielilor estimate din activităţi independente, cedarea folosinţei bunurilor, cu excepţia veniturilor din arendă, activităţi agricole determinate în sistem real şi/sau silvicultură şi piscicultură;
+- exercitarea opţiunii privind modificarea modului de determinare a venitului net;
+- recalcularea plăţilor anticipate cu titlu de impozit şi contribuţii sociale, potrivit legii;
+- declararea veniturilor din activităţi independente, din activităţi agricole, silvicultură şi piscicultură, scutite de la plata impozitului pe venit;
+- declararea veniturilor din pensii provenite dintr-un alt stat, cu respectarea prevederilor legislaţiei europene aplicabile în domeniul securităţii sociale, precum şi ale acordurilor privind sistemele de securitate socială la care România este parte.
+6. Se întocmeşte în două exemplare de contribuabil sau împuternicitul acestuia.
+7. Circulă:
+- originalul, la organul fiscal definit prin ordin;
+- copia, la contribuabil.
+8. Se arhivează la dosarul contribuabilului.
+b) Denumire: "Declaraţie privind veniturile din activităţi agricole impuse pe bază de norme de venit (formularul 221)"
+...
+1. Cod: 14.13.01.13/9
+2. Format: A4/t3
+3. U/M: seturi
+4. Caracteristici de tipărire: se tipăreşte pe ambele feţe.
+5. Se difuzează gratuit.
+6. Se utilizează la declararea suprafeţelor destinate producţiei vegetale şi/sau animalelor/familiilor de albine deţinute, pentru fiecare localitate pe raza căreia se desfăşoară activitatea agricolă impusă pe bază de norme de venit.
+7. Se întocmeşte în două exemplare de către:
+- persoanele fizice care realizează venituri din activităţi agricole în mod individual sau de împuterniciţii fiscali ai acestora;
+- responsabilul asocierii, în cazul în care activitatea se desfăşoară în cadrul unei asocieri fără personalitate juridică, constituită între persoane fizice.
+8. Circulă:
+- originalul, la organul fiscal definit prin ordin;
+- copia, la contribuabil.
+9. Se arhivează la dosarul contribuabilului/asocierii.
+c) Denumire: "Anexa nr. .... la Declaraţia privind veniturile din activităţi agricole impuse pe bază de norme de venit"
+...
+1. Cod: 14.13.01.13/9
+2. Format: A4/t1
+3. Se difuzează gratuit.
+4. Se utilizează, dacă este cazul, de către persoanele fizice care au realizat venituri din activităţi agricole şi deţin suprafeţe destinate producţiei agricole vegetale/animale în mai mult de patru localităţi, în completarea formularului 221 "Declaraţie privind veniturile din activităţi agricole impuse pe bază de norme de venit".
+5. Se întocmeşte în două exemplare de contribuabil sau de împuternicitul acestuia, după caz.
+6. Circulă:
+- originalul, la organul fiscal definit prin ordin, împreună cu formularul 221 "Declaraţie privind veniturile din activităţi agricole impuse pe bază de norme de venit";
+- copia, la contribuabil.
+7. Se arhivează la dosarul contribuabilului.
+d) Denumire: "Declaraţie informativă privind începerea/încetarea activităţii persoanelor fizice care desfăşoară activitate în România şi care obţin venituri sub formă de salarii şi asimilate salariilor din străinătate (formularul 222)"
+...
+1. Cod: 14.13.01.13/5i
+2. Format: A4/t1
+3. Caracteristici de tipărire:
+- se tipăreşte pe o singură faţă (seturi);
+- se poate utiliza şi echipament informatic pentru editare şi completare.
+4. Se difuzează gratuit.
+5. Se utilizează la furnizarea informaţiilor referitoare la data începerii şi încetării activităţii contribuabilului persoanelor fizice care desfăşoară activitate în România şi obţin venituri sub formă de salarii şi asimilate salariilor din străinătate.
+6. Se întocmeşte în două exemplare de persoana fizică sau juridică la care îşi desfăşoară activitatea contribuabilul.
+7. Circulă:
+- originalul, la organul fiscal definit prin ordin;
+- copia, la persoana fizică sau juridică la care îşi desfăşoară activitatea contribuabilul.
+8. Se arhivează la dosarul contribuabilului.
+e) Denumire: "Declaraţie privind veniturile estimate pentru asocierile fără personalitate juridică şi entităţi supuse regimului transparenţei fiscale (formularul 223)"
+...
+1. Cod: 14.13.01.13/1i
+2. Format: A4/t2
+3. Caracteristici de tipărire:
+- se tipăreşte pe ambele feţe (seturi);
+- se poate utiliza şi echipament informatic pentru editare şi completare.
+4. Se difuzează gratuit.
+5. Se utilizează la declararea veniturilor şi a cheltuielilor estimate a se realiza de către asocierile între persoane fizice care nu dau naştere unei persoane juridice şi entităţile supuse regimului transparenţei fiscale.
+6. Se întocmeşte în două exemplare de responsabilul desemnat al asocierii.
+7. Circulă:
+- originalul, la organul fiscal definit prin ordin;
+- copia, la asociere.
+8. Se arhivează la dosarul asocierii.
+f) Denumire: "Declaraţie privind veniturile sub formă de salarii şi asimilate salariilor din străinătate obţinute de către persoanele fizice care desfăşoară activitate în România şi de către persoanele fizice române angajate ale misiunilor diplomatice şi posturilor consulare acreditate în România (formularul 224)"
+...
+1. Cod: 14.13.01.13/5
+2. Format: A4/t1
+3. Caracteristici de tipărire:
+- se tipăreşte pe o singură faţă (seturi);
+- se poate utiliza şi echipament informatic pentru editare şi completare.
+4. Se difuzează gratuit.
+5. Se utilizează la declararea lunară a veniturilor sub formă de salarii şi asimilate salariilor din străinătate, obţinute de către persoanele fizice care desfăşoară activitate în România.
+6. Se întocmeşte în două exemplare de contribuabil sau reprezentantul fiscal.
+7. Circulă:
+- originalul, la organul fiscal definit prin ordin;
+- copia, la contribuabil.
+8. Se arhivează la dosarul contribuabilului.
+g) Denumire: "Decizie de impunere privind plăţile anticipate cu titlu de impozit pe venit/contribuţii de asigurări sociale de sănătate/contribuţii de asigurări sociale (formularul 260)"
+...
+1. Cod: 14.13.02.13/3a
+2. Format: A4/t2
+3. Caracteristici de tipărire:
+- se tipăreşte pe ambele feţe (seturi);
+- se poate utiliza şi echipament informatic pentru editare şi completare.
+4. Se difuzează gratuit.
+5. Se utilizează, potrivit situaţiei specifice a contribuabilului:
+- la stabilirea plăţilor anticipate cu titlu de impozit;
+- la stabilirea plăţilor anticipate cu titlu de contribuţii de asigurări sociale de sănătate şi contribuţii de asigurări sociale.
+6. Se întocmeşte în două exemplare de către organul fiscal competent, după cum urmează:
+6.1. organul fiscal în a cărui rază teritorială contribuabilul are adresa unde îşi are domiciliul, potrivit legii, sau adresa unde locuieşte efectiv, în cazul în care aceasta este diferită de domiciliu, pentru persoanele fizice care au domiciliul fiscal în România;
+6.2. organul fiscal competent potrivit legii, pentru administrarea contribuabililor persoane fizice, fără domiciliu fiscal în România.
+7. Circulă:
+- un exemplar, la contribuabil;
+- un exemplar, la organul fiscal competent.
+8. Se arhivează copia la dosarul contribuabilului.
+h) Denumire: "Situaţie privind modul de stabilire a venitului net pe baza normelor de venit" şi "Situaţie privind stabilirea contribuţiei lunare de asigurări sociale de sănătate/contribuţiei lunare de asigurări sociale", anexele nr. 1 şi 2 la formularul 260
+...
+1. Format: A4/t1
+2. Caracteristici de tipărire:
+- se tipăreşte pe o singură faţă;
+- se poate utiliza şi echipament informatic pentru editare şi completare.
+3. Se difuzează gratuit.
+4. Se utilizează potrivit situaţiei specifice a contribuabilului:
+- la stabilirea normei de venit în cazul contribuabililor care desfăşoară două sau mai multe activităţi pentru care venitul net se determină pe baza normelor de venit sau la stabilirea venitului anual în cazul contribuabililor care desfăşoară activităţi agricole impuse pe baza normelor de venit şi care deţin suprafeţe destinate producţiei agricole vegetale/animale în localităţi diferite (anexa nr. 1 "Situaţie privind modul de stabilire a venitului net pe baza normelor de venit");
+- la stabilirea contribuţiei lunare de asigurări sociale de sănătate/contribuţiei lunare de asigurări sociale (anexa nr. 2 "Situaţie privind stabilirea contribuţiei lunare de asigurări sociale de sănătate/contribuţiei lunare de asigurări sociale").
+5. Se întocmeşte ca anexă la formularul 260.
+6. Circulă şi se arhivează împreună cu formularul 260.
+i) Denumire: "Fişa capacităţii de cazare"
+...
+1. Cod: 14.13.01.13/3p
+2. Format: A4/t1
+3. U/M: seturi
+4. Caracteristici de tipărire:
+- se tipăreşte pe o singură faţă;
+- se poate utiliza şi echipament informatic pentru editare şi completare.
+5. Se difuzează gratuit.
+6. Se utilizează de către contribuabilii care realizează venituri din închiriere în scop turistic a camerelor situate în locuinţe proprietate personală, având o capacitate de cazare cuprinsă între 1 şi 5 camere inclusiv.
+7. Se întocmeşte în două exemplare de contribuabil.
+8. Circulă:
+- originalul, împreună cu "Declaraţie privind venitul estimat/norma de venit" (formularul 220), la organul fiscal definit prin ordin;
+- copia, la contribuabil.
+9. Se arhivează la dosarul contribuabilului.
+j) Denumire: "Decizie de impunere privind plăţile anticipate cu titlu de contribuţii de asigurări sociale de sănătate pentru veniturile din cedarea folosinţei bunurilor" (formularul 650)
+...
+1. Cod: 14.13.02.15/cfb
+2. Format: A4/t1
+3. Caracteristici de tipărire:
+- se tipăreşte pe o singură faţă;
+- se poate utiliza şi echipament informatic pentru editare şi completare, cu adaptări adecvate situaţiei contribuabilului.
+4. Se difuzează gratuit.
+5. Se utilizează la stabilirea plăţilor anticipate cu titlu de contribuţii de asigurări sociale de sănătate datorate de persoanele fizice care realizează venituri din cedarea folosinţei bunurilor, începând cu anul fiscal 2016.
+6. Se întocmeşte în două exemplare de către organul fiscal competent.
+7. Circulă:
+- un exemplar, la organul fiscal competent;
+- un exemplar, la contribuabil.
+8. Se arhivează la dosarul contribuabilului.
+k) Denumire: "Situaţie privind stabilirea contribuţiei lunare de asigurări sociale de sănătate", anexa la formularul 650
+...
+1. Format: A4/t1
+2. Caracteristici de tipărire:
+- se tipăreşte pe o singură faţă;
+- se poate utiliza şi echipament informatic pentru editare şi completare, cu adaptări adecvate situaţiei contribuabilului.
+3. Se difuzează gratuit.
+4. Se întocmeşte ca anexă la formularul 650.
+5. Se utilizează la stabilirea contribuţiei lunare de asigurări sociale de sănătate, pentru persoanele fizice care realizează venituri din cedarea folosinţei bunurilor.
+6. Se întocmeşte în două exemplare de către organul fiscal competent.
+7. Circulă:
+- un exemplar, la organul fiscal competent;
+- un exemplar, la contribuabil.
+8. Se arhivează împreună cu formularul 650 la dosarul contribuabilului.
+------
+Conținutul acestui material nu reprezintă în mod obligatoriu poziția oficială a Uniunii Europene sau a Guvernului României.
+Pentru informații detaliate despre celelalte programe cofinanțate de Uniunea Europeană, vă invităm să vizitați www.fonduri-ue.ro .
+Copyright © 2026 - Ministerul Justiției. Toate drepturile rezervate. - Termeni și Condiții
+| Acasă
+| Despre Proiect
+| Facilități Oferite
+| Legături Utile
+×
+Inchide
+Versiune Beta
+A fost lansata versiunea Beta a Portalului Legislativ
+Fiind o versiune Beta, este posibil ca unele facilitati sa nu functioneze in mod corect.
+Inchide mesajul de atentionare
+×
+Inchide
+Datorita faptului ca folositi o versiune de Internet Explorer (Internet Explorer 8) foarte veche este posibil ca unele functionalitati sa fie dezactivate sau sa nu functioneze corect!
+Ce browser sa aleg?
+Google Chrome
+Descarca Browser
+Mozilla Firefox
+Descarca Browser
+Internet Explorer
+Descarca Browser
+Apple Safari
+Descarca Browser
+De ce sa actualizez browserul?
+Browserele invechite, cum ar fi Internet Explorer 8 (lansat în 2001) nu respecta standardele web, nu ofera unele facilitati noi browser-ului, cum ar fi de navigatie sau descarcare, managerul de tab-uri, si au probleme de securitate.
+Aceasta afecteaza, de asemenea, calitatea de redare site-uri web.
+Inchide mesajul de atentionare

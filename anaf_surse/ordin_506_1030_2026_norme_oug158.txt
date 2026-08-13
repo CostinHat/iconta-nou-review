@@ -1,0 +1,147 @@
+ORDIN 506 18/06/2026 - Portal Legislativ
+Portal Legislativ
+-->
+Meniu
+Meniu
+Acasă
+Despre Proiect
+Facilități Oferite
+Legături Utile
+GDPR
+Meniu
+Acasă
+Despre Proiect
+Facilități Oferite
+Legături Utile
+GDPR
+Prin portalul N-Lex se acorda acces gratuit la legislatiile nationale ale statelor membre, portalul fiind
+conceput pe baza unei tehnologii de comunicare interne, ce permite accesarea directa a bazelor de date legislative nationale,
+rezultatele cautarilor venind direct de la sursa.
+Cuprins
+Se încarcă, vă rugăm asteptati.
++
+Fișă act
+Actiuni suferite
+Actiuni Induse
+Refera pe
+Referit de
+Cuprinsul Actului
+pentru modificarea și completarea Normelor de aplicare a prevederilor Ordonanței de urgență a Guvernului nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate, aprobate prin Ordinul ministrului sănătății și al președintelui Casei Naționale de Asigurări de Sănătate nr. 15/2018/1.311/2017 Articolul I
+Articolul II
+Ministrul sănătății, interimar,Cseke Attila-ZoltánPreședintele Casei Naționale de Asigurări de Sănătate,Horațiu-Remus Moldovan
+Reveniti in topul paginii
+Forma printabilă
+ORDIN nr. 506/1.030/2026
+pentru modificarea și completarea Normelor de aplicare a prevederilor Ordonanței de urgență a Guvernului nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate, aprobate prin Ordinul ministrului sănătății și al președintelui Casei Naționale de Asigurări de Sănătate nr. 15/2018/1.311/2017
+EMITENT
+MINISTERUL SĂNĂTĂȚII Nr. 506 din 18 iunie 2026
+CASA NAȚIONALĂ DE ASIGURĂRI DE SĂNĂTATE Nr. 1.030 din 12 iunie 2026
+Publicat în
+MONITORUL OFICIAL nr. 507 din 19 iunie 2026
+Având în vedere: –
+Ordonanța de urgență a Guvernului nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate, aprobată cu modificări și completări prin Legea nr. 399/2006 , cu modificările și completările ulterioare;
+...
+–
+art. VI alin. (3) din Ordonanța de urgență a Guvernului nr. 91/2025 privind stabilirea unor măsuri în cadrul sistemului de sănătate, aprobată cu modificări și completări prin Legea nr. 64/2026;
+...
+–
+Referatul de aprobare nr. CAZ506R din 18.06.2026 al Ministerului Sănătății și nr. D.G. 6.949 din 12.06.2026 al Casei Naționale de Asigurări de Sănătate,
+...
+în temeiul dispozițiilor art. 7 alin. (4) din Hotărârea Guvernului nr. 144/2010 privind organizarea și funcționarea Ministerului Sănătății, cu modificările și completările ulterioare, ale art. 291 alin. (2) din Legea nr. 95/2006 privind reforma în domeniul sănătății, republicată, cu modificările și completările ulterioare, și ale art. 17 alin. (5) din Statutul Casei Naționale de Asigurări de Sănătate, aprobat prin Hotărârea Guvernului nr. 972/2006 , cu modificările și completările ulterioare,
+ministrul sănătății, interimar, și președintele Casei Naționale de Asigurări de Sănătate emit următorul ordin:
++
+Articolul I
+Normele de aplicare a prevederilor Ordonanței de urgență a Guvernului nr. 158/2005 privind concediile și indemnizațiile de asigurări sociale de sănătate, aprobate prin Ordinul ministrului sănătății și al președintelui Casei Naționale de Asigurări de Sănătate nr. 15/2018/1.311/2017 , publicat în Monitorul Oficial al României, Partea I, nr. 31 din 12 ianuarie 2018, cu modificările și completările ulterioare, se modifică și se completează după cum urmează: 1.
+La articolul 78^4, după alineatul (1) se introduce un alineat nou, alin. (1^1), cu următorul cuprins: (1^1)
+În cazul concediului medical acordat fără întrerupere pentru un episod de boală sau complicațiile care decurg din aceasta, indemnizațiile de asigurări sociale de sănătate se calculează și se plătesc prin diminuarea cu o singură zi, indiferent de numărul certificatelor de concediu medical eliberate.
+...
+2.
+La articolul 78^4, după alineatul (2) se introduc două noi alineate, alin. (2^1) și (2^2), cu următorul cuprins: (2^1)
+Prevederile alin. (1) nu se aplică în cazul concediilor medicale prevăzute la art. 2 alin. (1) lit. c) , d^1) și e) din Ordonanța de urgență a Guvernului nr. 158/2005 , aprobată cu modificări și completări prin Legea nr. 399/2006 , cu modificările și completările ulterioare, precum și în cazul concediilor medicale acordate bolnavilor incluși în programele naționale de sănătate.
+(2^2)
+Prevederile alin. (1) nu se aplică în cazul certificatelor de concediu medical eliberate în situația bolnavilor care beneficiază de acordarea serviciilor medicale în regim de spitalizare.
+...
+3.
+La articolul 78^4, alineatul (4) se modifică și va avea următorul cuprins: (4)
+Cuantumul indemnizațiilor de asigurări sociale de sănătate este egal cu produsul dintre media zilnică și procentele prevăzute de lege, multiplicat cu numărul de zile lucrătoare din concediul medical inițial din care se scade o zi, astfel: Ci = Mzbci x ....% x (NZLCM – 1),
+în care: –
+Ci = cuantumul indemnizațiilor de asigurări sociale de sănătate;
+...
+–
+Mzbci = media zilnică a bazei de calcul al indemnizațiilor de asigurări sociale de sănătate;
+...
+–
+NZLCM – 1 = numărul de zile lucrătoare din concediul medical minus prima zi lucrătoare. Exemplu - Determinarea cuantumului indemnizației pentru un certificat de concediu medical pentru incapacitate temporară de muncă (boală obișnuită) acordat pentru 5 de zile lucrătoare -lei-
+luna
+1
+2
+3
+4
+5
+6
+V
+4.050
+4.050
+4.050
+4.050
+4.050
+4.050
+NZ
+18
+20
+22
+20
+20
+21
+în care: NZ = numărul de zile pe fiecare lună din baza de calcul;
+Σ V = 6 x 4.050 lei = 24.300 lei;
+NTZ = 18 + 20 + 22 + 20 + 20 + 21 = 121 de zile;
+Mzbci = 24.300 lei: 121 = 200,82 lei;
+.... % = 55%/65%/75% [conform art. 17 alin. (1) din Ordonanța de urgență a Guvernului nr. 158/2005 , aprobată cu modificări și completări prin Legea nr. 399/2006 , cu modificările și completările ulterioare];
+NZLCM – 1 = 5 zile minus prima zi lucrătoare, rezultă NZLCM – 1 = 4 zile;
+Ci = Mzbci x .... % x (NZLCM – 1) = 200,82 lei x 55% x 4 = 441,80 lei, rotunjit la 442 lei conform legii.
+...
+...
+4.
+La articolul 78^4, după alineatul (4) se introduc două noi alineate, alin. (5) și (6), cu următorul cuprins: (5)
+Pentru bolnavii cu afecțiuni incluse în programele naționale de sănătate prevăzuți la art. 13 alin. (3) lit. a )- c) din Ordonanța de urgență a Guvernului nr. 158/2005 , aprobată cu modificări și completări prin Legea nr. 399/2006 , cu modificările și completările ulterioare, certificatele de concediu medical se eliberează pe codurile de indemnizație 12, 13 și 14.
+(6)
+Cuantumul brut al indemnizației pentru bolnavii cu afecțiuni incluse în programele naționale de sănătate, alții decât cei prevăzuți la art. 13 alin. (3) lit. a )- c) din Ordonanța de urgență a Guvernului nr. 158/2005 , aprobată cu modificări și completări prin Legea nr. 399/2006 , cu modificările și completările ulterioare, se stabilește potrivit art. 17 alin. (1) din aceeași ordonanță de urgență .
+...
++
+Articolul II
+Prezentul ordin se publică în Monitorul Oficial al României, Partea I.
+Ministrul sănătății, interimar,
+Cseke Attila-Zoltán
+Președintele Casei Naționale de Asigurări de Sănătate,
+Horațiu-Remus Moldovan
+-----
+Conținutul acestui material nu reprezintă în mod obligatoriu poziția oficială a Uniunii Europene sau a Guvernului României.
+Pentru informații detaliate despre celelalte programe cofinanțate de Uniunea Europeană, vă invităm să vizitați www.fonduri-ue.ro .
+Copyright © 2026 - Ministerul Justiției. Toate drepturile rezervate. - Termeni și Condiții
+| Acasă
+| Despre Proiect
+| Facilități Oferite
+| Legături Utile
+×
+Inchide
+Versiune Beta
+A fost lansata versiunea Beta a Portalului Legislativ
+Fiind o versiune Beta, este posibil ca unele facilitati sa nu functioneze in mod corect.
+Inchide mesajul de atentionare
+×
+Inchide
+Datorita faptului ca folositi o versiune de Internet Explorer (Internet Explorer 8) foarte veche este posibil ca unele functionalitati sa fie dezactivate sau sa nu functioneze corect!
+Ce browser sa aleg?
+Google Chrome
+Descarca Browser
+Mozilla Firefox
+Descarca Browser
+Internet Explorer
+Descarca Browser
+Apple Safari
+Descarca Browser
+De ce sa actualizez browserul?
+Browserele invechite, cum ar fi Internet Explorer 8 (lansat în 2001) nu respecta standardele web, nu ofera unele facilitati noi browser-ului, cum ar fi de navigatie sau descarcare, managerul de tab-uri, si au probleme de securitate.
+Aceasta afecteaza, de asemenea, calitatea de redare site-uri web.
+Inchide mesajul de atentionare
