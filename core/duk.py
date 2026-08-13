@@ -30,6 +30,9 @@ REGULI = "2026.1"
 
 DIST = "/home/costin/duk/dist"
 JAR = os.path.join(DIST, "DUKIntegrator.jar")
+# DecValidation 2024 (din pachetul SAF-T) - ceruta de validatoarele de GENERATIE NOUA (ex. D216)
+# care crapa cu DecValidation vechi din lib/ ("cod eroare"/NoClassDefFound/DECTag).
+_DECVALIDATION_NOU = "/opt/duk/saft/val/duk_SAFT_an_luna/dist/lib/DecValidation.jar"
 
 # D406 (SAF-T) se valideaza cu ALT jar si ALTI parametri: DUKIntegrator_AnLunaUI.jar
 # -p D406 fisier.xml $ 0 0 out.pdf an=AAAA luna=LL. Dovedit in buildul vechi
@@ -47,6 +50,8 @@ CHEIE_DUK = {
     "d100": "D100", "d101": "D101", "d104": "D104", "d107": "D107", "d110": "D110", "d112": "D112", "d177": "D177", "d205": "D205", "d207": "D207", "d220": "D220", "d221": "D221", "d223": "D223", "d230": "D230",
     "d300": "D300", "d301": "D301", "d307": "D307", "d311": "D311", "d390": "D390", "d394": "D394",
     "d406": "D406", "s1003": "S1003", "s1005": "S1005", "d710": "D710",
+    "d120": "D120", "d200": "D200", "d201": "D201", "d204": "D204", "d208": "D208",
+    "d216": "D216", "d393": "D393", "d395": "D395", "d397": "D397", "d600": "D600",
 }
 
 
@@ -156,25 +161,51 @@ def valideaza(xml, tip, dist=DIST, timeout=180, an=None, luna=None):
     td = tempfile.mkdtemp(prefix="duk_%s_" % tip)
     xp = os.path.join(td, "d.xml")
     lp = os.path.join(td, "r.txt")
-    try:  # try/finally: continutul (r.txt/.err.txt) se citeste INAINTE de rmtree; tempdir-ul se curata mereu
-        try:
-            with open(xp, "w", encoding="utf-8") as fh:
-                fh.write(xml)
-            subprocess.run(["java", "-Djava.awt.headless=true", "-jar",
-                            os.path.join(dist, "DUKIntegrator.jar"), "-v", cheie, xp, lp],
-                           cwd=td, capture_output=True, text=True, timeout=timeout)
-        except Exception as e:
-            return _gri(cheie, "Validatorul nu a putut fi rulat: %s." % e)
-        rez = ""
+
+    def _citeste():
+        r = ""
         for f in (lp, xp + ".err.txt"):
             if os.path.exists(f):
                 with open(f, encoding="utf-8", errors="replace") as fh:
-                    rez = (rez + "\n" + fh.read()).strip()
-        # Validatorul scrie literalmente "ok" in fisierul de rezultat cand nu gaseste erori (dovedit
-        # 15.07.2026 pe D394). Fara asta, o declaratie VALIDA era raportata cu eroarea "ok" - fals negativ.
-        # Fisier gol = idem valid (unele validatoare nu-l scriu). Citit AICI, inainte de finally/rmtree.
+                    r = (r + "\n" + fh.read()).strip()
+        return r
+
+    _MARK_ESEC = ("cod eroare", "Erori la validare", "NoClassDefFound", "DECTag", "Exception in thread")
+    try:  # try/finally: continutul se citeste INAINTE de rmtree; tempdir-ul se curata mereu
+        try:
+            with open(xp, "w", encoding="utf-8") as fh:
+                fh.write(xml)
+            p = subprocess.run(["java", "-Djava.awt.headless=true", "-jar",
+                                os.path.join(dist, "DUKIntegrator.jar"), "-v", cheie, xp, lp],
+                               cwd=td, capture_output=True, text=True, timeout=timeout)
+        except Exception as e:
+            return _gri(cheie, "Validatorul nu a putut fi rulat: %s." % e)
+        rez = _citeste()
+        out = (p.stdout or "") + "\n" + (p.stderr or "")
+        # Validator de GENERATIE NOUA (ex. D216): DUKIntegrator.jar cu DecValidation.jar VECHI din lib/
+        # crapa fara fisier de rezultat -> calea -jar ar raporta FALS "valid" (fisier gol = valid).
+        # Reincercam cu DecValidation NOU (2024, pachet SAF-T) pe classpath (general.Main) - metoda
+        # dovedita ca da 'ok'/erori reale pe validatoarele noi.
+        if (not rez) and any(m in out for m in _MARK_ESEC) and os.path.exists(_DECVALIDATION_NOU):
+            try:
+                if os.path.exists(lp):
+                    os.remove(lp)
+                cp = os.pathsep.join([_DECVALIDATION_NOU, os.path.join(dist, "DUKIntegrator.jar"),
+                                      os.path.join(dist, "lib", "*")])
+                p = subprocess.run(["java", "-Djava.awt.headless=true", "-cp", cp,
+                                    "general.Main", "-v", cheie, xp, lp],
+                                   cwd=dist, capture_output=True, text=True, timeout=timeout)
+                rez = _citeste()
+                out = (p.stdout or "") + "\n" + (p.stderr or "")
+            except Exception as e:
+                return _gri(cheie, "Validator generatie noua: reincercarea cu DecValidation nou a esuat: %s." % e)
+        # "ok"/gol in fisierul de rezultat = valid (dovedit 15.07 pe D394).
         if rez.lower() in ("", "ok", "ok."):
             rez = ""
+        # FAIL-SAFE anti fals-verde: eroare semnalata pe stdout FARA fisier de rezultat -> NU 'valid'.
+        if (not rez) and any(m in out for m in _MARK_ESEC):
+            return _gri(cheie, "Validatorul a semnalat eroare fara fisier de rezultat: %s."
+                        % out.strip().replace("\n", " ")[:200])
         temei = "DUKIntegrator -v %s (pachet oficial ANAF)." % cheie
         stare = "erori" if rez else "valid"
         return {"stare": stare, "erori": rez, "severitate": severitate(rez), "cheie": cheie,

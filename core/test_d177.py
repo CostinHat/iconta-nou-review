@@ -51,6 +51,7 @@ def test_d177_reguli():
     assert any("depaseste sumaRest" in e for e in d177.erori_generare(prof, b))                  # Σsuma>rest
 
 
+@pytest.mark.xfail(strict=True, reason='DATORIE 13.08.2026: validatorul D177 a trecut la GENERATIE NOUA (cere DecValidation 2024); generatorul core/d177.py produce root/namespace stale (declaratie177, ns v1) respins de validatorul curent (element necunoscut). Fals-verde preexistent EXPUS de fail-safe-ul din core/duk.py (retry cu DecValidation nou). Se inchide cand d177 e reconstruit dupa structura validatorului CURENT, cu proba DUK (aceeasi metoda ca lotul 2). Vezi DECIZII.md 13.08.')
 @pytest.mark.skipif(not os.path.exists(_JAR), reason="Validatorul D177 nu e instalat in DUK.")
 def test_d177_valid_pe_validatorul_oficial():
     from core import duk

@@ -2012,3 +2012,63 @@ XML D307 validat, cu TVA ajustata pe cele trei tipuri de operatiuni.
 - Bifa ""dupa anularea rezervei"" fara temeiul legal completat.
 ## Reguli fiscale
 OPANAF 793/2016; Cod fiscal art. 270 alin. (7) (transfer de active), art. 324 alin. (8)/(9) si art. 316 alin. (11) (anularea codului de TVA)."
+Declaratia D393 (bilete transport rutier international de persoane),"D393 - declaratie informativa anuala privind biletele de calatorie pentru transportul rutier international de persoane, in format XML validat de DUKIntegrator. Generator MANUAL (core/d393.py): datele operatorului si veniturile din bilete vin din input; totalPlata_A = Venituri_bilete (suma de control). Structura din D393Validator.jar (radacina d393, ns declaratie:v1); actul OPANAF nu e in corpus - semantica din etichetele oficiale ale validatorului.",F218,firma,Declaratii,core/d393.py,OPANAF (model D393); structura din D393Validator.jar (ns declaratie:v1),LIVE,core/test_declaratii_lot2_duk.py + DUKIntegrator -v D393 'valid',,"## Ce face
+Genereaza D393 (informativa, bilete transport rutier international de persoane) in XML acceptat de validatorul oficial ANAF.
+## Cand se depune
+Anual, de operatorii de transport rutier international de persoane care emit bilete.
+## De completat
+CUI si datele operatorului (nume1, adresa1), semnatarul (nume/prenume/functie declarant) si veniturile din bilete. Suma de control se calculeaza automat."
+Declaratia D395 (trimiteri postale contra ramburs),"D395 - declaratie informativa lunara a furnizorilor de servicii postale privind trimiterile livrate contra ramburs. Generator MANUAL (core/d395.py): antet furnizor + reprezentant + lista trimiterilor (nr_doc, data, val_ramb, expeditor RO/extern, loc preluare, mod returnare). Structura din D395Validator.jar (radacina D395, sectiuni lista/lista2, ns declaratie:v1); act nu e in corpus.",F219,firma,Declaratii,core/d395.py,OPANAF (model D395); structura din D395Validator.jar (ns declaratie:v1),LIVE,core/test_declaratii_lot2_duk.py + DUKIntegrator -v D395 'valid',,"## Ce face
+Genereaza D395 (trimiteri postale contra ramburs) pentru furnizorii de servicii postale.
+## Cand se depune
+Lunar.
+## De completat
+Datele furnizorului si ale reprezentantului (ambele blocuri obligatorii) + pentru fiecare trimitere: nr_doc unic, data (zz.ll.aaaa), val_ramb, expeditor (cif RO sau cif+cod tara numeric pentru extern), judet+loc preluare, mod returnare (iban sau ridicat numerar), destinatar. Totalul se calculeaza automat."
+Declaratia D397 (transport alternativ cu autoturism si conducator auto),"D397 - declaratie informativa lunara privind activitatile de transport alternativ, depusa de platforme, cu sinteza pe operator si defalcare pe autoturisme/conducatori. Generator MANUAL (core/d397.py): valorile din input; totalPlata_A si totalurile pe operator se calculeaza. Structura din D397Validator.jar (radacina D397, ns declaratie:v1); act nu e in corpus.",F220,firma,Declaratii,core/d397.py,OPANAF (model D397); structura din D397Validator.jar (ns declaratie:v1),LIVE,core/test_declaratii_lot2_duk.py + DUKIntegrator -v D397 'valid',,"## Ce face
+Genereaza D397 (transport alternativ) pentru platformele de transport.
+## Cand se depune
+Lunar.
+## De completat
+Declarantul (den, cif, adresa, semnatar) + pentru fiecare operator (cif_O, den_O, data acceptare) autoturismele: nr_auto, km, durata, venituri, sume in numerar, conducator (nume+cnp). Totalurile se calculeaza automat."
+Declaratia D200 (venituri realizate din Romania - persoane fizice),"D200 - declaratie privind veniturile realizate din Romania de persoane fizice, anuala, pe categorii de venit. Generator MANUAL (core/d200.py): CNP + sectiuni pe categorie (venit_brut, chelt, venit_net). Singurul calcul: venit_net=venit_brut-chelt cand ambele date; impozitul NU se calculeaza (il stabileste ANAF). Structura din D200Validator.jar (radacina declaratie200, ns declaratie:v1); act nu e in corpus.",F221,firma,Declaratii,core/d200.py,OPANAF (model D200); Cod fiscal Titlul IV (venituri PF); structura din D200Validator.jar,LIVE,core/test_declaratii_lot2_duk.py + DUKIntegrator -v D200 'valid',,"## Ce face
+Genereaza D200 (venituri din Romania, persoane fizice) pe categorii de venit.
+## Cand se depune
+Anual.
+## De completat
+CNP, nume/prenume, adresa; cate o sectiune per categorie de venit (1..14) cu venit brut, cheltuieli si, unde e cazul, castig/pierdere. venit_net se calculeaza automat. Impozitul nu se completeaza - il stabileste ANAF prin decizie de impunere."
+Declaratia D201 (venituri realizate din strainatate - persoane fizice),"D201 - declaratie privind veniturile realizate din strainatate de persoane fizice, anuala, pe perechi (tara, categorie de venit). Generator MANUAL (core/d201.py): CNP + sectiuni (statul, venit_B, chlt_D, venit_N, imp1/imp2, pierdere). Creditul fiscal extern vine din input, nu se fabrica. Structura din D201Validator.jar (radacina declaratie201, ns declaratie:v2); act nu e in corpus.",F222,firma,Declaratii,core/d201.py,OPANAF (model D201); Cod fiscal Titlul IV; structura din D201Validator.jar (ns declaratie:v2),LIVE,core/test_declaratii_lot2_duk.py + DUKIntegrator -v D201 'valid',,"## Ce face
+Genereaza D201 (venituri din strainatate, persoane fizice).
+## Cand se depune
+Anual.
+## De completat
+CNP, nume/initiala/prenume; per pereche (tara, categorie): statul (cod ISO numeric, ex. 276=Germania), venit brut, cheltuieli (venit_N se calculeaza), impozitul platit in strainatate (imp1). imp2 doar la salarii (categ 14)."
+Declaratia D204 (asocieri fara personalitate juridica),"D204 - declaratie anuala de venit pentru asocieri fara personalitate juridica / transparenta fiscala; distribuie venitul net / pierderea pe asociati proportional cu cota. Generator MANUAL (core/d204.py): asocierea + reprezentant + activitate + asociati (cote suma=100, venit repartizat=net). Structura din D204Validator.jar in vigoare (radacina d204, ns declaratie:v3); act nu e in corpus.",F223,firma,Declaratii,core/d204.py,OPANAF (model D204); Cod fiscal (asocieri fara personalitate juridica); structura din D204Validator.jar (ns v3),LIVE,core/test_declaratii_lot2_duk.py + DUKIntegrator -v D204 'valid',,"## Ce face
+Genereaza D204 (asocieri fara personalitate juridica), depusa de asociatul desemnat.
+## Cand se depune
+Anual.
+## De completat
+Asocierea (denumire, CUI, adresa), reprezentantul, activitatea (categ_venit, CAEN, contract, venit brut si cheltuieli - net/pierdere se calculeaza) si asociatii (cota %, venit si pierdere repartizate). Suma cotelor = 100; suma veniturilor repartizate = venitul net."
+Declaratia D208 (transfer proprietati imobiliare - notari),"D208 - declaratie informativa semestriala a notarilor privind impozitul pe veniturile din transferul proprietatilor imobiliare din patrimoniul personal. Generator MANUAL (core/d208.py): tranzactii -> imobile -> beneficiari (cote suma=100) + parti; totalurile si totalPlata_A se calculeaza. Structura din D208Validator.jar (radacina declaratie208, ns declaratie:v1); act nu e in corpus.",F224,firma,Declaratii,core/d208.py,OPANAF (model D208); Cod fiscal art.111 (transfer proprietati imobiliare); structura din D208Validator.jar,LIVE,core/test_declaratii_lot2_duk.py + DUKIntegrator -v D208 'valid',,"## Ce face
+Genereaza D208 (transfer proprietati imobiliare), depusa de birourile notariale.
+## Cand se depune
+Semestrial (luna 6 sau 12).
+## De completat
+Notarul raporteaza tranzactii deja incheiate; sumele (valoare, baza, impozit) sunt cele din acte - aplicatia le insumeaza, nu le recalculeaza. Ierarhie: tranzactie (act notarial) -> imobile -> beneficiari (vanzatori, cote=100) + parti (cealalta parte, cote=100)."
+Declaratia D216 (impozit special pe bunuri de valoare mare),"D216 - declaratie privind impozitul special pe bunurile imobile si mobile de valoare mare, anuala. Generator MANUAL (core/d216.py): bunuri imobile/mobile cu valoare impozabila, cota si plafon din input; baza si impozitul pe linii + totalurile se calculeaza (COTA_IMPOZIT 0,3% e constanta impusa de aritmetica validatorului, nu din act). Structura din D216Validator.jar (radacina D216, ns declaratie:v1, validator generatie noua); act (Legea 296/2023) nu e in corpus.",F225,firma,Declaratii,core/d216.py,Legea 296/2023 (impozit special bunuri de valoare mare); structura din D216Validator.jar (ns v1),LIVE,core/test_declaratii_lot2_duk.py + DUKIntegrator -v D216 'valid',,"## Ce face
+Genereaza D216 (impozit special pe bunuri imobile si mobile de valoare mare).
+## Cand se depune
+Anual.
+## De completat
+Pentru fiecare imobil rezidential peste plafon: judet/localitate/strada (cu coduri), nr. cadastral, valoare impozabila, cota (%) si plafon. Pentru bunuri mobile: an detinere, valoare impozabila, plafon. Baza, impozitul si totalurile se calculeaza automat; valoarea trebuie sa depaseasca plafonul."
+Declaratia D120 (decont accize),"D120 - decont anual privind accizele (Cod fiscal Titlul VIII). Generator MANUAL (core/d120.py): antet contribuabil/declarant + o sectiune accize cu randurile R0..R41 pe coloane (sume intregi din contabilitatea de accize a utilizatorului); nivelurile de acciza NU sunt precompletate. Suma de control totalPlata_A ramane 0 (regula validatorului). Structura din D120Validator.jar (radacina declaratie120, ns declaratie:v5); act nu e in corpus.",F226,firma,Declaratii,core/d120.py,Cod fiscal Titlul VIII (accize); structura din D120Validator.jar (ns declaratie:v5),LIVE,core/test_declaratii_lot2_duk.py + DUKIntegrator -v D120 'valid',,"## Ce face
+Genereaza D120 (decont accize).
+## Cand se depune
+Anual, de platitorii de accize.
+## De completat
+CIF firma, denumire, adresa, CAEN + declarant. Accizele pe produse se completeaza in randurile R0..R41 (coloane C1/C2/C3), sume intregi in lei, consistente cu formulele oficiale de agregare. Nivelurile/cotele de acciza le aduci din propriile calcule; totalPlata_A ramane 0."
+Declaratia D600 (baza CAS/CASS estimata - persoane fizice),"D600 - declaratie privind venitul pentru CAS si baza CASS (estimare), persoane fizice, anuala. Generator MANUAL (core/d600.py): identificare contribuabil + bifele/bazele CAS/CASS din input; plafoanele (nr. salarii minime, cote) NU se hardcodeaza. Structura din D600Validator.jar (radacina declaratie600, ns declaratie:v2, luna fix 12); act nu e in corpus.",F227,firma,Declaratii,core/d600.py,Cod fiscal Titlul V (CAS/CASS venituri independente); structura din D600Validator.jar (ns v2),LIVE,core/test_declaratii_lot2_duk.py + DUKIntegrator -v D600 'valid',,"## Ce face
+Genereaza D600 (baza CAS/CASS estimata, persoane fizice).
+## Cand se depune
+Anual (luna 12).
+## De completat
+Identificarea contribuabilului (nume, CNP, adresa) + optiunile/bazele CAS/CASS. Pentru CAS: baza1..baza12 (baze lunare, fiecare >= salariul minim). Plafoanele si cotele nu sunt precompletate - baza legala o stabileste ANAF."

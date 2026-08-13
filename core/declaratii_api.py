@@ -18,7 +18,8 @@ CALCUL+DB stau în module (au pull+genereaza). Aici doar: validare cerere (pură
 """
 from __future__ import annotations
 
-from core import (d100, d101, d104, d107, d110, d220, d221, d223, d307, d112, d177, d205, d207, d230, d300, d301, d311, d390, d394, d406, d710)
+from core import (d100, d101, d104, d107, d110, d220, d221, d223, d307, d112, d177, d205, d207, d230, d300, d301, d311, d390, d394, d406, d710,
+                  d120, d200, d201, d204, d208, d216, d393, d395, d397, d600)
 from core.common import Perioada
 
 REGULI = "2026.1"
@@ -128,6 +129,46 @@ def _d311(conn, schema, b):
     return d311.genereaza(conn, schema, Perioada(b["an"], luna=b["luna"]), b.get("manual") or {})
 
 
+def _d393(conn, schema, b):   # informativa bilete transport international (anuala)
+    return d393.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
+def _d395(conn, schema, b):   # informativa trimiteri postale contra ramburs (lunara)
+    return d395.genereaza(conn, schema, Perioada(b["an"], luna=int(b["luna"])), b.get("manual") or {})
+
+
+def _d397(conn, schema, b):   # informativa transport alternativ (lunara)
+    return d397.genereaza(conn, schema, Perioada(b["an"], luna=int(b["luna"])), b.get("manual") or {})
+
+
+def _d200(conn, schema, b):   # venituri realizate din Romania (PF, anuala)
+    return d200.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
+def _d201(conn, schema, b):   # venituri din strainatate (PF, anuala)
+    return d201.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
+def _d204(conn, schema, b):   # venit asocieri fara personalitate juridica (anuala)
+    return d204.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
+def _d208(conn, schema, b):   # transfer proprietati imobiliare - notari (semestriala)
+    return d208.genereaza(conn, schema, Perioada(b["an"], luna=int(b.get("luna") or 12)), b.get("manual") or {})
+
+
+def _d216(conn, schema, b):   # impozit special bunuri de valoare mare (anuala)
+    return d216.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
+def _d120(conn, schema, b):   # decont accize (anual)
+    return d120.genereaza(conn, schema, Perioada(b["an"], luna=int(b.get("luna") or 12)), b.get("manual") or {})
+
+
+def _d600(conn, schema, b):   # baza CAS/CASS estimata (PF, anuala)
+    return d600.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
 DECLARATII = {
     "d100": ("trimestrial", _d100),
     "d101": ("anual",       _d101),
@@ -154,6 +195,16 @@ DECLARATII = {
     # nu intra in semaforul de restante (control_fiscal_api / termene_api): e la cerere,
     # depusa doar cand exista o eroare de corectat. Vezi DECIZII 20.07.
     "d710": ("trimestrial", _d710),
+    "d393": ("anual",       _d393),
+    "d395": ("lunar",       _d395),
+    "d397": ("lunar",       _d397),
+    "d200": ("anual",       _d200),
+    "d201": ("anual",       _d201),
+    "d204": ("anual",       _d204),
+    "d208": ("semestrial",  _d208),
+    "d216": ("anual",       _d216),
+    "d120": ("anual",       _d120),
+    "d600": ("anual",       _d600),
 }
 
 
@@ -161,7 +212,8 @@ DECLARATII = {
 # pe care ecranul generic (an/luna/trim) nu ii poate furniza. d710 (rectificativa) cere
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
-_DOAR_API = frozenset(("d104", "d107", "d110", "d177", "d207", "d220", "d221", "d223", "d230", "d307", "d311", "d710"))
+_DOAR_API = frozenset(("d104", "d107", "d110", "d177", "d207", "d220", "d221", "d223", "d230", "d307", "d311", "d710",
+                       "d393", "d395", "d397", "d200", "d201", "d204", "d208", "d216", "d120", "d600"))
 
 
 def tipuri():

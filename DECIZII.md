@@ -9108,3 +9108,50 @@ DATE CARE LIPSESC din tabelul mijloace_fixe pentru verificarea COMPLETA (raporta
 Decizia de fond: se aplica ce se poate proba din date (constructii->liniar, transport/mobilier->fara accelerat,
 fereastra superaccelerata), se refuza ce e clar interzis; ce nu se poate proba (computer lit.b, "nou") se
 raporteaza in loc sa se ghiceasca.
+
+
+## 13.08.2026 — Lot 2: 10 declaratii noi (D393/D395/D397/D200/D201/D204/D208/D216/D120/D600)
+
+Setul de declaratii cu validator DUK instalat era EPUIZAT (toate 21 forme D + S1003/S1005 aveau generator).
+Decizie Costin: se instaleaza validatoare noi de la ANAF si se construiesc 10 declaratii, la alegere, cu proba DUK.
+
+INSTALARE: 15 validatoare aduse de pe serverul de update ANAF (static.anaf.ro/static/10/Anaf/update5/,
+urlVersiuni din config.properties) in /home/costin/duk/dist/lib/. static.anaf.ro raspunde server-side
+(just.ro ramane blocat la IP - vezi 13.08 corpus). validatoare_instalate() le vede pe disc.
+
+CONSTRUITE (10), toate probate VALID pe validatorul OFICIAL (test_declaratii_lot2_duk.py):
+  informative: D393 (bilete transport intl), D395 (colete postale ramburs), D397 (transport alternativ),
+               D208 (transfer imobiliare - notari, semestriala);
+  venituri PF: D200 (venituri Romania), D201 (venituri strainatate), D204 (asocieri f.p.j.);
+  alte:        D216 (impozit special bunuri valoare mare), D120 (decont accize), D600 (baza CAS/CASS).
+
+METODA (ca la loturile anterioare): STRUCTURA din VALIDATOR (arbitru) - radacina/namespace/campuri citite
+din bytecode-ul DXXXValidator.jar si probate camp cu camp; GENERATOR MANUAL (valorile din input, ca d230/d104),
+suma de control = suma din input; contract dXXX (NS/pull/erori_generare/calcul_dXXX/build_xml/genereaza).
+Cablate: CHEIE_DUK, DECLARATII, _DOAR_API (toate 10 manuale), FUNCTIONALITATI.csv F218-F227 (LIVE + ajutor).
+
+REGULA VERIFICARII LA SURSA - LIMITARE DECLARATA: actele OPANAF care aproba modelele NU sunt in corpus
+(just.ro blocat la IP; static.anaf.ro nu le are consolidat). Deci semantica vine din ETICHETELE OFICIALE ale
+validatorului (arbitrul ANAF) + regulile lui, NU din textul actului. In consecinta NU s-au fabricat cote/rate/
+plafoane: D200/D201 nu calculeaza impozit (il stabileste ANAF); D216 nu hardcodeaza cota/plafon (vin din input;
+COTA 0,3% din aritmetica e constanta impusa de validator, documentata); D120 nu precompleteaza niveluri de acciza;
+D600 nu hardcodeaza plafoanele CAS/CASS. Actele raman de adus din browser (om) pentru sursa completa.
+
+REGULI descoperite (arbitrul bate premisa): D204 versiunea in vigoare = radacina d204/ns v3 (nu declaratie204/v1);
+D600 luna FIX 12; D120 totalPlata_A TREBUIE 0; D216 totalPlata_A = suma cifrelor din cif (R4); D208 structura reala
+= tranzactie->imobile->(beneficiari + parti), partile obligatorii; D200/D201 sectiuni lowercase sect/sect_2.
+
+DUK generatie noua (D216): DUKIntegrator.jar -jar cu DecValidation.jar VECHI din lib/ (2018) crapa
+(NoClassDefFound/cod eroare) fara fisier de rezultat -> calea -jar ar fi raportat FALS "valid" (fisier gol=valid).
+core/duk.py reparat: la marcaje de esec fara rezultat, reincearca cu DecValidation NOU (2024, din pachetul SAF-T)
+pe classpath (general.Main); plus FAIL-SAFE anti fals-verde (eroare pe stdout fara fisier de rezultat -> gri, nu valid).
+Aceeasi baza noua va debloca D177/D212/D398/D700 cand vor fi cablate. Fara regresie pe validatoarele vechi (D390/D406 probate).
+
+### 13.08.2026 D177 - fals-verde preexistent EXPUS de fail-safe-ul DUK (lot 2)
+Reparatia duk.py (retry generatie noua + anti fals-verde) a scos la iveala ca proba DUK a lui D177 era
+FALS-VERDE: validatorul D177 e de generatie noua, iar generatorul core/d177.py produce root/namespace stale
+(declaratie177, ns :v1) pe care validatorul CURENT il respinge ("element necunoscut"). Sub duk.py vechi, plain
+-jar crapa fara fisier de rezultat -> raportat "valid". Acum se ruleaza prin DecValidation nou -> eroarea reala.
+DECIZIE: test_d177_valid_pe_validatorul_oficial marcat xfail(strict) ca DATORIE (nu se ascunde, nu se lasa fals-verde);
+d177 se reconstruieste dupa structura validatorului CURENT (root/ns/campuri), cu proba DUK, ca lotul 2 - task separat.
+Doar D177 e afectat dintre declaratiile cablate (D406 foloseste calea SAF-T separata; D212/D398/D700 nu-s cablate).
