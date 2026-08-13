@@ -20,16 +20,11 @@
     "D112_XML_2026_0726_050826.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": []
+      "acopera": [],
+      "text_extras": false,
+      "motiv": "formular XFA neextractabil"
     },
     "D112_XML_2026_0726_050826.pdf.sha256": {
-      "exista": true,
-      "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
-    },
-    "D112_XML_2026_0726_050826.txt": {
       "exista": true,
       "tip_forma": null,
       "acopera": [],
@@ -39,16 +34,11 @@
     "D311_XML_2021_290121.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": []
+      "acopera": [],
+      "text_extras": false,
+      "motiv": "formular XFA neextractabil"
     },
     "D311_XML_2021_290121.pdf.sha256": {
-      "exista": true,
-      "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
-    },
-    "D311_XML_2021_290121.txt": {
       "exista": true,
       "tip_forma": null,
       "acopera": [],
@@ -1184,6 +1174,27 @@
       "sursa": "static.anaf.ro",
       "forma": "initiala"
     },
+    "legea_239_2025_stabilirea_masuri_redresare_eficientizare_resurselor.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "legislatie.just.ro",
+      "forma": "consolidata"
+    },
+    "legea_239_2025_stabilirea_masuri_redresare_eficientizare_resurselor.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "legea_239_2025_stabilirea_masuri_redresare_eficientizare_resurselor.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
     "legea_273_2006_fin_publice_locale.pdf": {
       "exista": true,
       "tip_forma": null,
@@ -1232,6 +1243,27 @@
       "acopera": [],
       "sursa": "static.anaf.ro",
       "forma": "consolidata"
+    },
+    "legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "legislatie.just.ro",
+      "forma": "consolidata"
+    },
+    "legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
     },
     "legea_30_2019_aprobarea_ordonantei_urgenta_guvernului_25.html": {
       "exista": true,
@@ -1619,21 +1651,21 @@
       "sursa": "static.anaf.ro",
       "forma": "consolidata"
     },
-    "og_26_2000_abilitarea_guvernului_emite_ordonante.html": {
+    "og_26_2000_asociatii_fundatii.html": {
       "exista": true,
       "tip_forma": null,
       "acopera": [],
       "sursa": "legislatie.just.ro",
       "forma": "consolidata"
     },
-    "og_26_2000_abilitarea_guvernului_emite_ordonante.html.sha256": {
+    "og_26_2000_asociatii_fundatii.html.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": [],
       "sursa": "static.anaf.ro",
       "forma": "initiala"
     },
-    "og_26_2000_abilitarea_guvernului_emite_ordonante.txt": {
+    "og_26_2000_asociatii_fundatii.txt": {
       "exista": true,
       "tip_forma": null,
       "acopera": [],
@@ -1830,27 +1862,6 @@
       "sursa": "static.anaf.ro",
       "forma": "initiala"
     },
-    "omfp_394_2017_contract_cadru_derulare_titeiului_petroliere.html": {
-      "exista": true,
-      "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
-    },
-    "omfp_394_2017_contract_cadru_derulare_titeiului_petroliere.html.sha256": {
-      "exista": true,
-      "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
-    },
-    "omfp_394_2017_contract_cadru_derulare_titeiului_petroliere.txt": {
-      "exista": true,
-      "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
-    },
     "omfp_660_2017.pdf": {
       "exista": true,
       "tip_forma": null,
@@ -1925,27 +1936,6 @@
       "forma": "initiala"
     },
     "oms_15_2018_norme.txt": {
-      "exista": true,
-      "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
-    },
-    "oms_484_2025_modificarea_ordin_ms_444_2019.html": {
-      "exista": true,
-      "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
-    },
-    "oms_484_2025_modificarea_ordin_ms_444_2019.html.sha256": {
-      "exista": true,
-      "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
-    },
-    "oms_484_2025_modificarea_ordin_ms_444_2019.txt": {
       "exista": true,
       "tip_forma": null,
       "acopera": [],
@@ -2319,6 +2309,27 @@
       "acopera": []
     },
     "opanaf_57_2026_d100_d710.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_587_2016_aprobarea_modelului_continutului_formularelor_utilizate.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "legislatie.just.ro",
+      "forma": "consolidata"
+    },
+    "opanaf_587_2016_aprobarea_modelului_continutului_formularelor_utilizate.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_587_2016_aprobarea_modelului_continutului_formularelor_utilizate.txt": {
       "exista": true,
       "tip_forma": null,
       "acopera": [],

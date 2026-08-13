@@ -99,9 +99,18 @@ def _sursa_forma(fname):
     return "static.anaf.ro", ("consolidata" if "_consolidat" in fname else "initiala"), None
 
 
+
+# A: fisiere cu text NEEXTRACTIBIL (formular XFA) - .txt-ul trunchiat a fost sters; INDEX o spune explicit.
+_TEXT_FALSE = {
+    "D112_XML_2026_0726_050826.pdf": "formular XFA neextractabil",
+    "D311_XML_2021_290121.pdf": "formular XFA neextractabil",
+}
+
 fisiere = {}
 for fname in sorted(fisiere_pe_disc):
     if fname in ("INDEX.json",):
+        continue
+    if fname.startswith("GRESIT_"):       # B: act gresit, in carantina - scos din INDEX (nu din disc)
         continue
     intr = sorted(per_fisier.get(fname, []), key=lambda x: (x["cota"], x["data_in"]))
     _srs, _frm, _nota = _sursa_forma(fname)
@@ -116,6 +125,9 @@ for fname in sorted(fisiere_pe_disc):
         _ent["forma"] = _frm
     if _nota:
         _ent["nota"] = _nota
+    if fname in _TEXT_FALSE:
+        _ent["text_extras"] = False
+        _ent["motiv"] = _TEXT_FALSE[fname]
     fisiere[fname] = _ent
 
 # fisiere citate in COTE dar lipsa pe disc (nu ar trebui sa existe dupa garda 1, dar il raportam)
