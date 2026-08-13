@@ -8963,3 +8963,16 @@ starea AMANAT (F175). Coexista ca F217 LIVE (tiparul D207: F193 AMANAT + F209 LI
 TEMEI: are validator oficial ANAF (D307Validator.jar) -> proba MECANICA pe DUK, nu interpretare de PDF. OPANAF
 793/2016; CF art.270(7) transfer active, art.324(8)(9), art.316(11) anulare cod TVA. PROBAT: DUKIntegrator -v
 D307 'valid' pe tip A/L/C + d_anulare. Structura in vigoare v0/namespace :v1; atribut mail (nu email); TVA <=0 permis.
+
+
+### 13.08.2026 Analytics public FARA date personale -> FARA obligatie de consimtamant  (F/ecran superadmin, 19d32f4)
+DECIZIE: se inregistreaza evenimente publice de interes (deschidere modal, click Intra in cont, vizita ghid)
+intr-o tabela public.eveniment_public care stocheaza EXCLUSIV: tip (lista alba), pagina (calea proprie curatata),
+creat_la. NICIUN identificator de persoana - fara IP, User-Agent, cookie, sesiune, amprenta, user_id, referrer.
+TEMEI: fara date personale => datele nu sunt personale in sensul RGPD => NU exista obligatia de consimtamant
+(fara banner). Endpoint-ul public NU citeste si NU persista IP/UA (spre deosebire de _ip_client folosit doar la
+rate-limit efemer). Precedent in cod: public.audit_log e deja fara IP/UA.
+PROBA: garda core/test_eveniment_public.py cade daca DDL-ul sau schema reala capata orice camp personal
+(ip/user_agent/cookie/sesiune/amprenta/user_id/referrer). sendBeacon nu trimite antete custom => niciun
+identificator adaugat pe drum. LIMITA: fara identificator NU exista dedup/filtrare de boti - cifrele sunt brute
+(chestiune de calitate a datelor, NU de confidentialitate); se consemneaza, nu se repara cu un identificator.

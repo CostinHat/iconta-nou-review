@@ -4165,3 +4165,19 @@ D392 SCOS din lot: suspendat legal pana 31.12.2026 (OUG 115/2023 art.LXII, verba
 declaratie DUK-valida + 3-4 teste pytest. Suita 1942 passed / 3 skipped / 16 xfailed la final; verificator TOTAL 0;
 four-way HEAD=origin/main=backup/lant-2026-08-13=RUNNING=baafe62. Lectii de metoda in memoria
 campanie-10-declaratii + PREDARE_LANT (d).
+
+
+## 13.08.2026 — Analytics public FARA date personale (eveniment landing/ghid + ecran superadmin), four-way 19d32f4
+Cerut de Costin: sa vada cate persoane deschid modalul si cate apasa Intra in cont, fara date personale.
+Construit: tabela public.eveniment_public(id, tip, pagina, creat_la) - DOAR ce/de unde/cand, NICIUN identificator
+(fara IP/UA/cookie/sesiune/user). Endpoint public POST /api/eveniment-public (fara Depends, NU citeste
+request.client/X-Real-IP/UA). Client: helper evPublic() cu navigator.sendBeacon (fire-and-forget, nu blocheaza
+randarea; fallback fetch keepalive) in login.js - evenimente vizita_landing, modal_functionalitati,
+deschide_preturi, intra_in_cont; iar in template-ul de ghid (_GHID_PAGINA, {{BEACON}}) vizita_ghid cu slug.
+Ecran superadmin /admin/analytics (cere_rol superadmin) + static/js/ecrane/admin_analytics.js (card in admin.js
+DEF; app.js admin.js?v=13): cifre pe eveniment / pe zi / pe pagina de provenienta. Migrare
+core/migrare_eveniment_public.py (idempotent). Garda core/test_eveniment_public.py (DDL + coloane live fara camp
+personal) + ruta in test_rute_autentificate.py::PUBLICE. PROBAT PRIN RANDARE (playwright): cele 5 evenimente
+inregistrate live (verificat in DB), ecranul superadmin randeaza sectiunile + cifrele + nota de confidentialitate,
+zero erori de pagina. Date de test truncate la final (cifrele pornesc de la zero). Suita 1945 passed; verificator
+TOTAL 0; four-way HEAD=origin/main=backup/lant-2026-08-13=RUNNING=19d32f4.
