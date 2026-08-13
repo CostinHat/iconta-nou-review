@@ -130,3 +130,36 @@ def test_sursa_cod_nu_e_referinta_de_concurenta():
         + "\n-> feature-ul e construit: pune modulul real (core/...py, static/js/...). Referinta la"
           " concurent e legitima DOAR pe non-LIVE (feature neconstruit, doar analizat)."
     )
+
+
+def _live_si_indici():
+    randuri = _randuri()
+    h = randuri[0]
+    iid, inume, ist, iaj = h.index("ID"), h.index("Functionalitate"), h.index("Stare"), h.index("ajutor")
+    live = [r for r in randuri[1:] if len(r) > iaj and (r[ist] or "").strip() == "LIVE"]
+    return live, iid, inume, iaj
+
+
+def test_declaratii_live_au_ajutor():
+    """Orice functionalitate LIVE de tip 'Declaratia D...' TREBUIE sa aiba explicatie contextuala (ajutor).
+    Prinde mecanic o declaratie noua adaugata fara '?' (clasa care a regresat: D104..D311)."""
+    live, iid, inume, iaj = _live_si_indici()
+    fara = [(r[iid], r[inume]) for r in live
+            if r[inume].strip().startswith("Declaratia D") and not (r[iaj] or "").strip()]
+    assert not fara, ("Declaratii LIVE fara ajutor contextual (completeaza coloana ajutor):\n"
+                      + "\n".join("  %s | %s" % (a, b) for a, b in fara))
+
+
+# Baseline al functionalitatilor LIVE inca fara ajutor (CLICHET: nu are voie sa CREASCA). Scop: 0.
+# Scade pe masura ce se scriu explicatiile; o LIVE noua fara ajutor ridica numarul peste baseline
+# -> rosu -> lipsa e prinsa mecanic, nu cu ochiul.
+_BASELINE_LIVE_FARA_AJUTOR = 76
+
+
+def test_acoperire_ajutor_nu_regreseaza():
+    live, iid, inume, iaj = _live_si_indici()
+    fara = [(r[iid], r[inume]) for r in live if not (r[iaj] or "").strip()]
+    assert len(fara) <= _BASELINE_LIVE_FARA_AJUTOR, (
+        "Nr. de LIVE fara ajutor a CRESCUT peste baseline (%d -> %d). Orice LIVE nou trebuie sa aiba "
+        "explicatie contextuala:\n" % (_BASELINE_LIVE_FARA_AJUTOR, len(fara))
+        + "\n".join("  %s | %s" % (a, b) for a, b in fara))

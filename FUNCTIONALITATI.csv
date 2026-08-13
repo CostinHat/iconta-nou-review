@@ -965,14 +965,217 @@ Cerere de stergere inregistrata; datele se sterg definitiv la procesare.
 ## Reguli fiscale
 GDPR art. 17 (dreptul de a fi uitat); DAR termenele legale de pastrare a documentelor contabile (Legea contabilitatii - 5/10 ani) au prioritate."
 Declaratia D177 (redirectionare impozit profit/micro catre sponsorizare) - AMANAT,"AMANAT 04.08.2026 (decizie Costin): D177 e cerere-formular PDF, NU declaratie XML - nu are validator instalat. Arhitectura de declaratii se sprijina pe validatorul DUK ca autoritate (R17); D177 ar fi prima piesa construita pe interpretarea unui PDF fara proba mecanica (tiparul ASI/HRK/nomenclator N gresit). Cerere ANUALA, nu lunara. Structura OPANAF 3562/2024 salvata in anaf_surse/. Vezi DECIZII.md + GARZI.md 04.08.",F206,firma,—,—,OPANAF 3562/2024,AMANAT 04.08.2026,—,,
-Declaratia D311 (TVA cod anulat),"D311: TVA datorata de persoane impozabile al caror cod de TVA a fost anulat (situatii speciale, art.316(11) CF). MANUALA - se produce prin corp de cerere/dispatch (ca d710), fara selector generic: contabilul introduce bazele/TVA pe situatii (schema IV, dupa anulare), iar subtotalele (rd.03/05) si suma de control (totalPlata_A=OB_51+OB_52+OB_61+OB_62) se calculeaza din structura oficiala. XML validat pe DUKIntegrator -v D311 ('valid', proba reala). RAMAS: schema V (reinregistrare art.316(12)) - limitare documentata (conflict XSD v1.02 pe Data_A/Data_I); ecran de introducere manuala (azi doar API/dispatch).",F207,firma,Declaratii,core/d311.py,OPANAF (D311); Cod fiscal art.316(11); XSD d311 v1.02 (anaf_surse/d311_20210129.xsd),LIVE,core/test_d311.py + DUKIntegrator -v D311 'valid' (schema IV),,
-"Declaratia D230 (redirectionare 3,5%)","D230: Cerere privind destinatia sumei de pana la 3,5% din impozitul anual pe venit catre o entitate nonprofit/unitate de cult (persoana fizica; ex. PFA/salariat). MANUALA - prin corp de cerere/dispatch (ca d710/d311), fara selector generic: contribuabilul + beneficiarul ONG vin din input manual. STRUCTURA CITITA DIN VALIDATORUL OFICIAL: schema in vigoare = namespace v5 (pachet d230validator/v1), campurile citite din bytecode-ul D230Validator.jar si probate camp cu camp pe DUKIntegrator -v D230 ('valid', proba reala). Reguli citite din validator: R_optiune (valabilitate_distribuire obligatoriu la bifa_entitate=1), R_procent (procent<=3,5), R31 (totalPlata_A=suma control). LIMITARI documentate: bursa privata, mai multi beneficiari, imputernicit - pe aceeasi metoda; camp `acord` optional NEPOPULAT (semantica nedeterminata din act, nu se ghiceste); ecran de introducere manuala (azi doar API/dispatch).",F208,firma,Declaratii,core/d230.py,"OPANAF (D230); Cod fiscal (redirectionare 3,5% impozit venit); structura din D230Validator.jar (schema v5 in vigoare)",LIVE,core/test_d230.py + DUKIntegrator -v D230 'valid' (schema v5),,
-Declaratia D207 (impozit retinut nerezidenti),"D207: Declaratie informativa privind impozitul retinut la sursa pe beneficiari de venit NEREZIDENTI (dividende, dobanzi, redevente etc. platite de firma catre nerezidenti). MANUALA - prin corp de cerere/dispatch (ca d230/d311): lista de beneficiari (den, stat rezidenta, cif, baza, impozit retinut, tip venit) din input; sectiunea II (agregate pe tip venit) si suma de control se calculeaza. STRUCTURA din VALIDATORUL oficial (D207Validator.jar, v2 in vigoare; imps1/Timps confirmate de mesajele validatorului). SEMANTICA din ACT in corpus: OPANAF_179_2022_D207.pdf + structura_D207_2025.pdf (nomenclator tip_venit 01=dividende art.223(1)a etc., reguli impozabil 01-11/22 vs scutit 12-21). PROBAT: DUKIntegrator -v D207 'valid'. Limitari: codul tip_venit + Act_N + statul se aleg de contabil din nomenclator (nu se ghicesc); ecran manual (azi API).",F209,firma,Declaratii,core/d207.py,OPANAF 179/2022; Cod fiscal art.223 (impozit nerezidenti); structura D207 din D207Validator.jar (v2),LIVE,core/test_d207.py + DUKIntegrator -v D207 'valid',,
-Declaratia D177 (redirectionare impozit profit),"D177: Cerere privind redirectionarea impozitului pe profit catre entitati nonprofit / unitati de cult (sponsorizare/mecenat, art.25 alin.(4) lit.i)/t) CF). MANUALA - prin corp de cerere/dispatch (ca d207/d230): beneficiarii (denumire, cod fiscal, IBAN, contract, suma) + sumaMax/sumaAnt/sumaRest din input; suma de control se calculeaza. STRUCTURA din VALIDATORUL oficial (D177Validator.jar, v1 in vigoare). SEMANTICA din ACT in corpus: OPANAF_3562_2024_D177.pdf + structura_D177_2026.pdf (tipPlatitor 1=profit/2=micro; tipB 1=cult/2=alte entitati/3=UNICEF/org.internationale, 4 nepermis; cuiB=CUI la tipB 1,2,5, CNP la 3,4; contractB obligatoriu la tipB<5; totalPlata_A=round(sumaRest/100)). PROBAT: DUKIntegrator -v D177 'valid'. Acopera cazul PROFIT (tipPlatitor=1); micro-ul e ABROGAT din 2024 (art.56(2^5)). Ecran manual: azi API.",F210,firma,Declaratii,core/d177.py,OPANAF 3562/2024; Cod fiscal art.25(4)i/t (sponsorizare); structura D177 din D177Validator.jar (v1),LIVE,core/test_d177.py + DUKIntegrator -v D177 'valid',,
-Declaratia D107 (beneficiari sponsorizari/mecenat/burse),"D107: Declaratie informativa privind beneficiarii sponsorizarilor / mecenatului / burselor private. Firma platitoare de impozit pe profit (persoane juridice) sau pe veniturile microintreprinderilor declara, pe fiecare beneficiar, sumele: Suma (Val1), Suma reportata (Val2), Suma dedusa (Val3). MANUALA - prin corp de cerere/dispatch (ca d207/d230): lista de beneficiari (den, cif, adresa, val1/val2/val3) din input; totalurile (TVal1=sum(Val1); TVal2=sum(Val2)+Val2_NI; TVal3=sum(Val3)+Val3_NI) si suma de control (totalPlata_A) se calculeaza. STRUCTURA din VALIDATORUL oficial (D107Validator.jar, v1 in vigoare pentru an sfarsit exercitiu >=2024; casing atribute Val1/Val2/Val3/TVal1/Val2_NI/Data_I/Data_S confirmat de arbitru). SEMANTICA din ACT in corpus: structura_D107_2024_010726.pdf + D107_XML_2024_010726.pdf (OPANAF 355/2024; cod_oblig 102/103/104/105/121; d_PM 1=profit / 2=micro; cont bugetar 5503; Anexa entit1 beneficiari neindividualizati exista doar daca Val2_NI>0). PROBAT: DUKIntegrator -v D107 'valid'. Limitari: exercitiu pe an calendaristic (an modificat / dizolvare respinse); cod_oblig se alege din regimul firmei sau de contabil; ecran manual (azi API).",F211,firma,Declaratii,core/d107.py,OPANAF 355/2024; Cod fiscal (sponsorizare/mecenat/burse); structura D107 din D107Validator.jar (v1),LIVE,core/test_d107.py + DUKIntegrator -v D107 'valid',,
-Declaratia D104 (distribuire venituri asocieri),"D104: Declaratie privind distribuirea intre asociati a veniturilor si cheltuielilor, depusa de asociatul desemnat al unei ASOCIERI FARA PERSONALITATE JURIDICA in numele asocierii. MANUALA - prin corp de cerere/dispatch (ca d107/d207): profit_pierd (profit impozabil/pierdere al asocierii, input contabil) + lista asociati (den, cif, adresa, cota, venit, chelt, imp_datorat, imp_declarat) din input; totalurile (Tven/Tchelt/TimpD/TimpR/TdifP/TdifR), difPR per asociat si suma de control (totalPlata_A=profit_pierd+TimpD+TimpR+TdifP+TdifR) se calculeaza. TRIMESTRIALA cumulat (luna 3/6/9) + definitivare anuala (luna 12); la trimestre impR=0 si difPR=0. STRUCTURA din VALIDATORUL oficial (D104Validator.jar; sub-pachet v0 dar namespace :v1) + d104.xsd. SEMANTICA din ACT in corpus: structura_D104_2012_v100_030613.pdf (OPANAF 1950/2012; cota 0<cota<=100; cif1 cheie unica; D104 NU are cod_bug). PROBAT: DUKIntegrator -v D104 'valid' pe definitivare si trimestru. Limitari: identitatea asocierii (cui/den/adresa) din manual sau firma_profil daca profilul E asocierea; profit_pierd nu se calculeaza automat (pot exista ajustari fiscale); ecran manual (azi API).",F212,firma,Declaratii,core/d104.py,OPANAF 1950/2012; Cod fiscal (asocieri fara personalitate juridica); structura D104 din D104Validator.jar (v0/ns v1) + d104.xsd,LIVE,core/test_d104.py + DUKIntegrator -v D104 'valid',,
-Declaratia D220 (venit estimat / norma de venit),"D220: Declaratie privind venitul estimat / norma de venit, depusa de PERSOANE FIZICE (activitati independente, drepturi de proprietate intelectuala, cedarea folosintei bunurilor, activitati agricole/silvicultura/piscicultura). MANUALA - prin corp de cerere/dispatch (ca d107/d207): identitatea PF (cif=CNP, nume) + activitatea (categ_venit, det_venit, forma_org, venit brut/cheltuieli estimate) din input; net3 (=venit-cheltuieli daca >=0, altfel 0) si suma de control (totalPlata_A=venit3+chelt3+net3) se calculeaza; d_rec se deduce din d_rec1/d_rec2. Suporta si cazarea turistica (categ_venit=7, contracte=3, norma): sectiunea fisa cu camere. STRUCTURA din VALIDATORUL oficial (D220Validator.jar; sub-pachet v1 dar namespace :v2; _dateVersionTable 2017-01 J2.1.0) + d220_20180108.xsd. SEMANTICA din ACT in corpus: structura_D220_2017_09012018.pdf (OPANAF 3622/2015; CF art.68/69/70, 83-85; luna=12 fix; stat_pensie omis - ramura pensii strainatate moarta in schema). PROBAT: DUKIntegrator -v D220 'valid' pe activitate independenta si cazare turistica. NOTA: D220 e INLOCUITA de Declaratia Unica D212 (OPANAF 888/2018) pentru depuneri curente - se pastreaza pentru cazuri istorice/reziduale (retro-2017). Limitari: identitatea PF integral din manual (aplicatia e orientata pe firme); ecran manual (azi API).",F213,firma,Declaratii,core/d220.py,"OPANAF 3622/2015 (supersedata de OPANAF 888/2018 - D212); Cod fiscal art.68/69/70, 83-85; structura D220 din D220Validator.jar (v1/ns v2) + d220_20180108.xsd",LIVE,core/test_d220.py + DUKIntegrator -v D220 'valid',,
-Declaratia D223 (venituri estimate asocieri),"D223: Declaratie privind veniturile estimate pentru asocierile fara personalitate juridica si entitatile supuse regimului transparentei fiscale, depusa de responsabilul asocierii. MANUALA - prin corp de cerere/dispatch (ca d107/d207): asocierea (nume, cif) + responsabilul (den_r, cif_r) + activitatea (categ_venit, forma_org, det_venit, CAEN, judet, localitate, venit brut/cheltuieli estimate) + asociatii (nume_d, cif_d=CNP, cota_d) din input; net3 (=venit-cheltuieli daca >0, altfel 0), totalPlata_A=venit3+chelt3+net3, venit_d distribuit dupa cota_d (suma=net3; 0 la norma de venit), nr_asoc se calculeaza. STRUCTURA din VALIDATORUL oficial (D223Validator.jar; sub-pachet v0 dar namespace :v1) + d223_20160113.xsd. SEMANTICA din ACT in corpus: structura_D223_2016_050116_13012016.pdf (OPANAF 184/2013; luna=12 fix; suma cotelor=100; cif_d=CNP 13 cifre; ordinea XSD activitati inainte de asociati; D223 NU are cod_bug; d_rec2 nu se emite - XSD-ul in vigoare nu-l declara). PROBAT: DUKIntegrator -v D223 'valid'. Limitari: identitatea asocierii din manual sau firma_profil daca tenant=asocierea; ecran manual (azi API).",F214,firma,Declaratii,core/d223.py,"OPANAF 184/2013; Cod fiscal (asocieri fara PJ, transparenta fiscala, venituri estimate); structura D223 din D223Validator.jar (v0/ns v1) + d223_20160113.xsd",LIVE,core/test_d223.py + DUKIntegrator -v D223 'valid',,
-Declaratia D221 (venituri agricole pe norme de venit),"D221: Declaratie privind veniturile din activitati agricole impuse pe baza de norme de venit, depusa de persoane fizice (individual) sau asocieri fara personalitate juridica. MANUALA - prin corp de cerere/dispatch (ca d107/d207): identitatea contribuabilului (cif=CNP, nume_a) + activitatile agricole (judet, localitate, produse: cod produs + suprafata/nr. capete) + (la asociere) asociatii cu cota de distribuire din input. NU contine sume de impozit (totalPlata_A=0 mereu; ANAF aplica normele de venit intern). STRUCTURA din VALIDATORUL oficial (D221Validator.jar; sub-pachet v0 dar namespace :v1) + d221_20170303.xsd. SEMANTICA din ACT in corpus: structura_D221_2017_050118.pdf (OPANAF 3622/2015; CF art.103-106 venituri agricole; luna=12 fix; aj_soc=0 pt an>=2017; ordinea XSD activitati inainte de asociati; forma_org 1=individual/2=asociere; suma cotelor=100; localitate unica, codp unic per activitate; D221 NU are cod_bug). PROBAT: DUKIntegrator -v D221 'valid' pe forma individuala si asociere. Limitari: nu exista registru agricol in aplicatie -> activitatile/produsele/asociatii vin integral din manual; ecran manual (azi API).",F215,firma,Declaratii,core/d221.py,OPANAF 3622/2015; Cod fiscal art.103-106 (venituri activitati agricole pe norme de venit); structura D221 din D221Validator.jar (v0/ns v1) + d221_20170303.xsd,LIVE,core/test_d221.py + DUKIntegrator -v D221 'valid',,
-Declaratia D110 (regularizare impozit retinut la sursa),"D110: Declaratie de regularizare / cerere de restituire privind impozitul pe venit retinut la sursa, depusa de platitorul de venit. MANUALA - prin corp de cerere/dispatch (ca d107/d207): obligatiile (cod_oblig din nomenclator, suma_dat=datorat, suma_rest=retinut) din input; per obligatie se calculeaza dif_plata (=suma_dat-suma_rest daca >=0) sau dif_rest (=suma_rest-suma_dat), cod_bugetar (5503XXXXXX; 629->20A031800X), scadenta (25 a lunii urmatoare) si nr_evid (23 caractere, control = suma primelor 21 cifre % 100, CONFIRMAT empiric pe DUKIntegrator); totalPlata_A=suma(dif_plata+dif_rest). Cerere de restituire prin d_temei=1 (cere IBAN+banca; suma dif_rest!=0). STRUCTURA din VALIDATORUL oficial (D110Validator.jar; sub-pachet v0 dar radacina <D110> majuscule si namespace :v1; _dateVersionTable 2014-01 J1.0.3) + d110_20260330.xsd. SEMANTICA din ACT in corpus: structura_D110_2026_240326.pdf (CPF L207/2015 art.168,170; cont bugetar 5503 cu X-uri literale; suma_rest>0 strict; cod_oblig unic). PROBAT: DUKIntegrator -v D110 'valid' pe plata (d_temei=0) si restituire (d_temei=1). Limitari: obligatiile vin din input (nu exista registru dedicat de impozite retinute la sursa); ecran manual (azi API).",F216,firma,Declaratii,core/d110.py,"Cod de procedura fiscala (L207/2015) art.168, 170 (regularizare/restituire); Cod fiscal titlurile II/III (impozit retinut la sursa); structura D110 din D110Validator.jar (v0/ns v1) + d110_20260330.xsd",LIVE,core/test_d110.py + DUKIntegrator -v D110 'valid',,
-Declaratia D307 (ajustare TVA),"D307: Declaratie privind sumele rezultate din ajustarea/corectia ajustarilor/regularizarea taxei pe valoarea adaugata, depusa de persoana impozabila aflata in situatie de ajustare TVA. MANUALA - prin corp de cerere/dispatch (ca d107/d207): operatiunile (tip A/L/C, cod operator, denumire, TVA) din input; sumele de control tvaA/tvaL/tvaC (pe tip) si totalPlata_A=suma TVA se calculeaza. tip A=transfer de active (art.270(7), codO=cedent); L=leasing, transfer active la finalul contractului (codO=finantator); C=anularea codului de TVA (art.316(11), codO=beneficiar). d_anulare=1 cere temei (1/2, art.105(6) L.207/2015). TVA poate fi <=0 (permis din J1.0.1). STRUCTURA din VALIDATORUL oficial (D307Validator.jar; sub-pachet v0 dar namespace :v1; _dateVersionTable 2016-01 J1.1.0) + d307_20171205.xsd. SEMANTICA din ACT in corpus: structura_D307_2017_071117.pdf (OPANAF 793/2016; CF art.270(7), 324(8)(9), 316(11); atribut mail nu email; D307 NU are cod_bug - e informativa). PROBAT: DUKIntegrator -v D307 'valid' pe tip A/L/C si d_anulare=1. Limitari: operatiunile vin din input (nu exista registru dedicat de ajustari TVA); ecran manual (azi API).",F217,firma,Declaratii,core/d307.py,"OPANAF 793/2016; Cod fiscal art.270(7), 324(8)(9), 316(11) (ajustare/regularizare TVA); structura D307 din D307Validator.jar (v0/ns v1) + d307_20171205.xsd",LIVE,core/test_d307.py + DUKIntegrator -v D307 'valid',,
+Declaratia D311 (TVA cod anulat),"D311: TVA datorata de persoane impozabile al caror cod de TVA a fost anulat (situatii speciale, art.316(11) CF). MANUALA - se produce prin corp de cerere/dispatch (ca d710), fara selector generic: contabilul introduce bazele/TVA pe situatii (schema IV, dupa anulare), iar subtotalele (rd.03/05) si suma de control (totalPlata_A=OB_51+OB_52+OB_61+OB_62) se calculeaza din structura oficiala. XML validat pe DUKIntegrator -v D311 ('valid', proba reala). RAMAS: schema V (reinregistrare art.316(12)) - limitare documentata (conflict XSD v1.02 pe Data_A/Data_I); ecran de introducere manuala (azi doar API/dispatch).",F207,firma,Declaratii,core/d311.py,OPANAF (D311); Cod fiscal art.316(11); XSD d311 v1.02 (anaf_surse/d311_20210129.xsd),LIVE,core/test_d311.py + DUKIntegrator -v D311 'valid' (schema IV),,"## Ce face
+Declaratia D311 - TVA datorata de o persoana careia i s-a anulat codul de inregistrare in scopuri de TVA, dar care a mai efectuat operatiuni taxabile in perioada fara cod. Generatorul construieste XML-ul pe bazele/TVA pe situatii si il valideaza pe DUK.
+## Cand se foloseste
+De persoana impozabila cu codul de TVA ANULAT, cand a colectat TVA (livrari/prestari, ajustari) dupa anulare. Se depune pana pe 25 a lunii urmatoare celei in care a aparut exigibilitatea.
+## Ce trebuie pregatit inainte
+- Data anularii codului de TVA si perioada acoperita.
+- Bazele si TVA pe fiecare situatie (livrari, achizitii cu taxare inversa, ajustari).
+## Pas cu pas
+1. Pregateste bazele si TVA pe situatii (azi prin dispatch/API, fara ecran dedicat de introducere).
+2. Declaratii -> D311 -> perioada.
+3. Aplicatia calculeaza si construieste declaratia.
+4. Valideaza si depune XML-ul.
+## Ce iese la capat
+XML D311 validat, cu TVA de plata pentru perioada fara cod.
+## Greseli frecvente
+- Confuzia cu decontul D300 (D311 e DOAR pentru perioada fara cod de TVA).
+- Deducerea TVA la achizitii - nu se admite pentru operatiunile din perioada cu cod anulat.
+## Reguli fiscale
+OPANAF (D311); Cod fiscal art. 11 alin. (6)/(8) si art. 316 alin. (11) (anularea codului de TVA). Termen: 25 a lunii urmatoare exigibilitatii."
+"Declaratia D230 (redirectionare 3,5%)","D230: Cerere privind destinatia sumei de pana la 3,5% din impozitul anual pe venit catre o entitate nonprofit/unitate de cult (persoana fizica; ex. PFA/salariat). MANUALA - prin corp de cerere/dispatch (ca d710/d311), fara selector generic: contribuabilul + beneficiarul ONG vin din input manual. STRUCTURA CITITA DIN VALIDATORUL OFICIAL: schema in vigoare = namespace v5 (pachet d230validator/v1), campurile citite din bytecode-ul D230Validator.jar si probate camp cu camp pe DUKIntegrator -v D230 ('valid', proba reala). Reguli citite din validator: R_optiune (valabilitate_distribuire obligatoriu la bifa_entitate=1), R_procent (procent<=3,5), R31 (totalPlata_A=suma control). LIMITARI documentate: bursa privata, mai multi beneficiari, imputernicit - pe aceeasi metoda; camp `acord` optional NEPOPULAT (semantica nedeterminata din act, nu se ghiceste); ecran de introducere manuala (azi doar API/dispatch).",F208,firma,Declaratii,core/d230.py,"OPANAF (D230); Cod fiscal (redirectionare 3,5% impozit venit); structura din D230Validator.jar (schema v5 in vigoare)",LIVE,core/test_d230.py + DUKIntegrator -v D230 'valid' (schema v5),,"## Ce face
+Declaratia D230 - cererea prin care o persoana fizica redirectioneaza pana la 3,5% din impozitul pe venit catre o entitate nonprofit / unitate de cult (sau pentru burse private). Aplicatia construieste XML-ul cu datele contribuabilului si ale beneficiarului.
+## Cand se foloseste
+De persoana fizica (salariat, PFA etc.) care vrea sa directioneze o parte din impozitul deja retinut catre un ONG. Se depune pana pe 25 mai a anului urmator celui de realizare a venitului.
+## Ce trebuie pregatit inainte
+- Datele contribuabilului (nume, CNP).
+- Datele beneficiarului: denumire, cod fiscal (CIF) si contul IBAN al ONG-ului.
+## Pas cu pas
+1. Pregateste datele contribuabilului si ale ONG-ului (azi prin dispatch/API, fara ecran dedicat de introducere).
+2. Declaratii -> D230 -> anul venitului.
+3. Aplicatia construieste cererea.
+4. Valideaza si depune XML-ul.
+## Ce iese la capat
+XML D230 validat, cu optiunea de redirectionare a pana la 3,5% catre ONG.
+## Greseli frecvente
+- Procent peste 3,5%.
+- Datele ONG (CIF/IBAN) gresite - suma nu ajunge la beneficiar.
+## Reguli fiscale
+OPANAF (D230); Cod fiscal (redirectionarea a pana la 3,5% din impozitul pe venit catre entitati nonprofit / unitati de cult). Termen: 25 mai a anului urmator."
+Declaratia D207 (impozit retinut nerezidenti),"D207: Declaratie informativa privind impozitul retinut la sursa pe beneficiari de venit NEREZIDENTI (dividende, dobanzi, redevente etc. platite de firma catre nerezidenti). MANUALA - prin corp de cerere/dispatch (ca d230/d311): lista de beneficiari (den, stat rezidenta, cif, baza, impozit retinut, tip venit) din input; sectiunea II (agregate pe tip venit) si suma de control se calculeaza. STRUCTURA din VALIDATORUL oficial (D207Validator.jar, v2 in vigoare; imps1/Timps confirmate de mesajele validatorului). SEMANTICA din ACT in corpus: OPANAF_179_2022_D207.pdf + structura_D207_2025.pdf (nomenclator tip_venit 01=dividende art.223(1)a etc., reguli impozabil 01-11/22 vs scutit 12-21). PROBAT: DUKIntegrator -v D207 'valid'. Limitari: codul tip_venit + Act_N + statul se aleg de contabil din nomenclator (nu se ghicesc); ecran manual (azi API).",F209,firma,Declaratii,core/d207.py,OPANAF 179/2022; Cod fiscal art.223 (impozit nerezidenti); structura D207 din D207Validator.jar (v2),LIVE,core/test_d207.py + DUKIntegrator -v D207 'valid',,"## Ce face
+Declaratia informativa D207 - impozitul retinut la sursa (sau suportat de platitor) pe veniturile platite catre beneficiari NEREZIDENTI: dividende, dobanzi, redevente, servicii etc. Aplicatia agrega pe tip de venit si calculeaza suma de control; genereaza XML validat pe DUK.
+## Cand se foloseste
+De firma platitoare de venit catre nerezidenti. Anual, pana in ultima zi a lunii februarie a anului urmator.
+## Ce trebuie pregatit inainte
+- Lista beneficiarilor nerezidenti: denumire, statul de rezidenta, codul de identificare fiscala.
+- Pe fiecare: tipul de venit (din nomenclator), baza si impozitul retinut, actul normativ aplicat (Cod fiscal / conventie / directiva).
+## Pas cu pas
+1. Pregateste lista beneficiarilor nerezidenti (azi prin dispatch/API, fara ecran dedicat de introducere).
+2. Declaratii -> D207 -> anul.
+3. Aplicatia agrega pe tip de venit si calculeaza suma de control.
+4. Valideaza si depune XML-ul.
+## Ce iese la capat
+XML D207 validat, cu impozitul retinut per beneficiar nerezident si totalurile pe tip de venit.
+## Greseli frecvente
+- Beneficiar rezident inclus aici - impozitul rezidentilor merge pe D205, nu pe D207.
+- Codul tipului de venit sau statul de rezidenta gresit (se aleg din nomenclator, nu din intuitie).
+## Reguli fiscale
+OPANAF 179/2022; Cod fiscal art. 223 (impozitul pe veniturile nerezidentilor). Termen: ultima zi a lunii februarie."
+Declaratia D177 (redirectionare impozit profit),"D177: Cerere privind redirectionarea impozitului pe profit catre entitati nonprofit / unitati de cult (sponsorizare/mecenat, art.25 alin.(4) lit.i)/t) CF). MANUALA - prin corp de cerere/dispatch (ca d207/d230): beneficiarii (denumire, cod fiscal, IBAN, contract, suma) + sumaMax/sumaAnt/sumaRest din input; suma de control se calculeaza. STRUCTURA din VALIDATORUL oficial (D177Validator.jar, v1 in vigoare). SEMANTICA din ACT in corpus: OPANAF_3562_2024_D177.pdf + structura_D177_2026.pdf (tipPlatitor 1=profit/2=micro; tipB 1=cult/2=alte entitati/3=UNICEF/org.internationale, 4 nepermis; cuiB=CUI la tipB 1,2,5, CNP la 3,4; contractB obligatoriu la tipB<5; totalPlata_A=round(sumaRest/100)). PROBAT: DUKIntegrator -v D177 'valid'. Acopera cazul PROFIT (tipPlatitor=1); micro-ul e ABROGAT din 2024 (art.56(2^5)). Ecran manual: azi API.",F210,firma,Declaratii,core/d177.py,OPANAF 3562/2024; Cod fiscal art.25(4)i/t (sponsorizare); structura D177 din D177Validator.jar (v1),LIVE,core/test_d177.py + DUKIntegrator -v D177 'valid',,"## Ce face
+Declaratia D177 - cererea prin care o firma platitoare de impozit pe profit redirectioneaza sume catre entitati nonprofit / unitati de cult (sponsorizare/mecenat), din creditul fiscal ramas neutilizat. Aplicatia calculeaza suma de control si genereaza XML-ul validat.
+## Cand se foloseste
+De persoana juridica pe impozit pe profit, dupa depunerea declaratiei anuale (D101), pentru a directiona sumele de sponsorizare ramase.
+## Ce trebuie pregatit inainte
+- Beneficiarii: denumire, cod fiscal, IBAN, numarul contractului de sponsorizare.
+- Sumele: suma maxima redirectionabila, suma deja acordata, suma ramasa.
+## Pas cu pas
+1. Pregateste beneficiarii si sumele (azi prin dispatch/API, fara ecran dedicat de introducere).
+2. Declaratii -> D177 -> anul.
+3. Aplicatia calculeaza suma de control (totalul redirectionat).
+4. Valideaza si depune XML-ul.
+## Ce iese la capat
+XML D177 validat, cu redirectionarea impozitului pe profit catre entitatile nonprofit alese.
+## Greseli frecvente
+- Suma redirectionata peste creditul fiscal ramas (suma maxima).
+- Contractul de sponsorizare lipsa pentru un beneficiar care il cere.
+## Reguli fiscale
+OPANAF 3562/2024; Cod fiscal art. 25 alin. (4) lit. i)/t) (sponsorizare/mecenat, credit fiscal). Micro-ul e abrogat de la 2024."
+Declaratia D107 (beneficiari sponsorizari/mecenat/burse),"D107: Declaratie informativa privind beneficiarii sponsorizarilor / mecenatului / burselor private. Firma platitoare de impozit pe profit (persoane juridice) sau pe veniturile microintreprinderilor declara, pe fiecare beneficiar, sumele: Suma (Val1), Suma reportata (Val2), Suma dedusa (Val3). MANUALA - prin corp de cerere/dispatch (ca d207/d230): lista de beneficiari (den, cif, adresa, val1/val2/val3) din input; totalurile (TVal1=sum(Val1); TVal2=sum(Val2)+Val2_NI; TVal3=sum(Val3)+Val3_NI) si suma de control (totalPlata_A) se calculeaza. STRUCTURA din VALIDATORUL oficial (D107Validator.jar, v1 in vigoare pentru an sfarsit exercitiu >=2024; casing atribute Val1/Val2/Val3/TVal1/Val2_NI/Data_I/Data_S confirmat de arbitru). SEMANTICA din ACT in corpus: structura_D107_2024_010726.pdf + D107_XML_2024_010726.pdf (OPANAF 355/2024; cod_oblig 102/103/104/105/121; d_PM 1=profit / 2=micro; cont bugetar 5503; Anexa entit1 beneficiari neindividualizati exista doar daca Val2_NI>0). PROBAT: DUKIntegrator -v D107 'valid'. Limitari: exercitiu pe an calendaristic (an modificat / dizolvare respinse); cod_oblig se alege din regimul firmei sau de contabil; ecran manual (azi API).",F211,firma,Declaratii,core/d107.py,OPANAF 355/2024; Cod fiscal (sponsorizare/mecenat/burse); structura D107 din D107Validator.jar (v1),LIVE,core/test_d107.py + DUKIntegrator -v D107 'valid',,"## Ce face
+Declaratia informativa D107 - beneficiarii sponsorizarilor, mecenatului si burselor private acordate de firma. Pe fiecare beneficiar declara sumele: acordata, reportata si dedusa. Aplicatia calculeaza totalurile si suma de control; genereaza XML validat pe DUK.
+## Cand se foloseste
+De firma platitoare de impozit pe profit sau pe veniturile microintreprinderilor care a acordat sponsorizari/mecenat/burse. Se depune odata cu declaratia anuala de impozit.
+## Ce trebuie pregatit inainte
+- Lista beneficiarilor: denumire, cod fiscal, adresa.
+- Pe fiecare: suma acordata (Val1), suma reportata (Val2), suma dedusa (Val3).
+- Daca ai beneficiari neindividualizati: suma reportata pe anexa.
+## Pas cu pas
+1. Pregateste lista beneficiarilor si sumele (azi prin dispatch/API, fara ecran dedicat de introducere).
+2. Declaratii -> D107 -> anul.
+3. Aplicatia calculeaza totalurile (acordat/reportat/dedus) si suma de control.
+4. Valideaza si depune XML-ul.
+## Ce iese la capat
+XML D107 validat, cu beneficiarii sponsorizarilor si totalurile pe cele trei coloane.
+## Greseli frecvente
+- Anexa beneficiarilor neindividualizati completata desi suma reportata pe ea e 0 (sau invers).
+- Cod fiscal beneficiar invalid.
+## Reguli fiscale
+OPANAF 355/2024; Cod fiscal (sponsorizare/mecenat/burse private, art. 25 alin. (4)). Se depune cu declaratia anuala de impozit."
+Declaratia D104 (distribuire venituri asocieri),"D104: Declaratie privind distribuirea intre asociati a veniturilor si cheltuielilor, depusa de asociatul desemnat al unei ASOCIERI FARA PERSONALITATE JURIDICA in numele asocierii. MANUALA - prin corp de cerere/dispatch (ca d107/d207): profit_pierd (profit impozabil/pierdere al asocierii, input contabil) + lista asociati (den, cif, adresa, cota, venit, chelt, imp_datorat, imp_declarat) din input; totalurile (Tven/Tchelt/TimpD/TimpR/TdifP/TdifR), difPR per asociat si suma de control (totalPlata_A=profit_pierd+TimpD+TimpR+TdifP+TdifR) se calculeaza. TRIMESTRIALA cumulat (luna 3/6/9) + definitivare anuala (luna 12); la trimestre impR=0 si difPR=0. STRUCTURA din VALIDATORUL oficial (D104Validator.jar; sub-pachet v0 dar namespace :v1) + d104.xsd. SEMANTICA din ACT in corpus: structura_D104_2012_v100_030613.pdf (OPANAF 1950/2012; cota 0<cota<=100; cif1 cheie unica; D104 NU are cod_bug). PROBAT: DUKIntegrator -v D104 'valid' pe definitivare si trimestru. Limitari: identitatea asocierii (cui/den/adresa) din manual sau firma_profil daca profilul E asocierea; profit_pierd nu se calculeaza automat (pot exista ajustari fiscale); ecran manual (azi API).",F212,firma,Declaratii,core/d104.py,OPANAF 1950/2012; Cod fiscal (asocieri fara personalitate juridica); structura D104 din D104Validator.jar (v0/ns v1) + d104.xsd,LIVE,core/test_d104.py + DUKIntegrator -v D104 'valid',,"## Ce face
+Declaratia D104 - distribuirea intre asociati a veniturilor si cheltuielilor la o asociere fara personalitate juridica, cu impozitul aferent fiecarui asociat. Aplicatia calculeaza totalurile si diferentele de plata/recuperat; genereaza XML validat pe DUK.
+## Cand se foloseste
+De asociatul desemnat al asocierii fara personalitate juridica, in numele asocierii. Trimestrial (cumulat) si la definitivarea anuala (luna 12).
+## Ce trebuie pregatit inainte
+- Datele asocierii (cod fiscal, denumire, adresa).
+- Profitul impozabil / pierderea asocierii.
+- Pe fiecare asociat: denumire, cod fiscal, cota de participare, venit, cheltuieli, impozit datorat si impozit declarat in cursul anului.
+## Pas cu pas
+1. Pregateste asociatii si sumele (azi prin dispatch/API, fara ecran dedicat de introducere).
+2. Declaratii -> D104 -> trimestrul (3/6/9) sau definitivarea (12).
+3. Aplicatia distribuie pe asociati si calculeaza diferentele.
+4. Valideaza si depune XML-ul.
+## Ce iese la capat
+XML D104 validat, cu distributia pe asociati si diferenta de plata/recuperat pe fiecare.
+## Greseli frecvente
+- Impozit declarat completat la un trimestru (la 3/6/9 e 0; diferentele apar doar la definitivare).
+- Acelasi cod fiscal pe doi asociati.
+## Reguli fiscale
+OPANAF 1950/2012; Cod fiscal - regimul asocierilor fara personalitate juridica. Suma de control = profit/pierdere + impozit datorat + impozit declarat + diferente."
+Declaratia D220 (venit estimat / norma de venit),"D220: Declaratie privind venitul estimat / norma de venit, depusa de PERSOANE FIZICE (activitati independente, drepturi de proprietate intelectuala, cedarea folosintei bunurilor, activitati agricole/silvicultura/piscicultura). MANUALA - prin corp de cerere/dispatch (ca d107/d207): identitatea PF (cif=CNP, nume) + activitatea (categ_venit, det_venit, forma_org, venit brut/cheltuieli estimate) din input; net3 (=venit-cheltuieli daca >=0, altfel 0) si suma de control (totalPlata_A=venit3+chelt3+net3) se calculeaza; d_rec se deduce din d_rec1/d_rec2. Suporta si cazarea turistica (categ_venit=7, contracte=3, norma): sectiunea fisa cu camere. STRUCTURA din VALIDATORUL oficial (D220Validator.jar; sub-pachet v1 dar namespace :v2; _dateVersionTable 2017-01 J2.1.0) + d220_20180108.xsd. SEMANTICA din ACT in corpus: structura_D220_2017_09012018.pdf (OPANAF 3622/2015; CF art.68/69/70, 83-85; luna=12 fix; stat_pensie omis - ramura pensii strainatate moarta in schema). PROBAT: DUKIntegrator -v D220 'valid' pe activitate independenta si cazare turistica. NOTA: D220 e INLOCUITA de Declaratia Unica D212 (OPANAF 888/2018) pentru depuneri curente - se pastreaza pentru cazuri istorice/reziduale (retro-2017). Limitari: identitatea PF integral din manual (aplicatia e orientata pe firme); ecran manual (azi API).",F213,firma,Declaratii,core/d220.py,"OPANAF 3622/2015 (supersedata de OPANAF 888/2018 - D212); Cod fiscal art.68/69/70, 83-85; structura D220 din D220Validator.jar (v1/ns v2) + d220_20180108.xsd",LIVE,core/test_d220.py + DUKIntegrator -v D220 'valid',,"## Ce face
+Declaratia D220 - venitul estimat / norma de venit pentru o persoana fizica (activitati independente, drepturi de proprietate intelectuala, cedarea folosintei bunurilor, activitati agricole). Aplicatia calculeaza venitul net estimat si suma de control; genereaza XML validat pe DUK.
+## Cand se foloseste
+De persoana fizica, la inceperea activitatii sau la schimbarea sistemului de impunere. ATENTIE: pentru depunerile curente D220 e inlocuita de Declaratia Unica (D212) - aici e pastrata pentru cazuri istorice (an fiscal 2017).
+## Ce trebuie pregatit inainte
+- CNP-ul si numele persoanei fizice.
+- Categoria de venit, sistemul de determinare (real/norma), forma de organizare.
+- Venitul brut estimat si cheltuielile deductibile estimate.
+## Pas cu pas
+1. Pregateste datele PF si estimarile (azi prin dispatch/API, fara ecran dedicat de introducere).
+2. Declaratii -> D220 -> anul.
+3. Aplicatia calculeaza venitul net estimat si suma de control.
+4. Valideaza si depune XML-ul.
+## Ce iese la capat
+XML D220 validat, cu venitul estimat pe categoria de venit.
+## Greseli frecvente
+- Folosirea D220 pentru un an curent - azi se depune Declaratia Unica (D212).
+- Venit net completat manual gresit (se calculeaza ca venit brut minus cheltuieli, cand e pozitiv).
+## Reguli fiscale
+OPANAF 3622/2015 (inlocuita de OPANAF 888/2018 - D212); Cod fiscal art. 68/69/70 (activitati independente), art. 83-85 (cedarea folosintei)."
+Declaratia D223 (venituri estimate asocieri),"D223: Declaratie privind veniturile estimate pentru asocierile fara personalitate juridica si entitatile supuse regimului transparentei fiscale, depusa de responsabilul asocierii. MANUALA - prin corp de cerere/dispatch (ca d107/d207): asocierea (nume, cif) + responsabilul (den_r, cif_r) + activitatea (categ_venit, forma_org, det_venit, CAEN, judet, localitate, venit brut/cheltuieli estimate) + asociatii (nume_d, cif_d=CNP, cota_d) din input; net3 (=venit-cheltuieli daca >0, altfel 0), totalPlata_A=venit3+chelt3+net3, venit_d distribuit dupa cota_d (suma=net3; 0 la norma de venit), nr_asoc se calculeaza. STRUCTURA din VALIDATORUL oficial (D223Validator.jar; sub-pachet v0 dar namespace :v1) + d223_20160113.xsd. SEMANTICA din ACT in corpus: structura_D223_2016_050116_13012016.pdf (OPANAF 184/2013; luna=12 fix; suma cotelor=100; cif_d=CNP 13 cifre; ordinea XSD activitati inainte de asociati; D223 NU are cod_bug; d_rec2 nu se emite - XSD-ul in vigoare nu-l declara). PROBAT: DUKIntegrator -v D223 'valid'. Limitari: identitatea asocierii din manual sau firma_profil daca tenant=asocierea; ecran manual (azi API).",F214,firma,Declaratii,core/d223.py,"OPANAF 184/2013; Cod fiscal (asocieri fara PJ, transparenta fiscala, venituri estimate); structura D223 din D223Validator.jar (v0/ns v1) + d223_20160113.xsd",LIVE,core/test_d223.py + DUKIntegrator -v D223 'valid',,"## Ce face
+Declaratia D223 - veniturile estimate pentru o asociere fara personalitate juridica (sau entitate cu regim de transparenta fiscala), distribuite pe fiecare asociat dupa cota. Aplicatia calculeaza venitul net estimat, distributia si suma de control; genereaza XML validat pe DUK.
+## Cand se foloseste
+De responsabilul desemnat al asocierii, la inceperea activitatii sau cand se estimeaza venitul anual al asocierii.
+## Ce trebuie pregatit inainte
+- Datele asocierii (denumire, cod fiscal) si ale responsabilului.
+- Activitatea: categoria de venit, forma de organizare, sistemul de determinare, CAEN, judet/localitate.
+- Venitul brut si cheltuielile estimate; asociatii cu cotele de distribuire (suma cotelor = 100).
+## Pas cu pas
+1. Pregateste asocierea, activitatea si asociatii (azi prin dispatch/API, fara ecran dedicat de introducere).
+2. Declaratii -> D223 -> anul.
+3. Aplicatia distribuie venitul net pe asociati dupa cota.
+4. Valideaza si depune XML-ul.
+## Ce iese la capat
+XML D223 validat, cu venitul estimat al asocierii distribuit pe asociati.
+## Greseli frecvente
+- Cotele asociatilor care nu insumeaza 100.
+- Cod fiscal asociat completat ca CUI de firma (se cere CNP de 13 cifre).
+## Reguli fiscale
+OPANAF 184/2013; Cod fiscal - asocieri fara personalitate juridica si regimul transparentei fiscale (venituri estimate)."
+Declaratia D221 (venituri agricole pe norme de venit),"D221: Declaratie privind veniturile din activitati agricole impuse pe baza de norme de venit, depusa de persoane fizice (individual) sau asocieri fara personalitate juridica. MANUALA - prin corp de cerere/dispatch (ca d107/d207): identitatea contribuabilului (cif=CNP, nume_a) + activitatile agricole (judet, localitate, produse: cod produs + suprafata/nr. capete) + (la asociere) asociatii cu cota de distribuire din input. NU contine sume de impozit (totalPlata_A=0 mereu; ANAF aplica normele de venit intern). STRUCTURA din VALIDATORUL oficial (D221Validator.jar; sub-pachet v0 dar namespace :v1) + d221_20170303.xsd. SEMANTICA din ACT in corpus: structura_D221_2017_050118.pdf (OPANAF 3622/2015; CF art.103-106 venituri agricole; luna=12 fix; aj_soc=0 pt an>=2017; ordinea XSD activitati inainte de asociati; forma_org 1=individual/2=asociere; suma cotelor=100; localitate unica, codp unic per activitate; D221 NU are cod_bug). PROBAT: DUKIntegrator -v D221 'valid' pe forma individuala si asociere. Limitari: nu exista registru agricol in aplicatie -> activitatile/produsele/asociatii vin integral din manual; ecran manual (azi API).",F215,firma,Declaratii,core/d221.py,OPANAF 3622/2015; Cod fiscal art.103-106 (venituri activitati agricole pe norme de venit); structura D221 din D221Validator.jar (v0/ns v1) + d221_20170303.xsd,LIVE,core/test_d221.py + DUKIntegrator -v D221 'valid',,"## Ce face
+Declaratia D221 - veniturile din activitati agricole impuse pe baza de norme de venit, detaliate pe judet/localitate si pe produse (suprafata sau numar de capete). Nu contine sume de impozit (normele le aplica ANAF); aplicatia genereaza XML validat pe DUK.
+## Cand se foloseste
+De persoana fizica (individual) sau de asocierea agricola fara personalitate juridica, pentru veniturile agricole impuse pe norme. Anual.
+## Ce trebuie pregatit inainte
+- CNP-ul contribuabilului (sau al asocierii) si adresa.
+- Activitatile agricole: judet, localitate, produse (cod produs + suprafata/nr. capete).
+- La asociere: asociatii cu cotele de distribuire (suma = 100).
+## Pas cu pas
+1. Pregateste activitatile si produsele (azi prin dispatch/API, fara ecran dedicat de introducere).
+2. Declaratii -> D221 -> anul.
+3. Aplicatia construieste declaratia (forma individuala sau asociere).
+4. Valideaza si depune XML-ul.
+## Ce iese la capat
+XML D221 validat, cu activitatile agricole pe norme de venit.
+## Greseli frecvente
+- Localitate repetata sau cod produs repetat in aceeasi activitate.
+- Asteptarea unui impozit calculat in declaratie - normele se aplica de ANAF, suma de control e 0.
+## Reguli fiscale
+OPANAF 3622/2015; Cod fiscal art. 103-106 (venituri din activitati agricole impuse pe norme de venit)."
+Declaratia D110 (regularizare impozit retinut la sursa),"D110: Declaratie de regularizare / cerere de restituire privind impozitul pe venit retinut la sursa, depusa de platitorul de venit. MANUALA - prin corp de cerere/dispatch (ca d107/d207): obligatiile (cod_oblig din nomenclator, suma_dat=datorat, suma_rest=retinut) din input; per obligatie se calculeaza dif_plata (=suma_dat-suma_rest daca >=0) sau dif_rest (=suma_rest-suma_dat), cod_bugetar (5503XXXXXX; 629->20A031800X), scadenta (25 a lunii urmatoare) si nr_evid (23 caractere, control = suma primelor 21 cifre % 100, CONFIRMAT empiric pe DUKIntegrator); totalPlata_A=suma(dif_plata+dif_rest). Cerere de restituire prin d_temei=1 (cere IBAN+banca; suma dif_rest!=0). STRUCTURA din VALIDATORUL oficial (D110Validator.jar; sub-pachet v0 dar radacina <D110> majuscule si namespace :v1; _dateVersionTable 2014-01 J1.0.3) + d110_20260330.xsd. SEMANTICA din ACT in corpus: structura_D110_2026_240326.pdf (CPF L207/2015 art.168,170; cont bugetar 5503 cu X-uri literale; suma_rest>0 strict; cod_oblig unic). PROBAT: DUKIntegrator -v D110 'valid' pe plata (d_temei=0) si restituire (d_temei=1). Limitari: obligatiile vin din input (nu exista registru dedicat de impozite retinute la sursa); ecran manual (azi API).",F216,firma,Declaratii,core/d110.py,"Cod de procedura fiscala (L207/2015) art.168, 170 (regularizare/restituire); Cod fiscal titlurile II/III (impozit retinut la sursa); structura D110 din D110Validator.jar (v0/ns v1) + d110_20260330.xsd",LIVE,core/test_d110.py + DUKIntegrator -v D110 'valid',,"## Ce face
+Declaratia D110 - regularizarea (si, optional, cererea de restituire) a impozitului pe venit retinut la sursa: compara impozitul datorat cu cel deja retinut si rezulta diferenta de plata sau de restituit. Aplicatia calculeaza diferentele, scadenta si numarul de evidenta a platii; genereaza XML validat pe DUK.
+## Cand se foloseste
+De platitorul de venit care a retinut impozit la sursa si trebuie sa il regularizeze (sau sa ceara restituirea sumei retinute in plus). Pe perioada de raportare (luna/an).
+## Ce trebuie pregatit inainte
+- Obligatiile de regularizat: codul obligatiei (din nomenclator), suma datorata si suma retinuta.
+- Pentru cerere de restituire: IBAN-ul si banca.
+## Pas cu pas
+1. Pregateste obligatiile (azi prin dispatch/API, fara ecran dedicat de introducere).
+2. Declaratii -> D110 -> perioada.
+3. Aplicatia calculeaza diferentele, scadenta si numarul de evidenta.
+4. Valideaza si depune XML-ul.
+## Ce iese la capat
+XML D110 validat, cu diferenta de plata sau de restituit pe fiecare obligatie.
+## Greseli frecvente
+- Cerere de restituire (bifa) fara IBAN/banca, sau fara nicio diferenta de restituit.
+- Acelasi cod de obligatie repetat.
+## Reguli fiscale
+Cod de procedura fiscala (Legea 207/2015) art. 168 si 170 (regularizare/restituire); Cod fiscal titlurile II/III (impozit retinut la sursa)."
+Declaratia D307 (ajustare TVA),"D307: Declaratie privind sumele rezultate din ajustarea/corectia ajustarilor/regularizarea taxei pe valoarea adaugata, depusa de persoana impozabila aflata in situatie de ajustare TVA. MANUALA - prin corp de cerere/dispatch (ca d107/d207): operatiunile (tip A/L/C, cod operator, denumire, TVA) din input; sumele de control tvaA/tvaL/tvaC (pe tip) si totalPlata_A=suma TVA se calculeaza. tip A=transfer de active (art.270(7), codO=cedent); L=leasing, transfer active la finalul contractului (codO=finantator); C=anularea codului de TVA (art.316(11), codO=beneficiar). d_anulare=1 cere temei (1/2, art.105(6) L.207/2015). TVA poate fi <=0 (permis din J1.0.1). STRUCTURA din VALIDATORUL oficial (D307Validator.jar; sub-pachet v0 dar namespace :v1; _dateVersionTable 2016-01 J1.1.0) + d307_20171205.xsd. SEMANTICA din ACT in corpus: structura_D307_2017_071117.pdf (OPANAF 793/2016; CF art.270(7), 324(8)(9), 316(11); atribut mail nu email; D307 NU are cod_bug - e informativa). PROBAT: DUKIntegrator -v D307 'valid' pe tip A/L/C si d_anulare=1. Limitari: operatiunile vin din input (nu exista registru dedicat de ajustari TVA); ecran manual (azi API).",F217,firma,Declaratii,core/d307.py,"OPANAF 793/2016; Cod fiscal art.270(7), 324(8)(9), 316(11) (ajustare/regularizare TVA); structura D307 din D307Validator.jar (v0/ns v1) + d307_20171205.xsd",LIVE,core/test_d307.py + DUKIntegrator -v D307 'valid',,"## Ce face
+Declaratia D307 - sumele de TVA rezultate din ajustarea/corectia ajustarilor/regularizarea taxei, pe operatiuni de trei tipuri: transfer de active, transfer la finalul unui contract de leasing, sau anularea codului de TVA. Aplicatia calculeaza sumele de control pe tip; genereaza XML validat pe DUK.
+## Cand se foloseste
+De persoana impozabila aflata intr-o situatie de ajustare TVA: primeste active printr-un transfer (cedent), preia active la finalul unui leasing (finantator), sau i s-a anulat codul de TVA (beneficiar).
+## Ce trebuie pregatit inainte
+- Operatiunile: tipul (A = transfer active, L = leasing, C = anulare cod TVA), operatorul (cod + denumire) si TVA aferenta.
+- Daca declaratia e depusa dupa anularea rezervei verificarii ulterioare: temeiul corectarii.
+## Pas cu pas
+1. Pregateste operatiunile pe tip (azi prin dispatch/API, fara ecran dedicat de introducere).
+2. Declaratii -> D307 -> perioada.
+3. Aplicatia calculeaza sumele de control pe tip (A/L/C).
+4. Valideaza si depune XML-ul.
+## Ce iese la capat
+XML D307 validat, cu TVA ajustata pe cele trei tipuri de operatiuni.
+## Greseli frecvente
+- Tipul operatiunii gresit (cedent vs finantator vs beneficiar).
+- Bifa ""dupa anularea rezervei"" fara temeiul legal completat.
+## Reguli fiscale
+OPANAF 793/2016; Cod fiscal art. 270 alin. (7) (transfer de active), art. 324 alin. (8)/(9) si art. 316 alin. (11) (anularea codului de TVA)."
