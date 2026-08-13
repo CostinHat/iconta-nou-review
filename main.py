@@ -8861,7 +8861,7 @@ def public_ghid_index():
     corp = ('<h1>Ghiduri fiscale iConta.eu</h1>'
             '<p>Ghiduri practice pentru contabili: temei legal verificat la sursă, procedura manuală și '
             'ce automatizează iConta.eu. Se adaugă pe măsură ce le scriem.</p>'
-            + ("".join(items) if items else "<p>În curând.</p>"))
+            + ("\n".join(items) if items else "<p>În curând.</p>"))
     return Response(content=_ghid_pagina_html(
         "Ghiduri fiscale",
         "Ghiduri fiscale practice pentru contabili — temei legal, proceduri și controalele automate iConta.eu.",
