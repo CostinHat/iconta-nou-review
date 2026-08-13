@@ -486,6 +486,21 @@
         }
       ]
     },
+    "legea_207_2015_consolidat.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": []
+    },
+    "legea_207_2015_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "legea_207_2015_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
     "legea_296_2020_consolidat.html": {
       "exista": true,
       "tip_forma": "forma_la_data",
@@ -534,6 +549,21 @@
           "temei": "OG 16/2022 art.97"
         }
       ]
+    },
+    "omf_1235_2023.pdf": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": []
+    },
+    "omf_1235_2023.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "omf_1235_2023.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
     },
     "oms_15_2018_modificare_2025.pdf": {
       "exista": true,
