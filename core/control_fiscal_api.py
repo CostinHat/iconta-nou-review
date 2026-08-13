@@ -204,7 +204,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                                  "termen": term.isoformat(), "perioada": f"anual {an-1}"})
 
     # D390 operatiuni intracomunitare — pe FAPT lunar (nu obligatie fixa). Se depune NUMAI pentru lunile in care ia
-    # nastere exigibilitatea operatiunilor IC (instr. completare D390, anexa OPANAF 705/2020 anexa 2 pct.1.2 (anterior OPANAF 394/2017, abrogat); OPANAF 705/2020).
+    # nastere exigibilitatea operatiunilor IC (instr. completare D390, anexa OPANAF 705/2020 anexa 2 pct.1.2 (anterior OPANAF 394/2017, abrogat)).
     # FAPTUL PRIMEAZA: d390_fapt=True -> datorat INDIFERENT de bifa operatiuni_ic; bifa conteaza DOAR cand faptul e
     # None (luna deschisa, nu se poate sti inca). Fara callback (matrice/teste) -> bifa decide (compat istoric).
     if d390_fapt is None:
