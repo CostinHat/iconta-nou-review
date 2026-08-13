@@ -75,7 +75,7 @@ export function ecranLogin(radacina) {
       <div class="pagina-carduri-wrap">
         <div class="pagina-card-mare" style="background:#fdeef2">
           <div class="pagina-card-mare-icon accent-magenta">${svgIcon(ICOANE.brief, 30)}</div>
-          <div class="pagina-card-mare-titlu">Funcționalități</div>
+          <div class="pagina-card-mare-titlu">Funcționalități și prețuri</div>
           <div class="pagina-card-mare-sub">Tot ce face platforma, pe șapte domenii — de la contabilitate la control fiscal.</div>
           <button type="button" class="pagina-card-buton" id="pagina-functionalitati-btn">Vezi tot</button>
         </div>
@@ -567,7 +567,7 @@ function deschideFunctionalitati() {
     `<span class="func-card-titlu">${esc(gr.titlu)}</span><span class="func-card-nr">${gr.functii.length} funcții</span></button>`
   ).join("");
   const o = _funcOverlay(
-    `<div class="fereastra fer-larg"><div class="fereastra-antet"><span class="fereastra-titlu">Funcționalități</span>` +
+    `<div class="fereastra fer-larg"><div class="fereastra-antet"><span class="fereastra-titlu">Funcționalități și prețuri</span>` +
     `<button class="nav-x" type="button" title="Închide" aria-label="Închide">✕</button></div>` +
     `<div class="fereastra-corp"><div class="func-grila">${carduri}</div></div></div>`
   );
