@@ -122,6 +122,10 @@ def extrage(continut, nume_fisier=""):
             avertismente.append("sub plafon 5000 (2026)")
         if durata <= 0:
             avertismente.append("durata lipsa")
+        if not cel(i_cimo):
+            avertismente.append("cont_imobilizare lipsa - categorie neclasificata "
+                                "(CF art.28 alin.5 lit.c): doar liniar/degresiv; "
+                                "accelerat/superaccelerat vor fi refuzate la D406 pana se completeaza contul")
 
         out.append({
             "cod": cel(i_cod) or f"MF{idx:03d}",
@@ -132,7 +136,7 @@ def extrage(continut, nume_fisier=""):
             "dnf_luni": durata,
             "data_pif": _data(r[i_pif]) if (0 <= i_pif < len(r)) else None,
             "metoda": _normalizeaza_metoda(cel(i_met)),
-            "cont_imobilizare": cel(i_cimo) or "2131",
+            "cont_imobilizare": cel(i_cimo),   # NU se completeaza tacit cu 2131 (categoria permisiva); gol -> lit.c
             "cont_amortizare": cel(i_camo) or "2813",
             "avertismente": avertismente,
             "ok": len(avertismente) == 0,
@@ -200,7 +204,7 @@ def importa(conn, randuri):
                   (cod, denumire, cont_imobilizare, cont_amortizare, valoare, rezidual,
                    dnf_luni, data_pif, metoda, activ)
                 VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,true)
-            """, (r["cod"], r["denumire"], r.get("cont_imobilizare", "2131"),
+            """, (r["cod"], r["denumire"], r.get("cont_imobilizare") or "",   # fara default 2131; gol = neclasificat -> lit.c la calc_asset
                   r.get("cont_amortizare", "2813"), r.get("valoare", 0),
                   r.get("rezidual", 0), r.get("dnf_luni", 0),
                   r.get("data_pif"), r.get("metoda", "liniara")))
