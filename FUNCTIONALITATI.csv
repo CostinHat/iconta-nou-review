@@ -1,8 +1,41 @@
 ﻿Functionalitate,Descriere,ID,Nivel,Acces UI,Sursa cod,Temei legal,Stare,Testat,ghid_slug,ajutor
 Client AI (Claude),Wrapper unic peste API-ul Anthropic: generare text (narativul Povestii lunii) si citire de imagini (clasificarea bonurilor pozate). Cheia din env; punct unic de acces AI.,F001,transversal,—,core/ai_client.py,,LIVE,,,
 Incredere si invatare AI,"Memoreaza corectiile contabilului la propunerile AI (cont per partener/descriere normalizata) si le refoloseste: dupa validari repetate sugestia devine cea invatata, cu scor de incredere.",F002,transversal,"propuneri contare (Banca, Bonuri)",core/ai_incredere.py,,LIVE,pytest,,
-Import Raport Z din AMEF,"Parseaza fisierul AMEF (.p7b sau XML, structura OPANAF 146/2018 anexa 2 II.7 verificata la sursa): totalurile zilei pe cote TVA (valoare operatiuni + TVA per cota) si pe tipuri de plata (nomenclator 1=Card, 3=Numerar, 4=Tichete etc.), din care se construieste nota contabila zilnica a Raportului Z; alimenteaza si retetarul GV (descarcarea pe portii).",F003,firma,card Raport Z,core/amef_import.py,OPANAF 146/2018,LIVE,date reale de re-verificat,,
-Validare CUI la ANAF,"Interogheaza serviciul ANAF pentru un CUI (existenta, denumire, platitor TVA, CAEN) + extragere CUI-uri in masa din fisiere la migrare.",F004,transversal,"Adauga firma, Migrare, Emitere, inregistrare",core/anaf_api.py,,LIVE,,,
+Import Raport Z din AMEF,"Parseaza fisierul AMEF (.p7b sau XML, structura OPANAF 146/2018 anexa 2 II.7 verificata la sursa): totalurile zilei pe cote TVA (valoare operatiuni + TVA per cota) si pe tipuri de plata (nomenclator 1=Card, 3=Numerar, 4=Tichete etc.), din care se construieste nota contabila zilnica a Raportului Z; alimenteaza si retetarul GV (descarcarea pe portii).",F003,firma,card Raport Z,core/amef_import.py,OPANAF 146/2018,LIVE,date reale de re-verificat,,"## Ce face
+Parseaza fisierul emis de casa de marcat (AMEF), .p7b sau XML, si extrage totalurile zilei: valoarea operatiunilor si TVA pe fiecare cota, plus incasarile pe tipuri de plata (card, numerar, tichete). Din acestea construieste nota contabila zilnica a Raportului Z si alimenteaza retetarul GV (descarcarea pe portii).
+## Cand se foloseste
+Zilnic, la firmele cu vanzare cu amanuntul prin casa de marcat (retail, HoReCa) care inregistreaza vanzarile pe baza Raportului Z.
+## Ce trebuie pregatit inainte
+Fisierul AMEF exportat pentru ziua respectiva (.p7b sau XML), conturile de vanzari si TVA configurate si cotele de TVA valide pe perioada.
+## Pas cu pas
+1. Incarci fisierul AMEF al zilei.
+2. Aplicatia parseaza totalurile pe cote si pe tipuri de plata.
+3. Verifici corespondenta cotelor si a incasarilor.
+4. Generezi nota contabila zilnica.
+## Ce iese la capat
+Nota contabila a Raportului Z, cu vanzari si TVA defalcate pe cote si incasari pe tipuri de plata.
+## Greseli frecvente
+Fisier dintr-o alta zi; cote nepotrivite pe perioada; ignorarea tipurilor de plata la reconcilierea cu casa/banca.
+## Reguli fiscale
+Structura fisierului AMEF conform OPANAF 146/2018 (anexa 2). Cotele si TVA preluate din raport se inregistreaza pe cotele valide ale perioadei."
+Validare CUI la ANAF,"Interogheaza serviciul ANAF pentru un CUI (existenta, denumire, platitor TVA, CAEN) + extragere CUI-uri in masa din fisiere la migrare.",F004,transversal,"Adauga firma, Migrare, Emitere, inregistrare",core/anaf_api.py,,LIVE,,,"## Ce face
+Interogheaza serviciul ANAF pentru un CUI si aduce datele oficiale: existenta firmei, denumirea, statutul de platitor de TVA si codul CAEN. Poate extrage in masa CUI-urile dintr-un fisier la migrare.
+## Cand se foloseste
+Cand adaugi un partener nou sau vrei sa verifici un client/furnizor existent. Pentru orice contabil care emite sau primeste facturi si vrea date corecte fara sa le tasteze manual.
+## Ce trebuie pregatit inainte
+- CUI-ul firmei de verificat (cu sau fara RO).
+- La migrare, fisierul din care se extrag CUI-urile.
+## Pas cu pas
+1. Deschide partenerul sau formularul de validare.
+2. Introdu CUI-ul si porneste interogarea ANAF.
+3. Preia denumirea, statutul TVA si CAEN returnate.
+## Ce iese la capat
+Datele oficiale ANAF pentru CUI-ul cautat, gata de completat pe partener.
+## Greseli frecvente
+- CUI tastat gresit sau cu spatii.
+- Presupunerea ca statutul TVA e mereu la zi: ANAF il actualizeaza cu intarziere.
+## Bun de stiut
+Foloseste validarea inainte de prima factura catre un partener nou, ca sa prinzi din timp daca e platitor de TVA. La migrare, extragerea in masa iti scuteste tastarea CUI cu CUI."
 Chei API publice per cabinet,"Chei API per cabinet pentru API-ul public v1: creare cu nume, cheia in clar se arata O SINGURA DATA la creare (stocam doar SHA256 + prefix pentru identificare), listare cu ultima folosire, dezactivare. Autentifica cererile /api/v1/*.",F005,cabinet,Setari cont > Chei API,core/api_public.py,,LIVE,pytest,,"## Ce face
 Chei API publice per cabinet - creeaza chei pentru API-ul public v1 (integrari externe). Cheia in clar se arata O SINGURA DATA la creare; se stocheaza doar amprenta (SHA256) + prefixul.
 ## Cand se foloseste
@@ -74,7 +107,26 @@ Note contabile pe liniile de extras, cu urma regulii aplicate; reconciliere cu f
 - Partener neidentificat din descriere - se coreleaza manual.
 ## Reguli fiscale
 Monografie OMFP 1802/2014 pe tipurile de operatiuni bancare."
-Parser extras bancar,"Citeste .xls/.xlsx/.csv (ING/Jasper), format detectat dupa continut (magic bytes), grid pe pozitia coloanelor, randuri multi-linie.",F012,firma,card Banca,core/banca_parser.py,,LIVE,validat la leu pe ING,,
+Parser extras bancar,"Citeste .xls/.xlsx/.csv (ING/Jasper), format detectat dupa continut (magic bytes), grid pe pozitia coloanelor, randuri multi-linie.",F012,firma,card Banca,core/banca_parser.py,,LIVE,validat la leu pe ING,,"## Ce face
+Citeste extrasul bancar din fisier .xls, .xlsx sau .csv (inclusiv formatele ING si Jasper) si extrage liniile de tranzactii. Formatul e detectat automat dupa continut (magic bytes), nu dupa extensie, iar coloanele sunt citite pe pozitie in grid, gestionand si randurile pe mai multe linii.
+## Cand se foloseste
+Pentru contabilul care vrea sa incarce miscarile de cont fara sa le tasteze manual, indiferent de banca de la care vine fisierul.
+## Ce trebuie pregatit inainte
+- Fisierul de extras exportat din internet banking (.xls/.xlsx/.csv).
+- Verifica sa fie extrasul intreg, nu o captura partiala.
+## Pas cu pas
+1. Exporta extrasul din aplicatia bancii.
+2. Incarca fisierul in parser.
+3. Lasa detectia dupa continut sa recunoasca formatul.
+4. Verifica liniile citite (data, detalii, suma) inainte de a le folosi.
+## Ce iese la capat
+Lista de tranzactii structurate, gata de reconciliere sau de inregistrare.
+## Greseli frecvente
+- Redenumirea extensiei nu schimba formatul real; detectia se face dupa continut.
+- Extras exportat trunchiat sau filtrat duce la linii lipsa.
+## Bun de stiut
+- Randurile de tranzactie care se intind pe mai multe linii sunt reunite automat.
+- Pentru fisiere MT940 exista o ramura separata de import."
 Bilant anual S1005/S1003,"Situatii financiare anuale pentru microentitati S1005 (OMF 107/2025, XSD v14): mapare balanta -> F10 bilant prescurtat + rulaje clase 6/7 -> F20 cont de profit si pierdere prescurtat, dupa structura oficiala ANAF (F10_BS, F20_micro); valori intregi in lei, rotunjite aritmetic. Motor pur.",F013,firma,card Bilant anual,core/bilant.py + core/bilant_api.py,OMF 107/2025,LIVE,validator ANAF,,"## Ce face
 Situatiile financiare anuale (bilant) - pentru microentitati S1005 sau S1003: mapeaza balanta in formularele oficiale F10 (bilant) si F20 (cont de profit si pierdere), dupa structura ANAF, cu valori intregi in lei.
 ## Cand se foloseste
@@ -161,8 +213,42 @@ Chitanta PDF numerotata, operatiune in registrul de casa, suma in litere.
 - Depasirea plafonului de numerar.
 ## Reguli fiscale
 Ordin 2634/2015 (chitanta cod 14-4-1). Legea 70/2015 pentru plafonul de numerar la incasare."
-Parteneri (clienti/furnizori),"CRUD parteneri in schema firmei: lista, creare, editare, stergere, cu reguli de validare; folositi la facturare, solduri, reconciliere.",F018,firma,Emitere / Solduri parteneri,core/clienti_api.py,,LIVE,,,
-Coada de validare patru-ochi,"Fluxul declaratiilor: pregatita -> aprobata/respinsa (cu motiv) -> depusa (cu index SPV); tranzitii de stare validate, hash pe payload, patru-ochi pe ID (pregatitorul nu aproba), cronometru de efort (inceput_la).",F019,transversal,De validat / Declaratii,core/coada_api.py,,LIVE,403 dovedit pe self-approval,,
+Parteneri (clienti/furnizori),"CRUD parteneri in schema firmei: lista, creare, editare, stergere, cu reguli de validare; folositi la facturare, solduri, reconciliere.",F018,firma,Emitere / Solduri parteneri,core/clienti_api.py,,LIVE,,,"## Ce face
+Gestioneaza partenerii firmei (clienti si furnizori): listare, creare, editare si stergere, cu reguli de validare la salvare. Partenerii sunt folositi apoi la facturare, solduri si reconciliere.
+## Cand se foloseste
+Ori de cate ori apare un client sau furnizor nou, sau trebuie corectate datele unuia existent. Pentru contabilul care tine evidenta si emite/inregistreaza facturi.
+## Ce trebuie pregatit inainte
+- Denumirea, CUI-ul si datele de identificare ale partenerului.
+- Eventual validarea CUI la ANAF pentru date corecte.
+## Pas cu pas
+1. Intra in sectiunea Parteneri.
+2. Alege creare sau selecteaza un partener pentru editare.
+3. Completeaza campurile si salveaza; validarile blocheaza datele incomplete.
+## Ce iese la capat
+Partener salvat in schema firmei, disponibil la facturare, solduri si reconciliere.
+## Greseli frecvente
+- Parteneri duplicati cu acelasi CUI.
+- Stergerea unui partener folosit deja in documente.
+## Bun de stiut
+Tine datele partenerului corecte de la inceput: se propaga automat pe facturi si in reconciliere. Verifica CUI-ul la ANAF inainte de a salva un partener nou."
+Coada de validare patru-ochi,"Fluxul declaratiilor: pregatita -> aprobata/respinsa (cu motiv) -> depusa (cu index SPV); tranzitii de stare validate, hash pe payload, patru-ochi pe ID (pregatitorul nu aproba), cronometru de efort (inceput_la).",F019,transversal,De validat / Declaratii,core/coada_api.py,,LIVE,403 dovedit pe self-approval,,"## Ce face
+Duce declaratiile printr-un flux controlat de stari: pregatita -> aprobata sau respinsa (cu motiv) -> depusa (cu index SPV). Tranzitiile de stare sunt validate, payload-ul e sigilat cu hash, iar regula patru-ochi se aplica pe ID: cine a pregatit declaratia nu o poate aproba. Un cronometru de efort retine momentul de inceput.
+## Cand se foloseste
+Pentru echipele in care o persoana pregateste si alta aproba, ca sa existe control si urma clara inainte de depunere. Utila oricarui birou contabil cu mai multi operatori.
+## Ce trebuie pregatit inainte
+- Declaratia pregatita si un al doilea utilizator distinct pentru aprobare.
+- Indexul de recipisa SPV la momentul depunerii.
+## Pas cu pas
+1. Pregateste declaratia (starea devine pregatita).
+2. Un alt utilizator o aproba sau o respinge cu motiv.
+3. Dupa depunere, inregistreaza indexul SPV (starea devine depusa).
+## Ce iese la capat
+Declaratie cu istoric de stari, hash de integritate si timp de efort masurat.
+## Greseli frecvente
+- Incercarea de a aproba propria declaratie este blocata de regula patru-ochi.
+- Respingerea fara motiv nu e permisa.
+## Bun de stiut
+- Hash-ul pe payload semnaleaza daca continutul a fost modificat dupa pregatire."
 "Comodat, chirii, refacturari","Note pentru comodat (evidenta extrabilantiera), chirie platita/incasata, refacturare utilitati (art. 271 CF: refacturarea = livrare/prestare in nume propriu).",F020,firma,Operatiuni speciale,core/comodat_chirii.py,OMFP 1802/2014; art. 271 CF,LIVE,pytest,,"## Ce face
 Note pentru comodat (evidenta extrabilantiera), chirie platita/incasata si refacturare utilitati (refacturarea = livrare/prestare in nume propriu, art. 271 CF).
 ## Cand se foloseste
@@ -212,7 +298,23 @@ Tablou de stari pe portofoliu + detaliu per firma cu motiv, termen si remediu.
 - Interpretarea ""gri"" ca problema - gri inseamna date insuficiente pentru verificare, nu neconformitate.
 ## Reguli fiscale
 Termenele ANAF pe fiecare declaratie (tin cont de sarbatorile legale). Vectorul fiscal = sursa obligatiilor declarative."
-Regula cotelor de TVA,"Sursa unica a cotelor (21/11/0% de la 01.08.2025): potrivirea cotei corecte pe descrierea produsului (regula + AI cu justificare), lista cotelor valide pe perioada.",F023,transversal,Produse / Emitere / Raport Z,core/cote_tva.py,art. 291 CF; Legea 141/2025,LIVE,pytest,cote-tva-2025,
+Regula cotelor de TVA,"Sursa unica a cotelor (21/11/0% de la 01.08.2025): potrivirea cotei corecte pe descrierea produsului (regula + AI cu justificare), lista cotelor valide pe perioada.",F023,transversal,Produse / Emitere / Raport Z,core/cote_tva.py,art. 291 CF; Legea 141/2025,LIVE,pytest,cote-tva-2025,"## Ce face
+Este sursa unica a cotelor de TVA din aplicatie: pe baza descrierii produsului potriveste cota corecta (regula plus AI cu justificare afisata) si tine lista cotelor valide pe fiecare perioada.
+## Cand se foloseste
+La configurarea produselor si la emiterea facturilor, ori de cate ori trebuie stabilita cota aplicabila.
+## Ce trebuie pregatit inainte
+Denumirea/descrierea clara a produsului sau serviciului; eventual codul NC pentru bunurile cu cota redusa.
+## Pas cu pas
+1. Introduci descrierea produsului.
+2. Motorul propune cota, cu justificarea legala.
+3. Verifici si, la nevoie, corectezi manual.
+4. Cota confirmata se foloseste la facturare.
+## Ce iese la capat
+Cota de TVA atribuita produsului, cu justificare, valabila pe perioada operatiunii.
+## Greseli frecvente
+Descriere vaga care duce la incadrare gresita; aplicarea cotei reduse fara indeplinirea conditiilor (cod NC, tip de bun); ignorarea datei operatiunii cand cotele se schimba.
+## Reguli fiscale
+Art. 291 Cod fiscal, modificat prin Legea 141/2025: de la 1 august 2025 cota standard este 21%, iar cota redusa 11% (art. 291 alin. 1 si 2). Pentru anumite livrari de locuinte se aplica tranzitoriu cota de 9% (art. III din Legea 141/2025)."
 Credite bancare si garantii,"Note pentru primirea creditului, dobanda angajata lunar, plata ratelor, restante si garantii (conturi 162/168/519x/8051).",F024,firma,Operatiuni speciale > Finantare,core/credite.py,OMFP 1802/2014 pct. 360-364,LIVE,pytest,,"## Ce face
 Note pentru credite bancare si garantii - primirea creditului, dobanda angajata lunar, plata ratelor, restante si garantii (conturi 162/168/519x/8051).
 ## Cand se foloseste
@@ -230,7 +332,23 @@ Note contabile pentru credit, dobanda lunara, rate, garantii extrabilantiere.
 - Garantiile neinregistrate extrabilantier (8051).
 ## Reguli fiscale
 OMFP 1802/2014 pct. 360-364 (credite, dobanzi, garantii)."
-Curs valutar BNR,"Preia si aplica cursul BNR pentru facturile in valuta, cu regula legala a cursului corect pe data operatiunii si conversia TVA.",F025,transversal,Emitere / operatiuni valutare,core/curs_bnr.py,art. 290(2) CF,LIVE,pytest,,
+Curs valutar BNR,"Preia si aplica cursul BNR pentru facturile in valuta, cu regula legala a cursului corect pe data operatiunii si conversia TVA.",F025,transversal,Emitere / operatiuni valutare,core/curs_bnr.py,art. 290(2) CF,LIVE,pytest,,"## Ce face
+Preia cursul BNR si il aplica facturilor in valuta, folosind cursul corect la data operatiunii si convertind TVA in lei.
+## Cand se foloseste
+La emiterea sau inregistrarea facturilor exprimate in valuta.
+## Ce trebuie pregatit inainte
+Data faptului generator/exigibilitatii, valuta si conexiunea la seria de cursuri BNR.
+## Pas cu pas
+1. Selectezi factura in valuta.
+2. Aplicatia identifica data relevanta a operatiunii.
+3. Preia cursul BNR valabil pentru acea data.
+4. Converteste baza si TVA in lei.
+## Ce iese la capat
+Valorile in lei ale bazei si TVA, la cursul corect.
+## Greseli frecvente
+Folosirea cursului din alta zi; confundarea datei facturii cu data faptului generator; conversie manuala care nu coincide cu cursul oficial.
+## Reguli fiscale
+Art. 290 Cod fiscal: pentru conversia in lei a sumelor in valuta se foloseste cursul de schimb comunicat de Banca Nationala a Romaniei, valabil pentru data operatiunii."
 Declaratia D100,"Impozitele la bugetul de stat, in principal impozitul micro: cota pe perioada, proratizare, scadente micro, numar de evidenta cu checksum, XML validat.",F026,firma,Declaratii,core/d100.py,OPANAF 587/2016 mod.,LIVE,DUKIntegrator,impozit-micro-2026,"## Ce face
 Declaratia D100 - impozitele la bugetul de stat, in principal impozitul pe veniturile microintreprinderilor. Aplicatia calculeaza cota pe perioada, aplica proratizarea si genereaza XML-ul validat.
 ## Cand se foloseste
@@ -309,7 +427,23 @@ XML D205 validat, cu impozitul pe dividende per asociat.
 - Beneficiar nerezident -> se declara pe D207, nu pe D205 (aplicatia refuza nerezidentul la generare).
 ## Reguli fiscale
 Codul fiscal art. 97. Cota pe an (8/10/16% dupa perioada). Termen: ultima zi a lunii februarie."
-Motor D212 (PFA/II/IF),"Calcul sistem real partida simpla: venit net, CAS si CASS pe plafoane (6/12/24 salarii minime), pentru Fisa D212 din registrul de incasari/plati.",F030,firma,RIP > Fisa D212,core/d212_engine.py,"CF art. 148-149, 154, 170",LIVE,pytest,,
+Motor D212 (PFA/II/IF),"Calcul sistem real partida simpla: venit net, CAS si CASS pe plafoane (6/12/24 salarii minime), pentru Fisa D212 din registrul de incasari/plati.",F030,firma,RIP > Fisa D212,core/d212_engine.py,"CF art. 148-149, 154, 170",LIVE,pytest,,"## Ce face
+Calculeaza in sistem real, partida simpla: venitul net (venituri incasate minus cheltuieli deductibile) si contributiile CAS si CASS pe plafoanele de salarii minime, pentru Fisa din Declaratia unica D212, pornind de la registrul de incasari si plati.
+## Cand se foloseste
+Pentru persoane fizice care obtin venituri din activitati independente (PFA, II, IF) impuse in sistem real.
+## Ce trebuie pregatit inainte
+Registrul de incasari si plati complet pe an, salariul minim brut al anului si veniturile din alte surse relevante pentru plafoane.
+## Pas cu pas
+1. Introduci incasarile si platile anului.
+2. Motorul determina venitul net.
+3. Compara venitul cu plafoanele de 6, 12 si 24 salarii minime.
+4. Calculeaza CAS si CASS datorate.
+## Ce iese la capat
+Venitul net si contributiile CAS/CASS pentru Fisa D212.
+## Greseli frecvente
+Cheltuieli nedeductibile trecute ca deductibile; plafon gresit pentru anul de referinta; omiterea altor venituri la stabilirea CASS.
+## Reguli fiscale
+Cod fiscal art. 148-149 (CAS), art. 170 (CASS) si art. 154: baza se raporteaza la plafoanele de 6, 12 si respectiv 24 salarii minime brute pe tara, in functie de nivelul venitului. Cotele si salariul minim se iau pe anul in cauza."
 Declaratia D300,"Decontul de TVA v12: calcul din facturi pe cote (21/11/9), TVA de plata/recuperat, tip decont lunar/trimestrial, avertismente (linii cu cote atipice, rezultat), XML validat.",F031,firma,Declaratii,core/d300.py,OPANAF 174/2026; Legea 141/2025,LIVE,DUKIntegrator,decont-tva-d300-rezultat,"## Ce face
 Decontul de TVA (D300) - declaratia prin care raportezi la ANAF TVA-ul colectat din facturile emise si TVA-ul deductibil din facturile primite, si stabilesti TVA de plata sau de recuperat. Aplicatia il genereaza automat din facturile perioadei si produce XML-ul validat, gata de depus in SPV.
 ## Cand se foloseste
@@ -423,8 +557,41 @@ Note pentru decont, cu diurna in/peste plafon corect tratata.
 - Diurna peste plafon netratata ca venit impozabil.
 ## Reguli fiscale
 Codul fiscal (diurna neimpozabila in limita plafonului legal, restul impozabil)."
-Diferente de curs valutar,"Diferentele de curs valutar 665/765 (OMFP 1802/2014 pct. 316-322), cu reguli de semn pe tip de sold: la decontarea creantelor/datoriilor in valuta (automat la incasare/plata) si la reevaluarea LUNARA a soldurilor (creante, datorii, disponibilitati) la cursul BNR din ultima zi bancara a lunii. Motor pur.",F041,firma,Operatiuni speciale / automat la decontare,core/diferente_curs.py,OMFP 1802/2014 pct. 316-322,LIVE,pytest,,
-Documente pentru portal,"Arhiva documentelor firmei pentru client: lunile disponibile, balanta lunara ca PDF, declaratiile depuse - totul read-only.",F042,portal,Portal > Documente,core/documente_api.py,,LIVE,,,
+Diferente de curs valutar,"Diferentele de curs valutar 665/765 (OMFP 1802/2014 pct. 316-322), cu reguli de semn pe tip de sold: la decontarea creantelor/datoriilor in valuta (automat la incasare/plata) si la reevaluarea LUNARA a soldurilor (creante, datorii, disponibilitati) la cursul BNR din ultima zi bancara a lunii. Motor pur.",F041,firma,Operatiuni speciale / automat la decontare,core/diferente_curs.py,OMFP 1802/2014 pct. 316-322,LIVE,pytest,,"## Ce face
+Calculeaza diferentele de curs valutar prin conturile 665 (cheltuiala) si 765 (venit), cu reguli de semn pe tipul soldului. Se aplica in doua momente: la decontarea creantelor si datoriilor in valuta (automat la incasare sau plata) si la reevaluarea LUNARA a soldurilor in valuta (creante, datorii, disponibilitati) la cursul BNR din ultima zi bancara a lunii. Este un motor pur de calcul.
+## Cand se foloseste
+Pentru firmele cu creante, datorii sau disponibilitati in valuta: la fiecare incasare/plata si la inchiderea fiecarei luni.
+## Ce trebuie pregatit inainte
+- Soldurile in valuta la data reevaluarii.
+- Cursul BNR din ultima zi bancara a lunii.
+## Pas cu pas
+1. La incasare/plata, lasa motorul sa calculeze diferenta fata de cursul initial.
+2. La sfarsit de luna, ruleaza reevaluarea pe solduri.
+3. Verifica sensul (665 sau 765) propus.
+## Ce iese la capat
+Note contabile de diferente de curs, cu contul si sensul corect.
+## Greseli frecvente
+- Omiterea reevaluarii lunare a disponibilitatilor in valuta.
+- Folosirea unui curs care nu e cel BNR din ultima zi bancara.
+## Reguli fiscale
+Tratamentul diferentelor de curs urmeaza OMFP 1802/2014 pct. 316-322 (reevaluarea lunara a elementelor monetare in valuta la cursul de inchidere)."
+Documente pentru portal,"Arhiva documentelor firmei pentru client: lunile disponibile, balanta lunara ca PDF, declaratiile depuse - totul read-only.",F042,portal,Portal > Documente,core/documente_api.py,,LIVE,,,"## Ce face
+Ofera clientului o arhiva read-only cu documentele firmei sale: lunile disponibile, balanta lunara ca PDF si declaratiile depuse. Nimic nu se editeaza de aici.
+## Cand se foloseste
+Cand clientul (antreprenorul) vrea sa vada sau sa descarce documentele firmei fara acces la contabilitatea bruta. Utila si contabilului care indruma clientul catre propriile documente.
+## Ce trebuie pregatit inainte
+- Balantele lunare generate si declaratiile depuse in perioada respectiva.
+## Pas cu pas
+1. Clientul intra pe portal in sectiunea Documente.
+2. Alege luna dorita din lista celor disponibile.
+3. Descarca balanta PDF sau declaratiile depuse.
+## Ce iese la capat
+Documentele firmei, pe luni, accesibile clientului in regim doar-citire.
+## Greseli frecvente
+- Asteptarea unei luni care nu are inca balanta generata.
+- Confuzia: aici nu se incarca si nu se modifica documente.
+## Bun de stiut
+Apar doar lunile pentru care exista documente generate. Daca un client nu vede o luna, verifica intai daca balanta a fost produsa pentru perioada respectiva."
 Import e-Factura (UBL),"Parser pentru XML-urile e-Factura (UBL 2.1 / CIUS-RO): numar, data, scadenta, parti, linii cu cote - facturile primite intra in aplicatie fara retastare.",F043,firma,Facturi (import),core/efactura_import.py,CIUS-RO,LIVE,pytest (test_efactura_import.py),,"## Ce face
 Importul facturilor primite din e-Factura (format UBL/XML de la SPV) - parseaza fisierul si creeaza ciorna de cheltuiala, cu datele extrase (furnizor, sume, TVA), pentru validare de catre contabil.
 ## Cand se foloseste
@@ -442,8 +609,41 @@ Cheltuiala inregistrata din factura primita, legata de factura, cu contul confir
 - Parserul minimal pierde unele campuri (tert platitor, categorie) - se completeaza manual.
 ## Reguli fiscale
 e-Factura obligatorie B2B (OUG 120/2021 si urmatoarele); structura CIUS-RO / UBL."
-PDF factura,"Genereaza PDF-ul facturii (reportlab) cu identitatea vizuala a firmei-client din Model factura: logo (base64), culoare accent, font (sans/serif/mono); folosit la emitere, pe portal si la trimiterea catre client.",F045,firma,Facturi / portal,core/factura_pdf.py,,LIVE,,,
-Contare facturi + TVA + storno,"Motor pur: TVA pe cote, nota pentru factura emisa (4111=70x+4427) si primita (60x+4426=401), taxare inversa, storno cu semn.",F046,firma,Facturi (contare automata ca ciorna),core/facturi.py + core/facturi_api.py,OMFP 1802/2014,LIVE,pytest,,
+PDF factura,"Genereaza PDF-ul facturii (reportlab) cu identitatea vizuala a firmei-client din Model factura: logo (base64), culoare accent, font (sans/serif/mono); folosit la emitere, pe portal si la trimiterea catre client.",F045,firma,Facturi / portal,core/factura_pdf.py,,LIVE,,,"## Ce face
+Genereaza PDF-ul facturii cu identitatea vizuala a firmei-client definita in Model factura: logo, culoare de accent si font (sans/serif/mono). Acelasi PDF e folosit la emitere, pe portal si la trimiterea catre client.
+## Cand se foloseste
+La emiterea unei facturi si ori de cate ori clientul are nevoie de documentul in format PDF. Pentru contabilul care emite facturi in numele firmei-client.
+## Ce trebuie pregatit inainte
+- Modelul de factura configurat: logo, culoare accent, font.
+- Factura completata cu partener, linii si sume.
+## Pas cu pas
+1. Configureaza in Model factura logo-ul, culoarea si fontul.
+2. Completeaza factura.
+3. Genereaza PDF-ul pentru emitere, portal sau trimitere.
+## Ce iese la capat
+PDF-ul facturii, gata de descarcat sau trimis clientului, cu aspectul firmei.
+## Greseli frecvente
+- Logo lipsa sau de rezolutie mica, care iese neclar.
+- Culoare de accent aleasa fara contrast, greu de citit.
+## Bun de stiut
+Seteaza o singura data Modelul de factura si toate PDF-urile vor arata unitar. Verifica cum arata logo-ul in PDF inainte de prima trimitere catre client."
+Contare facturi + TVA + storno,"Motor pur: TVA pe cote, nota pentru factura emisa (4111=70x+4427) si primita (60x+4426=401), taxare inversa, storno cu semn.",F046,firma,Facturi (contare automata ca ciorna),core/facturi.py + core/facturi_api.py,OMFP 1802/2014,LIVE,pytest,,"## Ce face
+Motorul de contare a facturilor: calculeaza TVA pe cote si construieste nota contabila pentru factura emisa (4111 = 70x + 4427) si pentru cea primita (60x + 4426 = 401). Trateaza taxarea inversa si storno-ul cu semn.
+## Cand se foloseste
+La inregistrarea oricarei facturi emise sau primite si la stornarea unei facturi gresite. Pentru contabilul care tine contabilitatea firmei.
+## Ce trebuie pregatit inainte
+- Factura cu partener, linii, cote de TVA si tipul operatiunii (normala, taxare inversa, storno).
+## Pas cu pas
+1. Introdu factura emisa sau primita cu liniile si cotele ei.
+2. Alege regimul: TVA normal, taxare inversa sau storno.
+3. Motorul genereaza nota contabila corespunzatoare.
+## Ce iese la capat
+Nota contabila a facturii, cu conturile si TVA-ul calculate automat.
+## Greseli frecvente
+- Cota de TVA gresita pe linie.
+- Storno introdus fara semn negativ, care dubleaza in loc sa anuleze.
+## Reguli fiscale
+Contarea urmeaza OMFP 1802/2014 pentru reglementarile contabile: factura emisa 4111 = 70x + 4427, factura primita 60x + 4426 = 401, iar la taxare inversa 4426 = 4427. Verifica temeiul in Codul fiscal pentru cotele si operatiunile aplicabile."
 Facturi recurente,"Sabloane cu zi de emitere: lista/adaugare/activare-dezactivare/stergere; cron-ul zilnic emite scadentele (sablon activ, zi <= azi, o singura data pe luna).",F047,firma,Facturi > Facturi recurente,core/facturi_recurente.py,,LIVE,de testat cap-coada P1.4,,"## Ce face
 Facturi recurente - sabloane de facturi care se emit automat, periodic (ex. abonamente lunare), pe baza unei configurari (client, articole, ziua din luna). Un cron le genereaza la scadenta.
 ## Cand se foloseste
@@ -479,9 +679,59 @@ Firma configurata pentru emitere: numerotare corecta, regim TVA, model PDF.
 - Regim TVA gresit -> facturi cu/fara TVA gresit.
 ## Reguli fiscale
 Numerotarea facturilor trebuie sa fie continua si cronologica (Codul fiscal, art. 319). Regimul de TVA din vectorul fiscal."
-Import/export extracomunitar,"Baza TVA la import (valoarea in vama + taxe + comisioane), calculul importului, validarea exportului (scutit cu drept de deducere).",F049,firma,Operatiuni speciale > Extern,core/import_export.py,art. 289 CF,LIVE,pytest,,
-Operatiuni intracomunitare,"AIC/LIC si servicii B2B: despartirea codului TVA, verificare VIES a partenerului, taxare inversa (4426=4427), validarile livrarii si prestarii IC.",F050,firma,Operatiuni speciale > Extern / Emitere,core/intracomunitar.py,"art. 268, 278(2) CF",LIVE,pytest,,
-Verificator praguri Intrastat,Analizeaza fluxurile UE ale firmei contra pragurilor 2026 (1.000.000 lei expedieri/introduceri) si avertizeaza cand se apropie obligatia de raportare.,F051,firma,Control fiscal (verificare),core/intrastat.py,Ordin INS 1604/2025,LIVE,,,
+Import/export extracomunitar,"Baza TVA la import (valoarea in vama + taxe + comisioane), calculul importului, validarea exportului (scutit cu drept de deducere).",F049,firma,Operatiuni speciale > Extern,core/import_export.py,art. 289 CF,LIVE,pytest,,"## Ce face
+Calculeaza TVA la import (baza = valoarea in vama + taxe + comisioane) si valideaza operatiunile de import/export extracomunitar, inclusiv exportul scutit cu drept de deducere.
+## Cand se foloseste
+La inregistrarea unei operatiuni de import sau export in afara UE. Pentru contabilul firmei care comercializeaza cu tari terte.
+## Ce trebuie pregatit inainte
+- Valoarea in vama, taxele vamale si comisioanele aferente importului.
+- Documentele de export pentru scutire.
+## Pas cu pas
+1. Alege operatiunea de import sau export.
+2. Introdu valoarea in vama, taxele si comisioanele.
+3. Sistemul calculeaza baza si TVA-ul la import sau valideaza exportul.
+## Ce iese la capat
+Baza de impozitare si TVA-ul la import, respectiv exportul validat ca scutit cu drept de deducere.
+## Greseli frecvente
+- Omiterea taxelor vamale sau a comisioanelor din baza de import.
+- Tratarea exportului ca scutit fara documente justificative.
+## Reguli fiscale
+Baza de impozitare la import urmeaza art. 289 din Codul fiscal (valoarea in vama la care se adauga taxe si cheltuieli accesorii). Exportul este scutit cu drept de deducere conform Codului fiscal. Verifica temeiul pentru fiecare operatiune."
+Operatiuni intracomunitare,"AIC/LIC si servicii B2B: despartirea codului TVA, verificare VIES a partenerului, taxare inversa (4426=4427), validarile livrarii si prestarii IC.",F050,firma,Operatiuni speciale > Extern / Emitere,core/intracomunitar.py,"art. 268, 278(2) CF",LIVE,pytest,,"## Ce face
+Gestioneaza operatiunile intracomunitare: achizitii si livrari intracomunitare (AIC/LIC) si servicii B2B. Desparte codul de TVA, verifica partenerul in VIES, aplica taxarea inversa (4426 = 4427) si valideaza livrarea si prestarea IC.
+## Cand se foloseste
+La tranzactiile cu parteneri din alte state UE. Pentru contabilul firmei cu operatiuni intracomunitare.
+## Ce trebuie pregatit inainte
+- Codul de TVA al partenerului din UE.
+- Natura operatiunii: achizitie, livrare de bunuri sau serviciu B2B.
+## Pas cu pas
+1. Alege tipul operatiunii intracomunitare.
+2. Introdu codul de TVA al partenerului; sistemul il verifica in VIES.
+3. Se aplica taxarea inversa si validarile livrarii/prestarii IC.
+## Ce iese la capat
+Operatiunea intracomunitara contata cu taxare inversa si partenerul confirmat in VIES.
+## Greseli frecvente
+- Cod de TVA invalid sau inactiv in VIES.
+- Confuzia intre locul livrarii de bunuri si locul prestarii de servicii.
+## Reguli fiscale
+Operatiunile impozabile urmeaza art. 268 din Codul fiscal, iar locul prestarii serviciilor B2B art. 278 alin. (2). Taxarea inversa se reflecta 4426 = 4427. Verifica temeiul pentru fiecare tip de operatiune."
+Verificator praguri Intrastat,Analizeaza fluxurile UE ale firmei contra pragurilor 2026 (1.000.000 lei expedieri/introduceri) si avertizeaza cand se apropie obligatia de raportare.,F051,firma,Control fiscal (verificare),core/intrastat.py,Ordin INS 1604/2025,LIVE,,,"## Ce face
+Urmareste fluxurile de bunuri cu statele UE (expedieri si introduceri) si le compara cu pragurile anuale de raportare Intrastat, avertizand cand firma se apropie de obligatie.
+## Cand se foloseste
+Pentru firmele cu tranzactii intracomunitare de bunuri, care risca sa depaseasca pragul de la care Intrastat devine obligatoriu.
+## Ce trebuie pregatit inainte
+Evidenta achizitiilor si livrarilor intracomunitare de bunuri pe an, separat pe expedieri si introduceri.
+## Pas cu pas
+1. Aplicatia aduna valorile expedierilor si introducerilor.
+2. Le compara cu pragul in vigoare pe fiecare flux.
+3. Semnaleaza apropierea sau depasirea pragului.
+4. Indica luna de la care apare obligatia de raportare.
+## Ce iese la capat
+Un avertisment pe fiecare flux cand se apropie/depaseste pragul si momentul de la care se depune Intrastat.
+## Greseli frecvente
+Confundarea fluxului de expedieri cu cel de introduceri; includerea serviciilor (Intrastat e doar pe bunuri); urmarirea pragului dupa emitere in loc de miscarea fizica a bunurilor.
+## Reguli fiscale
+Pragurile valorice pentru expedieri si pentru introduceri se stabilesc anual prin ordin al Institutului National de Statistica si se verifica separat pe fiecare flux."
 Inventariere anuala,"Notele rezultatelor inventarierii dupa compensari: plusuri (marfa/MF), minusuri imputabile/neimputabile, casare mijloace fixe.",F052,firma,Operatiuni speciale > Imobilizari,core/inventariere.py,OMFP 2861/2009; art. 304 CF,LIVE,pytest,,"## Ce face
 Inventarierea anuala - compararea stocului faptic (numarat) cu cel scriptic (din evidenta), cu inregistrarea diferentelor (plusuri/minusuri).
 ## Cand se foloseste
@@ -499,8 +749,41 @@ Diferente de inventar inregistrate (plus/minus), stoc reconciliat.
 ## Reguli fiscale
 Legea contabilitatii (inventariere anuala obligatorie); OMFP 2861/2009 (norme inventariere)."
 Import istoric declaratii (migrare),"Citeste lista declaratiilor deja depuse in vechiul program (tip/an/luna) si le inregistreaza, ca iConta sa nu le ceara ca restanta.",F053,firma,Migrare / Import date,core/istoric_declaratii_import_api.py,,LIVE,,,
-Editor note contabile,"Creare/editare/stergere/validare note: doar ciornele se modifica (AI propune ciorna, contabilul valideaza - validata devine imutabila).",F054,firma,Registru jurnal,core/jurnal_api.py,,LIVE,,,
-KPI client (portal),"KPI pentru portalul clientului, calculate din balanta cumulata: P&L (venituri/cheltuieli/profit), cash (conturi 5xxx), creante (4111), datorii (401, buget, salarii) - cifrele firmei pe intelesul antreprenorului, fara acces la contabilitatea bruta.",F055,portal,Portal > Cifrele firmei,core/kpi_client.py,,LIVE,pytest,,
+Editor note contabile,"Creare/editare/stergere/validare note: doar ciornele se modifica (AI propune ciorna, contabilul valideaza - validata devine imutabila).",F054,firma,Registru jurnal,core/jurnal_api.py,,LIVE,,,"## Ce face
+Permite crearea, editarea, stergerea si validarea notelor contabile. Se pot modifica doar ciornele: AI-ul propune o ciorna, contabilul o valideaza, iar dupa validare nota devine imutabila.
+## Cand se foloseste
+Pentru contabilul care revizuieste si confirma inregistrarile inainte ca acestea sa devina definitive. Utila la orice inregistrare manuala sau propusa automat.
+## Ce trebuie pregatit inainte
+- Documentul-sursa al operatiunii (factura, extras, act intern).
+- Conturile si sumele de inregistrat.
+## Pas cu pas
+1. Creeaza o nota noua sau preia ciorna propusa de AI.
+2. Ajusteaza conturile, sumele si explicatia.
+3. Valideaza nota cand e corecta.
+## Ce iese la capat
+Nota contabila validata si imutabila, parte din jurnal.
+## Greseli frecvente
+- Incercarea de a modifica o nota deja validata; trebuie stornata, nu editata.
+- Validarea unei ciorne inainte de verificarea sumelor.
+## Bun de stiut
+- Cat timp o nota e ciorna, poate fi corectata liber; validarea o inchide definitiv."
+KPI client (portal),"KPI pentru portalul clientului, calculate din balanta cumulata: P&L (venituri/cheltuieli/profit), cash (conturi 5xxx), creante (4111), datorii (401, buget, salarii) - cifrele firmei pe intelesul antreprenorului, fara acces la contabilitatea bruta.",F055,portal,Portal > Cifrele firmei,core/kpi_client.py,,LIVE,pytest,,"## Ce face
+Calculeaza KPI-urile pentru portalul clientului din balanta cumulata: P&L (venituri, cheltuieli, profit), cash (conturi 5xxx), creante (4111) si datorii (401, buget, salarii). Prezinta cifrele firmei pe intelesul antreprenorului, fara acces la contabilitatea bruta.
+## Cand se foloseste
+Cand clientul vrea o imagine rapida a situatiei firmei. Pentru antreprenorul care nu citeste balanta, dar vrea sa stie unde sta.
+## Ce trebuie pregatit inainte
+- Balanta cumulata generata pentru perioada dorita.
+## Pas cu pas
+1. Genereaza si verifica balanta cumulata a firmei.
+2. Clientul intra pe portal in sectiunea de indicatori.
+3. Citeste P&L, cash, creante si datorii.
+## Ce iese la capat
+Un tablou de indicatori sintetici pentru client, derivati din balanta.
+## Greseli frecvente
+- Interpretarea KPI cand balanta perioadei nu e inca completa.
+- Asteptarea unui detaliu contabil brut aici: KPI sunt sintetici.
+## Bun de stiut
+KPI sunt doar atat de corecti cat e balanta din spate. Inainte sa trimiti clientul sa se uite, asigura-te ca balanta cumulata e inchisa pentru perioada respectiva."
 Leasing financiar si operational,"Note pentru leasingul financiar (primire 2133=167, rata cu dobanda si TVA, valoare reziduala) si operational (chirie 612=401+4426).",F056,firma,Operatiuni speciale > Finantare,core/leasing.py,OMFP 1802/2014 pct. 212-217,LIVE,pytest,,"## Ce face
 Note contabile pentru leasing financiar si operational - recunoasterea bunului si a datoriei, dobanda, ratele, TVA, la leasing financiar; cheltuiala cu chiria la leasing operational.
 ## Cand se foloseste
@@ -518,7 +801,26 @@ Note contabile pentru leasing, cu bunul si datoria (financiar) sau chiria (opera
 - Confuzia leasing financiar (bun in bilant) vs operational (cheltuiala).
 ## Reguli fiscale
 OMFP 1802/2014; IFRS 16 / reglementari nationale pe clasificarea leasingului."
-Lichidare/radiere societate,"Lichidare/radiere societate (OMFP 897/2015 + L31/1990 art. 227+ + L85/2014): monografiile etapelor dupa aprobarea lichidarii - valorificarea activelor (461=7583+4427, descarcare 6583+28xx=21x, stocuri), incasare creante si plata datorii, inchidere TVA/impozite, rezultat pe 121, apoi PARTAJUL dupa bilantul de lichidare cu impozit pe castig in regim de dividende (16% din 2026). Motor pur.",F057,firma,Operatiuni speciale,core/lichidare.py,OMFP 897/2015; L31/1990; L85/2014,LIVE,pytest,,
+Lichidare/radiere societate,"Lichidare/radiere societate (OMFP 897/2015 + L31/1990 art. 227+ + L85/2014): monografiile etapelor dupa aprobarea lichidarii - valorificarea activelor (461=7583+4427, descarcare 6583+28xx=21x, stocuri), incasare creante si plata datorii, inchidere TVA/impozite, rezultat pe 121, apoi PARTAJUL dupa bilantul de lichidare cu impozit pe castig in regim de dividende (16% din 2026). Motor pur.",F057,firma,Operatiuni speciale,core/lichidare.py,OMFP 897/2015; L31/1990; L85/2014,LIVE,pytest,,"## Ce face
+Genereaza monografiile etapelor de lichidare si radiere a societatii, dupa aprobarea lichidarii: valorificarea activelor (461 = 7583 + 4427, cu descarcare 6583 si 28xx = 21x, plus stocuri), incasarea creantelor si plata datoriilor, inchiderea TVA si a impozitelor, stabilirea rezultatului pe 121, apoi PARTAJUL pe baza bilantului de lichidare, cu impozitare in regim de dividende pe castigul asociatilor. Este un motor pur.
+## Cand se foloseste
+Pentru firmele intrate in procedura de lichidare/radiere, dupa hotararea de lichidare. Pentru contabilul care trebuie sa parcurga etapele pana la partaj.
+## Ce trebuie pregatit inainte
+- Hotararea de aprobare a lichidarii.
+- Situatia activelor si datoriilor de lichidat.
+- Bilantul de lichidare pentru etapa de partaj.
+## Pas cu pas
+1. Valorifica activele si descarca gestiunile.
+2. Incaseaza creantele si plateste datoriile.
+3. Inchide TVA si impozitele, stabileste rezultatul pe 121.
+4. Fa partajul dupa bilantul de lichidare.
+## Ce iese la capat
+Monografiile complete ale lichidarii pana la partaj.
+## Greseli frecvente
+- Trecerea la partaj inainte de inchiderea TVA si a impozitelor.
+- Omiterea ajustarilor de TVA la valorificarea activelor.
+## Reguli fiscale
+Etapele urmeaza OMFP 897/2015, Legea 31/1990 (art. 227 si urmatoarele) si Legea 85/2014; castigul din partaj se impoziteaza in regim de dividende."
 Starea migrarii pe straturi,Per cabinet: fiecare strat cu stare (gata/in lucru + nota ce mai lipseste) decisa explicit; remindere pentru straturile ramase.,F058,cabinet,Migrare cabinet,core/migrare_api.py,,LIVE,vizual (9 straturi),,
 Import mijloace fixe (migrare),"Citeste registrul de mijloace fixe din export (valoare, durata, amortizare cumulata) - amortizarea continua fara reluare de la zero.",F059,firma,Migrare / Import date,core/mijloace_fixe_import_api.py,,LIVE,,,
 Motor contabil (carte mare + inchidere),"Nucleul contabilitatii: cartea mare din note validate, rezultatul, inchiderea de luna (TVA, venituri/cheltuieli in 121) si de an (rezerva legala, repartizare 129).",F061,firma,— (motorul tuturor rapoartelor),core/motor.py,OMFP 1802/2014,LIVE,pytest (bug nota neechilibrata prins la rescriere),,"## Ce face
@@ -537,7 +839,22 @@ Balanta la zi, conturi de venituri/cheltuieli inchise, rezultatul perioadei.
 - Inchiderea cu note neechilibrate (motorul o semnaleaza).
 ## Reguli fiscale
 OMFP 1802/2014 (planul de conturi, inchiderea exercitiului)."
-Notificari pe evenimente,"O notificare = eveniment catre un user (mesaj client, respingere, validare); adresare individuala sau catre validatorii cabinetului; contor necitite + marcare citit.",F062,transversal,clopotel,core/notificari_api.py,,LIVE,,,
+Notificari pe evenimente,"O notificare = eveniment catre un user (mesaj client, respingere, validare); adresare individuala sau catre validatorii cabinetului; contor necitite + marcare citit.",F062,transversal,clopotel,core/notificari_api.py,,LIVE,,,"## Ce face
+Trimite notificari pe evenimente catre utilizatori: mesaj de la client, respingere, validare. Adresarea poate fi individuala sau catre validatorii cabinetului. Tine un contor de necitite si permite marcarea ca citit.
+## Cand se foloseste
+Automat, la producerea unui eveniment relevant in aplicatie. Pentru orice utilizator care trebuie tinut la curent (contabil, validator).
+## Ce trebuie pregatit inainte
+- Nimic special: notificarile se genereaza din evenimentele curente.
+## Pas cu pas
+1. Un eveniment (mesaj, respingere, validare) declanseaza notificarea.
+2. Utilizatorul o vede in lista cu contor de necitite.
+3. O deschide si o marcheaza ca citita.
+## Ce iese la capat
+Notificari livrate destinatarilor, cu evidenta celor citite si necitite.
+## Greseli frecvente
+- Ignorarea notificarilor catre validatorii cabinetului, care raman necitite.
+## Bun de stiut
+Contorul de necitite arata ce asteapta actiune. Marcheaza citit doar dupa ce ai tratat evenimentul, ca sa nu pierzi respingeri sau cereri de validare."
 Obiecte de inventar,"Note pentru achizitie (303), dare in folosinta si scoatere din uz, cu pragul de mijloc fix actualizat (5.000 lei din 25.02.2026).",F063,firma,Operatiuni speciale > Imobilizari,core/obiecte_inventar.py,OMFP 1802/2014; OUG 8/2026,LIVE,pytest,,"## Ce face
 Evidenta obiectelor de inventar - inregistrarea si darea in folosinta a obiectelor de inventar (materiale de natura obiectelor de inventar), cu evidenta extrabilantiera.
 ## Cand se foloseste
@@ -554,9 +871,61 @@ Note pentru obiecte de inventar; evidenta pe durata folosintei.
 - Obiectele nescoate din evidenta la casare.
 ## Reguli fiscale
 OMFP 1802/2014 (materiale de natura obiectelor de inventar)."
-Contabilitate ONG,Note pe partida dubla specifica ONG (venituri fara scop patrimonial vs economice) si testul scutirii activitatii economice.,F064,firma,Operatiuni speciale,core/ong.py,OMFP 3103/2017; art. 15(2-3) CF,LIVE,pytest,,
-Povestea lunii (pachet lunar),Aduna cifrele lunii firmei -> AI scrie un draft narativ pentru antreprenor -> contabilul editeaza/aproba -> trimitere pe email; istoric per luna.,F065,cabinet,card Pachete lunare,core/pachete_api.py,,LIVE,vizual,,
-Perisabilitati si scazaminte,"Perisabilitati si scazaminte (HG 831/2004 + art. 25 si 304 CF): limita maxima deductibila = coeficientul grupei (anexe 1-3) aplicat la pretul de inregistrare al produselor INTRATE, cu conditii (verificare faptica, aprobarea administratorului, proces-verbal). IN limita: 607/60x=3xx deductibil fara ajustare TVA; PESTE limita: 607 nedeductibil + ajustare TVA dedusa (635=4426) pe depasire. Motor pur.",F066,firma,Operatiuni speciale,core/perisabilitati.py,"HG 831/2004; art. 25, 304 CF",LIVE,pytest,,
+Contabilitate ONG,Note pe partida dubla specifica ONG (venituri fara scop patrimonial vs economice) si testul scutirii activitatii economice.,F064,firma,Operatiuni speciale,core/ong.py,OMFP 3103/2017; art. 15(2-3) CF,LIVE,pytest,,"## Ce face
+Tine contabilitatea in partida dubla specifica ONG-urilor, separand veniturile fara scop patrimonial de cele din activitatea economica, si aplica testul de scutire a activitatii economice.
+## Cand se foloseste
+Pentru asociatii, fundatii si alte entitati fara scop patrimonial care au si activitate economica si trebuie sa verifice incadrarea in scutire. Pentru contabilul care tine astfel de entitati.
+## Ce trebuie pregatit inainte
+- Separarea veniturilor pe cele doua categorii (nepatrimoniale vs economice).
+- Datele necesare testului de scutire a activitatii economice.
+## Pas cu pas
+1. Inregistreaza veniturile pe categoria corecta.
+2. Aplica testul de scutire pe activitatea economica.
+3. Verifica incadrarea rezultata inainte de a calcula impozitul.
+## Ce iese la capat
+Note pe partida dubla structurate pe cele doua tipuri de venituri, cu rezultatul testului de scutire.
+## Greseli frecvente
+- Amestecarea veniturilor economice cu cele fara scop patrimonial.
+- Aplicarea scutirii fara testul cerut de lege.
+## Reguli fiscale
+Contabilitatea urmeaza OMFP 3103/2017 (entitati fara scop patrimonial), iar scutirea activitatii economice se stabileste conform art. 15 alin. (2)-(3) din Codul fiscal."
+Povestea lunii (pachet lunar),Aduna cifrele lunii firmei -> AI scrie un draft narativ pentru antreprenor -> contabilul editeaza/aproba -> trimitere pe email; istoric per luna.,F065,cabinet,card Pachete lunare,core/pachete_api.py,,LIVE,vizual,,"## Ce face
+Aduna cifrele lunii pentru o firma si cere AI-ului un draft narativ pentru antreprenor; contabilul il editeaza si aproba, apoi se trimite pe email. Fiecare luna ramane in istoric.
+## Cand se foloseste
+Lunar, dupa inchidere, pentru contabilul care vrea sa explice antreprenorului nefinanciar ce s-a intamplat in firma, fara jargon.
+## Ce trebuie pregatit inainte
+- luna inchisa, cu cifrele finale
+- adresa de email a antreprenorului
+## Pas cu pas
+1. Deschide pachetul lunar al firmei.
+2. Genereaza draftul narativ cu AI.
+3. Editeaza textul si verifica cifrele.
+4. Aproba si trimite pe email.
+## Ce iese la capat
+Un email cu povestea lunii, salvat in istoric per luna.
+## Greseli frecvente
+- trimiterea fara a citi si edita draftul AI
+- generarea inainte de inchiderea lunii, pe cifre provizorii
+## Bun de stiut
+Draftul AI e punct de plecare, nu text final; verifica cifrele si tonul inainte de aprobare."
+Perisabilitati si scazaminte,"Perisabilitati si scazaminte (HG 831/2004 + art. 25 si 304 CF): limita maxima deductibila = coeficientul grupei (anexe 1-3) aplicat la pretul de inregistrare al produselor INTRATE, cu conditii (verificare faptica, aprobarea administratorului, proces-verbal). IN limita: 607/60x=3xx deductibil fara ajustare TVA; PESTE limita: 607 nedeductibil + ajustare TVA dedusa (635=4426) pe depasire. Motor pur.",F066,firma,Operatiuni speciale,core/perisabilitati.py,"HG 831/2004; art. 25, 304 CF",LIVE,pytest,,"## Ce face
+Calculeaza perisabilitatile si scazamintele: limita maxima deductibila este coeficientul grupei (din anexele HG 831/2004) aplicat la pretul de inregistrare al produselor INTRATE, cu conditiile legale (verificare faptica, aprobarea administratorului, proces-verbal). In limita, cheltuiala (607 sau 60x = 3xx) e deductibila fara ajustare de TVA; peste limita, 607 e nedeductibil si se ajusteaza TVA dedusa (635 = 4426) pe depasire. Motor pur.
+## Cand se foloseste
+Pentru firmele cu pierderi naturale in gestiune (perisabilitati, scazaminte) care trebuie incadrate in limita deductibila. Pentru contabilul care inregistreaza minusurile constatate.
+## Ce trebuie pregatit inainte
+- Procesul-verbal de constatare si aprobarea administratorului.
+- Pretul de inregistrare al produselor intrate si grupa aplicabila.
+## Pas cu pas
+1. Stabileste grupa si coeficientul din anexe.
+2. Calculeaza limita pe intrari.
+3. Inregistreaza in limita ca deductibil; pe depasire, 607 nedeductibil + ajustare TVA.
+## Ce iese la capat
+Note contabile cu partea deductibila si, unde e cazul, ajustarea de TVA.
+## Greseli frecvente
+- Aplicarea coeficientului la iesiri in loc de intrari.
+- Omiterea ajustarii de TVA pe depasirea limitei.
+## Reguli fiscale
+Perisabilitatile urmeaza HG 831/2004 si art. 25 si 304 din Codul fiscal; peste limita, taxa dedusa se ajusteaza (norme la art. 304 CF)."
 Link de plata pe factura,Genereaza link de plata online pe factura emisa si confirma incasarea; provider abstract: mock (fara cont) / Netopia / Stripe - cheia providerului per cabinet.,F067,firma,Facturi (detaliu),core/plati.py,,LIVE cu mock; provider real de configurat,pytest,,"## Ce face
 Link de plata pe factura emisa - genereaza un link prin care clientul poate plati factura online (provider de plata). Azi functioneaza cu provider mock; la activarea unui provider real (Netopia/Stripe) devine plata reala.
 ## Cand se foloseste
@@ -575,8 +944,42 @@ Link de plata pentru factura (provider mock sau real).
 ## Reguli fiscale
 Fara implicatii fiscale directe; incasarea se contabilizeaza la confirmare."
 "API portal (read-only, izolat)","Datele clientului strict pe firmele lui: date firma, declaratii depuse etc.; rol client separat, fara actiuni de contabil.",F068,portal,Portal (toate ecranele),core/portal_api.py,,LIVE,privacy-bug reparat 10.07,,
-Productie in curs si produse finite,"Note pentru obtinerea produselor (345=711), productia in curs (331), coeficientul 348 (diferente de pret) si vanzarea cu descarcare.",F069,firma,Operatiuni speciale > Imobilizari,core/productie.py,OMFP 1802/2014,LIVE,pytest,,
-Nomenclator produse + cota AI,"Produsele firmei: denumire -> AI potriveste cota TVA din regula oficiala cu justificare afisata, corectabila manual; cautare si potrivire la emiterea facturilor.",F070,firma,card Produse / Emitere,core/produse_api.py,art. 291 CF,LIVE,vizual (reconectat 13.07),,
+Productie in curs si produse finite,"Note pentru obtinerea produselor (345=711), productia in curs (331), coeficientul 348 (diferente de pret) si vanzarea cu descarcare.",F069,firma,Operatiuni speciale > Imobilizari,core/productie.py,OMFP 1802/2014,LIVE,pytest,,"## Ce face
+Genereaza notele pentru ciclul de productie: obtinerea produselor finite (345 = 711), productia in curs de executie (331), coeficientul de diferente de pret (348) si vanzarea cu descarcarea de gestiune.
+## Cand se foloseste
+Pentru firmele de productie care obtin produse finite si au productie neterminata la sfarsit de perioada. Pentru contabilul care inregistreaza obtinerea si vanzarea produselor.
+## Ce trebuie pregatit inainte
+- Cantitatile de produse obtinute si costul de productie.
+- Stadiul productiei in curs la inchidere.
+## Pas cu pas
+1. Inregistreaza obtinerea produselor (345 = 711).
+2. Evidentiaza productia in curs pe 331.
+3. Aplica diferentele de pret pe 348.
+4. La vanzare, descarca gestiunea.
+## Ce iese la capat
+Note contabile pentru obtinere, productie in curs, diferente de pret si descarcare la vanzare.
+## Greseli frecvente
+- Omiterea coeficientului 348 la descarcarea gestiunii.
+- Neinregistrarea productiei in curs la inchiderea perioadei.
+## Reguli fiscale
+Evaluarea si inregistrarea productiei urmeaza OMFP 1802/2014 (stocuri de natura produselor si productie in curs)."
+Nomenclator produse + cota AI,"Produsele firmei: denumire -> AI potriveste cota TVA din regula oficiala cu justificare afisata, corectabila manual; cautare si potrivire la emiterea facturilor.",F070,firma,card Produse / Emitere,core/produse_api.py,art. 291 CF,LIVE,vizual (reconectat 13.07),,"## Ce face
+Tine nomenclatorul de produse al firmei si, dupa denumire, potriveste automat cota de TVA din regula oficiala, cu justificare afisata si posibilitatea de corectie manuala; permite cautarea si potrivirea la emiterea facturilor.
+## Cand se foloseste
+La construirea nomenclatorului si la facturare, pentru a atribui rapid cota corecta fiecarui produs.
+## Ce trebuie pregatit inainte
+Denumirile produselor, iar pentru bunurile cu cota redusa, incadrarea (cod NC) care justifica reducerea.
+## Pas cu pas
+1. Adaugi sau cauti produsul in nomenclator.
+2. AI propune cota, cu justificarea legala.
+3. Confirmi sau corectezi manual.
+4. Cota se aplica automat la facturare.
+## Ce iese la capat
+Nomenclator cu cota atribuita fiecarui produs, gata de folosit pe facturi.
+## Greseli frecvente
+Denumire ambigua ce duce la cota gresita; pastrarea unei cote vechi dupa modificarea legii; aplicarea cotei reduse fara conditiile de incadrare.
+## Reguli fiscale
+Art. 291 Cod fiscal: cota standard 21% si cota redusa 11% (Legea 141/2025, de la 1 august 2025). Incadrarea la cota redusa cere indeplinirea conditiilor din art. 291 alin. (2) pentru fiecare categorie de bun."
 Provizioane si ajustari,"Provizioane si ajustari de valoare (OMFP 1802/2014 sect. 4.10 + art. 26 CF): ajustari creante clienti (6814=491 / reluare 491=7814) cu deductibilitate pe conditii - 30% peste 270 zile de la scadenta (negarantata, neafiliata), 100% la faliment declarat/insolventa PF, altfel 0%; provizioane 151x (6812=151x / 151x=7812). Motor pur.",F071,firma,Operatiuni speciale > Imobilizari,core/provizioane.py,OMFP 1802/2014 s.4.10; art. 26 CF,LIVE,pytest,,"## Ce face
 Note pentru provizioane si ajustari - constituirea si reluarea provizioanelor pentru riscuri si cheltuieli, ajustari pentru deprecierea activelor.
 ## Cand se foloseste
@@ -593,8 +996,40 @@ Note pentru provizioane/ajustari; impact pe rezultat.
 - Provizioane nedeductibile fiscal tratate ca deductibile.
 ## Reguli fiscale
 OMFP 1802/2014; Codul fiscal (deductibilitatea provizioanelor)."
-Canal de sesizari (Raporteaza),"Feedback de la utilizatori catre Admin iConta: sesizare cu atasamente (capturi), fir de raspunsuri bidirectional, marcare citit.",F072,transversal,Raporteaza (cabinet/asistent/portal) + Admin > Raportari,core/raportari_api.py,,LIVE,vizual,,
-Reconciliere bancara (matching),"Motor pur de potrivire a liniilor de extras pe facturile deschise ale partenerului: exact, combinatii, FIFO; alocare partiala pe mai multe facturi.",F073,firma,card Banca,core/reconciliere.py + core/reconciliere_api.py,,LIVE,pytest,,
+Canal de sesizari (Raporteaza),"Feedback de la utilizatori catre Admin iConta: sesizare cu atasamente (capturi), fir de raspunsuri bidirectional, marcare citit.",F072,transversal,Raporteaza (cabinet/asistent/portal) + Admin > Raportari,core/raportari_api.py,,LIVE,vizual,,"## Ce face
+Canalul Raporteaza: utilizatorii trimit sesizari catre Administratorul iConta, cu atasamente (capturi de ecran), pe un fir de raspunsuri bidirectional, cu marcare citit.
+## Cand se foloseste
+Cand intalnesti o problema, o eroare sau ai o propunere pentru aplicatie. Pentru orice utilizator al iConta.
+## Ce trebuie pregatit inainte
+- Descrierea problemei si, daca ajuta, o captura de ecran.
+## Pas cu pas
+1. Deschide sectiunea Raporteaza.
+2. Scrie sesizarea si ataseaza capturile relevante.
+3. Urmareste firul: Adminul raspunde, tu poti replica.
+## Ce iese la capat
+O sesizare inregistrata, cu fir de discutie pana la rezolvare.
+## Greseli frecvente
+- Sesizare vaga, fara pasii de reproducere sau captura.
+## Bun de stiut
+O captura de ecran si pasii exacti scurteaza mult timpul pana la un raspuns util. Firul e bidirectional, deci verifica-l pentru raspunsul Adminului."
+Reconciliere bancara (matching),"Motor pur de potrivire a liniilor de extras pe facturile deschise ale partenerului: exact, combinatii, FIFO; alocare partiala pe mai multe facturi.",F073,firma,card Banca,core/reconciliere.py + core/reconciliere_api.py,,LIVE,pytest,,"## Ce face
+Motor pur care potriveste liniile de extras bancar cu facturile deschise ale partenerului: potrivire exacta, pe combinatii de facturi si dupa metoda FIFO, cu alocare partiala pe mai multe facturi.
+## Cand se foloseste
+Pentru contabilul care vrea sa inchida automat facturile pe baza incasarilor si platilor din extras, in loc sa le puncteze manual.
+## Ce trebuie pregatit inainte
+- Liniile de extras importate.
+- Lista facturilor deschise per partener.
+## Pas cu pas
+1. Importa extrasul si identifica partenerul.
+2. Lasa motorul sa caute potrivirea (exacta, combinatii, FIFO).
+3. Confirma alocarea, inclusiv cea partiala pe mai multe facturi.
+## Ce iese la capat
+Legaturi intre incasari/plati si facturi, cu soldurile facturilor actualizate.
+## Greseli frecvente
+- Partener neidentificat pe linia de extras impiedica potrivirea.
+- Acceptarea unei potriviri pe combinatii fara verificarea facturilor incluse.
+## Bun de stiut
+- Alocarea partiala permite stingerea unei facturi din mai multe incasari succesive."
 Reevaluare imobilizari,"Reevaluarea la valoarea justa (cont 105, metoda valorii nete cu eliminarea amortizarii) si realizarea surplusului din rezerve.",F074,firma,Operatiuni speciale > Imobilizari,core/reevaluare.py,OMFP 1802/2014 pct. 111-116,LIVE,pytest,,"## Ce face
 Note pentru reevaluarea imobilizarilor - actualizarea valorii mijloacelor fixe la valoarea justa, cu rezerva din reevaluare si impactul pe amortizare.
 ## Cand se foloseste
@@ -629,11 +1064,79 @@ Registru de incasari si plati; venitul net pentru D212.
 - Confuzia partida simpla (PFA) cu partida dubla (SRL).
 ## Reguli fiscale
 Codul fiscal (venituri din activitati independente, sistem real); norme partida simpla."
-Salariati (CRUD),"Salariatii firmei: creare/editare/stergere cu validare (CNP, norma, contract), alimenteaza statul de plata, D112 si REGES.",F078,firma,card Salariati,core/salariati_api.py,,LIVE,bug tip_norma reparat,,
+Salariati (CRUD),"Salariatii firmei: creare/editare/stergere cu validare (CNP, norma, contract), alimenteaza statul de plata, D112 si REGES.",F078,firma,card Salariati,core/salariati_api.py,,LIVE,bug tip_norma reparat,,"## Ce face
+Gestioneaza salariatii firmei: creare, editare si stergere, cu validare pe CNP, norma si contract. Datele introduse aici alimenteaza statul de plata, D112 si REGES.
+## Cand se foloseste
+La angajare, la modificarea contractului sau la incetare, de catre contabilul de salarizare.
+## Ce trebuie pregatit inainte
+- CNP corect
+- datele din contract: norma, tip contract, data de start
+## Pas cu pas
+1. Deschide lista salariatilor firmei.
+2. Adauga sau editeaza salariatul si completeaza campurile.
+3. Salveaza; validarile de CNP, norma si contract blocheaza datele incorecte.
+## Ce iese la capat
+Salariat activ, folosit automat in statul de plata, in D112 si in REGES.
+## Greseli frecvente
+- CNP gresit, respins la validare
+- stergerea unui salariat cu istoric de salarizare in loc de inregistrarea incetarii
+## Bun de stiut
+Modificarile de aici se propaga in stat si in D112; corecteaza datele salariatului aici, nu direct in declaratie."
 Import salariati (migrare),"Import salariati la migrare (stratul 4): citeste exportul din vechea aplicatie (.xlsx/.csv) cu mapare flexibila a coloanelor (nume/prenume/CNP/salariu/functie/data angajare, indiferent de ordine sau denumire); valideaza CNP-ul cu cheia de control oficiala 279146358279 + structura data + judet; importa in tabelul salariati existent al tenantului.",F079,firma,Migrare / Import date,core/salariati_import_api.py,,LIVE,,,
-Calculul scadentelor,"Data scadentei per declaratie (25 ale lunii etc.), mutata la prima zi lucratoare dupa sarbatori legale (calendar cu Pastele pe ani).",F081,transversal,Termene / Control fiscal,core/scadente.py,calendar sarbatori legale,LIVE,,,
-SGR (garantie-returnare),"Notele fluxului SGR: garantie la achizitie/vanzare (0,50 lei/ambalaj), restituire consumator, autofactura RetuRO, virarea garantiilor.",F082,firma,Operatiuni speciale,core/sgr.py,HG 1074/2021,LIVE,pytest,,
-Sinteza zilnica pe email,"Seara, patronul primeste pe email sinteza cabinetului: pregatite/validate/respinse/depuse, productia echipei, evenimente; aceeasi sinteza si in card, la cerere.",F083,cabinet,card Sinteza zilei + email (cron),core/sinteza_zilnica.py,,LIVE,vizual,,
+Calculul scadentelor,"Data scadentei per declaratie (25 ale lunii etc.), mutata la prima zi lucratoare dupa sarbatori legale (calendar cu Pastele pe ani).",F081,transversal,Termene / Control fiscal,core/scadente.py,calendar sarbatori legale,LIVE,,,"## Ce face
+Calculeaza data scadentei pentru fiecare declaratie (25 ale lunii si alte termene) si o muta pe prima zi lucratoare cand cade in weekend sau sarbatoare legala. Calendarul include si sarbatorile mobile (Pastele) pe ani.
+## Cand se foloseste
+Ori de cate ori ai nevoie de termenul real de depunere sau plata, nu de ziua nominala din lege.
+## Ce trebuie pregatit inainte
+- tipul declaratiei si perioada
+## Pas cu pas
+1. Alege declaratia si perioada.
+2. Sistemul aplica regula termenului (25 sau termenul specific).
+3. Daca termenul cade in weekend sau sarbatoare, il muta la prima zi lucratoare urmatoare.
+## Ce iese la capat
+Data scadentei reala, deja ajustata dupa calendarul sarbatorilor legale.
+## Greseli frecvente
+- folosirea zilei 25 fixe fara ajustare la zi lucratoare
+- ignorarea sarbatorilor mobile, care se schimba de la an la an
+## Bun de stiut
+Pastele si sarbatorile derivate se muta anual; calendarul le include, dar verifica pentru anii nou adaugati."
+SGR (garantie-returnare),"Notele fluxului SGR: garantie la achizitie/vanzare (0,50 lei/ambalaj), restituire consumator, autofactura RetuRO, virarea garantiilor.",F082,firma,Operatiuni speciale,core/sgr.py,HG 1074/2021,LIVE,pytest,,"## Ce face
+Genereaza notele contabile ale fluxului SGR: garantia la achizitie si la vanzare, restituirea garantiei catre consumator, autofactura catre RetuRO si virarea garantiilor colectate.
+## Cand se foloseste
+Pentru firmele care comercializeaza produse in ambalaje incluse in sistemul garantie-returnare.
+## Ce trebuie pregatit inainte
+- documentele de achizitie si vanzare cu ambalaje SGR
+- decontul/autofactura RetuRO
+## Pas cu pas
+1. Inregistreaza achizitia sau vanzarea cu garantia pe ambalaj.
+2. Aplica restituirea garantiei la returul consumatorului.
+3. Genereaza autofactura catre RetuRO.
+4. Vireaza garantiile colectate.
+## Ce iese la capat
+Notele contabile complete ale fluxului SGR, cu garantiile reflectate distinct de venituri.
+## Greseli frecvente
+- tratarea garantiei ca venit al comerciantului
+- omiterea autofacturii RetuRO
+## Reguli fiscale
+Sistemul de garantie-returnare este reglementat prin HG 1074/2021. Garantia (0,50 lei/ambalaj, conform fluxului configurat) este o suma tranzitorie, nu un venit: se colecteaza si se vireaza catre administratorul SGR."
+Sinteza zilnica pe email,"Seara, patronul primeste pe email sinteza cabinetului: pregatite/validate/respinse/depuse, productia echipei, evenimente; aceeasi sinteza si in card, la cerere.",F083,cabinet,card Sinteza zilei + email (cron),core/sinteza_zilnica.py,,LIVE,vizual,,"## Ce face
+Trimite seara patronului cabinetului o sinteza pe email: cate lucrari sunt pregatite, validate, respinse si depuse, productia echipei si evenimentele zilei. Acelasi continut apare si in card, la cerere.
+## Cand se foloseste
+Zilnic, seara, automat; sau oricand din card, pentru patronul ori coordonatorul cabinetului.
+## Ce trebuie pregatit inainte
+- adresa de email a patronului
+- activitatea zilei inregistrata in sistem
+## Pas cu pas
+1. Sistemul aduna starile lucrarilor (pregatite, validate, respinse, depuse) si productia echipei.
+2. Compune sinteza serii.
+3. O trimite pe email; o poti deschide si in card oricand.
+## Ce iese la capat
+Un email cu sinteza cabinetului, cu acelasi continut disponibil in card.
+## Greseli frecvente
+- email lipsa sau gresit, sinteza nu ajunge
+- confundarea starii ""depuse"" cu ""validate""
+## Bun de stiut
+Sinteza reflecta exact ce e inregistrat in sistem; ce nu e marcat corect nu apare in cifre."
 Import solduri initiale (migrare),"Citeste balanta de deschidere (.xlsx/.csv), extrage soldurile per cont si le importa ca pozitie de pornire; conturile analitice intra automat in plan.",F084,firma,Migrare / Import date,core/solduri_api.py,,LIVE,,,
 Import solduri parteneri (migrare),"Import solduri parteneri la migrare (defalcarea 4111/401 per client/furnizor): fisier .xlsx/.csv cu Cont, CUI, Denumire, Sold debitor/creditor - un rand = un partener pe un cont; verificare de coerenta cu stratul 2: suma soldurilor partenerilor pe contul sintetic se compara cu soldul din balanta de deschidere (analiticele grupate pe radacina).",F085,firma,Migrare / Import date,core/solduri_parteneri_api.py,,LIVE,,,
 Sponsorizari si credit fiscal,"Plafonul creditului fiscal (0,75% CA / 20% impozit), creditul de sponsorizare si nota; fara credit ramane simpla cheltuiala.",F086,firma,Operatiuni speciale,core/sponsorizari.py,art. 25(4)i CF; Legea 32/1994,LIVE,pytest,sponsorizare-credit-fiscal,"## Ce face
@@ -654,8 +1157,43 @@ Note pentru sponsorizare + creditul fiscal aplicabil (in limita legala).
 - Beneficiar neinscris in registru (micro) -> fara credit.
 ## Reguli fiscale
 Codul fiscal (sponsorizare: limita creditului fiscal - profit 0,75%% CA si max 20%% impozit; micro 20%% impozit)."
-Stat de plata + fluturasi,"Statul de plata lunar per firma: toti salariatii prin motorul de salarizare (brut -> contributii -> net, cu deduceri, facilitati, CM), plus fluturasii PDF individuali per salariat (pdf_util, identitate DS cap.7). Alimenteaza D112 si plata salariilor.",F087,firma,Salariati,core/stat_plata_api.py,,LIVE,vizual + parte din D112 DUK,salariu-minim-2026,
-Stocuri global-valorice,"Stocuri global-valorice (metoda pretului cu amanuntul, OMFP 1802/2014): NIR cu adaos + TVA neexigibila (378/4428), coeficientul K calculat cumulat pe exercitiu, descarcarea lunara a gestiunii din vanzari (nota % = 371: 607 + 378 + 4428). Propusa automat dupa nota Raportului Z al lunii.",F088,firma,card Stocuri,core/stocuri.py + core/stocuri_api.py,OMFP 1802/2014,LIVE,pytest,,
+Stat de plata + fluturasi,"Statul de plata lunar per firma: toti salariatii prin motorul de salarizare (brut -> contributii -> net, cu deduceri, facilitati, CM), plus fluturasii PDF individuali per salariat (pdf_util, identitate DS cap.7). Alimenteaza D112 si plata salariilor.",F087,firma,Salariati,core/stat_plata_api.py,,LIVE,vizual + parte din D112 DUK,salariu-minim-2026,"## Ce face
+Calculeaza statul de plata lunar per firma: trece toti salariatii prin motorul de salarizare (brut -> contributii -> net, cu deduceri, facilitati si concedii medicale) si genereaza fluturasii PDF individuali. Alimenteaza D112 si plata salariilor.
+## Cand se foloseste
+Lunar, la salarizare, de catre contabilul de salarizare.
+## Ce trebuie pregatit inainte
+- salariati activi si corecti (vezi Salariati)
+- pontajul si concediile medicale ale lunii
+## Pas cu pas
+1. Alege firma si luna.
+2. Ruleaza motorul de salarizare pentru toti salariatii.
+3. Verifica brut, contributii, net, deduceri si facilitati.
+4. Genereaza fluturasii PDF individuali.
+## Ce iese la capat
+Statul de plata al lunii si fluturasii PDF per salariat; datele merg in D112 si in plata salariilor.
+## Greseli frecvente
+- salariati cu date incomplete, care duc la calcul gresit
+- omiterea concediilor medicale ale lunii
+## Reguli fiscale
+Contributiile si impozitul pe venitul din salarii se calculeaza conform Codului fiscal (Legea 227/2015); concediile medicale se aplica potrivit OUG 158/2005. Deducerile si facilitatile se aplica dupa regulile in vigoare in luna calculata."
+Stocuri global-valorice,"Stocuri global-valorice (metoda pretului cu amanuntul, OMFP 1802/2014): NIR cu adaos + TVA neexigibila (378/4428), coeficientul K calculat cumulat pe exercitiu, descarcarea lunara a gestiunii din vanzari (nota % = 371: 607 + 378 + 4428). Propusa automat dupa nota Raportului Z al lunii.",F088,firma,card Stocuri,core/stocuri.py + core/stocuri_api.py,OMFP 1802/2014,LIVE,pytest,,"## Ce face
+Gestioneaza stocurile global-valoric prin metoda pretului cu amanuntul: NIR cu adaos comercial si TVA neexigibila (378 / 4428), coeficientul K calculat cumulat pe exercitiu si descarcarea lunara a gestiunii din vanzari (nota in procent: 371 = 607 + 378 + 4428). Descarcarea e propusa automat dupa nota Raportului Z al lunii.
+## Cand se foloseste
+Pentru magazinele care tin gestiunea global-valoric la pret de vanzare cu amanuntul. Pentru contabilul care descarca lunar gestiunea pe baza vanzarilor.
+## Ce trebuie pregatit inainte
+- NIR-urile lunii, cu adaos si TVA neexigibila.
+- Raportul Z (vanzarile lunii).
+## Pas cu pas
+1. Inregistreaza NIR-urile cu 378 si 4428.
+2. Lasa sistemul sa calculeze coeficientul K cumulat.
+3. Dupa nota Raportului Z, accepta descarcarea propusa (371 = 607 + 378 + 4428).
+## Ce iese la capat
+Nota de descarcare lunara a gestiunii, cu costul marfii, adaosul si TVA neexigibila repartizate.
+## Greseli frecvente
+- Recalcularea K doar pe luna in loc de cumulat pe exercitiu.
+- Descarcarea inainte de inregistrarea Raportului Z.
+## Reguli fiscale
+Metoda pretului cu amanuntul (coeficientul K si TVA neexigibila) urmeaza OMFP 1802/2014."
 Stocuri cantitativ-valorice (CMP),"Stocuri cantitativ-valorice la CMP (OMFP 1802/2014 pct. 96: CMP recalculat dupa fiecare intrare): fisa de magazie cronologica per articol (intrari/iesiri), iesiri la CMP curent, note 607=371 (marfa) / 601=301 (materii prime). Validare cronologica: o iesire nu poate depasi stocul LA DATA ei (gv_crono) - antedatarile care ar sparge fisa sunt respinse. Sta la baza retetarului HoReCa si a importului de articole cu stoc initial.",F089,firma,card Stocuri,core/stocuri_cv.py + core/stocuri_cv_api.py,OMFP 1802/2014 pct. 96,LIVE,pytest,,"## Ce face
 Gestiunea stocurilor cantitativ-valorica (CV) la cost mediu ponderat (CMP) - intrari (NIR), iesiri, transferuri intre gestiuni, cu evidenta pe cantitate si valoare, la pret mediu.
 ## Cand se foloseste
@@ -690,29 +1228,256 @@ Note pentru subventie, cu recunoasterea corecta (amanata pt investitii, curenta 
 - Recunoasterea subventiei pentru investitii integral pe venit (in loc de amanat).
 ## Reguli fiscale
 OMFP 1802/2014 (subventii: venituri amanate pentru investitii, venit curent pentru exploatare)."
-Taxare inversa interna,"Taxare inversa interna (art. 331 CF + norme pct. 109): conditie furnizor SI beneficiar platitori de TVA, doar operatiuni interne; beneficiarul inregistreaza 4426=4427, furnizorul factureaza fara TVA cu mentiunea obligatorie; prag 22.500 lei/factura la telefoane/circuite/console; categoriile c)-f), i)-l) valabile pana la 31.12.2026 (OUG 85/2022). Neaplicarea corecta = pierderea dreptului de deducere. Motor pur.",F091,firma,Operatiuni speciale > TVA regimuri,core/taxare_inversa.py,art. 331 CF; norme pct. 109,LIVE,pytest,taxare-inversa-interna,
+Taxare inversa interna,"Taxare inversa interna (art. 331 CF + norme pct. 109): conditie furnizor SI beneficiar platitori de TVA, doar operatiuni interne; beneficiarul inregistreaza 4426=4427, furnizorul factureaza fara TVA cu mentiunea obligatorie; prag 22.500 lei/factura la telefoane/circuite/console; categoriile c)-f), i)-l) valabile pana la 31.12.2026 (OUG 85/2022). Neaplicarea corecta = pierderea dreptului de deducere. Motor pur.",F091,firma,Operatiuni speciale > TVA regimuri,core/taxare_inversa.py,art. 331 CF; norme pct. 109,LIVE,pytest,taxare-inversa-interna,"## Ce face
+Aplica mecanismul taxarii inverse interne: la operatiuni interne intre doi platitori de TVA, furnizorul factureaza fara TVA cu mentiunea de taxare inversa, iar beneficiarul inregistreaza 4426 = 4427 (TVA neutra). Motor de calcul si validare a conditiilor.
+## Cand se foloseste
+Pentru livrari interne din categoriile prevazute de lege (ex. cereale, deseuri, masa lemnoasa, telefoane, console, circuite integrate), cand ambele parti sunt inregistrate in scopuri de TVA.
+## Ce trebuie pregatit inainte
+Statutul de platitor de TVA al ambelor parti, categoria bunului sau serviciului si valoarea facturii (pentru pragul aplicabil).
+## Pas cu pas
+1. Verifici ca furnizorul si beneficiarul sunt platitori de TVA.
+2. Confirmi ca operatiunea e interna si intra in categoriile legale.
+3. Furnizorul emite factura fara TVA, cu mentiunea obligatorie.
+4. Beneficiarul inregistreaza 4426 = 4427.
+## Ce iese la capat
+Factura fara TVA la furnizor si inregistrarea neutra la beneficiar, cu drept de deducere pastrat.
+## Greseli frecvente
+Aplicarea cand una din parti nu e platitoare; omiterea mentiunii pe factura; ignorarea pragului la telefoane/console/circuite. Neaplicarea corecta poate duce la pierderea dreptului de deducere.
+## Reguli fiscale
+Art. 331 Cod fiscal si normele pct. 109. Pentru bunurile de la art. 331 alin. (2) lit. i)-k) (telefoane, console, tablete, circuite integrate) taxarea inversa se aplica doar daca valoarea bunurilor dintr-o factura, exclusiv TVA, este cel putin 22.500 lei (art. 331 alin. 7)."
 Provisioning tenant (schema per firma),Firma noua = schema PostgreSQL dedicata cu tabelele din template + planul de conturi OMFP populat + numerotare automata a schemei; actualizare detalii tenant.,F092,transversal,— (automat la Adauga firma),core/tenant_provisioning.py + tenant_template.sql,,LIVE,bug template gol reparat 10.07; coliziune_gratuit_v1 testat real 18.07 (detectie pozitiva pe rand gratuit temporar cu prefix RO in tranzactie rollback; non-match si CUI inexistent -> None) | coliziune_gratuit_v1 SCOS 26.07 (contul gratuit eliminat); provisioning cabinet intact.,,
-Scadente viitoare pe portofoliu,"Pentru fiecare firma deriva din vectorul fiscal declaratiile datorate cu termenele urmatoarelor 60 de zile; agregare pe portofoliu, grupare pe data.",F093,cabinet,card Termene,core/termene_api.py,,LIVE,vizual,,
+Scadente viitoare pe portofoliu,"Pentru fiecare firma deriva din vectorul fiscal declaratiile datorate cu termenele urmatoarelor 60 de zile; agregare pe portofoliu, grupare pe data.",F093,cabinet,card Termene,core/termene_api.py,,LIVE,vizual,,"## Ce face
+Pentru fiecare firma deriva din vectorul fiscal declaratiile datorate cu termenele din urmatoarele 60 de zile, apoi le agrega pe tot portofoliul si le grupeaza pe data.
+## Cand se foloseste
+La planificarea lunii, de catre contabilul care gestioneaza mai multe firme.
+## Ce trebuie pregatit inainte
+- vectorul fiscal corect pentru fiecare firma
+## Pas cu pas
+1. Deschide scadentele pe portofoliu.
+2. Sistemul citeste vectorul fiscal al fiecarei firme.
+3. Deriva declaratiile datorate pe urmatoarele 60 de zile.
+4. Vezi lista agregata, grupata pe data.
+## Ce iese la capat
+Un calendar al portofoliului cu declaratiile datorate pe data, pentru urmatoarele 60 de zile.
+## Greseli frecvente
+- vector fiscal gresit, care produce declaratii lipsa sau in plus
+- ignorarea firmelor nou adaugate, cu vectorul nesetat
+## Bun de stiut
+Acuratetea depinde de vectorul fiscal; tine-l actualizat la fiecare modificare de regim."
 Educatie pe tipare de erori,Agregate statistice deterministe pe respingerile reale din coada: unde se greseste des si de ce - baza cardului Tipare de erori si a educatiei asistentilor.,F094,cabinet,Activitate > Tipare de erori,core/tipare_api.py,,LIVE,vizual,,
-Regim special agricultori,"Regim special agricultori (art. 315^1 CF): compensatie forfetara 8% aplicata la pretul EXCLUSIV taxa; agricultorul nu colecteaza si nu deduce TVA; cumparatorul PJ deduce compensatia ca TVA DOAR daca agricultorul figureaza in Registrul agricultorilor la data livrarii, cu evidenta separata a achizitiilor. Motor pur.",F095,firma,Operatiuni speciale > TVA regimuri,core/tva_agricultori.py,art. 315^1 CF,LIVE,pytest,,
-Regim special aur de investitii,"Regim special aur de investitii (art. 313 CF): definitii (lingouri >=995‰, monede >=900‰ emise dupa 1800, pret <= valoarea aurului +80%), livrari scutite cu optiune de taxare catre persoane impozabile -> taxare inversa (art. 331 al. 2 lit. h, factura fara TVA cu mentiune), identificarea clientului obligatorie + evidenta 5 ani. Motor pur.",F096,firma,Operatiuni speciale > TVA regimuri,core/tva_aur.py,art. 313 CF,LIVE,pytest,,
-TVA la incasare,"Exigibilitatea la incasarea totala/partiala: 4428->4427 proportional cu incasarile, alocarile pe facturi, verificarea plafonului de eligibilitate.",F097,firma,Operatiuni speciale > TVA regimuri,core/tva_incasare.py,art. 282 CF; OUG 8/2026,LIVE,pytest; de testat P2.6,tva-la-incasare-exigibilitate,
-Regim special marja (second-hand),"Regim special marja pentru bunuri second-hand (art. 312 CF, norme pct. 86): TVA = marja (pret vanzare - pret cumparare) x cota/(100+cota) prin suta marita; marja negativa -> TVA 0, reportata in jurnalul special; pe factura NU se inscrie TVA distinct, mentiune obligatorie regimul marjei. Motor pur.",F098,firma,Operatiuni speciale > TVA regimuri,core/tva_marja.py,art. 312 CF; norme pct. 86,LIVE,pytest,regim-marja-second-hand,
-Regim special agentii de turism,"Determina regimul aplicabil si calculeaza: marja pe regim special (incasari - costuri directe), regim normal, comision de intermediar.",F099,firma,Operatiuni speciale > TVA regimuri,core/tva_marja_turism.py,art. 311 CF,LIVE,pytest,regim-special-agentii-turism,
-Vector fiscal per firma,"Cele 4 atribute care determina obligatiile: platitor TVA + periodicitate, regim (micro/profit), operatiuni intracomunitare, salariati - stocate in firma_profil; baza semaforului si a declaratiilor datorate.",F100,firma,Migrare > Vector fiscal / Control fiscal,core/vector_fiscal_api.py,,LIVE,vizual,,
-Verificatoare de coerenta,"Motoare pure de control: echilibrul fiecarei note, echilibrul balantei, TVA pe cote (facturi vs 4427/4426), D205 vs cont 457 - fiecare esec cu explicatie.",F101,firma,Verificari / Control fiscal,core/verificatoare.py,,LIVE,pytest,,
-Conector WooCommerce,"Config per firma (URL + chei), citirea comenzilor, transformarea in facturi iConta idempotent (comanda deja importata se sare), sincronizare manuala + cron.",F102,firma,card Magazin online,core/woocommerce.py,,LIVE,pytest; de testat P1.5,,
+Regim special agricultori,"Regim special agricultori (art. 315^1 CF): compensatie forfetara 8% aplicata la pretul EXCLUSIV taxa; agricultorul nu colecteaza si nu deduce TVA; cumparatorul PJ deduce compensatia ca TVA DOAR daca agricultorul figureaza in Registrul agricultorilor la data livrarii, cu evidenta separata a achizitiilor. Motor pur.",F095,firma,Operatiuni speciale > TVA regimuri,core/tva_agricultori.py,art. 315^1 CF,LIVE,pytest,,"## Ce face
+Aplica regimul special pentru agricultori: o compensatie forfetara procentuala calculata la pretul exclusiv taxa. Agricultorul nu colecteaza si nu deduce TVA, iar cumparatorul persoana impozabila poate deduce compensatia. Motor de calcul.
+## Cand se foloseste
+Pentru livrarile de produse agricole si serviciile agricole efectuate de un agricultor inscris in regimul special, catre cumparatori persoane impozabile.
+## Ce trebuie pregatit inainte
+Confirmarea ca agricultorul figureaza in Registrul agricultorilor la data livrarii, pretul exclusiv taxa si evidenta separata a achizitiilor.
+## Pas cu pas
+1. Verifici inscrierea agricultorului in registru la data livrarii.
+2. Iei pretul exclusiv taxa.
+3. Aplici procentul de compensatie forfetara.
+4. Cumparatorul deduce compensatia doar daca sunt indeplinite conditiile.
+## Ce iese la capat
+Valoarea compensatiei forfetare pe livrare si tratamentul de deducere la cumparator.
+## Greseli frecvente
+Aplicarea compensatiei la pretul cu taxa in loc de cel fara; deducerea la cumparator cand agricultorul nu e in registru la data livrarii; lipsa evidentei separate.
+## Reguli fiscale
+Art. 315^1 Cod fiscal: procentul de compensare in cota forfetara este de 8% incepand cu anul 2019 (art. 315^1 alin. 2), aplicat la pretul exclusiv taxa. Agricultorul nu colecteaza si nu deduce TVA."
+Regim special aur de investitii,"Regim special aur de investitii (art. 313 CF): definitii (lingouri >=995‰, monede >=900‰ emise dupa 1800, pret <= valoarea aurului +80%), livrari scutite cu optiune de taxare catre persoane impozabile -> taxare inversa (art. 331 al. 2 lit. h, factura fara TVA cu mentiune), identificarea clientului obligatorie + evidenta 5 ani. Motor pur.",F096,firma,Operatiuni speciale > TVA regimuri,core/tva_aur.py,art. 313 CF,LIVE,pytest,,"## Ce face
+Aplica regimul special pentru aurul de investitii: verifica definitiile (lingouri, monede) si trateaza livrarile ca scutite, cu optiune de taxare catre persoane impozabile, caz in care se aplica taxare inversa. Motor de calcul si validare.
+## Cand se foloseste
+La comercializarea aurului de investitii de catre operatori specializati.
+## Ce trebuie pregatit inainte
+Puritatea si forma aurului (lingou sau moneda), datele clientului si evidenta operatiunilor.
+## Pas cu pas
+1. Verifici ca bunul se incadreaza in definitia aurului de investitii.
+2. Aplici scutirea sau, dupa caz, optiunea de taxare.
+3. La optiune de taxare catre persoana impozabila, aplici taxarea inversa (factura fara TVA, cu mentiune).
+4. Identifici clientul si pastrezi evidenta.
+## Ce iese la capat
+Tratamentul de TVA pe operatiune (scutit sau taxare inversa) si evidenta obligatorie.
+## Greseli frecvente
+Incadrarea gresita a aurului (sub puritatea minima); omiterea identificarii clientului; nepastrarea evidentei.
+## Reguli fiscale
+Art. 313 Cod fiscal: aur de investitii = lingouri/plachete cu puritate minima de 995 la mie (exceptand cele de cel mult 1 g) si monede cu titlu de minimum 900 la mie, reconfectionate dupa anul 1800, vandute la un pret ce nu depaseste cu mai mult de 80% valoarea aurului continut. Optiunea de taxare catre persoane impozabile duce la taxare inversa (art. 331 alin. 2 lit. h)."
+TVA la incasare,"Exigibilitatea la incasarea totala/partiala: 4428->4427 proportional cu incasarile, alocarile pe facturi, verificarea plafonului de eligibilitate.",F097,firma,Operatiuni speciale > TVA regimuri,core/tva_incasare.py,art. 282 CF; OUG 8/2026,LIVE,pytest; de testat P2.6,tva-la-incasare-exigibilitate,"## Ce face
+Gestioneaza exigibilitatea TVA la momentul incasarii: colecteaza TVA proportional cu sumele incasate (4428 catre 4427), aloca incasarile pe facturi si verifica plafonul de eligibilitate pentru aplicarea sistemului.
+## Cand se foloseste
+Pentru platitorii inscrisi in sistemul TVA la incasare, care colecteaza TVA doar cand incaseaza factura (total sau partial).
+## Ce trebuie pregatit inainte
+Facturile emise, incasarile aferente (cu date si sume) si cifra de afaceri pentru verificarea plafonului.
+## Pas cu pas
+1. Emiti factura cu TVA neexigibil (4428).
+2. La incasare, aloci suma pe factura.
+3. Transferi TVA proportional din 4428 in 4427.
+4. Verifici plafonul de eligibilitate la nivel de cifra de afaceri.
+## Ce iese la capat
+TVA colectata pe masura incasarilor si situatia eligibilitatii in sistem.
+## Greseli frecvente
+Colectarea integrala la emitere in loc de la incasare; alocare gresita a incasarilor partiale; nemonitorizarea depasirii plafonului.
+## Reguli fiscale
+Art. 282 Cod fiscal (exigibilitate la incasare). Prin OUG 8/2026, art. 282 alin. (3) a fost modificat: plafonul pentru aplicarea sistemului TVA la incasare este de 5.000.000 lei in perioada 1 martie - 31 decembrie 2026."
+Regim special marja (second-hand),"Regim special marja pentru bunuri second-hand (art. 312 CF, norme pct. 86): TVA = marja (pret vanzare - pret cumparare) x cota/(100+cota) prin suta marita; marja negativa -> TVA 0, reportata in jurnalul special; pe factura NU se inscrie TVA distinct, mentiune obligatorie regimul marjei. Motor pur.",F098,firma,Operatiuni speciale > TVA regimuri,core/tva_marja.py,art. 312 CF; norme pct. 86,LIVE,pytest,regim-marja-second-hand,"## Ce face
+Calculeaza TVA pe regimul marjei pentru bunuri second-hand: TVA = marja (pret vanzare minus pret cumparare) x cota / (100 + cota), prin procedeul sutei marite. Marja negativa da TVA zero, reportata in jurnalul special. Motor de calcul.
+## Cand se foloseste
+Pentru revanzatori de bunuri second-hand, opere de arta, obiecte de colectie si antichitati, care aplica regimul marjei.
+## Ce trebuie pregatit inainte
+Pretul de cumparare si de vanzare pe fiecare bun, cota aplicabila si jurnalul special al regimului.
+## Pas cu pas
+1. Introduci pretul de cumparare si cel de vanzare.
+2. Calculezi marja.
+3. Aplici suta marita pentru a extrage TVA din marja.
+4. Marja negativa duce la TVA zero, reportata in jurnal.
+## Ce iese la capat
+TVA pe fiecare bun, factura fara TVA distinct, cu mentiunea regimului marjei.
+## Greseli frecvente
+Aplicarea cotei la pretul intreg in loc de marja; inscrierea TVA distinct pe factura (interzis); omiterea reportarii marjei negative.
+## Reguli fiscale
+Art. 312 Cod fiscal si normele pct. 86: TVA se calculeaza pe marja de profit, exclusiv taxa. Pe factura nu se inscrie TVA distinct si se mentioneaza obligatoriu aplicarea regimului marjei."
+Regim special agentii de turism,"Determina regimul aplicabil si calculeaza: marja pe regim special (incasari - costuri directe), regim normal, comision de intermediar.",F099,firma,Operatiuni speciale > TVA regimuri,core/tva_marja_turism.py,art. 311 CF,LIVE,pytest,regim-special-agentii-turism,"## Ce face
+Determina regimul aplicabil unei agentii de turism si calculeaza baza: marja pe regimul special (incasari minus costuri directe in beneficiul calatorului), regim normal sau comision de intermediar.
+## Cand se foloseste
+Pentru agentiile de turism care actioneaza in nume propriu fata de calator, folosind livrari si servicii de la alti furnizori.
+## Ce trebuie pregatit inainte
+Sumele incasate de la calator, costurile directe ale serviciilor achizitionate in beneficiul lui si rolul agentiei (nume propriu sau intermediar).
+## Pas cu pas
+1. Stabilesti daca operatiunea intra in regimul special.
+2. Aduni suma platita de calator si costurile directe.
+3. Calculezi marja (incasari minus costuri directe).
+4. Aplici TVA pe marja, ori regimul normal sau comisionul, dupa caz.
+## Ce iese la capat
+Baza de TVA corespunzatoare regimului (marja, normal sau comision).
+## Greseli frecvente
+Includerea in marja a serviciilor prestate in nume propriu; deducerea TVA pe costurile directe (interzis in regimul marjei); tratarea gresita a rolului de intermediar.
+## Reguli fiscale
+Art. 311 Cod fiscal: regimul special pentru agentiile de turism; marja se determina ca diferenta intre suma totala platita de calator, exclusiv taxa, si costurile directe. TVA se aplica pe marja."
+Vector fiscal per firma,"Cele 4 atribute care determina obligatiile: platitor TVA + periodicitate, regim (micro/profit), operatiuni intracomunitare, salariati - stocate in firma_profil; baza semaforului si a declaratiilor datorate.",F100,firma,Migrare > Vector fiscal / Control fiscal,core/vector_fiscal_api.py,,LIVE,vizual,,"## Ce face
+Stocheaza in profilul firmei cele patru atribute care determina obligatiile fiscale: platitor de TVA si periodicitatea, regimul fiscal (micro sau profit), operatiunile intracomunitare si existenta salariatilor. Este baza semaforului de obligatii si a listei de declaratii datorate.
+## Cand se foloseste
+Pentru contabilul care configureaza o firma noua sau actualizeaza situatia fiscala cand se schimba un atribut (de exemplu inregistrare in scopuri de TVA sau angajarea primului salariat).
+## Ce trebuie pregatit inainte
+- Situatia TVA (platitor sau nu, lunar/trimestrial).
+- Regimul fiscal actual si daca exista operatiuni intracomunitare sau salariati.
+## Pas cu pas
+1. Deschide profilul firmei.
+2. Seteaza cele patru atribute.
+3. Salveaza; declaratiile datorate si semaforul se actualizeaza in consecinta.
+## Ce iese la capat
+Vectorul fiscal al firmei, care alimenteaza semaforul de obligatii si declaratiile datorate.
+## Greseli frecvente
+- Uitarea actualizarii vectorului la o schimbare de regim (micro/profit).
+- Periodicitate TVA gresita, care distorsioneaza scadentarul.
+## Bun de stiut
+- Cele patru atribute sunt sursa unica pentru ce declaratii apar ca datorate; tine-le la zi."
+Verificatoare de coerenta,"Motoare pure de control: echilibrul fiecarei note, echilibrul balantei, TVA pe cote (facturi vs 4427/4426), D205 vs cont 457 - fiecare esec cu explicatie.",F101,firma,Verificari / Control fiscal,core/verificatoare.py,,LIVE,pytest,,"## Ce face
+Ruleaza motoare pure de control al coerentei: echilibrul fiecarei note contabile, echilibrul balantei, TVA pe cote (facturi comparate cu 4427/4426) si potrivirea D205 cu contul 457. Fiecare esec vine cu o explicatie.
+## Cand se foloseste
+Pentru contabilul care vrea sa prinda erorile inainte de raportare sau depunere: la inchiderea lunii sau inainte de a genera declaratiile.
+## Ce trebuie pregatit inainte
+- Notele si balanta perioadei inregistrate.
+- Facturile cu TVA pe cote si, unde e cazul, datele D205 si soldul 457.
+## Pas cu pas
+1. Ruleaza verificatoarele pe perioada.
+2. Citeste explicatia fiecarui esec.
+3. Corecteaza sursa si reruleaza pana la coerenta.
+## Ce iese la capat
+Un raport cu verificarile trecute si cele picate, fiecare esec explicat.
+## Greseli frecvente
+- Ignorarea unei diferente mici de TVA pe cote, care semnaleaza o factura gresit inregistrata.
+- Depunerea D205 fara a reconcilia cu contul 457.
+## Bun de stiut
+- Verificatoarele nu corecteaza singure; arata cauza, corectia ramane la contabil."
+Conector WooCommerce,"Config per firma (URL + chei), citirea comenzilor, transformarea in facturi iConta idempotent (comanda deja importata se sare), sincronizare manuala + cron.",F102,firma,card Magazin online,core/woocommerce.py,,LIVE,pytest; de testat P1.5,,"## Ce face
+Conecteaza magazinul WooCommerce la iConta: configurare per firma (URL + chei API), citirea comenzilor si transformarea lor in facturi iConta. Importul e idempotent (o comanda deja importata se sare); sincronizarea poate fi manuala sau prin cron.
+## Cand se foloseste
+Cand firma vinde printr-un magazin WooCommerce si vrea facturile generate automat. Pentru contabilul unei firme de e-commerce.
+## Ce trebuie pregatit inainte
+- URL-ul magazinului si cheile API WooCommerce.
+## Pas cu pas
+1. Configureaza in firma URL-ul si cheile WooCommerce.
+2. Porneste sincronizarea manuala sau lasa cron-ul sa ruleze.
+3. Comenzile noi devin facturi; cele deja importate se sar.
+## Ce iese la capat
+Facturi iConta generate din comenzile WooCommerce, fara duplicate.
+## Greseli frecvente
+- Chei API gresite sau cu drepturi insuficiente.
+- Asteptarea reimportarii unei comenzi deja importate (e sarita intentionat).
+## Bun de stiut
+Idempotenta te protejeaza de facturi duble, deci poti rula sincronizarea de cate ori vrei. Daca lipsesc comenzi, verifica intai cheile API si URL-ul magazinului."
 Navigator ferestre cu traseu,"Ferestre modale peste desktop: fir de parinti in antet, titlul pasului in corp, sageata=pop pe traseul real, X=inchide tot, entitatea doar in antet, scroll memorat per pas.",F104,transversal,toata aplicatia,static/js/navigator.js,,LIVE,vizual,,
 Sesiune per-tab,Sesiune izolata per-tab prin sessionStorage (token + user): doua cabinete/conturi pot fi deschise simultan in taburi diferite fara sa se calce pe sesiune; inchiderea tabului inchide sesiunea lui.,F105,transversal,—,static/js/sesiune.js,,LIVE,reparat+verificat 12.07,,
 Design System + verificator,"16 capitole normative (DESIGN_SYSTEM.md v2.11) + gardian mecanic cu ~14 reguli (verificator_conformitate.py), TOTAL 0 permanent.",F106,transversal,—,DESIGN_SYSTEM.md + verificator_conformitate.py,,LIVE,rulat la fiecare tema,,
-Magic-link (login fara parola),"Login fara parola: utilizatorul cere un link pe email (/public/magic-link), tokenul din link emite sesiunea direct (auth_api.sesiune_pentru_user). Folosit si la activarea clientilor de portal - calea recomandata pe telefon.",F107,transversal,Acces client / Acces cont,main.py (auth),,LIVE,,,
-Inregistrare cabinet self-service,"Inregistrare cabinet self-service: formular public (/auth/register) creeaza contul admin_firma + cabinetul (accounting_firm) dintr-o miscare - email, parola, nume cabinet; utilizabil imediat, fara interventia superadminului.",F108,transversal,landing /,static/js/ecrane/login.js + tenant_provisioning,,LIVE,,,
-Suspendare cabinet,"Superadminul suspenda/reactiveaza un cabinet din Admin > Activitate; verificare per-request (nu doar la login): toate tokenurile cabinetului primesc 403 imediat, inclusiv sesiunile deja deschise. Exista si suspendare pe conturile gratuite.",F109,admin,Admin > Activitate,main.py,,LIVE,,,
+Magic-link (login fara parola),"Login fara parola: utilizatorul cere un link pe email (/public/magic-link), tokenul din link emite sesiunea direct (auth_api.sesiune_pentru_user). Folosit si la activarea clientilor de portal - calea recomandata pe telefon.",F107,transversal,Acces client / Acces cont,main.py (auth),,LIVE,,,"## Ce face
+Login fara parola prin magic-link: utilizatorul cere un link pe email, iar tokenul din link emite direct sesiunea. Aceeasi cale se foloseste la activarea clientilor de portal si este recomandata pe telefon.
+## Cand se foloseste
+Cand nu vrei sau nu poti folosi parola, mai ales pe telefon, sau la prima activare a unui client de portal.
+## Ce trebuie pregatit inainte
+- Adresa de email a contului, accesibila pentru a deschide linkul.
+## Pas cu pas
+1. Cere magic-link din pagina publica de login.
+2. Deschide emailul primit si apasa linkul.
+3. Tokenul emite sesiunea si esti autentificat.
+## Ce iese la capat
+Sesiune activa fara introducerea unei parole.
+## Greseli frecvente
+- Deschiderea linkului pe alt dispozitiv decat cel dorit.
+- Intarzierea: tokenul din link e menit unei folosiri prompte.
+## Bun de stiut
+Pe telefon magic-link e calea recomandata, mai comoda decat tastarea parolei. La activarea unui client de portal, trimite-i aceasta cale ca sa intre simplu prima data."
+Inregistrare cabinet self-service,"Inregistrare cabinet self-service: formular public (/auth/register) creeaza contul admin_firma + cabinetul (accounting_firm) dintr-o miscare - email, parola, nume cabinet; utilizabil imediat, fara interventia superadminului.",F108,transversal,landing /,static/js/ecrane/login.js + tenant_provisioning,,LIVE,,,"## Ce face
+Inregistrare self-service a cabinetului: un formular public creeaza dintr-o miscare contul de admin al firmei si cabinetul de contabilitate (email, parola, nume cabinet). Cabinetul e utilizabil imediat, fara interventia superadminului.
+## Cand se foloseste
+Cand un cabinet nou vrea sa inceapa sa foloseasca iConta pe cont propriu. Pentru administratorul unui cabinet la prima punere in functiune.
+## Ce trebuie pregatit inainte
+- Un email valid, o parola si numele cabinetului.
+## Pas cu pas
+1. Deschide formularul public de inregistrare.
+2. Completeaza email, parola si numele cabinetului.
+3. Trimite: contul de admin si cabinetul se creeaza impreuna.
+## Ce iese la capat
+Un cont de administrator si un cabinet functional, gata de folosit imediat.
+## Greseli frecvente
+- Email deja folosit pentru alt cont.
+- Nume de cabinet ales in graba, greu de schimbat ulterior.
+## Bun de stiut
+Nu astepta aprobarea unui superadmin: cabinetul e activ imediat dupa inregistrare. Foloseste un email la care ai acces permanent, pentru recuperare si notificari."
+Suspendare cabinet,"Superadminul suspenda/reactiveaza un cabinet din Admin > Activitate; verificare per-request (nu doar la login): toate tokenurile cabinetului primesc 403 imediat, inclusiv sesiunile deja deschise. Exista si suspendare pe conturile gratuite.",F109,admin,Admin > Activitate,main.py,,LIVE,,,"## Ce face
+Permite superadminului sa suspende sau sa reactiveze un cabinet din Admin > Activitate. Verificarea e per-request, nu doar la login: la suspendare toate tokenurile cabinetului primesc 403 imediat, inclusiv sesiunile deja deschise. Exista si suspendare pe conturile gratuite.
+## Cand se foloseste
+Cand un cabinet trebuie oprit din acces (neplata, abuz) sau readus in functiune. Pentru superadminul iConta.
+## Ce trebuie pregatit inainte
+- Identificarea cabinetului de suspendat sau reactivat.
+## Pas cu pas
+1. Intra in Admin > Activitate.
+2. Alege cabinetul si aplica suspendarea sau reactivarea.
+3. Efectul e imediat pe toate sesiunile cabinetului.
+## Ce iese la capat
+Cabinet suspendat (acces blocat cu 403) sau reactivat, cu efect instantaneu.
+## Greseli frecvente
+- Asteptarea ca suspendarea sa se aplice doar la urmatorul login: e imediata.
+- Suspendarea cabinetului gresit; verifica identitatea inainte.
+## Bun de stiut
+Suspendarea taie inclusiv sesiunile deschise, nu doar loginurile noi. Confirma de doua ori cabinetul tinta, pentru ca efectul e instant pentru toti utilizatorii lui."
 Cron facturi recurente,Cron zilnic 7:00: emite facturile lunare din sabloanele active. Regula: zi_emitere <= ziua curenta si nicio emitere in luna curenta -> emite si consemneaza ultima_emitere (idempotent pe luna).,F110,firma,— (automat),core/facturi_recurente.py + cron,,LIVE,de testat P1.4,,
 Cron WooCommerce,"Cron zilnic 7:30: import comenzi WooCommerce -> facturi iConta, per tenant cu config in firma_profil (wc_url, wc_ck, wc_cs); preturi fara TVA preluate din WC; idempotent pe numarul comenzii.",F111,firma,— (automat),core/woocommerce.py + cron,,LIVE,pytest; de testat P1.5,,
 Cron monitor fiscal,"Cron saptamanal (luni 8:00): citeste buletinele ANAF/MF (PDF), AI filtreaza modificarile relevante (TVA, salarii, plafoane, declaratii) cu data intrarii in vigoare, salveaza in alerte_fiscale + email; alimenteaza F103 (emitere 7/3/0 + propuneri admin).",F112,admin,— (automat),core/monitor_fiscal.py + cron,,LIVE (afisarea programata = F103),pytest,,
 API public v1,"API public v1 (REST, autentificat cu chei F005): GET firme, facturi, KPI, balanta; POST emitere factura. Baza integrarilor externe ale cabinetelor cu sistemele proprii.",F114,transversal,— (programatic),core/api_public.py + main.py /api/v1,,LIVE,pytest,,
-Notificari in-app + email,"Clopotel cu necitite, sumar la login, email zilnic (mesaje clienti, evenimente echipa); notificarile de mesaje doar catre rolurile de cabinet.",F115,transversal,clopotel antet,core/notificari_api.py,,LIVE,,,
+Notificari in-app + email,"Clopotel cu necitite, sumar la login, email zilnic (mesaje clienti, evenimente echipa); notificarile de mesaje doar catre rolurile de cabinet.",F115,transversal,clopotel antet,core/notificari_api.py,,LIVE,,,"## Ce face
+Sistemul de notificari in-app si pe email: un clopotel cu numarul de necitite, un sumar la login si un email zilnic cu mesajele clientilor si evenimentele echipei. Notificarile de mesaje merg doar catre rolurile de cabinet.
+## Cand se foloseste
+Zilnic, pentru a nu pierde mesaje de la clienti sau evenimente ale echipei. Pentru contabilii si validatorii cabinetului.
+## Ce trebuie pregatit inainte
+- Un email valid pe cont pentru sumarul zilnic.
+## Pas cu pas
+1. La login, citeste sumarul notificarilor.
+2. Foloseste clopotelul pentru necitite in timpul zilei.
+3. Verifica emailul zilnic pentru ce ai ratat.
+## Ce iese la capat
+O imagine completa a mesajelor si evenimentelor, in aplicatie si pe email.
+## Greseli frecvente
+- Ignorarea emailului zilnic, care aduna ce nu ai vazut in aplicatie.
+- Asteptarea notificarilor de mesaje pe roluri care nu sunt de cabinet.
+## Bun de stiut
+Clopotelul e pentru pe parcursul zilei, emailul zilnic pentru recapitulare. Tine adresa de email actualizata, altfel sumarul zilnic nu ajunge la tine."
 Securitate perimetru,"nginx SSL + rate limiting (5r/m auth, 20r/s general) + fail2ban 3 jails (nginx-botsearch/nginx-limit-req/sshd) + HEADERE de securitate DEPLOYATE 11.08.2026: X-Frame-Options SAMEORIGIN, X-Content-Type-Options nosniff, Referrer-Policy strict-origin-when-cross-origin, HSTS max-age=300 (fara includeSubDomains/preload, de urcat dupa verificare), CSP enforcing (default-src self; script-src self+hash SW+unsafe-hashes hash return-false; style-src self unsafe-inline; img-src self data:; object-src none; frame-ancestors self). Verificat: headere la client extern, login prin formular OK sub enforce, 38 ecrane 0 violari. Config: config_server/iconta-nginx.conf.",F116,transversal,—,nginx + fail2ban,,LIVE,,,
 Alerte sanatate server,"Bucla de monitorizare a serverului (RAM, disc, load, DB, erori) cu metrici persistate (metrici_sanatate), alerta pe email la depasirea pragurilor, istoric pe ore si endpoint de test permanent al livrarii (Admin > Sanatate).",F117,admin,Admin > Sanatate server,core/observare.py + static/js/ecrane/admin_sanatate.js,,LIVE,vizual partial,,
 Blocare perioade,"Blocarea unei luni contabile per firma (perioade_blocate, per tenant): trigger DB (verifica_perioada_blocata) respinge ORICE inregistrare in luna inchisa, indiferent de sursa (UI, import, cron, retetar); lista + deblocare din UI.",F118,firma,Registru jurnal > Blocheaza luna,main.py perioade-blocate,,LIVE,,,"## Ce face
@@ -838,9 +1603,44 @@ Adeverinta PDF cu datele salariatului.
 Fara implicatii fiscale (document informativ)."
 Coduri COR pe contracte,"LIVE 20.07.2026: nomenclatorul COR (Clasificarea Ocupatiilor din Romania) - inainte era free-text nevalidat, acum lookup validat la sursa. Nomenclator NATIONAL in public.cor_ocupatii (4422 ocupatii, cod 6 cifre), incarcat din fisierul OFICIAL data.gov.ro (Ordin 573/180/2024, MO 344/12.04.2024) prin cor_incarca.py - regula de aur, nu coduri inventate. Cautare diacritic-insensitiva dupa cod (prefix) sau denumire (GET /cor). Codul COR se valideaza la salvarea salariatului (creare+editare): inexistent in nomenclator -> respins (REGES respinge oricum un cod fals). UI: camp lookup 'Ocupatie (COR)' in formularul salariat + buton 'COR ✓/⚠' pe stat (editor inline, pt angajatii existenti). REGES foloseste codul (deja validat) + versiune 10 (COR 2010/ISCO-08). Import bulk ramane lax (date de migrare).",F137,firma,Salariati,"08_ddl_cor_ocupatii.sql, cor_incarca.py, core/cor_api.py, core/salariati_api.py, core/stat_plata_api.py, main.py, static/js/ecrane/firme.js, cor_surse/cor2024.xml",Ordin 573/180/2024 (COR); data.gov.ro,LIVE 20.07.2026,"core/test_cor.py (4 teste normalizare diacritice) + loader auto-valideaza (4422 coduri unice/6 cifre) + E2E: /cor cautare cod+denumire, validare creare/editare (cod inexistent respins), 35 teste non-regresie",,
 Transfer intre gestiuni,"Tier 1 (LIVE): multi-locatie DESCRIPTIVA - transfer fizic intre locatii (iesire+intrare la CMP GLOBAL, fara nota contabila, neutru pe valorizare/D406) + reclasificare tip produs (materie prima->marfa, nota cont_nou=cont_vechi la CMP). Tier 3 (multi-gestiune cu CMP separat per depozit) AMANAT pana la testare - vezi DECIZII.md 17.07.",F138,firma,card Stocuri,core/stocuri_cv_api.py + main.py,OMFP 1802/2014,LIVE (Tier 1; Tier 3 AMANAT),core/stocuri_cv_api.py (transfer/reclasificare/stoc_pe_locatii); test functional pe Postgres,,
-Landed cost pe NIR,"Transport + taxe pe NIR, repartizate PROPORTIONAL cu costul de baza in costul de achizitie al articolelor (OMFP 1802/2014: cost achizitie = pret + taxe nerecuperabile de import + transport direct atribuibil), cu restul de rotunjire pe ultima linie. Capitalizarea reduce adaosul si intra in K/descarcare. Contul de credit al accesoriului (401 furnizor / 446 taxe vamale) = default vizibil, confirmat de contabil - nu ghicit. Note ciorne.",F139,firma,card Stocuri (NIR),core/stocuri.py + main.py,OMFP 1802/2014,LIVE,core/stocuri.py (nir_gv landed) + core/test_stocuri.py (6 teste landed); test functional pe Postgres,,
+Landed cost pe NIR,"Transport + taxe pe NIR, repartizate PROPORTIONAL cu costul de baza in costul de achizitie al articolelor (OMFP 1802/2014: cost achizitie = pret + taxe nerecuperabile de import + transport direct atribuibil), cu restul de rotunjire pe ultima linie. Capitalizarea reduce adaosul si intra in K/descarcare. Contul de credit al accesoriului (401 furnizor / 446 taxe vamale) = default vizibil, confirmat de contabil - nu ghicit. Note ciorne.",F139,firma,card Stocuri (NIR),core/stocuri.py + main.py,OMFP 1802/2014,LIVE,core/stocuri.py (nir_gv landed) + core/test_stocuri.py (6 teste landed); test functional pe Postgres,,"## Ce face
+Repartizeaza cheltuielile accesorii de achizitie (transport, taxe) pe articolele unui NIR, PROPORTIONAL cu costul de baza, incluzandu-le in costul de achizitie; restul de rotunjire cade pe ultima linie. Capitalizarea acestor costuri reduce adaosul si intra in coeficientul K si in descarcare. Contul de credit al accesoriului (401 furnizor sau 446 taxe vamale) e propus ca default vizibil, confirmat de contabil, nu ghicit. Rezultatul sunt note ciorne.
+## Cand se foloseste
+Pentru contabilul care primeste marfa cu transport si taxe de import de inclus in costul stocului. Pentru firmele cu achizitii care au cheltuieli accesorii semnificative.
+## Ce trebuie pregatit inainte
+- NIR-ul cu articolele si costul de baza.
+- Sumele de transport/taxe si contul lor de credit (401 sau 446).
+## Pas cu pas
+1. Introdu costul accesoriu si confirma contul de credit propus.
+2. Lasa repartizarea proportionala pe articole.
+3. Verifica restul de rotunjire pe ultima linie.
+4. Valideaza notele ciorne.
+## Ce iese la capat
+Cost de achizitie majorat pe articole si note ciorne de inregistrat.
+## Greseli frecvente
+- Trecerea transportului pe cheltuiala in loc de capitalizare in cost.
+- Acceptarea unui cont de credit gresit fara verificare.
+## Reguli fiscale
+Costul de achizitie (pret + taxe nerecuperabile de import + transport direct atribuibil) urmeaza OMFP 1802/2014."
 Analitica de stoc,"Raport pe 4 sectiuni: stoc critic (sub nivel_minim, cu necesar de aprovizionare), articole fara miscare (inert, prag configurabil de zile), clasificare ABC-Pareto pe valoarea stocului (A<80% B<95% C restul, cumulativ INAINTE de item), consum pe perioade comparabile (iesiri 30 zile vs 30 anterioare). Prognoza propriu-zisa (model de forecast) NU e inclusa - vezi DECIZII 17.07.",F140,firma,card Stocuri,core/stocuri_cv_api.py + main.py,,LIVE (fara model de forecast),core/stocuri_cv_api.py (analitica/set_nivel_minim); test functional pe Postgres,,
-Coduri de bare in gestiune,"Cod de bare unic per articol (index partial WHERE NOT NULL): atribuire/stergere pe articol, cautare articol dupa cod (scan/tastare) care il selecteaza in fisele de magazie pentru intrare/iesire/inventar.",F141,firma,card Stocuri,core/stocuri_cv_api.py + main.py,,LIVE,core/stocuri_cv_api.py (gaseste_barcode/set_barcode); test functional pe Postgres (unicitate + reutilizare dupa stergere),,
+Coduri de bare in gestiune,"Cod de bare unic per articol (index partial WHERE NOT NULL): atribuire/stergere pe articol, cautare articol dupa cod (scan/tastare) care il selecteaza in fisele de magazie pentru intrare/iesire/inventar.",F141,firma,card Stocuri,core/stocuri_cv_api.py + main.py,,LIVE,core/stocuri_cv_api.py (gaseste_barcode/set_barcode); test functional pe Postgres (unicitate + reutilizare dupa stergere),,"## Ce face
+Atribuie un cod de bare unic per articol (index partial, doar unde codul e completat), permite atribuirea si stergerea lui pe articol si cautarea articolului dupa cod (prin scanare sau tastare), care il selecteaza direct in fisele de magazie pentru intrare, iesire sau inventar.
+## Cand se foloseste
+Pentru gestiunile care lucreaza cu scaner de coduri de bare si vor sa gaseasca rapid articolul. Pentru operatorul de depozit la receptie, livrare sau inventar.
+## Ce trebuie pregatit inainte
+- Codurile de bare ale articolelor (etichete sau lista).
+- Un scaner sau posibilitatea de tastare a codului.
+## Pas cu pas
+1. Atribuie codul de bare pe articol.
+2. La operare, scaneaza sau tasteaza codul.
+3. Articolul e selectat automat in fisa de magazie pentru intrare/iesire/inventar.
+## Ce iese la capat
+Articole identificabile prin cod de bare si selectate rapid in miscarile de gestiune.
+## Greseli frecvente
+- Acelasi cod pe doua articole; codul trebuie sa fie unic.
+- Cautarea unui articol caruia nu i s-a atribuit inca un cod.
+## Bun de stiut
+- Indexul e partial: se aplica doar articolelor care au cod completat, deci articolele fara cod raman valide."
 Inventar pe mobil,"Mod de numarare optimizat mobil (peste PWA F113): scanare cod de bare (keyboard-wedge, F141) sau cautare denumire -> adaugare la numaratoare cu acumulare in timp real pe ecran -> finalizare care posteaza diferentele prin motorul inventar() existent (note ciorne). Numarare oarba (nu afiseaza scripticul, evita influentarea). Fara schema noua. Sincronizarea live intre mai multi numaratori (nevoie de tabel de sesiune) NU e inclusa - vezi DECIZII 17.07.",F142,firma,card Stocuri,core/stocuri_cv_api.py + static/js/ecrane/firme.js + main.py,,LIVE (numarare oarba; fara sync multi-utilizator),static/js firme.js (mod inventar mobil) + core/stocuri_cv_api.py inventar(); test functional pe Postgres,,
 Centre de cost + bugete (management accounting intern),"LIVE 20.07: dimensiune centru de cost pe linia notei manuale + bugete anuale cu varianta. Faza 1: nomenclator centre per firma (card dedicat), selector pe linia de nota in Registru jurnal, raport 'realizat pe centre' (clasa 6 chelt / clasa 7 venit din note validate, pe perioada + nealocat). Faza 2: buget anual per centru, per clasa (cheltuieli + venituri, UNIQUE centru+an), ecran de setare in ecranul Centre de cost + raport varianta buget vs realizat pe an (abatere colorata: depasire chelt=rosu, peste plan venit=verde). Doar note MANUALE poarta centru. Management accounting intern confirmat la sursa CONCURENTA.csv (firme private). Vezi DECIZII 20.07.",F143,firma,Firma > Centre de cost (management + realizat + bugete/varianta) + selector in Registru jurnal,"02_ddl_centre_cost.sql, 03_ddl_bugete.sql, core/centre_cost_api.py, core/jurnal_api.py, static/js/ecrane/firme.js",,LIVE 20.07.2026 (Faza 1 + Faza 2),"test functional real (CRUD centre, tagare nota, raport realizat/nealocat, buget upsert, varianta buget vs realizat)",,
 Rapoarte comerciale,"v1 LIVE (read-only): fisa client/furnizor, vanzari pe partener, durata medie de incasare (ecran Rapoarte comerciale, rapoarte_comerciale_api.py). Profit pe produs / vanzari pe articol / vanzari pe agent = DECIZIE DESCHISA: vanzarea si descarcarea gestiunii sunt acte deconectate prin design (factura_linii fara articol_id, miscari_stoc fara factura_id). Vezi DECIZII.md 17.07 + DE_FACUT.md CARENTE pct.4. | 18.07: profit-pe-produs ACUM LIVE la CV prin puntea factura->stoc (F172) - articol_id pe linii + factura_id pe miscari_stoc; join venit(factura_linii)<->cost(miscari_stoc la CMP). GV ramane fara profit pe produs (cost pe articol inexistent). Decizia deschisa F144 (17.07) inchisa pt CV.",F144,firma,rapoarte,core/rapoarte_comerciale_api.py + main.py,,"LIVE (CV, 18.07)",functional real tenant_002 (Widget X: venit 100 - cost 60 = profit 40),,"## Ce face
@@ -876,8 +1676,41 @@ Model factura in contul gratuit,LIVE (verificat 18.07 la sursa): cardul Model fa
 Link de plata in contul gratuit,LIVE (verificat 18.07 la sursa): butonul Link plata (fd-plata) nu e gated pe client/gratuit; ruta /link-plata = cere_context (provider mock F067). Deja functional la gratuit.,F159,gratuit,Facturare gratuita,,,ELIMINAT 26.07.2026,"ELIMINAT 26.07.2026: contul de facturare gratuita scos definitiv din produs. Motiv: produsul se vinde CABINETELOR; contul gratuit (firma FARA cabinet, accounting_firm_id NULL) nu are consumator in modelul de pret. Cod scos: rute /public/register-gratuit + /admin/conturi-gratuite (+suspenda/reactiveaza) + /admin/coliziuni-cui, auth_api.inregistreaza_cont_gratuit (F185), tenant_provisioning coliziune_gratuit_v1 (F092 sub-logica), ramuri _eGratuit/e_gratuit (portal/emitere/facturi), segment anunturi gratuit, ecran login randeazaInregistrareGratuita, admin_gratuite.js. NEATINSE: portalul clientului (/portal/bon), provisioning cabinet, pre-completare ANAF cabinet. 0 conturi gratuite reale in DB la eliminare.",,
 e-Factura SPV pentru contul gratuit,"XML UBL + incarcare SPV: OAuth ANAF per firma. Obligatorie legal B2B - diferentiator major, efort mare. TEMEI TEHNIC CONFIRMAT 17.07.2026: fezabil server-side prin OAuth ANAF (authorize/token la logincert.anaf.ro/anaf-oauth2/v1/; access token 90 zile, refresh 365 zile; iConta = aplicatie inrolata cu un Client ID, contabilul autorizeaza cu certificatul lui). Nu atinge blocantul certificatului (vezi F128).",F160,gratuit,Facturare gratuita,core/efactura_send.py + core/spv_conector.py + facturi_ecran.js + main.py,,ELIMINAT 26.07.2026,"ELIMINAT 26.07.2026: contul de facturare gratuita scos definitiv din produs. Motiv: produsul se vinde CABINETELOR; contul gratuit (firma FARA cabinet, accounting_firm_id NULL) nu are consumator in modelul de pret. Cod scos: rute /public/register-gratuit + /admin/conturi-gratuite (+suspenda/reactiveaza) + /admin/coliziuni-cui, auth_api.inregistreaza_cont_gratuit (F185), tenant_provisioning coliziune_gratuit_v1 (F092 sub-logica), ramuri _eGratuit/e_gratuit (portal/emitere/facturi), segment anunturi gratuit, ecran login randeazaInregistrareGratuita, admin_gratuite.js. NEATINSE: portalul clientului (/portal/bon), provisioning cabinet, pre-completare ANAF cabinet. 0 conturi gratuite reale in DB la eliminare.",,
 Vreau contabil (conversie cont gratuit -> cabinet) - RESPINS,"RESPINS 18.07: butonul de conversie / ""vreau contabil"" cu flux de acceptare NU exista ca atare. iConta nu aloca clienti catre cabinete (nu e agentie de matchmaking - l-ar pune pe founder arbitru intre cabinete). Contul gratuit e o firma care are DEJA contabil; valoarea lui e emiterea in sine (LIVE). Blocajul tehnic de determinare gratuit-vs-cabinet (user vs tenant) rezolvat separat (cb3891f). Ce ramanea - preluare tenant la adaugare firma pe CUI gratuit existent - e acoperit tehnic: create-new corect, datele vin prin migrare + semnal coliziune F092/F185. Se reia doar la un caz real care cere altceva. Vezi DECIZII/ISTORIC 18.07.",F161,gratuit,—,,,RESPINS 18.07.2026,—,,
-Import extras bancar MT940 (SWIFT),"Ramura noua in parserul de extrase, detectata dupa markerul :61:/:20:. Un singur format standard acopera majoritatea bancilor din Romania (fisier exportat din internet banking), fata de cate un parser per banca. Produce aceeasi structura {data, detalii, suma} ca parserul grid XLS/CSV. RAMAS: validare pe fisier real (campul :86: variaza per banca).",F166,contabilitate,Banca - import extras,core/banca_parser.py,specificatia SWIFT MT940 (Statement Message),LIVE,pytest (4 teste),,
-Control incrucisat: declaratie vs contabilitate (TVA),"Puntea care lipsea intre declaratii si evidenta: compara D300 (rand R17_2 colectata / R31_2 dedusa, calculat din facturile lunii - fapt generator) cu rulajele lunare ale conturilor 4427/4426. TREI stari: verde (coerent), rosu (divergent, cu cifre si temei), GRI (nu am putut verifica - lipsesc date). Cand cauza e dovedita mecanic (facturi emise necontabilizate al caror TVA explica exact diferenta) propune si executa remediul (note ciorna, patru-ochi intact); cand nu, indica ce sa verifice omul, FARA a sugera ajustarea contului. Isi declara limita: nu poate sti daca D300 depus efectiv la ANAF coincide (necesita SPV).",F169,cabinet,Control fiscal - detaliu firma (Declaratie vs contabilitate),core/control_incrucisat.py,art. 281 Cod fiscal (fapt generator); art. 282 (exigibilitate),LIVE,pytest (7 teste) + verificat pe date reale tenant_004,,
+Import extras bancar MT940 (SWIFT),"Ramura noua in parserul de extrase, detectata dupa markerul :61:/:20:. Un singur format standard acopera majoritatea bancilor din Romania (fisier exportat din internet banking), fata de cate un parser per banca. Produce aceeasi structura {data, detalii, suma} ca parserul grid XLS/CSV. RAMAS: validare pe fisier real (campul :86: variaza per banca).",F166,contabilitate,Banca - import extras,core/banca_parser.py,specificatia SWIFT MT940 (Statement Message),LIVE,pytest (4 teste),,"## Ce face
+Adauga o ramura in parserul de extrase pentru fisiere MT940 (SWIFT), detectate dupa markerii :61: si :20:. Un singur format standard acopera majoritatea bancilor din Romania (fisier exportat din internet banking), inlocuind cate un parser per banca, si produce aceeasi structura {data, detalii, suma} ca parserul grid XLS/CSV.
+## Cand se foloseste
+Pentru contabilul care exporta extrasul in format MT940 din internet banking, indiferent de banca. Alternativa la parserele pe format specific de banca.
+## Ce trebuie pregatit inainte
+- Fisierul MT940 exportat din internet banking.
+- Verifica sa contina blocurile :20: si :61:.
+## Pas cu pas
+1. Exporta extrasul in format MT940.
+2. Incarca fisierul; ramura MT940 e detectata dupa marker.
+3. Verifica liniile citite (data, detalii, suma).
+## Ce iese la capat
+Aceeasi structura de tranzactii ca la parserul XLS/CSV, gata de reconciliere.
+## Greseli frecvente
+- Confundarea unui fisier non-MT940 cu unul standard; detectia se bazeaza pe markeri.
+- Presupunerea ca detaliile (:86:) arata identic la toate bancile; campul variaza.
+## Bun de stiut
+- Validarea pe fisiere reale ale fiecarei banci e in curs, pentru ca formatul campului :86: difera per banca."
+Control incrucisat: declaratie vs contabilitate (TVA),"Puntea care lipsea intre declaratii si evidenta: compara D300 (rand R17_2 colectata / R31_2 dedusa, calculat din facturile lunii - fapt generator) cu rulajele lunare ale conturilor 4427/4426. TREI stari: verde (coerent), rosu (divergent, cu cifre si temei), GRI (nu am putut verifica - lipsesc date). Cand cauza e dovedita mecanic (facturi emise necontabilizate al caror TVA explica exact diferenta) propune si executa remediul (note ciorna, patru-ochi intact); cand nu, indica ce sa verifice omul, FARA a sugera ajustarea contului. Isi declara limita: nu poate sti daca D300 depus efectiv la ANAF coincide (necesita SPV).",F169,cabinet,Control fiscal - detaliu firma (Declaratie vs contabilitate),core/control_incrucisat.py,art. 281 Cod fiscal (fapt generator); art. 282 (exigibilitate),LIVE,pytest (7 teste) + verificat pe date reale tenant_004,,"## Ce face
+Compara D300 (TVA colectata rand R17_2 si dedusa R31_2, calculate din facturile lunii dupa faptul generator) cu rulajele conturilor 4427 si 4426. Da trei stari: verde (coerent), rosu (divergent, cu cifre si temei) si gri (nu se poate verifica, lipsesc date).
+## Cand se foloseste
+Lunar sau trimestrial, inainte de depunerea D300, pentru a prinde divergente intre declaratie si evidenta contabila.
+## Ce trebuie pregatit inainte
+Facturile lunii contabilizate, rulajele 4426/4427 si datele necesare calculului D300.
+## Pas cu pas
+1. Calculezi colectata si dedusa din facturile lunii.
+2. Compari cu rulajele 4427 si 4426.
+3. Citesti starea: verde, rosu sau gri.
+4. Cand cauza e dovedita mecanic (facturi emise necontabilizate al caror TVA explica exact diferenta), aplicatia propune si executa remediul in nota ciorna; altfel indica ce sa verifici.
+## Ce iese la capat
+Un verdict pe luna, cu cifrele divergentei si, cand e cazul, nota ciorna de corectie (patru-ochi intact).
+## Greseli frecvente
+Compararea pe exigibilitate cand baza e faptul generator; acceptarea starii gri ca fiind in regula; ajustarea contului fara cauza dovedita.
+## Reguli fiscale
+Art. 281 Cod fiscal (faptul generator) si art. 282 (exigibilitatea): colectata si dedusa se raporteaza la faptul generator. Instrumentul nu poate sti daca D300 depus efectiv la ANAF coincide (necesita SPV)."
 Backup automat + restaurare baza de date,"Backup automat al bazei de date cabinet + restaurare verificata si plan de recuperare documentat. Infrastructura, nu pilot. LOCAL (SACRU) din ~29.06: iconta-backup.timer zilnic 03:00, pg_dump -Fc iconta_v2 in /var/backups/iconta, retentie 7 zile, restaurare confirmata. OFF-SITE din 18.07: iconta-backup.sh v2 sincronizeaza dump-ul pe Hetzner Storage Box prin rsync-over-SSH (cheie dedicata a userului postgres, port 23), retentie off-site 30 zile (>local). FAIL-SAFE: esecul off-site NU pica backup-ul local; esecuri consecutive numarate (.offsite_esecuri) -> email Brevo la pragul de 2 (acelasi canal ca core/observare.py, cheia via EnvironmentFile). Confirmare remote (sftp ls + dimensiune) dupa fiecare upload.",F170,cabinet,— (infra),config/iconta-backup.sh + config/iconta-backup.service/.timer,,LIVE (18.07: off-site pe Storage Box),"real 18.07: LOCAL+OFF-SITE OK (dump confirmat pe Storage Box, 290870 octeti); fail-safe testat (cheie stricata -> LOCAL reuseste, counter 2, email Brevo trimis, restaurare cheie -> counter 0); RESTAURARE DIN OFF-SITE testata cap-coada 18.07 (descarcat ultimul dump prin sftp -> pg_restore in baza de test -> scheme identice cu iconta_v2 (public+tenant_001+tenant_002), tenants 2=2, tenant_002.facturi=5 -> dropdb; baza vie neatinsa)",,
 Export facturi emise catre SAGA,"LIVE 18.07: export facturi EMISE in XML propriu SAGA (Diverse -> Import date din fisiere generate). Furnizor=firma-client, Client=partener -> SAGA claseaza iesire prin CIF; nume fisier F_<cif>_<nr>_<data>.xml; sume net + TVA aritmetic ROUND_HALF_UP; camp absent (capital, reg com/banca/IBAN client) lasat gol, nu inventat. Buton pe factura (single XML) + export zip pe luna. Read-only, fara schema, fara atingere pe emitere. SAGA-only (WinMentor/Ciel later, structura gata pt alt generator).",F171,firma,Facturi > Export SAGA,core/export_saga.py,,LIVE (18.07),XML real tenant_002 (F_14399840_1_10.06.2026.xml; net 10000 + TVA 2100 = 12100; structura cap-coada) + verificator 0,,
 Punte factura -> stoc (descarcare la emitere),"LIVE 18.07: poarta obligatorie 'Pleaca marfa acum? DA/NU' la emiterea facturii (firma cabinet CV cu linie de articol). DA -> descarca gestiunea (miscari_stoc legat prin factura_id, refoloseste iesire() existent, patru-ochi intact); NU -> factura pur fiscala. Elimina dubla introducere + deblocheaza profit-pe-produs (F144). Schema: articol_id pe factura_linii, factura_id pe miscari_stoc. core/migrare_punte_stoc.py + stocuri_cv_api.descarca_factura. Poarta DS = caseta-poarta v2.14.",F172,firma,Facturi > Emitere,core/stocuri_cv_api.py + core/facturi_api.py,,LIVE (18.07),functional real tenant_002 (DA stoc 100->97 legat factura_id; NU neatins; serviciu fara poarta; gratuit exclus),,
