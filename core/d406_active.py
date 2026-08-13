@@ -129,6 +129,59 @@ def _accum_neliniar(luni, pif, an):
             tot += amt
     return tot
 
+# --- Restrictii pe categorii (CF art.28 alin.5 + alin.8^1), pe cont_imobilizare ---
+# Legatura cont -> categorie e denumirea contului din OMFP 1802/2014 (in corpus):
+#   212  Constructii                                             -> alin.5 lit.a: DOAR liniara
+#   2131 Echipamente tehnologice (masini, utilaje si instalatii de lucru) -> alin.5 lit.b
+#        (denumirea OMFP e identica cu textul legii): liniara/degresiva/accelerata
+#   2134/217 Animale si plantatii (subgrupa 2.4)                -> lit.c (lin/deg) + superacc (alin.8^1)
+#   211  Terenuri                                               -> neamortizabil
+#   orice alt cont (2132 aparate masura, 2133 transport, 214 mobilier, necunoscut/lipsa) ->
+#        alin.5 lit.c ("oricarui altui mijloc fix"): liniara/degresiva (FARA accelerata)
+# alin.8^1 (OUG 8/2026): superaccelerata DOAR subgrupa 2.1 (2131) sau 2.4 (2134/217), active
+#   NOI puse in functiune in 2026. "Nou vs la mana a doua" NU exista in mijloace_fixe -> se verifica
+#   doar subgrupa + PIF in 2026; conditia "nou" ramane raspunderea contabilului (vezi DECIZII 13.08).
+def _categorie_activ(cont_imobilizare):
+    c = "".join(ch for ch in str(cont_imobilizare or "") if ch.isdigit())
+    if c.startswith("212"):
+        return "constructii"
+    if c.startswith("2131"):
+        return "echipamente_2_1"       # alin.5 lit.b (denumire OMFP = textul legii)
+    if c.startswith("2134") or c.startswith("217"):
+        return "animale_plantatii"     # subgrupa 2.4
+    if c.startswith("211"):
+        return "terenuri"              # neamortizabil
+    return "alt_mijloc_fix"            # lit.c, catch-ul legal: "oricarui altui mijloc fix amortizabil"
+
+def _metode_permise(categorie, pif):
+    """Setul de metode permise de lege pentru categorie (alin.5) + fereastra superaccelerata (alin.8^1)."""
+    if categorie == "terenuri":
+        return set()                   # terenurile nu se amortizeaza
+    if categorie == "constructii":
+        return {"liniara"}             # lit.a
+    permise = {"liniara", "degresiva"}  # lit.b si lit.c permit ambele
+    if categorie == "echipamente_2_1":
+        permise.add("accelerata")       # lit.b
+    if categorie in ("echipamente_2_1", "animale_plantatii") and pif is not None and pif.year == 2026:
+        permise.add("superaccelerata")  # alin.8^1: subgrupa 2.1/2.4, PIF in 2026
+    return permise
+
+def _verifica_categorie(mf, metoda, pif):
+    """Refuza (ValueError) metoda pe care legea NU o permite pentru categoria activului."""
+    cont = mf.get("cont_imobilizare")
+    categorie = _categorie_activ(cont)
+    permise = _metode_permise(categorie, pif)
+    if metoda not in permise:
+        temei = "CF art.28 alin.5"
+        if metoda == "superaccelerata":
+            temei = ("CF art.28 alin.8^1 (OUG 8/2026): doar subgrupa 2.1 (echipamente) sau 2.4 "
+                     "(animale/plantatii), active NOI puse in functiune in 2026")
+        raise ValueError(
+            "MF %s (cont %s -> categorie '%s'): metoda '%s' nu e permisa de lege; permise: %s. Temei: %s."
+            % (mf.get("cod"), cont, categorie, metoda,
+               (", ".join(sorted(permise)) or "niciuna (activ neamortizabil)"), temei))
+
+
 def calc_asset(mf, an):
     """mf: dict {cod, denumire, cont_imobilizare, cont_amortizare, valoare,
     rezidual, dnf_luni, data_pif, metoda, activ}. Returneaza dict Valuation pentru anul `an`.
@@ -141,6 +194,7 @@ def calc_asset(mf, an):
     pif = mf.get("data_pif")
     amortizabil = val - rez
     metoda = _norm_metoda(mf.get("metoda"))
+    _verifica_categorie(mf, metoda, pif)   # alin.5/8^1: ce legea nu permite pe categorie -> refuza
 
     if metoda == "liniara" or dnf < _MIN_LUNI_NELINIAR:
         # liniara (alin.6) - si fallback pentru durate sub 2 ani, unde metodele ne-liniare nu au sens

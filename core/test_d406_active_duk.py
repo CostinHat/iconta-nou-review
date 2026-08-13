@@ -27,8 +27,10 @@ def _db_ok():
 
 
 def _mf(met):
+    # cont 2131 = echipamente (lit.b) -> lin/deg/accel permise; superaccel cere PIF in 2026 (alin.8^1)
+    pif = date(2026, 12, 20) if met == "superaccelerata" else date(2025, 12, 20)
     return {"cod": "MF-%s" % met[:4].upper(), "denumire": "Demo %s" % met,
-            "valoare": 100000, "rezidual": 0, "dnf_luni": 60, "data_pif": date(2025, 12, 20),
+            "valoare": 100000, "rezidual": 0, "dnf_luni": 60, "data_pif": pif,
             "cont_imobilizare": "2131", "cont_amortizare": "2813", "metoda": met, "activ": True}
 
 

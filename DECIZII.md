@@ -9080,3 +9080,31 @@ xml_d406_anual_active exista si e DUK-valid, gata de cablat cand se face raporta
 
 Marker inchidere datorie: **mf amortizare degresiva si accelerata calculate dupa metoda activului**. xfail
 test_datorie_mf_metode_amortizare ELIMINAT.
+
+
+### 13.08.2026 D406 amortizare: restrictii pe categorii (CF art.28 alin.5 + alin.8^1) aplicate in motor
+
+calc_asset REFUZA acum (ValueError, nu downgrade tacit) metoda pe care legea nu o permite pentru categoria
+activului. Categoria se deduce din cont_imobilizare, folosind denumirile conturilor din OMFP 1802/2014 (in
+corpus - Catalogul HG 2139/2004 nu e in corpus):
+ - 212 Constructii            -> alin.5 lit.a: DOAR liniara
+ - 2131 Echipamente tehnologice (masini/utilaje/instalatii) -> lit.b (denumire OMFP = textul legii): lin/deg/accel
+ - 2132/2133/214/necunoscut   -> lit.c ("oricarui altui mijloc fix"): lin/deg (FARA accelerata)
+ - 2134/217 Animale si plantatii (subgrupa 2.4) -> lit.c (lin/deg) + superaccelerata (exceptia alin.8^1)
+ - 211 Terenuri              -> neamortizabil (nicio metoda)
+ - superaccelerata (alin.8^1): DOAR subgrupa 2.1 (2131) sau 2.4 (2134/217), cu PIF in 2026.
+Refuzul se propaga in xml_asset/xml_assets si in endpoint (/tenants/{id}/d406-active -> 422 cu motivul).
+Teste: core/test_d406_restrictii_metode.py (matrice categorie x metoda + propagare in XML + temei in mesaj).
+
+DATE CARE LIPSESC din tabelul mijloace_fixe pentru verificarea COMPLETA (raportate lui Costin, NU inventate):
+ 1. "Computere si echipamente periferice" - lit.b le permite accelerata, dar in OMFP 1802 nu au cont propriu
+    (stau in 214 birotica sau 2132) -> un computer inregistrat la 214/2132 e clasificat lit.c si i se REFUZA
+    accelerata, desi legea o permite. Lipseste: un camp de categorie/subgrupa (Catalog) sau un flag "computer".
+ 2. "Activ NOU" (conditie alin.8^1 pt superaccelerata) - nu exista flag nou/la-mana-a-doua -> se verifica doar
+    subgrupa + PIF 2026; conditia "nou" ramane raspunderea contabilului.
+ 3. Import-ul pune cont_imobilizare="2131" cand coloana lipseste (mijloace_fixe_import_api) -> un activ
+    neclasificat devine "echipament" (permisiv, permite accelerata). Pana la un camp de categorie explicit,
+    restrictia musca doar daca cont_imobilizare e furnizat corect.
+Decizia de fond: se aplica ce se poate proba din date (constructii->liniar, transport/mobilier->fara accelerat,
+fereastra superaccelerata), se refuza ce e clar interzis; ce nu se poate proba (computer lit.b, "nou") se
+raporteaza in loc sa se ghiceasca.
