@@ -8976,3 +8976,16 @@ PROBA: garda core/test_eveniment_public.py cade daca DDL-ul sau schema reala cap
 (ip/user_agent/cookie/sesiune/amprenta/user_id/referrer). sendBeacon nu trimite antete custom => niciun
 identificator adaugat pe drum. LIMITA: fara identificator NU exista dedup/filtrare de boti - cifrele sunt brute
 (chestiune de calitate a datelor, NU de confidentialitate); se consemneaza, nu se repara cu un identificator.
+
+
+### 13.08.2026 Ajutor contextual: gard pe CLASA declaratiilor + clichet, NU completare fortata a tuturor LIVE  (78a2968)
+DECIZIE: se completeaza ajutorul pentru cele 11 declaratii (sursabile din act) + gard mecanic dublu; NU se
+completeaza fortat toate cele 87 LIVE fara ajutor. Multe din restul sunt infra/tehnice (Autentificare, Provisioning
+tenant, Navigator, Design System, croane, securitate) - pentru ele "ce trebuie sa stie contabilul" ar fi INVENTAT
+(punct de oprire respectat: se raporteaza, nu se completeaza din intuitie).
+TEMEI: regula verificarii la sursa - textul "Reguli fiscale" al fiecarei declaratii vine din actul adus in corpus
+(OPANAF + CF), nu din memorie. Unde nu exista sursa de continut contabil, nu se scrie.
+PROBA: gard core/test_registru_functionalitati.py - (1) "Declaratia D*" LIVE fara ajutor -> rosu (mutatie F212);
+(2) clichet baseline 76 (scop 0), orice LIVE nou fara ajutor ridica numarul -> rosu.
+LIMITA: 76 LIVE inca fara ajutor (contabil-facing sursabile + infra) - de triat/scris la o trecere dedicata;
+clichetul le tine sub control si forteaza descresterea. NU se relaxeaza baselineul in sus.

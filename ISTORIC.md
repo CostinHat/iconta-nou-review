@@ -4181,3 +4181,18 @@ personal) + ruta in test_rute_autentificate.py::PUBLICE. PROBAT PRIN RANDARE (pl
 inregistrate live (verificat in DB), ecranul superadmin randeaza sectiunile + cifrele + nota de confidentialitate,
 zero erori de pagina. Date de test truncate la final (cifrele pornesc de la zero). Suita 1945 passed; verificator
 TOTAL 0; four-way HEAD=origin/main=backup/lant-2026-08-13=RUNNING=19d32f4.
+
+
+## 13.08.2026 — Ajutor contextual "?" pentru cele 11 declaratii noi + gard de acoperire, four-way 78a2968
+Panoul de functionalitati (ecran autentificat ansamblu.js) arata semnul "?" doar unde exista text in coloana
+ajutor (FUNCTIONALITATI.csv, cheie ID, incarcata de core/ajutor.py). Cele 11 declaratii F207-F217 (D311/D230/
+D207/D177/D107/D104/D220/D223/D221/D110/D307) erau LIVE cu ajutor GOL -> fara "?"; vecinatatea cu D100/D300 (care
+au) facea lipsa vizibila. Completat ajutor pentru toate 11, in modelul celor vechi (7 sectiuni ## : Ce face / Cand
+se foloseste / Ce trebuie pregatit inainte / Pas cu pas / Ce iese la capat / Greseli frecvente / Reguli fiscale);
+temeiul din sectiunea Reguli fiscale vine din ACTUL din corpus (OPANAF + articol CF per declaratie), nu din
+memorie. GARD nou (core/test_registru_functionalitati.py): (1) test_declaratii_live_au_ajutor - orice LIVE
+"Declaratia D*" fara ajutor -> rosu (probat prin mutatie: golirea F212/D104 face testul rosu); (2)
+test_acoperire_ajutor_nu_regreseaza - nr. LIVE fara ajutor nu poate creste peste baseline 76 (scop 0). PROBAT PRIN
+RANDARE: 47 -> 58 semne "?" in panou; D104/D110/D307 au "?"; modalul randeaza cele 7 sectiuni (1376 car. pt D104);
+zero erori. RAMASE: 76 LIVE inca fara ajutor (contabil-facing + infra) - raportate, tinute sub clichet. Suita 1947
+passed; verificator TOTAL 0.
