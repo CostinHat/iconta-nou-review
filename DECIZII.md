@@ -9000,3 +9000,16 @@ utilizare de contabil. Ele raman baza clichetului (26).
 TEMEI: regula verificarii la sursa - fiecare afirmatie fiscala din cele 50 e ancorata pe act din corpus
 (anaf_surse); o cifra fara temei in corpus a fost OMISA (ex. prag Intrastat), nu presupusa.
 LIMITA: daca vreo functie "infra" devine cu adevarat contabil-facing, primeste ajutor si clichetul scade sub 26.
+
+
+### 13.08.2026 Surse corpus: legislatie.just.ro BLOCAT server-side; consolidat doar via ANAF (CF+CPF) sau browser
+DECIZIE: actele consolidate 'la zi' se aduc server-side DOAR pentru cele doua coduri (CF 227/2015, CPF 207/2015)
+de pe static.anaf.ro; pentru restul, static.anaf.ro serveste doar forma initiala/republicata -> consolidatul se
+aduce din browser (om) sau cu client cu amprenta de browser.
+TEMEI: proba pe server - curl HTTP/2 -> PROTOCOL_ERROR, --http1.1/wget/urllib/requests -> empty reply catre
+legislatie.just.ro (WAF pe amprenta TLS/HTTP). static.anaf.ro raspunde. Supersedeaza nota veche ca --http1.1 merge.
+CONSECINTA: nu se pune in corpus forma INITIALA a unui act puternic modificat (e-Factura OUG120/2021,
+e-Transport OUG41/2022) sub pretextul 'consolidat' - ar fi text expirat folosit ca in vigoare. Se raporteaza si
+se aduce consolidatul separat.
+FAPT CONFIRMAT: diurna interna 23 lei/zi e in vigoare in 2026 (OMF 1235/2023, adus in corpus). Valoarea din cod
+si din paginile publice are acum act pe disc.

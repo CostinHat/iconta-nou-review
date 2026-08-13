@@ -4212,3 +4212,18 @@ navigator, design system, croane, securitate, API, importuri de migrare) - ajuto
 contabil (punct de oprire), NEATINSE. Clichet _BASELINE_LIVE_FARA_AJUTOR 76 -> 26. LIVE cu ajutor 49 -> 99.
 Randat: 58 -> 108 semne "?"; esantion F018/F097/F087/F073/F091 au "?", modalul randeaza sectiunile. Suita 1947
 passed; verificator TOTAL 0.
+
+
+## 13.08.2026 — Corpus +2 acte (CPF 207/2015 consolidat, OMF 1235/2023 diurna 23 lei); just.ro blocat server-side
+Regula sursei: acte cerute in corpus, forma in vigoare obtenabila server-side de pe static.anaf.ro.
+ADUSE (sha256+txt+INDEX): legea_207_2015_consolidat.html (Cod procedura fiscala, CONSOLIDAT la zi - ultima
+actualizare OUG 38/2026; citat in cod, era absent; tip_forma=consolidat_la_zi); omf_1235_2023.pdf (indemnizatie
+deplasare interna 23 lei/zi de la 01.04.2023, HG 714/2018; ancoreaza valoarea 23 lei din cod + 2 pagini publice;
+forma_la_data). Corpus 140 -> 146 fisiere.
+PUNCTUL 6: 23 lei ESTE in vigoare 2026 (OMF 1235/2023 = ultimul ordin pe nivelul de baza; niciun act ulterior;
+prag actualizare IPC >10%% neatins; coroborat de plafon neimpozabil 57,5 = 2,5 x 23).
+NEOBTENABILE server-side in forma CONSOLIDATA: Legea 82/1991, OMFP 1802/2014 (39 citari in cod!), OUG 120/2021,
+OUG 41/2022 - legislatie.just.ro BLOCAT (WAF pe amprenta TLS/HTTP; nota veche '--http1.1 merge' invalidata);
+static.anaf.ro are doar forma initiala/republicata (ANAF intretine consolidat DOAR cele doua coduri). De adus din
+browser (URL-uri just.ro predate lui Costin). Alte acte citate-si-absente: OMFP 3103/2017, OPANAF 102/2025,
+OUG 26/2019, OUG 153/2020, HG 423/2020, L31/1990, L53/2003, L52/2011, L32/1994 - aceeasi limita (just.ro).
