@@ -133,6 +133,11 @@ for fname in sorted(fisiere_pe_disc):
 # fisiere citate in COTE dar lipsa pe disc (nu ar trebui sa existe dupa garda 1, dar il raportam)
 citate_lipsa = sorted(set(per_fisier) - fisiere_pe_disc)
 
+# Acte ABROGATE (fara fisier pe disc): marcaj explicit ca absenta NU e o gaura, ci un act inlocuit.
+_ABROGATE = {"opanaf_394_2017_d390_anexa2_instructiuni.pdf": {"stare": "abrogat", "inlocuit_de": "opanaf_705_2020"}}
+for _k, _v in _ABROGATE.items():
+    fisiere.setdefault(_k, {}).update(_v)
+
 manifest = {
     "_generat_de": "gen_index.py (Corpus 2)",
     "_nota": "Regenereaza cu: venv/bin/python gen_index.py. tip_forma e declarat manual in TIP_FORMA.",

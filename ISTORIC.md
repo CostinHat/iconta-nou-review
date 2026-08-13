@@ -2538,7 +2538,7 @@ Comituri: 80c260b → a5f889a → 792f8d8 → 5f5c1b5 → 238b427 → cb8618a �
    maparea „cine ce datorează". Consolidat într-o primitivă unică (`obligatii_datorate`) cu fereastră
    parametrizabilă (7z semafor / 60z termene). Efect: matricea de 64 acoperă acum și Termene, care avea zero acoperire.
 2. **D390 tratat ca obligație lunară fixă pe flag static.** Corectat: fapt lunar din facturi IC + `d390_manual`.
-   Temei: instrucțiuni completare D390, anexa OPANAF 394/2017 pct.1.2. Poarta inversată: faptul primează, flag-ul
+   Temei: instrucțiuni completare D390, anexa OPANAF 705/2020 anexa 2 pct.1.2 (anterior OPANAF 394/2017, abrogat). Poarta inversată: faptul primează, flag-ul
    decide doar pe perioadă deschisă. Costuri asimetrice: înapoi decidem pe fapt (restanță falsă = acuzație
    nefondată), înainte afișăm pe incertitudine (termen ascuns = amendă).
 3. **d205_vs_457 producea ROȘU FALS pe orice firmă cu dividende** (tabelă goală peste tot, SUM=0 vs cont 457).

@@ -468,8 +468,7 @@ def d390_are_operatiuni(conn, schema, an, luna, azi=None):
     Se apeleaza DOAR pentru platitori (art. 316) - poarta din obligatii_datorate. NU citeste d301_operatiuni
     (acela e artefact D301 / NEplatitori, irelevant pentru D390 al unui platitor, si lipseste la unele scheme
     vechi de partida simpla -> ar crapa). Temei: D390 se depune NUMAI pentru lunile in care ia nastere
-    exigibilitatea operatiunilor IC (instr. completare D390, anexa OPANAF 705/2020; principiu identic OPANAF
-    394/2017 pct.1.2 la D394). NU e obligatie lunara fixa. Vezi DECIZII 23.07."""
+    exigibilitatea operatiunilor IC (instr. completare D390, anexa OPANAF 705/2020; principiu identic OPANAF 705/2020 anexa 2 pct.1.2 (anterior OPANAF 394/2017, abrogat) la D390). NU e obligatie lunara fixa. Vezi DECIZII 23.07."""
     azi = azi or c.azi_ro()
     prima_urm = datetime.date(an + 1, 1, 1) if luna == 12 else datetime.date(an, luna + 1, 1)
     if prima_urm > azi:

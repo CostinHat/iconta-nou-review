@@ -1,0 +1,230 @@
+                                                                                         anexa nr. 2
+
+
+                                  IN S T R U C Ţ I U N I
+      pentru completarea formularului (390 VIES) „Declaraţie recapitulativă privind
+                     livrările/achiziţiile/prestările intracomunitare”
+
+
+
+        1.1. Declaraţia recapitulativă se depune lunar, în condiţiile prevăzute la art. 325 din
+Legea nr. 227/2015 privind Codul fiscal, cu modificările și completările ulterioare, (Codul fiscal)
+până la data de 25 inclusiv a lunii următoare unei luni calendaristice, de către persoanele
+impozabile înregistrate în scopuri de TVA conform art. 316 sau art. 317 din Codul fiscal.
+        1.2. Persoanele impozabile înregistrate în scopuri de TVA depun declaraţia recapitulativă
+numai pentru lunile calendaristice în care ia naştere exigibilitatea taxei pentru:
+        a) livrările intracomunitare scutite de taxă în condiţiile prevăzute la art. 294 alin. (2) lit. a)
+şi d) din Codul fiscal, pentru care exigibilitatea taxei a luat naştere în luna calendaristică
+respectivă;
+         b) livrările de bunuri efectuate în cadrul unei operaţiuni triunghiulare prevăzute la art.
+276 alin. (5) din Codul fiscal efectuate în statul membru de sosire a bunurilor şi care se declară
+drept livrări intracomunitare cu cod T, pentru care exigibilitatea de taxă a luat naştere în luna
+calendaristică respectivă;
+         c) prestările de servicii prevăzute la art. 278 alin. (2) din Codul fiscal efectuate în
+beneficiul unor persoane impozabile nestabilite în România, dar stabilite în Uniunea Europeană,
+altele decât cele scutite de TVA în statul membru în care acestea sunt impozabile, pentru care
+exigibilitatea de taxă a luat naştere în luna calendaristică respectivă;
+        d) achiziţiile intracomunitare de bunuri taxabile, pentru care exigibilitatea de taxă a luat
+naştere în luna calendaristică respectivă;
+        e) achiziţiile de servicii prevăzute la art. 278 alin. (2) din Codul fiscal, efectuate de
+persoane impozabile din România care au obligaţia plăţii taxei conform art. 307 alin. (2), pentru
+care exigibilitatea de taxă a luat naştere în luna calendaristică respectivă, de la persoane
+impozabile nestabilite în România, dar stabilite în Uniunea Europeană.
+        2.1. Declaraţia recapitulativă se depune, în format PDF, cu fișier XML, atașat pe suport
+CD însoțit de formatul hârtie semnat conform legii, prin una dintre următoarele metode:
+        - la registratura organului fiscal competent;
+        - la poştă, prin scrisoare recomandată.
+        2.2. Declarația se poate depune și prin mijloace electronice de transmitere la distanță, în
+conformitate cu prevederile legale în vigoare.
+
+                        Modul de completare a declaraţiei recapitulative
+                                       SECŢIUNEA 1
+
+Cartuşul “Perioada de raportare” se completează cu:
+        - anul la care se referă declaraţia; se înscrie cu cifre arabe cu 4 caractere (exemplu: 2016)
+        - perioada de raportare aferentă operaţiunilor realizate este formată din două caractere,
+respectiv cifrele aferente lunii respective (exemplu: pentru luna ianuarie se va înscrie “01”).
+        Declaraţia depusă iniţial se rectifică prin depunerea unei noi declaraţii, pe acelaşi format,
+bifând căsuţa corespunzătoare de pe formular.
+        În declaraţia rectificativă se rectifică tranzacţii declarate în orice perioadă de raportare
+anterioară şi se completează toate rubricile formularului cu datele valabile la momentul
+declarării, indiferent dacă acestea au mai fost declarate.
+        Se completează câte o declaraţie rectificativă pentru fiecare perioadă de raportare pentru
+care se operează rectificări.
+        Ajustările se declară pentru luna calendaristică în care intervine exigibilitatea taxei,
+conform art. 282 alin. (9) din Codul fiscal, respectiv în luna calendaristică în care regularizarea a
+fost comunicată clientului.
+
+        Cartuşul “Date de identificare” conţine:
+        1. Cod de identificare fiscală - se înscrie codul de identificare în scopuri de TVA al
+persoanei impozabile din România, atribuit potrivit art. 316 sau art. 317 din Codul fiscal.
+        Înscrierea cifrelor în casetă se face cu aliniere la dreapta.
+        2. “Denumire/Nume, Prenume” - se înscriu, după caz, denumirea sau numele şi
+prenumele persoanei impozabile.
+        3. ”Domiciliul fiscal” - se completează cu datele privind adresa domiciliului fiscal
+(sediul social, sediul sau domiciliul fiscal, după caz) al persoanei impozabile înregistrată în
+scopuri de TVA.
+        În cazul persoanelor impozabile stabilite în străinătate, înregistrate direct în scopuri de
+TVA în România, se înscrie adresa din România la care pot fi examinate evidenţele şi
+documentele ce trebuie păstrate în conformitate cu prevederile pct. 88 alin. (7) lit. a) din Normele
+metodologice de aplicare a titlului VII ˝Taxa pe valoarea adăugată˝ din Codul fiscal, aprobate
+prin Hotărârea Guvernului nr. 1/2016 (Normele metodologice).
+        În cazul persoanelor impozabile stabilite în străinătate, care şi-au desemnat reprezentant
+fiscal se înscrie domiciliul fiscal al reprezentantului.
+        În cazul persoanelor impozabile care au sediul activităţii economice în afara României şi
+sunt stabilite în România prin unul sau mai multe sedii fixe fără personalitate juridică, conform
+art. 266 alin. (2) lit. b) din Codul fiscal, se înscrie domiciliul fiscal al sediului fix desemnat să
+depună decontul de taxă şi să fie responsabil pentru toate obligaţiile în scopuri de TVA, conform pct.
+88 alin. (5) din Normele metodologice.
+
+        Cartuşul “Rezumat declaraţie” conţine:
+        - numărul total al paginilor anexă la declaraţie;
+        - numărul total al operatorilor intracomunitari, indiferent de numărul operaţiunilor;
+        - valoarea operaţiunilor, defalcată pe tipuri: livrări intracomunitare de bunuri, livrări
+ulterioare de bunuri efectuate în cadrul operaţiunilor triunghiulare, livrări intracomunitare ce
+constau în transferuri scutite, achiziţii intracomunitare de bunuri, achiziţii intracomunitare
+asimilate, prestări intracomunitare de servicii, achiziţii intracomunitare de servicii.
+
+
+                                        SECŢIUNEA a 2-a
+
+       1. Se completează, cu tranzacţiile intracomunitare efectuate, în următoarea ordine:
+       a) livrări intracomunitare de bunuri (L);
+       b) livrări ulterioare de bunuri efectuate în cadrul unei operaţiuni triunghiulare (T);
+       c) achiziţii intracomunitare de bunuri, achiziţii intracomunitare asimilate prevăzute la art.
+273 alin. (2) lit. a) din Codul fiscal care urmează transferurilor din alte state membre, achiziţii
+efectuate de beneficiarul livrării ulterioare în cadrul unei operaţiuni triunghiulare (A);
+       d) prestări intracomunitare de servicii (P);
+         e) achiziţii intracomunitare de servicii (S);
+         f) livrări intracomunitare de bunuri efectuate în cadrul regimului special pentru
+agricultori (R).
+         Fiecare pagină aferentă secţiunii a 2-a va conţine în antet informaţii privind codul de
+înregistrare în scopuri de TVA, perioada aferentă şi numărul paginii.
+         a) Livrări intracomunitare de bunuri – se înscrie suma totală a livrărilor intracomunitare
+de bunuri scutite de la plata taxei în condiţiile art. 294 alin.(2) lit. a) şi d) din Codul fiscal, pe
+fiecare cumpărător, pentru care exigibilitatea taxei ia naştere în luna calendaristică respectivă,
+inclusiv sumele din facturile pentru încasări de avansuri pentru livrări intracomunitare de bunuri,
+scutite.
+         b) Livrări ulterioare de bunuri efectuate în cadrul unei operaţiuni triunghiulare – se
+înscrie suma totală a livrărilor de bunuri efectuate în cadrul unei operaţiuni triunghiulare,
+prevăzute la art. 276 alin. (5) din Codul fiscal, efectuate în statul membru de sosire a bunurilor
+expediate sau transportate, pe fiecare beneficiar al livrării ulterioare ce are desemnat un cod T, şi
+pentru care exigibilitatea taxei ia naştere în luna calendaristică respectivă, inclusiv sumele din
+facturile pentru încasări de avansuri pentru livrările de bunuri efectuate în cadrul unei operaţiuni
+triunghiulare.
+         Se va completa doar de către cumpărătorul revânzător prevăzut la art. 276 alin. (5) din
+Codul fiscal;
+         c) Achiziţii intracomunitare de bunuri – se înscrie suma totală a achiziţiilor
+intracomunitare de bunuri, pe fiecare furnizor, pentru care persoana impozabilă, care depune
+declaraţia, este obligată la plata taxei conform art. 308 din Codul fiscal, şi pentru care
+exigibilitatea taxei intervine în luna calendaristică respectivă, inclusiv sumele din facturile
+primite pentru plăţi de avansuri pentru achiziţii intracomunitare de bunuri.
+         d) Prestări intracomunitare de servicii – se înscrie suma totală a prestărilor de servicii
+pentru care se aplică prevederile art. 278 alin.(2) din Codul fiscal, altele decât cele scutite de
+TVA în statul membru în care acestea sunt impozabile, pe fiecare client în parte, stabilit în
+Uniunea Europeană, pentru care exigibilitatea taxei ia naştere în luna calendaristică respectivă.
+Nu vor fi declarate prestările de servicii prevăzute la art. 278 alin.(2) din Codul fiscal dacă
+beneficiarul serviciului este o persoană impozabilă care nu este stabilită pe teritoriul Uniunii
+Europene.
+         e) Achiziţii intracomunitare de servicii - se înscrie suma totală a achiziţiilor
+intracomunitare de servicii pentru care se aplică prevederile art. 278 alin.(2) din Codul fiscal,
+altele decât cele scutite de TVA, pe fiecare prestator în parte, care este stabilit în Uniunea
+Europeană, pentru care exigibilitatea taxei intervine în luna calendaristică respectivă. Nu vor fi
+declarate prestările de servicii prevăzute la art. 278 alin.(2) din Codul fiscal, dacă prestatorul
+serviciului este o persoană impozabilă care nu este stabilită pe teritoriul Comunităţii.
+         f) Livrări intracomunitare de bunuri efectuate în cadrul regimului special pentru
+agricultori - se înscrie suma totală a livrărilor intracomunitare de bunuri prevăzute la art. 3151
+alin. (8) lit. c) și d).
+         Coloana “Ţara” – codul ţării care a emis codul de înregistrare în scopuri de TVA al
+clientului/furnizorului/prestatorului sau codul statului membru care ar fi trebuit să emită acest
+cod de înregistrare în scopuri de TVA, dar din diverse motive acesta ori nu a fost emis, ori nu a
+fost comunicat.
+         Coloana “Cod operator intracomunitar” – trebuie introdus fără spaţii, virgule sau puncte
+şi se completează astfel:
+         - în cazul livrărilor intracomunitare de bunuri (L) efectuate din România - codul de
+identificare în scopuri de TVA al persoanei care achiziţionează bunurile în alt stat membru decât
+România, pe baza căruia furnizorul din România i-a efectuat o livrare intracomunitară scutită de
+TVA conform art. 294 alin. (2) lit. a) şi d) din Codul fiscal;
+         - în cazul livrărilor ulterioare de bunuri efectuate din România în cadrul unei operaţiuni
+triunghiulare (T) - codul de identificare în scopuri de TVA al persoanei beneficiare a livrării
+ulterioare, din al treilea stat membru, pe baza căruia cumpărătorul revânzător din România i-a
+efectuat livrarea ulterioară;
+         - în cazul achiziţiilor intracomunitare de bunuri, achiziţiilor intracomunitare asimilate
+prevăzute la art. 273 alin. (2) lit. a) din Codul fiscal care urmează transferurilor scutite,
+achiziţiilor efectuate de beneficiarul livrării ulterioare în cadrul unei operaţiuni triunghiulare (A)
+efectuate în România - codul de identificare în scopuri de TVA din alt stat membru atribuit
+furnizorului care efectuează livrarea intracomunitară;
+         - în cazul prestărilor intracomunitare de servicii (P) - codul de identificare în scopuri de
+TVA al persoanei care primeşte serviciile în alt stat membru decât România pe baza căruia
+prestatorul din România i-a prestat servicii prevăzute de art. 278 alin. (2) din Codul fiscal, altele
+decât cele scutite de TVA în statul membru în care acestea sunt impozabile;
+         - în cazul achiziţiilor intracomunitare de servicii (S) - codul de identificare în scopuri de
+TVA din alt stat membru atribuit prestatorului sau, după caz, doar codul statului membru în care
+este stabilit prestatorul serviciilor, în cazul în care prestatorul nu este identificat în scopuri de
+TVA dar există indicii suficiente pentru a considera că este o persoană impozabilă;
+         - în cazul livrărilor intracomunitare de bunuri efectuate în cadrul regimului special pentru
+agricultori (R) efectuate din România - codul de identificare în scopuri de TVA al persoanei care
+achiziţionează bunurile în alt stat membru decât România, pe baza căruia furnizorul din România
+i-a efectuat o livrare intracomunitară scutită de TVA conform art. 294 alin. (2) lit. a) şi d) din
+Codul fiscal.
+         Coloana “Tipul operaţiunii”
+         L - pentru livrări intracomunitare de bunuri către alte state membre;
+         T - pentru livrări în cadrul unei operaţiuni triunghiulare;
+         A - pentru achiziţii intracomunitare de bunuri, achiziţii care urmează transferurilor
+scutite, achiziţii efectuate de beneficiarul livrării ulterioare în cadrul unei operaţiuni triunghiulare
+din alte state membre;
+         P – pentru prestările intracomunitare de servicii;
+         S – pentru achiziţii intracomunitare de servicii;
+         R - livrări intracomunitare de bunuri efectuate în cadrul regimului special pentru
+agricultori.
+         Coloana “Baza impozabilă” – valoarea tranzacţiei/tranzacţiilor efectuate în perioada de
+raportare cu respectivul client/furnizor (baza impozabilă pentru calculul TVA stabilită potrivit
+prevederilor art. 286 - 288 şi 290 din Codul fiscal)
+         2. În subsolul paginii se înscrie suma totală a tranzacţiilor înscrise în pagina respectivă,
+iar pe ultima pagină a declaraţiei se înscrie şi totalul general al operaţiunilor.
+         3. Toate sumele se înscriu în lei.
+
+
+       N O T Ă:
+
+        1. Pentru achiziţii intracomunitare de bunuri taxabile în România, în cazul în care
+furnizorul nu comunică un cod valabil de TVA, dar bunurile sunt transportate de pe teritoriul
+unui stat membru al Uniunii Europene, achiziţia se declară în declaraţia recapitulativă, astfel:
+Coloana “Ţara” – codul ţării membre din care s-a efectuat livrarea intracomunitară.
+Coloana “Cod operator intracomunitar” – nu se va înscrie nimic.
+Coloana „Denumire/Nume, prenume operator intracomunitar” – se va înscrie denumirea/nume,
+prenume al furnizorului care a emis factura.
+Coloana “Tipul operaţiunii” - se va înscrie „A”.
+Coloana “Baza impozabilă” – valoarea tranzacţiei/tranzacţiilor efectuate în perioada de raportare
+cu respectivul furnizor (baza impozabilă pentru calculul TVA stabilită potrivit prevederilor
+titlului VI din Codul fiscal).
+         2. Pentru livrările intracomunitare de bunuri efectuate către clienţi nestabiliţi în Uniunea
+Europeană şi care au desemnat un reprezentant fiscal în Uniunea Europeană sau către clienţi
+stabiliţi în Uniunea Europeană, înregistraţi prin reprezentant fiscal în statul membru în care
+efectuează achiziţia intracomunitară de bunuri, la rubrica „Denumire operator intracomunitar” va
+fi înscrisă denumirea clientului (nu a reprezentantului fiscal), iar la rubrica „Cod operator
+intracomunitar” va fi înscris codul de înregistrare în scopuri de TVA atribuit persoanei străine
+prin reprezentant fiscal.
+         3. Pentru achiziţiile intracomunitare de bunuri care provin de la un furnizor nestabilit în
+Uniunea Europeană şi care a desemnat un reprezentant fiscal în statul membru în care începe
+transportul bunurilor sau care provin de la un furnizor stabilit în Uniunea Europeană, înregistrat
+prin reprezentant fiscal în statul membru din care efectuează livrarea intracomunitară de bunuri,
+la rubrica „Denumire operator intracomunitar” va fi înscrisă denumirea furnizorului (nu a
+reprezentantului fiscal), iar la rubrica „Cod operator intracomunitar” va fi înscris codul de
+înregistrare în scopuri de TVA atribuit persoanei străine prin reprezentant fiscal.
+         Similar se procedează şi în situaţia în care furnizorul nestabilit în Uniunea Europeană nu
+şi-a desemnat un reprezentant fiscal în statul membru în care începe transportul, dar prin
+aplicarea de către unele state membre a măsurilor de simplificare a declarării importurilor,
+respectiv o reprezentare globală de către o societate care poate fi, de exemplu o societate de
+expediţie/transport, operatorul extracomunitar se consideră reprezentat fiscal de societatea
+respectivă.
+         Exemplu: o societate „A” dintr-un stat extracomunitar (X) vinde unei societăţi din
+România „B” bunuri. Bunurile sunt importate într-un stat membru al Uniunii Europene (Y) de
+către societatea de expediţie „C” şi apoi aceeaşi societate „C” declară în numele furnizorului „A”
+din statul extracomunitar (X) (dar sub propriul cod de TVA) livrarea intracomunitară a bunurilor
+din statul membru (Y) în România.
+         În astfel de situaţii, se va considera drept reprezentant fiscal societatea de expediţie „C”.
+În declaraţia recapitulativă privind achiziţiile intracomunitare, la rubrica „Denumire operator
+intracomunitar” va fi înscrisă denumirea furnizorului, respectiv societatea „A” din statul
+extracomunitar (X), iar la rubrica „Cod operator intracomunitar” codul din statul membru (Y) al
+societăţii de expediţie „C”care a declarat livrarea intracomunitară.

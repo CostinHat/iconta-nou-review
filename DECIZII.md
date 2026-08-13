@@ -2805,8 +2805,7 @@ sub-grupare vizuala. Inchide flag-ul C4 din raportul precedent.
 
 ### 23.07.2026 Termene poz.3 — D390 pe FAPT lunar, o primitivă / două comportamente  (d390.py; control_fiscal_api; termene_api; main.py)
 PROBLEMA: obligatii_datorate emitea D390 pentru FIECARE lună cât timp bifa statică operatiuni_ic=True
-(obligație lunară fixă) — contrar instr. completare D390 (anexa OPANAF 705/2020; principiu identic OPANAF
-394/2017 pct.1.2 la D394): D390 se depune NUMAI pentru lunile în care ia naștere exigibilitatea operațiunilor IC.
+(obligație lunară fixă) — contrar instr. completare D390 (anexa OPANAF 705/2020; principiu identic OPANAF 705/2020 anexa 2 pct.1.2 (anterior OPANAF 394/2017, abrogat) la D394): D390 se depune NUMAI pentru lunile în care ia naștere exigibilitatea operațiunilor IC.
 DECIZIE: primitivă unică `d390.d390_are_operatiuni(conn, schema, an, luna, azi) -> bool|None` (unde stă deja
 cunoașterea per-lună): True/False = perioadă ÎNCHISĂ (fapt din facturi IC + d390_manual + d301_operatiuni),
 None = perioadă DESCHISĂ (exigibilitatea nu se poate stabili încă). `obligatii_datorate` primește callback
@@ -2852,8 +2851,7 @@ temei ("profilul firmei declara FARA operatiuni intracomunitare, dar exista fact
 NU blocare - ca F185. La platitor: D390 se datoreaza oricum (fapt) + semnalul. La neplatitor: gri (art.317 /
 contradictie) in loc de tacere. Semnalul intra in `neclar` -> Control fiscal il arata gri; termene il ignora
 (privire inainte), dar D390 datorat (fapt) apare si acolo.
-TEMEI: D390 se depune pe exigibilitatea operatiunilor IN LUNA (instr. completare D390, anexa OPANAF 394/2017
-pct.1.2). Bifa de profil e un indicator, nu adevarul lunar; cand contrazice faptul, faptul castiga si divergenta
+TEMEI: D390 se depune pe exigibilitatea operatiunilor IN LUNA (instr. completare D390, anexa OPANAF 705/2020 anexa 2 pct.1.2 (anterior OPANAF 394/2017, abrogat)). Bifa de profil e un indicator, nu adevarul lunar; cand contrazice faptul, faptul castiga si divergenta
 se semnaleaza (nu se ascunde, nu se blocheaza).
 DOVADA: pytest 927 (matrice 64 NESCHIMBATA, d390_fapt=None); verificator TOTAL 0; functional pe DANTE (semafor):
 D390 iunie = restanta reala (avea IC, nedepusa), mai NU e restanta falsa.
@@ -2869,7 +2867,7 @@ DECIZIE: operatiuni_ic devine obligatoriu la migrare, ca tip_decont, fara defaul
 - citeste intoarce operatiuni_ic None cand e None (nu False tacit) - simetric cu platitor_tva - ca frontendul sa
   distinga "nesetat" de "Nu".
 - migrare.js: fara preselectie (valoare raw true/false/null: `ic===true`/`ic===false`), trimite null cand nu e ales,
-  .camp-ajutor cu temeiul (instr. D390, anexa OPANAF 394/2017 pct.1.2).
+  .camp-ajutor cu temeiul (instr. D390, anexa OPANAF 705/2020 anexa 2 pct.1.2 (anterior OPANAF 394/2017, abrogat)).
 - DEFAULT_FISCAL_TACIT extins la al 5-lea camp (boolean: True/False/false + "da"/"nu"), .py+.js, regula in
   DESIGN_SYSTEM cap.17 v2.19 SIMULTAN cu verificatorul (norma + gardian mecanic in acelasi loc).
 TEMEI: acelasi principiu ca tip_decont (23.07) - un camp care decide obligatii, care nu se poate autocompleta din

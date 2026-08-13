@@ -2258,6 +2258,29 @@
       "sursa": "static.anaf.ro",
       "forma": "initiala"
     },
+    "opanaf_394_2017_d390_anexa2_instructiuni.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala",
+      "stare": "abrogat",
+      "inlocuit_de": "opanaf_705_2020"
+    },
+    "opanaf_394_2017_d390_anexa2_instructiuni.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_394_2017_d390_anexa2_instructiuni.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
     "opanaf_407_2025.pdf": {
       "exista": true,
       "tip_forma": null,
