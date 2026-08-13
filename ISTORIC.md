@@ -4196,3 +4196,19 @@ test_acoperire_ajutor_nu_regreseaza - nr. LIVE fara ajutor nu poate creste peste
 RANDARE: 47 -> 58 semne "?" in panou; D104/D110/D307 au "?"; modalul randeaza cele 7 sectiuni (1376 car. pt D104);
 zero erori. RAMASE: 76 LIVE inca fara ajutor (contabil-facing + infra) - raportate, tinute sub clichet. Suita 1947
 passed; verificator TOTAL 0.
+
+
+## 13.08.2026 — Ajutor contextual: +50 functionalitati contabil-facing, clichet 76 -> 26, four-way f330941
+Continuarea acoperirii ajutorului "?". Completate 50 din cele 76 LIVE fara explicatie (cele orientate spre
+contabil: parteneri, PDF/contare facturi, reconciliere bancara, TVA la incasare, taxare inversa, regimuri
+speciale, stat de plata, stocuri, note contabile, operatiuni IC/extracomunitare, curs valutar, scadente etc.).
+Acelasi tipar (7 sectiuni ## ); sursa a ceea ce face fiecare = coloana Descriere din registru; afirmatiile
+fiscale cu temei DIN CORPUS (anaf_surse), nu din memorie. Cifre verificate verbatim: cote TVA 21%/11% (Legea
+141/2025 art.291), plafoane CAS/CASS 6/12/24 (CF art.148-170), prag 22.500 taxare inversa (CF art.331(7)),
+plafon TVA la incasare 5.000.000 (OUG 8/2026), compensatie 8% agricultori (CF art.315^1), aur >=995 la mie (CF
+art.313). Unde temeiul cifrei nu era in corpus (prag Intrastat - Ordin INS neinclus) -> descris fara cifra.
+SARITE: 0 din 50 (toate Descrierile suficient de bogate). Cele 26 ramase = infra/tehnice (auth, provisioning,
+navigator, design system, croane, securitate, API, importuri de migrare) - ajutorul ar fi inventat pentru un
+contabil (punct de oprire), NEATINSE. Clichet _BASELINE_LIVE_FARA_AJUTOR 76 -> 26. LIVE cu ajutor 49 -> 99.
+Randat: 58 -> 108 semne "?"; esantion F018/F097/F087/F073/F091 au "?", modalul randeaza sectiunile. Suita 1947
+passed; verificator TOTAL 0.

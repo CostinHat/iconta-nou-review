@@ -8989,3 +8989,14 @@ PROBA: gard core/test_registru_functionalitati.py - (1) "Declaratia D*" LIVE far
 (2) clichet baseline 76 (scop 0), orice LIVE nou fara ajutor ridica numarul -> rosu.
 LIMITA: 76 LIVE inca fara ajutor (contabil-facing sursabile + infra) - de triat/scris la o trecere dedicata;
 clichetul le tine sub control si forteaza descresterea. NU se relaxeaza baselineul in sus.
+
+
+### 13.08.2026 Ajutor contextual COMPLET pe partea de contabil (50 scrise); raman 26 infra excepate  (f330941)
+DECIZIE: cele ~50 de functionalitati LIVE orientate spre contabil primesc explicatie (executarea bucketului
+"de scris" din decizia anterioara). Clichetul de acoperire coboara 76 -> 26. Cele 26 ramase sunt strict infra/
+tehnice (auth, provisioning tenant, navigator, design system, croane, securitate, API, importuri de migrare):
+raman FARA ajutor pentru ca explicatia "pentru contabil" ar fi inventata (punct de oprire) - nu au caz de
+utilizare de contabil. Ele raman baza clichetului (26).
+TEMEI: regula verificarii la sursa - fiecare afirmatie fiscala din cele 50 e ancorata pe act din corpus
+(anaf_surse); o cifra fara temei in corpus a fost OMISA (ex. prag Intrastat), nu presupusa.
+LIMITA: daca vreo functie "infra" devine cu adevarat contabil-facing, primeste ajutor si clichetul scade sub 26.
