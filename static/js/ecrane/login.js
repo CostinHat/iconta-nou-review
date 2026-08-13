@@ -52,7 +52,21 @@ function randCard(c) {
     </div>`;
 }
 
+// [analytics_public_v1] eveniment public anonim (ce/de unde/cand) - fire-and-forget, nu blocheaza
+// randarea, fara date personale (fara IP/UA/cookie/sesiune). Endpoint intern /api/eveniment-public.
+function evPublic(tip, pagina) {
+  try {
+    const corp = JSON.stringify({ tip, pagina: pagina || "landing" });
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon("/api/eveniment-public", new Blob([corp], { type: "application/json" }));
+    } else {
+      fetch("/api/eveniment-public", { method: "POST", headers: { "Content-Type": "application/json" }, body: corp, keepalive: true });
+    }
+  } catch (_e) { /* niciodata nu strica pagina */ }
+}
+
 export function ecranLogin(radacina) {
+  evPublic("vizita_landing");
   const bara = document.createElement("header");
   bara.className = "pagina-bara";
   bara.innerHTML = `
@@ -160,7 +174,7 @@ export function ecranLogin(radacina) {
       </div>
     `;
     modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
-    modal.querySelector("#acces-intra").addEventListener("click", randeazaLogin);
+    modal.querySelector("#acces-intra").addEventListener("click", () => { evPublic("intra_in_cont"); randeazaLogin(); });
     modal.querySelector("#acces-client-nou").addEventListener("click", randeazaPreturiInainte);
   }
 
@@ -550,6 +564,7 @@ function deschideFereastraGrupa(gr) {
 }
 
 function deschideFereastraPreturi() {  // [preturi_v1] continut din preturi.js (sursa unica), afisat ca fereastra ca la grupe
+  evPublic("deschide_preturi");
   _funcOverlay(
     `<div class="fereastra"><div class="fereastra-antet"><span class="fereastra-titlu">${esc(PRETURI_TITLU)}</span>` +
     `<button class="nav-x" type="button" title="Închide" aria-label="Închide">✕</button></div>` +
@@ -558,6 +573,7 @@ function deschideFereastraPreturi() {  // [preturi_v1] continut din preturi.js (
 }
 
 function deschideFunctionalitati() {
+  evPublic("modal_functionalitati");
   // [preturi_v1] cardul Preturi = PRIMUL, scris de mana (in afara zonei auto GRUPE_FUNC); nu se sterge la --scrie
   const cardPreturi =
     `<button class="func-card func-card-preturi" type="button" data-preturi="1"><span class="func-card-icon">${svgIcon(ICOANE.gauge, 26)}</span>` +

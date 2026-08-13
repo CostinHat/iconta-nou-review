@@ -7,6 +7,7 @@ import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc } from "../api.js";
 import { randeazaAdminRaportari } from "./admin_raportari.js?v=5";
 import { randeazaAdminActivitate } from "./admin_activitate.js?v=6";
 import { randeazaAdminSanatate } from "./admin_sanatate.js?v=3";
+import { randeazaAdminAnalytics } from "./admin_analytics.js?v=1";
 
 // iconite SVG inline (autonome)
 function svg(cheie, fg) {
@@ -24,6 +25,9 @@ const DEF = [
   { cheie:"anunturi", titlu:"Anunțuri", icon: "anunturi", ...CULORI_CARD.chihlimbar,
     sinteza:"Banner la logare pentru cabinete",
     actiune:(nav) => nav.deschide("Anunțuri", (corp) => randeazaAdminAnunturi(corp, nav), { lat: "larg" }) },  /* anunturi_larg_v1 */
+  { cheie:"analytics", titlu:"Analytics public", icon: "trend", ...CULORI_CARD.albastru,
+    sinteza:"Vizite landing, deschideri modal, click-uri, ghiduri",
+    actiune:(nav) => nav.deschide("Analytics public", (corp) => randeazaAdminAnalytics(corp, nav), { lat: "larg" }) },
   { cheie:"sanatate", titlu:"Sănătate server", icon: "server", ...CULORI_CARD.piersica,
     sinteza:"Server, aplicație, bază de date, erori",
     actiune:(nav) => nav.deschide("Sănătate server", (corp) => randeazaAdminSanatate(corp, nav)) },

@@ -42,6 +42,7 @@ PUBLICE = {
     ("post", "/public/plata/{ref}/confirma"),   # confirmare plata (ref = secret in URL)
     ("get",  "/ghid/{slug}"),                   # continut public (SEO)
     ("get",  "/ghid"),                          # index ghid
+    ("post", "/api/eveniment-public"),          # analytics public: eveniment anonim (ce/de unde/cand), fara date personale
     ("get",  "/ajutor/{fid}"),                 # ajutor contextual: text de FOLOSIRE, nu date de firma
     ("get",  "/sitemap.xml"),                   # SEO
     ("get",  "/robots.txt"),                    # SEO

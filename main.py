@@ -8601,7 +8601,7 @@ _GHID_PAGINA = """<!doctype html>
     <p class="ghid-subsol"><a href="/ghid">Toate ghidurile</a> · <a href="/">← iConta.eu</a> · <a href="/public/termeni">Termeni și condiții</a></p>
   </main>
 </div>
-</body>
+{{BEACON}}</body>
 </html>"""
 
 
@@ -8699,7 +8699,7 @@ def _ghid_randeaza(txt):
                         extensions=["extra", "sane_lists", "md_in_html", "attr_list"])
 
 
-def _ghid_pagina_html(titlu, descriere, canonical, corp_html, noindex=False, jsonld=None, og_type="article"):
+def _ghid_pagina_html(titlu, descriere, canonical, corp_html, noindex=False, jsonld=None, og_type="article", slug=""):
     meta = []
     if noindex:
         meta.append('<meta name="robots" content="noindex">')
@@ -8720,9 +8720,12 @@ def _ghid_pagina_html(titlu, descriere, canonical, corp_html, noindex=False, jso
     if jsonld:
         _s = _ghid_json.dumps(jsonld, ensure_ascii=False).replace("<", "\\u003c")
         meta.append('<script type="application/ld+json">%s</script>' % _s)
+    _beacon = ("<script>try{var b=JSON.stringify({tip:'vizita_ghid',pagina:%s});navigator.sendBeacon&&navigator.sendBeacon('/api/eveniment-public',new Blob([b],{type:'application/json'}))}catch(e){}</script>\n"
+               % _ghid_json.dumps(slug)) if slug else ""
     return (_GHID_PAGINA
             .replace("{{TITLU}}", _ghid_html.escape(titlu))
             .replace("{{META}}", "\n".join(meta))
+            .replace("{{BEACON}}", _beacon)
             .replace("{{CORP}}", corp_html))
 
 
@@ -8765,6 +8768,58 @@ def _ghid_lista():
     return out
 
 
+# ---- Analytics public FARA date personale (eveniment: ce/de unde/cand; NU ip/UA/cookie/sesiune/user) ----
+_EVENIMENTE_PUBLICE = frozenset((
+    "vizita_landing", "modal_functionalitati", "deschide_preturi", "intra_in_cont", "vizita_ghid"))
+
+
+class EvenimentPublicIn(BaseModel):
+    tip: str
+    pagina: Optional[str] = None
+
+
+@app.post("/api/eveniment-public")
+def eveniment_public(date: EvenimentPublicIn):
+    """Inregistrare eveniment public de interes (deschidere modal, click Intra in cont, vizita ghid).
+    Se stocheaza DOAR: tip (lista alba), pagina (calea proprie, curatata) si momentul (DEFAULT now()).
+    NU se citeste si NU se retine IP, User-Agent, cookie, sesiune sau vreun identificator -> fara date
+    personale -> fara obligatie de consimtamant. Fire-and-forget (clientul foloseste sendBeacon)."""
+    tip = (date.tip or "").strip()
+    if tip not in _EVENIMENTE_PUBLICE:
+        return {"ok": False}   # tip necunoscut -> se ignora (nu strica clientul)
+    pagina = "".join(c for c in (date.pagina or "landing").strip().lower()
+                     if c.isalnum() or c in "/_-")[:128] or "landing"
+    try:
+        with db.get_conn() as conn, conn.cursor() as cur:
+            cur.execute("INSERT INTO public.eveniment_public (tip, pagina) VALUES (%s, %s)", (tip, pagina))
+    except Exception:
+        return {"ok": False}
+    return {"ok": True}
+
+
+@app.get("/admin/analytics")
+def admin_analytics(zile: int = 30, ctx=Depends(cere_rol("superadmin"))):
+    """Cifre agregate din public.eveniment_public: pe eveniment, pe zi, pe pagina de provenienta.
+    Fara date personale (tabela nu contine niciun identificator)."""
+    zile = max(1, min(int(zile or 30), 365))
+    with db.get_conn() as conn, conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+        cur.execute("SELECT tip, COUNT(*) AS n FROM public.eveniment_public "
+                    "WHERE creat_la >= now() - (%s || ' days')::interval GROUP BY tip ORDER BY n DESC", (zile,))
+        pe_eveniment = cur.fetchall()
+        cur.execute("SELECT to_char(date_trunc('day', creat_la), 'YYYY-MM-DD') AS zi, COUNT(*) AS n "
+                    "FROM public.eveniment_public WHERE creat_la >= now() - (%s || ' days')::interval "
+                    "GROUP BY 1 ORDER BY 1 DESC", (zile,))
+        pe_zi = cur.fetchall()
+        cur.execute("SELECT COALESCE(NULLIF(pagina,''),'landing') AS pagina, COUNT(*) AS n "
+                    "FROM public.eveniment_public WHERE creat_la >= now() - (%s || ' days')::interval "
+                    "GROUP BY 1 ORDER BY n DESC LIMIT 100", (zile,))
+        pe_pagina = cur.fetchall()
+        cur.execute("SELECT COUNT(*) AS n FROM public.eveniment_public "
+                    "WHERE creat_la >= now() - (%s || ' days')::interval", (zile,))
+        total = cur.fetchone()["n"]
+    return {"zile": zile, "total": total, "pe_eveniment": pe_eveniment, "pe_zi": pe_zi, "pe_pagina": pe_pagina}
+
+
 @app.get("/ghid/{slug}")
 def public_ghid(slug: str):
     """Pagina publica de ghid (DS cap.22). Fara autentificare. slug -> ghid/{slug}.md -> markdown -> shell.
@@ -8790,7 +8845,7 @@ def public_ghid(slug: str):
               "mainEntityOfPage": {"@type": "WebPage", "@id": canonical},
               "image": _GHID_OG_IMAGINE}
     jsonld = {k: v for k, v in jsonld.items() if v not in ("", None)}
-    return Response(content=_ghid_pagina_html(titlu, descriere, canonical, _ghid_randeaza(corp_md), jsonld=jsonld),
+    return Response(content=_ghid_pagina_html(titlu, descriere, canonical, _ghid_randeaza(corp_md), jsonld=jsonld, slug=slug),
                     media_type="text/html; charset=utf-8")
 
 
