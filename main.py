@@ -8738,32 +8738,31 @@ def _ghid_404():
 
 
 def _ghid_lista():
-    """Lista ghidurilor PUBLICATE = slug-urile din coloana ghid_slug (FUNCTIONALITATI.csv) care au fisier
-    ghid/{slug}.md. Sursa UNICA pentru index + sitemap. Fiecare: {slug, titlu, descriere, published, modified}."""
-    import csv as _csv
-    out, vazut = [], set()
-    csv_path = os.path.join(os.path.dirname(os.path.abspath(__file__)), "FUNCTIONALITATI.csv")
-    try:
-        with open(csv_path, encoding="utf-8-sig") as f:
-            for r in _csv.reader(f):
-                if len(r) < 10:
-                    continue
-                for slug in r[9].split("|"):   # [multi_ghid] o functionalitate poate avea mai multe pagini de ghid
-                    slug = slug.strip()
-                    if not slug or not _GHID_SLUG_RE.match(slug) or slug in vazut:
-                        continue
-                    cale = os.path.join(_GHID_DIR, slug + ".md")
-                    if not os.path.isfile(cale):
-                        continue
-                    vazut.add(slug)
-                    meta, corp = _ghid_frontmatter(open(cale, encoding="utf-8").read())
-                    out.append({"slug": slug,
-                                "titlu": meta.get("title") or _ghid_titlu(corp),
-                                "descriere": meta.get("description", ""),
-                                "published": meta.get("published", ""),
-                                "modified": meta.get("modified", "") or _ghid_mtime(cale)})
-    except Exception:
-        pass
+    """Lista ghidurilor PUBLICATE = TOATE fisierele ghid/*.md cu front-matter valid. Sursa UNICA pentru index +
+    sitemap (aliniat la ce declara comentariul: ghid/ e sursa unica). FUNCTIONALITATI.csv (coloana ghid_slug) NU
+    mai decide ce pagini EXISTA - ramane doar pentru legatura inversa functionalitate->ghid. Un fisier fara
+    front-matter valid e EXCLUS cu LOG EXPLICIT (nu tacut). Fiecare: {slug, titlu, descriere, published, modified}."""
+    import glob as _glob
+    out = []
+    for cale in sorted(_glob.glob(os.path.join(_GHID_DIR, "*.md"))):
+        nume = os.path.basename(cale)
+        slug = nume[:-3]
+        if not _GHID_SLUG_RE.match(slug):
+            print("[ghid] EXCLUS (slug invalid): %s" % nume, flush=True)
+            continue
+        try:
+            meta, corp = _ghid_frontmatter(open(cale, encoding="utf-8").read())
+        except Exception as e:
+            print("[ghid] EXCLUS (citire esuata): %s (%s)" % (nume, e), flush=True)
+            continue
+        if not meta:
+            print("[ghid] EXCLUS (fara front-matter valid): %s" % nume, flush=True)
+            continue
+        out.append({"slug": slug,
+                    "titlu": meta.get("title") or _ghid_titlu(corp),
+                    "descriere": meta.get("description", ""),
+                    "published": meta.get("published", ""),
+                    "modified": meta.get("modified", "") or _ghid_mtime(cale)})
     out.sort(key=lambda g: g["slug"])
     return out
 
