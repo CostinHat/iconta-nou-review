@@ -9025,3 +9025,58 @@ DECIZIE: nu se mai incearca variatii client-side de pe server pentru just.ro (ef
 proxy/alt IP ar fi circumventie ABUZIVA a unui control de acces pe care site-ul il aplica acestui host
 (constrangerea lui Costin: 'nu ocoli protectiile in mod abuziv') -> INTERZIS. Actele consolidate de pe just.ro se
 aduc din BROWSERUL OMULUI (alt IP), pe URL-urile predate. Rezultat concret: 0 din cele 43 aduse de pe server.
+
+
+## 13.08.2026 — MF/D406 amortizare PE METODA (CF art.28): DATORIE 03.08 INCHISA
+
+Continuarea datoriei din 03.08 (subsistem mijloace fixe): motorul D406/SAF-T (core/d406_active.py)
+calcula amortizarea DOAR LINIAR (rata = amortizabil/dnf); metoda din activ (degresiva/accelerata/
+superaccelerata) era MAPATA dupa cod dar IGNORATA in calcul. La import, "superaccelerata" era chiar
+retrogradata tacut la "accelerata" (substring "acceler"), apoi calculata liniar. Decizie Costin:
+optiunea C - se calculeaza pe metoda, cu golden pe fiecare + proba DUK.
+
+TEMEIURI verificate VERBATIM la sursa (anaf_surse/cod_fiscal_227_2015_consolidat.txt, oug_8_2026.txt):
+  - alin.(6) liniara: cota liniara la valoarea de intrare.
+  - alin.(7) degresiva: cota liniara x coeficient - 1,5 (durata 2-5 ani) / 2,0 (6-10 ani) / 2,5 (>10 ani) -
+    pe valoarea ramasa, cu trecere la liniar pe durata ramasa (comutarea e din metodologia normelor
+    HG 1/2016 pct.25, al carei tabel an-cu-an e elidat in corpus; coeficientii sunt verbatim din alin.7).
+  - alin.(8) accelerata: an 1 = max 50% din valoarea de intrare; anii urmatori = valoare ramasa /
+    durata normala ramasa. Permisa doar echipamente/masini/unelte/computere (alin.5 lit.b).
+  - alin.(8^1) superaccelerata (introdus de OUG 8/2026, art.6 pct.8, MO 147 din 25.02.2026): an 1 =
+    max 65%; rest ca la accelerata. Doar active NOI puse in functiune 1 ian-31 dec 2026, subgrupele
+    2.1 (echipamente tehnologice/masini/unelte/instalatii) si 2.4 (animale si plantatii); de la anul fiscal 2026.
+
+IMPLEMENTARE (core/d406_active.py): calc_asset alege metoda din activ (_norm_metoda) si calculeaza:
+liniar (cale pastrata byte-echivalent - fara regresie pe cele 14 teste D406 existente); ne-liniar prin
+schema pe LUNI de utilizare (amortizarea incepe luna urmatoare PIF, alin.12), mapata pe ani calendaristici.
+Degresivul foloseste _amort_anual_degresiv (coef pe durata + comutare la liniar). Accelerat/superaccelerat:
+plafon an 1 (50%/65%) + rest liniar pe durata ramasa. Toate se aplica valorii amortizabile (valoare-rezidual)
+si amortizeaza integral (accum final = amortizabil, book_end = rezidual). Sub 2 ani (dnf<24) metodele
+ne-liniare nu au sens -> fallback liniar. DepreciationPercentage in XML = cota nominala liniara (100x12/dnf)
+ca referinta; amortizarea reala a perioadei e in DepreciationForPeriod (DUK nu verifica acest camp aritmetic).
+
+REGRESIE INCHISA: la import, superaccel se verifica ACUM inaintea acceler in AMBII normalizatori
+(_normalizeaza_metoda din mijloace_fixe_import_api.py si _norm_metoda din d406_active.py), robust si la
+"super accelerata"/"super-accelerata".
+
+GOLDEN (core/test_d406_amortizare.py, 15 teste): activ 100.000 lei, rezidual 0, durata 60 luni, PIF
+20.12.2025 (amortizare din ian.2026, ani utilizare = ani calendaristici). Cifre calculate de mana din lege:
+degresiv 30.000/21.000/16.333,33/16.333,34/16.333,33; accelerat 50.000 apoi 12.500x4; superaccelerat 65.000
+apoi 8.750x4; liniar ~20.000/an. Fiecare metoda amortizeaza integral. + test coeficienti degresivi pe durata
+(1,5/2,0/2,5), test 50%/65% an 1, test fallback sub 2 ani, test ordinea superaccel<acceler in ambii normalizatori.
+
+PROBA DUK (core/test_d406_active_duk.py, pe tenant_013 = ALFA MICRO SRL, CUI 301111003): generatorul
+NOU d406_active.xml_d406_anual_active emite D406 ANUAL complet cu HeaderComment='A' (poarta care permite
+sectiunea Assets - sursa: enumul AUDIT_FILE_TYPE din D406Validator.jar: L=lunar/T=trimestrial/C=la
+cerere/A=anual; cu L/T Asset are max 0 aparitii). Profilul anual: perioada 1-12 pe acelasi an, toate
+sectiunile non-Asset prezente dar GOALE, GeneralLedgerEntries gol, SourceDocuments cu cele 5 subsectiuni
+(AssetTransactions cu NumberOfAssetTransactions=0), doar <Assets> populat. Fisier cu 6 active (2 reale
+liniare din tenant_013 + 4 sintetice, cate una pe metoda) -> DUKIntegrator_AnLunaUI (pachet oficial ANAF)
+raspunde stare='valid', zero erori. DUK accepta textul literal al metodei in DepreciationMethod (nu
+verifica enumerarea acelui camp). NOTA: DUK verifica STRUCTURA, nu aritmetica - cifrele sunt pazite de
+golden. RAMAS (nu blocheaza, nu e datorie): cablarea raportarii anuale de active in fluxul de depunere
+(endpoint/UI) - D406 oricum nu e depunabil integral (vezi nota 27.07 - SourceDocuments pe continut real);
+xml_d406_anual_active exista si e DUK-valid, gata de cablat cand se face raportarea anuala.
+
+Marker inchidere datorie: **mf amortizare degresiva si accelerata calculate dupa metoda activului**. xfail
+test_datorie_mf_metode_amortizare ELIMINAT.

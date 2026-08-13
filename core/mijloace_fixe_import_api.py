@@ -12,6 +12,7 @@ Verificari informative (nu blocante):
 Amortizarea cumulata = valoare - rezidual (afisata informativ).
 """
 from __future__ import annotations
+import re as _re
 import datetime
 
 PLAFON_MF_2026 = 5000.0
@@ -50,7 +51,9 @@ def _data(v):
 
 
 def _normalizeaza_metoda(v):
-    t = str(v or "").strip().lower()
+    t = _re.sub(r"[\s._-]+", "", str(v or "").lower())   # colapseaza separatorii: "super accelerata" -> "superaccelerata"
+    if "superaccel" in t:          # INAINTE de "acceler": "superaccelerata" contine "acceler"
+        return "superaccelerata"   # CF art.28 alin.8^1 (OUG 8/2026)
     if "degres" in t:
         return "degresiva"
     if "acceler" in t:
