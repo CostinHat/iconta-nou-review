@@ -145,7 +145,7 @@ def test_declaratii_live_au_ajutor():
     Prinde mecanic o declaratie noua adaugata fara '?' (clasa care a regresat: D104..D311)."""
     live, iid, inume, iaj = _live_si_indici()
     fara = [(r[iid], r[inume]) for r in live
-            if r[inume].strip().startswith("Declaratia D") and not (r[iaj] or "").strip()]
+            if r[inume].strip().startswith(("Declaratia D", "Declarația D")) and not (r[iaj] or "").strip()]
     assert not fara, ("Declaratii LIVE fara ajutor contextual (completeaza coloana ajutor):\n"
                       + "\n".join("  %s | %s" % (a, b) for a, b in fara))
 
