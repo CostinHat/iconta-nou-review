@@ -5,7 +5,6 @@
 // texte publice care spun acelasi lucru altfel devin, in timp, doua promisiuni diferite. Treptele sunt PROGRESIVE: 30 firme = 20*10 + 10*8 = 280.
 
 export const PRETURI_TITLU = "Prețuri";
-export const PRETURI_SUBTITLU = "10 lei pe firmă pe lună";
 
 export function preturiHTML() {
   return `

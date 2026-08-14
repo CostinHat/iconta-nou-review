@@ -2,7 +2,7 @@
 // Bara sus: logo + buton "Acces". Acces deschide central un modal umbrit
 // cu 2 optiuni: Intra in cont (login existent) / Client nou (inregistrare cabinet).
 import { api, arataMesaj, CULORI_CARD, ICOANE, esc } from "../api.js";
-import { PRETURI_TITLU, PRETURI_SUBTITLU, preturiHTML } from "./preturi.js";  // [preturi_v1] sursa unica a continutului de preturi
+import { PRETURI_TITLU, preturiHTML } from "./preturi.js";  // [preturi_v1] sursa unica a continutului de preturi
 import { sesiune } from "../sesiune.js";
 
 function svgIcon(paths, w = 24) {
@@ -577,7 +577,7 @@ function deschideFunctionalitati() {
   // [preturi_v1] cardul Preturi = PRIMUL, scris de mana (in afara zonei auto GRUPE_FUNC); nu se sterge la --scrie
   const cardPreturi =
     `<button class="func-card func-card-preturi" type="button" data-preturi="1"><span class="func-card-icon">${svgIcon(ICOANE.gauge, 26)}</span>` +
-    `<span class="func-card-titlu">${esc(PRETURI_TITLU)}</span><span class="func-card-nr">${esc(PRETURI_SUBTITLU)}</span></button>`;
+    `<span class="func-card-titlu">${esc(PRETURI_TITLU)}</span></button>`;
   const carduri = cardPreturi + GRUPE_FUNC.map((gr, i) =>
     `<button class="func-card" type="button" data-i="${i}"><span class="func-card-icon">${svgIcon(ICOANE[gr.icon], 26)}</span>` +
     `<span class="func-card-titlu">${esc(gr.titlu)}</span><span class="func-card-nr">${gr.functii.length} funcții</span></button>`
