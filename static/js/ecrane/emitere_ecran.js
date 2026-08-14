@@ -16,10 +16,14 @@ export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   // citesc numerotarea; daca nu e configurata (serie null si urmator 1 fara facturi) -> config
   let num = { serie: null, urmator_numar: 1, configurata: false };
   try { num = await api.get(`/tenants/${tenantId}/facturi/numerotare`); } catch {}
+  // [tva_din_profil_v1] platitor_tva e deja in profil (Date firma/ANAF) - il citim ca sa NU re-intrebam (#16)
+  let tvaProfil = null;
+  try { const _v = await api.get(`/tenants/${tenantId}/vector`); if (_v && typeof _v.platitor_tva === "boolean") tvaProfil = _v.platitor_tva; }
+  catch { tvaProfil = null; }  // vector indisponibil -> intreaba (nu presupune)
 
   const neconfigurat = !num.configurata;  // numerotare_configurata_v1
   if (neconfigurat) {
-    configureazaNumerotare(corp, nav, tenantId, opt);
+    configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil);
   } else {
     // [punte_stoc_v1] F172: la firma de CABINET cu gestiune cantitativa (are articole), incarca
     // articolele de stoc pentru selectorul pe linie. Portalul client NU tine
@@ -33,20 +37,20 @@ export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
 }
 
 // ---------- CONFIGURARE NUMEROTARE (o data) ----------
-function configureazaNumerotare(corp, nav, tenantId, opt) {
+function configureazaNumerotare(corp, nav, tenantId, opt, tvaProfil = null) {
   if (nav && nav.setInapoi) nav.setInapoi(opt.inapoi || undefined);  // emitere_inapoi_v1
   const inapoi = opt.inapoi || (() => nav.inapoi());
   corp.innerHTML = `
 
     <h2 class="pf-titlu">Configurare emitere ${semnAjutor("F048")}</h2>
     <p class="pf-intro">Înainte de prima factură: numerotarea (ca să fie neîntreruptă) și regimul de TVA.</p>
-    <div class="em-config-camp" style="margin-bottom:12px">
+    ${tvaProfil === null ? `<div class="em-config-camp" style="margin-bottom:12px">
       <label>Firma e plătitoare de TVA?<span class="oblig">*</span></label>
       <div class="em-optiuni">
         <button class="buton-secundar em-buton-sec" id="em-tva-da">Da, plătitoare</button>
         <button class="buton-secundar em-buton-sec" id="em-tva-nu">Nu</button>
       </div>
-    </div>
+    </div>` : `<p class="pf-intro">Regim TVA: <b>${tvaProfil ? "plătitoare de TVA" : "neplătitoare"}</b> (din profilul firmei).</p>`}
     <div class="em-config">
       <div class="em-intrebare">Ai mai emis facturi până acum (în alt program sau pe hârtie)?</div>
       <div class="em-optiuni">
@@ -57,10 +61,13 @@ function configureazaNumerotare(corp, nav, tenantId, opt) {
     </div>`;
 
   const zona = corp.querySelector("#em-config-form");
-  let platitorTva = null;  // [tva_config_v1] obligatoriu ales inainte de Continua
+  const tvaDinProfil = tvaProfil !== null;   // [tva_din_profil_v1] profilul stie -> nu re-intrebam, nu suprascriem (#16)
+  let platitorTva = tvaProfil;  // null daca profilul nu stie -> obligatoriu ales
   const bTvaDa = corp.querySelector("#em-tva-da"), bTvaNu = corp.querySelector("#em-tva-nu");
-  bTvaDa.addEventListener("click", () => { platitorTva = true; bTvaDa.classList.add("buton-activ"); bTvaNu.classList.remove("buton-activ"); });
-  bTvaNu.addEventListener("click", () => { platitorTva = false; bTvaNu.classList.add("buton-activ"); bTvaDa.classList.remove("buton-activ"); });
+  if (bTvaDa && bTvaNu) {
+    bTvaDa.addEventListener("click", () => { platitorTva = true; bTvaDa.classList.add("buton-activ"); bTvaNu.classList.remove("buton-activ"); });
+    bTvaNu.addEventListener("click", () => { platitorTva = false; bTvaNu.classList.add("buton-activ"); bTvaDa.classList.remove("buton-activ"); });
+  }
 
   corp.querySelector("#em-da").addEventListener("click", () => {
     zona.innerHTML = `
@@ -77,10 +84,11 @@ function configureazaNumerotare(corp, nav, tenantId, opt) {
     zona.querySelector("#em-salveaza-config").addEventListener("click", async () => {
       const serie = zona.querySelector("#em-serie").value.trim() || null;
       if (serie && /^\d+$/.test(serie)) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Seria conține doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-). Numărul ultimei facturi se pune în câmpul următor."; return; }
-      const ultim = parseInt(zona.querySelector("#em-ultim").value, 10);
-      const start = Number.isFinite(ultim) ? ultim + 1 : 1;
+      const ultim = parseInt((zona.querySelector("#em-ultim").value || "").trim(), 10);
+      if (!Number.isFinite(ultim) || ultim < 1) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Completează numărul ultimei facturi emise (nu putem presupune numărul 1)."; return; }
+      const start = ultim + 1;   // #10: cerut explicit, nu fabricat
       if (platitorTva === null) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Alege dacă firma e plătitoare de TVA."; return; }
-      await salveazaConfig(tenantId, serie, start, platitorTva);
+      await salveazaConfig(tenantId, serie, start, tvaDinProfil ? null : platitorTva);
       randeazaEmitere(corp, nav, tenantId, opt);
     });
   });
@@ -97,7 +105,7 @@ function configureazaNumerotare(corp, nav, tenantId, opt) {
       const serie = zona.querySelector("#em-serie2").value.trim() || null;
       if (serie && /^\d+$/.test(serie)) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Seria conține doar cifre. Seria e un prefix cu litere (ex: KAI- sau FCT-)."; return; }
       if (platitorTva === null) { let m = zona.querySelector(".msg-eroare"); if (!m) { m = document.createElement("p"); m.className = "msg-eroare"; zona.appendChild(m); } m.textContent = "Alege dacă firma e plătitoare de TVA."; return; }
-      await salveazaConfig(tenantId, serie, 1, platitorTva);
+      await salveazaConfig(tenantId, serie, 1, tvaDinProfil ? null : platitorTva);
       randeazaEmitere(corp, nav, tenantId, opt);
     });
   });

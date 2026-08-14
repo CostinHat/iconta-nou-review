@@ -2081,8 +2081,12 @@ async function ecranJurnal(corp, nav, t) {
     corp.querySelector("#j-amort").addEventListener("click", async () => {
       try {
         const r = await api.post(`/tenants/${t.id}/amortizare?an=${an}&luna=${luna}`, {});
-        arataMesaj(zonaMesaj, r.linii ? `Notă generată: ${r.linii} mijloace fixe, total ${bani(r.total)} lei` : "Nimic de amortizat.", r.linii ? "ok" : "info");
-        deseneaza();
+        if (r.linii) {
+          arataMesaj(zonaMesaj, `Notă generată: ${r.linii} mijloace fixe, total ${bani(r.total)} lei`, "ok");
+          deseneaza();   // re-randare ca sa apara nota noua
+        } else {
+          arataMesaj(zonaMesaj, "Nimic de amortizat.", "info");   // FARA deseneaza() - altfel sterge mesajul (bug #9)
+        }
       } catch (e) { eroare(e, "Eroare la generarea notei de amortizare."); }
     });
     corp.querySelectorAll("[data-val]").forEach((b) => b.addEventListener("click", async () => {

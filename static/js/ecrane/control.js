@@ -19,7 +19,7 @@ export async function randeazaControl(corp, nav, tidAuto) {
   const s = date.sumar || {};
 
   corp.innerHTML = `
-    <p class="mig-intro">Starea fiscală a fiecărei firme: declarațiile datorate vs depuse (cu termenele ANAF) și coerența lor cu contabilitatea — TVA (F163), salarii, operațiuni intracomunitare, cota facturilor emise (F184), echilibru și trezorerie.</p>
+    <p class="mig-intro">Starea fiscală a fiecărei firme: declarațiile datorate vs depuse (cu termenele ANAF) și coerența lor cu contabilitatea — TVA, salarii, operațiuni intracomunitare, cota facturilor emise, echilibru și trezorerie.</p>
     <div class="cf-sumar">
       <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.verde.dot}"></span>${s.verde || 0} la zi</span>
       <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.galben.dot}"></span>${s.galben || 0} de urmărit</span>
