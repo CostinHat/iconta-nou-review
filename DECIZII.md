@@ -9198,3 +9198,19 @@ necesita_sistem_electronic(suma, prag) intoarce None fara prag (necunoscut, nu F
 configurare dupa aducerea HG 773/2019. De adus din browser: HG 773/2019 (consolidat, pt plafonul curent).
 Teste: core/test_compensare.py (min art.1616, nota 401=4111 echilibrata, brut/rest pct.56, ambele-parti
 obligatorii, prag None, sursa in corpus). 9 teste.
+
+### 14.08.2026 HG 773/2019 adus integral; necesita_sistem_electronic re-cablat (NU exista prag valoric)
+Fisierul HG 773/2019 din anaf_surse era SHELL-ul JS al just.ro ("Se incarca", fara corpul actului) -> sters.
+Textul INTEGRAL al Normelor (Art.1-10) adus de pe surse reachable non-just.ro (theexperts.ro + contabilul.
+manager.ro, cross-check; partea dispozitiva din PDF Lege5/alcont.ro) -> hg_773_2019_norme_monitorizare_
+datorii_nerambursate.{html,txt,sha256}; INDEX regenerat (in vigoare).
+CONSTATARE (sursa bate premisa): HG 773/2019 NU contine niciun prag VALORIC in lei. Pragul ~10.000 lei (100 mil
+ROL) apartinea HG 685/1999, ABROGAT de HG 773/2019 (Art.3 al hotararii). Actul in vigoare foloseste criteriul de
+VECHIME: facturi restante mai vechi de 30 de zile de la emitere/scadenta (Norme Art.2 alin.1), pentru persoane
+juridice cu capital de stat; sistemul e SIC (Sistemul Informatic de Compensare), gestionat de CPPI Busteni;
+"compensare = stingerea... pana la concurenta obligatiei celei mai mici, prin ordine de compensare" (Art.3 lit.a
+- coroboreaza regula min din Cod civil art.1616).
+CABLAT (core/compensare.py): necesita_sistem_electronic(varsta_factura_zile, cu_capital_de_stat) = varsta > 30
+si capital de stat (PRAG_VECHIME_ZILE=30, temei HG 773/2019 Art.2), NU pe suma; fara varsta -> None.
+propune_compensari ia varsta din input (per partener); pull pe solduri (balante) nu are varsta -> semnal None
+(onest). Teste actualizate (test_sic_pe_varsta_factura_hg773 + sursa in corpus include hg_773).

@@ -1,0 +1,104 @@
+HG 773/2019 - Norme metodologice privind monitorizarea datoriilor nerambursate la scadenta ale contribuabililor, persoane juridice
+Publicat in Monitorul Oficial, Partea I nr. 881 din 01 noiembrie 2019. In vigoare de la 31 decembrie 2019.
+Sursa full-text (reachable): https://www.theexperts.ro/noutati-diverse/compensare-facturi-imi-2020
+Confirmat verbatim si de: https://contabilul.manager.ro/a/24460/...
+Parte dispozitiva HG (Art.1-4, abrogarea HG 685/1999): Lege5 PDF via alcont.ro
+================================================================================
+
+ANEXA - NORME METODOLOGICE
+
+Art. 1. -
+(1) Centrul de Pregătire pentru Personalul din Industrie Bușteni - Sucursala București, denumit în continuare CPPI, prin structura de compensare, gestionează unitar administrarea la nivel național a sistemului de compensare datorii și creanțe, Sistemul informatic de compensare, denumit în continuare SIC, precum și toate informațiile primite de la persoanele juridice, conform Ordonanței de urgență a Guvernului nr. 77/1999 privind unele măsuri pentru prevenirea incapacității de plată, aprobată cu modificări prin Legea nr. 211/2001, cu modificările ulterioare.
+
+(2) Compensarea se realizează în condițiile legii prin stingerea datoriilor reciproce, neplătite/neîncasate reflectate în contabilitatea persoanelor juridice participante, până la concurența celei mai mici dintre obligații, pe baza ordinelor de compensare.
+
+Art. 2. -
+(1) În vederea realizării operațiunilor de compensare, persoanele juridice cu capital integral/majoritar/minoritar de stat transmit la adresa web dedicată facturile pentru sumele restante către orice creditor, respectiv de la orice debitor persoană juridică cu sediul în România, mai vechi de 30 de zile de la emiterea facturii fiscale sau de la scadență, dacă scadența este clar specificată, potrivit instrucțiunilor pentru transmiterea datelor prevăzute în anexa nr. 1.
+
+(2) Persoanele juridice, altele decât cele prevăzute la art. 2 din Ordonanța de urgență a Guvernului nr. 77/1999, aprobată cu modificări prin Legea nr. 211/2001, cu modificările ulterioare, pot să realizeze operațiuni de compensare cu facturi prin crearea conturilor de utilizator și prin transmiterea la adresa dedicată a facturilor pe care intenționează a le compensa, potrivit instrucțiunilor pentru transmiterea datelor prevăzute în anexa nr. 1.
+
+(3) Persoanele juridice prevăzute la alin. (1) și (2) au obligația de a actualiza situația facturilor, în maximum o zi lucrătoare de la momentul oricărei modificări survenite.
+
+(4) Toate datele furnizate de persoanele juridice trebuie să fie corecte, în caz contrar atrăgând răspunderea civilă și penală potrivit legii.
+
+Art. 3. -
+În sensul prezentelor norme, termenii și expresiile de mai jos au următoarele semnificații:
+
+a) compensare - stingerea obligațiilor de plată reciproce între contribuabili, persoane juridice, până la concurența obligației celei mai mici, prin ordine de compensare;
+
+b) compensare bilaterală - compensare fără numerar efectuată între două persoane juridice;
+
+c) compensare multilaterală - compensare fără numerar efectuată între trei sau mai multe persoane juridice;
+
+d) compensare predefinită - stingerea obligațiilor de plată reciproce între contribuabili, persoane juridice, prin ordine de compensare, pe baza unui circuit de compensare identificat, convenit și solicitat de comun acord de către aceștia;
+
+e) ordin de compensare - instrument de plată nemonetar, numerotat în SIC, emis de CPPI prin structura de compensare pentru fiecare persoană juridică participantă, document prevăzut în anexa nr. 2;
+
+f) persoană juridică compensatoare - persoană juridică, indiferent de forma de organizare și de tipul de proprietate, precum și persoane juridice, care nu sunt dizolvate sau nu se află în faliment, ce solicită stingerea obligațiilor de plată prin compensare, inclusiv cele aflate sub incidența Legii nr. 85/2014 privind procedurile de prevenire a insolvenței și de insolvență, cu modificările și completările ulterioare, cu aprobarea administratorului judiciar;
+
+g) proces-verbal de compensare - raport generat de SIC în care se consemnează îndeplinirea cumulativă a condițiilor necesare realizării unui circuit de compensare în vederea emiterii ordinelor de compensare, document prevăzut în anexa nr. 5.
+
+Art. 4. -
+(1) Operațiunile de compensare se realizează de către persoanele juridice prevăzute la art. 2 prin accesarea adresei web dedicate, publicată pe website-ul CPPI pentru accesarea SIC, precum și pentru transmiterea informațiilor necesare.
+
+(2) Publicarea adresei web dedicate, pe website-ul CPPI, se face ca urmare a aprobării prin decizie a directorului general al CPPI, în termen de 60 de zile de la data intrării în vigoare a prezentelor norme metodologice.
+
+Art. 5. -
+(1) În vederea creării conturilor de utilizator, persoanele juridice interesate trebuie să efectueze operațiunea de completare a formularului pus la dispoziție de SIC în vederea creării contului.
+
+(2) Pentru crearea conturilor prevăzute la alin. (1), persoanele juridice interesate trebuie să transmită către structura de compensare din cadrul CPPI prin SIC următoarele documente validate cu semnătură electronică calificată:
+
+a) copia certificatului de înregistrare de la registrul comerțului;
+
+b) împuternicirea persoanei care: ridică/depune acte și documente, aplică semnătura electronică calificată, semnează olograf, utilizează SIC, gestionează conturile de utilizator, conform modelului prevăzut în anexa nr. 4;
+
+c) copia actului de identitate cu semnătura olografă a persoanei împuternicite pentru: ridicarea/depunerea de acte și documente, aplicarea semnăturii electronice calificate, semnarea olografă, utilizarea SIC, gestionarea conturilor de utilizator;
+
+d) aprobarea administratorului judiciar conform Legii nr. 85/2014, cu modificările și completările ulterioare, când este cazul.
+
+(3) Ca urmare a verificării datelor transmise de către solicitant, CPPI prin structura de compensare informează solicitantul în termen de 5 zile de la data solicitării asupra validării contului sau conturilor de utilizator sau asupra neîndeplinirii condițiilor pentru crearea acestuia.
+
+(4) Accesarea conturilor se face prin utilizarea numelui de utilizator și a parolei stabilite la înregistrarea în SIC.
+
+(5) Persoanele juridice compensatoare care au creat cont sau conturi de utilizator sunt responsabile de modalitatea de gestionare a numelui de utilizator, a parolei de acces și a datelor introduse în SIC și trebuie să comunice către structura de compensare a CPPI prin SIC orice modificări intervenite privind persoana împuternicită și asupra modului de organizare și funcționare, în termen de o zi lucrătoare de la data la care acestea au fost operate.
+
+(6) Fiecare persoană juridică este responsabilă de editarea și gestionarea împuternicirilor transmise în SIC.
+
+Art. 6. -
+(1) Ca urmare a introducerii datelor de către persoanele juridice compensatoare, SIC identifică unul sau mai multe circuite de compensare care se comunică prin intermediul contului de utilizator, prin generarea în format electronic a formularelor de ordin de compensare.
+
+(2) Ca urmare a introducerii datelor necesare pentru identificarea unui/unor circuit/circuite de compensare, persoanele juridice debitoare și/sau creditoare ale căror date au fost introduse în SIC sunt notificate prin intermediul contului de utilizator asupra introducerii facturii/facturilor într-un circuit de compensare și a necesității operării modificării corespunzătoare în SIC, în termen de o zi în situația în care aceasta a fost plătită.
+
+(3) Persoanele juridice compensatoare pot opta pentru unul sau mai multe circuite de compensare prin completarea formularului/formularelor de ordin de compensare și aplicarea semnăturii electronice calificate.
+
+(4) La data emiterii tuturor formularelor de ordin de compensare completate și validate prin semnătură electronică calificată, aferente unui circuit de compensare, SIC comunică persoanelor juridice compensatoare prin intermediul conturilor de utilizator realizarea circuitului/circuitelor de compensare.
+
+(5) Structura de compensare din cadrul CPPI aplică semnătura electronică calificată pe formularele de ordin de compensare în vederea validării și încheierii circuitului de compensare, precum și orice alte forme de securizare în format electronic a documentului, aprobate de către conducerea CPPI. În momentul aplicării semnăturii electronice calificate SIC generează numărul ordinului de compensare și aplică data emiterii.
+
+(6) Informarea privind realizarea compensării către persoanele juridice compensatoare dintr-un circuit de compensare se face prin comunicarea prin intermediul conturilor de utilizator a ordinelor de compensare la data emiterii acestora.
+
+Art. 7. -
+(1) Pentru realizarea operațiunilor de compensare la sediul structurii de compensare din cadrul CPPI, persoanele juridice introduc datele necesare în SIC și indică operațiunea de compensare predefinită.
+
+(2) Pentru parcurgerea procedurii prevăzute la art. 6 persoanele împuternicite prezintă structurii de compensare din cadrul CPPI o copie a actului de identitate, certificată pentru conformitate cu originalul.
+
+(3) Ca urmare a parcurgerii procedurii prevăzute la art. 6, persoanele juridice primesc pe contul de utilizator ordinele de compensare.
+
+Art. 8. -
+(1) Data compensării este considerată data de stingere a datoriilor și creanțelor în contabilitate și se operează în toate documentele, fiind consemnată în: procesul-verbal de compensare, ordinul de compensare și borderoul datoriilor stinse, al cărui model este prevăzut în anexa nr. 3.
+
+(2) Ordinele de compensare sunt numerotate unic în cadrul SIC începând cu data validării acestora de către CPPI prin structura de compensare și se comunică persoanelor juridice compensatoare.
+
+(3) Ordinul de compensare conține următoarele informații: seria, numărul și data compensării, numărul procesului-verbal de compensare, numărul circuitului de compensare, valoarea compensată, datele de identificare ale structurii de compensare din cadrul CPPI în calitate de emitent, datele de identificare ale persoanei juridice compensatoare, în calitate de titular, și borderoul datoriilor stinse pentru justificarea prin ordinul de compensare.
+
+(4) Ordinul de compensare împreună cu borderoul facturilor în baza cărora s-a stabilit valoarea compensată poartă semnătura structurii de compensare din cadrul CPPI și a persoanei juridice titulare.
+
+(5) Ordinul de compensare reprezintă document justificativ de înregistrare în contabilitate a stingerii creanțelor și a datoriilor care au făcut obiectul compensării împreună cu borderoul datoriilor stinse pentru justificarea prin ordinul de compensare. Data înregistrării în contabilitate este cea înscrisă pe ordinul de compensare.
+
+(6) Ordinul de compensare are caracter de document primar și se anexează ca atare la nota contabilă împreună cu borderoul datoriilor stinse pentru justificarea prin ordinul de compensare.
+
+Art. 9. -
+Toate compensările efectuate conform prezentelor norme se înregistrează în format electronic în Registrul electronic de evidență a operațiunilor de compensare care este gestionat de structura de compensare din cadrul CPPI.
+
+Art. 10. -
+Anexele nr. 1-5 fac parte integrantă din prezentele norme metodologice.

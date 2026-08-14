@@ -64,12 +64,16 @@ def test_propune_doar_parteneri_cu_ambele_solduri():
     assert rez[1]["compensat"] == Decimal("200.00")
 
 
-def test_prag_necunoscut_e_none_nu_false():
-    """HG 773/2019 (pragul curent) nu e in corpus -> fara prag confirmat, semnalul e None (necunoscut),
-    NU False (nu se afirma ca nu e nevoie de sistemul electronic)."""
-    assert c.necesita_sistem_electronic(50000) is None
-    assert c.necesita_sistem_electronic(50000, prag=10000) is True
-    assert c.necesita_sistem_electronic(5000, prag=10000) is False
+def test_sic_pe_varsta_factura_hg773():
+    """HG 773/2019 Norme metodologice Art.2(1): compensarea prin SIC se aplica facturilor restante MAI VECHI
+    DE 30 DE ZILE, pentru persoane juridice cu capital de stat. NU exista prag VALORIC in lei (cel de ~10.000
+    lei era in HG 685/1999, ABROGAT de HG 773/2019) -> semnalul e pe VECHIME, nu pe suma."""
+    assert c.PRAG_VECHIME_ZILE == 30
+    assert c.necesita_sistem_electronic(None) is None                          # fara varsta -> necunoscut
+    assert c.necesita_sistem_electronic(45) is True                            # > 30 zile, capital de stat implicit
+    assert c.necesita_sistem_electronic(20) is False                           # <= 30 zile
+    assert c.necesita_sistem_electronic(30) is False                           # exact 30 nu depaseste
+    assert c.necesita_sistem_electronic(45, cu_capital_de_stat=False) is False # nu e persoana juridica cu capital de stat
 
 
 def test_rotunjire_half_up():
@@ -80,5 +84,6 @@ def test_temei_are_sursa_in_corpus():
     """Regula verificarii la sursa: actele citate de motor EXISTA in corpus."""
     surse = "anaf_surse"
     for f in ("cod_civil_287_2009_art_1616_1623_compensare.txt", "omfp_1802_2014.txt",
-              "oug_77_1999_masuri_prevenire_incapacitate_plata.txt"):
+              "oug_77_1999_masuri_prevenire_incapacitate_plata.txt",
+              "hg_773_2019_norme_monitorizare_datorii_nerambursate.txt"):
         assert os.path.exists(os.path.join(surse, f)), "lipseste din corpus: %s" % f

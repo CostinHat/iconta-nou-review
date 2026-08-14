@@ -20,10 +20,12 @@ TEMEI (verificat verbatim in corpus, anaf_surse/):
     respectiv a datoriilor si cheltuielilor corespunzatoare" + "in notele explicative se prezinta VALOAREA
     BRUTA a creantelor si datoriilor care au facut obiectul compensarii" -> nota pastreaza valorile BRUTE +
     resturile, nu doar netul; compensarea se face DUPA ce ambele au fost contabilizate.
-- Compensarea intre OPERATORI ECONOMICI peste un plafon se inregistreaza in sistemul electronic de compensare
-  (baza: OUG 77/1999, oug_77_1999_...txt). PRAGUL nu e hardcodat aici: HG 685/1999 (care il stabilea, cu
-  proces-verbal / IMI) e ABROGAT de HG 773/2019 (in vigoare 01.01.2020), iar HG 773/2019 NU e in corpus.
-  Vezi necesita_sistem_electronic(): fara prag confirmat la sursa -> None (necunoscut), nu False.
+- Compensarea prin SISTEMUL INFORMATIC DE COMPENSARE (SIC), gestionat de CPPI Busteni, se aplica facturilor
+  restante MAI VECHI DE 30 DE ZILE (de la emitere sau scadenta) ale persoanelor juridice cu capital de stat -
+  HG 773/2019, Norme metodologice Art.1-2 (hg_773_2019_norme_monitorizare_datorii_nerambursate.txt; baza OUG
+  77/1999). HG 773/2019 confirma regula min: Art.3(a) "compensare = stingerea obligatiilor... pana la concurenta
+  obligatiei celei mai mici, prin ordine de compensare". NU EXISTA prag VALORIC in lei in actul in vigoare -
+  pragul de ~10.000 lei (100 mil ROL) apartinea HG 685/1999, ABROGAT de HG 773/2019. Vezi necesita_sistem_electronic().
 """
 from decimal import Decimal, ROUND_HALF_UP
 
@@ -68,30 +70,35 @@ def nota_compensare(creanta, datorie):
     }
 
 
-def necesita_sistem_electronic(suma, prag=None):
-    """True daca suma compensata >= pragul legal pentru operatori economici -> se inregistreaza in sistemul
-    electronic de compensare (baza OUG 77/1999). Pragul NU e hardcodat: HG 685/1999 (care il stabilea) e
-    abrogat de HG 773/2019, care nu e in corpus. `prag` se furnizeaza din configurare/act, dupa confirmare la
-    sursa. Fara prag -> None (necunoscut), NU False (nu se afirma ca nu e nevoie)."""
-    if prag is None:
+PRAG_VECHIME_ZILE = 30   # HG 773/2019 Norme metodologice Art.2 alin.(1): facturi restante mai vechi de 30 de zile
+
+def necesita_sistem_electronic(varsta_factura_zile=None, cu_capital_de_stat=True):
+    """True daca compensarea intra in Sistemul Informatic de Compensare (SIC, gestionat de CPPI Busteni):
+    factura restanta MAI VECHE DE 30 DE ZILE (PRAG_VECHIME_ZILE) de la emitere/scadenta, pentru persoane juridice
+    cu capital de stat - HG 773/2019 Norme metodologice Art.1-2 (baza OUG 77/1999). Actul in vigoare NU prevede
+    prag VALORIC in lei (cel de ~10.000 lei / 100 mil ROL era in HG 685/1999, ABROGAT de HG 773/2019). Fara
+    varsta furnizata -> None (necunoscut)."""
+    if varsta_factura_zile is None:
         return None
-    return _d(suma) >= _d(prag)
+    return bool(cu_capital_de_stat) and int(varsta_factura_zile) > PRAG_VECHIME_ZILE
 
 
-def propune_compensari(parteneri, prag=None):
-    """parteneri: iterabil de dict {cui, denumire, creanta, datorie}. Intoarce doar partenerii cu AMBELE
-    solduri > 0 (compensare posibila), fiecare cu suma compensabila, nota si semnalul de sistem electronic."""
+def propune_compensari(parteneri):
+    """parteneri: iterabil de dict {cui, denumire, creanta, datorie, [varsta_factura_zile], [cu_capital_de_stat]}.
+    Intoarce doar partenerii cu AMBELE solduri > 0 (compensare posibila), fiecare cu suma compensabila, nota si
+    semnalul SIC (HG 773/2019: >30 zile + capital de stat). Fara varsta_factura_zile -> semnalul e None."""
     out = []
     for p in parteneri:
         c, d = _d(p.get("creanta")), _d(p.get("datorie"))
         if c > 0 and d > 0:
             n = nota_compensare(c, d)
-            n["necesita_sistem_electronic"] = necesita_sistem_electronic(n["compensat"], prag)
+            n["necesita_sistem_electronic"] = necesita_sistem_electronic(
+                p.get("varsta_factura_zile"), p.get("cu_capital_de_stat", True))
             out.append({"cui": p.get("cui"), "denumire": p.get("denumire"), **n})
     return out
 
 
-def pull(conn, schema, prag=None):
+def pull(conn, schema):
     """Candidatii de compensare din solduri_parteneri: per partener (cui), creanta = suma sold_debitor pe
     conturile de client (411*), datorie = suma sold_creditor pe conturile de furnizor (401*)."""
     cand = {}
@@ -108,4 +115,4 @@ def pull(conn, schema, prag=None):
                 r["datorie"] += _d(sc)
             if den and not r["denumire"]:
                 r["denumire"] = den
-    return propune_compensari(cand.values(), prag=prag)
+    return propune_compensari(cand.values())
