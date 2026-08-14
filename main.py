@@ -848,6 +848,7 @@ class VectorIn(BaseModel):  # [p82_vector]
     platitor_tva: bool
     tip_decont: Optional[str] = None
     operatiuni_ic: Optional[bool] = None   # obligatoriu la migrare (ca tip_decont) -> None respins in salveaza, fara default tacit
+    inreg_art317: Optional[bool] = False   # [art.317] inregistrare speciala scopuri TVA (art. 317 CF)
 
 class ProdusPotrivesteIn(BaseModel):  # [p97_produse_rute]
     denumire: str
@@ -2284,7 +2285,7 @@ def termene_portofoliu(ctx=Depends(cere_cabinet)):
             with db.get_conn(schema) as cs:
                 with cs.cursor() as cur:
                     cur.execute("SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, tip_firma, "
-                                "platitor_tva_anaf_inceput FROM firma_profil LIMIT 1")
+                                "platitor_tva_anaf_inceput, inreg_art317 FROM firma_profil LIMIT 1")
                     row = cur.fetchone()
                     from core.migrare_api import regim_contabil
                     vector = {"regim_fiscal": row[0], "platitor_tva": row[1],
@@ -2294,7 +2295,7 @@ def termene_portofoliu(ctx=Depends(cere_cabinet)):
                               "partida_simpla": regim_contabil(row[4]) == "simpla",
                               # [§4] data inceperii inregistrarii TVA (fapt ANAF) -> motorul margineste D300/D394/D406
                               # la perioadele DE DUPA inregistrare (marginit=True), ca semaforul. Inchide asimetria intre ecrane.
-                              "tva_data_inceput": row[5]} if row else {}
+                              "tva_data_inceput": row[5], "inreg_art317": row[6]} if row else {}
                     cur.execute("SELECT to_regclass('salariati')")
                     are_sal = False
                     if cur.fetchone()[0]:
@@ -2705,7 +2706,7 @@ def vector_salveaza(tenant_id: int, date: VectorIn, ctx=Depends(cere_rol("admin_
     with db.get_conn(schema) as conn:
         rez = vector_fiscal_api.salveaza(conn, date.regim_fiscal, date.platitor_tva,
                                          date.tip_decont, date.operatiuni_ic,
-                                         nume=t_nume, cui=t_cui)
+                                         nume=t_nume, cui=t_cui, inreg_art317=date.inreg_art317)
         if rez.get("ok") and anaf_val is not None:     # salvat + ANAF a raspuns -> snapshot (+ data inceput TVA)
             _fp.seteaza_snapshot_tva(conn, anaf_val, tva_inceput)
     if not rez.get("ok"):

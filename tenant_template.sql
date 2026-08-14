@@ -2376,3 +2376,6 @@ ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS platitor_tv
 -- [B1] data inceperii inregistrarii in scopuri de TVA (fapt ANAF v9: perioade_TVA.data_inceput_ScpTVA activa)
 -- -> declaratii_datorate margineste fereastra D300/D394 la perioadele DE DUPA inregistrare (nu restante inainte).
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS platitor_tva_anaf_inceput date;
+-- [art.317 14.08.2026] inregistrare speciala in scopuri de TVA (art. 317 CF, fost 153^1): decide pers_inreg
+-- in D301 (1 vs 2) si face verdictul D390 la neplatitorul cu IC satisfiabil (mirror in core/migrare_art317.py).
+ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS inreg_art317 boolean DEFAULT false NOT NULL;

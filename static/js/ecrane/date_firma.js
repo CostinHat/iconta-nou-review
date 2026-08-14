@@ -61,6 +61,9 @@ const VECTOR = [
   { k: "operatiuni_ic", e: "Opera\u021biuni intracomunitare", tip: "select",
     opt: [["nu", "Nu"], ["da", "Da"]],
     aj: "Achizi\u021bii/livr\u0103ri din UE. Decide D390 (VIES)." },
+  { k: "inreg_art317", e: "\u00cenregistrat\u0103 art. 317 (opera\u021biuni intracomunitare)", tip: "select",
+    opt: [["nu", "Nu"], ["da", "Da"]],
+    aj: "\u00cenregistrare special\u0103 \u00een scopuri de TVA (art. 317 CF) pentru achizi\u021bii/livr\u0103ri intracomunitare la nepl\u0103titori. Decide D390 (VIES) \u0219i pers_inreg \u00een D301." },
 ];
 
 function campVector(c, val) {
@@ -149,6 +152,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       platitor_tva: corp.querySelector("#vf-platitor_tva").value === "da",
       tip_decont: corp.querySelector("#vf-tip_decont").value || null,
       operatiuni_ic: corp.querySelector("#vf-operatiuni_ic").value === "da",
+      inreg_art317: corp.querySelector("#vf-inreg_art317").value === "da",
     };
     const tvaLipsa = vf.platitor_tva && !vf.tip_decont;
     if (tvaLipsa) eroareCamp(corp, "vf-tip_decont", "Periodicitatea TVA e obligatorie la plătitorii de TVA (decide dacă D300 se depune lunar sau trimestrial).");

@@ -155,6 +155,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     tip_decont = vector.get("tip_decont")
     regim_fiscal = vector.get("regim_fiscal")
     operatiuni_ic = vector.get("operatiuni_ic")
+    inreg_art317 = vector.get("inreg_art317")   # [art.317] inregistrare speciala scopuri TVA -> D390 satisfiabil la neplatitor
     # [B1] (an, luna) de la care D300/D394 se datoreaza = inceperea inregistrarii TVA (fapt ANAF). None = fara margine.
     _tvi = vector.get("tva_data_inceput")
     if hasattr(_tvi, "year"):
@@ -223,9 +224,13 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
             if platitor_tva:
                 for a, m in per_luni:
                     adauga("D390", a, m, _LUNI_NUME[m], "d390")
+            elif inreg_art317:
+                for a, m in per_luni:
+                    adauga("D390", a, m, _LUNI_NUME[m], "d390")   # [art.317] neplatitor inregistrat -> datorat
             else:
                 gri("D390", "D390 se depune de persoanele înregistrate conform art. 316 sau art. 317 "
-                            "(OPANAF 705/2020, pct. 1.1). Nu avem înregistrată calitatea art. 317 pentru această firmă.")
+                            "(OPANAF 705/2020, pct. 1.1). Firma nu are marcată înregistrarea art. 317 în profil — "
+                            "completați-o dacă firma e înregistrată.")
         # operatiuni_ic False -> nimic (istoric)
     elif platitor_tva:                          # art. 316: FAPTUL primeaza; bifa decide doar pe luna deschisa
         contradictie = []
@@ -269,9 +274,14 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
         # Decizie pe FLAG, fara DB -> nu atinge tabele care pot lipsi la un tenant de partida simpla (ex. d301_operatiuni).
         if operatiuni_ic is None:
             gri("D390", "Operatiuni intracomunitare necompletat - nu pot sti daca datorezi D390.")
-        elif operatiuni_ic:                      # flag True -> art. 317 gri (nu stim daca e inregistrat)
-            gri("D390", "D390 se depune de persoanele înregistrate conform art. 316 sau art. 317 "
-                        "(OPANAF 705/2020, pct. 1.1). Nu avem înregistrată calitatea art. 317 pentru această firmă.")
+        elif operatiuni_ic:                      # flag True -> art. 317: datorat daca inregistrat, altfel gri
+            if inreg_art317:
+                for a, m in per_luni:
+                    adauga("D390", a, m, _LUNI_NUME[m], "d390")
+            else:
+                gri("D390", "D390 se depune de persoanele înregistrate conform art. 316 sau art. 317 "
+                            "(OPANAF 705/2020, pct. 1.1). Firma nu are marcată înregistrarea art. 317 în profil — "
+                            "completați-o dacă firma e înregistrată.")
         # operatiuni_ic False -> neplatitor fara IC declarate -> nimic (D390 neaplicabil prin forma)
 
     # D406 SAF-T — obligatorie tuturor din 2025 (mici de la 01.01.2025). Periodicitate:
@@ -447,7 +457,8 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
     # vector + salariati
     with conn_schema.cursor() as cur:
         cur.execute("SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, "
-                    "platitor_tva_anaf, platitor_tva_anaf_data, tip_firma, platitor_tva_anaf_inceput "
+                    "platitor_tva_anaf, platitor_tva_anaf_data, tip_firma, platitor_tva_anaf_inceput, "
+                    "inreg_art317 "
                     "FROM firma_profil LIMIT 1")
         row = cur.fetchone()
         vector = {}
@@ -458,7 +469,7 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
                       "platitor_tva_anaf": row[4], "platitor_tva_anaf_data": row[5],
                       "tip_firma": row[6],
                       # [B1] data inceperii inregistrarii TVA (fapt ANAF) -> margineste fereastra D300/D394
-                      "tva_data_inceput": row[7],
+                      "tva_data_inceput": row[7], "inreg_art317": row[8],
                       # partida_simpla din regim_contabil (FAPTUL intr-un singur loc, nu recopiat). DECIZII 23.07.
                       "partida_simpla": regim_contabil(row[6]) == "simpla"}
         cur.execute("SELECT to_regclass('salariati')")

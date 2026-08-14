@@ -24,12 +24,12 @@ def citeste(conn_schema):
     with conn_schema.cursor() as cur:
         cur.execute(
             "SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, "
-            "       nume, cui "
+            "       nume, cui, inreg_art317 "
             "  FROM firma_profil WHERE id = 1")
         r = cur.fetchone()
     if not r:
         return {"ok": False, "cod": "FARA_PROFIL"}
-    regim, tva, decont, ic, nume, cui = r
+    regim, tva, decont, ic, nume, cui, art317 = r
     completat = bool(regim)  # regim_fiscal e obligatoriu -> daca exista, vectorul e setat
     return {
         "ok": True,
@@ -39,12 +39,13 @@ def citeste(conn_schema):
         "tip_decont": decont,
         # None = necompletat (nu False tacit) -> frontendul distinge "nesetat" de "Nu" (fara preselectie). Vezi DECIZII 23.07.
         "operatiuni_ic": bool(ic) if ic is not None else None,
+        "inreg_art317": bool(art317),
         "completat": completat,
     }
 
 
 def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
-             nume=None, cui=None):  # [p83_upsert] UPSERT
+             nume=None, cui=None, inreg_art317=False):  # [p83_upsert] UPSERT
     """Scrie vectorul. Valideaza valorile. Daca nu e platitor TVA, decontul devine NULL.
     Daca randul firma_profil (id=1) nu exista, il creeaza (nume+cui obligatorii la insert)."""
     regim_in = (regim_fiscal or "").strip().lower()
@@ -56,6 +57,7 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
         return {"ok": False, "cod": "IC_LIPSA",
                 "mesaj": "Operațiuni intracomunitare: alege Da sau Nu (obligatoriu)."}
     ic = bool(operatiuni_ic)
+    art317 = bool(inreg_art317)   # [art.317] inregistrare speciala scopuri TVA (art. 317 CF)
 
     decont = (tip_decont or "").strip().lower()
     if tva:
@@ -89,16 +91,16 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
             cur.execute(
                 "UPDATE firma_profil "
                 "   SET regim_fiscal = %s, platitor_tva = %s, "
-                "       tip_decont = %s, operatiuni_ic = %s "
+                "       tip_decont = %s, operatiuni_ic = %s, inreg_art317 = %s "
                 " WHERE id = 1",
-                (regim, tva, decont, ic))
+                (regim, tva, decont, ic, art317))
         else:
             if not nume or not cui:
                 return {"ok": False, "cod": "FARA_IDENTITATE",
                         "mesaj": "firma_profil gol si lipsesc nume/cui pentru creare"}
             cur.execute(
-                "INSERT INTO firma_profil (id, nume, cui, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic) "
-                "VALUES (1, %s, %s, %s, %s, %s, %s)",
-                (nume, cui, regim, tva, decont, ic))
+                "INSERT INTO firma_profil (id, nume, cui, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, inreg_art317) "
+                "VALUES (1, %s, %s, %s, %s, %s, %s, %s)",
+                (nume, cui, regim, tva, decont, ic, art317))
     return {"ok": True, "regim_fiscal": regim, "platitor_tva": tva,
-            "tip_decont": decont, "operatiuni_ic": ic}
+            "tip_decont": decont, "operatiuni_ic": ic, "inreg_art317": art317}

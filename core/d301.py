@@ -333,7 +333,7 @@ def pull(conn, schema, perioada):
     an, luna = perioada.an, perioada.luna
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute("SELECT nume, cui, adresa, oras, judet, banca, iban, "
-                    "declarant_nume, declarant_prenume, declarant_functie "
+                    "declarant_nume, declarant_prenume, declarant_functie, inreg_art317 "
                     "FROM firma_profil WHERE id = 1")
         prof = cur.fetchone() or {}
         cur.execute("SELECT tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva "
