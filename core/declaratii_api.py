@@ -21,7 +21,8 @@ from __future__ import annotations
 from core import (d100, d101, d104, d107, d110, d220, d221, d223, d307, d112, d177, d205, d207, d230, d300, d301, d311, d390, d394, d406, d710,
                   d120, d200, d201, d204, d208, d216, d393, d395, d397, d600,
                   d106, d108, d114, d130, d318, d603,
-                  d119, d169n, d213, d214, d401, d402)
+                  d119, d169n, d213, d214, d401, d402,
+                  d101g, d169, d398, d399, d403, d407)
 from core.common import Perioada
 
 REGULI = "2026.1"
@@ -219,6 +220,30 @@ def _d402(conn, schema, b):   # informativa venituri salariale nerezidenti - DAC
     return d402.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
 
 
+def _d101g(conn, schema, b):  # impozit profit grup fiscal consolidat (anuala)
+    return d101g.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
+def _d169(conn, schema, b):   # inregistrare contracte de fiducie (anuala)
+    return d169.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
+def _d398(conn, schema, b):   # TVA regim special OSS (UE/non-UE), trimestriala
+    return d398.genereaza(conn, schema, Perioada(b["an"], luna=int(b.get("luna") or 12)), b.get("manual") or {})
+
+
+def _d399(conn, schema, b):   # TVA regim special import IOSS, trimestriala
+    return d399.genereaza(conn, schema, Perioada(b["an"], luna=int(b.get("luna") or 12)), b.get("manual") or {})
+
+
+def _d403(conn, schema, b):   # informativa asigurari de viata - DAC2/CRS (anuala)
+    return d403.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
+def _d407(conn, schema, b):   # informativa institutii financiare raportoare (semestriala)
+    return d407.genereaza(conn, schema, Perioada(b["an"], luna=int(b.get("luna") or 12)), b.get("manual") or {})
+
+
 DECLARATII = {
     "d100": ("trimestrial", _d100),
     "d101": ("anual",       _d101),
@@ -267,6 +292,12 @@ DECLARATII = {
     "d214": ("anual",       _d214),
     "d401": ("anual",       _d401),
     "d402": ("anual",       _d402),
+    "d101g": ("anual",      _d101g),
+    "d169": ("anual",       _d169),
+    "d398": ("trimestrial", _d398),
+    "d399": ("trimestrial", _d399),
+    "d403": ("anual",       _d403),
+    "d407": ("semestrial",  _d407),
 }
 
 
@@ -277,7 +308,8 @@ DECLARATII = {
 _DOAR_API = frozenset(("d104", "d107", "d110", "d177", "d207", "d220", "d221", "d223", "d230", "d307", "d311", "d710",
                        "d393", "d395", "d397", "d200", "d201", "d204", "d208", "d216", "d120", "d600",
                        "d106", "d108", "d114", "d130", "d318", "d603",
-                       "d119", "d169n", "d213", "d214", "d401", "d402"))
+                       "d119", "d169n", "d213", "d214", "d401", "d402",
+                       "d101g", "d169", "d398", "d399", "d403", "d407"))
 
 
 def tipuri():

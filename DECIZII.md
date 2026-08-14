@@ -9247,3 +9247,18 @@ venit agricol ci instrainare pachet control. Toate conn=None (manuale). Cablate 
 FUNCTIONALITATI F234-F239. Total declaratii cablate: 43.
 RAMASE: D101G (grup fiscal profit), D169 (fiducie inregistrare), D398/D399 (OSS/IOSS TVA), D403/D407 (DAC2/DAC
 asigurari-financiare), D212 (declaratia unica - complex).
+
+## 14.08.2026 — Campanie declaratii ramase: Lot 5 (6): D169/D398/D399/D403/D407 (+ D101G datorie)
+Construite (manuale, structura din validator, probat DUK VALID - core/test_declaratii_lot5_duk.py):
+D169 (inregistrare fiducie, L.129/2019, root D169, generatie noua - DecValidation nou), D398 (OSS TVA UE/non-UE,
+art.314/315 CF, root d398 minuscul, generatie noua), D399 (IOSS TVA import, art.315^2 CF, root declaratie399,
+trimestriale), D403 (DAC2/CRS asigurari viata, OMFP 2727/2015, root declaratie403), D407 (institutii financiare
+raportoare, root D407, semestriala). Toate conn=None (manuale). Corectii premisa: D407 = polite/instrumente
+financiare (nu DAC/CRS conturi); D169 vs D169n = inregistrare vs neconcordante.
+D101G (grup fiscal impozit profit) - CONSTRUIT corect pe forma v2 (P01-P16, OPANAF 206/2025 in corpus, root
+declaratie ns v2) DAR proba DUK BLOCATA de infrastructura: schema de structura v2 D101G nu e deployata in DUK pe
+server (dist/lib/DecValidation.jar vechi nu cunoaste d101g; SAF-T DecValidation cere v1 hardwired pt toate
+perioadele; niciun XSD d101g instalat). DATORIE: test_declaratii_lot5_duk.py::[d101g] = xfail(strict); se
+probeaza cand se instaleaza DecValidation care cunoaste d101g v2. Modulul e cablat si folosibil (produce XML v2).
+Cablate CHEIE_DUK/DECLARATII/_DOAR_API/FUNCTIONALITATI F240-F245. Total declaratii cablate: 49.
+RAMASE: D212 (declaratia unica persoane fizice - complex, ns v11).

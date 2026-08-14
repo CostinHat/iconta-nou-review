@@ -2272,3 +2272,41 @@ Genereaza D402 (venituri salariale platite in Romania nerezidentilor din alte st
 Anual (ultima zi din februarie pentru anul precedent).
 ## De completat
 Platitorul (CUI, denumire, forma juridica, semnatar) si, pentru fiecare beneficiar nerezident: nume, statul de rezidenta (cod UE), CNP/NIF, calitatea si categoria, plus veniturile (tip, perioada, regim fiscal, suma, moneda). Totalul se calculeaza automat; datele in format zi.luna.an."
+Declaratia D101G (impozit pe profit - grup fiscal),"D101G - declaratie consolidata privind impozitul pe profit determinat de grupul fiscal (persoana juridica responsabila; CF art.42^1-42^11). Generator MANUAL (core/d101g.py, root declaratie, ns v2, randuri P01-P16, OPANAF 206/2025 - in corpus). NOTA: proba DUK BLOCATA de infrastructura - schema de structura v2 nu e deployata in DUK pe server (DecValidation vechi nu cunoaste d101g; cel nou cere v1). Modulul e construit pe v2 (bytecode + act); DATORIE de probat cand se instaleaza DecValidation v2.",F240,firma,Declaratii,core/d101g.py,OPANAF 206/2025; Cod fiscal art.42^1-42^11 (grup fiscal impozit profit); structura din D101GValidator.jar (ns v2),LIVE,core/test_declaratii_lot5_duk.py (xfail - DecValidation v2 neinstalat in DUK; vezi DECIZII),,"## Ce face
+Genereaza D101G (declaratia consolidata de impozit pe profit a grupului fiscal), depusa de persoana juridica responsabila.
+## Cand se depune
+Anual (scadenta 25 iunie an urmator; 25 martie daca membrii au reglementari BNR/ASF).
+## De completat
+Valorile consolidate ale grupului pe randurile P01-P16 (profit/pierdere, credite fiscale, sponsorizare, comparatie IMCA); identitatea vine din Profil firma. Fiecare membru depune propriul D101 bifat membru de grup. Cota implicita 16% se poate suprascrie.
+## De retinut
+Structura urmeaza formularul v2 (OPANAF 206/2025); proba pe validatorul oficial e in curs (schema v2 nu e inca instalata in DUK pe server - vezi DECIZII)."
+Declaratia D169 (inregistrare contracte de fiducie),"D169 - declaratie de inregistrare a contractelor de fiducie / constructiilor juridice similare in Registrul central al fiduciilor (Legea 129/2019 art.19 + Cod procedura fiscala). Generator MANUAL (core/d169.py, root D169, ns D169:declaratie:v1, generatie noua - probat prin DecValidation nou): contract + fiduciari + constituitori + beneficiari + beneficiari reali. Fara sume. Probat DUK valid.",F241,firma,Declaratii,core/d169.py,Legea 129/2019 art.19 (Registrul central al fiduciilor); Cod procedura fiscala (Legea 207/2015); structura din D169Validator.jar (D169),LIVE,core/test_declaratii_lot5_duk.py + DUKIntegrator -v D169 'valid',,"## Ce face
+Genereaza D169 (inregistrarea unui contract de fiducie in Registrul central al fiduciilor), depusa de fiduciarul desemnat.
+## Cand se depune
+La incheierea/modificarea/incetarea contractului de fiducie.
+## De completat
+Semnatarul si CIF-ul fiduciarului declarant, contractul (numar, data, durata, scop), plus fiduciarii, constituitorii, beneficiarii fiduciei si beneficiarii reali (persoana fizica ce detine controlul: CNP, act, calitate). Codul de judet pe 2 cifre (Bucuresti 40 + sector)."
+Declaratia D398 (TVA regim special OSS - UE/non-UE),"D398 - declaratie speciala de TVA pentru regimurile OSS (One Stop Shop): regim UE (art.315 CF) si non-UE (art.314 CF). Generator MANUAL (core/d398.py, root d398 minuscul, generatie noua - probat prin DecValidation nou): pe fiecare stat membru de consum (MS) liniile de livrare (SUPPLY: cota, baza, TVA) + corectii; totalurile si soldurile se calculeaza. Trimestriala, in EUR. Temei CF art.314/315 (in corpus). Probat DUK valid.",F242,firma,Declaratii,core/d398.py,Cod fiscal (Legea 227/2015) art.314-315 (regimuri speciale OSS); structura din D398Validator.jar (d398),LIVE,core/test_declaratii_lot5_duk.py + DUKIntegrator -v D398 'valid',,"## Ce face
+Genereaza D398 (TVA prin regimul special OSS - UE/non-UE) pentru vanzari la distanta / servicii catre consumatori din alte state UE.
+## Cand se depune
+Trimestrial, in euro.
+## De completat
+Regimul (UE/non-UE), codul de TVA, si pentru fiecare stat membru de consum liniile de livrare: tip (bunuri/servicii), cota de TVA, baza impozabila. TVA-ul, totalurile si soldurile se calculeaza automat. Corectii pentru trimestre anterioare se adauga separat."
+Declaratia D399 (TVA regim special import - IOSS),"D399 - declaratie speciala de TVA pentru regimul de import (IOSS - Import One Stop Shop, art.315^2 CF; Legea 33/2024). Generator MANUAL (core/d399.py, root declaratie399): pe fiecare stat membru de consum (MSCON), liniile de prestare (cota, baza); TVA se calculeaza. Trimestriala, in EUR. Temei art.315^2 CF (in corpus). Probat DUK valid.",F243,firma,Declaratii,core/d399.py,Cod fiscal (Legea 227/2015) art.315^2 (regim special import IOSS); Legea 33/2024; structura din D399Validator.jar (declaratie399),LIVE,core/test_declaratii_lot5_duk.py + DUKIntegrator -v D399 'valid',,"## Ce face
+Genereaza D399 (TVA prin regimul special de import IOSS) pentru vanzari de bunuri importate de valoare mica catre consumatori UE.
+## Cand se depune
+Trimestrial (lunar la nivel UE; formularul e pe trimestru), in euro.
+## De completat
+Codul de inregistrare (cifre, cu cifra de control), si pentru fiecare stat membru de consum: cota de TVA si baza impozabila. TVA-ul si totalurile se calculeaza automat. Declaratie NIL daca nu au fost prestari."
+Declaratia D403 (asigurari de viata - schimb automat DAC2/CRS),"D403 - declaratie informativa a institutiilor financiare raportoare privind produsele de asigurare de viata / schimb automat de informatii financiare (DAC2/CRS; OMFP 2727/2015; Directiva 2011/16/UE). Generator MANUAL (core/d403.py, root declaratie403): pe fiecare polita valorile de capital + persoanele raportabile (rezidente in alt stat) + evenimentele; totalPlata_A = suma valorilor + sume evenimente. Probat DUK valid.",F244,firma,Declaratii,core/d403.py,OMFP/OPANAF 2727/2015; Directiva 2011/16/UE (DAC2/CRS); structura din D403Validator.jar (declaratie403),LIVE,core/test_declaratii_lot5_duk.py + DUKIntegrator -v D403 'valid',,"## Ce face
+Genereaza D403 (produse de asigurare de viata raportate pentru schimbul automat de informatii - DAC2/CRS).
+## Cand se depune
+Anual, de institutiile financiare raportoare (asiguratori).
+## De completat
+Datele raportorului si, pentru fiecare polita: valorile de capital, persoanele raportabile (cel putin una rezidenta in alt stat participant) si evenimentele (plati/rascumparari). Totalurile se calculeaza automat."
+Declaratia D407 (institutii financiare raportoare),"D407 - declaratie informativa a institutiilor financiare raportoare: polite de asigurare de viata (tipDoc=1) sau detinatori de instrumente financiare (tipDoc=2), pentru schimbul automat de informatii. Generator MANUAL (core/d407.py, root D407, semestriala luna 6/12): pe polita beneficiari/asigurati/evenimente, sau lista de persoane cu instrumente (isin, cantitate, emitent); totalPlata_A = suma cifrelor CIF. Probat DUK valid.",F245,firma,Declaratii,core/d407.py,Schimb automat de informatii financiare (DAC/CRS); structura din D407Validator.jar (D407),LIVE,core/test_declaratii_lot5_duk.py + DUKIntegrator -v D407 'valid',,"## Ce face
+Genereaza D407 (raportarea institutiilor financiare: polite de asigurare de viata sau detinatori de instrumente financiare).
+## Cand se depune
+Semestrial/anual (luna 6 sau 12).
+## De completat
+Alege tipul documentului: tipDoc=1 (polite - cu beneficiari, asigurati, evenimente) sau tipDoc=2 (lista persoane - cu ISIN, cantitate, emitent). Datele raportorului in antet. Suma de control se calculeaza automat."
