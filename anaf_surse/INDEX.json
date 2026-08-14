@@ -55,13 +55,6 @@
       "tip_forma": null,
       "acopera": []
     },
-    "LEGE (R) 448 06_12_2006 - Portal Legislativ.html": {
-      "exista": true,
-      "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "consolidata"
-    },
     "OPANAF_179_2022_D207.pdf": {
       "exista": true,
       "tip_forma": null,
@@ -734,6 +727,34 @@
       "tip_forma": null,
       "acopera": []
     },
+    "hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [],
+      "sursa": "legislatie.just.ro",
+      "forma": "consolidata"
+    },
+    "hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
     "hg_276_2013.html": {
       "exista": true,
       "tip_forma": "forma_la_data",
@@ -756,6 +777,34 @@
       "exista": true,
       "tip_forma": null,
       "acopera": []
+    },
+    "hg_295_2025_reges_online_registru_salariati.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [],
+      "sursa": "legislatie.just.ro",
+      "forma": "consolidata"
+    },
+    "hg_295_2025_reges_online_registru_salariati.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "hg_295_2025_reges_online_registru_salariati.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "hg_295_2025_reges_online_registru_salariati.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
     },
     "hg_423_2020_aprobarea_listei_cuprinzand_urgentele_medico.html": {
       "exista": true,
@@ -1318,6 +1367,34 @@
       "exista": true,
       "tip_forma": null,
       "acopera": []
+    },
+    "legea_448_2006_protectia_persoanelor_cu_handicap.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [],
+      "sursa": "legislatie.just.ro",
+      "forma": "consolidata"
+    },
+    "legea_448_2006_protectia_persoanelor_cu_handicap.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "legea_448_2006_protectia_persoanelor_cu_handicap.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "legea_448_2006_protectia_persoanelor_cu_handicap.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
     },
     "legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.html": {
       "exista": true,
@@ -2457,6 +2534,34 @@
       "exista": true,
       "tip_forma": null,
       "acopera": []
+    },
+    "oug_70_2024_ro_etva_decont_precompletat.html": {
+      "exista": true,
+      "tip_forma": "forma_la_data",
+      "acopera": [],
+      "sursa": "legislatie.just.ro",
+      "forma": "consolidata"
+    },
+    "oug_70_2024_ro_etva_decont_precompletat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "oug_70_2024_ro_etva_decont_precompletat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "oug_70_2024_ro_etva_decont_precompletat.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
     },
     "oug_77_1999_masuri_prevenire_incapacitate_plata.html": {
       "exista": true,
