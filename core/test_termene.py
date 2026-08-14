@@ -46,10 +46,12 @@ def test_termene_emite_d394_d406_platitor():
 
 
 def test_termene_emite_d101_profit_in_fereastra():
-    """D101 (profit, anual 2025) termen 25.03.2026 -> fereastra [01.02, 02.04] il prinde (venea din motor)."""
+    """D101 (profit, anual 2025) termen 25.06.2026 -> fereastra [01.05, 30.06] il prinde (venea din motor).
+
+    Termenul e 25 iunie (OUG 153/2020 art.I alin.(13) lit.a pt 2021-2025), nu 25 martie."""
     v = {"regim_fiscal": "profit", "platitor_tva": False, "tip_decont": None,
          "operatiuni_ic": False, "partida_simpla": False}
-    out = termene_api.termene_firma(v, are_salariati=False, depuse=set(), azi=datetime.date(2026, 2, 1))
+    out = termene_api.termene_firma(v, are_salariati=False, depuse=set(), azi=datetime.date(2026, 5, 1))
     assert any(d["tip"] == "d101" and d["an"] == 2025 for d in out)
 
 

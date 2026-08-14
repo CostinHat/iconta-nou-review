@@ -590,14 +590,14 @@ def compara_d390_vs_d300(baze, gasit, randuri, perioada=None):
     if not gasit:
         return [{"eticheta": "D390 vs D300 depus" + per_sufix, "stare": "gri",
                  "mesaj": "Nu există D300 depus în fereastră — nu pot compara recapitulativa cu decontul.",
-                 "temei": ("D-vs-D real (F163, deblocat F198): D390 bază IC vs D300 depus (rânduri persistate). "
+                 "temei": ("Declarație-vs-declarație: D390 bază IC vs D300 depus (rânduri persistate). "
                            "Niciun D300 depus prin aplicație în fereastra TVA -> nimic de comparat. GRI, nu roșu."),
                  "remediu": None}]
     if randuri is None:
         return [{"eticheta": "D390 vs D300 depus" + per_sufix, "stare": "gri",
                  "mesaj": "D300 depus fără rânduri persistate — nu pot compara.",
                  "temei": ("D300 din fereastră a fost depus fără rânduri persistate (depunere anterioară "
-                           "persistării F198 sau import istoric). GRI, nu roșu — absența datelor nu e divergență."),
+                           "persistării rândurilor sau import istoric). GRI, nu roșu — absența datelor nu e divergență."),
                  "remediu": None}]
     R = (randuri or {}).get("R") or {}
     rez = []
@@ -614,7 +614,7 @@ def compara_d390_vs_d300(baze, gasit, randuri, perioada=None):
         absent_txt = ("" if prezent else
                       f" ATENȚIE: {rand} absent din D300 depus — rândurile intracomunitare ale D300 sunt "
                       "manual-only (le introduce contabilul la generare); absența nu dovedește lipsa operațiunilor.")
-        temei = (f"D-vs-D (F163, deblocat F198): D390 bază {cheie} vs D300 depus rând {rand} "
+        temei = (f"Declarație-vs-declarație: D390 bază {cheie} vs D300 depus rând {rand} "
                  f"(declaratii_depuse_curente.randuri). D390 = recapitulativa VIES, sursă mai autoritară.{absent_txt}")
         if abs(dif) <= TOLERANTA:
             rez.append(dict(baza, stare="verde",
@@ -716,8 +716,8 @@ def verifica_d390(conn, schema, an, luna):
     if rec_d300 is None:
         constatari.append({"eticheta": "D390 vs D300 depus", "stare": "gri",
             "mesaj": "Nicio depunere D300 prin aplicație — nu am cu ce compara recapitulativa.",
-            "temei": ("D-vs-D real (F163): D390 bază IC vs rândurile intracomunitare ale D300 EFECTIV "
-                      "DEPUS (persistate F198). Nicio depunere D300 persistată -> comparația devine "
+            "temei": ("Declarație-vs-declarație: D390 bază IC vs rândurile intracomunitare ale D300 EFECTIV "
+                      "DEPUS (rânduri persistate). Nicio depunere D300 persistată -> comparația devine "
                       "posibilă după prima depunere prin aplicație. GRI, nu roșu — absență, nu divergență."),
             "remediu": None})
     else:
@@ -734,7 +734,7 @@ def verifica_d390(conn, schema, an, luna):
         except Exception as e:
             constatari.append({"eticheta": "D390 vs D300 depus, perioada %s" % eticheta_d, "stare": "gri",
                 "mesaj": "NU pot recalcula D390 pe perioada depusă (%s) pentru comparație (%s)." % (eticheta_d, e),
-                "temei": "D-vs-D real (F163): baza D390 se recalculează pe perioada D300 depus; recalcularea a eșuat.",
+                "temei": "Declarație-vs-declarație: baza D390 se recalculează pe perioada D300 depus; recalcularea a eșuat.",
                 "remediu": None})
     if any(c["stare"] == "rosu" for c in constatari):
         stare = "rosu"
@@ -750,7 +750,7 @@ def verifica_d390(conn, schema, an, luna):
                            if necontate_tot else ""),
             "limita": ("Verificat: D390 bunuri IC (livrări L / achiziții A, auto din facturi) vs (1) evidența "
                        f"contabilă validată a acelorași facturi pe fereastra TVA curentă ({fereastra}) ȘI (2) D300 "
-                       "DEPUS (rânduri persistate F198), pe CEA MAI RECENTĂ perioadă efectiv depusă (afișată în "
+                       "DEPUS (rânduri persistate), pe CEA MAI RECENTĂ perioadă efectiv depusă (afișată în "
                        "verdict, alta decât luna curentă — D300 se depune în luna următoare), cu baza D390 "
                        "recalculată pe acea perioadă. D-vs-D real: R1_1/R5_1 din D300 depus sunt manual-only (gri "
                        "dacă absente sau dacă D300 depus fără rânduri / nicio depunere). NEVERIFICAT: servicii "

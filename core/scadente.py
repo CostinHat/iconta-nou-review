@@ -8,7 +8,7 @@ Verificat la sursa oficială (calendar ANAF 2026):
   D406 (SAF-T)                  -> ultima zi a lunii următoare
   trimestrial (D100/D300/...)   -> 25 (sau 30/ultima zi) ale lunii următoare trim.
   D205                          -> ultima zi februarie an următor
-  D101                          -> 25 martie an următor  (PROVIZORIU — de confirmat)
+  D101                          -> 25 iunie an următor (OUG 153/2020 art.I alin.(13) lit.a pt 2021-2025; OUG 8/2026 art.6 pct.12 -> art.42(1) CF pt 2026+)
 Toate se mută la prima zi lucrătoare dacă pică în weekend/sărbătoare legală.
 
 Sărbătorile sunt într-un dict EDITABIL per an (Paște/Rusalii variază anual).
@@ -116,8 +116,13 @@ def _data_nominala(tip, an, luna=None, trim=None):
         a = an + 1
         return date(a, 2, _ultima_zi_luna(a, 2))
     if tip == "d101":
-        # 25 martie an următor (PROVIZORIU)
-        return date(an + 1, 3, 25)
+        # 25 IUNIE an următor, pentru TOȚI anii afectați. Verificat la sursă:
+        #  2021-2025: OUG 153/2020 art. I alin. (13) lit. a), prin derogare de la art. 41-42 CF
+        #    (anaf_surse/anaf_oug_153_2020_reduceri_impozit.txt; MO 817/04.09.2020).
+        #  2026+:     OUG 8/2026 art. 6 pct. 12 modifică permanent art. 42 alin. (1) CF, aplicabil
+        #    din anul fiscal 2026 (anaf_surse/oug_8_2026.txt).
+        # (Era 25.03 hardcodat "PROVIZORIU" -> marca fals restanțieri firmele care depuneau apr-iun.)
+        return date(an + 1, 6, 25)
 
     if trim is not None:
         # luna următoare trimestrului: T1->4, T2->7, T3->10, T4->1(an+1)

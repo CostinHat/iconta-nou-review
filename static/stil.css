@@ -1793,7 +1793,7 @@ html, body {
 .em-linie input[type=number]::-webkit-inner-spin-button { -webkit-appearance:none; margin:0; }
 .em-linie input[type=number] { -moz-appearance:textfield; appearance:textfield; }
 
-.fereastra-spatiu { flex: 1; }
+.fereastra-spatiu { flex: 0 0 0; }
 
 /* ===== Detalii factura (fd-*) ===== */
 .fd-antet { margin: 4px 0 16px; }
@@ -2168,9 +2168,9 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], i[class*="dot"] {
 .fir-sep { color: #9aa7b4; font-size: 13px; }
 /* [fir_trunchiere_v1 10.08.2026] ultimul nod mereu vizibil; parintii se scurteaza cu ellipsis;
    fara a taia nodul din dreapta (bugul overflow:hidden care ascundea simptomul in DOM). */
-.fereastra-fir { flex: 0 1 auto; }
+.fereastra-fir { flex: 1 1 auto; }
 .fir-veriga { min-width: 0; flex: 0 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.fereastra-fir > .fir-veriga:last-of-type { flex-shrink: 0; max-width: 55%; }
+.fereastra-fir > .fir-veriga:last-of-type { flex-shrink: 1; max-width: none; }
 .fir-sep { flex: 0 0 auto; }
 .fir-parinti { color: #5b6b7c; font-size: 13px; font-weight: 500; }  /* parintii in titlurile de panou */
 /* titlu-entitate eliminat v1.1: entitatea traieste in bara mare de sus */

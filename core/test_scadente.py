@@ -21,8 +21,10 @@ def test_d300_25_luna_urmatoare():
     assert scadente._data_nominala("d300", 2026, luna=3) == date(2026, 4, 25)
 
 
-def test_d101_25_martie_an_urmator():
-    assert scadente._data_nominala("d101", 2025) == date(2026, 3, 25)
+def test_d101_25_iunie_an_urmator():
+    # OUG 153/2020 art.I alin.(13) lit.a (2021-2025); OUG 8/2026 art.6 pct.12 -> art.42(1) CF (2026+)
+    assert scadente._data_nominala("d101", 2025) == date(2026, 6, 25)
+    assert scadente._data_nominala("d101", 2026) == date(2027, 6, 25)
 
 
 def test_d406_ultima_zi_luna_urmatoare():
