@@ -8359,8 +8359,10 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
                 r = _iv.nota_plus(corp["valoare"], str(corp.get("cont_stoc") or "371"))
                 d0 = "Plus la inventar stocuri"
             elif op == "plus_mf":
-                r = _iv.nota_plus_mf(corp["valoare"],
-                                     str(corp.get("cont_imobilizare") or "2131"))
+                # [ruptura mijloc-fix post-migrare 14.08.2026] valideaza (art.28 alin.5/8^1) SI inscrie
+                # activul in registrul mijloace_fixe (nu doar nota 21x=4754) -> ajunge la amortizare/D406.
+                mf_reg = _iv.pregateste_mf_plus(corp)
+                r = _iv.nota_plus_mf(corp["valoare"], mf_reg["cont_imobilizare"])
                 d0 = "Plus la inventar mijloace fixe (21x=4754)"
             elif op == "minus":
                 r = _iv.nota_minus(corp["valoare"], str(corp.get("cont_stoc") or "371"),
@@ -8415,8 +8417,21 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
             if mf_id:
                 cur.execute(f"UPDATE {schema}.mijloace_fixe SET activ=false WHERE id=%s",
                             (mf_id,))
+            mf_nou_id = None
+            if op == "plus_mf":
+                cur.execute(f"""INSERT INTO {schema}.mijloace_fixe
+                                (cod, denumire, cont_imobilizare, cont_amortizare, valoare,
+                                 rezidual, dnf_luni, data_pif, metoda, activ)
+                                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,true) RETURNING id""",
+                            (mf_reg["cod"], mf_reg["denumire"], mf_reg["cont_imobilizare"],
+                             mf_reg["cont_amortizare"], mf_reg["valoare"], mf_reg["rezidual"],
+                             mf_reg["dnf_luni"], mf_reg["data_pif"], mf_reg["metoda"]))
+                mf_nou_id = cur.fetchone()[0]
         conn.commit()
-    return {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+    rez_out = {"inregistrare_id": iid, "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
+    if mf_nou_id:
+        rez_out["mijloc_fix_id"] = mf_nou_id
+    return rez_out
 
 
 @app.post("/tenants/{tenant_id}/nota-lichidare")

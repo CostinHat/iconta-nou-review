@@ -34,6 +34,40 @@ def nota_plus_mf(valoare, cont_imobilizare="2131"):
         raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")
     return {"linii": [(str(cont_imobilizare), "4754", v)]}
 
+
+def pregateste_mf_plus(corp):
+    """[ruptura mijloc-fix post-migrare 14.08.2026] Valideaza si normalizeaza un mijloc fix corporal
+    adaugat prin 'Plus la inventar', ca sa fie inscris in registrul mijloace_fixe. Altfel nota 21x=4754
+    nu ajunge la amortizare/D406 (activul e invizibil pentru tenant_amortizare si /d406-active). Refuza
+    (ValueError) metoda pe care legea NU o permite pe categoria activului (CF art.28 alin.5/8^1),
+    reutilizand gardul din d406_active. dnf_luni si data punerii in functiune sunt obligatorii (fara ele
+    activul nu se poate amortiza)."""
+    from datetime import date as _date
+    from core import d406_active as _d406a
+    v = _d(corp.get("valoare") or 0)
+    if v <= 0:
+        raise ValueError("Valoarea mijlocului fix trebuie sa fie un numar pozitiv.")
+    try:
+        dnf = int(corp.get("dnf_luni"))
+    except (TypeError, ValueError):
+        dnf = 0
+    if dnf <= 0:
+        raise ValueError("Durata normala de functionare (luni) e obligatorie pentru amortizare.")
+    data_pif = corp.get("data_pif") or corp.get("data")
+    if not data_pif:
+        raise ValueError("Data punerii in functiune e obligatorie.")
+    pif = data_pif if hasattr(data_pif, "year") else _date.fromisoformat(str(data_pif))
+    cont_imo = str(corp.get("cont_imobilizare") or "2131")
+    metoda = _d406a._norm_metoda(corp.get("metoda") or "liniara")
+    _d406a._verifica_categorie({"cod": corp.get("cod"), "cont_imobilizare": cont_imo}, metoda, pif)
+    return {"cod": corp.get("cod") or "MF-PLUS",
+            "denumire": (corp.get("denumire") or corp.get("descriere") or "Mijloc fix (plus inventar)")[:200],
+            "cont_imobilizare": cont_imo,
+            "cont_amortizare": str(corp.get("cont_amortizare") or "2813"),
+            "valoare": v, "rezidual": _d(corp.get("rezidual") or 0),
+            "dnf_luni": dnf, "data_pif": pif, "metoda": metoda}
+
+
 def nota_minus(valoare, cont_stoc="371", imputabil=False,
                valoare_imputare=None, vinovat="salariat",
                cota_tva=21, asigurat_sau_distrus=False):

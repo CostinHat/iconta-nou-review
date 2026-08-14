@@ -100,6 +100,12 @@ const REGISTRU = [
     C("cont_stoc", "Cont stoc", "text", { optional: true, sugestie: "371" }),
     C("imputabil", "Imputabil", "select", { optiuni: [["true","Da"],["false","Nu"]], cond: { camp: "operatie", val: "minus" } }),
     C("valoare_imputare", "Valoare imputare", "numar", { cond: { camp: "operatie", val: "minus" }, optional: true }),
+    C("denumire", "Denumire mijloc fix", "text", { cond: { camp: "operatie", val: "plus_mf" } }),
+    C("cont_imobilizare", "Cont imobilizare", "text", { cond: { camp: "operatie", val: "plus_mf" }, optional: true, sugestie: "2131" }),
+    C("cont_amortizare", "Cont amortizare", "text", { cond: { camp: "operatie", val: "plus_mf" }, optional: true, sugestie: "2813" }),
+    C("dnf_luni", "Durat\u0103 normal\u0103 (luni)", "numar", { cond: { camp: "operatie", val: "plus_mf" } }),
+    C("data_pif", "Dat\u0103 punere \u00een func\u021biune", "data", { cond: { camp: "operatie", val: "plus_mf" }, optional: true }),
+    C("metoda", "Metod\u0103 amortizare", "select", { cond: { camp: "operatie", val: "plus_mf" }, optiuni: [["liniara","Liniar\u0103"],["degresiva","Degresiv\u0103"],["accelerata","Accelerat\u0103"],["superaccelerata","Superaccelerat\u0103"]] }),
     C("descriere", "Descriere", "text", { optional: true }) ] },
 
   { cat: "TVA regimuri speciale", cheie: "tva_incasare", titlu: "TVA la încasare (art. 282)", ruta: "nota-tva-incasare", campuri: [
