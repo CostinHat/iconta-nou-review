@@ -329,6 +329,25 @@ def periodicitate(tip):
     return rec[0] if rec else None
 
 
+# [selector_periodicitate_v1] setul TVA-decont a carui periodicitate URMEAZA tip_decont-ul firmei
+_TVA_PERIODIC = frozenset({"d300", "d394", "d406"})
+
+
+def periodicitate_firma(tip, tip_decont=None):
+    """Periodicitatea AFISATA in selector. Pt setul TVA-decont (d300/d394/d406) urmeaza tip_decont-ul
+    firmei (L->lunar, T->trimestrial), ca semaforul (emite_tva); altfel mapul static. Fara tip_decont
+    cunoscut -> static. #2 plimbare vizuala 14.08.2026 (afisa 'lunar' si pt firme trimestriale)."""
+    baza = periodicitate(tip)
+    if tip in _TVA_PERIODIC and tip_decont:
+        try:
+            from core.common import perioada_tva_tip
+            d = perioada_tva_tip({"tip_decont": tip_decont})
+            return {"L": "lunar", "T": "trimestrial", "S": "semestrial", "A": "anual"}.get(d, baza)
+        except ValueError:
+            return baza
+    return baza
+
+
 # ============================================================
 #  VALIDARE CERERE — PURĂ (testabilă fără DB)
 # ============================================================

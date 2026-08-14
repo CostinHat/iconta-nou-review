@@ -61,6 +61,26 @@ def neaplicabile_forma(tip_firma):
     return dict(_NEAP_FORMA_SIMPLA) if regim_contabil(tip_firma) == "simpla" else {}
 
 
+def neaplicabile_selector(vector):
+    """[S1 plimbare 14.08.2026] NEaplicabile pt SELECTORUL de declaratii: forma + VECTORUL TVA, aliniat
+    cu gatingul din obligatii_datorate (aceleasi reguli -> selectorul NU diverge de semafor). Inainte
+    selectorul folosea doar neaplicabile_forma(tip_firma) -> o firma neplatitoare vedea D300/D390
+    selectabile desi semaforul le stie neaplicabile."""
+    neap = neaplicabile_forma(vector.get("tip_firma"))
+    platitor = vector.get("platitor_tva")
+    ic = vector.get("operatiuni_ic")
+    if platitor is False:
+        neap.setdefault("d300", "D300 nu se datorează — firma nu e înregistrată în scopuri de TVA (art. 316).")
+        neap.setdefault("d394", "D394 nu se datorează — firma nu e plătitoare de TVA.")
+    if platitor is True:
+        neap.setdefault("d301", "D301 nu se datorează — e pentru neînregistrații în scopuri de TVA (firma e plătitoare).")
+    if ic is False:
+        neap.setdefault("d390", "D390 nu se datorează — firma nu are operațiuni intracomunitare.")
+        if platitor is False:
+            neap.setdefault("d301", "D301 nu se datorează — fără operațiuni intracomunitare.")
+    return neap
+
+
 def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PRAG_URMARIT_ZILE, d390_fapt=None):
     """
     SURSA UNICA a mapicarii 'cine ce declaratie datoreaza' (regim/TVA/decont/IC/salariati),

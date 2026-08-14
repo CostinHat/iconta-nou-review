@@ -3222,11 +3222,14 @@ def declaratii_tipuri(tenant_id: Optional[int] = None, ctx=Depends(cere_cabinet)
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
-            cur.execute("SELECT tip_firma FROM firma_profil WHERE id = 1")
+            cur.execute("SELECT tip_firma, tip_decont, platitor_tva, operatiuni_ic FROM firma_profil WHERE id = 1")
             row = cur.fetchone()
+    _vec = ({"tip_firma": row[0], "tip_decont": row[1], "platitor_tva": row[2], "operatiuni_ic": row[3]}
+            if row else {})
+    _tipd = _vec.get("tip_decont")
     return {"tipuri": declaratii_api.tipuri(),
-            "periodicitate": {t: declaratii_api.periodicitate(t) for t in declaratii_api.tipuri()},
-            "neaplicabile": control_fiscal_api.neaplicabile_forma(row[0] if row else None)}
+            "periodicitate": {t: declaratii_api.periodicitate_firma(t, _tipd) for t in declaratii_api.tipuri()},
+            "neaplicabile": control_fiscal_api.neaplicabile_selector(_vec)}
 
 
 @app.post("/declaratii/{tip}/valideaza")  # duk_valideaza_v1
