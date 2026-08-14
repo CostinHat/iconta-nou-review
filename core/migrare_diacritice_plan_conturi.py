@@ -23,14 +23,14 @@ def aplica(conn, schema):
     n = 0
     with conn.cursor() as cur:
         cur.execute("SET search_path TO %s, public" % schema)
-        cur.execute("SELECT cont, denumire FROM plan_conturi")
-        for cont, den in cur.fetchall():
+        cur.execute("SELECT simbol, denumire FROM plan_conturi")
+        for cont, den in cur.fetchall():  # cont = simbol
             nou = PLAN_OMFP.get(str(cont))
             if not nou or nou == den:
                 continue
             # doar diacritice: forma curenta trebuie sa fie EXACT ASCII-ul numelui diacritic
             if _strip(nou) == den:
-                cur.execute("UPDATE plan_conturi SET denumire=%s WHERE cont=%s", (nou, cont))
+                cur.execute("UPDATE plan_conturi SET denumire=%s WHERE simbol=%s", (nou, cont))
                 n += 1
     return n
 
