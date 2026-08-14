@@ -149,6 +149,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
     <div class="em-sectiune">
       <div class="em-eticheta">Produse și servicii</div>
       <div class="camp-eticheta">Linie: denumire · cantitate · preț unitar <span class="oblig">*</span> <span class="tip-micut">(cota TVA e propusă automat pe baza denumirii produsului — verifică încadrarea; răspunderea corectitudinii cotei îți aparține)</span></div>
+      <div class="em-linie-antet" aria-hidden="true"><span>Denumire</span><span class="ant-cant">Cant.</span><span class="ant-pret">Preț</span><span class="ant-cota">Cotă</span><span></span></div>
       <div class="em-linii" id="em-linii"></div>
       <button class="buton-secundar em-buton-sec" id="em-add-linie">+ Adaugă linie</button>
     </div>
@@ -182,7 +183,7 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
   const articole = opt.articole || [];        // [punte_stoc_v1] F172: articole de stoc (gol la gratuit)
   let pleacaMarfaCurent = null;               // raspunsul la poarta "pleaca marfa acum?" pt emiterea curenta
 
-  const linieNoua = () => ({ descriere: "", cantitate: 1, pret_unitar: 0, cota_tva: null, articol_id: null });
+  const linieNoua = () => ({ descriere: "", cantitate: "", pret_unitar: "", cota_tva: null, articol_id: null });
   const _val = (x) => (x === "" || x == null) ? "" : esc(String(x));
 
   // randeaza O linie DIN MODEL (id-uri pozitionale em-l{i}-*, ca backendul sa lege eroarea de camp). Stergere/rand.

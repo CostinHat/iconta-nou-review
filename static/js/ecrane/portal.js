@@ -562,8 +562,15 @@ async function ecranBon(corp, nav) {
       fs.forEach((f) => fd.append("fisiere", f));
       try {
         const r = await api.postForm("/portal/bon", fd);
-        draft = { bon_id: r.bon_id, bon: r.bon || {}, avertismente: r.avertismente || [],
-                  urls: fs.map((f) => URL.createObjectURL(f)) };
+        // CSP nginx: img-src 'self' data: (fara blob:) -> folosim data:URL prin FileReader, nu createObjectURL.
+        const citesteDataUrl = (f) => new Promise((rez, resp) => {
+          const fr = new FileReader();
+          fr.onload = () => rez(fr.result);
+          fr.onerror = () => resp(fr.error || new Error("Nu am putut citi fișierul."));
+          fr.readAsDataURL(f);
+        });
+        const urls = await Promise.all(fs.map(citesteDataUrl));
+        draft = { bon_id: r.bon_id, bon: r.bon || {}, avertismente: r.avertismente || [], urls };
         nav.mergi("Verific\u0103 documentul", (c) => { corp = c; randeazaConfirmare(); });  // faza_b_traseu_v1
       } catch (e) {
         corp.querySelectorAll("#bon-butoane button").forEach((b) => { b.disabled = false; });
@@ -608,7 +615,7 @@ async function ecranBon(corp, nav) {
       bt.disabled = true; br.disabled = true; bt.textContent = "Se trimite...";
       try {
         await api.post("/portal/bon/" + draft.bon_id + "/confirma", {});
-        _pozareMesaj = "Documentul a plecat la contabil. Îl vei regăsi în cifrele firmei.";
+        _pozareMesaj = "Documentul a plecat la contabil pentru verificare. După ce îl înregistrează, efectul lui se va vedea în «Cifrele firmei».";
         nav.inapoiPas();  // faza_b_traseu_v1
       } catch (e) {
         bt.disabled = false; br.disabled = false; bt.textContent = "Trimite la contabil";

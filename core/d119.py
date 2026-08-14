@@ -228,7 +228,7 @@ def genereaza(conn, schema, perioada, manual=None):
         raise ValueError("D119 lunara: perioada.luna obligatoriu.")
     luna = int(perioada.luna)
     if not (1 <= luna <= 12):
-        raise ValueError("D119: luna invalida: %r." % luna)
+        raise ValueError("D119: lună invalidă: %r." % luna)
     prof = pull(conn, schema, perioada)
     er = erori_generare(prof, manual)
     if er:

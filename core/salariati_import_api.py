@@ -24,14 +24,14 @@ def valideaza_cnp(cnp):
            7: 2000, 8: 2000, 9: 1900}.get(s, 1900)
     an = sec + aa
     if not (1 <= ll <= 12):
-        return False, "luna invalida"
+        return False, "lună invalidă"
     try:
         datetime.date(an, ll, zz)
     except ValueError:
-        return False, "data invalida"
+        return False, "dată invalidă"
     jj = int(cnp[7:9])
     if not (1 <= jj <= 52):
-        return False, "judet invalid"
+        return False, "județ invalid"
     suma = sum(int(cnp[i]) * _CHEIE[i] for i in range(12))
     ctrl = suma % 11
     ctrl = 1 if ctrl == 10 else ctrl

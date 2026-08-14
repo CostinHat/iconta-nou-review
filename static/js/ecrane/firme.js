@@ -2299,7 +2299,14 @@ async function ecranBonuri(corp, nav, t) {
     const resp = await fetch(`/tenants/${t.id}/bonuri/${bonId}/imagine/${n}`,
       { headers: { Authorization: "Bearer " + sesiune.token() } });
     if (!resp.ok) throw new Error("imagine " + resp.status);
-    const u = URL.createObjectURL(await resp.blob());
+    // CSP nginx: img-src 'self' data: (fara blob:) -> data:URL prin FileReader, nu createObjectURL.
+    const blob = await resp.blob();
+    const u = await new Promise((rez, resp2) => {
+      const fr = new FileReader();
+      fr.onload = () => rez(fr.result);
+      fr.onerror = () => resp2(fr.error || new Error("Nu am putut citi imaginea."));
+      fr.readAsDataURL(blob);
+    });
     urlsPoze.push(u);
     return u;
   }

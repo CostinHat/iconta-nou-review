@@ -1752,6 +1752,9 @@ html, body {
 .em-benef { display:flex; gap:8px; margin-bottom:8px; }
 .em-cui { flex:1; }
 .em-nume { width:100%; }
+.em-adresa { width:100%; }
+/* [ui11] eroarea de camp pe rand propriu, sa nu ocupe o coloana din grila/flexul beneficiarului */
+.em-benef .msg-eroare { flex-basis:100%; }
 .em-cui-stare { font-size: var(--text-mic); margin-top:6px; min-height:16px; color:#64748b; }
 .em-cui-ok { color:#15803d; font-weight:600; }
 .em-cui-rau { color:#dc2626; }
@@ -1759,6 +1762,14 @@ html, body {
 .em-linii { display:flex; flex-direction:column; gap:8px; margin-bottom:10px; }
 .em-linie { display:grid; grid-template-columns: 1fr 80px 100px 54px 28px; gap:8px; align-items:center; }
 .em-linie .camp-input { padding:0 10px; }
+/* [ui11] eroarea de camp: pinata pe randul 2 al grilei, latime plina. eroareCamp o insereaza
+   la mijlocul liniei (dupa input); fixand-o pe grid-row 2, celulele urmatoare (pret/cota/sterge)
+   se aseaza inapoi pe randul 1 -> butonul de sters NU mai sare pe rand nou. */
+.em-linie .msg-eroare { grid-column:1/-1; grid-row:2; align-self:start; }
+/* [ui13] antet de coloane pt liniile de factura, aliniat la grila .em-linie */
+.em-linie-antet { display:grid; grid-template-columns: 1fr 80px 100px 54px 28px; gap:8px; font-size: var(--text-mic); font-weight:700; text-transform:uppercase; letter-spacing:.03em; color:#64748b; margin-bottom:2px; }
+.em-linie-antet span { padding:0 10px; }
+.em-linie-antet .ant-cant, .em-linie-antet .ant-pret, .em-linie-antet .ant-cota { text-align:center; padding:0; }
 .em-l-cota { text-align:center; font-weight:700; font-size: var(--text-mic); color:#64748b; }
 .em-l-cota.cota-11 { color:#15803d; }
 .em-l-cota.cota-21 { color:#475569; }
@@ -1775,6 +1786,7 @@ html, body {
 .em-rau { color:#dc2626; }
 @media (max-width:520px) {
   .em-linie { grid-template-columns: 1fr 60px 80px 44px 24px; gap:5px; }
+  .em-linie-antet { grid-template-columns: 1fr 60px 80px 44px 24px; gap:5px; }
 }
 
 /* [p108_fac_meniu_css] meniu facturi (2 optiuni) */
