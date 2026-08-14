@@ -209,10 +209,15 @@ def potriveste_cota(denumire, platitor_tva=True):
         f'Produs/serviciu: "{denum}"\n\n'
         "Raspunde DOAR cu un obiect JSON, fara alt text, in formatul:\n"
         '{"cota": 11 sau 21, "categorie": "cheia categoriei sau standard", '
+        '"tip": "marfa sau produse sau servicii", '
         '"justificare": "o fraza scurta cu temeiul legal", '
         '"incredere": "mare/medie/mica"}\n'
         "Daca denumirea e ambigua (ex. poate fi si aliment si supliment), pune "
         "incredere 'mica' si alege varianta cea mai probabila."
+        " tip = clasificarea contabila a contului de venit (OMFP 1802/2014): "
+        "marfa = bunuri cumparate spre revanzare (707); produse = produse finite "
+        "fabricate de firma (701); servicii = prestari (consultanta, IT, transport, "
+        "chirii etc.) (704). Alege tipul dupa natura reala a denumirii."
     )
     try:
         raspuns = ai_client.genereaza_text(prompt, sistem=sistem,
@@ -238,6 +243,7 @@ def potriveste_cota(denumire, platitor_tva=True):
                              "determina. Declara cota explicit." % cota)
     return {"ok": True, "cota": int(cota),
             "categorie": obj.get("categorie") or "standard",
+            "tip": obj.get("tip") or "marfa",  # #11 cont venit pe linie (marfa/produse/servicii)
             "justificare": obj.get("justificare") or "",
             "incredere": obj.get("incredere") or "medie",
             "sursa": "ai"}

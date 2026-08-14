@@ -6347,22 +6347,50 @@ def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_cab
                 raise HTTPException(422, "factura are deja înregistrare (ciornă sau validată)")
             cur.execute(f"SELECT COALESCE(tva_la_incasare,false) AS b FROM {schema}.firma_profil WHERE id=1")
             tvai = cur.fetchone()["b"]
-            cur.execute(f"""SELECT COALESCE(SUM(cantitate*pret_unitar),0) AS baza,
-                                   MAX(cota_tva) AS cota FROM {schema}.factura_linii
-                            WHERE factura_id=%s""", (factura_id,))
-            fl = cur.fetchone()
-            baza = Decimal(str(fl["baza"] or 0))
-            if baza <= 0:
-                baza = Decimal(str(f.get("total_lei") or f.get("total") or 0)) - Decimal(str(f.get("tva") or 0))
-            if fl["cota"] is None:
-                raise HTTPException(422, "factura fara cota TVA pe linii - nu se poate genera "
-                                         "nota (declara cota pe factura)")
-            cota = Decimal(str(fl["cota"])) / 100
+            _MSG_FARA_COTA = ("factura fara cota TVA pe linii - nu se poate genera "
+                              "nota (declara cota pe factura)")
             if f["directie"] == "emisa":
-                cur.execute(f"SELECT COALESCE(cont_venit_implicit,'707') AS cv FROM {schema}.firma_profil WHERE id=1")
-                _cv = cur.fetchone()["cv"]  # [cont_venit_firma_v1] 707 marfa / 704 servicii, setabil pe firma
-                note = _fc.factura_emisa(baza, cota=cota, la_data=str(f["data_emitere"]), tva_incasare=tvai, cont_venit=_cv)
+                # [#11 cont venit pe linie] nota se grupeaza pe (cont_venit, cota): o factura de
+                # servicii crediteaza 704, una de marfa 707, una mixta -> ambele. Parametrul de
+                # grupare = cont_venit_implicit al firmei; daca ACELA e NULL -> '707' ultim fallback
+                # legacy DOAR pentru linii vechi fara cont (OMFP 1802/2014).
+                cur.execute(f"SELECT cont_venit_implicit FROM {schema}.firma_profil WHERE id=1")
+                _cvi = ((cur.fetchone() or {}).get("cont_venit_implicit")) or '707'
+                cur.execute(f"""SELECT COALESCE(NULLIF(cont_venit,''), %s) AS cv, cota_tva,
+                                       COALESCE(SUM(cantitate*pret_unitar),0) AS baza
+                                FROM {schema}.factura_linii WHERE factura_id=%s
+                                GROUP BY cv, cota_tva ORDER BY cv, cota_tva""", (_cvi, factura_id))
+                grupuri = [dict(r) for r in cur.fetchall()]
+                total_baza = sum((Decimal(str(g["baza"] or 0)) for g in grupuri), Decimal(0))
+                if total_baza <= 0:
+                    # factura fara linii (legacy): cade pe antet, un singur cont (cont_venit_implicit)
+                    baza = Decimal(str(f.get("total_lei") or f.get("total") or 0)) - Decimal(str(f.get("tva") or 0))
+                    cur.execute(f"SELECT MAX(cota_tva) AS cota FROM {schema}.factura_linii WHERE factura_id=%s", (factura_id,))
+                    _cota_h = cur.fetchone()["cota"]
+                    if _cota_h is None:
+                        raise HTTPException(422, _MSG_FARA_COTA)
+                    note = _fc.factura_emisa(baza, cota=Decimal(str(_cota_h)) / 100,
+                                             la_data=str(f["data_emitere"]), tva_incasare=tvai, cont_venit=_cvi)
+                else:
+                    if any(g["cota_tva"] is None for g in grupuri):
+                        raise HTTPException(422, _MSG_FARA_COTA)
+                    note = []
+                    for g in grupuri:
+                        note += _fc.factura_emisa(Decimal(str(g["baza"] or 0)),
+                                                  cota=Decimal(str(g["cota_tva"])) / 100,
+                                                  la_data=str(f["data_emitere"]),
+                                                  tva_incasare=tvai, cont_venit=g["cv"])
             else:
+                cur.execute(f"""SELECT COALESCE(SUM(cantitate*pret_unitar),0) AS baza,
+                                       MAX(cota_tva) AS cota FROM {schema}.factura_linii
+                                WHERE factura_id=%s""", (factura_id,))
+                fl = cur.fetchone()
+                baza = Decimal(str(fl["baza"] or 0))
+                if baza <= 0:
+                    baza = Decimal(str(f.get("total_lei") or f.get("total") or 0)) - Decimal(str(f.get("tva") or 0))
+                if fl["cota"] is None:
+                    raise HTTPException(422, _MSG_FARA_COTA)
+                cota = Decimal(str(fl["cota"])) / 100
                 note = _fc.factura_primita(baza, cota=cota, la_data=str(f["data_emitere"]), tva_incasare=tvai)
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)
                             VALUES (%s,%s,%s,'facturi','ciorna') RETURNING id""",

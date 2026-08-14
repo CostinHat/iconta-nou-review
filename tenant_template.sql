@@ -2379,3 +2379,7 @@ ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS platitor_tv
 -- [art.317 14.08.2026] inregistrare speciala in scopuri de TVA (art. 317 CF, fost 153^1): decide pers_inreg
 -- in D301 (1 vs 2) si face verdictul D390 la neplatitorul cu IC satisfiabil (mirror in core/migrare_art317.py).
 ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS inreg_art317 boolean DEFAULT false NOT NULL;
+-- [cont_venit_linie #11] contul de venit stabilit PE LINIE (marfa->707/produse->701/serviciu->704,
+-- OMFP 1802/2014), editabil de contabil; contabilizarea grupeaza nota pe (cont_venit, cota).
+-- Nullable: linie fara cont -> contabilizarea decide (cont_venit_implicit / legacy 707). Mirror in core/migrare_cont_venit_linie.py.
+ALTER TABLE TENANT_PLACEHOLDER.factura_linii ADD COLUMN IF NOT EXISTS cont_venit text;

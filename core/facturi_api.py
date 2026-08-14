@@ -107,9 +107,10 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
         for l in linii:
             cur.execute(
                 "INSERT INTO factura_linii (factura_id, descriere, um, cantitate, "
-                "pret_unitar, cota_tva, articol_id) VALUES (%s,%s,%s,%s,%s,%s,%s)",
+                "pret_unitar, cota_tva, articol_id, cont_venit) VALUES (%s,%s,%s,%s,%s,%s,%s,%s)",
                 (factura_id, l["descriere"], l.get("um", "buc"),
-                 l["cantitate"], l["pret_unitar"], l["cota_tva"], l.get("articol_id")))
+                 l["cantitate"], l["pret_unitar"], l["cota_tva"], l.get("articol_id"),
+                 (l.get("cont_venit") or None)))  # #11 cont venit pe linie (auto din denumire, editabil)
     return {"ok": True, "factura_id": factura_id,
             "total": float(t["total"]), "tva": float(t["tva"])}
 
@@ -166,7 +167,7 @@ def detalii_factura(conn, factura_id):
             return None
         f = dict(f)
         cur.execute(
-            "SELECT id, descriere, um, cantitate, pret_unitar, cota_tva "
+            "SELECT id, descriere, um, cantitate, pret_unitar, cota_tva, cont_venit "
             "FROM factura_linii WHERE factura_id = %s ORDER BY id", (factura_id,))
         f["linii"] = [dict(r) for r in cur.fetchall()]
     return f
@@ -215,8 +216,20 @@ def seteaza_numerotare(conn, serie=None, numar_start=None):
 
 def _potriveste_linii(conn, linii, platitor_tva=True):
     """Pentru fiecare linie fara cota_tva, o potriveste (nomenclator/AI) si o
-    salveaza in nomenclator. Intoarce liniile cu cota completata."""
-    from core import produse_api
+    salveaza in nomenclator. Determina si contul de venit PE LINIE din denumire
+    (#11: marfa->707/produse->701/serviciu->704, OMFP 1802/2014), editabil ulterior.
+    Intoarce liniile cu cota + cont_venit completate."""
+    from core import produse_api, cote_tva
+    from core import facturi as _fc
+    # contul de venit implicit al firmei = fallback cand clasificarea liniei nu reuseste
+    cv_firma = None
+    try:
+        with conn.cursor() as _cur:
+            _cur.execute("SELECT cont_venit_implicit FROM firma_profil LIMIT 1")
+            _row = _cur.fetchone()
+            cv_firma = (_row[0] if _row else None) or None
+    except Exception:
+        cv_firma = None
     out = []
     for l in linii:
         linie = dict(l)
@@ -232,6 +245,19 @@ def _potriveste_linii(conn, linii, platitor_tva=True):
                                  "stabili cota. Declara cota explicit pe linie."
                                  % (linie.get("descriere") or "",))
             linie["cota_tva"] = r["cota_tva"]
+        # cont de venit pe linie: pastreaza ce a pus contabilul; altfel clasifica din denumire.
+        # Best-effort: daca AI indisponibil/nedeterminat NU blocheaza (spre deosebire de cota) ->
+        # cade pe cont_venit_implicit al firmei; daca nici acela nu e setat lasa None (contabilizarea decide).
+        if not str(linie.get("cont_venit") or "").strip():
+            cont = None
+            try:
+                rez = cote_tva.potriveste_cota(linie.get("descriere", ""), platitor_tva=platitor_tva)
+                tip = rez.get("tip") if rez.get("ok") else None
+                if tip:
+                    cont = _fc.VENIT.get(tip)
+            except Exception:
+                cont = None
+            linie["cont_venit"] = cont or cv_firma
         out.append(linie)
     return out
 
