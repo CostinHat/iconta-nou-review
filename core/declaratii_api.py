@@ -19,7 +19,8 @@ CALCUL+DB stau în module (au pull+genereaza). Aici doar: validare cerere (pură
 from __future__ import annotations
 
 from core import (d100, d101, d104, d107, d110, d220, d221, d223, d307, d112, d177, d205, d207, d230, d300, d301, d311, d390, d394, d406, d710,
-                  d120, d200, d201, d204, d208, d216, d393, d395, d397, d600)
+                  d120, d200, d201, d204, d208, d216, d393, d395, d397, d600,
+                  d106, d108, d114, d130, d318, d603)
 from core.common import Perioada
 
 REGULI = "2026.1"
@@ -169,6 +170,30 @@ def _d600(conn, schema, b):   # baza CAS/CASS estimata (PF, anuala)
     return d600.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
 
 
+def _d106(conn, schema, b):   # informativa dividende actionari de stat (anuala); header din firma_profil
+    return d106.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
+def _d108(conn, schema, b):   # impozit pe reprezentanta (anuala)
+    return d108.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
+def _d114(conn, schema, b):   # contributia asiguratorie pentru munca - CAM (lunara)
+    return d114.genereaza(conn, schema, Perioada(b["an"], luna=int(b["luna"])), b.get("manual") or {})
+
+
+def _d130(conn, schema, b):   # decont impozit titei productie interna (anuala)
+    return d130.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
+def _d318(conn, schema, b):   # rambursare TVA din alt stat membru UE (la cerere/anuala)
+    return d318.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
+def _d603(conn, schema, b):   # exceptare CASS - declaratie pe propria raspundere (anuala)
+    return d603.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
 DECLARATII = {
     "d100": ("trimestrial", _d100),
     "d101": ("anual",       _d101),
@@ -205,6 +230,12 @@ DECLARATII = {
     "d216": ("anual",       _d216),
     "d120": ("anual",       _d120),
     "d600": ("anual",       _d600),
+    "d106": ("anual",       _d106),
+    "d108": ("anual",       _d108),
+    "d114": ("lunar",       _d114),
+    "d130": ("anual",       _d130),
+    "d318": ("anual",       _d318),
+    "d603": ("anual",       _d603),
 }
 
 
@@ -213,7 +244,8 @@ DECLARATII = {
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
 _DOAR_API = frozenset(("d104", "d107", "d110", "d177", "d207", "d220", "d221", "d223", "d230", "d307", "d311", "d710",
-                       "d393", "d395", "d397", "d200", "d201", "d204", "d208", "d216", "d120", "d600"))
+                       "d393", "d395", "d397", "d200", "d201", "d204", "d208", "d216", "d120", "d600",
+                       "d106", "d108", "d114", "d130", "d318", "d603"))
 
 
 def tipuri():

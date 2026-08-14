@@ -41,6 +41,13 @@
       "tip_forma": null,
       "acopera": []
     },
+    "LEGE (R) 448 06_12_2006 - Portal Legislativ.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "legislatie.just.ro",
+      "forma": "consolidata"
+    },
     "OPANAF_179_2022_D207.pdf": {
       "exista": true,
       "tip_forma": null,
@@ -507,6 +514,20 @@
       "exista": true,
       "tip_forma": null,
       "acopera": []
+    },
+    "d318_instructiuni_anaf.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "necunoscuta"
+    },
+    "d318_instructiuni_anaf.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
     },
     "d390_struct_anaf.txt": {
       "exista": true,
@@ -1605,6 +1626,20 @@
       "tip_forma": null,
       "acopera": []
     },
+    "opanaf_1292_2014_d106_instructiuni.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_1292_2014_d106_instructiuni.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
     "opanaf_146_2018.pdf": {
       "exista": true,
       "tip_forma": null,
@@ -1694,6 +1729,62 @@
       "exista": true,
       "tip_forma": null,
       "acopera": []
+    },
+    "opanaf_1950_2012_130.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "necunoscuta"
+    },
+    "opanaf_1950_2012_130.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_1950_2012_decl130.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_1950_2012_decl130.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_1950_2012_decl130.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_1950_2012_instr_130_1950.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_1950_2012_instr_130_1950.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_1950_2012_instr_130_1950.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
     },
     "opanaf_206_2025.pdf": {
       "exista": true,

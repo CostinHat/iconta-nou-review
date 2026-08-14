@@ -9214,3 +9214,22 @@ CABLAT (core/compensare.py): necesita_sistem_electronic(varsta_factura_zile, cu_
 si capital de stat (PRAG_VECHIME_ZILE=30, temei HG 773/2019 Art.2), NU pe suma; fara varsta -> None.
 propune_compensari ia varsta din input (per partener); pull pe solduri (balante) nu are varsta -> semnal None
 (onest). Teste actualizate (test_sic_pe_varsta_factura_hg773 + sursa in corpus include hg_773).
+
+## 14.08.2026 — Campanie "toate declaratiile ramase": clasificare + Lot 3 (6 declaratii)
+Din 60 forme D/B oferite de ANAF, 31 erau construite. Cele 29 ramase: 19 declaratii FISCALE constructibile;
+10 EXCLUSE cu motiv (D392 suspendata legal; D017/D085/D092/D163/D700 = inregistrare/mentiuni/optiune; D179 =
+cerere de compensare; D180 = nota de certificare; B230/B900 = borderouri). Toate cele 29 validatoare instalate
+de la static.anaf.ro.
+LOT 3 construit (generatoare MANUALE, structura din validator = arbitru, probat DUK VALID fiecare):
+D106 (informativa dividende de stat, OPANAF 1292/2014, root declaratie106), D108 (impozit reprezentanta,
+CF Titlul VI = 18.000 lei/an, root D108), D114 (CAM, CF Titlul V, root D114, lunara), D130 (decont titei,
+OPANAF 1950/2012, root declaratie130), D318 (rambursare TVA din alt stat UE, art.302 CF + Directiva 2008/9,
+root D318, sumaControl=0), D603 (exceptare CASS, art.154 CF, root d603).
+ACTE: aduse in corpus de pe static.anaf.ro (D106 OPANAF 1292/2014; D130 OPANAF 1950/2012; D318 instructiuni +
+art.302 CF). D108 = temei CF Titlul VI deja in corpus. D603/D114 = temei in CF (art.154 / Titlul V) in corpus,
+dar OPANAF-ul dedicat (3697/2016, resp. formularul CAM) NU e liber obtenabil (lege5 auth-wall / just.ro blocat)
+-> semantica din validator, gol raportat.
+Cablate CHEIE_DUK + DECLARATII + _DOAR_API + FUNCTIONALITATI F228-F233 (+ genereaza_grupe_functii --scrie).
+Teste: core/test_declaratii_lot3_duk.py (6; d106 cu conn mock - trage header din firma_profil).
+RAMASE de construit (valuri urmatoare): D101G, D169, D169n, D119, D213, D214, D398, D399, D401, D402, D403,
+D407, D212 (declaratia unica - complex).

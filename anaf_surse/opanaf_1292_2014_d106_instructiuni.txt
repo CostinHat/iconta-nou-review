@@ -1,0 +1,47 @@
+                                                                                                   ANEXA Nr. 2
+                                                INSTRUCȚIUNI
+de completare a formularului 106 "Declarație informativă privind dividendele cuvenite acționarilor", cod
+                                           14.13.01.01/d.d.
+
+        I. Depunerea declarației
+        1. Declarația informativă privind dividendele cuvenite acționarilor se completează şi se depune de
+către societățile naționale, companiile naționale şi societățile la care statul este acționar unic, majoritar sau
+deține controlul, în cazul în care pentru anul de raportare au fost repartizate dividende acționarilor,
+potrivit Ordonanței Guvernului nr. 64/2001 privind repartizarea profitului la societățile naționale,
+companiile naționale şi societățile comerciale cu capital integral sau majoritar de stat, precum şi la regiile
+autonome, aprobată cu modificări prin Legea nr. 769/2001, cu modificările şi completările ulterioare.
+        2. Declarația se depune la organul fiscal competent din cadrul Agenției Naționale de Administrare
+Fiscală pentru administrarea operatorilor economici prevăzuți la pct. 1, anual, până la data de 25 a lunii
+următoare aprobării repartiției profitului.
+        3. Declarația se completează cu ajutorul programului de asistență.
+        Formularul se depune la organul fiscal competent, în format PDF, cu fişier XML ataşat, pe suport
+CD, însoțit de formatul hârtie, semnat şi ştampilat conform legii, sau se transmite prin mijloace electronice
+de transmitere la distanță, în conformitate cu prevederile legale în vigoare.
+        4. În cazul în care operatorii economici prevăzuți la pct. 1 corectează declarația depusă inițial,
+declarația rectificativă se întocmeşte pe acelaşi model de formular, înscriind "X" în spațiul special prevăzut
+în acest scop.
+
+        II. Completarea declarației
+        1. Secțiunea I "Date de identificare a operatorului economic"
+        În caseta "Cod de identificare fiscală" se completează codul de identificare fiscală atribuit societății
+naționale, companiei naționale sau societății la care statul este acționar unic, majoritar ori deține controlul,
+conform legii, înscriindu‐se cifrele cu aliniere la dreapta.
+        În cazul în care operatorul economic este înregistrat în scopuri de taxă pe valoarea adăugată, în
+prima căsuță se înscrie prefixul RO.
+        În rubrica "Denumire" se înscrie denumirea societății naționale, companiei naționale sau a societății
+la care statul este acționar unic, majoritar ori deține controlul.
+        Rubricile privind adresa se completează cu datele privind adresa domiciliului fiscal al operatorului
+economic.
+        2. Secțiunea II "Date privind dividendele cuvenite acționarilor"
+        Coloana "Denumire" ‐ se înscrie denumirea autorității publice centrale, în calitate de acționar,
+căreia îi revin obligațiile prevăzute la art. 1 alin. (44) din Ordonanța Guvernului nr. 64/2001, aprobată cu
+modificări prin Legea nr. 769/2001, cu modificările şi completările ulterioare, sub autoritatea căreia
+funcționează operatorii economici prevăzuți la subpct. 1 de la pct. I din Instrucțiuni.
+        Coloana "Cod de identificare fiscală" ‐ se înscrie codul de identificare fiscală corespunzător
+acționarilor.
+        Coloana "Cota de participare la capitalul social" ‐ se înscrie cota de participare la capitalul social
+corespunzătoare acționarilor.
+        Coloana "Dividende distribuite" ‐ se înscrie suma reprezentând dividendele distribuite autorităților
+publice centrale, în conformitate cu art. 1 alin. (1) şi (3) din Ordonanța Guvernului nr. 64/2001, aprobată cu
+modificări prin Legea nr. 769/2001, cu modificările şi completările ulterioare.
+

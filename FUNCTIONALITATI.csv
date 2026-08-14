@@ -2200,3 +2200,39 @@ Genereaza D600 (baza CAS/CASS estimata, persoane fizice).
 Anual (luna 12).
 ## De completat
 Identificarea contribuabilului (nume, CNP, adresa) + optiunile/bazele CAS/CASS. Pentru CAS: baza1..baza12 (baze lunare, fiecare >= salariul minim). Plafoanele si cotele nu sunt precompletate - baza legala o stabileste ANAF."
+Declaratia D106 (informativa dividende actionari de stat),"D106 - declaratie informativa anuala privind dividendele cuvenite actionarilor (societati/companii la care statul e actionar; OG 64/2001). Generator MANUAL (core/d106.py): header operator din firma_profil (pull, ca d207), lista actionarilor din input (cif unic, denumire, cota 0-100, dividend); totalPlata_A = suma dividendelor (regula R5.1). Structura din D106Validator.jar (root declaratie106); act: OPANAF 1292/2014 (anexa 2, static.anaf.ro). Probat DUK valid.",F228,firma,Declaratii,core/d106.py,OPANAF 1292/2014; OG 64/2001 (repartizare profit societati de stat); structura din D106Validator.jar (declaratie106),LIVE,core/test_declaratii_lot3_duk.py + DUKIntegrator -v D106 'valid',,"## Ce face
+Genereaza D106 (dividende cuvenite actionarilor) pentru societatile la care statul e actionar.
+## Cand se depune
+Anual, dupa aprobarea repartizarii profitului.
+## De completat
+Pentru fiecare actionar: cod fiscal (unic), denumire, cota de participare (0-100%) si dividendul distribuit. Header-ul firmei se preia automat. Suma de control se calculeaza din dividende. d_rec=1 pentru rectificativa."
+Declaratia D108 (impozit pe reprezentanta),"D108 - declaratie anuala privind impozitul pe reprezentanta (persoana juridica straina). Generator MANUAL (core/d108.py): impozit fix 18.000 lei/an (Cod fiscal Titlul VI), proportional la infiintare/desfiintare in cursul anului; scadenta = ultima zi februarie (anual) sau data+30 zile (infiintare)/data desfiintarii. Structura din D108Validator.jar (root D108); temei DEJA in corpus (cod_fiscal_227_2015_consolidat.txt, 18.000 lei/an). Probat DUK valid.",F229,firma,Declaratii,core/d108.py,Cod fiscal (Legea 227/2015) Titlul VI - Impozitul pe reprezentante (18.000 lei/an); structura din D108Validator.jar (D108),LIVE,core/test_declaratii_lot3_duk.py + DUKIntegrator -v D108 'valid',,"## Ce face
+Genereaza D108 (impozit pe reprezentanta unei persoane juridice straine): impozit fix 18.000 lei/an.
+## Cand se depune
+Anual (scadenta ultima zi din februarie); la infiintare/desfiintare - in 30 de zile.
+## De completat
+CUI si denumirea reprezentantei, domiciliul fiscal, datele reprezentantului legal. Pentru infiintare/desfiintare in cursul anului adaugi tipul si data - impozitul se proportioneaza automat pe luni. Sumele si nr. de evidenta se calculeaza."
+Declaratia D114 (contributia asiguratorie pentru munca - CAM),"D114 - declaratie lunara privind obligatiile de plata a contributiei asiguratorii pentru munca (CAM), pentru situatiile care NU se declara prin D112 (ex. lucratori culturali). Generator MANUAL (core/d114.py): declarant + contracte (per lucrator: cui, denumire, contract, venit, contributie); cod_obligatie=489, cont_bugetar=20A470300XX, Nr_evid (checksum), scadenta (25 luna urmatoare), totalPlata_A = suma cifrelor CIF. Structura din D114Validator.jar (root D114); temei CF Titlul V Cap.IX. Probat DUK valid.",F230,firma,Declaratii,core/d114.py,Cod fiscal Titlul V Cap.IX - contributia asiguratorie pentru munca; structura din D114Validator.jar (D114),LIVE,core/test_declaratii_lot3_duk.py + DUKIntegrator -v D114 'valid',,"## Ce face
+Genereaza D114 (CAM) pentru platitorii care datoreaza contributia asiguratorie pentru munca dar nu o declara prin D112.
+## Cand se depune
+Lunar (scadenta 25 a lunii urmatoare; decembrie -> 25 ianuarie).
+## De completat
+Datele declarantului (CUI, denumire, adresa, intocmitor) + pentru fiecare lucrator: cod fiscal, denumire, contract, venitul (baza) si contributia. Cod obligatie, cont bugetar, nr. evidenta si scadenta se completeaza automat."
+Declaratia D130 (decont impozit la titeiul din productia interna),"D130 - decont privind impozitul la titeiul din productia interna. Generator MANUAL (core/d130.py): platitor + cantitate_titei (tone) + impozit_datorat (calculat de contribuabil cu cota legala, NU hardcodat); totalPlata_A = cantitate + impozit (suma de control R13). Structura din D130Validator.jar (root declaratie130); act OPANAF 1950/2012 (static.anaf.ro) + Cod fiscal Titlul VIII. Probat DUK valid.",F231,firma,Declaratii,core/d130.py,OPANAF 1950/2012; Cod fiscal (Legea 227/2015) Titlul VIII - accize si taxe speciale; structura din D130Validator.jar,LIVE,core/test_declaratii_lot3_duk.py + DUKIntegrator -v D130 'valid',,"## Ce face
+Genereaza D130 (impozitul la titeiul din productia interna).
+## Cand se depune
+Conform actului (sume cumulate pe an, termen 30 aprilie anul urmator).
+## De completat
+CUI si denumirea platitorului, declarantul, cantitatea de titei (tone) si impozitul datorat (calculat cu cota legala in vigoare - nu e precompletat). Suma de control se calculeaza automat."
+Declaratia D318 (rambursare TVA din alt stat membru UE),"D318 - cerere de rambursare a TVA achitata in alt stat membru UE de persoane impozabile stabilite in Romania (Directiva 2008/9/CE, art.302 CF). Generator MANUAL (core/d318.py): perioada (trimestru-an), contul de rambursare (IBAN/BIC), statul de rambursare, facturi de achizitie/import cu furnizor UE si cod bun/serviciu; sumaControl = 0 (regula validator). Structura din D318Validator.jar (root D318). Probat DUK valid (inclusiv DecValidation nou).",F232,firma,Declaratii,core/d318.py,Cod fiscal (Legea 227/2015) art.302; Directiva 2008/9/CE; OPANAF 2810/2016; structura din D318Validator.jar (D318),LIVE,core/test_declaratii_lot3_duk.py + DUKIntegrator -v D318 'valid',,"## Ce face
+Genereaza D318 (rambursarea TVA platita in alt stat membru UE).
+## Cand se depune
+Pana la 30 septembrie a anului urmator; perioada = un trimestru pana la un an calendaristic.
+## De completat
+Statul de rambursare (cod UE), contul (IBAN+BIC+titular), si pentru fiecare factura straina: numar, data, baza, TVA, TVA de rambursat, moneda, furnizorul UE (denumire, adresa, cod TVA) si codul bunului/serviciului. Rectificativa: numarul deciziei (incepe cu RO)."
+Declaratia D603 (exceptare de la plata CASS),"D603 - declaratie pe propria raspundere pentru exceptarea de la plata contributiei de asigurari sociale de sanatate (CASS), pentru persoane fizice asigurate in alt stat (art.154 CF). Generator MANUAL (core/d603.py): CNP, categoria de exceptare (2/3/4), statul de asigurare (!= RO), perioada de exceptare, documentele justificative; totalPlata_A = suma de control. Structura din D603Validator.jar (root d603, structura plata, fara d_rec). Probat DUK valid.",F233,firma,Declaratii,core/d603.py,Cod fiscal (Legea 227/2015) art.154 - persoane exceptate de la CASS; OMFP/CNAS 3697/727/2016; structura din D603Validator.jar (d603),LIVE,core/test_declaratii_lot3_duk.py + DUKIntegrator -v D603 'valid',,"## Ce face
+Genereaza D603 (exceptarea de la plata CASS), pentru persoana fizica asigurata intr-un alt stat.
+## Cand se depune
+La aparitia situatiei de exceptare (declaratie pe propria raspundere).
+## De completat
+CNP-ul, categoria de exceptare (cod 2/3/4 din Procedura), statul unde esti asigurat (diferit de RO), perioada de exceptare (inceput/sfarsit) si documentele justificative (ex. formular A1). Datele se completeaza in format zi.luna.an."
