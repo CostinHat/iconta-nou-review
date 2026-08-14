@@ -153,7 +153,7 @@ def test_declaratii_live_au_ajutor():
 # Baseline al functionalitatilor LIVE inca fara ajutor (CLICHET: nu are voie sa CREASCA). Scop: 0.
 # Scade pe masura ce se scriu explicatiile; o LIVE noua fara ajutor ridica numarul peste baseline
 # -> rosu -> lipsa e prinsa mecanic, nu cu ochiul.
-_BASELINE_LIVE_FARA_AJUTOR = 26
+_BASELINE_LIVE_FARA_AJUTOR = 0
 
 
 def test_acoperire_ajutor_nu_regreseaza():

@@ -34,6 +34,7 @@ async function _corpAnsamblu(corp, primaLogare) {
   catch (_e) { grupe = []; }
   corp.innerHTML =
     `<div class="ans-continut">` +
+      `<p class="ans-intro">Orice solicitare de funcționalitate nouă sau modificare a celor existente se raportează prin cardul Suport și se rezolvă în maximum 48 de ore.</p>` +
       (primaLogare
         ? `<p class="ans-intro">Bun venit în iConta.eu. Mai jos e drumul de la preluarea unei firme până la operarea curentă — parcurge-l în ordine, începând cu migrarea. E o hartă a aplicației; n-o reține acum, o ai oricând la îndemână.</p>`
         : "") +

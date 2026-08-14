@@ -1008,11 +1008,7 @@ def login(date: LoginIn):
         _login_esec(_email)
         raise HTTPException(401, r["mesaj"])
     _login_reset(_email)
-    # [beta_gate_v1] poarta beta: daca BETA_COD_ACCES e setat, cere codul.
-    # Parola corecta dar fara cod -> 403 "in lucru" (contul ramane valid pt lansare).
-    _cod = os.environ.get("BETA_COD_ACCES", "").strip()
-    if _cod and (date.cod_acces or "").strip() != _cod:
-        raise HTTPException(403, "Site in lucru. Vei primi un email cand devine functional.")
+    # [beta_gate_v1 SCOS 14.08] poarta "Site in lucru" eliminata - acces liber (decizie Costin).
     try:
         with db.get_conn() as conn2:
             with conn2.cursor() as cur:
@@ -1316,7 +1312,7 @@ def public_termeni():
 
 @app.get("/public/config")  # [beta_gate_v1] doar STAREA portii (bool), NU valoarea codului
 def public_config():
-    return {"beta": bool(os.environ.get("BETA_COD_ACCES", "").strip())}
+    return {"beta": False}   # [beta_gate SCOS 14.08] acces liber - campul de cod nu mai apare
 
 
 class ResetCereIn(BaseModel):
