@@ -134,6 +134,17 @@ def d301_luni_operatiuni(conn, schema, an):
         return {r[0] for r in cur.fetchall()}
 
 
+def d301_luni_facturi_ic(conn, schema, an):
+    """Lunile (1-12) din `an` cu ACHIZITII intracomunitare inregistrate ca FACTURI (facturi IC primite).
+    [ruptura D301<->facturi 14.08.2026] Faptul care declanseaza D301 la un neplatitor NU e doar tabelul
+    manual d301_operatiuni: o achizitie IC inregistrata ca factura (fluxul normal de utilizator) datoreaza
+    D301. Simetric cu D390 (d390_are_operatiuni citeste tot facturi_ic). Reutilizeaza clasificarea UE din
+    facturi_ic (nu construieste una paralela)."""
+    import datetime as _dt
+    fic = facturi_ic(conn, schema, _dt.date(an, 1, 1), _dt.date(an + 1, 1, 1))
+    return {r["data_emitere"].month for r in fic.get("primita", []) if r.get("data_emitere")}
+
+
 def facturi_necontabilizate(conn, schema, an, luna):
     """Facturile lunii FARA inregistrare VALIDATA - cauza dovedibila a divergentei.
     are_ciorna=True -> nota exista dar asteapta patru-ochi: NU se recontabilizeaza."""
@@ -473,7 +484,7 @@ def facturi_ic(conn, schema, data_de, data_pana):
     out = {"emisa": [], "primita": []}
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(f"""
-            SELECT f.id, f.numar, f.directie, f.total, f.tva, f.tert_nume,
+            SELECT f.id, f.numar, f.directie, f.total, f.tva, f.tert_nume, f.data_emitere,
                    c.cui AS c_cui, f.tert_cui,
                    EXISTS (SELECT 1 FROM {schema}.inregistrari i
                            WHERE i.factura_id = f.id AND i.status = 'validata') AS contabilizata,

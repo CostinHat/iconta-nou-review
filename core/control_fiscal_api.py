@@ -22,7 +22,7 @@ from __future__ import annotations
 import datetime
 
 from core import scadente  # sursa unica de scadente + zile lucratoare (fara import circular)
-from core.common import azi_ro, pastila_firma  # [fus] ziua RO; [semafor] escaladare unica din constatari
+from core.common import azi_ro, pastila_firma, perioada_tva_tip  # [fus] ziua RO; [semafor] escaladare; [ruptura] normalizare tip_decont
 from core import firma_profil_api as _fp  # [F180] stare_tva_anaf (comparatie platitor_tva vs snapshot)
 
 PRAG_URMARIT_ZILE = 7   # termen in <= 7 zile, nedepus -> galben
@@ -129,19 +129,27 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
         """Emite `tip` pe perioada fiscala TVA (lunar/trimestrial dupa tip_decont). tip_decont necunoscut la
         un platitor -> gri cu cauza (principiul D3). [B1] marginit=True (D300/D394): sare perioadele DE
         DINAINTE de inregistrarea in scopuri de TVA (tva_inreg, fapt ANAF) - nu sunt restante, nu apar deloc."""
-        d = (tip_decont or "").strip().lower()
         def _dupa_inreg(a, luna_final):     # perioada e datorata daca firma era inregistrata pana la finalul ei
             return not (marginit and tva_inreg and (a, luna_final) < tva_inreg)
-        if d == "trimestrial":
+        # [ruptura seed<->control 14.08.2026] tip_decont vine ca litera ("T"/"L" - seed/generatoare) SAU
+        # cuvant intreg ("trimestrial"/"lunar" - calea de productie vector_fiscal_api). Egalitatea stricta pe
+        # cuvant respingea litera -> gri "necompletat" la TOTI platitorii seed. Normalizam prin acelasi
+        # perioada_tva_tip ca generatoarele (imun la ambele conventii).
+        try:
+            d = perioada_tva_tip({"tip_decont": tip_decont})    # "T"/"L"/"S"/"A" sau ridica
+        except ValueError:
+            gri(tip, cauza_periodicitate)
+            return
+        if d == "T":
             for a, tri, lf in per_trim:
                 if _dupa_inreg(a, lf):
                     adauga(tip, a, lf, f"T{tri}", tip_scad)
-        elif d == "lunar":
+        elif d == "L":
             for a, m in per_luni:
                 if _dupa_inreg(a, m):
                     adauga(tip, a, m, _LUNI_NUME[m], tip_scad)
         else:
-            gri(tip, cauza_periodicitate)
+            gri(tip, cauza_periodicitate)   # S/A: periodicitate TVA neuzuala, nesuportata in semafor
 
     platitor_tva = vector.get("platitor_tva")
     tip_decont = vector.get("tip_decont")
@@ -335,7 +343,10 @@ def declaratii_fapt(conn_schema, schema, vector, azi):
         neaplicabile.append({"tip": "d301",
                              "motiv": "D301 nu se datorează — firma e plătitoare de TVA (D301 e pentru neînregistrați în scopuri de TVA)"})
     else:
-        luni_an = {a: _ci.d301_luni_operatiuni(conn_schema, schema, a) for a in (an - 1, an)}
+        # [ruptura D301<->facturi 14.08.2026] union: tabelul manual d301_operatiuni SI facturile IC primite
+        # (fluxul normal). Altfel un neplatitor cu achizitii IC reale ca facturi primea "nicio operatiune IC".
+        luni_an = {a: (_ci.d301_luni_operatiuni(conn_schema, schema, a)
+                       | _ci.d301_luni_facturi_ic(conn_schema, schema, a)) for a in (an - 1, an)}
         vreo = False
         for a, m in [(an - 1, 12)] + [(an, mm) for mm in range(1, 13)]:
             if m in luni_an.get(a, set()):
