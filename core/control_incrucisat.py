@@ -197,7 +197,33 @@ def _explicatie(necontate):
     return ("; ".join(parti) + ".") if parti else ""
 
 
-def compara_tva(d300_R, rulaje, necontate=None):
+def _patru_ochi_activ(conn, schema):
+    """Starea REALA four-eyes a cabinetului care deține schema tenantului (nu o presupunere).
+    Fail-open pe True (formularea prudentă "al doilea utilizator") dacă maparea nu se poate citi."""
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT accounting_firm_id FROM public.tenants WHERE schema_name = %s", (schema,))
+            r = cur.fetchone()
+            if not r or r[0] is None:
+                return True
+            cur.execute("SELECT patru_ochi_activ FROM public.accounting_firms WHERE id = %s", (r[0],))
+            r2 = cur.fetchone()
+        return bool(r2[0]) if r2 and r2[0] is not None else False
+    except Exception:
+        return True
+
+
+def _actiune_valideaza(patru_ochi):
+    """Textul remediului "validează nota", condiționat de four-eyes REAL. Activat -> un al doilea
+    utilizator (patru ochi); neactivat -> același user își validează propria notă (bara de sus încă
+    oferă activarea, dar deocamdată e un singur pas)."""
+    if patru_ochi:
+        return ("Un al doilea utilizator validează notele (patru ochi). "
+                "Până atunci operațiunile nu sunt în evidență.")
+    return "Validează nota (din ciornă în evidență)."
+
+
+def compara_tva(d300_R, rulaje, necontate=None, patru_ochi=True):
     """PURA: compara randurile D300 cu rulajele contabile.
     necontate: facturi FARA nota validata, fiecare cu are_ciorna (nota propusa, nevalidata).
     Ciorna nu intra in rulaj si NU inchide constatarea: verdele vine dupa patru-ochi."""
@@ -249,8 +275,7 @@ def compara_tva(d300_R, rulaje, necontate=None):
                     "fel": "sugerat",
                     "cauza": (f"{len(cu_ciorna)} note ciornă create, așteaptă validare; "
                               f"TVA-ul lor ({_lei(tva_grup)}) explică exact diferența."),
-                    "actiune": ("Un al doilea utilizator validează notele (patru ochi). "
-                                "Până atunci operațiunile nu sunt în evidență."),
+                    "actiune": _actiune_valideaza(patru_ochi),
                     "facturi": [],
                 }))
             continue
@@ -291,7 +316,7 @@ def toleranta_d112(nr_salariati):
     return max(TOLERANTA, Decimal("0.5") * Decimal(str(nr_salariati or 0)))
 
 
-def compara_d112(totaluri, rulaje, note_ciorna=0, nr_salariati=0):
+def compara_d112(totaluri, rulaje, note_ciorna=0, nr_salariati=0, patru_ochi=True):
     """PURA: totaluri declarate (din XML) vs rulaj CREDIT pe conturile de datorii."""
     rez = []
     tol = toleranta_d112(nr_salariati)
@@ -322,8 +347,7 @@ def compara_d112(totaluri, rulaje, note_ciorna=0, nr_salariati=0):
             rez.append(dict(baza, stare="rosu", mesaj=mesaj, remediu={
                 "fel": "sugerat",
                 "cauza": f"{note_ciorna} note de salarii în ciornă, așteaptă validare.",
-                "actiune": ("Un al doilea utilizator validează notele (patru ochi). "
-                            "Până atunci operațiunile nu sunt în evidență."),
+                "actiune": _actiune_valideaza(patru_ochi),
                 "facturi": [],
             }))
         else:
@@ -357,12 +381,19 @@ def verifica_d112(conn, schema, an, luna):
     try:
         xml, _av = _d112.genereaza(conn, schema, an, luna)
     except Exception as e:
+        from core.perioada import PerioadaNeconfirmata
+        if isinstance(e, PerioadaNeconfirmata):
+            cauza = str(e).replace("PERIOADA_BLOCATA: ", "")
+            actiune = "Confirmă pontajul lunii (rol admin_firma)."
+        else:
+            cauza = "Date lipsă sau profil incomplet."
+            actiune = "Completează profilul firmei și salariații, apoi reîncearcă."
         return {"an": an, "luna": luna, "stare": "gri", "constatari": [{
                     "stare": "gri", "eticheta": "Salarii", "temei": "D112 nu s-a putut genera.",
                     "mesaj": f"NU pot verifica salariile: declarația nu se poate calcula ({e}).",
                     "remediu": {"fel": "investigatie",
-                                "cauza": "Date lipsă sau profil incomplet.",
-                                "actiune": "Completează profilul firmei și salariații, apoi reîncearcă.",
+                                "cauza": cauza,
+                                "actiune": actiune,
                                 "facturi": []}}],
                 "explicatie": "",
                 "limita": "Verificarea D112 nu a fost efectuată — riscul rămâne neacoperit.",
@@ -380,7 +411,7 @@ def verifica_d112(conn, schema, an, luna):
         return {"an": an, "luna": luna, "stare": "verde", "constatari": [],
                 "explicatie": "", "limita": "Fără salariați în lună — D112 nu se datorează, nimic de verificat.",
                 "modul": MODUL, "reguli": REGULI}
-    constatari = compara_d112(totaluri, rulaje, ciorne, nr_sal)
+    constatari = compara_d112(totaluri, rulaje, ciorne, nr_sal, patru_ochi=_patru_ochi_activ(conn, schema))
     stare = "rosu" if any(c["stare"] == "rosu" for c in constatari) else "verde"
     return {"an": an, "luna": luna, "stare": stare, "constatari": constatari,
             "explicatie": (f"{ciorne} note de salarii în ciornă." if ciorne else ""),
@@ -411,13 +442,20 @@ def verifica_tva(conn, schema, an, luna):
     try:
         _xml, res = _d300.genereaza(conn, schema, Perioada(an, luna=luna))
     except Exception as e:
+        from core.perioada import PerioadaNeconfirmata
+        if isinstance(e, PerioadaNeconfirmata):
+            cauza = str(e).replace("PERIOADA_BLOCATA: ", "")
+            actiune = "Confirmă perioada lunii (rol admin_firma)."
+        else:
+            cauza = "Date lipsă sau profil fiscal incomplet."
+            actiune = "Completează profilul firmei și reîncearcă."
         return {"an": an, "luna": luna, "stare": "gri",
                 "constatari": [{
                     "stare": "gri", "eticheta": "TVA", "temei": "D300 nu s-a putut genera.",
                     "mesaj": f"NU pot verifica TVA: decontul nu se poate calcula ({e}).",
                     "remediu": {"fel": "investigatie",
-                                "cauza": "Date lipsă sau profil fiscal incomplet.",
-                                "actiune": "Completează profilul firmei și reîncearcă.",
+                                "cauza": cauza,
+                                "actiune": actiune,
                                 "facturi": []},
                 }],
                 "facturi_necontabilizate": [], "explicatie": "",
@@ -426,7 +464,7 @@ def verifica_tva(conn, schema, an, luna):
     R = res["R"] if isinstance(res, dict) else getattr(res, "R", {})
     necontate = facturi_necontabilizate(conn, schema, an, luna)
     rulaje = rulaje_luna(conn, schema, an, luna, ("4427", "4426"))
-    constatari = compara_tva(R, rulaje, necontate)
+    constatari = compara_tva(R, rulaje, necontate, patru_ochi=_patru_ochi_activ(conn, schema))
     stare = "rosu" if any(c["stare"] == "rosu" for c in constatari) else "verde"
     return {
         "an": an, "luna": luna, "stare": stare, "constatari": constatari,
@@ -529,7 +567,7 @@ def facturi_ic(conn, schema, data_de, data_pana):
     return out
 
 
-def compara_d390(baze, ic_facturi):
+def compara_d390(baze, ic_facturi, patru_ochi=True):
     """PURA: bazele IC declarate în D390 (din facturi) vs evidența contabilă VALIDATĂ a acelorași
     facturi IC. baze = {"L": int, "A": int} (din res.rezumat D390); ic_facturi = {"emisa":[...],
     "primita":[...]} de la facturi_ic(). Regula direcțională documentată în capul secțiunii F163."""
@@ -566,9 +604,10 @@ def compara_d390(baze, ic_facturi):
                 mesaj=(f"{eticheta}: D390 declară {_lei(decl)}, evidența validată are {_lei(contab)} "
                        f"(diferență {_lei(dif)})."),
                 remediu={"fel": "sugerat", "cauza": cauza,
-                    "actiune": ("Verifică operațiunile: fie contabilizează facturile IC (notă validată, "
-                                "patru ochi), fie corectează declarația recapitulativă dacă au fost "
-                                "raportate greșit la VIES. Corecția o confirmă omul — nu e mecanică."),
+                    "actiune": ("Verifică operațiunile: fie contabilizează facturile IC (%s), "
+                                "fie corectează declarația recapitulativă dacă au fost "
+                                "raportate greșit la VIES. Corecția o confirmă omul — nu e mecanică."
+                                % ("notă validată, patru ochi" if patru_ochi else "notă validată")),
                     "facturi": [f["id"] for f in necontate]}))
             continue
         # GRI invers: evidență validată > declarat (în contabilitate, neraportat la VIES) — mai puțin sigur
@@ -739,7 +778,7 @@ def verifica_d390(conn, schema, an, luna):
                 "limita": "Verificarea D390 nu a fost efectuată — riscul rămâne neacoperit.",
                 "modul": MODUL, "reguli": REGULI}
     ic_facturi = facturi_ic(conn, schema, data_de, data_pana)
-    constatari = compara_d390(baze, ic_facturi)
+    constatari = compara_d390(baze, ic_facturi, patru_ochi=_patru_ochi_activ(conn, schema))
     # [F163 D-vs-D real, deblocat F198] A TREIA sursă: D390 vs D300 DEPUS (randuri persistate).
     # Fereastra PROPRIE (nu luna curentă — D300 se depune în luna următoare, altfel permanent gri):
     # cea mai recentă perioadă cu D300 depus. Baza D390 se RECALCULEAZĂ pe acea perioadă, ca ambele
@@ -874,7 +913,7 @@ def constatare_cota_tva(linii, an, luna):
 
     temei = ("Cota TVA de pe fiecare factură emisă trebuie să fie cota standard valabilă LA DATA facturii "
              "(common.COTE tva_standard, cu dată de valabilitate). Legea 141/2025: cota standard 21% din "
-             "01.08.2025. LIMITĂ: se verifică doar liniile la cotă STANDARD; cotele reduse (9/5) și scutit "
+             "01.08.2025. LIMITĂ: se verifică doar liniile la cotă STANDARD; cota redusă (11%) și scutit "
              "nu depind de schimbarea cotei standard. Nu se verifică dacă produsul necesită cota standard "
              "(clasificare de produs), doar coerența de PERIOADĂ.")
     limita = ("Verificat: cota liniilor la cotă standard de pe facturile EMISE ale lunii vs cota standard "

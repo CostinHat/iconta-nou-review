@@ -349,7 +349,7 @@ def test_mix_prinde_doar_linia_gresita():
 def test_temei_si_limita_declarate():
     r = constatare_cota_tva([_linie(1, _date(2025, 9, 10), 19)], 2025, 9)
     c = r["constatari"][0]
-    assert "Legea 141/2025" in c["temei"] and "reduse" in c["temei"].lower()
+    assert "Legea 141/2025" in c["temei"] and "redus" in c["temei"].lower()  # cota redusă (11%) unică, nu 9/5
     assert "NEVERIFICAT" in r["limita"]
 
 
@@ -641,3 +641,110 @@ def test_c2_d112_confrunta_artefacte_nu_recalculeaza_NON_TAUTOLOGIE():
                            % (fn.__name__, gasit))
     # cele doua surse SUNT diferite: D112 din regex pe XML (artefact emis), ledger din dict (rulaje din registru)
     assert "finditer" in inspect.getsource(_ci.totaluri_d112_din_xml), "totalurile D112 trebuie parsate din XML-ul EMIS"
+
+
+# ============================================================
+#  #18 — remediu PRECIS pe PerioadaNeconfirmata (nu mesajul generic "Date lipsă")
+#  #19 — formularea remediului reflectă four-eyes REAL (nu presupune mereu activat)
+# ============================================================
+from core.control_incrucisat import compara_tva as _c_tva, compara_d112 as _c_d112, compara_d390 as _c_d390
+
+
+class _FakeCur:
+    def __init__(self, row): self._row = row
+    def __enter__(self): return self
+    def __exit__(self, *a): return False
+    def execute(self, *a, **k): pass
+    def fetchone(self): return self._row
+
+
+class _FakeConn:
+    """Conn minimal: fetchone întoarce mereu `row` (destul cât să treacă de garda platitor_tva)."""
+    def __init__(self, row): self._row = row
+    def cursor(self, *a, **k): return _FakeCur(self._row)
+
+
+def test_d112_perioada_neconfirmata_da_cauza_precisa(monkeypatch):
+    from core import d112 as _d112
+    from core.perioada import PerioadaNeconfirmata
+    from core import control_incrucisat as _ci
+    def _boom(*a, **k):
+        raise PerioadaNeconfirmata("Tichetele de masă (D112)", 2026, 8, "pontaj", "HG 1045/2018 art.10(3)")
+    monkeypatch.setattr(_d112, "genereaza", _boom)
+    r = _ci.verifica_d112(None, "tenant_x", 2026, 8)
+    rem = r["constatari"][0]["remediu"]
+    assert "CONFIRMAT" in rem["cauza"] and "pontaj" in rem["cauza"].lower()
+    assert "Date lips" not in rem["cauza"]           # NU mai contrazice explicația precisă
+    assert rem["actiune"] == "Confirmă pontajul lunii (rol admin_firma)."
+
+
+def test_d112_exceptie_necunoscuta_pastreaza_remediu_generic(monkeypatch):
+    from core import d112 as _d112
+    from core import control_incrucisat as _ci
+    def _boom(*a, **k):
+        raise RuntimeError("cu totul altceva")
+    monkeypatch.setattr(_d112, "genereaza", _boom)
+    r = _ci.verifica_d112(None, "tenant_x", 2026, 8)
+    rem = r["constatari"][0]["remediu"]
+    assert rem["cauza"] == "Date lipsă sau profil incomplet."
+    assert rem["actiune"].startswith("Completează profilul")
+
+
+def test_tva_perioada_neconfirmata_da_cauza_precisa(monkeypatch):
+    from core import d300 as _d300
+    from core.perioada import PerioadaNeconfirmata
+    from core import control_incrucisat as _ci
+    def _boom(*a, **k):
+        raise PerioadaNeconfirmata("Decontul (D300)", 2026, 8, "TVA", "")
+    monkeypatch.setattr(_d300, "genereaza", _boom)
+    r = _ci.verifica_tva(_FakeConn((True,)), "tenant_x", 2026, 8)   # platitor_tva=True -> nu iese pe gardă
+    rem = r["constatari"][0]["remediu"]
+    assert "CONFIRMAT" in rem["cauza"]
+    assert "Date lips" not in rem["cauza"]
+    assert rem["actiune"] == "Confirmă perioada lunii (rol admin_firma)."
+
+
+def test_tva_exceptie_necunoscuta_pastreaza_remediu_generic(monkeypatch):
+    from core import d300 as _d300
+    from core import control_incrucisat as _ci
+    def _boom(*a, **k):
+        raise RuntimeError("cu totul altceva")
+    monkeypatch.setattr(_d300, "genereaza", _boom)
+    r = _ci.verifica_tva(_FakeConn((True,)), "tenant_x", 2026, 8)
+    rem = r["constatari"][0]["remediu"]
+    assert rem["cauza"] == "Date lipsă sau profil fiscal incomplet."
+
+
+def test_tva_four_eyes_activ_vs_neactivat_text_diferit():
+    necontate = [{"directie": "emisa", "tva": Decimal("74"), "are_ciorna": True}]
+    args = ({"R17_2": 95, "R27_2": 0}, _rulaje(colectata=21), necontate)
+    activ = _c_tva(*args, patru_ochi=True)[0]["remediu"]["actiune"]
+    neact = _c_tva(*args, patru_ochi=False)[0]["remediu"]["actiune"]
+    assert "patru ochi" in activ and "al doilea utilizator" in activ
+    assert "patru ochi" not in neact and "al doilea utilizator" not in neact
+    assert neact == "Validează nota (din ciornă în evidență)."
+
+
+def test_d112_four_eyes_neactivat_nu_promite_al_doilea_utilizator():
+    args = ({"602": 100, "412": 250, "432": 100, "480": 22}, _rd())
+    activ = _c_d112(*args, note_ciorna=1, patru_ochi=True)[0]["remediu"]["actiune"]
+    neact = _c_d112(*args, note_ciorna=1, patru_ochi=False)[0]["remediu"]["actiune"]
+    assert "al doilea utilizator" in activ
+    assert neact == "Validează nota (din ciornă în evidență)."
+
+
+def test_d390_four_eyes_neactivat_scoate_mentiunea_patru_ochi():
+    ic = {"emisa": [], "primita": [_fic(7, "primita", 500, 105)]}
+    ca = [x for x in _c_d390({"L": 0, "A": 500}, ic, patru_ochi=True)
+          if x["eticheta"].startswith("Achiziții")][0]["remediu"]["actiune"]
+    cn = [x for x in _c_d390({"L": 0, "A": 500}, ic, patru_ochi=False)
+          if x["eticheta"].startswith("Achiziții")][0]["remediu"]["actiune"]
+    assert "patru ochi" in ca and "patru ochi" not in cn
+    assert "notă validată" in cn
+
+
+def test_four_eyes_default_true_nu_sparge_apelantii_existenti():
+    # semnătura veche (fără patru_ochi) rămâne validă și dă formularea prudentă
+    necontate = [{"directie": "emisa", "tva": Decimal("74"), "are_ciorna": True}]
+    a = _c_tva({"R17_2": 95, "R27_2": 0}, _rulaje(colectata=21), necontate)
+    assert "al doilea utilizator" in a[0]["remediu"]["actiune"]
