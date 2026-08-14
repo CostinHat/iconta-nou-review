@@ -14,6 +14,7 @@ import { CULORI as CULORI_VERDICT, randeazaCorpVerdict, legaVerdict } from "./co
 import { randeazaProduse } from "./produse_ecran.js";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=2";  // [date_firma_v1]
+import { ecranMijloace } from "./mijloace_ecran.js";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {
@@ -186,6 +187,9 @@ function meniuFirma(corp, nav, t) {
     { cheie: "operatiuni", regim: "dubla", titlu: "Operatiuni speciale", desc: "Leasing, marja, IC, sponsorizari si altele",
       ...CULORI_CARD.violet,
       icon: '<path d="M12 2l2 4 4 .5-3 3 .8 4.5L12 12l-3.8 2 .8-4.5-3-3 4-.5z"/><path d="M5 18h14M5 21h14"/>', activ: true },
+    { cheie: "mijloace", regim: "dubla", titlu: "Mijloace fixe", desc: "Registrul activelor: valoare, amortizat, casare, reevaluare",
+      ...CULORI_CARD.chihlimbar,
+      icon: '<rect x="3" y="4" width="18" height="6" rx="1"/><path d="M5 10v10h14V10"/><path d="M9 14h6M12 10v10"/>', activ: true },
     { cheie: "rip", regim: "simpla", titlu: "Incasari/plati", desc: "Partida simpla PFA/II/IF, Fisa D212",
       ...CULORI_CARD.verde,
       icon: '<path d="M12 2v20M17 7H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>', activ: true },
@@ -336,6 +340,8 @@ function meniuFirma(corp, nav, t) {
   if (bRip) bRip.addEventListener("click", () => { nav.deschide("Încasări/plăți", (c2) => ecranRip(c2, nav, t)); });
   const bOperatiuni = corp.querySelector("#fa-operatiuni");
   if (bOperatiuni) bOperatiuni.addEventListener("click", () => { nav.deschide("Operațiuni speciale", (c2) => ecranOperatiuni(c2, nav, t)); });
+  const bMijloace = corp.querySelector("#fa-mijloace");  // [ecran_mf_v1]
+  if (bMijloace) bMijloace.addEventListener("click", () => { nav.deschide("Mijloace fixe", (c2) => ecranMijloace(c2, nav, t.id)); });
   const bEtransport = corp.querySelector("#fa-etransport");
   if (bEtransport) bEtransport.addEventListener("click", () => { nav.deschide("e-Transport", (c2) => ecranEtransport(c2, nav, t)); });
   const bBalanta = corp.querySelector("#fa-balanta");

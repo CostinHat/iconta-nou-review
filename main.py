@@ -8369,6 +8369,39 @@ def nota_contract_special(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
             "linii": [[a, b, str(c)] for a, b, c in r["linii"]]}
 
 
+@app.get("/tenants/{tenant_id}/mijloace-fixe")
+def tenant_mijloace_fixe(tenant_id: int, ctx=Depends(cere_cabinet)):
+    """[ecran_mf_v1 14.08.2026] Registrul mijloacelor fixe ale firmei: valoare, amortizat
+    la zi (liniar, luni scurse de la PIF plafonate la dnf), ramas, stare activ/casat.
+    Sursa unica pentru ID-ul cerut de casare/reevaluare (pana acum netastabil - niciun ecran)."""
+    from decimal import Decimal
+    from datetime import date as _date
+    schema = _schema_sau_404(ctx, tenant_id)
+    azi = _date.today()
+    out = []
+    with db.get_conn(schema) as conn:
+        with conn.cursor() as cur:
+            cur.execute("""SELECT id, cod, denumire, cont_imobilizare, cont_amortizare,
+                                  valoare, rezidual, dnf_luni, data_pif, metoda, activ
+                           FROM mijloace_fixe ORDER BY activ DESC, id""")
+            rows = cur.fetchall()
+    for (mid, cod, den, ci, ca, val, rez, dnf, pif, met, activ) in rows:
+        val = Decimal(str(val or 0)); rez = Decimal(str(rez or 0))
+        amortizat = Decimal("0")
+        if activ and pif and dnf:
+            luni = max(0, min((azi.year - pif.year) * 12 + (azi.month - pif.month), dnf))
+            rata = (val - rez) / dnf if dnf else Decimal(0)
+            amortizat = (rata * luni).quantize(Decimal("0.01"))
+        ramas = (val - amortizat).quantize(Decimal("0.01"))
+        out.append({"id": mid, "cod": cod, "denumire": den,
+                    "cont_imobilizare": ci, "cont_amortizare": ca,
+                    "valoare": str(val), "rezidual": str(rez),
+                    "dnf_luni": dnf, "data_pif": str(pif) if pif else None,
+                    "metoda": met, "activ": bool(activ),
+                    "amortizat": str(amortizat), "ramas": str(ramas)})
+    return {"mijloace": out}
+
+
 @app.post("/tenants/{tenant_id}/nota-inventariere")
 def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """corp: {data, operatie plus|plus_mf|minus|casare, descriere?, +

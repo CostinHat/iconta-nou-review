@@ -2318,3 +2318,9 @@ Anual, până la 25 mai a anului următor (cap.I - venituri realizate; cap.II - 
 Identificarea (CNP/NIF, nume, adresa) și capitolele aplicabile: veniturile efectiv realizate anul precedent (cap.I), venitul estimat pentru anul curent (cap.II), plafoanele de CAS/CASS (6/12/24 salarii minime) și eventualii coasigurați. Suma de control (totalPlata_A) se calculează automat.
 ## De reținut
 Motorul de calcul în sistem real (venit net, CAS, CASS) este integrat separat (RIP > Fișa D212); aici se generează XML-ul oficial pentru depunere. Datele în format zi.luna.an."
+Mijloace fixe (registru active),"Registrul activelor firmei cu valoare, amortizat la zi și rămas; casare și reevaluare direct din interfață.",F247,firma,Firma > Mijloace fixe,"static/js/ecrane/mijloace_ecran.js, main.py",OMFP 1802/2014 (amortizare) + CF art.28,LIVE,Playwright + pytest,,"## Ce face
+Arată registrul mijloacelor fixe ale firmei: cod, denumire, valoare, amortizat la zi, rămas, metodă și data punerii în funcțiune. Din el poți casa un mijloc fix (nota de casare, ciornă) sau îl poți reevalua la valoarea justă din raportul evaluatorului.
+## Cum ajung
+Firme → alegi firma → cardul Mijloace fixe.
+## Ce pot face
+Vezi registrul complet (activ și casat); apeși Casează pe un mijloc activ (amortizarea la zi se calculează automat, mijlocul devine inactiv); sau introduci valoarea justă și apeși Reevaluează. Ambele intră drept ciornă și se validează din Registru jurnal."
