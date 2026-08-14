@@ -425,6 +425,13 @@
       "tip_forma": null,
       "acopera": []
     },
+    "d214": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
     "d220_20180108.txt": {
       "exista": true,
       "tip_forma": null,
@@ -543,6 +550,27 @@
       "exista": true,
       "tip_forma": null,
       "acopera": []
+    },
+    "d402_20160226.xsd": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "d402_20160226_xsd_linii.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "d402_surse_sha256.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
     },
     "d406_nomenclatoare_anaf.properties": {
       "exista": true,
@@ -1816,6 +1844,48 @@
       "tip_forma": null,
       "acopera": []
     },
+    "opanaf_216_2023_formular_213_instrainare_pachet_control_terenuri_agricole_extravilan.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "consolidata"
+    },
+    "opanaf_216_2023_formular_213_instrainare_pachet_control_terenuri_agricole_extravilan.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_216_2023_formular_213_instrainare_pachet_control_terenuri_agricole_extravilan.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_2175_2025_d169n.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_2175_2025_d169n.pdf.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_2175_2025_d169n.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
     "opanaf_2194_2025.pdf": {
       "exista": true,
       "tip_forma": null,
@@ -2536,6 +2606,13 @@
       "exista": true,
       "tip_forma": null,
       "acopera": []
+    },
+    "structuraXML_D402_2022.pdf": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
     },
     "structura_D104_2012_v100_030613.pdf": {
       "exista": true,

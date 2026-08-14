@@ -20,7 +20,8 @@ from __future__ import annotations
 
 from core import (d100, d101, d104, d107, d110, d220, d221, d223, d307, d112, d177, d205, d207, d230, d300, d301, d311, d390, d394, d406, d710,
                   d120, d200, d201, d204, d208, d216, d393, d395, d397, d600,
-                  d106, d108, d114, d130, d318, d603)
+                  d106, d108, d114, d130, d318, d603,
+                  d119, d169n, d213, d214, d401, d402)
 from core.common import Perioada
 
 REGULI = "2026.1"
@@ -194,6 +195,30 @@ def _d603(conn, schema, b):   # exceptare CASS - declaratie pe propria raspunder
     return d603.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
 
 
+def _d119(conn, schema, b):   # declaratie speciala BNR - obligatii buget din venituri nete (lunara)
+    return d119.genereaza(conn, schema, Perioada(b["an"], luna=int(b["luna"])), b.get("manual") or {})
+
+
+def _d169n(conn, schema, b):  # neconcordante beneficiar real fiducie - AML (anuala)
+    return d169n.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
+def _d213(conn, schema, b):   # instrainare pachet control - terenuri agricole extravilan (anuala/eveniment)
+    return d213.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
+def _d214(conn, schema, b):   # instrainare teren agricol extravilan prin hotarare judecatoreasca (anuala/eveniment)
+    return d214.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
+def _d401(conn, schema, b):   # informativa proprietati imobiliare - schimb automat DAC (anuala)
+    return d401.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
+def _d402(conn, schema, b):   # informativa venituri salariale nerezidenti - DAC1 (anuala)
+    return d402.genereaza(conn, schema, Perioada(b["an"], luna=12), b.get("manual") or {})
+
+
 DECLARATII = {
     "d100": ("trimestrial", _d100),
     "d101": ("anual",       _d101),
@@ -236,6 +261,12 @@ DECLARATII = {
     "d130": ("anual",       _d130),
     "d318": ("anual",       _d318),
     "d603": ("anual",       _d603),
+    "d119": ("lunar",       _d119),
+    "d169n": ("anual",      _d169n),
+    "d213": ("anual",       _d213),
+    "d214": ("anual",       _d214),
+    "d401": ("anual",       _d401),
+    "d402": ("anual",       _d402),
 }
 
 
@@ -245,7 +276,8 @@ DECLARATII = {
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
 _DOAR_API = frozenset(("d104", "d107", "d110", "d177", "d207", "d220", "d221", "d223", "d230", "d307", "d311", "d710",
                        "d393", "d395", "d397", "d200", "d201", "d204", "d208", "d216", "d120", "d600",
-                       "d106", "d108", "d114", "d130", "d318", "d603"))
+                       "d106", "d108", "d114", "d130", "d318", "d603",
+                       "d119", "d169n", "d213", "d214", "d401", "d402"))
 
 
 def tipuri():

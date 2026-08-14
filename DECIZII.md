@@ -9233,3 +9233,17 @@ Cablate CHEIE_DUK + DECLARATII + _DOAR_API + FUNCTIONALITATI F228-F233 (+ genere
 Teste: core/test_declaratii_lot3_duk.py (6; d106 cu conn mock - trage header din firma_profil).
 RAMASE de construit (valuri urmatoare): D101G, D169, D169n, D119, D213, D214, D398, D399, D401, D402, D403,
 D407, D212 (declaratia unica - complex).
+
+## 14.08.2026 — Campanie declaratii ramase: Lot 4 (6): D119/D169n/D213/D214/D401/D402
+Construite (manuale, structura din validator, probat DUK VALID - core/test_declaratii_lot4_duk.py):
+D119 (declaratie speciala BNR, root D119, lunara), D169n (neconcordante beneficiar real fiducie/AML,
+OPANAF 2175/2025, root D169n), D213 (instrainare pachet control terenuri agricole extravilan, OPANAF 216/2023
++ Legea 17/2014 art.42, root D213), D214 (instrainare prin hotarare judecatoreasca, OPANAF 216/2023, root D214),
+D401 (proprietati imobiliare nerezidenti - DAC, root declaratie401, depusa de primarie), D402 (venituri
+salariale nerezidenti - DAC1, OMFP 2727/2015, root declaratie402). Acte aduse de pe static.anaf.ro/ilegis.ro
+(D169n/D213/D214/D402); D401 = semantica din validator (act DAC de adus); D119 = scop din pagina ANAF.
+Corectii premisa (sursa bate premisa): D169n NU e despre e-TVA ci beneficiar real fiducie; D213 NU e norme de
+venit agricol ci instrainare pachet control. Toate conn=None (manuale). Cablate CHEIE_DUK/DECLARATII/_DOAR_API/
+FUNCTIONALITATI F234-F239. Total declaratii cablate: 43.
+RAMASE: D101G (grup fiscal profit), D169 (fiducie inregistrare), D398/D399 (OSS/IOSS TVA), D403/D407 (DAC2/DAC
+asigurari-financiare), D212 (declaratia unica - complex).

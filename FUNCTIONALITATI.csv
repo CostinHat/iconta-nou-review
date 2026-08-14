@@ -2236,3 +2236,39 @@ Genereaza D603 (exceptarea de la plata CASS), pentru persoana fizica asigurata i
 La aparitia situatiei de exceptare (declaratie pe propria raspundere).
 ## De completat
 CNP-ul, categoria de exceptare (cod 2/3/4 din Procedura), statul unde esti asigurat (diferit de RO), perioada de exceptare (inceput/sfarsit) si documentele justificative (ex. formular A1). Datele se completeaza in format zi.luna.an."
+Declaratia D119 (declaratie speciala BNR - obligatii buget),"D119 - declaratie speciala privind obligatiile de plata la bugetul general consolidat ale BNR din veniturile nete realizate. Generator MANUAL (core/d119.py, root D119, lunara): cont bancar + obligatia (suma_dat, suma_ded); suma_plata/suma_rest, nr_evid (checksum), scadenta si totalPlata_A se calculeaza (DUK regula R15/R17/R20). Structura din D119Validator.jar; scop confirmat din pagina ANAF 119.html. Probat DUK valid.",F234,firma,Declaratii,core/d119.py,Declaratie speciala BNR (obligatii buget general din venituri nete); structura din D119Validator.jar (D119),LIVE,core/test_declaratii_lot4_duk.py + DUKIntegrator -v D119 'valid',,"## Ce face
+Genereaza D119 (declaratia speciala a BNR privind obligatiile de plata din veniturile nete).
+## Cand se depune
+Lunar (scadenta 25 a lunii urmatoare).
+## De completat
+CUI, denumire, adresa, contul bancar (IBAN) + suma datorata si suma dedusa. Suma de plata/ramasa, nr. de evidenta si scadenta se calculeaza automat. Suma dedusa nu poate depasi suma datorata."
+Declaratia D169n (neconcordante beneficiar real fiducie),"D169n - declaratie privind neconcordantele intre informatiile despre beneficiarii reali din Registrul central al fiduciilor si cele detinute de entitatile raportoare (Legea 129/2019 - spalarea banilor; OPANAF 2175/2025). Generator MANUAL (core/d169n.py, root D169n): entitate raportoare + reprezentant + fiduciar + lista beneficiarilor reali (den, cif/CNP, act, calitati 1-4, natura, mentiuni). Fara sume. Structura din validator; act OPANAF 2175/2025 (static.anaf.ro). Probat DUK valid.",F235,firma,Declaratii,core/d169n.py,OPANAF 2175/2025; Legea 129/2019 art.19 (beneficiar real); structura din D169nValidator.jar (D169n),LIVE,core/test_declaratii_lot4_duk.py + DUKIntegrator -v D169N 'valid',,"## Ce face
+Genereaza D169n (neconcordantele privind beneficiarul real al unei fiducii/constructii juridice similare).
+## Cand se depune
+La constatarea neconcordantei fata de Registrul central al fiduciilor.
+## De completat
+Entitatea raportoare (CUI, adresa), reprezentantul, fiduciarul, contractul de fiducie si, pentru fiecare beneficiar real: nume, CNP/identificare, actul de identitate, calitatile (1-4), natura interesului si mentiunile despre neconcordanta. Sector obligatoriu doar la judet Bucuresti (40)."
+Declaratia D213 (instrainare pachet control - terenuri agricole extravilan),"D213 (formular 213) - declaratie privind venitul din instrainarea prin VANZARE a pachetului de control (peste 25% din activ) al persoanelor juridice care detin terenuri agricole in extravilan (Legea 17/2014 art.42; OPANAF 216/2023). Generator MANUAL (core/d213.py, root D213): vanzator + actul de instrainare + terenuri pe UAT (judet, uat, cif_uat, valoare = diferenta valorica pozitiva); baza = suma valorilor; totalPlata_A=0 (impozitul il stabileste ANAF). Act OPANAF 216/2023 (ilegis.ro). Probat DUK valid.",F236,firma,Declaratii,core/d213.py,OPANAF 216/2023; Legea 17/2014 art.42; structura din D213Validator.jar (D213),LIVE,core/test_declaratii_lot4_duk.py + DUKIntegrator -v D213 'valid',,"## Ce face
+Genereaza D213 (venit din vanzarea pachetului de control al firmelor ce detin terenuri agricole in extravilan).
+## Cand se depune
+La instrainare (in max. 8 ani de la dobandire).
+## De completat
+Vanzatorul (CIF/CNP, nume, adresa), actul de vanzare (numar + data), si pentru fiecare teren pe UAT: judetul, localitatea (uat), CIF-ul UAT si valoarea (diferenta valorica pozitiva). Baza se insumeaza; impozitul il stabileste ANAF (suma de control 0)."
+Declaratia D214 (instrainare teren agricol extravilan prin hotarare judecatoreasca),"D214 (formular 214) - cerere de stabilire a impozitului pe venitul din instrainarea, PRIN HOTARARE JUDECATOREASCA, a terenurilor agricole extravilane / pachetului de control (Legea 17/2014 art.42; OPANAF 216/2023). Generator MANUAL (core/d214.py, root D214): contribuabil + actul de instrainare + optiune; totalPlata_A=0 (impozitul il stabileste ANAF). Act OPANAF 216/2023 (static.anaf.ro). Probat DUK valid.",F237,firma,Declaratii,core/d214.py,OPANAF 216/2023; Legea 17/2014 art.42; structura din D214Validator.jar (D214),LIVE,core/test_declaratii_lot4_duk.py + DUKIntegrator -v D214 'valid',,"## Ce face
+Genereaza D214 (stabilirea impozitului pe venitul din instrainarea prin hotarare judecatoreasca a terenurilor agricole extravilane).
+## Cand se depune
+La instrainarea dispusa prin hotarare judecatoreasca.
+## De completat
+Contribuabilul (nume, CNP/NIF, adresa), actul de instrainare (numar + data), optiunea si semnatarul. Impozitul il stabileste organul fiscal (suma de control 0)."
+Declaratia D401 (proprietati imobiliare ale nerezidentilor - DAC),"D401 - declaratie informativa a organului fiscal local (primarie) privind proprietatile imobiliare de pe raza UAT detinute de rezidenti ai altor state, pentru schimbul automat de informatii (DAC, Directiva 2011/16/UE). Generator MANUAL (core/d401.py, root declaratie401): antet primarie + detinatori straini + proprietati (tip, act dobandire/instrainare, suprafete, valoare/moneda, cote coproprietari); nr_pers si totalPlata_A (suma valorilor) se calculeaza. Structura din validator (act de adus). Probat DUK valid.",F238,firma,Declaratii,core/d401.py,Cod procedura fiscala (Legea 207/2015) - schimb automat DAC; Directiva 2011/16/UE; structura din D401Validator.jar (declaratie401),LIVE,core/test_declaratii_lot4_duk.py + DUKIntegrator -v D401 'valid',,"## Ce face
+Genereaza D401 (proprietatile imobiliare ale rezidentilor altor state), depusa de organul fiscal local.
+## Cand se depune
+Anual, pentru schimbul automat de informatii (DAC).
+## De completat
+Antetul primariei (CUI, denumire, localitate, adresa, semnatar) si, pentru fiecare detinator strain, imobilele: tip (cladire/teren), actul de dobandire, suprafete, destinatie, valoarea si moneda, cota de proprietate (100% unic sau coproprietari cu suma cotelor ~100%). Totalurile se calculeaza automat."
+Declaratia D402 (venituri salariale ale nerezidentilor - DAC1),"D402 - declaratie informativa privind veniturile din salarii/asimilate platite in Romania nerezidentilor rezidenti in alte state membre UE (schimb automat de informatii DAC1; OMFP 2727/2015; Directiva 2011/16/UE). Generator MANUAL (core/d402.py, root declaratie402): platitor + beneficiari nerezidenti (cu venituri: tip, perioada, regim fiscal, suma, moneda); totalPlata_A = suma veniturilor. Structura din XSD oficial + validator (static.anaf.ro). Probat DUK valid.",F239,firma,Declaratii,core/d402.py,OMFP/OPANAF 2727/2015; Directiva 2011/16/UE (DAC1); Cod procedura fiscala; structura din D402Validator.jar (declaratie402),LIVE,core/test_declaratii_lot4_duk.py + DUKIntegrator -v D402 'valid',,"## Ce face
+Genereaza D402 (venituri salariale platite in Romania nerezidentilor din alte state UE).
+## Cand se depune
+Anual (ultima zi din februarie pentru anul precedent).
+## De completat
+Platitorul (CUI, denumire, forma juridica, semnatar) si, pentru fiecare beneficiar nerezident: nume, statul de rezidenta (cod UE), CNP/NIF, calitatea si categoria, plus veniturile (tip, perioada, regim fiscal, suma, moneda). Totalul se calculeaza automat; datele in format zi.luna.an."

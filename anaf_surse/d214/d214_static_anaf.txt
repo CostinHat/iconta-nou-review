@@ -1,0 +1,31 @@
+﻿
+D214
+Ascultă
+Denumire formular
+Programe asistenţă
+Instrucţiuni/ Documentaţie
+PDF
+JAVA
+D214
+-
+Cerere pentru stabilirea impozitului privind venitul realizat de persoana fizică și/sau juridică din înstrăinarea, prin hotărâre judecătorească, a terenurilor agricole situate în extravilan/pachetului de control al persoanelor juridice care au în proprietate unul sau mai multe terenuri agricole situate în extravilan (OPANAF 216/2023).
+19.02.2019
+-->
+soft A
+actualizat în data de
+24.03.2020
+-->
+soft J*
+actualizat în data de
+24.03.2020
+-->
+Anexa
+validări
+actualizat în data de
+22.06.2026
+Schema
+XSD
+actualizat în data de
+07.03.2019
+-->
+*softul J se adresează doar contribuabililor care îşi generează fişierul xml din aplicaţiile informatice proprii

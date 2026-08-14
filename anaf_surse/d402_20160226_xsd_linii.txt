@@ -1,0 +1,520 @@
+     1	<?xml version="1.0" encoding="UTF-8"?>
+     2	<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="mfp:anaf:dgti:d402:declaratie:v1" targetNamespace="mfp:anaf:dgti:d402:declaratie:v1" elementFormDefault="qualified" attributeFormDefault="unqualified" version="1.02" xml:lang="ro">
+     3		<xs:element name="declaratie402" type="Declaratie402Type"/>
+     4		<xs:complexType name="Declaratie402Type">
+     5			<xs:complexContent>
+     6				<xs:restriction base="xs:anyType">
+     7					<xs:sequence>
+     8						<xs:element name="beneficiar" type="BeneficiarType" maxOccurs="unbounded"/>
+     9					</xs:sequence>
+    10					<xs:attribute name="an" type="IntInt2015_infSType" use="required"/>
+    11					<xs:attribute name="luna" type="IntInt12_12SType" use="required"/>
+    12					<xs:attribute name="d_rec" type="Int_zeroSauUnuSType" use="required"/>
+    13					<xs:attribute name="cif" type="CifSType" use="required"/>
+    14					<xs:attribute name="Den_P" type="Str200" use="required"/>
+    15					<xs:attribute name="Adresa_P" type="Str200" use="required"/>
+    16					<xs:attribute name="Tip_P" type="Int_tipPlatitorSType" use="required"/>
+    17					<xs:attribute name="Forma_jurid_P" type="IntInt1_9SType" use="required"/>
+    18					<xs:attribute name="nume_declar" type="Str75" use="required"/>
+    19					<xs:attribute name="prenume_declar" type="Str75" use="required"/>
+    20					<xs:attribute name="functie_declar" type="Str50" use="required"/>
+    21					<xs:attribute name="totalPlata_A" type="IntPoz15SType" use="required"/>
+    22				</xs:restriction>
+    23			</xs:complexContent>
+    24		</xs:complexType>
+    25		<xs:complexType name="BeneficiarType">
+    26			<xs:complexContent>
+    27				<xs:restriction base="xs:anyType">
+    28					<xs:sequence>
+    29						<xs:element name="venit" type="VenitType" maxOccurs="unbounded"/>
+    30					</xs:sequence>
+    31					<xs:attribute name="id_benef" type="IntPoz6SType" use="required"/>
+    32					<xs:attribute name="Nume" type="Str200" use="required"/>
+    33					<xs:attribute name="Nationalitate" type="Str_tariSType"/>
+    34					<xs:attribute name="Data_nasterii" type="DateSType"/>
+    35					<xs:attribute name="NIF_R" type="Str20"/>
+    36					<xs:attribute name="Act_id" type="Str50"/>
+    37					<xs:attribute name="Stat_R" type="Str_msSType" use="required"/>
+    38					<xs:attribute name="Localitate_R" type="Str75" use="required"/>
+    39					<xs:attribute name="Strada_R" type="Str50"/>
+    40					<xs:attribute name="Nr_R" type="Str10"/>
+    41					<xs:attribute name="Codp_R" type="Str20"/>
+    42					<xs:attribute name="CIF_Rom" type="CnpSType" use="required"/>
+    43					<xs:attribute name="Calitate_B" type="Int_calitateBSType" use="required"/>
+    44					<xs:attribute name="Tip_adr" type="Int_tipAdrSType" use="required"/>
+    45					<xs:attribute name="Categ_B" type="Int_categSType" use="required"/>
+    46					<xs:attribute name="Impozit_venit" type="IntPoz15SType" use="required"/>
+    47				</xs:restriction>
+    48			</xs:complexContent>
+    49		</xs:complexType>
+    50		<xs:complexType name="VenitType">
+    51			<xs:complexContent>
+    52				<xs:restriction base="xs:anyType">
+    53					<xs:attribute name="id_venit" type="IntPoz6SType" use="required"/>
+    54					<xs:attribute name="Tip_venit" type="Int_tipVenitSType" use="required"/>
+    55					<xs:attribute name="DA_NU" type="IntInt1_2SType" use="required"/>
+    56					<xs:attribute name="Data_I" type="DateSType" use="required"/>
+    57					<xs:attribute name="Data_S" type="DateSType"/>
+    58					<xs:attribute name="Per_venit" type="Int_perVenitSType" use="required"/>
+    59					<xs:attribute name="Regim_fisc" type="Int_regimFicalSType" use="required"/>
+    60					<xs:attribute name="Suma_venit" type="IntPoz15SType" use="required"/>
+    61					<xs:attribute name="Moneda_venit" type="Str_monedaSType" use="required"/>
+    62					<xs:attribute name="Cont" type="Str34"/>
+    63				</xs:restriction>
+    64			</xs:complexContent>
+    65		</xs:complexType>
+    66		<xs:simpleType name="IntInt2015_infSType">
+    67			<xs:restriction base="xs:integer">
+    68				<xs:minInclusive value="2015"/>
+    69			</xs:restriction>
+    70		</xs:simpleType>
+    71		<xs:simpleType name="IntInt12_12SType">
+    72			<xs:restriction base="xs:integer">
+    73				<xs:minInclusive value="12"/>
+    74				<xs:maxInclusive value="12"/>
+    75			</xs:restriction>
+    76		</xs:simpleType>
+    77		<xs:simpleType name="Int_zeroSauUnuSType">
+    78			<xs:restriction base="xs:integer">
+    79				<xs:enumeration value="0"/>
+    80				<xs:enumeration value="1"/>
+    81			</xs:restriction>
+    82		</xs:simpleType>
+    83		<xs:simpleType name="CifSType">
+    84			<xs:restriction base="xs:token">
+    85				<xs:pattern value="[1-9]\d{12}|[1-9]\d{1,9}"/>
+    86			</xs:restriction>
+    87		</xs:simpleType>
+    88		<xs:simpleType name="Str200">
+    89			<xs:restriction base="xs:string">
+    90				<xs:maxLength value="200"/>
+    91			</xs:restriction>
+    92		</xs:simpleType>
+    93		<xs:simpleType name="Int_tipPlatitorSType">
+    94			<xs:restriction base="xs:integer">
+    95				<xs:enumeration value="1"/>
+    96				<xs:enumeration value="2"/>
+    97				<xs:enumeration value="3"/>
+    98				<xs:enumeration value="4"/>
+    99			</xs:restriction>
+   100		</xs:simpleType>
+   101		<xs:simpleType name="IntInt1_9SType">
+   102			<xs:restriction base="xs:integer">
+   103				<xs:minInclusive value="1"/>
+   104				<xs:maxInclusive value="9"/>
+   105			</xs:restriction>
+   106		</xs:simpleType>
+   107		<xs:simpleType name="Str75">
+   108			<xs:restriction base="xs:string">
+   109				<xs:maxLength value="75"/>
+   110			</xs:restriction>
+   111		</xs:simpleType>
+   112		<xs:simpleType name="Str50">
+   113			<xs:restriction base="xs:string">
+   114				<xs:maxLength value="50"/>
+   115			</xs:restriction>
+   116		</xs:simpleType>
+   117		<xs:simpleType name="IntPoz15SType">
+   118			<xs:restriction base="xs:integer">
+   119				<xs:minInclusive value="0"/>
+   120				<xs:maxInclusive value="999999999999999"/>
+   121			</xs:restriction>
+   122		</xs:simpleType>
+   123		<xs:simpleType name="IntPoz6SType">
+   124			<xs:restriction base="xs:integer">
+   125				<xs:minInclusive value="0"/>
+   126				<xs:maxInclusive value="999999"/>
+   127			</xs:restriction>
+   128		</xs:simpleType>
+   129		<xs:simpleType name="Str_tariSType">
+   130			<xs:restriction base="xs:string">
+   131				<xs:maxLength value="2"/>
+   132				<xs:enumeration value="MM"/>
+   133				<xs:enumeration value="NA"/>
+   134				<xs:enumeration value="NR"/>
+   135				<xs:enumeration value="NP"/>
+   136				<xs:enumeration value="NL"/>
+   137				<xs:enumeration value="AN"/>
+   138				<xs:enumeration value="AF"/>
+   139				<xs:enumeration value="AX"/>
+   140				<xs:enumeration value="AL"/>
+   141				<xs:enumeration value="DZ"/>
+   142				<xs:enumeration value="AS"/>
+   143				<xs:enumeration value="AD"/>
+   144				<xs:enumeration value="AO"/>
+   145				<xs:enumeration value="AI"/>
+   146				<xs:enumeration value="AQ"/>
+   147				<xs:enumeration value="AG"/>
+   148				<xs:enumeration value="AR"/>
+   149				<xs:enumeration value="AM"/>
+   150				<xs:enumeration value="AW"/>
+   151				<xs:enumeration value="AU"/>
+   152				<xs:enumeration value="AT"/>
+   153				<xs:enumeration value="AZ"/>
+   154				<xs:enumeration value="BS"/>
+   155				<xs:enumeration value="BH"/>
+   156				<xs:enumeration value="BD"/>
+   157				<xs:enumeration value="BB"/>
+   158				<xs:enumeration value="BY"/>
+   159				<xs:enumeration value="BE"/>
+   160				<xs:enumeration value="BZ"/>
+   161				<xs:enumeration value="BJ"/>
+   162				<xs:enumeration value="BM"/>
+   163				<xs:enumeration value="BT"/>
+   164				<xs:enumeration value="BO"/>
+   165				<xs:enumeration value="BA"/>
+   166				<xs:enumeration value="BW"/>
+   167				<xs:enumeration value="BV"/>
+   168				<xs:enumeration value="BR"/>
+   169				<xs:enumeration value="IO"/>
+   170				<xs:enumeration value="BN"/>
+   171				<xs:enumeration value="BG"/>
+   172				<xs:enumeration value="BF"/>
+   173				<xs:enumeration value="BI"/>
+   174				<xs:enumeration value="KH"/>
+   175				<xs:enumeration value="CM"/>
+   176				<xs:enumeration value="CA"/>
+   177				<xs:enumeration value="CV"/>
+   178				<xs:enumeration value="KY"/>
+   179				<xs:enumeration value="CF"/>
+   180				<xs:enumeration value="TD"/>
+   181				<xs:enumeration value="CL"/>
+   182				<xs:enumeration value="CN"/>
+   183				<xs:enumeration value="CX"/>
+   184				<xs:enumeration value="CC"/>
+   185				<xs:enumeration value="CO"/>
+   186				<xs:enumeration value="KM"/>
+   187				<xs:enumeration value="CG"/>
+   188				<xs:enumeration value="CD"/>
+   189				<xs:enumeration value="CK"/>
+   190				<xs:enumeration value="CR"/>
+   191				<xs:enumeration value="CI"/>
+   192				<xs:enumeration value="HR"/>
+   193				<xs:enumeration value="CU"/>
+   194				<xs:enumeration value="CY"/>
+   195				<xs:enumeration value="CZ"/>
+   196				<xs:enumeration value="DK"/>
+   197				<xs:enumeration value="DJ"/>
+   198				<xs:enumeration value="DM"/>
+   199				<xs:enumeration value="DO"/>
+   200				<xs:enumeration value="EC"/>
+   201				<xs:enumeration value="EG"/>
+   202				<xs:enumeration value="SV"/>
+   203				<xs:enumeration value="GQ"/>
+   204				<xs:enumeration value="ER"/>
+   205				<xs:enumeration value="EE"/>
+   206				<xs:enumeration value="ET"/>
+   207				<xs:enumeration value="FK"/>
+   208				<xs:enumeration value="FO"/>
+   209				<xs:enumeration value="FJ"/>
+   210				<xs:enumeration value="FI"/>
+   211				<xs:enumeration value="FR"/>
+   212				<xs:enumeration value="GF"/>
+   213				<xs:enumeration value="PF"/>
+   214				<xs:enumeration value="TF"/>
+   215				<xs:enumeration value="GA"/>
+   216				<xs:enumeration value="GM"/>
+   217				<xs:enumeration value="GE"/>
+   218				<xs:enumeration value="DE"/>
+   219				<xs:enumeration value="GH"/>
+   220				<xs:enumeration value="GI"/>
+   221				<xs:enumeration value="EL"/>
+   222				<xs:enumeration value="GL"/>
+   223				<xs:enumeration value="GD"/>
+   224				<xs:enumeration value="GP"/>
+   225				<xs:enumeration value="GU"/>
+   226				<xs:enumeration value="GT"/>
+   227				<xs:enumeration value="GG"/>
+   228				<xs:enumeration value="GN"/>
+   229				<xs:enumeration value="GW"/>
+   230				<xs:enumeration value="GY"/>
+   231				<xs:enumeration value="HT"/>
+   232				<xs:enumeration value="HM"/>
+   233				<xs:enumeration value="VA"/>
+   234				<xs:enumeration value="HN"/>
+   235				<xs:enumeration value="HK"/>
+   236				<xs:enumeration value="HU"/>
+   237				<xs:enumeration value="IS"/>
+   238				<xs:enumeration value="IN"/>
+   239				<xs:enumeration value="ID"/>
+   240				<xs:enumeration value="IR"/>
+   241				<xs:enumeration value="IQ"/>
+   242				<xs:enumeration value="IE"/>
+   243				<xs:enumeration value="IM"/>
+   244				<xs:enumeration value="IL"/>
+   245				<xs:enumeration value="IT"/>
+   246				<xs:enumeration value="JM"/>
+   247				<xs:enumeration value="JP"/>
+   248				<xs:enumeration value="JE"/>
+   249				<xs:enumeration value="JO"/>
+   250				<xs:enumeration value="KZ"/>
+   251				<xs:enumeration value="KE"/>
+   252				<xs:enumeration value="KI"/>
+   253				<xs:enumeration value="KP"/>
+   254				<xs:enumeration value="KR"/>
+   255				<xs:enumeration value="KW"/>
+   256				<xs:enumeration value="KG"/>
+   257				<xs:enumeration value="LA"/>
+   258				<xs:enumeration value="LV"/>
+   259				<xs:enumeration value="LB"/>
+   260				<xs:enumeration value="LS"/>
+   261				<xs:enumeration value="LR"/>
+   262				<xs:enumeration value="LY"/>
+   263				<xs:enumeration value="LI"/>
+   264				<xs:enumeration value="LT"/>
+   265				<xs:enumeration value="LU"/>
+   266				<xs:enumeration value="MO"/>
+   267				<xs:enumeration value="MK"/>
+   268				<xs:enumeration value="MG"/>
+   269				<xs:enumeration value="MW"/>
+   270				<xs:enumeration value="MY"/>
+   271				<xs:enumeration value="MV"/>
+   272				<xs:enumeration value="ML"/>
+   273				<xs:enumeration value="MT"/>
+   274				<xs:enumeration value="MH"/>
+   275				<xs:enumeration value="MQ"/>
+   276				<xs:enumeration value="MR"/>
+   277				<xs:enumeration value="MU"/>
+   278				<xs:enumeration value="YT"/>
+   279				<xs:enumeration value="MX"/>
+   280				<xs:enumeration value="FM"/>
+   281				<xs:enumeration value="MD"/>
+   282				<xs:enumeration value="MC"/>
+   283				<xs:enumeration value="MN"/>
+   284				<xs:enumeration value="ME"/>
+   285				<xs:enumeration value="MS"/>
+   286				<xs:enumeration value="MA"/>
+   287				<xs:enumeration value="MZ"/>
+   288				<xs:enumeration value="NC"/>
+   289				<xs:enumeration value="NZ"/>
+   290				<xs:enumeration value="NI"/>
+   291				<xs:enumeration value="NE"/>
+   292				<xs:enumeration value="NG"/>
+   293				<xs:enumeration value="NU"/>
+   294				<xs:enumeration value="NF"/>
+   295				<xs:enumeration value="MP"/>
+   296				<xs:enumeration value="NO"/>
+   297				<xs:enumeration value="OM"/>
+   298				<xs:enumeration value="PK"/>
+   299				<xs:enumeration value="PW"/>
+   300				<xs:enumeration value="PS"/>
+   301				<xs:enumeration value="PA"/>
+   302				<xs:enumeration value="PG"/>
+   303				<xs:enumeration value="PY"/>
+   304				<xs:enumeration value="PE"/>
+   305				<xs:enumeration value="PH"/>
+   306				<xs:enumeration value="PN"/>
+   307				<xs:enumeration value="PL"/>
+   308				<xs:enumeration value="PT"/>
+   309				<xs:enumeration value="PR"/>
+   310				<xs:enumeration value="QA"/>
+   311				<xs:enumeration value="RE"/>
+   312				<xs:enumeration value="RO"/>
+   313				<xs:enumeration value="RU"/>
+   314				<xs:enumeration value="RW"/>
+   315				<xs:enumeration value="BL"/>
+   316				<xs:enumeration value="SH"/>
+   317				<xs:enumeration value="KN"/>
+   318				<xs:enumeration value="LC"/>
+   319				<xs:enumeration value="MF"/>
+   320				<xs:enumeration value="PM"/>
+   321				<xs:enumeration value="VC"/>
+   322				<xs:enumeration value="WS"/>
+   323				<xs:enumeration value="SM"/>
+   324				<xs:enumeration value="ST"/>
+   325				<xs:enumeration value="SA"/>
+   326				<xs:enumeration value="SN"/>
+   327				<xs:enumeration value="RS"/>
+   328				<xs:enumeration value="SC"/>
+   329				<xs:enumeration value="SL"/>
+   330				<xs:enumeration value="SG"/>
+   331				<xs:enumeration value="SK"/>
+   332				<xs:enumeration value="SI"/>
+   333				<xs:enumeration value="SB"/>
+   334				<xs:enumeration value="SO"/>
+   335				<xs:enumeration value="ZA"/>
+   336				<xs:enumeration value="GS"/>
+   337				<xs:enumeration value="ES"/>
+   338				<xs:enumeration value="LK"/>
+   339				<xs:enumeration value="SD"/>
+   340				<xs:enumeration value="SR"/>
+   341				<xs:enumeration value="SJ"/>
+   342				<xs:enumeration value="SZ"/>
+   343				<xs:enumeration value="SE"/>
+   344				<xs:enumeration value="CH"/>
+   345				<xs:enumeration value="SY"/>
+   346				<xs:enumeration value="TW"/>
+   347				<xs:enumeration value="TJ"/>
+   348				<xs:enumeration value="TZ"/>
+   349				<xs:enumeration value="TH"/>
+   350				<xs:enumeration value="TL"/>
+   351				<xs:enumeration value="TG"/>
+   352				<xs:enumeration value="TK"/>
+   353				<xs:enumeration value="TO"/>
+   354				<xs:enumeration value="TT"/>
+   355				<xs:enumeration value="TN"/>
+   356				<xs:enumeration value="TR"/>
+   357				<xs:enumeration value="TM"/>
+   358				<xs:enumeration value="TC"/>
+   359				<xs:enumeration value="TV"/>
+   360				<xs:enumeration value="UG"/>
+   361				<xs:enumeration value="UA"/>
+   362				<xs:enumeration value="AE"/>
+   363				<xs:enumeration value="GB"/>
+   364				<xs:enumeration value="US"/>
+   365				<xs:enumeration value="UM"/>
+   366				<xs:enumeration value="UY"/>
+   367				<xs:enumeration value="UZ"/>
+   368				<xs:enumeration value="VU"/>
+   369				<xs:enumeration value="VE"/>
+   370				<xs:enumeration value="VN"/>
+   371				<xs:enumeration value="VG"/>
+   372				<xs:enumeration value="VI"/>
+   373				<xs:enumeration value="WF"/>
+   374				<xs:enumeration value="EH"/>
+   375				<xs:enumeration value="YE"/>
+   376				<xs:enumeration value="ZM"/>
+   377				<xs:enumeration value="ZW"/>
+   378				<xs:enumeration value="IC"/>
+   379				<xs:enumeration value="CW"/>
+   380				<xs:enumeration value="BQ"/>
+   381				<xs:enumeration value="NM"/>
+   382				<xs:enumeration value="XI"/>
+   383				<xs:enumeration value="XJ"/>
+   384			</xs:restriction>
+   385		</xs:simpleType>
+   386		<xs:simpleType name="DateSType">
+   387			<xs:restriction base="xs:token">
+   388				<xs:pattern value="([1-9]|0[1-9]|[12][0-9]|3[01])\.([1-9]|0[1-9]|1[012])\.\d{4}"/>
+   389			</xs:restriction>
+   390		</xs:simpleType>
+   391		<xs:simpleType name="Str20">
+   392			<xs:restriction base="xs:string">
+   393				<xs:maxLength value="20"/>
+   394			</xs:restriction>
+   395		</xs:simpleType>
+   396		<xs:simpleType name="Str_msSType">
+   397			<xs:restriction base="xs:string">
+   398				<xs:maxLength value="2"/>
+   399				<xs:enumeration value="AT"/>
+   400				<xs:enumeration value="BE"/>
+   401				<xs:enumeration value="BG"/>
+   402				<xs:enumeration value="CZ"/>
+   403				<xs:enumeration value="CY"/>
+   404				<xs:enumeration value="HR"/>
+   405				<xs:enumeration value="DK"/>
+   406				<xs:enumeration value="EE"/>
+   407				<xs:enumeration value="DE"/>
+   408				<xs:enumeration value="EL"/>
+   409				<xs:enumeration value="FI"/>
+   410				<xs:enumeration value="FR"/>
+   411				<xs:enumeration value="IE"/>
+   412				<xs:enumeration value="IT"/>
+   413				<xs:enumeration value="LV"/>
+   414				<xs:enumeration value="LU"/>
+   415				<xs:enumeration value="LT"/>
+   416				<xs:enumeration value="MT"/>
+   417				<xs:enumeration value="GB"/>
+   418				<xs:enumeration value="NL"/>
+   419				<xs:enumeration value="PL"/>
+   420				<xs:enumeration value="PT"/>
+   421				<xs:enumeration value="SI"/>
+   422				<xs:enumeration value="SK"/>
+   423				<xs:enumeration value="ES"/>
+   424				<xs:enumeration value="SE"/>
+   425				<xs:enumeration value="HU"/>
+   426			</xs:restriction>
+   427		</xs:simpleType>
+   428		<xs:simpleType name="Str10">
+   429			<xs:restriction base="xs:string">
+   430				<xs:maxLength value="10"/>
+   431			</xs:restriction>
+   432		</xs:simpleType>
+   433		<xs:simpleType name="CnpSType">
+   434			<xs:restriction base="xs:token">
+   435				<xs:pattern value="[1-9]\d{12}"/>
+   436			</xs:restriction>
+   437		</xs:simpleType>
+   438		<xs:simpleType name="Int_calitateBSType">
+   439			<xs:restriction base="xs:integer">
+   440				<xs:enumeration value="1"/>
+   441				<xs:enumeration value="2"/>
+   442				<xs:enumeration value="3"/>
+   443				<xs:enumeration value="4"/>
+   444			</xs:restriction>
+   445		</xs:simpleType>
+   446		<xs:simpleType name="Int_tipAdrSType">
+   447			<xs:restriction base="xs:integer">
+   448				<xs:enumeration value="1"/>
+   449				<xs:enumeration value="2"/>
+   450				<xs:enumeration value="3"/>
+   451			</xs:restriction>
+   452		</xs:simpleType>
+   453		<xs:simpleType name="Int_categSType">
+   454			<xs:restriction base="xs:integer">
+   455				<xs:enumeration value="1"/>
+   456				<xs:enumeration value="2"/>
+   457			</xs:restriction>
+   458		</xs:simpleType>
+   459		<xs:simpleType name="Int_tipVenitSType">
+   460			<xs:restriction base="xs:integer">
+   461				<xs:enumeration value="1"/>
+   462				<xs:enumeration value="2"/>
+   463				<xs:enumeration value="3"/>
+   464				<xs:enumeration value="4"/>
+   465				<xs:enumeration value="5"/>
+   466				<xs:enumeration value="6"/>
+   467				<xs:enumeration value="7"/>
+   468				<xs:enumeration value="8"/>
+   469				<xs:enumeration value="9"/>
+   470				<xs:enumeration value="10"/>
+   471				<xs:enumeration value="11"/>
+   472				<xs:enumeration value="12"/>
+   473				<xs:enumeration value="13"/>
+   474				<xs:enumeration value="14"/>
+   475			</xs:restriction>
+   476		</xs:simpleType>
+   477		<xs:simpleType name="IntInt1_2SType">
+   478			<xs:restriction base="xs:integer">
+   479				<xs:minInclusive value="1"/>
+   480				<xs:maxInclusive value="2"/>
+   481			</xs:restriction>
+   482		</xs:simpleType>
+   483		<xs:simpleType name="Int_perVenitSType">
+   484			<xs:restriction base="xs:integer">
+   485				<xs:enumeration value="1"/>
+   486				<xs:enumeration value="2"/>
+   487				<xs:enumeration value="3"/>
+   488				<xs:enumeration value="4"/>
+   489				<xs:enumeration value="5"/>
+   490			</xs:restriction>
+   491		</xs:simpleType>
+   492		<xs:simpleType name="Int_regimFicalSType">
+   493			<xs:restriction base="xs:integer">
+   494				<xs:enumeration value="1"/>
+   495				<xs:enumeration value="2"/>
+   496				<xs:enumeration value="3"/>
+   497			</xs:restriction>
+   498		</xs:simpleType>
+   499		<xs:simpleType name="Str_monedaSType">
+   500			<xs:restriction base="xs:string">
+   501				<xs:maxLength value="3"/>
+   502				<xs:enumeration value="CZK"/>
+   503				<xs:enumeration value="DKK"/>
+   504				<xs:enumeration value="EUR"/>
+   505				<xs:enumeration value="GBP"/>
+   506				<xs:enumeration value="HRK"/>
+   507				<xs:enumeration value="HUF"/>
+   508				<xs:enumeration value="PLN"/>
+   509				<xs:enumeration value="RON"/>
+   510				<xs:enumeration value="SKK"/>
+   511				<xs:enumeration value="SEK"/>
+   512				<xs:enumeration value="USD"/>
+   513			</xs:restriction>
+   514		</xs:simpleType>
+   515		<xs:simpleType name="Str34">
+   516			<xs:restriction base="xs:string">
+   517				<xs:maxLength value="34"/>
+   518			</xs:restriction>
+   519		</xs:simpleType>
+   520	</xs:schema>
