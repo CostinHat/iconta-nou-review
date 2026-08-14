@@ -40,7 +40,7 @@ def conn():
 def _creeaza(conn, brut=4050):
     return sa.creeaza_salariat(conn, nume="POP", prenume="I", cnp="1900101410011",
                                data_angajare="2026-01-01", salariu_brut=brut,
-                               tip_norma="intreaga")["salariat_id"]
+                               tip_norma="intreaga", cor="522101")["salariat_id"]
 
 
 def test_crearea_scrie_salariul_in_istoric(conn):
@@ -79,3 +79,39 @@ def test_importul_nu_referi_activ_si_scrie_istoricul():
     coloane = bloc[:bloc.index("VALUES")]
     assert "activ" not in coloane, "importul inca referi coloana 'activ' retrasa"
     assert "seteaza" in src, "importul nu scrie salariul in salariu_istoric"
+
+
+# ============================================================
+#  #7/#8: brut si COR OBLIGATORII la creare (validare PURA, fara DB)
+# ============================================================
+def test_brut_lipsa_respins_la_creare():
+    """#8: fara salariu brut la creare -> eroare (fara el, nicio intrare in salariu_istoric -> D112 baza zero)."""
+    erori = sa.valideaza_salariat({"nume": "POP", "cor": "522101"}, la_creare=True)
+    assert any(c == "salariu_brut" for c, _ in erori), erori
+
+def test_brut_zero_respins_la_creare():
+    """#8: brut 0 respins la creare (>0 obligatoriu)."""
+    erori = sa.valideaza_salariat({"nume": "POP", "cor": "522101", "salariu_brut": 0}, la_creare=True)
+    assert any(c == "salariu_brut" for c, _ in erori), erori
+
+def test_brut_valid_trece():
+    erori = sa.valideaza_salariat({"nume": "POP", "cor": "522101", "salariu_brut": 4050}, la_creare=True)
+    assert not any(c == "salariu_brut" for c, _ in erori), erori
+
+def test_cor_gol_respins_la_creare():
+    """#7: COR gol respins la creare (obligatoriu D112/REGES)."""
+    erori = sa.valideaza_salariat({"nume": "POP", "salariu_brut": 4050}, la_creare=True)
+    assert any(c == "cor" for c, _ in erori), erori
+    erori2 = sa.valideaza_salariat({"nume": "POP", "salariu_brut": 4050, "cor": "   "}, la_creare=True)
+    assert any(c == "cor" for c, _ in erori2), erori2
+
+def test_editare_nu_forteaza_brut_si_cor():
+    """La editare (la_creare=False) nu se forteaza prezenta brut/COR (validam doar campurile trimise)."""
+    erori = sa.valideaza_salariat({"nume": "POP"}, la_creare=False)
+    assert not any(c in ("salariu_brut", "cor") for c, _ in erori), erori
+
+def test_verifica_cor_respinge_gol():
+    """#7 backend: _verifica_cor respinge codul gol (nu mai e optional)."""
+    import pytest as _pt
+    with _pt.raises(ValueError):
+        sa._verifica_cor(None, "")   # conn nefolosit pentru codul gol (respins inainte de interogare)

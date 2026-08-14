@@ -292,3 +292,37 @@ def test_neaplicabile_forma_pfa_vs_juridic():
     # "PFA/II/IF/profesii liberale" -> le colapseaza la 'pfa'. Deci II/IF sunt stocate 'pfa' -> D101/D406 corect
     # excluse. NU e bug.
     assert cf.neaplicabile_forma("srl") == cf.neaplicabile_forma(None) == {}   # juridic/necunoscut -> nimic exclus
+
+
+# ============================================================
+#  #6: D112 datorat PER-LUNA (salariat activ in luna), nu snapshot are_salariati pe CURRENT_DATE
+# ============================================================
+def test_d112_per_luna_doar_din_luna_angajarii():
+    """#6: o firma cu primul salariat angajat la mijloc de an NU datoreaza D112 pe lunile de dinainte de
+    angajare. d112_fapt (an,luna)->bool decide per-luna; are_salariati (snapshot) nu mai aplica la toate lunile."""
+    v = {"regim_fiscal": "micro", "platitor_tva": True, "tip_decont": "lunar", "operatiuni_ic": False,
+         "partida_simpla": False, "tva_data_inceput": None}
+    azi = date(2026, 8, 14)
+    activ_din = lambda a, m: (a, m) >= (2026, 6)   # primul salariat angajat 01.06.2026
+    rez = cf.declaratii_datorate(v, are_salariati=True, azi=azi, d112_fapt=activ_din)
+    luni = sorted((d["an"], d["luna"]) for d in rez["datorate"] if d["tip"] == "d112")
+    assert all((a, m) >= (2026, 6) for (a, m) in luni), luni     # nimic inainte de iunie
+    assert (2025, 12) not in luni and (2026, 5) not in luni
+
+def test_d112_fapt_none_pastreaza_comportamentul_vechi():
+    """d112_fapt=None (teste/matrice) -> comportament vechi: are_salariati boolean pe toate lunile. Apara
+    matricea de 64 (care NU paseaza d112_fapt)."""
+    v = {"regim_fiscal": "micro", "platitor_tva": True, "tip_decont": "lunar", "operatiuni_ic": False,
+         "partida_simpla": False, "tva_data_inceput": None}
+    azi = date(2026, 8, 14)
+    cu = cf.declaratii_datorate(v, are_salariati=True, azi=azi)
+    fara = cf.declaratii_datorate(v, are_salariati=False, azi=azi)
+    assert any(d["tip"] == "d112" for d in cu["datorate"])       # firma cu salariati -> D112 pe luni
+    assert not any(d["tip"] == "d112" for d in fara["datorate"]) # fara salariati -> niciun D112
+
+def test_d112_fapt_firma_fara_salariati_niciun_d112():
+    """Garda firme complet fara salariati: d112_fapt False peste tot -> niciun D112 (raman neaplicabile)."""
+    v = {"regim_fiscal": "micro", "platitor_tva": True, "tip_decont": "lunar", "operatiuni_ic": False,
+         "partida_simpla": False, "tva_data_inceput": None}
+    rez = cf.declaratii_datorate(v, are_salariati=True, azi=date(2026, 8, 14), d112_fapt=lambda a, m: False)
+    assert not any(d["tip"] == "d112" for d in rez["datorate"])

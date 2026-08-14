@@ -145,6 +145,27 @@ def d301_luni_facturi_ic(conn, schema, an):
     return {r["data_emitere"].month for r in fic.get("primita", []) if r.get("data_emitere")}
 
 
+def are_salariat_activ_luna(conn, schema, an, luna):
+    """[#6 D112 per-luna] Firma avea >=1 salariat ACTIV in (an, luna)? True/False.
+    Activ = data_angajare <= ultima zi a lunii SI (data_incetare IS NULL OR data_incetare >= prima zi a lunii).
+    (data_angajare NULL = tratat ca dintotdeauna angajat, ca in stat_plata_api / lista_salariati.)
+    Tabelul salariati lipsa -> False (firma fara payroll ramane neaplicabila). Faptul pe care se datoreaza
+    D112 LUNAR - inlocuieste snapshot-ul are_salariati pe CURRENT_DATE aplicat la toate lunile (bug #6:
+    firma cu primul salariat angajat la mijloc de an primea D112 restant pe lunile de dinainte de angajare)."""
+    import calendar as _cal, datetime as _dt
+    prima = _dt.date(an, luna, 1)
+    ultima = _dt.date(an, luna, _cal.monthrange(an, luna)[1])
+    with conn.cursor() as cur:
+        cur.execute("SELECT to_regclass(%s)", (schema + ".salariati",))
+        if cur.fetchone()[0] is None:
+            return False
+        cur.execute(f"""SELECT 1 FROM {schema}.salariati
+                        WHERE (data_angajare IS NULL OR data_angajare <= %s)
+                          AND (data_incetare IS NULL OR data_incetare >= %s) LIMIT 1""",
+                    (ultima, prima))
+        return cur.fetchone() is not None
+
+
 def facturi_necontabilizate(conn, schema, an, luna):
     """Facturile lunii FARA inregistrare VALIDATA - cauza dovedibila a divergentei.
     are_ciorna=True -> nota exista dar asteapta patru-ochi: NU se recontabilizeaza."""

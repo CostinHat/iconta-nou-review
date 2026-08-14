@@ -525,8 +525,8 @@ function legaCorLookup(scope, prefix, codInitial, denInitial) {
   });
 }
 
-function campCorLookup(prefix) {
-  return `<div class="camp"><label class="camp-eticheta" for="${prefix}-cor-cauta">Ocupație (COR)</label>
+function campCorLookup(prefix, obligatoriu) {
+  return `<div class="camp"><label class="camp-eticheta" for="${prefix}-cor-cauta">Ocupație (COR)${obligatoriu ? '<span class="oblig">*</span>' : ""}</label>
     <input type="text" id="${prefix}-cor-cauta" class="camp-input" placeholder="cod sau denumire (ex. programator)" autocomplete="off">
     <input type="hidden" id="${prefix}-cor">
     <div id="${prefix}-cor-rez" style="max-height:180px;overflow:auto"></div></div>`;
@@ -557,10 +557,10 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       ${camp("data_incetare", "Data încetării (gol = activ)", "data")}
       ${camp("tip_norma", "Tip norm\u0103", "select", { optiuni: [["intreaga","\u00centreag\u0103"],["partiala","Par\u021bial\u0103"]] })}
       ${camp("ore_zi", "Ore/zi (norm\u0103 par\u021bial\u0103)", "numar", { pas: "0.5" })}
-      ${camp("salariu_brut", "Salariu brut", "numar")}
+      ${camp("salariu_brut", "Salariu brut", "numar", { obligatoriu: true })}
       ${camp("persoane_intretinere", "Persoane \u00een \u00eentre\u021binere", "numar", { pas: "1" })}
       ${camp("judet_casa", "Jude\u021b CAS/CASS", "text")}
-      ${campCorLookup("sn")}
+      ${campCorLookup("sn", true)}
       ${camp("iban", "IBAN (cont salariu pe card)", "text")}
       ${camp("tichet_masa_valoare", "Tichet de mas\u0103 (lei/zi lucrat\u0103, 0 = f\u0103r\u0103)", "numar")}
       ${camp("scutit_contrib_minim", "Scutit contribu\u021bie minim\u0103", "checkbox")}
@@ -577,6 +577,8 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
     const brut = corp.querySelector("#sn-salariu_brut").value;
     curataEroriCamp(corp);  // [G10 cap.6 v2.30] eroare langa camp
     if (!nume) { eroareCamp(corp, "sn-nume", "Numele este obligatoriu."); return; }
+    if (!brut || !(Number(brut) > 0)) { eroareCamp(corp, "sn-salariu_brut", "Salariul brut este obligatoriu și trebuie să fie mai mare ca 0."); return; }  // [#8]
+    if (!corp.querySelector("#sn-cor").value.trim()) { eroareCamp(corp, "sn-cor-cauta", "Alege ocupația (cod COR) din listă — obligatorie pentru D112/REGES."); return; }  // [#7]
     const corpReq = {
       nume,
       prenume: corp.querySelector("#sn-prenume").value.trim() || null,
@@ -753,13 +755,15 @@ async function ecranSalariati(corp, nav, t) {
       stat = (r && r.stat) || [];
     areIban = stat.some((s) => s.iban);  // [dec2 Costin] SEPA cere macar un IBAN
     regesOk = !!(r && r.reges_configurat);  // [dec2 Costin] REGES cere chei configurate
-    } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca statul de plată.</p>`; return; }
+    } catch (e) { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca statul de plată. ${esc((e && (e.mesaj || e.message)) || "")}</p>`; return; }  // [#1/#3] mesaj real, nu catch gol
+    const pontajNeconf = stat.some((s) => s.pontaj_neconfirmat);  // [#1/#3] statul se afiseaza; tichete blocate
     const randuri = !stat.length
       ? `<div class="stare-goala">Niciun salariat activ încă.</div>`
       : stat.map((s) => `
         <div class="pf-frand" style="flex-wrap:wrap">
           <div class="pf-frand-text" style="flex:1 1 100%">
-            <div class="pf-frand-nume">${esc(s.nume)}</div>
+            <div class="pf-frand-nume">${esc(s.nume)}${s.pontaj_neconfirmat ? ' <span style="color:var(--rosu);font-weight:600">⚠ pontaj neconfirmat</span>' : ""}</div>
+            ${s.pontaj_neconfirmat ? `<div class="pf-frand-sub" style="color:var(--rosu)">Tichetele de masă sunt blocate până confirmi pontajul lunii (buton „Pontaj").</div>` : ""}
             <div class="pf-frand-sub">brut ${bani(s.brut)} \u00b7 CAS ${bani(s.cas)} \u00b7 CASS ${bani(s.cass)} \u00b7 impozit ${bani(s.impozit_salariu)} \u00b7 <b>net ${bani(s.net)}</b> \u00b7 cost ${bani(s.cost)}${s.tichete_nominal ? ` \u00b7 <span style="color:var(--teal)">tichete ${bani(s.tichete_nominal)} (${s.tichete_zile} zile)</span>` : ""}${s.tichete_vacanta ? ` · <span style="color:var(--teal)">vacanță ${bani(s.tichete_vacanta)}</span>${s.vacanta_peste_plafon ? ' <span style="color:var(--rosu)">⚠ peste plafon anual</span>' : ""}` : ""}${s.cadou ? ` · <span style="color:var(--teal)">cadou ${bani(s.cadou)}</span>${s.cadou_taxabil ? ' <span style="color:var(--rosu)">⚠ taxabil (>300 lei/eveniment sau eveniment nelegal)</span>' : ""}` : ""}${s.tichete_cultural ? ` · <span style="color:var(--teal)">cultural ${bani(s.tichete_cultural)}</span>` : ""}${s.tichete_cresa ? ` · <span style="color:var(--teal)">creșă ${bani(s.tichete_cresa)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta) ? ` · <span style="color:var(--gri)">reținut pe tichete: CASS ${bani(s.cass_tichete)} + impozit ${bani(s.impozit_tichete)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta || s.cadou) ? ` · <b>total disponibil ${bani(s.total_disponibil)}</b>` : ""}</div>
           </div>
           <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start;width:100%">
@@ -795,6 +799,7 @@ async function ecranSalariati(corp, nav, t) {
       <div id="sp-iban-zona"></div>
       <div id="sp-cor-zona"></div>
       <div id="sp-incet-zona"></div>
+      ${pontajNeconf ? `<div class="ecran-nota" style="color:var(--rosu)">⚠ Pontajul lunii nu e confirmat. Statul de plată se afișează, dar tichetele de masă rămân blocate până confirmi pontajul (buton „Pontaj" pe salariat).</div>` : ""}
       <div class="pf-lista">${randuri}</div>`;
     corp.querySelector("#sp-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#sp-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });

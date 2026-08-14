@@ -45,6 +45,8 @@ def stat_plata(conn, schema, an, luna):
     import calendar as _cal
     from core import salariu_istoric as _si  # [tranzitie 29.07.2026] salariul contractual DATE-AWARE, nu salariati.salariu_brut
     _ultima_luna = date(an, luna, _cal.monthrange(an, luna)[1])
+    # [#1/#3] pontajul lunii confirmat? o singura interogare (nu per-salariat).
+    _pontaj_confirmat = _per.e_confirmat(conn, schema, an, luna, "pontaj")["confirmat"]
     _cs_sal = conn.cursor()
     for sid, nume, prenume, brut, pers, part_time, ore_zi, tichet_val, iban, cor, data_ang, data_inc in randuri:
         brut = _si.salariu_la(_cs_sal, schema, sid, _ultima_luna)  # salariul contractual din istoric
@@ -56,10 +58,13 @@ def stat_plata(conn, schema, an, luna):
         cm_zile = c_cm["zile"] if (c_cm and c_cm["zile"] > 0) else 0
         # [D2 02.08] tichete de masa pe zile EFECTIV lucrate (HG 1045/2018 art.10(3)): zile lucratoare
         # - CM (evidenta) - CO/delegatie/absente/invoire (pontaj). Reversarea decuplarii 20.07 (DECIZII 02.08).
-        # [D2/cap.23] tichetele cer pontaj CONFIRMAT (nu se ghiceste zile efectiv lucrate dintr-o luna necompletata)
-        if float(tichet_val or 0) > 0 and not _per.e_confirmat(conn, schema, an, luna, "pontaj")["confirmat"]:
-            raise _per.PerioadaNeconfirmata("Tichetele de masa", an, luna, "pontaj", "HG 1045/2018 art.10(3)")
-        _fara_tichet = _pontaj.zile_fara_tichet(conn, schema, sid, an, luna) if float(tichet_val or 0) > 0 else 0
+        # [D2/cap.23 + #1/#3] tichetele cer pontaj CONFIRMAT. NU mai blocheaza TOT statul (deadlock: statul
+        # murea la HTTP 423 -> ecranul cu butonul Pontaj devenea inaccesibil -> pontajul nu se mai putea confirma).
+        # Per-salariat: cand pontajul lunii nu e confirmat, randul se calculeaza cu tichete=0 + flag
+        # pontaj_neconfirmat (tichetele raman blocate pana la confirmarea pontajului). HG 1045/2018 art.10(3).
+        _pontaj_neconf = float(tichet_val or 0) > 0 and not _pontaj_confirmat
+        _tichet_val = 0.0 if _pontaj_neconf else float(tichet_val or 0)
+        _fara_tichet = _pontaj.zile_fara_tichet(conn, schema, sid, an, luna) if _tichet_val > 0 else 0
         tichet_zile = max(zile_luna - cm_zile - _fara_tichet, 0)
         if cm_zile > 0:
             brut_lucrat = float(brut or 0) * max(zile_luna - cm_zile, 0) / zile_luna
@@ -78,7 +83,7 @@ def stat_plata(conn, schema, an, luna):
                                          data_angajare=data_ang,
                                          data_incetare=data_inc,
                                          facilitate_prorata=_fac_prorata,
-                                         tichet_valoare=float(tichet_val or 0), tichet_zile=tichet_zile,
+                                         tichet_valoare=_tichet_val, tichet_zile=tichet_zile,
                                          tichet_vacanta=max(float(vac or 0) - _exces_v3, 0.0),
                                          tichet_vacanta_exces=_exces_v3,
                                          tichet_cultural=float(cult or 0),
@@ -97,7 +102,9 @@ def stat_plata(conn, schema, an, luna):
             "cas_suprataxa": float(calc.get("cas_suprataxa", 0)),
             "cass_suprataxa": float(calc.get("cass_suprataxa", 0)),
             "tichete_nominal": float(calc.get("tichete_nominal", 0)),
-            "tichete_zile": tichet_zile if float(tichet_val or 0) > 0 else 0,
+            "tichete_zile": tichet_zile if _tichet_val > 0 else 0,
+            "pontaj_neconfirmat": bool(_pontaj_neconf),  # [#1/#3] tichete blocate pana la confirmarea pontajului
+            "tichet_masa_valoare": float(tichet_val or 0),  # valoarea configurata (chiar daca blocata luna asta)
             "tichete_vacanta": float(calc.get("tichete_vacanta", 0)),
             "vacanta_peste_plafon": bool(vac and vac_an > plafon_vac_an),
             "cadou": float(cadou or 0),  # [F133 Faza 2b1] neimpozabil, primit pe card

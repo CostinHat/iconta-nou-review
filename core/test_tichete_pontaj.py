@@ -37,7 +37,8 @@ def conn():
 
 def _sid(conn):
     sid = sa.creeaza_salariat(conn, nume="POP", prenume="I", cnp="1900101410011",
-                              data_angajare="2025-01-01", salariu_brut=5000, tip_norma="intreaga")["salariat_id"]
+                              data_angajare="2025-01-01", salariu_brut=5000, tip_norma="intreaga",
+                              cor="522101")["salariat_id"]
     with conn.cursor() as cur:
         cur.execute("UPDATE salariati SET tichet_masa_valoare = 40 WHERE id = %s", (sid,))
     return sid
@@ -54,12 +55,16 @@ def test_zile_fara_tichet_numara_exceptiile(conn):
 
 
 def test_tichete_blocheaza_daca_pontaj_neconfirmat(conn):
-    """cap.23: fara confirmare, calculul tichetelor blocheaza cu blocaj motivat."""
+    """[#1/#3] cap.23: fara confirmarea pontajului, tichetele raman BLOCATE - dar statul NU mai arunca
+    (deadlock: 423 omora ecranul -> butonul Pontaj inaccesibil). Randul se intoarce cu tichete=0 + flag
+    pontaj_neconfirmat; dupa confirmare, tichetele apar."""
     sid = _sid(conn)
-    with pytest.raises(per.PerioadaNeconfirmata):
-        sp.stat_plata(conn, SCHEMA, 2026, 8)
+    st0 = {f["id"]: f for f in sp.stat_plata(conn, SCHEMA, 2026, 8)}[sid]  # NU arunca
+    assert st0["pontaj_neconfirmat"] is True
+    assert st0["tichete_zile"] == 0 and st0["tichete_nominal"] == 0
     per.confirma(conn, SCHEMA, 2026, 8, "pontaj", user_id=1)
     st = {f["id"]: f for f in sp.stat_plata(conn, SCHEMA, 2026, 8)}[sid]
+    assert st.get("pontaj_neconfirmat") is False
     assert st["tichete_zile"] > 0
 
 

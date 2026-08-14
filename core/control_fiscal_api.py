@@ -81,7 +81,7 @@ def neaplicabile_selector(vector):
     return neap
 
 
-def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PRAG_URMARIT_ZILE, d390_fapt=None):
+def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PRAG_URMARIT_ZILE, d390_fapt=None, d112_fapt=None):
     """
     SURSA UNICA a mapicarii 'cine ce declaratie datoreaza' (regim/TVA/decont/IC/salariati),
     inclusiv marginirea la inregistrarea TVA (B1) si D390 art.317 gri la neplatitor (B2).
@@ -205,10 +205,20 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
         emite_tva("D394", "d394", "Tip decont TVA necompletat - nu pot sti periodicitatea D394.", marginit=True)
     # neplatitor -> fara D394
 
-    # D112 salariati (lunar) — are_salariati e fapt din DB, mereu cunoscut
-    if are_salariati:
+    # D112 salariati (lunar) — datorat per-luna DOAR daca firma avea >=1 salariat ACTIV in luna respectiva.
+    # [#6] are_salariati era un snapshot boolean pe CURRENT_DATE aplicat la TOATE lunile -> o firma cu primul
+    # salariat angajat la mijloc de an primea D112 restant pe lunile de dinainte de angajare. d112_fapt =
+    # callback (an, luna)->bool dat de evalueaza_firma (are conn_schema); None in teste/matrice -> comportament
+    # vechi (are_salariati boolean pe toate lunile, apara matricea de 64). Simetric cu d390_fapt.
+    if d112_fapt is None:
+        if are_salariati:
+            for a, m in per_luni:
+                adauga("D112", a, m, _LUNI_NUME[m], "d112")
+    else:
         for a, m in per_luni:
-            adauga("D112", a, m, _LUNI_NUME[m], "d112")
+            term = _termen(a, m, tip="d112")
+            if _in_fereastra(term) and d112_fapt(a, m):   # interogam faptul DOAR pentru lunile din fereastra
+                adauga("D112", a, m, _LUNI_NUME[m], "d112")
 
     # D100 (micro, trimestrial) / D101 (profit, anual) — declaratii de PERSOANA JURIDICA (impozit micro/
     # profit). PFA/partida simpla NU le datoreaza: impozitul pe venit PFA se depune prin Declaratia unica
@@ -326,11 +336,12 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     return {"datorate": datorate, "neclar": neclar, "neaplicabile": neaplicabile}
 
 
-def declaratii_datorate(vector, are_salariati, azi=None, *, d390_fapt=None):
+def declaratii_datorate(vector, are_salariati, azi=None, *, d390_fapt=None, d112_fapt=None):
     """Semaforul (privire inapoi): fereastra [restante ... azi+7], fara limita inferioara.
-    Wrapper subtire peste obligatii_datorate - comportament NESCHIMBAT fara d390_fapt (matricea de 64 il apara).
-    d390_fapt = callback D390 pe fapt lunar, dat de evalueaza_firma (are conn_schema); None in teste/matrice."""
-    return obligatii_datorate(vector, are_salariati, azi, d390_fapt=d390_fapt)
+    Wrapper subtire peste obligatii_datorate - comportament NESCHIMBAT fara d390_fapt/d112_fapt (matricea de 64
+    il apara). d390_fapt/d112_fapt = callback-uri pe fapt lunar, date de evalueaza_firma (are conn_schema);
+    None in teste/matrice."""
+    return obligatii_datorate(vector, are_salariati, azi, d390_fapt=d390_fapt, d112_fapt=d112_fapt)
 
 
 def _dmy(iso):
@@ -506,8 +517,11 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
 
     # [D390-fapt] semaforul intreaba faptul lunar (facturi IC + manual + d301), nu bifa statica operatiuni_ic.
     from core import d390 as _d390
+    from core import control_incrucisat as _ci_sal
     _d390_fapt = lambda a, l: _d390.d390_are_operatiuni(conn_schema, schema, a, l, azi)
-    rez = declaratii_datorate(vector, are_sal, azi, d390_fapt=_d390_fapt)
+    # [#6] D112 pe FAPT lunar (salariat activ in luna), nu snapshot are_sal pe CURRENT_DATE.
+    _d112_fapt = lambda a, l: _ci_sal.are_salariat_activ_luna(conn_schema, schema, a, l)
+    rez = declaratii_datorate(vector, are_sal, azi, d390_fapt=_d390_fapt, d112_fapt=_d112_fapt)
     datorate = list(rez["datorate"])
     neclar = list(rez["neclar"])
 

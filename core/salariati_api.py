@@ -71,14 +71,17 @@ def _verifica_cor(conn, cod):
     (public.cor_ocupatii). Gol = permis (COR optional). REGES respinge un cod inexistent."""
     cod = (str(cod).strip() if cod is not None else "")
     if not cod:
-        return
+        # [#7] COR e OBLIGATORIU (necesar D112/REGES). Inainte "gol = permis" -> salariatul se salva fara COR.
+        raise ValueError("Ocupatia (cod COR) este obligatorie - alege ocupatia din lista (necesara D112/REGES).")
     from core import cor_api
     if not cor_api.exista(conn, cod):
         raise ValueError("cod COR inexistent in nomenclator: %s (alege din lista)" % cod)
 
 
-def valideaza_salariat(date):
-    """Verifică datele unui salariat. Întoarce listă erori (gol = ok)."""
+def valideaza_salariat(date, la_creare=False):
+    """Verifică datele unui salariat. Întoarce listă erori (gol = ok).
+    la_creare=True -> câmpuri OBLIGATORII la creare: salariu brut (>0, #8) și COR (#7). La editare
+    (la_creare=False) validăm doar câmpurile trimise (nu forțăm prezența lor)."""
     erori = []
     if not (date.get("nume") and str(date["nume"]).strip()):
         erori.append(("nume", "Numele este obligatoriu."))
@@ -93,12 +96,23 @@ def valideaza_salariat(date):
         if not _ok_cnp:
             erori.append(("cnp", "CNP invalid: %s" % _motiv_cnp))
     brut = date.get("salariu_brut")
-    if brut is not None:
+    _brut_gol = brut is None or (isinstance(brut, str) and not brut.strip())
+    if la_creare and _brut_gol:
+        # [#8] fara brut -> nicio intrare in salariu_istoric -> D112 baza zero. Obligatoriu la creare.
+        erori.append(("salariu_brut", "Salariul brut este obligatoriu."))
+    elif not _brut_gol:
         try:
-            if float(brut) < 0:
+            _b = float(brut)
+            if _b < 0:
                 erori.append(("salariu_brut", "Salariul brut nu poate fi negativ."))
+            elif la_creare and _b <= 0:
+                erori.append(("salariu_brut", "Salariul brut trebuie să fie mai mare ca 0."))
         except (TypeError, ValueError):
             erori.append(("salariu_brut", "Salariul brut e invalid."))
+    cor = date.get("cor")
+    if la_creare and not (cor is not None and str(cor).strip()):
+        # [#7] COR obligatoriu la creare (per-camp; existenta in nomenclator o verifica _verifica_cor cu conn).
+        erori.append(("cor", "Ocupatia (cod COR) este obligatorie (necesara D112/REGES)."))
     tn = date.get("tip_norma")
     if tn is not None and tn not in _NORME:
         erori.append(("tip_norma", "Tip normă: alege 'intreaga' sau 'partiala'."))
@@ -173,7 +187,7 @@ def _eroare_campuri(erori):
 def creeaza_salariat(conn, **date):
     """Inserează un salariat (după validare). Întoarce {ok, salariat_id} sau ridică
     ValueError cu erorile."""
-    erori = valideaza_salariat(date)
+    erori = valideaza_salariat(date, la_creare=True)
     if erori:
         raise _eroare_campuri(erori)
     _verifica_cor(conn, date.get("cor"))  # [F137] codul COR (daca e dat) trebuie sa existe in nomenclator

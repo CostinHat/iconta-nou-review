@@ -895,14 +895,18 @@ except Exception as _ebm:
 # _TEMEI_FUNCTII). PRAG 0: o functie din lista fara verificarea confirmarii BLOCHEAZA. LIMITA: o functie noua
 # dependenta de perioada se ADAUGA aici (nu se auto-detecteaza). Controlul UI foloseste primitivele canonice
 # (buton-verde/confirmaCaseta/semafor) - pazit de regulile vizuale existente (HEX_SEMAFOR, BUTOANE).
+# (fisier, functie, semnale acceptate pt "perioada neconfirmata" - pe langa e_confirmat obligatoriu)
+# [#1/#3] stat_plata NU mai blocheaza TOT statul (deadlock: 423 omora ecranul -> butonul Pontaj inaccesibil
+# -> pontajul nu se putea confirma). Semnaleaza per-salariat prin flag pontaj_neconfirmat (tichete=0) SAU
+# blocheaza motivat. d112.pull ramane BLOCAJ HARD (o DECLARATIE nu se depune pe o luna necompletata).
 _PERIOADA_FUNCTII = [
-    ("core/stat_plata_api.py", "stat_plata"),
-    ("core/d112.py", "pull"),
+    ("core/stat_plata_api.py", "stat_plata", ("PerioadaNeconfirmata", "pontaj_neconfirmat")),
+    ("core/d112.py", "pull", ("PerioadaNeconfirmata",)),
 ]
 try:
     import ast as _ast_pf
     _pf_fara, _pf_lipsa = [], []
-    for _rel, _fn in _PERIOADA_FUNCTII:
+    for _rel, _fn, _semnale in _PERIOADA_FUNCTII:
         _cale = os.path.join(BAZA_PY, _rel)
         if not os.path.exists(_cale):
             _pf_lipsa.append((_rel, _fn)); continue
@@ -911,8 +915,14 @@ try:
         for _n in _ast_pf.walk(_tree):
             if isinstance(_n, _ast_pf.FunctionDef) and _n.name == _fn:
                 _gasit = True
-                _refs = {(getattr(_x, "attr", None) or getattr(_x, "id", None)) for _x in _ast_pf.walk(_n)}
-                if "e_confirmat" in _refs and "PerioadaNeconfirmata" in _refs:
+                _refs = set()
+                for _x in _ast_pf.walk(_n):
+                    _v = getattr(_x, "attr", None) or getattr(_x, "id", None)
+                    if _v:
+                        _refs.add(_v)
+                    if isinstance(_x, _ast_pf.Constant) and isinstance(_x.value, str):
+                        _refs.add(_x.value)   # flag-uri contractuale (ex. "pontaj_neconfirmat") sunt string keys
+                if "e_confirmat" in _refs and any(_sg in _refs for _sg in _semnale):
                     _are = True
                 break
         if not _gasit:

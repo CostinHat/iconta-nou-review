@@ -27,13 +27,18 @@ def test_date_firma_oblig_egal_backend_obligatorii():
 
 
 def test_g9_decizii_backend_enforce():
-    """G9: cele 3 cazuri unde asteriscul RAMANE -> backend-ul enforce (nu mai minte)."""
+    """G9: cazurile unde asteriscul RAMANE -> backend-ul enforce (nu mai minte)."""
     assert "Data de sfarsit a concediului medical e obligatorie" in _read("core/salariati_api.py"), "cm-sfarsit"
     assert 'b{i}-valoare_fara_tva' in _read("core/etransport.py"), "etransport valoare_fara_tva"
     assert "Denumirea beneficiarului e obligatorie" in _read("main.py"), "em-nume"
+    # [#8] salariu brut obligatoriu la creare (fara el -> D112 baza zero); [#7] COR obligatoriu (D112/REGES).
+    sa_src = _read("core/salariati_api.py")
+    assert "Salariul brut este obligatoriu" in sa_src, "sn-salariu_brut backend"
+    assert "Ocupatia (cod COR) este obligatorie" in sa_src, "sn-cor backend"
 
 
 def test_g9_decizii_asterisc_dispare():
-    """G9: cele 2 cazuri unde asteriscul FALS a fost scos (backend nu cere)."""
+    """G9: cazul unde asteriscul FALS a fost scos (backend nu cere). NOTA: salariu_brut a MIGRAT de aici la
+    test_g9_decizii_backend_enforce - decizia s-a inversat (#8): brut e acum OBLIGATORIU la creare (fara el,
+    D112 are baza zero), deci asteriscul e adevarat, nu fals."""
     assert '<span class="camp-eticheta">CUI<span class="oblig">' not in _read("static/js/ecrane/login.js"), "reg-cui"
-    assert '"salariu_brut", "Salariu brut", "numar", { obligatoriu: true }' not in _read("static/js/ecrane/firme.js"), "sn-salariu_brut"

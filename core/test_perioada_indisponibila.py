@@ -75,7 +75,7 @@ def test_adeverinta_2025_blocaj_2026_ok():
                 cur.execute("SET search_path TO %s, public" % SCHEMA_T)
             sid = sa.creeaza_salariat(conn, nume="POP", prenume="I", cnp="1900101410011",
                                       data_angajare="2025-01-01", salariu_brut=4050,
-                                      tip_norma="intreaga")["salariat_id"]
+                                      tip_norma="intreaga", cor="522101")["salariat_id"]
             with pytest.raises(ValueError):
                 adeverinta.date_auto(conn, SCHEMA_T, sid, 2025, 10)  # gol tichet octombrie 2025 (B1)
             d2026 = adeverinta.date_auto(conn, SCHEMA_T, sid, 2026, 8)
