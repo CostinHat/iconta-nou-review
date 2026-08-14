@@ -2310,3 +2310,11 @@ Genereaza D407 (raportarea institutiilor financiare: polite de asigurare de viat
 Semestrial/anual (luna 6 sau 12).
 ## De completat
 Alege tipul documentului: tipDoc=1 (polite - cu beneficiari, asigurati, evenimente) sau tipDoc=2 (lista persoane - cu ISIN, cantitate, emitent). Datele raportorului in antet. Suma de control se calculeaza automat."
+Declaratia D212 (declaratia unica),"D212 - declaratia unica privind impozitul pe venit si contributiile sociale datorate de persoanele fizice (PFA/II/IF, venituri din chirii/investitii/alte surse; CAS si CASS pe plafoane). Generator MANUAL (core/d212.py, root <d212>, ns mfp:anaf:dgti:d212:declaratie:v11): cazul minim = identificarea (CIF/CNP, nume, adresa); capitolele sunt extensibile - cap.I realizat (cap11 venituri efectiv realizate anul precedent), cap.II estimat (cap12), cap14, obligatiile realizate/estimate si coasiguratii; totalPlata_A se calculeaza. Structura din D212Validator.jar. Probat DUK valid.",F246,firma,Declaratii,core/d212.py,"OPANAF (declaratia unica) - anaf_surse/D212_IstoriaVersiunilor.txt; Cod fiscal art.148-149,154,170 (CAS/CASS persoane fizice); structura din D212Validator.jar (root d212, ns v11)",LIVE,core/test_declaratii_lot6_duk.py + DUKIntegrator -v D212 'valid',,"## Ce face
+Genereaza D212 (declaratia unica a persoanelor fizice) - impozitul pe venit si contributiile sociale (CAS, CASS) pentru PFA/II/IF si venituri din chirii, investitii, alte surse.
+## Cand se depune
+Anual, pana la 25 mai a anului urmator (cap.I - venituri realizate; cap.II - venituri estimate pentru anul curent).
+## De completat
+Identificarea (CNP/NIF, nume, adresa) si capitolele aplicabile: veniturile efectiv realizate anul precedent (cap.I), venitul estimat pentru anul curent (cap.II), plafoanele de CAS/CASS (6/12/24 salarii minime) si eventualii coasigurati. Suma de control (totalPlata_A) se calculeaza automat.
+## De retinut
+Motorul de calcul in sistem real (venit net, CAS, CASS) este integrat separat (RIP > Fisa D212); aici se genereaza XML-ul oficial pentru depunere. Datele in format zi.luna.an."

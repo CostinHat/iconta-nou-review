@@ -9262,3 +9262,39 @@ perioadele; niciun XSD d101g instalat). DATORIE: test_declaratii_lot5_duk.py::[d
 probeaza cand se instaleaza DecValidation care cunoaste d101g v2. Modulul e cablat si folosibil (produce XML v2).
 Cablate CHEIE_DUK/DECLARATII/_DOAR_API/FUNCTIONALITATI F240-F245. Total declaratii cablate: 49.
 RAMASE: D212 (declaratia unica persoane fizice - complex, ns v11).
+
+## 2026-08-14 — D212 Declaratia Unica (lot 6, final campanie declaratii)
+
+**Cerinta:** ultima declaratie ramasa din campania "construieste toate declaratiile ramase".
+
+**Ce s-a construit:** `core/d212.py` — generator MANUAL al Declaratiei Unice (impozit pe venit +
+CAS/CASS persoane fizice: PFA/II/IF, chirii, investitii, alte surse). Root `<d212>`, ns
+`mfp:anaf:dgti:d212:declaratie:v11`. Caz minim = identificarea (cif/nume_c/adresa_c); capitolele
+sunt extensibile prin `manual`: cap11 (realizat, cap.I), cap12 (estimat, cap.II), cap14,
+oblig_realizat/oblig_estimat, coasigurat. Atribute root obligatorii (d_rec, rectif1/2,
+totalPlata_A, luna_r=12, an_r, bifa_succesor, anulare_litA/B, bifa_conformare, bifa111..bifa15,
+nerezident, cif, nume_c, adresa_c) puse pe valori neutre. totalPlata_A calculat (nu hardcodat).
+
+**Distinctie fata de F030:** `core/d212_engine.py` (F030) = motorul de CALCUL in sistem real
+(venit net, plafoane CAS/CASS) din RIP > Fisa D212. `core/d212.py` (F246) = generatorul XML-ului
+OFICIAL pentru depunere. Fisiere si functionalitati distincte.
+
+**Sursa/temei:** structura din `D212Validator.jar` (arbitru); act adus in corpus ca
+`anaf_surse/D212_IstoriaVersiunilor.txt` (+.sha256), inclus in INDEX prin gen_index. CF art.148-149,
+154, 170 (CAS/CASS persoane fizice). Scadenta 25 mai.
+
+**Proba DUK:** `core.duk.valideaza("d212", ...)` → **valid** pe calea STANDARD (retry-ul
+DecValidation nou din core/duk.py il proceseaza corect). NB: la build initial subagentul a raportat
+ca standardul esueaza cu NoClassDefFoundError dec/DECTagCtx si ca doar un merge chirurgical de clase
+dec ar valida — acel caveat NU se confirma pe server: `core.duk.valideaza` intoarce valid direct.
+Deci, spre deosebire de D101G, D212 NU e datorie de infrastructura — e complet probat.
+Test: `core/test_declaratii_lot6_duk.py::test_d212_duk_valid` (proba reala, nu xfail).
+
+**Cablat:** CHEIE_DUK "d212":"D212"; declaratii_api import + _d212 dispatch + DECLARATII
+"d212":("anual",_d212) + _DOAR_API (cere date de identificare, deci doar-API, ca celelalte manuale);
+FUNCTIONALITATI F246 (LIVE, cu ajutor); GRUPE_FUNC regenerat.
+
+**Campanie declaratii — bilant:** construite si probate DUK 19 declaratii fiscale in loturile 3-6:
+lot3 (d106,d108,d114,d130,d318,d603), lot4 (d119,d169n,d213,d214,d401,d402),
+lot5 (d169,d398,d399,d403,d407 + d101g DATORIE), lot6 (d212). Total DECLARATII in dispecer: 50.
+Datorie ramasa: D101G (schema v2 OPANAF 206/2025 neinstalata in DecValidation pe server — xfail strict).

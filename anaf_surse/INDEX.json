@@ -29,6 +29,20 @@
       "tip_forma": null,
       "acopera": []
     },
+    "D212_IstoriaVersiunilor.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "D212_IstoriaVersiunilor.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
     "D311_XML_2021_290121.pdf": {
       "exista": true,
       "tip_forma": null,

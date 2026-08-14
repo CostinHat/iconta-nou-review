@@ -1,0 +1,147 @@
+21-Mar-2019
+	- publicat versiunea P2.0.0 pentru creare Pdf
+	- publicat versiunea J2.0.0 de validator
+
+26-Sep-2019
+	- publicat versiunea P2.0.0 pentru creare Pdf
+	- publicat versiunea J2.0.1 de validator
+
+27-Jan-2020
+	- publicat versiunea P3.0.0 pentru creare Pdf pentru 2020
+	- publicat versiunea J3.0.0 de validator pentru 2020
+
+24-Feb-2020
+	- publicat versiunea P3.0.0 pentru creare Pdf pentru 2020
+	- publicat versiunea J3.0.1 de validator pentru 2020
+               -eliminare regula 72 (obligatii estimate:oblcas_est_bonif (0) <>0 atunci oblcas_est_bonif este oblcas_datorat*5/100 (600))
+05-Jun-2020
+       - publicat versiunea J4.0.0 de validator pentru 2020
+               -modificare structura
+09-Jun-2020
+       - publicat versiunea P4.0.0 pentru creare Pdf pentru 2020
+               -modificare structura
+10-Jun-2020
+       - publicat versiunea J4.0.1 de validator pentru 2020
+                -modificare regula 61 (daca bonificatie120= 1 atunci  oblimpoz­real_120 + oblcas_real_148 +                           oblcass_real_180 > 0)
+       - publicat versiunea J4.0.2 de validator pentru 2020
+                -eliminare regula:
+       oblimpoz_real_120, oblimpoz_real_120_bonif_plata, oblimpoz_real_120_bonif_depunere, oblimpoz_real_120_deplata sunt                     simultan nule sau simultan nenule.
+       oblcas_real_148, oblcas_real_148_bonif_plata, oblcas_real_148_bonif_depunere, oblcas_real_148_bonif_deplata sunt                            simultan nule sau simultan nenule.
+       oblcass_real_180, oblcass_real_180_bonif_plata, oblcass_real_180_bonif_depunere, oblcass_real_180_deplata sunt                           simultan nule sau simultan nenule
+11-Jun-2020
+       - publicat versiunea J4.0.3 de validator pentru 2020
+                     -eliminare reg.65.1 si 69.1
+
+14-Jan-2021
+       - publicat versiunea J5.0.0 de validator pentru 2021
+               -modificare structura
+       - publicat versiunea P5.0.0 de validator pentru 2021
+               -modificare structura
+
+21-Jan-2021
+      - publicat versiunea J5.0.1 de validator pentru 2021
+               -eliminare bug - nr capitol 16 si 17
+       - publicat versiunea P5.0.1 de validator pentru 2021
+               -modificare titlu 1.3 si 1.4
+21-Jan-2021
+      - publicat versiunea J5.0.2 de validator pentru 2021
+               -corectie r40.1
+
+12-Mar-2021
+      - publicat versiunea J5.0.3 de validator pentru 2021
+               -corectie regula 36: Daca det_ven_net=1 si categ_venit 1016 sau 1003 si real_venit_net este completat, atunci real_venit_net  trebuie sa fie egal cu suma venit_recalculat 
+               -corectie regule 74 Cap11: Daca exista cel putin o bifa - Venit scutit conform conventiei de evitare a dublei impuneri si a legislatiei Uniunii Europene atunci trebuie sa existe si bifa Nerezident
+
+19-Apr-2021
+      - publicat versiunea P5.0.2 de validator pentru 2021
+               - eliminare bug afisare cap11, mod_forma_org
+
+
+12-May-2021
+      - publicat versiunea J5.0.5 de validator pentru 2021
+               -corectie regula 35: cass_datorat = math.round(cass_baza *10/ 100) rotunjire la numar intreg sau cass_datorat =  0(zero)
+
+
+12-May-2021
+      - publicat versiunea J5.0.6 de validator pentru 2021
+               -ridicare bug corectie regula 35: cass_datorat = math.round(cass_baza *10/ 100) rotunjire la numar intreg sau cass_datorat =  0(zero)
+               
+04-Jan-2022
+	- publicat versiunea J6.0.0 de validator pentru 2022
+	- publicat versiunea P6.0.0 pentru creare Pdf pentru 2022
+
+06-Jan-2022
+	- publicat versiunea P6.0.1 pentru creare Pdf pentru 2022
+				-modificare titlu 1.3 si 1.4
+
+21-Feb-2022
+	- publicat versiunea P6.0.2 pentru creare Pdf pentru 2022
+				-modificare titlu bifa dubla_impunere			
+
+01-Mar-2022
+	- publicat versiunea P6.0.3 pentru creare Pdf pentru 2022
+				-modificare afisare cap 1.1.3	
+
+10-Jan-2023
+	- publicat versiunea J7.0.0 de validator pentru 2023
+	- publicat versiunea P7.0.0 pentru creare Pdf pentru 2023
+
+13-Jan-2023
+	- publicat versiunea P7.0.1 pentru creare Pdf pentru 2023
+		- corectie afisare bifa d_rec									
+18-Jan-2023
+	- publicat versiunea P7.0.2 pentru creare Pdf pentru 2023
+		- corectie afisare bifa121, bifa122
+
+31-Jan-2023
+	- publicat versiunea J7.0.1 de validator pentru 2023
+		- modificare valori indemnizatie20_luna		
+
+13-Feb-2023
+	- publicat versiunea J7.0.2 de validator pentru 2023
+	- publicat versiunea P7.0.3 pentru creare Pdf pentru 2023
+		- corectie afisare tabele I.5., I.6., I.7 si I.2.3 in pdf generat
+
+11-May-2023
+	- publicat versiunea P7.0.4 pentru creare Pdf pentru 2023
+		- corectie afisare subsectiune II.2.1. in pdf generat
+
+02-Oct-2023
+	- publicat versiunea J8.0.0 de validator valabila de la 1 oct 2023
+		
+10-Jan-2024
+	- publicat versiunea J9.0.0 de validator pentru 2024
+	- publicat versiunea P8.0.0 pentru creare Pdf pentru 2024
+
+26-Feb-2024
+	- publicat versiunea J9.0.3 de validator pentru 2024
+                - modificat reguli: 6.1.9, 42.2, 45.2.3, 42.2
+
+11-Mar-2024
+	- publicat versiunea P8.0.1 pentru creare pdf pentru 2024
+                - ridicare bug
+
+01-Apr-2024
+	- publicat versiunea J9.0.4 de validator pentru 2024
+                - corectie formula 89.2 
+
+01-Jul-2024
+	- publicat versiunea J10.0.0 de validator pentru 2024
+		- cresterea salariului minim de la 1 iulie 2024 la 3700 lei
+
+08-Jul-2024
+	- publicat versiunea J11.0.0 de validator pentru 2024
+		- namespace modificat la 9 in loc de 10
+		
+13-Jan-2025
+	- publicat versiunea J12.0.0 de validator pentru 2025
+	- publicat versiunea P9.0.0 pentru creare Pdf pentru 2025
+		
+01-Aug-2025
+	- publicat versiunea J13.0.0 de validator pentru 2025
+	- publicat versiunea P10.0.0 pentru creare Pdf pentru 2025	
+
+01-Aug-2025
+	- publicat versiunea J13.0.1 de validator pentru 2025: corectie bifa optiune
+		
+                

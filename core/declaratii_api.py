@@ -22,7 +22,8 @@ from core import (d100, d101, d104, d107, d110, d220, d221, d223, d307, d112, d1
                   d120, d200, d201, d204, d208, d216, d393, d395, d397, d600,
                   d106, d108, d114, d130, d318, d603,
                   d119, d169n, d213, d214, d401, d402,
-                  d101g, d169, d398, d399, d403, d407)
+                  d101g, d169, d398, d399, d403, d407,
+                  d212)
 from core.common import Perioada
 
 REGULI = "2026.1"
@@ -244,6 +245,10 @@ def _d407(conn, schema, b):   # informativa institutii financiare raportoare (se
     return d407.genereaza(conn, schema, Perioada(b["an"], luna=int(b.get("luna") or 12)), b.get("manual") or {})
 
 
+def _d212(conn, schema, b):   # declaratia unica (PFA/II/IF - venituri persoane fizice), anuala
+    return d212.genereaza(conn, schema, Perioada(b["an"]), b.get("manual") or {})
+
+
 DECLARATII = {
     "d100": ("trimestrial", _d100),
     "d101": ("anual",       _d101),
@@ -298,6 +303,7 @@ DECLARATII = {
     "d399": ("trimestrial", _d399),
     "d403": ("anual",       _d403),
     "d407": ("semestrial",  _d407),
+    "d212": ("anual",       _d212),
 }
 
 
@@ -309,7 +315,7 @@ _DOAR_API = frozenset(("d104", "d107", "d110", "d177", "d207", "d220", "d221", "
                        "d393", "d395", "d397", "d200", "d201", "d204", "d208", "d216", "d120", "d600",
                        "d106", "d108", "d114", "d130", "d318", "d603",
                        "d119", "d169n", "d213", "d214", "d401", "d402",
-                       "d101g", "d169", "d398", "d399", "d403", "d407"))
+                       "d101g", "d169", "d398", "d399", "d403", "d407", "d212"))
 
 
 def tipuri():
