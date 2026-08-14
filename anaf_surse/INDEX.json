@@ -27,9 +27,7 @@
     "D112_XML_2026_0726_050826.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "D311_XML_2021_290121.pdf": {
       "exista": true,
@@ -41,9 +39,7 @@
     "D311_XML_2021_290121.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "OPANAF_179_2022_D207.pdf": {
       "exista": true,
@@ -88,37 +84,27 @@
     "anaf_bilete_de_valoare.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_bilete_de_valoare.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_cass_concedii_medicale_2024.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_cass_concedii_medicale_2024.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_cass_concedii_medicale_2024.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_concedii_2025.pdf": {
       "exista": true,
@@ -128,37 +114,27 @@
     "anaf_concedii_2025.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_concedii_2025.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_concedii_medicale_contributii.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_concedii_medicale_contributii.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_concedii_medicale_contributii.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_limite_2025.pdf": {
       "exista": true,
@@ -183,16 +159,12 @@
     "anaf_limite_2025.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_limite_2025.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_mo_apr_2026.pdf": {
       "exista": true,
@@ -202,58 +174,42 @@
     "anaf_mo_apr_2026.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_mo_apr_2026.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_oug_153_2020_capital_propriu.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_oug_153_2020_capital_propriu.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_oug_153_2020_capital_propriu.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_oug_153_2020_reduceri_impozit.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_oug_153_2020_reduceri_impozit.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "anaf_oug_153_2020_reduceri_impozit.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "cf_2015_forma_initiala.html": {
       "exista": true,
@@ -271,16 +227,12 @@
     "cf_2015_forma_initiala.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "cf_2015_forma_initiala.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "cf_art291_2016_forma_initiala.txt": {
       "exista": true,
@@ -306,6 +258,27 @@
       "exista": true,
       "tip_forma": null,
       "acopera": []
+    },
+    "cod_civil_287_2009_art_1616_1623_compensare.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "necunoscuta"
+    },
+    "cod_civil_287_2009_art_1616_1623_compensare.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "cod_civil_287_2009_art_1616_1623_compensare.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
     },
     "cod_fiscal_227_2015_consolidat.html": {
       "exista": true,
@@ -358,16 +331,12 @@
     "cod_fiscal_227_2015_consolidat.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "cod_fiscal_227_2015_consolidat.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "d010_d020_d070_d700_status.md": {
       "exista": true,
@@ -392,51 +361,37 @@
     "d104.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d104.xsd": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d104.xsd.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d110_20260330.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d110_20260330.xsd": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d110_20260330.xsd.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d112_06082026.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d112_06082026.xsd": {
       "exista": true,
@@ -446,9 +401,7 @@
     "d112_06082026.xsd.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d112_struct_anaf.txt": {
       "exista": true,
@@ -468,65 +421,47 @@
     "d220_20180108.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d220_20180108.xsd": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d220_20180108.xsd.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d221_20170303.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d221_20170303.xsd": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d221_20170303.xsd.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d223_20160113.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d223_20160113.xsd": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d223_20160113.xsd.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d230_structura_din_validator.md": {
       "exista": true,
@@ -546,30 +481,22 @@
     "d307_20171205.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d307_20171205.xsd": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d307_20171205.xsd.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d311_20210129.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d311_20210129.xsd": {
       "exista": true,
@@ -579,9 +506,7 @@
     "d311_20210129.xsd.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "d390_struct_anaf.txt": {
       "exista": true,
@@ -633,16 +558,12 @@
     "hg_1045_2018_hotarare.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_1045_2018_hotarare.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_1045_2018_norme_consolidat.html": {
       "exista": true,
@@ -652,37 +573,27 @@
     "hg_1045_2018_norme_consolidat.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "hg_1045_2018_norme_consolidat.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "hg_1074_2021_stabilirea_sistemului_garantie_returnare_ambalaje.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "hg_1074_2021_stabilirea_sistemului_garantie_returnare_ambalaje.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_1074_2021_stabilirea_sistemului_garantie_returnare_ambalaje.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_146_2026_salariu_minim.html": {
       "exista": true,
@@ -700,16 +611,12 @@
     "hg_146_2026_salariu_minim.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_146_2026_salariu_minim.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_1506_2024_salariu_minim.html": {
       "exista": true,
@@ -727,37 +634,27 @@
     "hg_1506_2024_salariu_minim.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_1506_2024_salariu_minim.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_1510_2024_actualizarea_denumirii_descrierii_tehnice_adresei.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_1510_2024_actualizarea_denumirii_descrierii_tehnice_adresei.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_1510_2024_actualizarea_denumirii_descrierii_tehnice_adresei.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_1_2016_norme_cod_fiscal.html": {
       "exista": true,
@@ -767,16 +664,12 @@
     "hg_1_2016_norme_cod_fiscal.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_1_2016_norme_cod_fiscal.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_276_2013.html": {
       "exista": true,
@@ -794,53 +687,61 @@
     "hg_276_2013.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_276_2013.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_423_2020_aprobarea_listei_cuprinzand_urgentele_medico.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_423_2020_aprobarea_listei_cuprinzand_urgentele_medico.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_423_2020_aprobarea_listei_cuprinzand_urgentele_medico.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_598_2024_stabilirea_salariului_baza_minim_brut.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_598_2024_stabilirea_salariului_baza_minim_brut.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_598_2024_stabilirea_salariului_baza_minim_brut.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": []
+    },
+    "hg_685_1999_norme_compensare_creante_datorii.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "necunoscuta",
+      "stare": "abrogat",
+      "inlocuit_de": "hg_773_2019",
+      "nota": "abrogat de HG 773/2019 (in vigoare 01.01.2020); forma istorica adusa pt referinta - HG 773/2019 nu e in corpus"
+    },
+    "hg_685_1999_norme_compensare_creante_datorii.html.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": [],
       "sursa": "static.anaf.ro",
       "forma": "initiala"
     },
-    "hg_598_2024_stabilirea_salariului_baza_minim_brut.txt": {
+    "hg_685_1999_norme_compensare_creante_datorii.txt": {
       "exista": true,
       "tip_forma": null,
       "acopera": [],
@@ -850,23 +751,17 @@
     "hg_831_2004_aprobarea_normelor_limitele_admisibile_perisabilitate.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_831_2004_aprobarea_normelor_limitele_admisibile_perisabilitate.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "hg_831_2004_aprobarea_normelor_limitele_admisibile_perisabilitate.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "impozit_dividende_istoric_cote.txt": {
       "exista": true,
@@ -881,37 +776,27 @@
     "lege_64_2026.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "lege_64_2026.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_125_2006_rambursarea_ratelor_capital_cota_parte.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_125_2006_rambursarea_ratelor_capital_cota_parte.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_125_2006_rambursarea_ratelor_capital_cota_parte.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_136_2020_consolidat.html": {
       "exista": true,
@@ -921,16 +806,12 @@
     "legea_136_2020_consolidat.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_136_2020_consolidat.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_141_2025.pdf": {
       "exista": true,
@@ -940,16 +821,12 @@
     "legea_141_2025.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_141_2025.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_141_2025_consolidat.html": {
       "exista": true,
@@ -995,37 +872,27 @@
     "legea_141_2025_consolidat.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_141_2025_consolidat.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_15_1994_amortizarea_capitalului_imobilizat_active_corporale.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_15_1994_amortizarea_capitalului_imobilizat_active_corporale.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_15_1994_amortizarea_capitalului_imobilizat_active_corporale.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_165_2018_anaf.pdf": {
       "exista": true,
@@ -1035,16 +902,12 @@
     "legea_165_2018_anaf.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_165_2018_anaf.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_165_2018_consolidat.html": {
       "exista": true,
@@ -1054,16 +917,12 @@
     "legea_165_2018_consolidat.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_165_2018_consolidat.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_165_2018_mf_2024.pdf": {
       "exista": true,
@@ -1073,37 +932,27 @@
     "legea_165_2018_mf_2024.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_165_2018_mf_2024.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_175_2018_modificarea_completarea_291_2_legea.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_175_2018_modificarea_completarea_291_2_legea.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_175_2018_modificarea_completarea_291_2_legea.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_201_2025.html": {
       "exista": true,
@@ -1121,79 +970,57 @@
     "legea_201_2025.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_201_2025.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_207_2015_consolidat.html": {
       "exista": true,
       "tip_forma": "consolidat_la_zi",
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_207_2015_consolidat.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_207_2015_consolidat.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_220_2016_completarea_1.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_220_2016_completarea_1.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_220_2016_completarea_1.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_239_2025_stabilirea_masuri_redresare_eficientizare_resurselor.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_239_2025_stabilirea_masuri_redresare_eficientizare_resurselor.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_239_2025_stabilirea_masuri_redresare_eficientizare_resurselor.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_273_2006_fin_publice_locale.pdf": {
       "exista": true,
@@ -1206,16 +1033,12 @@
     "legea_273_2006_fin_publice_locale.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_273_2006_fin_publice_locale.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_296_2020_consolidat.html": {
       "exista": true,
@@ -1233,58 +1056,42 @@
     "legea_296_2020_consolidat.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_296_2020_consolidat.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_296_2023_masuri_fiscal_bugetare_asigurarea_sustenabilitatii.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_30_2019_aprobarea_ordonantei_urgenta_guvernului_25.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_30_2019_aprobarea_ordonantei_urgenta_guvernului_25.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_30_2019_aprobarea_ordonantei_urgenta_guvernului_25.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_319_2006_consolidat.html": {
       "exista": true,
@@ -1294,100 +1101,72 @@
     "legea_319_2006_consolidat.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_319_2006_consolidat.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_31_1990_modif_L222_2023.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_31_1990_modif_L222_2023.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_31_1990_modif_L222_2023.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_31_1990_modif_L239_2025.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_31_1990_modif_L239_2025.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_31_1990_modif_L239_2025.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_31_1990_societatile.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_31_1990_societatile.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_31_1990_societatile.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_32_1994_sponsorizarea.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_32_1994_sponsorizarea.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_32_1994_sponsorizarea.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_346_2002_consolidat.html": {
       "exista": true,
@@ -1397,163 +1176,117 @@
     "legea_346_2002_consolidat.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_346_2002_consolidat.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_358_2015_aprobarea.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_358_2015_aprobarea.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_358_2015_aprobarea.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_370_2022_aprobarea_ordonantei_guvernului_16_2022.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_370_2022_aprobarea_ordonantei_guvernului_16_2022.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_370_2022_aprobarea_ordonantei_guvernului_16_2022.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_376_2022_modificarea_completarea_ordonantei_urgenta_guvernului.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_376_2022_modificarea_completarea_ordonantei_urgenta_guvernului.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_376_2022_modificarea_completarea_ordonantei_urgenta_guvernului.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_399_2006_aprobare_oug158.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_399_2006_aprobare_oug158.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_399_2006_aprobare_oug158.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_52_2011_exercitarea_activitati_caracter_ocazional_desfasurate.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_53_2003_codul_muncii.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_53_2003_codul_muncii.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_53_2003_codul_muncii.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_56_2021_suplimentele_alimentare.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_56_2021_suplimentele_alimentare.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_56_2021_suplimentele_alimentare.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_70_2015_consolidat.html": {
       "exista": true,
@@ -1571,58 +1304,42 @@
     "legea_70_2015_consolidat.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_70_2015_consolidat.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "legea_82_1991_modif_oug115_2023.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_82_1991_modif_oug115_2023.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_82_1991_modif_oug115_2023.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_82_1991_modif_oug138_2024.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_82_1991_modif_oug138_2024.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "legea_82_1991_modif_oug138_2024.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "og_16_2022_consolidat.html": {
       "exista": true,
@@ -1640,121 +1357,87 @@
     "og_16_2022_consolidat.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "og_16_2022_consolidat.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "og_26_2000_asociatii_fundatii.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "og_26_2000_asociatii_fundatii.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "og_26_2000_asociatii_fundatii.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omf_107_2025_principalele_aspecte_legate_intocmirea_depunerea.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "omf_107_2025_principalele_aspecte_legate_intocmirea_depunerea.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omf_107_2025_principalele_aspecte_legate_intocmirea_depunerea.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omf_1235_2023.pdf": {
       "exista": true,
       "tip_forma": "forma_la_data",
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omf_1235_2023.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omf_1235_2023.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omf_1855_2022.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omf_1855_2022.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omf_1855_2022.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_170_2015.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_170_2015.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_170_2015.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_1802_2014.pdf": {
       "exista": true,
@@ -1767,142 +1450,102 @@
     "omfp_1802_2014.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_1802_2014.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_2634_2015.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_2634_2015.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_2634_2015.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_2861_2009.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_2861_2009.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_2861_2009.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_3067_2018.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_3067_2018.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_3067_2018.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_3103_2017.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_3103_2017.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_3103_2017.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_660_2017.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_660_2017.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_660_2017.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_897_2015.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_897_2015.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_897_2015.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oms_15_2018_modificare_2025.pdf": {
       "exista": true,
@@ -1912,16 +1555,12 @@
     "oms_15_2018_modificare_2025.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oms_15_2018_modificare_2025.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oms_15_2018_norme.pdf": {
       "exista": true,
@@ -1931,58 +1570,42 @@
     "oms_15_2018_norme.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oms_15_2018_norme.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_102_2025_modificarea_ordinului_presedintelui_agentiei_nationale.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_102_2025_modificarea_ordinului_presedintelui_agentiei_nationale.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_102_2025_modificarea_ordinului_presedintelui_agentiei_nationale.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_146_2018.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_146_2018.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_146_2018.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_174_2026_d300.pdf": {
       "exista": true,
@@ -1992,16 +1615,12 @@
     "opanaf_174_2026_d300.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_174_2026_d300.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_1783_2021_saft_d406.pdf": {
       "exista": true,
@@ -2011,16 +1630,12 @@
     "opanaf_1783_2021_saft_d406.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_1783_2021_saft_d406.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_179_2022_d205_d207_baza.pdf": {
       "exista": true,
@@ -2035,72 +1650,52 @@
     "opanaf_179_2022_d205_d207_baza.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_184_2013.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_184_2013.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_184_2013.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_1950_2012.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_1950_2012.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_1950_2012.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_206_2025.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_206_2025.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_206_2025.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_206_2025_d101.pdf": {
       "exista": true,
@@ -2115,30 +1710,22 @@
     "opanaf_206_2025_d101.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_2194_2025.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_2194_2025.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_2194_2025.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_2194_2025_d394.pdf": {
       "exista": true,
@@ -2148,37 +1735,27 @@
     "opanaf_2194_2025_d394.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_2194_2025_d394.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_299_2025.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_299_2025.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_299_2025.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_303_2026_d205.pdf": {
       "exista": true,
@@ -2193,51 +1770,37 @@
     "opanaf_303_2026_d205.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_355_2024.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_355_2024.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_355_2024.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_3622_2015_aprobarea_modelului_continutului_formulare_utilizate.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_3622_2015_aprobarea_modelului_continutului_formulare_utilizate.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_3622_2015_aprobarea_modelului_continutului_formulare_utilizate.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_3769_2015_d394_baza.pdf": {
       "exista": true,
@@ -2247,60 +1810,44 @@
     "opanaf_3769_2015_d394_baza.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_3769_2015_d394_baza.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_394_2017_d390_anexa2_instructiuni.pdf": {
       "exista": true,
       "tip_forma": null,
       "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala",
       "stare": "abrogat",
       "inlocuit_de": "opanaf_705_2020"
     },
     "opanaf_394_2017_d390_anexa2_instructiuni.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_394_2017_d390_anexa2_instructiuni.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_407_2025.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_407_2025.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_407_2025.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_407_2025_saft_d406.pdf": {
       "exista": true,
@@ -2310,16 +1857,12 @@
     "opanaf_407_2025_saft_d406.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_407_2025_saft_d406.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_57_2026_d100_d710.pdf": {
       "exista": true,
@@ -2334,30 +1877,22 @@
     "opanaf_57_2026_d100_d710.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_587_2016_aprobarea_modelului_continutului_formularelor_utilizate.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "opanaf_587_2016_aprobarea_modelului_continutului_formularelor_utilizate.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_587_2016_aprobarea_modelului_continutului_formularelor_utilizate.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_592_2016_d301.pdf": {
       "exista": true,
@@ -2367,16 +1902,12 @@
     "opanaf_592_2016_d301.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_592_2016_d301.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_605_2026_d112.pdf": {
       "exista": true,
@@ -2391,9 +1922,7 @@
     "opanaf_605_2026_d112.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_705_2020_d390.pdf": {
       "exista": true,
@@ -2403,37 +1932,27 @@
     "opanaf_705_2020_d390.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_705_2020_d390.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_779_2024.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_779_2024.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_779_2024.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_77_2022.pdf": {
       "exista": true,
@@ -2453,44 +1972,32 @@
     "opanaf_793_2016.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_793_2016.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_793_2016.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_888_2018.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_888_2018.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_888_2018.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "ordin_1574_3246_2025.html": {
       "exista": true,
@@ -2500,16 +2007,12 @@
     "ordin_1574_3246_2025.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "ordin_1574_3246_2025.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "ordin_1574_3246_2025_cultural.pdf": {
       "exista": true,
@@ -2524,9 +2027,7 @@
     "ordin_1574_3246_2025_cultural.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "ordin_361_2680_2025.html": {
       "exista": true,
@@ -2536,16 +2037,12 @@
     "ordin_361_2680_2025.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "ordin_361_2680_2025.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "ordin_369_2624_2026.html": {
       "exista": true,
@@ -2555,16 +2052,12 @@
     "ordin_369_2624_2026.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "ordin_369_2624_2026.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "ordin_506_1030_2026_norme_oug158.html": {
       "exista": true,
@@ -2574,16 +2067,12 @@
     "ordin_506_1030_2026_norme_oug158.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "ordin_506_1030_2026_norme_oug158.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_115_2023_consolidat.html": {
       "exista": true,
@@ -2601,58 +2090,42 @@
     "oug_115_2023_consolidat.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "oug_115_2023_consolidat.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "oug_120_2021.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_120_2021.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_120_2021.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_138_2024.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_138_2024.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_138_2024.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_156_2024.pdf": {
       "exista": true,
@@ -2677,16 +2150,12 @@
     "oug_156_2024.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_156_2024.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_158_2005_consolidat.html": {
       "exista": true,
@@ -2696,16 +2165,12 @@
     "oug_158_2005_consolidat.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "oug_158_2005_consolidat.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "oug_158_2005_pre_L141.html": {
       "exista": true,
@@ -2715,79 +2180,57 @@
     "oug_158_2005_pre_L141.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_158_2005_pre_L141.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_200_2008_modificarea_completarea.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "oug_200_2008_modificarea_completarea.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_200_2008_modificarea_completarea.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_25_2018.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_25_2018.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_25_2018.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_26_2019_modificarea_completarea_acte_normative.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "oug_26_2019_modificarea_completarea_acte_normative.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_26_2019_modificarea_completarea_acte_normative.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_34_2024_consolidat.html": {
       "exista": true,
@@ -2797,37 +2240,27 @@
     "oug_34_2024_consolidat.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "oug_34_2024_consolidat.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "oug_41_2022.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_41_2022.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_41_2022.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_50_2015_consolidat.html": {
       "exista": true,
@@ -2845,37 +2278,48 @@
     "oug_50_2015_consolidat.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "oug_50_2015_consolidat.txt": {
       "exista": true,
       "tip_forma": null,
+      "acopera": []
+    },
+    "oug_77_1999_masuri_prevenire_incapacitate_plata.html": {
+      "exista": true,
+      "tip_forma": null,
       "acopera": [],
       "sursa": "static.anaf.ro",
-      "forma": "consolidata"
+      "forma": "necunoscuta"
+    },
+    "oug_77_1999_masuri_prevenire_incapacitate_plata.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "oug_77_1999_masuri_prevenire_incapacitate_plata.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
     },
     "oug_85_2022.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_85_2022.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_85_2022.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_89_2025.html": {
       "exista": true,
@@ -2907,16 +2351,12 @@
     "oug_89_2025.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_89_2025.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_8_2009_acordarea_tichetelor_vacanta.html": {
       "exista": true,
@@ -2929,16 +2369,12 @@
     "oug_8_2009_acordarea_tichetelor_vacanta.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_8_2009_acordarea_tichetelor_vacanta.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_8_2026.html": {
       "exista": true,
@@ -2970,16 +2406,12 @@
     "oug_8_2026.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_8_2026.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_91_2025.html": {
       "exista": true,
@@ -2989,37 +2421,27 @@
     "oug_91_2025.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_91_2025.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_96_2003_protectia_maternitatii_locurile_munca.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "consolidata"
+      "acopera": []
     },
     "oug_96_2003_protectia_maternitatii_locurile_munca.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_96_2003_protectia_maternitatii_locurile_munca.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "pdf_original": {
       "exista": true,
@@ -3029,23 +2451,17 @@
     "structura_D104_2012_v100_030613.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D104_2012_v100_030613.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D104_2012_v100_030613.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D107_2024_010726.pdf": {
       "exista": true,
@@ -3065,23 +2481,17 @@
     "structura_D110_2026_240326.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D110_2026_240326.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D110_2026_240326.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D112_0726_030826.pdf": {
       "exista": true,
@@ -3091,16 +2501,12 @@
     "structura_D112_0726_030826.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D112_0726_030826.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D177_2026.pdf": {
       "exista": true,
@@ -3135,86 +2541,62 @@
     "structura_D220_2017_09012018.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D220_2017_09012018.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D220_2017_09012018.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D221_2017_050118.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D221_2017_050118.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D221_2017_050118.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D223_2016_050116_13012016.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D223_2016_050116_13012016.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D223_2016_050116_13012016.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D307_2017_071117.pdf": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D307_2017_071117.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D307_2017_071117.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D311_2021_290121.pdf": {
       "exista": true,
@@ -3224,16 +2606,12 @@
     "structura_D311_2021_290121.pdf.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "structura_D311_2021_290121.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "versiuni.xml": {
       "exista": true,

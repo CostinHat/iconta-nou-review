@@ -134,7 +134,11 @@ for fname in sorted(fisiere_pe_disc):
 citate_lipsa = sorted(set(per_fisier) - fisiere_pe_disc)
 
 # Acte ABROGATE (fara fisier pe disc): marcaj explicit ca absenta NU e o gaura, ci un act inlocuit.
-_ABROGATE = {"opanaf_394_2017_d390_anexa2_instructiuni.pdf": {"stare": "abrogat", "inlocuit_de": "opanaf_705_2020"}}
+_ABROGATE = {
+    "opanaf_394_2017_d390_anexa2_instructiuni.pdf": {"stare": "abrogat", "inlocuit_de": "opanaf_705_2020"},
+    "hg_685_1999_norme_compensare_creante_datorii.html": {"stare": "abrogat", "inlocuit_de": "hg_773_2019",
+        "nota": "abrogat de HG 773/2019 (in vigoare 01.01.2020); forma istorica adusa pt referinta - HG 773/2019 nu e in corpus"},
+}
 for _k, _v in _ABROGATE.items():
     fisiere.setdefault(_k, {}).update(_v)
 

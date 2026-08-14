@@ -9169,3 +9169,32 @@ FIX core/test_d177.py: date an fiscal 2025, CUI beneficiar valid, luna=12, contr
 ELIMINAT - test_d177_valid_pe_validatorul_oficial trece GENUIN pe validatorul oficial (via DecValidation nou din
 duk.py), nu mai e fals-verde. Singura declaratie afectata era D177 (verificat: din 31 cablate, doar d177+d216
 sunt generatie noua; d216 valida corect). Datorie INCHISA.
+
+## 14.08.2026 — Compensari cu tertii (core/compensare.py): corpus actualizat intai, apoi motor
+
+Compensarea reciproca a creantelor si datoriilor fata de acelasi partener (client 4111 + furnizor 401).
+Cerinta Costin: "verifica la sursa; daca actul lipseste, actualizeaza corpusul intai".
+
+CORPUS ACTUALIZAT INTAI (acte aduse de pe surse reachable non-just.ro; just.ro ramane blocat la IP):
+- Cod civil (Legea 287/2009) art.1616-1623 - compensarea legala (codulcivil.ro).
+- OUG 77/1999 - baza sistemului de compensare intre operatori (legex.ro; forma initiala, modificata ulterior).
+- HG 685/1999 - Norme compensare (legex.ro). ATENTIE: ABROGAT de HG 773/2019 (01.01.2020) -> marcat "abrogat"
+  in INDEX (gen_index _ABROGATE, inlocuit_de hg_773_2019). Surse neoficiale (disclaimer legex/codulcivil).
+INDEX.json regenerat (PYTHONPATH=. venv/bin/python anaf_surse/gen_index.py).
+
+MOTOR (core/compensare.py, PUR, ca decontari_asociati): suma_compensabila = min(creanta, datorie);
+nota_compensare -> 401 = 4111 pe suma compensata; propune_compensari (doar partenerii cu AMBELE solduri > 0);
+pull din solduri_parteneri (411* debit = creanta, 401* credit = datorie).
+TEMEI verbatim din corpus:
+- Cod civil art.1616 "se sting pana la concurenta celei mai mici" -> min; art.1617 (certe/lichide/exigibile,
+  preconditii confirmate de contabil); art.1618 (excluderi).
+- OMFP 1802/2014 pct.56 alin.(3): compensarea se inregistreaza DUPA contabilizare; valoarea BRUTA se prezinta
+  in note -> nota pastreaza brutul + resturile, nu doar netul; alin.(1) necompensarea e despre PREZENTAREA in
+  situatii, distincta de stingerea reala.
+
+NEHARDCODAT (regula verificarii la sursa): pragul de la care compensarea intre operatori intra in sistemul
+electronic - HG 685/1999 (care il stabilea) e abrogat, iar HG 773/2019 (pragul curent) nu e in corpus.
+necesita_sistem_electronic(suma, prag) intoarce None fara prag (necunoscut, nu False); pragul se da din
+configurare dupa aducerea HG 773/2019. De adus din browser: HG 773/2019 (consolidat, pt plafonul curent).
+Teste: core/test_compensare.py (min art.1616, nota 401=4111 echilibrata, brut/rest pct.56, ambele-parti
+obligatorii, prag None, sursa in corpus). 9 teste.

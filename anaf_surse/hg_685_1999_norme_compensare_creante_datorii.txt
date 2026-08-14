@@ -1,0 +1,518 @@
+HG nr. 685/1999 - Norme metodologice monitorizare datorii + Regulament de compensare a datoriilor nerambursate (M.Of. 416/30.08.1999)
+Sursa: http://www.legex.ro/ (Legislatie gratuita, text neoficial)
+======================================================================
+HOTARARE   Nr. 685 din 23 august 1999
+pentru aprobarea Normelor metodologice privind monitorizarea datoriilor
+nerambursate la scadenta ale contribuabililor, persoane juridice, in vederea
+diminuarii blocajului financiar si a pierderilor din economie, si a
+Regulamentului de compensare a datoriilor nerambursate la scadenta ale
+contribuabililor, persoane juridice
+ACT EMIS DE: GUVERNUL ROMANIEI
+ACT PUBLICAT IN: MONITORUL OFICIAL  NR. 416 din 30 august 1999
+In temeiul prevederilor art. 8 din Ordonanta de urgenta a Guvernului nr.
+77/1999 privind unele masuri pentru prevenirea incapacitatii de plata,
+Guvernul Romaniei hotaraste:
+Art. 1
+Se aproba Normele metodologice privind monitorizarea datoriilor nerambursate
+la scadenta ale contribuabililor, persoane juridice, in vederea diminuarii
+blocajului financiar si a pierderilor din economie, prevazute in anexa nr. 1.
+Art. 2
+Se aproba Regulamentul de compensare a datoriilor nerambursate la scadenta
+ale contribuabililor, persoane juridice, prevazut in anexa nr. 2.
+Art. 3
+Incepand cu data de 1 octombrie 1999 se interzice utilizarea altor
+documente de compensare in afara celor prevazute in regulamentul de compensare
+aprobat prin prezenta hotarare.
+Art. 4
+Anexele nr. 1 si 2 fac parte integranta din prezenta hotarare.
+Art. 5
+Pe data intrarii in vigoare a prezentei hotarari se abroga Hotararea
+Guvernului nr. 135/1998 privind aprobarea Regulamentului de compensare a
+datoriilor nerambursate la scadenta ale agentilor economici din industrie,
+publicata in Monitorul Oficial al Romaniei, Partea I, nr. 163 din 23 aprilie
+1998, si Hotararea Guvernului nr. 912/1998 pentru aprobarea Metodologiei de
+monitorizare a datoriilor nerambursate la scadenta ale agentilor economici la
+care statul este actionar majoritar, publicata in Monitorul Oficial al
+Romaniei, Partea I, nr. 494 din 22 decembrie 1998.
+PRIM-MINISTRU
+RADU VASILE
+Contrasemneaza:
+p. Ministrul industriei
+si comertului,
+Nicolae Staiculescu,
+secretar de stat
+Ministrul finantelor,
+Decebal Traian Remes
+ANEXA 1
+NORME METODOLOGICE
+privind monitorizarea datoriilor nerambursate la scadenta ale contribuabililor,
+persoane juridice, in vederea diminuarii blocajului financiar si a pierderilor
+din economie
+Art. 1
+Institutul de Management si Informatica din cadrul Ministerului Industriei
+si Comertului va gestiona unitar toate informatiile primite de la
+contribuabili, persoane juridice.
+Art. 2
+(1) Contribuabilii, persoane juridice, sunt obligati sa se conecteze prin
+INTERNET sau sa foloseasca suportul magnetic (dischete) pentru a transmite in
+baza de date a Institutului de Management si Informatica datele privind platile
+restante mai vechi de 30 de zile, cu o valoare mai mare de 100 milioane lei.
+Pentru facturile care se incadreaza in aceste conditii se transmit urmatoarele
+informatii:
+a) codul fiscal al persoanei juridice raportoare;
+b) codul fiscal al persoanei juridice creditoare/debitoare fata de care
+raportorul are de platit/incasat;
+c) numarul si data emiterii facturii de catre persoana juridica
+creditoare/debitoare;
+d) valoarea facturii care urmeaza sa fie incasata de persoana juridica
+raportoare de la persoana juridica beneficiara;
+e) valoarea facturii care urmeaza sa fie platita de persoana juridica
+raportoare persoanei juridice furnizoare.
+Informatiile prevazute la art. 2 lit. c) din Ordonanta de urgenta a
+Guvernului nr. 77/1999 vor respecta aceleasi conditii (datorii mai vechi de 30
+de zile si mai mari de 100 milioane lei).
+Acestea sunt:
+- volumul creditelor nerambursate in termen catre bancile finantatoare,
+inclusiv dobanzile aferente;
+- volumul debitelor catre bugetul de stat, bugetele locale, bugetul
+asigurarilor sociale de stat si bugetele fondurilor speciale, neachitate in
+termen, inclusiv majorarile de intarziere datorate si penalizarile, dupa caz;
+- volumul creantelor fata de persoanele juridice, care se finanteaza total
+sau partial de la bugetul de stat;
+- volumul creditelor comerciale acordate de agentii economici, nerambursate
+la scadenta.
+(2) Datele prevazute la alin. (1) vor fi comunicate, potrivit
+instructiunilor pentru transmiterea datelor, prevazute in anexa nr. 1.1 care
+face parte integranta din prezentele norme metodologice.
+Art. 3
+Institutul de Management si Informatica din cadrul Ministerului Industriei
+si Comertului va acorda, la cerere, in mod gratuit, consultanta asupra modului
+de creare si de actualizare a fisierelor tip DBF prezentate la art. 2.
+Art. 4
+Dupa introducerea in sistem a datelor prevazute la art. 2 contribuabilii,
+persoane juridice, au obligatia sa le actualizeze permanent la intervale de cel
+mult 30 de zile, operand modificarile survenite.
+Art. 5
+Contribuabilii, persoane juridice, care nu inregistreaza datorii sau
+creante mai vechi de 30 de zile si care au o valoare mai mare de 100 milioane
+lei (conform restrictiilor prevazute la art. 2) nu sunt obligate sa transmita
+informatiile.
+Art. 6
+Contribuabilii, persoane juridice, care doresc sa intre in sistemul de
+compensare pot transmite si facturi mai noi de 30 de zile, cu valori mai mici
+de 100 milioane lei/factura.
+ANEXA 1.1
+INSTRUCTIUNI
+pentru transmiterea datelor
+Transmiterea datelor cu privire la datorii si creante Institutului de
+Management si Informatica se poate face in doua moduri:
+1. pe INTERNET;
+2. pe suport magnetic (discheta) sau fisier transmis prin e-mail.
+1. Pe INTERNET
+In aceasta varianta persoanele juridice isi gestioneaza in timp real
+propriile informatii: se introduc date in baza de date I.M.I.; se fac
+modificari la nivel de factura; se obtin informatii utile despre partenerii
+fata de care au datorii sau creante.
+Browserul utilizat trebuie sa fie de tip:
+Microsoft Internet Explorer - versiunea 4.x sau Nescape - versiunea 4.x.
+Adresa pe INTERNET este urmatoarea: http://gama.imi.ro.
+Pentru securitatea datelor prezentate de persoanele juridice raportoare pe
+INTERNET, accesarea se va face prin intermediul unei parole acordate de catre
+administratorul bazei de date a Institutului de Management si Informatica,
+telefon 659.45.83.
+2. Pe suport magnetic sau fisier e-mail
+A. Structura fisierului tip DBF pentru transmiterea informatiilor prevazute
+la art. 2 lit. a) si b) din Ordonanta de urgenta a Guvernului nr. 77/1999 va fi
+urmatoarea:
+- codul fiscal al punctului de raportare*) (fara R), NUMERIC (10);
+- codul fiscal al persoanei juridice raportoare*), obligatoriu de completat
+(fara R), NUMERIC (10);
+- codul fiscal al persoanei juridice creditoare/debitoare, fata de care
+persoana juridica raportoare are de platit sau de incasat, obligatoriu de
+completat (fara R), NUMERIC (10);
+- numarul facturii, CHARACTER (10);
+- data facturii (in format de data calendaristica FOX sau DBASE), DATE;
+- valoarea facturii ce urmeaza a fi incasata de persoana juridica
+raportoare de la persoana juridica debitoare, NUMERIC (15);
+- valoarea facturii ce urmeaza a fi platita de persoana juridica raportoare
+persoanei juridice creditoare, NUMERIC (15);
+- un camp MARCAJ, CHARACTER (1), care poate avea urmatoarele valori:
+- blanc = adaugare factura
+- M = modificare valoare
+- S = stergere factura.
+Structura numelui fisierului transmis va fi urmatoarea:
+- C
+- numarul secvential al fisierului transmis (2 caractere)
+- codul fiscal al persoanei juridice raportoare.
+Exemplu: C01 cod fiscal.
+B. Structura fisierului tip DBF pentru transmiterea informatiilor prevazute
+la art. 2 lit. c) din Ordonanta de urgenta a Guvernului nr. 77/1999 va fi
+urmatoarea:
+- codul fiscal al punctului de raportare (fara R), NUMERIC (10);
+- codul fiscal al persoanei juridice raportoare (fara R), obligatoriu de
+completat, NUMERIC (10);
+- volumul creditelor nerambursate in termen catre bancile finantatoare,
+inclusiv dobanzile aferente, NUMERIC (16);
+- volumul debitelor catre bugetul de stat, neachitat in termen, inclusiv
+majorarile de intarziere datorate si penalizarile, dupa caz, NUMERIC (16);
+- volumul debitelor catre bugetele locale, neachitat in termen, inclusiv
+majorarile de intarziere datorate si penalizarile, dupa caz, NUMERIC (16);
+- volumul debitelor catre bugetul asigurarilor sociale de stat, neachitat
+in termen, inclusiv majorarile de intarziere datorate si penalizarile, dupa
+caz, NUMERIC (16);
+- volumul debitelor catre bugetele fondurilor speciale, neachitat in
+termen, inclusiv majorarile de intarziere datorate si penalizarile, dupa caz,
+NUMERIC (16);
+- volumul creantelor fata de persoane juridice, care se finanteaza total
+sau partial de la bugetul de stat, NUMERIC (16);
+- volumul creditelor comerciale acordate de agentii economici, nerambursate
+la scadenta, NUMERIC (16);
+- un camp marcaj, CHARACTER (1), care poate avea urmatoarele valori:
+- blanc = adaugare
+- M = modificare valori
+- S = anularea valorilor raportate.
+Structura numelui fisierului transmis va fi urmatoarea:
+- B
+- numarul secvential al fisierului transmis (2 caractere)
+- codul fiscal al persoanei juridice raportoare.
+Exemplu: B01 cod fiscal.
+Daca softul utilizat nu permite completarea celor 13 caractere, atunci se
+vor completa numai primele 8 caractere.
+Fisierele de date descrise la pct. 2 lit. A si B pot fi transmise la
+Institutul de Management si Informatica in urmatoarele moduri:
+a) prin e-mail la adresa: compensare@alfa.imi.ro;
+b) pe discheta prin posta;
+c) pe discheta predata la sediul Institutului de Management si Informatica.
+Recomandam ca transmiterea initiala a datelor sa se faca sub forma de
+fisiere prin e-mail, urmand ca actualizarile sa fie facute prin lucru direct pe
+INTERNET.
+------------
+*) Punctul de raportare = locul de unde se transmite informatia.
+*) Persoana juridica raportoare = persoana juridica care transmite
+informatia.
+ANEXA 2
+REGULAMENT DE COMPENSARE
+a datoriilor nerambursate la scadenta ale contribuabililor, persoane juridice
+Art. 1
+Obiectul regulamentului de compensare
+Obiectul regulamentului de compensare il constituie compensarea succesiva a
+obligatiilor de plata reciproce dintre persoane juridice, pe baza de ordine de
+compensare.
+Art. 2
+Termenii utilizati
+1. Compensare fara numerar - stingerea obligatiilor de plata reciproce
+intre doua sau mai multe persoane juridice, pana la concurenta obligatiei celei
+mai mici, prin ordine de compensare.
+2. Compensare de mica valoare - anularea obligatiilor de plata reciproce
+sub 100 milioane lei.
+3. Compensare succesiva inchisa - modalitatea de stingere a obligatiilor
+din operatiuni economice care privesc perioada trecuta si care sting datoriile
+existente la un moment dat intre parti.
+4. Compensare succesiva deschisa - modalitatea de stingere a obligatiilor
+din operatiuni economice intre doua sau mai multe persoane juridice pentru
+datorii certe existente, inregistrate in contabilitate, cu exceptia celor
+pentru care s-au introdus actiuni la instantele judecatoresti.
+5. Persoane juridice - agentii economici organizati sub forma de societati
+comerciale, companii/societati nationale, regii autonome, institutii publice,
+unitati ale administratiei publice centrale si locale si alti contribuabili,
+persoane juridice.
+6. Persoana juridica initiatoare - persoana juridica care solicita
+stingerea obligatiilor reciproce prin intermediul unui act de compensare.
+7. Persoana juridica destinatara - persoana juridica care accepta
+compensarea unei creante prin datoria sa catre initiator. Compensarea poate
+avea loc la nivelul cel mai mic al datoriilor si creantelor reciproce.
+8. Serviciu de compensare - agentul de intermediere care primeste,
+analizeaza si negociaza periodic, in prezenta reprezentantilor persoanelor
+juridice, compensarea obligatiilor reciproce prin emiterea ordinelor de
+compensare.
+9. Instrument de plata - ordinul de compensare emis de serviciul de
+compensare in baza procesului-verbal de compensare prin care clientul si
+furnizorul isi lichideaza datoriile de valoare egala. Documentul este prezentat
+in anexa nr. 2.1.
+10. Inspector de compensare - persoana care reprezinta persoana juridica ce
+solicita serviciului de compensare sa ii presteze activitati in vederea
+compensarii.
+Inspectorul de compensare este desemnat, pentru fiecare sedinta, printr-o
+imputernicire acordata de persoanele care reprezinta persoana juridica. La
+fiecare sedinta de compensare documentul de imputernicire se prezinta la
+serviciul de organizare a sedintei de compensare. Documentul este prezentat in
+anexa nr. 2.2. Fiecare persoana juridica este responsabila de editarea si
+gestionarea formularelor respective, acestea avand caracter de regim special.
+11. Agent de compensare - persoana care reprezinta serviciul de compensare
+in sedintele de compensare. Agentul de compensare conduce sedinta de compensare
+pentru circuitele pentru care a fost desemnat de conducatorul serviciului de
+compensare.
+12. Ziua de compensare - ziua lucratoare in care se desfasoara sedinta de
+compensare.
+Art. 3
+Serviciul de compensare - organizare si atributii
+Serviciul de compensare functioneaza in cadrul Institutului de Management
+si Informatica din cadrul Ministerului Industriei si Comertului, avand
+urmatoarele compartimente:
+- compartimentul de analiza si identificare a circuitelor de compensare pe
+baza informatiilor transmise de persoanele juridice;
+- compartimentul de organizare a sedintelor de compensare, care primeste,
+inregistreaza, prezinta circuitele de compensare, intocmeste procesele-verbale
+de sedinta si transmite hotararile pentru emiterea ordinelor de compensare;
+- compartimentul de decontari, care emite ordine de compensare, tine
+evidenta lor si solutioneaza litigiile.
+Art. 4
+Obiectul compensarii succesive a platilor intre agentii economici pe baza
+ordinelor de compensare
+Obiectul compensarii succesive il constituie stingerea datoriilor, cu
+creantele reflectate in contabilitatea persoanelor juridice pe baza ordinelor
+de compensare.
+Art. 5
+Circuitele, termenele si intervalele obligatorii ale platilor prin
+compensare
+Persoana juridica initiatoare devine persoana juridica destinatara in
+momentul in care au fost emise si primite ordinele de compensare (instrumentele
+de plata) in numele persoanelor juridice dintr-un lant de compensare, negociate
+in cadrul sedintei care se consemneaza in procesul-verbal de compensare, model
+prezentat in anexa nr. 2.3.
+Data efectuarii stingerii datoriilor si a creantelor este cea a ordinului
+de compensare si se opereaza in toate documentele initiale (proces-verbal si
+ordin de compensare).
+Art. 6
+Sedinta de compensare
+Sedinta de compensare se organizeaza in termen de 3 zile de la momentul
+identificarii circuitului de compensare, de regula in zilele de marti, miercuri
+si joi.
+Sedinta se organizeaza la sediul Ministerului Industriei si Comertului.
+Sedinta zilnica se incheie prin consemnarea in procesul-verbal (anexa nr.
+2.3) a denumirii persoanelor juridice si a sumelor angajate in compensare, care
+se semneaza de catre reprezentantii acestora si de catre agentul de compensare
+desemnat de Serviciul de compensare pentru fiecare circuit, iar pe baza anexei
+se intocmesc ordinele de compensare conform modelului prezentat in anexa nr.
+2.1, remise intr-un exemplar fiecarei persoane juridice, consemnandu-se suma
+compensata cu fiecare persoana juridica.
+In borderoul pentru decontarile facute prin ordinul de compensare de pe
+versoul formularului prezentat in anexa nr. 2.1 se consemneaza situatia
+documentelor primare cuprinse in suma compensata pentru fiecare persoana
+juridica.
+Art. 7
+Orarul sedintelor de compensare
+Orarul sedintelor de compensare se stabileste intre orele 8,30 - 16,00,
+cuprinzand patru parti:
+Partea I - prezentarea si inscrierea documentelor de acreditare a
+inspectorilor de compensare, reprezentanti ai persoanelor juridice conform
+modelului prezentat in anexa nr. 2.2.
+Partea a II-a - in care Compartimentul de analiza si identificare circuite
+de compensare prezinta inspectorilor de compensare, reprezentanti ai
+persoanelor juridice, propunerile circuitelor de compensare inchise,
+identificate.
+Partea a III-a - in care Compartimentul de organizare a compensarii
+intocmeste procesul-verbal de sedinta pentru fiecare circuit de compensare
+inchis, in prezenta si sub semnatura inspectorilor de compensare acreditati si
+cu stampila acestora, conform modelului prezentat in anexa nr. 2.3.
+Partea a IV-a - in care Compartimentul decontari emite ordine de compensare
+si inregistreaza procesele-verbale de compensare. Ordinele de compensare poarta
+semnaturile emitentului si ale inspectorilor de compensare, reprezentanti ai
+persoanei juridice initiatoare si destinatare. De asemenea, borderoul
+facturilor in baza carora s-a stabilit valoarea de compensare va fi semnat de
+cei doi inspectori de compensare.
+Art. 8
+Evidenta operatiunilor de compensare
+In cadrul Serviciului de compensare se deschide Registrul de evidenta a
+operatiunilor de compensari prezentat in modelul din anexa nr. 2.4 in care se
+inscriu, in ordine cronologica:
+- data efectuarii compensarii;
+- procesele-verbale de sedinta in care sunt inscrise persoanele juridice
+intrate in compensare si suma compensata, pe fiecare relatie;
+- evidenta ordinelor de compensare, cu numarul si valoarea lor, eliberate
+fiecarei persoane juridice.
+Art. 9
+Organizarea Serviciului de compensare
+Structura organizatorica va fi incorporata in Institutul de Management si
+Informatica in cadrul numarului de personal aprobat prin Hotararea Guvernului
+nr. 382/1997 privind organizarea si functionarea Ministerului Industriei si
+Comertului, cu modificarile ulterioare.
+Serviciul de compensare va functiona experimental pentru o perioada de 4
+luni de la intrarea in vigoare a prezentului regulament, fara a percepe
+comision pentru operatiunile de compensare intermediate.
+Documentele necesare functionarii Serviciului de compensare, in perioada
+experimentala, vor fi asigurate de catre fiecare persoana juridica
+participanta, conform intelegerii cu colectivul de conducere al acestuia.
+Toate datele furnizate de persoanele juridice trebuie sa fie corecte, in
+caz contrar atragand raspunderea civila si penala potrivit legii.
+Toate compensarile intermediate conform prezentului regulament sunt legal
+efectuate.
+Art. 10
+Solutionarea litigiilor, corectarea erorilor
+Litigiile se solutioneaza in zilele programate pentru desfasurarea
+sedintelor de compensare de catre inspectorii de compensare care reprezinta
+unitatile in litigii; se incheie un proces-verbal in care se prevad masurile
+care trebuie luate de catre parti.
+Erorile vor fi solutionate la cererea persoanei juridice in cauza prin
+analiza naturii erorii si a efectelor financiare pentru petent. In cazul in
+care partile nu cad de acord asupra modului de compensare a obligatiilor de
+plata, compensarea nu opereaza.
+Daca eroarea afecteaza mai multe persoane juridice, Serviciul de compensare
+va transmite tuturor celor in cauza corectiile ce urmeaza sa fie facute,
+astfel:
+- pentru documente gresit redactate (cifre gresite), documentul se va
+prezenta in original, pentru anulare, emitandu-se un alt ordin de compensare
+corect;
+- pentru inscrierea gresita a denumirii persoanei juridice cu care s-a
+facut compensarea, ordinul de compensare respectiv va fi anulat, fiind emis un
+alt ordin de compensare corect.
+Documentele inlocuitoare opereaza de la aceeasi data cu cea a documentelor
+emise initial;
+- documentele emise pentru corectare se inscriu intr-un registru special de
+catre agentul de compensare, semnat de Serviciul de compensare, pentru
+rezolvarea litigiului si de catre cei doi sau mai multi agenti de compensare
+afectati. Registrul de erori de compensare este prezentat in anexa nr. 2.5.
+Art. 11
+Regimul ordinelor de compensare
+Ordinele de compensare au regim special, sunt numerotate din tipografie,
+iar evidenta lor este stricta. Ordinele de compensare eronat completate sau
+necompletate si degradate se distrug de o comisie desemnata special de catre
+conducatorul Serviciului de compensare pentru aceasta, intocmindu-se un
+proces-verbal.
+Ordinul de compensare emis de Serviciul de compensare reprezinta document
+justificativ de inregistrare in contabilitate a stingerii creantelor si a
+datoriilor care au facut obiectul compensarii. Ordinul de compensare se
+anexeaza la nota contabila.
+Art. 12
+Anexele nr. 2.1. - 2.5. fac parte integranta din prezentul regulament.
+ANEXA 2.1.
+ORDIN DE COMPENSARE
+Seria A Nr. ............ din data de ........../......../.......... pentru
+suma de: ..................
+Agentul economic initiator ................................................
+Agentul economic destinatar ...............................................
+SERVICIUL DE COMPENSARE
+AGENTUL DE COMPENSARE
+OPERATIUNEA DE COMPENSARE
+ORDIN DE COMPENSARE
+Seria A Nr. ............ din data de ........../......../..........  pentru
+suma de: ..................
+_________________________________________
+AGENTUL ECONOMIC INITIATOR   |                                         |
+|                                         |
+Semnatura si stampila        |_________________________________________|
+_________________________________________
+AGENTUL ECONOMIC DESTINATAR  |                                         |
+|                                         |
+Semnatura si stampila        |_________________________________________|
+ATENTIE!
+Nu se deconteaza prin banca.
+Nu se schimba contra numerar.
+Nu se admit stersaturi, corecturi, modificari.
+Priveste numai obligatii certe (fara dobanzi si penalitati).
+Circula numai in original.
+Diminuarea obligatiilor se face la data inscrisa pe ordinul de compensare.
+NOTA:
+Pe verso se trec elementele de identificare ale facturilor care fac
+obiectul compensarii.
+SERVICIUL DE COMPENSARE
+AGENTUL DE COMPENSARE
+OPERATIUNEA DE COMPENSARE
+Borderoul datoriilor stinse pentru justificarea prin ordinul de compensare
+Seria A Nr. ............ din data de ........../......../..........
+_________________________________________________________________________
+Numarul     Data emiterii   Valoarea facturata     Valoarea compensata
+facturii      facturii
+_________________________________________________________________________
+_________________________________________________________________________
+_________________________________________________________________________
+_________________________________________________________________________
+_________________________________________________________________________
+_________________________________________________________________________
+_________________________________________________________________________
+_________________________________________________________________________
+TOTAL:             X
+_________________________________________________________________________
+Inspector de compensare           Inspector de compensare
+destinatar,                        initiator,
+.............................     .............................
+ANEXA 2/2
+Institutia            Seria/nr.   Institutia                Seria    Nr.
+(societatea, regia)               (societatea, regia)
+...................               ...................
+IMPUTERNICIRE                          IMPUTERNICIRE
+Serviciul de compensare .......   Catre Serviciul de compensare .............
+str. ....... nr. ..............   str. ....... nr. ..........................
+sectorul ......................   sectorul ......... localitatea .......... .
+localitatea ...................   Subsemnatii ..............................,
+INSPECTOR DE COMPENSARE           director general/director, si ............,
+PENTRU SEDINTA DIN DATA .......   director economic/contabil-sef,
+Numele ........................   imputernicim ca inspector de compensare
+Functia .......................   pe domnul/doamna ..................., avand
+functia ................... si telefonul la
+serviciu ...................., legitimat(a)
+cu Buletinul de identitate/Pasaportul
+seria ................ nr. ...............,
+domiciliat(a) in localitatea ..............
+str. .........................., nr. .....,
+Director general/director,        bl. ....... sc. .......... ap. ...........,
+.............................     telefonul de la domiciliu ................,
+(semnatura)                 sa reprezinte societatea la sedinta de
+compensare din data de ....................
+Director economic/contabil-sef,       Director                Director
+...............................   general/director,    economic/contabil-sef,
+(semnatura)                .................    ......................
+(semnatura si           (semnatura si
+stampila)               stampila)
+ANEXA 2.3
+Emitent: SERVICIUL DE COMPENSARE: .......
+PROCES-VERBAL AL SEDINTEI NR. ... ... ... ...
+Lista cuprinzand persoanele juridice care intra in compensare din grupa nr.
+din data: ......./........./......
+Valoarea maxima ce poate fi compensata: ................
+Valoarea compensata: ...................................
+_____________________________________________________________________________
+Codul   Denumirea  Numele si prenumele  Semnatura  Stampila  Seria si numarul
+fiscal  agentului  reprezentantului,                         ordinului de
+functia                                   compensare
+_____________________________________________________________________________
+_____________________________________________________________________________
+_____________________________________________________________________________
+_____________________________________________________________________________
+_____________________________________________________________________________
+_____________________________________________________________________________
+_____________________________________________________________________________
+_____________________________________________________________________________
+Serviciul de compensare
+Agentul de compensare,
+...................
+ANEXA 2.4
+REGISTRUL DE EVIDENTA A OPERATIUNILOR DE COMPENSARI
+Semnificatia coloanelor din tabelul de mai jos este urmatoarea:
+A - Data efectuarii compensarii
+B - Locul compensarii
+C - Numarul procesului-verbal de compensare
+D - Numarul persoanelor juridice care au intrat in compensare
+E - Valoarea compensata
+F - Numarul ordinelor emise pentru realizarea compensarii
+G - Responsabilul Serviciului de compensare
+______________________________________________________________
+|     |     |     |     |     |     |             G            |
+|     |     |     |     |     |     |__________________________|
+|  A  |  B  |  C  |  D  |  E  |  F  |   Numele     | Semnatura |
+|     |     |     |     |     |     | si prenumele |           |
+|_____|_____|_____|_____|_____|_____|______________|___________|
+|     |     |     |     |     |     |              |           |
+|     |     |     |     |     |     |              |           |
+|     |     |     |     |     |     |              |           |
+|     |     |     |     |     |     |              |           |
+|_____|_____|_____|_____|_____|_____|______________|___________|
+ANEXA 2.5
+REGISTRUL
+de erori de compensare
+__________________________________________________________________________
+|    | Numarul  |Emitentul |Persoanele |  Suma de |Cauza |    Modul de     |
+| Nr.| si data  |ordinului | juridice  |compensare|erorii|   solutionare   |
+|crt.| ordinului|    de    |cuprinse in|          |      |_________________|
+|    |    de    |compensare|operatiunea|          |      |Anulare| Emitere |
+|    |compensare|          |    de     |          |      |  nr.  |ordin nou|
+|    |          |          |compensare |          |      |decizie| nr. ... |
+|____|__________|__________|___________|__________|______|_______|_________|
+|    |          |          |           |          |      |       |         |
+|    |          |          |           |          |      |       |         |
+|    |          |          |           |          |      |       |         |
+|    |          |          |           |          |      |       |         |
+|    |          |          |           |          |      |       |         |
+|    |          |          |           |          |      |       |         |
+|    |          |          |           |          |      |       |         |
+|____|__________|__________|___________|__________|______|_______|_________|
