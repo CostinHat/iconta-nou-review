@@ -357,8 +357,19 @@ async function actualizeazaTermene(grila) {
   try {
     const r = await api.get("/termene");
     const u = r && r.urmatoarea;
-    if (!u) { zona.innerHTML = "Nicio scadență apropiată"; return; }  // [p80_texte_scurte]
-    zona.innerHTML = `Următoarea scadență: <b>${dataRo(u.termen, "zi_luna_text")}</b>`;   // [P1b] dataRo canonic, nu formator local
+    if (u) {
+      zona.innerHTML = `Următoarea scadență: <b>${dataRo(u.termen, "zi_luna_text")}</b>`;   // [P1b] dataRo canonic, nu formator local
+      return;
+    }
+    // [reconciliere_termene 14.08.2026] "Nicio scadență apropiată" suna curat chiar cand exista restante:
+    // fereastra Termene [azi, azi+60] le exclude prin constructie (term<azi), dar semaforul le arata. Distingem
+    // dupa restantele din /control-fiscal (firme cu declaratii lipsa). Fetch-ul e in try-ul exterior (nu catch
+    // gol nou - garda test_catch_vizibil): daca /control-fiscal pica, cade pe acelasi catch ca /termene.
+    const c = await api.get("/control-fiscal");
+    const restante = ((c && c.firme) || []).filter((f) => (f.lipsa || 0) > 0).length;
+    zona.innerHTML = restante
+      ? `Nicio scadență în 60 de zile · <b class="tip-figura">${restante}</b> cu restanță`
+      : "Nicio scadență în 60 de zile";   // [p80_texte_scurte]
   } catch {}
 }
 
