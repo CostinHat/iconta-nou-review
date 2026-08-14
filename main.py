@@ -106,6 +106,10 @@ async def lifespan(app):
 
 app = FastAPI(title="iConta.eu API", version="2026.1", lifespan=lifespan)
 
+# [log_500_v1] configurare logging o singura data (nu exista basicConfig anterior)
+import logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s %(levelname)s %(name)s %(message)s")
+
 @app.exception_handler(Exception)
 async def _handler_perioada_blocata(request: Request, exc: Exception):
     from fastapi.responses import JSONResponse as _JR
@@ -114,6 +118,8 @@ async def _handler_perioada_blocata(request: Request, exc: Exception):
         detaliu = msg.split("PERIOADA_BLOCATA:")[1].split("\n")[0].strip() \
             if "PERIOADA_BLOCATA:" in msg else "perioada este blocata"
         return _JR(status_code=423, content={"detail": f"Perioada {detaliu}."})
+    # [log_500_v1] traceback vizibil pt erori necunoscute inainte de re-raise
+    logging.getLogger("iconta").exception("Eroare 500 la %s %s", request.method, request.url.path)
     raise exc
 
 _APP_PORNIT_LA = __import__("time").time()  # ICRD_SANATATE_SERVER_V1 - uptime proces
@@ -2299,7 +2305,7 @@ def termene_portofoliu(ctx=Depends(cere_cabinet)):
                     cur.execute("SELECT to_regclass('salariati')")
                     are_sal = False
                     if cur.fetchone()[0]:
-                        cur.execute("SELECT count(*) FROM salariati WHERE activ=true")
+                        cur.execute("SELECT count(*) FROM salariati WHERE (data_incetare IS NULL OR data_incetare >= CURRENT_DATE) AND (data_angajare IS NULL OR data_angajare <= CURRENT_DATE)")
                         are_sal = cur.fetchone()[0] > 0
                 if not vector:
                     # [T1] firma exista dar vectorul fiscal e gol -> nu se ascunde: gri cu temei (ca evalueaza_firma)
