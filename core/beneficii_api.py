@@ -118,6 +118,25 @@ def cadou_detalii_luna(conn, schema, an, luna):
         return out
 
 
+def cadou_taxabil_luna(conn, schema, an, luna):
+    """Per salariat: suma TAXABILA a cadourilor in luna. CF art.76(4)a + art.142: neimpozabil pana la
+    300 lei/persoana/ocazie DOAR pentru evenimentele legale (paste/craciun/8martie/1iunie); excedentul
+    peste 300 (eveniment legal) sau valoarea INTEGRALA (eveniment nelegal) = venit salarial. Acelasi
+    plafon pentru impozit si contributii. {salariat_id: suma_taxabila}."""
+    out = {}
+    for sid, entries in cadou_detalii_luna(conn, schema, an, luna).items():
+        s = 0.0
+        for e in entries:
+            val = float(e["valoare"])
+            if e["eveniment"] not in EVENIMENTE_LEGALE:
+                s += val
+            elif val > PLAFON_CADOU:
+                s += val - PLAFON_CADOU
+        if s > 0:
+            out[sid] = s
+    return out
+
+
 def total_an(conn, schema, salariat_id, an, tip, pana_luna=12):
     """Suma acordata unui salariat intr-un an (pt plafonul anual - vacanta 6 sal.minime).
     pana_luna: cumulat pana la luna inclusiv (pt verificare la momentul acordarii)."""

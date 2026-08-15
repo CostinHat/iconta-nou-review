@@ -204,7 +204,7 @@ def _d112_genereaza(prof, salariati, an, luna):
             raise ValueError(
                 "D112: salariatul %s (CNP %s) are data_angajare necompletata - dataAng e obligatoriu in "
                 "D112 (XSD). Completeaz-o in fisa salariatului, nu se emite D112 invalid." % (_nume_s, _cnp_s))
-        brut = _d112int(s.get("brut")) + _d112int(s.get("exces_vacanta", 0))  # [D3] excesul de vacanta in brutul declarat (S731)
+        brut = _d112int(s.get("brut")) + _d112int(s.get("exces_vacanta", 0)) + _d112int(s.get("e83_cadou", 0))  # [D3] exces vacanta + [cadou 16.08] cadou taxabil in brutul declarat (S731)
         facil = _d112int(s.get("facilitate"))
         bazac = brut - facil
         if bazac < 0:
@@ -238,7 +238,7 @@ def _d112_genereaza(prof, salariati, an, luna):
             # (calcul_salariu pe brut_lucrat). Gard: test_pull_declaratii.
             # test_d112_cm_baza_salariala_realizata_nu_brut_intreg. (Rotunjirea Sigma(round) vs round(total) = 2b,
             # datorie separata in GARZI 05.08 - neatinsa aici.)
-            bazac = _d112int(s.get("brut_lucrat", s.get("brut"))) + _d112int(s.get("exces_vacanta", 0)) - facil
+            bazac = _d112int(s.get("brut_lucrat", s.get("brut"))) + _d112int(s.get("exces_vacanta", 0)) + _d112int(s.get("e83_cadou", 0)) - facil
             if bazac < 0:
                 bazac = 0
             zile = nzl - zile_cm
@@ -470,18 +470,20 @@ def _d112_genereaza(prof, salariati, an, luna):
         a.append('    <asiguratE1 E1_1="%d" E1_2="%d" E1_3="0" E1_4="0" E1_5="0" E1_6="%d" E1_7="%d" '
                  'E1_41="0" E1_42="0" E1_421="0" E1_422="0"/>' % (brute, b4base, imp, imp))
         # [8.3 avantaje] bilete de valoare defalcate pe tip: E3_10 masa / E3_75 vacanta / E3_74 cultural /
-        # E3_72 cresa; E3_60 = suma (structura D112: E3_60 >= E3_10+E3_72+E3_73+E3_74+E3_75+...). INFORMATIV -
+        # E3_72 cresa / E3_73 cadou (partea taxabila); E3_60 = suma (structura D112: E3_60 >= E3_10+E3_72+E3_73+E3_74+E3_75). INFORMATIV -
         # NU se atinge E3_8/E1_1 (ar rupe DUK regula S111: E1_1 = Suma(E3_8)); E3_8 (venit, mii) >= E3_60 (bilete,
         # sute) prin constructie. Emise DOAR cand exista avantaje (salariatii fara bilete raman neschimbati).
-        # Probat DUK 04.08.2026. Cadou (E3_73) neinclus - cadou nu e in pipeline-ul de impozit D112 (calcul_salariu).
+        # Probat DUK 04.08.2026. Cadou (E3_73): partea TAXABILA (excedent >300 la eveniment legal / integral la nelegal, CF art.76(4)a + art.142) intra in brut + E3_73 (16.08 - inainte era neinclus).
         _m = _d112int(s.get("e83_masa", 0)); _vc = _d112int(s.get("e83_vacanta", 0))
         _cu = _d112int(s.get("e83_cultural", 0)); _cr = _d112int(s.get("e83_cresa", 0))
-        _e83_total = _m + _vc + _cu + _cr
+        _cd = _d112int(s.get("e83_cadou", 0))   # [cadou] E3_73
+        _e83_total = _m + _vc + _cu + _cr + _cd
         _e83 = ""
         if _e83_total > 0:
             _e83 = ' E3_60="%d"' % _e83_total
             if _m:  _e83 += ' E3_10="%d"' % _m
             if _cr: _e83 += ' E3_72="%d"' % _cr
+            if _cd: _e83 += ' E3_73="%d"' % _cd
             if _cu: _e83 += ' E3_74="%d"' % _cu
             if _vc: _e83 += ' E3_75="%d"' % _vc
         a.append('    <asiguratE3 E3_1="B" E3_2="1" E3_3="1" E3_4="A" E3_5="%s" E3_6="%s" E3_8="%d" '
@@ -606,6 +608,7 @@ def pull(conn, schema, an, luna):
     vac_luna = _ben.lista_luna(conn, schema, an, luna, "vacanta")
     cult_luna = _ben.lista_luna(conn, schema, an, luna, "cultural")  # [tichete culturale]
     cresa_luna = _ben.lista_luna(conn, schema, an, luna, "cresa")  # [tichete de cresa]
+    cadou_tax = _ben.cadou_taxabil_luna(conn, schema, an, luna)  # [cadou] suma taxabila (CF art.76(4)a)
     pe_sal = {}
     for c in cms:
         pe_sal.setdefault(c["salariat_id"], []).append({
@@ -706,7 +709,8 @@ def pull(conn, schema, an, luna):
                                tichet_vacanta=max(_vac_l - _exces_van, 0.0),
                                tichet_vacanta_exces=_exces_van,
                                tichet_cultural=float(s.get("tichet_cultural") or 0),
-                               tichet_cresa=float(s.get("tichet_cresa") or 0))
+                               tichet_cresa=float(s.get("tichet_cresa") or 0),
+                               cadou_taxabil=float(cadou_tax.get(s["id"], 0) or 0))
         s["brut_lucrat"] = brut_lucrat   # consumat de salarii_contare (o singura cifra)
         # [fix salariu-la-data 06.08.2026] brutul DECLARAT (B4_3/B1_sal1) si baza non-CM = salariul LUNII
         # (date-aware _sal_luna=brut_int), NU salariati.salariu_brut (contractual CURENT, stale). Migrarea 29.07
@@ -730,6 +734,7 @@ def pull(conn, schema, an, luna):
         s["e83_vacanta"] = r.get("tichete_vacanta", 0)
         s["e83_cultural"] = r.get("tichete_cultural", 0)
         s["e83_cresa"] = r.get("tichete_cresa", 0)
+        s["e83_cadou"] = r.get("tichete_cadou", 0)   # [cadou] E3_73 (partea taxabila)
         # part-time supra-taxare (art. 146(5^6)/168(6^1) CF, structura D112 v7):
         # part_time = ROUND(prag_pt * zile_lucrate / NZL); daca 0 < baza < part_time
         # -> B4_*P la prag, diferenta pe angajator. Exceptati: scutit+motiv 1-5.

@@ -123,7 +123,8 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
                    norma_intreaga=True, venit_brut_total=None,
                    exceptat_suprataxare=False,
                    tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
-                   facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0, tichet_cresa=0):
+                   facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0, tichet_cresa=0,
+                   cadou_taxabil=0):
     """Întoarce breakdown complet: facilitate, CAS, CASS, deducere, impozit, net, CAM, cost.
 
     Parametri noi (OUG 89/2025 art.III + art.146 Cod fiscal):
@@ -212,7 +213,10 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     # [D3 02.08] excesul intra in VENITUL BRUT impozabil (b_imp), declarat in D112 (S731) - regula DUK
     # S74 recalc B4 din brutul declarat. Atinge tot ce deriva din brut: deducere, CAM, contributii,
     # suprataxare. NET-ul ramane pe CASH (b), excesul e avantaj in natura (tichet), nu numerar.
-    b_imp = b + exces_vac
+    # [cadou 16.08] cadou TAXABIL (excedent >300 la eveniment legal / integral la nelegal, CF art.76(4)a
+    # + art.142) = venit salarial COMPLET: intra in b_imp ca exces_vac -> CAS/CASS (baza_contrib), CAM, impozit.
+    cadou_tax = _dec(cadou_taxabil) if _dec(cadou_taxabil) > 0 else Decimal(0)
+    b_imp = b + exces_vac + cadou_tax
     baza_contrib = b_imp - facilitate
 
     cas = baza_contrib * cota_cas
@@ -307,6 +311,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
         "tichete_nominal": _q(tichete_nominal),    # tichete de MASA (valoare x zile)
         "tichete_vacanta": _q(tichete_vac),        # tichete de VACANTA in plafon (one-off) - Faza 2a
         "tichete_vacanta_exces": _q(exces_vac),    # [D3] exces peste 6 sm -> venit salarial in baza
+        "tichete_cadou": _q(cadou_tax),            # [cadou] partea taxabila -> venit salarial (E3_73)
         "cass_tichete": _q(cass_tichete),          # CASS pe masa + vacanta (inclus in baza CASS D112)
         "impozit_tichete": _q(impozit_tichete),    # impozit pe masa + vacanta + cultural (inclus in "impozit")
         "tichete_cultural": _q(tichete_cult),      # [cultural] valoare nominala; impozit 10%, FARA CASS
@@ -333,7 +338,8 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
                    norma_intreaga=True, venit_brut_total=None,
                    exceptat_suprataxare=False,
                    tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
-                   facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0, tichet_cresa=0):
+                   facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0, tichet_cresa=0,
+                   cadou_taxabil=0):
     """Calcul salariu brut->net, DISPECER pe la_data (varianta de formula valabila la luna venitului).
     Dispecer subtire care forwardeaza toti parametrii catre varianta datata; NU duplica corpul.
     TEMEI: CF art.77 (deducere personala), art.146 alin.(5^6)/(5^7) (contributia minima / exceptari
@@ -348,7 +354,7 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
               tichet_valoare=tichet_valoare, tichet_zile=tichet_zile, tichet_vacanta=tichet_vacanta,
               data_angajare=data_angajare, data_incetare=data_incetare, facilitate_prorata=facilitate_prorata,
               tichet_vacanta_exces=tichet_vacanta_exces, tichet_cultural=tichet_cultural,
-              tichet_cresa=tichet_cresa)
+              tichet_cresa=tichet_cresa, cadou_taxabil=cadou_taxabil)
 
 
 # ============================================================
