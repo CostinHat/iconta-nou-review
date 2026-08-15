@@ -284,12 +284,12 @@ def pull(conn, schema, perioada):
             prof["adresa"] = " ".join(x for x in
                 (prof.get("adresa"), prof.get("oras"), prof.get("judet")) if x)
         cur.execute(
-            "SELECT COALESCE(SUM(l.suma),0) AS venituri FROM inregistrari_linii l "
-            "JOIN inregistrari i ON i.id = l.inregistrare_id "
-            "WHERE i.status='validata' AND l.cont_credit LIKE '70%%' "
-            "AND i.data >= %s AND i.data < %s", (_inc.isoformat(), _sf.isoformat()))
-        r = cur.fetchone() or {"venituri": 0}
-    return prof, r["venituri"]
+            "SELECT COALESCE(SUM(CASE WHEN l.cont_credit LIKE '70%%' THEN l.suma ELSE 0 END),0) AS venituri, "
+            "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' THEN l.suma ELSE 0 END),0) AS cheltuieli "
+            "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
+            "WHERE i.status='validata' AND i.data >= %s AND i.data < %s", (_inc.isoformat(), _sf.isoformat()))
+        r = cur.fetchone() or {"venituri": 0, "cheltuieli": 0}
+    return prof, r["venituri"], r["cheltuieli"]
 
 
 def genereaza(conn, schema, perioada, manual=None):
@@ -299,7 +299,8 @@ def genereaza(conn, schema, perioada, manual=None):
         raise ValueError("D100 trimestrial: trim invalid: %r" % perioada.trim)
     cota = cheie_manual(manual, "cota").get("cota")
     an, luna = perioada.an, perioada.trim * 3
-    prof, venituri = pull(conn, schema, perioada)
+    prof, venituri, cheltuieli = pull(conn, schema, perioada)
+    _avert_profit = None
     # POARTA (27.07.2026): profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF.
     erori = erori_generare(prof)
     if erori:
@@ -314,10 +315,22 @@ def genereaza(conn, schema, perioada, manual=None):
         if suma > 0:
             obligatii.append({"cod_oblig": "121", "suma_dat": suma, "cota": "1"})
     elif regim == "profit":
+        # [profit base fix 16.08] Impozitul pe PROFIT (103) se aplica pe PROFIT (venituri - cheltuieli),
+        # NU pe venituri. Anterior venituri x 16% -> supra-declarare grosolana (SRL cu venituri 1M si
+        # profit 100k primea 160k in loc de 16k). Baza = profit CONTABIL (venituri 70x - cheltuieli 6xx);
+        # ajustarile fiscale (nedeductibile/neimpozabile art.19+ CF) si regularizarea anuala se fac la D101
+        # (avertizat). Profit <= 0 (pierdere in trimestru) -> fara avans de impozit pe profit.
         c = Decimal(str(cota)) if cota is not None else _rata_impozit_default("profit", an, luna)
-        suma = _i(Decimal(str(venituri)) * c / Decimal(100))
+        _profit = Decimal(str(venituri)) - Decimal(str(cheltuieli))
+        suma = _i(_profit * c / Decimal(100)) if _profit > 0 else 0
         if suma > 0:
             obligatii.append({"cod_oblig": "103", "suma_dat": suma})
+            _avert_profit = ("D100 profit: baza = profit contabil (venituri %d - cheltuieli %d = %d) x %s%%. "
+                             "Impozitul pe profit se aplica pe PROFIT, nu pe venituri. Ajustarile fiscale "
+                             "(nedeductibile/neimpozabile art.19+ CF) si regularizarea anuala se fac la D101." %
+                             (_i(Decimal(str(venituri))), _i(Decimal(str(cheltuieli))), _i(_profit), c))
+        elif Decimal(str(venituri)) > 0:
+            _avert_profit = "LOSS"  # semnal pt mesajul de refuz (pierdere in trimestru)
 
     # [zero_base_refuz_v1 10.08.2026] D100 pe zero = XML STRUCTURAL INVALID la DUKIntegrator (sectiunea
     # <obligatie> e OBLIGATORIE, >=1 - verificat la sursa anaf_surse/d100_struct_anaf.txt + DUK: 'lipsa
@@ -331,8 +344,14 @@ def genereaza(conn, schema, perioada, manual=None):
                          "AND data_emitere >= %s AND data_emitere < %s", (_inc.isoformat(), _sf.isoformat()))
             _nf = _cur.fetchone()[0]
         _hint = (" Exista %d facturi emise necontabilizate in perioada - contabilizeaza-le intai." % _nf) if _nf else ""
+        if _avert_profit == "LOSS":
+            raise ValueError("D100 nu se depune pe zero: regim profit cu PIERDERE in trimestru (venituri %d - "
+                             "cheltuieli %d <= 0) -> fara avans de impozit pe profit. Regularizarea se face la D101."
+                             % (_i(Decimal(str(venituri))), _i(Decimal(str(cheltuieli)))))
         raise ValueError("D100 nu se depune pe zero: nicio obligatie (venituri contabilizate cont 70x = 0)." + _hint)
     res = calcul_d100(prof, an, luna, obligatii)
+    if _avert_profit and _avert_profit != "LOSS":
+        res.avertismente.append(_avert_profit)
     # POARTA A DOUA CALE (gard continut, pas 4/4 lant reconciliere): recalcul INDEPENDENT al
     # obligatiei din SURSA (venituri cont 70x, note validate) x cota din registru, confruntat
     # cu suma_dat a generatorului. Prinde CATALOG #31 aggregation-loss (venit scapat din pull ->

@@ -86,6 +86,19 @@ def _venituri_independent(conn, perioada):
         return Decimal(str(cur.fetchone()[0] or 0))
 
 
+def _cheltuieli_independent(conn, perioada):
+    """SUM(l.suma) pe cont_debit 6xx (cheltuieli), note VALIDATE, in fereastra. SQL PROPRIU.
+    Pentru regim PROFIT: profit contabil = venituri(70x) - cheltuieli(6xx) (baza impozitului pe profit)."""
+    inc, sf = perioada.interval()
+    q = ("SELECT COALESCE(SUM(l.suma),0) FROM inregistrari_linii l "
+         "JOIN inregistrari i ON i.id = l.inregistrare_id "
+         "WHERE i.status='validata' AND l.cont_debit LIKE '6%%' "
+         "AND i.data >= %s AND i.data < %s")
+    with conn.cursor() as cur:
+        cur.execute(q, (inc.isoformat(), sf.isoformat()))
+        return Decimal(str(cur.fetchone()[0] or 0))
+
+
 def _cota_procent(regim, nume_cota, an, luna, manual):
     """Cota ca PROCENT (1/16), la fel ca in generator: `manual['cota']` daca dat (contabilul o
     poate suprascrie), altfel din REGISTRU (cota()[0]*100). NU literal inline (interdictie
@@ -110,8 +123,17 @@ def reconciliaza(conn, perioada, res, manual=None):
 
     cod_oblig, nume_cota = _REGIM_OBLIG[regim]
     venituri = _venituri_independent(conn, perioada)
+    # [profit base fix 16.08] profit 103 se impoziteaza pe PROFIT (venituri - cheltuieli 6xx), micro 121 pe
+    # venituri. ACEEASI baza ca generatorul -> reconcilierea nu da fals-pozitiv (limita 5 ramane: ajustarile
+    # FISCALE nedeductibile/neimpozabile art.19+ nu se recalculeaza aici, doar profitul contabil).
+    if regim == "profit":
+        baza = venituri - _cheltuieli_independent(conn, perioada)
+        if baza < 0:
+            baza = Decimal(0)
+    else:
+        baza = venituri
     procent = _cota_procent(regim, nume_cota, res.an, res.luna, manual)
-    suma_cale2 = _q(venituri * procent / Decimal(100))
+    suma_cale2 = _q(baza * procent / Decimal(100))
 
     # suma_dat a generatorului pentru ACEST cod_oblig (0 daca obligatia lipseste din res -
     # atunci un venit nenul la sursa = obligatie SCAPATA = divergenta, nu tacere).
@@ -124,8 +146,8 @@ def reconciliaza(conn, perioada, res, manual=None):
     if gen != suma_cale2:
         divergente.append({
             "cod_oblig": cod_oblig,
-            "eticheta": "impozit %s (cod %s), baza 70x=%d x cota=%s%%" % (
-                regim, cod_oblig, _q(venituri), procent),
+            "eticheta": "impozit %s (cod %s), baza=%d x cota=%s%%" % (
+                regim, cod_oblig, _q(baza), procent),
             "generator": gen, "cale2": suma_cale2, "diferenta": gen - suma_cale2})
     return {"acoperit": True, "motiv": None, "divergente": divergente}
 
