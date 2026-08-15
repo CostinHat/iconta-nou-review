@@ -20,8 +20,10 @@ COTE PE PERIOADE (retinere la sursa, impozit final):
 
 REGULA DE APLICARE: cota se determina dupa DATA DISTRIBUIRII dividendului, nu dupa anul profitului.
 
-NOTA: valoarea 10% folosita in cod (common.COTE['impozit_dividend'], data_in 2024-01-01) NU corespunde
-niciunei perioade - 10% este cota impozitului pe venit (CF art.78), nu pe dividende. EROARE.
+CORECTIE 16.08.2026: nota anterioara ("10% e EROARE, e cota art.78") era GRESITA. 10% ESTE cota pe dividende
+pentru 2025 (OUG 156/2024 art.LXIV+LXV, de la 01.01.2025; confirmat de d205_struct_anaf.txt:6 "8%/2024, 10%/2025,
+16%/2026"). Peticul original avea data_in 2024-01-01 (gresit: 2024=8%), deci era gresit DATA nu cota; a fost aruncat
+in loc sa fie mutat la 2025-01-01. Cronologia corecta: 5% (2016-2022), 8% (2023-2024), 10% (2025), 16% (de la 2026).
 
 Surse web:
 - https://www.pwc.ro/ro/tax-legal/alerts/cele-mai-recente-msuri-fiscale-adoptate-de-guvern--og-nr--16-202.html (5%->8% de la 01.01.2023, OG 16/2022)

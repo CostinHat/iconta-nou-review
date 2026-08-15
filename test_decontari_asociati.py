@@ -5,7 +5,7 @@ import pytest
 from core import decontari_asociati as m
 
 def test_cota():
-    assert m.cota_dividend(date(2025, 12, 31)) == Decimal("8")   # OG 16/2022 (2023-2025)
+    assert m.cota_dividend(date(2025, 12, 31)) == Decimal("10")   # OUG 156/2024 (2025, de la 01.01.2025)
     assert m.cota_dividend(date(2026, 1, 1)) == Decimal("16")
 
 def test_anual():

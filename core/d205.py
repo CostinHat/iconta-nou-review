@@ -355,7 +355,7 @@ def genereaza(conn, schema, perioada, manual=None):
                 platit = _i(Decimal(total_platit) * Decimal(str(a["cota"])) / Decimal(100))
                 distribuit = _i(Decimal(total_distribuit) * Decimal(str(a["cota"])) / Decimal(100))
                 if platit > 0:
-                    # impozit pe dividende PERIOD-AWARE: cota 10% pana in 2025, 16% de la
+                    # impozit pe dividende PERIOD-AWARE: 8% (2023-2024), 10% (2025, OUG 156/2024), 16% de la
                     # 01.01.2026 (Legea 141/2025, CF art.97 - "cota de impozit de 16% asupra
                     # dividendului brut"). baza1/imp1 se calculeaza pe dividendul PLATIT
                     # (impozitul se retine la plata; aliniat cu calea 2 de reconciliere care

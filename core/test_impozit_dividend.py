@@ -11,13 +11,13 @@ def test_impozit_dividend_period_aware_din_cote():
     assert c.cota("impozit_dividend", date(2026, 1, 1))[0] == c.Decimal("0.16") if hasattr(c, "Decimal") else True
     from decimal import Decimal
     assert c.cota("impozit_dividend", date(2026, 6, 1))[0] == Decimal("0.16")
-    assert c.cota("impozit_dividend", date(2025, 6, 1))[0] == Decimal("0.08")  # OG 16/2022 (2023-2025)
+    assert c.cota("impozit_dividend", date(2025, 6, 1))[0] == Decimal("0.10")  # OUG 156/2024 (2025, de la 01.01.2025)
 
 
 def test_cota_dividend_si_lichidare_sursa_din_cote():
     """Ambele functii (decontari_asociati + lichidare) intorc procentul din common.COTE, nu literal."""
     assert int(da.cota_dividend(date(2026, 6, 1))) == 16
-    assert int(da.cota_dividend(date(2025, 6, 1))) == 8
+    assert int(da.cota_dividend(date(2025, 6, 1))) == 10
     assert int(li._cota_dividend(date(2026, 6, 1))) == 16
     assert int(li._cota_dividend(date(2024, 6, 1))) == 8
 

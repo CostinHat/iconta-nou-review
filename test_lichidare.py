@@ -27,7 +27,7 @@ def test_partaj_doar_capital():
 
 def test_cota_veche():
     r = m.partaj(0, 0, 100, date(2025, 6, 1))
-    assert r["impozit"] == Decimal("8.00")   # 8% (OG 16/2022)
+    assert r["impozit"] == Decimal("10.00")   # 10% (OUG 156/2024, 2025; corectat 16.08)
 
 def test_invalid():
     with pytest.raises(ValueError):
