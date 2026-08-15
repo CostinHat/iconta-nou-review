@@ -2673,3 +2673,22 @@ Limite ale remedierii D300 (B1-B4, HEAD c8d3947). Gard de regresie: core/test_d3
 - **Import non-UE (primită non-UE 0%) rămâne pe R26.** TVA vamală / deferment de import depinde de răspunsul ANAF
   (RAPORTAT SEPARAT, vezi raportul de audit / PREDARE_LANT); NEreparat în app - nu se repară aici fără decizia ANAF,
   trimite la ce e raportat separat.
+
+## 15.08.2026 — Plimbarea lui Costin (Firma Grea): datorii inchise (?v= negardat, diacritice frontend, .msg-eroare)
+Trei datorii de disciplina/render descoperite la plimbarea lui Costin, toate INCHISE cu gard sau fix + trimitere la commit.
+- **Disciplina ?v= (cache-bust) era NEGARDATA -> REZOLVAT prin sistem hash-de-continut + gard (087b33a).** Tokenul
+  ?v= al fiecarui asset e acum hash de CONTINUT (anti-cascada), nu contor manual; generatorul versioneaza_assets.py
+  stampileaza toate referintele (117 stampilate, 86 aveau ?v= lipsa). Gardul core/test_versionare_assets.py cade daca
+  un modul JS/CSS e schimbat fara re-stampilare (referinta cu token vechi = gard rosu) sau daca o referinta tinteste
+  un asset inexistent. Cauza radacina a constatarii #1 (selectoarele Clasificare TVA invizibile): emitere_ecran.js
+  schimbat cu ?v=6 neincrementat -> browserul servea versiunea veche din cache; acum staleness-ul e gard rosu, nu
+  descoperire vizuala. Regenerare dupa orice schimbare de asset: `venv/bin/python versioneaza_assets.py --scrie`.
+- **Gardul de diacritice acoperea doar Python -> EXTINS pe frontend (434efa3).** core/test_diacritice_afisate.py
+  scaneaza acum si static/js/** (41 fisiere, high-precision, baseline 0); 27 siruri afisate reparate (carduri de
+  meniu: „Incasari”->„Încasări”, „Operatiuni”->„Operațiuni”, „solduri si”->„solduri și” etc.). LIMITA DECLARATA ramasa: poarta zero-diacritice
+  SARE sirurile care au deja cel putin o diacritica -> nu prinde un cuvant ASCII asezat langa unul diacriticizat in
+  acelasi sir (false-negative deliberat, ca sa evite false-pozitive pe siruri mixte). De ridicat cand se gaseste un
+  criteriu care separa ASCII-necesar-diacritice de ASCII-legitim (markup/cod) in siruri mixte.
+- **.msg-eroare fara regula de curgere -> REZOLVAT (58e2aed).** Mesajele de eroare lungi primesc overflow-wrap /
+  word-break -> se rup in interiorul casetei, fara overflow orizontal pe pagina (probat prin randare headless:
+  scrollWidth == clientWidth pe container si pe document).

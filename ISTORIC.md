@@ -4279,3 +4279,31 @@ rutate numeric ca bunuri, semnalate explicit, neacoperite pe D300. Import non-UE
 Registrele (această intrare + GARZI/DECIZII/TESTE/PREDARE) NEcomise — le comite Costin prin poartă. FĂRĂ git commit.
 Supersede: corectează formularea "fără câmp pe factură" din intrarea 15.08 anterioară (D300 remediere completă) și
 datoria bun-vs-serviciu din GARZI (marcată acum REZOLVATĂ).
+
+## 15.08.2026 — Plimbarea lui Costin pe Firma Grea: 8 constatari reparate + disciplina ?v= gardata
+Costin a parcurs Firma Grea si a semnalat 8 constatari (render, UX, cache, diacritice) + a cerut garduri pe disciplinele
+descoperite. Toate INCHISE in 4 commituri deja comise (HEAD=087b33a):
+- **58e2aed — render CSS (#5,#6) + favicon + canal constatari (#7).** #6 latimea randului de total: .em-total
+  width:320px (max-width:100%, margin-left:auto), pe clasele em-total-rand + em-total-mare - nu mai e intins pe latimea
+  parintelui flex-column. #5 .msg-eroare overflow-wrap/word-break (mesaje lungi se rup, fara overflow orizontal).
+  Favicon: /favicon.ico 404->200 (static/favicon.svg + ruta + link + ruta in lista PUBLICE). #7 canal `note_rezultat`
+  (constatari neutre) separat de `avertismente`; sectiune UI „Constatari”.
+- **8a965f4 — UX coada/validare (#2,#3,#4).** #4 textul „Validat cu DUKIntegrator (validatorul oficial ANAF
+  rulat local)... Nu a fost depusa la ANAF” (nu „Validat la ANAF”). #3 coada afiseaza perioada DECLARATA
+  („august 2026”) + „termen (scadenta)” separat. #2 card „De depus” cand patru-ochi OFF
+  (cardul e patru-ochi-aware).
+- **434efa3 — gard de diacritice extins pe FRONTEND (#8).** core/test_diacritice_afisate.py scaneaza acum
+  static/js/** (41 fisiere, high-precision, baseline 0); 27 siruri reparate („Incasari”->„Încasări”, „Operatiuni”->„Operațiuni”,
+  „solduri si”->„solduri și” etc.).
+- **087b33a — sistem de versionare asseturi cu GARD (#1).** Token ?v= = hash de continut (anti-cascada);
+  versioneaza_assets.py (generator) + core/test_versionare_assets.py (gard, 6 teste); 117 referinte stampilate (86
+  aveau ?v= lipsa). Cauza #1 (selectoare Clasificare TVA invizibile) = ?v=6 neincrementat la schimbarea
+  emitere_ecran.js; acum staleness-ul e gard rosu.
+Note de la Costin: #1 (cache) confirmat de el prin Ctrl+F5 (hard-refresh a facut selectoarele sa apara -> era cache
+stale, nu cod lipsa); #6 cauza reala a fost corectata de Costin - doua clase (em-total-rand + em-total-mare) cu
+width:320px, NU o regula de flex pe parinte cum se banuise initial.
+Proba de randare (agent Playwright read-only, pe app-ul RUNNING 087b33a): toate 8 constatarile PASS - app.js si stil.css
+servite cu ?v=<hash>, 0 importuri JS neversionate; selectoarele Clasificare TVA prezente pe emitere_ecran.js; #5/#6
+verificate prin randare headless (.em-total masurat exact 320px; scrollWidth==clientWidth, fara overflow orizontal);
+/favicon.ico -> 200 image/svg+xml. #4/#7 traiesc in static/js/ecrane/declaratii.js, #3 in validat.js.
+Registrele (aceasta intrare + GARZI/DECIZII/TESTE/PREDARE) NEcomise - le comite Costin prin poarta. FARA git commit.

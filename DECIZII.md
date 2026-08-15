@@ -9330,3 +9330,21 @@ Datorie ramasa: D101G (schema v2 OPANAF 206/2025 neinstalata in DecValidation pe
   D390 bazaP/bazaS, DUK valid).
 - **Limită declarată rămasă:** T/R (triangulație / regim special agricultori) NU sunt pe axa bun-serviciu — rutate
   numeric ca bunuri, semnalate explicit, neacoperite pe D300 (raportat separat).
+
+## 2026-08-15 — Plimbarea lui Costin: decizii de canal, formulare si versionare
+Cinci decizii luate la remedierea celor 8 constatari (commituri 58e2aed / 8a965f4 / 434efa3 / 087b33a).
+- **Canalul neutru de rezultat se numeste in cod `note_rezultat`, NU `constatari`.** Verificatorul rezerva numele de
+  lista `constatari` pentru verdictele cu temei (control fiscal); un al doilea inteles pe acelasi nume ar dilua gardul.
+  Rezultatele neutre (ex. „fara erori DUK”) circula pe canalul `note_rezultat`, separat de `avertismente`.
+  Eticheta din UI ramane „Constatari” (limbaj de utilizator), dar cheia de date e note_rezultat (087b33a, #7).
+- **„Validat cu DUKIntegrator (validatorul oficial ANAF rulat local)” - validarea NU e depunere.** Formularea
+  veche „Validat la ANAF” sugera o depunere care nu s-a intamplat; textul spune acum explicit ca s-a rulat
+  validatorul oficial local si ca „Nu a fost depusa la ANAF” (8a965f4, #4).
+- **Coada afiseaza perioada DECLARATA ca perioada, scadenta e etichetata explicit „termen”.** lista_coada
+  intoarce perioada din payload (an/luna/trim) -> „august 2026”; scadenta apare pe rand separat ca
+  „termen (scadenta)”, ca sa nu se confunde luna declarata cu termenul (8a965f4, #3).
+- **Cardul de pe ecranul principal e patru-ochi-aware.** Cu patru-ochi ON -> „De validat”; cu patru-ochi OFF
+  (mono-utilizator) -> „De depus”, pentru ca fluxul de coada e neconditionat (mono-utilizatorul depune cap la
+  cap), deci si afisajul trebuie sa reflecte actiunea reala (8a965f4, #2).
+- **Versionarea asseturilor = hash de continut, nu contor manual.** Tokenul ?v= nu mai e o decizie umana de
+  incrementat (sursa de eroare la #1); e derivat mecanic din continutul fisierului si gardat (087b33a). Vezi GARZI 15.08.
