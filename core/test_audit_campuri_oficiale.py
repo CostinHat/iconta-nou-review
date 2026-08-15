@@ -75,6 +75,7 @@ def conn_audit():
                 cur.execute("INSERT INTO inregistrari_linii (inregistrare_id,cont_debit,cont_credit,suma) VALUES (%s,'457','5121',50000)", (i2,))
                 cur.execute("INSERT INTO facturi (numar,data_emitere,total,tva,directie,tert_nume,tert_cui) VALUES ('F1','2026-06-15',10000,0,'emisa','EU','DE811128135')")
                 cur.execute("INSERT INTO facturi (numar,data_emitere,total,tva,directie,tert_nume,tert_cui) VALUES ('F2','2026-06-20',6050,1050,'emisa','RO CLI','RO14399840')")
+                cur.execute("INSERT INTO d301_operatiuni (an,luna,tip,nr_doc,data_doc,val_valuta,tip_valuta,curs,tva) VALUES (2026,6,4,'D301A','2026-06-10',1000,'EUR',4.97,190)")
             yield conn
         finally:
             conn.rollback()

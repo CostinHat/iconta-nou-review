@@ -289,6 +289,11 @@ def _pers_inreg(prof):
 
 def build_xml(res):
     prof = res.prof
+    # [regula 4 - fara default tacit] nume/functie declarant sunt DA (obligatorii); cand lipsesc emitem
+    # un implicit (altfel DUK respinge campul gol) DAR ANUNTAT prin avertisment.
+    if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
+        res.avertismente.append("D301: declarantul (nume/functie) lipseste din profil -> emis implicit "
+                                "\"ADMINISTRATOR\". Completeaza declarantul in profilul firmei.")
     cif = _NEDIGIT.sub("", prof.get("cui") or "")
     den = prof.get("nume") or ""
     adr = " ".join(x for x in [prof.get("adresa"), prof.get("oras"), prof.get("judet")] if x).strip()
@@ -354,7 +359,50 @@ def genereaza(conn, schema, perioada, manual=None):
     erori = erori_generare(prof)
     if erori:
         raise ValueError("D301 nu se poate genera: " + " ".join(erori))
+    # [zero-base + ruptura facturi IC, campanie D300 16.08] OPANAF 592/2016: "Decontul special se depune
+    # NUMAI pentru perioadele in care ia nastere exigibilitatea taxei". Obligatia D301 se naste si din
+    # ACHIZITII IC inregistrate ca FACTURI (fluxul normal), nu doar din tabelul manual d301_operatiuni -
+    # ruptura seed<->consumator (regula 10). Cross-check-ul cu facturile e best-effort (schema/conn fara
+    # tabelele de facturi -> degradeaza la zero-base generic, fara sa ascunda erori de generare).
+    _ic_prim = []
+    try:
+        import datetime as _dt
+        from core.control_incrucisat import facturi_ic as _fic
+        _prima = _dt.date(perioada.an, perioada.luna, 1)
+        _urm = _dt.date(perioada.an + (perioada.luna // 12), (perioada.luna % 12) + 1, 1)
+        _ic_prim = _fic(conn, schema, _prima, _urm).get("primita", [])
+    except Exception:
+        _ic_prim = []
+    if not ops:
+        if _ic_prim:
+            _lst = "; ".join("%s (fact. %s, %s)" % (
+                        f.get("tert_nume") or "?", f.get("numar") or "?",
+                        bani(_r0(float(f.get("total") or 0) - float(f.get("tva") or 0)), "lei"))
+                    for f in _ic_prim[:10])
+            raise ValueError(
+                "D301 pe zero, DAR exista %d achizitie(i) intracomunitara(e) inregistrate ca FACTURI in "
+                "perioada, neintroduse in operatiunile D301: %s. Introdu-le in ecranul D301 inainte de "
+                "generare - obligatia D301 se naste din achizitia IC, nu doar din tabelul manual." %
+                (len(_ic_prim), _lst))
+        raise ValueError(
+            "D301 nu se genereaza pe zero: nicio operatiune cu exigibilitate in perioada. OPANAF 592/2016 - "
+            "decontul special se depune NUMAI pentru perioadele in care ia nastere exigibilitatea taxei.")
     res = calcul_d301(prof, perioada, ops)
+    # [Sectiunea 1 = art.317, OPANAF 592/2016 instr. I] Sectiunea 1 (achizitii IC de bunuri) "se completeaza
+    # NUMAI de catre persoanele inregistrate conform art. 317". O operatiune tip 1 cu pers_inreg=1 (firma
+    # fara marcajul art.317) e o declaratie contradictorie. Marcajul inreg_art317 nu e populat fiabil in
+    # profil -> avertisment vizibil (nu blocaj care ar opri orice D301 de sectiunea 1), regula 4/12.
+    if any(int(o.get("tip") or 1) == 1 for o in ops) and _pers_inreg(prof) == "1":
+        res.avertismente.append(
+            "D301: exista operatiune de Sectiunea 1 (achizitii IC de bunuri) dar firma nu are marcajul de "
+            "inregistrare art.317 in profil -> se emite pers_inreg=1. Sectiunea 1 se completeaza NUMAI de "
+            "persoanele inregistrate conform art.317 (OPANAF 592/2016). Confirma inregistrarea art.317 in "
+            "profil (altfel declaratia e contradictorie), sau reclasifica operatiunea.")
+    if _ic_prim:
+        res.avertismente.append(
+            "Verifica: exista %d achizitie(i) IC inregistrate ca facturi in perioada - asigura-te ca toate "
+            "sunt reflectate in operatiunile D301 (declaratia se construieste din tabelul d301_operatiuni, "
+            "nu automat din facturi)." % len(_ic_prim))
     # [T2 10.08.2026] valideaza(res) era COD MORT: genereaza chema doar erori_generare(prof), deci
     # verificarile prietenoase pe operatiuni (nr_doc/data_doc gol, tip/valuta out-of-nomenclator, T6
     # nr_doc>C(20)) nu ajungeau la contabil - primea eroarea bruta a validatorului la upload. Le cablam

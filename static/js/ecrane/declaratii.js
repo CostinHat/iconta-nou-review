@@ -191,10 +191,19 @@ async function pas2(corp, nav) {
   } catch (e) {
     // [G2] surfaceaza eroarea SPECIFICA (422 cu temei / gri cu limita), nu un mesaj generic - exact unde
     // contabilul are nevoie de ea. Aliniat cu pas3. api.js arunca {cod, mesaj}.
+    // [chicken-and-egg 16.08] Declaratiile cu panou editabil (d301/d390/d300) randeaza panoul CHIAR si pe
+    // eroare de generare (ex. refuz zero-base): altfel o firma fara operatiuni nu poate ajunge la ecranul
+    // unde le adauga. Eroarea explica DE CE; panoul lasa contabilul sa introduca + Regenereaza.
     corp.innerHTML = `
       <p class="mig-intro">Pasul 2 din 3 — generare</p>
+      ${S.tip === "d390" ? '<div id="dec-d390-clasif"></div>' : ""}
+      ${S.tip === "d301" ? '<div id="dec-d301-op"></div>' : ""}
+      ${S.tip === "d300" ? '<div id="dec-d300-manual"></div>' : ""}
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
+    if (S.tip === "d390") randeazaClasificareD390(corp, nav);
+    if (S.tip === "d301") randeazaOperatiuniD301(corp, nav);
+    if (S.tip === "d300") randeazaManualD300(corp, nav);
     return;
   }
 

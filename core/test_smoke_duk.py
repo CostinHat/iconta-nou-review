@@ -66,6 +66,9 @@ def conn_smoke():
                 # factura DOMESTICA emisa iunie (tert RO, TVA 21%) -> d394/d300/d406
                 cur.execute("INSERT INTO facturi (numar,data_emitere,total,tva,directie,tert_nume,tert_cui) "
                             "VALUES ('F002','2026-06-20',6050,1050,'emisa','CLIENT RO SRL','RO14399840')")
+                # operatiune D301 (tip 4 servicii, fara dependenta art.317) - D301 refuza generarea pe zero
+                cur.execute("INSERT INTO d301_operatiuni (an,luna,tip,nr_doc,data_doc,val_valuta,tip_valuta,curs,tva) "
+                            "VALUES (2026,6,4,'D301A','2026-06-10',1000,'EUR',4.97,190)")
             yield conn
         finally:
             conn.rollback()
