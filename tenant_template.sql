@@ -2208,6 +2208,21 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.d301_operatiuni (
 );
 
 --
+-- [B2/B3 D300] Randuri manuale D300 (Decont TVA) - mirror al core/migrare_d300_manual.py.
+-- Randurile pe care generatorul (core/d300.py) NU le deriva din facturi (scutiri R14/R15,
+-- regularizari R16/R30, ajustari R29/R43/R44, cote istorice) se introduc de contabil si PERSISTA
+-- aici; d300.genereaza le re-citeste pe calea de depunere (paritate preview<->depunere).
+-- UNITATE: LEI intregi (bigint), aliniat cu d300.py. baza=col.1, tva=col.2 (0 la randurile
+-- fara col.2). id SERIAL (ca d301_operatiuni) - zero drift.
+--
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.d300_manual (
+    id SERIAL PRIMARY KEY, an integer NOT NULL, luna integer NOT NULL,
+    rand text NOT NULL, baza bigint NOT NULL DEFAULT 0, tva bigint NOT NULL DEFAULT 0,
+    descriere text, creat timestamp DEFAULT now(),
+    UNIQUE (an, luna, rand)
+);
+
+--
 -- F145 (rapoarte configurabile salvabile) — mirror al core/migrare_rapoarte_salvate.py
 --
 CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.rapoarte_salvate (

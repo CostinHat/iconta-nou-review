@@ -892,6 +892,14 @@ def genereaza(conn, schema, perioada, manual=None):
     if perioada.luna is None or not (1 <= perioada.luna <= 12):
         raise ValueError("D300 lunar: luna invalidă: %r" % perioada.luna)
     prof, facturi = pull(conn, schema, perioada)
+    # [B2/B3 10.08.2026] Randurile manuale PERSISTATE (tabel d300_manual) sunt sursa pe calea de
+    # DEPUNERE: pas3 /coada regenereaza server-side FARA body.manual (manual=None). Le incarcam din
+    # DB ca XML-ul de depunere sa fie IDENTIC cu preview-ul (paritate preview<->depunere). Cand
+    # `manual` vine prin PARAM (preview programatic / test), param-ul are PRIORITATE integrala si NU
+    # se combina cu DB (deterministic; frontendul NU trimite manual, deci ambele cai citesc din DB).
+    if manual is None and conn is not None:
+        from core import d300_manual_api as _dm
+        manual = _dm.incarca_manual(conn, schema, perioada.an, perioada.luna)
     # POARTA (27.07.2026): profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF.
     erori = erori_generare(prof)
     if erori:

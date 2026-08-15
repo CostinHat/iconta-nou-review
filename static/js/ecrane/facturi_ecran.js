@@ -120,6 +120,11 @@ function primitaDetaliu(corp, nav, tenantId, p, opt) {
     <div class="grila-doc" style="grid-template-columns:2fr 1fr;margin-top:12px">
       <label class="camp"><span class="camp-eticheta">Cont cheltuială (sugerat, confirmă)</span><input class="camp-input" id="pr-cont" value="${esc(p.cont_sugerat || "")}" placeholder="ex. 628" aria-label="Cont cheltuiala"></label>
     </div>
+    <div class="grila-doc" style="grid-template-columns:2fr 1fr;margin-top:8px">
+      <label class="camp"><span class="camp-eticheta">Clasificare TVA (D300)</span>
+        <span style="display:flex;align-items:center;gap:6px"><input type="checkbox" id="pr-furnizor-incasare" aria-label="Furnizor cu TVA la încasare"> <span class="tip-micut">Furnizorul aplică TVA la încasare (deducere amânată până la plată, art. 297 alin. (2))</span></span></label>
+      <label class="camp"><span class="camp-eticheta">Țara furnizorului (ISO)</span><input class="camp-input" id="pr-tara" value="${esc(((p.cif_emitent || "").match(/^[A-Za-z]{2}/) || ["RO"])[0].toUpperCase())}" placeholder="RO" aria-label="Tara furnizorului"></label>
+    </div>
     <div style="margin-top:14px">
       <button class="buton-verde" id="pr-valideaza">Validează (creează cheltuiala)</button>
       <button class="btn-link" id="pr-respinge" style="margin-left:10px">Respinge</button>
@@ -131,7 +136,11 @@ function primitaDetaliu(corp, nav, tenantId, p, opt) {
   corp.querySelector("#pr-valideaza").addEventListener("click", () => {
     confirmaCaseta(zona, "Validezi factura și creezi cheltuiala? Intră în evidența contabilă.", async () => {
       try {
-        const r = await api.post(`/tenants/${tenantId}/facturi-primite/${p.id}/valideaza`, { cont: corp.querySelector("#pr-cont").value.trim() });
+        const _tara = (corp.querySelector("#pr-tara").value || "").trim().toUpperCase() || "RO";
+        const r = await api.post(`/tenants/${tenantId}/facturi-primite/${p.id}/valideaza`, {
+          cont: corp.querySelector("#pr-cont").value.trim(),
+          furnizor_tva_incasare: corp.querySelector("#pr-furnizor-incasare").checked,  // [B1 D300]
+          tert_tara: _tara });
         arataMesaj(zona, "Validată. Cheltuiala creată (factura #" + (r.factura_id || "—") + ").", "ok");
         setTimeout(() => nav.inapoi && nav.inapoi(), 900);
       } catch (e) { arataMesaj(zona, e.mesaj || e.message || "eroare", "eroare"); }

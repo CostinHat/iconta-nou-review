@@ -122,6 +122,21 @@ async function salveazaConfig(tenantId, serie, numar_start, platitor_tva) {
 function formularEmitere(corp, nav, tenantId, num, opt) {
   if (nav && nav.setInapoi) nav.setInapoi(opt.inapoi || undefined);  // emitere_inapoi_v1
   let monedaSel = "RON";
+  // [B1 D300] Tara partenerului decide ruta in generator (RO->intern, UE->livrare IC/taxare inversa,
+  // non-UE->export). Grupul UE OGLINDESTE core/d390.TARI_UE ca incadrarea sa coincida cu backendul.
+  const TARI_UE_JS = { AT:"Austria", BE:"Belgia", BG:"Bulgaria", CY:"Cipru", CZ:"Cehia",
+    DE:"Germania", DK:"Danemarca", EE:"Estonia", EL:"Grecia", ES:"Spania", FI:"Finlanda",
+    FR:"Franța", HR:"Croația", HU:"Ungaria", IE:"Irlanda", IT:"Italia", LT:"Lituania",
+    LU:"Luxemburg", LV:"Letonia", MT:"Malta", NL:"Țările de Jos", PL:"Polonia", PT:"Portugalia",
+    SE:"Suedia", SI:"Slovenia", SK:"Slovacia", GB:"Regatul Unit", XI:"Irlanda de Nord" };
+  const TARI_NONUE_JS = { US:"Statele Unite", CH:"Elveția", TR:"Turcia", CN:"China",
+    MD:"Republica Moldova", NO:"Norvegia", RS:"Serbia", UA:"Ucraina" };
+  const optiuniTara = `<option value="RO" selected>România (RO)</option>`
+    + `<optgroup label="Uniunea Europeană">`
+    + Object.keys(TARI_UE_JS).sort().map((c) => `<option value="${c}">${esc(TARI_UE_JS[c])} (${c})</option>`).join("")
+    + `</optgroup><optgroup label="În afara UE (export)">`
+    + Object.keys(TARI_NONUE_JS).sort().map((c) => `<option value="${c}">${esc(TARI_NONUE_JS[c])} (${c})</option>`).join("")
+    + `</optgroup>`;
   const inapoi = opt.inapoi || (() => nav.inapoi());
   const numarProxim = num.serie ? `${num.serie}${num.urmator_numar}` : `${num.urmator_numar}`;
 
@@ -167,6 +182,17 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
         <option value="PLN">PLN</option>
       </select>
       <span class="em-moneda-nota" id="em-moneda-nota"></span>
+    </div>
+    <div class="em-sectiune">
+      <div class="em-eticheta">Clasificare TVA (D300)</div>
+      <label class="camp-eticheta" for="em-tara">Țara partenerului</label>
+      <select class="camp-input" id="em-tara">${optiuniTara}</select>
+      <label class="camp-eticheta" for="em-tipop">Tip operațiune</label>
+      <select class="camp-input" id="em-tipop">
+        <option value="normal" selected>Operațiune normală</option>
+        <option value="avans">Avans încasat</option>
+        <option value="regularizare_avans">Regularizare avans</option>
+      </select>
     </div>
     <div class="em-actiuni">
       <select id="em-tip" class="camp-input" style="max-width:180px;margin-right:8px">
@@ -391,6 +417,8 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       tert_cui: corp.querySelector("#em-cui").value.trim() || null,
       tert_adresa: corp.querySelector("#em-adresa").value.trim() || null,
       moneda: monedaSel,
+      tert_tara: (corp.querySelector("#em-tara") || {}).value || "RO",              // [B1 D300]
+      tip_operatiune: (corp.querySelector("#em-tipop") || {}).value || "normal",    // [B1 D300]
     };
     if (cursManual != null) payload.curs_manual = cursManual;
     if (pleacaMarfaCurent !== null) payload.pleaca_marfa = pleacaMarfaCurent;  // [punte_stoc_v1] raspuns poarta

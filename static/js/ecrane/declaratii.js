@@ -226,6 +226,7 @@ async function pas2(corp, nav) {
     <p class="mig-intro">Pasul 2 din 3 — verifică <b>${S.tip.toUpperCase()}</b> · ${etPerioada()}</p>
     ${S.tip === "d390" ? '<div id="dec-d390-clasif"></div>' : ""}
     ${S.tip === "d301" ? '<div id="dec-d301-op"></div>' : ""}
+    ${S.tip === "d300" ? '<div id="dec-d300-manual"></div>' : ""}
     ${blocANAF}
     ${avert.length ? `<div class="dec-avert">
         <div class="dec-avert-cap">Avertismente (${avert.length})</div>
@@ -254,6 +255,7 @@ async function pas2(corp, nav) {
   if (_bNu) _bNu.addEventListener("click", () => pas1(corp, nav));
   if (S.tip === "d390") randeazaClasificareD390(corp, nav);
   if (S.tip === "d301") randeazaOperatiuniD301(corp, nav);
+  if (S.tip === "d300") randeazaManualD300(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -387,6 +389,73 @@ async function randeazaOperatiuniD301(corp, nav) {
     }
   });
   gv("#d301-regen").addEventListener("click", () => pas2(corp, nav));
+}
+
+// tip==="d300". Geaman cu randeazaOperatiuniD301: grila randurilor manuale + adaugare (upsert) +
+// stergere + regenerare. Randurile pe care generatorul NU le deriva din facturi (scutiri/regularizari/
+// ajustari) se introduc aici, PERSISTAT (tabel d300_manual); "Regenereaza D300" reface pas2, iar calea
+// de depunere (/coada) le citeste din DB -> acelasi XML (paritate preview<->depunere). Etichetele
+// oficiale + lista randurilor disponibile (allow-list minus auto-derivate) vin din backend, nu din JS.
+// Sume in LEI intregi (ca generatorul). catch NON-gol (scrie in #d300-msg / zona) - garda test_catch_vizibil.
+async function randeazaManualD300(corp, nav) {
+  const zona = corp.querySelector("#dec-d300-manual");
+  if (!zona) return;
+  let d;
+  try { d = await api.get(`/tenants/${S.tenant_id}/d300-manual?an=${S.an}&luna=${S.luna}`); }
+  catch (e) { zona.innerHTML = `<p class="ecran-nota">Nu am putut încărca rândurile manuale D300${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</p>`; return; }
+  const randuri = d.randuri || [], disp = d.randuri_disponibile || [];
+  const grila = randuri.length
+    ? randuri.map((o) => `<div class="dec-man-rand">
+        <span class="dec-recl-desc" title="${esc(o.eticheta)}">${esc(o.rand)} · ${esc(o.eticheta)}</span>
+        <span class="dec-recl-suma">${bani(o.baza)} bază${o.cu_tva ? " · " + bani(o.tva) + " TVA" : ""} (lei)${o.descriere ? " · " + esc(o.descriere) : ""}</span>
+        <button class="btn-link dec-d300-del" data-id="${o.id}">șterge</button></div>`).join("")
+    : `<div class="stare-goala stare-goala--inline">Niciun rând manual pe ${etPerioada()}. Rândurile pe care generatorul le derivă din facturi apar automat în decont; aici introduci doar ce nu se derivă (scutiri, regularizări, ajustări).</div>`;
+  const optiuni = disp.map((r) => `<option value="${esc(r.cod)}" data-cutva="${r.cu_tva ? 1 : 0}">${esc(r.cod)} — ${esc(r.eticheta)}</option>`).join("");
+  zona.innerHTML = `<details class="dec-xml" open><summary>Rânduri manuale D300 — introducere (${randuri.length})</summary>
+    ${grila}
+    ${disp.length ? `<div class="camp-eticheta" style="margin:10px 0 4px">Adaugă rând:</div>
+    <div class="dec-man-form">
+      <label class="camp" style="width:440px"><span class="camp-eticheta">Rând <span class="oblig">*</span></span>
+        <select id="d300-rand" class="camp-input">${optiuni}</select></label>
+      <label class="camp" style="width:130px"><span class="camp-eticheta">Bază (lei) <span class="oblig">*</span></span><input id="d300-baza" type="number" step="1" class="camp-input"></label>
+      <label class="camp" style="width:130px" id="d300-tva-wrap"><span class="camp-eticheta">TVA (lei)</span><input id="d300-tva" type="number" step="1" class="camp-input"></label>
+      <label class="camp" style="width:220px"><span class="camp-eticheta">Descriere</span><input id="d300-descriere" class="camp-input"></label>
+      <button class="buton-secundar" id="d300-add">+ adaugă</button>
+    </div>` : `<p class="ecran-nota" style="margin-top:8px">Toate rândurile manual-acceptabile sunt fie deja introduse, fie derivate automat din facturile perioadei.</p>`}
+    <div id="d300-msg"></div>
+    <p style="margin-top:8px"><button class="buton-primar" id="d300-regen">Regenerează D300</button>
+      <span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>
+  </details>`;
+  const gv = (id) => zona.querySelector(id);
+  function sincTva() {
+    const sel = gv("#d300-rand"); if (!sel) return;
+    const o = sel.selectedOptions[0];
+    const cuTva = !!(o && o.dataset.cutva === "1");
+    const w = gv("#d300-tva-wrap"); if (w) w.style.display = cuTva ? "" : "none";
+    if (!cuTva) { const t = gv("#d300-tva"); if (t) t.value = ""; }
+  }
+  if (gv("#d300-rand")) { gv("#d300-rand").addEventListener("change", sincTva); sincTva(); }
+  zona.querySelectorAll(".dec-d300-del").forEach((b) => b.addEventListener("click", async () => {
+    try { await api.del(`/tenants/${S.tenant_id}/d300-manual/${b.dataset.id}`); randeazaManualD300(corp, nav); }
+    catch (e) { arataMesaj(gv("#d300-msg"), (e && e.mesaj) || "Eroare la ștergere.", "eroare"); }
+  }));
+  const bAdd = gv("#d300-add");
+  if (bAdd) bAdd.addEventListener("click", async () => {
+    const tvaEl = gv("#d300-tva");
+    const b = { an: S.an, luna: S.luna, rand: gv("#d300-rand").value,
+      baza: parseInt(gv("#d300-baza").value, 10) || 0,
+      tva: parseInt((tvaEl && tvaEl.value) || "0", 10) || 0,
+      descriere: gv("#d300-descriere").value.trim() };
+    curataEroriCamp(zona);  // [G10] eroare langa camp
+    try { await api.post(`/tenants/${S.tenant_id}/d300-manual`, b); randeazaManualD300(corp, nav); }
+    catch (e) {
+      curataEroriCamp(zona);
+      const _ec = (e && e.erori_campuri) || [], _b = [];
+      _ec.forEach((x) => { if (!eroareCamp(zona, "d300-" + x.camp, x.mesaj)) _b.push(x.mesaj); });  // fallback B daca #camp lipseste
+      if (!_ec.length || _b.length) arataMesaj(gv("#d300-msg"), _b.length ? _b.join("; ") : ((e && e.mesaj) || "Eroare la adăugare."), "eroare");
+    }
+  });
+  gv("#d300-regen").addEventListener("click", () => pas2(corp, nav));
 }
 
 // [poarta_gol_v1 27.07.2026] O declaratie GOALA legitima (firma fara activitate) si una

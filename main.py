@@ -778,6 +778,9 @@ class FacturaIn(BaseModel):
     data_scadenta: Optional[str] = None
     moneda: str = "RON"
     status: str = "emisa"
+    tert_tara: str = "RO"                       # [B1 D300] cod ISO 2 litere partener (IC/export)
+    tip_operatiune: str = "normal"             # [B1 D300] normal|avans|regularizare_avans
+    furnizor_tva_incasare: bool = False        # [B1 D300] doar pe primite (deducere amanata)
 
 class ClientIn(BaseModel):
     nume: str
@@ -897,6 +900,8 @@ class EmitereIn(BaseModel):
     moneda: str = "RON"
     curs_manual: Optional[float] = None
     pleaca_marfa: Optional[bool] = None  # [punte_stoc_v1] F172 poarta: DA descarca gestiunea, NU doar fiscal
+    tert_tara: str = "RO"               # [B1 D300] cod ISO 2 litere partener (emise IC/export)
+    tip_operatiune: str = "normal"      # [B1 D300] normal|avans|regularizare_avans (avans exigibil la emitere)
 
 class NumerotareIn(BaseModel):
     serie: Optional[str] = None
@@ -2642,7 +2647,8 @@ def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_context)):
                 conn, linii, client_id=date.client_id, tert_nume=date.tert_nume,
                 tert_cui=date.tert_cui, tert_adresa=date.tert_adresa, data_emitere=date.data_emitere,
                 data_scadenta=date.data_scadenta, moneda=date.moneda,
-                platitor_tva=platitor, curs_manual=date.curs_manual, tip=date.tip)
+                platitor_tva=platitor, curs_manual=date.curs_manual, tip=date.tip,
+                tert_tara=date.tert_tara, tip_operatiune=date.tip_operatiune)
         except facturi_api.LiniiIncomplete as e:
             raise HTTPException(422, {"cod": "LINII_INCOMPLETE",
                 "mesaj": "Completează liniile: " + "; ".join(x["eticheta"] for x in e.campuri),
@@ -2754,7 +2760,9 @@ def factura_creeaza(tenant_id: int, date: FacturaIn,
                 conn, date.numar, date.data_emitere, date.directie, linii,
                 client_id=date.client_id, tert_nume=date.tert_nume,
                 tert_cui=date.tert_cui, data_scadenta=date.data_scadenta,
-                moneda=date.moneda, status=date.status)
+                moneda=date.moneda, status=date.status,
+                tert_tara=date.tert_tara, tip_operatiune=date.tip_operatiune,
+                furnizor_tva_incasare=date.furnizor_tva_incasare)
     except ValueError as e:
         raise HTTPException(422, str(e))
     return r
@@ -3882,6 +3890,40 @@ def d301_operatiuni_sterge(tenant_id: int, op_id: int, an: int, luna: int, ctx=D
     schema = _schema_cabinet_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         return _op.sterge(conn, schema, an, luna, op_id)
+
+
+# [B2/B3 D300] Randuri manuale D300 (Decont TVA). Geaman cu d301-operatiuni: grila lunara +
+# adaugare + stergere, cere_cabinet (operatiuni de contabil). Persistate in d300_manual;
+# d300.genereaza le re-citeste pe calea de depunere (paritate preview<->depunere).
+@app.get("/tenants/{tenant_id}/d300-manual")
+def d300_manual_lista(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    """Randurile manuale ale perioadei + randurile inca disponibile de adaugat (allow-list minus
+    auto-derivate minus deja introduse), cu etichete oficiale din backend."""
+    from core import d300_manual_api as _dm
+    schema = _schema_cabinet_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return _dm.lista(conn, schema, an, luna)
+
+
+@app.post("/tenants/{tenant_id}/d300-manual")
+def d300_manual_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """Adauga/actualizeaza un rand manual D300: {an, luna, rand, baza, tva, descriere}."""
+    from core import d300_manual_api as _dm
+    schema = _schema_cabinet_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        r = _dm.adauga(conn, schema, corp.get("an"), corp.get("luna"), corp)
+    if r.get("eroare"):
+        _ec = r.get("erori_campuri")  # [G10] contract {mesaj, erori_campuri}
+        raise HTTPException(422, detail={"mesaj": r["eroare"], "erori_campuri": _ec} if _ec else r["eroare"])
+    return r
+
+
+@app.delete("/tenants/{tenant_id}/d300-manual/{rid}")
+def d300_manual_sterge(tenant_id: int, rid: int, ctx=Depends(cere_cabinet)):
+    from core import d300_manual_api as _dm
+    schema = _schema_cabinet_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return _dm.sterge(conn, schema, rid)
 
 
 class AdeverintaIn(BaseModel):  # F136
@@ -6972,6 +7014,19 @@ def factura_primita_valideaza(tenant_id: int, primita_id: int, corp: dict = Body
                                 cont_cheltuiala=%s, validat_la=now() WHERE id=%s
                             RETURNING factura_id""", (fid, cont or None, primita_id))
             fid_final = cur.fetchone()[0]
+            # [B1 D300] optiuni de clasificare pe factura primita, alese de contabil la validare:
+            # furnizor cu TVA la incasare (deducere amanata la plata, art.297 alin.2) / tara
+            # partenerului (achizitie IC vs import). Setate pe factura legata (fid_final).
+            _ftva = corp.get("furnizor_tva_incasare")
+            _ttara = (corp.get("tert_tara") or "").strip().upper()
+            if fid_final and (_ftva is not None or _ttara):
+                _sets, _vals = [], []
+                if _ftva is not None:
+                    _sets.append("furnizor_tva_incasare=%s"); _vals.append(bool(_ftva))
+                if _ttara:
+                    _sets.append("tert_tara=%s"); _vals.append(_ttara)
+                _vals.append(fid_final)
+                cur.execute(f"UPDATE {schema}.facturi SET " + ", ".join(_sets) + " WHERE id=%s", _vals)
         conn.commit()
     return {"stare": "validata", "factura_id": fid_final}
 

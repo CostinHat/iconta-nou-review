@@ -78,7 +78,8 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
                     client_id=None, tert_nume=None, tert_cui=None, tert_adresa=None,
                     data_scadenta=None, moneda="RON", status="emisa",
                     categorie_331=None, data_faptului_generator=None, taxare_inversa=False,
-                    tert_platitor_tva=None):
+                    tert_platitor_tva=None, tert_tara="RO", tip_operatiune="normal",
+                    furnizor_tva_incasare=False):
     """
     Inserează factura + liniile, într-o tranzacție. total/tva calculate din linii.
     Întoarce {ok, factura_id, total, tva}.
@@ -92,17 +93,29 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
                              % (_l.get("descriere") or "",))
     if directie not in ("emisa", "primita"):
         raise ValueError("directie trebuie 'emisa' sau 'primita'")
+    # [B1 D300] campuri de clasificare/temporizare. tip_operatiune distinge avansul (exigibil la
+    # emitere, art.282 alin.2 lit.b); furnizor_tva_incasare doar pe PRIMITE (deducere amanata la
+    # plata, art.297 alin.2). Fara default tacit peste o valoare invalida -> refuz cu mesaj clar.
+    tert_tara_v = (tert_tara or "RO").strip().upper() or "RO"
+    tip_op_v = (tip_operatiune or "normal").strip().lower() or "normal"
+    if tip_op_v not in ("normal", "avans", "regularizare_avans"):
+        raise ValueError("tip_operatiune %r invalid (permise: normal, avans, regularizare_avans)."
+                         % tip_operatiune)
+    furnizor_incasare_v = bool(furnizor_tva_incasare)
+    if furnizor_incasare_v and directie != "primita":
+        raise ValueError("furnizor_tva_incasare se aplica DOAR pe facturi primite (pe emise n-are sens).")
     t = totaluri_din_linii(linii)
     with conn.cursor() as cur:
         cur.execute(
             "INSERT INTO facturi (client_id, numar, data_emitere, data_scadenta, "
             "total, tva, status, moneda, directie, tert_nume, tert_cui, tert_adresa, "
-            "categorie_331, data_faptului_generator, taxare_inversa, tert_platitor_tva) "
-            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
+            "categorie_331, data_faptului_generator, taxare_inversa, tert_platitor_tva, "
+            "tert_tara, tip_operatiune, furnizor_tva_incasare) "
+            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
             (client_id, numar, data_emitere, data_scadenta, t["total"], t["tva"],
              status, moneda, directie, tert_nume, tert_cui, tert_adresa,
              categorie_331 or None, data_faptului_generator or None, bool(taxare_inversa),
-             tert_platitor_tva))
+             tert_platitor_tva, tert_tara_v, tip_op_v, furnizor_incasare_v))
         factura_id = cur.fetchone()[0]
         for l in linii:
             cur.execute(
@@ -156,6 +169,7 @@ def detalii_factura(conn, factura_id):
         cur.execute(
             "SELECT id, client_id, numar, data_emitere, data_scadenta, total, tva, "
             "status, moneda, directie, tert_nume, tert_cui, tert_adresa, "
+            "tert_tara, tip_operatiune, furnizor_tva_incasare, "
             "curs_bnr, tva_lei, total_lei, data_curs, curs_sursa, storno_din_id, tip, transformat_in_id, "
             "link_plata, platita_la, "
             "(SELECT numar FROM facturi f2 WHERE f2.id = facturi.transformat_in_id) AS transformat_in_numar, "
@@ -264,7 +278,8 @@ def _potriveste_linii(conn, linii, platitor_tva=True):
 
 def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, tert_adresa=None,
                   data_emitere=None, data_scadenta=None, moneda="RON",
-                  platitor_tva=True, status="de_preluat", curs_manual=None, tip="factura"):
+                  platitor_tva=True, status="de_preluat", curs_manual=None, tip="factura",
+                  tert_tara="RO", tip_operatiune="normal"):
     """
     Emite o factura noua (directie=emisa):
       - potriveste cota pe liniile fara cota (nomenclator/AI)
@@ -297,7 +312,8 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
 
     r = creeaza_factura(conn, numar, data_emitere, "emisa", linii,
                         client_id=client_id, tert_nume=tert_nume, tert_cui=tert_cui, tert_adresa=tert_adresa,
-                        data_scadenta=data_scadenta, moneda=moneda, status=status)
+                        data_scadenta=data_scadenta, moneda=moneda, status=status,
+                        tert_tara=tert_tara, tip_operatiune=tip_operatiune)
     # setez seria pe factura + incrementez contorul
     with conn.cursor() as cur:
         cur.execute("UPDATE facturi SET serie = %s WHERE id = %s", (serie, r["factura_id"]))
