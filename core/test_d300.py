@@ -469,3 +469,31 @@ def test_d300_manual_rand_necunoscut_ridica_nu_dispare():
     with _pt.raises(ValueError) as e:
         calcul_d300(_prof(), Perioada(2026, luna=6), [], {"R99_1": 100})
     assert "neacceptate" in str(e.value) and "R99_1" in str(e.value)
+
+
+# ============================================================
+#  GARD canal CONSTATARI vs AVERTISMENTE (d300)
+#  Costin: "«Rezultat TVA 0 lei» e o constatare, nu un avertisment; de ce in aceeasi lista?"
+#  Constatare = fapt NEUTRU despre rezultat (fara actiune); avertisment = ceva de verificat/corectat.
+# ============================================================
+def test_rezultat_tva_e_constatare_nu_avertisment():
+    """'Rezultat TVA ...' sta in res.note_rezultat, NU in res.avertismente."""
+    facturi = [
+        {"directie": "emisa", "total": 12100, "tva": 2100},
+        {"directie": "primita", "total": 1210, "tva": 210},
+    ]
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi)
+    assert any("Rezultat TVA" in c for c in res.note_rezultat), res.note_rezultat
+    assert not any("Rezultat TVA" in a for a in res.avertismente), res.avertismente
+
+
+def test_subdeclarare_e_avertisment_nu_constatare():
+    """Un avertisment REAL (sub-declarare, cota in afara 21/11/9) sta in avertismente, NU in note_rezultat;
+    iar 'Rezultat TVA' ramane in note_rezultat in acelasi rezultat (canale disjuncte)."""
+    facturi = [{"directie": "emisa", "total": 1050, "tva": 50}]  # cota 5% -> sub-declarare
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi)
+    sub = [a for a in res.avertismente if "afara 21/11/9" in a and "sub-declarare" in a.lower()]
+    assert sub, "sub-declararea trebuie in avertismente: %r" % res.avertismente
+    assert not any("afara 21/11/9" in c for c in res.note_rezultat), res.note_rezultat
+    assert any("Rezultat TVA" in c for c in res.note_rezultat), res.note_rezultat
+    assert not any("Rezultat TVA" in a for a in res.avertismente), res.avertismente

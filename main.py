@@ -143,6 +143,15 @@ def index():
     raise HTTPException(404, "frontend neinstalat")
 
 
+@app.get("/favicon.ico", include_in_schema=False)
+def favicon():
+    # favicon_v1: browserul cere /favicon.ico implicit -> servim SVG-ul (fara 404 in loguri)
+    cale = os.path.join(_STATIC_DIR, "favicon.svg")
+    if os.path.isfile(cale):
+        return FileResponse(cale, media_type="image/svg+xml")
+    raise HTTPException(404, "favicon absent")
+
+
 # ============================================================
 #  DEPENDENȚE AUTH — Bearer token -> context
 # ============================================================
@@ -3035,6 +3044,7 @@ def coada_adauga(date: CoadaIn, ctx=Depends(cere_rol("admin_firma", "angajat")))
     # declaratii_depuse.randuri). d112 -> randuri None (randuri_din_res, temei acolo).
     payload = {"xml": xml,
                "avertismente": (res if isinstance(res, list) else getattr(res, "avertismente", None)),
+               "note_rezultat": ([] if isinstance(res, list) else (getattr(res, "note_rezultat", None) or [])),
                "randuri": coada_api.randuri_din_res(res)}
     # 2) pune în coadă (pe public), stare 'la_senior'
     with db.get_conn() as conn:
@@ -3280,6 +3290,7 @@ def declaratie_valideaza(tip: str, date: DeclaratieIn,
             "severitate": rez.get("severitate"),  # [A2] E:(eroare) vs A:(atentionare) - frontendul il citeste
             "temei": rez["temei"], "limita": rez["limita"],
             "avertismente": getattr(res, "avertismente", None),
+            "note_rezultat": getattr(res, "note_rezultat", None) or [],   # canal neutru (fapte despre rezultat); [] pt declaratiile fara canal
             # [poarta_gol_v1 27.07.2026] cate operatiuni are declaratia; None = nu se poate
             # numara (d101/d112). Ecranul pune o poarta la 0, ca declaratia goala legitima
             # sa nu mai arate identic cu cea golita de un query rupt.
@@ -3305,7 +3316,8 @@ def declaratie_genereaza(tip: str, date: DeclaratieIn,
     except ValueError as e:
         raise HTTPException(422, str(e))
     avert = getattr(res, "avertismente", None)
-    return {"tip": tip, "xml": xml, "avertismente": avert,
+    constat = getattr(res, "note_rezultat", None) or []   # canal neutru; [] pt declaratiile fara canal
+    return {"tip": tip, "xml": xml, "avertismente": avert, "note_rezultat": constat,
             "operatiuni": declaratii_api.numar_operatiuni(tip, res)}  # [poarta_gol_v1]
 
 

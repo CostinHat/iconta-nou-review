@@ -109,7 +109,13 @@ class Rezultat:
     tva_de_plata: int = 0
     tva_de_recuperat: int = 0
     total_plata_a: int = 0
+    # CANAL SEPARAT note_rezultat vs avertismente.
+    # CONSTATARE = fapt NEUTRU despre rezultatul produs, fara nimic de facut de contabil
+    #   (ex. "Rezultat TVA X lei.", decont nul asumat, operatiuni derivate automat net-zero).
+    # AVERTISMENT = ceva ce contabilul TREBUIE sa verifice/corecteze (sub-declarare, clasificare
+    #   manuala R14/R15, cota in afara 21/11/9 lipsa, reclasificare T/R neacoperita etc.).
     avertismente: list = field(default_factory=list)
+    note_rezultat: list = field(default_factory=list)   # fapte neutre despre rezultat (fara actiune)
     nula_asumata: bool = False   # [B1 zero_base] decont nul ASUMAT explicit (nicio valoare declarata)
 
 
@@ -611,7 +617,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
             "R12/R25 sau completează cota (altfel taxarea inversă nu apare în decont)."
             % (len(achiz_331_0), _f(sum(achiz_331_0, Decimal(0)))))
     if ti_ben_n:
-        res.avertismente.append(
+        res.note_rezultat.append(
             "%d achiziţii cu taxare inversă primită (bază %s lei, TVA %s lei) — derivate automat: rd.12 "
             "colectat + rd.25 deductibil (net zero, art.331). Anterior dispăreau tacit din decont."
             % (ti_ben_n, _f(ti_ben_baza), _f(ti_ben_tva)))
@@ -642,7 +648,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
             "alin.2). Dacă sunt PRESTĂRI de servicii intracomunitare, reclasifică operațiunea ca serviciu "
             "în panoul D390 (sursă unică) — se mută automat la rd.3." % _f(ic_livr_bunuri))
     if export_livr:
-        res.avertismente.append(
+        res.note_rezultat.append(
             "Livrări către partener non-UE (export, bază %s lei) — declarate la rd.14 (scutite cu drept "
             "de deducere)." % _f(export_livr))
     if ic_ach_n:
@@ -654,12 +660,12 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
             % (ic_ach_n, _f(ic_ach_b), _f(ic_ach_t), cota_std_ic))
     # [F125] Servicii IC reclasificate prin SURSA UNICA D390 (MUTATE, nu adaugate).
     if ic_prest_serv:
-        res.avertismente.append(
+        res.note_rezultat.append(
             "Prestări de servicii intracomunitare către UE (bază %s lei) — reclasificate ca serviciu (P) în "
             "D390, declarate la rd.3 + rd.3.1 (locul prestării în afara României, 0%%). Mutate din rd.1 "
             "(livrări de bunuri), nu adăugate — fără dublă numărare." % _f(ic_prest_serv))
     if ic_serv_n:
-        res.avertismente.append(
+        res.note_rezultat.append(
             "%d achiziții de servicii intracomunitare din UE (bază %s lei, TVA autolichidat %s lei la %d%%) — "
             "reclasificate ca serviciu (S) în D390, declarate la rd.7 colectat + rd.7.1 + oglindă rd.20 "
             "deductibil + rd.20.1 (taxare inversă, net zero). Mutate din rd.5+rd.18, nu adăugate."
@@ -674,7 +680,7 @@ def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
             "special (R) NU e acoperită de acest lot: au rămas rutate numeric ca bunuri (rd.1). Verifică "
             "manual încadrarea în decont — limită declarată, nu omisiune tacită."
             % (len(tr_reclas), _tipuri_tr))
-    res.avertismente.append("Rezultat TVA %s lei." % rez)
+    res.note_rezultat.append("Rezultat TVA %s lei." % rez)
     return res
 
 
@@ -1095,7 +1101,7 @@ def genereaza(conn, schema, perioada, manual=None, reclasificari=None):
                 "DECLARAȚIE NULĂ ASUMATĂ: niciun rând declarat, dar există %d facturi contabilizabile (rezultat TVA zero) în "
                 "perioadă (posibil necontabilizate sau TVA la încasare nedecontată) — confirmă că nu lipsesc date." % _nf)
         else:
-            res.avertismente.append(
+            res.note_rezultat.append(
                 "DECLARAȚIE NULĂ ASUMATĂ: nicio factură în perioadă şi niciun rând declarat. Un plătitor "
                 "depune nul pe luna fără activitate — depunerea nu se refuză, dar nulul e afirmat explicit.")
     return _xml, res

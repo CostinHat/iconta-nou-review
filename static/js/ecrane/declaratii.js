@@ -200,6 +200,7 @@ async function pas2(corp, nav) {
 
   const f = corp.closest(".fereastra"); if (f) f.classList.add("fer-larg");
   const avert = S.rezultat.avertismente || [];
+  const constat = S.rezultat.note_rezultat || [];   // fapte NEUTRE despre rezultat (sectiune informativa separata, nu avertisment)
   const xml = S.rezultat.xml_b64 ? _dinB64(S.rezultat.xml_b64) : (S.rezultat.xml || "");
   const stare = S.rezultat.stare || "gri";
   const erANAF = (S.rezultat.erori || "").trim();
@@ -228,6 +229,10 @@ async function pas2(corp, nav) {
     ${S.tip === "d301" ? '<div id="dec-d301-op"></div>' : ""}
     ${S.tip === "d300" ? '<div id="dec-d300-manual"></div>' : ""}
     ${blocANAF}
+    ${constat.length ? `<div class="caseta-info">
+        <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
+        <ul class="ci-mesaj" style="margin:0;padding-left:18px">${constat.map((c)=>`<li style="margin:3px 0">${esc(typeof c==="string"?c:(c.mesaj||"constatare fără detalii"))}</li>`).join("")}</ul>
+      </div>` : ""}
     ${avert.length ? `<div class="dec-avert">
         <div class="dec-avert-cap">Avertismente (${avert.length})</div>
         <ul>${avert.map((a)=>`<li>${esc(typeof a==="string"?a:(a.mesaj||"avertisment fără detalii"))}</li>`).join("")}</ul>

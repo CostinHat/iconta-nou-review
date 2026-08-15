@@ -22,24 +22,30 @@ _TID = 990163   # tenant_id sintetic, doar in ROLLBACK
 
 @dataclasses.dataclass
 class _RezFake:
-    """Imita un rezultat de declaratie dataclass (ca RezultatD300 etc.): sume Decimal + avertismente."""
+    """Imita un rezultat de declaratie dataclass (ca RezultatD300 etc.): sume Decimal + avertismente + note_rezultat."""
     colectata: Decimal = Decimal("0")
     deductibila: Decimal = Decimal("0")
     avertismente: list = dataclasses.field(default_factory=list)
+    note_rezultat: list = dataclasses.field(default_factory=list)   # canal neutru (fapte despre rezultat)
 
 
 # ============================================================
 #  PURE — randuri_din_res
 # ============================================================
 def test_randuri_din_res_dataclass_serializeaza_decimal():
+    # "Rezultat TVA" e o CONSTATARE (fapt neutru despre rezultat), nu un avertisment: canal separat.
     res = _RezFake(colectata=Decimal("1234.56"), deductibila=Decimal("789.10"),
-                   avertismente=["Rezultat TVA 445 lei."])
+                   avertismente=["Sub-declarare: cota in afara 21/11/9."],
+                   note_rezultat=["Rezultat TVA 445 lei."])
     r = coada_api.randuri_din_res(res)
     assert isinstance(r, dict)
     # Decimal -> str (default=str), valoarea se pastreaza exact
     assert r["colectata"] == "1234.56"
     assert Decimal(r["colectata"]) == Decimal("1234.56")
-    assert r["avertismente"] == ["Rezultat TVA 445 lei."]
+    # canalele se serializeaza distinct: constatarea in note_rezultat, avertismentul in avertismente
+    assert r["note_rezultat"] == ["Rezultat TVA 445 lei."]
+    assert r["avertismente"] == ["Sub-declarare: cota in afara 21/11/9."]
+    assert "Rezultat TVA 445 lei." not in r["avertismente"]
 
 
 def test_randuri_din_res_d112_lista_da_None():

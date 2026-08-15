@@ -46,6 +46,7 @@ PUBLICE = {
     ("get",  "/ajutor/{fid}"),                 # ajutor contextual: text de FOLOSIRE, nu date de firma
     ("get",  "/sitemap.xml"),                   # SEO
     ("get",  "/robots.txt"),                    # SEO
+    ("get",  "/favicon.ico"),                   # favicon: fisier static, fara date
     ("get",  "/anaf/oauth/callback"),           # ANAF redirecteaza aici; nu are cum sa poarte
                                                 # sesiunea noastra. Aparat de `state` semnat.
 }
