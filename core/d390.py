@@ -367,14 +367,24 @@ def build_xml(res):
     mail = prof.get("email") or ""
     bz = res.rezumat
     H = ['<?xml version="1.0" encoding="UTF-8"?>']
+    # [regula 4 - fara default tacut] nume/prenume/functie declarant sunt DA (obligatorii); cand lipsesc
+    # din profil emitem un implicit (altfel DUK respinge campul gol) DAR ANUNTAT prin avertisment.
+    _dnume = prof.get("declarant_nume")
+    _dfct = prof.get("declarant_functie")
+    if not (_dnume and _dfct):
+        res.avertismente.append("D390: declarantul (nume/functie) lipseste din profil -> emis implicit "
+                                "\"ADMINISTRATOR\". Completeaza declarantul in profilul firmei, nu lasa implicitul.")
+    _dnume = _dnume or "ADMINISTRATOR"
+    _dpren = prof.get("declarant_prenume") or "-"
+    _dfct = _dfct or "ADMINISTRATOR"
     hdr = ('<declaratie390 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" '
            'xmlns="%s" xsi:schemaLocation="%s D390.xsd" '
            'luna="%d" an="%d" d_rec="0" nume_declar="%s" prenume_declar="%s" '
            'functie_declar="%s" cui="%s" den="%s" adresa="%s"'
            % (NS, NS, res.luna, res.an,
-              _esc(_t(prof.get("declarant_nume") or "ADMINISTRATOR", _LIM["d390"]["nume_declar"])),
-              _esc(_t(prof.get("declarant_prenume") or "-", _LIM["d390"]["prenume_declar"])),
-              _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d390"]["functie_declar"])),
+              _esc(_t(_dnume, _LIM["d390"]["nume_declar"])),
+              _esc(_t(_dpren, _LIM["d390"]["prenume_declar"])),
+              _esc(_t(_dfct, _LIM["d390"]["functie_declar"])),
               _esc(cui), _esc(_t(den, _LIM["d390"]["den"])), _esc(_t(adr, _LIM["d390"]["adresa"]))))
     if tel:
         hdr += ' telefon="%s"' % _esc(tel)

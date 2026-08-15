@@ -61,8 +61,13 @@ def manual_adauga(conn, schema, an, luna, tip, tara, cod, den, baza):
     tara = (tara or "").strip().upper()
     cod = (cod or "").strip()
     erori = []
-    if tip not in ("P", "S", "T", "R"):
-        erori.append(("tip", "Tip linie manuală trebuie P/S/T/R (servicii/triangulație/agricol)."))
+    # [NOTA 1, OPANAF 394/2017 anexa2 instructiuni:189-201] Achizitia IC de bunuri de la un furnizor UE
+    # care NU comunica un cod valabil de TVA se declara ca tip A cu tara statului membru din care s-au
+    # transportat bunurile si COD GOL (A nu e in _CU_COD_OBLIG -> cod optional). Calea auto n-o poate
+    # detecta (factura fara cod valid n-are camp de tara), deci se introduce manual de contabil.
+    if tip not in ("A", "P", "S", "T", "R"):
+        erori.append(("tip", "Tip linie manuală: A (achiziție bunuri IC fără cod furnizor, NOTA 1) / "
+                             "P / S / T / R (servicii/triangulație/agricol)."))
     if tara not in TARI_UE:
         erori.append(("tara", "Țara %r nu e în nomenclatorul UE." % tara))
     if tip in _CU_COD_OBLIG and not cod:
