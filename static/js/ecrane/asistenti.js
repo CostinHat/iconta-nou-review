@@ -167,7 +167,7 @@ async function deschideEditare(uid, corp, nav) {
             <span>${t}</span>
           </label>`).join("")}
       </div>
-      <div class="asi-info-patru">\u2139 \u201ePoate valida\u201d permite aprobarea, dar niciodata a ceea ce a pregatit el insusi (patru ochi).</div>
+      <div class="asi-info-patru">\u2139 \u201ePoate valida\u201d permite aprobarea, dar niciodată a ceea ce a pregătit el însuși (patru ochi).</div>
       ${sectiuneFirme}
       <div class="asi-editbtns">
         <button class="buton-primar" id="asi-salveaza">Salveaz\u0103</button>
@@ -219,7 +219,7 @@ async function deschideEditare(uid, corp, nav) {
         }
         nav.inapoi();
         randeazaAsistenti(corp, nav);
-      } catch { err.textContent = "Nu am putut salva. Incearca din nou."; }
+      } catch { err.textContent = "Nu am putut salva. Încearcă din nou."; }
     };
     box.querySelector("#asi-salveaza").onclick = () => {
       err.textContent = "";
@@ -325,7 +325,7 @@ function _asiRandeazaFereastra(d, c) {
       <div class="asi-cal-card" style="flex:1;"><div class="asi-cal-eticheta">Respinse</div><div class="asi-cal-cifra asi-cal-rosu">${cal.respinse} \u00b7 ${cal.rata_respins}%</div></div>
     </div>
     <div class="asi-cal-rand2">
-      <span>Timp mediu pregatit\u2192aprobat: <b>${cal.zile_mediu != null ? cal.zile_mediu + " zile" : "\u2014"}</b></span>
+      <span>Timp mediu pregătit\u2192aprobat: <b>${cal.zile_mediu != null ? cal.zile_mediu + " zile" : "\u2014"}</b></span>
       <span>Acoperire: <b>${(cal.tipuri || []).join(", ") || "\u2014"}</b></span>
     </div>` : `<p class="ecran-nota">Calitatea nu a putut fi incarcata.</p>`;
 
@@ -339,7 +339,7 @@ function _asiRandeazaFereastra(d, c) {
       const bn = t.nou ? `<span class="asi-badge asi-badge-galben">nou</span>` : "";
       return `<div class="asi-cal-motiv"><span>${t.motiv}</span><span>${bt} ${bn} <b>${t.nr}\u00d7</b></span></div>`;
     }).join("") : `<div class="stare-goala">Nicio respingere înregistrată.</div>`;
-    tipare = `<div class="asi-sectiune-titlu">Tipare sistematice si greseli noi</div>${rows}`;
+    tipare = `<div class="asi-sectiune-titlu">Tipare sistematice și greșeli noi</div>${rows}`;
   }
 
   const acte = d.activitate || [];
@@ -351,11 +351,11 @@ function _asiRandeazaFereastra(d, c) {
     if (c2.a_pregatit) roluri.push("pregatit");
     if (c2.a_aprobat) roluri.push("aprobat");
     if (c2.a_respins) roluri.push("respins");
-    const flag = c2.self_approval ? `<span class="asi-flag-rosu">si-a aprobat singur</span>` : "";
+    const flag = c2.self_approval ? `<span class="asi-flag-rosu">și-a aprobat singur</span>` : "";
     return `<div class="asi-act-rand ${c2.self_approval ? "asi-act-rosu" : ""}"><div class="asi-act-tip">${c2.tip} \u00b7 ${c2.perioada}</div><div class="asi-act-meta">firma #${c2.tenant_id} \u00b7 ${roluri.join(", ")} \u00b7 stare: ${c2.stare} ${flag}</div></div>`;
   }).join("") : `<div class="stare-goala">Nicio activitate \u00eenregistrat\u0103.</div>`;
 
-  return `${header}${perioada}${calitate}${tipare}${alerta}<div class="asi-sectiune-titlu">Declaratii lucrate (max. 200)</div><div id="asi-activitate">${randuri}</div>`;
+  return `${header}${perioada}${calitate}${tipare}${alerta}<div class="asi-sectiune-titlu">Declarații lucrate (max. 200)</div><div id="asi-activitate">${randuri}</div>`;
 }
 
 /* [patch10_banner_erori] */
@@ -411,7 +411,7 @@ async function deschideEchipaErori(nav) {
           ${tipare}
         </div>`;
     }).join("");
-    box.innerHTML = `<p class="mig-intro">Cine a produs respingeri in ultimele ${d.zile} zile, sortat dupa volum.</p>${carduri}`;
+    box.innerHTML = `<p class="mig-intro">Cine a produs respingeri în ultimele ${d.zile} zile, sortat după volum.</p>${carduri}`;
   });
 }
 

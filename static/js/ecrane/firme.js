@@ -166,13 +166,13 @@ function meniuFirma(corp, nav, t) {
     { cheie: "jurnal", regim: "dubla", titlu: "Registru jurnal", desc: "Notele contabile ale firmei",
       ...CULORI_CARD.ardezie,
       icon: '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>', activ: true },
-    { cheie: "raportz", regim: "ambele", titlu: "Raport Z", desc: "Incasari zilnice \u2192 nota automata",
+    { cheie: "raportz", regim: "ambele", titlu: "Raport Z", desc: "Încasări zilnice \u2192 notă automată",
       ...CULORI_CARD.chihlimbar,
       icon: '<path d="M4 4h16M4 4l16 16M4 20h16"/>', activ: true },
     { cheie: "stocuri", regim: "dubla", titlu: "Stocuri", desc: "NIR, adaos, desc\u0103rcare gestiune",
       ...CULORI_CARD.chihlimbar,
       icon: '<path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/>', activ: true },
-    { cheie: "balanta", regim: "dubla", titlu: "Balan\u021b\u0103 de verificare", desc: "PDF lunar, solduri si rulaje",
+    { cheie: "balanta", regim: "dubla", titlu: "Balan\u021b\u0103 de verificare", desc: "PDF lunar, solduri și rulaje",
       ...CULORI_CARD.albastru,
       icon: '<path d="M12 3v18M3 7h18M6 7l-3 5h6l-3-5zM18 7l-3 5h6l-3-5z"/>', activ: true },
     { cheie: "bilant", regim: "dubla", titlu: "Bilan\u021b anual", desc: "S1005 micro / S1003 mici, validare ANAF",
@@ -184,13 +184,13 @@ function meniuFirma(corp, nav, t) {
     { cheie: "etransport", regim: "ambele", titlu: "e-Transport", desc: "Notificare UIT, XML pentru SPV",
       ...CULORI_CARD.chihlimbar,
       icon: '<path d="M1 8h13v8H1zM14 11h4l3 3v2h-7z"/><circle cx="6" cy="18" r="2"/><circle cx="17" cy="18" r="2"/>', activ: true },
-    { cheie: "operatiuni", regim: "dubla", titlu: "Operatiuni speciale", desc: "Leasing, marja, IC, sponsorizari si altele",
+    { cheie: "operatiuni", regim: "dubla", titlu: "Operațiuni speciale", desc: "Leasing, marjă, IC, sponsorizări și altele",
       ...CULORI_CARD.violet,
       icon: '<path d="M12 2l2 4 4 .5-3 3 .8 4.5L12 12l-3.8 2 .8-4.5-3-3 4-.5z"/><path d="M5 18h14M5 21h14"/>', activ: true },
     { cheie: "mijloace", regim: "dubla", titlu: "Mijloace fixe", desc: "Registrul activelor: valoare, amortizat, casare, reevaluare",
       ...CULORI_CARD.chihlimbar,
       icon: '<rect x="3" y="4" width="18" height="6" rx="1"/><path d="M5 10v10h14V10"/><path d="M9 14h6M12 10v10"/>', activ: true },
-    { cheie: "rip", regim: "simpla", titlu: "Incasari/plati", desc: "Partida simpla PFA/II/IF, Fisa D212",
+    { cheie: "rip", regim: "simpla", titlu: "Încasări/plăți", desc: "Partidă simplă PFA/II/IF, Fișă D212",
       ...CULORI_CARD.verde,
       icon: '<path d="M12 2v20M17 7H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>', activ: true },
     { cheie: "banca", regim: "ambele", titlu: "Banc\u0103", desc: "Import extras, propuneri contare",
@@ -1183,7 +1183,7 @@ export async function sectiuneaCV(corp, t, zonaM) {
         articol_id: parseInt(val("#cv-art")), data: val("#cv-data"),
         cantitate: parseFloat(val("#cv-cant")) || 0, document: val("#cv-doc") || null,
         locatie: val("#cv-loc") || null });
-      zonaM.innerHTML = `<p class="pf-intro">Iesire la CMP ${r.cmp} \u00b7 ${bani(r.valoare)} lei \u00b7 nota ${esc(r.nota)} (ciorna).</p>`;
+      zonaM.innerHTML = `<p class="pf-intro">Ieșire la CMP ${r.cmp} \u00b7 ${bani(r.valoare)} lei \u00b7 notă ${esc(r.nota)} (ciornă).</p>`;
       sectiuneaCV(corp, t, zonaM);
     } catch (e) { arataMesaj(zonaM, e.mesaj || "eroare", "eroare"); }
   });
@@ -1922,7 +1922,7 @@ async function ecranBanca(corp, nav, t) {
       });
       if (!resp.ok) throw new Error("eroare " + resp.status);
       const r = await resp.json();
-      zonaMesaj.innerHTML = `<p class="pf-intro"><b>${(r.linii || []).length}</b> linii importate si potrivite.</p>`;
+      zonaMesaj.innerHTML = `<p class="pf-intro"><b>${(r.linii || []).length}</b> linii importate și potrivite.</p>`;
       incarca();
     } catch { arataMesaj(zonaMesaj, "Nu am putut citi extrasul.", "eroare"); }
     ev.target.value = "";
@@ -1975,7 +1975,7 @@ async function ecranRaportZ(corp, nav, t) {
         numerar: v("#z-num"), card: v("#z-card"),
       });
       zona.innerHTML = `<div class="pf-frand"><div class="pf-frand-text">
-        <div class="pf-frand-nume">Nota generata (#${r.nota_id})</div>
+        <div class="pf-frand-nume">Notă generată (#${r.nota_id})</div>
         <div class="pf-frand-sub">TVA 11%: ${bani(r.tva_11)} \u00b7 TVA 21%: ${bani(r.tva_21)} \u00b7 baze: ${bani(r.baza_11)} / ${bani(r.baza_21)}</div>
       </div><span class="pf-frand-ok">\u2713</span></div>`;
       // [z_desc_v1] propune descarcarea gestiunii GV a lunii dupa nota Z

@@ -184,3 +184,195 @@ def test_niciun_mesaj_user_facing_fara_diacritice():
     assert not fl, (
         "Mesaj(e) USER-FACING fara diacritice (text pe ecran -> cu diacritice; log/assert -> ASCII). "
         "Adauga diacriticele corecte pe proza (codurile/campurile raman ASCII):\n" + raport)
+
+
+# ==========================================================================
+# GARD DE DIACRITICE PE FRONTEND (static/js/**/*.js) — extensie #4 (Costin).
+# ==========================================================================
+# Motiv: pana acum gardul scana DOAR core/*.py + main.py (roluri AST). Textul
+# user-facing din JS nu era pazit deloc — carduri de meniu scrise ASCII
+# („Incasari zilnice", „Operatiuni speciale", „solduri si rulaje").
+#
+# JS n-are AST in Python -> folosim REGEX + EURISTICI DE POZITIE. Aceleasi
+# 3 porti ca la Python (spatiu = proza, minuscule, ZERO diacritice) + o lista
+# HIGH-PRECISION separata `_TRIGGERE_JS`. Preferam FALSE NEGATIVE (ratam
+# cateva) in loc de FALSE POSITIVE (semnalam ASCII legitim: clase, id-uri,
+# cai API, chei, enum-uri).
+#
+# POZITII DE AFISARE scanate (doar aici cautam siruri):
+#   1. chei de afisare dintr-un obiect: `titlu:`/`desc:`/`eticheta:`/`subtitlu:`
+#      /`antet:`/`mesaj:`/`avertisment:`/`placeholder:`/`tooltip:`/`label:`
+#      urmate imediat de un string literal (carduri, meniuri);
+#   2. atribuiri la `.innerHTML`/`.textContent`/`.innerText`/`.title`
+#      /`.placeholder` (RHS = string literal);
+#   3. primul argument-string al `nav.deschide(`/`nav.mergi(`/`nav.inlocuieste(`
+#      (titlu de ecran);
+#   4. template-literale: NODURILE DE TEXT HTML (ce e intre `>` si `<`), DUPA ce
+#      stergem interpolarile `${...}` (asa nu scapa enum-uri de tip
+#      `o.status === "ciorna"` ca text afisat).
+#
+# EXCLUSE prin constructie (nu sunt in pozitiile de mai sus):
+#   • `console.*`; `api.get/post/put/del(...)` (cai); `querySelector`/`classList`
+#     /`getElementById`/`dataset` (selectoare); `import ... from`; `?v=`;
+#   • atributele `class=`/`id=`/`data-*` din template-literale (traiesc INTRE
+#     `<` si `>`, nu intre `>` si `<` -> nodurile de text le exclud automat);
+#   • `semnAjutor("F005")` — argumentul e un COD de marker, nu text afisat;
+#   • orice valoare de comparatie/enum din `${...}` (stearsa inainte de scan).
+#
+# `_decode_js` decodeaza `\\uXXXX`/`\\xXX` INAINTE de verificare: un sir scris
+# cu escape (`"Declara\\u021bii"`) are diacritica dupa decode -> NU e flagat.
+#
+# `_TRIGGERE_JS`: forme ASCII a caror scriere corecta cere OBLIGATORIU o
+# diacritica. Formele AMBIGUE (corecte ca ASCII) au fost SCOASE ca sa nu dea
+# fals-pozitive: „note"/„notele" (plural corect), „sponsorizare" (nearticulat
+# corect), „salariatul" (articulat corect), „scadent" (adj. corect),
+# „perioada"/„luna"/„factura" (articulat corect), „aproba"/„aprobat" (participiu
+# corect), „ciorna" (articulat corect), „generat" (participiu masc. corect).
+# Raman doar formele pe care ASCII e (aproape) mereu gresit in text afisat.
+# ==========================================================================
+
+_TRIGGERE_JS = {
+    # substantive/actiuni de UI, ASCII = mereu gresit
+    "incasari", "incasare", "incasarile", "incasarea",
+    "operatiuni", "operatiune", "operatiunile",
+    "plati", "plateste", "platesti", "platit", "platita",
+    "marja", "sponsorizari",
+    "simpla", "fisa",
+    "adauga", "adaugat", "adaugati", "adaugare",
+    "sterge", "stergere", "stersa", "sters",
+    "inregistrare", "inregistrari", "inregistrat", "inregistreaza",
+    "salariati", "salariatii",
+    "valideaza",
+    "cautare", "cauta", "cautati",
+    "urmatoarea", "urmatorul", "urmatoare",
+    "inchide", "inchisa", "inchidere",
+    "atentie", "scadenta", "scadente",
+    "ruleaza", "reporneste", "pregatit", "pregateste", "pregatire",
+    "greseli", "greseala", "greseste",
+    "descarcat", "descarca", "descarcare",
+    "generata", "iesire", "reincarca", "incearca",
+    # conjunctii/prepozitii/verbe scurte, ASCII = mereu gresit
+    "si", "fara", "pana", "dupa", "tara", "daca", "exista", "lipseste",
+    "gasit", "gasita", "societatii",
+    "declaratie", "declaratia", "declaratii", "declaratiile",
+}
+
+# excepcii temporare acceptate (sir user-facing lasat ASCII, cu motiv). Gol = clichet la 0.
+_BASELINE_JS = set()
+
+_JS_STR = r"(\"(?:[^\"\\]|\\.)*\"|'(?:[^'\\]|\\.)*')"
+_JS_TMPL_RE = re.compile(r"`(?:[^`\\]|\\.)*`", re.S)
+_JS_KEY_RE = re.compile(
+    r"\b(titlu|desc|eticheta|subtitlu|antet|mesaj|avertisment|placeholder|tooltip|label)"
+    r"\s*:\s*" + _JS_STR)
+_JS_ASSIGN_RE = re.compile(
+    r"\.(innerHTML|textContent|innerText|title|placeholder)\s*\+?=\s*" + _JS_STR)
+_JS_NAV_RE = re.compile(r"nav\.(?:deschide|mergi|inlocuieste)\s*\(\s*" + _JS_STR)
+_JS_INTERP_RE = re.compile(r"\$\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\}")
+_JS_TEXTNODE_RE = re.compile(r">([^<>]+)<")
+
+
+def _decode_js(s):
+    """Decodeaza escape-urile JS (\\uXXXX, \\xXX, \\n...) ca diacriticele scrise
+    cu escape sa conteze drept diacritice (nu drept ASCII)."""
+    s = re.sub(r"\\u([0-9a-fA-F]{4})", lambda m: chr(int(m.group(1), 16)), s)
+    s = re.sub(r"\\x([0-9a-fA-F]{2})", lambda m: chr(int(m.group(1), 16)), s)
+    for a, b in [("\\n", " "), ("\\t", " "), ("\\r", " "), ("\\'", "'"),
+                 ('\\"', '"'), ("\\`", "`"), ("\\\\", "\\")]:
+        s = s.replace(a, b)
+    return s
+
+
+def _flag_js(s):
+    """Ca `flag`, dar cu `_TRIGGERE_JS`. Intoarce lista triggere sau None.
+    Aceleasi 3 porti: proza (spatiu), minuscule, ZERO diacritice."""
+    if " " not in s.strip():
+        return None
+    if not any(c.islower() for c in s):
+        return None
+    if any(c in _DIAC for c in s):
+        return None
+    hit = set(_cuvinte(s)) & _TRIGGERE_JS
+    return sorted(hit) if hit else None
+
+
+def _lineno(text, pos):
+    return text.count("\n", 0, pos) + 1
+
+
+def scan_js_text(text):
+    """Intoarce [(linie, rol, text_decodat, [triggere])] pentru un sursa JS.
+    Extras DOAR din pozitiile de afisare (chei, atribuiri, nav.*, noduri-text)."""
+    out = []
+
+    def emit(pos, rol, raw):
+        d = _decode_js(raw[1:-1])  # scoate ghilimelele/backtick-urile
+        h = _flag_js(d)
+        if h:
+            out.append((_lineno(text, pos), rol, d.strip(), h))
+
+    for m in _JS_KEY_RE.finditer(text):
+        emit(m.start(2), "cheie:" + m.group(1), m.group(2))
+    for m in _JS_ASSIGN_RE.finditer(text):
+        emit(m.start(2), "atribuire:" + m.group(1), m.group(2))
+    for m in _JS_NAV_RE.finditer(text):
+        emit(m.start(1), "nav", m.group(1))
+    for m in _JS_TMPL_RE.finditer(text):
+        base = m.start() + 1
+        # sterge ${...} (1 nivel de acolade), pastrand lungimea -> offset->linie valid
+        body = _JS_INTERP_RE.sub(lambda mm: " " * len(mm.group(0)), m.group(0)[1:-1])
+        for tm in _JS_TEXTNODE_RE.finditer(body):
+            d = _decode_js(tm.group(1))
+            h = _flag_js(d)
+            if h:
+                out.append((_lineno(text, base + tm.start(1)), "text-html", d.strip(), h))
+    return out
+
+
+def _js_files():
+    return sorted(glob.glob("static/js/**/*.js", recursive=True))
+
+
+def _flagate_js():
+    out = []
+    for fn in _js_files():
+        try:
+            text = open(fn, encoding="utf-8").read()
+        except OSError:
+            continue
+        for ln, rol, s, h in scan_js_text(text):
+            if s not in _BASELINE_JS:
+                out.append((fn, ln, rol, s, h))
+    return out
+
+
+def test_autotest_js_criteriu_are_dinti():
+    """Dinti pe euristica JS: text afisat ASCII PICA; selectoare/cai/enum/diacritice TREC."""
+    # TREBUIE flagate (text afisat, pozitie de afisare, ASCII + trigger):
+    assert scan_js_text('nav.deschide("Adauga firma", (c) => {})'), "titlu nav ASCII"
+    assert scan_js_text('x.innerHTML = `<div>Sterge randul si gata</div>`;'), "nod-text HTML ASCII"
+    assert scan_js_text('const c = { titlu: "Operatiuni speciale" };'), "cheie de afisare ASCII"
+    assert _flag_js("Incasari zilnice"), "trigger direct"
+    # NU trebuie flagate:
+    assert not scan_js_text('api.get("/tenants/adauga/lista")'), "cale API, nu afisare"
+    assert not scan_js_text('el.classList.add("adauga-activ")'), "selector CSS, nu afisare"
+    assert not scan_js_text('x.innerHTML = `<div class="adauga-btn"></div>`;'), "atribut, nu nod-text"
+    assert not scan_js_text('t = `${o.status === "adauga" ? "a" : "b"}`;'), "enum in ${...}"
+    assert not scan_js_text('console.log("nu am gasit inregistrarea")'), "console, nu afisare"
+    assert _flag_js("Adaugă firmă") is None, "are diacritice -> corect"
+    assert _flag_js(_decode_js("Declara\\u021bii lucrate")) is None, "escape diacritic -> corect"
+    assert _flag_js("firme-optiune-titlu") is None, "un-cuvant (fara spatiu) -> nu e proza"
+
+
+def test_niciun_text_afisat_js_fara_diacritice():
+    fs = _js_files()
+    if not fs:
+        pytest.skip("static/js/**/*.js absent (rulare in afara radacinii)")
+    print("\n[gard-diacritice-JS] fisiere JS scanate: %d" % len(fs))
+    assert len(fs) > 0, "0 fisiere scanate -> gardul nu ruleaza"
+    fl = _flagate_js()
+    raport = "\n".join("  %s:%d  [%s]  %r  <- lipsesc diacritice pe [%s]"
+                       % (fn, ln, rol, s, ",".join(h)) for fn, ln, rol, s, h in fl)
+    assert not fl, (
+        "Text AFISAT in JS fara diacritice (pe ecran -> cu diacritice; cod/cai/selectoare -> ASCII). "
+        "Adauga diacriticele corecte pe proza:\n" + raport)

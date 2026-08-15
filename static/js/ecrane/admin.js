@@ -66,7 +66,7 @@ export function desktopAdmin(continut, nav) {
         const box = document.createElement("div");
         box.className = "caseta-atentie";
         box.id = "running-stale";
-        box.innerHTML = `<div class="ca-mesaj">Rularea NU e la zi: serviciul ruleaza commitul <b>${esc((v.running || "").slice(0, 7))}</b>, dar HEAD e <b>${esc((v.head || "").slice(0, 7))}</b>. Codul publicat nu e cel care ruleaza. Reporneste serviciul la o fereastra sigura (nu in mijlocul unei operatii a unui contabil). Detectorul nu reporneste nimic si nu repara nimic.</div>`;
+        box.innerHTML = `<div class="ca-mesaj">Rularea NU e la zi: serviciul rulează commitul <b>${esc((v.running || "").slice(0, 7))}</b>, dar HEAD e <b>${esc((v.head || "").slice(0, 7))}</b>. Codul publicat nu e cel care rulează. Repornește serviciul la o fereastră sigură (nu în mijlocul unei operații a unui contabil). Detectorul nu repornește nimic și nu repară nimic.</div>`;
         continut.insertBefore(box, continut.firstChild);
       }
     } catch {}

@@ -199,7 +199,7 @@ export async function ecranEtransport(corp, nav, t) {
         const a = document.createElement("a");
         a.href = url; a.download = `etransport_${ziAzi}.xml`; a.click();
         URL.revokeObjectURL(url);
-        zona.innerHTML = `<p class="pf-intro">XML generat si descarcat. ${esc(r.nota || "")}</p>`;
+        zona.innerHTML = `<p class="pf-intro">XML generat și descărcat. ${esc(r.nota || "")}</p>`;
       } catch (e) { plaseazaErori(zona, e); }
     });
 

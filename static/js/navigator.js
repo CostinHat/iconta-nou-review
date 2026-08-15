@@ -426,7 +426,7 @@ async function _anunturiBanner(ecran) {
         /* [catch_scriere 27.07.2026] confirmarea nesalvata parea salvata - anuntul
            disparea de pe ecran dar reapare la reincarcare, fara explicatie. */
         const t = el.querySelector(".anunt-text") || el;
-        t.textContent = "Nu am putut confirma. Reincarca pagina si incearca din nou.";
+        t.textContent = "Nu am putut confirma. Reîncarcă pagina și încearcă din nou.";
       }
     });
     document.body.appendChild(el);

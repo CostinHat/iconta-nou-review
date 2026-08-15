@@ -261,14 +261,14 @@ function randeazaMeniuActivitate(corp, nav) {
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg>
         </div>
         <div class="firme-optiune-titlu">Activitatea echipei</div>
-        <div class="firme-optiune-desc">Centralizator si jurnal cronologic: cine ce a pregatit, validat, depus</div>
+        <div class="firme-optiune-desc">Centralizator și jurnal cronologic: cine ce a pregătit, validat, depus</div>
       </button>
       <button class="firme-optiune" id="opt-tipare">
         <div class="firme-optiune-icon accent-roz">
           <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 17l6-6 4 4 8-8"/><path d="M17 7h4v4"/></svg>
         </div>
         <div class="firme-optiune-titlu">Tipare de erori ${window._activAlerta ? '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:var(--rosu-semafor);margin-left:6px"></span>' : ""}</div>
-        <div class="firme-optiune-desc">Unde se greseste des si de ce — educatie din respingerile reale</div>
+        <div class="firme-optiune-desc">Unde se greșește des și de ce — educație din respingerile reale</div>
       </button>
     </div>
   `;

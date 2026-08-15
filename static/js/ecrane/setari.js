@@ -90,11 +90,11 @@ export async function randeazaSetari(corp, nav) {
     corp.innerHTML = butonInapoi() + `
       <div class="panou">
         <div class="cap-titlu">Ce pot face</div>
-        <p class="ecran-nota">Alege ce poti face in fluxul de declaratii. Le poti lasa nebifate daca procesarea o fac asistentii.</p>
-        <label class="set-bifa"><input type="checkbox" id="cmp-preg" ${b("poate_pregati")}> <span>Pot pregati declaratii</span></label>
-        <label class="set-bifa"><input type="checkbox" id="cmp-val" ${b("poate_valida")}> <span>Pot valida declaratii</span></label>
-        <label class="set-bifa"><input type="checkbox" id="cmp-dep" ${b("poate_depune")}> <span>Pot depune declaratii</span></label>
-        <button class="buton-primar" id="set-salveaza-compet">Salveaz\u0103 competentele</button>
+        <p class="ecran-nota">Alege ce poți face în fluxul de declarații. Le poți lăsa nebifate dacă procesarea o fac asistenții.</p>
+        <label class="set-bifa"><input type="checkbox" id="cmp-preg" ${b("poate_pregati")}> <span>Pot pregăti declarații</span></label>
+        <label class="set-bifa"><input type="checkbox" id="cmp-val" ${b("poate_valida")}> <span>Pot valida declarații</span></label>
+        <label class="set-bifa"><input type="checkbox" id="cmp-dep" ${b("poate_depune")}> <span>Pot depune declarații</span></label>
+        <button class="buton-primar" id="set-salveaza-compet">Salveaz\u0103 competen\u021bele</button>
         <div class="" id="set-msg-compet"></div>
       </div>`;
     legaInapoi();
