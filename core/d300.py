@@ -169,7 +169,9 @@ def calcul_d300(prof, perioada, facturi, manual=None):
         ti = bool(f.get("taxare_inversa"))
         cat331 = f.get("categorie_331")   # [Task1] natura art.331 (taxare inversa) pt achizitii 0%
         f_zero_b = Decimal(0)             # [Task1] baza cotelor 0% pe ACEASTA factura primita
-        if tvai:
+        if tvai and not ti:
+            # taxarea inversa e exigibila la faptul generator (art.282 alin.6 CF), NU la incasare:
+            # ramane pe calea de emitere (_segmente) chiar sub tva_la_incasare - vezi _pull_taxare_inversa.
             from core import tva_incasare as _tvi
             segmente = []
             for d in (f.get("decontari") or []):
@@ -678,6 +680,30 @@ def _pull_incasare(cur, inceput, sfarsit):
     return out
 
 
+def _pull_taxare_inversa(cur, inceput, sfarsit):
+    """Facturi cu taxare inversa EMISE in [inceput, sfarsit) pe faptul generator (emitere), cu linii.
+    Folosit DOAR pe calea tva_la_incasare: _pull_incasare EXCLUDE taxarea inversa (art.282 alin.6 CF:
+    exigibila la faptul generator, nu la incasare) - o aducem separat ca sa NU dispara tacit din decont
+    (rd.13 pt emise / rd.12+rd.25 pt primite). Aceeasi forma de dict ca pull() normal."""
+    cur.execute("SELECT f.id, f.directie, f.total, f.tva, "
+                "COALESCE(f.taxare_inversa, false) AS taxare_inversa, f.categorie_331, "
+                "l.cantitate, l.pret_unitar, l.cota_tva "
+                "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
+                "WHERE f.data_emitere >= %s AND f.data_emitere < %s "
+                "AND COALESCE(f.taxare_inversa, false) = true ORDER BY f.id",
+                (inceput, sfarsit))
+    fmap = {}
+    for r in cur.fetchall():
+        f = fmap.setdefault(r["id"], {"directie": r["directie"],
+                                      "taxare_inversa": r["taxare_inversa"],
+                                      "categorie_331": r["categorie_331"],
+                                      "total": r["total"] if r["total"] is not None else 0,
+                                      "tva": r["tva"] if r["tva"] is not None else 0, "linii": []})
+        if r["cantitate"] is not None and r["pret_unitar"] is not None:
+            f["linii"].append((r["cantitate"], r["pret_unitar"], r["cota_tva"]))
+    return list(fmap.values())
+
+
 def pull(conn, schema, perioada):
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
@@ -694,8 +720,10 @@ def pull(conn, schema, perioada):
         sfarsit = _sf.isoformat()
         if prof.get("tva_la_incasare"):
             # TVA la incasare: exigibilitate pe DECONTARI (incasari/plati validate in perioada),
-            # nu pe emitere. Vezi _pull_incasare.
-            return prof, _pull_incasare(cur, inceput, sfarsit)
+            # nu pe emitere. Vezi _pull_incasare. EXCEPTIE: taxarea inversa e exigibila la faptul
+            # generator (art.282 alin.6 CF), nu la incasare - _pull_incasare o EXCLUDE; o aducem pe
+            # calea de emitere (_pull_taxare_inversa) ca sa NU dispara tacit (rd.13 / rd.12+rd.25).
+            return prof, _pull_incasare(cur, inceput, sfarsit) + _pull_taxare_inversa(cur, inceput, sfarsit)
         cur.execute("SELECT f.id, f.directie, f.total, f.tva, "
                     "COALESCE(f.taxare_inversa, false) AS taxare_inversa, f.categorie_331, "
                     "l.cantitate, l.pret_unitar, l.cota_tva "

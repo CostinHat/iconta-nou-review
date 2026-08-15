@@ -196,12 +196,18 @@ def existenta_firma_an(conn, schema, an):
     return False
 
 
-def facturi_necontabilizate(conn, schema, an, luna):
-    """Facturile lunii FARA inregistrare VALIDATA - cauza dovedibila a divergentei.
+def facturi_necontabilizate(conn, schema, inceput, sfarsit):
+    """Facturile din fereastra fiscala [inceput, sfarsit) FARA nota VALIDATA care ATINGE contul de
+    TVA (4427 credit pt emise, 4426 debit pt primite) - cauza dovedibila a divergentei D300<->cont.
+    inceput/sfarsit = 'YYYY-MM-DD', interval semi-deschis; fereastra = perioada fiscala TVA (trimestrul
+    intreg pt trimestriali), ACEEASI ca a D300 (vezi verifica_tva) - altfel D300=trimestru vs rulaj=luna
+    dadea rosu fals.
+    O DECONTARE (incasare 5311/4111, plata 5311/401) leaga factura_id dar NU atinge 4427/4426 -> nu mai
+    bifeaza factura drept contabilizata (bug: nota de vanzare/achizitie lipsa, mascata de incasare).
+    Facturile FARA TVA (tva=0) sau cu taxare inversa (fara TVA pe vanzare, nu au 4427/4426 de atins):
+    orice nota validata le contabilizeaza.
     are_ciorna=True -> nota exista dar asteapta patru-ochi: NU se recontabilizeaza."""
     import psycopg2.extras as _E
-    inceput = "%04d-%02d-01" % (an, luna)
-    sfarsit = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(f"""
             SELECT f.id, f.numar, f.directie, f.total, f.tva, f.tert_nume,
@@ -209,8 +215,14 @@ def facturi_necontabilizate(conn, schema, an, luna):
                            WHERE ic.factura_id = f.id AND ic.status = 'ciorna') AS are_ciorna
             FROM {schema}.facturi f
             WHERE f.data_emitere >= %s AND f.data_emitere < %s
-              AND NOT EXISTS (SELECT 1 FROM {schema}.inregistrari i
-                              WHERE i.factura_id = f.id AND i.status = 'validata')
+              AND NOT EXISTS (
+                    SELECT 1 FROM {schema}.inregistrari i
+                    LEFT JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
+                    WHERE i.factura_id = f.id AND i.status = 'validata'
+                      AND ( COALESCE(f.tva, 0) = 0
+                         OR COALESCE(f.taxare_inversa, false) = true
+                         OR (f.directie = 'emisa'   AND l.cont_credit = '4427')
+                         OR (f.directie = 'primita' AND l.cont_debit  = '4426') ) )
             ORDER BY f.id
         """, (inceput, sfarsit))
         return [dict(r) for r in cur.fetchall()]
@@ -318,6 +330,57 @@ def compara_tva(d300_R, rulaje, necontate=None, patru_ochi=True):
                         "facturi cu data în altă lună decât înregistrarea."),
             "facturi": [],
         }))
+
+    # REZULTATUL decontului, nu doar cele doua totaluri: sold de plata (rd.41) <-> 4423,
+    # de recuperat (rd.42) <-> 4424. Note validate, pe fereastra fiscala. Ambele 0 -> tacut
+    # (nu orice luna are nota de inchidere TVA - nu producem zgomot).
+    for eticheta, rand, cont, sens in (
+        ("TVA de plată (rezultat decont)", "R41_2", "4423", "credit"),
+        ("TVA de recuperat (rezultat decont)", "R42_2", "4424", "debit"),
+    ):
+        decl = _d(d300_R.get(rand, 0))
+        contabil = _d(rulaje.get(cont, {}).get(sens, 0))
+        if decl == 0 and contabil == 0:
+            continue
+        dif = decl - contabil
+        temei = (f"D300 rând {rand} (rezultatul decontului, sold la sfârșitul perioadei fiscale) vs "
+                 f"rulaj {sens} cont {cont}, numai note validate. Reconciliază rezultatul, nu doar "
+                 f"totalurile colectată/deductibilă.")
+        baza = {"eticheta": eticheta, "declarat": decl, "contabil": contabil,
+                "diferenta": dif, "temei": temei}
+        if abs(dif) <= TOLERANTA:
+            rez.append(dict(baza, stare="verde",
+                            mesaj=f"{eticheta}: D300 și contul {cont} coincid ({_lei(decl)}).",
+                            remediu=None))
+        else:
+            rez.append(dict(baza, stare="rosu",
+                mesaj=(f"{eticheta}: D300 declară {_lei(decl)}, contul {cont} are {_lei(contabil)} "
+                       f"(diferență {_lei(dif)})."),
+                remediu={"fel": "investigatie",
+                         "cauza": "Rezultatul decontului nu coincide cu nota de închidere TVA.",
+                         "actiune": (f"Verifică nota de închidere TVA a perioadei (4427/4426 → {cont}), "
+                                     f"regularizări și soldul reportat din perioada precedentă."),
+                         "facturi": []}))
+
+    # SEMNAL pe 4428 (TVA neexigibilă): exigibilitate decalată (TVA la încasare / taxare inversă),
+    # fără rând D300 corespondent direct. Dacă soldul net s-a mișcat în perioadă -> gri (informativ,
+    # NU roșu: nu are contrapartidă declarată), ca să nu treacă tăcut.
+    _nx = rulaje.get("4428")
+    if _nx:
+        _net = _d(_nx.get("credit", 0)) - _d(_nx.get("debit", 0))
+        if abs(_net) > TOLERANTA:
+            rez.append({"eticheta": "TVA neexigibilă (cont 4428)",
+                        "declarat": Decimal(0), "contabil": _net, "diferenta": _net,
+                        "stare": "gri",
+                        "temei": ("Cont 4428 (TVA neexigibilă) — exigibilitate decalată (TVA la încasare / "
+                                  "taxare inversă). Fără rând D300 corespondent direct."),
+                        "mesaj": (f"Cont 4428 (TVA neexigibilă) are sold net {_lei(_net)} în perioadă — "
+                                  f"exigibilitate decalată, încă nedeclarată în acest decont."),
+                        "remediu": {"fel": "investigatie",
+                                    "cauza": "TVA neexigibilă în sold — devine exigibilă la încasare/plată.",
+                                    "actiune": ("Verifică dacă TVA neexigibilă trebuia să devină exigibilă "
+                                                "în perioadă (încasări/plăți efectuate)."),
+                                    "facturi": []}})
     return rez
 
 
@@ -458,14 +521,19 @@ def verifica_tva(conn, schema, an, luna):
     Conexiunea trebuie pozitionata pe schema: get_conn(schema) (ca la declaratii).
     Intoarce si starea GRI daca D300 nu se poate genera (nu ascunde necunoscutul)."""
     from core import d300 as _d300
-    from core.common import Perioada
+    from core.common import Perioada, fereastra_tva, perioada_tva_tip
     # gardă subiect (analog cu d112 pe salariati): neplatitor de TVA -> D300 nu se aplica, NU producem verdict.
     # Verdele pe 0-vs-0 ar afirma o verificare fara subiect. platitor_tva==True cu luna goala e legitim (decont
     # nul coincide) -> ramane verde. None (vector incomplet) -> lasat sa ruleze; D300-declaratie e deja gri. DECIZII 23.07.
     with conn.cursor() as cur:
-        cur.execute(f"SELECT platitor_tva FROM {schema}.firma_profil LIMIT 1")
+        cur.execute(f"SELECT platitor_tva, tip_decont FROM {schema}.firma_profil LIMIT 1")
         _row = cur.fetchone()
-    if _row and _row[0] is False:
+    _prof = {}
+    if _row is not None:
+        _prof["platitor_tva"] = _row[0]
+        if len(_row) > 1:
+            _prof["tip_decont"] = _row[1]
+    if _prof.get("platitor_tva") is False:
         return {"an": an, "luna": luna, "stare": "verde", "constatari": [], "facturi_necontabilizate": [],
                 "explicatie": "", "limita": "Firmă neplătitoare de TVA — D300 nu se datorează, nimic de verificat.",
                 "modul": MODUL, "reguli": REGULI}
@@ -492,8 +560,13 @@ def verifica_tva(conn, schema, an, luna):
                 "limita": "Verificarea TVA nu a fost efectuată — riscul rămâne neacoperit."}
 
     R = res["R"] if isinstance(res, dict) else getattr(res, "R", {})
-    necontate = facturi_necontabilizate(conn, schema, an, luna)
-    rulaje = rulaje_luna(conn, schema, an, luna, ("4427", "4426"))
+    # FEREASTRA FISCALA (3a): rulajele si facturile se compara pe ACEEASI fereastra ca D300 - pentru
+    # trimestriali D300 agrega tot trimestrul (fereastra_tva), deci comparatia cu O luna calendaristica
+    # dadea rosu fals garantat. Foloseste perioada fiscala TVA din vectorul firmei (tip_decont).
+    _inc, _sf = fereastra_tva(Perioada(an, luna=luna), perioada_tva_tip(_prof))
+    _de, _pana = _inc.isoformat(), _sf.isoformat()
+    necontate = facturi_necontabilizate(conn, schema, _de, _pana)
+    rulaje = rulaje_interval(conn, schema, _de, _pana, ("4427", "4426", "4423", "4424", "4428"))
     constatari = compara_tva(R, rulaje, necontate, patru_ochi=_patru_ochi_activ(conn, schema))
     stare = "rosu" if any(c["stare"] == "rosu" for c in constatari) else "verde"
     return {
