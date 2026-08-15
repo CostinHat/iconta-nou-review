@@ -4,7 +4,7 @@ Modul D300 — Decont de TVA (ANAF v12, conform OPANAF 174/2026 + Legea 141/2025
 REFĂCUT DE LA ZERO după ANAF structura D300 v12.0.0 (structura_D300_v12.0.0_10022026).
 
 Separare strictă:
-  - CALCUL PUR : calcul_d300(prof, an, luna, facturi, manual=None) -> Rezultat
+  - CALCUL PUR : calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None) -> Rezultat
   - VALIDARE   : valideaza(rezultat) -> listă erori (regulile ANAF)
   - XML        : build_xml(rezultat) -> str
   - CITIRE DB  : pull(conn, schema, an, luna) -> (prof, facturi)
@@ -129,17 +129,49 @@ def _segmente(f):
     return [(ci, baza)]
 
 
-def calcul_d300(prof, perioada, facturi, manual=None):
+def calcul_d300(prof, perioada, facturi, manual=None, reclasificari=None):
     """
     Calcul PUR al decontului după structura ANAF v12.
     manual: dict opțional {rând: valoare} pentru operațiuni speciale introduse
             de contabil (ex. {"R5_1": 1000, "R5_2": 210} pt achiziții intracom).
+    reclasificari: SURSA UNICĂ partajată cu D390 (tabelul d390_reclasificare, scris prin panoul
+            D390). Bun-vs-serviciu e proprietate a OPERAȚIUNII, nu a declarației: contabilul
+            reclasifică O DATĂ, D300 și D390 CITESC amândouă. Cheie identică cu D390:
+            (directie, tara, cod) derivate din PREFIXUL CUI via core.d390._clasifica_partener.
+            Forme acceptate: {(an, luna, directie, tara, cod): tip} (per lună — necesar la
+            trimestru, unde același partener poate fi reclasificat diferit în luni diferite) SAU
+            {(directie, tara, cod): tip} (o singură lună). RECLASIFICĂ (mută), nu adaugă → fără
+            dublă numărare. Emisă tip P -> rd.3 (R3_1 + R3_1_1) în loc de rd.1; primită tip S ->
+            rd.7 colectat (R7_1/R7_2 + R7_1_1/R7_1_2) + oglindă rd.20 deductibil
+            (R20_1/R20_2 + R20_1_1/R20_1_2), net zero, în loc de rd.5+rd.18. Vezi DECIZII 21.07 F125.
     """
     manual = manual or {}
     _bad = [k for k in manual if not str(k).startswith("R")]
     if _bad:
         raise ValueError("D300: chei 'manual' necunoscute (asteptate Rxx_y): %s" % sorted(_bad))
     an, luna = perioada.an, perioada.luna
+    # [F125 reclasificare] Normalizez cheile in doua forme: per-luna {(an,luna): {(dir,tara,cod):tip}}
+    # (trimestru) + flat {(dir,tara,cod):tip} (o luna). Import regula de tranzitie din D390 (SURSA
+    # UNICA - NU o redefinesc): _reclasificare_tip valideaza tipul contra directiei (ca la scriere).
+    from core.d390 import _reclasificare_tip as _recl_tip, _clasifica_partener as _clas_part
+    _recl_by_luna = {}
+    _recl_flat = {}
+    for _k, _v in (reclasificari or {}).items():
+        if len(_k) == 5:
+            _a, _l, _d, _t, _c = _k
+            _recl_by_luna.setdefault((_a, _l), {})[(_d, _t, _c)] = _v
+        elif len(_k) == 3:
+            _recl_flat[_k] = _v
+        else:
+            raise ValueError("D300: cheie 'reclasificari' invalida %r - astept (an,luna,directie,tara,cod) "
+                             "sau (directie,tara,cod)." % (_k,))
+
+    def _recl_luna(an_f, luna_f):
+        """Override-urile 3-tuple aplicabile unei facturi (luna ei de exigibilitate): flat +
+        specificul lunii (specificul lunii are prioritate)."""
+        m = dict(_recl_flat)
+        m.update(_recl_by_luna.get((an_f, luna_f), {}))
+        return m
     Z = lambda: [Decimal(0), Decimal(0)]
     # colectată pe cote (livrări taxabile)
     col = {21: Z(), 11: Z(), 9: Z()}
@@ -175,6 +207,13 @@ def calcul_d300(prof, perioada, facturi, manual=None):
     ic_livr_bunuri = Decimal(0)          # rd.1 (R1): livrari IC de bunuri catre UE (0%, art.294 alin.2)
     export_livr = Decimal(0)             # rd.14 (R14): export catre non-UE (scutit cu drept de deducere)
     ic_ach_b = Decimal(0); ic_ach_t = Decimal(0); ic_ach_n = 0   # rd.5 colectat + rd.18 deductibil (taxare inversa IC, net zero)
+    # [F125 reclasificare bun->serviciu, sursa unica D390] Servicii IC (reclasificate P/S in D390):
+    #   emisa tip P -> rd.3 (R3_1 baza col.1, fara TVA) + sub-rand rd.3.1 (R3_1_1 "din care servicii IC").
+    #   primita tip S -> rd.7 colectat (R7_1/R7_2 + R7_1_1/R7_1_2) + OGLINDA rd.20 deductibil
+    #       (R20_1/R20_2 + R20_1_1/R20_1_2), autolichidare la cota interna, net zero (DUK V_13-V_16: R20=R7).
+    ic_prest_serv = Decimal(0)                                    # rd.3 (R3_1): prestari servicii IC (emisa, tip P), 0%
+    ic_serv_b = Decimal(0); ic_serv_t = Decimal(0); ic_serv_n = 0 # rd.7 colectat + rd.20 deductibil (achizitii servicii IC, tip S, net zero)
+    tr_reclas = []                       # [(directie, tip)] operatiuni reclasificate T/R in D390 (triangulatie/regim) - NEACOPERIT D300, semnalat
     foreign_pos = []                     # [(tara, baza, tva)] factura straina cu cota interna pozitiva (probabil eroare) -> avertisment, nu R9
     livrare_ti_base = Decimal(0)   # rd.13: baza livrarilor cu taxare inversa (furnizor art.331), fara TVA
     # [Task2 10.08.2026] beneficiar taxare inversa PRIMITA (art.331, masuri de simplificare): anterior
@@ -193,6 +232,18 @@ def calcul_d300(prof, perioada, facturi, manual=None):
         tara = (f.get("tert_tara") or "RO").upper()
         strain = (tara != "RO")
         ue = (tara in _TARI_UE)
+        # [F125 reclasificare bun->serviciu] Tipul operatiunii IC (default bunuri L/A) sau overridat prin
+        # SURSA UNICA D390 (d390_reclasificare). CHEIE IDENTICA cu D390: (directie, tara, cod) derivate din
+        # PREFIXUL CUI via core.d390._clasifica_partener (NU din tert_tara - ca lookup-ul sa coincida cu ce
+        # a scris panoul D390). Doar partenerii clasificati "ic" au override; fara CUI IC valid ramane bunuri.
+        directie = "emisa" if emisa else "primita"
+        tip_def_ic = "L" if emisa else "A"
+        _cat_p, _ptara, _pcod, _motiv_p = _clas_part(f.get("cui"))
+        if _cat_p == "ic":
+            _an_f = f.get("an_exig", an); _luna_f = f.get("luna_exig", luna)
+            tip_ic = _recl_tip(directie, _ptara, _pcod, _recl_luna(_an_f, _luna_f), tip_def_ic)
+        else:
+            tip_ic = tip_def_ic
         if (tvai or f.get("exigibil_la_decontare")) and not ti:
             # taxarea inversa e exigibila la faptul generator (art.282 alin.6 CF), NU la incasare:
             # ramane pe calea de emitere (_segmente) chiar sub tva_la_incasare - vezi _pull_taxare_inversa.
@@ -226,14 +277,27 @@ def calcul_d300(prof, perioada, facturi, manual=None):
                     foreign_pos.append((tara, baza, tva)); continue
                 if emisa:
                     if ue:
-                        ic_livr_bunuri += baza       # rd.1 livrare IC bunuri (0%)
+                        # [F125] tip din SURSA UNICA D390: L=bunuri->rd.1; P=servicii->rd.3; T/R=triangulatie
+                        # /regim (NU axa bun-serviciu) -> ramane bunuri (rd.1) DAR se semnaleaza (limita declarata).
+                        if tip_ic == "P":
+                            ic_prest_serv += baza    # rd.3 prestari servicii IC (0%)
+                        else:
+                            ic_livr_bunuri += baza   # rd.1 livrare IC bunuri (0%) [L, sau T/R nemapate]
+                            if tip_ic in ("T", "R"):
+                                tr_reclas.append((directie, tip_ic))
                     else:
                         export_livr += baza          # rd.14 export (scutit cu drept)
                 else:
                     if ue:
-                        ic_ach_b += baza             # rd.5 baza (taxare inversa IC)
-                        ic_ach_t += baza * Decimal(cota_std_ic) / Decimal(100)  # autolichidare la cota interna
-                        ic_ach_n += 1
+                        # [F125] tip din SURSA UNICA D390: A=bunuri->rd.5+rd.18; S=servicii->rd.7+rd.20 (oglinda).
+                        if tip_ic == "S":
+                            ic_serv_b += baza                                      # rd.7 baza (taxare inversa servicii IC)
+                            ic_serv_t += baza * Decimal(cota_std_ic) / Decimal(100)  # autolichidare la cota interna
+                            ic_serv_n += 1
+                        else:
+                            ic_ach_b += baza             # rd.5 baza (taxare inversa IC bunuri)
+                            ic_ach_t += baza * Decimal(cota_std_ic) / Decimal(100)  # autolichidare la cota interna
+                            ic_ach_n += 1
                     else:
                         f_zero_b += baza             # import non-UE 0% -> ruta scutite/neimpozabile (rd.26)
                 continue
@@ -349,6 +413,36 @@ def calcul_d300(prof, perioada, facturi, manual=None):
                 "(%s) - dubla numarare. Pastreaza o singura sursa." % (_r5b, _r5t, ", ".join(_dbl_ic)))
         R["R5_1"] = _r5b; R["R5_2"] = _r5t     # colectat (rd.5)
         R["R18_1"] = _r5b; R["R18_2"] = _r5t   # deductibil (rd.18) - oglinda rd.5, net zero (DUK V_7/V_8)
+
+    # [F125 reclasificare bun->serviciu, SURSA UNICA D390] Servicii IC reclasificate (MUTA, nu adauga).
+    # rd.3 (emisa tip P): R3_1 baza (col.1, 0% fara TVA) + sub-rand rd.3.1 R3_1_1 "din care servicii IC".
+    # rd.3/rd.3.1 sunt in allow-list-ul manual (colectata) -> gard anti-dubla auto+manual, ca la rd.1.
+    _r3 = _int(ic_prest_serv)
+    if _r3:
+        _dbl_p = sorted(k for k in ("R3_1", "R3_1_1") if k in manual)
+        if _dbl_p:
+            raise ValueError(
+                "D300 rd.3 (prestari servicii IC): derivat AUTOMAT din facturi emise catre UE reclasificate "
+                "serviciu (P) in D390 (=%d) plus introdus manual (%s) - dubla numarare. Pastreaza o singura "
+                "sursa: reclasifica in panoul D390 SAU introdu manual, nu ambele." % (_r3, ", ".join(_dbl_p)))
+        R["R3_1"] = _r3
+        R["R3_1_1"] = _r3                      # din care servicii IC (toata baza rd.3 e serviciu IC)
+    # rd.7 colectat (primita tip S): R7_1/R7_2 + sub-rand rd.7.1 R7_1_1/R7_1_2, autolichidare la cota interna.
+    # OGLINDA rd.20 deductibil: R20_1/R20_2 + R20_1_1/R20_1_2, net zero (DUK V_13-V_16: R20_x==R7_x, R20_1_x==R7_1_x).
+    # rd.7/rd.20 sunt in allow-list-ul manual (colectata/deductibila) -> gard anti-dubla auto+manual, ca la rd.5/rd.18.
+    _r7b = _int(ic_serv_b); _r7t = _int(ic_serv_t)
+    if _r7b or _r7t:
+        _dbl_s = sorted(k for k in ("R7_1", "R7_2", "R7_1_1", "R7_1_2",
+                                    "R20_1", "R20_2", "R20_1_1", "R20_1_2") if k in manual)
+        if _dbl_s:
+            raise ValueError(
+                "D300 achizitii servicii IC (rd.7 colectat + rd.20 deductibil, taxare inversa): derivate "
+                "AUTOMAT din facturi primite din UE reclasificate serviciu (S) in D390 (baza=%d, TVA=%d) plus "
+                "introduse manual (%s) - dubla numarare. Pastreaza o singura sursa." % (_r7b, _r7t, ", ".join(_dbl_s)))
+        R["R7_1"] = _r7b; R["R7_2"] = _r7t         # colectat (rd.7)
+        R["R7_1_1"] = _r7b; R["R7_1_2"] = _r7t     # din care servicii IC (rd.7.1)
+        R["R20_1"] = _r7b; R["R20_2"] = _r7t       # deductibil (rd.20) - oglinda rd.7, net zero (DUK V_13/V_14)
+        R["R20_1_1"] = _r7b; R["R20_1_2"] = _r7t   # din care servicii IC (rd.20.1) - oglinda rd.7.1 (DUK V_15/V_16)
 
     # R17 = TOTAL TAXĂ COLECTATĂ (formula oficială: sumă rd.1-18 cu excepții)
     # col.1 (bază) și col.2 (TVA) — pentru firma simplă: R9_1+R10_1+R11_1, R9_2+R10_2+R11_2
@@ -545,8 +639,8 @@ def calcul_d300(prof, perioada, facturi, manual=None):
     if ic_livr_bunuri:
         res.avertismente.append(
             "Livrări intracomunitare de bunuri către UE (bază %s lei) — declarate la rd.1 (0%%, art.294 "
-            "alin.2). Dacă sunt PRESTĂRI de servicii intracomunitare, reclasifică la rd.3 (locul prestării "
-            "în afara României)." % _f(ic_livr_bunuri))
+            "alin.2). Dacă sunt PRESTĂRI de servicii intracomunitare, reclasifică operațiunea ca serviciu "
+            "în panoul D390 (sursă unică) — se mută automat la rd.3." % _f(ic_livr_bunuri))
     if export_livr:
         res.avertismente.append(
             "Livrări către partener non-UE (export, bază %s lei) — declarate la rd.14 (scutite cu drept "
@@ -555,8 +649,31 @@ def calcul_d300(prof, perioada, facturi, manual=None):
         res.avertismente.append(
             "%d achiziții intracomunitare de bunuri din UE (bază %s lei, TVA autolichidat %s lei la %d%%) — "
             "declarate la rd.5 colectat + rd.18 deductibil (taxare inversă, net zero). Dacă sunt SERVICII, "
-            "reclasifică la rd.7 colectat + rd.20 deductibil. Anterior cădeau în R26/avertisment."
+            "reclasifică operațiunea ca serviciu în panoul D390 (sursă unică) — se mută automat la rd.7 "
+            "colectat + rd.20 deductibil."
             % (ic_ach_n, _f(ic_ach_b), _f(ic_ach_t), cota_std_ic))
+    # [F125] Servicii IC reclasificate prin SURSA UNICA D390 (MUTATE, nu adaugate).
+    if ic_prest_serv:
+        res.avertismente.append(
+            "Prestări de servicii intracomunitare către UE (bază %s lei) — reclasificate ca serviciu (P) în "
+            "D390, declarate la rd.3 + rd.3.1 (locul prestării în afara României, 0%%). Mutate din rd.1 "
+            "(livrări de bunuri), nu adăugate — fără dublă numărare." % _f(ic_prest_serv))
+    if ic_serv_n:
+        res.avertismente.append(
+            "%d achiziții de servicii intracomunitare din UE (bază %s lei, TVA autolichidat %s lei la %d%%) — "
+            "reclasificate ca serviciu (S) în D390, declarate la rd.7 colectat + rd.7.1 + oglindă rd.20 "
+            "deductibil + rd.20.1 (taxare inversă, net zero). Mutate din rd.5+rd.18, nu adăugate."
+            % (ic_serv_n, _f(ic_serv_b), _f(ic_serv_t), cota_std_ic))
+    if tr_reclas:
+        # LIMITA DECLARATA (marker ASCII intern MARKER_TR_D300_NEACOPERIT): T/R nu e axa bun-serviciu;
+        # maparea D300 pt triangulatie (T)/regularizari-regim (R) NU e acoperita de acest lot. Operatiunea
+        # ramane rutata numeric (bunuri, rd.1) DAR se semnaleaza explicit - limita declarata, nu tacere.
+        _tipuri_tr = ", ".join(sorted({t for _d, t in tr_reclas}))
+        res.avertismente.append(
+            "%d operațiuni reclasificate T/R (%s) în D390 — maparea D300 pentru triangulație (T) / regim "
+            "special (R) NU e acoperită de acest lot: au rămas rutate numeric ca bunuri (rd.1). Verifică "
+            "manual încadrarea în decont — limită declarată, nu omisiune tacită."
+            % (len(tr_reclas), _tipuri_tr))
     res.avertismente.append("Rezultat TVA %s lei." % rez)
     return res
 
@@ -861,7 +978,11 @@ def pull(conn, schema, perioada):
         cur.execute(
             "SELECT f.id, f.directie, f.total, f.tva, "
             "COALESCE(f.taxare_inversa, false) AS taxare_inversa, f.categorie_331, "
-            "COALESCE(f.tert_tara, 'RO') AS tert_tara, "
+            "COALESCE(f.tert_tara, 'RO') AS tert_tara, f.tert_cui, "
+            # [F125] LUNA de exigibilitate (aceeasi expresie pe care se face fereastra): cheia
+            # reclasificarii D390 e per-luna (acelasi partener poate fi reclasificat diferit in luni
+            # diferite - trimestru). Fara ea D300 nu poate potrivi factura pe luna corecta.
+            + _EXIG_NORMAL + " AS exig, "
             "l.cantitate, l.pret_unitar, l.cota_tva "
             "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
             # [B1] fereastra pe EXIGIBILITATE (COALESCE(data_faptului_generator, data_emitere); avans->emitere)
@@ -877,10 +998,17 @@ def pull(conn, schema, perioada):
         deferred = _pull_furnizor_incasare(cur, inceput, sfarsit)
     fmap = {}
     for r in rows:
+        _exig = r.get("exig")
         f = fmap.setdefault(r["id"], {"directie": r["directie"],
                                       "taxare_inversa": r["taxare_inversa"],
                                       "categorie_331": r["categorie_331"],
                                       "tert_tara": r["tert_tara"],
+                                      # [F125] CUI partener: cheia reclasificarii (directie,tara,cod) se
+                                      # deriva din PREFIXUL CUI via d390._clasifica_partener, identic cu D390.
+                                      "cui": (r.get("tert_cui") or "").strip(),
+                                      # [F125] luna de exigibilitate (potrivirea reclasificarii per-luna)
+                                      "an_exig": (_exig.year if _exig is not None else None),
+                                      "luna_exig": (_exig.month if _exig is not None else None),
                                       "total": r["total"] if r["total"] is not None else 0,
                                       "tva": r["tva"] if r["tva"] is not None else 0, "linii": []})
         if r["cantitate"] is not None and r["pret_unitar"] is not None:
@@ -888,10 +1016,33 @@ def pull(conn, schema, perioada):
     return prof, list(fmap.values()) + deferred
 
 
-def genereaza(conn, schema, perioada, manual=None):
+def _incarca_reclasificari(conn, schema, prof, perioada):
+    """[F125] SURSA UNICA partajata cu D390: incarca override-urile de tip (d390_reclasificare) pentru
+    TOATE lunile din fereastra fiscala D300 (la trimestru: 3 luni) si le cheiaza per-luna
+    {(an,luna,directie,tara,cod): tip}. NU dubleaza loaderul - refoloseste d390.pull_reclasificari
+    (acelasi tabel scris de panoul D390). Mirror pe d390.calculeaza (incarca daca None)."""
+    from core import d390 as _d390
+    _inc, _sf = c.fereastra_tva(perioada, c.perioada_tva_tip(prof))
+    out = {}
+    _y, _m = _inc.year, _inc.month
+    while (_y, _m) < (_sf.year, _sf.month):
+        for (d, t, cod), tip in _d390.pull_reclasificari(conn, schema, _y, _m).items():
+            out[(_y, _m, d, t, cod)] = tip
+        _m += 1
+        if _m > 12:
+            _m = 1; _y += 1
+    return out
+
+
+def genereaza(conn, schema, perioada, manual=None, reclasificari=None):
     if perioada.luna is None or not (1 <= perioada.luna <= 12):
         raise ValueError("D300 lunar: luna invalidă: %r" % perioada.luna)
     prof, facturi = pull(conn, schema, perioada)
+    # [F125] SURSA UNICA D390: daca nu s-a dat explicit, se incarca din d390_reclasificare (via
+    # d390.pull_reclasificari) pentru lunile ferestrei D300 - ca D300 si D390 sa CITEASCA aceeasi
+    # clasificare bun/serviciu (fara loader paralel). Param explicit are prioritate (preview/test).
+    if reclasificari is None and conn is not None:
+        reclasificari = _incarca_reclasificari(conn, schema, prof, perioada)
     # [B2/B3 10.08.2026] Randurile manuale PERSISTATE (tabel d300_manual) sunt sursa pe calea de
     # DEPUNERE: pas3 /coada regenereaza server-side FARA body.manual (manual=None). Le incarcam din
     # DB ca XML-ul de depunere sa fie IDENTIC cu preview-ul (paritate preview<->depunere). Cand
@@ -904,7 +1055,7 @@ def genereaza(conn, schema, perioada, manual=None):
     erori = erori_generare(prof)
     if erori:
         raise ValueError("D300 nu se poate genera: " + " ".join(erori))
-    res = calcul_d300(prof, perioada, facturi, manual)
+    res = calcul_d300(prof, perioada, facturi, manual, reclasificari)
     # [T2 10.08.2026] valideaza(res) era COD MORT: genereaza chema doar erori_generare(prof).
     # Cablam verificarile prietenoase aici, rutate pe severitate:
     #  - blocante (tip_decont <-> luna, DUK regula R18) -> ValueError cu motiv EXACT, pre-DUK

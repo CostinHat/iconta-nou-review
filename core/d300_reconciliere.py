@@ -70,7 +70,7 @@ def _agrega_independent(conn, inceput, sfarsit):
          "AND (CASE WHEN f.tip_operatiune = 'avans' THEN f.data_emitere "
          "     ELSE COALESCE(f.data_faptului_generator, f.data_emitere) END) < %s "
          "AND COALESCE(f.taxare_inversa, false) = false "  # [06.08.2026] taxare inversa -> rd.13 auto (nu col/ded), exclusa din cale2 ca in calcul_d300
-         "AND COALESCE(f.tert_tara, 'RO') = 'RO' "  # [B1] IC/export -> randuri proprii (rd.1/5/14/18), in afara reconcilierii pe cote (limita)
+         "AND COALESCE(f.tert_tara, 'RO') = 'RO' "  # [B1/F125] IC/export -> randuri proprii (rd.1/5/14/18 bunuri; rd.3/rd.7+rd.20 servicii reclasificate P/S in D390), in afara reconcilierii pe cote 21/11/9 (limita) - filtrul pe tert_tara le exclude coerent, ca la IC bunuri
          "AND COALESCE(f.status, 'emisa') NOT IN ('ciorna', 'de_preluat', 'descarcata', 'anulata', 'stornata') "  # [B1] doar facturi contabilizabile
          "AND NOT (f.directie = 'primita' AND COALESCE(f.furnizor_tva_incasare, false) = true) "  # [B1] deducere amanata la plata, in afara reconcilierii pe emitere (limita)
          "ORDER BY f.id")

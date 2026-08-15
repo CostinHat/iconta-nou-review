@@ -85,6 +85,104 @@ def test_antidubla_numarare_ic_livrare_manual_ridica():
 
 
 # ============================================================
+#  F125: RECLASIFICARE bun->serviciu pe SURSA UNICA partajata cu D390 (MUTA, nu adauga).
+#  Cheia (directie, tara, cod) = din PREFIXUL CUI via d390._clasifica_partener, identic cu D390.
+#  Reclasificari cheiate 3-tuple (o luna) - forma acceptata de calcul_d300.
+# ============================================================
+_CUI_DE = "DE123456789"   # partener IC (prefix UE) -> _clasifica_partener -> ("ic","DE","123456789")
+_KEY_DE = ("DE", "123456789")   # (tara, cod) fara prefix, ca in D390
+
+
+def test_reclas_emisa_serviciu_P_muta_R1_la_R3():
+    """[F125 mut, nu adauga] Livrare IC catre UE reclasificata SERVICIU (P) in D390 -> rd.3
+    (R3_1 baza col.1, 0% fara TVA) + sub-rand rd.3.1 (R3_1_1 'din care servicii IC'). R1_1 ABSENT
+    (mutat, nu adaugat). RED fara F125: emisa UE 0% cadea mereu in R1 (bunuri), fara citirea sursei D390."""
+    f = {"directie": "emisa", "tert_tara": "DE", "cui": _CUI_DE, "linii": [(1, 8000, 0)]}
+    recl = {("emisa",) + _KEY_DE: "P"}
+    res = calcul_d300(_prof(), Perioada(2026, luna=8), [f], reclasificari=recl)
+    assert res.R.get("R3_1") == 8000, "prestare serviciu IC -> rd.3 (R3_1)"
+    assert res.R.get("R3_1_1") == 8000, "sub-rand rd.3.1 (din care servicii IC)"
+    assert "R1_1" not in res.R, "MUTAT nu adaugat: livrarea de bunuri (rd.1) NU mai apare"
+    # rd.3 e 0% -> nu adauga TVA colectata (R17_2 nu creste din serviciu emis)
+    assert "R3_2" not in res.R, "rd.3 e 0% (col.2 nu exista)"
+
+
+def test_reclas_primita_serviciu_S_muta_R5R18_la_R7R20_oglinda():
+    """[F125 mut, nu adauga] Achizitie IC din UE reclasificata SERVICIU (S) in D390 -> rd.7 colectat
+    (R7_1/R7_2 + R7_1_1/R7_1_2) + OGLINDA rd.20 deductibil (R20_1/R20_2 + R20_1_1/R20_1_2), net zero
+    (DUK V_13-V_16: R20_x==R7_x). R5_1/R18_1 ABSENTE (mutat, nu adaugat). Autolichidare cota interna 21%."""
+    f = {"directie": "primita", "tert_tara": "DE", "cui": _CUI_DE, "linii": [(1, 15000, 0)]}
+    recl = {("primita",) + _KEY_DE: "S"}
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), [f], reclasificari=recl)
+    assert (res.R.get("R7_1"), res.R.get("R7_2")) == (15000, 3150), "rd.7 colectat (15000 x 21%)"
+    assert (res.R.get("R7_1_1"), res.R.get("R7_1_2")) == (15000, 3150), "sub-rand rd.7.1 servicii IC"
+    assert (res.R.get("R20_1"), res.R.get("R20_2")) == (15000, 3150), "oglinda rd.20 deductibil"
+    assert (res.R.get("R20_1_1"), res.R.get("R20_1_2")) == (15000, 3150), "sub-rand rd.20.1 (oglinda rd.7.1)"
+    assert res.R["R20_1"] == res.R["R7_1"] and res.R["R20_2"] == res.R["R7_2"], "DUK V_13/V_14 R20==R7"
+    assert res.R["R20_1_1"] == res.R["R7_1_1"] and res.R["R20_1_2"] == res.R["R7_1_2"], "DUK V_15/V_16 R20.1==R7.1"
+    assert "R5_1" not in res.R and "R18_1" not in res.R, "MUTAT nu adaugat: rd.5/rd.18 (bunuri) absente"
+    assert res.tva_de_plata == 0 and res.tva_de_recuperat == 0, "net zero (colectat==deductibil)"
+
+
+def test_reclas_tip_nelegal_pt_directie_ridica():
+    """[F125 gard tranzitie] Reclasificare cu tip NELEGAL pentru directie (S = achizitie, pus pe EMISA)
+    -> ValueError vizibil (refoloseste d390._reclasificare_tip). NU revine tacit la default (misclasificare)."""
+    f = {"directie": "emisa", "tert_tara": "DE", "cui": _CUI_DE, "linii": [(1, 8000, 0)]}
+    recl = {("emisa",) + _KEY_DE: "S"}   # S nu e permis pe emisa (permise L/T/P/R)
+    with pytest.raises(ValueError) as ei:
+        calcul_d300(_prof(), Perioada(2026, luna=8), [f], reclasificari=recl)
+    assert "nepermis" in str(ei.value).lower() or "S" in str(ei.value), "tip nelegal pt directie -> eroare"
+
+
+def test_reclas_antidubla_serviciu_S_plus_manual_R7_ridica():
+    """[F125 anti-dubla] rd.7 DERIVAT automat (serviciu S reclasificat) + acelasi rand prin `manual`
+    (R7_1) -> ValueError, nu insumare tacita. Ca la rd.1/rd.5."""
+    f = {"directie": "primita", "tert_tara": "DE", "cui": _CUI_DE, "linii": [(1, 15000, 0)]}
+    recl = {("primita",) + _KEY_DE: "S"}
+    with pytest.raises(ValueError) as ei:
+        calcul_d300(_prof(), Perioada(2026, luna=6), [f], {"R7_1": 15000}, reclasificari=recl)
+    assert "dubla numarare" in str(ei.value), "mesaj vizibil de dubla numarare pe rd.7"
+
+
+def test_reclas_absenta_pastreaza_L_A_actual():
+    """[F125 fara regresie] Cu CUI IC prezent DAR fara reclasificare -> comportamentul L/A actual:
+    emisa UE -> rd.1 (bunuri); primita UE -> rd.5+rd.18. Adaugarea CUI-ului NU schimba defaultul."""
+    fe = {"directie": "emisa", "tert_tara": "DE", "cui": _CUI_DE, "linii": [(1, 8000, 0)]}
+    res_e = calcul_d300(_prof(), Perioada(2026, luna=8), [fe])
+    assert res_e.R.get("R1_1") == 8000 and "R3_1" not in res_e.R, "fara reclasificare -> rd.1 (bunuri)"
+    fp = {"directie": "primita", "tert_tara": "DE", "cui": _CUI_DE, "linii": [(1, 15000, 0)]}
+    res_p = calcul_d300(_prof(), Perioada(2026, luna=6), [fp])
+    assert (res_p.R.get("R5_1"), res_p.R.get("R5_2")) == (15000, 3150), "fara reclasificare -> rd.5 (bunuri)"
+    assert "R7_1" not in res_p.R, "fara reclasificare -> NU rd.7 (servicii)"
+
+
+def test_reclas_T_emisa_ramane_bunuri_dar_semnaleaza():
+    """[F125 T/R limita declarata] Reclasificare T (triangulatie, emisa) NU e axa bun-serviciu: ramane
+    rutata numeric ca bunuri (rd.1) DAR se semnaleaza explicit (limita declarata, nu tacere)."""
+    f = {"directie": "emisa", "tert_tara": "DE", "cui": _CUI_DE, "linii": [(1, 8000, 0)]}
+    recl = {("emisa",) + _KEY_DE: "T"}
+    res = calcul_d300(_prof(), Perioada(2026, luna=8), [f], reclasificari=recl)
+    assert res.R.get("R1_1") == 8000, "T ramane rutat ca bunuri (rd.1)"
+    assert "R3_1" not in res.R, "T NU merge la rd.3 (nu e serviciu)"
+    assert any("triangula" in a.lower() or "T/R" in a for a in res.avertismente), \
+        "T/R se semnaleaza explicit (limita declarata)"
+
+
+def test_reclas_cheie_per_luna_5tuple():
+    """[F125 trimestru] Cheie 5-tuple {(an,luna,directie,tara,cod):tip} potriveste factura pe LUNA ei
+    de exigibilitate (an_exig/luna_exig). Acelasi partener, luni diferite, tipuri diferite."""
+    f_iun = {"directie": "emisa", "tert_tara": "DE", "cui": _CUI_DE, "an_exig": 2026, "luna_exig": 6,
+             "linii": [(1, 8000, 0)]}
+    recl = {(2026, 6, "emisa") + _KEY_DE: "P"}
+    res = calcul_d300(_prof(), Perioada(2026, luna=6), [f_iun], reclasificari=recl)
+    assert res.R.get("R3_1") == 8000, "5-tuple potrivit pe luna 6 -> serviciu rd.3"
+    # aceeasi factura in alta luna (fara override pe acea luna) -> ramane bunuri rd.1
+    f_iul = dict(f_iun, luna_exig=7)
+    res2 = calcul_d300(_prof(), Perioada(2026, luna=7), [f_iul], reclasificari=recl)
+    assert res2.R.get("R1_1") == 8000 and "R3_1" not in res2.R, "luna fara override -> bunuri rd.1"
+
+
+# ============================================================
 #  5-7: CAILE CU DB (fereastra pe exigibilitate, deducere amanata, persistenta manual).
 #  Schema de test cladita din tenant_template.sql (ca fixtura conn_tvai din test_d300.py).
 # ============================================================
