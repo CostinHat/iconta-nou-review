@@ -2327,3 +2327,45 @@ Vezi registrul complet (activ și casat); apeși Casează pe un mijloc activ (am
 Jurnal regim marjă (raport),"Raport de citire pentru jurnalul special de vânzări în regim de marjă (second-hand/turism): grupează vânzările pe tip și lună și dă baza, marja și TVA colectată pe marjă. Operațiunea de scriere „Vânzare regim marjă” există deja în Operațiuni, dar raportul de citire nu are încă ecran.",F248,firma,"endpoint intern, fără ecran (GET /tenants/{id}/jurnal-marja)",main.py (jurnal_marja),CF art. 312 (regim special al marjei),API 15.08.2026 (endpoint fără UI),,,"Raport intern al vânzărilor în regim de marjă (art. 312 CF), grupat pe tip și lună. Deocamdată accesibil doar ca API, fără ecran în aplicație."
 Calculator concediu medical (CM),"Calculează indemnizația de concediu medical (media zilnică pe 6 luni, procentul pe codul de indemnizație, plafoanele) și taxele aferente, pornind de la veniturile și zilele transmise. Este un calculator apelabil ca API, fără ecran dedicat.",F249,firma,"endpoint intern, fără ecran (POST /tenants/{id}/calcul-cm)",main.py (calcul_cm_endpoint); core/salarizare.py,OUG 158/2005 (concedii și indemnizații de asigurări sociale de sănătate),API 15.08.2026 (endpoint fără UI),core/test_salarizare.py,,"Calculator al indemnizației pentru concediu medical (OUG 158/2005). Deocamdată accesibil doar ca API, fără ecran dedicat."
 Reconciliere manuală D394,"A doua cale de verificare a D394: recalcul independent al totalurilor pe cotă din liniile brute, confruntat cu generatorul (divergența blochează generarea). Componenta de reconciliere manuală (clasificări introduse de utilizator) nu are încă ecran care să o alimenteze — doar corpul cererii — la fel ca la D390/D301.",F250,firma,"componentă internă, fără ecran",core/d394_reconciliere.py,ANAF (D394),INTERN 15.08.2026 (componentă fără ecran),core/test_d394_reconciliere.py,,Verificare independentă a totalurilor D394 (a doua cale). Reconcilierea manuală a clasificărilor nu are încă ecran în aplicație.
+Rând manual D300,"Panou de introducere a rândurilor manuale în decontul D300 (ecranul de declarații): rândurile care nu rezultă automat din facturi (ex. R16 regularizări, ajustări) se adaugă manual, se salvează persistat (tabel d300_manual, 3 rute REST) și sunt recitite la generare -> paritate între preview și depunere.",F251,firma,Declaratii,core/d300_manual_api.py,OPANAF 174/2026 (structura D300 v12),LIVE,"core/test_d300_b1_rutare.py (test_persistenta_manual_paritate_preview_depunere, test_antidubla_numarare_ic_livrare_manual_ridica) + traseu Playwright (panou randuri manuale D300)",,"## Ce face
+Panoul de rânduri manuale îți permite să adaugi în decontul D300 sume care nu rezultă automat din facturile perioadei (de exemplu regularizări la rândul R16 sau ajustări de TVA). Rândurile introduse se salvează în aplicație (nu se pierd) și intră în calculul decontului, astfel încât ce vezi în previzualizare este exact ce se depune.
+## Când se folosește
+Când decontul cere o sumă care nu are o factură în spate: regularizări, ajustări de TVA, corecții impuse de reguli speciale. Pentru operațiunile care AU facturi, folosește facturile - nu introduce manual.
+## Ce trebuie pregătit înainte
+- Perioada D300 aleasă.
+- Rândul din decont (ex. R16) și suma corectă, cu temeiul ei.
+## Pas cu pas
+1. Declarații -> D300 -> alege perioada.
+2. În panoul de rânduri manuale, apasă Adaugă rând.
+3. Alege rândul din decont, completează suma și descrierea.
+4. Salvează - rândul rămâne salvat pentru perioada respectivă.
+5. Regenerează decontul: rândul manual apare atât în previzualizare, cât și în XML-ul depus (R16 se oglindește în R17_2).
+## Ce iese la capăt
+Decontul D300 cu rândurile manuale incluse, identic între previzualizare și depunere.
+## Greșeli frecvente
+- Dublă numărare: nu introduce manual o sumă care vine deja dintr-o factură.
+- Rând greșit în decont -> sumă în poziția greșită; verifică rândul (R16/R17_2 etc.).
+## Reguli fiscale
+Rândurile manuale nu înlocuiesc evidența pe facturi; sunt pentru sumele fără document în perioadă (regularizări/ajustări), conform structurii decontului D300 v12 (OPANAF 174/2026)."
+Clasificare TVA pe factură,"Câmpuri de clasificare TVA pe factură care dirijează rândul din decontul D300: pe factura emisă - țara terțului (tert_tara) și tipul operațiunii (tip_operatiune) rutează livrarea intracomunitară/exportul; pe factura primită - bifa ""furnizor cu TVA la încasare"" (furnizor_tva_incasare) amână deducerea la data plății.",F252,firma,Facturi (emitere + primite),core/facturi_api.py,CF art.282 (exigibilitate - TVA la încasare); art.294 (scutiri export/livrări IC); OPANAF 174/2026,LIVE,core/test_d300_b1_rutare.py (rutare pe tert_tara / furnizor la incasare) + traseu Playwright (campuri emitere + checkbox furnizor la incasare pe factura primita),,"## Ce face
+Câmpurile de clasificare TVA de pe factură spun aplicației cum să trateze operațiunea în decontul D300. Pe factura emisă: țara partenerului și tipul operațiunii dirijează suma către rândul corect (livrare intracomunitară, export). Pe factura primită: bifa ""furnizor cu TVA la încasare"" amână dreptul de deducere până la data plății facturii.
+## Când se folosește
+La emiterea sau înregistrarea oricărei facturi cu element de extraneitate (partener din alt stat, export) sau primite de la un furnizor care aplică TVA la încasare.
+## Ce trebuie pregătit înainte
+- Codul de TVA al partenerului (prefixul de țară stabilește țara terțului).
+- Tipul operațiunii (livrare/achiziție intracomunitară, export, avans).
+- Dacă furnizorul aplică TVA la încasare (pentru factura primită).
+## Pas cu pas
+1. Facturi -> Emitere (sau factură primită).
+2. Completează țara partenerului și tipul operațiunii pe factura emisă.
+3. Pe factura primită, bifează ""furnizor cu TVA la încasare"" dacă e cazul.
+4. Salvează factura.
+5. Declarații -> D300: operațiunea apare pe rândul corect (livrare IC -> R1, achiziție IC -> R5 + R18, export -> R14; deducerea furnizorului la încasare apare la data plății).
+## Ce iese la capăt
+Factură clasificată corect, care se rutează automat pe rândul potrivit din decontul D300.
+## Greșeli frecvente
+- Țara greșită -> operațiunea IC/export nu apare pe rândul corect.
+- Servicii intracomunitare tratate ca bunuri: aplicația presupune bunuri (R1/R5+R18) și avertizează; serviciile se reclasifică manual la R3 / R7+R20.
+- Uiți bifa ""furnizor cu TVA la încasare"" -> deducere luată prea devreme.
+## Reguli fiscale
+Exigibilitatea TVA și TVA la încasare - Codul fiscal art.282. Scutirile pentru export și livrări intracomunitare - art.294. Structura rândurilor decontului - OPANAF 174/2026."

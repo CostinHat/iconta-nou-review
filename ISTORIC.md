@@ -4227,3 +4227,31 @@ OUG 41/2022 - legislatie.just.ro BLOCAT (WAF pe amprenta TLS/HTTP; nota veche '-
 static.anaf.ro are doar forma initiala/republicata (ANAF intretine consolidat DOAR cele doua coduri). De adus din
 browser (URL-uri just.ro predate lui Costin). Alte acte citate-si-absente: OMFP 3103/2017, OPANAF 102/2025,
 OUG 26/2019, OUG 153/2020, HG 423/2020, L31/1990, L53/2003, L52/2011, L32/1994 - aceeasi limita (just.ro).
+
+
+## 15.08.2026 — D300 remediere completă (B1-B4 + gard), HEAD c8d3947
+Auditul D300 (commit 8263a4b, aceeași zi) a arătat 8 situații netratate de generatorul decontului. Remedierea e
+livrată în 4 commituri, fiecare trecut prin poarta verde (pre-commit: suita + verificator TOTAL 0):
+- 05ad538 (B1): 3 câmpuri obligatorii pe facturi (tert_tara / tip_operatiune / furnizor_tva_incasare); generatorul
+  rutează IC/export după tert_tara, fereastră de avans pe emitere, filtru de status, deducere amânată la furnizorul
+  cu TVA la încasare, zero-base ne-tăcut; migrare + backfill (tert_tara din prefixul VIES al CUI) + seed regenerat.
+- 5f88f23 (B2+B3): tabel d300_manual persistat + 3 rute REST (core/d300_manual_api.py) + genereaza citește rândurile
+  manuale din DB (paritate preview<->depunere) + panou UI randezaManualD300 (declaratii.js) + câmpurile de factură pe
+  emitere_ecran.js / facturi_ecran.js + facturi_api.
+- 569ecbc (B4): firma grea tenant_017 (date_test/seed/firma_grea_audit.py) acoperă toate cele 8 situații noi (IC
+  livrare/achiziție, export, avans, regularizare avans, furnizor la încasare, rând manual, zero-base).
+- c8d3947 (gard): core/test_d300_b1_rutare.py (8 teste) blochează regresia comportamentelor noi; roșu-înainte demonstrat.
+Cifre-cheie ale rutării: achiziția intracomunitară (tert_tara=DE) merge la R5 + oglinda R18, NU la R26; factura cu
+status de_preluat e EXCLUSĂ din decont; rândul manual R16 se oglindește în R17_2; furnizorul cu TVA la încasare are
+deducerea DEFERATĂ la data plății (nu la data facturii).
+Cele 3 trasee de ecran verificate cu Playwright (nu doar test verde): panoul de rânduri manuale D300 în ecranul de
+declarații, câmpurile tert_tara/tip_operatiune pe ecranul de emitere, checkbox-ul "furnizor cu TVA la încasare" pe
+factura primită (capturi: frontend_test/d300_*.png, emit_campuri_noi.png, primite_detaliu_*.png).
+RUNNING pe c8d3947 (start-time 14:18:53 > commit 14:10:57, serviciu activ); publicare origin/main + backup prin
+post-commit (ritual neconditionat). Actualizarea registrelor (această intrare + GARZI/DECIZII/TESTE/CSV/PREDARE) e
+NEcomisă - o comite Costin prin poartă.
+Rămân dependente de ANAF, raportate separat, NEreparate în app (vezi GARZI + PREDARE_LANT): import non-UE pe R26 (TVA
+vamală/deferment) și discriminarea bunuri vs servicii la IC (fără câmp pe factură).
+Supersede: NU există în ISTORIC.md o intrare report-only din aceeași zi despre auditul D300 -> nimic de superseded aici
+(auditul a fost commitul 8263a4b, nu o intrare de jurnal; partea report-only a auditului e purtată mai departe în GARZI
+și PREDARE_LANT ca datorii ANAF-dependente).

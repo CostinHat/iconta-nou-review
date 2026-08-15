@@ -9298,3 +9298,16 @@ FUNCTIONALITATI F246 (LIVE, cu ajutor); GRUPE_FUNC regenerat.
 lot3 (d106,d108,d114,d130,d318,d603), lot4 (d119,d169n,d213,d214,d401,d402),
 lot5 (d169,d398,d399,d403,d407 + d101g DATORIE), lot6 (d212). Total DECLARATII in dispecer: 50.
 Datorie ramasa: D101G (schema v2 OPANAF 206/2025 neinstalata in DecValidation pe server — xfail strict).
+
+
+## 2026-08-15 — D300 remediere: decizii de arhitectură (B1-B4, HEAD c8d3947)
+- **Rânduri manuale D300 PERSISTATE, nu efemere prin body.** Tabel d300_manual + 3 rute REST (core/d300_manual_api.py);
+  genereaza citește rândurile din DB. MOTIV: paritate preview<->depunere - calea /coada regenerează decontul
+  server-side FĂRĂ body.manual (ca la d301); dacă rândurile ar sta doar în body-ul din UI, depunerea prin /coada le-ar
+  pierde. Persistența garantează că ce vede contabilul în preview = ce se depune.
+- **Cele 3 câmpuri noi pe facturi OBLIGATORII (NOT NULL DEFAULT) de la început** (tert_tara, tip_operatiune,
+  furnizor_tva_incasare). Nu opționale/nullable: un câmp de clasificare TVA lipsă = rutare tăcut greșită. tert_tara
+  backfill din prefixul VIES al CUI (RO/DE/... din codul de TVA), nu default fabricat.
+- **Convenție bunuri-implicit pentru IC** (livrare -> R1, achiziție -> R5 + R18): în lipsa unui câmp bunuri/servicii pe
+  factură, generatorul presupune BUNURI și avertizează pentru reclasificarea serviciilor. Limita și convenția stau
+  împreună - vezi datoria din GARZI (15.08 - D300 remediere).

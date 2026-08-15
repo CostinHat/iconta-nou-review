@@ -2644,3 +2644,21 @@ Starea de record F035/F036/F037 adusa la realitatea de azi (era 27.07 "NEDEPUNAB
 cu motivul de azi: F035 = Payments neemis (asteapta sursa maparei); F036 = amortizare doar liniara (art.28 degresiva/
 accelerata neimplementate) + fragment; F037 = fragment (nu in AuditFile lunar). Drift de registru similar: negasit pe
 alte randuri.
+
+
+## 15.08.2026 — D300 remediere: datorii/limite declarate
+Limite ale remedierii D300 (B1-B4, HEAD c8d3947). Gard de regresie: core/test_d300_b1_rutare.py (8 teste).
+- **Bunuri vs servicii IC - fără discriminare automată.** Nu există câmp pe factură care să separe bunurile de
+  servicii la operațiunile intracomunitare. Convenție (implicit BUNURI, aliniată cu D390): livrare IC -> R1,
+  achiziție IC -> R5 + oglinda R18. Pentru SERVICII intracomunitare rândurile corecte sunt R3 (prestări) / R7 + R20
+  (achiziții) -> generatorul emite un AVERTISMENT de reclasificare; rămâne în sarcina CONTABILULUI să reclasifice
+  serviciile. Vezi decizia gemenă din DECIZII (convenție bunuri-implicit). Gard: test_achizitie_ic_bunuri_R5_oglinda_R18.
+- **d300_reconciliere (a-doua-cale) NU acoperă IC/export + deducerea amânată.** Reconcilierea agregă pe cotele
+  21/11/9; rândurile IC (R1/R3/R5/R7), exportul (R14) și deducerea amânată a furnizorului cu TVA la încasare cad în
+  AFARA agregării -> nu sunt reconciliate de a-doua-cale. Limită aliniată cu cea existentă pentru tva_la_incasare.
+- **tip_operatiune='regularizare_avans' NU e ramificat de generator.** E rutat ca operațiune normală pe data
+  exigibilității; regularizarea avansului se face prin LINIILE facturii (livrare - storno avans), rezultat net corect.
+  Câmpul rămâne INFORMATIV (nu declanșează o ramură dedicată în generator).
+- **Import non-UE (primită non-UE 0%) rămâne pe R26.** TVA vamală / deferment de import depinde de răspunsul ANAF
+  (RAPORTAT SEPARAT, vezi raportul de audit / PREDARE_LANT); NEreparat în app - nu se repară aici fără decizia ANAF,
+  trimite la ce e raportat separat.
