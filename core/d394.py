@@ -453,7 +453,7 @@ def calcul_d394(prof, perioada, date, manual=None):
             # detaliu(nrN/valN). codPR = CONTINUT DECLARAT, dar reutilizeaza categoria art.331 EXISTENTA pe factura.
             # Fara categorie -> N nu poate fi declarat valid -> ramane EXCLUS cu avertisment (contabilul o adauga).
             if codpr_N_din_categorie(f.get("categorie_331")):
-                _adauga("N", P_NEINREG, 0, cui, f.get("nume"), 1, f.get("baza"), 0, f.get("categorie_331"))
+                _adauga("N", P_NEINREG, 0, cui, f.get("nume"), f.get("nrFact", 1), f.get("baza"), 0, f.get("categorie_331"))
             else:
                 excluse_N.append((f.get("nume"), f.get("cui"), f.get("baza")))
             continue
@@ -478,7 +478,7 @@ def calcul_d394(prof, perioada, date, manual=None):
                                                                     "/".join(TIP_COTA_ZERO)))
                 nefacturabile += 1
                 continue
-        _adauga(tip, tp, cota, cui, f.get("nume"), 1, f.get("baza"), f.get("tva"),
+        _adauga(tip, tp, cota, cui, f.get("nume"), f.get("nrFact", 1), f.get("baza"), f.get("tva"),
                 f.get("categorie_331"))
 
     for op in ops:
@@ -638,8 +638,10 @@ def calcul_d394(prof, perioada, date, manual=None):
         "nrCui3": len(cuis[P_UE]), "nrCui4": len(cuis[P_NONUE]),
         "nr_BF_i1": 0, "incasari_i1": 0, "incasari_i2": 0,
         "nrFacturi_terti": 0, "nrFacturi_benef": 0,
-        # R131: nrFacturi > 0 <=> exista serieFacturi tip 2. Le legam la aceeasi sursa.
-        "nrFacturi": sum(1 + (b - a) for a, b in serii_emise.values()) if serii_emise else 0,
+        # R131: nrFacturi > 0 <=> exista serieFacturi tip 2. Numarul REAL (din DB, pull) cand
+        # e disponibil; apelantii puri (fara nr_facturi) cad pe spanul seriei (aproximatie).
+        "nrFacturi": (date.get("nr_facturi") if date.get("nr_facturi") is not None
+                      else (sum(1 + (b - a) for a, b in serii_emise.values()) if serii_emise else 0)),
         # R132 (validator): "Incepand cu perioada 1.2017 atributul nrFacturiL_PF
         # trebuie sa fie egal cu 0". Camp mort - livrarile catre persoane fizice
         # se declara ca op1 tip N/LS, nu aici.
@@ -776,8 +778,24 @@ def build_xml(res):
     #    atunci calitate_intocmit trebuie sa fie completata"
     # Cabinetul/firma depune in nume propriu -> tip_intocmit=0 (persoana juridica),
     # cif_intocmit = CUI-ul firmei, calitate_intocmit completata, functie_intocmit=null.
-    rep_den = prof.get("reprezentant_nume") or prof.get("declarant_nume") or "ADMINISTRATOR"
-    rep_fct = prof.get("reprezentant_functie") or prof.get("declarant_functie") or "ADMINISTRATOR"
+    # [regula 4 - fara default tacut] denR/functie_reprez/calitate_intocmit sunt OBLIGATORII la ANAF;
+    # cand lipsesc din profil emitem tot un implicit (altfel DUK respinge campul gol), DAR ANUNTAT prin
+    # avertisment - implicit DECLARAT, nu tacit. Contabilul completeaza profilul firmei.
+    rep_den = prof.get("reprezentant_nume") or prof.get("declarant_nume")
+    rep_fct = prof.get("reprezentant_functie") or prof.get("declarant_functie")
+    calitate = prof.get("declarant_functie") or prof.get("reprezentant_functie")
+    if not rep_den:
+        res.avertismente.append("D394: numele reprezentantului (denR) lipseste din profil -> emis implicit "
+                                "\"ADMINISTRATOR\". Completeaza reprezentantul in profilul firmei, nu lasa implicitul.")
+        rep_den = "ADMINISTRATOR"
+    if not rep_fct:
+        res.avertismente.append("D394: functia reprezentantului (functie_reprez) lipseste din profil -> emisa "
+                                "implicit \"ADMINISTRATOR\". Completeaza in profil.")
+        rep_fct = "ADMINISTRATOR"
+    if not calitate:
+        res.avertismente.append("D394: calitatea intocmitorului (calitate_intocmit) lipseste din profil -> emisa "
+                                "implicit \"ADMINISTRATOR\". Completeaza in profil.")
+        calitate = "ADMINISTRATOR"
     # [prsAfiliat 10.08.2026] SPEC OFICIAL anaf_surse/d394_struct_anaf.txt poz.6.a:
     # "prsAfiliat - Au fost efectuate operatiuni cu persoane afiliate in perioada de
     # raportare", N(1), camp OBLIGATORIU: =0 NU, =1 Da. NU e derivabil din datele iConta -
@@ -802,7 +820,7 @@ def build_xml(res):
                 _esc(_t(adr, _LIM["d394"]["adresa"])), _esc(prof.get("telefon") or ""),
                 _esc(cui), _esc(_t(rep_den, _LIM["d394"]["denR"])), _esc(_t(rep_fct, _LIM["d394"]["functie_reprez"])), _esc(_t(adr, _LIM["d394"]["adresaR"])),
                 _esc(_t(prof.get("nume") or "", _LIM["d394"]["den_intocmit"])), _esc(cui),
-                _esc(_t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d394"]["calitate_intocmit"])),
+                _esc(_t(calitate, _LIM["d394"]["calitate_intocmit"])),
                 res.total_plata_a))
     # <informatii> INAINTE de <rezumat1> (atentionare ANAF in structD394)
     ordine_inf = ["nrCui1", "nrCui2", "nrCui3", "nrCui4", "nr_BF_i1", "incasari_i1",
@@ -848,8 +866,20 @@ def build_xml(res):
         # R232.2: tva se completeaza DOAR pentru tip in (A, L, C, AI); la taxare
         # inversa (V) si la neinregistrati (N/LS) TVA nu se declara aici.
         # R222.3: tip_partener = 2, cuiP necompletat, taraP = 'RO' -> judP obligatoriu.
-        at = (' cuiP="%s"' % _esc(cuiP) if cuiP
-              else ' taraP="RO" judP="%s"' % (jud_siruta(prof.get("judet")) or "40"))
+        if cuiP:
+            at = ' cuiP="%s"' % _esc(cuiP)
+        else:
+            # R222.3: tip_partener=2, cuiP necompletat, taraP='RO' -> judP obligatoriu. Proxy = judetul
+            # FIRMEI (partenerul neinregistrat n-are adresa stocata). [regula 4] lipsa judetului NU se
+            # acopera tacit cu "40" (Bucuresti) - se anunta o singura data.
+            _jud = jud_siruta(prof.get("judet"))
+            if not _jud:
+                if not any("judP emis implicit" in a for a in res.avertismente):
+                    res.avertismente.append("D394: judetul firmei lipseste din profil -> judP emis implicit "
+                                            "\"40\" (Bucuresti) pentru partenerii neinregistrati fara cod. "
+                                            "Completeaza judetul in profil.")
+                _jud = "40"
+            at = ' taraP="RO" judP="%s"' % _jud
         at += ' denP="%s" nrFact="%d" baza="%d"' % (_esc(_t(denP, _LIM["d394"]["denP"])), nr, baza)
         if tip in OP1_CU_TVA:
             at += ' tva="%d"' % tva
@@ -943,9 +973,15 @@ def pull(conn, schema, perioada):
             c = int(Decimal(str(l["cota"])))
             pe_cota[c] = pe_cota.get(c, Decimal(0)) + _d(l["baza"])
         if pe_cota:
+            # [nrFact multi-cota, OPANAF 2194/2025 pct.C.5:1221-1227] Pentru o factura cu operatiuni
+            # pe cote DIFERITE, la "numar de facturi" se inscrie valoarea 1 in dreptul operatiunii cu
+            # TVA cea mai mare si 0 pentru rest (la TVA egal -> cota cea mai mare). ANTERIOR fiecare
+            # split primea nrFact=1 -> o factura 2-cote raporta nrFact=2 (supra-numarare tacuta).
+            _tva_cota = {c: b * Decimal(c) / Decimal(100) for c, b in pe_cota.items()}
+            _cota_nrfact = max(_tva_cota, key=lambda c: (_tva_cota[c], c))
             for cota, baza in sorted(pe_cota.items()):
-                facturi.append(dict(comun, cota=cota, baza=baza,
-                                    tva=(baza * Decimal(cota) / Decimal(100))))
+                facturi.append(dict(comun, cota=cota, baza=baza, tva=_tva_cota[cota],
+                                    nrFact=(1 if cota == _cota_nrfact else 0)))
         else:
             # Factura fara linii (import / e-Factura fara detaliu): cota se deduce din
             # raportul tva/baza. ATENTIE la TAXARE INVERSA PRIMITA (tip C): documentul
@@ -967,7 +1003,27 @@ def pull(conn, schema, perioada):
             facturi.append(dict(comun, cota=cota, baza=baza,
                                 tva=(baza * Decimal(cota) / Decimal(100)
                                      if bool(r["ti"]) and r["directie"] == "primita" else tva)))
-    return prof, {"facturi": facturi, "serii": serii_emise(conn, schema, inceput, sfarsit)}
+    return prof, {"facturi": facturi, "serii": serii_emise(conn, schema, inceput, sfarsit),
+                  "nr_facturi": nr_facturi_emise(conn, inceput, sfarsit)}
+
+
+def nr_facturi_emise(conn, inceput, sfarsit):
+    """Numarul REAL de facturi EMISE cu numar numeric in perioada. Struct D394 (poz.
+    nrFacturi, d394_struct_anaf.txt:1797): 'Nr total facturi emise in perioada'. NU spanul
+    seriei (min..max): la numerotare necontigua (45,46,50) spanul supra-numara (6 in loc de 3).
+    Aceeasi populatie ca serii_emise (facturi emise cu cifre in numar) -> R131 pastrat
+    (nrFacturi>0 <=> exista serieFacturi tip 2)."""
+    import re as _re
+    n = 0
+    with conn.cursor() as cur:
+        cur.execute("""SELECT numar FROM facturi
+                         WHERE data_emitere >= %s AND data_emitere < %s
+                           AND directie = 'emisa' AND COALESCE(tip, 'factura') = 'factura'
+                    """, (inceput, sfarsit))
+        for (numar,) in cur.fetchall():
+            if _re.sub(r"\D", "", str(numar or "")):
+                n += 1
+    return n
 
 
 def serii_emise(conn, schema, inceput, sfarsit):
