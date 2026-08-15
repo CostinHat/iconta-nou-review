@@ -9311,3 +9311,22 @@ Datorie ramasa: D101G (schema v2 OPANAF 206/2025 neinstalata in DecValidation pe
 - **Convenție bunuri-implicit pentru IC** (livrare -> R1, achiziție -> R5 + R18): în lipsa unui câmp bunuri/servicii pe
   factură, generatorul presupune BUNURI și avertizează pentru reclasificarea serviciilor. Limita și convenția stau
   împreună - vezi datoria din GARZI (15.08 - D300 remediere).
+
+## 2026-08-15 — Bun-vs-serviciu IC = proprietate a operațiunii, SURSĂ UNICĂ partajată D300<->D390 (nu câmp, nu sursă duplicată)
+- **Decizia.** Bun-vs-serviciu la operațiunile intracomunitare este o **proprietate a OPERAȚIUNII** (reclasificare),
+  nu a declarației, și nici "un câmp lipsă pe factură". Sursa e UNICĂ: tabelul `d390_reclasificare`, scris o singură
+  dată din panoul D390 (F125) și CITIT de AMBELE declarații (D300 via `d300._incarca_reclasificari` -> `d390.pull_reclasificari`;
+  D390 via `d390.calculeaza` -> `pull_reclasificari`). Reclasificarea **MUTĂ**, nu adaugă: emisă P -> D300 rd.3 (R3/R3.1)
+  și D390 bazaP (nu R1/L); primită S -> D300 rd.7+rd.20 (oglindă net zero) și D390 bazaS (nu R5+R18/A).
+- **De ce (corectează formularea anterioară).** Nota de la 2026-08-15 ("convenție bunuri-implicit, în lipsa unui câmp")
+  descria doar JUMĂTATE din model: D300 primise implicitul de la D390 (emisă->L, primită->A) FĂRĂ mecanismul de corecție.
+  Costin a semnalat inconsecvența: "o singură sursă cu gard care face imposibilă reapariția rândurilor auto peste cele
+  reclasificate" + "cele două declarații trebuie oricum să se reconcilieze între ele". Nu se introduce un al doilea câmp
+  pe factură (ar duplica sursa și ar putea diverge de D390); reclasificarea rămâne singura sursă.
+- **Validată pe DIRECȚIE.** Tipul reclasificat e validat contra direcției la scriere ȘI la citire (aceeași regulă,
+  `d390._reclasificare_tip` + `TIPURI_DIRECTIE`): emisă acceptă L/T/P/R, primită A/S; un tip nelegal ridică eroare
+  vizibilă, nu revine tăcut la default (misclasificare). Gard de reconciliere cross-declarație:
+  core/test_d300_b1_rutare.py (test_recon_*). Probă pe date reale: firma grea tenant_017, iulie 2026 (D300 R3_1/R7_1 ==
+  D390 bazaP/bazaS, DUK valid).
+- **Limită declarată rămasă:** T/R (triangulație / regim special agricultori) NU sunt pe axa bun-serviciu — rutate
+  numeric ca bunuri, semnalate explicit, neacoperite pe D300 (raportat separat).

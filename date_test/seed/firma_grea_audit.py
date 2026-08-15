@@ -113,6 +113,21 @@ MANUAL_D300 = ("2026-05", "R16", 1000, 210, "[SEED-FG] regularizare taxa colecta
 # [sit.2] achizitie IC (FG-ICB, iunie) si [sit.8] zero-base (FEBRUARIE, fara nicio factura) sunt deja
 # acoperite de FACTURI / de lunile goale de mai sus.
 
+# [F125 servicii IC reclasificate] Prestare + achizitie IC de SERVICII pe firma grea (IULIE 2026),
+# reclasificate P/S in d390_reclasificare (SURSA UNICA D300<->D390: bun-vs-serviciu = proprietate a
+# operatiunii, contabilul reclasifica O DATA din panoul D390, ambele declaratii CITESC). Astfel firma
+# grea acopera si calea SERVICII, consistent: D300 rd.3 (P) / rd.7+rd.20 (S, autolichidare 21%, net
+# zero), D390 bazaP/bazaS. 0% (taxare la beneficiar, art.294/331). Iulie e curata de alte operatiuni IC
+# (are doar avansul RO FG-AV -> rd.9), deci R3/R7/R20 vs P/S se probeaza 1:1. Partenerii au checksum VIES
+# verificat pe DUK (FR40303265045, DE136695976). cod = fara prefix de tara (cheia reclasificarii).
+#   (numar, data_emitere, directie, tert_cui, tert_nume, net, tara, cod_fara_prefix, tip)
+SERVICII_IC = [
+    ("FG-SRVP", "2026-07-15", "emisa",   "FR40303265045", "Distributeur SARL",
+     5000, "FR", "40303265045", "P"),   # prestare servicii IC (emisa) -> rd.3 (R3_1) + rd.3.1
+    ("FG-SRVS", "2026-07-18", "primita", "DE136695976",   "BAUHAUS GMBH",
+     7000, "DE", "136695976", "S"),     # achizitie servicii IC (primita) -> rd.7 colectat + rd.20 oglinda
+]
+
 
 def _incarca_db_env():
     import os
@@ -272,6 +287,37 @@ def seed_plata_fti(conn, schema):
     return ("plata %s" % numar, "inserata nota id=%d (401=5121 %d lei)" % (nid, suma))
 
 
+def seed_servicii_ic(conn, schema):
+    """[F125] Prestare/achizitie IC de SERVICII (0%) + reclasificarea lor P/S in d390_reclasificare
+    (SURSA UNICA D300<->D390). Idempotent: factura pe (numar,directie) -> skip daca exista; reclasificarea
+    prin salveaza_reclasificare (upsert ON CONFLICT, valideaza tip contra directiei). tert_tara = prefixul
+    VIES; luna reclasificarii = luna de exigibilitate (data_emitere)."""
+    from core import d390_clasificare_api as _cls
+    rap = []
+    for (numar, data, directie, tcui, tnume, net, tara, cod, tip) in SERVICII_IC:
+        an, luna = (int(x) for x in data.split("-")[:2])
+        if _factura_exista(conn, schema, numar, directie):
+            rap.append((numar, "deja prezent"))
+        else:
+            with conn.cursor() as c:
+                c.execute(
+                    'INSERT INTO "%s".facturi (numar, serie, data_emitere, directie, tert_cui, tert_nume, '
+                    'total, tva, moneda, tip, tert_platitor_tva, tert_tara) '
+                    'VALUES (%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s) RETURNING id' % schema,
+                    (numar, "FG", data, directie, tcui, tnume, net, 0, "RON", "factura", True, tara))
+                fid = c.fetchone()[0]
+                c.execute(
+                    'INSERT INTO "%s".factura_linii (factura_id, descriere, um, cantitate, pret_unitar, cota_tva) '
+                    'VALUES (%%s,%%s,%%s,%%s,%%s,%%s)' % schema,
+                    (fid, "servicii IC (%s)" % tip, "buc", 1, net, 0))
+            rap.append((numar, "inserata id=%d (net=%d, tip=%s)" % (fid, net, tip)))
+        # reclasificarea in SURSA UNICA (idempotent prin upsert; salveaza_reclasificare face commit)
+        res = _cls.salveaza_reclasificare(conn, schema, an, luna, directie, tara, cod, tip)
+        rap.append(("%s recl" % numar, "%s %s %s%s -> %s -> %s"
+                    % (data[:7], directie, tara, cod, tip, "OK" if res.get("ok") else res)))
+    return rap
+
+
 def seed_manual_d300(schema):
     """[sit.7] rand MANUAL D300 (d300_manual) via API - validare + upsert idempotent pe UNIQUE.
     API-ul (d300_manual_api / d300.pull) foloseste nume de tabel NEcalificate -> cere search_path pe
@@ -303,6 +349,9 @@ def main():
         for (n, act) in seed_cazuri_d300(conn, schema):
             print("   %-10s %s" % (n, act))
         print("   %-10s %s" % seed_plata_fti(conn, schema))
+        print("servicii IC (F125 reclasificare P/S, sursa unica D390):")
+        for (n, act) in seed_servicii_ic(conn, schema):
+            print("   %-14s %s" % (n, act))
         conn.commit()   # persista facturile/plata inainte de pasul manual (conexiune separata)
     print("   %-10s %s" % seed_manual_d300(schema))
     print("OK. schema=%s" % schema)

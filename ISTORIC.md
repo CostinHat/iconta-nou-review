@@ -4255,3 +4255,27 @@ vamală/deferment) și discriminarea bunuri vs servicii la IC (fără câmp pe f
 Supersede: NU există în ISTORIC.md o intrare report-only din aceeași zi despre auditul D300 -> nimic de superseded aici
 (auditul a fost commitul 8263a4b, nu o intrare de jurnal; partea report-only a auditului e purtată mai departe în GARZI
 și PREDARE_LANT ca datorii ANAF-dependente).
+
+## 15.08.2026 — Bun-vs-serviciu IC remediat pe SURSĂ UNICĂ D300<->D390 (commit 0b132c3 + acest lot)
+Inconsecvența semnalată de Costin: nota anterioară ("discriminarea bunuri vs servicii la IC — fără câmp pe factură")
+descria o datorie falsă. Problema reală: bun-vs-serviciu e o RECLASIFICARE (proprietate a operațiunii), scrisă o dată
+din panoul D390 în `d390_reclasificare`; D300 primise doar implicitul de la D390 (emisă->L, primită->A) FĂRĂ mecanismul
+de corecție. Costin a cerut "o singură sursă cu gard care face imposibilă reapariția rândurilor auto peste cele
+reclasificate" + "cele două declarații trebuie oricum să se reconcilieze între ele".
+Remedierea (commit 0b132c3, mutarea bun->serviciu pe sursă unică; + acest lot):
+- D300 și D390 CITESC amândouă din `d390_reclasificare` (via `d390.pull_reclasificari`); reclasificarea MUTĂ operațiunea
+  (emisă P -> R3/R3.1 & D390 bazaP; primită S -> R7+R20 oglindă net zero & D390 bazaS), nu o adaugă peste rândul auto.
+- Gard de reconciliere cross-declarație (extins în core/test_d300_b1_rutare.py, +3 teste test_recon_*): pe aceeași
+  perioadă + aceeași reclasificare, baza D300 R3_1 == baza D390 bazaP și R7_1 == bazaS; o singură scriere schimbă
+  ambele declarații (nu există a doua sursă care ar putea diverge).
+- Probă pe date reale pe firma grea tenant_017 (seed extins cu o prestare IC de servicii + o achiziție IC de servicii,
+  reclasificate P/S; iulie 2026): D300 R3_1=5000, R7_1=7000/R7_2=1470 (+oglindă R20), R1/R5/R18 absente; D390 bazaP=5000,
+  bazaS=7000; DUK valid pe ambele. Seed idempotent (rulat de două ori).
+Verificarea aceleiași clase de declarații (dacă mai suferă de "auto peste reclasificat"): D394 NU — exclude operațiunile
+IC din scope și are corecție proprie; D208/D301/D406 — nu sunt pe axa bun-serviciu IC (idem, fără duplicare). Deci fixul
+e izolat la perechea D300/D390.
+Limită declarată rămasă (raportată separat): T/R (triangulație / regim special agricultori) nu sunt pe axa bun-serviciu —
+rutate numeric ca bunuri, semnalate explicit, neacoperite pe D300. Import non-UE pe R26 rămâne ANAF-dependent (neschimbat).
+Registrele (această intrare + GARZI/DECIZII/TESTE/PREDARE) NEcomise — le comite Costin prin poartă. FĂRĂ git commit.
+Supersede: corectează formularea "fără câmp pe factură" din intrarea 15.08 anterioară (D300 remediere completă) și
+datoria bun-vs-serviciu din GARZI (marcată acum REZOLVATĂ).

@@ -2648,11 +2648,22 @@ alte randuri.
 
 ## 15.08.2026 — D300 remediere: datorii/limite declarate
 Limite ale remedierii D300 (B1-B4, HEAD c8d3947). Gard de regresie: core/test_d300_b1_rutare.py (8 teste).
-- **Bunuri vs servicii IC - fără discriminare automată.** Nu există câmp pe factură care să separe bunurile de
-  servicii la operațiunile intracomunitare. Convenție (implicit BUNURI, aliniată cu D390): livrare IC -> R1,
-  achiziție IC -> R5 + oglinda R18. Pentru SERVICII intracomunitare rândurile corecte sunt R3 (prestări) / R7 + R20
-  (achiziții) -> generatorul emite un AVERTISMENT de reclasificare; rămâne în sarcina CONTABILULUI să reclasifice
-  serviciile. Vezi decizia gemenă din DECIZII (convenție bunuri-implicit). Gard: test_achizitie_ic_bunuri_R5_oglinda_R18.
+- **Bunuri vs servicii IC — REZOLVAT prin sursă unică partajată D300<->D390 (15.08.2026, commit 0b132c3 + acest lot).**
+  Formularea anterioară ("nu există câmp pe factură care să separe bunurile de servicii") era GREȘITĂ: problema NU era
+  lipsa unui câmp. Aplicația tratează bun-vs-serviciu ca RECLASIFICARE — o proprietate a OPERAȚIUNII, nu a declarației
+  (contabilul reclasifică o dată din panoul D390, în tabelul `d390_reclasificare`). Bug-ul real: D300 primise doar
+  JUMĂTATE din model — implicitul de la D390 (emisă->L/R1, primită->A/R5+R18), FĂRĂ mecanismul de corecție
+  (reclasificarea). Remediere: D300 și D390 CITESC AMÂNDOUĂ din aceeași sursă (`d390_reclasificare`, via
+  `d390.pull_reclasificari`); reclasificarea MUTĂ operațiunea (emisă P -> R3/R3.1; primită S -> R7+R20, oglindă net
+  zero), nu o adaugă peste rândul auto (reapariția auto = imposibilă). O singură scriere schimbă ambele declarații ->
+  nu există a doua sursă care ar putea diverge; cele două se reconciliază (baza D300 R3_1 == baza D390 bazaP; R7_1 ==
+  bazaS). Gard de reconciliere cross-declarație: core/test_d300_b1_rutare.py (test_recon_P_emisa_serviciu_d300_R3_egal_d390_bazaP,
+  test_recon_S_primita_serviciu_d300_R7_egal_d390_bazaS, test_recon_sursa_unica_o_scriere_muta_ambele) + gărzile
+  F125 din același fișier (test_reclas_emisa_serviciu_P_muta_R1_la_R3, test_reclas_primita_serviciu_S_muta_R5R18_la_R7R20_oglinda).
+  Probat pe date reale pe firma grea (tenant_017, iulie 2026): D300 R3_1=5000/R7_1=7000 vs D390 bazaP=5000/bazaS=7000, DUK valid.
+  **Limită DECLARATĂ rămasă:** T/R (triangulație / regim special agricultori) NU sunt pe axa bun-serviciu — rămân rutate
+  numeric ca bunuri (R1) DAR se semnalează explicit (nu tăcere); neacoperite pe D300, raportate separat. Gard:
+  test_reclas_T_emisa_ramane_bunuri_dar_semnaleaza.
 - **d300_reconciliere (a-doua-cale) NU acoperă IC/export + deducerea amânată.** Reconcilierea agregă pe cotele
   21/11/9; rândurile IC (R1/R3/R5/R7), exportul (R14) și deducerea amânată a furnizorului cu TVA la încasare cad în
   AFARA agregării -> nu sunt reconciliate de a-doua-cale. Limită aliniată cu cea existentă pentru tva_la_incasare.

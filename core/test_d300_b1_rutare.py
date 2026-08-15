@@ -310,3 +310,150 @@ def test_persistenta_manual_paritate_preview_depunere(conn_b1):
         with conn_b1.cursor() as cur:
             cur.execute("DELETE FROM %s.d300_manual WHERE an=%%s AND luna=%%s AND rand='R16'"
                         % _SCHEMA, (an, luna))
+
+
+# ============================================================
+#  RECONCILIERE CROSS-DECLARATIE D300<->D390 (15.08.2026): SURSA UNICA d390_reclasificare.
+#  Costin: "o singura sursa cu gard care face imposibila reaparitia randurilor auto peste cele
+#  reclasificate" + "cele doua declaratii trebuie oricum sa se reconcilieze intre ele". Pe ACEEASI
+#  perioada + aceeasi reclasificare (DB reala, schema efemera): baza D300 (R3_1/R7_1) == baza D390
+#  (bazaP/bazaS), operatiunea NU reapare pe calea auto (R1/R5+R18 in D300; L/A in D390). O singura
+#  scriere in d390_reclasificare muta AMBELE declaratii -> nu exista a doua sursa care ar putea diverge.
+#  D300 citeste via _incarca_reclasificari -> d390.pull_reclasificari; D390 via calculeaza ->
+#  pull_reclasificari (ACELASI tabel). Aserttile ASCII (regula diacritice).
+# ============================================================
+from core import d390 as _d390
+_SCHEMA_REC = "test_d300_recon_d390"
+_AN_REC, _LUNA_REC = 2026, 8
+_FR_COD = "40303265045"   # emisa servicii -> P (FR40303265045, checksum verificat DUK)
+_DE_COD = "136695976"     # primita servicii -> S (DE136695976, checksum verificat DUK)
+
+
+@pytest.fixture(scope="module")
+def conn_recon():
+    """Firma regim normal, decont lunar. Doua operatiuni IC de SERVICII (0%), aceeasi luna (august):
+      SRVP  emisa   FR40303265045, net 4000  -> reclasificabila P (prestare servicii IC)   -> rd.3
+      SRVS  primita DE136695976, net 9000    -> reclasificabila S (achizitie servicii IC)  -> rd.7+rd.20
+    Reclasificarea se scrie/sterge PER TEST in d390_reclasificare (sursa unica). ROLLBACK + DROP la teardown."""
+    _db.init_pool()
+    with _db.get_conn() as conn:
+        try:
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCHEMA_REC)
+                cur.execute(_tp.parametrizeaza_template(
+                    open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA_REC))
+                cur.execute("SET search_path TO %s, public" % _SCHEMA_REC)
+                cur.execute(
+                    "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, "
+                    "regim_fiscal, platitor_tva, tip_decont, declarant_nume, declarant_prenume, declarant_functie) "
+                    "VALUES (1,'RECON SRL','14399840','Str Test 1','Bucuresti','B','4711','BCR','RO49AAAA1B31007593840000',"
+                    "'real',true,'L','Pop','Ion','administrator')")
+                cur.execute("INSERT INTO facturi (numar, data_emitere, directie, total, tva, tert_tara, tert_cui, status) "
+                            "VALUES ('SRVP','2026-08-05','emisa',4000,0,'FR','FR%s','emisa') RETURNING id" % _FR_COD)
+                sp = cur.fetchone()[0]
+                cur.execute("INSERT INTO factura_linii (factura_id, descriere, cantitate, pret_unitar, cota_tva) "
+                            "VALUES (%s,'prestare servicii IC',1,4000,0)", (sp,))
+                cur.execute("INSERT INTO facturi (numar, data_emitere, directie, total, tva, tert_tara, tert_cui, status) "
+                            "VALUES ('SRVS','2026-08-07','primita',9000,0,'DE','DE%s','emisa') RETURNING id" % _DE_COD)
+                ss = cur.fetchone()[0]
+                cur.execute("INSERT INTO factura_linii (factura_id, descriere, cantitate, pret_unitar, cota_tva) "
+                            "VALUES (%s,'achizitie servicii IC',1,9000,0)", (ss,))
+            yield conn
+        finally:
+            conn.rollback()
+            with conn.cursor() as cur:
+                cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCHEMA_REC)
+            conn.commit()
+
+
+def _set_recl(conn, directie, tara, cod, tip):
+    """Scrie override-ul de tip in SURSA UNICA d390_reclasificare (fara commit - rollback-safe)."""
+    with conn.cursor() as cur:
+        cur.execute("INSERT INTO %s.d390_reclasificare (an,luna,directie,tara,cod,tip) "
+                    "VALUES (%%s,%%s,%%s,%%s,%%s,%%s) "
+                    "ON CONFLICT (an,luna,directie,tara,cod) DO UPDATE SET tip=EXCLUDED.tip"
+                    % _SCHEMA_REC, (_AN_REC, _LUNA_REC, directie, tara, cod, tip))
+
+
+def _clear_recl(conn):
+    with conn.cursor() as cur:
+        cur.execute("DELETE FROM %s.d390_reclasificare WHERE an=%%s AND luna=%%s"
+                    % _SCHEMA_REC, (_AN_REC, _LUNA_REC))
+
+
+def _d300_res(conn):
+    """D300 pe calea REALA: pull + _incarca_reclasificari (SURSA UNICA) + calcul_d300."""
+    per = Perioada(_AN_REC, luna=_LUNA_REC)
+    prof, facturi = _d300mod.pull(conn, _SCHEMA_REC, per)
+    recl = _d300mod._incarca_reclasificari(conn, _SCHEMA_REC, prof, per)
+    return calcul_d300(prof, per, facturi, reclasificari=recl)
+
+
+def _d390_res(conn):
+    """D390 pe calea REALA: calculeaza (incarca singur reclasificarile din ACELASI tabel)."""
+    return _d390.calculeaza(conn, _SCHEMA_REC, _AN_REC, _LUNA_REC)
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_recon_P_emisa_serviciu_d300_R3_egal_d390_bazaP(conn_recon):
+    """[RECONCILIERE P] Dupa reclasificarea operatiunii IC emise ca P in d390_reclasificare: baza D300
+    rd.3 (R3_1) == baza P din d390.calcul_d390 (ACEEASI operatiune, ambele declaratii), SI operatiunea
+    NU mai apare in D300 rd.1 (R1_1) si NU e L in D390. Reaparitia auto peste reclasificat = imposibila."""
+    _set_recl(conn_recon, "emisa", "FR", _FR_COD, "P")
+    try:
+        r3 = _d300_res(conn_recon)
+        r9 = _d390_res(conn_recon)
+        assert r3.R.get("R3_1") == 4000, "D300 rd.3 (R3_1) baza prestare servicii IC"
+        assert r3.R.get("R3_1_1") == 4000, "D300 sub-rand rd.3.1 (din care servicii IC)"
+        assert r9.rezumat["P"] == 4000, "D390 bazaP prestare servicii IC (aceeasi operatiune)"
+        assert r3.R["R3_1"] == r9.rezumat["P"], "RECONCILIERE: D300 R3_1 == D390 bazaP"
+        assert "R1_1" not in r3.R, "reaparitie auto IMPOSIBILA: R1_1 (bunuri) absent in D300 (mutat, nu adaugat)"
+        assert r9.rezumat["L"] == 0, "operatiunea NU e L (bunuri) in D390 (mutata la P)"
+    finally:
+        _clear_recl(conn_recon)
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_recon_S_primita_serviciu_d300_R7_egal_d390_bazaS(conn_recon):
+    """[RECONCILIERE S] Dupa reclasificarea operatiunii IC primite ca S in d390_reclasificare: baza D300
+    rd.7 (R7_1) == baza S din d390.calcul_d390, SI absenta din rd.5/rd.18 (R5_1/R18_1) si din A in D390.
+    Autolichidare la cota interna 21% (R7_2), oglinda rd.20 net zero."""
+    _set_recl(conn_recon, "primita", "DE", _DE_COD, "S")
+    try:
+        r3 = _d300_res(conn_recon)
+        r9 = _d390_res(conn_recon)
+        assert (r3.R.get("R7_1"), r3.R.get("R7_2")) == (9000, 1890), "D300 rd.7 colectat (9000 x 21%)"
+        assert (r3.R.get("R20_1"), r3.R.get("R20_2")) == (9000, 1890), "D300 oglinda rd.20 deductibil (net zero)"
+        assert r9.rezumat["S"] == 9000, "D390 bazaS achizitie servicii IC (aceeasi operatiune)"
+        assert r3.R["R7_1"] == r9.rezumat["S"], "RECONCILIERE: D300 R7_1 == D390 bazaS"
+        assert "R5_1" not in r3.R and "R18_1" not in r3.R, "reaparitie auto IMPOSIBILA: rd.5/rd.18 absente (mutat)"
+        assert r9.rezumat["A"] == 0, "operatiunea NU e A (bunuri) in D390 (mutata la S)"
+    finally:
+        _clear_recl(conn_recon)
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_recon_sursa_unica_o_scriere_muta_ambele(conn_recon):
+    """[SURSA UNICA dovedita] O singura scriere in d390_reclasificare schimba AMBELE declaratii - nu
+    exista o a doua sursa care ar putea diverge. FARA rand -> L/A (bunuri) in AMBELE (D300 R1/R5+R18,
+    D390 L/A). CU rand -> P/S in AMBELE (D300 R3/R7+R20, D390 P/S). D300 si D390 citesc din acelasi tabel."""
+    _clear_recl(conn_recon)
+    r3 = _d300_res(conn_recon)
+    r9 = _d390_res(conn_recon)
+    assert r3.R.get("R1_1") == 4000, "fara reclasificare -> D300 emisa = rd.1 (bunuri)"
+    assert (r3.R.get("R5_1"), r3.R.get("R5_2")) == (9000, 1890), "fara reclasificare -> D300 primita = rd.5 (bunuri)"
+    assert "R3_1" not in r3.R and "R7_1" not in r3.R, "fara reclasificare -> NU servicii (rd.3/rd.7) in D300"
+    assert r9.rezumat["L"] == 4000 and r9.rezumat["A"] == 9000, "fara reclasificare -> L/A (bunuri) in D390"
+    assert r9.rezumat["P"] == 0 and r9.rezumat["S"] == 0, "fara reclasificare -> NU P/S in D390"
+    # o singura scriere per directie in ACELASI tabel -> P/S in AMBELE declaratii
+    _set_recl(conn_recon, "emisa", "FR", _FR_COD, "P")
+    _set_recl(conn_recon, "primita", "DE", _DE_COD, "S")
+    try:
+        r3 = _d300_res(conn_recon)
+        r9 = _d390_res(conn_recon)
+        assert r3.R.get("R3_1") == 4000 and r3.R.get("R7_1") == 9000, "cu reclasificare -> D300 citeste sursa unica (rd.3/rd.7)"
+        assert r9.rezumat["P"] == 4000 and r9.rezumat["S"] == 9000, "cu reclasificare -> D390 citeste ACEEASI sursa (P/S)"
+        assert "R1_1" not in r3.R and "R5_1" not in r3.R, "MUTAT nu adaugat in D300 (rd.1/rd.5 dispar)"
+        assert r9.rezumat["L"] == 0 and r9.rezumat["A"] == 0, "MUTAT nu adaugat in D390 (L/A dispar)"
+    finally:
+        _clear_recl(conn_recon)
