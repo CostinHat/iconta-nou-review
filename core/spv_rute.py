@@ -39,7 +39,7 @@ def spv_principal(ctx):
     firm = ctx.get("firm")
     if firm:
         return spv_conector.principal_firm(firm)
-    raise HTTPException(403, "contul nu poate conecta SPV (fara cabinet)")
+    raise HTTPException(403, "contul nu poate conecta SPV (fără cabinet)")
 
 
 def monteaza(app, dep_context):
@@ -70,7 +70,7 @@ def monteaza(app, dep_context):
         def _retur(params):
             return RedirectResponse(_PAGINA_RETUR + "?" + urllib.parse.urlencode(params), status_code=303)
         if error or not code:
-            return _retur({"eroare": error or "cod lipsa"})
+            return _retur({"eroare": error or "cod lipsă"})
         try:
             principal = spv_conector.verifica_state(state)
         except spv_conector.EroareSpv as e:

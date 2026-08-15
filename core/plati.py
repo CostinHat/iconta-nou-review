@@ -18,7 +18,7 @@ def genereaza_link(conn, schema, factura_id, baza_url):
                         FROM {schema}.facturi WHERE id=%s""", (factura_id,))
         r = cur.fetchone()
     if not r:
-        return {"eroare": "factura inexistenta"}
+        return {"eroare": "factură inexistentă"}
     directie, status, total, moneda, link, ref, platita = r
     if directie != "emisa":
         return {"eroare": "doar facturi emise"}

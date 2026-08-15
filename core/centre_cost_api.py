@@ -28,7 +28,7 @@ def adauga(conn, schema, nume):
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"SELECT id FROM {schema}.centre_cost WHERE lower(nume) = lower(%s)", (nume,))
         if cur.fetchone():
-            return {"eroare": "exista deja un centru cu acest nume"}
+            return {"eroare": "există deja un centru cu acest nume"}
         cur.execute(f"INSERT INTO {schema}.centre_cost (nume) VALUES (%s) RETURNING id", (nume,))
         cid = cur.fetchone()["id"]
     conn.commit()

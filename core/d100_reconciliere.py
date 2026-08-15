@@ -101,11 +101,11 @@ def reconciliaza(conn, perioada, res, manual=None):
     """Recalculeaza independent obligatia si o confrunta cu res. NU ridica - intoarce raportul.
     {"acoperit": bool, "motiv": str|None, "divergente": [...]}"""
     if conn is None:
-        return {"acoperit": False, "motiv": "fara conexiune DB (recompute independent indisponibil)", "divergente": []}
+        return {"acoperit": False, "motiv": "fără conexiune DB (recompute independent indisponibil)", "divergente": []}
     regim = (res.prof.get("regim_fiscal") or "").lower()
     if regim not in _REGIM_OBLIG:
         return {"acoperit": False, "motiv":
-                "regim '%s' in afara micro(121)/profit(103) - generatorul nu emite obligatie D100 "
+                "regim '%s' în afara micro(121)/profit(103) - generatorul nu emite obligație D100 "
                 "pentru el (limita 3)." % regim, "divergente": []}
 
     cod_oblig, nume_cota = _REGIM_OBLIG[regim]

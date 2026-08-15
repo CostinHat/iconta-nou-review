@@ -34,7 +34,7 @@ def revoca(conn, firm_id, kid):
         cur.execute("""UPDATE public.api_chei SET activ=false
                        WHERE id=%s AND accounting_firm_id=%s RETURNING id""", (kid, firm_id))
         if not cur.fetchone():
-            return {"eroare": "cheie inexistenta"}
+            return {"eroare": "cheie inexistentă"}
     conn.commit()
     return {"revocat": kid}
 

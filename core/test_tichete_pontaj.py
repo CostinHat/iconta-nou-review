@@ -88,6 +88,6 @@ def test_pontaj_blocat_dupa_depunere_d112(conn):
         cur.execute("INSERT INTO public.declaratii_depuse (tenant_id,an,luna,tip,data_depunere,sursa,nr_depunere) "
                     "VALUES (99999,2026,8,'d112',now(),'test',1)")
     r = pj.seteaza(conn, SCHEMA, sid, "2026-08-10", "concediu_odihna", tenant_id=99999)
-    assert r["ok"] is False and "rectificativa" in r["mesaj"].lower()
+    assert r["ok"] is False and "rectificativă" in r["mesaj"].lower()  # diacritice cap.6 (mesaj afisat)
     r2 = pj.seteaza(conn, SCHEMA, sid, "2026-08-10", "concediu_odihna")  # fara tenant_id -> nu se verifica depunerea
     assert r2["ok"] is True

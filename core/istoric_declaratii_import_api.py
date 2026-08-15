@@ -147,16 +147,16 @@ def verifica_randuri(randuri, azi=None):
         luna = r.get("luna")
         if tip and tip not in TIPURI_CUNOSCUTE:
             er.append({"rand": i, "motiv": "tip",
-                       "mesaj": "declaratia %s nu exista in nomenclatorul ANAF" % tip})
+                       "mesaj": "declarația %s nu există în nomenclatorul ANAF" % tip})
         if not (2000 <= an <= azi.year + 1):
-            er.append({"rand": i, "motiv": "an", "mesaj": "%s: anul %s e in afara intervalului" % (tip or "?", an)})
+            er.append({"rand": i, "motiv": "an", "mesaj": "%s: anul %s e în afara intervalului" % (tip or "?", an)})
         if luna is not None and str(luna).strip() != "":
             try:
                 l = int(luna)
                 if not (1 <= l <= 12):
                     er.append({"rand": i, "motiv": "luna", "mesaj": "%s: luna %s (asteptat 1-12)" % (tip or "?", l)})
             except (TypeError, ValueError):
-                er.append({"rand": i, "motiv": "luna", "mesaj": "%s: luna %r nu e numar" % (tip or "?", luna)})
+                er.append({"rand": i, "motiv": "luna", "mesaj": "%s: luna %r nu e număr" % (tip or "?", luna)})
         d = r.get("data_depunere")
         if d:
             try:

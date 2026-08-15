@@ -109,7 +109,7 @@ def reconciliaza(conn, perioada, res):
     """Recalculeaza independent si confrunta. NU ridica - intoarce raportul.
     {"acoperit": bool, "motiv": str|None, "divergente": [...]}"""
     if conn is None:
-        return {"acoperit": False, "motiv": "fara conexiune DB (recompute independent indisponibil)", "divergente": []}
+        return {"acoperit": False, "motiv": "fără conexiune DB (recompute independent indisponibil)", "divergente": []}
     tot = _agrega_independent(conn, perioada)
     divergente = []
 

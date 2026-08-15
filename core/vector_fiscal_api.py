@@ -63,7 +63,7 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
     if tva:
         if decont not in _DECONTURI:
             return {"ok": False, "cod": "DECONT_INVALID",
-                    "mesaj": "tip_decont trebuie sa fie 'lunar' sau 'trimestrial' pentru platitor TVA"}
+                    "mesaj": "tip_decont trebuie să fie 'lunar' sau 'trimestrial' pentru plătitor TVA"}
     else:
         decont = None
 
@@ -85,7 +85,7 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
         else:
             if regim_in not in _REGIMURI:
                 return {"ok": False, "cod": "REGIM_INVALID",
-                        "mesaj": "regim_fiscal trebuie sa fie 'micro' sau 'profit'"}
+                        "mesaj": "regim_fiscal trebuie să fie 'micro' sau 'profit'"}
             regim = regim_in
         if exista:
             cur.execute(
@@ -97,7 +97,7 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
         else:
             if not nume or not cui:
                 return {"ok": False, "cod": "FARA_IDENTITATE",
-                        "mesaj": "firma_profil gol si lipsesc nume/cui pentru creare"}
+                        "mesaj": "firma_profil gol și lipsesc nume/cui pentru creare"}
             cur.execute(
                 "INSERT INTO firma_profil (id, nume, cui, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, inreg_art317) "
                 "VALUES (1, %s, %s, %s, %s, %s, %s, %s)",

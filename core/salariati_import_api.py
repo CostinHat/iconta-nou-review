@@ -208,7 +208,7 @@ def verifica_randuri(randuri, azi=None):
         j = str(r.get("judet_casa") or "").strip().upper()
         if j and j not in JUDETE_CASA:
             er.append({"rand": i, "motiv": "judet_invalid",
-                       "mesaj": "%s: judetul '%s' nu exista" % (nume, j)})
+                       "mesaj": "%s: județul '%s' nu există" % (nume, j)})
     return er
 
 

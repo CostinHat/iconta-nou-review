@@ -208,7 +208,7 @@ def test_skip_suspect_brut_lipsa_e_semnalat_nu_tacut(conn_recon):
     assert 4 not in rap["sarite"] and 4 not in rap["reconciliati"]
     with pytest.raises(ReconciliereD112) as ei:
         verifica_reconciliere(conn_recon, _SCHEMA, 2026, 6, sal)
-    assert "brut LIPSA" in str(ei.value) and "SUSPECTE" in str(ei.value)
+    assert "brut LIPSĂ" in str(ei.value) and "SUSPECTE" in str(ei.value)  # diacritice cap.6 (mesaj afisat)
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

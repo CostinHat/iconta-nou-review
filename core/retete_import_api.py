@@ -113,7 +113,7 @@ def importa(conn, schema, retete):
                 continue
             cur.execute(f"SELECT id FROM {schema}.retete WHERE lower(denumire)=lower(%s)", (ret["denumire"],))
             if cur.fetchone():
-                sarite.append({"denumire": ret["denumire"], "motiv": "exista deja"})
+                sarite.append({"denumire": ret["denumire"], "motiv": "există deja"})
                 continue
             retete_api.salveaza(conn, schema, {"denumire": ret["denumire"], "pret_fara_tva": ret.get("pret") or 0,
                 "linii": [{"articol_id": l["articol_id"], "cantitate": l["cantitate"]} for l in ret["linii"]]})

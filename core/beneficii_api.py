@@ -41,9 +41,9 @@ def seteaza(conn, schema, salariat_id, an, luna, tip, valoare, eveniment="", nr_
     try:
         v = Decimal(str(valoare or 0))
     except Exception:
-        return {"eroare": "valoare invalida"}
+        return {"eroare": "valoare invalidă"}
     if v < 0:
-        return {"eroare": "valoarea nu poate fi negativa"}
+        return {"eroare": "valoarea nu poate fi negativă"}
     if tip == "cresa" and v > 0:
         # [GARD] plafon 450/luna/copil (L165 art.19(1) baza confirmata; indexare GRI verdict 17 neaplicata)
         # + valoare nominala multiplu de 10 (art.19(2)). nr_copii pt validare (default 1; nepersistat).
@@ -58,8 +58,8 @@ def seteaza(conn, schema, salariat_id, an, luna, tip, valoare, eveniment="", nr_
         if v % 10 != 0:
             return {"eroare": "valoarea tichetului de cresa = multiplu de 10 lei (Legea 165/2018 art.19(2))"}
         if v > _plafc:
-            return {"eroare": "valoarea %s depaseste plafonul %s lei/luna pentru %d copil(i) (%s). Indexarea peste "
-                    "baza (ex. 740) e neconfirmata la sursa primara (GRI) - blocata." % (v, _plafc, _nr, _sursac)}
+            return {"eroare": "valoarea %s depășește plafonul %s lei/lună pentru %d copil(i) (%s). Indexarea peste "
+                    "bază (ex. 740) e neconfirmată la sursa primară (GRI) - blocată." % (v, _plafc, _nr, _sursac)}
     if tip == "cultural" and v > 0:
         # [GARD] plafon semestrial indexat (verdict 16). Fereastra GRI (oct.2025-mar.2026) sau semestru
         # fara ordin confirmat -> BLOCAT motivat, NU se calculeaza tacit cu 240/470. + valoare nominala
@@ -74,7 +74,7 @@ def seteaza(conn, schema, salariat_id, an, luna, tip, valoare, eveniment="", nr_
         if v % 10 != 0:
             return {"eroare": "valoarea tichetului cultural = multiplu de 10 lei (Legea 165/2018 art.22(2))"}
         if v > _plaf:
-            return {"eroare": "valoarea %s depaseste plafonul %s/%s pentru %s-%s (%s)"
+            return {"eroare": "valoarea %s depășește plafonul %s/%s pentru %s-%s (%s)"
                     % (v, _plaf, ("eveniment" if _ocaz else "luna"), an, luna, _sursa)}
     with conn.cursor() as cur:
         cur.execute(f"SELECT 1 FROM {schema}.salariati WHERE id = %s", (salariat_id,))

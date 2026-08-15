@@ -63,7 +63,7 @@ def seteaza(conn, schema, salariat_id, zi, stare, tenant_id=None):
     from datetime import date as _date
     from core import perioada as _per
     if stare not in STARI and stare and stare != "prezent":
-        return {"ok": False, "mesaj": "stare invalida: %s" % stare}
+        return {"ok": False, "mesaj": "stare invalidă: %s" % stare}
     d = zi if isinstance(zi, _date) else _date.fromisoformat(str(zi)[:10])
     an, luna = d.year, d.month
     if tenant_id is not None:
@@ -71,8 +71,8 @@ def seteaza(conn, schema, salariat_id, zi, stare, tenant_id=None):
             cur.execute("SELECT 1 FROM public.declaratii_depuse WHERE tenant_id = %s AND an = %s AND luna = %s "
                         "AND tip = 'd112' LIMIT 1", (tenant_id, an, luna))
             if cur.fetchone():
-                return {"ok": False, "mesaj": "Pontajul lunii %02d.%04d nu se poate modifica: D112 e deja depusa "
-                        "la ANAF. Corecteaza prin rectificativa (nu prin editare libera)." % (luna, an)}
+                return {"ok": False, "mesaj": "Pontajul lunii %02d.%04d nu se poate modifica: D112 e deja depusă "
+                        "la ANAF. Corectează prin rectificativă (nu prin editare liberă)." % (luna, an)}
     if not stare or stare == "prezent":
         with conn.cursor() as cur:
             cur.execute("DELETE FROM pontaj WHERE salariat_id = %s AND zi = %s", (salariat_id, zi))

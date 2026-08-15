@@ -84,7 +84,7 @@ def analiza_ai(conn, cabinet_id):
     from core import ai_client
     date = tipare(conn, cabinet_id)
     if not date.get("are_date"):
-        return {"disponibil": False, "motiv": "Nu exista inca respingeri de analizat."}
+        return {"disponibil": False, "motiv": "Nu există încă respingeri de analizat."}
     if not ai_client.disponibil():
         return {"disponibil": False, "motiv": "Asistentul AI nu e configurat pe acest server."}
 

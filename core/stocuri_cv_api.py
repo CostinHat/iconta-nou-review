@@ -64,7 +64,7 @@ def intrare(conn, schema, corp):
         cant = Decimal(str(corp["cantitate"]))
         pret = Decimal(str(corp["pret_unitar"]))
         if cant <= 0 or pret < 0:
-            return {"eroare": "cantitate/pret invalide"}
+            return {"eroare": "cantitate/preț invalide"}
         val = (cant * pret).quantize(Decimal("0.01"))
         cur.execute(f"""INSERT INTO {schema}.miscari_stoc
                         (articol_id, data, tip, cantitate, pret_unitar, valoare, document, locatie)
@@ -156,7 +156,7 @@ def inventar(conn, schema, corp):
             try:
                 faptic = Decimal(str(fv))
             except (InvalidOperation, ValueError):
-                rez.append({"articol_id": a["id"], "denumire": a["denumire"], "camp": "cvi-a%s-faptic" % a["id"], "eroare": "valoare invalida (numar)"})
+                rez.append({"articol_id": a["id"], "denumire": a["denumire"], "camp": "cvi-a%s-faptic" % a["id"], "eroare": "valoare invalidă (număr)"})
                 continue
             dif = faptic - scriptic
             if dif == 0:
@@ -273,7 +273,7 @@ def set_barcode(conn, schema, articol_id, barcode):
             cur.execute(f"SELECT id FROM {schema}.articole WHERE barcode=%s AND id<>%s",
                         (bc, articol_id))
             if cur.fetchone():
-                return {"eroare": "codul de bare exista deja la alt articol"}
+                return {"eroare": "codul de bare există deja la alt articol"}
         cur.execute(f"UPDATE {schema}.articole SET barcode=%s WHERE id=%s", (bc, articol_id))
     conn.commit()
     return {"articol_id": articol_id, "barcode": bc}
@@ -344,10 +344,10 @@ def transfer(conn, schema, corp):
         din = (corp.get("din_locatie") or "").strip() or None
         catre = (corp.get("in_locatie") or "").strip() or None
         if din == catre:
-            return {"eroare": "locatia sursa si destinatie sunt identice"}
+            return {"eroare": "locația sursă și destinație sunt identice"}
         cant = Decimal(str(corp["cantitate"]))
         if cant <= 0:
-            return {"eroare": "cantitate invalida"}
+            return {"eroare": "cantitate invalidă"}
         disp = _stoc_locatie(cur, schema, a["id"], din)
         if cant > disp:
             return {"eroare": f"transfer {cant} peste stocul {disp} la locatia sursa"}
@@ -383,7 +383,7 @@ def reclasificare(conn, schema, corp):
             return None
         cont_nou = (corp.get("cont_stoc_nou") or "").strip()
         if not cont_nou:
-            return {"eroare": "cont_stoc_nou lipsa"}
+            return {"eroare": "cont_stoc_nou lipsă"}
         if cont_nou == a["cont_stoc"]:
             return {"eroare": "contul de stoc e neschimbat"}
         chelt_nou = (corp.get("cont_cheltuiala_nou") or "").strip() or a["cont_cheltuiala"]

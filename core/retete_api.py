@@ -94,10 +94,10 @@ def salveaza(conn, schema, corp):
     if not (corp.get("denumire") or "").strip():
         return {"eroare": "Denumirea retetei e obligatorie."}
     if not linii:
-        return {"eroare": "Adauga cel putin un ingredient."}
+        return {"eroare": "Adaugă cel puțin un ingredient."}
     lipsa = _ingrediente_campuri_lipsa(linii)
     if lipsa:
-        return {"eroare": "Completeaza ingredientele: " + "; ".join(x["eticheta"] for x in lipsa),
+        return {"eroare": "Completează ingredientele: " + "; ".join(x["eticheta"] for x in lipsa),
                 "erori_campuri": [{"camp": x["camp"], "mesaj": x["eticheta"]} for x in lipsa]}
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         if corp.get("id"):

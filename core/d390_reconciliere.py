@@ -194,7 +194,7 @@ def reconciliaza(conn, schema, an, luna, res, manual=None, reclasificari=None):
     """Recalculeaza independent si confrunta. NU ridica - intoarce raportul.
     {"acoperit": bool, "motiv": str|None, "divergente": [...]}."""
     if conn is None:
-        return {"acoperit": False, "motiv": "fara conexiune DB (recompute independent indisponibil)", "divergente": []}
+        return {"acoperit": False, "motiv": "fără conexiune DB (recompute independent indisponibil)", "divergente": []}
     rezumat_g = _res_camp(res, "rezumat", {}) or {}
     rez2, nr2, tot2, plata2 = _recalcul_independent(conn, schema, an, luna, manual, reclasificari)
 

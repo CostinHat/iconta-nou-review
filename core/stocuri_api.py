@@ -49,7 +49,7 @@ def adauga_nir(conn, schema, nir):
     (nir-l{i}-..), nu il filtreaza tacit frontendul."""
     lipsa = _nir_campuri_lipsa(nir.get("linii") or [])
     if lipsa:
-        return {"eroare": "Completeaza articolele: " + "; ".join(x["eticheta"] for x in lipsa),
+        return {"eroare": "Completează articolele: " + "; ".join(x["eticheta"] for x in lipsa),
                 "erori_campuri": [{"camp": x["camp"], "mesaj": x["eticheta"]} for x in lipsa]}
     try:
         for _l in nir["linii"]:
@@ -152,7 +152,7 @@ def descarca_luna(conn, schema, an, luna):
     rez = _m.descarcare_gv(rc_707, tva_vanzari, -si["378"], rc_378,
                            si["371"], rd_371, -si["4428"], rc_4428)
     if not rez["note"]:
-        return {"k": None, "mesaj": "fara vanzari de marfuri in luna", "note": []}
+        return {"k": None, "mesaj": "fără vânzări de mărfuri în luna", "note": []}
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         import calendar
         ultima_zi = date(an, luna, calendar.monthrange(an, luna)[1])

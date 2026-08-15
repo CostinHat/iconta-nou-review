@@ -14,8 +14,8 @@ class PerioadaNeconfirmata(ValueError):
     def __init__(self, ce, an, luna, domeniu, temei=""):
         self.an, self.luna, self.domeniu = an, luna, domeniu
         det = ("%s nu se poate calcula pentru %02d.%04d: pontajul lunii (%s) nu e CONFIRMAT - datele sunt "
-               "informative, nu autoritative%s. Confirma %s-ul lunii (buton, rol admin_firma, la inchidere) sau "
-               "corecteaza datele; pana atunci calculul e blocat." % (
+               "informative, nu autoritative%s. Confirmă %s-ul lunii (buton, rol admin_firma, la închidere) sau "
+               "corectează datele; până atunci calculul e blocat." % (
                    ce, luna, an, domeniu, (" (" + temei + ")") if temei else "", domeniu))
         super().__init__("PERIOADA_BLOCATA: " + det)
 

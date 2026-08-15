@@ -182,7 +182,7 @@ def potriveste_cota(denumire, platitor_tva=True):
     """
     denum = (denumire or "").strip()
     if not denum:
-        return {"ok": False, "cod": "GOL", "mesaj": "denumire lipsa"}
+        return {"ok": False, "cod": "GOL", "mesaj": "denumire lipsă"}
 
     if not platitor_tva:
         return {"ok": True, "cota": 0, "categorie": "neplatitor_tva",

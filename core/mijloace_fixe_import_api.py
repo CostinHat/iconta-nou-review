@@ -167,22 +167,22 @@ def verifica_randuri(randuri):
         rez = float(r.get("rezidual") or 0)
         dur = int(r.get("durata") or 0)
         if not cod:
-            er.append({"rand": i, "motiv": "cod_lipsa", "mesaj": "%s: fara cod de inventar" % den})
+            er.append({"rand": i, "motiv": "cod_lipsa", "mesaj": "%s: fără cod de inventar" % den})
         elif cod in coduri:
             er.append({"rand": i, "motiv": "cod_duplicat",
-                       "mesaj": "codul de inventar %s apare de doua ori (randurile %s si %s)"
+                       "mesaj": "codul de inventar %s apare de două ori (rândurile %s și %s)"
                                 % (cod, coduri[cod], i)})
         else:
             coduri[cod] = i
         if dur <= 0:
             er.append({"rand": i, "motiv": "durata",
-                       "mesaj": "%s: durata %s luni - fara ea nu se calculeaza amortizarea" % (den, dur)})
+                       "mesaj": "%s: durata %s luni - fără ea nu se calculează amortizarea" % (den, dur)})
         if val <= 0:
             er.append({"rand": i, "motiv": "valoare",
                        "mesaj": "%s: valoare de intrare %s" % (den, val)})
         elif rez > val + 0.01:
             er.append({"rand": i, "motiv": "rezidual",
-                       "mesaj": "%s: valoarea ramasa (%s) depaseste valoarea de intrare (%s)"
+                       "mesaj": "%s: valoarea rămasă (%s) depășește valoarea de intrare (%s)"
                                 % (den, rez, val)})
     return er
 

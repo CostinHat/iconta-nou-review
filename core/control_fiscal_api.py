@@ -618,10 +618,10 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
                 "stare": "rosu", "eticheta": "Reconciliere surse<->declaratii - PUNTE RUPTA",
                 "mesaj": ("Reconcilierea nu a putut fi apelata (%s: %s) - semnalat, nu ascuns "
                           "(anti-D300 mort)." % (type(_e).__name__, _e)),
-                "temei": ("Puntea control_incrucisat.reconciliaza_declaratii a ridicat; contractul ei e sa "
+                "temei": ("Puntea control_incrucisat.reconciliaza_declaratii a ridicat; contractul ei e să "
                           "nu ridice. Un except->gri ar ascunde ruptura ca verdict permanent gri."),
                 "remediu": None}],
-                "explicatie": "", "limita": "Reconcilierea surse<->declaratii nu a rulat.",
+                "explicatie": "", "limita": "Reconcilierea surse<->declarații nu a rulat.",
                 "modul": "control_incrucisat", "reguli": ""}
         # severitatea vine din constatari (pastila_firma), NU dintr-un literal - un rosu de reconciliere urca
         # pastila firmei; gri-ul (nu pot verifica) NU o urca. Vezi DECIZII 23.07 + common.pastila_firma.

@@ -30,10 +30,10 @@ def adauga(conn, schema, op):
     Creează operațiunea + nota ciornă. Întoarce operațiunea + avertismente plafon."""
     cat = op.get("categorie")
     if cat not in CONTURI:
-        return {"eroare": f"categorie necunoscuta: {cat}"}
+        return {"eroare": f"categorie necunoscută: {cat}"}
     suma = Decimal(str(op.get("suma", 0)))
     if suma <= 0:
-        return {"eroare": "suma trebuie sa fie > 0"}
+        return {"eroare": "suma trebuie să fie > 0"}
     tip = "incasare" if cat in CATEGORII_INCASARE else "plata"
     debit, credit = CONTURI[cat]
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
@@ -106,7 +106,7 @@ def sterge(conn, schema, op_id):
                         (op["inregistrare_id"],))
             n = cur.fetchone()
             if n and n["status"] != "ciorna":
-                return {"eroare": "nota legata e validata; nu se mai poate sterge"}
+                return {"eroare": "nota legată e validată; nu se mai poate șterge"}
             cur.execute(f"DELETE FROM {schema}.inregistrari WHERE id=%s",
                         (op["inregistrare_id"],))
         cur.execute(f"DELETE FROM {schema}.casa_operatiuni WHERE id=%s", (op_id,))

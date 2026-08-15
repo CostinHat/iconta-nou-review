@@ -268,8 +268,8 @@ def actualizeaza_salariat(conn, salariat_id, **date):
 # ============================================================
 def _refuz_sterge():
     return {"ok": False, "cod": "ARE_LUNI_DECLARATE",
-            "mesaj": ("Salariatul are luni declarate. Nu se sterge - completeaza data incetarii "
-                      "contractului, altfel se pierde istoricul care sustine declaratiile deja depuse.")}
+            "mesaj": ("Salariatul are luni declarate. Nu se șterge - completează data încetării "
+                      "contractului, altfel se pierde istoricul care susține declarațiile deja depuse.")}
 
 
 def sterge_salariat(conn, salariat_id):

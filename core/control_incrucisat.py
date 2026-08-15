@@ -1150,7 +1150,7 @@ def _descrie_div(d):
 # ---- constructori de constatare (anatomia control_incrucisat: stare + eticheta + mesaj + temei) --
 def _c_verde(cheie, eticheta, temei):
     return {"declaratie": cheie, "stare": "verde", "eticheta": eticheta,
-            "mesaj": "Declaratia se reconciliaza cu sursa - recalculul independent confirma valorile.",
+            "mesaj": "Declarația se reconciliază cu sursa - recalculul independent confirmă valorile.",
             "temei": temei, "remediu": None}
 
 
@@ -1158,8 +1158,8 @@ def _c_rosu(cheie, eticheta, temei, mesaj):
     return {"declaratie": cheie, "stare": "rosu", "eticheta": eticheta, "mesaj": mesaj, "temei": temei,
             "remediu": {"fel": "investigatie",
                         "cauza": "Recalculul independent din sursa NU confirma valoarea declarata.",
-                        "actiune": ("Verifica agregarea si datele sursa - gardul nu alege singur cine are "
-                                    "dreptate. ACEEASI reconciliere blocheaza generarea declaratiei la depunere."),
+                        "actiune": ("Verifică agregarea și datele sursă - gardul nu alege singur cine are "
+                                    "dreptate. ACEEAȘI reconciliere blochează generarea declarației la depunere."),
                         "facturi": []}}
 
 
@@ -1167,7 +1167,7 @@ def _c_gri(cheie, eticheta, temei, motiv):
     return {"declaratie": cheie, "stare": "gri", "eticheta": eticheta,
             "mesaj": "NU pot reconcilia %s: %s" % (eticheta, motiv), "temei": temei,
             "remediu": {"fel": "investigatie", "cauza": "Date sau profil fiscal incomplet.",
-                        "actiune": "Completeaza datele firmei si reincearca.", "facturi": []}}
+                        "actiune": "Completează datele firmei și reîncearcă.", "facturi": []}}
 
 
 def _c_rupt(cheie, eticheta, e):
@@ -1175,13 +1175,13 @@ def _c_rupt(cheie, eticheta, e):
     Se semnaleaza ROSU ZGOMOTOS, ca sa nu redevina un verdict permanent gri, ascuns."""
     return {"declaratie": cheie, "stare": "rosu",
             "eticheta": eticheta + " - VERIFICARE INTRERUPTA",
-            "mesaj": ("Reconcilierea %s s-a oprit cu o eroare (%s: %s) - NU e 'date lipsa', ci verificare "
-                      "RUPTA. Semnalat ROSU, nu ascuns gri (lectia D300 mort)." % (eticheta, type(e).__name__, e)),
-            "temei": ("Contractul reconciliere: recalculul (reconciliaza) NU ridica; daca ridica, e deriva de "
-                      "semnatura / bug de cod. Un except->gri l-ar ascunde ca verdict permanent gri - vezi "
+            "mesaj": ("Reconcilierea %s s-a oprit cu o eroare (%s: %s) - NU e 'date lipsă', ci verificare "
+                      "RUPTĂ. Semnalat ROȘU, nu ascuns gri (lecția D300 mort)." % (eticheta, type(e).__name__, e)),
+            "temei": ("Contractul reconciliere: recalculul (reconciliaza) NU ridică; dacă ridică, e derivă de "
+                      "semnătură / bug de cod. Un except->gri l-ar ascunde ca verdict permanent gri - vezi "
                       "core/test_control_incrucisat_wiring.py."),
-            "remediu": {"fel": "investigatie", "cauza": "Cod / semnatura reconciliere rupta.",
-                        "actiune": "Verifica semnatura apelului de reconciliere pentru aceasta declaratie.",
+            "remediu": {"fel": "investigatie", "cauza": "Cod / semnătură reconciliere ruptă.",
+                        "actiune": "Verifică semnătura apelului de reconciliere pentru această declarație.",
                         "facturi": []}}
 
 
@@ -1309,10 +1309,10 @@ def reconciliaza_declaratii(conn, schema, an, luna):
     explicatie = ("; ".join(parti) + ".") if parti else ""
     return {"an": an, "luna": luna, "stare": stare, "constatari": constatari,
             "explicatie": explicatie,
-            "limita": ("Reconciliere sursa<->declaratie pentru declaratiile aplicabile firmei, cu ACEEASI "
-                       "reconciliere care blocheaza generarea (dXXX_reconciliere.reconciliaza - recalcul "
-                       "independent din sursa). Verde=recalculul confirma; rosu=divergenta (ambele valori "
-                       "numite) sau verificare rupta; gri=nu pot verifica (date/profil lipsa). NEVERIFICAT: "
-                       "declaratiile fara subiect in perioada (sarite tacut, nu verde fals). Perioade: TVA/"
-                       "salarii/SAF-T pe luna; D100 pe trimestru; D101/D205 pe an."),
+            "limita": ("Reconciliere sursă<->declarație pentru declarațiile aplicabile firmei, cu ACEEAȘI "
+                       "reconciliere care blochează generarea (dXXX_reconciliere.reconciliaza - recalcul "
+                       "independent din sursă). Verde=recalculul confirmă; roșu=divergență (ambele valori "
+                       "numite) sau verificare ruptă; gri=nu pot verifica (date/profil lipsă). NEVERIFICAT: "
+                       "declarațiile fără subiect în perioadă (sărite tăcut, nu verde fals). Perioade: TVA/"
+                       "salarii/SAF-T pe lună; D100 pe trimestru; D101/D205 pe an."),
             "modul": MODUL, "reguli": REGULI}

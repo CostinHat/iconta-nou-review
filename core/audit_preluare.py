@@ -336,7 +336,7 @@ def _audit_regim_nedeterminat(e):
                 cauza="Nu pot citi tip_firma din firma_profil (%s)." % e)],
             "coerent": 0, "divergent": 0, "neverificat": 1,
             "limita": ("Audit NErulat: regimul (SRL/PFA) nu s-a putut determina. Straturi nerulate: %s. "
-                       "Lipsa lor e vizibila prin gri, nu tacuta." % ", ".join(sarite)),
+                       "Lipsa lor e vizibilă prin gri, nu tăcută." % ", ".join(sarite)),
             "modul": MODUL, "reguli": REGULI}
 
 

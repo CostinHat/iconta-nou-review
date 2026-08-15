@@ -53,7 +53,7 @@ def avertisment_tva_anaf(local, anaf_val):
         return None
     _txt = lambda b: "platitoare TVA" if b else "neplatitoare TVA"
     return {"camp": "platitor_tva", "local": bool(local), "anaf": bool(anaf_val),
-            "mesaj": ("Ai setat firma ca %s, dar ANAF o are ca %s. Verifica in SPV; poti salva oricum."
+            "mesaj": ("Ai setat firma ca %s, dar ANAF o are ca %s. Verifică în SPV; poți salva oricum."
                       % (_txt(local), _txt(anaf_val)))}
 
 
@@ -188,7 +188,7 @@ def salveaza_date(conn, date):
     for camp, decl in OBLIGATORII.items():
         if camp in curat and not curat[camp]:
             return {"ok": False, "camp": camp,
-                    "mesaj": "%s e obligatoriu — fara el nu se pot depune: %s."
+                    "mesaj": "%s e obligatoriu — fără el nu se pot depune: %s."
                              % (ETICHETE.get(camp, camp), ", ".join(decl))}
     # [F182] cont venit implicit: optional, dar daca vine trebuie sa fie cont de venit (clasa 70) valid.
     # Refuz un cont invalid la sursa — altfel emiterea ar scrie o nota contabila pe un cont gresit.
@@ -196,7 +196,7 @@ def salveaza_date(conn, date):
         cv = str(date.get("cont_venit_implicit") or "").strip()
         if not cont_venit_valid(cv):
             return {"ok": False, "camp": "cont_venit_implicit",
-                    "mesaj": "Contul de venit implicit trebuie sa fie un cont din clasa 70 (cifra de afaceri)."}
+                    "mesaj": "Contul de venit implicit trebuie să fie un cont din clasa 70 (cifra de afaceri)."}
         curat["cont_venit_implicit"] = cv
     if not curat:
         return {"ok": True, "profil": citeste_date(conn)["profil"]}

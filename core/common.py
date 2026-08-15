@@ -496,9 +496,9 @@ class PerioadaIndisponibila(ValueError):
         self.nume = nume
         self.la_data = _ca_data(la_data)
         self.prima_data = _ca_data(prima_data)
-        det = ("%s nu poate fi calculata: valoarea '%s' nu e definita inainte de %s (nu a fost verificata "
-               "la sursa pentru perioade anterioare - nu se inventeaza retroactiv). Calculul e disponibil de "
-               "la %s; pentru perioade anterioare valoarea se completeaza in COTE la sursa (decizie de "
+        det = ("%s nu poate fi calculată: valoarea '%s' nu e definită înainte de %s (nu a fost verificată "
+               "la sursă pentru perioade anterioare - nu se inventează retroactiv). Calculul e disponibil de "
+               "la %s; pentru perioade anterioare valoarea se completează în COTE la sursă (decizie de "
                "dezvoltator)." % (self.la_data.isoformat(), nume, self.prima_data.isoformat(),
                                   self.prima_data.isoformat()))
         super().__init__("PERIOADA_BLOCATA: " + det)

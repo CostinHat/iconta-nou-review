@@ -151,8 +151,8 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
             brut = _brut_la(cur, schema, sid, luna_sf)
             # --- SKIP-SUSPECT: date corupte pe un angajat EMIS (semnalat, nu tacut) ---
             if brut is None:
-                suspecte.append({"salariat": sid, "motiv": "brut LIPSA (salariu_istoric si "
-                                 "salariati.salariu_brut ambele goale) - generatorul emite contributii pe 0"})
+                suspecte.append({"salariat": sid, "motiv": "brut LIPSĂ (salariu_istoric și "
+                                 "salariati.salariu_brut ambele goale) - generatorul emite contribuții pe 0"})
                 continue
             # --- SKIP-LEGITIM: complexitate fiscala (in afara scopului gardului, tacut) ---
             if r["scutit_contrib_minim"]:

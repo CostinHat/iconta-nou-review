@@ -142,7 +142,7 @@ def conteaza(conn, schema, linie_id, alocari=None):
         if not aloc:
             np = l.get("nota_propusa") or {}
             if not (np.get("debit") and np.get("credit")):
-                return {"eroare": "fara alocari si fara nota propusa; alege facturile"}
+                return {"eroare": "fără alocări și fără notă propusă; alege facturile"}
             cur.execute(f"""
                 INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                 VALUES (%s,%s,'banca','ciorna') RETURNING id

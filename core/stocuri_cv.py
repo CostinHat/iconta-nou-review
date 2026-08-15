@@ -69,7 +69,7 @@ def valoare_iesire(miscari, stoc_initial, cantitate):
         val = _d((stoc_initial or {}).get("valoare", 0))
     c = _d(cantitate)
     if c <= 0:
-        raise ValueError("cantitate invalida")
+        raise ValueError("cantitate invalidă")
     if c > cant:
         raise ValueError(f"iesire {c} peste stocul {cant}")
     cmp_curent = val / cant

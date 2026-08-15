@@ -24,12 +24,12 @@ def _centru(l):
 def creeaza(conn, schema, descriere, data, linii):
     """Creeaza o nota manuala noua, ca ciorna. linii = [{debit, credit, suma}], min 1 linie."""
     if not linii:
-        return {"eroare": "nota trebuie sa aiba cel putin o linie"}
+        return {"eroare": "nota trebuie să aibă cel puțin o linie"}
     for l in linii:
         if not str(l.get("debit", "")).strip() or not str(l.get("credit", "")).strip():
-            return {"eroare": "fiecare linie are nevoie de cont debit si credit"}
+            return {"eroare": "fiecare linie are nevoie de cont debit și credit"}
         if Decimal(str(l.get("suma", 0))) <= 0:
-            return {"eroare": "suma fiecarei linii trebuie sa fie > 0"}
+            return {"eroare": "suma fiecărei linii trebuie să fie > 0"}
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                         VALUES (%s,%s,'manual','ciorna') RETURNING id""",
@@ -53,7 +53,7 @@ def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None):
             return {"eroare": "doar ciornele se pot edita"}
         if linii is not None:
             if not linii:
-                return {"eroare": "nota trebuie sa aiba cel putin o linie"}
+                return {"eroare": "nota trebuie să aibă cel puțin o linie"}
             # ai_corectie_v1: memoreaza contul debit dinainte de edit (propunerea AI)
             cur.execute(f"""SELECT cont_debit FROM {schema}.inregistrari_linii
                             WHERE inregistrare_id=%s ORDER BY id LIMIT 1""", (nota_id,))
@@ -61,9 +61,9 @@ def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None):
             _cont_vechi = (_vechi["cont_debit"] if isinstance(_vechi, dict) else _vechi[0]) if _vechi else None
             for l in linii:
                 if not str(l.get("debit", "")).strip() or not str(l.get("credit", "")).strip():
-                    return {"eroare": "fiecare linie are nevoie de cont debit si credit"}
+                    return {"eroare": "fiecare linie are nevoie de cont debit și credit"}
                 if Decimal(str(l.get("suma", 0))) <= 0:
-                    return {"eroare": "suma fiecarei linii trebuie sa fie > 0"}
+                    return {"eroare": "suma fiecărei linii trebuie să fie > 0"}
             cur.execute(f"DELETE FROM {schema}.inregistrari_linii WHERE inregistrare_id=%s", (nota_id,))
             for l in linii:
                 cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
@@ -103,7 +103,7 @@ def sterge(conn, schema, nota_id):
         if not n:
             return None
         if n["status"] != "ciorna":
-            return {"eroare": "doar ciornele se pot sterge"}
+            return {"eroare": "doar ciornele se pot șterge"}
         cur.execute(f"DELETE FROM {schema}.casa_operatiuni WHERE inregistrare_id=%s", (nota_id,))
         cur.execute(f"""UPDATE {schema}.extras_linii SET status='potrivit'
                         WHERE status='contat'

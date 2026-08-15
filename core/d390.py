@@ -266,7 +266,7 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
         if len(cod) > 12:
             diag.append({"categorie": "codO_lung", "den": den, "cui": (tara + cod),
                          "directie": "manual", "tara": tara, "cod": cod, "baza": baza_op,
-                         "motiv": "codO manual are %d caractere (max 12) - trunchierea ar CORUPE numarul de TVA" % len(cod)})
+                         "motiv": "codO manual are %d caractere (max 12) - trunchierea ar CORUPE numărul de TVA" % len(cod)})
         k = (tip, tara, cod, den)
         ops[k] = ops.get(k, Decimal("0")) + baza_op
 

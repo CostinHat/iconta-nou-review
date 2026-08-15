@@ -25,7 +25,7 @@ def _valideaza(op):
     if op.get("metoda") not in ("numerar", "banca"):
         return "metoda invalida (numerar/banca)"
     if Decimal(str(op.get("suma", 0))) <= 0:
-        return "suma trebuie sa fie > 0"
+        return "suma trebuie să fie > 0"
     if not (op.get("data_operatiune") or "").strip():
         return "data operatiunii este obligatorie"
     if not (op.get("explicatie") or "").strip():
@@ -81,7 +81,7 @@ def valideaza(conn, schema, op_id, user_id=None):
                         SET status='validata', validat_de=%s, updated_at=now()
                         WHERE id=%s AND status='ciorna' RETURNING id""", (user_id, op_id))
         if not cur.fetchone():
-            return {"eroare": "operatiune inexistenta sau deja validata"}
+            return {"eroare": "operațiune inexistentă sau deja validată"}
     conn.commit()
     return {"id": op_id, "status": "validata"}
 
@@ -90,7 +90,7 @@ def sterge(conn, schema, op_id):
     with conn.cursor() as cur:
         cur.execute(f"DELETE FROM {schema}.rip_operatiuni WHERE id=%s AND status='ciorna' RETURNING id", (op_id,))
         if not cur.fetchone():
-            return {"eroare": "doar ciornele se pot sterge"}
+            return {"eroare": "doar ciornele se pot șterge"}
     conn.commit()
     return {"sters": op_id}
 
@@ -145,7 +145,7 @@ def fisa_d212(conn, schema, an, optiune_cas=False, optiune_cass=False):
     """Fisa calcul D212 din operatiunile VALIDATE. Plafoane verificate doar pt venituri 2025."""
     if an != 2025:
         return {"eroare": "plafoane verificate doar pentru venituri 2025; "
-                          "pentru alt an verifica intai sursele oficiale"}
+                          "pentru alt an verifică întâi sursele oficiale"}
     with conn.cursor() as cur:
         cur.execute(f"""SELECT
               COALESCE(SUM(suma) FILTER (WHERE tip='incasare' AND categorie='activitate'),0),

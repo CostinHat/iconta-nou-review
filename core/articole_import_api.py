@@ -93,7 +93,7 @@ def importa(conn, schema, articole, data_sold=None):
                 continue
             cur.execute(f"SELECT id FROM {schema}.articole WHERE lower(denumire)=lower(%s)", (a["denumire"],))
             if cur.fetchone():
-                sarite.append({"denumire": a["denumire"], "motiv": "exista deja"})
+                sarite.append({"denumire": a["denumire"], "motiv": "există deja"})
                 continue
             cur.execute(f"""INSERT INTO {schema}.articole (denumire, um, cont_stoc, cont_cheltuiala)
                             VALUES (%s,%s,%s,%s) RETURNING id""",

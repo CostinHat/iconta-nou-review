@@ -84,7 +84,7 @@ def potriveste_linie(linie, facturi_deschise):
     suma = _d(linie.get("suma", 0)).copy_abs()
     cui = _norm_cui(linie.get("cui"))
     if not cui:
-        return {"status": "rosu", "alocari": [], "motiv": "fara CUI in descriere"}
+        return {"status": "rosu", "alocari": [], "motiv": "fără CUI în descriere"}
 
     facturi = facturi_partener(facturi_deschise, cui, linie.get("tip"))
     if not facturi:
@@ -106,7 +106,7 @@ def potriveste_linie(linie, facturi_deschise):
     alocari, rest = _alocare_fifo(suma, facturi)
     if rest > TOLERANTA:
         return {"status": "galben", "alocari": alocari,
-                "motiv": f"suma depaseste soldul total; rest nealocat {rest}"}
+                "motiv": f"suma depășește soldul total; rest nealocat {rest}"}
     return {"status": "galben", "alocari": alocari,
             "motiv": "alocare partiala FIFO"}
 
