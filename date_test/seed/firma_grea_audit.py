@@ -65,6 +65,54 @@ FACTURI = [
 ]
 # aprilie, februarie, iulie..dec: FARA factura (contrast luni cu/ fara facturi)
 
+# ---------------------------------------------------------------------------------------------
+# [D300 remediere] Cazuri REALE pentru FIECARE situatie noua a decontului v12, pe FIRMA GREA.
+# Firma e platitoare de la 01.05.2026 -> toate operatiunile TVA sunt >= mai. O luna curata per
+# situatie, ca proba pe date reale sa fie neambigua. Coloane noi: data_faptului_generator,
+# tert_tara (explicit, nu derivat din prefix), tip_operatiune, furnizor_tva_incasare.
+#   (numar, data_emitere, data_fapt, directie, tert_cui, tert_nume, net, tva, cota,
+#    tert_tara, tip_operatiune, furnizor_tva_incasare)
+CAZURI_D300 = [
+    # [sit.1] LIVRARE INTRACOMUNITARA de bunuri (partener UE FR, 0%, art.294 alin.2) -> rd.1 (R1_1).
+    ("FG-ICL", "2026-08-12", None, "emisa", "FR40303265045", "Distributeur SARL",
+     8000, 0, 0, "FR", "normal", False),
+    # [sit.3] EXPORT non-UE (partener US, emisa 0%, scutit cu drept) -> rd.14 (R14_1).
+    ("FG-EXP", "2026-09-10", None, "emisa", "US-880033", "Overseas Trading Inc",
+     6000, 0, 0, "US", "normal", False),
+    # [sit.4] AVANS incasat: emisa in IULIE, faptul generator abia in OCTOMBRIE -> exigibil la
+    # EMITERE (art.282 alin.2 lit.b): apare in decontul lunii facturii (iulie, R9), NU reapare in
+    # octombrie la faptul generator.
+    ("FG-AV", "2026-07-05", "2026-10-15", "emisa", "95141537", "Comert Micro TVA SRL",
+     1000, 210, 21, "RO", "avans", False),
+    # [sit.5] REGULARIZARE AVANS: la livrarea din octombrie se emite factura finala (5000) cu
+    # STORNAREA avansului deja facturat (-1000) -> rd.9 net 4000/840. Peste iulie (210) + octombrie
+    # (840) = 1050 = 21% din livrarea totala de 5000 (coerent, fara dubla numarare).
+    ("FG-REGAV", "2026-10-20", "2026-10-20", "emisa", "95141537", "Comert Micro TVA SRL",
+     None, None, None, "RO", "regularizare_avans", False),
+    # [sit.6] FURNIZOR LA INCASARE: primita in NOIEMBRIE de la furnizor care aplica TVA la incasare
+    # -> deducerea se AMANA pana la PLATA (art.297 alin.2), chiar daca firma proprie e in regim
+    # normal. Nu apare in decontul lunii facturii (noiembrie); apare cand se plateste (decembrie).
+    ("FG-FTI", "2026-11-08", None, "primita", "95363126", "Constructii Profit Trim SRL",
+     2000, 420, 21, "RO", "normal", True),
+]
+# Linii MULTIPLE pentru facturile de regularizare (net = livrare - avans stornat). Cheie = numar.
+# Fiecare linie: (descriere, um, cantitate, pret_unitar, cota_tva).
+LINII_MULTI = {
+    "FG-REGAV": [
+        ("livrare finala bunuri", "buc", 1, 5000, 21),    # livrarea la faptul generator
+        ("storno avans facturat", "buc", 1, -1000, 21),   # regularizare: storneaza avansul din iulie
+    ],
+}
+# [sit.6] plata facturii FG-FTI (401=5121) validata in DECEMBRIE -> deducerea devine exigibila pe
+# calea de plata (decembrie): (numar, data_plata, suma).
+PLATA_FTI = ("FG-FTI", "2026-12-15", 2420)
+# [sit.7] rand MANUAL D300 pe tenant_017: R16 (Regularizari taxa colectata) pe MAI 2026 (luna cu
+# livrare interna R9). Rand ne-derivabil din facturi -> componenta manuala reala a decontului.
+#   (perioada "AAAA-LL", rand, baza, tva, descriere)
+MANUAL_D300 = ("2026-05", "R16", 1000, 210, "[SEED-FG] regularizare taxa colectata")
+# [sit.2] achizitie IC (FG-ICB, iunie) si [sit.8] zero-base (FEBRUARIE, fara nicio factura) sunt deja
+# acoperite de FACTURI / de lunile goale de mai sus.
+
 
 def _incarca_db_env():
     import os
@@ -165,6 +213,80 @@ def seed_facturi(conn, schema):
     return rap
 
 
+def seed_cazuri_d300(conn, schema):
+    """[D300 remediere] Facturi cu coloanele noi (data_faptului_generator, tert_tara explicit,
+    tip_operatiune, furnizor_tva_incasare) + linii multiple pentru regularizari. Idempotent."""
+    rap = []
+    for (numar, data, fapt, directie, tcui, tnume, net, tva, cota,
+         tara, tipop, fti) in CAZURI_D300:
+        if _factura_exista(conn, schema, numar, directie):
+            rap.append((numar, "deja prezent")); continue
+        linii = LINII_MULTI.get(numar)
+        if linii is not None:
+            # net/tva din suma liniilor (respecta storno negativ)
+            net_tot = sum(cant * pret for (_d, _u, cant, pret, _c) in linii)
+            tva_tot = sum(round(cant * pret * cta / 100) for (_d, _u, cant, pret, cta) in linii)
+        else:
+            net_tot, tva_tot = net, tva
+            linii = [("seed firma grea D300", "buc", 1, net, cota)]
+        total = net_tot + tva_tot
+        with conn.cursor() as c:
+            c.execute(
+                'INSERT INTO "%s".facturi (numar, serie, data_emitere, data_faptului_generator, '
+                'directie, tert_cui, tert_nume, total, tva, moneda, tip, tert_tara, tip_operatiune, '
+                'furnizor_tva_incasare, tert_platitor_tva) '
+                'VALUES (%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s) RETURNING id' % schema,
+                (numar, "FG", data, fapt, directie, tcui, tnume, total, tva_tot, "RON", "factura",
+                 tara, tipop, fti, True))
+            fid = c.fetchone()[0]
+            for (descr, um, cant, pret, cta) in linii:
+                c.execute(
+                    'INSERT INTO "%s".factura_linii (factura_id, descriere, um, cantitate, pret_unitar, cota_tva) '
+                    'VALUES (%%s,%%s,%%s,%%s,%%s,%%s)' % schema,
+                    (fid, descr, um, cant, pret, cta))
+        rap.append((numar, "inserata id=%d (net=%d tva=%d)" % (fid, net_tot, tva_tot)))
+    return rap
+
+
+def seed_plata_fti(conn, schema):
+    """[sit.6] plata FG-FTI (401=5121) validata in decembrie -> exigibilitate deducere pe plata."""
+    numar, data_p, suma = PLATA_FTI
+    with conn.cursor() as c:
+        c.execute('SELECT id FROM "%s".facturi WHERE numar=%%s AND directie=%%s' % schema,
+                  (numar, "primita"))
+        r = c.fetchone()
+        fid = r[0] if r else None
+    if not fid:
+        return (numar, "factura primita lipsa - plata nu se poate atasa")
+    with conn.cursor() as c:
+        c.execute('SELECT id FROM "%s".inregistrari WHERE factura_id=%%s AND data=%%s AND status=%%s'
+                  % schema, (fid, data_p, "validata"))
+        if c.fetchone():
+            return ("plata %s" % numar, "deja prezent")
+        c.execute('INSERT INTO "%s".inregistrari (data, descriere, factura_id, sursa, status) '
+                  'VALUES (%%s,%%s,%%s,%%s,%%s) RETURNING id' % schema,
+                  (data_p, "[SEED-FG] plata furnizor la incasare", fid, "banca", "validata"))
+        nid = c.fetchone()[0]
+        c.execute('INSERT INTO "%s".inregistrari_linii (inregistrare_id, cont_debit, cont_credit, suma) '
+                  'VALUES (%%s,%%s,%%s,%%s)' % schema, (nid, "401", "5121", suma))
+    return ("plata %s" % numar, "inserata nota id=%d (401=5121 %d lei)" % (nid, suma))
+
+
+def seed_manual_d300(schema):
+    """[sit.7] rand MANUAL D300 (d300_manual) via API - validare + upsert idempotent pe UNIQUE.
+    API-ul (d300_manual_api / d300.pull) foloseste nume de tabel NEcalificate -> cere search_path pe
+    schema tenantului; deschidem o conexiune dedicata schema-scoped (SET LOCAL + RESET la iesire)."""
+    from core import d300_manual_api as _dm
+    per, rand, baza, tva, descr = MANUAL_D300
+    an, luna = (int(x) for x in per.split("-"))
+    with db.get_conn(schema) as conn2:
+        res = _dm.adauga(conn2, schema, an, luna,
+                         {"rand": rand, "baza": baza, "tva": tva, "descriere": descr})
+    if res.get("ok"):
+        return ("%s %s" % (per, rand), "id=%d baza=%d tva=%d" % (res["id"], res["baza"], res["tva"]))
+    return ("%s %s" % (per, rand), "EROARE: %s" % res.get("eroare"))
+
+
 def main():
     _incarca_db_env()
     db.init_pool()
@@ -177,7 +299,13 @@ def main():
         print("facturi:")
         for (n, act) in seed_facturi(conn, schema):
             print("   %-10s %s" % (n, act))
-        print("OK. schema=%s" % schema)
+        print("cazuri D300:")
+        for (n, act) in seed_cazuri_d300(conn, schema):
+            print("   %-10s %s" % (n, act))
+        print("   %-10s %s" % seed_plata_fti(conn, schema))
+        conn.commit()   # persista facturile/plata inainte de pasul manual (conexiune separata)
+    print("   %-10s %s" % seed_manual_d300(schema))
+    print("OK. schema=%s" % schema)
 
 
 if __name__ == "__main__":
