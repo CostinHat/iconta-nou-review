@@ -454,12 +454,15 @@ def pull(conn, schema, an, luna):
 
 
 def pull_manual(conn, schema, an, luna):
-    """[F125] Liniile pur manuale D390 pentru luna (introduse de contabil, fără factură)."""
+    """[F125] Liniile pur manuale D390 pentru luna (introduse de contabil, fără factură).
+    Include id-ul: UI-ul il foloseste ca sa STEARGA linia (butonul dec-man-del -> DELETE
+    .../manual/{id}). Fara id, GET-ul returna linii nestergibile (data-id=undefined -> 422).
+    Consumatorii de calcul (calcul_d390) ignora cheia id."""
     with conn.cursor() as cur:
-        cur.execute(f"SELECT tip, tara, cod, den, baza FROM {schema}.d390_manual "
+        cur.execute(f"SELECT id, tip, tara, cod, den, baza FROM {schema}.d390_manual "
                     f"WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
-        return [{"tip": t, "tara": ta, "cod": c, "den": d, "baza": b}
-                for (t, ta, c, d, b) in cur.fetchall()]
+        return [{"id": i, "tip": t, "tara": ta, "cod": c, "den": d, "baza": b}
+                for (i, t, ta, c, d, b) in cur.fetchall()]
 
 
 def pull_reclasificari(conn, schema, an, luna):

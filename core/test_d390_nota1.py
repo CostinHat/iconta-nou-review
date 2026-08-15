@@ -119,6 +119,19 @@ def test_manual_adauga_tip_A_cere_tara_UE(conn):
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_manual_linie_are_id_si_se_poate_sterge(conn):
+    """Linia manuala D390 din stare() are id -> UI o sterge (butonul dec-man-del -> DELETE .../manual/{id}).
+    RED pre-fix: pull_manual returna fara id -> data-id=undefined -> stergere imposibila (422)."""
+    assert _tip_A_backend(conn).get("ok")
+    st = _capi.stare(conn, _SCHEMA, 2026, 6)
+    man = st["manual"]
+    assert man and man[0].get("id"), "linia manuala trebuie sa aiba id pentru stergere: %r" % man
+    r = _capi.manual_sterge(conn, _SCHEMA, 2026, 6, man[0]["id"])
+    assert r.get("ok"), "stergerea trebuie sa reuseasca cu id-ul din stare"
+    assert not _capi.stare(conn, _SCHEMA, 2026, 6)["manual"], "linia trebuie sa dispara dupa stergere"
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_nota1_genereaza_operatie_A_fara_cod(conn):
     """Manual A (NOTA 1, cod gol) -> genereaza emite <operatie tip='A' tara='DE' ... FARA codO>,
     reconcilierea a-doua-cale trece (include latura manuala). RED pre-fix: A neintroductibil."""
