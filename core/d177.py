@@ -78,7 +78,7 @@ def calcul_d177(manual):
 
 def pull(conn, schema, perioada):
     with conn.cursor() as cur:
-        cur.execute("SELECT cui, COALESCE(den, nume), adresa, telefon, email FROM firma_profil WHERE id = 1")
+        cur.execute("SELECT cui, nume, adresa, telefon, email FROM firma_profil WHERE id = 1")
         r = cur.fetchone()
     if not r:
         return {}
