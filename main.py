@@ -271,6 +271,27 @@ async def _audit_middleware(request: Request, call_next):
         pass
     return response
 
+@app.middleware("http")
+async def _edge_canonic_head(request: Request, call_next):
+    # [www_canonic 15.08.2026] www.iconta.eu servea acelasi continut ca iconta.eu (200 pe ambele) -> duplicat SEO,
+    # semnalul se imparte. Forma canonica = fara www (_GHID_BAZA, pe care se genereaza sitemap+canonical).
+    # Redirect 301 PERMANENT, PASTREAZA calea+query (www.../ghid/x -> iconta.eu/ghid/x, nu radacina). In app,
+    # nu in nginx (nginx trece Host $host la upstream, deci hostul ajunge aici; nginx-ul e sub sudo, prod).
+    _canonic = _GHID_BAZA.split("://")[-1]              # "iconta.eu"
+    host = (request.headers.get("host") or "").split(":")[0].lower()
+    if host == "www." + _canonic:
+        from fastapi.responses import RedirectResponse
+        q = ("?" + request.url.query) if request.url.query else ""
+        return RedirectResponse(_GHID_BAZA + request.url.path + q, status_code=301)
+    # [head_ca_get 15.08.2026] FastAPI NU adauga HEAD la rutele GET -> 405. Googlebot foloseste HEAD ca sa verifice
+    # daca pagina s-a schimbat inainte de a o descarca; 405 iroseste buget de crawl. Tratam HEAD ca GET la rutare;
+    # uvicorn suprima corpul pe fir pentru cererea HEAD (raspunde doar cu headerele, inclusiv Content-Length).
+    if request.method == "HEAD":
+        request.scope["method"] = "GET"
+        return await call_next(request)
+    return await call_next(request)
+
+
 # ICRD_CABINETE_CONSOLIDAT_V1
 # ICRD_SANATATE_SERVER_V1
 # ICRD_ALERTE_SANATATE_V1
