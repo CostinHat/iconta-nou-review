@@ -60,9 +60,13 @@ const DEF = [  /* cab_ordine_v2 */
     sinteza:"Întrebări, probleme și asistență tehnică", actiune:inLucru("Raportează") },
 ];
 
+// [coada_vizibila_mono_v1] titlul ferestrei cozii urmează starea patru-ochi (actualizat de actualizeazaValidat):
+// „De validat" cu patru-ochi ACTIV, „De depus" DEZACTIVAT — să nu contrazică titlul cardului/conținutul.
+let _coadaTitlu = "De validat";
+
 // [p73_sinteza_azi] deschide un ecran existent dupa cheie (refoloseste ecranele, nu duplica)
 function deschideEcran(cheie, nav, continut) {
-  if (cheie === "validat") return nav.deschide("De validat", (corp) => randeazaValidat(corp, nav), { nivel: "cabinet" });
+  if (cheie === "validat") return nav.deschide(_coadaTitlu, (corp) => randeazaValidat(corp, nav), { nivel: "cabinet" });
   if (cheie === "activitate") return nav.deschide("Activitate cabinet", (corp) => randeazaActivitateCabinet(corp, nav), { nivel: "cabinet" });
   if (cheie === "capacitate") return nav.deschide("Capacitate", (corp) => randeazaCapacitate(corp, nav), { nivel: "cabinet" });
   if (cheie === "tipare") return nav.deschide("Tipare", (corp) => randeazaTipare(corp, nav), { nivel: "cabinet" });
@@ -199,7 +203,7 @@ function randeazaPanou(continut, nav) {
     } else if (c.cheie === "termene") {
       card.addEventListener("click", () => nav.deschide("Termene", (corp) => randeazaTermene(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "validat") {
-      card.addEventListener("click", () => nav.deschide("De validat", (corp) => randeazaValidat(corp, nav), { nivel: "cabinet" }));
+      card.addEventListener("click", () => nav.deschide(_coadaTitlu, (corp) => randeazaValidat(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "asistenti") {
       card.addEventListener("click", () => nav.deschide("Asistenți", (corp) => randeazaAsistenti(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "activitate") {  // [p76_comasare_font] meniu Activitate (jurnal + tipare)
@@ -374,15 +378,32 @@ async function actualizeazaTermene(grila) {
 }
 
 
-// De validat: sinteza din /coada (cate sunt la_senior)
+// Coada pe ecranul principal: patru-ochi ACTIV -> "De validat" (la_senior); DEZACTIVAT -> "De depus".
+// [coada_vizibila_mono_v1] Fluxul declarație->coadă e necondiționat, deci ȘI afișajul trebuie să existe
+// indiferent de patru-ochi. Cu patru-ochi OFF (mono-utilizator) nu există validare în doi: tot ce e în
+// coadă (la_senior + aprobata) e „de depus", altfel coada rămânea invizibilă și nu se putea depune.
 async function actualizeazaValidat(grila) {
   const zona = grila.querySelector('[data-cheie="validat"]');
   if (!zona) return;
+  const card = zona.closest(".cab-card");
+  const titluEl = card ? card.querySelector(".cab-card-titlu") : null;
   try {
-    const r = await api.get("/coada");
-    const coada = (r && r.coada) || [];
-    const n = coada.filter((c) => c.stare === "la_senior").length;
-    zona.innerHTML = `<b class="tip-figura">${n}</b> declaraț${n === 1 ? "ie de validat" : "ii de validat"} și trimis`;
+    const [rc, rpo] = await Promise.all([api.get("/coada"), api.get("/eu/patru-ochi")]);
+    const coada = (rc && rc.coada) || [];
+    const patruOchi = !!(rpo && rpo.activ);
+    const laSenior = coada.filter((c) => c.stare === "la_senior").length;
+    const aprobate = coada.filter((c) => c.stare === "aprobata").length;
+    _coadaTitlu = patruOchi ? "De validat" : "De depus";
+    if (patruOchi) {
+      if (titluEl) titluEl.textContent = "De validat";
+      let s = `<b class="tip-figura">${laSenior}</b> declaraț${laSenior === 1 ? "ie de validat" : "ii de validat"}`;
+      if (aprobate) s += ` · <b class="tip-figura">${aprobate}</b> de depus`;
+      zona.innerHTML = s;
+    } else {
+      if (titluEl) titluEl.textContent = "De depus";
+      const n = laSenior + aprobate;
+      zona.innerHTML = `<b class="tip-figura">${n}</b> declaraț${n === 1 ? "ie de depus" : "ii de depus"}`;
+    }
   } catch {}
 }
 

@@ -1,10 +1,14 @@
-// validat.js — coada de validare a declarațiilor (perspectiva seniorului / admin_firma).
-// Sectiuni: "De validat" (la_senior -> Aprobă/Respinge) si "Aprobate, de depus" (aprobata -> Depune).
+// validat.js — coada de validare/depunere a declarațiilor (perspectiva seniorului / admin_firma).
+// Cu patru-ochi ACTIV: "De validat" (la_senior -> Aprobă/Respinge) + "Aprobate, de depus" (aprobata -> Depune).
+// Cu patru-ochi DEZACTIVAT (mono-utilizator): nu există validare în doi — tot ce e în coadă e "De depus";
+//   pentru un item la_senior, „Confirmă depunerea" înlănțuie aproba+depune (backendul permite auto-aprobarea
+//   când patru-ochi e oprit). Vezi cardul „De depus" din cabinet.js.
 // Butoanele se rescriu după permisiunile actorului curent (poate_valida / poate_depune),
 // proaspete de la GET /eu/permisiuni. Control „patru ochi": cine a pregătit nu poate aproba
-// (ascuns vizual + blocat în backend).
+// (ascuns vizual + blocat în backend) — DOAR când patru-ochi e activ.
+// Perioada afișată = perioada DECLARATĂ (an/lună/trim din payload); scadența = termen, etichetată separat.
 // Dialogurile (motiv respingere / index SPV) folosesc ferestre modale proprii (nav.deschide).
-import { api } from "../api.js";
+import { api, dataRo } from "../api.js";
 import { sesiune } from "../sesiune.js";
 
 function numeFirma(firme, tid) {
@@ -18,49 +22,77 @@ function uidCurent() {
   return u && u.id != null ? String(u.id) : null;
 }
 
+// [perioada_declarata_v1] perioada DECLARATĂ (nu scadența): "august 2026" lunar, "trim. III 2026" trimestrial,
+// "anul 2026" anual. Fallback pe c.perioada (scadența) doar dacă payload-ul nu are an (intrări vechi).
+const _ROM = ["", "I", "II", "III", "IV"];
+function fmtPerioadaDecl(c) {
+  const an = c.p_an, luna = c.p_luna, trim = c.p_trim;
+  if (an && luna) return dataRo(`${an}-${String(luna).padStart(2, "0")}`, "luna_an"); // "august 2026"
+  if (an && trim) return `trim. ${_ROM[trim] || trim} ${an}`;                          // "trim. III 2026"
+  if (an) return `anul ${an}`;
+  return c.perioada || "—";
+}
+
 export async function randeazaValidat(corp, nav) {
   corp.innerHTML = `<p class="ecran-nota">Se încarcă coada…</p>`;
   let coada = [];
   let firme = [];
   let perm = { poate_valida: false, poate_depune: false, rol: null };
+  let patruOchi = false;
   try {
-    const [rc, rf, rp] = await Promise.all([
+    const [rc, rf, rp, rpo] = await Promise.all([
       api.get("/coada"),
       api.get("/tenants"),
       api.get("/eu/permisiuni"),
+      api.get("/eu/patru-ochi"),
     ]);
     coada = (rc && rc.coada) || [];
     firme = (rf && rf.tenants) || [];
     if (rp) perm = rp;
+    patruOchi = !!(rpo && rpo.activ);
   } catch {
     corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca coada.</p>`;
     return;
   }
-  const deValidat = coada.filter((c) => c.stare === "la_senior");
-  const deDepus = coada.filter((c) => c.stare === "aprobata");
+  const laSenior = coada.filter((c) => c.stare === "la_senior");
+  const aprobate = coada.filter((c) => c.stare === "aprobata");
+
+  const intro = patruOchi
+    ? "Declarațiile pregătite de asistenți așteaptă validarea ta înainte de depunere. Nimic nu se depune nevalidat."
+    : "Patru-ochi e dezactivat: pregătești și depui singur. Declarațiile din coadă așteaptă depunerea.";
   corp.innerHTML = `
-    <p class="mig-intro">Declarațiile pregătite de asistenți așteaptă validarea ta înainte de depunere. Nimic nu se depune nevalidat.</p>
+    <p class="mig-intro">${intro}</p>
     <div id="val-deValidat"></div>
     <div id="val-deDepus"></div>
     <div class="mig-eroare" id="val-eroare"></div>
   `;
   const z1 = corp.querySelector("#val-deValidat");
   const z2 = corp.querySelector("#val-deDepus");
-  if (deValidat.length === 0 && deDepus.length === 0) {
-    z1.innerHTML = `<div class="stare-goala">Nimic de validat. Coada e goală.</div>`;
+
+  if (laSenior.length === 0 && aprobate.length === 0) {
+    z1.innerHTML = `<div class="stare-goala">${patruOchi ? "Nimic de validat. Coada e goală." : "Nimic de depus. Coada e goală."}</div>`;
     return;
   }
-  if (deValidat.length) {
-    z1.innerHTML = `<div class="cf-grup-titlu cf-galben">De validat (${deValidat.length})</div>`;
-    deValidat.forEach((c) => z1.appendChild(randDeclaratie(c, firme, corp, nav, "valida", perm)));
-  }
-  if (deDepus.length) {
-    z2.innerHTML = `<div class="cf-grup-titlu" style="color:var(--verde)">Aprobate, de depus (${deDepus.length})</div>`;
-    deDepus.forEach((c) => z2.appendChild(randDeclaratie(c, firme, corp, nav, "depune", perm)));
+
+  if (patruOchi) {
+    // ── patru-ochi ACTIV: validare în doi ──
+    if (laSenior.length) {
+      z1.innerHTML = `<div class="cf-grup-titlu cf-galben">De validat (${laSenior.length})</div>`;
+      laSenior.forEach((c) => z1.appendChild(randDeclaratie(c, firme, corp, nav, "valida", perm, patruOchi)));
+    }
+    if (aprobate.length) {
+      z2.innerHTML = `<div class="cf-grup-titlu" style="color:var(--verde)">Aprobate, de depus (${aprobate.length})</div>`;
+      aprobate.forEach((c) => z2.appendChild(randDeclaratie(c, firme, corp, nav, "depune", perm, patruOchi)));
+    }
+  } else {
+    // ── patru-ochi DEZACTIVAT: mono-utilizator, totul e „de depus" ──
+    const deDepus = [...laSenior, ...aprobate];
+    z1.innerHTML = `<div class="cf-grup-titlu" style="color:var(--verde)">De depus (${deDepus.length})</div>`;
+    deDepus.forEach((c) => z1.appendChild(randDeclaratie(c, firme, corp, nav, "depune", perm, patruOchi)));
   }
 }
 
-function randDeclaratie(c, firme, corp, nav, mod, perm) {
+function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
   const div = document.createElement("div");
   div.className = "val-card";
   const coer = c.coerenta
@@ -72,7 +104,7 @@ function randDeclaratie(c, firme, corp, nav, mod, perm) {
 
   let actiuni = "";
   if (mod === "valida") {
-    // Aprobă — doar dacă pot valida ȘI nu eu am pregătit-o (patru ochi)
+    // Aprobă — doar dacă pot valida ȘI (patru-ochi activ) nu eu am pregătit-o
     if (!perm.poate_valida) {
       actiuni += `<span class="val-nota-perm">nu ai dreptul de validare</span>`;
     } else if (euAmPregatit) {
@@ -80,23 +112,31 @@ function randDeclaratie(c, firme, corp, nav, mod, perm) {
     } else {
       actiuni += `<button class="buton-primar val-btn val-aproba" data-act="aproba">Aprobă</button>`;
     }
-    // Respinge — îl poate face oricine cu drept de validare (și care n-a pregătit-o)
+    // Respinge — oricine cu drept de validare (și care n-a pregătit-o, când patru-ochi e activ)
     if (perm.poate_valida && !euAmPregatit) {
       actiuni += `<button class="buton-sters val-btn val-respinge" data-act="respinge">Respinge</button>`;
     }
   } else {
-    // depune -> "Confirmă depunerea"
-    if (!perm.poate_depune) {
+    // depune -> "Confirmă depunerea". Cu patru-ochi OFF, un item la_senior se aprobă automat înainte de depunere.
+    const needsAproba = c.stare === "la_senior";
+    const potDepune = perm.poate_depune && (!needsAproba || perm.poate_valida);
+    if (!potDepune) {
       actiuni += `<span class="val-nota-perm">nu ai dreptul de depunere</span>`;
     } else {
       actiuni += `<button class="buton-primar val-btn val-depune" data-act="depune">Confirmă depunerea</button>`;
     }
+    // Cu patru-ochi OFF, mono-utilizatorul poate renunța la un item încă neaprobat (respinge din la_senior)
+    if (!patruOchi && needsAproba && perm.poate_valida) {
+      actiuni += `<button class="buton-sters val-btn val-respinge" data-act="respinge">Renunță</button>`;
+    }
   }
 
+  const perDecl = fmtPerioadaDecl(c);
   div.innerHTML = `
     <div class="val-info">
-      <div class="val-titlu"><b>${(c.tip||"").toUpperCase()}</b> · ${c.perioada}</div>
+      <div class="val-titlu"><b>${(c.tip||"").toUpperCase()}</b> · ${perDecl}</div>
       <div class="val-sub">${numeFirma(firme, c.tenant_id)} · pregătit de ${c.creat_de_nume || c.creat_de || "—"}</div>
+      <div class="val-termen">termen (scadență): ${c.perioada || "—"}</div>
     </div>
     <div class="val-mij">${coer}</div>
     <div class="val-actiuni">${actiuni}</div>
@@ -110,10 +150,11 @@ function randDeclaratie(c, firme, corp, nav, mod, perm) {
 async function actioneaza(c, act, firme, corp, nav) {
   const eroare = corp.querySelector("#val-eroare");
   if (eroare) eroare.textContent = "";
+  const perDecl = fmtPerioadaDecl(c);
   if (act === "respinge") {
     dialogInput(nav, {
       titlu: "Respinge declarația",
-      eticheta: `Motiv respingere pentru ${(c.tip||"").toUpperCase()} (${c.perioada}):`,
+      eticheta: `Motiv respingere pentru ${(c.tip||"").toUpperCase()} (${perDecl}):`,
       placeholder: "ex: TVA necorelată cu jurnalul de vânzări",
       obligatoriu: true,
       buton: "Respinge",
@@ -129,12 +170,17 @@ async function actioneaza(c, act, firme, corp, nav) {
   if (act === "depune") {
     dialogInput(nav, {
       titlu: "Confirmă depunerea",
-      eticheta: `Index SPV pentru ${(c.tip||"").toUpperCase()} (${c.perioada}) — opțional:`,
+      eticheta: `Index SPV pentru ${(c.tip||"").toUpperCase()} (${perDecl}) — opțional:`,
       placeholder: "lasă gol dacă nu ai indexul încă",
       obligatoriu: false,
       buton: "Confirmă depunerea",
       butonClasa: "val-depune",
       onConfirm: async (spv) => {
+        // Cu patru-ochi OFF, un item încă „la_senior" se aprobă automat înainte de depunere
+        // (aceeași auto-aprobare pe care backendul o permite când patru-ochi e oprit).
+        if (c.stare === "la_senior") {
+          await api.post(`/coada/${c.id}/aproba`, {});
+        }
         await api.post(`/coada/${c.id}/depune`, spv ? { spv_index: spv } : {});
         nav.inapoi();
         randeazaValidat(corp, nav);

@@ -116,6 +116,11 @@ def lista_coada(conn, cabinet_id, stare=None):
         cur.execute(
             "SELECT c.id, c.tenant_id, c.tip, c.perioada, c.stare, c.coerenta, c.creat_de, "
             "c.creat_la, c.aprobat_de, c.respins_de, c.motiv_respingere, "
+            # [perioada_declarata_v1] perioada DECLARATA (an/luna/trim din payload), separata de
+            # c.perioada = data scadentei (termen). Consumatorii existenti ai lui `perioada` NU se strica.
+            "(c.payload->>'_an')::int   AS p_an, "
+            "(c.payload->>'_luna')::int AS p_luna, "
+            "(c.payload->>'_trim')::int AS p_trim, "
             "COALESCE(u.nume, u.email) AS creat_de_nume "  # [val_nume_v1] numele pregatitorului, nu UID brut
             "FROM public.declaratii_coada c "
             "LEFT JOIN public.users u ON u.id = c.creat_de_id "

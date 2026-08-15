@@ -206,19 +206,19 @@ async function pas2(corp, nav) {
   const erANAF = (S.rezultat.erori || "").trim();
   const sev = S.rezultat.severitate;  // [A2] "eroare" (E:) vs "atentionare" (A:) - DUK pune ambele in stare="erori"
   const blocANAF = stare === "valid"
-    ? `<div class="dec-ok">Validat la ANAF, fără erori.</div>`
+    ? `<div class="dec-ok">Validat cu DUKIntegrator (validatorul oficial ANAF rulat local), fără erori. Nu a fost depusă la ANAF.</div>`
     : (stare === "erori"
         ? (sev === "atentionare"
             ? `<div class="dec-avert">
-                 <div class="dec-avert-cap">Validatorul ANAF a semnalat atenționări (nu blochează depunerea — verifică)</div>
+                 <div class="dec-avert-cap">DUKIntegrator (validatorul oficial ANAF, local) a semnalat atenționări (nu blochează depunerea — verifică)</div>
                  <pre class="dec-xml-pre">${esc(erANAF)}</pre>
                </div>`
             : `<div class="dec-eroare">
-                 <div class="dec-avert-cap">Validatorul ANAF a găsit erori</div>
+                 <div class="dec-avert-cap">DUKIntegrator (validatorul oficial ANAF, local) a găsit erori</div>
                  <pre class="dec-xml-pre">${esc(erANAF)}</pre>
                </div>`)
         : `<div class="dec-avert">
-             <div class="dec-avert-cap">Nu am putut valida la ANAF</div>
+             <div class="dec-avert-cap">Nu am putut rula validarea cu DUKIntegrator (validatorul ANAF, local)</div>
              <ul><li>${esc(S.rezultat.temei || "Validatorul nu a rulat.")}</li>
                  <li>${esc(S.rezultat.limita || "")}</li></ul>
            </div>`);
