@@ -2,7 +2,7 @@
 // Atașează automat token-ul (Bearer), tratează erorile uniform.
 // Origin relativ: FastAPI servește și frontendul, și API-ul.
 
-import { sesiune } from "./sesiune.js";
+import { sesiune } from "./sesiune.js?v=5d142951c9";
 
 // [cap1_feedback_async_v1] Design System cap.1: butonul declansator se dezactiveaza
 // automat pe durata oricarei actiuni asincrone. Textul devine "Se lucreaza..." si se

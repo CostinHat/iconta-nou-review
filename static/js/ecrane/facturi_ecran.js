@@ -3,9 +3,9 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js";  /* esc_nc27 */
-import { sesiune } from "../sesiune.js";
-import { randeazaEmitere } from "./emitere_ecran.js?v=6";
+import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=a0acf0511a";  /* esc_nc27 */
+import { sesiune } from "../sesiune.js?v=5d142951c9";
+import { randeazaEmitere } from "./emitere_ecran.js?v=b20eda8143";
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");

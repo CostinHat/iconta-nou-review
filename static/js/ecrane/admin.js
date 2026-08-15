@@ -2,12 +2,12 @@
 // Spatiu separat de cabinet: doar functiile de administrare iConta.
 // Acum: cardul Raportari (raspuns la sesizari). Extensibil (adaugi un dict in DEF).
 
-import { sesiune } from "../sesiune.js";
-import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc } from "../api.js";
-import { randeazaAdminRaportari } from "./admin_raportari.js?v=5";
-import { randeazaAdminActivitate } from "./admin_activitate.js?v=6";
-import { randeazaAdminSanatate } from "./admin_sanatate.js?v=3";
-import { randeazaAdminAnalytics } from "./admin_analytics.js?v=1";
+import { sesiune } from "../sesiune.js?v=5d142951c9";
+import { api, arataMesaj, dataRo, ICOANE, CULORI_CARD, esc } from "../api.js?v=a0acf0511a";
+import { randeazaAdminRaportari } from "./admin_raportari.js?v=f1b04de0db";
+import { randeazaAdminActivitate } from "./admin_activitate.js?v=0b7fa80bea";
+import { randeazaAdminSanatate } from "./admin_sanatate.js?v=aa317fad50";
+import { randeazaAdminAnalytics } from "./admin_analytics.js?v=eb0ee9388f";
 
 // iconite SVG inline (autonome)
 function svg(cheie, fg) {

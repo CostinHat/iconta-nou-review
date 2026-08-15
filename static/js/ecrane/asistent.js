@@ -2,18 +2,18 @@
 // minus exclusivele cabinetului. Bara 3 = doar motivational (pozitiv).
 // Sursa unica: identitatea/permisiunile din sesiune.user(); cifrele din /eu/calitate.
 
-import { api, ICOANE, CULORI_CARD } from "../api.js";
-import { semaforCard } from "./semafor.js";  // [p87_asistent]
-import { sesiune } from "../sesiune.js";
-import { randeazaControl } from "./control.js?v=1";
-import { randeazaTermene } from "./termene.js";
-import { randeazaValidat } from "./validat.js";
-import { randeazaListaFirme } from "./firme.js?v=7";
-import { randeazaRecomanda } from "./recomanda.js"; // [p31_recomanda]
-import { randeazaRaporteaza } from "./raporteaza.js?v=6"; // [p34_raporteaza]
-import { randeazaPachete } from "./pachete.js"; // [p63_pachete]
-import { randeazaDeclaratii } from "./declaratii.js"; // [p44_declaratii]
-import { randeazaSetari } from "./setari.js"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
+import { api, ICOANE, CULORI_CARD } from "../api.js?v=a0acf0511a";
+import { semaforCard } from "./semafor.js?v=df9fe94900";  // [p87_asistent]
+import { sesiune } from "../sesiune.js?v=5d142951c9";
+import { randeazaControl } from "./control.js?v=8576a174b7";
+import { randeazaTermene } from "./termene.js?v=e315c3005b";
+import { randeazaValidat } from "./validat.js?v=2720732c1c";
+import { randeazaListaFirme } from "./firme.js?v=7139a34c18";
+import { randeazaRecomanda } from "./recomanda.js?v=4dcc56e1ec"; // [p31_recomanda]
+import { randeazaRaporteaza } from "./raporteaza.js?v=f800de9e77"; // [p34_raporteaza]
+import { randeazaPachete } from "./pachete.js?v=8c32cbb767"; // [p63_pachete]
+import { randeazaDeclaratii } from "./declaratii.js?v=5f2e35ed48"; // [p44_declaratii]
+import { randeazaSetari } from "./setari.js?v=d3e3cec16d"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {
   return `<svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="${culoare}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICOANE[nume] || ""}</svg>`;

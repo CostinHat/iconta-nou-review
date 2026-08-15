@@ -1,8 +1,8 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor } from "../api.js";  /* generalizare_zi_v1 */
-import { sesiune } from "../sesiune.js";
-import { randeazaFacturi } from "./facturi_ecran.js?v=7";  // [p116_facturi_modul]
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor } from "../api.js?v=a0acf0511a";  /* generalizare_zi_v1 */
+import { sesiune } from "../sesiune.js?v=5d142951c9";
+import { randeazaFacturi } from "./facturi_ecran.js?v=64b2db9bf3";  // [p116_facturi_modul]
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 

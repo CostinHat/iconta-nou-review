@@ -2,7 +2,7 @@
 // Trei sectiuni statistice: motive de respingere, tipuri cu rata, firme cu respingeri.
 // Plus [F120] buton "Genereaza analiza AI" care cere lui Claude explicatii + recomandari.
 // Doar patron (regula 4).
-import { api, esc } from "../api.js";
+import { api, esc } from "../api.js?v=a0acf0511a";
 
 function bara(pct) {
   // bara de proportie pentru rata de respingere

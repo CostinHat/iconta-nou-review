@@ -2,22 +2,22 @@
 // Bandă de salut + 9 carduri pastel (grilă 3×3), fiecare cu sinteza lui.
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
-import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj } from "../api.js";  /* esc_nc27 */
-import { semaforCard as _semaforCard } from "./semafor.js";  // [p87_asistent]
-import { sesiune } from "../sesiune.js";
-import { randeazaListaFirme } from "./firme.js?v=7";
-import { randeazaMigrare } from "./migrare.js?v=6";
-import { randeazaControl } from "./control.js?v=1";
-import { randeazaActivitateCabinet } from "./activitate_cabinet.js"; // [p17_activitate]
-import { randeazaSetari } from "./setari.js"; // [p28_setari]
-import { randeazaRecomanda } from "./recomanda.js"; // [p31_recomanda]
-import { randeazaRaporteaza } from "./raporteaza.js?v=6"; // [p34_raporteaza]
-import { randeazaPachete } from "./pachete.js"; // [p63_pachete]
-import { randeazaTermene } from "./termene.js";
-import { randeazaValidat } from "./validat.js";
-import { randeazaAsistenti } from "./asistenti.js";
-import { randeazaCapacitate } from "./capacitate.js"; // [p71_capacitate]
-import { randeazaTipare } from "./tipare.js"; // [p72_tipare]
+import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj } from "../api.js?v=a0acf0511a";  /* esc_nc27 */
+import { semaforCard as _semaforCard } from "./semafor.js?v=df9fe94900";  // [p87_asistent]
+import { sesiune } from "../sesiune.js?v=5d142951c9";
+import { randeazaListaFirme } from "./firme.js?v=7139a34c18";
+import { randeazaMigrare } from "./migrare.js?v=ae86be6082";
+import { randeazaControl } from "./control.js?v=8576a174b7";
+import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=70bc686f76"; // [p17_activitate]
+import { randeazaSetari } from "./setari.js?v=d3e3cec16d"; // [p28_setari]
+import { randeazaRecomanda } from "./recomanda.js?v=4dcc56e1ec"; // [p31_recomanda]
+import { randeazaRaporteaza } from "./raporteaza.js?v=f800de9e77"; // [p34_raporteaza]
+import { randeazaPachete } from "./pachete.js?v=8c32cbb767"; // [p63_pachete]
+import { randeazaTermene } from "./termene.js?v=e315c3005b";
+import { randeazaValidat } from "./validat.js?v=2720732c1c";
+import { randeazaAsistenti } from "./asistenti.js?v=7561dc1cb1";
+import { randeazaCapacitate } from "./capacitate.js?v=5159e31f44"; // [p71_capacitate]
+import { randeazaTipare } from "./tipare.js?v=e88a7f5eba"; // [p72_tipare]
 
 // iconițe SVG inline (autonome, fără dependență externă de rețea)
 function svg(nume, culoare) {

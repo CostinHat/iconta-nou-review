@@ -2,8 +2,8 @@
 // Strat 1 (Firme) e funcțional: import ANAF -> decizie de finalizare (gata / mai am + notă).
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
-import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta } from "../api.js";
-import { sesiune } from "../sesiune.js";
+import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta } from "../api.js?v=a0acf0511a";
+import { sesiune } from "../sesiune.js?v=5d142951c9";
 
 export const STRATURI = [
   { cheie:"firme", nr:1, titlu:"Firme", desc:"Validare CUI la ANAF · identificare + status fiscal",

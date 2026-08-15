@@ -27,15 +27,15 @@ function _bannerLoginEroare(txt) {
 window.addEventListener("error", (e) => _bannerEroareGlobala(e.error || e.message));
 window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reason));
 
-import { sesiune } from "./sesiune.js";
-import { api } from "./api.js";
-import { ecranBunVenit } from "./ecrane/ansamblu.js";  // [bun_venit_v1]
-import { ecranLogin } from "./ecrane/login.js?v=7";
-import { creeazaNavigator } from "./navigator.js?v=3";
-import { desktopCabinet } from "./ecrane/cabinet.js?v=2";
-import { desktopAsistent } from "./ecrane/asistent.js";
-import { desktopPortal } from "./ecrane/portal.js?v=11";
-import { desktopAdmin } from "./ecrane/admin.js?v=13"; // [p37_admin_desktop]
+import { sesiune } from "./sesiune.js?v=5d142951c9";
+import { api } from "./api.js?v=a0acf0511a";
+import { ecranBunVenit } from "./ecrane/ansamblu.js?v=681cbcc2b3";  // [bun_venit_v1]
+import { ecranLogin } from "./ecrane/login.js?v=34a693f3bf";
+import { creeazaNavigator } from "./navigator.js?v=1a9b2b347e";
+import { desktopCabinet } from "./ecrane/cabinet.js?v=a185a35804";
+import { desktopAsistent } from "./ecrane/asistent.js?v=c7f6405f11";
+import { desktopPortal } from "./ecrane/portal.js?v=fc4216aaed";
+import { desktopAdmin } from "./ecrane/admin.js?v=7c33bbe96d"; // [p37_admin_desktop]
 
 const radacina = document.getElementById("app");
 

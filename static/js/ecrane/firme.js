@@ -1,20 +1,20 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
-import { sesiune } from "../sesiune.js";
-import { fluxConcediu } from "./flux_concediu.js?v=8";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js?v=7";
-import { ecranRip } from "./rip_ecran.js";
-import { ecranOperatiuni } from "./operatiuni_ecran.js?v=2";
-import { ecranEtransport } from "./etransport_ecran.js?v=5";
-import { meniuMigrarePerFirma } from "./migrare.js?v=6";  // [p96_import_firma]
-import { declaratiiPerFirma } from "./declaratii.js";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=2";  // renderer unic verdict control fiscal (DS cap.20)
-import { randeazaProduse } from "./produse_ecran.js";  // [produse_firma_v1]
-import { ecranMagazin } from "./woo_ecran.js";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=2";  // [date_firma_v1]
-import { ecranMijloace } from "./mijloace_ecran.js";  // [ecran_mf_v1]
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=a0acf0511a";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { sesiune } from "../sesiune.js?v=5d142951c9";
+import { fluxConcediu } from "./flux_concediu.js?v=4c0a7ef14c";  /* cm_flux_v1 */
+import { randeazaFacturi } from "./facturi_ecran.js?v=64b2db9bf3";
+import { ecranRip } from "./rip_ecran.js?v=c9c37ec6ae";
+import { ecranOperatiuni } from "./operatiuni_ecran.js?v=7019abe613";
+import { ecranEtransport } from "./etransport_ecran.js?v=0dca1ea392";
+import { meniuMigrarePerFirma } from "./migrare.js?v=ae86be6082";  // [p96_import_firma]
+import { declaratiiPerFirma } from "./declaratii.js?v=5f2e35ed48";  // [decl_firma_v1]
+import { CULORI as CULORI_VERDICT, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=7c53d3765b";  // renderer unic verdict control fiscal (DS cap.20)
+import { randeazaProduse } from "./produse_ecran.js?v=930762c3c4";  // [produse_firma_v1]
+import { ecranMagazin } from "./woo_ecran.js?v=ae22f440bf";  // [wc_extras_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=9dddec037d";  // [date_firma_v1]
+import { ecranMijloace } from "./mijloace_ecran.js?v=c047edba99";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {
