@@ -130,7 +130,7 @@ _SUBTOTAL_D101 = {
 }
 
 
-def _erori_valori_p(g, P):
+def _erori_valori_p(g, P, cifra_afaceri=None):
     """Verificari PRE-DUK pe VALORILE fiscale furnizate de contabil (manual). Sursa reguli:
     anaf_surse/d101_struct_anaf.txt (col. Validari). Prinde INAINTE de DUK, cu motivul exact:
       (1) non-negativitate pe randurile cu regula "Pn>=0" (ex. P36<0 -> DUK regula P36>=0);
@@ -162,6 +162,16 @@ def _erori_valori_p(g, P):
     for cod, camp, val, plafon, expr in verif:
         if val > plafon:
             erori.append("D101: %s = %d > plafon %d (DUK regula %s: %s)." % (camp, val, plafon, cod, expr))
+    # [V5-bis sponsorizare 16.08] Creditul de sponsorizare (CF art.25 alin.(4) lit.i) = limita DUBLA:
+    # min(0.75%% x cifra de afaceri; 20%% x impozit). DUK verifica DOAR 20%% (V5); adaugam 0.75%% CA.
+    # CA = SUM(cont 70x) = cifra de afaceri neta (>= CA reala, care scade reducerile 709) -> gard SOLID
+    # (fara fals-pozitive). Activ doar cand CA e cunoscuta din balanta (calea pull).
+    if cifra_afaceri is not None:
+        _plaf_v5b = _i(Decimal(str(cifra_afaceri)) * Decimal("0.0075"))
+        if P43 > _plaf_v5b:
+            erori.append("D101: P43 (sponsorizare) = %d > plafon %d (V5-bis: limita 0.75%% din cifra de "
+                         "afaceri %d, CF art.25 alin.(4) lit.i - limita DUBLA min(0.75%% CA; 20%% impozit); "
+                         "DUK verifica doar 20%%)." % (P43, _plaf_v5b, _i(Decimal(str(cifra_afaceri)))))
     return erori
 
 
@@ -208,7 +218,8 @@ def _scadenta(an):
     return fn(an)
 
 
-def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103", imca=None, rezerva=None):
+def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103", imca=None, rezerva=None,
+                cifra_afaceri=None):
     """Reconstruit 01.08.2026 pe FORMULARUL OFICIAL (OPANAF 206/2025, D101_A600 v10,
     anaf_surse/d101_struct_anaf.txt). `intrari` = dict cu campurile P de intrare (P1,P2,P4,P5 din
     contabilitate + ajustari fiscale din manual). Numerotarea inventata anterioara (p11=impozit) a
@@ -327,7 +338,7 @@ def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103"
             P[k] = g(k)
 
     # PRE-DUK: valorile fiscale ale contabilului (semn, sub-randuri, plafoane V1-V7) - motiv exact
-    _erv = _erori_valori_p(g, P)
+    _erv = _erori_valori_p(g, P, cifra_afaceri=cifra_afaceri)
     if _erv:
         raise ValueError(" ".join(_erv))
     # totalPlata_A = suma randurilor PRINCIPALE P1..P53 (checksum de structura, nu impozit datorat)
@@ -433,6 +444,7 @@ def pull(conn, schema, perioada):
             "SELECT "
             "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '76%%' THEN l.suma ELSE 0 END),0) AS ven_fin, "
             "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '7%%' AND l.cont_credit NOT LIKE '76%%' THEN l.suma ELSE 0 END),0) AS ven_expl, "
+            "COALESCE(SUM(CASE WHEN l.cont_credit LIKE '70%%' THEN l.suma ELSE 0 END),0) AS cifra_afaceri, "
             "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '66%%' THEN l.suma ELSE 0 END),0) AS chelt_fin, "
             "COALESCE(SUM(CASE WHEN l.cont_debit LIKE '6%%' AND l.cont_debit NOT LIKE '66%%' THEN l.suma ELSE 0 END),0) AS chelt_expl "
             "FROM inregistrari_linii l JOIN inregistrari i ON i.id = l.inregistrare_id "
@@ -491,6 +503,7 @@ def genereaza(conn, schema, perioada, manual=None):
                "P4": r.get("ven_fin", 0), "P5": r.get("chelt_fin", 0)}
     intrari.update(manual)   # ajustarile fiscale ale contabilului completeaza/suprascriu baza
     res = calcul_d101(prof, perioada.an, intrari, cota=cota, d_grup=d_grup, cod_obligatie=cod_obligatie,
+                      cifra_afaceri=r.get("cifra_afaceri", 0),
                       rezerva={"capital": r.get("capital", 0),
                                "rezerva_existenta": r.get("rezerva_existenta", 0),
                                "chelt_impozit": r.get("chelt_impozit", 0)})
