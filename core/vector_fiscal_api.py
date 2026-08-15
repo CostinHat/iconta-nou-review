@@ -24,12 +24,12 @@ def citeste(conn_schema):
     with conn_schema.cursor() as cur:
         cur.execute(
             "SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, "
-            "       nume, cui, inreg_art317 "
+            "       nume, cui, inreg_art317, platitor_tva_anaf_inceput "
             "  FROM firma_profil WHERE id = 1")
         r = cur.fetchone()
     if not r:
         return {"ok": False, "cod": "FARA_PROFIL"}
-    regim, tva, decont, ic, nume, cui, art317 = r
+    regim, tva, decont, ic, nume, cui, art317, tva_inceput = r
     completat = bool(regim)  # regim_fiscal e obligatoriu -> daca exista, vectorul e setat
     return {
         "ok": True,
@@ -40,12 +40,15 @@ def citeste(conn_schema):
         # None = necompletat (nu False tacit) -> frontendul distinge "nesetat" de "Nu" (fara preselectie). Vezi DECIZII 23.07.
         "operatiuni_ic": bool(ic) if ic is not None else None,
         "inreg_art317": bool(art317),
+        # [tva_inceput] data inregistrarii in scopuri de TVA (fapt ANAF sau introdusa manual de contabil) ca
+        # ISO 'YYYY-MM-DD' -> pre-populeaza formularul; motorul o foloseste ca margine pt D300/D394/D406.
+        "tva_data_inceput": tva_inceput.isoformat() if tva_inceput else None,
         "completat": completat,
     }
 
 
 def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
-             nume=None, cui=None, inreg_art317=False):  # [p83_upsert] UPSERT
+             nume=None, cui=None, inreg_art317=False, tva_data_inceput=None):  # [p83_upsert] UPSERT
     """Scrie vectorul. Valideaza valorile. Daca nu e platitor TVA, decontul devine NULL.
     Daca randul firma_profil (id=1) nu exista, il creeaza (nume+cui obligatorii la insert)."""
     regim_in = (regim_fiscal or "").strip().lower()
@@ -58,6 +61,20 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
                 "mesaj": "Operațiuni intracomunitare: alege Da sau Nu (obligatoriu)."}
     ic = bool(operatiuni_ic)
     art317 = bool(inreg_art317)   # [art.317] inregistrare speciala scopuri TVA (art. 317 CF)
+
+    # [tva_inceput] data inregistrarii in scopuri de TVA (de pe certificatul ANAF). Are sens DOAR la platitor
+    # (la neplatitor -> NULL, nu se stocheaza). Accepta ISO 'YYYY-MM-DD' sau None; format invalid -> eroare
+    # explicita (nu stocam gunoi si nu ghicim).
+    tva_inceput = None
+    if tva:
+        _di = tva_data_inceput.strip() if isinstance(tva_data_inceput, str) else tva_data_inceput
+        if _di:
+            import datetime as _dt
+            try:
+                tva_inceput = _dt.date.fromisoformat(_di).isoformat()
+            except (ValueError, TypeError):
+                return {"ok": False, "cod": "TVA_INCEPUT_INVALID",
+                        "mesaj": "Data înregistrării în scopuri de TVA trebuie în formatul AAAA-LL-ZZ (ex. 2020-01-15)."}
 
     decont = (tip_decont or "").strip().lower()
     if tva:
@@ -91,16 +108,18 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
             cur.execute(
                 "UPDATE firma_profil "
                 "   SET regim_fiscal = %s, platitor_tva = %s, "
-                "       tip_decont = %s, operatiuni_ic = %s, inreg_art317 = %s "
+                "       tip_decont = %s, operatiuni_ic = %s, inreg_art317 = %s, "
+                "       platitor_tva_anaf_inceput = %s "
                 " WHERE id = 1",
-                (regim, tva, decont, ic, art317))
+                (regim, tva, decont, ic, art317, tva_inceput))
         else:
             if not nume or not cui:
                 return {"ok": False, "cod": "FARA_IDENTITATE",
                         "mesaj": "firma_profil gol și lipsesc nume/cui pentru creare"}
             cur.execute(
-                "INSERT INTO firma_profil (id, nume, cui, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, inreg_art317) "
-                "VALUES (1, %s, %s, %s, %s, %s, %s, %s)",
-                (nume, cui, regim, tva, decont, ic, art317))
+                "INSERT INTO firma_profil (id, nume, cui, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, inreg_art317, platitor_tva_anaf_inceput) "
+                "VALUES (1, %s, %s, %s, %s, %s, %s, %s, %s)",
+                (nume, cui, regim, tva, decont, ic, art317, tva_inceput))
     return {"ok": True, "regim_fiscal": regim, "platitor_tva": tva,
-            "tip_decont": decont, "operatiuni_ic": ic, "inreg_art317": art317}
+            "tip_decont": decont, "operatiuni_ic": ic, "inreg_art317": art317,
+            "tva_data_inceput": tva_inceput}

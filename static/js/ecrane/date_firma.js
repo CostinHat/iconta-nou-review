@@ -64,19 +64,30 @@ const VECTOR = [
   { k: "inreg_art317", e: "\u00cenregistrat\u0103 art. 317 (opera\u021biuni intracomunitare)", tip: "select",
     opt: [["nu", "Nu"], ["da", "Da"]],
     aj: "\u00cenregistrare special\u0103 \u00een scopuri de TVA (art. 317 CF) pentru achizi\u021bii/livr\u0103ri intracomunitare la nepl\u0103titori. Decide D390 (VIES) \u0219i pers_inreg \u00een D301." },
+  // [tva_inceput] data inregistrarii in scopuri de TVA - EDITABILA, ceruta contabilului cand ANAF n-o are.
+  // Vizibila DOAR la platitor (doarPlatitor). Fara ea, motorul da gri "necunoscut" pe D300/D394/D406 (regula 4).
+  { k: "tva_data_inceput", e: "Data \u00eenregistr\u0103rii \u00een scopuri de TVA", tip: "data", doarPlatitor: true,
+    aj: "Data de la care firma e \u00eenregistrat\u0103 \u00een scopuri de TVA (de pe certificatul ANAF). Necesar\u0103 ca s\u0103 \u0219tim de c\u00e2nd se datoreaz\u0103 D300/D394/D406 \u2014 f\u0103r\u0103 ea, verdictele pe lunile trecute r\u0103m\u00e2n \u00abnecunoscut\u00bb." },
 ];
 
 function campVector(c, val) {
   const ob = c.ob ? '<span class="oblig">*</span>' : "";
   const aj = c.aj ? `<span class="camp-ajutor">${esc(c.aj)}</span>` : "";
-  const v = val === true ? "da" : val === false ? "nu" : (val || "");
-  const opts = c.opt.map(([k, t]) =>
-    `<option value="${esc(k)}"${String(k) === String(v) ? " selected" : ""}>${esc(t)}</option>`).join("");
+  let control;
+  if (c.tip === "data") {
+    // [tva_inceput] input calendaristic (ISO 'YYYY-MM-DD'); valoarea vine pre-populata din /vector.
+    control = `<input type="date" class="camp-input" id="vf-${c.k}" value="${esc(val || "")}">`;
+  } else {
+    const v = val === true ? "da" : val === false ? "nu" : (val || "");
+    const opts = c.opt.map(([k, t]) =>
+      `<option value="${esc(k)}"${String(k) === String(v) ? " selected" : ""}>${esc(t)}</option>`).join("");
+    control = `<select class="camp-input" id="vf-${c.k}">${opts}</select>`;
+  }
   return `
-    <label class="camp">
+    <label class="camp" id="vf-camp-${c.k}">
       <span class="camp-eticheta">${esc(c.e)}${ob}</span>
       ${aj}
-      <select class="camp-input" id="vf-${c.k}">${opts}</select>
+      ${control}
     </label>`;
 }
 
@@ -131,6 +142,13 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     </div>
   `;
 
+  // [tva_inceput] campul "Data inregistrarii TVA" apare DOAR la platitor; comuta live la schimbarea selectului.
+  const _tvaSel = corp.querySelector("#vf-platitor_tva");
+  const _tvaCamp = corp.querySelector("#vf-camp-tva_data_inceput");
+  const _tvaToggle = () => { if (_tvaCamp) _tvaCamp.style.display = (_tvaSel && _tvaSel.value === "da") ? "" : "none"; };
+  if (_tvaSel) _tvaSel.addEventListener("change", _tvaToggle);
+  _tvaToggle();
+
   corp.querySelector("#df-salveaza").addEventListener("click", async () => {
     const btn = corp.querySelector("#df-salveaza");
     const msg = corp.querySelector("#df-msg");
@@ -153,6 +171,9 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
       tip_decont: corp.querySelector("#vf-tip_decont").value || null,
       operatiuni_ic: corp.querySelector("#vf-operatiuni_ic").value === "da",
       inreg_art317: corp.querySelector("#vf-inreg_art317").value === "da",
+      // [tva_inceput] are sens doar la platitor; la neplatitor trimitem null (backendul o goleste oricum)
+      tva_data_inceput: corp.querySelector("#vf-platitor_tva").value === "da"
+        ? (corp.querySelector("#vf-tva_data_inceput").value || null) : null,
     };
     const tvaLipsa = vf.platitor_tva && !vf.tip_decont;
     if (tvaLipsa) eroareCamp(corp, "vf-tip_decont", "Periodicitatea TVA e obligatorie la plătitorii de TVA (decide dacă D300 se depune lunar sau trimestrial).");

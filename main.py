@@ -855,6 +855,7 @@ class VectorIn(BaseModel):  # [p82_vector]
     tip_decont: Optional[str] = None
     operatiuni_ic: Optional[bool] = None   # obligatoriu la migrare (ca tip_decont) -> None respins in salveaza, fara default tacit
     inreg_art317: Optional[bool] = False   # [art.317] inregistrare speciala scopuri TVA (art. 317 CF)
+    tva_data_inceput: Optional[str] = None   # [tva_inceput] data inreg. in scopuri de TVA (ISO 'YYYY-MM-DD'); ceruta contabilului cand ANAF n-o are
 
 class ProdusPotrivesteIn(BaseModel):  # [p97_produse_rute]
     denumire: str
@@ -2712,7 +2713,11 @@ def vector_salveaza(tenant_id: int, date: VectorIn, ctx=Depends(cere_rol("admin_
     with db.get_conn(schema) as conn:
         rez = vector_fiscal_api.salveaza(conn, date.regim_fiscal, date.platitor_tva,
                                          date.tip_decont, date.operatiuni_ic,
-                                         nume=t_nume, cui=t_cui, inreg_art317=date.inreg_art317)
+                                         nume=t_nume, cui=t_cui, inreg_art317=date.inreg_art317,
+                                         tva_data_inceput=date.tva_data_inceput)  # [tva_inceput] data manuala INTAI
+        # [tva_inceput] ANAF autoritar CAND are data: seteaza_snapshot_tva o suprascrie. Cand ANAF nu raspunde
+        # (anaf_val None, gasit=False) NU se cheama deloc -> data manuala ramane. Cand ANAF raspunde dar NU are
+        # data (tva_inceput None), guard-ul din seteaza_snapshot_tva NU goleste coloana -> data manuala ramane.
         if rez.get("ok") and anaf_val is not None:     # salvat + ANAF a raspuns -> snapshot (+ data inceput TVA)
             _fp.seteaza_snapshot_tva(conn, anaf_val, tva_inceput)
     if not rez.get("ok"):

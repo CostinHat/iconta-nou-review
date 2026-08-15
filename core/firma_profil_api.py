@@ -70,11 +70,18 @@ def citeste_tva(conn):
 
 
 def seteaza_snapshot_tva(conn, scp_tva, data_inceput=None):
-    """Scrie snapshot-ul ANAF (scpTVA + data inceperii inregistrarii TVA la data curenta). `scp_tva` = bool;
-    `data_inceput` = 'YYYY-MM-DD'|None (fapt ANAF, doar la platitor). Idempotent pe firma_profil (singleton)."""
+    """Scrie snapshot-ul ANAF (scpTVA + data inregistrarii in scopuri de TVA la data curenta). `scp_tva` = bool;
+    `data_inceput` = 'YYYY-MM-DD'|None (fapt ANAF, doar la platitor). Idempotent pe firma_profil (singleton).
+    [tva_inceput_protejat] ANAF e autoritar CAND are data: o suprascrie. Cand ANAF NU intoarce data
+    (data_inceput=None), NU golim coloana - pastram valoarea introdusa manual de contabil (altfel apelul
+    de dupa salveaza in vector_salveaza ar sterge exact ce a completat contabilul)."""
     with conn.cursor() as cur:
-        cur.execute("UPDATE firma_profil SET platitor_tva_anaf=%s, platitor_tva_anaf_data=CURRENT_DATE, "
-                    "platitor_tva_anaf_inceput=%s", (bool(scp_tva), data_inceput or None))
+        if data_inceput:
+            cur.execute("UPDATE firma_profil SET platitor_tva_anaf=%s, platitor_tva_anaf_data=CURRENT_DATE, "
+                        "platitor_tva_anaf_inceput=%s", (bool(scp_tva), data_inceput))
+        else:
+            cur.execute("UPDATE firma_profil SET platitor_tva_anaf=%s, platitor_tva_anaf_data=CURRENT_DATE",
+                        (bool(scp_tva),))
 
 # ============================================================
 #  CITIRE profil (pentru preview + model)
