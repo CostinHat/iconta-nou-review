@@ -64,8 +64,15 @@ def _agrega_independent(conn, inceput, sfarsit):
     q = ("SELECT f.id AS fid, f.directie AS directie, f.total AS total, f.tva AS tva, "
          "l.cantitate AS cant, l.pret_unitar AS pret, l.cota_tva AS cota "
          "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
-         "WHERE f.data_emitere >= %s AND f.data_emitere < %s "
+         # [B1] fereastra pe EXIGIBILITATE (COALESCE(data_faptului_generator, data_emitere); avans->emitere), ca generatorul
+         "WHERE (CASE WHEN f.tip_operatiune = 'avans' THEN f.data_emitere "
+         "       ELSE COALESCE(f.data_faptului_generator, f.data_emitere) END) >= %s "
+         "AND (CASE WHEN f.tip_operatiune = 'avans' THEN f.data_emitere "
+         "     ELSE COALESCE(f.data_faptului_generator, f.data_emitere) END) < %s "
          "AND COALESCE(f.taxare_inversa, false) = false "  # [06.08.2026] taxare inversa -> rd.13 auto (nu col/ded), exclusa din cale2 ca in calcul_d300
+         "AND COALESCE(f.tert_tara, 'RO') = 'RO' "  # [B1] IC/export -> randuri proprii (rd.1/5/14/18), in afara reconcilierii pe cote (limita)
+         "AND COALESCE(f.status, 'emisa') NOT IN ('ciorna', 'de_preluat', 'descarcata', 'anulata', 'stornata') "  # [B1] doar facturi contabilizabile
+         "AND NOT (f.directie = 'primita' AND COALESCE(f.furnizor_tva_incasare, false) = true) "  # [B1] deducere amanata la plata, in afara reconcilierii pe emitere (limita)
          "ORDER BY f.id")
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(q, (inceput.isoformat(), sfarsit.isoformat()))
@@ -129,6 +136,19 @@ def _confrunta(R, col, ded, manual_keys):
     return divergente, sarite
 
 
+def _deferred_activ(conn, inceput, sfarsit):
+    """[B1] True daca exista deducere amanata (furnizor la incasare) cu PLATA (cont 401) validata in
+    perioada - generatorul o include pe calea de plata; recon pe emitere n-o acopera (limita extinsa)."""
+    with conn.cursor() as cur:
+        cur.execute(
+            "SELECT 1 FROM inregistrari i JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
+            "JOIN facturi f ON f.id = i.factura_id "
+            "WHERE i.status = 'validata' AND f.directie = 'primita' "
+            "AND COALESCE(f.furnizor_tva_incasare, false) = true AND l.cont_debit = '401' "
+            "AND i.data >= %s AND i.data < %s LIMIT 1", (inceput.isoformat(), sfarsit.isoformat()))
+        return cur.fetchone() is not None
+
+
 def reconciliaza(conn, perioada, res, manual=None):
     """Recalculeaza independent si confrunta. NU ridica - intoarce raportul.
     {"acoperit": bool, "motiv": str|None, "divergente": [...], "sarite": [...]}"""
@@ -140,8 +160,13 @@ def reconciliaza(conn, perioada, res, manual=None):
     from core import common as _c  # [fix trim 06.08.2026]
     inceput, sfarsit = _c.fereastra_tva(perioada, _c.perioada_tva_tip(res.prof))  # fereastra pe perioada TVA (trimestrial -> tot trimestrul), ca generatorul
     col, ded = _agrega_independent(conn, inceput, sfarsit)
-    divergente, sarite = _confrunta(res.R, col, ded, manual_keys)
-    return {"acoperit": True, "motiv": None, "divergente": divergente, "sarite": sarite}
+    # [B1] deducere amanata (furnizor la incasare) cu PLATA in perioada: generatorul include deducerea pe
+    # calea de PLATA (rd.24/rd.25), recon pe emitere nu o poate verifica -> sare randurile deductibile.
+    skip = set(manual_keys)
+    if _deferred_activ(conn, inceput, sfarsit):
+        skip |= {"R22_1", "R22_2", "R23_1", "R23_2"}
+    divergente, sarite = _confrunta(res.R, col, ded, skip)
+    return {"acoperit": True, "motiv": None, "divergente": divergente, "sarite": sorted(set(sarite))}
 
 
 def verifica_reconciliere(conn, perioada, res, manual=None):

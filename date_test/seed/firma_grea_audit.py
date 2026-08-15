@@ -149,11 +149,13 @@ def seed_facturi(conn, schema):
         if _factura_exista(conn, schema, numar, directie):
             rap.append((numar, "deja prezent")); continue
         total = net + tva
+        import re as _re
+        tert_tara = (tcui or "")[:2].upper() if _re.match(r"^[A-Za-z]{2}", tcui or "") else "RO"  # [B1] prefix VIES = tara
         with conn.cursor() as c:
             c.execute(
                 'INSERT INTO "%s".facturi (numar, serie, data_emitere, directie, tert_cui, tert_nume, '
-                'total, tva, moneda, tip, tert_platitor_tva) VALUES (%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s) RETURNING id' % schema,
-                (numar, "FG", data, directie, tcui, tnume, total, tva, "RON", "factura", True))
+                'total, tva, moneda, tip, tert_platitor_tva, tert_tara) VALUES (%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s) RETURNING id' % schema,
+                (numar, "FG", data, directie, tcui, tnume, total, tva, "RON", "factura", True, tert_tara))
             fid = c.fetchone()[0]
             c.execute(
                 'INSERT INTO "%s".factura_linii (factura_id, descriere, um, cantitate, pret_unitar, cota_tva) '

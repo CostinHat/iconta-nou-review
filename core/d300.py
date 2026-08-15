@@ -41,6 +41,16 @@ _TIP_COD = {"L": "301", "T": "302", "S": "303", "A": "304"}
 _LIVRARE_RAND = {21: "R9", 11: "R10", 9: "R11"}
 _ACHIZ_RAND = {21: "R22", 11: "R23"}   # R22=Rd.24(21%), R23=Rd.25(11%). 9% deductibil: fara rand DUK-valid (vezi mai jos)
 
+# [B1 D300] Exigibilitatea in regim normal: faptul generator (art.282 alin.1 CF) =
+# COALESCE(data_faptului_generator, data_emitere); EXCEPTIE avansul (art.282 alin.2 lit.b) =
+# data_emitere (exigibil la EMITEREA facturii de avans). Data faptului generator nu mai e cod mort.
+_EXIG_NORMAL = ("(CASE WHEN f.tip_operatiune = 'avans' THEN f.data_emitere "
+                "ELSE COALESCE(f.data_faptului_generator, f.data_emitere) END)")
+# [B1 D300] Facturi CONTABILIZABILE in decont: exclude ciornele/staging/anulatele (ne-finale).
+# Statusuri observate pe facturi: emisa, importata (finale) vs ciorna, de_preluat, descarcata (staging).
+_STATUS_FINAL = ("COALESCE(f.status, 'emisa') NOT IN "
+                 "('ciorna', 'de_preluat', 'descarcata', 'anulata', 'stornata')")
+
 
 def _esc(v):
     s = "" if v is None else str(v)
@@ -100,6 +110,7 @@ class Rezultat:
     tva_de_recuperat: int = 0
     total_plata_a: int = 0
     avertismente: list = field(default_factory=list)
+    nula_asumata: bool = False   # [B1 zero_base] decont nul ASUMAT explicit (nicio valoare declarata)
 
 
 def _segmente(f):
@@ -156,6 +167,15 @@ def calcul_d300(prof, perioada, facturi, manual=None):
     # decontarilor = notele contabile legate de factura (nu emiterea) - vezi pull(). Fara acest
     # regim: exigibilitate la faptul generator (emitere), comportament neschimbat.
     tvai = bool(prof.get("tva_la_incasare"))
+    # [B1 D300] IC/export via tert_tara (nu doar cota). Refoloseste TARI_UE din core/d390.
+    from core.d390 import TARI_UE as _TARI_UE
+    from datetime import date as _date_ic
+    _cota_std_ic_dec, _ = c.cota("tva_standard", _date_ic(an, luna, 1))
+    cota_std_ic = int(round(float(_cota_std_ic_dec) * 100))  # ROTUNJIRE PE COTA (procent intreg RO 21/11/9/5/0, nu pe suma): autolichidarea IC se face la cota interna standard
+    ic_livr_bunuri = Decimal(0)          # rd.1 (R1): livrari IC de bunuri catre UE (0%, art.294 alin.2)
+    export_livr = Decimal(0)             # rd.14 (R14): export catre non-UE (scutit cu drept de deducere)
+    ic_ach_b = Decimal(0); ic_ach_t = Decimal(0); ic_ach_n = 0   # rd.5 colectat + rd.18 deductibil (taxare inversa IC, net zero)
+    foreign_pos = []                     # [(tara, baza, tva)] factura straina cu cota interna pozitiva (probabil eroare) -> avertisment, nu R9
     livrare_ti_base = Decimal(0)   # rd.13: baza livrarilor cu taxare inversa (furnizor art.331), fara TVA
     # [Task2 10.08.2026] beneficiar taxare inversa PRIMITA (art.331, masuri de simplificare): anterior
     # se arunca tacit (`continue`). Acum se DERIVA rd.12 colectat + rd.25 deductibil (net zero).
@@ -169,7 +189,11 @@ def calcul_d300(prof, perioada, facturi, manual=None):
         ti = bool(f.get("taxare_inversa"))
         cat331 = f.get("categorie_331")   # [Task1] natura art.331 (taxare inversa) pt achizitii 0%
         f_zero_b = Decimal(0)             # [Task1] baza cotelor 0% pe ACEASTA factura primita
-        if tvai and not ti:
+        # [B1] tara partenerului (INGHETATA pe factura): partener non-RO -> ruta IC/export, nu cota interna.
+        tara = (f.get("tert_tara") or "RO").upper()
+        strain = (tara != "RO")
+        ue = (tara in _TARI_UE)
+        if (tvai or f.get("exigibil_la_decontare")) and not ti:
             # taxarea inversa e exigibila la faptul generator (art.282 alin.6 CF), NU la incasare:
             # ramane pe calea de emitere (_segmente) chiar sub tva_la_incasare - vezi _pull_taxare_inversa.
             from core import tva_incasare as _tvi
@@ -195,6 +219,23 @@ def calcul_d300(prof, perioada, facturi, manual=None):
                     livrare_ti_base += baza
                 else:
                     ti_ben_baza += baza; ti_ben_tva += tva; ti_ben_n += 1
+                continue
+            if strain:
+                # [B1] partener non-RO: rutare pe TARA, nu pe cota interna.
+                if ci:   # cota interna POZITIVA pe factura straina = probabil eroare -> NU tacit in R9
+                    foreign_pos.append((tara, baza, tva)); continue
+                if emisa:
+                    if ue:
+                        ic_livr_bunuri += baza       # rd.1 livrare IC bunuri (0%)
+                    else:
+                        export_livr += baza          # rd.14 export (scutit cu drept)
+                else:
+                    if ue:
+                        ic_ach_b += baza             # rd.5 baza (taxare inversa IC)
+                        ic_ach_t += baza * Decimal(cota_std_ic) / Decimal(100)  # autolichidare la cota interna
+                        ic_ach_n += 1
+                    else:
+                        f_zero_b += baza             # import non-UE 0% -> ruta scutite/neimpozabile (rd.26)
                 continue
             if emisa:
                 if ci in col:
@@ -280,6 +321,34 @@ def calcul_d300(prof, perioada, facturi, manual=None):
                 % (_tib, _tit, ", ".join(_dbl)))
         R["R12_1"] = _tib; R["R12_2"] = _tit   # colectat (rd.12)
         R["R25_1"] = _tib; R["R25_2"] = _tit   # deductibil (rd.25)
+
+    # [B1 D300] IC/export derivate din tert_tara. Livrari IC bunuri -> rd.1 (0%); export non-UE -> rd.14;
+    # achizitii IC bunuri -> rd.5 colectat + rd.18 deductibil (taxare inversa, net zero: R18=R5, DUK V_7/V_8).
+    # Anti-dubla-numarare: derivat AUTOMAT + introdus manual pe acelasi rand -> EROARE (o singura sursa), ca la rd.13.
+    _r1 = _int(ic_livr_bunuri)
+    if _r1:
+        if "R1_1" in manual:
+            raise ValueError(
+                "D300 rd.1 (livrari IC bunuri): derivat AUTOMAT din facturi emise catre UE (tert_tara, "
+                "=%d) plus introdus manual (R1_1) - dubla numarare. Pastreaza o singura sursa." % _r1)
+        R["R1_1"] = _r1
+    _r14 = _int(export_livr)
+    if _r14:
+        if "R14_1" in manual:
+            raise ValueError(
+                "D300 rd.14 (export/livrari scutite cu drept): derivat AUTOMAT din facturi emise catre "
+                "non-UE (tert_tara, =%d) plus introdus manual (R14_1) - dubla numarare." % _r14)
+        R["R14_1"] = _r14
+    _r5b = _int(ic_ach_b); _r5t = _int(ic_ach_t)
+    if _r5b or _r5t:
+        _dbl_ic = sorted(k for k in ("R5_1", "R5_2", "R18_1", "R18_2") if k in manual)
+        if _dbl_ic:
+            raise ValueError(
+                "D300 achizitii IC bunuri (rd.5 colectat + rd.18 deductibil, taxare inversa): derivate "
+                "AUTOMAT din facturi primite din UE (tert_tara, baza=%d, TVA=%d) plus introduse manual "
+                "(%s) - dubla numarare. Pastreaza o singura sursa." % (_r5b, _r5t, ", ".join(_dbl_ic)))
+        R["R5_1"] = _r5b; R["R5_2"] = _r5t     # colectat (rd.5)
+        R["R18_1"] = _r5b; R["R18_2"] = _r5t   # deductibil (rd.18) - oglinda rd.5, net zero (DUK V_7/V_8)
 
     # R17 = TOTAL TAXĂ COLECTATĂ (formula oficială: sumă rd.1-18 cu excepții)
     # col.1 (bază) și col.2 (TVA) — pentru firma simplă: R9_1+R10_1+R11_1, R9_2+R10_2+R11_2
@@ -465,6 +534,29 @@ def calcul_d300(prof, perioada, facturi, manual=None):
             "Registrul agricultorilor), dar NU se pierde tacit. Declar-o MANUAL la rândul deductibil, "
             "altfel TVA de plată e supraevaluată." % _f(orphan_ded))
     rez = ("de plată " + _f(de_plata)) if de_plata else (("de recuperat " + _f(de_recuperat)) if de_recuperat else "0")
+    if foreign_pos:
+        _fpb = sum((x[1] for x in foreign_pos), Decimal(0))
+        _fpt = sum((x[2] for x in foreign_pos), Decimal(0))
+        res.avertismente.append(
+            "%d facturi cu partener străin (%s) dar cotă internă POZITIVĂ (bază %s lei, TVA %s lei) — "
+            "probabil eroare: o operațiune IC/export nu poartă cotă internă. NU s-a inclus tacit în R9; "
+            "corectează cota (0%%) sau țara partenerului."
+            % (len(foreign_pos), ", ".join(sorted({x[0] for x in foreign_pos})), _f(_fpb), _f(_fpt)))
+    if ic_livr_bunuri:
+        res.avertismente.append(
+            "Livrări intracomunitare de bunuri către UE (bază %s lei) — declarate la rd.1 (0%%, art.294 "
+            "alin.2). Dacă sunt PRESTĂRI de servicii intracomunitare, reclasifică la rd.3 (locul prestării "
+            "în afara României)." % _f(ic_livr_bunuri))
+    if export_livr:
+        res.avertismente.append(
+            "Livrări către partener non-UE (export, bază %s lei) — declarate la rd.14 (scutite cu drept "
+            "de deducere)." % _f(export_livr))
+    if ic_ach_n:
+        res.avertismente.append(
+            "%d achiziții intracomunitare de bunuri din UE (bază %s lei, TVA autolichidat %s lei la %d%%) — "
+            "declarate la rd.5 colectat + rd.18 deductibil (taxare inversă, net zero). Dacă sunt SERVICII, "
+            "reclasifică la rd.7 colectat + rd.20 deductibil. Anterior cădeau în R26/avertisment."
+            % (ic_ach_n, _f(ic_ach_b), _f(ic_ach_t), cota_std_ic))
     res.avertismente.append("Rezultat TVA %s lei." % rez)
     return res
 
@@ -654,6 +746,7 @@ def _pull_incasare(cur, inceput, sfarsit):
         "JOIN facturi f ON f.id = i.factura_id "
         "WHERE i.status = 'validata' AND i.factura_id IS NOT NULL "
         "AND COALESCE(f.taxare_inversa, false) = false "  # art.282(6)/297(3): taxare inversa = regim general, nu la incasare
+        "AND " + _STATUS_FINAL + " "  # [B1] doar facturi contabilizabile
         "AND i.data >= %s AND i.data < %s "
         "AND ((f.directie = 'emisa' AND l.cont_credit = '4111') "
         "  OR (f.directie = 'primita' AND l.cont_debit = '401')) "
@@ -687,9 +780,11 @@ def _pull_taxare_inversa(cur, inceput, sfarsit):
     (rd.13 pt emise / rd.12+rd.25 pt primite). Aceeasi forma de dict ca pull() normal."""
     cur.execute("SELECT f.id, f.directie, f.total, f.tva, "
                 "COALESCE(f.taxare_inversa, false) AS taxare_inversa, f.categorie_331, "
+                "COALESCE(f.tert_tara, 'RO') AS tert_tara, "
                 "l.cantitate, l.pret_unitar, l.cota_tva "
                 "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
-                "WHERE f.data_emitere >= %s AND f.data_emitere < %s "
+                "WHERE " + _EXIG_NORMAL + " >= %s AND " + _EXIG_NORMAL + " < %s "
+                "AND " + _STATUS_FINAL + " "
                 "AND COALESCE(f.taxare_inversa, false) = true ORDER BY f.id",
                 (inceput, sfarsit))
     fmap = {}
@@ -697,11 +792,50 @@ def _pull_taxare_inversa(cur, inceput, sfarsit):
         f = fmap.setdefault(r["id"], {"directie": r["directie"],
                                       "taxare_inversa": r["taxare_inversa"],
                                       "categorie_331": r["categorie_331"],
+                                      "tert_tara": r["tert_tara"],
                                       "total": r["total"] if r["total"] is not None else 0,
                                       "tva": r["tva"] if r["tva"] is not None else 0, "linii": []})
         if r["cantitate"] is not None and r["pret_unitar"] is not None:
             f["linii"].append((r["cantitate"], r["pret_unitar"], r["cota_tva"]))
     return list(fmap.values())
+
+
+def _pull_furnizor_incasare(cur, inceput, sfarsit):
+    """[B1 art.297 alin.2] Facturi PRIMITE de la furnizor care aplica TVA la incasare: deducerea se
+    amana pana la PLATA (cont 401 decontat), CHIAR daca firma proprie e in regim normal. Aceeasi cale
+    de decontare ca _pull_incasare (suma platita alocata pe cote), dar filtrata pe furnizor_tva_incasare.
+    Marcheaza dict-urile cu exigibil_la_decontare=True ca sa fie tratate pe decontari in calcul_d300."""
+    cur.execute(
+        "SELECT i.factura_id AS fid, SUM(l.suma) AS settled "
+        "FROM inregistrari i "
+        "JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
+        "JOIN facturi f ON f.id = i.factura_id "
+        "WHERE i.status = 'validata' AND i.factura_id IS NOT NULL "
+        "AND f.directie = 'primita' AND COALESCE(f.furnizor_tva_incasare, false) = true "
+        "AND COALESCE(f.taxare_inversa, false) = false "
+        "AND " + _STATUS_FINAL + " "
+        "AND i.data >= %s AND i.data < %s AND l.cont_debit = '401' "
+        "GROUP BY i.factura_id", (inceput, sfarsit))
+    settle = cur.fetchall()
+    if not settle:
+        return []
+    fids = [r["fid"] for r in settle]
+    cur.execute("SELECT f.id AS fid, f.total, f.tva, l.cantitate, l.pret_unitar, l.cota_tva "
+                "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
+                "WHERE f.id = ANY(%s)", (fids,))
+    linii, totaluri = {}, {}
+    for r in cur.fetchall():
+        totaluri[r["fid"]] = (r["total"], r["tva"])
+        if r["cantitate"] is not None and r["cota_tva"] is not None:
+            linii.setdefault(r["fid"], []).append((r["cantitate"], r["pret_unitar"], r["cota_tva"]))
+    out = []
+    for r in settle:
+        gross = Decimal(str(r["settled"] or 0))
+        if gross <= 0:
+            continue
+        dec = _aloca_pe_cote(gross, linii.get(r["fid"]), totaluri.get(r["fid"]))
+        out.append({"directie": "primita", "decontari": dec, "exigibil_la_decontare": True})
+    return out
 
 
 def pull(conn, schema, perioada):
@@ -724,23 +858,34 @@ def pull(conn, schema, perioada):
             # generator (art.282 alin.6 CF), nu la incasare - _pull_incasare o EXCLUDE; o aducem pe
             # calea de emitere (_pull_taxare_inversa) ca sa NU dispara tacit (rd.13 / rd.12+rd.25).
             return prof, _pull_incasare(cur, inceput, sfarsit) + _pull_taxare_inversa(cur, inceput, sfarsit)
-        cur.execute("SELECT f.id, f.directie, f.total, f.tva, "
-                    "COALESCE(f.taxare_inversa, false) AS taxare_inversa, f.categorie_331, "
-                    "l.cantitate, l.pret_unitar, l.cota_tva "
-                    "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
-                    "WHERE f.data_emitere >= %s AND f.data_emitere < %s ORDER BY f.id",
-                    (inceput, sfarsit))
+        cur.execute(
+            "SELECT f.id, f.directie, f.total, f.tva, "
+            "COALESCE(f.taxare_inversa, false) AS taxare_inversa, f.categorie_331, "
+            "COALESCE(f.tert_tara, 'RO') AS tert_tara, "
+            "l.cantitate, l.pret_unitar, l.cota_tva "
+            "FROM facturi f LEFT JOIN factura_linii l ON l.factura_id = f.id "
+            # [B1] fereastra pe EXIGIBILITATE (COALESCE(data_faptului_generator, data_emitere); avans->emitere)
+            "WHERE " + _EXIG_NORMAL + " >= %s AND " + _EXIG_NORMAL + " < %s "
+            # [B1] doar facturi contabilizabile (exclude ciorna/de_preluat/descarcata/anulata/stornata)
+            "AND " + _STATUS_FINAL + " "
+            # [B1] deducere amanata (art.297 alin.2): primita de la furnizor la incasare -> exclusa din
+            # calea de EMITERE, adusa separat pe calea de PLATA (_pull_furnizor_incasare)
+            "AND NOT (f.directie = 'primita' AND COALESCE(f.furnizor_tva_incasare, false) = true) "
+            "ORDER BY f.id",
+            (inceput, sfarsit))
         rows = cur.fetchall()
+        deferred = _pull_furnizor_incasare(cur, inceput, sfarsit)
     fmap = {}
     for r in rows:
         f = fmap.setdefault(r["id"], {"directie": r["directie"],
                                       "taxare_inversa": r["taxare_inversa"],
                                       "categorie_331": r["categorie_331"],
+                                      "tert_tara": r["tert_tara"],
                                       "total": r["total"] if r["total"] is not None else 0,
                                       "tva": r["tva"] if r["tva"] is not None else 0, "linii": []})
         if r["cantitate"] is not None and r["pret_unitar"] is not None:
             f["linii"].append((r["cantitate"], r["pret_unitar"], r["cota_tva"]))
-    return prof, list(fmap.values())
+    return prof, list(fmap.values()) + deferred
 
 
 def genereaza(conn, schema, perioada, manual=None):
@@ -778,11 +923,20 @@ def genereaza(conn, schema, perioada, manual=None):
         from core import common as _c
         _inc, _sf = _c.fereastra_tva(perioada, _c.perioada_tva_tip(prof))
         with conn.cursor() as _cur:
-            _cur.execute("SELECT count(*) FROM facturi WHERE data_emitere >= %s AND data_emitere < %s",
+            _cur.execute("SELECT count(*) FROM facturi WHERE data_emitere >= %s AND data_emitere < %s "
+                         "AND COALESCE(status, 'emisa') NOT IN ('ciorna', 'de_preluat', 'descarcata', 'anulata', 'stornata')",
                          (_inc.isoformat(), _sf.isoformat()))
             _nf = _cur.fetchone()[0]
+        # [zero_base_v1 extins B1] Decont complet gol -> NU XML gol tacit: afirmatie EXPLICITA surfatata
+        # (flag res.nula_asumata + mesaj). Acopera si cazul FARA nicio factura (un platitor depune nul pe
+        # luna fara activitate) - depunerea NU se refuza, dar nulul e ASUMAT explicit.
+        res.nula_asumata = True
         if _nf:
             res.avertismente.append(
-                "Decont pe zero: nicio valoare declarata, dar exista %d facturi in perioada "
-                "(necontabilizate sau TVA la incasare nedecontata). Nil-ul e legal - confirma ca nu lipsesc date." % _nf)
+                "DECLARAȚIE NULĂ ASUMATĂ: niciun rând declarat, dar există %d facturi contabilizabile (rezultat TVA zero) în "
+                "perioadă (posibil necontabilizate sau TVA la încasare nedecontată) — confirmă că nu lipsesc date." % _nf)
+        else:
+            res.avertismente.append(
+                "DECLARAȚIE NULĂ ASUMATĂ: nicio factură în perioadă şi niciun rând declarat. Un plătitor "
+                "depune nul pe luna fără activitate — depunerea nu se refuză, dar nulul e afirmat explicit.")
     return _xml, res

@@ -400,6 +400,9 @@ CREATE TABLE TENANT_PLACEHOLDER.facturi (
     curs_sursa character varying(10),
     tert_adresa text,
     taxare_inversa boolean DEFAULT false NOT NULL,
+    tert_tara text DEFAULT 'RO'::text NOT NULL,  -- [B1 D300] cod ISO 2 litere partener (IC/export)
+    tip_operatiune text DEFAULT 'normal'::text NOT NULL,  -- [B1 D300] {normal,avans,regularizare_avans}: avansul e exigibil la emitere (art.282 al.2 lit.b)
+    furnizor_tva_incasare boolean DEFAULT false NOT NULL,  -- [B1 D300] pe PRIMITE: furnizor la incasare -> deducere amanata la plata (art.297 al.2)
     categorie_331 character varying(30),
     tip character varying(10) DEFAULT 'factura'::character varying NOT NULL,
     transformat_in_id integer,

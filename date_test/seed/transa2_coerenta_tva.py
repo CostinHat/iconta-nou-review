@@ -123,13 +123,15 @@ def _factura_exista(conn, schema, numar, directie, data):
 def _insert_factura(conn, schema, *, numar, serie, data, directie, tert_cui, tert_nume,
                     net, tva, cota_linie, taxare_inversa, categ_331, tert_platitor):
     total = net + tva
+    import re as _re
+    tert_tara = (tert_cui or "")[:2].upper() if _re.match(r"^[A-Za-z]{2}", tert_cui or "") else "RO"  # [B1] prefix VIES = tara
     with conn.cursor() as c:
         c.execute(
             'INSERT INTO "%s".facturi (numar, serie, data_emitere, directie, tert_cui, tert_nume, '
-            'total, tva, moneda, tip, taxare_inversa, categorie_331, tert_platitor_tva) '
-            'VALUES (%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s) RETURNING id' % schema,
+            'total, tva, moneda, tip, taxare_inversa, categorie_331, tert_platitor_tva, tert_tara) '
+            'VALUES (%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s,%%s) RETURNING id' % schema,
             (numar, serie, data, directie, tert_cui, tert_nume, total, tva, "RON", "factura",
-             taxare_inversa, categ_331, tert_platitor))
+             taxare_inversa, categ_331, tert_platitor, tert_tara))
         fid = c.fetchone()[0]
         c.execute(
             'INSERT INTO "%s".factura_linii (factura_id, descriere, um, cantitate, pret_unitar, cota_tva) '
