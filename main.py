@@ -4530,7 +4530,8 @@ def plata_pagina(ref: str):
 <h2>Plat\u0103 factur\u0103 (demo)</h2>
 <p>Integrarea cu procesatorul de pl\u0103\u021bi urmeaz\u0103. Ap\u0103sa\u021bi pentru a simula plata.</p>
 <form method="post" action="/public/plata/{ref}/confirma"><button style="padding:10px 22px">Pl\u0103te\u0219te</button></form>
-</body></html>""", media_type="text/html")
+</body></html>""", media_type="text/html",
+                    headers={"X-Robots-Tag": "noindex, nofollow"})  # [plata_noindex 15.08.2026] ref e secret in URL; daca un link ajunge la crawler, se poate cere - inchis independent de robots.txt
 
 @app.post("/public/plata/{ref}/confirma")
 def plata_confirma(ref: str):
@@ -9048,7 +9049,19 @@ def public_sitemap():
 
 @app.get("/robots.txt")
 def public_robots():
-    txt = "User-agent: *\nAllow: /\nSitemap: %s/sitemap.xml\n" % _GHID_BAZA
+    # [robots_allowlist 15.08.2026] Allow: / lasa Google sa parcurga app.js si sa culeaga fragmente de rute
+    # construite prin concatenare (/depune, /tva?an, /d406-mapare, /auth/change-password) -> 18x404 in Search
+    # Console (prima detectare 05.08.2026). 404 e corect, dar lista se reface la orice modificare de JS.
+    # Fragmentele stau la RADACINA, nu sub un prefix -> allow-list a suprafetei publice indexabile, restul Disallow.
+    txt = ("User-agent: *\n"
+           "Allow: /$\n"                    # exact landing-ul
+           "Allow: /ghid\n"                 # index + /ghid/{slug}
+           "Allow: /public/termeni\n"
+           "Allow: /static/\n"              # Google are nevoie de CSS+JS ca sa randeze
+           "Allow: /sitemap.xml\n"
+           "Allow: /robots.txt\n"
+           "Disallow: /\n"                  # restul suprafetei (app, /public/plata, /auth, rute API)
+           "Sitemap: %s/sitemap.xml\n" % _GHID_BAZA)
     return Response(content=txt, media_type="text/plain; charset=utf-8")
 
 
