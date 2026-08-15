@@ -20,7 +20,10 @@ def test_control_accepta_tip_decont_litera_ca_seedul(litera, cuvant):
     egalitate stricta pe cuvant -> D300/D394 cadeau pe gri la TOTI cei 7 platitori. Litera trebuie
     acceptata identic cu cuvantul intreg (ca generatoarele, prin perioada_tva_tip)."""
     vec = {"regim_fiscal": "profit", "platitor_tva": True, "tip_decont": litera,
-           "operatiuni_ic": False, "partida_simpla": False}
+           "operatiuni_ic": False, "partida_simpla": False,
+           # [regula 4] data inregistrarii TVA cunoscuta -> obligatia D300/D394 e demonstrabila (altfel
+           # platitorul fara data -> gri necunoscut, nu restanta). Testul verifica DOAR ca litera e acceptata.
+           "tva_data_inceput": "2025-01-01"}
     out = cf.declaratii_datorate(vec, are_salariati=False, azi=datetime.date(2026, 2, 1))
     tipuri = {d["tip"] for d in out["datorate"]}
     neclar = {n["tip"] for n in out["neclar"]}

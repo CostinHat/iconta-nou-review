@@ -81,7 +81,7 @@ def neaplicabile_selector(vector):
     return neap
 
 
-def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PRAG_URMARIT_ZILE, d390_fapt=None, d112_fapt=None):
+def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PRAG_URMARIT_ZILE, d390_fapt=None, d112_fapt=None, existenta_fapt=None):
     """
     SURSA UNICA a mapicarii 'cine ce declaratie datoreaza' (regim/TVA/decont/IC/salariati),
     inclusiv marginirea la inregistrarea TVA (B1) si D390 art.317 gri la neplatitor (B2).
@@ -145,6 +145,23 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
         # neaplicabil pe o LUNA anume (D390 pe fapt) - poarta an/luna in plus fata de neaplic simplu.
         neaplicabile.append({"tip": tip.lower(), "an": a, "luna": luna_p, "motiv": motiv})
 
+    # [C - regula 4] declaratie de EXISTENTA (D100/D101/D406-neplatitor): o RESTANTA pe un an in care NU pot
+    # demonstra ca firma exista/era activa NU se emite ca lipsa (verdict nesustinut) -> GRI "necunoscut
+    # declarat" o data pe (declaratie, an). existenta_fapt(an) -> "da" (activitate demonstrabila, emite) sau
+    # MOTIV (string gri). None in teste/matrice -> comportament vechi. Doar restantele (termen < azi) se
+    # filtreaza (jos None); obligatia curenta/viitoare (termen >= azi) se emite normal.
+    _gri_ex = set()
+    def _adauga_existenta(tip, a, luna_perioada, perioada_txt, tip_scad):
+        if existenta_fapt is not None and jos is None and _termen(a, luna_perioada, tip=tip_scad) < azi:
+            st = existenta_fapt(a)
+            if st != "da":
+                k = (tip.lower(), a)
+                if k not in _gri_ex:
+                    _gri_ex.add(k)
+                    neclar.append({"tip": tip.lower(), "an": a, "cauza": st})
+                return
+        adauga(tip, a, luna_perioada, perioada_txt, tip_scad)
+
     def emite_tva(tip, tip_scad, cauza_periodicitate, marginit=False):
         """Emite `tip` pe perioada fiscala TVA (lunar/trimestrial dupa tip_decont). tip_decont necunoscut la
         un platitor -> gri cu cauza (principiul D3). [B1] marginit=True (D300/D394): sare perioadele DE
@@ -160,16 +177,33 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
         except ValueError:
             gri(tip, cauza_periodicitate)
             return
+        # [A - regula 4] platitor CU marginit dar FARA data de inregistrare TVA cunoscuta (tva_inreg None):
+        # nu pot demonstra DE CAND e inregistrata -> NU emit RESTANTA pe lunile trecute (verdict nesustinut).
+        # Suprim restanta necunoscuta si emit UN singur GRI "necunoscut declarat"; obligatia curenta/viitoare
+        # (termen >= azi, in fereastra) se emite normal. Doar la semafor (jos None): la termene (jos set,
+        # privire inainte) restantele-s deja excluse de fereastra, deci nimic de gri-uit.
+        necunoscut_data = marginit and tva_inreg is None and jos is None
+        supr = [False]
+        def _emite(a, luna_final, txt):
+            if necunoscut_data and _termen(a, luna_final, tip=tip_scad) < azi:
+                supr[0] = True   # restanta pe luna necunoscuta -> suprimata; GRI o data mai jos
+                return
+            adauga(tip, a, luna_final, txt, tip_scad)
         if d == "T":
             for a, tri, lf in per_trim:
                 if _dupa_inreg(a, lf):
-                    adauga(tip, a, lf, f"T{tri}", tip_scad)
+                    _emite(a, lf, f"T{tri}")
         elif d == "L":
             for a, m in per_luni:
                 if _dupa_inreg(a, m):
-                    adauga(tip, a, m, _LUNI_NUME[m], tip_scad)
+                    _emite(a, m, _LUNI_NUME[m])
         else:
             gri(tip, cauza_periodicitate)   # S/A: periodicitate TVA neuzuala, nesuportata in semafor
+            return
+        if necunoscut_data and supr[0]:
+            gri(tip, "necunoscut declarat: nu pot demonstra de cand e firma inregistrata in scopuri de TVA "
+                     "pentru restantele trecute - completati data inceperii TVA (platitor_tva_anaf_inceput) "
+                     "in vectorul fiscal.")
 
     platitor_tva = vector.get("platitor_tva")
     tip_decont = vector.get("tip_decont")
@@ -234,13 +268,10 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
         regim = regim_fiscal.strip().lower()
         if regim == "micro":
             for a, tri, lf in per_trim:
-                adauga("D100", a, lf, f"T{tri}", "d100")
+                _adauga_existenta("D100", a, lf, f"T{tri}", "d100")
         elif regim == "profit":
-            # D101 pentru anul precedent, termen 25 martie an curent
-            term = _termen(an - 1, tip="d101")
-            if _in_fereastra(term):
-                datorate.append({"tip": "d101", "an": an - 1, "luna": 12,
-                                 "termen": term.isoformat(), "perioada": f"anual {an-1}"})
+            # D101 pentru anul precedent, termen 25 martie an curent (existenta an-1 demonstrabila -> altfel gri)
+            _adauga_existenta("D101", an - 1, 12, f"anual {an-1}", "d101")
 
     # D390 operatiuni intracomunitare — pe FAPT lunar (nu obligatie fixa). Se depune NUMAI pentru lunile in care ia
     # nastere exigibilitatea operatiunilor IC (instr. completare D390, anexa OPANAF 705/2020 anexa 2 pct.1.2 (anterior OPANAF 394/2017, abrogat)).
@@ -328,20 +359,21 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     elif platitor_tva is None:
         gri("D406", "Platitor de TVA necompletat - nu pot sti periodicitatea D406.")
     elif platitor_tva:
-        emite_tva("D406", "d406", "Tip decont TVA necompletat - nu pot sti periodicitatea D406.")
+        emite_tva("D406", "d406", "Tip decont TVA necompletat - nu pot sti periodicitatea D406.", marginit=True)
     else:
         for a, tri, lf in per_trim:   # neplatitor de TVA (partida dubla) -> trimestrial
-            adauga("D406", a, lf, f"T{tri}", "d406")
+            _adauga_existenta("D406", a, lf, f"T{tri}", "d406")
 
     return {"datorate": datorate, "neclar": neclar, "neaplicabile": neaplicabile}
 
 
-def declaratii_datorate(vector, are_salariati, azi=None, *, d390_fapt=None, d112_fapt=None):
+def declaratii_datorate(vector, are_salariati, azi=None, *, d390_fapt=None, d112_fapt=None, existenta_fapt=None):
     """Semaforul (privire inapoi): fereastra [restante ... azi+7], fara limita inferioara.
-    Wrapper subtire peste obligatii_datorate - comportament NESCHIMBAT fara d390_fapt/d112_fapt (matricea de 64
-    il apara). d390_fapt/d112_fapt = callback-uri pe fapt lunar, date de evalueaza_firma (are conn_schema);
-    None in teste/matrice."""
-    return obligatii_datorate(vector, are_salariati, azi, d390_fapt=d390_fapt, d112_fapt=d112_fapt)
+    Wrapper subtire peste obligatii_datorate - comportament NESCHIMBAT fara d390_fapt/d112_fapt/existenta_fapt
+    (matricea de 64 il apara). d390_fapt/d112_fapt/existenta_fapt = callback-uri pe fapt, date de evalueaza_firma
+    (are conn_schema); None in teste/matrice."""
+    return obligatii_datorate(vector, are_salariati, azi, d390_fapt=d390_fapt, d112_fapt=d112_fapt,
+                              existenta_fapt=existenta_fapt)
 
 
 def _dmy(iso):
@@ -521,7 +553,23 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
     _d390_fapt = lambda a, l: _d390.d390_are_operatiuni(conn_schema, schema, a, l, azi)
     # [#6] D112 pe FAPT lunar (salariat activ in luna), nu snapshot are_sal pe CURRENT_DATE.
     _d112_fapt = lambda a, l: _ci_sal.are_salariat_activ_luna(conn_schema, schema, a, l)
-    rez = declaratii_datorate(vector, are_sal, azi, d390_fapt=_d390_fapt, d112_fapt=_d112_fapt)
+    # [C - regula 4] existenta/activitate demonstrabila pe an: creat_la (public.tenants) + activitate reala din
+    # schema (facturi/salariati/note, prin puntea control_incrucisat.existenta_firma_an). D100/D101/D406-neplatitor
+    # pe un an nedemonstrabil -> GRI "necunoscut declarat", NU restanta.
+    with conn_public.cursor() as _curt:
+        _curt.execute("SELECT (creat_la AT TIME ZONE 'Europe/Bucharest')::date FROM public.tenants WHERE id=%s", (tenant_id,))
+        _rt = _curt.fetchone()
+        _creat_la = _rt[0] if _rt else None
+    def _existenta_fapt(an):
+        if _ci_sal.existenta_firma_an(conn_schema, schema, an):
+            return "da"                                  # activitate reala in an -> restanta sustinuta
+        if _creat_la and an < _creat_la.year:
+            return ("necunoscut declarat: nu pot demonstra ca firma exista/era activa in %d - firma a fost "
+                    "creata in aplicatie in %d, iar pentru %d nu exista facturi, salariati sau note." % (an, _creat_la.year, an))
+        return ("necunoscut declarat: nu pot demonstra ca firma exista/era activa in %d - nu exista facturi, "
+                "salariati sau note pe %d in evidenta; completati vectorul/activitatea firmei." % (an, an))
+    rez = declaratii_datorate(vector, are_sal, azi, d390_fapt=_d390_fapt, d112_fapt=_d112_fapt,
+                              existenta_fapt=_existenta_fapt)
     datorate = list(rez["datorate"])
     neclar = list(rez["neclar"])
 

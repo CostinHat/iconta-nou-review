@@ -166,6 +166,36 @@ def are_salariat_activ_luna(conn, schema, an, luna):
         return cur.fetchone() is not None
 
 
+def existenta_firma_an(conn, schema, an):
+    """[#existenta - regula 4] Firma are ACTIVITATE reala demonstrabila in anul `an`? True/False.
+    Activitate = macar o factura (emisa/primita) in an, SAU un salariat activ candva in an, SAU o inregistrare
+    contabila in an. Tabelele lipsa -> se sar. Faptul pe care se decide daca o RESTANTA D100/D101/D406(neplatitor)
+    pe un an trecut are premisa (firma exista/era activa) - simetric cu are_salariat_activ_luna. NU dovedeste
+    inexistenta (o firma poate exista fara activitate); absenta activitatii -> 'necunoscut', decis in motor
+    (control_fiscal_api._existenta_fapt, care combina cu creat_la). Aceeasi logica ca audit_restante.existenta_an."""
+    import datetime as _dt
+    with conn.cursor() as cur:
+        cur.execute("SELECT to_regclass(%s)", (schema + ".facturi",))
+        if cur.fetchone()[0]:
+            cur.execute(f"SELECT 1 FROM {schema}.facturi WHERE EXTRACT(year FROM data_emitere)=%s LIMIT 1", (an,))
+            if cur.fetchone():
+                return True
+        cur.execute("SELECT to_regclass(%s)", (schema + ".salariati",))
+        if cur.fetchone()[0]:
+            cur.execute(f"""SELECT 1 FROM {schema}.salariati
+                            WHERE (data_angajare IS NULL OR data_angajare <= %s)
+                              AND (data_incetare IS NULL OR data_incetare >= %s) LIMIT 1""",
+                        (_dt.date(an, 12, 31), _dt.date(an, 1, 1)))
+            if cur.fetchone():
+                return True
+        cur.execute("SELECT to_regclass(%s)", (schema + ".inregistrari",))
+        if cur.fetchone()[0]:
+            cur.execute(f"SELECT 1 FROM {schema}.inregistrari WHERE EXTRACT(year FROM data)=%s LIMIT 1", (an,))
+            if cur.fetchone():
+                return True
+    return False
+
+
 def facturi_necontabilizate(conn, schema, an, luna):
     """Facturile lunii FARA inregistrare VALIDATA - cauza dovedibila a divergentei.
     are_ciorna=True -> nota exista dar asteapta patru-ochi: NU se recontabilizeaza."""

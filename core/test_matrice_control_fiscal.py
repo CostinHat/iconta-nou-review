@@ -32,6 +32,7 @@ def _stari(tip_firma, platitor_tva, salariati, operatiuni_ic, d205_note, depuse_
                         lambda *a, **k: ((5000, True) if d205_note else (0, False)))
     monkeypatch.setattr(ci, "d301_luni_operatiuni", lambda *a, **k: set())
     monkeypatch.setattr(ci, "d301_luni_facturi_ic", lambda *a, **k: set())  # [ruptura D301<->facturi] helper DB nou, monkeypatch ca vechiul (matricea ruleaza fara DB)
+    monkeypatch.setattr(ci, "existenta_firma_an", lambda *a, **k: True, raising=False)  # [C existenta] helper DB nou; matricea nu-l atinge (declaratii_datorate fara existenta_fapt), monkeypatch defensiv
     fapt = cf.declaratii_fapt(None, "x", vector, AZI)
     datorate = rez["datorate"] + fapt["datorate"]
     neaplicabile = rez["neaplicabile"] + fapt["neaplicabile"]

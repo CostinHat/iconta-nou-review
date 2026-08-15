@@ -27,7 +27,9 @@ def test_decembrie_an_precedent_vizibil():
 
 
 def test_t4_an_precedent_vizibil_trimestrial():
-    vector = {"platitor_tva": True, "tip_decont": "trimestrial"}
+    # [regula 4] cu data TVA CUNOSCUTA care acopera perioada -> T4 an-1 vizibil ca datorat.
+    # (fara tva_data_inceput, restanta trecuta e necunoscuta -> gri, vezi test_premisa_restanta.py)
+    vector = {"platitor_tva": True, "tip_decont": "trimestrial", "tva_data_inceput": "2025-01-01"}
     rez = cf.declaratii_datorate(vector, are_salariati=False, azi=date(2026, 2, 1))
     assert ("d300", 2025, 12) in _chei(rez["datorate"])  # T4 2025, termen 25 ian 2026
 
@@ -61,8 +63,10 @@ def test_operatiuni_ic_null_da_gri_d390():
 
 # vector complet stiut -> nicio pozitie neclara
 def test_vector_complet_fara_neclar():
+    # [regula 4] "complet" pt un platitor include tva_data_inceput (altfel restantele TVA trecute sunt
+    # necunoscute -> GRI, vezi test_premisa_restanta.test_A_platitor_fara_data_tva_gri_nu_restanta)
     vector = {"platitor_tva": True, "tip_decont": "lunar",
-              "regim_fiscal": "micro", "operatiuni_ic": False}
+              "regim_fiscal": "micro", "operatiuni_ic": False, "tva_data_inceput": "2025-01-01"}
     rez = cf.declaratii_datorate(vector, are_salariati=True, azi=date(2026, 6, 1))
     assert rez["neclar"] == []
 
@@ -111,7 +115,8 @@ def test_trimestre_pana_la_sters():
 
 # FAZA 3 — D394 (doar platitori de TVA, perioada = perioada TVA)
 def test_d394_platitor_lunar_datorat():
-    vector = {"platitor_tva": True, "tip_decont": "lunar"}
+    # [regula 4] data TVA cunoscuta -> perioada trecuta ramane datorata (restanta sustinuta)
+    vector = {"platitor_tva": True, "tip_decont": "lunar", "tva_data_inceput": "2025-01-01"}
     rez = cf.declaratii_datorate(vector, are_salariati=False, azi=date(2026, 2, 1))
     assert ("d394", 2025, 12) in _chei(rez["datorate"])
 
@@ -130,7 +135,8 @@ def test_d394_platitor_None_gri():
 
 # FAZA 3 — D406 SAF-T (platitor: perioada TVA; neplatitor: trimestrial; sursa OPANAF 1783/2021)
 def test_d406_platitor_lunar_datorat():
-    vector = {"platitor_tva": True, "tip_decont": "lunar"}
+    # [regula 4 + fix B] D406 acum marginit ca D300/D394: cu data TVA cunoscuta, perioada trecuta e datorata
+    vector = {"platitor_tva": True, "tip_decont": "lunar", "tva_data_inceput": "2025-01-01"}
     rez = cf.declaratii_datorate(vector, are_salariati=False, azi=date(2026, 2, 1))
     assert ("d406", 2025, 12) in _chei(rez["datorate"])
 
