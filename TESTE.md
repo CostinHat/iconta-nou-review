@@ -1569,3 +1569,12 @@ paginile noi; CSV integru 201x11. Temei verbatim din anaf_surse, nicio valoare d
 ## 12.08.2026 — +3 ghiduri finale (18 total)
 ghid/: regim-marja-second-hand (F098), regim-special-agentii-turism (F099), decont-tva-d300-rezultat (F031). 18 ghiduri
 in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323/303.
+
+
+## 16.08.2026 — Onboarding CUBUS: garzi campanie regula 13
+- `core/test_precompletare_anaf_unificata.py` — cele 3 cai de creare firma folosesc helperul unic de precompletare (Q9).
+- `core/test_profil_blocaje.py` — CAEN out-of-enum + vector TVA lipsa la platitor blocheaza verdictul "complet" (Q1/Q8).
+- `core/test_cauza_precisa_business.py` — ValueError business -> cauza precisa; RuntimeError -> generic (Q3).
+- `core/test_d112_mesaje_afisate.py` — `raise ValueError` proza in d112 are diacritice (Q2).
+- `core/test_onboarding_ux.py` — fereastra bun venit (ordine/nota/stivuire) + solduri (model/echilibru/transparenta) +
+  descoperibilitate import firme (Q4-Q7, Q10).

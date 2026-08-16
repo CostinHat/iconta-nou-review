@@ -4307,3 +4307,13 @@ servite cu ?v=<hash>, 0 importuri JS neversionate; selectoarele Clasificare TVA 
 verificate prin randare headless (.em-total masurat exact 320px; scrollWidth==clientWidth, fara overflow orizontal);
 /favicon.ico -> 200 image/svg+xml. #4/#7 traiesc in static/js/ecrane/declaratii.js, #3 in validat.js.
 Registrele (aceasta intrare + GARZI/DECIZII/TESTE/PREDARE) NEcomise - le comite Costin prin poarta. FARA git commit.
+
+
+## 16.08.2026 — Parcurgere onboarding CUBUS ARTS (10 intrebari, regula 13)
+Costin a parcurs onboarding-ul pe CUBUS ARTS SRL (CUI 13548146, CAEN 6210). 10 defecte reparate in 6 commituri:
+3f6e1b2 (Q9 precompletare ANAF unificata), 9d756a5 (Q1+Q8 profil onest), 855608e (Q2+Q3 cauza precisa+diacritice),
+65f8bad (Q4-Q7+Q10 onboarding UX). Detalii in GARZI.md. Descoperiri care au schimbat premisele intrebarilor:
+Q4 (importul in masa EXISTA deja in Migrare cabinet — defectul real era descoperibilitatea, nu absenta);
+Q9 (nu un nume de camp divergent — numele coincid — ci precompletare DUPLICATA pe 3 cai cu acoperiri diferite);
+CUBUS avea de fapt campurile TVA populate la momentul verificarii (completate manual / alt flux) — defectele confirmate
+la SURSA (cod), nu pe starea DB de moment. Marca 6acd293 -> 65f8bad.

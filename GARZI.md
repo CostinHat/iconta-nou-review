@@ -2838,3 +2838,29 @@ Costin a parcurs inregistrarea cu un CUI invalid (12345678). Trei probleme in or
 - **P1 (fc0a330) — ecran alb la esecul adaugarii firmei.** Dupa inregistrare cu CUI invalid, ecranul era o pagina alba cu un rand generic ("firma nu a putut fi adaugata automat. Te poti loga...") — fara identitate, fara cale de intrare, fara diacritice, fara motivul real. Cauza: `provision_tenant` valideaza cifra de control a CUI-ului si arunca, dar `register` inghitea motivul intr-un mesaj generic; frontend-ul intra tacit intr-un dashboard gol (0 firme) cu un toast pe body. FIX: (backend main.py) raspunsul poarta MOTIVUL real (model "nu putem presupune numarul 1"): CUI invalid -> "CUI-ul introdus (X) nu este valid — cifra de control nu corespunde. Verifica cifrele"; CUI duplicat / eroare tehnica au mesaje proprii; cu diacritice; cadru corect (cont+cabinet create si logat -> "din ecranul Firme"). (frontend login.js) `randeazaContCreatFirmaLipsa`: ecran propriu cu logo, "Contul tau a fost creat", motivul real si buton "Intra in cont" — nu mai intra tacit intr-un dashboard gol. **Probat Playwright**: CUI invalid -> ecran cu logo + motiv real + Intra in cont; CUI valid (13548146) -> firma adaugata, intra in app fara ecranul de esec.
 - **P2 (fc0a330) — login fara cale catre inregistrare.** Formularul de autentificare cabinet avea 3 optiuni, toate pentru cont existent (autentificare / magic link / reset). Adaugat "Nu ai cont? Inregistreaza cabinetul" -> fluxul de inregistrare. **Probat Playwright** (link prezent + navigheaza).
 - **P3 (acest commit) — 50 de intrari LIVE fara ajutor contextual (fara "?").** Cauza gardii ORBE: `test_acoperire_ajutor_nu_regreseaza` (via `_live_si_indici`) filtra `Stare == "LIVE"` EXACT -> cele 50 cu "LIVE (data)"/"LIVE 20.07" scapau, iar baseline 0 trecea fals. FIX: (a) scris ajutor pentru toate 50 (`## Ce face` din descriere + `## Cum ajungi la ea` cu traseul din coloana Acces UI, regula 8; onest "ruleaza in fundal, fara ecran" pentru cron/infra — fara trasee inventate); (b) garda intarita la `startswith("LIVE")`, baseline 0 -> "nicio intrare LIVE fara ajutor" devine mecanic complet. **RED probat**: pe CSV-ul HEAD (inainte), 50 de intrari LIVE fara ajutor -> garda ar fi picat.
+
+
+## 16.08.2026 — Parcurgere onboarding CUBUS ARTS: 10 defecte, regula 13 (comanda Costin)
+Costin a parcurs onboarding-ul pe o firma reala (CUBUS ARTS SRL, CUI 13548146, CAEN 6210), 10 intrebari.
+Regula 13 (perimetru, nu numele din intrebare): fiecare intrebare = punct de intrare; reparat perimetrul + tiparul.
+Marca 6acd293 -> 65f8bad, 6 commituri.
+- **Q9 (3f6e1b2) — data inregistrarii TVA lipsea pe firme adaugate.** Precompletarea ANAF era DUPLICATA in 3 cai de
+  creare firma cu seturi de campuri DIFERITE (register: snapshot TVA+_inceput; add-firm: reg_com+tva_la_incasare FARA
+  _inceput; import in masa: nimic). SURSA UNICA `tenant_provisioning.precompleteaza_din_anaf`, chemata de toate 3.
+  Gard `core/test_precompletare_anaf_unificata.py`. Proba DB+ANAF real (rollback): add-firm scrie acum _inceput=2007-02-01.
+- **Q1+Q8 (9d756a5) — verdict fals "toate declaratiile se pot genera".** `lipsuri()` verifica doar PREZENTA, nu
+  validitatea -> CAEN 6210 (out-of-enum D112) trecea ca valid. `d112.caen_in_nomenclator` public + `firma_profil_api.blocaje`
+  (CAEN->D112; periodicitate/data TVA lipsa la platitor). Verdict in 3 stari. Gard `core/test_profil_blocaje.py`.
+  Proba: `citeste_date`(CUBUS) -> blocaje=[D112: CAEN 6210].
+- **Q2+Q3 (855608e) — cauza generica peste explicatia precisa + mesaj CAEN fara diacritice.** `control_incrucisat`
+  (verifica_d112/tva/d390): ramura noua `elif isinstance(e, ValueError)` -> cauza=str(e) precis, nu genericul (fix #18
+  din M2 acoperise doar `PerioadaNeconfirmata`; genericul ramane doar pentru non-ValueError = bug). Mesajele d112 afisate
+  -> diacritice. Garzi `core/test_cauza_precisa_business.py`, `core/test_d112_mesaje_afisate.py` (raise ValueError proza
+  in d112 are diacritice - unghiul mort al garzii generale test_diacritice_afisate). Proba: verifica_d112(CUBUS) -> cauza =
+  mesajul CAEN precis+diacritice, nu "Date lipsa".
+- **Q4-Q7,Q10 (65f8bad) — onboarding UX.** Fereastra bun venit: salut inaintea Suportului (Q6), nota UNDE se face fiecare
+  pas (Q5), pasi stivuiti + fereastra mai lata 880->920 (Q7). Solduri: model CSV descarcabil (echilibrat), Salveaza blocat
+  pe neechilibru cu mesaj INAINTE de click (nu 422 dupa), transparenta conturi noi "se adauga automat" (Q10). Import firme
+  in masa (exista deja in Migrare cabinet) facut descoperibil din lista de firme (Q4 - premisa "nu exista" era gresita).
+  Gard `core/test_onboarding_ux.py`. Fereastra bun venit **probata Playwright** (cabinet de test real, sters complet dupa,
+  zero poluare).

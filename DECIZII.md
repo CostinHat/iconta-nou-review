@@ -9348,3 +9348,10 @@ Cinci decizii luate la remedierea celor 8 constatari (commituri 58e2aed / 8a965f
   cap), deci si afisajul trebuie sa reflecte actiunea reala (8a965f4, #2).
 - **Versionarea asseturilor = hash de continut, nu contor manual.** Tokenul ?v= nu mai e o decizie umana de
   incrementat (sursa de eroare la #1); e derivat mecanic din continutul fisierului si gardat (087b33a). Vezi GARZI 15.08.
+
+
+## 16.08.2026 — tip_decont (periodicitate TVA) NU se fabrica
+ANAF v9 nu intoarce periodicitatea TVA (lunar/trimestrial) — confirmat la sursa (`anaf_api.valideaza_cui` n-are cheie de
+periodicitate; comentariu si in `migrare.js`). Decizie: NU se fabrica o valoare implicita (regula 4). Ramane alegerea
+contabilului; lipsa la un platitor e semnalata EXPLICIT in completitudinea profilului (`firma_profil_api.blocaje` ->
+"D300/D394: periodicitatea TVA nu e aleasa"), nu prin "—" tacut. Q8 din parcurgerea onboarding CUBUS (16.08).
