@@ -772,8 +772,8 @@ async function ecranSalariati(corp, nav, t) {
       : stat.map((s) => `
         <div class="pf-frand" style="flex-wrap:wrap">
           <div class="pf-frand-text" style="flex:1 1 100%">
-            <div class="pf-frand-nume">${esc(s.nume)}${s.pontaj_neconfirmat ? ' <span style="color:var(--rosu);font-weight:600">⚠ pontaj neconfirmat</span>' : ""}</div>
-            ${s.pontaj_neconfirmat ? `<div class="pf-frand-sub" style="color:var(--rosu)">Tichetele de masă sunt blocate până confirmi pontajul lunii (buton „Pontaj").</div>` : ""}
+            <div class="pf-frand-nume">${esc(s.nume)}${s.pontaj_neconfirmat ? ' <span style="color:var(--gri);font-weight:600">tichete blocate</span>' : ""}</div>
+            ${s.pontaj_neconfirmat ? `<div class="pf-frand-sub" style="color:var(--gri)">Tichetele de masă sunt blocate până la confirmarea pontajului lunii (buton „Pontaj").</div>` : ""}
             <div class="pf-frand-sub">brut ${bani(s.brut)} \u00b7 CAS ${bani(s.cas)} \u00b7 CASS ${bani(s.cass)} \u00b7 impozit ${bani(s.impozit_salariu)} \u00b7 <b>net ${bani(s.net)}</b> \u00b7 cost ${bani(s.cost)}${s.tichete_nominal ? ` \u00b7 <span style="color:var(--teal)">tichete ${bani(s.tichete_nominal)} (${s.tichete_zile} zile)</span>` : ""}${s.tichete_vacanta ? ` · <span style="color:var(--teal)">vacanță ${bani(s.tichete_vacanta)}</span>${s.vacanta_peste_plafon ? ' <span style="color:var(--rosu)">⚠ peste plafon anual</span>' : ""}` : ""}${s.cadou ? ` · <span style="color:var(--teal)">cadou ${bani(s.cadou)}</span>${s.cadou_taxabil ? ' <span style="color:var(--rosu)">⚠ taxabil (>300 lei/eveniment sau eveniment nelegal)</span>' : ""}` : ""}${s.tichete_cultural ? ` · <span style="color:var(--teal)">cultural ${bani(s.tichete_cultural)}</span>` : ""}${s.tichete_cresa ? ` · <span style="color:var(--teal)">creșă ${bani(s.tichete_cresa)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta) ? ` · <span style="color:var(--gri)">reținut pe tichete: CASS ${bani(s.cass_tichete)} + impozit ${bani(s.impozit_tichete)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta || s.cadou) ? ` · <b>total disponibil ${bani(s.total_disponibil)}</b>` : ""}</div>
           </div>
           <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start;width:100%">
@@ -809,7 +809,7 @@ async function ecranSalariati(corp, nav, t) {
       <div id="sp-iban-zona"></div>
       <div id="sp-cor-zona"></div>
       <div id="sp-incet-zona"></div>
-      ${pontajNeconf ? `<div class="ecran-nota" style="color:var(--rosu)">⚠ Pontajul lunii nu e confirmat. Statul de plată se afișează, dar tichetele de masă rămân blocate până confirmi pontajul (buton „Pontaj" pe salariat).</div>` : ""}
+      ${pontajNeconf ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">●</span> Pontajul lunii ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} nu e confirmat — informativ; tichetele de masă rămân blocate până la confirmarea pontajului (buton „Pontaj" pe salariat).</div></div>` : ""}
       <div class="pf-lista">${randuri}</div>`;
     corp.querySelector("#sp-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#sp-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });

@@ -2953,3 +2953,10 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
   `<input type=date>` in browserul de test (en-US); NU defect de aplicatie: aplicatia NU seteaza placeholder
   (verificat null), foloseste `<html lang=ro>`, input nativ (formatul e controlat de browser, nu de HTML/JS).
   Nimic de reparat (regula 2 - temeiul la sursa a rasturnat constatarea din parcurgere).
+
+- **C1** [audit tenant_003, adevar/DS cap.23]: statul de plata (firme.js) randa starea de PERIOADA "pontaj
+  neconfirmat" ca marcaj ROSU per-salariat (cheiat pe tichete>0) + banner ecran-nota rosu - implica fals ca
+  un salariat fara marcaj ar avea pontaj confirmat. Fix: banner .caseta-info + semafor gri (o data/luna);
+  per-rand "tichete blocate" gri (consecinta reala). Gard core/test_c1_pontaj_neconfirmat_gri.py (2), RED
+  probat. CLASA: grep neconfirmat/confirmat+rosu in static/js -> singura instanta; confirmarea (firme.js:669)
+  deja conforma; 941/965 gri informativ; asistenti.js:355 self_approval = atentionare reala (nu stare perioada).

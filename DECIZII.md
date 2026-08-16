@@ -9390,3 +9390,12 @@ harta. Firma trimestriala trimite `trim`; generatoarele sunt ancorate pe LUNA (a
 luna), deci dispecerul `genereaza` converteste trim->luna-ancora (T*3) intr-un SINGUR loc, dupa validare.
 Corectitudine (declaratie blocata), nu decizie de produs. C8 (format data nativ la Casa) = NU defect de
 aplicatie (locale de browser), verificat la sursa - NEreparat, cu motiv (nu se fabrica un fix pentru un nedefect).
+
+## 16.08.2026 - pontaj neconfirmat pe Stat de plata: stare de PERIOADA, afisata GRI (C1)
+Starea "pontaj neconfirmat" e o stare de PERIOADA (an,luna,domeniu=pontaj), nu un atribut de salariat.
+DS cap.23: se afiseaza o data, GRI (.caseta-info + semafor gri), NU rosu (nu e atentionare). Marcajul
+per-salariat rosu "pontaj neconfirmat" (firme.js) implica FALS ca pontajul altui salariat ar fi confirmat
+(aceeasi luna, aceeasi stare) - defect de adevar. Consecinta REALA per-salariat = "tichete blocate" (doar
+la cei cu tichete>0), afisata gri. Audit tenant_003: Ana (tichet=40) marcata, Radu (tichet=0) nu - diferenta
+cheiata pe tichete, confirmata la sursa (stat_plata_api.py:67). Corectitudine (text ce descrie starea), nu
+decizie de produs.

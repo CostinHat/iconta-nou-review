@@ -1595,3 +1595,8 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
 - core/test_import_mesaje_afisate.py — rol raise ValueError pe fisierele de import are diacritice (Q2/Q17).
 - test_import_migrare (_s cu tip_norma), test_solduri_parteneri (2 randuri), test_import_backend_corect
   (cnp_invalid) re-ancorate la comportamentul nou.
+
+## 16.08.2026 - Gard C1 (pontaj neconfirmat gri)
+- core/test_c1_pontaj_neconfirmat_gri.py (2) - interzice marcajul rosu per-salariat "pontaj neconfirmat" si
+  banner-ul ecran-nota rosu; cere .caseta-info + semafor gri (DS cap.23). RED probat pe cod vechi
+  (marcaj rosu + ecran-nota rosu prezente); GREEN dupa fix.

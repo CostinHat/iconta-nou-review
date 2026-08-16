@@ -4362,3 +4362,11 @@ None"; fix in dispecer, periodicitate efectiva + conversie trim->luna-ancora), C
 in selectorul de declaratii -> arata motivul real), C5 (acord "1 campuri" -> singular/plural). C8 (format data
 Casa) verificat la sursa = artefact de browser (input nativ), NU defect - nereparat cu motiv. C1/C2/C3/C4
 predate la pozitia 11 cu ecranul exact. verificator 0; 18 teste verzi.
+
+## 16.08.2026 (audit tenant_003) - C1 livrat: pontaj neconfirmat gri
+C1 reparat: statul de plata afisa "pontaj neconfirmat" ROSU per-salariat (doar la cei cu tichete) + banner
+rosu - stare de PERIOADA (luna) randata ca atribut de salariat, implicand fals ca Radu (fara tichete) ar avea
+pontaj confirmat. Fix (DS cap.23): banner .caseta-info + semafor gri o data pe luna; per-rand "tichete
+blocate" gri (consecinta reala) doar la salariatii cu tichete. Randat before/after pe tenant_003 (Ana vs
+Radu): before rosu strident, after gri neutru; 0 erori consola. Gard test_c1 (2) RED->GREEN. Generalizare:
+tiparul apare doar aici; ecranul de confirmare pontaj (firme.js:669) foloseste deja caseta-info+gri.
