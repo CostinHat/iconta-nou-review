@@ -9415,3 +9415,10 @@ Intro-ul care descrie coloanele trebuie sa NUMEASCA tot ce citeste parserul: mij
 amortizare) si articole (cont stoc + cheltuiala) omiteau conturi citite la import -> completate. Model comun
 (_descarcaModelCSV + MODELE), exemple realiste care trec parserul (probat round-trip pe mijloace).
 Corectitudine (text care descrie ce accepta aplicatia), nu decizie de produs.
+
+## 17.08.2026 - poarta verde vizuala (CLAUDE.md §2.3 pct.11): axe+mobil+baseline pe ecranele atinse
+Ceruta de Costin. Nicio poarta verde fara cele trei unelte vizuale rulate pe ecranele ATINSE in tura, cu
+rezultatele (CU CIFRE) in raport §3. Obligatie de EXECUTOR - cer app viu + browser + auth, deci NU se cableaza
+in pre-commit (ca restartul, pct.10). O tura care nu a atins niciun ecran e SCUTITA, dar o DECLARA explicit
+("niciun ecran atins -> uneltele vizuale N/A"). Extinde Regula 14 din MEMORY.md (axe + profil telefon la orice
+ecran atins). Gardat structural de core/test_infra_vizuala.py. Uneltele: frontend_test/vizual/ (README acolo).

@@ -2973,3 +2973,9 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
   8 straturi de import cu fisier (format din parser), intro mijloace+articole completate cu conturile. Gard
   core/test_c4_model_csv.py (3), RED probat. Round-trip probat pe mijloace (model descarcat->reincarcat->parsat).
   CLASA: plan_conturi = cautare/adaugare (fara upload), exclus; intro-urile celorlalte coincid cu parserul.
+
+- **INFRA VIZUALA** [17.08.2026, testare vizuala permanenta]: trei unelte pe pagina randata in
+  frontend_test/vizual/ (axe_scan/mobil_scan/baseline_scan) + axe.min.js vandorizat (4.10.2) + 5 baseline.
+  Gard core/test_infra_vizuala.py (4 teste): pica daca lipseste vreo unealta, axe.min.js (trunchiat sub
+  100KB), vreun baseline, sau un ecran din nav_ecrane.ECRANE. Face imposibila disparitia TACUTA a
+  infrastructurii vizuale (Regula 6). Probat: cele 4 teste in suita (2251 passed, c83f152).

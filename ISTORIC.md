@@ -4389,3 +4389,14 @@ _descarcaModelCSV + MODELE. Probat round-trip pe mijloace (tenant_003): modelul 
 il recunoaste (2 mijloace, toate corecte, cu cod/durata/metoda). Gard test_c4 (3) RED->GREEN. Randat: butonul +
 intro cu conturile pe ecran. CLASA: 9 straturi cu upload (solduri avea); plan_conturi = cautare (fara upload),
 exclus; intro-uri verificate vs parser (mijloace+articole omiteau -> reparate; restul coincid).
+
+## 17.08.2026 - infrastructura de testare vizuala LIVRATA (axe + mobil + baseline)
+Trei unelte permanente pe pagina randata (Playwright autentificat via w_auth), pe 5 ecrane
+(import_mijloace_fixe, vector_fiscal, plan_conturi, stat_plata, declaratii). NU s-a reparat niciun ecran
+(comanda: masoara, cifrele inainte de a decide ordinea). axe-core 4.10.2 vandorizat offline: 1 regula/ecran =
+color-contrast (12-15 noduri serious, concentrat in chrome comun + grila de cabinet din fundal), 0 fara-eticheta,
+0 title-only strict, 1-3 title-extra (motiv blocare livrat DOAR prin title: REGES/IBAN pe stat_plata). mobil
+(Pixel 5, touch, fara hover): overflow-x 0 pe toate, CSS :hover doar decorativ, title pierdut pe touch 2-5,
+tinte <44px 11-40. baseline: 5 STABILE (self-diff 0%), --compare identic 0%, detectie probata 25% cross-screen.
+Guvernanta: CLAUDE.md §2.3 pct.11 + TESTE inventar + MEMORY R14 + gard test_infra_vizuala.py. Commit c83f152
+(four-way). Verdict zgomot: niciuna nu da sute pe ecran -> toate pot fi obligatorii.
