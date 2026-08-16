@@ -801,7 +801,7 @@ async function wizardSalariati(corp, nav) {
 
   const cuSal = firme.filter((f) => f.are_salariati).length;
   corp.innerHTML = `
-    <p class="mig-intro">Importă salariații din vechea aplicație (nume, CNP, salariu, contract). CNP-urile se verifică automat — cele greșite sunt semnalate și sărite.</p>
+    <p class="mig-intro">Importă salariații din vechea aplicație (nume, CNP, salariu, contract). CNP-urile se verifică automat — cele greșite sunt semnalate, iar importul se face doar după ce toate sunt corectate.</p>
     <div class="mig-progres">${cuSal} din ${firme.length} firme au salariați</div>
     <div class="mig-lista" id="mig-firme"></div>
     <button class="buton-primar mig-buton" id="mig-finalizeaza" style="margin-top:16px">Finalizează stratul Salariați</button>
@@ -874,7 +874,7 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
   const randuri = date.randuri || [];
 
   const banda = date.invalizi > 0
-    ? `<span class="mig-eq mig-eq-ok">${date.valizi} valizi</span> <span class="mig-eq mig-eq-no">${date.invalizi} cu CNP greșit (vor fi sărite)</span>`
+    ? `<span class="mig-eq mig-eq-ok">${date.valizi} valizi</span> <span class="mig-eq mig-eq-no">${date.invalizi} cu CNP greșit — de corectat în fișier</span>`
     : `<span class="mig-eq mig-eq-ok">toate ${date.valizi} CNP-urile sunt corecte</span>`;
 
   corp.innerHTML = `
@@ -914,19 +914,10 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
     eroare.textContent = "";
     buton.disabled = true; buton.textContent = "Salvez…";
     try {
-      const r = await api.post(`/tenants/${firma.tenant_id}/salariati-import`, { randuri });
-      const nSar = r.sarite_cnp || 0;
-      const _mergiLaSalariati = () => nav.deschide("Salariați", (cc, nn) => wizardSalariati(cc, nn));
-      // [D1a] raporteaza VIZIBIL randurile sarite (CNP invalid) - confirmare blocanta, fara navigare
-      // tacuta peste pierderea de date (ON CONFLICT/skip tacut nu e suficient).
-      if (nSar > 0) {
-        buton.disabled = false; buton.textContent = "Salvează salariații";
-        confirmaCaseta(eroare,
-          `${r.importati || 0} salariați importați · ${nSar} săriți (CNP invalid). Verifică fișierul pentru rândurile respinse.`,
-          _mergiLaSalariati, { textOk: "Vezi salariații" });
-      } else {
-        _mergiLaSalariati();
-      }
+      await api.post(`/tenants/${firma.tenant_id}/salariati-import`, { randuri });
+      // Importul BLOCHEAZĂ dacă vreun CNP e invalid (backendul ridică; preview dezactivează Salvarea) —
+      // nu există skip tăcut, deci nu raportăm "X săriți" (fost cod mort D1a). Aici toate rândurile-s valide.
+      nav.deschide("Salariați", (cc, nn) => wizardSalariati(cc, nn));
     } catch (e) {
       eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
       buton.disabled = false; buton.textContent = "Salvează salariații";

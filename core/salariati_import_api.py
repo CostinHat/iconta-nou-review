@@ -225,7 +225,7 @@ def importa(conn, randuri):
     Insereaza salariatii in tabelul existent. UPSERT pe CNP (daca exista, actualizeaza).
     Ridica ValueError daca vreun rand nu poate intra (vezi verifica_randuri).
     Refuzul e PRIMA POARTA: nimic nu se scrie dintr-un import cu randuri invalide.
-    Intoarce {importati, sarite_cnp}.
+    Intoarce {importati}. NU exista skip: importa ridica la primul CNP invalid (prima poarta).
     """
     er = verifica_randuri(randuri)
     if er:
@@ -235,7 +235,6 @@ def importa(conn, randuri):
         raise ValueError("%d rânduri nu pot intra în evidență: %s. Salariații intră în "
                          "D112 și REGES - datele trebuie să fie cele reale." % (len(er), det))
     importati = 0
-    sarite = 0
     with conn.cursor() as cur:
         # asiguram constrangerea unica pe cnp pentru upsert (idempotent)
         cur.execute("""
@@ -250,9 +249,8 @@ def importa(conn, randuri):
             END $$;
         """)
         for r in randuri:
-            if not r.get("cnp_valid"):
-                sarite += 1
-                continue
+            # NU exista skip tacit: importa a ridicat deja (mai sus) daca vreun CNP e invalid, deci aici
+            # toate randurile sunt valide (fostul skip pe CNP invalid era cod mort: importa ridica intai).
             part_time = (r.get("tip_norma", "intreaga") == "partiala")
             cur.execute("""
                 INSERT INTO salariati
@@ -277,4 +275,4 @@ def importa(conn, randuri):
             _si.seteaza(cur, _sid, r.get("salariu_brut", 0), r.get("data_angajare") or _dm.today().isoformat())
             importati += 1
     conn.commit()
-    return {"importati": importati, "sarite_cnp": sarite}
+    return {"importati": importati}

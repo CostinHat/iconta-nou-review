@@ -2915,3 +2915,21 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
   RED probat pe main.py vechi (KeyError 'cor_denumire').
 - Cuplaj rezolvat: Q16 adauga `db.get_conn` in endpointul de preview salariati -> gardul Q5
   (test_preview_salvare_poarta) a cerut fake_conn pe cazul salariati (cor gol = fara lookup).
+
+## 16.08.2026 — Cod mort: skip salariati INEXISTENT (tura audit vizual tenant_003)
+- salariati_import_api.importa() BLOCHEAZA la primul CNP invalid (verifica_randuri = prima poarta) -> bucla
+  `if not cnp_valid: sarite+=1; continue` + `sarite_cnp` erau COD MORT (sarite mereu 0), iar textele "vor fi
+  sarite" / "X sariti" (intro + banda + handlerul de salvare salariati) promiteau un skip inexistent.
+- Dovada VIZUALA (regula 14, tenant_003 Comert Micro TVA, fisier stricat cu 2 CNP invalide): pe ACELASI ecran
+  banda "2 cu CNP gresit (vor fi sarite)" langa caseta "2 randuri nu pot fi salvate" + butonul Salveaza
+  DEZACTIVAT -> contradictie. Gateaza-Preview (Q5) a facut contradictia vizibila.
+- Reparat: eliminat codul mort (backend) + aliniat textele la adevar (blocheaza, nu sare; DS cap.6).
+- Test core/test_d1_import_integritate.py REscris: superseda test_salariati_skip_surfatat_in_ui [citare-istorica: test rescris in aceasta tura, premisa falsa eliminata] (care cerea
+  sarite_cnp surfatat - premisa FALSA). Acum: importa ridica pe CNP invalid (block); fara sarite_cnp; fara
+  "vor fi sarite". RED probat pe cod vechi (2/3: sarite_cnp prezent + "vor fi sarite" prezent).
+- CLASA (regula 13): promisiunea falsa de skip = DOAR salariati. retete/articole "X sarite (existente/
+  invalide)" = skip REAL de duplicate (neatins); asociati.importa ridica la fel (fara skip).
+- RAMAS (constatare din aceeasi parcurgere, neatins): (Q8) meniuMigrarePerFirma nu are badge de stare per
+  strat -> contabilul nu vede ce e importat. Reparatia e BLOCATA pe un semnal de prezenta pt plan_conturi
+  (185 conturi standard, fara flag standard/adaugat) -> un badge count>0 ar fi FABRICAT. Cere decizie de
+  model (flag "adaugat" sau definirea "plan importat"). (Q12) avertismentul CNP pe rand e doar in title=.

@@ -4347,3 +4347,11 @@ verificator 0; suita import 37 passed. Bump migrare.js la 3 situri de import via
 Preview salariati arata codul COR in loc de denumirea ocupatiei. Endpointul imbogateste acum randurile cu
 cor_api.denumire (nomenclator public.cor_ocupatii); frontendul arata denumirea, fallback la cod. Garda RED
 probata. verificator 0. Cuplaj cu Q5 (endpointul deschide conn) rezolvat in gardul Q5.
+
+## 16.08.2026 (tura audit vizual tenant_003) — cod mort skip salariati (Q10)
+Parcurgere vizuala autentificata a tenant_003 (Comert Micro TVA SRL, cabinet 1968 Prisma; token mintuit
+pentru patron@prisma-cont.test, fara parola). Ecranul de import salariati, provocat cu fisier stricat (regula
+14 pct.4): banda "2 cu CNP gresit (vor fi sarite)" contrazicea VIZIBIL caseta Q5 "nu pot fi salvate" + butonul
+dezactivat -> cod mort / promisiune falsa. Eliminat skip mort (backend) + aliniat textele (DS cap.6); gardul
+D1 rescris (block-not-skip), RED probat pe cod vechi. verificator 0. Constatari neatinse din aceeasi
+parcurgere: Q8 (badge stare per strat lipseste, blocat pe semnal plan_conturi), Q12 (avertisment CNP doar title=).

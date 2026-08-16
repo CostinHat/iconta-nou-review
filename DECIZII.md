@@ -9375,3 +9375,10 @@ Normalizarea tuplu(parteneri)/lista intr-un singur loc: `migrare_api.erori_verif
 flagurile lui extrage in aceasta tura (risc de consumatori nedescoperiti); ele nu mai sunt autoritatea de
 validare. Efectul vizibil: la preview, randurile pe care salvarea le-ar respinge sunt aratate si Salvarea e
 blocata — corectitudine (ce vede userul), nu decizie de produs.
+
+## 16.08.2026 — skip la importul de salariati: NU exista; textele se aliniaza la BLOCARE
+Importul de salariati NU sare randuri cu CNP invalid - le BLOCHEAZA (importa() ridica la prima poarta,
+verifica_randuri). Decizie: eliminam codul mort (sarite_cnp + bucla de skip) si textele care promiteau skip
+("vor fi sarite" / "X sariti"), in loc sa "reparam" skip-ul (care ar fi pierdere tacuta de date - exact ce
+gardul D1a voia sa evite). Superseda test_salariati_skip_surfatat_in_ui (premisa falsa). Alinierea textului
+la comportamentul real = CORECTITUDINE (text care descrie ce face aplicatia), nu decizie de produs.

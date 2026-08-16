@@ -1,32 +1,48 @@
 # -*- coding: utf-8 -*-
-"""core/test_d1_import_integritate.py — GARD Bloc 0 (D1a): skip la import NU e tăcut.
+"""core/test_d1_import_integritate.py — GARD: importul de salariati BLOCHEAZA CNP invalid, NU sare tacut.
 
-`salariati-import` calculează `sarite_cnp` (câte rânduri au fost sărite pt CNP invalid) dar UI-ul îl
-arunca (`migrare.js` naviga tăcut peste pierderea de date). Gardul cere ca răspunsul să fie SURFAȚAT
-într-un canal vizibil înainte de navigare.
-
-NOTĂ (finding 06.08, tura 5): NOT NULL pe coloanele monetare a fost RETRAS. În acest codebase principiul
-„bază nulă = eroare" e enforce-uit SEMANTIC (detectează-și-semnalează), nu la nivel de schemă: ex.
-`test_d112_reconciliere.test_skip_suspect_brut_lipsa_e_semnalat_nu_tacut` se bazează pe `salariati.salariu_brut`
-NULL ca stare-semnal („brut lipsă → suspect"). Un NOT NULL de schemă ar ȘTERGE stări-semnal designate și
-intră în conflict cu garda semantică existentă. Deci integritatea monetară rămâne la stratul de reconciliere,
-nu în DDL.
+SUPERSEDEAZA (16.08.2026, tura audit vizual tenant_003) gardul vechi `test_salariati_skip_surfatat_in_ui`,
+care cerea ca `sarite_cnp` (cate randuri sarite) sa fie SURFATAT in UI. Premisa aceea era FALSA: `importa()`
+ridica ValueError la PRIMUL CNP invalid (`verifica_randuri` e prima poarta) -> nu se ajunge NICIODATA la
+bucla de skip; `sarite_cnp` era mereu 0 (cod mort), iar textele "vor fi sarite" / "X sariti" promiteau un
+comportament inexistent. Dovada vizuala (regula 14, tenant_003 Comert Micro TVA): pe acelasi ecran banda
+"2 cu CNP gresit (vor fi sarite)" contrazicea caseta "2 randuri nu pot fi salvate" + butonul Salveaza
+dezactivat. Adevarul garantat aici: BLOCHEAZA, nu sare.
 """
 import io
 import re
+import pytest
+from core import salariati_import_api as s
 
 
 def _read(p):
     return io.open(p, encoding="utf-8").read()
 
 
-def test_salariati_skip_surfatat_in_ui():
-    """Răspunsul import-ului de salariați (sarite_cnp) NU e aruncat: UI-ul îl citește și-l afișează vizibil."""
+def test_importa_blocheaza_cnp_invalid_nu_sare():
+    """Un rand cu CNP invalid -> importa RIDICA (nimic nu se scrie), nu il sare tacut.
+    Ridica INAINTE de orice cursor, deci conn=None nu se atinge (proba ca poarta e prima)."""
+    rows = [{"nume": "X", "prenume": "Y", "cnp": "1234567890123", "cnp_valid": False,
+             "cnp_motiv": "luna", "tip_norma": "intreaga", "ore_zi": 8, "salariu_brut": 3000}]
+    with pytest.raises(ValueError):
+        s.importa(None, rows)
+
+
+def test_fara_cod_mort_skip_in_backend():
+    """Codul mort de skip (sarite_cnp + bucla 'sare CNP invalid') e ELIMINAT din backend.
+    RED pe codul vechi: sarite_cnp prezent + `sarite += 1`."""
+    src = _read("core/salariati_import_api.py")
+    assert "sarite_cnp" not in src, "sarite_cnp reintrodus (cod mort: importa blocheaza, nu sare)"
+    assert not re.search(r"sarite\s*\+=\s*1", src), "bucla de skip reintrodusa in importa"
+
+
+def test_fara_promisiune_falsa_de_skip_in_ui():
+    """Frontendul NU promite un skip inexistent la salariati. RED pe codul vechi:
+    'vor fi sarite' + 'semnalate si sarite' + citirea sarite_cnp erau prezente.
+    (Retete/articole folosesc legitim 'X sarite (existente/invalide)' - skip REAL, neatins.)"""
     src = _read("static/js/ecrane/migrare.js")
-    # backend-ul întoarce contractul
-    assert '"sarite_cnp"' in _read("core/salariati_import_api.py"), "backend nu mai întoarce sarite_cnp"
-    # UI-ul referă sarite_cnp (nu-l lasă tăcut) în handlerul de salvare salariați
-    assert "sarite_cnp" in src, "migrare.js nu mai citește sarite_cnp — skip tăcut re-introdus"
-    # și îl duce într-un canal vizibil (confirmă/mesaj), nu doar îl citește
-    assert re.search(r"sarite_cnp[\s\S]{0,400}(confirmaCaseta|arataMesaj)", src), \
-        "sarite_cnp citit dar nu afișat vizibil (confirmaCaseta/arataMesaj)"
+    assert "vor fi sărite" not in src, "banda salariati promite skip inexistent (cod mort)"
+    assert "semnalate și sărite" not in src, "intro salariati promite skip inexistent"
+    assert "sarite_cnp" not in src, "UI citeste sarite_cnp (skip inexistent)"
+    # blocajul REAL: preview dezactiveaza Salvarea pe randuri respinse (gateazaPreview, Q5)
+    assert "gateazaPreview" in src, "poarta de blocare a preview-ului lipseste"
