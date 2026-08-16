@@ -478,6 +478,11 @@ def verifica_d112(conn, schema, an, luna):
         if isinstance(e, PerioadaNeconfirmata):
             cauza = str(e).replace("PERIOADA_BLOCATA: ", "")
             actiune = "Confirmă pontajul lunii (rol admin_firma)."
+        elif isinstance(e, ValueError):
+            # [cauza_precisa] eroare de business din d112.genereaza (CAEN out-of-enum, CUI invalid):
+            # mesajul ei E deja explicatia utila; nu-l acoperi cu genericul care CONTRAZICE (profil complet).
+            cauza = str(e)
+            actiune = "Corectează în Date firmă ce indică mesajul, apoi reîncearcă."
         else:
             cauza = "Date lipsă sau profil incomplet."
             actiune = "Completează profilul firmei și salariații, apoi reîncearcă."
@@ -544,6 +549,10 @@ def verifica_tva(conn, schema, an, luna):
         if isinstance(e, PerioadaNeconfirmata):
             cauza = str(e).replace("PERIOADA_BLOCATA: ", "")
             actiune = "Confirmă perioada lunii (rol admin_firma)."
+        elif isinstance(e, ValueError):
+            # [cauza_precisa] eroare de business precisa - nu o acoperi cu genericul
+            cauza = str(e)
+            actiune = "Corectează în Date firmă ce indică mesajul, apoi reîncearcă."
         else:
             cauza = "Date lipsă sau profil fiscal incomplet."
             actiune = "Completează profilul firmei și reîncearcă."
@@ -870,12 +879,22 @@ def verifica_d390(conn, schema, an, luna):
             baze["L"] += int(rezumat.get("L", 0))
             baze["A"] += int(rezumat.get("A", 0))
     except Exception as e:
+        from core.perioada import PerioadaNeconfirmata
+        if isinstance(e, PerioadaNeconfirmata):
+            _cauza = str(e).replace("PERIOADA_BLOCATA: ", "")
+            _actiune = "Confirmă perioada lunii (rol admin_firma)."
+        elif isinstance(e, ValueError):
+            _cauza = str(e)  # [cauza_precisa] eroare de business - nu o acoperi cu genericul
+            _actiune = "Corectează în Date firmă ce indică mesajul, apoi reîncearcă."
+        else:
+            _cauza = "Date lipsă sau profil incomplet."
+            _actiune = "Completează profilul firmei și facturile, apoi reîncearcă."
         return {"an": an, "luna": luna, "fereastra": fereastra, "stare": "gri", "constatari": [{
                     "stare": "gri", "eticheta": "Intracomunitar",
                     "temei": "D390 nu s-a putut genera.",
                     "mesaj": f"NU pot verifica operațiunile intracomunitare: D390 nu se poate calcula ({e}).",
-                    "remediu": {"fel": "investigatie", "cauza": "Date lipsă sau profil incomplet.",
-                                "actiune": "Completează profilul firmei și facturile, apoi reîncearcă.",
+                    "remediu": {"fel": "investigatie", "cauza": _cauza,
+                                "actiune": _actiune,
                                 "facturi": []}}],
                 "explicatie": "",
                 "limita": "Verificarea D390 nu a fost efectuată — riscul rămâne neacoperit.",

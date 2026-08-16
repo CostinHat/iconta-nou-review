@@ -165,9 +165,9 @@ def _d112_genereaza(prof, salariati, an, luna):
     pren_d = _t(prof.get("declarant_prenume") or "-", _LIM["d112"]["prenume_declar"])
     func_d = _t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d112"]["functie_declar"])   # structura D112: functie_declar C(50)
     if not cui_f:
-        av.append("CUI firma lipsa - completeaza Profil firma.")
+        av.append("CUI firmă lipsă — completează Profil firmă.")
     if caen_f == "0000":
-        av.append("CAEN firma lipsa/invalid - D112 cere CAEN valid in Profil firma.")
+        av.append("CAEN firmă lipsă/invalid — D112 cere CAEN valid în Profil firmă.")
     # [T1 identitate firma, 10.08.2026] CUI prezent-dar-invalid (cifra de control / lungime) pleca TACIT ->
     # DUK "CUI invalid". Pre-validam cu core.identitate.valideaza_cui (checksum offline). Golul ramane
     # avertisment / poarta erori_generare; blocam doar valoarea PREZENTA si gresita.
@@ -175,7 +175,7 @@ def _d112_genereaza(prof, salariati, an, luna):
         _ok_cui, _mot_cui = _vcui_id(cui_f)
         if not _ok_cui:
             raise ValueError(
-                "D112: CUI firma %s invalid (%s) - se corecteaza in Profil firma (ecran Date firma), "
+                "D112: CUI firmă %s invalid (%s) — se corectează în Profil firmă (ecran Date firmă), "
                 "nu se emite D112 respins de DUK." % (cui_f, _mot_cui))
     # [caen out-of-enum, 10.08.2026] CAEN prezent-dar-neenumerat (ex '9999') pleca TACIT -> XSD reject
     # (caen type=Str_caenListSType, enumerare INCHISA in d112_06082026.xsd). '0000' = LIPSA (avertisment
@@ -185,8 +185,8 @@ def _d112_genereaza(prof, salariati, an, luna):
         _caen_ok = (caen_f in _caene) if _caene else (len(caen_f) == 4 and caen_f not in ("0000", "9999"))
         if not _caen_ok:
             raise ValueError(
-                "D112: CAEN firma '%s' nu exista in nomenclatorul CAEN acceptat de D112 (tip XSD "
-                "Str_caenListSType, enumerare inchisa) - se corecteaza in Profil firma, nu se emite D112 "
+                "D112: CAEN firmă '%s' nu există în nomenclatorul CAEN acceptat de D112 (tip XSD "
+                "Str_caenListSType, enumerare închisă) — se corectează în Profil firmă, nu se emite D112 "
                 "respins de ANAF." % caen_f)
     sum_imp = sum_cas = sum_cass = sum_bazac = 0
     cas_ang_dif = cass_ang_dif = 0  # d112_b4p_v2

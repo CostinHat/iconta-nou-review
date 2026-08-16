@@ -57,7 +57,7 @@ def test_cui_firma_checksum_invalid_blocheaza():
     with pytest.raises(ValueError) as ei:
         d112._d112_genereaza(_prof(cui="14399841"), [_sal()], 2026, 6)  # ultima cifra alterata
     msg = str(ei.value)
-    assert "CUI firma" in msg and "14399841" in msg, msg
+    assert "CUI firm" in msg and "14399841" in msg, msg
     assert "cifra de control" in msg, msg
 
 
