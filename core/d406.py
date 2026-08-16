@@ -577,7 +577,10 @@ def _header(res):
     H.append('    <SoftwareID>iConta SaaS</SoftwareID>')
     H.append('    <SoftwareVersion>1.0</SoftwareVersion>')
     H.append('    <Company>')
-    H.append('      <RegistrationNumber>%s</RegistrationNumber>' % _esc(cui))
+    # [reg number firma proprie 16.08] S.CMH.1: platitor TVA -> RO+CIF; neplatitor -> CIF.
+    # registration_number() implementa regula dar era COD MORT (0 apeluri) - headerul emitea CUI
+    # brut (fara RO) -> "format invalid" la DUK pt platitorii de TVA (exact ce docstring-ul functiei descrie).
+    H.append('      <RegistrationNumber>%s</RegistrationNumber>' % _esc(registration_number(prof)))
     H.append('      <Name>%s</Name>' % _esc(_t(prof.get("nume") or "", _LIM["d406"]["CompanyName"])))
     H.append('      <Address>')
     H.append('        <StreetName>%s</StreetName>' % _esc(_t(prof.get("adresa") or "-", _LIM["d406"]["StreetName"])))
@@ -1086,7 +1089,7 @@ def pull(conn, schema, an, luna):
     di = "%04d-%02d-01" % (an, luna)
     ds = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT nume, cui, adresa, oras, cod_postal FROM firma_profil WHERE id = 1")
+        cur.execute("SELECT nume, cui, adresa, oras, cod_postal, platitor_tva FROM firma_profil WHERE id = 1")
         prof = cur.fetchone() or {}
         conturi, clienti, furnizori, note = [], [], [], []
         strain = []   # conturi din plan care nu apartin normei declarate
