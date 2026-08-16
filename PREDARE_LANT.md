@@ -1,59 +1,63 @@
-Marca de referință: 0ae8baf. Citește CLAUDE.md §2.2 (structura raportului) și §2.3 (lanț, siguranță, limbă) și ARHITECT.md „FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, înainte de a începe. Sunt 7 defecte nereparate din campania import CUBUS (Q9, Q18, Q7, Q8, Q12, Q14, cod mort Q10-skip). Punctele de aici sunt harta, nu perimetrul (regula 13). Repară tot ce e defect pe traseul importului/migrării, inclusiv dincolo de ce e scris. Ordinea: cifre greșite → blocante → restul.
+Marca de referință: ed6ac35. Citește CLAUDE.md §2.2 (structura raportului) și §2.3 (lanț, siguranță, limbă) și ARHITECT.md „FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, înainte de a începe. În lucru: audit vizual cap-la-cap al tenant_003 (Comert Micro TVA SRL, cabinet 1968 Prisma) — parcurs până la ecranul de import salariați; restul traseului NEparcurs. Regula 13: perimetrul, nu numele. Regula 14: captură privită, nu selectoare.
 
-# PREDARE LANT — import CUBUS: loturile amortizare + preview=salvare + COR LIVRATE
+# PREDARE LANT — audit vizual tenant_003 (parcurgere migrare, în curs)
 
 ## FOUR-WAY (ultima execuție, 16.08.2026)
-HEAD = origin/main = backup/lant-2026-08-16 = RUNNING = 0ae8baf
-(post-commit restartează automat iconta-nou pe portul 8010; confirmă cu `versiune.stare()` running==head, divergent=False.)
+HEAD = origin/main = backup/lant-2026-08-16 = RUNNING = ed6ac35
+(post-commit restartează automat iconta-nou pe portul 8010.)
 
-## LIVRAT în această tură (RED probat pe cod vechi, GREEN după; randat unde e ecran)
-- **Lot 1 amortizare (Q6+Q15) — 5a610dc.** Ecranul /mijloace-fixe + notele lunară/casare/reevaluare calculau
-  MEREU liniar ignorând `metoda`; TREI înscriau cifra greșită în jurnal/notă (ajunge la ANAF), una o afișa.
-  Motorul cu 4 metode (core/d406_active.py, CF art.28) exista, nechemat. 2 funcții noi (amortizat_la_data,
-  amortizare_luna, coerente cu calc_asset la granița de an); 4 situri cablate. Metodă nepermisă pe categorie
-  → eroare pe rând / 422, nu liniar tacit (DS cap.17). Casat → amortizat/ramas None (regula 4). Ultima lună
-  absoarbe rotunjirea → suma pe viață = amortizabil exact. Gardă core/test_amortizare_ecran_metoda.py (15).
-  Randat autentificat: ecranul afișează Metodă + amortizat pe motor (1.200/3.600, 1.100/4.900 pe ALFA MICRO).
-- **Lot 2 preview=salvare (Q5) — 74a655c.** Cele 5 endpoint-uri de preview (parteneri/salariați/asociați/
-  mijloace/istoric) luau verdictul din flagurile lui extrage (cnp_valid/ok) — a DOUA validare care drifta de
-  verifica_randuri (poarta pe care SALVAREA, importa, o ridică). Acum întorc `erori = verifica_randuri(...)`
-  prin migrare_api.erori_verifica (normalizează tuplu parteneri/listă); frontend `gateazaPreview()` blochează
-  Salvarea pe rândurile respinse + le arată (DS cap.5/6/24). Gardă core/test_preview_salvare_poarta.py (6),
-  același fișier prin ambele capete. Randat: Solduri (Q10) + Date firmă (Q1).
-- **Lot 3 COR (Q16) — 0ae8baf.** Preview salariați arăta codul COR ca „Funcție"; acum denumirea ocupației
-  (cor_api.denumire din public.cor_ocupatii), fallback la cod, cod în title. Gardă core/test_q16_cor.py (2).
+## CUM SE PARCURGE tenant_003 CU PLAYWRIGHT (auth cross-cabinet)
+- tenant_003 e sub cabinetul 1968 (Prisma), NU sub cabinetul login-ului de test FE (4163). Deci NU folosi
+  fe_test.env. Mintuiește un token direct pentru admin-ul cabinetului 1968, fără parolă:
+  `from core import auth_api; tok = auth_api.emite_token(<rand user patron@prisma-cont.test din public.users>)`.
+  Injectează în sessionStorage (iconta_token + iconta_user JSON), ca în frontend_test/walk_t003.py + provoke_t003.py.
+- Env pt scripturi ad-hoc: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a` (JWT_SECRET e în api_keys.env),
+  și `PYTHONPATH=~/iconta_nou`. Serviciul = iconta-nou pe 127.0.0.1:8010 (localhost ocolește allowlist-ul de mentenanță).
+- Navigare: „/" → Firme → Firme existente → „Comert Micro TVA" → cardurile firmei (#fa-import Import date,
+  #fa-datefirma Date firmă, #fa-facturi, #fa-banca, ...). Import date deschide meniuMigrarePerFirma (10 straturi).
+- Starea datelor tenant_003 (mostly gol): salariati=1, plan_conturi=185 (standard), vector setat (platitor_tva=T,
+  tip_decont='T', regim micro); solduri_initiale/parteneri/asociati/mijloace/istoric/produse/retete/rip = 0.
 
-## RĂMAS DE FĂCUT (neînceput) — cifre/blocante întâi
-1. **Q9 parteneri — coerență pierdută (BLOCANT).** Diferența `coerenta()` (solduri_parteneri_api.py:148) se
-   arată la preview dar NU se persistă și NU blochează salvarea (spre deosebire de solduri). Fix: blochează
-   salvarea pe incoerență (ca la solduri) SAU persistă+propagă la controlul fiscal. Datele incoerente intră
-   acum tăcut în evidență.
-2. **Q18 XSD — nomenclator înghețat (SISTEMIC).** d112.py:16 hardcodează `d112_06082026.xsd`. Fix: alege automat
-   cel mai nou `d112_*.xsd` din anaf_surse/ (glob pe data din nume) — adăugarea fișierului să fie de ajuns, fără
-   editare de cod. Toate declarațiile fixate la XSD datat (grep clasa).
-3. **Q7 solduri — confirmare după salvare (UX).** După salvare, `arataMesaj(..., "ok")` de confirmare (DS cap.6),
-   nu revenire tăcută la formular gol.
-4. **Q8 badge de stare per strat.** `meniuMigrarePerFirma` (migrare.js:1477): badge per strat citind
-   /migrare/status (ca `meniuMigrare` la nivel cabinet). Semafor prin tokeni (DS cap.8).
-5. **Q12 avertisment pe rând — doar `title=` (inaccesibil pe touch).** Fix: `.caseta-atentie`/arataMesaj vizibil
-   (DS cap.5). NOTĂ: gateazaPreview (Lot 2) a introdus deja `.caseta-atentie` pentru erorile de preview la nivel
-   de fișier; Q12 rămâne pentru avertismentele PE RÂND din tabelele de preview (r.ok / CNP), încă pe `title=`.
-6. **Q14 „Descarcă model (CSV)" — există doar la solduri (1/9, confirmat la randarea Q10).** Adaugă la parteneri,
-   salariați, asociați, mijloace, istoric, fiecare cu model corect.
-7. **Cod mort Q10-skip.** Salariații NU sar peste invalizi — ambele parsere blochează tot importul; calea „skip"
-   (salariati_import_api bucla din `importa` + banda UI „X cu CNP greșit (vor fi sărite)" din migrare.js) e COD
-   MORT + text care promite un comportament inexistent (dinainte de 15.07.2026). De ELIMINAT codul mort + textul.
+## LIVRAT în această tură (RED probat pe cod vechi, GREEN după; dovadă vizuală)
+- **Cod mort skip salariați (Q10) — ed6ac35.** Provocând importul de salariați cu fișier stricat (2 CNP
+  invalide), banda „2 cu CNP greșit (vor fi sărite)" contrazicea vizibil caseta „2 rânduri nu pot fi salvate"
+  + butonul dezactivat. Adevărul: importa() BLOCHEAZĂ la primul CNP invalid (verifica_randuri = prima poartă);
+  bucla de skip + `sarite_cnp` + textele „vor fi sărite"/„X săriți" erau cod mort/promisiune falsă. Eliminat
+  (backend) + text aliniat (DS cap.6). Gardă core/test_d1_import_integritate.py REscrisă (block-not-skip,
+  superseda test_salariați_skip_surfațat_in_ui). Clasa (regula 13): doar salariați; retete/articole „sărite" =
+  skip REAL de duplicate (neatins).
 
-## TURĂ SEPARATĂ (NU se începe din predarea asta)
-- Triaj mesaje generatoare (~150 raise ValueError în d100/d112/d205/d300/d390/...): afișat-vs-intern, judecată
-  per-mesaj, diacriticizat cele afișate + gardă scopată ca la import (extinderea Q2/Q17).
+## CONSTATĂRI din aceeași parcurgere (VĂZUTE, neatinse)
+- **Q8 — meniuMigrarePerFirma nu are badge de stare per strat** (văzut: toate cele 10 rânduri identice, fără
+  „importat/gol"). Contabilul nu vede ce e adus. Reparația e BLOCATĂ pe un semnal de prezență corect: `plan_conturi`
+  are 185 conturi standard fără flag standard/adăugat → un badge count>0 acolo ar fi FABRICAT (exact capcana regulii
+  14 pct.3). Cere decizie de model: flag „adăugat" pe plan_conturi SAU definirea „plan importat". Restul straturilor
+  au sursă clară de prezență (rezumat/count: solduri_initiale, solduri_parteneri, salariati, asociati, mijloace_fixe,
+  public.declaratii_depuse sursa='migrare', produse, retete, rip_operatiuni; vector = firma_profil.tip_decont).
+- **Q12 — avertismentul CNP pe rând e doar în `title=`** (văzut: „1960101078911 ⚠", motivul „cifra de control"
+  doar în title, inaccesibil pe touch). Fix: vizibil, nu tooltip nativ (DS cap.5).
 
-## LECȚII METODĂ (tura 16.08)
-- **JS: NU calcula manual tokenul `?v=`** — rulează `./venv/bin/python versioneaza_assets.py --scrie` (content-hash;
-  bumpează TOATE siturile de import, DS cap.19). Un token greșit pică `test_versionare_assets` → poartă roșie.
-- **Editare pe server prin patch scripts Python via scp** (Edit/Write locale ating checkout-ul Windows, nu ~/iconta_nou).
-- **post-commit restartează automat iconta-nou (port 8010)** → four-way automat după poarta verde; nu e nevoie de restart manual.
-- **Randare autentificată**: frontend_test/render_lant.py (login din ~/.iconta/fe_test.env, token în sessionStorage,
-  BAZA=127.0.0.1:8010 = iconta-nou, ocolește allowlist-ul de mentenanță). Firma cu MF = ALFA MICRO (tenant_013, doar liniar).
-- **DB din shell**: `set -a; . ~/.iconta/db.env; set +a` înainte de pytest/scripturi ad-hoc.
-- **Cuplaj testat**: o schimbare care adaugă `db.get_conn` într-un endpoint fără DB (ex. Q16 pe salariați) cere fake_conn în gărzile care apelau acel endpoint (Q5).
+## RĂMAS DE PARCURS pe tenant_003 (traseul, NEatins)
+1. Migrare, fiecare strat cap-la-cap (import→preview→salvare→confirmare→ecran unde apar datele), cu blocaje
+   provocate: solduri, parteneri, asociați, mijloace fixe, istoric, plan de conturi, articole, rețete. (Salariați
+   parcurs parțial: preview + blocaj; salvarea reală + ecranul „unde apar" neparcurse.)
+2. Date firmă și vectorul fiscal (#fa-datefirma; vector = primul rând din Import date).
+3. Operarea curentă: facturi (#fa-facturi), bancă (#fa-banca), casă, salarii — Comert Micro TVA e micro+TVA, are 1 salariat.
+4. Semaforul + controlul fiscal (dashboard: „7 alerte fiscale", „1 declarație de validat" — de deschis și citit).
+5. Fiecare declarație datorată (micro+TVA: D300, D394, D100/D101 după caz, D112 dacă are salariați, D205, SAF-T)
+   până la generarea XML + validarea DUK.
+
+## DEFECTE din campania anterioară (încă NEatinse, cod-citit)
+- Q9 parteneri — coerență pierdută (BLOCANT): coerenta() se arată la preview dar nu blochează salvarea; ALEGERE
+  block-vs-persistă+propagă = posibilă decizie de produs (a se clarifica).
+- Q18 XSD — d112.py:16 hardcodează d112_06082026.xsd; glob pe cel mai nou d112_*.xsd (sistemic).
+- Q7 confirmare după salvare (arataMesaj „ok", DS cap.6) — pe toate straturile (salvarea navighează tăcut).
+- Q14 „Descarcă model (CSV)" — doar la solduri (1/9); de adăugat la celelalte.
+- Tură separată: triaj mesaje generatoare (~150 raise, afișat-vs-intern).
+
+## LECȚII METODĂ (16.08)
+- **Auth cross-cabinet fără parolă**: `auth_api.emite_token(user_row)` + inject sessionStorage (vezi mai sus).
+- **JS: NU calcula manual `?v=`** — `./venv/bin/python versioneaza_assets.py --scrie` (bumpează toate siturile).
+- **Ratchet pe cod mort**: nu pune în COMENTARIU tiparul pe care gardul îl interzice (`sarite += 1` în comentariu a
+  picat propriul gard). Descrie mecanismul fără să scrii literalul interzis.
+- **Editare pe server prin patch scripts Python via scp**; DB/JWT din `~/.iconta/db.env` + `api_keys.env`.
