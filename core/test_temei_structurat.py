@@ -119,3 +119,13 @@ def test_cote_au_toate_nivel_sursa():
             assert getattr(t, "nivel_sursa", None) in Temei.NIVELE_SURSA, "%s@%s fara nivel_sursa" % (nume, din)
             if t.nivel_sursa == "MO":
                 assert t.text_citat, "%s@%s: MO fara text_citat verbatim" % (nume, din)
+
+
+def test_cam_temei_articolul_cotei_e_220_3():
+    """Cota CAM 2,25% e definita in CF art.220^3 alin.(1) (sursa cod_fiscal l.14954-14957), NU art.220^1
+    (=contribuabilii). Regresie prinsa: campul art trebuie sa coincida cu articolul din text_citat (220^3)."""
+    from datetime import date as _d
+    v, t = cota("cam", _d(2026, 6, 1))
+    assert str(v) == "0.0225", "cota CAM schimbata: %s" % v
+    assert t.art == "220^3", "CAM: articolul cotei trebuie 220^3 (cota), nu %r (220^1=contribuabilii)" % t.art
+    assert "220^3" in t.text_citat, "text_citat CAM incoerent cu art: %r" % t.text_citat

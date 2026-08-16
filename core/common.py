@@ -426,7 +426,7 @@ COTE = {
         (date(2018, 1, 1), Decimal("0.10"), Temei("CF", art="78", data_in="2018-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.64 alin.(1): Cota de impozit este de 10% (aplicata la venituri din salarii, art.78)")),
     ],
     "cam": [
-        (date(2018, 1, 1), Decimal("0.0225"), Temei("CF", art="220^1", data_in="2018-01-01", verificat_la="2026-08-07", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.220^3 alin.(1): Cota contributiei asiguratorii pentru munca este de 2,25%")),
+        (date(2018, 1, 1), Decimal("0.0225"), Temei("CF", art="220^3", alin="1", data_in="2018-01-01", verificat_la="2026-08-16", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/cod_fiscal_227_2015_consolidat.html", text_citat="art.220^3 alin.(1): Cota contributiei asiguratorii pentru munca este de 2,25%")),
     ],
     "salariu_minim": [
         (date(2026, 7, 1), Decimal("4325"), Temei("HG", 146, 2026, data_in="2026-07-01", url="anaf_surse/hg_146_2026_salariu_minim.html", verificat_la="2026-08-07", de_cine="Code/Costin", text_citat="Articolul 1: Incepand cu data de 1 iulie 2026 ... la suma de 4.325 lei lunar", lant_acte="HG 146/2026 art.2 abroga HG 1506/2024 de la 01.07.2026", nivel_sursa="MO")),
