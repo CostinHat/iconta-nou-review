@@ -1892,6 +1892,15 @@ async def salariati_import_incarca(tenant_id: int, fisier: UploadFile = File(...
         raise HTTPException(400, str(e))
     valizi = sum(1 for r in randuri if r["cnp_valid"])
     erori = migrare_api.erori_verifica(salariati_import_api.verifica_randuri(randuri))  # [Q5] poarta unica
+    from core import cor_api as _cor   # [Q16] imbogateste COR cu denumirea ocupatiei (nomenclator public.cor_ocupatii)
+    _cache = {}
+    with db.get_conn() as conn:
+        for r in randuri:
+            c = (r.get("cor") or "").strip()
+            if c and c not in _cache:
+                _cache[c] = _cor.denumire(conn, c)
+    for r in randuri:
+        r["cor_denumire"] = _cache.get((r.get("cor") or "").strip())
     return {"randuri": randuri, "total": len(randuri), "valizi": valizi,
             "invalizi": len(randuri) - valizi, "erori": erori}
 

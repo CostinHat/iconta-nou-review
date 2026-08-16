@@ -2905,3 +2905,13 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
   randul-drift (extrage OK / verifica_randuri respinge) prins la preview. RED probat pe main.py vechi
   (6/6 KeyError 'erori'). Flagurile lui extrage NU s-au sters (risc consumatori) — nu mai sunt autoritatea
   de validare; daca raman complet nefolosite dupa mutarea frontendului, sunt cod mort de curatat ulterior.
+
+## 16.08.2026 — COR: preview salariati arata denumirea ocupatiei, nu codul (Q16, lot 3)
+- Preview-ul de salariati (migrare.js) afisa `r.cor` (codul COR brut) etichetat "Functie". Fix: endpointul
+  de preview imbogateste fiecare rand cu `cor_denumire = cor_api.denumire(conn, cod)` (nomenclator
+  public.cor_ocupatii); frontendul arata denumirea, cu fallback la cod si codul in `title`. Cod necunoscut
+  in nomenclator -> cor_denumire None (necunoscut declarat, regula 4; UI cade pe cod).
+- Garda core/test_q16_cor.py (2 teste): endpointul ataseaza denumirea; codul necunoscut ramane None.
+  RED probat pe main.py vechi (KeyError 'cor_denumire').
+- Cuplaj rezolvat: Q16 adauga `db.get_conn` in endpointul de preview salariati -> gardul Q5
+  (test_preview_salvare_poarta) a cerut fake_conn pe cazul salariati (cor gol = fara lookup).

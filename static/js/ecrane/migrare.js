@@ -902,7 +902,7 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
       <div class="mig-sold-rand mig-rand-sal ${ok ? "" : "mig-rand-invalid"}">
         <span class="mig-sold-den">${esc(r.nume)} ${esc(r.prenume)}</span>
         <span class="mig-sold-cnp">${cnpCell}</span>
-        <span class="mig-sold-cor">${esc(r.cor || "")}</span>
+        <span class="mig-sold-cor" title="${esc(r.cor || "")}">${esc(r.cor_denumire || r.cor || "—")}</span>
         <span class="mig-sold-val">${bani(r.salariu_brut)}</span>
         <span class="mig-sold-norma">${norma}</span>
       </div>`;

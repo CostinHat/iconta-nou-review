@@ -4342,3 +4342,8 @@ acum verdictul poartii unice (verifica_randuri), nu flagurile lui extrage care d
 `gateazaPreview` blocheaza Salvarea si arata randurile respinse la preview (DS cap.5/6/24). Garda trece acelasi
 fisier prin ambele capete, verdict identic pe rand; RED probat pe main.py vechi (6/6 KeyError 'erori').
 verificator 0; suita import 37 passed. Bump migrare.js la 3 situri de import via versioneaza_assets.py.
+
+## 16.08.2026 (tura import CUBUS, lot 3: COR denumire) — Q16
+Preview salariati arata codul COR in loc de denumirea ocupatiei. Endpointul imbogateste acum randurile cu
+cor_api.denumire (nomenclator public.cor_ocupatii); frontendul arata denumirea, fallback la cod. Garda RED
+probata. verificator 0. Cuplaj cu Q5 (endpointul deschide conn) rezolvat in gardul Q5.
