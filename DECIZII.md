@@ -9406,3 +9406,12 @@ s-a plecat (meniul firmei sau lista de firme din wizard), NU deschide o fereastr
 (care arata toate firmele - "in afara firmei pe care lucra contabilul"). Mesajul de succes supravietuieste
 revenirea prin var de modul _migMesaj (tiparul _bonuriMesaj), consumat la re-randare (arataMesaj "ok", DS
 cap.6). Corectitudine UX (feedback + pozitie), aliniere la tiparul deja rezolvat (bonuri, retete, status-save).
+
+## 16.08.2026 - model CSV descarcabil la toate straturile de import; format din parser (C4)
+Fiecare strat de import cu fisier ofera "Descarca model (CSV)"; formatul = citit din PARSER
+(core/*_import_api.py), nu din textul de pe ecran. Adaugat la 8 straturi (parteneri/salariati/asociati/
+mijloace/istoric/articole/retete/rip); solduri il avea. plan_conturi = cautare/adaugare (fara upload), exclus.
+Intro-ul care descrie coloanele trebuie sa NUMEASCA tot ce citeste parserul: mijloace (cont imobilizare +
+amortizare) si articole (cont stoc + cheltuiala) omiteau conturi citite la import -> completate. Model comun
+(_descarcaModelCSV + MODELE), exemple realiste care trec parserul (probat round-trip pe mijloace).
+Corectitudine (text care descrie ce accepta aplicatia), nu decizie de produs.

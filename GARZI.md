@@ -2967,3 +2967,9 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
   (_migMesaj/_consumaMigMesaj, arataMesaj "ok", DS cap.6). Gard core/test_c2_migrare_revenire_firma.py (2), RED
   probat. CLASA (Regula 13): 7 handlere (6 straturi cu randuri + vector fiscal), toate reparate;
   retete/articole/status-save deja conforme.
+
+- **C4** [audit tenant_003, text/model]: "Descarca model (CSV)" doar la solduri (1/9); intro mijloace omitea
+  contul de imobilizare/amortizare (citite de parser). Fix: model comun _descarcaModelCSV + MODELE la toate cele
+  8 straturi de import cu fisier (format din parser), intro mijloace+articole completate cu conturile. Gard
+  core/test_c4_model_csv.py (3), RED probat. Round-trip probat pe mijloace (model descarcat->reincarcat->parsat).
+  CLASA: plan_conturi = cautare/adaugare (fara upload), exclus; intro-urile celorlalte coincid cu parserul.

@@ -544,6 +544,35 @@ function descarcaModelSolduri() {
   URL.revokeObjectURL(url);
 }
 
+// C4: modele CSV descarcabile per strat (format citit din parserul de import - core/*_import_api.py).
+const MODELE = {
+  parteneri: { fisier: "model_solduri_parteneri.csv", antet: "cont,cui,denumire,sold debitor,sold creditor",
+    randuri: ["4111,RO12345678,Client Exemplu SRL,5000,0", "401,RO87654321,Furnizor Exemplu SRL,0,3000"] },
+  salariati: { fisier: "model_salariati.csv", antet: "nume,prenume,cnp,data angajare,norma,brut,judet",
+    randuri: ["Popescu,Ana,2900215410011,2020-01-15,intreaga,5000,B", "Ionescu,Radu,1850715410012,2021-03-01,intreaga,6000,CJ"] },
+  asociati: { fisier: "model_asociati.csv", antet: "nume,cnp/cui,cota %",
+    randuri: ["Popescu Ana,2900215410011,60", "Ionescu Radu,1850715410012,40"] },
+  mijloace: { fisier: "model_mijloace_fixe.csv", antet: "cod,denumire,valoare intrare,valoare rezidual,durata luni,data PIF,metoda,cont imobilizare,cont amortizare",
+    randuri: ["MF001,Laptop Dell Latitude,6000,0,36,2024-03-15,liniara,2131,2813", "MF002,Autoturism serviciu,80000,20000,60,2023-06-01,liniara,2133,2813"] },
+  istoric: { fisier: "model_istoric_declaratii.csv", antet: "tip,an,luna,data depunere",
+    randuri: ["D112,2026,1,2026-02-25", "D300,2026,1,2026-02-25"] },
+  articole: { fisier: "model_articole.csv", antet: "denumire,um,cantitate,pret,cont stoc,cont cheltuiala",
+    randuri: ["Faina alba tip 000,kg,100,3.50,371,607", "Ulei floarea soarelui,L,50,8.20,371,607"] },
+  retete: { fisier: "model_retete.csv", antet: "reteta,pret vanzare,ingredient,cantitate",
+    randuri: ["Ciorba de burta,25,Burta de vita,0.15", "Ciorba de burta,25,Smantana,0.05", "Salata de boeuf,18,Cartofi,0.20"] },
+  rip: { fisier: "model_rip.csv", antet: "data,tip,explicatie,suma,categorie,metoda",
+    randuri: ["2026-01-10,incasare,Factura 1001 client,1500,venituri,banca", "2026-01-15,plata,Chirie spatiu ianuarie,600,cheltuieli,numerar"] },
+};
+function _descarcaModelCSV(spec) {
+  const continut = "\ufeff" + [spec.antet, ...spec.randuri].join("\r\n") + "\r\n";  // BOM: Excel citeste UTF-8
+  const blob = new Blob([continut], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = spec.fisier;
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
 function importSolduriFirma(corp, nav, firma) {
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă balanța de deschidere (cont · denumire · sold debitor · sold creditor). Debitul total trebuie să fie egal cu creditul total. Conturile din balanță care nu sunt încă în planul de conturi se adaugă automat (nu sunt respinse).</p>
@@ -694,6 +723,7 @@ async function wizardParteneri(corp, nav) {
 function importParteneriFirma(corp, nav, firma) {
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă partenerii (cont · CUI · denumire · sold debitor · sold creditor).</p>
+    <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0a807b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
@@ -704,6 +734,7 @@ function importParteneriFirma(corp, nav, firma) {
     <div id="mig-preview"></div>
   `;
   const fileInput = corp.querySelector("#mig-file");
+  corp.querySelector("#mig-model")?.addEventListener("click", () => _descarcaModelCSV(MODELE.parteneri));
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
     if (!file) return;
@@ -850,6 +881,7 @@ async function wizardSalariati(corp, nav) {
 function importSalariatiFirma(corp, nav, firma) {
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă exportul de salariați (nume · CNP · salariu · date contract).</p>
+    <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#c2415f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
@@ -860,6 +892,7 @@ function importSalariatiFirma(corp, nav, firma) {
     <div id="mig-preview"></div>
   `;
   const fileInput = corp.querySelector("#mig-file");
+  corp.querySelector("#mig-model")?.addEventListener("click", () => _descarcaModelCSV(MODELE.salariati));
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
     if (!file) return;
@@ -988,6 +1021,7 @@ async function wizardAsociati(corp, nav) {
 function importAsociatiFirma(corp, nav, firma) {
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă asociații (nume · CNP/CUI · cotă %).</p>
+    <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#6d28d9" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
@@ -998,6 +1032,7 @@ function importAsociatiFirma(corp, nav, firma) {
     <div id="mig-preview"></div>
   `;
   const fileInput = corp.querySelector("#mig-file");
+  corp.querySelector("#mig-model")?.addEventListener("click", () => _descarcaModelCSV(MODELE.asociati));
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
     if (!file) return;
@@ -1122,7 +1157,8 @@ async function wizardMijloace(corp, nav) {
 
 function importMijloaceFirma(corp, nav, firma) {
   corp.innerHTML = `
-    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă registrul de mijloace fixe (cod · denumire · valoare · rezidual · durată · PIF · metodă).</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă registrul de mijloace fixe (cod · denumire · valoare · rezidual · durată · PIF · metodă · cont imobilizare · cont amortizare).</p>
+    <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#c0492b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
@@ -1133,6 +1169,7 @@ function importMijloaceFirma(corp, nav, firma) {
     <div id="mig-preview"></div>
   `;
   const fileInput = corp.querySelector("#mig-file");
+  corp.querySelector("#mig-model")?.addEventListener("click", () => _descarcaModelCSV(MODELE.mijloace));
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
     if (!file) return;
@@ -1260,6 +1297,7 @@ async function wizardIstoric(corp, nav) {
 function importIstoricFirma(corp, nav, firma) {
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă declarațiile depuse (tip · an · lună · data depunerii).</p>
+    <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#45597f" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M9 13l2 2 4-4"/></svg>
@@ -1270,6 +1308,7 @@ function importIstoricFirma(corp, nav, firma) {
     <div id="mig-preview"></div>
   `;
   const fileInput = corp.querySelector("#mig-file");
+  corp.querySelector("#mig-model")?.addEventListener("click", () => _descarcaModelCSV(MODELE.istoric));
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
     if (!file) return;
@@ -1510,6 +1549,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
 function importReteteFirma(corp, nav, firma) {
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>\u00cencarc\u0103 re\u021betarul: un r\u00e2nd per ingredient (re\u021bet\u0103 \u00b7 pre\u021b v\u00e2nzare \u00b7 ingredient \u00b7 cantitate/por\u021bie). Ingredientele se potrivesc pe articolele din stoc dup\u0103 denumire.</p>
+    <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0a807b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
@@ -1520,6 +1560,7 @@ function importReteteFirma(corp, nav, firma) {
     <div id="mig-preview"></div>
   `;
   const fileInput = corp.querySelector("#mig-file");
+  corp.querySelector("#mig-model")?.addEventListener("click", () => _descarcaModelCSV(MODELE.retete));
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
     if (!file) return;
@@ -1575,7 +1616,8 @@ function previzualizeazaRetete(corp, nav, firma, date) {
 // [F151] Import articole + stoc initial CV (pasul 10)
 function importArticoleFirma(corp, nav, firma) {
   corp.innerHTML = `
-    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>\u00cencarc\u0103 nomenclatorul de articole cu stocul ini\u021bial (denumire \u00b7 UM \u00b7 cantitate \u00b7 pre\u021b unitar).</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>\u00cencarc\u0103 nomenclatorul de articole cu stocul ini\u021bial (denumire \u00b7 UM \u00b7 cantitate \u00b7 pre\u021b unitar \u00b7 op\u021bional cont stoc \u00b7 cont cheltuial\u0103).</p>
+    <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#0a807b" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
@@ -1586,6 +1628,7 @@ function importArticoleFirma(corp, nav, firma) {
     <div id="mig-preview"></div>
   `;
   const fileInput = corp.querySelector("#mig-file");
+  corp.querySelector("#mig-model")?.addEventListener("click", () => _descarcaModelCSV(MODELE.articole));
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
     if (!file) return;
@@ -1644,6 +1687,7 @@ function previzualizeazaArticole(corp, nav, firma, date) {
 function importRipFirma(corp, nav, firma) {
   corp.innerHTML = `
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>\u00cencarc\u0103 registrul de \u00eencas\u0103ri-pl\u0103\u021bi (istoric cronologic: dat\u0103 \u00b7 tip \u00b7 explica\u021bie \u00b7 sum\u0103 \u00b7 categorie \u00b7 metod\u0103). Partida simpl\u0103 nu are balan\u021b\u0103 de deschidere \u2014 soldul rezult\u0103 din opera\u021biuni.</p>
+    <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#16a34a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
@@ -1654,6 +1698,7 @@ function importRipFirma(corp, nav, firma) {
     <div id="mig-preview"></div>
   `;
   const fileInput = corp.querySelector("#mig-file");
+  corp.querySelector("#mig-model")?.addEventListener("click", () => _descarcaModelCSV(MODELE.rip));
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
     if (!file) return;

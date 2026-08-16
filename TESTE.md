@@ -1605,3 +1605,7 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
 - core/test_c2_migrare_revenire_firma.py (2) - fiecare nav.deschide("<Titlu>", wizard) apare O SINGURA data
   (dispecerul de straturi); a doua aparitie (handlerul de salvare) = nav.inapoiPas() + _migMesaj/_consumaMigMesaj.
   RED probat pe cod vechi (7 titluri de 2 ori, fara _migMesaj); GREEN dupa fix.
+
+## 16.08.2026 - Gard C4 (model CSV per strat)
+- core/test_c4_model_csv.py (3) - cele 8 straturi de import au butonul model cablat (_descarcaModelCSV(MODELE.X)),
+  MODELE are toate cheile, intro-ul mijloacelor numeste cont imobilizare+amortizare. RED probat pe cod vechi; GREEN dupa.

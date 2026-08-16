@@ -4380,3 +4380,12 @@ arataMesaj "ok"). Randat before/after pe tenant_003 (salariati): before -> lista
 RED->GREEN. CLASA (Regula 13): grep nav.deschide in migrare.js -> 7 handlere de salvare (solduri/parteneri/
 salariati/asociati/mijloace/istoric + vector fiscal) aveau bounce-ul; toate 7 reparate. retete/articole/
 status-save (mig-salveaza generic) foloseau deja tiparul bun (arataMesaj ok / inapoiPas).
+
+## 16.08.2026 (audit tenant_003) - C4 livrat: model CSV la toate straturile + intro mijloace
+C4 reparat: "Descarca model (CSV)" exista doar la solduri (1/9). Adaugat la celelalte 8 straturi de import cu
+fisier, cu formatul citit din parser (nu din textul ecranului). Intro mijloace omitea contul de imobilizare/
+amortizare (desi parserul le citeste) - completat; la fel articole (cont stoc/cheltuiala). Model comun
+_descarcaModelCSV + MODELE. Probat round-trip pe mijloace (tenant_003): modelul descarcat, reincarcat, parserul
+il recunoaste (2 mijloace, toate corecte, cu cod/durata/metoda). Gard test_c4 (3) RED->GREEN. Randat: butonul +
+intro cu conturile pe ecran. CLASA: 9 straturi cu upload (solduri avea); plan_conturi = cautare (fara upload),
+exclus; intro-uri verificate vs parser (mijloace+articole omiteau -> reparate; restul coincid).
