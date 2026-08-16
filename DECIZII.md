@@ -9355,3 +9355,14 @@ ANAF v9 nu intoarce periodicitatea TVA (lunar/trimestrial) — confirmat la surs
 periodicitate; comentariu si in `migrare.js`). Decizie: NU se fabrica o valoare implicita (regula 4). Ramane alegerea
 contabilului; lipsa la un platitor e semnalata EXPLICIT in completitudinea profilului (`firma_profil_api.blocaje` ->
 "D300/D394: periodicitatea TVA nu e aleasa"), nu prin "—" tacut. Q8 din parcurgerea onboarding CUBUS (16.08).
+
+## 16.08.2026 — amortizarea "la zi" pe metoda; casat = necunoscut explicit; ultima luna absoarbe rotunjirea
+Ecranul MF + notele (lunara/casare/reevaluare) calculau liniar ignorand metoda. Sursa unica de amortizare =
+motorul core.d406_active (CF art.28). Trei alegeri de CORECTITUDINE (nu de produs — cifre afisate/inscrise):
+1. Casat: amortizat/ramas = None (instantaneul de la casare nu se pastreaza in mijloace_fixe -> necunoscut
+   declarat explicit, regula 4), NU 0/valoare-plina (fostul default tacit, gresea in sens invers).
+2. Ultima luna de amortizare absoarbe restul de rotunjire (liniar SI neliniar) -> suma amortizarilor lunare
+   1..dnf = valoarea amortizabila EXACT; un activ nu se amortizeaza cu mai mult/putin decat costul-rezidual.
+3. Metoda nepermisa pe categorie NU se calculeaza liniar tacit: eroare pe rand (ecran) / 422 (note), care
+   NUMESTE categoria si metodele permise (mesajul din _verifica_categorie).
+Motivul comun: amortizarea e fapt fiscal (DS cap.17) — o singura sursa, fara default tacit al cifrei.

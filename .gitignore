@@ -51,3 +51,4 @@ venv/lib/python3.12/site-packages/playwright/
 venv/lib/python3.12/site-packages/playwright-*.dist-info/
 venv/lib/python3.12/site-packages/pyee/
 venv/lib/python3.12/site-packages/pyee-*.dist-info/
+.lant_tmp/

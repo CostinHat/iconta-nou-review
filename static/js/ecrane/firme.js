@@ -14,7 +14,7 @@ import { CULORI as CULORI_VERDICT, randeazaCorpVerdict, legaVerdict } from "./co
 import { randeazaProduse } from "./produse_ecran.js?v=930762c3c4";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=ae22f440bf";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=05269e407b";  // [date_firma_v1]
-import { ecranMijloace } from "./mijloace_ecran.js?v=c047edba99";  // [ecran_mf_v1]
+import { ecranMijloace } from "./mijloace_ecran.js?v=cec020b9da";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
 export function randeazaListaFirme(container, nav, inapoi) {

@@ -27,8 +27,10 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
         <td>${esc(m.cod || "")}</td>
         <td>${esc(m.denumire || "")}</td>
         <td class="fd-td-num">${bani(m.valoare)}</td>
-        <td class="fd-td-num">${bani(m.amortizat)}</td>
-        <td class="fd-td-num">${bani(m.ramas)}</td>
+        ${m.eroare
+          ? `<td class="fd-td-num" colspan="2"><span class="msg-eroare">${esc(m.eroare)}</span></td>`
+          : `<td class="fd-td-num">${m.amortizat != null ? bani(m.amortizat) : "—"}</td>
+        <td class="fd-td-num">${m.ramas != null ? bani(m.ramas) : "—"}</td>`}
         <td>${esc(m.metoda || "")}</td>
         <td>${m.data_pif ? dataRo(m.data_pif) : "—"}</td>
         <td>${m.activ ? "activ" : "casat"}</td>
@@ -42,7 +44,7 @@ export async function ecranMijloace(corp, nav, tenantId, opt = {}) {
 
     corp.innerHTML = `
       <h2 class="pf-titlu">Mijloace fixe</h2>
-      <p class="pf-intro">Registrul activelor firmei: valoare, amortizat la zi (liniar, de la punerea în funcțiune), rămas. Casarea și reevaluarea generează note contabile drept <b>ciornă</b> — se validează din Registru jurnal.</p>
+      <p class="pf-intro">Registrul activelor firmei: valoare, amortizat la zi (pe metoda fiecărui activ — liniar, degresiv, accelerat sau superaccelerat, CF art.28), rămas. Casarea și reevaluarea generează note contabile drept <b>ciornă</b> — se validează din Registru jurnal.</p>
       <div id="mf-mesaj"></div>
       ${lista.length ? `
       <div style="overflow-x:auto">

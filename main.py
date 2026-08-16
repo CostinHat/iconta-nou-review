@@ -3559,18 +3559,23 @@ def tenant_amortizare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabin
             if cur.fetchone():
                 raise HTTPException(400, "Amortizarea lunii e deja generată.")
             cur.execute(f"""
-                SELECT id, denumire, cont_amortizare, valoare, COALESCE(rezidual,0), dnf_luni, data_pif
+                SELECT id, denumire, cont_amortizare, valoare, COALESCE(rezidual,0), dnf_luni,
+                       data_pif, cont_imobilizare, metoda
                 FROM {schema}.mijloace_fixe WHERE activ = true
             """)
             mf = cur.fetchall()
+        from core import d406_active as _d406
         linii = []
-        for mid, den, cont_am, val, rez, dnf, pif in mf:
+        for mid, den, cont_am, val, rez, dnf, pif, cont_imob, met in mf:
             if not pif or not dnf:
                 continue
-            luni_trecute = (an - pif.year) * 12 + (luna - pif.month)
-            if luni_trecute < 1 or luni_trecute > dnf:
-                continue  # amortizarea incepe luna urmatoare PIF, se opreste la DNF
-            rata = ((D(str(val)) - D(str(rez))) / dnf).quantize(D("0.01"))
+            mf_d = {"cod": den, "denumire": den, "cont_imobilizare": cont_imob,
+                    "cont_amortizare": cont_am, "valoare": val, "rezidual": rez,
+                    "dnf_luni": dnf, "data_pif": pif, "metoda": met}
+            try:
+                rata = _d406.amortizare_luna(mf_d, an, luna)   # metoda reala (CF art.28), nu liniar
+            except ValueError as e:
+                raise HTTPException(422, f"Amortizarea nu se poate genera pentru {den}: {e}")
             if rata > 0:
                 linii.append((cont_am or "2813", float(rata), den))
         if not linii:
@@ -7895,19 +7900,18 @@ def reevaluare_imobilizare(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
             else:
                 with conn.cursor() as cur:
                     cur.execute(f"""SELECT denumire, cont_imobilizare, cont_amortizare,
-                                           valoare, COALESCE(rezidual,0), dnf_luni, data_pif
+                                           valoare, COALESCE(rezidual,0), dnf_luni, data_pif, metoda
                                     FROM {schema}.mijloace_fixe WHERE id=%s AND activ=true""",
                                 (corp["mijloc_fix_id"],))
                     mf = cur.fetchone()
                 if not mf:
                     raise HTTPException(404, "mijloc fix inexistent/inactiv")
-                den, ci, ca, val, rez, dnf, pif = mf
+                den, ci, ca, val, rez, dnf, pif, met = mf
                 ref = _date.fromisoformat(corp["data"])
-                luni = 0
-                if pif and dnf:
-                    luni = max(0, min((ref.year - pif.year) * 12 + (ref.month - pif.month), dnf))
-                rata = (Decimal(str(val)) - Decimal(str(rez))) / dnf if dnf else Decimal(0)
-                amortizare = (rata * luni).quantize(Decimal("0.01"))
+                from core import d406_active as _d406
+                mf_d = {"cod": den, "denumire": den, "cont_imobilizare": ci, "cont_amortizare": ca,
+                        "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif, "metoda": met}
+                amortizare = _d406.amortizat_la_data(mf_d, ref)["amortizat"]   # metoda reala, nu liniar
                 r = _rv.nota_reevaluare(val, amortizare, corp["valoare_justa"], ci, ca,
                                         corp.get("sold_105_activ", 0),
                                         corp.get("pierdere_655_anterioara", 0))
@@ -8469,8 +8473,12 @@ def nota_contract_special(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
 
 @app.get("/tenants/{tenant_id}/mijloace-fixe")
 def tenant_mijloace_fixe(tenant_id: int, ctx=Depends(cere_cabinet)):
-    """[ecran_mf_v1 14.08.2026] Registrul mijloacelor fixe ale firmei: valoare, amortizat
-    la zi (liniar, luni scurse de la PIF plafonate la dnf), ramas, stare activ/casat.
+    """[ecran_mf_v1 14.08.2026; amortizare pe metoda 16.08.2026] Registrul mijloacelor fixe ale
+    firmei: valoare, amortizat la zi PE METODA activului (liniar/degresiv/accelerat/superaccelerat,
+    CF art.28 - motor unic core.d406_active.amortizat_la_data), ramas (net book value), stare
+    activ/casat. Randul al carui activ are metoda nepermisa pe categorie (alin.5/8^1) NU se
+    calculeaza liniar tacit: intoarce amortizat=None, ramas=None, eroare=<motiv> (DS cap.17).
+    Casat: amortizat/ramas None (instantaneul de la casare nu se pastreaza in mijloace_fixe).
     Sursa unica pentru ID-ul cerut de casare/reevaluare (pana acum netastabil - niciun ecran)."""
     from decimal import Decimal
     from datetime import date as _date
@@ -8483,20 +8491,24 @@ def tenant_mijloace_fixe(tenant_id: int, ctx=Depends(cere_cabinet)):
                                   valoare, rezidual, dnf_luni, data_pif, metoda, activ
                            FROM mijloace_fixe ORDER BY activ DESC, id""")
             rows = cur.fetchall()
+    from core import d406_active as _d406
     for (mid, cod, den, ci, ca, val, rez, dnf, pif, met, activ) in rows:
         val = Decimal(str(val or 0)); rez = Decimal(str(rez or 0))
-        amortizat = Decimal("0")
-        if activ and pif and dnf:
-            luni = max(0, min((azi.year - pif.year) * 12 + (azi.month - pif.month), dnf))
-            rata = (val - rez) / dnf if dnf else Decimal(0)
-            amortizat = (rata * luni).quantize(Decimal("0.01"))
-        ramas = (val - amortizat).quantize(Decimal("0.01"))
+        amortizat = ramas = eroare = None
+        if activ:
+            mf_d = {"cod": cod, "denumire": den, "cont_imobilizare": ci, "cont_amortizare": ca,
+                    "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif, "metoda": met}
+            try:
+                r = _d406.amortizat_la_data(mf_d, azi)   # metoda reala (CF art.28), nu liniar
+                amortizat = str(r["amortizat"]); ramas = str(r["ramas"])
+            except (ValueError, KeyError) as e:
+                eroare = str(e)   # metoda nepermisa / date invalide -> se arata, nu se fabrica liniar
         out.append({"id": mid, "cod": cod, "denumire": den,
                     "cont_imobilizare": ci, "cont_amortizare": ca,
                     "valoare": str(val), "rezidual": str(rez),
                     "dnf_luni": dnf, "data_pif": str(pif) if pif else None,
                     "metoda": met, "activ": bool(activ),
-                    "amortizat": str(amortizat), "ramas": str(ramas)})
+                    "amortizat": amortizat, "ramas": ramas, "eroare": eroare})
     return {"mijloace": out}
 
 
@@ -8541,20 +8553,18 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
                     mf_id = corp["mijloc_fix_id"]
                     with conn.cursor() as cur:
                         cur.execute(f"""SELECT denumire, cont_imobilizare, cont_amortizare,
-                                               valoare, COALESCE(rezidual,0), dnf_luni, data_pif
+                                               valoare, COALESCE(rezidual,0), dnf_luni, data_pif, metoda
                                         FROM {schema}.mijloace_fixe
                                         WHERE id=%s AND activ=true""", (mf_id,))
                         mf = cur.fetchone()
                     if not mf:
                         raise HTTPException(404, "mijloc fix inexistent/inactiv")
-                    den, ci, ca, val, rez, dnf, pif = mf
+                    den, ci, ca, val, rez, dnf, pif, met = mf
                     ref = _date.fromisoformat(corp["data"])
-                    luni = 0
-                    if pif and dnf:
-                        luni = max(0, min((ref.year - pif.year) * 12 +
-                                          (ref.month - pif.month), dnf))
-                    rata = (Decimal(str(val)) - Decimal(str(rez))) / dnf if dnf else Decimal(0)
-                    am = (rata * luni).quantize(Decimal("0.01"))
+                    from core import d406_active as _d406
+                    mf_d = {"cod": den, "denumire": den, "cont_imobilizare": ci, "cont_amortizare": ca,
+                            "valoare": val, "rezidual": rez, "dnf_luni": dnf, "data_pif": pif, "metoda": met}
+                    am = _d406.amortizat_la_data(mf_d, ref)["amortizat"]   # metoda reala, nu liniar
                     r = _iv.nota_casare_mf(val, am, ci, ca)
                     d0 = f"Casare {den} (PV comisie, neamortizat {r['neamortizat']})"
                 else:

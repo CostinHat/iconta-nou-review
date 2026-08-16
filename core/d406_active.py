@@ -188,7 +188,7 @@ def calc_asset(mf, an):
     Metoda din activ decide calculul (CF art.28). Amortizarea incepe cu luna urmatoare PIF."""
     val = _d(mf["valoare"])
     rez = _d(mf.get("rezidual"))
-    dnf = int(mf["dnf_luni"])
+    dnf = int(mf.get("dnf_luni") or 0)
     if dnf <= 0 or val <= 0:
         raise ValueError(f"MF {mf.get('cod')}: valoare/dnf invalide")
     pif = mf.get("data_pif")
@@ -225,6 +225,66 @@ def calc_asset(mf, an):
         "book_end": (val - am_sfarsit).quantize(B),
         "procent_anual": (Decimal("100") * 12 / dnf).quantize(B, rounding=ROUND_HALF_UP),
     }
+
+def amortizat_la_data(mf, la_data):
+    """Amortizarea cumulata 'la zi' (pana la `la_data` inclusiv) pe METODA reala a activului
+    (CF art.28), plus valoarea ramasa (net book value). Amortizarea incepe luna urmatoare PIF
+    (alin.12); numarul de rate lunare inregistrate = lunile scurse de la PIF pana la la_data,
+    plafonat la dnf. La granita de an (la_data = 31.12.<an>) rezultatul coincide cu
+    calc_asset(mf, an)['accum_depr'] / ['book_end'] - aceeasi sursa de amortizare, un singur motor.
+    mf: acelasi dict ca la calc_asset. Ridica ValueError pe metoda nepermisa pe categorie
+    (alin.5/8^1) sau date invalide - apelantul decide cum arata randul, NU fabrica liniar tacit."""
+    val = _d(mf["valoare"])
+    rez = _d(mf.get("rezidual"))
+    dnf = int(mf.get("dnf_luni") or 0)
+    if dnf <= 0 or val <= 0:
+        raise ValueError(f"MF {mf.get('cod')}: valoare/dnf invalide")
+    pif = mf.get("data_pif")
+    metoda = _norm_metoda(mf.get("metoda"))
+    _verifica_categorie(mf, metoda, pif)   # ce legea nu permite pe categorie -> refuza (nu calcula gresit)
+    amortizabil = val - rez
+    if pif is None:
+        return {"amortizat": Decimal("0.00"), "ramas": val.quantize(B), "metoda": metoda}
+    luni_scurse = max(0, min(dnf, (la_data.year - pif.year) * 12 + (la_data.month - pif.month)))
+    if metoda == "liniara" or dnf < _MIN_LUNI_NELINIAR:
+        rata = (amortizabil / dnf).quantize(B, rounding=ROUND_HALF_UP)
+        amortizat = amortizabil if luni_scurse >= dnf else (rata * luni_scurse).quantize(B, rounding=ROUND_HALF_UP)
+    else:
+        luni = _amort_lunar_neliniar(metoda, amortizabil, dnf)
+        amortizat = min(amortizabil, sum(luni[:luni_scurse], Decimal(0))).quantize(B, rounding=ROUND_HALF_UP)
+    ramas = (val - amortizat).quantize(B)
+    return {"amortizat": amortizat, "ramas": ramas, "metoda": metoda}
+
+def amortizare_luna(mf, an, luna):
+    """Amortizarea unei SINGURE luni calendaristice (an, luna) pe METODA reala (CF art.28).
+    0.00 daca luna e inaintea primei luni de amortizare (luna urmatoare PIF, alin.12) sau dupa
+    epuizarea dnf. Ultima luna liniara absoarbe restul de rotunjire, ca suma lunilor 1..dnf =
+    valoarea amortizabila (coerent cu amortizat_la_data la epuizare). Ridica ValueError pe metoda
+    nepermisa pe categorie (alin.5/8^1) - apelantul (nota lunara) decide, nu fabrica liniar tacit."""
+    val = _d(mf["valoare"])
+    rez = _d(mf.get("rezidual"))
+    dnf = int(mf.get("dnf_luni") or 0)
+    if dnf <= 0 or val <= 0:
+        raise ValueError(f"MF {mf.get('cod')}: valoare/dnf invalide")
+    pif = mf.get("data_pif")
+    metoda = _norm_metoda(mf.get("metoda"))
+    _verifica_categorie(mf, metoda, pif)
+    if pif is None:
+        return Decimal("0.00")
+    luni_trecute = (an - pif.year) * 12 + (luna - pif.month)   # index (1-based) al lunii de amortizare
+    if luni_trecute < 1 or luni_trecute > dnf:
+        return Decimal("0.00")
+    amortizabil = val - rez
+    if metoda == "liniara" or dnf < _MIN_LUNI_NELINIAR:
+        rata = (amortizabil / dnf).quantize(B, rounding=ROUND_HALF_UP)
+        if luni_trecute == dnf:                                 # ultima luna: rest, ca totalul = amortizabil
+            return (amortizabil - rata * (dnf - 1)).quantize(B)
+        return rata
+    luni = _amort_lunar_neliniar(metoda, amortizabil, dnf)
+    if luni_trecute == dnf:                                     # ultima luna: rest, ca totalul = amortizabil
+        prev = sum((x.quantize(B, rounding=ROUND_HALF_UP) for x in luni[:dnf - 1]), Decimal(0))
+        return (amortizabil - prev).quantize(B)
+    return luni[luni_trecute - 1].quantize(B, rounding=ROUND_HALF_UP)
 
 def xml_asset(mf, an, valuation_class="2"):
     """XML pentru un Asset. valuation_class: cod clasificare (implicit grupa 2)."""

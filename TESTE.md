@@ -22,6 +22,15 @@ zero. Invers ar însemna să verifici de două ori — sau, mai probabil, a doua
 ---
 
 ## În lucru acum
+- fir: TURA IMPORT CUBUS — cele 11 defecte ramase din PREDARE_LANT (16.08.2026). Ordine ceruta: intai
+  cifre gresite pe ecran, apoi blocaje, apoi restul. LOT 1 [GATA]: amortizare pe metoda (Q6+Q15).
+- ultim: LOT 1 amortizare — 4 situri main.py (ecran/nota lunara/casare/reevaluare) cablate la motorul
+  unic d406_active; 2 functii noi (amortizat_la_data, amortizare_luna). Garda
+  core/test_amortizare_ecran_metoda.py (15 teste, RED probat pe main.py vechi: constructii+degresiva ->
+  13333.33 liniar in loc de eroare). verificator 0. [bifa: gard nou in git dupa commit.]
+- urmator: LOT 2 = structura preview=salvare pe 5 straturi (Q5), apoi Q9/Q16/Q18/Q7/Q8/Q12/Q14, render
+  Q1/Q10, cod mort skip salariati. NEINCEPUT.
+
 - fir: C-4 TRANȘA 2 (coerență + TVA) [ACTIV 06.08.2026 — predare ★★; supersedează firele de mai jos] — seed 11 firme + T-1…T-7 coerente + documente D300/D394/D390/D301 pt M1/M2/P1/P2/N1/S1/S2/S3 + limite TVA L1/L2/L3/L4/L10/L12 ×3 cazuri. Metodologie identică tranșei 1: divergență = bug până la proba contrarie → vânătoare de clasă → temei la sursă → gard + RED/GREEN → DUK.
 - ultim: C-5 CATALOG COMPLET (P1-P7) în date_test/C5_catalog.md — P1 (blocari: izolare gard structural test_izolare_structurala.py 243 rute×metoda + marcaje mutat; clase 1-4 catalog), P6 (cens .oblig 34 ecrane: 10 goluri dir.1 + 5 dir.2), P2 (date lipsa: stopuri fiscale exemplare; bug B17 d406 UM tacut), P3 (~140 raise-uri core/: ~55% explicit reconciliere+cota-TVA model, ~25% telegrafic; ZERO tacere fiscala), P4 (401/403/404/409/423 grupat pe sir: ~142 izolare terse-corect + goluri rol telegrafice), P5 (400/422: 208 situri, tinte rescriere email/cabinet/r.get(cod)), P7 (mecanism validare: gol cap.6 sistemic eroare-nu-langa-camp + non-enumerabil complet 34 cu motiv). Commituri 412d5df→ea1ff90, backup/lant-2026-08-06.
 - urmator: C-5 CATALOG ÎNCHIS (inventar de goluri, nu rescriere - decizia Costin). Actionabil rescriere/fix = CAMPANII SEPARATE cu decizia lui Costin: (a) rescriere mesaje telegrafice (P4 rol: Nu-ai-acces/Doar-Admin/rol-insuficient prin dep central+_cer_admin_cabinet+_pachet_schema; P5: fara-cabinet-asociat x5/familia-email/r.get(cod) x12; P3: input-guards ~25% + constrangerea); (b) fix bug-uri tacere B1-B17 + info-leak operatiuni:381 (B7 cod rupt, B8 cm-sfarsit NULL, B14 urcaPoze pierde atasamente, B17 d406 UM); (c) markeri literali ' *'→.oblig; (d) mecanism eroare-langa-camp (A) in loc de zona generica (B). NU se atinge: izolare terse (corect), entity-not-found. C-4 INCHISA.

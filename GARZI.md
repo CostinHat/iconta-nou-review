@@ -2874,3 +2874,20 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
 - Lot 2 (e090166): mesajele raise ValueError din 6 parsere de import diacriticizate (ajung la user
   via HTTPException(str(e)); scapau garzii generale prin ROL - Q2/Q17). Garda core/test_import_mesaje_afisate.py
   scopata pe fisierele de import (extensia globala ar fi flagrat 159, incl. erori interne legitim ASCII).
+
+## 16.08.2026 — Amortizare pe METODA (Q6+Q15, tura import CUBUS, lot amortizare)
+- Patru situri in main.py calculau MEREU liniar ignorand `metoda` din activ: ecranul /mijloace-fixe
+  (tenant_mijloace_fixe, afisa cifra ca "amortizat la zi"), nota lunara (tenant_amortizare, 6811/2813),
+  casarea (nota_casare_mf) si reevaluarea (nota_reevaluare). Trei INSCRIAU cifra gresita in jurnal /
+  in nota contabila (ajunge la ANAF prin balanta/D406), unul o AFISA. Motorul cu 4 metode
+  (core/d406_active.py, CF art.28, reconstruit iunie) exista dar NU era chemat de niciunul.
+- Reparat: doua functii noi in motor — `amortizat_la_data(mf, la_data)` (cumulat la zi, ecran/casare/
+  reevaluare) si `amortizare_luna(mf, an, luna)` (rata unei luni, nota lunara), coerente cu calc_asset
+  la granita de an. Toate 4 situri le consuma. Metoda nepermisa pe categorie (alin.5/8^1) -> eroare pe
+  rand (ecran: amortizat/ramas None + camp `eroare`) / HTTPException 422 (note), NU liniar tacit (DS cap.17).
+  Ultima luna absoarbe rotunjirea -> suma pe viata = valoarea amortizabila EXACT (liniar SI neliniar).
+- Garda core/test_amortizare_ecran_metoda.py (15 teste: coerenta motor, suma-pe-viata, endpoint pe DB).
+  RED probat pe main.py vechi: activ constructii(212)+degresiva primea 13333.33 LINIAR in loc de eroare;
+  activ echipament degresiv primea liniar in loc de degresivul motorului.
+- Registru statut adus la zi: FUNCTIONALITATI.csv F036 (D406) afirma "doar amortizare LINIARA
+  (degresiva/accelerata neimplementate, xfail)" — FALS din iunie (motorul are 4 metode); corectat.

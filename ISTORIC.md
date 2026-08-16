@@ -4325,3 +4325,13 @@ backend (Q3/Q4/Q11/Q13), Lot 2 diacritice import pe rol (Q2/Q17). Restul clasei 
 straturi, UX migrare Q7/Q8/Q12/Q14, amortizare Q6/Q15, cod mort Q10, COR Q16, XSD Q18, render Q1/Q10,
 audit mesaje generatoare) - scopat in PREDARE_LANT.md, NEPROBAT/neinceput. Oprire pe context epuizat
 (§2.3), livrare partiala onesta (§1 nu declara livrat ce n-are proba).
+
+## 16.08.2026 (tura import CUBUS, lot 1: amortizare pe metoda) — Q6+Q15
+Prima pozitie din cele 11 ramase in PREDARE_LANT (tura precedenta), aleasa prima pentru ca producea cifre
+gresite (ordinea ceruta de comanda: intai cifrele, apoi blocajele, apoi restul). Ecranul /mijloace-fixe
+calcula liniar ignorand metoda si eticheta cifra "amortizat la zi"; generalizarea pe clasa (grep
+`min(...dnf)` / `rata*luni` in main.py) a gasit INCA 3 situri care inscriau cifra gresita in jurnal/note
+(nota lunara, casare, reevaluare). Toate 4 cablate la motorul unic prin doua functii noi in d406_active
+(amortizat_la_data, amortizare_luna). Garda RED-probata pe main.py vechi. verificator 0; suita amortizare
+71 passed / 15 xfailed; gard nou 15 passed. Client: text onest (nu mai zice "liniar") + randare eroare/None
+pe rand (DS cap.6). Bump token mijloace_ecran.js la unicul sit de import (firme.js, DS cap.19).
