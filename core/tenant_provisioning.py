@@ -151,6 +151,53 @@ def provision_tenant(conn, nume, cui, accounting_firm_id, user_id, sql_template,
     return {"ok": True, "tenant_id": tenant_id, "schema_name": schema_noua}
 
 
+def precompleteaza_din_anaf(conn, schema_name, cui, seteaza_nume=False):
+    """[F188/register_profil_anaf] SURSA UNICA de precompletare a firma_profil din ANAF v9, pentru
+    TOATE caile de creare a unei firme: register (firma proprie), adaugare manuala, import in masa.
+    Inainte, fiecare cale scria un subset DIFERIT (register: snapshot TVA + data inceput; add-firm:
+    reg_com + tva_la_incasare; import in masa: nimic) -> data inregistrarii TVA aparea la unele firme
+    si la altele nu (ruptura pe cale, nu pe camp). Aici scriu ACELASI set peste tot, o singura data.
+
+    seteaza_nume=True doar la firma proprie (register), unde denumirea vine de la ANAF; la add-firm/
+    import numele e pus de contabil si NU se atinge. COALESCE: gol de la ANAF nu suprascrie.
+    Best-effort la nivel de apelant: ANAF jos -> exceptie propagata, profilul ramane pe default,
+    corectabil din Date firma. Intoarce True daca a precompletat, False daca ANAF n-a gasit CUI-ul.
+    NU scrie tip_decont (periodicitatea TVA): ANAF v9 nu o intoarce -> ramane alegerea contabilului
+    (necunoscut declarat explicit, nu fabricat)."""
+    from core import anaf_api
+    cuic = str(cui).replace("RO", "").strip()
+    rez = anaf_api.valideaza_cui([cuic])
+    if not (rez and rez[0].get("gasit")):
+        return False
+    d = rez[0]
+    seturi, par = [], []
+    if seteaza_nume:
+        seturi.append("nume = COALESCE(NULLIF(%s, ''), nume)")
+        par.append((d.get("denumire") or "").strip())
+    seturi += [
+        "caen = COALESCE(NULLIF(%s, ''), caen)",
+        "adresa = COALESCE(NULLIF(%s, ''), adresa)",
+        "reg_com = COALESCE(NULLIF(%s, ''), reg_com)",
+        "platitor_tva = %s",
+        "tva_la_incasare = %s",
+        "platitor_tva_anaf = %s",           # snapshot ANAF (verde) = aceeasi valoare la onboarding
+        "platitor_tva_anaf_data = CURRENT_DATE",
+        "platitor_tva_anaf_inceput = %s",   # data inregistrarii in scopuri de TVA (Q9)
+    ]
+    par += [
+        (d.get("cod_caen") or "").strip(),
+        (d.get("adresa") or "").strip(),
+        (d.get("nr_reg_com") or "").strip(),
+        bool(d.get("platitor_tva")),
+        bool(d.get("tva_la_incasare")),
+        bool(d.get("platitor_tva")),
+        d.get("tva_data_inceput"),
+    ]
+    with conn.cursor() as cur:
+        cur.execute('UPDATE "%s".firma_profil SET ' % schema_name + ", ".join(seturi), tuple(par))
+    return True
+
+
 # ============================================================
 #  CITIRE / EDITARE — DB
 # ============================================================

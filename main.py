@@ -1133,26 +1133,11 @@ def register(date: RegisterIn):
                 # situatie = aceeasi rezolvare), extins la toate campurile pe care ANAF
                 # le da: denumire, cod_caen, adresa, platitor_tva.
                 try:
-                    rez = anaf_api.valideaza_cui([_cui])
-                    if rez and rez[0].get("gasit") and _t and _t.get("schema_name"):
-                        d = rez[0]
-                        sch = _t["schema_name"]
-                        with conn.cursor() as cur:
-                            cur.execute(
-                                f'UPDATE "{sch}".firma_profil SET '
-                                'nume = COALESCE(NULLIF(%s, \'\'), nume), '
-                                'caen = COALESCE(NULLIF(%s, \'\'), caen), '
-                                'adresa = COALESCE(NULLIF(%s, \'\'), adresa), '
-                                'platitor_tva = %s, '
-                                # [F180] snapshot ANAF = aceeasi valoare la onboarding (verde), data = azi
-                                'platitor_tva_anaf = %s, platitor_tva_anaf_data = CURRENT_DATE, '
-                                'platitor_tva_anaf_inceput = %s',
-                                ((d.get("denumire") or "").strip(),
-                                 (d.get("cod_caen") or "").strip(),
-                                 (d.get("adresa") or "").strip(),
-                                 bool(d.get("platitor_tva")),
-                                 bool(d.get("platitor_tva")),
-                                 d.get("tva_data_inceput")))
+                    # [register_profil_anaf_v2] SURSA UNICA de precompletare ANAF
+                    # (tenant_provisioning.precompleteaza_din_anaf), aceeasi ca la add-firm/import.
+                    # seteaza_nume=True: firma proprie preia si denumirea de la ANAF.
+                    if _t and _t.get("schema_name"):
+                        tenant_provisioning.precompleteaza_din_anaf(conn, _t["schema_name"], _cui, seteaza_nume=True)
                 except Exception as _e:
                     # ANAF jos -> profilul ramane de completat manual. Firma EXISTA, doar
                     # datele preluate lipsesc - deci NU e esec de provisionare.
@@ -1213,21 +1198,13 @@ def tenant_creeaza(date: TenantNou, ctx=Depends(cere_rol("admin_firma"))):
             r = tenant_provisioning.provision_tenant(
                 conn, date.nume, date.cui, ctx["firm"], ctx["uid"], _TENANT_TEMPLATE,
                 tip_firma=date.tip_firma)
-            # [F188] pre-completare din ANAF v9 in profilul firmei nou-create (adresa/caen/reg_com/tva).
-            # NU atinge 'nume' (setat de contabil). COALESCE: gol ANAF nu suprascrie. ANAF jos -> default.
+            # [F188] pre-completare din ANAF v9 - SURSA UNICA (tenant_provisioning.precompleteaza_din_anaf),
+            # aceeasi ca la register/import. NU atinge 'nume' (setat de contabil): seteaza_nume=False.
+            # ANAF jos -> default, corectabil din Date firma.
             try:
-                rez = anaf_api.valideaza_cui([str(date.cui).replace("RO", "").strip()])
-                if rez and rez[0].get("gasit"):
-                    d = rez[0]
-                    with conn.cursor() as cur:
-                        cur.execute(f'''UPDATE "{r["schema_name"]}".firma_profil SET platitor_tva=%s, tva_la_incasare=%s,
-                                        adresa=COALESCE(NULLIF(%s,''), adresa), caen=COALESCE(NULLIF(%s,''), caen),
-                                        reg_com=COALESCE(NULLIF(%s,''), reg_com)''',
-                                    (bool(d.get("platitor_tva")), bool(d.get("tva_la_incasare")),
-                                     d.get("adresa") or "", d.get("cod_caen") or "", d.get("nr_reg_com") or ""))
+                tenant_provisioning.precompleteaza_din_anaf(conn, r["schema_name"], date.cui, seteaza_nume=False)
             except Exception as _e:
                 _obs.esec_secundar("precompletare ANAF la firma noua", _e)  # inghitit, dar nu tacut (27.07.2026)
-                pass  # best-effort: ANAF jos -> profil ramane default, corectabil din date_firma
     except ValueError as e:
         raise HTTPException(400, str(e))
     return r
@@ -1639,6 +1616,10 @@ def migrare_importa(date: MigrareImportaIn, ctx=Depends(cere_rol("admin_firma"))
             try:
                 r = tenant_provisioning.provision_tenant(
                     conn, nume, str(f.cui), ctx["firm"], ctx["uid"], _TENANT_TEMPLATE)
+                try:  # [import_profil_anaf_v1] aceeasi precompletare ANAF ca la add-firm (SURSA UNICA)
+                    tenant_provisioning.precompleteaza_din_anaf(conn, r["schema_name"], f.cui, seteaza_nume=False)
+                except Exception as _ea:
+                    _obs.esec_secundar("precompletare ANAF la import firma", _ea)  # firma creata; ANAF completabil manual
                 creat.append({"cui": str(f.cui), "nume": nume, "tenant_id": r.get("tenant_id")})
                 if cuic:
                     existente.add(cuic)   # prinde și duplicate în același lot
