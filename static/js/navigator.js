@@ -10,7 +10,7 @@
 
 import { sesiune } from "./sesiune.js?v=5d142951c9";
 import { esc } from "./api.js?v=3857bab660";  // esc canonic (cap.10): strip-html data-lossy inlocuit
-import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=681cbcc2b3";  // [bun_venit_v1] "?" general (ansamblu)
+import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=534adc8486";  // [bun_venit_v1] "?" general (ansamblu)
 
 // [p21_bara_lant] contextul barei 1 ca LANT, citit din sesiune.user() (sursa unica)
 function _functieAsistent(u) {

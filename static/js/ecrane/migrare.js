@@ -511,9 +511,30 @@ async function wizardSolduri(corp, nav) {
   });
 }
 
+function descarcaModelSolduri() {
+  // [Q10] model descarcabil: contabilul vede exact formatul asteptat, echilibrat (debit=credit=45000).
+  const antet = "cont,denumire,sold debitor,sold creditor";
+  const randuri = [
+    "1012,Capital subscris vărsat,0,10000",
+    "2131,Echipamente tehnologice,25000,0",
+    "371,Mărfuri,8000,0",
+    "401,Furnizori,0,15000",
+    "4111,Clienți,12000,0",
+    "5121,Conturi la bănci în lei,0,20000",
+  ];
+  const continut = "\ufeff" + [antet, ...randuri].join("\r\n") + "\r\n";  // BOM: Excel citeste UTF-8
+  const blob = new Blob([continut], { type: "text/csv;charset=utf-8" });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url; a.download = "model_solduri_initiale.csv";
+  document.body.appendChild(a); a.click(); a.remove();
+  URL.revokeObjectURL(url);
+}
+
 function importSolduriFirma(corp, nav, firma) {
   corp.innerHTML = `
-    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă balanța de deschidere (cont · denumire · sold debitor · sold creditor).</p>
+    <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Încarcă balanța de deschidere (cont · denumire · sold debitor · sold creditor). Debitul total trebuie să fie egal cu creditul total. Conturile din balanță care nu sunt încă în planul de conturi se adaugă automat (nu sunt respinse).</p>
+    <button type="button" class="buton-secundar mig-model" id="mig-model">Descarcă model (CSV)</button>
     <label class="mig-drop" id="mig-drop">
       <input type="file" id="mig-file" accept=".csv,.xlsx,.tsv" hidden>
       <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#16a34a" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3v4a1 1 0 0 0 1 1h4"/><path d="M17 21H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h7l5 5v11a2 2 0 0 1-2 2z"/><path d="M12 11v6M9 14l3-3 3 3"/></svg>
@@ -524,6 +545,7 @@ function importSolduriFirma(corp, nav, firma) {
     <div id="mig-preview"></div>
   `;
   const fileInput = corp.querySelector("#mig-file");
+  corp.querySelector("#mig-model")?.addEventListener("click", descarcaModelSolduri);
   fileInput.addEventListener("change", async () => {
     const file = fileInput.files[0];
     if (!file) return;
@@ -576,6 +598,13 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
     arataMesaj(corp.querySelector("#mig-eroare"), date.motiv || "Fișier nerecunoscut ca balanță.", "avert");
     const bs = corp.querySelector("#mig-salveaza-sold");
     if (bs) { bs.disabled = true; bs.title = "Balanță nevalidă — verifică fișierul încărcat"; }
+  } else if (!echilibrat) {
+    // [Q10] balanta neechilibrata: backendul o refuza oricum (422). O spunem INAINTE de click.
+    const dif = bani(Math.abs(date.total_debit - date.total_credit));
+    arataMesaj(corp.querySelector("#mig-eroare"),
+      "Balanța e neechilibrată: debitul diferă de credit cu " + dif + ". Corectează fișierul (debit = credit) înainte de salvare.", "avert");
+    const bs = corp.querySelector("#mig-salveaza-sold");
+    if (bs) { bs.disabled = true; bs.title = "Debit diferă de credit — corectează fișierul"; }
   }
 
   const tabel = corp.querySelector("#mig-sold-tabel");

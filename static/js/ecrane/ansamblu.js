@@ -7,12 +7,13 @@
 //   - ansamblul = grupele din registru (/ansamblu, SURSA UNICA genereaza_grupe_functii.repartizeaza)
 //     + coloana `ajutor` (semn "?" contextual pe functionalitatile care au ajutor scris).
 import { api, esc, semnAjutor } from "../api.js?v=3857bab660";
-import { STRATURI } from "./migrare.js?v=ae86be6082";
+import { STRATURI } from "./migrare.js?v=9f0f838f61";
 
 function _firHTML() {
   return STRATURI.map((st) =>
     `<li class="ans-pas"><span class="ans-pas-nr">${st.nr}</span>` +
-    `<span class="ans-pas-txt"><b>${esc(st.titlu)}</b> — ${esc(st.desc)}</span></li>`
+    `<span class="ans-pas-txt"><b class="ans-pas-titlu">${esc(st.titlu)}</b>` +
+    `<span class="ans-pas-desc">${esc(st.desc)}</span></span></li>`
   ).join("");
 }
 
@@ -34,12 +35,13 @@ async function _corpAnsamblu(corp, primaLogare) {
   catch (_e) { grupe = []; }
   corp.innerHTML =
     `<div class="ans-continut">` +
-      `<p class="ans-intro">Orice solicitare de funcționalitate nouă sau modificare a celor existente se raportează prin cardul Suport și se rezolvă în maximum 48 de ore.</p>` +
       (primaLogare
         ? `<p class="ans-intro">Bun venit în iConta.eu. Mai jos e drumul de la preluarea unei firme până la operarea curentă — parcurge-l în ordine, începând cu migrarea. E o hartă a aplicației; n-o reține acum, o ai oricând la îndemână.</p>`
         : "") +
+      `<p class="ans-intro">Orice solicitare de funcționalitate nouă sau modificare a celor existente se raportează prin cardul Suport și se rezolvă în maximum 48 de ore.</p>` +
       `<section class="ans-sectiune">` +
         `<h3 class="ans-sec-titlu">Firul de intrare — pașii, în ordine</h3>` +
+        `<p class="ans-fir-unde">Fiecare pas se face pentru firma respectivă, din cardul „Import date” al firmei (ecranul Firme → firma → Import date). Excepție: „Vector fiscal” se completează în ecranul „Date firmă”.</p>` +
         `<ol class="ans-fir">${_firHTML()}</ol>` +
       `</section>` +
       `<section class="ans-sectiune">` +

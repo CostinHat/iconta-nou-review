@@ -8,7 +8,7 @@ import { randeazaFacturi } from "./facturi_ecran.js?v=64b2db9bf3";
 import { ecranRip } from "./rip_ecran.js?v=c9c37ec6ae";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=7019abe613";
 import { ecranEtransport } from "./etransport_ecran.js?v=0dca1ea392";
-import { meniuMigrarePerFirma } from "./migrare.js?v=ae86be6082";  // [p96_import_firma]
+import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=9f0f838f61";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=eab47e576c";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=7c53d3765b";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=930762c3c4";  // [produse_firma_v1]
@@ -21,6 +21,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
   container.innerHTML = `
     <div class="firme-cap">
       <span class="firme-spatiu"></span>
+      <button class="buton-secundar" id="firme-import-masa">Import în masă (CSV)</button>
       <button class="buton-primar" id="firme-adauga">+ Adaugă firmă</button>
     </div>
     <div class="firme-cautare">
@@ -29,6 +30,9 @@ export function randeazaListaFirme(container, nav, inapoi) {
     </div>
     <div class="firme-lista" id="firme-lista"><div class="ecran-nota">Se încarcă firmele…</div></div>
   `;
+
+  container.querySelector("#firme-import-masa")?.addEventListener("click", () =>
+    nav.deschide("Migrare cabinet", (c) => randeazaMigrare(c, nav), { nivel: "cabinet" }));
 
   container.querySelector("#firme-adauga").addEventListener("click", () => {
     nav.deschide("Adaugă firmă", (corp) => {  /* firma_noua_v1 */
