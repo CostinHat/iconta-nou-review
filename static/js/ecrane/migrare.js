@@ -713,6 +713,24 @@ function importParteneriFirma(corp, nav, firma) {
   });
 }
 
+// [Q5 preview=salvare, 16.08.2026] Poarta UNICA: previzualizarea arata EXACT ce respinge salvarea
+// (erori din verifica_randuri, backend - aceeasi poarta pe care importa o aplica), nu o a doua
+// validare din extrage (cnp_valid/ok) care drifteaza. Randuri respinse -> lista vizibila + Salvare
+// blocata (DS cap.5 caseta-atentie / cap.6 / cap.24). erori: [{rand, motiv, mesaj}].
+function gateazaPreview(corp, butonId, erori) {
+  erori = erori || [];
+  if (!erori.length) return;
+  const buton = corp.querySelector("#" + butonId);
+  if (!buton) return;
+  buton.disabled = true;
+  const titlu = erori.length === 1 ? "un rând nu poate fi salvat" : (erori.length + " rânduri nu pot fi salvate");
+  const bloc = document.createElement("div");
+  bloc.className = "caseta-atentie";
+  bloc.innerHTML = `<div class="ca-mesaj"><b>${esc(titlu)}</b> — corectează fișierul și reîncarcă:` +
+    `<ul style="margin:6px 0 0;padding-left:20px">${erori.map((e) => `<li>rând ${esc(String(e.rand))}: ${esc(e.mesaj || e.motiv || "")}</li>`).join("")}</ul></div>`;
+  buton.parentNode.insertBefore(bloc, buton);
+}
+
 function previzualizeazaParteneri(corp, nav, firma, date) {
   latime(corp, true);
   const randuri = date.randuri || [];
@@ -742,6 +760,7 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
     <button class="buton-primar mig-buton" id="mig-salveaza-part">Salvează partenerii</button>
   `;
   nav.setInapoi(() => wizardParteneri(corp, nav));
+  gateazaPreview(corp, "mig-salveaza-part", date.erori);
 
   const tabel = corp.querySelector("#mig-sold-tabel");
   tabel.innerHTML = randuri.map((r) => `
@@ -870,6 +889,7 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
     <button class="buton-primar mig-buton" id="mig-salveaza-sal">Salvează salariații</button>
   `;
   nav.setInapoi(() => wizardSalariati(corp, nav));
+  gateazaPreview(corp, "mig-salveaza-sal", date.erori);
 
   const tabel = corp.querySelector("#mig-sold-tabel");
   tabel.innerHTML = randuri.map((r) => {
@@ -1017,6 +1037,7 @@ function previzualizeazaAsociati(corp, nav, firma, date) {
     <button class="buton-primar mig-buton" id="mig-salveaza-asoc">Salvează asociații</button>
   `;
   nav.setInapoi(() => wizardAsociati(corp, nav));
+  gateazaPreview(corp, "mig-salveaza-asoc", date.erori);
 
   const tabel = corp.querySelector("#mig-sold-tabel");
   tabel.innerHTML = randuri.map((r) => {
@@ -1152,6 +1173,7 @@ function previzualizeazaMijloace(corp, nav, firma, date) {
     <button class="buton-primar mig-buton" id="mig-salveaza-mf">Salvează mijloacele fixe</button>
   `;
   nav.setInapoi(() => wizardMijloace(corp, nav));
+  gateazaPreview(corp, "mig-salveaza-mf", date.erori);
 
   const tabel = corp.querySelector("#mig-sold-tabel");
   tabel.innerHTML = randuri.map((r) => {
@@ -1287,6 +1309,7 @@ function previzualizeazaIstoric(corp, nav, firma, date) {
     <button class="buton-primar mig-buton" id="mig-salveaza-ist">Salvează istoricul</button>
   `;
   nav.setInapoi(() => wizardIstoric(corp, nav));
+  gateazaPreview(corp, "mig-salveaza-ist", date.erori);
 
   const tabel = corp.querySelector("#mig-sold-tabel");
   tabel.innerHTML = randuri.map((r) => {

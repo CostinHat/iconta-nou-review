@@ -129,3 +129,14 @@ def reminder(conn, firm_id, tip_firma="srl"):
         if s and s["stare"] == "in_lucru":
             out.append({"strat": strat, "nota": s["nota"]})
     return out
+
+
+def erori_verifica(rez):
+    """Normalizeaza rezultatul verifica_randuri (lista SAU tuplu (erori, bune)) la lista de erori
+    [{rand, motiv, mesaj}]. POARTA UNICA preview<->salvare (DS cap.24): previzualizarea intoarce
+    ACEEASI verdict ca verifica_randuri - poarta pe care importa() o aplica la scriere - nu o a doua
+    validare din extrage (flaguri cnp_valid/ok) care drifteaza (un camp verificat intr-un capat si nu
+    in celalalt). Frontendul consuma `erori` si blocheaza Salvarea pe randurile respinse (cap.6)."""
+    if isinstance(rez, tuple):
+        return rez[0] or []
+    return rez or []

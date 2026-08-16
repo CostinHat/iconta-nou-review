@@ -4335,3 +4335,10 @@ calcula liniar ignorand metoda si eticheta cifra "amortizat la zi"; generalizare
 (amortizat_la_data, amortizare_luna). Garda RED-probata pe main.py vechi. verificator 0; suita amortizare
 71 passed / 15 xfailed; gard nou 15 passed. Client: text onest (nu mai zice "liniar") + randare eroare/None
 pe rand (DS cap.6). Bump token mijloace_ecran.js la unicul sit de import (firme.js, DS cap.19).
+
+## 16.08.2026 (tura import CUBUS, lot 2: preview=salvare) — Q5
+A doua pozitie ceruta (dupa amortizare). Cauza inchisa STRUCTURAL: cele 5 endpoint-uri de preview intorc
+acum verdictul poartii unice (verifica_randuri), nu flagurile lui extrage care drifteaza. Frontend: un helper
+`gateazaPreview` blocheaza Salvarea si arata randurile respinse la preview (DS cap.5/6/24). Garda trece acelasi
+fisier prin ambele capete, verdict identic pe rand; RED probat pe main.py vechi (6/6 KeyError 'erori').
+verificator 0; suita import 37 passed. Bump migrare.js la 3 situri de import via versioneaza_assets.py.

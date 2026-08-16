@@ -1830,7 +1830,8 @@ async def parteneri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=
     tc = round(sum(r["credit"] for r in randuri), 2)
     with db.get_conn(schema) as conn:
         coer = solduri_parteneri_api.coerenta(conn, randuri)
-    return {"randuri": randuri, "total_debit": td, "total_credit": tc, "coerenta": coer}
+    erori = migrare_api.erori_verifica(solduri_parteneri_api.verifica_randuri(randuri))  # [Q5] poarta unica
+    return {"randuri": randuri, "total_debit": td, "total_credit": tc, "coerenta": coer, "erori": erori}
 
 
 @app.get("/tenants/{tenant_id}/parteneri")
@@ -1890,8 +1891,9 @@ async def salariati_import_incarca(tenant_id: int, fisier: UploadFile = File(...
     except ValueError as e:
         raise HTTPException(400, str(e))
     valizi = sum(1 for r in randuri if r["cnp_valid"])
+    erori = migrare_api.erori_verifica(salariati_import_api.verifica_randuri(randuri))  # [Q5] poarta unica
     return {"randuri": randuri, "total": len(randuri), "valizi": valizi,
-            "invalizi": len(randuri) - valizi}
+            "invalizi": len(randuri) - valizi, "erori": erori}
 
 
 @app.post("/tenants/{tenant_id}/salariati-import")
@@ -1940,7 +1942,8 @@ async def asociati_import_incarca(tenant_id: int, fisier: UploadFile = File(...)
     except ValueError as e:
         raise HTTPException(400, str(e))
     coer = asociati_import_api.coerenta_cote(randuri)
-    return {"randuri": randuri, "total": len(randuri), "coerenta": coer}
+    erori = migrare_api.erori_verifica(asociati_import_api.verifica_randuri(randuri))  # [Q5] poarta unica
+    return {"randuri": randuri, "total": len(randuri), "coerenta": coer, "erori": erori}
 
 
 @app.post("/tenants/{tenant_id}/asociati-import")
@@ -2037,8 +2040,9 @@ async def mijloace_import_incarca(tenant_id: int, fisier: UploadFile = File(...)
     tv = round(sum(r["valoare"] for r in randuri), 2)
     tr = round(sum(r["rezidual"] for r in randuri), 2)
     cu_avert = sum(1 for r in randuri if not r["ok"])
+    erori = migrare_api.erori_verifica(mijloace_fixe_import_api.verifica_randuri(randuri))  # [Q5] poarta unica
     return {"randuri": randuri, "total": len(randuri), "total_valoare": tv,
-            "total_rezidual": tr, "cu_avertismente": cu_avert}
+            "total_rezidual": tr, "cu_avertismente": cu_avert, "erori": erori}
 
 
 @app.post("/tenants/{tenant_id}/mijloace-fixe-import")
@@ -2082,7 +2086,8 @@ async def istoric_import_incarca(tenant_id: int, fisier: UploadFile = File(...),
     except ValueError as e:
         raise HTTPException(400, str(e))
     cu_avert = sum(1 for r in randuri if not r["ok"])
-    return {"randuri": randuri, "total": len(randuri), "cu_avertismente": cu_avert}
+    erori = migrare_api.erori_verifica(istoric_declaratii_import_api.verifica_randuri(randuri))  # [Q5] poarta unica
+    return {"randuri": randuri, "total": len(randuri), "cu_avertismente": cu_avert, "erori": erori}
 
 
 @app.post("/tenants/{tenant_id}/istoric-declaratii-import")

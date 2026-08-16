@@ -9366,3 +9366,12 @@ motorul core.d406_active (CF art.28). Trei alegeri de CORECTITUDINE (nu de produ
 3. Metoda nepermisa pe categorie NU se calculeaza liniar tacit: eroare pe rand (ecran) / 422 (note), care
    NUMESTE categoria si metodele permise (mesajul din _verifica_categorie).
 Motivul comun: amortizarea e fapt fiscal (DS cap.17) — o singura sursa, fara default tacit al cifrei.
+
+## 16.08.2026 — preview=salvare: o singura poarta de validare (verifica_randuri)
+Previzualizarea si salvarea NU pot fi doua cai de cod care valideaza acelasi camp (DS cap.24). `extrage`
+ramane PARSER (poate seta flaguri de parsare cnp_valid/ok), dar VERDICTUL de validare — la preview SI la
+salvare — vine dintr-o singura sursa: `verifica_randuri`. Preview il intoarce (`erori`), importa il ridica.
+Normalizarea tuplu(parteneri)/lista intr-un singur loc: `migrare_api.erori_verifica`. Decizie de a NU sterge
+flagurile lui extrage in aceasta tura (risc de consumatori nedescoperiti); ele nu mai sunt autoritatea de
+validare. Efectul vizibil: la preview, randurile pe care salvarea le-ar respinge sunt aratate si Salvarea e
+blocata — corectitudine (ce vede userul), nu decizie de produs.

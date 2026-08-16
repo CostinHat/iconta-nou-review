@@ -2891,3 +2891,17 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
   activ echipament degresiv primea liniar in loc de degresivul motorului.
 - Registru statut adus la zi: FUNCTIONALITATI.csv F036 (D406) afirma "doar amortizare LINIARA
   (degresiva/accelerata neimplementate, xfail)" — FALS din iunie (motorul are 4 metode); corectat.
+
+## 16.08.2026 — Preview = salvare, O SINGURA POARTA (Q5, lot 2)
+- Cele 5 endpoint-uri de preview (/incarca) ale straturilor de migrare (parteneri, salariati, asociati,
+  mijloace_fixe, istoric) isi luau verdictul din flagurile lui extrage (`cnp_valid`, `ok`) — o A DOUA
+  validare care DRIFTA de la `verifica_randuri`, poarta pe care SALVAREA (importa) o ridica la scriere.
+  Preview arata "toate valide", userul trimitea, salvarea intorcea 422 pe randuri nesemnalate la preview
+  (ex. salariati: preview numara "valizi" doar pe CNP; salvarea respinge si norma/ore/judet/data lipsa).
+- Fix STRUCTURAL (nu instanta cu instanta): fiecare preview intoarce `erori = verifica_randuri(...)` prin
+  `migrare_api.erori_verifica` (normalizeaza tuplul parteneri vs lista). Frontend `gateazaPreview()`
+  blocheaza Salvarea + arata randurile respinse (DS cap.5/6/24). Un singur validator la AMBELE capete.
+- Garda core/test_preview_salvare_poarta.py: acelasi fisier prin ambele capete, verdict IDENTIC pe rand;
+  randul-drift (extrage OK / verifica_randuri respinge) prins la preview. RED probat pe main.py vechi
+  (6/6 KeyError 'erori'). Flagurile lui extrage NU s-au sters (risc consumatori) — nu mai sunt autoritatea
+  de validare; daca raman complet nefolosite dupa mutarea frontendului, sunt cod mort de curatat ulterior.
