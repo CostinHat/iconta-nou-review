@@ -1,63 +1,61 @@
-Marca de referință: ed6ac35. Citește CLAUDE.md §2.2 (structura raportului) și §2.3 (lanț, siguranță, limbă) și ARHITECT.md „FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, înainte de a începe. În lucru: audit vizual cap-la-cap al tenant_003 (Comert Micro TVA SRL, cabinet 1968 Prisma) — parcurs până la ecranul de import salariați; restul traseului NEparcurs. Regula 13: perimetrul, nu numele. Regula 14: captură privită, nu selectoare.
+Marca de referință: 569a52f. Citește CLAUDE.md §2.2 (structura raportului) și §2.3 (lanț, siguranță, limbă) și ARHITECT.md „FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, înainte de a începe. Stare: audit vizual tenant_003 (Comert Micro TVA SRL, cabinet 1968 Prisma) — tură de PARCURGERE (fără reparații). Am ajuns până la generarea D300 (Declarații pasul 2/3). Restul traseului NEparcurs (mai jos, cu ecranul exact). Regula 14: captură privită.
 
-# PREDARE LANT — audit vizual tenant_003 (parcurgere migrare, în curs)
+# PREDARE LANT — audit vizual tenant_003 (parcurgere, în curs)
 
 ## FOUR-WAY (ultima execuție, 16.08.2026)
-HEAD = origin/main = backup/lant-2026-08-16 = RUNNING = ed6ac35
-(post-commit restartează automat iconta-nou pe portul 8010.)
+HEAD = origin/main = backup/lant-2026-08-16 = RUNNING = 569a52f (doar PREDARE, cod neatins — tură de parcurgere).
 
-## CUM SE PARCURGE tenant_003 CU PLAYWRIGHT (auth cross-cabinet)
-- tenant_003 e sub cabinetul 1968 (Prisma), NU sub cabinetul login-ului de test FE (4163). Deci NU folosi
-  fe_test.env. Mintuiește un token direct pentru admin-ul cabinetului 1968, fără parolă:
-  `from core import auth_api; tok = auth_api.emite_token(<rand user patron@prisma-cont.test din public.users>)`.
-  Injectează în sessionStorage (iconta_token + iconta_user JSON), ca în frontend_test/walk_t003.py + provoke_t003.py.
-- Env pt scripturi ad-hoc: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a` (JWT_SECRET e în api_keys.env),
-  și `PYTHONPATH=~/iconta_nou`. Serviciul = iconta-nou pe 127.0.0.1:8010 (localhost ocolește allowlist-ul de mentenanță).
-- Navigare: „/" → Firme → Firme existente → „Comert Micro TVA" → cardurile firmei (#fa-import Import date,
-  #fa-datefirma Date firmă, #fa-facturi, #fa-banca, ...). Import date deschide meniuMigrarePerFirma (10 straturi).
-- Starea datelor tenant_003 (mostly gol): salariati=1, plan_conturi=185 (standard), vector setat (platitor_tva=T,
-  tip_decont='T', regim micro); solduri_initiale/parteneri/asociati/mijloace/istoric/produse/retete/rip = 0.
+## CUM SE PARCURGE tenant_003 (auth cross-cabinet, reutilizabil)
+- tenant_003 e sub cabinetul 1968 (Prisma), NU sub FE (4163). Token mintuit fără parolă:
+  `auth_api.emite_token(<user patron@prisma-cont.test>)` + inject sessionStorage. Scripturi gata în
+  frontend_test/: w_auth.py (helper comun), w_salariati/w_operare/w_straturi/w_date_vector/w_declaratii/w_decl_gen3.py.
+- Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; PYTHONPATH=~/iconta_nou:~/iconta_nou/frontend_test ./venv/bin/python frontend_test/<script>.py`. Serviciul = 127.0.0.1:8010.
+- MUTAȚIE DE DATE făcută (parte din „salvarea reală"): am importat 2 salariați în tenant_003 (Popescu Ana existentă + Ionescu Radu nou, CNP 1850715410012, brut 6000). Stat de plată îi arată.
 
-## LIVRAT în această tură (RED probat pe cod vechi, GREEN după; dovadă vizuală)
-- **Cod mort skip salariați (Q10) — ed6ac35.** Provocând importul de salariați cu fișier stricat (2 CNP
-  invalide), banda „2 cu CNP greșit (vor fi sărite)" contrazicea vizibil caseta „2 rânduri nu pot fi salvate"
-  + butonul dezactivat. Adevărul: importa() BLOCHEAZĂ la primul CNP invalid (verifica_randuri = prima poartă);
-  bucla de skip + `sarite_cnp` + textele „vor fi sărite"/„X săriți" erau cod mort/promisiune falsă. Eliminat
-  (backend) + text aliniat (DS cap.6). Gardă core/test_d1_import_integritate.py REscrisă (block-not-skip,
-  superseda test_salariați_skip_surfațat_in_ui). Clasa (regula 13): doar salariați; retete/articole „sărite" =
-  skip REAL de duplicate (neatins).
+## PARCURS ȘI VĂZUT (captură privită) — harta de până acum
+- **Cardurile firmei (26)**: facturi, produse, declaratii, control, salariati, bonuri, jurnal, raportz, stocuri,
+  balanta, bilant, casa, etransport, operatiuni, mijloace, banca, magazin, verificari, solicitari, acces, import,
+  datefirma, rapoarte, registratura, contracte, centrecost.
+- **Salariați (migrare)**: import valid → preview „toate 2 CNP corecte" → SALVARE reală → wizard cabinet, badge „✓ gata, 2 importați". Intro corectată e live (fără „vor fi sărite").
+- **Stat de plată (#fa-salariati)**: cei 2 salariați apar cu brut/CAS/CASS/impozit/net corect.
+- **Facturi (#fa-facturi)**: hub cu 6 acțiuni (Istoric, Scadențar, Emite, Model, Facturi primite SPV, Recurente).
+- **Casă (#fa-casa)**: sold 12.000, semnalează plafonul (Legea 70/2015 art.3) cu temei — bine.
+- **Control fiscal (#fa-control)**: RESTANȚE (10: D112 dec-iun + D100 T4/T1/T2), NU POT VERIFICA (D300/D394/D406
+  → completează platitor_tva_anaf_inceput în vector; D205 lipsă note 2025), D301 nu se datorează, D300↔4427/4426
+  coincid, D112 blocat pontaj (HG 1045/2018). Bine mesajat.
+- **Straturi Import date**: toate file-upload cu intro care descrie coloanele; Plan de conturi = căutare/adăugare
+  manuală (nu upload). „Descarcă model" doar la Solduri.
+- **Date firmă (#fa-datefirma)**: exemplar — casetă „Profil incomplet — Nr. registrul comerțului blochează Bilanț
+  S1005", asteriscuri pe obligatorii, câmp-ajutor preventiv, vector integrat (Regim micro, TVA Da, Periodicitate,
+  vf-tva_data_inceput gol).
+- **Declarații (#fa-declaratii)**: wizard 3 pași; tip din dropdown; generare D300 → ecran „Rânduri manuale D300".
 
-## CONSTATĂRI din aceeași parcurgere (VĂZUTE, neatinse)
-- **Q8 — meniuMigrarePerFirma nu are badge de stare per strat** (văzut: toate cele 10 rânduri identice, fără
-  „importat/gol"). Contabilul nu vede ce e adus. Reparația e BLOCATĂ pe un semnal de prezență corect: `plan_conturi`
-  are 185 conturi standard fără flag standard/adăugat → un badge count>0 acolo ar fi FABRICAT (exact capcana regulii
-  14 pct.3). Cere decizie de model: flag „adăugat" pe plan_conturi SAU definirea „plan importat". Restul straturilor
-  au sursă clară de prezență (rezumat/count: solduri_initiale, solduri_parteneri, salariati, asociati, mijloace_fixe,
-  public.declaratii_depuse sursa='migrare', produse, retete, rip_operatiuni; vector = firma_profil.tip_decont).
-- **Q12 — avertismentul CNP pe rând e doar în `title=`** (văzut: „1960101078911 ⚠", motivul „cifra de control"
-  doar în title, inaccesibil pe touch). Fix: vizibil, nu tooltip nativ (DS cap.5).
+## CONSTATĂRI (defecte văzute, NEatinse — numerotare continuă C1..C8)
+- **C1** [Stat de plată] Pontaj neconfirmat afișat INCONSISTENT: Popescu Ana „⚠ pontaj neconfirmat", Ionescu Radu
+  (la fel de nou, fără pontaj) NU. Ambii ar trebui marcați la fel.
+- **C2** [Salariați, după salvare] Confirmarea = doar badge „✓ gata"; navighează la wizardul CABINET (toate 13
+  firmele), nu la firma curentă; fără mesaj explicit de succes (arataMesaj „ok").
+- **C3** [Import date, per firmă] Fără badge de stare per strat — nu se vede ce e importat (Q8, reconfirmat).
+- **C4** [Straturi] „Descarcă model (CSV)" lipsește pe parteneri/asociați/mijloace/istoric/articole/rețete (doar
+  Solduri îl are). Contabilul deduce formatul doar din intro.
+- **C5** [Date firmă] Acord greșit: „**1 câmpuri** obligatorii lipsesc" (corect: „1 câmp obligatoriu lipsește").
+- **C6** [Declarații, dropdown tip] D301 și D390 marcate „**nu se aplică (partidă simplă)**" pe un SRL (partidă
+  DUBLĂ) — motiv GREȘIT (D301: firma e plătitoare TVA; D390: fără operațiuni IC). Mapare greșită a motivului.
+- **C7** [Declarații, generare D300 T3] Eroare roșie „**luna invalidă: None (aștept 1-12)**" — expune „None"
+  (valoare internă) utilizatorului, nu spune unde se corectează/ce consecință; D300 e TRIMESTRIAL (n-are lună).
+  POSIBIL BLOCANT pentru generarea D300 → n-am ajuns la XML/DUK.
+- **C8** [Casă] Placeholder dată „mm/dd/yyyy" (format american) pe aplicație RO (așteptat zz/ll/aaaa).
 
-## RĂMAS DE PARCURS pe tenant_003 (traseul, NEatins)
-1. Migrare, fiecare strat cap-la-cap (import→preview→salvare→confirmare→ecran unde apar datele), cu blocaje
-   provocate: solduri, parteneri, asociați, mijloace fixe, istoric, plan de conturi, articole, rețete. (Salariați
-   parcurs parțial: preview + blocaj; salvarea reală + ecranul „unde apar" neparcurse.)
-2. Date firmă și vectorul fiscal (#fa-datefirma; vector = primul rând din Import date).
-3. Operarea curentă: facturi (#fa-facturi), bancă (#fa-banca), casă, salarii — Comert Micro TVA e micro+TVA, are 1 salariat.
-4. Semaforul + controlul fiscal (dashboard: „7 alerte fiscale", „1 declarație de validat" — de deschis și citit).
-5. Fiecare declarație datorată (micro+TVA: D300, D394, D100/D101 după caz, D112 dacă are salariați, D205, SAF-T)
-   până la generarea XML + validarea DUK.
-
-## DEFECTE din campania anterioară (încă NEatinse, cod-citit)
-- Q9 parteneri — coerență pierdută (BLOCANT): coerenta() se arată la preview dar nu blochează salvarea; ALEGERE
-  block-vs-persistă+propagă = posibilă decizie de produs (a se clarifica).
-- Q18 XSD — d112.py:16 hardcodează d112_06082026.xsd; glob pe cel mai nou d112_*.xsd (sistemic).
-- Q7 confirmare după salvare (arataMesaj „ok", DS cap.6) — pe toate straturile (salvarea navighează tăcut).
-- Q14 „Descarcă model (CSV)" — doar la solduri (1/9); de adăugat la celelalte.
-- Tură separată: triaj mesaje generatoare (~150 raise, afișat-vs-intern).
+## RĂMAS DE PARCURS (traseul, cu ecranul EXACT)
+1. **Declarații pasul 3 (XML + DUK)** — blocat pe C7 la D300 (T3). De reluat: alege trimestru explicit
+   (#dec-trim) sau altă declarație; ajunge la „Descarcă XML" + „Validează DUK".
+2. **Celelalte declarații**: D100 (trim), D112 (lunar — blocat pontaj neconfirmat), D205, D394, D406 → XML → DUK.
+3. **Bancă (#fa-banca)** — capturată (t003_op_banca.png), NEprivită în detaliu.
+4. **Salvarea reală + ecranul-unde-apar** pe straturile: Solduri, Parteneri, Asociați, Mijloace fixe, Istoric,
+   Plan de conturi, Articole, Rețete (până acum doar ecranul de import văzut, nu salvarea).
+5. Vector fiscal ca ecran separat (din Import date) + provocarea unui submit cu câmp obligatoriu gol pe Date firmă.
 
 ## LECȚII METODĂ (16.08)
-- **Auth cross-cabinet fără parolă**: `auth_api.emite_token(user_row)` + inject sessionStorage (vezi mai sus).
-- **JS: NU calcula manual `?v=`** — `./venv/bin/python versioneaza_assets.py --scrie` (bumpează toate siturile).
-- **Ratchet pe cod mort**: nu pune în COMENTARIU tiparul pe care gardul îl interzice (`sarite += 1` în comentariu a
-  picat propriul gard). Descrie mecanismul fără să scrii literalul interzis.
-- **Editare pe server prin patch scripts Python via scp**; DB/JWT din `~/.iconta/db.env` + `api_keys.env`.
+- Selectorul de text prinde dashboard-ul din spatele modalului → citește din DOM-ul modalului sau privește captura.
+- `#dec-trim` NU are valoarea „T2"; selectează prin index/label sau lasă default.
+- Auth cross-cabinet: `auth_api.emite_token` (JWT_SECRET în api_keys.env).
