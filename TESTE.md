@@ -1578,3 +1578,10 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
 - `core/test_d112_mesaje_afisate.py` — `raise ValueError` proza in d112 are diacritice (Q2).
 - `core/test_onboarding_ux.py` — fereastra bun venit (ordine/nota/stivuire) + solduri (model/echilibru/transparenta) +
   descoperibilitate import firme (Q4-Q7, Q10).
+
+
+## 16.08.2026 — Garzi import CUBUS (loturi 1-2)
+- core/test_import_backend_corect.py — Q3/Q4/Q11/Q13 comportamental (cheama functiile), RED pe cod vechi.
+- core/test_import_mesaje_afisate.py — rol raise ValueError pe fisierele de import are diacritice (Q2/Q17).
+- test_import_migrare (_s cu tip_norma), test_solduri_parteneri (2 randuri), test_import_backend_corect
+  (cnp_invalid) re-ancorate la comportamentul nou.

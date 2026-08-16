@@ -2864,3 +2864,13 @@ Marca 6acd293 -> 65f8bad, 6 commituri.
   in masa (exista deja in Migrare cabinet) facut descoperibil din lista de firme (Q4 - premisa "nu exista" era gresita).
   Gard `core/test_onboarding_ux.py`. Fereastra bun venit **probata Playwright** (cabinet de test real, sters complet dupa,
   zero poluare).
+
+
+## 16.08.2026 — Parcurgere import CUBUS (raspunsuri 3-16): corectitudine backend + garda pe rol
+Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce ramane: PREDARE_LANT.md.
+- Lot 1 (71995e4): Q3 (cheia dnf_luni la verifica_randuri mijloace), Q4 (ramura juridic/fizic asociati),
+  Q11 (norma/ore nefabricate salariati - DS cap.17), Q13 (MijlocFixRand fara default 2131). Garda
+  core/test_import_backend_corect.py (comportamentala, RED 6/6 pe cod vechi).
+- Lot 2 (e090166): mesajele raise ValueError din 6 parsere de import diacriticizate (ajung la user
+  via HTTPException(str(e)); scapau garzii generale prin ROL - Q2/Q17). Garda core/test_import_mesaje_afisate.py
+  scopata pe fisierele de import (extensia globala ar fi flagrat 159, incl. erori interne legitim ASCII).

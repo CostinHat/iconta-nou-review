@@ -4317,3 +4317,11 @@ Q4 (importul in masa EXISTA deja in Migrare cabinet — defectul real era descop
 Q9 (nu un nume de camp divergent — numele coincid — ci precompletare DUPLICATA pe 3 cai cu acoperiri diferite);
 CUBUS avea de fapt campurile TVA populate la momentul verificarii (completate manual / alt flux) — defectele confirmate
 la SURSA (cod), nu pe starea DB de moment. Marca 6acd293 -> 65f8bad.
+
+
+## 16.08.2026 — Import CUBUS: 22 de raspunsuri devenite comanda (regula 13 pe clasa), loturi 1-2
+Costin a parcurs cele 9 straturi de import; 22 de intrebari-harta. Livrat probat: Lot 1 corectitudine
+backend (Q3/Q4/Q11/Q13), Lot 2 diacritice import pe rol (Q2/Q17). Restul clasei (preview=salvare pe 5
+straturi, UX migrare Q7/Q8/Q12/Q14, amortizare Q6/Q15, cod mort Q10, COR Q16, XSD Q18, render Q1/Q10,
+audit mesaje generatoare) - scopat in PREDARE_LANT.md, NEPROBAT/neinceput. Oprire pe context epuizat
+(§2.3), livrare partiala onesta (§1 nu declara livrat ce n-are proba).
