@@ -1139,6 +1139,9 @@ CREATE TABLE TENANT_PLACEHOLDER.salariati (
     ore_zi numeric DEFAULT 8,
     salariu_brut numeric DEFAULT 0,
     persoane_intretinere integer DEFAULT 0,
+    data_nastere date,                                 -- [deducere suplimentara] tineri <26 (CF art.77 alin.10a)
+    copii_scolarizati integer NOT NULL DEFAULT 0,      -- [deducere suplimentara] copii <=18 in invatamant (100 lei/copil)
+    declaratie_copii boolean NOT NULL DEFAULT false,   -- [deducere suplimentara] declaratia parintelui (art.77 alin.12-13)
     judet_casa text,
     cor text,
     tip_asigurat text,

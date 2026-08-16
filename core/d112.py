@@ -641,6 +641,9 @@ def pull(conn, schema, an, luna):
             "judet_casa": s.get("judet"),
             "part_time": bool(s.get("part_time")),
             "persoane_intretinere": s.get("persoane_intretinere") or 0,
+            "data_nastere": s.get("data_nastere"),                       # [deducere suplimentara] tineri <26
+            "copii_scolarizati": s.get("copii_scolarizati") or 0,        # [deducere suplimentara] 100 lei/copil
+            "declaratie_copii": bool(s.get("declaratie_copii")),         # [deducere suplimentara] declaratia parintelui
             "scutit_pt": bool(s.get("scutit_contrib_minim")),
             "scutit": bool(s.get("scutit_contrib_minim")),
             "motiv_exceptare": s.get("motiv_exceptare"),
@@ -710,7 +713,10 @@ def pull(conn, schema, an, luna):
                                tichet_vacanta_exces=_exces_van,
                                tichet_cultural=float(s.get("tichet_cultural") or 0),
                                tichet_cresa=float(s.get("tichet_cresa") or 0),
-                               cadou_taxabil=float(cadou_tax.get(s["id"], 0) or 0))
+                               cadou_taxabil=float(cadou_tax.get(s["id"], 0) or 0),
+                               sub_26=_sz.sub_26_la(s.get("data_nastere"), ref),   # [deducere suplimentara]
+                               copii_scoala=(int(s.get("copii_scolarizati") or 0) if s.get("declaratie_copii") else 0),
+                               declaratie_copii=bool(s.get("declaratie_copii")))
         s["brut_lucrat"] = brut_lucrat   # consumat de salarii_contare (o singura cifra)
         # [fix salariu-la-data 06.08.2026] brutul DECLARAT (B4_3/B1_sal1) si baza non-CM = salariul LUNII
         # (date-aware _sal_luna=brut_int), NU salariati.salariu_brut (contractual CURENT, stale). Migrarea 29.07

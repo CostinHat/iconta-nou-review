@@ -25,6 +25,7 @@ _NORME = ("intreaga", "partiala")
 # NU adauga citiri fiscale noi pe salariati.salariu_brut.
 _CAMPURI_API = ("cnp", "nume", "prenume", "data_angajare", "tip_norma", "ore_zi",
                 "persoane_intretinere", "judet_casa", "data_incetare",  # [2b] salariu_brut -> salariu_istoric
+                "data_nastere", "copii_scolarizati", "declaratie_copii",  # [deducere suplimentara]
                 "scutit_contrib_minim", "motiv_exceptare", "cor",
                 "tichet_masa_valoare",  # [F133]
                 "iban")  # [F134] cont beneficiar pt plata pe card

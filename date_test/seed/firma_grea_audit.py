@@ -32,18 +32,30 @@ FG_TVA_INCEPUT = "2026-05-01"  # inregistrare TVA in cursul anului
 
 # CNP fictiv valid
 _K = [2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9]
+def _data_nastere(sx, yy, mm, dd):
+    """Data nasterii din componentele CNP (secol dupa cifra sexului): 1/2->1900, 3/4->1800, 5/6->2000."""
+    secol = {1: 1900, 2: 1900, 3: 1800, 4: 1800, 5: 2000, 6: 2000}.get(sx, 1900)
+    return "%04d-%02d-%02d" % (secol + yy, mm, dd)
+
+
 def _cnp(sx, yy, mm, dd, nnn, jud=51):
     b = "%d%02d%02d%02d%02d%03d" % (sx, yy, mm, dd, jud, nnn)
     s = sum(int(b[i]) * _K[i] for i in range(12))
     c = s % 11
     return b + str(1 if c == 10 else c)
 
-# (cheie, nume, prenume, sex, an, luna, zi, seq, brut, cor, ore, data_ang, data_inc)
+# (cheie, nume, prenume, sex, an, luna, zi, seq, brut, cor, ore, data_ang, data_inc, copii, declaratie)
 SALARIATI = [
     # G_IN: intrat la mijloc de luna (15.03); ramane pana la final de an
-    ("G_IN",  "INTRAT",  "MIJLOC", 1, 90, 3, 15, 301, 5000, "512001", 8, "2026-03-15", None),
+    ("G_IN",  "INTRAT",  "MIJLOC", 1, 90, 3, 15, 301, 5000, "512001", 8, "2026-03-15", None, 0, False),
     # G_OUT: activ din feb, IESIT la mijloc de luna (15.06)
-    ("G_OUT", "IESIT",   "MIJLOC", 2, 88, 6, 15, 302, 4500, "522101", 8, "2026-02-01", "2026-06-15"),
+    ("G_OUT", "IESIT",   "MIJLOC", 2, 88, 6, 15, 302, 4500, "522101", 8, "2026-02-01", "2026-06-15", 0, False),
+    # [deducere suplimentara] G_TANAR: nascut 2003 (<26 ani in 2026) -> deducere tineri 15%% x salariu minim
+    ("G_TANAR",  "TANAR",  "SUB26", 5, 3, 5, 20, 303, 5000, "512001", 8, "2026-02-01", None, 0, False),
+    # [deducere suplimentara] G_PARINTE: 2 copii scolarizati + DECLARATIE -> +200 lei deducere (100/copil)
+    ("G_PARINTE","PARINTE","SCOALA", 1, 85, 4, 10, 304, 5500, "522101", 8, "2026-02-01", None, 2, True),
+    # [deducere suplimentara] G_PAR_ND: 1 copil scolarizat FARA declaratie -> gate: nu se acorda, nu blocheaza
+    ("G_PAR_ND", "PARINTE","NEDECL", 2, 86, 7, 22, 305, 5200, "512001", 8, "2026-02-01", None, 1, False),
 ]
 # NB: nimeni activ in IANUARIE 2026 (ambii incep >= 01.02) -> luna intreaga fara salariat.
 
@@ -184,11 +196,13 @@ def seed_payroll(conn, schema):
         already = c.fetchone()[0] > 0
         idmap = {}
         if not already:
-            for (k, nume, pren, sx, yy, mm, dd, seq, brut, cor, orez, dang, dinc) in SALARIATI:
+            for (k, nume, pren, sx, yy, mm, dd, seq, brut, cor, orez, dang, dinc, copii, decl) in SALARIATI:
                 cnp = _cnp(sx, yy, mm, dd, seq)
-                c.execute(q + "salariati (nume,prenume,cnp,data_angajare,data_incetare,salariu_brut,cor,ore_zi) "
-                          "VALUES (%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
-                          (nume, pren, cnp, dang, dinc, brut, cor, orez))
+                dn = _data_nastere(sx, yy, mm, dd)   # [deducere suplimentara] derivata din CNP
+                c.execute(q + "salariati (nume,prenume,cnp,data_angajare,data_incetare,salariu_brut,cor,ore_zi,"
+                          "data_nastere,copii_scolarizati,declaratie_copii) "
+                          "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
+                          (nume, pren, cnp, dang, dinc, brut, cor, orez, dn, copii, decl))
                 idmap[k] = c.fetchone()[0]
             nr = 0
             for (k, an, lu, cod, zi, di, ds, serie, numar) in CM:

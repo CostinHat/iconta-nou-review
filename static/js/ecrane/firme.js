@@ -559,6 +559,9 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       ${camp("ore_zi", "Ore/zi (norm\u0103 par\u021bial\u0103)", "numar", { pas: "0.5" })}
       ${camp("salariu_brut", "Salariu brut", "numar", { obligatoriu: true })}
       ${camp("persoane_intretinere", "Persoane \u00een \u00eentre\u021binere", "numar", { pas: "1" })}
+      ${camp("data_nastere", "Data nașterii (pentru deducerea tinerilor sub 26 de ani)", "data")}
+      ${camp("copii_scolarizati", "Copii ≤ 18 ani înscriși în învățământ (deducere 100 lei/copil)", "numar", { pas: "1" })}
+      ${camp("declaratie_copii", "Declarația părintelui pentru copii (art.77) — fără ea deducerea nu se acordă", "checkbox")}
       ${camp("judet_casa", "Jude\u021b CAS/CASS", "text")}
       ${campCorLookup("sn", true)}
       ${camp("iban", "IBAN (cont salariu pe card)", "text")}
@@ -589,6 +592,9 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       ore_zi: corp.querySelector("#sn-ore_zi").value ? Number(corp.querySelector("#sn-ore_zi").value) : null,
       salariu_brut: brut ? Number(brut) : 0,
       persoane_intretinere: corp.querySelector("#sn-persoane_intretinere").value ? Number(corp.querySelector("#sn-persoane_intretinere").value) : 0,
+      data_nastere: corp.querySelector("#sn-data_nastere").value || null,
+      copii_scolarizati: corp.querySelector("#sn-copii_scolarizati").value ? Number(corp.querySelector("#sn-copii_scolarizati").value) : 0,
+      declaratie_copii: corp.querySelector("#sn-declaratie_copii").checked,
       judet_casa: corp.querySelector("#sn-judet_casa").value.trim() || null,
       cor: corp.querySelector("#sn-cor").value.trim() || null,
       iban: corp.querySelector("#sn-iban").value.trim().replace(/\s/g, "").toUpperCase() || null,  // [F134]

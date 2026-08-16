@@ -18,7 +18,8 @@ def stat_plata(conn, schema, an, luna):
     with conn.cursor() as cur:
         cur.execute(f"""
             SELECT id, nume, prenume, salariu_brut, persoane_intretinere, part_time, ore_zi,
-                   tichet_masa_valoare, iban, cor, data_angajare, data_incetare
+                   tichet_masa_valoare, iban, cor, data_angajare, data_incetare,
+                   data_nastere, copii_scolarizati, declaratie_copii
             FROM {schema}.salariati
             WHERE (data_incetare IS NULL OR data_incetare >= %s)
               AND (data_angajare IS NULL OR data_angajare < (%s::date + INTERVAL '1 month'))
@@ -48,7 +49,8 @@ def stat_plata(conn, schema, an, luna):
     # [#1/#3] pontajul lunii confirmat? o singura interogare (nu per-salariat).
     _pontaj_confirmat = _per.e_confirmat(conn, schema, an, luna, "pontaj")["confirmat"]
     _cs_sal = conn.cursor()
-    for sid, nume, prenume, brut, pers, part_time, ore_zi, tichet_val, iban, cor, data_ang, data_inc in randuri:
+    for (sid, nume, prenume, brut, pers, part_time, ore_zi, tichet_val, iban, cor, data_ang, data_inc,
+         data_nastere, copii_scolarizati, declaratie_copii) in randuri:
         brut = _si.salariu_la(_cs_sal, schema, sid, _ultima_luna)  # salariul contractual din istoric
         _zlm, _zll = _si.zile_la_minim(_cs_sal, schema, sid, an, luna, data_ang, data_inc)
         _fac_prorata = (_zlm / _zll) if _zll else 0.0  # lit.a): zile ACTIVE si LA MINIM
@@ -87,7 +89,10 @@ def stat_plata(conn, schema, an, luna):
                                          tichet_vacanta=max(float(vac or 0) - _exces_v3, 0.0),
                                          tichet_vacanta_exces=_exces_v3,
                                          tichet_cultural=float(cult or 0),
-                                         tichet_cresa=float(cresa or 0))
+                                         tichet_cresa=float(cresa or 0),
+                                         sub_26=salarizare.sub_26_la(data_nastere, ref),   # [deducere suplimentara]
+                                         copii_scoala=(int(copii_scolarizati or 0) if declaratie_copii else 0),
+                                         declaratie_copii=bool(declaratie_copii))
         # semnal la depasirea plafonului anual de vacanta (6 sal.minime) - cumulat pana la luna curenta
         vac_an = _ben.total_an(conn, schema, sid, an, "vacanta", pana_luna=luna) if vac else 0
         cadou = cadou_luna.get(sid, 0)  # [F133 Faza 2b1] total cadou (neimpozabil in 2b1)
@@ -142,13 +147,15 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     ref = date(an, luna, 1)
     with conn.cursor() as cur:
         cur.execute(f"""
-            SELECT nume, prenume, salariu_brut, persoane_intretinere, part_time, tichet_masa_valoare, data_angajare, data_incetare
+            SELECT nume, prenume, salariu_brut, persoane_intretinere, part_time, tichet_masa_valoare, data_angajare, data_incetare,
+                   data_nastere, copii_scolarizati, declaratie_copii
             FROM {schema}.salariati WHERE id = %s
         """, (salariat_id,))
         r = cur.fetchone()
     if not r:
         return None
-    nume, prenume, brut, pers, part_time, tichet_val, data_ang, data_inc = r
+    (nume, prenume, brut, pers, part_time, tichet_val, data_ang, data_inc,
+     data_nastere, copii_scolarizati, declaratie_copii) = r
     import calendar as _cal2
     from core import salariu_istoric as _si  # [tranzitie] date-aware, nu salariati.salariu_brut
     _um = date(an, luna, _cal2.monthrange(an, luna)[1])
@@ -180,7 +187,10 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
                                      tichet_valoare=float(tichet_val or 0), tichet_zile=tichet_zile,
                                      tichet_vacanta=float(vac or 0),
                                      tichet_cultural=float(cult or 0),
-                                     tichet_cresa=float(cresa or 0))
+                                     tichet_cresa=float(cresa or 0),
+                                     sub_26=salarizare.sub_26_la(data_nastere, ref),   # [deducere suplimentara]
+                                     copii_scoala=(int(copii_scolarizati or 0) if declaratie_copii else 0),
+                                     declaratie_copii=bool(declaratie_copii))
 
     with conn.cursor() as _cur:
         _cur.execute(f"SELECT culoare_factura, font_factura FROM {schema}.firma_profil WHERE id = 1")

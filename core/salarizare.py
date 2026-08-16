@@ -103,6 +103,20 @@ _VARIANTE_DEDUCERE = [
 ]
 
 
+def sub_26_la(data_nastere, la_data):
+    """True daca salariatul are SUB 26 de ani la `la_data` (CF art.77 alin.(10) lit.a: 'persoane cu
+    varsta de pana la 26 de ani'). data_nastere None -> False (necunoscut, fara deducere - nu se acorda
+    tacit). Accepta date sau ISO string."""
+    if not data_nastere:
+        return False
+    import datetime as _dt
+    if isinstance(data_nastere, str):
+        data_nastere = _dt.date.fromisoformat(data_nastere[:10])
+    ani = la_data.year - data_nastere.year - (
+        1 if (la_data.month, la_data.day) < (data_nastere.month, data_nastere.day) else 0)
+    return ani < 26
+
+
 def deducere_personala(brut, persoane=0, sub_26=False, copii_scoala=0, functie_baza=True, declaratie_copii=False, *, la_data):
     """Deducerea personala, DISPECER pe la_data (varianta de formula valabila la data venitului).
     TEMEI: CF art.77 alin.(4) (scara degresiva 20/25/30/35/45%, prag salariu minim+2000) + alin.(10) lit.a
@@ -124,7 +138,7 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
                    exceptat_suprataxare=False,
                    tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
                    facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0, tichet_cresa=0,
-                   cadou_taxabil=0):
+                   cadou_taxabil=0, declaratie_copii=False):
     """Întoarce breakdown complet: facilitate, CAS, CASS, deducere, impozit, net, CAM, cost.
 
     Parametri noi (OUG 89/2025 art.III + art.146 Cod fiscal):
@@ -222,7 +236,8 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     cas = baza_contrib * cota_cas
     cass = baza_contrib * cota_cass
 
-    ded = deducere_personala(b_imp, persoane, sub_26, copii_scoala, functie_baza, la_data=la_data)
+    ded = deducere_personala(b_imp, persoane, sub_26, copii_scoala, functie_baza,
+                             la_data=la_data, declaratie_copii=declaratie_copii)
 
     baza_imp = baza_contrib - cas - cass - _dec(ded["total"])
     if baza_imp < 0:
@@ -339,7 +354,7 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
                    exceptat_suprataxare=False,
                    tichet_valoare=0, tichet_zile=0, tichet_vacanta=0, data_angajare=None, data_incetare=None,
                    facilitate_prorata=None, tichet_vacanta_exces=0, tichet_cultural=0, tichet_cresa=0,
-                   cadou_taxabil=0):
+                   cadou_taxabil=0, declaratie_copii=False):
     """Calcul salariu brut->net, DISPECER pe la_data (varianta de formula valabila la luna venitului).
     Dispecer subtire care forwardeaza toti parametrii catre varianta datata; NU duplica corpul.
     TEMEI: CF art.77 (deducere personala), art.146 alin.(5^6)/(5^7) (contributia minima / exceptari
@@ -354,7 +369,7 @@ def calcul_salariu(brut, persoane=0, sub_26=False, copii_scoala=0,
               tichet_valoare=tichet_valoare, tichet_zile=tichet_zile, tichet_vacanta=tichet_vacanta,
               data_angajare=data_angajare, data_incetare=data_incetare, facilitate_prorata=facilitate_prorata,
               tichet_vacanta_exces=tichet_vacanta_exces, tichet_cultural=tichet_cultural,
-              tichet_cresa=tichet_cresa, cadou_taxabil=cadou_taxabil)
+              tichet_cresa=tichet_cresa, cadou_taxabil=cadou_taxabil, declaratie_copii=declaratie_copii)
 
 
 # ============================================================
