@@ -57,6 +57,9 @@ def note_lunare(conn, schema, an, luna):
             persoane=s.get("persoane_intretinere") or 0, la_data=ref,
             norma_intreaga=not s.get("part_time"),
             venit_brut_total=float(s.get("brut") or 0),
+            sub_26=_sz.sub_26_la(s.get("data_nastere"), ref),   # [deducere suplimentara] coerenta contare<->D112
+            copii_scoala=(int(s.get("copii_scolarizati") or 0) if s.get("declaratie_copii") else 0),
+            declaratie_copii=bool(s.get("declaratie_copii")),
             data_angajare=s.get("data_angajare"),
             data_incetare=s.get("data_incetare"))
         for n in _sz.monografie_salariu(calc):

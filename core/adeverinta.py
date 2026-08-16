@@ -40,7 +40,9 @@ def date_auto(conn, schema, salariat_id, an, luna):
                     "declarant_functie FROM firma_profil WHERE id = 1")
         f = cur.fetchone() or (None,) * 6
         cur.execute("SELECT nume, prenume, cnp, cor, data_angajare, "
-                    "part_time, persoane_intretinere FROM salariati WHERE id = %s", (salariat_id,))
+                    "part_time, persoane_intretinere, "
+                    "data_nastere, copii_scolarizati, declaratie_copii "
+                    "FROM salariati WHERE id = %s", (salariat_id,))
         s = cur.fetchone()
         if s:
             _brut = float(_si.salariu_la(cur, None, salariat_id, date(an, luna, 1)) or 0)  # [2b] salariul lunii din istoric
@@ -48,7 +50,10 @@ def date_auto(conn, schema, salariat_id, an, luna):
         return None
     brut = _brut
     calc = salarizare.calcul_salariu(brut, persoane=s[6] or 0, la_data=date(an, luna, 1),
-                                     norma_intreaga=not s[5], venit_brut_total=brut)
+                                     norma_intreaga=not s[5], venit_brut_total=brut,
+                                     sub_26=salarizare.sub_26_la(s[7], date(an, luna, 1)),   # [deducere suplimentara]
+                                     copii_scoala=(int(s[8] or 0) if s[9] else 0),
+                                     declaratie_copii=bool(s[9]))
     return {
         "firma_nume": f[0] or "", "firma_cui": f[1] or "", "firma_adresa": f[2] or "",
         "reprezentant": f[3] or f[4] or "Administrator", "repr_functie": f[5] or "Administrator",

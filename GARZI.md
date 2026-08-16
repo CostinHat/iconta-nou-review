@@ -2804,3 +2804,20 @@ Tura exhaustivǎ D112 a livrat 2 fixuri PROBATE (deducere suplimentarǎ = fix 1,
 - **[MEDIU — deriva istoricǎ] Scutiri sectoriale (construcţii/agriculturǎ) pe luni istorice 2025.** Abrogate 2026, dar aplicaţia suportǎ luni date-aware istorice; scutirile nu se aplicǎ retroactiv la lunile 2025. Calcul period-aware.
 - **[MEDIU — reconciliere headcount] Numǎr asiguraţi vs REGES.** Fǎrǎ a-doua-cale pe headcount-ul declarat vs registrul de evidenţǎ.
 - Toate depind de APLICAŢIE (nu de rǎspunsul ANAF); niciuna nu e decizie de produs. Ordinea recomandatǎ = severitatea de mai sus (zilieri/nesalariale întâi = venit nedeclarat).
+
+
+## 16.08.2026 — Task 2 D112, fix 3/N: GENERALIZAREA clasei deducerii (§8) la adeverinta + salarii_contare (cluster "D112 exhaustiv")
+Generalizarea pe clasa a fix 1 (regula generalizare / §2.2 §8). Cautat TOTI apelantii de productie ai
+`calcul_salariu` (`grep -rln "calcul_salariu(" core/*.py | grep -v test_` -> adeverinta, d112, salarii_contare,
+salarizare, stat_plata_api). Fix 1 acoperise d112 + stat_plata; §8 a gasit inca DOUA instante genuine ale
+aceleiasi clase (formula cablata dar apelantul o cheama fara sub_26/copii):
+- **adeverinta.date_auto: net SUBEVALUAT pe adeverinta.** Chema `calcul_salariu` fara sub_26/copii -> un tanar<26
+  sau parinte primea o adeverinta de venit cu NET mai mic decat realitatea (impozit supra-declarat). FIX: SELECT
+  extins (data_nastere/copii_scolarizati/declaratie_copii) + pasarea deducerii. Probat: net(tanar) > net(matur).
+- **salarii_contare.note_lunare: impozit contabil DIVERGENT de D112.** Recalcula impozitul pentru notele contabile
+  (444 credit) fara sub_26/copii -> de cand fix 1 a cablat D112, contabilitatea ar fi declarat ALT impozit decat
+  declaratia (rupe "coerenta prin constructie", prins de `control_coerenta`). FIX: pasarea deducerii (s vine din
+  pull, are deja campurile). Probat: control_coerenta gol pe un tanar<26.
+- Gard `core/test_deducere_generalizare.py` (2 teste, DB): net adeverinta reflecta deducerea + note contabile
+  coerente cu D112. CLASA INCHISA: toti cei 5 apelanti de productie ai calcul_salariu paseaza acum deducerea (sau
+  SUNT functia insasi - salarizare).
