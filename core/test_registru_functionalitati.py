@@ -136,7 +136,9 @@ def _live_si_indici():
     randuri = _randuri()
     h = randuri[0]
     iid, inume, ist, iaj = h.index("ID"), h.index("Functionalitate"), h.index("Stare"), h.index("ajutor")
-    live = [r for r in randuri[1:] if len(r) > iaj and (r[ist] or "").strip() == "LIVE"]
+    # startswith("LIVE"): acopera SI variantele "LIVE (data)"/"LIVE 20.07.2026" - altfel 50 de intrari
+    # LIVE datate scapau de cerinta de ajutor (gaura descoperita 16.08). "Nicio intrare LIVE fara ajutor".
+    live = [r for r in randuri[1:] if len(r) > iaj and (r[ist] or "").strip().startswith("LIVE")]
     return live, iid, inume, iaj
 
 
