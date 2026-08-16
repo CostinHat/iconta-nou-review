@@ -4370,3 +4370,13 @@ pontaj confirmat. Fix (DS cap.23): banner .caseta-info + semafor gri o data pe l
 blocate" gri (consecinta reala) doar la salariatii cu tichete. Randat before/after pe tenant_003 (Ana vs
 Radu): before rosu strident, after gri neutru; 0 erori consola. Gard test_c1 (2) RED->GREEN. Generalizare:
 tiparul apare doar aici; ecranul de confirmare pontaj (firme.js:669) foloseste deja caseta-info+gri.
+
+## 16.08.2026 (audit tenant_003) - C2 livrat: revenire la firma + mesaj de succes
+C2 reparat: dupa salvarea unui strat de import per firma, navigarea facea nav.deschide(<wizard cabinet>) -> o
+fereastra NOUA cu TOATE firmele cabinetului, fara mesaj de succes. Fix: nav.inapoiPas() (revine pe traseu la
+meniul firmei / lista de firme) + mesaj verde care supravietuieste revenirea (_migMesaj -> _consumaMigMesaj,
+arataMesaj "ok"). Randat before/after pe tenant_003 (salariati): before -> lista de 13 firme fara mesaj; after
+-> meniul firmei "Alege ce vrei sa aduci" + "2 salariati importati" verde; 0 erori consola. Gard test_c2 (2)
+RED->GREEN. CLASA (Regula 13): grep nav.deschide in migrare.js -> 7 handlere de salvare (solduri/parteneri/
+salariati/asociati/mijloace/istoric + vector fiscal) aveau bounce-ul; toate 7 reparate. retete/articole/
+status-save (mig-salveaza generic) foloseau deja tiparul bun (arataMesaj ok / inapoiPas).

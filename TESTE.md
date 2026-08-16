@@ -1600,3 +1600,8 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
 - core/test_c1_pontaj_neconfirmat_gri.py (2) - interzice marcajul rosu per-salariat "pontaj neconfirmat" si
   banner-ul ecran-nota rosu; cere .caseta-info + semafor gri (DS cap.23). RED probat pe cod vechi
   (marcaj rosu + ecran-nota rosu prezente); GREEN dupa fix.
+
+## 16.08.2026 - Gard C2 (revenire la firma dupa import)
+- core/test_c2_migrare_revenire_firma.py (2) - fiecare nav.deschide("<Titlu>", wizard) apare O SINGURA data
+  (dispecerul de straturi); a doua aparitie (handlerul de salvare) = nav.inapoiPas() + _migMesaj/_consumaMigMesaj.
+  RED probat pe cod vechi (7 titluri de 2 ori, fara _migMesaj); GREEN dupa fix.

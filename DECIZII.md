@@ -9399,3 +9399,10 @@ per-salariat rosu "pontaj neconfirmat" (firme.js) implica FALS ca pontajul altui
 la cei cu tichete>0), afisata gri. Audit tenant_003: Ana (tichet=40) marcata, Radu (tichet=0) nu - diferenta
 cheiata pe tichete, confirmata la sursa (stat_plata_api.py:67). Corectitudine (text ce descrie starea), nu
 decizie de produs.
+
+## 16.08.2026 - import per firma: dupa salvare, revenire pe traseu la firma (C2)
+Dupa salvarea unui strat de import (per firma), navigarea revine cu nav.inapoiPas() la ecranul de la care
+s-a plecat (meniul firmei sau lista de firme din wizard), NU deschide o fereastra NOUA de wizard de CABINET
+(care arata toate firmele - "in afara firmei pe care lucra contabilul"). Mesajul de succes supravietuieste
+revenirea prin var de modul _migMesaj (tiparul _bonuriMesaj), consumat la re-randare (arataMesaj "ok", DS
+cap.6). Corectitudine UX (feedback + pozitie), aliniere la tiparul deja rezolvat (bonuri, retete, status-save).

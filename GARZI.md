@@ -2960,3 +2960,10 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
   per-rand "tichete blocate" gri (consecinta reala). Gard core/test_c1_pontaj_neconfirmat_gri.py (2), RED
   probat. CLASA: grep neconfirmat/confirmat+rosu in static/js -> singura instanta; confirmarea (firme.js:669)
   deja conforma; 941/965 gri informativ; asistenti.js:355 self_approval = atentionare reala (nu stare perioada).
+
+- **C2** [audit tenant_003, UX navigare]: dupa salvarea unui strat de import per firma, migrare.js facea
+  nav.deschide(<wizard de cabinet>) -> fereastra noua cu toate firmele, in afara firmei; fara mesaj de succes.
+  Fix: nav.inapoiPas() (revenire pe traseu la firma) + mesaj verde care supravietuieste revenirea
+  (_migMesaj/_consumaMigMesaj, arataMesaj "ok", DS cap.6). Gard core/test_c2_migrare_revenire_firma.py (2), RED
+  probat. CLASA (Regula 13): 7 handlere (6 straturi cu randuri + vector fiscal), toate reparate;
+  retete/articole/status-save deja conforme.

@@ -3,6 +3,19 @@
 // Restul straturilor: placeholder până le construim. Starea fiecăruia vine din /migrare/status.
 
 import { api, esc, dataRo, bani, CULORI_CARD, baniRotund, arataMesaj, confirmaCaseta } from "../api.js?v=3857bab660";
+
+// C2 (audit tenant_003): mesaj de succes care supravietuieste nav.inapoiPas() (tiparul _bonuriMesaj din
+// firme.js). Setat de handlerele de salvare INAINTE de inapoiPas; consumat la re-randarea ecranului la care
+// se revine (meniul per-firma). DS cap.6: succes = arataMesaj "ok" (verde), pe ecranul principal dupa revenire.
+let _migMesaj = "";
+function _consumaMigMesaj(corp) {
+  if (!_migMesaj || !corp) return;
+  const z = document.createElement("div");
+  z.style.margin = "0 0 12px";
+  corp.insertBefore(z, corp.firstChild);
+  arataMesaj(z, _migMesaj, "ok");
+  _migMesaj = "";
+}
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 
 export const STRATURI = [
@@ -459,7 +472,7 @@ async function formularVectorFirma(corp, nav, f) {
     };
     try {
       await api.post(`/tenants/${f.tenant_id}/vector`, payload);
-      nav.deschide("Vector fiscal", (cc, nn) => wizardVector(cc, nn));
+      _migMesaj = "Vector fiscal salvat."; nav.inapoiPas();
     } catch (e) {
       er.textContent = (e && (e.mesaj || e.message)) || "Nu am putut salva. \u00cencearc\u0103 din nou.";
     }
@@ -623,7 +636,7 @@ function previzualizeazaSolduri(corp, nav, firma, date) {
     buton.disabled = true; buton.textContent = "Salvez…";
     try {
       await api.post(`/tenants/${firma.tenant_id}/solduri`, { randuri });
-      nav.deschide("Solduri inițiale", (cc, nn) => wizardSolduri(cc, nn));
+      _migMesaj = `${randuri.length} conturi salvate.`; nav.inapoiPas();
     } catch (e) {
       eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
       buton.disabled = false; buton.textContent = "Salvează soldurile";
@@ -779,7 +792,7 @@ function previzualizeazaParteneri(corp, nav, firma, date) {
     buton.disabled = true; buton.textContent = "Salvez…";
     try {
       await api.post(`/tenants/${firma.tenant_id}/parteneri`, { randuri });
-      nav.deschide("Solduri parteneri", (cc, nn) => wizardParteneri(cc, nn));
+      _migMesaj = `${randuri.length} parteneri salvați.`; nav.inapoiPas();
     } catch (e) {
       eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
       buton.disabled = false; buton.textContent = "Salvează partenerii";
@@ -917,7 +930,7 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
       await api.post(`/tenants/${firma.tenant_id}/salariati-import`, { randuri });
       // Importul BLOCHEAZĂ dacă vreun CNP e invalid (backendul ridică; preview dezactivează Salvarea) —
       // nu există skip tăcut, deci nu raportăm "X săriți" (fost cod mort D1a). Aici toate rândurile-s valide.
-      nav.deschide("Salariați", (cc, nn) => wizardSalariati(cc, nn));
+      _migMesaj = `${randuri.length} salariați importați.`; nav.inapoiPas();
     } catch (e) {
       eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
       buton.disabled = false; buton.textContent = "Salvează salariații";
@@ -1052,7 +1065,7 @@ function previzualizeazaAsociati(corp, nav, firma, date) {
     buton.disabled = true; buton.textContent = "Salvez…";
     try {
       await api.post(`/tenants/${firma.tenant_id}/asociati-import`, { randuri });
-      nav.deschide("Asociați", (cc, nn) => wizardAsociati(cc, nn));
+      _migMesaj = `${randuri.length} asociați salvați.`; nav.inapoiPas();
     } catch (e) {
       eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
       buton.disabled = false; buton.textContent = "Salvează asociații";
@@ -1189,7 +1202,7 @@ function previzualizeazaMijloace(corp, nav, firma, date) {
     buton.disabled = true; buton.textContent = "Salvez…";
     try {
       await api.post(`/tenants/${firma.tenant_id}/mijloace-fixe-import`, { randuri });
-      nav.deschide("Mijloace fixe", (cc, nn) => wizardMijloace(cc, nn));
+      _migMesaj = `${randuri.length} mijloace fixe importate.`; nav.inapoiPas();
     } catch (e) {
       eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
       buton.disabled = false; buton.textContent = "Salvează mijloacele fixe";
@@ -1324,7 +1337,7 @@ function previzualizeazaIstoric(corp, nav, firma, date) {
     buton.disabled = true; buton.textContent = "Salvez…";
     try {
       await api.post(`/tenants/${firma.tenant_id}/istoric-declaratii-import`, { randuri });
-      nav.deschide("Istoric declarații", (cc, nn) => wizardIstoric(cc, nn));
+      _migMesaj = `${randuri.length} declarații din istoric salvate.`; nav.inapoiPas();
     } catch (e) {
       eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
       buton.disabled = false; buton.textContent = "Salvează istoricul";
@@ -1490,6 +1503,7 @@ export async function meniuMigrarePerFirma(corp, nav, firma) {
     rand.addEventListener("click", () => nav.mergi(p.titlu, (c) => p.fn(c, nav)));  // titlul = pasul; firma e in antet (fisa) sau in intro (drum cabinet) - DS cap.1
     lista.appendChild(rand);
   });
+  _consumaMigMesaj(corp);
 }
 
 // [F150] Import retete HoReCa (pasul 11)
