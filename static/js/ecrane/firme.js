@@ -9,11 +9,11 @@ import { ecranRip } from "./rip_ecran.js?v=c9c37ec6ae";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=7019abe613";
 import { ecranEtransport } from "./etransport_ecran.js?v=0dca1ea392";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=63b12cd0db";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=eab47e576c";  // [decl_firma_v1]
+import { declaratiiPerFirma } from "./declaratii.js?v=dc60f9ea45";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=7c53d3765b";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=930762c3c4";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=ae22f440bf";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=05269e407b";  // [date_firma_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=3a04efda6d";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=cec020b9da";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri

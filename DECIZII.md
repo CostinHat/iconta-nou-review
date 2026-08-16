@@ -9382,3 +9382,11 @@ verifica_randuri). Decizie: eliminam codul mort (sarite_cnp + bucla de skip) si 
 ("vor fi sarite" / "X sariti"), in loc sa "reparam" skip-ul (care ar fi pierdere tacuta de date - exact ce
 gardul D1a voia sa evite). Superseda test_salariati_skip_surfatat_in_ui (premisa falsa). Alinierea textului
 la comportamentul real = CORECTITUDINE (text care descrie ce face aplicatia), nu decizie de produs.
+
+## 16.08.2026 — periodicitatea declaratiilor TVA: EFECTIVA (tip_decont), nu statica (C7)
+Pentru setul TVA-decont (d300/d394/d406), periodicitatea care decide parametrul cerut (luna vs trim) e cea
+EFECTIVA a firmei (tip_decont) - ACEEASI sursa ca /declaratii/tipuri si wizardul, NU periodicitatea statica din
+harta. Firma trimestriala trimite `trim`; generatoarele sunt ancorate pe LUNA (agrega trimestrul din ultima
+luna), deci dispecerul `genereaza` converteste trim->luna-ancora (T*3) intr-un SINGUR loc, dupa validare.
+Corectitudine (declaratie blocata), nu decizie de produs. C8 (format data nativ la Casa) = NU defect de
+aplicatie (locale de browser), verificat la sursa - NEreparat, cu motiv (nu se fabrica un fix pentru un nedefect).

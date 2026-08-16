@@ -356,16 +356,19 @@ def periodicitate_firma(tip, tip_decont=None):
 # ============================================================
 #  VALIDARE CERERE — PURĂ (testabilă fără DB)
 # ============================================================
-def valideaza_cerere(tip, body):
+def valideaza_cerere(tip, body, per_efectiv=None):
     """
     Verifică tip + parametrii ceruți de periodicitate. Întoarce listă erori
-    (gol = ok). Nu atinge DB.
+    (gol = ok). Nu atinge DB. [C7] per_efectiv: periodicitatea REALĂ a firmei — setul
+    TVA-decont (d300/d394/d406) urmează tip_decont-ul (ca /declaratii/tipuri și wizardul);
+    fără ea, o firmă trimestrială (care trimite `trim`) pică pe periodicitatea statică.
     """
     erori = []
     per = periodicitate(tip)
     if per is None:
         return ["tip declarație necunoscut: %r (suportate: %s)"
                 % (tip, ", ".join(tipuri()))]
+    per = per_efectiv or per   # [C7] efectivă bate statica pentru setul TVA-decont
 
     an = body.get("an")
     if not isinstance(an, int) or an < 2020 or an > 2100:
@@ -463,7 +466,16 @@ def genereaza(conn, schema, tip, body):
     Întoarce (xml, rezultat) de la modul.
     Ridică ValueError cu erorile dacă cererea e invalidă.
     """
-    erori = valideaza_cerere(tip, body)
+    # [C7] periodicitatea EFECTIVĂ a firmei pentru setul TVA-decont (d300/d394/d406): urmează
+    # tip_decont (ca /declaratii/tipuri și wizardul). Fără asta, firma trimestrială trimite `trim`,
+    # iar validatorul static (lunar) cere `luna` -> "luna invalidă: None (aștept 1-12)".
+    per_ef = None
+    if tip in _TVA_PERIODIC:
+        with conn.cursor() as cur:
+            cur.execute("SELECT tip_decont FROM firma_profil WHERE id = 1")
+            _rd = cur.fetchone()
+        per_ef = periodicitate_firma(tip, _rd[0] if _rd else None)
+    erori = valideaza_cerere(tip, body, per_ef)
     if erori:
         raise ValueError("; ".join(erori))
     # [G1] POARTA PRIN FORMA: tipul neaplicabil pt tip_firma-ul firmei (ex. D101/D406 la un PFA) -> refuz cu
@@ -476,6 +488,11 @@ def genereaza(conn, schema, tip, body):
     _neap = _cf.neaplicabile_forma(_row[0] if _row else None)
     if tip in _neap:
         raise ValueError(_neap[tip])
+    # [C7] setul TVA trimestrial: wizardul trimite `trim`; generatoarele d300/d394/d406 sunt ancorate
+    # pe LUNĂ (agregă trimestrul din ultima lună). Convertim într-un SINGUR loc, după validare:
+    # T1->luna 3, T2->6, T3->9, T4->12 (DUK regula R18: trimestrial cere luna în 03/06/09/12).
+    if per_ef == "trimestrial" and body.get("trim") and body.get("luna") is None:
+        body = {**body, "luna": int(body["trim"]) * 3}
     _per, adaptor = DECLARATII[tip]
     return adaptor(conn, schema, body)
 

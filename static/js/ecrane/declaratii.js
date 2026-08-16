@@ -86,7 +86,7 @@ function pas1(corp, nav) {
       const et = `${tp.toUpperCase()} · ${S.periodicitate[tp] || ""}`;
       const neap = S.neaplicabile[tp];
       return neap
-        ? `<option value="${tp}" disabled title="${esc(neap)}">${et} — nu se aplică (partidă simplă)</option>`
+        ? `<option value="${tp}" disabled title="${esc(neap)}">${esc(neap)}</option>`
         : `<option value="${tp}" ${tp === S.tip ? "selected" : ""}>${et}</option>`;
     }).join("");
   }

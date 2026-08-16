@@ -2933,3 +2933,23 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
   strat -> contabilul nu vede ce e importat. Reparatia e BLOCATA pe un semnal de prezenta pt plan_conturi
   (185 conturi standard, fara flag standard/adaugat) -> un badge count>0 ar fi FABRICAT. Cere decizie de
   model (flag "adaugat" sau definirea "plan importat"). (Q12) avertismentul CNP pe rand e doar in title=.
+
+## 16.08.2026 — Reparatii audit vizual tenant_003 (C7, C6, C5); C8 verificat FALS la sursa
+- **C7** [CORECTITUDINE, SISTEMIC]: generarea D300/D394/D406 pe firma TRIMESTRIALA pica cu "luna invalida:
+  None (astept 1-12)" -> era BLOCATA pentru toate firmele trimestriale de TVA. Cauza: /declaratii/tipuri +
+  wizardul folosesc periodicitatea EFECTIVA (tip_decont), dar `valideaza_cerere` folosea periodicitatea
+  STATICA (d300=lunar). Frontendul trimite `trim`, validatorul cerea `luna` -> None. Fix intr-un SINGUR loc
+  (dispecerul `genereaza` + `valideaza_cerere`): periodicitate efectiva la validare + conversie trim->luna
+  ancora (T1->3, T2->6, T3->9, T4->12; generatoarele-s ancorate pe luna, agrega trimestrul; DUK R18). Gard
+  core/test_c7_periodicitate_trimestriala.py (6 teste), RED probat pe cod vechi ("luna invalida: None").
+  CLASA (regula 13): setul TVA-decont {d300,d394,d406} (_TVA_PERIODIC) - toate 3 prin acelasi dispecer, fix unic.
+- **C6** [text fals]: selectorul de declaratii (declaratii.js:89) afisa HARDCODAT 'nu se aplica (partida
+  simpla)' pentru orice declaratie neaplicabila (ex. D301/D390 la un SRL, care tine partida DUBLA), iar
+  motivul REAL (neaplicabile_selector, corect) era ascuns in title. Fix: optiunea afiseaza `neap` (motivul
+  real). CLASA: singura instanta hardcodata in frontend (grep 'partida simpla' -> doar aici in selector).
+- **C5** [acord]: 'Profil incomplet - 1 campuri obligatorii lipsesc' (date_firma.js) - plural hardcodat. Fix:
+  ramificare singular/plural. Gard core/test_c6_c5_motiv_acord.py (2), RED probat.
+- **C8** [VERIFICAT FALS la sursa, NEreparat]: placeholder 'mm/dd/yyyy' la Casa = randarea NATIVA a
+  `<input type=date>` in browserul de test (en-US); NU defect de aplicatie: aplicatia NU seteaza placeholder
+  (verificat null), foloseste `<html lang=ro>`, input nativ (formatul e controlat de browser, nu de HTML/JS).
+  Nimic de reparat (regula 2 - temeiul la sursa a rasturnat constatarea din parcurgere).

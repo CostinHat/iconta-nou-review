@@ -12,7 +12,7 @@ import { randeazaListaFirme } from "./firme.js?v=fdce65b51b";
 import { randeazaRecomanda } from "./recomanda.js?v=4dcc56e1ec"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=f800de9e77"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js?v=8c32cbb767"; // [p63_pachete]
-import { randeazaDeclaratii } from "./declaratii.js?v=eab47e576c"; // [p44_declaratii]
+import { randeazaDeclaratii } from "./declaratii.js?v=dc60f9ea45"; // [p44_declaratii]
 import { randeazaSetari } from "./setari.js?v=d3e3cec16d"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {

@@ -4355,3 +4355,10 @@ pentru patron@prisma-cont.test, fara parola). Ecranul de import salariati, provo
 dezactivat -> cod mort / promisiune falsa. Eliminat skip mort (backend) + aliniat textele (DS cap.6); gardul
 D1 rescris (block-not-skip), RED probat pe cod vechi. verificator 0. Constatari neatinse din aceeasi
 parcurgere: Q8 (badge stare per strat lipseste, blocat pe semnal plan_conturi), Q12 (avertisment CNP doar title=).
+
+## 16.08.2026 (reparatii audit vizual tenant_003) — C7, C6, C5 livrate; C8 fals
+Din cele 8 constatari, reparate + gard RED: C7 (D300/D394/D406 blocate pe firma trimestriala - "luna invalida:
+None"; fix in dispecer, periodicitate efectiva + conversie trim->luna-ancora), C6 (motiv fals "partida simpla"
+in selectorul de declaratii -> arata motivul real), C5 (acord "1 campuri" -> singular/plural). C8 (format data
+Casa) verificat la sursa = artefact de browser (input nativ), NU defect - nereparat cu motiv. C1/C2/C3/C4
+predate la pozitia 11 cu ecranul exact. verificator 0; 18 teste verzi.

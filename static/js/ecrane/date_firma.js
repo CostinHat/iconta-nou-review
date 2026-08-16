@@ -112,7 +112,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
   const blocaje = d.blocaje || [];
   const avert = lipsa.length
     ? `<div class="dec-avert">
-         <div class="dec-avert-cap">Profil incomplet \u2014 ${lipsa.length} c\u00e2mpuri obligatorii lipsesc</div>
+         <div class="dec-avert-cap">Profil incomplet \u2014 ${lipsa.length} ${lipsa.length === 1 ? "c\u00e2mp obligatoriu lipse\u0219te" : "c\u00e2mpuri obligatorii lipsesc"}</div>
          <ul>${lipsa.map((l) => `<li><b>${esc(eticheta(l.camp))}</b> \u2014 blocheaz\u0103 ${esc(l.declaratii.join(", "))}</li>`).join("")}</ul>
        </div>`
     : blocaje.length
