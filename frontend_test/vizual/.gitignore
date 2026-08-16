@@ -1,0 +1,13 @@
+# Ieșiri tranzitorii ale uneltelor vizuale — se regenerează la fiecare rulare, nu se versionează.
+raport_*.txt
+raport_*.json
+b1_*.png
+b2_*.png
+cur_*.png
+mobil_*.png
+smoke_*.png
+diff_*.png
+__pycache__/
+
+# SE versionează (referință pentru comparație): baseline/*.png, axe.min.js, cele 3 unelte, nav_ecrane.py
+!baseline/

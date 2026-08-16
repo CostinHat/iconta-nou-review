@@ -21,6 +21,23 @@ zero. Invers ar însemna să verifici de două ori — sau, mai probabil, a doua
 
 ---
 
+## Infrastructură de testare vizuală (permanentă, 17.08.2026 — cerută de Costin)
+
+Trei unelte care rulează pe pagina **randată** (Playwright autentificat via `w_auth`), pe cele 5 ecrane
+problematice numite de Costin (`frontend_test/vizual/nav_ecrane.py::ECRANE`: import_mijloace_fixe,
+vector_fiscal, plan_conturi, stat_plata, declaratii). Rulate **pe server** (`~/iconta_nou`, serviciul la
+127.0.0.1:8010). **Nu repară — măsoară și marchează.**
+
+| Unealtă | Fișier | Ce acoperă | Ieșire |
+|---|---|---|---|
+| axe-core (v4.10.2, vandorizat offline) | `frontend_test/vizual/axe_scan.py` | contrast (`color-contrast`), fără-etichetă (`label`/`*-name`), `title` în 3 categorii: strict / glif / extra (title cară info absentă din etichetă) | `raport_axe.txt`+`.json` |
+| emulare mobil (Pixel 5: touch, fără hover, 393px) | `frontend_test/vizual/mobil_scan.py` | ce dispare pe touch: tooltip `title` cu info unică, reguli CSS `:hover`, ținte de atingere <44px, overflow orizontal | `raport_mobil.txt`+`.json` + `mobil_*.png` |
+| baseline capturi (echiv. `toHaveScreenshot`) | `frontend_test/vizual/baseline_scan.py` | fără arg = stabilește `baseline/*.png` + self-diff (flakiness); `--compare` = diff pixel vs baseline (prag 0.05%) | `raport_baseline.txt`+`.json` |
+
+Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PYTHONPATH=$HOME/iconta_nou:$HOME/iconta_nou/frontend_test:$HOME/iconta_nou/frontend_test/vizual; ./venv/bin/python frontend_test/vizual/<unealtă>.py`
+
+Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
+
 ## În lucru acum
 - fir: TURA IMPORT CUBUS — cele 11 defecte ramase din PREDARE_LANT (16.08.2026). Ordine ceruta: intai
   cifre gresite pe ecran, apoi blocaje, apoi restul. LOT 1 [GATA]: amortizare pe metoda (Q6+Q15).

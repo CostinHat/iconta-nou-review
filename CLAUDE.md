@@ -631,6 +631,17 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
    (DECIZII 08.08): auto-restartul ORB ramane interzis; devine obligatoriu restartul CONSTIENT al executorului dupa
    poarta verde.
 
+11. **POARTA VERDE VIZUALA (17.08.2026, ceruta de Costin).** Daca tura a ATINS vreun ecran (reparat,
+   construit, probat orice ajunge pe un ecran), poarta verde NU e completa pana cand cele TREI unelte
+   vizuale (frontend_test/vizual: `axe_scan` / `mobil_scan` / `baseline_scan`) nu au fost rulate pe
+   ecranele atinse in tura respectiva, iar rezultatele lor (CU CIFRE) nu sunt in raport la §3 (PROBA).
+   E obligatie de EXECUTOR — cer app viu + browser + auth, deci NU se cableaza in pre-commit (ca
+   restartul, pct.10). O tura care NU a atins niciun ecran e SCUTITA, dar o DECLARA explicit in raport
+   ("niciun ecran atins -> uneltele vizuale N/A"), niciodata prin omisiune. Extinde Regula 14 din
+   MEMORY.md (axe + profil telefon la orice ecran atins) si inventarul din TESTE.md
+   ("Infrastructura de testare vizuala"). Gardata structural de core/test_infra_vizuala.py
+   (cele trei unelte + axe.min.js + baseline-urile nu pot disparea tacut — Regula 6).
+
 ## 2.1 De unde vin pasii
 
 Pasii unui fir traiesc in TESTE.md, la "In lucru acum". NU in conversatie.
