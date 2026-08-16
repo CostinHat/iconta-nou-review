@@ -163,3 +163,90 @@ def test_acoperire_ajutor_nu_regreseaza():
         "Nr. de LIVE fara ajutor a CRESCUT peste baseline (%d -> %d). Orice LIVE nou trebuie sa aiba "
         "explicatie contextuala:\n" % (_BASELINE_LIVE_FARA_AJUTOR, len(fara))
         + "\n".join("  %s | %s" % (a, b) for a, b in fara))
+
+
+# ── Reconciliere REGISTRU declaratii: cod (DECLARATII) <-> CSV <-> CHEIE_DUK <-> generator ──
+# DE CE (16.08.2026): registrul de declaratii era incoerent - randuri duplicate (un rand vechi RESPINS/AMANAT
+# fara generator langa unul cu generator real) si nicio garda care sa lege codul de CSV. Sursa UNICA a "ce poate
+# produce aplicatia" = dict-ul DECLARATII din declaratii_api. Aici se leaga bijectiv de randul canonic din CSV
+# (nume "Declarația D###"), de CHEIE_DUK si de generatorul core/<tip>.py::genereaza(). Impiedica desincronizarea.
+import re as _re
+
+
+def _cod_declaratie(nume):
+    m = _re.match(r"Declarația\s+(D\d{3}[A-Za-z]?)\b", nume)
+    return m.group(1).lower() if m else None
+
+
+def _tipuri_dispecer():
+    from core.declaratii_api import DECLARATII
+    return set(DECLARATII)
+
+
+def _canonice():
+    h = _randuri()[0]
+    i_nume, i_id = h.index("Functionalitate"), h.index("ID")
+    canon = {}
+    for r in _randuri()[1:]:
+        c = _cod_declaratie(r[i_nume])
+        if c:
+            canon.setdefault(c, []).append(r[i_id])
+    return canon
+
+
+def test_fiecare_declaratie_produsa_are_un_singur_rand_canonic():
+    """Bijectie DECLARATII (dispecer) <-> randuri 'Declarația D###' din CSV. Prinde: declaratie produsa de cod
+    fara rand (INCOMPLET) SI randuri duplicate pt aceeasi declaratie (INCOERENT - stale vechi langa canonic)."""
+    canon = _canonice()
+    tipuri = _tipuri_dispecer()
+    lipsa = sorted(t for t in tipuri if not canon.get(t))
+    dubluri = {t: canon[t] for t in tipuri if len(canon.get(t, [])) > 1}
+    assert not lipsa, "declaratii in dispecer (DECLARATII) FARA rand 'Declarația D###' in CSV: %s" % lipsa
+    assert not dubluri, "declaratii cu randuri canonice DUPLICATE in CSV (unifica): %s" % dubluri
+
+
+def test_niciun_rand_declaratie_fantoma():
+    """Reversul: fiecare rand 'Declarația D###' e ori produs de cod (in DECLARATII), ori marcat explicit
+    neprodus (RESPINS/ELIMINAT). Prinde un rand ce pretinde o declaratie pe care aplicatia nu o produce."""
+    h = _randuri()[0]
+    i_nume, i_st, i_id = h.index("Functionalitate"), h.index("Stare"), h.index("ID")
+    tipuri = _tipuri_dispecer()
+    fantome = []
+    for r in _randuri()[1:]:
+        c = _cod_declaratie(r[i_nume])
+        if c and c not in tipuri and not r[i_st].startswith(("RESPINS", "ELIMINAT")):
+            fantome.append((r[i_id], c, r[i_st][:20]))
+    assert not fantome, ("randuri 'Declarația D###' fara generator in DECLARATII si nemarcate RESPINS/ELIMINAT: %s"
+                         % fantome)
+
+
+def test_declaratie_produsa_nu_e_marcata_neprodusa():
+    """Randul canonic al unei declaratii pe care codul O PRODUCE (in DECLARATII) nu poate fi RESPINS/ELIMINAT -
+    ar fi o stare FALSA (pretinde ca nu se produce ceva ce se produce)."""
+    h = _randuri()[0]
+    i_nume, i_st, i_id = h.index("Functionalitate"), h.index("Stare"), h.index("ID")
+    tipuri = _tipuri_dispecer()
+    false_resp = []
+    for r in _randuri()[1:]:
+        c = _cod_declaratie(r[i_nume])
+        if c in tipuri and r[i_st].startswith(("RESPINS", "ELIMINAT")):
+            false_resp.append((r[i_id], c, r[i_st][:20]))
+    assert not false_resp, "declaratii produse de cod dar marcate RESPINS/ELIMINAT (stare falsa): %s" % false_resp
+
+
+def test_fiecare_declaratie_produsa_are_duk_si_generator():
+    """Fiecare tip din DECLARATII are cheie CHEIE_DUK (poate fi validat) + modul core/<tip>.py cu genereaza()."""
+    import importlib
+    from core.duk import CHEIE_DUK
+    tipuri = _tipuri_dispecer()
+    fara_duk = sorted(tipuri - set(CHEIE_DUK))
+    assert not fara_duk, "tipuri din dispecer fara CHEIE_DUK: %s" % fara_duk
+    fara_gen = []
+    for t in sorted(tipuri):
+        try:
+            mod = importlib.import_module("core.%s" % t)
+            if not hasattr(mod, "genereaza"):
+                fara_gen.append(t)
+        except Exception as e:
+            fara_gen.append("%s(import:%s)" % (t, e))
+    assert not fara_gen, "tipuri din dispecer fara generator genereaza(): %s" % fara_gen

@@ -11,8 +11,10 @@ Dovedit pe server: `-v D112` acceptat; cheie gresita -> "sectiune necunoscuta".
 Validatoarele sunt jar-uri OFICIALE ANAF din lib/, descarcate dupa
 config/config.properties -> urlVersiuni. NU se scriu de mana: un validator propriu
 ar valida impotriva presupunerii noastre, nu a regulii ANAF.
-Instalate 15.07.2026 din versiuni.xml: D100_75, D101_56, D112_209, D205_36, D300_27,
-D301_9, D390_11, D394_31, D406_35, S1003_38, S1005_41.
+Validatoarele instalate se citesc de pe DISC (validatoare_instalate/poate_valida), NU dintr-o
+listă fixă aici (pe disc sunt ~60 de jaruri: toate cele 50 de tipuri din DECLARATII + s1003/s1005
+bilanț + câteva necablate). CHEIE_DUK (mai jos) mapează tip→cheie ANAF; gardată cu registrul de
+core/test_registru_functionalitati.py.
 
 TREI STARI, ca la verificatoarele incrucisate:
   valid — validatorul a rulat, fara erori

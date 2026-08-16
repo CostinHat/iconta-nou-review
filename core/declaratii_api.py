@@ -1,9 +1,14 @@
 """
-core/declaratii_api.py — dispatch pentru cele 9 declarații. O singură rută în
-main.py cheamă aici; diferențele de semnătură genereaza() stau în ADAPTOARE,
-izolate, ca ruta să fie uniformă.
+core/declaratii_api.py — dispatch pentru TOATE declarațiile pe care le produce aplicația.
+Registrul DECLARATII (mai jos) = SURSA UNICĂ a tipurilor produse: 50 de tipuri, fiecare cu
+periodicitate + adaptor către core/<tip>.py::genereaza(). O singură rută în main.py cheamă aici;
+diferențele de semnătură genereaza() stau în ADAPTOARE, izolate, ca ruta să fie uniformă.
+Cele 9 periodice GENERICE (tipuri() = DECLARATII − _DOAR_API: d100 d101 d112 d205 d300 d301
+d390 d394 d406) apar în selectorul per-firmă; restul (41) sunt _DOAR_API (parametri manuali /
+fără ecran dedicat, stare AMÂNAT în FUNCTIONALITATI.csv). Coerența cod↔CSV↔CHEIE_DUK↔generator
+e gardată de core/test_registru_functionalitati.py.
 
-Periodicitate (din realitatea declarațiilor, nu forțată uniform):
+Periodicitate — cele 9 generice (din realitatea declarațiilor, nu forțată uniform):
   lunar      : d112, d300, d301, d390, d394, d406
   trimestrial: d100
   anual      : d101, d205
