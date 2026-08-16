@@ -165,7 +165,7 @@ def verifica_randuri(randuri):
         den = str(r.get("denumire") or cod or "?").strip()
         val = float(r.get("valoare") or 0)
         rez = float(r.get("rezidual") or 0)
-        dur = int(r.get("durata") or 0)
+        dur = int(r.get("dnf_luni") or r.get("durata") or 0)   # [Q3] cheia reala e dnf_luni (extrage:136); "durata" nu exista niciodata -> dadea 0 pe fiecare rand
         if not cod:
             er.append({"rand": i, "motiv": "cod_lipsa", "mesaj": "%s: fără cod de inventar" % den})
         elif cod in coduri:

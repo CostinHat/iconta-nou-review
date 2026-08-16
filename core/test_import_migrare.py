@@ -21,7 +21,7 @@ AZI = d.date(2026, 7, 15)
 # ---------------- SALARIATI ----------------
 def _s(**kw):
     b = {"nume": "X", "prenume": "Y", "cnp_valid": True, "data_angajare": "2024-01-08",
-         "ore_zi": 8, "judet_casa": "B"}
+         "ore_zi": 8, "judet_casa": "B", "tip_norma": "intreaga"}  # [Q11] salariat complet are norma
     b.update(kw)
     return b
 

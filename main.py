@@ -960,8 +960,8 @@ class SalariatRand(BaseModel):
     prenume: str = ""
     cnp: str = ""
     data_angajare: Optional[str] = None
-    tip_norma: str = "intreaga"
-    ore_zi: float = 8
+    tip_norma: str = ""     # [Q11] fara default tacit (DS cap.17): necunoscut ramane necunoscut, semnalat
+    ore_zi: float = 0
     salariu_brut: float = 0
     persoane_intretinere: int = 0
     judet_casa: str = ""
@@ -988,7 +988,7 @@ class MijlocFixRand(BaseModel):
     dnf_luni: int = 0
     data_pif: Optional[str] = None
     metoda: str = "liniara"
-    cont_imobilizare: str = "2131"
+    cont_imobilizare: str = ""   # [Q13] fara default tacit 2131 (extrage lasa gol intentionat, DS cap.17); gol = neclasificat -> lit.c
     cont_amortizare: str = "2813"
     avertismente: list[str] = []
     ok: bool = True

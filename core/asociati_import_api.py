@@ -8,6 +8,7 @@ Coerenta: suma cotelor ar trebui sa dea 100% (informativ, nu blocant).
 """
 from __future__ import annotations
 import datetime
+from core.identitate import valideaza_cui as _valideaza_cui  # [Q4] CUI juridic validat ca CUI, nu ca CNP
 
 _CHEIE = [2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9]
 
@@ -133,9 +134,14 @@ def verifica_randuri(randuri):
     for i, r in enumerate(randuri or [], start=2):   # antetul e randul 1
         nume = str(r.get("nume") or "?").strip()
         cod = str(r.get("cnp") or "").strip()
-        if cod and not valideaza_cnp(cod)[0]:
-            er.append({"rand": i, "motiv": "cnp_invalid",
-                       "mesaj": "%s: CNP/CUI invalid (%s)" % (nume, valideaza_cnp(cod)[1])})
+        # [Q4] ramifica fizic/juridic ca extrage(): CUI de juridica se valideaza ca CUI (cifra de
+        # control), NU ca CNP de 13 cifre. Altfel asociatul-firma acceptat la preview era respins aici.
+        if cod:
+            este_cnp = len(cod) == 13 and cod.isdigit()
+            ok, motiv = valideaza_cnp(cod) if este_cnp else _valideaza_cui(cod)
+            if not ok:
+                er.append({"rand": i, "motiv": "cnp_invalid" if este_cnp else "cui_invalid",
+                           "mesaj": "%s: %s invalid (%s)" % (nume, "CNP" if este_cnp else "CUI", motiv)})
     c = coerenta_cote(randuri or [])
     if (randuri or []) and not c["coincide"]:
         er.append({"rand": "-", "motiv": "cote",

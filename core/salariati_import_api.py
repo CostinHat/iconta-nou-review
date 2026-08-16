@@ -135,10 +135,15 @@ def extrage(continut, nume_fisier=""):
             continue
 
         valid, motiv = valideaza_cnp(cnp)
-        norma = cel(i_norma).lower()
-        tip_norma = "partiala" if ("part" in norma or "parțial" in norma) else "intreaga"
+        # [Q11] fara default tacit (DS cap.17): coloana norma lipsa / celula goala -> tip_norma
+        # necunoscut (""), NU "intreaga" fabricata. Doar o valoare PREZENTA se interpreteaza.
+        if i_norma >= 0 and cel(i_norma):
+            norma = cel(i_norma).lower()
+            tip_norma = "partiala" if ("part" in norma or "parțial" in norma) else "intreaga"
+        else:
+            tip_norma = ""
         ore = _numar(cel(i_ore)) if i_ore >= 0 else 0.0
-        if ore <= 0:
+        if ore <= 0 and tip_norma:   # ore implicite doar cand norma E cunoscuta; altfel 0 (semnalat)
             ore = 8 if tip_norma == "intreaga" else 4
 
         out.append({
@@ -201,8 +206,11 @@ def verifica_randuri(randuri, azi=None):
             except ValueError:
                 er.append({"rand": i, "motiv": "data_invalida",
                            "mesaj": "%s: data angajarii nu se intelege (%r)" % (nume, d)})
+        if not str(r.get("tip_norma") or "").strip():
+            er.append({"rand": i, "motiv": "norma_lipsa",
+                       "mesaj": "%s: norma de lucru lipsește (întreagă/parțială) - necesară pentru D112" % nume})
         ore = r.get("ore_zi")
-        if ore is not None and not (1 <= float(ore or 0) <= 8):
+        if ore and not (1 <= float(ore) <= 8):   # 0/None = necunoscut (acoperit de norma_lipsa); doar valoarea PREZENTA gresita
             er.append({"rand": i, "motiv": "ore_invalide",
                        "mesaj": "%s: %s ore/zi (norma legala e de maximum 8)" % (nume, ore)})
         j = str(r.get("judet_casa") or "").strip().upper()
