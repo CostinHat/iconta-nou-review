@@ -9422,3 +9422,14 @@ rezultatele (CU CIFRE) in raport §3. Obligatie de EXECUTOR - cer app viu + brow
 in pre-commit (ca restartul, pct.10). O tura care nu a atins niciun ecran e SCUTITA, dar o DECLARA explicit
 ("niciun ecran atins -> uneltele vizuale N/A"). Extinde Regula 14 din MEMORY.md (axe + profil telefon la orice
 ecran atins). Gardat structural de core/test_infra_vizuala.py. Uneltele: frontend_test/vizual/ (README acolo).
+
+## 17.08.2026 - verdictul de control fiscal: diacritice + fara nume intern de camp (audit tenant_004)
+Ecranul Control fiscal al tenant_004 (Distributie Profit IC SRL) arata 13 mesaje de verdict (D300/D394/D406/D100/
+D101/D390 necompletat + 2x "necunoscut declarat") in proza romaneasca FARA diacritice, unul scurgand numele
+coloanei din baza (platitor_tva_anaf_inceput) in loc de label-ul UI. TEMEI: DS cap.1 (text afisat = diacritice) +
+Regula 14 pct.4 (nume intern aratat utilizatorului = defect). Corectitudinea textelor care descriu ce face
+aplicatia NU e decizie de produs (comanda 17.08). Reparat toate 13 + trimis la label-ul real "Data inregistrarii
+in scopuri de TVA". Gard dedicat test_control_fiscal_diacritice.py: gardul canonic le rata pentru ca sunt args
+pozitionale la emitenti / return-uri de builder, nu roluri recunoscute. Clasa mai larga (erori de generare
+declaratii afisate contabilului) DECLARATA deschisa in GARZI - distinctie user-facing vs developer ne-mecanica.
+Matricea de 64 neatinsa; 221 teste tinta verzi.

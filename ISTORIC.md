@@ -4400,3 +4400,17 @@ color-contrast (12-15 noduri serious, concentrat in chrome comun + grila de cabi
 tinte <44px 11-40. baseline: 5 STABILE (self-diff 0%), --compare identic 0%, detectie probata 25% cross-screen.
 Guvernanta: CLAUDE.md §2.3 pct.11 + TESTE inventar + MEMORY R14 + gard test_infra_vizuala.py. Commit c83f152
 (four-way). Verdict zgomot: niciuna nu da sute pe ecran -> toate pot fi obligatorii.
+
+## 17.08.2026 - Audit vizual tenant_004 (Distributie Profit IC SRL) - verdict control fiscal reparat
+Parcurs cu Playwright (captura privita) traseul tenant_004: meniu firma, Import date (10 straturi per firma, rand
+.mig-frand FARA badge de stare = frontul C3 confirmat vizual, neatins), Date firma (bloc "Nr. registrul comertului
+lipseste - blocheaza Bilant S1005", corect), Declaratii (wizard 3 pasi; oferta corecta D100/D101/D112/D205/D300/
+D390/D394/D406, D301 explicat "nu se datoreaza - firma e platitoare"), Control fiscal. Cifre declarative verificate
+la SURSA (backend): D300 mai = taxare inversa IC BAUHAUS GMBH DE136695976 corecta (R5 colectata 15000/3150 + R18
+deductibila, net zero) + achizitie interna 30000/6300 -> pozitie de recuperat 6300; D390 mai = 1 operatiune simbol
+A, DE136695976, 15000; IT Servicii (RO) exclus corect. Restanta D390 mai (termen 25.06.2026) reala.
+DEFECT gasit pe ecranul Control fiscal: 13 mesaje de verdict FARA diacritice + scurgere nume coloana
+(platitor_tva_anaf_inceput) aratata contabilului. Reparat toate + label UI real "Data inregistrarii in scopuri de
+TVA"; gard nou test_control_fiscal_diacritice.py (RED 13 mesaje + 1 scurgere -> GREEN). DS cap.20 extins (limba
+mesajelor de verdict). Generalizare: clasa "erori generare declaratii fara diacritice" masurata (~218 candidati
+brut, clasa reala = erori dXXX afisate) si DECLARATA deschisa (GARZI) - distinctie ne-mecanica, nereparata in tura.

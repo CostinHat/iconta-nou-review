@@ -2979,3 +2979,18 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
   Gard core/test_infra_vizuala.py (4 teste): pica daca lipseste vreo unealta, axe.min.js (trunchiat sub
   100KB), vreun baseline, sau un ecran din nav_ecrane.ECRANE. Face imposibila disparitia TACUTA a
   infrastructurii vizuale (Regula 6). Probat: cele 4 teste in suita (2251 passed, c83f152).
+
+- **VERDICT CONTROL FISCAL — DIACRITICE + FARA NUME INTERN** [17.08.2026, audit vizual tenant_004]:
+  gard core/test_control_fiscal_diacritice.py (2 teste) — mesajele de verdict (neclar/neaplic/datorate) din
+  control_fiscal_api.py au diacritice si NU scurg nume interne de camp. Acopera PUNCTUL ORB al gardului canonic
+  (test_diacritice_afisate.py, roluri: detail HTTPException / dict-display-keys / corpuri de exceptii): args
+  pozitionale la gri()/neaplic()/emite_tva(), valori _NEAP_FORMA_SIMPLA, variabile-mesaj (cauza_r), return-uri
+  builder (_existenta_fapt). RED probat pe cod vechi (13 mesaje fara diacritice + scurgere platitor_tva_anaf_inceput);
+  GREEN dupa fix. Vezi DS cap.20 + DECIZII 17.08.
+- **DATORIE DESCHISA — erori de generare declaratii fara diacritice** [17.08.2026, masurat, NEreparata]: scan AST
+  core/ (raise-inline + append la liste-mesaj) da ~218 candidati; NU toti sunt defecte (multe = erori DEVELOPER,
+  legitim ASCII per criteriu). Clasa REALA = erorile afisate CONTABILULUI la generarea declaratiilor
+  (d100/d101/d112/d205/d119/bilant_api: "corecteaza in fisa", "declaratia ar fi respinsa", nume XSD interne
+  scurse "(cifR)"/"(den1)"). Distinctia user-facing-pe-ecran vs eroare-developer NU e mecanica -> nereparata (un
+  fix fara gard ar incalca Regula 6). De facut: gard care distinge (module de generare dXXX, mesaje prefixate
+  "Dxxx:") + diacriticizare + inlocuit numele XSD interne cu descriere umana. Enumerare in raportul 17.08 §5.

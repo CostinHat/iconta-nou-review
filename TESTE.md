@@ -1626,3 +1626,10 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
 ## 16.08.2026 - Gard C4 (model CSV per strat)
 - core/test_c4_model_csv.py (3) - cele 8 straturi de import au butonul model cablat (_descarcaModelCSV(MODELE.X)),
   MODELE are toate cheile, intro-ul mijloacelor numeste cont imobilizare+amortizare. RED probat pe cod vechi; GREEN dupa.
+
+## 17.08.2026 - Gard verdict control fiscal (diacritice + fara nume intern) [audit tenant_004]
+- core/test_control_fiscal_diacritice.py (2 teste) - mesajele de verdict din control_fiscal_api.py (args la
+  gri/neaplic/emite_tva, valori _NEAP_FORMA_SIMPLA, variabila cauza_r, return-uri _existenta_fapt) au >=1
+  diacritica si zero identificator snake_case (nume intern). Reutilizeaza _DIAC din test_diacritice_afisate
+  (sursa unica). RED probat pe cod vechi (13 mesaje fara diacritice + scurgere platitor_tva_anaf_inceput);
+  GREEN dupa fix. Autotest-cu-dinti inclus (test_autotest_criteriu_are_dinti).

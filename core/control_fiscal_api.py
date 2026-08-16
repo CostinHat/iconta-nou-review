@@ -201,9 +201,9 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
             gri(tip, cauza_periodicitate)   # S/A: periodicitate TVA neuzuala, nesuportata in semafor
             return
         if necunoscut_data and supr[0]:
-            gri(tip, "necunoscut declarat: nu pot demonstra de cand e firma inregistrata in scopuri de TVA "
-                     "pentru restantele trecute - completati data inceperii TVA (platitor_tva_anaf_inceput) "
-                     "in vectorul fiscal.")
+            gri(tip, "necunoscut declarat: nu pot demonstra de când e firma înregistrată în scopuri de TVA "
+                     "pentru restanțele trecute — completați „Data înregistrării în scopuri de TVA” "
+                     "în Vectorul fiscal.")
 
     platitor_tva = vector.get("platitor_tva")
     tip_decont = vector.get("tip_decont")
@@ -225,18 +225,18 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
 
     # D300 TVA — depinde de platitor_tva (DACA datoreaza) + tip_decont (PERIODICITATEA)
     if platitor_tva is None:
-        gri("D300", "Platitor de TVA necompletat in vectorul fiscal - nu pot sti daca datorezi D300.")
+        gri("D300", "Plătitor de TVA necompletat în Vectorul fiscal — nu pot ști dacă datorezi D300.")
     elif platitor_tva:
-        emite_tva("D300", "d300", "Tip decont TVA necompletat - nu pot sti periodicitatea D300 (lunar/trimestrial).", marginit=True)
+        emite_tva("D300", "d300", "Tip decont TVA necompletat — nu pot ști periodicitatea D300 (lunar/trimestrial).", marginit=True)
     # platitor_tva == False -> nu se datoreaza D300 (cunoscut)
 
     # D394 informativa livrari/achizitii nationale — doar platitori normali de TVA (art.316),
     # periodicitate = perioada fiscala TVA. Termen 30 luna urmatoare (scadente.py d394).
     # OPANAF 3769/2015, actualizat OPANAF 2194/2025.
     if platitor_tva is None:
-        gri("D394", "Platitor de TVA necompletat - nu pot sti daca datorezi D394.")
+        gri("D394", "Plătitor de TVA necompletat — nu pot ști dacă datorezi D394.")
     elif platitor_tva:
-        emite_tva("D394", "d394", "Tip decont TVA necompletat - nu pot sti periodicitatea D394.", marginit=True)
+        emite_tva("D394", "d394", "Tip decont TVA necompletat — nu pot ști periodicitatea D394.", marginit=True)
     # neplatitor -> fara D394
 
     # D112 salariati (lunar) — datorat per-luna DOAR daca firma avea >=1 salariat ACTIV in luna respectiva.
@@ -261,7 +261,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
         neaplic("D100", _NEAP_FORMA_SIMPLA["d100"])   # [G1] temei din constanta unica
         neaplic("D101", _NEAP_FORMA_SIMPLA["d101"])
     elif regim_fiscal is None:
-        cauza_r = "Regim fiscal necompletat - nu pot sti daca datorezi D100 (micro) sau D101 (profit)."
+        cauza_r = "Regim fiscal necompletat — nu pot ști dacă datorezi D100 (micro) sau D101 (profit)."
         gri("D100", cauza_r)
         gri("D101", cauza_r)
     else:
@@ -280,7 +280,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     if d390_fapt is None:
         # COMPAT — comportament istoric NESCHIMBAT (matricea de 64 il apara): bifa decide.
         if operatiuni_ic is None:
-            gri("D390", "Operatiuni intracomunitare necompletat - nu pot sti daca datorezi D390.")
+            gri("D390", "Operațiuni intracomunitare necompletat — nu pot ști dacă datorezi D390.")
         elif operatiuni_ic:
             if platitor_tva:
                 for a, m in per_luni:
@@ -322,7 +322,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                                     "operațiunilor intracomunitare." % (_LUNI_NUME[m], a))
                 elif operatiuni_ic is None:      # profil necompletat -> gri necompletat (doar semafor)
                     if jos is None:
-                        gri("D390", "Operatiuni intracomunitare necompletat - nu pot sti daca datorezi D390.")
+                        gri("D390", "Operațiuni intracomunitare necompletat — nu pot ști dacă datorezi D390.")
                 # operatiuni_ic False + luna deschisa -> profil declara fara IC -> nu emitem
         if contradictie:                        # [contradictie] operatiuni_ic=False vs facturi IC reale -> semnal, nu blocare (ca F185)
             luni_txt = ", ".join("%s %d" % (_LUNI_NUME[m], a) for (a, m) in contradictie)
@@ -334,7 +334,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
         # D390 pe fapt - obligatia depinde de inregistrarea art. 317, pe care n-o urmarim (facturile IC nu o dovedesc).
         # Decizie pe FLAG, fara DB -> nu atinge tabele care pot lipsi la un tenant de partida simpla (ex. d301_operatiuni).
         if operatiuni_ic is None:
-            gri("D390", "Operatiuni intracomunitare necompletat - nu pot sti daca datorezi D390.")
+            gri("D390", "Operațiuni intracomunitare necompletat — nu pot ști dacă datorezi D390.")
         elif operatiuni_ic:                      # flag True -> art. 317: datorat daca inregistrat, altfel gri
             if inreg_art317:
                 for a, m in per_luni:
@@ -357,9 +357,9 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     if partida_simpla:
         neaplic("D406", _NEAP_FORMA_SIMPLA["d406"])   # [G1] temei din constanta unica
     elif platitor_tva is None:
-        gri("D406", "Platitor de TVA necompletat - nu pot sti periodicitatea D406.")
+        gri("D406", "Plătitor de TVA necompletat — nu pot ști periodicitatea D406.")
     elif platitor_tva:
-        emite_tva("D406", "d406", "Tip decont TVA necompletat - nu pot sti periodicitatea D406.", marginit=True)
+        emite_tva("D406", "d406", "Tip decont TVA necompletat — nu pot ști periodicitatea D406.", marginit=True)
     else:
         for a, tri, lf in per_trim:   # neplatitor de TVA (partida dubla) -> trimestrial
             _adauga_existenta("D406", a, lf, f"T{tri}", "d406")
@@ -564,10 +564,10 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
         if _ci_sal.existenta_firma_an(conn_schema, schema, an):
             return "da"                                  # activitate reala in an -> restanta sustinuta
         if _creat_la and an < _creat_la.year:
-            return ("necunoscut declarat: nu pot demonstra ca firma exista/era activa in %d - firma a fost "
-                    "creata in aplicatie in %d, iar pentru %d nu exista facturi, salariati sau note." % (an, _creat_la.year, an))
-        return ("necunoscut declarat: nu pot demonstra ca firma exista/era activa in %d - nu exista facturi, "
-                "salariati sau note pe %d in evidenta; completati vectorul/activitatea firmei." % (an, an))
+            return ("necunoscut declarat: nu pot demonstra că firma exista/era activă în %d — firma a fost "
+                    "creată în aplicație în %d, iar pentru %d nu există facturi, salariați sau note." % (an, _creat_la.year, an))
+        return ("necunoscut declarat: nu pot demonstra că firma exista/era activă în %d — nu există facturi, "
+                "salariați sau note pe %d în evidență; completați vectorul/activitatea firmei." % (an, an))
     rez = declaratii_datorate(vector, are_sal, azi, d390_fapt=_d390_fapt, d112_fapt=_d112_fapt,
                               existenta_fapt=_existenta_fapt)
     datorate = list(rez["datorate"])
