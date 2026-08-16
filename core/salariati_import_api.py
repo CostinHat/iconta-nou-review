@@ -117,7 +117,7 @@ def extrage(continut, nume_fisier=""):
     i_jud = _gaseste_col(antet, "judet", "casa")
     i_cor = _gaseste_col(antet, "cor", "ocupatie", "ocupație")
     if i_nume < 0 and i_cnp < 0:
-        raise ValueError("nu gasesc coloana nume/CNP salariat - fisier nerecunoscut")
+        raise ValueError("nu găsesc coloana nume/CNP salariat - fișier nerecunoscut")
 
     out = []
     for r in randuri[1:]:
@@ -232,8 +232,8 @@ def importa(conn, randuri):
         det = "; ".join("rand %s: %s" % (e["rand"], e["mesaj"]) for e in er[:6])
         if len(er) > 6:
             det += " (si inca %d)" % (len(er) - 6)
-        raise ValueError("%d randuri nu pot intra in evidenta: %s. Salariatii intra in "
-                         "D112 si REGES - datele trebuie sa fie cele reale." % (len(er), det))
+        raise ValueError("%d rânduri nu pot intra în evidență: %s. Salariații intră în "
+                         "D112 și REGES - datele trebuie să fie cele reale." % (len(er), det))
     importati = 0
     sarite = 0
     with conn.cursor() as cur:

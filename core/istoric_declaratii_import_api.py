@@ -94,7 +94,7 @@ def extrage(continut, nume_fisier=""):
     i_luna = _gaseste_col(antet, "luna", "lună", "perioada", "perioadă")
     i_data = _gaseste_col(antet, "depunere", "depus", "data")
     if i_tip < 0:
-        raise ValueError("nu gasesc coloana cu tipul declaratiei (tip/declaratie/formular) - fisier nerecunoscut")
+        raise ValueError("nu găsesc coloana cu tipul declarației (tip/declarație/formular) - fișier nerecunoscut")
 
     out = []
     for r in randuri[1:]:
@@ -177,8 +177,8 @@ def importa(conn, tenant_id, randuri):
     Ridica ValueError daca randurile nu pot intra (vezi verifica_randuri)."""
     er = verifica_randuri(randuri)
     if er:
-        raise ValueError("%d randuri nu pot intra: %s. Istoricul declaratiilor sta la "
-                         "baza termenelor si a controlului fiscal."
+        raise ValueError("%d rânduri nu pot intra: %s. Istoricul declarațiilor stă la "
+                         "baza termenelor și a controlului fiscal."
                          % (len(er), "; ".join("rand %s: %s" % (x["rand"], x["mesaj"]) for x in er[:6])))
     with conn.cursor() as cur:
         cur.execute("DELETE FROM public.declaratii_depuse WHERE tenant_id=%s AND sursa='migrare'",

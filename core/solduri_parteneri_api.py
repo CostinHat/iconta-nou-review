@@ -225,8 +225,8 @@ def importa(conn, randuri, data_referinta=None):
         if len(erori) > 6:
             det += " (si inca %d)" % (len(erori) - 6)
         raise ValueError(
-            "%d randuri nu pot intra in evidenta: %s. Soldurile pe parteneri au nevoie "
-            "de CUI valid (intra in D394 si SAF-T) si de un cont care tine parteneri."
+            "%d rânduri nu pot intra în evidență: %s. Soldurile pe parteneri au nevoie "
+            "de CUI valid (intră în D394 și SAF-T) și de un cont care ține parteneri."
             % (len(erori), det))
     asigura_tabel(conn)
     td = tc = 0.0

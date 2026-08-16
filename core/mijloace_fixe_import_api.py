@@ -97,7 +97,7 @@ def extrage(continut, nume_fisier=""):
     i_cimo = _gaseste_col(antet, "cont imob", "cont_imob", "imobilizare")
     i_camo = _gaseste_col(antet, "cont amort", "cont_amort", "amortizare cont")
     if i_den < 0:
-        raise ValueError("nu gasesc coloana denumire mijloc fix - fisier nerecunoscut")
+        raise ValueError("nu găsesc coloana denumire mijloc fix - fișier nerecunoscut")
 
     out = []
     for idx, r in enumerate(randuri[1:], start=1):
@@ -192,8 +192,8 @@ def importa(conn, randuri):
     Ridica ValueError daca randurile nu pot intra (vezi verifica_randuri)."""
     er = verifica_randuri(randuri)
     if er:
-        raise ValueError("%d randuri nu pot intra: %s. Mijloacele fixe intra in "
-                         "amortizare si in D406 SAF-T."
+        raise ValueError("%d rânduri nu pot intra: %s. Mijloacele fixe intră în "
+                         "amortizare și în D406 SAF-T."
                          % (len(er), "; ".join("rand %s: %s" % (x["rand"], x["mesaj"]) for x in er[:6])))
     with conn.cursor() as cur:
         cur.execute("DELETE FROM mijloace_fixe")

@@ -75,7 +75,7 @@ def test_importa_REFUZA_randurile_invalide():
                        _r("4111", "12345678", "FIRMA INVENTATA"),
                        _r("5121", "RO4221306", "BANCA")])
     m = str(e.value)
-    assert "2 randuri" in m
+    assert "2 rânduri" in m
     assert "12345678" in m and "5121" in m
     assert "D394" in m or "SAF-T" in m      # spune DE CE conteaza
 

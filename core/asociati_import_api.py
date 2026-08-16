@@ -83,7 +83,7 @@ def extrage(continut, nume_fisier=""):
     i_cod = _gaseste_col(antet, "cnp", "cui", "cif", "cod")
     i_cota = _gaseste_col(antet, "cota", "cotă", "procent", "participare", "%")
     if i_nume < 0 and i_cod < 0:
-        raise ValueError("nu gasesc coloana nume/cod asociat - fisier nerecunoscut")
+        raise ValueError("nu găsesc coloana nume/cod asociat - fișier nerecunoscut")
 
     out = []
     for r in randuri[1:]:
@@ -154,8 +154,8 @@ def importa(conn, randuri):
     Ridica ValueError daca randurile nu pot intra (vezi verifica_randuri)."""
     er = verifica_randuri(randuri)
     if er:
-        raise ValueError("%d probleme: %s. Asociatii si cotele lor intra in D205 "
-                         "(dividende) - cotele trebuie sa dea exact 100%%."
+        raise ValueError("%d probleme: %s. Asociații și cotele lor intră în D205 "
+                         "(dividende) - cotele trebuie să dea exact 100%%."
                          % (len(er), "; ".join(x["mesaj"] for x in er[:6])))
     with conn.cursor() as cur:
         cur.execute("DELETE FROM asociati")
