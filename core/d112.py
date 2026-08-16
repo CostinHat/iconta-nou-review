@@ -33,6 +33,17 @@ def _enum_xsd(tip):
     _ENUM_XSD_CACHE[tip] = vals
     return vals
 
+def caen_in_nomenclator(caen):
+    """[Q1] True daca CAEN-ul e acceptat de D112 (enumerare inchisa Str_caenListSType). Gol/'0000' ->
+    True (lipsa CAEN e camp obligatoriu, alt tip de problema, nu 'prezent-dar-invalid'). Folosit de
+    ecranul Date firma ca sa NU pretinda 'toate declaratiile se pot genera' cand CAEN-ul ar face D112
+    respins de ANAF. Aceeasi regula ca poarta din genereaza - o singura sursa a nomenclatorului."""
+    caen_f = str(caen or "").strip()
+    if not caen_f or caen_f == "0000":
+        return True
+    _caene = _enum_xsd("Str_caenListSType")
+    return (caen_f in _caene) if _caene else (len(caen_f) == 4 and caen_f not in ("0000", "9999"))
+
 def _nzl(an, luna):
     # Zile lucratoare din luna, FARA sarbatori legale (OUG 158/2005 art.10). Sursa UNICA
     # scadente.zile_lucratoare_luna - inainte erau tabele hardcodate _D112_NZL_2025/2026

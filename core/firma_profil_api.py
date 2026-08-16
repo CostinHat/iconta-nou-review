@@ -172,6 +172,37 @@ def lipsuri(profil):
     return out
 
 
+def blocaje(conn, profil):
+    """Motive pentru care unele declaratii NU se pot genera desi campurile obligatorii sunt PREZENTE.
+    Nu 'lipsa camp' (aia e lipsuri), ci 'prezent-dar-invalid' (CAEN in afara nomenclatorului inchis al
+    D112 - Q1) sau 'vector necompletat la platitor' (periodicitate / data inregistrarii TVA - Q8).
+    Ecranul foloseste asta ca sa NU pretinda 'toate declaratiile se pot genera' desi ceva le blocheaza.
+    Textele 'motiv' sunt AFISATE -> diacritice (nu ASCII de log)."""
+    out = []
+    caen = str((profil or {}).get("caen") or "").strip()
+    if caen:
+        from core import d112
+        if not d112.caen_in_nomenclator(caen):
+            out.append({"declaratie": "D112",
+                        "motiv": "CAEN %s nu e în nomenclatorul acceptat de D112 — corectează "
+                                 "CAEN-ul, altfel D112 (dacă ai salariați) e respins de ANAF." % caen})
+    try:
+        from core import vector_fiscal_api
+        v = vector_fiscal_api.citeste(conn)
+    except Exception:
+        v = {}
+    if v.get("platitor_tva") is True:
+        if not str(v.get("tip_decont") or "").strip():
+            out.append({"declaratie": "D300/D394",
+                        "motiv": "periodicitatea TVA nu e aleasă (apare „—”) — alege "
+                                 "lunar sau trimestrial."})
+        if not str(v.get("tva_data_inceput") or "").strip():
+            out.append({"declaratie": "D300/D394/D406",
+                        "motiv": "data înregistrării în scopuri de TVA lipsește — fără "
+                                 "ea, verdictele pe lunile trecute rămân „necunoscut”."})
+    return out
+
+
 def citeste_date(conn):
     """Profilul complet + lipsurile + optiunile de cont venit, pentru ecranul Date firma."""
     import psycopg2.extras as _E
@@ -182,7 +213,8 @@ def citeste_date(conn):
     prof = dict(r) if r else {}
     if not str(prof.get("cont_venit_implicit") or "").strip():
         prof["cont_venit_implicit"] = CONT_VENIT_IMPLICIT_DEFAULT  # coerent cu COALESCE-ul de la emitere
-    return {"profil": prof, "lipsuri": lipsuri(prof), "conturi_venit": CONTURI_VENIT}
+    return {"profil": prof, "lipsuri": lipsuri(prof), "conturi_venit": CONTURI_VENIT,
+            "blocaje": blocaje(conn, prof)}
 
 
 def salveaza_date(conn, date):

@@ -109,12 +109,18 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
   }
 
   const lipsa = d.lipsuri || [];
+  const blocaje = d.blocaje || [];
   const avert = lipsa.length
     ? `<div class="dec-avert">
          <div class="dec-avert-cap">Profil incomplet \u2014 ${lipsa.length} c\u00e2mpuri obligatorii lipsesc</div>
          <ul>${lipsa.map((l) => `<li><b>${esc(eticheta(l.camp))}</b> \u2014 blocheaz\u0103 ${esc(l.declaratii.join(", "))}</li>`).join("")}</ul>
        </div>`
-    : `<div class="dec-ok">Profil complet. Toate declara\u021biile se pot genera.</div>`;
+    : blocaje.length
+    ? `<div class="dec-avert">
+         <div class="dec-avert-cap">C\u00e2mpurile obligatorii sunt completate, dar unele declara\u021bii nu se pot genera \u00eenc\u0103</div>
+         <ul>${blocaje.map((b) => `<li><b>${esc(b.declaratie)}</b> \u2014 ${esc(b.motiv)}</li>`).join("")}</ul>
+       </div>`
+    : `<div class="dec-ok">Profil complet. C\u00e2mpurile obligatorii sunt completate.</div>`;
 
   corp.innerHTML = `
     <h2 class="pf-titlu">Date firm\u0103</h2>
