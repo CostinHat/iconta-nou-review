@@ -334,6 +334,28 @@ function _randeazaAjutor(a) {
   return `<div class="aj-continut">${corp || '<p class="aj-p">Fără text de ajutor.</p>'}</div>`;
 }
 
+// [ajutor_prelogin_v1] Pe ecranele pre-autentificare (landing/login/inregistrare) shell-ul
+// autentificat (_navGlobal) NU e montat. Semnul "?" nu trebuie sa taca acolo -> overlay autonom,
+// construit din clasele DS existente (.acces-overlay/.acces-modal/.acces-x), fara stiluri inline.
+function _ajutorOverlayLiber(titlu, corpHTML) {
+  const o = document.createElement("div");
+  o.className = "acces-overlay ajutor-overlay-liber";
+  o.setAttribute("role", "dialog");
+  o.setAttribute("aria-modal", "true");
+  o.innerHTML = `
+    <div class="acces-modal">
+      <button type="button" class="acces-x" aria-label="Închide">✕</button>
+      <h3 class="aj-titlu">${esc(titlu)}</h3>
+      ${corpHTML}
+    </div>`;
+  const inchide = () => { o.remove(); document.removeEventListener("keydown", peEsc); };
+  function peEsc(ev) { if (ev.key === "Escape") inchide(); }
+  o.addEventListener("click", (ev) => { if (ev.target === o) inchide(); });
+  o.querySelector(".acces-x").addEventListener("click", inchide);
+  document.addEventListener("keydown", peEsc);
+  document.body.appendChild(o);
+}
+
 document.addEventListener("click", async (e) => {
   const b = e.target && e.target.closest && e.target.closest("[data-ajutor]");
   if (!b) return;
@@ -342,5 +364,7 @@ document.addEventListener("click", async (e) => {
   let a;
   try { a = await api.get(`/ajutor/${fid}`); }
   catch { a = { titlu: "Ajutor", ajutor: "Nu există încă text de ajutor pentru această funcționalitate." }; }
-  if (window._navGlobal) window._navGlobal.deschide("Ajutor · " + (a.titlu || ""), (c) => { c.innerHTML = _randeazaAjutor(a); });
+  const titlu = "Ajutor · " + (a.titlu || "");
+  if (window._navGlobal) { window._navGlobal.deschide(titlu, (c) => { c.innerHTML = _randeazaAjutor(a); }); return; }
+  _ajutorOverlayLiber(titlu, _randeazaAjutor(a));  // pre-login: shell-ul autentificat lipseste
 });

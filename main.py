@@ -1120,6 +1120,11 @@ def register(date: RegisterIn):
                 _t = tenant_provisioning.provision_tenant(
                     conn, date.nume_cabinet, _cui,
                     r["firm_id"], r["user_id"], _TENANT_TEMPLATE)
+                # [register_cabinet_cui_v1] CUI-ul a trecut cifra de control in provision_tenant
+                # -> descrie entitatea proprie a cabinetului. Se persista SI pe accounting_firms.cui
+                # (nu doar pe firma-tenant): altfel get_cabinet il citeste NULL si ecranul Setari
+                # cabinet ramane gol desi userul l-a tastat si verificat la ANAF la inregistrare.
+                auth_api.actualizeaza_cabinet(conn, r["firm_id"], cui=_cui)
                 # [register_profil_anaf_v1] Datele de la ANAF se SALVEAZA in profil, nu
                 # doar se afiseaza pe ecran la inregistrare. Fara ele firma noua se naste
                 # cu caen gol si platitor_tva necunoscut -> D394 blocat (caen e obligatoriu),

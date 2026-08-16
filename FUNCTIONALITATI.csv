@@ -1520,6 +1520,7 @@ Pe telefon magic-link e calea recomandată, mai comodă decât tastarea parolei.
 Când un cabinet nou vrea să înceapă să folosească iConta pe cont propriu. Pentru administratorul unui cabinet la prima punere în funcțiune.
 ## Ce trebuie pregătit înainte
 - Un email valid, o parolă și numele cabinetului.
+- Opțional: CUI-ul cabinetului. Dacă îl completezi și îl verifici la ANAF, firma proprie a cabinetului se creează automat la înregistrare, iar CUI-ul se reține pe cabinet (îl regăsești în Setări cabinet).
 ## Pas cu pas
 1. Deschide formularul public de înregistrare.
 2. Completează email, parola și numele cabinetului.

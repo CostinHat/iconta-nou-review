@@ -1,7 +1,7 @@
 // login.js — poarta de intrare.
 // Bara sus: logo + buton "Acces". Acces deschide central un modal umbrit
 // cu 2 optiuni: Intra in cont (login existent) / Client nou (inregistrare cabinet).
-import { api, arataMesaj, CULORI_CARD, ICOANE, esc } from "../api.js?v=a0acf0511a";
+import { api, arataMesaj, CULORI_CARD, ICOANE, esc, semnAjutor } from "../api.js?v=3857bab660";
 import { PRETURI_TITLU, preturiHTML } from "./preturi.js?v=0e00a65657";  // [preturi_v1] sursa unica a continutului de preturi
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 
@@ -422,7 +422,7 @@ export function ecranLogin(radacina) {
       <div class="login-brand">
         <img class="login-logo-img" src="/static/logo_login.png" alt="iConta.eu">
         <span class="login-tagline">Contabilitatea cu control fiscal</span>
-        <div class="login-subtagline">Înregistrează cabinetul tău</div>
+        <div class="login-subtagline">Înregistrează cabinetul tău ${semnAjutor("F108")}</div>
       </div>
       <label class="camp">
         <span class="camp-eticheta">CUI</span>

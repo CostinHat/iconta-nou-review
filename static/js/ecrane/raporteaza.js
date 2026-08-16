@@ -2,7 +2,7 @@
 // Trimite o observatie catre Admin iConta; vede firul cu raspunsuri; bec rosu = raspunsuri necitite.
 // Strat 2 (text + fir). Imagini: strat 3.
 
-import { api, dataRo, arataMesaj, esc } from "../api.js?v=a0acf0511a";
+import { api, dataRo, arataMesaj, esc } from "../api.js?v=3857bab660";
 
 function dataScurta(iso) {
   return dataRo(iso, "cu_ora");

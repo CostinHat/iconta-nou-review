@@ -2337,6 +2337,8 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 .aj-sec { margin:14px 0 4px; color:#1a3a6b; font-size:var(--text-mic); font-weight:700; }
 .aj-sec:first-child { margin-top:0; }
 .aj-p { margin:3px 0; color:var(--ardezie); line-height:1.55; }
+.aj-titlu { margin:0 0 10px; color:var(--ardezie); font-size:var(--text); font-weight:700; }
+.ajutor-overlay-liber .acces-modal { max-height:85vh; overflow-y:auto; }
 
 
 /* [bun_venit_v1] semnul "?" GENERAL din bara de stare (.nav-ghid) — DISTINCT de .ajutor-btn contextual:
