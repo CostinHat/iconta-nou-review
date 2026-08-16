@@ -300,6 +300,7 @@ export function ecranLogin(radacina) {
       <button type="button" class="btn-link" id="acc-magic" style="margin-top:10px;display:block">Trimite-mi link de logare (fără parolă)</button>
       <button type="button" class="btn-link" id="acc-reset" style="margin-top:4px;display:block">Am uitat parola</button>
       <p id="acc-magic-msg" style="margin:6px 0 0"></p>
+      <p class="ecran-nota" style="margin:12px 0 0;text-align:center">Nu ai cont? <button type="button" class="btn-link" id="acc-inreg" style="display:inline">\u00cenregistreaz\u0103 cabinetul</button></p>
       </form>
     `;
     modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
@@ -331,6 +332,8 @@ export function ecranLogin(radacina) {
     });
     const bReset = modal.querySelector("#acc-reset");  // [reset_parola_v1]
     if (bReset) bReset.addEventListener("click", randeazaResetCere);
+    const bInreg = modal.querySelector("#acc-inreg");  // [login_spre_inregistrare_v1] cale catre inregistrare din ecranul de autentificare
+    if (bInreg) bInreg.addEventListener("click", randeazaPreturiInainte);
     const buton = modal.querySelector("#login-buton");
     const eroare = modal.querySelector("#login-eroare");
 
@@ -380,6 +383,36 @@ export function ecranLogin(radacina) {
     modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
     modal.querySelector("#pr-inapoi").addEventListener("click", randeazaAlegere);
     modal.querySelector("#pr-continua").addEventListener("click", randeazaInregistrare);
+  }
+
+  // ---------- ecran 2c: cont creat dar firma proprie neadaugata (ex. CUI invalid) ---------- [register_ecran_esec_v1]
+  function randeazaContCreatFirmaLipsa(motiv, em, pw) {
+    modal.classList.remove("acces-modal-inreg");
+    modal.innerHTML = `
+      <button class="acces-x" id="acces-x" aria-label="\u00cenchide">\u2715</button>
+      <div class="login-brand">
+        <img class="login-logo-img" src="/static/logo_login.png" alt="iConta.eu">
+        <span class="login-tagline">Contabilitatea cu control fiscal</span>
+      </div>
+      <div class="ecran-nota" style="text-align:left;margin:4px 0 14px">
+        <p style="margin:0 0 8px"><b>Contul t\u0103u a fost creat.</b></p>
+        <p style="margin:0">${esc(motiv)}</p>
+      </div>
+      <button class="buton-primar" id="cc-intra">Intr\u0103 \u00een cont</button>
+      <p id="cc-msg" style="margin:8px 0 0"></p>
+    `;
+    modal.querySelector("#acces-x").addEventListener("click", inchideOverlay);
+    const b = modal.querySelector("#cc-intra");
+    b.addEventListener("click", async () => {
+      b.disabled = true;
+      try {
+        const r = await api.post("/auth/login", { email: em, parola: pw });
+        sesiune.intra(r.token, r.user);
+      } catch (e) {
+        b.disabled = false;
+        arataMesaj(modal.querySelector("#cc-msg"), e.mesaj || "Nu am putut intra \u00een cont. \u00cencearc\u0103 autentificarea.", "eroare");
+      }
+    });
   }
 
   function randeazaInregistrare() {
@@ -509,16 +542,18 @@ export function ecranLogin(radacina) {
             accept_termeni: !!modal.querySelector("#reg-termeni")?.checked,  /* [termeni_v1] */
         });
         const _avertReg = (_reg && _reg.firma_creata === false) ? (_reg.avertisment || "") : "";
+        if (_avertReg) {
+          /* [register_ecran_esec_v1] Firma proprie nu s-a putut adauga (ex. CUI invalid). NU intram tacit
+             intr-un dashboard gol cu un toast (pagina alba, fara identitate); aratam un ecran propriu cu
+             logo, motivul REAL si calea mai departe (Intra in cont). */
+          randeazaContCreatFirmaLipsa(_avertReg, email.value.trim(), parola.value);
+          return;
+        }
         const r = await api.post("/auth/login", {
           email: email.value.trim(),
           parola: parola.value,
         });
         sesiune.intra(r.token, r.user);
-        if (_avertReg) {
-          /* mesaj de stare, nu caseta permanenta: situatia e temporara (firma se adauga
-             din ecranul Firme). DS cap.6 - arataMesaj e singura cale pentru stari. */
-          setTimeout(() => arataMesaj(document.body, _avertReg, "avert"), 400);
-        }
       } catch (e) {
         arataEroare(e.mesaj || "Nu am putut crea contul.");
         buton.disabled = false;

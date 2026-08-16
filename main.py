@@ -1157,9 +1157,21 @@ def register(date: RegisterIn):
         except Exception as _e:
             # Contul RAMANE valid: userul se poate loga si adauga firma manual din ecranul
             # Firme. Dar raspunsul NU mai minte cu succes - vezi register_firma_v2 mai sus.
+            # [register_motiv_real_v1] Raspunsul poarta MOTIVUL real, nu un generic. Modelul e mesajul
+            # de la numerotarea facturilor ("nu putem presupune numarul 1") - spune DE CE. Contul + cabinetul
+            # SUNT create si userul e logat automat -> mesajul il indruma spre ecranul Firme, nu "te poti loga".
             _obs.esec_secundar("provisionare tenant la register", _e, alerta=True)
-            _firma_motiv = ("Contul a fost creat, dar firma nu a putut fi adaugata automat. "
-                            "Te poti loga si o adaugi din ecranul Firme.")
+            _txt = str(_e).lower()
+            _cui_afis = (date.cui or "").strip()
+            if "cifra de control" in _txt or "cui invalid" in _txt:
+                _motiv = ("CUI-ul introdus (%s) nu este valid \u2014 cifra de control nu corespunde. "
+                          "Verific\u0103 cifrele (f\u0103r\u0103 spa\u021bii sau litere)." % _cui_afis)
+            elif "exist" in _txt and "deja" in _txt:
+                _motiv = "exist\u0103 deja o firm\u0103 cu acest CUI \u00een portofoliul cabinetului."
+            else:
+                _motiv = "a ap\u0103rut o eroare tehnic\u0103 la ad\u0103ugarea firmei."
+            _firma_motiv = ("Contul \u0219i cabinetul au fost create. Firma proprie NU a putut fi ad\u0103ugat\u0103 "
+                            "automat: %s O po\u021bi ad\u0103uga oric\u00e2nd din ecranul Firme." % _motiv)
     raspuns = {"user_id": r["user_id"], "firm_id": r["firm_id"]}
     if _firma_ok is not None:
         raspuns["firma_creata"] = _firma_ok
