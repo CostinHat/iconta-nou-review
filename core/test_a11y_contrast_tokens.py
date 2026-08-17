@@ -77,3 +77,30 @@ def test_culori_card_fg_pe_bg():
         if r < 4.5:
             rele.append("CULORI_CARD fg %s pe bg %s = %.2f < 4.5" % (fg, bg, r))
     assert not rele, "\n".join(rele)
+
+
+# [a11y contrast Control fiscal 18.08.2026 - audit tenant_006] Ecranul Control fiscal (panou #e9edf3) avea
+# 17 perechi color-contrast sub 4.5 (axe): codurile declaratiilor (--albastru #347ab8 = 3.87) + sub-textul
+# verdictelor (--gri-semafor #9aa3b2 = 2.16). Reparate SCOPED (token global neatins). Gardul recalculeaza
+# din sursa contrastul culorilor scoped pe fundalul panoului.
+_PANOU_CF = "#e9edf3"
+
+
+def test_cf_incr_temei_contrast_pe_panou():
+    css = _css()
+    if not css:
+        pytest.skip("stil.css absent")
+    col = _val(r"\.cf-incr-temei\s*\{[^}]*color:\s*(#[0-9a-fA-F]{6})", css)
+    assert col, ".cf-incr-temei color negasit"
+    r = _ratio(col, _PANOU_CF)
+    assert r >= 4.5, ".cf-incr-temei (%s) pe panoul Control fiscal %s = %.2f < 4.5 (sub-text verdicte)" % (col, _PANOU_CF, r)
+
+
+def test_cf_coduri_declaratii_contrast_pe_panou():
+    css = _css()
+    if not css:
+        pytest.skip("stil.css absent")
+    col = _val(r"\.cf-incr-cap \.mig-sold-cont\s*\{\s*color:\s*(#[0-9a-fA-F]{6})", css)
+    assert col, "culoarea codurilor declaratiilor (control fiscal) negasita"
+    r = _ratio(col, _PANOU_CF)
+    assert r >= 4.5, "codurile declaratiilor Control fiscal (%s) pe panoul %s = %.2f < 4.5" % (col, _PANOU_CF, r)

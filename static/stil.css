@@ -738,6 +738,12 @@ html, body {
   padding: 9px 4px; border-bottom: 1px solid #eef0f3;
 }
 .cf-rand-decl .cf-perioada { white-space: nowrap; }  /* [audit_v2] T1 2026 nu se frange */
+/* [a11y contrast Control fiscal 18.08.2026] codurile declaratiilor (.mig-sold-cont) folosesc --albastru
+   #347ab8: pe panoul Control fiscal #e9edf3 = 3.87 < 4.5 (AA pe alb 4.54, nu pe panou). Scoped la control
+   fiscal -> #2f6fa6 = 4.53 pe #e9edf3; tokenul global --albastru (alb-pe-el) si .mig-sold-cont din migrare
+   (pe alb) raman neatinse. */
+.cf-rand-decl .mig-sold-cont,
+.cf-incr-cap .mig-sold-cont { color: #2f6fa6; }
 .cf-perioada { color: #44516b; font-size: var(--text-mic); }
 .cf-termen { font-size: 12.5px; font-variant-numeric: tabular-nums; }
 .cf-termen-rosu { color: #c0392b; }
@@ -2250,7 +2256,9 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 .fd-stare { font-size: 12px; color: #5b6572; background: var(--gri-fundal-semafor); border-radius: 10px; padding: 2px 10px; white-space: nowrap; }
 .fd-stare-verde { color: var(--verde); background: #e4f2ea; }
 /* [control_incrucisat_v1] declaratie vs contabilitate: temei + remediu sub constatare */
-.cf-incr-temei { font-size: var(--text-mic); color: var(--gri-semafor); margin-top: 4px; line-height: 1.4; }
+/* [a11y contrast Control fiscal 18.08.2026] --gri-semafor #9aa3b2 pe panoul #e9edf3 = 2.16 < 4.5;
+   scoped la sub-textul verdictelor (cf-incr, control-fiscal-specific) -> #5c6675 = 4.95 pe #e9edf3. */
+.cf-incr-temei { font-size: var(--text-mic); color: #5c6675; margin-top: 4px; line-height: 1.4; }
 .cf-incr-remediu { font-size: var(--text-mic); margin-top: 6px; padding: 8px 10px; background: var(--galben-fundal); border-radius: 8px; line-height: 1.45; }
 .cf-incr-rand { padding: 10px 4px; border-bottom: 1px solid #eef0f3; }
 .cf-incr-cap { display: flex; align-items: center; gap: 8px; font-weight: 600; }

@@ -9510,3 +9510,13 @@ preexistent d301/d390, extins la TOATE (d100/d101/d205/d112/d300/bilant). declar
 **Temei.** D100 pe zero e STRUCTURAL invalid la DUKIntegrator (sectiunea <obligatie> obligatorie >=1, anaf_surse/d100_struct_anaf.txt; d100.genereaza REFUZA "pe zero"). Un trimestru inchis fara venituri NU are D100 de depus -> semaforul care il arata restanta afirma o obligatie care dovedit nu poate exista (Regula 13 corectitudine, nu decizie de produs). Baza calculata din ACEEASI sursa ca generatorul (d100.pull + deriva_obligatii).
 
 **Proba.** tenant_006 (achizitie IC, fara venituri): D100 T1/T2 2026 trec din LIPSA (restanta) in NEAPLICABILE "nu se datoreaza - fara venituri"; raman D301+D406. tenant_003 (venituri 0, D100 REFUZA "pe zero" la generator): la fel, neaplic consistent cu generatorul (inainte: restante moarte). tenant_002 T1 (are venituri) -> restanta pastrata. Gard test_d100_fapt (5 teste pure + mutatie-probata: dezactivarea portii -> restantele [2025-12,2026-3,2026-6] reapar). Regresie: matrice/premisa/termene/control/d100 = 232 passed.
+
+## 18.08.2026 — a11y contrast Control fiscal + import blockages verificate (audit tenant_006)
+
+**Decizie.** Contrastul pe ecranul Control fiscal (panou #e9edf3) reparat SCOPED: codurile declaratiilor `.cf-rand-decl/.cf-incr-cap .mig-sold-cont` var(--albastru) #347ab8 (3.87) -> #2f6fa6 (4.53); sub-textul verdictelor `.cf-incr-temei` var(--gri-semafor) #9aa3b2 (2.16) -> #5c6675 (4.95). Token global neatins (ca `.camp-ajutor` in v2.42). Regula noua (DS v2.43): un token AA pe ALB nu e neaparat AA pe un panou colorat.
+
+**Temei.** WCAG 2.1 AA 1.4.3 (4.5:1 text normal). axe-core pe Control fiscal: 17 perechi color-contrast serious, 2 tokeni. Ecran neacoperit de auditul a11y tenant_005 (dashboard/vector/salariati).
+
+**Proba.** axe contrast=0 pe Control fiscal dupa fix (era 17), captura privita (identitate vizuala pastrata, lizibilitate imbunatatita). Gard `test_a11y_contrast_tokens.py` extins cu 2 perechi (recalcul din sursa pe #e9edf3), mutatie-probat RED (culorile rele -> 2 failed). versioneaza_assets --scrie (stil.css re-stampilat, 2 fisiere).
+
+**Import blockages verificate CURAT (Regula 14 pct.4).** Provocate vizual pe tenant_006: (a) salariati cu CNP invalid -> rand marcat rosu+warning, cutie de eroare VIZIBILA "rand N: NUME: CNP invalid (motiv)", buton Salveaza dezactivat; (b) solduri neechilibrate -> "debitul difera de credit cu 500,00. Corecteaza fisierul (debit=credit) inainte de salvare", badge neechilibrat, Salveaza dezactivat. Ambele: camp marcat, motiv vizibil (nu title-only), consecinta, unde se corecteaza, diacritice, fara nume interne. axe pe Vector fiscal + Date firma: contrast=0 (curate); contrastul e izolat pe Control fiscal.

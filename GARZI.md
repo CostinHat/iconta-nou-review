@@ -3135,3 +3135,9 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Gard:** `core/test_d100_fapt.py` (5 teste pure pe obligatii_datorate).
 - **Ce face imposibil:** semaforul sa arate D100 micro restanta pe un trimestru INCHIS fara venituri (D100 pe zero = structural invalid la DUK, ar dead-end la generator).
 - **Mutatie proba:** dezactivarea portii (`is False` -> `if False`) -> test_d100_fapt_fara_venituri_suprima_restanta pica (restantele [2025-12,2026-3,2026-6] reapar). Restaurat -> 5 passed.
+
+## a11y contrast Control fiscal: 2 perechi pe #e9edf3 (18.08.2026)
+- **Gard:** `core/test_a11y_contrast_tokens.py` (extins: test_cf_incr_temei + test_cf_coduri_declaratii, recalcul contrast pe #e9edf3).
+- **Ce face imposibil:** `.cf-incr-temei` sau codurile `.cf-*.mig-sold-cont` sa scada sub 4.5:1 pe panoul Control fiscal.
+- **Mutatie proba:** culorile rele (#9aa3b2 / #347ab8) in stil.css -> 2 failed; restaurat -> 5 passed.
+- **RAMAS:** axe "region" (landmark lipsa) 8-19 noduri app-wide (moderat, structural). D406 avertisment conturi 731-738 excluse din norma A (neverificat la sursa).

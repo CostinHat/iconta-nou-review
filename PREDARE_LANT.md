@@ -5,28 +5,26 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 ## REPORNIRE (comanda exacta, gata de dat)
 Continua auditul cap-coada tenant_006 (N1, neplatitor micro cu achizitii intracomunitare; id 4841, schema tenant_006,
 CUI 95451848). Livrat tura asta: fix de coerenta semafor (existenta_firma_an numara achizitiile IC + casa/banca),
-commit 288f886. Urmatorul FRONT gata de atacat = CLUSTER A11Y CONTRAST pe Control fiscal (2 tokeni, tinte verificate
-mai jos). Metoda Regula 13+14: captura PRIVITA + axe/mobil pe fiecare ecran atins, REPARAND, gard RED-probat prin
+commit 288f886. Livrat si: D100 pe fapt de venituri (b196943), a11y contrast Control fiscal + import blockages
+verificate. Fronturi RAMASE: field-level error marking (front 3, formulare SAVE), D390 ignora d301 (front 2, decizie
+ceruta), axe "region"/landmarks app-wide, D406 conturi 731-738. Metoda Regula 13+14: captura PRIVITA + axe/mobil pe
+fiecare ecran atins, REPARAND, gard RED-probat prin
 rulare; DS inainte de cod UI; versioneaza_assets --scrie dupa editare static/js|css; commit pe iconta_nou = poarta
 ~8min + post-commit publica+restart. Probe Playwright: helper ~/probe_t006/wt006.py (deschide_firma -> "Achizitii IC
 Neplatitor"); scripturi in ~/probe_t006 (server). Env: `set -a && . ~/.iconta/db.env && . ~/.iconta/api_keys.env`.
 
 ## FOUR-WAY (de confirmat de urmatoarea tura)
-HEAD = origin/main = backup/lant-2026-08-18 (remote) = RUNNING = b196943. Serviciul restartat 00:40:21 > commit
-00:31:56. Poarta verde: 2301 passed / 4 skipped / 16 xfailed, verificator 0. Comituri tura: 288f886 (existenta_firma_an),
-50c3ebf (registre+predare), b196943 (D100 pe fapt de venituri).
+Confirmat de raportul acestei ture (four-way pe commitul a11y). Comituri tura tenant_006: 288f886 (existenta_firma_an),
+50c3ebf (registre+predare), b196943 (D100 pe fapt de venituri), c55308f (predare), + commitul a11y contrast +
+import-verificat al acestei ture. Poarta verde pe fiecare, verificator 0.
 
-## FRONT 1 — CLUSTER A11Y CONTRAST pe Control fiscal (gata de atacat, tinte verificate)
-axe-core pe Control fiscal tenant_006: 17 violari color-contrast (serious), reduse la 2 TOKENI pe fundalul panoului
-#e9edf3:
-- `--albastru #347ab8` (var, `.mig-sold-cont` = codurile D100/D406/D301 in `.cf-rand-decl` si `.cf-incr-cap`):
-  3.87:1 pe #e9edf3 (AA pe alb 4.54, DAR sub 4.5 pe panou). Fix SCOPED (nu atinge tokenul global, calibrat alb-pe-albastru):
-  `.cf-rand-decl .mig-sold-cont, .cf-incr-cap .mig-sold-cont { color:#2f6fa6; }` -> 4.53 pe #e9edf3 (verificat).
-- `--gri-semafor #9aa3b2` (`.cf-incr-temei` = sub-textul verdictelor "necunoscut declarat...", stil.css:2253):
-  2.16:1 pe #e9edf3. Fix: `.cf-incr-temei { color:#5c6675; }` -> 4.95 pe #e9edf3 (verificat).
-Plus: axe "region" moderate 17 (landmark lipsa) - de evaluat separat. Gard: extinde core/test_a11y_contrast_tokens.py
-cu perechile (.cf-incr-temei pe #e9edf3, .cf-rand-decl .mig-sold-cont pe #e9edf3) >= 4.5, RED-probat. DS cap.12 paleta.
-Dupa fix: re-ruleaza ~/probe_t006/axe_detail.py -> contrast=0. axe/mobil si pe restul ecranelor tenant_006 neatinse.
+## INCHIS tura asta — CLUSTER A11Y CONTRAST pe Control fiscal (LIVRAT)
+17 violari color-contrast pe panoul #e9edf3, reduse la 2 tokeni, reparate SCOPED: `.cf-rand-decl/.cf-incr-cap
+.mig-sold-cont` (coduri declaratii) #347ab8->#2f6fa6 (4.53); `.cf-incr-temei` (sub-text verdicte) #9aa3b2->#5c6675
+(4.95). Token global neatins. axe contrast=0 dupa (captura privita, identitate pastrata). Gard test_a11y_contrast_tokens
+extins (mutatie-probat). DS v2.43. versioneaza_assets --scrie. Import blockages verificate CURAT (salariati CNP /
+solduri dezechilibru = model). RAMAS a11y: axe "region" (landmark) 8-19 noduri app-wide (moderat, structural);
+D406 avertisment conturi 731-738 excluse din norma A (neverificat la sursa).
 
 ## FRONT 2 — D390 nu vede achizitiile din d301_operatiuni (DECIZIE CERUTA, temei de verificat)
 d390.genereaza(tenant_006, 6/2026) refuza "pe zero: nicio operatiune intracomunitara" DESI exista achizitia IC in
