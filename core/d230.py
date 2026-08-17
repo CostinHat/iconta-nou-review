@@ -86,20 +86,20 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not str(manual.get("nume_c") or "").strip():
-        er.append("Lipsa nume contribuabil (nume_c).")
+        er.append("Lipsă nume contribuabil (nume_c).")
     if not str(manual.get("prenume_c") or "").strip():
-        er.append("Lipsa prenume contribuabil (prenume_c).")
+        er.append("Lipsă prenume contribuabil (prenume_c).")
     if not str(manual.get("initiala_c") or "").strip():
-        er.append("Lipsa initiala tata (initiala_c).")
+        er.append("Lipsă initiala tata (initiala_c).")
     if not _cnp_valid(manual.get("cif_c")):
         er.append("CNP contribuabil (cif_c) invalid (13 cifre + cifra de control).")
     if not str(manual.get("den_entitate") or "").strip():
-        er.append("Lipsa denumire entitate beneficiara (den_entitate).")
+        er.append("Lipsă denumire entitate beneficiara (den_entitate).")
     if not (2 <= len(_cif(manual.get("cif_entitate"))) <= 10):
         er.append("CIF entitate (cif_entitate) invalid.")
     iban = str(manual.get("cont_entitate") or "").replace(" ", "").upper()
     if not _IBAN_OK.match(iban):
-        er.append("IBAN entitate (cont_entitate) invalid - astept RO + 22 caractere.")
+        er.append("IBAN entitate (cont_entitate) invalid - aștept RO + 22 caractere.")
     try:
         valab = int(manual.get("valabilitate_distribuire"))
     except (TypeError, ValueError):

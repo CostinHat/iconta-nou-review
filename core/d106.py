@@ -100,34 +100,34 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not _cif(prof.get("cui")):
-        er.append("CIF operator economic lipsa/invalid.")
+        er.append("CIF operator economic lipsă/invalid.")
     if not prof.get("den"):
-        er.append("LIPSA denumire operator economic.")
+        er.append("LIPSĂ denumire operator economic.")
     if not str(prof.get("adresa") or "").strip():
-        er.append("LIPSA adresa domiciliu fiscal.")
+        er.append("LIPSĂ adresa domiciliu fiscal.")
     for c in ("declarant_nume", "declarant_prenume", "declarant_functie"):
         if not str(prof.get(c) or "").strip():
-            er.append("LIPSA %s (declarant obligatoriu)." % c)
+            er.append("LIPSĂ %s (declarant obligatoriu)." % c)
     actionari = manual.get("actionari") or []
     if not actionari:
-        er.append("D106 cere cel putin un actionar (actionari[]).")
+        er.append("D106 cere cel puțin un actionar (actionari[]).")
     vazute = set()
     for i, a in enumerate(actionari, 1):
         cif = _cif(a.get("cif"))
         if not (2 <= len(cif) <= 13):
             er.append("Actionar %d: CIF (cif) invalid." % i)
         elif cif in vazute:
-            er.append("Actionar %d: CIF %s repetat (actionarii trebuie sa fie unici)." % (i, cif))
+            er.append("Actionar %d: CIF %s repetat (actionarii trebuie să fie unici)." % (i, cif))
         else:
             vazute.add(cif)
         if not str(a.get("denumire") or "").strip():
-            er.append("Actionar %d: lipsa denumire (denAct)." % i)
+            er.append("Actionar %d: lipsă denumire (denAct)." % i)
         try:
             cota = float(str(a.get("cota")).replace(",", ".")) if a.get("cota") not in (None, "") else 0.0
         except ValueError:
             cota = -1
         if not (0 <= cota <= 100):
-            er.append("Actionar %d: cota de participare (cota) trebuie in 0..100." % i)
+            er.append("Actionar %d: cota de participare (cota) trebuie în 0..100." % i)
         if _i(a.get("dividend")) <= 0:
             er.append("Actionar %d: dividend distribuit (dividend) trebuie > 0." % i)
     return er

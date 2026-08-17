@@ -48,7 +48,7 @@ def test_amortizat_la_data_coerent_cu_calc_asset(metoda):
         ca = _d406.calc_asset(mf, an)
         ld = _d406.amortizat_la_data(mf, date(an, 12, 31))
         assert ld["amortizat"] == ca["accum_depr"], "%s %d amortizat" % (metoda, an)
-        assert ld["ramas"] == ca["book_end"], "%s %d ramas" % (metoda, an)
+        assert ld["ramas"] == ca["book_end"], "%s %d rămas" % (metoda, an)
 
 
 def test_amortizat_la_data_difera_de_liniar_pe_neliniar():
@@ -135,6 +135,6 @@ def test_ecran_mf_metoda_nepermisa_da_eroare_nu_liniar(monkeypatch):
         res = main.tenant_mijloace_fixe(1, ctx={"uid": 1})
         row = res["mijloace"][0]
         assert row["amortizat"] is None and row["ramas"] is None   # nu fabrica liniar
-        assert row["eroare"] and "nu e permisa" in row["eroare"]    # spune care e problema
+        assert row["eroare"] and "nu e permisă" in row["eroare"]    # spune care e problema
     finally:
         _drop()

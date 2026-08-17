@@ -209,18 +209,18 @@ def erori_generare(prof, manual):
     an = int(prof.get("an") or 0)
     # --- antet platitor de venit (sectiunea A) ---
     if not (_cui_valid(manual.get("cif")) or _cnp_valid(manual.get("cif"))):
-        er.append("CIF platitor (cif) invalid - astept CUI (2-10 cifre) sau CNP (13 cifre).")
-    for camp, et in (("den_p", "Denumire platitor (Den_P)"),
-                     ("adresa_p", "Adresa platitor (Adresa_P)"),
+        er.append("CIF plătitor (cif) invalid - aștept CUI (2-10 cifre) sau CNP (13 cifre).")
+    for camp, et in (("den_p", "Denumire plătitor (Den_P)"),
+                     ("adresa_p", "Adresa plătitor (Adresa_P)"),
                      ("nume_declar", "Nume declarant (nume_declar)"),
                      ("prenume_declar", "Prenume declarant (prenume_declar)"),
-                     ("functie_declar", "Functie declarant (functie_declar)")):
+                     ("functie_declar", "Funcție declarant (functie_declar)")):
         if not str(manual.get(camp) or "").strip():
             er.append("Lipsa " + et + ".")
     if not _int_in(manual.get("tip_p"), _TIP_P):
-        er.append("Tip_P (tip_p) obligatoriu in (1,2,3,4).")
+        er.append("Tip_P (tip_p) obligatoriu în (1,2,3,4).")
     if not _int_in(manual.get("forma_jurid_p"), _FORMA_JURID):
-        er.append("Forma_jurid_P (forma_jurid_p) obligatoriu in (1..8).")
+        er.append("Forma_jurid_P (forma_jurid_p) obligatoriu în (1..8).")
     try:
         d_rec = int(manual.get("d_rec") or 0)
     except (TypeError, ValueError):
@@ -236,7 +236,7 @@ def erori_generare(prof, manual):
     for i, b in enumerate(benefs, 1):
         p = "beneficiar #%d: " % i
         if not str(b.get("nume") or "").strip():
-            er.append(p + "lipsa Nume (nume).")
+            er.append(p + "lipsă Nume (nume).")
         if not _cnp_valid(b.get("cif_rom")):
             er.append(p + "CIF_Rom (cif_rom) invalid - CNP/NIF Romania 13 cifre "
                           "(DUK regula verificare cif(13)).")
@@ -245,18 +245,18 @@ def erori_generare(prof, manual):
         if str(b.get("stat_r") or "").strip().upper() not in _STATE_UE:
             er.append(p + "Stat_R (stat_r) obligatoriu, stat membru UE (N1).")
         if not str(b.get("localitate_r") or "").strip():
-            er.append(p + "lipsa Localitate_R (localitate_r).")
+            er.append(p + "lipsă Localitate_R (localitate_r).")
         if not _int_in(b.get("calitate_b"), _CALITATE_B):
-            er.append(p + "Calitate_B (calitate_b) obligatoriu in (1,2,3,4).")
+            er.append(p + "Calitate_B (calitate_b) obligatoriu în (1,2,3,4).")
         if not _int_in(b.get("tip_adr"), _TIP_ADR):
-            er.append(p + "Tip_adr (tip_adr) obligatoriu in (1,2,3).")
+            er.append(p + "Tip_adr (tip_adr) obligatoriu în (1,2,3).")
         if not _int_in(b.get("categ_b"), _CATEG_B):
-            er.append(p + "Categ_B (categ_b) obligatoriu in (1,2).")
+            er.append(p + "Categ_B (categ_b) obligatoriu în (1,2).")
         if _intval(b.get("impozit_venit")) < 0:
             er.append(p + "Impozit_venit (impozit_venit) >= 0 (DUK regula R34).")
         nat = b.get("nationalitate")
         if nat and str(nat).strip().upper() not in _TARI:
-            er.append(p + "Nationalitate (nationalitate) neregasita in N3.")
+            er.append(p + "Nationalitate (nationalitate) neregasita în N3.")
         if b.get("data_nasterii") and _parse_data(b.get("data_nasterii")) is None:
             er.append(p + "Data_nasterii format ZZ.LL.AAAA.")
         try:
@@ -270,14 +270,14 @@ def erori_generare(prof, manual):
             pv = p + "venit #%d: " % j
             tv = None
             if not _int_in(v.get("tip_venit"), _TIP_VENIT):
-                er.append(pv + "Tip_venit (tip_venit) obligatoriu in (1..14).")
+                er.append(pv + "Tip_venit (tip_venit) obligatoriu în (1..14).")
             else:
                 tv = int(v.get("tip_venit"))
                 if categ in _TIP_INTERZIS and tv in _TIP_INTERZIS[categ]:
                     er.append(pv + "Categ_B=%d incompatibil cu Tip_venit=%d (DUK regula R49.%d)."
                               % (categ, tv, 1 if categ == 1 else 2))
             if not _int_in(v.get("da_nu"), _DA_NU):
-                er.append(pv + "DA_NU (da_nu) obligatoriu in (1=da, 2=nu).")
+                er.append(pv + "DA_NU (da_nu) obligatoriu în (1=da, 2=nu).")
             di = _parse_data(v.get("data_i"))
             if di is None:
                 er.append(pv + "Data_I (data_i) obligatoriu, format ZZ.LL.AAAA.")
@@ -292,16 +292,16 @@ def erori_generare(prof, manual):
                 if di is not None and ds < di:
                     er.append(pv + "Data_S < Data_I (DUK regula R40).")
             if not _int_in(v.get("per_venit"), _PER_VENIT):
-                er.append(pv + "Per_venit (per_venit) obligatoriu in (1..5).")
+                er.append(pv + "Per_venit (per_venit) obligatoriu în (1..5).")
             if not _int_in(v.get("regim_fisc"), _REGIM_FISC):
-                er.append(pv + "Regim_fisc (regim_fisc) obligatoriu in (1,2,3).")
+                er.append(pv + "Regim_fisc (regim_fisc) obligatoriu în (1,2,3).")
             sv = _intval(v.get("suma_venit"))
             if d_rec == 0 and sv <= 0:
-                er.append(pv + "Suma_venit > 0 intr-o declaratie initiala (DUK regula R43).")
+                er.append(pv + "Suma_venit > 0 intr-o declarație initiala (DUK regula R43).")
             elif sv < 0:
                 er.append(pv + "Suma_venit >= 0 (DUK regula R43).")
             if str(v.get("moneda_venit") or "").strip().upper() not in _MONEDE:
-                er.append(pv + "Moneda_venit (moneda_venit) obligatoriu in N4 (EUR,RON,USD,...).")
+                er.append(pv + "Moneda_venit (moneda_venit) obligatoriu în N4 (EUR,RON,USD,...).")
     dup = sorted(set(x for x in cifuri if cifuri.count(x) > 1))
     if dup:
         er.append("CIF_Rom duplicat intre beneficiari: %s (DUK regula R50)." % ", ".join(dup))

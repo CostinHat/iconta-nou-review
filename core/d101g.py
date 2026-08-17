@@ -114,10 +114,10 @@ def calcul_d101g(prof, an, intrari=None, cota=None, cod_obligatie=_COD_OBLIGATIE
     I = dict(intrari or {})
     necunoscute = [k for k in I if k not in _P_INTRARI]
     if necunoscute:
-        raise ValueError("D101G intrari necunoscute: %s (permise: %s)" % (sorted(necunoscute), sorted(_P_INTRARI)))
+        raise ValueError("D101G intrări necunoscute: %s (permise: %s)" % (sorted(necunoscute), sorted(_P_INTRARI)))
     for k in _NENEG:
         if _i(I.get(k, 0)) < 0:
-            raise ValueError("D101G: %s = %d < 0 (DUK regula %s>=0). Corecteaza valoarea consolidata." % (
+            raise ValueError("D101G: %s = %d < 0 (DUK regula %s>=0). Corectează valoarea consolidată." % (
                 k, _i(I.get(k, 0)), k))
     cota = Decimal(str(cota if cota is not None else COTA_STANDARD))
     g = lambda k: _i(I.get(k, 0))
@@ -207,16 +207,16 @@ def erori_generare(prof):
     erori = []
     _cui = _cif(prof.get("cui"))
     if not _cui:
-        erori.append("LIPSA CUI persoana juridica responsabila (obligatoriu).")
+        erori.append("LIPSĂ CUI persoana juridica responsabila (obligatoriu).")
     if not (prof.get("nume") or "").strip():
-        erori.append("LIPSA denumire persoana juridica responsabila (obligatorie).")
+        erori.append("LIPSĂ denumire persoana juridica responsabila (obligatorie).")
     if not (prof.get("adresa") or "").strip():
-        erori.append("LIPSA adresa domiciliu fiscal (obligatorie).")
+        erori.append("LIPSĂ adresa domiciliu fiscal (obligatorie).")
     _caen = (prof.get("caen") or "").strip()
     if not _caen:
-        erori.append("LIPSA cod CAEN (obligatoriu in D101G).")
+        erori.append("LIPSĂ cod CAEN (obligatoriu în D101G).")
     elif not re.fullmatch(r"\d{4}", _caen):
-        erori.append("D101G: cod CAEN invalid (%s): trebuie exact 4 cifre — N(4). Corecteaza in Profil firma." % _caen)
+        erori.append("D101G: cod CAEN invalid (%s): trebuie exact 4 cifre — N(4). Corectează în Profil firma." % _caen)
     return erori
 
 

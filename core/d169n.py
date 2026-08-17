@@ -135,33 +135,33 @@ def _erori_beneficiar(b, idx):
     er = []
     p = "beneficiar %d:" % idx
     if not str(b.get("den_B") or "").strip():
-        er.append("%s lipsa nume si prenume (den_B)." % p)
+        er.append("%s lipsă nume și prenume (den_B)." % p)
     rez = _cif(b.get("stat_resedinta_B"))
     stat_res = str(b.get("stat_resedinta_B") or "").strip().upper()
     # DUK regula R33.1: rezident RO (fara stat_resedinta_B) -> cif_B = CNP 13 cifre
     if not stat_res:
         if not _cnp_valid(b.get("cif_B")):
-            er.append("%s CNP (cif_B) invalid pentru rezident RO - astept 13 cifre cu cifra de control (R33.1)." % p)
+            er.append("%s CNP (cif_B) invalid pentru rezident RO - aștept 13 cifre cu cifra de control (R33.1)." % p)
     else:
         # DUK regula stat_resedinta_B: trebuie diferit de RO
         if stat_res == "RO":
-            er.append("%s stat_resedinta_B trebuie sa fie diferit de RO (pt rezidenti RO se omite si se da CNP)." % p)
+            er.append("%s stat_resedinta_B trebuie să fie diferit de RO (pt rezidenti RO se omite și se da CNP)." % p)
         if not str(b.get("cif_B") or "").strip():
-            er.append("%s lipsa cod de identificare fiscala (cif_B)." % p)
+            er.append("%s lipsă cod de identificare fiscala (cif_B)." % p)
     if not _data(b.get("data_nasterii_B")):
-        er.append("%s data nasterii (data_nasterii_B) invalida - astept zz.ll.aaaa." % p)
+        er.append("%s data nasterii (data_nasterii_B) invalidă - aștept zz.ll.aaaa." % p)
     if not str(b.get("actId_B") or "").strip():
-        er.append("%s lipsa serie si numar act de identitate (actId_B)." % p)
+        er.append("%s lipsă serie și număr act de identitate (actId_B)." % p)
     if not str(b.get("adresa_B") or "").strip():
-        er.append("%s lipsa domiciliu/resedinta (adresa_B)." % p)
+        er.append("%s lipsă domiciliu/resedinta (adresa_B)." % p)
     if not str(b.get("mod_control_B") or "").strip():
-        er.append("%s lipsa modalitatea de exercitare a controlului (mod_control_B)." % p)
+        er.append("%s lipsă modalitatea de exercitare a controlului (mod_control_B)." % p)
     if not str(b.get("natura") or "").strip():
-        er.append("%s lipsa natura si amploarea interesului (natura)." % p)
+        er.append("%s lipsă natura și amploarea interesului (natura)." % p)
     if not str(b.get("mentiuni") or "").strip():
-        er.append("%s lipsa mentiuni privind neconcordantele (mentiuni)." % p)
+        er.append("%s lipsă mentiuni privind neconcordantele (mentiuni)." % p)
     if not _calitati(b):
-        er.append("%s cel putin o calitate a beneficiarului real (1-4) trebuie bifata (R40)." % p)
+        er.append("%s cel puțin o calitate a beneficiarului real (1-4) trebuie bifata (R40)." % p)
     return er
 
 
@@ -169,49 +169,49 @@ def erori_generare(prof, manual):
     er = []
     # A. entitate raportoare
     if not str(manual.get("den_E") or "").strip():
-        er.append("Lipsa denumire entitate raportoare (den_E).")
+        er.append("Lipsă denumire entitate raportoare (den_E).")
     if not (2 <= len(_cif(manual.get("cif"))) <= 10):
-        er.append("CIF entitate raportoare (cif) invalid - astept 2-10 cifre.")
+        er.append("CIF entitate raportoare (cif) invalid - aștept 2-10 cifre.")
     if not _judet(manual.get("judet_E")):
-        er.append("Lipsa judet entitate (judet_E) - cod numeric de judet.")
+        er.append("Lipsă județ entitate (judet_E) - cod numeric de județ.")
     if _judet(manual.get("judet_E")) == _JUDET_BUCURESTI and not str(manual.get("sector_E") or "").strip():
-        er.append("Sectorul (sector_E) este obligatoriu pentru judetul 40 (Bucuresti).")
+        er.append("Sectorul (sector_E) este obligatoriu pentru județul 40 (București).")
     if not str(manual.get("localit_E") or "").strip():
-        er.append("Lipsa localitate entitate (localit_E).")
+        er.append("Lipsă localitate entitate (localit_E).")
     if not str(manual.get("adresa_E") or "").strip():
-        er.append("Lipsa adresa entitate (adresa_E).")
+        er.append("Lipsă adresa entitate (adresa_E).")
     # semnatar
     if not str(manual.get("nume") or "").strip():
-        er.append("Lipsa nume semnatar (nume).")
+        er.append("Lipsă nume semnatar (nume).")
     if not str(manual.get("functie") or "").strip():
-        er.append("Lipsa functie semnatar (functie).")
+        er.append("Lipsă funcție semnatar (funcție).")
     # B. reprezentant legal
     if not str(manual.get("den_R") or "").strip():
-        er.append("Lipsa nume si prenume reprezentant legal (den_R).")
+        er.append("Lipsă nume și prenume reprezentant legal (den_R).")
     if not str(manual.get("calit_R") or "").strip():
-        er.append("Lipsa calitatea reprezentantului legal (calit_R).")
+        er.append("Lipsă calitatea reprezentantului legal (calit_R).")
     # C. fiduciar
     if not str(manual.get("den_F") or "").strip():
-        er.append("Lipsa denumire fiduciar (den_F).")
+        er.append("Lipsă denumire fiduciar (den_F).")
     if not (2 <= len(_cif(manual.get("cif_F"))) <= 10):
-        er.append("CIF fiduciar (cif_F) invalid - astept 2-10 cifre.")
+        er.append("CIF fiduciar (cif_F) invalid - aștept 2-10 cifre.")
     if not _judet(manual.get("judet_F")):
-        er.append("Lipsa judet fiduciar (judet_F) - cod numeric de judet.")
+        er.append("Lipsă județ fiduciar (judet_F) - cod numeric de județ.")
     if _judet(manual.get("judet_F")) == _JUDET_BUCURESTI and not str(manual.get("sector_F") or "").strip():
-        er.append("Sectorul (sector_F) este obligatoriu pentru judetul 40 (Bucuresti).")
+        er.append("Sectorul (sector_F) este obligatoriu pentru județul 40 (București).")
     if not str(manual.get("localit_F") or "").strip():
-        er.append("Lipsa localitate fiduciar (localit_F).")
+        er.append("Lipsă localitate fiduciar (localit_F).")
     if not str(manual.get("adresa_F") or "").strip():
-        er.append("Lipsa adresa fiduciar (adresa_F).")
+        er.append("Lipsă adresa fiduciar (adresa_F).")
     # contract de fiducie
     if not str(manual.get("nr_contract") or "").strip():
-        er.append("Lipsa numarul contractului de fiducie (nr_contract).")
+        er.append("Lipsă numărul contractului de fiducie (nr_contract).")
     if not _data(manual.get("data_contract")):
-        er.append("Data contractului de fiducie (data_contract) invalida - astept zz.ll.aaaa.")
+        er.append("Data contractului de fiducie (data_contract) invalidă - aștept zz.ll.aaaa.")
     # D. beneficiari reali
     benef = manual.get("beneficiari") or []
     if not benef:
-        er.append("Lipsa beneficiari reali - cel putin unul este obligatoriu (sectiunea benefR).")
+        er.append("Lipsă beneficiari reali - cel puțin unul este obligatoriu (secțiunea benefR).")
     perechi = set()
     for i, b in enumerate(benef, 1):
         er.extend(_erori_beneficiar(b, i))

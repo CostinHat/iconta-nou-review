@@ -111,21 +111,21 @@ def erori_generare(prof, manual):
     er = []
     for c in ("declarant_nume", "declarant_prenume", "declarant_functie"):
         if not str(prof.get(c) or (manual.get(c))or "").strip():
-            er.append("LIPSA %s (declarant obligatoriu)." % c)
+            er.append("LIPSĂ %s (declarant obligatoriu)." % c)
     aso = _asociere(prof, manual)
     if not _cif(aso.get("cif")):
-        er.append("CUI asociere lipsa/invalid (manual.asociere.cif sau firma_profil).")
+        er.append("CUI asociere lipsă/invalid (manual.asociere.cif sau firma_profil).")
     if not str(aso.get("nume") or "").strip():
-        er.append("LIPSA denumire asociere.")
+        er.append("LIPSĂ denumire asociere.")
     if not str(aso.get("adresa") or "").strip():
-        er.append("LIPSA adresa asociere.")
+        er.append("LIPSĂ adresa asociere.")
     resp = manual.get("responsabil") or {}
     for c, et in (("den_r", "den_r"), ("cif_r", "cif_r"), ("adresa_r", "adresa_r")):
         if not str(resp.get(c) or "").strip():
-            er.append("LIPSA %s (responsabilul asocierii, obligatoriu)." % et)
+            er.append("LIPSĂ %s (responsabilul asocierii, obligatoriu)." % et)
     act = manual.get("activitate")
     if not isinstance(act, dict) or not act:
-        er.append("D223 cere `manual.activitate` (categ_venit, forma_org, det_venit, CAEN, judet, localitate...).")
+        er.append("D223 cere `manual.activitate` (categ_venit, forma_org, det_venit, CAEN, județ, localitate...).")
         return er
     if str(act.get("categ_venit") or "") not in {"1", "2", "4", "5", "6", "7"}:
         er.append("activitate: categ_venit invalid (1,2,4,5,6,7).")
@@ -136,16 +136,16 @@ def erori_generare(prof, manual):
     for c, et in (("caen", "CAEN"), ("judet", "judet"), ("localitate", "localitate"), ("sediu", "sediu"),
                   ("nr_contr", "nr_contr"), ("data_contr", "data_contr")):
         if not str(act.get(c) or "").strip():
-            er.append("activitate: lipsa %s (obligatoriu)." % et)
+            er.append("activitate: lipsă %s (obligatoriu)." % et)
     if str(act.get("judet") or "") == "40" and not str(act.get("sector") or "").strip():
-        er.append("activitate: sector obligatoriu pentru judet=40 (Bucuresti).")
+        er.append("activitate: sector obligatoriu pentru județ=40 (București).")
     asociati = manual.get("asociati") or []
     if not asociati:
-        er.append("D223 cere cel putin un asociat (asociati[]).")
+        er.append("D223 cere cel puțin un asociat (asociati[]).")
     cifuri, suma_cota = [], Decimal(0)
     for i, a in enumerate(asociati, 1):
         if not str(a.get("nume_d") or "").strip():
-            er.append("Asociat %d: lipsa nume_d." % i)
+            er.append("Asociat %d: lipsă nume_d." % i)
         cf = _cif(a.get("cif_d"))
         if len(cf) != 13:
             er.append("Asociat %d: cif_d trebuie CNP de 13 cifre (a fost %r)." % (i, a.get("cif_d")))
@@ -160,9 +160,9 @@ def erori_generare(prof, manual):
             er.append("Asociat %d: cota_d %s invalida (0<cota_d<100; =100 doar cu un singur asociat)." %
                       (i, a.get("cota_d")))
     if asociati and suma_cota != Decimal(100):
-        er.append("Suma cotelor de distribuire (%s) trebuie sa fie 100." % suma_cota)
+        er.append("Suma cotelor de distribuire (%s) trebuie să fie 100." % suma_cota)
     if len(cifuri) != len(set(cifuri)):
-        er.append("Asociatii au cif_d duplicat (cif_d = cheie unica).")
+        er.append("Asociații au cif_d duplicat (cif_d = cheie unica).")
     return er
 
 

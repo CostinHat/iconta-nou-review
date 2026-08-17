@@ -136,26 +136,26 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not str(manual.get("nume") or "").strip():
-        er.append("Lipsa nume contribuabil (nume).")
+        er.append("Lipsă nume contribuabil (nume).")
     if not (2 <= len(_cif(manual.get("cif"))) <= 13):
         er.append("CIF/CNP contribuabil (cif) invalid.")
     if not str(manual.get("domiciliuFiscal") or "").strip():
-        er.append("Lipsa domiciliu fiscal (domiciliuFiscal).")
+        er.append("Lipsă domiciliu fiscal (domiciliuFiscal).")
     if not str(manual.get("nume_intocmit") or "").strip():
-        er.append("Lipsa nume intocmit (nume_intocmit) - obligatoriu.")
+        er.append("Lipsă nume intocmit (nume_intocmit) - obligatoriu.")
     if not str(manual.get("functia_intocmit") or "").strip():
-        er.append("Lipsa functia intocmit (functia_intocmit) - obligatoriu.")
+        er.append("Lipsă funcția intocmit (functia_intocmit) - obligatoriu.")
     imob = manual.get("imobile") or []
     mob = manual.get("mobile") or []
     if not imob and not mob:
-        er.append("Cel putin un bun (imobil sau mobil) trebuie declarat.")
+        er.append("Cel puțin un bun (imobil sau mobil) trebuie declarat.")
     for i, b in enumerate(imob, 1):
         for camp in ("judet_imobil", "cod_judet_imobil", "localitate_imobil", "cod_localitate_imobil",
                      "strada_imobil", "cod_strada_imobil", "nr_cadastral"):
             if not str(b.get(camp) or "").strip():
-                er.append("Bun imobil %d: lipsa %s." % (i, camp))
+                er.append("Bun imobil %d: lipsă %s." % (i, camp))
         if _int(b.get("valoare_impozabila_imobil")) <= 0:
-            er.append("Bun imobil %d: valoare_impozabila_imobil invalida." % i)
+            er.append("Bun imobil %d: valoare_impozabila_imobil invalidă." % i)
         if not (0 < _cota(b.get("cota")) <= 100):
             er.append("Bun imobil %d: cota trebuie 0 < cota <= 100." % i)
         if _int(b.get("plafon_imobil")) <= 0:
@@ -166,9 +166,9 @@ def erori_generare(prof, manual):
         if _int(b.get("an_detinere")) <= 0:
             er.append("Bun mobil %d: an_detinere invalid." % i)
         if str(b.get("niv") or "").strip() == "":
-            er.append("Bun mobil %d: lipsa niv." % i)
+            er.append("Bun mobil %d: lipsă niv." % i)
         if _int(b.get("valoare_impozabila_mobil")) <= 0:
-            er.append("Bun mobil %d: valoare_impozabila_mobil invalida." % i)
+            er.append("Bun mobil %d: valoare_impozabila_mobil invalidă." % i)
         if _int(b.get("plafon_mobil")) <= 0:
             er.append("Bun mobil %d: plafon_mobil invalid." % i)
         if _int(b.get("valoare_impozabila_mobil")) <= _int(b.get("plafon_mobil")):

@@ -133,32 +133,32 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not _cif(prof.get("cui")):
-        er.append("CUI firma platitoare lipsa/invalid.")
+        er.append("CUI firma plătitoare lipsă/invalid.")
     if not prof.get("den"):
-        er.append("LIPSA denumire firma.")
+        er.append("LIPSĂ denumire firma.")
     if not str(prof.get("adresa") or "").strip():
-        er.append("LIPSA adresa firma.")
+        er.append("LIPSĂ adresa firma.")
     for c in ("declarant_nume", "declarant_prenume"):
         if not str(prof.get(c) or "").strip():
-            er.append("LIPSA %s (semnatar obligatoriu, denS)." % c)
+            er.append("LIPSĂ %s (semnatar obligatoriu, denS)." % c)
     co = _cod_oblig(prof, manual)
     if co not in _COD_OBLIG_VALIDE:
         er.append("cod_oblig %r invalid (nomenclator: 102/103/104/105/121)." % co)
     # exercitiu modificat / dizolvare: nesuportat (nu se ghiceste corelatia de date)
     for k in ("data_m", "data_l", "data_b"):
         if str(manual.get(k) or "").strip():
-            er.append("D107 aici suporta doar exercitiul pe an calendaristic; %s (an modificat/dizolvare) "
+            er.append("D107 aici suportă doar exercițiul pe an calendaristic; %s (an modificat/dizolvare) "
                       "nu e suportat." % k)
     benef = manual.get("beneficiari") or []
     if not benef:
-        er.append("D107 cere cel putin un beneficiar (beneficiari[]).")
+        er.append("D107 cere cel puțin un beneficiar (beneficiari[]).")
     for i, b in enumerate(benef, 1):
         if not str(b.get("den") or "").strip():
-            er.append("Beneficiar %d: lipsa denumire/nume (denE)." % i)
+            er.append("Beneficiar %d: lipsă denumire/nume (denE)." % i)
         if not _cif(b.get("cif")):
-            er.append("Beneficiar %d: lipsa cod de identificare fiscala (cifE)." % i)
+            er.append("Beneficiar %d: lipsă cod de identificare fiscala (cifE)." % i)
         if not str(b.get("adresa") or "").strip():
-            er.append("Beneficiar %d: lipsa adresa (adrE)." % i)
+            er.append("Beneficiar %d: lipsă adresa (adrE)." % i)
         for camp in ("val1", "val2", "val3"):
             if _i(b.get(camp)) < 0:
                 er.append("Beneficiar %d: %s trebuie >= 0." % (i, camp))
@@ -166,14 +166,14 @@ def erori_generare(prof, manual):
     val2_ni = _i(manual.get("val2_ni"))
     ni = manual.get("neindividualizati") or []
     if val2_ni > 0 and not ni:
-        er.append("Val2_NI>0 cere sectiunea entit1 (beneficiari neindividualizati).")
+        er.append("Val2_NI>0 cere secțiunea entit1 (beneficiari neindividualizati).")
     if val2_ni == 0 and ni:
-        er.append("entit1 (neindividualizati) exista doar daca Val2_NI>0.")
+        er.append("entit1 (neindividualizati) există doar dacă Val2_NI>0.")
     for i, n in enumerate(ni, 1):
         for camp, et in (("den", "denE_NI"), ("cif", "cifE_NI"), ("adresa", "adrE_NI")):
             v = _cif(n.get(camp)) if camp == "cif" else str(n.get(camp) or "").strip()
             if not v:
-                er.append("Neindividualizat %d: lipsa %s (obligatoriu daca Val2_NI>0)." % (i, et))
+                er.append("Neindividualizat %d: lipsă %s (obligatoriu dacă Val2_NI>0)." % (i, et))
     return er
 
 

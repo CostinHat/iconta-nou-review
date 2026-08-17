@@ -124,8 +124,8 @@ def calcul_d119(an, luna, manual):
     if suma_ded > suma_dat:
         raise ValueError(
             "D119: Suma_ded (%d) > Suma_dat (%d). Validatorul oficial (DUK regula R15) NU accepta "
-            "Suma_dat < Suma_ded (Suma_rest trebuie >= 0, nicio combinatie nu trece). Declaratia "
-            "se depune doar cand suma datorata >= suma dedusa." % (suma_ded, suma_dat))
+            "Suma_dat < Suma_ded (Suma_rest trebuie >= 0, nicio combinatie nu trece). Declarația "
+            "se depune doar cand suma datorată >= suma dedusa." % (suma_ded, suma_dat))
     suma_plata = suma_dat - suma_ded
     suma_rest = 0
     total = suma_dat + suma_ded + suma_plata + suma_rest
@@ -136,7 +136,7 @@ def calcul_d119(an, luna, manual):
         p = scad_manual.split(".")
         if (len(p) != 3 or not all(x.isdigit() for x in p)
                 or len(p[0]) != 2 or len(p[1]) != 2 or len(p[2]) != 4):
-            raise ValueError("D119: scadenta manuala %r nu e in formatul ZZ.LL.AAAA." % scad_manual)
+            raise ValueError("D119: scadență manuală %r nu e în formatul ZZ.LL.AAAA." % scad_manual)
         zi_s, luna_s, an_s = int(p[0]), int(p[1]), int(p[2])
     scad_str = "%02d.%02d.%04d" % (zi_s, luna_s, an_s)
 
@@ -156,24 +156,24 @@ def erori_generare(prof, manual):
     er = []
     cui = _cif(manual.get("cif"))
     if not cui:
-        er.append("Lipsa cod de identificare fiscala (cif) al BNR.")
+        er.append("Lipsă cod de identificare fiscala (cif) al BNR.")
     else:
         ok, motiv = valideaza_cui(cui)
         if not ok:
             er.append("D119: cif invalid (%s: %s)." % (cui, motiv))
     if not str(manual.get("den") or "").strip():
-        er.append("Lipsa denumire (den).")
+        er.append("Lipsă denumire (den).")
     if not str(manual.get("adresaS") or "").strip():
-        er.append("Lipsa adresa sediu (adresaS).")
+        er.append("Lipsă adresa sediu (adresaS).")
     if not str(manual.get("banca") or "").strip():
-        er.append("Lipsa banca (banca) - atribut obligatoriu.")
+        er.append("Lipsă banca (banca) - atribut obligatoriu.")
     iban = str(manual.get("Cont") or "").replace(" ", "").upper()
     if not _IBAN_OK.match(iban):
-        er.append("Cont (IBAN) invalid - astept RO + 22 caractere.")
+        er.append("Cont (IBAN) invalid - aștept RO + 22 caractere.")
     for k, et in (("nume", "nume reprezentant"), ("prenume", "prenume reprezentant"),
-                  ("functie", "functie reprezentant")):
+                  ("functie", "funcție reprezentant")):
         if not str(manual.get(k) or "").strip():
-            er.append("Lipsa %s (%s)." % (et, k))
+            er.append("Lipsă %s (%s)." % (et, k))
     if _i(manual.get("suma_dat")) < 0 or _i(manual.get("suma_ded")) < 0:
         er.append("Sumele (suma_dat/suma_ded) nu pot fi negative.")
     try:

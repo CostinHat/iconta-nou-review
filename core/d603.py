@@ -116,15 +116,15 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not str(manual.get("numeContrib") or "").strip():
-        er.append("Lipsa nume contribuabil (numeContrib).")
+        er.append("Lipsă nume contribuabil (numeContrib).")
     if not _cnp_valid(manual.get("cif")):
         er.append("CNP contribuabil (cif) invalid (13 cifre + cifra de control).")
     tara = str(manual.get("taraContrib") or "RO").strip().upper()
     if tara == "RO" and not str(manual.get("judetContrib") or "").strip():
-        er.append("Daca taraContrib=RO atunci judetContrib obligatoriu (DUK regula R21).")
+        er.append("Dacă taraContrib=RO atunci judetContrib obligatoriu (DUK regula R21).")
     iban = str(manual.get("ibanContrib") or "").replace(" ", "").upper()
     if iban and not _IBAN_OK.match(iban):
-        er.append("ibanContrib invalid - astept RO + 22 caractere majuscule (24 total).")
+        er.append("ibanContrib invalid - aștept RO + 22 caractere majuscule (24 total).")
     try:
         cod = int(manual.get("exceptare"))
     except (TypeError, ValueError):
@@ -133,19 +133,19 @@ def erori_generare(prof, manual):
         er.append("Cod exceptare (exceptare) obligatoriu, unul din %s." % (COD_EXCEPTARE,))
     st = str(manual.get("statAsigurare") or "").strip().upper()
     if not st:
-        er.append("statAsigurare obligatoriu (stat de asigurare, cod tara).")
+        er.append("statAsigurare obligatoriu (stat de asigurare, cod țară).")
     elif st == "RO":
-        er.append("statAsigurare trebuie sa fie diferit de RO (DUK regula R36).")
+        er.append("statAsigurare trebuie să fie diferit de RO (DUK regula R36).")
     di, tdi = _data(manual.get("dataInceput"))
     ds, tds = _data(manual.get("dataSfarsit"))
     if not di:
-        er.append("dataInceput lipsa/invalida (astept YYYY-MM-DD sau dd.MM.yyyy).")
+        er.append("dataInceput lipsă/invalidă (aștept YYYY-MM-DD sau dd.MM.yyyy).")
     if not ds:
-        er.append("dataSfarsit lipsa/invalida (astept YYYY-MM-DD sau dd.MM.yyyy).")
+        er.append("dataSfarsit lipsă/invalidă (aștept YYYY-MM-DD sau dd.MM.yyyy).")
     if tdi and tds and tdi >= tds:
-        er.append("dataInceput trebuie sa fie mai mica decat dataSfarsit (DUK regula R36).")
+        er.append("dataInceput trebuie să fie mai mica decat dataSfarsit (DUK regula R36).")
     if not _data(manual.get("dataExceptare"))[0]:
-        er.append("dataExceptare obligatorie/invalida (astept YYYY-MM-DD sau dd.MM.yyyy).")
+        er.append("dataExceptare obligatorie/invalidă (aștept YYYY-MM-DD sau dd.MM.yyyy).")
     if not str(manual.get("documente") or "").strip():
         er.append("documente obligatoriu (documentele justificative ale exceptarii).")
     if int(manual.get("imputernicit") or 0) == 1:

@@ -87,38 +87,38 @@ def erori_generare(prof, an, manual):
     d = _declarant(prof, manual)
     for c in ("nume_declar", "prenume_declar"):
         if not str(d.get(c) or "").strip():
-            er.append("LIPSA %s (declarant/titular obligatoriu)." % c)
+            er.append("LIPSĂ %s (declarant/titular obligatoriu)." % c)
     if not _cif(manual.get("cif")):
         er.append("D221 cere cif (CNP/NIF contribuabil).")
     if not str(manual.get("nume_a") or "").strip():
-        er.append("LIPSA nume_a (nume+prenume / denumire contribuabil sau asociere).")
+        er.append("LIPSĂ nume_a (nume+prenume / denumire contribuabil sau asociere).")
     if not str(manual.get("adresa_a") or "").strip():
-        er.append("LIPSA adresa_a.")
+        er.append("LIPSĂ adresa_a.")
     forma = str(manual.get("forma_org") or "")
     if forma not in {"1", "2"}:
-        er.append("forma_org invalid (1=individual / 2=asociere fara PJ).")
+        er.append("forma_org invalid (1=individual / 2=asociere fără PJ).")
     activitati = manual.get("activitati") or []
     if not activitati:
-        er.append("D221 cere cel putin o activitate (activitati[]).")
+        er.append("D221 cere cel puțin o activitate (activități[]).")
     locuri = []
     for i, a in enumerate(activitati, 1):
         if not str(a.get("judet") or "").strip():
-            er.append("Activitate %d: lipsa judet." % i)
+            er.append("Activitate %d: lipsă județ." % i)
         loc = str(a.get("localitate") or "").strip()
         if not loc:
-            er.append("Activitate %d: lipsa localitate." % i)
+            er.append("Activitate %d: lipsă localitate." % i)
         else:
             locuri.append(loc)
         if str(a.get("optiune") or "0") not in {"0", "1"}:
-            er.append("Activitate %d: optiune invalida (0/1)." % i)
+            er.append("Activitate %d: optiune invalidă (0/1)." % i)
         produse = a.get("produse") or []
         if not produse:
-            er.append("Activitate %d: cere cel putin un produs (produse[])." % i)
+            er.append("Activitate %d: cere cel puțin un produs (produse[])." % i)
         coduri = []
         for j, p in enumerate(produse, 1):
             cp = str(p.get("codp") or "").strip()
             if not cp:
-                er.append("Activitate %d produs %d: lipsa codp." % (i, j))
+                er.append("Activitate %d produs %d: lipsă codp." % (i, j))
             else:
                 coduri.append(cp)
             try:
@@ -127,28 +127,28 @@ def erori_generare(prof, an, manual):
             except Exception:
                 er.append("Activitate %d produs %d: prod1 invalid." % (i, j))
         if len(coduri) != len(set(coduri)):
-            er.append("Activitate %d: codp duplicat (unic in cadrul unei activitati)." % i)
+            er.append("Activitate %d: codp duplicat (unic în cadrul unei activități)." % i)
     if len(locuri) != len(set(locuri)):
-        er.append("localitate duplicata intre activitati (trebuie unica).")
+        er.append("localitate duplicata intre activități (trebuie unica).")
     asociati = manual.get("asociati") or []
     if forma == "1" and asociati:
-        er.append("forma_org=1 (individual): nu se completeaza asociati.")
+        er.append("forma_org=1 (individual): nu se completează asociati.")
     if forma == "2":
         if len(asociati) < 2:
-            er.append("forma_org=2 (asociere): cere cel putin 2 asociati.")
+            er.append("forma_org=2 (asociere): cere cel puțin 2 asociati.")
         if not str(manual.get("nr_contr") or "").strip() or not str(manual.get("data_contr") or "").strip():
-            er.append("forma_org=2: nr_contr si data_contr obligatorii.")
+            er.append("forma_org=2: nr_contr și data_contr obligatorii.")
     cifuri, suma = [], Decimal(0)
     for i, a in enumerate(asociati, 1):
         if not str(a.get("nume_d") or "").strip():
-            er.append("Asociat %d: lipsa nume_d." % i)
+            er.append("Asociat %d: lipsă nume_d." % i)
         cf = _cif(a.get("cif_d"))
         if len(cf) != 13:
             er.append("Asociat %d: cif_d trebuie CNP 13 cifre." % i)
         else:
             cifuri.append(cf)
         if not str(a.get("dom_d") or "").strip():
-            er.append("Asociat %d: lipsa dom_d." % i)
+            er.append("Asociat %d: lipsă dom_d." % i)
         try:
             cota = _cota(a.get("cota_d") or 0)
         except Exception:
@@ -157,13 +157,13 @@ def erori_generare(prof, an, manual):
         if not (Decimal(0) < cota < Decimal(100)):
             er.append("Asociat %d: cota_d %s invalida (0<cota_d<100)." % (i, a.get("cota_d")))
     if asociati and suma != Decimal(100):
-        er.append("Suma cotelor de distribuire (%s) trebuie sa fie 100." % suma)
+        er.append("Suma cotelor de distribuire (%s) trebuie să fie 100." % suma)
     if len(cifuri) != len(set(cifuri)):
-        er.append("Asociatii au cif_d duplicat.")
+        er.append("Asociații au cif_d duplicat.")
     # bloc imputernicit all-or-nothing
     imp = [str((manual.get("imputernicit") or {}).get(k) or "").strip() for k in ("den_r", "cif_r", "adresa_r")]
     if any(imp) and not all(imp):
-        er.append("Imputernicit: den_r, cif_r si adresa_r trebuie completate impreuna (all-or-nothing).")
+        er.append("Imputernicit: den_r, cif_r și adresa_r trebuie completate impreuna (all-or-nothing).")
     return er
 
 

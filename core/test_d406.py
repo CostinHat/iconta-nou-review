@@ -16,7 +16,7 @@ def test_plan_oficial_citeste_nomenclatorul_norma_A():
     oficial = _d406.plan_oficial("A")
     assert len(oficial) > 100, "plan_oficial('A') GOL/mic (%d) - nomenclatorul nu e citit (cale?)" % len(oficial)
     assert "731" not in oficial, "731 (ONG) nu apartine normei comerciale 'A'"
-    assert "704" in oficial, "704 (venituri servicii) trebuie sa fie in norma comerciala 'A'"
+    assert "704" in oficial, "704 (venituri servicii) trebuie să fie în norma comerciala 'A'"
 
 
 
@@ -77,7 +77,7 @@ def test_conturi_straine_de_norma_sunt_semnalate_nu_excluse_tacit():
             _xml, res = _d406mod.genereaza(conn, SCHEMA, 2026, 6)
             av = " ".join(res.avertismente)
             assert "731" in av and "EXCLUS" in av.upper(), (
-                "contul strain 731 (nu apartine normei 'A') trebuie SEMNALAT in avertisment, nu exclus tacit; "
+                "contul străin 731 (nu apartine normei 'A') trebuie SEMNALAT în avertisment, nu exclus tacit; "
                 "avertismente: %s" % res.avertismente)
         finally:
             conn.rollback()
@@ -101,7 +101,7 @@ def test_uom_unece_mapare_coduri_valide():
     assert "BUC" not in set(UOM_UNECE.values())
     # toate valorile sunt coduri UN/ECE (2-3 caractere alfanumerice majuscule)
     for cod in set(UOM_UNECE.values()):
-        assert re.fullmatch(r"[A-Z0-9]{2,3}", cod), "cod UoM ne-UNECE in UOM_UNECE: %r" % cod
+        assert re.fullmatch(r"[A-Z0-9]{2,3}", cod), "cod UoM ne-UNECE în UOM_UNECE: %r" % cod
 
 
 def test_movementtype_nomenclator_oficial():
@@ -122,18 +122,18 @@ def test_movementtype_nomenclator_oficial():
         "10": "Achizitie", "20": "Productie", "30": "Vanzare",
         "40": "Retur produse vandute", "50": "Retur produse achizitionate",
         "60": "Reduceri comerciale primite", "70": "Consum", "80": "Transfer intern",
-        "90": "Cheltuieli ulterioare incluse in valoarea de intrare",
-        "100": "Diferente de pret pozitive", "101": "Diferente de pret negative",
+        "90": "Cheltuieli ulterioare incluse în valoarea de intrare",
+        "100": "Diferente de preț pozitive", "101": "Diferente de preț negative",
         "110": "Plus de inventar", "120": "Minus de inventar",
         "130": "Ajustari pentru deprecierea stocurilor",
         "140": "Reluari de ajustari pentru deprecierea stocurilor",
         "150": "Bunuri acordate cu titlu gratuit", "160": "Bunuri degradate",
-        "170": "Bunuri expirate", "180": "Alte tranzactii",
+        "170": "Bunuri expirate", "180": "Alte tranzacții",
     }
     # setul de coduri = exact cele 19 oficiale (nici lipsa -> miscare nereprezentabila, nici in plus
     # -> valoare respinsa fatal de validator, nota 5)
     assert set(MISCARI_STOC) == set(OFICIAL), (
-        "MISCARI_STOC difera de nomenclatorul oficial: lipsa %r / in plus %r" % (
+        "MISCARI_STOC difera de nomenclatorul oficial: lipsă %r / în plus %r" % (
             sorted(set(OFICIAL) - set(MISCARI_STOC)), sorted(set(MISCARI_STOC) - set(OFICIAL))))
     # etichetele RO coincid (eticheta informativa in rapoartele ANAF, dar sursa unica = foaia oficiala)
     assert MISCARI_STOC == OFICIAL
@@ -181,7 +181,7 @@ def test_baserate_encoding_pro_rata_fractie():
                         cote_tva=d406.COTE_TVA_STANDARD)
     xml = "\n".join(d406._masterfiles(res))
     emise = re.findall(r"<BaseRate>([^<]*)</BaseRate>", xml)
-    assert emise, "niciun BaseRate emis in MasterFiles"
+    assert emise, "niciun BaseRate emis în MasterFiles"
     assert set(emise) == {str(BASE_RATE)}, "BaseRate emis divergent de BASE_RATE: %r" % sorted(set(emise))
     # fiecare valoare emisa respecta SAFBaseRate
     for v in emise:
@@ -349,9 +349,9 @@ def test_genereaza_emite_liniile_reale_din_factura_linii():
                 "kg -> UN/ECE KGM, cantitate 1000 reala, descriere fidela; got %r" % (l0,))
             assert l0.valoare == Decimal("5000") and l0.tva_procent == Decimal("21") and l0.tva_suma == Decimal("1050")
             # (2) ajung FIDEL in XML (nu 1 buc x net)
-            assert "<Quantity>1000.00</Quantity>" in xml, "cantitatea reala 1000 lipseste din XML"
+            assert "<Quantity>1000.00</Quantity>" in xml, "cantitatea reala 1000 lipsește din XML"
             assert "<InvoiceUOM>KGM</InvoiceUOM>" in xml, "UM reala (kg->KGM) lipseste din XML"
-            assert "<Description>Deseuri fier vechi</Description>" in xml, "descrierea reala lipseste din XML"
+            assert "<Description>Deseuri fier vechi</Description>" in xml, "descrierea reala lipsește din XML"
             assert xml.count("<InvoiceLine>") == 2, "doua linii reale in <Invoice>, nu o linie sintetica"
         finally:
             conn.rollback()

@@ -394,25 +394,25 @@ def valideaza_cerere(tip, body, per_efectiv=None):
     if tip == "d207":
         m = body.get("manual")
         if not isinstance(m, dict) or not m.get("beneficiari"):
-            erori.append("d207 cere `manual.beneficiari` (lista de beneficiari nerezidenti)")
+            erori.append("d207 cere `manual.beneficiari` (lista de beneficiari nerezidenți)")
 
     # d104 (distribuire venituri asocieri, MANUALA trimestriala): cere trim + manual.asociati
     if tip == "d104":
         m = body.get("manual")
         if not isinstance(m, dict) or not m.get("asociati"):
-            erori.append("d104 cere `manual.asociati` (asociatii asocierii) + `manual.profit_pierd`")
+            erori.append("d104 cere `manual.asociati` (asociații asocierii) + `manual.profit_pierd`")
 
     # d107 (informativa sponsorizari/mecenat/burse, MANUALA): cere `manual` cu lista de beneficiari
     if tip == "d107":
         m = body.get("manual")
         if not isinstance(m, dict) or not m.get("beneficiari"):
-            erori.append("d107 cere `manual.beneficiari` (beneficiari sponsorizari/mecenat/burse)")
+            erori.append("d107 cere `manual.beneficiari` (beneficiari sponsorizări/mecenat/burse)")
 
     # d110 (regularizare impozit retinut la sursa, MANUALA lunara): cere manual.obligatii
     if tip == "d110":
         m = body.get("manual")
         if not isinstance(m, dict) or not m.get("obligatii"):
-            erori.append("d110 cere `manual.obligatii` (obligatii de regularizat: cod_oblig/suma_dat/suma_rest)")
+            erori.append("d110 cere `manual.obligatii` (obligații de regularizat: cod_oblig/suma_dat/suma_rest)")
 
     # d220 (venit estimat PF, MANUALA anuala): cere manual.cif (CNP) + manual.activitate
     if tip == "d220":
@@ -424,13 +424,13 @@ def valideaza_cerere(tip, body, per_efectiv=None):
     if tip == "d221":
         m = body.get("manual")
         if not isinstance(m, dict) or not m.get("cif") or not m.get("activitati"):
-            erori.append("d221 cere `manual.cif` (CNP) + `manual.activitati` (activitati agricole)")
+            erori.append("d221 cere `manual.cif` (CNP) + `manual.activitati` (activități agricole)")
 
     # d223 (venituri estimate asocieri, MANUALA anuala): cere manual.activitate + asociati
     if tip == "d223":
         m = body.get("manual")
         if not isinstance(m, dict) or not m.get("activitate") or not m.get("asociati"):
-            erori.append("d223 cere `manual.activitate` + `manual.asociati` (asocierea + asociatii)")
+            erori.append("d223 cere `manual.activitate` + `manual.asociati` (asocierea + asociații)")
 
     # d230 (redirectionare 3,5%, MANUALA): cere `manual` (contribuabil + beneficiar ONG)
     if tip == "d230":
@@ -441,18 +441,18 @@ def valideaza_cerere(tip, body, per_efectiv=None):
     if tip == "d307":
         m = body.get("manual")
         if not isinstance(m, dict) or not m.get("operatiuni"):
-            erori.append("d307 cere `manual.operatiuni` (operatiuni de ajustare TVA, tip A/L/C)")
+            erori.append("d307 cere `manual.operatiuni` (operațiuni de ajustare TVA, tip A/L/C)")
 
     # d311 (TVA situatii speciale, MANUALA): cere `manual` (bazele/TVA pe situatii)
     if tip == "d311":
         if not isinstance(body.get("manual"), dict) or not body.get("manual"):
-            erori.append("d311 cere `manual` (bazele/TVA pe situatii + Data_A + d_anul1/d_anul2)")
+            erori.append("d311 cere `manual` (bazele/TVA pe situații + Data_A + d_anul1/d_anul2)")
 
     # d710 (rectificativa): cere lista de corectii `obligatii` [{cod_oblig, suma_dat_i, suma_dat_c}]
     if tip == "d710":
         obl = body.get("obligatii")
         if not isinstance(obl, list) or not obl:
-            erori.append("d710 cere `obligatii` (lista de corectii, nevida)")
+            erori.append("d710 cere `obligații` (lista de corecții, nevidă)")
 
     return erori
 

@@ -38,16 +38,16 @@ def test_baseline_certificat_in_limite_emite():
 
 @pytest.mark.parametrize("camp,valoare,eticheta,limita", [
     ("serie", "ABCDEF", "D_1 (serie)", 5),            # 6 > 5
-    ("numar", "12345678901", "D_2 (numar)", 10),      # 11 > 10
+    ("numar", "12345678901", "D_2 (număr)", 10),      # 11 > 10
     ("diagnostic", "ABCD", "D_23 (diagnostic)", 3),   # 4 > 3
 ])
 def test_cert_overflow_blocheaza_cu_camp_si_limita(camp, valoare, eticheta, limita):
     with pytest.raises(ValueError) as ei:
         d112._d112_genereaza(_prof(), [_sal_cm(**{camp: valoare})], 2026, 8)
     msg = str(ei.value)
-    assert eticheta in msg, "trebuie sa numeasca campul %s: %s" % (eticheta, msg)
-    assert "max %d" % limita in msg, "trebuie sa dea limita: %s" % msg
-    assert "1850315400125" in msg, "trebuie sa numeasca salariatul: %s" % msg
+    assert eticheta in msg, "trebuie să numeasca campul %s: %s" % (eticheta, msg)
+    assert "max %d" % limita in msg, "trebuie să dea limita: %s" % msg
+    assert "1850315400125" in msg, "trebuie să numeasca salariatul: %s" % msg
 
 
 def test_diagnostic_lung_nu_e_trunchiat_tacit():

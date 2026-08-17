@@ -118,19 +118,19 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not (2 <= len(_cif(manual.get("cif"))) <= 10):
-        er.append("CIF firma (cif) invalid - astept 2..10 cifre.")
+        er.append("CIF firma (cif) invalid - aștept 2..10 cifre.")
     if not str(manual.get("den") or "").strip():
-        er.append("Lipsa denumire contribuabil (den).")
+        er.append("Lipsă denumire contribuabil (den).")
     if not str(manual.get("adresa") or "").strip():
-        er.append("Lipsa adresa contribuabil (adresa).")
+        er.append("Lipsă adresa contribuabil (adresa).")
     if not _cif(manual.get("caen")):
-        er.append("Lipsa cod CAEN (caen).")
+        er.append("Lipsă cod CAEN (caen).")
     if not str(manual.get("nume_declar") or "").strip():
-        er.append("Lipsa nume declarant (nume_declar).")
+        er.append("Lipsă nume declarant (nume_declar).")
     if not str(manual.get("prenume_declar") or "").strip():
-        er.append("Lipsa prenume declarant (prenume_declar).")
+        er.append("Lipsă prenume declarant (prenume_declar).")
     if not str(manual.get("functie_declar") or "").strip():
-        er.append("Lipsa functie declarant (functie_declar).")
+        er.append("Lipsă funcție declarant (functie_declar).")
     d_rec = str(manual.get("d_rec", "0")).strip()
     if d_rec not in ("0", "1"):
         er.append("d_rec (tip rectificativa) trebuie 0 sau 1.")

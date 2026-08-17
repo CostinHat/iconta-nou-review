@@ -35,8 +35,8 @@ def test_livrare_ic_bunuri_ruteaza_R1():
     f = {"directie": "emisa", "tert_tara": "DE", "linii": [(1, 8000, 0)]}
     res = calcul_d300(_prof(), Perioada(2026, luna=8), [f])
     assert res.R.get("R1_1") == 8000, "livrare IC bunuri catre UE -> rd.1 (R1_1)"
-    assert "R26_1" not in res.R, "livrarea IC NU merge la R26 (achizitii scutite)"
-    assert "R9_1" not in res.R, "livrarea IC 0% NU cade in colectat intern (rd.9)"
+    assert "R26_1" not in res.R, "livrarea IC NU merge la R26 (achiziții scutite)"
+    assert "R9_1" not in res.R, "livrarea IC 0% NU cade în colectat intern (rd.9)"
 
 
 def test_achizitie_ic_bunuri_R5_oglinda_R18():
@@ -47,7 +47,7 @@ def test_achizitie_ic_bunuri_R5_oglinda_R18():
     res = calcul_d300(_prof(), Perioada(2026, luna=6), [f])
     assert (res.R.get("R5_1"), res.R.get("R5_2")) == (15000, 3150), "rd.5 colectat (15000 x 21%)"
     assert (res.R.get("R18_1"), res.R.get("R18_2")) == (15000, 3150), "rd.18 deductibil"
-    assert res.R["R18_1"] == res.R["R5_1"] and res.R["R18_2"] == res.R["R5_2"], "oglinda net zero R18==R5"
+    assert res.R["R18_1"] == res.R["R5_1"] and res.R["R18_2"] == res.R["R5_2"], "oglindă net zero R18==R5"
     assert res.tva_de_plata == 0 and res.tva_de_recuperat == 0, "autolichidare -> impact zero"
 
 
@@ -58,7 +58,7 @@ def test_export_non_ue_ruteaza_R14():
     res = calcul_d300(_prof(), Perioada(2026, luna=9), [f])
     assert res.R.get("R14_1") == 6000, "export non-UE -> rd.14"
     assert "R26_1" not in res.R, "exportul NU merge la R26"
-    assert "R9_1" not in res.R, "exportul NU cade in colectat intern (rd.9)"
+    assert "R9_1" not in res.R, "exportul NU cade în colectat intern (rd.9)"
 
 
 def test_discriminare_pe_tara_RO_zero_nu_autoclasifica():
@@ -69,9 +69,9 @@ def test_discriminare_pe_tara_RO_zero_nu_autoclasifica():
     res = calcul_d300(_prof(), Perioada(2026, luna=8), [f])
     assert "R1_1" not in res.R, "livrarea 0% interna NU e livrare IC (rd.1)"
     assert "R14_1" not in res.R, "livrarea 0% interna NU e export (rd.14)"
-    assert "R9_1" not in res.R, "0% NU cade in colectat cu cota"
+    assert "R9_1" not in res.R, "0% NU cade în colectat cu cota"
     assert any("R14/R15" in a for a in res.avertismente), \
-        "livrarea 0% interna se semnaleaza per-linie pentru clasificare manuala R14/R15"
+        "livrarea 0% interna se semnaleaza per-linie pentru clasificare manuală R14/R15"
 
 
 def test_antidubla_numarare_ic_livrare_manual_ridica():
@@ -81,7 +81,7 @@ def test_antidubla_numarare_ic_livrare_manual_ridica():
     f = {"directie": "emisa", "tert_tara": "DE", "linii": [(1, 8000, 0)]}
     with pytest.raises(ValueError) as ei:
         calcul_d300(_prof(), Perioada(2026, luna=8), [f], {"R1_1": 8000})
-    assert "dubla numarare" in str(ei.value), "mesaj vizibil de dubla numarare pe rd.1"
+    assert "dublă numărare" in str(ei.value), "mesaj vizibil de dublă numărare pe rd.1"
 
 
 # ============================================================
@@ -101,10 +101,10 @@ def test_reclas_emisa_serviciu_P_muta_R1_la_R3():
     recl = {("emisa",) + _KEY_DE: "P"}
     res = calcul_d300(_prof(), Perioada(2026, luna=8), [f], reclasificari=recl)
     assert res.R.get("R3_1") == 8000, "prestare serviciu IC -> rd.3 (R3_1)"
-    assert res.R.get("R3_1_1") == 8000, "sub-rand rd.3.1 (din care servicii IC)"
-    assert "R1_1" not in res.R, "MUTAT nu adaugat: livrarea de bunuri (rd.1) NU mai apare"
+    assert res.R.get("R3_1_1") == 8000, "sub-rând rd.3.1 (din care servicii IC)"
+    assert "R1_1" not in res.R, "MUTAT nu adăugat: livrarea de bunuri (rd.1) NU mai apare"
     # rd.3 e 0% -> nu adauga TVA colectata (R17_2 nu creste din serviciu emis)
-    assert "R3_2" not in res.R, "rd.3 e 0% (col.2 nu exista)"
+    assert "R3_2" not in res.R, "rd.3 e 0% (col.2 nu există)"
 
 
 def test_reclas_primita_serviciu_S_muta_R5R18_la_R7R20_oglinda():
@@ -115,12 +115,12 @@ def test_reclas_primita_serviciu_S_muta_R5R18_la_R7R20_oglinda():
     recl = {("primita",) + _KEY_DE: "S"}
     res = calcul_d300(_prof(), Perioada(2026, luna=6), [f], reclasificari=recl)
     assert (res.R.get("R7_1"), res.R.get("R7_2")) == (15000, 3150), "rd.7 colectat (15000 x 21%)"
-    assert (res.R.get("R7_1_1"), res.R.get("R7_1_2")) == (15000, 3150), "sub-rand rd.7.1 servicii IC"
-    assert (res.R.get("R20_1"), res.R.get("R20_2")) == (15000, 3150), "oglinda rd.20 deductibil"
-    assert (res.R.get("R20_1_1"), res.R.get("R20_1_2")) == (15000, 3150), "sub-rand rd.20.1 (oglinda rd.7.1)"
+    assert (res.R.get("R7_1_1"), res.R.get("R7_1_2")) == (15000, 3150), "sub-rând rd.7.1 servicii IC"
+    assert (res.R.get("R20_1"), res.R.get("R20_2")) == (15000, 3150), "oglindă rd.20 deductibil"
+    assert (res.R.get("R20_1_1"), res.R.get("R20_1_2")) == (15000, 3150), "sub-rând rd.20.1 (oglindă rd.7.1)"
     assert res.R["R20_1"] == res.R["R7_1"] and res.R["R20_2"] == res.R["R7_2"], "DUK V_13/V_14 R20==R7"
     assert res.R["R20_1_1"] == res.R["R7_1_1"] and res.R["R20_1_2"] == res.R["R7_1_2"], "DUK V_15/V_16 R20.1==R7.1"
-    assert "R5_1" not in res.R and "R18_1" not in res.R, "MUTAT nu adaugat: rd.5/rd.18 (bunuri) absente"
+    assert "R5_1" not in res.R and "R18_1" not in res.R, "MUTAT nu adăugat: rd.5/rd.18 (bunuri) absente"
     assert res.tva_de_plata == 0 and res.tva_de_recuperat == 0, "net zero (colectat==deductibil)"
 
 
@@ -141,7 +141,7 @@ def test_reclas_antidubla_serviciu_S_plus_manual_R7_ridica():
     recl = {("primita",) + _KEY_DE: "S"}
     with pytest.raises(ValueError) as ei:
         calcul_d300(_prof(), Perioada(2026, luna=6), [f], {"R7_1": 15000}, reclasificari=recl)
-    assert "dubla numarare" in str(ei.value), "mesaj vizibil de dubla numarare pe rd.7"
+    assert "dublă numărare" in str(ei.value), "mesaj vizibil de dublă numărare pe rd.7"
 
 
 def test_reclas_absenta_pastreaza_L_A_actual():
@@ -262,12 +262,12 @@ def test_avans_fereastra_pe_emitere_nu_reapare(conn_b1):
     prof, fac_iul = _d300mod.pull(conn_b1, _SCHEMA, Perioada(2026, luna=7))
     res_iul = calcul_d300(prof, Perioada(2026, luna=7), fac_iul)
     assert (res_iul.R.get("R9_1"), res_iul.R.get("R9_2")) == (1000, 210), \
-        "avansul e exigibil in iulie (la emitere)"
+        "avansul e exigibil în iulie (la emitere)"
     prof, fac_oct = _d300mod.pull(conn_b1, _SCHEMA, Perioada(2026, luna=10))
     res_oct = calcul_d300(prof, Perioada(2026, luna=10), fac_oct)
     # octombrie contine DOAR livrarea normala (2000/420), NU si avansul (altfel 3000/630).
     assert (res_oct.R.get("R9_1"), res_oct.R.get("R9_2")) == (2000, 420), \
-        "avansul NU reapare in octombrie la faptul generator (dubla numarare)"
+        "avansul NU reapare în octombrie la faptul generator (dublă numărare)"
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -283,7 +283,7 @@ def test_deducere_amanata_furnizor_la_incasare(conn_b1):
     prof, fac_dec = _d300mod.pull(conn_b1, _SCHEMA, Perioada(2026, luna=12))
     res_dec = calcul_d300(prof, Perioada(2026, luna=12), fac_dec)
     assert (res_dec.R.get("R22_1"), res_dec.R.get("R22_2")) == (2000, 420), \
-        "deducerea devine exigibila la plata (decembrie)"
+        "deducerea devine exigibila la plată (decembrie)"
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -303,7 +303,7 @@ def test_persistenta_manual_paritate_preview_depunere(conn_b1):
         per = Perioada(an, luna=luna)
         xml_db, res_db = _d300mod.genereaza(conn_b1, _SCHEMA, per, manual=None)
         assert (res_db.R.get("R16_1"), res_db.R.get("R16_2")) == (1000, 210), \
-            "randul manual persistat e incarcat din DB pe calea de depunere (manual=None)"
+            "randul manual persistat e încărcat din DB pe calea de depunere (manual=None)"
         xml_par, _res_par = _d300mod.genereaza(conn_b1, _SCHEMA, per, manual={"R16_1": 1000, "R16_2": 210})
         assert xml_db == xml_par, "paritate preview<->depunere: XML din DB == XML din param"
     finally:
@@ -404,11 +404,11 @@ def test_recon_P_emisa_serviciu_d300_R3_egal_d390_bazaP(conn_recon):
         r3 = _d300_res(conn_recon)
         r9 = _d390_res(conn_recon)
         assert r3.R.get("R3_1") == 4000, "D300 rd.3 (R3_1) baza prestare servicii IC"
-        assert r3.R.get("R3_1_1") == 4000, "D300 sub-rand rd.3.1 (din care servicii IC)"
-        assert r9.rezumat["P"] == 4000, "D390 bazaP prestare servicii IC (aceeasi operatiune)"
+        assert r3.R.get("R3_1_1") == 4000, "D300 sub-rând rd.3.1 (din care servicii IC)"
+        assert r9.rezumat["P"] == 4000, "D390 bazaP prestare servicii IC (aceeași operațiune)"
         assert r3.R["R3_1"] == r9.rezumat["P"], "RECONCILIERE: D300 R3_1 == D390 bazaP"
-        assert "R1_1" not in r3.R, "reaparitie auto IMPOSIBILA: R1_1 (bunuri) absent in D300 (mutat, nu adaugat)"
-        assert r9.rezumat["L"] == 0, "operatiunea NU e L (bunuri) in D390 (mutata la P)"
+        assert "R1_1" not in r3.R, "reaparitie auto IMPOSIBILA: R1_1 (bunuri) absent în D300 (mutat, nu adăugat)"
+        assert r9.rezumat["L"] == 0, "operatiunea NU e L (bunuri) în D390 (mutata la P)"
     finally:
         _clear_recl(conn_recon)
 
@@ -423,11 +423,11 @@ def test_recon_S_primita_serviciu_d300_R7_egal_d390_bazaS(conn_recon):
         r3 = _d300_res(conn_recon)
         r9 = _d390_res(conn_recon)
         assert (r3.R.get("R7_1"), r3.R.get("R7_2")) == (9000, 1890), "D300 rd.7 colectat (9000 x 21%)"
-        assert (r3.R.get("R20_1"), r3.R.get("R20_2")) == (9000, 1890), "D300 oglinda rd.20 deductibil (net zero)"
-        assert r9.rezumat["S"] == 9000, "D390 bazaS achizitie servicii IC (aceeasi operatiune)"
+        assert (r3.R.get("R20_1"), r3.R.get("R20_2")) == (9000, 1890), "D300 oglindă rd.20 deductibil (net zero)"
+        assert r9.rezumat["S"] == 9000, "D390 bazaS achiziție servicii IC (aceeași operațiune)"
         assert r3.R["R7_1"] == r9.rezumat["S"], "RECONCILIERE: D300 R7_1 == D390 bazaS"
         assert "R5_1" not in r3.R and "R18_1" not in r3.R, "reaparitie auto IMPOSIBILA: rd.5/rd.18 absente (mutat)"
-        assert r9.rezumat["A"] == 0, "operatiunea NU e A (bunuri) in D390 (mutata la S)"
+        assert r9.rezumat["A"] == 0, "operatiunea NU e A (bunuri) în D390 (mutata la S)"
     finally:
         _clear_recl(conn_recon)
 
@@ -453,7 +453,7 @@ def test_recon_sursa_unica_o_scriere_muta_ambele(conn_recon):
         r9 = _d390_res(conn_recon)
         assert r3.R.get("R3_1") == 4000 and r3.R.get("R7_1") == 9000, "cu reclasificare -> D300 citeste sursa unica (rd.3/rd.7)"
         assert r9.rezumat["P"] == 4000 and r9.rezumat["S"] == 9000, "cu reclasificare -> D390 citeste ACEEASI sursa (P/S)"
-        assert "R1_1" not in r3.R and "R5_1" not in r3.R, "MUTAT nu adaugat in D300 (rd.1/rd.5 dispar)"
-        assert r9.rezumat["L"] == 0 and r9.rezumat["A"] == 0, "MUTAT nu adaugat in D390 (L/A dispar)"
+        assert "R1_1" not in r3.R and "R5_1" not in r3.R, "MUTAT nu adăugat în D300 (rd.1/rd.5 dispar)"
+        assert r9.rezumat["L"] == 0 and r9.rezumat["A"] == 0, "MUTAT nu adăugat în D390 (L/A dispar)"
     finally:
         _clear_recl(conn_recon)

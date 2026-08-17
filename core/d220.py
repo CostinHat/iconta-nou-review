@@ -105,11 +105,11 @@ def erori_generare(prof, manual):
     d = _declarant(prof, manual)
     for c in ("nume_declar", "prenume_declar"):
         if not str(d.get(c) or "").strip():
-            er.append("LIPSA %s (declarant/titular obligatoriu)." % c)
+            er.append("LIPSĂ %s (declarant/titular obligatoriu)." % c)
     if not _cif(manual.get("cif")):
         er.append("D220 cere cif (CNP persoana fizica).")
     if not str(manual.get("nume") or "").strip():
-        er.append("LIPSA nume contribuabil (nume+prenume PF).")
+        er.append("LIPSĂ nume contribuabil (nume+prenume PF).")
     act = manual.get("activitate")
     if not isinstance(act, dict) or not act:
         er.append("D220 cere `manual.activitate` (categ_venit, det_venit, forma_org, venit_brut, cheltuieli).")
@@ -124,7 +124,7 @@ def erori_generare(prof, manual):
     if _i(act.get("venit_brut")) < 0 or _i(act.get("cheltuieli")) < 0:
         er.append("activitate: venit_brut/cheltuieli trebuie >= 0.")
     if str(act.get("judet") or "") == "40" and not str(act.get("sector") or "").strip():
-        er.append("activitate: sector obligatoriu pentru judet=40 (Bucuresti).")
+        er.append("activitate: sector obligatoriu pentru județ=40 (București).")
     # cazare turistica: fisa cu camere = nr_camere
     fisa = manual.get("fisa")
     if cv == "7" and str(act.get("contracte") or "") == "3" and str(act.get("det_venit") or "") == "3":
@@ -133,7 +133,7 @@ def erori_generare(prof, manual):
         else:
             nrc = int(act.get("nr_camere") or 0)
             if nrc and len(fisa.get("camere") or []) != nrc:
-                er.append("fisa: numarul de camere (%d) trebuie sa fie egal cu nr_camere (%d)." %
+                er.append("fisa: numărul de camere (%d) trebuie să fie egal cu nr_camere (%d)." %
                           (len(fisa.get("camere")), nrc))
     return er
 

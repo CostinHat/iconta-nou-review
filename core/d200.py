@@ -155,29 +155,29 @@ def erori_generare(prof, manual):
     if not _cnp_valid(manual.get("cif_i")):
         er.append("CNP contribuabil (cif_i) invalid (13 cifre + cifra de control).")
     if not str(manual.get("den_i") or "").strip():
-        er.append("Lipsa nume contribuabil (den_i).")
+        er.append("Lipsă nume contribuabil (den_i).")
     if not str(manual.get("adresa_i") or "").strip():
-        er.append("Lipsa adresa contribuabil (adresa_i).")
+        er.append("Lipsă adresa contribuabil (adresa_i).")
     cont = str(manual.get("cont_c") or "").replace(" ", "").upper()
     if cont and not _IBAN_OK.match(cont):
-        er.append("IBAN (cont_c) invalid - astept RO + 22 caractere.")
+        er.append("IBAN (cont_c) invalid - aștept RO + 22 caractere.")
     sec = manual.get("sectiuni") or []
     if not sec:
-        er.append("D200 cere cel putin o sectiune de venit (sectiuni[]).")
+        er.append("D200 cere cel puțin o sectiune de venit (sectiuni[]).")
     for i, s in enumerate(sec, 1):
         c = int(_cif(s.get("categ_venit")) or 0)
         if not (1 <= c <= 14):
-            er.append("Sectiunea %d: categ_venit %r invalid (1..14)." % (i, s.get("categ_venit")))
+            er.append("Secțiunea %d: categ_venit %r invalid (1..14)." % (i, s.get("categ_venit")))
             continue
         if c in _CAT_ORGJN_DEN and not str(s.get("den_orgJN") or "").strip():
-            er.append("Sectiunea %d: categ_venit=%d cere den_orgJN (denumire organizator/platitor)." % (i, c))
+            er.append("Secțiunea %d: categ_venit=%d cere den_orgJN (denumire organizator/plătitor)." % (i, c))
         if c in _CAT_ORGJN_CIF and not _cif(s.get("cif_orgJN")):
-            er.append("Sectiunea %d: categ_venit=13 cere cif_orgJN." % i)
+            er.append("Secțiunea %d: categ_venit=13 cere cif_orgJN." % i)
         if c == _CAT_14:
             if _i(s.get("castig")) <= 0 and _i(s.get("pierdere")) <= 0:
-                er.append("Sectiunea %d: categ_venit=14 cere castig>0 sau pierdere>0." % i)
+                er.append("Secțiunea %d: categ_venit=14 cere castig>0 sau pierdere>0." % i)
         if c in _CAT_CG and _i(s.get("castig")) > 0 and _i(s.get("pierdere")) > 0:
-            er.append("Sectiunea %d: categ_venit=%d - castig si pierdere nu pot fi amandoua >0." % (i, c))
+            er.append("Secțiunea %d: categ_venit=%d - castig și pierdere nu pot fi amandoua >0." % (i, c))
     return er
 
 

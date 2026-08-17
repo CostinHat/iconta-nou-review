@@ -33,11 +33,11 @@ def test_tip_zero_nu_devine_tacit_sectiunea_1(monkeypatch):
     monkeypatch.setattr(d301, "pull", lambda conn, schema, perioada: (PROF, [_op(tip=0)]))
     with pytest.raises(ValueError) as ei:
         d301.genereaza(None, "tenant_014", Perioada(2026, luna=8))
-    assert "nu se reclasifica tacit in sectiunea 1" in str(ei.value), str(ei.value)
+    assert "nu se reclasifică tacit în secțiunea 1" in str(ei.value), str(ei.value)
 
 
 def test_valuta_lipsa_nu_devine_tacit_eur(monkeypatch):
     monkeypatch.setattr(d301, "pull", lambda conn, schema, perioada: (PROF, [_op(tip_valuta="")]))
     with pytest.raises(ValueError) as ei:
         d301.genereaza(None, "tenant_014", Perioada(2026, luna=8))
-    assert "nu se completeaza tacit EUR" in str(ei.value), str(ei.value)
+    assert "nu se completează tacit EUR" in str(ei.value), str(ei.value)

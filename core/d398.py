@@ -218,33 +218,33 @@ def erori_generare(prof, manual):
     if moes not in (SCHEME_UE, SCHEME_NONUE, SCHEME_IMP):
         er.append("moes_voes_imp obligatoriu 1 (regim UE) / 2 (regim non-UE) / 3 (regim import).")
     if not _esc(manual.get("name")):
-        er.append("Lipsa denumire contribuabil (name).")
+        er.append("Lipsă denumire contribuabil (name).")
     if not _esc(manual.get("vat_id_no")):
-        er.append("Lipsa cod de identificare TVA (vat_id_no) - DUK regula R10.")
+        er.append("Lipsă cod de identificare TVA (vat_id_no) - DUK regula R10.")
     if _int(manual.get("an_r")) is None:
-        er.append("Lipsa an de raportare (an_r).")
+        er.append("Lipsă an de raportare (an_r).")
     if _int(manual.get("luna_r")) is None:
-        er.append("Lipsa perioada de raportare luna_r - DUK regula R3.")
+        er.append("Lipsă perioada de raportare luna_r - DUK regula R3.")
     if moes == SCHEME_UE and _int(manual.get("e_int")) not in (0, 1):
         er.append("e_int obligatoriu (0/1) cand moes_voes_imp=1 - DUK regula R5.1.")
     ps, pe = _esc(manual.get("period_start_date")), _esc(manual.get("period_end_date"))
     if bool(ps) != bool(pe):
-        er.append("period_start_date si period_end_date simultan nule sau nenule - DUK regula R6.1.")
+        er.append("period_start_date și period_end_date simultan nule sau nenule - DUK regula R6.1.")
     for d, nume in ((ps, "period_start_date"), (pe, "period_end_date")):
         if d and not _DATA_OK.match(d):
-            er.append("%s trebuie in format dd.MM.yyyy." % nume)
+            er.append("%s trebuie în format dd.MM.yyyy." % nume)
 
     state_vazute = set()
     for i, m in enumerate(manual.get("ms") or [], 1):
         stat = _esc(m.get("mscon_state")).upper()
         if not _STAT_OK.match(stat):
-            er.append("MS[%d]: mscon_state invalid (astept 2 litere)." % i)
+            er.append("MS[%d]: mscon_state invalid (aștept 2 litere)." % i)
         if stat in state_vazute:
             er.append("MS[%d]: mscon_state %s duplicat - DUK regula R14." % (i, stat))
         state_vazute.add(stat)
         supplies = m.get("supplies") or []
         if not supplies:
-            er.append("MS[%d] (%s): trebuie cel putin un SUPPLY - DUK regula R22." % (i, stat))
+            er.append("MS[%d] (%s): trebuie cel puțin un SUPPLY - DUK regula R22." % (i, stat))
         for j, s in enumerate(supplies, 1):
             pfx = "MS[%d]/SUPPLY[%d]" % (i, j)
             st = _int(s.get("supply_type"))
@@ -257,15 +257,15 @@ def erori_generare(prof, manual):
                 er.append("%s: vat_rate_type obligatoriu." % pfx)
             rate = _dec(s.get("vat_rate"))
             if not (Decimal("0") < rate <= Decimal("100")):
-                er.append("%s: vat_rate in intervalul (0, 100] - DUK regula R27.1." % pfx)
+                er.append("%s: vat_rate în intervalul (0, 100] - DUK regula R27.1." % pfx)
             if _dec(s.get("taxable_amount")) <= 0:
                 er.append("%s: taxable_amount strict pozitiv - DUK regula R28." % pfx)
             if st == 1 and moes == SCHEME_NONUE:
-                er.append("%s: bunuri interzise in regim non-UE - DUK regula R25.1." % pfx)
+                er.append("%s: bunuri interzise în regim non-UE - DUK regula R25.1." % pfx)
             if st == 2 and moes == SCHEME_IMP:
-                er.append("%s: servicii interzise in regim import - DUK regula R25.2." % pfx)
+                er.append("%s: servicii interzise în regim import - DUK regula R25.2." % pfx)
             if tt == 2 and moes != SCHEME_UE:
-                er.append("%s: msest (trade_type=2) doar in regim UE - DUK regula R23." % pfx)
+                er.append("%s: msest (trade_type=2) doar în regim UE - DUK regula R23." % pfx)
             if tt == 2 and not _esc(s.get("vat_id_no_msest")):
                 er.append("%s: vat_id_no_msest obligatoriu la trade_type=2 - DUK regula R24.1." % pfx)
             if tt == 1 and _esc(s.get("vat_id_no_msest")):

@@ -88,19 +88,19 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not _cif(prof.get("cui")):
-        er.append("CUI firma platitoare lipsa/invalid.")
+        er.append("CUI firma plătitoare lipsă/invalid.")
     if not prof.get("den"):
-        er.append("LIPSA denumire firma.")
+        er.append("LIPSĂ denumire firma.")
     if int(manual.get("tip_platitor") or 1) not in (1, 2):
         er.append("tipPlatitor invalid (1=profit, 2=micro).")
     smax, sant, srest = _i(manual.get("suma_max")), _i(manual.get("suma_ant")), _i(manual.get("suma_rest"))
     if srest <= 0:
-        er.append("sumaRest (suma de redirectionat) trebuie > 0.")
+        er.append("sumaRest (suma de redirecționat) trebuie > 0.")
     if smax < sant + srest:
         er.append("sumaMax (%d) trebuie >= sumaAnt (%d) + sumaRest (%d)." % (smax, sant, srest))
     benef = manual.get("beneficiari") or []
     if not benef:
-        er.append("D177 cere cel putin un beneficiar.")
+        er.append("D177 cere cel puțin un beneficiar.")
     tot_b = 0
     for i, b in enumerate(benef, 1):
         tb = str(b.get("tip") or "")
@@ -109,19 +109,19 @@ def erori_generare(prof, manual):
         if int(manual.get("tip_platitor") or 1) == 2 and tb == "3":
             er.append("Beneficiar %d: la tipPlatitor=2 (micro) tipB nu poate fi 3." % i)
         if not str(b.get("den") or "").strip():
-            er.append("Beneficiar %d: lipsa denumire (denB)." % i)
+            er.append("Beneficiar %d: lipsă denumire (denB)." % i)
         if not _cif(b.get("cui")):
-            er.append("Beneficiar %d: lipsa cod fiscal beneficiar (cuiB)." % i)
+            er.append("Beneficiar %d: lipsă cod fiscal beneficiar (cuiB)." % i)
         iban = str(b.get("iban") or "").replace(" ", "").upper()
         if not _IBAN_OK.match(iban):
             er.append("Beneficiar %d: IBAN invalid (RO + 22 caractere)." % i)
         if tb in ("1", "2", "3") and not str(b.get("contract") or "").strip():
-            er.append("Beneficiar %d: contractB obligatoriu pentru tipB<5 (nr. si data sponsorizarii)." % i)
+            er.append("Beneficiar %d: contractB obligatoriu pentru tipB<5 (nr. și data sponsorizării)." % i)
         if str(b.get("acord") or "") not in ("0", "1"):
             er.append("Beneficiar %d: acord obligatoriu (0/1)." % i)
         tot_b += _i(b.get("suma"))
     if tot_b > srest:
-        er.append("Suma beneficiarilor (%d) depaseste sumaRest (%d)." % (tot_b, srest))
+        er.append("Suma beneficiarilor (%d) depășește sumaRest (%d)." % (tot_b, srest))
     return er
 
 

@@ -204,7 +204,7 @@ def erori_generare(prof):
         if not _ok_cif:
             erori.append("CIF persoana impozabila invalid (%s): %s." % (_cif, _motiv_cif))
         elif len(_cif) > 13:
-            erori.append("CIF %s depaseste C(13) (structura ANAF d301)." % _cif)
+            erori.append("CIF %s depășește C(13) (structura ANAF d301)." % _cif)
     if not str(prof.get("nume") or "").strip():
         erori.append("LIPSĂ denumire.")
     if not _clean_bc(prof.get("banca")):
@@ -233,26 +233,26 @@ def _blocante_pre_duk(res):
         except (TypeError, ValueError):
             tip = None
         if tip not in TIPURI_OP:
-            b.append("Operatiunea %s: tip operatiune %r in afara nomenclatorului (permise 1..5); "
-                     "nu se reclasifica tacit in sectiunea 1." % (eticheta, tip_raw))
+            b.append("Operatiunea %s: tip operațiune %r în afară nomenclatorului (permise 1..5); "
+                     "nu se reclasifică tacit în secțiunea 1." % (eticheta, tip_raw))
         # valuta: gol -> NU devine tacit EUR; altfel trebuie in nomenclatorul ancorat pe validator (T2/T3)
         val_raw = r.get("tip_valuta")
         val = str(val_raw).strip().upper() if val_raw is not None else ""
         if not val:
-            b.append("Operatiunea %s: valuta lipsa; nu se completeaza tacit EUR." % eticheta)
+            b.append("Operatiunea %s: valuta lipsă; nu se completează tacit EUR." % eticheta)
         elif val not in VALUTE:
             b.append("Operatiunea %s: valuta %r neacceptata (nomenclator ANAF)." % (eticheta, val))
         # nr_doc: gol (T2) sau supra-lung C(20) netrunchiat (T6, leak pur)
         if not nr:
-            b.append("Operatiunea #%d: fara numar document (nr_doc gol)." % i)
+            b.append("Operatiunea #%d: fără număr document (nr_doc gol)." % i)
         elif len(nr) > 20:
-            b.append("Operatiunea %s: numar document de %d caractere depaseste C(20) (structura ANAF); "
+            b.append("Operatiunea %s: număr document de %d caractere depășește C(20) (structura ANAF); "
                      "nu se emite netrunchiat." % (eticheta, len(nr)))
         # data_doc: gol (T2)
         dd_raw = r.get("data_doc")
         dd = str(dd_raw).strip() if dd_raw is not None else ""
         if not dd:
-            b.append("Operatiunea %s: fara data document (data_doc gol)." % eticheta)
+            b.append("Operatiunea %s: fără data document (data_doc gol)." % eticheta)
     return b
 
 
@@ -292,8 +292,8 @@ def build_xml(res):
     # [regula 4 - fara default tacit] nume/functie declarant sunt DA (obligatorii); cand lipsesc emitem
     # un implicit (altfel DUK respinge campul gol) DAR ANUNTAT prin avertisment.
     if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
-        res.avertismente.append("D301: declarantul (nume/functie) lipseste din profil -> emis implicit "
-                                "\"ADMINISTRATOR\". Completeaza declarantul in profilul firmei.")
+        res.avertismente.append("D301: declarantul (nume/funcție) lipsește din profil -> emis implicit "
+                                "\"ADMINISTRATOR\". Completează declarantul în profilul firmei.")
     cif = _NEDIGIT.sub("", prof.get("cui") or "")
     den = prof.get("nume") or ""
     adr = " ".join(x for x in [prof.get("adresa"), prof.get("oras"), prof.get("judet")] if x).strip()
@@ -353,7 +353,7 @@ def genereaza(conn, schema, perioada, manual=None):
     if perioada.luna is None or not (1 <= perioada.luna <= 12):
         raise ValueError("D301 lunar: luna invalidă: %r" % perioada.luna)
     if perioada.an is None or int(perioada.an) < 2013:
-        raise ValueError("D301: an invalid %r - formularul 301 se depune din 2013 (OPANAF 592/2016 si anterioare)." % perioada.an)
+        raise ValueError("D301: an invalid %r - formularul 301 se depune din 2013 (OPANAF 592/2016 și anterioare)." % perioada.an)
     prof, ops = pull(conn, schema, perioada)
     # POARTA (27.07.2026): profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF.
     erori = erori_generare(prof)
@@ -380,13 +380,13 @@ def genereaza(conn, schema, perioada, manual=None):
                         bani(_r0(float(f.get("total") or 0) - float(f.get("tva") or 0)), "lei"))
                     for f in _ic_prim[:10])
             raise ValueError(
-                "D301 pe zero, DAR exista %d achizitie(i) intracomunitara(e) inregistrate ca FACTURI in "
-                "perioada, neintroduse in operatiunile D301: %s. Introdu-le in ecranul D301 inainte de "
-                "generare - obligatia D301 se naste din achizitia IC, nu doar din tabelul manual." %
+                "D301 pe zero, DAR există %d achiziție(i) intracomunitară(e) înregistrate ca FACTURI în "
+                "perioada, neintroduse în operatiunile D301: %s. Introdu-le în ecranul D301 înainte de "
+                "generare - obligația D301 se naste din achiziția IC, nu doar din tabelul manual." %
                 (len(_ic_prim), _lst))
         raise ValueError(
-            "D301 nu se genereaza pe zero: nicio operatiune cu exigibilitate in perioada. OPANAF 592/2016 - "
-            "decontul special se depune NUMAI pentru perioadele in care ia nastere exigibilitatea taxei.")
+            "D301 nu se generează pe zero: nicio operațiune cu exigibilitate în perioada. OPANAF 592/2016 - "
+            "decontul special se depune NUMAI pentru perioadele în care ia naștere exigibilitatea taxei.")
     res = calcul_d301(prof, perioada, ops)
     # [Sectiunea 1 = art.317, OPANAF 592/2016 instr. I] Sectiunea 1 (achizitii IC de bunuri) "se completeaza
     # NUMAI de catre persoanele inregistrate conform art. 317". O operatiune tip 1 cu pers_inreg=1 (firma
@@ -394,14 +394,14 @@ def genereaza(conn, schema, perioada, manual=None):
     # profil -> avertisment vizibil (nu blocaj care ar opri orice D301 de sectiunea 1), regula 4/12.
     if any(int(o.get("tip") or 1) == 1 for o in ops) and _pers_inreg(prof) == "1":
         res.avertismente.append(
-            "D301: exista operatiune de Sectiunea 1 (achizitii IC de bunuri) dar firma nu are marcajul de "
-            "inregistrare art.317 in profil -> se emite pers_inreg=1. Sectiunea 1 se completeaza NUMAI de "
-            "persoanele inregistrate conform art.317 (OPANAF 592/2016). Confirma inregistrarea art.317 in "
-            "profil (altfel declaratia e contradictorie), sau reclasifica operatiunea.")
+            "D301: există operațiune de Secțiunea 1 (achiziții IC de bunuri) dar firma nu are marcajul de "
+            "înregistrare art.317 în profil -> se emite pers_inreg=1. Secțiunea 1 se completează NUMAI de "
+            "persoanele înregistrate conform art.317 (OPANAF 592/2016). Confirmă înregistrarea art.317 în "
+            "profil (altfel declarația e contradictorie), sau reclasifică operatiunea.")
     if _ic_prim:
         res.avertismente.append(
-            "Verifica: exista %d achizitie(i) IC inregistrate ca facturi in perioada - asigura-te ca toate "
-            "sunt reflectate in operatiunile D301 (declaratia se construieste din tabelul d301_operatiuni, "
+            "Verifică: există %d achiziție(i) IC înregistrate ca facturi în perioada - asigură-te ca toate "
+            "sunt reflectate în operatiunile D301 (declarația se construiește din tabelul d301_operatiuni, "
             "nu automat din facturi)." % len(_ic_prim))
     # [T2 10.08.2026] valideaza(res) era COD MORT: genereaza chema doar erori_generare(prof), deci
     # verificarile prietenoase pe operatiuni (nr_doc/data_doc gol, tip/valuta out-of-nomenclator, T6

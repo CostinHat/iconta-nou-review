@@ -44,8 +44,8 @@ def test_declarant_lipsa_avertisment_nu_tacut():
     f = [{"cui": "DE811569869", "nume": "PARTENER DE", "directie": "emisa", "total": 1000, "tva": 0}]
     res = calcul_d390(prof, 2026, 6, f)
     xml = build_xml(res)
-    assert 'nume_declar="ADMINISTRATOR"' in xml, "implicitul inca emis (DUK cere campul)"
-    assert any("declarantul (nume/functie) lipseste" in a for a in res.avertismente), \
+    assert 'nume_declar="ADMINISTRATOR"' in xml, "implicitul încă emis (DUK cere campul)"
+    assert any("declarantul (nume/funcție) lipsește" in a for a in res.avertismente), \
         "implicitul declarant trebuie ANUNTAT"
 
 
@@ -94,14 +94,14 @@ def conn():
 
 
 def _tip_A_backend(conn):
-    return _capi.manual_adauga(conn, _SCHEMA, 2026, 6, "A", "DE", "", "FURNIZOR DE FARA COD", 5000)
+    return _capi.manual_adauga(conn, _SCHEMA, 2026, 6, "A", "DE", "", "FURNIZOR DE FĂRĂ COD", 5000)
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_manual_adauga_accepta_tip_A_nota1(conn):
     """manual_adauga acepta tip A cu COD GOL (NOTA 1). RED pre-fix: tip A respins ('trebuie P/S/T/R')."""
     r = _tip_A_backend(conn)
-    assert r.get("ok"), "tip A (NOTA 1) trebuie acceptat pe calea manuala; primit %r" % r
+    assert r.get("ok"), "tip A (NOTA 1) trebuie acceptat pe calea manuală; primit %r" % r
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -125,10 +125,10 @@ def test_manual_linie_are_id_si_se_poate_sterge(conn):
     assert _tip_A_backend(conn).get("ok")
     st = _capi.stare(conn, _SCHEMA, 2026, 6)
     man = st["manual"]
-    assert man and man[0].get("id"), "linia manuala trebuie sa aiba id pentru stergere: %r" % man
+    assert man and man[0].get("id"), "linia manuală trebuie să aibă id pentru ștergere: %r" % man
     r = _capi.manual_sterge(conn, _SCHEMA, 2026, 6, man[0]["id"])
-    assert r.get("ok"), "stergerea trebuie sa reuseasca cu id-ul din stare"
-    assert not _capi.stare(conn, _SCHEMA, 2026, 6)["manual"], "linia trebuie sa dispara dupa stergere"
+    assert r.get("ok"), "stergerea trebuie să reuseasca cu id-ul din stare"
+    assert not _capi.stare(conn, _SCHEMA, 2026, 6)["manual"], "linia trebuie să dispară dupa ștergere"
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -137,11 +137,11 @@ def test_nota1_genereaza_operatie_A_fara_cod(conn):
     reconcilierea a-doua-cale trece (include latura manuala). RED pre-fix: A neintroductibil."""
     assert _tip_A_backend(conn).get("ok")
     xml, res = d390.genereaza(conn, _SCHEMA, 2026, 6)   # daca reconcilierea da fals-pozitiv -> crapa AICI
-    assert '<operatie tip="A" tara="DE"' in xml, "operatiunea A NOTA 1 trebuie emisa"
+    assert '<operatie tip="A" tara="DE"' in xml, "operatiunea A NOTA 1 trebuie emisă"
     # codO absent (nu ' codO=' pe linia operatiunii A)
     op_line = [l for l in xml.splitlines() if '<operatie tip="A"' in l][0]
     assert "codO=" not in op_line, "codO trebuie OMIS pentru A NOTA 1 (nu vid): %r" % op_line
-    assert res.rezumat.get("A") == 5000 or res.ops, "baza A in rezumat"
+    assert res.rezumat.get("A") == 5000 or res.ops, "baza A în rezumat"
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -170,5 +170,5 @@ def test_exigibilitate_achizitie_primita_ziua15(conn):
     _p, fact_aug = d390.pull(conn, _SCHEMA, 2026, 8)
     tot_iul = [int(round(float(f["total"]))) for f in fact_iul]
     tot_aug = [int(round(float(f["total"]))) for f in fact_aug]
-    assert 2000 in tot_iul, "achizitia primita trebuie mutata pe luna exigibilitatii (iulie): %r" % tot_iul
-    assert 2000 not in tot_aug, "achizitia NU mai apare in august (luna emiterii): %r" % tot_aug
+    assert 2000 in tot_iul, "achiziția primită trebuie mutata pe luna exigibilitatii (iulie): %r" % tot_iul
+    assert 2000 not in tot_aug, "achiziția NU mai apare în august (luna emiterii): %r" % tot_aug

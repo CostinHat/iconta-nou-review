@@ -157,16 +157,16 @@ def erori_generare(prof, manual):
         an = int(manual.get("an"))
     except (TypeError, ValueError):
         an = 0
-        er.append("Lipsa/invalid an perioada de rambursare (an).")
+        er.append("Lipsă/invalid an perioada de rambursare (an).")
     try:
         li = int(manual.get("luna_inceput"))
         ls = int(manual.get("luna_sfarsit"))
     except (TypeError, ValueError):
         li = ls = 0
-        er.append("Lipsa/invalid luna_inceput / luna_sfarsit.")
+        er.append("Lipsă/invalid luna_inceput / luna_sfarsit.")
     annual = _b(manual.get("annual"))
     if annual == 1 and not (li == 1 and ls == 12):
-        er.append("annual=1 cere luna_inceput=1 si luna_sfarsit=12 (R5.1).")
+        er.append("annual=1 cere luna_inceput=1 și luna_sfarsit=12 (R5.1).")
     if annual == 0 and (li == 1 and ls == 12):
         er.append("annual=0 cere luna_inceput<>1 sau luna_sfarsit<>12 (R5.2).")
     if li and ls and not (1 <= li <= ls <= 12):
@@ -176,64 +176,64 @@ def erori_generare(prof, manual):
     d_rec = _b(manual.get("d_rec"))
     ref = str(manual.get("reference_number") or "").strip()
     if d_rec == 1 and not ref:
-        er.append("Declaratie rectificativa (d_rec=1) cere reference_number (R9.3).")
+        er.append("Declarație rectificativa (d_rec=1) cere reference_number (R9.3).")
     if d_rec == 0 and ref:
-        er.append("Declaratie initiala (d_rec=0) nu poate contine reference_number (R9.1).")
+        er.append("Declarație initiala (d_rec=0) nu poate contine reference_number (R9.1).")
     if ref and not ref.upper().startswith("RO"):
-        er.append("reference_number trebuie sa inceapa cu 'RO' (R9.2).")
+        er.append("reference_number trebuie să înceapă cu 'RO' (R9.2).")
     if not str(manual.get("refunding_country") or "").strip():
-        er.append("Lipsa cod stat de rambursare (refunding_country).")
+        er.append("Lipsă cod stat de rambursare (refunding_country).")
     if not str(manual.get("iban") or "").strip():
-        er.append("Lipsa IBAN cont de rambursare (iban).")
+        er.append("Lipsă IBAN cont de rambursare (iban).")
     if not str(manual.get("owner_name") or "").strip():
-        er.append("Lipsa titular cont (owner_name, obligatoriu).")
+        er.append("Lipsă titular cont (owner_name, obligatoriu).")
     if str(manual.get("owner_type") or "").strip() not in ("A", "R"):
         er.append("owner_type obligatoriu: 'A' (solicitant) sau 'R' (reprezentant).")
     if not str(manual.get("bic") or "").strip():
-        er.append("Lipsa BIC/SWIFT cont de rambursare (bic, obligatoriu).")
+        er.append("Lipsă BIC/SWIFT cont de rambursare (bic, obligatoriu).")
     if not str(manual.get("declarant") or "").strip():
-        er.append("Lipsa declarant.")
+        er.append("Lipsă declarant.")
     if not str(manual.get("functie") or "").strip():
-        er.append("Lipsa functie/calitate declarant (functie, obligatoriu).")
+        er.append("Lipsă funcție/calitate declarant (funcție, obligatoriu).")
     sol = manual.get("solicitant") or {}
     if not str(sol.get("denumire") or sol.get("firstName") or "").strip():
-        er.append("Lipsa denumire solicitant (solicitant.denumire).")
+        er.append("Lipsă denumire solicitant (solicitant.denumire).")
     if not str(sol.get("strada") or sol.get("street") or "").strip():
-        er.append("Lipsa adresa solicitant (solicitant.strada, obligatoriu).")
+        er.append("Lipsă adresa solicitant (solicitant.strada, obligatoriu).")
     if not str(sol.get("email") or sol.get("emailaddress") or "").strip():
-        er.append("Lipsa email solicitant (solicitant.email, obligatoriu).")
+        er.append("Lipsă email solicitant (solicitant.email, obligatoriu).")
     if not (manual.get("activitati") or manual.get("descriere_activitate")):
-        er.append("Lipsa descriere activitate (activitati / businessActivity NACE).")
+        er.append("Lipsă descriere activitate (activități / businessActivity NACE).")
     achizitii, importuri = _linii(manual)
     if not achizitii and not importuri:
-        er.append("Cel putin o factura de achizitie sau de import (achizitii / importuri).")
+        er.append("Cel puțin o factura de achiziție sau de import (achiziții / importuri).")
     for i, f in enumerate(achizitii, 1):
         ta = _dec(f.get("taxable_amount", f.get("taxableAmount")))
         va = _dec(f.get("vat_amount", f.get("vatAmount")))
         dv = _dec(f.get("deductible_vat", f.get("deductibleVATAmount")))
         semne = {(x > 0) - (x < 0) for x in (ta, va, dv) if x != 0}
         if len(semne) > 1:
-            er.append("Achizitie %d: taxableAmount/vatAmount/deductibleVATAmount cu semne diferite (R50.1)." % i)
+            er.append("Achiziție %d: taxableAmount/vatAmount/deductibleVATAmount cu semne diferite (R50.1)." % i)
         if abs(va) > abs(ta):
-            er.append("Achizitie %d: vatAmount (%s) > taxableAmount (%s)." % (i, va, ta))
+            er.append("Achiziție %d: vatAmount (%s) > taxableAmount (%s)." % (i, va, ta))
         if not str(f.get("reference_number") or "").strip():
-            er.append("Achizitie %d: lipsa reference_number (numar factura, obligatoriu - DUK regula R48)." % i)
+            er.append("Achiziție %d: lipsă reference_number (număr factura, obligatoriu - DUK regula R48)." % i)
         fz = f.get("furnizor") or {}
         if not str(fz.get("denumire") or fz.get("firstName") or "").strip():
-            er.append("Achizitie %d: lipsa furnizor UE (furnizor.denumire)." % i)
+            er.append("Achiziție %d: lipsă furnizor UE (furnizor.denumire)." % i)
         if not str(fz.get("strada") or fz.get("street") or "").strip():
-            er.append("Achizitie %d: lipsa adresa furnizor UE (furnizor.strada)." % i)
+            er.append("Achiziție %d: lipsă adresa furnizor UE (furnizor.strada)." % i)
         if _b(f.get("simplified_invoice", f.get("simplifiedInvoice"))) == 1:
             if not str(fz.get("vat_id") or fz.get("vatIdentificationNumber") or "").strip():
-                er.append("Achizitie %d simplificata: furnizorul cere vatIdentificationNumber." % i)
+                er.append("Achiziție %d simplificata: furnizorul cere vatIdentificationNumber." % i)
         if not _data_ok(f.get("issuing_date", f.get("issuingDate"))):
-            er.append("Achizitie %d: issuing_date invalid (astept yyyy-mm-dd sau dd.mm.yyyy)." % i)
+            er.append("Achiziție %d: issuing_date invalid (aștept yyyy-mm-dd sau dd.mm.yyyy)." % i)
     for i, f in enumerate(importuri, 1):
         if not str(f.get("reference_number") or "").strip() and \
                 not str(f.get("reference_information", f.get("referenceInformation")) or "").strip():
-            er.append("Import %d: fara reference_number cere reference_information." % i)
+            er.append("Import %d: fără reference_number cere reference_information." % i)
         if not _data_ok(f.get("issuing_date", f.get("issuingDate"))):
-            er.append("Import %d: issuing_date invalid (astept yyyy-mm-dd sau dd.mm.yyyy)." % i)
+            er.append("Import %d: issuing_date invalid (aștept yyyy-mm-dd sau dd.mm.yyyy)." % i)
     return er
 
 

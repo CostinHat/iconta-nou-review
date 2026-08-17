@@ -81,27 +81,27 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not _cif(prof.get("cui")):
-        er.append("CUI persoana impozabila lipsa/invalid.")
+        er.append("CUI persoana impozabila lipsă/invalid.")
     if not str(prof.get("den") or "").strip():
-        er.append("LIPSA denumire.")
+        er.append("LIPSĂ denumire.")
     if not str(prof.get("adresa") or "").strip():
-        er.append("LIPSA adresa.")
+        er.append("LIPSĂ adresa.")
     for c in ("declarant_nume", "declarant_prenume", "declarant_functie"):
         if not str(prof.get(c) or "").strip():
-            er.append("LIPSA %s (declarant obligatoriu)." % c)
+            er.append("LIPSĂ %s (declarant obligatoriu)." % c)
     if str(manual.get("d_anulare") or "0") == "1" and str(manual.get("temei") or "") not in ("1", "2"):
         er.append("d_anulare=1 cere temei (1=art.105(6)a / 2=art.105(6)b din L.207/2015).")
     ops = manual.get("operatiuni") or []
     if not ops:
-        er.append("D307 cere cel putin o operatiune (operatiuni[]).")
+        er.append("D307 cere cel puțin o operațiune (operațiuni[]).")
     for i, o in enumerate(ops, 1):
         if str(o.get("tip") or "").upper() not in _TIP_VALIDE:
-            er.append("Operatiune %d: tip %r invalid (A=transfer active / L=leasing / C=anulare cod TVA)." %
+            er.append("Operațiune %d: tip %r invalid (A=transfer active / L=leasing / C=anulare cod TVA)." %
                       (i, o.get("tip")))
         if not str(o.get("den") or o.get("denO") or "").strip():
-            er.append("Operatiune %d: lipsa denumire operator (denO)." % i)
+            er.append("Operațiune %d: lipsă denumire operator (denO)." % i)
         if not _cif(o.get("cod") or o.get("codO")):
-            er.append("Operatiune %d: lipsa cod operator (codO)." % i)
+            er.append("Operațiune %d: lipsă cod operator (codO)." % i)
     return er
 
 

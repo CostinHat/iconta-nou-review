@@ -36,8 +36,8 @@ def test_declarant_lipsa_avertisment_nu_tacut():
             "tip_valuta": "EUR", "curs": 4.97, "tva": 200}]
     res = calcul_d301(prof, Perioada(2026, luna=8), ops)
     xml = build_xml(res)
-    assert 'nume_declarant="ADMINISTRATOR"' in xml, "implicitul inca emis (DUK cere campul)"
-    assert any("declarantul (nume/functie) lipseste" in a for a in res.avertismente), \
+    assert 'nume_declarant="ADMINISTRATOR"' in xml, "implicitul încă emis (DUK cere campul)"
+    assert any("declarantul (nume/funcție) lipsește" in a for a in res.avertismente), \
         "implicitul declarant trebuie ANUNTAT"
 
 
@@ -94,7 +94,7 @@ def test_zero_base_fara_operatiuni_si_fara_facturi_refuza(conn):
     conn.commit()
     with pytest.raises(ValueError) as ei:
         d301.genereaza(conn, _SCHEMA, Perioada(2026, luna=8))
-    assert "nu se genereaza pe zero" in str(ei.value), str(ei.value)
+    assert "nu se generează pe zero" in str(ei.value), str(ei.value)
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -109,8 +109,8 @@ def test_ruptura_factura_ic_neintrodusa_refuza_cu_lista(conn):
     with pytest.raises(ValueError) as ei:
         d301.genereaza(conn, _SCHEMA, Perioada(2026, luna=8))
     msg = str(ei.value)
-    assert "achizitie" in msg and "FURNIZOR DE GMBH" in msg, msg
-    assert "neintroduse in operatiunile D301" in msg, msg
+    assert "achiziție" in msg and "FURNIZOR DE GMBH" in msg, msg
+    assert "neintroduse în operatiunile D301" in msg, msg
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -122,8 +122,8 @@ def test_tip1_fara_art317_avertisment(conn):
         _op1(cur)
     conn.commit()
     _xml, res = d301.genereaza(conn, _SCHEMA, Perioada(2026, luna=8))
-    assert any("Sectiunea 1" in a and "art.317" in a for a in res.avertismente), \
-        "operatiune de sectiunea 1 fara art.317 trebuie ANUNTATA: %r" % res.avertismente
+    assert any("Secțiunea 1" in a and "art.317" in a for a in res.avertismente), \
+        "operațiune de secțiunea 1 fără art.317 trebuie ANUNTATA: %r" % res.avertismente
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -135,7 +135,7 @@ def test_tip1_cu_art317_fara_avertisment_sectiune1(conn):
         _op1(cur)
     conn.commit()
     xml, res = d301.genereaza(conn, _SCHEMA, Perioada(2026, luna=8))
-    assert not any("Sectiunea 1" in a and "art.317" in a for a in res.avertismente)
+    assert not any("Secțiunea 1" in a and "art.317" in a for a in res.avertismente)
     assert 'pers_inreg="2"' in xml, "firma art.317 -> pers_inreg=2"
 
 

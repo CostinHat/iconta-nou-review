@@ -74,8 +74,8 @@ def _reclasificare_tip(directie, tara, cod, recl, tip_def):
     tip = recl.get((directie, tara, cod), tip_def)
     if tip != tip_def and tip not in TIPURI_DIRECTIE.get(directie, ()):
         raise ValueError(
-            "D390: reclasificare cu tip %r nepermis pentru directia %s (permise: %s). Un tip din "
-            "d390_reclasificare nelegal pentru directie trebuie sa produca eroare vizibila, nu sa "
+            "D390: reclasificare cu tip %r nepermis pentru direcția %s (permise: %s). Un tip din "
+            "d390_reclasificare nelegal pentru direcție trebuie să producă eroare vizibilă, nu să "
             "revina tacit la %r (misclasificare)."
             % (tip, directie, "/".join(TIPURI_DIRECTIE.get(directie, ())), tip_def))
     return tip
@@ -160,7 +160,7 @@ def checksum_vies(tara, cod):
     if tara == "FR":
         if len(cod) == 11 and cod[:2].isdigit() and cod[2:].isdigit():
             key = (12 + 3 * (int(cod[2:]) % 97)) % 97
-            return ("ok", "ok") if key == int(cod[:2]) else ("invalid", "cheia FR (SIREN) gresita")
+            return ("ok", "ok") if key == int(cod[:2]) else ("invalid", "cheia FR (SIREN) greșită")
         return "neverificat", "format FR neabordat offline - verificat de DUK"
     return "neverificat", "algoritm %s neimplementat offline - verificat de DUK" % tara
 
@@ -171,19 +171,19 @@ def _clasifica_partener(raw):
                prefix (fara prefix de tara UE valid, SUSPECT) | tara (prefix ne-UE, mistypat)."""
     raw = (raw or "").strip().upper().replace(" ", "").replace("-", "")
     if not raw:
-        return "domestic", None, "", "fara CUI (partener intern/persoana fizica)"
+        return "domestic", None, "", "fără CUI (partener intern/persoana fizica)"
     m = _CUI_UE.match(raw)
     if not m:
         # fara prefix de 2 litere: CUI RO valid -> intern (exclus corect); altfel SUSPECT (prefix lipsa)
         if _valideaza_cui(raw)[0]:
-            return "domestic", "RO", raw, "CUI RO valid (operatiune interna)"
-        return "prefix", None, raw, "CUI fara prefix de tara UE valid (prefix tara lipsa/invalid)"
+            return "domestic", "RO", raw, "CUI RO valid (operațiune interna)"
+        return "prefix", None, raw, "CUI fără prefix de țară UE valid (prefix țară lipsă/invalid)"
     tara, cod = m.group(1), m.group(2)
     if tara == "RO":
-        return "domestic", "RO", cod, "partener RO (operatiune interna)"
+        return "domestic", "RO", cod, "partener RO (operațiune interna)"
     if tara not in TARI_UE:
         sug = {"CR": "HR (Croatia)", "GR": "EL (Grecia)"}.get(tara)
-        motiv = "tara %r nu e in nomenclatorul UE" % tara + ((" (ai vrut %s?)" % sug) if sug else "")
+        motiv = "țară %r nu e în nomenclatorul UE" % tara + ((" (ai vrut %s?)" % sug) if sug else "")
         return "tara", tara, cod, motiv
     return "ic", tara, cod, "ok"
 
@@ -205,7 +205,7 @@ def _facturi_ic(facturi):
             continue
         if len(cod) > 12:                            # T6: NU trunchia codO (trunchierea CORUPE VAT-ul)
             diag.append(dict(info, categorie="codO_lung",
-                             motiv="codO are %d caractere (max 12) - trunchierea ar CORUPE numarul de TVA" % len(cod)))
+                             motiv="codO are %d caractere (max 12) - trunchierea ar CORUPE numărul de TVA" % len(cod)))
         else:
             st, mo = checksum_vies(tara, cod)
             if st == "invalid":
@@ -256,9 +256,9 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
         tip = op.get("tip")
         if tip not in TIPURI:
             # [GARD CLASA] operatiune manuala a contabilului cu tip gresit -> eroare vizibila, nu drop tacit.
-            raise ValueError("D390: operatiune manuala cu tip necunoscut %r (acceptate: %s). Un tip introdus "
-                             "de contabil care nu e in lista trebuie sa produca eroare vizibila, nu sa dispara "
-                             "tacut din declaratie." % (tip, ", ".join(map(str, TIPURI))))
+            raise ValueError("D390: operațiune manuală cu tip necunoscut %r (acceptate: %s). Un tip introdus "
+                             "de contabil care nu e în lista trebuie să producă eroare vizibilă, nu să dispară "
+                             "tacut din declarație." % (tip, ", ".join(map(str, TIPURI))))
         tara = (op.get("tara") or "").upper()
         cod = (op.get("cod") or "")            # T6: NU mai trunchia la 12 - ar CORUPE numarul de TVA
         den = (op.get("den") or "")[:200]
@@ -293,20 +293,20 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
     # nu declaratia se subtiaza tacit.
     _domestic = [d for d in diag if d["categorie"] == "domestic"]
     if _domestic:
-        res.avertismente.append("%d facturi cu parteneri interni (RO)/fara CUI - excluse (D390 e doar intracomunitar)." % len(_domestic))
+        res.avertismente.append("%d facturi cu parteneri interni (RO)/fără CUI - excluse (D390 e doar intracomunitar)." % len(_domestic))
     for d in diag:
-        _id = "%s (CUI %r, factura %s)" % (d["den"] or "(fara denumire)", d["cui"], d["directie"] or "-")
+        _id = "%s (CUI %r, factura %s)" % (d["den"] or "(fără denumire)", d["cui"], d["directie"] or "-")
         if d["categorie"] == "prefix":
-            res.avertismente.append("Partener EXCLUS - %s: %s. Verifica prefixul de tara (ex. DE/FR/IT)." % (_id, d["motiv"]))
+            res.avertismente.append("Partener EXCLUS - %s: %s. Verifică prefixul de țară (ex. DE/FR/IT)." % (_id, d["motiv"]))
         elif d["categorie"] == "tara":
-            res.avertismente.append("Partener EXCLUS (tara mistypata) - %s: %s." % (_id, d["motiv"]))
+            res.avertismente.append("Partener EXCLUS (țară mistypata) - %s: %s." % (_id, d["motiv"]))
         elif d["categorie"] == "checksum":
             res.avertismente.append("ATENTIE cod TVA invalid - %s: %s." % (_id, d["motiv"]))
         elif d["categorie"] == "codO_lung":
             res.avertismente.append("codO prea lung - %s: %s." % (_id, d["motiv"]))
     _tel = str(prof.get("telefon") or "")
     if len(_tel) > 15:
-        res.avertismente.append("Telefon firma are %d caractere (max 15, C(15)) - va fi trunchiat la 15 la emitere; verifica." % len(_tel))
+        res.avertismente.append("Telefon firma are %d caractere (max 15, C(15)) - va fi trunchiat la 15 la emitere; verifică." % len(_tel))
     if not ops:
         res.avertismente.append("Nicio operațiune intracomunitară în lună — D390 se depune doar dacă există operațiuni.")
     res.avertismente.append("Mapare automată: emisă->L, primită->A (bunuri). Servicii (P/S) și triangulație (T/R) = clasificare manuală.")
@@ -321,33 +321,33 @@ def valideaza(res):
     erori = []
     prof = res.prof
     if res.luna < 1 or res.luna > 12:
-        erori.append("Luna invalida.")
+        erori.append("Luna invalidă.")
     if res.an == 2020 and res.luna < 2:
         erori.append("Pentru an=2020, luna >= 2.")
     _cui = _NEDIGIT.sub("", prof.get("cui") or "")
     if not _cui:
-        erori.append("LIPSA CUI firma (obligatoriu).")
+        erori.append("LIPSĂ CUI firma (obligatoriu).")
     elif len(_cui) > 10:
-        erori.append("CUI firma are %d cifre (max 10, N(10)) - clamparea ar corupe identitatea; corecteaza." % len(_cui))
+        erori.append("CUI firma are %d cifre (max 10, N(10)) - clamparea ar corupe identitatea; corectează." % len(_cui))
     if not (prof.get("nume")):
-        erori.append("LIPSA denumire firma.")
+        erori.append("LIPSĂ denumire firma.")
     # codO obligatoriu pentru L,T,P,R. NOTA: catalogul/tura ziceau "DUK cere codO doar pt L,T,P (nu R)";
     # proba DUK boundary 10.08.2026 CONTRAZICE: R fara codO e respins de validatorul instalat prin
     # DUK regula R24.2 ("o tranzactie de tip R trebuie sa aibe codO completat"), pe langa cerinta pt L,T,P. Deci codO
     # obligatoriu = L,T,P,R (ancorat pe validatorul instalat, ca test_nomenclatoare...). A,S il pot omite.
     for (tip, tara, cod, den) in res.ops:
         if tip in ("L", "T", "P", "R") and not cod:
-            erori.append("Operatorul %s/%s (tip %s) nu are cod - obligatoriu pentru L,T,P,R (DUK regula R24.2 pentru R; codO cerut si pentru L,T,P)." % (tara, den, tip))
+            erori.append("Operatorul %s/%s (tip %s) nu are cod - obligatoriu pentru L,T,P,R (DUK regula R24.2 pentru R; codO cerut și pentru L,T,P)." % (tara, den, tip))
         if tara and tara not in TARI_UE:
-            erori.append("Tara %s (operator %s) nu e in nomenclatorul UE." % (tara, den))
+            erori.append("Țară %s (operator %s) nu e în nomenclatorul UE." % (tara, den))
         if cod and len(cod) > 12:
-            erori.append("codO %r (operator %s/%s) depaseste 12 caractere C(12) - trunchierea ar corupe VAT-ul." % (cod, tara, den))
+            erori.append("codO %r (operator %s/%s) depășește 12 caractere C(12) - trunchierea ar corupe VAT-ul." % (cod, tara, den))
     # per-partener din diag: tara mistypata + codO_lung = BLOCANTE (nu lasa operatiunea obligatorie sa
     # dispara tacit intr-un count anonim; numeste partenerul si motivul, pre-DUK).
     for d in getattr(res, "diag", []):
-        _id = "%s (CUI %r, factura %s)" % (d["den"] or "(fara denumire)", d["cui"], d["directie"] or "-")
+        _id = "%s (CUI %r, factura %s)" % (d["den"] or "(fără denumire)", d["cui"], d["directie"] or "-")
         if d["categorie"] == "tara":
-            erori.append("Partener %s: %s. Operatiunea NU se poate declara pana nu corectezi tara - nu dispare tacit." % (_id, d["motiv"]))
+            erori.append("Partener %s: %s. Operatiunea NU se poate declara până nu corectezi țară - nu dispare tacit." % (_id, d["motiv"]))
         elif d["categorie"] == "codO_lung":
             erori.append("Partener %s: %s." % (_id, d["motiv"]))
     # totalPlata_A coerent
@@ -372,8 +372,8 @@ def build_xml(res):
     _dnume = prof.get("declarant_nume")
     _dfct = prof.get("declarant_functie")
     if not (_dnume and _dfct):
-        res.avertismente.append("D390: declarantul (nume/functie) lipseste din profil -> emis implicit "
-                                "\"ADMINISTRATOR\". Completeaza declarantul in profilul firmei, nu lasa implicitul.")
+        res.avertismente.append("D390: declarantul (nume/funcție) lipsește din profil -> emis implicit "
+                                "\"ADMINISTRATOR\". Completează declarantul în profilul firmei, nu lasa implicitul.")
     _dnume = _dnume or "ADMINISTRATOR"
     _dpren = prof.get("declarant_prenume") or "-"
     _dfct = _dfct or "ADMINISTRATOR"
@@ -499,9 +499,9 @@ def erori_generare(prof):
     """Poarta bazei nule: profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF."""
     erori = []
     if not str(prof.get("cui") or "").strip():
-        erori.append("LIPSA CUI firma.")
+        erori.append("LIPSĂ CUI firma.")
     if not str(prof.get("nume") or "").strip():
-        erori.append("LIPSA denumire firma.")
+        erori.append("LIPSĂ denumire firma.")
     return erori
 
 
@@ -542,7 +542,7 @@ def genereaza(conn, schema, an, luna, manual=None, reclasificari=None):
     # e mai util decat "nu ai operatiuni" (altfel operatiunea obligatorie ar disparea tacit).
     _er = valideaza(res)
     if _er:
-        raise ValueError("D390 nu se poate genera (corecteaza si regenereaza):\n  - " + "\n  - ".join(_er))
+        raise ValueError("D390 nu se poate genera (corectează și regenereaza):\n  - " + "\n  - ".join(_er))
     # POARTA A DOUA CALE (10.08.2026): recalcul INDEPENDENT sursa->declaratie (core/d390_reconciliere,
     # ca d300_reconciliere). Ruleaza DUPA valideaza (codO/tara/manual curate) si INAINTE de poarta-zero.
     # Blocheaza emiterea daca generatorul a pierdut/mutat o operatiune intre facturi si <rezumat>
@@ -565,9 +565,9 @@ def genereaza(conn, schema, an, luna, manual=None, reclasificari=None):
     # ("D205 fara niciun beneficiar de venit").
     if res.nr_opi == 0:
         raise ValueError(
-            "D390 nu se depune pe zero: luna %02d/%d nu are nicio operatiune intracomunitara. "
-            "Declaratia recapitulativa se depune NUMAI pentru lunile in care ia nastere "
+            "D390 nu se depune pe zero: luna %02d/%d nu are nicio operațiune intracomunitară. "
+            "Declarația recapitulativă se depune NUMAI pentru lunile în care ia naștere "
             "exigibilitatea taxei (OPANAF 705/2020 pct. 1.2; art. 325 Cod fiscal). "
-            "Daca ar fi trebuit sa existe operatiuni, verifica daca facturile UE sunt "
-            "introduse si daca partenerii au cod de TVA valid." % (luna, an))
+            "Dacă ar fi trebuit să existe operațiuni, verifică dacă facturile UE sunt "
+            "introduse și dacă partenerii au cod de TVA valid." % (luna, an))
     return build_xml(res), res

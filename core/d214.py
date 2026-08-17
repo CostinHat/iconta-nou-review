@@ -121,27 +121,27 @@ def _data_act(manual):
 def erori_generare(prof, manual):
     er = []
     if not str(manual.get("nume_c") or "").strip():
-        er.append("Lipsa nume/denumire contribuabil (nume_c).")
+        er.append("Lipsă nume/denumire contribuabil (nume_c).")
     if not str(manual.get("adresa_c") or "").strip():
-        er.append("Lipsa adresa contribuabil (adresa_c).")
+        er.append("Lipsă adresa contribuabil (adresa_c).")
     cif = _cif(manual.get("cif_c"))
     nif = bool(manual.get("nif"))
     if not cif:
-        er.append("Lipsa CIF/CNP contribuabil (cif_c).")
+        er.append("Lipsă CIF/CNP contribuabil (cif_c).")
     elif not nif and not _cnp_valid(cif):
-        er.append("CNP contribuabil (cif_c) invalid (13 cifre + cifra de control); pentru NIF nerezident seteaza nif=1.")
+        er.append("CNP contribuabil (cif_c) invalid (13 cifre + cifra de control); pentru NIF nerezident setează nif=1.")
     if nif and not _cif(manual.get("taraRezidenta")):
-        er.append("cif_c e NIF nerezident: seteaza taraRezidenta cu codul ISO numeric al tarii de rezidenta (DUK regula R8).")
+        er.append("cif_c e NIF nerezident: setează taraRezidenta cu codul ISO numeric al tarii de rezidență (DUK regula R8).")
     if not _data_act(manual):
-        er.append("Lipsa/format gresit data act instrainare (dataAct ZZ.LL.AAAA sau zi_act/luna_act/an_act).")
+        er.append("Lipsă/format greșit data act instrainare (dataAct ZZ.LL.AAAA sau zi_act/luna_act/an_act).")
     if not str(manual.get("actInstrainare") or "").strip():
-        er.append("Lipsa identificator act de instrainare (actInstrainare).")
+        er.append("Lipsă identificator act de instrainare (actInstrainare).")
     if str(manual.get("optiuneInstrainare") or "1") not in _OPTIUNI:
-        er.append("optiuneInstrainare trebuie sa fie 1 sau 2.")
+        er.append("optiuneInstrainare trebuie să fie 1 sau 2.")
     if not str(manual.get("numeD") or "").strip():
-        er.append("Lipsa nume semnatar declaratie (numeD) - obligatoriu.")
+        er.append("Lipsă nume semnatar declarație (numeD) - obligatoriu.")
     if not str(manual.get("functieD") or "").strip():
-        er.append("Lipsa functie/calitate semnatar (functieD) - obligatoriu.")
+        er.append("Lipsă funcție/calitate semnatar (functieD) - obligatoriu.")
     return er
 
 

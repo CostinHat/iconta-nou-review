@@ -143,22 +143,22 @@ def erori_generare(prof, manual):
     if not _valideaza_cui(_cif(manual.get("cif")))[0]:
         er.append("CF/CUI reprezentanta (cif) invalid - cifra de control eronata.")
     if not _esc(manual.get("den")):
-        er.append("Lipsa denumire reprezentanta / persoana juridica straina (den).")
+        er.append("Lipsă denumire reprezentanta / persoana juridica străină (den).")
     if not _esc(manual.get("adresaS")):
-        er.append("Lipsa domiciliu fiscal (adresaS).")
+        er.append("Lipsă domiciliu fiscal (adresaS).")
     for c in ("nume", "prenume", "functie"):
         if not _esc(manual.get(c)):
-            er.append("Lipsa %s reprezentant legal (%s)." % (c, c))
+            er.append("Lipsă %s reprezentant legal (%s)." % (c, c))
     tip = _tip(manual)
     if tip == "infiintare" and _parse_data(manual.get("datai")) is None:
-        er.append("Infiintare: data infiintarii (datai) lipsa/invalida - astept ZZ.LL.AAAA.")
+        er.append("Infiintare: data infiintarii (datai) lipsă/invalidă - aștept ZZ.LL.AAAA.")
     if tip == "desfiintare" and _parse_data(manual.get("dataincetarii")) is None:
-        er.append("Desfiintare: data desfiintarii (dataincetarii) lipsa/invalida - astept ZZ.LL.AAAA.")
+        er.append("Desfiintare: data desfiintarii (dataincetarii) lipsă/invalidă - aștept ZZ.LL.AAAA.")
     if tip == "anual":
         try:
             int(manual.get("an"))
         except (TypeError, ValueError):
-            er.append("An de impunere (an) lipsa/invalid.")
+            er.append("An de impunere (an) lipsă/invalid.")
     return er
 
 

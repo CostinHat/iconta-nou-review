@@ -123,35 +123,35 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not str(manual.get("nume_c") or "").strip():
-        er.append("Lipsa nume contribuabil (nume_c).")
+        er.append("Lipsă nume contribuabil (nume_c).")
     if not str(manual.get("initiala_c") or "").strip():
-        er.append("Lipsa initiala tata (initiala_c).")
+        er.append("Lipsă initiala tata (initiala_c).")
     if not str(manual.get("prenume_c") or "").strip():
-        er.append("Lipsa prenume contribuabil (prenume_c).")
+        er.append("Lipsă prenume contribuabil (prenume_c).")
     if not _cnp_valid(manual.get("cif_c")):
         er.append("CNP contribuabil (cif_c) invalid (13 cifre + cifra de control).")
     sect = manual.get("sectiuni") or []
     if not sect:
-        er.append("Lipsa sectiuni de venit (sectiuni) - minim o pereche (tara, categorie).")
+        er.append("Lipsă sectiuni de venit (sectiuni) - minim o pereche (țară, categorie).")
     vazute = set()
     for i, s in enumerate(sect, 1):
         categ = _int(s.get("categ_venit"))
         tara = _int(s.get("statul"))
         if categ is None:
-            er.append("Sectiunea %d: lipsa categ_venit (categoria de venit)." % i)
+            er.append("Secțiunea %d: lipsă categ_venit (categoria de venit)." % i)
         if tara is None:
-            er.append("Sectiunea %d: lipsa statul (cod tara ISO-3166 numeric)." % i)
+            er.append("Secțiunea %d: lipsă statul (cod țară ISO-3166 numeric)." % i)
         if categ is not None and tara is not None:
             if (tara, categ) in vazute:
-                er.append("Sectiunea %d: perechea (statul=%s, categ_venit=%s) duplicata - trebuie unica."
+                er.append("Secțiunea %d: perechea (statul=%s, categ_venit=%s) duplicata - trebuie unica."
                           % (i, tara, categ))
             vazute.add((tara, categ))
         if _int(s.get("imp2")) and categ != _CATEG_SALARII:
-            er.append("Sectiunea %d: imp2 (impozit pe salarii) admis doar la categ_venit=14 (R33)." % i)
+            er.append("Secțiunea %d: imp2 (impozit pe salarii) admis doar la categ_venit=14 (R33)." % i)
         for et in ("data_I", "data_P"):
             dv = s.get(et)
             if dv and not _DATA_RO.match(str(dv).strip()):
-                er.append("Sectiunea %d: %s trebuie in format dd.mm.yyyy." % (i, et))
+                er.append("Secțiunea %d: %s trebuie în format dd.mm.yyyy." % (i, et))
     return er
 
 

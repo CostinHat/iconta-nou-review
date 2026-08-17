@@ -118,27 +118,27 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not str(manual.get("nume_c") or "").strip():
-        er.append("Lipsa nume contribuabil (nume_c).")
+        er.append("Lipsă nume contribuabil (nume_c).")
     if not str(manual.get("initiala_c") or "").strip():
-        er.append("Lipsa initiala tata (initiala_c).")
+        er.append("Lipsă initiala tata (initiala_c).")
     if not str(manual.get("prenume_c") or "").strip():
-        er.append("Lipsa prenume contribuabil (prenume_c).")
+        er.append("Lipsă prenume contribuabil (prenume_c).")
     if not _cnp_valid(manual.get("cif_c")):
         er.append("CNP contribuabil (cif_c) invalid (13 cifre + cifra de control).")
     if not str(manual.get("adresa_c") or "").strip():
-        er.append("Lipsa adresa contribuabil (adresa_c).")
+        er.append("Lipsă adresa contribuabil (adresa_c).")
     cont = str(manual.get("cont_c") or "").replace(" ", "").upper()
     if cont and not _IBAN_OK.match(cont):
-        er.append("IBAN contribuabil (cont_c) invalid - astept RO + 22 caractere.")
+        er.append("IBAN contribuabil (cont_c) invalid - aștept RO + 22 caractere.")
     # R42: suma de control trebuie sa fie > 0 (cel putin o componenta CAS/CASS).
     if calcul_d600(manual)["totalPlata_A"] <= 0:
-        er.append("Nicio componenta CAS/CASS > 0 (totalPlata_A trebuie sa fie > 0) - DUK regula R42.")
+        er.append("Nicio componenta CAS/CASS > 0 (totalPlata_A trebuie să fie > 0) - DUK regula R42.")
     # Exclusivitate CASS (probata pe validator): cass1..6 / cass_opt / cass_incepere - cel mult una.
     cass_baze = sum(_int(manual.get("cass%d" % i)) for i in range(1, 7))
     cai = sum(1 for v in (cass_baze, _int(manual.get("cass_opt")),
                           _int(manual.get("cass_incepere"))) if v > 0)
     if cai > 1:
-        er.append("CASS: cass1..cass6, cass_opt si cass_incepere nu pot fi simultan > 0.")
+        er.append("CASS: cass1..cass6, cass_opt și cass_incepere nu pot fi simultan > 0.")
     return er
 
 

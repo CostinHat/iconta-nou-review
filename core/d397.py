@@ -131,27 +131,27 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not str(manual.get("den") or "").strip():
-        er.append("Lipsa denumire declarant (den).")
+        er.append("Lipsă denumire declarant (den).")
     if not _cui_valid(manual.get("cif")):
-        er.append("CIF declarant (cif) invalid - CUI cu cifra de control gresita.")
+        er.append("CIF declarant (cif) invalid - CUI cu cifra de control greșită.")
     if not str(manual.get("adresa") or "").strip():
-        er.append("Lipsa adresa declarant (adresa).")
+        er.append("Lipsă adresa declarant (adresa).")
     if not str(manual.get("numeIntocmit") or "").strip():
-        er.append("Lipsa nume intocmitor (numeIntocmit).")
+        er.append("Lipsă nume intocmitor (numeIntocmit).")
     if not str(manual.get("functiaIntocmit") or "").strip():
-        er.append("Lipsa functie intocmitor (functiaIntocmit).")
+        er.append("Lipsă funcție intocmitor (functiaIntocmit).")
     ops = _operatori(manual)
     if not ops:
-        er.append("Lipsa operatori (cel putin un operator cu cel putin un autoturism).")
+        er.append("Lipsă operatori (cel puțin un operator cu cel puțin un autoturism).")
     calc = {o["cif_O"]: o for o in calcul_d397(manual)["operatori"]}
     for i, op in enumerate(ops, 1):
         p = "Operator %d" % i
         if not _cui_valid(op.get("cif_O")):
             er.append("%s: CIF operator (cif_O) invalid." % p)
         if not str(op.get("den_O") or "").strip():
-            er.append("%s: lipsa denumire operator (den_O)." % p)
+            er.append("%s: lipsă denumire operator (den_O)." % p)
         if not _data(op.get("data_accept")):
-            er.append("%s: lipsa data acceptare operator (data_accept)." % p)
+            er.append("%s: lipsă data acceptare operator (data_accept)." % p)
         autos = list(op.get("auto") or [])
         if not autos:
             er.append("%s: niciun autoturism (Auto)." % p)
@@ -166,17 +166,17 @@ def erori_generare(prof, manual):
         for j, a in enumerate(autos, 1):
             q = "%s auto %d" % (p, j)
             if not str(a.get("nr_auto") or "").strip():
-                er.append("%s: lipsa nr. inmatriculare (nr_auto)." % q)
+                er.append("%s: lipsă nr. înmatriculare (nr_auto)." % q)
             if not _data(a.get("data_acceptA")):
-                er.append("%s: lipsa data acceptare autoturism (data_acceptA)." % q)
+                er.append("%s: lipsă data acceptare autoturism (data_acceptA)." % q)
             if not _data(a.get("data_accept_CA")):
-                er.append("%s: lipsa data acceptare conducator (data_accept_CA)." % q)
+                er.append("%s: lipsă data acceptare conducator (data_accept_CA)." % q)
             if not str(a.get("nume") or "").strip():
-                er.append("%s: lipsa nume conducator (nume)." % q)
+                er.append("%s: lipsă nume conducator (nume)." % q)
             if not _cnp_valid(a.get("cnp")):
                 er.append("%s: CNP conducator (cnp) invalid." % q)
             if not str(a.get("statut") or "").strip():
-                er.append("%s: lipsa statut (statut)." % q)
+                er.append("%s: lipsă statut (statut)." % q)
     return er
 
 

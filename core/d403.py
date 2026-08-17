@@ -299,28 +299,28 @@ def erori_generare(prof, manual):
     an = int(prof.get("an") or 0)
     # --- identificare raportor (radacina declaratie403) ---
     if not (_cui_valid(manual.get("cif")) or _cnp_valid(manual.get("cif"))):
-        er.append("CIF raportor (cif) invalid - astept CUI (2-10 cifre) sau CNP (13 cifre).")
+        er.append("CIF raportor (cif) invalid - aștept CUI (2-10 cifre) sau CNP (13 cifre).")
     for camp, et in (("den_rap", "Denumire raportor (Den_rap)"),
                      ("localitate_rap", "Localitate raportor (Localitate_rap)"),
                      ("adresa_rap", "Adresa raportor (Adresa_rap)"),
                      ("nume_declar", "Nume declarant (nume_declar)"),
                      ("prenume_declar", "Prenume declarant (prenume_declar)"),
-                     ("functie_declar", "Functie declarant (functie_declar)")):
+                     ("functie_declar", "Funcție declarant (functie_declar)")):
         if not str(manual.get(camp) or "").strip():
             er.append("Lipsa " + et + ".")
     judet = str(manual.get("judet_rap") or "").strip()
     if judet not in _JUDETE:
-        er.append("Judet_rap (judet_rap) obligatoriu, cod judet valid (ex. 40=Bucuresti).")
+        er.append("Judet_rap (judet_rap) obligatoriu, cod județ valid (ex. 40=București).")
     elif judet == "40" and not str(manual.get("sector_rap") or "").strip():
         er.append("Pentru Judet_rap=40, Sector_rap (sector_rap) este obligatoriu (DUK regula R9).")
     if str(manual.get("tara_rap") or "").strip().upper() not in _TARI_MS:
         er.append("Tara_rap (tara_rap) obligatoriu, stat din nomenclator (ex. RO).")
     if str(manual.get("forma_juridica") or "").strip() not in _FORMA_JURID:
-        er.append("Forma_juridica (forma_juridica) obligatoriu in {1,8,9,10}.")
+        er.append("Forma_juridica (forma_juridica) obligatoriu în {1,8,9,10}.")
     if not _in_range(manual.get("tip_adresa1"), _R_TIP_ADR1) or int(manual.get("tip_adresa1")) == 3:
-        er.append("Tip_adresa1 (tip_adresa1) obligatoriu in {1,2,4}.")
+        er.append("Tip_adresa1 (tip_adresa1) obligatoriu în {1,2,4}.")
     if not _in_range(manual.get("sediu_dn1"), _R_SEDIU_DN1):
-        er.append("Sediu_DN1 (sediu_dn1) obligatoriu in (1,2).")
+        er.append("Sediu_DN1 (sediu_dn1) obligatoriu în (1,2).")
     try:
         d_rec = int(manual.get("d_rec") or 0)
     except (TypeError, ValueError):
@@ -334,15 +334,15 @@ def erori_generare(prof, manual):
     for pi, pol in enumerate(polite, 1):
         pp = "polita #%d: " % pi
         if not str(pol.get("id_polita") or "").strip():
-            er.append(pp + "lipsa id_polita.")
+            er.append(pp + "lipsă id_polita.")
         tp = _int_or_none(pol.get("tip_polita"))
         if not _in_range(tp, _R_TIP_POLITA):
-            er.append(pp + "tip_polita obligatoriu in (1,2).")
+            er.append(pp + "tip_polita obligatoriu în (1,2).")
         if not _in_range(pol.get("trat_fisc_polita"), _R_TRAT_FISC):
-            er.append(pp + "trat_fisc_polita obligatoriu in (1..5).")
+            er.append(pp + "trat_fisc_polita obligatoriu în (1..5).")
         tbp = _int_or_none(pol.get("tip_benef_polita"))
         if not _in_range(tbp, _R_TIP_BENEF_POLITA):
-            er.append(pp + "tip_benef_polita obligatoriu in (1..4).")
+            er.append(pp + "tip_benef_polita obligatoriu în (1..4).")
         tt = _int_or_none(pol.get("tip_termen_polita"))
         if tp == 1 and tt != 2:
             er.append(pp + "tip_polita=1 impune tip_termen_polita=2 (DUK regula R111).")
@@ -352,7 +352,7 @@ def erori_generare(prof, manual):
         if tt == 1 and (aci is None or aci == 0):
             er.append(pp + "tip_termen_polita=1 impune ani_contrib_polita <> 0 (DUK regula R114).")
         if tbp in (2, 4) and (aci is None or aci == 0):
-            er.append(pp + "tip_benef_polita in (2,4) impune ani_contrib_polita <> 0 (DUK regula R115).")
+            er.append(pp + "tip_benef_polita în (2,4) impune ani_contrib_polita <> 0 (DUK regula R115).")
         di = _parse_data(pol.get("data_i_polita"))
         if pol.get("data_i_polita") and di is None:
             er.append(pp + "data_i_polita format ZZ.LL.AAAA.")
@@ -366,29 +366,29 @@ def erori_generare(prof, manual):
         for bi, b in enumerate(pers, 1):
             pb = pp + "persoana #%d: " % bi
             if not str(b.get("id_pers") or "").strip():
-                er.append(pb + "lipsa id_pers.")
+                er.append(pb + "lipsă id_pers.")
             calit = _int_or_none(b.get("calit_pers"))
             if not _in_range(calit, _R_CALIT_PERS):
-                er.append(pb + "Calit_pers obligatoriu in (1..4).")
+                er.append(pb + "Calit_pers obligatoriu în (1..4).")
             tip_pers = _int_or_none(b.get("tip_pers"))
             if not _in_range(tip_pers, _R_TIP_PERS):
-                er.append(pb + "Tip_pers obligatoriu in (1,2).")
+                er.append(pb + "Tip_pers obligatoriu în (1,2).")
             stat = str(b.get("stat_sr") or "").strip().upper()
             if stat not in _TARI_MS:
                 er.append(pb + "Stat_SR obligatoriu, stat din nomenclator (_tari).")
             if not str(b.get("localitate_sr") or "").strip():
-                er.append(pb + "lipsa Localitate_SR (localitate_sr).")
+                er.append(pb + "lipsă Localitate_SR (localitate_sr).")
             if not _in_range(b.get("unic_mm"), _R_UNIC_MM):
-                er.append(pb + "unic_mm obligatoriu in (1..3).")
+                er.append(pb + "unic_mm obligatoriu în (1..3).")
             cp = b.get("cota_parte")
             if cp in (None, "") or _dec2(cp) < 0:
                 er.append(pb + "cota_parte obligatorie (zecimal, ex. 100.00).")
             # tip_pers dependent
             if tip_pers == 1:
                 if not _in_range(b.get("in_calit"), _R_IN_CALIT):
-                    er.append(pb + "Tip_pers=1 impune In_calit in (1..4) (DUK regula R64).")
+                    er.append(pb + "Tip_pers=1 impune In_calit în (1..4) (DUK regula R64).")
                 if not _in_range(b.get("tip_adresa2"), _R_TIP_ADR2):
-                    er.append(pb + "Tip_pers=1 impune Tip_adresa2 in (1..5) (DUK regula R65).")
+                    er.append(pb + "Tip_pers=1 impune Tip_adresa2 în (1..5) (DUK regula R65).")
                 if not (b.get("data_nasterii") or _cif(b.get("cif_sr")) or _cnp_valid(b.get("cif_rom"))):
                     er.append(pb + "Tip_pers=1 impune Data_nasterii sau CIF_SR sau CIF_rom (DUK regula R120).")
                 if not str(b.get("nume_pers") or "").strip():
@@ -397,68 +397,68 @@ def erori_generare(prof, manual):
                     er.append(pb + "Tip_pers=1 impune Pren_pers (DUK regula R53b).")
             if tip_pers == 2:
                 if not _in_range(b.get("tip_pj"), _R_TIP_PJ):
-                    er.append(pb + "Tip_pers=2 impune Tip_PJ in (1..8) (DUK regula R67).")
+                    er.append(pb + "Tip_pers=2 impune Tip_PJ în (1..8) (DUK regula R67).")
                 if not _in_range(b.get("sediu_dn2"), _R_SEDIU_DN2):
-                    er.append(pb + "Tip_pers=2 impune Sediu_DN2 in (1,2) (DUK regula R68).")
+                    er.append(pb + "Tip_pers=2 impune Sediu_DN2 în (1,2) (DUK regula R68).")
                 if not str(b.get("den_pers") or "").strip():
                     er.append(pb + "Tip_pers=2 impune Den_pers (DUK regula R53).")
             # calit_pers dependent
             tbpc = _int_or_none(b.get("tip_ben_plat_contr"))
             if calit in (1, 3, 4):
                 if tbpc is None or not _in_range(tbpc, _R_TIP_BEN_PLAT):
-                    er.append(pb + "Calit_pers in (1,3,4) impune tip_ben_plat_contr in (1..4) (DUK regula R75.1).")
+                    er.append(pb + "Calit_pers în (1,3,4) impune tip_ben_plat_contr în (1..4) (DUK regula R75.1).")
                 elif calit != 1 and tbpc == 3:
                     er.append(pb + "Calit_pers<>1: tip_ben_plat_contr nu poate fi 3 (DUK regula R75.3).")
             elif calit == 2 and tbpc is not None:
-                er.append(pb + "Calit_pers=2: tip_ben_plat_contr trebuie sa fie null (DUK regula R75.2).")
+                er.append(pb + "Calit_pers=2: tip_ben_plat_contr trebuie să fie null (DUK regula R75.2).")
             if calit in (2, 3, 4) and not _in_range(b.get("rel_ben"), _R_REL_BEN):
-                er.append(pb + "Calit_pers in (2,3,4) impune rel_ben in (1..4) (DUK regula R78).")
+                er.append(pb + "Calit_pers în (2,3,4) impune rel_ben în (1..4) (DUK regula R78).")
             sb = _int_or_none(b.get("stare_ben"))
             if calit == 1 and not _in_range(sb, _R_STARE_BEN):
-                er.append(pb + "Calit_pers=1 impune stare_ben in (1,2) (DUK regula R79.1).")
+                er.append(pb + "Calit_pers=1 impune stare_ben în (1,2) (DUK regula R79.1).")
             elif calit is not None and calit != 1 and sb is not None:
-                er.append(pb + "Calit_pers<>1: stare_ben trebuie sa fie null (DUK regula R79.2).")
+                er.append(pb + "Calit_pers<>1: stare_ben trebuie să fie null (DUK regula R79.2).")
             nat = b.get("nationalitate")
             if nat and str(nat).strip().upper() not in _NATIONALITATI:
-                er.append(pb + "Nationalitate neregasita in nomenclator.")
+                er.append(pb + "Nationalitate neregasita în nomenclator.")
             if b.get("data_nasterii") and _parse_data(b.get("data_nasterii")) is None:
                 er.append(pb + "Data_nasterii format ZZ.LL.AAAA.")
             if calit in (1, 3, 4) and stat and stat != "RO":
                 raportabila = True
         if pers and not raportabila:
-            er.append(pp + "trebuie o persoana cu Stat_SR<>RO si Calit_pers in (1,3,4) "
+            er.append(pp + "trebuie o persoana cu Stat_SR<>RO și Calit_pers în (1,3,4) "
                            "(persoana raportabila; DUK regula polita).")
 
         for ei, ev in enumerate(_evenimente(pol), 1):
             pe = pp + "eveniment #%d: " % ei
             if not str(ev.get("id_eveniment") or "").strip():
-                er.append(pe + "lipsa id_eveniment.")
+                er.append(pe + "lipsă id_eveniment.")
             tev = _int_or_none(ev.get("tip_ev"))
             if not _in_range(tev, _R_TIP_EV):
-                er.append(pe + "Tip_ev obligatoriu in (1..25).")
+                er.append(pe + "Tip_ev obligatoriu în (1..25).")
             elif tp == 1 and tev in (3, 4, 8):
                 er.append(pe + "tip_polita=1: Tip_ev nu poate fi 3,4,8 (DUK regula R114).")
             if not _in_range(ev.get("periodicitate"), _R_PERIODICITATE):
-                er.append(pe + "Periodicitate obligatoriu in (1..3).")
+                er.append(pe + "Periodicitate obligatoriu în (1..3).")
             if not _in_range(ev.get("regim_ev"), _R_REGIM_EV):
-                er.append(pe + "Regim_ev obligatoriu in (1,2).")
+                er.append(pe + "Regim_ev obligatoriu în (1,2).")
             if not _in_range(ev.get("mod_imp1"), _R_MOD_IMP1):
-                er.append(pe + "Mod_imp1 obligatoriu in (1..6).")
+                er.append(pe + "Mod_imp1 obligatoriu în (1..6).")
             if not _in_range(ev.get("mod_imp2"), _R_MOD_IMP2):
-                er.append(pe + "Mod_imp2 obligatoriu in (1,2).")
+                er.append(pe + "Mod_imp2 obligatoriu în (1,2).")
             sev = _int_or_none(ev.get("status_ev"))
             if tev in range(3, 10) and sev != 2:
-                er.append(pe + "Tip_ev in 3..9 impune Status_ev=2 (DUK regula R116).")
+                er.append(pe + "Tip_ev în 3..9 impune Status_ev=2 (DUK regula R116).")
             elif tev in range(10, 18) and sev is None:
-                er.append(pe + "Tip_ev in 10..17 impune Status_ev (DUK regula R117).")
+                er.append(pe + "Tip_ev în 10..17 impune Status_ev (DUK regula R117).")
             elif tev is not None and (tev in (1, 2) or tev >= 18) and sev is not None:
-                er.append(pe + "Tip_ev in (1,2,18..25): Status_ev trebuie null (DUK regula R115).")
+                er.append(pe + "Tip_ev în (1,2,18..25): Status_ev trebuie null (DUK regula R115).")
             if tev in range(10, 18) and not _in_range(ev.get("tip_transfer"), _R_TIP_TRANSFER):
-                er.append(pe + "Tip_ev in 10..17 impune Tip_transfer (DUK regula R118).")
+                er.append(pe + "Tip_ev în 10..17 impune Tip_transfer (DUK regula R118).")
             for sfx, rc in (("3", ("R95", "R96", "R97")), ("5", ("R103", "R104", "R105"))):
                 if _dec2(ev.get("suma" + sfx)) > 0:
                     if str(ev.get("moneda" + sfx) or "").strip().upper() not in _MONEZI:
-                        er.append(pe + "Suma%s>0 impune Moneda%s in nomenclator (DUK regula %s)."
+                        er.append(pe + "Suma%s>0 impune Moneda%s în nomenclator (DUK regula %s)."
                                   % (sfx, sfx, rc[0]))
                     if _parse_data(ev.get("data" + sfx)) is None:
                         er.append(pe + "Suma%s>0 impune Data%s (DUK regula %s)." % (sfx, sfx, rc[1]))
@@ -471,12 +471,12 @@ def erori_generare(prof, manual):
                     vc.get("val_capital") not in (None, ""),
                     bool(str(vc.get("moneda_capital") or "").strip())]
             if any(comp) and not all(comp):
-                er.append(pv + "tip_val_capital, val_capital si moneda_capital: toate sau niciunul "
+                er.append(pv + "tip_val_capital, val_capital și moneda_capital: toate sau niciunul "
                                "(DUK regula R110).")
             if comp[0] and not _in_range(vc.get("tip_val_capital"), _R_TIP_VAL_CAP):
-                er.append(pv + "tip_val_capital in (1..4).")
+                er.append(pv + "tip_val_capital în (1..4).")
             if comp[2] and str(vc.get("moneda_capital")).strip().upper() not in _MONEZI:
-                er.append(pv + "moneda_capital in nomenclator.")
+                er.append(pv + "moneda_capital în nomenclator.")
     return er
 
 

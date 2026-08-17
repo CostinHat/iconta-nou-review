@@ -190,10 +190,10 @@ def erori_generare(prof, manual):
     except (TypeError, ValueError):
         luna = 0
     if luna not in (6, 12):
-        er.append("luna raportare trebuie sa fie 6 sau 12 (DUK regula RLuna).")
+        er.append("luna raportare trebuie să fie 6 sau 12 (DUK regula RLuna).")
     an = int(prof.get("an") or 0)
     if not (2025 <= an <= 2100):
-        er.append("an raportare in afara intervalului [2025, 2100] (DUK regula an).")
+        er.append("an raportare în afară intervalului [2025, 2100] (DUK regula an).")
     if not _int_in(manual.get("tip_doc"), (1, 2)):
         er.append("tipDoc (tip_doc) obligatoriu 1 (polite) sau 2 (lista persoane).")
     try:
@@ -211,23 +211,23 @@ def erori_generare(prof, manual):
                      ("localitate", "Localitate (localitate)"),
                      ("forma_j", "Forma juridica (forma_j)"),
                      ("nume", "Nume declarant/semnatar (nume)"),
-                     ("functia", "Functia (functia)")):
+                     ("functia", "Funcția (funcția)")):
         if not str(manual.get(camp) or "").strip():
             er.append("Lipsa " + et + ".")
     try:
         int(manual.get("judet"))
     except (TypeError, ValueError):
-        er.append("judet (cod numeric) obligatoriu (nomenclator DUK).")
+        er.append("județ (cod numeric) obligatoriu (nomenclator DUK).")
     if not str(manual.get("tara_rap") or "").strip():
-        er.append("tara_rap (cod tara) obligatoriu (nomenclator DUK).")
+        er.append("tara_rap (cod țară) obligatoriu (nomenclator DUK).")
     # reprezentant: cifR/adresaR doar daca denR completat (R18/R19)
     denR = str(manual.get("den_r") or "").strip()
     if not denR:
         if str(manual.get("cif_r") or "").strip():
-            er.append("cif reprezentant (cif_r) doar daca denumire reprezentant (den_r) "
+            er.append("cif reprezentant (cif_r) doar dacă denumire reprezentant (den_r) "
                       "completat (DUK regula R18).")
         if str(manual.get("adresa_r") or "").strip():
-            er.append("domiciliu reprezentant (adresa_r) doar daca den_r completat (DUK regula R19).")
+            er.append("domiciliu reprezentant (adresa_r) doar dacă den_r completat (DUK regula R19).")
     if manual.get("cif_r") and not _cif_valid(manual.get("cif_r")):
         er.append("cif reprezentant (cif_r) invalid.")
 
@@ -239,15 +239,15 @@ def erori_generare(prof, manual):
         for i, p in enumerate(polite, 1):
             pf = "polita #%d: " % i
             if not str(p.get("nr_polita") or "").strip():
-                er.append(pf + "lipsa nr_polita.")
+                er.append(pf + "lipsă nr_polita.")
             if not str(p.get("nr_contract") or "").strip():
-                er.append(pf + "lipsa nr_contract.")
+                er.append(pf + "lipsă nr_contract.")
             if not _int_in(p.get("status_polita"), _STATUS_POLITA):
-                er.append(pf + "status_polita obligatoriu in [1,2].")
+                er.append(pf + "status_polita obligatoriu în [1,2].")
             if p.get("clasa_asigurari") is not None and not _int_in(p.get("clasa_asigurari"), _CLASA_ASIG):
-                er.append(pf + "clasa_asigurari in [1,7].")
+                er.append(pf + "clasa_asigurari în [1,7].")
             if p.get("tip_persoana") is not None and not _int_in(p.get("tip_persoana"), _TIP_PERSOANA):
-                er.append(pf + "tip_persoana in [1,3].")
+                er.append(pf + "tip_persoana în [1,3].")
             for db in ("data_inceput", "data_sfarsit", "data_incetare", "data_rascumparare",
                        "data_eveniment"):
                 if p.get(db) and _parse_data(p.get(db)) is None:
@@ -265,7 +265,7 @@ def erori_generare(prof, manual):
                     er.append(bf + "cif_benef invalid.")
                 for bx in ("bifa_a", "bifa_tp", "bifa_ms"):
                     if b.get(bx) is not None and not _int_in(b.get(bx), _BIFA):
-                        er.append(bf + "%s in [0,1]." % bx)
+                        er.append(bf + "%s în [0,1]." % bx)
             asig = p.get("asigurati") or []
             if len(asig) > 10:
                 er.append(pf + "maxim 10 <ASIGURAT> pe polita.")
@@ -275,9 +275,9 @@ def erori_generare(prof, manual):
             for j, ev in enumerate(p.get("evenimente") or [], 1):
                 ef = pf + "eveniment #%d: " % j
                 if ev.get("tip_eveniment") is not None and not _int_in(ev.get("tip_eveniment"), _TIP_EVENIMENT):
-                    er.append(ef + "tip_eveniment in [1,7].")
+                    er.append(ef + "tip_eveniment în [1,7].")
                 if ev.get("mod_plata") is not None and not _int_in(ev.get("mod_plata"), _MOD_PLATA):
-                    er.append(ef + "mod_plata in [1,11].")
+                    er.append(ef + "mod_plata în [1,11].")
                 if ev.get("data_producere") and _parse_data(ev.get("data_producere")) is None:
                     er.append(ef + "data_producere format ZZ.LL.AAAA.")
                 if ev.get("cif_benef_1") and not _cif_valid(ev.get("cif_benef_1")):
@@ -291,7 +291,7 @@ def erori_generare(prof, manual):
             if pp.get("cif_d") and not _cif_valid(pp.get("cif_d")):
                 er.append(lf + "cif_d invalid.")
             if pp.get("tip_instrument") is not None and not _int_in(pp.get("tip_instrument"), _TIP_INSTRUMENT):
-                er.append(lf + "tip_instrument in [1,2].")
+                er.append(lf + "tip_instrument în [1,2].")
     return er
 
 

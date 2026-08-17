@@ -58,7 +58,7 @@ _NEDIGIT = re.compile(r"\D")
 _CATEG_VENIT = {1, 2, 3, 4, 5, 6}          # coduri categorie venit acceptate
 _CUI_KEY = (7, 5, 3, 2, 1, 7, 5, 3, 2)     # cheia de control CUI
 _CNP_W = (2, 7, 9, 1, 4, 6, 3, 5, 8, 2, 7, 9)
-_JUDET_BUC = {"40", "B", "BUCURESTI", "MUNICIPIUL BUCURESTI"}
+_JUDET_BUC = {"40", "B", "BUCURESTI", "MUNICIPIUL BUCUREȘTI"}
 
 
 def _cif(x):
@@ -196,22 +196,22 @@ def erori_generare(prof, manual):
     rep = manual.get("reprezentant") or manual.get("declarant") or {}
     # ASOCIEREA: nume (denumire), cif (CUI, max 10), adresa
     if not str(aso.get("den") or aso.get("nume") or "").strip():
-        er.append("Lipsa denumire asociere (asociere.den).")
+        er.append("Lipsă denumire asociere (asociere.den).")
     if not _cui_valid(aso.get("cif") or aso.get("cui")):
         er.append("CUI asociere (asociere.cif) invalid (max 10 cifre + cifra de control).")
     if not str(aso.get("adresa") or "").strip():
-        er.append("Lipsa adresa asociere (asociere.adresa).")
+        er.append("Lipsă adresa asociere (asociere.adresa).")
     # REPREZENTANTUL: den_r (nume), cif_r (CNP sau CUI), adresa_r
     if not str(rep.get("nume") or rep.get("den") or "").strip():
-        er.append("Lipsa nume reprezentant (reprezentant.nume).")
+        er.append("Lipsă nume reprezentant (reprezentant.nume).")
     if not _nif_valid(rep.get("cif")):
         er.append("CIF/CNP reprezentant (reprezentant.cif) invalid.")
     if not str(rep.get("adresa") or "").strip():
-        er.append("Lipsa adresa reprezentant (reprezentant.adresa).")
+        er.append("Lipsă adresa reprezentant (reprezentant.adresa).")
 
     calc = calcul_d204(manual)
     if not calc["activitati"] or all(not a["asociati"] for a in calc["activitati"]):
-        er.append("D204 cere cel putin o activitate cu cel putin un asociat.")
+        er.append("D204 cere cel puțin o activitate cu cel puțin un asociat.")
     for idx, act in enumerate(calc["activitati"], 1):
         et = "Activitate %d" % idx
         if act["categ_venit"] not in _CATEG_VENIT:
@@ -220,7 +220,7 @@ def erori_generare(prof, manual):
             er.append("%s: det_ven_net trebuie 1 sau 2." % et)
         if act["det_ven_net"] == 2:
             er.append("%s: det_ven_net=2 (norma de venit) cere sectiuni <anexa>/<produse> - "
-                      "caz nepopulat in acest modul; foloseste det_ven_net=1 (sistem real)." % et)
+                      "caz nepopulat în acest modul; folosește det_ven_net=1 (sistem real)." % et)
         if act["categ_venit"] != 3 and act["det_ven_net"] != 1:
             er.append("%s: categ_venit != 3 impune det_ven_net = 1." % et)
         if act["categ_venit"] == 3 and act["forma_org"] != 1:
@@ -228,21 +228,21 @@ def erori_generare(prof, manual):
         if act["det_ven_net"] == 1 and not act["caen"]:
             er.append("%s: det_ven_net=1 cere cod CAEN." % et)
         if not act["judet"]:
-            er.append("%s: lipsa judet." % et)
+            er.append("%s: lipsă județ." % et)
         if act["judet"].upper() in _JUDET_BUC and not act["sector"]:
-            er.append("%s: pentru Municipiul Bucuresti este obligatoriu sectorul." % et)
+            er.append("%s: pentru Municipiul București este obligatoriu sectorul." % et)
         if act["judet"].upper() not in _JUDET_BUC and act["sector"]:
-            er.append("%s: sectorul se completeaza doar pentru Municipiul Bucuresti." % et)
+            er.append("%s: sectorul se completează doar pentru Municipiul București." % et)
         if not str(act["sediu"] or "").strip():
-            er.append("%s: lipsa sediu." % et)
+            er.append("%s: lipsă sediu." % et)
         if bool(act["nr_contr"]) != bool(act["data_contr"]):
-            er.append("%s: nr_contr si data_contr trebuie completate impreuna." % et)
+            er.append("%s: nr_contr și data_contr trebuie completate impreuna." % et)
         if not act["asociati"]:
-            er.append("%s: cel putin un asociat." % et)
+            er.append("%s: cel puțin un asociat." % et)
         cifuri = []
         for j, a in enumerate(act["asociati"], 1):
             if not str(a["nume_d"] or "").strip():
-                er.append("%s asociat %d: lipsa nume (nume_d)." % (et, j))
+                er.append("%s asociat %d: lipsă nume (nume_d)." % (et, j))
             if not _nif_valid(a["cif_d"]):
                 er.append("%s asociat %d: cif_d (CNP/CUI) invalid." % (et, j))
             else:
@@ -252,12 +252,12 @@ def erori_generare(prof, manual):
         if len(cifuri) != len(set(cifuri)):
             er.append("%s: cif_d duplicat intre asociati." % et)
         if act["asociati"] and act["sum_cota"] != Decimal(100):
-            er.append("%s: suma cotelor (%s) trebuie sa fie 100." % (et, act["sum_cota"]))
+            er.append("%s: suma cotelor (%s) trebuie să fie 100." % (et, act["sum_cota"]))
         if act["sum_venit_d"] != act["net3"]:
-            er.append("%s: suma venit_d (%d) trebuie sa fie egala cu venitul net net3 (%d)."
+            er.append("%s: suma venit_d (%d) trebuie să fie egala cu venitul net net3 (%d)."
                       % (et, act["sum_venit_d"], act["net3"]))
         if act["sum_pierd_d"] != act["pierd3"]:
-            er.append("%s: suma pierd_d (%d) trebuie sa fie egala cu pierderea pierd3 (%d)."
+            er.append("%s: suma pierd_d (%d) trebuie să fie egala cu pierderea pierd3 (%d)."
                       % (et, act["sum_pierd_d"], act["pierd3"]))
     return er
 

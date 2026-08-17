@@ -98,19 +98,19 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not _cif(prof.get("cui")):
-        er.append("CUI firma lipsa/invalid (D311 cere cod fiscal valid).")
+        er.append("CUI firma lipsă/invalid (D311 cere cod fiscal valid).")
     if not (prof.get("den") or prof.get("nume")):
-        er.append("LIPSA denumire firma.")
+        er.append("LIPSĂ denumire firma.")
     for c in ("declarant_nume", "declarant_prenume", "declarant_functie"):
         if not str(prof.get(c) or "").strip():
-            er.append("LIPSA %s (declarant obligatoriu D311)." % c)
+            er.append("LIPSĂ %s (declarant obligatoriu D311)." % c)
     sch = int(manual.get("schema") or 1)
     if sch != 1:
         er.append("D311: doar schema IV (dupa anularea codului de TVA) e implementata; "
                   "schema V (reinregistrare) - limitare documentata, vezi core/d311.py.")
         return er
     if not manual.get("Data_A"):
-        er.append("Schema IV: Data_A (data anularii inregistrarii in scopuri de TVA) obligatorie.")
+        er.append("Schema IV: Data_A (data anularii inregistrarii în scopuri de TVA) obligatorie.")
     a1, a2 = int(manual.get("d_anul1") or 0), int(manual.get("d_anul2") or 0)
     if a1 + a2 != 1:
         er.append("Schema IV: exact una din d_anul1 (anulare din oficiu) / d_anul2 "

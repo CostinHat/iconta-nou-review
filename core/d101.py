@@ -142,7 +142,7 @@ def _erori_valori_p(g, P, cifra_afaceri=None):
     erori = []
     for k in _NENEG_D101:
         if g(k) < 0:
-            erori.append("D101: %s = %d < 0 (DUK regula %s>=0). Corecteaza valoarea in declaratie." % (k, g(k), k))
+            erori.append("D101: %s = %d < 0 (DUK regula %s>=0). Corectează valoarea în declarație." % (k, g(k), k))
     for parinte, copii in _SUBTOTAL_D101.items():
         suma = sum(g(c) for c in copii)
         if g(parinte) < suma:
@@ -171,8 +171,8 @@ def _erori_valori_p(g, P, cifra_afaceri=None):
         _plaf_v5b = _i(Decimal(str(cifra_afaceri)) * Decimal("0.0075"))
         if P43 > _plaf_v5b:
             erori.append("D101: P43 (sponsorizare) = %d > plafon %d (V5-bis: limita 0.75%% din cifra de "
-                         "afaceri %d, CF art.25 alin.(4) lit.i - limita DUBLA min(0.75%% CA; 20%% impozit); "
-                         "DUK verifica doar 20%%)." % (P43, _plaf_v5b, _i(Decimal(str(cifra_afaceri)))))
+                         "afaceri %d, CF art.25 alin.(4) lit.i - limita DUBLĂ min(0.75%% CA; 20%% impozit); "
+                         "DUK verifică doar 20%%)." % (P43, _plaf_v5b, _i(Decimal(str(cifra_afaceri)))))
     return erori
 
 
@@ -228,11 +228,11 @@ def calcul_d101(prof, an, intrari=None, cota=None, d_grup=0, cod_obligatie="103"
     I = dict(intrari or {})
     necunoscute = [k for k in I if k not in _P_INTRARI]
     if necunoscute:
-        raise ValueError("D101 intrari necunoscute: %s (permise: %s)" % (sorted(necunoscute), sorted(_P_INTRARI)))
+        raise ValueError("D101 intrări necunoscute: %s (permise: %s)" % (sorted(necunoscute), sorted(_P_INTRARI)))
     cod_obligatie = str(cod_obligatie)
     if cod_obligatie not in _COD_OBLIGATIE_D101:
         raise ValueError("D101: cod_obligatie invalid (%s): permise %s (DUK regula cod_obligatie=(102,103,104,105)). "
-                         "Corecteaza tipul de impozit pe profit." % (cod_obligatie, sorted(_COD_OBLIGATIE_D101)))
+                         "Corectează tipul de impozit pe profit." % (cod_obligatie, sorted(_COD_OBLIGATIE_D101)))
     cota = Decimal(str(cota if cota is not None else COTA_STANDARD))
     g = lambda k: _i(I.get(k, 0))
 
@@ -392,8 +392,8 @@ def build_xml(res):
     elementului unic <declaratie101>, care se inchide self-fara-copii."""
     prof = res.prof
     if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
-        res.avertismente.append("D101: declarantul (nume/functie) lipseste din profil -> emis implicit "
-                                "\"ADMINISTRATOR\". Completeaza declarantul in Date firma.")
+        res.avertismente.append("D101: declarantul (nume/funcție) lipsește din profil -> emis implicit "
+                                "\"ADMINISTRATOR\". Completează declarantul în Date firma.")
     an = res.an
     cif_num = "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit())
     scad_luna, scad_an = _scadenta(an)
@@ -497,8 +497,8 @@ def genereaza(conn, schema, perioada, manual=None):
     if ca_prec not in (None, "") and Decimal(str(ca_prec)) > PRAG_IMCA_EUR and "P47" not in manual:
         raise ValueError(
             "D101 IMCA (art.18^1 alin.1): cifra de afaceri an precedent %s EUR > 50.000.000 -> IMCA "
-            "datorata, dar P47 (=1%% x (VT-Vs-I-A)) nu e furnizat. Declara P47 in date_extra (VT/Vs/I/A "
-            "nu se deriva automat din balanta) sau foloseste calcul_d101(imca=...)." % ca_prec)
+            "datorată, dar P47 (=1%% x (VT-Vs-I-A)) nu e furnizat. Declara P47 în date_extra (VT/Vs/I/A "
+            "nu se derivă automat din balanță) sau folosește calcul_d101(imca=...)." % ca_prec)
     prof, r = pull(conn, schema, perioada)
     erori = erori_generare(prof)
     if erori:

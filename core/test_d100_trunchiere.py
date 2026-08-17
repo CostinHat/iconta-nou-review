@@ -22,7 +22,7 @@ def _res(nume, adresa):
 
 
 def test_den_si_adresa_normale_fara_avertisment():
-    res = _res("ALFA MICRO SRL", "Str. Test 1 Bucuresti")
+    res = _res("ALFA MICRO SRL", "Str. Test 1 București")
     d100.build_xml(res)
     assert res.avertismente == [], res.avertismente
 
@@ -31,7 +31,7 @@ def test_denumire_prea_lunga_avertizeaza_si_numeste_campul():
     nume = "A" * (_LIM_DEN + 5)
     res = _res(nume, "Str. Test 1")
     xml = d100.build_xml(res)
-    assert any("denumirea firmei" in a and "trunchiata" in a for a in res.avertismente), res.avertismente
+    assert any("denumirea firmei" in a and "trunchiată" in a for a in res.avertismente), res.avertismente
     # avertismentul e NON-blocant: XML se genereaza, dar den din XML e taiat la limita
     assert ('den="%s"' % ("A" * _LIM_DEN)) in xml
     assert ("A" * (_LIM_DEN + 1)) not in xml
@@ -41,7 +41,7 @@ def test_adresa_prea_lunga_avertizeaza_si_numeste_campul():
     adresa = "B" * (_LIM_ADR + 3)
     res = _res("ALFA MICRO SRL", adresa)
     d100.build_xml(res)
-    assert any("adresa domiciliului fiscal" in a and "trunchiata" in a for a in res.avertismente), res.avertismente
+    assert any("adresa domiciliului fiscal" in a and "trunchiată" in a for a in res.avertismente), res.avertismente
 
 
 def test_avertismentul_da_limita_reala():

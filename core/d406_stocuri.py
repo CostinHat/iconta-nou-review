@@ -28,7 +28,7 @@ def solduri(miscari, data_start, data_end):
         if m["data"] <= data_end:
             cq += q; cv += v
     if cq < 0 or cv < 0:
-        raise ValueError("stoc negativ la inchidere - verifica miscarile")
+        raise ValueError("stoc negativ la închidere - verifică mișcările")
     pret = (cv / cq).quantize(Decimal("0.0001"), rounding=ROUND_HALF_UP) if cq > 0 else Decimal("0")
     return {"open_q": oq.quantize(B3), "open_v": ov.quantize(B2),
             "close_q": cq.quantize(B3), "close_v": cv.quantize(B2), "pret": pret}
@@ -63,5 +63,5 @@ def xml_physical_stock(articole_cu_miscari, data_start, data_end, owner_id):
         s = solduri(mis, data_start, data_end)
         parti.append(xml_entry(art, s, owner_id))
     if not parti:
-        raise ValueError("niciun articol cu miscari in perioada")
+        raise ValueError("niciun articol cu mișcări în perioada")
     return "<nsSAFT:PhysicalStock>\n" + "\n".join(parti) + "\n</nsSAFT:PhysicalStock>"

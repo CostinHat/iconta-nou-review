@@ -145,7 +145,7 @@ def test_checksum_totalplata_a_egal_suma_randuri_emise_duk_valid():
         {"directie": "primita", "total": 1210, "tva": 210},
     ]
     res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi)
-    assert res.total_plata_a == sum(res.R.values()), "totalPlata_A trebuie sa fie suma randurilor emise"
+    assert res.total_plata_a == sum(res.R.values()), "totalPlata_A trebuie să fie suma randurilor emise"
     assert res.total_plata_a == 7810, "golden checksum; got %d" % res.total_plata_a
     rez = _duk300.valideaza(build_xml(res), "d300", an=2026, luna=6)
     assert rez["stare"] == "valid", "DUK a respins checksum-ul D300: %s" % rez.get("erori")
@@ -326,7 +326,7 @@ def test_taxare_inversa_r12_fara_fix_ar_fi_dropped():
     # GARD anti-regresie: daca R12_ dispare din allow-list, rd.12 devine None si testul de mai sus pica.
     # Aici verificam direct ca un R12 manual ajunge in rezultat (nu tacut ignorat ca inainte de fix).
     res = calcul_d300(_prof(), Perioada(2026, luna=6), [], {"R12_1": 500, "R12_2": 105})
-    assert res.R.get("R12_1") == 500, "rd.12 (taxare inversa) e ignorat - R12_ lipseste din allow-list"
+    assert res.R.get("R12_1") == 500, "rd.12 (taxare inversa) e ignorat - R12_ lipsește din allow-list"
 
 
 @pytest.mark.skipif(not _D300_DUK, reason="DUK d300 indisponibil")
@@ -349,23 +349,23 @@ def _fact_ti_emisa(baza=40000):
 
 def test_taxare_inversa_furnizor_rd13_auto_baza_fara_tva():
     res = calcul_d300(_prof(), Perioada(2026, luna=6), [_fact_ti_emisa(40000)])
-    assert res.R.get("R13_1") == 40000, "livrarea cu taxare inversa trebuie in rd.13 (baza)"
-    assert res.R.get("R13_2", 0) == 0, "rd.13 e FARA TVA (furnizorul nu colecteaza)"
-    assert "R9_1" not in res.R, "livrarea taxare inversa NU merge in colectat normal (rd.9)"
+    assert res.R.get("R13_1") == 40000, "livrarea cu taxare inversa trebuie în rd.13 (baza)"
+    assert res.R.get("R13_2", 0) == 0, "rd.13 e FĂRĂ TVA (furnizorul nu colecteaza)"
+    assert "R9_1" not in res.R, "livrarea taxare inversa NU merge în colectat normal (rd.9)"
 
 
 def test_taxare_inversa_beneficiar_NU_se_auto_deduce():
     # primita cu taxare_inversa -> NU auto-deduce (beneficiarul declara manual rd.12+rd.27)
     f = {"directie": "primita", "taxare_inversa": True, "linii": [(1, 40000, 21)]}
     res = calcul_d300(_prof(), Perioada(2026, luna=6), [f])
-    assert res.R.get("R22_1", 0) == 0, "achizitia cu taxare inversa NU se auto-deduce (ar dubla manualul)"
+    assert res.R.get("R22_1", 0) == 0, "achiziția cu taxare inversa NU se auto-deduce (ar dublă manualul)"
 
 
 def test_taxare_inversa_rd13_auto_PLUS_manual_dubla_numarare_EROARE():
     # GARD anti-dubla-numarare (cerinta Costin): auto rd.13 + manual R13_1 -> EROARE, nu insumare tacita
     with pytest.raises(ValueError) as ei:
         calcul_d300(_prof(), Perioada(2026, luna=6), [_fact_ti_emisa(40000)], {"R13_1": 40000})
-    assert "dubla numarare" in str(ei.value)
+    assert "dublă numărare" in str(ei.value)
 
 
 def test_taxare_inversa_rd13_MUTATIE_fara_flag_ar_fi_dropped():
@@ -373,7 +373,7 @@ def test_taxare_inversa_rd13_MUTATIE_fara_flag_ar_fi_dropped():
     # Proba ca rd.13 depinde de flag (nu de cota): daca rutarea ti dispare, testul de mai sus pica.
     f = {"directie": "emisa", "taxare_inversa": False, "linii": [(1, 40000, 0)]}
     res = calcul_d300(_prof(), Perioada(2026, luna=6), [f])
-    assert res.R.get("R13_1", 0) == 0, "fara flag taxare_inversa, cota 0 NU produce rd.13"
+    assert res.R.get("R13_1", 0) == 0, "fără flag taxare_inversa, cota 0 NU produce rd.13"
 
 
 # ============================================================
@@ -449,8 +449,8 @@ def test_regularizari_rezultat_r36_intra_in_cumulat():
 def test_ajustari_r30_fara_fix_ar_fi_dropped():
     # GARD anti-regresie: daca R30_ dispare din allow-list, regularizarea devine None (silentios ignorata).
     res = calcul_d300(_prof(), Perioada(2026, luna=6), [], {"R30_2": 99, "R35_2": 30})
-    assert res.R.get("R30_2") == 99, "regularizari (R30) ignorate - R30_ lipseste din allow-list"
-    assert res.R.get("R35_2") == 30, "sold reportat (R35) ignorat - R35_ lipseste din allow-list"
+    assert res.R.get("R30_2") == 99, "regularizari (R30) ignorate - R30_ lipsește din allow-list"
+    assert res.R.get("R35_2") == 30, "sold reportat (R35) ignorat - R35_ lipsește din allow-list"
 
 
 @pytest.mark.skipif(not _D300_DUK, reason="DUK d300 indisponibil")
@@ -492,8 +492,8 @@ def test_subdeclarare_e_avertisment_nu_constatare():
     iar 'Rezultat TVA' ramane in note_rezultat in acelasi rezultat (canale disjuncte)."""
     facturi = [{"directie": "emisa", "total": 1050, "tva": 50}]  # cota 5% -> sub-declarare
     res = calcul_d300(_prof(), Perioada(2026, luna=6), facturi)
-    sub = [a for a in res.avertismente if "afara 21/11/9" in a and "sub-declarare" in a.lower()]
-    assert sub, "sub-declararea trebuie in avertismente: %r" % res.avertismente
-    assert not any("afara 21/11/9" in c for c in res.note_rezultat), res.note_rezultat
+    sub = [a for a in res.avertismente if "afară 21/11/9" in a and "sub-declarare" in a.lower()]
+    assert sub, "sub-declararea trebuie în avertismente: %r" % res.avertismente
+    assert not any("afară 21/11/9" in c for c in res.note_rezultat), res.note_rezultat
     assert any("Rezultat TVA" in c for c in res.note_rezultat), res.note_rezultat
     assert not any("Rezultat TVA" in a for a in res.avertismente), res.avertismente

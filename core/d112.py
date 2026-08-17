@@ -165,8 +165,8 @@ def _d112_genereaza(prof, salariati, an, luna):
     pren_d = _t(prof.get("declarant_prenume") or "-", _LIM["d112"]["prenume_declar"])
     func_d = _t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d112"]["functie_declar"])   # structura D112: functie_declar C(50)
     if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
-        av.append("D112: declarantul (nume/functie) lipseste din profil -> emis implicit "
-                  "\"ADMINISTRATOR\". Completeaza declarantul in Date firma.")
+        av.append("D112: declarantul (nume/funcție) lipsește din profil -> emis implicit "
+                  "\"ADMINISTRATOR\". Completează declarantul în Date firma.")
     if not cui_f:
         av.append("CUI firmă lipsă — completează Profil firmă.")
     if caen_f == "0000":
@@ -208,16 +208,16 @@ def _d112_genereaza(prof, salariati, an, luna):
         _ok_cnp, _mot_cnp = _vcnp_id(_cnp_s)
         if not _ok_cnp:
             raise ValueError(
-                "D112: salariatul %s (CNP %s) are CNP invalid (%s) - se corecteaza in fisa salariatului, "
+                "D112: salariatul %s (CNP %s) are CNP invalid (%s) - se corectează în fisa salariatului, "
                 "nu se emite D112 invalid." % (_nume_s or "(nume necompletat)", _cnp_s or "(gol)", _mot_cnp))
         if not _nume_s:
             raise ValueError(
                 "D112: salariatul cu CNP %s are numeAsig gol - numele e obligatoriu (DUK: vid nepermis). "
-                "Completeaza-l in fisa salariatului, nu se emite D112 invalid." % _cnp_s)
+                "Completează-l în fisa salariatului, nu se emite D112 invalid." % _cnp_s)
         if not str(s.get("data_angajare") or "").strip():
             raise ValueError(
-                "D112: salariatul %s (CNP %s) are data_angajare necompletata - dataAng e obligatoriu in "
-                "D112 (XSD). Completeaz-o in fisa salariatului, nu se emite D112 invalid." % (_nume_s, _cnp_s))
+                "D112: salariatul %s (CNP %s) are data_angajare necompletată - dataAng e obligatoriu în "
+                "D112 (XSD). Completeaz-o în fisa salariatului, nu se emite D112 invalid." % (_nume_s, _cnp_s))
         brut = _d112int(s.get("brut")) + _d112int(s.get("exces_vacanta", 0)) + _d112int(s.get("e83_cadou", 0))  # [D3] exces vacanta + [cadou 16.08] cadou taxabil in brutul declarat (S731)
         facil = _d112int(s.get("facilitate"))
         bazac = brut - facil
@@ -350,16 +350,16 @@ def _d112_genereaza(prof, salariati, an, luna):
                 # clasa ca hard-block-ul D_8 de mai jos si ca D205 cifR): nu se emite D112 invalid. Campurile
                 # NU se mai omit (comportamentul vechi masca certificatele corupte).
                 _obl = (("D_1", "serie certificat", _d112esc(x.get("serie"))),
-                        ("D_2", "numar certificat", _d112esc(x.get("numar"))),
+                        ("D_2", "număr certificat", _d112esc(x.get("numar"))),
                         ("D_5", "data acordarii", x.get("da") or ""),
-                        ("D_6", "data inceput valabilitate", x.get("di") or ""),
+                        ("D_6", "data început valabilitate", x.get("di") or ""),
                         ("D_7", "data incetare", x.get("ds") or ""))
                 _lipsa = ["%s (%s)" % (_a, _lbl) for _a, _lbl, _v in _obl if not str(_v).strip()]
                 if _lipsa:
                     raise ValueError(
-                        "D112: certificatul de concediu medical (salariat CNP %s) are campuri obligatorii goale: %s. "
-                        "AsiguratDType le cere use=required in d112_06082026.xsd - un XML cu ele goale e respins de "
-                        "ANAF. Completeaza-le in certificat (ecran Concedii medicale) - nu se emite D112 invalid."
+                        "D112: certificatul de concediu medical (salariat CNP %s) are câmpuri obligatorii goale: %s. "
+                        "AsiguratDType le cere use=required în d112_06082026.xsd - un XML cu ele goale e respins de "
+                        "ANAF. Completează-le în certificat (ecran Concedii medicale) - nu se emite D112 invalid."
                         % (s.get("cnp"), ", ".join(_lipsa)))
                 # [cod boala D_9 out-of-enum, 10.08.2026] D_9 type=Str_codBoalaSType (enum '01'..'15' in
                 # XSD). Un cod '99' pleca TACIT -> XSD reject. Validam contra enumerarii din XSD.
@@ -368,9 +368,9 @@ def _d112_genereaza(prof, salariati, an, luna):
                 _codb_ok = (_cod_b in _codb_set) if _codb_set else (_cod_b.isdigit() and 1 <= int(_cod_b) <= 15)
                 if not _codb_ok:
                     raise ValueError(
-                        "D112: certificatul de concediu medical (salariat CNP %s) are cod boala '%s' in "
-                        "afara nomenclatorului D_9 (tip XSD Str_codBoalaSType, coduri 01-15) - se corecteaza "
-                        "in certificat (ecran Concedii medicale), nu se emite D112 respins de ANAF."
+                        "D112: certificatul de concediu medical (salariat CNP %s) are cod boală '%s' în "
+                        "afară nomenclatorului D_9 (tip XSD Str_codBoalaSType, coduri 01-15) - se corectează "
+                        "în certificat (ecran Concedii medicale), nu se emite D112 respins de ANAF."
                         % (s.get("cnp"), _cod_b))
                 # [T6 passthrough NETRUNCHIAT, 10.08.2026] serie(D_1)/numar(D_2)/diagnostic(D_23) sunt
                 # identificatori de certificat - NU se trunchiaza tacit (spre deosebire de nume/den prin _t):
@@ -378,14 +378,14 @@ def _d112_genereaza(prof, salariati, an, luna):
                 # -> hard-block care numeste campul + limita. (Golul e deja blocat mai sus.)
                 _diag = "RM" if _cod_b == "15" else str(x.get("diagnostic") or "999")
                 _t6 = (("D_1 (serie)", str(x.get("serie") or ""), 5),
-                       ("D_2 (numar)", str(x.get("numar") or ""), 10),
+                       ("D_2 (număr)", str(x.get("numar") or ""), 10),
                        ("D_23 (diagnostic)", _diag, 3))
                 _ovf = ["%s = %d caractere (max %d)" % (_lbl, len(_v), _lim) for _lbl, _v, _lim in _t6 if len(_v) > _lim]
                 if _ovf:
                     raise ValueError(
-                        "D112: certificatul de concediu medical (salariat CNP %s) are campuri care depasesc "
-                        "lungimea maxima XSD: %s - se corecteaza in certificat (ecran Concedii medicale); "
-                        "identificatorii de certificat NU se trunchiaza tacit, nu se emite D112 invalid."
+                        "D112: certificatul de concediu medical (salariat CNP %s) are câmpuri care depășesc "
+                        "lungimea maximă XSD: %s - se corectează în certificat (ecran Concedii medicale); "
+                        "identificatorii de certificat NU se trunchiază tacit, nu se emite D112 invalid."
                         % (s.get("cnp"), ", ".join(_ovf)))
                 _opt = ""
                 for _a, _lbl, _v in _obl:
@@ -406,8 +406,8 @@ def _d112_genereaza(prof, salariati, an, luna):
                         _camp = "D_8a (CNP pacient oncologic)" if _cod_c == "17" else "D_8 (CNP copil)"
                         raise ValueError(
                             "D112: certificatul de concediu medical cod %s (salariat CNP %s) cere %s conform "
-                            "regulii DUK S97, dar CNP-ul persoanei ingrijite lipseste sau e invalid (%s). "
-                            "Completeaza-l in certificat (ecran Concedii medicale) - nu se emite D112 invalid."
+                            "regulii DUK S97, dar CNP-ul persoanei îngrijite lipsește sau e invalid (%s). "
+                            "Completează-l în certificat (ecran Concedii medicale) - nu se emite D112 invalid."
                             % (_cod_c, s.get("cnp"), _camp, _mot_c))
                     _opt += (' D_8a="%s"' if _cod_c == "17" else ' D_8="%s"') % _cnp_i
                 # [d112 v1.03-072026] Ordin comun 605/95/928/2314/2026 (D112_A7.2.6 v7, se aplica din 07/2026):

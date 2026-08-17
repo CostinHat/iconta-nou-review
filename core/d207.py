@@ -105,29 +105,29 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not _cif(prof.get("cui")):
-        er.append("CUI firma platitoare lipsa/invalid.")
+        er.append("CUI firma plătitoare lipsă/invalid.")
     if not (prof.get("den")):
-        er.append("LIPSA denumire firma.")
+        er.append("LIPSĂ denumire firma.")
     for c in ("declarant_nume", "declarant_prenume", "declarant_functie"):
         if not str(prof.get(c) or "").strip():
-            er.append("LIPSA %s (declarant obligatoriu)." % c)
+            er.append("LIPSĂ %s (declarant obligatoriu)." % c)
     benef = manual.get("beneficiari") or []
     if not benef:
-        er.append("D207 cere cel putin un beneficiar nerezident (beneficiari[]).")
+        er.append("D207 cere cel puțin un beneficiar nerezident (beneficiari[]).")
     for i, b in enumerate(benef, 1):
         tv = str(b.get("tip_venit") or "").zfill(2)
         if tv not in _TIP_VALIDE:
-            er.append("Beneficiar %d: tip_venit %r invalid (cod din nomenclator, 01..25/26 fara 09)." % (i, tv))
+            er.append("Beneficiar %d: tip_venit %r invalid (cod din nomenclator, 01..25/26 fără 09)." % (i, tv))
         if not str(b.get("den") or "").strip():
-            er.append("Beneficiar %d: lipsa nume/denumire (den1)." % i)
+            er.append("Beneficiar %d: lipsă nume/denumire (den1)." % i)
         if not str(b.get("stat") or "").strip():
-            er.append("Beneficiar %d: lipsa Statul de rezidenta (Stat_R, cod tara)." % i)
+            er.append("Beneficiar %d: lipsă Statul de rezidență (Stat_R, cod țară)." % i)
         if not (_cif(b.get("cif_ro")) or str(b.get("cif_strain") or "").strip()):
-            er.append("Beneficiar %d: lipsa identificare fiscala (cifR din RO sau cifS din strainatate)." % i)
+            er.append("Beneficiar %d: lipsă identificare fiscala (cifR din RO sau cifS din străinătate)." % i)
         if str(b.get("act_n") or "") not in ("1", "2", "3"):
             er.append("Beneficiar %d: Act_N obligatoriu 1/2/3 (actul normativ)." % i)
         if tv in _TIP_SCUTIT and _i(b.get("imp")):
-            er.append("Beneficiar %d: tip scutit (%s) -> impozit retinut trebuie 0." % (i, tv))
+            er.append("Beneficiar %d: tip scutit (%s) -> impozit reținut trebuie 0." % (i, tv))
     return er
 
 

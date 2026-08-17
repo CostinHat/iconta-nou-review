@@ -178,26 +178,26 @@ def _erori_persoana(p, idx, sufix, eticheta, cif_ca_pf_pj=False, judet_obligator
     er = []
     pre = "%s %d:" % (eticheta, idx)
     if not str(p.get("den_" + sufix) or "").strip():
-        er.append("%s lipsa denumire/nume (den_%s)." % (pre, sufix))
+        er.append("%s lipsă denumire/nume (den_%s)." % (pre, sufix))
     cifv = _cif(p.get("cif_" + sufix))
     if cif_ca_pf_pj:
         if not _cif_pf_pj_ok(cifv):
             er.append("%s cod de identificare fiscala (cif_%s) invalid - CNP de 13 cifre sau CUI 2-10 cifre." % (pre, sufix))
     else:
         if not (2 <= len(cifv) <= 10):
-            er.append("%s CIF (cif_%s) invalid - astept 2-10 cifre." % (pre, sufix))
+            er.append("%s CIF (cif_%s) invalid - aștept 2-10 cifre." % (pre, sufix))
     if not str(p.get("localit_" + sufix) or "").strip():
-        er.append("%s lipsa localitate (localit_%s)." % (pre, sufix))
+        er.append("%s lipsă localitate (localit_%s)." % (pre, sufix))
     if not str(p.get("adresa_" + sufix) or "").strip():
-        er.append("%s lipsa adresa (adresa_%s)." % (pre, sufix))
+        er.append("%s lipsă adresa (adresa_%s)." % (pre, sufix))
     judet = _judet(p.get("judet_" + sufix))
     tara = str(p.get("tara_" + sufix) or "").strip()
     if judet_obligatoriu and not judet and not tara:
-        er.append("%s lipsa judet (judet_%s) sau tara (tara_%s) - R83." % (pre, sufix, sufix))
+        er.append("%s lipsă județ (judet_%s) sau țară (tara_%s) - R83." % (pre, sufix, sufix))
     if judet == _JUDET_BUCURESTI:
         sector = _cif(p.get("sector_" + sufix))
         if sector not in ("1", "2", "3", "4", "5", "6"):
-            er.append("%s sector_%s obligatoriu 1-6 pentru judetul 40 (Bucuresti)." % (pre, sufix))
+            er.append("%s sector_%s obligatoriu 1-6 pentru județul 40 (București)." % (pre, sufix))
     return er
 
 
@@ -205,26 +205,26 @@ def _erori_benefR(b, idx):
     er = []
     pre = "beneficiar real %d:" % idx
     if not str(b.get("den_B") or "").strip():
-        er.append("%s lipsa nume si prenume (den_B)." % pre)
+        er.append("%s lipsă nume și prenume (den_B)." % pre)
     stat_res = str(b.get("stat_resedinta_B") or "").strip().upper()
     if not stat_res:
         if not _cnp_valid(b.get("cif_B")):
-            er.append("%s CNP (cif_B) invalid pentru rezident RO - astept 13 cifre cu cifra de control." % pre)
+            er.append("%s CNP (cif_B) invalid pentru rezident RO - aștept 13 cifre cu cifra de control." % pre)
     else:
         if not str(b.get("cif_B") or "").strip():
-            er.append("%s lipsa cod de identificare (cif_B)." % pre)
+            er.append("%s lipsă cod de identificare (cif_B)." % pre)
     if not _data(b.get("data_nasterii_B")):
-        er.append("%s data nasterii (data_nasterii_B) invalida - astept zz.ll.aaaa." % pre)
+        er.append("%s data nasterii (data_nasterii_B) invalidă - aștept zz.ll.aaaa." % pre)
     if not str(b.get("actId_B") or "").strip():
-        er.append("%s lipsa serie si numar act de identitate (actId_B)." % pre)
+        er.append("%s lipsă serie și număr act de identitate (actId_B)." % pre)
     if not str(b.get("adresa_B") or "").strip():
-        er.append("%s lipsa domiciliu/resedinta (adresa_B)." % pre)
+        er.append("%s lipsă domiciliu/resedinta (adresa_B)." % pre)
     if not str(b.get("mod_control_B") or "").strip():
-        er.append("%s lipsa modalitatea de exercitare a controlului (mod_control_B)." % pre)
+        er.append("%s lipsă modalitatea de exercitare a controlului (mod_control_B)." % pre)
     if not str(b.get("natura") or "").strip():
-        er.append("%s lipsa natura si amploarea interesului (natura)." % pre)
+        er.append("%s lipsă natura și amploarea interesului (natura)." % pre)
     if not _calitati(b):
-        er.append("%s cel putin o calitate de beneficiar real (1-4) trebuie bifata." % pre)
+        er.append("%s cel puțin o calitate de beneficiar real (1-4) trebuie bifata." % pre)
     return er
 
 
@@ -234,7 +234,7 @@ def _erori_unicitate(lista, sufix, eticheta):
     for i, p in enumerate(lista, 1):
         c = _cif(p.get("cif_" + sufix))
         if c and c in vazute:
-            er.append("%s %d: cif_%s '%s' duplicat - trebuie unic in sectiune." % (eticheta, i, sufix, c))
+            er.append("%s %d: cif_%s '%s' duplicat - trebuie unic în sectiune." % (eticheta, i, sufix, c))
         vazute.add(c)
     return er
 
@@ -243,38 +243,38 @@ def erori_generare(prof, manual):
     er = []
     # semnatar + date declaratie
     if not str(manual.get("nume") or "").strip():
-        er.append("Lipsa nume semnatar (nume).")
+        er.append("Lipsă nume semnatar (nume).")
     if not str(manual.get("functie") or "").strip():
-        er.append("Lipsa functie semnatar (functie).")
+        er.append("Lipsă funcție semnatar (funcție).")
     cif = _cif(manual.get("cif"))
     if not (2 <= len(cif) <= 10):
-        er.append("CIF fiduciar declarant (cif) invalid - astept 2-10 cifre.")
+        er.append("CIF fiduciar declarant (cif) invalid - aștept 2-10 cifre.")
     # sectiunea I - inregistrarea contractului
     if not str(manual.get("nr_contract_I") or manual.get("nr_contract") or "").strip():
-        er.append("Lipsa numarul contractului de fiducie (nr_contract_I).")
+        er.append("Lipsă numărul contractului de fiducie (nr_contract_I).")
     if not _data(manual.get("data_contract_I") or manual.get("data_contract")):
-        er.append("Data contractului de fiducie (data_contract_I) invalida - astept zz.ll.aaaa.")
+        er.append("Data contractului de fiducie (data_contract_I) invalidă - aștept zz.ll.aaaa.")
     d1 = _data(manual.get("data1_I") or manual.get("data_inceput"))
     if not d1:
-        er.append("Data de inceput a fiduciei (data1_I) invalida - astept zz.ll.aaaa.")
+        er.append("Data de început a fiduciei (data1_I) invalidă - aștept zz.ll.aaaa.")
     d2 = _data(manual.get("data2_I") or manual.get("data_sfarsit"))
     if d1 and d2 and _cheie_data(d2) < _cheie_data(d1):
-        er.append("data2_I trebuie sa fie >= data1_I.")
+        er.append("data2_I trebuie să fie >= data1_I.")
     if not str(manual.get("scop_fiducie") or "").strip():
-        er.append("Lipsa scopul fiduciei (scop_fiducie).")
+        er.append("Lipsă scopul fiduciei (scop_fiducie).")
     # sectiuni obligatorii (min. 1 fiecare)
     fid = manual.get("fiduciari") or []
     ct = manual.get("constituitori") or []
     ben = manual.get("beneficiari") or []
     bR = manual.get("beneficiari_reali") or []
     if not fid:
-        er.append("Lipsa fiduciar - cel putin unul este obligatoriu (sectiunea fiduciar).")
+        er.append("Lipsă fiduciar - cel puțin unul este obligatoriu (secțiunea fiduciar).")
     if not ct:
-        er.append("Lipsa constituitor - cel putin unul este obligatoriu (sectiunea constituitor).")
+        er.append("Lipsă constituitor - cel puțin unul este obligatoriu (secțiunea constituitor).")
     if not ben:
-        er.append("Lipsa beneficiar - cel putin unul este obligatoriu (sectiunea beneficiar).")
+        er.append("Lipsă beneficiar - cel puțin unul este obligatoriu (secțiunea beneficiar).")
     if not bR:
-        er.append("Lipsa beneficiar real - cel putin unul este obligatoriu (sectiunea benefR).")
+        er.append("Lipsă beneficiar real - cel puțin unul este obligatoriu (secțiunea benefR).")
     for i, f in enumerate(fid, 1):
         er.extend(_erori_persoana(f, i, "F", "fiduciar"))
     for i, c in enumerate(ct, 1):

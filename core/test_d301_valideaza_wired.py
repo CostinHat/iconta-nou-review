@@ -30,25 +30,25 @@ def _gen(monkeypatch, ops, prof=None, per=None):
 
 
 def test_helperul_de_rutare_exista():
-    assert hasattr(d301, "_blocante_pre_duk"), "lipseste _blocante_pre_duk (T2 necablat)"
+    assert hasattr(d301, "_blocante_pre_duk"), "lipsește _blocante_pre_duk (T2 necablat)"
 
 
 def test_nr_doc_gol_blocheaza_cu_motiv_exact(monkeypatch):
     with pytest.raises(ValueError) as ei:
         _gen(monkeypatch, [_op(nr_doc="")])
-    assert "fara numar document" in str(ei.value), str(ei.value)
+    assert "fără număr document" in str(ei.value), str(ei.value)
 
 
 def test_data_doc_gol_blocheaza_cu_motiv_exact(monkeypatch):
     with pytest.raises(ValueError) as ei:
         _gen(monkeypatch, [_op(data_doc="")])
-    assert "fara data document" in str(ei.value), str(ei.value)
+    assert "fără data document" in str(ei.value), str(ei.value)
 
 
 def test_tip_out_of_nomenclator_blocheaza(monkeypatch):
     with pytest.raises(ValueError) as ei:
         _gen(monkeypatch, [_op(tip=9)])
-    assert "in afara nomenclatorului" in str(ei.value), str(ei.value)
+    assert "în afară nomenclatorului" in str(ei.value), str(ei.value)
 
 
 def test_valuta_out_of_nomenclator_blocheaza(monkeypatch):

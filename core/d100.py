@@ -128,7 +128,7 @@ def calcul_d100(prof, an, luna, obligatii):
     """`luna` trebuie sa fie 3, 6, 9 sau 12 (raportare trimestriala) - dovedit
     obligatoriu de validator. `obligatii` = [{cod_oblig, suma_dat, cod_bugetar?}]."""
     if luna not in (3, 6, 9, 12):
-        raise ValueError("D100 trimestrial: luna trebuie sa fie 3, 6, 9 sau 12 (primit %r)." % luna)
+        raise ValueError("D100 trimestrial: luna trebuie să fie 3, 6, 9 sau 12 (primit %r)." % luna)
     cui = prof.get("cui")
     obl = []
     total = 0
@@ -139,7 +139,7 @@ def calcul_d100(prof, an, luna, obligatii):
         cod = str(o["cod_oblig"])
         cod_bug = o.get("cod_bugetar") or COD_BUGETAR.get(cod, "")
         if not cod_bug:
-            raise ValueError("D100: cod_oblig %r fara cont bugetar (nu e in nomenclatorul COD_BUGETAR); "
+            raise ValueError("D100: cod_oblig %r fără cont bugetar (nu e în nomenclatorul COD_BUGETAR); "
                              "atributul cod_bugetar e OBLIGATORIU (ANAF C(10)), nu se omite tacit." % cod)
         zi_s, luna_s, an_s = _scadenta_cod(cod, an, luna)
         # scadenta manuala (override): nr_evid EMBEDA scadenta (poz.12-17), verificata de DUK regula R16
@@ -150,7 +150,7 @@ def calcul_d100(prof, an, luna, obligatii):
             parti = str(scad_manual).strip().split(".")
             if (len(parti) != 3 or not all(x.isdigit() for x in parti)
                     or len(parti[0]) != 2 or len(parti[1]) != 2 or len(parti[2]) != 4):
-                raise ValueError("D100: scadenta manuala %r nu e in formatul ZZ.LL.AAAA." % scad_manual)
+                raise ValueError("D100: scadență manuală %r nu e în formatul ZZ.LL.AAAA." % scad_manual)
             zi_s, luna_s, an_s = int(parti[0]), int(parti[1]), int(parti[2])
         scad_str = "%02d.%02d.%04d" % (zi_s, luna_s, an_s)
         obl.append(Obligatie(
@@ -216,8 +216,8 @@ def erori_generare(prof):
 def build_xml(res):
     prof = res.prof
     if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
-        res.avertismente.append("D100: declarantul (nume/functie) lipseste din profil -> emis implicit "
-                                "\"ADMINISTRATOR\". Completeaza declarantul in Date firma.")
+        res.avertismente.append("D100: declarantul (nume/funcție) lipsește din profil -> emis implicit "
+                                "\"ADMINISTRATOR\". Completează declarantul în Date firma.")
     # T6 (CATALOG_INVALIDITATE.md): text_anaf trunchiaza TACIT den/adresa la limita oficiala C(n)
     # (LIMITE_TEXT_ANAF). Pierderea de date era silentioasa; emitem un avertisment NON-blocant care
     # numeste campul cand valoarea reala depaseste limita si a fost taiata pentru XML.
@@ -226,7 +226,7 @@ def build_xml(res):
         _real = " ".join(str(prof.get(_cheie) or "").split())
         if len(_real) > _lim_c:
             res.avertismente.append(
-                "D100: %s depaseste %d caractere si a fost trunchiata pentru XML - verifica." % (_et, _lim_c))
+                "D100: %s depășește %d caractere și a fost trunchiată pentru XML - verifică." % (_et, _lim_c))
     H = ['<?xml version="1.0" encoding="UTF-8"?>']
     # d_anulare/d_succ/d_dizolv/d_bonif/d_nInf/d_energie = "0": fara ele bifate,
     # validatorul NU cere campurile suplimentare (temei, cifS etc.) - dovedit
@@ -265,7 +265,7 @@ def build_xml(res):
                 raise ValueError("D100: cod_oblig 121 (micro) CERE cota=1 (are %r) - validator ERR cota micro." % (o.cota,))
             linie += ' cota=%s' % _esc(o.cota)
         elif o.cota:
-            raise ValueError("D100: cota se completeaza NUMAI pentru cod_oblig 121 (micro); cod_oblig %r are cota=%r." % (o.cod_oblig, o.cota))
+            raise ValueError("D100: cota se completează NUMAI pentru cod_oblig 121 (micro); cod_oblig %r are cota=%r." % (o.cod_oblig, o.cota))
         linie += "/>"
         H.append(linie)
     H.append("</declaratie100>")
@@ -325,8 +325,8 @@ def deriva_obligatii(prof, venituri, cheltuieli, an, luna, cota=None):
         if suma > 0:
             obligatii.append({"cod_oblig": "103", "suma_dat": suma})
             avert = ("D100 profit: baza = profit contabil (venituri %d - cheltuieli %d = %d) x %s%%. "
-                     "Impozitul pe profit se aplica pe PROFIT, nu pe venituri. Ajustarile fiscale "
-                     "(nedeductibile/neimpozabile art.19+ CF) si regularizarea anuala se fac la D101." %
+                     "Impozitul pe profit se aplică pe PROFIT, nu pe venituri. Ajustările fiscale "
+                     "(nedeductibile/neimpozabile art.19+ CF) și regularizarea anuală se fac la D101." %
                      (_i(Decimal(str(venituri))), _i(Decimal(str(cheltuieli))), _i(_profit), c))
         elif Decimal(str(venituri)) > 0:
             avert = "LOSS"  # semnal pt mesajul de refuz (pierdere in trimestru)
@@ -362,12 +362,12 @@ def genereaza(conn, schema, perioada, manual=None):
             _cur.execute("SELECT count(*) FROM facturi WHERE directie='emisa' "
                          "AND data_emitere >= %s AND data_emitere < %s", (_inc.isoformat(), _sf.isoformat()))
             _nf = _cur.fetchone()[0]
-        _hint = (" Exista %d facturi emise necontabilizate in perioada - contabilizeaza-le intai." % _nf) if _nf else ""
+        _hint = (" Există %d facturi emise necontabilizate în perioada - contabilizează-le întâi." % _nf) if _nf else ""
         if _avert_profit == "LOSS":
-            raise ValueError("D100 nu se depune pe zero: regim profit cu PIERDERE in trimestru (venituri %d - "
-                             "cheltuieli %d <= 0) -> fara avans de impozit pe profit. Regularizarea se face la D101."
+            raise ValueError("D100 nu se depune pe zero: regim profit cu PIERDERE în trimestru (venituri %d - "
+                             "cheltuieli %d <= 0) -> fără avans de impozit pe profit. Regularizarea se face la D101."
                              % (_i(Decimal(str(venituri))), _i(Decimal(str(cheltuieli)))))
-        raise ValueError("D100 nu se depune pe zero: nicio obligatie (venituri contabilizate cont 70x = 0)." + _hint)
+        raise ValueError("D100 nu se depune pe zero: nicio obligație (venituri contabilizate cont 70x = 0)." + _hint)
     res = calcul_d100(prof, an, luna, obligatii)
     if _avert_profit and _avert_profit != "LOSS":
         res.avertismente.append(_avert_profit)

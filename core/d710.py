@@ -51,7 +51,7 @@ from datetime import date as _date_v
 # raportare 12.2025 (regula validator "d_recN diferit de null incepand cu 12.2025"), altfel se omite.
 # Peticul "if an*100+luna >= 202512" convertit in variante datate.
 _VARIANTE_D_RECN = [
-    ("2000-01-01", lambda: "", _Tm(text="d_recN absent inainte de perioada 12.2025", nivel_sursa="REDARE", de_cine="Code/Costin", verificat_la="2026-07-31")),
+    ("2000-01-01", lambda: "", _Tm(text="d_recN absent înainte de perioada 12.2025", nivel_sursa="REDARE", de_cine="Code/Costin", verificat_la="2026-07-31")),
     ("2025-12-01", lambda: ' d_recN="1"', _Tm(text="DUK: d_recN de la perioada de raportare 12.2025", nivel_sursa="REDARE", de_cine="Code/Costin", verificat_la="2026-07-31")),
 ]
 
@@ -91,10 +91,10 @@ def _suma(val, camp, cod, idx):
     try:
         n = _i(val)
     except (InvalidOperation, ValueError, TypeError, ArithmeticError):
-        raise ValueError("D710: obligatie #%d (cod_oblig %s): campul %s are o valoare nenumerica (%r); "
+        raise ValueError("D710: obligație #%d (cod_oblig %s): campul %s are o valoare nenumerica (%r); "
                          "se asteapta o suma intreaga." % (idx, cod, camp, val))
     if n < 0:
-        raise ValueError("D710: obligatie #%d (cod_oblig %s): campul %s nu poate fi negativ (%r)."
+        raise ValueError("D710: obligație #%d (cod_oblig %s): campul %s nu poate fi negativ (%r)."
                          % (idx, cod, camp, val))
     return n
 
@@ -164,7 +164,7 @@ def calcul_d710(prof, perioada, date, manual=None):
         # mesajul ajunge la utilizator PRE-DUK, nu un stacktrace criptic.
         cod_raw = o.get("cod_oblig")
         if cod_raw is None or str(cod_raw).strip() == "":
-            raise ValueError("D710: obligatie #%d fara cod_oblig (camp obligatoriu)." % idx)
+            raise ValueError("D710: obligație #%d fără cod_oblig (câmp obligatoriu)." % idx)
         cod = str(cod_raw).strip()
         # C5: cod_oblig 131/132 cer Data_I (data incheierii exercitiului financiar) pe care aplicatia NU o
         # furnizeaza; fara ea validatorul CRAPA ('F: eroare fatala de parsare', dupa DUK regula R_cod131_132).
@@ -175,8 +175,8 @@ def calcul_d710(prof, perioada, date, manual=None):
         # C2/C3: cod_oblig acceptat NUMAI din nomenclatorul suportat (sursa unica COD_BUGETAR din d100).
         # Un cod necunoscut era emis raw -> DUK 'cod_oblig ... nu se afla in lista'. Il prindem aici, PRE-DUK.
         if cod not in COD_BUGETAR:
-            raise ValueError("D710: cod_oblig %r nu e in nomenclatorul suportat de aplicatie (%s); "
-                             "DUK regula 'cod_oblig nu se afla in lista' l-ar respinge."
+            raise ValueError("D710: cod_oblig %r nu e în nomenclatorul suportat de aplicatie (%s); "
+                             "DUK regula 'cod_oblig nu se afla în lista' l-ar respinge."
                              % (cod, "/".join(sorted(COD_BUGETAR))))
         di = _suma(o.get("suma_dat_i", 0), "suma_dat_i", cod, idx)
         dc = _suma(o.get("suma_dat_c", 0), "suma_dat_c", cod, idx)
@@ -192,14 +192,14 @@ def calcul_d710(prof, perioada, date, manual=None):
             parti = str(scad_manual).strip().split(".")
             if (len(parti) != 3 or not all(x.isdigit() for x in parti)
                     or len(parti[0]) != 2 or len(parti[1]) != 2 or len(parti[2]) != 4):
-                raise ValueError("D710: scadenta manuala %r nu e in formatul ZZ.LL.AAAA." % scad_manual)
+                raise ValueError("D710: scadență manuală %r nu e în formatul ZZ.LL.AAAA." % scad_manual)
             zi_s, luna_s, an_s = int(parti[0]), int(parti[1]), int(parti[2])
             # Nu doar FORMA ZZ.LL.AAAA, ci data calendaristica REALA (31.02 / luna 13 -> DUK
             # 'data calendaristica eronata'). O prindem aici cu motiv, nu o trimitem la validator.
             try:
                 _date_v(an_s, luna_s, zi_s)
             except ValueError:
-                raise ValueError("D710: scadenta manuala %r nu e o data calendaristica valida." % scad_manual)
+                raise ValueError("D710: scadență manuală %r nu e o data calendaristica valida." % scad_manual)
         scad = "%02d.%02d.%04d" % (zi_s, luna_s, an_s)
         # Gard anti-drop (ca la d100): cod_bugetar per cod_oblig din nomenclatorul COD_BUGETAR (sursa
         # unica d100). Un cod fara cont bugetar (nemapat SI fara valoare manuala) ar emite un XML fara
@@ -207,7 +207,7 @@ def calcul_d710(prof, perioada, date, manual=None):
         # in loc sa emitem tacit incomplet: eroarea e clara in aplicatie, nu un mesaj criptic de la DUK.
         cod_bug = o.get("cod_bugetar") or COD_BUGETAR.get(cod, "")
         if not cod_bug:
-            raise ValueError("D710: cod_oblig %r fara cont bugetar (nu e in nomenclatorul COD_BUGETAR, sursa "
+            raise ValueError("D710: cod_oblig %r fără cont bugetar (nu e în nomenclatorul COD_BUGETAR, sursa "
                              "unica din d100). Codurile suportate (121/103) sunt mapate; alt cod cere "
                              "cod_bugetar explicit sau extinderea nomenclatorului." % cod)
         # D4: un cod_bugetar MANUAL trebuie sa coincida cu nomenclatorul pt acel cod_oblig; altfel DUK
@@ -215,7 +215,7 @@ def calcul_d710(prof, perioada, date, manual=None):
         nomen_bug = COD_BUGETAR.get(cod, "")
         if o.get("cod_bugetar") and nomen_bug and str(o["cod_bugetar"]).strip() != nomen_bug:
             raise ValueError("D710: cod_bugetar %r nu corespunde nomenclatorului pentru cod_oblig %s "
-                             "(asteptat %s); DUK regula R14a l-ar respinge." % (o["cod_bugetar"], cod, nomen_bug))
+                             "(așteptat %s); DUK regula R14a l-ar respinge." % (o["cod_bugetar"], cod, nomen_bug))
         # E: cota (rata micro) pentru cod 121 trebuie sa fie o rata valida (COTE_MICRO); altfel DUK regula
         # R17 ('cota ... nu se incadreaza in intervalul cerut'). Prezenta/absenta o pazeste build_xml.
         cota_val = str(o.get("cota") or "").strip()
@@ -237,11 +237,11 @@ def calcul_d710(prof, perioada, date, manual=None):
         if (ded_i or ded_c) and cod != "121":
             raise ValueError("D710: cod_oblig %s: suma_ded (deducere) nu e parte din modelul de completare "
                              "al acestui cod (model 8#: suma_plata = suma_dat, DUK regula R14-21 'suma_ded "
-                             "nu se completeaza'); doar cod 121 (micro, model 9#) accepta deducere. Nu se "
-                             "emite o declaratie respinsa de validator si nici nu se abandoneaza deducerea "
+                             "nu se completează'); doar cod 121 (micro, model 9#) accepta deducere. Nu se "
+                             "emite o declarație respinsă de validator și nici nu se abandoneaza deducerea "
                              "tacit." % cod)
         if ded_i > di or ded_c > dc:
-            raise ValueError("D710: cod_oblig 121 (micro): suma_ded nu poate depasi suma_dat pe aceeasi "
+            raise ValueError("D710: cod_oblig 121 (micro): suma_ded nu poate depasi suma_dat pe aceeași "
                              "latura (initial: ded=%d>dat=%d; corectat: ded=%d>dat=%d). Model 9# are "
                              "suma_rest=0 (micro nu restituie excedentul), deci o deducere excedentara s-ar "
                              "pierde tacit." % (ded_i, di, ded_c, dc))
@@ -322,10 +322,10 @@ def build_xml(res):
         # range-check-ul valorii ramane la validator, aici pazim regula STRUCTURALA (prezenta/absenta).
         if str(o.cod_oblig) == "121":
             if not str(o.cota).strip():
-                raise ValueError("D710: cod_oblig 121 (micro) CERE cota (rata micro) - validator R17 'cota lipsa'.")
+                raise ValueError("D710: cod_oblig 121 (micro) CERE cota (rata micro) - validator R17 'cota lipsă'.")
             linie += ' cota=%s' % _esc(o.cota)
         elif o.cota:
-            raise ValueError("D710: cota se completeaza NUMAI pentru cod_oblig 121 (micro); cod_oblig %r are cota=%r." % (o.cod_oblig, o.cota))
+            raise ValueError("D710: cota se completează NUMAI pentru cod_oblig 121 (micro); cod_oblig %r are cota=%r." % (o.cod_oblig, o.cota))
         linie += "/>"
         H.append(linie)
     H.append("</declaratie710>")

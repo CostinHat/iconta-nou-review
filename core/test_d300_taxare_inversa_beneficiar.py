@@ -49,7 +49,7 @@ def test_beneficiar_derivat_PLUS_manual_dubla_numarare_EROARE():
     """Gard anti-dubla-numarare (ca la rd.13): derivat automat + manual -> EROARE, nu insumare."""
     with pytest.raises(ValueError) as ei:
         calcul_d300(_prof(), Perioada(2026, luna=8), [_fact_rc(1000, 21)], {"R12_1": 1000, "R12_2": 210})
-    assert "dubla numarare" in str(ei.value)
+    assert "dublă numărare" in str(ei.value)
 
 
 def test_beneficiar_fara_flag_NU_deriva_ci_deduce_normal():

@@ -77,7 +77,7 @@ def test_restrictie_categorie(cont, metoda, pif, permis):
     else:
         with pytest.raises(ValueError) as ei:
             m.calc_asset(mf, pif.year + 1)
-        assert "nu e permisa de lege" in str(ei.value)
+        assert "nu e permisă de lege" in str(ei.value)
 
 
 def test_constructii_refuza_chiar_si_metoda_scrisa_altfel():
@@ -98,7 +98,7 @@ def test_mesajul_de_refuz_citeaza_temeiul_si_permisele():
     """Mesajul spune categoria, ce e permis si temeiul legal (contabilul intelege de ce)."""
     try:
         m.calc_asset(_mf("2133", "accelerata"), 2026)
-        assert False, "trebuia sa ridice"
+        assert False, "trebuia să ridice"
     except ValueError as e:
         s = str(e)
         assert "transport" not in s or "categorie" in s   # contine categoria dedusa

@@ -49,9 +49,9 @@ def test_cod_boala_99_out_of_enum_blocheaza():
     with pytest.raises(ValueError) as ei:
         d112._d112_genereaza(_prof(), [_sal_cm(cod="99")], 2026, 8)
     msg = str(ei.value)
-    assert "cod boala" in msg and "99" in msg, msg
+    assert "cod boală" in msg and "99" in msg, msg
     assert "Str_codBoalaSType" in msg, msg
-    assert "1850315400125" in msg, "trebuie sa numeasca salariatul: %s" % msg
+    assert "1850315400125" in msg, "trebuie să numeasca salariatul: %s" % msg
 
 
 def test_enum_xsd_se_incarca_din_sursa():

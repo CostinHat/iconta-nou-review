@@ -14,7 +14,7 @@ class _P:
     def __exit__(self, *a): pass
     def execute(self, q): pass
     def fetchone(self):
-        return ("14399840", "TEST SRL", "Str Test 1 Bucuresti", "0211234567", "t@t.ro")
+        return ("14399840", "TEST SRL", "Str Test 1 București", "0211234567", "t@t.ro")
 
 
 def _manual(**ov):
@@ -50,10 +50,10 @@ def test_d177_reguli():
     b = _manual(); b["beneficiari"][0]["contract"] = ""
     assert any("contractB" in e for e in d177.erori_generare(prof, b))                           # tipB<5 -> contract
     b = _manual(); b["beneficiari"][0]["suma"] = 20000
-    assert any("depaseste sumaRest" in e for e in d177.erori_generare(prof, b))                  # Σsuma>rest
+    assert any("depășește sumaRest" in e for e in d177.erori_generare(prof, b))                  # Σsuma>rest
 
 
-@pytest.mark.skipif(not os.path.exists(_JAR), reason="Validatorul D177 nu e instalat in DUK.")
+@pytest.mark.skipif(not os.path.exists(_JAR), reason="Validatorul D177 nu e instalat în DUK.")
 def test_d177_valid_pe_validatorul_oficial():
     from core import duk
     from core.common import Perioada

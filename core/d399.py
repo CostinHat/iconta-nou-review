@@ -66,7 +66,7 @@ def _dec(x):
     """Decimal tolerant la virgula/spatii; ridica ValueError daca nu e numeric."""
     s = str("" if x is None else x).replace(",", ".").replace(" ", "").strip()
     if s == "":
-        raise ValueError("valoare numerica lipsa")
+        raise ValueError("valoare numerica lipsă")
     return Decimal(s)
 
 
@@ -152,48 +152,48 @@ def erori_generare(prof, manual):
     er = []
     moss = str(manual.get("moss_voes") or "RO").strip().upper()
     if moss not in ("RO", "EU"):
-        er.append("moss_voes trebuie sa fie 'RO' sau 'EU'.")
+        er.append("moss_voes trebuie să fie 'RO' sau 'EU'.")
     if not str(manual.get("vat_id_num") or manual.get("cui") or "").strip():
-        er.append("Lipsa vat_id_num (codul de inregistrare pentru regimul special).")
+        er.append("Lipsă vat_id_num (codul de înregistrare pentru regimul special).")
     if not str(manual.get("name") or manual.get("denumire") or "").strip():
-        er.append("Lipsa name (denumire persoana impozabila).")
+        er.append("Lipsă name (denumire persoana impozabila).")
     if not str(manual.get("address") or manual.get("adresa") or "").strip():
-        er.append("Lipsa address (adresa).")
+        er.append("Lipsă address (adresa).")
     if not str(manual.get("family_name") or "").strip():
-        er.append("Lipsa family_name (nume semnatar).")
+        er.append("Lipsă family_name (nume semnatar).")
     if not str(manual.get("first_name") or "").strip():
-        er.append("Lipsa first_name (prenume semnatar).")
+        er.append("Lipsă first_name (prenume semnatar).")
     if not str(manual.get("title") or "").strip():
-        er.append("Lipsa title (functie semnatar).")
+        er.append("Lipsă title (funcție semnatar).")
     try:
         corr = int(manual.get("correction", 0))
     except (TypeError, ValueError):
         corr = -1
     if corr not in (0, 1):
-        er.append("correction trebuie sa fie 0 (initiala) sau 1 (rectificativa).")
+        er.append("correction trebuie să fie 0 (initiala) sau 1 (rectificativa).")
     if corr == 1 and not str(manual.get("vat_return_reference") or "").strip():
         er.append("vat_return_reference obligatoriu la rectificativa (DUK regula: correction=1).")
     vat_id = str(manual.get("vat_id_num") or manual.get("cui") or "").strip()
     try:
         linii = _linii(manual)
     except (ValueError, ArithmeticError) as e:
-        er.append("Prestare cu valoare numerica invalida (vat_rate/taxable_amount): %s" % e)
+        er.append("Prestare cu valoare numerica invalidă (vat_rate/taxable_amount): %s" % e)
         linii = []
     seen_fix = set()
     for i, l in enumerate(linii, 1):
         et = "prestarea %d" % i
         if not l.mscon_state:
-            er.append("%s: lipsa mscon_state." % et)
+            er.append("%s: lipsă mscon_state." % et)
         if l.fix_est == l.mscon_state:
             er.append("%s: fix_est = mscon_state (DUK regula R27.1)." % et)
         if moss == "RO" and l.mscon_state == "RO":
             er.append("%s: mscon_state nu poate fi 'RO' cand moss_voes='RO' (DUK regula R27.2)." % et)
         if moss == "EU" and l.fix_est != "99":
-            er.append("%s: pentru moss_voes='EU' fix_est trebuie sa fie '99'." % et)
+            er.append("%s: pentru moss_voes='EU' fix_est trebuie să fie '99'." % et)
         if l.vat_rate_type not in (0, 1):
             er.append("%s: vat_rate_type trebuie 0 (standard) sau 1 (redusa)." % et)
         if not (Decimal(0) < l.vat_rate <= Decimal(100)):
-            er.append("%s: vat_rate in afara intervalului (0,100] (DUK regula R29.1)." % et)
+            er.append("%s: vat_rate în afară intervalului (0,100] (DUK regula R29.1)." % et)
         if l.taxable_amount == 0:
             er.append("%s: taxable_amount nu poate fi 0 (DUK regula R30)." % et)
         if l.vat_amount == 0:
@@ -202,7 +202,7 @@ def erori_generare(prof, manual):
             er.append("%s: pentru fix_est='RO'/moss_voes='EU' vat_id_num_fe trebuie = vat_id_num." % et)
         key = (l.fix_est, l.mscon_state, l.vat_rate_type, str(l.vat_rate))
         if key in seen_fix:
-            er.append("%s: triplet (mscon_state, vat_rate_type, vat_rate) duplicat in MSEST." % et)
+            er.append("%s: triplet (mscon_state, vat_rate_type, vat_rate) duplicat în MSEST." % et)
         seen_fix.add(key)
     return er
 

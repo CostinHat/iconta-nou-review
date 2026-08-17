@@ -254,7 +254,64 @@ def test_validatori_import_cu_diacritice():
 # mesaje - backlog in GARZI); lista de mai jos creste pe masura ce se curata cate un fisier. d205
 # curatat integral 17.08 (parcurgere Front D).
 _GEN_DECLARATII = (
+    "core/bilant_api.py",
+    "core/d100.py",
+    "core/d101.py",
+    "core/d101g.py",
+    "core/d104.py",
+    "core/d106.py",
+    "core/d107.py",
+    "core/d108.py",
+    "core/d110.py",
+    "core/d112.py",
+    "core/d114.py",
+    "core/d119.py",
+    "core/d120.py",
+    "core/d130.py",
+    "core/d169.py",
+    "core/d169n.py",
+    "core/d177.py",
+    "core/d200.py",
+    "core/d201.py",
+    "core/d204.py",
     "core/d205.py",
+    "core/d207.py",
+    "core/d208.py",
+    "core/d212.py",
+    "core/d212_engine.py",
+    "core/d213.py",
+    "core/d214.py",
+    "core/d216.py",
+    "core/d220.py",
+    "core/d221.py",
+    "core/d223.py",
+    "core/d230.py",
+    "core/d300.py",
+    "core/d300_manual_api.py",
+    "core/d301.py",
+    "core/d301_operatiuni_api.py",
+    "core/d307.py",
+    "core/d311.py",
+    "core/d318.py",
+    "core/d390.py",
+    "core/d390_clasificare_api.py",
+    "core/d393.py",
+    "core/d394.py",
+    "core/d395.py",
+    "core/d397.py",
+    "core/d398.py",
+    "core/d399.py",
+    "core/d401.py",
+    "core/d402.py",
+    "core/d403.py",
+    "core/d406.py",
+    "core/d406_active.py",
+    "core/d406_stocuri.py",
+    "core/d407.py",
+    "core/d600.py",
+    "core/d603.py",
+    "core/d710.py",
+    "core/declaratii_api.py",
 )
 
 
@@ -272,7 +329,9 @@ def _flagate_declaratii():
         for n in ast.walk(tree):
             if isinstance(n, ast.Constant) and isinstance(n.value, str) and id(n) not in doc:
                 v = n.value
-                if "<" in v or ">" in v or "=\"" in v or _SQL.search(v):
+                if _re3.search(r"\b[a-z]\.[a-z_]{2,}\b", v):
+                    continue
+                if _re3.search(r"<[A-Za-z/!?]", v) or '="' in v or _SQL.search(v):
                     continue  # tag/atribut XML sau SQL, nu mesaj afisat
                 h = flag(v)
                 if h and v not in _BASELINE:

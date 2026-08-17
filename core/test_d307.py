@@ -36,7 +36,7 @@ def test_d307_sume_control():
 def test_d307_erori():
     prof = {"cui": "14399840", "den": "F", "adresa": "A", "declarant_nume": "N",
             "declarant_prenume": "P", "declarant_functie": "F"}
-    assert any("operatiune" in e for e in d307.erori_generare(prof, {"operatiuni": []}))
+    assert any("operațiune" in e for e in d307.erori_generare(prof, {"operatiuni": []}))
     bad = {"operatiuni": [{"tip": "X", "cod": "12345674", "den": "Y", "tva": 1}]}
     assert any("tip" in e for e in d307.erori_generare(prof, bad))
     # d_anulare=1 fara temei
@@ -44,7 +44,7 @@ def test_d307_erori():
     assert any("temei" in e for e in d307.erori_generare(prof, anul))
 
 
-@pytest.mark.skipif(not os.path.exists(_JAR), reason="Validatorul D307 nu e instalat in DUK.")
+@pytest.mark.skipif(not os.path.exists(_JAR), reason="Validatorul D307 nu e instalat în DUK.")
 def test_d307_valid_pe_validatorul_oficial():
     from core import duk
     xml, res = d307.genereaza(_P(), "s", Perioada(2026, luna=7), _manual())

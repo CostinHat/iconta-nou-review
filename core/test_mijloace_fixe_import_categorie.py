@@ -50,7 +50,7 @@ def test_activ_neclasificat_refuza_accelerat_la_d406():
         m.calc_asset(r, 2026)
         assert False, "activ neclasificat cu accelerata trebuia refuzat"
     except ValueError as e:
-        assert "nu e permisa de lege" in str(e)
+        assert "nu e permisă de lege" in str(e)
 
 
 def test_activ_neclasificat_permite_liniar():

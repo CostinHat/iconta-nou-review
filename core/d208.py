@@ -148,29 +148,29 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not str(manual.get("nume") or "").strip():
-        er.append("Lipsa denumire birou notarial / notar (nume).")
+        er.append("Lipsă denumire birou notarial / notar (nume).")
     if not (2 <= len(_cif(manual.get("cif") or manual.get("cui"))) <= 10):
         er.append("CIF birou notarial (cif) invalid.")
     if not str(manual.get("domiciliu") or manual.get("domiciuliuFiscal") or "").strip():
-        er.append("Lipsa domiciliu fiscal (domiciliu).")
+        er.append("Lipsă domiciliu fiscal (domiciliu).")
     if not str(manual.get("nume_intocmit") or manual.get("nume_Intocmit") or "").strip():
-        er.append("Lipsa nume intocmitor (nume_intocmit).")
+        er.append("Lipsă nume intocmitor (nume_intocmit).")
     if not str(manual.get("functia_intocmit") or "").strip():
-        er.append("Lipsa functie intocmitor (functia_intocmit).")
+        er.append("Lipsă funcție intocmitor (functia_intocmit).")
     tz = _tranzactii(manual)
     if not tz:
-        er.append("Nicio tranzactie (macar 1 tranzactie cu >=1 imobil).")
+        er.append("Nicio tranzacție (macar 1 tranzacție cu >=1 imobil).")
     for k, t in enumerate(tz, 1):
-        pre = "Tranzactia %d: " % k
+        pre = "Tranzacția %d: " % k
         if not str(t.get("nr_act_notarial") or "").strip():
-            er.append(pre + "lipsa nr_act_notarial (identificatorul tranzactiei).")
+            er.append(pre + "lipsă nr_act_notarial (identificatorul tranzactiei).")
         imob = _imobile(t)
         if not imob:
             er.append(pre + "niciun imobil.")
         for j, im in enumerate(imob, 1):
             ipre = pre + "imobil %d: " % j
             if not str(im.get("nr_cadastral") or "").strip():
-                er.append(ipre + "lipsa nr_cadastral.")
+                er.append(ipre + "lipsă nr_cadastral.")
             benef = im.get("beneficiari", [])
             parti = im.get("parti", [])
             if not benef:

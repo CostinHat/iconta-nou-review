@@ -90,16 +90,16 @@ def genereaza(conn, schema, an):
         "intocmit_nume": p.get("declarant_nume"),
     }
     if not prof["reg_com"]:
-        av.append("Nr. Reg. Com. lipsa in Profil firma (camp obligatoriu S1005).")
+        av.append("Nr. Reg. Com. lipsă în Profil firma (câmp obligatoriu S1005).")
     if not prof.get("declarant_nume"):
         # [declarant thread 3] Regula 4: fara fabricare tacita a administratorului
-        av.append("Bilant: declarantul (administrator) lipseste din profil -> emis implicit "
-                  "\"ADMINISTRATOR\". Completeaza declarantul in Date firma.")
+        av.append("Bilant: declarantul (administrator) lipsește din profil -> emis implicit "
+                  "\"ADMINISTRATOR\". Completează declarantul în Date firma.")
     f10c = _b.f10_din_balanta(s_fin)
     f10p = _b.f10_din_balanta(s_ini)
     f20c = _b.f20_din_rulaje(rl)
     f20p = {}
-    av.append("F20 an precedent necompletat (istoric indisponibil) - de completat manual daca e cazul.")
+    av.append("F20 an precedent necompletat (istoric indisponibil) - de completat manual dacă e cazul.")
     if f10c.get(15) != f10c.get(49):
         av.append(f"Verificare: F(rd15)={f10c.get(15)} != J(rd49)={f10c.get(49)} - datorii>1an/provizioane/ven.avans pot explica diferenta.")
     _er = erori_generare(prof)
@@ -131,7 +131,7 @@ def genereaza_s1003(conn, schema, an):
     f10c = _b.f10_din_balanta(s_fin)
     f10p = _b.f10_din_balanta(s_ini)
     f20c = _b.f20_complet_din_rulaje(rl)
-    av.append("F20 an precedent necompletat - de completat manual daca e cazul.")
+    av.append("F20 an precedent necompletat - de completat manual dacă e cazul.")
     _er = erori_generare(prof)
     if _er:
         raise ValueError("Bilant nu se poate genera: " + " ".join(_er))

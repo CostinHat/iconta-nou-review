@@ -128,20 +128,20 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not str(manual.get("nume_c") or "").strip():
-        er.append("Lipsa nume contribuabil (nume_c).")
+        er.append("Lipsă nume contribuabil (nume_c).")
     if not str(manual.get("adresa_c") or "").strip():
-        er.append("Lipsa adresa contribuabil (adresa_c).")
+        er.append("Lipsă adresa contribuabil (adresa_c).")
     cif = _cif(manual.get("cif_c"))
     if not (_cnp_valid(cif) or (2 <= len(cif) <= 13)):
         er.append("cif_c (CNP/NIF contribuabil) invalid.")
     # declarant / semnatar (numeD + functieD obligatorii pe validator)
     if not str(manual.get("nume_d") or "").strip():
-        er.append("Lipsa nume declarant/semnatar (nume_d).")
+        er.append("Lipsă nume declarant/semnatar (nume_d).")
     if not str(manual.get("functie_d") or "").strip():
-        er.append("Lipsa functie declarant/semnatar (functie_d).")
+        er.append("Lipsă funcție declarant/semnatar (functie_d).")
     # act de instrainare (actInstrainare + dataAct obligatorii pe validator)
     if not str(manual.get("act_instrainare") or "").strip():
-        er.append("Lipsa act de instrainare (act_instrainare).")
+        er.append("Lipsă act de instrainare (act_instrainare).")
     da = str(manual.get("data_act") or "").strip()
     if not _DATA_RE.match(da):
         er.append("data_act obligatorie, format zz.ll.aaaa.")
@@ -154,24 +154,24 @@ def erori_generare(prof, manual):
     if d_rec == 1 and not str(manual.get("index_init") or "").strip():
         er.append("Rectificativa (d_rec=1) cere index_init (DUK regula R_index_init).")
     if d_rec == 0 and str(manual.get("index_init") or "").strip():
-        er.append("index_init se completeaza doar la rectificativa (DUK regula R_index_init).")
+        er.append("index_init se completează doar la rectificativa (DUK regula R_index_init).")
     an = _int(manual.get("an"))
     if an is None or not (2023 <= an <= 2100):
-        er.append("an trebuie in intervalul 2023..2100.")
+        er.append("an trebuie în intervalul 2023..2100.")
     luna = _int(manual.get("luna"))
     if luna is None or not (1 <= luna <= 12):
-        er.append("luna trebuie in intervalul 1..12.")
+        er.append("luna trebuie în intervalul 1..12.")
     ter = _terenuri(manual)
     if not ter:
-        er.append("Lipsa terenuri (cel putin un dateTeren cu judet/cif_uat/uat/valoare).")
+        er.append("Lipsă terenuri (cel puțin un dateTeren cu județ/cif_uat/uat/valoare).")
     for i, t in enumerate(ter, 1):
         if _int(t.get("judet")) not in _JUDETE:
-            er.append("teren #%d: judet (cod din 2..46,51,52) invalid." % i)
+            er.append("teren #%d: județ (cod din 2..46,51,52) invalid." % i)
         if not _cif(t.get("cif_uat")):
-            er.append("teren #%d: lipsa cif_uat (codul fiscal UAT)." % i)
+            er.append("teren #%d: lipsă cif_uat (codul fiscal UAT)." % i)
         u = _int(t.get("uat"))
         if u is None or not (0 <= u <= 100):
-            er.append("teren #%d: uat (cod UAT) trebuie in intervalul 0..100." % i)
+            er.append("teren #%d: uat (cod UAT) trebuie în intervalul 0..100." % i)
         if _suma(t.get("valoare")) <= 0:
             er.append("teren #%d: valoare trebuie > 0 (DUK regula R_valoare_pozitiv)." % i)
     if not er and calcul_d213(manual)["bazaImpozit"] <= 0:

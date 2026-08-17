@@ -217,10 +217,10 @@ def _op11_cod(k, categorii):
         if cod:
             break
     if not cod:
-        return None, None, "fara categoria art.331 a bunului"
+        return None, None, "fără categoria art.331 a bunului"
     bun = "21" if cod in CODPR_CEREALE else cod
     if bun == "21" and len(cod) <= 2:
-        return None, None, "cereale fara subcodul NC pe factura (ex. 1001 grau / 1005 porumb)"
+        return None, None, "cereale fără subcodul NC pe factura (ex. 1001 grau / 1005 porumb)"
     return cod, bun, None
 
 # <rezumat2>: TOATE campurile sunt obligatorii, si cele de facturi simplificate/bonuri,
@@ -431,9 +431,9 @@ def calcul_d394(prof, perioada, date, manual=None):
             # 3/4 -> livrare scutita cota 0 (LS) -> DUK trecea cu DATE GRESITE (cea mai grava
             # neconformitate D394). Nu-l emitem tacit: numim partenerul si motivul exact.
             raise ValueError(
-                "D394: partenerul \"%s\" are CUI \"%s\" cu prefix alfabetic care nu e cod de tara valid "
-                "-> CUI RO invalid, nu partener strain. Un CUI RO tastat gresit (cu litere) NU trebuie "
-                "raportat tacit ca partener strain (tip 3/4, cota 0). Corecteaza CUI-ul pe factura."
+                "D394: partenerul \"%s\" are CUI \"%s\" cu prefix alfabetic care nu e cod de țară valid "
+                "-> CUI RO invalid, nu partener străin. Un CUI RO tastat greșit (cu litere) NU trebuie "
+                "raportat tacit ca partener străin (tip 3/4, cota 0). Corectează CUI-ul pe factura."
                 % (f.get("nume") or "?", f.get("cui") or ""))
         # ACHIZITIILE INTRACOMUNITARE NU INTRA IN D394 - se declara in D390 (VIES).
         # Ghid ANAF: "Nu se inscriu achizitiile intracomunitare de bunuri si servicii
@@ -484,9 +484,9 @@ def calcul_d394(prof, perioada, date, manual=None):
     for op in ops:
         if op.get("tip") not in TIPURI:
             # [GARD CLASA] operatiune manuala a contabilului cu tip gresit -> eroare vizibila, nu drop tacit.
-            raise ValueError("D394: operatiune manuala cu tip necunoscut %r (acceptate: %s). Un tip introdus "
-                             "de contabil care nu e in lista trebuie sa produca eroare vizibila, nu sa dispara "
-                             "tacut din declaratie." % (op.get("tip"), ", ".join(map(str, TIPURI))))
+            raise ValueError("D394: operațiune manuală cu tip necunoscut %r (acceptate: %s). Un tip introdus "
+                             "de contabil care nu e în lista trebuie să producă eroare vizibilă, nu să dispară "
+                             "tacut din declarație." % (op.get("tip"), ", ".join(map(str, TIPURI))))
         if op.get("tip") == "N":
             # [approach a] N inclus cu tip_document=1 + document_N + op11(codPR) DOAR daca are categorie art.331
             # (R233.6 persoana fizica). Fara categorie -> exclus cu avertisment (vezi calea auto).
@@ -510,12 +510,12 @@ def calcul_d394(prof, perioada, date, manual=None):
                 op.get("baza"), op.get("tva"), op.get("categorie_331"))
 
     if excluse_N:
-        lista = "; ".join("%s (baza %s lei)" % (n or (c or "fara CUI"), _int(b)) for n, c, b in excluse_N)
+        lista = "; ".join("%s (baza %s lei)" % (n or (c or "fără CUI"), _int(b)) for n, c, b in excluse_N)
         avert.append(
-            "ATENTIE: %d operatiune(i) N (achizitii de la parteneri NEINREGISTRATI, persoane fizice) EXCLUSE "
-            "din D394 fiindca le LIPSESTE categoria art.331 a bunurilor (op11.codPR e OBLIGATORIU la persoana "
-            "fizica, conform R233.6). Adauga categoria produsului pe factura ca sa fie declarate. Furnizori/sume: "
-            "%s. Restul declaratiei RAMANE valid." % (len(excluse_N), lista))
+            "ATENTIE: %d operațiune(i) N (achiziții de la parteneri NEÎNREGISTRAȚI, persoane fizice) EXCLUSE "
+            "din D394 fiindcă le LIPSEȘTE categoria art.331 a bunurilor (op11.codPR e OBLIGATORIU la persoana "
+            "fizica, conform R233.6). Adaugă categoria produsului pe factura ca să fie declarate. Furnizori/sume: "
+            "%s. Restul declarației RAMANE valid." % (len(excluse_N), lista))
 
     # [T1/G-c1 10.08.2026] CHECKSUM cuiP partener, PRE-DUK (altfel DUK il prinde brut: R218.2/R218.3).
     # Sursa canonica core.identitate (import read-only). Un CUI/CIF cu cifra de control gresita / lungime /
@@ -531,13 +531,13 @@ def calcul_d394(prof, perioada, date, manual=None):
         if tp == P_TVA_RO:
             ok, motiv = _vcui(cuiP)
             if not ok:
-                avert.append("Partener \"%s\": CUI \"%s\" invalid (%s) - DUK regula R218.2 il respinge. "
-                             "Corecteaza CUI-ul pe factura." % (denP or "?", cuiP, motiv))
+                avert.append("Partener \"%s\": CUI \"%s\" invalid (%s) - DUK regula R218.2 îl respinge. "
+                             "Corectează CUI-ul pe factura." % (denP or "?", cuiP, motiv))
         elif tp == P_NEINREG:
             ok, _tid, motiv = _vcif(cuiP)
             if not ok:
-                avert.append("Partener \"%s\": cod fiscal \"%s\" invalid (%s) - DUK regula R218.3 il "
-                             "respinge. Corecteaza codul pe factura." % (denP or "?", cuiP, motiv))
+                avert.append("Partener \"%s\": cod fiscal \"%s\" invalid (%s) - DUK regula R218.3 îl "
+                             "respinge. Corectează codul pe factura." % (denP or "?", cuiP, motiv))
 
     # [T4/G-bc1 + G-bc2 10.08.2026] op1 care NECESITA op11 dar NU-l poate obtine -> EXCLUS aici, INAINTE de
     # rezumat1/rezumat2 (totalurile raman coerente) si de reconciliere. ANTERIOR (T4): op1 C/V (tip_partener=1)
@@ -553,10 +553,10 @@ def calcul_d394(prof, perioada, date, manual=None):
             _ok, _tid, _m = _vcif(cuiP)
             if _ok and _tid == "cui":
                 avert.append(
-                    "Operatiune N catre partener \"%s\" (cod \"%s\") - codul e CUI de FIRMA, nu CNP de "
+                    "Operațiune N către partener \"%s\" (cod \"%s\") - codul e CUI de FIRMA, nu CNP de "
                     "persoana fizica: op11 (categoria art.331) e cerut la persoane fizice, iar un partener cu "
-                    "CUI de firma declarat ca N-persoana fizica e respins de DUK regula R233.4. Operatiune "
-                    "EXCLUSA din declaratie; declara-l corect (persoana fizica fara CUI, sau alt tip de "
+                    "CUI de firma declarat ca N-persoana fizica e respins de DUK regula R233.4. Operațiune "
+                    "EXCLUSA din declarație; declara-l corect (persoana fizica fără CUI, sau alt tip de "
                     "operatiune)." % (denP or "?", cuiP))
                 del op1[k]
                 categorii.pop(k, None)
@@ -566,9 +566,9 @@ def calcul_d394(prof, perioada, date, manual=None):
             _regula = "R233.6" if tip == "N" else "R233.5"
             _ident = (denP or "?") + ((" (CUI %s)" % cuiP) if cuiP else "")
             avert.append(
-                "Operatiune %s catre partener %s %s -> op1 s-ar emite FARA op11 (codul produsului "
-                "art.331), pe care DUK regula %s il respinge. Operatiune EXCLUSA din declaratie; adauga "
-                "categoria art.331 / subcodul NC pe factura ca sa fie declarata. Restul declaratiei RAMANE "
+                "Operațiune %s către partener %s %s -> op1 s-ar emite FĂRĂ op11 (codul produsului "
+                "art.331), pe care DUK regula %s îl respinge. Operațiune EXCLUSA din declarație; adaugă "
+                "categoria art.331 / subcodul NC pe factura ca să fie declarata. Restul declarației RAMANE "
                 "valid." % (tip, _ident, motiv, _regula))
             del op1[k]
             categorii.pop(k, None)
@@ -785,16 +785,16 @@ def build_xml(res):
     rep_fct = prof.get("reprezentant_functie") or prof.get("declarant_functie")
     calitate = prof.get("declarant_functie") or prof.get("reprezentant_functie")
     if not rep_den:
-        res.avertismente.append("D394: numele reprezentantului (denR) lipseste din profil -> emis implicit "
-                                "\"ADMINISTRATOR\". Completeaza reprezentantul in profilul firmei, nu lasa implicitul.")
+        res.avertismente.append("D394: numele reprezentantului (denR) lipsește din profil -> emis implicit "
+                                "\"ADMINISTRATOR\". Completează reprezentantul în profilul firmei, nu lasa implicitul.")
         rep_den = "ADMINISTRATOR"
     if not rep_fct:
-        res.avertismente.append("D394: functia reprezentantului (functie_reprez) lipseste din profil -> emisa "
-                                "implicit \"ADMINISTRATOR\". Completeaza in profil.")
+        res.avertismente.append("D394: funcția reprezentantului (functie_reprez) lipsește din profil -> emisă "
+                                "implicit \"ADMINISTRATOR\". Completează în profil.")
         rep_fct = "ADMINISTRATOR"
     if not calitate:
-        res.avertismente.append("D394: calitatea intocmitorului (calitate_intocmit) lipseste din profil -> emisa "
-                                "implicit \"ADMINISTRATOR\". Completeaza in profil.")
+        res.avertismente.append("D394: calitatea întocmitorului (calitate_intocmit) lipsește din profil -> emisă "
+                                "implicit \"ADMINISTRATOR\". Completează în profil.")
         calitate = "ADMINISTRATOR"
     # [prsAfiliat 10.08.2026] SPEC OFICIAL anaf_surse/d394_struct_anaf.txt poz.6.a:
     # "prsAfiliat - Au fost efectuate operatiuni cu persoane afiliate in perioada de
@@ -875,9 +875,9 @@ def build_xml(res):
             _jud = jud_siruta(prof.get("judet"))
             if not _jud:
                 if not any("judP emis implicit" in a for a in res.avertismente):
-                    res.avertismente.append("D394: judetul firmei lipseste din profil -> judP emis implicit "
-                                            "\"40\" (Bucuresti) pentru partenerii neinregistrati fara cod. "
-                                            "Completeaza judetul in profil.")
+                    res.avertismente.append("D394: județul firmei lipsește din profil -> judP emis implicit "
+                                            "\"40\" (București) pentru partenerii neînregistrați fără cod. "
+                                            "Completează județul în profil.")
                 _jud = "40"
             at = ' taraP="RO" judP="%s"' % _jud
         at += ' denP="%s" nrFact="%d" baza="%d"' % (_esc(_t(denP, _LIM["d394"]["denP"])), nr, baza)
@@ -913,8 +913,8 @@ def valideaza(res):
         # respinge la depunere. Il verificam pre-DUK cu sursa canonica (core.identitate), nu doar non-gol.
         _ok, _motiv = _vcui(prof.get("cui"))
         if not _ok:
-            erori.append("CUI declarant \"%s\" invalid (%s) - DUK regula R6 il respinge; corecteaza CUI-ul "
-                         "in profilul firmei." % (prof.get("cui"), _motiv))
+            erori.append("CUI declarant \"%s\" invalid (%s) - DUK regula R6 îl respinge; corectează CUI-ul "
+                         "în profilul firmei." % (prof.get("cui"), _motiv))
     if not prof.get("caen"):
         erori.append("LIPSĂ cod CAEN în profilul firmei (obligatoriu în D394).")
     if not prof.get("nume"):
@@ -1055,9 +1055,9 @@ def erori_generare(prof):
     """Poarta bazei nule: profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF."""
     erori = []
     if not str(prof.get("cui") or "").strip():
-        erori.append("LIPSA CUI firma.")
+        erori.append("LIPSĂ CUI firma.")
     if not str(prof.get("nume") or "").strip():
-        erori.append("LIPSA denumire firma.")
+        erori.append("LIPSĂ denumire firma.")
     return erori
 
 

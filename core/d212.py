@@ -161,13 +161,13 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not str(manual.get("nume_c") or "").strip():
-        er.append("Lipsa nume/denumire contribuabil (nume_c).")
+        er.append("Lipsă nume/denumire contribuabil (nume_c).")
     if not str(manual.get("adresa_c") or "").strip():
-        er.append("Lipsa adresa contribuabil (adresa_c).")
+        er.append("Lipsă adresa contribuabil (adresa_c).")
     nerez = str(manual.get("nerezident") or "0").strip()
     if nerez == "1":
         if not _cif(manual.get("cif_str")):
-            er.append("Nerezident: lipsa cod fiscal strain (cif_str).")
+            er.append("Nerezident: lipsă cod fiscal străin (cif_str).")
     else:
         if not _cnp_valid(manual.get("cif")):
             er.append("CNP contribuabil (cif) invalid (13 cifre + cifra de control).")
@@ -179,7 +179,7 @@ def erori_generare(prof, manual):
         if cap:
             straine = set(cap) - _CAMPURI[nume]
             if straine:
-                er.append("Capitol %s: campuri necunoscute (respinse de validator): %s"
+                er.append("Capitol %s: câmpuri necunoscute (respinse de validator): %s"
                           % (nume, ", ".join(sorted(straine))))
     return er
 

@@ -175,9 +175,9 @@ def _verifica_categorie(mf, metoda, pif):
         temei = "CF art.28 alin.5"
         if metoda == "superaccelerata":
             temei = ("CF art.28 alin.8^1 (OUG 8/2026): doar subgrupa 2.1 (echipamente) sau 2.4 "
-                     "(animale/plantatii), active NOI puse in functiune in 2026")
+                     "(animale/plantații), active NOI puse în funcțiune în 2026")
         raise ValueError(
-            "MF %s (cont %s -> categorie '%s'): metoda '%s' nu e permisa de lege; permise: %s. Temei: %s."
+            "MF %s (cont %s -> categorie '%s'): metoda '%s' nu e permisă de lege; permise: %s. Temei: %s."
             % (mf.get("cod"), cont, categorie, metoda,
                (", ".join(sorted(permise)) or "niciuna (activ neamortizabil)"), temei))
 

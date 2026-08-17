@@ -116,30 +116,30 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual, calc):
     er = []
     if not _cif(prof.get("cui")):
-        er.append("CUI platitor lipsa/invalid.")
+        er.append("CUI plătitor lipsă/invalid.")
     if not str(prof.get("den") or "").strip():
-        er.append("LIPSA denumire.")
+        er.append("LIPSĂ denumire.")
     if not str(prof.get("adresa") or "").strip():
-        er.append("LIPSA adresa.")
+        er.append("LIPSĂ adresa.")
     for c in ("declarant_nume", "declarant_prenume", "declarant_functie"):
         if not str(prof.get(c) or "").strip():
-            er.append("LIPSA %s (declarant obligatoriu)." % c)
+            er.append("LIPSĂ %s (declarant obligatoriu)." % c)
     obl = manual.get("obligatii") or []
     if not obl:
-        er.append("D110 cere cel putin o obligatie (obligatii[]).")
+        er.append("D110 cere cel puțin o obligație (obligații[]).")
     coduri = []
     for i, o in enumerate(obl, 1):
         cod = str(o.get("cod_oblig") or "").strip()
         if cod not in _COD_OBLIG_VALIDE:
-            er.append("Obligatie %d: cod_oblig %r negasit in nomenclator." % (i, cod))
+            er.append("Obligație %d: cod_oblig %r negăsit în nomenclator." % (i, cod))
         else:
             coduri.append(cod)
         if _i(o.get("suma_dat")) < 0:
-            er.append("Obligatie %d: suma_dat trebuie >= 0." % i)
+            er.append("Obligație %d: suma_dat trebuie >= 0." % i)
         if _i(o.get("suma_rest")) <= 0:
-            er.append("Obligatie %d: suma_rest trebuie > 0 (strict)." % i)
+            er.append("Obligație %d: suma_rest trebuie > 0 (strict)." % i)
     if len(coduri) != len(set(coduri)):
-        er.append("cod_oblig duplicat (unic per declaratie).")
+        er.append("cod_oblig duplicat (unic per declarație).")
     d_temei = int(manual.get("d_temei") or 0)
     if d_temei == 1:
         if calc["sigma_dif_rest"] == 0:
@@ -150,7 +150,7 @@ def erori_generare(prof, manual, calc):
             er.append("d_temei=1 cere banca (pentru restituire).")
     else:
         if calc["sigma_dif_rest"] != 0:
-            er.append("d_temei=0 dar exista diferente de restituit (suma dif_rest!=0); seteaza d_temei=1 + IBAN/banca.")
+            er.append("d_temei=0 dar există diferente de restituit (suma dif_rest!=0); setează d_temei=1 + IBAN/banca.")
     return er
 
 

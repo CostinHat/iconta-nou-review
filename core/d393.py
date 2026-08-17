@@ -39,7 +39,7 @@ _NEDIGIT = re.compile(r"\D")
 # campuri declarant obligatorii (probate pe validator: "atributul trebuie sa existe")
 _DECLARANT = (("nume_declarant", "nume declarant"),
               ("prenume_declarant", "prenume declarant"),
-              ("functia_declarant", "functia declarant"))
+              ("functia_declarant", "funcția declarant"))
 
 
 def _cif(x):
@@ -87,18 +87,18 @@ def erori_generare(prof, manual):
     if not (2 <= len(_cif(manual.get("cif"))) <= 10):
         er.append("CUI operator (cif) invalid.")
     if not str(manual.get("nume1") or "").strip():
-        er.append("Lipsa denumire operator (nume1).")
+        er.append("Lipsă denumire operator (nume1).")
     if not str(manual.get("adresa1") or "").strip():
-        er.append("Lipsa adresa operator (adresa1).")
+        er.append("Lipsă adresa operator (adresa1).")
     for k, et in _DECLARANT:
         if not str(manual.get(k) or "").strip():
-            er.append("Lipsa %s (%s)." % (et, k))
+            er.append("Lipsă %s (%s)." % (et, k))
     if calcul_d393(manual)["Venituri_bilete"] <= 0:
-        er.append("Lipsa venituri din bilete (venituri_bilete) > 0.")
+        er.append("Lipsă venituri din bilete (venituri_bilete) > 0.")
     # R_reprezentant: grup all-or-nothing pe cif2/nume2/adresa2
     if _are_reprezentant(manual):
         if not (2 <= len(_cif(manual.get("cif2"))) <= 10):
-            er.append("Reprezentant fiscal declarat: cif2 obligatoriu si valid.")
+            er.append("Reprezentant fiscal declarat: cif2 obligatoriu și valid.")
         if not str(manual.get("nume2") or "").strip():
             er.append("Reprezentant fiscal declarat: nume2 obligatoriu.")
         if not str(manual.get("adresa2") or "").strip():

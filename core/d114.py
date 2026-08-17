@@ -169,16 +169,16 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not (2 <= len(_cif(manual.get("cif_declarant"))) <= 10):
-        er.append("CIF declarant (cif_declarant) invalid — astept 2..10 cifre.")
+        er.append("CIF declarant (cif_declarant) invalid — aștept 2..10 cifre.")
     if not str(manual.get("den_declarant") or "").strip():
-        er.append("Lipsa denumire declarant (den_declarant).")
+        er.append("Lipsă denumire declarant (den_declarant).")
     if not str(manual.get("adresa_declarant") or "").strip():
-        er.append("Lipsa adresa declarant (adresa_declarant).")
+        er.append("Lipsă adresa declarant (adresa_declarant).")
     # OBLIGATORII pe radacina (dovedit pe DUK: 'atributul trebuie sa existe').
     if not str(manual.get("functia_intocmit") or "").strip():
-        er.append("Lipsa functia intocmit (functia_intocmit) - obligatoriu.")
+        er.append("Lipsă funcția intocmit (functia_intocmit) - obligatoriu.")
     if not str(manual.get("den_intocmit") or "").strip():
-        er.append("Lipsa nume intocmit (den_intocmit) - obligatoriu.")
+        er.append("Lipsă nume intocmit (den_intocmit) - obligatoriu.")
     contracte = manual.get("contracte") or []
     if not contracte:
         er.append("D114 nu se depune pe zero: cel putin un <contracte> (lucrator) e obligatoriu.")
@@ -188,17 +188,17 @@ def erori_generare(prof, manual):
         if not (2 <= len(_cif(c.get("cui_lucrator"))) <= 13):
             er.append("Contract %d: cui_lucrator invalid." % idx)
         if not str(c.get("den_lucrator") or "").strip():
-            er.append("Contract %d: lipsa den_lucrator." % idx)
+            er.append("Contract %d: lipsă den_lucrator." % idx)
         if _i(c.get("venit_lucrator", 0)) <= 0:
             er.append("Contract %d: venit_lucrator (baza) trebuie > 0." % idx)
         if _i(c.get("contributie_lucrator", 0)) <= 0:
             er.append("Contract %d: contributie_lucrator (suma CAM) trebuie > 0." % idx)
         if not str(c.get("nui_lucrator") or "").strip():
-            er.append("Contract %d: lipsa nui_lucrator - obligatoriu." % idx)
+            er.append("Contract %d: lipsă nui_lucrator - obligatoriu." % idx)
         if not str(c.get("nr_contract") or "").strip():
-            er.append("Contract %d: lipsa nr_contract - obligatoriu." % idx)
+            er.append("Contract %d: lipsă nr_contract - obligatoriu." % idx)
         if not str(c.get("data_contract") or "").strip():
-            er.append("Contract %d: lipsa data_contract - obligatoriu." % idx)
+            er.append("Contract %d: lipsă data_contract - obligatoriu." % idx)
     return er
 
 

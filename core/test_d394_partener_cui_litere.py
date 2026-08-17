@@ -27,19 +27,19 @@ def _calc(facturi, manual=None):
 def test_cui_litere_nu_devine_partener_strain_tacit():
     tp, _ = d394.clasifica_partener("ABC123")
     assert tp not in (d394.P_UE, d394.P_NONUE), \
-        "CUI RO garbage cu litere clasificat TACIT ca partener strain (tip 3/4) - G-d1"
+        "CUI RO garbage cu litere clasificat TACIT ca partener străin (tip 3/4) - G-d1"
 
 
 def test_factura_cui_litere_blocheaza_cu_motiv_exact():
-    facturi = [{"cui": "ABC123", "nume": "PARTENER GRESIT SRL", "directie": "emisa",
+    facturi = [{"cui": "ABC123", "nume": "PARTENER GREȘIT SRL", "directie": "emisa",
                 "taxare_inversa": False, "cota": 0, "baza": 1000, "tva": 0,
                 "platitor_tva": True}]
     with pytest.raises(ValueError) as ei:
         _calc(facturi)
     msg = str(ei.value)
-    assert "nu partener strain" in msg.lower(), "motivul exact lipseste din blocaj"
-    assert "PARTENER GRESIT SRL" in msg, "partenerul nu e numit in mesaj"
-    assert "ABC123" in msg, "CUI-ul gresit nu apare in mesaj"
+    assert "nu partener străin" in msg.lower(), "motivul exact lipsește din blocaj"
+    assert "PARTENER GREȘIT SRL" in msg, "partenerul nu e numit în mesaj"
+    assert "ABC123" in msg, "CUI-ul greșit nu apare în mesaj"
 
 
 def test_partener_strain_genuin_ramane_clasificat():

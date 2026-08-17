@@ -123,29 +123,29 @@ def _asociere(prof, manual):
 def erori_generare(prof, luna, manual):
     er = []
     if luna not in _LUNI_VALIDE:
-        er.append("D104: luna de raportare %r invalida (trim -> 3/6/9/12)." % luna)
+        er.append("D104: luna de raportare %r invalidă (trim -> 3/6/9/12)." % luna)
     for c in ("declarant_nume", "declarant_prenume", "declarant_functie"):
         if not str(prof.get(c) or "").strip():
-            er.append("LIPSA %s (declarant obligatoriu)." % c)
+            er.append("LIPSĂ %s (declarant obligatoriu)." % c)
     aso = _asociere(prof, manual)
     if not _cif(aso.get("cui")):
-        er.append("CUI asociere lipsa/invalid (manual.asociere.cui sau firma_profil).")
+        er.append("CUI asociere lipsă/invalid (manual.asociere.cui sau firma_profil).")
     if not str(aso.get("den") or "").strip():
-        er.append("LIPSA denumire asociere.")
+        er.append("LIPSĂ denumire asociere.")
     if not str(aso.get("adresa") or "").strip():
-        er.append("LIPSA adresa asociere.")
+        er.append("LIPSĂ adresa asociere.")
     if manual.get("profit_pierd") is None:
         er.append("D104 cere profit_pierd (profit impozabil(+)/pierdere(-) al asocierii; input contabil).")
     asociati = manual.get("asociati") or []
     if not asociati:
-        er.append("D104 cere cel putin un asociat (asociati[]).")
+        er.append("D104 cere cel puțin un asociat (asociati[]).")
     cifuri = []
     for i, a in enumerate(asociati, 1):
         if not str(a.get("den") or "").strip():
-            er.append("Asociat %d: lipsa denumire/nume (den1)." % i)
+            er.append("Asociat %d: lipsă denumire/nume (den1)." % i)
         cf = _cif(a.get("cif"))
         if not cf:
-            er.append("Asociat %d: lipsa cod de identificare fiscala (cif1)." % i)
+            er.append("Asociat %d: lipsă cod de identificare fiscala (cif1)." % i)
         else:
             cifuri.append(cf)
         try:
@@ -158,7 +158,7 @@ def erori_generare(prof, luna, manual):
             if _i(a.get(camp)) < 0:
                 er.append("Asociat %d: %s trebuie >= 0." % (i, camp))
     if len(cifuri) != len(set(cifuri)):
-        er.append("Asociatii au cif1 duplicat (cif1 = cheie unica per SB).")
+        er.append("Asociații au cif1 duplicat (cif1 = cheie unica per SB).")
     return er
 
 

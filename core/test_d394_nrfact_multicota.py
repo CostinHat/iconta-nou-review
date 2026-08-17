@@ -46,7 +46,7 @@ def test_calcul_respecta_nrfact_din_factura_multicota():
     nr_pe_cota = {k[2]: v[0] for k, v in res.op1.items()}
     assert nr_pe_cota.get(21) == 1, "cota cu TVA max primeste nrFact=1"
     assert nr_pe_cota.get(9) == 0, "restul cotelor primesc nrFact=0"
-    assert sum(v[0] for v in res.op1.values()) == 1, "factura 2-cote = 1 in total, nu 2"
+    assert sum(v[0] for v in res.op1.values()) == 1, "factura 2-cote = 1 în total, nu 2"
 
 
 def test_calcul_nrfact_default_1_fara_cheie():
@@ -71,8 +71,8 @@ def test_reprezentant_lipsa_avertisment_nu_tacut():
     res = calcul_d394(prof, Perioada(2026, luna=6), {"facturi": []})
     build_xml(res)
     txt = " ".join(res.avertismente)
-    assert "reprezentantului (denR) lipseste" in txt, "lipsa denR trebuie ANUNTATA"
-    assert "calitatea intocmitorului" in txt, "lipsa calitate_intocmit trebuie ANUNTATA"
+    assert "reprezentantului (denR) lipsește" in txt, "lipsă denR trebuie ANUNTATA"
+    assert "calitatea întocmitorului" in txt, "lipsă calitate_intocmit trebuie ANUNTATA"
 
 
 def test_reprezentant_prezent_fara_avertisment():
@@ -91,7 +91,7 @@ def test_judet_lipsa_partener_neinreg_avertisment():
                               "cota": 0, "baza": Decimal(100)}]}
     res = calcul_d394(prof, Perioada(2026, luna=6), {"facturi": []}, manual)
     xml = build_xml(res)
-    assert 'judP="40"' in xml, "judP implicit inca emis (DUK cere campul)"
+    assert 'judP="40"' in xml, "judP implicit încă emis (DUK cere campul)"
     assert any("judP emis implicit" in a for a in res.avertismente), "implicitul judP trebuie ANUNTAT"
 
 
@@ -148,11 +148,11 @@ def test_pull_factura_multicota_nrfact_1_pe_tva_max(conn):
                     "VALUES (%s,'m21','buc',1,1000,21),(%s,'m9','buc',1,500,9)", (f1, f1))
         _prof_db, date = d394.pull(conn, _SCHEMA, Perioada(2026, luna=6))
     nr = {f["cota"]: f["nrFact"] for f in date["facturi"]}
-    assert nr == {21: 1, 9: 0}, "nrFact 1 pe cota cu TVA max (21), 0 pe rest; gasit %r" % nr
+    assert nr == {21: 1, 9: 0}, "nrFact 1 pe cota cu TVA max (21), 0 pe rest; găsit %r" % nr
     res = calcul_d394(_prof(), Perioada(2026, luna=6), date)
     assert res.rezumat2[21]["nrFacturiL"] == 1
     assert res.rezumat2[9]["nrFacturiL"] == 0
-    assert sum(v[0] for v in res.op1.values()) == 1, "o factura = un singur nrFact in total"
+    assert sum(v[0] for v in res.op1.values()) == 1, "o factura = un singur nrFact în total"
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -168,7 +168,7 @@ def test_pull_multicota_tva_egal_alege_cota_mare(conn):
                     "VALUES (%s,'a','buc',1,100,19),(%s,'b','buc',1,95,20)", (f1, f1))
         _prof_db, date = d394.pull(conn, _SCHEMA, Perioada(2026, luna=6))
     nr = {f["cota"]: f["nrFact"] for f in date["facturi"]}
-    assert nr == {19: 0, 20: 1}, "TVA egal -> nrFact=1 la cota mai mare (20); gasit %r" % nr
+    assert nr == {19: 0, 20: 1}, "TVA egal -> nrFact=1 la cota mai mare (20); găsit %r" % nr
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
@@ -185,9 +185,9 @@ def test_nrfacturi_e_numarul_real_nu_spanul_seriei(conn):
             cur.execute("INSERT INTO factura_linii (factura_id,descriere,um,cantitate,pret_unitar,cota_tva) "
                         "VALUES (%s,'m','buc',1,1000,21)", (fid,))
         _prof_db, date = d394.pull(conn, _SCHEMA, Perioada(2026, luna=6))
-    assert date["nr_facturi"] == 3, "numar REAL de facturi emise = 3; gasit %r" % date["nr_facturi"]
+    assert date["nr_facturi"] == 3, "număr REAL de facturi emise = 3; găsit %r" % date["nr_facturi"]
     res = calcul_d394(_prof(), Perioada(2026, luna=6), date)
-    assert res.informatii["nrFacturi"] == 3, "nrFacturi = numar (3), NU spanul seriei (6)"
+    assert res.informatii["nrFacturi"] == 3, "nrFacturi = număr (3), NU spanul seriei (6)"
     # serieFacturi pastreaza plaja completa 45-50 (tip 1 si tip 2)
     plaje = {(s["nrI"], s["nrF"]) for s in res.serii}
     assert (45, 50) in plaje, "serieFacturi pastreaza plaja min-max 45-50: %r" % plaje
@@ -209,4 +209,4 @@ def test_multicota_ramane_duk_valid(conn):
                     "VALUES (%s,'m21','buc',1,1000,21),(%s,'m9','buc',1,500,9)", (f1, f1))
         xml, res = d394.genereaza(conn, _SCHEMA, Perioada(2026, luna=6))
     rez = duk.valideaza(xml, "d394", an=2026, luna=6)
-    assert rez["stare"] == "valid", "D394 multi-cota trebuie sa fie DUK-valid; rez=%r" % rez
+    assert rez["stare"] == "valid", "D394 multi-cota trebuie să fie DUK-valid; rez=%r" % rez

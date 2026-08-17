@@ -106,42 +106,42 @@ def _err_trimitere(i, t):
     er = []
     p = "trimitere #%d" % i
     if not _cif(t.get("nr_doc")) and not str(t.get("nr_doc") or "").strip():
-        er.append("%s: lipsa nr_doc." % p)
+        er.append("%s: lipsă nr_doc." % p)
     d = str(t.get("data_doc") or "").strip()
     if not _DATA_OK.match(d):
-        er.append("%s: data_doc invalid ('%s') - astept zz.ll.aaaa." % (p, d))
+        er.append("%s: data_doc invalid ('%s') - aștept zz.ll.aaaa." % (p, d))
     if _num(t.get("val_ramb")) in ("", "0"):
-        er.append("%s: val_ramb lipsa sau 0." % p)
+        er.append("%s: val_ramb lipsă sau 0." % p)
     if not str(t.get("den_expeditor") or "").strip():
-        er.append("%s: lipsa den_expeditor." % p)
+        er.append("%s: lipsă den_expeditor." % p)
     if not str(t.get("den_destinatar") or "").strip():
-        er.append("%s: lipsa den_destinatar." % p)
+        er.append("%s: lipsă den_destinatar." % p)
     # expeditor: cif_expeditor (RO) XOR cif_expeditor_str + cod_tara_str (extern)
     cif_e = _cif(t.get("cif_expeditor"))
     cif_str = str(t.get("cif_expeditor_str") or "").strip()
     tara = _cif(t.get("cod_tara_str"))
     if cif_e and cif_str:
-        er.append("%s: cif_expeditor si cif_expeditor_str nu pot fi simultan completate (R35)." % p)
+        er.append("%s: cif_expeditor și cif_expeditor_str nu pot fi simultan completate (R35)." % p)
     if not cif_e and not cif_str:
-        er.append("%s: lipsa identificare expeditor (cif_expeditor sau cif_expeditor_str)." % p)
+        er.append("%s: lipsă identificare expeditor (cif_expeditor sau cif_expeditor_str)." % p)
     if bool(cif_str) != bool(tara):
-        er.append("%s: cif_expeditor_str si cod_tara_str (numeric) trebuie ambele date sau ambele goale (R36)." % p)
+        er.append("%s: cif_expeditor_str și cod_tara_str (numeric) trebuie ambele date sau ambele goale (R36)." % p)
     # adresa preluare/oficiu: exact una + judet
     ap = str(t.get("adresa_preluare") or "").strip()
     ao = str(t.get("adresa_oficiu") or "").strip()
     if ap and ao:
-        er.append("%s: adresa_preluare si adresa_oficiu nu pot fi simultan completate (R27)." % p)
+        er.append("%s: adresa_preluare și adresa_oficiu nu pot fi simultan completate (R27)." % p)
     if not ap and not ao:
-        er.append("%s: lipsa adresa preluare/oficiu (exact una obligatorie) (R27.1)." % p)
+        er.append("%s: lipsă adresa preluare/oficiu (exact una obligatorie) (R27.1)." % p)
     if not _cif(t.get("jud_preluare")):
-        er.append("%s: lipsa jud_preluare (cod judet, obligatoriu cu adresa) (R27.2)." % p)
+        er.append("%s: lipsă jud_preluare (cod județ, obligatoriu cu adresa) (R27.2)." % p)
     # mod: iban XOR den_receptionat
     iban = str(t.get("iban") or "").replace(" ", "").upper()
     rec = str(t.get("den_receptionat") or "").strip()
     if iban and rec:
-        er.append("%s: iban si den_receptionat se exclud (mod=1 vs mod=2)." % p)
+        er.append("%s: iban și den_receptionat se exclud (mod=1 vs mod=2)." % p)
     if not iban and not rec:
-        er.append("%s: lipsa mod plata ramburs - da 'iban' (mod 1) sau 'den_receptionat' (mod 2)." % p)
+        er.append("%s: lipsă mod plată ramburs - da 'iban' (mod 1) sau 'den_receptionat' (mod 2)." % p)
     if iban and not _IBAN_OK.match(iban):
         er.append("%s: IBAN invalid ('%s')." % (p, iban))
     return er
@@ -154,16 +154,16 @@ def erori_generare(prof, manual):
                   ("adresa", "adresa declarant"), ("telefon", "telefon declarant"),
                   ("mail", "email declarant")):
         if not str(manual.get(k) or "").strip():
-            er.append("Lipsa %s (%s)." % (et, k))
+            er.append("Lipsă %s (%s)." % (et, k))
     # antet - reprezentant (obligatoriu in validator)
     for k, et in (("cifR", "CIF reprezentant"), ("denR", "denumire reprezentant"),
                   ("adresaR", "adresa reprezentant"), ("telefonR", "telefon reprezentant"),
                   ("mailR", "email reprezentant")):
         if not str(manual.get(k) or "").strip():
-            er.append("Lipsa %s (%s)." % (et, k))
-    for k, et in (("declarant", "nume semnatar"), ("functie", "functie semnatar")):
+            er.append("Lipsă %s (%s)." % (et, k))
+    for k, et in (("declarant", "nume semnatar"), ("functie", "funcție semnatar")):
         if not str(manual.get(k) or "").strip():
-            er.append("Lipsa %s (%s)." % (et, k))
+            er.append("Lipsă %s (%s)." % (et, k))
     if manual.get("mail") and not _MAIL_OK.match(str(manual.get("mail")).strip()):
         er.append("Email declarant (mail) invalid.")
     if manual.get("mailR") and not _MAIL_OK.match(str(manual.get("mailR")).strip()):
@@ -175,7 +175,7 @@ def erori_generare(prof, manual):
     # trimiteri
     trim = manual.get("trimiteri") or []
     if not trim:
-        er.append("Lipsa trimiteri (cel putin o trimitere postala contra ramburs).")
+        er.append("Lipsă trimiteri (cel puțin o trimitere postala contra ramburs).")
     vazute = set()
     for i, t in enumerate(trim, 1):
         er.extend(_err_trimitere(i, t))
@@ -188,7 +188,7 @@ def erori_generare(prof, manual):
     if l2:
         for k in ("nr_colete", "nr_colete_info", "nr_colete_taxa"):
             if not _cif(l2.get(k)):
-                er.append("lista2: lipsa %s (obligatoriu cand sectiunea sumar e prezenta)." % k)
+                er.append("lista2: lipsă %s (obligatoriu cand secțiunea sumar e prezenta)." % k)
     return er
 
 

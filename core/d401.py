@@ -138,20 +138,20 @@ def _erori_detinator(idx, det):
     if tip not in (1, 2):
         er.append("Detinator %d: Tip_detinator obligatoriu 1 (PF) sau 2 (PJ)." % idx)
     if not str(det.get("den_detinator") or "").strip():
-        er.append("Detinator %d: lipsa Den_detinator." % idx)
+        er.append("Detinator %d: lipsă Den_detinator." % idx)
     if tip == 1:
         # DUK regula detinator-PF: cel putin unul din Data_nasterii, codTVA, CIF_rom, CIF_SR
         if not any(str(det.get(k) or "").strip() for k in
                    ("data_nasterii", "cod_tva", "cif_rom", "cif_sr")):
-            er.append("Detinator %d (PF): completeaza cel putin unul din "
+            er.append("Detinator %d (PF): completează cel puțin unul din "
                       "Data_nasterii/codTVA/CIF_rom/CIF_SR (DUK regula detinator-PF)." % idx)
         for k, lbl in (("den_repr", "Den_repr"), ("cif_repr", "CIF_repr"), ("adr_repr", "Adr_repr")):
             if str(det.get(k) or "").strip():
-                er.append("Detinator %d (PF): %s se completeaza numai pentru PJ." % (idx, lbl))
+                er.append("Detinator %d (PF): %s se completează numai pentru PJ." % (idx, lbl))
     if tip == 2:
         for k, lbl in (("act_id", "Act_id"), ("nationalitate", "Nationalitate")):
             if str(det.get(k) or "").strip():
-                er.append("Detinator %d (PJ): %s se completeaza numai pentru PF." % (idx, lbl))
+                er.append("Detinator %d (PJ): %s se completează numai pentru PF." % (idx, lbl))
     if det.get("data_nasterii") and not _DATE_OK.match(str(det["data_nasterii"])):
         er.append("Detinator %d: Data_nasterii format zz.ll.aaaa." % idx)
     if not (det.get("proprietati")):
@@ -168,23 +168,23 @@ def _erori_proprietate(di, pi, p, an_rap):
     sc = p.get("suprafata_cladire")
     st = p.get("suprafata_teren")
     if tip in (1, 3) and not (sc and Decimal(str(sc).replace(",", ".")) > 0):
-        er.append("%s Suprafata_cladire >0 obligatoriu (DUK regula suprafata)." % pre)
+        er.append("%s Suprafata_cladire >0 obligatoriu (DUK regula suprafață)." % pre)
     if tip == 2 and sc:
-        er.append("%s Suprafata_cladire nu se completeaza pentru teren (DUK regula suprafata)." % pre)
+        er.append("%s Suprafata_cladire nu se completează pentru teren (DUK regula suprafață)." % pre)
     if tip in (2, 3) and not (st and Decimal(str(st).replace(",", ".")) > 0):
-        er.append("%s Suprafata_teren >0 obligatoriu (DUK regula suprafata)." % pre)
+        er.append("%s Suprafata_teren >0 obligatoriu (DUK regula suprafață)." % pre)
     if tip == 1 and st:
-        er.append("%s Suprafata_teren nu se completeaza pentru cladire (DUK regula suprafata)." % pre)
+        er.append("%s Suprafata_teren nu se completează pentru clădire (DUK regula suprafață)." % pre)
     dc = str(p.get("destinatie_cladire") or "").strip()
     if tip == 2 and dc:
-        er.append("%s Destinatie_cladire nu se completeaza pentru teren (DUK regula destinatie)." % pre)
+        er.append("%s Destinatie_cladire nu se completează pentru teren (DUK regula destinatie)." % pre)
     if tip in (1, 3) and not dc:
         er.append("%s Destinatie_cladire obligatoriu (DUK regula destinatie)." % pre)
     # acte dobandire (obligatorii, probat pe validator: "atributul trebuie sa existe")
     if not str(p.get("act_nr_d") or "").strip():
-        er.append("%s Act_nr_D obligatoriu (DUK: atributul trebuie sa existe)." % pre)
+        er.append("%s Act_nr_D obligatoriu (DUK: atributul trebuie să existe)." % pre)
     if not str(p.get("act_emitent_d") or "").strip():
-        er.append("%s Act_emitent_D obligatoriu (DUK: atributul trebuie sa existe)." % pre)
+        er.append("%s Act_emitent_D obligatoriu (DUK: atributul trebuie să existe)." % pre)
     # date
     dd, di_ = p.get("data_d"), p.get("data_i")
     if not _DATE_OK.match(str(dd or "")):
@@ -194,29 +194,29 @@ def _erori_proprietate(di, pi, p, an_rap):
             er.append("%s anul Data_D <= anul raportarii (%d)." % (pre, an_rap))
     if di_:
         if not str(p.get("act_nr_i") or "").strip():
-            er.append("%s Act_nr_I obligatoriu cand exista Data_I." % pre)
+            er.append("%s Act_nr_I obligatoriu cand există Data_I." % pre)
         if not str(p.get("act_emitent_i") or "").strip():
-            er.append("%s Act_emitent_I obligatoriu cand exista Data_I." % pre)
+            er.append("%s Act_emitent_I obligatoriu cand există Data_I." % pre)
         if not _DATE_OK.match(str(di_)):
             er.append("%s Data_I format zz.ll.aaaa." % pre)
         else:
             if _an_din_data(di_) != an_rap:
-                er.append("%s anul Data_I trebuie sa fie = anul raportarii (%d)." % (pre, an_rap))
+                er.append("%s anul Data_I trebuie să fie = anul raportarii (%d)." % (pre, an_rap))
             if _DATE_OK.match(str(dd or "")) and dd and _cmp_data(dd) > _cmp_data(di_):
                 er.append("%s Data_D <= Data_I." % pre)
     if tip == 2 and _int(p.get("mod_d")) == 1:
-        er.append("%s pentru teren Mod_D trebuie sa fie diferit de 1 (construire)." % pre)
+        er.append("%s pentru teren Mod_D trebuie să fie diferit de 1 (construire)." % pre)
     # valori / monede
     vals = _valori(p)
     if not vals:
-        er.append("%s cel putin un Val1..Val10 <> 0 (DUK regula valori)." % pre)
+        er.append("%s cel puțin un Val1..Val10 <> 0 (DUK regula valori)." % pre)
     for i, _vi, m in vals:
         if not m:
             er.append("%s Val%d completat -> Moneda%d obligatoriu (DUK regula Moneda)." % (pre, i, i))
         elif m not in _MONEDE:
-            er.append("%s Moneda%d '%s' necunoscuta (%s)." % (pre, i, m, ",".join(sorted(_MONEDE))))
+            er.append("%s Moneda%d '%s' necunoscută (%s)." % (pre, i, m, ",".join(sorted(_MONEDE))))
     if tip == 2 and any(i == 6 for i, _v, _m in vals):
-        er.append("%s Val6 (valoare de construire) nu se completeaza pentru teren (DUK regula Val6)." % pre)
+        er.append("%s Val6 (valoare de construire) nu se completează pentru teren (DUK regula Val6)." % pre)
     # coproprietari
     tuc = _int(p.get("tip_unic_coprop"))
     copro = p.get("coproprietari") or []
@@ -224,17 +224,17 @@ def _erori_proprietate(di, pi, p, an_rap):
         er.append("%s Tip_unic_coprop obligatoriu 1 (unic) sau 2 (coproprietari)." % pre)
     if tuc == 1:
         if copro:
-            er.append("%s proprietar unic -> fara coproprietari (DUK regula coproprietari)." % pre)
+            er.append("%s proprietar unic -> fără coproprietari (DUK regula coproprietari)." % pre)
         if _cota(p.get("cota_proprietar")) not in ("100",):
             er.append("%s proprietar unic -> Cota_proprietar = 100 (DUK regula coproprietari)." % pre)
     if tuc == 2:
         if not copro:
-            er.append("%s coproprietate -> cel putin un coproprietar (DUK regula coproprietari)." % pre)
+            er.append("%s coproprietate -> cel puțin un coproprietar (DUK regula coproprietari)." % pre)
         s = Decimal(_cota(p.get("cota_proprietar")) or "0")
         for c in copro:
             s += Decimal(_cota(c.get("cota_coproprietar")) or "0")
         if not (Decimal("99") < s < Decimal("101")):
-            er.append("%s suma cotelor (%s) trebuie in intervalul (99,101) (DUK regula coproprietari)." % (pre, s))
+            er.append("%s suma cotelor (%s) trebuie în intervalul (99,101) (DUK regula coproprietari)." % (pre, s))
     if not (Decimal(_cota(p.get("cota_proprietar")) or "0") > 0):
         er.append("%s Cota_proprietar strict pozitiv (DUK regula coproprietari)." % pre)
     return er
@@ -254,7 +254,7 @@ def erori_generare(prof, manual):
                    ("nume_declar", "nume_declar"), ("prenume_declar", "prenume_declar"),
                    ("functie_declar", "functie_declar")):
         if not str(manual.get(k) or "").strip():
-            er.append("Lipsa %s." % lbl)
+            er.append("Lipsă %s." % lbl)
     if not _cif(manual.get("cif")):
         er.append("cif primarie invalid (cifre).")
     det = manual.get("detinatori") or []
