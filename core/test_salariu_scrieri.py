@@ -115,3 +115,29 @@ def test_verifica_cor_respinge_gol():
     import pytest as _pt
     with _pt.raises(ValueError):
         sa._verifica_cor(None, "")   # conn nefolosit pentru codul gol (respins inainte de interogare)
+
+
+def test_stat_plata_semnaleaza_baza_lipsa(conn):
+    # [salariu_edit] Stat de plata SEMNALEAZA baza contractuala lipsa/0 (MEMORY §13), nu o afiseaza tacit.
+    from core import stat_plata_api as _sp
+    sid = _creeaza(conn, 4050)
+    st = _sp.stat_plata(conn, SCHEMA_T, 2026, 6)
+    r = [x for x in st if x["id"] == sid][0]
+    assert r["baza_lipsa"] is False   # salariu normal -> fara semnal
+    # forteaza baza 0 in istoric (cale reziduala/legacy, ocolind validarea la creare/editare/import)
+    with conn.cursor() as cur:
+        cur.execute("UPDATE salariu_istoric SET salariu_brut=0 WHERE salariat_id=%s", (sid,))
+    r2 = [x for x in _sp.stat_plata(conn, SCHEMA_T, 2026, 6) if x["id"] == sid][0]
+    assert r2["baza_lipsa"] is True and r2["brut"] == 0
+
+
+def test_editarea_salariului_prin_put_dateaza_istoricul(conn):
+    # [salariu_edit] valabil_din e onorat: corectia unei baze 0 la data angajarii UPDATE-eaza intrarea (nu adauga)
+    sid = _creeaza(conn, 4050)
+    with conn.cursor() as cur:
+        cur.execute("UPDATE salariu_istoric SET salariu_brut=0 WHERE salariat_id=%s", (sid,))
+    sa.actualizeaza_salariat(conn, sid, salariu_brut=6000, valabil_din="2026-01-01")
+    with conn.cursor() as cur:
+        cur.execute("SELECT count(*), max(salariu_brut) FROM salariu_istoric WHERE salariat_id=%s", (sid,))
+        n, mx = cur.fetchone()
+    assert n == 1 and float(mx) == 6000   # aceeasi data -> UPSERT, o singura intrare corectata

@@ -772,7 +772,8 @@ async function ecranSalariati(corp, nav, t) {
       : stat.map((s) => `
         <div class="pf-frand" style="flex-wrap:wrap">
           <div class="pf-frand-text" style="flex:1 1 100%">
-            <div class="pf-frand-nume">${esc(s.nume)}${s.pontaj_neconfirmat ? ' <span style="color:var(--gri);font-weight:600">tichete blocate</span>' : ""}</div>
+            <div class="pf-frand-nume">${esc(s.nume)}${s.baza_lipsa ? ' <span style="color:var(--rosu);font-weight:600">⚠ salariu de bază lipsă</span>' : ""}${s.pontaj_neconfirmat ? ' <span style="color:var(--gri);font-weight:600">tichete blocate</span>' : ""}</div>
+            ${s.baza_lipsa ? `<div class="pf-frand-sub" style="color:var(--rosu)">Salariul de bază lipsește (0 lei) — completează-l cu butonul „Salariu" de pe salariat. Fără el statul nu e corect: net 0, dar angajatorul apare cu cost din suprataxa CAS/CASS pe podeaua salariului minim (art.146(5^6)/168(6^1)).</div>` : ""}
             ${s.pontaj_neconfirmat ? `<div class="pf-frand-sub" style="color:var(--gri)">Tichetele de masă sunt blocate până la confirmarea pontajului lunii (buton „Pontaj").</div>` : ""}
             <div class="pf-frand-sub">brut ${bani(s.brut)} \u00b7 CAS ${bani(s.cas)} \u00b7 CASS ${bani(s.cass)} \u00b7 impozit ${bani(s.impozit_salariu)} \u00b7 <b>net ${bani(s.net)}</b> \u00b7 cost ${bani(s.cost)}${s.tichete_nominal ? ` \u00b7 <span style="color:var(--teal)">tichete ${bani(s.tichete_nominal)} (${s.tichete_zile} zile)</span>` : ""}${s.tichete_vacanta ? ` · <span style="color:var(--teal)">vacanță ${bani(s.tichete_vacanta)}</span>${s.vacanta_peste_plafon ? ' <span style="color:var(--rosu)">⚠ peste plafon anual</span>' : ""}` : ""}${s.cadou ? ` · <span style="color:var(--teal)">cadou ${bani(s.cadou)}</span>${s.cadou_taxabil ? ' <span style="color:var(--rosu)">⚠ taxabil (>300 lei/eveniment sau eveniment nelegal)</span>' : ""}` : ""}${s.tichete_cultural ? ` · <span style="color:var(--teal)">cultural ${bani(s.tichete_cultural)}</span>` : ""}${s.tichete_cresa ? ` · <span style="color:var(--teal)">creșă ${bani(s.tichete_cresa)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta) ? ` · <span style="color:var(--gri)">reținut pe tichete: CASS ${bani(s.cass_tichete)} + impozit ${bani(s.impozit_tichete)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta || s.cadou) ? ` · <b>total disponibil ${bani(s.total_disponibil)}</b>` : ""}</div>
           </div>
@@ -786,6 +787,7 @@ async function ecranSalariati(corp, nav, t) {
           <button class="buton-secundar" data-cadou="${s.id}" data-nume="${esc(s.nume)}">+ cadou</button>
           <button class="buton-secundar" data-cult="${s.id}" data-nume="${esc(s.nume)}">+ cultural</button>
           <button class="buton-secundar" data-cresa="${s.id}" data-nume="${esc(s.nume)}">+ creșă</button>
+          <button class="buton-secundar" data-salariu="${s.id}" data-val="${s.salariu_baza || 0}" data-nume="${esc(s.nume)}">Salariu</button>
           <button class="buton-secundar" data-iban="${s.id}" data-val="${esc(s.iban || "")}" data-nume="${esc(s.nume)}">IBAN ${s.iban ? "✓" : "⚠"}</button>
           <button class="buton-secundar" data-cor="${s.id}" data-val="${esc(s.cor || "")}" data-nume="${esc(s.nume)}">COR ${s.cor ? "✓" : "⚠"}</button>
           <button class="buton-secundar" data-incet="${s.id}" data-val="${esc(s.data_incetare || "")}" data-nume="${esc(s.nume)}">${s.data_incetare ? "Plecat " + s.data_incetare : "Încetare"}</button>
@@ -809,6 +811,7 @@ async function ecranSalariati(corp, nav, t) {
       <div id="sp-iban-zona"></div>
       <div id="sp-cor-zona"></div>
       <div id="sp-incet-zona"></div>
+      <div id="sp-salariu-zona"></div>
       ${!areIban ? `<div class="caseta-info"><span class="ci-mesaj">Fișierul de plată pe card (SEPA) e indisponibil: niciun salariat nu are IBAN completat. Adaugă IBAN-ul cu butonul „IBAN ⚠" de pe salariat.</span></div>` : ""}
       ${!regesOk ? `<div class="caseta-info"><span class="ci-mesaj">„Răspunsuri REGES" e indisponibil: cheile REGES nu sunt configurate încă. Configurează-le cu butonul „Chei REGES".</span></div>` : ""}
       ${pontajNeconf ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">●</span> Pontajul lunii ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} nu e confirmat — informativ; tichetele de masă rămân blocate până la confirmarea pontajului (buton „Pontaj" pe salariat).</div></div>` : ""}
@@ -1001,6 +1004,33 @@ async function ecranSalariati(corp, nav, t) {
     // PASUL 1: incetarea contractului (data_incetare). Marcheaza PLECAREA - inlocuieste stergerea la
     // plecare (istoricul sustine declaratiile depuse). DESIGN_SYSTEM cap.5 (INPUT): input in-ecran + buton.
     const zonaIncet = corp.querySelector("#sp-incet-zona");
+    // [salariu_edit] editarea salariului de baza (schimbare de salariu -> intrare noua in salariu_istoric).
+    // Cabla PUT /salariati/{id} {salariu_brut, valabil_din} (necablat pana acum) + repara cazul baza_lipsa.
+    const zonaSalariu = corp.querySelector("#sp-salariu-zona");
+    corp.querySelectorAll("[data-salariu]").forEach((b) => b.addEventListener("click", () => {
+      const sid = b.dataset.salariu;
+      const azi = new Date().toISOString().slice(0, 10);
+      zonaSalariu.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">
+        <span class="camp-eticheta">Salariu de bază · ${esc(b.dataset.nume)}:</span>
+        <input type="number" min="0" step="0.01" id="salariu-input" class="camp-input" value="${esc(b.dataset.val)}" style="width:140px">
+        <span class="camp-eticheta">de la:</span>
+        <input type="date" id="salariu-data" class="camp-input" value="${azi}" style="width:160px">
+        <button class="buton-primar" id="salariu-save">Salvează</button>
+        <button class="buton-secundar" id="salariu-cancel">Renunță</button></div>
+        <div class="camp-eticheta" style="color:var(--gri)">Salariul de bază brut lunar (lei), din contractul de muncă (mai mare ca 0). „De la" = data de când e valabil: o mărire creează o intrare nouă în istoric; o corecție pune data angajării.</div>
+        <div id="salariu-msg"></div>`;
+      corp.querySelector("#salariu-input").focus();
+      corp.querySelector("#salariu-cancel").addEventListener("click", () => { zonaSalariu.innerHTML = ""; });
+      corp.querySelector("#salariu-save").addEventListener("click", async () => {
+        const val = Number(corp.querySelector("#salariu-input").value);
+        const valabil_din = corp.querySelector("#salariu-data").value || null;
+        if (!(val > 0)) { arataMesaj(corp.querySelector("#salariu-msg"), "Salariul de bază trebuie să fie mai mare ca 0.", "eroare"); return; }
+        try {
+          await api.put(`/tenants/${t.id}/salariati/${sid}`, { salariu_brut: val, valabil_din });
+          zonaSalariu.innerHTML = ""; deseneaza();
+        } catch (e) { arataMesaj(corp.querySelector("#salariu-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
+      });
+    }));
     corp.querySelectorAll("[data-incet]").forEach((b) => b.addEventListener("click", () => {
       const sid = b.dataset.incet;
       zonaIncet.innerHTML = `<div style="display:flex;gap:8px;align-items:center;margin:10px 0;flex-wrap:wrap">

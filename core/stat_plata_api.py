@@ -130,6 +130,10 @@ def stat_plata(conn, schema, an, luna):
             "cost": float(calc["cost_angajator"]),
             "cm_zile": cm_zile,
             "cm_brut": c_cm["brut"] if c_cm else 0,
+            # [salariu_edit] baza contractuala (salariu_istoric) lipsa/0 -> statul e incoerent
+            # (net 0 dar apare cost din suprataxa sub-minim); se SEMNALEAZA, nu se afiseaza tacit (MEMORY §13).
+            "baza_lipsa": float(brut or 0) <= 0,
+            "salariu_baza": float(brut or 0),  # [salariu_edit] baza contractuala (istoric), pt pre-completarea editarii
         })
     _cs_sal.close()
     return stat

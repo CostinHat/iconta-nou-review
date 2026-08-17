@@ -9478,3 +9478,11 @@ preexistent d301/d390, extins la TOATE (d100/d101/d205/d112/d300/bilant). declar
 **Proba.** tenant_005 (P2, Constructii Profit Trim): salariatul Ionescu Marin are `salariu_istoric.salariu_brut=0` -> Stat de plata 08/2026 afiseaza "brut 0 · net 0 · cost 825" (825 = cas_suprataxa 589.29 + cass_suprataxa 235.71, podeaua pe baza zero), fara niciun semnal. Gard RED->GREEN: `test_salariu_brut_lipsa/negativ_e_respins` (pe cod vechi verifica_randuri intoarce [], accepta tacit).
 
 **Ramas (front deschis).** Datele REZIDUALE cu brut=0 deja in baza NU sunt reparate de gardul de import; Stat de plata inca afiseaza "cost 825" tacit pe ele. Semnalul pe ecranul Stat de plata (brut 0 -> "salariu de baza lipsa") = cluster separat.
+
+## 17.08.2026 — Editare salariu cablata + semnal baza lipsa pe Stat de plata (audit tenant_005)
+
+**Decizie.** Cardul de salariat (Stat de plata) primeste butonul „Salariu” care cableaza `PUT /salariati/{id}` cu {salariu_brut, valabil_din} — editarea/marirea salariului nu exista in UI (doar creare „+ Salariat nou” + editari IBAN/COR/incetare). `SalariatEdit.valabil_din` adaugat la model (backendul `actualizeaza_salariat` il onora deja prin kwarg). `stat_plata` intoarce `baza_lipsa`/`salariu_baza`; cardul semnaleaza baza contractuala lipsa/0 in rosu, cu trimitere la butonul de corectie.
+
+**Temei.** MEMORY §13 (aplicatia lasa omul sa ajunga la tot ce poate produce + semnaleaza explicit data lipsa). DS cap.5 (INPUT in-ecran) + cap.6 (mesaj de stare). Cod fiscal art.146(5^6)/168(6^1) (suprataxa sub-minim care producea cost 825 pe baza 0). Continua decizia 17.08 (import salariu_brut obligatoriu): importul BLOCHEAZA baza 0, iar Stat de plata SEMNALEAZA + ofera corectia pt datele reziduale/legacy.
+
+**Proba.** tenant_005 Ionescu Marin (brut=0): Stat de plata arata brut 0 / cost 825 tacit; acum badge rosu + sub-linie + buton „Salariu” prin care se pune salariul real (UPSERT pe istoric la data angajarii). Gard RED->GREEN `test_stat_plata_semnaleaza_baza_lipsa` (KeyError pe cod vechi).

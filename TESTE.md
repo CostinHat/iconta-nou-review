@@ -1671,3 +1671,7 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
 ## Bifa 17.08.2026 — audit tenant_005: import salariu_brut obligatoriu
 
 `core/test_import_migrare.py`: adaugat `salariu_brut` la fixture-ul `_s()` (un salariat complet ARE baza > 0) + `test_salariu_brut_lipsa_e_respins`, `test_salariu_brut_negativ_e_respins`. RED probat pe cod vechi (stash salariati_import_api.py). GREEN: 21 passed in test_import_migrare.py; 33 passed pe suita de import salariati (iban/preview/d1/backend/cnp/valideaza). Gard in GARZI.
+
+## Bifa 17.08.2026 — audit tenant_005: semnal baza lipsa + editare salariu
+
+`core/test_salariu_scrieri.py`: `test_stat_plata_semnaleaza_baza_lipsa` (RED KeyError pe cod vechi) + `test_editarea_salariului_prin_put_dateaza_istoricul` (UPSERT pe data). GREEN: 33 passed (test_salariu_scrieri + test_import_migrare). Frontend cablat (buton „Salariu”), probat vizual pe Stat de plata. Gard in GARZI.

@@ -858,6 +858,7 @@ class SalariatEdit(BaseModel):
     tip_norma: Optional[str] = None
     ore_zi: Optional[float] = None
     salariu_brut: Optional[float] = None
+    valabil_din: Optional[str] = None  # [salariu_edit] data efectiva a schimbarii de salariu (implicit azi)
     persoane_intretinere: Optional[int] = None
     judet_casa: Optional[str] = None
     activ: Optional[bool] = None

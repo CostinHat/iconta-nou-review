@@ -3057,3 +3057,9 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
 - **Gard:** `core/test_import_migrare.py::test_salariu_brut_lipsa_e_respins` + `::test_salariu_brut_negativ_e_respins`.
 - **Ce face imposibil:** un import de salariati cu salariu de baza lipsa/0/negativ sa intre tacit (baza 0 -> suprataxa angajatorului pe podeaua sub-minim, Stat de plata incoerent). `verifica_randuri` respinge (motiv `salariu_lipsa`).
 - **Mutatie proba:** `git stash push -- core/salariati_import_api.py` -> testele pica (verifica_randuri intoarce []); pop -> verzi. Rulat 17.08.2026.
+
+## Stat de plata — semnal baza contractuala lipsa (17.08.2026)
+
+- **Gard:** `core/test_salariu_scrieri.py::test_stat_plata_semnaleaza_baza_lipsa` (+ `::test_editarea_salariului_prin_put_dateaza_istoricul`).
+- **Ce face imposibil:** ca `stat_plata` sa intoarca un salariat cu baza contractuala 0/lipsa FARA flag `baza_lipsa` (ecranul ar afisa cost 825 din suprataxa sub-minim tacit). Cardul semnaleaza in rosu + ofera butonul „Salariu” de corectie.
+- **Mutatie proba:** `git stash push -- core/stat_plata_api.py` -> `KeyError: 'baza_lipsa'`; pop -> verde. Rulat 17.08.2026.
