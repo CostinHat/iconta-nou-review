@@ -69,6 +69,23 @@ def perioada_tva_tip(prof):
     raise ValueError("tip_decont necunoscut in vectorul fiscal: %r" % raw)
 
 
+DECONT_LUNG = {"L": "lunar", "T": "trimestrial", "S": "semestrial", "A": "anual"}
+
+
+def tip_decont_lung(tip_decont):
+    """Periodicitatea decontului TVA in forma LUNGA canonica ('lunar'/'trimestrial'/'semestrial'/'anual')
+    pentru UI, din ORICE conventie stocata: litera legacy 'L'/'T' (seed transa2) SAU forma lunga.
+    None la gol/necunoscut - FARA default tacit (DEFAULT_FISCAL_TACIT). Parsarea = perioada_tva_tip
+    (sursa unica); normalizam la GRANITA UI (citeste/citeste_date/portal), unde frontendul compara pe
+    forma lunga (decont==='lunar'). Motoarele fiscale NU folosesc asta - parseaza raw prin perioada_tva_tip."""
+    if not (tip_decont or ""):
+        return None
+    try:
+        return DECONT_LUNG.get(perioada_tva_tip({"tip_decont": tip_decont}))
+    except ValueError:
+        return None
+
+
 def fereastra_tva(perioada, tip):
     """(inceput, sfarsit) semi-deschis [inceput, sfarsit) pentru decontul TVA, functie de
     PERIOADA FISCALA (tip=L/T/S/A). Decupleaza ETICHETA (perioada.luna, pusa in XML: 3/6/9/12

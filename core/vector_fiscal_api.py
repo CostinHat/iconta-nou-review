@@ -14,6 +14,7 @@ Valori acceptate de motor (control_fiscal_api.declaratii_datorate):
 """
 
 from core.migrare_api import regim_contabil, tip_firma_nrm  # [regim] fapt UNIC + normalizare tip_firma (default 'srl')
+from core.common import tip_decont_lung  # [decont_lung] periodicitatea in forma lunga pt UI (seed legacy L/T)
 
 _REGIMURI = ("micro", "profit")
 _DECONTURI = ("lunar", "trimestrial")
@@ -39,7 +40,7 @@ def citeste(conn_schema):
         "nume": nume, "cui": cui,
         "regim_fiscal": regim,
         "platitor_tva": bool(tva) if tva is not None else None,
-        "tip_decont": decont,
+        "tip_decont": tip_decont_lung(decont),  # [decont_lung] UI compara pe forma lunga; seed vechi are L/T
         # None = necompletat (nu False tacit) -> frontendul distinge "nesetat" de "Nu" (fara preselectie). Vezi DECIZII 23.07.
         "operatiuni_ic": bool(ic) if ic is not None else None,
         "inreg_art317": bool(art317),

@@ -384,6 +384,27 @@ async function wizardVector(corp, nav) {
 async function formularVectorFirma(corp, nav, f) {
   nav.setInapoi(() => wizardVector(corp, nav));
   latime(corp, false);
+  // [fix_vector_perfirma] Sursa de adevar pentru o firma existenta = vectorul SALVAT. Pe traseul
+  // per-firma (meniuMigrarePerFirma) `f` vine cu doar {tenant_id,nume,tip_firma} - fara campurile
+  // vectorului si fara cui. Fara asta formularul apare GOL (regim gol, "Nu" tacit la TVA, cui gol -
+  // incalca DEFAULT_FISCAL_TACIT cap.17: "nesetat" != "Nu") si ar SUPRASCRIE vectorul la salvare.
+  // Citim GET /tenants/{id}/vector (citeste, sursa unica) si completam ce `f` nu aduce.
+  corp.innerHTML = `<p class="ecran-nota">Se încarcă vectorul…</p>`;
+  try {
+    const sv = await api.get(`/tenants/${f.tenant_id}/vector`);
+    if (sv && sv.ok !== false) {
+      const lua = (a, b) => (a !== undefined ? a : b);   // pastreaza ce a adus `f`, altfel din vectorul salvat
+      f = Object.assign({}, f, {
+        nume: f.nume != null ? f.nume : sv.nume,
+        cui: f.cui != null ? f.cui : sv.cui,
+        regim_fiscal: lua(f.regim_fiscal, sv.regim_fiscal),
+        platitor_tva: lua(f.platitor_tva, sv.platitor_tva),
+        tip_decont: lua(f.tip_decont, sv.tip_decont),
+        operatiuni_ic: lua(f.operatiuni_ic, sv.operatiuni_ic),
+        regim_contabil: lua(f.regim_contabil, (sv.partida_simpla ? "simpla" : "dubla")),
+      });
+    }
+  } catch {}
   // pre-completez din ANAF (platitor_tva e deja stiut la validarea CUI) daca firma n-are vector
   let tvaInit = f.platitor_tva;
   if (tvaInit === null || tvaInit === undefined) {

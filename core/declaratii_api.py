@@ -345,9 +345,9 @@ def periodicitate_firma(tip, tip_decont=None):
     baza = periodicitate(tip)
     if tip in _TVA_PERIODIC and tip_decont:
         try:
-            from core.common import perioada_tva_tip
+            from core.common import perioada_tva_tip, DECONT_LUNG
             d = perioada_tva_tip({"tip_decont": tip_decont})
-            return {"L": "lunar", "T": "trimestrial", "S": "semestrial", "A": "anual"}.get(d, baza)
+            return DECONT_LUNG.get(d, baza)
         except ValueError:
             return baza
     return baza

@@ -25,7 +25,11 @@ def date_firma(conn, schema):
             "SELECT nume, cui, adresa, oras, judet, caen, banca, iban, "
             "tip_decont FROM firma_profil WHERE id = 1")
         r = cur.fetchone()
-    return dict(r) if r else None
+    d = dict(r) if r else None
+    if d:
+        from core.common import tip_decont_lung  # [decont_lung] portalul clientului afisa "L"/"T" brut
+        d["tip_decont"] = tip_decont_lung(d.get("tip_decont"))
+    return d
 
 
 # ============================================================
