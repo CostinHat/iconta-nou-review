@@ -3117,3 +3117,10 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Ce face imposibil:** un token de culoare (--albastru; .camp-ajutor; CULORI_CARD fg/bg) sub 4.5:1 fata de fundalul/textul lui.
 - **Mutatie proba:** --albastru->#3d8fd6 -> gardul pica (alb pe el 3.44); restaurat -> verde.
 - **RAMAS (nou GAP):** butoanele nav 30-36px = AA(24) dar nu AAA(44); .btn-link #3d8fd6 literal de verificat pe alb. Cluster field-level error marking inca deschis.
+
+## existenta_firma_an: activitate = orice operatiune datata (18.08.2026)
+
+- **Gard:** `core/test_existenta_activitate.py` (4 teste, schema temporara, DB).
+- **Ce face imposibil:** existenta_firma_an sa ignore d301_operatiuni / casa_operatiuni / extras_linii intr-un an cu operatiuni datate (ar contrazice restanta D301 pe acelasi ecran, Regula 14 pct.2).
+- **Mutatie proba:** pe cod vechi (doar facturi/salariati/note) `test_d301_operatiuni_e_activitate_demonstrabila` pica (existenta 2026 = False cu 1 d301 op, 0 facturi); dupa fix = True. Rulat RED prin pytest inainte de reparatie.
+- **RAMAS (limita declarata):** euristica e la granularitate de AN, nu de trimestru — o firma cu activitate doar in T2 arata si restanta D100 T1 (nu suprimata). Pre-existent, nu introdus de fix.

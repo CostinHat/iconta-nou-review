@@ -168,11 +168,14 @@ def are_salariat_activ_luna(conn, schema, an, luna):
 
 def existenta_firma_an(conn, schema, an):
     """[#existenta - regula 4] Firma are ACTIVITATE reala demonstrabila in anul `an`? True/False.
-    Activitate = macar o factura (emisa/primita) in an, SAU un salariat activ candva in an, SAU o inregistrare
-    contabila in an. Tabelele lipsa -> se sar. Faptul pe care se decide daca o RESTANTA D100/D101/D406(neplatitor)
-    pe un an trecut are premisa (firma exista/era activa) - simetric cu are_salariat_activ_luna. NU dovedeste
-    inexistenta (o firma poate exista fara activitate); absenta activitatii -> 'necunoscut', decis in motor
-    (control_fiscal_api._existenta_fapt, care combina cu creat_la). Aceeasi logica ca audit_restante.existenta_an."""
+    Activitate = macar o OPERATIUNE DATATA in an: factura (emisa/primita), salariat activ candva in an,
+    inregistrare contabila, achizitie intracomunitara (d301_operatiuni), operatiune de casa, linie de extras
+    bancar, bon, chitanta, sau mijloc fix pus in functiune. Tabelele lipsa -> se sar. Faptul pe care se decide
+    daca o RESTANTA D100/D101/D406(neplatitor) pe un an trecut are premisa (firma exista/era activa) - simetric
+    cu are_salariat_activ_luna. NU dovedeste inexistenta (o firma poate exista fara activitate); absenta
+    activitatii -> 'necunoscut', decis in motor (control_fiscal_api._existenta_fapt, care combina cu creat_la).
+    Nomenclatoarele (articole/furnizori/plan) si soldurile initiale (pot preceda existenta firmei) NU sunt
+    activitate -> EXCLUSE. Aceeasi logica ca audit_restante.existenta_an."""
     import datetime as _dt
     with conn.cursor() as cur:
         cur.execute("SELECT to_regclass(%s)", (schema + ".facturi",))
@@ -193,6 +196,24 @@ def existenta_firma_an(conn, schema, an):
             cur.execute(f"SELECT 1 FROM {schema}.inregistrari WHERE EXTRACT(year FROM data)=%s LIMIT 1", (an,))
             if cur.fetchone():
                 return True
+        # [#existenta d301/casa/banca - audit tenant_006, 18.08.2026] Activitatea reala NU trece doar prin
+        # facturi/salariati/note: un NEPLATITOR cu achizitii intracomunitare isi inregistreaza operatiunile
+        # in d301_operatiuni (din care se naste CHIAR restanta D301 - vezi control_fiscal_api obligatii), iar
+        # casa/banca/bonuri/chitante/mijloace fixe sunt tot operatiuni DATATE. Fara ele, semaforul afisa
+        # simultan "operatiuni IC in iun 2026" (restanta D301) SI "nu pot demonstra ca firma era activa in
+        # 2026" (D100/D406) -> contradictie pe acelasi ecran (Regula 14 pct.2). Criteriu: tabel de OPERATIUNI
+        # datate, autor firma. Nomenclatoarele si soldurile_initiale/parteneri (pot preceda existenta) EXCLUSE.
+        for _tab, _unde in (("d301_operatiuni", "an = %s"),
+                            ("casa_operatiuni", "EXTRACT(year FROM data) = %s"),
+                            ("extras_linii", "EXTRACT(year FROM data) = %s"),
+                            ("bonuri", "EXTRACT(year FROM data) = %s"),
+                            ("chitante", "EXTRACT(year FROM data) = %s"),
+                            ("mijloace_fixe", "EXTRACT(year FROM data_pif) = %s")):
+            cur.execute("SELECT to_regclass(%s)", (schema + "." + _tab,))
+            if cur.fetchone()[0]:
+                cur.execute(f"SELECT 1 FROM {schema}.{_tab} WHERE {_unde} LIMIT 1", (an,))
+                if cur.fetchone():
+                    return True
     return False
 
 

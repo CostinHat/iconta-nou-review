@@ -1706,3 +1706,6 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
 ## Bifa 17.08.2026 — a11y contrast WCAG AA (audit tenant_005)
 
 `core/test_a11y_contrast_tokens.py` (nou, browser-free: recalcul contrast din sursa >= 4.5:1 pentru --albastru/camp-ajutor/CULORI_CARD). RED-probat (--albastru->#3d8fd6 pica). axe contrast=0 pe dashboard/vector/salariati. DS v2.42.
+## Bifa 18.08.2026 — existenta_firma_an numara toata activitatea datata (audit tenant_006)
+
+`core/test_existenta_activitate.py` (nou, 4 teste pe schema temporara: d301_operatiuni/casa_operatiuni/extras_linii = activitate; schema goala = False). RED-probat prin rulare (d301-only -> existenta 2026 False pe cod vechi). Suita control_incrucisat/premisa_restanta/matrice/control_fiscal: 198 passed.

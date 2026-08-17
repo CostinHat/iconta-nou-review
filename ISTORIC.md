@@ -4505,3 +4505,9 @@ Backlog-ul sistemic raportat la Front D (~330 mesaje pe ~50 fisiere) INCHIS. Une
 ## 17.08.2026 — Cluster a11y: contrast WCAG AA + title-only + tinta atingere
 
 axe-core a gasit 5 perechi text/fundal sub 4.5:1 (alb pe --albastru 3.44; card verde 2.94; teal 4.18; camp-ajutor 2.93; edu 4.16). Reparate la SURSA (token/paleta). title-only pierdut pe touch (po-indicator + nav-ghid) -> aria-label. tinta subbara-edu 18->24px. Gard browser-free pe contrastul token-urilor. Identitate vizuala pastrata (captura). Commit 09bb2cd. DS v2.42.
+
+## 18.08.2026 — Audit tenant_006 (Achizitii IC Neplatitor SRL): existenta_firma_an ignora achizitiile IC
+
+Parcurgere cap-coada tenant_006 (N1, neplatitor micro cu achizitii intracomunitare; o singura operatiune D301 iun 2026, 10500 EUR curs 4.9772, TVA 21% = 10975). D301 verificat end-to-end (script + DUK): stare DUK "valid", cifre corecte (baza1 52261, tva1 10975, totalPlata_A 63236), avertisment art.317 afisat (pers_inreg=1 fara default tacit, plus reconciliere si blocante pre-DUK — cale matura). Selector declaratii: D300/D394 corect "nu se datoreaza" pe vector, D301/D390 corect oferite.
+
+Semafor (Control fiscal): gasit defect de coerenta — `existenta_firma_an` numara doar facturi/salariati/inregistrari, ignorand d301_operatiuni; firma aparea simultan cu restanta D301 (din operatiunea IC iun 2026) SI "nu pot demonstra ca firma era activa in 2026" (D100/D406). Reparat: existenta numara si d301_operatiuni/casa/extras/bonuri/chitante/mijloace_fixe (operatiuni datate); nomenclatoare si solduri initiale excluse. Gard RED->GREEN `test_existenta_activitate`. Commit: aceasta tura (vezi raport §2).
