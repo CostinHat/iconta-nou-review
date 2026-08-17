@@ -3042,3 +3042,12 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
   incercat 2 fix-uri (sm-fac lunar; ref-ianuarie 3750) - ambele contrazic teste deliberate cu temei legal. NU e
   defect de calcul CLAR -> REVENIT la HEAD. Cere autoritate externa (ANAF/consultant): period-aware vs ref-ianuarie,
   si de ce fluturas != D112 azi. Analiza completa + probe DUK in PREDARE_LANT FRONT #1.
+
+## 17.08.2026 - declarant fabricat "ADMINISTRATOR" tacit pe toate declaratiile [audit tenant_001, thread 3]
+- declarant_nume/prenume/functie erau CAMPURI_FISCALE dar NU in OBLIGATORII -> ecranul Date firma nu le cerea,
+  iar d100/d101/d205/d112/d300 + bilant emiteau "ADMINISTRATOR" fabricat TACIT cand lipseau (d301/d390 avertizau
+  deja). Declaratii semnate de un declarant inventat -> ANAF (Regula 4). REPARAT in 2 jumatati: (1) declarant_nume
+  + declarant_functie in OBLIGATORII + ob:true in date_firma.js (se cere EXPLICIT, ca regim_fiscal; salveaza_date
+  valideaza; comit 7aef45e); (2) toate generatoarele AVERTIZEAZA cand declarantul lipseste - XML NESCHIMBAT
+  (fallback tot ADMINISTRATOR, DUK respinge campul gol; comit ae5bced). declarant_prenume ramane optional
+  (fallback "-" legitim). Garzi test_declarant_oblig + test_declarant_warn (RED->GREEN). Vezi DECIZII/ISTORIC 17.08.

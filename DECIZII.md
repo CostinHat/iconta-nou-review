@@ -9459,3 +9459,12 @@ DECIZII 23.07 (frontendul distinge nesetat de Nu, fara preselectie) + DS cap.6 (
 langa camp). partida_simpla (PFA/II/PFL) expus din vector_fiscal_api.citeste -> regimul NU se pretinde la partida
 simpla (n-are micro/profit). PROBA: 2 garzi RED->GREEN + proba vizuala Playwright (selecturile alege, Salvarea
 blocheaza cu mesaje per-camp, DB ramane NULL). Corectitudinea nu e decizie de produs (comanda 17.08).
+
+## 17.08.2026 - declarant: se cere EXPLICIT in profil + avertisment la generare (fara fabricare tacita) [tenant_001]
+DECIZIE: declarant_nume + declarant_functie sunt OBLIGATORII in profil (Date firma le cere, cu declaratiile pe care
+le blocheaza; salveaza_date valideaza) - la fel ca regim_fiscal. La GENERARE, cand lipsesc, generatorul emite
+implicit "ADMINISTRATOR" (DUK respinge campul gol al declarantului) DAR ANUNTAT prin avertisment - tiparul
+preexistent d301/d390, extins la TOATE (d100/d101/d205/d112/d300/bilant). declarant_prenume ramane optional
+(fallback "-" legitim in forma ANAF). TEMEI: Regula 4 (fara valori fabricate tacit) + DS cap.6. XML NESCHIMBAT
+(amprenta/DUK neatinse - warn-ul e doar in avertismente, nu in XML). PROBA: garzi RED->GREEN + behavioral D112
+(tenant_001, declarant NULL -> avertisment emis, XML tot ADMINISTRATOR). Corectitudinea nu e decizie de produs.

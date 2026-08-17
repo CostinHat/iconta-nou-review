@@ -4455,3 +4455,14 @@ sm integral 4050 aparat de 2 teste cu art.LXVI; fluturas sm-fac; DUK+structura 3
 DUKIntegrator (iunie+august cer 3750). Nu e defect de calcul clar; cele 2 incercari de fix contraziceau teste
 deliberate. Revenit la HEAD - cere autoritate externa. Fronturi ramase: cod boala 17 in afara nomenclatorului D_9
 (app blocheaza D112 septembrie corect, cu mesaj), declarant fabricat "ADMINISTRATOR" in 7 module (thread 3 neinceput).
+
+## 17.08.2026 - Audit tenant_001 thread 3: declarant fabricat "ADMINISTRATOR" pe toate declaratiile
+declarant_nume/prenume/functie nu erau obligatorii in profil -> Date firma nu le cerea, iar generatoarele (d100/
+d101/d205/d112/d300/bilant) emiteau "ADMINISTRATOR" fabricat tacit cand lipseau (d301/d390 avertizau deja).
+Reparat in 2 jumatati: profilul le CERE explicit (OBLIGATORII + ob:true, ca regim_fiscal; 7aef45e), iar toate
+generatoarele AVERTIZEAZA cand lipsesc (XML neschimbat -> amprenta/DUK neatinse; ae5bced). Vizual (Playwright):
+Nume declarant* + Functia declarantului* cu asterisc, Salvarea fara ele blocheaza; Prenume fara asterisc. axe/mobil
+Date firma: title_only STRICT 0; pre-existent contrast 17 noduri + 31 tinte <44px. Behavioral D112: avertisment
+"D112: declarantul... lipseste" emis, XML tot ADMINISTRATOR. Garzi test_declarant_oblig + test_declarant_warn RED->
+GREEN. Threads ramase: 4 (scan selecturi nullable), 5 (salariati adancime), 6 (declaratii ramase XML+DUK), 7
+(straturi migrare). Front backlog: podea part-time D112 (thread 2, cere autoritate externa).

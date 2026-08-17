@@ -1661,3 +1661,9 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
   avea IBAN deloc: parser/writer/model) -> GREEN.
 - core/test_salariati_blocaj_vizibil.py (2 teste) - butoanele dezactivate SEPA / Raspunsuri REGES au motiv VIZIBIL
   (.caseta-info), NU doar prin title (invizibil pe touch). RED pe firme.js vechi (git HEAD, title="...") -> GREEN.
+
+## 17.08.2026 - Garzi declarant obligatoriu + avertizat pe toate declaratiile [audit tenant_001, thread 3]
+- core/test_declarant_oblig.py (3 teste) - declarant_nume + declarant_functie in firma_profil_api.OBLIGATORII;
+  lipsuri le semnaleaza cu declaratiile blocate; prenume ramane optional. RED pe OBLIGATORII vechi -> GREEN.
+- core/test_declarant_warn.py (1 test) - toate cele 8 declaratii care emit declarantul (d100/d101/d205/d112/
+  d300/d301/d390/bilant) AVERTIZEAZA cand lipseste (nu fabrica tacit "ADMINISTRATOR"). RED pe d100 vechi -> GREEN.
