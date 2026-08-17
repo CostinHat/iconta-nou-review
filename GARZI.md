@@ -2994,3 +2994,21 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
   scurse "(cifR)"/"(den1)"). Distinctia user-facing-pe-ecran vs eroare-developer NU e mecanica -> nereparata (un
   fix fara gard ar incalca Regula 6). De facut: gard care distinge (module de generare dXXX, mesaje prefixate
   "Dxxx:") + diacriticizare + inlocuit numele XSD interne cu descriere umana. Enumerare in raportul 17.08 §5.
+
+## 17.08.2026 - Reconciliere D100 pe semafor REPARATA [audit tenant_002]
+- DEFECT gasit pe ecranul Control fiscal (evalueaza_firma -> reconciliere_surse): _thunk_d100 din
+  control_incrucisat.py despacheta `prof, venituri = pull(...)` dar d100.pull intoarce 3 (prof, venituri,
+  cheltuieli, de la profit-base-fix 16.08). ValueError "too many values to unpack" pe ORICE firma ->
+  _ruleaza_una PASUL 1 il clasifica GRI (nu rosu rupt, cum cere clasa "deriva de semnatura"), cu textul
+  Python scurs in motiv. Plasa a-doua-cale D100 MOARTA universal (micro t002 + profit t004). Latent: ramura
+  profit calcula cota pe VENITURI (nu pe profit) -> rosu fals daca s-ar fi reparat doar aritatea. REPARAT:
+  extras d100.deriva_obligatii (sursa unica) chemata de genereaza SI de thunk -> nu mai poate drifta (aritate
+  + formula). Gard core/test_reconciliere_d100_wiring.py (RED micro+profit -> GREEN). Vezi DECIZII/TESTE 17.08.
+
+## 17.08.2026 - Bilant S1005/S1003 REFUZA fara reg_com (poarta completata) [audit tenant_002]
+- DEFECT provocat pe Date firma (reg_com=None -> UI: "blocheaza Bilant S1005"): bilant_api.erori_generare
+  verifica doar cui+nume, deci genereaza emitea S1005 FARA regCom (respins de DUK: "regCom: atributul trebuie
+  sa existe") in loc sa refuze - promisiunea UI "blocheaza" era falsa, iar poarta (docstring "nu XML respins de
+  ANAF") isi rata exact scopul. REPARAT: reg_com adaugat in erori_generare (partajata S1005+S1003) -> refuz cu
+  mesaj clar. Sursa: DUKIntegrator -v S1005 (reguli 2026.1). Gard core/test_bilant_regcom_poarta.py (RED
+  S1005+S1003 nu ridicau -> GREEN). Vezi DECIZII/TESTE 17.08.

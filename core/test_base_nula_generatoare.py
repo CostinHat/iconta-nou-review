@@ -17,9 +17,20 @@ def test_generatorul_are_poarta_baza_nula(mod):
 
 
 @pytest.mark.parametrize("mod, kcui", [
-    (d112, "cui"), (d390, "cui"), (d394, "cui"), (d406, "cui"), (bilant_api, "cui_numeric")],
-    ids=["d112", "d390", "d394", "d406", "bilant"])
+    (d112, "cui"), (d390, "cui"), (d394, "cui"), (d406, "cui")],
+    ids=["d112", "d390", "d394", "d406"])
 def test_poarta_minima_cui_nume_trece(mod, kcui):
-    """Cele 5 nou-adaugate au poarta minima cui+nume; un profil cu ambele trece."""
+    """Cele 4 au poarta minima cui+nume; un profil cu ambele trece. (bilant cere si reg_com - test separat.)"""
     assert not mod.erori_generare({kcui: "14399840", "nume": "PROBA SRL"}), (
         "%s: profil cu cui+nume respins gresit" % mod.__name__)
+
+
+def test_bilant_poarta_cere_si_reg_com():
+    """Bilant (S1005/S1003) cere reg_com PESTE cui+nume: regCom e obligatoriu in XSD, verificat la sursa
+    (DUKIntegrator -v S1005: 'regCom: atributul trebuie sa existe', reguli 2026.1). cui+nume singur e respins
+    pe reg_com; cu +reg_com trece. Refuzul end-to-end e in core/test_bilant_regcom_poarta.py."""
+    assert bilant_api.erori_generare({"cui_numeric": "14399840", "nume": "PROBA SRL"}), (
+        "bilant: profil fara reg_com ar trebui respins (regCom obligatoriu S1005/S1003)")
+    assert not bilant_api.erori_generare(
+        {"cui_numeric": "14399840", "nume": "PROBA SRL", "reg_com": "J40/1234/2020"}), (
+        "bilant: profil cu cui+nume+reg_com respins gresit")

@@ -61,6 +61,12 @@ def erori_generare(prof):
         erori.append("LIPSĂ CUI firmă.")
     if not str(prof.get("nume") or "").strip():
         erori.append("LIPSĂ denumire firmă.")
+    # regCom e OBLIGATORIU in S1005/S1003 (verificat la sursa: DUKIntegrator -v S1005 respinge XML-ul cu
+    # "eroare atribut: regCom: atributul trebuie sa existe"). Fara aceasta poarta, genereaza emitea un
+    # bilant FARA regCom - exact "XML respins de ANAF" pe care docstring-ul spune ca poarta il previne.
+    if not str(prof.get("reg_com") or "").strip():
+        erori.append("Nr. registrul comerțului lipsește — obligatoriu în bilanț; fără el declarația e "
+                     "respinsă de validatorul ANAF. Se completează la Date firmă.")
     return erori
 
 

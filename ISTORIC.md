@@ -4414,3 +4414,20 @@ DEFECT gasit pe ecranul Control fiscal: 13 mesaje de verdict FARA diacritice + s
 TVA"; gard nou test_control_fiscal_diacritice.py (RED 13 mesaje + 1 scurgere -> GREEN). DS cap.20 extins (limba
 mesajelor de verdict). Generalizare: clasa "erori generare declaratii fara diacritice" masurata (~218 candidati
 brut, clasa reala = erori dXXX afisate) si DECLARATA deschisa (GARZI) - distinctie ne-mecanica, nereparata in tura.
+
+## 17.08.2026 - Audit vizual tenant_002 (Coafor Micro Neplatitor SRL) - reconciliere D100 reparata
+Parcurs inceputul traseului tenant_002; pe ecranul Control fiscal (semafor) reconcilierea a-doua-cale D100 crapa
+universal ("too many values to unpack") pentru ca _thunk_d100 despacheta 2 din 3 valori de la d100.pull (driftat de
+profit-base-fix 16.08); crash-ul ValueError era clasificat gri (opusul intentiei "deriva=rosu rupt") cu textul
+Python scurs in motiv. Reparat structural: extras d100.deriva_obligatii, sursa unica pentru genereaza + thunk; gard
+test_reconciliere_d100_wiring (RED micro+profit -> GREEN). tenant_002 semafor reconciliere: gri-crash -> verde (D100
+sarit corect, venituri=0). tenant_004: gri-crash D100 eliminat, ramane gri din d406 (divergenta preexistenta factura
+COER-T5, alt modul, neatinsa). Restul walk-ului (migrare, date firma/vector, operare, declaratii XML+DUK) neparcurs.
+
+## 17.08.2026 - Audit tenant_002: bilant refuza fara reg_com (blocaj provocat)
+Provocat blocajul anuntat pe Date firma (reg_com lipsa -> "blocheaza Bilant S1005"): bilant_api.genereaza NU
+bloca - erori_generare verifica doar cui+nume, iar genereaza emitea S1005 fara regCom. Confirmat la sursa cu
+DUKIntegrator -v S1005: "eroare atribut: regCom: atributul trebuie sa existe" (respins). Reparat: reg_com in
+erori_generare (partajata S1005+S1003) -> refuz cu mesaj clar. Gard test_bilant_regcom_poarta (RED S1005+S1003
+-> GREEN). tenant_002 confirmat: refuz corect. Nota: prefixul "Bilant nu se poate genera" (preexistent) e fara
+diacritice - neatins, semnalat.

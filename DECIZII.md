@@ -9433,3 +9433,20 @@ in scopuri de TVA". Gard dedicat test_control_fiscal_diacritice.py: gardul canon
 pozitionale la emitenti / return-uri de builder, nu roluri recunoscute. Clasa mai larga (erori de generare
 declaratii afisate contabilului) DECLARATA deschisa in GARZI - distinctie user-facing vs developer ne-mecanica.
 Matricea de 64 neatinsa; 221 teste tinta verzi.
+
+## 17.08.2026 - Thunk-urile de reconciliere NU re-implementeaza derivarea generatorului [audit tenant_002]
+DECIZIE: derivarea obligatiilor unei declaratii traieste O SINGURA data, in generator (d100.deriva_obligatii),
+si e CHEMATA de reconcilierea din control_incrucisat (_thunk_d100), nu re-implementata de mana. TEMEI: copia de
+mana din _thunk_d100 driftase de d100.pull/genereaza (profit-base-fix 16.08) -> crash "too many values to unpack"
+clasificat gri pe fiecare firma + baza profit pe venituri (latent). Aceeasi clasa ca test_control_incrucisat_wiring
+(d300 semnatura). PROBA: test_reconciliere_d100_wiring RED (micro gri-crash, profit gri-crash) -> GREEN. LIMITA:
+d205 re-deriva la fel inline dar NU e driftat azi (verificat prin rulare, derivarea coincide); pattern-ul persista
+acolo, neguardat end-to-end - vezi raport 17.08 sect.5.
+
+## 17.08.2026 - reg_com obligatoriu in bilant: poarta blocheaza, nu doar avertizeaza [audit tenant_002]
+DECIZIE: lipsa Nr. registrul comertului OPRESTE generarea bilantului (S1005 si S1003), nu doar adauga
+avertisment soft. TEMEI la sursa: DUKIntegrator -v S1005 respinge XML-ul fara regCom ("atributul trebuie sa
+existe", pachet oficial ANAF reguli 2026.1) - un bilant fara regCom NU e depozitabil. Aliniaza codul cu
+promisiunea UI existenta ("Nr. registrul comertului - blocheaza Bilant S1005") si cu contractul portii
+erori_generare ("STOP cu mesaj clar, nu XML respins de ANAF"). PROBA: test_bilant_regcom_poarta RED (S1005+
+S1003 emiteau XML) -> GREEN. Corectitudinea declaratiei nu e decizie de produs (comanda 17.08).

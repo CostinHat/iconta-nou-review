@@ -1633,3 +1633,15 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
   diacritica si zero identificator snake_case (nume intern). Reutilizeaza _DIAC din test_diacritice_afisate
   (sursa unica). RED probat pe cod vechi (13 mesaje fara diacritice + scurgere platitor_tva_anaf_inceput);
   GREEN dupa fix. Autotest-cu-dinti inclus (test_autotest_criteriu_are_dinti).
+
+## 17.08.2026 - Gard reconciliere D100 pe semafor (thunk = generator) [audit tenant_002]
+- core/test_reconciliere_d100_wiring.py (2 teste) - reconciliaza_declaratii pe scheme efemere micro (venituri
+  10000 -> D100 121) si profit (venituri 10000 + cheltuieli 6000 -> D100 103 pe profit 4000) cere stare d100
+  'verde', fara "too many values to unpack" in motiv. Prinde SI aritatea (pull 3) SI formula (baza profit).
+  RED probat pe cod vechi (ambele gri, crash despachetare); GREEN dupa extragerea d100.deriva_obligatii.
+
+## 17.08.2026 - Gard bilant refuza fara reg_com (S1005+S1003) [audit tenant_002]
+- core/test_bilant_regcom_poarta.py (3 teste) - genereaza (S1005) si genereaza_s1003 ridica ValueError cu
+  "registrul comertului" cand reg_com lipseste; control pozitiv: cu reg_com completat, S1005 se genereaza.
+  RED probat pe cod vechi (ambele emiteau XML fara regCom, DID NOT RAISE); GREEN dupa adaugarea reg_com in
+  bilant_api.erori_generare. Temei DUK: regCom "atributul trebuie sa existe".

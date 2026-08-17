@@ -292,21 +292,17 @@ def pull(conn, schema, perioada):
     return prof, r["venituri"], r["cheltuieli"]
 
 
-def genereaza(conn, schema, perioada, manual=None):
-    """D100 trimestrial (contract uniform A1). `perioada.trim` (1-4) -> luna raportare = trim*3.
-    `manual` accepta DOAR cheia 'cota' (procent impozit; micro implicit 1, profit implicit 16)."""
-    if perioada.trim is None or not (1 <= perioada.trim <= 4):
-        raise ValueError("D100 trimestrial: trim invalid: %r" % perioada.trim)
-    cota = cheie_manual(manual, "cota").get("cota")
-    an, luna = perioada.an, perioada.trim * 3
-    prof, venituri, cheltuieli = pull(conn, schema, perioada)
-    _avert_profit = None
-    # POARTA (27.07.2026): profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF.
-    erori = erori_generare(prof)
-    if erori:
-        raise ValueError(" ".join(erori))
-
+def deriva_obligatii(prof, venituri, cheltuieli, an, luna, cota=None):
+    """Derivarea obligatiilor D100 (micro 121 pe venituri; profit 103 pe PROFIT = venituri - cheltuieli),
+    GATE-FREE: fara poarta erori_generare, fara refuz-pe-zero. SURSA UNICA a derivarii - o folosesc si
+    genereaza (care aplica poarta + refuz-pe-zero + reconciliere peste), SI reconcilierea din
+    control_incrucisat._thunk_d100 (a doua cale, expusa pe semafor). Un singur loc -> thunk-ul NU mai
+    poate drifta de la generator nici in ARITATE (pull intoarce prof, venituri, cheltuieli), nici in
+    FORMULA (baza profit = venituri - cheltuieli). Intoarce (obligatii, avert): avert = mesajul de
+    avertisment profit (adaugat la res.avertismente de genereaza), sau "LOSS" (semnal pierdere in
+    trimestru pentru refuzul-pe-zero), sau None."""
     obligatii = []
+    avert = None
     regim = (prof.get("regim_fiscal") or "").lower()
     if regim == "micro":
         # rata default din registru (impozit_micro=1%), NU literal; contabilul o poate da explicit prin manual
@@ -325,12 +321,32 @@ def genereaza(conn, schema, perioada, manual=None):
         suma = _i(_profit * c / Decimal(100)) if _profit > 0 else 0
         if suma > 0:
             obligatii.append({"cod_oblig": "103", "suma_dat": suma})
-            _avert_profit = ("D100 profit: baza = profit contabil (venituri %d - cheltuieli %d = %d) x %s%%. "
-                             "Impozitul pe profit se aplica pe PROFIT, nu pe venituri. Ajustarile fiscale "
-                             "(nedeductibile/neimpozabile art.19+ CF) si regularizarea anuala se fac la D101." %
-                             (_i(Decimal(str(venituri))), _i(Decimal(str(cheltuieli))), _i(_profit), c))
+            avert = ("D100 profit: baza = profit contabil (venituri %d - cheltuieli %d = %d) x %s%%. "
+                     "Impozitul pe profit se aplica pe PROFIT, nu pe venituri. Ajustarile fiscale "
+                     "(nedeductibile/neimpozabile art.19+ CF) si regularizarea anuala se fac la D101." %
+                     (_i(Decimal(str(venituri))), _i(Decimal(str(cheltuieli))), _i(_profit), c))
         elif Decimal(str(venituri)) > 0:
-            _avert_profit = "LOSS"  # semnal pt mesajul de refuz (pierdere in trimestru)
+            avert = "LOSS"  # semnal pt mesajul de refuz (pierdere in trimestru)
+    return obligatii, avert
+
+
+def genereaza(conn, schema, perioada, manual=None):
+    """D100 trimestrial (contract uniform A1). `perioada.trim` (1-4) -> luna raportare = trim*3.
+    `manual` accepta DOAR cheia 'cota' (procent impozit; micro implicit 1, profit implicit 16)."""
+    if perioada.trim is None or not (1 <= perioada.trim <= 4):
+        raise ValueError("D100 trimestrial: trim invalid: %r" % perioada.trim)
+    cota = cheie_manual(manual, "cota").get("cota")
+    an, luna = perioada.an, perioada.trim * 3
+    prof, venituri, cheltuieli = pull(conn, schema, perioada)
+    # POARTA (27.07.2026): profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF.
+    erori = erori_generare(prof)
+    if erori:
+        raise ValueError(" ".join(erori))
+
+    # Derivarea obligatiilor traieste o SINGURA data in deriva_obligatii (aceeasi sursa ca thunk-ul de
+    # reconciliere din control_incrucisat._thunk_d100) - genereaza aplica poarta + refuz-pe-zero +
+    # reconciliere peste. Elimina copia de mana care driftase (aritate 2 vs 3 + baza profit pe venituri).
+    obligatii, _avert_profit = deriva_obligatii(prof, venituri, cheltuieli, an, luna, cota)
 
     # [zero_base_refuz_v1 10.08.2026] D100 pe zero = XML STRUCTURAL INVALID la DUKIntegrator (sectiunea
     # <obligatie> e OBLIGATORIE, >=1 - verificat la sursa anaf_surse/d100_struct_anaf.txt + DUK: 'lipsa

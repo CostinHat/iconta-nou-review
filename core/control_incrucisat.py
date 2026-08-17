@@ -1156,19 +1156,11 @@ def _thunk_d100(conn, schema, an, luna):
     from core.common import Perioada
     per = Perioada(an, trim=(luna - 1) // 3 + 1)
     a2, l2 = per.an, per.trim * 3
-    prof, venituri = _g.pull(conn, schema, per)
-    regim = (prof.get("regim_fiscal") or "").strip().lower()
-    obligatii = []   # replica orchestrarii din d100.genereaza (fara poarta); NU inventeaza cote
-    if regim == "micro":
-        c = _g._rata_impozit_default("micro", a2, l2)
-        suma = _g._i(Decimal(str(venituri)) * c / Decimal(100))
-        if suma > 0:
-            obligatii.append({"cod_oblig": "121", "suma_dat": suma, "cota": "1"})
-    elif regim == "profit":
-        c = _g._rata_impozit_default("profit", a2, l2)
-        suma = _g._i(Decimal(str(venituri)) * c / Decimal(100))
-        if suma > 0:
-            obligatii.append({"cod_oblig": "103", "suma_dat": suma})
+    # pull intoarce (prof, venituri, cheltuieli); derivarea obligatiei NU se re-implementeaza aici -
+    # o CHEAMA pe cea din generator (d100.deriva_obligatii), sursa unica -> thunk-ul nu poate drifta
+    # de generator nici in aritate, nici in formula (baza profit = venituri - cheltuieli).
+    prof, venituri, cheltuieli = _g.pull(conn, schema, per)
+    obligatii, _ = _g.deriva_obligatii(prof, venituri, cheltuieli, a2, l2)
     if not obligatii:
         raise _SkipSubiect("D100 fara obligatie (venituri cont 70x = 0) - nimic de reconciliat.")
     res = _g.calcul_d100(prof, a2, l2, obligatii)

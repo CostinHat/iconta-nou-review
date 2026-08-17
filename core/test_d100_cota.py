@@ -17,13 +17,16 @@ def test_cotele_micro_profit_in_registru():
 
 
 def test_d100_rata_default_prin_helper_nu_literal():
-    """genereaza deleaga rata default catre _rata_impozit_default (nu mai are literal 1/16)."""
+    """Derivarea obligatiilor traieste in deriva_obligatii (sursa unica genereaza + thunk reconciliere)
+    si deleaga rata default catre _rata_impozit_default (nu literal 1/16); genereaza ruteaza prin ea."""
     src = pathlib.Path("core/d100.py").read_text(encoding="utf-8")
-    g = next(n for n in ast.walk(ast.parse(src))
-             if isinstance(n, ast.FunctionDef) and n.name == "genereaza")
-    calls = [(getattr(x.func, "attr", None) or getattr(x.func, "id", None))
-             for x in ast.walk(g) if isinstance(x, ast.Call)]
-    assert "_rata_impozit_default" in calls, "genereaza nu deleaga rata default catre helper"
+    fdefs = {n.name: n for n in ast.walk(ast.parse(src)) if isinstance(n, ast.FunctionDef)}
+    calls_deriva = [(getattr(x.func, "attr", None) or getattr(x.func, "id", None))
+                    for x in ast.walk(fdefs["deriva_obligatii"]) if isinstance(x, ast.Call)]
+    assert "_rata_impozit_default" in calls_deriva, "deriva_obligatii nu deleaga rata default catre helper"
+    calls_gen = [(getattr(x.func, "attr", None) or getattr(x.func, "id", None))
+                 for x in ast.walk(fdefs["genereaza"]) if isinstance(x, ast.Call)]
+    assert "deriva_obligatii" in calls_gen, "genereaza nu ruteaza derivarea obligatiilor prin deriva_obligatii"
 
 
 def test_d100_apare_in_graful_impozit():
