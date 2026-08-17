@@ -7,7 +7,7 @@
 // [cap.24 batch 3b] randuri dinamice: model pozitional cu valori + re-randare integrala + stergere/rand (splice);
 // validarea per-linie o face BACKENDUL (facturi_api.linii_campuri_lipsa -> 422.campuri {camp,eticheta}); frontendul
 // NU mai filtreaza randuri si plaseaza erorile langa campul lor prin eroareCamp (cap.6 mecanism A).
-import { api, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=427bd69bf5";
+import { api, dataRo, esc, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=a7f9e80ae0";
 
 export async function randeazaEmitere(corp, nav, tenantId, opt = {}) {
   const inapoi = opt.inapoi || (() => nav && nav.inapoi && nav.inapoi());

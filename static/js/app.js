@@ -28,7 +28,7 @@ window.addEventListener("error", (e) => _bannerEroareGlobala(e.error || e.messag
 window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reason));
 
 import { sesiune } from "./sesiune.js?v=5d142951c9";
-import { api } from "./api.js?v=427bd69bf5";
+import { api } from "./api.js?v=a7f9e80ae0";
 import { ecranBunVenit } from "./ecrane/ansamblu.js?v=534adc8486";  // [bun_venit_v1]
 import { ecranLogin } from "./ecrane/login.js?v=b4eacbafa3";
 import { creeazaNavigator } from "./navigator.js?v=2578fdb284";

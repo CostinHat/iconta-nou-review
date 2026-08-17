@@ -6,7 +6,7 @@
 // DS: cap.6 (asterisc pe obligatorii + ghidaj camp-ajutor + validari preventive cu
 // mesaj explicativ), cap.9 (.grila-doc), cap.3 (nav.setInapoi).
 // Apelare: randeazaDateFirma(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, esc, eroareCamp, curataEroriCamp } from "../api.js?v=427bd69bf5";
+import { api, arataMesaj, esc, eroareCamp, curataEroriCamp } from "../api.js?v=a7f9e80ae0";
 
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.

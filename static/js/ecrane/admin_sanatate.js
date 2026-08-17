@@ -1,6 +1,6 @@
 // admin_sanatate.js — Admin iConta: sanatate infrastructura (doar superadmin).
 // Server (CPU/RAM/disk), aplicatie (uptime), baza de date, erori recente (500+), grafice istoric.
-import { dataRo, api, arataMesaj, esc } from "../api.js?v=427bd69bf5";
+import { dataRo, api, arataMesaj, esc } from "../api.js?v=a7f9e80ae0";
 
 
 function fmtOra(iso) {
