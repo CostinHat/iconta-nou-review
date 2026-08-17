@@ -3108,3 +3108,6 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
 - **Gard:** `core/test_front_e_editare_identitate.py`.
 - **Ce face imposibil:** backendul sa nu mai accepte nume/CNP/data_angajare/tip_norma (contract SalariatEdit+_CAMPURI_API), SAU UI-ul sa piarda cablarea editarii (data-date/ed-cnp/cnpValid in firme.js).
 - **Mutatie proba:** data-date -> data-XXXX in firme.js -> clampul UI pica; restaurat -> verde. 17.08.2026.
+## [ACTUALIZARE 17.08.2026] Diacritice generatoare declaratii — BACKLOG INCHIS
+
+Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 58 fisierele in _GEN_DECLARATII, gardul verde pe toate. Diacriticizat cu ~/probe_t005/diacriticize.py (reutilizabil). Commit 09010f7.

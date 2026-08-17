@@ -4499,3 +4499,6 @@ D112 scutire constructii: verificat la sursa (cod_fiscal consolidat) - art.60 pc
 ## 17.08.2026 — Audit tenant_005, Front E (editare identitate salariat)
 
 nume/prenume/CNP/data_angajare/norma nu se puteau corecta din UI desi backendul le accepta (MEMORY §13: ce se afiseaza si nu se poate corecta, faci cum se corecteaza). Cablat buton 'Corecteaza datele' cu validare CNP client-side. stat_plata expune cnp+tip_norma. Probat live pe Ionescu. Commit e651da0.
+## 17.08.2026 — Campanie: curatare backlog diacritice generatoare declaratii
+
+Backlog-ul sistemic raportat la Front D (~330 mesaje pe ~50 fisiere) INCHIS. Unealta gard-driven (tokenize + AST): dictionar high-precision aplicat pe literalii-mesaj, excluzand XML/SQL/coloane/chei. Iteratii cu cazuri-limita prinse de suita + gard: byte-string (prefix), coloane SQL in query multi-fragment (f.directie -> UndefinedColumn), sageata '->' confundata cu tag XML, chei in backtick (`manual.obligatii` = cheie reala, ramane ASCII). 58 generatoare + ~18 teste aliniate. Commit 09010f7. DS v2.41.
