@@ -24,12 +24,15 @@ def citeste(conn_schema):
     with conn_schema.cursor() as cur:
         cur.execute(
             "SELECT regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, "
-            "       nume, cui, inreg_art317, platitor_tva_anaf_inceput "
+            "       nume, cui, inreg_art317, platitor_tva_anaf_inceput, tip_firma "
             "  FROM firma_profil WHERE id = 1")
         r = cur.fetchone()
     if not r:
         return {"ok": False, "cod": "FARA_PROFIL"}
-    regim, tva, decont, ic, nume, cui, art317, tva_inceput = r
+    regim, tva, decont, ic, nume, cui, art317, tva_inceput, tip_firma = r
+    # [regim] partida simpla (PFA/II/PFL) NU are regim micro/profit -> frontendul nu cere regimul acolo
+    # (fapt UNIC: regim_contabil, aceeasi sursa ca la salveaza). Vezi DECIZII 23.07.
+    partida_simpla = regim_contabil(tip_firma_nrm(tip_firma)) == "simpla"
     completat = bool(regim)  # regim_fiscal e obligatoriu -> daca exista, vectorul e setat
     return {
         "ok": True,
@@ -43,6 +46,7 @@ def citeste(conn_schema):
         # [tva_inceput] data inregistrarii in scopuri de TVA (fapt ANAF sau introdusa manual de contabil) ca
         # ISO 'YYYY-MM-DD' -> pre-populeaza formularul; motorul o foloseste ca margine pt D300/D394/D406.
         "tva_data_inceput": tva_inceput.isoformat() if tva_inceput else None,
+        "partida_simpla": partida_simpla,
         "completat": completat,
     }
 
@@ -53,6 +57,13 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
     Daca randul firma_profil (id=1) nu exista, il creeaza (nume+cui obligatorii la insert)."""
     regim_in = (regim_fiscal or "").strip().lower()
 
+    # platitor_tva OBLIGATORIU (ca operatiuni_ic) - decide obligatia D300/D394. Fara default tacit:
+    # None (necompletat) -> eroare, nu False. Altfel selectul fara optiune-placeholder din Date firma
+    # trimitea "Nu" pe firma cu platitor_tva=NULL si se persista o alegere pe care contabilul n-a facut-o
+    # (Regula 4). Vezi DECIZII 23.07 + DESIGN_SYSTEM cap.17; simetric cu operatiuni_ic de mai jos.
+    if platitor_tva is None:
+        return {"ok": False, "cod": "TVA_LIPSA",
+                "mesaj": "Înregistrată în scopuri de TVA: alege Da sau Nu (obligatoriu)."}
     tva = bool(platitor_tva)
     # operatiuni_ic OBLIGATORIU la migrare (ca tip_decont) - decide obligatia D390. Fara default tacit:
     # None (necompletat) -> eroare, nu False. Vezi DECIZII 23.07 + DESIGN_SYSTEM cap.17.

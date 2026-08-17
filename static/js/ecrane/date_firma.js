@@ -49,16 +49,19 @@ function camp(c, val) {
 // Sta aici, nu intr-un ecran separat: datele fiscale ale firmei sunt un tot (DS:
 // aceeasi situatie = aceeasi rezolvare).
 const VECTOR = [
-  { k: "regim_fiscal", e: "Regim fiscal", ob: true, tip: "select",
+  // [alege] selecturi obligatorii FARA optiune-goala pre-existenta: la valoare NULL browserul afiseaza
+  // prima optiune ca aleasa (default fabricat, Regula 4). `alege:true` -> campVector pune un placeholder
+  // "\u2014 alege \u2014" cand valoarea lipseste, iar salvarea cere alegere explicita (nu trimite fabricat).
+  { k: "regim_fiscal", e: "Regim fiscal", ob: true, alege: true, tip: "select",
     opt: [["micro", "Microintreprindere (impozit pe venit)"], ["profit", "Impozit pe profit"]],
     aj: "Decide D100 (micro, trimestrial) sau D101 (profit, anual)." },
-  { k: "platitor_tva", e: "\u00cenregistrat\u0103 \u00een scopuri de TVA", ob: true, tip: "select",
+  { k: "platitor_tva", e: "\u00cenregistrat\u0103 \u00een scopuri de TVA", ob: true, alege: true, tip: "select",
     opt: [["nu", "Nu"], ["da", "Da"]],
     aj: "Din vectorul fiscal ANAF. Decide D300 si D394." },
   { k: "tip_decont", e: "Periodicitate TVA", tip: "select",
     opt: [["", "\u2014"], ["lunar", "Lunar"], ["trimestrial", "Trimestrial"]],
     aj: "Obligatorie doar la pl\u0103titorii de TVA. Decide dac\u0103 D300/D394 se depun lunar sau trimestrial." },
-  { k: "operatiuni_ic", e: "Opera\u021biuni intracomunitare", tip: "select",
+  { k: "operatiuni_ic", e: "Opera\u021biuni intracomunitare", alege: true, tip: "select",
     opt: [["nu", "Nu"], ["da", "Da"]],
     aj: "Achizi\u021bii/livr\u0103ri din UE. Decide D390 (VIES)." },
   { k: "inreg_art317", e: "\u00cenregistrat\u0103 art. 317 (opera\u021biuni intracomunitare)", tip: "select",
@@ -71,7 +74,7 @@ const VECTOR = [
 ];
 
 function campVector(c, val) {
-  const ob = c.ob ? '<span class="oblig">*</span>' : "";
+  const ob = (c.ob || c.alege) ? '<span class="oblig">*</span>' : "";
   const aj = c.aj ? `<span class="camp-ajutor">${esc(c.aj)}</span>` : "";
   let control;
   if (c.tip === "data") {
@@ -79,9 +82,13 @@ function campVector(c, val) {
     control = `<input type="date" class="camp-input" id="vf-${c.k}" value="${esc(val || "")}">`;
   } else {
     const v = val === true ? "da" : val === false ? "nu" : (val || "");
+    // [alege] valoare lipsa pe select obligatoriu -> placeholder "— alege —" AFISAT (selected), dar
+    // neselectabil (disabled hidden): fara el, browserul afiseaza prima optiune reala ca aleasa (Regula 4).
+    const ph = (c.alege && !v)
+      ? `<option value="" selected disabled hidden>— alege —</option>` : "";
     const opts = c.opt.map(([k, t]) =>
       `<option value="${esc(k)}"${String(k) === String(v) ? " selected" : ""}>${esc(t)}</option>`).join("");
-    control = `<select class="camp-input" id="vf-${c.k}">${opts}</select>`;
+    control = `<select class="camp-input" id="vf-${c.k}">${ph}${opts}</select>`;
   }
   return `
     <label class="camp" id="vf-camp-${c.k}">
@@ -171,20 +178,38 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     const goale = CAMPURI.filter((c) => c.ob && !date[c.k]);
     goale.forEach((c) => eroareCamp(corp, "df-" + c.k, "Completează " + c.e + "."));
     // vectorul: periodicitatea TVA e obligatorie DOAR la platitorii de TVA (vector_fiscal_api.salveaza - sursa unica)
+    // [alege] tri-stare: "" (placeholder neales) -> null, NU false tacit. Backendul refuza null cu mesaj
+    // clar (regim REGIM_INVALID pt SRL, TVA_LIPSA, IC_LIPSA); dar validam preventiv aici (DS cap.6).
+    const _regimV = corp.querySelector("#vf-regim_fiscal").value;
+    const _tvaV = corp.querySelector("#vf-platitor_tva").value;
+    const _icV = corp.querySelector("#vf-operatiuni_ic").value;
+    const triBool = (x) => (x === "da" ? true : x === "nu" ? false : null);
     const vf = {
-      regim_fiscal: corp.querySelector("#vf-regim_fiscal").value,
-      platitor_tva: corp.querySelector("#vf-platitor_tva").value === "da",
+      regim_fiscal: _regimV || null,
+      platitor_tva: triBool(_tvaV),
       tip_decont: corp.querySelector("#vf-tip_decont").value || null,
-      operatiuni_ic: corp.querySelector("#vf-operatiuni_ic").value === "da",
+      operatiuni_ic: triBool(_icV),
       inreg_art317: corp.querySelector("#vf-inreg_art317").value === "da",
       // [tva_inceput] are sens doar la platitor; la neplatitor trimitem null (backendul o goleste oricum)
-      tva_data_inceput: corp.querySelector("#vf-platitor_tva").value === "da"
+      tva_data_inceput: _tvaV === "da"
         ? (corp.querySelector("#vf-tva_data_inceput").value || null) : null,
     };
-    const tvaLipsa = vf.platitor_tva && !vf.tip_decont;
+    // [alege] alegerile obligatorii ale vectorului. regim NU se cere la partida simpla (PFA/II/PFL n-are
+    // micro/profit — vine din payload, fapt unic backend). tva si ic se cer la orice firma.
+    const vecOblig = [];
+    if (!(v && v.partida_simpla) && !vf.regim_fiscal)
+      vecOblig.push(["vf-regim_fiscal", "Alege regimul fiscal (micro sau profit) — decide D100/D101."]);
+    if (vf.platitor_tva === null)
+      vecOblig.push(["vf-platitor_tva", "Alege dacă firma e înregistrată în scopuri de TVA (Da sau Nu) — decide D300/D394."]);
+    if (vf.operatiuni_ic === null)
+      vecOblig.push(["vf-operatiuni_ic", "Alege dacă firma are operațiuni intracomunitare (Da sau Nu) — decide D390."]);
+    vecOblig.forEach(([id, m]) => eroareCamp(corp, id, m));
+    const tvaLipsa = vf.platitor_tva === true && !vf.tip_decont;
     if (tvaLipsa) eroareCamp(corp, "vf-tip_decont", "Periodicitatea TVA e obligatorie la plătitorii de TVA (decide dacă D300 se depune lunar sau trimestrial).");
-    if (goale.length || tvaLipsa) {
-      (corp.querySelector(`#df-${(goale[0] || {}).k}`) || corp.querySelector("#vf-tip_decont"))?.focus();
+    if (goale.length || vecOblig.length || tvaLipsa) {
+      (corp.querySelector(`#df-${(goale[0] || {}).k}`)
+        || corp.querySelector(`#${(vecOblig[0] || [])[0]}`)
+        || corp.querySelector("#vf-tip_decont"))?.focus();
       return;
     }
     btn.disabled = true;

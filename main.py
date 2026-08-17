@@ -884,7 +884,7 @@ class MigrareStatusIn(BaseModel):
 
 class VectorIn(BaseModel):  # [p82_vector]
     regim_fiscal: Optional[str] = None  # [regim] partida simpla -> NULL valid; Optional doar ca sa nu pice la boundary
-    platitor_tva: bool
+    platitor_tva: Optional[bool] = None  # obligatoriu (ca operatiuni_ic) -> None respins in salveaza cu TVA_LIPSA, fara default tacit False. Vezi DECIZII 23.07.
     tip_decont: Optional[str] = None
     operatiuni_ic: Optional[bool] = None   # obligatoriu la migrare (ca tip_decont) -> None respins in salveaza, fara default tacit
     inreg_art317: Optional[bool] = False   # [art.317] inregistrare speciala scopuri TVA (art. 317 CF)
