@@ -116,6 +116,7 @@ def extrage(continut, nume_fisier=""):
     i_intr = _gaseste_col(antet, "intretinere", "persoane")
     i_jud = _gaseste_col(antet, "judet", "casa")
     i_cor = _gaseste_col(antet, "cor", "ocupatie", "ocupație")
+    i_iban = _gaseste_col(antet, "iban", "cont bancar")   # [iban_import] contul in care se plateste salariul (SEPA)
     if i_nume < 0 and i_cnp < 0:
         raise ValueError("nu găsesc coloana nume/CNP salariat - fișier nerecunoscut")
 
@@ -157,6 +158,8 @@ def extrage(continut, nume_fisier=""):
             "persoane_intretinere": int(_numar(cel(i_intr))) if i_intr >= 0 else 0,
             "judet_casa": cel(i_jud),
             "cor": cel(i_cor),
+            # [iban_import] normalizat (fara spatii, majuscule); gol -> "" (necunoscut, NU fabricat)
+            "iban": cel(i_iban).replace(" ", "").upper(),
             "cnp_valid": valid,
             "cnp_motiv": motiv,
         })
@@ -217,6 +220,15 @@ def verifica_randuri(randuri, azi=None):
         if j and j not in JUDETE_CASA:
             er.append({"rand": i, "motiv": "judet_invalid",
                        "mesaj": "%s: județul '%s' nu există" % (nume, j)})
+        # [iban_import] IBAN e OPTIONAL la import (gol -> salariatul e exclus din SEPA si raportat, nu platit
+        # tacit - vezi plata_salarii), dar o valoare PREZENTA trebuie sa fie valida mod-97: un IBAN gresit
+        # trimite banii altcuiva. DS cap.6 (validare preventiva cu mesaj explicativ).
+        ib = str(r.get("iban") or "").strip()
+        if ib:
+            from core.salariati_api import iban_valid   # import local: salariati_api importa din acest modul (circular la nivel de modul)
+            if not iban_valid(ib):
+                er.append({"rand": i, "motiv": "iban_invalid",
+                           "mesaj": "%s: IBAN-ul (%s) e invalid — verifică-l, altfel salariatul nu intră în fișierul de plată SEPA" % (nume, ib)})
     return er
 
 
@@ -255,19 +267,23 @@ def importa(conn, randuri):
             cur.execute("""
                 INSERT INTO salariati
                   (cnp, nume, prenume, data_angajare, part_time, ore_zi,
-                   persoane_intretinere, judet_casa, cor)
-                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s)
+                   persoane_intretinere, judet_casa, cor, iban)
+                VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)
                 ON CONFLICT (cnp) DO UPDATE SET
                   nume=EXCLUDED.nume, prenume=EXCLUDED.prenume,
                   data_angajare=EXCLUDED.data_angajare, part_time=EXCLUDED.part_time,
                   ore_zi=EXCLUDED.ore_zi,
                   persoane_intretinere=EXCLUDED.persoane_intretinere,
-                  judet_casa=EXCLUDED.judet_casa, cor=EXCLUDED.cor
+                  judet_casa=EXCLUDED.judet_casa, cor=EXCLUDED.cor,
+                  -- [iban_import] la re-import fara coloana IBAN (EXCLUDED.iban NULL) NU sterge IBAN-ul deja
+                  -- introdus manual pe ecran: pastreaza valoarea existenta (COALESCE), nu o goleste tacit.
+                  iban=COALESCE(EXCLUDED.iban, salariati.iban)
                 RETURNING id
             """, (r["cnp"], r["nume"], r["prenume"], r.get("data_angajare"),
                   part_time, r.get("ore_zi", 8),
                   r.get("persoane_intretinere", 0),
-                  r.get("judet_casa", ""), r.get("cor", "")))
+                  r.get("judet_casa", ""), r.get("cor", ""),
+                  (r.get("iban") or "").strip() or None))   # gol -> NULL (necunoscut), nu "" fabricat
             # [PASUL 2b] salariul de baza pe salariu_istoric (sursa unica); reparat si activ (coloana retrasa PASUL 1)
             _sid = cur.fetchone()[0]
             from core import salariu_istoric as _si

@@ -8,7 +8,7 @@ import { randeazaFacturi } from "./facturi_ecran.js?v=64b2db9bf3";
 import { ecranRip } from "./rip_ecran.js?v=c9c37ec6ae";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=7019abe613";
 import { ecranEtransport } from "./etransport_ecran.js?v=0dca1ea392";
-import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=f76a025f32";  // [p96_import_firma] + [Q4] import in masa
+import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=3c91d72a8c";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=dc60f9ea45";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=7c53d3765b";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=930762c3c4";  // [produse_firma_v1]
@@ -797,9 +797,9 @@ async function ecranSalariati(corp, nav, t) {
         <button class="buton-secundar" id="sp-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="sp-next">luna \u2192</button>
         <button class="buton-secundar" id="sp-reges-cfg" style="margin-left:12px">Chei REGES</button>
-        <button class="buton-secundar" id="sp-reges-poll"${regesOk ? "" : ' disabled title="Configureaz\u0103 cheile REGES (butonul Chei REGES) \u00eent\u00e2i"'}>R\u0103spunsuri REGES</button>
+        <button class="buton-secundar" id="sp-reges-poll"${regesOk ? "" : " disabled"}>R\u0103spunsuri REGES</button>
         <button class="buton-primar" id="sp-salariat-nou" style="margin-left:12px">+ Salariat nou</button>
-        <button class="buton-secundar" id="sp-plata-card" style="margin-left:12px"${areIban ? "" : ' disabled title="Niciun salariat nu are IBAN. Completeaz\u0103 IBAN-ul (buton IBAN)"'}>Fișier plată card (SEPA)</button></p>
+        <button class="buton-secundar" id="sp-plata-card" style="margin-left:12px"${areIban ? "" : " disabled"}>Fișier plată card (SEPA)</button></p>
       <div id="sp-plata-zona"></div>
       <div id="sp-reges-zona"></div>
       <div id="sp-vac-zona"></div>
@@ -809,6 +809,8 @@ async function ecranSalariati(corp, nav, t) {
       <div id="sp-iban-zona"></div>
       <div id="sp-cor-zona"></div>
       <div id="sp-incet-zona"></div>
+      ${!areIban ? `<div class="caseta-info"><span class="ci-mesaj">Fișierul de plată pe card (SEPA) e indisponibil: niciun salariat nu are IBAN completat. Adaugă IBAN-ul cu butonul „IBAN ⚠" de pe salariat.</span></div>` : ""}
+      ${!regesOk ? `<div class="caseta-info"><span class="ci-mesaj">„Răspunsuri REGES" e indisponibil: cheile REGES nu sunt configurate încă. Configurează-le cu butonul „Chei REGES".</span></div>` : ""}
       ${pontajNeconf ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">●</span> Pontajul lunii ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} nu e confirmat — informativ; tichetele de masă rămân blocate până la confirmarea pontajului (buton „Pontaj" pe salariat).</div></div>` : ""}
       <div class="pf-lista">${randuri}</div>`;
     corp.querySelector("#sp-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });

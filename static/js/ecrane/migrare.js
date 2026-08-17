@@ -548,8 +548,8 @@ function descarcaModelSolduri() {
 const MODELE = {
   parteneri: { fisier: "model_solduri_parteneri.csv", antet: "cont,cui,denumire,sold debitor,sold creditor",
     randuri: ["4111,RO12345678,Client Exemplu SRL,5000,0", "401,RO87654321,Furnizor Exemplu SRL,0,3000"] },
-  salariati: { fisier: "model_salariati.csv", antet: "nume,prenume,cnp,data angajare,norma,brut,judet",
-    randuri: ["Popescu,Ana,2900215410011,2020-01-15,intreaga,5000,B", "Ionescu,Radu,1850715410012,2021-03-01,intreaga,6000,CJ"] },
+  salariati: { fisier: "model_salariati.csv", antet: "nume,prenume,cnp,data angajare,norma,brut,judet,cor,iban",
+    randuri: ["Popescu,Ana,2900215410011,2020-01-15,intreaga,5000,B,251401,RO49AAAA1B31007593840000", "Ionescu,Radu,1850715410012,2021-03-01,intreaga,6000,CJ,522101,"] },
   asociati: { fisier: "model_asociati.csv", antet: "nume,cnp/cui,cota %",
     randuri: ["Popescu Ana,2900215410011,60", "Ionescu Radu,1850715410012,40"] },
   mijloace: { fisier: "model_mijloace_fixe.csv", antet: "cod,denumire,valoare intrare,valoare rezidual,durata luni,data PIF,metoda,cont imobilizare,cont amortizare",
