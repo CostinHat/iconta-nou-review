@@ -8769,6 +8769,8 @@ import json as _ghid_json
 _GHID_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ghid")
 _GHID_SLUG_RE = _ghid_re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 _GHID_BAZA = "https://iconta.eu"          # domeniu canonic public (canonical, og:url, sitemap)
+# [ghid_redirect] slug-uri retrase -> 301 permanent catre succesor (consolidare continut, pastreaza SEO).
+_GHID_REDIRECT = {"cote-tva-2025": "cote-tva-2026"}
 _GHID_OG_IMAGINE = _GHID_BAZA + "/static/logo_login.png"   # provizoriu; DE_FACUT: imagine dedicata per ghid
 
 # Shell public: leaga stil.css, foloseste DOAR clase + tokeni (fara <style> inline, fara culori
@@ -9023,6 +9025,9 @@ def public_ghid(slug: str):
     Front-matter per pagina: title (optional), description, published, modified."""
     if not _GHID_SLUG_RE.match(slug or ""):
         return _ghid_404()
+    if slug in _GHID_REDIRECT:
+        from fastapi.responses import RedirectResponse
+        return RedirectResponse(_GHID_BAZA + "/ghid/" + _GHID_REDIRECT[slug], status_code=301)
     cale = os.path.join(_GHID_DIR, slug + ".md")
     if not os.path.isfile(cale):
         return _ghid_404()

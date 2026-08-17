@@ -30,6 +30,8 @@ Cota se determină după **data distribuirii** — data hotărârii adunării ge
 - Dividend distribuit până la 31 decembrie 2025 → **8%**
 - Dividend distribuit de la 1 ianuarie 2026 → **16%**
 
+O singură excepție păstrează cota de **10%** în 2026: dividendele distribuite pe baza [situațiilor financiare interimare întocmite în 2025](/ghid/impozit-dividende-2026-exceptia-interimare). Regularizarea lor din 2026 nu schimbă cota aplicată la distribuirea inițială.
+
 Impozitul se **reține la sursă în momentul plății** și este final: asociatul primește suma netă, iar firma virează impozitul la buget. Distribuirea fixează cota; plata declanșează reținerea.
 
 Pentru persoanele fizice rezidente, dividendele intră și în baza de calcul a CASS dacă veniturile totale din surse extrasalariale depășesc pragurile din Codul fiscal — impozitul de 16% nu e singura sarcină fiscală asupra lor.

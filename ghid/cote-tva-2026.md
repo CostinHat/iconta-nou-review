@@ -19,6 +19,17 @@ Ambele se aplică din **1 august 2025**, prin Legea nr. 141/2025.
 
 **Excepția tranzitorie: 9% la locuințe**, pentru contractele care îndeplinesc condițiile stabilite și cu livrare până la **30 septembrie 2026** — termen prelungit prin Legea nr. 161/2026 de la 31 iulie.
 
+## Tranziția de la 1 august 2025
+
+Cotele actuale au apărut prin **Legea nr. 141/2025** (art. II pct. 42), care a modificat **art. 291 din Codul fiscal (Legea nr. 227/2015)**, cu intrare în vigoare la **1 august 2025** (art. VII alin. (1)). Până la acea dată, cota standard era **19%**, iar cotele reduse erau **9%** și **5%**.
+
+De la 1 august 2025:
+
+- **cota standard a urcat de la 19% la 21%** — pentru orice operațiune taxabilă care nu e scutită și nu intră la o cotă redusă;
+- **cotele de 9% și 5% s-au comasat într-una singură, de 11%.** Atenție: nu tot ce era la 5% a devenit 11% — unele categorii au urcat direct la 21%. Presupunerea „tot ce era 5% e acum 11%" e greșită și costă.
+
+**Regularizarea avansurilor la schimbarea cotei.** Pentru facturile emise înainte de faptul generator și pentru avansurile încasate (art. 282 alin. (2) din Codul fiscal), cota se aplică la data exigibilității, iar la livrare se regularizează la cota în vigoare atunci. Un avans încasat la 19% pentru o livrare de după 1 august 2025 se regularizează la 21% în momentul livrării — aceeași regulă se aplică și la trecerea de la 9%/5% la 11%.
+
 ## Ce intră la cota redusă de 11%
 
 Categoriile prevăzute la art. 291 alin. (2) din Codul fiscal, printre care:

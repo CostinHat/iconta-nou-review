@@ -1,13 +1,13 @@
 ---
-title: Impozitul pe dividende în 2026: 16%, cu o excepție care valorează bani
-description: Impozitul pe dividende urcă la 16% pentru cele distribuite după 1 ianuarie 2026; excepția care rămâne la 10% și distribuirile interimare din 2025 (Legea 141/2025).
+title: Dividende din situații financiare interimare 2025: cota de 10% în 2026 (excepția de la 16%)
+description: Dividendele distribuite pe baza situațiilor financiare interimare întocmite în 2025 se impozitează cu 10%, chiar dacă regularizarea are loc în 2026 — singura excepție de la cota de 16% (Legea 141/2025).
 published: 2026-08-17
 modified: 2026-08-17
 ---
 
-# Impozitul pe dividende în 2026: 16%, cu o excepție care valorează bani
+# Dividende din situații financiare interimare 2025: de ce rămân la cota de 10%
 
-Cota a urcat de la 10% la 16% pentru dividendele distribuite după 1 ianuarie 2026, indiferent din ce an provine profitul. Dar există o excepție care rămâne la 10%, iar cine a distribuit în 2025 pe situații interimare o păstrează.
+Din 2026, [cota generală a impozitului pe dividende este 16%](/ghid/impozit-dividende-2026), pentru dividendele distribuite după 1 ianuarie 2026, indiferent din ce an provine profitul. Există o singură excepție care rămâne la **10%**: dividendele distribuite pe baza situațiilor financiare interimare întocmite în cursul anului 2025. Cine a făcut astfel de distribuiri anul trecut păstrează cota de 10%, chiar dacă regularizarea se face în 2026.
 
 ## Cota nouă
 
