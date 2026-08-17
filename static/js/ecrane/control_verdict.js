@@ -5,7 +5,7 @@
 // unele ecrane (cazul DANTE 24.07: cele 4 rosii pe salarii nu apareau pe cardul din fisa).
 // Regula DS cap.20: sectiunile pot diferi intre ecrane, cheile dintr-o sectiune randata NU. Garda
 // VERDICT_PARITATE (verificator) impune paritatea prin inventarul declarat VC_RANDATE de mai jos.
-import { api, esc, dataRo, confirmaCaseta, arataMesaj, bani } from "../api.js?v=3857bab660";
+import { api, esc, dataRo, confirmaCaseta, arataMesaj, bani } from "../api.js?v=427bd69bf5";
 
 // Paleta de semafor UNICA (inlocuieste control.js CULORI + firme.js _CF_CUL — erau doua copii divergente).
 export const CULORI = {

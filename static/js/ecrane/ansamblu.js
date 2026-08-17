@@ -6,7 +6,7 @@
 //   - firul de intrare = STRATURI (migrare.js): pasii de migrare, in ordine, migrarea prima;
 //   - ansamblul = grupele din registru (/ansamblu, SURSA UNICA genereaza_grupe_functii.repartizeaza)
 //     + coloana `ajutor` (semn "?" contextual pe functionalitatile care au ajutor scris).
-import { api, esc, semnAjutor } from "../api.js?v=3857bab660";
+import { api, esc, semnAjutor } from "../api.js?v=427bd69bf5";
 import { STRATURI } from "./migrare.js?v=8b814a56ef";
 
 function _firHTML() {

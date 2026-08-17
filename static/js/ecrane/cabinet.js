@@ -2,7 +2,7 @@
 // Bandă de salut + 9 carduri pastel (grilă 3×3), fiecare cu sinteza lui.
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
-import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj } from "../api.js?v=3857bab660";  /* esc_nc27 */
+import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj } from "../api.js?v=427bd69bf5";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js?v=df9fe94900";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { randeazaListaFirme } from "./firme.js?v=3a63916477";
@@ -463,10 +463,11 @@ async function _indicatorPatruOchi() {  /* po_indicator_v1 */
   const el = document.createElement("button");
   el.id = "po-indicator";
   el.className = "subbara-edu btn-link";
-  el.style.color = "var(--verde)";
+  el.style.color = "var(--verde-inchis)";  // a11y: verde care trece 4.5:1 pe bara (DS v2.42)
   el.style.fontWeight = "600";
   el.textContent = "Validarea \u00een doi asisten\u021bi \u2713";
   el.title = "Apas\u0103 pentru a dezactiva";
+  el.setAttribute("aria-label", el.textContent + " — apasă pentru a dezactiva");  // a11y: info title si in numele accesibil
   el.addEventListener("click", () => {
     confirmaCaseta(el.parentElement || el, "Dezactivezi validarea \u00een doi? Declara\u021biile vor putea fi depuse de cine le-a preg\u0103tit.", async () => {  // audit_cab_lot2_v1
       try {

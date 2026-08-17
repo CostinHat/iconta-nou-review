@@ -2,7 +2,7 @@
 // minus exclusivele cabinetului. Bara 3 = doar motivational (pozitiv).
 // Sursa unica: identitatea/permisiunile din sesiune.user(); cifrele din /eu/calitate.
 
-import { api, ICOANE, CULORI_CARD } from "../api.js?v=3857bab660";
+import { api, ICOANE, CULORI_CARD } from "../api.js?v=427bd69bf5";
 import { semaforCard } from "./semafor.js?v=df9fe94900";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { randeazaControl } from "./control.js?v=8576a174b7";

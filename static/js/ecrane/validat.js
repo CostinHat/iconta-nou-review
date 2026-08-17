@@ -8,7 +8,7 @@
 // (ascuns vizual + blocat în backend) — DOAR când patru-ochi e activ.
 // Perioada afișată = perioada DECLARATĂ (an/lună/trim din payload); scadența = termen, etichetată separat.
 // Dialogurile (motiv respingere / index SPV) folosesc ferestre modale proprii (nav.deschide).
-import { api, dataRo } from "../api.js?v=3857bab660";
+import { api, dataRo } from "../api.js?v=427bd69bf5";
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 
 function numeFirma(firme, tid) {

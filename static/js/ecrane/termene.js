@@ -1,7 +1,7 @@
 // termene.js — scadente fiscale viitoare pe portofoliu (orizont 60 zile).
 // Grupate pe data-termen; click pe o declaratie -> firmele; click pe o firma -> fisa firmei.
 
-import { api, dataRo } from "../api.js?v=3857bab660";
+import { api, dataRo } from "../api.js?v=427bd69bf5";
 import { deschideFirma } from "./firme.js?v=3a63916477";   // [P2] refolosim fisa firmei (firme.js:146), nu ruta noua; ?v=7 aliniat cu cabinet/asistent ca sa nu apara o a doua instanta a modulului
 
 // [P1c] anul se afiseaza pe eticheta de perioada DOAR cand difera de asta (fereastra de 60z poate trece in an+1).

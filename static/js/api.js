@@ -228,8 +228,8 @@ export function baniRotund(v) {
    Fiecare card foloseste o cheie de aici, NU hex ad-hoc. bg = fundal pastel, fg = titlu/icon saturat. */
 export const CULORI_CARD = {
   albastru:  { bg: "#e9f0fe", fg: "#1d4ed8" },
-  verde:     { bg: "#e6f6ec", fg: "#16a34a" },
-  teal:      { bg: "#dff4f2", fg: "#0a807b" },
+  verde:     { bg: "#e6f6ec", fg: "#117f39" },  /* a11y: 4.55:1 (era #16a34a=2.94) */
+  teal:      { bg: "#dff4f2", fg: "#097a76" },  /* a11y: 4.53:1 (era #0a807b=4.18) */
   violet:    { bg: "#efebfe", fg: "#6d28d9" },
   piersica:  { bg: "#faece7", fg: "#993c1d" },
   chihlimbar:{ bg: "#fbeedd", fg: "#92500a" },
