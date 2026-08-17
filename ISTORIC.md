@@ -4485,3 +4485,10 @@ Formularul Vector fiscal arata contabilului `tip_decont trebuie sa fie lunar sau
 ## 17.08.2026 — Audit tenant_005, cluster 5: vector fiscal per-firma reflecta vectorul salvat
 
 Pe traseul per-firma formularul Vector aparea GOL (plator TVA -> `Nu` tacit, CUI gol, risc suprascriere vector real). B1: formularVectorFirma incarca /vector (sursa unica). B2: 12/20 tenanti au tip_decont legacy `L`/`T` din seed (intentionat); UI-ul compara pe forma lunga -> periodicitate neselectata pe Vector si Date firma. Primitiva common.tip_decont_lung normalizeaza la granita UI (citeste + portal). Motoarele fiscale erau deja imune. Probat end-to-end: formularul arata acum profit/TVA-Da/Trimestrial/IC-Nu/CUI-populat. Commit 3a3b3f2. DS v2.36.
+## 17.08.2026 — Audit tenant_005, cluster 6: diacritice pe mesajele validatorilor de import
+
+Parcurgerea vizuala a straturilor de migrare (Solduri/Parteneri/Asociati/Mijloace/Istoric) a scos 21 mesaje afisate fara diacritice, in structuri pe care gardul de diacritice nu le vedea (raise brut/det+=/f-string/avertismente). Reparate + gard extins cu scanare integrala a validatorilor de import. Commit 58fd46e. DS v2.37.
+
+## 17.08.2026 — Audit tenant_005, cluster 7: plan conturi, adaugarea de cont reparata
+
+Adaugarea de cont in Plan de conturi pica cu 422 (frontend generic 'eroare') pt orice input. Cauza: PlanContIn definit dupa handler + future annotations -> FastAPI trata `date` ca query. Mutat inainte de handler; gard general pe rute. Probat live: 200, contul apare in registru (185->186). Commit 368325e. DS v2.38.

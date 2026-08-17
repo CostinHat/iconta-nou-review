@@ -1686,3 +1686,10 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
 ## Bifa 17.08.2026 — audit tenant_005: vector per-firma reflecta vectorul salvat (cluster 5)
 
 `core/test_tip_decont_lung.py`: contract primitiva + integrare (tenant legacy L/T -> forma lunga prin citeste/portal) + clamp B1 (formularVectorFirma incarca /vector). Ambele RED-probate. GREEN 3 passed. versioneaza_assets --scrie (migrare.js). Gard in GARZI. DS v2.36.
+## Bifa 17.08.2026 — audit tenant_005: diacritice mesaje validatori import (cluster 6)
+
+`core/test_diacritice_afisate.py::test_validatori_import_cu_diacritice` (nou) + 14 triggere. RED-probat: avertisment fara diacritice -> pica. 21 mesaje reparate in 8 validatori + e-Factura. Aliniat test_mijloace_fixe_import_categorie. DS v2.37.
+
+## Bifa 17.08.2026 — audit tenant_005: plan conturi adaugare reparata (cluster 7)
+
+`core/test_rute_model_body.py` (nou): niciun param BaseModel clasificat ca query. RED-probat: PlanContIn dupa handler -> flagheaza param 'date'. Probat live: POST plan-conturi 200 (era 422). DS v2.38.

@@ -3085,3 +3085,14 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
 
 - Eroarea de la formularul Vector NU marcheaza campul vinovat cu contur (doar cutie generica jos; mesajul il numeste acum). Pattern app-wide (Regula 14 pct.4).
 - axe pe ecranul Vector: 15 noduri color-contrast (serious) + 17 tinte <44px + 2 info livrata EXCLUSIV prin `title` (pierduta pe touch). Pre-existent, app-wide.
+## Diacritice pe mesajele validatorilor de import (17.08.2026)
+
+- **Gard:** `core/test_diacritice_afisate.py::test_validatori_import_cu_diacritice` + 14 triggere noi.
+- **Ce face imposibil:** un mesaj afisat de un validator de import (raise/mesaj/motiv/f-string/avertismente.append) fara diacritice. Scanare INTEGRALA a celor 8 fisiere-validator (integral user-facing), exclus _gaseste_col + SQL.
+- **Mutatie proba:** avertisment `"durata lipsa"` in mijloace -> gardul pica; restaurat -> verde. 17.08.2026.
+
+## Plan de conturi: model de body clasificat ca query (17.08.2026)
+
+- **Gard:** `core/test_rute_model_body.py`.
+- **Ce face imposibil:** un param tipat cu BaseModel sa fie clasificat de FastAPI ca query (model definit DUPA handler cu future annotations -> request pica cu 422). Prinde clasa app-wide.
+- **Mutatie proba:** PlanContIn mutat inapoi dupa handler -> gardul flagheaza param 'date' tip PlanContIn ca QUERY; restaurat -> verde. 17.08.2026.
