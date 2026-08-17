@@ -1693,3 +1693,10 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
 ## Bifa 17.08.2026 — audit tenant_005: plan conturi adaugare reparata (cluster 7)
 
 `core/test_rute_model_body.py` (nou): niciun param BaseModel clasificat ca query. RED-probat: PlanContIn dupa handler -> flagheaza param 'date'. Probat live: POST plan-conturi 200 (era 422). DS v2.38.
+## Bifa 17.08.2026 — Front D: D205 diacritice + temei D112 (art.60 pct.5 abrogat)
+
+`core/test_diacritice_afisate.py::test_generatoare_declaratii_cu_diacritice` (nou, _GEN_DECLARATII=[d205], RED-probat). 17 mesaje d205 diacriticizate. Aliniat test_d205_cui_checksum + test_declarant_warn. D112 verificat la sursa (OUG 156/2024). DS v2.39.
+
+## Bifa 17.08.2026 — Front E: editare identitate salariat din UI
+
+`core/test_front_e_editare_identitate.py` (nou): contract backend (SalariatEdit+_CAMPURI_API) + clamp UI (firme.js data-date/ed-cnp/cnpValid). RED-probat. Probat live: form pre-completat CNP/nume, validare CNP. DS v2.40.

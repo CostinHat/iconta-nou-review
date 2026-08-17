@@ -3096,3 +3096,15 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
 - **Gard:** `core/test_rute_model_body.py`.
 - **Ce face imposibil:** un param tipat cu BaseModel sa fie clasificat de FastAPI ca query (model definit DUPA handler cu future annotations -> request pica cu 422). Prinde clasa app-wide.
 - **Mutatie proba:** PlanContIn mutat inapoi dupa handler -> gardul flagheaza param 'date' tip PlanContIn ca QUERY; restaurat -> verde. 17.08.2026.
+## Diacritice generatoare declaratii (17.08.2026) + BACKLOG sistemic
+
+- **Gard:** `core/test_diacritice_afisate.py::test_generatoare_declaratii_cu_diacritice` (_GEN_DECLARATII).
+- **Ce face imposibil:** mesaj-proza fara diacritice intr-un generator din _GEN_DECLARATII (azi: d205).
+- **BACKLOG (~330 mesaje, ~50 fisiere):** d100/d101/d112/d300/d301/d390/d394/d406/d107/d177/d207/bilant_api/declaratii_api + extins d104-d710 - fara diacritice (raise/er.append/avertisment). Se curata cate un fisier, se adauga in _GEN_DECLARATII. Campanie dedicata. Unele scapa si nume de camp (Regula 14 pct.4).
+- **Mutatie proba:** mesaj d205 integral ASCII -> gardul flagheaza; restaurat -> verde. 17.08.2026.
+
+## Front E: editarea identitatii salariatului din UI (17.08.2026)
+
+- **Gard:** `core/test_front_e_editare_identitate.py`.
+- **Ce face imposibil:** backendul sa nu mai accepte nume/CNP/data_angajare/tip_norma (contract SalariatEdit+_CAMPURI_API), SAU UI-ul sa piarda cablarea editarii (data-date/ed-cnp/cnpValid in firme.js).
+- **Mutatie proba:** data-date -> data-XXXX in firme.js -> clampul UI pica; restaurat -> verde. 17.08.2026.

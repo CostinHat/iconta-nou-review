@@ -4492,3 +4492,10 @@ Parcurgerea vizuala a straturilor de migrare (Solduri/Parteneri/Asociati/Mijloac
 ## 17.08.2026 — Audit tenant_005, cluster 7: plan conturi, adaugarea de cont reparata
 
 Adaugarea de cont in Plan de conturi pica cu 422 (frontend generic 'eroare') pt orice input. Cauza: PlanContIn definit dupa handler + future annotations -> FastAPI trata `date` ca query. Mutat inainte de handler; gard general pe rute. Probat live: 200, contul apare in registru (185->186). Commit 368325e. DS v2.38.
+## 17.08.2026 — Audit tenant_005, Front D (declaratii)
+
+D112 scutire constructii: verificat la sursa (cod_fiscal consolidat) - art.60 pct.5 + art.60^1 ABROGATE 01-01-2025 de OUG 156/2024 -> in 2026 tratament standard, NU e defect; temei documentat. D101 genereaza+DUK ok. D205 blocheaza corect pe zero beneficiari; 17 mesaje diacriticizate (walk-ul a scos clasa sistemica ~330 mesaje pe ~50 generatoare - backlog). Bilant/d301/d390 corecte. Commit e651da0.
+
+## 17.08.2026 — Audit tenant_005, Front E (editare identitate salariat)
+
+nume/prenume/CNP/data_angajare/norma nu se puteau corecta din UI desi backendul le accepta (MEMORY §13: ce se afiseaza si nu se poate corecta, faci cum se corecteaza). Cablat buton 'Corecteaza datele' cu validare CNP client-side. stat_plata expune cnp+tip_norma. Probat live pe Ionescu. Commit e651da0.
