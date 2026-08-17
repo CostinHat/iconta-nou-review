@@ -79,7 +79,7 @@ def reconciliaza(conn, schema, perioada, res, manual=None):
         # verifica_reconciliere). Inainte: return divergente=[] TACIT -> imp1 gresit trecea + DUK valid.
         return {"acoperit": False, "divergente": _consistenta_interna(perioada, res),
                 "motiv": "beneficiari introdusi manual de contabil (§8) - recalculul din 457 nu se "
-                         "aplica; verificata DOAR consistenta interna imp1=round(cota_dividend x baza1)."}
+                         "aplica; verificata DOAR consistenta interna imp1=round(cota dividendului x baza1)."}
     an = perioada.an
     from core import common as _c   # registrul de lege (cota impozit dividende period-aware)
     cota_div = Decimal(str(_c.cota("impozit_dividend", date(an, 12, 31))[0]))

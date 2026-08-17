@@ -91,7 +91,7 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
     if tva:
         if decont not in _DECONTURI:
             return {"ok": False, "cod": "DECONT_INVALID",
-                    "mesaj": "tip_decont trebuie să fie 'lunar' sau 'trimestrial' pentru plătitor TVA"}
+                    "mesaj": "Periodicitate decont TVA: alege Lunar sau Trimestrial (obligatoriu la plătitor de TVA)."}
     else:
         decont = None
 
@@ -113,7 +113,7 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
         else:
             if regim_in not in _REGIMURI:
                 return {"ok": False, "cod": "REGIM_INVALID",
-                        "mesaj": "regim_fiscal trebuie să fie 'micro' sau 'profit'"}
+                        "mesaj": "Regim fiscal: alege microîntreprindere sau impozit pe profit (obligatoriu)."}
             regim = regim_in
         if exista:
             cur.execute(
@@ -126,7 +126,7 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
         else:
             if not nume or not cui:
                 return {"ok": False, "cod": "FARA_IDENTITATE",
-                        "mesaj": "firma_profil gol și lipsesc nume/cui pentru creare"}
+                        "mesaj": "Firma nu are încă datele de identificare (denumire și CUI) — completează-le înainte de a salva vectorul fiscal."}
             cur.execute(
                 "INSERT INTO firma_profil (id, nume, cui, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic, inreg_art317, platitor_tva_anaf_inceput) "
                 "VALUES (1, %s, %s, %s, %s, %s, %s, %s, %s)",

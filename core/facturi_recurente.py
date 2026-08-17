@@ -29,7 +29,7 @@ def adauga(conn, schema, corp):
         return {"eroare": "beneficiar obligatoriu"}
     zi = int(corp.get("zi_emitere") or 1)
     if not 1 <= zi <= 28:
-        return {"eroare": "zi_emitere între 1 și 28"}
+        return {"eroare": "Ziua emiterii trebuie să fie între 1 și 28."}
     # [cap.24 regula 2] validare per-linie AUTORITARA: un rand incomplet se raporteaza langa campul lui
     # (fr-l{i}-..), nu il filtreaza tacit frontendul. Aceleasi criterii (denumire nevida + cantitate>0),
     # din aceeasi functie ca emitere (fara oglinda care drifteaza, cap.24 regula 4).

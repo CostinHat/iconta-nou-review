@@ -170,7 +170,7 @@ def test_tva_la_incasare_neacoperit_fara_alarma_falsa():
         R = {"R9_1": 999999}   # valoare aberanta - NU trebuie sa produca divergenta
     rap = reconciliaza(conn=None, perioada=Perioada(2026, luna=6), res=_R())
     assert rap["acoperit"] is False and rap["divergente"] == []
-    assert "tva_la_incasare" in rap["motiv"]
+    assert "TVA la încasare" in rap["motiv"]
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

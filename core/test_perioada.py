@@ -49,4 +49,4 @@ def test_blocaj_motivat_are_cele_4_elemente():
     assert "Tichetele de masa nu se poate calcula" in m       # ce s-a oprit
     assert "nu e CONFIRMAT" in m                                # de ce
     assert "Confirmă pontaj-ul lunii" in m and "buton" in m     # ce se poate face
-    assert "admin_firma" in m                                    # cine decide
+    assert "administrator al firmei" in m                        # cine decide

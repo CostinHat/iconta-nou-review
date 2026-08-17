@@ -488,7 +488,7 @@ def constatare_regim_tva(local, anaf, data=None):
     data_txt = data.isoformat() if hasattr(data, "isoformat") else (data or "—")
     c = {"eticheta": "Regim TVA vs ANAF", "stare": st, "local": local, "anaf": anaf,
          "data_anaf": data_txt,
-         "temei": "firma_profil.platitor_tva (setat manual) vs snapshot ANAF v9 scpTVA."}
+         "temei": "Plătitor de TVA setat manual în firmă vs. starea din snapshot ANAF v9 (scpTVA)."}
     if st == "gri":
         c["mesaj"] = "Regimul TVA nu a fost comparat cu ANAF (fără snapshot)."
         c["limita"] = ("Fără valoare ANAF stocată — se populează la onboarding sau la "

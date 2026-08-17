@@ -693,7 +693,7 @@ def gdpr_export_cabinet(cabinet_id: Optional[int] = None, ctx=Depends(cere_rol("
     if ctx["rol"] == "superadmin":
         cab = cabinet_id
         if not cab:
-            raise HTTPException(422, "cabinet_id obligatoriu pentru superadmin")
+            raise HTTPException(422, "Alegeți cabinetul (obligatoriu pentru superadmin).")
     else:
         cab = ctx.get("firm")
     if not cab:
@@ -3281,7 +3281,7 @@ def declaratii_tipuri(tenant_id: Optional[int] = None, ctx=Depends(cere_cabinet)
     # [G1] tenant_id OBLIGATORIU: aplicabilitatea prin forma depinde de firma. Fara firma -> 400 (NU {} tacit -
     # "nimic exclus" implicit = tiparul eliminat de 5 ori azi). UI-ul re-cere la fiecare schimbare de firma.
     if tenant_id is None:
-        raise HTTPException(400, "tenant_id obligatoriu — alege firma întâi")
+        raise HTTPException(400, "Alege firma întâi.")
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
@@ -3371,7 +3371,7 @@ def _tenant_client(ctx, tenant_id=None):
         return t
     if len(tenants) == 1:
         return tenants[0]
-    raise HTTPException(400, "aveți mai multe firme; specificați tenant_id")
+    raise HTTPException(400, "Aveți mai multe firme; alegeți firma.")
 
 
 @app.get("/portal/firme")
@@ -4145,7 +4145,7 @@ def _tenant_pentru_documente(ctx, tenant_id):  # bon_cabinet_v1
     if (ctx.get("rol") or "") == "client":
         return _tenant_client(ctx, tenant_id)
     if not tenant_id:
-        raise HTTPException(400, "tenant_id necesar pentru rolurile de cabinet")
+        raise HTTPException(400, "Alegeți firma (necesar pentru rolurile de cabinet).")
     return {"schema_name": _schema_sau_404(ctx, tenant_id), "id": tenant_id}
 
 @app.post("/portal/bon")
@@ -6856,8 +6856,8 @@ def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
                         (corp["salariat_id"], start, prima))
             venituri, zile, nr_luni = cur.fetchone()
     if nr_luni == 0 or zile == 0:
-        raise HTTPException(422, "fără istoric în state_plata pt. ultimele 6 luni - "
-                                 "rulează stat-plata pe lunile anterioare")
+        raise HTTPException(422, "fără istoric în statul de plată pentru ultimele 6 luni — "
+                                 "rulează statul de plată pe lunile anterioare")
     try:
         r = _s.calcul_cm(venituri, zile, int(corp["zile_lucratoare_cm"]),
                          cod=corp.get("cod", "01"),
@@ -7841,7 +7841,7 @@ def achizitie_necorporala(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
         elif tip == "constituire":
             dnf = min(int(dnf or 60), 60)  # art. 28(11): max 5 ani
         elif not dnf:
-            raise HTTPException(422, f"dnf_luni obligatoriu pentru {tip} "
+            raise HTTPException(422, f"Durata normală de funcționare (luni) obligatorie pentru {tip} "
                                      "(durata contractului/de utilizare, art. 28(9))")
         from core import facturi_api as _fa
         try:

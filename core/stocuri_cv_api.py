@@ -383,7 +383,7 @@ def reclasificare(conn, schema, corp):
             return None
         cont_nou = (corp.get("cont_stoc_nou") or "").strip()
         if not cont_nou:
-            return {"eroare": "cont_stoc_nou lipsă"}
+            return {"eroare": "Contul de stoc nou lipsește."}
         if cont_nou == a["cont_stoc"]:
             return {"eroare": "contul de stoc e neschimbat"}
         chelt_nou = (corp.get("cont_cheltuiala_nou") or "").strip() or a["cont_cheltuiala"]
