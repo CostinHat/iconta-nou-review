@@ -212,6 +212,18 @@ def verifica_randuri(randuri, azi=None):
         if not str(r.get("tip_norma") or "").strip():
             er.append({"rand": i, "motiv": "norma_lipsa",
                        "mesaj": "%s: norma de lucru lipsește (întreagă/parțială) - necesară pentru D112" % nume})
+        # [salariu_import] salariul de baza e OBLIGATORIU si > 0 (ca la creare, salariati_api #8):
+        # intra in D112 si pe fluturas. Lipsa lui (coloana absenta / celula goala -> parser 0.0) NU se
+        # accepta tacit (DS cap.17, fara default fabricat): firma ar plati CAS/CASS pe podeaua sub-minim
+        # (art.146(5^6)/168(6^1)) fara sa stie, iar statul ar arata brut 0 / cost pozitiv - incoerent.
+        _brut = r.get("salariu_brut")
+        try:
+            _brut_ok = _brut is not None and float(_brut) > 0
+        except (TypeError, ValueError):
+            _brut_ok = False
+        if not _brut_ok:
+            er.append({"rand": i, "motiv": "salariu_lipsa",
+                       "mesaj": "%s: salariul de bază lipsește sau nu e mai mare ca 0 - intră în D112 și pe fluturaș, trebuie să fie cel real" % nume})
         ore = r.get("ore_zi")
         if ore and not (1 <= float(ore) <= 8):   # 0/None = necunoscut (acoperit de norma_lipsa); doar valoarea PREZENTA gresita
             er.append({"rand": i, "motiv": "ore_invalide",

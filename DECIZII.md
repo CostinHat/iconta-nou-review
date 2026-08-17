@@ -9468,3 +9468,13 @@ preexistent d301/d390, extins la TOATE (d100/d101/d205/d112/d300/bilant). declar
 (fallback "-" legitim in forma ANAF). TEMEI: Regula 4 (fara valori fabricate tacit) + DS cap.6. XML NESCHIMBAT
 (amprenta/DUK neatinse - warn-ul e doar in avertismente, nu in XML). PROBA: garzi RED->GREEN + behavioral D112
 (tenant_001, declarant NULL -> avertisment emis, XML tot ADMINISTRATOR). Corectitudinea nu e decizie de produs.
+
+## 17.08.2026 — Import salariati: salariu_brut obligatoriu si > 0 (audit tenant_005)
+
+**Decizie.** `salariati_import_api.verifica_randuri` respinge randurile cu salariu de baza lipsa/0/negativ (motiv `salariu_lipsa`), ca poarta unica a importului — aceeasi invarianta ca la creare (`salariati_api` #8: brut obligatoriu > 0). Pana acum importul verifica CNP/data/norma/ore/judet/IBAN dar NU salariul; comentariul din verifica_randuri (linia ~189) recunostea explicit gaura ("brut 1500 la norma intreaga sub minim... toate au intrat, migrarea a zis gata").
+
+**Temei.** Cod fiscal art.146(5^6)/168(6^1) — podeaua CAS/CASS sub salariul minim: un salariat cu baza 0/lipsa produce suprataxa angajatorului pe podea (cost pozitiv) desi net 0. DS cap.17 (fara default fiscal fabricat: parser `_numar` intoarce 0.0 pt coloana absenta) + cap.6 (validare preventiva cu mesaj) + MEMORY §13 (data lipsa se semnaleaza explicit, nu se calculeaza tacit). Un CIM la norma intreaga nu poate avea baza sub minim/zero (Codul muncii art.164).
+
+**Proba.** tenant_005 (P2, Constructii Profit Trim): salariatul Ionescu Marin are `salariu_istoric.salariu_brut=0` -> Stat de plata 08/2026 afiseaza "brut 0 · net 0 · cost 825" (825 = cas_suprataxa 589.29 + cass_suprataxa 235.71, podeaua pe baza zero), fara niciun semnal. Gard RED->GREEN: `test_salariu_brut_lipsa/negativ_e_respins` (pe cod vechi verifica_randuri intoarce [], accepta tacit).
+
+**Ramas (front deschis).** Datele REZIDUALE cu brut=0 deja in baza NU sunt reparate de gardul de import; Stat de plata inca afiseaza "cost 825" tacit pe ele. Semnalul pe ecranul Stat de plata (brut 0 -> "salariu de baza lipsa") = cluster separat.

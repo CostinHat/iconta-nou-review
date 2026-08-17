@@ -1667,3 +1667,7 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
   lipsuri le semnaleaza cu declaratiile blocate; prenume ramane optional. RED pe OBLIGATORII vechi -> GREEN.
 - core/test_declarant_warn.py (1 test) - toate cele 8 declaratii care emit declarantul (d100/d101/d205/d112/
   d300/d301/d390/bilant) AVERTIZEAZA cand lipseste (nu fabrica tacit "ADMINISTRATOR"). RED pe d100 vechi -> GREEN.
+
+## Bifa 17.08.2026 — audit tenant_005: import salariu_brut obligatoriu
+
+`core/test_import_migrare.py`: adaugat `salariu_brut` la fixture-ul `_s()` (un salariat complet ARE baza > 0) + `test_salariu_brut_lipsa_e_respins`, `test_salariu_brut_negativ_e_respins`. RED probat pe cod vechi (stash salariati_import_api.py). GREEN: 21 passed in test_import_migrare.py; 33 passed pe suita de import salariati (iban/preview/d1/backend/cnp/valideaza). Gard in GARZI.

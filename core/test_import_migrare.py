@@ -21,7 +21,8 @@ AZI = d.date(2026, 7, 15)
 # ---------------- SALARIATI ----------------
 def _s(**kw):
     b = {"nume": "X", "prenume": "Y", "cnp_valid": True, "data_angajare": "2024-01-08",
-         "ore_zi": 8, "judet_casa": "B", "tip_norma": "intreaga"}  # [Q11] salariat complet are norma
+         "ore_zi": 8, "judet_casa": "B", "tip_norma": "intreaga",  # [Q11] salariat complet are norma
+         "salariu_brut": 5000}  # [salariu_import] ... si salariu de baza > 0
     b.update(kw)
     return b
 
@@ -49,6 +50,19 @@ def test_judet_inexistent():
     er = v_sal([_s(judet_casa="ZZ")], azi=AZI)
     assert er and er[0]["motiv"] == "judet_invalid"
     assert "ZZ" not in JUDETE_CASA and "B" in JUDETE_CASA
+
+
+def test_salariu_brut_lipsa_e_respins():
+    # [salariu_import] fisier fara coloana de salariu -> parser 0.0 / None; NU intra tacit cu baza 0
+    er = v_sal([_s(salariu_brut=None)], azi=AZI)
+    assert er and er[0]["motiv"] == "salariu_lipsa"
+    er2 = v_sal([_s(salariu_brut=0.0)], azi=AZI)
+    assert er2 and er2[0]["motiv"] == "salariu_lipsa"
+
+
+def test_salariu_brut_negativ_e_respins():
+    er = v_sal([_s(salariu_brut=-100)], azi=AZI)
+    assert er and er[0]["motiv"] == "salariu_lipsa"
 
 
 # ---------------- ASOCIATI ----------------

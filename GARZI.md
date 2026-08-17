@@ -3051,3 +3051,9 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
   valideaza; comit 7aef45e); (2) toate generatoarele AVERTIZEAZA cand declarantul lipseste - XML NESCHIMBAT
   (fallback tot ADMINISTRATOR, DUK respinge campul gol; comit ae5bced). declarant_prenume ramane optional
   (fallback "-" legitim). Garzi test_declarant_oblig + test_declarant_warn (RED->GREEN). Vezi DECIZII/ISTORIC 17.08.
+
+## Import salariati — salariu de baza obligatoriu (17.08.2026)
+
+- **Gard:** `core/test_import_migrare.py::test_salariu_brut_lipsa_e_respins` + `::test_salariu_brut_negativ_e_respins`.
+- **Ce face imposibil:** un import de salariati cu salariu de baza lipsa/0/negativ sa intre tacit (baza 0 -> suprataxa angajatorului pe podeaua sub-minim, Stat de plata incoerent). `verifica_randuri` respinge (motiv `salariu_lipsa`).
+- **Mutatie proba:** `git stash push -- core/salariati_import_api.py` -> testele pica (verifica_randuri intoarce []); pop -> verzi. Rulat 17.08.2026.

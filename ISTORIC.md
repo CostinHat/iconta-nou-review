@@ -4466,3 +4466,7 @@ Date firma: title_only STRICT 0; pre-existent contrast 17 noduri + 31 tinte <44p
 "D112: declarantul... lipseste" emis, XML tot ADMINISTRATOR. Garzi test_declarant_oblig + test_declarant_warn RED->
 GREEN. Threads ramase: 4 (scan selecturi nullable), 5 (salariati adancime), 6 (declaratii ramase XML+DUK), 7
 (straturi migrare). Front backlog: podea part-time D112 (thread 2, cere autoritate externa).
+
+## 17.08.2026 — Audit vizual tenant_005 (P2, Constructii Profit Trim SRL), cluster 1
+
+Pornit auditul cap-coada tenant_005. Prima trecere cu Playwright (captura privita): meniu firma, Import date, Date firma/vector fiscal, Facturi/Banca/Casa, Stat de plata, Declaratii. Pe Stat de plata 08/2026 salariatul Ionescu Marin arata "brut 0 · net 0 · cost 825" — incoerent (Regula 14 pct.2). Cauza la sursa: `salariu_istoric.salariu_brut=0`; `calcul_salariu(0)` produce cas_suprataxa 589.29 + cass_suprataxa 235.71 = 825 (podeaua sub-minim pe baza zero). Reachable prin contabil: `salariati_import_api.verifica_randuri` NU valida salariul (coloana absenta -> parser 0.0 tacit); `creeaza_salariat` il bloca (#8). Reparat: verifica_randuri respinge brut lipsa/0/negativ (motiv salariu_lipsa), poarta unica, mesaj vizibil prin gateazaPreview. Gard RED->GREEN in test_import_migrare. DS v2.32. Front deschis: datele reziduale cu brut=0 + semnalul pe Stat de plata.
