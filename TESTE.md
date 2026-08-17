@@ -1703,3 +1703,6 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
 ## Bifa 17.08.2026 — backlog diacritice generatoare declaratii INCHIS
 
 `test_generatoare_declaratii_cu_diacritice` (_GEN_DECLARATII = 58 fisiere). ~840 literale diacriticizate prin unealta; ~18 fisiere de test aliniate (aserari pe substring-uri de mesaj). Suita intreaga verde (1965 passed), verificator 0. DS v2.41.
+## Bifa 17.08.2026 — a11y contrast WCAG AA (audit tenant_005)
+
+`core/test_a11y_contrast_tokens.py` (nou, browser-free: recalcul contrast din sursa >= 4.5:1 pentru --albastru/camp-ajutor/CULORI_CARD). RED-probat (--albastru->#3d8fd6 pica). axe contrast=0 pe dashboard/vector/salariati. DS v2.42.

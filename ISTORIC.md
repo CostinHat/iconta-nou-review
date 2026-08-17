@@ -4502,3 +4502,6 @@ nume/prenume/CNP/data_angajare/norma nu se puteau corecta din UI desi backendul 
 ## 17.08.2026 — Campanie: curatare backlog diacritice generatoare declaratii
 
 Backlog-ul sistemic raportat la Front D (~330 mesaje pe ~50 fisiere) INCHIS. Unealta gard-driven (tokenize + AST): dictionar high-precision aplicat pe literalii-mesaj, excluzand XML/SQL/coloane/chei. Iteratii cu cazuri-limita prinse de suita + gard: byte-string (prefix), coloane SQL in query multi-fragment (f.directie -> UndefinedColumn), sageata '->' confundata cu tag XML, chei in backtick (`manual.obligatii` = cheie reala, ramane ASCII). 58 generatoare + ~18 teste aliniate. Commit 09010f7. DS v2.41.
+## 17.08.2026 — Cluster a11y: contrast WCAG AA + title-only + tinta atingere
+
+axe-core a gasit 5 perechi text/fundal sub 4.5:1 (alb pe --albastru 3.44; card verde 2.94; teal 4.18; camp-ajutor 2.93; edu 4.16). Reparate la SURSA (token/paleta). title-only pierdut pe touch (po-indicator + nav-ghid) -> aria-label. tinta subbara-edu 18->24px. Gard browser-free pe contrastul token-urilor. Identitate vizuala pastrata (captura). Commit 09bb2cd. DS v2.42.

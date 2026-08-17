@@ -3111,3 +3111,9 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
 ## [ACTUALIZARE 17.08.2026] Diacritice generatoare declaratii — BACKLOG INCHIS
 
 Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 58 fisierele in _GEN_DECLARATII, gardul verde pe toate. Diacriticizat cu ~/probe_t005/diacriticize.py (reutilizabil). Commit 09010f7.
+## a11y: contrast token-uri WCAG AA (17.08.2026)
+
+- **Gard:** `core/test_a11y_contrast_tokens.py` (browser-free, recalcul contrast din sursa).
+- **Ce face imposibil:** un token de culoare (--albastru; .camp-ajutor; CULORI_CARD fg/bg) sub 4.5:1 fata de fundalul/textul lui.
+- **Mutatie proba:** --albastru->#3d8fd6 -> gardul pica (alb pe el 3.44); restaurat -> verde.
+- **RAMAS (nou GAP):** butoanele nav 30-36px = AA(24) dar nu AAA(44); .btn-link #3d8fd6 literal de verificat pe alb. Cluster field-level error marking inca deschis.
