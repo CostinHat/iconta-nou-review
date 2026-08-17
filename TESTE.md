@@ -1709,3 +1709,5 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
 ## Bifa 18.08.2026 — existenta_firma_an numara toata activitatea datata (audit tenant_006)
 
 `core/test_existenta_activitate.py` (nou, 4 teste pe schema temporara: d301_operatiuni/casa_operatiuni/extras_linii = activitate; schema goala = False). RED-probat prin rulare (d301-only -> existenta 2026 False pe cod vechi). Suita control_incrucisat/premisa_restanta/matrice/control_fiscal: 198 passed.
+## Bifa 18.08.2026 — D100 micro pe fapt (d100_fapt), audit tenant_006
+`core/test_d100_fapt.py` (5 teste pure, mutatie-probata). Simetric d390_fapt/d112_fapt. Regresie matrice/premisa/termene/control/d100 = 232 passed.

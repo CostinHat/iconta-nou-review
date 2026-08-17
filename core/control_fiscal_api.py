@@ -81,7 +81,7 @@ def neaplicabile_selector(vector):
     return neap
 
 
-def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PRAG_URMARIT_ZILE, d390_fapt=None, d112_fapt=None, existenta_fapt=None):
+def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PRAG_URMARIT_ZILE, d390_fapt=None, d112_fapt=None, existenta_fapt=None, d100_fapt=None):
     """
     SURSA UNICA a mapicarii 'cine ce declaratie datoreaza' (regim/TVA/decont/IC/salariati),
     inclusiv marginirea la inregistrarea TVA (B1) si D390 art.317 gri la neplatitor (B2).
@@ -100,6 +100,14 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
              True=luna cu operatiuni IC -> datorat; False=luna inchisa fara -> nu se datoreaza (cu temei);
              None=luna deschisa -> apelantul decide dupa directie (jos): semafor gri, termene afiseaza.
              d390_fapt=None (implicit) -> comportament vechi (bifa operatiuni_ic decide), apara matricea de 64.
+    d100_fapt = callback optional (an, luna_final_trim) -> bool|None pentru D100 micro pe FAPT (baza de venituri),
+             simetric cu d390_fapt/d112_fapt. D100 pe zero e STRUCTURAL invalid la DUKIntegrator (sectiunea
+             <obligatie> obligatorie >=1, anaf_surse/d100_struct_anaf.txt) -> un trimestru INCHIS fara venituri NU
+             are D100 de depus (nu e restanta falsa). True=are baza venituri -> restanta; False=trimestru inchis
+             fara venituri (si fara facturi nefacturate) -> neaplic cu temei; None=nu se poate sti (ex. facturi
+             necontabilizate) -> emit (reminder). Consultat DOAR pe restante (jos None, termen<azi); obligatia
+             curenta/viitoare se emite normal. d100_fapt=None (implicit) -> comportament vechi (regim decide),
+             apara matricea de 64. Gateaza DOAR micro (impozit pe venituri); profit (D101) neatins.
     """
     azi = azi or azi_ro()   # [fus] verdict de zi (lipsa vs urmarit) = zi RO
     an = azi.year
@@ -161,6 +169,30 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                     neclar.append({"tip": tip.lower(), "an": a, "cauza": st})
                 return
         adauga(tip, a, luna_perioada, perioada_txt, tip_scad)
+
+    def _adauga_d100_micro(a, luna_final, perioada_txt):
+        # [#d100_fapt - audit tenant_006 18.08.2026] D100 micro pe FAPT (baza venituri), simetric cu d390_fapt.
+        # Intai poarta de EXISTENTA (an nedemonstrabil -> gri, ca _adauga_existenta). Apoi, pe RESTANTE (jos None,
+        # termen<azi), poarta de VENITURI: un trimestru INCHIS fara venituri NU are D100 (nil-ul D100 e structural
+        # invalid la DUK - sectiunea <obligatie> obligatorie). d100_fapt False -> neaplic (nu restanta falsa);
+        # True/None -> emit. Obligatia curenta/viitoare (termen>=azi) se emite normal (reminder), fara poarta.
+        if existenta_fapt is not None and jos is None and _termen(a, luna_final, tip="d100") < azi:
+            st = existenta_fapt(a)
+            if st != "da":
+                k = ("d100", a)
+                if k not in _gri_ex:
+                    _gri_ex.add(k)
+                    neclar.append({"tip": "d100", "an": a, "cauza": st})
+                return
+        if d100_fapt is not None and jos is None and _termen(a, luna_final, tip="d100") < azi:
+            if d100_fapt(a, luna_final) is False:
+                neaplic_luna("D100", a, luna_final,
+                    "D100 nu se datorează pe %s %d — fără venituri în trimestru (bază 0). Impozitul pe veniturile "
+                    "microîntreprinderilor se declară numai pentru trimestrele cu venituri; declarația fără "
+                    "obligație e respinsă de validatorul ANAF (secțiunea obligație e obligatorie)." % (perioada_txt, a))
+                return
+            # True (are bază) sau None (nu se poate ști, ex. facturi necontabilizate) -> emit (reminder)
+        adauga("D100", a, luna_final, perioada_txt, "d100")
 
     def emite_tva(tip, tip_scad, cauza_periodicitate, marginit=False):
         """Emite `tip` pe perioada fiscala TVA (lunar/trimestrial dupa tip_decont). tip_decont necunoscut la
@@ -268,7 +300,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
         regim = regim_fiscal.strip().lower()
         if regim == "micro":
             for a, tri, lf in per_trim:
-                _adauga_existenta("D100", a, lf, f"T{tri}", "d100")
+                _adauga_d100_micro(a, lf, f"T{tri}")
         elif regim == "profit":
             # D101 pentru anul precedent, termen 25 martie an curent (existenta an-1 demonstrabila -> altfel gri)
             _adauga_existenta("D101", an - 1, 12, f"anual {an-1}", "d101")
@@ -367,13 +399,13 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     return {"datorate": datorate, "neclar": neclar, "neaplicabile": neaplicabile}
 
 
-def declaratii_datorate(vector, are_salariati, azi=None, *, d390_fapt=None, d112_fapt=None, existenta_fapt=None):
+def declaratii_datorate(vector, are_salariati, azi=None, *, d390_fapt=None, d112_fapt=None, existenta_fapt=None, d100_fapt=None):
     """Semaforul (privire inapoi): fereastra [restante ... azi+7], fara limita inferioara.
-    Wrapper subtire peste obligatii_datorate - comportament NESCHIMBAT fara d390_fapt/d112_fapt/existenta_fapt
-    (matricea de 64 il apara). d390_fapt/d112_fapt/existenta_fapt = callback-uri pe fapt, date de evalueaza_firma
-    (are conn_schema); None in teste/matrice."""
+    Wrapper subtire peste obligatii_datorate - comportament NESCHIMBAT fara callback-uri de fapt
+    (matricea de 64 il apara). d390_fapt/d112_fapt/existenta_fapt/d100_fapt = callback-uri pe fapt, date de
+    evalueaza_firma (are conn_schema); None in teste/matrice."""
     return obligatii_datorate(vector, are_salariati, azi, d390_fapt=d390_fapt, d112_fapt=d112_fapt,
-                              existenta_fapt=existenta_fapt)
+                              existenta_fapt=existenta_fapt, d100_fapt=d100_fapt)
 
 
 def _dmy(iso):
@@ -568,8 +600,33 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
                     "creată în aplicație în %d, iar pentru %d nu există facturi, salariați sau note." % (an, _creat_la.year, an))
         return ("necunoscut declarat: nu pot demonstra că firma exista/era activă în %d — nu există facturi, "
                 "salariați sau note pe %d în evidență; completați vectorul/activitatea firmei." % (an, an))
+    def _d100_fapt(a, luna_final):
+        # [#d100_fapt] D100 micro pe baza de venituri a trimestrului (aceeasi sursa ca generatorul d100:
+        # pull + deriva_obligatii). True=are obligatie (venituri>0); False=trimestru fara venituri SI fara
+        # facturi emise (genuin gol -> D100 pe zero = structural invalid la DUK, nu restanta); None=venituri 0
+        # dar exista facturi emise (posibil necontabilizate) -> nu pot sti, emit reminder.
+        from core import d100 as _d100
+        from core.common import Perioada as _Per
+        try:
+            trim = (luna_final + 2) // 3
+            per = _Per(a, trim=trim)
+            prof, venituri, cheltuieli = _d100.pull(conn_schema, schema, per)
+            obl, _av = _d100.deriva_obligatii(prof, venituri, cheltuieli, a, luna_final, None)
+            if obl:
+                return True
+            inc, sf = per.interval()
+            with conn_schema.cursor() as _cf:
+                _cf.execute("SELECT count(*) FROM facturi WHERE directie='emisa' "
+                            "AND data_emitere >= %s AND data_emitere < %s", (inc.isoformat(), sf.isoformat()))
+                nf = _cf.fetchone()[0]
+            return None if nf else False
+        except Exception:
+            # MASCA MOTIVATA: fail-safe DELIBERAT - daca nu pot calcula baza de venituri (pull/DB esueaza),
+            # intorc None -> semaforul EMITE D100 (reminder), NU suprima. Suprimarea (neaplic) se face DOAR pe
+            # False (fapt DEMONSTRAT fara venituri), niciodata pe o eroare de citire (ar ascunde o obligatie reala).
+            return None
     rez = declaratii_datorate(vector, are_sal, azi, d390_fapt=_d390_fapt, d112_fapt=_d112_fapt,
-                              existenta_fapt=_existenta_fapt)
+                              existenta_fapt=_existenta_fapt, d100_fapt=_d100_fapt)
     datorate = list(rez["datorate"])
     neclar = list(rez["neclar"])
 

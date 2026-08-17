@@ -3130,3 +3130,8 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **A11Y CONTRAST Control fiscal (NEreparat, gata de atacat):** axe = 17 violari color-contrast (serious), 2 tokeni pe panoul #e9edf3: `--albastru #347ab8` (coduri declaratii `.mig-sold-cont`, 3.87:1) + `--gri-semafor #9aa3b2` (`.cf-incr-temei`, 2.16:1). Tinte verificate: #2f6fa6 (4.53) blue scoped, #5c6675 (4.95) gri. Ecranul Control fiscal NU era in auditul a11y tenant_005 (dashboard/vector/salariati). Plus axe "region" 17.
 - **D390 ignora d301_operatiuni (DECIZIE CERUTA):** d390.genereaza refuza "pe zero" desi exista achizitie IC in d301_operatiuni; D390 citeste facturi, nu d301 (acelasi tipar ca existenta). Latent (D390 gri cat timp art.317 nemarcat). Cere temei (relatia D301<->D390 la neinregistratii art.316) + scenariu art.317=da.
 - **D100 pe zero (OBSERVATIE, pre-existent universal):** micro fara venituri vede D100 restanta pe semafor dar generatorul refuza "pe zero". Comun tuturor micro (tenant_002/003), nu introdus de fix-ul existenta. Relatia semafor<->generator pe zero = de clarificat.
+
+## D100 micro pe fapt de venituri: d100_fapt (18.08.2026)
+- **Gard:** `core/test_d100_fapt.py` (5 teste pure pe obligatii_datorate).
+- **Ce face imposibil:** semaforul sa arate D100 micro restanta pe un trimestru INCHIS fara venituri (D100 pe zero = structural invalid la DUK, ar dead-end la generator).
+- **Mutatie proba:** dezactivarea portii (`is False` -> `if False`) -> test_d100_fapt_fara_venituri_suprima_restanta pica (restantele [2025-12,2026-3,2026-6] reapar). Restaurat -> 5 passed.
