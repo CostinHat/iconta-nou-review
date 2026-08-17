@@ -4478,3 +4478,10 @@ Continuarea auditului (FRONT A din PREDARE). Stat de plata afisa brut 0 / cost 8
 ## 17.08.2026 — Audit tenant_005, cluster 3: generalizare Regula 13 pe import articole
 
 Sweep pe toata familia de import de migrare (tiparul 'camp obligatoriu fabricat 0 tacit, neverificat', ca salariu_brut). Gasit un singur analog: `articole_import_api` — articol cu stoc dar pret 0/lipsa intra cu valoare 0 (CMP 0, stoc sub-raportat), pentru ca verificarea inline respingea doar negativ si modulul n-are verifica_randuri. Reparat: `extrage` respinge `cant>0 and pret<=0`, motiv afisat rosu in preview (frontend deja il arata). Restul modulelor (mijloace fixe/solduri/istoric/retete/parteneri gardate; asociati cu reziduu ingust neridicat la GAP): curate. Gard RED->GREEN. DS v2.34.
+## 17.08.2026 — Audit tenant_005, cluster 4: mesaje user-facing fara nume intern de camp (Regula 14 pct.4)
+
+Formularul Vector fiscal arata contabilului `tip_decont trebuie sa fie lunar sau trimestrial` (probat vizual). Sweep Regula 13 pe core/+main.py (mesaje prin rol sintactic): 13 instante cu nume de camp snake_case. Reparate cu eticheta umana. Gard nou refoloseste extractia din gardul de diacritice. 2 baseline = temei-diagnostic pe cale de except->bug de cod (numesc simbol/fisier de test pt dezvoltator), cu motiv. Commit 53ca370. DS v2.35.
+
+## 17.08.2026 — Audit tenant_005, cluster 5: vector fiscal per-firma reflecta vectorul salvat
+
+Pe traseul per-firma formularul Vector aparea GOL (plator TVA -> `Nu` tacit, CUI gol, risc suprascriere vector real). B1: formularVectorFirma incarca /vector (sursa unica). B2: 12/20 tenanti au tip_decont legacy `L`/`T` din seed (intentionat); UI-ul compara pe forma lunga -> periodicitate neselectata pe Vector si Date firma. Primitiva common.tip_decont_lung normalizeaza la granita UI (citeste + portal). Motoarele fiscale erau deja imune. Probat end-to-end: formularul arata acum profit/TVA-Da/Trimestrial/IC-Nu/CUI-populat. Commit 3a3b3f2. DS v2.36.

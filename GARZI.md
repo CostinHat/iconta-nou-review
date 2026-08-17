@@ -3069,3 +3069,19 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
 - **Gard:** `core/test_import_migrare_valideaza.py::test_articole_stoc_fara_pret_e_invalid`.
 - **Ce face imposibil:** un articol cu cantitate > 0 si pret 0/lipsa sa intre cu valoare 0 (CMP 0, stoc sub-raportat). `extrage` il marcheaza invalid; preview-ul il arata rosu cu motiv; nu se importa.
 - **Mutatie proba:** `git stash push -- core/articole_import_api.py` -> articolul fara pret = valid (test pica); pop -> verde. Rulat 17.08.2026.
+## Mesaje user-facing fara nume intern de camp (17.08.2026)
+
+- **Gard:** `core/test_mesaje_fara_camp_intern.py`.
+- **Ce face imposibil:** un mesaj user-facing (mesaj/eroare/detail, prin rol sintactic) sa contina un token snake_case = nume intern de camp/coloana (`tip_decont`, `regim_fiscal`, `tenant_id`...). Baseline 0; 2 exceptii temei-diagnostic (bug de cod) cu motiv in _BASELINE.
+- **Mutatie proba:** reintrodus `tip_decont trebuie...` in vector_fiscal_api -> gardul pica; restaurat -> verde. 17.08.2026.
+
+## Vector fiscal per-firma: periodicitate legacy + pre-completare (17.08.2026)
+
+- **Gard:** `core/test_tip_decont_lung.py` (contract primitiva + integrare citeste/portal + clamp B1).
+- **Ce face imposibil:** (B2) un cod legacy `L`/`T` din tip_decont sa ajunga BRUT la UI (formularul ar arata periodicitatea neselectata); normalizat la forma lunga prin common.tip_decont_lung la citeste + portal. (B1) ca formularVectorFirma sa nu mai incarce vectorul salvat (/vector) si sa apara gol pe traseul per-firma.
+- **Mutatie proba:** citeste raw (fara tip_decont_lung) -> `T` scapa la UI, testul pica; scos fetch-ul /vector din formularVectorFirma -> clampul pica. Ambele restaurate. 17.08.2026.
+
+## REZIDUU UX/a11y neridicat (audit tenant_005, 17.08.2026) — pentru cluster a11y dedicat
+
+- Eroarea de la formularul Vector NU marcheaza campul vinovat cu contur (doar cutie generica jos; mesajul il numeste acum). Pattern app-wide (Regula 14 pct.4).
+- axe pe ecranul Vector: 15 noduri color-contrast (serious) + 17 tinte <44px + 2 info livrata EXCLUSIV prin `title` (pierduta pe touch). Pre-existent, app-wide.

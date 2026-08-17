@@ -1679,3 +1679,10 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
 ## Bifa 17.08.2026 — audit tenant_005: import articole stoc fara pret (Regula 13)
 
 `core/test_import_migrare_valideaza.py::test_articole_stoc_fara_pret_e_invalid` (RED pe cod vechi). GREEN 7 passed. Generalizarea sweep-ului pe validatorii de import (subagent): singurul analog al salariu_brut = articole. Gard in GARZI.
+## Bifa 17.08.2026 — audit tenant_005: mesaje user-facing fara nume intern de camp (cluster 4)
+
+`core/test_mesaje_fara_camp_intern.py` (RED-probat: reintrodus `tip_decont` in mesaj -> pica). GREEN. 13 mesaje reparate in 8 fisiere. Refoloseste `_candidati()` din test_diacritice_afisate. Gard in GARZI. DS v2.35.
+
+## Bifa 17.08.2026 — audit tenant_005: vector per-firma reflecta vectorul salvat (cluster 5)
+
+`core/test_tip_decont_lung.py`: contract primitiva + integrare (tenant legacy L/T -> forma lunga prin citeste/portal) + clamp B1 (formularVectorFirma incarca /vector). Ambele RED-probate. GREEN 3 passed. versioneaza_assets --scrie (migrare.js). Gard in GARZI. DS v2.36.
