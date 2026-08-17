@@ -9105,7 +9105,8 @@ def public_robots():
            "Allow: /$\n"                    # exact landing-ul
            "Allow: /ghid\n"                 # index + /ghid/{slug}
            "Allow: /public/termeni\n"
-           "Allow: /static/\n"              # Google are nevoie de CSS+JS ca sa randeze
+           "Allow: /static/\n"              # CSS, iconite, manifest (necesare la randare)
+           "Disallow: /static/js/\n"        # bundle-ul app (app.js) expune fragmente de rute API -> Googlebot le culege; nu se scaneaza (05.08: 18x404+1x401)
            "Allow: /sitemap.xml\n"
            "Allow: /robots.txt\n"
            "Disallow: /\n"                  # restul suprafetei (app, /public/plata, /auth, rute API)
