@@ -69,6 +69,11 @@ def extrage(continut, nume_fisier=""):
         valid, motiv = True, "ok"
         if cant < 0 or pret < 0:
             valid, motiv = False, "cantitate/pret negativ"
+        # [articol_pret] articol cu stoc dar pret 0/lipsa: parserul fabrica pret 0.0 (coloana absenta /
+        # celula goala) -> miscarea de intrare ar avea valoare 0, CMP porneste de la 0, valoarea stocului
+        # sub-raportata TACIT (DS cap.17, fara default fabricat). Un stoc real are cost > 0.
+        elif cant > 0 and pret <= 0:
+            valid, motiv = False, "are stoc dar preț unitar 0/lipsă: valoarea stocului ar fi 0 - completează costul unitar (CMP)"
         rez.append({"denumire": den[:255], "um": um[:20], "cantitate": cant, "pret": pret,
                     "cont_stoc": cont[:10], "cont_cheltuiala": ch[:10], "valid": valid, "motiv": motiv})
     return rez

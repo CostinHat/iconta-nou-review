@@ -9486,3 +9486,11 @@ preexistent d301/d390, extins la TOATE (d100/d101/d205/d112/d300/bilant). declar
 **Temei.** MEMORY §13 (aplicatia lasa omul sa ajunga la tot ce poate produce + semnaleaza explicit data lipsa). DS cap.5 (INPUT in-ecran) + cap.6 (mesaj de stare). Cod fiscal art.146(5^6)/168(6^1) (suprataxa sub-minim care producea cost 825 pe baza 0). Continua decizia 17.08 (import salariu_brut obligatoriu): importul BLOCHEAZA baza 0, iar Stat de plata SEMNALEAZA + ofera corectia pt datele reziduale/legacy.
 
 **Proba.** tenant_005 Ionescu Marin (brut=0): Stat de plata arata brut 0 / cost 825 tacit; acum badge rosu + sub-linie + buton „Salariu” prin care se pune salariul real (UPSERT pe istoric la data angajarii). Gard RED->GREEN `test_stat_plata_semnaleaza_baza_lipsa` (KeyError pe cod vechi).
+
+## 17.08.2026 — Import articole: stoc fara pret = invalid (audit tenant_005, Regula 13)
+
+**Decizie.** `articole_import_api.extrage` respinge un articol cu cantitate > 0 dar pret 0/lipsa (motiv afisat in preview, rand rosu). Pana acum verificarea inline respingea doar valori negative; un pret 0 (coloana absenta -> parser 0.0) trecea ca valid, iar `importa` scria miscarea de intrare cu valoare 0.
+
+**Temei.** DS cap.17 (fara default fabricat) + principiul necunoscut-ramane-necunoscut. Contabil: un stoc real e evaluat la cost de achizitie > 0 (OMFP 1802/2014); cantitate fara cost = date lipsa, nu valoare 0. Acelasi tipar ca salariu_brut (import salariati) — generalizat prin sweep pe toata familia de import.
+
+**Proba.** Gard RED->GREEN `test_articole_stoc_fara_pret_e_invalid` (pe cod vechi articolul 'Nisip 200 buc fara pret' = valid; dupa = invalid, motiv 'are stoc dar pret unitar 0/lipsa'). Articol fara stoc (cant 0) fara pret ramane VALID (nomenclator pur). Sweep restul modulelor de import: curate.

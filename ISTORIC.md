@@ -4474,3 +4474,7 @@ Pornit auditul cap-coada tenant_005. Prima trecere cu Playwright (captura privit
 ## 17.08.2026 — Audit tenant_005, cluster 2: semnal baza lipsa + editare salariu
 
 Continuarea auditului (FRONT A din PREDARE). Stat de plata afisa brut 0 / cost 825 tacit pe salariatul cu baza 0, iar UI-ul nu avea cale de editare a salariului (doar creare). Reparat: `stat_plata.baza_lipsa`/`salariu_baza`; cardul arata badge rosu + sub-linie explicativa; buton „Salariu” cableaza `PUT /salariati/{id}` {salariu_brut, valabil_din} (SalariatEdit.valabil_din adaugat). Schimbarea de salariu = intrare noua in istoric (UPSERT pe data). Gard RED->GREEN. DS v2.33. Reparat si data reziduala tenant_005 (Ionescu) prin noul buton, in proba vizuala.
+
+## 17.08.2026 — Audit tenant_005, cluster 3: generalizare Regula 13 pe import articole
+
+Sweep pe toata familia de import de migrare (tiparul 'camp obligatoriu fabricat 0 tacit, neverificat', ca salariu_brut). Gasit un singur analog: `articole_import_api` — articol cu stoc dar pret 0/lipsa intra cu valoare 0 (CMP 0, stoc sub-raportat), pentru ca verificarea inline respingea doar negativ si modulul n-are verifica_randuri. Reparat: `extrage` respinge `cant>0 and pret<=0`, motiv afisat rosu in preview (frontend deja il arata). Restul modulelor (mijloace fixe/solduri/istoric/retete/parteneri gardate; asociati cu reziduu ingust neridicat la GAP): curate. Gard RED->GREEN. DS v2.34.

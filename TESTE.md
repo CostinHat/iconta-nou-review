@@ -1675,3 +1675,7 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
 ## Bifa 17.08.2026 — audit tenant_005: semnal baza lipsa + editare salariu
 
 `core/test_salariu_scrieri.py`: `test_stat_plata_semnaleaza_baza_lipsa` (RED KeyError pe cod vechi) + `test_editarea_salariului_prin_put_dateaza_istoricul` (UPSERT pe data). GREEN: 33 passed (test_salariu_scrieri + test_import_migrare). Frontend cablat (buton „Salariu”), probat vizual pe Stat de plata. Gard in GARZI.
+
+## Bifa 17.08.2026 — audit tenant_005: import articole stoc fara pret (Regula 13)
+
+`core/test_import_migrare_valideaza.py::test_articole_stoc_fara_pret_e_invalid` (RED pe cod vechi). GREEN 7 passed. Generalizarea sweep-ului pe validatorii de import (subagent): singurul analog al salariu_brut = articole. Gard in GARZI.

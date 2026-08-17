@@ -3063,3 +3063,9 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
 - **Gard:** `core/test_salariu_scrieri.py::test_stat_plata_semnaleaza_baza_lipsa` (+ `::test_editarea_salariului_prin_put_dateaza_istoricul`).
 - **Ce face imposibil:** ca `stat_plata` sa intoarca un salariat cu baza contractuala 0/lipsa FARA flag `baza_lipsa` (ecranul ar afisa cost 825 din suprataxa sub-minim tacit). Cardul semnaleaza in rosu + ofera butonul „Salariu” de corectie.
 - **Mutatie proba:** `git stash push -- core/stat_plata_api.py` -> `KeyError: 'baza_lipsa'`; pop -> verde. Rulat 17.08.2026.
+
+## Import articole — stoc fara pret (17.08.2026)
+
+- **Gard:** `core/test_import_migrare_valideaza.py::test_articole_stoc_fara_pret_e_invalid`.
+- **Ce face imposibil:** un articol cu cantitate > 0 si pret 0/lipsa sa intre cu valoare 0 (CMP 0, stoc sub-raportat). `extrage` il marcheaza invalid; preview-ul il arata rosu cu motiv; nu se importa.
+- **Mutatie proba:** `git stash push -- core/articole_import_api.py` -> articolul fara pret = valid (test pica); pop -> verde. Rulat 17.08.2026.
