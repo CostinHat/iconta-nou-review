@@ -2141,6 +2141,14 @@ span[class*="pct"]:not(.rap-badge-pct), span[class*="sem-"], i[class*="dot"] {
 .pa-card:hover { transform: translateY(-2px); box-shadow: 0 4px 14px rgba(20,30,45,0.12); }
 /* conventie globala mesaje (msg_conventie_v1) */
 .msg-eroare { color: #a3231c; font-weight: 600; font-size: var(--text-mic); white-space: normal; overflow-wrap: break-word; word-break: break-word; line-height: 1.45; }
+/* [fieldmark 18.08.2026] campul cu eroare de validare: contur rosu (asortat cu .msg-eroare), invinge si focusul.
+   Marcheaza VIZUAL campul vinovat, nu doar mesajul ancorat langa el (Regula 14 pct.4). Pus de eroareCamp (api.js). */
+/* box-shadow rosu pe orice element marcat (inclusiv non-input, ex. grupuri de butoane) */
+.camp-invalid { box-shadow: 0 0 0 3px rgba(163, 35, 28, 0.18); }
+/* conturul rosu trebuie sa invinga regula globala contrast_ferestre_v1 (input:not(...) x6 { border ... !important },
+   specificitate 0,6,1): reproducem selectorul + .camp-invalid (0,7,1) ca sa castige, altfel bordura ramane gri. */
+input.camp-invalid:not([type="checkbox"]):not([type="radio"]):not([type="file"]):not([type="range"]):not([type="color"]):not([type="hidden"]),
+select.camp-invalid, textarea.camp-invalid { border-color: #a3231c !important; }
 .msg-eroare[data-camp] { display: block; margin-top: 3px; }
 .msg-avert  { color: #8a6410; font-weight: 600; font-size: var(--text-mic); }
 .msg-info   { color: var(--gri); font-size: var(--text-mic); }

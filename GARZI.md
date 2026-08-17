@@ -3141,3 +3141,9 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Ce face imposibil:** `.cf-incr-temei` sau codurile `.cf-*.mig-sold-cont` sa scada sub 4.5:1 pe panoul Control fiscal.
 - **Mutatie proba:** culorile rele (#9aa3b2 / #347ab8) in stil.css -> 2 failed; restaurat -> 5 passed.
 - **RAMAS:** axe "region" (landmark lipsa) 8-19 noduri app-wide (moderat, structural). D406 avertisment conturi 731-738 excluse din norma A (neverificat la sursa).
+
+## Field-level error marking: marcaj pe input (18.08.2026)
+- **Gard:** `core/test_fieldmark.py` (eroareCamp adauga camp-invalid+aria-invalid; curataEroriCamp o scoate; CSS override input.camp-invalid invinge bordura globala).
+- **Ce face imposibil:** eroareCamp sa lase inputul nemarcat (doar mesaj) sau overrideul CSS sa dispara (bordura ar ramane gri sub `!important`-ul global).
+- **Mutatie proba:** scot classList.add("camp-invalid") din api.js -> test_eroareCamp_marcheaza_inputul pica.
+- **RAMAS:** front D390<->d301 = decizie (d301 n-are TVA partener pt cod A); axe "region" landmarks app-wide; D406 conturi 731-738.

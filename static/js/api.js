@@ -124,6 +124,10 @@ export function arataMesaj(el, txt, tip = "info") {
 export function eroareCamp(root, idCamp, txt) {
   const inp = (root || document).querySelector("#" + idCamp);
   if (!inp) return false;
+  // [fieldmark 18.08.2026] marcaj VIZUAL pe campul vinovat (contur rosu + aria-invalid), nu doar mesaj
+  // ancorat: la un formular lung, mesajul rosu nu spune singur CARE input e problema. Regula 14 pct.4.
+  inp.classList.add("camp-invalid");
+  inp.setAttribute("aria-invalid", "true");
   let sp = inp.parentElement && inp.parentElement.querySelector('.msg-eroare[data-camp="' + idCamp + '"]');
   if (!sp) {
     sp = document.createElement("span");
@@ -136,7 +140,10 @@ export function eroareCamp(root, idCamp, txt) {
 }
 
 export function curataEroriCamp(root) {
-  (root || document).querySelectorAll(".msg-eroare[data-camp]").forEach((e) => e.remove());
+  const r = root || document;
+  r.querySelectorAll(".msg-eroare[data-camp]").forEach((e) => e.remove());
+  // [fieldmark] scoate marcajul de pe inputurile marcate anterior (altfel raman rosii dupa corectare)
+  r.querySelectorAll(".camp-invalid").forEach((e) => { e.classList.remove("camp-invalid"); e.removeAttribute("aria-invalid"); });
 }
 
 // [STANDARD_ATENTIONARE] confirmare in caseta standard, inlocuieste confirm() nativ.

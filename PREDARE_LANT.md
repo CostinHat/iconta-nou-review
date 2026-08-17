@@ -26,13 +26,14 @@ extins (mutatie-probat). DS v2.43. versioneaza_assets --scrie. Import blockages 
 solduri dezechilibru = model). RAMAS a11y: axe "region" (landmark) 8-19 noduri app-wide (moderat, structural);
 D406 avertisment conturi 731-738 excluse din norma A (neverificat la sursa).
 
-## FRONT 2 — D390 nu vede achizitiile din d301_operatiuni (DECIZIE CERUTA, temei de verificat)
-d390.genereaza(tenant_006, 6/2026) refuza "pe zero: nicio operatiune intracomunitara" DESI exista achizitia IC in
-d301_operatiuni (iun 2026). D390 se construieste din facturi, nu din d301_operatiuni - acelasi tipar ca bug-ul de
-existenta reparat. DAR: (a) D390 e "gri" oricum cat timp art.317 nu e marcat pe firma (neplatitor); (b) daca o achizitie
-IC de bunuri inregistrata NUMAI in d301 (fara factura) trebuie sa apara in D390 (cod A) pentru un neplatitor art.317 -
-de confirmat la sursa (OPANAF 705/2020 + relatia D301<->D390 pentru achizitii de bunuri la neinregistratii art.316).
-NEVERIFICAT: comportamentul cu art.317=da (firma are art317=False acum). Nu reparat - cere temei + scenariu art.317.
+## FRONT 2 — D390 nu vede achizitiile din d301_operatiuni (DECIZIE CERUTA, verificat la sursa)
+VERIFICAT (Regula 5): art.325 CF + OPANAF 705/2020 - un art.317-inregistrat CHIAR datoreaza D390 cod A pentru
+achizitii IC de bunuri. DAR blocajul nu e doar "D390 nu citeste d301": `d301_operatiuni` are (tip, nr_doc, data_doc,
+val_valuta, curs, tva) - NU are codul TVA + tara FURNIZORULUI, pe care D390 cod A le CERE (codT/codO). Deci D390 cod A
+NU se poate construi din d301. Fixul corect = DECIZIE DE PRODUS pe fluxul datelor: (a) extinzi d301_operatiuni cu
+TVA+tara partener, SAU (b) achizitiile IC intra ca facturi (care au partenerul, si D390 le citeste deja). Plus firma
+trebuie art.317=True (tenant_006 e False -> D390 corect "gri" acum). Nu reparat - cere alegere de produs + confirmarea
+mapicarii d301->D390 cod A.
 
 ## INCHIS tura asta — D100 micro pe fapt de venituri (commit b196943)
 Semaforul arata D100 micro restanta ignorand baza de venituri, DAR D100 pe zero e structural invalid la DUK
@@ -41,10 +42,19 @@ venituri; trimestru inchis fara venituri -> "nu se datoreaza", nu restanta. tena
 D100 T1/T2 -> "Nu se datoreaza" (captura privita); restante ramase D406 T1/T2 + D301 iun (toate genereaza DUK-valid).
 tenant_003 (venituri 0) corectat identic; tenant_002 T1 (are venituri) pastrat. Gard RED(mutatie)->GREEN test_d100_fapt.
 
-## FRONT 3 — field-level error marking (RAMAS din tura tenant_005, inca deschis)
-Erorile de formular numesc campul si consecinta (ex. Date firma: "Profil incomplet - Nr. registrul comertului -
-blocheaza Bilant S1005" - CORECT, Regula 14 pct.4) DAR nu marcheaza VIZUAL campul vinovat cu contur rosu langa el.
-Pattern app-wide. De reparat la nivel de tipar (marcaj rosu pe campul cu eroare + ancorare mesaj).
+## INCHIS tura asta — FIELD-LEVEL ERROR MARKING (front 3, LIVRAT)
+eroareCamp (api.js) ancora mesajul rosu langa camp DAR nu marca inputul (fara contur). Reparat app-wide (7 ecrane):
+eroareCamp adauga `.camp-invalid` + aria-invalid, curataEroriCamp o scoate la corectare; contur rosu #a3231c + glow.
+Capcana: bordura globala `!important` (contrast_ferestre_v1, specificitate 0,6,1) - overrideul reproduce selectorul +
+`.camp-invalid` (0,7,1). Captura privita Date firma (2 campuri goale -> contur rosu + mesaj, dispar la corectare).
+Gard test_fieldmark.py mutatie-probat. DS v2.44.
+
+## RAMAS deschis (fronturi pt urmatoarea tura)
+- FRONT 2 (D390<->d301) = decizie de produs (vezi mai sus).
+- axe "region"/landmarks app-wide (moderat, structural, 8-19 noduri/ecran).
+- D406 avertisment conturi 731-738 excluse din norma A (neverificat la sursa).
+- Import: provocate salariati+solduri (curat); restul 8 straturi neprovocate in aceste ture.
+- Vizual/mobil (Pixel 5): rulat doar pe Control fiscal; restul ecranelor tenant_006 neanalizate pe telefon.
 
 ## LIVRAT (tura asta, commit 288f886)
 existenta_firma_an (control_incrucisat.py) numara acum orice operatiune datata: d301_operatiuni (achizitii IC),

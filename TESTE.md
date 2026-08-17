@@ -1713,3 +1713,5 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
 `core/test_d100_fapt.py` (5 teste pure, mutatie-probata). Simetric d390_fapt/d112_fapt. Regresie matrice/premisa/termene/control/d100 = 232 passed.
 ## Bifa 18.08.2026 — a11y contrast Control fiscal (audit tenant_006)
 `core/test_a11y_contrast_tokens.py` extins cu 2 teste (.cf-incr-temei #5c6675, coduri declaratii #2f6fa6, pe #e9edf3 >= 4.5). Mutatie-probat RED. axe contrast=0 pe Control fiscal. DS v2.43. Import blockages (salariati CNP / solduri dezechilibru) verificate curat vizual.
+## Bifa 18.08.2026 — field-level error marking (audit tenant_006)
+`core/test_fieldmark.py` (3 teste: eroareCamp marcheaza inputul + aria-invalid, curataEroriCamp scoate, CSS override invinge bordura globala). Mutatie-probat RED. Captura privita Date firma. DS v2.44.
