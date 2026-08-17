@@ -121,11 +121,11 @@ def extrage(continut, nume_fisier=""):
         if 0 < valoare < PLAFON_MF_2026:
             avertismente.append("sub plafon 5000 (2026)")
         if durata <= 0:
-            avertismente.append("durata lipsa")
+            avertismente.append("durată lipsă")
         if not cel(i_cimo):
-            avertismente.append("cont_imobilizare lipsa - categorie neclasificata "
+            avertismente.append("cont de imobilizare lipsă - categorie neclasificată "
                                 "(CF art.28 alin.5 lit.c): doar liniar/degresiv; "
-                                "accelerat/superaccelerat vor fi refuzate la D406 pana se completeaza contul")
+                                "accelerat/superaccelerat vor fi refuzate la D406 până se completează contul")
 
         out.append({
             "cod": cel(i_cod) or f"MF{idx:03d}",

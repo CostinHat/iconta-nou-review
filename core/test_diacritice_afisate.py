@@ -62,6 +62,9 @@ _TRIGGERE = {
     "cheltuiala", "scadenta", "tara", "societatii",
     "declaratie", "declaratia", "declaratii", "declaratiile",
     "depaseste", "depasit", "depasita", "aceeasi",
+    # audit tenant_005 (17.08): mesaje validatori de import
+    "gasesc", "tine", "insumeaza", "asociatilor", "asteptat", "depusa", "inainte",
+    "raportata", "intelege", "angajarii", "legala", "negasit", "invalida", "inca",
 }
 
 # excepții temporare acceptate (șir user-facing lăsat ASCII, cu motiv). Gol = clichet la 0.
@@ -184,6 +187,64 @@ def test_niciun_mesaj_user_facing_fara_diacritice():
     assert not fl, (
         "Mesaj(e) USER-FACING fara diacritice (text pe ecran -> cu diacritice; log/assert -> ASCII). "
         "Adauga diacriticele corecte pe proza (codurile/campurile raman ASCII):\n" + raport)
+
+
+# ==========================================================================
+_VALIDATORI_IMPORT = (
+    "core/solduri_api.py", "core/solduri_parteneri_api.py", "core/asociati_import_api.py",
+    "core/mijloace_fixe_import_api.py", "core/istoric_declaratii_import_api.py",
+    "core/articole_import_api.py", "core/salariati_import_api.py", "core/retete_import_api.py",
+)
+
+
+def _flagate_import():
+    """TOATE mesajele din validatorii de import - fisiere integral user-facing (fiecare mesaj ajunge
+    in .caseta-atentie / #mig-eroare / avertismente per rand), scanate INTEGRAL: prinde raise brut,
+    det+=, f-string, avertismente.append(...), structuri pe care _candidati() nu le vede. Se exclud:
+    docstring-uri; argumentele lui _gaseste_col (SINONIME DE COLOANA = antetul CSV al utilizatorului,
+    poate fi ASCII); string-urile SQL (execute, nu mesaj)."""
+    import os
+    import re as _re2
+    _SQL = _re2.compile(r"\b(SELECT|INSERT|UPDATE|DELETE|CREATE|VALUES)\b")
+    out = []
+    for fn in _VALIDATORI_IMPORT:
+        if not os.path.exists(fn):
+            continue
+        tree = ast.parse(open(fn, encoding="utf-8").read())
+        doc_ids = {id(x.value) for x in ast.walk(tree)
+                   if isinstance(x, ast.Expr) and isinstance(x.value, ast.Constant)
+                   and isinstance(x.value.value, str)}
+        col_ids = set()
+        for c in ast.walk(tree):
+            if isinstance(c, ast.Call):
+                f = c.func
+                nm = f.id if isinstance(f, ast.Name) else (f.attr if isinstance(f, ast.Attribute) else "")
+                if nm == "_gaseste_col":
+                    for a in c.args:
+                        for lit in ast.walk(a):
+                            if isinstance(lit, ast.Constant) and isinstance(lit.value, str):
+                                col_ids.add(id(lit))
+        for n in ast.walk(tree):
+            if isinstance(n, ast.Constant) and isinstance(n.value, str) \
+                    and id(n) not in doc_ids and id(n) not in col_ids:
+                if _SQL.search(n.value):
+                    continue
+                h = flag(n.value)
+                if h and n.value not in _BASELINE:
+                    out.append((fn, n.lineno, n.value, h))
+    return out
+
+
+def test_validatori_import_cu_diacritice():
+    """Validatorii de import produc DOAR mesaje afisate contabilului. Orice mesaj-proza fara diacritice
+    de aici PICA - indiferent de structura (cheie de afisare / raise brut / det+= / f-string). Audit
+    tenant_005, straturile de migrare (17.08.2026)."""
+    if not glob.glob("core/*.py"):
+        pytest.skip("core/*.py absent")
+    fl = _flagate_import()
+    raport = "\n".join("  %s:%d  %r  <- lipsesc diacritice pe [%s]" % (fn, ln, s, ",".join(h))
+                       for fn, ln, s, h in fl)
+    assert not fl, ("Mesaj(e) de validator import fara diacritice (text afisat -> cu diacritice):\n" + raport)
 
 
 # ==========================================================================

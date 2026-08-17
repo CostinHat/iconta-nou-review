@@ -205,10 +205,10 @@ def verifica_randuri(randuri, azi=None):
                 dd = d if isinstance(d, _dt.date) else _dt.date.fromisoformat(str(d)[:10])
                 if dd > azi:
                     er.append({"rand": i, "motiv": "data_viitor",
-                               "mesaj": "%s: data angajarii (%s) e in viitor" % (nume, dd)})
+                               "mesaj": "%s: data angajării (%s) e în viitor" % (nume, dd)})
             except ValueError:
                 er.append({"rand": i, "motiv": "data_invalida",
-                           "mesaj": "%s: data angajarii nu se intelege (%r)" % (nume, d)})
+                           "mesaj": "%s: data angajării nu se înțelege (%r)" % (nume, d)})
         if not str(r.get("tip_norma") or "").strip():
             er.append({"rand": i, "motiv": "norma_lipsa",
                        "mesaj": "%s: norma de lucru lipsește (întreagă/parțială) - necesară pentru D112" % nume})
@@ -227,7 +227,7 @@ def verifica_randuri(randuri, azi=None):
         ore = r.get("ore_zi")
         if ore and not (1 <= float(ore) <= 8):   # 0/None = necunoscut (acoperit de norma_lipsa); doar valoarea PREZENTA gresita
             er.append({"rand": i, "motiv": "ore_invalide",
-                       "mesaj": "%s: %s ore/zi (norma legala e de maximum 8)" % (nume, ore)})
+                       "mesaj": "%s: %s ore/zi (norma legală e de maximum 8)" % (nume, ore)})
         j = str(r.get("judet_casa") or "").strip().upper()
         if j and j not in JUDETE_CASA:
             er.append({"rand": i, "motiv": "judet_invalid",
@@ -255,7 +255,7 @@ def importa(conn, randuri):
     if er:
         det = "; ".join("rand %s: %s" % (e["rand"], e["mesaj"]) for e in er[:6])
         if len(er) > 6:
-            det += " (si inca %d)" % (len(er) - 6)
+            det += " (și încă %d)" % (len(er) - 6)
         raise ValueError("%d rânduri nu pot intra în evidență: %s. Salariații intră în "
                          "D112 și REGES - datele trebuie să fie cele reale." % (len(er), det))
     importati = 0

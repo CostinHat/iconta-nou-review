@@ -201,7 +201,7 @@ def verifica_randuri(randuri):
         rad = _radacina(cont)
         if rad not in CONTURI_PARTENERI:
             erori.append({"rand": i, "cont": cont, "motiv": "cont_nepartener",
-                          "mesaj": "contul %s nu tine solduri pe parteneri (doar %s)"
+                          "mesaj": "contul %s nu ține solduri pe parteneri (doar %s)"
                                    % (cont or "?", ", ".join(CONTURI_PARTENERI[:4]))})
             continue
         ok, motiv = valideaza_cui(cui)
@@ -223,7 +223,7 @@ def importa(conn, randuri, data_referinta=None):
     if erori:
         det = "; ".join("rand %s: %s" % (e["rand"], e["mesaj"]) for e in erori[:6])
         if len(erori) > 6:
-            det += " (si inca %d)" % (len(erori) - 6)
+            det += " (și încă %d)" % (len(erori) - 6)
         raise ValueError(
             "%d rânduri nu pot intra în evidență: %s. Soldurile pe parteneri au nevoie "
             "de CUI valid (intră în D394 și SAF-T) și de un cont care ține parteneri."

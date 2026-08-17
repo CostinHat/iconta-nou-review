@@ -55,7 +55,7 @@ def extrage(continut, nume_fisier=""):
     i_cont = _gaseste_col(antet, "cont stoc", "cont_stoc")
     i_ch = _gaseste_col(antet, "cont cheltuiala", "cont_cheltuiala")
     if i_den < 0:
-        raise ValueError("nu gasesc coloana cu denumirea articolului")
+        raise ValueError("nu găsesc coloana cu denumirea articolului")
     rez = []
     for r in randuri[1:]:
         den = str(r[i_den] if i_den < len(r) else "").strip()
@@ -68,7 +68,7 @@ def extrage(continut, nume_fisier=""):
         ch = (str(r[i_ch]).strip() if 0 <= i_ch < len(r) else "") or "601"
         valid, motiv = True, "ok"
         if cant < 0 or pret < 0:
-            valid, motiv = False, "cantitate/pret negativ"
+            valid, motiv = False, "cantitate/preț negativ"
         # [articol_pret] articol cu stoc dar pret 0/lipsa: parserul fabrica pret 0.0 (coloana absenta /
         # celula goala) -> miscarea de intrare ar avea valoare 0, CMP porneste de la 0, valoarea stocului
         # sub-raportata TACIT (DS cap.17, fara default fabricat). Un stoc real are cost > 0.

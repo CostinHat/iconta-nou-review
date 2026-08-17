@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""Import mijloace fixe: cont_imobilizare lipsa NU se mai completeaza tacit cu 2131.
+"""Import mijloace fixe: cont de imobilizare lipsă NU se mai completează tacit cu 2131.
 
 Inainte, un activ fara cont primea 2131 (echipamente = categoria cea mai permisiva, lit.b) ->
 i se permitea accelerat/superaccelerat desi categoria era necunoscuta. Acum: cont lipsa ramane
@@ -27,7 +27,7 @@ _FARA_CONT = b"cod;denumire;valoare;durata;pif;metoda\nMF1;Ceva;100000;60;2025-1
 def test_cont_prezent_se_pastreaza():
     r = extrage(_CU_CONT, "mf.csv")[0]
     assert r["cont_imobilizare"] == "2131"
-    assert not any("cont_imobilizare lipsa" in a for a in r["avertismente"])
+    assert not any("cont de imobilizare lipsă" in a for a in r["avertismente"])
 
 
 def test_cont_lipsa_ramane_gol_nu_2131():
@@ -38,7 +38,7 @@ def test_cont_lipsa_ramane_gol_nu_2131():
 
 def test_cont_lipsa_da_avertisment_si_ok_false():
     r = extrage(_FARA_CONT, "mf.csv")[0]
-    assert any("cont_imobilizare lipsa" in a for a in r["avertismente"]), r["avertismente"]
+    assert any("cont de imobilizare lipsă" in a for a in r["avertismente"]), r["avertismente"]
     assert r["ok"] is False
 
 

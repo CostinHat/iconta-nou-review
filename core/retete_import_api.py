@@ -52,7 +52,7 @@ def extrage(continut, nume_fisier=""):
     i_ing = _gaseste_col(antet, "ingredient", "articol", "materie")
     i_cant = _gaseste_col(antet, "cantitate", "cant", "consum")
     if i_ret < 0 or i_ing < 0 or i_cant < 0:
-        raise ValueError("nu gasesc coloanele Reteta / Ingredient / Cantitate")
+        raise ValueError("nu găsesc coloanele Rețeta / Ingredient / Cantitate")
     grup = {}
     ordine = []
     for r in randuri[1:]:
@@ -88,9 +88,9 @@ def potriveste(conn, schema, retete):
                 aid = cand[0] if len(cand) == 1 else None
             l["articol_id"] = aid
             if aid is None:
-                motive.append(f"ingredient negasit: {l['ingredient']}")
+                motive.append(f"ingredient negăsit: {l['ingredient']}")
             elif l["cantitate"] <= 0:
-                motive.append(f"cantitate invalida la {l['ingredient']}")
+                motive.append(f"cantitate invalidă la {l['ingredient']}")
         ret["valid"] = not motive
         ret["motiv"] = "; ".join(motive) if motive else "ok"
     return retete

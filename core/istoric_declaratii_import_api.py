@@ -154,7 +154,7 @@ def verifica_randuri(randuri, azi=None):
             try:
                 l = int(luna)
                 if not (1 <= l <= 12):
-                    er.append({"rand": i, "motiv": "luna", "mesaj": "%s: luna %s (asteptat 1-12)" % (tip or "?", l)})
+                    er.append({"rand": i, "motiv": "luna", "mesaj": "%s: luna %s (așteptat 1-12)" % (tip or "?", l)})
             except (TypeError, ValueError):
                 er.append({"rand": i, "motiv": "luna", "mesaj": "%s: luna %r nu e număr" % (tip or "?", luna)})
         d = r.get("data_depunere")
@@ -165,10 +165,10 @@ def verifica_randuri(randuri, azi=None):
                 sfarsit = _dt.date(an, l, 1) if 2000 <= an <= 2100 and 1 <= l <= 12 else None
                 if sfarsit and dd < sfarsit:
                     er.append({"rand": i, "motiv": "data_inainte",
-                               "mesaj": "%s %s/%s: depusa la %s, inainte de perioada raportata"
+                               "mesaj": "%s %s/%s: depusă la %s, înainte de perioada raportată"
                                         % (tip or "?", luna, an, dd)})
             except ValueError:
-                er.append({"rand": i, "motiv": "data", "mesaj": "%s: data depunerii %r nu se intelege" % (tip or "?", d)})
+                er.append({"rand": i, "motiv": "data", "mesaj": "%s: data depunerii %r nu se înțelege" % (tip or "?", d)})
     return er
 
 

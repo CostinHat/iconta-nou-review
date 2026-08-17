@@ -469,7 +469,7 @@ def trimite(schema, factura_id, principal, mediu="test"):
     with db.get_conn() as conn:
         # POARTA 1: token viu?
         if spv_conector.ia_token_activ(conn, principal) is None:
-            return {"stare": "fara_token", "mesaj": "Conecteaza ANAF (SPV) inainte de a trimite factura."}
+            return {"stare": "fara_token", "mesaj": "Conectează ANAF (SPV) înainte de a trimite factura."}
         xml, _factura = genereaza_din_factura(conn, schema, factura_id)
         with conn.cursor() as cur:
             cur.execute(f"SELECT cui FROM {schema}.firma_profil WHERE id=1")

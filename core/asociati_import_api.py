@@ -145,7 +145,7 @@ def verifica_randuri(randuri):
     c = coerenta_cote(randuri or [])
     if (randuri or []) and not c["coincide"]:
         er.append({"rand": "-", "motiv": "cote",
-                   "mesaj": "cotele asociatilor insumeaza %s%%, nu 100%%" % c["total"]})
+                   "mesaj": "cotele asociaților însumează %s%%, nu 100%%" % c["total"]})
     return er
 
 

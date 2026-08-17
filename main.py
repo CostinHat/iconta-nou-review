@@ -6891,10 +6891,10 @@ def factura_trimite_spv(tenant_id: int, factura_id: int, ctx=Depends(cere_contex
     except _efs.EDateIncomplete as e:
         raise HTTPException(422, str(e))
     except NotImplementedError as e:
-        raise HTTPException(422, "Tip de factura netratat inca in e-Factura: %s" % e)
+        raise HTTPException(422, "Tip de factură netratat încă în e-Factura: %s" % e)
     st = r.get("stare")
     if st == "fara_token":
-        raise HTTPException(409, r.get("mesaj", "Conecteaza ANAF (SPV) inainte de a trimite."))
+        raise HTTPException(409, r.get("mesaj", "Conectează ANAF (SPV) înainte de a trimite."))
     if st == "deja_trimisa":
         raise HTTPException(409, "Factura are deja o trimitere activa in SPV (%s)." % r.get("stare_existenta"))
     if st == "nevalidat":
