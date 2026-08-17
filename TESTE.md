@@ -1654,3 +1654,10 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
   operatiuni_ic marcate alege:true; placeholder randat la valoare lipsa (c.alege && !v, selected disabled hidden);
   salvarea NU coerce cu ===da (tri-stare triBool); regimul tine cont de partida_simpla. RED pe git
   HEAD:date_firma.js (rulat pe versiunea veche, cp temporar) -> GREEN.
+
+## 17.08.2026 - Garzi IBAN import + blocaj vizibil SEPA/REGES [audit tenant_001]
+- core/test_salariati_import_iban.py (4 teste) - parserul mapeaza coloana IBAN, verifica_randuri valideaza mod-97
+  (un IBAN gresit trimite banii altcuiva), importa scrie iban in INSERT. RED pe cod vechi (importul stratul 4 nu
+  avea IBAN deloc: parser/writer/model) -> GREEN.
+- core/test_salariati_blocaj_vizibil.py (2 teste) - butoanele dezactivate SEPA / Raspunsuri REGES au motiv VIZIBIL
+  (.caseta-info), NU doar prin title (invizibil pe touch). RED pe firme.js vechi (git HEAD, title="...") -> GREEN.

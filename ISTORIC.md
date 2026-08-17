@@ -4443,3 +4443,15 @@ genereaza + valideaza cu DUKIntegrator, o atenționare non-blocanta pe E4 part-t
 deschis, cere verificare legala baza minima part-time sector alimentar). Restul walk-ului (straturi migrare
 individual, salariati in adancime, declaratii ramase, axe+mobil) neparcurs - predare in PREDARE_LANT. Comit 59f4fec,
 four-way HEAD=origin=backup=RUNNING (restart 06:42 > commit 06:34).
+
+## 17.08.2026 - Audit tenant_001 (continuare): IBAN import + blocaj vizibil SEPA/REGES; D112 podea part-time cercetat+revenit
+LIVRAT (a62f46b): importul de salariati aducea COR dar NU IBAN (parser/writer/model) -> firme migrate cu iban=NULL,
+fisierul SEPA le excludea. Reparat: mapare + validare mod-97 + writer (UPSERT COALESCE) + model CSV cu cor,iban.
+Butoanele dezactivate SEPA / "Raspunsuri REGES" isi ascundeau motivul in title (invizibil pe touch) -> mutat in
+.caseta-info vizibil (DS cap.5). axe/mobil pe Stat plata (Regula 14 addendum): title_only STRICT 0 dupa fix;
+pre-existent semnalat: contrast 19 noduri, 160 tinte de atingere <44px, overflow-x False.
+CERCETAT, REVENIT (thread 2): podeaua de suprataxare part-time in D112 - 3 pozitii contradictorii in codebase (d112
+sm integral 4050 aparat de 2 teste cu art.LXVI; fluturas sm-fac; DUK+structura 3750 ref-ianuarie). Verificat cu
+DUKIntegrator (iunie+august cer 3750). Nu e defect de calcul clar; cele 2 incercari de fix contraziceau teste
+deliberate. Revenit la HEAD - cere autoritate externa. Fronturi ramase: cod boala 17 in afara nomenclatorului D_9
+(app blocheaza D112 septembrie corect, cu mesaj), declarant fabricat "ADMINISTRATOR" in 7 module (thread 3 neinceput).

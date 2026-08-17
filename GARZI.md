@@ -3023,3 +3023,22 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
   expune partida_simpla. frontend date_firma.js: alege:true + placeholder alege + tri-stare + validare preventiva
   langa camp. Garzi test_vector_platitor_tva_oblig + test_date_firma_alege_placeholder (RED pe cod vechi -> GREEN).
   Comit 59f4fec. Vezi DECIZII/TESTE/ISTORIC 17.08.
+
+## 17.08.2026 - IBAN lipsa din importul de salariati + blocaj SEPA/REGES doar prin title [audit tenant_001]
+- (a) importul (stratul 4 migrare) NU aducea IBAN (nici parser, nici writer, nici model CSV) -> orice firma migrata
+  avea iban=NULL pe toti salariatii -> fisierul SEPA ii excludea pe toti. COR era deja mapat (test_q16). REPARAT:
+  mapare + validare mod-97 + INSERT (UPSERT cu COALESCE, nu sterge IBAN manual la re-import) + model CSV cu cor,iban.
+  (b) butoanele dezactivate SEPA / Raspunsuri REGES livrau motivul DOAR prin title (invizibil pe touch - Regula 14
+  addendum) -> motiv VIZIBIL prin .caseta-info (DS cap.5). Garzi test_salariati_import_iban + test_salariati_blocaj_
+  vizibil (RED->GREEN). Comit a62f46b. axe/mobil Stat plata: title_only STRICT 0; PRE-EXISTENT semnalat: contrast 19
+  noduri + 160 tinte <44px + overflow-x False.
+
+## 17.08.2026 - FRONT DESCHIS: podea part-time D112 - 3 pozitii contradictorii (CERCETAT, REVENIT) [audit tenant_001]
+- Podeaua de suprataxare part-time (art.146(5^6) CAS / art.168(6^1) CASS) e calculata in TREI locuri cu TREI valori:
+  salarizare.baza_podea (fluturas) = sm-facilitate LUNAR (3750 H1 / 4125 H2); d112.pull:680 + d112_reconciliere:182
+  = sm INTEGRAL (fix 06.08, 4050 H1 / 4325 H2); DUK (SP1B4_1) + structura ANAF (d112_struct_anaf.txt "sm=4050;
+  sm=sm-300") = 3750 FIX pe an (ref 1 ian), verificat pe DUKIntegrator iunie SI august. Decizia 06.08 (4050) e
+  DELIBERATA, aparata cu art.LXVI in DOUA teste (test_pull_declaratii.py:634 + test_d112_reconciliere.py:307). Am
+  incercat 2 fix-uri (sm-fac lunar; ref-ianuarie 3750) - ambele contrazic teste deliberate cu temei legal. NU e
+  defect de calcul CLAR -> REVENIT la HEAD. Cere autoritate externa (ANAF/consultant): period-aware vs ref-ianuarie,
+  si de ce fluturas != D112 azi. Analiza completa + probe DUK in PREDARE_LANT FRONT #1.
