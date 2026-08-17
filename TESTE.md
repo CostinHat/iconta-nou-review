@@ -1645,3 +1645,12 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
   "registrul comertului" cand reg_com lipseste; control pozitiv: cu reg_com completat, S1005 se genereaza.
   RED probat pe cod vechi (ambele emiteau XML fara regCom, DID NOT RAISE); GREEN dupa adaugarea reg_com in
   bilant_api.erori_generare. Temei DUK: regCom "atributul trebuie sa existe".
+
+## 17.08.2026 - Garzi default fabricat selecturi vector Date firma [audit tenant_001]
+- core/test_vector_platitor_tva_oblig.py (2 teste) - vector_fiscal_api.salveaza cu platitor_tva=None (conn fals,
+  fara DB) intoarce ok=False cod TVA_LIPSA si NU scrie; regresie operatiuni_ic=None ramane IC_LIPSA. RED pe cod
+  vechi (bool(None)=False -> ok=True, platitor_tva=False persistat) -> GREEN.
+- core/test_date_firma_alege_placeholder.py (4 teste) - source-scan pe date_firma.js: regim_fiscal/platitor_tva/
+  operatiuni_ic marcate alege:true; placeholder randat la valoare lipsa (c.alege && !v, selected disabled hidden);
+  salvarea NU coerce cu ===da (tri-stare triBool); regimul tine cont de partida_simpla. RED pe git
+  HEAD:date_firma.js (rulat pe versiunea veche, cp temporar) -> GREEN.

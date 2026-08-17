@@ -3012,3 +3012,14 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
   ANAF") isi rata exact scopul. REPARAT: reg_com adaugat in erori_generare (partajata S1005+S1003) -> refuz cu
   mesaj clar. Sursa: DUKIntegrator -v S1005 (reguli 2026.1). Gard core/test_bilant_regcom_poarta.py (RED
   S1005+S1003 nu ridicau -> GREEN). Vezi DECIZII/TESTE 17.08.
+
+## 17.08.2026 - Default fabricat pe selecturile vector din Date firma [audit tenant_001]
+- DEFECT provocat pe Date firma (regim_fiscal/platitor_tva/operatiuni_ic = NULL): selectul obligatoriu FARA
+  optiune-goala afisa prima optiune (Microintreprindere / Nu) ca aleasa; la Salvare frontendul trimitea valoarea
+  fabricata iar backend salveaza facea bool(platitor_tva) -> None coerce tacit la False, persistat. Semaforul
+  (NULL=necompletat) si Date firma (micro/Nu) dadeau verdicte care nu coincid (Regula 14.2); alegere fabricata
+  scrisa fara ca contabilul s-o faca (Regula 4). REPARAT (2 jumatati): backend respinge platitor_tva=None
+  (TVA_LIPSA, simetric cu operatiuni_ic care era deja corect); main VectorIn.platitor_tva Optional; citeste()
+  expune partida_simpla. frontend date_firma.js: alege:true + placeholder alege + tri-stare + validare preventiva
+  langa camp. Garzi test_vector_platitor_tva_oblig + test_date_firma_alege_placeholder (RED pe cod vechi -> GREEN).
+  Comit 59f4fec. Vezi DECIZII/TESTE/ISTORIC 17.08.

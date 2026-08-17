@@ -4431,3 +4431,15 @@ DUKIntegrator -v S1005: "eroare atribut: regCom: atributul trebuie sa existe" (r
 erori_generare (partajata S1005+S1003) -> refuz cu mesaj clar. Gard test_bilant_regcom_poarta (RED S1005+S1003
 -> GREEN). tenant_002 confirmat: refuz corect. Nota: prefixul "Bilant nu se poate genera" (preexistent) e fara
 diacritice - neatins, semnalat.
+
+## 17.08.2026 - Audit tenant_001 (Panificatie Salarii Speciale SRL): default fabricat selecturi vector Date firma
+Parcurs vizual cap-coada ecranele de sus (Playwright, captura privita): meniu firma (26 module), Import (10 straturi
+listate), Date firma+vector, Salariati (Stat plata 12 salariati cu situatii CM speciale), semafor Control fiscal,
+Declaratii wizard, Casa/Banca/Facturi. Reparat: selecturile obligatorii regim_fiscal/platitor_tva/operatiuni_ic
+afisau prima optiune (Microintreprindere/Nu) la valoare NULL (default fabricat, Regula 4) contrazicand semaforul;
+la Salvare se persista tacit (backend bool(None)=False). Fix 2 jumatati (backend TVA_LIPSA + frontend placeholder/
+tri-stare/validare preventiva), 2 garzi RED->GREEN, proba vizuala + DB ramane NULL. D112 dus la XML+DUK pe 06/2026:
+genereaza + valideaza cu DUKIntegrator, o atenționare non-blocanta pe E4 part-time (B4_5P 4050 vs suma 3750 - front
+deschis, cere verificare legala baza minima part-time sector alimentar). Restul walk-ului (straturi migrare
+individual, salariati in adancime, declaratii ramase, axe+mobil) neparcurs - predare in PREDARE_LANT. Comit 59f4fec,
+four-way HEAD=origin=backup=RUNNING (restart 06:42 > commit 06:34).

@@ -1,54 +1,80 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANT — audit vizual tenant_002 (Coafor Micro Neplatitor SRL, cabinet 1968); 2 defecte de cod reparate
+# PREDARE LANT — audit vizual tenant_001 (Panificatie Salarii Speciale SRL, cabinet 1968); 1 cluster de cod reparat
 
 ## REPORNIRE (comanda exacta, gata de dat)
-Continua auditul vizual tenant_002 cap-coada cu Playwright (captura PRIVITA, nu selectoare - Regula 14),
+Continua auditul vizual tenant_001 cap-coada cu Playwright (captura PRIVITA, nu selectoare - Regula 14),
 REPARAND ce gasesti; ce gasesti pe o firma cauta pe toate (Regula 13). Punctul la care am ramas: parcurse
-VIZUAL ecranele de sus (meniu firma, Import=10 straturi listate, Date firma, Facturi, Banca, Casa, Salariati
-gol canonic, Declaratii wizard pas 1, Control fiscal semafor). RAMASE, NEATINSE:
-- **Cele 9-10 straturi de migrare INDIVIDUAL**: import->previzualizare->salvare->confirmare->ecranul unde apar
-  datele. Doar meniul Import a fost privit (straturile listate); niciun strat parcurs cap-coada. tenant_002 are
-  DOAR plan_conturi populat (185 randuri) + 1 factura; restul straturi goale.
-- **Provocarea deliberata a blocajelor**: fisiere stricate la PREVIZUALIZARE (nu salvare) pe straturile de
-  import; campuri obligatorii goale la fiecare formular. NEFACUTA sistematic (doar reg_com->Bilant, reparat).
-- **Fiecare declaratie datorata pana la XML + DUK din UI**: D100 (micro) REFUZA corect pe zero (venituri 70x=0;
-  hint "1 factura necontabilizata" pe T1) - de confirmat din ECRAN, nu doar din modul. D406 (SAF-T) datorat pe
-  semafor T1/T2 - NEPARCURS deloc (generare+DUK). Bilant S1005 acum REFUZA fara reg_com (reparat) - de confirmat
-  refuzul pe ECRAN. D205/D301 neaplicabile/fara subiect.
+VIZUAL ecranele de sus (meniu firma 26 module, Import=10 straturi LISTATE, Date firma+vector, Salariati=Stat
+plata 12 salariati, semafor Control fiscal, Declaratii wizard, Casa/Banca/Facturi=goale/meniu). Reparat +
+livrat: default fabricat pe selecturile vector din Date firma. D112 dus la XML+DUK pe O luna (06/2026).
+RAMASE, NEATINSE (prioritatea sus):
+- **D112 celelalte luni + Trimite in coada**: doar 06/2026 dus la Pas 2 (DUK). ian-mai, iul-aug neparcurse; Pas 3
+  (coada) neatins pe nicio luna.
+- **ATENTIONARE DUK D112 nerezolvata** (vezi FRONTURI #1) — cifra part-time posibil gresita.
+- **Cele 9-10 straturi migrare INDIVIDUAL**: import->preview->salvare->confirmare->ecran. Doar meniul Import
+  privit (straturile listate). tenant_001 are plan_conturi(185)+salariati(12)+concedii(11)+istoric(30) populate;
+  restul goale. Niciun strat parcurs cap-coada; blocaje la PREVIZUALIZARE (fisier stricat) NEPROVOCATE.
+- **Salariati in adancime**: doar Stat plata privit. Fluturas/REGES/Concediu/Adeverinta/Pontaj/Incetare pe
+  salariat + "+Salariat nou" cu campuri goale (blocaj) + "Fisier plata card (SEPA)" fara IBAN + "Chei REGES"
+  fara COR — NEPROVOCATE (vezi FRONTURI #5).
+- **Declaratii ramase**: D100 (micro; ACUM regim_fiscal=NULL dupa fix -> semaforul zice "necompletat", de
+  confirmat ca D100 refuza corect din ECRAN), D300/D394 (blocate vector), Bilant S1005 (blocat reg_com), D205
+  (fara note 2025). Duse la XML+DUK: DOAR D112.
+- **axe-core + mobil pe ecranele atinse** (Date firma, Salariati, Declaratii) — Regula 14 addendum, NEFACUT.
 
-## FOUR-WAY (ultima executie, 17.08.2026)
-HEAD = origin/main = backup/lant-2026-08-17 = RUNNING = 86b776a. Sentinele push absente; tree tracked-clean;
-divergent=False; service ActiveEnter 04:56 > commit 04:48 (post-commit a restartat: "procesul viu preia 86b776a").
-pytest 2258 passed / 0 failed / 4 skipped / 16 xfailed (COLLECTED 2278); verificator TOTAL: 0.
+## FOUR-WAY (executat automat de post-commit, 17.08.2026)
+HEAD = origin/main = backup/lant-2026-08-17 (remote) = RUNNING = **59f4fec**. Service ActiveEnter 06:42:20 >
+commit 06:34:04 (procesul viu preia 59f4fec). pytest 2264 passed / 0 failed / 4 skipped / 16 xfailed;
+verificator TOTAL scanat 130 = ACCEPTAT 129 + GRI 0 + ROSU 0 + EXCLUS 1 -> TOTAL 0. Poarta verde curata.
+NOTA: prima incercare de commit a fost RESPINSA de test_versionare_assets.py (?v= manual sha1sum != hashul
+uneltei); reparat cu `venv/bin/python3 versioneaza_assets.py --scrie` (NU stampila ?v= manual - exista gard).
 
-## LIVRAT ACEASTA TURA (2 clustere, fiecare cu gard RED-probat)
-1. **Reconciliere D100 pe semafor** (control_incrucisat._thunk_d100): despacheta 2 valori de la d100.pull care
-   intoarce 3 (prof, venituri, cheltuieli, de la profit-base-fix 16.08) -> ValueError "too many values to
-   unpack" pe ORICE firma, clasificat GRI de _ruleaza_una PASUL 1 (opusul intentiei "deriva de semnatura =
-   rosu rupt"), cu textul Python scurs in motiv; a-doua-cale D100 MOARTA universal (micro t002 + profit t004).
-   Latent: ramura profit calcula cota pe VENITURI, nu pe profit. Fix structural (Regula 13): extras
-   d100.deriva_obligatii (sursa unica) chemata de genereaza SI de thunk. Gard test_reconciliere_d100_wiring
-   (RED micro+profit gri-crash -> GREEN). test_d100_cota + test_base_nula_generatoare reancorate la refactor.
-2. **Bilant S1005/S1003 refuza fara reg_com** (bilant_api.erori_generare): poarta verifica doar cui+nume, deci
-   genereaza emitea bilant FARA regCom - respins de DUKIntegrator ("regCom: atributul trebuie sa existe", reguli
-   2026.1) desi UI promitea "blocheaza Bilant S1005". Fix: reg_com in poarta partajata -> refuz cu mesaj clar.
-   Gard test_bilant_regcom_poarta (RED S1005+S1003 nu ridicau -> GREEN).
+## LIVRAT ACEASTA TURA (1 cluster, cu 2 garzi RED-probate + proba vizuala)
+**Default fabricat pe selecturile vector din Date firma** (regim_fiscal/platitor_tva/operatiuni_ic).
+Selectul obligatoriu FARA optiune-goala afisa prima optiune ("Microintreprindere"/"Nu") cand valoarea
+stocata era NULL -> contrazicea semaforul ("necompletat", Regula 14.2); la Salvare se persista tacit alegerea
+fabricata (Regula 4). backend salveaza facea bool(platitor_tva) -> None->False tacit (asimetric cu
+operatiuni_ic care era deja corect). Fix in 2 jumatati:
+- backend vector_fiscal_api.salveaza respinge platitor_tva=None (TVA_LIPSA); main.py VectorIn.platitor_tva
+  Optional[bool]; citeste() expune partida_simpla (PFA n-are regim).
+- frontend date_firma.js: alege:true + placeholder "— alege —" + tri-stare la salvare + validare preventiva
+  langa camp. firme.js bump ?v=.
+Probe: proba_regim_placeholder.py (selecturile arata "— alege —", Salvarea blocheaza cu mesaje per-camp, DB
+ramane NULL). Garzi: test_vector_platitor_tva_oblig.py (backend fake-conn), test_date_firma_alege_placeholder.py
+(frontend source-scan). Ambele RED pe cod vechi (rulat pe git HEAD:date_firma.js) -> GREEN.
 
-## FRONTURI DESCHISE / OBSERVATII (neatinse, pentru decizie sau tura viitoare)
-- **Tensiune de semafor D100 (tenant_002)**: semaforul arata D100 T1/T2 2026 ca RESTANTE ROSII, dar generarea
-  REFUZA "nu se depune pe zero" (venituri 70x=0). Verdictele despre aceeasi declaratie NU coincid (Regula 14
-  pct.2). Sectiunea "NU POT VERIFICA" spune simultan "nu pot demonstra ca firma exista in 2025". Necesita
-  DECIZIE DE POLITICA: o factura emisa necontabilizata declanseaza restanta D100 dura? Nereparata (decizie).
-- **D406 (SAF-T) datorat de micro neplatitor TVA**: semaforul il pune restanta T1/T2 pentru un coafor micro
-  neplatitor. De VERIFICAT LA SURSA daca periodicitatea/obligativitatea SAF-T pentru micro neplatitor e corecta
-  (Regula 5). Neverificat din cod.
-- **Clasa "erori generare dXXX fara diacritice"** (deja DECLARATA in GARZI 17.08): mesajul de refuz D100 "nu se
-  depune pe zero: nicio obligatie..." e fara diacritice (user-facing). Parte din clasa deschisa, neatinsa.
-- **Prefix "Bilant nu se poate genera" fara diacritice** (bilant_api) - preexistent, neatins.
-- **Badge stare per strat de migrare** (C3, din predarea tenant_004): meniul Import nu arata explicit ce strat
-  are deja date (plan_conturi populat apare doar subtil umbrit). Front deschis mai vechi.
+## FRONTURI DESCHISE (gasite aceasta tura, NEREZOLVATE — pentru decizie/tura viitoare)
+1. **ATENTIONARE DUK D112 part-time** (E4 idAsig=4, luna 06/2026 H1): `SP1B4_1: B4_5P(4050) diferit de suma
+   calculata 3750`. Non-blocant (atenționare), dar inconsistenta INTERNA in XML: aplicatia pune 4050 in B4_5P,
+   DUK sumeaza 3750 din celelalte campuri B4. E4 = part-time sub floor (brut 3000). Sector alimentar
+   (CAEN 1071 panificatie) cu facilitate -> floor CASS = sm-facilitate = 3750. De rezolvat: (a) verifica legal
+   baza minima CAS/CASS part-time sub floor la sector cu facilitate (Regula 5); (b) confrunta cu anaf_surse
+   D112_struct + XSD ce e B4_5P si ce sumeaza SP1B4_1; (c) test_d112 part-time existent pineaza 4050 sau 3750?
+2. **`declarant_functie or "ADMINISTRATOR"`** (core/d112.py:166): default fabricat (Regula 4) pe functia
+   declarantului cand firma_profil.declarant_functie=NULL. tenant_001 are NULL -> D112 emite
+   functie_declar="ADMINISTRATOR" inventata. Aceeasi clasa cu clusterul reparat, dar in D112 antet. De decis
+   daca se cere explicit (ca regim/tva) sau e acceptat.
+3. **Umbrire strat migrare** (Import date, ecran): randurile Plan de conturi/Articole/Retete apar umbrite
+   subtil, dar Salariati NU — desi tenant_001 are plan_conturi(185)+salariati(12) cu date si articole(0)/
+   retete(0) goale. Daca umbrirea = "stratul are date", e gresita in ambele sensuri. NEINVESTIGAT la sursa
+   (migrare.js). Reper: "badge stare per strat" front C3 din predarea t004.
+4. **Mesaj TVA semafor cu nume intern + fara diacritice** (LOCALIZAT): sursa = **core/common.py:57-58**
+   ("LIPSA tip_decont (perioada fiscala TVA) in vectorul firmei - obligatoriu pentru decontul de TVA
+   (D300/D394). Completeaza lunar/trimestrial in vectorul fiscal."). User-facing CONFIRMAT (vazut pe ecranul
+   Control fiscal, sectiunea DECLARATIE VS CONTABILITATE) — expune `tip_decont`, fara diacritice (Regula 14.4).
+   GAURA DE GARDA: test_control_fiscal_diacritice.py scaneaza DOAR control_fiscal_api.py, deci NU vede mesajul
+   din common.py. Fix: rescrie mesajul cu diacritice + label UI ("Periodicitate TVA", nu tip_decont) SI extinde
+   gardul sa scaneze common.py (sau modulul care ridica exceptia afisata). Mutatie RED: mesajul curent pica noul
+   gard. NEREZOLVAT (al doilea cluster, neinceput ca sa nu las cod neprobat in bugetul turei).
+5. **COR ⚠ / IBAN ⚠ pe toti 12 salariatii**: reale (cor=None, iban=None pe toti). COR obligatoriu la REGES
+   (NU D112 — d112.py nu consuma coloana cor); IBAN obligatoriu la fisierul SEPA. Seed a inserat direct,
+   ocolind API-ul care cere COR ("Ocupatia (cod COR) este obligatorie" in salariati_api.py — ruptura
+   seed↔consumator, Regula 10). De provocat: "Fisier plata card (SEPA)" fara IBAN + "Chei REGES" fara COR,
+   citeste mesajele (spun ce lipseste, unde, ce consecinta?).
 
-## BACKLOG (mostenit din predarea tenant_004, tot deschis)
-d406 divergenta factura COER-T5 pe tenant_004 (antet net, alt modul, neatins). Q9/Q18/Q7/Q8/Q12/Q14 din predarea
-anterioara. Constatari infra vizuala (contrast, title-extra, tinte <44px) - Costin da ordinea.
+## BACKLOG (mostenit din predarea tenant_002, tot deschis)
+Tensiune semafor D100 micro pe zero (decizie de politica). D406 SAF-T datorat de micro neplatitor (verifica
+periodicitatea la sursa). Clasa "erori generare dXXX fara diacritice". Prefix "Bilant nu se poate genera" fara
+diacritice. Backlog t004: d406 divergenta factura COER-T5; Q9/Q18/Q7/Q8/Q12/Q14. Constatari infra vizuala
+(contrast, title-extra, tinte <44px) - Costin da ordinea.

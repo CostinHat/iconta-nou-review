@@ -9450,3 +9450,12 @@ existe", pachet oficial ANAF reguli 2026.1) - un bilant fara regCom NU e depozit
 promisiunea UI existenta ("Nr. registrul comertului - blocheaza Bilant S1005") si cu contractul portii
 erori_generare ("STOP cu mesaj clar, nu XML respins de ANAF"). PROBA: test_bilant_regcom_poarta RED (S1005+
 S1003 emiteau XML) -> GREEN. Corectitudinea declaratiei nu e decizie de produs (comanda 17.08).
+
+## 17.08.2026 - Selecturile vector obligatorii cer alegere explicita (fara default fabricat) [audit tenant_001]
+DECIZIE: regim_fiscal, platitor_tva, operatiuni_ic la NULL se afiseaza ca alege (nu prima optiune reala) si
+salvarea cere alegere explicita (tri-stare: gol -> null, NU false tacit). Backend respinge platitor_tva=None
+(TVA_LIPSA), simetric cu operatiuni_ic care era deja corect. TEMEI: Regula 4 (fara valori implicite fabricate) +
+DECIZII 23.07 (frontendul distinge nesetat de Nu, fara preselectie) + DS cap.6 (validari preventive cu mesaj
+langa camp). partida_simpla (PFA/II/PFL) expus din vector_fiscal_api.citeste -> regimul NU se pretinde la partida
+simpla (n-are micro/profit). PROBA: 2 garzi RED->GREEN + proba vizuala Playwright (selecturile alege, Salvarea
+blocheaza cu mesaje per-camp, DB ramane NULL). Corectitudinea nu e decizie de produs (comanda 17.08).
