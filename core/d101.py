@@ -84,6 +84,7 @@ class RezultatD101:
     total_plata_a: int = 0
     cod_obligatie: str = "103"
     d_grup: int = 0
+    avertismente: list = field(default_factory=list)
 
 
 # Campurile P de INTRARE: baza contabila (P1,P2,P4,P5 - din pull) + ajustari fiscale (restul,
@@ -390,6 +391,9 @@ def build_xml(res):
     'sectiune necunoscuta P1'). OPANAF 206/2025: toate campurile (d_rec..P53) sunt atribute ale
     elementului unic <declaratie101>, care se inchide self-fara-copii."""
     prof = res.prof
+    if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
+        res.avertismente.append("D101: declarantul (nume/functie) lipseste din profil -> emis implicit "
+                                "\"ADMINISTRATOR\". Completeaza declarantul in Date firma.")
     an = res.an
     cif_num = "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit())
     scad_luna, scad_an = _scadenta(an)

@@ -111,6 +111,7 @@ class RezultatD205:
     prof: dict = field(default_factory=dict)
     beneficiari: list = field(default_factory=list)
     total_plata_a: int = 0
+    avertismente: list = field(default_factory=list)
 
 
 def calcul_d205(prof, an, beneficiari):
@@ -161,6 +162,9 @@ def erori_generare(prof):
 
 def build_xml(res):
     prof = res.prof
+    if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
+        res.avertismente.append("D205: declarantul (nume/functie) lipseste din profil -> emis implicit "
+                                "\"ADMINISTRATOR\". Completeaza declarantul in Date firma.")
     if not res.beneficiari:
         raise ValueError("D205 fara niciun beneficiar de venit - nu se genereaza "
                          "declaratie fara continut.")

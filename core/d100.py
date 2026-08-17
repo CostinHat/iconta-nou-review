@@ -215,6 +215,9 @@ def erori_generare(prof):
 
 def build_xml(res):
     prof = res.prof
+    if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
+        res.avertismente.append("D100: declarantul (nume/functie) lipseste din profil -> emis implicit "
+                                "\"ADMINISTRATOR\". Completeaza declarantul in Date firma.")
     # T6 (CATALOG_INVALIDITATE.md): text_anaf trunchiaza TACIT den/adresa la limita oficiala C(n)
     # (LIMITE_TEXT_ANAF). Pierderea de date era silentioasa; emitem un avertisment NON-blocant care
     # numeste campul cand valoarea reala depaseste limita si a fost taiata pentru XML.

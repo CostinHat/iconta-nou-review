@@ -91,6 +91,10 @@ def genereaza(conn, schema, an):
     }
     if not prof["reg_com"]:
         av.append("Nr. Reg. Com. lipsa in Profil firma (camp obligatoriu S1005).")
+    if not prof.get("declarant_nume"):
+        # [declarant thread 3] Regula 4: fara fabricare tacita a administratorului
+        av.append("Bilant: declarantul (administrator) lipseste din profil -> emis implicit "
+                  "\"ADMINISTRATOR\". Completeaza declarantul in Date firma.")
     f10c = _b.f10_din_balanta(s_fin)
     f10p = _b.f10_din_balanta(s_ini)
     f20c = _b.f20_din_rulaje(rl)

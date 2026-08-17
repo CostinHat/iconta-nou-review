@@ -164,6 +164,9 @@ def _d112_genereaza(prof, salariati, an, luna):
     nume_d = _t(prof.get("declarant_nume") or den_f or "ADMINISTRATOR", _LIM["d112"]["nume_declar"])
     pren_d = _t(prof.get("declarant_prenume") or "-", _LIM["d112"]["prenume_declar"])
     func_d = _t(prof.get("declarant_functie") or "ADMINISTRATOR", _LIM["d112"]["functie_declar"])   # structura D112: functie_declar C(50)
+    if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
+        av.append("D112: declarantul (nume/functie) lipseste din profil -> emis implicit "
+                  "\"ADMINISTRATOR\". Completeaza declarantul in Date firma.")
     if not cui_f:
         av.append("CUI firmă lipsă — completează Profil firmă.")
     if caen_f == "0000":
