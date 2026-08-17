@@ -12,8 +12,9 @@ rulare; DS inainte de cod UI; versioneaza_assets --scrie dupa editare static/js|
 Neplatitor"); scripturi in ~/probe_t006 (server). Env: `set -a && . ~/.iconta/db.env && . ~/.iconta/api_keys.env`.
 
 ## FOUR-WAY (de confirmat de urmatoarea tura)
-HEAD = origin/main = backup/lant-2026-08-17 (remote) = RUNNING = 288f886. Serviciul restartat 23:24:31 > commit
-23:16:06. Poarta verde: 2296 passed / 4 skipped / 16 xfailed, verificator 0.
+HEAD = origin/main = backup/lant-2026-08-18 (remote) = RUNNING = b196943. Serviciul restartat 00:40:21 > commit
+00:31:56. Poarta verde: 2301 passed / 4 skipped / 16 xfailed, verificator 0. Comituri tura: 288f886 (existenta_firma_an),
+50c3ebf (registre+predare), b196943 (D100 pe fapt de venituri).
 
 ## FRONT 1 — CLUSTER A11Y CONTRAST pe Control fiscal (gata de atacat, tinte verificate)
 axe-core pe Control fiscal tenant_006: 17 violari color-contrast (serious), reduse la 2 TOKENI pe fundalul panoului
@@ -35,6 +36,13 @@ IC de bunuri inregistrata NUMAI in d301 (fara factura) trebuie sa apara in D390 
 de confirmat la sursa (OPANAF 705/2020 + relatia D301<->D390 pentru achizitii de bunuri la neinregistratii art.316).
 NEVERIFICAT: comportamentul cu art.317=da (firma are art317=False acum). Nu reparat - cere temei + scenariu art.317.
 
+## INCHIS tura asta — D100 micro pe fapt de venituri (commit b196943)
+Semaforul arata D100 micro restanta ignorand baza de venituri, DAR D100 pe zero e structural invalid la DUK
+(generatorul refuza) -> restanta falsa. Reparat: d100_fapt (simetric d390_fapt/d112_fapt) gateaza D100 pe baza de
+venituri; trimestru inchis fara venituri -> "nu se datoreaza", nu restanta. tenant_006 (achizitie IC, fara venituri):
+D100 T1/T2 -> "Nu se datoreaza" (captura privita); restante ramase D406 T1/T2 + D301 iun (toate genereaza DUK-valid).
+tenant_003 (venituri 0) corectat identic; tenant_002 T1 (are venituri) pastrat. Gard RED(mutatie)->GREEN test_d100_fapt.
+
 ## FRONT 3 — field-level error marking (RAMAS din tura tenant_005, inca deschis)
 Erorile de formular numesc campul si consecinta (ex. Date firma: "Profil incomplet - Nr. registrul comertului -
 blocheaza Bilant S1005" - CORECT, Regula 14 pct.4) DAR nu marcheaza VIZUAL campul vinovat cu contur rosu langa el.
@@ -48,6 +56,6 @@ tenant_006 acum consistent cu tenant_002/003 (micro): D100/D406 2026 T1+T2 resta
 Gard RED->GREEN core/test_existenta_activitate.py (schema temporara, 4 teste). D301 verificat end-to-end: DUK valid,
 cifre corecte (baza 52261, tva 10975 @21%, total 63236), avertisment art.317 (pers_inreg=1). Probe vizuale privite:
 dashboard, import (10 straturi), declaratii (selector), Control fiscal (inainte+dupa), Vector fiscal (reflecta
-micro/neplatitor/IC=Da), Date firma (art.317 editabil=nu). OBSERVATIE (§5, nereparat, pre-existent universal): o micro
-fara venituri intr-un trimestru vede D100 restanta pe semafor dar D100.genereaza refuza "pe zero" - comportament comun
-tuturor micro (tenant_002/003), nu introdus de fix; relatia semafor<->generator pe zero = de clarificat separat.
+micro/neplatitor/IC=Da), Date firma (art.317 editabil=nu). Declaratii la XML+DUK: D301 valid, D406 valid (68895B),
+D101/D112 genereaza gol, D205/D390 refuza pe gol. D100 pe zero (semafor restanta vs generator refuza) REPARAT tura asta
+(vezi INCHIS mai jos).
