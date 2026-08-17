@@ -1715,6 +1715,16 @@ def tenant_plan_conturi_lista(tenant_id: int, q: Optional[str] = None, ctx=Depen
                 cur.execute("SELECT simbol, denumire, tip FROM plan_conturi ORDER BY simbol LIMIT 100")
             rows = cur.fetchall()
     return {"conturi": [{"simbol": r[0], "denumire": r[1], "tip": r[2]} for r in rows]}
+# [p95_plan_conturi] Modelul TREBUIE definit INAINTE de handler: cu `from __future__ import annotations`
+# (PEP 563) adnotarea `date: PlanContIn` e string, iar @app.post o rezolva la IMPORT, in ordinea sursei.
+# Definit DUPA handler => FastAPI nu-l recunoaste ca model de body => trateaza `date` ca query param =>
+# orice adaugare de cont pica cu 422 "date required". (Bug gasit la auditul vizual tenant_005, 17.08.)
+class PlanContIn(BaseModel):  # [p95_plan_conturi]
+    simbol: str
+    denumire: str
+    tip: Optional[str] = "Bifunctional"
+
+
 @app.post("/tenants/{tenant_id}/plan-conturi")  # [p95_plan_conturi] adauga cont nou (analitic/nestandard)
 def tenant_plan_conturi_adauga(tenant_id: int, date: PlanContIn, ctx=Depends(cere_context)):
     schema = _schema_sau_404(ctx, tenant_id)
@@ -4795,10 +4805,6 @@ def portal_povesti(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
 
 # ICRD_SOLICITARI_V1 - bucla solicitari client <-> cabinet
 import psycopg2.extras as _E_sol
-class PlanContIn(BaseModel):  # [p95_plan_conturi]
-    simbol: str
-    denumire: str
-    tip: Optional[str] = "Bifunctional"
 class SolicitareIn(BaseModel):
     mesaj: str
 
