@@ -25,9 +25,9 @@ const CAMPURI = [
   { k: "iban", e: "IBAN", ob: true },
   { k: "telefon", e: "Telefon", ob: true },
   { k: "email", e: "E-mail" },
-  { k: "declarant_nume", e: "Nume declarant" },
+  { k: "declarant_nume", e: "Nume declarant", ob: true },
   { k: "declarant_prenume", e: "Prenume declarant" },
-  { k: "declarant_functie", e: "Func\u021bia declarantului" },
+  { k: "declarant_functie", e: "Func\u021bia declarantului", ob: true },
 ];
 
 function camp(c, val) {

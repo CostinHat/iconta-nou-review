@@ -159,6 +159,10 @@ OBLIGATORII = {
     "iban": ("D300", "D301"),
     "telefon": ("D394",),
     "reg_com": ("Bilant S1005",),
+    # [declarant_oblig 17.08.2026] nume+functia declarantului: DUK respinge campul gol al declarantului
+    # (nume_declar/functie_declar) -> se cer EXPLICIT (ca regim_fiscal), nu se fabrica "ADMINISTRATOR" tacit.
+    "declarant_nume": ("D100", "D101", "D112", "D205", "D300", "D301", "D390", "D394", "Bilant"),
+    "declarant_functie": ("D100", "D101", "D112", "D205", "D300", "D301", "D390", "D394", "Bilant"),
 }
 
 
