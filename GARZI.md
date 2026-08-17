@@ -3124,3 +3124,9 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Ce face imposibil:** existenta_firma_an sa ignore d301_operatiuni / casa_operatiuni / extras_linii intr-un an cu operatiuni datate (ar contrazice restanta D301 pe acelasi ecran, Regula 14 pct.2).
 - **Mutatie proba:** pe cod vechi (doar facturi/salariati/note) `test_d301_operatiuni_e_activitate_demonstrabila` pica (existenta 2026 = False cu 1 d301 op, 0 facturi); dupa fix = True. Rulat RED prin pytest inainte de reparatie.
 - **RAMAS (limita declarata):** euristica e la granularitate de AN, nu de trimestru — o firma cu activitate doar in T2 arata si restanta D100 T1 (nu suprimata). Pre-existent, nu introdus de fix.
+
+## Fronturi deschise audit tenant_006 (18.08.2026) — vezi PREDARE_LANT.md
+
+- **A11Y CONTRAST Control fiscal (NEreparat, gata de atacat):** axe = 17 violari color-contrast (serious), 2 tokeni pe panoul #e9edf3: `--albastru #347ab8` (coduri declaratii `.mig-sold-cont`, 3.87:1) + `--gri-semafor #9aa3b2` (`.cf-incr-temei`, 2.16:1). Tinte verificate: #2f6fa6 (4.53) blue scoped, #5c6675 (4.95) gri. Ecranul Control fiscal NU era in auditul a11y tenant_005 (dashboard/vector/salariati). Plus axe "region" 17.
+- **D390 ignora d301_operatiuni (DECIZIE CERUTA):** d390.genereaza refuza "pe zero" desi exista achizitie IC in d301_operatiuni; D390 citeste facturi, nu d301 (acelasi tipar ca existenta). Latent (D390 gri cat timp art.317 nemarcat). Cere temei (relatia D301<->D390 la neinregistratii art.316) + scenariu art.317=da.
+- **D100 pe zero (OBSERVATIE, pre-existent universal):** micro fara venituri vede D100 restanta pe semafor dar generatorul refuza "pe zero". Comun tuturor micro (tenant_002/003), nu introdus de fix-ul existenta. Relatia semafor<->generator pe zero = de clarificat.
