@@ -248,6 +248,51 @@ def test_validatori_import_cu_diacritice():
 
 
 # ==========================================================================
+# GARD DE DIACRITICE PE GENERATOARELE DE DECLARATII (audit tenant_005, 17.08.2026)
+# Mesajele de blocaj/avertisment ale generatoarelor (raise -> pasul 2 in rosu, res.avertismente ->
+# warning) se AFISEAZA contabilului -> cu diacritice. Clasa e SISTEMICA (~50 fisiere d100-d710, ~330
+# mesaje - backlog in GARZI); lista de mai jos creste pe masura ce se curata cate un fisier. d205
+# curatat integral 17.08 (parcurgere Front D).
+_GEN_DECLARATII = (
+    "core/d205.py",
+)
+
+
+def _flagate_declaratii():
+    import os, re as _re3
+    _SQL = _re3.compile(r"\b(SELECT|INSERT|UPDATE|DELETE|CREATE|VALUES|WHERE|FROM|JOIN)\b")
+    out = []
+    for fn in _GEN_DECLARATII:
+        if not os.path.exists(fn):
+            continue
+        tree = ast.parse(open(fn, encoding="utf-8").read())
+        doc = {id(x.value) for x in ast.walk(tree)
+               if isinstance(x, ast.Expr) and isinstance(x.value, ast.Constant)
+               and isinstance(x.value.value, str)}
+        for n in ast.walk(tree):
+            if isinstance(n, ast.Constant) and isinstance(n.value, str) and id(n) not in doc:
+                v = n.value
+                if "<" in v or ">" in v or "=\"" in v or _SQL.search(v):
+                    continue  # tag/atribut XML sau SQL, nu mesaj afisat
+                h = flag(v)
+                if h and v not in _BASELINE:
+                    out.append((fn, n.lineno, v, h))
+    return out
+
+
+def test_generatoare_declaratii_cu_diacritice():
+    """Generatoarele de declaratii din _GEN_DECLARATII (curatate) nu mai au mesaje-proza fara diacritice.
+    Clasa e sistemica (backlog GARZI); lista creste pe masura ce se curata. RED-probat pe d205."""
+    if not glob.glob("core/*.py"):
+        pytest.skip("core/*.py absent")
+    fl = _flagate_declaratii()
+    raport = "\n".join("  %s:%d  %r  <- lipsesc diacritice pe [%s]" % (fn, ln, s, ",".join(h))
+                       for fn, ln, s, h in fl)
+    assert not fl, ("Mesaj(e) de generator declaratii fara diacritice (text afisat -> cu diacritice):\n" + raport)
+
+
+# ==========================================================================
+# ==========================================================================
 # GARD DE DIACRITICE PE FRONTEND (static/js/**/*.js) — extensie #4 (Costin).
 # ==========================================================================
 # Motiv: pana acum gardul scana DOAR core/*.py + main.py (roluri AST). Textul

@@ -151,6 +151,10 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
     TEMEI: CF art.77 (deducere personala), art.146 alin.(5^6)/(5^7) (contributia minima / exceptari
     suprataxare), OUG 89/2025 art.III (facilitate salariu minim); cotele CAS/CASS/impozit/CAM din
     common.COTE (CF art.138/156/78/220^1). nivel_sursa: REDARE.
+    NB constructii/agricultura/alimentar: facilitatea sectoriala (scutire impozit art.60 pct.5,
+    CAS redus art.138^1) NU se aplica - art.60 pct.5 si art.60^1 ABROGATE de la 01-01-2025 prin
+    OUG 156/2024 pct.7-8 art.LXIV (MO 1334/31.12.2024). Din 2025 salariatul din constructii se
+    trateaza standard (cote intregi). De aceea NU exista ramura de CAEN aici. nivel_sursa: MO.
     """
     b = _dec(brut)
     sm, temei_sm = c.salariu_minim_luna(la_data)  # [#12] art.77(3)

@@ -791,6 +791,7 @@ async function ecranSalariati(corp, nav, t) {
           <button class="buton-secundar" data-iban="${s.id}" data-val="${esc(s.iban || "")}" data-nume="${esc(s.nume)}">IBAN ${s.iban ? "✓" : "⚠"}</button>
           <button class="buton-secundar" data-cor="${s.id}" data-val="${esc(s.cor || "")}" data-nume="${esc(s.nume)}">COR ${s.cor ? "✓" : "⚠"}</button>
           <button class="buton-secundar" data-incet="${s.id}" data-val="${esc(s.data_incetare || "")}" data-nume="${esc(s.nume)}">${s.data_incetare ? "Plecat " + s.data_incetare : "Încetare"}</button>
+          <button class="buton-secundar" data-date="${s.id}" data-dnume="${esc(s.nume_ed || "")}" data-dpren="${esc(s.prenume_ed || "")}" data-dcnp="${esc(s.cnp || "")}" data-dang="${esc(s.data_angajare || "")}" data-dnorma="${esc(s.tip_norma || "")}" data-dorezi="${esc(s.ore_zi == null ? "" : String(s.ore_zi))}">Corectează datele</button>
           </div>
         </div>`).join("");
     corp.innerHTML = `
@@ -812,6 +813,7 @@ async function ecranSalariati(corp, nav, t) {
       <div id="sp-cor-zona"></div>
       <div id="sp-incet-zona"></div>
       <div id="sp-salariu-zona"></div>
+      <div id="sp-date-zona"></div>
       ${!areIban ? `<div class="caseta-info"><span class="ci-mesaj">Fișierul de plată pe card (SEPA) e indisponibil: niciun salariat nu are IBAN completat. Adaugă IBAN-ul cu butonul „IBAN ⚠" de pe salariat.</span></div>` : ""}
       ${!regesOk ? `<div class="caseta-info"><span class="ci-mesaj">„Răspunsuri REGES" e indisponibil: cheile REGES nu sunt configurate încă. Configurează-le cu butonul „Chei REGES".</span></div>` : ""}
       ${pontajNeconf ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">●</span> Pontajul lunii ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} nu e confirmat — informativ; tichetele de masă rămân blocate până la confirmarea pontajului (buton „Pontaj" pe salariat).</div></div>` : ""}
@@ -1048,6 +1050,54 @@ async function ecranSalariati(corp, nav, t) {
           await api.put(`/tenants/${t.id}/salariati/${sid}`, { data_incetare });
           zonaIncet.innerHTML = ""; deseneaza();
         } catch (e) { arataMesaj(corp.querySelector("#incet-msg"), (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
+      });
+    }));
+    // [front_e] corectarea datelor de identitate/contract (nume/prenume/CNP/data angajare/norma).
+    // Backend-ul (SalariatEdit + _CAMPURI_API) le accepta deja; UI-ul nu le cabla -> o eroare de tastare
+    // in nume/CNP nu se putea corecta din UI (MEMORY §13). CNP validat client-side (checksum) inainte de PUT.
+    const zonaDate = corp.querySelector("#sp-date-zona");
+    const cnpValid = (c) => {
+      if (!/^\d{13}$/.test(c)) return false;
+      const w = [2,7,9,1,4,6,3,5,8,2,7,9]; let sm = 0;
+      for (let i = 0; i < 12; i++) sm += (+c[i]) * w[i];
+      let ctrl = sm % 11; if (ctrl === 10) ctrl = 1;
+      return ctrl === (+c[12]);
+    };
+    corp.querySelectorAll("[data-date]").forEach((b) => b.addEventListener("click", () => {
+      const sid = b.dataset.date;
+      const norma = b.dataset.dnorma || "intreaga";
+      zonaDate.innerHTML = `<div style="margin:10px 0;padding:12px;border:1px solid var(--linie);border-radius:var(--raza)">
+        <div class="camp-eticheta" style="font-weight:600;margin-bottom:8px">Corectează datele salariatului</div>
+        <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:8px">
+          <label class="camp"><span class="camp-eticheta">Nume</span><input id="ed-nume" class="camp-input" value="${esc(b.dataset.dnume)}"></label>
+          <label class="camp"><span class="camp-eticheta">Prenume</span><input id="ed-pren" class="camp-input" value="${esc(b.dataset.dpren)}"></label>
+          <label class="camp"><span class="camp-eticheta">CNP</span><input id="ed-cnp" class="camp-input" inputmode="numeric" maxlength="13" value="${esc(b.dataset.dcnp)}"></label>
+          <label class="camp"><span class="camp-eticheta">Data angajării</span><input type="date" id="ed-ang" class="camp-input" value="${esc(b.dataset.dang)}"></label>
+          <label class="camp"><span class="camp-eticheta">Normă</span><select id="ed-norma" class="camp-input">
+            <option value="intreaga" ${norma === "intreaga" ? "selected" : ""}>Întreagă (8h)</option>
+            <option value="partiala" ${norma === "partiala" ? "selected" : ""}>Parțială</option></select></label>
+          <label class="camp"><span class="camp-eticheta">Ore/zi</span><input type="number" min="1" max="8" step="0.5" id="ed-orezi" class="camp-input" value="${esc(b.dataset.dorezi)}"></label>
+        </div>
+        <div class="camp-eticheta" style="color:var(--gri);margin-top:6px">Corectarea acestor date NU modifică declarațiile deja depuse. CNP-ul se validează la salvare.</div>
+        <p style="margin-top:8px"><button class="buton-primar" id="ed-save">Salvează</button>
+          <button class="buton-secundar" id="ed-cancel" style="margin-left:6px">Renunță</button></p>
+        <div id="ed-msg"></div></div>`;
+      corp.querySelector("#ed-nume").focus();
+      corp.querySelector("#ed-cancel").addEventListener("click", () => { zonaDate.innerHTML = ""; });
+      corp.querySelector("#ed-save").addEventListener("click", async () => {
+        const msg = corp.querySelector("#ed-msg");
+        const nume = corp.querySelector("#ed-nume").value.trim();
+        const prenume = corp.querySelector("#ed-pren").value.trim();
+        const cnp = corp.querySelector("#ed-cnp").value.trim();
+        const data_angajare = corp.querySelector("#ed-ang").value || null;
+        const tip_norma = corp.querySelector("#ed-norma").value;
+        const ore_zi = Number(corp.querySelector("#ed-orezi").value) || null;
+        if (!nume) { arataMesaj(msg, "Numele e obligatoriu.", "eroare"); return; }
+        if (!cnpValid(cnp)) { arataMesaj(msg, "CNP invalid (13 cifre, cifră de control greșită).", "eroare"); return; }
+        try {
+          await api.put(`/tenants/${t.id}/salariati/${sid}`, { nume, prenume, cnp, data_angajare, tip_norma, ore_zi });
+          zonaDate.innerHTML = ""; deseneaza();
+        } catch (e) { arataMesaj(msg, (e && e.mesaj) || "Eroare la salvare.", "eroare"); }
       });
     }));
     // [F137] cod ocupatie COR: lookup din nomenclator, editabil pe rand (necesar REGES)

@@ -47,7 +47,7 @@ DIVIDENDE (tip_venit1=08) validatorul oficial admite DOAR Rezid=1 (DUK regula R3
 permis doar pentru tip_venit1 in (04,16,18,25,26,27,28,29,30)); dividendele catre nerezidenti
 se declara pe D207, nu pe D205. Un beneficiar nerezident de dividende e REFUZAT la generare.
 statR/cifS raman goale pentru rezidenti (cifS=null la Rezid=1); pentru un nerezident structura
-cere Stat_R (DUK regula R33), camp inexistent in tabelul `asociati` (vezi build_xml).
+cere Stat_R (DUK regula R33), camp inexistent în tabelul `asociati` (vezi build_xml).
 """
 from __future__ import annotations
 
@@ -163,22 +163,22 @@ def erori_generare(prof):
 def build_xml(res):
     prof = res.prof
     if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
-        res.avertismente.append("D205: declarantul (nume/functie) lipseste din profil -> emis implicit "
-                                "\"ADMINISTRATOR\". Completeaza declarantul in Date firma.")
+        res.avertismente.append("D205: declarantul (nume/funcție) lipsește din profil -> emis implicit "
+                                "\"ADMINISTRATOR\". Completează declarantul în Date firmă.")
     if not res.beneficiari:
-        raise ValueError("D205 fara niciun beneficiar de venit - nu se genereaza "
-                         "declaratie fara continut.")
+        raise ValueError("D205 fără niciun beneficiar de venit - nu se generează "
+                         "declarație fără conținut.")
 
     # c2 (T1 - CATALOG_INVALIDITATE.md): CUI platitor pre-validat pe CIFRA DE CONTROL, nu doar
     # non-gol (erori_generare verifica doar non-gol). Un CUI cu control gresit / lungime gresita
-    # era emis TACIT si respins abia de DUK (atribut "cui: CUI invalid"; structura ANAF rand 9
+    # era emis TACIT si respins abia de DUK (atribut "cui: CUI invalid"; structura ANAF rând 9
     # "Verificare cui" -> "ERR - CIF platitor de venit invalid"). valideaza_cui = validatorul
     # canonic OFFLINE (core.identitate), refolosit read-only.
     _ok_cui, _motiv_cui = valideaza_cui(prof.get("cui"))
     if not _ok_cui:
         raise ValueError(
-            "D205: CUI platitor %s invalid (%s) - se corecteaza, nu se emite declaratie respinsa "
-            "de ANAF (validarea DUK de atribut 'cui: CUI invalid'; structura ANAF rand 9 "
+            "D205: CUI plătitor %s invalid (%s) - se corectează, nu se emite declarație respinsă "
+            "de ANAF (validarea DUK de atribut 'cui: CUI invalid'; structura ANAF rând 9 "
             "'Verificare cui')." % (
                 "".join(ch for ch in str(prof.get("cui") or "") if ch.isdigit()) or "-", _motiv_cui))
 
@@ -190,27 +190,27 @@ def build_xml(res):
     for b in res.beneficiari:
         if not any(ch.isdigit() for ch in (b.cif or "")):
             raise ValueError(
-                "D205: beneficiarul %r are CNP/NIF (cifR) necompletat - camp "
-                "obligatoriu N(13) in structura ANAF; declaratia ar fi respinsa "
+                "D205: beneficiarul %r are CNP/NIF (cifR) necompletat - câmp "
+                "obligatoriu N(13) în structura ANAF; declarația ar fi respinsă "
                 "de validator." % (b.nume1 or "necunoscut"))
         if not (b.nume1 or "").strip():
             raise ValueError(
                 "D205: beneficiarul cu CNP %s are numele (den1) necompletat - "
-                "camp obligatoriu in structura ANAF."
+                "câmp obligatoriu în structura ANAF."
                 % "".join(ch for ch in b.cif if ch.isdigit()))
         # Rezid (rand 32) DERIVAT din identitate, NU hardcodat "1". Pentru dividende
         # (tip_venit1=08) validatorul admite DOAR Rezid=1 (DUK regula R32: Rezid=2 e permis
         # doar pentru tip_venit1 in (04,16,18,25,26,27,28,29,30)). Un beneficiar de dividende
         # fara CNP romanesc valid = nerezident -> se declara pe D207, NU pe D205. In plus,
-        # DUK regula R33 cere Stat_R pentru Rezid=2 (camp inexistent in tabelul `asociati`).
+        # DUK regula R33 cere Stat_R pentru Rezid=2 (camp inexistent în tabelul `asociati`).
         b.rezid = _rezid(b.cif)
         if b.rezid != "1":
             raise ValueError(
-                "D205: beneficiarul %r (CNP/NIF %s) nu are CNP romanesc valid = NEREZIDENT "
-                "(Rezid=2). Dividendele (tip_venit1=08) catre nerezidenti NU se declara pe D205 "
-                "(DUK regula R32 admite Rezid=2 doar pt. tip_venit1 in 04,16,18,25-30); se "
-                "declara pe D207. In plus DUK regula R33 cere Stat_R (statul de rezidenta), camp "
-                "inexistent in tabelul `asociati`." % (
+                "D205: beneficiarul %r (CNP/NIF %s) nu are CNP românesc valid = NEREZIDENT "
+                "(Rezid=2). Dividendele (tip_venit1=08) către nerezidenți NU se declară pe D205 "
+                "(DUK regula R32 admite Rezid=2 doar pt. tip_venit1 în 04,16,18,25-30); se "
+                "declară pe D207. În plus DUK regula R33 cere Stat_R (statul de rezidență), câmp "
+                "inexistent în tabelul `asociati`." % (
                     b.nume1 or "necunoscut",
                     "".join(ch for ch in (b.cif or "") if ch.isdigit()) or "-"))
 
@@ -222,8 +222,8 @@ def build_xml(res):
         _ok_cnp, _motiv_cnp = valideaza_cnp("".join(ch for ch in (b.cif or "") if ch.isdigit()))
         if not _ok_cnp:
             raise ValueError(
-                "D205: beneficiarul %s are CNP invalid (%s: %s) - se corecteaza, nu se emite "
-                "declaratie respinsa de ANAF (DUK regula R29)." % (
+                "D205: beneficiarul %s are CNP invalid (%s: %s) - se corectează, nu se emite "
+                "declarație respinsă de ANAF (DUK regula R29)." % (
                     b.nume1 or "necunoscut",
                     "".join(ch for ch in (b.cif or "") if ch.isdigit()), _motiv_cnp))
 
@@ -238,7 +238,7 @@ def build_xml(res):
         if _cheie_cifr in _cifr_vazute:
             raise ValueError(
                 "D205: beneficiarul cu CNP %s apare de 2 ori - (tip_venit1+CNP) trebuie unic "
-                "(DUK regula R41b). Comaseaza sau corecteaza." % _cheie_cifr)
+                "(DUK regula R41b). Comasează sau corectează." % _cheie_cifr)
         _cifr_vazute.add(_cheie_cifr)
 
     # Tcastig/Tpierd, conform formulei oficiale, se calculeaza DOAR din

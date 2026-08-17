@@ -43,7 +43,7 @@ def test_cui_checksum_gresit_refuzat():
     with pytest.raises(ValueError) as ei:
         build_xml(res)
     msg = str(ei.value)
-    assert "CUI platitor" in msg
+    assert "CUI plătitor" in msg
     assert CUI_BAD_CTRL in msg
     assert "cifra de control" in msg
     assert "cui: CUI invalid" in msg

@@ -15,6 +15,6 @@ def test_toate_declaratiile_avertizeaza_declarant_lipsa():
     lipsa = []
     for d, path in _DECL.items():
         src = io.open(path, encoding="utf-8").read()
-        if not ("declarantul" in src and "lipseste din profil" in src):
+        if not ("declarantul" in src and ("lipseste din profil" in src or "lipsește din profil" in src)):
             lipsa.append(d)
     assert not lipsa, ("declaratii care fabrica TACIT declarantul (fara avertisment cand lipseste): %s" % lipsa)

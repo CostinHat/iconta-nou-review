@@ -17,7 +17,7 @@ def stat_plata(conn, schema, an, luna):
     ref = date(an, luna, 1)
     with conn.cursor() as cur:
         cur.execute(f"""
-            SELECT id, nume, prenume, salariu_brut, persoane_intretinere, part_time, ore_zi,
+            SELECT id, nume, prenume, cnp, salariu_brut, persoane_intretinere, part_time, ore_zi,
                    tichet_masa_valoare, iban, cor, data_angajare, data_incetare,
                    data_nastere, copii_scolarizati, declaratie_copii
             FROM {schema}.salariati
@@ -49,7 +49,7 @@ def stat_plata(conn, schema, an, luna):
     # [#1/#3] pontajul lunii confirmat? o singura interogare (nu per-salariat).
     _pontaj_confirmat = _per.e_confirmat(conn, schema, an, luna, "pontaj")["confirmat"]
     _cs_sal = conn.cursor()
-    for (sid, nume, prenume, brut, pers, part_time, ore_zi, tichet_val, iban, cor, data_ang, data_inc,
+    for (sid, nume, prenume, cnp, brut, pers, part_time, ore_zi, tichet_val, iban, cor, data_ang, data_inc,
          data_nastere, copii_scolarizati, declaratie_copii) in randuri:
         brut = _si.salariu_la(_cs_sal, schema, sid, _ultima_luna)  # salariul contractual din istoric
         _zlm, _zll = _si.zile_la_minim(_cs_sal, schema, sid, an, luna, data_ang, data_inc)
@@ -100,6 +100,10 @@ def stat_plata(conn, schema, an, luna):
         stat.append({
             "id": sid,
             "nume": f"{nume or ''} {prenume or ''}".strip(),
+            # [front_e] campuri de identitate/contract pt corectie din UI (backend le accepta deja via SalariatEdit)
+            "nume_ed": nume, "prenume_ed": prenume, "cnp": cnp,
+            "tip_norma": ("partiala" if part_time else "intreaga"),
+            "data_angajare": data_ang.isoformat() if data_ang else None, "ore_zi": ore_zi,
             "brut": float(calc["brut"]), "cas": float(calc["cas"]),
             "cass": float(calc["cass"]), "impozit": float(calc["impozit"]),
             "deducere": float(calc["deducere"]["total"]),
