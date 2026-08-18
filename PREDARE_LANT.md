@@ -20,10 +20,16 @@ pe toast); scan_region_all.py = 0 pe dashboard + 5 ECRANE; gard core/test_a11y_l
 backup-copie). (2) D406 731-738 verificat la sursa (nomenclatorul ANAF) = excludere CORECTA din norma A
 (731-738 sunt in planul ONG, nu in bal_soc_com); gard test_conturi_ong_731_738_norma_specifica (ambele laturi).
 
-COMANDA DE REPORNIRE (gata de dat): "Continua auditul tenant_006. Fronturi ramase: import 8 straturi neprovocate
-(provoaca fiecare blocaj/refuz/camp obligatoriu si citeste mesajul - Regula 14.4); vizual/mobil Pixel5 pe restul
-ecranelor tenant_006 (axe + baseline). Metoda Regula 13+14: captura privita + axe/mobil pe fiecare ecran atins,
-reparand, gard RED-probat."
+GATA (18.08.2026, commit dc1ee22): (3) mobil/touch-target AA 2.5.8 pe cele 5 ecrane -> 0 tinte <24px
+(.fir-veriga 19->24, .ajutor-btn 20->24, flex-shrink:0 pe controale copil-direct in .fer-larg; bug #pc-cauta
+40->20px reparat); gard test_a11y_touch_target. (4) IMPORT: tiparul "motiv de refuz livrat DOAR prin title"
+(pierdut pe touch) reparat pe 4 straturi (salariati/asociati CNP, mijloace fixe, istoric) -> motiv VIZIBIL
+(span.mig-motiv); probat live tenant_006 (salariati bad_sal.csv); gard test_import_motiv_vizibil.
+
+COMANDA DE REPORNIRE (gata de dat): "Continua auditul tenant_006. RAMAS: provoaca INDIVIDUAL straturile de import
+inca neprobate cap-coada - firme (CUI la ANAF), vector_fiscal, solduri_parteneri (cont nepartener / CUI invalid),
+plan_conturi (adauga cont: simbol/denumire gol/duplicat) - cu date GRESITE, citind mesajul rendat (limba
+contabilului, camp marcat, fara nume interne, obligativitate inainte de buton - Regula 14.4). Metoda Regula 13+14."
 
 **GATA: d710** - formular "Obligatii corectate" (cod 121 micro/103 profit, suma initiala/corecta, cota la micro),
 obligatii in memorie -> body, refuz-pe-gol, gard test_d710_formular, CSV F192->LIVE. Model: declaratii.js::randeazaFormularD710.
@@ -150,8 +156,11 @@ marcate "✓ furnizor confirmat local" (derivat din confirmarile existente, fara
 ## RAMAS deschis (fronturi pt urmatoarea tura)
 - [INCHIS 18.08 commit 0392b3b] axe region/landmarks app-wide -> 0 (fix structural navigator.js + gard test_a11y_landmarks).
 - [INCHIS 18.08 commit 0392b3b] D406 731-738: verificat la sursa = excludere CORECTA din norma A (sunt in planul ONG); gard intarit.
-- Import: provocate salariati+solduri (curat); restul 8 straturi neprovocate in aceste ture.
-- Vizual/mobil (Pixel 5): rulat pe Control fiscal + shell-ul (landmarks); restul ecranelor tenant_006 neanalizate pe telefon.
+- [PARTIAL 18.08 commit dc1ee22] Import: reparat tiparul motiv-title-only pe 4 straturi (salariati/asociati/mijloace/istoric)
+  -> motiv vizibil, probat live salariati. RAMAS de provocat individual: firme (CUI ANAF), vector_fiscal,
+  solduri_parteneri (cont nepartener/CUI), plan_conturi (adauga cont gol/duplicat).
+- [INCHIS 18.08 commit dc1ee22] Vizual/mobil (Pixel5): 5 ecrane (import mf, vector, plan conturi, stat plata, declaratii)
+  -> 0 tinte <24px (AA 2.5.8), fara revarsare/hover-loss. RAMAS: casa/banca, facturi, produse neanalizate pe telefon.
 
 ## LIVRAT (tura asta, commit 288f886)
 existenta_firma_an (control_incrucisat.py) numara acum orice operatiune datata: d301_operatiuni (achizitii IC),
