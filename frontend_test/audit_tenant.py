@@ -44,6 +44,24 @@ def _valideaza_xsd(xml_str, xsd_path):
     except Exception as ex:
         return None, str(ex)[:120]
 
+def _mint_token(email):
+    """Token server-side pentru un user (ca wt006) - permite rularea pe ORICE cabinet, nu doar fe_test."""
+    from core import db, auth_api
+    import psycopg2.extras as _E
+    try:
+        db.init_pool()
+    except Exception:
+        pass
+    with db.get_conn() as conn:
+        with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+            cur.execute("SELECT u.*, af.nume AS nume_firma FROM public.users u "
+                        "LEFT JOIN public.accounting_firms af ON af.id=u.accounting_firm_id WHERE u.email=%s", (email,))
+            u = cur.fetchone()
+    if not u:
+        return None, None
+    u = dict(u)
+    return auth_api.emite_token(u), u
+
 CFG = {}
 for ln in open(os.path.expanduser("~/.iconta/fe_test.env")):
     ln = ln.strip()
@@ -92,11 +110,12 @@ class Raport:
 
 def _perioada_body(tip, per, an, luna):
     b = {"an": an}
+    if luna:
+        b["luna"] = luna  # D406 (SAF-T) cere an+luna chiar si la trimestrial; ceilalti ignora ce nu folosesc
     if per == "lunar":
         b["luna"] = luna or 12
     elif per == "trimestrial":
         b["trim"] = ((int(luna or 12) - 1) // 3) + 1
-    # anual: doar an
     return b
 
 
@@ -261,12 +280,19 @@ def main():
     tid = int(args[0])
     fara_vizual = "--fara-vizual" in sys.argv
 
-    d, err = call("/auth/login", {"email": CFG["FE_TEST_EMAIL"], "parola": CFG["FE_TEST_PAROLA"]})
-    if err:
-        print("login esuat:", err)
-        sys.exit(2)
-    tok = d["token"]
-    user = d["user"]
+    _uemail = None
+    for a in sys.argv[1:]:
+        if a.startswith("--user="):
+            _uemail = a.split("=", 1)[1]
+    if _uemail:
+        tok, user = _mint_token(_uemail)
+        if not tok:
+            print("user %r negasit" % _uemail); sys.exit(2)
+    else:
+        d, err = call("/auth/login", {"email": CFG["FE_TEST_EMAIL"], "parola": CFG["FE_TEST_PAROLA"]})
+        if err:
+            print("login esuat:", err); sys.exit(2)
+        tok = d["token"]; user = d["user"]
     tn, e = call("/tenants", tok=tok)
     firma = next((t for t in (tn or {}).get("tenants", []) if t.get("id") == tid), None)
     if not firma:
