@@ -3159,3 +3159,8 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Ce face imposibil:** o cale (generator sau reconciliere) sa ignore d301 sau sa driftreze maparea -> gardul de reconciliere ar bloca fals, sau achizitia ar disparea din D390.
 - **Mutatie proba:** _D301_TIP_COD 1->S in reconciliere -> cele doua cai difera -> test_cele_doua_cai_coincid pica.
 - **RAMAS:** tip 2/4 excluse din auto-derivare (clasificare manuala); codul TVA furnizor validat de checksum_vies la generare (cod invalid -> DUK R24.1). axe region landmarks; D406 731-738.
+
+## tip 3 -> cod A verificat + avertisment d301 rafinat (18.08.2026)
+- **Gard:** `core/test_d390_autoderivare.py::test_achizitii_d301_numara_doar_mapabile_fara_tara` + test_mapare (tip 3 -> A).
+- **Ce face imposibil:** achizitii_d301 sa numere tip 2/4 (avertisment fals "lipseste tara") sau sa scape tip 1/3/5 fara tara.
+- **Temei verificat:** OPANAF 394/2017 anexa 2 - cod A = achizitii IC de bunuri fara excludere accizabile; DUK valid pe tip 3 (bazaA) si tip 5 (bazaS).

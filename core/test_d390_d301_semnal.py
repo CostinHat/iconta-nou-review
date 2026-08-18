@@ -42,7 +42,7 @@ def test_achizitii_d301_numara_perioada():
         with conn.cursor() as c:
             c.execute('DROP SCHEMA IF EXISTS "%s" CASCADE' % SCH)
             c.execute('CREATE SCHEMA "%s"' % SCH)
-            c.execute('CREATE TABLE "%s".d301_operatiuni (id serial, an int, luna int, tip int)' % SCH)
+            c.execute('CREATE TABLE "%s".d301_operatiuni (id serial, an int, luna int, tip int, partener_tara varchar(2))' % SCH)
             c.execute('INSERT INTO "%s".d301_operatiuni (an, luna, tip) VALUES (2026, 6, 1)' % SCH)
     try:
         with db.get_conn() as conn:

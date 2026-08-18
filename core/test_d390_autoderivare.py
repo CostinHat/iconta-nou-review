@@ -90,3 +90,19 @@ def test_cele_doua_cai_coincid(schema_d301):
         r = sorted((o["tip"], o["tara"], o["cod"], o["baza"]) for o in _pull_d301(conn, SCH, 2026, 6))
     assert g == r, "generatorul si reconcilierea difera pe d301: %s vs %s" % (g, r)
     assert len(g) == 2, "operatiunea fara tara nu trebuie sa formeze linie: %s" % g
+
+
+def test_achizitii_d301_numara_doar_mapabile_fara_tara(schema_d301):
+    """[refinare tip 2/4] achizitii_d301 (folosit la refuzul-pe-zero) numara DOAR operatiunile care AR TREBUI
+    in D390 dar nu au aparut: tip 1/3/5 FARA tara. tip 2/4 (nu intra in D390) NU se numara nici cu tara -
+    altfel avertismentul ar spune fals 'lipseste tara' pt o operatiune care nu apartine D390."""
+    db = schema_d301
+    from core.d390 import achizitii_d301
+    _ins(db, 1, 100, 5, "")      # bunuri fara tara -> numarat
+    _ins(db, 3, 100, 5, "")      # accizabile fara tara -> numarat
+    _ins(db, 5, 100, 5, "")      # servicii fara tara -> numarat
+    _ins(db, 2, 100, 5, "DE")    # transport CU tara -> NU (nu intra in D390)
+    _ins(db, 4, 100, 5, "DE")    # mixt CU tara -> NU
+    _ins(db, 1, 100, 5, "DE")    # bunuri CU tara -> NU (a intrat deja in D390)
+    with db.get_conn() as conn:
+        assert achizitii_d301(conn, SCH, 2026, 6) == 3, "numara doar tip 1/3/5 fara tara"

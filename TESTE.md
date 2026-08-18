@@ -1719,3 +1719,5 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
 `core/test_d390_d301_semnal.py` (2 teste: achizitii_d301 temp-schema + mesaj refuz tenant_006). Mutatie-probat RED. D390 producibil manual -> XML valid probat (rollback). 19 passed d390.
 ## Bifa 18.08.2026 — auto-derivare d301->D390 cod A/S (audit tenant_006, decizia Costin)
 `core/test_d390_autoderivare.py` (mapare tip->cod + filtru tara; generator==reconciliere, mutatie-probat). Migrare `core/migrare_d301_partener` (19/19 scheme, test_audit_schema verde). D390 auto-derivat DUK valid probat. 103 passed regresie.
+## Bifa 18.08.2026 — tip 3 -> cod A (sursa+DUK) + avertisment d301 rafinat
+`test_d390_autoderivare.py` + fix schema temporara `test_d390_d301_semnal.py` (coloana partener_tara). tip 3 DUK valid (bazaA), tip 5 (bazaS). achizitii_d301 numara doar tip 1/3/5 fara tara. 116 passed d390.

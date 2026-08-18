@@ -9546,3 +9546,11 @@ preexistent d301/d390, extins la TOATE (d100/d101/d205/d112/d300/bilant). declar
 **Temei.** art.325 CF + OPANAF 705/2020 (D390 art.316/317). Maparea tip D301 (OPANAF 592/2016) -> cod D390 (bunuri->A, servicii->S) la sursa.
 
 **Proba.** tenant_006 op tip 1 cu furnizor DE (129273398) -> D390 auto-derivat, DUK VALID (baza 52261, cod A, codO in XML). Captura privita ecran D301 (campuri furnizor + indicator "⚠ fara furnizor — nu intra in D390 (cod A)"). Gard: cele doua cai (generator + reconciliere) coincid (mutatie mapare -> divergenta). 103 passed regresie (d390/d301/reconciliere/control/audit_schema).
+
+## 18.08.2026 — tip 3 (produse accizabile) -> D390 cod A: VERIFICAT sursa+DUK + rafinare avertisment
+
+**Verificare (Regula 5).** OPANAF 394/2017 anexa 2 (instructiunile D390 citate de aplicatie), coloana "Tipul operatiunii": cod A = "achizitii intracomunitare de bunuri" - TOATE achizitiile IC de bunuri (art.308 CF), FARA excludere pentru produse accizabile. Produsele accizabile SUNT bunuri -> tip 3 -> cod A CORECT. Confirmat la DUK: op tip 3 cu furnizor DE -> `<operatie tip="A" ...>`, rezumat bazaA populat, DUK VALID. Simetric: tip 5 -> `tip="S"`, bazaS, DUK valid.
+
+**Rafinare avertisment (defect adiacent gasit).** achizitii_d301 (folosit la refuzul-pe-zero) numara acum DOAR tipurile auto-derivabile (1/3/5) FARA tara - operatiunile care AR TREBUI in D390 dar nu au aparut. tip 2 (transport nou) / tip 4 (art.307 mixt) NU se numara nici cu tara: nu intra in D390 nici asa, deci a spune "lipseste tara" ar fi fals. Inainte: tip 2 cu tara declansa fals "completeaza tara furnizorului".
+
+**Proba.** tip 2/4 cu tara -> mesaj GENERIC (D390 pe zero legitim); tip 1/3/5 fara tara -> mesaj care semnaleaza d301. Gard test_achizitii_d301_numara_doar_mapabile_fara_tara (tip 2/4 cu tara + tip 1/3/5 fara tara -> count 3). 116 passed regresie d390.

@@ -474,16 +474,19 @@ def pull_reclasificari(conn, schema, an, luna):
 
 
 def achizitii_d301(conn, schema, an, luna):
-    """[front D390<->d301, audit tenant_006 18.08.2026] Cate operatiuni IC sunt inregistrate in
-    d301_operatiuni pentru perioada (din ecranul D301). Auto-derivarea (operatiuni_din_d301) le aduce in
-    D390 pe cele cu FURNIZOR completat (tara); acest count e folosit la refuzul-pe-zero: daca D390 e pe zero
-    DAR d301 are operatiuni, inseamna ca le lipseste tara furnizorului -> indrumam spre completare (nu 'nu ai
-    operatiuni', Regula 4). Tabela poate lipsi (partida simpla)."""
+    """[front D390<->d301, audit tenant_006 18.08.2026] Cate operatiuni D301 AR TREBUI sa apara in D390 dar NU
+    au aparut fiindca le lipseste tara furnizorului. Numara DOAR tipurile auto-derivabile (1/3->A, 5->S) FARA
+    tara - exact cazul care justifica refuzul-pe-zero cu indrumare spre completarea furnizorului (Regula 4).
+    Tipurile 2 (transport nou) / 4 (art.307 mixt) NU se numara: ele nu intra in D390 nici cu tara, deci nu sunt
+    'lipsa' din D390 - a le semnala 'lipseste tara' ar fi fals. Tabela/coloana poate lipsi -> 0."""
+    if conn is None:
+        return 0
     with conn.cursor() as cur:
         cur.execute("SELECT to_regclass(%s)", (schema + ".d301_operatiuni",))
         if not cur.fetchone()[0]:
             return 0
-        cur.execute(f"SELECT count(*) FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s", (an, luna))
+        cur.execute(f"SELECT count(*) FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s "
+                    f"AND tip IN (1, 3, 5) AND coalesce(partener_tara, '') = ''", (an, luna))
         return cur.fetchone()[0]
 
 

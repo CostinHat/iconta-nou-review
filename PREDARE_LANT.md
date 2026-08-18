@@ -55,6 +55,9 @@ Costin a cerut construirea (peste recomandarea executorului). Livrat: migrare DB
 scheme) + ecran D301 cu 3 campuri furnizor + indicator grila + generator d390.operatiuni_din_d301 (tip 1/3->A, 5->S;
 2/4 excluse) + reconciliere a-doua-cale _pull_d301. Proba: tenant_006 op cu furnizor DE -> D390 auto-derivat DUK VALID
 (cod A, baza 52261); captura privita ecran D301. Gard mutatie-probat (cele doua cai coincid). DS v2.45.
+tip 3 (accizabile) -> cod A VERIFICAT la sursa (OPANAF 394/2017 anexa 2: cod A = achizitii IC de bunuri, fara
+excludere accizabile) + DUK (bazaA); tip 5 -> cod S DUK (bazaS). Rafinare: achizitii_d301 numara doar tip 1/3/5
+fara tara (tip 2/4 cu tara nu mai da fals "lipseste tara").
 
 ## RAMAS deschis (fronturi pt urmatoarea tura)
 - axe "region"/landmarks app-wide (moderat, structural, 8-19 noduri/ecran).
