@@ -26,6 +26,13 @@ provocate INDIVIDUAL pe tenant_006, cap-coada cu Playwright (captura privita). L
   obligativitate inainte de buton + campul gol marcat). §5 (ce ramane) pe straturile de import 006 = GOL de
   neverificat/nereparat IN perimetru; ce ramane e DOAR tiparul in ALTE formulare neatinse (pattern app-wide,
   nu datoria firmei curente). Regula noua (Costin 19.08): la finalizarea unei firme, §5 gol de perimetru.
+- **DS + F6 (mobil/axe)** (b94fcf2 + 6683623): DS citit si citat. cap.6 pct.4 (fail-fast INTERZIS pe formular
+  multi-camp) a scos ca vector marca doar PRIMUL camp lipsa -> acum COLECTEAZA toate campurile lipsa si le
+  marcheaza odata (b94fcf2). Changelog DESIGN_SYSTEM v2.56/v2.57 (Regula 6). F6: axe-pe-mobil (Pixel 5) pe
+  firme/vector/plan/parteneri = 0 DUPA fix .fereastra-corp `tabindex=0` (axe scrollable-region-focusable,
+  WCAG 2.1.1, 6683623); tinte >=24 AA, title-unic 0, fara h-scroll (393). §5 perimetru import 006 = GOL
+  (F6 + DS incluse). Lectie infra (OUT-of-perimeter, nu datoria firmei): axe_scan e desktop-only + mobil_scan
+  nu ruleaza axe -> de adaugat un pas axe-pe-mobil in infra vizuala.
 
 COMANDA DE REPORNIRE (gata de dat): "Cele 4 straturi de import ale tenant_006 (firme/plan_conturi/solduri_parteneri/
 vector_fiscal) + a11y contrast = INCHISE (fd224d2, a651fec, 2bdac14, 73522f5). Continua campania colectii valide+invalide
