@@ -46,12 +46,19 @@ def test_d311_build_xml_conform_xsd():
 
 def test_d311_erori_schema():
     prof = _prof()
+    # [mesaj_contabil] asertam INTENTIA (ce eroare e prinsa), pe formularea de contabil - nu numele
+    # intern al campului (Data_A/d_anul/OB_51), interzis in textul aratat utilizatorului (Regula 14.4).
     m = _manual(); m.pop("Data_A")
-    assert any("Data_A" in e for e in d311.erori_generare(prof, m)), "lipsa Data_A trebuie prinsa"
+    assert any("data anulării" in e.lower() for e in d311.erori_generare(prof, m)), "lipsa datei anularii trebuie prinsa"
     m = _manual(); m["d_anul1"] = 1; m["d_anul2"] = 1
-    assert any("d_anul" in e for e in d311.erori_generare(prof, m)), "ambele bife trebuie respinse"
+    assert any("motivul anulării" in e.lower() for e in d311.erori_generare(prof, m)), "ambele bife trebuie respinse"
     m = {"schema": 1, "Data_A": "2026-03-15", "d_anul1": 1, "d_anul2": 0}
-    assert any("OB_51+OB_52" in e for e in d311.erori_generare(prof, m)), "zero pe schema IV respins"
+    assert any("nu se depune pe zero" in e.lower() for e in d311.erori_generare(prof, m)), "zero pe schema IV respins"
+    # niciun nume intern XSD nu ajunge in textul aratat contabilului
+    for m2 in ({"schema": 1, "d_anul1": 1, "d_anul2": 1}, {"schema": 1, "Data_A": "2026-03-15", "d_anul1": 1, "d_anul2": 0}):
+        for e in d311.erori_generare(prof, m2):
+            for intern in ("Data_A", "d_anul1", "d_anul2", "OB_51", "OB_52", "OB_11"):
+                assert intern not in e, "mesajul expune numele intern %r: %s" % (intern, e)
 
 
 @pytest.mark.skipif(not os.path.exists(_JAR_D311), reason="Validatorul D311 nu e instalat in DUK.")

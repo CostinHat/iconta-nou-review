@@ -2132,25 +2132,29 @@ Cerere de ștergere înregistrată; datele se șterg definitiv la procesare.
 - Ștergerea înainte de îndeplinirea obligațiilor de arhivare fiscală (documentele contabile au termene legale de păstrare).
 ## Reguli fiscale
 GDPR art. 17 (dreptul de a fi uitat); DAR termenele legale de păstrare a documentelor contabile (Legea contabilității - 5/10 ani) au prioritate."
-Declarația D311 (TVA cod anulat),"D311: TVA datorată de persoane impozabile al căror cod de TVA a fost anulat (situații speciale, art.316(11) CF). MANUALĂ - se produce prin corp de cerere/dispatch (ca d710), fără selector generic: contabilul introduce bazele/TVA pe situații (schema IV, după anulare), iar subtotalele (rd.03/05) și suma de control (totalPlata_A=OB_51+OB_52+OB_61+OB_62) se calculează din structura oficială. XML validat pe DUKIntegrator -v D311 ('valid', proba reală). RĂMAS: schema V (reînregistrare art.316(12)) - limitare documentată (conflict XSD v1.02 pe Data_A/Data_I); ecran de introducere manuală (azi doar API/dispatch).",F207,firma,Declaratii,core/d311.py,OPANAF (D311); Cod fiscal art.316(11); XSD d311 v1.02 (anaf_surse/d311_20210129.xsd),AMANAT 14.08.2026 (backend+DUK; formular manual in UI dupa inghet),core/test_d311.py + DUKIntegrator -v D311 'valid' (schema IV),,"## Ce face
-Declarația D311 - TVA datorată de o persoană căreia i s-a anulat codul de înregistrare în scopuri de TVA, dar care a mai efectuat operațiuni taxabile în perioada fără cod. Generatorul construiește XML-ul pe bazele/TVA pe situații și îl validează pe DUK.
+Declarația D311 (TVA cod anulat),"D311: TVA datorată de persoane impozabile al căror cod de TVA a fost anulat (situații speciale, art.316(11) CF). MANUALĂ: formular în UI (18.08.2026) unde contabilul introduce data anulării, motivul (din oficiu / la cerere) și bazele/TVA pe cele trei situații oficiale (livrări, achiziții cu taxare inversă, livrări cu TVA la încasare exigibilă după anulare); subtotalurile (rd.03/05) și suma de control (totalPlata_A=OB_51+OB_52+OB_61+OB_62) se calculează din structura oficială. Formular gol refuzat cu mesaj de contabil (fără nume interne de câmp). Scos din _DOAR_API -> apare în selectorul de declarații. XML validat pe DUKIntegrator -v D311 ('valid', probă reală + Playwright pe firmă demo ALFA MICRO). RĂMAS: schema V (reînregistrare art.316(12)) - limitare documentată (conflict XSD v1.02 pe Data_A/Data_I).",F207,firma,Declaratii,"core/d311.py, core/declaratii_api.py, static/js/ecrane/declaratii.js",OPANAF (D311); Cod fiscal art.316(11); XSD d311 v1.02 (anaf_surse/d311_20210129.xsd),LIVE 18.08.2026 (formular manual in UI: situatii fiscale dupa anularea codului de TVA; gol refuzat cu mesaj de contabil; backend+DUK valid),"core/test_d311.py + core/test_d311_formular.py (garda formular gol, RED-probat) + DUKIntegrator -v D311 'valid' + Playwright real (ALFA MICRO): DUK valid, axe curat, mobil OK",,"## Ce face
+Declarația D311 - TVA datorată de o firmă căreia i s-a anulat codul de înregistrare în scopuri de TVA, dar care a mai efectuat operațiuni taxabile în perioada fără cod valabil. Aplicația construiește XML-ul din situațiile introduse și îl validează pe DUKIntegrator.
 ## Când se folosește
-De persoana impozabilă cu codul de TVA ANULAT, când a colectat TVA (livrări/prestări, ajustări) după anulare. Se depune până pe 25 a lunii următoare celei în care a apărut exigibilitatea.
+Când firmei i s-a anulat codul de TVA (din oficiu sau la cerere) și, după anulare, a livrat bunuri / prestat servicii sau are achiziții cu taxare inversă pentru care datorează TVA. Se depune lunar, până pe 25.
 ## Ce trebuie pregătit înainte
-- Data anulării codului de TVA și perioada acoperită.
-- Bazele și TVA pe fiecare situație (livrări, achiziții cu taxare inversă, ajustări).
+- Data la care ți-a fost anulat codul de TVA.
+- Motivul anulării: din oficiu, ori la cerere (firmă care aplica TVA la încasare).
+- Bazele și TVA pe operațiunile din perioada fără cod valabil.
 ## Pas cu pas
-1. Pregătește bazele și TVA pe situații (azi prin dispatch/API, fără ecran dedicat de introducere).
-2. Declarații -> D311 -> perioada.
-3. Aplicația calculează și construiește declarația.
-4. Validează și depune XML-ul.
+1. Din ecranul principal: Firme -> firma -> Declarații (sau caseta Declarații).
+2. Alege D311 și luna de raportare.
+3. Apasă „Continuă"" - se deschide formularul „Situația fiscală după anularea codului de TVA"".
+4. Completează data anulării, motivul, și sumele pe cele trei situații (cel puțin una mai mare ca 0).
+5. Apasă „Regenerează D311"" - totalul de plată se calculează automat din bazele și TVA introduse.
+6. Verifică validarea DUKIntegrator și trimite în coadă.
 ## Ce iese la capăt
-XML D311 validat, cu TVA de plată pentru perioada fără cod.
+XML D311 validat (fără erori la DUKIntegrator), cu suma de control calculată din bazele și TVA introduse.
 ## Greșeli frecvente
-- Confuzia cu decontul D300 (D311 e DOAR pentru perioada fără cod de TVA).
-- Deducerea TVA la achiziții - nu se admite pentru operațiunile din perioada cu cod anulat.
+- Completarea subtotalurilor sau a totalului (se calculează singure).
+- Depunerea pe zero (D311 nu se depune fără nicio sumă).
+- Uitarea motivului anulării (din oficiu / la cerere).
 ## Reguli fiscale
-OPANAF (D311); Cod fiscal art. 11 alin. (6)/(8) și art. 316 alin. (11) (anularea codului de TVA). Termen: 25 a lunii următoare exigibilității."
+Cod fiscal art. 316 alin. (11); structura oficială ANAF (XSD D311 v1.02). Se acoperă situația de după anularea codului (schema IV); reînregistrarea (art. 316 alin. (12)) nu e încă disponibilă."
 "Declarația D230 (redirecționare 3,5%)","D230: Cerere privind destinația sumei de până la 3,5% din impozitul anual pe venit către o entitate nonprofit/unitate de cult (persoană fizică; ex. PFA/salariat). MANUALĂ - prin corp de cerere/dispatch (ca d710/d311), fără selector generic: contribuabilul + beneficiarul ONG vin din input manual. STRUCTURA CITITĂ DIN VALIDATORUL OFICIAL: schema în vigoare = namespace v5 (pachet d230validator/v1), câmpurile citite din bytecode-ul D230Validator.jar și probate câmp cu câmp pe DUKIntegrator -v D230 ('valid', proba reală). Reguli citite din validator: R_opțiune (valabilitate_distribuire obligatoriu la bifă_entitate=1), R_procent (procent<=3,5), R31 (totalPlata_A=suma control). LIMITĂRI documentate: bursă privată, mai multi beneficiari, împuternicit - pe aceeași metodă; câmp `acord` optional NEPOPULAT (semantică nedeterminată din act, nu se ghicește); ecran de introducere manuală (azi doar API/dispatch).",F208,firma,Declaratii,core/d230.py,"OPANAF (D230); Cod fiscal (redirectionare 3,5% impozit venit); structura din D230Validator.jar (schema v5 in vigoare)",AMANAT 14.08.2026 (persoana fizica; 0 clienti PFA - se activeaza la primul client PF),core/test_d230.py + DUKIntegrator -v D230 'valid' (schema v5),,"## Ce face
 Declarația D230 - cererea prin care o persoană fizică redirecționează până la 3,5% din impozitul pe venit către o entitate nonprofit / unitate de cult (sau pentru burse private). Aplicația construiește XML-ul cu datele contribuabilului și ale beneficiarului.
 ## Când se folosește

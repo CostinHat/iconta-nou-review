@@ -101,23 +101,29 @@ def erori_generare(prof, manual):
         er.append("CUI firma lipsă/invalid (D311 cere cod fiscal valid).")
     if not (prof.get("den") or prof.get("nume")):
         er.append("LIPSĂ denumire firma.")
+    # [mesaj_contabil] Regula 14.4 + GARDA campaniei: erorile urca la UTILIZATOR (ValueError -> 422 ->
+    # e.mesaj in formular). Textul e in limba contabilului - ce lipseste si unde se completeaza -, NU
+    # numele intern al campului (Data_A/d_anul1/OB_51). Numele XSD raman doar in cod/comentariu/test.
+    _ET_DECL = {"declarant_nume": "numele declarantului", "declarant_prenume": "prenumele declarantului",
+                "declarant_functie": "funcția declarantului"}
     for c in ("declarant_nume", "declarant_prenume", "declarant_functie"):
         if not str(prof.get(c) or "").strip():
-            er.append("LIPSĂ %s (declarant obligatoriu D311)." % c)
+            er.append("Lipsește %s (obligatoriu la D311) — completează la datele firmei." % _ET_DECL[c])
     sch = int(manual.get("schema") or 1)
     if sch != 1:
-        er.append("D311: doar schema IV (dupa anularea codului de TVA) e implementata; "
-                  "schema V (reinregistrare) - limitare documentata, vezi core/d311.py.")
+        er.append("D311 acoperă deocamdată doar situația de după anularea codului de TVA. "
+                  "Cazul reînregistrării în scopuri de TVA nu e încă disponibil (vezi ajutorul declarației).")
         return er
     if not manual.get("Data_A"):
-        er.append("Schema IV: Data_A (data anularii inregistrarii în scopuri de TVA) obligatorie.")
+        er.append("Completează data anulării înregistrării în scopuri de TVA (obligatorie).")
     a1, a2 = int(manual.get("d_anul1") or 0), int(manual.get("d_anul2") or 0)
     if a1 + a2 != 1:
-        er.append("Schema IV: exact una din d_anul1 (anulare din oficiu) / d_anul2 "
-                  "(anulare la cerere, TVA la incasare) trebuie bifata.")
+        er.append("Bifează motivul anulării codului de TVA: din oficiu, ori la cerere "
+                  "(firmă care aplica TVA la încasare). Exact unul dintre cele două.")
     ob, _ = calcul_d311(manual)
     if ob["OB_51"] + ob["OB_52"] <= 0:
-        er.append("Schema IV: OB_51+OB_52 trebuie > 0 (nu se depune D311 pe zero).")
+        er.append("Nu ai introdus nicio sumă de plată (bază sau TVA pe operațiunile din perioada "
+                  "în care firma nu a avut cod valabil de TVA). D311 nu se depune pe zero.")
     return er
 
 

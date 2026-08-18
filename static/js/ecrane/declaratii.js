@@ -9,7 +9,7 @@
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=a7f9e80ae0";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
-  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192" };
+  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207" };
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -44,6 +44,10 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     trim: Math.floor(acum.getMonth()/3) + 1,
     rezultat: null,                          // {xml, avertismente}
     d710_obligatii: [],                      // [formular_manual_d710] obligatii corectate (in memorie, pt body)
+    // [formular_manual_d311] situatiile fiscale dupa anularea codului de TVA (in memorie, pt body.manual).
+    // Persista intre randari (Regenereaza reface pas2 -> re-randeaza formularul cu valorile pastrate).
+    d311: { Data_A: "", motiv: "", d_rec: 0,
+            OB_11: "", OB_12: "", OB_21: "", OB_22: "", OB_41: "", OB_42: "" },
   };
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
@@ -187,6 +191,7 @@ async function pas2(corp, nav) {
   if (per === "lunar") body.luna = S.luna;
   if (per === "trimestrial") body.trim = S.trim;
   if (S.tip === "d710") body.obligatii = S.d710_obligatii || [];  // [formular_manual_d710] din memorie
+  if (S.tip === "d311") body.manual = _d311Manual();              // [formular_manual_d311] situatiile din memorie
 
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
@@ -202,12 +207,14 @@ async function pas2(corp, nav) {
       ${S.tip === "d301" ? '<div id="dec-d301-op"></div>' : ""}
       ${S.tip === "d300" ? '<div id="dec-d300-manual"></div>' : ""}
       ${S.tip === "d710" ? '<div id="dec-d710-form"></div>' : ""}
+      ${S.tip === "d311" ? '<div id="dec-d311-form"></div>' : ""}
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
     if (S.tip === "d301") randeazaOperatiuniD301(corp, nav);
     if (S.tip === "d300") randeazaManualD300(corp, nav);
-  if (S.tip === "d710") randeazaFormularD710(corp, nav);
+    if (S.tip === "d710") randeazaFormularD710(corp, nav);
+    if (S.tip === "d311") randeazaFormularD311(corp, nav);
     return;
   }
 
@@ -242,6 +249,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d301" ? '<div id="dec-d301-op"></div>' : ""}
     ${S.tip === "d300" ? '<div id="dec-d300-manual"></div>' : ""}
     ${S.tip === "d710" ? '<div id="dec-d710-form"></div>' : ""}
+    ${S.tip === "d311" ? '<div id="dec-d311-form"></div>' : ""}
     ${blocANAF}
     ${constat.length ? `<div class="caseta-info">
         <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
@@ -276,6 +284,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d301") randeazaOperatiuniD301(corp, nav);
   if (S.tip === "d300") randeazaManualD300(corp, nav);
   if (S.tip === "d710") randeazaFormularD710(corp, nav);
+  if (S.tip === "d311") randeazaFormularD311(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -493,6 +502,111 @@ function randeazaFormularD710(corp, nav) {
     randeazaFormularD710(corp, nav);
   });
   gv("#d710-regen").addEventListener("click", () => pas2(corp, nav));
+}
+
+// tip==="d311" (TVA datorata dupa anularea codului de TVA, situatii speciale art.316(11) CF). Formular
+// de PANOU (nu lista, ca d710): contabilul introduce data anularii + motivul + bazele/TVA pe cele trei
+// situatii oficiale (structura_D311, rd.01/02/04). Subtotalurile si totalul de control se CALCULEAZA
+// (nu se cer). Valorile stau IN MEMORIE (S.d311) si persista intre randari (Regenereaza reface pas2).
+// Clasele DS: .camp/.camp-eticheta/.camp-input/.oblig + details.dec-xml, exact ca formularul D710 de pe
+// acelasi ecran (identitate cu situatia similara). Situatiile (etichete din sursa oficiala ANAF):
+//   A.1 OB_11/OB_12  Livrari de bunuri / prestari de servicii
+//   A.2 OB_21/OB_22  Achizitii cu taxare inversa (firma e obligata la plata taxei)
+//   B   OB_41/OB_42  Livrari dinainte de anulare, cu TVA la incasare exigibila in perioada fara cod valid
+const _D311_SITUATII = [
+  { baza: "OB_11", tva: "OB_12", et: "Livrări de bunuri / prestări de servicii" },
+  { baza: "OB_21", tva: "OB_22", et: "Achiziții cu taxare inversă (firma e obligată la plata taxei)" },
+  { baza: "OB_41", tva: "OB_42", et: "Livrări dinainte de anulare, cu TVA la încasare exigibilă în perioada fără cod valid de TVA" },
+];
+const _D311_MOTIVE = [
+  { val: "1", et: "Din oficiu (art. 316 alin. (11) lit. a)–e) sau h) CF)" },
+  { val: "2", et: "La cerere — firmă care aplica TVA la încasare (art. 316 alin. (11) lit. g) CF)" },
+];
+function _n(v) { const x = parseFloat(v); return isNaN(x) ? 0 : x; }
+
+// Construieste `manual` pentru body din starea formularului (S.d311). Sumele goale -> 0 (Python _i le trateaza).
+function _d311Manual() {
+  const d = S.d311 || {};
+  return {
+    schema: 1,
+    Data_A: d.Data_A || "",
+    d_anul1: d.motiv === "1" ? 1 : 0,
+    d_anul2: d.motiv === "2" ? 1 : 0,
+    d_rec: d.d_rec ? 1 : 0,
+    OB_11: _n(d.OB_11), OB_12: _n(d.OB_12), OB_21: _n(d.OB_21),
+    OB_22: _n(d.OB_22), OB_41: _n(d.OB_41), OB_42: _n(d.OB_42),
+  };
+}
+
+function randeazaFormularD311(corp, nav) {
+  const zona = corp.querySelector("#dec-d311-form");
+  if (!zona) return;
+  const d = S.d311;
+  // total de control (OB_51+OB_52), calculat identic cu backendul (structura rd.05) -> cifra afisata
+  // coincide cu ce genereaza serverul (Regula 14.2: aceeasi operatiune, aceeasi cifra pe tot traseul).
+  const bazaT = _n(d.OB_11) + _n(d.OB_21) + _n(d.OB_41);
+  const tvaT = _n(d.OB_12) + _n(d.OB_22) + _n(d.OB_42);
+  const total = bazaT + tvaT;
+  const camp = (id, val) => `<input id="${id}" type="number" step="1" min="0" class="camp-input" value="${val === "" || val == null ? "" : esc(String(val))}">`;
+  // eticheta pe linie proprie, apoi Baza+TVA intr-un sub-rand care se IMPACHETEAZA (flex-wrap) ->
+  // nu se revarsa orizontal pe telefon (proba Pixel 5: inainte inputul TVA iesea din ecran).
+  const randuri = _D311_SITUATII.map((s, i) => `
+    <div class="dec-man-rand" style="flex-direction:column;align-items:stretch;gap:6px">
+      <span class="dec-recl-desc" style="flex:0 0 auto">${i + 1}. ${esc(s.et)}</span>
+      <div style="display:flex;flex-wrap:wrap;gap:12px">
+        <label class="camp" style="flex:1 1 130px"><span class="camp-eticheta">Bază (lei)</span>${camp("d311-" + s.baza, d[s.baza])}</label>
+        <label class="camp" style="flex:1 1 130px"><span class="camp-eticheta">TVA (lei)</span>${camp("d311-" + s.tva, d[s.tva])}</label>
+      </div>
+    </div>`).join("");
+  zona.innerHTML = `<details class="dec-xml" open><summary>Situația fiscală după anularea codului de TVA</summary>
+    <div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:12px">
+      <label class="camp" style="width:230px"><span class="camp-eticheta">Data anulării codului de TVA <span class="oblig">*</span></span>
+        <input id="d311-data" type="date" class="camp-input" value="${esc(d.Data_A || "")}"></label>
+      <label class="camp" style="width:430px"><span class="camp-eticheta">Motivul anulării <span class="oblig">*</span></span>
+        <select id="d311-motiv" class="camp-input">
+          <option value="">— alege motivul —</option>
+          ${_D311_MOTIVE.map((mo) => `<option value="${mo.val}" ${d.motiv === mo.val ? "selected" : ""}>${esc(mo.et)}</option>`).join("")}
+        </select></label>
+      <label class="camp" style="width:auto;flex-direction:row;align-items:center;gap:6px">
+        <input id="d311-rec" type="checkbox" ${d.d_rec ? "checked" : ""}><span class="camp-eticheta" style="margin:0">Declarație rectificativă</span></label>
+    </div>
+    <div class="camp-eticheta" style="margin:12px 0 4px">Sume pe operațiuni <span class="oblig">*</span> (cel puțin una &gt; 0):</div>
+    ${randuri}
+    <p class="camp-ajutor" style="margin-top:8px">Total de plată (control): <b id="d311-total">${bani(total)} lei</b> — se calculează automat din bazele și TVA de mai sus. Subtotalurile nu se completează.</p>
+    <div id="d311-msg"></div>
+    <p style="margin-top:8px"><button class="buton-primar" id="d311-regen">Regenerează D311</button>
+      <span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>
+  </details>`;
+  const gv = (id) => zona.querySelector(id);
+  // legare bidirectionala: input -> S.d311 (persista intre randari). Total-ul se reface la re-randare.
+  gv("#d311-data").addEventListener("change", (e) => { S.d311.Data_A = e.target.value; });
+  gv("#d311-motiv").addEventListener("change", (e) => { S.d311.motiv = e.target.value; });
+  gv("#d311-rec").addEventListener("change", (e) => { S.d311.d_rec = e.target.checked ? 1 : 0; });
+  // totalul de control se recalculeaza LIVE la tastare (Regula 14.2: cifra afisata coincide in orice
+  // moment cu ce genereaza serverul), fara re-randare completa (pastreaza focusul in camp).
+  const actualizeazaTotal = () => {
+    const bt = _n(S.d311.OB_11) + _n(S.d311.OB_21) + _n(S.d311.OB_41);
+    const tt = _n(S.d311.OB_12) + _n(S.d311.OB_22) + _n(S.d311.OB_42);
+    const el = gv("#d311-total"); if (el) el.textContent = bani(bt + tt) + " lei";
+  };
+  _D311_SITUATII.forEach((s) => {
+    ["baza", "tva"].forEach((k) => {
+      const el = gv("#d311-" + s[k]);
+      el.addEventListener("input", (e) => { S.d311[s[k]] = e.target.value; actualizeazaTotal(); });
+    });
+  });
+  gv("#d311-regen").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    // marcheaza campul vinovat INAINTE de a chema serverul (Regula 14.4: nu doar mesaj general dupa apasare).
+    const err = [];
+    if (!S.d311.Data_A) err.push(["d311-data", "Completează data la care ți-a fost anulat codul de TVA."]);
+    if (!S.d311.motiv) err.push(["d311-motiv", "Alege motivul anulării codului de TVA (din oficiu sau la cerere)."]);
+    const m = _d311Manual();
+    const totalPlata = m.OB_11 + m.OB_21 + m.OB_41 + m.OB_12 + m.OB_22 + m.OB_42;
+    if (totalPlata <= 0) err.push(["d311-OB_11", "Introdu cel puțin o sumă (bază sau TVA). D311 nu se depune pe zero."]);
+    if (err.length) { err.forEach(([id, msg]) => eroareCamp(zona, id, msg)); return; }
+    pas2(corp, nav);
+  });
 }
 
 // tip==="d300". Geaman cu randeazaOperatiuniD301: grila randurilor manuale + adaugare (upsert) +
