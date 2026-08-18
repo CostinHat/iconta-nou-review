@@ -75,38 +75,3 @@ def plati_estimate(obligatii, medie_lunara, azi=None, saptamani=8):
             d = (d.replace(day=1) + datetime.timedelta(days=32)).replace(day=min(azi.day, 28))
             plati.append({"data_scadenta": d.isoformat(), "suma": medie_lunara})
     return plati
-
-
-def obligatii_din_balanta(randuri):
-    """Solduri creditoare de platit: fiscale (25 ale lunii) + salarii nete (imediat)."""
-    def _sc(prefixe):
-        return round(sum(r["sf_c"] for r in randuri
-                         if any(str(r["cont"]).startswith(p) for p in prefixe)), 2)
-    return {"fiscale": _sc(("4423", "431", "436", "444", "4411")),
-            "salarii_nete": _sc(("421",))}
-
-
-def cheltuieli_lunare_cash(randuri, luni_scurse):
-    """Media lunara a cheltuielilor cash: cl.6 fara 68x (amortizari) si 641/645 (acoperite de 421/431)."""
-    ch = round(sum(r["rul_d"] - r["rul_c"] for r in randuri
-                   if str(r["cont"]).startswith("6")
-                   and not str(r["cont"]).startswith(("68", "641", "645"))), 2)
-    return round(ch / max(luni_scurse, 1), 2)
-
-
-def plati_estimate(obligatii, medie_lunara, azi=None, saptamani=8):
-    """Genereaza lista de plati estimate: [{data_scadenta, suma}]."""
-    azi = azi or datetime.date.today()
-    plati = []
-    if obligatii.get("salarii_nete"):
-        plati.append({"data_scadenta": azi.isoformat(), "suma": obligatii["salarii_nete"]})
-    urm25 = azi.replace(day=25) if azi.day <= 25 else \
-        (azi.replace(day=1) + datetime.timedelta(days=32)).replace(day=25)
-    if obligatii.get("fiscale"):
-        plati.append({"data_scadenta": urm25.isoformat(), "suma": obligatii["fiscale"]})
-    if medie_lunara > 0:
-        d = azi
-        for _ in range(max(1, saptamani // 4)):
-            d = (d.replace(day=1) + datetime.timedelta(days=32)).replace(day=min(azi.day, 28))
-            plati.append({"data_scadenta": d.isoformat(), "suma": medie_lunara})
-    return plati

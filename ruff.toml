@@ -1,0 +1,12 @@
+# ruff.toml — poarta ruff (adaugata 18.08.2026). Vezi scripts/githooks/pre-commit.
+# Select DELIBERAT MINIMAL: doar familia "undefined" (F821 nume nedefinit, F822 export nedefinit,
+# F823 local folosit inainte de atribuire) = bug-uri de CRASH (NameError/UnboundLocalError) care
+# scapa de pytest pana se executa calea. Verde pe tot codul dupa reparatia din 18.08 (3 crash-uri +
+# duplicat cashflow). F401 (unused import ~115) / F811 (redefinire ~11) / F841 (unused var) raman
+# pentru un cleanup viitor - prea zgomotoase ca sa fie poarta blocanta pe cod existent.
+line-length = 200
+target-version = "py312"
+exclude = ["venv", ".git", "node_modules"]
+
+[lint]
+select = ["F821", "F822", "F823"]

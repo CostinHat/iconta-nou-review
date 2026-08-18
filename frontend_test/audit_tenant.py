@@ -23,6 +23,26 @@ import urllib.error
 BAZA = "http://127.0.0.1:8010"
 HERE = os.path.dirname(os.path.abspath(__file__))
 AXE = open(os.path.join(HERE, "vizual", "axe.min.js"), encoding="utf-8").read()
+import glob as _glob
+import base64 as _b64
+_CORPUS = os.path.join(os.path.dirname(HERE), "anaf_surse")
+
+def _xsd_pt(tip):
+    """XSD-ul din corpus pentru tip (nume cu sufix de data: d112_06082026.xsd)."""
+    m = sorted(_glob.glob(os.path.join(_CORPUS, tip + ".xsd")) + _glob.glob(os.path.join(_CORPUS, tip + "_*.xsd")))
+    return m[0] if m else None
+
+def _valideaza_xsd(xml_str, xsd_path):
+    """(True/False/None, mesaj). None = nu am putut rula (lxml/xsd)."""
+    try:
+        from lxml import etree
+        schema = etree.XMLSchema(etree.parse(xsd_path))
+        doc = etree.fromstring(xml_str.encode())
+        if schema.validate(doc):
+            return True, None
+        return False, str(schema.error_log)[:160]
+    except Exception as ex:
+        return None, str(ex)[:120]
 
 CFG = {}
 for ln in open(os.path.expanduser("~/.iconta/fe_test.env")):
@@ -119,6 +139,17 @@ def faceta_f2_f7(rap, tok, tid):
         body.update(_perioada_body(tip, per, an, luna))
         rez, e = call("/declaratii/%s/valideaza" % tip, body, tok=tok, method="POST")
         et = "%s %s (%s)" % (tip.upper(), it.get("perioada") or ("%s/%s" % (luna, an)), _cat)
+        # pre-check XSD (lxml) pe XML-ul generat, daca exista XSD in corpus - cross-check structural langa DUK
+        xsd_txt = ""
+        if not e and rez and rez.get("xml_b64"):
+            _xp = _xsd_pt(tip)
+            if _xp:
+                try:
+                    _xml = _b64.b64decode(rez["xml_b64"]).decode(errors="replace")
+                    ok_x, err_x = _valideaza_xsd(_xml, _xp)
+                    xsd_txt = " | XSD valid" if ok_x else (" | XSD INVALID: %s" % err_x if ok_x is False else " | XSD n/a")
+                except Exception:
+                    xsd_txt = ""
         if e and e["cod"] == 422:
             # refuz PRE-XML: declaratia nu se poate genera (ex. pe zero) desi semaforul o cere -> semnal F7
             f2.append("%-16s REFUZ generare (422): %s" % (et, str(e["detail"])[:90]))
@@ -129,12 +160,12 @@ def faceta_f2_f7(rap, tok, tid):
         else:
             st = rez.get("stare")
             if st == "valid":
-                f2.append("%-16s DUK valid" % et)
+                f2.append("%-16s DUK valid%s" % (et, xsd_txt))
             elif st == "erori":
-                f2.append("%-16s DUK ERORI: %s" % (et, (rez.get("erori") or "")[:100]))
+                f2.append("%-16s DUK ERORI%s: %s" % (et, xsd_txt, (rez.get("erori") or "")[:100]))
                 rosu_f2 = True
             else:
-                f2.append("%-16s DUK gri (nevalidat): %s" % (et, rez.get("temei") or ""))
+                f2.append("%-16s DUK gri (nevalidat)%s: %s" % (et, xsd_txt, rez.get("temei") or ""))
                 rosu_f2 = True
 
     if falsa_restanta:

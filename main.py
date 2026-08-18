@@ -395,7 +395,6 @@ def _verifica_si_alerta():
             "<p>Alerta sanatate server iConta.eu:</p><ul>" +
             "".join("<li>" + p + "</li>" for p in alerte) +
             "</ul><p>Verifica panoul 'Sanatate server' din Admin iConta.</p></div>")
-    import core.observare as _obs
     _obs.trimite_email_html(email, "Alerta iConta.eu - sanatate server", html)
 
 async def _bucla_alerte_sanatate():
@@ -414,7 +413,6 @@ def admin_sanatate_test_alerta(ctx=Depends(cere_cabinet)):
     email = _email_superadmin()
     if not email:
         raise HTTPException(500, "email superadmin negăsit")
-    import core.observare as _obs
     r = _obs.trimite_email_html(email, "TEST Alerta iConta.eu - sanatate server",
         "<p>Test manual alerta sanatate. Daca ai primit acest email, livrarea functioneaza.</p>")
     return {"trimis_catre": email, "rezultat": str(r)}
@@ -2712,8 +2710,9 @@ def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_context)):
         # descarcare gestiune DOAR la poarta = DA, in ACEEASI tranzactie (atomic: emit + descarcare)
         if poarta_ceruta and date.pleaca_marfa is True and isinstance(r, dict) and r.get("factura_id"):
             from core import stocuri_cv_api as _cv
+            from datetime import date as _dt_date  # fix F821: datetime neimportat in scope (date = param Pydantic)
             r["descarcare"] = _cv.descarca_factura(conn, schema, r["factura_id"],
-                                                   date.data_emitere or datetime.date.today().isoformat())
+                                                   date.data_emitere or _dt_date.today().isoformat())
     # curs BNR indisponibil -> 409 cu detaliile pt frontend (Reincearca / Manual)
     if isinstance(r, dict) and r.get("ok") is False and r.get("cod") == "CURS_INDISPONIBIL":
         raise HTTPException(409, detail=r)
@@ -3251,7 +3250,6 @@ def pachet_poveste_set(tenant_id: int, an: int, luna: int, date: PachetTextIn, c
                         "<p><a href='https://iconta.eu' style='background:#2563eb;color:#fff;"
                         "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>"
                         "Deschide portalul</a></p></div>")
-                import core.observare as _obs
                 _obs.trimite_email_html(email, subiect, html)
         return r
 
@@ -4752,7 +4750,6 @@ def _trimite_recomandari(emails, html, subiect):
         raise HTTPException(400, EMAIL_NICIUNUL_VALID)
     if len(emails) > 20:
         raise HTTPException(400, "Maxim 20 de emailuri odata.")
-    import core.observare as _obs
     rezultate = []
     for em in emails:
         ok = _obs.trimite_email_html(em, subiect, html)
@@ -4893,7 +4890,6 @@ def cabinet_solicitari_raspunde(tenant_id: int, date: SolicitareIn, ctx=Depends(
                     "<p><a href='https://iconta.eu' style='background:#2563eb;color:#fff;"
                     "padding:12px 22px;border-radius:8px;text-decoration:none;font-weight:600'>"
                     "Deschide portalul</a></p></div>")
-            import core.observare as _obs
             _obs.trimite_email_html(email, subiect, html)
     return {"ok": True}
 
@@ -6835,6 +6831,7 @@ def d406_stocuri_xml(tenant_id: int, data_start: str, data_end: str, cui: str,
 def _snapshot_stat_plata(conn, schema, rezultate, an, luna):
     """Persista venit brut + zile lucrate per salariat (UPSERT), pt. media CM."""
     from core import scadente as _scad
+    from datetime import date as _date  # fix F821: _date nu era importat in aceasta functie
     zile_luna = _scad.zile_lucratoare_luna(an, luna)  # fara sarbatori (OUG 158/2005 art.10)
     with conn.cursor() as cur:
         for r in rezultate:
