@@ -103,31 +103,38 @@ def pull(conn, schema, perioada):
 
 
 def erori_generare(prof, manual):
+    # Mesaje in limba CONTABILULUI (ce lipseste + unde se corecteaza), fara nume interne de camp/atribut XML.
+    _ET_DECL = {"declarant_nume": "numele declarantului", "declarant_prenume": "prenumele declarantului",
+                "declarant_functie": "funcția declarantului"}
     er = []
     if not _cif(prof.get("cui")):
-        er.append("CUI firma plătitoare lipsă/invalid.")
+        er.append("Lipsește codul fiscal (CUI) al firmei plătitoare de venit — completează-l în Date firmă.")
     if not (prof.get("den")):
-        er.append("LIPSĂ denumire firma.")
+        er.append("Lipsește denumirea firmei plătitoare de venit — completeaz-o în Date firmă.")
     for c in ("declarant_nume", "declarant_prenume", "declarant_functie"):
         if not str(prof.get(c) or "").strip():
-            er.append("LIPSĂ %s (declarant obligatoriu)." % c)
+            er.append("Completează %s (obligatoriu) în Date firmă." % _ET_DECL[c])
     benef = manual.get("beneficiari") or []
     if not benef:
-        er.append("D207 cere cel puțin un beneficiar nerezident (beneficiari[]).")
+        er.append("D207 nu are ce genera: adaugă în formular cel puțin un beneficiar nerezident căruia i-ai "
+                  "plătit venituri cu reținere la sursă (dividende, dobânzi, redevențe etc.).")
     for i, b in enumerate(benef, 1):
         tv = str(b.get("tip_venit") or "").zfill(2)
         if tv not in _TIP_VALIDE:
-            er.append("Beneficiar %d: tip_venit %r invalid (cod din nomenclator, 01..25/26 fără 09)." % (i, tv))
+            er.append("Beneficiarul %d: alege tipul de venit plătit din listă (dividende, dobânzi, redevențe, "
+                      "servicii, premii etc.)." % i)
         if not str(b.get("den") or "").strip():
-            er.append("Beneficiar %d: lipsă nume/denumire (den1)." % i)
+            er.append("Beneficiarul %d: completează numele sau denumirea beneficiarului nerezident." % i)
         if not str(b.get("stat") or "").strip():
-            er.append("Beneficiar %d: lipsă Statul de rezidență (Stat_R, cod țară)." % i)
+            er.append("Beneficiarul %d: completează statul de rezidență (codul de țară din 2 litere)." % i)
         if not (_cif(b.get("cif_ro")) or str(b.get("cif_strain") or "").strip()):
-            er.append("Beneficiar %d: lipsă identificare fiscala (cifR din RO sau cifS din străinătate)." % i)
+            er.append("Beneficiarul %d: completează codul de identificare fiscală — cel din România sau cel "
+                      "din străinătate (măcar unul)." % i)
         if str(b.get("act_n") or "") not in ("1", "2", "3"):
-            er.append("Beneficiar %d: Act_N obligatoriu 1/2/3 (actul normativ)." % i)
+            er.append("Beneficiarul %d: alege actul normativ aplicabil (Codul fiscal, convenția de evitare a dublei "
+                      "impuneri sau acordul internațional)." % i)
         if tv in _TIP_SCUTIT and _i(b.get("imp")):
-            er.append("Beneficiar %d: tip scutit (%s) -> impozit reținut trebuie 0." % (i, tv))
+            er.append("Beneficiarul %d: venitul este scutit de impozit — impozitul reținut trebuie să fie 0." % i)
     return er
 
 

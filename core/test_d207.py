@@ -51,8 +51,11 @@ def test_d207_scutit_forteaza_impozit_zero():
 def test_d207_erori():
     prof = {"cui": "14399840", "den": "F", "declarant_nume": "A", "declarant_prenume": "B", "declarant_functie": "C"}
     assert any("un beneficiar" in e for e in d207.erori_generare(prof, {"beneficiari": []}))
+    # cod de venit invalid (09 exclus din nomenclator) -> mesaj de CONTABIL, fara numele intern al campului
     bad = {"beneficiari": [{"tip_venit": "09", "den": "X", "stat": "DE", "cif_strain": "1", "act_n": "1"}]}
-    assert any("tip_venit" in e for e in d207.erori_generare(prof, bad))
+    err = d207.erori_generare(prof, bad)
+    assert any("tipul de venit" in e for e in err), err
+    assert not any("tip_venit" in e or "Stat_R" in e or "Act_N" in e for e in err), err
 
 
 @pytest.mark.skipif(not os.path.exists(_JAR), reason="Validatorul D207 nu e instalat in DUK.")

@@ -9,7 +9,7 @@
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=a7f9e80ae0";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
-  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210" };
+  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210", d207:"F209" };
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -54,6 +54,9 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     d107: { beneficiari: [], val2_ni: "", val3_ni: "", neindividualizati: [], d_rec: 0 },
     // [formular_manual_d177] redirectionarea impozitului pe profit catre ONG/cult (in memorie, pt body.manual).
     d177: { data_inceput: "", data_sfarsit: "", suma_max: "", suma_ant: "", suma_rest: "", d_rec: 0, beneficiari: [] },
+    // [formular_manual_d207] beneficiarii nerezidenti carora firma le-a platit venituri cu retinere la sursa
+    // (lista in memorie, pt body.manual, ca d107). Grupati pe tip_venit -> Sect_II; suma de control calculata.
+    d207: { beneficiari: [], d_rec: 0 },
   };
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
@@ -201,6 +204,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d307") body.manual = _d307Manual();              // [formular_manual_d307] operatiunile din memorie
   if (S.tip === "d107") body.manual = _d107Manual();              // [formular_manual_d107] beneficiarii din memorie
   if (S.tip === "d177") body.manual = _d177Manual();              // [formular_manual_d177] redirectionarea din memorie
+  if (S.tip === "d207") body.manual = _d207Manual();              // [formular_manual_d207] beneficiarii nerezidenti din memorie
 
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
@@ -220,6 +224,7 @@ async function pas2(corp, nav) {
       ${S.tip === "d307" ? '<div id="dec-d307-form"></div>' : ""}
       ${S.tip === "d107" ? '<div id="dec-d107-form"></div>' : ""}
       ${S.tip === "d177" ? '<div id="dec-d177-form"></div>' : ""}
+      ${S.tip === "d207" ? '<div id="dec-d207-form"></div>' : ""}
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
@@ -230,6 +235,7 @@ async function pas2(corp, nav) {
     if (S.tip === "d307") randeazaFormularD307(corp, nav);
     if (S.tip === "d107") randeazaFormularD107(corp, nav);
     if (S.tip === "d177") randeazaFormularD177(corp, nav);
+    if (S.tip === "d207") randeazaFormularD207(corp, nav);
     return;
   }
 
@@ -268,6 +274,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d307" ? '<div id="dec-d307-form"></div>' : ""}
     ${S.tip === "d107" ? '<div id="dec-d107-form"></div>' : ""}
     ${S.tip === "d177" ? '<div id="dec-d177-form"></div>' : ""}
+    ${S.tip === "d207" ? '<div id="dec-d207-form"></div>' : ""}
     ${blocANAF}
     ${constat.length ? `<div class="caseta-info">
         <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
@@ -306,6 +313,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d307") randeazaFormularD307(corp, nav);
   if (S.tip === "d107") randeazaFormularD107(corp, nav);
   if (S.tip === "d177") randeazaFormularD177(corp, nav);
+  if (S.tip === "d207") randeazaFormularD207(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -984,6 +992,172 @@ function randeazaFormularD177(corp, nav) {
     if (!S.d177.data_inceput || !S.d177.data_sfarsit) { eroareCamp(zona, "d177-di", "Completează perioada fiscală (de la / până la)."); return; }
     const totB = (S.d177.beneficiari || []).reduce((s, b) => s + _n(b.suma), 0);
     if (totB > _n(S.d177.suma_rest)) { eroareCamp(zona, "d177-srest", "Suma alocată beneficiarilor depășește suma rămasă de redirecționat."); return; }
+    pas2(corp, nav);
+  });
+}
+
+// tip==="d207" (informativa impozit retinut la sursa - beneficiari nerezidenti). Formular-LISTA de beneficiari
+// (ca d107): fiecare cu tip de venit, nume/denumire, stat de rezidenta, cod fiscal (RO sau strainatate), act
+// normativ, baza si impozit retinut/suportat. Backend agrega pe tip_venit (Sect_II) si calculeaza suma de
+// control. Nomenclatorul tip venit + regula scutit (12-21) = din structura_D207_2025 (cap.III). Zero clase noi.
+// Valorile stau IN MEMORIE (S.d207), persista intre randari (Regenereaza reface pas2).
+const _D207_TIP = {
+  impozabile: [
+    ["01", "Dividende (art.223(1) lit.a)"],
+    ["02", "Dobânzi (art.223(1) lit.b, c)"],
+    ["03", "Redevențe (art.223(1) lit.d, e)"],
+    ["04", "Comisioane (art.223(1) lit.f, g)"],
+    ["05", "Activități sportive și de divertisment (art.223(1) lit.h)"],
+    ["06", "Remunerații administratori/fondatori/consiliu (art.223(1) lit.j)"],
+    ["07", "Servicii prestate de nerezidenți (art.223(1) lit.i, k, l)"],
+    ["08", "Premii la concursuri în România (art.223(1) lit.m)"],
+    ["10", "Lichidarea unui rezident (art.223(1) lit.o)"],
+    ["11", "Transfer masă patrimonială fiduciară (art.223(1) lit.p)"],
+    ["22", "Dividende, cf. convenției de evitare a dublei impuneri"],
+    ["23", "Dobânzi, cf. convenției de evitare a dublei impuneri"],
+    ["24", "Redevențe, cf. convenției de evitare a dublei impuneri"],
+    ["25", "Comisioane, cf. convenției de evitare a dublei impuneri"],
+    ["26", "Plăți pentru servicii tehnice (Acord România–India, L329/2013)"],
+  ],
+  scutite: [
+    ["12", "Dobânzi (art.229(1) lit.a, b, g, h)"],
+    ["13", "Tranzacții cu instrumente financiare / titluri de stat (art.229(1) lit.a)"],
+    ["14", "Dividende (art.229(1) lit.c)"],
+    ["15", "Premii (art.229(1) lit.d, e)"],
+    ["16", "Redevențe (art.229(1) lit.g)"],
+    ["17", "Activități de consultanță (art.229(1) lit.f)"],
+    ["18", "Câștiguri din jocuri de noroc într-un alt stat (art.229(1) lit.i)"],
+    ["19", "Dobânzi, cf. convenției de evitare a dublei impuneri"],
+    ["20", "Dividende, cf. convenției de evitare a dublei impuneri"],
+    ["21", "Redevențe, cf. convenției de evitare a dublei impuneri"],
+  ],
+};
+const _D207_ACT = [["1", "Codul fiscal (Legea 227/2015)"], ["2", "Convenție de evitare a dublei impuneri"], ["3", "Acord internațional"]];
+function _d207Scutit(tv) { const n = parseInt(tv, 10); return n >= 12 && n <= 21; }
+function _d207TipEt(tv) {
+  const all = _D207_TIP.impozabile.concat(_D207_TIP.scutite);
+  const x = all.find((y) => y[0] === String(tv)); return x ? x[0] + " — " + x[1] : "tip " + tv;
+}
+
+function _d207Manual() {
+  const d = S.d207 || {};
+  return {
+    beneficiari: (d.beneficiari || []).map((b) => ({
+      tip_venit: b.tip_venit, den: b.den, stat: b.stat, cif_ro: b.cif_ro, cif_strain: b.cif_strain,
+      act_n: b.act_n, baza: b.baza, imp: b.imp, imp_suportat: b.imp_suportat })),
+    d_rec: d.d_rec ? 1 : 0,
+  };
+}
+
+function randeazaFormularD207(corp, nav) {
+  const zona = corp.querySelector("#dec-d207-form");
+  if (!zona) return;
+  const d = S.d207;
+  const benef = d.beneficiari || [];
+  // oglinda calcul_d207: grupare pe tip_venit -> Sect_II; totalPlata_A = sum(nrben+Tscutit+Tbaza+Timp+Timps)
+  const sec = {};
+  benef.forEach((b) => {
+    const tv = String(b.tip_venit || "").padStart(2, "0");
+    const x = sec[tv] || (sec[tv] = { nrben: 0, Tbaza: 0, Tscutit: 0, Timp: 0, Timps: 0 });
+    x.nrben += 1;
+    const baza = Math.round(_n(b.baza) || 0);
+    if (_d207Scutit(tv)) { x.Tscutit += baza; }
+    else { x.Tbaza += baza; x.Timp += Math.round(_n(b.imp) || 0); x.Timps += Math.round(_n(b.imp_suportat) || 0); }
+  });
+  const secv = Object.keys(sec).map((k) => sec[k]);
+  const Tbaza = secv.reduce((a, x) => a + x.Tbaza, 0);
+  const Tscutit = secv.reduce((a, x) => a + x.Tscutit, 0);
+  const Timp = secv.reduce((a, x) => a + x.Timp, 0);
+  const Timps = secv.reduce((a, x) => a + x.Timps, 0);
+  const totalCtrl = secv.reduce((a, x) => a + x.nrben + x.Tscutit + x.Tbaza + x.Timp + x.Timps, 0);
+  const grila = benef.length
+    ? benef.map((b, i) => {
+        const tv = String(b.tip_venit || "").padStart(2, "0");
+        const cf = b.cif_ro ? ("RO " + b.cif_ro) : (b.cif_strain || "—");
+        const sc = _d207Scutit(tv);
+        return '<div class="dec-man-rand">' +
+          '<span class="dec-recl-desc">' + esc(b.den) + ' · ' + esc(String(b.stat || "").toUpperCase()) +
+          ' · cod fiscal ' + esc(String(cf)) + ' · ' + esc(_d207TipEt(tv)) +
+          ' · ' + (sc ? "venit scutit " : "bază ") + bani(_n(b.baza)) + ' lei' +
+          (sc ? "" : ' · impozit ' + bani(_n(b.imp)) + ' lei') + '</span>' +
+          '<button class="btn-link dec-d207-del" data-idx="' + i + '">șterge</button></div>';
+      }).join("")
+    : '<div class="stare-goala stare-goala--inline">Niciun beneficiar. D207 declară veniturile plătite beneficiarilor nerezidenți și impozitul reținut la sursă — adaugă mai jos fiecare beneficiar.</div>';
+  const optTip = '<optgroup label="Venituri impozabile">' +
+    _D207_TIP.impozabile.map((t) => '<option value="' + t[0] + '">' + esc(t[0] + " — " + t[1]) + '</option>').join("") +
+    '</optgroup><optgroup label="Venituri scutite">' +
+    _D207_TIP.scutite.map((t) => '<option value="' + t[0] + '">' + esc(t[0] + " — " + t[1]) + '</option>').join("") +
+    '</optgroup>';
+  const optAct = _D207_ACT.map((a) => '<option value="' + a[0] + '">' + esc(a[1]) + '</option>').join("");
+  zona.innerHTML = '<details class="dec-xml" open><summary>Beneficiari nerezidenți (' + benef.length + ')</summary>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:6px">' +
+      '<label class="camp" style="width:auto;flex-direction:row;align-items:center;gap:6px">' +
+        '<input id="d207-rec" type="checkbox" ' + (d.d_rec ? "checked" : "") + '><span class="camp-eticheta" style="margin:0">Declarație rectificativă</span></label>' +
+    '</div>' +
+    grila +
+    '<div class="camp-eticheta" style="margin:12px 0 4px">Adaugă beneficiar nerezident:</div>' +
+    '<div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px">' +
+      '<label class="camp" style="flex:1 1 280px"><span class="camp-eticheta">Tip venit plătit <span class="oblig">*</span></span>' +
+        '<select id="d207-tip" class="camp-input">' + optTip + '</select></label>' +
+      '<label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Nume / denumire beneficiar <span class="oblig">*</span></span><input id="d207-den" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Stat rezidență (2 litere) <span class="oblig">*</span></span><input id="d207-stat" type="text" maxlength="2" class="camp-input" style="text-transform:uppercase"></label>' +
+      '<label class="camp" style="width:160px"><span class="camp-eticheta">Cod fiscal România</span><input id="d207-cifro" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="width:160px"><span class="camp-eticheta">Cod fiscal străinătate</span><input id="d207-cifs" type="text" class="camp-input"></label>' +
+      '<label class="camp" style="flex:1 1 240px"><span class="camp-eticheta">Act normativ aplicabil <span class="oblig">*</span></span>' +
+        '<select id="d207-act" class="camp-input">' + optAct + '</select></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Bază / venit brut (lei)</span><input id="d207-baza" type="number" step="1" min="0" class="camp-input"></label>' +
+      '<label class="camp" style="width:150px"><span class="camp-eticheta">Impozit reținut (lei)</span><input id="d207-imp" type="number" step="1" min="0" class="camp-input"></label>' +
+      '<label class="camp" style="width:190px"><span class="camp-eticheta">Impozit suportat de plătitor (lei)</span><input id="d207-imps" type="number" step="1" min="0" class="camp-input"></label>' +
+      '<button class="buton-secundar" id="d207-add">+ adaugă</button>' +
+    '</div>' +
+    '<p class="camp-ajutor" id="d207-scutit-nota" style="margin:4px 0 0"></p>' +
+    '<div id="d207-msg"></div>' +
+    '<p class="camp-ajutor" id="d207-totaluri" style="margin-top:8px">' + benef.length + ' beneficiar(i) · bază impozabilă <b>' + bani(Tbaza) + '</b> · venit scutit <b>' + bani(Tscutit) + '</b> · impozit reținut <b>' + bani(Timp) + '</b> · impozit suportat de plătitor <b>' + bani(Timps) + '</b> lei. Suma de control a declarației: <b>' + totalCtrl + '</b> — se calculează automat din datele de mai sus.</p>' +
+    '<p style="margin-top:8px"><button class="buton-primar" id="d207-regen">Regenerează D207</button>' +
+      '<span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>' +
+  '</details>';
+  const gv = (id) => zona.querySelector(id);
+  gv("#d207-rec").addEventListener("change", (e) => { S.d207.d_rec = e.target.checked ? 1 : 0; });
+  // tip de venit scutit (12-21) -> impozitul retinut/suportat sunt 0 (regula validatorului): dezactiveaza + noteaza
+  const reflScutit = () => {
+    const sc = _d207Scutit(gv("#d207-tip").value);
+    gv("#d207-imp").disabled = sc; gv("#d207-imps").disabled = sc;
+    if (sc) { gv("#d207-imp").value = ""; gv("#d207-imps").value = ""; }
+    gv("#d207-scutit-nota").textContent = sc
+      ? "Tip de venit scutit — impozitul reținut și cel suportat de plătitor sunt 0 pentru acest beneficiar."
+      : "";
+  };
+  gv("#d207-tip").addEventListener("change", reflScutit);
+  reflScutit();
+  zona.querySelectorAll(".dec-d207-del").forEach((b) => b.addEventListener("click", () => {
+    S.d207.beneficiari.splice(parseInt(b.dataset.idx), 1); randeazaFormularD207(corp, nav);
+  }));
+  gv("#d207-add").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    const tip = gv("#d207-tip").value;
+    const den = gv("#d207-den").value.trim();
+    const stat = gv("#d207-stat").value.trim().toUpperCase();
+    const cifro = gv("#d207-cifro").value.trim();
+    const cifs = gv("#d207-cifs").value.trim();
+    const act = gv("#d207-act").value;
+    const err = [];
+    if (!den) err.push(["d207-den", "Completează numele sau denumirea beneficiarului nerezident."]);
+    if (!stat) err.push(["d207-stat", "Completează statul de rezidență (codul de țară din 2 litere)."]);
+    if (!cifro && !cifs) err.push(["d207-cifro", "Completează codul de identificare fiscală — cel din România sau cel din străinătate (măcar unul)."]);
+    if (err.length) { err.forEach(([id, m]) => eroareCamp(zona, id, m)); return; }
+    const sc = _d207Scutit(tip);
+    S.d207.beneficiari.push({ tip_venit: tip, den: den, stat: stat, cif_ro: cifro, cif_strain: cifs,
+      act_n: act, baza: gv("#d207-baza").value,
+      imp: sc ? "" : gv("#d207-imp").value, imp_suportat: sc ? "" : gv("#d207-imps").value });
+    randeazaFormularD207(corp, nav);
+  });
+  gv("#d207-regen").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    // marcheaza campul vinovat INAINTE de a chema serverul (Regula 14.4)
+    if (!(S.d207.beneficiari || []).length) {
+      eroareCamp(zona, "d207-den", "Adaugă cel puțin un beneficiar nerezident (butonul + adaugă). D207 nu se depune fără beneficiari.");
+      return;
+    }
     pas2(corp, nav);
   });
 }
