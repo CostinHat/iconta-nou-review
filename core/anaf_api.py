@@ -103,16 +103,31 @@ def platitor_tva_freeze(cui, fallback=None):
     return fallback
 
 
+def separa_cui(lista_cui):
+    """Imparte intrarile brute in (curatate_unice, ignorate).
+    'ignorate' = intrari care nu contin nicio cifra -> nu pot fi un CUI (antet de coloana, nume, typo).
+    Regula 4 (fara default tacut) + Regula 14.4: intrarea care nu-i CUI NU dispare in tacere - o intoarcem
+    ca ecranul s-o arate contabilului ('verifica daca lipseste o firma'). Duplicatele se dedup (nu-s ignorate).
+    Randurile pur goale nu se raporteaza (nu-s intrari reale)."""
+    curatate, vazute, ignorate = [], set(), []
+    for c in lista_cui:
+        cifre = _curata(c)
+        if not cifre:
+            brut = str(c).strip()
+            if brut:
+                ignorate.append(brut)
+            continue
+        if cifre not in vazute:
+            vazute.add(cifre)
+            curatate.append(int(cifre))
+    return curatate, ignorate
+
+
 def valideaza_cui(lista_cui, data_interogare=None):
     """Întoarce [{cui, denumire, platitor_tva, tva_data_inceput, stare, inactiv, gasit}], ordine păstrată."""
     azi = data_interogare or date.today().isoformat()
 
-    curatate, vazute = [], set()
-    for c in lista_cui:
-        cifre = _curata(c)
-        if cifre and cifre not in vazute:
-            vazute.add(cifre)
-            curatate.append(int(cifre))
+    curatate, _ignorate = separa_cui(lista_cui)
     if not curatate:
         return []
 

@@ -180,11 +180,14 @@ function pasInput(corp, nav) {
         raspuns = await api.post("/migrare/valideaza", { cui_uri });
       }
       const rez = (raspuns && raspuns.rezultate) || [];
+      const ignorate = (raspuns && raspuns.ignorate) || [];
       if (rez.length === 0) {
-        eroare.textContent = "Niciun CUI valid de verificat.";
+        eroare.textContent = ignorate.length
+          ? (ignorate.length + " \u00eentr\u0103ri lipite nu con\u021bin un CUI (ex. \u201e" + ignorate[0] + "\u201d) \u2014 un CUI are doar cifre.")
+          : "Niciun CUI valid de verificat.";
         buton.disabled = false; buton.textContent = "Validează la ANAF"; return;
       }
-      pasRezultate(corp, nav, rez);
+      pasRezultate(corp, nav, rez, ignorate);
     } catch (e) {
       eroare.textContent = (e && e.mesaj) || "A apărut o eroare la validare.";
       buton.disabled = false; buton.textContent = "Validează la ANAF";
@@ -206,10 +209,15 @@ async function incarcaFisier(file) {
   return date;
 }
 
-function pasRezultate(corp, nav, rezultate) {
+function pasRezultate(corp, nav, rezultate, ignorate) {
+  ignorate = ignorate || [];
+  const bannerIgnorate = ignorate.length
+    ? `<div class="mig-avert" role="status"><b>${ignorate.length} ${ignorate.length === 1 ? "intrare nu con\u021bine" : "intr\u0103ri nu con\u021bin"} un CUI</b> \u0219i ${ignorate.length === 1 ? "a fost ignorat\u0103" : "au fost ignorate"}: ${ignorate.slice(0, 8).map((t) => "\u201e" + esc(t) + "\u201d").join(", ")}${ignorate.length > 8 ? " \u2026" : ""}. Un CUI are doar cifre \u2014 verific\u0103 dac\u0103 lipse\u0219te vreo firm\u0103.</div>`
+    : "";
   nav.setInapoi(() => pasInput(corp, nav));
   corp.innerHTML = `
     <p class="mig-intro">Am verificat <b>${rezultate.length} CUI-uri</b> la ANAF. Bifează firmele pe care le aduci în iConta.eu.</p>
+    ${bannerIgnorate}
     <div class="mig-lista" id="mig-lista"></div>
     <div class="mig-eroare" id="mig-eroare"></div>
     <button class="buton-primar mig-buton" id="mig-importa">Importă firmele bifate</button>

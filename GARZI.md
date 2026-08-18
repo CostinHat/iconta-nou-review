@@ -3208,3 +3208,10 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Gard:** `core/test_d307_formular.py` (nicio operatiune -> refuz; operatiune fara tip/denumire/cod -> refuz; o operatiune valida -> genereaza). `core/test_d307.py` extins cu asertia no-nume-interne pe erori_generare.
 - **Ce face imposibil:** un formular D307 gol (nicio operatiune) sa produca XML respins tacit de DUK; SI ca mesajul sa expuna nume interne (denO/codO/operatiuni/d_anulare).
 - **Mutatie proba:** sed reintroduce "denO" in mesajul de denumire lipsa din d307.py -> test_d307_operatiune_incompleta_refuza pica (rulat RED, restaurat GREEN).
+
+## Strat import FIRME: intrarea ne-CUI nu dispare în tăcere (18.08.2026)
+- **Gărzi:** `core/test_separa_cui.py` (4 teste, pure) + `core/test_migrare_ignorate_vizibil.py` (ratchet sursă: rută + frontend).
+- **Ce face imposibil:** o intrare fără nicio cifră (typo „ABC", antet de coloană, un token din „vezi lista") să fie curățată la gol și eliminată înainte de ANAF fără niciun semn (Regula 4 — fără default tăcut; Regula 14.4 — spune care dată și de ce). `anaf_api.separa_cui()` întoarce explicit `(curatate, ignorate)`; ruta `/migrare/valideaza` întoarce `ignorate`; `migrare.js` randează banner VIZIBIL `.mig-avert` (role=status, NU title-only — pierdut pe touch).
+- **Mutație probă:** pe cod vechi (fără `separa_cui`) cele 7 aserții pică (AttributeError + rută/frontend fără „ignorate"); după fix = 7 passed. Rulat RED prin pytest înainte de reparație.
+- **Probă live (Playwright, tenant_006):** lipit „14837428 / ABC / vezi lista / 12-34" → 2 rânduri verificate (BORG DESIGN SRL găsit, CUI 1234 negăsit) + banner „3 intrări nu conțin un CUI și au fost ignorate: „ABC", „vezi", „lista". Un CUI are doar cifre — verifică dacă lipsește vreo firmă." axe=0, mobil body=393px (fără scroll orizontal), banner vizibil. Cifrele se leagă (Regula 14.2): 5 token = 2 verificate + 3 ignorate.
+- **RĂMAS (straturi import încă neprobate individual):** vector_fiscal, solduri_parteneri (cont nepartener / CUI invalid), plan_conturi (simbol/denumire gol/duplicat).

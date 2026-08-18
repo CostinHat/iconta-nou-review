@@ -1550,12 +1550,13 @@ def tenant_actualizeaza(tenant_id: int, date: TenantEdit,
 def migrare_valideaza(date: MigrareValideazaIn, ctx=Depends(cere_cabinet)):
     """Verifică o listă de CUI-uri la ANAF; întoarce denumirea + status."""
     if not date.cui_uri:
-        return {"rezultate": []}
+        return {"rezultate": [], "ignorate": []}
+    _curatate, ignorate = anaf_api.separa_cui(date.cui_uri)
     try:
         rez = anaf_api.valideaza_cui(date.cui_uri)
     except Exception as e:
         raise HTTPException(502, f"ANAF indisponibil sau a refuzat cererea: {e}")
-    return {"rezultate": rez}
+    return {"rezultate": rez, "ignorate": ignorate}
 
 
 @app.post("/migrare/fisier")
