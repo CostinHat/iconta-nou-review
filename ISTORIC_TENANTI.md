@@ -14,6 +14,7 @@ Metoda de lucru per tenant = [`MODEL_AUDIT_TENANT.md`](MODEL_AUDIT_TENANT.md).
 
 | Data | Ce s-a atins | Commit(uri) | Rămas |
 |------|--------------|-------------|-------|
+| 2026-08-18 | **Re-test complet cu audit_tenant.py** (F2/F6/F7): scos ce scapase - D301 mesaj 'nr_doc gol' (nume intern), a11y app-wide (etichete lipsa fa-stocuri/registratura/banca/rapoarte, contrast fa-control/etransport/centrecost, mobil tinte<24px) | (audit, necomis-fix) | campanie colectii date valide+invalide: F5 mesaj D301 + a11y P3 + colectii invalide |
 | 2026-08-18 | **Mobil touch-target AA 2.5.8** pe 5 ecrane → 0 ținte <24px (.fir-veriga 19→24, .ajutor-btn 20→24, bug flex-shrink `#pc-cauta` 40→20px reparat) + **import motiv VIZIBIL** (nu title-only) pe 4 straturi, probat live salariați | `dc1ee22`, `e4fee31` | provocare **individuală** straturi import: firme (CUI ANAF), vector_fiscal, solduri_parteneri, plan_conturi; mobil pe casă/bancă, facturi, produse |
 | 2026-08-18 | **axe landmarks app-wide → 0** (fix structural navigator.js: `<header>` banner + role=dialog + role=status) + **D406 conturi 731-738** verificat la sursă = excludere corectă din norma A (sunt în planul ONG) | `0392b3b`, `6be6a53` | — |
 | 2026-08-18 | **D390↔d301** rezolvat pe corectitudine + **auto-derivare d301→D390 cod A/S** (decizia Costin) + rafinări tip 3/4 verificate la sursă + confirmare "nu e serviciu" per-furnizor + a11y contrast grila D301 | `8ceed16`, `0a47512`, `bce45bc`, `cba1856`, `abea0b6`, `a8c2f1e`, `4349d4b`, `816cf65` | — |

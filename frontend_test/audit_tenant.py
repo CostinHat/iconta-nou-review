@@ -60,7 +60,14 @@ def _mint_token(email):
     if not u:
         return None, None
     u = dict(u)
-    return auth_api.emite_token(u), u
+    tok = auth_api.emite_token(u)
+    # user CURAT pt sessionStorage (F6): scoate parola_hash, serializeaza datetime -> altfel json.dumps crapa
+    safe = {}
+    for k, v in u.items():
+        if k in ("parola_hash", "parola"):
+            continue
+        safe[k] = v.isoformat() if hasattr(v, "isoformat") else v
+    return tok, safe
 
 CFG = {}
 for ln in open(os.path.expanduser("~/.iconta/fe_test.env")):

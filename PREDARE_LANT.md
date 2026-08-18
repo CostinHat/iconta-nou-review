@@ -2,6 +2,36 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 # PREDARE LANT — audit tenant_006 (Achizitii IC Neplatitor SRL / N1, cabinet Prisma 1968)
 
+## REPORNIRE (comanda exacta, gata de dat) — CAMPANIE ACTIVA: colectii date valide+invalide per firma + corectitudine (F5)
+Costin (18.08): pentru FIECARE firma din matrice (cabinet 1968: t001-t012 + t017; + demo 8396-99) construieste o
+colectie de date VALIDE (genereaza toate declaratiile aplicabile DUK-valid) + una INVALIDE (provoaca fiecare blocaj/
+refuz/camp obligatoriu). La cele INVALIDE conteaza ca MESAJUL de pe ecran sa-l ajute pe contabil sa inteleaga si sa
+remedieze intrarea - "nu facem economie de vorbe" (F5/Regula 14.4: ce lipseste + unde se corecteaza + consecinta;
+FARA nume interne; motiv VIZIBIL nu title-only; obligativitate inainte de buton). NU vanez defect/firma - verific
+CORECTITUDINEA aplicatiei, holistic. Instrument: frontend_test/audit_tenant.py <id> --user=<email> (F2 DUK + F7
+semafor + F6 axe/mobil; F3/F5 manuale). Metoda = MODEL_AUDIT_TENANT.md (8 fatete, extensibile). Fiecare firma cap-
+coada -> rand in ISTORIC_TENANTI.md; roșurile de corectitudine reparate cu tiparul P3 (app-wide) + gard RED-probat.
+Criteriu "gata de productie" (AGREAT Costin): fiecare functionalitate a trecut fatetele aplicabile pe >=1 firma cu
+date valide+invalide, roșurile de corectitudine reparate, restul documentat ca decizie de produs (NU "zero bug").
+
+COMANDA DE REPORNIRE (gata de dat): "Continua campania colectii date valide+invalide + corectitudine. Instrument:
+audit_tenant.py pe matricea 1968 (--user=patron@prisma-cont.test). Reia de la 006. PRIORITATI din re-testul 006 (18.08):
+(A) F5 - mesajul D301 'nr_doc gol' EXPUNE numele intern -> rescrie in limba contabilului ('Operatiunea N: completeaza
+numarul documentului'); cauta TIPARUL 'nume intern in paranteza' in TOATE mesajele de generare (grep pe erori_generare/
+valideaza) si repara app-wide. (B) a11y APP-WIDE (P3, iesit pe 006 SI ALFA): campuri fara eticheta pe fa-stocuri(4)/
+fa-registratura(2)/fa-banca(1)/fa-rapoarte(1); contrast pe fa-control(2)/fa-etransport(1)/fa-centrecost(2); mobil
+tinte<24px pe fa-casa/fa-banca - reparate cu tiparul + gard test_a11y_touch_target/contrast_tokens extins. (C) apoi
+colectii INVALIDE per firma (CSV-uri bad per strat + valori la limita), provocate cu F5, mesaj util. Toate: poarta
+verde + rand ISTORIC_TENANTI."
+
+STARE MATRICE (harta F2/F7 pe cabinet 1968, 18.08): DEFECTE REALE = t001 (D112 erori DUK 'asigurat idAsig=4' + cod
+boala '91' pe concediu medical), t006 (D301 operatiune fara nr_doc), t009 (D406 factura COER-T5 nereconciliata:
+antet net/tva != suma liniilor). SUB-EXERCITATE (fara date de validat) = t005/t011/t012 (au nevoie de DATE, nu de
+stergere - regimuri valoroase: profit-trim/startup-partial/tranzitie). REFUZ CORECT by-design (D100 pe zero) =
+t002/t009/t017. CURAT F2 = t004/t007/t008/t010. Concluzie firme (agreat): cele 13 ≈ set minim de REGIMURI; nu se
+reduc - se umplu cu date. audit_tenant.py: --user mint server-side + F6 + XSD pre-check + user sanitizat (18.08).
+
+
 ## REPORNIRE (comanda exacta, gata de dat) — CAMPANIE: 6 formulare manuale pt declaratiile _DOAR_API
 Costin a cerut formulare de introducere manuala pentru 6 declaratii (din cele 41 _DOAR_API care au generator+DUK dar
 n-au ecran), in ordinea frecventei la un cabinet SRL: **d710, d311, d307, d107, d177, d207**. Cap-coada fiecare:
