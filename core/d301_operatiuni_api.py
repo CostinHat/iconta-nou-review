@@ -92,7 +92,12 @@ def lista(conn, schema, an, luna):
                         "partener_tara": r["partener_tara"] or "", "partener_cod": r["partener_cod"] or "",
                         "partener_den": r["partener_den"] or "",
                         # semnal UI: operatiune care ar apărea in D390 (cod A/S) dar nu are tara furnizor
-                        "d390_cod": _codD, "d390_lipsa_furnizor": bool(_codD and not (r["partener_tara"] or ""))})
+                        "d390_cod": _codD, "d390_lipsa_furnizor": bool(_codD and not (r["partener_tara"] or "")),
+                        # [mis-clasificare 18.08.2026] tip 4 cu COD TVA furnizor completat = suspect: codul
+                        # exclude alin.(6) (furnizori neinregistrati) -> ramane gaz/energie (alin 3/5) SAU un
+                        # SERVICIU IC (alin 2) gresit pus ca tip 4 (ar trebui tip 5 -> cod S in D390). Indiciu
+                        # soft (nu certitudine: gazul poate avea si el furnizor inregistrat).
+                        "d390_posibil_serviciu": bool(r["tip"] == 4 and (r["partener_cod"] or "").strip())})
     return {
         "operatiuni": ops,
         "tipuri": [{"val": t, "eticheta": TIPURI_ETICHETE[t]} for t in TIPURI_OP],

@@ -351,11 +351,14 @@ async function randeazaOperatiuniD301(corp, nav) {
   const grila = ops.length
     ? ops.map((o) => {
         const furnizor = o.partener_tara ? `${esc(o.partener_tara)}${esc(o.partener_cod || "")}${o.partener_den ? " " + esc(o.partener_den) : ""}` : "";
+        const misclas = o.d390_posibil_serviciu
+          ? ` <span class="mig-cnp-no" title="Serviciile intracomunitare (art. 307 alin. 2) se introduc ca tip 5 ca să apară în D390 la cod S. Tip 4 e pentru gaz/energie și taxare inversă locală, care nu intră în D390.">⚠ dacă e serviciu intracomunitar, folosește tip 5 (D390 cod S)</span>`
+          : "";
         const d390 = o.d390_cod
           ? (o.d390_lipsa_furnizor
               ? ` <span class="mig-cnp-no" title="completează țara furnizorului ca operațiunea să apară în D390">⚠ fără furnizor — nu intră în D390 (cod ${o.d390_cod})</span>`
               : (furnizor ? ` <span class="mig-cnp-ok">→ D390 cod ${o.d390_cod}</span>` : ""))
-          : ` <span class="ecran-nota">(nu intră în D390 — ${o.tip === 2 ? "mijloc de transport nou" : "taxare inversă locală, art. 307 alin. (3)/(5)/(6)"})</span>`;
+          : ` <span class="ecran-nota">(nu intră în D390 — ${o.tip === 2 ? "mijloc de transport nou" : "taxare inversă locală, art. 307 alin. (3)/(5)/(6)"})</span>${misclas}`;
         return `<div class="dec-man-rand">
         <span class="dec-recl-desc" title="${esc(o.eticheta)}">Tip ${o.tip} · ${esc(o.nr_doc)}${o.data_doc ? " · " + esc(o.data_doc) : ""} · ${esc(o.tip_valuta)} ${bani(o.val_valuta)} × ${esc(String(o.curs))}${furnizor ? " · furnizor " + furnizor : ""}${d390}</span>
         <span class="dec-recl-suma">${bani(o.baza)} bază · ${bani(o.tva)} TVA (lei)</span>

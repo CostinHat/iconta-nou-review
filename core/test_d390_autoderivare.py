@@ -42,6 +42,7 @@ def schema_d301():
             c.execute('DROP SCHEMA IF EXISTS "%s" CASCADE' % SCH)
             c.execute('CREATE SCHEMA "%s"' % SCH)
             c.execute('CREATE TABLE "%s".d301_operatiuni (id serial, an int, luna int, tip int, '
+                      'nr_doc text, data_doc text, tip_valuta text DEFAULT \'EUR\', tva numeric DEFAULT 0, '
                       'val_valuta numeric, curs numeric, partener_tara varchar(2) DEFAULT \'\', '
                       'partener_cod varchar(20) DEFAULT \'\', partener_den text DEFAULT \'\')' % SCH)
     try:
@@ -106,3 +107,19 @@ def test_achizitii_d301_numara_doar_mapabile_fara_tara(schema_d301):
     _ins(db, 1, 100, 5, "DE")    # bunuri CU tara -> NU (a intrat deja in D390)
     with db.get_conn() as conn:
         assert achizitii_d301(conn, SCH, 2026, 6) == 3, "numara doar tip 1/3/5 fara tara"
+
+
+def test_d390_posibil_serviciu_semnaleaza_tip4_cu_cod(schema_d301):
+    """[mis-clasificare] lista marcheaza d390_posibil_serviciu=True DOAR pe tip 4 cu cod TVA furnizor
+    (codul exclude alin.6 nereg -> posibil serviciu IC pus gresit ca tip 4, ar trebui tip 5 -> D390 cod S).
+    tip 4 fara cod (posibil alin.6) si tip 5 -> False."""
+    db = schema_d301
+    from core import d301_operatiuni_api as api
+    _ins(db, 4, 100, 5, "DE", "123456", "Furnizor DE")   # tip 4 CU cod -> suspect
+    _ins(db, 4, 100, 5, "DE", "", "Fara cod")            # tip 4 FARA cod -> nu
+    _ins(db, 5, 100, 5, "IT", "999", "Serviciu IT")      # tip 5 -> nu (deja corect)
+    with db.get_conn() as conn:
+        ops = {o["partener_den"]: o for o in api.lista(conn, SCH, 2026, 6)["operatiuni"]}
+    assert ops["Furnizor DE"]["d390_posibil_serviciu"] is True, "tip 4 cu cod trebuie semnalat"
+    assert ops["Fara cod"]["d390_posibil_serviciu"] is False, "tip 4 fara cod nu se semnaleaza"
+    assert ops["Serviciu IT"]["d390_posibil_serviciu"] is False, "tip 5 nu se semnaleaza"

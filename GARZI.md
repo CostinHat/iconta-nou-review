@@ -3169,3 +3169,9 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Gard:** `core/test_d390_autoderivare.py::test_mapare_tip_cod_si_filtrul_tarii` (tip 4 cu tara NU apare in output).
 - **Temei verificat:** CF art. 307 alin.(3)(5)(6) = gaz/energie / bunuri din regim suspensiv / taxare inversa locala generala -> niciuna IC -> exclus din D390 corect.
 - **Efect:** grila D301 clarifica tip 2/4 ("nu intra in D390 — ...") chiar cu furnizor.
+
+## Mis-clasificare tip 4 -> indiciu tip 5 (18.08.2026)
+- **Gard:** `core/test_d390_autoderivare.py::test_d390_posibil_serviciu_semnaleaza_tip4_cu_cod`.
+- **Ce face imposibil:** d390_posibil_serviciu sa se aprinda pe alt tip decat 4, sau sa rateze tip 4 cu cod.
+- **Mutatie proba:** scot conditia tip==4 -> tip 5 cu cod semnalat -> testul pica.
+- **Limita:** indiciu SOFT (gaz/energie alin.3/5 cu furnizor inregistrat da fals-pozitiv benign; contabilul confirma).

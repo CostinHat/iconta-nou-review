@@ -9562,3 +9562,11 @@ preexistent d301/d390, extins la TOATE (d100/d101/d205/d112/d300/bilant). declar
 **Efect UI.** Grila D301 arata acum pentru tip 2/4 o nota "(nu intra in D390 — transport nou / taxare inversa locala, art. 307 alin.(3)/(5)/(6))", CHIAR daca au furnizor - contabilul stie ca excluderea e intentionata, nu o omisiune. Comentariul mapicarii _D301_TIP_COD (d390.py) actualizat cu temeiul precis (era vag "amestec").
 
 **Proba.** Captura privita: op tip 4 cu furnizor DE -> nota "nu intra in D390 — taxare inversa locala art. 307 alin.(3)/(5)/(6)"; op tip 1 fara furnizor -> "⚠ fara furnizor". Fara schimbare de mapare (era corecta); gard existent test_mapare_tip_cod pineaza tip 4 exclus din output.
+
+## 18.08.2026 — Mis-clasificare: tip 4 cu cod TVA furnizor -> indiciu "poate e serviciu IC (tip 5)"
+
+**Decizie.** O operatiune D301 tip 4 (art.307 alin.(3)(5)(6), exclusa din D390) care are COD TVA furnizor completat e SUSPECTA de mis-clasificare: codul de TVA exclude alin.(6) (furnizori neinregistrati), lasand gaz/energie (alin.3/5) SAU un SERVICIU intracomunitar (alin.2) pus GRESIT ca tip 4 - care ar trebui tip 5 ca sa apara in D390 (cod S). lista intoarce d390_posibil_serviciu = (tip==4 AND partener_cod != ''); grila D301 arata indiciu SOFT: "⚠ daca e serviciu intracomunitar, foloseste tip 5 (D390 cod S)".
+
+**Temei.** Regula 4 (nu tace pe un posibil gol de conformitate) + CF art.307 alin.(2) (servicii IC = tip 5). Indiciu SOFT, nu blocaj: nu e certitudine (gazul/energia alin.3/5 pot avea si ele furnizor inregistrat) -> avertizeaza, nu impune. Astfel un serviciu IC ratacit pe tip 4 (deci absent din D390) e semnalat contabilului.
+
+**Proba.** lista pe tenant_006: tip 4 cu cod -> posibil_serviciu True; tip 4 fara cod -> False; tip 5 -> False. Gard test_d390_posibil_serviciu_semnaleaza_tip4_cu_cod (mutatie: fara tip==4 -> tip 5 semnalat -> pica). 25 passed regresie.

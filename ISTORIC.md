@@ -4532,3 +4532,6 @@ Cerut de Costin. Verificat la sursa (OPANAF 394/2017 anexa 2): cod A = achizitii
 
 ## 18.08.2026 — Audit tenant_006 (cont.): tip 4 exclus din D390 verificat la sursa + nota UI
 Cerut de Costin. Verificat CF art. 307 (corpus): tip 4 = Sectiunea 4 D301 = alin.(3) gaz/energie (loc in RO, nu IC) + alin.(5) bunuri din regim suspensiv (intern) + alin.(6) taxare inversa locala generala -> niciuna intracomunitara -> exclus din D390 CORECT (serviciile IC art.307(2) = tip 5 -> cod S). Comentariu mapare actualizat cu temeiul precis. Nota UI in grila D301 pentru tip 2/4 ("nu intra in D390 — ..."), chiar cu furnizor. Captura privita. Fara schimbare de mapare. Commit: aceasta tura.
+
+## 18.08.2026 — Audit tenant_006 (cont.): cazul de mis-clasificare tip 4 -> tip 5
+Cerut de Costin (item §5). Un serviciu IC introdus gresit ca tip 4 (in loc de tip 5) nu ajunge in D390 = gol de conformitate. Semnal: tip 4 cu COD TVA furnizor completat (codul exclude alin.6 nereg) -> suspect serviciu IC. lista intoarce d390_posibil_serviciu; grila D301 arata indiciu soft "daca e serviciu intracomunitar, foloseste tip 5 (D390 cod S)". Nu blocaj (gazul alin.3/5 poate avea si el furnizor -> fals-pozitiv benign). Gard mutatie-probat. Commit: aceasta tura.

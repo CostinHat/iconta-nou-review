@@ -60,6 +60,8 @@ excludere accizabile) + DUK (bazaA); tip 5 -> cod S DUK (bazaS). tip 4 (art.307 
 bunuri din regim suspensiv + taxare inversa locala) VERIFICAT la sursa (CF art.307) = NEintracomunitar -> exclus
 din D390 CORECT (serviciile IC art.307(2) = tip 5). Rafinare: achizitii_d301 numara doar tip 1/3/5 fara tara;
 grila D301 clarifica tip 2/4 ("nu intra in D390 — ..."). Toate cele 5 tipuri D301 verificate la sursa.
+Mis-clasificare: tip 4 cu cod TVA furnizor -> indiciu soft "poate e serviciu IC -> foloseste tip 5 (D390 cod S)"
+(flag d390_posibil_serviciu), ca un serviciu IC ratacit pe tip 4 sa nu ramana absent din D390.
 
 ## RAMAS deschis (fronturi pt urmatoarea tura)
 - axe "region"/landmarks app-wide (moderat, structural, 8-19 noduri/ecran).
