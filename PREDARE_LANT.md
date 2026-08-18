@@ -11,8 +11,13 @@ cap.6, ZERO clase noi, regula 0 citata in cap; identitate intre situatii similar
 PRIVITA. GARDA per declaratie: formular gol nu produce declaratie (refuz backend cu mesaj de CONTABIL, nu nume de camp),
 mutatie-probata RED. CSV FUNCTIONALITATI (Stare AMANAT->LIVE) odata cu codul; test_registru_functionalitati verde.
 
-COMANDA DE REPORNIRE (gata de dat): "Continua campania de formulare manuale _DOAR_API. GATA d710+d311+d307+d107+d177.
-URMATOAREA: d207 (informativa nerezidenti, ULTIMA din campanie), cap-coada, in aceeasi metoda."
+CAMPANIE INCHISA (18.08.2026): GATA toate 6 - d710+d311+d307+d107+d177+d207. Fiecare LIVE, scos din _DOAR_API,
+formular UI + gard formular-gol (mesaj de contabil) + DUK valid + Playwright (axe 0/0 + mobil 393). Commit d207: 89c3a26.
+
+COMANDA DE REPORNIRE (gata de dat): "Continua auditul tenant_006. Fronturi ramase (vezi sectiunea RAMAS deschis):
+axe 'region'/landmarks app-wide (structural, 8-26 noduri/ecran); D406 avertisment conturi 731-738 (de verificat la sursa
+daca norma A le exclude corect); import 8 straturi neprovocate; vizual/mobil Pixel5 pe restul ecranelor tenant_006.
+Metoda Regula 13+14: captura privita + axe/mobil pe fiecare ecran atins, reparand, gard RED-probat."
 
 **GATA: d710** - formular "Obligatii corectate" (cod 121 micro/103 profit, suma initiala/corecta, cota la micro),
 obligatii in memorie -> body, refuz-pe-gol, gard test_d710_formular, CSV F192->LIVE. Model: declaratii.js::randeazaFormularD710.
@@ -57,7 +62,10 @@ core/test_d177_formular.py (RED-probat sed pe sumaRest). BUG REAL reparat: luna 
 trimitea luna=6 -> R4.1 respins), aserție regresie in gard. Scos DOAR d177 din _DOAR_API. CSV F210->LIVE + GRUPE_FUNC
 (149) + registre IN ACELASI commit. Proba: frontend_test/proba_d177_formular.py (ALFA MICRO an 2025, DUK valid, axe 0, mobil body=393).
 
-**URMATOAREA: d207** (declaratie informativa privind impozitul retinut la sursa pe veniturile nerezidentilor, ULTIMA din
+**GATA: d207** (LIVRAT 18.08, commit 89c3a26 - ULTIMA, CAMPANIA INCHISA; DUK valid + axe 0/0 + mobil body=393;
+nomenclator tip venit SURSAT din structura_D207_2025 cap.III - 25 coduri, impozabile+scutite; suma control 10801
+JS=server; scutit->impozit dezactivat+0. LECTIE: RED-proof pe fisier needitat-committed NU cu git checkout -
+sterge si editarile necommitate; re-aplica editarea sau foloseste o copie). Istoric metoda: informativa nerezidenti, ULTIMA din
 campanie, MANUALA). Citeste core/d207.py (semnatura genereaza + calcul + erori_generare + build_xml) si valideaza_cerere
 d207 (linia "d207 cere `manual.beneficiari` (lista de beneficiari nerezidenți)" - de rescris in limba contabilului).
 Model LISTA de beneficiari nerezidenti, grupati pe tip_venit (verifica structura la sursa in anaf_surse). DE FACUT identic
