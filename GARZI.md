@@ -3153,3 +3153,9 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Ce face imposibil:** D390 sa refuze "pe zero" cu mesaj generic cand D301 are achizitii in perioada (ar duce la omiterea D390 pentru un art.317).
 - **Mutatie proba:** bypass ramura d301 (`_d301 = 0`) -> mesajul tenant_006 devine generic -> test pica.
 - **RAMAS:** auto-derivare d301->D390 = decizie (recomandare NU); axe region/landmarks app-wide; D406 conturi 731-738.
+
+## Auto-derivare d301->D390 cod A/S (18.08.2026)
+- **Gard:** `core/test_d390_autoderivare.py` (mapare tip->cod + filtrul tarii; cele doua cai generator/reconciliere coincid). Plus test_audit_schema (coloanele partener pe toate schemele).
+- **Ce face imposibil:** o cale (generator sau reconciliere) sa ignore d301 sau sa driftreze maparea -> gardul de reconciliere ar bloca fals, sau achizitia ar disparea din D390.
+- **Mutatie proba:** _D301_TIP_COD 1->S in reconciliere -> cele doua cai difera -> test_cele_doua_cai_coincid pica.
+- **RAMAS:** tip 2/4 excluse din auto-derivare (clasificare manuala); codul TVA furnizor validat de checksum_vies la generare (cod invalid -> DUK R24.1). axe region landmarks; D406 731-738.

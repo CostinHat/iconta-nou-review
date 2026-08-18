@@ -475,16 +475,52 @@ def pull_reclasificari(conn, schema, an, luna):
 
 def achizitii_d301(conn, schema, an, luna):
     """[front D390<->d301, audit tenant_006 18.08.2026] Cate operatiuni IC sunt inregistrate in
-    d301_operatiuni pentru perioada (achizitii IC ale neplatitorilor art.317, din ecranul D301).
-    D390 NU le citeste automat: d301_operatiuni NU are codul TVA + tara FURNIZORULUI, pe care D390 cod A
-    le cere (codT/codO) - vezi decizia de flux (extindere d301 vs facturi). Pe refuzul-pe-zero le
-    SEMNALAM (Regula 4: nu 'nu exista operatiuni' cand D301 are achizitii). Tabela poate lipsi (partida simpla)."""
+    d301_operatiuni pentru perioada (din ecranul D301). Auto-derivarea (operatiuni_din_d301) le aduce in
+    D390 pe cele cu FURNIZOR completat (tara); acest count e folosit la refuzul-pe-zero: daca D390 e pe zero
+    DAR d301 are operatiuni, inseamna ca le lipseste tara furnizorului -> indrumam spre completare (nu 'nu ai
+    operatiuni', Regula 4). Tabela poate lipsi (partida simpla)."""
     with conn.cursor() as cur:
         cur.execute("SELECT to_regclass(%s)", (schema + ".d301_operatiuni",))
         if not cur.fetchone()[0]:
             return 0
         cur.execute(f"SELECT count(*) FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s", (an, luna))
         return cur.fetchone()[0]
+
+
+# [auto-derivare d301->D390, decizia Costin 18.08.2026] Maparea tipului D301 (OPANAF 592/2016) -> codul
+# D390 (OPANAF 705/2020): tip 1 (achizitii IC bunuri taxabile) + tip 3 (produse accizabile = bunuri) -> A;
+# tip 5 (servicii IC primite, taxare inversa art.307(2)) -> S. EXCLUSE: tip 2 (mijloace transport noi -
+# raportare speciala, nu in recapitulativa) si tip 4 (art.307 (2)(3)(5)(6) - amestec IC + taxare inversa
+# interna gaz/energie, nu toate intracomunitare) -> clasificare manuala daca e cazul.
+_D301_TIP_COD = {1: "A", 3: "A", 5: "S"}
+
+
+def operatiuni_din_d301(conn, schema, an, luna):
+    """[auto-derivare d301->D390] Achizitiile IC din ecranul D301 (d301_operatiuni) devin linii D390
+    pre-tipizate (ca liniile manuale d390_manual): tip D301 -> cod D390 prin _D301_TIP_COD. Se deriveaza
+    DOAR operatiunile cu TARA furnizorului completata (fara tara nu se poate forma o linie D390 valida -
+    codT obligatoriu; codO poate fi gol = NOTA 1). baza = round(val_valuta x curs) (aceeasi ca D301).
+    Directie 'primita' (achizitii). Tabela poate lipsi (partida simpla) -> []. conn None (teste cu pull
+    monkeypatchuit, fara DB) -> [] (nicio operatiune d301 din DB)."""
+    from decimal import ROUND_HALF_UP as _RH
+    if conn is None:
+        return []
+    with conn.cursor() as cur:
+        cur.execute("SELECT to_regclass(%s)", (schema + ".d301_operatiuni",))
+        if not cur.fetchone()[0]:
+            return []
+        cur.execute(f"SELECT tip, val_valuta, curs, partener_tara, partener_cod, partener_den "
+                    f"FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
+        out = []
+        for tip, val, curs, tara, cod, den in cur.fetchall():
+            codD = _D301_TIP_COD.get(int(tip or 1))
+            tara = (tara or "").strip().upper()
+            if not codD or not tara:
+                continue   # tip neauto-derivabil (2/4) sau fara tara furnizor -> nu formam linie
+            baza = int((Decimal(str(val or 0)) * Decimal(str(curs or 0))).quantize(Decimal("1"), rounding=_RH))
+            out.append({"tip": codD, "tara": tara, "cod": (cod or "").strip(),
+                        "den": (den or "")[:200], "baza": baza, "directie": "primita"})
+    return out
 
 
 def d390_are_operatiuni(conn, schema, an, luna, azi=None):
@@ -543,6 +579,9 @@ def calculeaza(conn, schema, an, luna, manual=None, reclasificari=None):
         manual = pull_manual(conn, schema, an, luna)
     if reclasificari is None:
         reclasificari = pull_reclasificari(conn, schema, an, luna)
+    # [auto-derivare d301->D390] achizitiile IC din ecranul D301 (cu furnizor completat) intra ca linii
+    # pre-tipizate A/S, INTOTDEAUNA (ca facturile) - persistate, deci vazute de toate caile (wizard/control).
+    manual = list(manual) + operatiuni_din_d301(conn, schema, an, luna)
     res = calcul_d390(prof, an, luna, facturi, manual, reclasificari)
     return res
 
@@ -584,12 +623,15 @@ def genereaza(conn, schema, an, luna, manual=None, reclasificari=None):
         # adaugarea manuala (Tip A). Acelasi tipar ca refuzul D301 care semnaleaza facturile IC neintroduse.
         _d301 = achizitii_d301(conn, schema, an, luna)
         if _d301:
+            # D390 e pe zero desi D301 are operatiuni -> auto-derivarea nu le-a putut aduce (le lipseste
+            # TARA furnizorului). Indrumam spre completarea furnizorului in ecranul D301 (nu 'nu ai operatiuni').
             raise ValueError(
                 "D390 pe zero, DAR există %d operațiune(i) intracomunitară(e) în D301 (d301_operatiuni) în "
-                "%02d/%d, nereflectate în D390. Dacă firma e înregistrată conform art.317, adaugă-le manual "
-                "în Clasificarea intracomunitară a D390 (Tip A — achiziție bunuri IC de la furnizor UE, cu "
-                "țara și codul de TVA al furnizorului). D390 se construiește din facturi + liniile manuale, "
-                "nu automat din tabelul D301." % (_d301, luna, an))
+                "%02d/%d care nu au apărut în D390 — le lipsește ȚARA furnizorului. Completează țara (și, "
+                "dacă există, codul de TVA) furnizorului pe fiecare operațiune din ecranul D301: achizițiile "
+                "de bunuri (tip 1/3) apar automat ca linii cod A, serviciile IC (tip 5) ca linii cod S. "
+                "(Operațiunile tip 2 — transport nou — și tip 4 se clasifică manual în D390 dacă e cazul.)"
+                % (_d301, luna, an))
         raise ValueError(
             "D390 nu se depune pe zero: luna %02d/%d nu are nicio operațiune intracomunitară. "
             "Declarația recapitulativă se depune NUMAI pentru lunile în care ia naștere "

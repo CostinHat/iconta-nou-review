@@ -77,16 +77,22 @@ def lista(conn, schema, an, luna):
     """Operatiunile lunii (cu baza si tva) + nomenclatoarele pt formular (o singura sursa)."""
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute(f"SELECT id, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva "
+        cur.execute(f"SELECT id, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva, "
+                    f"partener_tara, partener_cod, partener_den "
                     f"FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
         ops = []
         for r in cur.fetchall():
             baza = calc_baza(r["val_valuta"] or 0, r["curs"])
+            _codD = {1: "A", 3: "A", 5: "S"}.get(r["tip"])
             ops.append({"id": r["id"], "tip": r["tip"],
                         "eticheta": TIPURI_ETICHETE.get(r["tip"], "Tip %s" % r["tip"]),
                         "nr_doc": r["nr_doc"] or "", "data_doc": r["data_doc"] or "",
                         "val_valuta": float(r["val_valuta"] or 0), "tip_valuta": r["tip_valuta"] or "",
-                        "curs": float(r["curs"]), "baza": baza, "tva": _r0(r["tva"] or 0)})
+                        "curs": float(r["curs"]), "baza": baza, "tva": _r0(r["tva"] or 0),
+                        "partener_tara": r["partener_tara"] or "", "partener_cod": r["partener_cod"] or "",
+                        "partener_den": r["partener_den"] or "",
+                        # semnal UI: operatiune care ar apărea in D390 (cod A/S) dar nu are tara furnizor
+                        "d390_cod": _codD, "d390_lipsa_furnizor": bool(_codD and not (r["partener_tara"] or ""))})
     return {
         "operatiuni": ops,
         "tipuri": [{"val": t, "eticheta": TIPURI_ETICHETE[t]} for t in TIPURI_OP],
@@ -135,15 +141,30 @@ def adauga(conn, schema, an, luna, d):
             date(aaaa, ll, zz)
         except (ValueError, TypeError):
             erori.append(("datadoc", "Data documentului %r nu e o dată calendaristică validă." % data_doc))
+    # [auto-derivare d301->D390, decizia Costin 18.08.2026] Furnizorul UE - OPTIONAL pe D301 (D301 nu-l cere),
+    # dar necesar ca operatiunea sa apara AUTOMAT in D390 (cod A/S). tara: 2 litere ISO; cod: codul de TVA al
+    # furnizorului fara prefix tara (poate lipsi = NOTA 1). Fara tara -> operatiunea nu intra in D390 (avertisment
+    # la generare). Validam usor aici; checksum-ul VIES al codului il face D390 (checksum_vies) la generare.
+    partener_tara = (d.get("partener_tara") or "").strip().upper()
+    partener_cod = (d.get("partener_cod") or "").strip().upper()
+    partener_den = (d.get("partener_den") or "").strip()
+    if partener_tara and not re.match(r"^[A-Z]{2}$", partener_tara):
+        erori.append(("partener_tara", "Țara furnizorului trebuie să fie codul din 2 litere (ex. DE, FR, IT)."))
+    if partener_cod and not partener_tara:
+        erori.append(("partener_tara", "Ai completat codul de TVA al furnizorului — completează și țara (2 litere)."))
+    if len(partener_cod) > 20:
+        erori.append(("partener_cod", "Codul de TVA al furnizorului e prea lung (max 20 caractere)."))
     if erori:
         return {"eroare": "; ".join(m for _c, m in erori),
                 "erori_campuri": [{"camp": c, "mesaj": m} for c, m in erori]}
     baza, tva = _tva_din(val_valuta, curs, cota)
     with conn.cursor() as cur:
         cur.execute(f"""INSERT INTO {schema}.d301_operatiuni
-                        (an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva)
-                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
-                    (an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva))
+                        (an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva,
+                         partener_tara, partener_cod, partener_den)
+                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
+                    (an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva,
+                     partener_tara, partener_cod, partener_den))
         oid = cur.fetchone()[0]
     conn.commit()
     return {"ok": True, "id": oid, "baza": baza, "tva": tva}

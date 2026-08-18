@@ -50,8 +50,13 @@ Capcana: bordura globala `!important` (contrast_ferestre_v1, specificitate 0,6,1
 `.camp-invalid` (0,7,1). Captura privita Date firma (2 campuri goale -> contur rosu + mesaj, dispar la corectare).
 Gard test_fieldmark.py mutatie-probat. DS v2.44.
 
+## INCHIS tura asta — AUTO-DERIVARE d301->D390 cod A/S (CONSTRUITA, decizia Costin)
+Costin a cerut construirea (peste recomandarea executorului). Livrat: migrare DB (furnizor pe d301_operatiuni, 19/19
+scheme) + ecran D301 cu 3 campuri furnizor + indicator grila + generator d390.operatiuni_din_d301 (tip 1/3->A, 5->S;
+2/4 excluse) + reconciliere a-doua-cale _pull_d301. Proba: tenant_006 op cu furnizor DE -> D390 auto-derivat DUK VALID
+(cod A, baza 52261); captura privita ecran D301. Gard mutatie-probat (cele doua cai coincid). DS v2.45.
+
 ## RAMAS deschis (fronturi pt urmatoarea tura)
-- Auto-derivare d301->D390 cod A = DECIZIE (recomandare executor: NU; vezi front 2 INCHIS). Fara asta, fluxul e complet (manual + avertisment).
 - axe "region"/landmarks app-wide (moderat, structural, 8-19 noduri/ecran).
 - D406 avertisment conturi 731-738 excluse din norma A (neverificat la sursa).
 - Import: provocate salariati+solduri (curat); restul 8 straturi neprovocate in aceste ture.

@@ -143,6 +143,34 @@ def _pull_manual(conn, schema, an, luna):
                 for (t, ta, c, d, b) in cur.fetchall()]
 
 
+_D301_TIP_COD = {1: "A", 3: "A", 5: "S"}  # mirror d390._D301_TIP_COD (NU se importa - a doua cale independenta)
+
+
+def _pull_d301(conn, schema, an, luna):
+    """[auto-derivare d301->D390] Achizitiile IC din d301_operatiuni ca linii pre-tipizate {tip,tara,cod,den,baza}.
+    SQL PROPRIU (nu importa d390.operatiuni_din_d301) - a doua cale independenta, mapare identica (tip 1/3->A,
+    5->S; DOAR cu tara furnizor; baza=round(val x curs)). Tabela poate lipsi (partida simpla) -> [].
+    conn None -> [] (reconciliaza deja intoarce 'neacoperit' fara conn)."""
+    if conn is None:
+        return []
+    with conn.cursor() as cur:
+        cur.execute("SELECT to_regclass(%s)", (schema + ".d301_operatiuni",))
+        if not cur.fetchone()[0]:
+            return []
+        cur.execute("SELECT tip, val_valuta, curs, partener_tara, partener_cod, partener_den "
+                    "FROM {s}.d301_operatiuni WHERE an=%s AND luna=%s".format(s=schema), (an, luna))
+        out = []
+        for (tip, val, curs, tara, cod, den) in cur.fetchall():
+            codD = _D301_TIP_COD.get(int(tip or 1))
+            tara = (tara or "").strip().upper()
+            if not codD or not tara:
+                continue
+            baza = _q(Decimal(str(val or 0)) * Decimal(str(curs or 0)))
+            out.append({"tip": codD, "tara": tara, "cod": (cod or "").strip(),
+                        "den": (den or "")[:200], "baza": baza})
+    return out
+
+
 def _recalcul_independent(conn, schema, an, luna, manual, reclasificari):
     """Recalcul COMPLET si INDEPENDENT al rezumatului D390 din sursa. Reproduce aritmetica
     generatorului cu cod propriu: pull -> filtru UE -> agregare pe (tip, tara, cod, den[:200]) ->
@@ -162,8 +190,9 @@ def _recalcul_independent(conn, schema, an, luna, manual, reclasificari):
         tip_def = "L" if directie == "emisa" else "A"
         tip = recl.get((directie, tara, cod), tip_def)
         ops[(tip, tara, cod, den)] = ops.get((tip, tara, cod, den), Decimal(0)) + baza
-    # latura MANUALA (P/S/T/R introduse de contabil, fara factura)
-    for op in (man or []):
+    # latura MANUALA (P/S/T/R introduse de contabil, fara factura) + auto-derivarea din d301 (A/S, cu furnizor).
+    # d301 se adauga INTOTDEAUNA (ca facturile) - independent de parametrul manual, oglinda calculeaza().
+    for op in list(man or []) + _pull_d301(conn, schema, an, luna):
         tip = op.get("tip")
         tara = (op.get("tara") or "").upper()
         cod = (op.get("cod") or "")

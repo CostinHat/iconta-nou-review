@@ -9536,3 +9536,13 @@ preexistent d301/d390, extins la TOATE (d100/d101/d205/d112/d300/bilant). declar
 **Auto-derivare d301->D390 (RAMANE DECIZIE, recomandare EXECUTOR: NU).** Full auto-derivarea ar cere coloane noi partener (cod TVA + tara) in d301_operatiuni + camp in ecranul D301 (pe care D301 nu-l cere) + migrare DB, si beneficiaza DOAR firmele art.317 (caz de margine, achizitii rare). Recomand SA NU se construiasca: calea manuala (UI clasificare Tip A) + avertismentul acopera corect fluxul. De redeschis daca volumul art.317 o cere.
 
 **Proba.** tenant_006 (1 d301 op iun, 0 facturi): mesajul D390 semnaleaza acum "1 operatiune in D301... adauga manual Tip A". Gard RED(mutatie)->GREEN test_d390_d301_semnal. 19 passed d390.
+
+## 18.08.2026 — Auto-derivare d301_operatiuni -> D390 cod A/S (decizia Costin, CONSTRUITA) — audit tenant_006
+
+**Decizie (Costin, peste recomandarea executorului de a NU construi).** Achizitiile IC ale unui neplatitor art.317, inregistrate O SINGURA data in ecranul D301 (d301_operatiuni cu furnizor), alimenteaza AUTOMAT D390: tip 1/3 (bunuri) -> cod A, tip 5 (servicii IC) -> cod S; tip 2 (transport nou) + tip 4 (art.307 mixt, nu toate IC) EXCLUSE (clasificare manuala daca e cazul). Se deriveaza DOAR operatiunile cu TARA furnizorului (codT obligatoriu in D390; codO poate lipsi = NOTA 1).
+
+**Parti.** (A) Migrare DB: d301_operatiuni + partener_tara/partener_cod/partener_den (core/migrare_d301_partener, mirror tenant_template.sql; 19/19 scheme). (B) API+UI: d301_operatiuni_api (parse+valida+insert+lista furnizor) + ecran D301 (3 campuri furnizor optionale + nota + indicator grila "fara furnizor -> nu intra in D390"). (C) Generator: d390.operatiuni_din_d301 injectat in calculeaza ca linii pre-tipizate A/S INTOTDEAUNA; reconcilierea a-doua-cale primeste _pull_d301 PROPRIU (independent, aceeasi mapare). (D) Refuzul-pe-zero rafinat: daca d301 are operatiuni fara tara, indruma spre completarea furnizorului.
+
+**Temei.** art.325 CF + OPANAF 705/2020 (D390 art.316/317). Maparea tip D301 (OPANAF 592/2016) -> cod D390 (bunuri->A, servicii->S) la sursa.
+
+**Proba.** tenant_006 op tip 1 cu furnizor DE (129273398) -> D390 auto-derivat, DUK VALID (baza 52261, cod A, codO in XML). Captura privita ecran D301 (campuri furnizor + indicator "⚠ fara furnizor — nu intra in D390 (cod A)"). Gard: cele doua cai (generator + reconciliere) coincid (mutatie mapare -> divergenta). 103 passed regresie (d390/d301/reconciliere/control/audit_schema).

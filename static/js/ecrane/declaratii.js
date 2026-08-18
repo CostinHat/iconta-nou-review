@@ -349,10 +349,16 @@ async function randeazaOperatiuniD301(corp, nav) {
   catch (e) { zona.innerHTML = `<p class="ecran-nota">Nu am putut încărca operațiunile D301${e && e.mesaj ? " (" + esc(e.mesaj) + ")" : ""}. Reîncarcă declarația.</p>`; return; }
   const ops = d.operatiuni || [], tipuri = d.tipuri || [], valute = d.valute || [], cote = d.cote || [];
   const grila = ops.length
-    ? ops.map((o) => `<div class="dec-man-rand">
-        <span class="dec-recl-desc" title="${esc(o.eticheta)}">Tip ${o.tip} · ${esc(o.nr_doc)}${o.data_doc ? " · " + esc(o.data_doc) : ""} · ${esc(o.tip_valuta)} ${bani(o.val_valuta)} × ${esc(String(o.curs))}</span>
+    ? ops.map((o) => {
+        const furnizor = o.partener_tara ? `${esc(o.partener_tara)}${esc(o.partener_cod || "")}${o.partener_den ? " " + esc(o.partener_den) : ""}` : "";
+        const d390 = o.d390_lipsa_furnizor
+          ? ` <span class="mig-cnp-no" title="completează țara furnizorului ca operațiunea să apară în D390">⚠ fără furnizor — nu intră în D390 (cod ${o.d390_cod})</span>`
+          : (o.d390_cod && furnizor ? ` <span class="mig-cnp-ok">→ D390 cod ${o.d390_cod}</span>` : "");
+        return `<div class="dec-man-rand">
+        <span class="dec-recl-desc" title="${esc(o.eticheta)}">Tip ${o.tip} · ${esc(o.nr_doc)}${o.data_doc ? " · " + esc(o.data_doc) : ""} · ${esc(o.tip_valuta)} ${bani(o.val_valuta)} × ${esc(String(o.curs))}${furnizor ? " · furnizor " + furnizor : ""}${d390}</span>
         <span class="dec-recl-suma">${bani(o.baza)} bază · ${bani(o.tva)} TVA (lei)</span>
-        <button class="btn-link dec-d301-del" data-id="${o.id}">șterge</button></div>`).join("")
+        <button class="btn-link dec-d301-del" data-id="${o.id}">șterge</button></div>`;
+      }).join("")
     : `<div class="stare-goala stare-goala--inline">Nicio operațiune pe ${etPerioada()}. D301 se depune doar cu achiziții intracomunitare / taxare inversă — introdu-le mai jos; fără ele, declarația e pe zero.</div>`;
   zona.innerHTML = `<details class="dec-xml" open><summary>Operațiuni D301 — introducere (${ops.length})</summary>
     ${grila}
@@ -368,8 +374,12 @@ async function randeazaOperatiuniD301(corp, nav) {
       <label class="camp" style="width:100px"><span class="camp-eticheta">Curs <span class="oblig">*</span></span><input id="d301-curs" type="number" step="0.0001" class="camp-input"></label>
       <label class="camp" style="width:150px"><span class="camp-eticheta">Cotă TVA <span class="oblig">*</span></span>
         <select id="d301-cota" class="camp-input">${cote.map((c) => `<option value="${c.val}">${esc(c.eticheta)}</option>`).join("")}</select></label>
+      <label class="camp" style="width:90px"><span class="camp-eticheta">Țară furnizor</span><input id="d301-partener_tara" class="camp-input" placeholder="DE" maxlength="2" style="text-transform:uppercase"></label>
+      <label class="camp" style="width:170px"><span class="camp-eticheta">Cod TVA furnizor</span><input id="d301-partener_cod" class="camp-input" placeholder="fără prefix țară"></label>
+      <label class="camp" style="width:200px"><span class="camp-eticheta">Denumire furnizor</span><input id="d301-partener_den" class="camp-input"></label>
       <button class="buton-secundar" id="d301-add">+ adaugă</button>
     </div>
+    <p class="ecran-nota" style="margin-top:2px">Furnizorul UE (țară + cod TVA) e opțional pentru D301, dar dacă îl completezi, achiziția apare AUTOMAT în D390 (bunuri tip 1/3 → cod A; servicii tip 5 → cod S). Fără țară, operațiunea nu intră în D390.</p>
     <div class="camp-ajutor" id="d301-preview" style="margin-top:4px"></div>
     <div id="d301-msg"></div>
     <p style="margin-top:8px"><button class="buton-primar" id="d301-regen">Regenerează D301</button>
@@ -393,7 +403,9 @@ async function randeazaOperatiuniD301(corp, nav) {
     const b = { an: S.an, luna: S.luna, tip: parseInt(gv("#d301-tip").value),
       nr_doc: gv("#d301-nrdoc").value.trim(), data_doc: gv("#d301-datadoc").value.trim(),
       tip_valuta: gv("#d301-valuta").value, val_valuta: parseFloat(gv("#d301-val").value) || 0,
-      curs: parseFloat(gv("#d301-curs").value) || 0, cota: parseInt(gv("#d301-cota").value) };
+      curs: parseFloat(gv("#d301-curs").value) || 0, cota: parseInt(gv("#d301-cota").value),
+      partener_tara: gv("#d301-partener_tara").value.trim(), partener_cod: gv("#d301-partener_cod").value.trim(),
+      partener_den: gv("#d301-partener_den").value.trim() };
     curataEroriCamp(zona);  // [G10] eroare langa camp
     try { await api.post(`/tenants/${S.tenant_id}/d301-operatiuni`, b); randeazaOperatiuniD301(corp, nav); }
     catch (e) {
