@@ -1464,10 +1464,10 @@ function importPlanConturiFirma(corp, nav, firma) {
     <p class="mig-intro"><b>${esc(firma.nume)}</b><br>Caut\u0103 \u00een planul existent sau adaug\u0103 un cont nou.</p>
     <input type="text" class="camp-input" id="pc-cauta" aria-label="Caut\u0103 \u00een plan" placeholder="Caut\u0103 dup\u0103 simbol sau denumire\u2026" style="width:100%;margin-bottom:10px">
     <div class="mig-lista" id="pc-rezultate"></div>
-    <div class="mig-eticheta" style="margin-top:16px">Adaug\u0103 cont nou</div>
+    <div class="mig-eticheta" style="margin-top:16px">Adaug\u0103 cont nou <span class="oblig">*</span></div>
     <div style="display:flex;gap:8px;margin-top:6px">
-      <input type="text" class="camp-input" id="pc-simbol" aria-label="Simbol cont" placeholder="Simbol (ex: 4428)" style="width:140px">
-      <input type="text" class="camp-input" id="pc-denumire" aria-label="Denumire cont" placeholder="Denumire" style="flex:1">
+      <input type="text" class="camp-input" id="pc-simbol" aria-label="Simbol cont" aria-required="true" placeholder="Simbol (ex: 4428)" style="width:140px">
+      <input type="text" class="camp-input" id="pc-denumire" aria-label="Denumire cont" aria-required="true" placeholder="Denumire" style="flex:1">
     </div>
     <div class="mig-eroare" id="pc-eroare"></div>
     <button class="buton-primar mig-buton" id="pc-adauga" style="margin-top:10px">Adaug\u0103 cont</button>
@@ -1499,16 +1499,25 @@ function importPlanConturiFirma(corp, nav, firma) {
   });
   corp.querySelector("#pc-adauga").addEventListener("click", async () => {
     const eroare = corp.querySelector("#pc-eroare");
+    const inpS = corp.querySelector("#pc-simbol"), inpD = corp.querySelector("#pc-denumire");
     eroare.textContent = "";
-    const simbol = corp.querySelector("#pc-simbol").value.trim();
-    const denumire = corp.querySelector("#pc-denumire").value.trim();
-    if (!simbol || !denumire) { eroare.textContent = "Simbol \u0219i denumire sunt obligatorii."; return; }
+    [inpS, inpD].forEach((i) => { i.classList.remove("camp-invalid"); i.removeAttribute("aria-invalid"); });
+    const simbol = inpS.value.trim();
+    const denumire = inpD.value.trim();
+    if (!simbol || !denumire) {   // Regula 14.4 pct.4: marcheaza CARE camp lipseste, nu mesaj generic
+      if (!simbol) { inpS.classList.add("camp-invalid"); inpS.setAttribute("aria-invalid", "true"); }
+      if (!denumire) { inpD.classList.add("camp-invalid"); inpD.setAttribute("aria-invalid", "true"); }
+      eroare.textContent = (!simbol && !denumire) ? "Completează simbolul și denumirea contului."
+        : (!simbol ? "Completează simbolul contului (ex. 4428)." : "Completează denumirea contului.");
+      (!simbol ? inpS : inpD).focus();
+      return;
+    }
     try {
       await api.post(`/tenants/${firma.tenant_id}/plan-conturi`, { simbol, denumire });
-      corp.querySelector("#pc-simbol").value = "";
-      corp.querySelector("#pc-denumire").value = "";
+      inpS.value = ""; inpD.value = "";
       cauta(cautaInput.value.trim());
     } catch (e) {
+      if (e && e.cod === 409) { inpS.classList.add("camp-invalid"); inpS.setAttribute("aria-invalid", "true"); inpS.focus(); }
       eroare.textContent = (e && e.mesaj) || "Eroare la salvare.";
     }
   });

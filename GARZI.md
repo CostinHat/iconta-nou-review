@@ -3229,3 +3229,10 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Mutație probă:** pe cod vechi (fără `camp`) cele 5 aserții pică (salveaza nu întoarce camp; rută/frontend fără erori_campuri); după fix = 5 passed. Rulat RED prin pytest.
 - **Probă live (Playwright, tenant_001 - firmă FĂRĂ vector):** micro + TVA=Da + IC=Nu, decont GOL → salvare RESPINSĂ (400, nicio scriere: tenant_001 rămâne None,None,None,None); mesaj „Periodicitate decont TVA: alege Lunar sau Trimestrial (obligatoriu la plătitor de TVA)" + grupul decont cu contur ROȘU (aria-invalid=True, captură privită). axe 0.
 - **RĂMAS (cluster field-marking app-wide):** același tipar poate exista în alte formulare cu grupuri de butoane / selecturi care nu folosesc `erori_campuri`. De măturat formular cu formular (mecanism: `api.js` `marcheazaCampInvalid` + `detail.erori_campuri`).
+
+## Plan de conturi (Adauga cont): camp gol marcat + obligativitate INAINTE de buton (19.08.2026)
+- **Gard:** `core/test_plan_form_fieldmark.py` (4 teste, ratchet pe sursa).
+- **Ce face imposibil:** formularul „Adaugă cont" să semnaleze obligativitatea abia DUPĂ apăsarea butonului (buton mereu activ, mesaj generic „Simbol și denumire sunt obligatorii" fără să marcheze CARE câmp) — Regula 14.4 pct.4. Acum: asterisc `.oblig` pe etichetă (obligativitate ÎNAINTE de buton) + `aria-required`; la submit gol, câmpul/câmpurile lipsă marcate cu `.camp-invalid` + `aria-invalid`, mesaj care numește exact ce lipsește (simbol vs denumire); duplicatul (409) marchează simbolul.
+- **Mutație probă:** pe cod vechi (asterisc absent, mesaj generic, fără marcaj) 4 aserții pică; după fix = 4 passed. Rulat RED prin pytest.
+- **Probă live (Playwright, tenant_006):** ambele goale → „Completează simbolul și denumirea contului." + ambele câmpuri cu contur roșu; doar simbol completat → „Completează denumirea contului." + DOAR denumirea marcată. axe 0 (captură privită).
+- **Perimetru curat:** aceasta era ultima datorie de field-marking ÎN perimetrul stratului plan_conturi (tenant_006). Rămâne doar tiparul în ALTE formulare neatinse (pattern app-wide, NU datoria firmei curente — vezi regula §5-goală).
