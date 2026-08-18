@@ -11,8 +11,8 @@ cap.6, ZERO clase noi, regula 0 citata in cap; identitate intre situatii similar
 PRIVITA. GARDA per declaratie: formular gol nu produce declaratie (refuz backend cu mesaj de CONTABIL, nu nume de camp),
 mutatie-probata RED. CSV FUNCTIONALITATI (Stare AMANAT->LIVE) odata cu codul; test_registru_functionalitati verde.
 
-COMANDA DE REPORNIRE (gata de dat): "Continua campania de formulare manuale _DOAR_API. GATA d710+d311.
-URMATOAREA: d307 (ajustare TVA), apoi d107, d177, d207, cap-coada, in aceeasi metoda ca d311."
+COMANDA DE REPORNIRE (gata de dat): "Continua campania de formulare manuale _DOAR_API. GATA d710+d311+d307.
+URMATOAREA: d107 (informativa sponsorizari/mecenat/burse), apoi d177, d207, cap-coada, in aceeasi metoda."
 
 **GATA: d710** - formular "Obligatii corectate" (cod 121 micro/103 profit, suma initiala/corecta, cota la micro),
 obligatii in memorie -> body, refuz-pe-gol, gard test_d710_formular, CSV F192->LIVE. Model: declaratii.js::randeazaFormularD710.
@@ -28,15 +28,24 @@ am scos din greseala d307, prins de test_live_accesibil). CSV F207->LIVE + login
 Proba: frontend_test/proba_d311_formular.py (ALFA MICRO 8396; declarant setat via API /firma-profil/date; DUK valid,
 axe 0, mobil Pixel5). CUI-uri demo sintetice (301111003) TREC DUK.
 
-**URMATOAREA: d307** (ajustare/corectie TVA). E LISTA de operatiuni (tip A=transfer active / L=leasing / C=anulare cod
-TVA; fiecare: cod operator codO + denumire denO + tva) -> foloseste modelul LISTA d710 (add/sterge/regen, in memorie),
-NU panoul-camp d311. Citeste core/d307.py: calcul_d307 (tvaA/L/C=Σtva pe tip, totalPlata_A=Σtva) + build_xml + erori_generare.
-DE FACUT ca la d311: (1) rescrie mesajele erori_generare d307.py in limba contabilului (azi expun denO/codO/operatiuni[]/
-declarant_nume/d_anulare); (2) valideaza_cerere d307 -> mesaj prietenos; (3) formular-lista in declaratii.js + hook pas2 in
-AMBELE locuri; (4) scoate DOAR "d307" din _DOAR_API; (5) ajutor d307:"Fxxx"; (6) gard test_d307_formular RED; (7) CSV
-(cauta randul D307 sau adauga-l) -> LIVE + genereaza_grupe_functii --scrie; (8) proba Playwright pe ALFA MICRO -> DUK valid.
-Firma ALFA MICRO (tenant 8396) are acum declarant setat. Apoi d107 (sponsorizari, lista beneficiari), d177 (redirectionare
-profit ONG), d207 (nerezidenti, beneficiari grupati pe tip_venit).
+**GATA: d307** (ajustare/corectie TVA, commit aceasta tura) - LISTA de operatiuni (model d710): fiecare operatiune tip
+(A=transfer active/cedent, L=leasing/finantator, C=anulare cod TVA/beneficiar) + cod fiscal + denumire operator + TVA
+(poate fi <=0 la regularizare); tvaA/L/C + total de ajustare CALCULATE (total afisat, recalculat la randare). Model:
+declaratii.js::randeazaFormularD307 + _d307Manual + S.d307 (operatiuni in memorie) + hook pas2 (S.tip==="d307", DOUA locuri).
+Backend: erori_generare d307.py rescrise in limba contabilului; valideaza_cerere prietenos; gard core/test_d307_formular.py
+(RED-probat sed pe denO). Scos DOAR d307 din _DOAR_API. CSV F217->LIVE + GRUPE_FUNC regenerat + registre IN ACELASI commit
+(lectia d311). Proba: frontend_test/proba_d307_formular.py (ALFA MICRO, 2 operatiuni tip A+C cu TVA negativ, DUK valid, axe 0, mobil body=393).
+
+**URMATOAREA: d107** (informativa sponsorizari/mecenat/burse). LISTA de beneficiari (ca d710/d307). Citeste core/d107.py:
+calcul_d107 (TVal1=Σval1; TVal2=Σval2+Val2_NI; TVal3=Σval3+Val3_NI; totalPlata_A=TVal1+TVal2+TVal3) + build_xml + erori_generare
+(azi expun val1/val2/val3/beneficiari? - verifica si rescrie in limba contabilului). Fiecare beneficiar: campurile din structura
+(val1/val2/val3 = feluri de sponsorizare/mecenat/bursa) + eventual identificare beneficiar. Val2_NI/Val3_NI = totaluri "neidentificati"
+(camp separat, nu pe beneficiar). Model LISTA d307. DE FACUT identic cu d307: (1) mesaje contabil erori_generare; (2) valideaza_cerere;
+(3) formular-lista + hook pas2 AMBELE locuri; (4) scoate DOAR d107 din _DOAR_API; (5) ajutor d107 (cauta F-number in CSV, e rand existent);
+(6) gard test_d107_formular RED; (7) CSV ->LIVE + GRUPE_FUNC + registre IN ACELASI commit; (8) proba Playwright ALFA MICRO -> DUK valid + axe + mobil.
+ATENTIE la Val2_NI/Val3_NI (nu-s pe beneficiar) si la ce inseamna val1/val2/val3 - citeste anaf_surse structura D107 la sursa. Apoi d177
+(redirectionare profit ONG, `manual.beneficiari` + sumaMax/sumaRest), d207 (nerezidenti, beneficiari grupati pe tip_venit).
+RESTART OBLIGATORIU dupa scoaterea din _DOAR_API (modificare backend, altfel tipul nu apare in selectorul live - prins la d307).
 
 ## REPORNIRE (audit tenant_006 - context anterior)
 Continua auditul cap-coada tenant_006 (N1, neplatitor micro cu achizitii intracomunitare; id 4841, schema tenant_006,

@@ -86,22 +86,28 @@ def erori_generare(prof, manual):
         er.append("LIPSĂ denumire.")
     if not str(prof.get("adresa") or "").strip():
         er.append("LIPSĂ adresa.")
+    # [mesaj_contabil] Regula 14.4 + GARDA campaniei: erorile urca la UTILIZATOR (ValueError -> 422 ->
+    # e.mesaj in formular). Text in limba contabilului - ce lipseste si unde -, NU numele intern al
+    # campului (declarant_nume/denO/codO/operatiuni[]/d_anulare). Numele XSD raman doar in cod/comentariu.
+    _ET_DECL = {"declarant_nume": "numele declarantului", "declarant_prenume": "prenumele declarantului",
+                "declarant_functie": "funcția declarantului"}
     for c in ("declarant_nume", "declarant_prenume", "declarant_functie"):
         if not str(prof.get(c) or "").strip():
-            er.append("LIPSĂ %s (declarant obligatoriu)." % c)
+            er.append("Lipsește %s (obligatoriu la D307) — completează la datele firmei." % _ET_DECL[c])
     if str(manual.get("d_anulare") or "0") == "1" and str(manual.get("temei") or "") not in ("1", "2"):
-        er.append("d_anulare=1 cere temei (1=art.105(6)a / 2=art.105(6)b din L.207/2015).")
+        er.append("Ai bifat că declarația corectează una depusă după anularea rezervei verificării — "
+                  "alege temeiul legal (îndeplinirea/neîndeplinirea unei condiții, ori o hotărâre judecătorească).")
     ops = manual.get("operatiuni") or []
     if not ops:
-        er.append("D307 cere cel puțin o operațiune (operațiuni[]).")
+        er.append("Adaugă cel puțin o operațiune de ajustare (transfer de active, leasing, sau anularea "
+                  "codului de TVA). D307 nu se depune fără nicio operațiune.")
     for i, o in enumerate(ops, 1):
         if str(o.get("tip") or "").upper() not in _TIP_VALIDE:
-            er.append("Operațiune %d: tip %r invalid (A=transfer active / L=leasing / C=anulare cod TVA)." %
-                      (i, o.get("tip")))
+            er.append("Operațiunea %d: alege tipul — transfer de active, leasing, sau anularea codului de TVA." % i)
         if not str(o.get("den") or o.get("denO") or "").strip():
-            er.append("Operațiune %d: lipsă denumire operator (denO)." % i)
+            er.append("Operațiunea %d: completează denumirea operatorului (cedent / finanțator / beneficiar)." % i)
         if not _cif(o.get("cod") or o.get("codO")):
-            er.append("Operațiune %d: lipsă cod operator (codO)." % i)
+            er.append("Operațiunea %d: completează codul fiscal (CUI) al operatorului." % i)
     return er
 
 

@@ -3203,3 +3203,8 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Ce face imposibil:** un formular D311 gol (fara data anularii / motiv / sume) sa produca XML respins tacit de DUK in loc de mesaj clar; SI ca mesajul sa expuna nume interne XSD (Data_A/d_anul1/OB_51).
 - **Mutatie proba:** sed reintroduce "OB_51+OB_52" in mesajul de zero din d311.py -> test_d311_fara_sume_refuza pica pe scurgerea numelui intern (rulat RED, restaurat GREEN).
 - **Mesaj de contabil:** verificat ca NU expune Data_A/d_anul1/d_anul2/OB_*/manual.
+
+## Formular manual D307: gol nu produce declaratie (18.08.2026)
+- **Gard:** `core/test_d307_formular.py` (nicio operatiune -> refuz; operatiune fara tip/denumire/cod -> refuz; o operatiune valida -> genereaza). `core/test_d307.py` extins cu asertia no-nume-interne pe erori_generare.
+- **Ce face imposibil:** un formular D307 gol (nicio operatiune) sa produca XML respins tacit de DUK; SI ca mesajul sa expuna nume interne (denO/codO/operatiuni/d_anulare).
+- **Mutatie proba:** sed reintroduce "denO" in mesajul de denumire lipsa din d307.py -> test_d307_operatiune_incompleta_refuza pica (rulat RED, restaurat GREEN).

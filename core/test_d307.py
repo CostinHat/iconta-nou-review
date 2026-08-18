@@ -42,6 +42,12 @@ def test_d307_erori():
     # d_anulare=1 fara temei
     anul = {"d_anulare": "1", "operatiuni": [{"tip": "C", "cod": "14399840", "den": "Y", "tva": 1}]}
     assert any("temei" in e for e in d307.erori_generare(prof, anul))
+    # [mesaj_contabil] Regula 14.4: niciun nume intern XSD in textul aratat contabilului
+    prof_gol = {"cui": "14399840", "den": "F", "adresa": "A"}   # fara declarant -> mesaj declarant
+    for pf, mc in ((prof, {"operatiuni": []}), (prof, anul), (prof_gol, {"operatiuni": [{"tip": "A", "cod": "1", "den": "Y", "tva": 1}]})):
+        for e in d307.erori_generare(pf, mc):
+            for intern in ("denO", "codO", "operatiuni[", "declarant_nume", "declarant_prenume", "d_anulare", "temei=", "%r"):
+                assert intern not in e, "mesajul expune numele intern %r: %s" % (intern, e)
 
 
 @pytest.mark.skipif(not os.path.exists(_JAR), reason="Validatorul D307 nu e instalat în DUK.")

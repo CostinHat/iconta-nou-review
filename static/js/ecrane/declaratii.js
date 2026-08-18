@@ -9,7 +9,7 @@
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=a7f9e80ae0";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
-  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207" };
+  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217" };
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -48,6 +48,8 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     // Persista intre randari (Regenereaza reface pas2 -> re-randeaza formularul cu valorile pastrate).
     d311: { Data_A: "", motiv: "", d_rec: 0,
             OB_11: "", OB_12: "", OB_21: "", OB_22: "", OB_41: "", OB_42: "" },
+    // [formular_manual_d307] operatiunile de ajustare TVA (lista in memorie, pt body.manual, ca d710).
+    d307: { operatiuni: [], d_rec: 0, d_anulare: 0, temei: "" },
   };
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
@@ -192,6 +194,7 @@ async function pas2(corp, nav) {
   if (per === "trimestrial") body.trim = S.trim;
   if (S.tip === "d710") body.obligatii = S.d710_obligatii || [];  // [formular_manual_d710] din memorie
   if (S.tip === "d311") body.manual = _d311Manual();              // [formular_manual_d311] situatiile din memorie
+  if (S.tip === "d307") body.manual = _d307Manual();              // [formular_manual_d307] operatiunile din memorie
 
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
@@ -208,6 +211,7 @@ async function pas2(corp, nav) {
       ${S.tip === "d300" ? '<div id="dec-d300-manual"></div>' : ""}
       ${S.tip === "d710" ? '<div id="dec-d710-form"></div>' : ""}
       ${S.tip === "d311" ? '<div id="dec-d311-form"></div>' : ""}
+      ${S.tip === "d307" ? '<div id="dec-d307-form"></div>' : ""}
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
@@ -215,6 +219,7 @@ async function pas2(corp, nav) {
     if (S.tip === "d300") randeazaManualD300(corp, nav);
     if (S.tip === "d710") randeazaFormularD710(corp, nav);
     if (S.tip === "d311") randeazaFormularD311(corp, nav);
+    if (S.tip === "d307") randeazaFormularD307(corp, nav);
     return;
   }
 
@@ -250,6 +255,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d300" ? '<div id="dec-d300-manual"></div>' : ""}
     ${S.tip === "d710" ? '<div id="dec-d710-form"></div>' : ""}
     ${S.tip === "d311" ? '<div id="dec-d311-form"></div>' : ""}
+    ${S.tip === "d307" ? '<div id="dec-d307-form"></div>' : ""}
     ${blocANAF}
     ${constat.length ? `<div class="caseta-info">
         <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
@@ -285,6 +291,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d300") randeazaManualD300(corp, nav);
   if (S.tip === "d710") randeazaFormularD710(corp, nav);
   if (S.tip === "d311") randeazaFormularD311(corp, nav);
+  if (S.tip === "d307") randeazaFormularD307(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -605,6 +612,109 @@ function randeazaFormularD311(corp, nav) {
     const totalPlata = m.OB_11 + m.OB_21 + m.OB_41 + m.OB_12 + m.OB_22 + m.OB_42;
     if (totalPlata <= 0) err.push(["d311-OB_11", "Introdu cel puțin o sumă (bază sau TVA). D311 nu se depune pe zero."]);
     if (err.length) { err.forEach(([id, msg]) => eroareCamp(zona, id, msg)); return; }
+    pas2(corp, nav);
+  });
+}
+
+// tip==="d307" (ajustare/corectie/regularizare TVA). LISTA de operatiuni (model IDENTIC cu D710:
+// lista in memorie -> body, add/sterge/regen; D307 n-are tabel DB). Fiecare operatiune: tip
+// (A=transfer active / L=leasing / C=anularea codului de TVA), cod fiscal operator, denumire operator,
+// suma TVA (poate fi <=0, permis de structura). tvaA/L/C si totalPlata_A=Σtva se CALCULEAZA. Clasele DS
+// dec-man-rand/dec-man-form/camp, ca d710/d311 (identitate intre situatii similare). Etichete din
+// core/d307.py (art.270(7)/324/316(11) CF): A codO=cedent, L codO=finantator, C codO=beneficiar.
+const _D307_TIPURI = [
+  { val: "A", et: "Transfer de active (cedent)" },
+  { val: "L", et: "Leasing / transfer active la finalul contractului (finanțator)" },
+  { val: "C", et: "Anularea codului de TVA (beneficiar)" },
+];
+const _D307_TEMEI = [
+  { val: "1", et: "Îndeplinirea / neîndeplinirea unei condiții prevăzute de lege (art. 105 alin. (6) lit. a) L. 207/2015)" },
+  { val: "2", et: "Hotărâre judecătorească definitivă (art. 105 alin. (6) lit. b) L. 207/2015)" },
+];
+function _d307_et(tip) { const t = _D307_TIPURI.find((x) => x.val === tip); return t ? t.et : "Tip " + tip; }
+
+// Construieste `manual` pentru body din starea formularului (S.d307).
+function _d307Manual() {
+  const d = S.d307 || {};
+  return {
+    operatiuni: (d.operatiuni || []).map((o) => ({ tip: o.tip, cod: o.cod, den: o.den, tva: o.tva })),
+    d_rec: d.d_rec ? 1 : 0,
+    d_anulare: d.d_anulare ? 1 : 0,
+    temei: d.d_anulare ? (d.temei || "") : "",
+  };
+}
+
+function randeazaFormularD307(corp, nav) {
+  const zona = corp.querySelector("#dec-d307-form");
+  if (!zona) return;
+  const d = S.d307;
+  const ops = d.operatiuni || [];
+  const total = ops.reduce((s, o) => s + (_n(o.tva) || 0), 0);
+  const grila = ops.length
+    ? ops.map((o, i) => `<div class="dec-man-rand">
+        <span class="dec-recl-desc">${esc(_d307_et(o.tip))} · ${esc(o.den)} (CUI ${esc(String(o.cod))}) · TVA ${bani(o.tva)} lei</span>
+        <button class="btn-link dec-d307-del" data-idx="${i}">șterge</button></div>`).join("")
+    : `<div class="stare-goala stare-goala--inline">Nicio operațiune. D307 declară sumele de TVA din ajustări — adaugă mai jos fiecare operațiune (transfer de active, leasing, ori anularea codului de TVA).</div>`;
+  zona.innerHTML = `<details class="dec-xml" open><summary>Operațiuni de ajustare TVA (${ops.length})</summary>
+    <div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:6px">
+      <label class="camp" style="width:auto;flex-direction:row;align-items:center;gap:6px">
+        <input id="d307-rec" type="checkbox" ${d.d_rec ? "checked" : ""}><span class="camp-eticheta" style="margin:0">Declarație rectificativă</span></label>
+      <label class="camp" style="width:auto;flex-direction:row;align-items:center;gap:6px">
+        <input id="d307-anul" type="checkbox" ${d.d_anulare ? "checked" : ""}><span class="camp-eticheta" style="margin:0">Corectată după anularea rezervei verificării</span></label>
+      <label class="camp" id="d307-temei-wrap" style="width:520px;${d.d_anulare ? "" : "display:none"}"><span class="camp-eticheta">Temeiul legal al corectării <span class="oblig">*</span></span>
+        <select id="d307-temei" class="camp-input"><option value="">— alege temeiul —</option>
+          ${_D307_TEMEI.map((t) => `<option value="${t.val}" ${d.temei === t.val ? "selected" : ""}>${esc(t.et)}</option>`).join("")}</select></label>
+    </div>
+    ${grila}
+    <div class="camp-eticheta" style="margin:12px 0 4px">Adaugă operațiune:</div>
+    <div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px">
+      <label class="camp" style="width:360px"><span class="camp-eticheta">Tipul operațiunii <span class="oblig">*</span></span>
+        <select id="d307-tip" class="camp-input">${_D307_TIPURI.map((t) => `<option value="${t.val}">${esc(t.et)}</option>`).join("")}</select></label>
+      <label class="camp" style="width:150px"><span class="camp-eticheta">CUI operator <span class="oblig">*</span></span><input id="d307-cod" type="text" class="camp-input"></label>
+      <label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Denumire operator <span class="oblig">*</span></span><input id="d307-den" type="text" class="camp-input"></label>
+      <label class="camp" style="width:150px"><span class="camp-eticheta">TVA (lei) <span class="oblig">*</span></span><input id="d307-tva" type="number" step="1" class="camp-input"></label>
+      <button class="buton-secundar" id="d307-add">+ adaugă</button>
+    </div>
+    <div id="d307-msg"></div>
+    <p class="camp-ajutor" style="margin-top:8px">Total ajustare TVA: <b>${bani(total)} lei</b> — se calculează automat din operațiunile de mai sus.</p>
+    <p style="margin-top:8px"><button class="buton-primar" id="d307-regen">Regenerează D307</button>
+      <span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>
+  </details>`;
+  const gv = (id) => zona.querySelector(id);
+  gv("#d307-rec").addEventListener("change", (e) => { S.d307.d_rec = e.target.checked ? 1 : 0; });
+  gv("#d307-anul").addEventListener("change", (e) => {
+    S.d307.d_anulare = e.target.checked ? 1 : 0;
+    gv("#d307-temei-wrap").style.display = e.target.checked ? "" : "none";
+  });
+  gv("#d307-temei").addEventListener("change", (e) => { S.d307.temei = e.target.value; });
+  zona.querySelectorAll(".dec-d307-del").forEach((b) => b.addEventListener("click", () => {
+    S.d307.operatiuni.splice(parseInt(b.dataset.idx), 1); randeazaFormularD307(corp, nav);
+  }));
+  gv("#d307-add").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    const tip = gv("#d307-tip").value;
+    const cod = gv("#d307-cod").value.trim();
+    const den = gv("#d307-den").value.trim();
+    const tvaRaw = gv("#d307-tva").value;
+    const err = [];
+    if (!cod) err.push(["d307-cod", "Completează codul fiscal (CUI) al operatorului."]);
+    if (!den) err.push(["d307-den", "Completează denumirea operatorului (cedent / finanțator / beneficiar)."]);
+    if (tvaRaw === "" || isNaN(parseFloat(tvaRaw))) err.push(["d307-tva", "Completează suma TVA a operațiunii (poate fi și negativă la regularizare)."]);
+    if (err.length) { err.forEach(([id, m]) => eroareCamp(zona, id, m)); return; }
+    S.d307.operatiuni.push({ tip: tip, cod: cod, den: den, tva: parseFloat(tvaRaw) });
+    randeazaFormularD307(corp, nav);
+  });
+  gv("#d307-regen").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    // marcheaza campul vinovat INAINTE de a chema serverul (Regula 14.4)
+    if (!(S.d307.operatiuni || []).length) {
+      eroareCamp(zona, "d307-cod", "Adaugă cel puțin o operațiune de ajustare (butonul + adaugă). D307 nu se depune fără operațiuni.");
+      return;
+    }
+    if (S.d307.d_anulare && !S.d307.temei) {
+      eroareCamp(zona, "d307-temei", "Alege temeiul legal al corectării (ai bifat că declarația corectează una depusă după anularea rezervei).");
+      return;
+    }
     pas2(corp, nav);
   });
 }

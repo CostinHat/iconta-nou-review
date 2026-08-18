@@ -316,7 +316,7 @@ DECLARATII = {
 # pe care ecranul generic (an/luna/trim) nu ii poate furniza. d710 (rectificativa) cere
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
-_DOAR_API = frozenset(("d104", "d107", "d110", "d177", "d207", "d220", "d221", "d223", "d230", "d307",
+_DOAR_API = frozenset(("d104", "d107", "d110", "d177", "d207", "d220", "d221", "d223", "d230",
                        "d393", "d395", "d397", "d200", "d201", "d204", "d208", "d216", "d120", "d600",
                        "d106", "d108", "d114", "d130", "d318", "d603",
                        "d119", "d169n", "d213", "d214", "d401", "d402",
@@ -437,11 +437,13 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         if not isinstance(body.get("manual"), dict) or not body.get("manual"):
             erori.append("d230 cere `manual` (nume_c/cif_c contribuabil + den/cif/cont_entitate ONG)")
 
-    # d307 (ajustare TVA, MANUALA lunara): cere manual.operatiuni (tip A/L/C)
+    # d307 (ajustare TVA, MANUALA lunara): cere manual.operatiuni. Mesaj de CONTABIL (formularul manual din
+    # UI trimite mereu operatiuni -> aici cade doar apelul API gol). Detaliile pe operatiune le da d307.genereaza.
     if tip == "d307":
         m = body.get("manual")
         if not isinstance(m, dict) or not m.get("operatiuni"):
-            erori.append("d307 cere `manual.operatiuni` (operațiuni de ajustare TVA, tip A/L/C)")
+            erori.append("D307 nu are ce genera: adaugă în formular cel puțin o operațiune de ajustare TVA "
+                         "(transfer de active, leasing, sau anularea codului de TVA).")
 
     # d311 (TVA situatii speciale, MANUALA): cere `manual`. Mesaj de CONTABIL (formularul manual din UI
     # trimite mereu `manual` populat -> aici cade doar apelul API gol). Detaliile de camp le da d311.genereaza.

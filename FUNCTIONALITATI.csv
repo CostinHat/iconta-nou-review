@@ -2331,25 +2331,27 @@ XML D110 validat, cu diferența de plată sau de restituit pe fiecare obligație
 - Același cod de obligație repetat.
 ## Reguli fiscale
 Cod de procedură fiscală (Legea 207/2015) art. 168 și 170 (regularizare/restituire); Cod fiscal titlurile II/III (impozit reținut la sursă)."
-Declarația D307 (ajustare TVA),"D307: Declarație privind sumele rezultate din ajustarea/corecția ajustărilor/regularizarea taxei pe valoarea adăugată, depusă de persoană impozabilă aflată în situație de ajustare TVA. MANUALĂ - prin corp de cerere/dispatch (ca d107/d207): operațiunile (tip A/L/C, cod operator, denumire, TVA) din input; sumele de control tvaA/tvaL/tvaC (pe tip) și totalPlata_A=suma TVA se calculează. tip A=transfer de active (art.270(7), codO=cedent); L=leasing, transfer active la finalul contractului (codO=finanțator); C=anularea codului de TVA (art.316(11), codO=beneficiar). d_anulare=1 cere temei (1/2, art.105(6) L.207/2015). TVA poate fi <=0 (permis din J1.0.1). STRUCTURA din VALIDATORUL oficial (D307Validator.jar; sub-pachet v0 dar namespace :v1; _dateVersionTable 2016-01 J1.1.0) + d307_20171205.xsd. SEMANTICĂ din ACT în corpus: structura_D307_2017_071117.pdf (OPANAF 793/2016; CF art.270(7), 324(8)(9), 316(11); atribut mail nu email; D307 NU are cod_bug - e informativă). PROBAT: DUKIntegrator -v D307 'valid' pe tip A/L/C și d_anulare=1. Limitări: operațiunile vin din input (nu există registru dedicat de ajustări TVA); ecran manual (azi API).",F217,firma,Declaratii,core/d307.py,"OPANAF 793/2016; Cod fiscal art.270(7), 324(8)(9), 316(11) (ajustare/regularizare TVA); structura D307 din D307Validator.jar (v0/ns v1) + d307_20171205.xsd",AMANAT 14.08.2026 (backend+DUK; formular manual in UI dupa inghet),core/test_d307.py + DUKIntegrator -v D307 'valid',,"## Ce face
-Declarația D307 - sumele de TVA rezultate din ajustarea/corecția ajustărilor/regularizarea taxei, pe operațiuni de trei tipuri: transfer de active, transfer la finalul unui contract de leasing, sau anularea codului de TVA. Aplicația calculează sumele de control pe tip; generează XML validat pe DUK.
+Declarația D307 (ajustare TVA),"D307: Declarație privind sumele rezultate din ajustarea/corecția ajustărilor/regularizarea TVA. MANUALĂ: formular-listă în UI (18.08.2026) unde contabilul adaugă operațiunile de ajustare, fiecare cu tip (A=transfer active/cedent, L=leasing/finanțator, C=anularea codului de TVA/beneficiar), cod fiscal + denumire operator, sumă TVA (poate fi <=0 la regularizare); tvaA/tvaL/tvaC și suma de control (totalPlata_A=Σtva) se calculează. Formular gol refuzat cu mesaj de contabil (fără nume interne). Scos din _DOAR_API -> apare în selectorul de declarații. XML validat pe DUKIntegrator -v D307 ('valid', probă reală + Playwright pe ALFA MICRO). Structura citită din validatorul oficial (D307Validator.jar) + anaf_surse/structura_D307_2017; OPANAF 793/2016; CF art.270(7)/324/316(11).",F217,firma,Declaratii,"core/d307.py, core/declaratii_api.py, static/js/ecrane/declaratii.js","OPANAF 793/2016; Cod fiscal art.270(7), 324(8)(9), 316(11) (ajustare/regularizare TVA); structura D307 din D307Validator.jar (v0/ns v1) + d307_20171205.xsd",LIVE 18.08.2026 (formular manual in UI: lista operatiuni ajustare TVA tip A/L/C; gol refuzat cu mesaj de contabil; backend+DUK valid),"core/test_d307.py + core/test_d307_formular.py (garda formular gol, RED-probat) + DUKIntegrator -v D307 'valid' + Playwright real (ALFA MICRO): DUK valid, axe curat, mobil OK",,"## Ce face
+Declarația D307 - sumele de TVA rezultate din ajustarea / corecția ajustărilor / regularizarea taxei, pe operațiuni de trei tipuri: transfer de active, transfer la finalul unui contract de leasing, sau anularea codului de TVA. Aplicația calculează sumele de control pe tip și generează XML validat pe DUKIntegrator.
 ## Când se folosește
-De persoana impozabilă aflată într-o situație de ajustare TVA: primește active printr-un transfer (cedent), preia active la finalul unui leasing (finanțator), sau i s-a anulat codul de TVA (beneficiar).
+De persoana impozabilă aflată într-o situație de ajustare TVA: primește active printr-un transfer (cedent), preia active la finalul unui leasing (finanțator), sau i s-a anulat codul de TVA (beneficiar). Se depune lunar, până pe 25.
 ## Ce trebuie pregătit înainte
-- Operațiunile: tipul (A = transfer active, L = leasing, C = anulare cod TVA), operatorul (cod + denumire) și TVA aferentă.
-- Dacă declarația e depusă după anularea rezervei verificării ulterioare: temeiul corectării.
+- Operațiunile: tipul (transfer de active / leasing / anularea codului de TVA), codul fiscal și denumirea operatorului, suma TVA (poate fi și negativă la regularizare).
 ## Pas cu pas
-1. Pregătește operațiunile pe tip (azi prin dispatch/API, fără ecran dedicat de introducere).
-2. Declarații -> D307 -> perioada.
-3. Aplicația calculează sumele de control pe tip (A/L/C).
-4. Validează și depune XML-ul.
+1. Din ecranul principal: Firme -> firma -> Declarații (sau caseta Declarații).
+2. Alege D307 și luna de raportare.
+3. Apasă „Continuă"" - se deschide formularul „Operațiuni de ajustare TVA"".
+4. Adaugă fiecare operațiune (tip + CUI + denumire + TVA) cu butonul „+ adaugă"".
+5. Apasă „Regenerează D307"" - totalul de ajustare se calculează automat.
+6. Verifică validarea DUKIntegrator și trimite în coadă.
 ## Ce iese la capăt
-XML D307 validat, cu TVA ajustată pe cele trei tipuri de operațiuni.
+XML D307 validat, cu sumele de TVA defalcate pe tip (transfer active / leasing / anulare cod) și suma de control.
 ## Greșeli frecvente
-- Tipul operațiunii greșit (cedent vs finanțator vs beneficiar).
-- Bifa ""după anularea rezervei"" fără temeiul legal completat.
+- Depunerea fără nicio operațiune (D307 cere cel puțin una).
+- Uitarea codului fiscal sau a denumirii operatorului.
+- Bifarea „corectată după anularea rezervei"" fără a alege temeiul legal.
 ## Reguli fiscale
-OPANAF 793/2016; Cod fiscal art. 270 alin. (7) (transfer de active), art. 324 alin. (8)/(9) și art. 316 alin. (11) (anularea codului de TVA)."
+OPANAF 793/2016; Cod fiscal art. 270 alin. (7) (transfer de active), art. 324, art. 316 alin. (11) (anulare cod TVA). Structura din validatorul oficial ANAF (D307Validator.jar)."
 Declarația D393 (bilete transport rutier internațional de persoane),"D393 - declarație informativă anuală privind biletele de călătorie pentru transportul rutier internațional de persoane, în format XML validat de DUKIntegrator. Generator MANUAL (core/d393.py): datele operatorului și veniturile din bilete vin din input; totalPlata_A = Venituri_bilete (suma de control). Structura din D393Validator.jar (rădăcina d393, ns declarație:v1); actul OPANAF nu e în corpus - semantică din etichetele oficiale ale validatorului.",F218,firma,Declaratii,core/d393.py,OPANAF (model D393); structura din D393Validator.jar (ns declaratie:v1),AMANAT 14.08.2026 (entitate speciala - BNR/inst.financiare/autoritati/OSS/accize; nu un SRL de rand),core/test_declaratii_lot2_duk.py + DUKIntegrator -v D393 'valid',,"## Ce face
 Generează D393 (informativă, bilete transport rutier internațional de persoane) în XML acceptat de validatorul oficial ANAF.
 ## Când se depune

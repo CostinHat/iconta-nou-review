@@ -9618,3 +9618,15 @@ preexistent d301/d390, extins la TOATE (d100/d101/d205/d112/d300/bilant). declar
 **Limita.** Schema V (reinregistrare art.316(12)) ramane nedisponibila (conflict XSD v1.02 pe Data_A/Data_I) - documentata in d311.py.
 
 **Lectie.** Flipul CSV AMANAT->LIVE creste numarul de functionalitati LIVE -> login.js GRUPE_FUNC (generat) trebuie regenerat (`genereaza_grupe_functii.py --scrie`) IN ACELASI commit, altfel verificatorul respinge (count CSV 146 != pagina 145). La scoaterea din _DOAR_API: scoate DOAR tipul curent (am scos din greseala si vecinul d307, prins de test_live_accesibil).
+
+## 18.08.2026 — Formular manual D307 in UI (scos din _DOAR_API) — declaratie 3/6
+
+**Decizie.** D307 (ajustare TVA) capata formular manual in ecranul Declaratii, ca LISTA (model d710), nu panou-camp ca d311: declaratia e o lista de operatiuni de ajustare de lungime variabila. Fiecare operatiune: tip (A=transfer active/cedent, L=leasing/finantator, C=anularea codului de TVA/beneficiar), cod fiscal operator, denumire operator, suma TVA. tvaA/tvaL/tvaC (Σtva pe tip) si totalPlata_A=Σtva se CALCULEAZA (total afisat, recalculat la fiecare randare a listei). Operatiunile stau IN MEMORIE (S.d307.operatiuni) -> body de generare (D307 n-are tabel DB). Optional: rectificativa (d_rec) + corectata dupa anularea rezervei (d_anulare) cu temei obligatoriu.
+
+**Parametri (cititi din semnatura, Regula 1).** d307.genereaza(conn, schema, Perioada(an, luna), {"operatiuni":[{tip:A/L/C, cod, den, tva}], "d_rec"?, "d_anulare"?, "temei"?(1/2 daca d_anulare)}). tva poate fi <=0 (permis de structura, J1.0.1). Etichete tip din core/d307.py (CF art.270(7)/324/316(11)).
+
+**Temei.** OPANAF 793/2016; CF art.270 alin.(7) (transfer active), art.324, art.316 alin.(11) (anulare cod TVA). Structura din D307Validator.jar (validatorul oficial ANAF). Regula 14.4 (mesaj de contabil) -> erori_generare rescrise, test extins.
+
+**Proba.** Backend: refuz pe gol cu mesaj de contabil; DUK valid pe 2 operatiuni (transfer active tva 5000 + anulare cod tva -1200, total 3800). Gard test_d307_formular RED(sed reintroduce denO)->GREEN. Traseu live Playwright (ALFA MICRO): D307 in selector, gol refuzat, completat -> DUK valid, axe 0, mobil Pixel5 body=393 fara overflow. Captura privita.
+
+**Lectie (a treia oara aplicata).** Flip CSV AMANAT->LIVE cere genereaza_grupe_functii --scrie IN ACELASI commit; scoate DOAR tipul curent din _DOAR_API. De data asta registrele + CSV + GRUPE_FUNC intra IN ACELASI commit cu codul (la d311 le-am uitat -> commit separat).
