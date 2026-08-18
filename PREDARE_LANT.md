@@ -11,11 +11,32 @@ cap.6, ZERO clase noi, regula 0 citata in cap; identitate intre situatii similar
 PRIVITA. GARDA per declaratie: formular gol nu produce declaratie (refuz backend cu mesaj de CONTABIL, nu nume de camp),
 mutatie-probata RED. CSV FUNCTIONALITATI (Stare AMANAT->LIVE) odata cu codul; test_registru_functionalitati verde.
 
-**GATA: d710** (commit aceasta tura) - formular "Obligatii corectate" (cod 121 micro/103 profit, suma initiala/corecta,
-cota la micro), obligatii in memorie -> body (D710 n-are tabel DB), refuz-pe-gol, gard test_d710_formular, CSV F192->LIVE.
-Model complet in static/js/ecrane/declaratii.js::randeazaFormularD710 + hook-urile pas2 (S.tip==="d710").
-**URMATOAREA: d311** (TVA cod anulat). Citeste semnatura: `grep -n "def _d311" core/declaratii_api.py` + `d311.genereaza`
-+ structura situatiilor (schema IV, baze/TVA pe rd.03/05). Panou-lista ca d710. Apoi d307, d107, d177, d207.
+COMANDA DE REPORNIRE (gata de dat): "Continua campania de formulare manuale _DOAR_API. GATA d710+d311.
+URMATOAREA: d307 (ajustare TVA), apoi d107, d177, d207, cap-coada, in aceeasi metoda ca d311."
+
+**GATA: d710** - formular "Obligatii corectate" (cod 121 micro/103 profit, suma initiala/corecta, cota la micro),
+obligatii in memorie -> body, refuz-pe-gol, gard test_d710_formular, CSV F192->LIVE. Model: declaratii.js::randeazaFormularD710.
+
+**GATA: d311** (TVA cod anulat, commit aceasta tura) - PANOU-CAMP (nu lista): data anularii + motiv (oficiu/cerere) +
+3 situatii oficiale baze/TVA (livrari / achizitii cu taxare inversa / livrari cu TVA la incasare exigibila dupa anulare),
+subtotaluri+total CALCULATE, total de plata LIVE la tastare. Model complet: declaratii.js::randeazaFormularD311 +
+_d311Manual + S.d311 (in memorie) + hook-urile pas2 (S.tip==="d311", DOUA locuri: eroare + succes, indentare diferita).
+Backend: erori_generare d311.py rescrise in limba contabilului (fara Data_A/d_anul1/OB_51); test_d311 re-ancorat;
+gard core/test_d311_formular.py (RED-probat prin sed pe mesaj). Scos din _DOAR_API (ATENTIE: nu sterge si vecinul -
+am scos din greseala d307, prins de test_live_accesibil). CSV F207->LIVE + login.js GRUPE_FUNC regenerat
+(`python3 genereaza_grupe_functii.py --scrie`, ALTFEL verificatorul RESPINGE commitul: CSV live-count != pagina).
+Proba: frontend_test/proba_d311_formular.py (ALFA MICRO 8396; declarant setat via API /firma-profil/date; DUK valid,
+axe 0, mobil Pixel5). CUI-uri demo sintetice (301111003) TREC DUK.
+
+**URMATOAREA: d307** (ajustare/corectie TVA). E LISTA de operatiuni (tip A=transfer active / L=leasing / C=anulare cod
+TVA; fiecare: cod operator codO + denumire denO + tva) -> foloseste modelul LISTA d710 (add/sterge/regen, in memorie),
+NU panoul-camp d311. Citeste core/d307.py: calcul_d307 (tvaA/L/C=Σtva pe tip, totalPlata_A=Σtva) + build_xml + erori_generare.
+DE FACUT ca la d311: (1) rescrie mesajele erori_generare d307.py in limba contabilului (azi expun denO/codO/operatiuni[]/
+declarant_nume/d_anulare); (2) valideaza_cerere d307 -> mesaj prietenos; (3) formular-lista in declaratii.js + hook pas2 in
+AMBELE locuri; (4) scoate DOAR "d307" din _DOAR_API; (5) ajutor d307:"Fxxx"; (6) gard test_d307_formular RED; (7) CSV
+(cauta randul D307 sau adauga-l) -> LIVE + genereaza_grupe_functii --scrie; (8) proba Playwright pe ALFA MICRO -> DUK valid.
+Firma ALFA MICRO (tenant 8396) are acum declarant setat. Apoi d107 (sponsorizari, lista beneficiari), d177 (redirectionare
+profit ONG), d207 (nerezidenti, beneficiari grupati pe tip_venit).
 
 ## REPORNIRE (audit tenant_006 - context anterior)
 Continua auditul cap-coada tenant_006 (N1, neplatitor micro cu achizitii intracomunitare; id 4841, schema tenant_006,
