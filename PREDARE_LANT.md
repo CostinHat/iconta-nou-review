@@ -2,6 +2,34 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 # PREDARE LANT — audit tenant_006 (Achizitii IC Neplatitor SRL / N1, cabinet Prisma 1968)
 
+## REPORNIRE (comanda exacta, gata de dat) — TURA 18.08(b): straturi import 006 provocate + corectate
+
+STARE (tura curenta, 3 comituri): straturile de import ale campaniei "colectii valide+invalide" (F5/Regula 14.4)
+provocate INDIVIDUAL pe tenant_006, cap-coada cu Playwright (captura privita). LIVRAT:
+- **firme** (fd224d2): intrarea ne-CUI (typo/antet, ex. "ABC") disparea TACUT inainte de ANAF (Regula 4 - drop
+  tacut) -> anaf_api.separa_cui() intoarce (curatate, ignorate); ruta /migrare/valideaza intoarce "ignorate";
+  banner VIZIBIL .mig-avert (role=status, nu title-only). Gard RED (7 aserții) + Playwright (axe 0, mobil 393).
+- **plan_conturi** (a651fec): adaugarea manuala facea INSERT ON CONFLICT DO UPDATE -> simbol duplicat (101)
+  REDENUMEA TACUT contul OMFP standard "Capital". Calea bulk (solduri_api) folosea corect DO NOTHING. -> refuz
+  409 in limba contabilului ("Contul X exista deja: «denumire»…"), cont neatins. Gard RED + Playwright (axe 0, mobil 393).
+- **solduri_parteneri**: MESAJ conform by-design (poarta Q5 preview=salvare: per-rand DE CE nu se salveaza + Salvare
+  blocata) - probat live cu conturi ne-partener (5121/101 -> "nu tine solduri pe parteneri (doar 4111,401,409,419)").
+  Fara fix de mesaj.
+- **a11y contrast P3** (2bdac14): axe pe preview parteneri a scos .mig-sold-cont #347ab8 = 3.86 < 4.5 pe panoul #e9edf3
+  (fix-ul Control fiscal asumase "migrare = pe alb", gresit) -> baza .mig-sold-cont -> #2f6fa6 (toate instantele,
+  tiparul P3) + gard ancorat la regula de BAZA. Re-probat: axe color-contrast 0 pe preview parteneri.
+
+COMANDA DE REPORNIRE (gata de dat): "Continua auditul tenant_006 (campania colectii valide+invalide). RAMAS pe
+straturile de import: **vector_fiscal** - provoaca refuzul de CAMP OBLIGATORIU LIPSA (ex. platitor TVA fara
+periodicitate decont, sau operatiuni_ic neales) pe o firma FARA vector complet (tenant_006 il are complet: micro/
+platitor/trimestrial/ic - nu se poate provoca acolo; foloseste o firma demo sau una cu are_vector=false). Citeste
+mesajul rendat cu Playwright si verifica: mesaj in limba contabilului (backend vector_fiscal_api are deja
+"Periodicitate decont TVA: alege Lunar sau Trimestrial (obligatoriu la platitor de TVA)"), obligativitate marcata
+INAINTE de buton (asteriscul .oblig exista), SI ca eroarea MARCHEAZA campul vinovat cu contur (cluster field-level
+marking inca deschis - vezi GARZI). Apoi treci la urmatoarea firma din matrice (t001 D112, t009 D406 - STARE MATRICE
+mai jos). Metoda Regula 13+14 (captura privita + axe/mobil pe fiecare ecran atins)."
+
+
 ## REPORNIRE (comanda exacta, gata de dat) — CAMPANIE ACTIVA: colectii date valide+invalide per firma + corectitudine (F5)
 Costin (18.08): pentru FIECARE firma din matrice (cabinet 1968: t001-t012 + t017; + demo 8396-99) construieste o
 colectie de date VALIDE (genereaza toate declaratiile aplicabile DUK-valid) + una INVALIDE (provoaca fiecare blocaj/
@@ -56,10 +84,9 @@ GATA (18.08.2026, commit dc1ee22): (3) mobil/touch-target AA 2.5.8 pe cele 5 ecr
 (pierdut pe touch) reparat pe 4 straturi (salariati/asociati CNP, mijloace fixe, istoric) -> motiv VIZIBIL
 (span.mig-motiv); probat live tenant_006 (salariati bad_sal.csv); gard test_import_motiv_vizibil.
 
-COMANDA DE REPORNIRE (gata de dat): "Continua auditul tenant_006. RAMAS: provoaca INDIVIDUAL straturile de import
-inca neprobate cap-coada - firme (CUI la ANAF), vector_fiscal, solduri_parteneri (cont nepartener / CUI invalid),
-plan_conturi (adauga cont: simbol/denumire gol/duplicat) - cu date GRESITE, citind mesajul rendat (limba
-contabilului, camp marcat, fara nume interne, obligativitate inainte de buton - Regula 14.4). Metoda Regula 13+14."
+COMANDA DE REPORNIRE (SUPERSEDAT de blocul REPORNIRE TURA 18.08(b) de la inceputul fisierului): din cele 4 straturi
+de import, firme/plan_conturi/solduri_parteneri/contrast = LIVRATE tura asta (fd224d2, a651fec, 2bdac14). RAMAS pe
+straturi = DOAR vector_fiscal (refuz camp obligatoriu lipsa pe o firma FARA vector complet)."
 
 **GATA: d710** - formular "Obligatii corectate" (cod 121 micro/103 profit, suma initiala/corecta, cota la micro),
 obligatii in memorie -> body, refuz-pe-gol, gard test_d710_formular, CSV F192->LIVE. Model: declaratii.js::randeazaFormularD710.
