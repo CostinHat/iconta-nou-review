@@ -22,6 +22,10 @@ provocate INDIVIDUAL pe tenant_006, cap-coada cu Playwright (captura privita). L
   salvare RESPINSA (400, nicio scriere), mesaj corect DAR grupul vinovat nu era marcat (Regula 14.4 pct.4). Fix:
   salveaza() intoarce 'camp' -> ruta expune erori_campuri -> migrare.js marcheaza grupul (.camp-invalid + aria-invalid).
   Gard RED (5) + Playwright (contur rosu privit, axe 0). CELE 4 STRATURI DE IMPORT 006 = INCHISE.
+- **plan_conturi field-marking** (ebd05c6): ultima datorie de field-marking DIN perimetru inchisa (asterisc
+  obligativitate inainte de buton + campul gol marcat). §5 (ce ramane) pe straturile de import 006 = GOL de
+  neverificat/nereparat IN perimetru; ce ramane e DOAR tiparul in ALTE formulare neatinse (pattern app-wide,
+  nu datoria firmei curente). Regula noua (Costin 19.08): la finalizarea unei firme, §5 gol de perimetru.
 
 COMANDA DE REPORNIRE (gata de dat): "Cele 4 straturi de import ale tenant_006 (firme/plan_conturi/solduri_parteneri/
 vector_fiscal) + a11y contrast = INCHISE (fd224d2, a651fec, 2bdac14, 73522f5). Continua campania colectii valide+invalide
