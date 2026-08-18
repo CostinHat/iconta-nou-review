@@ -88,40 +88,45 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not _cif(prof.get("cui")):
-        er.append("CUI firma plătitoare lipsă/invalid.")
+        er.append("CUI-ul firmei plătitoare lipsește sau nu e valid — completează-l în profilul firmei.")
     if not prof.get("den"):
-        er.append("LIPSĂ denumire firma.")
+        er.append("Lipsește denumirea firmei plătitoare — completeaz-o în profilul firmei.")
     if int(manual.get("tip_platitor") or 1) not in (1, 2):
-        er.append("tipPlatitor invalid (1=profit, 2=micro).")
+        er.append("Tipul de plătitor nu e valid (se redirecționează impozitul pe profit).")
     smax, sant, srest = _i(manual.get("suma_max")), _i(manual.get("suma_ant")), _i(manual.get("suma_rest"))
     if srest <= 0:
-        er.append("sumaRest (suma de redirecționat) trebuie > 0.")
+        er.append("Suma rămasă de redirecționat trebuie să fie mai mare ca zero.")
     if smax < sant + srest:
-        er.append("sumaMax (%d) trebuie >= sumaAnt (%d) + sumaRest (%d)." % (smax, sant, srest))
+        er.append("Suma maximă redirecționabilă trebuie să fie cel puțin cât suma redirecționată "
+                  "anterior plus suma rămasă de redirecționat.")
     benef = manual.get("beneficiari") or []
     if not benef:
-        er.append("D177 cere cel puțin un beneficiar.")
+        er.append("Adaugă cel puțin un beneficiar către care redirecționezi impozitul.")
     tot_b = 0
     for i, b in enumerate(benef, 1):
         tb = str(b.get("tip") or "")
         if tb not in _TIPB_VALIDE:
-            er.append("Beneficiar %d: tipB %r invalid (1/2/3/5; 4 nepermis)." % (i, tb))
+            er.append("Beneficiarul %d: alege tipul beneficiarului (unitate de cult / entitate nonprofit / "
+                      "act de mecenat / organizație internațională)." % i)
         if int(manual.get("tip_platitor") or 1) == 2 and tb == "3":
-            er.append("Beneficiar %d: la tipPlatitor=2 (micro) tipB nu poate fi 3." % i)
+            er.append("Beneficiarul %d: actul de mecenat nu poate fi redirecționat de un plătitor de impozit "
+                      "pe veniturile microîntreprinderilor." % i)
         if not str(b.get("den") or "").strip():
-            er.append("Beneficiar %d: lipsă denumire (denB)." % i)
+            er.append("Beneficiarul %d: completează denumirea sau numele." % i)
         if not _cif(b.get("cui")):
-            er.append("Beneficiar %d: lipsă cod fiscal beneficiar (cuiB)." % i)
+            et = "CNP-ul" if tb == "3" else "codul de identificare fiscală (CUI)"
+            er.append("Beneficiarul %d: completează %s." % (i, et))
         iban = str(b.get("iban") or "").replace(" ", "").upper()
         if not _IBAN_OK.match(iban):
-            er.append("Beneficiar %d: IBAN invalid (RO + 22 caractere)." % i)
+            er.append("Beneficiarul %d: IBAN-ul nu e valid (trebuie să înceapă cu RO și să aibă 24 de "
+                      "caractere, cont deschis la o bancă din România)." % i)
         if tb in ("1", "2", "3") and not str(b.get("contract") or "").strip():
-            er.append("Beneficiar %d: contractB obligatoriu pentru tipB<5 (nr. și data sponsorizării)." % i)
+            er.append("Beneficiarul %d: completează numărul și data contractului de sponsorizare / mecenat." % i)
         if str(b.get("acord") or "") not in ("0", "1"):
-            er.append("Beneficiar %d: acord obligatoriu (0/1)." % i)
+            er.append("Beneficiarul %d: bifează dacă ești sau nu de acord cu informarea beneficiarului." % i)
         tot_b += _i(b.get("suma"))
     if tot_b > srest:
-        er.append("Suma beneficiarilor (%d) depășește sumaRest (%d)." % (tot_b, srest))
+        er.append("Suma alocată beneficiarilor depășește suma rămasă de redirecționat.")
     return er
 
 
@@ -169,7 +174,14 @@ def build_xml(prof, an, luna, manual, calc):
 def genereaza(conn, schema, perioada, manual=None):
     manual = dict(manual or {})
     manual.setdefault("tip_platitor", 1)
-    an, luna = int(perioada.an), int(perioada.luna)
+    an = int(perioada.an)
+    # [R4.1 validator] luna din XML = luna din dataSfarsit (an calendaristic -> 12; daca dataSfarsit e nul,
+    # ex. micro abrogat, -> 12). NU se ia din perioada (dispatch-ul trimitea luna=6, respins de validator).
+    luna = 12
+    _ds = _data(manual.get("data_sfarsit"))
+    _mm = re.match(r"^\d{2}\.(\d{2})\.\d{4}$", _ds)
+    if _mm:
+        luna = int(_mm.group(1))
     prof = pull(conn, schema, perioada)
     er = erori_generare(prof, manual)
     if er:

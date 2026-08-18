@@ -11,8 +11,8 @@ cap.6, ZERO clase noi, regula 0 citata in cap; identitate intre situatii similar
 PRIVITA. GARDA per declaratie: formular gol nu produce declaratie (refuz backend cu mesaj de CONTABIL, nu nume de camp),
 mutatie-probata RED. CSV FUNCTIONALITATI (Stare AMANAT->LIVE) odata cu codul; test_registru_functionalitati verde.
 
-COMANDA DE REPORNIRE (gata de dat): "Continua campania de formulare manuale _DOAR_API. GATA d710+d311+d307+d107.
-URMATOAREA: d177 (redirectionare profit -> ONG), apoi d207, cap-coada, in aceeasi metoda."
+COMANDA DE REPORNIRE (gata de dat): "Continua campania de formulare manuale _DOAR_API. GATA d710+d311+d307+d107+d177.
+URMATOAREA: d207 (informativa nerezidenti, ULTIMA din campanie), cap-coada, in aceeasi metoda."
 
 **GATA: d710** - formular "Obligatii corectate" (cod 121 micro/103 profit, suma initiala/corecta, cota la micro),
 obligatii in memorie -> body, refuz-pe-gol, gard test_d710_formular, CSV F192->LIVE. Model: declaratii.js::randeazaFormularD710.
@@ -47,13 +47,25 @@ nu de unit); test_d107 re-ancorat; gard core/test_d107_formular.py (RED-probat s
 _DOAR_API. CSV F211->LIVE + GRUPE_FUNC regenerat (148) + registre IN ACELASI commit. Proba:
 frontend_test/proba_d107_formular.py (ALFA MICRO an 2024, 2 beneficiari, DUK valid, axe 0, mobil body=393).
 
-**URMATOAREA: d177** (redirectionare a unei parti din impozitul pe profit catre ONG/culte, MANUALA). Citeste core/d177.py
-(semnatura genereaza + calcul + erori_generare + build_xml) si valideaza_cerere d177 (linia "d177 cere `manual.beneficiari`
-+ sumaMax/sumaRest" - de rescris in limba contabilului). Model LISTA (beneficiari + sume). DE FACUT identic cu d107/d307:
-(1) mesaje contabil in erori_generare SI valideaza_cerere (ATENTIE la stratul de dispatch, lectia d107); (2) formular-lista
-+ hook pas2 AMBELE locuri; (3) scoate DOAR d177 din _DOAR_API; (4) ajutor d177 (cauta F-number in CSV, rand existent);
-(5) gard test_d177_formular RED; (6) CSV ->LIVE + GRUPE_FUNC + registre IN ACELASI commit; (7) proba Playwright ALFA MICRO
--> DUK valid + axe + mobil. RESTART OBLIGATORIU dupa scoaterea din _DOAR_API. Apoi d207 (nerezidenti, beneficiari grupati pe tip_venit).
+**GATA: d177** (redirectionare impozit profit -> ONG/cult, commit aceasta tura) - cea mai bogata forma: ANTET (plafoane
+suma_max/ant/rest + perioada fiscala) + LISTA de beneficiari, fiecare cu tip (1 cult / 2 alte / 3 mecenat / 5 UNICEF;
+4 nepermis), cod fiscal (CUI, CNP la mecenat - eticheta se schimba), denumire, IBAN, suma, acord, contract (obligatoriu
+la tip<5, ascuns la UNICEF). Total alocat vs. ramas afisat; suma de control = 0. Model complet: declaratii.js::
+randeazaFormularD177 + _d177Manual + _D177_TIPB + S.d177 (in memorie) + hook pas2 (DOUA locuri) + id #d177-totaluri.
+Backend: erori_generare + valideaza_cerere rescrise (fara tipB/cuiB/sumaRest/etc); test_d177 re-ancorat; gard
+core/test_d177_formular.py (RED-probat sed pe sumaRest). BUG REAL reparat: luna XML derivata din dataSfarsit (dispatch
+trimitea luna=6 -> R4.1 respins), aserție regresie in gard. Scos DOAR d177 din _DOAR_API. CSV F210->LIVE + GRUPE_FUNC
+(149) + registre IN ACELASI commit. Proba: frontend_test/proba_d177_formular.py (ALFA MICRO an 2025, DUK valid, axe 0, mobil body=393).
+
+**URMATOAREA: d207** (declaratie informativa privind impozitul retinut la sursa pe veniturile nerezidentilor, ULTIMA din
+campanie, MANUALA). Citeste core/d207.py (semnatura genereaza + calcul + erori_generare + build_xml) si valideaza_cerere
+d207 (linia "d207 cere `manual.beneficiari` (lista de beneficiari nerezidenți)" - de rescris in limba contabilului).
+Model LISTA de beneficiari nerezidenti, grupati pe tip_venit (verifica structura la sursa in anaf_surse). DE FACUT identic
+cu d177/d107: (1) mesaje contabil in erori_generare SI valideaza_cerere; (2) formular-lista + hook pas2 AMBELE locuri;
+(3) scoate DOAR d207 din _DOAR_API; (4) ajutor d207 (F-number in CSV, rand existent); (5) gard test_d207_formular RED;
+(6) CSV ->LIVE + GRUPE_FUNC + registre IN ACELASI commit; (7) proba Playwright ALFA MICRO -> DUK valid + axe + mobil.
+RESTART OBLIGATORIU dupa scoaterea din _DOAR_API. ATENTIE (lectia d177): ruleaza proba pe traseul REAL, cu default-urile
+dispatchului - bug-urile de parametru (ex. luna/perioada) trec de unit-teste dar cad la DUK pe traseu. Cu d207 campania de 6 e INCHISA.
 RESTART OBLIGATORIU dupa scoaterea din _DOAR_API (modificare backend, altfel tipul nu apare in selectorul live - prins la d307).
 
 ## REPORNIRE (audit tenant_006 - context anterior)

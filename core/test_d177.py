@@ -44,13 +44,14 @@ def test_d177_build_xml():
 
 def test_d177_reguli():
     prof = {"cui": "14399840", "den": "F"}
-    assert any("sumaMax" in e for e in d177.erori_generare(prof, _manual(suma_max=5000)))       # max < ant+rest
+    assert any("maximă" in e.lower() for e in d177.erori_generare(prof, _manual(suma_max=5000)))  # max < ant+rest
     b = _manual(); b["beneficiari"][0]["tip"] = "4"
-    assert any("tipB" in e for e in d177.erori_generare(prof, b))                                # 4 nepermis
+    assert any("tipul beneficiarului" in e.lower() for e in d177.erori_generare(prof, b))         # 4 nepermis
     b = _manual(); b["beneficiari"][0]["contract"] = ""
-    assert any("contractB" in e for e in d177.erori_generare(prof, b))                           # tipB<5 -> contract
+    assert any("contract" in e.lower() for e in d177.erori_generare(prof, b))                     # tipB<5 -> contract
     b = _manual(); b["beneficiari"][0]["suma"] = 20000
-    assert any("depășește sumaRest" in e for e in d177.erori_generare(prof, b))                  # Σsuma>rest
+    assert any("depășește" in e.lower() and "rămas" in e.lower()
+               for e in d177.erori_generare(prof, b))                                         # Σsuma>rest
 
 
 @pytest.mark.skipif(not os.path.exists(_JAR), reason="Validatorul D177 nu e instalat în DUK.")
@@ -60,3 +61,19 @@ def test_d177_valid_pe_validatorul_oficial():
     xml, res = d177.genereaza(_P(), "s", Perioada(2025, luna=12), _manual())
     rez = duk.valideaza(xml, "d177", an=2025, luna=12)
     assert rez["stare"] == "valid", rez.get("erori")
+
+
+def test_d177_erori_fara_nume_interne():
+    """Mesajele de eroare sunt in limba contabilului - fara atribute XML / campuri interne."""
+    prof = {"cui": "14399840", "den": "F"}
+    interne = ("tipPlatitor", "sumaMax", "sumaAnt", "sumaRest", "denB", "cuiB", "tipB", "contractB",
+               "ibanB", "sumaB", "totalPlata_A")
+    cazuri = [
+        {"beneficiari": [], "suma_rest": 0},
+        _manual(suma_max=5000),
+        _manual(beneficiari=[{"tip": "1", "cui": "", "den": "", "iban": "x", "suma": 1, "acord": "1"}]),
+    ]
+    for mn in cazuri:
+        for e in d177.erori_generare(prof, mn):
+            for intern in interne:
+                assert intern not in e, "mesaj cu nume intern %r: %s" % (intern, e)

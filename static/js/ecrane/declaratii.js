@@ -9,7 +9,7 @@
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=a7f9e80ae0";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
-  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211" };
+  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211", d177:"F210" };
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -52,6 +52,8 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     d307: { operatiuni: [], d_rec: 0, d_anulare: 0, temei: "" },
     // [formular_manual_d107] beneficiarii sponsorizarilor/mecenatului/burselor (lista in memorie, pt body.manual, ca d307).
     d107: { beneficiari: [], val2_ni: "", val3_ni: "", neindividualizati: [], d_rec: 0 },
+    // [formular_manual_d177] redirectionarea impozitului pe profit catre ONG/cult (in memorie, pt body.manual).
+    d177: { data_inceput: "", data_sfarsit: "", suma_max: "", suma_ant: "", suma_rest: "", d_rec: 0, beneficiari: [] },
   };
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
@@ -198,6 +200,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d311") body.manual = _d311Manual();              // [formular_manual_d311] situatiile din memorie
   if (S.tip === "d307") body.manual = _d307Manual();              // [formular_manual_d307] operatiunile din memorie
   if (S.tip === "d107") body.manual = _d107Manual();              // [formular_manual_d107] beneficiarii din memorie
+  if (S.tip === "d177") body.manual = _d177Manual();              // [formular_manual_d177] redirectionarea din memorie
 
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
@@ -216,6 +219,7 @@ async function pas2(corp, nav) {
       ${S.tip === "d311" ? '<div id="dec-d311-form"></div>' : ""}
       ${S.tip === "d307" ? '<div id="dec-d307-form"></div>' : ""}
       ${S.tip === "d107" ? '<div id="dec-d107-form"></div>' : ""}
+      ${S.tip === "d177" ? '<div id="dec-d177-form"></div>' : ""}
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
@@ -225,6 +229,7 @@ async function pas2(corp, nav) {
     if (S.tip === "d311") randeazaFormularD311(corp, nav);
     if (S.tip === "d307") randeazaFormularD307(corp, nav);
     if (S.tip === "d107") randeazaFormularD107(corp, nav);
+    if (S.tip === "d177") randeazaFormularD177(corp, nav);
     return;
   }
 
@@ -262,6 +267,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d311" ? '<div id="dec-d311-form"></div>' : ""}
     ${S.tip === "d307" ? '<div id="dec-d307-form"></div>' : ""}
     ${S.tip === "d107" ? '<div id="dec-d107-form"></div>' : ""}
+    ${S.tip === "d177" ? '<div id="dec-d177-form"></div>' : ""}
     ${blocANAF}
     ${constat.length ? `<div class="caseta-info">
         <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
@@ -299,6 +305,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d311") randeazaFormularD311(corp, nav);
   if (S.tip === "d307") randeazaFormularD307(corp, nav);
   if (S.tip === "d107") randeazaFormularD107(corp, nav);
+  if (S.tip === "d177") randeazaFormularD177(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -849,6 +856,134 @@ function randeazaFormularD107(corp, nav) {
       eroareCamp(zona, "d107-val2ni", "Ai o sumă reportată pentru beneficiari neindividualizați — adaugă-i în anexă sau șterge suma.");
       return;
     }
+    pas2(corp, nav);
+  });
+}
+
+const _D177_TIPB = [
+  { val: "1", et: "Sponsorizare — persoane juridice fără scop lucrativ, inclusiv unități de cult" },
+  { val: "2", et: "Sponsorizare — alți beneficiari, potrivit legii" },
+  { val: "3", et: "Act de mecenat (persoană fizică)" },
+  { val: "5", et: "UNICEF și alte organizații internaționale" },
+];
+function _d177TipEt(t) { const x = _D177_TIPB.find((y) => y.val === t); return x ? x.et : "Tip " + t; }
+
+// tip==="d177" (cerere de redirectionare a unei parti din impozitul pe profit catre entitati nonprofit /
+// unitati de cult, art.25(4)i/t CF). Formular-lista de beneficiari (ca d107/d307) + un antet cu plafoanele
+// (suma maxima redirectionabila / redirectionata anterior / ramasa) si perioada fiscala. Fiecare beneficiar:
+// tip (cult/nonprofit/mecenat/UNICEF), cod fiscal (CUI, ori CNP la mecenat), denumire, IBAN, suma, acord de
+// informare, si contract (obligatoriu la tip 1/2/3, nu la UNICEF). Suma de control = 0 (D177 e informativa).
+// Valorile stau IN MEMORIE (S.d177), persista intre randari. Zero clase noi.
+function _d177Manual() {
+  const d = S.d177 || {};
+  return {
+    tip_platitor: 1,
+    data_inceput: d.data_inceput, data_sfarsit: d.data_sfarsit,
+    suma_max: d.suma_max, suma_ant: d.suma_ant, suma_rest: d.suma_rest,
+    d_rec: d.d_rec ? 1 : 0,
+    beneficiari: (d.beneficiari || []).map((b) => ({
+      tip: b.tip, cui: b.cui, den: b.den, iban: b.iban, suma: b.suma,
+      acord: b.acord ? "1" : "0", adresa: b.adresa || "", contract: b.contract || "",
+    })),
+  };
+}
+
+function randeazaFormularD177(corp, nav) {
+  const zona = corp.querySelector("#dec-d177-form");
+  if (!zona) return;
+  const d = S.d177;
+  if (!d.data_inceput) d.data_inceput = S.an + "-01-01";
+  if (!d.data_sfarsit) d.data_sfarsit = S.an + "-12-31";
+  const benef = d.beneficiari || [];
+  const srest = _n(d.suma_rest);
+  const totB = benef.reduce((s, b) => s + _n(b.suma), 0);
+  const ramas = srest - totB;
+  const grila = benef.length
+    ? benef.map((b, i) => `<div class="dec-man-rand">
+        <span class="dec-recl-desc">${esc(_d177TipEt(b.tip))} · ${esc(b.den)} (${b.tip === "3" ? "CNP" : "CUI"} ${esc(String(b.cui))}) · ${bani(_n(b.suma))} lei${b.contract ? " · contract " + esc(b.contract) : ""} · ${b.acord ? "cu acord de informare" : "fără acord de informare"}</span>
+        <button class="btn-link dec-d177-del" data-idx="${i}">șterge</button></div>`).join("")
+    : `<div class="stare-goala stare-goala--inline">Niciun beneficiar. D177 redirecționează o parte din impozitul pe profit către entități nonprofit / unități de cult — adaugă mai jos fiecare beneficiar cu suma redirecționată.</div>`;
+  zona.innerHTML = `<details class="dec-xml" open><summary>Redirecționarea impozitului pe profit (${benef.length} beneficiari)</summary>
+    <p class="camp-ajutor">Plătitor de impozit pe profit. Suma maximă redirecționabilă = min(20% din impozitul pe profit, 0,75% din cifra de afaceri) — o calculezi din situația firmei și o treci mai jos.</p>
+    <div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:6px">
+      <label class="camp" style="width:150px"><span class="camp-eticheta">Perioada de la <span class="oblig">*</span></span><input id="d177-di" type="date" class="camp-input" value="${esc(d.data_inceput)}"></label>
+      <label class="camp" style="width:150px"><span class="camp-eticheta">până la <span class="oblig">*</span></span><input id="d177-ds" type="date" class="camp-input" value="${esc(d.data_sfarsit)}"></label>
+      <label class="camp" style="width:180px"><span class="camp-eticheta">Suma maximă redirecționabilă (lei) <span class="oblig">*</span></span><input id="d177-smax" type="number" step="1" min="0" class="camp-input" value="${esc(String(d.suma_max || ""))}"></label>
+      <label class="camp" style="width:180px"><span class="camp-eticheta">Redirecționată anterior (lei)</span><input id="d177-sant" type="number" step="1" min="0" class="camp-input" value="${esc(String(d.suma_ant || ""))}"></label>
+      <label class="camp" style="width:180px"><span class="camp-eticheta">Rămasă de redirecționat (lei) <span class="oblig">*</span></span><input id="d177-srest" type="number" step="1" min="0" class="camp-input" value="${esc(String(d.suma_rest || ""))}"></label>
+      <label class="camp" style="width:auto;flex-direction:row;align-items:center;gap:6px">
+        <input id="d177-rec" type="checkbox" ${d.d_rec ? "checked" : ""}><span class="camp-eticheta" style="margin:0">Declarație rectificativă</span></label>
+    </div>
+    ${grila}
+    <div class="camp-eticheta" style="margin:12px 0 4px">Adaugă beneficiar:</div>
+    <div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px">
+      <label class="camp" style="flex:1 1 320px"><span class="camp-eticheta">Tipul beneficiarului <span class="oblig">*</span></span>
+        <select id="d177-tip" class="camp-input">${_D177_TIPB.map((t) => `<option value="${t.val}">${esc(t.et)}</option>`).join("")}</select></label>
+      <label class="camp" style="width:160px"><span class="camp-eticheta" id="d177-cui-et">CUI beneficiar <span class="oblig">*</span></span><input id="d177-cui" type="text" class="camp-input"></label>
+      <label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Denumire / nume beneficiar <span class="oblig">*</span></span><input id="d177-den" type="text" class="camp-input"></label>
+      <label class="camp" style="width:240px"><span class="camp-eticheta">IBAN (RO…) <span class="oblig">*</span></span><input id="d177-iban" type="text" class="camp-input"></label>
+      <label class="camp" style="width:160px"><span class="camp-eticheta">Suma redirecționată (lei) <span class="oblig">*</span></span><input id="d177-suma" type="number" step="1" min="0" class="camp-input"></label>
+      <label class="camp" id="d177-contract-wrap" style="width:190px"><span class="camp-eticheta">Nr. și data contractului <span class="oblig">*</span></span><input id="d177-contract" type="text" class="camp-input"></label>
+      <label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Adresa beneficiar</span><input id="d177-adr" type="text" class="camp-input"></label>
+      <label class="camp" style="width:auto;flex-direction:row;align-items:center;gap:6px">
+        <input id="d177-acord" type="checkbox"><span class="camp-eticheta" style="margin:0">Sunt de acord cu informarea beneficiarului</span></label>
+      <button class="buton-secundar" id="d177-add">+ adaugă</button>
+    </div>
+    <div id="d177-msg"></div>
+    <p class="camp-ajutor" id="d177-totaluri" style="margin-top:8px">Alocat beneficiarilor: <b>${bani(totB)}</b> din <b>${bani(srest)}</b> lei rămași · nealocat: <b>${bani(ramas)}</b> lei. Suma de control a declarației este 0 (D177 e informativă).</p>
+    <p style="margin-top:8px"><button class="buton-primar" id="d177-regen">Regenerează D177</button>
+      <span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>
+  </details>`;
+  const gv = (id) => zona.querySelector(id);
+  gv("#d177-di").addEventListener("change", (e) => { S.d177.data_inceput = e.target.value; });
+  gv("#d177-ds").addEventListener("change", (e) => { S.d177.data_sfarsit = e.target.value; });
+  gv("#d177-smax").addEventListener("change", (e) => { S.d177.suma_max = e.target.value; });
+  gv("#d177-sant").addEventListener("change", (e) => { S.d177.suma_ant = e.target.value; });
+  gv("#d177-srest").addEventListener("change", (e) => { S.d177.suma_rest = e.target.value; randeazaFormularD177(corp, nav); });
+  gv("#d177-rec").addEventListener("change", (e) => { S.d177.d_rec = e.target.checked ? 1 : 0; });
+  const syncTip = () => {
+    const t = gv("#d177-tip").value;
+    gv("#d177-contract-wrap").style.display = (t === "5") ? "none" : "";
+    gv("#d177-cui-et").firstChild.textContent = (t === "3") ? "CNP beneficiar " : "CUI beneficiar ";
+  };
+  gv("#d177-tip").addEventListener("change", syncTip); syncTip();
+  zona.querySelectorAll(".dec-d177-del").forEach((btn) => btn.addEventListener("click", () => {
+    S.d177.beneficiari.splice(parseInt(btn.dataset.idx), 1); randeazaFormularD177(corp, nav);
+  }));
+  gv("#d177-add").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    const tip = gv("#d177-tip").value;
+    const cui = gv("#d177-cui").value.trim();
+    const den = gv("#d177-den").value.trim();
+    const iban = gv("#d177-iban").value.replace(/\s/g, "").toUpperCase();
+    const sumaRaw = gv("#d177-suma").value;
+    const contract = gv("#d177-contract").value.trim();
+    const adr = gv("#d177-adr").value.trim();
+    const acord = gv("#d177-acord").checked;
+    const err = [];
+    if (!cui) err.push(["d177-cui", tip === "3" ? "Completează CNP-ul beneficiarului." : "Completează codul fiscal (CUI) al beneficiarului."]);
+    if (!den) err.push(["d177-den", "Completează denumirea sau numele beneficiarului."]);
+    if (!/^RO[0-9]{2}[0-9A-Z]{20}$/.test(iban)) err.push(["d177-iban", "IBAN-ul trebuie să înceapă cu RO și să aibă 24 de caractere."]);
+    if (sumaRaw === "" || isNaN(parseFloat(sumaRaw)) || parseFloat(sumaRaw) <= 0) err.push(["d177-suma", "Completează suma redirecționată (mai mare ca zero)."]);
+    if (tip !== "5" && !contract) err.push(["d177-contract", "Completează numărul și data contractului de sponsorizare / mecenat."]);
+    if (err.length) { err.forEach(([id, m]) => eroareCamp(zona, id, m)); return; }
+    S.d177.beneficiari.push({ tip: tip, cui: cui, den: den, iban: iban, suma: sumaRaw, contract: contract, adresa: adr, acord: acord ? 1 : 0 });
+    randeazaFormularD177(corp, nav);
+  });
+  gv("#d177-regen").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    // marcheaza campul vinovat INAINTE de a chema serverul (Regula 14.4)
+    if (!(S.d177.beneficiari || []).length) {
+      eroareCamp(zona, "d177-cui", "Adaugă cel puțin un beneficiar (butonul + adaugă). D177 nu se depune fără beneficiari.");
+      return;
+    }
+    if (_n(S.d177.suma_rest) <= 0) { eroareCamp(zona, "d177-srest", "Completează suma rămasă de redirecționat (mai mare ca zero)."); return; }
+    if (_n(S.d177.suma_max) < _n(S.d177.suma_ant) + _n(S.d177.suma_rest)) {
+      eroareCamp(zona, "d177-smax", "Suma maximă trebuie să fie cel puțin cât suma redirecționată anterior plus suma rămasă."); return;
+    }
+    if (!S.d177.data_inceput || !S.d177.data_sfarsit) { eroareCamp(zona, "d177-di", "Completează perioada fiscală (de la / până la)."); return; }
+    const totB = (S.d177.beneficiari || []).reduce((s, b) => s + _n(b.suma), 0);
+    if (totB > _n(S.d177.suma_rest)) { eroareCamp(zona, "d177-srest", "Suma alocată beneficiarilor depășește suma rămasă de redirecționat."); return; }
     pas2(corp, nav);
   });
 }

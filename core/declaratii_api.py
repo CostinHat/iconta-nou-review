@@ -316,7 +316,7 @@ DECLARATII = {
 # pe care ecranul generic (an/luna/trim) nu ii poate furniza. d710 (rectificativa) cere
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
-_DOAR_API = frozenset(("d104", "d110", "d177", "d207", "d220", "d221", "d223", "d230",
+_DOAR_API = frozenset(("d104", "d110", "d207", "d220", "d221", "d223", "d230",
                        "d393", "d395", "d397", "d200", "d201", "d204", "d208", "d216", "d120", "d600",
                        "d106", "d108", "d114", "d130", "d318", "d603",
                        "d119", "d169n", "d213", "d214", "d401", "d402",
@@ -384,11 +384,14 @@ def valideaza_cerere(tip, body, per_efectiv=None):
             erori.append("trimestru invalid: %r (aștept 1-4)" % (trim,))
     # 'anual' nu cere nimic în plus față de an
 
-    # d177 (redirectionare profit -> ONG, MANUALA): cere `manual` cu beneficiari + sume
+    # d177 (redirectionare impozit profit -> ONG/cult, MANUALA anuala): cere manual.beneficiari. Mesaj de
+    # CONTABIL (formularul manual din UI trimite mereu beneficiari -> aici cade doar apelul API gol). Detaliile
+    # pe beneficiar (tip/cod fiscal/IBAN/contract/suma) si plafoanele le da d177.genereaza.
     if tip == "d177":
         m = body.get("manual")
         if not isinstance(m, dict) or not m.get("beneficiari"):
-            erori.append("d177 cere `manual.beneficiari` + sumaMax/sumaRest")
+            erori.append("D177 nu are ce genera: adaugă în formular cel puțin un beneficiar către care "
+                         "redirecționezi o parte din impozitul pe profit.")
 
     # d207 (informativa nerezidenti, MANUALA): cere `manual` cu lista de beneficiari
     if tip == "d207":
