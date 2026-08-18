@@ -3236,3 +3236,9 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Mutație probă:** pe cod vechi (asterisc absent, mesaj generic, fără marcaj) 4 aserții pică; după fix = 4 passed. Rulat RED prin pytest.
 - **Probă live (Playwright, tenant_006):** ambele goale → „Completează simbolul și denumirea contului." + ambele câmpuri cu contur roșu; doar simbol completat → „Completează denumirea contului." + DOAR denumirea marcată. axe 0 (captură privită).
 - **Perimetru curat:** aceasta era ultima datorie de field-marking ÎN perimetrul stratului plan_conturi (tenant_006). Rămâne doar tiparul în ALTE formulare neatinse (pattern app-wide, NU datoria firmei curente — vezi regula §5-goală).
+
+## a11y: corpul modal .fereastra-corp focusabil din tastatura (mobil, 19.08.2026)
+- **Gard:** `core/test_fereastra_focusabila.py` (ratchet: ambele `.fereastra-corp` din navigator.js au `tabindex`).
+- **Ce face imposibil:** shell-ul modal partajat `.fereastra-corp` sa fie scrollabil dar nefocusabil din tastatura (axe `scrollable-region-focusable`, WCAG 2.1.1) - iesit pe Pixel 5 (393px) la preview-ul de parteneri, unde continutul depaseste viewportul. Fix o data in navigator.js = app-wide (toate ecranele modale).
+- **Mutatie proba:** pe cod vechi (fara tabindex) garda pica; dupa fix = 1 passed. RED prin pytest. Re-probat live mobil: axe pe preview parteneri 0 (era scrollable-region-focusable).
+- **Lectie infra (RAMAS, out-of-perimeter):** axe_scan.py = desktop-only, mobil_scan.py nu ruleaza axe -> de adaugat un pas axe-pe-mobil in infra vizuala (prinde clasa asta de violari care apar doar cand continutul overflow-uieste).

@@ -169,7 +169,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
         <span class="fereastra-spatiu"></span>
         <button class="nav-x" title="Închide" aria-label="Închide"><span aria-hidden="true">✕</span></button>
       </div>
-      <div class="fereastra-corp"></div>
+      <div class="fereastra-corp" tabindex="0"></div>
     `;
     fer.querySelectorAll(".fir-veriga").forEach((b) => b.addEventListener("click", () => {
       if (b.dataset.fer !== "") {  // sari la o fereastra de dedesubt
@@ -423,7 +423,7 @@ async function _anunturiBanner(ecran) {
     el.className = "fereastra-overlay";
     el.style.zIndex = "300";
     el.innerHTML = `<div class="fereastra" style="max-width:520px">
-      <div class="fereastra-corp">
+      <div class="fereastra-corp" tabindex="0">
         <h2 class="pf-titlu">Mesaj de la iConta.eu</h2>
         <p class="anunt-text">${esc(a.mesaj || "")}</p>
         <button class="buton-primar anunt-ok">Am \u00een\u021beles</button>
