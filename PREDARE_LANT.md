@@ -56,8 +56,10 @@ scheme) + ecran D301 cu 3 campuri furnizor + indicator grila + generator d390.op
 2/4 excluse) + reconciliere a-doua-cale _pull_d301. Proba: tenant_006 op cu furnizor DE -> D390 auto-derivat DUK VALID
 (cod A, baza 52261); captura privita ecran D301. Gard mutatie-probat (cele doua cai coincid). DS v2.45.
 tip 3 (accizabile) -> cod A VERIFICAT la sursa (OPANAF 394/2017 anexa 2: cod A = achizitii IC de bunuri, fara
-excludere accizabile) + DUK (bazaA); tip 5 -> cod S DUK (bazaS). Rafinare: achizitii_d301 numara doar tip 1/3/5
-fara tara (tip 2/4 cu tara nu mai da fals "lipseste tara").
+excludere accizabile) + DUK (bazaA); tip 5 -> cod S DUK (bazaS). tip 4 (art.307 alin.(3)(5)(6): gaz/energie +
+bunuri din regim suspensiv + taxare inversa locala) VERIFICAT la sursa (CF art.307) = NEintracomunitar -> exclus
+din D390 CORECT (serviciile IC art.307(2) = tip 5). Rafinare: achizitii_d301 numara doar tip 1/3/5 fara tara;
+grila D301 clarifica tip 2/4 ("nu intra in D390 — ..."). Toate cele 5 tipuri D301 verificate la sursa.
 
 ## RAMAS deschis (fronturi pt urmatoarea tura)
 - axe "region"/landmarks app-wide (moderat, structural, 8-19 noduri/ecran).

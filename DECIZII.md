@@ -9554,3 +9554,11 @@ preexistent d301/d390, extins la TOATE (d100/d101/d205/d112/d300/bilant). declar
 **Rafinare avertisment (defect adiacent gasit).** achizitii_d301 (folosit la refuzul-pe-zero) numara acum DOAR tipurile auto-derivabile (1/3/5) FARA tara - operatiunile care AR TREBUI in D390 dar nu au aparut. tip 2 (transport nou) / tip 4 (art.307 mixt) NU se numara nici cu tara: nu intra in D390 nici asa, deci a spune "lipseste tara" ar fi fals. Inainte: tip 2 cu tara declansa fals "completeaza tara furnizorului".
 
 **Proba.** tip 2/4 cu tara -> mesaj GENERIC (D390 pe zero legitim); tip 1/3/5 fara tara -> mesaj care semnaleaza d301. Gard test_achizitii_d301_numara_doar_mapabile_fara_tara (tip 2/4 cu tara + tip 1/3/5 fara tara -> count 3). 116 passed regresie d390.
+
+## 18.08.2026 — tip 4 (art.307 alin.(3)(5)(6)) EXCLUS din D390: VERIFICAT la sursa + nota UI
+
+**Verificare (Regula 5).** Codul fiscal art. 307 (anaf_surse/cod_fiscal_227_2015_consolidat), alineatele care compun D301 Sectiunea 4 (tip 4): alin.(3) = gaz/energie electrica/termica (art.275(1) lit.e/f) de la nestabilit -> LIVRARE cu loc in RO, nu achizitie IC; alin.(5) = bunuri iesite din regim suspensiv (art.295(1) lit.a/d) -> operatiune INTERNA; alin.(6) = taxare inversa GENERALA pentru livrari/prestari cu loc in RO de la nestabilit neinregistrat -> nu IC. NICIUNA intracomunitara -> tip 4 EXCLUS din declaratia recapitulativa D390 e CORECT. Serviciile IC (art.307 alin.2) NU se pun ca tip 4, ci ca tip 5 (S4.1 = subset al S4, OPANAF 592/2016) -> cod S, deja mapate. tip 2 (mijloace transport noi) exclus (raportare speciala).
+
+**Efect UI.** Grila D301 arata acum pentru tip 2/4 o nota "(nu intra in D390 — transport nou / taxare inversa locala, art. 307 alin.(3)/(5)/(6))", CHIAR daca au furnizor - contabilul stie ca excluderea e intentionata, nu o omisiune. Comentariul mapicarii _D301_TIP_COD (d390.py) actualizat cu temeiul precis (era vag "amestec").
+
+**Proba.** Captura privita: op tip 4 cu furnizor DE -> nota "nu intra in D390 — taxare inversa locala art. 307 alin.(3)/(5)/(6)"; op tip 1 fara furnizor -> "⚠ fara furnizor". Fara schimbare de mapare (era corecta); gard existent test_mapare_tip_cod pineaza tip 4 exclus din output.

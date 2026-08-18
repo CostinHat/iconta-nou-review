@@ -4529,3 +4529,6 @@ Costin a cerut construirea auto-derivarii (peste recomandarea executorului). Liv
 
 ## 18.08.2026 — Audit tenant_006 (cont.): tip 3 -> cod A verificat sursa+DUK + rafinare avertisment
 Cerut de Costin. Verificat la sursa (OPANAF 394/2017 anexa 2): cod A = achizitii IC de bunuri, fara excludere accizabile -> tip 3 (produse accizabile) -> cod A corect. Probat la DUK: tip 3 -> operatie tip="A", bazaA, DUK valid; tip 5 -> tip="S", bazaS. Defect adiacent reparat: achizitii_d301 numara acum doar tip 1/3/5 fara tara (tip 2/4 cu tara nu mai declanseaza fals "lipseste tara furnizorului"). Gard + fix schema test. Commit: aceasta tura.
+
+## 18.08.2026 — Audit tenant_006 (cont.): tip 4 exclus din D390 verificat la sursa + nota UI
+Cerut de Costin. Verificat CF art. 307 (corpus): tip 4 = Sectiunea 4 D301 = alin.(3) gaz/energie (loc in RO, nu IC) + alin.(5) bunuri din regim suspensiv (intern) + alin.(6) taxare inversa locala generala -> niciuna intracomunitara -> exclus din D390 CORECT (serviciile IC art.307(2) = tip 5 -> cod S). Comentariu mapare actualizat cu temeiul precis. Nota UI in grila D301 pentru tip 2/4 ("nu intra in D390 — ..."), chiar cu furnizor. Captura privita. Fara schimbare de mapare. Commit: aceasta tura.

@@ -3164,3 +3164,8 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Gard:** `core/test_d390_autoderivare.py::test_achizitii_d301_numara_doar_mapabile_fara_tara` + test_mapare (tip 3 -> A).
 - **Ce face imposibil:** achizitii_d301 sa numere tip 2/4 (avertisment fals "lipseste tara") sau sa scape tip 1/3/5 fara tara.
 - **Temei verificat:** OPANAF 394/2017 anexa 2 - cod A = achizitii IC de bunuri fara excludere accizabile; DUK valid pe tip 3 (bazaA) si tip 5 (bazaS).
+
+## tip 4 exclus din D390 verificat la sursa + nota UI (18.08.2026)
+- **Gard:** `core/test_d390_autoderivare.py::test_mapare_tip_cod_si_filtrul_tarii` (tip 4 cu tara NU apare in output).
+- **Temei verificat:** CF art. 307 alin.(3)(5)(6) = gaz/energie / bunuri din regim suspensiv / taxare inversa locala generala -> niciuna IC -> exclus din D390 corect.
+- **Efect:** grila D301 clarifica tip 2/4 ("nu intra in D390 — ...") chiar cu furnizor.

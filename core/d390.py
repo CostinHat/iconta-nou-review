@@ -491,10 +491,17 @@ def achizitii_d301(conn, schema, an, luna):
 
 
 # [auto-derivare d301->D390, decizia Costin 18.08.2026] Maparea tipului D301 (OPANAF 592/2016) -> codul
-# D390 (OPANAF 705/2020): tip 1 (achizitii IC bunuri taxabile) + tip 3 (produse accizabile = bunuri) -> A;
-# tip 5 (servicii IC primite, taxare inversa art.307(2)) -> S. EXCLUSE: tip 2 (mijloace transport noi -
-# raportare speciala, nu in recapitulativa) si tip 4 (art.307 (2)(3)(5)(6) - amestec IC + taxare inversa
-# interna gaz/energie, nu toate intracomunitare) -> clasificare manuala daca e cazul.
+# D390 (OPANAF 394/2017 anexa 2 / OPANAF 705/2020), VERIFICATA element-cu-element la sursa:
+#  tip 1 (achizitii IC bunuri taxabile) + tip 3 (produse accizabile = bunuri) -> A (cod A = "achizitii
+#    intracomunitare de bunuri", fara excludere accizabile - instr. D390);
+#  tip 5 (achizitii servicii IC, art.307 alin.(2) CF = servicii art.278(2) de la prestator UE = S4.1) -> S.
+# EXCLUSE (nu intra in declaratia recapitulativa):
+#  tip 2 (mijloace de transport noi) - raportare speciala, nu in recapitulativa;
+#  tip 4 (Sectiunea 4 = art.307 alin.(3)(5)(6) CF, verificat cod_fiscal_227_2015): alin.(3)=gaz/energie
+#    electrica/termica (art.275(1)e/f) de la nestabilit -> LIVRARE cu loc in RO, nu achizitie IC; alin.(5)=
+#    bunuri iesite din regim suspensiv (art.295(1)a/d) -> operatiune INTERNA; alin.(6)=taxare inversa
+#    generala pt livrari/prestari cu loc in RO de la nestabilit neinregistrat -> nu IC. Serviciile IC
+#    (alin.2) NU se pun ca tip 4, ci ca tip 5 (S4.1 e subset al S4) -> deja mapate la S.
 _D301_TIP_COD = {1: "A", 3: "A", 5: "S"}
 
 
