@@ -3185,3 +3185,9 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Gard:** `core/test_d390_autoderivare.py::test_confirmare_per_furnizor_persista_intre_luni`.
 - **Ce face imposibil:** confirmarea unui furnizor sa NU se aplice viitoarelor operatiuni de la el (contabilul ar re-confirma lunar).
 - **Mutatie proba:** scot verificarea `... not in _furnizori_conf` din lista -> op-ul din alta luna ramane semnalat dupa confirmarea furnizorului -> testul pica.
+
+## a11y contrast .btn-link + dec-xml summary (18.08.2026)
+- **Gard:** `core/test_a11y_contrast_tokens.py` (test_btn_link + test_dec_xml_summary, recalcul din sursa pe alb + #e9edf3).
+- **Ce face imposibil:** .btn-link sau .dec-xml summary sa scada sub 4.5:1 (butoane-link app-wide + toggle D301).
+- **Mutatie proba:** #2f6fa6 -> #3d8fd6 in .btn-link -> pica pe ambele fundaluri.
+- **RAMAS:** axe "region"/landmarks (26 noduri, app-wide, front separat); butoanele-link 18px inaltime = excepatia inline WCAG 2.5.8.

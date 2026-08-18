@@ -9586,3 +9586,11 @@ preexistent d301/d390, extins la TOATE (d100/d101/d205/d112/d300/bilant). declar
 **Temei.** Inchide §5 al raportului anterior (confirmarea era per-operatiune). Un furnizor de gaz/energie are natura consecventa -> confirmarea lui o data se aplica tuturor operatiunilor lui. Nu ascunde datele (op ramane, marcata).
 
 **Proba.** Doua op tip 4 acelasi furnizor DE/777, luni diferite (iun/iul): initial ambele posibil_serviciu=True; dupa confirma iun -> iun confirmat_local=True, iul posibil_serviciu=False + furnizor_confirmat=True (mostenit). Gard test_confirmare_per_furnizor_persista_intre_luni (mutatie: fara mostenire -> iul ramane semnalat -> pica). 25 passed.
+
+## 18.08.2026 — a11y contrast pe grila D301: .btn-link + summary (axe pe ecranul atins, §5)
+
+**Decizie.** axe-core rulat pe grila D301 (modificata repetat: campuri furnizor, indicii, butoane confirma/anuleaza) a gasit 2 perechi contrast sub AA: `.btn-link` #3d8fd6 (3.44 pe alb, 2.93 pe panoul #e9edf3) - butoanele sterge/confirma/anuleaza, app-wide; `.dec-xml summary` var(--albastru) #347ab8 (3.86 pe #e9edf3). Reparate la #2f6fa6 (4.53 pe #e9edf3, 5.32 pe alb). Inchide "RAMAS"-ul notat la DS v2.42 (.btn-link inca #3d8fd6 literal).
+
+**Temei.** WCAG 2.1 AA 1.4.3 (4.5:1). Rule 14 (axe pe ecranul atins). Tinta de atingere a butoanelor-link (18px inaltime) = excepatia inline WCAG 2.5.8 (in randul de text al operatiunii) -> acceptata, notata.
+
+**Proba.** axe pe grila D301: contrast 8 -> 0 (butoane-link + summary). Gard test_btn_link_contrast_pe_alb_si_panou + test_dec_xml_summary_contrast_pe_panou (recalcul din sursa >= 4.5), mutatie-probat (#2f6fa6->#3d8fd6 -> pica). Ramas: axe "region" (landmark) 26 noduri (front separat); tinta 18px inline.

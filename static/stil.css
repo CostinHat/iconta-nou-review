@@ -1360,7 +1360,8 @@ html, body {
 
 /* XML */
 .dec-xml { margin-bottom: 8px; }
-.dec-xml summary { cursor: pointer; font-size: var(--text-mic); color: var(--albastru); }
+/* [a11y contrast 18.08.2026] --albastru #347ab8 = 3.86 pe panoul #e9edf3 (sub AA); scoped -> #2f6fa6 (4.53). */
+.dec-xml summary { cursor: pointer; font-size: var(--text-mic); color: #2f6fa6; }
 .fereastra.fer-larg .dec-xml { flex: 1 1 auto; min-height: 80px; display: flex; flex-direction: column; }
 .fereastra.fer-larg .dec-xml[open] .dec-xml-pre { flex: 1 1 auto; }
 .dec-xml-pre {
@@ -2062,7 +2063,9 @@ html.pagina-publica, body.pagina-publica { overflow-y: auto; }
   background: #f97316; color: #fff; font-size: 18px; cursor: pointer; box-shadow: 0 2px 6px rgba(20,30,45,0.25); }
 .subbara-edu { min-height: 24px; display: inline-flex; align-items: center; padding: 2px 4px; }  /* a11y: tinta atingere >=24px (AA 2.5.8; era 18px) */
 .btn-link { font-size: var(--text-mic); padding: 0; border: none; background: transparent;
-  color: #3d8fd6; text-decoration: underline; cursor: pointer; box-shadow: none; }
+  /* [a11y contrast 18.08.2026] era #3d8fd6 = 3.44 pe alb / 2.93 pe panou #e9edf3 (sub AA); -> #2f6fa6
+     = 4.53 pe #e9edf3, 5.32 pe alb. Butoanele-link (sterge/confirma/anuleaza etc.) app-wide. */
+  color: #2f6fa6; text-decoration: underline; cursor: pointer; box-shadow: none; }
 .buton-mic { padding: 4px 10px !important; font-size: 12.5px !important; height: auto !important; }
 .buton-verde { border: none; border-radius: var(--raza); background: #1d7a4d; color: #fff;
   padding: 9px 18px; font-family: var(--font); font-size: var(--text-mic); font-weight: 600; cursor: pointer;

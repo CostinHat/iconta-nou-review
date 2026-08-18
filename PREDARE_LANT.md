@@ -68,7 +68,7 @@ d390_confirmat_local + ruta PUT confirma-local) stinge indiciul reversibil. Conf
 marcate "✓ furnizor confirmat local" (derivat din confirmarile existente, fara tabel nou).
 
 ## RAMAS deschis (fronturi pt urmatoarea tura)
-- axe "region"/landmarks app-wide (moderat, structural, 8-19 noduri/ecran).
+- axe "region"/landmarks app-wide (moderat, structural, 8-26 noduri/ecran). [singurul a11y ramas: contrast=0 pe ecranele atinse]
 - D406 avertisment conturi 731-738 excluse din norma A (neverificat la sursa).
 - Import: provocate salariati+solduri (curat); restul 8 straturi neprovocate in aceste ture.
 - Vizual/mobil (Pixel 5): rulat doar pe Control fiscal; restul ecranelor tenant_006 neanalizate pe telefon.

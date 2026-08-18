@@ -4541,3 +4541,6 @@ Cerut de Costin (item §5). Indiciul "poate e serviciu -> tip 5" apare si pe gaz
 
 ## 18.08.2026 — Audit tenant_006 (cont.): confirmarea persista per-furnizor
 Inchide §5 (confirmarea era per-operatiune). Un furnizor confirmat "local" pe orice operatiune tip 4 stinge indiciul si pentru viitoarele operatiuni de la el (alta luna) - nu re-confirmi lunar acelasi furnizor de gaz. Derivat din confirmarile existente (fara tabel nou). Op confirmata direct: "✓ confirmat local"; mostenita: "✓ furnizor confirmat local" (d390_furnizor_confirmat). Gard mutatie-probat. Commit: aceasta tura.
+
+## 18.08.2026 — Audit tenant_006 (cont.): a11y pe grila D301 (§5 - axe pe ecranul atins)
+Rule 14 restant: axe/mobil pe grila D301 modificata. axe a gasit 2 perechi contrast sub AA: .btn-link #3d8fd6 (3.44 alb / 2.93 panou #e9edf3) - butoane app-wide; .dec-xml summary --albastru #347ab8 (3.86 pe #e9edf3). Reparate la #2f6fa6. Inchide "RAMAS"-ul din DS v2.42 (.btn-link literal #3d8fd6). Gard mutatie-probat, axe contrast 8->0. Mobil: fara overflow; butoane-link 18px = excepatia inline WCAG 2.5.8 (notat). Ramas: axe region/landmarks (front separat). Commit: aceasta tura.

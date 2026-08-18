@@ -104,3 +104,26 @@ def test_cf_coduri_declaratii_contrast_pe_panou():
     assert col, "culoarea codurilor declaratiilor (control fiscal) negasita"
     r = _ratio(col, _PANOU_CF)
     assert r >= 4.5, "codurile declaratiilor Control fiscal (%s) pe panoul %s = %.2f < 4.5" % (col, _PANOU_CF, r)
+
+
+# [a11y contrast btn-link + summary 18.08.2026 - axe pe grila D301] .btn-link folosea #3d8fd6 (3.44 pe alb,
+# 2.93 pe panoul #e9edf3) si .dec-xml summary --albastru #347ab8 (3.86 pe #e9edf3) - sub AA. -> #2f6fa6.
+def test_btn_link_contrast_pe_alb_si_panou():
+    css = _css()
+    if not css:
+        pytest.skip("stil.css absent")
+    col = _val(r"\.btn-link\s*\{[^}]*color:\s*(#[0-9a-fA-F]{6})", css)
+    assert col, ".btn-link color negasit"
+    for bg in ("#ffffff", "#e9edf3"):
+        r = _ratio(col, bg)
+        assert r >= 4.5, ".btn-link (%s) pe %s = %.2f < 4.5 (butoane-link sterge/confirma/anuleaza)" % (col, bg, r)
+
+
+def test_dec_xml_summary_contrast_pe_panou():
+    css = _css()
+    if not css:
+        pytest.skip("stil.css absent")
+    col = _val(r"\.dec-xml summary\s*\{[^}]*color:\s*(#[0-9a-fA-F]{6})", css)
+    assert col, ".dec-xml summary color negasit"
+    r = _ratio(col, "#e9edf3")
+    assert r >= 4.5, ".dec-xml summary (%s) pe panoul #e9edf3 = %.2f < 4.5" % (col, r)
