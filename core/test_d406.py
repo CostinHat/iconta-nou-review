@@ -19,6 +19,24 @@ def test_plan_oficial_citeste_nomenclatorul_norma_A():
     assert "704" in oficial, "704 (venituri servicii) trebuie să fie în norma comerciala 'A'"
 
 
+def test_conturi_ong_731_738_norma_specifica():
+    """[Regula 2/5 - verificat la sursa 18.08.2026] Conturile de venituri ONG 731-738 (OMFP 3103/2017)
+    sunt NORMA-SPECIFICE: absente din planul comercial 'A' (OMFP 1802/2014), prezente in planul ONG.
+    Sursa = nomenclatorul validatorului oficial ANAF (d406_nomenclatoare_anaf.properties, arbitrul).
+    Blocheaza faptul care justifica excluderea din D406 la o firma norma-A: nu e un drop orb al clasei 73,
+    ci filtrare pe planul normei declarate. Fara latura ONG, gardul nu ar distinge 'exclus corect' de 'clasa 73
+    lipseste peste tot'."""
+    A = _d406.plan_oficial("A")
+    ONG = _d406.plan_oficial("ONG")
+    assert len(ONG) > 100, "plan_oficial('ONG') GOL/mic (%d) - nomenclatorul ONG nu e citit (cheie/cale?)" % len(ONG)
+    C73 = ("731", "732", "733", "734", "735", "736", "737", "738")
+    gresit_in_A = [c for c in C73 if c in A]
+    lipsa_in_ONG = [c for c in C73 if c not in ONG]
+    assert not gresit_in_A, "conturi 73x (venituri ONG) gasite GRESIT in norma comerciala 'A': %s" % gresit_in_A
+    assert not lipsa_in_ONG, "conturi 73x LIPSA din planul ONG (ar trebui sa existe, OMFP 3103/2017): %s" % lipsa_in_ONG
+
+
+
 
 def test_taxcode_livrari_period_aware():
     """TaxCode-ul SAF-T pentru livrari e PERIOD-AWARE pe data facturii: ANAF a schimbat codurile cu

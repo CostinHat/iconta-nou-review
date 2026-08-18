@@ -53,8 +53,12 @@ export function creeazaNavigator(radacina, desktopRandator) {
     const ecran = document.createElement("div");
     ecran.className = "desktop";
 
+    // --- antet (banner): inveleste tot chrome-ul de sus intr-un singur <header> landmark,
+    // ca subbara/bara3/toasturile sa nu mai fie continut in afara oricarui landmark (axe: region). ---
+    const antet = document.createElement("header");
+    antet.className = "bara-antet";
     // --- bara albastră ---
-    const bara = document.createElement("header");
+    const bara = document.createElement("div");
     bara.className = "bara";
     bara.innerHTML = `
       <img class="bara-logo-img" src="/static/logo_simbol.png" alt="">
@@ -68,7 +72,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
     `;
     bara.querySelector("#nav-iesire").addEventListener("click", () => sesiune.iesi());
     bara.querySelector("#nav-ghid").addEventListener("click", deschideAnsamblu);  // [bun_venit_v1]
-    ecran.appendChild(bara);
+    antet.appendChild(bara);
     // [p58_clopot] clopotel notificari -- dupa append, ca badge-ul sa fie in DOM  // [p65_clopot_dom]
     _clopotInit(bara, ecran);
     _sumarLogin(ecran);  // [p64_sumar_toast]
@@ -99,14 +103,14 @@ export function creeazaNavigator(radacina, desktopRandator) {
           ? `${icon}<span class="subbara-cheie">În lucru:</span><span class="subbara-firma">${firmaInLucru}</span>`
           : `${icon}<span class="subbara-gol">Firmă activă: Nicio firmă selectată</span>`;
       }
-      ecran.appendChild(subbara);
+      antet.appendChild(subbara);
     }
     // [p25_bara3] bara 3 motivationala — doar asistent (angajat)
     if (u.rol === "angajat") {
       const bara3 = document.createElement("div");
       bara3.className = "bara3";
       bara3.innerHTML = `<span class="bara3-gol">se încarcă realizările tale…</span>`;
-      ecran.appendChild(bara3);
+      antet.appendChild(bara3);
       import("./api.js?v=a7f9e80ae0").then(({ api }) => api.get("/eu/calitate")).then((cal) => {
         if (!cal || !cal.ok) { bara3.innerHTML = ""; return; }
         const evaluate = cal.evaluate || 0;
@@ -121,6 +125,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
       }).catch(() => { bara3.innerHTML = ""; });
     }
 
+    ecran.appendChild(antet);   // [a11y_landmark] banner cu tot chrome-ul de sus, INAINTE de main
     const continut = document.createElement("main");
     continut.className = "desktop-continut";
     ecran.appendChild(continut);
@@ -140,6 +145,11 @@ export function creeazaNavigator(radacina, desktopRandator) {
     overlay.className = "fereastra-overlay";
     const fer = document.createElement("div");
     fer.className = "fereastra";
+    // [a11y_landmark] fereastra de lucru e un dialog modal: role=dialog e frontiera de landmark
+    // (continutul ei nu mai declanseaza regula axe "region") + nume accesibil din titlul ferestrei.
+    fer.setAttribute("role", "dialog");
+    fer.setAttribute("aria-modal", "true");
+    fer.setAttribute("aria-label", String(sus.titluCurent || sus.titlu || "Fereastră de lucru"));
     // Sageata apare DOAR cand exista un "inapoi" real:
     //  - mai multe ferestre pe stiva, SAU
     //  - ecranul curent isi defineste o functie interna 'inapoi' (ex: migrare in cascada)
@@ -375,6 +385,7 @@ async function _sumarLogin(ecran) {
     const detalii = (r.pe_tip || []).map((x) => _sumarTextTip(x.tip, x.n)).join(", ");
     const t = document.createElement("div");
     t.className = "sumar-toast";
+    t.setAttribute("role", "status");  // [a11y_landmark] toast = live region (polite), nu continut orfan
     t.innerHTML = `<div class="sumar-toast-cap">${nume ? "Buna, " + esc(nume) + "!" : "Bine ai revenit!"}</div>` +
       `<div class="sumar-toast-corp">${esc(detalii)}</div>`;
     ecran.appendChild(t);

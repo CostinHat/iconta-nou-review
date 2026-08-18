@@ -181,6 +181,7 @@ html, body {
    DESKTOP rolului — bară albastră + bară albastru-gri
    ============================================================ */
 .desktop { min-height: 100dvh; display: flex; flex-direction: column; }
+.bara-antet { display: flex; flex-direction: column; }  /* [a11y_landmark] banner: bara+subbara+bara3 stivuite */
 
 /* bara albastră (sus) */
 .bara {
