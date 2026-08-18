@@ -1731,3 +1731,5 @@ Fara test nou (maparea neschimbata; test_mapare_tip_cod acopera deja tip 4 exclu
 `core/test_d390_autoderivare.py::test_confirmare_per_furnizor_persista_intre_luni` (confirma iun -> iul acelasi furnizor mosteneste). Mutatie-probat. 25 passed. Fara migrare (derivat din confirmarile per-operatiune).
 ## Bifa 18.08.2026 — a11y contrast .btn-link + summary (axe pe grila D301)
 `core/test_a11y_contrast_tokens.py` extins (2 teste: .btn-link pe alb+#e9edf3, .dec-xml summary pe #e9edf3, >= 4.5). Mutatie-probat. axe D301 contrast 8->0. Inchide RAMAS DS v2.42 (.btn-link #3d8fd6).
+## Bifa 18.08.2026 — formular manual D710 in UI (declaratie 1/6)
+`core/test_d710_formular.py` (3 teste, mutatie-probat). d710 scos din _DOAR_API -> GET /declaratii/tipuri (10). CSV F192->LIVE, test_registru_functionalitati verde. Backend refuz-gol + formular UI (model D301). DUK valid (cod 103 + cod 121 cu cota).

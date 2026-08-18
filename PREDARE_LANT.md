@@ -2,7 +2,22 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 # PREDARE LANT — audit tenant_006 (Achizitii IC Neplatitor SRL / N1, cabinet Prisma 1968)
 
-## REPORNIRE (comanda exacta, gata de dat)
+## REPORNIRE (comanda exacta, gata de dat) — CAMPANIE: 6 formulare manuale pt declaratiile _DOAR_API
+Costin a cerut formulare de introducere manuala pentru 6 declaratii (din cele 41 _DOAR_API care au generator+DUK dar
+n-au ecran), in ordinea frecventei la un cabinet SRL: **d710, d311, d307, d107, d177, d207**. Cap-coada fiecare:
+(1) parametri cititi din SEMNATURA generatorului (nu presupusi); (2) formular UI pe modelul panoului D301 (clase DS
+cap.6, ZERO clase noi, regula 0 citata in cap; identitate intre situatii similare); (3) scos din declaratii_api._DOAR_API
+-> apare in GET /declaratii/tipuri; (4) traseu live probat pe firma demo: formular->generare->XML->DUK valid, CAPTURA
+PRIVITA. GARDA per declaratie: formular gol nu produce declaratie (refuz backend cu mesaj de CONTABIL, nu nume de camp),
+mutatie-probata RED. CSV FUNCTIONALITATI (Stare AMANAT->LIVE) odata cu codul; test_registru_functionalitati verde.
+
+**GATA: d710** (commit aceasta tura) - formular "Obligatii corectate" (cod 121 micro/103 profit, suma initiala/corecta,
+cota la micro), obligatii in memorie -> body (D710 n-are tabel DB), refuz-pe-gol, gard test_d710_formular, CSV F192->LIVE.
+Model complet in static/js/ecrane/declaratii.js::randeazaFormularD710 + hook-urile pas2 (S.tip==="d710").
+**URMATOAREA: d311** (TVA cod anulat). Citeste semnatura: `grep -n "def _d311" core/declaratii_api.py` + `d311.genereaza`
++ structura situatiilor (schema IV, baze/TVA pe rd.03/05). Panou-lista ca d710. Apoi d307, d107, d177, d207.
+
+## REPORNIRE (audit tenant_006 - context anterior)
 Continua auditul cap-coada tenant_006 (N1, neplatitor micro cu achizitii intracomunitare; id 4841, schema tenant_006,
 CUI 95451848). Livrat tura asta: fix de coerenta semafor (existenta_firma_an numara achizitiile IC + casa/banca),
 commit 288f886. Livrat si: D100 pe fapt de venituri (b196943), a11y contrast Control fiscal + import blockages

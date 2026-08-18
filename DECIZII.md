@@ -9594,3 +9594,13 @@ preexistent d301/d390, extins la TOATE (d100/d101/d205/d112/d300/bilant). declar
 **Temei.** WCAG 2.1 AA 1.4.3 (4.5:1). Rule 14 (axe pe ecranul atins). Tinta de atingere a butoanelor-link (18px inaltime) = excepatia inline WCAG 2.5.8 (in randul de text al operatiunii) -> acceptata, notata.
 
 **Proba.** axe pe grila D301: contrast 8 -> 0 (butoane-link + summary). Gard test_btn_link_contrast_pe_alb_si_panou + test_dec_xml_summary_contrast_pe_panou (recalcul din sursa >= 4.5), mutatie-probat (#2f6fa6->#3d8fd6 -> pica). Ramas: axe "region" (landmark) 26 noduri (front separat); tinta 18px inline.
+
+## 18.08.2026 — Formular manual D710 in UI (scos din _DOAR_API) — declaratie 1/6
+
+**Decizie.** D710 (rectificativa D100) capata formular de introducere manuala in ecranul Declaratii: alegi D710 -> perioada (trim) -> Continua -> panou "Obligatii corectate" (chicken-and-egg: pas2 refuza pe gol si randeaza panoul). Fiecare obligatie: cod (121 micro / 103 profit), suma declarata INITIAL (gresit in D100), suma CORECTA, cota % (obligatorie la micro 121). Obligatiile stau IN MEMORIE (S.d710_obligatii) si intra DIRECT in body-ul de generare (D710 nu are tabel DB, spre deosebire de d301/d390/d300). Scos din declaratii_api._DOAR_API -> apare in GET /declaratii/tipuri (10 tipuri, era 9).
+
+**Parametri (cititi din semnatura, Regula 1).** d710.genereaza(conn, schema, Perioada(an, trim), {"obligatii": [{cod_oblig, suma_dat_i, suma_dat_c, cota?(doar 121), suma_ded?(doar 121)}]}). cod_oblig din nomenclatorul COD_BUGETAR (121/103). Empty/toate-zero -> refuz PRE-DUK.
+
+**Temei.** DS regula 0 (fara clase noi; diacritice in textul afisat; mesaje clare = ce lipseste + ce ai de facut) + cap.6 (formulare). Clasele IDENTICE cu panoul D301 (dec-man-form / dec-man-rand / camp / btn-link / dec-xml summary) - "identitate intre situatii similare"; modelul pentru celelalte 5 declaratii cu lista.
+
+**Proba.** Backend: refuz pe gol; cod 103 profit -> DUK valid; cod 121 micro + cota -> DUK valid; 121 fara cota -> mesaj R17 de contabil. Validare de camp in formular (sume/cota lipsa -> eroareCamp langa camp). Gard RED(mutatie)->GREEN test_d710_formular. test_registru_functionalitati verde (CSV F192 AMANAT->LIVE). Traseu live + captura privita dupa restart (four-way).

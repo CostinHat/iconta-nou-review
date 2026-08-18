@@ -3191,3 +3191,9 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Ce face imposibil:** .btn-link sau .dec-xml summary sa scada sub 4.5:1 (butoane-link app-wide + toggle D301).
 - **Mutatie proba:** #2f6fa6 -> #3d8fd6 in .btn-link -> pica pe ambele fundaluri.
 - **RAMAS:** axe "region"/landmarks (26 noduri, app-wide, front separat); butoanele-link 18px inaltime = excepatia inline WCAG 2.5.8.
+
+## Formular manual D710: gol nu produce declaratie (18.08.2026)
+- **Gard:** `core/test_d710_formular.py` (gol -> refuz cu mesaj de contabil; toate sumele 0 -> refuz; o obligatie valida -> genereaza).
+- **Ce face imposibil:** un formular D710 gol sa produca un XML (respins tacit de DUK) in loc de un mesaj clar.
+- **Mutatie proba:** dezactivez `if not res.obligatii` in d710.genereaza -> gol produce XML -> testul pica.
+- **Mesaj de contabil:** verificat ca NU expune nume interne (obligatii/suma_dat_i/cod_oblig).

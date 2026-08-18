@@ -316,7 +316,7 @@ DECLARATII = {
 # pe care ecranul generic (an/luna/trim) nu ii poate furniza. d710 (rectificativa) cere
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
-_DOAR_API = frozenset(("d104", "d107", "d110", "d177", "d207", "d220", "d221", "d223", "d230", "d307", "d311", "d710",
+_DOAR_API = frozenset(("d104", "d107", "d110", "d177", "d207", "d220", "d221", "d223", "d230", "d307", "d311",
                        "d393", "d395", "d397", "d200", "d201", "d204", "d208", "d216", "d120", "d600",
                        "d106", "d108", "d114", "d130", "d318", "d603",
                        "d119", "d169n", "d213", "d214", "d401", "d402",

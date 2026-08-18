@@ -4544,3 +4544,6 @@ Inchide §5 (confirmarea era per-operatiune). Un furnizor confirmat "local" pe o
 
 ## 18.08.2026 — Audit tenant_006 (cont.): a11y pe grila D301 (§5 - axe pe ecranul atins)
 Rule 14 restant: axe/mobil pe grila D301 modificata. axe a gasit 2 perechi contrast sub AA: .btn-link #3d8fd6 (3.44 alb / 2.93 panou #e9edf3) - butoane app-wide; .dec-xml summary --albastru #347ab8 (3.86 pe #e9edf3). Reparate la #2f6fa6. Inchide "RAMAS"-ul din DS v2.42 (.btn-link literal #3d8fd6). Gard mutatie-probat, axe contrast 8->0. Mobil: fara overflow; butoane-link 18px = excepatia inline WCAG 2.5.8 (notat). Ramas: axe region/landmarks (front separat). Commit: aceasta tura.
+
+## 18.08.2026 — Audit tenant_006: formulare manuale pt cele 41 _DOAR_API — d710 (1/6)
+Comanda Costin: 6 formulare (d710, d311, d307, d107, d177, d207), cap-coada, in ordinea frecventei. Livrat d710: parametri cititi din semnatura (perioada + obligatii cu cod 121/103, suma initiala/corecta, cota la micro); formular manual in ecranul Declaratii (panou "Obligatii corectate", model IDENTIC cu D301, clase DS cap.6); scos din _DOAR_API -> apare in selector; backend refuz-pe-gol cu mesaj de contabil; gard mutatie-probat; CSV F192->LIVE, test_registru verde. Traseu live + captura dupa restart. Commit: aceasta tura. Urmatoarea: d311.

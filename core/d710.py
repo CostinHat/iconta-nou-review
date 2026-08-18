@@ -353,4 +353,13 @@ def genereaza(conn, schema, perioada, manual=None):
     if erori:
         raise ValueError("D710 nu se poate genera: " + " ".join(erori))
     res = calcul_d710(prof, perioada, _date, manual)
+    # [formular_manual_d710 18.08.2026] Refuz pe GOL: un D710 fara nicio obligatie corectata (lista goala sau
+    # toate cu ambele sume 0 -> filtrate in calcul) e structural invalid la DUK (sectiunea <obligatie> e
+    # obligatoria). Il oprim cu mesaj de contabil PRE-DUK, ca formularul gol sa nu produca declaratie (nici
+    # XML respins). Acelasi tipar ca d100/d390/d205 "nu se depune pe zero".
+    if not res.obligatii:
+        raise ValueError(
+            "D710 nu se poate genera: nu ai introdus nicio obligație corectată. Adaugă în tabelul de mai jos "
+            "cel puțin o obligație — codul obligației (impozit micro sau impozit pe profit), suma declarată "
+            "greșit inițial și suma corectă. O declarație rectificativă fără nicio corecție nu are ce depune.")
     return build_xml(res), res

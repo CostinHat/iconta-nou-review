@@ -43,6 +43,7 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
     luna: acum.getMonth() + 1,
     trim: Math.floor(acum.getMonth()/3) + 1,
     rezultat: null,                          // {xml, avertismente}
+    d710_obligatii: [],                      // [formular_manual_d710] obligatii corectate (in memorie, pt body)
   };
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
@@ -185,6 +186,7 @@ async function pas2(corp, nav) {
   const body = { tenant_id: S.tenant_id, an: S.an };
   if (per === "lunar") body.luna = S.luna;
   if (per === "trimestrial") body.trim = S.trim;
+  if (S.tip === "d710") body.obligatii = S.d710_obligatii || [];  // [formular_manual_d710] din memorie
 
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
@@ -199,11 +201,13 @@ async function pas2(corp, nav) {
       ${S.tip === "d390" ? '<div id="dec-d390-clasif"></div>' : ""}
       ${S.tip === "d301" ? '<div id="dec-d301-op"></div>' : ""}
       ${S.tip === "d300" ? '<div id="dec-d300-manual"></div>' : ""}
+      ${S.tip === "d710" ? '<div id="dec-d710-form"></div>' : ""}
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
     if (S.tip === "d301") randeazaOperatiuniD301(corp, nav);
     if (S.tip === "d300") randeazaManualD300(corp, nav);
+  if (S.tip === "d710") randeazaFormularD710(corp, nav);
     return;
   }
 
@@ -237,6 +241,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d390" ? '<div id="dec-d390-clasif"></div>' : ""}
     ${S.tip === "d301" ? '<div id="dec-d301-op"></div>' : ""}
     ${S.tip === "d300" ? '<div id="dec-d300-manual"></div>' : ""}
+    ${S.tip === "d710" ? '<div id="dec-d710-form"></div>' : ""}
     ${blocANAF}
     ${constat.length ? `<div class="caseta-info">
         <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
@@ -270,6 +275,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d390") randeazaClasificareD390(corp, nav);
   if (S.tip === "d301") randeazaOperatiuniD301(corp, nav);
   if (S.tip === "d300") randeazaManualD300(corp, nav);
+  if (S.tip === "d710") randeazaFormularD710(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -428,6 +434,65 @@ async function randeazaOperatiuniD301(corp, nav) {
     }
   });
   gv("#d301-regen").addEventListener("click", () => pas2(corp, nav));
+}
+
+// tip==="d710" (rectificativa D100). Geaman cu randeazaOperatiuniD301: lista obligatiilor corectate +
+// adaugare + stergere + regenerare. Obligatiile stau IN MEMORIE (S.d710_obligatii) - D710 le primeste
+// DIRECT in body (nu are tabel in DB). Fiecare: cod obligatie (121 micro / 103 profit), suma initiala
+// (declarata gresit in D100) + suma corecta; cota % obligatorie la micro (121). Clasele DS din cap.6/D301.
+const _D710_CODURI = [{ val: "121", et: "Impozit pe veniturile microîntreprinderilor (121)" },
+                      { val: "103", et: "Impozit pe profit (103)" }];
+function _d710_et(cod) { const c = _D710_CODURI.find((x) => x.val === cod); return c ? c.et : "Cod " + cod; }
+
+function randeazaFormularD710(corp, nav) {
+  const zona = corp.querySelector("#dec-d710-form");
+  if (!zona) return;
+  const obl = S.d710_obligatii || [];
+  const grila = obl.length
+    ? obl.map((o, i) => `<div class="dec-man-rand">
+        <span class="dec-recl-desc">${esc(_d710_et(o.cod_oblig))} · inițial ${bani(o.suma_dat_i)} lei → corect ${bani(o.suma_dat_c)} lei${o.cota ? " · cotă " + esc(String(o.cota)) + "%" : ""}</span>
+        <button class="btn-link dec-d710-del" data-idx="${i}">șterge</button></div>`).join("")
+    : `<div class="stare-goala stare-goala--inline">Nicio obligație corectată. D710 corectează obligațiile declarate greșit în D100 — adaugă mai jos ce ai declarat inițial și cât e corect.</div>`;
+  zona.innerHTML = `<details class="dec-xml" open><summary>Obligații corectate (${obl.length})</summary>
+    ${grila}
+    <div class="camp-eticheta" style="margin:10px 0 4px">Adaugă obligație corectată:</div>
+    <div class="dec-man-form">
+      <label class="camp" style="width:340px"><span class="camp-eticheta">Obligația <span class="oblig">*</span></span>
+        <select id="d710-cod" class="camp-input">${_D710_CODURI.map((c) => `<option value="${c.val}">${esc(c.et)}</option>`).join("")}</select></label>
+      <label class="camp" style="width:160px"><span class="camp-eticheta">Suma declarată inițial <span class="oblig">*</span></span><input id="d710-i" type="number" step="1" class="camp-input"></label>
+      <label class="camp" style="width:150px"><span class="camp-eticheta">Suma corectă <span class="oblig">*</span></span><input id="d710-c" type="number" step="1" class="camp-input"></label>
+      <label class="camp" style="width:120px" id="d710-cota-wrap"><span class="camp-eticheta">Cotă micro (%) <span class="oblig">*</span></span><input id="d710-cota" type="number" step="0.01" class="camp-input" placeholder="1"></label>
+      <button class="buton-secundar" id="d710-add">+ adaugă</button>
+    </div>
+    <div id="d710-msg"></div>
+    <p style="margin-top:8px"><button class="buton-primar" id="d710-regen">Regenerează D710</button>
+      <span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>
+  </details>`;
+  const gv = (id) => zona.querySelector(id);
+  const comutaCota = () => { gv("#d710-cota-wrap").style.display = gv("#d710-cod").value === "121" ? "" : "none"; };
+  gv("#d710-cod").addEventListener("change", comutaCota); comutaCota();
+  zona.querySelectorAll(".dec-d710-del").forEach((b) => b.addEventListener("click", () => {
+    S.d710_obligatii.splice(parseInt(b.dataset.idx), 1); randeazaFormularD710(corp, nav);
+  }));
+  gv("#d710-add").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    const cod = gv("#d710-cod").value;
+    const i = parseFloat(gv("#d710-i").value), c = parseFloat(gv("#d710-c").value);
+    const err = [];
+    if (isNaN(i)) err.push(["d710-i", "Completează suma declarată inițial (cât ai pus greșit în D100)."]);
+    if (isNaN(c)) err.push(["d710-c", "Completează suma corectă (cât ar fi trebuit declarat)."]);
+    if (!isNaN(i) && !isNaN(c) && i <= 0 && c <= 0) err.push(["d710-c", "Cel puțin una dintre sume trebuie să fie mai mare ca 0 — altfel nu e nimic de corectat."]);
+    const rand = { cod_oblig: cod, suma_dat_i: isNaN(i) ? 0 : i, suma_dat_c: isNaN(c) ? 0 : c };
+    if (cod === "121") {
+      const cota = parseFloat(gv("#d710-cota").value);
+      if (isNaN(cota) || cota <= 0) err.push(["d710-cota", "Cota micro (1% sau 3%) e obligatorie la impozitul pe veniturile microîntreprinderilor."]);
+      else rand.cota = String(cota);
+    }
+    if (err.length) { err.forEach(([id, m]) => eroareCamp(zona, id, m)); return; }
+    S.d710_obligatii.push(rand);
+    randeazaFormularD710(corp, nav);
+  });
+  gv("#d710-regen").addEventListener("click", () => pas2(corp, nav));
 }
 
 // tip==="d300". Geaman cu randeazaOperatiuniD301: grila randurilor manuale + adaugare (upsert) +
