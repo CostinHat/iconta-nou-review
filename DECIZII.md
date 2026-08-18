@@ -9526,3 +9526,13 @@ preexistent d301/d390, extins la TOATE (d100/d101/d205/d112/d300/bilant). declar
 **Decizie (field-marking, front 3 LIVRAT).** `eroareCamp`/`curataEroriCamp` (api.js) marcheaza acum si INPUTUL cu eroare (clasa `camp-invalid` + aria-invalid + contur rosu), nu doar mesajul ancorat. App-wide (7 ecrane). Override CSS cu specificitate 0,7,1 ca sa invinga bordura globala `!important` (contrast_ferestre_v1, 0,6,1). Temei: Regula 14 pct.4. Proba: captura privita Date firma (2 campuri goale rosii, dispar la corectare); gard test_fieldmark mutatie-probat.
 
 **Front D390 <-> d301 (front 2, RAMANE DECIZIE, ascutit).** Verificat la sursa: art.325 CF + OPANAF 705/2020 - un art.317-inregistrat CHIAR datoreaza D390 cod A pentru achizitii IC de bunuri. DAR blocajul NU e doar "D390 nu citeste d301": `d301_operatiuni` are doar (tip, nr_doc, data_doc, val_valuta, curs, tva) - NU are codul TVA + tara FURNIZORULUI, pe care D390 cod A le CERE (codT/codO). Deci D390 cod A nu se poate construi din d301. Fixul corect = decizie de produs pe fluxul datelor: (a) extinzi d301_operatiuni cu TVA+tara partener, SAU (b) achizitiile IC intra ca facturi (care au partenerul). Plus firma trebuie art.317=True (tenant_006 e False). Nu reparat - cere alegere de produs + confirmare temei.
+
+## 18.08.2026 — D390 pe zero semnaleaza achizitiile din d301 (front 2, corectitudine) — audit tenant_006
+
+**Decizie (corectitudine, LIVRAT).** Cand D390 refuza "pe zero" DAR exista operatiuni in d301_operatiuni in perioada, mesajul le SEMNALEAZA si indruma spre adaugarea manuala (Tip A - achizitie bunuri IC, cu tara + cod TVA furnizor), in loc de mesajul generic "verifica facturile UE" (fals cand firma ARE achizitii in D301). Mirror al refuzului D301 care semnaleaza facturile IC neintroduse.
+
+**Temei.** Regula 4 (nu spune fals "nu ai operatiuni") + art.325 CF / OPANAF 705/2020. D390 SE POATE produce manual - PROBAT: linie cod A -> genereaza XML valid (nr_opi=1); DUK valideaza algoritmul codului TVA furnizor (a respins un cod DE fabricat, corect). Deci nu e blocaj de corectitudine, ci ghidaj anti-omisiune.
+
+**Auto-derivare d301->D390 (RAMANE DECIZIE, recomandare EXECUTOR: NU).** Full auto-derivarea ar cere coloane noi partener (cod TVA + tara) in d301_operatiuni + camp in ecranul D301 (pe care D301 nu-l cere) + migrare DB, si beneficiaza DOAR firmele art.317 (caz de margine, achizitii rare). Recomand SA NU se construiasca: calea manuala (UI clasificare Tip A) + avertismentul acopera corect fluxul. De redeschis daca volumul art.317 o cere.
+
+**Proba.** tenant_006 (1 d301 op iun, 0 facturi): mesajul D390 semnaleaza acum "1 operatiune in D301... adauga manual Tip A". Gard RED(mutatie)->GREEN test_d390_d301_semnal. 19 passed d390.

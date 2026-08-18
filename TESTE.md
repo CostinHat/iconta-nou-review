@@ -1715,3 +1715,5 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
 `core/test_a11y_contrast_tokens.py` extins cu 2 teste (.cf-incr-temei #5c6675, coduri declaratii #2f6fa6, pe #e9edf3 >= 4.5). Mutatie-probat RED. axe contrast=0 pe Control fiscal. DS v2.43. Import blockages (salariati CNP / solduri dezechilibru) verificate curat vizual.
 ## Bifa 18.08.2026 — field-level error marking (audit tenant_006)
 `core/test_fieldmark.py` (3 teste: eroareCamp marcheaza inputul + aria-invalid, curataEroriCamp scoate, CSS override invinge bordura globala). Mutatie-probat RED. Captura privita Date firma. DS v2.44.
+## Bifa 18.08.2026 — D390 semnaleaza achizitiile din d301 (front 2)
+`core/test_d390_d301_semnal.py` (2 teste: achizitii_d301 temp-schema + mesaj refuz tenant_006). Mutatie-probat RED. D390 producibil manual -> XML valid probat (rollback). 19 passed d390.

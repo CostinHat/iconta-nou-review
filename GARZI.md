@@ -3147,3 +3147,9 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Ce face imposibil:** eroareCamp sa lase inputul nemarcat (doar mesaj) sau overrideul CSS sa dispara (bordura ar ramane gri sub `!important`-ul global).
 - **Mutatie proba:** scot classList.add("camp-invalid") din api.js -> test_eroareCamp_marcheaza_inputul pica.
 - **RAMAS:** front D390<->d301 = decizie (d301 n-are TVA partener pt cod A); axe "region" landmarks app-wide; D406 conturi 731-738.
+
+## D390 pe zero semnaleaza d301 (front 2, 18.08.2026)
+- **Gard:** `core/test_d390_d301_semnal.py` (achizitii_d301 numara operatiunile d301; refuzul tenant_006 semnaleaza d301 + indruma manual).
+- **Ce face imposibil:** D390 sa refuze "pe zero" cu mesaj generic cand D301 are achizitii in perioada (ar duce la omiterea D390 pentru un art.317).
+- **Mutatie proba:** bypass ramura d301 (`_d301 = 0`) -> mesajul tenant_006 devine generic -> test pica.
+- **RAMAS:** auto-derivare d301->D390 = decizie (recomandare NU); axe region/landmarks app-wide; D406 conturi 731-738.

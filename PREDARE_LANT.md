@@ -26,14 +26,15 @@ extins (mutatie-probat). DS v2.43. versioneaza_assets --scrie. Import blockages 
 solduri dezechilibru = model). RAMAS a11y: axe "region" (landmark) 8-19 noduri app-wide (moderat, structural);
 D406 avertisment conturi 731-738 excluse din norma A (neverificat la sursa).
 
-## FRONT 2 — D390 nu vede achizitiile din d301_operatiuni (DECIZIE CERUTA, verificat la sursa)
-VERIFICAT (Regula 5): art.325 CF + OPANAF 705/2020 - un art.317-inregistrat CHIAR datoreaza D390 cod A pentru
-achizitii IC de bunuri. DAR blocajul nu e doar "D390 nu citeste d301": `d301_operatiuni` are (tip, nr_doc, data_doc,
-val_valuta, curs, tva) - NU are codul TVA + tara FURNIZORULUI, pe care D390 cod A le CERE (codT/codO). Deci D390 cod A
-NU se poate construi din d301. Fixul corect = DECIZIE DE PRODUS pe fluxul datelor: (a) extinzi d301_operatiuni cu
-TVA+tara partener, SAU (b) achizitiile IC intra ca facturi (care au partenerul, si D390 le citeste deja). Plus firma
-trebuie art.317=True (tenant_006 e False -> D390 corect "gri" acum). Nu reparat - cere alegere de produs + confirmarea
-mapicarii d301->D390 cod A.
+## INCHIS tura asta — FRONT 2 (D390<->d301) rezolvat pe corectitudine
+INVESTIGAT: D390 SE POATE produce manual - UI-ul de clasificare intracomunitara are Tip A (achizitie bunuri IC cu
+tara + cod TVA furnizor). Probat: linie manuala cod A -> d390.genereaza produce XML valid (nr_opi=1); DUK valideaza
+algoritmul codului TVA. Deci NU e blocaj de corectitudine. FIX LIVRAT: refuzul D390 "pe zero" semnaleaza acum
+operatiunile din d301_operatiuni si indruma spre adaugarea manuala (Tip A), in loc de mesajul generic fals "verifica
+facturile UE". Mirror al refuzului D301<->facturi. Gard test_d390_d301_semnal (mutatie-probat).
+RAMAS = DECIZIE (recomandare executor: NU construi): auto-derivarea d301->D390 cod A ar cere migrare DB (coloane
+partener cod TVA+tara pe d301_operatiuni) + camp in ecranul D301, pentru un caz de margine (art.317). Calea manuala +
+avertismentul acopera corect fluxul.
 
 ## INCHIS tura asta — D100 micro pe fapt de venituri (commit b196943)
 Semaforul arata D100 micro restanta ignorand baza de venituri, DAR D100 pe zero e structural invalid la DUK
@@ -50,7 +51,7 @@ Capcana: bordura globala `!important` (contrast_ferestre_v1, specificitate 0,6,1
 Gard test_fieldmark.py mutatie-probat. DS v2.44.
 
 ## RAMAS deschis (fronturi pt urmatoarea tura)
-- FRONT 2 (D390<->d301) = decizie de produs (vezi mai sus).
+- Auto-derivare d301->D390 cod A = DECIZIE (recomandare executor: NU; vezi front 2 INCHIS). Fara asta, fluxul e complet (manual + avertisment).
 - axe "region"/landmarks app-wide (moderat, structural, 8-19 noduri/ecran).
 - D406 avertisment conturi 731-738 excluse din norma A (neverificat la sursa).
 - Import: provocate salariati+solduri (curat); restul 8 straturi neprovocate in aceste ture.

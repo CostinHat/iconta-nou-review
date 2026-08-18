@@ -473,6 +473,20 @@ def pull_reclasificari(conn, schema, an, luna):
         return {(dir_, ta, c): t for (dir_, ta, c, t) in cur.fetchall()}
 
 
+def achizitii_d301(conn, schema, an, luna):
+    """[front D390<->d301, audit tenant_006 18.08.2026] Cate operatiuni IC sunt inregistrate in
+    d301_operatiuni pentru perioada (achizitii IC ale neplatitorilor art.317, din ecranul D301).
+    D390 NU le citeste automat: d301_operatiuni NU are codul TVA + tara FURNIZORULUI, pe care D390 cod A
+    le cere (codT/codO) - vezi decizia de flux (extindere d301 vs facturi). Pe refuzul-pe-zero le
+    SEMNALAM (Regula 4: nu 'nu exista operatiuni' cand D301 are achizitii). Tabela poate lipsi (partida simpla)."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT to_regclass(%s)", (schema + ".d301_operatiuni",))
+        if not cur.fetchone()[0]:
+            return 0
+        cur.execute(f"SELECT count(*) FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s", (an, luna))
+        return cur.fetchone()[0]
+
+
 def d390_are_operatiuni(conn, schema, an, luna, azi=None):
     """Fapt per-luna: exista operatiuni intracomunitare in (an, luna)? -> True | False | None.
       True/False = perioada INCHISA (luna incheiata inainte de azi): fapt STABILIT din facturi IC
@@ -564,6 +578,18 @@ def genereaza(conn, schema, an, luna, manual=None, reclasificari=None):
     # primea un mesaj de structura in loc de "nu ai ce depune". Acelasi tipar ca la d205
     # ("D205 fara niciun beneficiar de venit").
     if res.nr_opi == 0:
+        # [front D390<->d301] Daca D301 are achizitii IC in perioada dar D390 e pe zero, contabilul le-a
+        # introdus in ecranul D301 (d301_operatiuni) fara sa le reflecte in D390 -> nu spunem "nu ai
+        # operatiuni" (ar fi fals si ar duce la omiterea D390 pentru un art.317). Il indrumam explicit spre
+        # adaugarea manuala (Tip A). Acelasi tipar ca refuzul D301 care semnaleaza facturile IC neintroduse.
+        _d301 = achizitii_d301(conn, schema, an, luna)
+        if _d301:
+            raise ValueError(
+                "D390 pe zero, DAR există %d operațiune(i) intracomunitară(e) în D301 (d301_operatiuni) în "
+                "%02d/%d, nereflectate în D390. Dacă firma e înregistrată conform art.317, adaugă-le manual "
+                "în Clasificarea intracomunitară a D390 (Tip A — achiziție bunuri IC de la furnizor UE, cu "
+                "țara și codul de TVA al furnizorului). D390 se construiește din facturi + liniile manuale, "
+                "nu automat din tabelul D301." % (_d301, luna, an))
         raise ValueError(
             "D390 nu se depune pe zero: luna %02d/%d nu are nicio operațiune intracomunitară. "
             "Declarația recapitulativă se depune NUMAI pentru lunile în care ia naștere "
