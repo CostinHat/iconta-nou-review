@@ -2208,6 +2208,7 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.d301_operatiuni (
     nr_doc text, data_doc text, val_valuta numeric DEFAULT 0,
     tip_valuta text DEFAULT 'EUR', curs numeric, tva numeric DEFAULT 0,
     partener_tara varchar(2) DEFAULT '', partener_cod varchar(20) DEFAULT '', partener_den text DEFAULT '',
+    d390_confirmat_local boolean DEFAULT false,
     creat timestamp DEFAULT now()
 );
 

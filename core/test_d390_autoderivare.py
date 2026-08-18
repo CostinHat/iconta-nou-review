@@ -44,7 +44,8 @@ def schema_d301():
             c.execute('CREATE TABLE "%s".d301_operatiuni (id serial, an int, luna int, tip int, '
                       'nr_doc text, data_doc text, tip_valuta text DEFAULT \'EUR\', tva numeric DEFAULT 0, '
                       'val_valuta numeric, curs numeric, partener_tara varchar(2) DEFAULT \'\', '
-                      'partener_cod varchar(20) DEFAULT \'\', partener_den text DEFAULT \'\')' % SCH)
+                      'partener_cod varchar(20) DEFAULT \'\', partener_den text DEFAULT \'\', '
+                      'd390_confirmat_local boolean DEFAULT false)' % SCH)
     try:
         yield db
     finally:
@@ -123,3 +124,27 @@ def test_d390_posibil_serviciu_semnaleaza_tip4_cu_cod(schema_d301):
     assert ops["Furnizor DE"]["d390_posibil_serviciu"] is True, "tip 4 cu cod trebuie semnalat"
     assert ops["Fara cod"]["d390_posibil_serviciu"] is False, "tip 4 fara cod nu se semnaleaza"
     assert ops["Serviciu IT"]["d390_posibil_serviciu"] is False, "tip 5 nu se semnaleaza"
+
+
+def test_confirma_local_stinge_indiciul_reversibil(schema_d301):
+    """[fals-pozitiv benign] confirma_local pe o operatiune tip 4 -> d390_posibil_serviciu devine False
+    (indiciul se stinge); reversibil (valoare=False -> revine). Rezolva gaz/energie legitim (alin.3/5)."""
+    db = schema_d301
+    from core import d301_operatiuni_api as api
+    with db.get_conn() as conn:
+        with conn.cursor() as c:
+            c.execute('INSERT INTO "%s".d301_operatiuni (an,luna,tip,val_valuta,curs,partener_tara,partener_cod,partener_den) '
+                      "VALUES (2026,6,4,100,5,%%s,%%s,%%s) RETURNING id" % SCH, ("DE", "999", "Gaz DE"))
+            oid = c.fetchone()[0]
+
+    def flag():
+        with db.get_conn() as conn:
+            return [o["d390_posibil_serviciu"] for o in api.lista(conn, SCH, 2026, 6)["operatiuni"] if o["id"] == oid][0]
+
+    assert flag() is True, "tip 4 cu cod, neconfirmat -> indiciul apare"
+    with db.get_conn() as conn:
+        api.confirma_local(conn, SCH, 2026, 6, oid, True)
+    assert flag() is False, "dupa confirmare -> indiciul se stinge"
+    with db.get_conn() as conn:
+        api.confirma_local(conn, SCH, 2026, 6, oid, False)
+    assert flag() is True, "anularea confirmarii readuce indiciul (reversibil)"

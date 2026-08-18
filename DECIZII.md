@@ -9570,3 +9570,11 @@ preexistent d301/d390, extins la TOATE (d100/d101/d205/d112/d300/bilant). declar
 **Temei.** Regula 4 (nu tace pe un posibil gol de conformitate) + CF art.307 alin.(2) (servicii IC = tip 5). Indiciu SOFT, nu blocaj: nu e certitudine (gazul/energia alin.3/5 pot avea si ele furnizor inregistrat) -> avertizeaza, nu impune. Astfel un serviciu IC ratacit pe tip 4 (deci absent din D390) e semnalat contabilului.
 
 **Proba.** lista pe tenant_006: tip 4 cu cod -> posibil_serviciu True; tip 4 fara cod -> False; tip 5 -> False. Gard test_d390_posibil_serviciu_semnaleaza_tip4_cu_cod (mutatie: fara tip==4 -> tip 5 semnalat -> pica). 25 passed regresie.
+
+## 18.08.2026 — Fals-pozitiv benign: confirmarea "nu e serviciu IC" stinge indiciul tip 4
+
+**Decizie.** Indiciul de mis-clasificare (tip 4 cu cod TVA furnizor -> "poate e serviciu IC, foloseste tip 5") are un fals-pozitiv benign: gaz/energie/bunuri (art.307 alin.3/5) de la un furnizor INregistrat au si ele cod TVA, deci primesc indiciul desi sunt legitim tip 4. Rezolvare: contabilul apasa "confirma (nu e serviciu)" -> d390_confirmat_local=true -> indiciul se stinge pentru acea operatiune. Reversibil ("anuleaza"). Coloana noua d301_operatiuni.d390_confirmat_local (migrare_d301_confirmat, 19/19 scheme); ruta PUT /d301-operatiuni/{id}/confirma-local; lista: d390_posibil_serviciu = (tip==4 AND cod AND NOT confirmat).
+
+**Temei.** Regula 4 (indiciu, nu blocaj; contabilul decide). Nu se poate distinge din date serviciul de gaz/energie (ambele cu cod TVA) -> confirmarea manuala e singura cale corecta, fara a ascunde tacit un posibil gol de conformitate.
+
+**Proba.** lista pe tenant_006: op tip 4 cu cod -> posibil_serviciu True; confirma_local(True) -> False; confirma_local(False) -> True (reversibil). Gard test_confirma_local_stinge_indiciul_reversibil (mutatie: lista ignora confirmarea -> ramane True -> pica). Migrare verificata test_audit_schema. 37 passed regresie.

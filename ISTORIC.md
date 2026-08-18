@@ -4535,3 +4535,6 @@ Cerut de Costin. Verificat CF art. 307 (corpus): tip 4 = Sectiunea 4 D301 = alin
 
 ## 18.08.2026 — Audit tenant_006 (cont.): cazul de mis-clasificare tip 4 -> tip 5
 Cerut de Costin (item §5). Un serviciu IC introdus gresit ca tip 4 (in loc de tip 5) nu ajunge in D390 = gol de conformitate. Semnal: tip 4 cu COD TVA furnizor completat (codul exclude alin.6 nereg) -> suspect serviciu IC. lista intoarce d390_posibil_serviciu; grila D301 arata indiciu soft "daca e serviciu intracomunitar, foloseste tip 5 (D390 cod S)". Nu blocaj (gazul alin.3/5 poate avea si el furnizor -> fals-pozitiv benign). Gard mutatie-probat. Commit: aceasta tura.
+
+## 18.08.2026 — Audit tenant_006 (cont.): fals-pozitivul benign al indiciului tip 4
+Cerut de Costin (item §5). Indiciul "poate e serviciu -> tip 5" apare si pe gaz/energie legitim (art.307 alin.3/5) de la furnizor inregistrat (au cod TVA) = fals-pozitiv. Rezolvat cu confirmare manuala: buton "confirma (nu e serviciu)" -> d390_confirmat_local=true -> indiciul se stinge (reversibil "anuleaza"). Migrare coloana + ruta PUT confirma-local + lista respecta flag-ul + UI. Gard mutatie-probat. Nu se poate distinge din date serviciul de gaz -> confirmarea manuala e calea corecta (indiciu, nu blocaj). Commit: aceasta tura.

@@ -352,8 +352,8 @@ async function randeazaOperatiuniD301(corp, nav) {
     ? ops.map((o) => {
         const furnizor = o.partener_tara ? `${esc(o.partener_tara)}${esc(o.partener_cod || "")}${o.partener_den ? " " + esc(o.partener_den) : ""}` : "";
         const misclas = o.d390_posibil_serviciu
-          ? ` <span class="mig-cnp-no" title="Serviciile intracomunitare (art. 307 alin. 2) se introduc ca tip 5 ca să apară în D390 la cod S. Tip 4 e pentru gaz/energie și taxare inversă locală, care nu intră în D390.">⚠ dacă e serviciu intracomunitar, folosește tip 5 (D390 cod S)</span>`
-          : "";
+          ? ` <span class="mig-cnp-no" title="Serviciile intracomunitare (art. 307 alin. 2) se introduc ca tip 5 ca să apară în D390 la cod S. Tip 4 e pentru gaz/energie și taxare inversă locală, care nu intră în D390.">⚠ dacă e serviciu intracomunitar, folosește tip 5 (D390 cod S)</span> <button class="btn-link dec-d301-confirma" data-id="${o.id}">confirmă (nu e serviciu)</button>`
+          : (o.d390_confirmat_local && o.tip === 4 ? ` <span class="ecran-nota">✓ confirmat local <button class="btn-link dec-d301-neconfirma" data-id="${o.id}">anulează</button></span>` : "");
         const d390 = o.d390_cod
           ? (o.d390_lipsa_furnizor
               ? ` <span class="mig-cnp-no" title="completează țara furnizorului ca operațiunea să apară în D390">⚠ fără furnizor — nu intră în D390 (cod ${o.d390_cod})</span>`
@@ -404,6 +404,12 @@ async function randeazaOperatiuniD301(corp, nav) {
     try { await api.del(`/tenants/${S.tenant_id}/d301-operatiuni/${b.dataset.id}?an=${S.an}&luna=${S.luna}`); randeazaOperatiuniD301(corp, nav); }
     catch (e) { arataMesaj(gv("#d301-msg"), (e && e.mesaj) || "Eroare la ștergere.", "eroare"); }
   }));
+  // [mis-clasificare fals-pozitiv] confirma/anuleaza ca operatiunea tip 4 e legitim locala (nu serviciu IC)
+  const confirmaLocal = (id, valoare) => api.put(`/tenants/${S.tenant_id}/d301-operatiuni/${id}/confirma-local`,
+    { an: S.an, luna: S.luna, valoare }).then(() => randeazaOperatiuniD301(corp, nav))
+    .catch((e) => arataMesaj(gv("#d301-msg"), (e && e.mesaj) || "Eroare la confirmare.", "eroare"));
+  zona.querySelectorAll(".dec-d301-confirma").forEach((b) => b.addEventListener("click", () => confirmaLocal(b.dataset.id, true)));
+  zona.querySelectorAll(".dec-d301-neconfirma").forEach((b) => b.addEventListener("click", () => confirmaLocal(b.dataset.id, false)));
   gv("#d301-add").addEventListener("click", async () => {
     const b = { an: S.an, luna: S.luna, tip: parseInt(gv("#d301-tip").value),
       nr_doc: gv("#d301-nrdoc").value.trim(), data_doc: gv("#d301-datadoc").value.trim(),

@@ -78,7 +78,7 @@ def lista(conn, schema, an, luna):
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(f"SELECT id, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva, "
-                    f"partener_tara, partener_cod, partener_den "
+                    f"partener_tara, partener_cod, partener_den, d390_confirmat_local "
                     f"FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
         ops = []
         for r in cur.fetchall():
@@ -96,8 +96,11 @@ def lista(conn, schema, an, luna):
                         # [mis-clasificare 18.08.2026] tip 4 cu COD TVA furnizor completat = suspect: codul
                         # exclude alin.(6) (furnizori neinregistrati) -> ramane gaz/energie (alin 3/5) SAU un
                         # SERVICIU IC (alin 2) gresit pus ca tip 4 (ar trebui tip 5 -> cod S in D390). Indiciu
-                        # soft (nu certitudine: gazul poate avea si el furnizor inregistrat).
-                        "d390_posibil_serviciu": bool(r["tip"] == 4 and (r["partener_cod"] or "").strip())})
+                        # soft (nu certitudine: gazul poate avea si el furnizor inregistrat). Fals-pozitivul
+                        # benign (gaz/energie legitim): contabilul confirma (d390_confirmat_local) -> se stinge.
+                        "d390_confirmat_local": bool(r["d390_confirmat_local"]),
+                        "d390_posibil_serviciu": bool(r["tip"] == 4 and (r["partener_cod"] or "").strip()
+                                                      and not r["d390_confirmat_local"])})
     return {
         "operatiuni": ops,
         "tipuri": [{"val": t, "eticheta": TIPURI_ETICHETE[t]} for t in TIPURI_OP],
@@ -182,3 +185,17 @@ def sterge(conn, schema, an, luna, op_id):
         ok = cur.rowcount > 0
     conn.commit()
     return {"ok": ok}
+
+
+def confirma_local(conn, schema, an, luna, op_id, valoare=True):
+    """[mis-clasificare, fals-pozitiv benign 18.08.2026] Marcheaza o operatiune tip 4 ca CONFIRMATA
+    legitima locala (NU serviciu IC) -> stinge indiciul 'poate e serviciu -> tip 5' pentru ea. Reversibil
+    (valoare=False readuce indiciul). Doar tip 4 conteaza (indiciul apare doar acolo), dar setarea e permisa
+    pe orice rand al perioadei (idempotent). Contabilul o foloseste pentru gaz/energie de la furnizor
+    inregistrat (alin.3/5), care legitim nu intra in D390 desi are cod TVA."""
+    with conn.cursor() as cur:
+        cur.execute(f"UPDATE {schema}.d301_operatiuni SET d390_confirmat_local=%s "
+                    f"WHERE id=%s AND an=%s AND luna=%s", (bool(valoare), op_id, an, luna))
+        ok = cur.rowcount > 0
+    conn.commit()
+    return {"ok": ok, "d390_confirmat_local": bool(valoare)}

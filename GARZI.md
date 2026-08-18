@@ -3175,3 +3175,8 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Ce face imposibil:** d390_posibil_serviciu sa se aprinda pe alt tip decat 4, sau sa rateze tip 4 cu cod.
 - **Mutatie proba:** scot conditia tip==4 -> tip 5 cu cod semnalat -> testul pica.
 - **Limita:** indiciu SOFT (gaz/energie alin.3/5 cu furnizor inregistrat da fals-pozitiv benign; contabilul confirma).
+
+## Confirmare "nu e serviciu IC" stinge indiciul tip 4 (18.08.2026)
+- **Gard:** `core/test_d390_autoderivare.py::test_confirma_local_stinge_indiciul_reversibil` + test_audit_schema (coloana d390_confirmat_local).
+- **Ce face imposibil:** lista sa ignore confirmarea (indiciul ramane pe operatiunile confirmate legitime).
+- **Mutatie proba:** scot `and not r["d390_confirmat_local"]` din lista -> indiciul ramane True dupa confirmare -> testul pica.
