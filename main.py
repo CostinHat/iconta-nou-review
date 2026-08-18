@@ -1731,12 +1731,20 @@ def tenant_plan_conturi_adauga(tenant_id: int, date: PlanContIn, ctx=Depends(cer
     simbol = (date.simbol or "").strip()
     denumire = (date.denumire or "").strip()
     if not simbol or not denumire:
-        raise HTTPException(422, "simbol și denumire sunt obligatorii")
+        raise HTTPException(422, "Completează atât simbolul, cât și denumirea contului.")
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
+            # Regula 4 + 14.4: un simbol care exista deja NU se suprascrie tacut (ar redenumi un cont OMFP
+            # standard, seed-uit la crearea firmei). Calea bulk (solduri_api) foloseste ON CONFLICT DO NOTHING;
+            # calea manuala refuza explicit, cu denumirea contului existent, si trimite la cautarea de mai sus.
+            cur.execute("SELECT denumire FROM plan_conturi WHERE simbol = %s", (simbol,))
+            existent = cur.fetchone()
+            if existent:
+                raise HTTPException(409,
+                    "Contul %s există deja în plan: „%s”. Caută-l în lista de mai sus; dacă ai nevoie "
+                    "de un cont diferit, folosește alt simbol." % (simbol, existent[0]))
             cur.execute(
-                "INSERT INTO plan_conturi (simbol, denumire, tip) VALUES (%s, %s, %s) "
-                "ON CONFLICT (simbol) DO UPDATE SET denumire = EXCLUDED.denumire, tip = EXCLUDED.tip",
+                "INSERT INTO plan_conturi (simbol, denumire, tip) VALUES (%s, %s, %s)",
                 (simbol, denumire, date.tip or "Bifunctional"))
         conn.commit()
     return {"ok": True, "simbol": simbol}
