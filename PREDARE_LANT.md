@@ -14,10 +14,16 @@ mutatie-probata RED. CSV FUNCTIONALITATI (Stare AMANAT->LIVE) odata cu codul; te
 CAMPANIE INCHISA (18.08.2026): GATA toate 6 - d710+d311+d307+d107+d177+d207. Fiecare LIVE, scos din _DOAR_API,
 formular UI + gard formular-gol (mesaj de contabil) + DUK valid + Playwright (axe 0/0 + mobil 393). Commit d207: 89c3a26.
 
-COMANDA DE REPORNIRE (gata de dat): "Continua auditul tenant_006. Fronturi ramase (vezi sectiunea RAMAS deschis):
-axe 'region'/landmarks app-wide (structural, 8-26 noduri/ecran); D406 avertisment conturi 731-738 (de verificat la sursa
-daca norma A le exclude corect); import 8 straturi neprovocate; vizual/mobil Pixel5 pe restul ecranelor tenant_006.
-Metoda Regula 13+14: captura privita + axe/mobil pe fiecare ecran atins, reparand, gard RED-probat."
+GATA (18.08.2026, commit 0392b3b): (1) axe region/landmarks app-wide -> 0 - fix STRUCTURAL in navigator.js
+(<header class="bara-antet"> banner peste bara+subbara+bara3; role="dialog"+aria-modal pe ferestre; role="status"
+pe toast); scan_region_all.py = 0 pe dashboard + 5 ECRANE; gard core/test_a11y_landmarks.py (RED-probat din
+backup-copie). (2) D406 731-738 verificat la sursa (nomenclatorul ANAF) = excludere CORECTA din norma A
+(731-738 sunt in planul ONG, nu in bal_soc_com); gard test_conturi_ong_731_738_norma_specifica (ambele laturi).
+
+COMANDA DE REPORNIRE (gata de dat): "Continua auditul tenant_006. Fronturi ramase: import 8 straturi neprovocate
+(provoaca fiecare blocaj/refuz/camp obligatoriu si citeste mesajul - Regula 14.4); vizual/mobil Pixel5 pe restul
+ecranelor tenant_006 (axe + baseline). Metoda Regula 13+14: captura privita + axe/mobil pe fiecare ecran atins,
+reparand, gard RED-probat."
 
 **GATA: d710** - formular "Obligatii corectate" (cod 121 micro/103 profit, suma initiala/corecta, cota la micro),
 obligatii in memorie -> body, refuz-pe-gol, gard test_d710_formular, CSV F192->LIVE. Model: declaratii.js::randeazaFormularD710.
@@ -142,10 +148,10 @@ d390_confirmat_local + ruta PUT confirma-local) stinge indiciul reversibil. Conf
 marcate "✓ furnizor confirmat local" (derivat din confirmarile existente, fara tabel nou).
 
 ## RAMAS deschis (fronturi pt urmatoarea tura)
-- axe "region"/landmarks app-wide (moderat, structural, 8-26 noduri/ecran). [singurul a11y ramas: contrast=0 pe ecranele atinse]
-- D406 avertisment conturi 731-738 excluse din norma A (neverificat la sursa).
+- [INCHIS 18.08 commit 0392b3b] axe region/landmarks app-wide -> 0 (fix structural navigator.js + gard test_a11y_landmarks).
+- [INCHIS 18.08 commit 0392b3b] D406 731-738: verificat la sursa = excludere CORECTA din norma A (sunt in planul ONG); gard intarit.
 - Import: provocate salariati+solduri (curat); restul 8 straturi neprovocate in aceste ture.
-- Vizual/mobil (Pixel 5): rulat doar pe Control fiscal; restul ecranelor tenant_006 neanalizate pe telefon.
+- Vizual/mobil (Pixel 5): rulat pe Control fiscal + shell-ul (landmarks); restul ecranelor tenant_006 neanalizate pe telefon.
 
 ## LIVRAT (tura asta, commit 288f886)
 existenta_firma_an (control_incrucisat.py) numara acum orice operatiune datata: d301_operatiuni (achizitii IC),
