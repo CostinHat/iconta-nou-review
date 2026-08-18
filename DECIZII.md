@@ -9604,3 +9604,17 @@ preexistent d301/d390, extins la TOATE (d100/d101/d205/d112/d300/bilant). declar
 **Temei.** DS regula 0 (fara clase noi; diacritice in textul afisat; mesaje clare = ce lipseste + ce ai de facut) + cap.6 (formulare). Clasele IDENTICE cu panoul D301 (dec-man-form / dec-man-rand / camp / btn-link / dec-xml summary) - "identitate intre situatii similare"; modelul pentru celelalte 5 declaratii cu lista.
 
 **Proba.** Backend: refuz pe gol; cod 103 profit -> DUK valid; cod 121 micro + cota -> DUK valid; 121 fara cota -> mesaj R17 de contabil. Validare de camp in formular (sume/cota lipsa -> eroareCamp langa camp). Gard RED(mutatie)->GREEN test_d710_formular. test_registru_functionalitati verde (CSV F192 AMANAT->LIVE). Traseu live + captura privita dupa restart (four-way).
+
+## 18.08.2026 — Formular manual D311 in UI (scos din _DOAR_API) — declaratie 2/6
+
+**Decizie.** D311 (TVA datorata dupa anularea codului de TVA) capata formular manual in ecranul Declaratii, dar ca PANOU-CAMP, nu lista ca d710: structura declaratiei e fixa (schema IV) - data anularii, motiv (d_anul1 din oficiu XOR d_anul2 la cerere), 3 situatii oficiale cu baza/TVA (OB_11/12 livrari, OB_21/22 achizitii cu taxare inversa, OB_41/42 livrari cu TVA la incasare exigibila dupa anulare). Subtotalurile (OB_31/32/51/52) si totalul de control (totalPlata_A) se CALCULEAZA din structura, nu se cer (afisat LIVE, coincide cu serverul - Regula 14.2). "Identitate intre situatii similare" se pastreaza la nivel de CLASE DS si comportament (dec-man-rand/camp/dec-xml, validare pe camp, refuz pe gol, mesaj de contabil), NU la forma: d710/d307 = lista, d311 = campuri fixe, fiindca declaratia e diferita.
+
+**Parametri (cititi din semnatura, Regula 1).** d311.genereaza(conn, schema, Perioada(an, luna), {"schema":1, "Data_A", "d_anul1"|"d_anul2", "d_rec"?, "OB_11/12/21/22/41/42"}). Etichete situatii din anaf_surse/structura_D311_2021 (rd.01/02/04). CUI-uri demo sintetice (301111003) trec DUK.
+
+**Temei.** Cod fiscal art. 316 alin. (11); XSD d311 v1.02 (schema IV = dupa anulare). Regula 14.4 (mesaj de contabil, nu nume intern de camp) -> erori_generare rescrise, test re-ancorat. DS v2.52.
+
+**Proba.** Backend: refuz pe gol/zero cu mesaj de contabil; DUK valid pe situatii completate (totalPlata_A=14280). Gard test_d311_formular RED(sed reintroduce OB_51)->GREEN. Traseu live Playwright (ALFA MICRO): D311 in selector, gol refuzat, completat -> DUK valid, axe 0, mobil Pixel5 fara overflow. Captura privita.
+
+**Limita.** Schema V (reinregistrare art.316(12)) ramane nedisponibila (conflict XSD v1.02 pe Data_A/Data_I) - documentata in d311.py.
+
+**Lectie.** Flipul CSV AMANAT->LIVE creste numarul de functionalitati LIVE -> login.js GRUPE_FUNC (generat) trebuie regenerat (`genereaza_grupe_functii.py --scrie`) IN ACELASI commit, altfel verificatorul respinge (count CSV 146 != pagina 145). La scoaterea din _DOAR_API: scoate DOAR tipul curent (am scos din greseala si vecinul d307, prins de test_live_accesibil).

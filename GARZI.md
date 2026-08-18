@@ -3197,3 +3197,9 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Ce face imposibil:** un formular D710 gol sa produca un XML (respins tacit de DUK) in loc de un mesaj clar.
 - **Mutatie proba:** dezactivez `if not res.obligatii` in d710.genereaza -> gol produce XML -> testul pica.
 - **Mesaj de contabil:** verificat ca NU expune nume interne (obligatii/suma_dat_i/cod_oblig).
+
+## Formular manual D311: gol nu produce declaratie (18.08.2026)
+- **Gard:** `core/test_d311_formular.py` (gol -> refuz cu mesaj de contabil; data+motiv completate dar toate sumele 0 -> refuz "nu se depune pe zero"; completat -> genereaza). `core/test_d311.py` extins cu asertia no-nume-interne pe erori_generare.
+- **Ce face imposibil:** un formular D311 gol (fara data anularii / motiv / sume) sa produca XML respins tacit de DUK in loc de mesaj clar; SI ca mesajul sa expuna nume interne XSD (Data_A/d_anul1/OB_51).
+- **Mutatie proba:** sed reintroduce "OB_51+OB_52" in mesajul de zero din d311.py -> test_d311_fara_sume_refuza pica pe scurgerea numelui intern (rulat RED, restaurat GREEN).
+- **Mesaj de contabil:** verificat ca NU expune Data_A/d_anul1/d_anul2/OB_*/manual.
