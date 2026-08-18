@@ -133,47 +133,54 @@ def pull(conn, schema, perioada):
 def erori_generare(prof, manual):
     er = []
     if not _cif(prof.get("cui")):
-        er.append("CUI firma plătitoare lipsă/invalid.")
+        er.append("CUI-ul firmei plătitoare lipsește sau nu e valid — completează-l în profilul firmei.")
     if not prof.get("den"):
-        er.append("LIPSĂ denumire firma.")
+        er.append("Lipsește denumirea firmei plătitoare — completeaz-o în profilul firmei.")
     if not str(prof.get("adresa") or "").strip():
-        er.append("LIPSĂ adresa firma.")
-    for c in ("declarant_nume", "declarant_prenume"):
-        if not str(prof.get(c) or "").strip():
-            er.append("LIPSĂ %s (semnatar obligatoriu, denS)." % c)
+        er.append("Lipsește adresa firmei plătitoare — completeaz-o în profilul firmei.")
+    if not str(prof.get("declarant_nume") or "").strip() or not str(prof.get("declarant_prenume") or "").strip():
+        er.append("Lipsește persoana care semnează declarația — completează numele și prenumele "
+                  "declarantului în profilul firmei.")
     co = _cod_oblig(prof, manual)
     if co not in _COD_OBLIG_VALIDE:
-        er.append("cod_oblig %r invalid (nomenclator: 102/103/104/105/121)." % co)
+        er.append("Codul obligației fiscale nu e valid — se alege automat din regimul firmei "
+                  "(microîntreprindere sau impozit pe profit).")
     # exercitiu modificat / dizolvare: nesuportat (nu se ghiceste corelatia de date)
     for k in ("data_m", "data_l", "data_b"):
         if str(manual.get(k) or "").strip():
-            er.append("D107 aici suportă doar exercițiul pe an calendaristic; %s (an modificat/dizolvare) "
-                      "nu e suportat." % k)
+            er.append("D107 se depune aici doar pentru exercițiul pe an calendaristic; exercițiul "
+                      "modificat sau dizolvarea firmei nu sunt suportate.")
+            break
     benef = manual.get("beneficiari") or []
     if not benef:
-        er.append("D107 cere cel puțin un beneficiar (beneficiari[]).")
+        er.append("Adaugă cel puțin un beneficiar al sponsorizării, mecenatului sau bursei — "
+                  "D107 nu se depune fără beneficiari.")
     for i, b in enumerate(benef, 1):
         if not str(b.get("den") or "").strip():
-            er.append("Beneficiar %d: lipsă denumire/nume (denE)." % i)
+            er.append("Beneficiarul %d: completează denumirea sau numele." % i)
         if not _cif(b.get("cif")):
-            er.append("Beneficiar %d: lipsă cod de identificare fiscala (cifE)." % i)
+            er.append("Beneficiarul %d: completează codul de identificare fiscală (CUI sau CNP)." % i)
         if not str(b.get("adresa") or "").strip():
-            er.append("Beneficiar %d: lipsă adresa (adrE)." % i)
-        for camp in ("val1", "val2", "val3"):
+            er.append("Beneficiarul %d: completează adresa." % i)
+        for camp, et in (("val1", "suma acordată"), ("val2", "suma reportată"), ("val3", "suma dedusă")):
             if _i(b.get(camp)) < 0:
-                er.append("Beneficiar %d: %s trebuie >= 0." % (i, camp))
-    # Anexa neindividualizati: exista DACA SI NUMAI DACA Val2_NI>0 (struct rd.55)
+                er.append("Beneficiarul %d: %s nu poate fi negativă." % (i, et))
+    # Anexa neindividualizati: exista DACA SI NUMAI DACA suma reportata a lor > 0 (struct rd.55)
     val2_ni = _i(manual.get("val2_ni"))
     ni = manual.get("neindividualizati") or []
     if val2_ni > 0 and not ni:
-        er.append("Val2_NI>0 cere secțiunea entit1 (beneficiari neindividualizati).")
+        er.append("Ai completat o sumă reportată pentru beneficiarii neindividualizați — adaugă în "
+                  "anexă cel puțin un asemenea beneficiar (denumire, cod fiscal, adresă).")
     if val2_ni == 0 and ni:
-        er.append("entit1 (neindividualizati) există doar dacă Val2_NI>0.")
+        er.append("Anexa beneficiarilor neindividualizați se completează doar dacă ai o sumă "
+                  "reportată pentru ei; altfel șterge-i din anexă.")
     for i, n in enumerate(ni, 1):
-        for camp, et in (("den", "denE_NI"), ("cif", "cifE_NI"), ("adresa", "adrE_NI")):
-            v = _cif(n.get(camp)) if camp == "cif" else str(n.get(camp) or "").strip()
-            if not v:
-                er.append("Neindividualizat %d: lipsă %s (obligatoriu dacă Val2_NI>0)." % (i, et))
+        if not str(n.get("den") or "").strip():
+            er.append("Beneficiar neindividualizat %d: completează denumirea sau numele." % i)
+        if not _cif(n.get("cif")):
+            er.append("Beneficiar neindividualizat %d: completează codul de identificare fiscală." % i)
+        if not str(n.get("adresa") or "").strip():
+            er.append("Beneficiar neindividualizat %d: completează adresa." % i)
     return er
 
 

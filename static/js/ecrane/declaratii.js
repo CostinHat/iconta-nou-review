@@ -9,7 +9,7 @@
 import { api, esc, bani, arataMesaj, dataRo, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=a7f9e80ae0";
 // [ajutor_contextual] mapare tip declaratie -> ID functionalitate pentru semnul "?" dinamic
 const _DECL_AJUTOR = { d100:"F026", d101:"F027", d112:"F028", d205:"F029", d300:"F031",
-  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217" };
+  d301:"F032", d390:"F033", d394:"F034", d406:"F035", d710:"F192", d311:"F207", d307:"F217", d107:"F211" };
 
 const LUNI = ["ianuarie","februarie","martie","aprilie","mai","iunie",
               "iulie","august","septembrie","octombrie","noiembrie","decembrie"];
@@ -50,6 +50,8 @@ export async function randeazaDeclaratii(corp, nav, firmaFixa) {
             OB_11: "", OB_12: "", OB_21: "", OB_22: "", OB_41: "", OB_42: "" },
     // [formular_manual_d307] operatiunile de ajustare TVA (lista in memorie, pt body.manual, ca d710).
     d307: { operatiuni: [], d_rec: 0, d_anulare: 0, temei: "" },
+    // [formular_manual_d107] beneficiarii sponsorizarilor/mecenatului/burselor (lista in memorie, pt body.manual, ca d307).
+    d107: { beneficiari: [], val2_ni: "", val3_ni: "", neindividualizati: [], d_rec: 0 },
   };
   corp.innerHTML = `<p class="ecran-nota">Se încarcă…</p>`;
   try {
@@ -195,6 +197,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d710") body.obligatii = S.d710_obligatii || [];  // [formular_manual_d710] din memorie
   if (S.tip === "d311") body.manual = _d311Manual();              // [formular_manual_d311] situatiile din memorie
   if (S.tip === "d307") body.manual = _d307Manual();              // [formular_manual_d307] operatiunile din memorie
+  if (S.tip === "d107") body.manual = _d107Manual();              // [formular_manual_d107] beneficiarii din memorie
 
   try {
     S.rezultat = await api.post(`/declaratii/${S.tip}/valideaza`, body);
@@ -212,6 +215,7 @@ async function pas2(corp, nav) {
       ${S.tip === "d710" ? '<div id="dec-d710-form"></div>' : ""}
       ${S.tip === "d311" ? '<div id="dec-d311-form"></div>' : ""}
       ${S.tip === "d307" ? '<div id="dec-d307-form"></div>' : ""}
+      ${S.tip === "d107" ? '<div id="dec-d107-form"></div>' : ""}
       <div class="dec-eroare">${esc((e && e.mesaj) || "Nu am putut genera declarația. Verifică datele firmei pentru perioada aleasă.")}</div>
       `;
     if (S.tip === "d390") randeazaClasificareD390(corp, nav);
@@ -220,6 +224,7 @@ async function pas2(corp, nav) {
     if (S.tip === "d710") randeazaFormularD710(corp, nav);
     if (S.tip === "d311") randeazaFormularD311(corp, nav);
     if (S.tip === "d307") randeazaFormularD307(corp, nav);
+    if (S.tip === "d107") randeazaFormularD107(corp, nav);
     return;
   }
 
@@ -256,6 +261,7 @@ async function pas2(corp, nav) {
     ${S.tip === "d710" ? '<div id="dec-d710-form"></div>' : ""}
     ${S.tip === "d311" ? '<div id="dec-d311-form"></div>' : ""}
     ${S.tip === "d307" ? '<div id="dec-d307-form"></div>' : ""}
+    ${S.tip === "d107" ? '<div id="dec-d107-form"></div>' : ""}
     ${blocANAF}
     ${constat.length ? `<div class="caseta-info">
         <div class="ci-mesaj" style="font-weight:600;margin-bottom:6px">Constatări (${constat.length})</div>
@@ -292,6 +298,7 @@ async function pas2(corp, nav) {
   if (S.tip === "d710") randeazaFormularD710(corp, nav);
   if (S.tip === "d311") randeazaFormularD311(corp, nav);
   if (S.tip === "d307") randeazaFormularD307(corp, nav);
+  if (S.tip === "d107") randeazaFormularD107(corp, nav);
 }
 
 // [F125] panou clasificare D390: reclasifica operatiunile auto (servicii/triangulatie) + adauga
@@ -713,6 +720,133 @@ function randeazaFormularD307(corp, nav) {
     }
     if (S.d307.d_anulare && !S.d307.temei) {
       eroareCamp(zona, "d307-temei", "Alege temeiul legal al corectării (ai bifat că declarația corectează una depusă după anularea rezervei).");
+      return;
+    }
+    pas2(corp, nav);
+  });
+}
+
+// tip==="d107" (informativa sponsorizari/mecenat/burse, exercitiu pe an calendaristic). Formular-lista de
+// beneficiari (ca d307): fiecare cu denumire, cod fiscal, adresa si trei sume - acordata (Suma), reportata,
+// dedusa. Anexa beneficiarilor neindividualizati exista DOAR daca suma reportata a lor > 0 (regula
+// validatorului ANAF). Valorile stau IN MEMORIE (S.d107), persista intre randari (Regenereaza reface pas2).
+// Totalurile pe cele trei coloane + suma de control se calculeaza si se afiseaza.
+function _d107Manual() {
+  const d = S.d107 || {};
+  const ni = _n(d.val2_ni) > 0 ? (d.neindividualizati || []).map((n) => ({ den: n.den, cif: n.cif, adresa: n.adresa })) : [];
+  return {
+    beneficiari: (d.beneficiari || []).map((b) => ({ den: b.den, cif: b.cif, adresa: b.adresa, val1: b.val1, val2: b.val2, val3: b.val3 })),
+    val2_ni: d.val2_ni, val3_ni: d.val3_ni,
+    neindividualizati: ni,
+    d_rec: d.d_rec ? 1 : 0,
+  };
+}
+
+function randeazaFormularD107(corp, nav) {
+  const zona = corp.querySelector("#dec-d107-form");
+  if (!zona) return;
+  const d = S.d107;
+  const benef = d.beneficiari || [];
+  const val2ni = _n(d.val2_ni), val3ni = _n(d.val3_ni);
+  const ni = d.neindividualizati || [];
+  const tval1 = benef.reduce((s, b) => s + (_n(b.val1) || 0), 0);
+  const tval2 = benef.reduce((s, b) => s + (_n(b.val2) || 0), 0) + val2ni;
+  const tval3 = benef.reduce((s, b) => s + (_n(b.val3) || 0), 0) + val3ni;
+  const total = tval1 + tval2 + tval3;
+  const grila = benef.length
+    ? benef.map((b, i) => `<div class="dec-man-rand">
+        <span class="dec-recl-desc">${esc(b.den)} (CUI ${esc(String(b.cif))}) · acordată ${bani(b.val1)} · reportată ${bani(b.val2)} · dedusă ${bani(b.val3)} lei</span>
+        <button class="btn-link dec-d107-del" data-idx="${i}">șterge</button></div>`).join("")
+    : `<div class="stare-goala stare-goala--inline">Niciun beneficiar. D107 declară beneficiarii sponsorizărilor, mecenatului și burselor private — adaugă mai jos fiecare beneficiar cu sumele acordate.</div>`;
+  const grilaNI = ni.length
+    ? ni.map((n, i) => `<div class="dec-man-rand">
+        <span class="dec-recl-desc">${esc(n.den)} (CUI ${esc(String(n.cif))}) · ${esc(n.adresa)}</span>
+        <button class="btn-link dec-d107-ni-del" data-idx="${i}">șterge</button></div>`).join("")
+    : `<div class="stare-goala stare-goala--inline">Niciun beneficiar neindividualizat.</div>`;
+  zona.innerHTML = `<details class="dec-xml" open><summary>Beneficiarii sponsorizărilor / mecenatului / burselor (${benef.length})</summary>
+    <div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px;margin-bottom:6px">
+      <label class="camp" style="width:auto;flex-direction:row;align-items:center;gap:6px">
+        <input id="d107-rec" type="checkbox" ${d.d_rec ? "checked" : ""}><span class="camp-eticheta" style="margin:0">Declarație rectificativă</span></label>
+    </div>
+    ${grila}
+    <div class="camp-eticheta" style="margin:12px 0 4px">Adaugă beneficiar:</div>
+    <div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px">
+      <label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Denumire / nume beneficiar <span class="oblig">*</span></span><input id="d107-den" type="text" class="camp-input"></label>
+      <label class="camp" style="width:150px"><span class="camp-eticheta">CUI / CNP <span class="oblig">*</span></span><input id="d107-cif" type="text" class="camp-input"></label>
+      <label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Adresă <span class="oblig">*</span></span><input id="d107-adr" type="text" class="camp-input"></label>
+      <label class="camp" style="width:130px"><span class="camp-eticheta">Suma acordată (lei)</span><input id="d107-val1" type="number" step="1" min="0" class="camp-input"></label>
+      <label class="camp" style="width:130px"><span class="camp-eticheta">Suma reportată (lei)</span><input id="d107-val2" type="number" step="1" min="0" class="camp-input"></label>
+      <label class="camp" style="width:130px"><span class="camp-eticheta">Suma dedusă (lei)</span><input id="d107-val3" type="number" step="1" min="0" class="camp-input"></label>
+      <button class="buton-secundar" id="d107-add">+ adaugă</button>
+    </div>
+    <div id="d107-msg"></div>
+    <details class="dec-xml" style="margin-top:10px"><summary>Anexă — beneficiari neindividualizați (rar)</summary>
+      <p class="camp-ajutor">Se completează doar dacă ai sume reportate/deduse pentru beneficiari care nu se individualizează. Lista cu numele lor apare doar când suma reportată de mai jos este mai mare ca zero.</p>
+      <div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px">
+        <label class="camp" style="width:200px"><span class="camp-eticheta">Suma reportată neindividualizați (lei)</span><input id="d107-val2ni" type="number" step="1" min="0" class="camp-input" value="${esc(String(d.val2_ni || ""))}"></label>
+        <label class="camp" style="width:200px"><span class="camp-eticheta">Suma dedusă neindividualizați (lei)</span><input id="d107-val3ni" type="number" step="1" min="0" class="camp-input" value="${esc(String(d.val3_ni || ""))}"></label>
+      </div>
+      ${val2ni > 0 ? `${grilaNI}
+        <div class="camp-eticheta" style="margin:12px 0 4px">Adaugă beneficiar neindividualizat:</div>
+        <div class="dec-man-form" style="flex-wrap:wrap;align-items:flex-end;gap:10px">
+          <label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Denumire / nume <span class="oblig">*</span></span><input id="d107-ni-den" type="text" class="camp-input"></label>
+          <label class="camp" style="width:150px"><span class="camp-eticheta">CUI / CNP <span class="oblig">*</span></span><input id="d107-ni-cif" type="text" class="camp-input"></label>
+          <label class="camp" style="flex:1 1 200px"><span class="camp-eticheta">Adresă <span class="oblig">*</span></span><input id="d107-ni-adr" type="text" class="camp-input"></label>
+          <button class="buton-secundar" id="d107-ni-add">+ adaugă</button>
+        </div>` : ""}
+      <div id="d107-ni-msg"></div>
+    </details>
+    <p class="camp-ajutor" id="d107-totaluri" style="margin-top:8px">Totaluri: acordată <b>${bani(tval1)}</b> · reportată <b>${bani(tval2)}</b> · dedusă <b>${bani(tval3)}</b> lei. Suma de control (total): <b>${bani(total)} lei</b> — se calculează automat din sumele de mai sus.</p>
+    <p style="margin-top:8px"><button class="buton-primar" id="d107-regen">Regenerează D107</button>
+      <span class="ecran-nota" style="margin-left:8px">după modificări, regenerează pentru a revalida.</span></p>
+  </details>`;
+  const gv = (id) => zona.querySelector(id);
+  gv("#d107-rec").addEventListener("change", (e) => { S.d107.d_rec = e.target.checked ? 1 : 0; });
+  gv("#d107-val2ni").addEventListener("change", (e) => { S.d107.val2_ni = e.target.value; randeazaFormularD107(corp, nav); });
+  gv("#d107-val3ni").addEventListener("change", (e) => { S.d107.val3_ni = e.target.value; randeazaFormularD107(corp, nav); });
+  zona.querySelectorAll(".dec-d107-del").forEach((b) => b.addEventListener("click", () => {
+    S.d107.beneficiari.splice(parseInt(b.dataset.idx), 1); randeazaFormularD107(corp, nav);
+  }));
+  zona.querySelectorAll(".dec-d107-ni-del").forEach((b) => b.addEventListener("click", () => {
+    S.d107.neindividualizati.splice(parseInt(b.dataset.idx), 1); randeazaFormularD107(corp, nav);
+  }));
+  gv("#d107-add").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    const den = gv("#d107-den").value.trim();
+    const cif = gv("#d107-cif").value.trim();
+    const adr = gv("#d107-adr").value.trim();
+    const err = [];
+    if (!den) err.push(["d107-den", "Completează denumirea sau numele beneficiarului."]);
+    if (!cif) err.push(["d107-cif", "Completează codul de identificare fiscală (CUI sau CNP)."]);
+    if (!adr) err.push(["d107-adr", "Completează adresa beneficiarului."]);
+    if (err.length) { err.forEach(([id, m]) => eroareCamp(zona, id, m)); return; }
+    S.d107.beneficiari.push({ den: den, cif: cif, adresa: adr,
+      val1: gv("#d107-val1").value, val2: gv("#d107-val2").value, val3: gv("#d107-val3").value });
+    randeazaFormularD107(corp, nav);
+  });
+  const addNi = gv("#d107-ni-add");
+  if (addNi) addNi.addEventListener("click", () => {
+    curataEroriCamp(zona);
+    const den = gv("#d107-ni-den").value.trim();
+    const cif = gv("#d107-ni-cif").value.trim();
+    const adr = gv("#d107-ni-adr").value.trim();
+    const err = [];
+    if (!den) err.push(["d107-ni-den", "Completează denumirea sau numele beneficiarului neindividualizat."]);
+    if (!cif) err.push(["d107-ni-cif", "Completează codul de identificare fiscală."]);
+    if (!adr) err.push(["d107-ni-adr", "Completează adresa."]);
+    if (err.length) { err.forEach(([id, m]) => eroareCamp(zona, id, m)); return; }
+    S.d107.neindividualizati.push({ den: den, cif: cif, adresa: adr });
+    randeazaFormularD107(corp, nav);
+  });
+  gv("#d107-regen").addEventListener("click", () => {
+    curataEroriCamp(zona);
+    // marcheaza campul vinovat INAINTE de a chema serverul (Regula 14.4)
+    if (!(S.d107.beneficiari || []).length) {
+      eroareCamp(zona, "d107-den", "Adaugă cel puțin un beneficiar (butonul + adaugă). D107 nu se depune fără beneficiari.");
+      return;
+    }
+    if (_n(S.d107.val2_ni) > 0 && !(S.d107.neindividualizati || []).length) {
+      eroareCamp(zona, "d107-val2ni", "Ai o sumă reportată pentru beneficiari neindividualizați — adaugă-i în anexă sau șterge suma.");
       return;
     }
     pas2(corp, nav);

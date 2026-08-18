@@ -57,18 +57,20 @@ def test_d107_entit1_legata_de_val2ni():
     prof = {"cui": "14399840", "den": "F", "adresa": "A", "declarant_nume": "A", "declarant_prenume": "B"}
     # Val2_NI>0 fara entit1 -> eroare
     m1 = {"beneficiari": [{"den": "X", "cif": "45678918", "adresa": "A", "val1": 1}], "val2_ni": 100}
-    assert any("entit1" in e for e in d107.erori_generare(prof, m1))
+    assert any("neindividualiza" in e.lower() and "reportat" in e.lower()
+               for e in d107.erori_generare(prof, m1))
     # entit1 fara Val2_NI -> eroare
     m2 = {"beneficiari": [{"den": "X", "cif": "45678918", "adresa": "A", "val1": 1}],
           "neindividualizati": [{"den": "Y", "cif": "12345674", "adresa": "A"}]}
-    assert any("Val2_NI>0" in e for e in d107.erori_generare(prof, m2))
+    assert any("neindividualiza" in e.lower() for e in d107.erori_generare(prof, m2))
 
 
 def test_d107_erori():
     prof = {"cui": "14399840", "den": "F", "adresa": "A", "declarant_nume": "A", "declarant_prenume": "B"}
     assert any("un beneficiar" in e for e in d107.erori_generare(prof, {"beneficiari": []}))
     bad = {"beneficiari": [{"den": "X", "cif": "45678918", "adresa": "A", "val1": 1}], "cod_oblig": "999"}
-    assert any("cod_oblig" in e for e in d107.erori_generare(prof, bad))
+    assert any(("obligați" in e.lower() or "regimul" in e.lower())
+               for e in d107.erori_generare(prof, bad))
 
 
 @pytest.mark.skipif(not os.path.exists(_JAR), reason="Validatorul D107 nu e instalat in DUK.")
@@ -84,3 +86,20 @@ def test_d107_valid_pe_validatorul_oficial():
 def _perioada(an):
     from core.common import Perioada
     return Perioada(an)
+
+
+def test_d107_erori_fara_nume_interne():
+    """Mesajele de eroare sunt in limba contabilului - fara atribute XML / campuri interne."""
+    prof = {"cui": "14399840", "den": "F", "adresa": "A", "declarant_nume": "A", "declarant_prenume": "B"}
+    interne = ("denE", "cifE", "adrE", "entit1", "Val1", "Val2", "Val3", "Val2_NI", "Val3_NI",
+               "TVal1", "cod_oblig", "cod_bug", "d_PM", "totalPlata_A")
+    cazuri = [
+        {"beneficiari": []},
+        {"beneficiari": [{"den": "", "cif": "", "adresa": ""}]},
+        {"beneficiari": [{"den": "X", "cif": "45678918", "adresa": "A", "val1": 1}], "val2_ni": 100},
+        {"beneficiari": [{"den": "X", "cif": "45678918", "adresa": "A", "val1": 1}], "cod_oblig": "999"},
+    ]
+    for m in cazuri:
+        for e in d107.erori_generare(prof, m):
+            for intern in interne:
+                assert intern not in e, "mesaj cu nume intern %r: %s" % (intern, e)

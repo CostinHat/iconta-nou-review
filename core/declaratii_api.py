@@ -316,7 +316,7 @@ DECLARATII = {
 # pe care ecranul generic (an/luna/trim) nu ii poate furniza. d710 (rectificativa) cere
 # `obligatii` = corectiile contabilului -> flux dedicat viitor, nu selectorul generic (altfel
 # ar aparea in dropdown si ar esua la generare). Ramane in DECLARATII (dispecer + test cheie DUK).
-_DOAR_API = frozenset(("d104", "d107", "d110", "d177", "d207", "d220", "d221", "d223", "d230",
+_DOAR_API = frozenset(("d104", "d110", "d177", "d207", "d220", "d221", "d223", "d230",
                        "d393", "d395", "d397", "d200", "d201", "d204", "d208", "d216", "d120", "d600",
                        "d106", "d108", "d114", "d130", "d318", "d603",
                        "d119", "d169n", "d213", "d214", "d401", "d402",
@@ -402,11 +402,14 @@ def valideaza_cerere(tip, body, per_efectiv=None):
         if not isinstance(m, dict) or not m.get("asociati"):
             erori.append("d104 cere `manual.asociati` (asociații asocierii) + `manual.profit_pierd`")
 
-    # d107 (informativa sponsorizari/mecenat/burse, MANUALA): cere `manual` cu lista de beneficiari
+    # d107 (informativa sponsorizari/mecenat/burse, MANUALA anuala): cere manual.beneficiari. Mesaj de CONTABIL
+    # (formularul manual din UI trimite mereu beneficiari -> aici cade doar apelul API gol). Detaliile pe
+    # beneficiar (denumire/cod fiscal/adresa/sume) le da d107.genereaza.
     if tip == "d107":
         m = body.get("manual")
         if not isinstance(m, dict) or not m.get("beneficiari"):
-            erori.append("d107 cere `manual.beneficiari` (beneficiari sponsorizări/mecenat/burse)")
+            erori.append("D107 nu are ce genera: adaugă în formular cel puțin un beneficiar al "
+                         "sponsorizării, mecenatului sau bursei.")
 
     # d110 (regularizare impozit retinut la sursa, MANUALA lunara): cere manual.obligatii
     if tip == "d110":

@@ -11,8 +11,8 @@ cap.6, ZERO clase noi, regula 0 citata in cap; identitate intre situatii similar
 PRIVITA. GARDA per declaratie: formular gol nu produce declaratie (refuz backend cu mesaj de CONTABIL, nu nume de camp),
 mutatie-probata RED. CSV FUNCTIONALITATI (Stare AMANAT->LIVE) odata cu codul; test_registru_functionalitati verde.
 
-COMANDA DE REPORNIRE (gata de dat): "Continua campania de formulare manuale _DOAR_API. GATA d710+d311+d307.
-URMATOAREA: d107 (informativa sponsorizari/mecenat/burse), apoi d177, d207, cap-coada, in aceeasi metoda."
+COMANDA DE REPORNIRE (gata de dat): "Continua campania de formulare manuale _DOAR_API. GATA d710+d311+d307+d107.
+URMATOAREA: d177 (redirectionare profit -> ONG), apoi d207, cap-coada, in aceeasi metoda."
 
 **GATA: d710** - formular "Obligatii corectate" (cod 121 micro/103 profit, suma initiala/corecta, cota la micro),
 obligatii in memorie -> body, refuz-pe-gol, gard test_d710_formular, CSV F192->LIVE. Model: declaratii.js::randeazaFormularD710.
@@ -36,15 +36,24 @@ Backend: erori_generare d307.py rescrise in limba contabilului; valideaza_cerere
 (RED-probat sed pe denO). Scos DOAR d307 din _DOAR_API. CSV F217->LIVE + GRUPE_FUNC regenerat + registre IN ACELASI commit
 (lectia d311). Proba: frontend_test/proba_d307_formular.py (ALFA MICRO, 2 operatiuni tip A+C cu TVA negativ, DUK valid, axe 0, mobil body=393).
 
-**URMATOAREA: d107** (informativa sponsorizari/mecenat/burse). LISTA de beneficiari (ca d710/d307). Citeste core/d107.py:
-calcul_d107 (TVal1=Σval1; TVal2=Σval2+Val2_NI; TVal3=Σval3+Val3_NI; totalPlata_A=TVal1+TVal2+TVal3) + build_xml + erori_generare
-(azi expun val1/val2/val3/beneficiari? - verifica si rescrie in limba contabilului). Fiecare beneficiar: campurile din structura
-(val1/val2/val3 = feluri de sponsorizare/mecenat/bursa) + eventual identificare beneficiar. Val2_NI/Val3_NI = totaluri "neidentificati"
-(camp separat, nu pe beneficiar). Model LISTA d307. DE FACUT identic cu d307: (1) mesaje contabil erori_generare; (2) valideaza_cerere;
-(3) formular-lista + hook pas2 AMBELE locuri; (4) scoate DOAR d107 din _DOAR_API; (5) ajutor d107 (cauta F-number in CSV, e rand existent);
-(6) gard test_d107_formular RED; (7) CSV ->LIVE + GRUPE_FUNC + registre IN ACELASI commit; (8) proba Playwright ALFA MICRO -> DUK valid + axe + mobil.
-ATENTIE la Val2_NI/Val3_NI (nu-s pe beneficiar) si la ce inseamna val1/val2/val3 - citeste anaf_surse structura D107 la sursa. Apoi d177
-(redirectionare profit ONG, `manual.beneficiari` + sumaMax/sumaRest), d207 (nerezidenti, beneficiari grupati pe tip_venit).
+**GATA: d107** (informativa sponsorizari/mecenat/burse, commit aceasta tura) - LISTA de beneficiari (model d307):
+fiecare beneficiar cu denumire + cod fiscal (CUI/CNP) + adresa + trei sume (acordata Val1 / reportata Val2 / dedusa Val3);
+TVal1/TVal2/TVal3 + totalPlata_A (suma de control) CALCULATE si afisate (coincid cu serverul). Anexa neindividualizati
+(entit1) intr-un `<details>` colapsat, mini-lista conditionata de Val2_NI>0 (regula validatorului). Model complet:
+declaratii.js::randeazaFormularD107 + _d107Manual + S.d107 (in memorie) + hook pas2 (S.tip==="d107", DOUA locuri:
+div placeholder + render, indentari diferite 6/4 si 4/2 sp) + id #d107-totaluri. Backend: erori_generare d107.py rescrise
+in limba contabilului + valideaza_cerere d107 rescris (NU mai expune `manual.beneficiari` - prins de proba Playwright,
+nu de unit); test_d107 re-ancorat; gard core/test_d107_formular.py (RED-probat sed pe Val2_NI). Scos DOAR d107 din
+_DOAR_API. CSV F211->LIVE + GRUPE_FUNC regenerat (148) + registre IN ACELASI commit. Proba:
+frontend_test/proba_d107_formular.py (ALFA MICRO an 2024, 2 beneficiari, DUK valid, axe 0, mobil body=393).
+
+**URMATOAREA: d177** (redirectionare a unei parti din impozitul pe profit catre ONG/culte, MANUALA). Citeste core/d177.py
+(semnatura genereaza + calcul + erori_generare + build_xml) si valideaza_cerere d177 (linia "d177 cere `manual.beneficiari`
++ sumaMax/sumaRest" - de rescris in limba contabilului). Model LISTA (beneficiari + sume). DE FACUT identic cu d107/d307:
+(1) mesaje contabil in erori_generare SI valideaza_cerere (ATENTIE la stratul de dispatch, lectia d107); (2) formular-lista
++ hook pas2 AMBELE locuri; (3) scoate DOAR d177 din _DOAR_API; (4) ajutor d177 (cauta F-number in CSV, rand existent);
+(5) gard test_d177_formular RED; (6) CSV ->LIVE + GRUPE_FUNC + registre IN ACELASI commit; (7) proba Playwright ALFA MICRO
+-> DUK valid + axe + mobil. RESTART OBLIGATORIU dupa scoaterea din _DOAR_API. Apoi d207 (nerezidenti, beneficiari grupati pe tip_venit).
 RESTART OBLIGATORIU dupa scoaterea din _DOAR_API (modificare backend, altfel tipul nu apare in selectorul live - prins la d307).
 
 ## REPORNIRE (audit tenant_006 - context anterior)
