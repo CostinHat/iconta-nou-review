@@ -2789,7 +2789,11 @@ def vector_salveaza(tenant_id: int, date: VectorIn, ctx=Depends(cere_rol("admin_
         if rez.get("ok") and anaf_val is not None:     # salvat + ANAF a raspuns -> snapshot (+ data inceput TVA)
             _fp.seteaza_snapshot_tva(conn, anaf_val, tva_inceput)
     if not rez.get("ok"):
-        raise HTTPException(400, rez.get("mesaj", "vector invalid"))
+        _mesaj = rez.get("mesaj", "vector invalid")
+        _camp = rez.get("camp")
+        if _camp:   # Regula 14.4 pct.4: marcheaza campul vinovat, nu doar mesaj generic
+            raise HTTPException(400, {"mesaj": _mesaj, "erori_campuri": [{"camp": _camp, "mesaj": _mesaj}]})
+        raise HTTPException(400, _mesaj)
     if avert:                                          # divergenta -> informeaza, nu blocheaza
         rez["avertisment"] = avert
     # marcheaza stratul de migrare ca gata

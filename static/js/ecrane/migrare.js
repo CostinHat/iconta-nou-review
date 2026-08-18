@@ -491,6 +491,7 @@ async function formularVectorFirma(corp, nav, f) {
   corp.querySelector("#vf-salveaza").addEventListener("click", async () => {
     const er = corp.querySelector("#vf-eroare");
     er.textContent = "";
+    corp.querySelectorAll("#vf-regim, #vf-tva, #vf-decont, #vf-ic").forEach((z) => { z.classList.remove("camp-invalid"); z.removeAttribute("aria-invalid"); });
     const platitor = getTva() === "da";
     const payload = {
       regim_fiscal: getRegim(),
@@ -503,6 +504,9 @@ async function formularVectorFirma(corp, nav, f) {
       await api.post(`/tenants/${f.tenant_id}/vector`, payload);
       _migMesaj = "Vector fiscal salvat."; nav.inapoiPas();
     } catch (e) {
+      const _eris = (e && e.erori_campuri) || [];
+      const _MAP = { regim_fiscal: "vf-regim", platitor_tva: "vf-tva", tip_decont: "vf-decont", operatiuni_ic: "vf-ic", tva_data_inceput: "vf-decont" };
+      _eris.forEach((x) => { const g = corp.querySelector("#" + (_MAP[x.camp] || "_none")); if (g) { g.classList.add("camp-invalid"); g.setAttribute("aria-invalid", "true"); } });
       er.textContent = (e && (e.mesaj || e.message)) || "Nu am putut salva. \u00cencearc\u0103 din nou.";
     }
   });

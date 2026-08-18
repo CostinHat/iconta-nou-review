@@ -63,13 +63,13 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
     # trimitea "Nu" pe firma cu platitor_tva=NULL si se persista o alegere pe care contabilul n-a facut-o
     # (Regula 4). Vezi DECIZII 23.07 + DESIGN_SYSTEM cap.17; simetric cu operatiuni_ic de mai jos.
     if platitor_tva is None:
-        return {"ok": False, "cod": "TVA_LIPSA",
+        return {"ok": False, "cod": "TVA_LIPSA", "camp": "platitor_tva",
                 "mesaj": "Înregistrată în scopuri de TVA: alege Da sau Nu (obligatoriu)."}
     tva = bool(platitor_tva)
     # operatiuni_ic OBLIGATORIU la migrare (ca tip_decont) - decide obligatia D390. Fara default tacit:
     # None (necompletat) -> eroare, nu False. Vezi DECIZII 23.07 + DESIGN_SYSTEM cap.17.
     if operatiuni_ic is None:
-        return {"ok": False, "cod": "IC_LIPSA",
+        return {"ok": False, "cod": "IC_LIPSA", "camp": "operatiuni_ic",
                 "mesaj": "Operațiuni intracomunitare: alege Da sau Nu (obligatoriu)."}
     ic = bool(operatiuni_ic)
     art317 = bool(inreg_art317)   # [art.317] inregistrare speciala scopuri TVA (art. 317 CF)
@@ -85,13 +85,13 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
             try:
                 tva_inceput = _dt.date.fromisoformat(_di).isoformat()
             except (ValueError, TypeError):
-                return {"ok": False, "cod": "TVA_INCEPUT_INVALID",
+                return {"ok": False, "cod": "TVA_INCEPUT_INVALID", "camp": "tva_data_inceput",
                         "mesaj": "Data înregistrării în scopuri de TVA trebuie în formatul AAAA-LL-ZZ (ex. 2020-01-15)."}
 
     decont = (tip_decont or "").strip().lower()
     if tva:
         if decont not in _DECONTURI:
-            return {"ok": False, "cod": "DECONT_INVALID",
+            return {"ok": False, "cod": "DECONT_INVALID", "camp": "tip_decont",
                     "mesaj": "Periodicitate decont TVA: alege Lunar sau Trimestrial (obligatoriu la plătitor de TVA)."}
     else:
         decont = None
@@ -108,12 +108,12 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
             # PFA/II/PFL n-are regim CIT (impozit pe venit prin D212). Gol -> NULL valid; valoare ne-goala
             # -> eroare explicita (nu stocam micro/profit inexistent la partida simpla). Vezi DECIZII 23.07.
             if regim_in:
-                return {"ok": False, "cod": "REGIM_LA_PARTIDA_SIMPLA",
+                return {"ok": False, "cod": "REGIM_LA_PARTIDA_SIMPLA", "camp": "regim_fiscal",
                         "mesaj": "Firmă în partidă simplă (PFA/II/PFL) — nu are regim micro/profit; lasă regimul gol."}
             regim = None
         else:
             if regim_in not in _REGIMURI:
-                return {"ok": False, "cod": "REGIM_INVALID",
+                return {"ok": False, "cod": "REGIM_INVALID", "camp": "regim_fiscal",
                         "mesaj": "Regim fiscal: alege microîntreprindere sau impozit pe profit (obligatoriu)."}
             regim = regim_in
         if exista:
