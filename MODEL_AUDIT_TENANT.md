@@ -95,7 +95,16 @@ commit).
 
 ---
 
-## Selftest al modelului (opțional, de construit)
-Un orchestrator `frontend_test/audit_tenant.py <tenant>` care rulează sondele automatizabile (F2 DUK pe declarațiile
-datorate, F6 axe+mobil pe ecranele accesibile, F7 coerență semafor) și tipărește un raport per fațetă cu verdict.
-F3/F5 rămân semi-manuale (cer date greșite provocate deliberat). — *neconstruit încă; vezi opinia din predare.*
+## Selftest al modelului — CONSTRUIT: `frontend_test/audit_tenant.py <tenant_id> [--fara-vizual]`
+Orchestrator care rulează fațetele automatizabile și tipărește un raport per fațetă cu verdict verde/roșu (iese 1 pe roșu):
+- **F2** — pt fiecare declarație datorată/de urmărit din semafor: generează + `DUKIntegrator` (valid/erori/gri); un refuz
+  pe zero (422) = semnal de posibilă restanță falsă (către F7).
+- **F7** — starea semaforului + constatările ROȘII (motivul, nu doar culoarea).
+- **F6** — descoperă ecranele accesibile ale firmei (`button.firme-optiune[id^=fa-]`) și rulează pe fiecare, desktop +
+  Pixel5: axe (contrast, region/landmark, etichetă) + țintă atingere <24px + revărsare. Navigare PROASPĂTĂ per ecran.
+- **F3 / F5** rămân MANUALE (cer date deliberat greșite + citirea ecranului) — scriptul le listează ca reminder.
+
+Autentificare: userul `fe_test` (vede firmele cabinetului lui de test). Pentru un tenant din alt cabinet, orchestratorul
+are nevoie de credențialele acelui cabinet (de parametrizat când e nevoie). Probat 18.08 pe ALFA MICRO (8396): F2 DUK
+valid pe D300/D112, F7 constatări roșii reale, F6 a scos contrast/etichetă pe ~8 ecrane (control, jurnal, bancă,
+etransport, centrecost, stocuri, registratura, rapoarte) — backlog a11y app-wide de reparat cu tiparul (P3).
