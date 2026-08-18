@@ -648,6 +648,13 @@ html, body {
 
 /* pe fereastra lărgită: corpul nu scrollează, doar tabelul ia spațiul rămas */
 .fereastra.fer-larg .fereastra-corp { overflow: auto; display: flex; flex-direction: column; }
+/* [layout/a11y] intr-o fereastra larga corpul e flex-column; un frate inalt (o lista lunga) NU trebuie sa
+   striveasca inputurile/select-urile copil-direct prin flex-shrink pana la inaltimea continutului
+   (dovedit: #pc-cauta din import plan conturi cadea 40px->20px). Coloana scrolleaza; controalele isi pastreaza
+   inaltimea. Doar copiii DIRECTI (main-axis vertical); inputurile din randuri flex nu-s atinse. */
+.fereastra.fer-larg .fereastra-corp > input:not([type=checkbox]):not([type=radio]):not([type=file]),
+.fereastra.fer-larg .fereastra-corp > select,
+.fereastra.fer-larg .fereastra-corp > textarea { flex-shrink: 0; }
 .fereastra.fer-larg .mig-sold-tabel { max-height: none; flex: 1 1 auto; min-height: 100px; }
 .fereastra.fer-larg .mig-inapoi,
 .fereastra.fer-larg .mig-intro,
@@ -688,6 +695,7 @@ html, body {
 .mig-sold-cnp { font-variant-numeric: tabular-nums; }
 .mig-cnp-ok { color: #15803d; }
 .mig-cnp-no { color: #c0392b; font-weight: 600; }
+.mig-motiv { font-size: var(--text-mic); font-weight: 400; color: #a3231c; }  /* [a11y] motivul de refuz VIZIBIL (nu title-only, pierdut pe touch) */
 .mig-sold-cor, .mig-sold-norma { color: #44516b; font-size: var(--text-mic); }
 .mig-rand-invalid { background: #fdf0ee; }
 
@@ -2195,13 +2203,14 @@ select.camp-invalid, textarea.camp-invalid { border-color: #a3231c !important; }
 .fereastra-fir { display: flex; align-items: center; gap: 6px; margin-left: 10px;
   overflow: hidden; white-space: nowrap; min-width: 0; font-size: 13px; }
 .fir-veriga { border: 0; background: none; padding: 2px 4px; cursor: pointer;
-  color: #5b6b7c; font-size: 13px; font-weight: 500; border-radius: 6px; }  /* uniformizare_fir_v1 */
+  color: #5b6b7c; font-size: 13px; font-weight: 500; border-radius: 6px;
+  min-height: 24px; box-sizing: border-box; }  /* uniformizare_fir_v1; a11y: tinta atingere >=24px (AA 2.5.8) */
 .fir-veriga:hover { background: #eef2f6; color: #1d3a5f; text-decoration: underline; }
 .fir-sep { color: #9aa7b4; font-size: 13px; }
 /* [fir_trunchiere_v1 10.08.2026] ultimul nod mereu vizibil; parintii se scurteaza cu ellipsis;
    fara a taia nodul din dreapta (bugul overflow:hidden care ascundea simptomul in DOM). */
 .fereastra-fir { flex: 1 1 auto; }
-.fir-veriga { min-width: 0; flex: 0 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.fir-veriga { min-width: 24px; flex: 0 1 auto; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }  /* a11y: latime tinta >=24px (AA 2.5.8) */
 .fereastra-fir > .fir-veriga:last-of-type { flex-shrink: 1; max-width: none; }
 .fir-sep { flex: 0 0 auto; }
 .fir-parinti { color: #5b6b7c; font-size: 13px; font-weight: 500; }  /* parintii in titlurile de panou */
@@ -2351,7 +2360,7 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 .ghid-procedura li::before { content: counter(pas); position: absolute; left: 0; top: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--albastru); color: var(--alb); display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: var(--text-mic); }
 
 /* [ajutor_contextual] semnul "?" pe ecrane + panoul de ajutor (11.08.2026) */
-.ajutor-btn { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px;
+.ajutor-btn { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px;  /* a11y: tinta atingere >=24px (AA 2.5.8; era 20px) */
   border-radius:50%; border:1.5px solid #b9c2cf; background:#eef4fd; color:#3d8fd6; font-weight:700;
   font-size:12px; line-height:1; cursor:pointer; padding:0; margin-left:6px; vertical-align:middle; }
 .ajutor-btn:hover { background:#3d8fd6; color:#fff; border-color:#3d8fd6; }

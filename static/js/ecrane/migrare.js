@@ -963,7 +963,7 @@ function previzualizeazaSalariati(corp, nav, firma, date) {
     const ok = r.cnp_valid;
     const cnpCell = ok
       ? `<span class="mig-cnp-ok">${esc(r.cnp)}</span>`
-      : `<span class="mig-cnp-no" title="${esc(r.cnp_motiv)}">${esc(r.cnp || "—")} ⚠</span>`;
+      : `<span class="mig-cnp-no">${esc(r.cnp || "—")} ⚠ <span class="mig-motiv">${esc(r.cnp_motiv)}</span></span>`;
     const norma = r.tip_norma === "partiala" ? `parțială ${r.ore_zi}h` : "întreagă";
     return `
       <div class="mig-sold-rand mig-rand-sal ${ok ? "" : "mig-rand-invalid"}">
@@ -1102,7 +1102,7 @@ function previzualizeazaAsociati(corp, nav, firma, date) {
   const tabel = corp.querySelector("#mig-sold-tabel");
   tabel.innerHTML = randuri.map((r) => {
     const cod = r.tip === "fizica"
-      ? (r.cnp_valid ? `<span class="mig-cnp-ok">${esc(r.cnp)}</span>` : `<span class="mig-cnp-no" title="${esc(r.cnp_motiv)}">${esc(r.cnp)} ⚠</span>`)
+      ? (r.cnp_valid ? `<span class="mig-cnp-ok">${esc(r.cnp)}</span>` : `<span class="mig-cnp-no">${esc(r.cnp)} ⚠ <span class="mig-motiv">${esc(r.cnp_motiv)}</span></span>`)
       : `<span>${esc(r.cnp)}</span>`;
     const tip = r.tip === "juridica" ? "juridică" : "fizică";
     return `
@@ -1240,7 +1240,7 @@ function previzualizeazaMijloace(corp, nav, firma, date) {
   const tabel = corp.querySelector("#mig-sold-tabel");
   tabel.innerHTML = randuri.map((r) => {
     const av = r.avertismente && r.avertismente.length
-      ? `<span class="mig-cnp-no" title="${r.avertismente.join(', ')}"> ⚠</span>` : "";
+      ? `<span class="mig-cnp-no"> ⚠ <span class="mig-motiv">${esc(r.avertismente.join(', '))}</span></span>` : "";
     const luni = r.dnf_luni ? `${r.dnf_luni} luni` : "—";
     return `
       <div class="mig-sold-rand mig-rand-mf ${r.ok ? "" : "mig-rand-invalid"}">
@@ -1378,7 +1378,7 @@ function previzualizeazaIstoric(corp, nav, firma, date) {
   const tabel = corp.querySelector("#mig-sold-tabel");
   tabel.innerHTML = randuri.map((r) => {
     const av = r.avertisment && r.avertisment.length
-      ? `<span class="mig-cnp-no" title="${r.avertisment.join(', ')}"> ⚠</span>` : "";
+      ? `<span class="mig-cnp-no"> ⚠ <span class="mig-motiv">${esc(r.avertisment.join(', '))}</span></span>` : "";
     const tipCls = r.tip_cunoscut ? "mig-cnp-ok" : "mig-cnp-no";
     const lunaTxt = (r.luna >= 1 && r.luna <= 12) ? luni[r.luna] : (r.luna || "—");
     return `
