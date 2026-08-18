@@ -18,16 +18,18 @@ provocate INDIVIDUAL pe tenant_006, cap-coada cu Playwright (captura privita). L
 - **a11y contrast P3** (2bdac14): axe pe preview parteneri a scos .mig-sold-cont #347ab8 = 3.86 < 4.5 pe panoul #e9edf3
   (fix-ul Control fiscal asumase "migrare = pe alb", gresit) -> baza .mig-sold-cont -> #2f6fa6 (toate instantele,
   tiparul P3) + gard ancorat la regula de BAZA. Re-probat: axe color-contrast 0 pe preview parteneri.
+- **vector_fiscal** (73522f5): provocat pe tenant_001 (firma FARA vector) - platitor TVA fara periodicitate decont ->
+  salvare RESPINSA (400, nicio scriere), mesaj corect DAR grupul vinovat nu era marcat (Regula 14.4 pct.4). Fix:
+  salveaza() intoarce 'camp' -> ruta expune erori_campuri -> migrare.js marcheaza grupul (.camp-invalid + aria-invalid).
+  Gard RED (5) + Playwright (contur rosu privit, axe 0). CELE 4 STRATURI DE IMPORT 006 = INCHISE.
 
-COMANDA DE REPORNIRE (gata de dat): "Continua auditul tenant_006 (campania colectii valide+invalide). RAMAS pe
-straturile de import: **vector_fiscal** - provoaca refuzul de CAMP OBLIGATORIU LIPSA (ex. platitor TVA fara
-periodicitate decont, sau operatiuni_ic neales) pe o firma FARA vector complet (tenant_006 il are complet: micro/
-platitor/trimestrial/ic - nu se poate provoca acolo; foloseste o firma demo sau una cu are_vector=false). Citeste
-mesajul rendat cu Playwright si verifica: mesaj in limba contabilului (backend vector_fiscal_api are deja
-"Periodicitate decont TVA: alege Lunar sau Trimestrial (obligatoriu la platitor de TVA)"), obligativitate marcata
-INAINTE de buton (asteriscul .oblig exista), SI ca eroarea MARCHEAZA campul vinovat cu contur (cluster field-level
-marking inca deschis - vezi GARZI). Apoi treci la urmatoarea firma din matrice (t001 D112, t009 D406 - STARE MATRICE
-mai jos). Metoda Regula 13+14 (captura privita + axe/mobil pe fiecare ecran atins)."
+COMANDA DE REPORNIRE (gata de dat): "Cele 4 straturi de import ale tenant_006 (firme/plan_conturi/solduri_parteneri/
+vector_fiscal) + a11y contrast = INCHISE (fd224d2, a651fec, 2bdac14, 73522f5). Continua campania colectii valide+invalide
+la URMATOAREA firma din matricea 1968: t001 (Panificatie Salarii Speciale - D112 erori DUK 'asigurat idAsig=4' + cod
+boala '91' pe concediu medical) sau t009 (D406 factura COER-T5 nereconciliata: antet net/tva != suma liniilor).
+Instrument: audit_tenant.py <id> --user=patron@prisma-cont.test (F2 DUK + F7 semafor + F6 axe/mobil). Metoda Regula 13+14
+(captura privita). Cluster RAMAS app-wide: field-level marking in ALTE formulare cu grupuri de butoane/selecturi care nu
+folosesc erori_campuri - de maturat form cu form (mecanism: api.js marcheazaCampInvalid + detail.erori_campuri)."
 
 
 ## REPORNIRE (comanda exacta, gata de dat) — CAMPANIE ACTIVA: colectii date valide+invalide per firma + corectitudine (F5)
