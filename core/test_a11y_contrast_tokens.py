@@ -127,3 +127,17 @@ def test_dec_xml_summary_contrast_pe_panou():
     assert col, ".dec-xml summary color negasit"
     r = _ratio(col, "#e9edf3")
     assert r >= 4.5, ".dec-xml summary (%s) pe panoul #e9edf3 = %.2f < 4.5" % (col, r)
+
+
+# [a11y contrast P3 18.08.2026 - audit tenant_006 strat solduri_parteneri] codul de cont (.mig-sold-cont)
+# apare si in preview-urile de migrare (solduri/parteneri/plan) pe panoul #e9edf3, NU doar pe alb. Fix-ul
+# Control fiscal a asumat "migrare = pe alb" si a lasat baza --albastru #347ab8 (3.86 pe #e9edf3). axe a
+# gasit 5121/101 la 3.86 in preview-ul de parteneri -> baza dusa la #2f6fa6 (4.53 pe panou).
+def test_mig_sold_cont_baza_contrast_pe_panou():
+    css = _css()
+    if not css:
+        pytest.skip("stil.css absent")
+    col = _val(r"(?m)^\.mig-sold-cont\s*\{[^}]*color:\s*(#[0-9a-fA-F]{6})", css)
+    assert col, "culoarea de baza .mig-sold-cont nu e un hex literal (revenit la var(--albastru)? = 3.86 pe panou)"
+    r = _ratio(col, _PANOU_CF)
+    assert r >= 4.5, ".mig-sold-cont baza (%s) pe panoul de preview %s = %.2f < 4.5 (coduri de cont in migrare)" % (col, _PANOU_CF, r)

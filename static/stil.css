@@ -631,7 +631,7 @@ html, body {
   padding: 7px 12px; border-bottom: 0.5px solid var(--linie); font-size: 12.5px; align-items: center;
 }
 .mig-sold-rand:last-child { border-bottom: none; }
-.mig-sold-cont { font-family: ui-monospace, monospace; font-weight: 600; color: var(--albastru); }
+.mig-sold-cont { font-family: ui-monospace, monospace; font-weight: 600; color: #2f6fa6; }  /* [a11y 18.08 P3] codul de cont apare in preview-urile de migrare (solduri/parteneri/plan) pe panoul #e9edf3, NU doar pe alb: --albastru #347ab8 = 3.86 < 4.5 (axe: 5121/101 in preview parteneri). #2f6fa6 = 4.53 pe panou si ~4.9 pe alb. Asumptia din fix-ul Control fiscal era gresita. */
 .mig-sold-den { color: var(--ardezie); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .mig-sold-val { text-align: right; color: var(--ardezie); font-variant-numeric: tabular-nums; }
 
