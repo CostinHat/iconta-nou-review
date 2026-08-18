@@ -1727,3 +1727,5 @@ Fara test nou (maparea neschimbata; test_mapare_tip_cod acopera deja tip 4 exclu
 `core/test_d390_autoderivare.py::test_d390_posibil_serviciu...` (tip 4 cu cod -> True; tip 4 fara cod / tip 5 -> False). Mutatie-probat. Fixtura extinsa cu coloanele cerute de lista. 25 passed d390/d301.
 ## Bifa 18.08.2026 — confirmare "nu e serviciu IC" (fals-pozitiv tip 4)
 `core/test_d390_autoderivare.py::test_confirma_local_stinge_indiciul_reversibil` (True -> confirma -> False -> anuleaza -> True). Mutatie-probat. Migrare `core/migrare_d301_confirmat` (19/19, test_audit_schema verde). 37 passed.
+## Bifa 18.08.2026 — confirmare persistenta per-furnizor
+`core/test_d390_autoderivare.py::test_confirmare_per_furnizor_persista_intre_luni` (confirma iun -> iul acelasi furnizor mosteneste). Mutatie-probat. 25 passed. Fara migrare (derivat din confirmarile per-operatiune).

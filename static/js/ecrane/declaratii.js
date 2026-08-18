@@ -353,7 +353,8 @@ async function randeazaOperatiuniD301(corp, nav) {
         const furnizor = o.partener_tara ? `${esc(o.partener_tara)}${esc(o.partener_cod || "")}${o.partener_den ? " " + esc(o.partener_den) : ""}` : "";
         const misclas = o.d390_posibil_serviciu
           ? ` <span class="mig-cnp-no" title="Serviciile intracomunitare (art. 307 alin. 2) se introduc ca tip 5 ca să apară în D390 la cod S. Tip 4 e pentru gaz/energie și taxare inversă locală, care nu intră în D390.">⚠ dacă e serviciu intracomunitar, folosește tip 5 (D390 cod S)</span> <button class="btn-link dec-d301-confirma" data-id="${o.id}">confirmă (nu e serviciu)</button>`
-          : (o.d390_confirmat_local && o.tip === 4 ? ` <span class="ecran-nota">✓ confirmat local <button class="btn-link dec-d301-neconfirma" data-id="${o.id}">anulează</button></span>` : "");
+          : (o.d390_confirmat_local && o.tip === 4 ? ` <span class="ecran-nota">✓ confirmat local <button class="btn-link dec-d301-neconfirma" data-id="${o.id}">anulează</button></span>`
+             : (o.d390_furnizor_confirmat && o.tip === 4 ? ` <span class="ecran-nota" title="furnizor confirmat pe altă operațiune ca taxare inversă locală, nu serviciu IC">✓ furnizor confirmat local</span>` : ""));
         const d390 = o.d390_cod
           ? (o.d390_lipsa_furnizor
               ? ` <span class="mig-cnp-no" title="completează țara furnizorului ca operațiunea să apară în D390">⚠ fără furnizor — nu intră în D390 (cod ${o.d390_cod})</span>`

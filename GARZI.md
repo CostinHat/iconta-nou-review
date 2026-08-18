@@ -3180,3 +3180,8 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Gard:** `core/test_d390_autoderivare.py::test_confirma_local_stinge_indiciul_reversibil` + test_audit_schema (coloana d390_confirmat_local).
 - **Ce face imposibil:** lista sa ignore confirmarea (indiciul ramane pe operatiunile confirmate legitime).
 - **Mutatie proba:** scot `and not r["d390_confirmat_local"]` din lista -> indiciul ramane True dupa confirmare -> testul pica.
+
+## Confirmare persistenta per-furnizor (18.08.2026)
+- **Gard:** `core/test_d390_autoderivare.py::test_confirmare_per_furnizor_persista_intre_luni`.
+- **Ce face imposibil:** confirmarea unui furnizor sa NU se aplice viitoarelor operatiuni de la el (contabilul ar re-confirma lunar).
+- **Mutatie proba:** scot verificarea `... not in _furnizori_conf` din lista -> op-ul din alta luna ramane semnalat dupa confirmarea furnizorului -> testul pica.

@@ -63,7 +63,9 @@ grila D301 clarifica tip 2/4 ("nu intra in D390 — ..."). Toate cele 5 tipuri D
 Mis-clasificare: tip 4 cu cod TVA furnizor -> indiciu soft "poate e serviciu IC -> foloseste tip 5 (D390 cod S)"
 (flag d390_posibil_serviciu), ca un serviciu IC ratacit pe tip 4 sa nu ramana absent din D390. Fals-pozitivul
 benign (gaz/energie alin.3/5 cu furnizor inregistrat) -> buton "confirma (nu e serviciu)" (coloana
-d390_confirmat_local + ruta PUT confirma-local) stinge indiciul reversibil.
+d390_confirmat_local + ruta PUT confirma-local) stinge indiciul reversibil. Confirmarea PERSISTA per-furnizor
+(tara+cod): un furnizor confirmat pe orice operatiune stinge indiciul si pe viitoarele lui (alta luna),
+marcate "✓ furnizor confirmat local" (derivat din confirmarile existente, fara tabel nou).
 
 ## RAMAS deschis (fronturi pt urmatoarea tura)
 - axe "region"/landmarks app-wide (moderat, structural, 8-19 noduri/ecran).

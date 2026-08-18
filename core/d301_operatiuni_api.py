@@ -77,6 +77,15 @@ def lista(conn, schema, an, luna):
     """Operatiunile lunii (cu baza si tva) + nomenclatoarele pt formular (o singura sursa)."""
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        # [confirmare per-furnizor 18.08.2026] Un furnizor (tara+cod) confirmat "local" pe ORICE operatiune
+        # (orice luna) => viitoarele operatiuni de la el nu mai primesc indiciul de mis-clasificare - nu
+        # re-confirmi lunar acelasi furnizor de gaz/energie. Derivat din confirmarile per-operatiune existente,
+        # fara tabel separat. Se interogheaza INAINTE de SELECT-ul principal (acelasi cursor).
+        cur.execute(f"SELECT DISTINCT partener_tara, partener_cod FROM {schema}.d301_operatiuni "
+                    f"WHERE d390_confirmat_local = true AND coalesce(partener_cod, '') <> ''")
+        # .get() defensiv: robust daca un rand nu poarta cheile (ex. cursor mock din teste); WHERE filtreaza real.
+        _furnizori_conf = {(r.get("partener_tara") or "", r.get("partener_cod") or "")
+                           for r in cur.fetchall() if (r.get("partener_cod") or "").strip()}
         cur.execute(f"SELECT id, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva, "
                     f"partener_tara, partener_cod, partener_den, d390_confirmat_local "
                     f"FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
@@ -99,8 +108,14 @@ def lista(conn, schema, an, luna):
                         # soft (nu certitudine: gazul poate avea si el furnizor inregistrat). Fals-pozitivul
                         # benign (gaz/energie legitim): contabilul confirma (d390_confirmat_local) -> se stinge.
                         "d390_confirmat_local": bool(r["d390_confirmat_local"]),
+                        # furnizorul (tara+cod) a fost confirmat local pe alta operatiune -> mostenit
+                        "d390_furnizor_confirmat": bool((r["partener_cod"] or "").strip()
+                            and (r["partener_tara"] or "", r["partener_cod"] or "") in _furnizori_conf
+                            and not r["d390_confirmat_local"]),
+                        # indiciul apare doar daca NICI operatiunea, NICI furnizorul nu sunt confirmate
                         "d390_posibil_serviciu": bool(r["tip"] == 4 and (r["partener_cod"] or "").strip()
-                                                      and not r["d390_confirmat_local"])})
+                            and not r["d390_confirmat_local"]
+                            and (r["partener_tara"] or "", r["partener_cod"] or "") not in _furnizori_conf)})
     return {
         "operatiuni": ops,
         "tipuri": [{"val": t, "eticheta": TIPURI_ETICHETE[t]} for t in TIPURI_OP],

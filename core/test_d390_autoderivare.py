@@ -148,3 +148,35 @@ def test_confirma_local_stinge_indiciul_reversibil(schema_d301):
     with db.get_conn() as conn:
         api.confirma_local(conn, SCH, 2026, 6, oid, False)
     assert flag() is True, "anularea confirmarii readuce indiciul (reversibil)"
+
+
+def test_confirmare_per_furnizor_persista_intre_luni(schema_d301):
+    """[per-furnizor 18.08.2026] Confirmarea unei operatiuni tip 4 de la un furnizor (tara+cod) stinge
+    indiciul si pentru VIITOARELE operatiuni de la ACELASI furnizor (alta luna) - nu re-confirmi lunar.
+    Cea mostenita e marcata d390_furnizor_confirmat (nu d390_confirmat_local)."""
+    db = schema_d301
+    from core import d301_operatiuni_api as api
+    with db.get_conn() as conn:
+        with conn.cursor() as c:
+            c.execute('INSERT INTO "%s".d301_operatiuni (an,luna,tip,val_valuta,curs,partener_tara,partener_cod,partener_den) '
+                      "VALUES (2026,6,4,100,5,%%s,%%s,%%s) RETURNING id" % SCH, ("DE", "777", "Gaz X"))
+            id1 = c.fetchone()[0]
+            c.execute('INSERT INTO "%s".d301_operatiuni (an,luna,tip,val_valuta,curs,partener_tara,partener_cod,partener_den) '
+                      "VALUES (2026,7,4,200,5,%%s,%%s,%%s) RETURNING id" % SCH, ("DE", "777", "Gaz X"))
+            id2 = c.fetchone()[0]
+
+    def op(an, luna, oid):
+        with db.get_conn() as conn:
+            return [x for x in api.lista(conn, SCH, an, luna)["operatiuni"] if x["id"] == oid][0]
+
+    assert op(2026, 6, id1)["d390_posibil_serviciu"] is True
+    assert op(2026, 7, id2)["d390_posibil_serviciu"] is True
+    with db.get_conn() as conn:
+        api.confirma_local(conn, SCH, 2026, 6, id1, True)
+    # operatiunea confirmata direct
+    assert op(2026, 6, id1)["d390_confirmat_local"] is True
+    # operatiunea din alta luna, acelasi furnizor -> indiciul stins prin MOSTENIRE
+    o2 = op(2026, 7, id2)
+    assert o2["d390_posibil_serviciu"] is False, "furnizor confirmat -> indiciul se stinge si pe alta luna"
+    assert o2["d390_furnizor_confirmat"] is True, "marcata ca furnizor confirmat (mostenit, nu propriu)"
+    assert o2["d390_confirmat_local"] is False, "operatiunea din iulie NU e confirmata direct"

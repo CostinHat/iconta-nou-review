@@ -4538,3 +4538,6 @@ Cerut de Costin (item §5). Un serviciu IC introdus gresit ca tip 4 (in loc de t
 
 ## 18.08.2026 — Audit tenant_006 (cont.): fals-pozitivul benign al indiciului tip 4
 Cerut de Costin (item §5). Indiciul "poate e serviciu -> tip 5" apare si pe gaz/energie legitim (art.307 alin.3/5) de la furnizor inregistrat (au cod TVA) = fals-pozitiv. Rezolvat cu confirmare manuala: buton "confirma (nu e serviciu)" -> d390_confirmat_local=true -> indiciul se stinge (reversibil "anuleaza"). Migrare coloana + ruta PUT confirma-local + lista respecta flag-ul + UI. Gard mutatie-probat. Nu se poate distinge din date serviciul de gaz -> confirmarea manuala e calea corecta (indiciu, nu blocaj). Commit: aceasta tura.
+
+## 18.08.2026 — Audit tenant_006 (cont.): confirmarea persista per-furnizor
+Inchide §5 (confirmarea era per-operatiune). Un furnizor confirmat "local" pe orice operatiune tip 4 stinge indiciul si pentru viitoarele operatiuni de la el (alta luna) - nu re-confirmi lunar acelasi furnizor de gaz. Derivat din confirmarile existente (fara tabel nou). Op confirmata direct: "✓ confirmat local"; mostenita: "✓ furnizor confirmat local" (d390_furnizor_confirmat). Gard mutatie-probat. Commit: aceasta tura.

@@ -9578,3 +9578,11 @@ preexistent d301/d390, extins la TOATE (d100/d101/d205/d112/d300/bilant). declar
 **Temei.** Regula 4 (indiciu, nu blocaj; contabilul decide). Nu se poate distinge din date serviciul de gaz/energie (ambele cu cod TVA) -> confirmarea manuala e singura cale corecta, fara a ascunde tacit un posibil gol de conformitate.
 
 **Proba.** lista pe tenant_006: op tip 4 cu cod -> posibil_serviciu True; confirma_local(True) -> False; confirma_local(False) -> True (reversibil). Gard test_confirma_local_stinge_indiciul_reversibil (mutatie: lista ignora confirmarea -> ramane True -> pica). Migrare verificata test_audit_schema. 37 passed regresie.
+
+## 18.08.2026 — Confirmarea "nu e serviciu" persista per-furnizor (nu re-confirmi lunar)
+
+**Decizie.** Un furnizor (tara+cod) confirmat "local" pe ORICE operatiune tip 4 (orice luna) stinge indiciul de mis-clasificare si pentru VIITOARELE operatiuni de la ACELASI furnizor - contabilul nu re-confirma lunar acelasi furnizor de gaz/energie. Derivat din confirmarile per-operatiune existente (SELECT DISTINCT tara,cod WHERE d390_confirmat_local=true), FARA tabel separat. Operatiunea confirmata direct arata "✓ confirmat local [anuleaza]"; cea mostenita arata "✓ furnizor confirmat local" (flag d390_furnizor_confirmat, nu d390_confirmat_local).
+
+**Temei.** Inchide §5 al raportului anterior (confirmarea era per-operatiune). Un furnizor de gaz/energie are natura consecventa -> confirmarea lui o data se aplica tuturor operatiunilor lui. Nu ascunde datele (op ramane, marcata).
+
+**Proba.** Doua op tip 4 acelasi furnizor DE/777, luni diferite (iun/iul): initial ambele posibil_serviciu=True; dupa confirma iun -> iun confirmat_local=True, iul posibil_serviciu=False + furnizor_confirmat=True (mostenit). Gard test_confirmare_per_furnizor_persista_intre_luni (mutatie: fara mostenire -> iul ramane semnalat -> pica). 25 passed.
