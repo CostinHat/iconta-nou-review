@@ -780,6 +780,7 @@ class DeclaratieIn(BaseModel):
     manual: Optional[dict] = None
     date_extra: Optional[dict] = None
     ca_an_precedent_eur: Optional[float] = None
+    obligatii: Optional[list] = None   # [formular_manual_d710] corectiile D710 (direct in body, nu DB)
 
 class TenantNou(BaseModel):
     nume: str
