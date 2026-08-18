@@ -493,6 +493,18 @@ async function formularVectorFirma(corp, nav, f) {
     er.textContent = "";
     corp.querySelectorAll("#vf-regim, #vf-tva, #vf-decont, #vf-ic").forEach((z) => { z.classList.remove("camp-invalid"); z.removeAttribute("aria-invalid"); });
     const platitor = getTva() === "da";
+    // DS cap.6 pct.4: COLECTEAZA toate campurile obligatorii lipsa si le marcheaza pe toate odata (fail-fast INTERZIS)
+    const _lipsa = [];
+    if (!partidaSimpla && !getRegim()) _lipsa.push(["vf-regim", "regimul fiscal"]);
+    if (getTva() !== "da" && getTva() !== "nu") _lipsa.push(["vf-tva", "dacă e plătitoare de TVA (Da/Nu)"]);
+    if (platitor && !getDecont()) _lipsa.push(["vf-decont", "periodicitatea decontului de TVA"]);
+    if (getIc() !== "da" && getIc() !== "nu") _lipsa.push(["vf-ic", "operațiunile intracomunitare (Da/Nu)"]);
+    if (_lipsa.length) {
+      _lipsa.forEach(([id]) => { const g = corp.querySelector("#" + id); if (g) { g.classList.add("camp-invalid"); g.setAttribute("aria-invalid", "true"); } });
+      const _prima = corp.querySelector("#" + _lipsa[0][0]); if (_prima) _prima.scrollIntoView({ block: "center" });
+      er.textContent = "Completează: " + _lipsa.map((x) => x[1]).join(", ") + ".";
+      return;
+    }
     const payload = {
       regim_fiscal: getRegim(),
       platitor_tva: platitor,

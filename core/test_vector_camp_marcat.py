@@ -44,3 +44,13 @@ def test_frontend_marcheaza_grupul():
     assert "erori_campuri" in s, "migrare.js nu mai citeste erori_campuri la vector"
     assert 'tip_decont: "vf-decont"' in s, "maparea camp->grup (tip_decont->vf-decont) lipseste"
     assert 'classList.add("camp-invalid")' in s, "grupul vinovat nu mai e marcat (camp-invalid)"
+
+
+def test_frontend_colecteaza_multi_camp():
+    """DS cap.6 pct.4: vectorul COLECTEAZA toate campurile obligatorii lipsa client-side (nu fail-fast) -
+    le marcheaza pe toate odata inainte de POST, un singur mesaj 'Completeaza: ...'."""
+    s = _f("static/js/ecrane/migrare.js")
+    assert "_lipsa.push" in s, "vector nu mai colecteaza campurile lipsa (fail-fast)"
+    for g in ("vf-regim", "vf-tva", "vf-decont", "vf-ic"):
+        assert '"%s"' % g in s, "grupul %s nu e in colectarea multi-camp" % g
+    assert "_lipsa.forEach" in s, "campurile lipsa nu se marcheaza toate odata"
