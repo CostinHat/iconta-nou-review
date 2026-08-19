@@ -179,7 +179,8 @@ def adauga(conn, schema, an, luna, d):
     # [auto-derivare d301->D390, decizia Costin 18.08.2026] Furnizorul UE - OPTIONAL pe D301 (D301 nu-l cere),
     # dar necesar ca operatiunea sa apara AUTOMAT in D390 (cod A/S). tara: 2 litere ISO; cod: codul de TVA al
     # furnizorului fara prefix tara (poate lipsi = NOTA 1). Fara tara -> operatiunea nu intra in D390 (avertisment
-    # la generare). Validam usor aici; checksum-ul VIES al codului il face D390 (checksum_vies) la generare.
+    # la generare). Checksum-ul VIES (algoritm offline DE/FR/HR) il rulam ACUM, NEBLOCANT (audit 006/R24.1):
+    # calea d301-derivata NU trece prin _facturi_ic, deci fara asta codul gresit ajungea neverificat pana la DUK.
     partener_tara = (d.get("partener_tara") or "").strip().upper()
     partener_cod = (d.get("partener_cod") or "").strip().upper()
     partener_den = (d.get("partener_den") or "").strip()
@@ -192,6 +193,16 @@ def adauga(conn, schema, an, luna, d):
     if erori:
         return {"eroare": "; ".join(m for _c, m in erori),
                 "erori_campuri": [{"camp": c, "mesaj": m} for c, m in erori]}
+    # [checksum VIES la introducere, simetric cu cifra de control a CUI RO la parteneri interni]
+    # NEBLOCANT (ca la RO: intra + avertisment) - o achizitie IC obligatorie nu se pierde pentru un cod
+    # gresit; dar contabilul afla DEVREME, in limba lui, nu abia la respingerea DUK.
+    _avert = None
+    if partener_tara and partener_cod:
+        from core.d390 import checksum_vies as _cv
+        _st, _mo = _cv(partener_tara, partener_cod)
+        if _st == "invalid":
+            _avert = ("Codul de TVA %s%s nu trece algoritmul %s (%s) — va fi respins de DUKIntegrator "
+                      "(DUK regula R24.1) la generarea D390. Verifică-l acum." % (partener_tara, partener_cod, partener_tara, _mo))
     baza, tva = _tva_din(val_valuta, curs, cota)
     with conn.cursor() as cur:
         cur.execute(f"""INSERT INTO {schema}.d301_operatiuni
@@ -202,7 +213,7 @@ def adauga(conn, schema, an, luna, d):
                      partener_tara, partener_cod, partener_den))
         oid = cur.fetchone()[0]
     conn.commit()
-    return {"ok": True, "id": oid, "baza": baza, "tva": tva}
+    return {"ok": True, "id": oid, "baza": baza, "tva": tva, "avertisment": _avert}
 
 
 def sterge(conn, schema, an, luna, op_id):

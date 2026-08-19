@@ -463,7 +463,7 @@ async function randeazaOperatiuniD301(corp, nav) {
       partener_tara: gv("#d301-partener_tara").value.trim(), partener_cod: gv("#d301-partener_cod").value.trim(),
       partener_den: gv("#d301-partener_den").value.trim() };
     curataEroriCamp(zona);  // [G10] eroare langa camp
-    try { await api.post(`/tenants/${S.tenant_id}/d301-operatiuni`, b); randeazaOperatiuniD301(corp, nav); }
+    try { const _r = await api.post(`/tenants/${S.tenant_id}/d301-operatiuni`, b); await randeazaOperatiuniD301(corp, nav); if (_r && _r.avertisment) arataMesaj(gv("#d301-msg"), _r.avertisment, "atentionare"); }
     catch (e) {
       curataEroriCamp(zona);
       const _ec = (e && e.erori_campuri) || [], _b = [];
