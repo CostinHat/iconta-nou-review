@@ -183,10 +183,10 @@ def erori_generare(prof, manual):
                 if _num(b.get("cotaImpozit", 0)) not in (0, 1, 3):
                     er.append(ipre + "cotaImpozit beneficiar poate fi doar 0, 1 sau 3.")
             s_ben = sum(_num(b.get("cota")) for b in benef)
-            if benef and round(s_ben, 2) != 100:
+            if benef and round(s_ben, 2) != 100:  # round-ok: verificare suma cote == 100
                 er.append(ipre + "suma cotelor beneficiarilor = %s (trebuie 100)." % _fmtnum(s_ben))
             s_p = sum(_num(p.get("cota")) for p in parti)
-            if parti and round(s_p, 2) != 100:
+            if parti and round(s_p, 2) != 100:  # round-ok: verificare suma cote == 100
                 er.append(ipre + "suma cotelor cealalta parte = %s (trebuie 100)." % _fmtnum(s_p))
     return er
 

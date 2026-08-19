@@ -3274,3 +3274,10 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Mutație probă:** `fa-nou` injectat → pică; restaurat → verde.
 - **Baseline v1:** 27 ecrane; doar 6 în ECRANE (scanate), restul 21 = DATORIE de scanat, de mutat incremental (batch/tură). Scopul v1: niciun ecran nou nu scapă.
 - **Campanie „gardăm cele 31": #3/~13** (primul instrument; după fixturi + CUI/CNP).
+
+## Rotunjire fiscală: sumele folosesc ROUND_HALF_UP, nu round() bancar (19.08.2026)
+- **Gard:** `core/test_rotunjire_fiscala.py` (AST pe `core/d*.py` + `*engine*.py`).
+- **Ce face imposibil:** o sumă fiscală rotunjită cu `round()` (bancar half-to-even — greșit pe .XX5) în modulele de declarații. Se cere `common._q()` (Decimal+ROUND_HALF_UP). Exceptat: `int(round(...))` (rate/cote întregi, bancar==aritmetic), sau marker `# round-ok:` (rație/medie/margine/verificare, nu sumă persistată).
+- **A SCOS BUG REAL:** `d212_engine` rotunjea bancar 8 sume fiscale (CAS/CASS/venit_net/impozit/baza_impozit/total_datorat = produse rată×bază + sume) → reparat la `_q`. Cele sigure (sume/diferențe de valori deja la 2 zecimale, medii, verificări) marcate `# round-ok:`.
+- **Mutație probă:** `round()` nou pe produs fără marker → pică; restaurat → verde. Teste d112/d208/d300/d212: 67 passed.
+- **Campanie „gardăm cele 31": instrument rotunjire-scoped (după fixturi + CUI/CNP + hartă).**

@@ -96,8 +96,8 @@ def _cm_media6(brut, data_ang, an, luna):  # cm_media6_v1
         d18 = 21
     if cap and d17 > cap:
         d17 = float(cap)
-    media = round(d17 / d18, 2) if d18 else 0.0
-    return round(d17, 2), d18, media
+    media = round(d17 / d18, 2) if d18 else 0.0  # round-ok: medie (rație), nu suma persistata
+    return round(d17, 2), d18, media  # round-ok: d17 = suma de brute deja la 2 zecimale (no-op)
 _D112_CASA = {
     "bucuresti": "_B", "alba": "AB", "arad": "AR", "arges": "AG", "bacau": "BC", "bihor": "BH",
     "bistrita-nasaud": "BN", "bistrita nasaud": "BN", "botosani": "BT", "brasov": "BV", "braila": "BR",
@@ -343,7 +343,7 @@ def _d112_genereaza(prof, salariati, an, luna):
                 d17 = _d112int(_m17)
                 if d17 == 0:  # d112_s107_v1: S107.1 - fara medie => si d18=0
                     d18 = 0
-                d19 = round(d17 / d18, 2) if d18 else 0
+                d19 = round(d17 / d18, 2) if d18 else 0  # round-ok: medie (rație)
                 # [d112 asiguratD zero-base v1] D_1/D_2/D_5/D_6/D_7 sunt use="required" in AsiguratDType
                 # (d112_06082026.xsd l.665-671; struct rd.90-96 D_1..D_7). Un certificat cu vreunul gol =>
                 # XML respins de ANAF ("D_1: atributul trebuie sa exista"). REFUZ pe gol la radacina (aceeasi

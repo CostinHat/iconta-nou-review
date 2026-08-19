@@ -759,8 +759,8 @@ def _avertismente_marja(res):
         b = res.R.get(baza_k, 0)
         t = res.R.get(tva_k, 0)
         if b and t:
-            lo = round((cota - 1) / 100 * b)
-            hi = round((cota + 1) / 100 * b)
+            lo = round((cota - 1) / 100 * b)  # round-ok: margine de verificare, nu suma persistata
+            hi = round((cota + 1) / 100 * b)  # round-ok: margine de verificare
             if not (lo <= t <= hi):
                 av.append("TVA %s (%d) nu se \u00eencadreaz\u0103 în %d%%\u00b11%% din baza %d (DUK: aten\u021bionare, uploadabil)."
                           % (tva_k, t, cota, b))

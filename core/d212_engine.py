@@ -69,7 +69,7 @@ def calculeaza_cas(venit_net: float, plafoane: PlafoaneD212, optiune_cas: bool =
     return {
         "obligatoriu": venit_net >= prag_min,
         "baza": baza,
-        "cas": round(baza * plafoane.cas_cota, 2),
+        "cas": float(_common._q(baza * plafoane.cas_cota)),
     }
 
 
@@ -93,8 +93,8 @@ def calculeaza_cass(venit_net: float, plafoane: PlafoaneD212, optiune_cass: bool
 
     return {
         "obligatoriu": venit_net >= prag_min,
-        "baza": round(baza, 2),
-        "cass": round(baza * plafoane.cass_cota, 2),
+        "baza": float(_common._q(baza)),
+        "cass": float(_common._q(baza * plafoane.cass_cota)),
     }
 
 
@@ -110,7 +110,7 @@ def calculeaza_d212(
     Impozit = 10% x (venit net - CAS - CASS).
     Returneaza toate componentele pentru Fisa de calcul D212.
     """
-    venit_net = round(venit_brut - cheltuieli_deductibile, 2)
+    venit_net = float(_common._q(venit_brut - cheltuieli_deductibile))
     if venit_net < 0:
         venit_net = 0.0
 
@@ -118,7 +118,7 @@ def calculeaza_d212(
     cass = calculeaza_cass(venit_net, plafoane, optiune_cass)
 
     baza_impozit = max(0.0, venit_net - cas["cas"] - cass["cass"])
-    impozit = round(baza_impozit * plafoane.impozit_cota, 2)
+    impozit = float(_common._q(baza_impozit * plafoane.impozit_cota))
 
     return {
         "venit_brut": venit_brut,
@@ -126,9 +126,9 @@ def calculeaza_d212(
         "venit_net": venit_net,
         "cas": cas,
         "cass": cass,
-        "baza_impozit": round(baza_impozit, 2),
+        "baza_impozit": float(_common._q(baza_impozit)),
         "impozit": impozit,
-        "total_datorat": round(cas["cas"] + cass["cass"] + impozit, 2),
+        "total_datorat": float(_common._q(cas["cas"] + cass["cass"] + impozit)),
     }
 
 
@@ -173,7 +173,7 @@ def _test():
     assert r["cas"]["cas"] == 24300.0          # peste 24 sm -> plafon
     assert r["cass"]["cass"] == 12000.0        # 120000 x 10%
     assert r["baza_impozit"] == 120000 - 24300 - 12000
-    assert r["impozit"] == round(r["baza_impozit"] * 0.10, 2)
+    assert r["impozit"] == float(_common._q(r["baza_impozit"] * 0.10))
 
     print("Toate testele D212 au trecut. Praguri: sm=%s" % p.salariu_minim)
 
