@@ -3267,3 +3267,10 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Ce face imposibil:** un CUI/CNP folosit ca date de test VALIDE (`cui=`/`cnp="..."`) cu cifra de control GREȘITĂ = capcană (16.07: validatorul confundă o dată de test greșită cu un bug de cod real). Testele negative (linia conține invalid/control/alterat/format sau marker `# cui-invalid-ok:`) sunt exceptate automat.
 - **Mutație probă:** cui invalid nou fără keyword → pică; restaurat → verde. A scos **11 CUI/CNP invalide reale** folosite ca date valide — reparate la cifra de control corectă (înlocuire în tot fișierul, date+aserții consistente). `143000009` din test_d394 = deliberat invalid pt test negativ → marcat, nu reparat. Toate afectate: 43 passed.
 - **Campanie „gardăm cele 31": garda #2/16** (A2 ratchet). Următoarele: hook-uri git-diff (registre/predare/DS-citat) → instrumente roadmap.
+
+## Harta ecranelor nu crește tăcut (map completeness v1, 19.08.2026)
+- **Gard:** `core/test_harta_ecrane.py` (roadmap #3).
+- **Ce face imposibil:** un ecran de firmă `#fa-*` NOU să apară în cod fără a fi înregistrat — pică → forțează decizia: îl adaugi în `nav_ecrane.ECRANE` (scanat vizual/comportamental de `test_acoperire_vizuala`) SAU în `_BASELINE` (datorie de scanat, conștientă). Plus: baseline stătut (ecran dispărut) → pică.
+- **Mutație probă:** `fa-nou` injectat → pică; restaurat → verde.
+- **Baseline v1:** 27 ecrane; doar 6 în ECRANE (scanate), restul 21 = DATORIE de scanat, de mutat incremental (batch/tură). Scopul v1: niciun ecran nou nu scapă.
+- **Campanie „gardăm cele 31": #3/~13** (primul instrument; după fixturi + CUI/CNP).
