@@ -178,6 +178,7 @@ def adauga(conn, schema, an, luna, d):
                 "erori_campuri": [{"camp": c, "mesaj": m} for c, m in erori]}
     descriere = (d.get("descriere") or "").strip() or None
     with conn.cursor() as cur:
+        # upsert-ok: editare rand D300 manual pe (an,luna,rand) - re-scrierea aceluiasi rand
         cur.execute(f"""INSERT INTO {schema}.d300_manual (an, luna, rand, baza, tva, descriere)
                         VALUES (%s,%s,%s,%s,%s,%s)
                         ON CONFLICT (an, luna, rand)

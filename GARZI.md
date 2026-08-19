@@ -3249,3 +3249,9 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Mutatie proba:** (a) atins un fisier UI -> `test_scan_proaspat` pica (ui_hash difera); (b) violare injectata in artefact -> `test_fara_violari` pica. Ambele RED prin pytest, apoi restaurat GREEN.
 - **De ce:** o regula scrisa si citita NU e o regula pazita — doar poarta tine (ca `test_agenda`). Am sarit DS+mobil+comportament desi erau in metoda; acum metoda nu se mai poate sari. Cerut de Costin (19.08). Vezi F9 + punctul 5 din MODEL_AUDIT_TENANT.
 - **RAMAS (out-of-perimeter, infra):** `interactiune_scan.py` acopera 6 ecrane din `nav_ecrane.ECRANE`; de extins treptat la toate ecranele UI. Stratul cabinet "firme" (paste CUI -> ANAF) exclus din scanul automat (dependenta externa nedeterminista) - acoperit de proba dedicata.
+
+## Gard anti-suprascriere-tăcută: DO UPDATE cere justificare + roadmap instrumente (19.08.2026)
+- **Gărzi:** `core/test_upsert_motivat.py` + `core/test_instrumente_roadmap.py`.
+- **Ce face imposibil:** un `INSERT ... ON CONFLICT DO UPDATE` în producție fără `# upsert-ok: <motiv>` (suprascriere tăcută, Regula 4). Un „adaugă" de utilizator care suprascrie tăcut (ca bug-ul plan_conturi) e prins LA SCRIERE: n-are justificare → pică → folosește `DO NOTHING` / refuz 409. Simetric, `INSTRUMENTE_ROADMAP.md` marcat CONSTRUIT nu poate numi un fișier inexistent.
+- **Mutație probă:** pe cod neanotat, 15 `DO UPDATE` pică; după anotare (toate 15 revizuite, legitime — chei naturale) = verde. Roadmap: fișier CONSTRUIT inexistent → pică (RED-probat).
+- **RĂMAS (documentat în INSTRUMENTE_ROADMAP #1):** latura DROP tăcut (input curățat-la-gol-eliminat, ca `separa_cui`) — greu static, abordare separată (convenție „funcțiile de curățare întorc `(păstrate, ignorate)`"); `except`-gol prins de `test_masti`, coerciția de `DEFAULT_FISCAL_TACIT`. Instrumentele #2–#11 = backlog urmărit în roadmap.

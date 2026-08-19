@@ -46,6 +46,7 @@ def salveaza_reclasificare(conn, schema, an, luna, directie, tara, cod, tip):
                         f"WHERE an=%s AND luna=%s AND directie=%s AND tara=%s AND cod=%s",
                         (an, luna, directie, tara, cod))
         else:
+            # upsert-ok: override reclasificare D390 pe (an,luna,directie,tara,cod) - set intentionat
             cur.execute(f"""INSERT INTO {schema}.d390_reclasificare (an,luna,directie,tara,cod,tip)
                             VALUES (%s,%s,%s,%s,%s,%s)
                             ON CONFLICT (an,luna,directie,tara,cod) DO UPDATE SET tip=EXCLUDED.tip""",

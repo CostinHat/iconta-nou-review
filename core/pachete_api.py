@@ -143,6 +143,7 @@ def salveaza_poveste(conn_public, tenant_id, an, luna, text, status="ciorna"):
         return {"ok": False, "cod": "TEXT_GOL"}
     pass  # tabela creata manual (owner iconta_user)
     with conn_public.cursor() as cur:
+        # upsert-ok: salvare text pachet lunar pe (tenant,an,luna) - re-scriere intentionata
         cur.execute(
             "INSERT INTO public.pachet_povestea (tenant_id, an, luna, text, status, updated_at) "
             "VALUES (%s,%s,%s,%s,%s, now()) "

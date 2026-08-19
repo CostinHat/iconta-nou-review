@@ -276,6 +276,7 @@ def importa(conn, randuri):
             # NU exista skip tacit: importa a ridicat deja (mai sus) daca vreun CNP e invalid, deci aici
             # toate randurile sunt valide (fostul skip pe CNP invalid era cod mort: importa ridica intai).
             part_time = (r.get("tip_norma", "intreaga") == "partiala")
+            # upsert-ok: re-import salariat pe CNP - actualizeaza fisa existenta (IBAN pazit separat)
             cur.execute("""
                 INSERT INTO salariati
                   (cnp, nume, prenume, data_angajare, part_time, ore_zi,

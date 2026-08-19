@@ -85,6 +85,7 @@ def seteaza(conn, schema, salariat_id, an, luna, tip, valoare, eveniment="", nr_
                         f"WHERE salariat_id=%s AND an=%s AND luna=%s AND tip=%s AND eveniment=%s",
                         (salariat_id, an, luna, tip, eveniment))
         else:
+            # upsert-ok: set beneficiu pe (salariat,an,luna,tip,eveniment) - re-setare intentionata
             cur.execute(f"""INSERT INTO {schema}.beneficii_lunare (salariat_id, an, luna, tip, valoare, eveniment)
                             VALUES (%s,%s,%s,%s,%s,%s)
                             ON CONFLICT (salariat_id, an, luna, tip, eveniment)

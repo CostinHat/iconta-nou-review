@@ -28,6 +28,7 @@ def detecteaza(conn, fereastra_min, prag_tenanti, prag_actiuni):
 
 def _poate_trimite(conn, cheie, dedup_min):
     with conn.cursor() as cur:
+        # upsert-ok: dedup alerta pe cheie cu fereastra (WHERE trimis_la<...) - reset intentionat
         cur.execute("""INSERT INTO public.alerte_acces_dedup (cheie, trimis_la) VALUES (%s, now())
                        ON CONFLICT (cheie) DO UPDATE SET trimis_la = now()
                        WHERE public.alerte_acces_dedup.trimis_la < now() - make_interval(mins => %s)

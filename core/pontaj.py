@@ -78,6 +78,7 @@ def seteaza(conn, schema, salariat_id, zi, stare, tenant_id=None):
             cur.execute("DELETE FROM pontaj WHERE salariat_id = %s AND zi = %s", (salariat_id, zi))
     else:
         with conn.cursor() as cur:
+            # upsert-ok: set pontaj pe (salariat,zi) - re-marcarea aceleiasi zile rescrie intentionat
             cur.execute("INSERT INTO pontaj (salariat_id, zi, stare) VALUES (%s, %s, %s) "
                         "ON CONFLICT (salariat_id, zi) DO UPDATE SET stare = EXCLUDED.stare",
                         (salariat_id, zi, stare))

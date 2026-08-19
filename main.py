@@ -6849,6 +6849,7 @@ def _snapshot_stat_plata(conn, schema, rezultate, an, luna):
     with conn.cursor() as cur:
         for r in rezultate:
             zile = max(zile_luna - int(r.get("cm_zile") or 0), 0)
+            # upsert-ok: recalc lunar idempotent pe (salariat,luna) - re-rulare, nu adaugare de utilizator
             cur.execute(f"""INSERT INTO {schema}.state_plata
                             (salariat_id, luna, venit_brut, zile_lucrate)
                             VALUES (%s,%s,%s,%s)
@@ -7143,6 +7144,7 @@ def reges_config(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabine
         if corp.get("mediu", "test") not in ("test", "prod"):
             raise HTTPException(422, "mediu: test|prod")
         with conn.cursor() as cur:
+            # upsert-ok: salvare credentiale REGES per tenant - update intentionat al aceleiasi chei (tenant_id)
             cur.execute("""INSERT INTO public.reges_chei (tenant_id, username, parola, mediu)
                            VALUES (%s,%s,%s,%s)
                            ON CONFLICT (tenant_id) DO UPDATE

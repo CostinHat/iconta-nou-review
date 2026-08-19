@@ -99,6 +99,7 @@ def seteaza_buget(conn, schema, centru_id, an, buget_cheltuieli, buget_venituri)
         cur.execute(f"SELECT 1 FROM {schema}.centre_cost WHERE id = %s", (centru_id,))
         if not cur.fetchone():
             return None
+        # upsert-ok: editare buget centru de cost pe (centru,an) - re-scriere intentionata
         cur.execute(f"""INSERT INTO {schema}.bugete
                         (centru_cost_id, an, buget_cheltuieli, buget_venituri)
                         VALUES (%s, %s, %s, %s)

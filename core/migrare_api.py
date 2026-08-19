@@ -104,6 +104,7 @@ def seteaza_status(conn, firm_id, strat, stare, nota=""):
         raise ValueError("nota e obligatorie când importul nu e gata")
 
     with conn.cursor() as cur:
+        # upsert-ok: set stare strat import pe (firma,strat) - actualizare intentionata a statusului
         cur.execute(
             "INSERT INTO public.migrare_status "
             "  (accounting_firm_id, strat, stare, nota, actualizat_la) "

@@ -43,6 +43,7 @@ def seteaza(cur, salariat_id, salariu_brut, valabil_din):
     """Scrie o intrare de salariu in ISTORIC (UPSERT pe salariat+data). SURSA UNICA a salariului
     contractual (PASUL 2b) - toate scrierile (creare/editare/import) trec pe aici, nu pe
     salariati.salariu_brut. Context search_path pe schema tenant (necalificat)."""
+    # upsert-ok: set salariu la o data (salariat,valabil_din) - editarea aceleiasi date rescrie intentionat
     cur.execute("INSERT INTO salariu_istoric (salariat_id, valabil_din, salariu_brut) VALUES (%s, %s, %s) "
                 "ON CONFLICT (salariat_id, valabil_din) DO UPDATE SET salariu_brut = EXCLUDED.salariu_brut",
                 (salariat_id, valabil_din, salariu_brut))

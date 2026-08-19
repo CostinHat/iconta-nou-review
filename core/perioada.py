@@ -42,6 +42,7 @@ def e_confirmat(conn, schema, an, luna, domeniu):
 def confirma(conn, schema, an, luna, domeniu, user_id):
     """Marcheaza perioada CONFIRMATA (autoritativa). Idempotent (re-confirmarea reimprospateaza confirmat_la)."""
     with conn.cursor() as cur:
+        # upsert-ok: confirmare perioada pe (an,luna,domeniu) - idempotent, reimprospateaza confirmat_la
         cur.execute("INSERT INTO " + _tbl(schema) + " (an, luna, domeniu, confirmat_de) VALUES (%s, %s, %s, %s) "
                     "ON CONFLICT (an, luna, domeniu) DO UPDATE SET confirmat_de = EXCLUDED.confirmat_de, "
                     "confirmat_la = now()", (an, luna, domeniu, user_id))

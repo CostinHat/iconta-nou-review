@@ -237,6 +237,7 @@ def salveaza_token(conn, principal, valori, acum_dt=None):
     with conn.cursor() as cur:
         cur.execute("UPDATE public.spv_token SET activ=false WHERE " + where +
                     " AND serial_certificat <> %s", params + (valori["serial_certificat"],))
+        # upsert-ok: refresh token SPV pe (col,serial) - actualizare intentionata a tokenului
         cur.execute(f"""
             INSERT INTO public.spv_token
                 ({col}, serial_certificat, access_token, refresh_token,

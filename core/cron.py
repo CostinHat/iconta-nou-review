@@ -97,6 +97,7 @@ def bate(nume, durata_sec=None):
         db.init_pool()          # nemascat - vezi nota din verifica_batai
         with db.get_conn() as conn:
             with conn.cursor() as cur:
+                # upsert-ok: heartbeat cron pe nume - incrementeaza rulari + timestamp, intentionat
                 cur.execute(
                     "INSERT INTO public.cron_batai (nume, ultima_reusita, durata_sec, rulari) "
                     "VALUES (%s, now(), %s, 1) "
