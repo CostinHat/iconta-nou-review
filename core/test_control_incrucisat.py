@@ -531,6 +531,7 @@ def test_verifica_d390_dvsd_foloseste_perioada_depusa_nu_luna_curenta():
             cur.execute("INSERT INTO ztest_ci_d390.firma_profil (id, nume, cui, platitor_tva, tip_decont) "
                         "VALUES (1, 'PROBA CI', '14399840', true, 'L')")
             tid = _tenant_fabricat(cur, "ztest_ci_d390")
+            # fixtura-sintetica-ok: tenant_id sintetic (nu coliziune PK cu depunere reala)
             cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, nr_depunere) "
                         "VALUES (%s, 2026, 6, 'd300', '<x/>', %s, 1)", (tid, _E.Json({"R": {"R1_1": 5000}})))
             # d390.calculeaza (chemat de verifica_d390) interogheaza firma_profil NECALIFICAT ->

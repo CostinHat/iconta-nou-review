@@ -85,6 +85,7 @@ def test_pontaj_blocat_dupa_depunere_d112(conn):
     """cap.23 reversibilitate: dupa D112 depusa pe luna, editarea pontajului se blocheaza (-> rectificativa)."""
     sid = _sid(conn)
     with conn.cursor() as cur:
+        # fixtura-sintetica-ok: tenant_id sintetic (nu coliziune PK cu depunere reala)
         cur.execute("INSERT INTO public.declaratii_depuse (tenant_id,an,luna,tip,data_depunere,sursa,nr_depunere) "
                     "VALUES (99999,2026,8,'d112',now(),'test',1)")
     r = pj.seteaza(conn, SCHEMA, sid, "2026-08-10", "concediu_odihna", tenant_id=99999)

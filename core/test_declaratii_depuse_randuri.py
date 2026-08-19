@@ -70,6 +70,7 @@ def test_round_trip_decimal_prin_jsonb():
     try:
         with conn.cursor() as cur:
             cur.execute(
+            # fixtura-sintetica-ok: tenant_id sintetic (nu coliziune PK cu depunere reala)
                 "INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri) "
                 "VALUES (%s,%s,%s,%s,%s,%s)",
                 (_TID, 2026, 6, "d300", "<x/>", _E.Json(randuri)))
@@ -90,6 +91,7 @@ def test_d112_randuri_null_in_db():
     try:
         with conn.cursor() as cur:
             cur.execute(
+            # fixtura-sintetica-ok: tenant_id sintetic (nu coliziune PK cu depunere reala)
                 "INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri) "
                 "VALUES (%s,%s,%s,%s,%s,%s)",
                 (_TID, 2026, 6, "d112", "<x/>", None))
@@ -104,6 +106,7 @@ def test_d112_randuri_null_in_db():
 def _pune_coada_aprobata(cur, tip, xml, res):
     """Insereaza o intrare de coada 'aprobata' cu payload (xml + randuri), intoarce coada_id."""
     payload = {"xml": xml, "randuri": coada_api.randuri_din_res(res), "_an": 2026, "_luna": 6}
+    # fixtura-sintetica-ok: tenant_id sintetic (nu coliziune PK cu depunere reala)
     cur.execute("""INSERT INTO public.declaratii_coada
         (cabinet_id, tenant_id, tip, perioada, stare, payload, hash, creat_de)
         VALUES (1,%s,%s,'25/07/2026','aprobata',%s,%s,'tester') RETURNING id""",
@@ -155,8 +158,10 @@ def test_d710_tip_separat_coexista_cu_d100():
     conn = _conn()
     try:
         with conn.cursor() as cur:
+            # fixtura-sintetica-ok: tenant_id sintetic (nu coliziune PK cu depunere reala)
             cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip) "
                         "VALUES (%s,2026,3,'d100') ON CONFLICT DO NOTHING", (_TID,))
+            # fixtura-sintetica-ok: tenant_id sintetic (nu coliziune PK cu depunere reala)
             cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip) "
                         "VALUES (%s,2026,3,'d710') ON CONFLICT DO NOTHING", (_TID,))
             cur.execute("SELECT tip FROM public.declaratii_depuse WHERE tenant_id=%s AND an=2026 AND luna=3 "

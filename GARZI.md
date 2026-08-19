@@ -3255,3 +3255,9 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Ce face imposibil:** un `INSERT ... ON CONFLICT DO UPDATE` în producție fără `# upsert-ok: <motiv>` (suprascriere tăcută, Regula 4). Un „adaugă" de utilizator care suprascrie tăcut (ca bug-ul plan_conturi) e prins LA SCRIERE: n-are justificare → pică → folosește `DO NOTHING` / refuz 409. Simetric, `INSTRUMENTE_ROADMAP.md` marcat CONSTRUIT nu poate numi un fișier inexistent.
 - **Mutație probă:** pe cod neanotat, 15 `DO UPDATE` pică; după anotare (toate 15 revizuite, legitime — chei naturale) = verde. Roadmap: fișier CONSTRUIT inexistent → pică (RED-probat).
 - **RĂMAS (documentat în INSTRUMENTE_ROADMAP #1):** latura DROP tăcut (input curățat-la-gol-eliminat, ca `separa_cui`) — greu static, abordare separată (convenție „funcțiile de curățare întorc `(păstrate, ignorate)`"); `except`-gol prins de `test_masti`, coerciția de `DEFAULT_FISCAL_TACIT`. Instrumentele #2–#11 = backlog urmărit în roadmap.
+
+## Fixturi pe tabele partajate period-keyed: marker sintetic obligatoriu (19.08.2026)
+- **Gard:** `core/test_fixturi_shared_period.py`.
+- **Ce face imposibil:** o fixtură de test care scrie în `public.declaratii_depuse`/`declaratii_coada` fără marker `# fixtura-sintetica-ok:` (tenant_id sintetic / rollback) și fără an 2099 → risc de coliziune PK cu prima depunere reală pe acel interval (bug 22.07: „verde azi, roșu mâine"). Alegerea sigură devine CONȘTIENTĂ.
+- **Mutație probă:** scos un marker → pică; restaurat → verde. Adnotate ~8 situri în test_control_incrucisat/test_declaratii_depuse_randuri/test_tichete_pontaj (toate cu tenant_id sintetic, revizuite).
+- **Campanie „gardăm cele 31":** prima din cele 16 de construit (A2 ratchet). Restul: RED-proof → CUI/CNP → hook-uri (registre/predare/DS-citat) → instrumente (#3→#2→#5→#6→#11 + rotunjire/temei/global-first/model-audit).
