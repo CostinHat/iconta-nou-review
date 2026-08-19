@@ -141,6 +141,16 @@ def lista(conn, schema, an, luna):
 def adauga(conn, schema, an, luna, d):
     """Validează și face upsert pe UNIQUE(an,luna,rand). Colectează TOATE erorile de câmp
     (field-keyed pentru erori_campuri, contract [G10] ca la d301)."""
+    # [gard consistenta vector<->D300, audit tenant_006] D300 (decontul de TVA) e pentru PLATITORI.
+    # Daca platitor_tva=False, D300 e blocat in selector -> nu acceptam randuri manuale (altfel stare
+    # inconsistenta ca la D301). Simetric cu d301_operatiuni_api / d390_clasificare_api.
+    with conn.cursor() as _cur:
+        _cur.execute(f"SELECT platitor_tva FROM {schema}.firma_profil WHERE id=1")
+        _pr = _cur.fetchone()
+    if _pr and _pr[0] is False:
+        return {"eroare": "Firma NU e înregistrată în scopuri de TVA — D300 (decontul de TVA) se "
+                          "depune doar de plătitori. Dacă firma e de fapt plătitoare, corectează "
+                          "înregistrarea în scopuri de TVA în Vectorul fiscal."}
     erori = []
     rand = (d.get("rand") or "").strip().upper()
     if not rand:

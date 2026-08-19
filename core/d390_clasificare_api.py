@@ -57,6 +57,15 @@ def salveaza_reclasificare(conn, schema, an, luna, directie, tara, cod, tip):
 
 def manual_adauga(conn, schema, an, luna, tip, tara, cod, den, baza):
     """Adaugă o linie pur manuală (P/S/T/R). Validează tip/țară/cod/bază."""
+    # [gard consistenta vector<->D390, audit tenant_006] D390 e pentru firme cu operatiuni IC.
+    # Daca operatiuni_ic=False, D390 e blocat in selector -> nu acceptam linii manuale. Simetric d300/d301.
+    with conn.cursor() as _cur:
+        _cur.execute(f"SELECT operatiuni_ic FROM {schema}.firma_profil WHERE id=1")
+        _pr = _cur.fetchone()
+    if _pr and _pr[0] is False:
+        return {"eroare": "Firma nu are operațiuni intracomunitare în Vectorul fiscal — D390 "
+                          "(declarația recapitulativă) nu i se aplică. Dacă firma face operațiuni "
+                          "intracomunitare, marchează-le în Vectorul fiscal."}
     # [G10 rule2/4] colecteaza TOATE erorile de camp (nu fail-fast), field-keyed.
     tip = (tip or "").strip().upper()
     tara = (tara or "").strip().upper()
