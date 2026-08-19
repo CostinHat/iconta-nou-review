@@ -126,6 +126,18 @@ def lista(conn, schema, an, luna):
 
 def adauga(conn, schema, an, luna, d):
     """Valideaza si insereaza o operatiune. Calculeaza+stocheaza tva; NU stocheaza baza."""
+    # [gard consistenta vector<->D301, audit tenant_006] D301 (decontul special, art. 324 Cod fiscal)
+    # e DOAR pentru NEplatitori de TVA. Daca vectorul spune platitor_tva=True, operatiunile D301 nu se
+    # pot depune niciodata (selectorul le blocheaza: control_fiscal_api "firma e platitoare") -> nu le
+    # acceptam la introducere, altfel stare inconsistenta (operatiuni pentru o declaratie blocata).
+    with conn.cursor() as _cur:
+        _cur.execute(f"SELECT platitor_tva FROM {schema}.firma_profil WHERE id=1")
+        _pr = _cur.fetchone()
+    if _pr and _pr[0] is True:
+        return {"eroare": "Firma e înregistrată în scopuri de TVA (plătitoare) — D301 (decontul "
+                          "special) e pentru NEplătitori. Achizițiile intracomunitare ale unui "
+                          "plătitor se declară în D390/D300, nu în D301. Dacă firma e de fapt "
+                          "neplătitoare, corectează înregistrarea în scopuri de TVA în Vectorul fiscal."}
     # [G10 rule2/4] colecteaza TOATE erorile de camp (nu fail-fast), field-keyed pt erori_campuri.
     erori = []
     try:
