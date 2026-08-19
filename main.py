@@ -3129,6 +3129,37 @@ def coada_lista(stare: Optional[str] = None, ctx=Depends(cere_cabinet)):
         return {"coada": coada_api.lista_coada(conn, ctx["firm"], stare)}
 
 
+@app.get("/coada/{coada_id}/continut")
+def coada_continut(coada_id: int, ctx=Depends(cere_cabinet)):
+    """[patru-ochi] Continutul unui element din coada pentru VIZUALIZARE inainte de aprobare:
+    declaratia (avertismente/note), XML-ul generat si verdictul DUK. Read-only. Fara asta,
+    validarea in doi era oarba - cine aproba nu vedea ce aproba (declaratie/XML/verdict)."""
+    import base64 as _b64
+    from core import duk as _duk
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT tip, payload, (payload->>'_an')::int, (payload->>'_luna')::int "
+                        "FROM public.declaratii_coada WHERE id=%s AND cabinet_id=%s",
+                        (coada_id, ctx["firm"]))
+            row = cur.fetchone()
+    if not row:
+        raise HTTPException(404, "Element de coadă negăsit (sau alt cabinet).")
+    tip, payload, _an, _luna = row
+    payload = payload or {}
+    xml = payload.get("xml") or ""
+    if xml:
+        rez = _duk.valideaza(xml, tip, an=_an, luna=_luna)  # java blocant - verdictul oficial ANAF
+    else:
+        rez = {"stare": "gri", "erori": "", "severitate": None,
+               "temei": "XML lipsă din payload-ul cozii.", "limita": ""}
+    return {"tip": tip,
+            "xml_b64": _b64.b64encode(xml.encode()).decode(),
+            "avertismente": payload.get("avertismente") or [],
+            "note_rezultat": payload.get("note_rezultat") or [],
+            "stare": rez["stare"], "erori": rez["erori"], "severitate": rez.get("severitate"),
+            "temei": rez.get("temei"), "limita": rez.get("limita")}
+
+
 @app.post("/coada/{coada_id}/aproba")
 def coada_aproba(coada_id: int, ctx=Depends(cere_rol("admin_firma", "angajat"))):
     with db.get_conn() as conn:

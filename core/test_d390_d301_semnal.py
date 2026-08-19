@@ -68,11 +68,31 @@ def test_d390_refuz_semnaleaza_d301_pe_tenant_006(cui):
     if not r:
         pytest.skip("tenant_006 neseeduit")
     schema = r[0]
+    # [determinist, nu pe starea ambientala MUTABILA a lui 006 - care a driftat: 19.08 avea deja
+    # tara pe operatiunile din iunie, deci D390 le auto-deriva si NU mai refuza] Seed o achizitie
+    # D301 FARA tara pe o perioada NEFOLOSITA (an 2099): fara tara nu se auto-deriva in D390 si nu
+    # exista facturi -> D390 pe zero DAR cu operatiuni D301 -> refuz care semnaleaza D301. Curatat la final.
+    AN, LUNA = 2099, 1
     with db.get_conn(schema) as conn:
-        # tenant_006 are 1 d301_operatiuni pe 6/2026, 0 facturi -> D390 refuza CU semnalarea d301
-        with pytest.raises(ValueError) as exc:
-            d390.genereaza(conn, schema, 2026, 6)
-        msg = str(exc.value)
-        assert "d301" in msg.lower(), \
-            "refuzul D390 pe zero NU semnaleaza operatiunile din D301 (mesaj generic inselator): %s" % msg
-        assert "manual" in msg.lower(), "mesajul nu indruma spre adaugarea manuala (Tip A)"
+        with conn.cursor() as c:
+            c.execute(
+                "INSERT INTO \"%s\".d301_operatiuni "
+                "(an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva) "
+                "VALUES (%%s, %%s, 1, 'SEED-2099', '15.01.2099', 1000, 'EUR', 5, 210)" % schema,
+                (AN, LUNA))
+        conn.commit()
+    try:
+        with db.get_conn(schema) as conn:
+            # D390 pe zero (fara facturi, d301 fara tara -> nederivata) DAR cu operatiuni D301 -> refuz semnalat
+            with pytest.raises(ValueError) as exc:
+                d390.genereaza(conn, schema, AN, LUNA)
+            msg = str(exc.value)
+            assert "d301" in msg.lower(), \
+                "refuzul D390 pe zero NU semnaleaza operatiunile din D301 (mesaj generic inselator): %s" % msg
+            assert "manual" in msg.lower(), "mesajul nu indruma spre adaugarea manuala (Tip A)"
+    finally:
+        with db.get_conn(schema) as conn:
+            with conn.cursor() as c:
+                c.execute("DELETE FROM \"%s\".d301_operatiuni WHERE an=%%s AND luna=%%s AND nr_doc='SEED-2099'" % schema,
+                          (AN, LUNA))
+            conn.commit()

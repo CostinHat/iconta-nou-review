@@ -8,7 +8,7 @@
 // (ascuns vizual + blocat în backend) — DOAR când patru-ochi e activ.
 // Perioada afișată = perioada DECLARATĂ (an/lună/trim din payload); scadența = termen, etichetată separat.
 // Dialogurile (motiv respingere / index SPV) folosesc ferestre modale proprii (nav.deschide).
-import { api, dataRo } from "../api.js?v=a7f9e80ae0";
+import { api, dataRo, esc } from "../api.js?v=a7f9e80ae0";
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 
 function numeFirma(firme, tid) {
@@ -92,6 +92,39 @@ export async function randeazaValidat(corp, nav) {
   }
 }
 
+// [patru-ochi-vizibil] deschide continutul unui element din coada pentru validare: declaratie
+// (avertismente/note) + XML + verdictul DUK. Read-only. Fara asta, cine aproba nu vede ce aproba.
+async function deschideContinut(c, nav) {
+  const titlu = `${(c.tip || "").toUpperCase()} \u00b7 ${fmtPerioadaDecl(c)}`;
+  nav.deschide(titlu, async (corp) => {
+    corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103 declara\u021bia\u2026</p>`;
+    let d;
+    try { d = await api.get(`/coada/${c.id}/continut`); }
+    catch (e) {
+      corp.innerHTML = `<div class="dec-eroare">Nu am putut \u00eencarca con\u021binutul: ${esc((e && e.mesaj) || "eroare")}</div>`;
+      return;
+    }
+    const xml = d.xml_b64 ? (function(){ try { return decodeURIComponent(escape(atob(d.xml_b64))); } catch(e){ return ""; } })() : "";
+    const stare = d.stare || "gri";
+    const duk = stare === "valid"
+      ? `<div class="dec-ok">Validat cu DUKIntegrator (validatorul oficial ANAF, rulat local), f\u0103r\u0103 erori.</div>`
+      : (stare === "erori"
+          ? `<div class="dec-eroare"><div class="dec-avert-cap">DUKIntegrator (validatorul ANAF, local) a g\u0103sit ${d.severitate === "atentionare" ? "aten\u021bion\u0103ri" : "erori"}</div><pre class="dec-xml-pre">${esc(d.erori || "")}</pre></div>`
+          : `<div class="dec-avert"><div class="dec-avert-cap">Nu am putut valida cu DUKIntegrator</div><ul><li>${esc(d.temei || "")}</li><li>${esc(d.limita || "")}</li></ul></div>`);
+    const av = d.avertismente || [];
+    const avert = av.length
+      ? `<div class="caseta-atentie"><b>Avertismente (${av.length})</b><ul>${av.map((a) => `<li>${esc(a)}</li>`).join("")}</ul></div>`
+      : "";
+    corp.innerHTML = `
+      <p class="mig-intro">Con\u021binutul declara\u021biei \u2014 vizualizare pentru validare (patru ochi). Read-only.</p>
+      ${duk}
+      ${avert}
+      <details open><summary>XML generat</summary><pre class="dec-xml-pre">${esc(xml)}</pre></details>
+    `;
+  }, { nivel: "cabinet" });
+}
+
+
 function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
   const div = document.createElement("div");
   div.className = "val-card";
@@ -137,6 +170,7 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
       <div class="val-titlu"><b>${(c.tip||"").toUpperCase()}</b> · ${perDecl}</div>
       <div class="val-sub">${numeFirma(firme, c.tenant_id)} · pregătit de ${c.creat_de_nume || c.creat_de || "—"}</div>
       <div class="val-termen">termen (scadență): ${c.perioada || "—"}</div>
+      <button type="button" class="btn-link val-vezi" data-act="vezi">Vezi declarația, XML și verdictul DUK →</button>
     </div>
     <div class="val-mij">${coer}</div>
     <div class="val-actiuni">${actiuni}</div>
@@ -144,6 +178,8 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
   div.querySelectorAll(".val-btn").forEach((btn) => {
     btn.addEventListener("click", () => actioneaza(c, btn.dataset.act, firme, corp, nav));
   });
+  const _vezi = div.querySelector(".val-vezi");
+  if (_vezi) _vezi.addEventListener("click", () => deschideContinut(c, nav));
   return div;
 }
 
