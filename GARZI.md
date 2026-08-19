@@ -3301,3 +3301,10 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - Reparat cu tiparul (shell partajat, profită toți tenanții): 8 controale fără etichetă → `aria-label`; contrast `.buton-sters`(--rosu-semafor→--rosu), `.cap-titlu`(#888→#6b6b6b), `.pf-frand-nume span`/`CUL.rosu`(→--rosu, 3 text-uses în firme/rip/facturi); țintă<24px `.btn-link`+`input[type=file]`(min-height 24, tiparul .subbara-edu).
 - **GARD:** cele 7 ecrane înregistrate în `nav_ecrane.ECRANE` (scan urcă la 13) → `test_acoperire_vizuala` le păzește app-wide; închide 7/21 din datoria hărții (#3). Gardul a prins o violare (`.pf-frand-nume span`) pe care probe-ul static a ratat-o (interactiune_scan apasă butoane, dezvăluie rânduri) — dovada valorii scanului de interacțiune.
 - Latent (de verificat când se renderizează): `CUL.galben/gri`-ca-text (contrast).
+
+## 19.08 — D390: dublă-sursă + primită-fără-CUI (audit tenant_006)
+- **`core/test_d390_dubla_si_primita_fara_cui.py`** (4 teste) — gard pe `calcul_d390`:
+  - [Q1a] o operațiune IC cu bază din AMBELE surse (factură `directie=primita` + linie manuală/din ecranul D301, aceeași cheie tip/țară/cod/den) → avertisment „Posibilă DUBLĂ raportare" (bazele se adună; nu blochează). `core/d390.py:245,320`.
+  - [Q2] factură PRIMITĂ fără CUI furnizor → NUMITĂ distinct („exclusă din D390; adaugă codul de TVA"), nu doar numărată anonim cu domesticele RO. `core/d390.py:300`.
+  - RED-probat: `cp /tmp/d390.bak core/d390.py && pytest` → cele 2 teste pozitive pică. Probă vizuală R14: wizard D390 pe 006/09-2026 (seed temporar, curățat) afișează ambele în caseta de atenție.
+  - Q1b (D394 gol pe firmă IC) și Q3 (ferestre D390/D394) = proiectare corectă, neatinse.
