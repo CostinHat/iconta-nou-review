@@ -94,7 +94,7 @@ async function primiteSPV(corp, nav, tenantId, opt) {
       <button class="buton-secundar pf-frand fac-primita-btn" data-id="${p.id}">
         <div class="pf-frand-text">
           <div class="pf-frand-nume">${esc(p.furnizor || p.cif_emitent || "—")}${p.numar ? " · " + esc(p.numar) : ""}</div>
-          <div class="pf-frand-sub">${p.data ? dataRo(p.data) : ""}${p.parsabila ? "" : ' · <span style="color:var(--rosu-semafor)">neparsabilă</span>'}</div>
+          <div class="pf-frand-sub">${p.data ? dataRo(p.data) : ""}${p.parsabila ? "" : ' · <span style="color:var(--rosu)">neparsabilă</span>'}</div>
         </div>
         <span class="pf-frand-suma">${p.total ? bani(p.total) + " " + (p.moneda || "lei") : ""}</span>
       </button>`).join("")}</div>`;
@@ -307,7 +307,7 @@ async function scadentarEcran(corp, nav, tenantId, opt) {
   const randClienti = () => {
     if (!(d.clienti || []).length) return `<div class="stare-goala">Niciun client cu facturi neîncasate.</div>`;
     return d.clienti.map((c) => {
-      const rest = Number(c.restant) > 0 ? `<span style="color:var(--rosu-semafor)">${bani(c.restant)} restant</span> · ` : "";
+      const rest = Number(c.restant) > 0 ? `<span style="color:var(--rosu)">${bani(c.restant)} restant</span> · ` : "";
       const fara = c.email ? "" : " · fără email";
       return `
       <div class="mig-frand" style="cursor:default">

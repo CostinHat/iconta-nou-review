@@ -150,7 +150,7 @@ export async function ecranRip(corp, nav, t) {
               Baza impozit: <b>${d.baza_impozit}</b> \u00b7 Impozit (10%): <b>${d.impozit}</b> lei<br>
               <b class="tip-total">Total datorat: ${bani(d.total_datorat)} lei</b>
               ${d.cheltuieli_limitate_de_analizat > 0 ? `<br><span style="color:var(--galben)">Cheltuieli limitate de analizat: ${bani(d.cheltuieli_limitate_de_analizat)} lei</span>` : ""}
-              ${d.ciorne_nevalidate > 0 ? `<br><span style="color:var(--rosu-semafor)">${d.ciorne_nevalidate} ciorne nevalidate \u2014 neincluse \u00een calcul</span>` : ""}
+              ${d.ciorne_nevalidate > 0 ? `<br><span style="color:var(--rosu)">${d.ciorne_nevalidate} ciorne nevalidate \u2014 neincluse \u00een calcul</span>` : ""}
               ${d.avertisment ? `<br><span style="color:var(--galben)">${esc(d.avertisment)}</span>` : ""}
             </div>
           </div>`;

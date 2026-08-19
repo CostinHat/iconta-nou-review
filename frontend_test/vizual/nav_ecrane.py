@@ -59,6 +59,21 @@ def ecran_declaratii(pg):
 
 
 # ordinea = ordinea din comanda lui Costin
+
+def _ecran_shell(pg, fid):
+    deschide_firma(pg)
+    pg.click("#" + fid)
+    pg.wait_for_timeout(1600)
+
+
+def ecran_stocuri(pg): _ecran_shell(pg, "fa-stocuri")
+def ecran_registratura(pg): _ecran_shell(pg, "fa-registratura")
+def ecran_banca(pg): _ecran_shell(pg, "fa-banca")
+def ecran_rapoarte(pg): _ecran_shell(pg, "fa-rapoarte")
+def ecran_etransport(pg): _ecran_shell(pg, "fa-etransport")
+def ecran_centrecost(pg): _ecran_shell(pg, "fa-centrecost")
+def ecran_casa(pg): _ecran_shell(pg, "fa-casa")
+
 ECRANE = [
     ("import_mijloace_fixe", ecran_import_mijloace_fixe),
     ("vector_fiscal", ecran_vector_fiscal),
@@ -66,4 +81,11 @@ ECRANE = [
     ("solduri_parteneri", ecran_solduri_parteneri),
     ("stat_plata", ecran_stat_plata),
     ("declaratii", ecran_declaratii),
+    ("stocuri", ecran_stocuri),
+    ("registratura", ecran_registratura),
+    ("banca", ecran_banca),
+    ("rapoarte", ecran_rapoarte),
+    ("etransport", ecran_etransport),
+    ("centrecost", ecran_centrecost),
+    ("casa", ecran_casa),
 ]

@@ -4,8 +4,8 @@
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=a7f9e80ae0";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { fluxConcediu } from "./flux_concediu.js?v=4c0a7ef14c";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js?v=64b2db9bf3";
-import { ecranRip } from "./rip_ecran.js?v=c9c37ec6ae";
+import { randeazaFacturi } from "./facturi_ecran.js?v=a56a60c876";
+import { ecranRip } from "./rip_ecran.js?v=aee3ed851b";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=7019abe613";
 import { ecranEtransport } from "./etransport_ecran.js?v=0dca1ea392";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=698f6e7671";  // [p96_import_firma] + [Q4] import in masa
@@ -1179,12 +1179,12 @@ export async function sectiuneaCV(corp, t, zonaM) {
       <div class="pf-frand-nume" style="margin-bottom:8px">Fi\u0219e de magazie (cantitativ-valoric, CMP)</div>
       <div class="camp-eticheta">Mi\u0219care: articol \u00b7 denumire (nou) \u00b7 dat\u0103 \u00b7 cantitate \u00b7 pre\u021b unitar \u00b7 document</div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
-        <select id="cv-art" class="camp-input" style="min-width:200px">
+        <select id="cv-art" aria-label="Articol" class="camp-input" style="min-width:200px">
           <option value="">\u2014 articol nou \u2014</option>
           ${arts.map((a) => `<option value="${a.id}">${esc(a.denumire)} \u00b7 stoc ${a.stoc} ${esc(a.um)}${a.cmp ? " \u00b7 CMP " + a.cmp : ""}${a.barcode ? " \u00b7 cod " + esc(a.barcode) : ""}</option>`).join("")}
         </select>
         <input type="text" id="cv-den" class="camp-input" placeholder="denumire (articol nou)" aria-label="Denumire articol nou" style="flex:1;min-width:160px">
-        <input type="date" id="cv-data" class="camp-input">
+        <input type="date" id="cv-data" aria-label="Data document" class="camp-input">
         <input type="number" step="0.001" id="cv-cant" class="camp-input" placeholder="cant." aria-label="Cantitate" style="width:90px">
         <input type="number" step="0.0001" id="cv-pret" class="camp-input" placeholder="pret unitar (la intrare)" aria-label="Pre\u021b unitar la intrare" style="width:170px">
         <input type="text" id="cv-doc" class="camp-input" placeholder="document" aria-label="Document" style="width:130px">
@@ -1580,7 +1580,7 @@ async function ecranBilant(corp, nav, t) {
         const r = await api.post(`/tenants/${t.id}/${tip()}-valideaza?${par()}`, {});
         const sem = r.ok
           ? `<span style="color:var(--verde);font-weight:600">\u25cf Validare f\u0103r\u0103 erori</span>`
-          : `<span style="color:var(--rosu-semafor);font-weight:600">\u25cf Erori la validare</span>`;
+          : `<span style="color:var(--rosu);font-weight:600">\u25cf Erori la validare</span>`;
         rez.innerHTML = `<p>${sem}</p>` +
           (r.erori ? `<pre class="tip-micut" style="white-space:pre-wrap;background:var(--fundal);padding:8px;border-radius:var(--raza)">${esc(r.erori)}</pre>` : "") +
           (r.avertismente && r.avertismente.length
@@ -1632,7 +1632,7 @@ export async function ecranStocuri(corp, nav, t) {
         <input type="number" step="0.001" class="camp-input" id="nir-l${i}-cantitate" placeholder="cant." aria-label="Cantitate" value="${_vn(l.cantitate)}" style="width:90px">
         <input type="number" step="0.0001" class="camp-input" id="nir-l${i}-pret_achizitie" placeholder="preț achiziție" aria-label="Preț achiziție" value="${_vn(l.pret_achizitie)}" style="width:120px">
         <input type="number" step="0.0001" class="camp-input" id="nir-l${i}-pret_vanzare" placeholder="preț raft (cu TVA)" aria-label="Preț raft cu TVA" value="${_vn(l.pret_vanzare)}" style="width:140px">
-        <select class="camp-input" id="nir-l${i}-cota_tva" style="width:80px">${[21, 11].map((c) => `<option value="${c}"${(l.cota_tva || 21) == c ? " selected" : ""}>${c}%</option>`).join("")}</select>
+        <select class="camp-input" id="nir-l${i}-cota_tva" aria-label="Cota TVA" style="width:80px">${[21, 11].map((c) => `<option value="${c}"${(l.cota_tva || 21) == c ? " selected" : ""}>${c}%</option>`).join("")}</select>
         <button type="button" class="buton-sters nir-l-sterge" data-idx="${i}" title="Șterge">×</button>
       </div>`;
     }
@@ -1650,7 +1650,7 @@ export async function ecranStocuri(corp, nav, t) {
         <div class="camp-eticheta">NIR: num\u0103r \u00b7 dat\u0103 \u00b7 furnizor \u00b7 CUI</div>
         <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:8px">
           <input type="text" id="sn-numar" class="camp-input" placeholder="număr NIR" aria-label="Num\u0103r NIR" style="width:120px">
-          <input type="date" id="sn-data" class="camp-input" value="${new Date().toISOString().slice(0, 10)}">
+          <input type="date" id="sn-data" aria-label="Data intrare stoc" class="camp-input" value="${new Date().toISOString().slice(0, 10)}">
           <input type="text" id="sn-furn" class="camp-input" placeholder="furnizor" aria-label="Furnizor" style="flex:1;min-width:160px">
           <input type="text" id="sn-cui" class="camp-input" placeholder="CUI" aria-label="CUI furnizor" style="width:120px">
         </div>
@@ -1878,11 +1878,11 @@ async function ecranCasa(corp, nav, t) {
 
 // [banca] Import extras + reconciliere pe facturi
 async function ecranBanca(corp, nav, t) {
-  const CUL = { verde: "var(--verde)", galben: "var(--galben)", rosu: "var(--rosu-semafor)", gri: "var(--gri-semafor)" };
+  const CUL = { verde: "var(--verde)", galben: "var(--galben)", rosu: "var(--rosu)", gri: "var(--gri-semafor)" };
   corp.innerHTML = `
     <h2 class="pf-titlu">Banc\u0103 ${semnAjutor("F011")}</h2>
     <p class="pf-intro">Încarcă extrasul (.xls, .xlsx, .csv) \u2014 liniile se potrivesc automat pe facturi dupa CUI.</p>
-    <input type="file" id="bk-fisier" accept=".xls,.xlsx,.csv" style="margin-bottom:16px">
+    <input type="file" id="bk-fisier" aria-label="Fisier extras bancar" accept=".xls,.xlsx,.csv" style="margin-bottom:16px">
     <div id="bk-mesaj"></div>
     <div id="bk-lista"></div>`;
   const zonaMesaj = corp.querySelector("#bk-mesaj");
@@ -2759,7 +2759,7 @@ async function ecranRapoarte(corp, nav, t) {
         </table>` : `<div class="stare-goala">Niciun profit pe produs în perioadă. Disponibil doar la gestiune cantitativă (CV), pe articolele descărcate din stoc la emitere (poarta „pleacă marfa"). La global-valoric costul pe articol nu există.</div>`}
 
       <h3 class="pf-subtitlu">Fișă client/furnizor</h3>
-      <p><select id="r-fisa-sel" class="camp-input" style="max-width:360px">
+      <p><select id="r-fisa-sel" aria-label="Partener fisa" class="camp-input" style="max-width:360px">
         <option value="">— alege partenerul —</option>${optParteneri}</select></p>
       <div id="r-fisa"></div>
 
@@ -2843,13 +2843,13 @@ async function ecranRegistratura(corp, nav, t) {
       <div class="panou" style="margin-bottom:14px">
         <div class="camp" style="margin-bottom:8px">
           <label class="camp-eticheta">Direcție <span class="oblig">*</span></label>
-          <select class="camp-input" id="rg-dir" style="max-width:200px">
+          <select class="camp-input" id="rg-dir" aria-label="Directie inregistrare" style="max-width:200px">
             <option value="intrare">Intrare</option>
             <option value="iesire">Ieșire</option></select>
         </div>
         <div class="camp" style="margin-bottom:8px">
           <label class="camp-eticheta">Data</label>
-          <input type="date" class="camp-input" id="rg-data" style="max-width:200px" value="${new Date().toISOString().slice(0, 10)}">
+          <input type="date" class="camp-input" id="rg-data" aria-label="Data inregistrare" style="max-width:200px" value="${new Date().toISOString().slice(0, 10)}">
         </div>
         <div class="camp" style="margin-bottom:8px">
           <label class="camp-eticheta">Descriere <span class="oblig">*</span></label>

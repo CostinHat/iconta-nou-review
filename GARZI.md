@@ -3295,3 +3295,9 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **D301 reparat** (perimetru tenant_006): `fără număr document (nr_doc gol)` / `(data_doc gol)` expuneau numele intern → rescrise fără paranteză.
 - **`core/test_mesaje_generare_fara_camp_intern.py`** — gardă-ratchet: funcțiile `erori_generare`/`valideaza` din `core/d*.py` nu expun token `snake_case` (nume câmp intern) în mesaje afișate; exclude docstring-uri. Complementar lui `test_mesaje_fara_camp_intern` (care nu vedea listele returnate de erori_generare). Baseline per-fișier = datoria app-wide (274 mesaje/31 fișiere), niciun fișier nu crește; burn-down la 0. RED-probat (d403 36>35 → pică).
 - **Datorie F5 app-wide (burn-down, DINCOLO de 006):** 274 mesaje în 31 generatoare expun nume interne (`categ_venit`, `cif_c`, `nr_contract`, `d_temei`…). De rescris în limba contabilului, form cu form. Gardat contra creșterii.
+
+## 19.08 — F6 a11y app-wide (perimetru extins 006) + 7 ecrane gardate
+- Audit orchestrator 006 (tid 4841): F2/F7 VERDE, F6 ROȘU pe 7 ecrane shell (fa-stocuri/registratura/banca/rapoarte/etransport/centrecost/casa).
+- Reparat cu tiparul (shell partajat, profită toți tenanții): 8 controale fără etichetă → `aria-label`; contrast `.buton-sters`(--rosu-semafor→--rosu), `.cap-titlu`(#888→#6b6b6b), `.pf-frand-nume span`/`CUL.rosu`(→--rosu, 3 text-uses în firme/rip/facturi); țintă<24px `.btn-link`+`input[type=file]`(min-height 24, tiparul .subbara-edu).
+- **GARD:** cele 7 ecrane înregistrate în `nav_ecrane.ECRANE` (scan urcă la 13) → `test_acoperire_vizuala` le păzește app-wide; închide 7/21 din datoria hărții (#3). Gardul a prins o violare (`.pf-frand-nume span`) pe care probe-ul static a ratat-o (interactiune_scan apasă butoane, dezvăluie rânduri) — dovada valorii scanului de interacțiune.
+- Latent (de verificat când se renderizează): `CUL.galben/gri`-ca-text (contrast).
