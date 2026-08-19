@@ -8,14 +8,14 @@ cele **CONSTRUIT** numesc fișierul-gardă (existența lor e păzită de `core/t
 
 - **#1 Detector drop/overwrite tăcut — overwrite** — CONSTRUIT: `core/test_upsert_motivat.py`. Orice `INSERT ... ON CONFLICT DO UPDATE` din producție cere `# upsert-ok: <motiv>` (suprascriere conștientă). Grounded: bug plan_conturi. Prinsă latura suprascrierii; **RĂMAS latura DROP** (input curățat-la-gol-eliminat, ca `separa_cui`) — greu static fără fals-pozitive; abordare propusă: convenție „funcțiile de curățare intrări întorc `(păstrate, ignorate)`", plus `test_masti` (except-gol) + `DEFAULT_FISCAL_TACIT` (coerciție) acoperă restul clasei.
 - **F6+F9 vizual/comportamental gardat pe diff** — CONSTRUIT: `frontend_test/vizual/interactiune_scan.py` + `core/test_acoperire_vizuala.py` (fundația lui #2). Apasă butoanele + completează casetele + axe desktop/mobil; poarta pică la schimbare UI fără re-scan curat.
+- **#3 Gard de completitudine a hărții** — CONSTRUIT: `core/test_harta_ecrane.py`. Un `#fa-*` nou neînregistrat în baseline → pică (altfel „acoperit tot” e iar o afirmație).
+- **#6 Golden XSD structural pe date POPULATE — latura structurală** — CONSTRUIT: `core/test_golden_xsd.py` + `core/test_d402.py`. Fiecare XSD de declarație din corpus cere un test care generează pe date populate și validează structura (lxml/jar). Grounded: d402 avea generator complet și ZERO teste. RĂMAS latura *valori-golden* (nesursabilă — n-avem declarații-etalon completate, [[anaf-surse-fara-exemple-completate]]).
 
 ## Propuse (neconstruite încă — backlog urmărit)
 
 - **#2 Fuzzer de formulare** — PARȚIAL (interactiune_scan apasă/completează). RĂMAS: generarea invalidelor per câmp (gol/peste-lungime/tip/duplicat/limită) + verdict 14.4 automat. Playwright, deja instalat.
-- **#3 Gard de completitudine a hărții** — PROPUS: pică dacă există un ecran în cod (`#fa-*`, `nav.deschide/mergi`) neînregistrat în `nav_ecrane.ECRANE`. Python pur.
 - **#4 Matrice de stări de date** — PROPUS: fiecare ecran peste stări (gol/populat/limită, micro/profit/PFA). Playwright + seed.
 - **#5 Reconciliator de cifre (Regula 14.2)** — PROPUS: total = suma rândurilor; previzualizare = buton = rezultat, asertat. Playwright.
-- **#6 Golden field-by-field XML↔XSD/_struct pe date POPULATE** — PROPUS: DUK-trece ≠ conform. `lxml` (instalat).
 - **#7 Verificator „temei la sursă"** — PROPUS: constantă/scadență fiscală fără sursă în corpus → pică. Python pur.
 - **#8 Baseline determinist** — PROPUS: ceas + firmă-snapshot înghețate → pixel-diff real. `freezegun` (mic, de instalat).
 - **#9 Pas keyboard-only** — PROPUS: tab-order, focus-trap în modal, Escape închide. Playwright.

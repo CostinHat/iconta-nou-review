@@ -3281,3 +3281,8 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **A SCOS BUG REAL:** `d212_engine` rotunjea bancar 8 sume fiscale (CAS/CASS/venit_net/impozit/baza_impozit/total_datorat = produse rată×bază + sume) → reparat la `_q`. Cele sigure (sume/diferențe de valori deja la 2 zecimale, medii, verificări) marcate `# round-ok:`.
 - **Mutație probă:** `round()` nou pe produs fără marker → pică; restaurat → verde. Teste d112/d208/d300/d212: 67 passed.
 - **Campanie „gardăm cele 31": instrument rotunjire-scoped (după fixturi + CUI/CNP + hartă).**
+
+## 19.08 — Campanie gardare: golden-XSD structural (#6) + d402 reparat
+- **`core/test_golden_xsd.py`** — ratchet: fiecare XSD de declarație din corpus (anaf_surse/*.xsd + core/saft.xsd) trebuie să aibă generator + ≥1 test care-l generează pe date populate și validează (lxml/jar). XSD nou nemapate sau fără test → blochează. RED-probat (fără test_d402 → semnalează d402).
+- **BUG REAL scos:** `d402` (declarație informativă DAC1, generator complet `build_xml`/`genereaza` + XSD oficial) avea **ZERO teste** — XML niciodată probat contra structurii. Reparat: `core/test_d402.py` (fixtură populată → erori_generare gol → XML validează XSD-ul oficial ANAF prin lxml; + total=suma rândurilor R14).
+- #7 (temei la sursă) marcat ACOPERIT în roadmap (test_temeiuri + verificator TEMEI/GRI, nu necesită instrument nou). #3 (hartă) mutat la Construite (era stătut).
