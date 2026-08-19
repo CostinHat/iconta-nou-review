@@ -30,28 +30,38 @@ Ordinea nu e arbitrară: datele greșite otrăvesc tot ce urmează, deci se vali
 deja corect funcțional.
 
 ### F1 — Perimetru & inventar
+**Acoperire:** GARDAT `core/test_harta_ecrane.py` (inventarul ecranelor e complet; un `#fa-*` nou nein­registrat pica).
+
 **Întrebarea:** ce atinge tenantul? (declarațiile datorate din vectorul fiscal, ecranele accesibile, registrele,
 gărzile care-l păzesc). **Sondă:** deschide firma cu Playwright (helper tip `~/probe_t006/wt006.py`), enumeră ce
 declarații apar „de depus", ce ecrane sunt accesibile din ecranul principal. **Verdict:** ai lista completă a
 suprafeței de auditat, scrisă; nimic „presupus prezent" fără să fi fost văzut.
 
 ### F2 — Corectitudinea calculului (declarații)
+**Acoperire:** GARDAT `core/test_golden_xsd.py` + `core/test_rotunjire_fiscala.py` + verificator (DEFAULT_FISCAL_TACIT/TEMEI/GRI). Reziduu MANUAL: DUK field-by-field pe date reale.
+
 **Întrebarea:** fiecare declarație datorată se generează corect și trece arbitrul? **Sondă:** generează fiecare
 declarație pe date reale → `DUKIntegrator -v <COD>`; confruntă câmp-cu-câmp cu `anaf_surse/*_struct` + XSD (DUK e
 lenient — trece câmpuri pe care nu le verifică). **Verdict:** DUK `valid` **ȘI** temeiul citat la sursă (P1) **ȘI**
 restricția legală probată (ce legea nu permite, aplicația refuză). „A trecut validarea" ≠ conform.
 
 ### F3 — Integritatea datelor (seed ↔ consumator)
+**Acoperire:** MANUAL — trace seed->consumator pe date populate (partial gardat: `core/test_fixturi_shared_period.py` pe tabele partajate).
+
 **Întrebarea:** fiecare câmp folosit — cine îl scrie, cine îl citește, ajunge valoarea reală până la capăt?
 **Sondă:** urmărește câmpul de la producător la consumator pe **date populate** (ruptura seed↔consumator), nu pe
 fixture goale. **Verdict:** valoarea reală ajunge la consumator; niciun default fabricat pe drum (P2); nimic pierdut.
 
 ### F4 — Accesibilitatea funcțională a ecranelor
+**Acoperire:** MANUAL — parcurgere Playwright reala (login->navigare->submit); inregistrarea ecranelor e la F1.
+
 **Întrebarea:** se ajunge la funcționalitate din ecranul principal, cu interacțiune reală? **Sondă:** parcurge
 traseul cu Playwright (login → navighează → verifică câmpul nou → submit), nu doar `node --check`/verificator.
 **Verdict:** ecran accesibil + interacțiune reală probată. Fără ecran accesibil, funcționalitatea nu există.
 
 ### F5 — Mesajele de blocaj/refuz (limba contabilului) — Regula 14.4
+**Acoperire:** MANUAL — provoci fiecare blocaj si citesti mesajul rendat (partial gardat: `core/test_diacritice_afisate.py` + `core/test_fieldmark.py` + `test_a11y_*`).
+
 **Întrebarea:** ce scrie pe ecran când provoci un refuz? **Sondă:** alimentează **date greșite / câmpuri
 obligatorii neîndeplinite** și citește mesajul rendat. **Verdict — sunt defecte:** numele intern al câmpului sau
 valorile din bază arătate utilizatorului; mesajul generic pus peste explicația precisă; eroarea care nu marchează
@@ -60,6 +70,8 @@ doar prin `title`** (pierdut pe touch). Mesajul trebuie să spună: ce lipsește
 consecință are (care declarație se blochează).
 
 ### F6 — a11y vizual + mobil (pe fiecare ecran atins) — Regula 14
+**Acoperire:** GARDAT `core/test_acoperire_vizuala.py` (axe desktop+mobil/Pixel5 + tinta<24; pica la UI schimbat fara re-scan curat).
+
 **Întrebarea:** ecranul e citibil și utilizabil, pe desktop și pe telefon? **Sonde:** `frontend_test/vizual/` —
 `axe_scan.py` (contrast, etichete, title-only), `scan_region_all.py` (landmarks/region), `mobil_scan.py` (Pixel5:
 țintă atingere <24px AA 2.5.8, hover-pierdut pe touch, revărsare orizontală), `baseline_scan.py --compare` (diff
@@ -69,6 +81,8 @@ revărsare. Captura **privită**, nu doar selectorul trecut.
 **Automatizat + GĂRDAT:** `frontend_test/vizual/interactiune_scan.py` rulează axe pe **desktop ȘI mobil** (combinația prinde `scrollable-region-focusable`, care apare doar când conținutul depășește viewportul) + țintă<24 + F9 → scrie `acoperire_vizuala.json`; `core/test_acoperire_vizuala.py` **pică** dacă UI-ul s-a schimbat fără re-scan curat.
 
 ### F9 — Comportament sub interacțiune (ce NU e aparent) — Regula 14 (cerut de Costin, 19.08.2026)
+**Acoperire:** GARDAT `core/test_acoperire_vizuala.py` (apasa butoanele + umple casetele; erori consola/layout rupt/revarsare).
+
 **Întrebarea:** dacă apeși butoanele ecranului, se strică ceva? dacă completezi casetele cu text la limită, se
 trunchiază textul / se rupe alinierea? **Sondă:** `frontend_test/vizual/interactiune_scan.py` — apasă butoanele
 din conținutul ferestrei (ne-destructive, cu re-navigare ca să le acopere pe toate) și prinde erori JS de consolă
@@ -78,12 +92,16 @@ zero layout rupt, zero revărsare / element peste viewport la completare. **Apar
 culori) NU acoperă comportamentul** — se verifică amândouă, mereu.
 
 ### F7 — Registrele la zi
+**Acoperire:** MANUAL — cifrele coincid (Regula 14.2, viitor #5 reconciliator); partial gardat: `core/test_agenda.py` (registre ne-statute).
+
 **Întrebarea:** semaforul / vectorul fiscal reflectă realitatea? **Sondă:** compară cifrele afișate (restanțe,
 „de depus") cu faptele (venituri, operațiuni, plăți) pe date reale. **Verdict:** cifrele coincid (Regula 14.2 —
 totalul = suma rândurilor; previzualizare = buton = rezultat); nicio restanță falsă, nimic stătut. Când o coloană
 are aceeași valoare pe toate rândurile, oprește-te și verifică la sursă dacă e reală sau fabricată.
 
 ### F8 — Gărzile (închiderea buclei)
+**Acoperire:** GARDAT `core/test_instrumente_roadmap.py` + poarta verde insasi (suita+verificator 0).
+
 **Întrebarea:** ce am reparat, rămâne reparat? **Sondă:** pentru fiecare regulă nouă, gardă RED-probată (P5),
 simultan în cod + verificator; rând în `FUNCTIONALITATI.csv` dacă e funcționalitate. **Verdict:** poarta verde
 (suita + verificator 0 roșu); four-way după poartă (publish origin + backup + restart iconta-nou, start-time >

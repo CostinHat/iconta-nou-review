@@ -3286,3 +3286,7 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **`core/test_golden_xsd.py`** — ratchet: fiecare XSD de declarație din corpus (anaf_surse/*.xsd + core/saft.xsd) trebuie să aibă generator + ≥1 test care-l generează pe date populate și validează (lxml/jar). XSD nou nemapate sau fără test → blochează. RED-probat (fără test_d402 → semnalează d402).
 - **BUG REAL scos:** `d402` (declarație informativă DAC1, generator complet `build_xml`/`genereaza` + XSD oficial) avea **ZERO teste** — XML niciodată probat contra structurii. Reparat: `core/test_d402.py` (fixtură populată → erori_generare gol → XML validează XSD-ul oficial ANAF prin lxml; + total=suma rândurilor R14).
 - #7 (temei la sursă) marcat ACOPERIT în roadmap (test_temeiuri + verificator TEMEI/GRI, nu necesită instrument nou). #3 (hartă) mutat la Construite (era stătut).
+
+## 19.08 — #11 §5 CALCULAT (meta-gardul campaniei)
+- **`core/test_perimetru_calculat.py`** — din MODEL_AUDIT_TENANT.md (F1..F9) computează §5 = fațetele MANUAL (neacoperite mecanic), CALCULAT nu afirmat. §5 curent = {F3, F4, F5, F7}. Bite: fiecare fațetă cere etichetă `**Acoperire:**`; orice GARDAT numește gard care EXISTĂ (RED-probat: ștergi test_acoperire_vizuala → F6+F9 „enforcement pierdut"); §5 pinat la baseline (fațetă alunecată din GARDAT în MANUAL → §5 crește → pică). Ar fi prins ratatul „am sărit DS+mobil".
+- MODEL_AUDIT_TENANT.md: etichete Acoperire pe toate cele 9 fațete (F6/F9 GARDAT test_acoperire_vizuala; F3/F4/F5/F7 MANUAL — pe diligență).
