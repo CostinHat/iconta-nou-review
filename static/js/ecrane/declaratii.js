@@ -395,15 +395,16 @@ async function randeazaOperatiuniD301(corp, nav) {
   const grila = ops.length
     ? ops.map((o) => {
         const furnizor = o.partener_tara ? `${esc(o.partener_tara)}${esc(o.partener_cod || "")}${o.partener_den ? " " + esc(o.partener_den) : ""}` : "";
-        const misclas = o.d390_posibil_serviciu
-          ? ` <span class="mig-cnp-no" title="Serviciile intracomunitare (art. 307 alin. 2) se introduc ca tip 5 ca să apară în D390 la cod S. Tip 4 e pentru gaz/energie și taxare inversă locală, care nu intră în D390.">⚠ dacă e serviciu intracomunitar, folosește tip 5 (D390 cod S)</span> <button class="btn-link dec-d301-confirma" data-id="${o.id}">confirmă (nu e serviciu)</button>`
-          : (o.d390_confirmat_local && o.tip === 4 ? ` <span class="ecran-nota">✓ confirmat local <button class="btn-link dec-d301-neconfirma" data-id="${o.id}">anulează</button></span>`
-             : (o.d390_furnizor_confirmat && o.tip === 4 ? ` <span class="ecran-nota" title="furnizor confirmat pe altă operațiune ca taxare inversă locală, nu serviciu IC">✓ furnizor confirmat local</span>` : ""));
+        const temei307 = o.tip === 4
+          ? (o.temei_neconfirmat
+              ? ` <span class="mig-cnp-no" title="Alege alineatul art. 307 (gaz/energie / ieșire din regim suspensiv / nestabilit neînregistrat) ca excluderea din D390 să fie auditabilă.">⚠ temei art. 307 neconfirmat</span>`
+              : (o.temei_307_eticheta ? ` <span class="ecran-nota">temei: ${esc(o.temei_307_eticheta)}</span>` : ""))
+          : "";
         const d390 = o.d390_cod
           ? (o.d390_lipsa_furnizor
               ? ` <span class="mig-cnp-no" title="completează țara furnizorului ca operațiunea să apară în D390">⚠ fără furnizor — nu intră în D390 (cod ${o.d390_cod})</span>`
               : (furnizor ? ` <span class="mig-cnp-ok">→ D390 cod ${o.d390_cod}</span>` : ""))
-          : ` <span class="ecran-nota">(nu intră în D390 — ${o.tip === 2 ? "mijloc de transport nou" : "taxare inversă locală, art. 307 alin. (3)/(5)/(6)"})</span>${misclas}`;
+          : ` <span class="ecran-nota">(nu intră în D390 — ${o.tip === 2 ? "mijloc de transport nou" : "art. 307 alin. (3)/(5)/(6)"})</span>${temei307}`;
         return `<div class="dec-man-rand">
         <span class="dec-recl-desc" title="${esc(o.eticheta)}">Tip ${o.tip} · ${esc(o.nr_doc)}${o.data_doc ? " · " + esc(o.data_doc) : ""} · ${esc(o.tip_valuta)} ${bani(o.val_valuta)} × ${esc(String(o.curs))}${furnizor ? " · furnizor " + furnizor : ""}${d390}</span>
         <span class="dec-recl-suma">${bani(o.baza)} bază · ${bani(o.tva)} TVA (lei)</span>
@@ -416,6 +417,8 @@ async function randeazaOperatiuniD301(corp, nav) {
     <div class="dec-man-form">
       <label class="camp" style="width:320px"><span class="camp-eticheta">Tip operațiune <span class="oblig">*</span></span>
         <select id="d301-tip" class="camp-input">${tipuri.map((t) => `<option value="${t.val}">${t.val} — ${esc(t.eticheta)}</option>`).join("")}</select></label>
+      <label class="camp" id="d301-temei-wrap" style="width:320px;display:none"><span class="camp-eticheta">Temei art. 307 (tip 4) <span class="oblig">*</span></span>
+        <select id="d301-temei307" class="camp-input"><option value="">— alege alineatul —</option>${(d.temeiuri_307 || []).map((tm) => `<option value="${tm.val}">${esc(tm.eticheta)}</option>`).join("")}</select></label>
       <label class="camp" style="width:150px"><span class="camp-eticheta">Nr. document <span class="oblig">*</span></span><input id="d301-nrdoc" class="camp-input"></label>
       <label class="camp" style="width:130px"><span class="camp-eticheta">Data document <span class="oblig">*</span></span><input id="d301-datadoc" class="camp-input" placeholder="ZZ.LL.AAAA"></label>
       <label class="camp" style="width:90px"><span class="camp-eticheta">Valută <span class="oblig">*</span></span>
@@ -449,19 +452,18 @@ async function randeazaOperatiuniD301(corp, nav) {
     try { await api.del(`/tenants/${S.tenant_id}/d301-operatiuni/${b.dataset.id}?an=${S.an}&luna=${S.luna}`); randeazaOperatiuniD301(corp, nav); }
     catch (e) { arataMesaj(gv("#d301-msg"), (e && e.mesaj) || "Eroare la ștergere.", "eroare"); }
   }));
-  // [mis-clasificare fals-pozitiv] confirma/anuleaza ca operatiunea tip 4 e legitim locala (nu serviciu IC)
-  const confirmaLocal = (id, valoare) => api.put(`/tenants/${S.tenant_id}/d301-operatiuni/${id}/confirma-local`,
-    { an: S.an, luna: S.luna, valoare }).then(() => randeazaOperatiuniD301(corp, nav))
-    .catch((e) => arataMesaj(gv("#d301-msg"), (e && e.mesaj) || "Eroare la confirmare.", "eroare"));
-  zona.querySelectorAll(".dec-d301-confirma").forEach((b) => b.addEventListener("click", () => confirmaLocal(b.dataset.id, true)));
-  zona.querySelectorAll(".dec-d301-neconfirma").forEach((b) => b.addEventListener("click", () => confirmaLocal(b.dataset.id, false)));
+  // [temei_307] selectul de temei art. 307 apare doar la tip 4 (obligatoriu la introducere)
+  const _tipSel = gv("#d301-tip"), _temeiWrap = gv("#d301-temei-wrap");
+  const _sincTemei = () => { if (_temeiWrap) _temeiWrap.style.display = (_tipSel.value === "4") ? "" : "none"; };
+  if (_tipSel) { _tipSel.addEventListener("change", _sincTemei); _sincTemei(); }
   gv("#d301-add").addEventListener("click", async () => {
     const b = { an: S.an, luna: S.luna, tip: parseInt(gv("#d301-tip").value),
       nr_doc: gv("#d301-nrdoc").value.trim(), data_doc: gv("#d301-datadoc").value.trim(),
       tip_valuta: gv("#d301-valuta").value, val_valuta: parseFloat(gv("#d301-val").value) || 0,
       curs: parseFloat(gv("#d301-curs").value) || 0, cota: parseInt(gv("#d301-cota").value),
       partener_tara: gv("#d301-partener_tara").value.trim(), partener_cod: gv("#d301-partener_cod").value.trim(),
-      partener_den: gv("#d301-partener_den").value.trim() };
+      partener_den: gv("#d301-partener_den").value.trim(),
+      temei_307: (gv("#d301-tip").value === "4" && gv("#d301-temei307")) ? gv("#d301-temei307").value : "" };
     curataEroriCamp(zona);  // [G10] eroare langa camp
     try { const _r = await api.post(`/tenants/${S.tenant_id}/d301-operatiuni`, b); await randeazaOperatiuniD301(corp, nav); if (_r && _r.avertisment) arataMesaj(gv("#d301-msg"), _r.avertisment, "atentionare"); }
     catch (e) {

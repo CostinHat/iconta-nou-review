@@ -1724,11 +1724,11 @@ in index+sitemap, randare 200+SEO. Toate verbatim din Cod fiscal art.311/312/323
 ## Bifa 18.08.2026 — tip 4 exclus din D390 verificat la sursa (CF art. 307)
 Fara test nou (maparea neschimbata; test_mapare_tip_cod acopera deja tip 4 exclus). Comentariu temei precis in d390.py + nota UI grila D301. Captura privita.
 ## Bifa 18.08.2026 — indiciu mis-clasificare tip 4 -> tip 5
-`core/test_d390_autoderivare.py::test_d390_posibil_serviciu...` (tip 4 cu cod -> True; tip 4 fara cod / tip 5 -> False). Mutatie-probat. Fixtura extinsa cu coloanele cerute de lista. 25 passed d390/d301.
+`core/test_d390_autoderivare.py::test_d390_posibil_serviciu...` (tip 4 cu cod -> True; tip 4 fara cod / tip 5 -> False). Mutatie-probat. Fixtura extinsa cu coloanele cerute de lista. 25 passed d390/d301. [citare-istorica: mecanism inlocuit de temei_307, 19.08.2026]
 ## Bifa 18.08.2026 — confirmare "nu e serviciu IC" (fals-pozitiv tip 4)
-`core/test_d390_autoderivare.py::test_confirma_local_stinge_indiciul_reversibil` (True -> confirma -> False -> anuleaza -> True). Mutatie-probat. Migrare `core/migrare_d301_confirmat` (19/19, test_audit_schema verde). 37 passed.
+`core/test_d390_autoderivare.py::test_confirma_local_stinge_indiciul_reversibil` (True -> confirma -> False -> anuleaza -> True). Mutatie-probat. Migrare `core/migrare_d301_confirmat` (19/19, test_audit_schema verde). 37 passed. [citare-istorica: mecanism confirma_local/euristica inlocuit de temei_307, 19.08.2026]
 ## Bifa 18.08.2026 — confirmare persistenta per-furnizor
-`core/test_d390_autoderivare.py::test_confirmare_per_furnizor_persista_intre_luni` (confirma iun -> iul acelasi furnizor mosteneste). Mutatie-probat. 25 passed. Fara migrare (derivat din confirmarile per-operatiune).
+`core/test_d390_autoderivare.py::test_confirmare_per_furnizor_persista_intre_luni` (confirma iun -> iul acelasi furnizor mosteneste). Mutatie-probat. 25 passed. Fara migrare (derivat din confirmarile per-operatiune). [citare-istorica: mecanism confirma_local/euristica inlocuit de temei_307, 19.08.2026]
 ## Bifa 18.08.2026 — a11y contrast .btn-link + summary (axe pe grila D301)
 `core/test_a11y_contrast_tokens.py` extins (2 teste: .btn-link pe alb+#e9edf3, .dec-xml summary pe #e9edf3, >= 4.5). Mutatie-probat. axe D301 contrast 8->0. Inchide RAMAS DS v2.42 (.btn-link #3d8fd6).
 ## Bifa 18.08.2026 — formular manual D710 in UI (declaratie 1/6)

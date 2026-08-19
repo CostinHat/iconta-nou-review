@@ -34,6 +34,20 @@ TIPURI_ETICHETE = {
     5: "Achiziții de SERVICII intracomunitare, taxare inversă art. 307 alin. (2) — secțiunea 4.1",
 }
 
+# [temei_307, audit tenant_006] Tip 4 = Sectiunea 4 (art. 307 alin. (3)/(5)/(6)) - NU intra in D390.
+# Fiecare tip 4 poarta CARE alineat, ca excluderea din D390 sa fie AUDITABILA (motiv + temei citat),
+# nu dedusa. NULL = NECONFIRMAT (semnal, nu verde). Inlocuieste euristica "tip 4 + cod -> serviciu".
+TEMEI_307 = {
+    "gaz_energie": {"eticheta": "Gaz/energie electrică/termică (art. 307 alin. 3)",
+                    "temei": "Cod fiscal art. 307 alin. (3) coroborat cu art. 275 alin. (1) lit. e)/f) — "
+                             "livrare cu loc în România, nu achiziție intracomunitară"},
+    "suspensiv": {"eticheta": "Bunuri ieșite din regim suspensiv (art. 307 alin. 5)",
+                  "temei": "Cod fiscal art. 307 alin. (5) coroborat cu art. 295 alin. (1) lit. a)/d) — "
+                           "operațiune internă"},
+    "nestabilit": {"eticheta": "Furnizor nestabilit neînregistrat în RO (art. 307 alin. 6)",
+                   "temei": "Cod fiscal art. 307 alin. (6) — taxare inversă generală, nu operațiune intracomunitară"},
+}
+
 
 def _r0(x):
     return int(Decimal(str(x)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
@@ -77,17 +91,8 @@ def lista(conn, schema, an, luna):
     """Operatiunile lunii (cu baza si tva) + nomenclatoarele pt formular (o singura sursa)."""
     import psycopg2.extras as _E
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        # [confirmare per-furnizor 18.08.2026] Un furnizor (tara+cod) confirmat "local" pe ORICE operatiune
-        # (orice luna) => viitoarele operatiuni de la el nu mai primesc indiciul de mis-clasificare - nu
-        # re-confirmi lunar acelasi furnizor de gaz/energie. Derivat din confirmarile per-operatiune existente,
-        # fara tabel separat. Se interogheaza INAINTE de SELECT-ul principal (acelasi cursor).
-        cur.execute(f"SELECT DISTINCT partener_tara, partener_cod FROM {schema}.d301_operatiuni "
-                    f"WHERE d390_confirmat_local = true AND coalesce(partener_cod, '') <> ''")
-        # .get() defensiv: robust daca un rand nu poarta cheile (ex. cursor mock din teste); WHERE filtreaza real.
-        _furnizori_conf = {(r.get("partener_tara") or "", r.get("partener_cod") or "")
-                           for r in cur.fetchall() if (r.get("partener_cod") or "").strip()}
         cur.execute(f"SELECT id, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva, "
-                    f"partener_tara, partener_cod, partener_den, d390_confirmat_local "
+                    f"partener_tara, partener_cod, partener_den, temei_307 "
                     f"FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
         ops = []
         for r in cur.fetchall():
@@ -102,23 +107,14 @@ def lista(conn, schema, an, luna):
                         "partener_den": r["partener_den"] or "",
                         # semnal UI: operatiune care ar apărea in D390 (cod A/S) dar nu are tara furnizor
                         "d390_cod": _codD, "d390_lipsa_furnizor": bool(_codD and not (r["partener_tara"] or "")),
-                        # [mis-clasificare 18.08.2026] tip 4 cu COD TVA furnizor completat = suspect: codul
-                        # exclude alin.(6) (furnizori neinregistrati) -> ramane gaz/energie (alin 3/5) SAU un
-                        # SERVICIU IC (alin 2) gresit pus ca tip 4 (ar trebui tip 5 -> cod S in D390). Indiciu
-                        # soft (nu certitudine: gazul poate avea si el furnizor inregistrat). Fals-pozitivul
-                        # benign (gaz/energie legitim): contabilul confirma (d390_confirmat_local) -> se stinge.
-                        "d390_confirmat_local": bool(r["d390_confirmat_local"]),
-                        # furnizorul (tara+cod) a fost confirmat local pe alta operatiune -> mostenit
-                        "d390_furnizor_confirmat": bool((r["partener_cod"] or "").strip()
-                            and (r["partener_tara"] or "", r["partener_cod"] or "") in _furnizori_conf
-                            and not r["d390_confirmat_local"]),
-                        # indiciul apare doar daca NICI operatiunea, NICI furnizorul nu sunt confirmate
-                        "d390_posibil_serviciu": bool(r["tip"] == 4 and (r["partener_cod"] or "").strip()
-                            and not r["d390_confirmat_local"]
-                            and (r["partener_tara"] or "", r["partener_cod"] or "") not in _furnizori_conf)})
+                        # [temei_307] tip 4: CARE alineat art. 307 (3/5/6). NULL = NECONFIRMAT -> semnal.
+                        "temei_307": r["temei_307"],
+                        "temei_307_eticheta": (TEMEI_307.get(r["temei_307"], {}).get("eticheta") if r["temei_307"] else None),
+                        "temei_neconfirmat": bool(r["tip"] == 4 and not r["temei_307"])})
     return {
         "operatiuni": ops,
         "tipuri": [{"val": t, "eticheta": TIPURI_ETICHETE[t]} for t in TIPURI_OP],
+        "temeiuri_307": [{"val": k, "eticheta": v["eticheta"]} for k, v in TEMEI_307.items()],
         "valute": sorted(VALUTE),
         "cote": cote_perioada(an, luna),
     }
@@ -190,6 +186,13 @@ def adauga(conn, schema, an, luna, d):
         erori.append(("partener_tara", "Ai completat codul de TVA al furnizorului — completează și țara (2 litere)."))
     if len(partener_cod) > 20:
         erori.append(("partener_cod", "Codul de TVA al furnizorului e prea lung (max 20 caractere)."))
+    # [temei_307] tip 4 cere CARE alineat art. 307 (3/5/6) - aceeasi regula la introducere si la preview.
+    temei_307 = (d.get("temei_307") or "").strip() or None
+    if tip == 4 and temei_307 not in TEMEI_307:
+        erori.append(("temei_307", "Pentru tip 4 (art. 307 alin. 3/5/6) alege temeiul: %s." %
+                      "; ".join("%s = %s" % (k, v["eticheta"]) for k, v in TEMEI_307.items())))
+    if tip != 4:
+        temei_307 = None  # temeiul e doar pentru tip 4
     if erori:
         return {"eroare": "; ".join(m for _c, m in erori),
                 "erori_campuri": [{"camp": c, "mesaj": m} for c, m in erori]}
@@ -207,10 +210,10 @@ def adauga(conn, schema, an, luna, d):
     with conn.cursor() as cur:
         cur.execute(f"""INSERT INTO {schema}.d301_operatiuni
                         (an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva,
-                         partener_tara, partener_cod, partener_den)
-                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
+                         partener_tara, partener_cod, partener_den, temei_307)
+                        VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
                     (an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva,
-                     partener_tara, partener_cod, partener_den))
+                     partener_tara, partener_cod, partener_den, temei_307))
         oid = cur.fetchone()[0]
     conn.commit()
     return {"ok": True, "id": oid, "baza": baza, "tva": tva, "avertisment": _avert}
@@ -225,15 +228,3 @@ def sterge(conn, schema, an, luna, op_id):
     return {"ok": ok}
 
 
-def confirma_local(conn, schema, an, luna, op_id, valoare=True):
-    """[mis-clasificare, fals-pozitiv benign 18.08.2026] Marcheaza o operatiune tip 4 ca CONFIRMATA
-    legitima locala (NU serviciu IC) -> stinge indiciul 'poate e serviciu -> tip 5' pentru ea. Reversibil
-    (valoare=False readuce indiciul). Doar tip 4 conteaza (indiciul apare doar acolo), dar setarea e permisa
-    pe orice rand al perioadei (idempotent). Contabilul o foloseste pentru gaz/energie de la furnizor
-    inregistrat (alin.3/5), care legitim nu intra in D390 desi are cod TVA."""
-    with conn.cursor() as cur:
-        cur.execute(f"UPDATE {schema}.d301_operatiuni SET d390_confirmat_local=%s "
-                    f"WHERE id=%s AND an=%s AND luna=%s", (bool(valoare), op_id, an, luna))
-        ok = cur.rowcount > 0
-    conn.commit()
-    return {"ok": ok, "d390_confirmat_local": bool(valoare)}

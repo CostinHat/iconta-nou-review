@@ -3996,13 +3996,6 @@ def d301_operatiuni_sterge(tenant_id: int, op_id: int, an: int, luna: int, ctx=D
         return _op.sterge(conn, schema, an, luna, op_id)
 
 
-@app.put("/tenants/{tenant_id}/d301-operatiuni/{op_id}/confirma-local")
-def d301_operatiuni_confirma_local(tenant_id: int, op_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    # [mis-clasificare fals-pozitiv] contabilul confirma ca operatiunea tip 4 e legitim locala (nu serviciu IC).
-    from core import d301_operatiuni_api as _op
-    schema = _schema_cabinet_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return _op.confirma_local(conn, schema, int(corp["an"]), int(corp["luna"]), op_id, bool(corp.get("valoare", True)))
 
 
 # [B2/B3 D300] Randuri manuale D300 (Decont TVA). Geaman cu d301-operatiuni: grila lunara +

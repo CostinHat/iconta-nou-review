@@ -45,7 +45,7 @@ def schema_d301():
                       'nr_doc text, data_doc text, tip_valuta text DEFAULT \'EUR\', tva numeric DEFAULT 0, '
                       'val_valuta numeric, curs numeric, partener_tara varchar(2) DEFAULT \'\', '
                       'partener_cod varchar(20) DEFAULT \'\', partener_den text DEFAULT \'\', '
-                      'd390_confirmat_local boolean DEFAULT false)' % SCH)
+                      'temei_307 text)' % SCH)
     try:
         yield db
     finally:
@@ -54,11 +54,11 @@ def schema_d301():
                 c.execute('DROP SCHEMA IF EXISTS "%s" CASCADE' % SCH)
 
 
-def _ins(db, tip, val, curs, tara, cod="", den=""):
+def _ins(db, tip, val, curs, tara, cod="", den="", temei=None):
     with db.get_conn() as conn:
         with conn.cursor() as c:
-            c.execute('INSERT INTO "%s".d301_operatiuni (an,luna,tip,val_valuta,curs,partener_tara,partener_cod,partener_den) '
-                      "VALUES (2026,6,%%s,%%s,%%s,%%s,%%s,%%s)" % SCH, (tip, val, curs, tara, cod, den))
+            c.execute('INSERT INTO "%s".d301_operatiuni (an,luna,tip,val_valuta,curs,partener_tara,partener_cod,partener_den,temei_307) '
+                      "VALUES (2026,6,%%s,%%s,%%s,%%s,%%s,%%s,%%s)" % SCH, (tip, val, curs, tara, cod, den, temei))
 
 
 def test_mapare_tip_cod_si_filtrul_tarii(schema_d301):
@@ -110,73 +110,32 @@ def test_achizitii_d301_numara_doar_mapabile_fara_tara(schema_d301):
         assert achizitii_d301(conn, SCH, 2026, 6) == 3, "numara doar tip 1/3/5 fara tara"
 
 
-def test_d390_posibil_serviciu_semnaleaza_tip4_cu_cod(schema_d301):
-    """[mis-clasificare] lista marcheaza d390_posibil_serviciu=True DOAR pe tip 4 cu cod TVA furnizor
-    (codul exclude alin.6 nereg -> posibil serviciu IC pus gresit ca tip 4, ar trebui tip 5 -> D390 cod S).
-    tip 4 fara cod (posibil alin.6) si tip 5 -> False."""
+def test_excluse_d301_tip4_neconfirmat_semnaleaza(schema_d301):
+    """[temei_307] excluse_d301 face excluderea din D390 AUDITABILA: tip 4 FARA temei_307 -> SEMNAL
+    (NECONFIRMAT); tip 4 CU temei -> exclusa cu eticheta + temei citat, fara semnal; tip 1 cu tara ->
+    se deriveaza in D390 (cod A), NU e exclusa. Ruleaza pe operatiuni reale, nu pe lista goala."""
+    db = schema_d301
+    from core.d390 import excluse_d301
+    _ins(db, 4, 100, 5, "DE", "777888", "Gaz X")                            # tip 4 fara temei -> semnal
+    _ins(db, 4, 100, 5, "DE", "888", "Gaz confirmat", temei="gaz_energie")  # tip 4 cu temei -> fara semnal
+    _ins(db, 1, 100, 5, "DE", "136695976", "Bunuri")                        # tip 1 cu tara -> derivata (nu exclusa)
+    with db.get_conn() as conn:
+        ex = {e["id"].split(" (")[0]: e for e in excluse_d301(conn, SCH, 2026, 6)}
+    assert "Gaz X" in ex and ex["Gaz X"]["semnal"] is True and "NECONFIRMAT" in ex["Gaz X"]["motiv"], ex
+    assert "Gaz confirmat" in ex and ex["Gaz confirmat"]["semnal"] is False and "307" in ex["Gaz confirmat"]["temei"], ex
+    assert "Bunuri" not in ex, "tip 1 cu tara se deriveaza in D390, nu e exclusa"
+
+
+def test_lista_temei_neconfirmat_pe_tip4(schema_d301):
+    """[temei_307] lista marcheaza temei_neconfirmat=True pe tip 4 fara temei; False pe tip 4 cu temei
+    si pe alte tipuri; expune temei_307 + eticheta."""
     db = schema_d301
     from core import d301_operatiuni_api as api
-    _ins(db, 4, 100, 5, "DE", "123456", "Furnizor DE")   # tip 4 CU cod -> suspect
-    _ins(db, 4, 100, 5, "DE", "", "Fara cod")            # tip 4 FARA cod -> nu
-    _ins(db, 5, 100, 5, "IT", "999", "Serviciu IT")      # tip 5 -> nu (deja corect)
+    _ins(db, 4, 100, 5, "DE", "777", "Gaz fara temei")
+    _ins(db, 4, 100, 5, "DE", "778", "Gaz cu temei", temei="gaz_energie")
+    _ins(db, 1, 100, 5, "DE", "136695976", "Bunuri tip1")
     with db.get_conn() as conn:
         ops = {o["partener_den"]: o for o in api.lista(conn, SCH, 2026, 6)["operatiuni"]}
-    assert ops["Furnizor DE"]["d390_posibil_serviciu"] is True, "tip 4 cu cod trebuie semnalat"
-    assert ops["Fara cod"]["d390_posibil_serviciu"] is False, "tip 4 fara cod nu se semnaleaza"
-    assert ops["Serviciu IT"]["d390_posibil_serviciu"] is False, "tip 5 nu se semnaleaza"
-
-
-def test_confirma_local_stinge_indiciul_reversibil(schema_d301):
-    """[fals-pozitiv benign] confirma_local pe o operatiune tip 4 -> d390_posibil_serviciu devine False
-    (indiciul se stinge); reversibil (valoare=False -> revine). Rezolva gaz/energie legitim (alin.3/5)."""
-    db = schema_d301
-    from core import d301_operatiuni_api as api
-    with db.get_conn() as conn:
-        with conn.cursor() as c:
-            c.execute('INSERT INTO "%s".d301_operatiuni (an,luna,tip,val_valuta,curs,partener_tara,partener_cod,partener_den) '
-                      "VALUES (2026,6,4,100,5,%%s,%%s,%%s) RETURNING id" % SCH, ("DE", "999", "Gaz DE"))
-            oid = c.fetchone()[0]
-
-    def flag():
-        with db.get_conn() as conn:
-            return [o["d390_posibil_serviciu"] for o in api.lista(conn, SCH, 2026, 6)["operatiuni"] if o["id"] == oid][0]
-
-    assert flag() is True, "tip 4 cu cod, neconfirmat -> indiciul apare"
-    with db.get_conn() as conn:
-        api.confirma_local(conn, SCH, 2026, 6, oid, True)
-    assert flag() is False, "dupa confirmare -> indiciul se stinge"
-    with db.get_conn() as conn:
-        api.confirma_local(conn, SCH, 2026, 6, oid, False)
-    assert flag() is True, "anularea confirmarii readuce indiciul (reversibil)"
-
-
-def test_confirmare_per_furnizor_persista_intre_luni(schema_d301):
-    """[per-furnizor 18.08.2026] Confirmarea unei operatiuni tip 4 de la un furnizor (tara+cod) stinge
-    indiciul si pentru VIITOARELE operatiuni de la ACELASI furnizor (alta luna) - nu re-confirmi lunar.
-    Cea mostenita e marcata d390_furnizor_confirmat (nu d390_confirmat_local)."""
-    db = schema_d301
-    from core import d301_operatiuni_api as api
-    with db.get_conn() as conn:
-        with conn.cursor() as c:
-            c.execute('INSERT INTO "%s".d301_operatiuni (an,luna,tip,val_valuta,curs,partener_tara,partener_cod,partener_den) '
-                      "VALUES (2026,6,4,100,5,%%s,%%s,%%s) RETURNING id" % SCH, ("DE", "777", "Gaz X"))
-            id1 = c.fetchone()[0]
-            c.execute('INSERT INTO "%s".d301_operatiuni (an,luna,tip,val_valuta,curs,partener_tara,partener_cod,partener_den) '
-                      "VALUES (2026,7,4,200,5,%%s,%%s,%%s) RETURNING id" % SCH, ("DE", "777", "Gaz X"))
-            id2 = c.fetchone()[0]
-
-    def op(an, luna, oid):
-        with db.get_conn() as conn:
-            return [x for x in api.lista(conn, SCH, an, luna)["operatiuni"] if x["id"] == oid][0]
-
-    assert op(2026, 6, id1)["d390_posibil_serviciu"] is True
-    assert op(2026, 7, id2)["d390_posibil_serviciu"] is True
-    with db.get_conn() as conn:
-        api.confirma_local(conn, SCH, 2026, 6, id1, True)
-    # operatiunea confirmata direct
-    assert op(2026, 6, id1)["d390_confirmat_local"] is True
-    # operatiunea din alta luna, acelasi furnizor -> indiciul stins prin MOSTENIRE
-    o2 = op(2026, 7, id2)
-    assert o2["d390_posibil_serviciu"] is False, "furnizor confirmat -> indiciul se stinge si pe alta luna"
-    assert o2["d390_furnizor_confirmat"] is True, "marcata ca furnizor confirmat (mostenit, nu propriu)"
-    assert o2["d390_confirmat_local"] is False, "operatiunea din iulie NU e confirmata direct"
+    assert ops["Gaz fara temei"]["temei_neconfirmat"] is True, ops["Gaz fara temei"]
+    assert ops["Gaz cu temei"]["temei_neconfirmat"] is False and ops["Gaz cu temei"]["temei_307"] == "gaz_energie"
+    assert ops["Bunuri tip1"]["temei_neconfirmat"] is False

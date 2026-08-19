@@ -553,6 +553,51 @@ def operatiuni_din_d301(conn, schema, an, luna):
     return out
 
 
+def excluse_d301(conn, schema, an, luna):
+    """[audit tenant_006] Operatiunile D301 cu partener UE care NU ajung in D390 - cu MOTIV numit + TEMEI
+    citat, SIMETRIC cu diag-ul per-partener al facturilor. Face excluderea AUDITABILA:
+      - tip 4 -> art. 307 alin. (3)/(5)/(6) dupa temei_307 (NULL = NECONFIRMAT -> SEMNAL, nu verde);
+      - tip 2 -> mijloace de transport noi (raportare speciala);
+      - tip 1/3/5 FARA tara furnizor -> nu se poate forma linia D390 (codT obligatoriu) -> SEMNAL.
+    Read-only. Tabela poate lipsi -> []. conn None -> []."""
+    from core.d301_operatiuni_api import TEMEI_307 as _T307
+    if conn is None:
+        return []
+    with conn.cursor() as cur:
+        cur.execute("SELECT to_regclass(%s)", (schema + ".d301_operatiuni",))
+        if not cur.fetchone()[0]:
+            return []
+        cur.execute(f"SELECT tip, nr_doc, partener_tara, partener_cod, partener_den, temei_307 "
+                    f"FROM {schema}.d301_operatiuni WHERE an=%s AND luna=%s ORDER BY id", (an, luna))
+        out = []
+        for tip, nr_doc, tara, cod, den, temei in cur.fetchall():
+            tip = int(tip or 1)
+            tara = (tara or "").strip().upper()
+            _id = "%s (%s%s, %s)" % (den or "(fără denumire)", tara, (cod or "").strip(), nr_doc or "-")
+            codD = _D301_TIP_COD.get(tip)
+            if codD and tara:
+                continue                      # se deriveaza in D390 (cod A/S) - nu e exclusa
+            if codD and not tara:
+                out.append({"id": _id, "semnal": True,
+                            "motiv": "lipsă țara furnizorului — nu se poate forma linia D390 (codT obligatoriu)",
+                            "temei": "instr. completare D390 (OPANAF 705/2020)"})
+            elif tip == 2:
+                out.append({"id": _id, "semnal": False,
+                            "motiv": "mijloace de transport noi — raportare specială, nu în recapitulativă",
+                            "temei": "instr. completare D390 (OPANAF 705/2020)"})
+            elif tip == 4:
+                if temei in _T307:
+                    out.append({"id": _id, "semnal": False,
+                                "motiv": "exclusa din D390: %s" % _T307[temei]["eticheta"],
+                                "temei": _T307[temei]["temei"]})
+                else:
+                    out.append({"id": _id, "semnal": True,
+                                "motiv": "tip 4 (art. 307 alin. 3/5/6) cu TEMEI NECONFIRMAT — confirmă alineatul "
+                                         "în ecranul D301 ca excluderea din D390 să fie auditabilă",
+                                "temei": "Cod fiscal art. 307 alin. (3)/(5)/(6)"})
+    return out
+
+
 def d390_are_operatiuni(conn, schema, an, luna, azi=None):
     """Fapt per-luna: exista operatiuni intracomunitare in (an, luna)? -> True | False | None.
       True/False = perioada INCHISA (luna incheiata inainte de azi): fapt STABILIT din facturi IC
@@ -613,6 +658,11 @@ def calculeaza(conn, schema, an, luna, manual=None, reclasificari=None):
     # pre-tipizate A/S, INTOTDEAUNA (ca facturile) - persistate, deci vazute de toate caile (wizard/control).
     manual = list(manual) + operatiuni_din_d301(conn, schema, an, luna)
     res = calcul_d390(prof, an, luna, facturi, manual, reclasificari)
+    # [audit] excluderi D301->D390 auditabile (motiv + temei citat, semnal pe temei neconfirmat / lipsa tara)
+    for _ex in excluse_d301(conn, schema, an, luna):
+        _pre = "\u26a0 " if _ex["semnal"] else ""
+        res.avertismente.append("%sOperatiune D301 EXCLUSA din D390 - %s: %s (%s)."
+                                % (_pre, _ex["id"], _ex["motiv"], _ex["temei"]))
     return res
 
 

@@ -3171,18 +3171,18 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Efect:** grila D301 clarifica tip 2/4 ("nu intra in D390 — ...") chiar cu furnizor.
 
 ## Mis-clasificare tip 4 -> indiciu tip 5 (18.08.2026)
-- **Gard:** `core/test_d390_autoderivare.py::test_d390_posibil_serviciu_semnaleaza_tip4_cu_cod`.
+- **Gard:** `core/test_d390_autoderivare.py::test_d390_posibil_serviciu_semnaleaza_tip4_cu_cod`. [citare-istorica: mecanism confirma_local/euristica inlocuit de temei_307, 19.08.2026]
 - **Ce face imposibil:** d390_posibil_serviciu sa se aprinda pe alt tip decat 4, sau sa rateze tip 4 cu cod.
 - **Mutatie proba:** scot conditia tip==4 -> tip 5 cu cod semnalat -> testul pica.
 - **Limita:** indiciu SOFT (gaz/energie alin.3/5 cu furnizor inregistrat da fals-pozitiv benign; contabilul confirma).
 
 ## Confirmare "nu e serviciu IC" stinge indiciul tip 4 (18.08.2026)
-- **Gard:** `core/test_d390_autoderivare.py::test_confirma_local_stinge_indiciul_reversibil` + test_audit_schema (coloana d390_confirmat_local).
+- **Gard:** `core/test_d390_autoderivare.py::test_confirma_local_stinge_indiciul_reversibil` + test_audit_schema (coloana d390_confirmat_local). [citare-istorica: mecanism confirma_local/euristica inlocuit de temei_307, 19.08.2026]
 - **Ce face imposibil:** lista sa ignore confirmarea (indiciul ramane pe operatiunile confirmate legitime).
 - **Mutatie proba:** scot `and not r["d390_confirmat_local"]` din lista -> indiciul ramane True dupa confirmare -> testul pica.
 
 ## Confirmare persistenta per-furnizor (18.08.2026)
-- **Gard:** `core/test_d390_autoderivare.py::test_confirmare_per_furnizor_persista_intre_luni`.
+- **Gard:** `core/test_d390_autoderivare.py::test_confirmare_per_furnizor_persista_intre_luni`. [citare-istorica: mecanism confirma_local/euristica inlocuit de temei_307, 19.08.2026]
 - **Ce face imposibil:** confirmarea unui furnizor sa NU se aplice viitoarelor operatiuni de la el (contabilul ar re-confirma lunar).
 - **Mutatie proba:** scot verificarea `... not in _furnizori_conf` din lista -> op-ul din alta luna ramane semnalat dupa confirmarea furnizorului -> testul pica.
 
@@ -3321,3 +3321,7 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 
 ## 19.08 — D301: checksum VIES la introducere (audit 006/R24.1, clasa preview↔salvare)
 - **core/test_d301_vies_la_introducere.py** — gard: la adaugarea unei operatiuni D301 cu furnizor UE, algoritmul codului de TVA (offline DE/FR/HR) se verifica ACUM in d301_operatiuni_api.adauga si da AVERTISMENT neblocant (simetric cu cifra de control a CUI RO). Fara asta, calea d301-derivata (care NU trece prin _facturi_ic) ducea codul gresit neverificat pana la respingerea DUK R24.1 - aceeasi regula, verdicte diferite in etape diferite. Neblocant: achizitia IC obligatorie nu se pierde. RED-probat. R14: form op D301/006 cu DE811234567 -> avertisment "va fi respins de DUKIntegrator (R24.1)... Verifica-l acum".
+
+## 19.08 — temei_307: excludere D301->D390 auditabila per operatiune (audit tenant_006)
+- **core/test_d390_autoderivare.py** (rescris) + **core/test_d301_temei_307_intrare.py** — gard: fiecare operatiune D301 tip 4 (art. 307 alin. 3/5/6) poarta CARE alineat (temei_307), cerut la introducere (respins fara temei); excluderea din D390 devine AUDITABILA (excluse_d301 -> motiv numit + temei citat, simetric cu diag-ul facturilor); temei NULL = SEMNAL, nu verde. Euristica "tip 4 + cod -> serviciu" + confirma_local SCOASE (inlocuite, nu dublate; zero cod mort). Migrare toate schemele (core/migrare_d301_temei_307.py). RED-probat pe operatiuni reale. R14: dropdown temei pe tip 4 + INV-DE-88 "temei art. 307 neconfirmat".
+- Acceptare 006/iunie: D390 = 1 linie cod A DE136695976 baza 52.261; INV-DE-88 in excluse cu semnal neconfirmat; tip 4 fara temei respins la introducere. Toate verificate.
