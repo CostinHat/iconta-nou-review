@@ -3290,3 +3290,8 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 ## 19.08 — #11 §5 CALCULAT (meta-gardul campaniei)
 - **`core/test_perimetru_calculat.py`** — din MODEL_AUDIT_TENANT.md (F1..F9) computează §5 = fațetele MANUAL (neacoperite mecanic), CALCULAT nu afirmat. §5 curent = {F3, F4, F5, F7}. Bite: fiecare fațetă cere etichetă `**Acoperire:**`; orice GARDAT numește gard care EXISTĂ (RED-probat: ștergi test_acoperire_vizuala → F6+F9 „enforcement pierdut"); §5 pinat la baseline (fațetă alunecată din GARDAT în MANUAL → §5 crește → pică). Ar fi prins ratatul „am sărit DS+mobil".
 - MODEL_AUDIT_TENANT.md: etichete Acoperire pe toate cele 9 fațete (F6/F9 GARDAT test_acoperire_vizuala; F3/F4/F5/F7 MANUAL — pe diligență).
+
+## 19.08 — F5 nume intern în mesajele de generare (perimetru 006/D301 + gardă app-wide)
+- **D301 reparat** (perimetru tenant_006): `fără număr document (nr_doc gol)` / `(data_doc gol)` expuneau numele intern → rescrise fără paranteză.
+- **`core/test_mesaje_generare_fara_camp_intern.py`** — gardă-ratchet: funcțiile `erori_generare`/`valideaza` din `core/d*.py` nu expun token `snake_case` (nume câmp intern) în mesaje afișate; exclude docstring-uri. Complementar lui `test_mesaje_fara_camp_intern` (care nu vedea listele returnate de erori_generare). Baseline per-fișier = datoria app-wide (274 mesaje/31 fișiere), niciun fișier nu crește; burn-down la 0. RED-probat (d403 36>35 → pică).
+- **Datorie F5 app-wide (burn-down, DINCOLO de 006):** 274 mesaje în 31 generatoare expun nume interne (`categ_venit`, `cif_c`, `nr_contract`, `d_temei`…). De rescris în limba contabilului, form cu form. Gardat contra creșterii.

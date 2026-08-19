@@ -244,7 +244,7 @@ def _blocante_pre_duk(res):
             b.append("Operatiunea %s: valuta %r neacceptata (nomenclator ANAF)." % (eticheta, val))
         # nr_doc: gol (T2) sau supra-lung C(20) netrunchiat (T6, leak pur)
         if not nr:
-            b.append("Operatiunea #%d: fără număr document (nr_doc gol)." % i)
+            b.append("Operatiunea #%d: fără număr document." % i)
         elif len(nr) > 20:
             b.append("Operatiunea %s: număr document de %d caractere depășește C(20) (structura ANAF); "
                      "nu se emite netrunchiat." % (eticheta, len(nr)))
@@ -252,7 +252,7 @@ def _blocante_pre_duk(res):
         dd_raw = r.get("data_doc")
         dd = str(dd_raw).strip() if dd_raw is not None else ""
         if not dd:
-            b.append("Operatiunea %s: fără data document (data_doc gol)." % eticheta)
+            b.append("Operatiunea %s: fără data document." % eticheta)
     return b
 
 

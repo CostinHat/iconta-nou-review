@@ -60,7 +60,7 @@ traseul cu Playwright (login → navighează → verifică câmpul nou → submi
 **Verdict:** ecran accesibil + interacțiune reală probată. Fără ecran accesibil, funcționalitatea nu există.
 
 ### F5 — Mesajele de blocaj/refuz (limba contabilului) — Regula 14.4
-**Acoperire:** MANUAL — provoci fiecare blocaj si citesti mesajul rendat (partial gardat: `core/test_diacritice_afisate.py` + `core/test_fieldmark.py` + `test_a11y_*`).
+**Acoperire:** MANUAL — provoci fiecare blocaj si citesti mesajul rendat (partial gardat: `core/test_diacritice_afisate.py` + `core/test_fieldmark.py` + `test_a11y_*` + `core/test_mesaje_generare_fara_camp_intern.py` [nume intern in mesaje de generare, ratchet]).
 
 **Întrebarea:** ce scrie pe ecran când provoci un refuz? **Sondă:** alimentează **date greșite / câmpuri
 obligatorii neîndeplinite** și citește mesajul rendat. **Verdict — sunt defecte:** numele intern al câmpului sau
