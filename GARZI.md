@@ -3308,3 +3308,6 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
   - [Q2] factură PRIMITĂ fără CUI furnizor → NUMITĂ distinct („exclusă din D390; adaugă codul de TVA"), nu doar numărată anonim cu domesticele RO. `core/d390.py:300`.
   - RED-probat: `cp /tmp/d390.bak core/d390.py && pytest` → cele 2 teste pozitive pică. Probă vizuală R14: wizard D390 pe 006/09-2026 (seed temporar, curățat) afișează ambele în caseta de atenție.
   - Q1b (D394 gol pe firmă IC) și Q3 (ferestre D390/D394) = proiectare corectă, neatinse.
+
+## 19.08 — D301: ruta de adaugare refuza platitorii (audit tenant_006)
+- **core/test_d301_op_cere_neplatitor.py** — gard pe core/d301_operatiuni_api.adauga: daca firma e platitoare (platitor_tva=True) refuza operatiunea D301 cu mesaj spre Vectorul fiscal (D301 e pentru NEplatitori). Inchide ruptura care a permis cele 3 operatiuni pe 006 (vector platitor). Aparare-in-adancime: selectorul deja blocheaza calea UI (option disabled). RED-probat (fake conn; fara fix testul de blocare pica). R14: selector 006 D301 disabled "firma e platitoare" (DOM).
