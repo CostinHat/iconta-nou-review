@@ -1739,3 +1739,6 @@ Fara test nou (maparea neschimbata; test_mapare_tip_cod acopera deja tip 4 exclu
 
 ## Bifa 18.08.2026 — formular manual D307 in UI (declaratie 3/6)
 `core/test_d307_formular.py` (3 teste, mutatie-probat prin sed pe mesaj) + `core/test_d307.py` extins (asertie no-nume-interne). d307 scos din _DOAR_API -> GET /declaratii/tipuri; vecinii intacti (d107 ramane API). CSV F217->LIVE + login.js GRUPE_FUNC regenerat. Proba Playwright reala (ALFA MICRO): DUK valid (2 operatiuni tip A + C, TVA negativ la regularizare), axe 0, mobil Pixel5 body=393 (fara overflow).
+
+## Bifa 19.08.2026 — GARD D394 trimestrial (perioada + fereastra) [audit 003]
+`core/test_d394_trimestrial_perioada.py` (4 teste, RED-probat prin mutatia fereastra T -> luna-ancora). Inghetare a corectitudinii D394 trimestrial dupa inchiderea misdiagnosticului „003 septembrie + cifre necorespunzatoare": eticheta canonica (trim*3=3/6/9/12, OPANAF 2194/2025 lit. c) + fereastra = trimestrul intreg (augustul cules, 5900+889=6789). Test pur pe core.common.fereastra_tva/Perioada, fara DB. Fara reparatie in cod (produsul era corect). Inchidere in PREDARE_LANT.md.

@@ -2,6 +2,30 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 # PREDARE LANT — audit tenant_006 (Achizitii IC Neplatitor SRL / N1, cabinet Prisma 1968)
 
+## INCHIS — MISDIAGNOSTIC: „D394/003 perioada septembrie + cifre necorespunzatoare" (NU redeschide)
+
+Constatarea din tura precedenta („D394 pe tenant_003 emite septembrie in loc de trimestru, plus cifre care
+nu corespund") a fost investigata read-only si inchisa ca **MISDIAGNOSTIC** — codul de produs e CORECT, nu s-a
+reparat nimic. Eticheta simptomului confunda CODIFICAREA ANAF cu o eroare de perioada. Verificat la sursa:
+
+1. **Codificarea ANAF.** OPANAF 2194/2025 lit. c: campul `luna` pentru declarantul trimestrial = ultima luna a
+   trimestrului (01 pt lunar; **03 pt T1, 06 pt T2, 09 pt T3, 12 pt T4**; 12 si pt anual). Deci `luna=09` pe T3 e
+   marcajul corect al trimestrului III, NU „septembrie" ca luna izolata. Wizard-ul trimite `trim`; conversia
+   `declaratii_api.py` face `luna = trim * 3` → ancora canonica 3/6/9/12.
+2. **Fereastra reala T3.** `fereastra_tva(perioada, "T")` returneaza empiric pe T3 intervalul
+   **[2026-07-01, 2026-10-01)** — TRIMESTRUL INTREG (3 luni), nu doar luna-ancora. Iulie si august NU se pierd.
+   Decupleaza ETICHETA (luna pusa in XML = 9) de FEREASTRA DE DATE (tot trimestrul) — vezi docstring `fereastra_tva`.
+3. **Cifrele.** „Cifrele necorespunzatoare" = singura factura din **august** a lui 003, culeasa corect de fereastra T3:
+   bazaL 3500 (11%) + 2400 (21%) = **5900 baza**, TVA 889 → **5900 + 889 = 6789** = totalul facturii din august.
+   Nu lipseste si nu se dubleaza nimic; cifrele corespund exact facturii, doar ca nu au fost recunoscute la triaj.
+
+**GARD care ingheata corectitudinea:** `core/test_d394_trimestrial_perioada.py` (4 teste) — freeze pe AMBELE laturi:
+eticheta (`trim*3 ∈ {3,6,9,12}`) + fereastra (`fereastra_tva(·,"T")` = trimestrul intreg, augustul inauntru,
+span 3 luni, orice luna din trimestru → aceeasi fereastra). RED-probat: mutand fereastra T la doar luna-ancora
+(regresia care ar pierde iulie/august) → 3 teste pica. Daca simptomul reapare, citeste intai gardul si punctele
+1–3 de mai sus INAINTE de a-l reclasa ca bug.
+
+
 ## REPORNIRE (comanda exacta, gata de dat) — TURA 18.08(b): straturi import 006 provocate + corectate
 
 STARE (tura curenta, 3 comituri): straturile de import ale campaniei "colectii valide+invalide" (F5/Regula 14.4)
