@@ -242,6 +242,7 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
             auto-derivate (emisă implicit L, primită implicit A). RECLASIFICĂ, nu adaugă →
             fără dublă numărare a facturilor de servicii (F125). Vezi DECIZII 21.07."""
     ops = {}
+    _sursa = {}   # k -> {"factura","manual/D301"} pt detectia sursei-duble (Q1a)
     recl = reclasificari or {}
     ic, diag = _facturi_ic(facturi)
     for o in ic:
@@ -250,6 +251,7 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
         tip = _reclasificare_tip(o["directie"], o["tara"], o["cod"], recl, tip_def)
         k = (tip, o["tara"], o["cod"], o["den"])
         ops[k] = ops.get(k, Decimal("0")) + o["baza"]
+        _sursa.setdefault(k, set()).add("factura")
 
     # operațiuni manuale (P/S/T/R)
     for op in (manual or []):
@@ -269,6 +271,7 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
                          "motiv": "codO manual are %d caractere (max 12) - trunchierea ar CORUPE numărul de TVA" % len(cod)})
         k = (tip, tara, cod, den)
         ops[k] = ops.get(k, Decimal("0")) + baza_op
+        _sursa.setdefault(k, set()).add("manual/D301")
 
     # ROTUNJIRE COERENTA (10.08.2026, probat DUK R16): rezumatul (bazaL..bazaR, total_baza) =
     # suma bazelor ROTUNJITE PE OPERATIE (exact valorile emise in <operatie baza=...>), NU
@@ -294,6 +297,14 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
     _domestic = [d for d in diag if d["categorie"] == "domestic"]
     if _domestic:
         res.avertismente.append("%d facturi cu parteneri interni (RO)/fără CUI - excluse (D390 e doar intracomunitar)." % len(_domestic))
+    # [Q2] factura PRIMITĂ fără CUI furnizor: nu doar in numaratoarea anonima - pentru
+    # directia primita un CUI gol e SUSPECT (posibila achizitie IC careia ii lipseste codul de TVA).
+    for _dp in _domestic:
+        if _dp.get("directie") == "primita" and not str(_dp.get("cui") or "").strip():
+            res.avertismente.append(
+                "Factură PRIMITĂ fără CUI furnizor - %s: exclusă din D390. Dacă e achiziție "
+                "intracomunitară, adaugă codul de TVA al furnizorului (fără el nu poate fi "
+                "raportată la VIES)." % (_dp["den"] or "(fără denumire)"))
     for d in diag:
         _id = "%s (CUI %r, factura %s)" % (d["den"] or "(fără denumire)", d["cui"], d["directie"] or "-")
         if d["categorie"] == "prefix":
@@ -304,6 +315,15 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
             res.avertismente.append("ATENTIE cod TVA invalid - %s: %s." % (_id, d["motiv"]))
         elif d["categorie"] == "codO_lung":
             res.avertismente.append("codO prea lung - %s: %s." % (_id, d["motiv"]))
+    # [Q1a] aceeasi operatiune a primit baza din AMBELE surse (factura + manual/D301) -> bazele
+    # s-au ADUNAT in D390 (dubla raportare). Nimic nu impiedica introducerea pe ambele cai; semnalam.
+    for _ks, _ss in _sursa.items():
+        if "factura" in _ss and "manual/D301" in _ss:
+            _tp, _tr, _cd, _dn = _ks
+            res.avertismente.append(
+                "Posibilă DUBLĂ raportare - operațiunea (tip %s, %s%s, %s) apare ȘI ca factură ȘI "
+                "ca linie manuală/din ecranul D301; bazele se adună in D390. Verifică să nu fie "
+                "introdusă de două ori." % (_tp, _tr, _cd, _dn or "(fără denumire)"))
     _tel = str(prof.get("telefon") or "")
     if len(_tel) > 15:
         res.avertismente.append("Telefon firma are %d caractere (max 15, C(15)) - va fi trunchiat la 15 la emitere; verifică." % len(_tel))
