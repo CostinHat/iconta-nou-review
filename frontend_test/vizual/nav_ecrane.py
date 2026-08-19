@@ -39,6 +39,11 @@ def ecran_plan_conturi(pg):
     _import_strat(pg, "Plan de conturi")
 
 
+def ecran_solduri_parteneri(pg):
+    deschide_firma(pg)
+    _import_strat(pg, "Solduri parteneri")
+
+
 def ecran_stat_plata(pg):
     deschide_firma(pg)
     pg.click("#fa-salariati")
@@ -58,6 +63,7 @@ ECRANE = [
     ("import_mijloace_fixe", ecran_import_mijloace_fixe),
     ("vector_fiscal", ecran_vector_fiscal),
     ("plan_conturi", ecran_plan_conturi),
+    ("solduri_parteneri", ecran_solduri_parteneri),
     ("stat_plata", ecran_stat_plata),
     ("declaratii", ecran_declaratii),
 ]

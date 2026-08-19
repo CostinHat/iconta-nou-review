@@ -66,6 +66,17 @@ consecință are (care declarație se blochează).
 pixel). **Verdict:** contrast=0, region=0, ținte <24px=0, fără info livrată exclusiv prin hover/title, fără
 revărsare. Captura **privită**, nu doar selectorul trecut.
 
+**Automatizat + GĂRDAT:** `frontend_test/vizual/interactiune_scan.py` rulează axe pe **desktop ȘI mobil** (combinația prinde `scrollable-region-focusable`, care apare doar când conținutul depășește viewportul) + țintă<24 + F9 → scrie `acoperire_vizuala.json`; `core/test_acoperire_vizuala.py` **pică** dacă UI-ul s-a schimbat fără re-scan curat.
+
+### F9 — Comportament sub interacțiune (ce NU e aparent) — Regula 14 (cerut de Costin, 19.08.2026)
+**Întrebarea:** dacă apeși butoanele ecranului, se strică ceva? dacă completezi casetele cu text la limită, se
+trunchiază textul / se rupe alinierea? **Sondă:** `frontend_test/vizual/interactiune_scan.py` — apasă butoanele
+din conținutul ferestrei (ne-destructive, cu re-navigare ca să le acopere pe toate) și prinde erori JS de consolă
++ rupturi de layout; umple fiecare casetă cu text lung + diacritice și prinde revărsarea orizontală + elementele
+împinse dincolo de viewport (aliniere ruptă / text împins afară). **Verdict:** zero erori de consolă la apăsare,
+zero layout rupt, zero revărsare / element peste viewport la completare. **Aparentul (F6: contrast/diacritice/
+culori) NU acoperă comportamentul** — se verifică amândouă, mereu.
+
 ### F7 — Registrele la zi
 **Întrebarea:** semaforul / vectorul fiscal reflectă realitatea? **Sondă:** compară cifrele afișate (restanțe,
 „de depus") cu faptele (venituri, operațiuni, plăți) pe date reale. **Verdict:** cifrele coincid (Regula 14.2 —
@@ -92,6 +103,11 @@ commit).
    verifica din cod. Perimetrul e tot restul — nu se „raportează ca rămas" ce ținea de audit.
 4. **Estimarea la început, predarea la oprire (Regula 15).** La început spui cât estimezi că apuci; la oprire,
    prima linie din `PREDARE_LANT.md` e comanda exactă de repornire, iar `ISTORIC_TENANTI.md` primește rândul turei.
+5. **Metoda e POARTĂ, nu doar document (Costin, 19.08.2026).** F6 + F9 sunt cuplate mecanic de diff prin
+   `core/test_acoperire_vizuala.py`: orice schimbare de UI (`static/js/**.js` + `stil.css`) invalidează scanul
+   (ui_hash) și pică suita până rulezi `frontend_test/vizual/interactiune_scan.py` și comiți artefactul curat.
+   **Nu te poți abate:** o regulă scrisă și citită NU e o regulă păzită — doar poarta ține (ca `test_agenda` /
+   `test_versionare_assets`). Se folosește INSTRUMENTUL standard, nu probă ad-hoc.
 
 ---
 

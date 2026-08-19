@@ -1,0 +1,119 @@
+{
+ "ui_hash": "500e0134828309f4",
+ "ecrane": {
+  "import_mijloace_fixe": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 7,
+    "apasate": 5,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "vector_fiscal": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 15,
+    "apasate": 11,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "plan_conturi": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 7,
+    "apasate": 5,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "solduri_parteneri": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 7,
+    "apasate": 6,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "stat_plata": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 38,
+    "apasate": 5,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "declaratii": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 5,
+    "apasate": 3,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  }
+ }
+}
