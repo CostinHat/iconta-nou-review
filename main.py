@@ -8799,7 +8799,15 @@ _GHID_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "ghid")
 _GHID_SLUG_RE = _ghid_re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 _GHID_BAZA = "https://iconta.eu"          # domeniu canonic public (canonical, og:url, sitemap)
 # [ghid_redirect] slug-uri retrase -> 301 permanent catre succesor (consolidare continut, pastreaza SEO).
-_GHID_REDIRECT = {"cote-tva-2025": "cote-tva-2026"}
+_GHID_REDIRECT = {
+    "cote-tva-2025": "cote-tva-2026",
+    "corelare-d406-d300-d301-contabil": "corelare-d406-d300-d301",
+    "credit-fiscal-cercetare-dezvoltare-contabil": "credit-fiscal-cercetare-dezvoltare",
+    "d406-active-microintreprinderi-contabil": "d406-active-microintreprinderi",
+    "formular-800-facturi-netransmise-contabil": "formular-800-facturi-netransmise",
+    "rectificativa-dupa-bonificatie-contabil": "rectificativa-dupa-bonificatie",
+    "risc-fiscal-ridicat-contabil": "risc-fiscal-ridicat",
+}
 _GHID_OG_IMAGINE = _GHID_BAZA + "/static/logo_login.png"   # provizoriu; DE_FACUT: imagine dedicata per ghid
 
 # Shell public: leaga stil.css, foloseste DOAR clase + tokeni (fara <style> inline, fara culori
