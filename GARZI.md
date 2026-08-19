@@ -3311,3 +3311,7 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 
 ## 19.08 — D301: ruta de adaugare refuza platitorii (audit tenant_006)
 - **core/test_d301_op_cere_neplatitor.py** — gard pe core/d301_operatiuni_api.adauga: daca firma e platitoare (platitor_tva=True) refuza operatiunea D301 cu mesaj spre Vectorul fiscal (D301 e pentru NEplatitori). Inchide ruptura care a permis cele 3 operatiuni pe 006 (vector platitor). Aparare-in-adancime: selectorul deja blocheaza calea UI (option disabled). RED-probat (fake conn; fara fix testul de blocare pica). R14: selector 006 D301 disabled "firma e platitoare" (DOM).
+
+## 19.08 — Sweep D300/D390 manual: eligibilitate vector (audit tenant_006)
+- **core/test_manual_decl_cere_eligibil.py** (4 teste) — simetric cu gardul D301: d300_manual_api.adauga refuza neplatitorii (D300=platitori); d390_clasificare_api.manual_adauga refuza firmele fara operatiuni_ic (D390=firme cu IC). Tiparul "ruta manuala de declaratie NU verifica vectorul" inchis pe toate 3 rutele. Aparare-in-adancime (UI deja blocata de selector). RED-probat (fake conn).
+- DATE 006: vector corectat platitor_tva=False + inreg_art317=true (neplatitor art.317 cu achizitii IC). Verificat pe ecran: D301 -> ACTIV (datorat), D300/D394 -> blocate. Cele 3 operatiuni D301 acum coerente.
