@@ -3261,3 +3261,9 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - **Ce face imposibil:** o fixtură de test care scrie în `public.declaratii_depuse`/`declaratii_coada` fără marker `# fixtura-sintetica-ok:` (tenant_id sintetic / rollback) și fără an 2099 → risc de coliziune PK cu prima depunere reală pe acel interval (bug 22.07: „verde azi, roșu mâine"). Alegerea sigură devine CONȘTIENTĂ.
 - **Mutație probă:** scos un marker → pică; restaurat → verde. Adnotate ~8 situri în test_control_incrucisat/test_declaratii_depuse_randuri/test_tichete_pontaj (toate cu tenant_id sintetic, revizuite).
 - **Campanie „gardăm cele 31":** prima din cele 16 de construit (A2 ratchet). Restul: RED-proof → CUI/CNP → hook-uri (registre/predare/DS-citat) → instrumente (#3→#2→#5→#6→#11 + rotunjire/temei/global-first/model-audit).
+
+## CUI/CNP de test trec cifra de control (19.08.2026)
+- **Gard:** `core/test_cui_cnp_test_valid.py`.
+- **Ce face imposibil:** un CUI/CNP folosit ca date de test VALIDE (`cui=`/`cnp="..."`) cu cifra de control GREȘITĂ = capcană (16.07: validatorul confundă o dată de test greșită cu un bug de cod real). Testele negative (linia conține invalid/control/alterat/format sau marker `# cui-invalid-ok:`) sunt exceptate automat.
+- **Mutație probă:** cui invalid nou fără keyword → pică; restaurat → verde. A scos **11 CUI/CNP invalide reale** folosite ca date valide — reparate la cifra de control corectă (înlocuire în tot fișierul, date+aserții consistente). `143000009` din test_d394 = deliberat invalid pt test negativ → marcat, nu reparat. Toate afectate: 43 passed.
+- **Campanie „gardăm cele 31": garda #2/16** (A2 ratchet). Următoarele: hook-uri git-diff (registre/predare/DS-citat) → instrumente roadmap.

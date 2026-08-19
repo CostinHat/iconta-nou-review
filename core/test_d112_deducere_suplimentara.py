@@ -54,9 +54,9 @@ def test_deducere_suplimentara_cablata_pull(conn):
     with conn.cursor() as cur:
         _setup(cur, [
             {"cnp": "5000101410011", "nume": "TANAR", "dn": "2002-06-01", "copii": 0, "decl": False},
-            {"cnp": "1800101410011", "nume": "MATUR", "dn": "1980-06-01", "copii": 0, "decl": False},
+            {"cnp": "1800101410013", "nume": "MATUR", "dn": "1980-06-01", "copii": 0, "decl": False},
             {"cnp": "1800202410011", "nume": "PARINTE_DA", "dn": "1980-06-01", "copii": 2, "decl": True},
-            {"cnp": "1800303410011", "nume": "PARINTE_NU", "dn": "1980-06-01", "copii": 2, "decl": False},
+            {"cnp": "1800303410016", "nume": "PARINTE_NU", "dn": "1980-06-01", "copii": 2, "decl": False},
         ])
     conn.commit()
     _prof, sal = d112.pull(conn, _SCHEMA, 2026, 6)
@@ -81,7 +81,7 @@ def test_tanar_sub26_diferenta_e_15pct_salariu_minim(conn):
     with conn.cursor() as cur:
         _setup(cur, [
             {"cnp": "5000101410011", "nume": "TANAR", "dn": "2002-06-01", "copii": 0, "decl": False},
-            {"cnp": "1800101410011", "nume": "MATUR", "dn": "1980-06-01", "copii": 0, "decl": False},
+            {"cnp": "1800101410013", "nume": "MATUR", "dn": "1980-06-01", "copii": 0, "decl": False},
         ])
     conn.commit()
     _prof, sal = d112.pull(conn, _SCHEMA, 2026, 6)

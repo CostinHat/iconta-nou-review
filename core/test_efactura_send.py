@@ -24,7 +24,7 @@ def _factura_minima(**kw):
 
 
 def _furnizor(platitor=True):
-    return {"nume": "FIRMA MEA SRL", "cui": "40372004", "reg_com": "J12/1/2020",
+    return {"nume": "FIRMA MEA SRL", "cui": "40372003", "reg_com": "J12/1/2020",
             "adresa": "Bd. Test 10, Sector 2", "oras": "Bucuresti", "judet": "Bucuresti",
             "cod_postal": "010101", "iban": "RO49AAAA1B31007593840000", "platitor_tva": platitor}
 
@@ -73,7 +73,7 @@ def test_vat_supplier_doar_daca_platitor():
     xml_nu = ef.genereaza_xml(_factura_minima(), _linii(), _furnizor(platitor=False), _client())
     sup_da = ET.fromstring(xml_da).find("cac:AccountingSupplierParty/cac:Party", NS)
     sup_nu = ET.fromstring(xml_nu).find("cac:AccountingSupplierParty/cac:Party", NS)
-    assert sup_da.find("cac:PartyTaxScheme/cbc:CompanyID", NS).text == "RO40372004"
+    assert sup_da.find("cac:PartyTaxScheme/cbc:CompanyID", NS).text == "RO40372003"
     assert sup_nu.find("cac:PartyTaxScheme", NS) is None
 
 

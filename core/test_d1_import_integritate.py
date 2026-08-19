@@ -22,7 +22,7 @@ def _read(p):
 def test_importa_blocheaza_cnp_invalid_nu_sare():
     """Un rand cu CNP invalid -> importa RIDICA (nimic nu se scrie), nu il sare tacut.
     Ridica INAINTE de orice cursor, deci conn=None nu se atinge (proba ca poarta e prima)."""
-    rows = [{"nume": "X", "prenume": "Y", "cnp": "1234567890123", "cnp_valid": False,
+    rows = [{"nume": "X", "prenume": "Y", "cnp": "1234567890128", "cnp_valid": False,
              "cnp_motiv": "luna", "tip_norma": "intreaga", "ore_zi": 8, "salariu_brut": 3000}]
     with pytest.raises(ValueError):
         s.importa(None, rows)

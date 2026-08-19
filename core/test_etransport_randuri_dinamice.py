@@ -22,18 +22,18 @@ if _RAD not in sys.path:
     sys.path.insert(0, _RAD)
 from core import etransport as E
 
-CUI = "12345678"
+CUI = "12345674"
 
 # set complet de referinta (2 randuri). FILL = valorile tastate (siruri); CANONICAL = corpul POST asteptat
 # (numericele devin int prin parseFloat->JSON->json.loads). Structura = exact ce emite construiesteCorp.
 FILL = {
     "cod_tip_operatiune": "30", "ref": "REF-1",
     "bunuri": [
-        {"cod_scop": "101", "cod_tarifar": "12345678", "denumire": "Marfa A", "cantitate": "10", "um": "H87", "greutate_neta": "5", "greutate_bruta": "6", "valoare_fara_tva": "100"},
+        {"cod_scop": "101", "cod_tarifar": "12345674", "denumire": "Marfa A", "cantitate": "10", "um": "H87", "greutate_neta": "5", "greutate_bruta": "6", "valoare_fara_tva": "100"},
         {"cod_scop": "201", "cod_tarifar": "87654321", "denumire": "Marfa B", "cantitate": "2", "um": "KGM", "greutate_neta": "3", "greutate_bruta": "4", "valoare_fara_tva": "50"},
     ],
     "partener": {"cod_tara": "RO", "cod": "RO99999999", "denumire": "Partener SRL"},
-    "transport": {"nr_vehicul": "B123ABC", "nr_remorca1": "B999XYZ", "cod_tara_org": "RO", "cod_org": "12345678", "denumire_org": "Transportator SRL", "data": "2026-08-10"},
+    "transport": {"nr_vehicul": "B123ABC", "nr_remorca1": "B999XYZ", "cod_tara_org": "RO", "cod_org": "12345674", "denumire_org": "Transportator SRL", "data": "2026-08-10"},
     "start": {"cod_judet": "B", "localitate": "Bucuresti", "strada": "Str. A", "numar": "1"},
     "final": {"cod_judet": "CJ", "localitate": "Cluj", "strada": "Str. B", "numar": "2"},
 }

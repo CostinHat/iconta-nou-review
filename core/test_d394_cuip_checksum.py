@@ -7,6 +7,7 @@ PROPRIEI firme (prezent-dar-invalid).
 FIX (core/d394.py): validare pre-DUK cu sursa canonica core.identitate (valideaza_cui/valideaza_cif),
 avertisment care NUMESTE partenerul + motivul exact + citarea regulii DUK; own cui in valideaza().
 
+# cui-invalid-ok: CUI deliberat invalid pentru testul negativ de checksum (R6/R218)
 143000000 = CUI valid; 143000009 = checksum gresit (dovada in docstring core/identitate.py).
 Pe HEAD (8b74ccb): niciun avertisment de checksum -> acest test PICA. Dupa fix: TRECE.
 """
@@ -23,6 +24,7 @@ def _calc(facturi, manual=None):
 
 
 def test_partener_cuiP_checksum_avertisment_R218_2():
+    # cui-invalid-ok: CUI deliberat invalid pentru testul negativ de checksum (R6/R218)
     facturi = [{"cui": "143000009", "nume": "CLIENT RAU SRL", "directie": "emisa",
                 "taxare_inversa": False, "cota": 21, "baza": 1000, "tva": 210,
                 "platitor_tva": True}]
@@ -33,6 +35,7 @@ def test_partener_cuiP_checksum_avertisment_R218_2():
 
 def test_partener_tip2_cif_invalid_avertisment_R218_3():
     manual = {"operatiuni": [{"tip": "LS", "tip_partener": 2, "cota": 0,
+                              # cui-invalid-ok: CUI deliberat invalid pentru testul negativ de checksum (R6/R218)
                               "cuiP": "143000009", "denP": "NEINREG SRL", "nrFact": 1,
                               "baza": 500, "tva": 0}]}
     res = _calc([], manual)
@@ -41,6 +44,7 @@ def test_partener_tip2_cif_invalid_avertisment_R218_3():
 
 
 def test_own_cui_invalid_valideaza_R6():
+    # cui-invalid-ok: CUI deliberat invalid pentru testul negativ de checksum (R6/R218)
     prof = dict(_PROF, cui="143000009")
     res = d394.Rezultat(an=2026, luna=8, prof=prof)
     erori = d394.valideaza(res)

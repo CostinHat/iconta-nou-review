@@ -56,7 +56,7 @@ def test_adeverinta_net_reflecta_deducerea_suplimentara(conn):
     with conn.cursor() as cur:
         ids = _setup(cur, [
             {"cnp": "5000101410011", "nume": "TANAR", "dn": "2002-06-01", "copii": 0, "decl": False},
-            {"cnp": "1800101410011", "nume": "MATUR", "dn": "1980-06-01", "copii": 0, "decl": False},
+            {"cnp": "1800101410013", "nume": "MATUR", "dn": "1980-06-01", "copii": 0, "decl": False},
         ])
     conn.commit()
     a_tanar = adeverinta.date_auto(conn, _SCHEMA, ids["TANAR"], 2026, 6)

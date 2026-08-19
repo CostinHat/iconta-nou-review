@@ -13,9 +13,9 @@ VALID = {"01", "02", "03", "98", "99"}
 
 
 def _payment_method_emis(metoda=None):
-    prof = {"cui": "12345678", "nume": "TEST SRL", "platitor_tva": True}
+    prof = {"cui": "12345674", "nume": "TEST SRL", "platitor_tva": True}
     kw = {} if metoda is None else {"metoda": metoda}
-    p = d406.Plata(ref="PL1", data=date(2026, 8, 10), partener_id="0012345678", **kw)
+    p = d406.Plata(ref="PL1", data=date(2026, 8, 10), partener_id="0012345674", **kw)
     p.linii.append(d406.LiniePlata(nr=1, cont="5121", descriere="x", suma=Decimal("100.00"), sens="D"))
     p.linii.append(d406.LiniePlata(nr=2, cont="4111", descriere="y", suma=Decimal("100.00"), sens="C"))
     res = d406.construieste(prof, 2026, 8, [], [], [], plati=[p])

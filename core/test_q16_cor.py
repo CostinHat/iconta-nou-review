@@ -22,7 +22,7 @@ def _uf():
 
 
 def test_preview_salariati_ataseaza_denumirea_cor(monkeypatch):
-    rand = {"nume": "POP", "prenume": "ION", "cnp": "1960101078911", "cnp_valid": True,
+    rand = {"nume": "POP", "prenume": "ION", "cnp": "1960101078916", "cnp_valid": True,
             "tip_norma": "intreaga", "ore_zi": 8, "cor": "251401", "salariu_brut": 5000, "judet_casa": "B"}
     monkeypatch.setattr(main, "_schema_sau_404", lambda ctx, tid: "public")
     monkeypatch.setattr(_sal, "extrage", lambda *a, **k: [dict(rand)])
@@ -37,7 +37,7 @@ def test_preview_salariati_ataseaza_denumirea_cor(monkeypatch):
 
 
 def test_preview_salariati_cor_necunoscut_ramane_none(monkeypatch):
-    rand = {"nume": "X", "prenume": "Y", "cnp": "1960101078911", "cnp_valid": True,
+    rand = {"nume": "X", "prenume": "Y", "cnp": "1960101078916", "cnp_valid": True,
             "tip_norma": "intreaga", "ore_zi": 8, "cor": "999999", "salariu_brut": 5000, "judet_casa": "B"}
     monkeypatch.setattr(main, "_schema_sau_404", lambda ctx, tid: "public")
     monkeypatch.setattr(_sal, "extrage", lambda *a, **k: [dict(rand)])
