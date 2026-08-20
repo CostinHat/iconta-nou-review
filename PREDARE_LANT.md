@@ -1,6 +1,68 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANT — masuratoarea, masurata (tura 20.08d / noaptea de 21.08)
+# PREDARE LANT — R6 cablat, clasa „absenta" reparata, instrumentele confruntate (tura 20.08e / 21.08)
+
+## REPORNIRE (comanda exacta, gata de dat) — TURA 20.08(e)
+
+LIVRAT, comis si impins (`8238ef7`; HEAD = origin/main = backup/lant-2026-08-21):
+- **R6, trecerea INVERSA.** `control_fiscal_api.depuneri_fara_obligatie` (pura, 8 teste).
+  `_clasifica` itereaza pe `datorate` si consulta `depuse` ca dictionar - o depunere fara obligatie
+  pereche nu era VIZITATA niciodata, deci contradictia era invizibila PRIN CONSTRUCTIE. Acum: pe
+  perioada declarata neaplicabila -> „contrazice"; pe `neclar` -> „opinie", care se ARATA, NU stinge.
+  In afara ferestrei -> nimic (fereastra e o alegere de afisare, nu o afirmatie).
+- **ECRANUL Control fiscal NEATINS** (STOP). Rezultatul intra in raspunsul semaforului, consumatorul
+  de azi e `audit_tenant.py` F7. Pastila NU se escaladeaza. Propunerea vizuala e mai jos, la DECIZII.
+- **Clasa `absenta_observatie`, reparata pe CLASA.** Masurat: 12 motive „nu se datoreaza", 5 formulate
+  ca absenta - 2 cu poarta reala (D100 baza 0, D390 luna inchisa), 1 fara (D205 `are_note` cerea o
+  singura nota validata pe an) -> REINCADRAT la „nu pot verifica" cu remediul scris, 2 dintr-o bifa
+  din Vector -> isi numesc acum SURSA. Gard de clasa: `core/test_absenta_nu_e_neaplicabil.py`.
+- **Confruntarea celor doua instrumente.** Verificatorul tinea `cote_tva.py` pe `_TVA_EXCLUSE`, scanul
+  il raporta nesursat - niciodata comparate. Retroactiv: **9 semnale ieri**, exact miezul celor 28 de
+  false pozitive. Azi 5, in clichet NUMIT.
+- **METODA_VERIFICARE.md §5 are acum SASE pasi**: pasul 4 (verifica la SURSA primele N de pe lista de
+  ardere si publica rata de fals-pozitiv - un total fara rata de eroare e o afirmatie) si pasul 5
+  (confrunta instrumentul cu cine mai are o opinie despre aceleasi obiecte).
+
+**MASURATORI (sonde de citire, fiecare cu proba de nescriere: 834 tabele numarate inainte si dupa):**
+- 54 depuneri pe 17 firme: 28 sting o obligatie · 18 in afara ferestrei · **7 contrazic** · 1 opinie.
+- efect pe produs al reincadrarii D205: 3 firme din 17 au D205 in gri; NICIUNA n-a coborat din verde
+  (toate erau deja galbene). Pe firme reale efectul e mai mare: orice firma cu note validate si fara
+  dividende va avea D205 in „nu pot verifica".
+
+**DECIZIE CERUTA — ce se vede pe Control fiscal (ecranul e STOP).** Propunerea, in trei variante:
+  (a) UN grup nou, „Depuneri fara obligatie (N)", sub „Nu pot verifica" - un singur loc, dar amesteca
+      doua lucruri diferite (contradictie = defect de verdict; opinie = informatie).
+  (b) DOUA locuri, dupa natura: contradictiile ca rand rosu in „Nu se datoreaza" (langa motivul pe
+      care il contrazic, cu textul „…dar D100/12-2025 e DEPUSA"), iar opiniile ca rand gri in „Nu pot
+      verifica". RECOMANDATA: fiecare semnal sta langa afirmatia pe care o pune la indoiala.
+  (c) Doar in auditul de firma (ca azi), zero pe ecranul contabilului.
+  Intrebarea deschisa la (b): contradictia URCA pastila firmei? Argument pro - e proba ca un verdict
+  „nu se datoreaza" e gresit. Argument contra - nu e o restanta, iar rosul inseamna azi „datorezi si
+  n-ai depus". Inclin spre: NU urca pastila, dar randul e rosu in grupul lui.
+
+**COMANDA DE REPORNIRE:** „Alege varianta vizuala pentru R6 (a/b/c) si daca urca pastila. Apoi:
+d300_reconciliere - maparea cota->rand e DUBLATA din d300.py fara sa-i citeze actul; repara prin
+import din sursa unica, nu prin copierea comentariului. Si `d406.tva_procent: Decimal = Decimal(21)`,
+cota ca default de parametru. Amandoua sunt in clichetul confruntarii. Dupa: sursarea per tip a
+termenelor (R4, `core/test_temei_termene.py` e xfail strict pana atunci), apoi arderea clichetului de
+la 98 in jos, in ordinea 2-6."
+
+**FRONTUL DE ARDERE** (neschimbat fata de 20.08d, plus cele doua din confruntare):
+2. `cota=21` / `procent=8` ca default de parametru in `tva_marja`, `tva_marja_turism`, `tva_agricultori`.
+3. `Decimal("16")` in `d101.py:40` si `d101g.py:62` - aceeasi cota, doua locuri, amandoua in C.
+4. `d216.COTA_IMPOZIT = 0.3` - cota fiscala in float.
+5. `d212_engine.py:148-174` - unsprezece `assert` cu valori hardcodate in PRODUCTIE.
+6. `salarizare.py` 18 valori + `common.py` ferestrele 220/450, 240/470, 250/490.
+7. **NOU:** `d300_reconciliere.py:46-47` (mapare duplicata, fara act) si `d406.py:387` (cota ca default).
+
+RAMAS deschis din turele anterioare, nemiscat: FK pe `salariu_istoric`/`pontaj` + 24 orfani pe t001 ·
+cele 8 CNP-uri plauzibile pe t013-t016 · `etransport_ecran.js` etTimp gri -> „—" · citirea celor 9
+diff-uri verificator/verificat co-comise · marcarea celor 85 de teste · cele trei stari ca fixturi ·
+scanerul multi-firma · `semafor.js` (griul e in afara modelului lui).
+
+---
+
+# ARHIVA — PREDARE LANT — masuratoarea, masurata (tura 20.08d)
 
 ## REPORNIRE (comanda exacta, gata de dat) — TURA 20.08(d): clasa E + R6
 

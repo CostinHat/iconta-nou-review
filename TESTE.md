@@ -1782,3 +1782,15 @@ A=sursat (48) / B=nomenclator (308) / C=nesursat (98) / D=precizie (37) / E=teme
 
 Clichetul a coborât **126 → 98**, cu cele 28 de false pozitive scoase. `cote_tva.py` (2) și `d300.py`
 (5) au ieșit complet — amândouă își citează actul lângă valoare, în antet.
+
+## 21.08.2026 — R6 + clasa absenta_observatie + confruntarea instrumentelor
+
+| gardă | ce face imposibil |
+|---|---|
+| `core/test_depunere_contrazice.py` | ca o depunere pe o perioadă declarată „nu se datorează" să treacă nevăzută; și ca una pe un `neclar` să sune a obligație stinsă |
+| `core/test_absenta_nu_e_neaplicabil.py` | un motiv „nu se datorează" formulat ca absență de înregistrări, fără poartă de completitudine numită |
+| `core/test_constante_nesursate.py` (confruntarea) | ca scanul și verificatorul să se contrazică în tăcere despre același fișier |
+
+Măsurat înainte de reparație: 12 motive „nu se datorează", 5 formulate ca absență (2 cu poartă reală,
+1 fără — D205, reîncadrat — 2 dintr-o bifă, reformulate). Trecerea inversă: 7 contraziceri + 1 opinie
+pe 17 firme, zero semnale înainte. Confruntarea instrumentelor: 9 semnale retroactiv, 5 azi (clichet).

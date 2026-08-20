@@ -3494,3 +3494,81 @@ există în modul), nu pe cuvinte.
 
 **Mutații (două):** `return {... "sursa": "fallback"}` pe ramura fără AI → roșu pe două teste (și pe
 comportament, nu doar pe text) · `cote_valide()` reînviat → roșu.
+
+
+## 21.08.2026 — R6: o depunere care contrazice un „nu se datorează" nu mai e invizibilă (`8238ef7`)
+
+**Ce face imposibil:** ca „nu se datorează" și „s-a depus" să treacă una pe lângă alta.
+`core/test_depunere_contrazice.py` (8 teste) peste `control_fiscal_api.depuneri_fara_obligatie`.
+
+**Nu era o omisiune, era o proprietate a FORMEI.** `_clasifica` iterează pe `datorate` și consultă
+`depuse` ca dicționar — o depunere fără obligație pereche nu era VIZITATĂ niciodată. Nicio trecere
+inversă nu exista, deci contradicția era invizibilă **prin construcție**. Diferența față de un bug:
+n-avea cum să apară, oricâte date ai fi pus.
+
+**Măsurat înainte de a repara** (sondă de citire pe 17 firme, cu probă de nescriere — 834 de tabele
+numărate înainte și după, zero diferențe): din 54 de depuneri, 28 sting o obligație, 18 sunt în afara
+ferestrei, **7 contrazic un „nu se datorează"**, 1 e opinie pe un `neclar`. Zero semnale produse.
+
+**Ce NU face — și e miezul:** o depunere nu stinge un `neclar`. Că s-a depus dovedește că firma a
+CONSIDERAT că datorează, nu că a considerat corect, și nu spune nimic despre perioadele în care N-A
+depus — care e chiar întrebarea. Dacă ar stinge-o, firma care a depus tot ar părea complet verificată,
+deși ea e tocmai cea despre care nu știi dacă a depus tot ce trebuia. Gardul cere explicit ca mesajul
+de opinie să nu sune a stingere.
+
+**Defect prins în construcție:** prima versiune ținea motivele într-un dicționar pe TIP și a produs
+„D100 pe 3/2026 … nu se datorează: «nu se datorează pe T4 2025»" — un mesaj care citează altă
+perioadă. Are gard propriu (`test_motivul_citat_e_al_perioadei_depunerii`).
+
+**Mutații (patru), toate roșii:** neaplicabilul periodic nu mai e văzut · motivul luat pe tip ·
+opinia formulată ca stingere · rezultatul nu mai ajunge în răspuns.
+
+**Ce NU e cablat:** ecranul. Rezultatul intră în răspunsul semaforului și e consumat de
+`frontend_test/audit_tenant.py` (F7); pastila NU e escaladată — o culoare fără explicație ar fi mai
+rea decât tăcerea. Randarea așteaptă confirmarea a CE se vede.
+
+## 21.08.2026 — absența unei înregistrări nu mai poate deveni „nu se datorează" (`8238ef7`)
+
+**Ce face imposibil:** un motiv nou de tipul „D40x nu se datorează — niciun X înregistrat", fără
+poartă de completitudine numită. `core/test_absenta_nu_e_neaplicabil.py` (6 teste), care citește prin
+`ast` toate șirurile vizibile din `control_fiscal_api` (fără docstringuri) și le trece prin
+discriminatorul de FORMULARE.
+
+**A patra instanță în două zile** — trei D301 (R2′, 20.08) și D205 (azi). Discriminatorul e al lui
+Costin: *„niciun X înregistrat" e aproape întotdeauna `absenta_observatie`*. Criteriul de separare e
+REMEDIUL: „verifică dacă faptul a existat" aparține lui «Nu pot verifica», niciodată lui «Nu se
+datorează».
+
+**Măsurat, nu presupus:** 12 motive „nu se datorează" în total; **5 formulate ca absență**; dintre
+ele 2 au poartă reală (D100 „bază 0" distinge trimestrul genuin gol de cel cu facturi necontabilizate;
+D390 se confirmă doar pe luna ÎNCHISĂ), 1 n-avea (D205 — `are_note` cerea o singură notă validată pe
+an), 2 veneau dintr-o bifă din Vector. Reparate: D205 reîncadrat la „nu pot verifica" cu remediul
+scris; cele două din selector își numesc acum SURSA.
+
+**Ce NU face:** nu judecă dacă poarta e destul de bună, doar că a fost NUMITĂ. O poartă slabă scrisă
+în registru se vede și se poate contesta; una nescrisă nu.
+
+**Mutații (trei), toate roșii:** motiv nou formulat ca absență · D205 întors la „nu se datorează" ·
+propoziția care ține reîncadrarea D301 ștearsă.
+
+## 21.08.2026 — confruntarea celor două instrumente (`8238ef7`)
+
+**Ce face imposibil:** ca două măsurători ale aceluiași lucru să se contrazică în tăcere.
+`core/test_constante_nesursate.py` — verificatorul ținea `cote_tva.py` pe `_TVA_EXCLUSE` („aici
+literalii de cotă sunt așteptați"), iar scanul îl raporta cu 2 constante nesursate. Nimeni nu le
+compara.
+
+**Testat retroactiv: ieri confruntarea ar fi dat 9 semnale** (cote_tva 21/11, d300 ×4, d394 ×3) —
+adică exact miezul celor 28 de false pozitive, **fără să deschizi vreun fișier**. Ăsta e răspunsul la
+„se putea ști înainte?".
+
+**Azi dă 5, toate datorie reală, ținute într-un clichet NUMIT** (nu un număr): `d300_reconciliere`
+dublează maparea cotă→rând a lui `d300` fără să-i citeze actul (geamăna lui e în E fiindcă antetul ei
+citează Legea 141/2025), și `d406.tva_procent: Decimal = Decimal(21)` e o cotă ca default de parametru.
+
+**Citește registrul celuilalt instrument ca DATE, prin `ast`, fără import** — modulul verificatorului
+își rulează scanul la nivel de modul, iar un test n-are voie să pornească alt instrument ca efect
+secundar.
+
+**Mutații (trei), toate roșii:** cotă nouă nesursată într-un fișier exclus · `_TVA_EXCLUSE` dispare
+(gardul spune „repar-o, nu o șterge") · baseline mai larg decât realitatea.

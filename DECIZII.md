@@ -10465,3 +10465,83 @@ dar nu e o măsurătoare a realității clienților.
 trecere inversă peste `depuse` care produce o CONSTATARE acolo unde o depunere cade pe o perioadă
 declarată neaplicabilă. Pe `neclar`, depunerea rămâne informație („cineva a avut o opinie unde noi
 n-avem"), nu verdict — deci se arată, nu se numără ca stinsă.
+
+
+## 21.08.2026 — R6, actul: trecerea inversă peste depuneri
+
+Decis de Costin: *„o depunere pe perioadă neaplicabilă e o contradicție care azi nu poate fi văzută
+prin construcție, nu prin omisiune. Pe neclar doar se arată, ca opinie, nu se numără ca stinsă."*
+
+**De ce contradicția, dar nu stingerea.** Cele două nu sunt simetrice. „Nu se datorează" e o
+AFIRMAȚIE a noastră; o depunere pe aceeași perioadă e o afirmație contrară a firmei — două propoziții
+care nu pot fi amândouă adevărate, deci se ciocnesc. „Nu pot verifica" NU e o afirmație despre
+obligație, e absența uneia; o depunere n-are ce contrazice acolo, și nici ce rezolva: dovedește doar
+că cineva a avut o opinie unde noi n-avem.
+
+**Asimetria costurilor.** O contradicție nesemnalată lasă în picioare un verdict despre care avem
+deja proba că e greșit. O „stingere" falsă e mai rea: firma care a depus tot ar părea complet
+verificată, deși ea e tocmai cea despre care nu știi dacă a depus tot ce trebuia — mecanismul de pe
+006, întors pe dos.
+
+**Fereastra nu e o afirmație.** O depunere în afara ferestrei `datorate` (18 din 54) nu produce
+nimic: fereastra e o alegere de AFIȘARE. A o semnala ar transforma un contor într-o acuzație.
+
+**Perioada se scrie „lună/an", nu „decembrie 2025".** Pentru declarațiile trimestriale/anuale luna
+din înregistrare e ancora de codificare ANAF (D394 T3 → luna 09), nu luna calendaristică. A o traduce
+în nume de lună ar repeta exact misdiagnosticul D394/003.
+
+**Ecranul rămâne neatins.** Rezultatul intră în răspunsul semaforului, consumatorul de azi e
+`audit_tenant.py` (F7). Pastila NU se escaladează: o culoare schimbată fără un rând care s-o explice
+e mai rea decât tăcerea. Ce se vede pe Control fiscal se decide separat.
+
+## 21.08.2026 — „niciun X înregistrat" e absență de OBSERVAȚIE, reparat pe clasă
+
+Întrebarea lui Costin după a patra instanță în două zile: *„câte alte motive din «Nu se datorează»
+sunt formulate ca absență de rulaje sau de înregistrări? Formularea e discriminatorul."*
+
+**Măsurat înainte de a repara fragmentul** (aceeași regulă de intrare ca la constante): 12 motive
+„nu se datorează" în `control_fiscal_api`; **5 formulate ca absență**. Împărțite după POARTA de
+completitudine, nu după cum sună:
+- **cu poartă reală (rămân fapt): 2.** D100 „fără venituri în trimestru" — `d100_fapt` distinge False
+  (trimestru genuin gol: fără venituri ȘI fără facturi emise) de None (venituri 0 dar facturi emise →
+  gri). D390 „nicio operațiune IC în lună" — doar pe luna ÎNCHISĂ, doar ultima, din reuniunea facturi
+  IC + manual + d301.
+- **fără poartă: 1.** D205 „niciun rulaj pe 457" — `are_note` cerea o SINGURĂ notă validată pe an; o
+  notă din ianuarie făcea din tăcerea restului anului un „fapt". Reîncadrat la «Nu pot verifica».
+- **din bifă, nu din observație: 2.** Cele două din selector afirmau despre lume („firma nu are
+  operațiuni intracomunitare") pe baza unei căsuțe din Vector — tiparul de pe tenant_006. Își numesc
+  acum sursa și poartă remediul; clasa nu se schimbă (selectorul are nevoie de o decizie binară),
+  afirmația da.
+
+**Ce a forțat reîncadrarea D205 nu a fost un raționament, ci o probă:** BETA PROFIT are D205/12-2025
+DEPUS în timp ce semaforul spunea că nu se datorează. Depunerea e proba vie a încadrării greșite —
+exact felul de dovadă pe care trecerea inversă îl face de-acum vizibil.
+
+**Efectul pe produs, măsurat:** 3 firme din 17 au D205 mutat în gri; niciuna n-a coborât din verde
+(toate erau deja galbene din alte motive). Pe firme reale efectul poate fi mai mare — orice firmă cu
+note validate și fără dividende va avea D205 în „nu pot verifica" în loc de „nu se datorează".
+
+## 21.08.2026 — un total se publică împreună cu rata lui de eroare; și instrumentele se confruntă
+
+Întrebarea lui Costin despre cele 28 de false pozitive: *„există o cale ca următorul inventar să afle
+ÎNAINTE, nu după? Eșantionul de 30 a prins-o de data asta — e regulă scrisă sau noroc?"*
+
+**Nici una, nici alta — și eșantionul de 30 NU a prins-o.** Eșantionul privește clasa în agregat, iar
+`COTA_STANDARD = 21` nu se deosebește de nimic într-un rând de scan; temeiul se vede doar deschizând
+fișierul. Ce a prins-o a fost REGULA DE AUR aplicată propriei măsurători: prima intrare de pe lista de
+ardere a fost verificată la sursă înainte de a fi „reparată".
+
+**Deci regula scrisă (METODA §5, pasul 3′):** înainte de a publica un total, verifică LA SURSĂ primele
+N de pe lista de ardere și publică rata de fals-pozitiv măsurată alături de total. *Un total fără rată
+de eroare e o afirmație, nu o măsurătoare.*
+
+**Și calea mecanică, care nu depinde de disciplină:** două instrumente din acest repo aveau deja
+opinii despre același fișier. Verificatorul ținea `cote_tva.py` pe `_TVA_EXCLUSE`; scanul îl raporta
+nesursat. Confruntarea lor, testată retroactiv, ar fi dat **9 semnale ieri** — miezul celor 28 — fără
+să deschizi nimic. E acum un gard (`test_cele_doua_instrumente_nu_se_contrazic`), cu clichet numit pe
+cele 5 rămase.
+
+**Generalizarea, pentru orice instrument nou:** întreabă cine ALTCINEVA din repo are deja o opinie
+despre obiectele pe care le măsori — un registru de excepții, o listă de excluderi, o hartă, un
+xfail — și confruntă-le. Un dezacord între două măsurători ale aceluiași lucru e cel mai ieftin semnal
+că una dintre ele are o clasă nedistinsă.

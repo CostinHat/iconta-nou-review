@@ -4709,3 +4709,20 @@ legat prin `test_granite_cota.py` TEMA D; `cote_valide()` ștearsă (cod mort, l
 
 R6 măsurat pe baza reală (sondă de citire cu probă de nescriere): 7 depuneri contrazic un
 „nu se datorează", 1 cade pe un `neclar`. Vezi DECIZII 21.08.
+
+## 21.08.2026 (tura 20.08e) — R6 cablat, clasa „absență" reparată, instrumentele confruntate (`8238ef7`)
+
+**R6.** `control_fiscal_api.depuneri_fara_obligatie` — trecerea INVERSĂ peste depuneri. Pe perioadă
+neaplicabilă → „contrazice"; pe `neclar` → „opinie" care se arată, nu stinge. Ecranul Control fiscal
+NEATINS (STOP); consumatorul de azi e `audit_tenant.py` F7. Măsurat pe 17 firme: 7 contraziceri + 1
+opinie, zero semnale înainte.
+
+**Clasa `absenta_observatie`, a patra instanță.** D205 „niciun rulaj pe 457" → „nu pot verifica" cu
+remediu scris (forțat de o depunere reală care contrazicea verdictul). Cele două motive din selector
+își numesc sursa. Gard de clasă nou peste toate șirurile „nu se datorează" din modul.
+
+**Confruntarea instrumentelor.** Verificatorul scutea `cote_tva.py`, scanul îl raporta nesursat —
+retroactiv 9 semnale, exact miezul celor 28 de false pozitive de aseară. Gard + clichet numit pe cele
+5 rămase: `d300_reconciliere` (mapare duplicată fără act) și `d406.tva_procent` (cotă ca default).
+
+Suita: 2500 → 2517 teste.

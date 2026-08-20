@@ -76,7 +76,7 @@ Gardat: `core/test_harta_temei.py`.
 măsurarea trece înaintea reparării unei bucăți din ea — altfel alegi ce repari după ce ți-a picat sub
 ochi, nu după cât cântărește.
 
-Patru pași, în ordinea asta:
+Șase pași, în ordinea asta:
 
 1. **Nu produce lista întâi.** Un scan pe cod găsește mii. Taxonomia descoperită după 4.000 de rânduri e
    descoperită prea târziu.
@@ -88,7 +88,19 @@ Patru pași, în ordinea asta:
    mutat 100 din 126 în „sursat în proză". Deci fiecare clasă nouă primește și aserțiuni că anume cazuri
    RĂMÂN în țintă, nu doar că anume cazuri ies din ea.
 3. **Privește un eșantion de ~30 înainte de orice total.** Acolo apare taxonomia reală.
-4. **Zgomotul exclus se NUMĂRĂ, nu se aruncă tăcut** — altfel filtrul devine el însuși o afirmație
+4. **Verifică LA SURSĂ primele N de pe lista de ardere și publică rata de fals-pozitiv.** Eșantionul
+   de la 3 privește clasa în agregat; el NU prinde un caz al cărui temei se vede doar deschizând
+   fișierul (`COTA_STANDARD = 21` nu se deosebește de nimic într-un rând de scan). Ce l-a prins a fost
+   Regula de Aur aplicată propriei măsurători, la prima intrare pe care urma s-o „repari".
+   **Un total fără rată de eroare măsurată e o afirmație, nu o măsurătoare** — la scanul de constante
+   rata era 28 din 126, adică un sfert din lista de ardere.
+5. **Confruntă instrumentul cu cine mai are o opinie despre aceleași obiecte.** Verificatorul ținea
+   `cote_tva.py` pe `_TVA_EXCLUSE` („aici cotele sunt așteptate"), scanul îl raporta nesursat — două
+   măsurători ale aceluiași lucru, niciodată comparate. Testată retroactiv, confruntarea ar fi dat 9
+   semnale din prima zi, **fără să deschizi vreun fișier**. Întreabă mereu ce registru de excepții,
+   listă de excluderi, hartă sau xfail vorbește deja despre obiectele tale: un dezacord între două
+   măsurători e cel mai ieftin semnal că una dintre ele are o clasă nedistinsă.
+6. **Zgomotul exclus se NUMĂRĂ, nu se aruncă tăcut** — altfel filtrul devine el însuși o afirmație
    neverificată.
 
 **Și întreabă-te unde trăiește lucrul căutat, nu unde stă fișierul de test.** Domeniul greșit e cea mai
