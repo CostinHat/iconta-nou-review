@@ -204,7 +204,7 @@ async function deschideEditare(uid, corp, nav) {
       try {
         const permVals = {};
         box.querySelectorAll("[data-perm]").forEach((cb) => { permVals[cb.dataset.perm] = cb.checked; });
-        await api.post(`/asistenti/${uid}/permisiuni`, permVals);
+        const _rp = await api.post(`/asistenti/${uid}/permisiuni`, permVals);
         if (a.atribuire_relevanta) {
           const initiale = {};
           firme.forEach((f) => (initiale[f.id] = f.atribuit));
@@ -218,7 +218,13 @@ async function deschideEditare(uid, corp, nav) {
           await api.post(`/asistenti/${uid}/finalizeaza-firme`);
         }
         nav.inapoi();
-        randeazaAsistenti(corp, nav);
+        await randeazaAsistenti(corp, nav);
+        // [po_efectiv_v1] PUNCT DE ACTIUNE: acordarea dreptului de validare e chiar momentul in care
+        // patru-ochi poate reintra in vigoare. Indicatorul din subbara (crom persistent) arata STAREA
+        // la fiecare deschidere; aici se marcheaza MOMENTUL, ca patronul care reangajeaza sa nu afle
+        // dintr-un buton disparut. Trecerea granitei nu e tacuta - DECIZII 20.08.2026.
+        if (_rp && _rp.patru_ochi_intra_in_vigoare)
+          arataMesaj(corp, "Validarea \u00een doi intr\u0103 acum \u00een vigoare: de aici \u00eenainte, cine preg\u0103te\u0219te o declara\u021bie nu o mai poate aproba singur. Declara\u021biile deja \u00een coad\u0103 trec la al doilea validator.", "ok");
       } catch { err.textContent = "Nu am putut salva. Încearcă din nou."; }
     };
     box.querySelector("#asi-salveaza").onclick = () => {

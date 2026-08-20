@@ -2,6 +2,55 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 # PREDARE LANT — audit tenant_006 (Achizitii IC Neplatitor SRL / N1, cabinet Prisma 1968)
 
+## REPORNIRE (comanda exacta, gata de dat) — TURA 20.08: I1 (patru-ochi) + I2 (checksum manual) INCHISE
+
+LIVRAT (un singur commit, bundle I1+I2, o singura repornire):
+- **I1 — patru-ochi pe cabinet solo.** Patru-ochi are DOUA axe: POLITICA (`activ`, explicita, a patronului,
+  persistenta) x APLICABILITATE (`posibil`, aritmetica, live). `efectiv = activ ∧ posibil`, dintr-o SURSA
+  UNICA (`coada_api.patru_ochi_stare`) consumata si de `aproba` si de `GET /eu/patru-ochi`. Defectul
+  PRINCIPAL reparat = INDICATORUL MINCINOS (subbara zicea „Validarea in doi ✓" pe un cabinet cu un singur
+  validator, in timp ce cardul de pe acelasi ecran zicea „De depus"). Trei stari, nu doua; bifa doar pe
+  `efectiv`; suspendat = `var(--ardezie)`, fara verde.
+- **I1b — FUNDATURA gasita si inchisa (corectie fata de propunerea initiala).** Formula veche a lui `posibil`
+  („>=1 pregatitor + >=1 validator + >=2 oameni") devenea `true` cand un cabinet solo angaja un asistent DOAR
+  cu `poate_pregati` -> cele 3 declaratii pregatite de unicul validator deveneau NEAPROBABILE DE NIMENI.
+  Acum `posibil` ⇔ >=2 VALIDATORI activi. Nu se pierde nicio protectie (un om fara drept de validare nu putea
+  oricum aproba nimic).
+- **I1c — trecerea granitei NU e tacuta**, in trei locuri: subbara (crom persistent = STAREA), dialogul
+  „Acorzi dreptul de validare lui X?" din Asistenti (= MOMENTUL, prin `patru_ochi_intra_in_vigoare`), textul
+  cozii (trei variante: in vigoare / suspendat / oprit — „dezactivat" pe o politica suspendata era o a doua
+  minciuna).
+- **I2 — checksum VIES pe liniile manuale/D301** in `calcul_d390` (era doar pe latura din facturi). Neblocant,
+  simetric cu latura auto. `salveaza_reclasificare` verificat CURAT (nu creeaza cod nou de partener).
+- Reparatie reala: „cine poate aproba in acest cabinet" era intrebat in TREI locuri cu trei interogari
+  proprii -> `coada_api.validatori_activi`, sursa unica.
+
+GARZI: `core/test_patru_ochi_efectiv.py` (14), `core/test_d390_checksum_manual.py` (5),
+`core/test_a11y_contrast_tokens.py` extins. RED-probate (8/14 + 2/5 pica pe HEAD; mutatii prinse pe prag,
+pe notificari si pe culoare). DECIZII 20.08 (doua intrari, regula GARDATA). DS v2.60.
+PROBA: `frontend_test/proba_patru_ochi.py` pe cabinetul 1968 — trei stari, capturi privite
+(`po_0_inainte_*` / `po_1_suspendat_*` / `po_2_efectiv_*`), axe 0 desktop + Pixel 5 (body=393).
+IGIENA DE DATE: asistentul 6248 activat TEMPORAR pentru starea 2 si restaurat exact (activ=f, competente
+f/f/f) — verificat in proba. Flagul `patru_ochi_activ` pe 1968 = ON (vezi mai jos).
+
+DE DECIS DE COSTIN (o linie de SQL, nu blocheaza nimic): flagul `patru_ochi_activ` pe cabinetul 1968 a ramas
+ON — a fost proba vizibila pana la reparatie. ACUM e o stare ONESTA si utila (exercita ramura „suspendat" pe
+matrice), dar schimba cromul dashboardului la fiecare audit viitor pe 1968. Ca sa-l stingi:
+`UPDATE public.accounting_firms SET patru_ochi_activ=false WHERE id=1968;` (sau butonul din subbara).
+
+RAMAS NUMIT din I2 (nu tacut, NU e gaura de corectitudine): formularul de linie MANUALA D390
+(`d390_clasificare_api.manual_adauga`) valideaza tip/tara/cod-obligatoriu/baza, dar NU da inca avertismentul
+de checksum LA INTRODUCERE, asa cum face ecranul D301 din 19.08. Corectitudinea e inchisa (avertismentul apare
+la generare, cu partenerul NUMIT), dar simetria „contabilul afla DEVREME, in limba lui" nu. De adaugat cand se
+atinge ecranul: backend `avertisment` (5 linii, copia exacta din `d301_operatiuni_api.salveaza`) + afisarea lui
+in `declaratii.js:371` (azi raspunsul e aruncat — deci fara UI ar fi cod mort).
+
+COMANDA DE REPORNIRE (gata de dat): "Continua auditul cabinetului 1968. I1 (patru-ochi) + I2 (checksum manual
+D390) = INCHISE. Reia campania colectii date valide+invalide de la urmatoarea firma din matrice: t001
+(D112 erori DUK 'asigurat idAsig=4' + cod boala '91') sau t009 (D406 factura COER-T5 nereconciliata).
+Instrument: audit_tenant.py <id> --user=patron@prisma-cont.test. Metoda Regula 13+14 (captura PRIVITA)."
+
+
 ## INCHIS — MISDIAGNOSTIC: „D394/003 perioada septembrie + cifre necorespunzatoare" (NU redeschide)
 
 Constatarea din tura precedenta („D394 pe tenant_003 emite septembrie in loc de trimestru, plus cifre care

@@ -9658,3 +9658,112 @@ preexistent d301/d390, extins la TOATE (d100/d101/d205/d112/d300/bilant). declar
 **Proba.** Backend: refuz pe gol + plafon depasit cu mesaj de contabil; DUK valid pe 1 beneficiar (tip 2, IBAN valid, suma 10000, plafon 10000). Gard test_d177_formular RED(sed reintroduce sumaRest)->GREEN. Traseu live Playwright (ALFA MICRO, an 2025): D177 in selector, gol refuzat, completat -> DUK VALID (tipB=2/sumaRest=10000/luna=12/1x<beneficiar>), axe 0, mobil Pixel5 body=393. Captura privita.
 
 **Lectie (a cincea).** Formula "identitate intre situatii similare" se aplica la clase+comportament, nu la forma: D177 amesteca antet-fix (ca d311) cu lista (ca d107/d307) fiindca declaratia are ambele. Si: bug-ul de dispatch (luna) trece de unit-testele care pun explicit parametrul corect - proba pe traseul REAL (cu default-urile dispatchului) e cea care il prinde (Regula 14 completeaza proba pe date).
+
+## 20.08.2026 — Patru-ochi: politică explicită × aplicabilitate automată × tranziție AFIȘATĂ (audit tenant_006, front Î1)
+
+**Context.** Coadă de validare pe un cabinet cu un singur validator competent (tenant_006 / Cabinet Prisma,
+patron Elena Dobrescu, id 1968, `patru_ochi_activ=t`, `posibil=false`): enforcement-ul (`coada_api.aproba`)
+folosea DEJA `activ ∧ posibil` → auto-aprobarea e permisă; DAR UI-ul citea flagul brut `activ` (`validat.js`,
+`cabinet.js`) și indicatorul `_indicatorPatruOchi` afișa „Validarea în doi asistenți ✓" ori de câte ori `activ`
+— MINCINOS pe solo. Probat vizual, captură privită (`frontend_test/po_0_inainte_dashboard.png`): pe ACELAȘI
+ecran, subbara zicea „Validarea în doi ✓" iar cardul zicea „De depus · 3 declarații de depus" — contradicție
+cu sine. Divergență front↔back, aceeași familie cu preview↔salvare.
+
+**Decizia (regula).** Patru-ochi are DOUĂ axe care nu se confundă:
+- **POLITICA** — `activ`, explicită, setată și înregistrată de patron, PERSISTENTĂ. Nu se re-cere
+  consimțământul la reintrare (ar fi cicăleală).
+- **APLICABILITATEA** — `posibil`, aritmetică, calculată LIVE, OBLIGATORIE. Patru-ochi cu un om e imposibil;
+  o aplicabilitate „explicită" ar reintroduce fundătura (cabinet care pierde un validator și uită să suspende).
+- `efectiv = activ ∧ posibil`, **identic în enforcement ȘI în UI** — o singură funcție,
+  `coada_api.patru_ochi_stare`, consumată și de `aproba`, și de `GET /eu/patru-ochi`. Front și back nu mai
+  pot diverge fiindcă nu mai există două definiții.
+- **Trecerea graniței NU e tăcută.** Starea „pornit, dar suspendat — ești singurul validator" și reintrarea
+  în vigoare se AFIȘEAZĂ (trei locuri, mai jos).
+
+**Defectul PRINCIPAL = indicatorul mincinos, nu butonul lipsă.** Un cabinet care crede că are control în doi
+și n-are e mai rău decât o coadă blocată: cel dintâi e o falsă siguranță pe care nimeni n-o verifică, al
+doilea se vede și se reclamă. Deci gardul principal al lui Î1 e ADEVĂRUL INDICATORULUI, nu prezența butonului:
+„✓" se dă DOAR pe `efectiv`; pe `activ ∧ ¬posibil` indicatorul spune „Validarea în doi: suspendată — ești
+singurul validator", în `var(--ardezie)` (9,85:1 pe bara #dfe4ea), fără verde și fără bifă — verdele e
+afirmația „controlul funcționează", iar el nu funcționează.
+
+**CORECȚIE față de propunerea din 20.08 (dimineață): aplicabilitatea veche PRODUCEA fundătură.**
+Formula `posibil` era „≥1 pregătitor ∧ ≥1 validator ∧ ≥2 oameni". Propunerea afirma că „deadlock imposibil în
+operare normală" — FALS, verificat la sursă și probat: pe cabinetul 1968 (patron = singurul validator, 3
+declarații pregătite de el în coadă), **angajarea unui asistent DOAR cu `poate_pregati`** ducea `posibil` la
+`true` (1 pregătitor, 1 validator, 2 oameni), iar cele 3 declarații deveneau neaprobabile de NIMENI — fără
+ieșire din aplicație. Enforcement-ul blochează exclusiv auto-aprobarea, deci un singur validator + lucrările
+lui = fundătură.
+**Aplicabilitatea corectă: `posibil` ⇔ cabinetul are ≥2 VALIDATORI activi.** Nu se pierde nicio protecție:
+un al doilea om FĂRĂ drept de validare nu putea oricum aproba nimic, deci vechea condiție nu gardase
+niciodată vreo lucrare în plus. Gard comportamental, nu doar aritmetic:
+`test_enforcement_nu_produce_deadlock_pe_cabinet_cu_un_validator` (RED pe HEAD).
+
+**Unde se vede reintrarea în vigoare (și de ce e suficient).** Trei locuri, în ordinea în care le întâlnește
+patronul — nu unul singur îngropat în ecranul de echipă:
+1. **Cromul persistent** — indicatorul din `.subbara`, prezent la FIECARE deschidere a spațiului de lucru al
+   cabinetului. E starea, nu evenimentul: cine reangajează și uită, o vede oricum, a doua zi sau peste o lună.
+   Ăsta singur ar fi suficient.
+2. **Punctul de acțiune** — dialogul „Acorzi dreptul de validare lui X (Nivel 2)?" din cardul Asistenți e chiar
+   momentul în care granița se trece. `set_permisiuni` întoarce `patru_ochi_intra_in_vigoare`, iar ecranul
+   anunță efectul: „Validarea în doi intră acum în vigoare: de aici înainte, cine pregătește o declarație nu o
+   mai poate aproba singur. Declarațiile deja în coadă trec la al doilea validator." Marchează MOMENTUL.
+3. **Coada însăși** — intro-ul are acum TREI texte, nu două. „Patru-ochi e dezactivat" pe o politică doar
+   suspendată contrazicea indicatorul și îl lăsa pe patron să creadă că i s-a stins setarea; acum spune golul,
+   cauza și ieșirea (DS cap.6): „pornită, dar suspendată: ești singurul validator… reintră în vigoare de îndată
+   ce un coleg primește dreptul de validare (cardul Asistenți)."
+
+**Declarațiile deja în coadă la trecerea `posibil` false→true — ALEGEREA: RETROACTIV.** Cele 3 declarații
+pregătite de Elena NU se blochează și NU rămân aprobabile de ea: devin aprobabile de **al doilea validator**
+(care nu le-a pregătit), iar Elena nu le mai poate auto-aproba — exact scopul patru-ochi. Enforcement-ul e
+FĂRĂ STARE (calculat la clic), deci dacă `posibil` scade iar la false, Elena redevine capabilă: auto-vindecare
+în ambele sensuri, fără flag per-item.
+*De ce nu „grandfather"*: patru-ochi e un control ÎMPOTRIVA depunerii nevalidate; a scuti lucrările în curs ar
+lăsa tocmai munca nevalidată să treacă exact în ziua în care patronul a pornit controlul — opusul intenției.
+Plus: un flag per-item ar fi logică paralelă (interzisă).
+*Și nu se blochează retroactiv*: cu `posibil` = ≥2 validatori, al doilea validator există prin definiția
+tranziției — deci există cine să le aprobe. Fundătura din formula veche era singura cale prin care „retroactiv"
+însemna „blocat"; ea a dispărut.
+*Se AFIȘEAZĂ*: coada Elenei arată cele 3 ca „ai pregătit-o tu — o validează altcineva", iar acum „altcineva"
+chiar există. Captură privită: `frontend_test/po_2_efectiv_coada.png`.
+
+**Temei** (regula nu exista numită; derivă din principii păzite): DS **v2.56 / v2.59** (no-silent-drop /
+no-silent-overwrite: suprascrierea tăcută = alegere conștientă); DS **v2.32** („NU se acceptă tacit … fără să
+știe = interzis"); DECIZII **:1168** (capability gardată pe nr. validatori, calculată live, „retry când apar
+validatori — altfel un finding ar fi suprimat fără să-l fi văzut cineva"). Consistent cu fluxul de educație
+existent (opt-in explicit la ≥2 validatori, `educatie_de_aratat`).
+
+**Reparație reală, fără logică paralelă.** Întrebarea „cine poate aproba în acest cabinet" era pusă în TREI
+locuri cu trei interogări proprii (`coada_api` pentru aplicabilitate, `asistenti_api._nr_validatori` pentru
+educație, `notificari_api.validatorii_cabinetului` pentru destinatari). Toate trei derivă acum din
+`coada_api.validatori_activi`. Gard: `test_o_singura_definitie_a_multimii_de_validatori`.
+
+**Proba.** Gărzi RED-probate: `core/test_patru_ochi_efectiv.py` (14 teste — 8 picau pe HEAD, între care
+fundătura și adevărul indicatorului) + extinderea `core/test_a11y_contrast_tokens.py` (ambele culori ale
+indicatorului pe subbara; mutație `--ardezie`→`--verde-inchis` prinsă) + mutații pe `notificari_api` și pe
+pragul `>= 2` (prinse). Traseu live pe cabinetul 1968, captură PRIVITĂ, trei stări pe același ecran:
+`po_0_inainte_*` (bifa mincinoasă, cod vechi simulat), `po_1_suspendat_*` (text onest, `rgb(43,52,64)`),
+`po_2_efectiv_*` (bifa adevărată, card „De validat", zero butoane de aprobare pentru pregătitoare).
+axe 0 și pe desktop și pe Pixel 5 (body=393), țintă indicator 54px ≥ AA 2.5.8.
+
+**Stare: GARDATĂ.**
+
+## 20.08.2026 — D390: checksum-ul VIES se aplică pe TOATE liniile, nu doar pe cele din facturi (front Î2)
+
+**Context.** `checksum_vies` era chemat DOAR de `_facturi_ic` (latura auto-derivată din facturi). Bucla
+liniilor MANUALE din `calcul_d390` verifica exclusiv lungimea `codO` (>12), nu și cifra de control. Deci o
+operațiune introdusă de contabil în ecranul D390 sau derivată din D301 intra în declarație cu un cod de TVA
+nevalidat, iar contabilul afla abia din respingerea de la DUK regula R24.1. Aceeași informație, două măsuri,
+după calea de intrare — clasa „preview ≠ salvare" mutată pe „auto ≠ manual".
+
+**Decizia.** Diagnosticul se face în `calcul_d390`, la SURSA comună a ambelor căi (nu la fiecare punct de
+scriere — asta ar fi fost a treia copie). Caracterul rămâne **NEBLOCANT**, identic cu latura auto și explicit
+motivat în docstringul lui `d390.valideaza`: o operațiune obligatorie raportată cu cod invalid e mai bună
+decât una dispărută tăcut; partenerul e NUMIT, DUK decide. Excepție deliberată: `codO` gol pe tip A/S nu e
+raportat ca invalid — A și S pot omite legal codul (vezi `valideaza`), iar lipsa nu e greșeală de cifră de
+control. Verificarea la introducere din ecranul D301 (`d301_operatiuni_api.salveaza`) rămâne — e mai devreme
+și în limba contabilului; cea din `calcul_d390` e plasa care prinde toate căile.
+
+**Proba.** `core/test_d390_checksum_manual.py` (5 teste, RED pe HEAD: linia manuală cu DE136695975 nu producea
+niciun diagnostic, iar cele două căi dădeau verdicte diferite pe același cod). Linia reală a lui tenant_006
+(iunie 2026, cod A, DE136695976, bază 52.261) rămâne curată — zero fals-pozitiv, D390 în continuare DUK-valid.

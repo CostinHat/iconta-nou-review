@@ -5188,10 +5188,11 @@ class PatruOchiIn(BaseModel):
 
 @app.get("/eu/patru-ochi")  # po_stare_v1
 def eu_patru_ochi_stare(ctx=Depends(cere_cabinet)):
-    with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute("SELECT patru_ochi_activ FROM public.accounting_firms WHERE id=%s", (ctx["firm"],))
-        r = cur.fetchone()
-    return {"activ": bool(r and r[0])}
+    """[po_efectiv_v1] {activ, posibil, efectiv} din SURSA UNICA folosita si de enforcement
+    (core.coada_api.patru_ochi_stare). Inainte intorcea DOAR flagul brut `activ`, iar UI-ul
+    afisa "validarea in doi ✓" pe un cabinet cu un singur validator - divergenta front<->back."""
+    with db.get_conn() as conn:
+        return coada_api.patru_ochi_stare(conn, ctx["firm"])
 
 @app.post("/eu/patru-ochi")
 def eu_patru_ochi(date: PatruOchiIn, ctx=Depends(cere_cabinet)):

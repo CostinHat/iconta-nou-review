@@ -138,18 +138,42 @@ def _stare_curenta(cur, coada_id):
 # ============================================================
 #  APROBARE / RESPINGERE — DB (verifică tranziția)
 # ============================================================
-def patru_ochi_posibil(conn, cabinet_id):
-    """Posibil DOAR daca exista pregatitor + validator pe persoane distincte (competente)."""
+def validatori_activi(conn, cabinet_id, exclude_id=None):
+    """[po_efectiv_v1] SURSA UNICA a multimii „cine poate aproba in acest cabinet" -> lista de id-uri.
+
+    Aceeasi intrebare era pusa in TREI locuri, cu trei interogari proprii (coada_api: count pentru
+    aplicabilitate; asistenti_api._nr_validatori: count pentru educatie; notificari_api: lista de
+    destinatari). Trei copii care puteau diverge tacit: educatia ar fi propus patru-ochi acolo unde
+    enforcement-ul nu-l aplica, sau notificarea ar fi mers la cine nu poate aproba. Acum toate trei
+    deriva de aici."""
     with conn.cursor() as cur:
         cur.execute(
-            "SELECT COUNT(*) FILTER (WHERE poate_pregati), "
-            "       COUNT(*) FILTER (WHERE poate_valida), "
-            "       COUNT(*) "
-            "  FROM public.users "
-            " WHERE accounting_firm_id = %s AND activ = true AND (poate_pregati OR poate_valida)",
+            "SELECT id FROM public.users "
+            " WHERE accounting_firm_id = %s AND activ = true AND poate_valida = true",
             (cabinet_id,))
-        r = cur.fetchone()
-    return int(r[0]) >= 1 and int(r[1]) >= 1 and int(r[2]) >= 2
+        ids = [r[0] for r in cur.fetchall()]
+    if exclude_id is not None:
+        ids = [i for i in ids if i != exclude_id]
+    return ids
+
+
+def patru_ochi_posibil(conn, cabinet_id):
+    """APLICABILITATE (axa automata, calculata live): patru-ochi se poate aplica DOAR daca
+    cabinetul are >=2 validatori activi.
+
+    De ce >=2 VALIDATORI, si nu formula veche ">=1 pregatitor + >=1 validator + >=2 oameni"
+    (pana la 20.08.2026): enforcement-ul (`aproba` mai jos) blocheaza EXCLUSIV auto-aprobarea
+    (pregatitor == aprobator). Cu un SINGUR validator, orice lucrare pregatita chiar de el nu mai
+    poate fi aprobata de nimeni -> DEADLOCK, fara iesire din aplicatie.
+    Scenariul concret care il producea (cabinet 1968, audit tenant_006): patron singur validator,
+    3 declaratii pregatite de el in coada; se angajeaza un asistent DOAR cu `poate_pregati` ->
+    formula veche dadea posibil=True (1 pregatitor, 1 validator, 2 oameni) si cele 3 declaratii
+    deveneau neaprobabile de oricine.
+    Formula noua nu pierde nicio protectie: un al doilea om FARA drept de validare nu putea
+    oricum aproba nimic, deci vechea conditie nu gardase niciodata vreo lucrare in plus.
+    Vezi DECIZII 20.08.2026 (patru-ochi: politica explicita x aplicabilitate automata).
+    """
+    return len(validatori_activi(conn, cabinet_id)) >= 2
 
 
 def patru_ochi_activ(conn, cabinet_id):
@@ -159,6 +183,23 @@ def patru_ochi_activ(conn, cabinet_id):
                     (cabinet_id,))
         r = cur.fetchone()
     return bool(r[0]) if r and r[0] is not None else False
+
+
+def patru_ochi_stare(conn, cabinet_id):
+    """SURSA UNICA a starii patru-ochi - consumata SI de enforcement SI de UI (GET /eu/patru-ochi).
+
+      activ   = POLITICA explicita a patronului (flag persistat, setat din UI)
+      posibil = APLICABILITATEA aritmetica, calculata live (>=2 validatori activi)
+      efectiv = activ AND posibil = ce se aplica DE FAPT
+
+    Exista pentru ca UI-ul citea flagul brut `activ` si afisa "Validarea in doi ✓" pe un cabinet
+    cu un singur validator, in timp ce `aproba` folosea deja `activ AND posibil` -> indicator
+    MINCINOS (audit tenant_006 / cabinet Prisma 1968, 20.08.2026). Front si back nu mai pot
+    diverge: amandoua citesc de aici.
+    """
+    activ = patru_ochi_activ(conn, cabinet_id)
+    posibil = patru_ochi_posibil(conn, cabinet_id)
+    return {"activ": activ, "posibil": posibil, "efectiv": bool(activ and posibil)}
 
 
 def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None):
@@ -183,7 +224,7 @@ def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None):
                 and str(creat_de) == str(aprobat_de))
         )
         # [p54_4ochi] patru-ochi se aplica doar daca patronul l-a activat SI e posibil pe competente
-        if _vinovat and patru_ochi_activ(conn, _cabinet_id) and patru_ochi_posibil(conn, _cabinet_id):
+        if _vinovat and patru_ochi_stare(conn, _cabinet_id)["efectiv"]:
             return {"ok": False, "cod": "PATRU_OCHI",
                     "mesaj": "nu poți aproba o declarație pe care ai pregătit-o tu însuți "
                              "(control intern: pregătirea și validarea se fac de persoane diferite)"}

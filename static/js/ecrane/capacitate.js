@@ -3,7 +3,7 @@
 // (incarcare per procesator), 3) timp mediu pe tip de declaratie.
 // Regula 4: control/comparatii doar la cabinet, niciodata la asistent.
 import { api, esc } from "../api.js?v=a7f9e80ae0";
-import { randeazaAsistenti } from "./asistenti.js?v=7561dc1cb1";
+import { randeazaAsistenti } from "./asistenti.js?v=69b81e4ede";
 
 function celulaCifra(valoare, eticheta, accent) {
   const c = accent || "#1a1d21";

@@ -30,16 +30,13 @@ def adauga_multi(conn, user_ids, tip, text, link=None):
 
 
 def validatorii_cabinetului(conn, cabinet_id, exclude_id=None):
-    """Id-urile validatorilor activi (poate_valida), optional fara unul (pregatitorul)."""
-    with conn.cursor() as cur:
-        cur.execute(
-            "SELECT id FROM public.users "
-            " WHERE accounting_firm_id = %s AND poate_valida = true AND activ = true",
-            (cabinet_id,))
-        ids = [r[0] for r in cur.fetchall()]
-    if exclude_id is not None:
-        ids = [i for i in ids if i != exclude_id]
-    return ids
+    """Id-urile validatorilor activi (poate_valida), optional fara unul (pregatitorul).
+
+    [po_efectiv_v1] Delegat la core.coada_api.validatori_activi: destinatarii notificarii de
+    validare sunt EXACT multimea pe care se calculeaza aplicabilitatea patru-ochi. Doua interogari
+    separate puteau diverge - s-ar fi notificat cine nu poate aproba, sau invers."""
+    from core.coada_api import validatori_activi as _va
+    return _va(conn, cabinet_id, exclude_id=exclude_id)
 
 
 def lista(conn, user_id, doar_necitite=False, limita=50):

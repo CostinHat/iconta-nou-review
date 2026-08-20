@@ -40,6 +40,12 @@ def _apijs():
     return open("static/js/api.js", encoding="utf-8").read() if os.path.exists("static/js/api.js") else ""
 
 
+def _sursa_cabinet():
+    import os
+    cale = "static/js/ecrane/cabinet.js"
+    return open(cale, encoding="utf-8").read() if os.path.exists(cale) else ""
+
+
 def _val(pattern, text):
     m = re.search(pattern, text)
     return m.group(1) if m else None
@@ -141,3 +147,42 @@ def test_mig_sold_cont_baza_contrast_pe_panou():
     assert col, "culoarea de baza .mig-sold-cont nu e un hex literal (revenit la var(--albastru)? = 3.86 pe panou)"
     r = _ratio(col, _PANOU_CF)
     assert r >= 4.5, ".mig-sold-cont baza (%s) pe panoul de preview %s = %.2f < 4.5 (coduri de cont in migrare)" % (col, _PANOU_CF, r)
+
+
+# [po_efectiv_v1 20.08.2026 - audit tenant_006] Indicatorul patru-ochi din subbara are acum DOUA
+# stari, deci DOUA culori pe fundalul barii (#dfe4ea): „in vigoare" = --verde-inchis (verdele
+# --verde #1d7a4d dadea 4.16 aici, de-aia exista --verde-inchis din v2.42) si „suspendat" =
+# --ardezie (NU verde: politica e pornita, dar nu se aplica). Gardul le recalculeaza pe amandoua
+# din tokeni - daca cineva readuce indicatorul pe un token care cade sub AA, pica.
+_BARA_SUBBARA = "#dfe4ea"
+_TOKENI_INDICATOR_PO = ("--verde-inchis", "--ardezie")
+
+
+def test_indicator_patru_ochi_contrast_pe_subbara():
+    css = _css()
+    if not css:
+        pytest.skip("stil.css absent")
+    js = _sursa_cabinet()
+    rele = []
+    for tok in _TOKENI_INDICATOR_PO:
+        assert "var(%s)" % tok in js, (
+            "indicatorul patru-ochi nu mai foloseste %s - gardul de contrast e ancorat pe el "
+            "(daca s-a schimbat culoarea, re-ancoreaza AICI, nu sterge testul)" % tok)
+        col = _val(r"%s:\s*(#[0-9a-fA-F]{6})" % tok, css)
+        assert col, "tokenul %s negasit in stil.css" % tok
+        r = _ratio(col, _BARA_SUBBARA)
+        if r < 4.5:
+            rele.append("%s (%s) pe subbara %s = %.2f < 4.5" % (tok, col, _BARA_SUBBARA, r))
+    assert not rele, "\n".join(rele)
+
+
+def test_indicator_suspendat_nu_e_verde():
+    """Adevarul indicatorului nu e doar textual: starea suspendata NU are voie sa poarte verdele
+    de succes - verdele e afirmatia „controlul functioneaza"."""
+    js = _sursa_cabinet()
+    m = re.search(r"if \(efectiv\) \{(.*?)\} else \{(.*?)\}", js, re.S)
+    assert m, "ramurile efectiv/suspendat ale indicatorului negasite in cabinet.js"
+    ramura_suspendat = m.group(2)
+    assert "var(--verde" not in ramura_suspendat, (
+        "starea suspendata foloseste un token verde: %r" % (ramura_suspendat.strip()[:200],)
+    )

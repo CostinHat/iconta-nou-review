@@ -269,6 +269,21 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
             diag.append({"categorie": "codO_lung", "den": den, "cui": (tara + cod),
                          "directie": "manual", "tara": tara, "cod": cod, "baza": baza_op,
                          "motiv": "codO manual are %d caractere (max 12) - trunchierea ar CORUPE numărul de TVA" % len(cod)})
+        elif tara and cod:
+            # [checksum manual 20.08.2026] Bucla manuala sarea peste checksum_vies - il chema DOAR
+            # `_facturi_ic` (latura auto). Deci o linie introdusa de contabil in ecranul D390 sau
+            # derivata din D301 ajungea in declaratie cu un cod TVA nevalidat, iar contabilul afla
+            # abia din respingerea de la DUK regula R24.1. Acelasi diagnostic, aceeasi categorie,
+            # acelasi caracter NEBLOCANT ca pe facturi (vezi `valideaza`: cod invalid raportat >
+            # operatiune obligatorie disparuta tacit).
+            # `tara and cod`: A/S pot omite legal codO (vezi `valideaza`) - un codO gol NU e un cod
+            # gresit, deci nu se raporteaza ca invalid.
+            _st, _mo = checksum_vies(tara, cod)
+            if _st == "invalid":
+                diag.append({"categorie": "checksum", "den": den, "cui": (tara + cod),
+                             "directie": "manual", "tara": tara, "cod": cod, "baza": baza_op,
+                             "motiv": "cod TVA %s%s invalid: %s (va fi respins de DUK regula R24.1)"
+                                      % (tara, cod, _mo)})
         k = (tip, tara, cod, den)
         ops[k] = ops.get(k, Decimal("0")) + baza_op
         _sursa.setdefault(k, set()).add("manual/D301")

@@ -38,7 +38,8 @@ export async function randeazaValidat(corp, nav) {
   let coada = [];
   let firme = [];
   let perm = { poate_valida: false, poate_depune: false, rol: null };
-  let patruOchi = false;
+  let patruOchi = false;          // efectiv = politica AND aplicabilitate
+  let patruOchiPolitica = false;  // politica bruta a patronului (pentru a distinge „oprit" de „suspendat")
   try {
     const [rc, rf, rp, rpo] = await Promise.all([
       api.get("/coada"),
@@ -49,7 +50,11 @@ export async function randeazaValidat(corp, nav) {
     coada = (rc && rc.coada) || [];
     firme = (rf && rf.tenants) || [];
     if (rp) perm = rp;
-    patruOchi = !!(rpo && rpo.activ);
+    // [po_efectiv_v1] `efectiv` (politica AND aplicabilitate), nu flagul brut: pe un cabinet cu un
+    // singur validator ecranul arata "o valideaza altcineva" cu un "altcineva" inexistent, iar
+    // butoanele de aprobare lipseau desi backendul permitea aprobarea.
+    patruOchi = !!(rpo && rpo.efectiv);
+    patruOchiPolitica = !!(rpo && rpo.activ);
   } catch {
     corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca coada.</p>`;
     return;
@@ -57,9 +62,15 @@ export async function randeazaValidat(corp, nav) {
   const laSenior = coada.filter((c) => c.stare === "la_senior");
   const aprobate = coada.filter((c) => c.stare === "aprobata");
 
+  // [po_efectiv_v1] TREI texte, nu doua: „oprit" si „suspendat" nu sunt acelasi lucru. Pe un cabinet
+  // solo cu politica PORNITA, „Patru-ochi e dezactivat" contrazicea indicatorul din subbara
+  // („suspendata") si il lasa pe patron sa creada ca i s-a stins setarea. Politica persista; ce
+  // lipseste e al doilea validator - si se spune, cu iesirea (DS cap.6, stare goala: gol + cauza + iesire).
   const intro = patruOchi
     ? "Declarațiile pregătite de asistenți așteaptă validarea ta înainte de depunere. Nimic nu se depune nevalidat."
-    : "Patru-ochi e dezactivat: pregătești și depui singur. Declarațiile din coadă așteaptă depunerea.";
+    : (patruOchiPolitica
+      ? "Validarea în doi e pornită, dar suspendată: ești singurul validator din cabinet, așa că pregătești și depui singur. Reintră în vigoare de îndată ce un coleg primește dreptul de validare (cardul Asistenți)."
+      : "Patru-ochi e dezactivat: pregătești și depui singur. Declarațiile din coadă așteaptă depunerea.");
   corp.innerHTML = `
     <p class="mig-intro">${intro}</p>
     <div id="val-deValidat"></div>

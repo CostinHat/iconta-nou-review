@@ -254,31 +254,24 @@ def detalii_actor(conn, cabinet_id, user_id):
 #  EDITARE PERMISIUNI — DB
 # ============================================================
 def _nr_validatori(conn, cabinet_id):
-    with conn.cursor() as cur:
-        cur.execute(
-            "SELECT COUNT(*) FROM public.users "
-            " WHERE accounting_firm_id = %s AND poate_valida = true AND activ = true",
-            (cabinet_id,))
-        return int(cur.fetchone()[0])
+    """[po_efectiv_v1] o singura definitie a multimii (core.coada_api.validatori_activi)."""
+    from core.coada_api import validatori_activi as _va
+    return len(_va(conn, cabinet_id))
 
 
 def _po_posibil(conn, cabinet_id):
-    with conn.cursor() as cur:
-        cur.execute(
-            "SELECT COUNT(*) FILTER (WHERE poate_pregati), "
-            "       COUNT(*) FILTER (WHERE poate_valida), COUNT(*) "
-            "  FROM public.users "
-            " WHERE accounting_firm_id = %s AND activ = true AND (poate_pregati OR poate_valida)",
-            (cabinet_id,))
-        r = cur.fetchone()
-    return int(r[0]) >= 1 and int(r[1]) >= 1 and int(r[2]) >= 2
+    """[po_efectiv_v1] Aplicabilitatea patru-ochi are o SINGURA definitie in tot codul:
+    core.coada_api.patru_ochi_posibil. Aici era o COPIE a interogarii (logica paralela): cele
+    doua puteau diverge tacit, iar educatia ar fi propus patru-ochi pe un cabinet unde
+    enforcement-ul nu-l aplica."""
+    from core.coada_api import patru_ochi_posibil as _pos
+    return _pos(conn, cabinet_id)
 
 
 def _po_activ(conn, cabinet_id):
-    with conn.cursor() as cur:
-        cur.execute("SELECT patru_ochi_activ FROM public.accounting_firms WHERE id = %s", (cabinet_id,))
-        r = cur.fetchone()
-    return bool(r[0]) if r and r[0] is not None else False
+    """[po_efectiv_v1] idem: politica se citeste dintr-un singur loc."""
+    from core.coada_api import patru_ochi_activ as _act
+    return _act(conn, cabinet_id)
 
 
 def patru_ochi_seteaza(conn, cabinet_id, activ):
@@ -350,9 +343,16 @@ def set_competente_proprii(conn, user_id, preg, val, dep):
 
 
 def set_permisiuni(conn, cabinet_id, user_id, preg, val, dep):
-    """Setează cele 3 flaguri pe un actor al cabinetului."""
+    """Setează cele 3 flaguri pe un actor al cabinetului.
+
+    [po_efectiv_v1] Intoarce si `patru_ochi` = starea DUPA schimbare + `patru_ochi_intra_in_vigoare`
+    = True cand exact aceasta salvare a facut patru-ochi sa devina efectiv (posibil false->true, cu
+    politica deja pornita). Trecerea granitei NU e tacuta: ecranul o anunta in punctul de actiune,
+    peste indicatorul persistent din subbara. Vezi DECIZII 20.08.2026."""
+    from core.coada_api import patru_ochi_stare as _po
     if not _actor_din_cabinet(conn, cabinet_id, user_id):
         return {"ok": False, "cod": "actor_inexistent"}
+    inainte = _po(conn, cabinet_id)
     with conn.cursor() as cur:
         cur.execute(
             """
@@ -362,7 +362,9 @@ def set_permisiuni(conn, cabinet_id, user_id, preg, val, dep):
             """,
             (bool(preg), bool(val), bool(dep), user_id, cabinet_id),
         )
-    return {"ok": True}
+    dupa = _po(conn, cabinet_id)
+    return {"ok": True, "patru_ochi": dupa,
+            "patru_ochi_intra_in_vigoare": bool(dupa["efectiv"] and not inainte["efectiv"])}
 
 
 # ============================================================

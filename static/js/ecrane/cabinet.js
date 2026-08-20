@@ -14,8 +14,8 @@ import { randeazaRecomanda } from "./recomanda.js?v=4dcc56e1ec"; // [p31_recoman
 import { randeazaRaporteaza } from "./raporteaza.js?v=f800de9e77"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js?v=8c32cbb767"; // [p63_pachete]
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
-import { randeazaValidat } from "./validat.js?v=4e660f4886";
-import { randeazaAsistenti } from "./asistenti.js?v=7561dc1cb1";
+import { randeazaValidat } from "./validat.js?v=1aa4c6b904";
+import { randeazaAsistenti } from "./asistenti.js?v=69b81e4ede";
 import { randeazaCapacitate } from "./capacitate.js?v=5159e31f44"; // [p71_capacitate]
 import { randeazaTipare } from "./tipare.js?v=e88a7f5eba"; // [p72_tipare]
 
@@ -390,7 +390,10 @@ async function actualizeazaValidat(grila) {
   try {
     const [rc, rpo] = await Promise.all([api.get("/coada"), api.get("/eu/patru-ochi")]);
     const coada = (rc && rc.coada) || [];
-    const patruOchi = !!(rpo && rpo.activ);
+    // [po_efectiv_v1] `efectiv` = politica AND aplicabilitate (aceeasi stare pe care o foloseste
+    // enforcement-ul la aprobare). Pe `activ` brut, cardul zicea "De validat" pe un cabinet cu un
+    // singur validator, unde nimeni nu are pe cine astepta.
+    const patruOchi = !!(rpo && rpo.efectiv);
     const laSenior = coada.filter((c) => c.stare === "la_senior").length;
     const aprobate = coada.filter((c) => c.stare === "aprobata").length;
     _coadaTitlu = patruOchi ? "De validat" : "De depus";
@@ -454,22 +457,39 @@ async function actualizeazaRaportari(grila) {
 
 
 // [p51_edu] banner educatie patru-ochi (apare cand creste nr de validatori)
+// [po_efectiv_v1 20.08.2026] Indicatorul are TREI stari, nu doua, fiindca patru-ochi are doua axe:
+// POLITICA patronului (`activ`, explicita, persistenta) x APLICABILITATE (`posibil`, aritmetica,
+// calculata live). Pana azi afisa "Validarea in doi ✓" ori de cate ori `activ` — MINCINOS pe un
+// cabinet cu un singur validator, unde enforcement-ul permitea deja auto-aprobarea. Un cabinet care
+// CREDE ca are control in doi si n-are e mai rau decat o coada blocata: bifa se da DOAR pe `efectiv`,
+// iar starea suspendata se NUMESTE (trecerea granitei nu e tacuta). Vezi DECIZII 20.08.2026.
 async function _indicatorPatruOchi() {  /* po_indicator_v1 */
   const bara = document.querySelector(".subbara");
   if (!bara || bara.querySelector("#po-indicator")) return;
   let st;
   try { st = await api.get("/eu/patru-ochi"); } catch { return; }
-  if (!st || !st.activ) return;
+  if (!st || !st.activ) return;            // politica oprita -> nimic de aratat
+  const efectiv = !!st.efectiv;            // politica AND aplicabilitate = ce se aplica DE FAPT
   const el = document.createElement("button");
   el.id = "po-indicator";
   el.className = "subbara-edu btn-link";
-  el.style.color = "var(--verde-inchis)";  // a11y: verde care trece 4.5:1 pe bara (DS v2.42)
   el.style.fontWeight = "600";
-  el.textContent = "Validarea \u00een doi asisten\u021bi \u2713";
-  el.title = "Apas\u0103 pentru a dezactiva";
-  el.setAttribute("aria-label", el.textContent + " — apasă pentru a dezactiva");  // a11y: info title si in numele accesibil
+  if (efectiv) {
+    el.style.color = "var(--verde-inchis)";  // a11y: verde care trece 4.5:1 pe bara (DS v2.42)
+    el.textContent = "Validarea \u00een doi asisten\u021bi \u2713";
+    el.title = "Apas\u0103 pentru a dezactiva";
+  } else {
+    // NU verde si FARA bifa: politica e pornita, dar nu e in vigoare. --ardezie = 9.85:1 pe bara #dfe4ea.
+    el.style.color = "var(--ardezie)";
+    el.textContent = "Validarea \u00een doi: suspendat\u0103 \u2014 e\u0219ti singurul validator";
+    el.title = "R\u0103m\u00e2ne pornit\u0103 \u0219i reintr\u0103 \u00een vigoare c\u00e2nd al doilea coleg prime\u0219te dreptul de validare. Apas\u0103 pentru a o opri de tot.";
+  }
+  el.setAttribute("aria-label", el.textContent + " \u2014 " + el.title);  // a11y: info title si in numele accesibil
   el.addEventListener("click", () => {
-    confirmaCaseta(el.parentElement || el, "Dezactivezi validarea \u00een doi? Declara\u021biile vor putea fi depuse de cine le-a preg\u0103tit.", async () => {  // audit_cab_lot2_v1
+    const _intrebare = efectiv
+      ? "Dezactivezi validarea \u00een doi? Declara\u021biile vor putea fi depuse de cine le-a preg\u0103tit."
+      : "Opre\u0219ti de tot validarea \u00een doi? Acum e suspendat\u0103 (e\u0219ti singurul validator), dar dac\u0103 o opre\u0219ti NU va reintra \u00een vigoare c\u00e2nd apare al doilea validator.";
+    confirmaCaseta(el.parentElement || el, _intrebare, async () => {  // audit_cab_lot2_v1
       try {
         await api.post("/eu/patru-ochi", { activ: false });
         el.remove();
@@ -479,7 +499,7 @@ async function _indicatorPatruOchi() {  /* po_indicator_v1 */
            elementul disparea oricum. Control intern - nu are voie sa taca. */
         arataMesaj(el, (e && e.mesaj) || "Nu am putut salva setarea. Incearca din nou.", "eroare");
       }
-    }, { textOk: "Dezactiveaz\u0103" });
+    }, { textOk: efectiv ? "Dezactiveaz\u0103" : "Opre\u0219te de tot" });
   });
   bara.appendChild(el);
 }
