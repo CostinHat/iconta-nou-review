@@ -9903,3 +9903,56 @@ bilanț și cel de D300.
 **Reziduul sondei, șters.** Sondele mele de audit au lăsat 24 de rânduri în `state_plata` și 2 NIR-uri goale
 pe tenant_001. Șterse țintit, pe cele patru marcaje de creare, cu refuz dacă s-ar fi găsit altceva decât se
 aștepta. Motivul deciziei (Costin): „arată ca istoric de salarizare real și nu sunt".
+
+## 20.08.2026 — DIVERGENȚĂ podea part-time: trei module, două formule, iar al doilea aviz a fost aliniat la primul
+
+Găsită trasând impozitul unui salariat de pe tenant_001 (întrebare Costin). E aceeași rădăcină cu **D1**,
+văzută din interiorul aplicației, nu dinspre arbitru — și o întărește cu o sursă independentă.
+
+**Podeaua de suprataxare part-time (CF art.146 alin.(5^6) CAS / art.168 alin.(6^1) CASS) e calculată în
+trei locuri:**
+
+| modul | linie | formulă | valoare 08/2026 |
+|---|---|---|---|
+| `core/salarizare.py` | 309 | `(sm - facilitate_val) * _prorata` | **4.125** |
+| `core/d112.py` | 683 | `prag_pt = float(sm)` | **4.325** |
+| `core/d112_reconciliere.py` | sub-caz 1c-PT | `prag = sm` | **4.325** |
+| DUKIntegrator (arbitrul) | regula SP1B4_1 | `sm - 300` (constantă înghețată în spec) | **3.750** |
+
+**Efect măsurat**, PARTTIME SUBFLOOR (brut 3.000, 4h/zi), august 2026:
+
+| | fluturaș | D112 | diferență |
+|---|---|---|---|
+| CAS suportat de angajator | 281,25 | `B4_8D` = 331 | **+49,75** |
+| CASS suportat de angajator | 112,50 | `B4_6D` = 133 | **+20,50** |
+
+**70,25 lei/lună** între ce spune fluturașul că datorează angajatorul și ce declară D112 — pentru același
+salariat, aceeași lună. Salariatului i se reține corect în ambele (`B4_8` = 750 = fluturașul); divergența e
+strict pe partea suportată de angajator.
+
+**Cine are dreptate.** `salarizare.py`, și își citează temeiul la linia 299: *„OUG 156/2024 art.LXVI alin.(5)
+= OUG 89/2025 art.III — derogarea «NIVELUL... SE DIMINUEAZĂ cu 300 lei» REDEFINEȘTE nivelul (3750 în S1 /
+4125 în S2)"*. Cifra 3.750 e exact ce calculează DUK pentru semestrul 1. Deci modulul de salarizare
+coincide cu arbitrul; celelalte două s-au rupt de amândouă pe 06.08.2026.
+
+**Partea gravă: al doilea aviz a fost aliniat la ceea ce trebuia să verifice.**
+`core/d112_reconciliere.py` există exact ca a doua cale independentă — SQL propriu, rotunjire proprie,
+interdicție de a importa `salarizare`/`d112` (verificată pe lanțul tranzitiv într-un test). Sub-cazul
+**1c-PT** (part-time, lună întreagă, ne-scutit, fără CM, fără tichete) e declarat *„reconciliere COMPLETĂ"*
+pe CAS+CASS. Ar fi trebuit să prindă divergența în ziua în care a apărut. N-a prins-o fiindcă a fost
+schimbat în ACELAȘI commit, cu comentariul scris pe el:
+
+> `# [fix part-time-floor 06.08.2026] floor = salariul minim INTEGRAL ... Aliniat cu d112.pull prag_pt.`
+
+Docstring-ul modulului (l.35) încă spune *„calea 2 recalculează prag = **sm - facilitate** INDEPENDENT"* —
+documentația a rămas pe formula veche, codul nu. Un modul care se contrazice pe el însuși.
+
+**Ce înseamnă asta pentru clasa de gărzi.** O a doua cale nu e independentă prin construcție, ci prin
+DISCIPLINĂ: în ziua în care cele două nu coincid, alegerea corectă e să duci întrebarea la arbitru, nu să
+muți verificatorul peste verificat. Aici s-a mutat verificatorul. Rezultatul: o gardă vie, verde, care
+păzea o cifră greșită timp de două săptămâni.
+
+**Consecință pentru implementarea D1** (decisă deja: urmează arbitrul): reparația NU e „scade 300", ci
+**`prag_pt = sm - fac`** în `d112.py` **ȘI** revenirea lui `d112_reconciliere.py` la aceeași formă. Un
+singur schimb aliniază D112 simultan cu propriul modul de salarizare, cu a doua cale, și cu DUK. Dacă se
+schimbă doar `d112.py`, reconcilierea va începe să pice — corect, dar în direcția opusă.
