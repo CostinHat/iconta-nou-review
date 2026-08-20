@@ -9956,3 +9956,31 @@ păzea o cifră greșită timp de două săptămâni.
 **`prag_pt = sm - fac`** în `d112.py` **ȘI** revenirea lui `d112_reconciliere.py` la aceeași formă. Un
 singur schimb aliniază D112 simultan cu propriul modul de salarizare, cu a doua cale, și cu DUK. Dacă se
 schimbă doar `d112.py`, reconcilierea va începe să pice — corect, dar în direcția opusă.
+
+## 20.08.2026 — D1 IMPLEMENTAT: podeaua part-time revine la `sm − facilitate`, în ambele căi
+
+Decizia (Costin, azi): **urmează arbitrul**. Reparat în `core/d112.py:683` (`prag_pt = sm - fac`) ȘI în
+`core/d112_reconciliere.py` (`prag = sm - fac_val`) — a doua cale trebuia readusă odată cu prima, altfel
+ar fi început să pice în direcția opusă.
+
+**Nu a fost o scăpare pe 06.08 — a fost o alegere.** Testul de atunci o scrie negru pe alb:
+*„NOTA: DUK dă atenționare pe 4050 (validatorul scade facilitatea = 3750) — divergență lege↔validator,
+urmărim legea (decizie Costin)."* Deci divergența cu arbitrul a fost văzută și tranșată în favoarea legii.
+Ce **nu** s-a văzut atunci: (a) structura ANAF pune `sm=sm-300` ÎNĂUNTRUL formulei `part_time`
+(`structura_D112_0726_030826.txt` l.3128-3129 și l.3157-3158), deci derogarea REDEFINEȘTE nivelul de
+referință în loc să acorde o facilitate — ceea ce slăbește chiar argumentul „facilitatea e doar pentru
+normă întreagă"; (b) `core/salarizare.py:309` a rămas pe forma corectă, deci fluturașul și D112 au
+declarat sume diferite pentru același salariat, 70,25 lei/lună, timp de două săptămâni.
+
+**PROBĂ la arbitru** (t001, PARTTIME SUBFLOOR): pe **ianuarie 2026** (4050 − 300 = 3750) D112 e acum
+`stare=valid`, **zero erori** — atenționarea prezentă pe fiecare D112 din 06.08 încoace a dispărut. Pe
+august 2026 (4325 − 200 = 4125) atenționarea rămâne, fiindcă spec-ul ANAF îngheață `sm=4050` și
+validatorul calculează literal 3750: **[EXTERN]**, declarat. Diferența e că acum valoarea e corectă și
+semnalată, nu greșită și semnalată. `B4_8D`/`B4_6D` = 281/113 coincid cu fluturașul (281,25 / 112,50).
+
+**Gard nou: `core/test_cale_a_doua.py`.** Două colțuri: (1) nicio cale de verificare nu are voie să
+declare că a fost „aliniată" la modulul verificat — zero admis, fără baseline (o linie care CITEAZĂ o
+aliniere trecută poartă `# istoric-aliniere-ok:`, ca `# upsert-ok:`); (2) dacă verificatorul și
+verificatul se schimbă în aceeași tură, `DECIZII.md` trebuie să se schimbe și el — nu interzice
+co-modificarea (o schimbare de lege chiar cere ambele căi), cere doar ca motivul să fie scris. Colțul 2
+a picat pe chiar commit-ul ăsta până am scris secțiunea de față; ăsta e comportamentul dorit.

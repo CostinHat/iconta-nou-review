@@ -32,7 +32,8 @@ CE RECONCILIAZA - SUB-CAZ 1c-PT (05.08.2026), PART-TIME suprataxare art.146 alin
   Angajat PART-TIME, luna intreaga, ne-scutit (scutit_contrib_minim=scutit_pt), fara CM, fara alte beneficii,
   fara tichete: CAS SI CASS EMISE se reconciliaza pe baza RIDICATA la nivelul minim. Emisul per angajat =
   cas_min_pt/cass_min_pt (cand 0<brut<prag -> B4_*P, diferenta pe angajator) sau cas/cass (brut>=prag, part-time
-  n-are facilitate) = max(brut, sm-facilitate) x cota. calea 2 recalculeaza prag = sm - facilitate INDEPENDENT
+  n-are facilitate proprie, dar nivelul de referinta e cel DIMINUAT) = max(brut, sm-facilitate) x cota.
+  calea 2 recalculeaza prag = sm - facilitate INDEPENDENT
   (registru); full month + fara CM -> fara proratare/pontaj (d112.py:517-520). Part-time + tichete = combo ulterior, sarit.
 
 CE RAMANE IN AFARA (LIMITA DECLARATA, GARZI cat.4 - gardul NU acopera):
@@ -176,10 +177,17 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
                 # zile_lucr = nzl -> prag_zile = prag_pt EXACT, fara proratare/pontaj (d112.py:517-520).
                 # Emisul per angajat pe baza RIDICATA: cas_min_pt/cass_min_pt daca s-a aplicat pragul
                 # (0<brut<prag), altfel cas/cass (brut>=prag; part-time n-are facilitate). = max(brut,prag) x cota.
-                # [fix part-time-floor 06.08.2026] floor = salariul minim INTEGRAL (art.146(5^6) CAS /
-                # art.157 CASS): part-time NU are facilitate (aceasta e doar norma intreaga - OUG 156/2024
-                # art.LXVI). Inainte: sm-fac -> baza part-time sub-declarata. Aliniat cu d112.pull prag_pt.
-                prag = sm
+                # [part-time-floor 20.08.2026 — REVENIRE la sm-facilitate] Nivelul de referinta e
+                # salariul minim DIMINUAT (OUG 156/2024 art.LXVI alin.(5) = OUG 89/2025 art.III: derogarea
+                # REDEFINESTE nivelul, 3750 in S1 / 4125 in S2), confirmat de arbitru (DUK regula SP1B4_1).
+                # Nota de proces, mai importanta decat cifra: pe 06.08.2026 linia asta a fost schimbata in
+                # ACELASI commit cu d112.pull, cu motivul „Aliniat cu d112.pull prag_pt" — adica a doua cale  # istoric-aliniere-ok: citat, nu act
+                # a fost mutata peste prima, pe exact dimensiunea pe care exista sa o verifice. Sub-cazul
+                # 1c-PT e declarat „reconciliere COMPLETA": ar fi trebuit sa pice pe 6 august si n-a picat
+                # fiindca a incetat sa mai fie independent. O a doua cale nu e independenta prin
+                # constructie, ci prin DISCIPLINA: cand cele doua nu coincid, intrebarea se duce la
+                # ARBITRU, nu se muta verificatorul peste verificat. Gardat: core/test_cale_a_doua.py.
+                prag = sm - fac_val
                 baza_pt = brut if brut >= prag else prag
                 exp = {"cas": _q(baza_pt * cota_cas), "cass": _q(baza_pt * cota_cass)}
                 pt_ap = bool(g.get("pt_aplica"))

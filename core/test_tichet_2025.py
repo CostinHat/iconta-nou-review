@@ -23,7 +23,13 @@ def test_octombrie_2025_gol_motivat_nu_valoare_tacuta():
     pe Ordinul 484/2025 opreste derivarea din succesorul @noiembrie -> gol motivat."""
     with pytest.raises(ValueError) as ei:
         cota("tichet_masa_plafon", date(2025, 10, 1))
-    assert "gol in registru" in str(ei.value), "octombrie 2025 trebuie gol motivat, nu 40,18 tacit"
+    # [20.08.2026] Aserțiunea se lega de FORMULAREA mesajului („gol in registru"), care a trebuit
+    # rescrisă când mesajul a intrat în canalul publicat contabilului (diacritice, F5). Un test legat
+    # de cuvinte pică la fiecare rescriere corectă și împinge spre a NU repara mesajul. Se leagă acum
+    # de FAPTELE pe care mesajul trebuie să le poarte ca să fie „motivat", indiferent de formulare:
+    # numele cotei și data cerută.
+    _msg = str(ei.value)
+    assert "tichet_masa_plafon" in _msg and "2025-10-01" in _msg,         "octombrie 2025 trebuie gol MOTIVAT (mesajul numește cota și data cerută), nu 40,18 tacit: %s" % _msg
     assert cota("tichet_masa_plafon", date(2025, 9, 1))[0] == Decimal("40.18"), "septembrie ramane 40,18"
 
 

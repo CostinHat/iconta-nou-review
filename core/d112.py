@@ -675,11 +675,19 @@ def pull(conn, schema, an, luna):
     ref = _dt(an, luna, 1)
     sm, _t1 = _cm.cota("salariu_minim", ref)
     fac, _t2 = _cm.cota("facilitate_salariu_minim", ref)
-    # [fix part-time-floor 06.08.2026] baza minima part-time (CAS art.146(5^6) / CASS art.157) = salariul
-    # de baza minim brut INTEGRAL in vigoare in luna, corespunzator zilelor lucratoare active - NU diminuat
-    # cu facilitatea de 300/200 lei: aceasta (OUG 156/2024 art.LXVI) se aplica DOAR salariatilor cu NORMA
-    # INTREAGA, deci nu atinge floor-ul part-time. (Inainte: sm-fac -> baza part-time sub-declarata cu facilitatea.)
-    prag_pt = float(sm)
+    # [part-time-floor 20.08.2026 — REVENIRE la sm-facilitate, decizia „urmeaza arbitrul"] Nivelul de
+    # referinta pentru baza minima part-time (CAS art.146 alin.(5^6) / CASS art.168 alin.(6^1)) e salariul
+    # minim DIMINUAT cu facilitatea, NU cel integral.
+    #   TEMEI: OUG 156/2024 art.LXVI alin.(5) = OUG 89/2025 art.III — derogarea „NIVELUL ... SE DIMINUEAZA
+    #   cu 300 lei" REDEFINESTE nivelul de referinta (3750 in S1 2026 / 4125 in S2), nu acorda o facilitate.
+    #   Structura ANAF o pune INAUNTRUL formulei part_time (structura_D112_0726_030826.txt l.3128-3129
+    #   pentru B4_7P si l.3157-3158 pentru B4_5P: „sm=4050 ... sm=sm-300 ... part_time=ROUND(sm*zile_PT/NZL)").
+    #   ARBITRUL: DUKIntegrator, DUK regula SP1B4_1, calculeaza 3750 si semnala 4050/4325 ca atentionare.
+    # Pe 06.08.2026 scaderea fusese scoasa de aici (rationament: facilitatea e doar pentru norma intreaga)
+    # SI din core/d112_reconciliere.py, dar NU si din core/salarizare.py:309 — care ramasese pe forma
+    # corecta si isi cita temeiul. Rezultat: fluturasul si D112 declarau sume diferite pentru acelasi
+    # salariat si aceeasi luna (70,25 lei/luna pe PARTTIME SUBFLOOR, august 2026). Vezi DECIZII 20.08.
+    prag_pt = float(sm - fac)
     nzl = _nzl(an, luna)  # zile lucratoare fara sarbatori (OUG 158 art.10)
     # ALINIERE la stat_plata_api:36-38 (15.07.2026). pull() chema calcul_salariu(brut,
     # la_data) GOL: fara persoane / norma_intreaga / venit_brut_total, si pe brutul

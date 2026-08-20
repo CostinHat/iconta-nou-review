@@ -658,9 +658,10 @@ def cota(nume, la_data=None, strict=True):
             _out = getattr(temei, "data_out", None)
             if strict and _out is not None and la_data > _out:
                 raise ValueError(
-                    f"{nume}: valoarea din {din.isoformat()} ({temei}) a fost valabila pana la "
-                    f"{_out.isoformat()} (succesorul a intrat in vigoare dupa). S-a cerut pentru "
-                    f"{la_data.isoformat()} - gol in registru. Adauga valoarea valabila in COTE."
+                    f"{nume}: valoarea din {din.isoformat()} ({temei}) a fost valabilă până la "
+                    f"{_out.isoformat()} — succesorul a intrat în vigoare după această dată. "
+                    f"S-a cerut pentru {la_data.isoformat()}, iar registrul de cote nu are nicio "
+                    f"valoare pentru atunci. Completează valoarea valabilă în registru."
                 )
             return valoare, temei
     # la_data e inainte de PRIMA valoare cunoscuta (intrari sortate descrescator -> ultima = cea mai veche).

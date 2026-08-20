@@ -3845,6 +3845,48 @@ async def banca_parse_extras(tenant_id: int, fisier: UploadFile = File(...), ctx
         t["tip"] = r.get("tip")
         t["nota"] = r.get("nota")
     return {"tranzactii": tranzactii, "nr": len(tranzactii)}
+@app.get("/tenants/{tenant_id}/salariu-efect")
+def salariu_efect(tenant_id: int, brut: float, valabil_din: Optional[str] = None,
+                  ctx=Depends(cere_cabinet)):
+    """[prag_minim_v1] Ce se intampla cu netul la brutul introdus, INAINTE de salvare (DS cap.6:
+    consecinta inainte de buton). Calculeaza pe server cu salarizare.calcul_salariu - aceeasi functie
+    care produce fluturasul; nicio regula fiscala nu se rescrie in JS.
+
+    Avertizeaza pe PRAPASTIA facilitatii salariului minim: facilitatea (OUG 156/2024 art.LXVI /
+    OUG 89/2025 art.III) se acorda doar la incadrarea EXACT la salariul minim. Un leu peste => se
+    stinge => netul SCADE. Intoarce si brutul de la care netul redevine cel de la minim."""
+    from datetime import date as _date
+    from core import salarizare as _s, common as _c
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+    la_data = _date.fromisoformat(valabil_din) if valabil_din else _date.today()
+    try:
+        sm, _t = _c.cota("salariu_minim", la_data)
+        def _net(b):
+            return float(_s.calcul_salariu(b, la_data=la_data)["net"])
+        net_acum = _net(brut)
+        net_minim = _net(float(sm))
+    except ValueError as e:
+        raise HTTPException(422, str(e))
+    out = {"brut": brut, "net": round(net_acum, 2), "salariu_minim": float(sm),
+           "net_la_minim": round(net_minim, 2), "avertisment": None}
+    # zona moarta: peste minim, dar cu net sub cel de la minim
+    if brut > float(sm) and net_acum < net_minim:
+        # cautarea porneste STRICT peste minim: la minim netul e trivial egal, iar contabilul vrea
+        # brutul de DEASUPRA minimului de la care netul redevine cel de la minim (capatul zonei moarte).
+        b = float(sm) + 1
+        while b < float(sm) + 1000 and _net(b) < net_minim:
+            b += 1
+        out["brut_echivalent"] = round(b, 2)
+        out["avertisment"] = (
+            "%.2f lei e peste salariul minim (%.2f), deci se pierde facilitatea de scutire: netul "
+            "scade de la %.2f la %.2f lei. Aceeași plată netă se obține de la ~%.2f lei brut."
+            % (brut, float(sm), net_minim, net_acum, b))
+    return out
+
+
 @app.get("/tenants/{tenant_id}/stat-plata")
 def tenant_stat_plata(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     from core import stat_plata_api as _sp

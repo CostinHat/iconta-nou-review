@@ -617,11 +617,19 @@ def test_d112_brut_si_baza_pe_salariul_lunii_nu_contractual_curent(schema):
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
 def test_d112_part_time_baza_minima_salariul_minim_integral(schema):
     """[fix part-time-floor 06.08.2026] baza minima part-time (CAS art.146 alin.(5^6) / CASS art.157) = salariul
-    de baza minim brut INTEGRAL in vigoare in luna, NU sm-facilitate. Facilitatea de 300/200 lei se aplica DOAR
-    salariatilor cu NORMA INTREAGA (OUG 156/2024 art.LXVI), deci nu diminueaza floor-ul part-time. Salariat
-    part-time sub prag, luna intreaga, iunie 2026 (salariu minim 4050): baza minima emisa (B4_5P) = 4050, NU 3750
-    (=4050-300). MUTATIE: prag_pt = sm - fac in d112.pull -> B4_5P=3750 -> pica. NOTA: DUK da atentionare pe
-    4050 (validatorul scade facilitatea = 3750) - divergenta lege<->validator, urmarim legea (decizie Costin)."""
+    de baza minim DIMINUAT cu facilitatea (sm - fac), NU cel integral. Salariat part-time sub prag, luna
+    intreaga, iunie 2026 (salariu minim 4050, facilitate 300): baza minima emisa (B4_5P) = 3750.
+    MUTATIE: prag_pt = sm in d112.pull -> B4_5P=4050 -> pica.
+
+    ISTORIC AL DECIZIEI (nu se sterge, se dateaza):
+    - 06.08.2026: pusa pe 4050. Divergenta cu DUK a fost VAZUTA si decisa atunci in favoarea legii
+      („facilitatea e doar norma intreaga, art.LXVI") - deci nu o scapare, o alegere.
+    - 20.08.2026: INVERSATA de Costin, „nu declaram impotriva validatorului care decide". Temeiul
+      suplimentar gasit intre timp: structura ANAF pune `sm=sm-300` INAUNTRUL formulei part_time
+      (structura_D112_0726_030826.txt l.3128-3129 si l.3157-3158), deci derogarea REDEFINESTE
+      nivelul de referinta, nu acorda o facilitate. In plus, core/salarizare.py:309 ramasese pe
+      forma corecta -> fluturasul si D112 declarau sume diferite pentru acelasi salariat
+      (70,25 lei/luna). PROBA: pe ianuarie 2026 D112 devine DUK-VALID, zero erori."""
     import re
     from core import d112
     with schema.cursor() as cur:
@@ -631,9 +639,9 @@ def test_d112_part_time_baza_minima_salariul_minim_integral(schema):
     m = re.search(r'<asiguratB4\b([^>]*)/>', xml)
     at = dict(re.findall(r'(\w+)="([^"]*)"', m.group(1)))
     b5p = int(at.get("B4_5P", 0))
-    assert b5p == 4050, (
-        "B4_5P=%d: baza minima part-time trebuie sa fie salariul minim INTEGRAL (4050), nu sm-facilitate (3750) - "
-        "facilitatea e doar norma intreaga (art.LXVI)" % b5p)
+    assert b5p == 3750, (
+        "B4_5P=%d: baza minima part-time e salariul minim DIMINUAT cu facilitatea (4050-300=3750), nu cel "
+        "integral - derogarea OUG 156/2024 art.LXVI alin.(5) REDEFINESTE nivelul; confirmat de arbitru" % b5p)
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
