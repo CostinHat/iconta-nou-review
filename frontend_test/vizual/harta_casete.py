@@ -17,7 +17,8 @@ comparatorul e în Python și citește nativ; conține temeiuri, care trăiesc �
 JS; și proprietatea anti-derivă nu vine din vecinătate, ci din gardă. `VC_RANDATE` rămâne neatins —
 păzește altceva, mai îngust, și funcționează.
 
-STARE: DRAFT. `STRUCTURA` e citită din cod și o susțin. `TEMEI` și `CONSTRANGERI` sunt PROPUNERI —
+STARE: DRAFT. `STRUCTURA` e citită din cod și o susțin. `TEMEI` e despărțit în temei_legal/regula_produs
+(R5 20.08.2026) și are gardă: core/test_harta_temei.py. `CONSTRANGERI` rămân PROPUNERI —
 nu le pot închide singur fără să fiu și observator, și comparator (vezi DECIZII 20.08, calea a doua).
 """
 
@@ -155,15 +156,90 @@ STRUCTURA = {
 
 # ─────────────────────────────────────────────────────────────────────────────
 # TEMEI — pentru casetele care poartă o valoare GUVERNATĂ DE O REGULĂ.
-# PROPUNERE. Nu se citește din cod: aici e granița dintre ce pot consulta și ce ceri tu.
-# ─────────────────────────────────────────────────────────────────────────────
+#
+# DOUĂ CÂMPURI, fiindcă unul singur amestecă două lucruri care SE REVIZUIESC DIFERIT (R5, 20.08.2026):
+#   temei_legal   — se schimbă când se schimbă legea; nu decizi nimic.
+#   regula_produs — se schimbă când decizi tu, iar „mai e bună?" e o întrebare legitimă oricând.
+# Amestecate, o regulă de produs devine imposibil de repus în discuție (nimeni nu contestă un articol de
+# lege), iar o prevedere legală devine negociabilă — ceea ce e mai rău. Exemplul care a produs regula:
+# indicatorul de patru ochi. Dacă ar fi fost etichetat temei legal în loc de control intern, nimeni n-ar
+# fi discutat dacă „posibil" înseamnă >=2 validatori, și fundătura rămânea.
+#
+# AL TREILEA FEL nu cere un al treilea câmp: e cazul în care AMÂNDOUĂ sunt pline. Termenul care se mută
+# în ziua lucrătoare următoare e lege; alegerea de a afișa firma ca restanțieră de a doua zi e produs.
+# Intrarea e unitatea: `regula_produs` spune CE ADAUGă peste actul citat, nu reformulează actul.
+#
+# `decizie` + `data` pe fiecare regulă de produs: funcția spune ce face, decizia spune de ce și când.
+# Fără dată, peste șase luni nu se știe dacă regula a fost gândită sau a apărut din inerție. Când decizia
+# nu e consemnată, se scrie NEDOCUMENTATA — tăcerea s-ar citi ca „gandită".
+# ───────────────────────────────────────────────────────────────────────────────
+
+NEDOCUMENTATA = "NEDOCUMENTATA"   # decizia care a fixat regula nu e consemnată nicăieri
+
+
+def DATORIE(unde):
+    """Temei legal ABSENT și declarat ca atare. NU e același lucru cu tăcerea: tăcerea se citește ca
+    „n-are nevoie de temei", datoria spune „are, și încă nu l-am scris — se urmărește aici"."""
+    return {"stare": "datorie", "unde": unde}
+
+
+def PRODUS(regula, decizie, data):
+    return {"regula": regula, "decizie": decizie, "data": data}
+
+
+_DATORIE_TERMENE = "R4 20.08.2026 — temeiul se atașează PER TIP; legat în core/test_temei_termene.py (xfail strict)"
+
 TEMEI = {
-    "restante.termen":            "scadența legală per declarație — core/scadente.py; de legat la actul care o fixează",
-    "de_urmarit.termen":          "idem",
-    "depuse_cu_intarziere.termen": "idem",
-    "la_zi.termen":               "idem",
-    "coerenta_tva.detaliu":       "soldurile 4426/4427 din balanță; regula de coerență TVA",
-    "totul_la_zi":                "d.stare, calculată de control_fiscal_api._stare(lipsa, urmarit, neclar)",
+    "restante.termen": {
+        "temei_legal": DATORIE(_DATORIE_TERMENE),
+        "regula_produs": PRODUS(
+            "O obligație intră în «Restanțe» din ziua URMĂTOARE termenului: control_fiscal_api "
+            "clasifică `term < azi` ca restanță (l.503), deci în chiar ziua termenului e încă «de urmărit». "
+            "Ce adaugă peste lege: legea fixează termenul, nu ziua din care ești numit restanțier.",
+            decizie=NEDOCUMENTATA, data=None)},
+
+    "de_urmarit.termen": {
+        "temei_legal": DATORIE(_DATORIE_TERMENE),
+        "regula_produs": PRODUS(
+            "Fereastra galbenă e de 7 zile: control_fiscal_api.PRAG_URMARIT_ZILE = 7. Integral produs — "
+            "nicio lege nu cere un avertisment anticipat. Valoarea e și în clasa C a scanului de constante "
+            "nesursate (core/scan_constante.py), deci apare în două inventare independente.",
+            decizie=NEDOCUMENTATA, data=None)},
+
+    "depuse_cu_intarziere.termen": {
+        "temei_legal": DATORIE(_DATORIE_TERMENE),
+        "regula_produs": PRODUS(
+            "O depunere târzie rămâne marcată târzie — nu se «vindecă». Două depuneri pe aceeași perioadă "
+            "produc două RÂNDURI, nu un rând care își schimbă starea: un rând care și-ar schimba starea ar "
+            "șterge faptul că prima a fost la timp. Motivul e fiscal, nu de UI.",
+            decizie="R1", data="2026-08-20")},
+
+    "la_zi.termen": {
+        "temei_legal": DATORIE(_DATORIE_TERMENE),
+        "regula_produs": PRODUS(
+            "«La zi» = depusă la sau înaintea termenului. Simetric cu restanța, deci aceeași graniță în "
+            "control_fiscal_api trebuie să le separe pe amândouă.",
+            decizie=NEDOCUMENTATA, data=None)},
+
+    "coerenta_tva.detaliu": {
+        # singurul temei legal REZOLVABIL azi: planul de conturi e în corpus (anaf_surse/omfp_1802_2014).
+        "temei_legal": "OMFP 1802/2014",
+        "regula_produs": PRODUS(
+            "Coerența se verifică pe soldurile 4426 (TVA deductibilă) / 4427 (TVA colectată) din balanță. "
+            "Ce adaugă peste ordin: ordinul fixează conturile și conținutul lor, nu obligația de a le "
+            "reconcilia cu D300 și nici pragul de la care diferența se raportează.",
+            decizie=NEDOCUMENTATA, data=None)},
+
+    "totul_la_zi": {
+        # nu are temei legal, și asta e o AFIRMAȚIE, nu o omisiune — de-aia e scris explicit, nu lăsat gol.
+        "temei_legal": None,
+        "regula_produs": PRODUS(
+            "d.stare = control_fiscal_api._stare(lipsa, urmarit, neclar), cu prioritatea "
+            "roșu > galben > gri > verde. Griul NU poate fi ascuns ca verde: verdele e o afirmație "
+            "(«am verificat și e în regulă»), griul spune că afirmația nu se poate face, iar o afirmație "
+            "parțial imposibilă nu devine adevărată prin partea care s-a putut face. "
+            "Gardat: core/test_pastila_gri.py.",
+            decizie="gri_nu_devine_verde", data="2026-08-20")},
 }
 
 # ─────────────────────────────────────────────────────────────────────────────
