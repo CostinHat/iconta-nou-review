@@ -3437,3 +3437,60 @@ sintactic. Limita e scrisă în docstring, nu presupusă.
 
 **Mutații (patru):** act inexistent în corpus · decizie fără dată · intrare tăcută pe amândouă câmpurile ·
 dispariția felului „citare" (anti-vacuu). Toate roșii, cu mesaj care numește intrarea.
+
+## 21.08.2026 — a patra clasă a scanului: temei PREZENT, dar în PROZĂ (`e22416f`)
+
+**Ce face imposibil:** ca instrumentul de măsură să numere drept datorie exact cazurile bune. O
+constantă al cărei act e citat lângă ea, în text, nu mai intră în clichet. `cote_tva.py` reproduce
+art. 291 CF în antet și per categorie, e pe `_TVA_EXCLUSE` în verificator tocmai fiindcă el e modulul
+care reproduce legea — și totuși scanul îl raporta nesursat. Cele 126 s-au recalculat: **C = 98,
+E = 28.** Clichetul a coborât cu diferența.
+
+**Regula, ancorată pe `_TVA_TEMEI` din verificator:** acolo un literal are temei dacă VALOAREA lui e
+în registrul valoare → citare. Deci E cere ca aceeași unitate de proză (blocul de comentarii al
+instrucțiunii, sau un paragraf din docstringul scope-ului imediat) să conțină ȘI citarea ȘI valoarea.
+Citările se șterg din text înainte de căutarea valorii, ca `art. 21` să nu treacă drept cota 21.
+
+**Ancorarea pe valoare nu e un rafinament, e miezul — măsurat, nu presupus:** regula „există o citare
+undeva în antetul modulului" ar fi mutat **100 din 126** în E, inclusiv cele 11 `assert` cu valori
+așteptate din `d212_engine` și cota în float din `d216`. Un antet care spune despre CE declarație e
+modulul nu e temeiul niciunei valori din el.
+
+**Instrumentul a picat de trei ori în construcție, toate în direcția periculoasă — E înghite datorie:**
+- antetul ca pătură (100/126) → reparat prin ancorarea pe valoare;
+- docstringul modulului guverna orice număr din adâncul funcțiilor: „sursa" ziua 25 din
+  `_ZIUA.get(tip, 25)`, adică **chiar cazul de calibrare al nesursatului** → limitat la scope-ul imediat;
+- `lit.?\s*[a-z]\)` fără graniță de cuvânt se aprindea pe cuvântul „po**lit**e)" din antetul lui
+  `d403` și sursa cinci constante cu o coincidență ortografică.
+
+**Zgomotul rămas e NUMĂRAT și NUMIT, nu aruncat tăcut:** `scan_constante.PROZA_RESPINSA`, două cazuri
+privite în sursă și respinse — `d101g.py` „16" (proza vecină spune rd.16 și rd.61 cercetare-dezvoltare
+16%, alt 16; geamăna ei din `d101.py:40` e în C, iar aceeași constantă nu poate avea două clase) și
+`salarizare.py` „12" (proza spune „PNS 12/13/14", coduri de excepție, nu plafonul de 12 salarii
+minime). Fiecare respingere are gard anti-vacuu: dacă nu mai corespunde unui candidat, testul cere
+scoaterea ei.
+
+**Calibrarea e acum în PATRU direcții:** nesursat (`25`) · sursat (`4050`) · nomenclator (`40`) ·
+temei în proză (`cote_tva` 21/11), plus contra-direcția — `test_proza_nu_inghite_nesursatul` cere ca
+`25`, `d216 0.3`, `d101 16` și cele 11 aserțiuni din `d212_engine` să RĂMÂNĂ în C.
+
+**Mutații (patru), toate roșii:** proza fără ancorare pe valoare · granița de cuvânt scoasă de la
+`lit.` · antetul guvernând orice scope · o respingere învechită. RED-probate din copie de siguranță.
+
+**Ce NU face:** citește FORMA citării, nu adevărul ei — o proză care numește actul și valoarea, dar
+citează greșit, trece drept sursată. Și E **nu e clasa bună**: A e sursat pentru MAȘINĂ (registrul
+poate consuma temeiul), E doar pentru OM. Se numără separat tocmai ca să nu se topească în A și să
+dispară cu ea și drumul E → A.
+
+## 21.08.2026 — TEMA D: doc contra cod în `cote_tva` (`e22416f`)
+
+**Ce face imposibil:** ca vreun drum din `cote_tva` să întoarcă din nou o cotă marcată
+`sursa='fallback'`, și ca `cote_valide()` să reînvie. `core/test_granite_cota.py` TEMA D (3 teste).
+
+**Prima versiune a gardului s-a aprins pe propria explicație.** Căuta „fallback" lângă „21" în
+docstring — și l-a găsit în fraza care spune DE CE fallback-ul e greșit. Un gard care nu deosebește
+afirmația de negația ei nu păzește nimic; mutat pe invariantul codului (`"sursa": "fallback"` nu
+există în modul), nu pe cuvinte.
+
+**Mutații (două):** `return {... "sursa": "fallback"}` pe ramura fără AI → roșu pe două teste (și pe
+comportament, nu doar pe text) · `cote_valide()` reînviat → roșu.

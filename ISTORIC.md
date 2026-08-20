@@ -4690,3 +4690,22 @@ Cele mai grele din C, pe fișier: `salarizare.py` 19 (cotele de deducere 0.20–
 care 11 sunt `assert` cu valori așteptate hardcodate, într-un modul de producție) · `common.py` 9
 (ferestrele sezoniere 220/450, 240/470, 250/490 — fără `Temei`, chiar lângă `COTE` care are) ·
 `d394.py` 9 (`COTE = (0,5,9,11,19,20,21,24)`, cotele istorice de TVA) · `d101.py` 8.
+
+## 21.08.2026 (tura 20.08 noaptea) — clasa E, clichetul 126 → 98, `cote_tva` reparat (`e22416f`)
+
+Scanul de constante a primit a patra clasă: **E = temei prezent, dar în PROZĂ**. Recalculat pe cele
+126: **A=48 / B=308 / C=98 / D=37 / E=28**. Clichetul per fișier a coborât cu cele 28. `cote_tva.py`
+(2) și `d300.py` (5) au ieșit complet din datorie; `d394.py` 9→2, `d212_engine.py` 13→11, `d104.py`
+4→0, `d101.py` 8→7, `salarizare.py` 19→18, `scadente.py` 4→3.
+
+Instrumentul a picat de trei ori în construcție, toate în direcția care șterge datorie: antetul ca
+pătură (100/126 ar fi fugit în E), docstringul modulului guvernând numere din adâncul funcțiilor
+(„sursa" chiar cazul de calibrare `_ZIUA.get(tip, 25)`), și `lit.` fără graniță de cuvânt, aprins pe
+cuvântul „po**lit**e)". Zgomotul rămas e numit în `PROZA_RESPINSA` (două cazuri), cu gard anti-vacuu.
+
+`cote_tva.py`: docstring-ul lui `potriveste_cota` corectat către cod (NEDETERMINAT, nu fallback 21) și
+legat prin `test_granite_cota.py` TEMA D; `cote_valide()` ștearsă (cod mort, listă fără dată).
+`scan_constante.py` adăugat pe `_TVA_EXCLUSE` în verificator, cu motivul scris.
+
+R6 măsurat pe baza reală (sondă de citire cu probă de nescriere): 7 depuneri contrazic un
+„nu se datorează", 1 cade pe un `neclar`. Vezi DECIZII 21.08.

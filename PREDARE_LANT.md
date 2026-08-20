@@ -1,6 +1,77 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANT — masurarea clasei de constante fiscale (tura 20.08, seara)
+# PREDARE LANT — masuratoarea, masurata (tura 20.08d / noaptea de 21.08)
+
+## REPORNIRE (comanda exacta, gata de dat) — TURA 20.08(d): clasa E + R6
+
+LIVRAT, comis si impins (`e22416f`; HEAD = origin/main = backup/lant-2026-08-21; RUNNING 00:19 >
+commit 00:10; :8010 -> 200):
+- **Clasa E — temei PREZENT, dar in PROZA.** Scanul avea el insusi o clasa nedistinsa, gasita
+  privind un fisier, nu scanandu-l. Recalculat: **A=48 / B=308 / C=98 / D=37 / E=28.** Clichetul
+  a coborat 126 -> 98, cu cele 28 de false pozitive scoase. `cote_tva.py` (2) si `d300.py` (5) au
+  IESIT complet; d394 9->2, d212_engine 13->11, d104 4->0, d101 8->7, salarizare 19->18, scadente 4->3.
+- **Ancorat pe `_TVA_TEMEI`**: proza trebuie sa contina SI citarea SI VALOAREA. Nu e rafinament,
+  e miezul - masurat, "exista o citare undeva in antet" ar fi mutat **100 din 126** in E, inclusiv
+  cele unsprezece `assert` din d212_engine si cota in float din d216.
+- **Instrumentul a picat de TREI ori in constructie, toate in directia periculoasa** (E inghite
+  datorie): antetul ca patura · docstringul modulului guvernand numere din adancul functiilor
+  (sursa chiar cazul de calibrare `_ZIUA.get(tip, 25)`) · `lit.` fara granita de cuvant, aprins pe
+  cuvantul "po-LIT-e)" din antetul lui d403. Calibrarea e acum in PATRU directii + contra-directia.
+- **Zgomotul ramas e NUMIT**, nu aruncat: `PROZA_RESPINSA` (d101g "16" = rd.16/rd.61, nu cota de
+  profit - geamana ei din d101.py:40 e in C; salarizare "12" = codurile PNS, nu plafonul), fiecare
+  cu gard anti-vacuu.
+- **`cote_tva.py`, ambele constatari**: docstring-ul lui `potriveste_cota` corectat CATRE cod
+  (NEDETERMINAT, nu fallback 21) si LEGAT prin `test_granite_cota.py` TEMA D; `cote_valide()`
+  STEARSA (cod mort, lista fara data). Prima versiune a gardului TEMA D s-a aprins pe propria
+  explicatie - mutat pe invariantul codului (`sursa='fallback'` nu exista in modul).
+- **verificator**: `scan_constante.py` pe `_TVA_EXCLUSE`, cu motivul scris. Alternativa era
+  rescrierea prozei ca sa ocoleasca regexul - adica sa para verde fara sa se schimbe nimic.
+
+**R6 INCHISA ca intrebare, DESCHISA ca lucru: o depunere NU rezolva `neclar`, dar CONTRAZICE.**
+`_clasifica` itereaza pe `datorate` si consulta `depuse` ca dictionar - o depunere fara obligatie
+pereche nu e VIZITATA niciodata, deci cele doua afirmatii trec una pe langa alta.
+MASURAT (sonda de citire pe 17 firme, cu proba de nescriere: 834 tabele numarate inainte si dupa,
+zero diferente): din 54 de depuneri, **28 sting o obligatie, 18 sunt in afara ferestrei, 7 CONTRAZIC
+un "nu se datoreaza", 1 e opinie pe un `neclar`**:
+- ALFA MICRO (t8396) si DELTA DEFECT-LUNA (t8399): "D100 nu se datoreaza pe T4 2025 - fara venituri
+  in trimestru (baza 0)", si totusi D100/12-2025 DEPUS. Idem T1 si T2 2026.
+- BETA PROFIT (t8397): "D205 nu se datoreaza - niciun rulaj pe cont 457 in 2025", si D205/12-2025
+  DEPUS. Cel mai ascutit: motivul e o `absenta_observatie` imbracata in `nu se datoreaza` - exact ce
+  spune harta ca NU are voie (precedent 006). Depunerea e proba vie a incadrarii gresite.
+- Constructii Profit Trim (t4840): D300/06-2026 depus, d300 in `neclar` -> "0 datorate · 1 depuse"
+  (cazul de la R3).
+REZERVA DECLARATA: toate 8 sunt pe firme SEEDATE (depuneri datate 2026-07-20), nu de productie. Nu
+slabeste constatarea despre MECANISM (starea e atinsa si nu produce niciun semnal), dar nu e o
+masuratoare a realitatii clientilor.
+
+**COMANDA DE REPORNIRE:** „R6, actul: trecerea inversa peste `depuse` - o depunere care cade pe o
+perioada declarata NEAPLICABILA produce o CONSTATARE, nu tacere. Pe `neclar` se ARATA ca informatie
+(«cineva a avut o opinie unde noi n-avem»), NU se numara ca stinsa - altfel firma care a depus tot
+pare complet verificata, exact mecanismul de pe 006. Incepe cu BETA PROFIT/D205: acolo motivul
+«niciun rulaj pe 457» e o absenta_observatie imbracata in «nu se datoreaza», deci reincadrarea ei e
+prima reparatie, nu constatarea. Dupa: sursarea per tip a termenelor (R4, `core/test_temei_termene.py`
+e xfail strict pana atunci), apoi arderea clichetului de la 98 in jos, in ordinea 2-6 de mai jos.
+Si `semafor.js`: griul e in afara modelului lui, iar un cabinet numai cu firme gri arata un rand
+verde linistitor."
+
+**FRONTUL DE ARDERE, RECALCULAT** (pct. 1 din lista veche era falsul pozitiv care a pornit tura asta):
+2. `cota=21` / `procent=8` ca **default de parametru** in `tva_marja`, `tva_marja_turism`,
+   `tva_agricultori` - supravietuiesc TACUT unei schimbari de cota. Nu pica niciun test.
+3. `Decimal("16")` in `d101.py:40` si `d101g.py:62` - aceeasi cota, doua locuri. AMANDOUA in C:
+   d101g a fost candidat E si a fost RESPINS explicit, ca sa nu aiba clase diferite.
+4. `d216.COTA_IMPOZIT = 0.3` - cota fiscala in **float**, nu Decimal.
+5. `d212_engine.py:148-174` - unsprezece `assert` cu valori asteptate hardcodate in PRODUCTIE.
+6. `salarizare.py` 18 valori si `common.py` ferestrele 220/450, 240/470, 250/490 - fara `Temei`,
+   chiar langa `COTE` care are.
+
+RAMAS deschis din turele anterioare, nemiscat: FK pe `salariu_istoric`/`pontaj` + 24 orfani pe t001 ·
+cele 8 CNP-uri plauzibile pe t013-t016 · `etransport_ecran.js` etTimp gri -> „—" · citirea celor 9
+diff-uri verificator/verificat co-comise · marcarea celor 85 de teste · cele trei stari ca fixturi ·
+scanerul multi-firma (garda hartii citeste artefactul unei singure firme).
+
+---
+
+# ARHIVA — PREDARE LANT — masurarea clasei de constante (tura 20.08c)
 
 ## REPORNIRE (comanda exacta, gata de dat) — TURA 20.08(c): scan constante + R5
 

@@ -10386,3 +10386,82 @@ un act. Și `TEMEI` n-avea niciun consumator — o regulă scrisă care nu era o
 
 **Patru din șase reguli de produs sunt NEDOCUMENTATA** — decizia care le-a fixat nu e consemnată nicăieri.
 Asta e constatarea, nu o scăpare; tăcerea s-ar fi citit ca „gândită".
+
+## 21.08.2026 — măsurătoarea se măsoară înainte de a arde clichetul după ea
+
+Regula de intrare a metodei („nu repara fragmente dintr-o clasă nemăsurată") se aplică și
+INSTRUMENTULUI. Scanul de constante a dat C=126 și a deschis o listă de ardere în șase puncte; primul
+punct de pe listă — `cote_tva.COTA_STANDARD = 21` — era un FALS POZITIV, găsit privind fișierul, nu
+scanându-l. Deci lista era construită pe o măsurătoare cu o clasă nedistinsă. **Decizia: rafinez
+scanul, recalculez, cobor clichetul — și abia apoi ard.** Altfel 28 de „reparații" ar fi fost făcute
+pe cazuri care nu erau stricate, iar credibilitatea clichetului s-ar fi dus cu ele.
+
+**Ancorarea pe VALOARE, nu pe modul.** `_TVA_TEMEI` din verificator ține un registru valoare → citare:
+un literal are temei dacă VALOAREA lui e acolo. Clasa E copiază exact asta — proza trebuie să conțină
+și citarea, și valoarea. Alternativa („modulul își citează actul în antet, deci tot ce e în el e
+sursat") a fost MĂSURATĂ, nu respinsă din intuiție: ar fi mutat 100 din 126 în E. Un antet spune despre
+CE declarație e modulul; nu e temeiul niciunei valori din el.
+
+**E nu se topește în A.** A e sursat pentru MAȘINĂ — registrul poate consuma `Temei`, un gard poate
+verifica citarea. E e sursat doar pentru OM. Ținute la un loc, distincția dispare și cu ea drumul
+E → A. Deci se numără separat, chiar dacă niciuna din cele două nu e datorie de felul lui C.
+
+**Excluderea lui `scan_constante.py` din registrul GRI COTA** (verificator): e un instrument de măsură
+care citează cote ca exemple în proză, aceeași clasă cu `verificator_conformitate.py` și `cote_tva.py`,
+deja acolo. Alternativa era rescrierea prozei ca să ocolească regexul — exact felul de ajustare care
+face un gard să pară verde fără să se fi schimbat nimic.
+
+## 21.08.2026 — `cote_tva`: docstring-ul se corectează CĂTRE cod, iar codul mort se șterge
+
+A cincea și a șasea instanță doc-contra-cod din aceeași zi.
+
+**(1) `potriveste_cota`** promitea „dacă AI indisponibil → fallback: cota standard 21%", iar codul
+întoarce `_nedeterminat`. Tranșarea vine dinafară — argumentul semantic scris chiar în `_nedeterminat`:
+*un 21 marcat „fallback" ajunge în decont exact ca unul tăcit, dacă factura se emite oricum*. Deci
+codul are dreptate; docstring-ul s-a corectat către cod și s-a LEGAT printr-un test, nu s-a înmuiat.
+
+**(2) `cote_valide()`** — ștearsă. Întorcea `[21, 11, 0]` fără dată, cu zero consumatori. Nu era
+inofensivă prin nefolosire: chemată pe o factură din iunie 2025 ar fi respins 19% ca invalidă, adică ar
+fi transformat cota corectă de atunci într-o eroare. Validarea period-aware există în `common.cota`;
+a doua listă ar fi fost logică paralelă. Reparația reală e ștergerea, nu conservarea unui cod mort care
+așteaptă primul apelant.
+
+**Gardul care s-a aprins pe propria explicație.** Prima versiune a lui TEMA D căuta „fallback" lângă
+„21" în docstring — și l-a găsit în fraza care spune DE CE fallback-ul e greșit. Un gard care nu
+deosebește afirmația de negația ei nu păzește nimic. Mutat pe invariantul codului: modulul nu are voie
+să întoarcă `sursa='fallback'`.
+
+## 21.08.2026 — R6: o declarație depusă NU rezolvă `neclar`, dar poate CONTRAZICE `nu se datorează`
+
+Întrebarea deschisă („depunerea e dovadă care rezolvă neclar-ul?") — răspuns: **nu**, și motivul nu e
+despre vector. O depunere e o observație în plus, nu o rezolvare: că s-a depus D300 pe iunie dovedește
+că firma a CONSIDERAT că datorează D300 pe iunie, nu că a considerat corect, și nu spune nimic despre
+lunile în care n-a depus — care e chiar întrebarea din „nu pot verifica". Dacă depunerea ar stinge
+necunoașterea, firma care a depus tot ar părea complet verificată, deși ea e tocmai cea despre care nu
+știi dacă a depus tot ce trebuia — mecanismul de pe 006, întors pe dos.
+
+**Dar o depunere poate CONTRAZICE, iar azi contrazicerea trece nevăzută.** `_clasifica` iterează pe
+`datorate` și consultă `depuse` ca dicționar: o depunere fără obligație pereche nu e VIZITATĂ niciodată.
+Nu există nicio trecere inversă peste `depuse`. Deci cele două afirmații nu se ciocnesc — trec una pe
+lângă alta.
+
+**MĂSURAT pe baza reală (sondă de citire, 17 firme, cu probă de nescriere — 834 de tabele numărate
+înainte și după, zero diferențe):** din 54 de depuneri, 28 sting o obligație, 18 sunt în afara ferestrei
+`datorate`, **7 contrazic un «nu se datorează»**, 1 e o opinie pe un `neclar`. Discrepanța NU e ipotetică:
+- `ALFA MICRO` (t8396) și `DELTA DEFECT-LUNA` (t8399): semaforul spune *„D100 nu se datorează pe T4 2025
+  — fără venituri în trimestru (bază 0)"*, iar `declaratii_depuse` are D100/12-2025 depus. Idem T1 și T2 2026.
+- `BETA PROFIT` (t8397): *„D205 nu se datorează — niciun rulaj pe cont 457 în 2025 (fără dividende
+  distribuite)"*, cu D205/12-2025 depus. Ăsta e cel mai ascuțit: motivul e o `absenta_observatie`
+  (n-am înregistrări), îmbrăcată în `nu se datorează` — exact ce spune harta că nu are voie să se
+  întâmple (PRECEDENT tenant_006). Depunerea e proba vie a încadrării greșite.
+- `Constructii Profit Trim` (t4840): D300/06-2026 depus, d300 în `neclar` → pastila „0 datorate · 1
+  depuse". Cazul deja consemnat la R3.
+
+**Rezervă declarată:** toate cele 8 sunt pe firme SEEDATE (depuneri cu data 2026-07-20), nu pe firme de
+producție. Asta nu slăbește constatarea despre MECANISM — starea e atinsă și nu produce niciun semnal —
+dar nu e o măsurătoare a realității clienților.
+
+**Ce urmează, cel mai mic act onest:** nu „depunerea stinge neclar-ul" (ar ascunde necunoașterea), ci o
+trecere inversă peste `depuse` care produce o CONSTATARE acolo unde o depunere cade pe o perioadă
+declarată neaplicabilă. Pe `neclar`, depunerea rămâne informație („cineva a avut o opinie unde noi
+n-avem"), nu verdict — deci se arată, nu se numără ca stinsă.

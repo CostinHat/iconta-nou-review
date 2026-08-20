@@ -82,7 +82,11 @@ Patru pași, în ordinea asta:
    descoperită prea târziu.
 2. **Calibrare în MAI MULTE DIRECȚII, nu una.** O singură țintă lasă instrumentul să treacă pe gol în
    celelalte. La scanul de constante: `25` trebuie să cadă în „nesursat", `4050` în „sursat", `40` (cod
-   județ) în „nomenclator" — și **fiecare direcție a picat efectiv o dată** în construcție.
+   județ) în „nomenclator", `cote_tva` 21/11 în „temei în proză" — și **fiecare direcție a picat efectiv
+   o dată** în construcție.
+   **Și contra-direcția.** O clasă care „sursează" poate ȘTERGE datorie: la clasa E, regula largă ar fi
+   mutat 100 din 126 în „sursat în proză". Deci fiecare clasă nouă primește și aserțiuni că anume cazuri
+   RĂMÂN în țintă, nu doar că anume cazuri ies din ea.
 3. **Privește un eșantion de ~30 înainte de orice total.** Acolo apare taxonomia reală.
 4. **Zgomotul exclus se NUMĂRĂ, nu se aruncă tăcut** — altfel filtrul devine el însuși o afirmație
    neverificată.
@@ -99,7 +103,7 @@ ieftină formă de orbire: `test_datorie.py:144` afirma „nimic nu scrie în `s
 | cheia pe rolul sintactic greșit | v1 al scanului a căutat aritmetică+comparații; `_ZIUA.get(tip, 25)` e un *default*, deci invizibil |
 | clasifici ramura, nu obiectul | v2 a clasat `Decimal("4050")` ca nesursată deși avea `Temei` pe același rând |
 | domeniul de căutare prea îngust | `test_datorie.py:144`; și scanul ăsta, până a fost măsurată rădăcina |
-| temei prezent, dar în PROZĂ | `cote_tva.py` citează art. 291 în antet și per categorie — scanul cere obiect `Temei`, deci îl raportează nesursat |
+| temei prezent, dar în PROZĂ | `cote_tva.py` citează art. 291 în antet și per categorie — scanul cerea obiect `Temei`, deci îl raporta nesursat. ÎNCHISĂ 21.08: clasa E, ancorată pe valoare (proza trebuie să conțină și citarea, și valoarea). 126 → 98 |
 
 **Fiecare gard nou primește o aserțiune anti-vacuu:** un gard care nu găsește nimic TRECE. Un gard cu
 domeniul greșit e mai rău decât niciun gard — raportează verde despre o lume pe care n-o vede.

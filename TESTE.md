@@ -1762,13 +1762,23 @@ tabele în `tenant_template.sql` când baza are 5, fiindcă schema trăiește ș
 
 | gardă | ce face imposibil |
 |---|---|
-| `core/test_constante_nesursate.py` | o constantă fiscală nouă în cod de producție fără `Temei` (clichet per fișier, baseline 126) |
+| `core/test_constante_nesursate.py` | o constantă fiscală nouă în cod de producție fără `Temei` (clichet per fișier, baseline 98 — coborât de la 126 pe 21.08 după distingerea clasei E) |
 | `core/test_harta_temei.py` | o intrare din harta casetelor care tace despre temeiul legal, citează un act inexistent în corpus, sau are regulă de produs fără decizie+dată |
 
-Amândouă poartă anti-vacuu. Cel de la `test_constante_nesursate` e o calibrare în TREI direcții, fiindcă
+Amândouă poartă anti-vacuu. Cel de la `test_constante_nesursate` e o calibrare în PATRU direcții (a patra adăugată 21.08), fiindcă
 una singură lasă scanul să treacă pe gol în celelalte — și fiecare direcție a picat efectiv o dată în
 construcție. Cel de la `test_harta_temei` cere ca harta să conțină toate cele trei feluri de temei
 (citare / datorie declarată / produs curat), altfel ramurile gardului n-au fost exercitate.
 
 Instrument nou, nu test: `core/scan_constante.py` — clasifică literalii numerici din modulele fiscale în
-A=sursat (48) / B=nomenclator (308) / C=nesursat (126) / D=precizie (37).
+A=sursat (48) / B=nomenclator (308) / C=nesursat (98) / D=precizie (37) / E=temei în proză (28).
+
+## 21.08.2026 — clasa E și TEMA D
+
+| gardă | ce face imposibil |
+|---|---|
+| `core/test_constante_nesursate.py` (extins) | ca o citare în proză să ȘTEARGĂ datorie reală: `25` din `_ZIUA`, `d216 0.3`, `d101 16` și cele unsprezece aserțiuni din `d212_engine` trebuie să RĂMÂNĂ în C; iar o respingere din `PROZA_RESPINSA` care nu mai corespunde unui candidat pică |
+| `core/test_granite_cota.py` TEMA D | ca `cote_tva` să întoarcă din nou o cotă marcată `sursa='fallback'`, sau ca `cote_valide()` să reînvie |
+
+Clichetul a coborât **126 → 98**, cu cele 28 de false pozitive scoase. `cote_tva.py` (2) și `d300.py`
+(5) au ieșit complet — amândouă își citează actul lângă valoare, în antet.
