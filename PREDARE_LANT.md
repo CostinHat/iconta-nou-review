@@ -15,8 +15,8 @@ LIVRAT, comis si impins (`e188018`, `feddfd0`; HEAD = origin/main; backup/lant-2
   act, si `TEMEI` n-avea niciun consumator.
 
 **FRONT NOU DESCHIS de masuratoare — cele mai grele din C, in ordinea in care ajung la contabil:**
-1. `cote_tva.COTA_STANDARD = 21` / `COTA_REDUSA = 11` — cota de TVA scrisa de mana IN AFARA registrului.
-   Exact clasa celor 85, dar in productie. Cel mai ieftin de mutat in `common.COTE`.
+1. ~~`cote_tva.COTA_STANDARD = 21`~~ **CORECTAT, vezi mai jos: e FALS POZITIV.** Modulul isi citeaza
+   temeiul in antet (art. 291 CF, Legea 141/2025) si per categorie, si e pe `_TVA_EXCLUSE` in verificator.
 2. `cota=21` / `procent=8` ca **default de parametru** in `tva_marja`, `tva_marja_turism`,
    `tva_agricultori` — supravietuiesc TACUT unei schimbari de cota. Nu pica niciun test.
 3. `Decimal("16")` duplicat in `d101.py:40` si `d101g.py:62` — aceeasi cota, doua locuri.
@@ -30,6 +30,34 @@ LIVRAT, comis si impins (`e188018`, `feddfd0`; HEAD = origin/main; backup/lant-2
 strict pana atunci), apoi arderea clichetului de la 126 in jos, in ordinea 1-6 de mai sus. Dupa:
 `semafor.js` — griul e in afara modelului lui, iar un cabinet numai cu firme gri arata un rand verde
 linistitor. Si R6: o declaratie depusa rezolva `neclar`?”
+
+**CORECTIE la frontul de mai sus + a PATRA clasa a scanului (gasita privind fisierul, nu scanandu-l):**
+
+`cote_tva.py` NU e nesursat. Antetul citeaza *art. 291 Cod fiscal, modificat prin Legea 141/2025, in
+vigoare de la 01.08.2025*, fiecare categorie poarta `"lege": "art. 291 (2) a)"`, iar
+`verificator_conformitate.py:594` il are pe `_TVA_EXCLUSE` — exclus DELIBERAT, fiindca el e modulul care
+reproduce legea. Mutarea in `COTE` ar fi stricat structura injectata in promptul AI.
+
+Deci scanul are o a patra clasa nedistinsa: **temei PREZENT, dar in PROZA, nu ca obiect `Temei`**. E
+masurabila — verificatorul face deja exact asta prin `_TVA_TEMEI`. **Pasul urmator decis (20.08c):**
+rafinez scanul cu clasa asta, recalculez cele 126, cobor clichetul cu falsele pozitive scoase. Abia dupa
+aia lista de ardere e reala. Acelasi principiu ca masurarea inaintea fragmentelor, aplicat propriei
+masuratori.
+
+**Doua constatari in `cote_tva.py`, de reparat cu gard:**
+- `potriveste_cota` — docstring-ul spune *"Daca AI indisponibil -> fallback: cota standard 21%
+  (sursa='fallback'), ca sa nu blocheze fluxul"*, iar codul returneaza `_nedeterminat(...)`. A cincea
+  instanta doc-contra-cod in aceeasi zi. Aici codul are dreptate si poarta rationamentul explicit ("un 21
+  marcat fallback ajunge in decont exact ca unul tacit daca factura se emite oricum"), deci docstring-ul
+  se corecteaza la decizia scrisa si se LEAGA — nu se inmoaie ca sa se potriveasca.
+- `cote_valide()` — **zero consumatori**, cod mort. Intoarce `[21, 11, 0]` fara data; chemat pe o factura
+  din iunie 2025 ar respinge 19% ca invalid. Reparatie reala = se sterge sau se face period-aware.
+
+**Metoda e acum SCRISA:** `METODA_VERIFICARE.md` (cele trei acte, cele patru surse, precondiția-harta,
+temei legal vs regula de produs, cum se construieste un instrument de masura cu formele de orbire prin
+constructie, clichet vs xfail, doc-contra-cod, verde-e-o-afirmatie, ce NU acopera). Pana acum traia doar
+in docstring-uri si in practica. Gardata de `core/test_metoda_vie.py`: fiecare fisier pe care metoda il
+numeste trebuie sa existe, altfel metoda descrie un instrument disparut.
 
 RAMAS deschis din turele anterioare, nemiscat tura asta: FK pe `salariu_istoric`/`pontaj` + 24 orfani pe
 t001 · cele 8 CNP-uri plauzibile pe t013-t016 · `etransport_ecran.js` etTimp gri -> „—” ·
