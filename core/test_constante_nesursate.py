@@ -111,3 +111,63 @@ def test_scanul_chiar_vede_toate_clasele(inv):
     assert c["A"] >= 20 and c["B"] >= 100 and c["C"] >= 50, \
         "distribuție implauzibilă — scanul s-a rupt, nu s-a reparat codul: %s" % dict(c)
     assert len({h["f"] for h in inv}) >= 40, "prea puține module fiscale văzute: verifică scan_constante.FIS"
+
+
+# ─────────── DOMENIUL: de ce `core/` și ce se pierde prin asta ───────────
+# Memoria zilei (test_datorie.py:144) spune: când scrii domeniul de căutare, întreabă-te unde trăiește
+# de fapt lucrul căutat, nu unde stă fișierul de test. Deci am MĂSURAT rădăcina, n-am presupus-o goală:
+# 14 constante de clasă C în `main.py`, TOATE operaționale (praguri RAM/disc, conexiuni, cooldown,
+# rate-limit, paginare, ferestre de zile). Zero fiscale. Restrângerea la `core/` n-a ascuns nimic azi.
+#
+# Dar gaura e structurală: o cotă scrisă mâine direct într-o rută din `main.py` n-ar fi prinsă. Testul de
+# mai jos o închide îngust — fără să importe cele 14 ca datorie falsă, fiindcă n-ar fi datorie fiscală.
+
+_RADACINA = ("main.py", "tenant_db.py", "db.py")
+
+# Numele operaționale care conțin din întâmplare un cuvânt din `NF` („prag"). Fiecare cu ce măsoară,
+# ca lista să nu devină un coș în care se ascund constante fiscale reale.
+_OPERATIONALE = {
+    "_PRAG_RAM_PROCENT": "procent RAM peste care se alertează — infrastructură",
+    "_PRAG_DISC_PROCENT": "procent disc peste care se alertează — infrastructură",
+    "_PRAG_CONEXIUNI_DB": "număr de conexiuni Postgres peste care se alertează — infrastructură",
+}
+
+
+def test_nicio_constanta_fiscala_in_radacina():
+    """Îngust prin construcție: nu inventariază rădăcina, cere doar ca nimic FISCAL să nu apară acolo.
+    Locul unei cote e registrul `common.COTE`, nu o rută."""
+    import io
+    import os
+    import re
+    rad = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    rele = []
+    for f in _RADACINA:
+        p = os.path.join(rad, f)
+        if not os.path.exists(p):
+            continue
+        for h in scan_constante.scan(f, io.open(p, encoding="utf-8", errors="replace").read()):
+            if h["cls"] != "C" or scan_constante._este_precizie(h):
+                continue
+            m = scan_constante.NF.search(h["ctx"])
+            if not m:
+                continue
+            nume = re.search(r"`([^`]+)`", h["ctx"])
+            if nume and nume.group(1).strip() in _OPERATIONALE:
+                continue
+            rele.append("  %s:%d `%s` — %s | %s" % (f, h["l"], h["v"], h["ctx"], h["txt"][:60]))
+    assert not rele, (
+        "constantă cu nume fiscal în afara lui core/:\n" + "\n".join(rele)
+        + "\n\nMută valoarea în common.COTE cu Temei. Dacă e operațională (infrastructură, paginare,"
+        + " rate-limit), adaug-o în _OPERATIONALE cu ce măsoară.")
+
+
+def test_lista_operationale_nu_e_un_cos():
+    """Anti-vacuu pe exemptare: fiecare nume exceptat trebuie să existe cu adevărat în rădăcină,
+    altfel lista îmbătrânește și ascunde ce n-a fost niciodată acolo."""
+    import io
+    import os
+    rad = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    sursa = "".join(io.open(os.path.join(rad, f), encoding="utf-8", errors="replace").read()
+                    for f in _RADACINA if os.path.exists(os.path.join(rad, f)))
+    moarte = [n for n in _OPERATIONALE if n not in sursa]
+    assert not moarte, "exceptări care nu mai există în rădăcină — scoate-le: %s" % moarte
