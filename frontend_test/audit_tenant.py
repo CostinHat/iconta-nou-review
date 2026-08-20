@@ -143,6 +143,12 @@ def faceta_f2_f7(rap, tok, tid):
           % (stare, sem.get("datorate"), sem.get("depuse"), len(lipsa), len(urmarit), len(neclar))]
     for n in neclar:
         f7.append("  neclar: %s - %s" % (n.get("tip"), n.get("cauza") or n.get("motiv") or ""))
+    # [R6 21.08.2026] Trecerea INVERSA peste depuneri: o depunere pe o perioada declarata neaplicabila
+    # e o CONTRADICTIE (cele doua nu pot fi amandoua adevarate); pe un `neclar` e o OPINIE (cineva a
+    # considerat ca se datoreaza), NU o stingere. Auditul e primul consumator: pe ecran nu se randeaza
+    # inca (Control fiscal e STOP pana la confirmarea a CE se vede).
+    for c in (sem.get("depuneri_fara_obligatie") or []):
+        f7.append("  depunere %s: %s" % (c.get("fel"), c.get("mesaj", "")[:150]))
     _con = sem.get("contabil")
     _constat = _con if isinstance(_con, list) else (_con.get("constatari") if isinstance(_con, dict) else [])
     for c in (_constat or []):

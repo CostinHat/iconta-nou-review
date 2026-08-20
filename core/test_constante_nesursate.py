@@ -225,3 +225,78 @@ def test_lista_operationale_nu_e_un_cos():
                     for f in _RADACINA if os.path.exists(os.path.join(rad, f)))
     moarte = [n for n in _OPERATIONALE if n not in sursa]
     assert not moarte, "exceptări care nu mai există în rădăcină — scoate-le: %s" % moarte
+
+
+
+# ─────────── CONFRUNTAREA CELOR DOUĂ INSTRUMENTE (21.08.2026) ───────────
+# Întrebarea lui Costin, după ce clasa E a scos 28 de false pozitive: *există o cale ca următorul
+# inventar să afle ÎNAINTE, nu după?* Da — și n-a fost eșantionul de 30. Acela privește clasa în
+# agregat, iar `COTA_STANDARD = 21` nu se deosebește de nimic într-un rând de scan. Ce a prins-o a
+# fost verificarea la SURSĂ a primei intrări de pe lista de ardere: s-a deschis fișierul.
+#
+# Dar exista și o cale MECANICĂ, disponibilă din prima zi: **două instrumente din acest repo aveau
+# opinii despre același fișier și nimeni nu le confrunta.** Verificatorul ținea `cote_tva.py` pe
+# `_TVA_EXCLUSE` („aici literalii de cotă sunt așteptați"), iar scanul îl raporta cu 2 constante
+# nesursate. Contradicția era vizibilă fără să deschizi nimic — trebuia doar întrebată.
+#
+# Testat retroactiv: ieri confruntarea ar fi dat 9 semnale (cote_tva 21/11, d300 ×4, d394 ×3) —
+# exact miezul celor 28. Azi dă 5, toate datorie reală, ținute de clichetul de mai jos.
+
+_COTE_TVA = {"21", "19", "11", "0.21", "0.19", "0.11"}
+
+# Clichet, nu prag: cele 5 de azi sunt NUMITE, ca să nu se ascundă într-un număr.
+CONFRUNTARE_BASELINE = {
+    ("d300_reconciliere.py", "21"): "maparea cotă→rând, geamăna lui d300.py:41-42 care ÎȘI citează "
+                                    "actul în antet (Legea 141/2025); aici doar un comentariu fără act.",
+    ("d300_reconciliere.py", "11"): "idem, aceeași mapare duplicată în două fișiere.",
+    ("d406.py", "21"): "`tva_procent: Decimal = Decimal(21)` — cotă ca DEFAULT de parametru; "
+                       "supraviețuiește tăcut unei schimbări de cotă (clasa #2 de pe lista de ardere).",
+}
+
+
+def _excluse_din_verificator():
+    """Citește `_TVA_EXCLUSE` din verificator ca DATE, prin `ast` — fără import: modulul își rulează
+    scanul la nivel de modul, iar un test n-are voie să pornească alt instrument ca efect secundar."""
+    import ast
+    import io
+    import os
+    rad = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    src = io.open(os.path.join(rad, "verificator_conformitate.py"), encoding="utf-8").read()
+    for n in ast.walk(ast.parse(src)):
+        if isinstance(n, ast.Assign) and any(getattr(t, "id", "") == "_TVA_EXCLUSE" for t in n.targets):
+            return set(ast.literal_eval(n.value))
+    raise AssertionError("`_TVA_EXCLUSE` nu mai există în verificator — confruntarea a rămas fără "
+                         "al doilea instrument; repar-o, nu o șterge")
+
+
+def _confruntare(inv):
+    excl = _excluse_din_verificator()
+    return [h for h in inv if h["f"] in excl and h["cls"] == "C" and h["v"] in _COTE_TVA]
+
+
+def test_cele_doua_instrumente_nu_se_contrazic(inv):
+    """Miezul. Un fișier pe care verificatorul îl scutește fiindcă „aici cotele sunt așteptate", dar
+    în care scanul vede o cotă NESURSATĂ, e un dezacord între două măsurători ale aceluiași lucru."""
+    nou = [h for h in _confruntare(inv) if (h["f"], h["v"]) not in CONFRUNTARE_BASELINE]
+    assert not nou, (
+        "dezacord NOU între scan și verificator:\n"
+        + "\n".join("  %s:%d `%s` — %s" % (h["f"], h["l"], h["v"], h["txt"][:60]) for h in nou)
+        + "\n\nOri atașezi temeiul (obiect `Temei`, sau citarea actului lângă valoare), ori scoți "
+        "fișierul de pe `_TVA_EXCLUSE` dacă nu mai e un loc unde cotele sunt așteptate.")
+
+
+def test_confruntarea_nu_e_stat(inv):
+    """Anti-datorie-stătută, ca la clichetul principal: ce s-a reparat iese din baseline."""
+    real = {(h["f"], h["v"]) for h in _confruntare(inv)}
+    stat = sorted(k for k in CONFRUNTARE_BASELINE if k not in real)
+    assert not stat, ("confruntarea e mai largă decât realitatea — scoate din CONFRUNTARE_BASELINE: %s"
+                      % stat)
+
+
+def test_confruntarea_chiar_vede_ceva(inv):
+    """Anti-vacuu: dacă lista de excluse se golește sau `inv` se rupe, confruntarea ar trece pe gol,
+    raportând pace între două instrumente pe care nu le mai citește."""
+    excl = _excluse_din_verificator()
+    assert len(excl) >= 8 and "cote_tva.py" in excl, \
+        "lista de excluse a verificatorului e implauzibilă: %s" % excl
+    assert any(h["f"] in excl for h in inv), "scanul nu vede niciun fișier dintre cele excluse"

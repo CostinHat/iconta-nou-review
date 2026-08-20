@@ -75,9 +75,18 @@ def neaplicabile_selector(vector):
     if platitor is True:
         neap.setdefault("d301", "D301 nu se datorează — e pentru neînregistrații în scopuri de TVA (firma e plătitoare).")
     if ic is False:
-        neap.setdefault("d390", "D390 nu se datorează — firma nu are operațiuni intracomunitare.")
+        # [absenta_observatie 21.08.2026] Amandoua veneau dintr-o BIFA din vector si afirmau despre
+        # LUME („firma nu are operatiuni intracomunitare"). Bifa nu e o observatie asupra operatiunilor;
+        # pe tenant_006 exact asta a produs „nu se datoreaza" pe o firma cu achizitii IC reale. Motivul
+        # isi numeste acum SURSA si poarta remediul. Clasa nu se schimba (selectorul are nevoie de o
+        # decizie binara), afirmatia da.
+        neap.setdefault("d390", "D390 nu se datorează — Vectorul fiscal declară că firma nu are "
+                                "operațiuni intracomunitare. Dacă firma a avut livrări sau achiziții "
+                                "intracomunitare, corectează Vectorul fiscal.")
         if platitor is False:
-            neap.setdefault("d301", "D301 nu se datorează — fără operațiuni intracomunitare.")
+            neap.setdefault("d301", "D301 nu se datorează — Vectorul fiscal declară că firma nu are "
+                                    "operațiuni intracomunitare. Dacă firma a avut achiziții de la "
+                                    "furnizori din UE, corectează Vectorul fiscal.")
     return neap
 
 
@@ -437,8 +446,21 @@ def declaratii_fapt(conn_schema, schema, vector, azi):
                              "termen": term205.isoformat(),
                              "fapt": f"dividende distribuite în {Y} (rulaj cont 457)"})
         elif are_note:
-            neaplicabile.append({"tip": "d205",
-                                 "motiv": f"D205 nu se datorează — niciun rulaj pe cont 457 în {Y} (fără dividende distribuite)"})
+            # [absenta_observatie 21.08.2026 — a PATRA instanta a clasei, dupa cele trei D301 (R2')]
+            # „niciun rulaj pe 457" NU e un fapt despre lume: e absenta unei inregistrari in registrul
+            # NOSTRU. Poarta `are_note` cere o SINGURA nota validata pe an - o nota din ianuarie face
+            # din tacerea restului anului un „fapt". Criteriul de separare e REMEDIUL (harta casetelor):
+            # aici omul are de verificat DACA faptul a existat (hotarare AGA, extras de cont), nu de
+            # completat un atribut - deci apartine lui „Nu pot verifica", NICIODATA lui „Nu se datoreaza".
+            # PROBA care a fortat reincadrarea (sonda R6, 21.08): BETA PROFIT (t8397) are D205/12-2025
+            # DEPUS, in timp ce semaforul spunea ca nu se datoreaza. Depunerea e proba vie a incadrarii
+            # gresite. PRECEDENT: tenant_006, unde acelasi tipar a produs „nu se datoreaza" pe o firma
+            # cu achizitii intracomunitare REALE.
+            neclar.append({"tip": "d205",
+                           "motiv": f"D205 — nu pot verifica: am note validate pe {Y}, dar niciun rulaj "
+                                    f"pe contul 457 (dividende). Absența unei înregistrări nu dovedește "
+                                    f"absența distribuirii — verifică hotărârea AGA și extrasul de cont "
+                                    f"pentru {Y}."})
         else:
             neclar.append({"tip": "d205",
                            "motiv": f"D205 — nu pot verifica: lipsesc note validate pe {Y} (nu știu dacă s-au distribuit dividende)"})
@@ -507,6 +529,72 @@ def _clasifica(datorate, depuse, azi):
             e["motiv"] = fapt                 # de urmarit: idem
             urmarit.append(e)
     return lipsa, urmarit, confirmate, cu_intarziere
+
+
+def depuneri_fara_obligatie(datorate, neaplicabile, neclar, depuse):
+    """TRECEREA INVERSA (R6, 21.08.2026): peste `depuse`, nu peste `datorate`. PURA.
+
+    `_clasifica` itereaza pe obligatii si consulta `depuse` ca DICTIONAR - deci o depunere care
+    n-are obligatie pereche nu e VIZITATA niciodata. Nu e o omisiune, e o proprietate a formei:
+    „nu se datoreaza" si „s-a depus" nu se ciocneau nicaieri, deci o contradictie era invizibila
+    PRIN CONSTRUCTIE. Masurat pe baza (17 firme): 7 depuneri contraziceau un „nu se datoreaza".
+
+    Intoarce lista de {tip, an, luna, data, fel, mesaj}:
+      fel="contrazice"  depunere pe o perioada declarata NEAPLICABILA. Cele doua afirmatii nu pot
+                        fi amandoua adevarate. Semnal, nu blocare - aceeasi forma ca `contradictie`
+                        de la D390 (profil fara IC vs facturi IC reale).
+      fel="opinie"      depunere pe un tip aflat in „nu pot verifica". NU stinge necunoasterea: ca
+                        s-a depus dovedeste ca firma a CONSIDERAT ca datoreaza, nu ca a considerat
+                        corect, si nu spune nimic despre perioadele in care N-A depus - care e chiar
+                        intrebarea. Daca ar stinge-o, firma care a depus tot ar parea complet
+                        verificata, desi ea e tocmai cea despre care nu stii daca a depus tot.
+                        Se ARATA ca informatie; NU se numara ca obligatie stinsa.
+    O depunere in afara ferestrei `datorate` nu e niciuna: fereastra e o alegere de AFISARE, nu o
+    afirmatie despre obligatie.
+
+    PERIOADA se scrie „luna/an", nu „decembrie 2025": pentru declaratiile trimestriale/anuale luna
+    din inregistrare e ANCORA de codificare ANAF (D394 T3 -> luna 09), nu luna calendaristica. A o
+    traduce in nume de luna ar repeta exact misdiagnosticul D394/003.
+    """
+    dat = {(d["tip"], d["an"], d["luna"]) for d in datorate}
+    neap_per = {(n["tip"], n.get("an"), n.get("luna")) for n in neaplicabile if n.get("an")}
+    neap_tip = {n["tip"] for n in neaplicabile if not n.get("an")}
+    # Motivul se ia de la INTRAREA POTRIVITA, nu de la prima cu acelasi tip. Prima versiune tinea un
+    # dictionar pe tip si a produs „D100 pe 3/2026 ... nu se datoreaza: «nu se datoreaza pe T4 2025»" -
+    # un mesaj care citeaza alta perioada, adica exact clasa de defect pe care gardul asta o vaneaza.
+    motive_per, motive_tip = {}, {}
+    for n_ in list(neaplicabile) + list(neclar):
+        m_ = (n_.get("motiv") or n_.get("cauza") or "").strip()
+        if n_.get("an"):
+            motive_per[(n_["tip"], n_.get("an"), n_.get("luna"))] = m_
+        else:
+            motive_tip.setdefault(n_["tip"], m_)
+
+    def _motiv(t_, an_, luna_):
+        return motive_per.get((t_, an_, luna_)) or motive_tip.get(t_) or "—"
+
+    neclar_tip = {n["tip"] for n in neclar}
+
+    out = []
+    for (tip, an, luna), data in sorted(depuse.items(), key=lambda k: (str(k[0][0]), k[0][1] or 0, k[0][2] or 0)):
+        t = (tip or "").lower()
+        if (t, an, luna) in dat:
+            continue                       # are obligatie pereche - o trateaza _clasifica
+        per = "%s/%s" % (luna, an)
+        d_txt = (" (depusă %s)" % _dmy(data.isoformat())) if data else ""
+        if (t, an, luna) in neap_per or t in neap_tip:
+            out.append({"tip": t, "an": an, "luna": luna, "data": data, "fel": "contrazice",
+                        "mesaj": ("%s pe perioada marcată %s e DEPUSĂ%s, dar iConta a considerat că nu "
+                                  "se datorează: «%s». Cele două nu pot fi amândouă adevărate — verifică "
+                                  "dacă motivul e greșit sau depunerea e pe altă perioadă."
+                                  % (t.upper(), per, d_txt, _motiv(t, an, luna)))})
+        elif t in neclar_tip:
+            out.append({"tip": t, "an": an, "luna": luna, "data": data, "fel": "opinie",
+                        "mesaj": ("%s pe perioada marcată %s e DEPUSĂ%s, pe o obligație pe care nu o pot "
+                                  "verifica: «%s». Depunerea arată că cineva a considerat că se datorează; "
+                                  "nu spune nimic despre perioadele în care nu s-a depus."
+                                  % (t.upper(), per, d_txt, _motiv(t, an, luna)))})
+    return out
 
 
 def _stare(lipsa, urmarit, neclar):
@@ -658,6 +746,11 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
     lipsa, urmarit, confirmate, cu_intarziere = _clasifica(datorate, depuse, azi)
     # neclar uniformizat pe campul `motiv` (declaratii_datorate foloseste `cauza`)
     neclar_m = [{"tip": n["tip"], "motiv": n.get("motiv") or n.get("cauza", "")} for n in neclar]
+    # [R6 21.08.2026] Trecerea INVERSA peste `depuse`. NU escaladeaza pastila si NU se randeaza inca:
+    # ecranul Control fiscal e STOP pana la confirmarea lui Costin asupra a CE se vede. Consumator viu
+    # azi: frontend_test/audit_tenant.py (F7) + gard. Ramane in raspuns ca sa fie un singur loc unde se
+    # calculeaza, nu doua cand se cabla si UI-ul.
+    depuneri_contra = depuneri_fara_obligatie(datorate, neaplicabile, neclar_m, depuse)
     stare = _stare(lipsa, urmarit, neclar_m)
 
     # [F180] regim TVA local vs snapshot ANAF — divergenta = constatare cu remediu investigatie. Escaladarea
@@ -695,6 +788,7 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
         stare = pastila_firma(stare, [regim_tva_anaf] + list(reconciliere.get("constatari") or []))
 
     return {"stare": stare, "datorate": len(datorate), "depuse": len(depuse),
+            "depuneri_fara_obligatie": depuneri_contra,
             "lipsa": lipsa, "urmarit": urmarit, "confirmate": confirmate,
             "cu_intarziere": cu_intarziere,
             "neclar": neclar_m, "neaplicabile": neaplicabile,
