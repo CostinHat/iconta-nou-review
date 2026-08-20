@@ -104,6 +104,38 @@ regimului — deci nu se gardează să rămână gol. `state_plata` e gol prin d
 emitere, vezi `test_datorie.py`), nu prin regim. `reg_com`, `banca` și `iban` din `firma_profil` rămân NULL
 deliberat: C-2 nu le fixează, iar lipsa lor e chiar cazul de test care a scos refuzul de bilanț și cel de D300.
 
+**Ce lipsește ca să exercite regimul complet (măsurat 20.08.2026 contra matricei S4 din C-2).**
+„Sub-exercitată" nu e o etichetă, e lista de mai jos. Primele două **dezactivează fațete**, restul lasă
+dimensiuni ale regimului neatinse.
+
+1. **`pontaj` = 0 rânduri.** CAEN 1071 a fost ales tocmai pentru „forță de muncă numeroasă, ture,
+   part-time". Fără pontaj, zilele lucrate se derivă din calendar (`_nzl` − zile CM), deci turele,
+   absențele și lunile parțiale reale nu se exercită. **F3 e definită pe date populate — aici lipsește
+   chiar producătorul lanțului.**
+2. **`inregistrari` = 0.** Statul de plată nu e contabilizat, deci constatarea „Salarii declarate diferă
+   de contabilitate" **nu poate deveni verde**. **F7 compară cifrele afișate cu faptele; fără note nu are
+   ce contrazice** — roșu prin construcție verifică tot atât cât verdele pe tabel gol.
+3. **`este_continuare = 0` pe toate cele 11 certificate**, deși 4 sunt cod 01. Progresia 55/65/75 e pe
+   EPISOD (OUG 158/2005 art.17(1)); fără un certificat inițial + continuare, escaladarea nu e atinsă.
+4. **Niciun certificat cod 05 sau 51.** `core/test_datorie.py` (datoria din 31.07, îngustată 02.08) spune
+   verbatim că sub-rândurile C2 infectocontagioase (Rd.1.1–1.4, condiționate de `D_12`/dată) rămân
+   nedefalcate „cât timp nu există cod 05 în lună". Un singur certificat închide datoria.
+5. **`program_national = 0`** → `D_9a`, unul dintre cele 13 câmpuri noi din 07/2026 (datoria D112
+   v1.03-072026), nu e atins de nicio dată.
+6. **Cod 92 absent** — singurul din lista S4 care lipsește (există 01, 07, 08, 09, 10, 15, 17, 91).
+7. **`data_incetare` NULL pe toți 12** — încetarea de contract e chiar cazul pe care `sterge_salariat` îl
+   descrie în contract („la PLECARE nu se șterge, se completează data încetării").
+8. **Exces tichete de vacanță peste plafonul de 6 salarii minime** — specul cere „→ INTRĂ în bază";
+   există un rând `vacanta` în `beneficii_lunare`, valoarea nu a fost verificată.
+9. **Facilitate salariu minim** (agroalimentar, aplicabilă la CAEN 1071) — cerută de spec, neverificat
+   dacă vreun salariat o poartă.
+
+**Cum se citește un verdict pe firma asta până se umplu 1 și 2.** F2 se sprijină pe date reale
+(`salariu_istoric`, `concedii_medicale` — populate), DAR zilele lucrate din D112 vin din calendar, nu
+dintr-un pontaj; F6/F9 pe ecranele fără date („curat" pe listă goală înseamnă „n-a avut ce strica");
+F7 pe latura de reconciliere. Pe astea, verdictul e **necontrazis, nu verificat** — exact distincția pentru
+care există gardul de perimetru. Cine reia firma trece întâi 1 și 2, apoi re-rulează fațetele.
+
 | Data | Ce s-a atins | Commit(uri) | Rămas |
 |------|--------------|-------------|-------|
 | 2026-08-20 | **Audit cap-coadă F1–F9 (10 defecte) + 4 gărzi pe clase.** F2 DUK: atenționarea B4_5P pe toate cele 7 luni (baza part-time fără cei 300 lei) + D112/aprilie nedepusibilă (cod `91` refuzat de gardă, ACCEPTAT de arbitru). F3: 24/30 rânduri `salariu_istoric` orfane. F5: 14 mesaje publicate rescrise (nume interne 4→0). F6: contrast `.cf-galben` 4.02. F9: bilanț 500 gol + stocuri 400 în limba programatorului. Plus: GET care comitea, poarta închisă de o citire, datoria care se contrazicea, orchestrator care citea `stare` în loc de `severitate`. Vector completat conform C-2. Reziduul sondelor (24 `state_plata` + 2 `nir`) șters țintit. | (audit t001) | **D1** (scăderea celor 300 lei) și **D2** (Nomenclatorul 9 ca sursă) — decise, neimplementate; odată cu ele cele 3 etichete inversate din UI (02/03, 16, 17). Orfanii `salariu_istoric` + FK-ul pe `salariu_istoric`/`pontaj` (migrare pe 19 scheme) — nedecis. |

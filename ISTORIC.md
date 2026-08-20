@@ -4634,3 +4634,46 @@ contrast `.cf-galben` 4.02 → 5.30 · orfani `salariu_istoric` · orchestrator 
 `severitate`, 6 luni din 7 raportate fals ca ERORI) — detaliile la GARZI 20.08 și ISTORIC_TENANTI tenant_001.
 
 **Poarta:** 2132 passed, 4 skipped, 16 xfailed; verificator TOTAL 0.
+
+## 20.08.2026 - tenant_018/019 sterse (CUBUS ARTS) + maturare CNP pe toata matricea
+
+**Ce erau.** Doua tenant-uri create la 1h30 distanta pe 16.08.2026, pe cabinete diferite
+(`Proba Valid SRL` 9777 cu un cont `@example.test`; `Cabinet Contabil Popescu SRL` 9834 cu aliasul lui
+Costin), amandoua purtand identitatea REALA a firmei `CUBUS ARTS SRL` (CUI 13548146, reg. com.
+J2000000508324, adresa Sibiu, IBAN, telefon, `platitor_tva_anaf_inceput=2007-02-01` — data venita din
+raspunsul ANAF, deci firma reala interogata la sursa). t018 = ciot (`plan_conturi` 185 + `firma_profil`).
+t019 = `plan_conturi` 190, `solduri_initiale` 23, `articole` 8, `miscari_stoc` 7, `solduri_parteneri` 5,
+**`salariati` 4**, `salariu_istoric` 4. Partenerii erau sintetici (ALFA/BETA/GAMA/DELTA/EPSILON), dar
+salariatii aveau CNP-uri cu cifra de control valida si date de nastere plauzibile.
+
+**Nu erau in matrice** (C-1/C-2 = t001–t012 pe cabinetul 1968; t013–t016 demo; t017 audit) si erau
+duplicate una alteia. Sterse la cererea lui Costin: `DROP SCHEMA CASCADE` + randul din `public.tenants`.
+NU s-a pastrat dump — scopul stergerii era sa dispara datele, iar un dump ar fi mutat expunerea pe disc;
+s-a inregistrat CE s-a sters (tabele + numaratori), nu continutul.
+
+**Nimic nu le-a atins cat timp bug-ul GET-care-comitea era viu:** `state_plata` = 0 pe amandoua, deci in
+cele 47 de zile nimeni nu le-a deschis ecranul de salariati. Uneltele nu ajung la ele nici din greseala
+(`w_auth` are tenant_003 hardcodat, `audit_tenant.py` cere id explicit). Riscul era insa real: t019 avea
+4 salariati, iar o singura deschidere de ecran ar fi scris in datele unei firme reale dintr-un cont de test.
+
+**Stergerea a reprodus clasa D5, cu un etaj mai sus.** `DROP SCHEMA` nu atinge `public.*`: au ramas **11
+declaratii depuse orfane** (d101/2025, 5x d112, d205/2025, 2x d300, 2x d394) referind un tenant inexistent.
+Erau singurele orfane din tabel — deci stergerea unui tenant nu are cale de curatare pentru tabelele-copil
+din `public`. Sterse. `public.audit_log` (53.992 randuri fara tenant viu, majoritatea de la schemele efemere
+din pytest) NU s-a atins: e jurnal de raspundere si supravietuieste prin proiectare.
+
+**Maturarea CNP — stergerea NU inchide clasa.** 37 de CNP-uri distincte in 9 scheme, **toate trec cifra de
+control**. Doua conventii:
+- **cu marcaj sintetic** — t001 (15) si t017 (5): judet 51, serii secventiale 101–203 / 301–305;
+  t003/t005: serii 001–020. Recognoscibile ca seed.
+- **fara niciun marcaj** — firmele demo **t013 (2), t014 (2), t015 (1), t016 (3)**: judet 40, serii
+  neconsecutive 007–055, ani de nastere 1970–1995. Exact profilul lui t019.
+
+Deci t019 nu era exceptia; era a cincea. Au ramas **8 CNP-uri plauzibile** pe firmele demo. C-2 isi declara
+singura disciplina („nu exista registru public de verificare a non-existentei unui CNP… se vor folosi date
+de nastere/secvente implauzibile") si ea s-a aplicat doar unde a rulat seed-ul C-2.
+
+**Inversarea de notat:** `core/test_cui_cnp_test_valid.py` garda ca un CUI/CNP folosit ca DATE DE TEST **trece
+cifra de control** — adica il face mai probabil sa coincida cu o persoana reala — si se uita doar la literalii
+din COD, niciodata la randurile din baza. Nimic nu garda implauzibilitatea. Am gardat directia opusa celei
+care conteaza pentru datele personale.
