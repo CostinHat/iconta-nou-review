@@ -10332,3 +10332,57 @@ verbatim, la sursă.
 
 **NU las decizia ca promisiune scrisă** — ziua asta a arătat de trei ori că intențiile scrise derivează.
 Legată în `core/test_temei_termene.py`, care pică până fiecare tip își poartă actul.
+
+
+## 20.08.2026 — clasa constantelor fiscale s-a MĂSURAT, înainte de a repara fragmente din ea
+
+**Comanda lui Costin:** „Fă scanul pe cod de producție întâi. Sursarea per tip după. §8 spune că nu știm
+cât de mare e clasa. Cele 85 sunt partea vizibilă a unei datorii de dimensiune necunoscută, iar sursarea a
+5 tipuri e muncă pe o bucată dintr-un întreg nemăsurat."
+
+**Cifra:** 85 vizibile în teste (inventarul 31.07) + **126 în producție**. Partea invizibilă e mai mare
+decât cea văzută. Termenele de depunere — motivul pentru care s-a pornit — sunt **4 din 126**.
+
+**Ce distinge o constantă fiscală de un număr oarecare.** NU felul în care e folosită, ci unde LOCUIEȘTE:
+constantă de modul / default la lookup / default de parametru / `Decimal` literal / nume fiscal. Și
+clasificarea vine de la strămoșul sintactic, nu de la ramura care a găsit literalul.
+
+**Trei feluri, nu unul** — descoperite la 35 de rânduri de eșantion, nu la 4.000 de rânduri de listă:
+sursat (are `Temei` — cazul bun), nomenclator (cod/pondere din XSD sau algoritm: are sursă, dar ALTA și cu
+altă cadență de revizuire), nesursat (ținta).
+
+**Ce s-a văzut imediat, și nu se vedea din inventarul pe teste:**
+`cote_tva.COTA_STANDARD = 21` / `COTA_REDUSA = 11` scrise de mână în afara registrului — exact clasa celor
+85, dar în producție · `Decimal("16")` duplicat în `d101` și `d101g` · `d216.COTA_IMPOZIT = 0.3` în float,
+nu Decimal · `cota=21` și `procent=8` ca **default de parametru** în modulele de marjă și agricultori, deci
+supraviețuiesc tăcut unei schimbări de cotă · `assert` cu valori hardcodate în `d212_engine`, modul de
+PRODUCȚIE, nu test.
+
+**Ordinea nu s-a schimbat de dimensiune, prioritatea da.** Clichetul se pune oricum — e singurul lucru
+independent de mărime. La 126, sursarea se triază după cât de departe ajunge constanta: una care aterizează
+într-o declarație depusă înaintea uneia dintr-un raport intern. Termenele rămân sus, fiindcă D101 a dovedit
+unde ajung — firme marcate fals ca restanțiere.
+
+## 20.08.2026 — R5: temei_legal se desparte de regula_produs
+
+**Motivul, formulat de Costin:** cele două **se revizuiesc diferit**. Un temei legal se schimbă când se
+schimbă legea și nu decizi nimic. O regulă de produs se schimbă când decizi tu, iar „mai e bună?" e o
+întrebare legitimă oricând. Amestecate, o regulă de produs devine imposibil de repus în discuție — nimeni
+nu contestă un articol de lege — iar o prevedere legală devine negociabilă, ceea ce e mai rău.
+
+**Instanța care a produs regula:** indicatorul de patru ochi. Etichetat temei legal în loc de control
+intern, nimeni n-ar fi întrebat dacă „posibil" înseamnă ≥2 validatori, și fundătura rămânea.
+
+**Al treilea fel nu cere un al treilea câmp** (întrebarea 2 a lui Costin): e cazul în care AMÂNDOUĂ sunt
+pline. Termenul care se mută în ziua lucrătoare următoare e lege; alegerea de a afișa firma ca restanțieră
+de a doua zi e produs. Intrarea e unitatea, iar `regula_produs` spune CE ADAUGĂ peste act.
+
+**Starea la instalare, măsurată (întrebarea 1):** toate cele **6 din 6** intrări trimiteau la COD, zero la
+un act. Și `TEMEI` n-avea niciun consumator — o regulă scrisă care nu era o regulă păzită.
+
+**Verificat la sursă, nu presupus:** `control_fiscal_api.py:503` clasifică `term < azi` ca restanță, deci
+în chiar ziua termenului obligația e încă „de urmărit" — restanțier din ziua următoare.
+`PRAG_URMARIT_ZILE = 7` e fereastra galbenă, integral produs, și apare și în clasa C a scanului.
+
+**Patru din șase reguli de produs sunt NEDOCUMENTATA** — decizia care le-a fixat nu e consemnată nicăieri.
+Asta e constatarea, nu o scăpare; tăcerea s-ar fi citit ca „gândită".

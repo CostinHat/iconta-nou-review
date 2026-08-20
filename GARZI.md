@@ -3407,3 +3407,33 @@ doar o firmă cu declarații „de urmărit" RANDEAZĂ starea galbenă — exact
 și `"Str_caenListSType" in msg` — adică cerea PREZENȚA numelui intern în mesajul contabilului, exact defectul
 F5 reparat. A patra apariție a clasei notate în `test_datorie.py:234` (31.07). Aserțiunile cer acum absența
 numelui intern + prezența locului unde se corectează.
+
+
+## 20.08.2026 — clichetul constantelor fiscale nesursate din PRODUCȚIE (`e188018`)
+
+**Ce face imposibil:** o constantă fiscală nouă, scrisă de mână în cod de producție, fără `Temei` atașat.
+`core/test_constante_nesursate.py`, clichet **per fișier** (baseline 126 la instalare, se coboară, nu se
+ridică). Un fișier fiscal nou pornește de la 0.
+
+**De ce clichet și nu xfail.** Inventarul de pe 31.07 a fost xfail: a *înregistrat* datoria, n-a
+*împiedicat-o*, și clasa a produs a cincea apariție opt zile mai târziu. Un xfail e o notiță.
+
+**Instrumentul a picat de două ori înainte să meargă — ambele picări sunt în docstring și în calibrare:**
+v1 a căutat literali în aritmetică+comparații (127 rezultate, aproape integral zgomot de format) și a
+RATAT ținta cunoscută, fiindcă `_ZIUA.get(tip, 25)` e un default la lookup. v2 a clasat `Decimal("4050")`
+ca nesursată deși are `Temei` pe același rând — clasifica ramura care găsise literalul, nu strămoșul
+sintactic. De-aia calibrarea e în TREI direcții (nesursat / sursat / nomenclator), nu una.
+
+**Mutația:** `PRAG_INVENTAT = 12345` în `core/cote_tva.py` → roșu, cu fișierul și rândul numite.
+
+## 20.08.2026 — R5: temei legal ≠ regulă de produs în harta casetelor (`feddfd0`)
+
+**Ce face imposibil:** o intrare `TEMEI` care tace despre baza ei legală, o citare care nu aterizează pe un
+document din `anaf_surse/`, sau o regulă de produs fără decizia și data care au fixat-o.
+`core/test_harta_temei.py`.
+
+**Ce NU face:** nu verifică dacă actul citat chiar spune ce pretinzi — aia cere arbitrul, nu un gard
+sintactic. Limita e scrisă în docstring, nu presupusă.
+
+**Mutații (patru):** act inexistent în corpus · decizie fără dată · intrare tăcută pe amândouă câmpurile ·
+dispariția felului „citare" (anti-vacuu). Toate roșii, cu mesaj care numește intrarea.

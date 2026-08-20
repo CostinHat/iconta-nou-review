@@ -1756,3 +1756,19 @@ Fara test nou (maparea neschimbata; test_mapare_tip_cod acopera deja tip 4 exclu
 Fiecare are un test anti-gard-mort: dacă euristica se rupe (regex, decorator, cale de schemă), gardul PICĂ în
 loc să treacă pe gol. Cel de la `test_stergere_salariat_completa` s-a declanșat chiar la naștere — găsise 3
 tabele în `tenant_template.sql` când baza are 5, fiindcă schema trăiește și în `NN_ddl_*.sql`.
+
+
+## 20.08.2026 — două gărzi noi
+
+| gardă | ce face imposibil |
+|---|---|
+| `core/test_constante_nesursate.py` | o constantă fiscală nouă în cod de producție fără `Temei` (clichet per fișier, baseline 126) |
+| `core/test_harta_temei.py` | o intrare din harta casetelor care tace despre temeiul legal, citează un act inexistent în corpus, sau are regulă de produs fără decizie+dată |
+
+Amândouă poartă anti-vacuu. Cel de la `test_constante_nesursate` e o calibrare în TREI direcții, fiindcă
+una singură lasă scanul să treacă pe gol în celelalte — și fiecare direcție a picat efectiv o dată în
+construcție. Cel de la `test_harta_temei` cere ca harta să conțină toate cele trei feluri de temei
+(citare / datorie declarată / produs curat), altfel ramurile gardului n-au fost exercitate.
+
+Instrument nou, nu test: `core/scan_constante.py` — clasifică literalii numerici din modulele fiscale în
+A=sursat (48) / B=nomenclator (308) / C=nesursat (126) / D=precizie (37).

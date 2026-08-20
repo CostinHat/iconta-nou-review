@@ -1,6 +1,44 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANT — audit tenant_001 (Panificatie Salarii Speciale SRL / S4, cabinet Prisma 1968)
+# PREDARE LANT — masurarea clasei de constante fiscale (tura 20.08, seara)
+
+## REPORNIRE (comanda exacta, gata de dat) — TURA 20.08(c): scan constante + R5
+
+LIVRAT, comis si impins (`e188018`, `feddfd0`; HEAD = origin/main; backup/lant-2026-08-20; RUNNING 21:21 > commit 21:12; :8010 -> 200):
+- **Clasa de constante fiscale s-a MASURAT**, la comanda lui Costin, INAINTE de a repara fragmente din
+  ea. `core/scan_constante.py` + clichet per fisier `core/test_constante_nesursate.py`.
+  **A=48 sursate / B=308 nomenclator / C=126 NESURSATE / D=37 precizie.** Partea invizibila (126) e mai
+  mare decat cea vazuta in inventarul pe teste de pe 31.07 (85). Termenele sunt 4 din 126.
+- **R5**: `temei_legal` despartit de `regula_produs` in harta casetelor + garda
+  `core/test_harta_temei.py` (citare rezolvabila in `anaf_surse/`, `None` asumat, sau `DATORIE`
+  explicita; regula de produs poarta decizia si data). Toate cele 6 intrari trimiteau la COD, zero la un
+  act, si `TEMEI` n-avea niciun consumator.
+
+**FRONT NOU DESCHIS de masuratoare — cele mai grele din C, in ordinea in care ajung la contabil:**
+1. `cote_tva.COTA_STANDARD = 21` / `COTA_REDUSA = 11` — cota de TVA scrisa de mana IN AFARA registrului.
+   Exact clasa celor 85, dar in productie. Cel mai ieftin de mutat in `common.COTE`.
+2. `cota=21` / `procent=8` ca **default de parametru** in `tva_marja`, `tva_marja_turism`,
+   `tva_agricultori` — supravietuiesc TACUT unei schimbari de cota. Nu pica niciun test.
+3. `Decimal("16")` duplicat in `d101.py:40` si `d101g.py:62` — aceeasi cota, doua locuri.
+4. `d216.COTA_IMPOZIT = 0.3` — cota fiscala in **float**, nu Decimal.
+5. `d212_engine.py:148-174` — 11 `assert` cu valori asteptate hardcodate intr-un modul de PRODUCTIE.
+6. `salarizare.py` 19 valori (deduceri 0.20-0.45, `PCT_TINERI` 0.15, `PRAG_VENIT_DEDUCERE` 2000, concediu
+   medical 0.55/0.65/0.75/0.85) si `common.py` ferestrele 220/450, 240/470, 250/490 — fara `Temei`, chiar
+   langa `COTE` care are.
+
+**COMANDA DE REPORNIRE:** „Sursarea per tip a termenelor (R4, `core/test_temei_termene.py` e xfail
+strict pana atunci), apoi arderea clichetului de la 126 in jos, in ordinea 1-6 de mai sus. Dupa:
+`semafor.js` — griul e in afara modelului lui, iar un cabinet numai cu firme gri arata un rand verde
+linistitor. Si R6: o declaratie depusa rezolva `neclar`?”
+
+RAMAS deschis din turele anterioare, nemiscat tura asta: FK pe `salariu_istoric`/`pontaj` + 24 orfani pe
+t001 · cele 8 CNP-uri plauzibile pe t013-t016 · `etransport_ecran.js` etTimp gri -> „—” ·
+citirea celor 9 diff-uri verificator/verificat co-comise · marcarea celor 85 de teste · cele trei stari ca
+fixturi · scanerul multi-firma (garda hartii citeste artefactul unei singure firme).
+
+---
+
+# ARHIVA — PREDARE LANT — audit tenant_001 (Panificatie Salarii Speciale SRL / S4, cabinet Prisma 1968)
 
 ## REPORNIRE (comanda exacta, gata de dat) — TURA 20.08: audit t001, 10 defecte, 4 garzi
 

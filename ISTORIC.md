@@ -4677,3 +4677,16 @@ de nastere/secvente implauzibile") si ea s-a aplicat doar unde a rulat seed-ul C
 cifra de control** — adica il face mai probabil sa coincida cu o persoana reala — si se uita doar la literalii
 din COD, niciodata la randurile din baza. Nimic nu garda implauzibilitatea. Am gardat directia opusa celei
 care conteaza pentru datele personale.
+
+
+## 20.08.2026 — inventarul constantelor fiscale, partea de PRODUCȚIE
+
+Al doilea inventar al aceleiași clase, complementar celui de pe 31.07 (care măsura TESTE).
+A=48 sursate · B=308 nomenclator · **C=126 nesursate** · D=37 precizie. Persistat mecanic în
+`core/scan_constante.py`, deci recalculabil, nu o listă care îmbătrânește.
+
+Cele mai grele din C, pe fișier: `salarizare.py` 19 (cotele de deducere 0.20–0.45, `PCT_TINERI` 0.15,
+`PRAG_VENIT_DEDUCERE` 2000, cotele de concediu medical 0.55/0.65/0.75/0.85) · `d212_engine.py` 13 (dintre
+care 11 sunt `assert` cu valori așteptate hardcodate, într-un modul de producție) · `common.py` 9
+(ferestrele sezoniere 220/450, 240/470, 250/490 — fără `Temei`, chiar lângă `COTE` care are) ·
+`d394.py` 9 (`COTE = (0,5,9,11,19,20,21,24)`, cotele istorice de TVA) · `d101.py` 8.
