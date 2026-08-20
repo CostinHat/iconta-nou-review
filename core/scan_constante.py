@@ -24,20 +24,46 @@ a picat exact aici: `Decimal("4050")` avea `Temei(...)` pe acelasi rand si a aju
                    Are si el sursa, dar ALTA (XSD/validator) si alta cadenta de revizuire.
     C  NESURSAT    TINTA
     D  precizie    Decimal("0.01") de cuantizare, chr(), stari interne. Numarata, nu aruncata tacut.
+    E  TEMEI IN PROZA  citarea EXISTA, dar ca text pentru om, nu ca obiect `Temei` pentru masina.
+
+CLASA E, adaugata 20.08.2026(d) - a patra forma de orbire prin constructie, gasita PRIVIND un fisier,
+nu scanandu-l: `cote_tva.py` isi citeaza temeiul in antet (art. 291 CF, Legea 141/2025) si per
+categorie, iar verificatorul il are DELIBERAT pe `_TVA_EXCLUSE` fiindca el e modulul care reproduce
+legea - si totusi scanul il raporta nesursat, fiindca cerea obiect `Temei`. Masuratoarea trebuia
+masurata la randul ei inainte de a arde clichetul dupa ea.
+
+CUM SE RECUNOASTE, si de ce ASA. Ancora e `_TVA_TEMEI` din verificator: acolo un literal are temei
+daca VALOAREA LUI e in registrul valoare -> citare. Deci E cere ca aceeasi unitate de proza sa contina
+SI o citare legala SI valoarea literalului. Ancorarea pe valoare NU e un rafinament, e miezul:
+masurata pe cele 126, regula "exista o citare undeva in antetul modulului" ar fi mutat 100 din 126 in
+E - inclusiv cele 11 `assert` din `d212_engine` si `d216.COTA_IMPOZIT = 0.3`, adica exact datoria
+reala. Un antet care spune despre CE declaratie e modulul nu e temeiul niciunei valori din el.
+
+    unitatea de proza = blocul contiguu de comentarii de deasupra instructiunii + comentariile de la
+    coada randurilor ei; sau un PARAGRAF dintr-un docstring (al modulului / al functiei / al clasei).
+    Citarile se sterg din text INAINTE de cautarea valorii, ca `art. 21` sa nu treaca drept cota 21.
+
+E NU e clasa buna. A e sursat pentru MASINA (registrul poate consuma temeiul, gardul poate verifica
+citarea); E e sursat doar pentru OM. Se numara separat tocmai ca sa nu se topeasca in A - altfel
+distinctia dispare si cu ea si drumul E -> A.
 
 ZGOMOTUL si CITARILE se exclud dupa forma, INAINTE de culegere: operanzii lui len(), divizorii de
 modulo, componentele de data, si argumentele lui `Temei(...)`/`date(...)` - care sunt citari, nu valori.
 
 LIMITA, scrisa fiindca tacerea unui scan se citeste ca absenta: granita B/C e euristica pe NUME (NOM).
 Un nomenclator botezat neinspirat ajunge in C - fals pozitiv, il vezi. O valoare fiscala botezata
-`_TIP_...` ar ajunge in B - fals negativ, NU o vezi. De-aia gardul care foloseste scannerul poarta o
-calibrare in TREI directii, nu una: o singura tinta lasa scanul sa treaca pe gol in celelalte.
+`_TIP_...` ar ajunge in B - fals negativ, NU o vezi. La fel si E: o proza care numeste actul si
+valoarea, dar o citeaza GRESIT, trece drept sursata - scanul citeste FORMA citarii, nu adevarul ei.
+De-aia gardul care foloseste scannerul poarta o calibrare in PATRU directii, nu una: o singura tinta
+lasa scanul sa treaca pe gol in celelalte.
 """
 
 import ast
+import io
 import json
 import os
 import re
+import tokenize
 from collections import Counter
 
 RAD = "/home/costin/iconta_nou/core"
@@ -49,6 +75,91 @@ NF = re.compile(r"prag|plafon|cota|cote|salariu|salar|venit|impozit|contrib|cas\
 NOM = re.compile(r"_W$|_WEIGHT|_KEY$|CNP|CUI|JUD|SIRUTA|TIPURI|TIP_|_TIP|FORMA|LIMITE_TEXT|LIMITE|"
                  r"TAXCODE|COD_|CODURI|_REL_|_PER_|CAEN|VALUT|TARA|_MAP$|SCHEMA|XSD|NOMENCL|SARB|"
                  r"HEADER|_STR_|_OPT$|PERIODIC|_CAT_|CATEG", re.I)
+
+# ── clasa E: FORMA unei citari legale in proza. Calibrata pe citarile care EXISTA in modulele
+# fiscale (esantionul de 20.08d): "art.18^1 alin.(1)", "CF (L227/2015) Titlul VI", "OPANAF 2194/2025",
+# "OUG 156/2024", "HG 1506/2024", "art. 291 alin. 2". Nu contine `\bCF\b` singur: prea multe „CF" din
+# alte contexte l-ar face sa firma pe orice.
+# GRANITELE DE CUVANT nu sunt cosmetice: fara `\b`, `lit.?\s*[a-z]\)` se aprindea pe „po-LIT-E)" din
+# antetul lui `d403` si sursa cinci constante cu o coincidenta ortografica. Iar `lit` cere punctul
+# obligatoriu ("lit. a)"), fiindca fara el orice cuvant terminat in „lit" + paranteza trece.
+CITARE = re.compile(
+    r"\bart\.?\s*\d+|\balin\.?\s*\(?\d|\blit\.\s*[a-z]\)|\bpct\.?\s*\d+"
+    r"|Leg(?:ea|ii)\s*\d+\s*/\s*\d{4}|\bL\.?\s*\d{2,3}\s*/\s*\d{4}"
+    r"|O\.?U\.?G\.?\s*\d+\s*/\s*\d{4}|\bOG\s*\d+\s*/\s*\d{4}|\bHG\s*\d+\s*/\s*\d{4}"
+    r"|OMFP\s*\d+|OMF\s*\d+|OPANAF\s*\d+|Ordin(?:ul)?\s*\d+\s*/\s*\d{4}"
+    r"|Cod(?:ul)?\s+fiscal|\bCF\s+art|Titlul\s+[IVX]+|Norm[ae]\s+metodologic", re.I)
+# separatorul de mii din proza („50.000.000 euro") nu e in literal („50000000")
+_MII = re.compile(r"(?<=\d)[.,  ](?=\d{3}(?!\d))")
+
+
+# NUMARUL din proza, ca TOKEN - nu ca substring. Masurat pe esantion: `19` din enumerarea
+# „(0,5,9,19,20,24)" e o cota si trebuie vazut, `5` din „validatorul v5" e un numar de versiune si
+# NU trebuie, iar `9` din „-> R9" e un rand de formular. Deci virgula desparte (nu e separator
+# zecimal in proza asta) si o litera lipita in fata descalifica.
+_NUM = re.compile(r"(?<![A-Za-z_])\d+(?:\.\d+)?")
+
+
+def _normal(s):
+    """`2430.0` si `2430` sunt acelasi numar; `0.30` si `0.3` la fel."""
+    return (s.rstrip("0").rstrip(".") or "0") if "." in s else s
+
+
+def _valoarea_e_in(txt, val):
+    """Valoarea literalului apare in proza asta? Citarile se STERG intai, ca `art. 21` sa nu treaca
+    drept cota 21 - altfel numarul actului ar sursa orice literal egal cu el."""
+    t = _MII.sub("", CITARE.sub(" ", txt)).replace(",", " , ")
+    v = _normal(val)
+    return any(_normal(m.group(0)) == v for m in _NUM.finditer(t))
+
+
+# ── ZGOMOTUL LUI E, NUMARAT SI NUMIT (nu aruncat tacit) ──
+# Limita instrumentului, masurata: un numar MIC dintr-o enumerare de coduri, aflata in acelasi
+# paragraf cu o citare reala, nu se poate deosebi mecanic de valoarea sursata. Cazurile de mai jos
+# au fost PRIVITE in sursa si respinse; raman in C. Cheia e (fisier, valoare), iar gardul cere ca
+# fiecare intrare sa fie in continuare un candidat - altfel intrarea a imbatranit si se scoate.
+PROZA_RESPINSA = {
+    ("d101g.py", "16"): 'cota de impozit pe profit; proza vecina spune „rd.16 diferenta de '
+                        'recuperat” si „rd.61 cercetare-dezvoltare 16% (OUG 115/2024)” - alt 16. '
+                        'Geamana ei, d101.py:40, e in C: aceeasi constanta nu poate avea doua clase.',
+    ("salarizare.py", "12"): 'plafonul de 12 salarii minime la concediu medical; proza vecina spune '
+                             '„PNS 12/13/14” - coduri de exceptie, nu plafonul.',
+}
+
+
+def _comentarii(src):
+    """{linie: text} pentru fiecare comentariu. Prin `tokenize`, nu prin split pe '#' - altfel un
+    '#' dintr-un sir de caractere ar inventa proza care nu exista."""
+    d = {}
+    try:
+        for t in tokenize.generate_tokens(io.StringIO(src).readline):
+            if t.type == tokenize.COMMENT:
+                d[t.start[0]] = t.string.lstrip("#").strip()
+    except (tokenize.TokenError, IndentationError, SyntaxError):
+        pass
+    return d
+
+
+def _paragrafe_docstring(n):
+    ds = ast.get_docstring(n) if isinstance(
+        n, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)) else None
+    return [p for p in re.split(r"\n\s*\n", ds or "") if p.strip()]
+
+
+def _proza(L, com, l_instr, l_lit):
+    """Unitatile de proza care GUVERNEAZA literalul: blocul contiguu de comentarii de deasupra
+    instructiunii + comentariile de la coada randurilor ei. Blocul se ia INTREG (e un singur gand:
+    `d394.COTE` isi enumera cotele pe un rand si citeaza OPANAF pe urmatorul)."""
+    u = []
+    sus, j = [], l_instr - 1
+    while j >= 1 and j in com and L[j - 1].strip().startswith("#"):
+        sus.insert(0, com[j])
+        j -= 1
+    coada = [com[k] for k in range(l_instr, l_lit + 1)
+             if k in com and not L[k - 1].strip().startswith("#")]
+    if sus or coada:
+        u.append(" ".join(sus + coada))
+    return u
 
 
 def scan(f, src):
@@ -141,6 +252,30 @@ def scan(f, src):
                 for c in n.comparators:
                     cul(c, "H5", "comparat cu `%s`" % nm)
 
+    # ── clasa E: proza care guverneaza literalul (comentariile lui + docstringurile care-l contin) ──
+    com = _comentarii(src)
+
+    def proza_care_sursa(n, val):
+        """Unitatea de proza care contine SI citarea SI valoarea. Intoarce citatul, sau None.
+
+        Docstringul care conteaza e DOAR al scope-ului imediat: antetul modulului guverneaza
+        constantele MODULULUI, nu orice numar din adancul oricarei functii. Masurat: fara
+        restrictia asta, docstringul lui `scadente.py` „sursa" ziua 25 din `_ZIUA.get(tip, 25)` -
+        adica exact cazul de calibrare al nesursatului - iar antetul lui `d403` sursa cinci
+        numere mici din corpul functiilor, doar fiindca erau lungi si contineau cifre."""
+        a, l_instr, vazut, parag = n, getattr(n, "lineno", 0), False, []
+        while id(a) in par:
+            a = par[id(a)]
+            if not vazut and isinstance(a, ast.stmt):
+                l_instr, vazut = getattr(a, "lineno", l_instr), True
+            if isinstance(a, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+                parag = _paragrafe_docstring(a)      # primul scope intalnit, si numai el
+                break
+        for u in _proza(L, com, l_instr, getattr(n, "lineno", l_instr)) + parag:
+            if CITARE.search(u) and _valoarea_e_in(u, val):
+                return re.sub(r"\s+", " ", u.strip())[:90]
+        return None
+
     # ── pasul 3: CLASIFICA uniform, urcand pe parinti ──
     out = []
     for n, casa, ctx in brut:
@@ -156,7 +291,11 @@ def scan(f, src):
             cls = "B"
         ln, t = txt(n)
         val = str(n.value)
-        out.append({"f": f, "l": ln, "v": val, "casa": casa, "cls": cls, "ctx": ctx[:44], "txt": t})
+        cit = proza_care_sursa(n, val) if cls == "C" else None
+        if cit and (f, val) not in PROZA_RESPINSA:
+            cls = "E"
+        out.append({"f": f, "l": ln, "v": val, "casa": casa, "cls": cls, "ctx": ctx[:44], "txt": t,
+                    "cit": cit or ""})
     return out
 
 
@@ -193,17 +332,27 @@ def inventar(rad=RAD):
 
 
 def nesursate(rad=RAD):
-    """Doar clasa C - constantele fiscale fara temei atasat."""
+    """Doar clasa C - constantele fiscale fara temei atasat, nici macar in proza."""
     return [h for h in inventar(rad) if h["cls"] == "C"]
+
+
+def in_proza(rad=RAD):
+    """Clasa E - citarea exista, dar ca text pentru om. Nu e datorie de acelasi fel cu C, dar nici
+    caz inchis: drumul ei e E -> A (temeiul devine obiect, deci verificabil de masina)."""
+    return [h for h in inventar(rad) if h["cls"] == "E"]
 
 
 if __name__ == "__main__":
     from collections import Counter
     U = inventar()
-    for c in "ABCD":
+    for c in "ABCDE":
         print("%s %4d" % (c, sum(1 for h in U if h["cls"] == c)))
     print("")
     print("BASELINE = {")
     for f, n in sorted(Counter(h["f"] for h in nesursate()).items()):
         print('    "%s": %d,' % (f, n))
     print("}")
+    print("")
+    print("E - temei in proza (%d):" % len(in_proza()))
+    for h in in_proza():
+        print("  %-22s l.%-5d %-10s %s" % (h["f"], h["l"], h["v"], h["cit"]))

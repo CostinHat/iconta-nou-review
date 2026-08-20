@@ -12,24 +12,33 @@ PER FIȘIER, nu global — altfel o reparație într-un modul ar plăti pentru o
 CE MĂSOARĂ. `core/scan_constante.py`: literali numerici din modulele fiscale, clasificați după unde
 LOCUIESC (constantă de modul / default la lookup / default de parametru / Decimal literal / nume
 fiscal), apoi împărțiți după strămoșul sintactic în A=sursat (are `Temei`), B=nomenclator (cod din
-XSD/algoritm), C=nesursat, D=precizie. C e ținta.
+XSD/algoritm), C=nesursat, D=precizie, E=temei în proză. C e ținta.
 
-DIMENSIUNEA CLASEI, măsurată azi: 85 vizibile în teste (inventarul 31.07) + 126 în producție. Partea
-invizibilă e mai mare decât cea văzută. Termenele de depunere — motivul pentru care s-a pornit — sunt
-4 din 126, deci sursarea lor singură ar fi fost lucru pe un fragment dintr-un întreg nemăsurat.
+DIMENSIUNEA CLASEI: 85 vizibile în teste (inventarul 31.07) + 98 în producție. Partea invizibilă e
+tot mai mare decât cea văzută. Termenele de depunere — motivul pentru care s-a pornit — sunt 3 din
+98 (al patrulea, ziua 30 a lui D394, e sursat în proza antetului lui `scadente.py`).
+
+RECALCULAT 20.08(d): prima măsurătoare a dat C=126, dar ea însăși avea o clasă nedistinsă — temei
+PREZENT, dar în PROZĂ, nu ca obiect `Temei`. `cote_tva.py` reproduce art. 291 CF în antet și e pe
+`_TVA_EXCLUSE` în verificator, și totuși scanul îl raporta nesursat. 28 din cele 126 erau de fapt
+sursate în proză; clichetul coboară cu ele. Măsurătoarea a trebuit măsurată înainte de a arde
+clichetul după ea — altfel 28 de reparații ar fi fost făcute pe cazuri care nu erau stricate.
 """
 import pytest
 
 from core import scan_constante
 
-# Instalat 20.08.2026. Se COBOARĂ pe măsură ce constantele primesc temei. Nu se ridică.
+# Instalat 20.08.2026, COBORÂT 20.08(d) de la 126 la 98 după distingerea clasei E (temei în proză).
+# Se coboară pe măsură ce constantele primesc temei. Nu se ridică.
+# Ieșite complet: `cote_tva.py` (2) și `d300.py` (5) — amândouă își citează actul în antet, per
+# valoare. Coborâte: d394 9->2, d212_engine 13->11, d101 8->7, d104 4->0, salarizare 19->18.
 BASELINE = {
-    "common.py": 9, "control_fiscal_api.py": 1, "cote_tva.py": 2, "d101.py": 8, "d101g.py": 1,
-    "d104.py": 4, "d108.py": 2, "d169.py": 1, "d169n.py": 1, "d205.py": 2, "d212_engine.py": 13,
-    "d216.py": 1, "d300.py": 5, "d300_reconciliere.py": 5, "d394.py": 9, "d398.py": 1,
-    "d401.py": 2, "d402.py": 3, "d403.py": 5, "d406.py": 7, "d406_active.py": 7,
-    "d406_stocuri.py": 1, "d407.py": 2, "salariati_api.py": 1, "salarizare.py": 19,
-    "scadente.py": 4, "stat_plata_api.py": 1, "tva_agricultori.py": 2, "tva_aur.py": 1,
+    "common.py": 8, "control_fiscal_api.py": 1, "d101.py": 7, "d101g.py": 1,
+    "d108.py": 1, "d169.py": 1, "d169n.py": 1, "d205.py": 2, "d212_engine.py": 11,
+    "d216.py": 1, "d300_reconciliere.py": 5, "d394.py": 2,
+    "d401.py": 2, "d402.py": 3, "d403.py": 5, "d406.py": 5, "d406_active.py": 7,
+    "d406_stocuri.py": 1, "d407.py": 2, "salariati_api.py": 1, "salarizare.py": 18,
+    "scadente.py": 3, "stat_plata_api.py": 1, "tva_agricultori.py": 2, "tva_aur.py": 1,
     "tva_marja.py": 2, "tva_marja_turism.py": 4,
 }
 
@@ -75,10 +84,11 @@ def test_baseline_nu_e_stat(inv):
         + "\n".join(stat))
 
 
-# ─────────── ANTI-VACUU: calibrare în TREI direcții ───────────
+# ─────────── ANTI-VACUU: calibrare în PATRU direcții ───────────
 # O singură țintă lasă scanul să treacă pe gol în celelalte. Prima versiune a scanului a picat pe
-# `25`; a doua a trecut `25` dar a pus `4050` (care ARE Temei) în nesursate. Fiecare direcție a picat
-# o dată în construcție — de-aia sunt toate trei aici, nu doar cea care a picat ultima.
+# `25`; a doua a trecut `25` dar a pus `4050` (care ARE Temei) în nesursate; a treia a raportat
+# `cote_tva.py` nesursat deși modulul reproduce art. 291 CF. Fiecare direcție a picat efectiv o dată
+# în construcție — de-aia sunt toate patru aici, nu doar cea care a picat ultima.
 
 def _clasa(inv, fisier, valoare, casa=None):
     r = [h for h in inv if h["f"] == fisier and h["v"] == valoare and (casa is None or h["casa"] == casa)]
@@ -104,12 +114,54 @@ def test_calibrare_separa_nomenclatorul(inv):
     assert _clasa(inv, "bilant_api.py", "40", "H2") == "B"
 
 
+def test_calibrare_vede_temeiul_din_proza(inv):
+    """A patra direcție, adăugată 20.08(d). `cote_tva.COTA_STANDARD = 21` NU e datorie: antetul
+    citează art. 291 CF (Legea 141/2025) chiar lângă valoare, iar verificatorul are modulul pe
+    `_TVA_EXCLUSE` fiindcă el e cel care reproduce legea. Raportată ca nesursată, ar fi trimis pe
+    cineva să „repare" un caz bun — și ar fi stricat structura injectată în promptul AI."""
+    assert _clasa(inv, "cote_tva.py", "21") == "E"
+    assert _clasa(inv, "cote_tva.py", "11") == "E"
+
+
+def test_proza_nu_inghite_nesursatul(inv):
+    """Contra-direcția lui E, și cea care contează: o clasă care „sursează" din proză poate ȘTERGE
+    datoria reală. Măsurat în construcție — regula „există o citare undeva în antetul modulului" ar
+    fi mutat 100 din 126 în E, inclusiv aserțiunile din `d212_engine` și cota în float din `d216`.
+    De-aia proza cere VALOAREA, iar antetul guvernează doar constantele modulului."""
+    assert _clasa(inv, "scadente.py", "25", "H2") == "C", "ziua 25 din _ZIUA a fugit în E"
+    assert _clasa(inv, "d216.py", "0.3") == "C", "cota în float din d216 a fugit în E"
+    assert _clasa(inv, "d101.py", "16") == "C", "cota de impozit pe profit a fugit în E"
+    assert sum(1 for h in inv if h["cls"] == "C" and h["f"] == "d212_engine.py") >= 11, \
+        "aserțiunile cu valori din modulul de PRODUCȚIE d212_engine au fugit în E"
+
+
+def test_respinsele_din_proza_nu_imbatranesc(inv):
+    """Anti-vacuu pe exceptare (a doua oară în fișierul ăsta, din același motiv): o respingere care
+    nu mai corespunde unui candidat e o notă despre o lume care nu mai există. Fiecare intrare din
+    `PROZA_RESPINSA` trebuie să fie în continuare un caz pe care scanul L-AR muta în E."""
+    moarte = []
+    for f, v in scan_constante.PROZA_RESPINSA:
+        cand = [h for h in inv if h["f"] == f and h["v"] == v and h["cit"]]
+        if not cand:
+            moarte.append("  %s `%s`" % (f, v))
+        elif any(h["cls"] != "C" for h in cand):
+            moarte.append("  %s `%s` — respinsă, dar nu e în C" % (f, v))
+    assert not moarte, (
+        "respingeri care nu mai corespund unui candidat — scoate-le din PROZA_RESPINSA:\n"
+        + "\n".join(moarte))
+
+
 def test_scanul_chiar_vede_toate_clasele(inv):
     """Dacă regexul de module sau parserul se rupe, listele se golesc și clichetul ar trece pe gol."""
     from collections import Counter
     c = Counter(h["cls"] for h in inv)
     assert c["A"] >= 20 and c["B"] >= 100 and c["C"] >= 50, \
         "distribuție implauzibilă — scanul s-a rupt, nu s-a reparat codul: %s" % dict(c)
+    assert 10 <= c["E"] <= 60, (
+        "clasa E (temei în proză) e implauzibilă: %d. Sub prag = detectorul de citări s-a rupt și "
+        "clichetul e prea larg; peste = proza a devenit o pătură și șterge datorie reală." % c["E"])
+    assert all(h["cit"] for h in inv if h["cls"] == "E"), \
+        "un E fără citat — E trebuie să poată fi CITIT, altfel e o afirmație neverificabilă"
     assert len({h["f"] for h in inv}) >= 40, "prea puține module fiscale văzute: verifică scan_constante.FIS"
 
 
@@ -146,7 +198,9 @@ def test_nicio_constanta_fiscala_in_radacina():
         if not os.path.exists(p):
             continue
         for h in scan_constante.scan(f, io.open(p, encoding="utf-8", errors="replace").read()):
-            if h["cls"] != "C" or scan_constante._este_precizie(h):
+            # ȘI E, nu doar C: testul ăsta e despre LOCUL constantei, nu despre sursarea ei. O cotă
+            # scrisă într-o rută rămâne în locul greșit chiar dacă are un comentariu cu articolul.
+            if h["cls"] not in ("C", "E") or scan_constante._este_precizie(h):
                 continue
             m = scan_constante.NF.search(h["ctx"])
             if not m:

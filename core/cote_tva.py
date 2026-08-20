@@ -176,9 +176,17 @@ def potriveste_cota(denumire, platitor_tva=True):
     regula oficiala (art. 291) + AI. Intoarce dict:
       {ok, cota, categorie, justificare, incredere, sursa}
     - Daca firma NU e platitoare TVA -> cota 0 direct (fara AI).
-    - Daca AI indisponibil -> fallback: cota standard 21% (sursa='fallback'),
-      ca sa nu blocheze fluxul; utilizatorul poate corecta manual.
+    - Daca AI e indisponibil, esueaza sau raspunde neinterpretabil -> NEDETERMINAT
+      (ok=False, cota=None, sursa='nedeterminat'), NU cota standard. Vezi
+      `_nedeterminat` pentru rationament: un 21 marcat "fallback" ajunge in decont
+      exact ca unul tacit, daca factura se emite oricum. Linia ramane incompleta,
+      emiterea se blocheaza (regula bazei nule), iar contabilul declara cota explicit.
     incredere: 'mare' / 'medie' / 'mica' (cat de sigur e AI).
+
+    Docstring-ul asta a spus pana la 20.08.2026 exact pe dos ("fallback: cota standard
+    21%, ca sa nu blocheze fluxul") - afirmatie ramasa de la o versiune anterioara si
+    niciodata verificata la sursa. Codul are dreptate si poarta motivul; regula nu se
+    inmoaie ca sa se potriveasca unui text. Legat de `test_granite_cota.py` TEMA D.
     """
     denum = (denumire or "").strip()
     if not denum:
@@ -249,9 +257,12 @@ def potriveste_cota(denumire, platitor_tva=True):
             "sursa": "ai"}
 
 
-def cote_valide():
-    """Cotele legale in vigoare (pentru validare)."""
-    return [COTA_STANDARD, COTA_REDUSA, 0]  # 0 = scutit / neplatitor TVA
+# STERS 20.08.2026: `cote_valide()` - lista [21, 11, 0] FARA data, cu ZERO consumatori.
+# Nu era inofensiva prin nefolosire: chemata pe o factura din iunie 2025 ar fi respins 19% ca
+# "invalida", adica ar fi transformat cota corecta de atunci intr-o eroare. Validarea period-aware
+# exista deja in `common.cota(...)` / `common.cota_ceruta(...)`; a doua lista, fara perioada, ar fi
+# fost logica paralela. Reparatia reala e stergerea, nu conservarea unui cod mort care asteapta
+# primul apelant. Gardat de `test_granite_cota.py` TEMA D.
 
 
 if __name__ == "__main__":

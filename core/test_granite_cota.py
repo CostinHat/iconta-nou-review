@@ -181,3 +181,48 @@ def test_proba_d390_livrare_ic_scutita_prin_granita_reparata_duk_valid(conn_sche
     xml, res = declaratii_api.genereaza(conn_schema_d300, SCHEMA_T, "d390", {"an": 2026, "luna": 6})
     rez = _duk.valideaza(xml, "d390", an=2026, luna=6)
     assert rez["stare"] == "valid", "DUK a respins D390 (livrare IC scutita): %s" % rez
+
+
+# ── TEMA D: doc contra cod in cote_tva (20.08.2026) ──────────────────────────
+# Doua constatari, aceeasi radacina: o afirmatie despre cota care n-a fost verificata la sursa.
+# (1) docstring-ul lui `potriveste_cota` promitea "fallback: cota standard 21%" iar codul intoarce
+#     NEDETERMINAT. Arbitrul e argumentul semantic, scris in `_nedeterminat`: un 21 marcat fallback
+#     ajunge in decont exact ca unul tacit daca factura se emite oricum. Deci codul are dreptate,
+#     docstring-ul s-a corectat catre cod, si se LEAGA aici - altfel se poate intoarce.
+# (2) `cote_valide()` intorcea [21, 11, 0] fara data, cu zero consumatori. Stearsa.
+
+def test_ai_indisponibil_da_nedeterminat_nu_fallback_21(monkeypatch):
+    """Comportamentul, nu doar textul: fara AI, cota NU se ghiceste."""
+    from core import ai_client, cote_tva
+    monkeypatch.setattr(ai_client, "disponibil", lambda: False)
+    r = cote_tva.potriveste_cota("produs complet necunoscut zzz-qwerty", platitor_tva=True)
+    assert r["ok"] is False and r["cota"] is None, "a ghicit o cota fara AI: %r" % r
+    assert r["cod"] == "NEDETERMINAT" and r["sursa"] == "nedeterminat"
+
+
+def test_niciun_drum_nu_intoarce_o_cota_marcata_fallback():
+    """Legatura doc-cod, pusa pe INVARIANTUL codului, nu pe cuvinte. Prima versiune a gardului
+    cauta "fallback" langa "21" in docstring - si s-a aprins pe propria explicatie de ce fallback-ul
+    e gresit. Un gard care nu deosebeste afirmatia de negatia ei nu pazeste nimic. Ce se pazeste de
+    fapt: niciun drum din modul nu are voie sa intoarca o cota cu `sursa='fallback'`."""
+    import inspect
+    import re
+
+    from core import cote_tva
+    src = inspect.getsource(cote_tva)
+    rau = re.findall(r"""["']sursa["']\s*:\s*["']fallback["']""", src)
+    assert not rau, (
+        "cote_tva intoarce iar o cota marcata 'fallback' (%d locuri). Un 21 marcat fallback ajunge "
+        "in decont exact ca unul tacit - vezi `_nedeterminat`." % len(rau))
+    d = (cote_tva.potriveste_cota.__doc__ or "").lower()
+    assert "nedetermin" in d, "docstring-ul nu spune ce face de fapt functia cand AI lipseste"
+
+
+def test_cote_valide_a_disparut_nu_se_intoarce():
+    """Anti-vacuu pe stergere: `cote_valide()` intorcea [21, 11, 0] FARA perioada. Chemata pe o
+    factura din iunie 2025 ar fi respins 19% ca invalida. Validarea period-aware traieste in
+    `common.cota` / `common.cota_ceruta`; o a doua lista, oarba la perioada, e logica paralela."""
+    from core import cote_tva
+    assert not hasattr(cote_tva, "cote_valide"), (
+        "`cote_valide` a revenit. O lista de cote valide fara data respinge cota corecta a unei "
+        "perioade trecute - foloseste common.cota(...) cu perioada facturii.")

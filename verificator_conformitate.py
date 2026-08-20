@@ -591,7 +591,12 @@ if os.path.isdir(_GHID_MD):
 GRI_BASELINE = 0   # PRAG (nu ratchet) de la 01.08.2026: cele 2 GRI (main.py bucketing OCR) atasate la common.cota. Regula 01.08 (ciclul>ratchet): la 0, orice GRI nou BLOCHEAZA.
 _re_tva_dec = re.compile(r"(?<![\w.])0\.(?:21|19|11)(?![\w])")
 _re_tva_int = re.compile(r"(?<![\w.])(?:21|19|11)(?![\w.%])")
-_TVA_EXCLUSE = {"common.py", "verificator_conformitate.py", "cote_tva.py",
+# `scan_constante.py` intra aici 21.08.2026, in aceeasi clasa cu verificator_conformitate.py si
+# cote_tva.py: nu e cod fiscal, e un INSTRUMENT DE MASURA care citeaza cote ca exemple in proza
+# ("ca `art. 21` sa nu treaca drept cota 21"). N-are si nu poate avea logica de cota - orice 21 din
+# el e text despre masuratoare. Alternativa era rescrierea prozei ca sa ocoleasca regexul, adica
+# exact felul de ajustare care face un gard sa para verde fara sa se fi schimbat nimic.
+_TVA_EXCLUSE = {"common.py", "verificator_conformitate.py", "cote_tva.py", "scan_constante.py",
                 "d406.py", "d300.py", "d300_reconciliere.py", "d301.py", "d390.py", "d394.py", "amef_import.py",
                 "export_winmentor.py"}
 # valoare -> (semantica, temei): sursa unica a citarii. Valoare care NU e aici -> temei=??? -> ROSU.
