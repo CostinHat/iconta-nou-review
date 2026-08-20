@@ -30,12 +30,14 @@ Ordinea nu e arbitrară: datele greșite otrăvesc tot ce urmează, deci se vali
 deja corect funcțional.
 
 ### F1 — Perimetru & inventar
-**Acoperire:** GARDAT `core/test_harta_ecrane.py` (inventarul ecranelor e complet; un `#fa-*` nou nein­registrat pica).
+**Acoperire:** GARDAT `core/test_harta_ecrane.py` (inventarul ecranelor e complet; un `#fa-*` nou nein­registrat pica) + `core/test_perimetru_firma_declarat.py` (perimetrul declarat al fiecarei firme din `ISTORIC_TENANTI.md` nu poate lipsi si nu poate deveni statut).
 
 **Întrebarea:** ce atinge tenantul? (declarațiile datorate din vectorul fiscal, ecranele accesibile, registrele,
 gărzile care-l păzesc). **Sondă:** deschide firma cu Playwright (helper tip `~/probe_t006/wt006.py`), enumeră ce
 declarații apar „de depus", ce ecrane sunt accesibile din ecranul principal. **Verdict:** ai lista completă a
 suprafeței de auditat, scrisă; nimic „presupus prezent" fără să fi fost văzut.
+
+**Perimetrul se DECLARĂ în registru (20.08.2026, cerut de Costin).** Secțiunea firmei din `ISTORIC_TENANTI.md` poartă un bloc **Perimetru** cu două laturi: ce e ÎN perimetru (proză) și ce e ÎN AFARA (listă de tabele). Motivul: o firmă poate fi **purtătoarea unui REGIM**, nu o firmă completă (ex. tenant_006 = neplătitor micro cu achiziții IC: 3 tabele cu date din 47). Fără declarație, golurile se citesc ca DATORIE și cineva pornește să parcurgă F3/F7 pe tabele goale — unde dau verde fiindcă n-au ce contrazice. Cu declarație dar fără gardă, ea devine stătută în tăcere când firma se umple. Amândouă sunt gardate de `core/test_perimetru_firma_declarat.py`.
 
 ### F2 — Corectitudinea calculului (declarații)
 **Acoperire:** GARDAT `core/test_golden_xsd.py` + `core/test_rotunjire_fiscala.py` + verificator (DEFAULT_FISCAL_TACIT/TEMEI/GRI). Reziduu MANUAL: DUK field-by-field pe date reale.

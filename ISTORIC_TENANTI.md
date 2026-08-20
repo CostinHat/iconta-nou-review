@@ -12,6 +12,32 @@ Metoda de lucru per tenant = [`MODEL_AUDIT_TENANT.md`](MODEL_AUDIT_TENANT.md).
 
 ## tenant_006 — Achizitii IC Neplatitor SRL (CUI 95451848 · schema tenant_006 · cabinet Prisma 1968 · N1, neplătitor micro cu achiziții intracomunitare)
 
+**Perimetru (regim N1 — declarat 20.08.2026, verificat la sursă).** 006 e **purtătoarea regimului**
+„neplătitor micro cu achiziții intracomunitare" (art. 317 CF), nu o firmă completă. Schema are 47 de tabele
+și date în trei: `firma_profil` (1), `d301_operatiuni` (3), `plan_conturi` (185 = nomenclatorul OMFP, nu date
+de firmă).
+
+**În perimetru:** vector fiscal · D301 · D390 (derivat din D301) · D100/D406 pe fapt de venituri ·
+control fiscal / semafor · cele 4 straturi de import (firme, plan conturi, solduri parteneri, vector) ·
+coada de validare. Pe acest perimetru, F1–F9 din [`MODEL_AUDIT_TENANT.md`](MODEL_AUDIT_TENANT.md) = parcurse;
+coloana „Rămas" se citește pe el, nu pe toată aplicația.
+
+**În afara perimetrului (tabele care trebuie să rămână goale):** `salariati`, `salariu_istoric`, `state_plata`, `pontaj`, `concedii_medicale`, `beneficii_lunare`, `facturi`, `factura_linii`, `facturi_recurente`, `efactura_primite`, `efactura_trimiteri`, `clienti`, `furnizori`, `asociati`, `casa_operatiuni`, `bonuri`, `chitante`, `extras_linii`, `rip_operatiuni`, `produse`, `articole`, `miscari_stoc`, `nir`, `nir_linii`, `retete`, `retete_linii`, `mijloace_fixe`, `solduri_initiale`, `solduri_parteneri`, `inregistrari`, `inregistrari_linii`, `registratura`, `centre_cost`, `bugete`, `etransport_trimiteri`.
+
+**De ce nu se parcurg și restul fațetelor pe modulele astea — și de ce firma NU se exclude din matrice.**
+F3 e definită pe *date populate* („nu pe fixture goale") și F7 compară *cifrele afișate cu faptele*: pe tabele
+goale n-au ce contrazice, deci ar da verde fiindcă nu verifică nimic — exact falsul sentiment de acoperire pe
+care `GARZI.md` îl interzice. Modulele acelea se validează pe firmele care le poartă (salarizare → t001,
+SAF-T/facturi → t009 ș.a.m.d.), iar criteriul agreat e pe *funcționalitate × fațetele **aplicabile***, nu pe
+firmă × toate fațetele. Excluderea lui 006 din matrice ar lăsa regimul IC netestat; umplerea ei cu date
+străine de regim (soluția corectă la t005/t011/t012, care sunt SUB-EXERCITATE) ar dilua regimul, nu l-ar
+întări. 006 nu e sub-exercitată — e **scopată**, și e închisă pe scopul ei.
+
+**Gardat:** `core/test_perimetru_firma_declarat.py` — blocul nu poate lipsi dintr-o secțiune de firmă, iar
+tabelele declarate mai sus trebuie să existe și să rămână goale (dacă firma se umple, declarația devine roșie
+în aceeași zi, nu peste trei luni).
+
+
 | Data | Ce s-a atins | Commit(uri) | Rămas |
 |------|--------------|-------------|-------|
 | 2026-08-19 | **temei_307 construit (excludere D390 auditabila per op)**: tip 4 poarta care alineat art. 307 (3/5/6), cerut la introducere; excluse_d301 numeste motivul+temeiul (simetric cu facturi); temei NULL=semnal. Euristica veche + confirma_local scoase (fara cod mort). Migrat pe 19 scheme. Acceptare 006/iunie verificata: D390=1 linie cod A DE136695976 baza 52.261, INV-DE-88 exclus cu semnal, tip4-fara-temei respins. | (temei_307) | — perimetru inchis. |

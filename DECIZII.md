@@ -9767,3 +9767,59 @@ control. Verificarea la introducere din ecranul D301 (`d301_operatiuni_api.salve
 **Proba.** `core/test_d390_checksum_manual.py` (5 teste, RED pe HEAD: linia manuală cu DE136695975 nu producea
 niciun diagnostic, iar cele două căi dădeau verdicte diferite pe același cod). Linia reală a lui tenant_006
 (iunie 2026, cod A, DE136695976, bază 52.261) rămâne curată — zero fals-pozitiv, D390 în continuare DUK-valid.
+
+## 20.08.2026 — O firmă din matrice poartă un REGIM, nu e o firmă completă: perimetrul se DECLARĂ și se GARDEAZĂ
+
+**Context.** Întrebarea lui Costin: pe ce fațete se închide rândul unei firme, pe care a fost parcurs tenant_006,
+și merită parcurse și celelalte pe firma asta. Verificat la sursă: schema `tenant_006` are **47 de tabele** și
+date în **trei** — `firma_profil` (1), `d301_operatiuni` (3), `plan_conturi` (185 = nomenclatorul OMFP, nu date
+de firmă). Nici măcar `facturi` nu are date: linia D390 vine exclusiv din derivarea D301. Firma nu e incompletă
+din neglijență — e **purtătoarea regimului** „neplătitor micro cu achiziții intracomunitare".
+
+**Precizare de vocabular (rândul nu se „închide").** `ISTORIC_TENANTI.md` spune în antet: *un rând per (tură ×
+tenant), fiecare tură ADAUGĂ un rând, nu rescrie*. Ce se închide e **perimetrul**, și se scrie în coloana
+„Rămas". Criteriul de gata-de-producție agreat e formulat pe funcționalitate, nu pe firmă: *fiecare
+funcționalitate a trecut **fațetele aplicabile** pe ≥1 firmă cu date valide+invalide*. Cuvântul care poartă
+greutatea e „aplicabile".
+
+**Decizia.** Nu se parcurg fațetele pe modulele goale ale unei firme-purtătoare-de-regim, și firma **nu se
+exclude** din matrice. Motivul nu e „n-ar testa nimic", ci mai tare: **F3 e definită pe date POPULATE** („nu pe
+fixture goale") și **F7 compară cifrele afișate cu faptele** — pe tabele goale n-au ce contrazice, deci dau
+verde fiindcă nu verifică nimic. Ăsta e exact falsul sentiment de acoperire pe care `GARZI.md` îl interzice în
+capul lui. Excluderea lui 006 ar lăsa regimul IC netestat (e singura purtătoare); umplerea ei cu date străine de
+regim — soluția corectă la t005/t011/t012, care sunt SUB-EXERCITATE — ar dilua regimul, nu l-ar întări. 006 nu e
+sub-exercitată, e **scopată**.
+
+**Marcarea: niciuna din cele două variante puse.** „Rând închis pe fațeta IC" e o eroare de categorie — IC nu e
+o fațetă; fațetele F1–F9 sunt **metoda**, IC e **perimetrul**, adică pe ce aplici metoda. „Firmă exclusă din
+matrice" pierde regimul. Varianta corectă e a treia: **declarația de perimetru pe antetul secțiunii firmei**, o
+dată, nu pe fiecare rând — cu două laturi, ce e ÎN perimetru (proză) și ce e ÎN AFARA (listă de tabele, citabilă
+mecanic). Modulele goale nu sunt „rămas"; sunt **în afara perimetrului prin construcție**, iar asta trebuie
+scris, altfel cineva peste trei luni le citește ca datorie neplătită.
+
+**Și gardată, fiindcă o regulă scrisă nu e o regulă păzită.** `core/test_perimetru_firma_declarat.py`, doi
+colți: blocul nu poate LIPSI dintr-o secțiune de firmă; tabelele declarate în afara perimetrului trebuie să
+existe și să rămână GOALE — dacă firma se umple, declarația devine roșie în aceeași zi, nu peste trei luni.
+
+**Introducerea fără poartă roșie permanentă (întrebarea lui Costin) — fără baseline, deliberat.** Premisa
+„celelalte firme n-au blocul, deci gardul le pică pe toate" nu ține: registrul avea o SINGURĂ secțiune de firmă
+(`## tenant_006`); 001/002/003 apar doar ca mențiuni în proză, iar subsolul fișierului spune *„se completează pe
+măsură ce fiecare tenant e atins din nou"*. Blocul lui 006 se scrie în același commit cu gardul → poarta e verde
+din prima. Gardul mușcă la prima tură care creează secțiunea firmei următoare — acolo unde e și contextul ei; a
+completa acum 12 blocuri ar fi însemnat să **inventez** perimetre neverificate la sursă (Regula de aur). Un
+ratchet cu baseline (tiparul `test_mesaje_generare_fara_camp_intern`, 274 de mesaje) e instrumentul corect când
+datoria există; aici e zero, iar un baseline gol e greutate moartă — unul ne-gol ar fi fost o listă de amnistie
+care legitimează absența exact cât o ține în viață.
+
+**Limita, declarată (GARZI.md o cere).** Gardul apără secțiunile CARE EXISTĂ. O tură care auditează o firmă și
+nu-i creează deloc rând nu aprinde nimic aici — rămâne pe disciplina §11 (raportul numește obligatoriu
+`ISTORIC_TENANTI.md`). Acoperă „scris pe jumătate" și „scris și uitat", nu „nescris deloc".
+
+**Proba.** RED-probat prin trei mutații pe `ISTORIC_TENANTI.md`, câte una pentru fiecare fel de minciună, toate
+restaurate exact: linia ștearsă (nescris) → pică; `plan_conturi` (185 rânduri) declarat în afara perimetrului
+(stătut) → pică; tabel inexistent declarat (verificare pe gol) → pică. Al patrulea test e anti-vacuu: dacă
+regexul de secțiune nu mai prinde nimic, gardul însuși ar trece pe gol → pică. Scriptul care a compus blocul
+refuză să scrie dacă vreun modul din listă are date — cele 35 au fost numărate la sursă.
+
+**Stare: GARDATĂ.**
+
