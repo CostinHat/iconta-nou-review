@@ -10293,3 +10293,42 @@ contract — *„perechi în ordine roșu, galben (verdele e «ok»)… dacă to
 Un cabinet numai cu firme gri ar afișa un rând verde liniștitor. E același defect cu un etaj mai sus,
 dar schimbarea e structurală (atinge forma funcției, folosită de `cabinet.js` și `asistent.js`), deci
 nu am făcut-o orbește.
+
+## 20.08.2026 — R4: temeiul se atașează PER TIP de declarație. Și metoda de inventar e oarbă la clasă.
+
+**Decizia lui Costin.** Termenele sunt constante fiscale ca oricare altele; temeiul se atașează per tip.
+
+**Argumentul care închide „25 e notoriu":** notorietatea e o proprietate a **cunoașterii**, nu a valorii —
+cota TVA de 21% e la fel de notorie, și tocmai ea e cazul dominant din inventarul de pe 31.07. Iar
+excepțiile deja citate **dovedesc** că baza are temei: dacă D101 la 25 iunie merită un act, „25 ale lunii
+următoare" merită la fel. Altfel regula e mai slab susținută decât abaterile de la ea.
+
+**Q2 — unul din cinci poartă act.** `_data_nominala` tratează `d205` (ultima zi februarie an următor),
+`d101` (25 iunie), `d406` (ultima zi), `d394` (ziua 30) și restul (25). **Doar D101** are act citat, cu
+trimitere la `anaf_surse/`. Motivul e scris chiar acolo: era 25.03 hardcodat „PROVIZORIU" și **marca fals
+restanțieri** firmele care depuneau apr-iun. Actul a fost adăugat ca urmare a unui bug vizibil, nu din
+disciplină.
+
+**Q3 — termenele s-au schimbat de două ori, niciuna prinsă de un test.** `0f22306` (14.08, scadența D101)
+a ieșit dintr-o **plimbare vizuală** — cineva s-a uitat la ecran; `3cc1455` (17.07, ziua 30 nu există în
+februarie) a ieșit în timpul cablării D394/D406. `_ZIUA` n-a fost atins niciodată în afara snapshot-ului
+inițial. Ambele modificări au fost găsite de un om privind, nu de o gardă.
+
+**Q1 — și e răspunsul cel mai prost: metoda de inventar nu poate găsi clasa.** Inventarul de pe 31.07 a
+scanat **teste care asertează o constantă fiscală**. Testele care ating termene asertează **date
+CALCULATE**: `scadenta_data("d300", 2026, luna=11) == date(2026, 12, 28)` — 28 e rezultatul (25 dec e
+Crăciun). Constanta `25` **nu apare în niciun test**; trăiește doar în `_ZIUA.get(tip, 25)`, în cod de
+producție.
+
+Deci cele 85 sunt partea VIZIBILĂ a clasei: constante *asertate de un test*. Există o parte invizibilă —
+**constante fiscale în cod de producție pe care niciun test nu le asertează direct**, structural
+negăsibile de metoda aceea. `25` e una. Câte altele: necunoscut, măsurabil doar cu un scan pe cod, nu pe
+teste. **Termenele sunt inventar SEPARAT**, iar dimensiunea clasei mari e nedeterminată.
+
+**Fezabilitate verificată (nu presupusă):** `anaf_surse/` are Codul fiscal consolidat cu articolele
+numerotate (101, 132, 147, 323, 324, 325) și fraza „25 inclusiv a lunii următoare" în text, plus ordinele
+`opanaf_174_2026_d300`, `opanaf_1783_2021_saft_d406`, `opanaf_179_2022_d205_d207`. Sursarea se poate face
+verbatim, la sursă.
+
+**NU las decizia ca promisiune scrisă** — ziua asta a arătat de trei ori că intențiile scrise derivează.
+Legată în `core/test_temei_termene.py`, care pică până fiecare tip își poartă actul.
