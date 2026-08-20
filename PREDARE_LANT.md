@@ -33,10 +33,13 @@ PROBA: `frontend_test/proba_patru_ochi.py` pe cabinetul 1968 — trei stari, cap
 IGIENA DE DATE: asistentul 6248 activat TEMPORAR pentru starea 2 si restaurat exact (activ=f, competente
 f/f/f) — verificat in proba. Flagul `patru_ochi_activ` pe 1968 = ON (vezi mai jos).
 
-DE DECIS DE COSTIN (o linie de SQL, nu blocheaza nimic): flagul `patru_ochi_activ` pe cabinetul 1968 a ramas
-ON — a fost proba vizibila pana la reparatie. ACUM e o stare ONESTA si utila (exercita ramura „suspendat" pe
-matrice), dar schimba cromul dashboardului la fiecare audit viitor pe 1968. Ca sa-l stingi:
-`UPDATE public.accounting_firms SET patru_ochi_activ=false WHERE id=1968;` (sau butonul din subbara).
+IGIENA DE DATE (facuta, 20.08 dupa reparatie): flagul patru_ochi_activ pe cabinetul 1968 a fost STINS
+(era ON doar ca proba vizibila a defectului). Cabinetul 1968 e din nou in starea lui naturala: un singur
+validator (patronul), politica oprita, cele 3 declaratii din coada raman la_senior si depozabile de el.
+Asistentul 6248 restaurat exact (activ=f, competente f/f/f) dupa starea 2 a probei. Ramura „suspendat" a
+indicatorului ramane acoperita de gard (core/test_patru_ochi_efectiv.py) si de capturile comise, nu de o
+stare lasata in baza. Ca s-o reaprinzi oricand: butonul din subbara, sau
+`UPDATE public.accounting_firms SET patru_ochi_activ=true WHERE id=1968;`.
 
 RAMAS NUMIT din I2 (nu tacut, NU e gaura de corectitudine): formularul de linie MANUALA D390
 (`d390_clasificare_api.manual_adauga`) valideaza tip/tara/cod-obligatoriu/baza, dar NU da inca avertismentul
