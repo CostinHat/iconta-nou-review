@@ -462,8 +462,18 @@ def declaratii_fapt(conn_schema, schema, vector, azi):
                                      "fapt": f"operațiuni intracomunitare înregistrate în {_LUNI_NUME[m]} {a}"})
                     vreo = True
         if not vreo:
-            neaplicabile.append({"tip": "d301",
-                                 "motiv": "D301 nu se datorează — nicio operațiune intracomunitară înregistrată"})
+            # [absenta_observatie 20.08.2026] NU „nu se datorează", ci „nu pot verifica". Tabelul gol
+            # nu e un fapt despre lume — e absența unei OBSERVAȚII în datele noastre, iar absența unei
+            # înregistrări nu e absența unui fapt. Spre deosebire de d100_fapt/d390_fapt, calea asta
+            # n-are NICIO verificare de completitudine: nici lună închisă, nici „nimic în așteptare".
+            # PRECEDENT: pe tenant_006 exact asta a produs „nu se datorează" pe baza vectorului, în
+            # timp ce firma avea achiziții intracomunitare REALE — verificam conformarea la vectorul
+            # declarat, nu realitatea operațiunilor. Decis 20.08 (R2′), vezi DECIZII.
+            neclar.append({"tip": "d301",
+                           "cauza": "nu am nicio înregistrare de operațiune intracomunitară — "
+                                    "verifică dacă firma a avut achiziții de la furnizori din UE "
+                                    "(facturi primite, e-facturi, extrase). Absența înregistrărilor "
+                                    "nu dovedește absența operațiunilor."})
     return {"datorate": datorate, "neaplicabile": neaplicabile, "neclar": neclar}
 
 

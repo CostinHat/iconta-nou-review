@@ -4,7 +4,11 @@
 import { api, arataMesaj, confirmaCaseta, esc } from "../api.js?v=a7f9e80ae0";  /* audit_cab_lot2_v1 */
 /* [patch11_semafor_explicit] */
 function _semaforEticheta(culoare) {
-  const M = { rosu: "probleme", galben: "de urm\u0103rit", verde: "f\u0103r\u0103 probleme" };
+  // [eticheta_din_fapt 20.08.2026] `gri` lipsea din harta -> M[culoare] || "" randa o bulina
+  // colorata CU ETICHETA GOALA. Griul a devenit accesibil in practica pe 20.08 (pastila_firma
+  // nu-l mai falsifica in verde), deci golul ar fi ajuns pe ecran.
+  const M = { rosu: "probleme", galben: "de urm\u0103rit", verde: "f\u0103r\u0103 probleme",
+              gri: "nu se poate verifica" };
   const t = M[culoare] || "";
   return `<span class="asi-sem asi-sem-${culoare}"></span><span class="asi-sem-txt">${t}</span>`;
 }

@@ -3,7 +3,7 @@
 // Nivel 2: click pe firma -> corpul verdictului, randat de control_verdict.js (renderer UNIC, DS cap.20).
 
 import { api, esc } from "../api.js?v=a7f9e80ae0";  /* esc_nc27 */
-import { CULORI, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=7c53d3765b";  // renderer unic al verdictului (DS cap.20)
+import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=e6a4a7c407";  // renderer unic al verdictului (DS cap.20)
 
 
 export async function randeazaControl(corp, nav, tidAuto) {
@@ -24,6 +24,9 @@ export async function randeazaControl(corp, nav, tidAuto) {
       <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.verde.dot}"></span>${s.verde || 0} la zi</span>
       <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.galben.dot}"></span>${s.galben || 0} de urmărit</span>
       <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.rosu.dot}"></span>${s.rosu || 0} cu restanță</span>
+      <!-- [eticheta_din_fapt] al 4-lea contor: fara el, o firma gri DISPAREA din sumar (totalul nu mai
+           dadea numarul de firme din cabinet). Backendul il numara de la inceput (sumar["gri"]). -->
+      <span class="cf-pastila"><span class="cf-dot" style="background:${CULORI.gri.dot}"></span>${s.gri || 0} nu se pot verifica</span>
     </div>
     <div class="mig-lista" id="cf-lista"></div>
   `;
@@ -41,7 +44,8 @@ export async function randeazaControl(corp, nav, tidAuto) {
     const col = CULORI[f.stare] || CULORI.gri;
     let detaliu = f.stare === "rosu" ? `${f.lipsa} restanț${f.lipsa === 1 ? "ă" : "e"}`
       : f.stare === "galben" ? `${f.urmarit} de urmărit`
-      : f.stare === "verde" ? "totul la zi" : "vector necompletat";
+      : f.stare === "verde" ? "totul la zi"
+      : `${f.neclar || 0} declarați${(f.neclar || 0) === 1 ? "e nu se poate verifica" : "i nu se pot verifica"}`;
     if ((f.contabil || []).length) detaliu += " · " + f.contabil.map((c) => (c && c.eticheta) || c).join(" · ");
     const rand = document.createElement("button");
     rand.className = "mig-frand";
@@ -51,7 +55,7 @@ export async function randeazaControl(corp, nav, tidAuto) {
         <div class="mig-frand-sub">${detaliu}</div>
       </div>
       <span class="cf-stare" style="background:${col.bg}">
-        <span class="cf-dot" style="background:${col.dot}"></span>${col.txt}
+        <span class="cf-dot" style="background:${col.dot}"></span>${etichetaStare(f.stare, f.neclar)}
       </span>
     `;
     rand.addEventListener("click", () => nav.deschide("Detaliu firmă", (cc, nn) => detaliuFirma(cc, nn, f)));  // [p122_nav_stiva]
@@ -82,7 +86,7 @@ async function detaliuFirma(corp, nav, firma) {
   }
   const col = CULORI[d.stare] || CULORI.gri;
   corp.innerHTML =
-    `<p class="mig-intro"><b>${esc(firma.nume)}</b> · <span style="color:${col.dot}">${col.txt}</span></p>`
+    `<p class="mig-intro"><b>${esc(firma.nume)}</b> · <span style="color:${col.dot}">${etichetaStare(d.stare, (d.neclar || []).length)}</span></p>`
     + randeazaCorpVerdict(d, { mod: "detaliu" });
   legaVerdict(corp, nav, { tenant_id: firma.tenant_id, nume: firma.nume, reincarca: () => detaliuFirma(corp, nav, firma) });
 }

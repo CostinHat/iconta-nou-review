@@ -2294,6 +2294,10 @@ def control_fiscal_portofoliu(ctx=Depends(cere_cabinet)):
         sumar[r["stare"]] = sumar.get(r["stare"], 0) + 1
         out.append({"tenant_id": tid, "nume": f.get("nume"), "cui": f.get("cui"),
                     "stare": r["stare"], "lipsa": len(r["lipsa"]), "urmarit": len(r["urmarit"]),
+                    # [eticheta_din_fapt 20.08.2026] fara numarul de neverificabile, lista nu poate
+                    # spune DE CE e o firma gri - si afisa un text fix ("vector necompletat") care e
+                    # fals cand vectorul e complet. Rosu si galben poarta deja numarul lor.
+                    "neclar": len(r.get("neclar") or []),
                     "contabil": contabil})
     return {"firme": out, "sumar": sumar}
 

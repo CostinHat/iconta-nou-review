@@ -5,10 +5,10 @@
 import { api, ICOANE, CULORI_CARD } from "../api.js?v=a7f9e80ae0";
 import { semaforCard } from "./semafor.js?v=df9fe94900";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=5d142951c9";
-import { randeazaControl } from "./control.js?v=8576a174b7";
+import { randeazaControl } from "./control.js?v=d09ca9ab5a";
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
 import { randeazaValidat } from "./validat.js?v=1aa4c6b904";
-import { randeazaListaFirme } from "./firme.js?v=9b834fa6e3";
+import { randeazaListaFirme } from "./firme.js?v=474caf58f0";
 import { randeazaRecomanda } from "./recomanda.js?v=4dcc56e1ec"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=f800de9e77"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js?v=8c32cbb767"; // [p63_pachete]

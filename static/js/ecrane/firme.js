@@ -10,7 +10,7 @@ import { ecranOperatiuni } from "./operatiuni_ecran.js?v=7019abe613";
 import { ecranEtransport } from "./etransport_ecran.js?v=0dca1ea392";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=698f6e7671";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=cc81187e9a";  // [decl_firma_v1]
-import { CULORI as CULORI_VERDICT, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=7c53d3765b";  // renderer unic verdict control fiscal (DS cap.20)
+import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=e6a4a7c407";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=930762c3c4";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=ae22f440bf";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=0f99052ac6";  // [date_firma_v1]
@@ -639,7 +639,7 @@ async function ecranControlFirma(corp, nav, t) {
     <p class="pf-intro">Situația fiscală a firmei: ce s-a depus vs ce e datorat, cu verificări de coerență.</p>
     <div class="cf-stare-mare" style="background:${cul.bg}">
       <span class="cf-dot" style="background:${cul.dot}"></span>
-      <span class="cf-stare-txt">${cul.txt}</span>
+      <span class="cf-stare-txt">${etichetaStare(d.stare, (d.neclar || []).length)}</span>
       <span class="cf-stare-cifre tip-micut">${d.datorate || 0} datorate · ${d.depuse || 0} depuse</span>
     </div>
     ${randeazaCorpVerdict(d, { mod: "fisa" })}`;

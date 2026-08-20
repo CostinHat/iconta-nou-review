@@ -9984,3 +9984,312 @@ aliniere trecută poartă `# istoric-aliniere-ok:`, ca `# upsert-ok:`); (2) dac�
 verificatul se schimbă în aceeași tură, `DECIZII.md` trebuie să se schimbe și el — nu interzice
 co-modificarea (o schimbare de lege chiar cere ambele căi), cere doar ca motivul să fie scris. Colțul 2
 a picat pe chiar commit-ul ăsta până am scris secțiunea de față; ăsta e comportamentul dorit.
+
+## 20.08.2026 — Anatomia rândului trebuie să poarte cheia de identificare (R1′ + R2, decizii Costin)
+
+**Contextul.** Harta casetelor pentru ecranul Control fiscal (`frontend_test/vizual/harta_casete.py`)
+a scos trei anomalii care păreau distincte: D300 apărând simultan în „De urmărit" și „Nu pot verifica"
+pe t001; două rânduri „D100" identice pe Startup Partial 2026 și pe Trecere Micro Profit; și întrebarea
+ce se întâmplă la o rectificativă.
+
+**Decizia lui Costin — cele trei sunt o singură constatare, văzută din trei locuri:** *anatomia rândului
+e insuficientă pentru a identifica unic obiectul pe care îl descrie.* Perioada lipsește la unele rânduri,
+numărul depunerii lipsește la toate.
+
+**Formă verificabilă.** Identitatea nu e o alegere de design — e deja definită în schemă:
+`public.declaratii_depuse` are cheia primară `(tenant_id, an, luna, tip, nr_depunere)`. Regula devine:
+**un rând randat poartă cheia de identificare a entității pe care o randează.**
+
+**R1′ — rectificativa produce DOUĂ rânduri, nu unul care își schimbă starea.** Motivul e fiscal, nu de
+interfață: inițiala și rectificativa sunt depuneri separate, cu recipise separate la ANAF. Contabilul
+care se uită la iunie trebuie să vadă că a depus de două ori și că a doua a fost peste termen —
+întârzierea rectificativei are consecințe proprii. Un rând care „își schimbă starea" ar ȘTERGE faptul
+că prima a fost la timp. În modelul cu două axe, nici nu e o suprapunere: sunt două obiecte declarative
+distincte, fiecare cu starea lui. Schema le permite deja (`nr_depunere` în cheia primară); zero perioade
+au azi mai mult de o depunere, deci cazul e posibil și neexercitat.
+
+**R2 — domeniul unei constatări devine DATĂ, nu formulare.** Trei variante analizate; decizia (a),
+intervalul, dar nu din motivul propus de mine:
+- **(c) etichetă calitativă — respinsă.** Un rând care afirmă un domeniu fără să-l poarte E chiar
+  defectul, scris mai frumos. A treia apariție a clasei în trei zile: declarația de perimetru pe 006,
+  `temei_307` pe tip 4, și acum. Răspunsul e mereu același — **afirmația trebuie să devină dată.**
+- **(b) un rând per perioadă — respinsă PENTRU ACEASTĂ constatare**, și nu fiindcă produce multe rânduri
+  (ăsta era argumentul meu, de cost). Motivul real e de exactitate: un rând per lună afirmă că fiecare
+  lună a fost evaluată individual și a eșuat individual. Dar o singură necunoscută — data înregistrării
+  în scopuri de TVA — face toate lunile anterioare neverificabile deodată. Douăzeci de rânduri ar
+  sugera douăzeci de constatări unde e una: **minciună de cardinalitate.**
+- **(a) interval — acceptată**, fiindcă intervalul E forma constatării: cauza e un punct necunoscut pe
+  axa timpului, consecința e un interval. Iar „backendul trebuie să calculeze intervalul" nu e un cost,
+  **e verificarea însăși**: dacă nu poți calcula de unde până unde, nu știi ce afirmi.
+
+**REGULA GENERALĂ care iese, mai importantă decât cele trei cazuri:** *forma domeniului urmează forma
+constatării.* Când sunt douăzeci de constatări, douăzeci de rânduri e corect — și chiar se întâmplă
+corect azi (`D100 nu se datorează pe T1 2026`, evaluat per trimestru, 15 rânduri pe 13 firme). Când e
+una singură care lovește douăzeci de perioade, e un rând cu interval.
+
+**Intervalul e mărginit la AMBELE capete.** Capătul de sus = ultima perioadă neverificabilă. Capătul de
+jos = ceva ce firma știe: data înființării, prima factură, prima notă, sau începutul termenului de
+prescripție. **Dacă limita inferioară nu se poate determina, aia e a doua necunoscută și se declară
+separat** — nu se ascunde într-un „toate perioadele anterioare".
+
+**RĂMASĂ DESCHISĂ: R2′ — excluderea pe STATUT.** 12 rânduri din `neaplicabile`, toate D301
+(„nu se datorează — firma e plătitoare de TVA"), nu au nicio necunoscută: cauza e un statut cunoscut,
+iar domeniul are capătul de sus deschis („cât timp statutul ține"). Capătul de jos E determinabil —
+`firma_profil.platitor_tva_anaf_inceput`, venit din ANAF. Nedecis: dacă un domeniu cu capăt deschis
+satisface regula, dacă se închide artificial pe perioada evaluată, sau dacă e un fel de afirmație
+diferit care cere o a doua anatomie. Vezi `harta_casete.CONSTRANGERI`.
+
+## 20.08.2026 — R2′: felul afirmației se DECLARĂ în payload, nu se deduce din câmpuri
+
+**Decizia lui Costin: (iii).** O excludere bazată pe STATUT nu se forțează în formă de interval.
+
+**Motivul, care rafinează R2.** „Mărginit la ambele capete" era o regulă despre R2, nu una generală: se
+aplica **necunoașterii**, unde intervalul E constatarea („nu pot verifica din X până în Y" — dacă nu poți
+numi Y, nu știi ce afirmi). La R2′ afirmația nu e despre un interval, e despre o **relație**: cât timp
+ține statutul, obligația nu există. Intervalul ar fi o consecință derivată, nu constatarea însăși.
+
+Varianta (ii) — capăt închis artificial pe perioada evaluată — e cea mai proastă din trei, și nu din
+imprecizie: **un capăt care se mută singur în fiecare lună afirmă o graniță pe care realitatea n-o are.**
+Peste șase luni cineva citește „până în iulie 2026" și crede că atunci s-a schimbat ceva.
+
+**REGULA CARE CONTEAZĂ CEL MAI MULT, și e generală:** *payload-ul declară FELUL afirmației; garda nu-l
+deduce din prezența câmpurilor.* O gardă care deduce tipul din ce câmpuri sunt completate e exact tiparul
+închis de două ori azi — afirmație implicită în locul uneia declarate. Dacă un rând pe statut are din
+întâmplare și o perioadă, deducția l-ar clasifica greșit și n-ar afla nimeni.
+
+**Consecință directă: mulțimea felurilor devine ea însăși un nomenclator declarat și gardat** — altfel
+apare un fel nou și nu observă nimeni. Același tipar cu `VC_RANDATE` din control_verdict.js.
+
+**Nomenclatorul, ENUMERAT pe toate cele 13 firme (nu propus din exemple).** 8 formulări distincte în
+`neclar` + `neaplicabile`, care se așază în trei feluri:
+
+| fel | domeniu | ce am găsit |
+|---|---|---|
+| `necunoastere` | interval SAU perioadă | 4 formulări, 56 apariții — d300 „de când e înregistrată" (necunoscuta e un PUNCT pe axă → interval); d100 „exista în AN", d205 „lipsesc note pe AN" (necunoscuta e PE AN → perioadă). Niciuna nu poartă domeniu azi. |
+| `fapt` | perioadă SAU interval | 15 apariții cu perioadă (d390 „pe iul 2026", d100 „pe T1 2026") — **singurele corecte azi, poartă `an`+`luna`**; plus 3 apariții fără (d301 „nicio operațiune IC înregistrată"). |
+| `statut` | relație, capăt superior DESCHIS | 9 apariții (d301 „firma e plătitoare de TVA"). Capătul de jos e determinabil: `firma_profil.platitor_tva_anaf_inceput`, venit din ANAF. |
+
+Confirmă regula din R2 pe date: **forma domeniului urmează forma constatării** — la d300 necunoscuta e un
+punct, deci interval; la d100/d205 e pe an, deci perioadă. Nu e „mereu interval".
+
+**O ÎNCADRARE INCERTĂ, declarată ca atare:** d301 „nu se datorează — nicio operațiune intracomunitară
+înregistrată" (3 apariții). Nu e statut — nu descrie o însușire a firmei, ci absența unor înregistrări.
+Citirea reținută: `fapt` cu domeniu interval (pe tot intervalul evaluat n-a existat nicio operațiune).
+Dacă e greșită, garda clasifică greșit 3 rânduri în tăcere — exact riscul semnalat de Costin.
+
+## 20.08.2026 — R3: „n datorate" = toate obligațiile perioadei (confirmat din cod), dar perechea e ruptă
+
+**Decizia lui Costin.** „Datorate" înseamnă **toate obligațiile perioadei**, nu cele neonorate. Argumentul
+nu vine din nume, ci din pastila însăși: „8 datorate · 0 depuse" pune cele două în raport. Dacă „datorate"
+ar însemna neonorate, cele două numere ar măsura aceeași mulțime din unghiuri incompatibile — depusele
+n-ar fi în 8. **Un numitor care se micșorează pe măsură ce depui nu e numitor.** Și e coerent cu regula
+„fără default tăcut": o firmă care depune tot trebuie să vadă „8 datorate · 8 depuse", nu „0 datorate" —
+a doua ar face ecranul să pară gol chiar în luna în care contabilul și-a făcut treaba perfect.
+
+**Cerință explicită a lui Costin: garda NU se scrie pe raționament, ci pe cod.** Derivat:
+`control_fiscal_api` construiește `datorate`, apoi `_clasifica(datorate, depuse, azi)` sparge ACEEAȘI
+listă în `lipsa/urmarit/confirmate/cu_intarziere`, iar `return` dă `len(datorate)`. Deci
+`datorate == lipsa + urmarit + confirmate + cu_intarziere` **prin construcție**. Verificat empiric pe
+toate cele 13 firme: identitate pe fiecare.
+
+**DEFECT GĂSIT prin derivare, nu prin raționament.** Perechea pe care se sprijină argumentul e ruptă:
+`datorate` se calculează pe fereastra evaluată, dar `depuse` vine din
+`SELECT ... FROM public.declaratii_depuse_curente WHERE tenant_id=%s` — **fără filtru de perioadă**,
+adică toate depunerile din istoria firmei. Cele două numere măsoară populații diferite.
+
+Vizibil azi pe **Constructii Profit Trim SRL**: pastila scrie **„0 datorate · 1 depuse"** — una depusă
+din zero datorate. E singura firmă din 13 cu vreo depunere, deci defectul e sub-exercitat, nu rar.
+Corect ar fi `depuse == len(confirmate) + len(cu_intarziere)`. Lăsat nereparat: să-l prindă garda.
+
+**LIMITĂ A INSTRUMENTULUI, descoperită la prima folosire reală.** Gardul hărții citește un artefact
+produs pe O SINGURĂ firmă (t001). Pe t001, `depuse=0` și `confirmate+cu_intarziere=0`, deci constrângerea
+TRECE — defectul e vizibil doar pe altă firmă. Adică instrumentul construit ca să repare punctul orb
+„o firmă" îl reproduce el însuși. Fixul: scanerul să acopere mai multe firme, iar artefactul să le
+poarte pe toate. Vezi `harta_casete.LIMITE`.
+
+## 20.08.2026 — R3, derivat: eticheta s-a lipit pe un câmp existent; calculul cedează
+
+**Cerința lui Costin: nu lua raționamentul meu ca temei — derivă-l.** Trei căi, toate parcurse, toate
+convergente pe același verdict, care e OPUSUL presupunerii mele inițiale.
+
+**(1) Are vederea o fereastră?** Nu. `public.declaratii_depuse_curente` e
+`SELECT DISTINCT ON (tenant_id, an, luna, tip) ... FROM declaratii_depuse ORDER BY ... nr_depunere DESC`
+— **fără niciun `WHERE`**. Nici apelul din `control_fiscal_api` nu filtrează. Proiectat pe toată istoria.
+
+**(2) Cine mai consumă `depuse`?** Exact doi: pastila (`static/js/ecrane/firme.js:643`) și portalul
+(`main.py:5003`), și **amândoi folosesc aceeași pereche** `datorate`+`depuse`. Niciun consumator nu-l
+citește ca „total istoric". Deci schimbarea calculului nu rupe pe nimeni — eticheta nu e apărată de nimic.
+(Celelalte apariții ale numelui `depuse` — `asistenti_api`, `sinteza_zilnica`, `cabinet.js` — sunt un ALT
+câmp, contorul de activitate pregătite/validate/respinse/depuse. Nu au legătură.)
+
+**(3) Au apărut în același commit?** Nu:
+- câmpul: `cbf24ce`, **01.07.2026**, „Snapshot initial: build nou iconta_v2" — a intrat cu snapshot-ul,
+  nu dintr-o decizie;
+- eticheta: `dfa4be9`, **13.07.2026**, „Control fiscal per firma… **Backend deja existent**".
+
+Douăsprezece zile mai târziu, iar mesajul o spune singur: cineva a cablat o interfață pe un câmp care era
+deja acolo. **Eticheta s-a lipit pe un câmp care însemna altceva.**
+
+**Verdict derivat:** eticheta a fost greșită de la naștere; fiindcă nimic nu depinde de citirea veche,
+**calculul e cel care cedează**. `depuse` trebuie mărginit la aceeași fereastră ca `datorate`.
+
+**FEREASTRA, citită (obiecția 3 a mea, rezolvată).** `declaratii_datorate` docstring + l.403:
+*„Semaforul (privire înapoi): fereastra [restanțe … azi+7], **fără limită inferioară**"*. Capătul de sus =
+`azi + PRAG_URMARIT_ZILE (7)`. Capătul de jos = None, dar **generarea** pornește de la `(an-1, luna 12)`
+(`per_luni`, l.129), deci în practică fereastra e ≈ [termenul lui decembrie anul trecut … azi+7].
+
+**CORECȚIE (aceeași zi, înainte de commit).** Scrisesem aici că `Constructii Profit Trim SRL` arată
+„0 datorate · 1 depuse" fiindcă depunerea ar fi mai VECHE decât fereastra. **Fals, și scris fără
+verificare — exact clasa pe care documentul ăsta o interzice.** Verificat la sursă: firma are o singură
+depunere, **D300 pe 06/2026**, depusă la 20.07.2026 — iunie e fix în fereastră.
+
+Cauza reală e alta și e mai gravă: **aceeași declarație e simultan în `neclar` și depusă.** D300 apare în
+„Nu pot verifica" („nu pot demonstra de când e firma înregistrată în scopuri de TVA"), deci obligația nu
+intră niciodată în `datorate` (numărător 0); depunerea e numărată oricum (numitor 1). Cele două numere ale
+pastilei nu diferă prin fereastră, ci prin **populație de clasificare**: o depunere nu poate stinge o
+obligație care n-a fost generată.
+
+**ÎNTREBARE DESCHISĂ care iese de aici (R6):** o declarație DEPUSĂ e o dovadă că obligația exista.
+Contabilul a depus D300 pe iunie — asta e o afirmație a lui despre ce datorează firma. Ar trebui ca
+existența depunerii să rezolve `neclar`-ul, sau cele două rămân independente prin proiectare
+(necunoașterea e despre ce spune vectorul, nu despre ce a făcut contabilul)? Nedecis.
+
+**CORECȚIE LA PROPRIA MEA OBIECȚIE 1.** Propusesem ca `depuse` să numere OBIECTE (scoțând `DISTINCT ON`).
+Greșit, și întrebarea lui Costin a arătat de ce: dacă `datorate` numără obligații și `depuse` ar număra
+obiecte, „8 datorate · 9 depuse" e o propoziție care nu se poate citi. Ambele numere trebuie să numere
+**același fel de lucru**, iar acela e **obligația** — o rectificativă nu creează o obligație nouă.
+Deci `DISTINCT ON (tenant_id, an, luna, tip)` e **CORECT pentru pastilă**: colapsează depunerile la
+perioade. **R1′ atinge LISTA, nu PASTILA** — iunie are două rânduri, fiecare cu starea lui, dar o singură
+obligație în contor.
+
+**Forma corectă a constrângerii**, care supraviețuiește lui R1′:
+`depuse == |{ (tip, perioadă) : rând ∈ confirmate ∪ cu_intarziere }|`
+și NU `depuse == len(confirmate) + len(cu_intarziere)` — a doua ar număra obiecte pe o parte și obligații
+pe cealaltă, adică fix propoziția ilizibilă.
+
+## 20.08.2026 — A patra natură: absența unei observații. Și griul care devine verde.
+
+**Decizia lui Costin (R2′, completată).** Nomenclatorul felurilor se închide la **PATRU**, iar criteriul
+de separare e: *felurile se disting prin REMEDIU, nu prin taxonomie.* Clasificarea există ca omul să știe
+ce are de făcut.
+
+| fel | ce afirmă | remediu |
+|---|---|---|
+| `statut` | o însușire a firmei exclude obligația | — |
+| `fapt` | măsurătoare pe perioadă cu temei de completitudine | — |
+| `necunoastere` | lipsește un **atribut numit** | completează atributul |
+| `absenta_observatie` | nu am înregistrări într-o **sursă numită** | verifică dacă faptul a existat |
+
+**Absența unei înregistrări nu e absența unui fapt.** `D301 nu se datorează — nicio operațiune
+intracomunitară înregistrată` era clasificată ca excludere, dar linia 464 din `control_fiscal_api` nu
+verifică nimic: dacă bucla pe luni nu găsește rânduri în `d301_operatiuni`, declară „nu se datorează".
+Fără lună închisă, fără „nimic în așteptare". **Mutată în `neclar`.** 3 apariții (t002, t009, t011).
+
+**PRECEDENT SCRIS — tenant_006.** Exact asta s-a întâmplat acolo: „nu se datorează" pe baza vectorului,
+în timp ce firma avea achiziții intracomunitare REALE. Aplicația verifica **conformarea la vectorul
+declarat, nu realitatea operațiunilor**. Cele trei D301 sunt a doua instanță a aceleiași clase, nu un caz.
+
+**DOUĂ GRADE DE TEMEI pentru `fapt`, măsurate:** *confirmat* (contabilul afirmă completitudinea prin
+`perioada_confirmata`) există DOAR pentru `pontaj`, cu un singur consumator în tot codul
+(`stat_plata_api:50`, tichete, HG 1045/2018 art.10(3)) — deci e **inaccesibil pentru orice ține de TVA**;
+*dedus* (perioadă închisă + nimic în așteptare) îl au `d100_fapt` și `d390_fapt`, cu contract pe trei
+valori. De-aia clasa e mică: din 27 de rânduri „Nu se datorează", 9 sunt `statut`, 15 sunt `fapt` de grad
+*dedus*, și doar **3** sunt `absenta_observatie`. Lacună de implementare, nu alegere.
+
+---
+
+## 20.08.2026 — DEFECT: `pastila_firma` transformă griul în verde (a treia instanță a clasei)
+
+**Reprodus izolat:**
+```
+pastila_firma("gri", [{"stare": "verde"}])  ->  verde      <- griul dispare
+pastila_firma("gri", [])                     ->  gri
+pastila_firma("gri", [{"stare": "gri"}])     ->  gri
+```
+`_RANG_STARE = {"verde": 1, "galben": 2, "rosu": 3}` — „gri" nu e în tabel, deci primește 0. Orice
+constatare verde (rang 1) îl bate, iar maparea de ieșire `{1:"verde", 2:"galben", 3:"rosu"}` n-are unde
+să-l întoarcă. Un `constatare_regim_tva` verde nu ESCALADEAZĂ nimic — dar șterge griul.
+
+**Regula e scrisă în ambele funcții și încălcată de una:**
+- `_stare`: „Gri nu poate fi ascuns ca verde."
+- `pastila_firma`: „base 'gri' se păstrează dacă nimic confirmat nu escaladează."
+
+**EFECT MĂSURAT pe cabinetul 1968 (13 firme):** semaforul arată `8 roșii · 3 galbene · 2 verzi`.
+**Ambele firme verzi au baza GRI** — `Startup Partial 2026` (5 neclar) și `Trecere Micro Profit`
+(6 neclar). Deci lista de firme curate a contabilului **nu e parțial falsă, e falsă în întregime**: nu
+există nicio firmă genuin verde, iar cele două afișate ca atare sunt exact cele despre care aplicația
+știe cel mai puțin. `Constructii Profit Trim` are tot baza gri dar afișează roșu — escaladare
+CORECTĂ (o problemă confirmată bate o necunoaștere), deci fixul n-o atinge.
+
+**Diagnostic:** gri și verde sunt pe **axe diferite** — verde/galben/roșu măsoară GRAVITATEA, gri
+măsoară CUNOAȘTEREA. `max` peste amândouă e o eroare de categorie. Nu e nevoie de o a cincea stare:
+`CULORI` din `control_verdict.js` are deja patru (verde/galben/roșu/gri „vector necompletat").
+
+**Fix propus (NEAPLICAT, așteaptă confirmare — schimbă ce vede clientul):** griul domină verdele;
+galbenul și roșul domină griul. Adică o constatare verde nu poate scoate o firmă din gri; doar una
+confirmată (galben/roșu) o poate. Impact măsurat: **2 firme trec verde → gri**, niciuna nu se schimbă
+în alt sens.
+
+**A treia instanță în două zile a clasei „verde = n-am ce contrazice, nu = am verificat":** pe 006 erau
+F3/F7 pe tabele goale; pe t001 era propriul meu raport de audit („25 ecrane curate"); aici e semaforul
+de pe ecranul contabilului. Primele două erau interne. **Asta o vede clientul.**
+
+## 20.08.2026 — REGULĂ: dezacordul docstring↔cod nu spune cine greșește; spune că trebuie mers la arbitru
+
+Formulată de Costin, după ce clasa a apărut de două ori în aceeași zi, **în direcții opuse**:
+
+- **`d112_reconciliere`**: docstring-ul spunea `prag = sm - facilitate`, codul spunea `prag = sm`.
+  Codul era schimbarea DELIBERATĂ (06.08, cu motiv scris), docstring-ul rămăsese în urmă. Dacă aplicam
+  „codul e mai nou, deci are dreptate", greșeam: arbitrul (DUKIntegrator + structura ANAF) a arătat că
+  docstring-ul avea dreptate.
+- **`pastila_firma`**: docstring-ul spunea „base 'gri' se păstrează dacă nimic confirmat nu escaladează",
+  codul făcea exact opusul. Aici docstring-ul avea dreptate și codul nu fusese niciodată scris să-l
+  respecte. Dacă aplicam „docstring-ul e intenția, deci are dreptate", nimeream — dar din noroc.
+
+**Deci nici „codul are dreptate", nici „docstring-ul are dreptate" nu sunt reguli.** Dezacordul e un
+SEMNAL că afirmația n-a fost niciodată verificată la sursă. Tranșarea vine din AFARĂ: arbitrul (DUK,
+structura ANAF, XSD), legea, sau un argument semantic explicit (aici: *verdele e o afirmație — „am
+verificat și e în regulă"; griul spune că afirmația nu se poate face; o afirmație parțial imposibilă nu
+devine adevărată prin partea care s-a putut face*).
+
+**Și pasul al doilea, fără de care primul nu ține:** după ce arbitrul tranșează, afirmația se LEAGĂ —
+un test care o face verificabilă, nu o reformulare care o face mai modestă. Docstring-ul nu se
+înmoaie ca să se potrivească codului; codul se repară, iar afirmația primește gardă.
+`test_reconcilierea_d112_chiar_e_independenta_de_d112` și `core/test_pastila_gri.py` sunt cele două.
+
+---
+
+## 20.08.2026 — Etichetele indexate pe culoare, nu pe fapt (sweep + fix)
+
+**Clasa**, a doua instanță a zilei după „n depuse": o etichetă afișată utilizatorului, luată dintr-un
+dicționar indexat pe **forma afișării** (culoare/stare), nu pe **faptul** descris. Când starea are mai
+multe cauze, eticheta minte.
+
+**Sweep pe `static/js`** — dicționare care produc TEXT pentru utilizator, indexate pe culoare:
+
+| loc | ce făcea | stare |
+|---|---|---|
+| `control_verdict.js` `CULORI[x].txt` | griul afișa mereu „vector necompletat", inclusiv pe firme cu vectorul COMPLET (măsurat: Startup Partial 2026, Trecere Micro Profit — niciun câmp NULL) | **REPARAT** |
+| `asistenti.js:7` `M` | fără intrare `gri` -> `M[culoare] \|\| ""` randa bulină colorată cu **etichetă goală** | **REPARAT** |
+| `etransport_ecran.js:235` `etTimp` | `gri: "—"` — aceeași clasă: griul randează *nimic* | **NEREPARAT**, neverificat dacă griul e accesibil acolo |
+| `etransport_ecran.js:236` `etTrim` | `gri: "în lucru"` — aici griul e o STARE reală a trimiterii, nu o necunoaștere | probabil legitim |
+
+Nu intră în clasă dicționarele care mapează la ordine de sortare (`control.js:37`), rang
+(`control_verdict.js:91`) sau variabilă CSS (`firme.js:1904`) — acelea chiar sunt despre afișare.
+
+**Fixul**, și motivul pentru care NU alege o cauză dominantă: griul are acum patru cauze
+(necunoaștere, absență de observație, vector incomplet, existența firmei). O ordine de prioritate ar fi
+arbitrară, iar contabilul ar vedea o cauză și ar crede că e singura. Afișăm **numărul**, exact cum fac
+deja roșul („3 restanțe") și galbenul („2 de urmărit"): **„5 nu se pot verifica"**. Cauzele, toate, sunt
+în ecranul de detaliu. Un număr nu minte și nu alege.
+
+**Al patrulea contor.** `control.js` afișa trei pastile în sumar (la zi / de urmărit / cu restanță).
+Backendul numără griul de la început (`main.py:2276`, `sumar["gri"]`), dar frontendul nu-l afișa — deci
+după fixul `pastila_firma` cele două firme gri ar fi **DISPĂRUT din sumar** (8+3+0 = 11 dintr-un cabinet
+de 13). Adăugat.
+
+**RĂMÂNE, nereparat și declarat:** `semafor.js` (`semaforCard`) are griul în afara modelului prin
+contract — *„perechi în ordine roșu, galben (verdele e «ok»)… dacă tot e zero → rând verde pozitiv"*.
+Un cabinet numai cu firme gri ar afișa un rând verde liniștitor. E același defect cu un etaj mai sus,
+dar schimbarea e structurală (atinge forma funcției, folosită de `cabinet.js` și `asistent.js`), deci
+nu am făcut-o orbește.

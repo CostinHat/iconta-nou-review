@@ -1,0 +1,262 @@
+{
+ "firma": "Panificatie Salarii Speciale SRL",
+ "payload": {
+  "contabil_etichete": [
+   "Salarii declarate diferă de contabilitate"
+  ],
+  "contabil_total": 1,
+  "datorate": 8,
+  "depuse": 0,
+  "lungimi": {
+   "confirmate": 0,
+   "cu_intarziere": 0,
+   "lipsa": 6,
+   "neaplicabile": 2,
+   "neclar": 5,
+   "urmarit": 2
+  },
+  "perechi_tip_perioada": {
+   "confirmate": [],
+   "cu_intarziere": [],
+   "lipsa": [
+    [
+     "d112",
+     "ian"
+    ],
+    [
+     "d112",
+     "feb"
+    ],
+    [
+     "d112",
+     "mar"
+    ],
+    [
+     "d112",
+     "apr"
+    ],
+    [
+     "d112",
+     "mai"
+    ],
+    [
+     "d112",
+     "iun"
+    ]
+   ],
+   "neaplicabile": [
+    [
+     "d390",
+     null
+    ],
+    [
+     "d301",
+     null
+    ]
+   ],
+   "neclar": [
+    [
+     "d300",
+     null
+    ],
+    [
+     "d394",
+     null
+    ],
+    [
+     "d101",
+     null
+    ],
+    [
+     "d406",
+     null
+    ],
+    [
+     "d205",
+     null
+    ]
+   ],
+   "urmarit": [
+    [
+     "d300",
+     "iul"
+    ],
+    [
+     "d112",
+     "iul"
+    ]
+   ]
+  },
+  "randuri_decl": {
+   "confirmate": [],
+   "cu_intarziere": [],
+   "lipsa": [
+    [
+     "an",
+     "luna",
+     "motiv",
+     "perioada",
+     "termen",
+     "tip"
+    ],
+    [
+     "an",
+     "luna",
+     "motiv",
+     "perioada",
+     "termen",
+     "tip"
+    ],
+    [
+     "an",
+     "luna",
+     "motiv",
+     "perioada",
+     "termen",
+     "tip"
+    ],
+    [
+     "an",
+     "luna",
+     "motiv",
+     "perioada",
+     "termen",
+     "tip"
+    ],
+    [
+     "an",
+     "luna",
+     "motiv",
+     "perioada",
+     "termen",
+     "tip"
+    ],
+    [
+     "an",
+     "luna",
+     "motiv",
+     "perioada",
+     "termen",
+     "tip"
+    ]
+   ],
+   "urmarit": [
+    [
+     "an",
+     "luna",
+     "motiv",
+     "perioada",
+     "termen",
+     "tip"
+    ],
+    [
+     "an",
+     "luna",
+     "motiv",
+     "perioada",
+     "termen",
+     "tip"
+    ]
+   ]
+  },
+  "randuri_motiv": {
+   "neaplicabile": [
+    [
+     "an",
+     "luna",
+     "motiv",
+     "tip"
+    ],
+    [
+     "motiv",
+     "tip"
+    ]
+   ],
+   "neclar": [
+    [
+     "motiv",
+     "tip"
+    ],
+    [
+     "motiv",
+     "tip"
+    ],
+    [
+     "motiv",
+     "tip"
+    ],
+    [
+     "motiv",
+     "tip"
+    ],
+    [
+     "motiv",
+     "tip"
+    ]
+   ]
+  },
+  "stare": "rosu",
+  "vc_chei_prezente": [
+   "cota_tva_conformitate",
+   "d112_incrucisat",
+   "d390_incrucisat",
+   "documente_pozate",
+   "echilibru",
+   "tva",
+   "tva_incrucisat"
+  ],
+  "vc_cu_constatari": [
+   "d112_incrucisat",
+   "d390_incrucisat",
+   "tva_incrucisat"
+  ]
+ },
+ "randat": {
+  "are_gata": false,
+  "gata_text": "",
+  "sectiuni": [
+   {
+    "contor": 6,
+    "randuri": 6,
+    "titlu": "Restanțe"
+   },
+   {
+    "contor": 2,
+    "randuri": 2,
+    "titlu": "De urmărit"
+   },
+   {
+    "contor": 5,
+    "randuri": 5,
+    "titlu": "Nu pot verifica"
+   },
+   {
+    "contor": 2,
+    "randuri": 2,
+    "titlu": "Nu se datorează"
+   },
+   {
+    "contor": null,
+    "randuri": 6,
+    "titlu": "Declarație vs contabilitate"
+   },
+   {
+    "contor": null,
+    "randuri": 1,
+    "titlu": "Coerență TVA (balanță)"
+   },
+   {
+    "contor": null,
+    "randuri": 1,
+    "titlu": "Documente pozate"
+   },
+   {
+    "contor": null,
+    "randuri": 0,
+    "titlu": "Audit de preluare"
+   }
+  ]
+ },
+ "schema": "tenant_001",
+ "tenant_id": 4784
+}

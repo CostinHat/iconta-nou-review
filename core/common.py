@@ -184,8 +184,23 @@ def pastila_firma(base, constatari):
     semafor: un rosu pe lista care 'minte' (blocant afara, doar avertisment inauntru) invata contabilul ca
     rosul minte, si va ignora si rosurile reale. Un SINGUR loc, nu escaladari imprastiate cu literal per
     verificator. gri (necunoscut, 'nu pot verifica') NU escaladeaza - nu face firma necompletata; base 'gri'
-    se pastreaza daca nimic confirmat nu escaladeaza. constatari = [{'stare': ...}, ...]. Vezi DECIZII 23.07."""
+    se pastreaza daca nimic confirmat nu escaladeaza. EXPLICIT, fiindca aici a fost indus in eroare
+    cititorul (si codul, pana la 20.08): o constatare VERDE nu poate scoate firma din gri - doar una
+    CONFIRMATA (galben/rosu) o poate. Verdele e o afirmatie; griul spune ca afirmatia nu se poate face. constatari = [{'stare': ...}, ...]. Vezi DECIZII 23.07."""
     rang = max([_RANG_STARE.get(base, 0)] + [_RANG_STARE.get((c or {}).get("stare"), 0) for c in constatari])
+    # [gri_nu_devine_verde 20.08.2026] VERDELE E O AFIRMATIE — „am verificat si e in regula". GRIUL spune
+    # ca afirmatia NU SE POATE FACE. O afirmatie partial imposibila nu devine adevarata prin partea care
+    # s-a putut face. Aceeasi propozitie ca la indicatorul de patru ochi: verdele e afirmatia ca lucrurile
+    # functioneaza, nu decorul.
+    # Gri si verde sunt pe AXE DIFERITE: verde/galben/rosu masoara GRAVITATEA, gri masoara CUNOASTEREA.
+    # `max` peste amandoua e o eroare de categorie - gri avea rangul 0, deci orice constatare VERDE (rang 1)
+    # il stergea, desi verdele nu escaladeaza nimic. O problema CONFIRMATA (galben/rosu) bate o necunoastere;
+    # o absenta confirmata de problema (verde) NU o rezolva.
+    # Efect masurat inainte de fix (cabinet 1968): pastila arata 2 firme verzi, AMANDOUA cu baza gri -
+    # lista de firme curate a contabilului era falsa in intregime. Vezi DECIZII 20.08. Gardat:
+    # core/test_pastila_gri.py.
+    if base == "gri" and rang < _RANG_STARE["galben"]:
+        return "gri"
     return base if rang == 0 else {1: "verde", 2: "galben", 3: "rosu"}[rang]
 
 

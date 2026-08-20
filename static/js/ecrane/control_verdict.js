@@ -12,7 +12,7 @@ export const CULORI = {
   verde:  { dot:"radial-gradient(circle at 65% 30%, #6fc494, var(--verde) 60%)", txt:"la zi",       bg:"var(--verde-fundal)" },
   galben: { dot:"radial-gradient(circle at 65% 30%, #f0cd7a, var(--galben) 60%)", txt:"de urmărit",  bg:"var(--galben-fundal)" },
   rosu:   { dot:"radial-gradient(circle at 65% 30%, #ff8a80, var(--rosu-semafor) 60%)", txt:"restanță", bg:"var(--rosu-fundal)" },
-  gri:    { dot:"var(--gri-semafor)", txt:"vector necompletat", bg:"var(--gri-fundal-semafor)" },
+  gri:    { dot:"var(--gri-semafor)", txt:"nu se poate verifica", bg:"var(--gri-fundal-semafor)" },
 };
 
 // INVENTAR DECLARAT — paritatea 1 (RANDARE). Fiecare cheie din payload-ul `verificari_contabile` (vc)
@@ -30,6 +30,22 @@ export const VC_RANDATE = {
   trezorerie:            "via d.contabil — Verificări contabile",
   note:                  "__contor__ (numar de note, nu constatare)",
 };
+
+// [eticheta_din_fapt 20.08.2026] Textul pastilei se leaga de FAPT, nu de culoare. `CULORI[x].txt` era
+// un dictionar indexat pe culoare: griul afisa mereu "vector necompletat", inclusiv pe firme al caror
+// vector e COMPLET (masurat pe Startup Partial 2026 si Trecere Micro Profit - niciun camp NULL).
+// Griul are patru cauze acum (necunoastere, absenta de observatie, vector incomplet, existenta firmei),
+// deci o eticheta fixa e falsa in trei cazuri din patru.
+// NU alegem o "cauza dominanta": ordinea ar fi arbitrara, iar contabilul ar vedea o cauza si ar crede
+// ca e singura. Afisam NUMARUL, exact ca la rosu ("3 restante") si galben ("2 de urmarit"); cauzele,
+// toate, sunt in ecranul de detaliu. Un numar nu minte si nu alege.
+export function etichetaStare(stare, n_neverificabile) {
+  const col = CULORI[stare] || CULORI.gri;
+  if (stare !== "gri") return col.txt;
+  const n = Number(n_neverificabile || 0);
+  if (!n) return col.txt;                       // gri fara numar (ex. eroare de evaluare) -> generic
+  return `${n} ${n === 1 ? "nu se poate verifica" : "nu se pot verifica"}`;
+}
 
 // anatomie constatare (dot + mesaj + temei + remediu) — renderer unic pt «Verificari contabile» si audit.
 function randA(c) {
