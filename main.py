@@ -2617,7 +2617,12 @@ def factura_pdf_ruta(tenant_id: int, factura_id: int, ctx=Depends(cere_context))
         if not f:
             raise HTTPException(404, "factură inexistentă")
         profil = _fp.citeste_profil(conn)
-    pdf = _pdf.genereaza_pdf(profil, f)
+    try:
+        pdf = _pdf.genereaza_pdf(profil, f)
+    except ValueError as e:
+        # [bilant_422_v1] refuzul motivat al generatorului de PDF (ex. linie fara cota TVA)
+        # ajungea la contabil ca 500 gol. Gasit de core/test_refuz_generator_422.py.
+        raise HTTPException(422, str(e))
     nume = "factura_" + str(f.get("numar") or factura_id).replace("/", "-") + ".pdf"
     return Response(content=pdf, media_type="application/pdf",
                     headers={"Content-Disposition": f'inline; filename="{nume}"'})
@@ -2638,7 +2643,12 @@ def factura_email(tenant_id: int, factura_id: int, date: EmailFacturaIn, ctx=Dep
             raise HTTPException(404, "factură inexistentă")
         profil = _fp.citeste_profil(conn)
     import base64 as _b64
-    pdf = _pdf.genereaza_pdf(profil, f)
+    try:
+        pdf = _pdf.genereaza_pdf(profil, f)
+    except ValueError as e:
+        # [bilant_422_v1] refuzul motivat al generatorului de PDF (ex. linie fara cota TVA)
+        # ajungea la contabil ca 500 gol. Gasit de core/test_refuz_generator_422.py.
+        raise HTTPException(422, str(e))
     nume_pdf = "factura_" + str(f.get("numar") or factura_id).replace("/", "-") + ".pdf"
     b64 = _b64.b64encode(pdf).decode()
     numar = f.get("numar") or ""
@@ -3843,11 +3853,12 @@ def tenant_stat_plata(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabin
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
     with db.get_conn(schema) as conn:  # helper-ele (pontaj/perioada) folosesc nume necalificate -> search_path pe tenant
+        # [get_safe_v1 20.08.2026] AICI se chema _snapshot_stat_plata() -> INSERT + commit pe un GET.
+        # Efect: simpla deschidere a ecranului Salariati scria un rand per salariat si il comitea
+        # (orice monitorizare/prefetch/al doilea tab faceau acelasi lucru), iar poarta de stergere din
+        # salariati_api.sterge_salariat se inchidea din vizitare. Consumatorul (POST /calcul-cm)
+        # calculeaza acum media din sursa, nu din cache-ul de navigare.
         stat = _sp.stat_plata(conn, schema, an, luna)
-        try:
-            _snapshot_stat_plata(conn, schema, stat, an, luna)
-        except Exception:
-            conn.rollback()
         with conn.cursor() as _rc:
             _rc.execute("SELECT 1 FROM public.reges_chei WHERE tenant_id=%s", (tenant_id,))
             _reges_ok = _rc.fetchone() is not None
@@ -6225,7 +6236,12 @@ def s1005_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
-        xml, av = _ba.genereaza(conn, schema, an)
+        try:
+            xml, av = _ba.genereaza(conn, schema, an)
+        except ValueError as e:
+            # [bilant_422_v1] mesajul de refuz al lui bilant_api (ex. lipsa nr. reg. com.) e scris
+            # pentru contabil; fara asta ajungea la el ca 500 gol (oprire generica, interzisa de DS).
+            raise HTTPException(422, str(e))
     return {"xml": xml, "avertismente": av}
 
 @app.post("/tenants/{tenant_id}/s1005-valideaza")
@@ -6236,7 +6252,12 @@ def s1005_valideaza(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
-        xml, av = _ba.genereaza(conn, schema, an)
+        try:
+            xml, av = _ba.genereaza(conn, schema, an)
+        except ValueError as e:
+            # [bilant_422_v1] mesajul de refuz al lui bilant_api (ex. lipsa nr. reg. com.) e scris
+            # pentru contabil; fara asta ajungea la el ca 500 gol (oprire generica, interzisa de DS).
+            raise HTTPException(422, str(e))
     with tempfile.TemporaryDirectory() as td:
         cale = os.path.join(td, f"s1005_{tenant_id}_{an}.xml")
         open(cale, "w", encoding="utf-8").write(xml)
@@ -6259,7 +6280,12 @@ def s1003_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
-        xml, av = _ba.genereaza_s1003(conn, schema, an)
+        try:
+            xml, av = _ba.genereaza_s1003(conn, schema, an)
+        except ValueError as e:
+            # [bilant_422_v1] mesajul de refuz al lui bilant_api (ex. lipsa nr. reg. com.) e scris
+            # pentru contabil; fara asta ajungea la el ca 500 gol (oprire generica, interzisa de DS).
+            raise HTTPException(422, str(e))
     return {"xml": xml, "avertismente": av}
 
 @app.post("/tenants/{tenant_id}/s1003-valideaza")
@@ -6270,7 +6296,12 @@ def s1003_valideaza(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
-        xml, av = _ba.genereaza_s1003(conn, schema, an)
+        try:
+            xml, av = _ba.genereaza_s1003(conn, schema, an)
+        except ValueError as e:
+            # [bilant_422_v1] mesajul de refuz al lui bilant_api (ex. lipsa nr. reg. com.) e scris
+            # pentru contabil; fara asta ajungea la el ca 500 gol (oprire generica, interzisa de DS).
+            raise HTTPException(422, str(e))
     with tempfile.TemporaryDirectory() as td:
         cale = os.path.join(td, f"s1003_{tenant_id}_{an}.xml")
         open(cale, "w", encoding="utf-8").write(xml)
@@ -6866,23 +6897,6 @@ def d406_stocuri_xml(tenant_id: int, data_start: str, data_end: str, cui: str,
     return Response(content=xml, media_type="application/xml")
 
 
-def _snapshot_stat_plata(conn, schema, rezultate, an, luna):
-    """Persista venit brut + zile lucrate per salariat (UPSERT), pt. media CM."""
-    from core import scadente as _scad
-    from datetime import date as _date  # fix F821: _date nu era importat in aceasta functie
-    zile_luna = _scad.zile_lucratoare_luna(an, luna)  # fara sarbatori (OUG 158/2005 art.10)
-    with conn.cursor() as cur:
-        for r in rezultate:
-            zile = max(zile_luna - int(r.get("cm_zile") or 0), 0)
-            # upsert-ok: recalc lunar idempotent pe (salariat,luna) - re-rulare, nu adaugare de utilizator
-            cur.execute(f"""INSERT INTO {schema}.state_plata
-                            (salariat_id, luna, venit_brut, zile_lucrate)
-                            VALUES (%s,%s,%s,%s)
-                            ON CONFLICT (salariat_id, luna) DO UPDATE
-                            SET venit_brut=EXCLUDED.venit_brut,
-                                zile_lucrate=EXCLUDED.zile_lucrate""",
-                        (r["id"], _date(an, luna, 1), r.get("brut", 0), zile))
-    conn.commit()
 
 
 @app.post("/tenants/{tenant_id}/calcul-cm")  # [api_intern_v1] calculator CM - fara UI inca, pastrat deliberat
@@ -6893,23 +6907,41 @@ def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
     (sau cate exista, art. 10 al. 4 OUG 158/2005)."""
     from datetime import date as _date
     from core import salarizare as _s
+    from core import stat_plata_api as _sp
+    from core import scadente as _scad
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
-        an, luna = int(corp["an"]), int(corp["luna"])
-        prima = _date(an, luna, 1)
-        start = _date(an - 1, luna + 6, 1) if luna <= 6 else _date(an, luna - 6, 1)
-        with conn.cursor() as cur:
-            cur.execute(f"""SELECT COALESCE(SUM(venit_brut),0), COALESCE(SUM(zile_lucrate),0),
-                                   COUNT(*)
-                            FROM {schema}.state_plata
-                            WHERE salariat_id=%s AND luna >= %s AND luna < %s""",
-                        (corp["salariat_id"], start, prima))
-            venituri, zile, nr_luni = cur.fetchone()
+    an, luna = int(corp["an"]), int(corp["luna"])
+    sal_id = int(corp["salariat_id"])
+    # [get_safe_v1 20.08.2026] Baza se CALCULEAZA pe cele 6 luni anterioare, nu se citeste din
+    # state_plata. Inainte, tabelul era populat ca efect secundar al lui GET /stat-plata: media legala
+    # (OUG 158/2005 art.10 al.4) depindea de ce luni deschisese cineva in interfata, iar lunile
+    # nedeschise lipseau TACIT din medie. Aceeasi functie produce aceleasi cifre, dar complet.
+    _luni = []
+    for _i in range(6, 0, -1):
+        _m = luna - _i
+        _luni.append((an - 1, _m + 12) if _m <= 0 else (an, _m))
+    venituri, zile, nr_luni = 0, 0, 0
+    with db.get_conn(schema) as conn:  # stat_plata foloseste nume necalificate -> search_path pe tenant
+        for _a, _l in _luni:
+            try:
+                _stat = _sp.stat_plata(conn, schema, _a, _l)
+            except Exception:
+                continue                      # luna necalculabila (date lipsa) - nu o inventez
+            _r = next((x for x in _stat if int(x.get("id") or 0) == sal_id), None)
+            if not _r:
+                continue                      # salariatul nu era angajat in luna aia
+            _zl = max(_scad.zile_lucratoare_luna(_a, _l) - int(_r.get("cm_zile") or 0), 0)
+            if _zl <= 0:
+                continue
+            venituri += _r.get("brut", 0) or 0
+            zile += _zl
+            nr_luni += 1
     if nr_luni == 0 or zile == 0:
-        raise HTTPException(422, "fără istoric în statul de plată pentru ultimele 6 luni — "
-                                 "rulează statul de plată pe lunile anterioare")
+        raise HTTPException(422, "Nu pot calcula media: salariatul nu are nicio lună lucrată în cele "
+                                 "6 luni dinaintea certificatului. Verifică data angajării și pontajul.")
     try:
         r = _s.calcul_cm(venituri, zile, int(corp["zile_lucratoare_cm"]),
                          cod=corp.get("cod", "01"),

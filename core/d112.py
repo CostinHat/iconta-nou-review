@@ -188,9 +188,8 @@ def _d112_genereaza(prof, salariati, an, luna):
         _caen_ok = (caen_f in _caene) if _caene else (len(caen_f) == 4 and caen_f not in ("0000", "9999"))
         if not _caen_ok:
             raise ValueError(
-                "D112: CAEN firmă '%s' nu există în nomenclatorul CAEN acceptat de D112 (tip XSD "
-                "Str_caenListSType, enumerare închisă) — se corectează în Profil firmă, nu se emite D112 "
-                "respins de ANAF." % caen_f)
+                "Codul CAEN al firmei, '%s', nu e în nomenclatorul CAEN pe care îl acceptă D112. "
+                "Corectează-l în Profil firmă — un D112 trimis cu el ar fi respins de ANAF." % caen_f)
     sum_imp = sum_cas = sum_cass = sum_bazac = 0
     cas_ang_dif = cass_ang_dif = 0  # d112_b4p_v2
     _c2_cazuri = []  # [D112 C2 pe rand] (cod, d16, d14=za, d15=zf, d20, d21) per certificat
@@ -368,10 +367,10 @@ def _d112_genereaza(prof, salariati, an, luna):
                 _codb_ok = (_cod_b in _codb_set) if _codb_set else (_cod_b.isdigit() and 1 <= int(_cod_b) <= 15)
                 if not _codb_ok:
                     raise ValueError(
-                        "D112: certificatul de concediu medical (salariat CNP %s) are cod boală '%s' în "
-                        "afară nomenclatorului D_9 (tip XSD Str_codBoalaSType, coduri 01-15) - se corectează "
-                        "în certificat (ecran Concedii medicale), nu se emite D112 respins de ANAF."
-                        % (s.get("cnp"), _cod_b))
+                        "Certificatul de concediu medical al salariatului cu CNP %s are codul de "
+                        "indemnizație '%s', care nu e în nomenclatorul acceptat de ANAF pentru D112. "
+                        "Corectează codul în certificat (ecran Concedii medicale) — un D112 trimis "
+                        "cu el ar fi respins." % (s.get("cnp"), _cod_b))
                 # [T6 passthrough NETRUNCHIAT, 10.08.2026] serie(D_1)/numar(D_2)/diagnostic(D_23) sunt
                 # identificatori de certificat - NU se trunchiaza tacit (spre deosebire de nume/den prin _t):
                 # o serie/numar trunchiat = alt certificat la ANAF. Overflow lungime (XSD Str5/Str10/Str3)

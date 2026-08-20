@@ -54,8 +54,9 @@ def perioada_tva_tip(prof):
     raw = str((prof or {}).get("tip_decont") or "").strip().lower()
     if not raw:
         raise ValueError(
-            "LIPSA tip_decont (perioada fiscala TVA) in vectorul firmei - obligatoriu pentru "
-            "decontul de TVA (D300/D394). Completeaza lunar/trimestrial in vectorul fiscal.")
+            "Perioada fiscală TVA nu e completată în Vectorul fiscal — fără ea nu pot ști la ce "
+            "interval se depune decontul de TVA (D300/D394). Alege lunar sau trimestrial la "
+            "Date firmă → Vector fiscal.")
     if raw in ("l", "t", "s", "a"):
         return raw.upper()
     if "trim" in raw:
@@ -66,7 +67,9 @@ def perioada_tva_tip(prof):
         return "A"
     if raw.startswith("lun") or raw == "l":
         return "L"
-    raise ValueError("tip_decont necunoscut in vectorul fiscal: %r" % raw)
+    raise ValueError(
+        "Perioada fiscală TVA din Vectorul fiscal are o valoare pe care nu o recunosc: %r. "
+        "Alege lunar, trimestrial, semestrial sau anual la Date firmă → Vector fiscal." % raw)
 
 
 DECONT_LUNG = {"L": "lunar", "T": "trimestrial", "S": "semestrial", "A": "anual"}

@@ -3358,3 +3358,52 @@ Backlog-ul de ~330 mesaje pe ~50 fisiere (deschis mai sus) e ACUM INCHIS: toate 
 - Clasificarea NU s-a facut prin umflarea listei: trei dintre cele 9 (`d300_manual`/`d390_manual`/`d390_reclasificare`) sunt caile MANUALE ale unor declaratii DIN perimetru — a le garda „sa ramana goale" ar fi fost o GRESEALA (o linie manuala pe 006 e legitima). Blocul poarta acum CRITERIUL de selectie scris, nu doar lista.
 - CLAUDE.md §2.2 pct.5: §5 devine camp TIPAT — gol implicit, trei etichete permise (`[EXTERN]` / `[DECIZIE]` / `[NEVERIFICABIL]`), orice altceva e munca. **Limita: nu e gardabil mecanic** (raportul e text in conversatie, nu fisier); ramane pe lista B, cu inspectia lui Costin ca poarta — dar etichetele il fac verificabil dintr-o privire, iar coltul 3 scoate din discutie subclasa care a produs incalcarea.
 
+## 20.08 — audit tenant_001 (S4): patru gărzi noi pe clase, nu pe cazuri
+
+Auditul firmei celei mai complexe din matrice (12 salariați, 11 certificate CM pe 8 coduri) a scos 10
+defecte. Patru gărzi noi; fiecare RED-probată din backup-copie, nu `git checkout`.
+
+- **`core/test_refuz_generator_422.py`** — un generator care REFUZĂ motivat nu ajunge la contabil ca 500 gol.
+  `bilant_api.genereaza` ridica `ValueError` cu mesajul potrivit („Nr. registrul comerțului lipsește… Se
+  completează la Date firmă"), iar `main.py` nu-l prindea → `@app.exception_handler(Exception)` îl transforma
+  în 500 „Internal Server Error". 44 din 392 de rute prindeau deja `ValueError`; astea nu. Regula gardată e
+  **auto-întreținută, fără listă de rute**: pentru orice rută care cheamă `X.genereaza*()` unde funcția din
+  `core/` conține `raise ValueError`, apelul trebuie să fie într-un `try/except ValueError`. Un generator nou
+  care refuză motivat intră automat sub gardă; `api_public.genereaza` (care nu ridică `ValueError`) rămâne în
+  afară — deci fără fals-pozitive (GĂRZI regula 3). **Gardul a găsit la prima rulare două instanțe pe care
+  nici F9 nici sweep-ul manual nu le prinseseră** (`factura_pdf_ruta`, `factura_email`): contabilul care
+  tipărea o factură cu o linie fără cotă TVA primea 500 gol. Total reparat: 6 rute.
+- **`core/test_mesaje_valueerror_publicat.py`** — canalul de mesaje NEMODELAT de celelalte două gărzi F5.
+  Ambele cheie pe ROL SINTACTIC (`HTTPException(detail=)` / cheie de afișare în dict / subclasă de excepție
+  de business, respectiv funcții numite `valideaza`/`erori*`), deci un `ValueError` gol ridicat într-un helper
+  din `core/` nu e în niciunul — raportau VERDE pe mesaje pe care nu le vedeau. Canalul, definit mecanic: 71
+  de rute fac `except ValueError -> HTTPException`, adică PUBLICĂ orice `ValueError` primesc; ele ajung la 116
+  funcții din `core/`, cu 148 de mesaje în proză. Două dimensiuni tratate diferit: **nume intern = ZERO admis,
+  fără baseline** (cele 4 existente rescrise, deci pornește curat) și **diacritice = clichet per fișier**
+  (baseline 84, burn-down declarat). Al treilea test refuză baseline-ul umflat: dacă cureți un fișier și nu
+  scazi cifra, clichetul lasă loc să reintre exact câte ai reparat.
+- **`core/test_get_fara_scriere.py`** — o rută GET nu scrie în starea de business (RFC 9110 §9.2.1). Vezi
+  ISTORIC 20.08 pentru cazul care a scos-o. Clasa e mică și acum e închisă: 2 rute din 168 scriau. A doua,
+  `GET /gdpr/export-cabinet`, scrie în `public.audit_log` cine și când a exportat date personale — aia nu e
+  stare de business, e urma faptului că citirea a avut loc, și trebuie să existe TOCMAI fiindcă e un GET.
+  **Excepția e mecanică (numele tabelului), nu o listă de rute**: orice rută poate jurnaliza, niciuna nu poate
+  scrie altceva. Al treilea test cere ca excepția să fie chiar folosită — o excepție nefolosită e o gaură
+  deschisă degeaba.
+- **`core/test_stergere_salariat_completa.py`** — ștergerea unui salariat nu lasă jumătate din înregistrare.
+  `salariu_istoric.salariat_id` e `integer NOT NULL` FĂRĂ `REFERENCES`, deci nimic nu cascadează: 24 din 30 de
+  rânduri orfane pe tenant_001 (celelalte 18 scheme, curate). Regula se citește din SCHEMĂ, nu dintr-o listă:
+  fiecare tabel cu `salariat_id` trebuie ori ȘTERS, ori REFUZAT, ori PROTEJAT de FK. **Prima versiune a picat
+  pe propria barieră anti-gard-mort** (3 tabele găsite în `tenant_template.sql` vs 5 reale în bază): schema
+  trăiește în template PLUS fișierele `NN_ddl_*.sql`. Corectat să le citească pe toate. Tot bariera aia a scos
+  că `beneficii_lunare` ARE FK fără `ON DELETE` — deci nu poate orfana, blochează ștergerea zgomotos; îl
+  scosesem din `DELETE`, fiindcă a-l șterge tăcut ar fi fost o schimbare de comportament neprobată.
+
+**Extins:** `core/test_a11y_contrast_tokens.py` — test GENERIC pe toate clasele `.cf-*` cu culoare literală,
+nu încă două teste per clasă. `.cf-galben`/`.cf-termen-galben` derivaseră de pe tokenul chihlimbar al DS
+(`#92500a`) la `#a06713` = 4.02 pe panoul `#e9edf3`. Puse înapoi pe token: 5.30. Prins abia pe t001, fiindcă
+doar o firmă cu declarații „de urmărit" RANDEAZĂ starea galbenă — exact latentul notat pe 19.08.
+
+**Trei teste care APĂRAU defecte, inversate.** `test_d112_caen_codboala` asserta `"Str_codBoalaSType" in msg`
+și `"Str_caenListSType" in msg` — adică cerea PREZENȚA numelui intern în mesajul contabilului, exact defectul
+F5 reparat. A patra apariție a clasei notate în `test_datorie.py:234` (31.07). Aserțiunile cer acum absența
+numelui intern + prezența locului unde se corectează.

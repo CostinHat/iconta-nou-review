@@ -42,15 +42,22 @@ def test_caen_9999_out_of_enum_blocheaza():
         d112._d112_genereaza(_prof(caen="9999"), [_sal_cm()], 2026, 8)
     msg = str(ei.value)
     assert "CAEN" in msg and "9999" in msg, msg
-    assert "Str_caenListSType" in msg, msg
+    # [F5 20.08.2026] NU se mai asertaza numele tipului XSD: aserta prezenta lui in mesaj insemna sa
+    # APERI defectul (nume intern aratat contabilului). Se asertaza ce conteaza: unde se corecteaza.
+    assert "Profil firmă" in msg, "mesajul trebuie sa spuna UNDE se corecteaza: %s" % msg
+    assert "Str_caenListSType" not in msg, "nume intern de tip XSD in mesajul contabilului: %s" % msg
 
 
 def test_cod_boala_99_out_of_enum_blocheaza():
     with pytest.raises(ValueError) as ei:
         d112._d112_genereaza(_prof(), [_sal_cm(cod="99")], 2026, 8)
     msg = str(ei.value)
-    assert "cod boală" in msg and "99" in msg, msg
-    assert "Str_codBoalaSType" in msg, msg
+    assert "99" in msg, msg
+    assert "cod" in msg.lower() and "indemniza" in msg.lower(), \
+        "mesajul trebuie sa numeasca ce e gresit (codul de indemnizatie): %s" % msg
+    # [F5 20.08.2026] vezi nota de la testul CAEN: nu mai aparam numele intern.
+    assert "Concedii medicale" in msg, "mesajul trebuie sa spuna UNDE se corecteaza: %s" % msg
+    assert "Str_codBoalaSType" not in msg, "nume intern de tip XSD in mesajul contabilului: %s" % msg
     assert "1850315400125" in msg, "trebuie să numeasca salariatul: %s" % msg
 
 

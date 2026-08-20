@@ -186,3 +186,27 @@ def test_indicator_suspendat_nu_e_verde():
     assert "var(--verde" not in ramura_suspendat, (
         "starea suspendata foloseste un token verde: %r" % (ramura_suspendat.strip()[:200],)
     )
+
+
+# [a11y contrast galben Control fiscal 20.08.2026 - audit tenant_001] .cf-galben / .cf-termen-galben
+# derivasera de pe tokenul chihlimbar al DS (#92500a) la #a06713 = 4.02 pe panoul #e9edf3 - sub AA.
+# Prins abia pe t001, fiindca doar o firma cu declaratii "de urmarit" RANDEAZA starea galbena
+# (latentul notat pe 19.08: "CUL.galben/gri-ca-text, de verificat cand se renderizeaza acele stari").
+# Testul e GENERIC pe toate clasele .cf-* cu culoare literala: prinde urmatoarea derivare, nu doar astea doua.
+def test_toate_clasele_cf_cu_culoare_literala_trec_pe_panou():
+    css = _css()
+    if not css:
+        pytest.skip("stil.css absent")
+    gasite, rele = 0, []
+    for m in re.finditer(r"^(\.cf-[a-z0-9-]+)\s*\{([^}]*)\}", css, re.M):
+        clasa, corp = m.group(1), m.group(2)
+        c = re.search(r"color:\s*(#[0-9a-fA-F]{6})", corp)
+        if not c:
+            continue          # var(--token) se verifica prin testele de token, nu aici
+        gasite += 1
+        r = _ratio(c.group(1), _PANOU_CF)
+        if r < 4.5:
+            rele.append("%s (%s) pe panoul Control fiscal %s = %.2f < 4.5"
+                        % (clasa, c.group(1), _PANOU_CF, r))
+    assert gasite >= 5, "doar %d clase .cf-* cu culoare literala - regexul s-a rupt, gardul ar trece pe gol" % gasite
+    assert not rele, "\n".join(rele)

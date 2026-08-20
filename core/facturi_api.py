@@ -88,22 +88,23 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
         raise ValueError("factura trebuie să aibă cel puțin o linie")
     for _l in linii:
         if _l.get("cota_tva") is None:
-            raise ValueError("linie fara cota TVA (%r): declara cota explicit - o linie fara "
-                             "cota e intrare incompleta, nu cota standard"
+            raise ValueError("Linia %r nu are cotă de TVA. Completează cota pe linie — 0 (scutit) "
+                             "e o valoare validă, dar absența nu se poate ghici."
                              % (_l.get("descriere") or "",))
     if directie not in ("emisa", "primita"):
-        raise ValueError("directie trebuie 'emisa' sau 'primita'")
+        raise ValueError("Direcția facturii trebuie să fie 'emisă' sau 'primită'.")
     # [B1 D300] campuri de clasificare/temporizare. tip_operatiune distinge avansul (exigibil la
     # emitere, art.282 alin.2 lit.b); furnizor_tva_incasare doar pe PRIMITE (deducere amanata la
     # plata, art.297 alin.2). Fara default tacit peste o valoare invalida -> refuz cu mesaj clar.
     tert_tara_v = (tert_tara or "RO").strip().upper() or "RO"
     tip_op_v = (tip_operatiune or "normal").strip().lower() or "normal"
     if tip_op_v not in ("normal", "avans", "regularizare_avans"):
-        raise ValueError("tip_operatiune %r invalid (permise: normal, avans, regularizare_avans)."
-                         % tip_operatiune)
+        raise ValueError("Tipul operațiunii %r nu e recunoscut. Alege: normal, avans sau "
+                         "regularizare de avans." % tip_operatiune)
     furnizor_incasare_v = bool(furnizor_tva_incasare)
     if furnizor_incasare_v and directie != "primita":
-        raise ValueError("furnizor_tva_incasare se aplica DOAR pe facturi primite (pe emise n-are sens).")
+        raise ValueError("TVA la încasare la furnizor se poate bifa doar pe facturile primite "
+                         "— pe cele emise nu se aplică.")
     t = totaluri_din_linii(linii)
     with conn.cursor() as cur:
         cur.execute(

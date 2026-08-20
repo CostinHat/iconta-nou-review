@@ -53,7 +53,10 @@ def coeficient_348(sold_initial_348, rulaj_348, sold_initial_345, intrari_345):
     numarator = _d(sold_initial_348) + _d(rulaj_348)
     numitor = _d(sold_initial_345) + _d(intrari_345)
     if numitor <= 0:
-        raise ValueError("baza 345 invalida")
+        raise ValueError(
+            "Nu pot calcula coeficientul de diferențe de preț: baza de calcul — soldul inițial "
+            "plus intrările de produse finite (contul 345) — e zero sau negativă. Verifică "
+            "soldul și intrările contului 345 pe perioada aleasă.")
     return (numarator / numitor).quantize(Decimal("0.000001"))
 
 def nota_vanzare(pret_vanzare, cost_standard_iesit, cota_tva=21, coef_348=None):

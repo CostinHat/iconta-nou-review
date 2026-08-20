@@ -1,6 +1,49 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANT — audit tenant_006 (Achizitii IC Neplatitor SRL / N1, cabinet Prisma 1968)
+# PREDARE LANT — audit tenant_001 (Panificatie Salarii Speciale SRL / S4, cabinet Prisma 1968)
+
+## REPORNIRE (comanda exacta, gata de dat) — TURA 20.08: audit t001, 10 defecte, 4 garzi
+
+LIVRAT (necomis la scrierea asta; poarta verde inainte de commit):
+- **6 rute** care lasau un refuz motivat sa devina 500 gol -> 422 cu mesajul care exista deja
+  (`bilant_api`, `factura_pdf`). Doua dintre ele gasite de GARDA, nu de mine.
+- **14 mesaje publicate** rescrise in limba contabilului: nume interne in canal **4 -> 0**, fara
+  diacritice **89 -> 82** (clichet cu baseline 84, burn-down declarat).
+- **GET care comitea** (`GET /stat-plata` -> INSERT+commit): scos; media CM pe 6 luni se calculeaza
+  acum din sursa. Poarta de stergere trecuta pe `perioada_confirmata`. Datoria din `test_datorie.py`
+  corectata (cauta si in radacina, formularea nu mai afirma un fals).
+- **Contrast** `.cf-galben`/`.cf-termen-galben` inapoi pe tokenul DS `#92500a` (4.02 -> 5.30).
+- **`sterge_salariat`** curata tabelele-copil fara FK (`salariu_istoric`, `pontaj`).
+- **`audit_tenant.py`** decide pe `severitate`, nu pe `stare` — F2 pe t001 a trecut de la ROSU fals la VERDE.
+- **Vector t001** completat conform C-2/S4. Reziduul sondelor (24 `state_plata` + 2 `nir`) sters tintit.
+
+GARZI NOI: `test_refuz_generator_422`, `test_mesaje_valueerror_publicat`, `test_get_fara_scriere`,
+`test_stergere_salariat_completa`; `test_a11y_contrast_tokens` extins. Toate RED-probate din backup-copie.
+Fiecare are aserțiune anti-vacuu — cea de la stergere s-a declansat chiar la nastere (schema traieste in
+`tenant_template.sql` PLUS `NN_ddl_*.sql`).
+
+**COMANDA DE REPORNIRE:** „Continua pe t001. Doua lucruri DECISE si NEIMPLEMENTATE, in ordinea asta:
+(1) gardul pe FIXTURES — un fixture care contine iesire de validator nu poate exista fara verdict
+(«verificata la sursa, iata temeiul» sau «bug cunoscut, iata datoria»); ala ar fi prins fixture-ul B4_5P
+in ziua in care a fost scris (08.08). (2) D1 — scade cei 300 lei din pragul part-time (CF art.146(5^6) /
+art.168(6^1), `structura_D112` l.3128/3157, arbitrul da 3750); D2 — Nomenclatorul 9 (20 coduri) devine
+sursa unica pentru D_9 in toate cele patru straturi, XSD-ul ramane al doilea semnal; verifica intai
+`caen_in_nomenclator` la arbitru, e aceeasi expunere. Odata cu D2, cele TREI etichete inversate din
+`flux_concediu.js`: `02`/`03` sunt schimbate intre ele (surse de plata diferite!), `16` scrie «boala
+infectocontagioasa» in loc de «unele tipuri de arsuri», `17` scrie «reducere cu 1/4» in loc de «ingrijire
+pacient oncologic». Apoi: marcajul celor 85 de teste care aserteaza o constanta fiscala FARA temei
+(inventar 31.07, `test_datorie.py:234`) — comentariu injectat mecanic + clichet, si in aceeasi trecere
+numara cate difera de registrul `common.COTE`. Abia dupa astea, cele trei stari ca fixturi
+(galben randat / vector incomplet / generator care refuza) — D2 schimba a treia, altfel o construiesti
+de doua ori."
+
+NEDECIS, pe masa lui Costin: orfanii `salariu_istoric` (24 pe t001) + FK-ul pe `salariu_istoric`/`pontaj`
+(migrare pe 19 scheme, cere intai stergerea orfanilor). `reg_com`/`banca`/`iban` pe t001 raman NULL
+deliberat — sunt cazurile de test care au scos refuzul de bilant si cel de D300.
+
+---
+
+# ARHIVA — PREDARE LANT — audit tenant_006 (Achizitii IC Neplatitor SRL / N1, cabinet Prisma 1968)
 
 ## REPORNIRE (comanda exacta, gata de dat) — TURA 20.08: I1 (patru-ochi) + I2 (checksum manual) INCHISE
 

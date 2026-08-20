@@ -736,7 +736,7 @@ html, body {
 }
 .cf-grup-titlu { font-size: var(--text-mic); font-weight: 700; margin: 14px 0 8px; text-transform: uppercase; letter-spacing: .3px; }
 .cf-rosu { color: #c0392b; }
-.cf-galben { color: #a06713; }
+.cf-galben { color: #92500a; }
 .cf-verde { color: var(--verde); }
 /* [semafor_b_v1] grup + rand cu motiv (temei pe orice culoare, inclusiv verde) */
 .cf-decl-item { padding: 7px 4px; border-bottom: 1px solid #eef0f3; }
@@ -756,7 +756,7 @@ html, body {
 .cf-perioada { color: #44516b; font-size: var(--text-mic); }
 .cf-termen { font-size: 12.5px; font-variant-numeric: tabular-nums; }
 .cf-termen-rosu { color: #c0392b; }
-.cf-termen-galben { color: #a06713; }
+.cf-termen-galben { color: #92500a; }
 .cf-termen-verde { color: var(--verde); }
 /* [control_firma_v1] Control fiscal per firma */
 .cf-stare-mare { display: flex; align-items: center; gap: 10px; padding: 12px 16px; border-radius: var(--raza); margin-top: 14px; }

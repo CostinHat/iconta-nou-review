@@ -4600,3 +4600,37 @@ Doua clase gardate app-wide, provocate de auditul 006 dar reparate pe tot ecranu
 ## 20.08.2026 — §5 tipat (gol implicit) + al treilea colt al gardului de perimetru
 **(dupa incalcare prinsa de Costin).** Raportul precedent avea §5 cu patru randuri, din care DOUA fixabile in cinci minute — munca neterminata parcata intr-o lista, nu limite. Diagnostic mai important decat incalcarea: regula exista deja de doua ori (Regula 12 + „§5 gol la finalizarea unei firme", 19.08) dar era formulata „cand declar o FIRMA gata", iar incalcarea a fost intr-un raport de METODA -> conditia n-a fost indeplinita, regula n-a declansat, iar tacerea ei arata exact ca respectarea ei. Corectia NU e o nota noua peste cea veche (chiar tiparul care a esuat), ci largirea domeniului: se aplica la ORICE raport. CLAUDE.md §2.2 pct.5: §5 devine camp TIPAT — gol implicit, trei etichete permise (`[EXTERN]` = depinde de un raspuns pe care nu-l pot obtine / `[DECIZIE]` = alegere de produs a lui Costin, apare si la §6 / `[NEVERIFICABIL]` = vazut dar neverificabil din cod); orice altceva nu e limita, e munca, si se face inainte de raport. Testul: (a) as putea s-o inchid acum? (b) e o afirmatie despre REPO sau despre LUME? Ce e despre repo si e inchidabil = munca. Cele doua randuri fixabile au devenit cod: (1) al TREILEA COLT in `core/test_perimetru_firma_declarat.py` — orice tabel GOL din schema trebuie CLASIFICAT, ori „in afara perimetrului" (gardat sa ramana gol), ori „in perimetru, poate primi date" (golul e o stare, nu o promisiune); prinde si tabelele noi din `tenant_template.sql`, iar RED-ul a numit exact cele 9 tabele parcate in §5; (2) `test_ramura_schema_inexistenta_e_raportata`, sintetic pe `tenant_999`, cu verificarile de DB extrase in `_probleme_sectiune(cur, schema, corp)` tocmai ca ramura sa fie probabila (fara sa creez sau sa sterg ceva in baza). Clasificarea nu s-a facut umfland lista: `d300_manual`/`d390_manual`/`d390_reclasificare` sunt caile MANUALE ale unor declaratii DIN perimetru — a le garda „sa ramana goale" ar fi fost o greseala; blocul 006 poarta acum CRITERIUL de selectie scris. Limita declarata: regula §5 in sine nu e gardabila mecanic (raportul e text in conversatie, nu fisier), ramane pe lista B cu inspectia lui Costin ca poarta — dar etichetele o fac verificabila dintr-o privire.
 
+## 20.08.2026 - Audit tenant_001 (S4, salarii complexe): 10 defecte, patru gărzi pe clase
+
+**GET care comitea — media CM depindea de ce ecrane s-au deschis (`4c4b65b`, 04.07 → 20.08.2026).**
+`GET /tenants/{id}/stat-plata` chema `_snapshot_stat_plata()` → `INSERT ... ON CONFLICT` + `commit()`.
+Deschiderea ecranului Salariați scria un rând per salariat. Consecințe: baza legală a indemnizației de
+concediu medical (OUG 158/2005 art.10 al.4) se citea din acel tabel, deci lunile pe care nu le deschisese
+nimeni lipseau **tăcut** din media pe 6 luni (măsurat pe salariat 55: 409,09 lei/zi pe 2 luni vs 425,06 pe
+cele 6 reale); poarta din `sterge_salariat` („a fost pe un stat de plată") se închidea din vizitare; orice
+monitorizare sau prefetch producea aceleași scrieri.
+**N-a ajuns la nimeni:** consumatorul (`POST /calcul-cm`, marcat în cod `fara UI inca`) nu e chemat din
+`static/` (0 hituri) și nu e expus prin API-ul public, iar calea reală a contabilului
+(`salariati_api.salveaza_concediu`) își ia baza din cerere. `state_plata` avea rânduri în 2 din 19 scheme, iar
+cele trei firme cu certificate reale (t013, t014, t017) aveau ZERO — pe ele endpoint-ul ar fi întors 422 „fără
+istoric", nu o cifră greșită. **Contenție accidentală, nu proiectare:** ziua în care cineva cabla ecranul de
+concedii la endpoint, media ar fi devenit funcție de istoricul de navigare.
+**Cum a ieșit la iveală:** o sondă de *citire* din auditul t001 a lăsat 24 de rânduri în urmă. Asta e partea
+de reținut — nu numele tabelului, ci că o citire a lăsat urmă.
+**Reparat:** GET-ul nu mai scrie; media se calculează din sursă (aceeași funcție, aceleași cifre, dar
+complete); poarta trecută pe `perioada_confirmata` (semnal scris deliberat, nu efect secundar); helperul rămas
+fără apelant, șters. **Gardat:** `core/test_get_fara_scriere.py`, cu excepția mecanică pentru
+`public.audit_log` (jurnalul de acces GDPR trebuie să existe TOCMAI fiindcă e un GET).
+
+**Datoria care descria o lume pe care n-o verifica.** `core/test_datorie.py:144` afirma „state_plata există în
+schemă dar nimic nu scrie în el" — fals, `main.py` scria. `xfail(strict=True)` ar fi trebuit să dea xpass în
+ziua cablării; n-a dat, fiindcă `rad.glob("*.py")` caută doar în `core/`, niciodată în rădăcină. Corectate
+AMÂNDOUĂ: căutarea acoperă acum rădăcina, iar motivul spune ce s-a întâmplat și că „azi chiar nimic nu scrie"
+e o consecință a reparației, nu starea de plecare. A doua instanță în două zile a clasei „registru care nu-și
+verifică propria afirmație" (prima: fixture-ul DUK din 08.08, notat la ISTORIC 19-20.08).
+
+**Restul defectelor** (refuz motivat → 500 gol pe 6 rute · 14 mesaje publicate rescrise, nume interne 4→0 ·
+contrast `.cf-galben` 4.02 → 5.30 · orfani `salariu_istoric` · orchestrator care citea `stare` în loc de
+`severitate`, 6 luni din 7 raportate fals ca ERORI) — detaliile la GARZI 20.08 și ISTORIC_TENANTI tenant_001.
+
+**Poarta:** 2132 passed, 4 skipped, 16 xfailed; verificator TOTAL 0.

@@ -78,6 +78,39 @@ ambiguă.
 
 ---
 
+## tenant_001 — Panificatie Salarii Speciale SRL (CUI 96653616 · schema tenant_001 · cabinet Prisma 1968 · S4, salarizare în situații speciale)
+
+**Perimetru (celula S4 — declarat 20.08.2026, verificat la sursă).** t001 e purtătoarea dimensiunii
+**„D112 complex"** din `date_test/C2_firme.md`: 12 salariați, 11 certificate de concediu medical pe 8 coduri
+(01, 07, 08, 09, 10, 15, 17, 91), part-time sub minim, plafon 12 salarii minime, tichete parțiale, angajare la
+mijloc de an. Vectorul fiscal a fost completat în această tură conform C-2 (`profit`, plătitor TVA `lunar`,
+fără operațiuni intracomunitare) — până atunci era gol și bloca 7 declarații cu „nu pot ști".
+
+**În perimetru:** salarizare completă (salariați, istoric salarial, concedii medicale, beneficii, plată pe
+card) · D112 · D100/D101 · D300/D394 · D406 · D205 · bilanț (S1005/S1003) · control fiscal / semafor ·
+vector fiscal · e-Factura.
+
+**În afara perimetrului (tabele care trebuie să rămână goale):** `d301_operatiuni`, `d390_manual`, `d390_reclasificare`.
+
+Criteriul: firma are `operatiuni_ic=False`, deci NU datorează D301 (art.317) și nici
+D390 (recapitulativa IC) — nici pe cale automată, nici manuală. Regimul IC e purtat de t004 și t006.
+
+**În perimetru, tabele care pot primi date:** `ai_corectii`, `articole`, `asociati`, `bugete`, `casa_operatiuni`, `centre_cost`, `chitante`, `clienti`, `contracte_sabloane`, `d300_manual`, `efactura_primite`, `efactura_trimiteri`, `etransport_trimiteri`, `extras_linii`, `facturi_recurente`, `furnizori`, `inregistrari`, `inregistrari_linii`, `mijloace_fixe`, `miscari_stoc`, `nir`, `nir_linii`, `notificari_scadenta`, `pontaj`, `produse`, `rapoarte_salvate`, `registratura`, `retete`, `retete_linii`, `rip_operatiuni`, `solduri_initiale`, `solduri_parteneri`, `state_plata`.
+
+**De ce lista de mai sus e scurtă, spre deosebire de 006.** t001 nu e *scopată*, e **SUB-EXERCITATĂ**: o
+brutărie cu 12 salariați, profit și TVA lunar poate avea în mod legitim clienți, furnizori, facturi, casă,
+bancă, stocuri, NIR, rețete, mijloace fixe și solduri. Golul lor e o stare de moment, nu o proprietate a
+regimului — deci nu se gardează să rămână gol. `state_plata` e gol prin datoria declarată (nu se persistă la
+emitere, vezi `test_datorie.py`), nu prin regim. `reg_com`, `banca` și `iban` din `firma_profil` rămân NULL
+deliberat: C-2 nu le fixează, iar lipsa lor e chiar cazul de test care a scos refuzul de bilanț și cel de D300.
+
+| Data | Ce s-a atins | Commit(uri) | Rămas |
+|------|--------------|-------------|-------|
+| 2026-08-20 | **Audit cap-coadă F1–F9 (10 defecte) + 4 gărzi pe clase.** F2 DUK: atenționarea B4_5P pe toate cele 7 luni (baza part-time fără cei 300 lei) + D112/aprilie nedepusibilă (cod `91` refuzat de gardă, ACCEPTAT de arbitru). F3: 24/30 rânduri `salariu_istoric` orfane. F5: 14 mesaje publicate rescrise (nume interne 4→0). F6: contrast `.cf-galben` 4.02. F9: bilanț 500 gol + stocuri 400 în limba programatorului. Plus: GET care comitea, poarta închisă de o citire, datoria care se contrazicea, orchestrator care citea `stare` în loc de `severitate`. Vector completat conform C-2. Reziduul sondelor (24 `state_plata` + 2 `nir`) șters țintit. | (audit t001) | **D1** (scăderea celor 300 lei) și **D2** (Nomenclatorul 9 ca sursă) — decise, neimplementate; odată cu ele cele 3 etichete inversate din UI (02/03, 16, 17). Orfanii `salariu_istoric` + FK-ul pe `salariu_istoric`/`pontaj` (migrare pe 19 scheme) — nedecis. |
+| 2026-08-17 | Audit tenant_001: default fabricat pe selecturile de vector din Date firmă (vezi ISTORIC 17.08) | — | — |
+
+---
+
 ## Global — funcționalități care nu sunt per-firmă (probate pe firme demo)
 
 Muncă de produs care atinge TOATE firmele; se probează pe o firmă demo, dar nu e „a tenantului". Ținută aici ca

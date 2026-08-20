@@ -142,19 +142,27 @@ def test_datorie_d710_trunchiere_in_garda():
 
 
 @pytest.mark.xfail(strict=True, reason=(
-    "DATORIE 29.07.2026: state_plata exista in schema dar nimic nu scrie in el. Statul de plata se "
+    "DATORIE 29.07.2026, RESTATUATA 20.08.2026: state_plata nu se persista LA EMITERE. Statul se "
     "recalculeaza la fiecare afisare, deci un stat 'emis' in ianuarie si reafisat in iulie poate iesi "
     "ALTFEL daca s-a schimbat cota, salariul minim sau codul intre timp. Pentru un document care se "
     "semneaza si se da salariatului, asta e o problema de integritate, nu de performanta. De decis: se "
     "persista la emitere (cu hash, ca declaratiile depuse) sau tabelul se scoate ca sa nu para ca exista "
-    "ceva ce nu exista."))
+    "ceva ce nu exista. || CORECTIE 20.08.2026: formularea veche spunea 'nimic nu scrie in el' si era "
+    "FALSA - main.py scria, din GET /stat-plata (efect secundar al unei citiri). Testul n-a prins-o "
+    "fiindca isi cauta dovada DOAR in core/*.py, niciodata in main.py: o datorie care descria o lume pe "
+    "care nu o verifica. Scrierea-din-GET a fost scoasa (RFC 9110 §9.2.1: GET trebuie sa fie safe), deci "
+    "azi chiar nimic nu scrie - dar asta e o consecinta, nu starea de la care s-a plecat. Cautarea acopera "
+    "acum si radacina repo-ului."))
 def test_datorie_state_plata_se_persista():
     # Prerechizit MECANIC: statul de plata sa fie PERSISTAT la emitere. Azi state_plata (salariat_id+luna)
     # e tabel mort - zero INSERT in cod -> statul se recalculeaza de fiecare data (risc de integritate).
     import re as _re
     rad = pathlib.Path(__file__).resolve().parent
     patt = _re.compile(r"insert\s+into\s+[\"\w.{}]*state_plata", _re.IGNORECASE)
-    scrie = any(patt.search(f.read_text(encoding="utf-8")) for f in rad.glob("*.py"))
+    # [20.08.2026] cauta si in RADACINA repo-ului (main.py), nu doar in core/ - vechea forma se uita
+    # doar langa ea si de-aia a ratat exact scrierea care exista.
+    _fisiere = list(rad.glob("*.py")) + list(rad.parent.glob("*.py"))
+    scrie = any(patt.search(f.read_text(encoding="utf-8", errors="replace")) for f in _fisiere)
     assert scrie, "nimic nu scrie in state_plata - statul de plata nu se persista la emitere"
 
 

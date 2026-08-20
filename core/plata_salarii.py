@@ -74,9 +74,11 @@ def genereaza_pain001(conn, schema, an, luna, data_executie=None, acum=None, num
     nume_firma, iban_firma = _profil_firma(conn, schema)
     nume_firma = nume_firma or nume_firma_fallback
     if not iban_firma:
-        raise ValueError("firma nu are IBAN configurat (firma_profil) - necesar ca ordonator al platii")
+        raise ValueError("Firma nu are IBAN completat — e necesar ca ordonator al plății. "
+                         "Completează-l la Date firmă.")
     if not _sa.iban_valid(iban_firma):
-        raise ValueError("IBAN-ul firmei (firma_profil) e invalid - corecteaza-l inainte de generare")
+        raise ValueError("IBAN-ul firmei e invalid — corectează-l la Date firmă înainte de a "
+                         "genera fișierul de plată.")
 
     stat = _sp.stat_plata(conn, schema, an, luna)
     plati, fara_iban = [], []

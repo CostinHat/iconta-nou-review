@@ -185,8 +185,17 @@ def faceta_f2_f7(rap, tok, tid):
             rosu_f2 = True
         else:
             st = rez.get("stare")
+            # [severitate_v1 20.08.2026] `stare` e "erori" pentru ORICE iesire a validatorului
+            # (duk.py: stare = "erori" if rez else "valid"), inclusiv pentru o ATENTIONARE pura.
+            # Clasificarea reala e in `severitate` (duk.severitate, 08.08.2026): "A:" = atentionare,
+            # NU blocheaza depunerea. declaratii.js o consuma corect de atunci; orchestratorul nu -
+            # raporta atentionarile ca ERORI si facea fateta rosie degeaba (6 luni din 7 pe t001).
+            sev = rez.get("severitate")
             if st == "valid":
                 f2.append("%-16s DUK valid%s" % (et, xsd_txt))
+            elif st == "erori" and sev == "atentionare":
+                f2.append("%-16s DUK atentionare (nu blocheaza)%s: %s"
+                          % (et, xsd_txt, (rez.get("erori") or "")[:100]))
             elif st == "erori":
                 f2.append("%-16s DUK ERORI%s: %s" % (et, xsd_txt, (rez.get("erori") or "")[:100]))
                 rosu_f2 = True

@@ -276,7 +276,8 @@ def _refuz_sterge():
 def sterge_salariat(conn, salariat_id):
     """Hard-delete DOAR pentru greseala de introducere: salariat fara nicio luna declarata. La PLECARE
     NU se sterge - se completeaza data_incetare (istoricul sustine declaratiile depuse). Refuza daca are
-    concedii medicale, apare in stat de plata (state_plata) sau tenantul are vreun D112 depus pentru o
+    concedii medicale, are o perioada CONFIRMATA (pontaj/salarizare) de la angajare incoace, sau
+    tenantul are vreun D112 depus pentru o
     luna >= luna angajarii (grosier per tenant+luna: declaratii_depuse nu e per-salariat -> err-on-refuse,
     vezi DECIZII + datoria state_plata)."""
     with conn.cursor() as cur:
@@ -288,9 +289,20 @@ def sterge_salariat(conn, salariat_id):
         cur.execute("SELECT count(*) FROM concedii_medicale WHERE salariat_id = %s", (salariat_id,))
         if cur.fetchone()[0]:
             return _refuz_sterge()
-        cur.execute("SELECT count(*) FROM state_plata WHERE salariat_id = %s", (salariat_id,))
-        if cur.fetchone()[0]:
-            return _refuz_sterge()
+        # [get_safe_v1 20.08.2026] AICI se citea `state_plata` ca dovada ca salariatul "a fost pe un
+        # stat de plata". NU era o dovada: tabelul se popula ca efect secundar al lui GET /stat-plata -
+        # simpla deschidere a ecranului Salariati scria un rand per salariat si il comitea, deci poarta
+        # se inchidea din VIZITARE, nu din emitere. De cand GET-ul nu mai scrie (main.py), nimic nu mai
+        # populeaza tabelul, iar verificarea ar fi ramas logica moarta care PARE protectie si care ar fi
+        # prins doar reziduu de navigare ramas in baza.
+        # Semnalul REAL ca luna e blocata e perioada CONFIRMATA - scrisa deliberat de utilizator prin
+        # core/perioada.confirma(). Grosier per tenant+luna, ca si poarta D112 de mai jos: err-on-refuse.
+        if data_ang is not None:
+            cur.execute("SELECT count(*) FROM perioada_confirmata "
+                        "WHERE domeniu IN ('pontaj', 'salarizare') "
+                        "AND make_date(an, luna, 1) >= date_trunc('month', %s::date)", (data_ang,))
+            if cur.fetchone()[0]:
+                return _refuz_sterge()
         cur.execute("SELECT id FROM public.tenants WHERE schema_name = current_schema()")
         t = cur.fetchone()
         if t and data_ang is not None:
@@ -300,6 +312,15 @@ def sterge_salariat(conn, salariat_id):
                         (t[0], "d112", "month", data_ang))
             if cur.fetchone()[0]:
                 return _refuz_sterge()
+        # [orfani_salariu_istoric 20.08.2026] salariu_istoric NU are FK catre salariati (tenant_template
+        # l.1176-1183), deci nimic nu cascadeaza: pana acum stergerea lasa istoricul salarial in urma
+        # (24 din 30 randuri orfane pe tenant_001, gasit la auditul t001). Hard-delete-ul asta e rezervat
+        # greselii de introducere, deci trebuie sa stearga inregistrarea INTREAGA. Copiii se sterg
+        # INAINTE de parinte, in aceeasi tranzactie. Celelalte tabele cu salariat_id (concedii_medicale,
+        # state_plata) sunt deja porti de REFUZ mai sus; beneficii_lunare are FK fara ON DELETE, deci
+        # blocheaza stergerea zgomotos - nu o sterg tacit.
+        cur.execute("DELETE FROM salariu_istoric WHERE salariat_id = %s", (salariat_id,))
+        cur.execute("DELETE FROM pontaj WHERE salariat_id = %s", (salariat_id,))
         cur.execute("DELETE FROM salariati WHERE id = %s", (salariat_id,))
         sters = cur.rowcount > 0
     return {"ok": sters}

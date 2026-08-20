@@ -9862,3 +9862,44 @@ fac verificabilă dintr-o privire, iar colțul 3 scoate din discuție chiar subc
 **Stare: GARDATĂ parțial** — subclasa „declarație incompletă de perimetru" e gardată; disciplina §5 rămâne
 comportamentală, cu domeniul corectat.
 
+## 20.08.2026 — deciziile turei de audit tenant_001
+
+**Arbitrul bate raționamentul (D1, PENDINTE de implementat).** Baza minimă part-time (CF art.146 alin.(5^6)
+CAS / art.168 alin.(6^1) CASS) se calculează azi pe salariul minim ÎNTREG. Structura ANAF
+(`structura_D112_0726_030826.txt` l.3128-3129 și 3157-3158) pune `sm=sm-300` ÎNĂUNTRUL formulei `part_time`,
+iar DUKIntegrator o implementează (semnalează 3750 = 4050−300). Scăderea fusese scoasă DELIBERAT pe 06.08 cu
+raționamentul „facilitatea se aplică doar normei întregi" — plauzibil juridic, dar codul de dinainte coincidea
+cu arbitrul. **Decizia lui Costin: urmează arbitrul.** Nu declarăm împotriva validatorului care decide.
+Efect: +105 lei/lună declarați în plus per salariat part-time sub minim (B4_6P 405→375, B4_8P 1013→938,
+B4_6D 105→75, B4_8D 263→188). LIMITĂ [EXTERN]: spec-ul îngheață `sm=4050`, deci din 07/2026 (minim 4325,
+facilitate 200) valoarea corectă legal (4125) va rămâne semnalată de DUK oricum.
+
+**Nomenclatorul 9 devine sursa unică pentru D_9 (D2, PENDINTE).** Enum-ul `Str_codBoalaSType` din
+`d112_06082026.xsd` are 15 coduri; Nomenclatorul 9 din ACEEAȘI versiune (1.03-072026, l.5580-5615) are 20.
+Garda din `core/d112.py` (10.08) derivă din XSD și refuză generarea pentru `16` arsuri, `17` oncologic, `51`
+izolare, `91` îngrijire copil cu afecțiuni grave, `92` carantină copil. **Dus la arbitru: DUKIntegrator
+acceptă `D_9=17` și `D_9=91`** (generare cu garda ocolită în proces, date neatinse — singurul semnal rămas a
+fost atenționarea B4_5P, nimic despre codul de boală). Decizia: Nomenclatorul 9 devine sursa, o singură listă
+pentru toate straturile; XSD-ul rămâne al doilea semnal, nu autoritate. De verificat la arbitru și
+`caen_in_nomenclator` (`Str_caenListSType`) înainte — aceeași expunere.
+
+**Un GET nu scrie în starea de business.** Vezi ISTORIC 20.08. Consumatorul (media CM pe 6 luni) calculează
+acum din sursă, cu aceeași funcție care producea snapshot-ul — aceleași cifre, dar complete și independente de
+navigare. Cotele se rezolvă pe data lunii, deci recalculul unei luni trecute e stabil, nu derivă cu regulile
+de azi.
+
+**Poarta de ștergere trece pe `perioada_confirmata`.** `sterge_salariat` refuza dacă salariatul avea rânduri
+în `state_plata` — „a fost pe un stat de plată". Nu mai era o dovadă: rândurile veneau din vizitarea
+ecranului. Iar de când GET-ul nu mai scrie, nimic nu populează tabelul, deci verificarea ar fi rămas logică
+moartă care PARE protecție. Semnalul real e perioada CONFIRMATĂ, scrisă deliberat prin `perioada.confirma()`.
+Grosier per tenant+lună, ca și poarta D112 de alături: err-on-refuse, cum își declară funcția contractul.
+
+**Vectorul t001 completat, `reg_com`/`banca`/`iban` NU.** Vectorul e pus conform `date_test/C2_firme.md`
+celula S4 (`regim_fiscal=profit`, `platitor_tva=True`, `tip_decont=L`, `operatiuni_ic=False`) — firma era
+blocată cu 7 declarații „nu pot ști". Celelalte trei câmpuri rămân NULL **deliberat**: C-2 nu le fixează, a le
+inventa ar fi defaultul fabricat interzis de P2, și sunt chiar cazurile de test care au scos refuzul de
+bilanț și cel de D300.
+
+**Reziduul sondei, șters.** Sondele mele de audit au lăsat 24 de rânduri în `state_plata` și 2 NIR-uri goale
+pe tenant_001. Șterse țintit, pe cele patru marcaje de creare, cu refuz dacă s-ar fi găsit altceva decât se
+aștepta. Motivul deciziei (Costin): „arată ca istoric de salarizare real și nu sunt".

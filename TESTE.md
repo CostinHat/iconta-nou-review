@@ -1742,3 +1742,17 @@ Fara test nou (maparea neschimbata; test_mapare_tip_cod acopera deja tip 4 exclu
 
 ## Bifa 19.08.2026 — GARD D394 trimestrial (perioada + fereastra) [audit 003]
 `core/test_d394_trimestrial_perioada.py` (4 teste, RED-probat prin mutatia fereastra T -> luna-ancora). Inghetare a corectitudinii D394 trimestrial dupa inchiderea misdiagnosticului „003 septembrie + cifre necorespunzatoare": eticheta canonica (trim*3=3/6/9/12, OPANAF 2194/2025 lit. c) + fereastra = trimestrul intreg (augustul cules, 5900+889=6789). Test pur pe core.common.fereastra_tva/Perioada, fara DB. Fara reparatie in cod (produsul era corect). Inchidere in PREDARE_LANT.md.
+
+## Gărzi adăugate la auditul tenant_001 (20.08.2026)
+
+| gardă | ce face imposibil |
+|---|---|
+| `core/test_refuz_generator_422.py` | un refuz motivat de generator să ajungă la contabil ca 500 gol |
+| `core/test_mesaje_valueerror_publicat.py` | un nume intern (0 admis) sau un mesaj fără diacritice (clichet, baseline 84) în canalul `ValueError` publicat |
+| `core/test_get_fara_scriere.py` | o rută GET să scrie în starea de business (excepție mecanică: `public.audit_log`) |
+| `core/test_stergere_salariat_completa.py` | ștergerea unui salariat să lase rânduri-copil orfane |
+| `core/test_a11y_contrast_tokens.py` (extins) | o clasă `.cf-*` cu culoare literală sub 4.5:1 pe panoul Control fiscal |
+
+Fiecare are un test anti-gard-mort: dacă euristica se rupe (regex, decorator, cale de schemă), gardul PICĂ în
+loc să treacă pe gol. Cel de la `test_stergere_salariat_completa` s-a declanșat chiar la naștere — găsise 3
+tabele în `tenant_template.sql` când baza are 5, fiindcă schema trăiește și în `NN_ddl_*.sql`.
