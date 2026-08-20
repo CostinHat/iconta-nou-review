@@ -9823,3 +9823,42 @@ refuză să scrie dacă vreun modul din listă are date — cele 35 au fost num�
 
 **Stare: GARDATĂ.**
 
+## 20.08.2026 — §5 e un câmp TIPAT, gol implicit; și o regulă legată de un context prea îngust nu declanșează
+
+**Context (încălcare prinsă de Costin).** Raportul gardului de perimetru avea §5 cu patru rânduri. Două erau
+închidabile în cinci minute: „lista de module e incompletă, restul tabelelor goale nu-s gardate" și „ramura
+«schema nu există» e scrisă, nu probată". Alea nu erau limite — erau **muncă neterminată parcată într-o listă**.
+Verdictul lui Costin: *„punctul 5 trebuia să fie gol sau de neexecutat cu motivație"*.
+
+**Diagnosticul, care e mai important decât încălcarea.** Regula exista deja de două ori — Regula 12 (CLAUDE.md)
+și „§5 gol la finalizarea unei firme" (19.08, DECIZII + memorie). N-a declanșat fiindcă era formulată *„când
+declar o firmă gata"*, iar încălcarea a fost într-un raport de **metodă** (gard + registru, nicio firmă
+declarată gata). **O regulă legată de un context prea îngust nu se aplică — și tăcerea ei arată exact ca
+respectarea ei.** Corecția nu e o notă nouă peste cea veche (aia e chiar tiparul care a eșuat), ci lărgirea
+domeniului celei existente: se aplică la ORICE raport.
+
+**Decizia — §5 devine câmp TIPAT (CLAUDE.md §2.2 pct.5).** Valoarea implicită e „niciuna" (secțiunea nu se
+omite). Un item are voie doar cu una din exact trei etichete, scrisă la începutul rândului: **[EXTERN]** —
+depinde de un răspuns pe care nu-l pot obține; **[DECIZIE]** — alegere de produs, a lui Costin, deci apare și la
+§6; **[NEVERIFICABIL]** — l-am văzut, dar nu se poate verifica din cod. Un item care nu încape în niciuna **nu e
+o limită, e muncă**. Testul, în ordine: (a) aș putea s-o închid acum, cu comenzile pe care le am? (b) e o
+afirmație despre REPO (listă incompletă, ramură netestată, tipar nematurat) sau despre LUME? Ce e despre repo și
+e închidabil = muncă. Scrisul lui în §5 nu îl descarcă, îl ascunde.
+
+**Și ce s-a putut garda, s-a gardat — §5 se golește reparând, nu explicând.** Cele două rânduri fixabile au
+devenit cod în commitul următor: (1) „lista incompletă" → **al treilea colț** al
+`core/test_perimetru_firma_declarat.py`: orice tabel GOL din schemă trebuie CLASIFICAT, ori „în afara
+perimetrului" (gardat să rămână gol), ori „în perimetru, poate primi date" (golul lui e o stare, nu o
+promisiune) — prinde și tabelele noi din `tenant_template.sql`; (2) „ramura neprobată" → test sintetic pe
+`tenant_999`, cu verificările de DB extrase într-o funcție tocmai ca ramura să fie probabilă.
+Clasificarea NU s-a făcut umflând lista: trei dintre cele 9 tabele rămase (`d300_manual`, `d390_manual`,
+`d390_reclasificare`) sunt căile MANUALE ale unor declarații DIN perimetru — a le garda „să rămână goale" ar fi
+fost o greșeală, nu o completare. Blocul poartă acum **criteriul de selecție** scris, nu doar lista.
+
+**Limita, declarată.** Regula §5 în sine NU e gardabilă mecanic: raportul e text în conversație, nu fișier în
+repo. Rămâne pe lista B (comportamentale), cu inspecția lui Costin ca poartă. Ce s-a putut face: etichetele o
+fac verificabilă dintr-o privire, iar colțul 3 scoate din discuție chiar subclasa care a produs încălcarea.
+
+**Stare: GARDATĂ parțial** — subclasa „declarație incompletă de perimetru" e gardată; disciplina §5 rămâne
+comportamentală, cu domeniul corectat.
+

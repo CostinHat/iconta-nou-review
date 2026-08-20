@@ -431,6 +431,27 @@ Fara titlu, raportul e incomplet.
 5. CE NU AM VERIFICAT - lista EXPLICITA, fiecare limita pe rand propriu, NU topita in proza. Include si ce s-a
    presupus fara sa se citeasca sursa. (= substanta 2/etapa 5 d.)
 
+   **GOL IMPLICIT (20.08.2026, cerut de Costin - regula intarita dupa o incalcare).** §5 nu e o lista de
+   observatii; e o lista de IMPOSIBILITATI. Valoarea implicita e "niciuna" (sectiunea NU se omite, se scrie
+   explicit). Un item are voie in §5 doar daca poarta UNA din exact trei etichete, scrisa la inceputul randului:
+
+     - **[EXTERN]** - depinde de un raspuns pe care nu-l pot obtine (ANAF, un tert, o cheie, un acces).
+     - **[DECIZIE]** - cere o alegere de produs care e a lui Costin, nu de corectitudine. Atunci apare SI la §6.
+     - **[NEVERIFICABIL]** - l-am vazut, dar nu se poate verifica din cod (comportament de terti, randare pe
+       dispozitiv real, date de productie inaccesibile).
+
+   **Un item care nu incape in niciuna din cele trei NU e o limita, e MUNCA NETERMINATA** - se face inainte de
+   raport, nu se raporteaza. Testele astea, in ordine: (a) as putea s-o inchid cu comenzile pe care le am acum?
+   (b) e o afirmatie despre REPO (lista incompleta, ramura netestata, tipar nematurat) sau despre LUME? Ce e
+   despre repo si e inchidabil = munca. Scrisul lui in §5 nu il descarca - il ascunde.
+
+   **De ce regula asta e intarita:** exista deja ca Regula 12 si ca §5-gol-la-finalizarea-firmei (19.08), si a
+   fost incalcata pe 20.08 intr-un raport de METODA (nu de firma) - formularea veche era legata de "firma gata",
+   deci n-a declansat. Se aplica la ORICE raport. Doua din cele patru randuri de atunci erau fixabile in cinci
+   minute ("lista de module e incompleta", "o ramura a gardului n-a fost executata"); prima a devenit al treilea
+   colt al gardului de perimetru, a doua un test sintetic - amandoua in commitul urmator. Asta e forma corecta:
+   §5 se GOLESTE reparand, nu explicand.
+
 6. DECIZII CERUTE - NUMEROTAT: ce asteapta raspunsul lui Costin si ce blocheaza fiecare. Se scrie "niciuna" daca
    nu e cazul - sectiunea NU se omite.
 

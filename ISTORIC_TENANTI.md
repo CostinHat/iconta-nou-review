@@ -33,9 +33,23 @@ firmă × toate fațetele. Excluderea lui 006 din matrice ar lăsa regimul IC ne
 străine de regim (soluția corectă la t005/t011/t012, care sunt SUB-EXERCITATE) ar dilua regimul, nu l-ar
 întări. 006 nu e sub-exercitată — e **scopată**, și e închisă pe scopul ei.
 
-**Gardat:** `core/test_perimetru_firma_declarat.py` — blocul nu poate lipsi dintr-o secțiune de firmă, iar
-tabelele declarate mai sus trebuie să existe și să rămână goale (dacă firma se umple, declarația devine roșie
-în aceeași zi, nu peste trei luni).
+**Criteriul de selecție al listei de mai sus** (ca să nu fie arbitrară): sunt **modulele de business ale
+unor REGIMURI pe care 006 nu le poartă** — salarizare, facturare, trezorerie, stocuri, imobilizări, solduri.
+Golul lor e o proprietate a regimului, deci se gardează să rămână gol. Restul tabelelor goale din schemă NU
+intră în listă, fiindcă pot primi date **fără ca 006 să-și schimbe regimul**:
+
+**În perimetru, tabele care pot primi date:** `d300_manual`, `d390_manual`, `d390_reclasificare`, `perioada_confirmata`, `perioade_blocate`, `notificari_scadenta`, `rapoarte_salvate`, `contracte_sabloane`, `ai_corectii`.
+
+Primele trei sunt căile MANUALE ale unor declarații care sunt chiar în perimetru (D390 pe 006 e auto-derivat
+din D301, dar o linie manuală rămâne legitimă) — a le garda „să rămână goale" ar fi fost o greșeală, nu o
+completare. Celelalte șase sunt infrastructură de aplicație (închidere de perioadă, termene, rapoarte salvate,
+șabloane, corecții AI), nu module de regim.
+
+**Gardat:** `core/test_perimetru_firma_declarat.py`, trei colți — blocul nu poate LIPSI dintr-o secțiune de
+firmă; tabelele declarate în afara perimetrului trebuie să existe și să rămână GOALE (dacă firma se umple,
+declarația devine roșie în aceeași zi, nu peste trei luni); și **orice tabel gol din schemă trebuie clasificat**
+de una din cele două părți — un tabel nou în `tenant_template.sql` forțează decizia o dată, în loc s-o lase
+ambiguă.
 
 
 | Data | Ce s-a atins | Commit(uri) | Rămas |
