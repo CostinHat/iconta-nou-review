@@ -30,6 +30,34 @@ _SARB_FIXE = [(1, 1), (1, 2), (1, 6), (1, 7), (1, 24), (5, 1), (6, 1),
 _AN_MIN, _AN_MAX = 2024, 2099   # set fix (cu 6-7 ian) valabil din 2024; offset iulian +13 pana 2099
 _cache_sarb = {}
 
+# [R4, 21.08.2026] TEMEIUL PER TIP, ca DATE — nu ca proză. Termenele sunt constante fiscale ca oricare
+# altele: notorietatea e o proprietate a CUNOAȘTERII, nu a valorii. S-au schimbat de două ori în viața
+# aplicației și NICIUNA n-a fost prinsă de un test (scadența D101 marca fals restanțieri; ziua 30
+# inexistentă în februarie).
+#
+# DE CE REGISTRU ȘI NU COMENTARIU. Prima variantă a pus citările într-un bloc de comentarii, iar gardul
+# le căuta prin proximitate (numele tipului la ±8 rânduri de un act). Rezultatul: nota „unde se caută
+# pentru cele nesursate" a făcut TOATE tipurile să pară sursate — gardul a trecut pe gol. Proximitatea
+# nu e atribuire; aceeași lecție ca la clasa E din scanul de constante, unde antetul modulului părea
+# să sursere orice valoare din el.
+#
+# Fiecare intrare: (act, fișier din corpus, citat VERBATIM). Citatul se verifică mecanic — vezi
+# `core/test_temei_termene.py`, care caută fragmentul în fișier, nu se mulțumește cu referința.
+TEMEI_TERMEN = {
+    "d300": ("CF art. 323 alin.(1)", "anaf_surse/cod_fiscal_227_2015_consolidat.html",
+             "până la data de 25 inclusiv a lunii următoare celei în care se încheie perioada fiscală"),
+    "d301": ("CF art. 324", "anaf_surse/cod_fiscal_227_2015_consolidat.html",
+             "până la data de 25 inclusiv a lunii următoare celei în care ia naștere exigibilitatea"),
+    "d390": ("OPANAF 705/2020", "anaf_surse/opanaf_705_2020_d390.txt",
+             "se depune lunar, până la data de 25 inclusiv a lunii următoare unei luni calendaristice"),
+}
+# NESURSATE ÎNCĂ (clichetul le numără): d100, d101, d112, d205, d394, d406. Unde se caută, ca
+# următorul să nu reia de la zero: d112 → CF art. 147; d100 → CF art. 56 (micro) și art. 41 (plăți
+# anticipate profit); d101 → CF art. 42; d205 → OPANAF 179/2022 + 102/2025; d394 → OPANAF 3769/2015
+# actualizat prin 2194/2025; d406 → OPANAF 1783/2021 Anexa 4. ATENȚIE la consolidat: are întâi un
+# CUPRINS cu aceleași marcaje „Articolul N", deci numărul se derivă mergând ÎNAPOI de la fraza găsită,
+# nu căutând titlul articolului.
+
 # ziua nominală a scadenței per tip (în luna următoare perioadei)
 _ZIUA = {"d394": 30}          # restul: 25 ; d406: ultima zi (tratat separat)
 _ULTIMA_ZI = {"d406"}          # scadența = ultima zi a lunii
