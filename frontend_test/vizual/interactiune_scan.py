@@ -120,6 +120,38 @@ def _mobil(pg):
     }""")
 
 
+def _fir_stabil(pg):
+    """Firul revine la starea de plecare dupa fiecare ciclu deschide/inchide? [P6]
+    Intoarce {inainte, dupa: [...], stabil}. Nu ridica daca ecranul nu are fir - raporteaza."""
+    from nav_ecrane import ECRANE as _E
+    # Orice ecran care se deschide intr-o FEREASTRA serveste de referinta; „declaratii" e stabil si
+    # rapid. Daca dispare din registru, se ia primul disponibil - dar NU se raporteaza `stabil` daca
+    # ecranul n-are fir, ca sa nu se confunde „n-am ce masura" cu „e stabil".
+    _d = dict(_E)
+    nav = _d.get("declaratii") or (list(_d.values())[0] if _d else None)
+    if nav is None:
+        return {"stabil": None, "motiv": "registrul de ecrane e gol"}
+    nav(pg)
+    pg.wait_for_timeout(600)
+
+    def _fir():
+        el = pg.query_selector(".fereastra-fir")
+        return el.inner_text().strip().replace("\n", " ") if el else ""
+
+    plecare, dupa = _fir(), []
+    for _ in range(3):
+        b = pg.query_selector(".fereastra-antet button")
+        if not b:
+            break
+        b.click()
+        pg.wait_for_timeout(700)
+        nav(pg)
+        pg.wait_for_timeout(700)
+        dupa.append(_fir())
+    return {"inainte": plecare, "dupa": dupa,
+            "stabil": all(x == plecare for x in dupa) if dupa else None}
+
+
 def _pagina(pw, mobil):
     b = pw.chromium.launch(headless=True)
     if mobil:
@@ -154,6 +186,17 @@ def scan():
             b2.close()
             rez["ecrane"][nume] = r
             print("scanat:", nume, "| apasate", r.get("apasare", {}).get("apasate"), "/", r.get("apasare", {}).get("vazute"))
+        # [P6 21.08.2026] DRUMUL nu se acumuleaza la inainte-inapoi. Defectul reparat pe 10.08
+        # (fir_pop_v1) era: un `setInapoi` custom sarea pop-ul, iar antetul aduna ferestre/pasi.
+        # Reparat, dar NEGARDAT - iar 76 de apeluri `setInapoi` din ecrane pot reintroduce tiparul.
+        # Se masoara COMPORTAMENTUL: trei cicluri deschide/inchide, firul trebuie sa revina identic.
+        b3, pg3 = _pagina(pw, False)
+        try:
+            rez["fir"] = _fir_stabil(pg3)
+        except Exception as e:  # noqa: BLE001
+            rez["fir"] = {"eroare": str(e)[:200]}
+        b3.close()
+        print("fir:", rez.get("fir"))
     with open(ARTEFACT, "w", encoding="utf-8") as f:
         json.dump(rez, f, ensure_ascii=False, indent=1)
     print("ARTEFACT scris ui_hash", rez["ui_hash"])

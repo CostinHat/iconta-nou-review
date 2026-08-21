@@ -34,6 +34,26 @@ def test_scan_proaspat():
         "frontend_test/vizual/interactiune_scan.py inainte de commit (si comite artefactul)")
 
 
+def test_drumul_nu_se_acumuleaza():
+    """[P6, 21.08.2026] DRUMUL (breadcrumb) revine identic după fiecare ciclu deschide/închide.
+
+    Defectul reparat pe 10.08 (fir_pop_v1): back-ul consuma poziția reală ÎNAINTE de un `setInapoi`
+    custom — „altfel un `setInapoi(()=>re-randare)` sărea pop-ul și antetul acumula ferestre/pași,
+    dovedit în browser". Reparat, dar NEGARDAT — iar 76 de apeluri `setInapoi` din ecrane pot
+    reintroduce tiparul oricând. Conținutul putea corupe navigarea: exact încălcarea contractului din
+    DS cap.25 (chiriașul nu se atinge de spațiu străin), în forma ei cea mai greu de observat.
+
+    Se măsoară COMPORTAMENTUL, nu sursa: trei cicluri, firul trebuie să revină la starea de plecare."""
+    a = _load()
+    f = a.get("fir")
+    assert f, "artefactul nu poartă măsurătoarea firului — ruleaza interactiune_scan.py"
+    assert not f.get("eroare"), "măsurătoarea firului a eșuat: %s" % f.get("eroare")
+    assert f.get("dupa"), "niciun ciclu măsurat — verifică ecranul de referință (%s)" % f.get("motiv")
+    assert f.get("stabil") is True, (
+        "drumul se acumulează la înainte-înapoi:\n  plecare: %r\n  după cicluri: %r"
+        % (f.get("inainte"), f.get("dupa")))
+
+
 def test_toate_ecranele_scanate():
     a = _load()
     lipsa = [e for e in ecrane_asteptate() if e not in a.get("ecrane", {})]
