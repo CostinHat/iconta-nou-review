@@ -5,7 +5,7 @@ Statut per fiecare; cele **CONSTRUIT** numesc fișierul-gardă (existența lor e
 `core/test_instrumente_roadmap.py`). Motto: *o regulă scrisă și citită nu e o regulă păzită — doar
 poarta ține* (vezi [[regula-scrisa-nu-e-regula-pazita]]).
 
-**INSTRUMENTE DECLARATE: 13.** Numărul e citit de gardă din rândul ăsta — dacă apare al 13-lea, rândul
+**INSTRUMENTE DECLARATE: 14.** Numărul e citit de gardă din rândul ăsta — dacă apare al 13-lea, rândul
 trebuie schimbat, altfel poarta pică. Așa roadmap-ul poate CREȘTE, nu doar să nu mintă.
 
 ## Construite (gard mecanic în pre-commit)
@@ -20,6 +20,8 @@ trebuie schimbat, altfel poarta pică. Așa roadmap-ul poate CREȘTE, nu doar s�
 
 - **#13 Scanul de citări verificabile (clichet care CREȘTE)** — CONSTRUIT (21.08): `core/scan_citate.py` + `core/test_citate_verbatim.py`. Verifică dacă `text_citat` chiar EXISTĂ în documentul citat din `anaf_surse/` — trece de la „referința aterizează" la „citatul e real". Calibrat pe cele 34 de citări din registrul de cote: 10 verbatim, 24 parafrază-cu-localizator (NU greșite, altă formă). De-aia clichetul **crește**: o citare nouă scrisă verbatim ridică pragul, una rescrisă din verbatim în parafrază îl coboară și pică. **Ce nu poate spune:** când un citat nu se găsește, cauza poate fi parafrază / altă consolidare a actului / citat greșit — scanul nu le deosebește, iar numărul e o măsură, nu un verdict.
   *Adăugat prin DISCIPLINĂ, nu prins de gardă:* gardul roadmap-ului a trecut verde cu instrumentul neînregistrat, exact cum e declarat mai jos că nu-l poate prinde. Limita s-a confirmat în aceeași oră în care a fost scrisă.
+
+- **#14 Gard peste gărzi: ancora trăiește în COD, nu în PROZĂ** — CONSTRUIT (21.08): `core/scan_ancore.py` + `core/test_ancore_in_cod.py`. Clasa a apărut de TREI ori într-o zi (gardul aprins pe propria explicație · `lit.` aprins pe „po-LIT-e)" · titlul secțiunii găsit în comentariul de deasupra randării). Un gard ancorat în proză **rezistă exact la mutația care ar trebui să-l facă roșu**. Scanează aserțiunile `"ANCORĂ" in <sursă citită>`, scoate comentariile și docstringurile din fișierul țintă, verifică dacă ancora mai există. **Ce vede: 12 din 39** — restul sunt în funcții care citesc mai multe surse (16, raportate `ambiguu`, NU greșite — calibrarea a arătat că a presupune primul fișier produce acuzații false) sau au căi nerezolvabile (11). Cele 27 sunt raportate ca NEVERIFICATE, nu ca trecute.
 
 ## Propuse (neconstruite încă — backlog urmărit)
 
