@@ -4775,3 +4775,38 @@ punctul de adoptare. Rute GET+POST cu rol `admin_firma`, ca la pontaj. Deconfirm
 stări. `d390.evidenta_incompleta_sau_neinchisa` leagă închiderea de semafor, adoptare per firmă.
 
 Gard nou: `core/test_inchidere_luna.py` (14 teste pe schemă efemeră). Suita: 2530 → 2544.
+
+## 21.08.2026 — P1…P7: ce a livrat rularea, și ce a găsit măsurătoarea
+
+**P1 roadmap** — registrul putea crește (numărul de instrumente e citit din document). Direcția
+inversă rămâne NEGARDATĂ, cu cele trei definiții respinse prin calibrare scrise în roadmap. Limita
+s-a confirmat în aceeași oră: #13 a intrat prin disciplină, nu prins de gardă.
+
+**P2 coajă** — contract proprietar↔chiriaș (`static/js/coaja.js`) + gard de proprietate. Măsurătoarea
+mi-a corectat diagnosticul: Comunicarea nu stătea în patru locuri, ci în unul — două linii din
+`cabinet.js`.
+
+**P3 afirmații** — `core/afirmatii.py`, cinci feluri, câmpuri cerute per fel. `fapt` nu poate exista
+fără `temei_completitudine`, `absenta_observatie` fără `surse_consultate`. Cei 25 de producători
+convertiți; R2 și R2′ au căzut singure, cu dovada. Pe ecran: perioada afirmației și sursele
+consultate — „D300 · iul" nu mai pare să se contrazică cu „D300 · din 12.2025".
+
+**P4 „Ce nu poate spune verificarea asta"** — secțiune permanentă, compusă din limite declarate ca
+date. Argumentul: `limita` exista, dar se randa doar când exista o constatare — deci dispărea exact
+pe firmele curate.
+
+**P5 R4** — temeiul termenelor ca registru verificat verbatim (3 din 9, clichet). Și defectul care
+conta: **gardul avea un octet 0x08 în regex și nu putea deveni verde niciodată.** Generalizat:
+zero alte instanțe în repo, plus gard permanent.
+
+**P6 Drumul** — cuplajul conținut→navigare gardat COMPORTAMENTAL (trei cicluri, firul revine identic),
+nu pe sursă.
+
+**P7 prima jumătate** — clichetul propus a fost RESPINS de propria măsurătoare (15 din 23 erau
+constatări, un tip structurat corect). În schimb măsurătoarea a găsit o conversie ratată și, reparând-o,
+o excepție pe o cale fără niciun test.
+
+**Tiparul rulării, dacă e ceva de reținut:** de patru ori măsurătoarea a schimbat ce urma să construiesc
+— și de fiecare dată în bine. Diagnosticul de la P2 (patru locuri → două linii), propunerea de la P3b
+(două din trei existau deja), clichetul de la P7 (ar fi înghețat un non-defect), și regula verbatim de
+la #13 (ar fi cerut rescrierea a 24 de citări corecte).
