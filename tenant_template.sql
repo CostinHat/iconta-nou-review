@@ -1255,7 +1255,16 @@ CREATE TABLE TENANT_PLACEHOLDER.state_plata (
     luna date NOT NULL,
     venit_brut numeric DEFAULT 0 NOT NULL,
     zile_lucrate integer DEFAULT 0 NOT NULL,
-    creat_la timestamp with time zone DEFAULT now() NOT NULL
+    creat_la timestamp with time zone DEFAULT now() NOT NULL,
+    exemplar integer DEFAULT 1 NOT NULL,
+    amprenta text,
+    date jsonb,
+    emis_de text,
+    emis_la timestamp with time zone DEFAULT now() NOT NULL,
+    corectie_la integer,
+    motiv text,
+    motiv_de text,
+    motiv_la timestamp with time zone
 );
 
 
@@ -1537,11 +1546,14 @@ ALTER TABLE ONLY TENANT_PLACEHOLDER.state_plata
 
 
 --
--- Name: state_plata state_plata_salariat_id_luna_key; Type: CONSTRAINT; Schema: TENANT_PLACEHOLDER; Owner: postgres
+-- Name: state_plata uq_state_plata_sal_luna_ex; Type: INDEX; Schema: TENANT_PLACEHOLDER; Owner: postgres
+-- [stat_emis 21.08.2026] Vechea UNIQUE (salariat_id, luna) interzicea STRUCTURAL al doilea exemplar:
+-- schema codifica statul ca VEDERE (un rand per om per luna), nu ca DOCUMENT. Corectia unui fluturas
+-- dat unui om e un act nou care il refera pe primul, deci cheia cuprinde si numarul exemplarului.
 --
 
-ALTER TABLE ONLY TENANT_PLACEHOLDER.state_plata
-    ADD CONSTRAINT state_plata_salariat_id_luna_key UNIQUE (salariat_id, luna);
+CREATE UNIQUE INDEX IF NOT EXISTS uq_state_plata_sal_luna_ex
+    ON TENANT_PLACEHOLDER.state_plata (salariat_id, luna, exemplar);
 
 
 --

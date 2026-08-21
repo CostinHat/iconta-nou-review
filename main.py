@@ -3939,6 +3939,89 @@ def tenant_fluturas(tenant_id: int, salariat_id: int, an: int, luna: int, ctx=De
                     headers={"Content-Disposition": f'attachment; filename="fluturas_{salariat_id}_{an}_{luna:02d}.pdf"'})
 
 
+# ---------------------------------------------------------------------------------------------
+# [stat_emis 21.08.2026] Statul de plata ca DOCUMENT EMIS. Pana aici, statul si fluturasul se
+# recalculau la fiecare afisare: un fluturas dat unui om in ianuarie putea iesi altfel in iulie.
+# Emiterea ingheata cifrele cu amprenta; divergenta fata de recalcul se SEMNALEAZA; corectia e al
+# doilea exemplar, care il refera pe primul. Aplicatia nu corecteaza singura - contabilul decide.
+def _cere_an_luna(corp):
+    """(an, luna) din corp, sau 422. Nu KeyError -> 500: o cerere incompleta e o cerere gresita, nu
+    o defectiune a serverului, iar 500 spune mai mult decat trebuie despre ruta."""
+    try:
+        an, luna = int((corp or {})["an"]), int((corp or {})["luna"])
+    except (KeyError, TypeError, ValueError):
+        raise HTTPException(422, "lipsesc an și luna")
+    if not (1 <= luna <= 12):
+        raise HTTPException(422, "luna trebuie să fie între 1 și 12")
+    return an, luna
+
+
+@app.post("/tenants/{tenant_id}/stat-plata/emite")
+def tenant_stat_emite(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {an, luna}. Idempotent: cine are deja exemplar nu primeste al doilea (ala e o corectie)."""
+    from core import stat_plata_emis as _spe
+    # ORDINEA: acces (404) -> drept (403) -> validarea corpului (422). Prima forma citea `corp["an"]`
+    # INAINTE de verificarea accesului: un strain primea KeyError -> 500, adica invata ca ruta exista
+    # si ce campuri asteapta. Prins de gardul de izolare structurala, care probeaza fiecare ruta noua
+    # {tenant_id} cu corp gol.
+    schema = _schema_sau_404(ctx, tenant_id)
+    if not _are_permisiune(ctx, "poate_valida"):
+        raise HTTPException(403, FARA_DREPT_VALIDARE)
+    an, luna = _cere_an_luna(corp)
+    with db.get_conn(schema) as conn:
+        _spe.aplica(conn, schema)
+        emise = _spe.emite(conn, schema, an, luna, de_cine=str(ctx["uid"]))
+        return {"emise": len(emise), "total": len(_spe.citeste(conn, schema, an, luna))}
+
+
+@app.get("/tenants/{tenant_id}/stat-plata/emis")
+def tenant_stat_emis(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    """Exemplarele emise + contradictiile DERIVATE (emis vs recalcul de acum). Nu scrie nimic."""
+    from core import stat_plata_emis as _spe
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        ex = _spe.citeste(conn, schema, an, luna)
+        return {"exemplare": ex, "contradictii": _spe.verifica(conn, schema, an, luna)}
+
+
+@app.post("/tenants/{tenant_id}/stat-plata/corectie")
+def tenant_stat_corectie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {salariat_id, an, luna}. Al doilea exemplar. Primul ramane - el a ajuns la om."""
+    from core import stat_plata_emis as _spe
+    schema = _schema_sau_404(ctx, tenant_id)
+    if not _are_permisiune(ctx, "poate_valida"):
+        raise HTTPException(403, FARA_DREPT_VALIDARE)
+    an, luna = _cere_an_luna(corp)
+    try:
+        sid = int(corp["salariat_id"])
+    except (KeyError, TypeError, ValueError):
+        raise HTTPException(422, "cererea nu spune pentru care salariat se face corecția")
+    with db.get_conn(schema) as conn:
+        try:
+            return _spe.corectie(conn, schema, sid, an, luna, de_cine=str(ctx["uid"]))
+        except ValueError as e:
+            raise HTTPException(409, str(e))
+
+
+@app.post("/tenants/{tenant_id}/stat-plata/motiv")
+def tenant_stat_motiv(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """corp: {exemplar_id, motiv}. ASUMA divergenta, nu o sterge: ramane in lista, cu cine si cand."""
+    from core import stat_plata_emis as _spe
+    schema = _schema_sau_404(ctx, tenant_id)
+    if not _are_permisiune(ctx, "poate_valida"):
+        raise HTTPException(403, FARA_DREPT_VALIDARE)
+    try:
+        eid = int(corp["exemplar_id"])
+    except (KeyError, TypeError, ValueError):
+        raise HTTPException(422, "cererea nu spune care exemplar al statului se asumă")
+    with db.get_conn(schema) as conn:
+        try:
+            _spe.motiveaza(conn, schema, eid, corp.get("motiv") or "", de_cine=str(ctx["uid"]))
+        except ValueError as e:
+            raise HTTPException(422, str(e))
+    return {"ok": True}
+
+
 @app.get("/tenants/{tenant_id}/plata-salarii-preview")
 def tenant_plata_salarii_preview(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     """[F134] Sumar inainte de generarea fisierului SEPA: cate plati, total, cine e exclus (fara IBAN)."""

@@ -10770,3 +10770,47 @@ invers. Asta e chiar ideea din DS cap.25, aplicată la propria ei implementare.
 ar fi trecut verde într-o lume în care proprietarul nu mai declară locul și toți chiriașii au dispărut
 tăcut de pe ecran. A doua aserțiune costă trei rânduri și acoperă exact modul în care reparația asta
 ar putea muri.
+
+## 21.08.2026 — Statul de plată e un DOCUMENT EMIS. Fluturașul îl tipărește, nu îl recalculează.
+
+**Decizia (Costin):** statul se persistă LA EMITERE, cu amprentă, ca declarațiile depuse. Un fluturaș
+dat unui salariat e un fapt, nu o vedere. Un exemplar care nu mai corespunde recalculului **se
+semnalează, nu tace**. Corecția e **al doilea exemplar, cu referință la primul** — primul nu se
+rescrie, fiindcă el e cel care a ajuns la om. Corecția o apasă **contabilul**, nu aplicația; dar
+contradicția nesoluționată **rămâne vizibilă, nu se stinge prin ignorare**.
+
+**Cum s-a construit asta ca să nu poată minți:**
+- contradicția e **derivată** din `hash(emis) ≠ hash(recalcul)`, nu ținută într-un câmp — nu există
+  nimic de pus pe zero ca să dispară;
+- un motiv o marchează `asumata`, dar o lasă în listă, și cere **cine + când** (o asumare anonimă nu
+  e o decizie);
+- `verifica()` nu scrie și nu emite (clasa arsă deja o dată: o sondă „de citire" lăsase 24 de rânduri
+  în exact acest tabel);
+- emiterea e **idempotentă** — a doua apăsare nu produce al doilea document.
+
+**Ce a ieșit la măsurătoare, și n-a fost căutat.** `fluturas_pdf` își refăcea singur tot calculul, cu
+alte intrări decât `stat_plata`. Pe datele reale: **14 din 192 de perechi (salariat × lună) ieșeau
+DIFERIT**, verificat pe funcția reală — prima măsurătoare fusese pe o reimplementare, adică exact
+felul de logică paralelă pe care îl căutam. Două cauze, ambele cu fluturașul în greșeală:
+1. **pontaj neconfirmat** — statul blochează tichetele de masă (HG 1045/2018 art.10(3), pe zile
+   efectiv lucrate), fluturașul le acorda. tenant_003 / Popescu Ana / 2026-07: net 2983,39 pe stat vs
+   2808,59 pe fluturaș — omul primea pe hârtie 920 lei de tichete pe care statul nu i-i dădea;
+2. **vacanță peste plafonul anual** (6 salarii minime) — statul mută excesul în venit salarial,
+   fluturașul nu. tenant_001 / 2026-06: brut 10500 vs 4800, CAS 2625 vs 1200.
+
+Reparat: fluturașul e acum **randare** peste rândul statului (`rand_fluturas`), care întoarce
+exemplarul EMIS dacă luna e emisă, altfel rândul de acum. Nu mai există al doilea calcul.
+
+**Consecință de raportat, nedecisă:** baza CM (OUG 158/2005 art.10 al.4) se calculează în continuare
+din RECALCULUL celor 6 luni anterioare, nu din statele EMISE. Cât timp lunile nu se emit, e același
+lucru; după ce se emit, sunt două răspunsuri posibile la aceeași întrebare. De decis separat.
+
+**Rămas neconstruit (STOP declarat):** ecranul. Semnalul de contradicție și butoanele emite/corectează
+nu sunt puse în interfață — o rearanjare de ecran cere confirmare, iar verificatorul nu prinde
+așezarea. Capabilitatea e ajunsă prin API (`POST /stat-plata/emite`, `GET /stat-plata/emis`,
+`POST /stat-plata/corectie`, `POST /stat-plata/motiv`).
+
+**Închide DATORIA** 29.07.2026 („state_plata nu se persistă la emitere"), restatuată 20.08.2026.
+Gardul viu nu mai e cel din `test_datorie.py` — ăla căuta `INSERT INTO state_plata` în sursă, deci ar
+fi trecut în clipa în care apărea orice insert, orice ar fi scris el. Comportamentul e păzit de
+`core/test_stat_plata_emis.py` și `core/test_fluturas_egal_stat.py`.

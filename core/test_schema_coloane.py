@@ -103,6 +103,20 @@ def _fragmente(path):
             toks = list(tokenize.tokenize(f.readline))
     except Exception:
         return frags
+    # [21.08.2026] Docstringurile NU sunt SQL. Forma veche lua orice token STRING drept literal SQL,
+    # deci un docstring care POMENEA un tabel devenea „SQL" si fiecare cuvant de dupa devenea o
+    # coloana inexistenta: `state_plata.document`, `state_plata.salariat`, `state_plata.altfel`.
+    # Un gard care citeste proza drept cod raporteaza despre o lume pe care n-o vede - a treia oara
+    # in doua zile ca aceasta clasa se aprinde (vezi core/test_ancore_in_cod.py, #14).
+    try:
+        import io as _io
+
+        from core import scan_ancore as _sa
+        _doc = _sa.domenii_docstring(_io.open(path, encoding="utf-8", errors="replace").read())
+    except Exception:  # MASCA MOTIVATA: fisier neparsabil -> nu se exclude nimic (comportamentul vechi)
+        _doc = []
+    toks = [t for t in toks
+            if t.type != tokenize.STRING or not any(a <= t.start[0] <= b for a, b in _doc)]
     conectori = {tokenize.NL, tokenize.NEWLINE, tokenize.COMMENT, tokenize.INDENT, tokenize.DEDENT}
     i, n = 0, len(toks)
     while i < n:

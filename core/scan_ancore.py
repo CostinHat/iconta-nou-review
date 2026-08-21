@@ -25,22 +25,37 @@ import re
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
+def domenii_docstring(text):
+    """Intervalele de linii [(prima, ultima)] ocupate de docstringuri (modul/clasă/funcție).
+
+    Scos separat fiindcă are DOI clienți: `fara_proza` de mai jos și `test_schema_coloane`, care
+    tokeniza literalii SQL dintr-un .py și lua docstringurile drept SQL — pe 21.08 s-a aprins pe o
+    frază care descria tabelul `state_plata` și a „găsit" coloane numite `document`, `salariat`,
+    `altfel`. Aceeași clasă ca #14, în cealaltă direcție: un gard care nu deosebește proza de cod."""
+    try:
+        arb = ast.parse(text)
+    except SyntaxError:
+        return []
+    out = []
+    for n in ast.walk(arb):
+        if isinstance(n, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            c = getattr(n, "body", None)
+            if c and isinstance(c[0], ast.Expr) and isinstance(c[0].value, ast.Constant) \
+               and isinstance(c[0].value.value, str):
+                out.append((c[0].lineno, c[0].end_lineno))
+    return out
+
+
 def fara_proza(text, cale):
     """Sursa fără comentarii și fără docstringuri. Pentru .js: comentarii // și /* */."""
     if cale.endswith(".js"):
         text = re.sub(r"/\*.*?\*/", " ", text, flags=re.S)
         return re.sub(r"(^|[^:])//[^\n]*", r"\1", text)
     try:
-        arb = ast.parse(text)
+        ast.parse(text)
     except SyntaxError:
         return text
-    doc = set()
-    for n in ast.walk(arb):
-        if isinstance(n, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
-            c = getattr(n, "body", None)
-            if c and isinstance(c[0], ast.Expr) and isinstance(c[0].value, ast.Constant) \
-               and isinstance(c[0].value.value, str):
-                doc.add((c[0].lineno, c[0].end_lineno))
+    doc = set(domenii_docstring(text))
     linii = text.splitlines()
     afara = []
     for i, l in enumerate(linii, 1):

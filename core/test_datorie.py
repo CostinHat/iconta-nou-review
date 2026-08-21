@@ -141,29 +141,12 @@ def test_datorie_d710_trunchiere_in_garda():
     assert any(t == "d710" for t, _ in CERERI), "d710 lipseste din garda de 75 (test_limita_text_anaf)"
 
 
-@pytest.mark.xfail(strict=True, reason=(
-    "DATORIE 29.07.2026, RESTATUATA 20.08.2026: state_plata nu se persista LA EMITERE. Statul se "
-    "recalculeaza la fiecare afisare, deci un stat 'emis' in ianuarie si reafisat in iulie poate iesi "
-    "ALTFEL daca s-a schimbat cota, salariul minim sau codul intre timp. Pentru un document care se "
-    "semneaza si se da salariatului, asta e o problema de integritate, nu de performanta. De decis: se "
-    "persista la emitere (cu hash, ca declaratiile depuse) sau tabelul se scoate ca sa nu para ca exista "
-    "ceva ce nu exista. || CORECTIE 20.08.2026: formularea veche spunea 'nimic nu scrie in el' si era "
-    "FALSA - main.py scria, din GET /stat-plata (efect secundar al unei citiri). Testul n-a prins-o "
-    "fiindca isi cauta dovada DOAR in core/*.py, niciodata in main.py: o datorie care descria o lume pe "
-    "care nu o verifica. Scrierea-din-GET a fost scoasa (RFC 9110 §9.2.1: GET trebuie sa fie safe), deci "
-    "azi chiar nimic nu scrie - dar asta e o consecinta, nu starea de la care s-a plecat. Cautarea acopera "
-    "acum si radacina repo-ului."))
-def test_datorie_state_plata_se_persista():
-    # Prerechizit MECANIC: statul de plata sa fie PERSISTAT la emitere. Azi state_plata (salariat_id+luna)
-    # e tabel mort - zero INSERT in cod -> statul se recalculeaza de fiecare data (risc de integritate).
-    import re as _re
-    rad = pathlib.Path(__file__).resolve().parent
-    patt = _re.compile(r"insert\s+into\s+[\"\w.{}]*state_plata", _re.IGNORECASE)
-    # [20.08.2026] cauta si in RADACINA repo-ului (main.py), nu doar in core/ - vechea forma se uita
-    # doar langa ea si de-aia a ratat exact scrierea care exista.
-    _fisiere = list(rad.glob("*.py")) + list(rad.parent.glob("*.py"))
-    scrie = any(patt.search(f.read_text(encoding="utf-8", errors="replace")) for f in _fisiere)
-    assert scrie, "nimic nu scrie in state_plata - statul de plata nu se persista la emitere"
+# INCHISA 21.08.2026 - datoria state_plata. Statul se PERSISTA la emitere, cu amprenta
+# (core/stat_plata_emis.py); corectia e al doilea exemplar, care il refera pe primul. Gardul viu NU
+# mai e aici: cel de fata cauta `INSERT INTO state_plata` in sursa, adica ar fi trecut in clipa in
+# care apare ORICE insert, orice ar scrie el. Comportamentul e pazit de core/test_stat_plata_emis.py
+# (documentul emis nu se schimba cand se schimba datele sub el; divergenta se semnaleaza; verificarea
+# nu scrie si nu emite singura corectia).
 
 
 @pytest.mark.xfail(strict=True, reason="DATORIE 30.07.2026: staleness pe continutul Sesiunii B nu se poate verifica mecanic pana nu exista teste N3 (cap-coada pe firma). Etapele Fazei 1 sunt neincepute si nu se mapeaza pe fisiere, deci nu exista pe ce compara 'marcat done vs realitate'. Cade singur cand apar testele N3.")

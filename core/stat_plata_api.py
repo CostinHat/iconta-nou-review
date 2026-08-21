@@ -138,12 +138,37 @@ def stat_plata(conn, schema, an, luna):
             # (net 0 dar apare cost din suprataxa sub-minim); se SEMNALEAZA, nu se afiseaza tacit (MEMORY §13).
             "baza_lipsa": float(brut or 0) <= 0,
             "salariu_baza": float(brut or 0),  # [salariu_edit] baza contractuala (istoric), pt pre-completarea editarii
+            # [stat_emis 21.08.2026] doua campuri pe care fluturasul si le recalcula singur, cu alte
+            # intrari. Acum le ia de aici: statul e sursa unica a cifrelor de pe fluturas.
+            "facilitate": float(calc.get("facilitate", 0)),
+            "cm_net": float(c_cm["net"]) if c_cm else 0.0,
         })
     _cs_sal.close()
     return stat
 
+def rand_fluturas(conn, schema, salariat_id, an, luna):
+    """Rândul din care se TIPĂREȘTE fluturașul — sursa unică a cifrelor lui.
+
+    Dacă luna e EMISĂ, întoarce exemplarul înghețat (documentul care a ajuns la om); altfel, rândul
+    statului de acum. Fluturașul nu mai calculează nimic: până la 21.08.2026 își refăcea singur tot
+    calculul, cu alte intrări, și ieșea DIFERIT pe 14 din 192 de perechi reale — dădea pe hârtie
+    tichete pe care statul le blocase (pontaj neconfirmat, HG 1045/2018 art.10(3)) și ignora plafonul
+    anual de vacanță. Două calcule ale aceluiași lucru nu rămân egale."""
+    from core import stat_plata_emis as _spe
+    # Fara masca pe coloane lipsa: prima forma inghitea eroarea si cadea pe recalcul, dar lasa
+    # tranzactia OTRAVITA (InFailedSqlTransaction la urmatoarea interogare) si ascundea o migrare
+    # neaplicata. Un tenant nemigrat e o eroare de instalare, nu o stare de functionare.
+    ex = _spe.citeste(conn, schema, an, luna, salariat_id=salariat_id)
+    if ex:
+        return max(ex, key=lambda x: x["exemplar"])["date"]
+    return next((r for r in stat_plata(conn, schema, an, luna)
+                 if int(r.get("id") or 0) == salariat_id), None)
+
+
 def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
-    """Design System cap.7: reportlab Table, nu drawString manual. Sume in format romanesc."""
+    """Design System cap.7: reportlab Table, nu drawString manual. Sume in format romanesc.
+
+    RANDOR, nu calculator: toate cifrele vin din `rand_fluturas`. Vezi acolo de ce."""
     from reportlab.lib.pagesizes import A4 as _A4
     from reportlab.lib.units import mm as _mm
     from reportlab.lib import colors as _colors
@@ -152,53 +177,12 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     from reportlab.lib.enums import TA_RIGHT
     from core.pdf_util import bani as _bani
 
-    ref = date(an, luna, 1)
-    with conn.cursor() as cur:
-        cur.execute(f"""
-            SELECT nume, prenume, salariu_brut, persoane_intretinere, part_time, tichet_masa_valoare, data_angajare, data_incetare,
-                   data_nastere, copii_scolarizati, declaratie_copii
-            FROM {schema}.salariati WHERE id = %s
-        """, (salariat_id,))
-        r = cur.fetchone()
+    r = rand_fluturas(conn, schema, salariat_id, an, luna)
     if not r:
         return None
-    (nume, prenume, brut, pers, part_time, tichet_val, data_ang, data_inc,
-     data_nastere, copii_scolarizati, declaratie_copii) = r
-    import calendar as _cal2
-    from core import salariu_istoric as _si  # [tranzitie] date-aware, nu salariati.salariu_brut
-    _um = date(an, luna, _cal2.monthrange(an, luna)[1])
-    with conn.cursor() as _csf:
-        brut = _si.salariu_la(_csf, schema, salariat_id, _um)
-        _zlm, _zll = _si.zile_la_minim(_csf, schema, salariat_id, an, luna, data_ang, data_inc)
-    _fac_prorata = (_zlm / _zll) if _zll else 0.0
-    with conn.cursor() as cur:
-        cur.execute(f"""
-            SELECT COALESCE(SUM(zile),0), COALESCE(SUM(net),0), COALESCE(SUM(brut_ang+brut_fnuass),0)
-            FROM {schema}.concedii_medicale WHERE salariat_id = %s AND an = %s AND luna = %s
-        """, (salariat_id, an, luna))
-        zc, cm_net, cm_brut = cur.fetchone()
-    # zile lucratoare FARA sarbatori (OUG 158/2005 art.10)
-    zile_luna = _scad.zile_lucratoare_luna(an, luna)
-    cm_zile = int(zc or 0)
-    tichet_zile = max(zile_luna - cm_zile, 0)  # [F133] aceleasi zile ca proratarea salariului
-    brut_lucrat = float(brut or 0) * max(zile_luna - cm_zile, 0) / zile_luna if zc else float(brut or 0)
-    vac = _ben.lista_luna(conn, schema, an, luna, "vacanta").get(salariat_id, 0)  # [F133 Faza 2a]
-    cult = _ben.lista_luna(conn, schema, an, luna, "cultural").get(salariat_id, 0)  # [tichete culturale]
-    cresa = _ben.lista_luna(conn, schema, an, luna, "cresa").get(salariat_id, 0)  # [tichete de cresa]
-    cadou = _ben.lista_luna(conn, schema, an, luna, "cadou").get(salariat_id, 0)  # [F133 Faza 2b1] neimpozabil
-    calc = salarizare.calcul_salariu(brut_lucrat, persoane=pers or 0, la_data=ref,
-                                     norma_intreaga=not part_time,
-                                     venit_brut_total=float(brut or 0),
-                                     data_angajare=data_ang,
-                                     data_incetare=data_inc,
-                                     facilitate_prorata=_fac_prorata,
-                                     tichet_valoare=float(tichet_val or 0), tichet_zile=tichet_zile,
-                                     tichet_vacanta=float(vac or 0),
-                                     tichet_cultural=float(cult or 0),
-                                     tichet_cresa=float(cresa or 0),
-                                     sub_26=salarizare.sub_26_la(data_nastere, ref),   # [deducere suplimentara]
-                                     copii_scoala=(int(copii_scolarizati or 0) if declaratie_copii else 0),
-                                     declaratie_copii=bool(declaratie_copii))
+
+    def _n(k):
+        return float(r.get(k) or 0)
 
     with conn.cursor() as _cur:
         _cur.execute(f"SELECT culoare_factura, font_factura FROM {schema}.firma_profil WHERE id = 1")
@@ -226,47 +210,48 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     st_val_b = ParagraphStyle("valb", parent=st_val, fontName=fb, fontSize=11)
 
     el = [
-        Paragraph(f"Fluturas de salariu \u2014 {luna:02d}/{an}", st_titlu),
+        Paragraph(f"Fluturas de salariu — {luna:02d}/{an}", st_titlu),
         Paragraph(nume_firma, st_meta),
-        Paragraph(f"Salariat: {nume or ''} {prenume or ''}", st_meta),
+        Paragraph(f"Salariat: {r.get('nume') or ''}", st_meta),
         Spacer(1, 10),
     ]
 
-    # [F133] impozitul din calc e TOTAL (salariu+tichete); pe fluturas il aratam separat
-    imp_tichete = calc.get("impozit_tichete", 0)
-    imp_salariu = calc["impozit"] - imp_tichete
+    # [F133] impozitul din stat e TOTAL (salariu+tichete); pe fluturas il aratam separat
+    imp_tichete = _n("impozit_tichete")
     linii = [
-        ("Salariu brut", calc["brut"]),
-        ("Facilitate salariu minim (netaxabil)", calc["facilitate"]),
-        ("CAS (25%)", -calc["cas"]),
-        ("CASS (10%)", -calc["cass"]),
-        ("Deducere personala", calc["deducere"]["total"]),
-        ("Impozit pe venit", -imp_salariu),
-        ("SALARIU NET", calc["net"]),
+        ("Salariu brut", _n("brut")),
+        ("Facilitate salariu minim (netaxabil)", _n("facilitate")),
+        ("CAS (25%)", -_n("cas")),
+        ("CASS (10%)", -_n("cass")),
+        ("Deducere personala", _n("deducere")),
+        ("Impozit pe venit", -_n("impozit_salariu")),
+        ("SALARIU NET", _n("net")),
     ]
-    if zc:
-        linii.insert(1, (f"Zile concediu medical: {int(zc)}", None))
-        linii.insert(len(linii) - 1, ("Indemnizatie CM (neta)", cm_net))
+    cm_zile = int(_n("cm_zile"))
+    if cm_zile:
+        linii.insert(1, (f"Zile concediu medical: {cm_zile}", None))
+        linii.insert(len(linii) - 1, ("Indemnizatie CM (neta)", _n("cm_net")))
     # [F133] tichete: doar TAXA (CASS+impozit) se retine din salariul CASH -> reduce NET-ul,
     # deci ramane INAINTE de SALARIU NET (coloana reconciliaza la net). Valoarea tichetelor se
     # primeste PE CARD SEPARAT (nu cash) -> se arata DUPA net, + total disponibil = net + tichete.
-    are_masa = float(calc.get("tichete_nominal", 0) or 0) > 0
-    are_vac = float(calc.get("tichete_vacanta", 0) or 0) > 0
-    are_cadou = float(cadou or 0) > 0  # [F133 Faza 2b1] cadou neimpozabil - fara retinere, primit pe card
+    are_masa = _n("tichete_nominal") > 0
+    are_vac = _n("tichete_vacanta") > 0
+    are_cadou = _n("cadou") > 0  # [F133 Faza 2b1] cadou neimpozabil - fara retinere, primit pe card
     if are_masa or are_vac or are_cadou:
         # retinerea (CASS+impozit) apare DOAR pt masa/vacanta (taxabile); cadoul e neimpozabil in 2b1
         if are_masa or are_vac:
             i = len(linii) - 1  # inaintea SALARIU NET
-            linii.insert(i, ("  CASS tichete (10%) - retinut din salariu", -calc["cass_tichete"])); i += 1
+            linii.insert(i, ("  CASS tichete (10%) - retinut din salariu", -_n("cass_tichete"))); i += 1
             linii.insert(i, ("  Impozit tichete (10%) - retinut din salariu", -imp_tichete))
-        val_tichete = float(calc.get("tichete_nominal", 0)) + float(calc.get("tichete_vacanta", 0)) + float(cadou or 0)
+        val_tichete = _n("tichete_nominal") + _n("tichete_vacanta") + _n("cadou")
         if are_masa:
-            linii.append((f"Tichete masa ({tichet_zile} zile x {float(tichet_val):g} lei, pe card)", calc["tichete_nominal"]))
+            _zt, _vt = int(_n("tichete_zile")), _n("tichet_masa_valoare")
+            linii.append((f"Tichete masa ({_zt} zile x {_vt:g} lei, pe card)", _n("tichete_nominal")))
         if are_vac:
-            linii.append(("Tichete vacanta (pe card separat)", calc["tichete_vacanta"]))
+            linii.append(("Tichete vacanta (pe card separat)", _n("tichete_vacanta")))
         if are_cadou:
-            linii.append(("Tichete cadou (neimpozabil, pe card separat)", float(cadou)))
-        linii.append(("TOTAL DISPONIBIL (net + tichete)", float(calc["net"]) + val_tichete))
+            linii.append(("Tichete cadou (neimpozabil, pe card separat)", _n("cadou")))
+        linii.append(("TOTAL DISPONIBIL (net + tichete)", _n("net") + val_tichete))
 
     rows = []
     for eticheta, val in linii:
@@ -285,11 +270,11 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     ]))
     el.append(tabel)
     el.append(Spacer(1, 8))
-    _supra = float(calc.get("cas_suprataxa", 0) or 0) + float(calc.get("cass_suprataxa", 0) or 0)
+    _supra = _n("cas_suprataxa") + _n("cass_suprataxa")
     _nota_cost = "Cost total angajator (inclusiv CAM 2.25%"
     if _supra > 0:
         _nota_cost += f" + suprataxa part-time {_bani(_supra, 'lei')}"
-    _nota_cost += f"): {_bani(calc['cost_angajator'], 'lei')}"
+    _nota_cost += f"): {_bani(_n('cost'), 'lei')}"
     el.append(Paragraph(
         _nota_cost,
         ParagraphStyle("cost", parent=stil["Normal"], fontName=fr, fontSize=9, textColor=_colors.HexColor("#555555")),

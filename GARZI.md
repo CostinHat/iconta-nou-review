@@ -3717,3 +3717,43 @@ arătând închis, cu suita verde.
 
 Generalizat imediat în #14 (`core/test_ancore_in_cod.py`): ancora unui gard trebuie să existe în COD,
 nu în proză.
+
+## 21.08.2026 — Gărzi noi: statul emis și fluturașul
+
+**`core/test_stat_plata_emis.py`** (16) — documentul emis nu se schimbă când se schimbă datele sub el;
+contradicția e derivată, nu un câmp; un motiv o asumă, nu o stinge, și cere cine + când; corecția e al
+doilea exemplar care îl referă pe primul; verificarea nu scrie și nu emite; emiterea e idempotentă.
+RED-probat cu 7 mutații, toate roșii.
+
+**`core/test_fluturas_egal_stat.py`** (4) — fluturașul nu cheamă direct motorul de salarizare; rândul
+din care se tipărește coincide cu statul pe toată populația (192 de perechi); PDF-ul RANDAT arată
+cifra statului (citit cu `pypdf`, pe un caz construit prin deconfirmarea pontajului în tranzacție
+anulată — nu pe ce se întâmplă să conțină datele unei firme); exemplarul emis bate recalculul.
+RED-probat cu 4 mutații, toate roșii.
+
+### Ce a scos RED-proof-ul, și n-ar fi ieșit altfel
+Două gărzi treceau pentru motivul greșit:
+- `verificarea nu scrie` număra rândurile pe o lună FĂRĂ nicio contradicție — o verificare care emite
+  singură corecții ar fi trecut, fiindcă n-avea ce corecta. Acum provoacă divergența întâi.
+- `emiterea persistă` chema `emite` o singură dată, deci nimic nu asertea idempotența. Mutația care o
+  scotea trecea verde.
+
+Și un ajutor de test trecea pe gol: muta salariul cu `UPDATE salariu_istoric`, dar tenantul are
+istoricul GOL (bridge pe `salariati.salariu_brut`), deci prindea ZERO rânduri. Două teste „probau" că
+documentul rezistă la schimbarea datelor, într-o lume în care nimeni nu schimbase nimic. Mutarea se
+face acum prin sursa unică și **dovedește** că recalculul s-a mișcat înainte de a asertea ceva.
+
+### A patra instanță a clasei „un gard citește proză drept cod"
+`test_schema_coloane` tokeniza literalii SQL dintr-un `.py` și lua **docstringurile** drept SQL: un
+docstring care pomenea tabelul `state_plata` a produs „coloane" numite `document`, `salariat`,
+`altfel`, `aplicația`. Reparat gardul, nu textul: `scan_ancore.domenii_docstring()` (scoasă din
+`fara_proza`, din #14) e acum folosită de amândouă. Aceeași unealtă, în cele două direcții — un gard
+trebuie să-și găsească ancora în cod, și nu are voie să-și citească dovada din proză.
+
+### Coliziune de nume, prinsă de gardul de izolare
+Am definit `_schema_sau_404(tenant_id, ctx)` fără să caut întâi numele. Exista deja
+`_schema_sau_404(ctx, tenant_id)`; definiția mea a suprascris-o și a rupt **47 de rute** cu argumentele
+inversate. Suita a prins-o pe loc. REGULA DE AUR se aplică și la botez: grep înainte de „e liber".
+Tot gardul ăla a prins și ordinea greșită din ruta de emitere — citea corpul cererii înaintea
+verificării accesului, deci un străin primea 500 în loc de 404, adică afla că ruta există și ce
+câmpuri așteaptă.
