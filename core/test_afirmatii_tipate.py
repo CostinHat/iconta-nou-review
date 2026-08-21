@@ -22,8 +22,11 @@ from core import scan_afirmatii as s
 
 # Măsurat 21.08.2026: 120 afirmații netipate în clasele A (verdict) și C (import), în 30 de fișiere.
 # Fiecare linie e o DATORIE, nu o normă. Se coboară; nu se ridică.
+#
+# 21.08, aceeași zi: 120 -> 105. `control_incrucisat` a coborât 27 -> 12 (constatările trec prin
+# `afirmatie()`; cele 12 rămase sunt CONTAINERE de modul, nu afirmații — vezi nota de la coadă).
 BASELINE = {
-    "core/control_incrucisat.py": 27,
+    "core/control_incrucisat.py": 12,
     "main.py": 13,
     "core/salariati_import_api.py": 8,
     "core/d390.py": 7,
@@ -145,3 +148,21 @@ def test_granita_lui_costin_e_respectata():
     assert any(x[4] == "D_formular" for x in inv), (
         "nicio validare de formular văzută — clasa nu mai e exercitată, deci nu se știe dacă ar mai "
         "fi ținută afară")
+
+
+def test_containerele_de_modul_sunt_declarate_ca_datorie_deschisa():
+    """DE RAPORTAT, nu de ascuns. Cele 12 rămase în `control_incrucisat` NU sunt constatări — sunt
+    CONTAINERE de modul (`{an, luna, stare, constatari: [...], explicatie, limita, ...}`). Scanul le
+    numără fiindcă poartă cheia `explicatie`.
+
+    Iar `explicatie` de pe container nu e citit de NIMENI: nici de `control_verdict.js`, nici de
+    vreun modul Python (verificat 21.08; cele din `rip_*` sunt alt câmp, descrierea unei operațiuni).
+    Șapte din douăsprezece sunt șirul gol; cinci calculează o frază pe care n-o vede nimeni.
+
+    Nu le-am convertit și nu le-am șters: a scoate un câmp dintr-un răspuns de API e decizia lui
+    Costin, nu a mea. Rămân în clichet ca DATORIE VIZIBILĂ. Testul ăsta există ca să nu se poată
+    pretinde că sunt altceva."""
+    ramase = [x for x in s.netipate_in_scop() if x[0] == "core/control_incrucisat.py"]
+    assert all("constatari" in x[5] for x in ramase), (
+        "în control_incrucisat a rămas o CONSTATARE netipată, nu doar containere: %s"
+        % [(x[1], x[2]) for x in ramase if "constatari" not in x[5]])

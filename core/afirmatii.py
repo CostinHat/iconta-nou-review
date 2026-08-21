@@ -42,6 +42,16 @@ FELURI = {
     # perioadă declarată neaplicabilă. Nu e necunoaștere — două afirmații care nu pot fi amândouă
     # adevărate. `sursele` le NUMEȘTE pe amândouă, altfel nu se poate arbitra.
     "contradictie": ("fel", "tip", "motiv", "sursele"),
+    # [21.08.2026] Al saselea: verificarea INSASI s-a oprit. NU e necunoastere - aia ar ascunde-o ca
+    # verdict permanent gri, exact ce refuza `_c_rupt` din control_incrucisat („lectia D300 mort"):
+    # o verificare rupta arata la fel cu una care „nu poate spune", si asa a stat D300 mort. `eroare`
+    # e obligatorie fiindca fara ea nimeni nu poate incepe s-o repare.
+    "verificare_rupta": ("fel", "tip", "motiv", "eroare"),
+    # [21.08.2026] Al saptelea: o VALOARE nu satisface o REGULA. Cele 46 de validari de rand la
+    # import nu incap in celelalte - nu e necunoastere (stim foarte bine), nu e absenta (valoarea E
+    # acolo, dar nu tine), nu e statut. `unde` = pe ce anume (randul 7, salariatul X); `regula` = de
+    # ce nu tine. Fara amandoua, respingerea e un repros fara adresa.
+    "neconformitate": ("fel", "tip", "motiv", "unde", "regula"),
 }
 
 # Câmpurile care au voie să fie None, fiecare cu motivul. Restul trebuie să poarte o valoare.

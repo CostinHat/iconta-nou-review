@@ -47,6 +47,7 @@ remediu SUGERAT (asteapta validare), nu executabil (nota exista deja, nu se dubl
 """
 from decimal import Decimal
 from core.pdf_util import bani
+from core import afirmatii as _af  # [P8] o constatare E o afirmatie, imbracata pentru ecran
 
 TOLERANTA = Decimal("1")  # 1 leu: D300 rotunjeste la leu, contabilitatea are bani
 MODUL = "control_incrucisat"
@@ -286,8 +287,14 @@ def _actiune_valideaza(patru_ochi):
     return "Validează nota (din ciornă în evidență)."
 
 
-def compara_tva(d300_R, rulaje, necontate=None, patru_ochi=True):
+def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True):
     """PURA: compara randurile D300 cu rulajele contabile.
+
+    [P8, 21.08.2026] `an`/`luna` sunt OBLIGATORII. Prima forma le-a pus optionale, „ca sa nu ating
+    testele pure" - si ramura contului 4428 cadea cu AfirmatieIncompleta, fiindca un fapt fara
+    perioada nu se poate construi. Niciun test n-o atingea (`_rulaje()` nu pune 4428), deci suita era
+    verde peste o cadere. A doua oara azi cand un default comod ascunde o cale netestata: un FAPT
+    despre datele firmei ARE o perioada, iar semnatura trebuie s-o ceara, nu s-o spere.
     necontate: facturi FARA nota validata, fiecare cu are_ciorna (nota propusa, nevalidata).
     Ciorna nu intra in rulaj si NU inchide constatarea: verdele vine dupa patru-ochi."""
     necontate = necontate or []
@@ -390,18 +397,23 @@ def compara_tva(d300_R, rulaje, necontate=None, patru_ochi=True):
     if _nx:
         _net = _d(_nx.get("credit", 0)) - _d(_nx.get("debit", 0))
         if abs(_net) > TOLERANTA:
-            rez.append({"eticheta": "TVA neexigibilă (cont 4428)",
-                        "declarat": Decimal(0), "contabil": _net, "diferenta": _net,
-                        "stare": "gri",
-                        "temei": ("Cont 4428 (TVA neexigibilă) — exigibilitate decalată (TVA la încasare / "
-                                  "taxare inversă). Fără rând D300 corespondent direct."),
-                        "mesaj": (f"Cont 4428 (TVA neexigibilă) are sold net {_lei(_net)} în perioadă — "
-                                  f"exigibilitate decalată, încă nedeclarată în acest decont."),
-                        "remediu": {"fel": "investigatie",
-                                    "cauza": "TVA neexigibilă în sold — devine exigibilă la încasare/plată.",
-                                    "actiune": ("Verifică dacă TVA neexigibilă trebuia să devină exigibilă "
-                                                "în perioadă (încasări/plăți efectuate)."),
-                                    "facturi": []}})
+            _c4428 = _fapt_liber(
+                "d300", "TVA neexigibilă (cont 4428)",
+                ("Cont 4428 (TVA neexigibilă) — exigibilitate decalată (TVA la încasare / "
+                 "taxare inversă). Fără rând D300 corespondent direct."),
+                (f"Cont 4428 (TVA neexigibilă) are sold net {_lei(_net)} în perioadă — "
+                 f"exigibilitate decalată, încă nedeclarată în acest decont."),
+                an, luna,
+                "rulajele contabile ale perioadei pe contul 4428",
+                # GRI, nu verde: e informativ (nu are contrapartida declarata), dar ramane un FAPT.
+                stare="gri",
+                remediu={"fel": "investigatie",
+                         "cauza": "TVA neexigibilă în sold — devine exigibilă la încasare/plată.",
+                         "actiune": ("Verifică dacă TVA neexigibilă trebuia să devină exigibilă "
+                                     "în perioadă (încasări/plăți efectuate)."),
+                         "facturi": []})
+            _c4428.update({"declarat": Decimal(0), "contabil": _net, "diferenta": _net})
+            rez.append(_c4428)
     return rez
 
 
@@ -507,13 +519,10 @@ def verifica_d112(conn, schema, an, luna):
         else:
             cauza = "Date lipsă sau profil incomplet."
             actiune = "Completează profilul firmei și salariații, apoi reîncearcă."
-        return {"an": an, "luna": luna, "stare": "gri", "constatari": [{
-                    "stare": "gri", "eticheta": "Salarii", "temei": "D112 nu s-a putut genera.",
-                    "mesaj": f"NU pot verifica salariile: declarația nu se poate calcula ({e}).",
-                    "remediu": {"fel": "investigatie",
-                                "cauza": cauza,
-                                "actiune": actiune,
-                                "facturi": []}}],
+        return {"an": an, "luna": luna, "stare": "gri", "constatari": [_gri_liber(
+                    "d112", "Salarii", "D112 nu s-a putut genera.",
+                    f"NU pot verifica salariile: declarația nu se poate calcula ({e}).", an, luna,
+                    {"fel": "investigatie", "cauza": cauza, "actiune": actiune, "facturi": []})],
                 "explicatie": "",
                 "limita": "Verificarea D112 nu a fost efectuată — riscul rămâne neacoperit.",
                 "modul": MODUL, "reguli": REGULI}
@@ -578,14 +587,10 @@ def verifica_tva(conn, schema, an, luna):
             cauza = "Date lipsă sau profil fiscal incomplet."
             actiune = "Completează profilul firmei și reîncearcă."
         return {"an": an, "luna": luna, "stare": "gri",
-                "constatari": [{
-                    "stare": "gri", "eticheta": "TVA", "temei": "D300 nu s-a putut genera.",
-                    "mesaj": f"NU pot verifica TVA: decontul nu se poate calcula ({e}).",
-                    "remediu": {"fel": "investigatie",
-                                "cauza": cauza,
-                                "actiune": actiune,
-                                "facturi": []},
-                }],
+                "constatari": [_gri_liber(
+                    "d300", "TVA", "D300 nu s-a putut genera.",
+                    f"NU pot verifica TVA: decontul nu se poate calcula ({e}).", an, luna,
+                    {"fel": "investigatie", "cauza": cauza, "actiune": actiune, "facturi": []})],
                 "facturi_necontabilizate": [], "explicatie": "",
                 "limita": "Verificarea TVA nu a fost efectuată — riscul rămâne neacoperit."}
 
@@ -597,7 +602,8 @@ def verifica_tva(conn, schema, an, luna):
     _de, _pana = _inc.isoformat(), _sf.isoformat()
     necontate = facturi_necontabilizate(conn, schema, _de, _pana)
     rulaje = rulaje_interval(conn, schema, _de, _pana, ("4427", "4426", "4423", "4424", "4428"))
-    constatari = compara_tva(R, rulaje, necontate, patru_ochi=_patru_ochi_activ(conn, schema))
+    constatari = compara_tva(R, rulaje, an, luna, necontate,
+                             patru_ochi=_patru_ochi_activ(conn, schema))
     stare = "rosu" if any(c["stare"] == "rosu" for c in constatari) else "verde"
     return {
         "an": an, "luna": luna, "stare": stare, "constatari": constatari,
@@ -792,17 +798,19 @@ def compara_d390_vs_d300(baze, gasit, randuri, perioada=None):
     exigibilitate, NICIODATĂ roșu pe cifre); ambele 0 -> tăcut."""
     per_sufix = (", perioada %s" % perioada) if perioada else ""
     if not gasit:
-        return [{"eticheta": "D390 vs D300 depus" + per_sufix, "stare": "gri",
-                 "mesaj": "Nu există D300 depus în fereastră — nu pot compara recapitulativa cu decontul.",
-                 "temei": ("Declarație-vs-declarație: D390 bază IC vs D300 depus (rânduri persistate). "
-                           "Niciun D300 depus prin aplicație în fereastra TVA -> nimic de comparat. GRI, nu roșu."),
-                 "remediu": None}]
+        return [_absenta_libera(
+            "d390", "D390 vs D300 depus" + per_sufix,
+            ("Declarație-vs-declarație: D390 bază IC vs D300 depus (rânduri persistate). "
+             "Niciun D300 depus prin aplicație în fereastra TVA -> nimic de comparat. GRI, nu roșu."),
+            "Nu există D300 depus în fereastră — nu pot compara recapitulativa cu decontul.",
+            "declarațiile D300 depuse prin aplicație, în fereastra TVA")]
     if randuri is None:
-        return [{"eticheta": "D390 vs D300 depus" + per_sufix, "stare": "gri",
-                 "mesaj": "D300 depus fără rânduri persistate — nu pot compara.",
-                 "temei": ("D300 din fereastră a fost depus fără rânduri persistate (depunere anterioară "
-                           "persistării rândurilor sau import istoric). GRI, nu roșu — absența datelor nu e divergență."),
-                 "remediu": None}]
+        return [_absenta_libera(
+            "d390", "D390 vs D300 depus" + per_sufix,
+            ("D300 din fereastră a fost depus fără rânduri persistate (depunere anterioară "
+             "persistării rândurilor sau import istoric). GRI, nu roșu — absența datelor nu e divergență."),
+            "D300 depus fără rânduri persistate — nu pot compara.",
+            "rândurile persistate ale D300 depus din fereastră")]
     R = (randuri or {}).get("R") or {}
     rez = []
     for eticheta, cheie, rand in D390_D300_PERECHI:
@@ -910,13 +918,11 @@ def verifica_d390(conn, schema, an, luna):
         else:
             _cauza = "Date lipsă sau profil incomplet."
             _actiune = "Completează profilul firmei și facturile, apoi reîncearcă."
-        return {"an": an, "luna": luna, "fereastra": fereastra, "stare": "gri", "constatari": [{
-                    "stare": "gri", "eticheta": "Intracomunitar",
-                    "temei": "D390 nu s-a putut genera.",
-                    "mesaj": f"NU pot verifica operațiunile intracomunitare: D390 nu se poate calcula ({e}).",
-                    "remediu": {"fel": "investigatie", "cauza": _cauza,
-                                "actiune": _actiune,
-                                "facturi": []}}],
+        return {"an": an, "luna": luna, "fereastra": fereastra, "stare": "gri", "constatari": [_gri_liber(
+                    "d390", "Intracomunitar", "D390 nu s-a putut genera.",
+                    f"NU pot verifica operațiunile intracomunitare: D390 nu se poate calcula ({e}).",
+                    an, luna,
+                    {"fel": "investigatie", "cauza": _cauza, "actiune": _actiune, "facturi": []})],
                 "explicatie": "",
                 "limita": "Verificarea D390 nu a fost efectuată — riscul rămâne neacoperit.",
                 "modul": MODUL, "reguli": REGULI}
@@ -928,12 +934,13 @@ def verifica_d390(conn, schema, an, luna):
     # laturi să fie ACEEAȘI perioadă (comparație reală, nu perioade diferite). Perioada = afișată explicit.
     rec_d300 = _d300_depus_recent(conn, schema)
     if rec_d300 is None:
-        constatari.append({"eticheta": "D390 vs D300 depus", "stare": "gri",
-            "mesaj": "Nicio depunere D300 prin aplicație — nu am cu ce compara recapitulativa.",
-            "temei": ("Declarație-vs-declarație: D390 bază IC vs rândurile intracomunitare ale D300 EFECTIV "
-                      "DEPUS (rânduri persistate). Nicio depunere D300 persistată -> comparația devine "
-                      "posibilă după prima depunere prin aplicație. GRI, nu roșu — absență, nu divergență."),
-            "remediu": None})
+        constatari.append(_absenta_libera(
+            "d390", "D390 vs D300 depus",
+            ("Declarație-vs-declarație: D390 bază IC vs rândurile intracomunitare ale D300 EFECTIV "
+             "DEPUS (rânduri persistate). Nicio depunere D300 persistată -> comparația devine "
+             "posibilă după prima depunere prin aplicație. GRI, nu roșu — absență, nu divergență."),
+            "Nicio depunere D300 prin aplicație — nu am cu ce compara recapitulativa.",
+            "depunerile D300 persistate prin aplicație"))
     else:
         an_d, luna_d, randuri_d = rec_d300
         luni_d, _de_d, _pana_d, eticheta_d = _fereastra_tva(tip_dec, an_d, luna_d)
@@ -946,10 +953,11 @@ def verifica_d390(conn, schema, an, luna):
                 baze_d["A"] += int(rez_d.get("A", 0))
             constatari += compara_d390_vs_d300(baze_d, True, randuri_d, perioada=eticheta_d)
         except Exception as e:
-            constatari.append({"eticheta": "D390 vs D300 depus, perioada %s" % eticheta_d, "stare": "gri",
-                "mesaj": "NU pot recalcula D390 pe perioada depusă (%s) pentru comparație (%s)." % (eticheta_d, e),
-                "temei": "Declarație-vs-declarație: baza D390 se recalculează pe perioada D300 depus; recalcularea a eșuat.",
-                "remediu": None})
+            constatari.append(_gri_liber(
+                "d390", "D390 vs D300 depus, perioada %s" % eticheta_d,
+                "Declarație-vs-declarație: baza D390 se recalculează pe perioada D300 depus; recalcularea a eșuat.",
+                "NU pot recalcula D390 pe perioada depusă (%s) pentru comparație (%s)." % (eticheta_d, e),
+                an, luna))
     if any(c["stare"] == "rosu" for c in constatari):
         stare = "rosu"
     elif any(c["stare"] == "gri" for c in constatari):
@@ -989,13 +997,13 @@ def verifica_d390(conn, schema, an, luna):
 #  daca nu pot citi facturile; verde/tacit daca toate liniile standard au cota corecta.
 
 def _gri_cota_tva(an, luna, motiv):
-    return {"an": an, "luna": luna, "stare": "gri", "constatari": [{
-                "stare": "gri", "eticheta": "Cotă TVA facturi emise",
-                "temei": "Conformitatea cotei TVA nu s-a putut evalua.",
-                "mesaj": f"NU pot verifica cota TVA a facturilor emise: {motiv}",
-                "remediu": {"fel": "investigatie", "cauza": "Date lipsă sau necitibile.",
-                            "actiune": "Verifică facturile emise ale lunii, apoi reîncearcă.",
-                            "facturi": []}}],
+    return {"an": an, "luna": luna, "stare": "gri", "constatari": [_gri_liber(
+                "d300", "Cotă TVA facturi emise",
+                "Conformitatea cotei TVA nu s-a putut evalua.",
+                f"NU pot verifica cota TVA a facturilor emise: {motiv}", an, luna,
+                {"fel": "investigatie", "cauza": "Date lipsă sau necitibile.",
+                 "actiune": "Verifică facturile emise ale lunii, apoi reîncearcă.",
+                 "facturi": []})],
             "explicatie": "",
             "limita": "Verificarea cotei TVA nu a fost efectuată — riscul rămâne neacoperit.",
             "modul": MODUL, "reguli": REGULI}
@@ -1068,9 +1076,10 @@ def constatare_cota_tva(linii, an, luna):
                    "cotă citibilă)." % nedeterminabile)
 
     if not gresite:
-        constatari = [] if verificate == 0 else [{
-            "stare": "verde", "eticheta": "Cotă TVA facturi emise", "temei": temei,
-            "mesaj": "Toate facturile emise folosesc cota TVA corectă pentru perioadă.", "remediu": None}]
+        constatari = [] if verificate == 0 else [_fapt_liber(
+            "d300", "Cotă TVA facturi emise", temei,
+            "Toate facturile emise folosesc cota TVA corectă pentru perioadă.", an, luna,
+            "cele %d linii cu cotă citibilă din facturile emise ale lunii" % verificate)]
         return {"an": an, "luna": luna, "stare": "verde", "constatari": constatari,
                 "explicatie": "", "limita": limita, "modul": MODUL, "reguli": REGULI}
 
@@ -1079,13 +1088,16 @@ def constatare_cota_tva(linii, an, luna):
     ex = gresite[ids[0]]
     mesaj = (f"{n} factur{'ă' if n == 1 else 'i'} emis{'ă' if n == 1 else 'e'} cu cotă TVA greșită pentru "
              f"perioadă (ex. {ex['cota_gasita']}% în loc de {ex['cota_corecta']}%).")
-    constatare = {"stare": "rosu", "eticheta": "Cotă TVA facturi emise", "temei": temei, "mesaj": mesaj,
-                  "remediu": {"fel": "sugerat",
-                              "cauza": (f"{n} facturi emise au cotă TVA neconformă perioadei "
-                                        f"(cotă veche folosită după schimbarea cotei standard)."),
-                              "actiune": ("Verifică și corectează cota (stornare + reemitere sau factură de "
-                                          "corecție). Cota o confirmă omul, nu se ajustează automat."),
-                              "facturi": ids}}
+    constatare = _neconform_liber(
+        "d300", "Cotă TVA facturi emise", temei, mesaj,
+        unde="facturile emise %s" % ", ".join(str(i) for i in ids[:6]),
+        regula="cota_tva_neconforma_perioadei",
+        remediu={"fel": "sugerat",
+                 "cauza": (f"{n} facturi emise au cotă TVA neconformă perioadei "
+                           f"(cotă veche folosită după schimbarea cotei standard)."),
+                 "actiune": ("Verifică și corectează cota (stornare + reemitere sau factură de "
+                             "corecție). Cota o confirmă omul, nu se ajustează automat."),
+                 "facturi": ids})
     return {"an": an, "luna": luna, "stare": "rosu", "constatari": [constatare],
             "explicatie": f"{n} facturi emise cu cotă TVA neconformă perioadei.",
             "limita": limita, "modul": MODUL, "reguli": REGULI}
@@ -1253,44 +1265,97 @@ def _descrie_div(d):
 
 
 # ---- constructori de constatare (anatomia control_incrucisat: stare + eticheta + mesaj + temei) --
-def _c_verde(cheie, eticheta, temei):
-    return {"declaratie": cheie, "stare": "verde", "eticheta": eticheta,
-            "mesaj": "Declarația se reconciliază cu sursa - recalculul independent confirmă valorile.",
-            "temei": temei, "remediu": None}
+# [P8, 21.08.2026] O CONSTATARE E O AFIRMATIE, imbracata pentru ecran. Pana azi era proza intr-un
+# dictionar: `mesaj` purta tot - ce s-a constatat, pe ce perioada, pe ce se sprijina - iar cine randa
+# trebuia sa ghiceasca. Acum textul vine din afirmatie (`motiv`), iar felul e DECLARAT, nu dedus.
+#
+# `mesaj` ramane, cu ACEEASI valoare ca `motiv`, fiindca randorul il citeste. NU sunt doua texte:
+# `_imbraca` il deriva, si `test_control_incrucisat` asertaza ca nu pot diverge. Ziua in care randorul
+# citeste `motiv` e ziua in care `mesaj` dispare - dar aia atinge ecranul, deci e alta decizie.
+def _imbraca(eticheta, temei, stare, remediu, a, cheie=None):
+    """Afirmatia -> constatarea pe care o asteapta ecranul. Textul are o singura sursa.
+
+    Campurile se pun UNUL CATE UNUL, nu printr-un al doilea dictionar-literal: un `{... "mesaj": ...}`
+    aici ar fi numarat de `core/scan_afirmatii` drept inca o afirmatie netipata, iar constructorul
+    afirmatiilor ar aparea pe vecie in clichet ca datorie. Nu e cosmetica - e adevarat ca nu exista
+    doua dictionare, ci unul singur, imbogatit."""
+    c = dict(a)
+    c["stare"] = stare
+    c["eticheta"] = eticheta
+    c["mesaj"] = a["motiv"]
+    c["temei"] = temei
+    c["remediu"] = remediu
+    if cheie is not None:
+        c["declaratie"] = cheie
+    return c
 
 
-def _c_rosu(cheie, eticheta, temei, mesaj):
-    return {"declaratie": cheie, "stare": "rosu", "eticheta": eticheta, "mesaj": mesaj, "temei": temei,
-            "remediu": {"fel": "investigatie",
-                        "cauza": "Recalculul independent din sursa NU confirma valoarea declarata.",
-                        "actiune": ("Verifică agregarea și datele sursă - gardul nu alege singur cine are "
-                                    "dreptate. ACEEAȘI reconciliere blochează generarea declarației la depunere."),
-                        "facturi": []}}
+def _c_verde(cheie, eticheta, temei, an=None, luna=None):
+    """FAPT: recalculul independent din sursa confirma valorile declarate.
+
+    `temei_completitudine` numeste PE CE se sprijina afirmatia - aici, faptul ca recalculul a pornit
+    din sursa, nu din declaratie. Fara el, „se reconciliaza" ar fi o absenta bine imbracata."""
+    return _imbraca(eticheta, temei, "verde", None, cheie=cheie, a=_af.afirmatie(
+        "fapt", cheie,
+        "Declarația se reconciliază cu sursa - recalculul independent confirmă valorile.",
+        an=an, luna=luna,
+        temei_completitudine="recalcul independent sursă->declarație (core/%s_reconciliere.py)" % cheie))
 
 
-def _c_gri(cheie, eticheta, temei, motiv):
-    return {"declaratie": cheie, "stare": "gri", "eticheta": eticheta,
-            "mesaj": "NU pot reconcilia %s: %s" % (eticheta, motiv), "temei": temei,
-            "remediu": {"fel": "investigatie", "cauza": "Date sau profil fiscal incomplet.",
-                        "actiune": "Completează datele firmei și reîncearcă.", "facturi": []}}
+def _c_rosu(cheie, eticheta, temei, mesaj, an=None, luna=None):
+    """CONTRADICTIE: declaratia si recalculul independent spun lucruri incompatibile.
+
+    NU e „declaratia e gresita" - gardul nu alege singur cine are dreptate, si `sursele` le numeste pe
+    amandoua tocmai ca sa se poata arbitra."""
+    return _imbraca(eticheta, temei, "rosu", cheie=cheie,
+                    remediu={"fel": "investigatie",
+                     "cauza": "Recalculul independent din sursa NU confirma valoarea declarata.",
+                     "actiune": ("Verifică agregarea și datele sursă - gardul nu alege singur cine are "
+                                 "dreptate. ACEEAȘI reconciliere blochează generarea declarației la depunere."),
+                     "facturi": []},
+                    a=_af.afirmatie("contradictie", cheie, mesaj,
+                                    sursele="valoarea declarată în %s; recalculul independent din sursă"
+                                            % eticheta))
 
 
-def _c_rupt(cheie, eticheta, e):
+def _c_gri(cheie, eticheta, temei, motiv, an=None, luna=None):
+    """NECUNOASTERE: nu pot reconcilia, si spun pe ce perioada nu pot.
+
+    Domeniul e LUNA evaluata, nu „toate perioadele": o necunoastere fara capete se citeste peste sase
+    luni ca fapt permanent."""
+    dom = ("%04d-%02d" % (an, luna)) if (an and luna) else (str(an) if an else None)
+    return _imbraca(eticheta, temei, "gri", cheie=cheie,
+                    remediu={"fel": "investigatie", "cauza": "Date sau profil fiscal incomplet.",
+                             "actiune": "Completează datele firmei și reîncearcă.", "facturi": []},
+                    a=_af.afirmatie("necunoastere", cheie,
+                                    "NU pot reconcilia %s: %s" % (eticheta, motiv),
+                                    domeniu_de=dom, domeniu_pana=dom))
+
+
+def _c_rupt(cheie, eticheta, e, an=None, luna=None):
     """ANTI-"D300 mort": verificarea s-a RUPT (bug/deriva de semnatura), NU e "nu pot verifica" (gri).
-    Se semnaleaza ROSU ZGOMOTOS, ca sa nu redevina un verdict permanent gri, ascuns."""
-    return {"declaratie": cheie, "stare": "rosu",
-            "eticheta": eticheta + " - VERIFICARE INTRERUPTA",
-            "mesaj": ("Reconcilierea %s s-a oprit cu o eroare (%s: %s) - NU e 'date lipsă', ci verificare "
-                      "RUPTĂ. Semnalat ROȘU, nu ascuns gri (lecția D300 mort)." % (eticheta, type(e).__name__, e)),
-            "temei": ("Contractul reconciliere: recalculul (reconciliaza) NU ridică; dacă ridică, e derivă de "
-                      "semnătură / bug de cod. Un except->gri l-ar ascunde ca verdict permanent gri - vezi "
-                      "core/test_control_incrucisat_wiring.py."),
-            "remediu": {"fel": "investigatie", "cauza": "Cod / semnătură reconciliere ruptă.",
-                        "actiune": "Verifică semnătura apelului de reconciliere pentru această declarație.",
-                        "facturi": []}}
+    Se semnaleaza ROSU ZGOMOTOS, ca sa nu redevina un verdict permanent gri, ascuns.
+
+    [P8] Felul e `verificare_rupta`, nu `necunoastere` - pe ecran arata la fel, in date NU mai arata:
+    cine numara „cate nu pot fi verificate" nu mai inghite si rupturile."""
+    return _imbraca(
+        eticheta + " - VERIFICARE INTRERUPTA",
+        ("Contractul reconciliere: recalculul (reconciliaza) NU ridică; dacă ridică, e derivă de "
+         "semnătură / bug de cod. Un except->gri l-ar ascunde ca verdict permanent gri - vezi "
+         "core/test_control_incrucisat_wiring.py."),
+        "rosu",
+        cheie=cheie,
+        remediu={"fel": "investigatie", "cauza": "Cod / semnătură reconciliere ruptă.",
+                 "actiune": "Verifică semnătura apelului de reconciliere pentru această declarație.",
+                 "facturi": []},
+        a=_af.afirmatie("verificare_rupta", cheie,
+                      ("Reconcilierea %s s-a oprit cu o eroare (%s: %s) - NU e 'date lipsă', ci verificare "
+                       "RUPTĂ. Semnalat ROȘU, nu ascuns gri (lecția D300 mort)."
+                       % (eticheta, type(e).__name__, e)),
+                      eroare="%s: %s" % (type(e).__name__, e)))
 
 
-def _interpreteaza(cheie, eticheta, temei, rap):
+def _interpreteaza(cheie, eticheta, temei, rap, an=None, luna=None):
     """Raportul (non-raising) al reconciliatorului -> constatare cu trei stari. Rosu numeste AMBELE valori."""
     div = list(rap.get("divergente") or [])
     susp = list(rap.get("suspecte") or [])     # D112: date corupte pe angajat emis (loud, nu tacut)
@@ -1302,10 +1367,47 @@ def _interpreteaza(cheie, eticheta, temei, rap):
         if dez:
             parti.append("dubla partida dezechilibrata in declaratie: debit %s vs credit %s (diferenta %s)."
                          % (_lei(dez["debit"]), _lei(dez["credit"]), _lei(dez["diferenta"])))
-        return _c_rosu(cheie, eticheta, temei, eticheta + ": " + " ".join(parti))
+        return _c_rosu(cheie, eticheta, temei, eticheta + ": " + " ".join(parti), an, luna)
     if rap.get("acoperit") is False and rap.get("motiv"):
-        return _c_gri(cheie, eticheta, temei, rap["motiv"])   # reconcilierea nu se APLICA (limita declarata)
-    return _c_verde(cheie, eticheta, temei)
+        return _c_gri(cheie, eticheta, temei, rap["motiv"], an, luna)  # reconcilierea nu se APLICA (limita declarata)
+    return _c_verde(cheie, eticheta, temei, an, luna)
+
+# [P8] Constatari produse in AFARA caii de reconciliere (verificarile incrucisate). Aceleasi feluri,
+# alta imbracaminte: unele locuri n-au `declaratie`, altele n-au remediu. Nu un al doilea nomenclator.
+def _gri_liber(tip, eticheta, temei, mesaj, an=None, luna=None, remediu=None):
+    """NECUNOASTERE: nu pot verifica, si spun PE CE PERIOADA nu pot. O necunoastere fara capete se
+    citeste peste sase luni ca fapt permanent."""
+    dom = ("%04d-%02d" % (an, luna)) if (an and luna) else (str(an) if an else None)
+    return _imbraca(eticheta, temei, "gri", remediu,
+                    _af.afirmatie("necunoastere", tip, mesaj, domeniu_de=dom, domeniu_pana=dom))
+
+
+def _absenta_libera(tip, eticheta, temei, mesaj, surse):
+    """ABSENTA_OBSERVATIE: n-am inregistrari intr-o sursa NUMITA. Deosebita de necunoastere fiindca
+    aici stim unde ne-am uitat - iar „nicio depunere D300 persistata" nu inseamna „nu stiu"."""
+    return _imbraca(eticheta, temei, "gri", None,
+                    _af.afirmatie("absenta_observatie", tip, mesaj, surse_consultate=surse))
+
+
+def _fapt_liber(tip, eticheta, temei, mesaj, an, luna, temei_completitudine, remediu=None,
+                stare="verde"):
+    """FAPT pe o perioada anume. `temei_completitudine` spune pe ce se sprijina - fara el, un fapt
+    negativ e o absenta bine imbracata.
+
+    `stare` e parametru, nu ceva de pus dupa. Prima forma o suprascria la apel
+    (`c["stare"] = "gri"`) si verificatorul a prins-o (VERDICT_COLAPSAT, stare-literal): un verdict
+    carpit dupa constructie e un verdict cu doua surse. Un fapt poate fi VERDE (confirma) sau GRI
+    (informativ, fara contrapartida declarata) - amandoua sunt fapte."""
+    return _imbraca(eticheta, temei, stare, remediu,
+                    _af.afirmatie("fapt", tip, mesaj, an=an, luna=luna,
+                                  temei_completitudine=temei_completitudine))
+
+
+def _neconform_liber(tip, eticheta, temei, mesaj, unde, regula, remediu=None):
+    """NECONFORMITATE: valori care nu satisfac o regula. `unde` le NUMESTE (id-uri), `regula` spune
+    de ce nu tin - altfel e un repros fara adresa."""
+    return _imbraca(eticheta, temei, "rosu", remediu,
+                    _af.afirmatie("neconformitate", tip, mesaj, unde=unde, regula=regula))
 
 
 def _ruleaza_una(conn, schema, cheie, eticheta, thunk_builder, an, luna):
@@ -1319,16 +1421,16 @@ def _ruleaza_una(conn, schema, cheie, eticheta, thunk_builder, an, luna):
     except _SkipSubiect:
         return None
     except ValueError as e:
-        return _c_gri(cheie, eticheta, temei, str(e))
+        return _c_gri(cheie, eticheta, temei, str(e), an, luna)
     except Exception as e:
-        return _c_rupt(cheie, eticheta, e)
+        return _c_rupt(cheie, eticheta, e, an, luna)
     # PASUL 2 - recalculul independent (reconciliaza). Contractul ei e sa NU ridice: ORICE exceptie aici
     # e o RUPTURA (deriva de semnatura = exact bug-ul D300 mort) -> ROSU, NICIODATA gri.
     try:
         rap = thunk()
     except Exception as e:
-        return _c_rupt(cheie, eticheta, e)
-    return _interpreteaza(cheie, eticheta, temei, rap)
+        return _c_rupt(cheie, eticheta, e, an, luna)
+    return _interpreteaza(cheie, eticheta, temei, rap, an, luna)
 
 
 def _vector_firma(conn, schema):

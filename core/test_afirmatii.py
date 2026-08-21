@@ -66,7 +66,9 @@ def test_fiecare_fel_din_nomenclator_e_construibil(fel):
     valori = {"domeniu_de": "2025-01", "domeniu_pana": None, "an": 2026, "luna": 7,
               "temei_completitudine": "lună închisă, fără documente în așteptare",
               "surse_consultate": "registrul de note validate", "statut": "pfa", "statut_din": None,
-              "sursele": "profilul firmei; facturile intracomunitare din iunie"}
+              "sursele": "profilul firmei; facturile intracomunitare din iunie",
+              "eroare": "TypeError: unsupported operand type(s)",
+              "unde": "rândul 7", "regula": "cnp_invalid"}
     a = afirmatie(fel, "d999", "motiv de probă",
                   **{c: valori[c] for c in FELURI[fel] if c not in ("fel", "tip", "motiv")})
     assert a["fel"] == fel
@@ -97,3 +99,38 @@ def test_nomenclatorul_e_acelasi_cu_asteptarea_din_harta():
     for fel, spec in h.FELURI.items():
         assert tuple(spec["campuri_ceruti"]) == FELURI[fel], (
             "câmpurile cerute pentru `%s` diferă între hartă și cod" % fel)
+
+
+# ---------------------------------------------------------------- al șaselea fel (21.08.2026)
+
+def test_verificarea_rupta_e_un_fel_propriu():
+    """`_c_rupt` din control_incrucisat exista ÎNAINTE de nomenclator și nu încăpea în niciunul din
+    cele cinci feluri. Nu e necunoaștere — asta ar ascunde-o ca verdict permanent gri, exact ce
+    refuză docstringul lui („lecția D300 mort"). Nu e contradicție — nimeni nu contrazice pe nimeni.
+    E instrumentul care s-a rupt, iar asta se spune tare."""
+    a = afirmatie("verificare_rupta", tip="d300", motiv="reconcilierea s-a oprit cu o eroare",
+                  eroare="TypeError: unsupported operand")
+    assert a["fel"] == "verificare_rupta"
+
+
+def test_verificarea_rupta_cere_eroarea():
+    """Fără eroarea concretă, „verificarea s-a rupt" e o vorbă: nimeni nu poate începe s-o repare."""
+    with pytest.raises(AfirmatieIncompleta):
+        afirmatie("verificare_rupta", tip="d300", motiv="s-a rupt ceva")
+
+
+def test_neconformitatea_e_un_fel_propriu():
+    """Cele 46 de validări de rând la import („rândul 7: CNP invalid") nu încap în cele cinci: nu e
+    necunoaștere (știm foarte bine), nu e absență (valoarea E acolo, dar nu ține), nu e statut. E o
+    valoare care nu satisface o regulă — iar regula trebuie NUMITĂ, altfel respingerea e arbitrară."""
+    a = afirmatie("neconformitate", tip="salariat", motiv="CNP invalid (cifra de control)",
+                  unde="rândul 7", regula="cnp_invalid")
+    assert a["fel"] == "neconformitate"
+
+
+def test_neconformitatea_cere_unde_si_regula():
+    """`unde` = pe ce anume; `regula` = de ce nu ține. Fără ele, contabilul are un repros fără adresă."""
+    with pytest.raises(AfirmatieIncompleta):
+        afirmatie("neconformitate", tip="salariat", motiv="CNP invalid", unde="rândul 7")
+    with pytest.raises(AfirmatieIncompleta):
+        afirmatie("neconformitate", tip="salariat", motiv="CNP invalid", regula="cnp_invalid")

@@ -100,6 +100,25 @@ FELURI = {
                 "perioada declarata neaplicabila. NU e necunoastere - acolo nu stim, aici stim doua "
                 "lucruri incompatibile. `sursele` le numeste pe amandoua, altfel nu se poate arbitra.",
     },
+    "verificare_rupta": {
+        "domeniu": ["fara_domeniu"],
+        "campuri_ceruti": ["fel", "tip", "motiv", "eroare"],
+        "nota": "[21.08.2026] Verificarea INSASI s-a oprit - bug, deriva de semnatura. NU e "
+                "necunoastere: aia ar ascunde-o ca verdict permanent gri, si asa a stat D300 mort "
+                "(vezi `_c_rupt` in control_incrucisat). O verificare rupta arata pe ecran la fel cu "
+                "una care „nu poate spune\", si de-aia trebuie sa poarte alt nume. Fara domeniu: nu "
+                "afirma nimic despre vreo perioada, fiindca n-a apucat sa se uite. `eroare` e "
+                "obligatorie - fara ea nimeni nu poate incepe s-o repare.",
+    },
+    "neconformitate": {
+        "domeniu": ["locul_din_date"],
+        "campuri_ceruti": ["fel", "tip", "motiv", "unde", "regula"],
+        "nota": "[21.08.2026] O VALOARE nu satisface o REGULA: „randul 7: CNP invalid\", „durata "
+                "lipseste\". Nu incape in celelalte - nu e necunoastere (stim foarte bine), nu e "
+                "absenta (valoarea E acolo, dar nu tine), nu e statut. Domeniul nu e o PERIOADA, ci "
+                "LOCUL: care rand, care inregistrare. `regula` numeste de ce nu tine - fara ea, "
+                "respingerea e un repros fara adresa, si contabilul nu stie ce sa corecteze.",
+    },
     "statut": {
         "domeniu": ["relatie_deschisa"],
         "campuri_ceruti": ["fel", "tip", "motiv", "statut", "statut_din"],

@@ -13,14 +13,14 @@ def _rulaje(colectata=0, dedusa=0):
 
 
 def test_coerent_da_verde():
-    r = compara_tva({"R17_2": 21, "R27_2": 0}, _rulaje(colectata=21))
+    r = compara_tva({"R17_2": 21, "R27_2": 0}, _rulaje(colectata=21), 2026, 7)
     assert r[0]["stare"] == "verde"
     assert r[0]["remediu"] is None
 
 
 def test_toleranta_1_leu_rotunjire_d300():
     # D300 rotunjeste la leu: 95 vs 94.50 contabil = coerent
-    r = compara_tva({"R17_2": 95, "R27_2": 0}, _rulaje(colectata=Decimal("94.50")))
+    r = compara_tva({"R17_2": 95, "R27_2": 0}, _rulaje(colectata=Decimal("94.50")), 2026, 7)
     assert r[0]["stare"] == "verde"
 
 
@@ -29,7 +29,7 @@ def test_divergenta_explicata_de_facturi_necontate_da_remediu_executabil():
         {"id": 2, "directie": "emisa", "tva": Decimal("21.00")},
         {"id": 3, "directie": "emisa", "tva": Decimal("52.50")},
     ]
-    r = compara_tva({"R17_2": 95, "R27_2": 0}, _rulaje(colectata=21), necontate)
+    r = compara_tva({"R17_2": 95, "R27_2": 0}, _rulaje(colectata=21), 2026, 7, necontate)
     c = r[0]
     assert c["stare"] == "rosu"
     assert c["diferenta"] == Decimal("74")
@@ -40,7 +40,7 @@ def test_divergenta_explicata_de_facturi_necontate_da_remediu_executabil():
 def test_divergenta_neexplicata_da_investigatie_nu_ajustare():
     # diferenta NU se explica prin necontate -> investigatie, fara buton
     necontate = [{"id": 2, "directie": "emisa", "tva": Decimal("5.00")}]
-    r = compara_tva({"R17_2": 95, "R27_2": 0}, _rulaje(colectata=21), necontate)
+    r = compara_tva({"R17_2": 95, "R27_2": 0}, _rulaje(colectata=21), 2026, 7, necontate)
     c = r[0]
     assert c["stare"] == "rosu"
     assert c["remediu"]["fel"] == "investigatie"
@@ -51,21 +51,21 @@ def test_divergenta_neexplicata_da_investigatie_nu_ajustare():
 
 
 def test_fiecare_constatare_isi_declara_temeiul():
-    r = compara_tva({"R17_2": 21, "R27_2": 0}, _rulaje(colectata=21))
+    r = compara_tva({"R17_2": 21, "R27_2": 0}, _rulaje(colectata=21), 2026, 7)
     for c in r:
         assert c["temei"]
         assert "D300" in c["temei"]
 
 
 def test_temei_corect_pe_directie():
-    r = compara_tva({"R17_2": 0, "R27_2": 0}, _rulaje())
+    r = compara_tva({"R17_2": 0, "R27_2": 0}, _rulaje(), 2026, 7)
     assert "emise" in r[0]["temei"]      # colectata <- facturi emise
     assert "primite" in r[1]["temei"]    # deductibila <- facturi primite
 
 
 def test_deductibila_necontata_primite():
     necontate = [{"id": 9, "directie": "primita", "tva": Decimal("10.00")}]
-    r = compara_tva({"R17_2": 0, "R27_2": 10}, _rulaje(dedusa=0), necontate)
+    r = compara_tva({"R17_2": 0, "R27_2": 10}, _rulaje(dedusa=0), 2026, 7, necontate)
     c = r[1]
     assert c["stare"] == "rosu"
     assert c["remediu"]["fel"] == "executabil"
@@ -75,7 +75,7 @@ def test_deductibila_necontata_primite():
 def test_ciorna_nu_da_verde_asteapta_validare():
     """O nota ciorna e propunere, nu evidenta: constatarea ramane rosie pana la patru-ochi."""
     necontate = [{"id": 1, "directie": "emisa", "tva": Decimal("74"), "are_ciorna": True}]
-    r = compara_tva({"R17_2": 95, "R27_2": 0}, _rulaje(colectata=21), necontate)
+    r = compara_tva({"R17_2": 95, "R27_2": 0}, _rulaje(colectata=21), 2026, 7, necontate)
     assert r[0]["stare"] == "rosu"
     assert r[0]["remediu"]["fel"] == "sugerat"
     assert "ciorn" in r[0]["remediu"]["cauza"]
@@ -85,7 +85,7 @@ def test_ciorna_nu_da_verde_asteapta_validare():
 def test_mixt_executabil_doar_pe_facturile_fara_nota():
     necontate = [{"id": 1, "directie": "emisa", "tva": Decimal("40"), "are_ciorna": True},
                  {"id": 2, "directie": "emisa", "tva": Decimal("34"), "are_ciorna": False}]
-    r = compara_tva({"R17_2": 95, "R27_2": 0}, _rulaje(colectata=21), necontate)
+    r = compara_tva({"R17_2": 95, "R27_2": 0}, _rulaje(colectata=21), 2026, 7, necontate)
     assert r[0]["remediu"]["fel"] == "executabil"
     assert r[0]["remediu"]["facturi"] == [2]
     assert "ciorn" in r[0]["remediu"]["cauza"]
@@ -94,7 +94,7 @@ def test_mixt_executabil_doar_pe_facturile_fara_nota():
 def test_o_factura_cu_ciorna_nu_intra_niciodata_intr_un_remediu_executabil():
     necontate = [{"id": 1, "directie": "emisa", "tva": Decimal("74"), "are_ciorna": True},
                  {"id": 2, "directie": "primita", "tva": Decimal("10"), "are_ciorna": True}]
-    r = compara_tva({"R17_2": 95, "R27_2": 10}, _rulaje(colectata=21, dedusa=0), necontate)
+    r = compara_tva({"R17_2": 95, "R27_2": 10}, _rulaje(colectata=21, dedusa=0), 2026, 7, necontate)
     for c in r:
         rem = c.get("remediu") or {}
         if rem.get("fel") == "executabil":
@@ -718,7 +718,7 @@ def test_tva_exceptie_necunoscuta_pastreaza_remediu_generic(monkeypatch):
 
 def test_tva_four_eyes_activ_vs_neactivat_text_diferit():
     necontate = [{"directie": "emisa", "tva": Decimal("74"), "are_ciorna": True}]
-    args = ({"R17_2": 95, "R27_2": 0}, _rulaje(colectata=21), necontate)
+    args = ({"R17_2": 95, "R27_2": 0}, _rulaje(colectata=21), 2026, 7, necontate)
     activ = _c_tva(*args, patru_ochi=True)[0]["remediu"]["actiune"]
     neact = _c_tva(*args, patru_ochi=False)[0]["remediu"]["actiune"]
     assert "patru ochi" in activ and "al doilea utilizator" in activ
@@ -747,5 +747,21 @@ def test_d390_four_eyes_neactivat_scoate_mentiunea_patru_ochi():
 def test_four_eyes_default_true_nu_sparge_apelantii_existenti():
     # semnătura veche (fără patru_ochi) rămâne validă și dă formularea prudentă
     necontate = [{"directie": "emisa", "tva": Decimal("74"), "are_ciorna": True}]
-    a = _c_tva({"R17_2": 95, "R27_2": 0}, _rulaje(colectata=21), necontate)
+    a = _c_tva({"R17_2": 95, "R27_2": 0}, _rulaje(colectata=21), 2026, 7, necontate)
     assert "al doilea utilizator" in a[0]["remediu"]["actiune"]
+
+
+def test_contul_4428_cu_sold_e_un_fapt_cu_perioada():
+    """CALEA CARE CĂDEA ÎN TĂCERE (21.08.2026). Ramura contului 4428 n-avea NICIUN test — `_rulaje()`
+    nu produce 4428 — deci când `an`/`luna` au fost puse opționale „ca să nu ating testele pure",
+    ramura a început să ridice `AfirmatieIncompleta` și suita a rămas verde peste o cădere.
+
+    Un fapt despre datele firmei ARE o perioadă; semnătura o cere acum, nu o speră."""
+    from core.afirmatii import FELURI
+    r = compara_tva({"R17_2": 0, "R27_2": 0}, {"4428": {"credit": 500, "debit": 0}}, 2026, 7)
+    c = next(x for x in r if "4428" in x["eticheta"])
+    assert c["stare"] == "gri" and c["fel"] == "fapt"
+    assert c["an"] == 2026 and c["luna"] == 7, "faptul nu poartă perioada pe care o afirmă"
+    for camp in FELURI["fapt"]:
+        assert camp in c, "constatarea 4428 nu e o afirmație validă: lipsește %s" % camp
+    assert c["mesaj"] == c["motiv"], "textul s-a despărțit în două surse"
