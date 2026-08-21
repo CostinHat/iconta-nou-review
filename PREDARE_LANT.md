@@ -41,9 +41,8 @@ LIVRAT, comis si impins (`8238ef7`; HEAD = origin/main = backup/lant-2026-08-21)
   n-ai depus". Inclin spre: NU urca pastila, dar randul e rosu in grupul lui.
 
 **COMANDA DE REPORNIRE:** „Alege varianta vizuala pentru R6 (a/b/c) si daca urca pastila. Apoi:
-d300_reconciliere - maparea cota->rand e DUBLATA din d300.py fara sa-i citeze actul; repara prin
-import din sursa unica, nu prin copierea comentariului. Si `d406.tva_procent: Decimal = Decimal(21)`,
-cota ca default de parametru. Amandoua sunt in clichetul confruntarii. Dupa: sursarea per tip a
+`d406.tva_procent: Decimal = Decimal(21)`, cota ca default de parametru pe linia de factura D406
+(clasa #2, in clichetul confruntarii). Dupa: sursarea per tip a
 termenelor (R4, `core/test_temei_termene.py` e xfail strict pana atunci), apoi arderea clichetului de
 la 98 in jos, in ordinea 2-6."
 
@@ -53,7 +52,16 @@ la 98 in jos, in ordinea 2-6."
 4. `d216.COTA_IMPOZIT = 0.3` - cota fiscala in float.
 5. `d212_engine.py:148-174` - unsprezece `assert` cu valori hardcodate in PRODUCTIE.
 6. `salarizare.py` 18 valori + `common.py` ferestrele 220/450, 240/470, 250/490.
-7. **NOU:** `d300_reconciliere.py:46-47` (mapare duplicata, fara act) si `d406.py:387` (cota ca default).
+7. **NOU:** `d406.py:387` — `tva_procent: Decimal = Decimal(21)` pe `Linie` (D406), cota ca default de
+   parametru. (`d300_reconciliere` a IESIT — vezi corectia.)
+
+**CORECTIE LA PROPRIUL RAPORT (21.08).** Scrisesem ca `d300_reconciliere` „dubleaza maparea lui d300 si
+trebuie reparata prin import din sursa unica". GRESIT, si periculos: duplicarea e DELIBERATA, scrisa in
+antetul modulului si probata de `test_d300_reconciliere.test_non_tautologie_*` — cele doua cai n-au voie
+sa imparta cod, altfel gardul de continut D300 devine tautologic si un bug comun trece prin amandoua.
+Judecasem mecanismul dupa FORMA (doua constante identice) fara sa-i citesc antetul — a doua oara in
+aceeasi tura. Ce lipsea cu adevarat era TEMEIUL langa valori (Legea 141/2025 art.291 CF + OPANAF
+174/2025); adaugat, cele doua randuri au trecut in clasa E si clichetul fisierului a coborat la 0.
 
 RAMAS deschis din turele anterioare, nemiscat: FK pe `salariu_istoric`/`pontaj` + 24 orfani pe t001 ·
 cele 8 CNP-uri plauzibile pe t013-t016 · `etransport_ecran.js` etTimp gri -> „—" · citirea celor 9

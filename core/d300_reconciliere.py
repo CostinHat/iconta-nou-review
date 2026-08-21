@@ -42,9 +42,14 @@ from decimal import Decimal, ROUND_HALF_UP
 
 # Randurile AUTOMATE derivate din facturi (aceleasi cote ca generatorul, dar
 # maparea e re-declarata aici - nu se importa _LIVRARE_RAND/_ACHIZ_RAND din d300,
-# ca sa nu existe cod comun cu calea 1).
-_COLECTAT = {21: "R9", 11: "R10", 9: "R11"}     # livrari taxabile
-_DEDUCTIBIL = {21: "R22", 11: "R23"}            # achizitii deductibile (9% e respins de DUK -> negardat aici)
+# ca sa nu existe cod comun cu calea 1). DUPLICAREA E DELIBERATA si probata de
+# test_d300_reconciliere.test_non_tautologie_*: a "repara"-o prin import ar sterge exact
+# proprietatea pentru care exista modulul. Ce lipsea, si se adauga acum (21.08.2026), e TEMEIUL
+# de langa valori - scanul de constante il cerea, si avea dreptate:
+# COTE (de la 1 aug 2025, Legea 141/2025 art.291 CF): standard 21%, redusa 11%; 9% e cota
+# istorica de dinainte. Maparea cota -> rand a decontului: OPANAF 174/2025 (structura D300).
+_COLECTAT = {21: "R9", 11: "R10", 9: "R11"}     # livrari taxabile: 21->R9, 11->R10, 9->R11 (istoric)
+_DEDUCTIBIL = {21: "R22", 11: "R23"}            # achizitii ded. (OPANAF 174/2025): 21->R22, 11->R23; 9% respins de DUK
 
 
 class ReconciliereD300(ValueError):

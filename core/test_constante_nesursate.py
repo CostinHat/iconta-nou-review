@@ -35,7 +35,7 @@ from core import scan_constante
 BASELINE = {
     "common.py": 8, "control_fiscal_api.py": 1, "d101.py": 7, "d101g.py": 1,
     "d108.py": 1, "d169.py": 1, "d169n.py": 1, "d205.py": 2, "d212_engine.py": 11,
-    "d216.py": 1, "d300_reconciliere.py": 5, "d394.py": 2,
+    "d216.py": 1, "d394.py": 2,
     "d401.py": 2, "d402.py": 3, "d403.py": 5, "d406.py": 5, "d406_active.py": 7,
     "d406_stocuri.py": 1, "d407.py": 2, "salariati_api.py": 1, "salarizare.py": 18,
     "scadente.py": 3, "stat_plata_api.py": 1, "tva_agricultori.py": 2, "tva_aur.py": 1,
@@ -244,11 +244,13 @@ def test_lista_operationale_nu_e_un_cos():
 
 _COTE_TVA = {"21", "19", "11", "0.21", "0.19", "0.11"}
 
-# Clichet, nu prag: cele 5 de azi sunt NUMITE, ca să nu se ascundă într-un număr.
+# Clichet, nu prag: intrările sunt NUMITE, ca să nu se ascundă într-un număr.
+# 21.08, după prima măsurătoare: cele două din `d300_reconciliere` au IEȘIT — dar NU prin
+# unificare, cum scrisesem. Duplicarea mapării acolo e DELIBERATĂ și probată de
+# `test_non_tautologie_*`: cele două căi n-au voie să împartă cod, altfel gardul de conținut
+# devine tautologic. Judecasem mecanismul după formă (două constante identice) fără să-i citesc
+# antetul. Ce lipsea cu adevărat era TEMEIUL lângă valori; adăugat, au trecut în clasa E.
 CONFRUNTARE_BASELINE = {
-    ("d300_reconciliere.py", "21"): "maparea cotă→rând, geamăna lui d300.py:41-42 care ÎȘI citează "
-                                    "actul în antet (Legea 141/2025); aici doar un comentariu fără act.",
-    ("d300_reconciliere.py", "11"): "idem, aceeași mapare duplicată în două fișiere.",
     ("d406.py", "21"): "`tva_procent: Decimal = Decimal(21)` — cotă ca DEFAULT de parametru; "
                        "supraviețuiește tăcut unei schimbări de cotă (clasa #2 de pe lista de ardere).",
 }

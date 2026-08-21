@@ -3562,9 +3562,16 @@ compara.
 adică exact miezul celor 28 de false pozitive, **fără să deschizi vreun fișier**. Ăsta e răspunsul la
 „se putea ști înainte?".
 
-**Azi dă 5, toate datorie reală, ținute într-un clichet NUMIT** (nu un număr): `d300_reconciliere`
-dublează maparea cotă→rând a lui `d300` fără să-i citeze actul (geamăna lui e în E fiindcă antetul ei
-citează Legea 141/2025), și `d406.tva_procent: Decimal = Decimal(21)` e o cotă ca default de parametru.
+**Azi dă 1, ținut într-un clichet NUMIT** (nu un număr): `d406.tva_procent: Decimal = Decimal(21)`,
+cotă ca default de parametru pe linia de factură D406.
+
+**CORECTIE (21.08, în aceeași zi).** Raportasem 5, dintre care 4 în `d300_reconciliere`, cu
+instrucțiunea „repară prin import din sursa unică". Era GREȘIT: duplicarea de acolo e DELIBERATĂ,
+scrisă în antetul modulului și apărată de `test_non_tautologie_*` — a doua cale n-are voie să împartă
+cod cu prima, altfel gardul de conținut D300 devine tautologic. Judecasem după FORMĂ (două constante
+identice) fără să citesc antetul. Ce lipsea era TEMEIUL lângă valori; adăugat, au ieșit din C.
+**Confruntarea a avut dreptate că e ceva acolo — eu am greșit ce anume.** Un instrument care semnalează
+corect poate fi urmat greșit: semnalul spune UNDE să te uiți, nu CE să repari.
 
 **Citește registrul celuilalt instrument ca DATE, prin `ast`, fără import** — modulul verificatorului
 își rulează scanul la nivel de modul, iar un test n-are voie să pornească alt instrument ca efect

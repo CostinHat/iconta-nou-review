@@ -1,0 +1,20 @@
+#!/bin/sh
+# Poarta: UN COMMIT CONTINE EXACT CE POTI NUMI (21.08.2026, dupa o incalcare).
+# `git add -A core/ frontend_test/ static/` a maturat 234 de artefacte necomise intr-un commit
+# despre altceva - capturi de proba, scripturi de lucru, CSV-uri. Mesajul nu putea spune nimic
+# despre ele. Un fisier nou care nu incape in mesaj n-are ce cauta in commit.
+#
+# Escape MOTIVAT (acelasi tipar ca `# upsert-ok:`): scrie in mesaj
+#     # multe-fisiere-ok: <de ce sunt toate intentionate>
+MSG="$1"
+PRAG=8
+NOI=$(git diff --cached --name-only --diff-filter=A | wc -l)
+if [ "$NOI" -gt "$PRAG" ] && ! grep -q "multe-fisiere-ok:" "$MSG"; then
+    echo "[commit-msg] RESPINS: $NOI fisiere NOI in commit (prag $PRAG)."
+    git diff --cached --name-only --diff-filter=A | head -12 | sed 's/^/    /'
+    [ "$NOI" -gt 12 ] && echo "    ... si inca $((NOI - 12))"
+    echo "[commit-msg] Daca sunt intentionate: scrie '# multe-fisiere-ok: <motiv>' in mesaj."
+    echo "[commit-msg] Daca NU (ai dat 'git add -A'?): scoate-le cu 'git reset HEAD -- <cale>'."
+    exit 1
+fi
+exit 0

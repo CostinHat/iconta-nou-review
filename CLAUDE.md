@@ -445,6 +445,14 @@ Fara titlu, raportul e incomplet.
    (b) e o afirmatie despre REPO (lista incompleta, ramura netestata, tipar nematurat) sau despre LUME? Ce e
    despre repo si e inchidabil = munca. Scrisul lui in §5 nu il descarca - il ascunde.
 
+   **INCALCATA DIN NOU, 21.08.2026 (a treia oara).** Doua rapoarte din aceeasi tura au avut in §5 itemi FARA
+   eticheta: "daca portile declarate sunt destul de bune" si "d300_reconciliere duplica maparea - n-am facut-o".
+   Amandoi erau MUNCA, nu limite: primul s-a inchis citind doua functii (si a scos la iveala ca poarta D390 e
+   calendaristica, nu de completitudine - o afirmatie deja publicata, corectata), al doilea citind un antet de
+   modul (si a scos la iveala ca "reparatia" pe care o propuneam ar fi sters un gard de non-tautologie). Motivul
+   real n-a fost imposibilitatea, ci ora si scopul. Testul (a) din paragraful de mai sus le-ar fi prins pe
+   amandoua: "as putea s-o inchid cu comenzile pe care le am acum?" - da, in cinci minute fiecare.
+
    **De ce regula asta e intarita:** exista deja ca Regula 12 si ca §5-gol-la-finalizarea-firmei (19.08), si a
    fost incalcata pe 20.08 intr-un raport de METODA (nu de firma) - formularea veche era legata de "firma gata",
    deci n-a declansat. Se aplica la ORICE raport. Doua din cele patru randuri de atunci erau fixabile in cinci
@@ -788,6 +796,13 @@ externalizeaza.
 ## Mecanica portii (lectii 30.07.2026, platite)
 
 Poarta e ce se ruleaza, nu ce se spune - iar doua capcane au lasat rezultate false:
+
+- **Un commit contine exact ce poti NUMI. Se pune la index pe NUME, niciodata `git add -A` / `git add .`**
+  (21.08.2026). `git add -A core/ frontend_test/ static/` a maturat in 5cc3c5e 234 de artefacte necomise -
+  190 de capturi PNG de proba, scripturi de lucru, CSV-uri - peste care mesajul de commit nu putea spune
+  nimic. Nu se repara rescriind istoria (era deja pe origin/main si pe backup, iar `--force` e interzis):
+  se repara INAINTE, cu `git rm --cached`, si raman pe disc netrackate. GARD: `scripts/githooks/commit-msg`
+  respinge un commit cu peste 8 fisiere NOI daca mesajul nu poarta `# multe-fisiere-ok: <motiv>`.
 
 - **Exit-code-ul REAL al lui pytest, nu al ultimei comenzi din pipe.** `pytest -q | tail -1 && git
   commit` verifica iesirea lui `tail` (mereu 0), nu a lui pytest - a lasat un commit ROSU sa treaca

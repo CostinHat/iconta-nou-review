@@ -162,3 +162,49 @@ semaforul pe care îl vede clientul. Gardat: `core/test_pastila_gri.py`.
 - Gardul temeiurilor verifică doar că citarea **aterizează** pe un document existent — nu că documentul
   spune ce pretinzi. Aia cere arbitrul.
 - Așezarea în pagină nu e prinsă de niciun verificator. Reorganizarea unui ecran cere confirmare.
+
+## 10. DISCIPLINA EXECUȚIEI — greșeli proprii, scrise ca să nu se repete
+
+Secțiunile 1–9 spun cum se verifică. Asta spune ce am greșit executând, în ciuda lor. Fiecare rând
+are instanța care l-a produs; fără instanță ar fi un principiu, iar principiile nu se pot verifica.
+
+**10.1 Nu descrie un mecanism după NUMELE lui. Deschide-l.**
+Două instanțe în aceeași tură (21.08.2026):
+- am scris în registrul de excepții că D390 are „poartă: lună închisă" — sună a completitudine. Citit
+  la sursă, `d390_are_operatiuni` face `prima_urm > azi -> None`: e luna **calendaristică**, nu
+  evidența închisă. O firmă care n-a introdus încă facturile de iulie primește în august „nu se
+  datorează pe iulie".
+- am scris că `d300_reconciliere` „dublează maparea lui d300 și trebuie reparată prin import din sursa
+  unică". Antetul modulului spune exact pe dos: duplicarea e **deliberată**, iar
+  `test_non_tautologie_*` o apără — a doua cale n-are voie să împartă cod cu prima, altfel gardul de
+  conținut devine tautologic. „Reparația" ar fi șters gardul.
+
+E aceeași orbire ca „măsori proxy-ul, nu lucrul", mutată în scris: numele unui mecanism e un proxy
+pentru corpul lui. **Un semnal spune UNDE să te uiți, nu CE să repari.** Instrumentul avea dreptate
+că e ceva acolo; eu am greșit ce anume, fiindcă n-am deschis fișierul.
+
+**10.2 Înainte de a adăuga o intrare într-un registru, citește CONSUMATORUL lui.**
+Am înregistrat semnalele R6 ca `casete` în harta ecranului. Gardul a picat corect: „casete cu
+condiție necunoscută (ar fi sărite tăcut)". Casetele sunt SECȚIUNI, iar comparatorul le caută după
+titlu în DOM; semnalele sunt un tip de RÂND în două casete existente. O intrare într-un registru e o
+promisiune făcută codului care îl citește — dacă nu știi cine îl citește, nu știi ce promiți.
+
+**10.3 Scrie FIȘIERUL, nu scriptul care scrie fișierul.**
+Trei defecte de escaping într-o singură tură, toate din același tipar: text românesc („…") și `\n`
+puse în literali Python care generau alt cod. Un ghilimet drept de închidere a rupt de două ori
+fișierul generat, iar `\n` dintr-un șir ne-raw a rupt al treilea. Regula: **textul trăiește în
+fișiere**; scripturile doar le citesc și le aplică. Timpul pierdut pe escaping e timp în care nu
+verifici nimic.
+
+**10.4 Captura care se PRIVEȘTE se ia din codul care RULEAZĂ.**
+Prima captură a semnalelor R6 arăta textul de dinaintea schimbării, fiindcă serviciul rula încă
+commitul anterior. Captura probează versiunea pornită, nu fișierul de pe disc. Dacă repornirea nu e
+în puterea ta, capturează DUPĂ publicare și privește atunci — și spune în raport care versiune ai
+privit.
+
+**10.5 Ce a mers, și de ce se păstrează.**
+Defectul care a contat cel mai mult în tura asta — semnalul care repeta integral motivul randat
+imediat deasupra lui, același paragraf de patru rânduri de două ori — n-a fost găsit de niciun test,
+de niciun contor și de nicio măsurătoare. A fost găsit **privind captura**. Numărătoarea spunea „4
+rânduri `.cf-semnal`, axe 0 violări": tot verde, și tot greșit. Privitul rămâne singurul instrument
+care găsește dublarea, aglomerarea și tonul.
