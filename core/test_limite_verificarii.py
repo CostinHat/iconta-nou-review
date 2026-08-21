@@ -68,13 +68,25 @@ def test_invitatia_de_intarire_apare_doar_cand_e_ceva_de_facut():
 
 
 def test_randerul_chiar_o_afiseaza():
-    """Doc-cod: o listă corectă în payload poate fi complet nefolosită pe ecran."""
+    """Doc-cod: o listă corectă în payload poate fi complet nefolosită pe ecran.
+
+    ANCORAT PE ARTEFACT, nu pe sursă. Prima versiune căuta titlul în textul lui `control_verdict.js`
+    — și a trecut VERDE la o mutație care ștergea titlul din randare, fiindcă îl găsea în COMENTARIUL
+    de deasupra. A treia oară în aceeași zi când un gard citește proză în loc de cod (după cel care
+    s-a aprins pe propria explicație și după `lit.` aprins pe «po-LIT-e»). Artefactul e produs
+    RANDÂND ecranul, deci un comentariu nu-l poate satisface."""
+    import json
     import os
     rad = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    js = open(os.path.join(rad, "static", "js", "ecrane", "control_verdict.js"),
-              encoding="utf-8").read()
-    assert "Ce nu poate spune verificarea asta" in js, "secțiunea nu se randează"
-    assert "d.limite" in js, "rendererul nu citește limitele din payload"
+    art = os.path.join(rad, "frontend_test", "vizual", "casete_control_fiscal.json")
+    if not os.path.exists(art):
+        pytest.skip("artefactul casetelor lipsește — rulează frontend_test/vizual/scan_casete.py")
+    a = json.load(open(art, encoding="utf-8"))
+    titluri = [s["titlu"] for s in a["randat"]["sectiuni"]]
+    assert "Ce nu poate spune verificarea asta" in titluri, (
+        "secțiunea nu apare pe ecranul RANDAT (secțiuni văzute: %s)" % titluri)
+    randuri = a["payload"]["lungimi"].get("limite", 0)
+    assert randuri >= 3, "payload-ul poartă doar %d limite — cele trei feluri n-ajung pe ecran" % randuri
 
 
 def test_semaforul_pune_limitele_in_payload():
