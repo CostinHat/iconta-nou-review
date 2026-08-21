@@ -5,7 +5,7 @@ Statut per fiecare; cele **CONSTRUIT** numesc fișierul-gardă (existența lor e
 `core/test_instrumente_roadmap.py`). Motto: *o regulă scrisă și citită nu e o regulă păzită — doar
 poarta ține* (vezi [[regula-scrisa-nu-e-regula-pazita]]).
 
-**INSTRUMENTE DECLARATE: 12.** Numărul e citit de gardă din rândul ăsta — dacă apare al 13-lea, rândul
+**INSTRUMENTE DECLARATE: 13.** Numărul e citit de gardă din rândul ăsta — dacă apare al 13-lea, rândul
 trebuie schimbat, altfel poarta pică. Așa roadmap-ul poate CREȘTE, nu doar să nu mintă.
 
 ## Construite (gard mecanic în pre-commit)
@@ -17,6 +17,9 @@ trebuie schimbat, altfel poarta pică. Așa roadmap-ul poate CREȘTE, nu doar s�
 - **#6 Golden XSD structural pe date POPULATE — latura structurală** — CONSTRUIT: `core/test_golden_xsd.py` + `core/test_d402.py`. Fiecare XSD de declarație din corpus cere un test care generează pe date populate și validează structura (lxml/jar). Grounded: d402 avea generator complet și ZERO teste. RĂMAS latura *valori-golden* (nesursabilă — n-avem declarații-etalon completate, [[anaf-surse-fara-exemple-completate]]).
 - **#7 Verificator „temei la sursă"** — CONSTRUIT (21.08, era listat PROPUS deși exista): `core/test_temeiuri.py` (citarea aterizează pe un document din `anaf_surse/`) + `core/test_harta_temei.py` (R5: temei_legal ≠ regula_produs) + verificatorul `TEMEI-STRUCTURAT`/`GRI`. **RĂMAS:** citatul VERBATIM (azi se verifică doar că referința aterizează, nu că actul spune ce pretinzi) — vezi #12 și prioritatea P2.
 - **#12 Scanul de constante fiscale + confruntarea instrumentelor** — CONSTRUIT (20-21.08, lipsea din roadmap): `core/scan_constante.py` + `core/test_constante_nesursate.py`. Clasifică literalii numerici din modulele fiscale (A sursat / B nomenclator / C nesursat / D precizie / E temei în proză), clichet **per fișier** (126 → 93), plus **confruntarea celor două instrumente**: un fișier de pe `_TVA_EXCLUSE` al verificatorului care are o cotă în clasa C = dezacord între două măsurători ale aceluiași lucru. Grounded: `cote_tva.py` era raportat nesursat deși verificatorul îl scutea deliberat.
+
+- **#13 Scanul de citări verificabile (clichet care CREȘTE)** — CONSTRUIT (21.08): `core/scan_citate.py` + `core/test_citate_verbatim.py`. Verifică dacă `text_citat` chiar EXISTĂ în documentul citat din `anaf_surse/` — trece de la „referința aterizează" la „citatul e real". Calibrat pe cele 34 de citări din registrul de cote: 10 verbatim, 24 parafrază-cu-localizator (NU greșite, altă formă). De-aia clichetul **crește**: o citare nouă scrisă verbatim ridică pragul, una rescrisă din verbatim în parafrază îl coboară și pică. **Ce nu poate spune:** când un citat nu se găsește, cauza poate fi parafrază / altă consolidare a actului / citat greșit — scanul nu le deosebește, iar numărul e o măsură, nu un verdict.
+  *Adăugat prin DISCIPLINĂ, nu prins de gardă:* gardul roadmap-ului a trecut verde cu instrumentul neînregistrat, exact cum e declarat mai jos că nu-l poate prinde. Limita s-a confirmat în aceeași oră în care a fost scrisă.
 
 ## Propuse (neconstruite încă — backlog urmărit)
 
