@@ -208,3 +208,41 @@ imediat deasupra lui, același paragraf de patru rânduri de două ori — n-a f
 de niciun contor și de nicio măsurătoare. A fost găsit **privind captura**. Numărătoarea spunea „4
 rânduri `.cf-semnal`, axe 0 violări": tot verde, și tot greșit. Privitul rămâne singurul instrument
 care găsește dublarea, aglomerarea și tonul.
+
+### 10.6 — Un gard „nu face X" trebuie să provoace întâi starea în care X ar fi tentant
+
+`test_verificarea_nu_scrie_nimic` număra rândurile înainte și după, pe o lună **fără nicio
+contradicție**. O verificare care ar fi emis singură corecții ar fi trecut senin: n-avea ce corecta.
+Gardul măsura corect, într-o lume în care întrebarea nu se punea.
+
+Regula: un test de forma „funcția asta NU face X" e vid dacă nu construiește întâi condiția în care X
+ar fi rezultatul natural. Numărătoarea înainte/după nu e suficientă — trebuie ca între ele să existe
+motivul pentru care cineva ar scrie.
+
+Aceeași formă, altă față: `test_emiterea_persista` chema `emite` **o singură dată**, deci nimic nu
+asertea idempotența, și mutația care o scotea trecea verde. Un gard pe o proprietate care se vede
+doar la a doua apăsare trebuie să apese de două ori.
+
+**Cum se prinde:** RED-proof. Amândouă au ieșit doar fiindcă am mutat implementarea și am văzut că
+gardul rămâne verde. Nicio citire a testului nu le-ar fi arătat.
+
+### 10.7 — Mutația din test trebuie DOVEDITĂ, nu presupusă
+
+Un ajutor de test muta salariul cu `UPDATE salariu_istoric SET salariu_brut = salariu_brut + 1000`.
+Tenantul are istoricul **gol** (salariul vine din bridge-ul `salariati.salariu_brut`), deci UPDATE-ul
+prindea ZERO rânduri. Două teste „probau" că documentul emis rezistă la schimbarea datelor de sub el
+— într-o lume în care nimeni nu schimbase nimic. Au trecut, și n-au verificat.
+
+Regula: după ce muți starea într-un test, **asertează că mutația s-a văzut** înainte de a asertea
+concluzia. O linie: `assert dupa != inainte, "mutația nu a schimbat nimic"`. Fără ea, un test de
+rezistență e o tautologie costisitoare.
+
+### 10.8 — REGULA DE AUR se aplică și la botez
+
+Am definit `_schema_sau_404(tenant_id, ctx)` fără să caut întâi numele. Exista deja
+`_schema_sau_404(ctx, tenant_id)` în același fișier; definiția mea a suprascris-o tăcut și a rupt
+**47 de rute** cu argumentele inversate. Python nu spune nimic la redefinire.
+
+„Verifici la sursă înainte de a afirma «absent»" nu e doar despre funcționalități — e și despre
+simboluri. Un `grep -n "def <nume>"` înainte de a scrie `def` costă o secundă. Aici a costat o rundă
+întreagă de suită plus un diagnostic pe o urmă de eroare care arăta ca un bug în rute străine.
