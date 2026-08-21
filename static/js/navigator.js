@@ -11,6 +11,7 @@
 import { sesiune } from "./sesiune.js?v=5d142951c9";
 import { esc } from "./api.js?v=a7f9e80ae0";  // esc canonic (cap.10): strip-html data-lossy inlocuit
 import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=534adc8486";  // [bun_venit_v1] "?" general (ansamblu)
+import * as _coaja from "./coaja.js?v=d189568eb7";  // [DS cap.25] contractul proprietar<->chirias
 
 // [p21_bara_lant] contextul barei 1 ca LANT, citit din sesiune.user() (sursa unica)
 function _functieAsistent(u) {
@@ -50,6 +51,7 @@ export function creeazaNavigator(radacina, desktopRandator) {
     const ctx = contextBara(u);
     const areBaraJos = u.rol !== "client";
 
+    _coaja.uitaLocurile();   // [DS cap.25] coaja se re-randeaza: locurile vechi nu mai exista
     const ecran = document.createElement("div");
     ecran.className = "desktop";
 
@@ -104,6 +106,9 @@ export function creeazaNavigator(radacina, desktopRandator) {
           : `${icon}<span class="subbara-gol">Firmă activă: Nicio firmă selectată</span>`;
       }
       antet.appendChild(subbara);
+      // [DS cap.25, 21.08.2026] Proprietarul isi DECLARA locul inchiriabil. Chiriasii (ecrane) cer
+      // loc prin `coaja.pune(...)`, nu si-l iau cu `document.querySelector(".subbara")`.
+      _coaja.inregistreazaLoc(_coaja.LOCURI.BARA_DE_STARE, subbara);
     }
     // [p25_bara3] bara 3 motivationala — doar asistent (angajat)
     if (u.rol === "angajat") {

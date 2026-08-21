@@ -5,6 +5,7 @@
 import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj } from "../api.js?v=a7f9e80ae0";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js?v=df9fe94900";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=5d142951c9";
+import * as _coaja from "../coaja.js?v=d189568eb7";  // [DS cap.25] contractul proprietar<->chirias
 import { randeazaListaFirme } from "./firme.js?v=474caf58f0";
 import { randeazaMigrare } from "./migrare.js?v=698f6e7671";
 import { randeazaControl } from "./control.js?v=d09ca9ab5a";
@@ -464,8 +465,8 @@ async function actualizeazaRaportari(grila) {
 // CREDE ca are control in doi si n-are e mai rau decat o coada blocata: bifa se da DOAR pe `efectiv`,
 // iar starea suspendata se NUMESTE (trecerea granitei nu e tacuta). Vezi DECIZII 20.08.2026.
 async function _indicatorPatruOchi() {  /* po_indicator_v1 */
-  const bara = document.querySelector(".subbara");
-  if (!bara || bara.querySelector("#po-indicator")) return;
+  // [DS cap.25, 21.08.2026] Chiriasul CERE loc, nu si-l ia. Inainte: querySelector(".subbara").
+  if (!_coaja.cereLoc(_coaja.LOCURI.BARA_DE_STARE)) return;   // locul poate lipsi (rol client)
   let st;
   try { st = await api.get("/eu/patru-ochi"); } catch { return; }
   if (!st || !st.activ) return;            // politica oprita -> nimic de aratat
@@ -501,22 +502,22 @@ async function _indicatorPatruOchi() {  /* po_indicator_v1 */
       }
     }, { textOk: efectiv ? "Dezactiveaz\u0103" : "Opre\u0219te de tot" });
   });
-  bara.appendChild(el);
+  _coaja.pune(_coaja.LOCURI.BARA_DE_STARE, "po-indicator", el);   // idempotent: inlocuieste, nu dubleaza
 }
 async function _educatiePatruOchi(continut) {  // [p55_decizie]
   let date;
   try { date = await api.get("/eu/educatie"); } catch { return; }
   const ed = (date.educatii || []).find((e) => e.cheie === "patru-ochi");
   if (!ed) return;
-  const bara = document.querySelector(".subbara");  /* edu_subbara_v1: mesaj persistent in bara gri */
-  if (!bara || bara.querySelector("#edu-4ochi")) return;
+  // [DS cap.25] mesaj persistent in bara de stare — CERUT, nu luat.
+  if (!_coaja.cereLoc(_coaja.LOCURI.BARA_DE_STARE)) return;
   const el = document.createElement("span");
   el.id = "edu-4ochi";
   el.className = "subbara-edu";
   el.innerHTML = `Po\u021bi activa validarea \u00een doi (patru ochi): nimeni nu depune ce a preg\u0103tit singur.
     <button class="btn-link" id="edu-activ">Activeaz\u0103</button> \u00b7
     <button class="btn-link" id="edu-nu">Nu acum</button>`;
-  bara.appendChild(el);
+  if (!_coaja.pune(_coaja.LOCURI.BARA_DE_STARE, "edu-4ochi", el)) return;
   el.querySelector("#edu-activ").addEventListener("click", async () => {
     try {
       await api.post("/eu/patru-ochi", { activ: true });
