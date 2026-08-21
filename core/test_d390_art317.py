@@ -22,7 +22,7 @@ def test_d390_neplatitor_art317_inregistrat_e_datorat():
 def test_d390_neplatitor_fara_art317_gri_actionabil_nu_permanent():
     out = cf.declaratii_datorate(_vec(False), are_salariati=False, azi=AZI)
     assert "d390" not in {d["tip"] for d in out["datorate"]}   # nebifat -> nu se fabrica datorat
-    motiv = " ".join(n["cauza"] for n in out["neclar"] if n["tip"] == "d390")
+    motiv = " ".join(n["motiv"] for n in out["neclar"] if n["tip"] == "d390")
     # mesaj ACTIONABIL (completeaza in profil), nu "nu avem inregistrata" permanent-fals
     assert "art. 317" in motiv and "marcat" in motiv.lower()
     assert "Nu avem înregistrată" not in motiv

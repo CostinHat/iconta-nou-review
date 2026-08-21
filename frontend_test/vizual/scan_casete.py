@@ -124,9 +124,13 @@ def main():
             "vc_chei_prezente": sorted([k for k, v in vc.items() if v]),
             "vc_cu_constatari": sorted([k for k, v in vc.items()
                                         if isinstance(v, dict) and (v.get("constatari") or [])]),
+            # [P3 21.08.2026] Se retine si FELUL, nu doar cheile: constrangerea reala e ca ce cere
+            # felul sa fie prezent (campurile urmeaza forma afirmatiei), nu ca exista o cheie anume.
             "randuri_motiv": {
-                "neclar": [sorted(x.keys()) for x in (d.get("neclar") or [])],
-                "neaplicabile": [sorted(x.keys()) for x in (d.get("neaplicabile") or [])],
+                "neclar": [{"fel": x.get("fel"), "chei": sorted(x.keys())}
+                           for x in (d.get("neclar") or [])],
+                "neaplicabile": [{"fel": x.get("fel"), "chei": sorted(x.keys())}
+                                 for x in (d.get("neaplicabile") or [])],
             },
             "randuri_decl": {
                 k: [sorted(x.keys()) for x in (d.get(k) or [])]

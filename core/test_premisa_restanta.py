@@ -39,7 +39,7 @@ def test_A_platitor_fara_data_tva_gri_nu_restanta():
         assert not any(d["tip"] == t for d in lipsa), "%s emis ca restanta fara data TVA" % t
         gri_t = [n for n in rez["neclar"] if n["tip"] == t]
         assert gri_t, "%s fara GRI necunoscut" % t
-        assert any("necunoscut declarat" in (n.get("cauza") or "") for n in gri_t), t
+        assert any("necunoscut declarat" in (n.get("motiv") or "") for n in gri_t), t
 
 
 def test_B_D406_marginit_ca_d300_d394():

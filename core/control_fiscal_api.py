@@ -21,6 +21,8 @@ hardcodata cu D101 lipit pe langa).
 from __future__ import annotations
 import datetime
 
+from core import afirmatii as _af   # [P3] afirmatiile despre datele firmei sunt obiecte, nu siruri
+
 from core import scadente  # sursa unica de scadente + zile lucratoare (fara import circular)
 from core.common import azi_ro, pastila_firma, perioada_tva_tip  # [fus] ziua RO; [semafor] escaladare; [ruptura] normalizare tip_decont
 from core import firma_profil_api as _fp  # [F180] stare_tva_anaf (comparatie platitor_tva vs snapshot)
@@ -207,16 +209,43 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                 item["incert"] = True   # [P4] perioada DESCHISA (D390 posibil, nu ferm) -> marcaj gri-semafor in UI
             datorate.append(item)
 
-    def gri(tip, cauza):
-        neclar.append({"tip": tip.lower(), "cauza": cauza})
+    # [P3 / R2′ 21.08.2026] Fiecare producator isi NUMESTE felul afirmatiei; nu se deduce din campuri.
+    # Sapte producatori in loc de trei, fiindca numele lor E declaratia: `gri_fereastra` spune ca
+    # necunoasterea acopera toata fereastra evaluata, `neaplic_fapt` spune ca e un fapt pe o perioada
+    # anume si CERE temeiul completitudinii. Domeniul nu se mai deduce la randare din nimic.
+    _dom_de = "%04d-12" % (an - 1)          # fereastra evaluata incepe la dec. anului precedent
 
-    def neaplic(tip, motiv):
-        # "nu se datoreaza" (cunoscut), NU gri ("nu pot verifica"). Se afiseaza in grupul Nu se datoreaza.
-        neaplicabile.append({"tip": tip.lower(), "motiv": motiv})
+    def gri_fereastra(tip, cauza):
+        """Necunoastere pe toata fereastra evaluata (vector incomplet, periodicitate necunoscuta)."""
+        neclar.append(_af.afirmatie("necunoastere", tip.lower(), cauza,
+                                    domeniu_de=_dom_de, domeniu_pana=None))
 
-    def neaplic_luna(tip, a, luna_p, motiv):
-        # neaplicabil pe o LUNA anume (D390 pe fapt) - poarta an/luna in plus fata de neaplic simplu.
-        neaplicabile.append({"tip": tip.lower(), "an": a, "luna": luna_p, "motiv": motiv})
+    def gri_luna(tip, a, m, cauza):
+        """Necunoastere pe o LUNA anume (perioada inca deschisa, evidenta incompleta)."""
+        neclar.append(_af.afirmatie("necunoastere", tip.lower(), cauza,
+                                    domeniu_de="%04d-%02d" % (a, m), domeniu_pana="%04d-%02d" % (a, m)))
+
+    def gri_an(tip, a, cauza):
+        """Necunoastere pe un AN (existenta/activitatea firmei in anul ala)."""
+        neclar.append(_af.afirmatie("necunoastere", tip.lower(), cauza,
+                                    domeniu_de="%04d-01" % a, domeniu_pana="%04d-12" % a))
+
+    def gri_contradictie(tip, motiv, sursele):
+        """Doua afirmatii care nu pot fi amandoua adevarate. NU e necunoastere: aici stim doua
+        lucruri incompatibile, si `sursele` le numeste pe amandoua ca sa se poata arbitra."""
+        neclar.append(_af.afirmatie("contradictie", tip.lower(), motiv, sursele=sursele))
+
+    def neaplic_statut(tip, motiv, statut, statut_din=None):
+        """Obligatia nu exista cat tine un STATUT (forma juridica, regim TVA). Relatie, nu interval:
+        capatul de sus e deschis prin natura afirmatiei."""
+        neaplicabile.append(_af.afirmatie("statut", tip.lower(), motiv,
+                                          statut=statut, statut_din=statut_din))
+
+    def neaplic_fapt(tip, a, luna_p, motiv, temei_completitudine):
+        """Fapt constatat pe o perioada ANUME. Temeiul completitudinii e OBLIGATORIU: un fapt negativ
+        („nicio operatiune IC in luna") se sprijina pe ce ne face sa credem ca am vazut tot."""
+        neaplicabile.append(_af.afirmatie("fapt", tip.lower(), motiv, an=a, luna=luna_p,
+                                          temei_completitudine=temei_completitudine))
 
     # [C - regula 4] declaratie de EXISTENTA (D100/D101/D406-neplatitor): o RESTANTA pe un an in care NU pot
     # demonstra ca firma exista/era activa NU se emite ca lipsa (verdict nesustinut) -> GRI "necunoscut
@@ -231,7 +260,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                 k = (tip.lower(), a)
                 if k not in _gri_ex:
                     _gri_ex.add(k)
-                    neclar.append({"tip": tip.lower(), "an": a, "cauza": st})
+                    gri_an(tip, a, st)
                 return
         adauga(tip, a, luna_perioada, perioada_txt, tip_scad)
 
@@ -247,14 +276,16 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                 k = ("d100", a)
                 if k not in _gri_ex:
                     _gri_ex.add(k)
-                    neclar.append({"tip": "d100", "an": a, "cauza": st})
+                    gri_an("d100", a, st)
                 return
         if d100_fapt is not None and jos is None and _termen(a, luna_final, tip="d100") < azi:
             if d100_fapt(a, luna_final) is False:
-                neaplic_luna("D100", a, luna_final,
+                neaplic_fapt("D100", a, luna_final,
                     "D100 nu se datorează pe %s %d — fără venituri în trimestru (bază 0). Impozitul pe veniturile "
                     "microîntreprinderilor se declară numai pentru trimestrele cu venituri; declarația fără "
-                    "obligație e respinsă de validatorul ANAF (secțiunea obligație e obligatorie)." % (perioada_txt, a))
+                    "obligație e respinsă de validatorul ANAF (secțiunea obligație e obligatorie)." % (perioada_txt, a),
+                    temei_completitudine="d100_fapt: trimestru fără venituri ȘI fără facturi emise "
+                                         "(False), nu doar venituri 0 — ambiguu ar fi întors None")
                 return
             # True (are bază) sau None (nu se poate ști, ex. facturi necontabilizate) -> emit (reminder)
         adauga("D100", a, luna_final, perioada_txt, "d100")
@@ -272,7 +303,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
         try:
             d = perioada_tva_tip({"tip_decont": tip_decont})    # "T"/"L"/"S"/"A" sau ridica
         except ValueError:
-            gri(tip, cauza_periodicitate)
+            gri_fereastra(tip, cauza_periodicitate)
             return
         # [A - regula 4] platitor CU marginit dar FARA data de inregistrare TVA cunoscuta (tva_inreg None):
         # nu pot demonstra DE CAND e inregistrata -> NU emit RESTANTA pe lunile trecute (verdict nesustinut).
@@ -295,10 +326,10 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                 if _dupa_inreg(a, m):
                     _emite(a, m, _LUNI_NUME[m])
         else:
-            gri(tip, cauza_periodicitate)   # S/A: periodicitate TVA neuzuala, nesuportata in semafor
+            gri_fereastra(tip, cauza_periodicitate)   # S/A: periodicitate TVA neuzuala, nesuportata in semafor
             return
         if necunoscut_data and supr[0]:
-            gri(tip, "necunoscut declarat: nu pot demonstra de când e firma înregistrată în scopuri de TVA "
+            gri_fereastra(tip, "necunoscut declarat: nu pot demonstra de când e firma înregistrată în scopuri de TVA "
                      "pentru restanțele trecute — completați „Data înregistrării în scopuri de TVA” "
                      "în Vectorul fiscal.")
 
@@ -322,7 +353,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
 
     # D300 TVA — depinde de platitor_tva (DACA datoreaza) + tip_decont (PERIODICITATEA)
     if platitor_tva is None:
-        gri("D300", "Plătitor de TVA necompletat în Vectorul fiscal — nu pot ști dacă datorezi D300.")
+        gri_fereastra("D300", "Plătitor de TVA necompletat în Vectorul fiscal — nu pot ști dacă datorezi D300.")
     elif platitor_tva:
         emite_tva("D300", "d300", "Tip decont TVA necompletat — nu pot ști periodicitatea D300 (lunar/trimestrial).", marginit=True)
     # platitor_tva == False -> nu se datoreaza D300 (cunoscut)
@@ -331,7 +362,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     # periodicitate = perioada fiscala TVA. Termen 30 luna urmatoare (scadente.py d394).
     # OPANAF 3769/2015, actualizat OPANAF 2194/2025.
     if platitor_tva is None:
-        gri("D394", "Plătitor de TVA necompletat — nu pot ști dacă datorezi D394.")
+        gri_fereastra("D394", "Plătitor de TVA necompletat — nu pot ști dacă datorezi D394.")
     elif platitor_tva:
         emite_tva("D394", "d394", "Tip decont TVA necompletat — nu pot ști periodicitatea D394.", marginit=True)
     # neplatitor -> fara D394
@@ -355,12 +386,12 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     # profit). PFA/partida simpla NU le datoreaza: impozitul pe venit PFA se depune prin Declaratia unica
     # (D212), rutata separat (rip_api/d212_engine). Deci "nu se datoreaza" (cunoscut), NU gri. Vezi DECIZII 23.07.
     if partida_simpla:
-        neaplic("D100", _NEAP_FORMA_SIMPLA["d100"])   # [G1] temei din constanta unica
-        neaplic("D101", _NEAP_FORMA_SIMPLA["d101"])
+        neaplic_statut("D100", _NEAP_FORMA_SIMPLA["d100"], statut="partida_simpla")   # [G1]
+        neaplic_statut("D101", _NEAP_FORMA_SIMPLA["d101"], statut="partida_simpla")
     elif regim_fiscal is None:
         cauza_r = "Regim fiscal necompletat — nu pot ști dacă datorezi D100 (micro) sau D101 (profit)."
-        gri("D100", cauza_r)
-        gri("D101", cauza_r)
+        gri_fereastra("D100", cauza_r)
+        gri_fereastra("D101", cauza_r)
     else:
         regim = regim_fiscal.strip().lower()
         if regim == "micro":
@@ -377,7 +408,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     if d390_fapt is None:
         # COMPAT — comportament istoric NESCHIMBAT (matricea de 64 il apara): bifa decide.
         if operatiuni_ic is None:
-            gri("D390", "Operațiuni intracomunitare necompletat — nu pot ști dacă datorezi D390.")
+            gri_fereastra("D390", "Operațiuni intracomunitare necompletat — nu pot ști dacă datorezi D390.")
         elif operatiuni_ic:
             if platitor_tva:
                 for a, m in per_luni:
@@ -386,7 +417,7 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                 for a, m in per_luni:
                     adauga("D390", a, m, _LUNI_NUME[m], "d390")   # [art.317] neplatitor inregistrat -> datorat
             else:
-                gri("D390", "D390 se depune de persoanele înregistrate conform art. 316 sau art. 317 "
+                gri_fereastra("D390", "D390 se depune de persoanele înregistrate conform art. 316 sau art. 317 "
                             "(OPANAF 705/2020, pct. 1.1). Firma nu are marcată înregistrarea art. 317 în profil — "
                             "completați-o dacă firma e înregistrată.")
         # operatiuni_ic False -> nimic (istoric)
@@ -411,41 +442,47 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                     # gri doar pe lunile cu semnal CONCRET (vezi d390.evidenta_incompleta).
                     _inc = d390_incomplet(a, m) if d390_incomplet else None
                     if _inc:
-                        gri("D390", _inc)
+                        gri_luna("D390", a, m, _inc)
                     else:
-                        neaplic_luna("D390", a, m,
+                        neaplic_fapt("D390", a, m,
                             "D390 nu se datorează pe %s %d — nicio operațiune intracomunitară în lună. Se depune numai "
                             "pentru lunile în care ia naștere exigibilitatea (instr. completare D390, anexa OPANAF "
-                            "705/2020 anexa 2 pct.1.2 (anterior OPANAF 394/2017, abrogat))." % (_LUNI_NUME[m], a))
+                            "705/2020 anexa 2 pct.1.2 (anterior OPANAF 394/2017, abrogat))." % (_LUNI_NUME[m], a),
+                            temei_completitudine="lună calendaristică încheiată, confirmată doar pe "
+                                                 "ULTIMA lună închisă, fără documente primite de la "
+                                                 "ANAF și neînregistrate pe ea")
             else:
                 # None = luna DESCHISA -> BIFA decide (faptul nu se poate sti inca; cost asimetric: termen ascuns = amenda).
                 if operatiuni_ic:               # profil declara IC -> nu putem exclude: termene afiseaza, semafor gri
                     if jos is not None:
                         adauga("D390", a, m, _LUNI_NUME[m], "d390", incert=True)   # [P4] perioada deschisa = posibil, nu ferm
                     else:
-                        gri("D390", "Perioada %s %d încă deschisă — nu pot stabili încă exigibilitatea "
-                                    "operațiunilor intracomunitare." % (_LUNI_NUME[m], a))
+                        gri_luna("D390", a, m,
+                                 "Perioada %s %d încă deschisă — nu pot stabili încă exigibilitatea "
+                                 "operațiunilor intracomunitare." % (_LUNI_NUME[m], a))
                 elif operatiuni_ic is None:      # profil necompletat -> gri necompletat (doar semafor)
                     if jos is None:
-                        gri("D390", "Operațiuni intracomunitare necompletat — nu pot ști dacă datorezi D390.")
+                        gri_fereastra("D390", "Operațiuni intracomunitare necompletat — nu pot ști dacă datorezi D390.")
                 # operatiuni_ic False + luna deschisa -> profil declara fara IC -> nu emitem
         if contradictie:                        # [contradictie] operatiuni_ic=False vs facturi IC reale -> semnal, nu blocare (ca F185)
             luni_txt = ", ".join("%s %d" % (_LUNI_NUME[m], a) for (a, m) in contradictie)
-            gri("D390", "Profilul firmei declară FĂRĂ operațiuni intracomunitare, dar există facturi "
+            gri_contradictie("D390", "Profilul firmei declară FĂRĂ operațiuni intracomunitare, dar există facturi "
                         "intracomunitare în perioada %s. Verificați Vectorul fiscal (operațiuni intracomunitare) — "
-                        "D390 se datorează pentru lunile cu astfel de operațiuni." % luni_txt)
+                        "D390 se datorează pentru lunile cu astfel de operațiuni." % luni_txt,
+                             sursele="Vectorul fiscal (operațiuni intracomunitare) vs facturile "
+                                     "intracomunitare din evidență")
     else:                                        # NEplatitor: D390 e neaplicabil PRIN FORMA pe fapt.
         # POARTA: faptul D390 (d390_fapt -> DB per luna) se consulta DOAR la platitori (art. 316). Un neplatitor nu are
         # D390 pe fapt - obligatia depinde de inregistrarea art. 317, pe care n-o urmarim (facturile IC nu o dovedesc).
         # Decizie pe FLAG, fara DB -> nu atinge tabele care pot lipsi la un tenant de partida simpla (ex. d301_operatiuni).
         if operatiuni_ic is None:
-            gri("D390", "Operațiuni intracomunitare necompletat — nu pot ști dacă datorezi D390.")
+            gri_fereastra("D390", "Operațiuni intracomunitare necompletat — nu pot ști dacă datorezi D390.")
         elif operatiuni_ic:                      # flag True -> art. 317: datorat daca inregistrat, altfel gri
             if inreg_art317:
                 for a, m in per_luni:
                     adauga("D390", a, m, _LUNI_NUME[m], "d390")
             else:
-                gri("D390", "D390 se depune de persoanele înregistrate conform art. 316 sau art. 317 "
+                gri_fereastra("D390", "D390 se depune de persoanele înregistrate conform art. 316 sau art. 317 "
                             "(OPANAF 705/2020, pct. 1.1). Firma nu are marcată înregistrarea art. 317 în profil — "
                             "completați-o dacă firma e înregistrată.")
         # operatiuni_ic False -> neplatitor fara IC declarate -> nimic (D390 neaplicabil prin forma)
@@ -460,9 +497,9 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     # neconditionata; conditia de partida dubla e DOAR la lit.n) pt asociatii fara scop patrimonial; pct.3
     # lit.s) vizeaza doar persoane juridice). Deci nici PFA in partida dubla nu datoreaza. Restul: dupa TVA.
     if partida_simpla:
-        neaplic("D406", _NEAP_FORMA_SIMPLA["d406"])   # [G1] temei din constanta unica
+        neaplic_statut("D406", _NEAP_FORMA_SIMPLA["d406"], statut="partida_simpla")   # [G1]
     elif platitor_tva is None:
-        gri("D406", "Plătitor de TVA necompletat — nu pot ști periodicitatea D406.")
+        gri_fereastra("D406", "Plătitor de TVA necompletat — nu pot ști periodicitatea D406.")
     elif platitor_tva:
         emite_tva("D406", "d406", "Tip decont TVA necompletat — nu pot ști periodicitatea D406.", marginit=True)
     else:
@@ -521,19 +558,25 @@ def declaratii_fapt(conn_schema, schema, vector, azi):
             # DEPUS, in timp ce semaforul spunea ca nu se datoreaza. Depunerea e proba vie a incadrarii
             # gresite. PRECEDENT: tenant_006, unde acelasi tipar a produs „nu se datoreaza" pe o firma
             # cu achizitii intracomunitare REALE.
-            neclar.append({"tip": "d205",
-                           "motiv": f"D205 — nu pot verifica: am note validate pe {Y}, dar niciun rulaj "
+            neclar.append(_af.afirmatie(
+                "absenta_observatie", "d205",
+                surse_consultate=f"registrul de note validate pe {Y} (rulaj cont 457)",
+                motiv=f"D205 — nu pot verifica: am note validate pe {Y}, dar niciun rulaj "
                                     f"pe contul 457 (dividende). Absența unei înregistrări nu dovedește "
                                     f"absența distribuirii — verifică hotărârea AGA și extrasul de cont "
-                                    f"pentru {Y}."})
+                                    f"pentru {Y}."))
         else:
-            neclar.append({"tip": "d205",
-                           "motiv": f"D205 — nu pot verifica: lipsesc note validate pe {Y} (nu știu dacă s-au distribuit dividende)"})
+            neclar.append(_af.afirmatie(
+                "necunoastere", "d205",
+                f"D205 — nu pot verifica: lipsesc note validate pe {Y} (nu știu dacă s-au distribuit dividende)",
+                domeniu_de=f"{Y}-01", domeniu_pana=f"{Y}-12"))
 
     # D301 — lunar, DOAR neplatitori de TVA cu operatiuni IC (fapt: tabelul d301_operatiuni pe luna).
     if platitor_tva is True:
-        neaplicabile.append({"tip": "d301",
-                             "motiv": "D301 nu se datorează — firma e plătitoare de TVA (D301 e pentru neînregistrați în scopuri de TVA)"})
+        neaplicabile.append(_af.afirmatie(
+            "statut", "d301",
+            "D301 nu se datorează — firma e plătitoare de TVA (D301 e pentru neînregistrați în scopuri de TVA)",
+            statut="platitor_tva", statut_din=None))
     else:
         # [ruptura D301<->facturi 14.08.2026] union: tabelul manual d301_operatiuni SI facturile IC primite
         # (fluxul normal). Altfel un neplatitor cu achizitii IC reale ca facturi primea "nicio operatiune IC".
@@ -556,11 +599,14 @@ def declaratii_fapt(conn_schema, schema, vector, azi):
             # PRECEDENT: pe tenant_006 exact asta a produs „nu se datorează" pe baza vectorului, în
             # timp ce firma avea achiziții intracomunitare REALE — verificam conformarea la vectorul
             # declarat, nu realitatea operațiunilor. Decis 20.08 (R2′), vezi DECIZII.
-            neclar.append({"tip": "d301",
-                           "cauza": "nu am nicio înregistrare de operațiune intracomunitară — "
+            neclar.append(_af.afirmatie(
+                "absenta_observatie", "d301",
+                surse_consultate="tabelul d301_operatiuni + facturile intracomunitare primite, pe "
+                                 "anul curent și cel precedent",
+                motiv="nu am nicio înregistrare de operațiune intracomunitară — "
                                     "verifică dacă firma a avut achiziții de la furnizori din UE "
                                     "(facturi primite, e-facturi, extrase). Absența înregistrărilor "
-                                    "nu dovedește absența operațiunilor."})
+                                    "nu dovedește absența operațiunilor."))
     return {"datorate": datorate, "neaplicabile": neaplicabile, "neclar": neclar}
 
 
@@ -819,8 +865,9 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
             depuse[(t, a, l)] = dd.date() if hasattr(dd, "date") else dd
 
     lipsa, urmarit, confirmate, cu_intarziere = _clasifica(datorate, depuse, azi)
-    # neclar uniformizat pe campul `motiv` (declaratii_datorate foloseste `cauza`)
-    neclar_m = [{"tip": n["tip"], "motiv": n.get("motiv") or n.get("cauza", "")} for n in neclar]
+    # [P3 21.08.2026] Randurile sunt deja AFIRMATII normalizate (fel + motiv + domeniul lor).
+    # Vechea normalizare le reconstruia cu doar {tip, motiv} — arunca exact felul si domeniul.
+    neclar_m = list(neclar)
     # [R6 21.08.2026] Trecerea INVERSA peste `depuse`. NU escaladeaza pastila si NU se randeaza inca:
     # ecranul Control fiscal e STOP pana la confirmarea lui Costin asupra a CE se vede. Consumator viu
     # azi: frontend_test/audit_tenant.py (F7) + gard. Ramane in raspuns ca sa fie un singur loc unde se
