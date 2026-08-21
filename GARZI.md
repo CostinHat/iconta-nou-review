@@ -3631,3 +3631,36 @@ citească drept acoperire):
 **Ambele `except` sunt marcate `# MASCA MOTIVATA`** — gardul de măști le-a prins la commit, corect.
 Tăcerea e deliberată și direcția ei contează: un eșec de citire produce „nu pot ști" (deblochează /
 lasă poarta cum era), niciodată o afirmație despre lume.
+
+## 21.08.2026 — actul de închidere a lunii pe domeniul `facturi` (`c1043e3`, `396447d`)
+
+**Ce face imposibil:** ca cineva să declare „evidența lunii e completă" peste documente pe care le
+vedem deja neînregistrate; și ca o închidere să supraviețuiască unei modificări.
+`core/test_inchidere_luna.py` (14 teste, pe schemă efemeră reală).
+
+**Ce lipsea nu era mecanismul.** `core/perioada.py` (cap.23) există din iulie, cu
+`confirma`/`deconfirma`/`e_confirmat` pe (an, lună, domeniu). Lipsea DOMENIUL și ACTUL: cineva trebuie
+să DECLARE. Până atunci „lună închisă" era o observație despre calendar.
+
+**Cele două reguli, gardate:**
+1. **Nu se confirmă peste o absență cunoscută** — blocaj motivat care numește câte sunt și unde se
+   rezolvă. Refuzul e verificat și pe stare (nu doar pe excepție): luna rămâne neînchisă.
+2. **O modificare de-confirmă automat** — `facturi_api._redeschide_luna` pe creare și pe ștergere,
+   simetric cu `pontaj.seteaza`. Cu contra-direcția: o factură din ALTĂ lună nu redeschide luna
+   închisă, altfel închiderea n-ar ține niciodată.
+
+**Adoptarea e per firmă** (decizia „poarta se întărește, nu se convertește"): o firmă care n-a închis
+nicio lună rămâne exact cu comportamentul de dinainte. Punctul de adoptare e cea mai VECHE lună
+închisă, nu ultima.
+
+**Mutații (cinci).** A patra — punctul de adoptare luat ca ULTIMA lună — **a trecut prima dată**:
+testul închidea o singură lună, unde „prima" și „ultima" coincid. O aserțiune care nu poate fi
+falsificată nu e gardă; întărită cu două luni închise, mutația pică.
+
+**Două defecte găsite PRIVIND capturile, nu numărând** (contorul spunea „casetă prezentă, axe 0"):
+starea blocată numea obstacolul fără remediu — contabilul știa CE, nu și UNDE; și butonul rupea fraza
+la mijloc, stând inline. Ambele reparate, a doua oară la tiparul pontajului, care era de urmat oricum.
+
+**Probă vizuală** pe ALFA MICRO, trei stări pe aceeași lună (deschis / blocat / închis) + Pixel 5:
+axe 0 desktop, axe 0 mobil, body=393 fără overflow. IGIENĂ DE DATE: rândul de e-Factură inserat
+temporar și șters, luna redeschisă, numărătorile identice înainte/după.

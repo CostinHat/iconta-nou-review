@@ -4766,3 +4766,12 @@ un domeniu `facturi` în `perioada_confirmata` (mecanismul cap.23 există, folos
 `pontaj`) + actul de închidere a lunii.
 
 Gard nou: `core/test_faptul_bate_vectorul.py` (12 teste, 5 mutații). Suita: 2518 → 2530.
+
+## 21.08.2026 (tura 20.08h) — domeniul `facturi` + actul de închidere (`c1043e3`, `396447d`)
+
+`core/inchidere_luna.py`: stare / confirmă (refuz motivat peste documente în așteptare) / redeschide /
+punctul de adoptare. Rute GET+POST cu rol `admin_firma`, ca la pontaj. Deconfirmare automată în
+`facturi_api` pe creare și ștergere. Ecran: aceeași casetă ca la pontaj pe Istoric facturi, în trei
+stări. `d390.evidenta_incompleta_sau_neinchisa` leagă închiderea de semafor, adoptare per firmă.
+
+Gard nou: `core/test_inchidere_luna.py` (14 teste pe schemă efemeră). Suita: 2530 → 2544.

@@ -10659,3 +10659,25 @@ afirma. Semaforul răspunde gri cu numărul lor, DOAR pe lunile cu semnal concre
 **Deci drumul, în ordine:** (a) făcut — documentele în așteptare; (b) următorul pas real — un domeniu
 `facturi` în `perioada_confirmata` plus butonul de închidere de lună, moment în care „lună închisă"
 chiar devine o afirmație a cuiva, nu o observație despre calendar; (c) niciodată — hârtia.
+
+## 21.08.2026 — actul de închidere: ce declară, și ce nu poate declara
+
+Cerut de Costin după ce s-a stabilit că „lună închisă" era calendaristică, nu completitudine.
+
+**Închiderea e o AFIRMAȚIE a unui om**, nu o deducție a noastră — de-aia are rol (`admin_firma`), dată
+și autor, exact ca la pontaj. Iar o afirmație nu se lasă făcută peste ceva ce contrazicem deja: dacă
+ANAF ne-a dat e-Facturi pe luna aia și nu sunt înregistrate, închiderea e refuzată motivat. Nu e o
+restricție de comoditate — e aceeași regulă ca „nu se confirmă un verde peste un roșu cunoscut".
+
+**Și nu supraviețuiește datelor pe care le descrie.** O factură nouă sau ștearsă redeschide luna
+automat. Fără asta, închiderea ar spune „evidența e completă" despre alte date decât cele văzute
+atunci — „verde e o afirmație", în forma cea mai directă.
+
+**Adoptarea per firmă e ce ține decizia ta intactă.** Dacă poarta ar cere închidere de la toți, fiecare
+lună ar fi ieșit „neconfirmată" și toată clasa ar fi devenit gri — conversia respinsă. Așa, firma care
+nu folosește închiderea nu se schimbă; cea care o folosește primește afirmația mai tare, de la prima
+lună închisă încolo.
+
+**CE NU POATE DECLARA, oricât s-ar întări:** documentele care există doar pe hârtie sau la client.
+Închiderea spune „am văzut tot ce mi-a ajuns", nu „am văzut tot ce există". Limita rămâne scrisă în
+`inchidere_luna` și în registrul de excepții al gardului de absență.

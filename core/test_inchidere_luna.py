@@ -124,6 +124,20 @@ def test_stergerea_unei_facturi_redeschide_luna(conn):
     assert _per.e_confirmat(conn, SCHEMA, 2026, 6, "facturi")["confirmat"] is False
 
 
+def test_stornarea_redeschide_luna(conn):
+    """Stornarea e calea prin care se CORECTEAZĂ o factură emisă (nu există editare de sume). Trece
+    prin `creeaza_factura`, deci cade sub aceeași regulă — verificat, nu presupus: era gata să scriu
+    în predare că editarea nu e acoperită, când de fapt editarea nu există."""
+    r = _fa.emite_factura(conn, [{"descriere": "x", "cantitate": 1, "pret_unitar": 80, "cota_tva": 21}],
+                          tert_nume="CLIENT SRL", tert_cui="14399840",
+                          data_emitere=date.today().isoformat(), moneda="RON", platitor_tva=True)
+    azi = date.today()
+    _il.confirma(conn, SCHEMA, azi.year, azi.month, user_id=7)
+    _fa.storneaza(conn, r["factura_id"])
+    assert _per.e_confirmat(conn, SCHEMA, azi.year, azi.month, "facturi")["confirmat"] is False, \
+        "stornarea a lăsat luna închisă"
+
+
 def test_factura_din_alta_luna_nu_redeschide(conn):
     """Contra-direcția: dacă orice factură ar redeschide orice lună, închiderea n-ar ține niciodată."""
     _il.confirma(conn, SCHEMA, 2026, 6, user_id=7)

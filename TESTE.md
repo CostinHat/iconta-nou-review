@@ -1805,3 +1805,12 @@ pe 17 firme, zero semnale înainte. Confruntarea instrumentelor: 9 semnale retro
 
 Cinci mutații RED-probate. Cele două `except` sunt marcate `# MASCA MOTIVATA` — direcția tăcerii
 contează: un eșec de citire produce „nu pot ști", niciodată o afirmație despre lume.
+
+## 21.08.2026 — actul de închidere a lunii (`facturi`)
+
+| gardă | ce face imposibil |
+|---|---|
+| `core/test_inchidere_luna.py` | să se închidă o lună peste documente primite și neînregistrate; ca o factură nouă/ștearsă să lase luna închisă; ca punctul de adoptare să fie ultima lună în loc de prima |
+
+14 teste pe schemă efemeră reală. 5 mutații — a patra a trecut prima dată (o singură lună închisă face
+„prima" și „ultima" să coincidă); testul a fost întărit până a devenit falsificabil.
