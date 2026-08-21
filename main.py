@@ -26,6 +26,7 @@ from core.pdf_util import bani, data_ro
 from core.common import azi_ro, stare_din_nivel, pastila_firma  # [fus] ziua RO; [verdict] nivel->culoare + escaladare pastila
 from core import common as _common
 from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
+from core import afirmatii as _af  # [P8] afirmatiile despre datele firmei sunt obiecte, nu siruri
 from core.mesaje import (mesaj_din_cod, FARA_CABINET, EMAIL_INVALID, EMAIL_EXISTA,
                          EMAIL_NICIUNUL_VALID, CUI_FIRMA_LIPSA, PERIOADA_INCHISA,
                          ROL_INSUFICIENT, DOAR_ADMIN_ICONTA, DOAR_ADMIN_CABINET, DOAR_PATRON,
@@ -1630,7 +1631,12 @@ def migrare_importa(date: MigrareImportaIn, ctx=Depends(cere_rol("admin_firma"))
                 if cuic:
                     existente.add(cuic)   # prinde și duplicate în același lot
             except Exception as e:
-                erori.append({"cui": str(f.cui), "nume": nume, "mesaj": str(e)})
+                # ESEC, nu respingere de date: sta in aceeasi lista cu `deja_exista`, dar cauza e
+                # alta si omul trebuie s-o poata deosebi - altfel cauta greseala in fisier cand
+                # problema e la noi.
+                erori.append(migrare_api.respinge(
+                    "firmă", "firma %s (CUI %s)" % (nume, f.cui), "creare_esuata",
+                    "nu s-a putut crea: %s" % e, cui=str(f.cui), nume=nume))
     return {"creat": creat, "erori": erori, "total": len(creat)}
 
 
@@ -2176,18 +2182,40 @@ async def rip_import_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx
 # ============================================================
 #  CONTROL FISCAL — semafor conformare per portofoliu
 # ============================================================
-def _flag_constatare(stare, eticheta, mesaj, temei, remediu=None):
+def _flag_constatare(stare, eticheta, mesaj, temei, an, luna, remediu=None):
     # [verdict_colapsat] constatare STRUCTURATA (dot + mesaj + temei + remediu), randata identic cu D390/TVA
     # in control.js. `eticheta` = label scurt (sumar de lista + dedup fata de «Declaratie vs contabilitate»).
-    return {"stare": stare, "eticheta": eticheta, "mesaj": mesaj or eticheta,
-            "temei": temei or "", "remediu": remediu}
+    # [P8, 21.08.2026] Constatarea E o afirmatie, imbracata pentru ecran - ca in control_incrucisat.
+    # Felul se alege dupa STARE, fiindca asta E ce afirma: verde = am verificat si tine (fapt);
+    # rosu = doua surse nu pot fi amandoua adevarate (contradictie); gri = nu pot spune (necunoastere).
+
+    _txt = mesaj or eticheta
+    if stare == "gri":
+        _dom = ("%04d-%02d" % (an, luna)) if (an and luna) else (str(an) if an else None)
+        _a = _af.afirmatie("necunoastere", eticheta, _txt, domeniu_de=_dom, domeniu_pana=_dom)
+    elif stare == "rosu":
+        _a = _af.afirmatie("contradictie", eticheta, _txt,
+                           sursele="evidența contabilă a firmei; verificarea „%s”" % eticheta)
+    else:
+        _a = _af.afirmatie("fapt", eticheta, _txt, an=an, luna=luna,
+                           temei_completitudine=temei or "verificarea „%s” a rulat pe datele lunii"
+                                                         % eticheta)
+    # Campurile se pun UNUL CATE UNUL: un `{... "mesaj": ...}` aici ar fi numarat de
+    # `core/scan_afirmatii` drept inca o afirmatie netipata, iar CONSTRUCTORUL afirmatiilor ar aparea
+    # pe vecie in clichet ca datorie. Nu e cosmetica - chiar exista un singur dictionar, imbogatit.
+    _a["stare"] = stare
+    _a["eticheta"] = eticheta
+    _a["mesaj"] = _txt
+    _a["temei"] = temei or ""
+    _a["remediu"] = remediu
+    return _a
 
 
 import logging as _logging
 _LOG_VERDICT = _logging.getLogger("iconta.verdict")
 
 
-def _constatare_esuata(eticheta, nume, e):
+def _constatare_esuata(eticheta, nume, e, an, luna):
     """Constatare GRI pentru un verificator care CRAPA (nu 'nimic de raportat' - e 'nu am putut verifica').
     Excepția înghițită face firma să pară mai curată decât e (minciună prin omisiune). GRI nu escaladeaza
     pastila_firma (rezistenta se pastreaza - un esec izolat nu doboara semaforul), dar il anunta pe CONTABIL,
@@ -2196,12 +2224,12 @@ def _constatare_esuata(eticheta, nume, e):
     _LOG_VERDICT.warning("verificator esuat pe cale de verdict: %s -> gri (%r)", nume, e)
     return _flag_constatare("gri", eticheta, "Nu am putut verifica %s." % nume,
         "Verificarea a eșuat (%s). GRI înseamnă 'nu am putut verifica', NU 'curat' — o constatare reală "
-        "poate lipsi. Reîncarcă; dacă persistă, semnalează." % e)
+        "poate lipsi. Reîncarcă; dacă persistă, semnalează." % e, an, luna)
 
 
-def _verificator_esuat(contabil, eticheta, nume, e):
+def _verificator_esuat(contabil, eticheta, nume, e, an, luna):
     """Varianta pt lista de constatari (contabil): adauga constatarea gri. Vezi _constatare_esuata."""
-    contabil.append(_constatare_esuata(eticheta, nume, e))
+    contabil.append(_constatare_esuata(eticheta, nume, e, an, luna))
 
 
 # [paritate_severitate 24.07] Chei din verificari_contabile (vc) care NU se pliaza in `contabil` -> nu urca
@@ -2229,11 +2257,11 @@ def _construieste_contabil(schema, tid, ctx, an, luna, regim_tva_anaf):
         vc = _verificari_contabile(schema, an, luna)
         ech = vc.get("echilibru") or {}
         if not ech.get("ok", True):
-            contabil.append(_flag_constatare(stare_din_nivel(ech.get("nivel")), "Balanță dezechilibrată", ech.get("mesaj"), ech.get("temei")))
+            contabil.append(_flag_constatare(stare_din_nivel(ech.get("nivel")), "Balanță dezechilibrată", ech.get("mesaj"), ech.get("temei"), an, luna))
         tz = vc.get("trezorerie") or []
         tz_probleme = tz if isinstance(tz, list) else ([tz] if isinstance(tz, dict) and not tz.get("ok", True) else [])
         for p in tz_probleme:
-            contabil.append(_flag_constatare(stare_din_nivel(p.get("nivel")), "Solduri creditoare trezorerie", p.get("mesaj"), p.get("temei")))
+            contabil.append(_flag_constatare(stare_din_nivel(p.get("nivel")), "Solduri creditoare trezorerie", p.get("mesaj"), p.get("temei"), an, luna))
         # [control_incrucisat_v1 + F163_ui] declaratie vs evidenta. Constatarea INTREAGA e in «Declaratie vs
         # contabilitate»; aici doar sumarul (eticheta + temei). Etichete = EXACT cele filtrate in control.js.
         for cheie, et in (("tva_incrucisat", "TVA declarat diferă de contabilitate"),
@@ -2243,10 +2271,11 @@ def _construieste_contabil(schema, tid, ctx, an, luna, regim_tva_anaf):
             vd = vc.get(cheie) or {}
             if vd.get("stare") == "rosu":
                 prima = next((c for c in (vd.get("constatari") or []) if c.get("stare") == "rosu"), {})
-                contabil.append(_flag_constatare(prima.get("stare"), et, prima.get("mesaj"), prima.get("temei"), prima.get("remediu")))
+                contabil.append(_flag_constatare(prima.get("stare"), et, prima.get("mesaj"), prima.get("temei"), an, luna, prima.get("remediu")))
     except Exception as e:
         _verificator_esuat(contabil, "Verificări contabile — eșuate",
-                           "verificările contabile (echilibru, trezorerie, declarație vs contabilitate)", e)
+                           "verificările contabile (echilibru, trezorerie, declarație vs contabilitate)",
+                           e, an, luna)
     try:  # stocuri contabil vs fise CV
         vs = verificare_stocuri(tid, ctx)
         if not vs.get("ok", True):
@@ -2254,22 +2283,23 @@ def _construieste_contabil(schema, tid, ctx, an, luna, regim_tva_anaf):
             mesaj = ("Sold contabil diferit de fișele CV pe conturile: " + ", ".join(c["cont"] for c in difs) + "."
                      if difs else "Soldul contabil diferă de fișele de magazie CV.")
             # verificare_stocuri NU declara `nivel` (cauze legitime) -> stare_din_nivel(None)=gri. Vezi DECIZII 23.07.
-            contabil.append(_flag_constatare(stare_din_nivel(vs.get("nivel")), "Diferențe stocuri", mesaj, vs.get("nota")))
+            contabil.append(_flag_constatare(stare_din_nivel(vs.get("nivel")), "Diferențe stocuri", mesaj, vs.get("nota"), an, luna))
     except Exception as e:
-        _verificator_esuat(contabil, "Verificare stocuri — eșuată", "stocurile (sold contabil vs fișe CV)", e)
+        _verificator_esuat(contabil, "Verificare stocuri — eșuată", "stocurile (sold contabil vs fișe CV)", e, an, luna)
     try:  # praguri Intrastat
         ip = intrastat_praguri(tid, an, ctx)
         fluxuri = [nume for nume in ("introduceri", "expedieri") if ip[nume]["status"] != "sub_prag"]
         if fluxuri:
             # Intrastat declara nivel=AVERTISMENT (intrastat.NIVEL_STATUS) -> galben prin stare_din_nivel.
             contabil.append(_flag_constatare(stare_din_nivel(ip.get("nivel")), "Prag Intrastat depășit",
-                                             "Prag Intrastat depășit pe: " + ", ".join(fluxuri) + ".", ip.get("nota")))
+                                             "Prag Intrastat depășit pe: " + ", ".join(fluxuri) + ".",
+                                             ip.get("nota"), an, luna))
     except Exception as e:
-        _verificator_esuat(contabil, "Verificare Intrastat — eșuată", "pragurile Intrastat", e)
+        _verificator_esuat(contabil, "Verificare Intrastat — eșuată", "pragurile Intrastat", e, an, luna)
     # [F180] regim TVA local vs snapshot ANAF (constatare structurata deja produsa de evalueaza_firma)
     rta = regim_tva_anaf or {}
     if rta.get("stare") == "rosu":
-        contabil.append(_flag_constatare(rta.get("stare"), "Regim TVA diferă de ANAF", rta.get("mesaj"), rta.get("temei"), rta.get("remediu")))
+        contabil.append(_flag_constatare(rta.get("stare"), "Regim TVA diferă de ANAF", rta.get("mesaj"), rta.get("temei"), an, luna, rta.get("remediu")))
     return contabil, vc
 
 
@@ -2392,8 +2422,17 @@ def termene_portofoliu(ctx=Depends(cere_cabinet)):
                         are_sal = cur.fetchone()[0] > 0
                 if not vector:
                     # [T1] firma exista dar vectorul fiscal e gol -> nu se ascunde: gri cu temei (ca evalueaza_firma)
-                    neevaluate.append({"tenant_id": tid, "nume": f.get("nume"),
-                                       "cauza": "Vector fiscal necompletat — nu pot evalua obligațiile firmei."})
+                    # [P8] NECUNOASTERE declarata, nu o cauza in proza: „nu pot evalua" e o afirmatie
+                    # despre firma, si trebuie sa spuna PE CE perioada nu poate - altfel peste sase
+                    # luni se citeste ca fapt permanent.
+                    _n = _af.afirmatie(
+                        "necunoastere", "obligații fiscale",
+                        "Vector fiscal necompletat — nu pot evalua obligațiile firmei.",
+                        domeniu_de=azi.isoformat(), domeniu_pana=azi.isoformat())
+                    _n["tenant_id"] = tid
+                    _n["nume"] = f.get("nume")
+                    _n["cauza"] = _n["motiv"]
+                    neevaluate.append(_n)
                     continue
                 with db.get_conn() as cp:
                     with cp.cursor() as cur:
@@ -2413,9 +2452,18 @@ def termene_portofoliu(ctx=Depends(cere_cabinet)):
             # [T1] o firma care crapa NU dispare din ecran: gri cu temei (doctrina 23.07 — gri = "nu am putut", nu tacere).
             # [item4] numele tehnic al exceptiei merge DOAR in log (%r); pe ecran - temei citibil pentru contabil (DS cap.6).
             _LOG_VERDICT.warning("termene: evaluare esuata tenant %s -> gri (%r)", tid, e)
-            neevaluate.append({"tenant_id": tid, "nume": f.get("nume"),
-                               "cauza": "Nu am putut evalua această firmă acum — a apărut o eroare internă. "
-                                        "Am notat-o; reîncearcă mai târziu sau anunță suportul."})
+            # [P8] VERIFICARE RUPTA, nu necunoastere: masinaria a crapat, iar asta se spune ca atare -
+            # altfel se amesteca pe ecran cu „nu am date", si nimeni nu mai stie unde sa se uite.
+            # `eroare` sta in obiect pentru diagnostic; pe ecran ramane `cauza`, in limba omului.
+            _n = _af.afirmatie(
+                "verificare_rupta", "obligații fiscale",
+                "Nu am putut evalua această firmă acum — a apărut o eroare internă. "
+                "Am notat-o; reîncearcă mai târziu sau anunță suportul.",
+                eroare="%s: %s" % (type(e).__name__, e))
+            _n["tenant_id"] = tid
+            _n["nume"] = f.get("nume")
+            _n["cauza"] = _n["motiv"]
+            neevaluate.append(_n)
     return termene_api.portofoliu(firme_eval, azi, neevaluate)
 
 
@@ -4347,12 +4395,20 @@ def _verificari_contabile(schema, an, luna):
             with db.get_conn(schema) as _c:
                 return fn(_c, schema, an, luna)
         except Exception as _e:
-            return {"stare": "gri", "constatari": [{
-                        "stare": "gri", "eticheta": eticheta, "temei": "Verificarea nu a rulat.",
-                        "mesaj": "NU pot verifica %s: %s" % (eticheta, _e),
-                        "remediu": {"fel": "investigatie", "cauza": "Eroare la verificare.",
-                                    "actiune": "Reîncearcă; dacă persistă, verifică datele firmei.",
-                                    "facturi": []}}],
+            # [P8] VERIFICARE RUPTA: motorul a crapat, nu datele lipsesc. Pe ecran ramane gri, in
+            # date se DEOSEBESTE - cine numara „cate nu pot fi verificate" nu mai inghite si rupturile.
+            # Starea intra la CONSTRUCTIE, nu prin atribuire dupa: `_c["stare"] = "gri"` e prins de
+            # verificator (VERDICT_COLAPSAT, stare-literal), si pe drept - un verdict carpit dupa
+            # constructie are doua surse. A doua oara azi cand fac asta.
+            _c = dict(_af.afirmatie("verificare_rupta", eticheta,
+                                    "NU pot verifica %s: %s" % (eticheta, _e),
+                                    eroare="%s: %s" % (type(_e).__name__, _e)),
+                      stare="gri", eticheta=eticheta, temei="Verificarea nu a rulat.",
+                      remediu={"fel": "investigatie", "cauza": "Eroare la verificare.",
+                               "actiune": "Reîncearcă; dacă persistă, verifică datele firmei.",
+                               "facturi": []})
+            _c["mesaj"] = _c["motiv"]
+            return {"stare": "gri", "constatari": [_c],
                     "limita": "Verificarea %s nu a rulat: %s" % (eticheta, _e)}
     tva_incr = _incrucisat(_ci.verifica_tva, "TVA")
     d112_incr = _incrucisat(_ci.verifica_d112, "salarii (D112)")
@@ -4373,7 +4429,7 @@ def _verificari_contabile(schema, an, luna):
         rezultat["documente_pozate"] = _verifica_documente_pozate(schema)
     except Exception as e:
         # gri, nu tacere: chiar daca azi nu e surfacat in pastila, devine corect cand cineva il surfaceaza.
-        rezultat["documente_pozate"] = _constatare_esuata("Documente pozate — verificare eșuată", "documentele pozate", e)
+        rezultat["documente_pozate"] = _constatare_esuata("Documente pozate — verificare eșuată", "documentele pozate", e, an, luna)
     # [d205_legacy_eliminat 23.07] Verificarea d205_vs_457 a fost ELIMINATA: citea suma D205 din tabela
     # d205_beneficiari care NU are niciun writer in cod -> suma_d205 era mereu 0 -> orice firma cu dividende
     # (1171->457) primea rosu fals. D205 real foloseste cont 457 din d205.py; coerenta D205-vs-457 pe FAPT

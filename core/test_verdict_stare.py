@@ -31,7 +31,8 @@ def test_verificator_esuat_da_gri_cu_temei_nu_absenta():
     # Un verificator care crapa NU e "nimic de raportat" - e "nu am putut verifica" = GRI cu temei.
     import main
     contabil = []
-    main._verificator_esuat(contabil, "Verificare stocuri — eșuată", "stocurile", ValueError("boom"))
+    main._verificator_esuat(contabil, "Verificare stocuri — eșuată", "stocurile", ValueError("boom"),
+                            2026, 7)
     assert len(contabil) == 1
     c = contabil[0]
     assert c["stare"] == "gri"                         # gri, nu absenta si nu verde
@@ -59,7 +60,8 @@ def test_construieste_contabil_verificator_care_arunca_da_gri(monkeypatch):
 def test_constatare_esuata_e_gri_cu_temei():
     # documente_pozate care crapa -> gri cu temei, nu tacere (main.py _verificari_contabile).
     import main
-    c = main._constatare_esuata("Documente pozate — verificare eșuată", "documentele pozate", ValueError("x"))
+    c = main._constatare_esuata("Documente pozate — verificare eșuată", "documentele pozate",
+                                ValueError("x"), 2026, 7)
     assert c["stare"] == "gri" and "Nu am putut verifica" in c["mesaj"] and "x" in c["temei"]
 
 

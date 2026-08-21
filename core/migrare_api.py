@@ -185,6 +185,11 @@ REGULI = {
     "cod_duplicat":     {"fel": "duplicat", "inseamna": "acelasi cod de inventar apare de doua ori in fisier"},
     "deja_exista":      {"fel": "duplicat", "inseamna": "inregistrarea exista deja si nu se dubleaza"},
 
+    # --- esec: nu datele sunt de vina, ci operatiunea s-a rupt. Sta in ACEEASI lista pe care o vede
+    # contabilul, deci trebuie sa se poata DEOSEBI de o respingere de date - altfel „N firme nu au
+    # putut fi adaugate" amesteca „CUI invalid" cu „baza de date a picat", si omul cauta in locul gresit.
+    "creare_esuata":    {"fel": "esec", "inseamna": "crearea inregistrarii s-a oprit cu o eroare tehnica"},
+
     # --- incoerent: doua valori ale aceluiasi rand (sau set) nu pot fi amandoua adevarate
     "rezidual_peste_intrare": {"fel": "incoerent",
                                "inseamna": "valoarea ramasa depaseste valoarea de intrare"},
