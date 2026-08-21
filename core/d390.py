@@ -32,6 +32,7 @@ import re
 import datetime
 from core import common as c
 from core import afirmatii as _af  # [P8] diagnosticele sunt afirmatii
+from core.unde import Unde as _Unde  # [P8] domeniul e FACTURA, nu o luna
 from core import d390_reconciliere as _recon  # POARTA a-doua-cale (recalcul independent sursa->declaratie)
 from core.identitate import valideaza_cui as _valideaza_cui  # T1: checksum CUI RO (partener/firma), sursa canonica (read-only)
 from dataclasses import dataclass, field
@@ -199,8 +200,14 @@ def _facturi_ic(facturi):
         cat, tara, cod, motiv = _clasifica_partener(f.get("cui"))
         den = (f.get("nume") or "")
         baza = Decimal(str(f.get("total") or 0)) - Decimal(str(f.get("tva") or 0))
-        info = {"categorie": cat, "den": den, "cui": (f.get("cui") or ""),
-                "directie": f.get("directie"), "tara": tara, "cod": cod, "baza": baza, "motiv": motiv}
+        # [P8, 22.08] FAPT despre FACTURA, nu despre o luna: `_facturi_ic` e pura si clasifica
+        # fiecare factura in parte. Domeniul e factura; `unde` il poarta.
+        info = dict(_af.afirmatie(
+            "fapt", "d390", motiv,
+            unde=_Unde("factura", (f.get("cui") or "?"), den or "(fără denumire)"),
+            temei_completitudine="codul de TVA al partenerului, verificat contra prefixelor UE"),
+            categorie=cat, den=den, cui=(f.get("cui") or ""),
+            directie=f.get("directie"), tara=tara, cod=cod, baza=baza)
         if cat != "ic":
             diag.append(info)                        # domestic/prefix/tara -> NU intra in declaratie
             continue

@@ -17,6 +17,7 @@ galben = alocare parțială / FIFO (necesită confirmare atentă)
 rosu   = fără CUI sau fără facturi deschise ale partenerului
 """
 from core import afirmatii as _af  # [P8] absenta spune UNDE s-a cautat
+from core.unde import Unde as _Unde  # [P8] domeniul e LINIA, nu o luna
 from decimal import Decimal
 from itertools import combinations
 
@@ -102,22 +103,34 @@ def potriveste_linie(linie, facturi_deschise):
 
     f = _match_exact_una(suma, facturi)
     if f:
-        return {"status": "verde",
-                "alocari": [{"factura_id": f["id"], "suma": suma}],
-                "motiv": "match exact pe o factura"}
+        return dict(_af.afirmatie(
+            "fapt", "reconciliere extras", "match exact pe o factura",
+            unde=_Unde("linie_extras", cui, "suma %s" % suma),
+            temei_completitudine="documentele DESCHISE ale partenerului, la suma exacta"),
+            status="verde", alocari=[{"factura_id": f["id"], "suma": suma}])
 
     combo = _match_combo(suma, facturi)
     if combo:
-        return {"status": "verde",
-                "alocari": [{"factura_id": f["id"], "suma": _d(f["sold"])} for f in combo],
-                "motiv": f"match exact pe {len(combo)} facturi"}
+        return dict(_af.afirmatie(
+            "fapt", "reconciliere extras", f"match exact pe {len(combo)} facturi",
+            unde=_Unde("linie_extras", cui, "suma %s" % suma),
+            temei_completitudine="documentele DESCHISE ale partenerului, pe combinatie de solduri"),
+            status="verde",
+            alocari=[{"factura_id": f["id"], "suma": _d(f["sold"])} for f in combo])
 
     alocari, rest = _alocare_fifo(suma, facturi)
     if rest > TOLERANTA:
-        return {"status": "galben", "alocari": alocari,
-                "motiv": f"suma depășește soldul total; rest nealocat {rest}"}
-    return {"status": "galben", "alocari": alocari,
-            "motiv": "alocare partiala FIFO"}
+        return dict(_af.afirmatie(
+            "fapt", "reconciliere extras",
+            f"suma depășește soldul total; rest nealocat {rest}",
+            unde=_Unde("linie_extras", cui, "suma %s" % suma),
+            temei_completitudine="soldurile DESCHISE ale partenerului, insumate"),
+            status="galben", alocari=alocari)
+    return dict(_af.afirmatie(
+        "fapt", "reconciliere extras", "alocare partiala FIFO",
+        unde=_Unde("linie_extras", cui, "suma %s" % suma),
+        temei_completitudine="documentele deschise, alocate in ordinea vechimii (FIFO)"),
+        status="galben", alocari=alocari)
 
 
 def potriveste_extras(linii, facturi_deschise):

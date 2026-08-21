@@ -30,7 +30,13 @@ FELURI = {
     # Un fapt constatat pe o perioadă ANUME. `temei_completitudine` e obligatoriu fiindcă un fapt
     # negativ („nicio operațiune IC în lună") e o afirmație despre lume, iar ea se sprijină pe ce ne
     # face să credem că am văzut tot. Fără el, „fapt" e doar o absență bine îmbrăcată.
-    "fapt": ("fel", "tip", "motiv", "an", "luna", "temei_completitudine"),
+    # [22.08.2026] DOMENIU ALTERNATIV, decis de Costin: `an`+`luna` SAU `unde`, unul din doua
+    # OBLIGATORIU. Lipsa era a DOMENIULUI, nu a felului: un fapt despre pachetul de preluare si unul
+    # despre o luna sunt acelasi fel de afirmatie, cu domenii de forme diferite. Nomenclatorul fusese
+    # enumerat pe randuri de DECLARATIE, unde domeniul e mereu o perioada; aplicat pe toata
+    # aplicatia s-a vazut ca nu ajunge (pachetul de preluare, linia de extras, factura).
+    # UN FAPT FARA NICIUN DOMENIU RAMANE INTERZIS - altfel alternativa ar fi o portita.
+    "fapt": ("fel", "tip", "motiv", "temei_completitudine"),
     # NU am înregistrări într-o sursă NUMITĂ. Absența unei înregistrări nu e absența unui fapt —
     # de-aia `surse_consultate` e obligatoriu: fără el, nimeni nu știe unde s-a uitat.
     "absenta_observatie": ("fel", "tip", "motiv", "surse_consultate"),
@@ -88,6 +94,12 @@ def afirmatie(fel, tip, motiv, **campuri):
     if goale:
         raise AfirmatieIncompleta(
             "afirmație `%s` pentru %s cu câmpuri goale care nu pot fi goale: %s" % (fel, tip, ", ".join(goale)))
+    if fel == "fapt" and a.get("an") is None and a.get("unde") is None:
+        raise AfirmatieIncompleta(
+            "fapt `%s` FĂRĂ NICIUN DOMENIU: pune `an` (+`luna`, unde e lunar) dacă vorbește despre o "
+            "perioadă, sau `unde=Unde(...)` dacă vorbește despre un obiect anume (un pachet de "
+            "preluare, o linie de extras, o factură). Un fapt nedatat și fără adresă se citește peste "
+            "șase luni ca adevăr permanent." % tip)
     return a
 
 

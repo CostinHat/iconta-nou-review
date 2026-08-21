@@ -58,7 +58,10 @@ OPERATIE_FN = ("salveaza", "creeaza", "sterge", "marcheaza", "seteaza", "adauga"
 # firmei. Lista e DECLARATA, ca oricine sa poata contesta o intrare.
 FARA_FIRMA_FN = ("jurnal", "calitate", "analiza_ai", "_eroare_campuri")
 
-IGNORA_FISIER = ("test_", "scan_", "verificator_conformitate", "migrare_", "conftest")
+# `registru_` scos 22.08.2026: registrul de EXCEPTII se numara pe SINE, fiindca intrarile lui poarta
+# cheia `motiv` (motivul exceptarii). Circular - registrul care declara ce nu e afirmatie ar aparea ca
+# datorie de sapte afirmatii. Un registru nu PRODUCE afirmatii, le DESCRIE.
+IGNORA_FISIER = ("test_", "scan_", "verificator_conformitate", "migrare_", "conftest", "registru_")
 
 # Module de infrastructura: nu vorbesc despre datele unei firme, oricat de sugestive le-ar fi cheile.
 FARA_FIRMA = ("core/auth_api.py", "core/email_util.py", "core/notificari.py", "core/cron.py",

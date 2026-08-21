@@ -32,6 +32,7 @@ partida dubla (SRL) si partida simpla (PFA). NEVERIFICAT v1 (ramane vizibil gri 
 nu tacut): asociati/cote, mijloace fixe, salariati, vector fiscal vs documente.
 """
 from core import afirmatii as _af  # [P8] constatarea E o afirmatie
+from core.unde import Unde as _Unde  # [P8] domeniul e PACHETUL, nu o luna
 from decimal import Decimal
 from core.pdf_util import bani
 
@@ -84,10 +85,7 @@ CONT_DECL_FISCAL = (
 
 # ---- constructori de constatare (anatomia control_incrucisat: stare + temei + mesaj + remediu) ----
 
-def _c(stare, eticheta, temei, mesaj, remediu=None):
-    """Constatarea NETIPATA. Ramane pentru `_verde`, si NUMAI pentru el - vezi limita din capul
-    fisierului: `fapt` cere an+luna, iar la preluare domeniul e PACHETUL, nu o luna."""
-    return {"stare": stare, "eticheta": eticheta, "temei": temei, "mesaj": mesaj, "remediu": remediu}
+
 
 
 def _imbraca(a, stare, eticheta, temei, remediu):
@@ -102,7 +100,12 @@ def _imbraca(a, stare, eticheta, temei, remediu):
 
 
 def _verde(et, temei, mesaj):
-    return _c("verde", et, temei, mesaj, None)
+    """FAPT despre PACHETUL preluat. Domeniul nu e o luna - la preluare nici nu exista una;
+    contabilitatea in iConta incepe DUPA. `unde` poarta referinta, `an`/`luna` raman goale."""
+    return _imbraca(
+        _af.afirmatie("fapt", et, mesaj, unde=_Unde("pachet_preluare", None),
+                      temei_completitudine=temei),
+        "verde", et, temei, None)
 
 
 def _gri(et, temei, mesaj, actiune, cauza="Lipsește un document necesar verificării."):

@@ -65,7 +65,8 @@ FELURI = {
     },
     "fapt": {
         "domeniu": ["perioada", "interval"],
-        "campuri_ceruti": ["fel", "tip", "motiv", "an", "luna", "temei_completitudine"],
+        "campuri_ceruti": ["fel", "tip", "motiv", "temei_completitudine"],
+        "domeniu_alternativ": ["an+luna", "unde"],
         "grade_de_temei": {
             "confirmat": "contabilul a afirmat completitudinea (perioada_confirmata pe domeniul "
                          "relevant). AZI EXISTĂ DOAR pentru `pontaj`, cu un singur consumator în tot "
@@ -76,7 +77,12 @@ FELURI = {
                      "Mai slab decât confirmarea, dar real.",
             "niciunul": "tabel gol -> verdict. NU e `fapt`, e `absenta_observatie`.",
         },
-        "nota": "Un fapt constatat pe o perioadă anume (d390 «nicio operațiune IC în lună», d100 «fără "
+        "nota": "[22.08.2026] DOMENIU ALTERNATIV: `an`+`luna` SAU `unde` (o referință structurată din "
+                "core/unde.py), unul din două OBLIGATORIU. Lipsa era a DOMENIULUI, nu a felului: un "
+                "fapt despre pachetul de preluare și unul despre o lună sunt același fel de afirmație. "
+                "Nomenclatorul fusese enumerat pe rânduri de DECLARAȚIE, unde domeniul e mereu o "
+                "perioadă. Un fapt FĂRĂ NICIUN domeniu rămâne INTERZIS. || "
+                "Un fapt constatat pe o perioadă anume (d390 «nicio operațiune IC în lună», d100 «fără "
                 "venituri în trimestru»). SINGURELE rânduri corecte azi — poartă deja an+luna. "
                 "ÎNCADRARE INCERTĂ: d301 «nicio operațiune IC înregistrată» (3 apariții) — reținut aici "
                 "ca fapt pe interval, nu ca statut; de reconfirmat.",

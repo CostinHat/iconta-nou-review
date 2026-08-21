@@ -30,14 +30,11 @@ from core import scan_afirmatii as s
 # respingeri — se numără mai departe fiindcă poartă cheia `motiv`.
 BASELINE = {
     "main.py": 7,
-    "core/reconciliere.py": 4,
     "core/control_fiscal_api.py": 3,
     "core/raportari_ai.py": 3,
     "core/articole_import_api.py": 2,
     "core/rip_migrare_api.py": 2,
-    "core/audit_preluare.py": 1,
     "core/cote_tva.py": 1,
-    "core/d390.py": 1,
     "core/etransport_send.py": 1,
     "core/gdpr_sterge.py": 1,
     "core/istoric_declaratii_import_api.py": 1,

@@ -64,13 +64,17 @@ def test_o_afirmatie_valida_ramane_un_dict_simplu():
 def test_fiecare_fel_din_nomenclator_e_construibil(fel):
     """Anti-vacuu: un fel declarat dar imposibil de construit e o intrare moartă în nomenclator."""
     valori = {"domeniu_de": "2025-01", "domeniu_pana": None, "an": 2026, "luna": 7,
+              # [22.08] `fapt` are domeniu ALTERNATIV (an+luna SAU unde); exemplul canonic ramane
+              # perioada, iar forma pe obiect e probata separat in core/test_unde.py.
               "temei_completitudine": "lună închisă, fără documente în așteptare",
               "surse_consultate": "registrul de note validate", "statut": "pfa", "statut_din": None,
               "sursele": "profilul firmei; facturile intracomunitare din iunie",
               "eroare": "TypeError: unsupported operand type(s)",
               "unde": "rândul 7", "regula": "cnp_invalid"}
-    a = afirmatie(fel, "d999", "motiv de probă",
-                  **{c: valori[c] for c in FELURI[fel] if c not in ("fel", "tip", "motiv")})
+    camp = {c: valori[c] for c in FELURI[fel] if c not in ("fel", "tip", "motiv")}
+    if fel == "fapt":
+        camp.update(an=valori["an"], luna=valori["luna"])   # domeniul, in forma pe perioada
+    a = afirmatie(fel, "d999", "motiv de probă", **camp)
     assert a["fel"] == fel
 
 
