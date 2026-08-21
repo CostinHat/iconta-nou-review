@@ -1355,8 +1355,15 @@ def _interpreteaza(cheie, eticheta, temei, rap, an=None, luna=None):
             parti.append("dubla partida dezechilibrata in declaratie: debit %s vs credit %s (diferenta %s)."
                          % (_lei(dez["debit"]), _lei(dez["credit"]), _lei(dez["diferenta"])))
         return _c_rosu(cheie, eticheta, temei, eticheta + ": " + " ".join(parti), an, luna)
-    if rap.get("acoperit") is False and rap.get("motiv"):
-        return _c_gri(cheie, eticheta, temei, rap["motiv"], an, luna)  # reconcilierea nu se APLICA (limita declarata)
+    if rap.get("acoperit") is False and rap.get("neacoperit"):
+        # Reconcilierea nu se APLICA (limita declarata). Afirmatia vine GATA de la reconciliator, cu
+        # domeniul ei - nu se reconstruieste aici, ca sa nu existe doua surse ale perioadei.
+        return _imbraca(eticheta, temei, "gri", cheie=cheie,
+                        remediu={"fel": "investigatie",
+                                 "cauza": "Date sau profil fiscal incomplet.",
+                                 "actiune": "Completează datele firmei și reîncearcă.",
+                                 "facturi": []},
+                        a=rap["neacoperit"])
     return _c_verde(cheie, eticheta, temei, an, luna)
 
 # [P8] Constatari produse in AFARA caii de reconciliere (verificarile incrucisate). Aceleasi feluri,

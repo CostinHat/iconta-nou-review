@@ -51,6 +51,7 @@ deja curate), inainte de / impreuna cu poarta-zero. `conn` e pozitionat pe schem
 (genereaza primeste `schema`, iar SQL-ul e schema-calificat - independent de search_path).
 """
 
+from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 import re
 from decimal import Decimal, ROUND_HALF_UP
 
@@ -221,9 +222,12 @@ def _res_camp(res, nume, implicit=0):
 
 def reconciliaza(conn, schema, an, luna, res, manual=None, reclasificari=None):
     """Recalculeaza independent si confrunta. NU ridica - intoarce raportul.
-    {"acoperit": bool, "motiv": str|None, "divergente": [...]}."""
+    {"acoperit": bool, "neacoperit": afirmatie|None, "divergente": [...]}
+
+    [P8, 21.08.2026] `motiv` (sir) -> `neacoperit` (afirmatie `necunoastere`, cu domeniul ei).."""
     if conn is None:
-        return {"acoperit": False, "motiv": "fără conexiune DB (recompute independent indisponibil)", "divergente": []}
+        return {"acoperit": False, "divergente": [], "neacoperit": _af.necunoastere_pe_luna(
+            "d390", "fără conexiune DB (recompute independent indisponibil)", an, luna)}
     rezumat_g = _res_camp(res, "rezumat", {}) or {}
     rez2, nr2, tot2, plata2 = _recalcul_independent(conn, schema, an, luna, manual, reclasificari)
 
@@ -243,7 +247,7 @@ def reconciliaza(conn, schema, an, luna, res, manual=None, reclasificari=None):
     cmp("total_baza", "total baze", _res_camp(res, "total_baza", 0), tot2)
     cmp("totalPlata_A", "totalPlata_A", _res_camp(res, "total_plata_a", 0), plata2)
 
-    return {"acoperit": True, "motiv": None, "divergente": divergente}
+    return {"acoperit": True, "neacoperit": None, "divergente": divergente}
 
 
 def verifica_reconciliere(conn, schema, an, luna, res, manual=None, reclasificari=None):

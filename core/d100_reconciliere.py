@@ -50,6 +50,7 @@ PRECONDITIE: conn e pozitionat pe schema tenantului (acelasi contract ca `d100.p
 nu seteaza search_path - conn vine din db.get_conn(tenant)).
 """
 
+from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 from decimal import Decimal, ROUND_HALF_UP
 
 from core.common import cota as _cota, cheie_manual as _cheie_manual
@@ -112,14 +113,17 @@ def _cota_procent(regim, nume_cota, an, luna, manual):
 
 def reconciliaza(conn, perioada, res, manual=None):
     """Recalculeaza independent obligatia si o confrunta cu res. NU ridica - intoarce raportul.
-    {"acoperit": bool, "motiv": str|None, "divergente": [...]}"""
+    {"acoperit": bool, "neacoperit": afirmatie|None, "divergente": [...]}
+
+    [P8, 21.08.2026] `motiv` (sir) -> `neacoperit` (afirmatie `necunoastere`, cu domeniul ei)."""
     if conn is None:
-        return {"acoperit": False, "motiv": "fără conexiune DB (recompute independent indisponibil)", "divergente": []}
+        return {"acoperit": False, "divergente": [], "neacoperit": _af.necunoastere_pe_luna(
+            "d100", "fără conexiune DB (recompute independent indisponibil)", res.an, res.luna)}
     regim = (res.prof.get("regim_fiscal") or "").lower()
     if regim not in _REGIM_OBLIG:
-        return {"acoperit": False, "motiv":
-                "regim '%s' în afara micro(121)/profit(103) - generatorul nu emite obligație D100 "
-                "pentru el (limita 3)." % regim, "divergente": []}
+        return {"acoperit": False, "divergente": [], "neacoperit": _af.necunoastere_pe_luna(
+            "d100", "regim '%s' în afara micro(121)/profit(103) - generatorul nu emite obligație "
+                    "D100 pentru el (limita 3)." % regim, res.an, res.luna)}
 
     cod_oblig, nume_cota = _REGIM_OBLIG[regim]
     venituri = _venituri_independent(conn, perioada)
@@ -149,7 +153,7 @@ def reconciliaza(conn, perioada, res, manual=None):
             "eticheta": "impozit %s (cod %s), baza=%d x cota=%s%%" % (
                 regim, cod_oblig, _q(baza), procent),
             "generator": gen, "cale2": suma_cale2, "diferenta": gen - suma_cale2})
-    return {"acoperit": True, "motiv": None, "divergente": divergente}
+    return {"acoperit": True, "neacoperit": None, "divergente": divergente}
 
 
 def verifica_reconciliere(conn, perioada, res, manual=None):

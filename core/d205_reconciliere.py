@@ -22,6 +22,7 @@ NON-TAUTOLOGIE (AST): NU importa/foloseste d205.calcul_d205 / d205.pull. Cotele:
 (registrul de lege). Divergenta = HARD-BLOCK care numeste beneficiarul si AMBELE valori.
 """
 
+from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
 
@@ -69,7 +70,7 @@ def _consistenta_interna(perioada, res):
 
 
 def reconciliaza(conn, schema, perioada, res, manual=None):
-    """NU ridica. {"acoperit":bool, "motiv":str|None, "divergente":[...]}."""
+    """NU ridica. {"acoperit":bool, "neacoperit":afirmatie|None, "divergente":[...]}."""
     manual = manual or {}
     if manual.get("beneficiari"):
         # d1 (CATALOG): beneficiari MANUALI - recalculul din 457 NU se aplica (nicio sursa in
@@ -78,8 +79,11 @@ def reconciliaza(conn, schema, perioada, res, manual=None):
         # independenta), dar divergentele de consistenta interna se raporteaza (ridica in
         # verifica_reconciliere). Inainte: return divergente=[] TACIT -> imp1 gresit trecea + DUK valid.
         return {"acoperit": False, "divergente": _consistenta_interna(perioada, res),
-                "motiv": "beneficiari introdusi manual de contabil (§8) - recalculul din 457 nu se "
-                         "aplica; verificata DOAR consistenta interna imp1=round(cota dividendului x baza1)."}
+                "neacoperit": _af.necunoastere_pe_luna(
+                    "d205",
+                    "beneficiari introdusi manual de contabil (§8) - recalculul din 457 nu se "
+                    "aplica; verificata DOAR consistenta interna "
+                    "imp1=round(cota dividendului x baza1).", perioada.an)}
     an = perioada.an
     from core import common as _c   # registrul de lege (cota impozit dividende period-aware)
     cota_div = Decimal(str(_c.cota("impozit_dividend", date(an, 12, 31))[0]))
@@ -102,7 +106,7 @@ def reconciliaza(conn, schema, perioada, res, manual=None):
         if int(b.imp1) != imp:
             divergente.append({"beneficiar": cnp or nume, "camp": "impozit",
                                "generator": int(b.imp1), "cale2": imp, "diferenta": int(b.imp1) - imp})
-    return {"acoperit": True, "motiv": None, "divergente": divergente}
+    return {"acoperit": True, "neacoperit": None, "divergente": divergente}
 
 
 def verifica_reconciliere(conn, schema, perioada, res, manual=None):

@@ -38,6 +38,7 @@ PRECONDITIE: conn e pozitionat pe schema tenantului (acelasi contract ca
 `d300.pull` in calea non-tva_la_incasare, care nu seteaza search_path).
 """
 
+from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 from decimal import Decimal, ROUND_HALF_UP
 
 # Randurile AUTOMATE derivate din facturi (aceleasi cote ca generatorul, dar
@@ -156,12 +157,15 @@ def _deferred_activ(conn, inceput, sfarsit):
 
 def reconciliaza(conn, perioada, res, manual=None):
     """Recalculeaza independent si confrunta. NU ridica - intoarce raportul.
-    {"acoperit": bool, "motiv": str|None, "divergente": [...], "sarite": [...]}"""
+    {"acoperit": bool, "neacoperit": afirmatie|None, "divergente": [...], "sarite": [...]}"""
     manual_keys = set((manual or {}).keys())
     if res.prof.get("tva_la_incasare"):
         return {"acoperit": False, "divergente": [], "sarite": [],
-                "motiv": "TVA la încasare: exigibilitate pe decontari, nu pe emitere - "
-                         "reconcilierea pe emitere nu se aplica (limita 3, GARZI cat.4)."}
+                "neacoperit": _af.necunoastere_pe_luna(
+                    "d300",
+                    "TVA la încasare: exigibilitate pe decontari, nu pe emitere - "
+                    "reconcilierea pe emitere nu se aplica (limita 3, GARZI cat.4).",
+                    perioada.an, perioada.luna)}
     from core import common as _c  # [fix trim 06.08.2026]
     inceput, sfarsit = _c.fereastra_tva(perioada, _c.perioada_tva_tip(res.prof))  # fereastra pe perioada TVA (trimestrial -> tot trimestrul), ca generatorul
     col, ded = _agrega_independent(conn, inceput, sfarsit)
@@ -171,7 +175,8 @@ def reconciliaza(conn, perioada, res, manual=None):
     if _deferred_activ(conn, inceput, sfarsit):
         skip |= {"R22_1", "R22_2", "R23_1", "R23_2"}
     divergente, sarite = _confrunta(res.R, col, ded, skip)
-    return {"acoperit": True, "motiv": None, "divergente": divergente, "sarite": sorted(set(sarite))}
+    return {"acoperit": True, "neacoperit": None, "divergente": divergente,
+            "sarite": sorted(set(sarite))}
 
 
 def verifica_reconciliere(conn, perioada, res, manual=None):

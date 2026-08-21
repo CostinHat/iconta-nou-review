@@ -170,7 +170,10 @@ def test_tva_la_incasare_neacoperit_fara_alarma_falsa():
         R = {"R9_1": 999999}   # valoare aberanta - NU trebuie sa produca divergenta
     rap = reconciliaza(conn=None, perioada=Perioada(2026, luna=6), res=_R())
     assert rap["acoperit"] is False and rap["divergente"] == []
-    assert "TVA la încasare" in rap["motiv"]
+    # [P8] `motiv` (sir) a devenit `neacoperit` (afirmatie cu domeniul ei) - codul si-a schimbat casa
+    assert rap["neacoperit"]["fel"] == "necunoastere"
+    assert "TVA la încasare" in rap["neacoperit"]["motiv"]
+    assert rap["neacoperit"]["domeniu_de"], "necunoasterea nu spune pe ce perioada nu poate"
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

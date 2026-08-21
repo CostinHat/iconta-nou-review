@@ -159,4 +159,6 @@ def test_operatiuni_manuale_neacoperit_fara_alarma(conn_recon):
     rap = reconciliaza(conn_recon, per, res,
                        manual={"operatiuni": [{"tip": "AI", "cota": 21, "baza": 100, "tva": 21}]})
     assert rap["acoperit"] is False and rap["divergente"] == []
-    assert "manual" in rap["motiv"]
+    assert rap["neacoperit"]["fel"] == "necunoastere"
+    assert "manual" in rap["neacoperit"]["motiv"]
+    assert rap["neacoperit"]["domeniu_de"], "necunoasterea nu spune pe ce perioada nu poate"

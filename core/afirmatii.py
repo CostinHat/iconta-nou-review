@@ -91,6 +91,19 @@ def afirmatie(fel, tip, motiv, **campuri):
     return a
 
 
+def necunoastere_pe_luna(tip, motiv, an, luna=None):
+    """Forma cea mai deasa de necunoastere: „nu pot spune, pe perioada asta".
+
+    Scoasa aici fiindca o scriau deja patru locuri, fiecare cu propria formatare a domeniului - iar
+    cand `reconciliaza` producea textul si `_c_gri` ii punea domeniul, existau DOUA surse ale
+    perioadei, care puteau sa nu coincida. Acum afirmatia isi poarta domeniul de la nastere.
+
+    Domeniul e luna evaluata (sau anul, la declaratiile anuale). Deschis la dreapta NU se foloseste
+    aici: o necunoastere fara capat de sus se citeste peste sase luni ca fapt permanent."""
+    dom = ("%04d-%02d" % (an, luna)) if (an and luna) else (str(an) if an else None)
+    return afirmatie("necunoastere", tip, motiv, domeniu_de=dom, domeniu_pana=dom)
+
+
 def domeniu_text(a):
     """Perioada afirmației, în limba contabilului, pentru randare. NU inventează: dacă afirmația nu
     poartă domeniu (fel `statut`), întoarce None și cine randează decide ce face."""

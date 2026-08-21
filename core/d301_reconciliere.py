@@ -53,6 +53,7 @@ PRECONDITIE: conn e pozitionat pe schema tenantului (acelasi contract ca d301.pu
 care interogheaza d301_operatiuni fara a seta search_path).
 """
 
+from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 from decimal import Decimal, ROUND_HALF_UP
 
 TIPURI_OP = (1, 2, 3, 4, 5)   # re-declarat aici, NU importat din d301 (fara cod comun cu calea 1)
@@ -107,9 +108,13 @@ def _agrega_independent(conn, perioada):
 
 def reconciliaza(conn, perioada, res):
     """Recalculeaza independent si confrunta. NU ridica - intoarce raportul.
-    {"acoperit": bool, "motiv": str|None, "divergente": [...]}"""
+    {"acoperit": bool, "neacoperit": afirmatie|None, "divergente": [...]}
+
+    [P8, 21.08.2026] `motiv` (sir) -> `neacoperit` (afirmatie `necunoastere`, cu domeniul ei)."""
     if conn is None:
-        return {"acoperit": False, "motiv": "fără conexiune DB (recompute independent indisponibil)", "divergente": []}
+        return {"acoperit": False, "divergente": [], "neacoperit": _af.necunoastere_pe_luna(
+            "d301", "fără conexiune DB (recompute independent indisponibil)",
+            perioada.an, perioada.luna)}
     tot = _agrega_independent(conn, perioada)
     divergente = []
 
@@ -126,7 +131,7 @@ def reconciliaza(conn, perioada, res):
     tpa_cale2 = sum(tot[t][0] + tot[t][1] for t in TIPURI_OP)
     cmp("totalPlata_A", "suma de control", int(res.total_plata_a), tpa_cale2)
 
-    return {"acoperit": True, "motiv": None, "divergente": divergente}
+    return {"acoperit": True, "neacoperit": None, "divergente": divergente}
 
 
 def verifica_reconciliere(conn, perioada, res, manual=None):

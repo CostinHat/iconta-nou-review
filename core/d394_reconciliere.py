@@ -44,6 +44,7 @@ LIMITA DECLARATA (GARZI cat.4):
 PRECONDITIE: conn pozitionat pe schema tenantului (acelasi contract ca d394.pull).
 """
 
+from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 import re
 from decimal import Decimal, ROUND_HALF_UP
 
@@ -174,18 +175,21 @@ def _confrunta(rezumat2, cale2):
 
 def reconciliaza(conn, perioada, res, manual=None):
     """Recalculeaza independent si confrunta. NU ridica - intoarce raportul.
-    {"acoperit": bool, "motiv": str|None, "divergente": [...]}"""
+    {"acoperit": bool, "neacoperit": afirmatie|None, "divergente": [...]}
+
+    [P8, 21.08.2026] `motiv` (sir) -> `neacoperit` (afirmatie `necunoastere`, cu domeniul ei)."""
     ops = (manual or {}).get("operatiuni") or []
     if ops:
-        return {"acoperit": False, "divergente": [],
-                "motiv": "manual['operatiuni'] nevid (%d op) - operatiuni ne-deductibile din facturi "
-                         "(bonuri/borderouri/AI/AS/LS); calea 2 reconstruieste doar din facturi "
-                         "(limita 2, GARZI cat.4)." % len(ops)}
+        return {"acoperit": False, "divergente": [], "neacoperit": _af.necunoastere_pe_luna(
+            "d394",
+            "operatiuni introduse manual (%d) - ne-deductibile din facturi "
+            "(bonuri/borderouri/AI/AS/LS); calea 2 reconstruieste doar din facturi "
+            "(limita 2, GARZI cat.4)." % len(ops), perioada.an, perioada.luna)}
     from core import common as _c  # [fix trim 06.08.2026]
     _inc, _sf = _c.fereastra_tva(perioada, _c.perioada_tva_tip(res.prof))
     cale2 = _agrega_independent(conn, perioada, _inc, _sf)
     div = _confrunta(res.rezumat2, cale2)
-    return {"acoperit": True, "motiv": None, "divergente": div}
+    return {"acoperit": True, "neacoperit": None, "divergente": div}
 
 
 def verifica_reconciliere(conn, perioada, res, manual=None):
