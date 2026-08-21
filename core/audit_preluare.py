@@ -31,6 +31,7 @@ declaratii vs solduri fiscale + PFA/RIP (coerenta interna registru). Acopera amb
 partida dubla (SRL) si partida simpla (PFA). NEVERIFICAT v1 (ramane vizibil gri prin lipsa checkului,
 nu tacut): asociati/cote, mijloace fixe, salariati, vector fiscal vs documente.
 """
+from core import afirmatii as _af  # [P8] constatarea E o afirmatie
 from decimal import Decimal
 from core.pdf_util import bani
 
@@ -84,7 +85,20 @@ CONT_DECL_FISCAL = (
 # ---- constructori de constatare (anatomia control_incrucisat: stare + temei + mesaj + remediu) ----
 
 def _c(stare, eticheta, temei, mesaj, remediu=None):
+    """Constatarea NETIPATA. Ramane pentru `_verde`, si NUMAI pentru el - vezi limita din capul
+    fisierului: `fapt` cere an+luna, iar la preluare domeniul e PACHETUL, nu o luna."""
     return {"stare": stare, "eticheta": eticheta, "temei": temei, "mesaj": mesaj, "remediu": remediu}
+
+
+def _imbraca(a, stare, eticheta, temei, remediu):
+    """Afirmatia -> constatarea pe care o asteapta ecranul. Textul are o singura sursa (`motiv`)."""
+    c = dict(a)
+    c["stare"] = stare
+    c["eticheta"] = eticheta
+    c["temei"] = temei
+    c["mesaj"] = a["motiv"]
+    c["remediu"] = remediu
+    return c
 
 
 def _verde(et, temei, mesaj):
@@ -92,13 +106,22 @@ def _verde(et, temei, mesaj):
 
 
 def _gri(et, temei, mesaj, actiune, cauza="Lipsește un document necesar verificării."):
-    return _c("gri", et, temei, mesaj,
-              {"fel": "investigatie", "cauza": cauza, "actiune": actiune, "facturi": []})
+    """ABSENTA_OBSERVATIE: lipseste un document din pachet. Felul CERE sursa consultata, si aia e
+    exact ce-i trebuie contabilului - care document lipseste, nu doar ca „nu pot verifica"."""
+    return _imbraca(
+        _af.afirmatie("absenta_observatie", et, mesaj, surse_consultate=cauza),
+        "gri", et, temei,
+        {"fel": "investigatie", "cauza": cauza, "actiune": actiune, "facturi": []})
 
 
 def _rosu(et, temei, mesaj, cauza, actiune, fel="investigatie"):
-    return _c("rosu", et, temei, mesaj,
-              {"fel": fel, "cauza": cauza, "actiune": actiune, "facturi": []})
+    """CONTRADICTIE: la preluare ambele surse sunt EXTERNE (documente de la contabilul anterior).
+    Nu „una e gresita" - doua documente care nu pot fi amandoua adevarate; `sursele` le numeste."""
+    return _imbraca(
+        _af.afirmatie("contradictie", et, mesaj,
+                      sursele="documentele pachetului de preluare confruntate la „%s”" % et),
+        "rosu", et, temei,
+        {"fel": fel, "cauza": cauza, "actiune": actiune, "facturi": []})
 
 
 def _rows_solduri_initiale(conn, schema):

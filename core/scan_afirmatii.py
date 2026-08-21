@@ -90,6 +90,23 @@ def _fisiere():
                     yield p, rel
 
 
+def _nomenclatoare(arb):
+    """Liniile dictionarelor atribuite unei CONSTANTE de modul (NUME_MARE = {...}).
+
+    Alea sunt harti de nomenclator, nu afirmatii: `intrastat.NIVEL_STATUS` e
+    `{"depasit": AVERTISMENT, "atentie": AVERTISMENT}` - o mapare status->nivel, prinsa DOAR fiindca
+    o CHEIE se cheama `atentie`. Cheia nu face afirmatia; textul o face.
+
+    Excluderea e TINTITA si masurata: la instalare scoate EXACT UN sit din tot inventarul. O prima
+    incercare, mai larga („valoarea cheii de revendicare trebuie sa produca text"), scotea SAISPREZECE
+    din treizeci si doua - jumatate din datorie, printre care o constatare adevarata din
+    `audit_preluare`. Aia nu ascutea instrumentul, il orbea. `test_afirmatii_tipate` numara ce scoate
+    excluderea asta si pica daca numarul creste."""
+    return {n.value.lineno for n in arb.body
+            if isinstance(n, ast.Assign) and isinstance(n.value, ast.Dict)
+            and any(isinstance(t, ast.Name) and t.id.isupper() for t in n.targets)}
+
+
 def inventar():
     """[(fisier, functie, linie, stare, clasa, chei)] — stare in `tipata` | `netipata`."""
     out = []
@@ -103,12 +120,13 @@ def inventar():
             if isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
                 for ln in range(fn.lineno, (fn.end_lineno or fn.lineno) + 1):
                     fn_de_linie.setdefault(ln, fn.name)
+        harti = _nomenclatoare(arb)
         for n in ast.walk(arb):
             if not isinstance(n, ast.Dict):
                 continue
             ch = {k.value for k in n.keys
                   if isinstance(k, ast.Constant) and isinstance(k.value, str)}
-            if not (ch & REVENDICARE) or (ch & REMEDIU):
+            if not (ch & REVENDICARE) or (ch & REMEDIU) or n.lineno in harti:
                 continue
             fn = fn_de_linie.get(n.lineno, "<modul>")
             out.append((rel, fn, n.lineno, "tipata" if (ch & TIPATE) else "netipata",

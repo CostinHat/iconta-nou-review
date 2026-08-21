@@ -40,7 +40,6 @@ BASELINE = {
     "core/d390.py": 1,
     "core/etransport_send.py": 1,
     "core/gdpr_sterge.py": 1,
-    "core/intrastat.py": 1,
     "core/istoric_declaratii_import_api.py": 1,
     "core/reconciliere_api.py": 1,
     "core/retete_import_api.py": 1,
@@ -125,6 +124,43 @@ def test_clasificarea_chiar_discrimineaza():
     assert s.clasa("core/x_import_api.py", "verifica_randuri", "mesaj,motiv,rand") == "C_import"
     assert s.clasa("core/x.py", "salveaza", "cod,mesaj,ok") == "B_operatie"
     assert s.clasa("core/x.py", "adauga", "camp,mesaj") == "D_formular"
+
+
+def test_excluderea_nomenclatoarelor_ramane_tintita():
+    """Un scan se poate face verde ORBINDU-L, nu reparand codul. Excluderea hărților de nomenclator
+    (`NUME_MARE = {...}`) scotea EXACT UN sit la instalare — `intrastat.NIVEL_STATUS`.
+
+    O primă încercare, mai largă („valoarea cheii de revendicare trebuie să producă text"), scotea
+    ȘAISPREZECE din treizeci și două — jumătate din datorie, printre care o constatare adevărată din
+    `audit_preluare`. Am revenit. Testul ăsta există ca următoarea lărgire să nu treacă tăcut."""
+    import ast
+    import io
+    import os
+    scoase = []
+    for rad, dirs, fis in os.walk(s.RAD):
+        dirs[:] = [d for d in dirs if d not in ("venv", ".git", "_arhiva", "node_modules",
+                                                "frontend_test", "__pycache__")]
+        for f in fis:
+            if not f.endswith(".py") or f.startswith(s.IGNORA_FISIER):
+                continue
+            p = os.path.join(rad, f)
+            try:
+                arb = ast.parse(io.open(p, encoding="utf-8").read())
+            except (SyntaxError, UnicodeDecodeError):
+                continue
+            harti = s._nomenclatoare(arb)
+            for n in ast.walk(arb):
+                if not isinstance(n, ast.Dict) or n.lineno not in harti:
+                    continue
+                ch = {k.value for k in n.keys
+                      if isinstance(k, ast.Constant) and isinstance(k.value, str)}
+                if (ch & s.REVENDICARE) and not (ch & s.REMEDIU):
+                    scoase.append("%s:%d" % (os.path.relpath(p, s.RAD).replace(os.sep, "/"),
+                                             n.lineno))
+    assert len(scoase) <= 2, (
+        "excluderea hărților de nomenclator scoate acum %d situri (%s) — la instalare scotea UNUL. "
+        "Dacă e legitim, ridică pragul CU MOTIV; dacă nu, scanul a fost lărgit până a orbit."
+        % (len(scoase), ", ".join(scoase)))
 
 
 def test_granita_lui_costin_e_respectata():
