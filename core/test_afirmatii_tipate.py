@@ -90,13 +90,40 @@ def test_baseline_nu_e_stale(acum):
 
 
 def test_scanul_vede_producatorul_tipat():
-    """ANTI-VACUU. Prima formă a acestui scan căuta LISTE numite `constatari`/`probleme` și era
-    ORBĂ pe `control_fiscal_api` — exact modulul care produce afirmații tipate. Un scan care nu-și
-    vede lumea raportează verde despre ea. Aici se probează că le VEDE."""
+    """ANTI-VACUU, în două direcții — amândouă ieșite din defecte REALE ale acestui scan.
+
+    (1) Prima formă căuta LISTE numite `constatari`/`probleme` și era ORBĂ pe `control_fiscal_api`,
+    exact modulul care produce afirmații tipate.
+
+    (2) A doua formă le VEDEA, dar număra 27 de „afirmații tipate" din care 23 erau sub-dicționare
+    `remediu`: ele poartă și ele `fel`, dar dintr-un alt nomenclator („investigatie"), iar cheia lor
+    `cauza` nimerește în vocabularul de revendicare. Gardul trecea numărând altceva decât credea —
+    a treia oară azi când un gard raportează verde despre o lume pe care n-o vede. Afirmații tipate
+    REALE la instalare: 4. Cifra e mică pentru că asta e realitatea: decizia trăia pe un ecran."""
     tipate = [x for x in s.inventar() if x[3] == "tipata"]
-    assert len(tipate) >= 20, "doar %d afirmații tipate văzute — scanul a orbit" % len(tipate)
+    assert tipate, "nicio afirmație tipată văzută — scanul a orbit"
     assert any("control_fiscal_api" in x[0] for x in tipate), (
         "scanul nu vede afirmațiile tipate din control_fiscal_api — producătorul de referință")
+    assert not any("actiune" in x[5] for x in tipate), (
+        "scanul numără iar REMEDII drept afirmații: %s"
+        % [x for x in tipate if "actiune" in x[5]][:3])
+
+
+def test_remediul_nu_e_o_afirmatie():
+    """Contra-direcția, legată: remediile TREBUIE să existe și TREBUIE să rămână afară. Dacă
+    dispar din cod, testul de mai sus n-ar mai discrimina nimic și ar trece pe gol."""
+    import ast
+    import io
+    import os
+    sursa = io.open(os.path.join(s.RAD, "core", "control_incrucisat.py"), encoding="utf-8").read()
+    remedii = [n for n in ast.walk(ast.parse(sursa))
+               if isinstance(n, ast.Dict)
+               and {k.value for k in n.keys if isinstance(k, ast.Constant)} >= {"fel", "actiune"}]
+    assert len(remedii) >= 10, (
+        "doar %d remedii găsite în control_incrucisat — dacă forma s-a schimbat, verifică dacă "
+        "excluderea din scan mai e cea potrivită" % len(remedii))
+    assert not any(x[0] == "core/control_incrucisat.py" and "actiune" in x[5]
+                   for x in s.inventar()), "remediile au reintrat în inventarul de afirmații"
 
 
 def test_clasificarea_chiar_discrimineaza():

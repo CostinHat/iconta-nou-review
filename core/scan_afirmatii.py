@@ -37,6 +37,13 @@ REVENDICARE = {"mesaj", "motiv", "cauza", "cauză", "avertisment", "constatare",
 
 TIPATE = {"fel"}
 
+# Un REMEDIU nu e o afirmatie - e ce se poate FACE in privinta ei. Poarta si el `fel`, dar dintr-un
+# alt nomenclator ("investigatie", nu "necunoastere"), si o cheie `cauza` care nimereste in
+# vocabularul de revendicare. Prima forma a scanului le numara ca afirmatii TIPATE: 23 din cele 27
+# „tipate" erau remedii, deci gardul anti-vacuu trecea numarand altceva decat credea. Afirmatii
+# tipate reale, la instalare: 4. Discriminatorul e `actiune` - un remediu spune ce sa faci.
+REMEDIU = {"actiune"}
+
 # Chei care spun ca dictionarul e o validare de FORMULAR (care camp e gresit), nu o afirmatie despre
 # datele firmei. Iesite din calibrarea clasei A: 41 din 186 erau asta.
 FORMULAR = {"camp", "erori_campuri", "campuri"}
@@ -101,7 +108,7 @@ def inventar():
                 continue
             ch = {k.value for k in n.keys
                   if isinstance(k, ast.Constant) and isinstance(k.value, str)}
-            if not (ch & REVENDICARE):
+            if not (ch & REVENDICARE) or (ch & REMEDIU):
                 continue
             fn = fn_de_linie.get(n.lineno, "<modul>")
             out.append((rel, fn, n.lineno, "tipata" if (ch & TIPATE) else "netipata",
