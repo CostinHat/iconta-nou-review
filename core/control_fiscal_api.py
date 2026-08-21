@@ -755,6 +755,50 @@ def constatare_regim_tva(local, anaf, data=None):
     return c
 
 
+def limite_verificarii(azi, jos=None, sus_zile=PRAG_URMARIT_ZILE, vc=None, inchide_luni=None):
+    """[P4, 21.08.2026] CE NU POATE SPUNE verificarea asta. DESIGN_SYSTEM cap.25.4.
+
+    DE CE EXISTĂ. Câmpul `limita` există de mult pe constatări — dar se randează DOAR când există o
+    constatare. Pe o firmă curată limitele dispar, adică exact când verdictul e cel mai ușor de citit
+    greșit: verdele arată ca „am verificat tot" fiindcă n-are nimic sub el care să spună ce nu.
+    E aceeași eroare ca `absenta_observatie`, mutată un nivel mai sus.
+
+    CE NU INTRĂ (asta o salvează de la a fi coș de gunoi):
+      - necunoașterea legată de un OBIECT rămâne lângă obiect („Nu pot verifica", cu tipul și perioada);
+      - datoriile noastre de dezvoltare (xfail) — sunt ale noastre, nu ale contabilului.
+    Intră doar ce nu poate afirma INSTRUMENTUL, indiferent de date. E despre CAPACITATE.
+
+    NU SE SCRIE DE MÂNĂ. Se compune: acoperirea (constantă, ține de ce compară semaforul), perimetrul
+    (calculat din fereastra reală) și limitele DECLARATE de fiecare verificator prezent în payload.
+    Un text redactat separat ar descrie peste șase luni un instrument care s-a schimbat.
+
+    Întoarce [{fel, text}] cu fel ∈ acoperire | perimetru | intarire.
+    """
+    limita_sus = azi + datetime.timedelta(days=sus_zile)
+    de_la = jos.isoformat() if jos else ("%04d-12-01" % (azi.year - 1))
+    out = [
+        {"fel": "acoperire",
+         "text": "Compar obligațiile cu evidența din iConta și cu declarațiile înregistrate aici. "
+                 "NU compar cu ce are ANAF în SPV: o declarație depusă direct la ANAF și "
+                 "neînregistrată în aplicație nu apare ca depusă."},
+        {"fel": "perimetru",
+         "text": "Am privit perioada %s → %s. Surse: facturile, notele validate, e-Factura primită "
+                 "și operațiunile intracomunitare înregistrate. Documentele care există doar pe "
+                 "hârtie sau la client nu ajung aici."
+                 % (_dmy(de_la), _dmy(limita_sus.isoformat()))},
+    ]
+    # Limitele DECLARATE de verificatorii prezenți — sursa lor, nu o repovestire.
+    for cheie, v in sorted((vc or {}).items()):
+        if isinstance(v, dict) and v.get("limita"):
+            out.append({"fel": "acoperire", "text": v["limita"], "sursa": cheie})
+    # Ce ar face afirmația mai tare — invitație, nu disclaimer.
+    if not inchide_luni:
+        out.append({"fel": "intarire",
+                    "text": "Închide lunile pe facturi (Istoric facturi → Închide luna) și pot spune "
+                            "„nu se datorează” cu acoperire, nu doar pe calendar."})
+    return out
+
+
 def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu_reconciliere=True):
     """
     Intoarce {stare, datorate, depuse, lipsa, urmarit, confirmate, neclar, neaplicabile}.
@@ -873,6 +917,16 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
     # azi: frontend_test/audit_tenant.py (F7) + gard. Ramane in raspuns ca sa fie un singur loc unde se
     # calculeaza, nu doua cand se cabla si UI-ul.
     depuneri_contra = depuneri_fara_obligatie(datorate, neaplicabile, neclar_m, depuse)
+    # [P4] Limitele PROPRII ale semaforului. Cele ale verificatorilor contabili se adauga in ruta,
+    # dupa ce `vc` e construit — fiecare isi declara limita lui, nu le repovesteste altcineva.
+    jos_ferestra = None
+    try:
+        from core import inchidere_luna as _il4
+        _firma_inchide_luni = _il4.prima_luna_inchisa(conn_schema, schema) is not None
+    except Exception:
+        # MASCA MOTIVATA: daca nu pot citi, presupun ca firma NU inchide luni -> se afiseaza invitatia
+        # de intarire. Directia sigura: o invitatie in plus nu strica, una lipsa ascunde ce se poate face.
+        _firma_inchide_luni = False
     stare = _stare(lipsa, urmarit, neclar_m)
 
     # [F180] regim TVA local vs snapshot ANAF — divergenta = constatare cu remediu investigatie. Escaladarea
@@ -911,6 +965,9 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
 
     return {"stare": stare, "datorate": len(datorate), "depuse": len(depuse),
             "depuneri_fara_obligatie": depuneri_contra,
+            # [P4 21.08.2026] Ce nu poate spune verificarea asta — PERMANENT, nu doar cand exista o
+            # constatare. Daca ar aparea doar cateodata, prezenta ei ar deveni semnal si absenta ar minti.
+            "limite": limite_verificarii(azi, jos=jos_ferestra, inchide_luni=_firma_inchide_luni),
             "lipsa": lipsa, "urmarit": urmarit, "confirmate": confirmate,
             "cu_intarziere": cu_intarziere,
             "neclar": neclar_m, "neaplicabile": neaplicabile,

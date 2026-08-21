@@ -2282,6 +2282,11 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 /* [a11y contrast Control fiscal 18.08.2026] --gri-semafor #9aa3b2 pe panoul #e9edf3 = 2.16 < 4.5;
    scoped la sub-textul verdictelor (cf-incr, control-fiscal-specific) -> #5c6675 = 4.95 pe #e9edf3. */
 .cf-incr-temei { font-size: var(--text-mic); color: #5c6675; margin-top: 4px; line-height: 1.4; }
+/* [P4] „Ce nu poate spune verificarea asta": subsolul de onestitate al ecranului. Necolorat
+   deliberat — nu e o problemă de rezolvat, e o declarație de acoperire. */
+.cf-limite summary { cursor: pointer; }
+.cf-limite summary::marker { color: var(--gri-semafor); }
+.cf-limite > .cf-incr-temei { margin-left: 14px; }
 .cf-semnal { font-size: var(--text-mic); margin-top: 6px; padding: 8px 10px; border-radius: 8px;
   line-height: 1.45; }
 /* [R6] contradictie = defect al NOSTRU (rosu sobru, nu rosu-semafor: nu e o restanta a firmei) */

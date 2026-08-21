@@ -2313,6 +2313,13 @@ def control_fiscal_detaliu(tenant_id: int, ctx=Depends(cere_cabinet)):
         contabil, vc = _construieste_contabil(schema, tenant_id, ctx, azi.year, azi.month, r.get("regim_tva_anaf"))
         r["verificari_contabile"] = vc
         r["contabil"] = contabil
+        # [P4 21.08.2026] Fiecare verificator isi declara SINGUR limita; sectiunea o aduna, n-o
+        # repovesteste. Fara asta, limitele apar doar cand exista o constatare - adica dispar exact
+        # cand verdictul e cel mai usor de citit gresit.
+        r["limite"] = list(r.get("limite") or []) + [
+            {"fel": "acoperire", "text": v["limita"], "sursa": k}
+            for k, v in sorted((vc or {}).items())
+            if isinstance(v, dict) and v.get("limita")]
         # Headerul de detaliu nu poate fi mai bun decat ce e sub el: pastila_firma peste constatari (ex.
         # trezorerie BLOCANT -> nu mai poate ramane "la zi" cu rosu dedesubt). Vezi DECIZII 23.07.
         r["stare"] = pastila_firma(r["stare"], contabil)

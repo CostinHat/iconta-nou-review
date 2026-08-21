@@ -242,7 +242,25 @@ export function randeazaCorpVerdict(d, opt = {}) {
       <button class="buton-secundar" id="cf-audit-run" style="margin-top:10px">Rulează auditul de preluare</button>
     </div>`;
 
-  return declaratii + sectIncrucisat + sectCota + sectTva + sectDocumente + sectContabil + gata + audit;
+  // [P4, DS cap.25.4] „Ce nu poate spune verificarea asta" — despre CAPACITATE, nu despre date.
+  // PERMANENTĂ: dacă ar apărea doar câteodată, prezența ei ar deveni semnal și absența ei ar minți.
+  // Necolorată (nu e o problemă de rezolvat), jos (nu e alarmă), compactă cu detaliul la extindere
+  // (nu într-un „?", care dispare exact pentru cine ar avea nevoie).
+  const sectLimite = (() => {
+    const lim = d.limite || [];
+    if (!lim.length) return "";
+    const per = lim.find((x) => x.fel === "perimetru");
+    const rest = lim.filter((x) => x !== per);
+    return `<div class="cf-grup-titlu" style="margin-top:20px">Ce nu poate spune verificarea asta</div>
+      <div class="cf-decl"><details class="cf-limite">
+        <summary class="cf-incr-temei">${esc(per ? per.text : "Ce am privit și ce nu.")}
+          <span class="tip-micut">(vezi toate limitele: ${rest.length})</span></summary>
+        ${rest.map((x) => `<div class="cf-incr-temei">${esc(x.text)}</div>`).join("")}
+      </details></div>`;
+  })();
+
+  return declaratii + sectIncrucisat + sectCota + sectTva + sectDocumente + sectContabil + gata
+       + sectLimite + audit;
 }
 
 // Leaga evenimentele corpului dupa inserare (butoane remediu executabil + audit de preluare on-demand).

@@ -38,7 +38,17 @@ Principiul: *întâi ce face restul mai ieftin sau mai sigur; apoi ce nu cade si
 |---|---|---|
 | **P1** | Roadmapul la zi + gardul care-i permite să crească | oprește sângerarea: un instrument construit putea lipsi din registru fără ca nimeni să afle |
 | **P2** | **Comunicarea** (chiriaș, DS cap.25) + gardul de proprietate „niciun ecran nu scrie în coajă" | gardul blochează REGRESIA cât lucrăm la ceilalți chiriași — clichet, nu intenție |
-| **P3** | `fel` + `obiect` pe afirmații (R2′ + R2) **+ `temei`/`arbitru` despărțite + `valabil_de`/`valabil_pana`** | necunoașterea declarată depinde de ele; R2 are deja xfail care cade singur |
+| **P3** | `fel` + `obiect` pe afirmații (R2′ + R2) — **LIVRAT 21.08** (`core/afirmatii.py`, 5 feluri, xfail-ul R2 căzut singur) | necunoașterea declarată depinde de ele |
+
+**Corecție la P3, 21.08:** din cele trei lucruri propuse pe tema temeiului, **două existau deja** și
+le-am propus fără să citesc tipul (METODA §10.1): `valabil_de`/`valabil_pana` sunt `data_in`/`data_out`
+pe `Temei`, mai bine gândite decât propunerea mea (`data_out` se DERIVĂ din succesor, fiindcă o lege
+spune de când intră, nu până când); iar `text_citat` era deja obligatoriu la nivel MO. A rămas doar
+verificarea VERBATIM — livrată ca #13, pe firul paralel.
+**Despărțirea `temei`/`arbitru` e AMÂNATĂ în P4, motivat:** arbitrii (DUK, XSD, structura ANAF) nu
+poluează tipul `Temei` — trăiesc în proză și în registre. Un câmp `arbitru` n-ar avea azi niciun
+producător, iar singurul consumator ar fi secțiunea „Ce nu poate spune verificarea asta". Deci P4 îl
+trage, cu forma pe care o cere el — nu invers.
 | **P4** | **„Ce nu poate spune verificarea asta"** (chiriaș nou) + `limita` obligatorie la verificatori | devine posibilă abia după P3 |
 | **P5** | **R4** — temeiul termenelor per tip | datorie fiscală reală; decizia luată, fezabilitatea verificată, gardul scris în xfail strict |
 | **P6** | **Starea de lucru** + **Drumul** (chiriași) | mult mai mici odată ce gardul din P2 există |

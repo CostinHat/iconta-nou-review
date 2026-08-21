@@ -146,6 +146,20 @@ STRUCTURA = {
                      "e o incoerenta a NOASTRA; din acelasi motiv NU urca pastila. Grupul apare si "
                      "cand `neaplicabile` e gol dar exista contraziceri; contorul din titlu numara "
                      "doar obligatiile, fiindca un semnal nu e o obligatie."},
+            {"id": "ce_nu_poate_spune", "cheie": 'limite', "conditie": 'lista_nevida',
+             "titlu": "Ce nu poate spune verificarea asta", "sursa": "d.limite",
+             "apare_cand": "intotdeauna (lista e compusa, nu conditionata de date)", "rand": "limita",
+             "numarata": False,
+             "nota": "[P4 21.08.2026, DS cap.25.4] Despre CAPACITATE, nu despre date: ce nu poate "
+                     "afirma instrumentul, indiferent ce contine firma. PERMANENTA - daca ar aparea "
+                     "doar cateodata, prezenta ei ar deveni semnal si absenta ar minti. Necolorata "
+                     "(nu e problema de rezolvat), jos (nu e alarma), compacta cu detaliul la "
+                     "extindere (nu intr-un ?, care dispare exact pentru cine are nevoie). Se COMPUNE "
+                     "din limite declarate ca DATE: acoperirea, perimetrul calculat din fereastra "
+                     "reala, si limita fiecarui verificator prezent. NU intra necunoasterea legata de "
+                     "un obiect (ramane langa obiect) si nici datoriile de dezvoltare (sunt ale "
+                     "noastre, nu ale contabilului).",
+             },
             {"id": "depuse_cu_intarziere", "cheie": 'cu_intarziere', "conditie": 'lista_nevida', "titlu": "Depuse cu întârziere", "sursa": "d.cu_intarziere",
              "apare_cand": "len(d.cu_intarziere) > 0", "rand": "decl", "numarata": True},
             {"id": "la_zi", "cheie": 'confirmate', "conditie": 'lista_nevida', "titlu": "La zi", "sursa": "d.confirmate",

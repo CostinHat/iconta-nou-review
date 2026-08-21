@@ -117,7 +117,8 @@ def main():
             "datorate": d.get("datorate"),
             "depuse": d.get("depuse"),
             "lungimi": {k: len(d.get(k) or []) for k in
-                        ("lipsa", "urmarit", "neclar", "neaplicabile", "cu_intarziere", "confirmate")},
+                        ("lipsa", "urmarit", "neclar", "neaplicabile", "cu_intarziere", "confirmate",
+                         "limite")},
             "contabil_total": len(d.get("contabil") or []) if isinstance(d.get("contabil"), list) else None,
             "contabil_etichete": [c.get("eticheta") for c in (d.get("contabil") or [])
                                   if isinstance(c, dict)],
