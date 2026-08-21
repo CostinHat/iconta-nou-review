@@ -10603,3 +10603,59 @@ DUK/XSD și golden-XSD, nu a doua cale.
 **Limita măsurătorii, declarată:** instrumentul vede doar constante de modul cu valoare literală. O
 FORMULĂ copiată (cazul `d112_reconciliere`, care are zero constante de modul) îi scapă. Duplicarea de
 logică cere citit, nu scanat — deci lista de mai sus e un minim, nu un total.
+
+
+## 21.08.2026 — faptul bate vectorul; și de ce blocajul rămâne când faptul lipsește
+
+Decis de Costin: *„Un selector care blochează pe vector împiedică contabilul să declare o obligație pe
+care o are. Faptul e observabil, vectorul e o afirmație — când se contrazic, faptul câștigă și vectorul
+devine ce trebuie corectat."*
+
+**Întrebarea lui, și răspunsul:** *dacă selectorul se aliniază la fapt, ce se întâmplă cu o firmă unde
+faptul e absent și vectorul spune nu — rămâne blocat, sau devine „nu pot verifica" ca la cele trei
+D301?* → **Rămâne blocat, și diferența față de D301 e reală, nu de comoditate.** La cele trei D301
+tăcea un TABEL: absența unei observații, pe care nimeni n-a declarat-o. Aici a răspuns un OM. Verificat
+la sursă, în trei locuri:
+- `date_firma.js`: câmp tri-stare cu placeholder gol; `triBool("")` → `null`, iar salvarea e REFUZATĂ
+  cu mesaj propriu („Alege dacă firma are operațiuni intracomunitare (Da sau Nu) — decide D390.").
+- `vector_fiscal_api`: `None` respins la migrare (IC_LIPSA); verificatorul are un gard dedicat
+  (`DEFAULT_FISCAL_TACIT`) care interzice `operatiuni_ic or False`.
+- Date: 17/17 firme completate, 0 necompletat.
+
+Și **necompletat produce deja gri**, nu blocaj — deci cele trei stări sunt distincte: *nu știu* (gri),
+*am răspuns nu* (blocaj pe declarație, cu remediu), *faptul spune da* (deblocat, contradicție
+semnalată). A muta răspunsul „nu" în „nu pot verifica" ar șterge tocmai distincția pe care am apărat-o
+toată ziua: absența unei observații ≠ o declarație.
+
+**A șaptea instanță doc-contra-cod în două zile:** docstringul lui `neaplicabile_selector` pretindea
+alinierea cu semaforul („aceleași reguli → selectorul NU diverge de semafor") — o afirmație care nu era
+adevărată pentru cazul fapt-vs-bifă. Rescris la ce face și de ce.
+
+**Descoperit citind (nu presupunând):** poarta de BACKEND folosea doar `neaplicabile_forma`, deci
+blocarea pe vector trăia numai în selector. Reparația a ieșit mai mică decât diagnosticul inițial.
+
+## 21.08.2026 — ce ar face „luna închisă" o poartă reală
+
+Întrebarea lui Costin: *ce lipsește azi ca „lună închisă" să însemne completitudine — perioada blocată,
+note validate, absența facturilor în așteptare?*
+
+**Ce s-a putut întări azi, fiindcă e observabil:** e-Facturile primite de la ANAF și rămase
+`descarcata` (nici ciornă, nici validată, nici respinsă), cu data în lună. Sunt documente pe care
+statul ni le-a dat și pe care noi nu le-am înregistrat — dacă există, absența operațiunilor nu se poate
+afirma. Semaforul răspunde gri cu numărul lor, DOAR pe lunile cu semnal concret.
+
+**Ce lipsește, și de ce nu se putea face azi:**
+1. **Perioada confirmată pe domeniul facturi/TVA.** Mecanismul e general și deja scris —
+   `core/perioada.py` (cap.23): `confirma` / `deconfirma` / `e_confirmat(an, luna, domeniu)`, cu regula
+   că datele unei perioade neconfirmate sunt informative, iar calculele din aval blochează. **Singurul
+   domeniu folosit azi e `pontaj`.** Nu lipsește mecanismul, lipsește DOMENIUL și actul de confirmare
+   la închiderea lunii contabile. Dacă l-aș fi consultat acum, fiecare lună ar fi ieșit „neconfirmată"
+   și toată clasa ar fi devenit gri — exact conversia pe care ai respins-o.
+2. **Notele validate** nu sunt un criteriu suficient singure: existența unei note în lună nu spune
+   nimic despre facturile care lipsesc (aceeași eroare ca `are_note` la D205, reîncadrat azi).
+3. **Documentele care există doar pe hârtie sau la client** — necunoscute prin construcție. Oricât s-ar
+   întări poarta, limita asta rămâne și trebuie să rămână DECLARATĂ.
+
+**Deci drumul, în ordine:** (a) făcut — documentele în așteptare; (b) următorul pas real — un domeniu
+`facturi` în `perioada_confirmata` plus butonul de închidere de lună, moment în care „lună închisă"
+chiar devine o afirmație a cuiva, nu o observație despre calendar; (c) niciodată — hârtia.

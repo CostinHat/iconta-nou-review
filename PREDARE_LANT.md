@@ -40,7 +40,10 @@ LIVRAT, comis si impins (`8238ef7`; HEAD = origin/main = backup/lant-2026-08-21)
   „nu se datoreaza" e gresit. Argument contra - nu e o restanta, iar rosul inseamna azi „datorezi si
   n-ai depus". Inclin spre: NU urca pastila, dar randul e rosu in grupul lui.
 
-**COMANDA DE REPORNIRE:** „Alege varianta vizuala pentru R6 (a/b/c) si daca urca pastila. Apoi:
+**COMANDA DE REPORNIRE (actualizata 21.08, dupa deciziile lui Costin):** „Urmatorul pas real pe
+completitudine: un domeniu `facturi` in `perioada_confirmata` + actul de inchidere a lunii - abia
+atunci «luna inchisa» devine o afirmatie a cuiva, nu o observatie despre calendar (mecanismul cap.23
+exista deja in core/perioada.py, folosit azi doar pentru `pontaj`). Apoi:
 `d406.tva_procent: Decimal = Decimal(21)`, cota ca default de parametru pe linia de factura D406
 (clasa #2, in clichetul confruntarii). Dupa: sursarea per tip a
 termenelor (R4, `core/test_temei_termene.py` e xfail strict pana atunci), apoi arderea clichetului de

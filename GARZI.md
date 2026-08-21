@@ -3579,3 +3579,55 @@ secundar.
 
 **Mutații (trei), toate roșii:** cotă nouă nesursată într-un fișier exclus · `_TVA_EXCLUSE` dispare
 (gardul spune „repar-o, nu o șterge") · baseline mai larg decât realitatea.
+
+
+## 21.08.2026 — faptul bate vectorul în selector (`d6f5d44`)
+
+**Ce face imposibil:** ca selectorul să blocheze D390/D301 pe o bifă din Vector când faptul o
+contrazice. `core/test_faptul_bate_vectorul.py` (12 teste).
+
+**Tiparul tenant_006, în formă de acțiune.** Vectorul spunea „fără operațiuni intracomunitare", firma
+avea achiziții IC reale. Un verdict greșit se poate citi și ignora; un SELECTOR care blochează pe
+acel verdict îl împiedică pe contabil să declare o obligație pe care firma o are. Vectorul e o
+AFIRMAȚIE, faptul e o OBSERVAȚIE — când se contrazic, faptul câștigă și vectorul devine ce trebuie
+corectat.
+
+**Contra-direcția, la fel de gardată:** fapt ABSENT + vector „nu" → blocajul RĂMÂNE, și NU devine „nu
+pot verifica" ca la cele trei D301. Acolo tăcea un tabel (absența unei observații), aici a răspuns un
+om — verificat în trei locuri: UI-ul refuză salvarea cu placeholder gol și mesaj propriu, backendul
+respinge `None` (IC_LIPSA), 17/17 firme au câmpul completat. Vectorul NEcompletat produce deja gri.
+
+**Descoperit citind, nu presupunând:** poarta de BACKEND (`declaratii_api`) folosea doar
+`neaplicabile_forma` — deci blocarea pe vector trăia numai în selector. Schimbarea a ieșit mai mică și
+mai sigură decât părea.
+
+**Mutații (cinci), toate roșii:** faptul nu mai deblochează · motivul nu-și mai numește sursa · poarta
+nu mai vede documentele în așteptare · semaforul ignoră sonda · ruta nu mai cheamă sonda.
+
+**Ce NU face (limită declarată):** sonda de fapt citește facturile IC (ambele direcții) și tabelul
+manual D301; NU citește `d390_manual`. O firmă cu DOAR linii manuale D390 rămâne blocată în selector —
+dar semaforul îi arată obligația, iar remediul e în mesaj.
+
+## 21.08.2026 — poarta D390: întărită, nu convertită (`d6f5d44`)
+
+**Ce face imposibil:** să se afirme „D390 nu se datorează pe luna X" când există documente primite de
+la ANAF și încă neînregistrate pe acea lună. `d390.evidenta_incompleta`.
+
+**Decizia lui Costin, care a ținut designul drept:** *„poarta se întărește, nu se convertește în
+necunoaștere — griul își pierde înțelesul dacă acoperă și «nu știm nimic» și «știm, dar poarta e
+slabă»"*. Deci gri DOAR pe lunile cu semnal CONCRET: e-Facturi rămase `descarcata` cu data în lună,
+numărate în mesaj. Restul lunilor rămân fapt.
+
+**CE LIPSEȘTE ca „lună închisă" să însemne completitudine** (scris în cod și aici, ca tăcerea să nu se
+citească drept acoperire):
+1. **Perioada confirmată pe domeniul facturi/TVA.** Mecanismul general EXISTĂ — `core/perioada.py`,
+   DESIGN_SYSTEM cap.23: cât timp e neconfirmat, datele sunt informative și calculele din aval
+   blochează. Dar singurul domeniu folosit azi e `pontaj`. Fără un domeniu de facturi și fără acțiunea
+   de confirmare la închidere, nimeni nu declară vreodată luna încheiată. **Asta e jumătatea care
+   lipsește, și e muncă de produs.**
+2. **Documentele care există doar pe hârtie sau la client** — necunoscute prin construcție. Nicio
+   poartă nu le acoperă, deci limita rămâne declarată oricât s-ar întări restul.
+
+**Ambele `except` sunt marcate `# MASCA MOTIVATA`** — gardul de măști le-a prins la commit, corect.
+Tăcerea e deliberată și direcția ei contează: un eșec de citire produce „nu pot ști" (deblochează /
+lasă poarta cum era), niciodată o afirmație despre lume.

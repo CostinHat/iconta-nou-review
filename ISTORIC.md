@@ -4751,3 +4751,18 @@ UI refuză salvarea fără ea); cele 9 perechi generator↔reconciliere nu impor
 iar 4 duplică constante — dintre care doar maparea cotă→rând e „afirmația pusă la test".
 
 METODA_VERIFICARE.md are acum §10 (disciplina execuției, cu instanțele care au produs-o).
+
+## 21.08.2026 (tura 20.08g) — faptul bate vectorul, poarta D390 întărită (`d6f5d44`)
+
+Selectorul de declarații nu mai blochează D390/D301 pe bifa din Vector când faptul o contrazice
+(operațiuni IC reale) sau când evidența e incompletă. Blocajul rămâne doar când faptul lipsește ȘI
+vectorul a fost completat de un om — distincție verificată în trei locuri (UI refuză salvarea goală,
+backendul respinge `None`, 17/17 firme completate). A șaptea instanță doc-contra-cod: docstringul
+selectorului pretindea o aliniere cu semaforul care nu era adevărată.
+
+`d390.evidenta_incompleta`: e-Facturile rămase `descarcata` pe o lună împiedică afirmarea absenței →
+gri cu numărul lor, doar pe lunile cu semnal concret. Ce lipsește pentru completitudine reală, scris:
+un domeniu `facturi` în `perioada_confirmata` (mecanismul cap.23 există, folosit azi doar pentru
+`pontaj`) + actul de închidere a lunii.
+
+Gard nou: `core/test_faptul_bate_vectorul.py` (12 teste, 5 mutații). Suita: 2518 → 2530.

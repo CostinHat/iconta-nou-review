@@ -1795,3 +1795,13 @@ Clichetul a coborât **126 → 98**, cu cele 28 de false pozitive scoase. `cote_
 Măsurat înainte de reparație: 12 motive „nu se datorează", 5 formulate ca absență (2 cu poartă reală,
 1 fără — D205, reîncadrat — 2 dintr-o bifă, reformulate). Trecerea inversă: 7 contraziceri + 1 opinie
 pe 17 firme, zero semnale înainte. Confruntarea instrumentelor: 9 semnale retroactiv, 5 azi (clichet).
+
+## 21.08.2026 — faptul bate vectorul + poarta D390 întărită
+
+| gardă | ce face imposibil |
+|---|---|
+| `core/test_faptul_bate_vectorul.py` | ca selectorul să blocheze D390/D301 pe bifă când faptul o contrazice sau evidența e incompletă; și ca blocajul să dispară când faptul chiar lipsește (contra-direcția) |
+| idem, partea D390 | să se afirme „nu se datorează pe luna X" când există e-Facturi primite de la ANAF, neînregistrate pe acea lună |
+
+Cinci mutații RED-probate. Cele două `except` sunt marcate `# MASCA MOTIVATA` — direcția tăcerii
+contează: un eșec de citire produce „nu pot ști", niciodată o afirmație despre lume.
