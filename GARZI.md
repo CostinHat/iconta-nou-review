@@ -3691,3 +3691,29 @@ proprietarul nu-și mai declară locul.
 
 **Probă live** (cabinet 1968, flag aprins temporar și restaurat exact): bara arată identic, axe 0,
 Pixel 5 fără overflow, și UN singur indicator după re-randare — idempotența contractului.
+
+## 21.08.2026 — ORDINEA gard↔reparație: ce e închis și ce e doar asertat de autor
+
+Regula (Costin): *garda se scrie ÎNTÂI, pică pe HEAD, apoi vine reparația. Dacă garda apare după fix,
+ai fost și observator și comparator, indiferent ce scrie în ea.* Aplicată retroactiv rulării P1–P7,
+prin măsurarea istoricului — nu din memorie.
+
+**ÎNCHISE (gardă înainte, roșie pe HEAD):**
+- **R2 / R2′** — xfail strict din `8f3a8ba` (20.08), roșu 24 de ore, reparat pe 21.08. Toate cele 12
+  constrângeri ale hărții sunt din acel commit: 12/12 scrise înaintea oricărei reparații de azi.
+- **P6 Drumul** — fixul e din 10.08 și nu e al meu; am măsurat comportamentul ÎNAINTE de a scrie garda.
+
+**GARDĂ DUPĂ FIX, RED-probată prin mutarea fixului** (nu „închise" — mutația o aleg tot eu):
+P2 coajă · P5 termene · #13 citate · octeți invizibili · P4 limite · P7 vector gol.
+
+**Ce lipsește ca să fie închise cu adevărat:** o falsificare INDEPENDENTĂ — mutații generate
+sistematic, nu alese de autor. Aia e #2 din roadmap (fuzzer), și e singurul lucru care ar transforma
+„am probat că pică" în „nu putea să nu pice".
+
+**De ce contează, dovedit în aceeași zi:** RED-proof-ul retroactiv cerut de Costin a scos un gard care
+NU păzea nimic — `test_randerul_chiar_o_afiseaza` a rămas verde după ștergerea titlului din randare,
+fiindcă îl găsea în comentariul de deasupra. Dacă n-ar fi cerut ordinea, gardul ar fi rămas în tabel
+arătând închis, cu suita verde.
+
+Generalizat imediat în #14 (`core/test_ancore_in_cod.py`): ancora unui gard trebuie să existe în COD,
+nu în proză.
