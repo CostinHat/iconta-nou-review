@@ -94,6 +94,26 @@ function randDecl(arr, clasa) {
 // contradicția (defect al NOSTRU) și opinia (informație) cer lucruri diferite de la contabil.
 // Semnalele care nu-și găsesc perechea NU dispar: se randează la coada grupului. Un semnal pierdut
 // tăcut ar fi exact clasa de defect pe care mecanismul ăsta o vânează.
+// [P3 21.08.2026] Domeniul unei afirmații, în limba contabilului. Felul NU se tipărește — contabilul
+// n-are ce face cu „absenta_observatie" — dar își face treaba: decide CE se poate scrie ca perioadă.
+// Oglinda lui `core/afirmatii.domeniu_text`; dacă afirmația n-are domeniu prin natura ei (`statut`),
+// nu se inventează unul. Efectul care a cerut-o: D300 apărea și în «De urmărit · iul», și în «Nu pot
+// verifica» fără nicio perioadă, deci cele două păreau să se contrazică deși vorbeau de luni diferite.
+// „2025-12" -> „12.2025": acelasi registru ca restul ecranului (termene, blocaje), nu ISO. Vazut
+// privind captura: „din 2025-12" statea langa „iul" in aceeasi lista, doua formate pentru acelasi fel
+// de lucru.
+const _luniAn = (s) => (/^\d{4}-\d{2}$/.test(s || "") ? `${s.slice(5)}.${s.slice(0, 4)}` : (s || ""));
+
+function domeniuAfirmatie(x) {
+  if (x.fel === "fapt") return x.luna ? `${String(x.luna).padStart(2, "0")}.${x.an}` : String(x.an || "");
+  if (x.fel === "necunoastere") {
+    const de = _luniAn(x.domeniu_de), pana = _luniAn(x.domeniu_pana);
+    if (de && pana) return de === pana ? de : `${de} – ${pana}`;
+    return de ? `din ${de}` : "";
+  }
+  return "";
+}
+
 function randMotiv(arr, semnale = [], felCls = "") {
   const folosite = new Set();
   const potrivite = (x) => semnale.filter((s, i) => {
@@ -105,8 +125,11 @@ function randMotiv(arr, semnale = [], felCls = "") {
   const randSemnal = (s) => `<div class="cf-semnal ${felCls}">${esc(s.mesaj || "")}</div>`;
   const corp = arr.map((x) => `
     <div class="cf-decl-item">
-      <div class="cf-incr-cap"><span class="mig-sold-cont">${esc((x.tip || "").toUpperCase())}</span></div>
+      <div class="cf-incr-cap"><span class="mig-sold-cont">${esc((x.tip || "").toUpperCase())}</span>${
+        domeniuAfirmatie(x) ? `<span class="cf-perioada">${esc(domeniuAfirmatie(x))}</span>` : ""}</div>
       <div class="cf-incr-temei">${esc(x.motiv || "")}</div>
+      ${x.surse_consultate ? `<div class="cf-incr-temei">Căutat în: ${esc(x.surse_consultate)}</div>` : ""}
+      ${x.temei_completitudine ? `<div class="cf-incr-temei">Pe ce se sprijină: ${esc(x.temei_completitudine)}</div>` : ""}
       ${potrivite(x).map(randSemnal).join("")}
     </div>`).join("");
   const orfane = semnale.filter((_, i) => !folosite.has(i));
