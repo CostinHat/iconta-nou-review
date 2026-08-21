@@ -89,12 +89,29 @@ function randDecl(arr, clasa) {
     </div>`).join("");
 }
 // rand de declaratie fara termen (Nu pot verifica / Nu se datoreaza) — doar tip + motiv.
-function randMotiv(arr) {
-  return arr.map((x) => `
+// [R6 21.08.2026] Un motiv poate primi un SEMNAL: o depunere care îl pune la îndoială. Varianta (b),
+// decisă de Costin: fiecare semnal stă lângă afirmația pe care o contrazice, nu într-un grup propriu —
+// contradicția (defect al NOSTRU) și opinia (informație) cer lucruri diferite de la contabil.
+// Semnalele care nu-și găsesc perechea NU dispar: se randează la coada grupului. Un semnal pierdut
+// tăcut ar fi exact clasa de defect pe care mecanismul ăsta o vânează.
+function randMotiv(arr, semnale = [], felCls = "") {
+  const folosite = new Set();
+  const potrivite = (x) => semnale.filter((s, i) => {
+    const acelasiTip = s.tip === x.tip;
+    const acelasiInterval = x.an == null || (s.an === x.an && s.luna === x.luna);
+    if (acelasiTip && acelasiInterval) { folosite.add(i); return true; }
+    return false;
+  });
+  const randSemnal = (s) => `<div class="cf-semnal ${felCls}">${esc(s.mesaj || "")}</div>`;
+  const corp = arr.map((x) => `
     <div class="cf-decl-item">
       <div class="cf-incr-cap"><span class="mig-sold-cont">${esc((x.tip || "").toUpperCase())}</span></div>
       <div class="cf-incr-temei">${esc(x.motiv || "")}</div>
+      ${potrivite(x).map(randSemnal).join("")}
     </div>`).join("");
+  const orfane = semnale.filter((_, i) => !folosite.has(i));
+  return corp + (orfane.length
+    ? `<div class="cf-decl-item">${orfane.map(randSemnal).join("")}</div>` : "");
 }
 // verificare booleana (echilibru/tva/documente) — dot verde/rosu dupa .ok.
 function randVerif(eticheta, ok, detaliu) {
@@ -126,12 +143,18 @@ export function randeazaCorpVerdict(d, opt = {}) {
   const cu_intarziere = d.cu_intarziere || [];
   const neclar = d.neclar || [];
   const neaplicabile = d.neaplicabile || [];
+  // [R6] depuneri fara obligatie pereche: „contrazice" langa «Nu se datoreaza», „opinie" langa
+  // «Nu pot verifica». NU urca pastila (control_fiscal_api._stare neatins): rosul pastilei inseamna
+  // „ai restante"; o incoerenta de verdict e un defect al nostru, nu o datorie a firmei.
+  const semnale = d.depuneri_fara_obligatie || [];
+  const contraziceri = semnale.filter((x) => x.fel === "contrazice");
+  const opinii = semnale.filter((x) => x.fel === "opinie");
 
   const declaratii = `
     ${lipsa.length ? `<div class="cf-grup-titlu cf-rosu">Restanțe (${lipsa.length})</div><div class="cf-decl">${randDecl(lipsa, "cf-termen-rosu")}</div>` : ""}
     ${urmarit.length ? `<div class="cf-grup-titlu cf-galben">De urmărit (${urmarit.length})</div><div class="cf-decl">${randDecl(urmarit, "cf-termen-galben")}</div>` : ""}
-    ${neclar.length ? `<div class="cf-grup-titlu">Nu pot verifica (${neclar.length})</div><div class="cf-decl">${randMotiv(neclar)}</div>` : ""}
-    ${neaplicabile.length ? `<div class="cf-grup-titlu">Nu se datorează (${neaplicabile.length})</div><div class="cf-decl">${randMotiv(neaplicabile)}</div>` : ""}
+    ${neclar.length || opinii.length ? `<div class="cf-grup-titlu">Nu pot verifica (${neclar.length})</div><div class="cf-decl">${randMotiv(neclar, opinii, "cf-semnal-opinie")}</div>` : ""}
+    ${neaplicabile.length || contraziceri.length ? `<div class="cf-grup-titlu">Nu se datorează (${neaplicabile.length})</div><div class="cf-decl">${randMotiv(neaplicabile, contraziceri, "cf-semnal-contra")}</div>` : ""}
     ${cu_intarziere.length ? `<div class="cf-grup-titlu cf-galben">Depuse cu întârziere (${cu_intarziere.length})</div><div class="cf-decl">${randDecl(cu_intarziere, "cf-termen-galben")}</div>` : ""}
     ${confirmate.length ? `<div class="cf-grup-titlu cf-verde">La zi (${confirmate.length})</div><div class="cf-decl">${randDecl(confirmate, "cf-termen-verde")}</div>` : ""}`;
 

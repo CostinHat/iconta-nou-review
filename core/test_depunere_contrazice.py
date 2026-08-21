@@ -38,8 +38,8 @@ def test_depunere_pe_perioada_neaplicabila_e_contrazicere():
         neclar=[],
         depuse={("d100", 2025, 12): Z})
     assert len(r) == 1 and r[0]["fel"] == "contrazice", r
-    assert "T4 2025" in r[0]["mesaj"] and "DEPUSĂ" in r[0]["mesaj"]
-    assert "nu pot fi amândouă adevărate" in r[0]["mesaj"]
+    assert "DEPUSĂ" in r[0]["mesaj"] and "nu pot fi amândouă adevărate" in r[0]["mesaj"]
+    assert "T4 2025" in r[0]["motiv_citat"], "citatul nu poartă motivul contrazis"
 
 
 def test_motivul_citat_e_al_perioadei_depunerii():
@@ -50,8 +50,21 @@ def test_motivul_citat_e_al_perioadei_depunerii():
             _neap("d100", "D100 nu se datorează pe T1 2026 — fără venituri", 2026, 3)]
     r = depuneri_fara_obligatie([], neap, [], {("d100", 2026, 3): Z})
     assert len(r) == 1
-    assert "T1 2026" in r[0]["mesaj"], r[0]["mesaj"]
-    assert "T4 2025" not in r[0]["mesaj"], "citează motivul altei perioade: " + r[0]["mesaj"]
+    assert "T1 2026" in r[0]["motiv_citat"], r[0]["motiv_citat"]
+    assert "T4 2025" not in r[0]["motiv_citat"], "citează motivul altei perioade: " + r[0]["motiv_citat"]
+
+
+def test_mesajul_nu_repeta_motivul():
+    """Găsit PRIVIND captura, nu numărând: mesajul cita integral motivul, iar pe ecran motivul e
+    randat imediat deasupra semnalului — același paragraf de patru rânduri, de două ori la rând.
+    Citatul stă acum separat, în `motiv_citat`, pentru consumatorii care NU afișează motivul."""
+    motiv = ("D100 nu se datorează pe T4 2025 — fără venituri în trimestru (bază 0). Impozitul pe "
+             "veniturile microîntreprinderilor se declară numai pentru trimestrele cu venituri.")
+    r = depuneri_fara_obligatie([], [_neap("d100", motiv, 2025, 12)], [], {("d100", 2025, 12): Z})
+    assert r[0]["motiv_citat"] == motiv
+    assert motiv[:40] not in r[0]["mesaj"], (
+        "mesajul repetă motivul care oricum se randează deasupra lui: " + r[0]["mesaj"])
+    assert len(r[0]["mesaj"]) < 280, "mesajul a redevenit un paragraf: %d caractere" % len(r[0]["mesaj"])
 
 
 def test_depunere_pe_neclar_e_opinie_nu_stingere():

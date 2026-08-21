@@ -552,6 +552,10 @@ def depuneri_fara_obligatie(datorate, neaplicabile, neclar, depuse):
     O depunere in afara ferestrei `datorate` nu e niciuna: fereastra e o alegere de AFISARE, nu o
     afirmatie despre obligatie.
 
+    MESAJUL nu citeaza motivul; citatul sta separat, in `motiv_citat`. Pe ecran motivul e randat
+    imediat deasupra semnalului, iar citatul il dubla - acelasi paragraf de patru randuri de doua ori
+    la rand, vazut in captura. Consumatorii care NU afiseaza motivul (audit_tenant) il compun ei.
+
     PERIOADA se scrie „luna/an", nu „decembrie 2025": pentru declaratiile trimestriale/anuale luna
     din inregistrare e ANCORA de codificare ANAF (D394 T3 -> luna 09), nu luna calendaristica. A o
     traduce in nume de luna ar repeta exact misdiagnosticul D394/003.
@@ -581,19 +585,21 @@ def depuneri_fara_obligatie(datorate, neaplicabile, neclar, depuse):
         if (t, an, luna) in dat:
             continue                       # are obligatie pereche - o trateaza _clasifica
         per = "%s/%s" % (luna, an)
-        d_txt = (" (depusă %s)" % _dmy(data.isoformat())) if data else ""
+        d_txt = (" (%s)" % _dmy(data.isoformat())) if data else ""
         if (t, an, luna) in neap_per or t in neap_tip:
             out.append({"tip": t, "an": an, "luna": luna, "data": data, "fel": "contrazice",
-                        "mesaj": ("%s pe perioada marcată %s e DEPUSĂ%s, dar iConta a considerat că nu "
-                                  "se datorează: «%s». Cele două nu pot fi amândouă adevărate — verifică "
-                                  "dacă motivul e greșit sau depunerea e pe altă perioadă."
-                                  % (t.upper(), per, d_txt, _motiv(t, an, luna)))})
+                        "motiv_citat": _motiv(t, an, luna),
+                        "mesaj": ("Neconcordanță în iConta: %s pe perioada marcată %s e DEPUSĂ%s, deși "
+                                  "motivul înregistrat spune că nu se datorează — cele două nu pot fi "
+                                  "amândouă adevărate. Nu e o greșeală a ta și n-ai ce retrage: cel mai "
+                                  "probabil motivul nostru e greșit." % (t.upper(), per, d_txt))})
         elif t in neclar_tip:
             out.append({"tip": t, "an": an, "luna": luna, "data": data, "fel": "opinie",
-                        "mesaj": ("%s pe perioada marcată %s e DEPUSĂ%s, pe o obligație pe care nu o pot "
-                                  "verifica: «%s». Depunerea arată că cineva a considerat că se datorează; "
-                                  "nu spune nimic despre perioadele în care nu s-a depus."
-                                  % (t.upper(), per, d_txt, _motiv(t, an, luna)))})
+                        "motiv_citat": _motiv(t, an, luna),
+                        "mesaj": ("%s pe perioada marcată %s e DEPUSĂ%s. Cineva a considerat că se "
+                                  "datorează — e o informație în plus, nu un răspuns: nu spune nimic "
+                                  "despre perioadele în care nu s-a depus."
+                                  % (t.upper(), per, d_txt))})
     return out
 
 

@@ -36,8 +36,13 @@ _ABSENTA_MOTIVATA = {
         "Poartă reală: `d100_fapt` distinge False (trimestru genuin gol — fără venituri ȘI fără "
         "facturi emise) de None (venituri 0 dar există facturi emise → gri). Absența e MĂSURATĂ.",
     "nicio operațiune intracomunitară în lună":
-        "Poartă: se confirmă doar pe LUNA ÎNCHISĂ, și doar pe ultima închisă; sursa faptului e "
-        "reuniunea facturi IC + operațiuni manuale + d301, nu o bifă.",
+        "Poartă SLABĂ, scrisă ca s-o poată contesta cineva (citit la sursă 21.08, `d390.d390_are_"
+        "operatiuni`): «luna închisă» înseamnă doar că luna CALENDARISTICĂ s-a terminat "
+        "(`prima_urm > azi -> None`), NU că evidența lunii e completă. O firmă care n-a introdus "
+        "încă facturile de iulie primește în august «D390 nu se datorează pe iulie». Ce ACOPERĂ "
+        "poarta: separă «nu pot ști încă» (lună deschisă) de «am privit»; și confirmă doar pe "
+        "ULTIMA lună închisă, deci raza e o lună. Ce NU acoperă: întârzierea la introducerea "
+        "datelor. Candidat la reîncadrare — decizie de produs, nu de cod.",
     "Vectorul fiscal declară că firma nu are operațiuni intracomunitare":
         "Nu afirmă despre lume: își numește SURSA (bifa din Vector) și poartă remediul "
         "(„corectează Vectorul fiscal”). Selectorul are nevoie de o decizie binară.",

@@ -125,9 +125,19 @@ STRUCTURA = {
             {"id": "de_urmarit", "cheie": 'urmarit', "conditie": 'lista_nevida', "titlu": "De urmărit", "sursa": "d.urmarit",
              "apare_cand": "len(d.urmarit) > 0", "rand": "decl", "numarata": True},
             {"id": "nu_pot_verifica", "cheie": 'neclar', "conditie": 'lista_nevida', "titlu": "Nu pot verifica", "sursa": "d.neclar",
-             "apare_cand": "len(d.neclar) > 0", "rand": "motiv", "numarata": True},
+             "apare_cand": "len(d.neclar) > 0 sau len(opinii) > 0", "rand": "motiv", "numarata": True,
+             "rand_secundar": "semnal",
+             "nota": "[R6 21.08.2026] Grupul apare si cand `neclar` e gol dar exista OPINII "
+                     "(depuneri pe un tip neclar). Contorul din titlu numara doar `neclar` - "
+                     "opinia NU e o obligatie, deci n-are ce numara acolo."},
             {"id": "nu_se_datoreaza", "cheie": 'neaplicabile', "conditie": 'lista_nevida', "titlu": "Nu se datorează", "sursa": "d.neaplicabile",
-             "apare_cand": "len(d.neaplicabile) > 0", "rand": "motiv", "numarata": True},
+             "apare_cand": "len(d.neaplicabile) > 0 sau len(contraziceri) > 0", "rand": "motiv", "numarata": True,
+             "rand_secundar": "semnal",
+             "nota": "[R6 21.08.2026] Un motiv poate purta un SEMNAL: o depunere care il contrazice. "
+                     "Rosu SOBRU (--rosu pe --rosu-fundal), NU rosu-semafor - nu e o restanta a firmei, "
+                     "e o incoerenta a NOASTRA; din acelasi motiv NU urca pastila. Grupul apare si "
+                     "cand `neaplicabile` e gol dar exista contraziceri; contorul din titlu numara "
+                     "doar obligatiile, fiindca un semnal nu e o obligatie."},
             {"id": "depuse_cu_intarziere", "cheie": 'cu_intarziere', "conditie": 'lista_nevida', "titlu": "Depuse cu întârziere", "sursa": "d.cu_intarziere",
              "apare_cand": "len(d.cu_intarziere) > 0", "rand": "decl", "numarata": True},
             {"id": "la_zi", "cheie": 'confirmate', "conditie": 'lista_nevida', "titlu": "La zi", "sursa": "d.confirmate",

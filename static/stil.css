@@ -2282,6 +2282,12 @@ table tbody tr:nth-child(even) td { background: var(--alb); }
 /* [a11y contrast Control fiscal 18.08.2026] --gri-semafor #9aa3b2 pe panoul #e9edf3 = 2.16 < 4.5;
    scoped la sub-textul verdictelor (cf-incr, control-fiscal-specific) -> #5c6675 = 4.95 pe #e9edf3. */
 .cf-incr-temei { font-size: var(--text-mic); color: #5c6675; margin-top: 4px; line-height: 1.4; }
+.cf-semnal { font-size: var(--text-mic); margin-top: 6px; padding: 8px 10px; border-radius: 8px;
+  line-height: 1.45; }
+/* [R6] contradictie = defect al NOSTRU (rosu sobru, nu rosu-semafor: nu e o restanta a firmei) */
+.cf-semnal-contra { background: var(--rosu-fundal); color: var(--rosu); }
+/* opinie = informatie in plus, ton neutru: nu raspunde la intrebare, deci nu are voie sa para verdict */
+.cf-semnal-opinie { background: var(--fundal); color: var(--ardezie); }
 .cf-incr-remediu { font-size: var(--text-mic); margin-top: 6px; padding: 8px 10px; background: var(--galben-fundal); border-radius: 8px; line-height: 1.45; }
 .cf-incr-rand { padding: 10px 4px; border-bottom: 1px solid #eef0f3; }
 .cf-incr-cap { display: flex; align-items: center; gap: 8px; font-weight: 600; }

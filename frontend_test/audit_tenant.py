@@ -149,6 +149,8 @@ def faceta_f2_f7(rap, tok, tid):
     # inca (Control fiscal e STOP pana la confirmarea a CE se vede).
     for c in (sem.get("depuneri_fara_obligatie") or []):
         f7.append("  depunere %s: %s" % (c.get("fel"), c.get("mesaj", "")[:150]))
+        if c.get("motiv_citat"):
+            f7.append("      motivul contrazis: %s" % c["motiv_citat"][:120])
     _con = sem.get("contabil")
     _constat = _con if isinstance(_con, list) else (_con.get("constatari") if isinstance(_con, dict) else [])
     for c in (_constat or []):
