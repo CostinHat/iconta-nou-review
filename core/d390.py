@@ -635,6 +635,55 @@ def d390_are_operatiuni(conn, schema, an, luna, azi=None):
     return False
 
 
+def evidenta_incompleta(conn, schema, an, luna):
+    """[21.08.2026] Ce ne impiedica sa AFIRMAM ca luna n-a avut operatiuni intracomunitare?
+    Intoarce motivul (text pentru contabil) sau None daca nu stim de nimic in asteptare.
+
+    DE CE EXISTA. `d390_are_operatiuni` intoarce False pe „luna inchisa" - dar inchis inseamna acolo
+    doar ca luna CALENDARISTICA s-a terminat (`prima_urm > azi`), NU ca evidenta lunii e completa. O
+    firma care n-a inregistrat inca facturile de iulie primea in august „D390 nu se datoreaza pe iulie".
+    Poarta se INTARESTE (decis de Costin 21.08), nu se converteste in necunoastere: gri-ul isi pierde
+    intelesul daca acopera si „nu stim nimic" si „stim, dar poarta e slaba". Deci: raspundem gri DOAR
+    pe lunile despre care avem un semnal CONCRET ca evidenta nu e inchisa.
+
+    CE ACOPERA AZI: e-Facturi descarcate de la SPV si ramase `descarcata` (nici ciorna, nici validata,
+    nici respinsa) cu data in luna. E un document pe care ANAF ni l-a dat si care nu e inca inregistrat.
+
+    CE LIPSESTE ca „luna inchisa" sa insemne COMPLETITUDINE (scris, ca tacerea sa nu se citeasca drept
+    acoperire):
+      1. PERIOADA CONFIRMATA pe domeniul facturi/TVA. Mecanismul general exista (`core/perioada.py`,
+         DESIGN_SYSTEM cap.23: cat timp e neconfirmat, datele sunt informative si calculele din aval
+         blocheaza), dar singurul domeniu folosit azi e `pontaj`. Fara un domeniu de facturi si fara
+         actiunea de confirmare la inchidere, nimeni nu declara vreodata luna incheiata. Asta e
+         jumatatea care lipseste, si e munca de produs, nu de cod.
+      2. Documentele care exista DOAR pe hartie sau la client. Necunoscute prin constructie - nicio
+         poarta nu le poate acoperi, deci limita ramane declarata oricat s-ar intari restul.
+    """
+    if not conn or not schema:
+        return None
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT to_regclass(%s)", (schema + ".efactura_primite",))
+            if not cur.fetchone()[0]:
+                return None
+            cur.execute("SELECT count(*) FROM " + schema + ".efactura_primite "
+                        "WHERE status = 'descarcata' AND data_creare >= %s AND data_creare < %s",
+                        (datetime.date(an, luna, 1),
+                         (datetime.date(an + 1, 1, 1) if luna == 12 else datetime.date(an, luna + 1, 1))))
+            n = cur.fetchone()[0]
+    except Exception:
+        # MASCA MOTIVATA: None = „nu stiu de nimic in asteptare", deci poarta ramane cum era inainte
+        # de intarire (comportament vechi). Un esec de citire NU are voie sa produca gri pe toate
+        # lunile - ar converti clasa in necunoastere, exact ce s-a decis sa NU se faca.
+        return None
+    if not n:
+        return None
+    return ("%d e-Factur%s primit%s de la ANAF pe %02d.%04d %s încă neînregistrat%s — până atunci nu pot "
+            "confirma că luna n-a avut operațiuni intracomunitare." %
+            (n, "ă" if n == 1 else "i", "ă" if n == 1 else "e", luna, an,
+             "e" if n == 1 else "sunt", "ă" if n == 1 else "e"))
+
+
 def erori_generare(prof):
     """Poarta bazei nule: profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF."""
     erori = []

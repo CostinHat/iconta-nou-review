@@ -3354,12 +3354,17 @@ def declaratii_tipuri(tenant_id: Optional[int] = None, ctx=Depends(cere_cabinet)
         with conn.cursor() as cur:
             cur.execute("SELECT tip_firma, tip_decont, platitor_tva, operatiuni_ic FROM firma_profil WHERE id = 1")
             row = cur.fetchone()
-    _vec = ({"tip_firma": row[0], "tip_decont": row[1], "platitor_tva": row[2], "operatiuni_ic": row[3]}
-            if row else {})
+        _vec = ({"tip_firma": row[0], "tip_decont": row[1], "platitor_tva": row[2], "operatiuni_ic": row[3]}
+                if row else {})
+        # [21.08.2026] FAPTUL BATE VECTORUL: selectorul nu mai blocheaza D390/D301 pe bifa cand exista
+        # operatiuni IC reale (sau cand evidenta e incompleta). Tiparul tenant_006. Sonda se cheama
+        # INAINTE de inchiderea conexiunii - inainte era calculata dupa `with`, ceea ce n-ar fi mers.
+        _neap = control_fiscal_api.neaplicabile_selector(
+            _vec, ic_fapt=(lambda: control_fiscal_api.ic_fapt_din_db(conn, schema, azi_ro().year)))
     _tipd = _vec.get("tip_decont")
     return {"tipuri": declaratii_api.tipuri(),
             "periodicitate": {t: declaratii_api.periodicitate_firma(t, _tipd) for t in declaratii_api.tipuri()},
-            "neaplicabile": control_fiscal_api.neaplicabile_selector(_vec)}
+            "neaplicabile": _neap}
 
 
 @app.post("/declaratii/{tip}/valideaza")  # duk_valideaza_v1

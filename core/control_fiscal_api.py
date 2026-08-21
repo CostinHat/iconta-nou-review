@@ -61,11 +61,29 @@ def neaplicabile_forma(tip_firma):
     return dict(_NEAP_FORMA_SIMPLA) if regim_contabil(tip_firma) == "simpla" else {}
 
 
-def neaplicabile_selector(vector):
-    """[S1 plimbare 14.08.2026] NEaplicabile pt SELECTORUL de declaratii: forma + VECTORUL TVA, aliniat
-    cu gatingul din obligatii_datorate (aceleasi reguli -> selectorul NU diverge de semafor). Inainte
-    selectorul folosea doar neaplicabile_forma(tip_firma) -> o firma neplatitoare vedea D300/D390
-    selectabile desi semaforul le stie neaplicabile."""
+def neaplicabile_selector(vector, *, ic_fapt=None):
+    """[S1 plimbare 14.08.2026] NEaplicabile pt SELECTORUL de declaratii: forma + VECTORUL TVA.
+
+    FAPTUL BATE VECTORUL (21.08.2026, decis de Costin - tiparul tenant_006). `ic_fapt` e un callback
+    fara argumente care intoarce True (s-au gasit operatiuni intracomunitare REALE), False (nu s-au
+    gasit, iar evidenta e completa cat putem sti) sau None (evidenta e INCOMPLETA - exista documente
+    neprocesate, deci absenta nu se poate afirma). D390/D301 se blocheaza DOAR pe False.
+
+    DE CE. Vectorul e o AFIRMATIE a cuiva; faptul e o OBSERVATIE. Cand se contrazic, faptul castiga si
+    vectorul devine ce trebuie corectat - altfel un selector care blocheaza pe bifa il impiedica pe
+    contabil sa declare o obligatie pe care firma o ARE (exact ce s-a intamplat pe tenant_006: vectorul
+    zicea fara IC, firma avea achizitii intracomunitare reale).
+
+    Cand faptul LIPSESTE si vectorul spune nu, blocajul RAMANE - si nu devine „nu pot verifica", ca la
+    cele trei D301. Diferenta e reala: acolo tacea un TABEL (absenta unei observatii), aici a raspuns
+    un OM. Masurat 21.08: campul e tri-stare cu placeholder gol, iar salvarea e refuzata cu mesaj
+    propriu daca ramane necompletat (`date_firma.js`), backendul respinge None (IC_LIPSA), si 17 din 17
+    firme il au completat. Vectorul NEcompletat produce deja gri in semafor, nu blocaj.
+
+    LIMITA declarata: sonda de fapt citeste facturile IC (ambele directii) si tabelul manual D301; NU
+    citeste `d390_manual`. O firma care are DOAR linii manuale D390 ramane blocata in selector - dar
+    semaforul ii arata obligatia, si remediul (corecteaza Vectorul) e in mesaj.
+    """
     neap = neaplicabile_forma(vector.get("tip_firma"))
     platitor = vector.get("platitor_tva")
     ic = vector.get("operatiuni_ic")
@@ -75,11 +93,13 @@ def neaplicabile_selector(vector):
     if platitor is True:
         neap.setdefault("d301", "D301 nu se datorează — e pentru neînregistrații în scopuri de TVA (firma e plătitoare).")
     if ic is False:
-        # [absenta_observatie 21.08.2026] Amandoua veneau dintr-o BIFA din vector si afirmau despre
-        # LUME („firma nu are operatiuni intracomunitare"). Bifa nu e o observatie asupra operatiunilor;
-        # pe tenant_006 exact asta a produs „nu se datoreaza" pe o firma cu achizitii IC reale. Motivul
-        # isi numeste acum SURSA si poarta remediul. Clasa nu se schimba (selectorul are nevoie de o
-        # decizie binara), afirmatia da.
+        fapt = ic_fapt() if ic_fapt else False
+        if fapt is True:
+            return neap          # faptul contrazice bifa -> NU blocam; semaforul semnaleaza contradictia
+        if fapt is None:
+            return neap          # evidenta incompleta -> absenta nu se poate afirma
+        # [absenta_observatie 21.08.2026] Motivul isi numeste SURSA si poarta remediul: nu afirma despre
+        # lume dintr-o bifa, spune cine a declarat si unde se corecteaza.
         neap.setdefault("d390", "D390 nu se datorează — Vectorul fiscal declară că firma nu are "
                                 "operațiuni intracomunitare. Dacă firma a avut livrări sau achiziții "
                                 "intracomunitare, corectează Vectorul fiscal.")
@@ -90,7 +110,43 @@ def neaplicabile_selector(vector):
     return neap
 
 
-def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PRAG_URMARIT_ZILE, d390_fapt=None, d112_fapt=None, existenta_fapt=None, d100_fapt=None):
+def ic_fapt_din_db(conn, schema, an):
+    """Sonda de FAPT pentru selector: exista operatiuni intracomunitare in `an-1`..`an`?
+    True = da (facturi IC pe oricare directie, sau linii manuale D301).
+    None = nu am gasit, DAR evidenta e incompleta (e-Facturi descarcate de la SPV, neinregistrate inca)
+           -> absenta nu se poate afirma.
+    False = nu am gasit si nu stiu de nimic in asteptare.
+    Citire pura (SELECT); nu scrie nimic."""
+    import datetime as _dt
+
+    from core import control_incrucisat as _ci
+    try:
+        fic = _ci.facturi_ic(conn, schema, _dt.date(an - 1, 1, 1), _dt.date(an + 1, 1, 1))
+        if any(fic.get(k) for k in ("primita", "emisa")):
+            return True
+        for a in (an - 1, an):
+            if _ci.d301_luni_operatiuni(conn, schema, a):
+                return True
+    except Exception:
+        return None                      # nu pot citi faptul -> nu afirm absenta (fail-safe)
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT to_regclass(%s)", (schema + ".efactura_primite",))
+            if cur.fetchone()[0]:
+                cur.execute("SELECT count(*) FROM " + schema + ".efactura_primite "
+                            "WHERE status = 'descarcata'")
+                if cur.fetchone()[0]:
+                    return None          # documente descarcate, neinregistrate -> evidenta incompleta
+    except Exception:
+        # MASCA MOTIVATA: daca nu pot CITI faptul, nu am voie sa afirm absenta lui. Tacerea aici
+        # inseamna None = „nu pot sti", care DEBLOCHEAZA selectorul - deci esecul citirii nu poate
+        # produce niciodata un blocaj. Directia opusa (except -> False) ar transforma o eroare de
+        # citire intr-o afirmatie despre lume, exact clasa absenta_observatie.
+        return None
+    return False
+
+
+def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PRAG_URMARIT_ZILE, d390_fapt=None, d112_fapt=None, existenta_fapt=None, d100_fapt=None, d390_incomplet=None):
     """
     SURSA UNICA a mapicarii 'cine ce declaratie datoreaza' (regim/TVA/decont/IC/salariati),
     inclusiv marginirea la inregistrarea TVA (B1) si D390 art.317 gri la neplatitor (B2).
@@ -349,10 +405,18 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
                 # luna INCHISA fara operatiuni -> nu se datoreaza (cost asimetric: restanta falsa = acuzatie).
                 # Semafor confirma cu temei doar pe ULTIMA luna inchisa; termene skip tacit.
                 if jos is None and (a, m) == ultima_inchisa:
-                    neaplic_luna("D390", a, m,
-                        "D390 nu se datorează pe %s %d — nicio operațiune intracomunitară în lună. Se depune numai "
-                        "pentru lunile în care ia naștere exigibilitatea (instr. completare D390, anexa OPANAF "
-                        "705/2020 anexa 2 pct.1.2 (anterior OPANAF 394/2017, abrogat))." % (_LUNI_NUME[m], a))
+                    # [21.08.2026] POARTA INTARITA: „luna inchisa" inseamna doar ca luna calendaristica
+                    # s-a terminat, NU ca evidenta e completa. Daca stim de documente in asteptare pe
+                    # luna aia, nu AFIRMAM absenta - dar nici nu convertim toata clasa in necunoastere:
+                    # gri doar pe lunile cu semnal CONCRET (vezi d390.evidenta_incompleta).
+                    _inc = d390_incomplet(a, m) if d390_incomplet else None
+                    if _inc:
+                        gri("D390", _inc)
+                    else:
+                        neaplic_luna("D390", a, m,
+                            "D390 nu se datorează pe %s %d — nicio operațiune intracomunitară în lună. Se depune numai "
+                            "pentru lunile în care ia naștere exigibilitatea (instr. completare D390, anexa OPANAF "
+                            "705/2020 anexa 2 pct.1.2 (anterior OPANAF 394/2017, abrogat))." % (_LUNI_NUME[m], a))
             else:
                 # None = luna DESCHISA -> BIFA decide (faptul nu se poate sti inca; cost asimetric: termen ascuns = amenda).
                 if operatiuni_ic:               # profil declara IC -> nu putem exclude: termene afiseaza, semafor gri
@@ -408,13 +472,14 @@ def obligatii_datorate(vector, are_salariati, azi=None, *, jos=None, sus_zile=PR
     return {"datorate": datorate, "neclar": neclar, "neaplicabile": neaplicabile}
 
 
-def declaratii_datorate(vector, are_salariati, azi=None, *, d390_fapt=None, d112_fapt=None, existenta_fapt=None, d100_fapt=None):
+def declaratii_datorate(vector, are_salariati, azi=None, *, d390_fapt=None, d112_fapt=None, existenta_fapt=None, d100_fapt=None, d390_incomplet=None):
     """Semaforul (privire inapoi): fereastra [restante ... azi+7], fara limita inferioara.
     Wrapper subtire peste obligatii_datorate - comportament NESCHIMBAT fara callback-uri de fapt
     (matricea de 64 il apara). d390_fapt/d112_fapt/existenta_fapt/d100_fapt = callback-uri pe fapt, date de
     evalueaza_firma (are conn_schema); None in teste/matrice."""
     return obligatii_datorate(vector, are_salariati, azi, d390_fapt=d390_fapt, d112_fapt=d112_fapt,
-                              existenta_fapt=existenta_fapt, d100_fapt=d100_fapt)
+                              existenta_fapt=existenta_fapt, d100_fapt=d100_fapt,
+                              d390_incomplet=d390_incomplet)
 
 
 def _dmy(iso):
@@ -729,8 +794,12 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
             # intorc None -> semaforul EMITE D100 (reminder), NU suprima. Suprimarea (neaplic) se face DOAR pe
             # False (fapt DEMONSTRAT fara venituri), niciodata pe o eroare de citire (ar ascunde o obligatie reala).
             return None
+    # [21.08.2026] Inainte de a AFIRMA ca o luna n-a avut operatiuni IC, intrebam daca evidenta lunii
+    # e completa cat putem sti (e-Facturi descarcate si neinregistrate). Poarta intarita, nu convertita.
+    _d390_incomplet = lambda a, l: _d390.evidenta_incompleta(conn_schema, schema, a, l)
     rez = declaratii_datorate(vector, are_sal, azi, d390_fapt=_d390_fapt, d112_fapt=_d112_fapt,
-                              existenta_fapt=_existenta_fapt, d100_fapt=_d100_fapt)
+                              existenta_fapt=_existenta_fapt, d100_fapt=_d100_fapt,
+                              d390_incomplet=_d390_incomplet)
     datorate = list(rez["datorate"])
     neclar = list(rez["neclar"])
 

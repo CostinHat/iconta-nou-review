@@ -36,13 +36,15 @@ _ABSENTA_MOTIVATA = {
         "Poartă reală: `d100_fapt` distinge False (trimestru genuin gol — fără venituri ȘI fără "
         "facturi emise) de None (venituri 0 dar există facturi emise → gri). Absența e MĂSURATĂ.",
     "nicio operațiune intracomunitară în lună":
-        "Poartă SLABĂ, scrisă ca s-o poată contesta cineva (citit la sursă 21.08, `d390.d390_are_"
-        "operatiuni`): «luna închisă» înseamnă doar că luna CALENDARISTICĂ s-a terminat "
-        "(`prima_urm > azi -> None`), NU că evidența lunii e completă. O firmă care n-a introdus "
-        "încă facturile de iulie primește în august «D390 nu se datorează pe iulie». Ce ACOPERĂ "
-        "poarta: separă «nu pot ști încă» (lună deschisă) de «am privit»; și confirmă doar pe "
-        "ULTIMA lună închisă, deci raza e o lună. Ce NU acoperă: întârzierea la introducerea "
-        "datelor. Candidat la reîncadrare — decizie de produs, nu de cod.",
+        "Poartă ÎNTĂRITĂ 21.08 (decis de Costin: poarta se întărește, nu se convertește în "
+        "necunoaștere — gri-ul își pierde înțelesul dacă acoperă și «nu știm nimic» și «știm, dar "
+        "poarta e slabă»). Ce acoperă acum: luna calendaristică încheiată, confirmată doar pe ULTIMA "
+        "lună închisă, PLUS `d390.evidenta_incompleta` — dacă există e-Facturi primite de la ANAF și "
+        "rămase neînregistrate pe acea lună, nu se mai afirmă absența, se răspunde gri cu numărul lor. "
+        "Ce ÎNCĂ NU acoperă, scris ca tăcerea să nu se citească drept acoperire: (1) perioada "
+        "confirmată pe domeniul facturi/TVA — mecanismul general există (`core/perioada.py`, cap.23), "
+        "dar singurul domeniu folosit azi e `pontaj`, deci nimeni nu declară vreodată luna încheiată; "
+        "(2) documentele care există doar pe hârtie sau la client — necunoscute prin construcție.",
     "Vectorul fiscal declară că firma nu are operațiuni intracomunitare":
         "Nu afirmă despre lume: își numește SURSA (bifa din Vector) și poartă remediul "
         "(„corectează Vectorul fiscal”). Selectorul are nevoie de o decizie binară.",
