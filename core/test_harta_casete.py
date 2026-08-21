@@ -242,22 +242,38 @@ def test_randurile_poarta_cheia_de_identificare():
     assert not fara, "Rânduri de depunere fără cheia de identificare completă: %s" % fara[:6]
 
 
-@pytest.mark.xfail(strict=True, reason=(
-    "DECIS 20.08.2026 (R2), NEIMPLEMENTAT (20.08.2026): fiecare rând de anatomie `motiv` trebuie să poarte perioada "
-    "sau intervalul la care se referă. Azi intrările din d.neclar au doar {tip, motiv}, iar textul lor "
-    "afirmă «pentru restanțele trecute» — un domeniu pe care datele nu-l poartă. Efect pe ecran: D300 "
-    "apare și în «De urmărit · iul», și în «Nu pot verifica» fără perioadă, deci cele două par să se "
-    "contrazică deși vorbesc despre luni diferite. Lăsat DELIBERAT neredus: garda trebuie să-l prindă "
-    "ea, nu eu — altfel am probat doar că l-am văzut. Cade singur când payload-ul poartă domeniul."))
-def test_randurile_motiv_poarta_domeniul():
+# [R2 + R2′ ÎNCHISE 21.08.2026] Datoria a căzut SINGURĂ, cum s-a scris că va cădea („cade când
+# payload-ul poartă domeniul"). Nu s-a mutat pragul și nu s-a înmuiat aserțiunea: s-a schimbat
+# PRODUCĂTORUL (`core/afirmatii.py` + cei șapte producători din `control_fiscal_api`), iar testul a
+# devenit verde de la sine. Textul vechi al datoriei, păstrat fiindcă descrie efectul care a motivat-o:
+# „D300 apare și în «De urmărit · iul», și în «Nu pot verifica» fără perioadă, deci cele două par să se
+# contrazică deși vorbesc despre luni diferite."
+def test_randurile_motiv_isi_declara_felul_si_campurile_lui():
+    """Constrângerea corectă nu e „există una din cheile {perioada, an, interval}" — aia era o listă
+    fixă, dinaintea nomenclatorului. E că **câmpurile urmează FORMA afirmației**: o necunoaștere poartă
+    interval, un fapt poartă an+lună+temeiul completitudinii, un statut n-are domeniu prin natura lui,
+    o contradicție poartă sursele."""
+    from core.afirmatii import FELURI
     a = _art()
-    p = a["payload"]
-    fara = []
-    for lista, randuri in p["randuri_motiv"].items():
-        for chei in randuri:
-            if not ({"perioada", "an", "interval"} & set(chei)):
-                fara.append("%s: rând cu cheile %s" % (lista, chei))
-    assert not fara, "Rânduri `motiv` fără domeniu declarat: %s" % fara
+    rele = []
+    for lista, randuri in a["payload"]["randuri_motiv"].items():
+        for r in randuri:
+            fel, chei = r.get("fel"), set(r.get("chei") or [])
+            if fel not in FELURI:
+                rele.append("%s: rând cu fel %r (nomenclator ÎNCHIS)" % (lista, fel))
+                continue
+            lipsa = [c for c in FELURI[fel] if c not in chei]
+            if lipsa:
+                rele.append("%s: `%s` fără %s" % (lista, fel, ", ".join(lipsa)))
+    assert not rele, "Rânduri `motiv` care nu-și urmează felul: %s" % rele
+
+
+def test_felurile_randate_chiar_acopera_mai_multe_cazuri():
+    """Anti-vacuu: dacă firma scanată produce un singur fel, testul de mai sus abia discriminează.
+    Se cere să apară cel puțin DOUĂ feluri diferite — altfel constrângerea trece pe un caz norocos."""
+    a = _art()
+    feluri = {r.get("fel") for randuri in a["payload"]["randuri_motiv"].values() for r in randuri}
+    assert len(feluri) >= 2, "un singur fel randat (%s) — constrângerea nu discriminează" % feluri
 
 
 def test_depuse_numara_obligatii_stinse_nu_depuneri():

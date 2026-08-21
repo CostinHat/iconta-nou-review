@@ -161,38 +161,79 @@
   },
   "randuri_motiv": {
    "neaplicabile": [
-    [
-     "an",
-     "luna",
-     "motiv",
-     "tip"
-    ],
-    [
-     "motiv",
-     "tip"
-    ]
+    {
+     "chei": [
+      "an",
+      "fel",
+      "luna",
+      "motiv",
+      "temei_completitudine",
+      "tip"
+     ],
+     "fel": "fapt"
+    },
+    {
+     "chei": [
+      "fel",
+      "motiv",
+      "statut",
+      "statut_din",
+      "tip"
+     ],
+     "fel": "statut"
+    }
    ],
    "neclar": [
-    [
-     "motiv",
-     "tip"
-    ],
-    [
-     "motiv",
-     "tip"
-    ],
-    [
-     "motiv",
-     "tip"
-    ],
-    [
-     "motiv",
-     "tip"
-    ],
-    [
-     "motiv",
-     "tip"
-    ]
+    {
+     "chei": [
+      "domeniu_de",
+      "domeniu_pana",
+      "fel",
+      "motiv",
+      "tip"
+     ],
+     "fel": "necunoastere"
+    },
+    {
+     "chei": [
+      "domeniu_de",
+      "domeniu_pana",
+      "fel",
+      "motiv",
+      "tip"
+     ],
+     "fel": "necunoastere"
+    },
+    {
+     "chei": [
+      "domeniu_de",
+      "domeniu_pana",
+      "fel",
+      "motiv",
+      "tip"
+     ],
+     "fel": "necunoastere"
+    },
+    {
+     "chei": [
+      "domeniu_de",
+      "domeniu_pana",
+      "fel",
+      "motiv",
+      "tip"
+     ],
+     "fel": "necunoastere"
+    },
+    {
+     "chei": [
+      "domeniu_de",
+      "domeniu_pana",
+      "fel",
+      "motiv",
+      "tip"
+     ],
+     "fel": "necunoastere"
+    }
    ]
   },
   "stare": "rosu",
