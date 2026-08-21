@@ -44,14 +44,14 @@ def test_cont_care_nu_tine_parteneri_e_respins():
     """5121 (banca), 5311 (casa), 707 (venituri) nu au parteneri: un sold pe partener
     acolo e o eroare de export, nu o realitate contabila."""
     er, bune = verifica_randuri([_r("5121", "RO14399840", "BANCA")])
-    assert len(er) == 1 and er[0]["motiv"] == "cont_nepartener"
+    assert len(er) == 1 and er[0]["regula"] == "cont_nepartener"
     assert not bune
 
 
 def test_partener_fara_cui_e_respins():
     """Soldurile pe parteneri intra in D394 si SAF-T - acolo CUI-ul e obligatoriu."""
     er, _ = verifica_randuri([_r("4111", "", "PARTENER FARA CUI")])
-    assert len(er) == 1 and er[0]["motiv"] == "cui_invalid"
+    assert len(er) == 1 and er[0]["regula"] == "cui_invalid"
     assert "nu are CUI" in er[0]["mesaj"]
 
 

@@ -23,42 +23,38 @@ from core import scan_afirmatii as s
 # Măsurat 21.08.2026: 120 afirmații netipate în clasele A (verdict) și C (import), în 30 de fișiere.
 # Fiecare linie e o DATORIE, nu o normă. Se coboară; nu se ridică.
 #
-# 21.08, aceeași zi: 120 -> 93. `control_incrucisat` a ajuns la ZERO și a ieșit din tabel:
-# constatările trec prin `afirmatie()`, iar containerele de modul au scăpat de câmpul mort
-# `explicatie` (nu-l citea nimeni — decis de Costin: „a-l cabla acum înseamnă să inventăm o nevoie
-# ca să justificăm un câmp").
+# 21.08, aceeași zi: 120 -> 63.
+#   `control_incrucisat` 27 -> 0 (constatările trec prin `afirmatie()`; câmpul mort `explicatie` scos)
+#   importurile de rând -> prin `migrare_api.respinge`, cu regulă din nomenclator ÎNCHIS
+# Ce a rămas la importuri sunt rezultate de import (`{denumire, motiv}` pe rândurile VALIDE), nu
+# respingeri — se numără mai departe fiindcă poartă cheia `motiv`.
 BASELINE = {
-    "main.py": 13,
-    "core/salariati_import_api.py": 8,
+    "main.py": 12,
     "core/d390.py": 7,
-    "core/istoric_declaratii_import_api.py": 7,
     "core/reconciliere.py": 6,
-    "core/rip_migrare_api.py": 6,
-    "core/mijloace_fixe_import_api.py": 5,
-    "core/articole_import_api.py": 3,
     "core/control_fiscal_api.py": 3,
     "core/d100_reconciliere.py": 3,
     "core/firma_profil_api.py": 3,
     "core/raportari_ai.py": 3,
-    "core/asociati_import_api.py": 2,
+    "core/articole_import_api.py": 2,
     "core/d112_reconciliere.py": 2,
     "core/d205_reconciliere.py": 2,
     "core/d300_reconciliere.py": 2,
     "core/d301_reconciliere.py": 2,
     "core/d390_reconciliere.py": 2,
     "core/d394_reconciliere.py": 2,
-    "core/retete_import_api.py": 2,
-    "core/solduri_parteneri_api.py": 2,
+    "core/rip_migrare_api.py": 2,
     "core/audit_preluare.py": 1,
     "core/cote_tva.py": 1,
     "core/etransport_send.py": 1,
     "core/gdpr_sterge.py": 1,
     "core/intrastat.py": 1,
+    "core/istoric_declaratii_import_api.py": 1,
     "core/reconciliere_api.py": 1,
+    "core/retete_import_api.py": 1,
     "core/stocuri_api.py": 1,
     "core/tipare_api.py": 1,
 }
-
 
 @pytest.fixture(scope="module")
 def acum():

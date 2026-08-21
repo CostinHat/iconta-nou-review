@@ -28,6 +28,7 @@ def _gaseste_col(antet, *chei):
 
 
 from core.numere import numar as _numar  # sursa unica (15.07.2026, vezi core/numere.py)
+from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 
 
 def _intreg(v):
@@ -167,23 +168,23 @@ def verifica_randuri(randuri):
         rez = float(r.get("rezidual") or 0)
         dur = int(r.get("dnf_luni") or r.get("durata") or 0)   # [Q3] cheia reala e dnf_luni (extrage:136); "durata" nu exista niciodata -> dadea 0 pe fiecare rand
         if not cod:
-            er.append({"rand": i, "motiv": "cod_lipsa", "mesaj": "%s: fără cod de inventar" % den})
+            er.append(respinge("mijloc fix", i, "cod_lipsa", "%s: fără cod de inventar" % den))
         elif cod in coduri:
-            er.append({"rand": i, "motiv": "cod_duplicat",
-                       "mesaj": "codul de inventar %s apare de două ori (rândurile %s și %s)"
-                                % (cod, coduri[cod], i)})
+            er.append(respinge("mijloc fix", i, "cod_duplicat",
+                               "codul de inventar %s apare de două ori (rândurile %s și %s)"
+                               % (cod, coduri[cod], i)))
         else:
             coduri[cod] = i
         if dur <= 0:
-            er.append({"rand": i, "motiv": "durata",
-                       "mesaj": "%s: durata %s luni - fără ea nu se calculează amortizarea" % (den, dur)})
+            er.append(respinge("mijloc fix", i, "durata_lipsa",
+                               "%s: durata %s luni - fără ea nu se calculează amortizarea" % (den, dur)))
         if val <= 0:
-            er.append({"rand": i, "motiv": "valoare",
-                       "mesaj": "%s: valoare de intrare %s" % (den, val)})
+            er.append(respinge("mijloc fix", i, "valoare_lipsa",
+                               "%s: valoare de intrare %s" % (den, val)))
         elif rez > val + 0.01:
-            er.append({"rand": i, "motiv": "rezidual",
-                       "mesaj": "%s: valoarea rămasă (%s) depășește valoarea de intrare (%s)"
-                                % (den, rez, val)})
+            er.append(respinge("mijloc fix", i, "rezidual_peste_intrare",
+                               "%s: valoarea rămasă (%s) depășește valoarea de intrare (%s)"
+                               % (den, rez, val)))
     return er
 
 

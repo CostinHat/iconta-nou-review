@@ -21,7 +21,7 @@ def test_q4_asociat_juridic_acceptat():
 def test_q4_cnp_fizic_invalid_tot_respins():
     from core import asociati_import_api as a
     er = a.verifica_randuri([{"nume": "POP ION", "cnp": "1234567890123", "cota": 100}])
-    assert any(e["motiv"] == "cnp_invalid" for e in er), "un CNP fizic invalid trebuie tot respins"
+    assert any(e["regula"] == "cnp_invalid" for e in er), "un CNP fizic invalid trebuie tot respins"
 
 
 def test_q11_extrage_nu_fabrica_norma():
@@ -35,7 +35,7 @@ def test_q11_extrage_nu_fabrica_norma():
 def test_q11_norma_lipsa_semnalata():
     from core import salariati_import_api as s
     er = s.verifica_randuri([{"nume": "POP", "prenume": "ION", "cnp_valid": True, "tip_norma": "", "ore_zi": 0}])
-    assert any(e["motiv"] == "norma_lipsa" for e in er), "norma lipsa nu e semnalata (Q11): %r" % er
+    assert any(e["regula"] == "norma_lipsa" for e in er), "norma lipsa nu e semnalata (Q11): %r" % er
 
 
 def test_q13_mijloc_fara_default_cont():

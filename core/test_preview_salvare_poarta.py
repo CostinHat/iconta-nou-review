@@ -51,10 +51,10 @@ CAZURI = [
      "cnp_invalid", False),
     ("mijloace", main.mijloace_import_incarca, _mf,
      [{"cod": "MF1", "denumire": "X", "valoare": 5000.0, "rezidual": 0.0, "dnf_luni": 0, "ok": True}],
-     "durata", False),
+     "durata_lipsa", False),
     ("istoric", main.istoric_import_incarca, _ist,
      [{"tip": "D999", "an": 2025, "luna": 1, "data_depunere": "", "ok": True}],
-     "tip", False),
+     "tip_necunoscut", False),
 ]
 
 
@@ -72,7 +72,7 @@ def test_preview_intoarce_verdictul_salvarii(monkeypatch, nume, endpoint, modul,
     assert "erori" in res, "preview NU intoarce cheia `erori` (poarta lipseste) - %s" % nume
     asteptat = migrare_api.erori_verifica(modul.verifica_randuri(randuri))
     assert res["erori"] == asteptat, "preview != verifica_randuri (drift) - %s" % nume
-    assert any(e.get("motiv") == motiv for e in res["erori"]), \
+    assert any(e.get("regula") == motiv for e in res["erori"]), \
         "randul-drift (extrage OK, verifica_randuri respinge) nu apare la preview - %s: %r" % (nume, res["erori"])
 
 

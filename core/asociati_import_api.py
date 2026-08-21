@@ -51,6 +51,7 @@ def _gaseste_col(antet, *chei):
 
 
 from core.numere import numar as _numar  # sursa unica (15.07.2026); "%" tratat acolo
+from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 
 
 def extrage(continut, nume_fisier=""):
@@ -140,12 +141,15 @@ def verifica_randuri(randuri):
             este_cnp = len(cod) == 13 and cod.isdigit()
             ok, motiv = valideaza_cnp(cod) if este_cnp else _valideaza_cui(cod)
             if not ok:
-                er.append({"rand": i, "motiv": "cnp_invalid" if este_cnp else "cui_invalid",
-                           "mesaj": "%s: %s invalid (%s)" % (nume, "CNP" if este_cnp else "CUI", motiv)})
+                er.append(respinge(
+                    "asociat", i, "cnp_invalid" if este_cnp else "cui_invalid",
+                    "%s: %s invalid (%s)" % (nume, "CNP" if este_cnp else "CUI", motiv)))
     c = coerenta_cote(randuri or [])
     if (randuri or []) and not c["coincide"]:
-        er.append({"rand": "-", "motiv": "cote",
-                   "mesaj": "cotele asociaților însumează %s%%, nu 100%%" % c["total"]})
+        # randul "-": afirmatia e despre SETUL de asociati, nu despre un rand anume - iar asta se
+        # scrie, nu se ascunde alegand arbitrar primul rand.
+        er.append(respinge("asociati (toti)", "-", "cote_nu_dau_suta",
+                           "cotele asociaților însumează %s%%, nu 100%%" % c["total"]))
     return er
 
 

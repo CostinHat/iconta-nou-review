@@ -50,6 +50,7 @@ def _gaseste_col(antet, *chei):
 
 
 from core.numere import numar as _numar  # sursa unica (15.07.2026, vezi core/numere.py)
+from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 
 
 def _data(v):
@@ -193,25 +194,26 @@ def verifica_randuri(randuri, azi=None):
     import datetime as _dt
     azi = azi or _dt.date.today()
     er = []
+
     for i, r in enumerate(randuri or [], start=2):   # antetul e randul 1
         nume = ("%s %s" % (r.get("nume") or "", r.get("prenume") or "")).strip() or "?"
         if not r.get("cnp_valid"):
-            er.append({"rand": i, "motiv": "cnp_invalid",
-                       "mesaj": "%s: CNP invalid (%s)" % (nume, r.get("cnp_motiv") or "-")})
+            er.append(respinge("salariat", i, "cnp_invalid",
+                            "%s: CNP invalid (%s)" % (nume, r.get("cnp_motiv") or "-")))
             continue
         d = r.get("data_angajare")
         if d:
             try:
                 dd = d if isinstance(d, _dt.date) else _dt.date.fromisoformat(str(d)[:10])
                 if dd > azi:
-                    er.append({"rand": i, "motiv": "data_viitor",
-                               "mesaj": "%s: data angajării (%s) e în viitor" % (nume, dd)})
+                    er.append(respinge("salariat", i, "data_viitor",
+                                    "%s: data angajării (%s) e în viitor" % (nume, dd)))
             except ValueError:
-                er.append({"rand": i, "motiv": "data_invalida",
-                           "mesaj": "%s: data angajării nu se înțelege (%r)" % (nume, d)})
+                er.append(respinge("salariat", i, "data_invalida",
+                                "%s: data angajării nu se înțelege (%r)" % (nume, d)))
         if not str(r.get("tip_norma") or "").strip():
-            er.append({"rand": i, "motiv": "norma_lipsa",
-                       "mesaj": "%s: norma de lucru lipsește (întreagă/parțială) - necesară pentru D112" % nume})
+            er.append(respinge("salariat", i, "norma_lipsa",
+                            "%s: norma de lucru lipsește (întreagă/parțială) - necesară pentru D112" % nume))
         # [salariu_import] salariul de baza e OBLIGATORIU si > 0 (ca la creare, salariati_api #8):
         # intra in D112 si pe fluturas. Lipsa lui (coloana absenta / celula goala -> parser 0.0) NU se
         # accepta tacit (DS cap.17, fara default fabricat): firma ar plati CAS/CASS pe podeaua sub-minim
@@ -222,16 +224,15 @@ def verifica_randuri(randuri, azi=None):
         except (TypeError, ValueError):
             _brut_ok = False
         if not _brut_ok:
-            er.append({"rand": i, "motiv": "salariu_lipsa",
-                       "mesaj": "%s: salariul de bază lipsește sau nu e mai mare ca 0 - intră în D112 și pe fluturaș, trebuie să fie cel real" % nume})
+            er.append(respinge("salariat", i, "salariu_lipsa",
+                            "%s: salariul de bază lipsește sau nu e mai mare ca 0 - intră în D112 și pe fluturaș, trebuie să fie cel real" % nume))
         ore = r.get("ore_zi")
         if ore and not (1 <= float(ore) <= 8):   # 0/None = necunoscut (acoperit de norma_lipsa); doar valoarea PREZENTA gresita
-            er.append({"rand": i, "motiv": "ore_invalide",
-                       "mesaj": "%s: %s ore/zi (norma legală e de maximum 8)" % (nume, ore)})
+            er.append(respinge("salariat", i, "ore_invalide",
+                            "%s: %s ore/zi (norma legală e de maximum 8)" % (nume, ore)))
         j = str(r.get("judet_casa") or "").strip().upper()
         if j and j not in JUDETE_CASA:
-            er.append({"rand": i, "motiv": "judet_invalid",
-                       "mesaj": "%s: județul '%s' nu există" % (nume, j)})
+            er.append(respinge("salariat", i, "judet_invalid", "%s: județul '%s' nu există" % (nume, j)))
         # [iban_import] IBAN e OPTIONAL la import (gol -> salariatul e exclus din SEPA si raportat, nu platit
         # tacit - vezi plata_salarii), dar o valoare PREZENTA trebuie sa fie valida mod-97: un IBAN gresit
         # trimite banii altcuiva. DS cap.6 (validare preventiva cu mesaj explicativ).
@@ -239,8 +240,8 @@ def verifica_randuri(randuri, azi=None):
         if ib:
             from core.salariati_api import iban_valid   # import local: salariati_api importa din acest modul (circular la nivel de modul)
             if not iban_valid(ib):
-                er.append({"rand": i, "motiv": "iban_invalid",
-                           "mesaj": "%s: IBAN-ul (%s) e invalid — verifică-l, altfel salariatul nu intră în fișierul de plată SEPA" % (nume, ib)})
+                er.append(respinge("salariat", i, "iban_invalid",
+                                "%s: IBAN-ul (%s) e invalid — verifică-l, altfel salariatul nu intră în fișierul de plată SEPA" % (nume, ib)))
     return er
 
 

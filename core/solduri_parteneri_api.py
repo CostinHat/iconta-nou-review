@@ -12,6 +12,7 @@ from __future__ import annotations
 
 
 from core.numere import numar as _numar  # sursa unica (15.07.2026, vezi core/numere.py)
+from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 
 
 def _gaseste_col(antet, *chei, exclus=None):
@@ -200,16 +201,18 @@ def verifica_randuri(randuri):
         den = str(r.get("denumire") or "").strip()
         rad = _radacina(cont)
         if rad not in CONTURI_PARTENERI:
-            erori.append({"rand": i, "cont": cont, "motiv": "cont_nepartener",
-                          "mesaj": "contul %s nu ține solduri pe parteneri (doar %s)"
-                                   % (cont or "?", ", ".join(CONTURI_PARTENERI[:4]))})
+            erori.append(respinge(
+                "sold partener", i, "cont_nepartener",
+                "contul %s nu ține solduri pe parteneri (doar %s)"
+                % (cont or "?", ", ".join(CONTURI_PARTENERI[:4])), cont=cont))
             continue
         ok, motiv = valideaza_cui(cui)
         if not ok:
-            erori.append({"rand": i, "cont": cont, "cui": cui, "denumire": den,
-                          "motiv": "cui_invalid",
-                          "mesaj": ("partenerul %s nu are CUI" % (den or "?")) if motiv == "lipsa"
-                                   else "CUI %s invalid (%s)" % (cui, motiv)})
+            erori.append(respinge(
+                "sold partener", i, "cui_invalid",
+                ("partenerul %s nu are CUI" % (den or "?")) if motiv == "lipsa"
+                else "CUI %s invalid (%s)" % (cui, motiv),
+                cont=cont, cui=cui, denumire=den))
             continue
         bune.append(r)
     return erori, bune

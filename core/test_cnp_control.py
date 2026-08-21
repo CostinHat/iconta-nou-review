@@ -50,7 +50,7 @@ def test_toate_caile_CNP_refuza_control_gresit():
     # (c) asociati import
     from core.asociati_import_api import verifica_randuri
     er = verifica_randuri([{"nume": "A", "cnp": CNP_CTRL_GRESIT, "cota": 100, "tip": "fizica"}])
-    assert any(x.get("motiv") == "cnp_invalid" for x in er), er
+    assert any(x.get("regula") == "cnp_invalid" for x in er), er
     # (d) salariat direct (creare/editare) -> prin valideaza_salariat
     assert any("CNP invalid" in _m for (_c, _m) in valideaza_salariat({"nume": "X", "cnp": CNP_CTRL_GRESIT}))
 

@@ -26,7 +26,7 @@ def test_verifica_iban_invalid_semnalat():
     rand = {"nume": "POP", "prenume": "ION", "cnp": "2900215410011", "cnp_valid": True,
             "tip_norma": "intreaga", "ore_zi": 8, "iban": "RO00AAAA1B31007593840000"}
     er = _sal.verifica_randuri([rand])
-    assert any(e.get("motiv") == "iban_invalid" for e in er), \
+    assert any(e.get("regula") == "iban_invalid" for e in er), \
         "IBAN invalid la import NU e semnalat (banii pot pleca altcuiva): %r" % er
 
 
@@ -34,7 +34,7 @@ def test_verifica_iban_valid_trece():
     rand = {"nume": "POP", "prenume": "ION", "cnp": "2900215410011", "cnp_valid": True,
             "tip_norma": "intreaga", "ore_zi": 8, "iban": "RO49AAAA1B31007593840000"}
     er = _sal.verifica_randuri([rand])
-    assert not any(e.get("motiv") == "iban_invalid" for e in er), er
+    assert not any(e.get("regula") == "iban_invalid" for e in er), er
 
 
 def test_importa_scrie_iban():

@@ -23,6 +23,7 @@ def _gaseste_col(antet, *chei):
 
 
 from core.numere import numar as _numar  # sursa unica (15.07.2026, vezi core/numere.py)
+from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 
 
 def extrage(continut, nume_fisier=""):
@@ -98,7 +99,9 @@ def importa(conn, schema, articole, data_sold=None):
                 continue
             cur.execute(f"SELECT id FROM {schema}.articole WHERE lower(denumire)=lower(%s)", (a["denumire"],))
             if cur.fetchone():
-                sarite.append({"denumire": a["denumire"], "motiv": "există deja"})
+                sarite.append(respinge("articol", "articolul „%s”" % a["denumire"], "deja_exista",
+                                       "există deja în nomenclator - nu s-a dublat",
+                                       denumire=a["denumire"]))
                 continue
             cur.execute(f"""INSERT INTO {schema}.articole (denumire, um, cont_stoc, cont_cheltuiala)
                             VALUES (%s,%s,%s,%s) RETURNING id""",

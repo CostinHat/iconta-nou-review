@@ -273,7 +273,11 @@ function pasFinal(corp, nav, raport) {
   nav.setInapoi(() => meniuMigrare(corp, nav));
   const creat = (raport && raport.creat) || [];
   const erori = (raport && raport.erori) || [];
-  const dejaExista = erori.filter((e) => (e.mesaj || "").includes("există deja")).length;
+  // Clasificare pe COD, nu pe proza. Pana la 21.08.2026 aici era
+  // `(e.mesaj || "").includes("există deja")`: cine reformula mesajul din backend strica TACUT
+  // numaratoarea, iar ecranul spunea „0 firme erau deja in portofoliu" despre un import in care erau.
+  // `regula` vine din nomenclatorul inchis (core/migrare_api.REGULI) si nu se schimba cu textul.
+  const dejaExista = erori.filter((e) => e.regula === "deja_exista").length;
   const alteErori = erori.length - dejaExista;
   let avert = "";
   if (dejaExista) avert += `<div class="mig-avert">${dejaExista} ${dejaExista === 1 ? "firmă era deja" : "firme erau deja"} în portofoliu — nu s-au dublat.</div>`;

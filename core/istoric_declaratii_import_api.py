@@ -9,6 +9,8 @@ NU sterge declaratiile depuse prin iConta (sursa='iconta').
 from __future__ import annotations
 import datetime
 
+from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
+
 # tipuri cunoscute (pentru normalizare + recunoastere)
 _TIPURI = ["D100", "D101", "D112", "D205", "D300", "D301", "D390", "D394", "D406"]
 
@@ -146,17 +148,20 @@ def verifica_randuri(randuri, azi=None):
         an = int(r.get("an") or 0)
         luna = r.get("luna")
         if tip and tip not in TIPURI_CUNOSCUTE:
-            er.append({"rand": i, "motiv": "tip",
-                       "mesaj": "declarația %s nu există în nomenclatorul ANAF" % tip})
+            er.append(respinge("declarație depusă", i, "tip_necunoscut",
+                               "declarația %s nu există în nomenclatorul ANAF" % tip))
         if not (2000 <= an <= azi.year + 1):
-            er.append({"rand": i, "motiv": "an", "mesaj": "%s: anul %s e în afara intervalului" % (tip or "?", an)})
+            er.append(respinge("declarație depusă", i, "an_invalid",
+                               "%s: anul %s e în afara intervalului" % (tip or "?", an)))
         if luna is not None and str(luna).strip() != "":
             try:
                 l = int(luna)
                 if not (1 <= l <= 12):
-                    er.append({"rand": i, "motiv": "luna", "mesaj": "%s: luna %s (așteptat 1-12)" % (tip or "?", l)})
+                    er.append(respinge("declarație depusă", i, "luna_invalida",
+                                       "%s: luna %s (așteptat 1-12)" % (tip or "?", l)))
             except (TypeError, ValueError):
-                er.append({"rand": i, "motiv": "luna", "mesaj": "%s: luna %r nu e număr" % (tip or "?", luna)})
+                er.append(respinge("declarație depusă", i, "luna_invalida",
+                                   "%s: luna %r nu e număr" % (tip or "?", luna)))
         d = r.get("data_depunere")
         if d:
             try:
@@ -164,11 +169,12 @@ def verifica_randuri(randuri, azi=None):
                 l = int(luna) if str(luna or "").strip().isdigit() else 12
                 sfarsit = _dt.date(an, l, 1) if 2000 <= an <= 2100 and 1 <= l <= 12 else None
                 if sfarsit and dd < sfarsit:
-                    er.append({"rand": i, "motiv": "data_inainte",
-                               "mesaj": "%s %s/%s: depusă la %s, înainte de perioada raportată"
-                                        % (tip or "?", luna, an, dd)})
+                    er.append(respinge("declarație depusă", i, "data_inainte_de_perioada",
+                                       "%s %s/%s: depusă la %s, înainte de perioada raportată"
+                                       % (tip or "?", luna, an, dd)))
             except ValueError:
-                er.append({"rand": i, "motiv": "data", "mesaj": "%s: data depunerii %r nu se înțelege" % (tip or "?", d)})
+                er.append(respinge("declarație depusă", i, "data_invalida",
+                                   "%s: data depunerii %r nu se înțelege" % (tip or "?", d)))
     return er
 
 

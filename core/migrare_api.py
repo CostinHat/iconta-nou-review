@@ -141,3 +141,93 @@ def erori_verifica(rez):
     if isinstance(rez, tuple):
         return rez[0] or []
     return rez or []
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# [P8/C, 21.08.2026] RESPINGERILE DE RAND LA IMPORT SUNT AFIRMATII, cu regula NUMITA.
+#
+# Pana azi fiecare modul isi inventa codurile. Masurat: 46 de respingeri in 12 module, din care 27
+# purtau deja un cod masinal si 9 doar proza. ZERO coliziuni intre module (verificat, nu presupus),
+# deci nomenclatorul se poate INCHIDE fara sa cimenteze o ambiguitate.
+#
+# DE CE conteaza, cu instanta: `migrare.js` numara duplicatele cu
+# `erori.filter(e => (e.mesaj || "").includes("există deja"))` - o clasificare prin potrivire de
+# PROZA. Cine reformuleaza mesajul strica tacut numaratoarea, iar ecranul spune „0 firme erau deja in
+# portofoliu" despre un import in care erau. Un cod inchis nu se schimba cand se rescrie textul.
+#
+# `fel` de aici NU e felul afirmatiei (ala e mereu `neconformitate`), ci FORMA respingerii - ce s-a
+# intamplat cu valoarea. Randorul poate grupa dupa el fara sa citeasca textul.
+REGULI = {
+    # --- lipsa: campul nu are valoare, iar fara ea nu se poate merge mai departe
+    "cod_lipsa":        {"fel": "lipsa", "inseamna": "mijloc fix fara cod de inventar"},
+    "durata_lipsa":     {"fel": "lipsa", "inseamna": "durata de amortizare lipseste sau nu e pozitiva"},
+    "norma_lipsa":      {"fel": "lipsa", "inseamna": "norma de lucru (intreaga/partiala) lipseste - ceruta de D112"},
+    "salariu_lipsa":    {"fel": "lipsa", "inseamna": "salariul de baza lipseste sau nu e mai mare ca 0"},
+    "valoare_lipsa":    {"fel": "lipsa", "inseamna": "valoarea de intrare lipseste sau nu e pozitiva"},
+    "data_lipsa":       {"fel": "lipsa", "inseamna": "data operatiunii lipseste"},
+    "explicatie_lipsa": {"fel": "lipsa", "inseamna": "explicatia operatiunii lipseste (coloana e NOT NULL)"},
+
+    # --- invalid: valoarea E acolo, dar nu satisface regula
+    "cnp_invalid":      {"fel": "invalid", "inseamna": "CNP care nu trece cifra de control"},
+    "cui_invalid":      {"fel": "invalid", "inseamna": "CUI care nu trece cifra de control"},
+    "iban_invalid":     {"fel": "invalid", "inseamna": "IBAN care nu trece mod-97 (ISO 13616)"},
+    "judet_invalid":    {"fel": "invalid", "inseamna": "judet inexistent in nomenclatorul oficial"},
+    "ore_invalide":     {"fel": "invalid", "inseamna": "ore/zi peste norma legala"},
+    "an_invalid":       {"fel": "invalid", "inseamna": "anul e in afara intervalului acceptat"},
+    "luna_invalida":    {"fel": "invalid", "inseamna": "luna nu e intre 1 si 12, sau nu e numar"},
+    "data_invalida":    {"fel": "invalid", "inseamna": "data nu se poate interpreta"},
+    "data_viitor":      {"fel": "invalid", "inseamna": "data e in viitor, unde nu poate fi"},
+    "tip_necunoscut":   {"fel": "invalid", "inseamna": "tipul nu exista in nomenclatorul asteptat"},
+    "suma_invalida":    {"fel": "invalid", "inseamna": "suma e 0 sau neinterpretabila"},
+    "cont_nepartener":  {"fel": "invalid", "inseamna": "contul nu tine solduri pe parteneri"},
+
+    # --- duplicat: valoarea intra in conflict cu una care exista deja
+    "cod_duplicat":     {"fel": "duplicat", "inseamna": "acelasi cod de inventar apare de doua ori in fisier"},
+    "deja_exista":      {"fel": "duplicat", "inseamna": "inregistrarea exista deja si nu se dubleaza"},
+
+    # --- incoerent: doua valori ale aceluiasi rand (sau set) nu pot fi amandoua adevarate
+    "rezidual_peste_intrare": {"fel": "incoerent",
+                               "inseamna": "valoarea ramasa depaseste valoarea de intrare"},
+    "cote_nu_dau_suta":       {"fel": "incoerent",
+                               "inseamna": "cotele asociatilor nu insumeaza 100%"},
+    "data_inainte_de_perioada": {"fel": "incoerent",
+                                 "inseamna": "depunerea e datata inaintea perioadei raportate"},
+}
+
+
+def respinge(tip, unde, regula, mesaj, **campuri):
+    """O respingere de rand, ca AFIRMATIE. Constructorul UNIC - un cod care nu e in REGULI nu poate
+    fi produs, deci o greseala de tastare nu mai trece tacut ca o categorie noua.
+
+    CIOCNIRE DE VOCABULAR, rezolvata explicit (21.08.2026): pana azi cheia "motiv" purta CODUL in
+    importuri si TEXTUL in afirmatii - acelasi nume, doua intelesuri, exact capcana pe care o vaneaza
+    campania. De-acum "motiv" e TEXTUL peste tot; codul traieste in "regula". Consumatorii au fost
+    NUMARATI inainte, nu presupusi: trei fisiere de test si fallback-ul din migrare.js. Modulul
+    tipare_api grupeaza respingerile ANAF din baza - alt camp cu acelasi nume, care nu se atinge.
+
+    Cheia "mesaj" ramane, cu ACEEASI valoare ca "motiv", fiindca frontendul o randeaza; testul
+    asertaza ca nu pot diverge. Cheia "rand" e domeniul concret, pe langa "unde" care il scrie in
+    limba omului."""
+    from core import afirmatii as _af
+    if regula not in REGULI:
+        raise ValueError(
+            "regula %r nu e in nomenclator; cele declarate: %s. Un cod nou se ADAUGA in REGULI, cu "
+            "ce inseamna - altfel randorul primeste o categorie despre care nu stie nimic."
+            % (regula, ", ".join(sorted(REGULI))))
+    if unde is None or str(unde).strip() == "":
+        raise ValueError("respingerea cere domeniul: fara el, contabilul nu stie ce sa corecteze")
+    if not (mesaj or "").strip():
+        raise ValueError("respingerea cere un text pentru om, nu doar codul %r" % regula)
+    # DOMENIUL nu e mereu un rand. Prima forma cerea `rand`, si era peste-croita pe importurile din
+    # fisier: `articole_import` si `retete_import` identifica prin DENUMIRE, iar coerenta cotelor e
+    # despre SETUL de asociati. A doua constructor pentru „acelasi lucru, alt domeniu" ar fi fost
+    # exact logica paralela pe care o evitam. Aici: numarul devine „randul N", restul se scrie ca atare.
+    e_rand = isinstance(unde, int) or (isinstance(unde, str) and unde.strip().isdigit())
+    a = _af.afirmatie("neconformitate", tip, mesaj,
+                      unde=("rândul %s" % unde) if e_rand else str(unde), regula=regula)
+    if e_rand:
+        a["rand"] = int(unde)      # cheia pe care o citeste poarta unica preview<->salvare
+    a["mesaj"] = mesaj
+    a["forma"] = REGULI[regula]["fel"]   # lipsa | invalid | duplicat | incoerent - pt grupare la randare
+    a.update(campuri)
+    return a

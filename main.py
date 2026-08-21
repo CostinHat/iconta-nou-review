@@ -1612,7 +1612,12 @@ def migrare_importa(date: MigrareImportaIn, ctx=Depends(cere_rol("admin_firma"))
             nume = (f.denumire or "").strip() or f"Firmă {f.cui}"
             cuic = anaf_api._curata(f.cui)
             if cuic and cuic in existente:
-                erori.append({"cui": str(f.cui), "nume": nume, "mesaj": "există deja în portofoliu"})
+                # [P8/C] respingere TIPATA: pana azi ecranul numara duplicatele potrivind PROZA
+                # (`(e.mesaj || "").includes("există deja")`), deci o reformulare a textului ar fi
+                # spus tacit „0 firme erau deja in portofoliu" despre un import in care erau.
+                erori.append(migrare_api.respinge(
+                    "firmă", "firma %s (CUI %s)" % (nume, f.cui), "deja_exista",
+                    "există deja în portofoliu - nu s-a dublat", cui=str(f.cui), nume=nume))
                 continue
             try:
                 r = tenant_provisioning.provision_tenant(

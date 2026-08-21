@@ -18,6 +18,7 @@ anterior; e evidență preluată, marcată ca atare.
 from __future__ import annotations
 from decimal import Decimal, ROUND_HALF_UP
 from core.solduri_api import _numar, _gaseste_col
+from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 
 
 # coloanele obligatorii din rip_operatiuni (din \d tenant_XXX.rip_operatiuni, 20.07):
@@ -86,22 +87,25 @@ def extrage_operatiuni(continut, nume_fisier=""):
 
         data_op = get(i_data)
         if not data_op or not str(data_op).strip():
-            respinse.append({"rand": nr, "motiv": "lipsă dată operațiune"})
+            respinse.append(respinge("operațiune RIP", nr, "data_lipsa", "lipsă dată operațiune"))
             continue
 
         tip = _norm_tip(get(i_tip)) if i_tip >= 0 else None
         if tip is None:
-            respinse.append({"rand": nr, "motiv": f"tip operațiune neclar: {get(i_tip)!r}"})
+            respinse.append(respinge("operațiune RIP", nr, "tip_necunoscut",
+                                     f"tip operațiune neclar: {get(i_tip)!r}"))
             continue
 
         expl = str(get(i_expl) or "").strip() if i_expl >= 0 else ""
         if not expl:
-            respinse.append({"rand": nr, "motiv": "lipsă explicație (NOT NULL)"})
+            respinse.append(respinge("operațiune RIP", nr, "explicatie_lipsa",
+                                     "lipsă explicație - coloana e obligatorie în registru"))
             continue
 
         suma = _numar(get(i_suma), strict=False) if i_suma >= 0 else 0.0
         if suma == 0.0:
-            respinse.append({"rand": nr, "motiv": "sumă 0 sau neinterpretabilă"})
+            respinse.append(respinge("operațiune RIP", nr, "suma_invalida",
+                                     "sumă 0 sau neinterpretabilă"))
             continue
         suma = abs(suma)  # semnul e dat de tip, nu de sumă
 

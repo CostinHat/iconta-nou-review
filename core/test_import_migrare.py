@@ -33,36 +33,36 @@ def test_salariat_corect_trece():
 
 def test_cnp_invalid_e_respins():
     er = v_sal([_s(cnp_valid=False, cnp_motiv="cifra de control")], azi=AZI)
-    assert er and er[0]["motiv"] == "cnp_invalid"
+    assert er and er[0]["regula"] == "cnp_invalid"
 
 
 def test_angajare_in_viitor():
     er = v_sal([_s(data_angajare="2027-09-15")], azi=AZI)
-    assert er and er[0]["motiv"] == "data_viitor"
+    assert er and er[0]["regula"] == "data_viitor"
 
 
 def test_peste_8_ore_pe_zi():
     er = v_sal([_s(ore_zi=15)], azi=AZI)
-    assert er and er[0]["motiv"] == "ore_invalide"
+    assert er and er[0]["regula"] == "ore_invalide"
 
 
 def test_judet_inexistent():
     er = v_sal([_s(judet_casa="ZZ")], azi=AZI)
-    assert er and er[0]["motiv"] == "judet_invalid"
+    assert er and er[0]["regula"] == "judet_invalid"
     assert "ZZ" not in JUDETE_CASA and "B" in JUDETE_CASA
 
 
 def test_salariu_brut_lipsa_e_respins():
     # [salariu_import] fisier fara coloana de salariu -> parser 0.0 / None; NU intra tacit cu baza 0
     er = v_sal([_s(salariu_brut=None)], azi=AZI)
-    assert er and er[0]["motiv"] == "salariu_lipsa"
+    assert er and er[0]["regula"] == "salariu_lipsa"
     er2 = v_sal([_s(salariu_brut=0.0)], azi=AZI)
-    assert er2 and er2[0]["motiv"] == "salariu_lipsa"
+    assert er2 and er2[0]["regula"] == "salariu_lipsa"
 
 
 def test_salariu_brut_negativ_e_respins():
     er = v_sal([_s(salariu_brut=-100)], azi=AZI)
-    assert er and er[0]["motiv"] == "salariu_lipsa"
+    assert er and er[0]["regula"] == "salariu_lipsa"
 
 
 # ---------------- ASOCIATI ----------------
@@ -70,7 +70,7 @@ def test_cotele_trebuie_sa_dea_100():
     """coerenta_cote() exista de la inceput, dar importa() n-o chema."""
     er = v_asoc([{"nume": "A", "cnp": "1700826400183", "cota": 60},
                  {"nume": "B", "cnp": "2751126400229", "cota": 30}])
-    assert any(x["motiv"] == "cote" for x in er)
+    assert any(x["regula"] == "cote_nu_dau_suta" for x in er)
 
 
 def test_cotele_de_100_trec():
@@ -97,17 +97,17 @@ def test_mijloc_fix_corect_trece():
 
 def test_durata_zero_opreste_amortizarea():
     er = v_mf([_m(durata=0)])
-    assert er and er[0]["motiv"] == "durata"
+    assert er and er[0]["regula"] == "durata_lipsa"
 
 
 def test_ramasa_nu_poate_depasi_intrarea():
     er = v_mf([_m(valoare=5000, rezidual=6000)])
-    assert er and er[0]["motiv"] == "rezidual"
+    assert er and er[0]["regula"] == "rezidual_peste_intrare"
 
 
 def test_cod_inventar_duplicat():
     er = v_mf([_m(cod="MF-1"), _m(cod="MF-1", denumire="Altul")])
-    assert any(x["motiv"] == "cod_duplicat" for x in er)
+    assert any(x["regula"] == "cod_duplicat" for x in er)
 
 
 def test_importa_mijloace_REFUZA():
@@ -129,19 +129,19 @@ def test_declaratie_corecta_trece():
 
 def test_tip_inexistent():
     er = v_ist([_i(tip="D999")], azi=AZI)
-    assert er and er[0]["motiv"] == "tip"
+    assert er and er[0]["regula"] == "tip_necunoscut"
     assert "D999" not in TIPURI_CUNOSCUTE and "D406" in TIPURI_CUNOSCUTE
 
 
 def test_luna_13():
     er = v_ist([_i(luna=13)], azi=AZI)
-    assert er and er[0]["motiv"] == "luna"
+    assert er and er[0]["regula"] == "luna_invalida"
 
 
 def test_depusa_inainte_de_perioada():
     """D112 pentru mai, depusa in ianuarie - imposibil."""
     er = v_ist([_i(tip="D112", luna=5, data_depunere="2026-01-10")], azi=AZI)
-    assert er and er[0]["motiv"] == "data_inainte"
+    assert er and er[0]["regula"] == "data_inainte_de_perioada"
 
 
 def test_importa_istoric_REFUZA():
