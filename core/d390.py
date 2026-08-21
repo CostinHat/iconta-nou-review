@@ -684,6 +684,24 @@ def evidenta_incompleta(conn, schema, an, luna):
              "e" if n == 1 else "sunt", "ă" if n == 1 else "e"))
 
 
+def evidenta_incompleta_sau_neinchisa(conn, schema, an, luna):
+    """Poarta COMPLETA a lunii, in ordinea in care conteaza:
+      1. documente pe care ANAF ni le-a dat si nu le-am inregistrat (fapt observabil, orice firma);
+      2. luna nedeclarata inchisa - DOAR daca firma foloseste inchiderea (`core/inchidere_luna.py`).
+    Punctul 2 e adoptarea per firma: o firma care n-a inchis niciodata o luna ramane cu comportamentul
+    de dinainte, deci intarirea nu converteste clasa in necunoastere peste noapte."""
+    m = evidenta_incompleta(conn, schema, an, luna)
+    if m:
+        return m
+    try:
+        from core import inchidere_luna as _il
+        return _il.luna_neinchisa_desi_firma_inchide(conn, schema, an, luna)
+    except Exception:
+        # MASCA MOTIVATA: None = „nu stiu de nimic", deci poarta ramane cum era. Un esec de citire NU
+        # are voie sa produca gri pe toate lunile - ar fi exact conversia refuzata.
+        return None
+
+
 def erori_generare(prof):
     """Poarta bazei nule: profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF."""
     erori = []

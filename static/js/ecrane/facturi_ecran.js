@@ -181,6 +181,14 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
       const r = await api.get(`/tenants/${tenantId}/facturi?an=${an}&luna=${luna}&limit=${afisate + 1}`);
       lista = (r && r.facturi) || [];
     } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca facturile emise.</p>`; return; }
+    // [cap.23, 21.08.2026] ACTUL DE ÎNCHIDERE a lunii pe facturi. Cât timp luna nu e închisă, evidența
+    // ei e informativă — iar semaforul nu se poate sprijini pe ea când spune că o declarație nu se
+    // datorează. Nu se afișează în portalul clientului (închiderea e act de contabil).
+    let per = null;
+    if (!opt.client) {
+      try { per = await api.get(`/tenants/${tenantId}/facturi/perioada?an=${an}&luna=${luna}`); }
+      catch { per = null; }
+    }
     const maiSunt = lista.length > afisate;
     if (maiSunt) lista = lista.slice(0, afisate);
     let corpuri = !lista.length
@@ -200,6 +208,12 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
           ${(!opt.client && !f.contabilizata) ? `<span class="btn-link fac-cont" data-cid="${f.id}" style="margin-left:8px">Conteaz\u0103</span>` : ""}
         </button>`;
         }).join("");
+    const dataInch = per && per.confirmat_la ? dataRo(String(per.confirmat_la).slice(0, 10)) : "";
+    const blocInchidere = !per ? "" : (per.confirmat
+      ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--verde)">\u25cf</span> Lun\u0103 \u00eenchis\u0103${dataInch ? " la " + dataInch : ""} \u2014 eviden\u021ba facturilor e complet\u0103; semaforul se poate sprijini pe ea.</span> <button class="buton-secundar" id="fac-redeschide" style="margin-left:8px">Redeschide luna</button></div>`
+      : (per.blocaj
+        ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">\u25cf</span> Luna nu se poate \u00eenchide \u00eenc\u0103: ${esc(per.blocaj)}</span></div>`
+        : `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">\u25cf</span> Lun\u0103 ne\u00eenchis\u0103 \u2014 eviden\u021ba facturilor e informativ\u0103; p\u00e2n\u0103 la \u00eenchidere semaforul nu se poate sprijini pe ea.</span> <button class="buton-verde" id="fac-inchide" style="margin-left:8px">\u00cenchide luna</button></div>`));
     corp.innerHTML = `
       <h2 class="pf-titlu">Istoric facturi</h2>
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
@@ -208,8 +222,24 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
         <button class="buton-secundar" id="fac-saga-luna" style="margin-left:12px">Export SAGA lun\u0103</button>
         <button class="buton-secundar" id="fac-winmentor-luna">Export WinMentor lun\u0103</button>
         ${maiSunt ? '<button class="buton-secundar" id="fac-mai-multe" style="margin-left:12px">Vezi \u0219i facturile mai vechi din aceast\u0103 lun\u0103</button>' : ""}</p>
+      ${blocInchidere}
       <div id="fac-saga-zona"></div>
-      <div class="pf-lista zebra-lista">${corpuri}</div>`;
+      <div class="pf-lista zebra-lista">${corpuri}</div>
+      <div id="fac-per-msg" style="margin-top:10px"></div>`;
+    const btnInchide = corp.querySelector("#fac-inchide");
+    if (btnInchide) btnInchide.addEventListener("click", () => confirmaCaseta(btnInchide,
+      "\u00cenchizi luna? Declari c\u0103 eviden\u021ba facturilor din luna asta e complet\u0103 \u2014 semaforul se poate sprijini pe ea. O factur\u0103 nou\u0103 sau \u0219tears\u0103 o redeschide automat.",
+      async () => {
+        try { await api.post(`/tenants/${tenantId}/facturi/perioada/confirma`, { an, luna }); deseneaza(); }
+        catch (e) { arataMesaj(corp.querySelector("#fac-per-msg"), e.mesaj || "Eroare.", "eroare"); }
+      }));
+    const btnRedeschide = corp.querySelector("#fac-redeschide");
+    if (btnRedeschide) btnRedeschide.addEventListener("click", () => confirmaCaseta(btnRedeschide,
+      "Redeschizi luna? Eviden\u021ba ei redevine informativ\u0103 p\u00e2n\u0103 la o nou\u0103 \u00eenchidere.",
+      async () => {
+        try { await api.post(`/tenants/${tenantId}/facturi/perioada/redeschide`, { an, luna }); deseneaza(); }
+        catch (e) { arataMesaj(corp.querySelector("#fac-per-msg"), e.mesaj || "Eroare.", "eroare"); }
+      }));
     corp.querySelector("#fac-mai-multe")?.addEventListener("click", () => { afisate += 10; deseneaza(); });
     corp.querySelector("#fac-prev").addEventListener("click", () => { afisate = 10; luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#fac-next").addEventListener("click", () => { afisate = 10; luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });

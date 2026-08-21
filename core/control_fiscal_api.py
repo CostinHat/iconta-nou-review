@@ -796,7 +796,7 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
             return None
     # [21.08.2026] Inainte de a AFIRMA ca o luna n-a avut operatiuni IC, intrebam daca evidenta lunii
     # e completa cat putem sti (e-Facturi descarcate si neinregistrate). Poarta intarita, nu convertita.
-    _d390_incomplet = lambda a, l: _d390.evidenta_incompleta(conn_schema, schema, a, l)
+    _d390_incomplet = lambda a, l: _d390.evidenta_incompleta_sau_neinchisa(conn_schema, schema, a, l)
     rez = declaratii_datorate(vector, are_sal, azi, d390_fapt=_d390_fapt, d112_fapt=_d112_fapt,
                               existenta_fapt=_existenta_fapt, d100_fapt=_d100_fapt,
                               d390_incomplet=_d390_incomplet)

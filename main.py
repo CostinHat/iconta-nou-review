@@ -4162,6 +4162,45 @@ class ConfirmaPontajIn(BaseModel):
     luna: int
 
 
+@app.get("/tenants/{tenant_id}/facturi/perioada")
+def tenant_facturi_perioada(tenant_id: int, an: int, luna: int, ctx=Depends(cere_context)):
+    """[cap.23, 21.08.2026] Starea INCHIDERII lunii pe domeniul `facturi`: confirmat / cine / cand,
+    daca se poate confirma acum si — daca nu — DE CE (documente primite de la ANAF, neinregistrate)."""
+    from core import inchidere_luna as _il
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        return _il.stare(conn, schema, an, luna)
+
+
+@app.post("/tenants/{tenant_id}/facturi/perioada/confirma")
+def tenant_facturi_perioada_confirma(tenant_id: int, date: ConfirmaPontajIn,
+                                     ctx=Depends(cere_rol("admin_firma"))):
+    """[cap.23] Declara luna INCHISA pe facturi: evidenta ei devine autoritativa, iar semaforul se poate
+    sprijini pe ea cand spune ca o declaratie nu se datoreaza. Rol admin_firma, ca la pontaj.
+    REFUZA motivat daca stim de e-Facturi primite si neinregistrate — nu lasam pe cineva sa declare
+    complet ceva ce noi vedem deja ca nu e."""
+    from core import inchidere_luna as _il
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        try:
+            st = _il.confirma(conn, schema, date.an, date.luna, ctx.get("uid"))
+        except ValueError as e:
+            raise HTTPException(422, str(e))
+    return {"ok": True, "perioada": st}
+
+
+@app.post("/tenants/{tenant_id}/facturi/perioada/redeschide")
+def tenant_facturi_perioada_redeschide(tenant_id: int, date: ConfirmaPontajIn,
+                                       ctx=Depends(cere_rol("admin_firma"))):
+    """[cap.23] Redeschide luna (o corectie de facturi cere redeschiderea). Simetric cu confirmarea;
+    o modificare de facturi o face oricum AUTOMAT (facturi_api._redeschide_luna)."""
+    from core import inchidere_luna as _il
+    schema = _schema_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        st = _il.redeschide(conn, schema, date.an, date.luna)
+    return {"ok": True, "perioada": st}
+
+
 @app.post("/tenants/{tenant_id}/pontaj/confirma")
 def tenant_pontaj_confirma(tenant_id: int, date: ConfirmaPontajIn, ctx=Depends(cere_rol("admin_firma"))):
     """[cap.23] Confirma pontajul lunii -> devine AUTORITATIV pentru salarizare (tichete pe zile efectiv

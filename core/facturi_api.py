@@ -125,6 +125,7 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
                 (factura_id, l["descriere"], l.get("um", "buc"),
                  l["cantitate"], l["pret_unitar"], l["cota_tva"], l.get("articol_id"),
                  (l.get("cont_venit") or None)))  # #11 cont venit pe linie (auto din denumire, editabil)
+    _redeschide_luna(conn, data_emitere)   # [cap.23] evidenta lunii s-a schimbat -> luna se redeschide
     return {"ok": True, "factura_id": factura_id,
             "total": float(t["total"]), "tva": float(t["tva"])}
 
@@ -191,11 +192,39 @@ def detalii_factura(conn, factura_id):
 # ============================================================
 #  ȘTERGERE — DB (liniile cad prin CASCADE)
 # ============================================================
+def _redeschide_luna(conn, data_emitere):
+    """[cap.23, 21.08.2026] Orice modificare a evidenței facturilor DE-CONFIRMĂ luna. O închidere care
+    supraviețuiește unei modificări ar afirma „evidența lunii e completă" despre alte date decât cele
+    pe care cineva le-a văzut când a închis — exact „verde e o afirmație". Simetric cu `pontaj.seteaza`.
+    Conexiunea e pe schema tenantului (search_path), ca restul modulului."""
+    if not data_emitere:
+        return
+    d = data_emitere
+    if isinstance(d, str):
+        import datetime as _dt
+        try:
+            d = _dt.date.fromisoformat(d[:10])
+        except ValueError:
+            return
+    from core import perioada as _per
+    _per.deconfirma(conn, "", d.year, d.month, "facturi")
+
+
+def _luna_facturii(conn, factura_id):
+    with conn.cursor() as cur:
+        cur.execute("SELECT data_emitere FROM facturi WHERE id = %s", (factura_id,))
+        r = cur.fetchone()
+    return r[0] if r else None
+
+
 def sterge_factura(conn, factura_id):
     """Șterge factura (liniile cad automat prin ON DELETE CASCADE)."""
+    _d = _luna_facturii(conn, factura_id)
     with conn.cursor() as cur:
         cur.execute("DELETE FROM facturi WHERE id = %s", (factura_id,))
         sterse = cur.rowcount
+    if sterse:
+        _redeschide_luna(conn, _d)
     return {"ok": sterse > 0}
 
 
