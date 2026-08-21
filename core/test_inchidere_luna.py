@@ -93,6 +93,9 @@ def test_nu_se_inchide_peste_documente_in_asteptare(conn):
     st = _il.stare(conn, SCHEMA, 2026, 6)
     assert st["poate_confirma"] is False and st["blocaj"]
     assert "2 e-Facturi" in st["blocaj"], st["blocaj"]
+    # Blocajul numeste obstacolul; remediul spune UNDE se rezolva. Vazut PRIVIND captura: ecranul se
+    # oprea la „e inca neinregistrata" - contabilul stia ce, nu si unde.
+    assert st["remediu"] and "e-Factura" in st["remediu"], st["remediu"]
     with pytest.raises(ValueError) as e:
         _il.confirma(conn, SCHEMA, 2026, 6, user_id=7)
     m = str(e.value)

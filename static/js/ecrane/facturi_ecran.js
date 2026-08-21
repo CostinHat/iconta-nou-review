@@ -210,10 +210,10 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
         }).join("");
     const dataInch = per && per.confirmat_la ? dataRo(String(per.confirmat_la).slice(0, 10)) : "";
     const blocInchidere = !per ? "" : (per.confirmat
-      ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--verde)">\u25cf</span> Lun\u0103 \u00eenchis\u0103${dataInch ? " la " + dataInch : ""} \u2014 eviden\u021ba facturilor e complet\u0103; semaforul se poate sprijini pe ea.</span> <button class="buton-secundar" id="fac-redeschide" style="margin-left:8px">Redeschide luna</button></div>`
+      ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--verde)">\u25cf</span> Lun\u0103 \u00eenchis\u0103${dataInch ? " la " + dataInch : ""} \u2014 eviden\u021ba facturilor e complet\u0103; semaforul se poate sprijini pe ea.</span><p style="margin-top:8px"><button class="buton-secundar" id="fac-redeschide">Redeschide luna</button></p></div>`
       : (per.blocaj
-        ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">\u25cf</span> Luna nu se poate \u00eenchide \u00eenc\u0103: ${esc(per.blocaj)}</span></div>`
-        : `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">\u25cf</span> Lun\u0103 ne\u00eenchis\u0103 \u2014 eviden\u021ba facturilor e informativ\u0103; p\u00e2n\u0103 la \u00eenchidere semaforul nu se poate sprijini pe ea.</span> <button class="buton-verde" id="fac-inchide" style="margin-left:8px">\u00cenchide luna</button></div>`));
+        ? `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">\u25cf</span> Luna nu se poate \u00eenchide \u00eenc\u0103: ${esc(per.blocaj)}${per.remediu ? " " + esc(per.remediu) : ""}</span></div>`
+        : `<div class="caseta-info"><span class="ci-mesaj"><span style="color:var(--gri-semafor)">\u25cf</span> Lun\u0103 ne\u00eenchis\u0103 \u2014 eviden\u021ba facturilor e informativ\u0103; p\u00e2n\u0103 la \u00eenchidere semaforul nu se poate sprijini pe ea.</span><p style="margin-top:8px"><button class="buton-verde" id="fac-inchide">\u00cenchide luna</button></p></div>`));
     corp.innerHTML = `
       <h2 class="pf-titlu">Istoric facturi</h2>
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}

@@ -32,6 +32,11 @@ def stare(conn, schema, an, luna):
     bl = blocaj(conn, schema, an, luna)
     st["poate_confirma"] = (not st["confirmat"]) and bl is None
     st["blocaj"] = bl
+    # Blocajul NUMESTE obstacolul; remediul spune UNDE se rezolva. Vazut privind captura: ecranul
+    # arata „1 e-Factura ... e inca neinregistrata" si se oprea acolo - contabilul stia ce, nu si unde.
+    # Remediul e al CONTEXTULUI de inchidere, nu al sondei (semaforul foloseste acelasi motiv altfel).
+    st["remediu"] = ("Înregistrează-le (sau respinge-le) în e-Factura, apoi închide luna."
+                     if bl else None)
     return st
 
 
