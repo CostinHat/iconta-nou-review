@@ -332,3 +332,40 @@ def test_d112_fapt_firma_fara_salariati_niciun_d112():
          "partida_simpla": False, "tva_data_inceput": None}
     rez = cf.declaratii_datorate(v, are_salariati=True, azi=date(2026, 8, 14), d112_fapt=lambda a, m: False)
     assert not any(d["tip"] == "d112" for d in rez["datorate"])
+
+def test_vector_gol_nu_ridica_si_poarta_afirmatie():
+    """Calea „vector fiscal necompletat" n-avea NICIUN test — de-aia o conversie greșită pe ea
+    (`domeniu_de=None`, interzis de tip) a trecut de toată suita. O cale fără test e o cale pe care
+    orice schimbare e oarbă; iar asta e o cale de utilizator: o firmă cu vectorul necompletat.
+
+    Se verifică ce contează: NU ridică, iar rândul e o afirmație validă cu fel și domeniu."""
+    import datetime
+
+    from core.afirmatii import FELURI
+    from core import control_fiscal_api as cf
+
+    class _Cur:
+        def __enter__(self):
+            return self
+
+        def __exit__(self, *a):
+            return False
+
+        def execute(self, q, a=None):
+            self.q = q
+
+        def fetchone(self):
+            # firma_profil gol -> vector gol; restul interogarilor primesc o forma valida, ca testul
+            # sa cada pe CE masoara (afirmatia), nu pe schela.
+            return None if "firma_profil" in getattr(self, "q", "") else (None,)
+
+    class _Conn:
+        def cursor(self, **k):
+            return _Cur()
+
+    r = cf.evalueaza_firma(_Conn(), _Conn(), 1, "tenant_x", azi=datetime.date(2026, 8, 21),
+                           cu_reconciliere=False)
+    assert r["stare"] == "gri"
+    (rand,) = r["neclar"]
+    assert rand["fel"] in FELURI and rand["domeniu_de"], rand
+    assert r["limite"], "chiar și fără vector, limitele verificării trebuie să existe"

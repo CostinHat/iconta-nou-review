@@ -835,7 +835,14 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
     if not vector:
         return {"stare": "gri", "datorate": 0, "depuse": 0, "lipsa": [], "urmarit": [],
                 "confirmate": [], "cu_intarziere": [], "neaplicabile": [],
-                "neclar": [{"tip": "—", "motiv": "Vector fiscal necompletat — nu pot evalua obligațiile firmei."}],
+                # [P3a, ratat la prima trecere si gasit masurand clasa pe 21.08] Randul asta e o
+                # AFIRMATIE ca oricare alta: fara `fel` si fara domeniu ar fi picat garda hartii pe
+                # prima firma cu vector gol care ajungea in scanare.
+                "neclar": [_af.afirmatie(
+                    "necunoastere", "—",
+                    "Vector fiscal necompletat — nu pot evalua obligațiile firmei.",
+                    domeniu_de="%04d-12" % (azi.year - 1), domeniu_pana=None)],
+                "limite": limite_verificarii(azi),
                 "mesaj": "vector fiscal necompletat"}
 
     # [D390-fapt] semaforul intreaba faptul lunar (facturi IC + manual + d301), nu bifa statica operatiuni_ic.
