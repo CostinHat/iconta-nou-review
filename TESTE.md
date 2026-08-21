@@ -1814,3 +1814,12 @@ contează: un eșec de citire produce „nu pot ști", niciodată o afirmație d
 
 14 teste pe schemă efemeră reală. 5 mutații — a patra a trecut prima dată (o singură lună închisă face
 „prima" și „ultima" să coincidă); testul a fost întărit până a devenit falsificabil.
+
+## 21.08.2026 — P2: proprietatea cojii
+
+| gardă | ce face imposibil |
+|---|---|
+| `core/test_proprietate_coaja.py` | ca un ecran să scrie direct în `.bara` / `.subbara` / `.bara3` / `.bara-antet`; și ca proprietarul să nu-și mai declare locul (chiriașii ar dispărea tăcut) |
+
+Contract: `static/js/coaja.js` — `inregistreazaLoc` (proprietarul declară) / `cereLoc` · `pune` ·
+`scoate` (chiriașul cere). `pune` e idempotent.

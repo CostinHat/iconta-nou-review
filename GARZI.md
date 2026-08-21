@@ -3664,3 +3664,30 @@ la mijloc, stând inline. Ambele reparate, a doua oară la tiparul pontajului, c
 **Probă vizuală** pe ALFA MICRO, trei stări pe aceeași lună (deschis / blocat / închis) + Pixel 5:
 axe 0 desktop, axe 0 mobil, body=393 fără overflow. IGIENĂ DE DATE: rândul de e-Factură inserat
 temporar și șters, luna redeschisă, numărătorile identice înainte/după.
+
+## 21.08.2026 — P2: un ecran nu scrie în coajă (`e0b8eb7`)
+
+**Ce face imposibil:** ca un chiriaș să-și ia singur spațiu din coajă.
+`core/test_proprietate_coaja.py` (9 teste) + contractul din `static/js/coaja.js`.
+
+**Măsurătoarea mi-a corectat diagnosticul.** Spusesem dimineața că *Comunicarea stă în patru locuri*.
+Fals: `arataMesaj` (256 apeluri, 22 fișiere), `confirmaCaseta` (27) și `eroareCamp` (35) au fiecare UN
+proprietar în `api.js`, iar `test_dialog_nativ_frontend` interzice deja mesajele ad-hoc cu clichet 0.
+Defectul real era îngust — **două locuri** în `cabinet.js`.
+
+**Contractul stă în modul propriu**, nu în navigator: `navigator.js` importă `ecrane/ansamblu.js`, deci
+un import invers ar fi închis un ciclu. Contractul nu aparține niciunei părți.
+
+**Ambele semnături sunt gardate** — și că nimeni nu ia singur, și că proprietarul încă declară locul.
+Fără a doua, `cereLoc` ar întoarce mereu null și chiriașii ar dispărea TĂCUT de pe ecran.
+
+**Gardul a trebuit reparat înainte de a fi scris:** prima versiune se aprindea pe propriul meu
+comentariu explicativ. Aceeași greșeală ca gardul de ieri care nu deosebea afirmația de negația ei —
+comentariile se scot ÎNAINTE de căutare, și e legat cu două teste (o pomenire nu e încălcare;
+`el.className = "subbara-edu"` nici atât — chiriașul își numește propriul nod).
+
+**Mutații (trei), toate roșii:** un ecran ia iar singur loc · nimeni nu mai cere prin contract ·
+proprietarul nu-și mai declară locul.
+
+**Probă live** (cabinet 1968, flag aprins temporar și restaurat exact): bara arată identic, axe 0,
+Pixel 5 fără overflow, și UN singur indicator după re-randare — idempotența contractului.

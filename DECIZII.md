@@ -10749,3 +10749,24 @@ susține, nu ținută separat și legată prin convenție.
 
 **Migrarea, în idiomul casei:** afirmațiile noi se nasc ca obiecte; cele vechi migrează când sunt
 atinse; clichet ca numărul celor rămase șiruri să nu mai crească.
+
+## 21.08.2026 — P2 livrat: contractul cojii, și ce m-a corectat măsurătoarea
+
+Primul pas din ordinea confirmată care atinge produsul. Două lucruri de reținut, dincolo de cod.
+
+**Diagnosticul meu de dimineață era greșit, și măsurătoarea l-a corectat.** Spusesem că *Comunicarea
+stă în patru locuri, patru proprietari pentru o treabă*. Numărat: `arataMesaj` 256 de apeluri în 22 de
+fișiere, `confirmaCaseta` 27, `eroareCamp` 35 — fiecare cu UN singur proprietar în `api.js` — plus un
+gard care interzice deja mesajele ad-hoc. Comunicarea era **deja bine deținută**. Defectul real erau
+două linii în `cabinet.js`. Diferența dintre „patru proprietari" și „două linii" e diferența dintre o
+rescriere și o reparație — și n-aș fi aflat-o fără să număr.
+
+**Contractul nu aparține niciunei părți.** Prima variantă era o funcție în `navigator.js`, dar
+navigatorul importă `ecrane/ansamblu.js`, deci ecranele n-o pot chema fără ciclu. Modulul separat
+(`coaja.js`) nu e eleganță: e singura formă în care nici proprietarul nu-l deține pe chiriaș, nici
+invers. Asta e chiar ideea din DS cap.25, aplicată la propria ei implementare.
+
+**Ambele semnături se gardează.** Un contract păzit pe o singură latură („niciun ecran nu ia singur")
+ar fi trecut verde într-o lume în care proprietarul nu mai declară locul și toți chiriașii au dispărut
+tăcut de pe ecran. A doua aserțiune costă trei rânduri și acoperă exact modul în care reparația asta
+ar putea muri.
