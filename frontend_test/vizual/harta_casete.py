@@ -92,6 +92,14 @@ FELURI = {
                 "lui «Nu se datorează». PRECEDENT: tenant_006 — «nu se datorează» din vector, în timp "
                 "ce firma avea achiziții IC reale.",
     },
+    "contradictie": {
+        "domeniu": ["doua_afirmatii"],
+        "campuri_ceruti": ["fel", "tip", "motiv", "sursele"],
+        "nota": "[21.08.2026] Doua afirmatii care nu pot fi amandoua adevarate: profilul zice ca "
+                "firma nu are operatiuni IC, dar exista facturi IC reale; sau o depunere pe o "
+                "perioada declarata neaplicabila. NU e necunoastere - acolo nu stim, aici stim doua "
+                "lucruri incompatibile. `sursele` le numeste pe amandoua, altfel nu se poate arbitra.",
+    },
     "statut": {
         "domeniu": ["relatie_deschisa"],
         "campuri_ceruti": ["fel", "tip", "motiv", "statut", "statut_din"],
