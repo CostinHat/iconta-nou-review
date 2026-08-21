@@ -1823,3 +1823,33 @@ contează: un eșec de citire produce „nu pot ști", niciodată o afirmație d
 
 Contract: `static/js/coaja.js` — `inregistreazaLoc` (proprietarul declară) / `cereLoc` · `pune` ·
 `scoate` (chiriașul cere). `pune` e idempotent.
+
+## 21–22.08.2026 — P8: afirmațiile despre datele firmei, în toată aplicația
+
+| gardă | ce face imposibil |
+|---|---|
+| `core/test_afirmatii_tipate.py` | ca un fișier să producă MAI MULTE afirmații netipate decât la instalare; ca un fișier NOU să intre tăcut; ca baseline-ul să rămână peste realitate după o conversie; ca scanul să orbească pe vocabular greșit; ca excluderea hărților de nomenclator să se lărgească |
+| `core/test_respingeri_import.py` | ca o respingere de import să poarte un cod din afara nomenclatorului ÎNCHIS; ca un cod declarat să rămână nefolosit; ca `migrare.js` să clasifice iar după textul uman |
+| `core/test_chei_duplicate.py` | ca o cheie să apară de două ori în același dicționar — Python o dedublează TĂCUT, ruff n-o prinde, iar într-un nomenclator fiscal ordinea din fișier ar decide ce regulă se aplică |
+| `core/test_flag_constatare.py` | ca vreuna din cele trei stări ale semaforului de portofoliu să nu producă o afirmație validă; ca `an`/`luna` să redevină opționale în semnătură |
+| `core/test_unde.py` | un fel de referent inventat pe loc; un referent fără identitate; **un fapt fără NICIUN domeniu** |
+| `core/test_registru_exceptii.py` | ca registrul de excepții să crească; ca o excepție să rămână după ce situl a fost convertit; ca un motiv să fie scris în proză în loc să fie ales din setul închis |
+
+### Instrumente
+`core/scan_afirmatii.py` (inventarul, patru clase) · `core/scan_respingeri.py` (confruntarea
+coduri-folosite ↔ nomenclator, ambele direcții) · `core/unde.py` (referința structurată) ·
+`core/registru_exceptii.py` (excepțiile, cu rațiuni închise).
+
+### Mutații
+- clichetul de afirmații: **5 direcții**, toate roșii (fișier existent care crește · fișier nou ·
+  baseline peste realitate · scanul orbit · clasificarea care înghite clasele excluse);
+- felurile noi: **4 mutații** — și una a trecut prima dată, fiindcă `__pycache__` stale reciclase
+  bytecode-ul mutației anterioare (aceeași dimensiune, aceeași secundă). Sonda curăță acum cache-ul
+  între mutații; fără asta proba era falsă;
+- cheia duplicată: RED-probat cu **exact duplicatul care mi-a scăpat** în `migrare_api.REGULI`;
+- statul emis (lot anterior, aceeași tură): 7 mutații, toate roșii — și DOUĂ dintre gărzi treceau
+  degeaba înainte (numărau pe o lună fără contradicții; apăsau butonul o singură dată).
+
+### Ce NU probează gărzile astea
+Că textul e bun, că `fel`-ul ales e cel potrivit, sau că referentul din `unde` există în bază. Prima
+e a gărzilor de calitate-mesaj; a treia cere conexiune și e o gardă separată, neconstruită.

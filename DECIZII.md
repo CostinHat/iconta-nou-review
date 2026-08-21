@@ -10814,3 +10814,58 @@ așezarea. Capabilitatea e ajunsă prin API (`POST /stat-plata/emite`, `GET /sta
 Gardul viu nu mai e cel din `test_datorie.py` — ăla căuta `INSERT INTO state_plata` în sursă, deci ar
 fi trecut în clipa în care apărea orice insert, orice ar fi scris el. Comportamentul e păzit de
 `core/test_stat_plata_emis.py` și `core/test_fluturas_egal_stat.py`.
+
+## 21–22.08.2026 — P8: decizii de nomenclator luate în campania „afirmațiile sunt obiecte"
+
+### D1. Validările de rând la import intră în aceeași decizie (Costin, 21.08)
+Întrebate explicit ca graniță: sunt afirmații despre FIȘIERUL încărcat, nu despre datele deja
+înregistrate. Răspuns: **„Da — aceeași decizie, același tip."** Scopul a crescut de la 74 la 120 de
+locuri. **Temei:** N/A — decizie de produs, nu fiscală.
+
+### D2. Două feluri noi în nomenclator, fiindcă cele cinci nu ajungeau
+- **`verificare_rupta`** — verificarea ÎNSĂȘI s-a oprit. NU e `necunoastere`: aia ar ascunde-o ca
+  verdict permanent gri, exact ce refuză `_c_rupt` („lecția D300 mort"). Pe ecran arată la fel; în
+  DATE nu mai arată, deci cine numără „câte nu pot fi verificate" nu mai înghite și rupturile.
+  `eroare` obligatorie.
+- **`neconformitate`** — o VALOARE nu satisface o REGULĂ. `unde` + `regula` obligatorii: fără ele,
+  respingerea e un reproș fără adresă.
+
+Amândouă au producători reali (zeci) și o distincție pe care randorul o poate folosi. **Un al optulea
+fel a fost REFUZAT** pentru trei situri de potrivire — ar fi fost tip forțat ca să scadă un număr.
+
+### D3. `unde` ca domeniu ALTERNATIV la `an`+`luna` în `fapt` (Costin, 22.08)
+**Lipsa era a DOMENIULUI, nu a felului.** Nomenclatorul fusese enumerat pe rânduri de DECLARAȚIE, unde
+domeniul e mereu o perioadă; aplicat pe toată aplicația s-a văzut că nu ajunge — pachetul de preluare,
+linia de extras, factura. Un fapt despre un pachet și unul despre o lună sunt același FEL de afirmație.
+
+**Un fapt fără NICIUN domeniu rămâne INTERZIS** (cerut explicit de Costin), cu test propriu: altfel
+alternativa ar fi o portiță prin care orice fapt scapă nedatat.
+
+`unde` NU e text liber: `core/unde.py`, subclasă de `str` după modelul `common.Temei` care exista deja.
+Se randează ca text — niciun randor nu se atinge — dar poartă `fel` din nomenclator ÎNCHIS (14 feluri
+de referent, enumerate din cele ȘAPTE forme măsurate) și `id`. **Temei:** N/A — tooling.
+
+### D4. Registrul de excepții, cu trei zăvoare (Costin, 22.08)
+Motivul: **„Un plafon care nu poate ajunge la zero își pierde funcția."** Câteva locuri poartă cheia
+`mesaj` fără să fie afirmații despre datele firmei; nu se pot converti, n-au ce tipa.
+
+Întrebarea lui Costin — ce împiedică o intrare nouă să fie ADĂUGATĂ în loc să fie REPARATĂ:
+1. registrul nu poate CREȘTE (dimensiunea e clichet, instalat pe cifra măsurată: 7);
+2. fiecare intrare trebuie să fie VIE — situl numit trebuie să existe ȘI să fie încă netipat
+   (echivalentul lui „excepția trebuie să fie chiar folosită" de la blocul de perimetru);
+3. motivul se alege dintr-un set ÎNCHIS de patru RAȚIUNI, fiecare o NATURĂ, nu o formă.
+
+**„Rezultat de operație" NU e în set, deliberat**, și un test îl ține afară pe nume. Când am spus
+„vreo cinci, rezultate de operație", Costin a întrebat dacă sunt de aceeași natură. Măsurate, erau
+**~11, de PATRU naturi** — iar două erau afirmații ADEVĂRATE pe care le-aș fi ascuns acolo. Alea două
+s-au reparat, nu s-au declarat.
+
+### D5. Câmpul mort `explicatie` se SCOATE, nu se cablează (Costin, 21.08)
+*„A-l cabla acum înseamnă să inventăm o nevoie ca să justificăm un câmp."* Verificat în patru direcții
+înainte de ștergere, fiindcă întrebarea lui a fost cine ALTCINEVA îl poate citi: `/api/v1` (cu chei)
+întoarce doar firme/facturi/kpi/balanță; ruta e pe sesiune; nu se persistă; nu ajunge în PDF.
+
+### D6. Ciocnirea de vocabular `motiv`, rezolvată în favoarea canonicului
+Cheia `motiv` purta CODUL în importuri și TEXTUL în afirmații — același nume, două înțelesuri, exact
+capcana pe care o vânează campania. De-acum `motiv` e TEXTUL peste tot; codul trăiește în `regula`.
+Consumatorii au fost numărați înainte (deși prima numărătoare a fost greșită — vezi GARZI).

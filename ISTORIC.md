@@ -4810,3 +4810,41 @@ o excepție pe o cale fără niciun test.
 — și de fiecare dată în bine. Diagnosticul de la P2 (patru locuri → două linii), propunerea de la P3b
 (două din trei existau deja), clichetul de la P7 (ar fi înghețat un non-defect), și regula verbatim de
 la #13 (ar fi cerut rescrierea a 24 de citări corecte).
+
+## 21–22.08.2026 — P8: decizia a coborât de pe un ecran în toată aplicația
+
+Costin a întrebat unde stă în lista de priorități decizia de a trata textul ca date. Răspunsul măsurat
+a fost mai prost decât părea: era la P3, **livrată** — dar `core/afirmatii.py` avea exact **un**
+consumator de producție. O regulă scrisă și nepăzită e o intenție.
+
+**120 netipate → 24, din care 7 declarate ca excepții → datorie reală 17.** `control_incrucisat` la ZERO.
+
+### Ce a schimbat măsurătoarea, iar și iar
+Prima formă a scanului căuta LISTE numite `constatari`/`probleme`. A găsit 24 de locuri pe toată
+aplicația și era **oarbă pe producătorul de referință**. Căuta forma pe care mi-o imaginam, nu forma
+pe care o are codul. A doua formă număra **remedii** drept afirmații tipate — 23 din 27 — deci gardul
+anti-vacuu trecea numărând altceva decât credea.
+
+Și campania n-a fost curățenie: a scos **defecte reale pe care nimeni nu le căuta**. Fluturașul dădea
+920 lei de tichete pe hârtie pe care statul le blocase. `migrare.js` clasifica duplicatele potrivind
+proză, deci o reformulare a mesajului ar fi spus tăcut „0 firme erau deja în portofoliu". Un câmp
+calculat în cinci locuri și citit de nimeni. O cheie duplicată într-un nomenclator fiscal.
+
+### Cele patru întrebări ale lui Costin care au schimbat munca
+1. *„Cine altcineva îl mai poate citi — API-ul public cu chei?"* — fără pasul ăla, „nimeni" ar fi fost
+   o presupunere. Verificat: `/api/v1` întoarce doar firme/facturi/kpi/balanță.
+2. *„Alea 27 merită luate înaintea familiei reconciliere?"* — da, și pentru un motiv pe care nu-l
+   pusesem: `neconformitate` era un fel cu ZERO producători reali.
+3. *„Sunt toate cinci de aceeași natură?"* — nu. Măsurate, erau ~11, de patru naturi, iar două erau
+   afirmații adevărate. Întrebarea a împiedicat un registru care s-ar fi umplut.
+4. *„Ce împiedică o intrare nouă să fie adăugată acolo în loc să fie reparată?"* — a produs cele trei
+   zăvoare, dintre care doar al treilea (setul închis de rațiuni) e cel care ține.
+
+### Tiparul rulării
+De **șase** ori măsurătoarea a schimbat ce urma să construiesc. Dar lucrul de reținut e altul:
+**de trei ori am pus un default comod care ascundea o cale netestată**, și o dată **am orbit scanul**
+lărgind o regulă ca să scot un fals pozitiv — a scos 16 din 32, jumătate din datorie, printre care o
+constatare adevărată. Am revenit, și ce am pus în loc scoate exact unu și are gardă pe creștere.
+
+Un scan se poate face verde orbindu-l, nu reparând codul. Clichetul are nevoie de gardă și pe
+INSTRUMENT, nu doar pe număr — asta lipsea, și acum există.

@@ -3757,3 +3757,59 @@ inversate. Suita a prins-o pe loc. REGULA DE AUR se aplică și la botez: grep �
 Tot gardul ăla a prins și ordinea greșită din ruta de emitere — citea corpul cererii înaintea
 verificării accesului, deci un străin primea 500 în loc de 404, adică afla că ruta există și ce
 câmpuri așteaptă.
+
+## 21–22.08.2026 — P8: afirmațiile despre datele firmei sunt OBIECTE, în TOATĂ aplicația
+
+Decizia exista din 21.08 (`core/afirmatii.py`, R2′/R2), dar trăia pe **un ecran**: un singur consumator
+de producție, `control_fiscal_api`. O regulă scrisă și nepăzită e o intenție. Campania a dus-o în tot
+codul, cu clichet.
+
+### Cifra
+120 netipate la instalare → **24**, din care **7 declarate ca excepții** → **datorie reală 17**.
+`control_incrucisat` a ajuns la ZERO și a ieșit din tabel.
+
+### Gărzi noi
+| gard | ce face imposibil |
+|---|---|
+| `core/test_afirmatii_tipate.py` | o afirmație netipată nouă; un fișier care crește; un baseline stale; scanul care orbește pe vocabular; clasificarea care înghite clasele excluse |
+| `core/test_respingeri_import.py` | un cod de respingere din afara nomenclatorului închis; un cod declarat-nefolosit; clasificarea după proză în `migrare.js` |
+| `core/test_chei_duplicate.py` | o cheie care apare de două ori în același dicționar (Python o dedublează TĂCUT; ruff n-o prinde) |
+| `core/test_flag_constatare.py` | o stare a semaforului care nu produce afirmație validă; `an`/`luna` care redevin opționale |
+| `core/test_unde.py` | un fel de referent inventat; un referent fără identitate; **un fapt fără niciun domeniu** |
+| `core/test_registru_exceptii.py` | registrul care crește; o excepție moartă; un motiv din afara setului închis; rațiunea „rezultat de operație" |
+
+### Ce a ieșit necăutat — defecte reale, nu curățenie
+- **Fluturașul dădea 920 lei de tichete pe hârtie** pe care statul le blocase (pontaj neconfirmat,
+  HG 1045/2018 art.10(3)). 14 din 192 de perechi salariat×lună divergeau, verificat pe funcția reală.
+- **`migrare.js` clasifica duplicatele potrivind PROZĂ** — `(e.mesaj||"").includes("există deja")`.
+  O reformulare a mesajului ar fi spus tăcut „0 firme erau deja în portofoliu" despre un import în
+  care erau.
+- **Câmp mort** `explicatie` pe containerele de modul: 7 din 12 șirul gol, 5 calculate degeaba, citit
+  de nimeni (verificat: nici `/api/v1`, nici PDF, nici persistat).
+- **Cheie duplicată** într-un nomenclator fiscal — două intrări cu aceeași cheie ar face ca ordinea
+  din fișier să decidă ce regulă se aplică.
+- **`tip 4 cu temei NECONFIRMAT`** din D390 stătea în aceeași listă cu excluderile confirmate,
+  deosebite doar printr-un boolean. Acum una e `fapt` cu temei, cealaltă `necunoastere`.
+
+### Clase de greșeală proprie, consemnate (au produs gărzi sau reguli de metodă)
+1. **Default comod care ascunde o cale netestată — de TREI ori.** `an=None`/`luna=None` puse „ca să nu
+   ating apelanții"; ramuri care cădeau imediat, fără niciun test. Sonda `sonda_default` măsoară acum
+   clasa: **25 din 78** de parametri cu default `None` din modulele fiscale n-au fost NICIODATĂ `None`
+   la niciun apel din suită — adică defaultul e o promisiune neverificată.
+2. **Gard care-și citește dovada din proză — de PATRU ori**, ultima pe propriul meu comentariu care
+   explica de ce forma veche era greșită. Instrumentul exista (`scan_ancore.fara_proza`, #14); nu
+   l-am folosit din prima.
+3. **AM ORBIT SCANUL.** Ca să scot un fals pozitiv, am lărgit o regulă: a scos **16 din 32** —
+   jumătate din datorie — printre care o constatare adevărată. Am revenit. Ce am pus în loc scoate
+   EXACT UNU și are gardă pe creștere. Un scan se poate face verde orbindu-l, nu reparând codul.
+4. **Măsurătoare de consumatori făcută prin grep pe exemple**, nu pe clasă: am zis „trei fișiere de
+   test", erau cinci, iar suita mi-a arătat-o cu 23 de teste roșii.
+5. **Ambalaj „pentru brevitate" care orbește un instrument** — un `_resp` local a făcut scanul de
+   confruntare să nu mai găsească codurile. Scos.
+
+### Datorie deschisă, declarată
+- **17 afirmații netipate reale** rămase, în 13 fișiere.
+- `unde` NU verifică că referentul EXISTĂ în bază — cere conexiune, e altă gardă.
+- Sonda de default-uri e grea (~10 min, învelește la import); locul ei e lângă scanul de constante,
+  nu în pre-commit. **Prima ei formă a stricat un test** (funcția învelită returna sursa spionului la
+  `inspect.getsource`); reparat cu `functools.wraps`.
