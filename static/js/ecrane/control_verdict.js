@@ -249,13 +249,14 @@ export function randeazaCorpVerdict(d, opt = {}) {
   const sectLimite = (() => {
     const lim = d.limite || [];
     if (!lim.length) return "";
-    const per = lim.find((x) => x.fel === "perimetru");
-    const rest = lim.filter((x) => x !== per);
+    // Rezumatul e o ETICHETĂ, nu o limită: dacă ar consuma un rând din sursă, numărul randat n-ar mai
+    // fi egal cu numărul din payload — și un rând pierdut la randare e chiar clasa pe care harta o
+    // păzește. Prinsă de `test_randurile_randate_egal_cu_randurile_din_sursa`.
     return `<div class="cf-grup-titlu" style="margin-top:20px">Ce nu poate spune verificarea asta</div>
       <div class="cf-decl"><details class="cf-limite">
-        <summary class="cf-incr-temei">${esc(per ? per.text : "Ce am privit și ce nu.")}
-          <span class="tip-micut">(vezi toate limitele: ${rest.length})</span></summary>
-        ${rest.map((x) => `<div class="cf-incr-temei">${esc(x.text)}</div>`).join("")}
+        <summary class="cf-incr-temei">Ce am privit, ce nu compar, și ce ar întări verdictul
+          <span class="tip-micut">(${lim.length})</span></summary>
+        ${lim.map((x) => `<div class="cf-decl-item"><div class="cf-incr-temei">${esc(x.text)}</div></div>`).join("")}
       </details></div>`;
   })();
 

@@ -10,6 +10,7 @@
   "lungimi": {
    "confirmate": 0,
    "cu_intarziere": 0,
+   "limite": 7,
    "lipsa": 6,
    "neaplicabile": 2,
    "neclar": 5,
@@ -290,6 +291,11 @@
     "contor": null,
     "randuri": 1,
     "titlu": "Documente pozate"
+   },
+   {
+    "contor": null,
+    "randuri": 7,
+    "titlu": "Ce nu poate spune verificarea asta"
    },
    {
     "contor": null,
