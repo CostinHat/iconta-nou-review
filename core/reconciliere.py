@@ -16,6 +16,7 @@ verde  = match exact (o factură sau combinație cu sumă identică)
 galben = alocare parțială / FIFO (necesită confirmare atentă)
 rosu   = fără CUI sau fără facturi deschise ale partenerului
 """
+from core import afirmatii as _af  # [P8] absenta spune UNDE s-a cautat
 from decimal import Decimal
 from itertools import combinations
 
@@ -84,12 +85,20 @@ def potriveste_linie(linie, facturi_deschise):
     suma = _d(linie.get("suma", 0)).copy_abs()
     cui = _norm_cui(linie.get("cui"))
     if not cui:
-        return {"status": "rosu", "alocari": [], "motiv": "fără CUI în descriere"}
+        return dict(_af.afirmatie(
+            "absenta_observatie", "reconciliere extras",
+            "fără CUI în descriere",
+            surse_consultate="descrierea liniei de extras (câmpul din care se extrage CUI-ul)"),
+            status="rosu", alocari=[])
 
     facturi = facturi_partener(facturi_deschise, cui, linie.get("tip"))
     if not facturi:
-        return {"status": "rosu", "alocari": [],
-                "motiv": f"niciun document deschis pentru CUI {cui}"}
+        return dict(_af.afirmatie(
+            "absenta_observatie", "reconciliere extras",
+            f"niciun document deschis pentru CUI {cui}",
+            surse_consultate=f"documentele DESCHISE ale partenerului cu CUI {cui} "
+                             f"(cele stinse nu se caută)"),
+            status="rosu", alocari=[])
 
     f = _match_exact_una(suma, facturi)
     if f:

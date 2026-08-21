@@ -31,6 +31,7 @@ from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM  # limite text
 import re
 import datetime
 from core import common as c
+from core import afirmatii as _af  # [P8] diagnosticele sunt afirmatii
 from core import d390_reconciliere as _recon  # POARTA a-doua-cale (recalcul independent sursa->declaratie)
 from core.identitate import valideaza_cui as _valideaza_cui  # T1: checksum CUI RO (partener/firma), sursa canonica (read-only)
 from dataclasses import dataclass, field
@@ -266,9 +267,13 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
         den = (op.get("den") or "")[:200]
         baza_op = Decimal(str(op.get("baza") or 0))
         if len(cod) > 12:
-            diag.append({"categorie": "codO_lung", "den": den, "cui": (tara + cod),
-                         "directie": "manual", "tara": tara, "cod": cod, "baza": baza_op,
-                         "motiv": "codO manual are %d caractere (max 12) - trunchierea ar CORUPE numărul de TVA" % len(cod)})
+            diag.append(dict(_af.afirmatie(
+                "neconformitate", "d390",
+                "codO manual are %d caractere (max 12) - trunchierea ar CORUPE numărul de TVA" % len(cod),
+                unde="partenerul %s (%s%s)" % (den or "(fără denumire)", tara, cod),
+                regula="cod_tva_peste_12_caractere"),
+                categorie="codO_lung", den=den, cui=(tara + cod), directie="manual", tara=tara,
+                cod=cod, baza=baza_op))
         elif tara and cod:
             # [checksum manual 20.08.2026] Bucla manuala sarea peste checksum_vies - il chema DOAR
             # `_facturi_ic` (latura auto). Deci o linie introdusa de contabil in ecranul D390 sau
@@ -280,10 +285,13 @@ def calcul_d390(prof, an, luna, facturi, manual=None, reclasificari=None):
             # gresit, deci nu se raporteaza ca invalid.
             _st, _mo = checksum_vies(tara, cod)
             if _st == "invalid":
-                diag.append({"categorie": "checksum", "den": den, "cui": (tara + cod),
-                             "directie": "manual", "tara": tara, "cod": cod, "baza": baza_op,
-                             "motiv": "cod TVA %s%s invalid: %s (va fi respins de DUK regula R24.1)"
-                                      % (tara, cod, _mo)})
+                diag.append(dict(_af.afirmatie(
+                    "neconformitate", "d390",
+                    "cod TVA %s%s invalid: %s (va fi respins de DUK regula R24.1)" % (tara, cod, _mo),
+                    unde="partenerul %s (%s%s)" % (den or "(fără denumire)", tara, cod),
+                    regula="DUK regula R24.1"),
+                    categorie="checksum", den=den, cui=(tara + cod), directie="manual", tara=tara,
+                    cod=cod, baza=baza_op))
         k = (tip, tara, cod, den)
         ops[k] = ops.get(k, Decimal("0")) + baza_op
         _sursa.setdefault(k, set()).add("manual/D301")
@@ -593,23 +601,31 @@ def excluse_d301(conn, schema, an, luna):
             if codD and tara:
                 continue                      # se deriveaza in D390 (cod A/S) - nu e exclusa
             if codD and not tara:
-                out.append({"id": _id, "semnal": True,
-                            "motiv": "lipsă țara furnizorului — nu se poate forma linia D390 (codT obligatoriu)",
-                            "temei": "instr. completare D390 (OPANAF 705/2020)"})
+                out.append(dict(_af.afirmatie(
+                    "neconformitate", "d390",
+                    "lipsă țara furnizorului — nu se poate forma linia D390 (codT obligatoriu)",
+                    unde=_id, regula="tara_furnizor_lipsa"),
+                    semnal=True, id=_id, temei="instr. completare D390 (OPANAF 705/2020)"))
             elif tip == 2:
-                out.append({"id": _id, "semnal": False,
-                            "motiv": "mijloace de transport noi — raportare specială, nu în recapitulativă",
-                            "temei": "instr. completare D390 (OPANAF 705/2020)"})
+                out.append(dict(_af.afirmatie(
+                    "fapt", "d390",
+                    "mijloace de transport noi — raportare specială, nu în recapitulativă",
+                    an=an, luna=luna,
+                    temei_completitudine="instr. completare D390 (OPANAF 705/2020) — tipul operațiunii "
+                                         "din D301 determină excluderea"),
+                    semnal=False, id=_id, temei="instr. completare D390 (OPANAF 705/2020)"))
             elif tip == 4:
                 if temei in _T307:
-                    out.append({"id": _id, "semnal": False,
-                                "motiv": "exclusa din D390: %s" % _T307[temei]["eticheta"],
-                                "temei": _T307[temei]["temei"]})
+                    out.append(dict(_af.afirmatie(
+                        "fapt", "d390", "exclusa din D390: %s" % _T307[temei]["eticheta"],
+                        an=an, luna=luna, temei_completitudine=_T307[temei]["temei"]),
+                        semnal=False, id=_id, temei=_T307[temei]["temei"]))
                 else:
-                    out.append({"id": _id, "semnal": True,
-                                "motiv": "tip 4 (art. 307 alin. 3/5/6) cu TEMEI NECONFIRMAT — confirmă alineatul "
-                                         "în ecranul D301 ca excluderea din D390 să fie auditabilă",
-                                "temei": "Cod fiscal art. 307 alin. (3)/(5)/(6)"})
+                    out.append(dict(_af.necunoastere_pe_luna(
+                        "d390",
+                        "tip 4 (art. 307 alin. 3/5/6) cu TEMEI NECONFIRMAT — confirmă alineatul "
+                        "în ecranul D301 ca excluderea din D390 să fie auditabilă", an, luna),
+                        semnal=True, id=_id, temei="Cod fiscal art. 307 alin. (3)/(5)/(6)"))
     return out
 
 

@@ -29,17 +29,15 @@ from core import scan_afirmatii as s
 # Ce a rămas la importuri sunt rezultate de import (`{denumire, motiv}` pe rândurile VALIDE), nu
 # respingeri — se numără mai departe fiindcă poartă cheia `motiv`.
 BASELINE = {
-    "core/d390.py": 7,
     "main.py": 7,
-    "core/reconciliere.py": 6,
+    "core/reconciliere.py": 4,
     "core/control_fiscal_api.py": 3,
-    "core/firma_profil_api.py": 3,
     "core/raportari_ai.py": 3,
     "core/articole_import_api.py": 2,
-    "core/d112_reconciliere.py": 2,
     "core/rip_migrare_api.py": 2,
     "core/audit_preluare.py": 1,
     "core/cote_tva.py": 1,
+    "core/d390.py": 1,
     "core/etransport_send.py": 1,
     "core/gdpr_sterge.py": 1,
     "core/intrastat.py": 1,

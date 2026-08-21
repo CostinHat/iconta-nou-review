@@ -6,6 +6,8 @@ Folosit de ecranul "Model factura": datele firmei (pt preview) + personalizare
 """
 from __future__ import annotations
 
+from core import afirmatii as _af  # [P8] blocajul numeste regula
+
 MODUL = "firma_profil_api"
 
 # fonturi web-safe permise (merg garantat la print/PDF)
@@ -187,9 +189,12 @@ def blocaje(conn, profil):
     if caen:
         from core import d112
         if not d112.caen_in_nomenclator(caen):
-            out.append({"declaratie": "D112",
-                        "motiv": "CAEN %s nu e în nomenclatorul acceptat de D112 — corectează "
-                                 "CAEN-ul, altfel D112 (dacă ai salariați) e respins de ANAF." % caen})
+            out.append(dict(_af.afirmatie(
+                "neconformitate", "d112",
+                "CAEN %s nu e în nomenclatorul acceptat de D112 — corectează "
+                "CAEN-ul, altfel D112 (dacă ai salariați) e respins de ANAF." % caen,
+                unde="codul CAEN al firmei (%s)" % caen, regula="caen_in_afara_nomenclatorului_d112"),
+                declaratie="D112"))
     try:
         from core import vector_fiscal_api
         v = vector_fiscal_api.citeste(conn)
@@ -197,13 +202,18 @@ def blocaje(conn, profil):
         v = {}
     if v.get("platitor_tva") is True:
         if not str(v.get("tip_decont") or "").strip():
-            out.append({"declaratie": "D300/D394",
-                        "motiv": "periodicitatea TVA nu e aleasă (apare „—”) — alege "
-                                 "lunar sau trimestrial."})
+            out.append(dict(_af.afirmatie(
+                "neconformitate", "d300",
+                "periodicitatea TVA nu e aleasă (apare „—”) — alege lunar sau trimestrial.",
+                unde="vectorul fiscal al firmei", regula="periodicitate_tva_nealeasa"),
+                declaratie="D300/D394"))
         if not str(v.get("tva_data_inceput") or "").strip():
-            out.append({"declaratie": "D300/D394/D406",
-                        "motiv": "data înregistrării în scopuri de TVA lipsește — fără "
-                                 "ea, verdictele pe lunile trecute rămân „necunoscut”."})
+            out.append(dict(_af.afirmatie(
+                "neconformitate", "d300",
+                "data înregistrării în scopuri de TVA lipsește — fără "
+                "ea, verdictele pe lunile trecute rămân „necunoscut”.",
+                unde="vectorul fiscal al firmei", regula="data_inceput_tva_lipsa"),
+                declaratie="D300/D394/D406"))
     return out
 
 

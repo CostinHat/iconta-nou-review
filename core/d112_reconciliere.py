@@ -60,6 +60,7 @@ tacit (tipar DECIZII 05.08).
 LIMITE suplimentare: input partajat gresit (ambele cai citesc acelasi brut gresit) = §8.
 """
 
+from core import afirmatii as _af  # [P8] blocajul numeste regula
 import calendar as _cal
 from datetime import date as _date
 from decimal import Decimal, ROUND_HALF_UP
@@ -152,8 +153,12 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
             brut = _brut_la(cur, schema, sid, luna_sf)
             # --- SKIP-SUSPECT: date corupte pe un angajat EMIS (semnalat, nu tacut) ---
             if brut is None:
-                suspecte.append({"salariat": sid, "motiv": "salariul brut lipsește (nici din istoric, "
-                                 "nici din fișa salariatului) - generatorul emite contribuții pe 0"})
+                suspecte.append(dict(_af.afirmatie(
+                    "neconformitate", "d112",
+                    "salariul brut lipsește (nici din istoric, nici din fișa salariatului) - "
+                    "generatorul emite contribuții pe 0",
+                    unde="salariatul %s" % sid, regula="salariu_brut_lipsa"),
+                    salariat=sid))
                 continue
             # --- SKIP-LEGITIM: complexitate fiscala (in afara scopului gardului, tacut) ---
             if r["scutit_contrib_minim"]:
@@ -220,9 +225,12 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
                 continue
             # --- SKIP-SUSPECT: sub minimul legal pentru angajat full-time luna intreaga ---
             if brut < sm:
-                suspecte.append({"salariat": sid, "motiv": "brut %s SUB salariul minim %s pentru angajat "
-                                 "full-time luna intreaga (sub pragul legal) - date probabil corupte"
-                                 % (_q(brut), _q(sm))})
+                suspecte.append(dict(_af.afirmatie(
+                    "neconformitate", "d112",
+                    "brut %s SUB salariul minim %s pentru angajat full-time luna intreaga "
+                    "(sub pragul legal) - date probabil corupte" % (_q(brut), _q(sm)),
+                    unde="salariatul %s" % sid, regula="brut_sub_salariul_minim"),
+                    salariat=sid))
                 continue
             # --- SUB-CAZ 1b (05.08): angajat PESTE MINIM cu TICHETE DE MASA -> CAS reconciliabil, CASS numit-afara ---
             if are_tichete_masa:
