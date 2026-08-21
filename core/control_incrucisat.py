@@ -250,15 +250,7 @@ def facturi_necontabilizate(conn, schema, inceput, sfarsit):
         return [dict(r) for r in cur.fetchall()]
 
 
-def _explicatie(necontate):
-    fara = [f for f in necontate if not f.get("are_ciorna")]
-    ciorne = [f for f in necontate if f.get("are_ciorna")]
-    parti = []
-    if fara:
-        parti.append(f"{len(fara)} facturi ale lunii nu sunt contabilizate")
-    if ciorne:
-        parti.append(f"{len(ciorne)} au note în ciornă, în așteptarea validării")
-    return ("; ".join(parti) + ".") if parti else ""
+
 
 
 def _patru_ochi_activ(conn, schema):
@@ -523,7 +515,6 @@ def verifica_d112(conn, schema, an, luna):
                     "d112", "Salarii", "D112 nu s-a putut genera.",
                     f"NU pot verifica salariile: declarația nu se poate calcula ({e}).", an, luna,
                     {"fel": "investigatie", "cauza": cauza, "actiune": actiune, "facturi": []})],
-                "explicatie": "",
                 "limita": "Verificarea D112 nu a fost efectuată — riscul rămâne neacoperit.",
                 "modul": MODUL, "reguli": REGULI}
     totaluri = totaluri_d112_din_xml(xml)
@@ -537,12 +528,12 @@ def verifica_d112(conn, schema, an, luna):
         # gardă: fără salariați, D112 nu se datorează -> NU producem verdict. Verdele pe 0-vs-0 ar fi
         # minciuna ("am verificat, coincide" despre un subiect inexistent) - absent, nu verde. DECIZII 23.07.
         return {"an": an, "luna": luna, "stare": "verde", "constatari": [],
-                "explicatie": "", "limita": "Fără salariați în lună — D112 nu se datorează, nimic de verificat.",
+                "limita": "Fără salariați în lună — D112 nu se datorează, nimic de verificat.",
                 "modul": MODUL, "reguli": REGULI}
     constatari = compara_d112(totaluri, rulaje, ciorne, nr_sal, patru_ochi=_patru_ochi_activ(conn, schema))
     stare = "rosu" if any(c["stare"] == "rosu" for c in constatari) else "verde"
     return {"an": an, "luna": luna, "stare": stare, "constatari": constatari,
-            "explicatie": (f"{ciorne} note de salarii în ciornă." if ciorne else ""),
+
             "limita": ("Verificat: totalurile din XML-ul D112 (cod 602/412+458/432+459/480) vs "
                        "conturile 444/4315/4316/436, numai note validate. "
                        "NEVERIFICAT: brutul (421) — D112 raportează baza de contribuții, "
@@ -570,7 +561,7 @@ def verifica_tva(conn, schema, an, luna):
             _prof["tip_decont"] = _row[1]
     if _prof.get("platitor_tva") is False:
         return {"an": an, "luna": luna, "stare": "verde", "constatari": [], "facturi_necontabilizate": [],
-                "explicatie": "", "limita": "Firmă neplătitoare de TVA — D300 nu se datorează, nimic de verificat.",
+                "limita": "Firmă neplătitoare de TVA — D300 nu se datorează, nimic de verificat.",
                 "modul": MODUL, "reguli": REGULI}
     try:
         _xml, res = _d300.genereaza(conn, schema, Perioada(an, luna=luna))
@@ -591,7 +582,7 @@ def verifica_tva(conn, schema, an, luna):
                     "d300", "TVA", "D300 nu s-a putut genera.",
                     f"NU pot verifica TVA: decontul nu se poate calcula ({e}).", an, luna,
                     {"fel": "investigatie", "cauza": cauza, "actiune": actiune, "facturi": []})],
-                "facturi_necontabilizate": [], "explicatie": "",
+                "facturi_necontabilizate": [],
                 "limita": "Verificarea TVA nu a fost efectuată — riscul rămâne neacoperit."}
 
     R = res["R"] if isinstance(res, dict) else getattr(res, "R", {})
@@ -608,7 +599,7 @@ def verifica_tva(conn, schema, an, luna):
     return {
         "an": an, "luna": luna, "stare": stare, "constatari": constatari,
         "facturi_necontabilizate": necontate,
-        "explicatie": _explicatie(necontate),
+
         "limita": ("Verificat: D300 (calculat din facturile lunii) vs conturile 4427/4426. "
                    "Evidența = note validate; ciornele nu intră în rulaj. "
                    "NEVERIFICAT: dacă D300 depus efectiv la ANAF coincide cu cel calculat aici "
@@ -923,7 +914,6 @@ def verifica_d390(conn, schema, an, luna):
                     f"NU pot verifica operațiunile intracomunitare: D390 nu se poate calcula ({e}).",
                     an, luna,
                     {"fel": "investigatie", "cauza": _cauza, "actiune": _actiune, "facturi": []})],
-                "explicatie": "",
                 "limita": "Verificarea D390 nu a fost efectuată — riscul rămâne neacoperit.",
                 "modul": MODUL, "reguli": REGULI}
     ic_facturi = facturi_ic(conn, schema, data_de, data_pana)
@@ -968,8 +958,7 @@ def verifica_d390(conn, schema, an, luna):
                         for f in ic_facturi.get(d, []) if not f.get("contabilizata"))
     return {"an": an, "luna": luna, "fereastra": fereastra, "stare": stare,
             "constatari": constatari,
-            "explicatie": (f"{necontate_tot} facturi intracomunitare fără notă validată în fereastră."
-                           if necontate_tot else ""),
+
             "limita": ("Verificat: D390 bunuri IC (livrări L / achiziții A, auto din facturi) vs (1) evidența "
                        f"contabilă validată a acelorași facturi pe fereastra TVA curentă ({fereastra}) ȘI (2) D300 "
                        "DEPUS (rânduri persistate), pe CEA MAI RECENTĂ perioadă efectiv depusă (afișată în "
@@ -1004,7 +993,6 @@ def _gri_cota_tva(an, luna, motiv):
                 {"fel": "investigatie", "cauza": "Date lipsă sau necitibile.",
                  "actiune": "Verifică facturile emise ale lunii, apoi reîncearcă.",
                  "facturi": []})],
-            "explicatie": "",
             "limita": "Verificarea cotei TVA nu a fost efectuată — riscul rămâne neacoperit.",
             "modul": MODUL, "reguli": REGULI}
 
@@ -1081,7 +1069,7 @@ def constatare_cota_tva(linii, an, luna):
             "Toate facturile emise folosesc cota TVA corectă pentru perioadă.", an, luna,
             "cele %d linii cu cotă citibilă din facturile emise ale lunii" % verificate)]
         return {"an": an, "luna": luna, "stare": "verde", "constatari": constatari,
-                "explicatie": "", "limita": limita, "modul": MODUL, "reguli": REGULI}
+                "limita": limita, "modul": MODUL, "reguli": REGULI}
 
     ids = sorted(gresite)
     n = len(ids)
@@ -1099,7 +1087,6 @@ def constatare_cota_tva(linii, an, luna):
                              "corecție). Cota o confirmă omul, nu se ajustează automat."),
                  "facturi": ids})
     return {"an": an, "luna": luna, "stare": "rosu", "constatari": [constatare],
-            "explicatie": f"{n} facturi emise cu cotă TVA neconformă perioadei.",
             "limita": limita, "modul": MODUL, "reguli": REGULI}
 
 
@@ -1468,7 +1455,13 @@ def reconciliaza_declaratii(conn, schema, an, luna):
     """SUPRAFATA UNIFICATA: reconciliere SURSA <-> DECLARATIE pentru toate declaratiile APLICABILE firmei,
     cu trei stari (verde/rosu/gri), refolosind ACEEASI reconciliere ca poarta de generare (vezi capul
     sectiunii). Nu ridica. Perioadele: lunare/TVA pe (an, luna); D100 pe trimestrul lunii; D101/D205 pe
-    anul `an`. Intoarce {an, luna, stare, constatari:[...structurate...], explicatie, limita, modul, reguli}."""
+    anul `an`. Intoarce {an, luna, stare, constatari:[...structurate...], limita, modul, reguli}.
+
+    [21.08.2026] `explicatie` SCOASA din container: camp mort. Nu-l citea nimeni - nici
+    control_verdict.js (randeaza `limita`), nici firme.js (il declara IGNORAT), nici vreun modul
+    Python; nu iesea prin /api/v1 (firme/facturi/kpi/balanta), nu se persista, nu ajungea in PDF.
+    Sapte din douasprezece erau sirul gol; cinci calculau o fraza pe care n-o vedea nimeni.
+    Daca vreodata containerul chiar are ce explica, se construieste atunci - cu un consumator real."""
     vector, are_sal = _vector_firma(conn, schema)
     platitor = vector.get("platitor_tva")
     regim = (vector.get("regim_fiscal") or "").strip().lower()
@@ -1506,16 +1499,7 @@ def reconciliaza_declaratii(conn, schema, an, luna):
     else:
         stare = "verde"
 
-    n_rosu = sum(1 for c in constatari if c["stare"] == "rosu")
-    n_gri = sum(1 for c in constatari if c["stare"] == "gri")
-    parti = []
-    if n_rosu:
-        parti.append("%d declaratie(i) NU se reconciliaza cu sursa" % n_rosu)
-    if n_gri:
-        parti.append("%d nu au putut fi verificate" % n_gri)
-    explicatie = ("; ".join(parti) + ".") if parti else ""
     return {"an": an, "luna": luna, "stare": stare, "constatari": constatari,
-            "explicatie": explicatie,
             "limita": ("Reconciliere sursă<->declarație pentru declarațiile aplicabile firmei, cu ACEEAȘI "
                        "reconciliere care blochează generarea (dXXX_reconciliere.reconciliaza - recalcul "
                        "independent din sursă). Verde=recalculul confirmă; roșu=divergență (ambele valori "

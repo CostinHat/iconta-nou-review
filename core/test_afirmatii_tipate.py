@@ -23,10 +23,11 @@ from core import scan_afirmatii as s
 # Măsurat 21.08.2026: 120 afirmații netipate în clasele A (verdict) și C (import), în 30 de fișiere.
 # Fiecare linie e o DATORIE, nu o normă. Se coboară; nu se ridică.
 #
-# 21.08, aceeași zi: 120 -> 105. `control_incrucisat` a coborât 27 -> 12 (constatările trec prin
-# `afirmatie()`; cele 12 rămase sunt CONTAINERE de modul, nu afirmații — vezi nota de la coadă).
+# 21.08, aceeași zi: 120 -> 93. `control_incrucisat` a ajuns la ZERO și a ieșit din tabel:
+# constatările trec prin `afirmatie()`, iar containerele de modul au scăpat de câmpul mort
+# `explicatie` (nu-l citea nimeni — decis de Costin: „a-l cabla acum înseamnă să inventăm o nevoie
+# ca să justificăm un câmp").
 BASELINE = {
-    "core/control_incrucisat.py": 12,
     "main.py": 13,
     "core/salariati_import_api.py": 8,
     "core/d390.py": 7,
@@ -150,19 +151,23 @@ def test_granita_lui_costin_e_respectata():
         "fi ținută afară")
 
 
-def test_containerele_de_modul_sunt_declarate_ca_datorie_deschisa():
-    """DE RAPORTAT, nu de ascuns. Cele 12 rămase în `control_incrucisat` NU sunt constatări — sunt
-    CONTAINERE de modul (`{an, luna, stare, constatari: [...], explicatie, limita, ...}`). Scanul le
-    numără fiindcă poartă cheia `explicatie`.
+def test_campul_mort_explicatie_nu_reapare():
+    """`explicatie` de pe containerul de modul a fost SCOASĂ (21.08): nu o citea nimeni — nici
+    `control_verdict.js` (randează `limita`), nici `firme.js` (o declară IGNORAT), nici vreun modul
+    Python; nu ieșea prin `/api/v1`, nu se persista, nu ajungea în PDF. Șapte din douăsprezece erau
+    șirul gol; cinci calculau o frază pe care n-o vedea nimeni.
 
-    Iar `explicatie` de pe container nu e citit de NIMENI: nici de `control_verdict.js`, nici de
-    vreun modul Python (verificat 21.08; cele din `rip_*` sunt alt câmp, descrierea unei operațiuni).
-    Șapte din douăsprezece sunt șirul gol; cinci calculează o frază pe care n-o vede nimeni.
-
-    Nu le-am convertit și nu le-am șters: a scoate un câmp dintr-un răspuns de API e decizia lui
-    Costin, nu a mea. Rămân în clichet ca DATORIE VIZIBILĂ. Testul ăsta există ca să nu se poată
-    pretinde că sunt altceva."""
-    ramase = [x for x in s.netipate_in_scop() if x[0] == "core/control_incrucisat.py"]
-    assert all("constatari" in x[5] for x in ramase), (
-        "în control_incrucisat a rămas o CONSTATARE netipată, nu doar containere: %s"
-        % [(x[1], x[2]) for x in ramase if "constatari" not in x[5]])
+    Gardul e pe REAPARIȚIE, nu pe absență: un câmp mort care se întoarce arată ca o funcționalitate.
+    Dacă vreodată containerul chiar are ce explica, se construiește atunci — cu un consumator real,
+    care apare în aserțiunea de mai jos."""
+    import io
+    import os
+    sursa = io.open(os.path.join(s.RAD, "core", "control_incrucisat.py"), encoding="utf-8").read()
+    linii = [ln for ln in sursa.split("\n")
+             if '"explicatie"' in ln and not ln.lstrip().startswith("#")]
+    assert not linii, (
+        "`explicatie` a reapărut în containerele de modul:\n  " + "\n  ".join(linii[:4])
+        + "\n\nDacă are acum un consumator real, numește-l aici și scoate gardul.")
+    js = io.open(os.path.join(s.RAD, "static", "js", "ecrane", "control_verdict.js"),
+                 encoding="utf-8").read()
+    assert ".explicatie" not in js, "randorul a început să citească `explicatie` — actualizează gardul"
