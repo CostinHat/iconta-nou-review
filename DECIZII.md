@@ -10681,3 +10681,71 @@ lună închisă încolo.
 **CE NU POATE DECLARA, oricât s-ar întări:** documentele care există doar pe hârtie sau la client.
 Închiderea spune „am văzut tot ce mi-a ajuns", nu „am văzut tot ce există". Limita rămâne scrisă în
 `inchidere_luna` și în registrul de excepții al gardului de absență.
+
+## 21.08.2026 — ecranul se împarte după PROPRIETAR și CHIRIAȘ, nu după regiuni
+
+Discuție cu Costin. Prima mea tăietură (secțiuni de pixeli: navigare / bară de stare / conținut) era
+greșită pe două planuri: amesteca un STRAT (designul) cu REGIUNI, și tăia după *unde stă pe ecran* în
+loc de *cine deține spațiul*.
+
+**Tăietura corectă**, formulată de Costin: aspecte independente (proprietari) care au CHIRIAȘI. Pe bara
+de stare stau și navigare, și comunicare — dar nu o influențează; dacă schimbi bara, chiriașii rămân.
+Contractul: proprietarul nu interpretează ce spune chiriașul, chiriașul nu se atinge de spațiu străin.
+
+**Patru aspecte** (după ciclu de viață, fiindcă ăla nu se poate împărți): Cadrul (sesiune) · Zona de
+lucru (un pas) · Fereastra (cât e deschisă) · Efemerul (secunde). **Șapte chiriași** (după întrebarea la
+care răspund): Identitatea · Drumul · Starea de lucru · Comunicarea · Acțiunile globale · Lucrul ·
+Necunoașterea declarată. Norma completă: DESIGN_SYSTEM cap.25.
+
+**Diagnosticul, măsurat nu presupus:** nu avem prea puține secțiuni, avem **chiriași fără contract**.
+Comunicarea stă în patru locuri (toast, mesaje inline, dialog de confirmare, și bara de stare — unde
+`cabinet.js` scrie DIRECT prin `document.querySelector(".subbara")`). Starea de lucru poate fi rescrisă
+din conținut — mecanismul incidentului „indicatorul mincinos". Drumul poate fi corupt din conținut prin
+`setInapoi`, dovedit în browser. Necunoașterea n-are contract deloc.
+
+**Ordinea de atac decisă:** câte un CHIRIAȘ pe rând, nu câte un proprietar — un proprietar se schimbă
+fără durere odată ce chiriașii au contracte, dar nu invers.
+
+## 21.08.2026 — „Ce nu poate spune verificarea asta": chiriaș nou, despre CAPACITATE
+
+Necunoașterea legată de un obiect rămâne lângă obiect (altfel se rupe de lucrul despre care vorbește).
+Datoriile de dezvoltare nu intră (sunt ale noastre). Rămâne fără casă exact un lucru: **ce nu poate
+afirma instrumentul, indiferent de date.**
+
+**Argumentul care a decis-o:** câmpul `limita` există deja pe constatări, dar se randează DOAR când
+există o constatare. Pe o firmă curată limitele dispar — exact când verdictul e cel mai ușor de
+supra-citit. Verdele arată ca „am verificat tot" fiindcă n-are nimic sub el care să spună ce nu.
+Aceeași eroare ca `absenta_observatie`, mutată un nivel mai sus.
+
+Formă și conținut: DESIGN_SYSTEM cap.25.4. Reținut aici doar ce e decizie, nu normă: **permanentă, nu
+condiționată** (dacă apare doar câteodată, prezența ei devine semnal și absența ei minte), și **nu se
+scrie de mână** (se compune din limitele declarate ca date; verificator fără `limita` → pică).
+
+## 21.08.2026 — afirmațiile despre datele firmei sunt OBIECTE cu atribute, nu șiruri
+
+Propus de Costin: datele/textul să fie privite ca date, cu toate atributele. Ascuțit în discuție:
+**nu texte în tabel, ci afirmații cu atribute** — textul rămâne scris de om, dar devine UN atribut, nu
+recipientul tuturor. Un mesaj asamblat din câmpuri sună a formular; tot ce am scris azi merge în
+direcția opusă.
+
+**Dovada, din defectele zilei — toate sunt defecte de DATE apărute fiindcă afirmația era un șir:**
+mesajul care cita motivul altei perioade (motiv indexat pe tip, nu legat de perioadă) · semnalul care
+repeta paragraful de deasupra (nu știa că celălalt e pe ecran) · starea blocată fără remediu (remediul
+trăia în altă funcție) · limita care dispare când nu există constatare (agățată de constatare, nu
+declarată de verificator).
+
+**Și partea care închide argumentul:** azi TOATE gărzile de mesaj sunt regex pe proză, fiindcă proza e
+tot ce avem. De două ori într-o zi s-a întors împotriva noastră — gardul care s-a aprins pe propria
+explicație, și `lit.` aprins pe cuvântul „po-LIT-e)". Nu erau gărzi proaste; erau gărzi obligate să
+ghicească structura din text. Cu `fel` / `obiect` / `temei` / `sursă` / `remediu` ca atribute, gărzile
+încetează să fie euristici.
+
+**GRANIȚA, confirmată de Costin:** doar afirmațiile despre datele firmei (verdicte, motive, blocaje,
+constatări). NU textele de interfață — alea sunt design. Fără graniță devine proiect de traduceri.
+
+**Riscul, spus pe față:** un registru de afirmații poate devia de la cod exact ca documentația (clasa
+doc-contra-cod, a șaptea instanță pe 20-21.08). Se apără doar dacă afirmația e PRODUSĂ de codul care o
+susține, nu ținută separat și legată prin convenție.
+
+**Migrarea, în idiomul casei:** afirmațiile noi se nasc ca obiecte; cele vechi migrează când sunt
+atinse; clichet ca numărul celor rămase șiruri să nu mai crească.

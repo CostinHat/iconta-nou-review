@@ -1,6 +1,6 @@
 # iConta — Design System
 
-*Document normativ · v2.31 · 08 august 2026 (editabil prin SSH)*
+*Document normativ · v2.32 · 21 august 2026 (editabil prin SSH)*
 
 **Acest document este REFERINȚA OBLIGATORIE pentru orice ecran nou și pentru auditul celor existente. Nicio abatere fără actualizarea prealabilă a acestui document.**
 
@@ -393,6 +393,110 @@ ecrane în afara restructurării în curs.
   add-fără-delete (3) ar aprinde ecrane funcționale în afara batch 3 (`facturi_ecran.js`, `firme.js`
   rețete/jurnal) care azi filtrează/mută noduri legitim până la restructurare. Se cablează prin ratchet, pe măsură
   ce ecranele se conformează, nu dintr-odată.
+
+
+## 25. Ecranul ca entitate — ASPECTE (proprietari) și CHIRIAȘI (ocupanți) (v2.32, 21.08.2026)
+
+Stabilit cu Costin, 21.08.2026. Împărțirea ecranului NU se face după regiuni de pixeli, ci după
+**cine deține spațiul** față de **cine îl locuiește**. Proprietarul dă spațiu și ciclu de viață;
+chiriașul dă înțeles. Scopul e ca oricare să poată fi schimbat fără să-l atingă pe celălalt.
+
+**CONTRACTUL, în două propoziții:**
+1. Proprietarul **nu interpretează niciodată** ce spune chiriașul.
+2. Chiriașul **nu se atinge de spațiu care nu e al lui**.
+
+### 25.1 Aspectele — se disting prin CICLU DE VIAȚĂ (ăla nu se poate împărți)
+
+| aspect | trăiește | se schimbă când |
+|---|---|---|
+| **Cadrul** | toată sesiunea | login / ieșire |
+| **Zona de lucru** | un pas | navighezi |
+| **Fereastra** | cât e deschisă | deschizi / închizi (ține în ea o zonă de lucru) |
+| **Efemerul** | secunde | apare un mesaj și moare singur |
+
+Aspectele se pot cuprinde unul pe altul (Cadrul are fâșii: bara de sus, bara de stare; fereastra are
+antet și corp). **Chiriașii sunt frunzele.**
+
+**Designul NU e aspect, e STRAT.** Tokenii + gărzile verificatorului traversează toate aspectele.
+Independența lui funcționează invers: trebuie să fie COMUN, nu izolat — o schimbare de token mișcă tot
+ecranul deodată, și ăsta e scopul. La fel accesibilitatea și limba.
+
+### 25.2 Chiriașii — se disting prin ÎNTREBAREA la care răspund
+
+| chiriaș | răspunde la |
+|---|---|
+| **Identitatea** | cine sunt, ce cabinet, ce firmă |
+| **Drumul** | pe unde am umblat, unde sunt |
+| **Starea de lucru** | pe ce firmă/lună lucrez acum |
+| **Comunicarea** | ce s-a întâmplat, ce trebuie confirmat, ce a eșuat |
+| **Acțiunile globale** | ieșire, ghid, notificări |
+| **Lucrul** | conținutul util |
+| **Necunoașterea declarată** | ce nu poate spune ecranul |
+
+**Un chiriaș are UN SINGUR contract.** Dacă e în două locuri, ori sunt doi chiriași diferiți (și
+trebuie numiți diferit), ori e o scurgere.
+
+### 25.3 Diagnosticul măsurat la 21.08.2026 — chiriași fără contract
+
+- **Drumul** stă în două locuri: verigile din `.bara` (răspund la „cine ești / ce firmă") și
+  `.fereastra-fir` (răspunde la „pe unde ai umblat"). NU e dublare — sunt doi chiriași — dar nimeni
+  n-a scris care e care, deci se citesc ca dublare.
+- **Comunicarea** stă în PATRU: toast la login (`sumar-toast`), mesaje inline în ecrane
+  (`arataMesaj`), dialogul de confirmare (`confirmaCaseta`, în `api.js`), **și bara de stare, unde un
+  ecran scrie direct** (`cabinet.js:467` și `:511` fac `document.querySelector(".subbara")`).
+- **Starea de lucru** e rescrisă din conținut — deci chiriașul nu-și controlează propriul contract.
+  Ăsta e mecanismul incidentului „indicatorul mincinos" (patru ochi, 20.08).
+- **Drumul poate fi corupt din conținut**: back-ul consumă poziția reală ÎNAINTE de un `setInapoi`
+  custom, „altfel antetul acumula ferestre/pași — dovedit în browser" (`navigator.js`).
+- **Necunoașterea declarată** n-are contract deloc: trăiește în docstringuri, unde contabilul n-o vede.
+
+**Gardul care face diviziunea reală** (de construit): niciun `document.querySelector` / `getElementById`
+din `static/js/ecrane/*.js` către `.bara`, `.subbara`, `.bara3`, `.bara-antet`. Excepțiile se declară
+cu motiv scris, ca `# upsert-ok:`.
+
+### 25.4 „Ce nu poate spune verificarea asta" — chiriașul nou
+
+**Ce NU intră** (asta o salvează de la a fi coș de gunoi):
+- necunoașterea legată de un OBIECT rămâne lângă obiect (o obligație pe care n-o pot verifica stă în
+  „Nu pot verifica", cu tipul și perioada ei) — mutată în listă separată, se rupe de lucrul despre care
+  vorbește;
+- datoriile de dezvoltare (xfail) NU intră: sunt ale noastre, nu ale contabilului.
+
+**Ce intră:** ce nu poate afirma INSTRUMENTUL, indiferent de date. E despre CAPACITATE, nu despre date.
+
+**De ce e necesară:** câmpul `limita` există deja pe constatări, dar se randează doar când EXISTĂ o
+constatare. Pe o firmă curată limitele dispar — adică exact când verdictul e cel mai ușor de citit
+greșit. Verdele arată ca „am verificat tot" tocmai fiindcă n-are nimic sub el care să spună ce nu.
+E aceeași eroare ca `absenta_observatie`, mutată un nivel mai sus.
+
+**Trei feluri de conținut:**
+1. **Acoperirea** — ce compar și ce NU. („Compar cu evidența din iConta. Nu compar cu ce are ANAF în
+   SPV — o declarație depusă direct la ANAF, neînregistrată aici, nu apare.")
+2. **Perimetrul privit** — fereastra și sursele. („Am privit dec.2025 → azi, din facturi, note
+   validate, e-Factura. Ce există doar pe hârtie nu ajunge aici.")
+3. **Ce ar face afirmația mai tare** — remediul. („Închide lunile pe facturi și pot spune «nu se
+   datorează» cu acoperire, nu doar pe calendar.") Al treilea o face utilă, nu doar onestă.
+
+**Formă:** jos, permanentă, necolorată, compactă (2-3 rânduri, detaliul la extindere). Nu sus (nu e
+alarmă), nu într-un „?" (dispare pentru cine are nevoie), nu colorată (nu e problemă de rezolvat).
+**Permanența e esențială**: dacă apare doar câteodată, prezența ei devine semnal și absența ei minte.
+
+**Nu se scrie de mână.** Se compune din limitele declarate ca DATE de fiecare verificator care
+contribuie la ecran. Gard: un verificator care apare pe ecran fără `limita` declarată → pică.
+
+### 25.5 Afirmațiile despre datele firmei sunt OBIECTE, nu șiruri
+
+Textul e UN atribut, nu recipientul tuturor. Atributele, descoperite empiric: `fel` (fapt /
+necunoaștere / absență de observație / opinie / contradicție) · `obiect` (tip + perioadă) · `sursă` ·
+`temei` (act, sau regulă de produs cu decizie+dată) · `poartă` (ce acoperă și ce nu) · `remediu` ·
+`severitate` (decisă o singură dată) · `text` (scris de om, în limba contabilului).
+
+**GRANIȚA (decisă de Costin):** regula se aplică **afirmațiilor despre datele firmei** — verdicte,
+motive, blocaje, constatări. **NU** textelor de interfață (titluri, etichete, ajutoare): alea sunt
+design. Fără graniță, devine un proiect de traduceri și moare.
+
+**NU se asamblează șabloane.** Un mesaj compus din câmpuri sună a formular („Obligație: D100.
+Perioadă: T4 2025."). Proza rămâne scrisă de om; structura stă lângă ea, nu în locul ei.
 
 ## Changelog
 **v2.60 (20.08.2026)** — **Indicatorul de stare nu are voie să mintă: politică ≠ aplicabilitate (audit tenant_006, cabinet 1968).** Indicatorul patru-ochi din `.subbara` afișa „Validarea în doi asistenți ✓" ori de câte ori politica era pornită, inclusiv pe un cabinet cu UN singur validator — unde enforcement-ul permitea deja auto-aprobarea. Pe același ecran, subbara zicea „validare în doi ✓" iar cardul zicea „De depus": contradicție cu sine. **Regula:** un indicator de stare afișează ce se APLICĂ (`efectiv`), nu ce s-a CONFIGURAT (`activ`); cele două se calculează într-un singur loc consumat și de backend și de UI. **Trei stări, nu două** — pornit-și-în-vigoare (bifă + `var(--verde-inchis)`), pornit-dar-suspendat (`var(--ardezie)`, FĂRĂ bifă și FĂRĂ verde — verdele e afirmația „funcționează"), oprit (absent). **„Oprit" și „suspendat" nu se spun cu același cuvânt:** textul cozii („Patru-ochi e dezactivat") îl lăsa pe patron să creadă că i s-a stins setarea; acum spune golul + cauza + ieșirea (cap.6, stare goală): „pornită, dar suspendată: ești singurul validator… reintră în vigoare de îndată ce un coleg primește dreptul de validare (cardul Asistenți)". **Trecerea graniței se anunță în DOUĂ registre:** cromul persistent (subbara = starea, o vede oricine deschide spațiul de lucru) + punctul de acțiune (dialogul „Acorzi dreptul de validare lui X?" → mesaj `ok` la salvare = momentul). Gărzi: `core/test_patru_ochi_efectiv.py` (adevărul indicatorului + o singură definiție a mulțimii de validatori + fundătura), `core/test_a11y_contrast_tokens.py` extins (ambele culori ale indicatorului ≥4,5:1 pe bara #dfe4ea; starea suspendată nu poate purta un token verde). Vezi DECIZII 20.08.2026.
