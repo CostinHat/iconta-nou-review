@@ -10545,3 +10545,61 @@ cele 5 rămase.
 despre obiectele pe care le măsori — un registru de excepții, o listă de excluderi, o hartă, un
 xfail — și confruntă-le. Un dezacord între două măsurători ale aceluiași lucru e cel mai ieftin semnal
 că una dintre ele are o clasă nedistinsă.
+
+## 21.08.2026 — bifa `operatiuni_ic` E răspuns, nu default (întrebarea 2 a lui Costin)
+
+Întrebarea: *dacă e un câmp pe care nimeni nu-l completează în practică, motivul e tot absență, doar
+mai bine îmbrăcată.* Verificat la sursă, în trei locuri:
+- **UI** (`date_firma.js:181-206`): tri-stare cu placeholder gol; `triBool("")` → `null`, iar salvarea
+  e REFUZATĂ cu mesaj propriu — „Alege dacă firma are operațiuni intracomunitare (Da sau Nu) — decide
+  D390." Nu există drum prin care „nu" să apară fără ca cineva să-l aleagă.
+- **Backend** (`vector_fiscal_api`): `None` respins la migrare (IC_LIPSA), fără default tăcut. Există
+  și un gard dedicat în verificator (`DEFAULT_FISCAL_TACIT`) care interzice `operatiuni_ic or False`.
+- **Date** (17 firme): 5 „da", 12 „nu", **0 necompletat**. Iar când e necompletat, semaforul spune gri
+  („Operațiuni intracomunitare necompletat"), NU „nu se datorează".
+
+Deci „Vectorul fiscal declară" e literal adevărat. **Dar declarat ≠ corect** — tenant_006 a dovedit-o.
+De-aia contra-proba pe fapt rămâne obligatorie: `contradictie` la D390 (profil fără IC vs facturi IC
+reale) și D301 pe fapt lunar.
+
+**Rămâne o divergență, numită, nereparată:** `neaplicabile_selector` blochează D301 pentru un
+neplătitor cu `ic=nu`, în timp ce `declaratii_fapt` pune D301 în `datorate` dacă găsește facturi IC
+reale. Semaforul spune „datorezi", selectorul spune „nu se datorează" — iar docstringul selectorului
+pretinde alinierea („aceleași reguli → selectorul NU diverge de semafor"). E doc-contra-cod pe un
+ecran, deci decizie de produs: se aliniază selectorul la FAPT, sau se lasă gating-ul pe vector cu
+mesajul care trimite la corectarea lui?
+
+## 21.08.2026 — corecție la mine: `d300_reconciliere` NU trebuia unificat
+
+Raportasem că duplicarea mapării cotă→rând între `d300` și `d300_reconciliere` e datorie și trebuie
+reparată „prin import din sursa unică". **Greșit, și periculos.** Antetul modulului spune explicit că
+duplicarea e deliberată, iar `test_d300_reconciliere.test_non_tautologie_*` o apără mecanic: a doua
+cale n-are voie să importe sau să cheme agregarea primei, altfel un bug comun trece prin amândouă și
+gardul de conținut D300 devine tautologic. Unificarea ar fi șters exact proprietatea pentru care
+modulul există.
+
+Judecasem mecanismul după FORMĂ (două constante identice), fără să-i citesc antetul — a doua oară în
+aceeași tură, după poarta D390. Ce lipsea cu adevărat era **temeiul lângă valori**: Legea 141/2025
+art.291 CF pentru cote, OPANAF 174/2025 pentru maparea cotă→rând. Adăugat; cele patru literale au
+trecut în clasa E, clichetul fișierului a coborât 5 → 0, iar confruntarea instrumentelor a rămas cu o
+singură intrare (`d406.tva_procent`).
+
+**Ce se învață, dincolo de instanță:** confruntarea a avut dreptate că e ceva acolo — eu am greșit ce
+anume. Un instrument care semnalează corect poate fi urmat greșit. **Semnalul spune UNDE să te uiți,
+nu CE să repari.** Scris în METODA §10.1.
+
+## 21.08.2026 — cele două căi: care perechi mai duplică (întrebarea 3)
+
+Măsurat pe cele 9 perechi `dXXX` ↔ `dXXX_reconciliere`: **niciuna nu importă generatorul** (proprietatea
+de non-tautologie ține peste tot). Constante cu valoare literală identică în ambele: `d300`
+(mapările cotă→rând), `d301` (`TIPURI_OP`), `d390` (`_CUI_UE`, `_D301_TIP_COD`), `d394` (`_NEDIGIT`).
+
+**Duplicarea nu e automat un defect — depinde de ce se duplică.** Un regex care curăță ne-cifrele
+(`_NEDIGIT`) e o unealtă de format: împărțit sau copiat, nu schimbă ce poate prinde reconcilierea. O
+mapare cotă→rând e ALTCEVA: e chiar afirmația pusă la test. Acolo copia deliberată e corectă (altfel
+tautologie), dar limita trebuie declarată — **reconcilierea nu verifică maparea**; aia o verifică
+DUK/XSD și golden-XSD, nu a doua cale.
+
+**Limita măsurătorii, declarată:** instrumentul vede doar constante de modul cu valoare literală. O
+FORMULĂ copiată (cazul `d112_reconciliere`, care are zero constante de modul) îi scapă. Duplicarea de
+logică cere citit, nu scanat — deci lista de mai sus e un minim, nu un total.

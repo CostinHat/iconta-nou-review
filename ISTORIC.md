@@ -4726,3 +4726,28 @@ retroactiv 9 semnale, exact miezul celor 28 de false pozitive de aseară. Gard +
 5 rămase: `d300_reconciliere` (mapare duplicată fără act) și `d406.tva_procent` (cotă ca default).
 
 Suita: 2500 → 2517 teste.
+
+## 21.08.2026 (tura 20.08f) — R6 pe ecran, disciplina execuției, două corecții la mine
+
+**Ecranul**, varianta (b) decisă de Costin: contradicția = rând roșu sobru în «Nu se datorează», lângă
+motivul pe care îl contrazice; opinia = rând neutru în «Nu pot verifica». Pastila NU urcă. Textul
+poartă răspunsul: mesajul începe cu „Neconcordanță în iConta" și spune explicit „nu e o greșeală a ta
+și n-ai ce retrage". axe 0 desktop + 0 mobil, Pixel 5 body=393 fără overflow. Semnalele orfane se
+randează la coada grupului — un semnal pierdut tăcut ar fi exact clasa vânată.
+
+**Găsit privind captura, nu numărând:** semnalul cita integral motivul randat imediat deasupra lui —
+același paragraf de patru rânduri, de două ori. Citatul a trecut în `motiv_citat`, pentru consumatorii
+care nu afișează motivul. Contorul spunea „4 rânduri, axe 0 violări": tot verde, și tot greșit.
+
+**Greșeala mea de proces:** `git add -A` a măturat 234 de artefacte necomise în `5cc3c5e`. Reparat
+înainte (`git rm --cached`, `b87dad4`), nu prin rescrierea istoriei. GARD: `scripts/githooks/commit-msg`.
+
+**A doua corecție la mine:** `d300_reconciliere` NU trebuia unificat — duplicarea e deliberată și
+apărată de `test_non_tautologie_*`. I-am dat temeiul lângă valori: clichetul fișierului 5 → 0, scanul
+C = 98 → **93**, E = 28 → **33**.
+
+**Măsurat pentru întrebările lui Costin:** bifa `operatiuni_ic` e răspuns, nu default (17/17 completate,
+UI refuză salvarea fără ea); cele 9 perechi generator↔reconciliere nu importă niciodată generatorul,
+iar 4 duplică constante — dintre care doar maparea cotă→rând e „afirmația pusă la test".
+
+METODA_VERIFICARE.md are acum §10 (disciplina execuției, cu instanțele care au produs-o).

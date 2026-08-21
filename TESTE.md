@@ -1762,7 +1762,7 @@ tabele în `tenant_template.sql` când baza are 5, fiindcă schema trăiește ș
 
 | gardă | ce face imposibil |
 |---|---|
-| `core/test_constante_nesursate.py` | o constantă fiscală nouă în cod de producție fără `Temei` (clichet per fișier, baseline 98 — coborât de la 126 pe 21.08 după distingerea clasei E) |
+| `core/test_constante_nesursate.py` | o constantă fiscală nouă în cod de producție fără `Temei` (clichet per fișier, baseline 93 — coborât de la 126 pe 21.08: clasa E, apoi temeiul din d300_reconciliere) |
 | `core/test_harta_temei.py` | o intrare din harta casetelor care tace despre temeiul legal, citează un act inexistent în corpus, sau are regulă de produs fără decizie+dată |
 
 Amândouă poartă anti-vacuu. Cel de la `test_constante_nesursate` e o calibrare în PATRU direcții (a patra adăugată 21.08), fiindcă
@@ -1771,7 +1771,8 @@ construcție. Cel de la `test_harta_temei` cere ca harta să conțină toate cel
 (citare / datorie declarată / produs curat), altfel ramurile gardului n-au fost exercitate.
 
 Instrument nou, nu test: `core/scan_constante.py` — clasifică literalii numerici din modulele fiscale în
-A=sursat (48) / B=nomenclator (308) / C=nesursat (98) / D=precizie (37) / E=temei în proză (28).
+A=sursat (48) / B=nomenclator (308) / C=nesursat (93) / D=precizie (37) / E=temei în proză (33).
+(126 → 98 pe 21.08 după distingerea clasei E; → 93 după ce `d300_reconciliere` și-a primit temeiul.)
 
 ## 21.08.2026 — clasa E și TEMA D
 
