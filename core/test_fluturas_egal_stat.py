@@ -182,3 +182,47 @@ def test_exemplarul_emis_bate_recalculul():
                 "fluturașul a urmat recalculul, nu exemplarul emis")
             return
     pytest.skip("niciun tenant cu salariați în 2026-06")
+
+
+@_DB
+def test_corectia_se_vede_pe_hartie():
+    """Un al doilea exemplar care arată IDENTIC cu primul nu e o corecție — e un al doilea original.
+
+    Decizia a fost «corecția e al doilea exemplar, CU REFERINȚĂ la primul», iar referința aia are
+    sens abia pe hârtia dată omului: el are deja un fluturaș acasă și trebuie să afle care dintre
+    cele două e cel bun. Până la garda asta, `corectie()` scria cuminte `corectie_la` în bază, dar
+    PDF-ul îl tipărea la fel — decizia trăia în tabel, nu în document."""
+    from io import BytesIO as _B
+
+    from pypdf import PdfReader
+
+    from core import stat_plata_emis as spe
+    for schema in SCHEME:
+        with db.get_conn(schema) as conn:
+            spe.aplica(conn, schema)
+            em = spe.emite(conn, schema, 2026, 6, de_cine="garda")
+            if not em:
+                conn.rollback()
+                continue
+            sid = em[0]["salariat_id"]
+            pdf1 = _sp.fluturas_pdf(conn, schema, sid, 2026, 6, "probă")
+            with conn.cursor() as cur:
+                cur.execute("SELECT salariu_brut FROM salariati WHERE id=%s", (sid,))
+                baza = float(cur.fetchone()[0] or 0)
+                from datetime import date as _d
+
+                from core import salariu_istoric as _si
+                _si.seteaza(cur, sid, baza + 1000, _d(2026, 6, 1))
+            spe.corectie(conn, schema, sid, 2026, 6, de_cine="costin")
+            pdf2 = _sp.fluturas_pdf(conn, schema, sid, 2026, 6, "probă")
+            conn.rollback()
+        t1 = re.sub(r"[\s ]+", " ", PdfReader(_B(pdf1)).pages[0].extract_text() or "")
+        t2 = re.sub(r"[\s ]+", " ", PdfReader(_B(pdf2)).pages[0].extract_text() or "")
+        assert "CORECȚIE" not in t1, "primul exemplar se anunță drept corecție"
+        assert "CORECȚIE" in t2, (
+            "al doilea exemplar nu se anunță ca fiind corecție — omul are acasă un fluturaș și nu "
+            "poate ști care dintre cele două ține. Text: %.300s" % t2)
+        assert "exemplarul 1" in t2, (
+            "corecția nu spune PE CARE exemplar îl înlocuiește: %.300s" % t2)
+        return
+    pytest.skip("niciun tenant cu salariați în 2026-06")

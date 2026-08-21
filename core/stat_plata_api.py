@@ -146,6 +146,15 @@ def stat_plata(conn, schema, an, luna):
     _cs_sal.close()
     return stat
 
+def exemplar_curent(conn, schema, salariat_id, an, luna):
+    """Exemplarul EMIS cel mai recent al salariatului, sau None daca luna nu e emisa. Separat de
+    `rand_fluturas` fiindca fluturasul are nevoie si de METADATELE actului (al catelea exemplar, pe
+    care il inlocuieste), nu doar de cifre."""
+    from core import stat_plata_emis as _spe
+    ex = _spe.citeste(conn, schema, an, luna, salariat_id=salariat_id)
+    return max(ex, key=lambda x: x["exemplar"]) if ex else None
+
+
 def rand_fluturas(conn, schema, salariat_id, an, luna):
     """Rândul din care se TIPĂREȘTE fluturașul — sursa unică a cifrelor lui.
 
@@ -154,13 +163,12 @@ def rand_fluturas(conn, schema, salariat_id, an, luna):
     calculul, cu alte intrări, și ieșea DIFERIT pe 14 din 192 de perechi reale — dădea pe hârtie
     tichete pe care statul le blocase (pontaj neconfirmat, HG 1045/2018 art.10(3)) și ignora plafonul
     anual de vacanță. Două calcule ale aceluiași lucru nu rămân egale."""
-    from core import stat_plata_emis as _spe
     # Fara masca pe coloane lipsa: prima forma inghitea eroarea si cadea pe recalcul, dar lasa
     # tranzactia OTRAVITA (InFailedSqlTransaction la urmatoarea interogare) si ascundea o migrare
     # neaplicata. Un tenant nemigrat e o eroare de instalare, nu o stare de functionare.
-    ex = _spe.citeste(conn, schema, an, luna, salariat_id=salariat_id)
-    if ex:
-        return max(ex, key=lambda x: x["exemplar"])["date"]
+    _ex = exemplar_curent(conn, schema, salariat_id, an, luna)
+    if _ex:
+        return _ex["date"]
     return next((r for r in stat_plata(conn, schema, an, luna)
                  if int(r.get("id") or 0) == salariat_id), None)
 
@@ -180,6 +188,7 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     r = rand_fluturas(conn, schema, salariat_id, an, luna)
     if not r:
         return None
+    _ex = exemplar_curent(conn, schema, salariat_id, an, luna)
 
     def _n(k):
         return float(r.get(k) or 0)
@@ -213,8 +222,19 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
         Paragraph(f"Fluturas de salariu — {luna:02d}/{an}", st_titlu),
         Paragraph(nume_firma, st_meta),
         Paragraph(f"Salariat: {r.get('nume') or ''}", st_meta),
-        Spacer(1, 10),
     ]
+    # Un al doilea exemplar care arata IDENTIC cu primul nu e o corectie, e un al doilea original.
+    # Omul are deja un fluturas acasa; hartia trebuie sa-i spuna care dintre cele doua tine.
+    if _ex and int(_ex.get("exemplar") or 1) > 1:
+        from core.pdf_util import data_ro as _data_ro  # sursa canonica (DS cap.4), nu strftime local
+        _cand = _data_ro(_ex.get("emis_la"))
+        _cand = (" din " + _cand) if _cand else ""
+        el.append(Paragraph(
+            "CORECȚIE — exemplarul %d, care înlocuiește exemplarul %d%s. Suma corectă e cea de mai jos."
+            % (int(_ex["exemplar"]), int(_ex["exemplar"]) - 1, _cand),
+            ParagraphStyle("cor", parent=st_meta, fontName=fb,
+                           textColor=_colors.HexColor("#b91c1c"))))
+    el.append(Spacer(1, 10))
 
     # [F133] impozitul din stat e TOTAL (salariu+tichete); pe fluturas il aratam separat
     imp_tichete = _n("impozit_tichete")
