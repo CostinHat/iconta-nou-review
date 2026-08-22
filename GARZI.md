@@ -4074,3 +4074,25 @@ pentru consemnare. L-a prins proba, nu norocul.
 
 **CE NU FAC, declarat:** hook-ul pazeste MESAJUL DE COMMIT — singurul artefact de tip raport care ramane
 pe disc. **Rapoartele din conversatie nu se pot garda de aici**; ele raman in seama disciplinei.
+
+
+## 22.08.2026 — un fisier NORMATIV nu se comite pana nu e citit (`commit-msg`, garda A)
+
+**De ce (Costin):** *„Un fisier normativ e o COMANDA SCRISA, nu un artefact de sincronizat. Diff-ul se
+citeste si se rezuma in mesajul de commit: ce s-a schimbat, ce cerinte noi contine, ce trebuie facut cu
+ele."*
+
+**Instanta care a produs regula** — cea mai scumpa de azi: sectiunea „Restantele" din `PLAN_LUCRU.md`
+a intrat in repo prin commitul `45f15ab`, NECITITA. 70 de linii scrise de Costin, sub mesajul meu.
+**Patru cerinte au stat opt commituri neimplementate**, iar o a doua taxonomie a fost derivata in
+paralel pentru un obiect deja definit.
+
+**Ce face imposibil:** un commit care atinge `PLAN_*.md`, `CONFORMITATE.md`, `METODA_VERIFICARE.md`,
+`CLAUDE.md`, `MEMORY.md` sau `ARHITECT.md` fara un rand `# diff-citit: <rezumat>` in mesaj.
+
+**CE NU FACE, declarat:** verifica doar ca mesajul POARTA un rezumat. Nu poate verifica daca diff-ul a
+fost inteles — aia ramane disciplina. Dar face imposibil sa treaca TACUT, si asta lipsea.
+
+**Impreuna cu garda de ieri** („un defect mentionat are un loc"), hook-ul `commit-msg` are acum trei
+porti: fisiere noi peste prag, defect fara loc, fisier normativ fara rezumat. Toate cu escape motivat,
+niciuna care sa se poata ocoli tacand.

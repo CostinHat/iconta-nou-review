@@ -30,10 +30,10 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: faza 1, pasul **1b** din `PLAN_INVESTIGATII.md` — în lucru: **familiile A și C** (registrele și declarațiile) sunt măsurate pe date reale. Urmează **B** (blocată de R3) și **D**, apoi **1c**.
+- **pasul curent**: faza 1, pasul **1b** — familiile **A, C și D** măsurate pe date reale. Rămâne **B**, blocată de R3 (categoria de mărime), apoi **1c**.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: operațiunea 1 (câte regimuri) și pasul 1a (ce cere legea) sunt MĂSURATE; **1b** e în lucru (familiile A și C, măsurate pe date reale). Mai lipsesc, ca să se termine E1: restul lui **1b** (familiile B și D) · **1c** · plus restanțele de mai jos — **numărul lor e derivat, nu scris aici**, fiindcă altfel ar fi al doilea loc unde trăiește aceeași stare. Cele care blochează cel mai mult: **R3** (categoria de mărime — blochează toată familia B), **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
-- **decizii care blochează**: **una deschisă**: verdictul 1d are **cinci liste**, dar tabelul P23 are **trei cauze** — a treia, *„artefactul nu se poate produce indiferent de date"*, n-are listă, și e exact cazul găsit la familia A (Registrul-inventar, Cartea mare). Se lărgește lista 3, sau se adaugă a șasea? Blochează clasificarea artefactelor la 1d, nu măsurarea lor la 1b.
+- **decizii care blochează**: **niciuna deschisă** — cea de la 1b (cele cinci liste vs cele trei cauze din P23) a fost luată pe 22.08: **lista 3 se lărgește**, nu se adaugă a șasea; cauza se scrie lângă artefact.
 - **avertisment la cifre**: **NEÎNCEPUTE include interdicții măsurate în campanii anterioare, netransferate — vezi 3a din `PLAN_INVESTIGATII.md`.** Cel puțin zece au cifre în `GARZI.md` și `TESTE.md` și scriu NEÎNCEPUTĂ aici. Cifra e adevărată, dar arată mai multă muncă rămasă decât e.
 - **ultima actualizare**: 2026-08-22
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
@@ -216,7 +216,7 @@ gardă; e un prag de citit, la un moment numit.
 - **reluări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `1eaecbb`
-- **ce blochează**: secțiunea „Ce se gardează" din `PLAN_LUCRU.md` cere patru gărzi. Două există azi (o restanță fără condiție de deblocare nu se poate scrie; raportul enumeră restanțele deschise, derivat). **Două nu:** *„o etapă nu se poate declara terminată dacă are restanțe deschise care îi aparțin"* și *„o restanță cu blocaj EXTERN fără cerere specifică formulată nu trece"*. Fără prima, E1 se poate declara închis peste restanțe deschise — chiar situația pe care pragul de la închiderea lui 1b o urmărește, dar fără mecanism.
+- **ce blochează**: cele **patru** cerințe din „Ce se gardează" (`PLAN_LUCRU.md`), cu starea fiecăreia la 22.08.2026 — **răspuns la întrebarea 5**: (1) *„un raport care nu enumeră restanțele deschise nu trece"* — **realizată în forma posibilă**: secțiunea B le enumeră, derivat din registru; **negardabilă mecanic**, fiindcă rapoartele nu trăiesc pe disc, iar asta se declară, nu se ascunde. (2) *„o restanță fără «ce o închide» nu poate fi scrisă"* — **implementată**, câmpul e obligatoriu. (3) *„o etapă nu se poate declara terminată dacă are restanțe deschise care îi aparțin"* — **implementată azi**, cu anti-vacuu. (4) *„o restanță cu blocaj EXTERN fără cerere specifică formulată nu trece"* — **NEIMPLEMENTATĂ, și singura rămasă**. După împăcarea taxonomiilor, EXTERN a trecut pe axa „cine deblochează", care nu se gardează azi; cerința rămâne validă ca disciplină.
 - **condiția de deblocare**: cele două gărzi există, RED-probate. Prima are nevoie de `unde intră` pe fiecare restanță — **există de azi**, deci nu mai e blocată de nimic tehnic; a doua are nevoie de o formă scrisă a cererii specifice.
 
 ### R11 — Datoria veche consemnată doar în proză, în GARZI.md
@@ -226,8 +226,28 @@ gardă; e un prag de citit, la un moment numit.
 - **reluări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `1eaecbb`
-- **ce blochează**: sweep-ul mecanic pe registre a găsit, **în afara perimetrului de două zile**, cel puțin **nouă** poziții de forma „găsit, NU se repară acum" care trăiesc numai ca proză în `GARZI.md`: un defect declarat **LATENT** („de reparat ÎNAINTE să existe date reale", `:1005`), două „NU se repară acum/unilateral" (`:1128`, `:1163`), „RĂMÂNE DESCHIS: Finding 2b rotunjire Σ(round) vs round(total)" (`:1248`), D_8 neatins (`:1370`), GL neechilibrat (`:1389`), C3 job nocturn scopat separat (`:1502`), „NEREPARAT în această tură" (`:1576`), „D300 furnizor taxare inversă" (`:1603`), plus un xfail rămas deschis (`:1837`). Niciuna n-are stare, condiție de deblocare sau etapă.
+- **ce blochează**: zece poziții de forma „găsit, NU se repară acum", care trăiesc numai ca proză în `GARZI.md`, în afara ferestrei de două zile. **Enumerate aici, o linie fiecare — răspuns la întrebarea 4:** transcrierea *prozei* ar fi mutat proză în proză, dar **numirea** lor nu e transcriere, e indexare: diferența dintre „nouă lucruri necunoscute" și „nouă lucruri numite" e exact ce a produs auditul.
+  1. `:1005` — defect declarat **LATENT**, nedeclanșat: „de reparat ÎNAINTE să existe date reale".
+  2. `:1128` — depășire de plafon vs. responsabilitatea contabilului; „NU se repară acum", descoperit la confruntarea celor 4 corecții C-1.
+  3. `:1163` — CF art. 139/140 la sursă; „NU se repară **unilateral**" (schimbă ieșirea la ANAF); **xfail-ancoră nescrisă încă**.
+  4. `:1248` — „RĂMÂNE DESCHIS: Finding 2b — rotunjire Σ(round) vs round(total)"; datorie separată, coincid doar pe fixturi non-graniță.
+  5. `:1370` — emisia `D_8`, neatinsă „în afara scopului impozit".
+  6. `:1389` — **GL neechilibrat**: nu se verifică Σdebit = Σcredit; datorie separată, cablare d406 după curățarea fixturilor.
+  7. `:1502` — risc pe date NULL curente + touch pe multe tabele; scopat separat pe buget (C3, job nocturn).
+  8. `:1576` — „NEREPARAT în această tură": buget de context + decizie de design pe forma API-ului de perioadă.
+  9. `:1603` — R13 (art. 331), „D300 furnizor taxare inversă", item separat; firmele fără taxare inversă emisă neafectate.
+  10. `:1837` — xfail rămas deschis: amortizarea fiscală ca input P11, afectează afișarea D406 Assets.
 - **condiția de deblocare**: **la triajul din faza 3b**, care trece o dată peste toate cele 75 de interdicții — acolo fiecare dintre ele primește ori o instanță într-o secțiune, ori o restanță proprie. Până atunci rămân numărate aici, nu transcrise.
+
+### R12 — Divergență între D300 și D100 pe aceeași firmă, același fapt
+
+- **felul**: ARTEFACT
+- **unde intră**: E1 · faza 1, pasul 1b · interdicția 17 (un adevăr re-declarat în alt modul)
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `cbf7b67`
+- **ce blochează**: pe **t003, 08/2026**, `D300` iese **`valid` cu 0 operațiuni**, iar `D100` **refuză** pe aceeași firmă și aceeași perioadă, cu motivul *„nu se depune pe zero: venituri contabilizate cont 70x = 0. Există 2 facturi emise necontabilizate"*. **Nu pot avea amândoi dreptate:** ori cele două facturi trebuie să apară undeva, ori niciunul nu trebuie să le vadă. Deocamdată D300 tace despre ele și D100 le numește — deci **nu se poate spune ce datorează firma**, care e chiar definiția felului ARTEFACT. Consemnat până acum doar ca observație în narațiunea lui 1b („semnal fin, de privit"), fără stare.
+- **condiția de deblocare**: **se contabilizează cele două facturi pe t003 și se rulează amândouă din nou.** Dacă D300 rămâne pe 0 → D300 are un defect de citire. Dacă D300 le ia, iar D100 continuă să refuze → refuzul lui D100 e cel greșit. Dacă amândouă se schimbă coerent → nu era divergență de motor, ci **două straturi citite diferit** (facturi vs contabilitate), și atunci e interdicția 17, cu instanța ei.
 
 ---
 
@@ -409,11 +429,45 @@ t003 (3), t005 (1), t017 (1).
 
 | artefact | temei | se produce azi? | pe ce s-a probat |
 |---|---|---|---|
-| **Balanța de verificare, LUNAR** | L82 art. 22 | **DA** — `documente_api.balanta` + PDF pe rută (`/tenants/{id}/documente/balanta`) | t013 08/2026 → **26 rânduri** · t014 → 16 · t016 → 7, cu solduri inițiale, rulaje și solduri finale |
-| **Registrul-jurnal** (14-1-1) | L82 art. 20 · OMFP 2634 Anexa 1 pct. 45 | **PARȚIAL** — conținutul există și se vede pe ecran (`/tenants/{id}/jurnal`, ecranul „Registru jurnal"), dar **nu există artefact listabil** (fără PDF/export, spre deosebire de balanță), iar câmpurile cerute de pct. 45 — *„felul, numărul și data documentului justificativ"* — nu ies: ruta întoarce `sursa` și `factura_id`, nu felul/numărul/data documentului | t013 08/2026 |
+| **Balanța de verificare, LUNAR** | L82 art. 22 | **DA, ȘI SE ÎNCHIDE** — vezi proba de mai jos | t013 08/2026 → 26 rânduri · t014 → 16 · t016 → 7 |
+| **Registrul-jurnal** (14-1-1) | L82 art. 20 · OMFP 2634 Anexa 1 pct. 45 | **NU, în sensul normei** — iese ca listă de note, dar elementele cerute de pct. 45 **lipsesc din DATE**, nu din randare. Vezi Q2 | t013 08/2026, plus toți cei 6 tenanți cu note |
 | **Registrul-inventar** (14-1-2) | L82 art. 20 · OMFP 2634 Anexa 1 pct. 46 | **NU** — niciun producător pentru partidă dublă | căutare pe `registru.?inventar`, `14-1-2` în `core/`, `main.py`, `static/js/`: singura potrivire e `rip_api.registru_inventar`, care e varianta **14-1-2/b**, de partidă simplă |
 | **Cartea mare** (14-1-3) | L82 art. 20 · OMFP 2634 Anexa 1 pct. 47 | **NU** — motorul există (`core/motor.py:32 carte_mare`), **zero consumatori în tot repo-ul**, nicio rută | grep pe `carte_mare`: o singură apariție, definiția |
 | **Registrul-jurnal de încasări și plăți** (14-1-1/b) + **Registrul-inventar** (14-1-2/b) | OMFP 2634 Anexa 1 pct. 48 · OMFP 170/2015 | **DA, dar neexercitat** — `core/rip_api.py` + ecran `rip_ecran.js` | **0 firme PFA** din 17, deci artefactul n-a fost produs niciodată pe date |
+
+
+**Q1 — proba balanței: „DA" era mai slab decât „valid".** Familia C are arbitru extern (DUKIntegrator);
+balanța n-are, deci „se produce" nu e o probă de aceeași tărie. Proba potrivită e **că se închide**:
+
+| firmă | SI D = SI C | rulaje D = C | SF D = C | pe fiecare cont, SI + rulaj = SF |
+|---|---|---|---|---|
+| t013 (26 conturi) | 26.050,00 = 26.050,00 | 41.223,00 = 41.223,00 | 51.914,00 = 51.914,00 | **DA, toate** |
+| t014 (16 conturi) | 19.760,00 = 19.760,00 | 20.222,00 = 20.222,00 | 30.163,00 = 30.163,00 | **DA, toate** |
+| t016 (7 conturi) | 6.050,00 = 6.050,00 | 5.100,00 = 5.100,00 | 7.520,00 = 7.520,00 | **DA, toate** |
+
+Deci „DA" pe balanță are acum o probă a artefactului, nu doar a rutei. **Ce nu spune proba:** că soldurile
+sunt CORECTE — o balanță greșită se poate închide perfect. Spune că e coerentă cu sine.
+
+**Q2 — documentul justificativ lipsește din DATE, nu din randare, și asta mută verdictul.**
+`inregistrari` are coloanele `numar`, `factura_id` și **`document_ref`**. Pe date reale, toți cei șase
+tenanți cu note (33 în total):
+
+| coloană | populată |
+|---|---|
+| `document_ref` | **0 din 33** |
+| `numar` | **1 din 33** (doar nota de amortizare, `AMORT-2026-08`) |
+| `factura_id` | 14 din 33 |
+
+Iar în cod, **nimic nu scrie `inregistrari.document_ref`**: singurele apariții sunt o CITIRE în
+`control_incrucisat.py:491` (care caută `document_ref = 'SAL LL/AAAA'`, deci așteaptă o valoare pe care
+n-o scrie nimeni) și `registratura_api.py`, care lucrează pe **altă tabelă**.
+
+**Consecința, scrisă ca atare:** cele 19 note fără nicio legătură la un document nu se pot desface până
+la documentul care le justifică. **Asta nu e o coloană de adăugat la randare — e P14**, iar PARȚIAL era
+prea blând. Registrul-jurnal trece în **lista 3**, cu cauza „iese, dar nu ca artefactul cerut de normă".
+**Ridică și interdicția 32** („o poziție de declarație care nu se poate desface până la document"), care
+e NEÎNCEPUTĂ — aici are o primă instanță, măsurată pe date.
+
 
 **Răspunderea, după P23:** niciunul dintre cazurile de mai sus nu e „lipsesc date". Datele există —
 t013 are 21 de note și o balanță de 26 de rânduri din ele. Registrul-inventar și Cartea mare **nu se
@@ -480,7 +534,26 @@ interfață n-au fost atinse (sunt în afara perimetrului, prin decizie).
 scrisă în Partea II). `declaratii_coada` și `declaratii_depuse`: **neatinse**, verificat prin snapshot
 înainte/după.
 
-### Decizie cerută la 1b: verdictul are cinci liste, dar P23 are trei cauze
+### Pasul 1b — ce produce aplicația (FAMILIA D: evidențele speciale)
+
+| evidență | temei | se produce azi? | proba |
+|---|---|---|---|
+| **Registrul de casă** (14-4-7A) | OMFP 2634 Anexa 2 | **DA** — motor pur `core/casa.py:44 registru_casa`, API `core/casa_api.py:71 registru`, rută `/tenants/{id}/casa/registru`, ecran în `firme.js` | lanț complet, de la motor la ecran |
+| **Jurnal regim marjă** (art. 312) | CF art. 312 | **producător DA, ecran NU** — ruta `/tenants/{id}/jurnal-marja` există, cu comentariul propriu: *„raport regim marjă — fără UI încă, păstrat deliberat"* | `main.py:7061` |
+| **Evidența operațiunilor de TVA** (jurnale de vânzări / cumpărări) | CF art. 321 | **NU ca artefact** | căutat pe `jurnal_vanzari`, `jurnal_cumparari`, `jurnale_tva`, `jurnal_tva`, apoi pe `jurnal (de) vânzări/cumpărări`, `raport tva`, `situatie tva`, `registru tva` — **zero potriviri**; rutele cu „tva" în nume sunt două, și niciuna nu e un jurnal. Datele agregate există (d300, d394), **documentul nu** |
+| **Registrul de evidență fiscală** | CF art. 19 (profit) · art. 68 (venit real) | **NU** | zero potriviri pe `registru_evidenta_fiscala`, `evidenta_fiscala` |
+
+**Verdictul familiei D, după decizia de azi:** registrul de casă în **lista 1**; jurnalul de marjă,
+evidența TVA și registrul de evidență fiscală în **lista 3**, cu cauza *„nu există producător"* —
+pentru jurnalul de marjă, cauza e mai exact *„producătorul există, dar nu ajunge la om"*, ceea ce e
+tot vina aplicației, nu a datelor.
+
+**Ce nu vede măsurătoarea:** un producător sub un nume pe care nu l-am căutat (termenii sunt scriși
+mai sus, ca să se poată contrazice) · un raport configurabil care ar reconstitui un jurnal fără să-l
+numească · faptul că, pentru trei din cele patru firme din matrice cu operațiuni de TVA, nu s-a cerut
+efectiv artefactul, ci s-a căutat producătorul lui.
+
+### DECIS 22.08.2026 (Costin): lista 3 se lărgește, nu se adaugă a șasea
 
 Tabelul P23 din 1b are **trei** cauze pentru un artefact care nu iese: date lipsă **cerute la timp**
 (a omului) · date lipsă **necerute sau cerute prea târziu** (a aplicației) · **artefactul nu se poate
@@ -491,9 +564,20 @@ date cerute la timp") și lista 3 („nu ies, fiindcă lipsesc date necerute sau
 **A treia cauză n-are listă** — iar ea e exact cazul găsit la familia A: Registrul-inventar și Cartea
 mare nu ies, și nu din lipsă de date.
 
-Nu aleg singur între „se lărgește lista 3" și „se adaugă o a șasea listă": planurile nu se
-interpretează. **Decizia e cerută.** Până atunci, cele două artefacte sunt scrise mai sus cu cauza
-lor, nu clasificate într-o listă.
+**Decizia, cu motivul ei:** *„Lista 3 e «nu iese, din vina aplicației»; un artefact care nu se poate
+produce indiferent de date e **forma extremă a aceleiași cauze**, nu altă natură."*
+
+Deci **lista 3 se citește de acum ca „nu iese, din vina aplicației"**, cu două forme: *lipsesc date pe
+care aplicația nu le-a cerut la timp* și *nu există producător, indiferent de date*. **Cauza se scrie
+lângă artefact**, ca să nu se piardă distincția în interiorul listei.
+
+**Clasificate acum, în lista 3:**
+
+| artefact | cauza scrisă |
+|---|---|
+| **Registrul-inventar** (14-1-2) | **nu există producător** pentru partidă dublă — nu „lipsesc date" |
+| **Cartea mare** (14-1-3) | **nu există producător**: motorul `core/motor.py:32` există, cu zero consumatori |
+| **Registrul-jurnal** (14-1-1) | **iese ca listă, dar nu ca artefactul cerut de normă** — vezi Q2 mai jos: elementele din pct. 45 lipsesc **din date**, nu din randare |
 
 
 ### Ce lipsește ca să se termine E1
@@ -863,13 +947,13 @@ lor, nu clasificate într-o listă.
 
 ## 32 — O poziție de declarație care nu se poate desface până la document
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: PARȚIAL
+- **măsurat la**: 2026-08-22
+- **pe commit**: `cbf7b67`
+- **cifra**: **19 din 33 de note contabile** nu au nicio legătură către documentul care le justifică. Măsurat **un nivel mai jos decât spune interdicția** — pe înregistrare, nu pe poziția din declarație — fiindcă acolo se rupe lanțul întâi: o poziție nu se poate desface până la document dacă nici înregistrarea din spatele ei nu poate. **Cifra e un plafon inferior**: nu s-a măsurat câte poziții de declarație sunt afectate, ci câte note nu pot fi desfăcute.
+- **instanțe**: pe toți cei șase tenanți cu note (t003, t005, t013, t014, t016, t017): `document_ref` populat **0 din 33** · `numar` **1 din 33** (doar `AMORT-2026-08`) · `factura_id` **14 din 33**. Coloana `inregistrari.document_ref` **există și nu o scrie nimeni**: singurele apariții în cod sunt o CITIRE în `core/control_incrucisat.py:491` (caută `document_ref = 'SAL LL/AAAA'`, o valoare pe care n-o produce nimic) și `core/registratura_api.py`, care lucrează pe altă tabelă.
+- **calibrare**: GĂSIT — cazul pozitiv e nota de amortizare de pe t013 (`id=30`, `numar=AMORT-2026-08`), singura cu identificator propriu; cazul negativ NEraportat sunt cele 14 note cu `factura_id`, care **au** legătură și n-au intrat în cifră.
+- **ce nu vede**: nu urmărește lanțul mai departe, de la înregistrare spre poziția din declarație și înapoi · nu spune dacă o notă **trebuie** să aibă document justificativ extern (amortizarea, de pildă, e o notă internă legitimă) — deci o parte din cele 19 pot fi corecte; de aceea cifra e plafon inferior și pentru datorie, nu doar pentru acoperire
 - **unde ajunge efectul**: o cifră declarată care nu se poate desface până la document nu se poate apăra la control
 
 ## 33 — Un lanț de justificare a cărui sumă nu dă valoarea declarată

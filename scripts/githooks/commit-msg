@@ -45,4 +45,29 @@ if grep -qE "$SEMNAL" "$MSG"; then
     fi
 fi
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Poarta: UN FISIER NORMATIV MODIFICAT SE CITESTE INAINTE DE A FI COMIS (22.08.2026).
+#
+# Cerut de Costin: „Un fisier normativ e o COMANDA SCRISA, nu un artefact de sincronizat. Diff-ul se
+# citeste si se rezuma in mesajul de commit: ce s-a schimbat, ce cerinte noi contine, ce trebuie facut
+# cu ele."
+#
+# INSTANTA care a produs regula: sectiunea „Restantele" din PLAN_LUCRU.md a intrat in repo prin
+# commitul 45f15ab, NECITITA — 70 de linii scrise de Costin, sub mesajul meu. Patru cerinte au stat
+# opt commituri neimplementate, iar o a doua taxonomie a fost derivata in paralel pentru un obiect
+# deja definit.
+#
+# CE PAZESTE, declarat: ca mesajul POARTA un rezumat. Nu poate verifica daca diff-ul a fost inteles —
+# aia ramane disciplina. Dar face imposibil sa treaca TACUT.
+NORMATIVE=$(git diff --cached --name-only | grep -E '^(PLAN_[A-Z_]+\.md|CONFORMITATE\.md|METODA_VERIFICARE\.md|CLAUDE\.md|MEMORY\.md|ARHITECT\.md)$' || true)
+if [ -n "$NORMATIVE" ]; then
+    if ! grep -qE '^# diff-citit:.{20,}' "$MSG"; then
+        echo "[commit-msg] RESPINS: sunt in commit fisiere NORMATIVE, iar mesajul n-are rezumatul diff-ului."
+        echo "$NORMATIVE" | sed 's/^/    /'
+        echo "[commit-msg] Un fisier normativ e o comanda scrisa. Citeste 'git diff --cached -- <fisier>'"
+        echo "[commit-msg] si scrie in mesaj: '# diff-citit: ce s-a schimbat, ce cerinte noi contine, ce fac cu ele'."
+        exit 1
+    fi
+fi
+
 exit 0
