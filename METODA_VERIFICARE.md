@@ -377,3 +377,50 @@ poartă referința la locul din care a fost citită*, cum poartă `Temei` un cit
 scris-o, ce ar fi prins-o? Dacă răspunsul e „nimic", fraza are nevoie de o referință, nu de mai multă
 grijă.
 
+### 10.13 — Un total care poartă numele unei componente e o afirmație falsă, chiar dacă cifra e corectă
+
+Gărzile de conținut verifică **cifre**: reconcilierea pe a doua cale, egalitățile stricte, plafoanele.
+Niciuna nu se uită la **eticheta** de lângă cifră. Iar o etichetă e o afirmație: „Deducere personala:
+1.513,75" spune că deducerea personală e 1.513,75. Când numărul e de fapt un total din trei deduceri
+distincte în lege, afirmația e falsă — și niciun gard n-o vede, fiindcă suma e corectă.
+
+**Instanța (22.08.2026):** fluturașul tipărea `deducere['total']` sub eticheta „Deducere personala".
+Calculul avea deducerea desfăcută corect în `baza`/`tineri`/`copii`; API-ul a colapsat-o la `total`;
+hârtia a dat totalului numele uneia dintre componente. Fiecare strat era apărat de garda lui, și
+niciunul nu apăra numele. 3 din 5 cazuri obișnuite, 2 din 24 de salariați reali.
+
+**Regula, generalizată:** *agregarea nu e neutră.* Când un total împrumută numele unei componente,
+încetează să fie o rotunjire a adevărului și devine o afirmație greșită. Locurile de căutat sunt cele
+în care legea distinge și codul adună: deduceri, scutiri, cote, plafoane.
+
+**Testul practic:** citește eticheta cu voce tare ca pe o propoziție, apoi întreabă dacă e adevărată
+pentru cifra de lângă ea. „Deducere personala 1.513,75" — e adevărat? Nu. Nicio gardă de cifre nu pune
+întrebarea asta, fiindcă nu e o întrebare despre cifră.
+
+### 10.14 — Un graf cheiat pe nume simplu afirmă despre dependențe ceea ce nu poate ști
+
+Un instrument care răspunde la *„ce depinde de ce"* e mai periculos decât unul care răspunde la
+*„câte sunt"*: cifra greșită se vede, legătura greșită nu. `core/graf_temei` indexează funcțiile
+într-un dicționar plat, cheiat pe **numele simplu**, peste tot `core/*.py`, incluzând definițiile
+imbricate — deci două funcții cu același nume din fișiere diferite sunt **una singură**, iar cea care
+supraviețuiește e decisă de **ordinea alfabetică a fișierelor**.
+
+**Instanța (22.08.2026):** un helper imbricat numit `_suma`, adăugat într-un fișier care sortează
+târziu, a preluat apelanții celorlalte cinci `_suma` din `core/`. Clusterele de TVA au apărut brusc ca
+depinzând de salariul minim. Măsurat după aceea: **118 din 1.411 nume** sunt definite în mai multe
+fișiere, iar printre ele sunt chiar `genereaza` (53 de fișiere), `pull` (52) și `build_xml` (49).
+
+**Ce contează, dincolo de instanță:** greșeala are **două semne**, și doar unul e zgomotos. Un nume
+preluat ADAUGĂ dependențe false — numărul crește, ratchet-ul cade, cineva se uită. Același mecanism
+ȘTERGE dependențe reale când numele tău e preluat de altcineva — și atunci instrumentul raportează
+liniște despre o lume pe care n-o mai vede. **Un gard care poate greși în ambele direcții și e
+observabil doar într-una e, practic, negardat.**
+
+**Testul practic, când construiești un instrument care leagă lucruri:** întreabă ce se întâmplă dacă
+două lucruri diferite primesc aceeași cheie. Dacă răspunsul e „unul îl înlocuiește pe celălalt", cheia
+e prea scurtă — și adaugă întrebarea a doua: *pe care direcție a greșelii se aprinde ceva?*
+
+**Corolar, pentru cifrele deja scrise:** o cifră măsurată cu un instrument despre care afli ulterior
+că era conflat nu devine falsă, dar devine **necreditabilă** — se re-măsoară, nu se moștenește.
+`STALE_BAZA_BASELINE = 14` e într-o astfel de poziție.
+

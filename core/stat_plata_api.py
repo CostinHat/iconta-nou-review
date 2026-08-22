@@ -107,6 +107,11 @@ def stat_plata(conn, schema, an, luna):
             "brut": float(calc["brut"]), "cas": float(calc["cas"]),
             "cass": float(calc["cass"]), "impozit": float(calc["impozit"]),
             "deducere": float(calc["deducere"]["total"]),
+            # [deducere_desfacuta 22.08.2026] componentele, ca fluturasul sa poata NUMI
+            # fiecare rand. `deducere` ramane TOTALUL: d112 raporteaza totalul, nu se atinge.
+            "deducere_baza": float(calc["deducere"]["baza"]),
+            "deducere_tineri": float(calc["deducere"]["tineri"]),
+            "deducere_copii": float(calc["deducere"]["copii"]),
             "net": float(calc["net"]), "cam": float(calc["cam"]),
             "cas_suprataxa": float(calc.get("cas_suprataxa", 0)),
             "cass_suprataxa": float(calc.get("cass_suprataxa", 0)),
@@ -172,6 +177,39 @@ def rand_fluturas(conn, schema, salariat_id, an, luna):
     return next((r for r in stat_plata(conn, schema, an, luna)
                  if int(r.get("id") or 0) == salariat_id), None)
 
+
+
+def randuri_deducere(r):
+    """Randurile de deducere de pe fluturas, fiecare sub NUMELE lui. [deducere_desfacuta 22.08.2026]
+
+    Pana la 22.08.2026 exista un singur rand, ("Deducere personala", total) — iar totalul include si
+    deducerile SUPLIMENTARE: tineri sub 26 de ani si copii scolarizati. Pe un tanar la salariul minim
+    din iulie 2026 randul arata 1.513,75 lei sub numele unei deduceri care e 865,00. Nu e o lipsa, e o
+    ETICHETA FALSA pe o hartie care ajunge la salariat — masurat: 3 din 5 cazuri obisnuite si 2 din 24
+    de salariati reali activi la 01.07.2026.
+
+    TEMEI: CF art.77 alin.(2) deducerea personala de baza; alin.(4^1) suplimentara pentru tineri sub
+    26 de ani; alin.(4^2) suplimentara pentru copii scolarizati. Trei deduceri distincte in lege, deci
+    trei randuri distincte pe hartie.
+
+    Suplimentarele apar doar cand sunt ACORDATE. Absenta lor, aratata cu motiv, e interdictia 64 —
+    masurata separat, alt prag; aici se repara strict eticheta care minte.
+
+    Exemplarele inghetate scrise inainte de data asta n-au componentele: atunci randul isi spune pe
+    nume ('...si suplimentare'), nu pretinde ca e doar cea personala.
+    """
+    def _ded_lei(k):
+        return float(r.get(k) or 0)
+
+    total = _ded_lei("deducere")
+    if not any(k in r for k in ("deducere_baza", "deducere_tineri", "deducere_copii")):
+        return [("Deducere personala si suplimentare (total)", total)]
+    randuri = [("Deducere personala", _ded_lei("deducere_baza"))]
+    if _ded_lei("deducere_tineri"):
+        randuri.append(("Deducere suplimentara, tineri sub 26 de ani", _ded_lei("deducere_tineri")))
+    if _ded_lei("deducere_copii"):
+        randuri.append(("Deducere suplimentara, copii scolarizati", _ded_lei("deducere_copii")))
+    return randuri
 
 def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     """Design System cap.7: reportlab Table, nu drawString manual. Sume in format romanesc.
@@ -243,7 +281,7 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
         ("Facilitate salariu minim (netaxabil)", _n("facilitate")),
         ("CAS (25%)", -_n("cas")),
         ("CASS (10%)", -_n("cass")),
-        ("Deducere personala", _n("deducere")),
+        *randuri_deducere(r),
         ("Impozit pe venit", -_n("impozit_salariu")),
         ("SALARIU NET", _n("net")),
     ]
