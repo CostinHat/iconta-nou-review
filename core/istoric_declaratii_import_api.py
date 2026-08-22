@@ -9,6 +9,8 @@ NU sterge declaratiile depuse prin iConta (sursa='iconta').
 from __future__ import annotations
 import datetime
 
+from core import afirmatii as _af
+from core.unde import Unde as _Unde  # [P8] fiecare avertisment stie pe ce rand e
 from core.migrare_api import respinge  # [P8/C] respingerea e o afirmatie, cu regula din nomenclator
 
 # tipuri cunoscute (pentru normalizare + recunoastere)
@@ -99,7 +101,7 @@ def extrage(continut, nume_fisier=""):
         raise ValueError("nu găsesc coloana cu tipul declarației (tip/declarație/formular) - fișier nerecunoscut")
 
     out = []
-    for r in randuri[1:]:
+    for i, r in enumerate(randuri[1:], start=2):
         def cel(i):
             return str(r[i]).strip() if (0 <= i < len(r)) else ""
         tip_raw = cel(i_tip)
@@ -110,13 +112,23 @@ def extrage(continut, nume_fisier=""):
         luna = _intreg(cel(i_luna))
         data_dep = _data(r[i_data]) if (0 <= i_data < len(r)) else None
 
+        # [P8, 22.08] fiecare avertisment e AFIRMATIA lui, nu un sir intr-o lista. O lista de texte
+        # nu poate fi numarata pe regula, nu poate fi filtrata si nu spune despre CE rand vorbeste -
+        # exact forma pe care campania o desfiinteaza. Randorul citeste `.motiv`.
+        _unde = _Unde("rand", i)
         avert = []
         if not cunoscut:
-            avert.append("tip necunoscut")
+            avert.append(_af.afirmatie("neconformitate", "declarație depusă",
+                                       "tip necunoscut: %s" % (tip or "?"),
+                                       unde=_unde, regula="tip_necunoscut"))
         if not (2018 <= an <= 2027):
-            avert.append("an neplauzibil")
+            avert.append(_af.afirmatie("neconformitate", "declarație depusă",
+                                       "an neplauzibil: %s" % an,
+                                       unde=_unde, regula="an_invalid"))
         if not (1 <= luna <= 12):
-            avert.append("lună invalidă")
+            avert.append(_af.afirmatie("neconformitate", "declarație depusă",
+                                       "lună invalidă: %s" % luna,
+                                       unde=_unde, regula="luna_invalida"))
 
         out.append({"tip": tip, "an": an, "luna": luna, "data_depunere": data_dep,
                     "tip_cunoscut": cunoscut, "avertisment": avert, "ok": len(avert) == 0})

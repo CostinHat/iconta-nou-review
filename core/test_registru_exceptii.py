@@ -26,7 +26,10 @@ from core import scan_afirmatii as s
 # Instalat 22.08.2026 pe cifra MĂSURATĂ. Coborât la 5 în aceeași zi, când cheia a trecut de pe
 # LINIE pe FUNCȚIE și cele trei ramuri ale lui `raportari_ai.triaj` s-au dovedit a fi o singură
 # intrare (aceeași funcție, aceeași natură). NU se ridică.
-MARIME_MAXIMA = 5
+# Ridicat 5 -> 6 pe 22.08, DELIBERAT si cu motivul in DECIZII: `cote_tva.potriveste_cota` e un
+# protocol intre functii, verificat la sursa ca nu ajunge la niciun randor. O ridicare fara
+# motiv scris ar transforma registrul in portita pe care cele trei zavoare o inchid.
+MARIME_MAXIMA = 6
 
 
 @pytest.fixture(scope="module")

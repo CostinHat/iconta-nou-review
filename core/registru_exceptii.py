@@ -32,6 +32,10 @@ RATIUNI = {
                           "tipa a doua oara ar crea o a doua sursa a aceluiasi text.",
     "avertisment_de_actiune": "Text despre ce URMEAZA sa faca utilizatorul (ireversibilitate, "
                               "confirmare ceruta), nu despre ce ESTE in datele firmei.",
+    "protocol_intern": "Contractul unei functii PURE, consumat programatic si niciodata aratat unui "
+                       "om. Un tip pus peste un protocol intern adauga ceremonie fara sa faca nimic "
+                       "imposibil (Costin, 22.08). Se declara DOAR dupa ce s-a verificat la sursa ca "
+                       "textul nu ajunge la niciun randor - altfel e o scuza, nu o ratiune.",
 }
 
 # Fiecare intrare: unde e, ce ratiune, si argumentul propriu. Ratiunea e categoria; `de_ce` e motivul.
@@ -51,6 +55,11 @@ EXCEPTII = [
               "IREVERSIBILA si ce NU se sterge. E despre ce urmeaza sa faca omul, nu despre ce e in "
               "datele firmei. Cifrele de alaturi (nr_tenanti, nr_useri) sunt fapte, dar ele nu poarta "
               "cheia de revendicare - avertismentul o poarta."},
+    {"fisier": "core/cote_tva.py", "functie": "potriveste_cota", "motiv": "protocol_intern",
+     "de_ce": "`{ok, cod, mesaj}` e contractul unei functii PURE de potrivire a cotei. VERIFICAT LA "
+              "SURSA (22.08): ambii consumatori - `produse_ecran.js:129` si `emitere_ecran.js:266` - "
+              "testeaza `r.ok` si pe FALS pun `innerHTML = \"\"`. Textul `mesaj` nu ajunge la niciun "
+              "om; il tipam = ceremonie peste un protocol intre functii."},
     {"fisier": "main.py", "functie": "portal_acasa", "motiv": "trecere_prin_tipat",
      "de_ce": "portalul re-impacheteaza pentru client verdictul deja produs de "
               "`control_fiscal_api.evalueaza_firma`. Tiparea aici ar face a doua sursa a aceluiasi text."},

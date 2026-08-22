@@ -3923,7 +3923,7 @@ async def banca_parse_extras(tenant_id: int, fisier: UploadFile = File(...), ctx
         t["nota"] = r.get("nota")
     return {"tranzactii": tranzactii, "nr": len(tranzactii)}
 @app.get("/tenants/{tenant_id}/salariu-efect")
-def salariu_efect(tenant_id: int, brut: float, valabil_din: Optional[str] = None,
+def salariu_efect(tenant_id: int, brut: float, salariat_id: int, valabil_din: Optional[str] = None,
                   ctx=Depends(cere_cabinet)):
     """[prag_minim_v1] Ce se intampla cu netul la brutul introdus, INAINTE de salvare (DS cap.6:
     consecinta inainte de buton). Calculeaza pe server cu salarizare.calcul_salariu - aceeasi functie
@@ -3947,8 +3947,17 @@ def salariu_efect(tenant_id: int, brut: float, valabil_din: Optional[str] = None
         net_minim = _net(float(sm))
     except ValueError as e:
         raise HTTPException(422, str(e))
-    out = {"brut": brut, "net": round(net_acum, 2), "salariu_minim": float(sm),
-           "net_la_minim": round(net_minim, 2), "avertisment": None}
+    # [P8] `fel` intra la CONSTRUCTIE, nu prin `.update()` de mai jos: `core/scan_afirmatii` citeste
+    # LITERALUL de dictionar, deci o imbogatire ulterioara ii ramane invizibila si locul ar aparea pe
+    # vecie ca datorie. Fara constatare, felul e `fapt` cu textul gol - vezi mai jos.
+    _unde = _Unde("salariat", salariat_id)
+    out = dict(_af.afirmatie("fapt", "salariu",
+                             "Net estimat %.2f lei la brutul introdus." % round(net_acum, 2),
+                             unde=_unde,
+                             temei_completitudine="calcul cu salarizare.calcul_salariu la data "
+                                                  "valabilității, aceeași funcție care produce fluturașul"),
+               brut=brut, net=round(net_acum, 2), salariu_minim=float(sm),
+               net_la_minim=round(net_minim, 2), avertisment=None)
     # zona moarta: peste minim, dar cu net sub cel de la minim
     if brut > float(sm) and net_acum < net_minim:
         # cautarea porneste STRICT peste minim: la minim netul e trivial egal, iar contabilul vrea
@@ -3957,10 +3966,17 @@ def salariu_efect(tenant_id: int, brut: float, valabil_din: Optional[str] = None
         while b < float(sm) + 1000 and _net(b) < net_minim:
             b += 1
         out["brut_echivalent"] = round(b, 2)
-        out["avertisment"] = (
-            "%.2f lei e peste salariul minim (%.2f), deci se pierde facilitatea de scutire: netul "
-            "scade de la %.2f la %.2f lei. Aceeași plată netă se obține de la ~%.2f lei brut."
-            % (brut, float(sm), net_minim, net_acum, b))
+        # [P8, 22.08 - IN SCOP, decis de Costin] „Zona moartă e o afirmație despre ce se va întâmpla
+        # dacă salvezi, arătată contabilului ÎNAINTE de decizie. Faptul că brutul e tastat, nu stocat,
+        # nu o face mai puțin afirmație — referentul e salariatul, iar domeniul e modificarea propusă."
+        _t = ("%.2f lei e peste salariul minim (%.2f), deci se pierde facilitatea de scutire: netul "
+              "scade de la %.2f la %.2f lei. Aceeași plată netă se obține de la ~%.2f lei brut."
+              % (brut, float(sm), net_minim, net_acum, b))
+        out.update(_af.afirmatie(
+            "fapt", "salariu", _t, unde=_unde,
+            temei_completitudine="calcul cu salarizare.calcul_salariu la data valabilității, "
+                                 "aceeași funcție care produce fluturașul"))
+        out["avertisment"] = _t
     return out
 
 

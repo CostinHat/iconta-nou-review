@@ -8,7 +8,7 @@ import { randeazaFacturi } from "./facturi_ecran.js?v=cd6cc87493";
 import { ecranRip } from "./rip_ecran.js?v=aee3ed851b";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=7019abe613";
 import { ecranEtransport } from "./etransport_ecran.js?v=0dca1ea392";
-import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=2cde0e0a37";  // [p96_import_firma] + [Q4] import in masa
+import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=05a5b55996";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=cc81187e9a";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=3a84046f2a";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=930762c3c4";  // [produse_firma_v1]
@@ -1034,7 +1034,9 @@ async function ecranSalariati(corp, nav, t) {
         if (!zona) return;
         if (!(v > 0)) { zona.innerHTML = ""; return; }
         try {
-          const r = await api.get(`/tenants/${t.id}/salariu-efect?brut=${v}${d ? "&valabil_din=" + d : ""}`);
+          // [P8 22.08] `salariat_id` se trimite acum: avertismentul e o afirmatie despre SALARIATUL
+          // asta, iar o afirmatie fara referent n-are adresa. Ecranul il avea deja (`sid`).
+          const r = await api.get(`/tenants/${t.id}/salariu-efect?brut=${v}&salariat_id=${sid}${d ? "&valabil_din=" + d : ""}`);
           zona.innerHTML = r.avertisment
             ? `<div class="mig-avert">${esc(r.avertisment)}</div>`
             : `<div class="camp-ajutor">Net estimat: ${bani(r.net)} lei.</div>`;

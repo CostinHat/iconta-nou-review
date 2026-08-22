@@ -1405,8 +1405,10 @@ function previzualizeazaIstoric(corp, nav, firma, date) {
 
   const tabel = corp.querySelector("#mig-sold-tabel");
   tabel.innerHTML = randuri.map((r) => {
+    // [P8 22.08] fiecare avertisment e o AFIRMATIE ({fel, motiv, unde, regula}), nu un sir. Se
+    // randeaza `.motiv`; `regula` ramane in obiect pentru cine vrea sa numere pe cod, nu pe text.
     const av = r.avertisment && r.avertisment.length
-      ? `<span class="mig-cnp-no"> ⚠ <span class="mig-motiv">${esc(r.avertisment.join(', '))}</span></span>` : "";
+      ? `<span class="mig-cnp-no"> ⚠ <span class="mig-motiv">${esc(r.avertisment.map((a) => a.motiv).join(', '))}</span></span>` : "";
     const tipCls = r.tip_cunoscut ? "mig-cnp-ok" : "mig-cnp-no";
     const lunaTxt = (r.luna >= 1 && r.luna <= 12) ? luni[r.luna] : (r.luna || "—");
     return `
