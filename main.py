@@ -6888,9 +6888,13 @@ def vanzare_marja(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabin
                                     (inregistrare_id, cont_debit, cont_credit, suma)
                                     VALUES (%s,%s,%s,%s)""", (iid, d, c, s))
         conn.commit()
-    return {"inregistrare_id": iid, "marja_bruta": str(r["marja_bruta"]),
-            "tva": str(r["tva"]), "marja_neta": str(r["marja_neta"]),
-            "avertisment": r["nota"]}
+    return dict(_af.afirmatie(
+        "fapt", "vânzare în regim de marjă", r["nota"] or "marjă calculată conform art. 312",
+        unde=_Unde("inregistrare", iid),
+        temei_completitudine="prețul de vânzare și cel de cumpărare din nota creată "
+                             "(Cod fiscal art. 312, regimul marjei)"),
+        inregistrare_id=iid, marja_bruta=str(r["marja_bruta"]),
+        tva=str(r["tva"]), marja_neta=str(r["marja_neta"]), avertisment=r["nota"])
 
 
 @app.post("/tenants/{tenant_id}/vanzare-marja-turism")
@@ -8002,8 +8006,12 @@ def reevaluare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
         except (ValueError, KeyError) as e:
             raise HTTPException(422, str(e))
         if not linii:
-            return {"inregistrare_id": None, "detalii": [],
-                    "mesaj": "nicio diferenta de reevaluat"}
+            _d = _date.fromisoformat(str(corp["data"])[:10])
+            return dict(_af.afirmatie(
+                "fapt", "reevaluare valută", "nicio diferență de reevaluat",
+                an=_d.year, luna=_d.month,
+                temei_completitudine="soldurile în valută ale firmei, la cursul BNR din data cerută"),
+                inregistrare_id=None, detalii=[], mesaj="nicio diferență de reevaluat")
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                             VALUES (%s,%s,'banca','ciorna') RETURNING id""",
@@ -8280,7 +8288,14 @@ def reevaluare_imobilizare(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
                 extra = {"valoare_neta": str(r["valoare_neta"]),
                          "diferenta": str(r["diferenta"]), "amortizare_eliminata": str(amortizare)}
                 if not r["linii"]:
-                    return {"inregistrare_id": None, "mesaj": "nicio diferenta", **extra}
+                    _d = _date.fromisoformat(str(corp["data"])[:10]) if corp.get("data") else None
+                    return dict(_af.afirmatie(
+                        "fapt", "reevaluare imobilizare", "nicio diferență de reevaluat",
+                        unde=_Unde("mijloc_fix", corp.get("mijloc_fix_id") or den),
+                        temei_completitudine="valoarea netă contabilă vs valoarea justă declarată "
+                                             "(OMFP 1802 pct.111-116)"),
+                        inregistrare_id=None, mesaj="nicio diferență de reevaluat",
+                        data=str(_d) if _d else None, **extra)
         except (ValueError, KeyError) as e:
             raise HTTPException(422, str(e))
         with conn.cursor() as cur:
