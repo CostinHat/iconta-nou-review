@@ -4848,3 +4848,25 @@ constatare adevărată. Am revenit, și ce am pus în loc scoate exact unu și a
 
 Un scan se poate face verde orbindu-l, nu reparând codul. Clichetul are nevoie de gardă și pe
 INSTRUMENT, nu doar pe număr — asta lipsea, și acum există.
+
+## 22.08.2026 — confruntarea cu planul normativ, partea de registru
+
+Costin a scris `ARHITECTURA_NORMATIV.md` **fără să se uite la cod** — cum trebuie să fie, nu cum e.
+Prima confruntare: P1 și P11, șapte interdicții. Fără reparații.
+
+**Regula de măsurare a ținut de fiecare dată.** Cele cinci cazuri obligatorii au fost găsite înainte
+de orice cifră — podeaua part-time în trei module, codurile de boală în patru straturi, nomenclatorul
+D390 ancorat pe validator, egalitatea strictă la salariul minim, alinierea din 06.08.
+
+**Și de două ori măsurătoarea a fost nefolosibilă din prima.** Interdicția 17a a dat **1167** —
+orice `10` din cod se potrivea cu CASS 10%, orice `9` cu TVA 9%. 90% zgomot. Refăcută pe detectorul
+de context deja calibrat din `scan_constante`: **42**. Interdicția 21 a dat 15, din care 2 reale —
+87% zgomot, și doar pentru că discriminatorul (egalitate strictă) e slab prin natura lui.
+
+**Cea mai importantă întrebare a fost a lui.** „«Determinată de temeiul citat» — cum se verifică
+mecanic? E a cincea instanță de gardă care citește proză?" Era. Garda s-a construit altfel: pe un
+link verificabil, nu pe o frază, și cu declarația a ce nu face.
+
+**Am greșit o afirmație și o corectez aici:** am spus „le-am privit pe toate 15". Era la nivel de
+linie, nu de context. Trei dintre cele numite zgomot merită a doua privire. „2 reale" e un plafon
+inferior.

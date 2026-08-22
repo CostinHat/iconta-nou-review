@@ -10869,3 +10869,31 @@ s-au reparat, nu s-au declarat.
 Cheia `motiv` purta CODUL în importuri și TEXTUL în afirmații — același nume, două înțelesuri, exact
 capcana pe care o vânează campania. De-acum `motiv` e TEXTUL peste tot; codul trăiește în `regula`.
 Consumatorii au fost numărați înainte (deși prima numărătoare a fost greșită — vezi GARZI).
+
+## 22.08.2026 — P11: interpretarea e un obiect, nu un comentariu
+
+**Decis de Costin:** se construiește `interpretare()` ca obiect declarabil, cu variantele obligatorii,
+plus garda pe direcția inversă.
+
+**Ce deosebește o interpretare de o valoare: VARIANTELE.** „O interpretare fără variantele enumerate
+nu e o interpretare, e o valoare deghizată. Dacă nu poți numi cealaltă variantă, legea nu lăsa loc."
+Minimul e două.
+
+**Dezacordul cu arbitrul se DERIVĂ**, nu se ține într-un câmp — aceeași formă ca la contradicția
+dintre statul emis și recalcul: nu există nimic de pus pe zero ca să dispară. Un arbitru care
+contrazice trebuie să spună CE zice; un `False` fără text nu documentează un dezacord, îl ascunde.
+
+**Cum se verifică „determinată de temeiul citat" — decis după întrebarea lui Costin.** Nu prin
+citirea unui `text_citat`: aia ar fi fost a cincea gardă care își ia dovada din proză. Se verifică un
+**link**: marcajul numește o cheie, iar cheia se rezolvă în registru sau nu. Ce rămâne neverificat —
+că temeiul chiar determină comparația — e declarat, fiindcă o gardă care ar pretinde că face judecata
+semantică ar transforma o citire umană într-un verde automat.
+
+**Categorie nouă în registru: CONVENȚII DE CALCUL** (Costin, 22.08). Rotunjire, ordine de aplicare, ce
+se scade înainte de proratare, regula de alegere a cursului. Nu „Formule": formulele spun **ce** se
+calculează, convențiile spun **cum**. Cursul BNR rămâne în afara registrului ca valoare — e fapt de
+piață, nu normă — dar regula de alegere a lui intră.
+
+**Interdicția 22 declarată NEMĂSURABILĂ**, cu motivul: nu are numitor. O interpretare nemarcată e
+indistinguibilă de un calcul; orice cifră ar însemna „cele găsite", nu „câte sunt". Interdicțiile 21
+și 23 rămân măsurabile **pe forma declarată**, cu limita scrisă în plan.

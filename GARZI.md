@@ -3813,3 +3813,53 @@ codul, cu clichet.
 - Sonda de default-uri e grea (~10 min, învelește la import); locul ei e lângă scanul de constante,
   nu în pre-commit. **Prima ei formă a stricat un test** (funcția învelită returna sursa spionului la
   `inspect.getsource`); reparat cu `functools.wraps`.
+
+## 22.08.2026 — P11 construit: interpretarea ca obiect + confruntarea registrului
+
+### Ce s-a măsurat (confruntare ARHITECTURA_NORMATIV, interdicțiile 1, 2, 16, 17, 21, 22, 23)
+
+Toate cinci cazurile de calibrare cerute de Costin **găsite înainte de orice cifră**.
+
+| # | brut | real |
+|---|---|---|
+| 1 valoare fiscală în afara registrului | 131 | ~100 (≈23% zgomot) |
+| 2 interogare fără dată | 3 | 3 |
+| 16 nomenclator din sursă secundară | 39 din 93 | 39 |
+| 17a valoare de registru re-declarată | 42 | ~34 |
+| 17b formulă de registru în ≥2 module | 1 formulă, 3 module | 1 |
+| 21 interpretare care apare ca lege | 15 | **2** |
+| 22 interpretare fără variante | — | **nemăsurabilă** |
+| 23 dezacord stins prin aliniere | 0 | 0, deja gardat |
+
+**#2 are o cauză unică:** `cota(nume, la_data=None)` — defaultul e *azi*. Interdicția 2 e posibilă doar
+fiindcă interdicția 14 e prezentă în punctul de intrare al registrului.
+
+**Codurile de boală, patru straturi, cu o contradicție:** interfața oferă 16/17/51, validarea din
+`d112` cade pe `1..15` când XSD-ul nu se poate citi.
+
+**Tensiune de plan, semnalată:** P8 spune „arbitrul decide", interdicția 16 spune „nu deriva din sursă
+secundară". `d390.TIPURI/TARI_UE` au ales conștient validatorul, cu proba scrisă. Planul nu spune care
+câștigă.
+
+### Gărzi noi
+| gard | ce face imposibil |
+|---|---|
+| `core/test_interpretare.py` | o interpretare cu o singură variantă · alesul din afara listei · dezacordul ca flag stins prin apăsare · arbitrul care contrazice fără să spună ce zice · o formă de incertitudine inventată |
+| `core/test_comparatii_clasificate.py` | o comparație NOUĂ neclasificată pe o valoare de registru · un marcaj către o cheie inexistentă · un registru cu dicționar liber · detectorul care orbește |
+
+RED-probat pe **opt** direcții, toate roșii, cu curățare de `__pycache__`.
+
+### Ce NU face garda, scris în capul ei
+Nu verifică că temeiul **chiar determină** comparația. Întrebarea lui Costin a schimbat construcția:
+o gardă care ar citi un `text_citat` ar fi a cincea instanță de gardă-care-citește-proză. Marcajul e
+un **link verificabil** (cheia se rezolvă sau nu), iar gardul închide clasa **NECLASIFICAT**, nu clasa
+*greșit clasificat*.
+
+### Greșeală proprie, consemnată
+Am raportat „le-am privit pe toate 15" despre egalitățile stricte. Era **la nivel de linie**. La
+re-citire pe context, trei dintre cele numite „zgomot" merită a doua privire (`d223:159` regula
+„100% doar cu un singur asociat", `d406:1338/1367` alegerea codului fiscal pentru cota zero). Cifra
+„2 reale" rămâne un **plafon inferior**, nu un rezultat.
+
+Și a patra oară azi am insistat pe editarea din shell până s-au rupt escapările, în loc să scriu
+fișierul din prima.

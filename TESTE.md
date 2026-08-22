@@ -1853,3 +1853,26 @@ coduri-folosite ↔ nomenclator, ambele direcții) · `core/unde.py` (referința
 ### Ce NU probează gărzile astea
 Că textul e bun, că `fel`-ul ales e cel potrivit, sau că referentul din `unde` există în bază. Prima
 e a gărzilor de calitate-mesaj; a treia cere conexiune și e o gardă separată, neconstruită.
+
+## 22.08.2026 — P11: interpretarea declarabilă + garda pe comparații
+
+| gardă | ce face imposibil |
+|---|---|
+| `core/test_interpretare.py` | o interpretare cu O SINGURĂ variantă (valoarea deghizată); alesul din afara listei enumerate; textul care a lăsat loc lipsă; autor sau dată lipsă; dezacordul cu arbitrul stins prin atribuire; un arbitru care contrazice fără să spună CE zice; o formă de incertitudine din afara nomenclatorului închis |
+| `core/test_comparatii_clasificate.py` | o comparație NOUĂ neclasificată pe o valoare de registru; un marcaj `# interpretare:` sau `# temei-determina:` către o cheie care nu se rezolvă; un registru de interpretări cu dicționare libere în loc de obiecte; detectorul de comparații care orbește (garda ar trece pe zero rânduri) |
+
+### Instrumente
+`core/interpretare.py` (obiectul + nomenclatorul închis de cinci forme de incertitudine) ·
+`core/registru_interpretari.py` (cele două recunoscute prin măsurătoare).
+
+### Clichet
+Comparații neclasificate: **15 → 13**, după marcarea celor două confirmate.
+
+### Mutații
+**8, toate roșii**, cu curățare de `__pycache__`. Două au cerut refacere: una avea mutația fără sens
+(nu schimba comportamentul), alta o ancoră inexistentă. Ambele erau probe vide până la reparare —
+aceeași clasă ca reluarea de azi-dimineață.
+
+### Ce NU probează
+Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face imposibil ca alegerea să fie
+**invizibilă** — atât, și atât se promite în capul fișierului.
