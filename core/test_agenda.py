@@ -381,6 +381,10 @@ def test_cote_cluster_leaga_deducere_de_salariu_minim():
 # adaugarea valorilor 2025 la sursa (B1: plafon_facilitate OUG 156/2024 + tichet_masa_plafon Ord.4679/484 +
 # Legea 201/2025) a atins ~7 clustere x 2 cote = 14 prin graf - EXTINDERE ISTORICA verificata la sursa (2026 NEschimbat,
 # nu o modificare periculoasa. De re-coborat cand cele 6 clustere se re-ancoreaza (dupa deblocarea 2025 - tichet).
+# INVALIDATA 23.08.2026, nu corectata: cifra 14 a fost masurata pe graful din graf_temei, despre
+# care s-a dovedit (R17) ca e cheiat pe NUME SIMPLU si pierde 761 din 2173 de definitii. Nu se
+# stie in ce directie gresea, deci nu se ajusteaza - se RE-MASOARA dupa ce graful se cheie pe
+# (fisier, nume). Ramane activa ca prag pana atunci: e singurul lucru care a prins conflatarea.
 STALE_BAZA_BASELINE = 14
 
 

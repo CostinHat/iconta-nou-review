@@ -121,7 +121,7 @@ tabel de priorități.
 
 | prag | ce a intrat |
 |---|---|
-| 1 | `de_preluat` exclus din D300 — 3.052 lei TVA colectată omisă, la 3 plătitori · `flux_concediu.js`, blocaj pe un cod legal · **eticheta „Deducere personala" de pe fluturaș tipărea totalul deducerilor** — afirmație falsă pe hârtia salariatului, 2 din 24 de salariați reali |
+| 1 | `de_preluat` exclus din D300 — 3.052 lei TVA colectată omisă, la 3 plătitori · `flux_concediu.js`, blocaj pe un cod legal · **eticheta „Deducere personala" de pe fluturaș tipărea totalul deducerilor** — afirmație falsă pe hârtia salariatului, 2 din 24 de salariați DE TEST — pe instalare nu există nicio firmă reală, vezi corecția din CONFORMITATE 1d |
 | 2 | interdicția 2 (o cauză, o linie) · Registrul-inventar · Cartea mare · Registrul de evidență fiscală · evidența TVA ca artefact · jurnalul regim marjă |
 | 3 | interdicțiile 1 (~100), 16 (39), 17a (42), 32 (19/33) · Registrul-jurnal, care depinde de 32 |
 

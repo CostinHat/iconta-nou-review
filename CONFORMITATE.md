@@ -30,12 +30,12 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **faza 1 e COMPLETĂ** (1a · 1b · 1c · 1d, toate măsurate pe 2026-08-22). Verdictul: lista 1 = **1** artefact · lista 2 = 5 (a omului) · lista 3 = **9** (de construit) · lista 4 = **0** pe ce s-a măsurat · lista 5 = **11** (de predat — calculate, valide, și oprite înainte de ecran). **Criteriul de gata nu e îndeplinit.** Urmează decizia lui Costin: unde intră munca — în lista 3 sau în lista 5.
+- **pasul curent**: **faza 1 e COMPLETĂ**; verdictul 1/5/9/0/11 stă în blocul 1d. **DECIS 23.08 (Costin): la punctul de decizie 2, L5 intră înaintea lui L3**, cu excepția celor obligatorii prin lege (Cartea mare, Registrul-inventar, registrul de evidență fiscală). Înainte de punctul de decizie 1: **R2** e măsurată pe cele 8 puncte pe care stă verdictul, cu o singură confruntare rămasă.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași. Ca să se termine **E1** rămâne: **vigoarea pe punct** pentru cele două acte structurate pe puncte (R2) · plus restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult: **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă** — cea de la 1b (cele cinci liste vs cele trei cauze din P23) a fost luată pe 22.08: **lista 3 se lărgește**, nu se adaugă a șasea; cauza se scrie lângă artefact.
 - **avertisment la cifre**: **NEÎNCEPUTE include interdicții măsurate în campanii anterioare, netransferate — vezi 3a din `PLAN_INVESTIGATII.md`.** Cel puțin zece au cifre în `GARZI.md` și `TESTE.md` și scriu NEÎNCEPUTĂ aici. Cifra e adevărată, dar arată mai multă muncă rămasă decât e.
-- **ultima actualizare**: 2026-08-22
+- **ultima actualizare**: 2026-08-23
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
 
 ---
@@ -63,7 +63,7 @@ prins o a doua instanță, mai mică, a aceleiași clase: textul de ajutor scria
 
 | # | ce e | efectul, azi |
 |---|---|---|
-| **1.1** | **`de_preluat` înseamnă două lucruri opuse, iar D300 omite tăcut facturi emise** — GĂSIT AZI, prin experimentul de la R12 | **cifră greșită într-o declarație depusă.** `core/d300.py:50-52` tratează `de_preluat` ca **staging** și îl exclude din decont; `core/export_winmentor.py:17` scrie explicit *„'de_preluat' e starea NORMALĂ a facturii emise, nu una de exclus"*; iar `core/facturi_api.py:311` **creează facturile noi exact cu `status="de_preluat"`**. Măsurat: **4 facturi emise, la 3 plătitori de TVA, cu TVA colectată de 3.052,00 lei, nu intră în D300** (t003: 2 facturi / 889,00 · t005: 1 / 2.100,00 · t013: 1 / 63,00). Pe t013 decontul **nu e gol, e incomplet** — iese cu 18 operațiuni și o omite pe a 19-a, ceea ce e mai greu de văzut decât un zero |
+| **1.1** | **`de_preluat` înseamnă două lucruri opuse, iar D300 omite tăcut facturi emise** — GĂSIT AZI, prin experimentul de la R12 | **cifră greșită într-o declarație generată** (pe date de test; pe instalare nu există firme reale, deci nicio depunere reală — vezi corecția din 1d). `core/d300.py:50-52` tratează `de_preluat` ca **staging** și îl exclude din decont; `core/export_winmentor.py:17` scrie explicit *„'de_preluat' e starea NORMALĂ a facturii emise, nu una de exclus"*; iar `core/facturi_api.py:311` **creează facturile noi exact cu `status="de_preluat"`**. Măsurat: **4 facturi emise, la 3 plătitori de TVA, cu TVA colectată de 3.052,00 lei, nu intră în D300** (t003: 2 facturi / 889,00 · t005: 1 / 2.100,00 · t013: 1 / 63,00). Pe t013 decontul **nu e gol, e incomplet** — iese cu 18 operațiuni și o omite pe a 19-a, ceea ce e mai greu de văzut decât un zero |
 | **1.2** | **`flux_concediu.js` blochează introducerea unui cod legal** (secțiunea 28, `DECIZII` D3) | **blocaj**: codurile `11`, `91`, `92` există în nomenclator cu temei, aplicația le acceptă, ecranul nu le oferă. Consemnat, nereparat, de trei ture |
 
 ### PRAGUL 2 — la închiderea etapei (cauză unică dovedită, fără concurență)
@@ -192,6 +192,11 @@ gardă; e un prag de citit, la un moment numit.
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `45f15ab`
 - **ce blochează**: Reglementările contabile (anexa OMFP 1802/2014) și Normele OMFP 2634/2015 sunt structurate pe **puncte**; `scripts/vigoare_articol.py` delimitează pe articole. Deci pentru familia B din 1a se cunoaște doar data consolidării actului, nu starea punctului folosit.
+- **măsurat 23.08.2026**: **instrumentul e construit** — `scripts/vigoare_punct.py`, gardat de `core/test_vigoare_punct.py` (6 teste). Costul a fost **mai mic decât la articol**, dintr-un motiv care nu se vedea până nu s-a deschis actul: în forma consolidată, **marcajul își spune singur adresa în actul de bază** — *„(la 23-08-2024, Litera a), Alineatul (2), Punctul 9., Sectiunea 1.3, Capitolul 1 a fost modificată de..."*. Deci punctul nu se deduce din poziție, se citește. **Numitorul real e 8 puncte, nu 58**: verdictul 1d stă pe pct. 9, 20, 21 (Reglementări) și 44–48 (Norme).
+- **rezultatul pe cele 8**: pct. **9** — modificat **23-08-2024** de ORDIN 4.164/2024 (exact ce știam, deci calibrarea trece); pct. **20** și **21** — găsite în act, **neatinse** de vreun marcaj; pct. **44–48** din Norme — găsite în act (64 de puncte detectate), **neatinse**.
+- **cele două greșeli ale instrumentului, prinse la calibrare, nu după**: (1) expresia marcajului se oprea la primul `)`, care e chiar în „Litera a)", deci rata „Punctul 9." și raporta NEMODIFICAT punctul despre care **știam** că fusese modificat dimineața; (2) cunoștea un singur tipar de numerotare (`9. - (1)`), iar Normele scriu `45. Registrul-jurnal` — deci pe Anexa 1 vedea **zero puncte** și **răspundea totuși**, cu încredere. Amândouă sunt gardate acum, iar instrumentul **refuză** să răspundă pe un act în care nu vede niciun punct.
+- **ce mai lipsește ca R2 să se închidă, și e puțin**: Anexa 1 are **doar 2 marcaje de consolidare în tot fișierul**, ceea ce e suspect de puțin pentru un act din 2015 consolidat la 01.08.2024. Ori chiar n-a fost modificată în zona punctelor 44–48, ori **extragerea a pierdut marcajele**. Se confruntă cu pagina de act de pe portal — o singură verificare, nu o campanie. Până atunci, „neatins" pe 44–48 se citește **împreună cu amprenta** `bf39029e…a87f`.
+
 - **condiția de deblocare**: instrumentul citește și puncte, calibrat pe un punct despre care se ȘTIE că a fost modificat (pct. 9, ORDIN 4.164/2024) plus unul nemodificat plus un control negativ. **Cost măsurat, nu estimat din burtă: ~2 ore** — marcajele pe punct EXISTĂ și sunt mai bogate decât cele pe articol (numesc Litera, Alineatul, Punctul, Secțiunea, Capitolul: 58 de marcaje în act), dar titlul punctului e **în flux, nu la început de rând** (`9. - (1) În funcție de…`), deci delimitarea cere alt regex decât cel de articol. **E restanță de muncă, nu limită declarată.**
 
 ### R3 — Categoria de mărime nu există în aplicație
@@ -394,6 +399,15 @@ gardă; e un prag de citit, la un moment numit.
   **Garda a prins-o — dar numai în direcția zgomotoasă.** Un nume preluat ADAUGĂ dependențe false, iar numărul crește și poarta cade. Direcția tăcută e cealaltă: o dependență **reală** dispare când numele funcției e preluat de alt fișier, iar atunci o cotă schimbată sub o bifă **nu se mai vede deloc**. Aceeași cauză, semn opus, și niciun gard nu se uită acolo.
 
   **Consecință asupra unei cifre deja scrise:** `STALE_BAZA_BASELINE = 14` a fost măsurat **pe graful conflat**. Nu e o cifră care se poate crede ca atare până nu se recalculează pe un graf corectat.
+- **cât e de mare, măsurat 23.08.2026 pe commit `4a0c9b9`** (cerut ca să se știe dacă e restanță sau prag 2):
+  - `core/` are **2.173 definiții** de funcții; graful păstrează **1.412 noduri** → **761 de definiții (35,0%) sunt pierdute prin cheia scurtă**.
+  - harta pe care stau gărzile are **79 de clustere**, dintre care 30 cu cote derivate, și **88 de muchii (cluster, cotă)**.
+  - **2 muchii** sunt pinuite de un test care afirmă PREZENȚA. **86 din 88 pot dispărea fără ca vreun test să se aprindă.**
+  - **57 din cele 79 de clustere** au lanțul trecând printr-un nume conflat. *(Instrumentul meu a tipărit „57 din 30" — raport imposibil; numitorul corect e 79, toate clusterele, nu 30, care numără doar clusterele cu cote. Greșeala e a etichetei mele, nu a măsurătorii, și o scriu în loc s-o corectez tăcut.)*
+  - câștigătorii sunt arbitrari și absurzi: `genereaza` (53 de fișiere) → graful păstrează doar `declaratii_api.py`; `build_xml` (49) și `erori_generare` (51) → doar `d710.py`; `pull` (52) → `scadentar.py`.
+- **câte porți verzi sunt false** (întrebarea pusă direct): **10 funcții de test stau pe graf. 7 afirmă PREZENȚA** unei muchii — o muchie dispărută le face ROȘII, deci sunt zgomotoase și în regulă. **3 devin VERZI** când o muchie dispare: `test_bifele_nu_stau_pe_o_baza_schimbata` (prag `len(stale) <= 14` — mai puține muchii, mai puține stale), `test_secventa_persistata_e_topologica` (`assert not viol` — mai puține muchii, mai puține violări) și `test_secventa_persistata_e_actuala`, care compară **două derivări ale aceluiași graf greșit** și e verde prin construcție. Cele 7 zgomotoase pin **2 muchii din 88**; restul hărții e nepăzit în direcția tăcută.
+- **prag**: **PRAGUL 2**, după definiția din `PLAN_LUCRU.md` — cauză unică dovedită (dicționarul cheiat pe nume) și nu concurează cu nimic (n-are instanțe de ordonat). Nereparat acum, cum s-a cerut.
+
 - **condiția de deblocare**: graful se cheie pe **`(fișier, nume)`**, nu pe nume; funcțiile imbricate ori se exclud, ori primesc cheie `(fișier, funcție-părinte, nume)`. Se închide când **toate trei** există: (a) cheia e calificată; (b) o gardă numără coliziunile rămase, cu clichet, ca 118 să nu crească tăcut; (c) `STALE_BAZA_BASELINE` e **re-măsurat** pe graful corectat — altfel rămâne o cifră moștenită dintr-o lume conflată. Prima singură ar muta numărul fără să spună nimeni de ce.
 
 ---
@@ -793,7 +807,7 @@ include și deducerile **suplimentare** (CF art.77 alin.(4^1) tineri sub 26; ali
 **1.513,75**, deducerea personală **865,00**. Numea un lucru și arăta altul.
 
 - **măsurat înainte de reparație**: **3 din 5** cazuri obișnuite produc eticheta falsă · **2 din 24**
-  de salariați reali activi la 01.07.2026 sunt în situația asta (`tenant_017`: TANAR SUB26, PARINTE
+  de salariați de test activi la 01.07.2026 sunt în situația asta (`tenant_017`: TANAR SUB26, PARINTE
   SCOALA). Cuvântul `tineri` nu apărea **deloc** în `stat_plata_api.py`: deducerea pentru tineri n-avea
   nume nicăieri pe drumul spre hârtie.
 - **reparat**: `randuri_deducere(r)` întoarce randuri NUMITE, unul per deducere din lege; `stat_plata`
@@ -899,6 +913,74 @@ arată operațiunile și avertismentul își poartă temeiul — mecanismul e sc
 trei firme din 17 pentru familia C, un ecran pentru fluturaș, iar pentru corectitudinea cifrelor
 **nicio măsurătoare**: „valid la DUKIntegrator" e o afirmație despre formă. Verdictul spune ce ajunge
 la om și în ce stare, **nu** că cifrele sunt corecte.
+
+#### DECIS 23.08.2026 (Costin): ordinea nu e L3 înaintea lui L5
+
+**Listele rămân separate, dar ordinea se inversează.** Motivul, scris cu cuvintele deciziei: *„L3 e
+construcție — lucruri care nu există. L5 e predare — totul e făcut, se oprește înainte de ecran. Un
+artefact din L5 costă ore; unul din L3 costă zile."* Iar pentru propoziția din Partea 00 — *contabilul
+depune din aplicație fără să recalculeze* — **L5 contează mai mult: o cifră corectă pe care n-o poate
+verifica e o cifră pe care o reface.**
+
+**La punctul de decizie 2, L5 intră înaintea lui L3** — cu **excepția** artefactelor din L3 obligatorii
+prin lege: **Cartea mare**, **Registrul-inventar**, **registrul de evidență fiscală**. Acelea nu pot
+aștepta: *absența lor nu e neplăcută, e neconformă.*
+
+**O corecție la justificarea mea, cerută de întrebarea 3.** Am scris că „L5 costă ore". **Nu e adevărat
+pentru tot L5.** Zece dintre cele unsprezece intrări sunt calculate și nepredate — acolo ține. A
+unsprezecea, **interdicția 65** (diferența față de luna anterioară), **nu e calculată deloc**: 0
+mecanisme în Python, 0 în JS. Artefactul stă în L5 fiindcă listele clasifică **artefacte**, iar
+fluturașul iese și se validează; dar **munca** e de tip L3. Deci:
+
+| în L5 | ce fel de muncă | de ce |
+|---|---|---|
+| temeiul pe ecran (9 declarații) · balanța pe ecran · componentele fluturașului · desfacerea unei poziții | **predare** — ore | valorile există: 57 de obiecte `Temei`, balanța se produce, `deducere`/`facilitate` sunt în răspunsul API |
+| **interdicția 65** — explicația diferenței față de luna anterioară | **construcție** — zile | nimic nu compară două perioade; nu e nepredat, e nescris |
+
+**Lista nu se schimbă; ordinea în interiorul ei, da.** Cele patru de sus intră primele, fiindcă acolo
+ține argumentul de cost care a decis ordinea.
+
+
+#### CORECȚIE 23.08.2026 — „salariați reali" era cuvântul greșit
+
+**Întrebarea lui Costin:** *„care 24? Dacă sunt ai unei firme reale, cineva a primit o hârtie pe care
+scria «Deducere personală 1.513,75» și nu era deducerea personală."*
+
+**Măsurat, la sursă:** cei 24 de salariați activi la 01.07.2026 sunt **fixturi de test**, toți — numele
+sunt descrieri de scenariu: `MINIM EXACT`, `PESTE MINIM`, `PARTTIME SUBFLOOR`, `CM COD01`, `TANAR
+SUB26`, `PARINTE NEDECL`. Și **toate cele 17 firme sunt de test**: `Coafor Micro Neplatitor SRL`,
+`Second Hand Marja SRL`, `GAMA DEFECT-MIGRARE`, `Firma Grea Audit SRL`. **Niciun client real.**
+
+**Deci nimeni n-a primit hârtia greșită.** „Reali" însemna la mine „existenți în baza de date"; cuvântul
+corect e **„de test"**. Corectat unde l-am scris: la interdicția 64 și în blocul 1c.
+
+**Ce ridică asta, și nu decid eu.** Pragul 1 e definit ca *„produce efect greșit la un om ACUM"*. Pe
+instalarea asta nu există niciun om — deci, citit literal, **pragul 1 e gol prin construcție**, iar
+cele trei instanțe consemnate în `PLAN_LUCRU.md` (TVA-ul din D300 „la 3 plătitori", codul de concediu,
+eticheta de pe fluturaș) n-ar fi trebuit să-l atingă. Citit ca **atingibilitate** — *ar produce, la
+prima firmă reală aflată în acea stare* — toate trei rămân corecte, iar pragul rămâne util.
+
+**Nu aleg între cele două citiri**, fiindcă e o ambiguitate a planului, nu a măsurătorii, iar regula e
+că planurile nu se interpretează. **Decizie cerută.** Până atunci, cele trei reparații rămân făcute:
+niciuna n-a stricat ceva, toate au gardă și RED-proof.
+
+
+#### Ce alte cifre au fost măsurate cu `graf_temei` (întrebarea 6)
+
+**Cinci locuri**, și cel mai important nu e o cifră:
+
+| unde | ce | stare |
+|---|---|---|
+| `core/test_agenda.py:384` | `STALE_BAZA_BASELINE = 14` | **INVALIDATĂ** — nu se corectează, se re-măsoară pe graful calificat |
+| `TESTE.md:193` | `depinde_de("salariu_minim") = 12 funcții` | **INVALIDATĂ** — aceeași cauză |
+| `TESTE.md:491` | „29 clustere structurale · 40 fiscale, majoritatea zero în graf" | **INVALIDATĂ** — cifrele au fost citite de pe graful conflat |
+| `TESTE.md:332` | **secvența persistată** — ordinea deterministă a celor 64 de clustere, sortată topologic pe `graf_clustere` | **INVALIDATĂ ca ordine.** Nu e o cifră: e ordinea în care s-a executat campania din 03–04.08. Nu spune că verificările sunt greșite — spune că **ordinea lor n-a fost cea calculată** |
+| `TESTE.md:284` | `clustere_indirect(act)` — instrumentul care răspunde *„ce se atinge când se schimbă o lege"* | **INVALIDAT ca instrument.** Cel mai grav consumator: e unealta de propagare a modificărilor legislative |
+
+**Formularea, ca regulă:** o cifră măsurată cu un instrument despre care s-a dovedit ulterior că vede
+greșit **nu se corectează, se invalidează** — se re-măsoară de la zero, fiindcă nu se știe în ce
+direcție greșea. Marcate ca atare mai sus; nu sunt șterse, ca să rămână urma.
+
 
 ### Ce lipsește ca să se termine E1
 
