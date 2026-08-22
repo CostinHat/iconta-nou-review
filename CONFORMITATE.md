@@ -30,7 +30,7 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: faza 1, pasul **1b** — familiile **A, C și D** măsurate pe date reale. Rămâne **B**, blocată de R3 (categoria de mărime), apoi **1c**.
+- **pasul curent**: faza 1, pasul **1b** — **toate cele patru familii** (A, B, C, D) sunt măsurate pe date reale. Urmează **1c** (se poate verifica pe ecran — interdicțiile 63–66), apoi verdictul **1d** pe cele cinci liste.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: operațiunea 1 (câte regimuri) și pasul 1a (ce cere legea) sunt MĂSURATE; **1b** e în lucru (familiile A și C, măsurate pe date reale). Mai lipsesc, ca să se termine E1: restul lui **1b** (familiile B și D) · **1c** · plus restanțele de mai jos — **numărul lor e derivat, nu scris aici**, fiindcă altfel ar fi al doilea loc unde trăiește aceeași stare. Cele care blochează cel mai mult: **R3** (categoria de mărime — blochează toată familia B), **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă** — cea de la 1b (cele cinci liste vs cele trei cauze din P23) a fost luată pe 22.08: **lista 3 se lărgește**, nu se adaugă a șasea; cauza se scrie lângă artefact.
@@ -202,8 +202,10 @@ gardă; e un prag de citit, la un moment numit.
 - **reluări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `45f15ab`
-- **ce blochează**: componența situațiilor financiare depinde de categoria de mărime (micro / mică / mijlocie-mare). Nu e câmp în `firma_profil`, nu apare în vectorul fiscal. Pentru **niciuna** dintre cele 17 firme nu se poate spune, din date, ce set de situații financiare datorează — deci **toată familia B din 1a nu poate intra în 1b**.
-- **condiția de deblocare**: categoria se poate **deriva** (active, cifră de afaceri netă, număr mediu de salariați, două criterii din trei, la data bilanțului) — deci nu cere un câmp nou, ci un calcul pe date pe care evidența le are. Se închide când 1b poate clasifica fiecare firmă și artefactele familiei B primesc verdict.
+- **ce blochează**: componența situațiilor financiare depinde de categoria de mărime (micro / mică / mijlocie-mare). Nu e câmp în `firma_profil`, nu apare în vectorul fiscal.
+
+  **ÎNGUSTATĂ 22.08.2026, după măsurătoare.** Formularea inițială — *„nu se poate spune, din date, ce set datorează, deci toată familia B nu poate intra în 1b"* — **era prea largă, și a costat o amânare**: familia B s-a măsurat totuși, iar R3 n-o bloca decât pe jumătate. **Datele există**: categoria s-a derivat de probă pe **toate cele 17 firme**, din `inregistrari_linii` și `salariati`, cu regula celor două criterii din trei. Ce lipsește nu e informația, ci **calculul** — nimeni nu-l face și nimic nu-l stochează. Deci restanța nu e „nu se poate ști", ci „nu se calculează".
+- **condiția de deblocare**: categoria se derivă (active, cifră de afaceri netă, număr mediu de salariați, două criterii din trei, **la data bilanțului**) și **rezultatul devine interogabil** — nu recalculat ad-hoc de fiecare consumator, ci o singură dată, cu data la care s-a calculat, ca orice adevăr din registru. **Ce rămâne de lămurit la implementare, nu acum:** `active` trebuie luat din **bilanț**, nu din rulaje ca în proba de azi; iar „numărul mediu de salariați" e o medie pe exercițiu, nu numărul de azi. Se închide când fiecare firmă are categoria calculată pe date corecte, iar artefactele familiei B primesc verdictul care depinde de ea.
 
 ### R4 — Câte alte forme VECHI din corpus sunt citite ca fiind la zi
 
@@ -334,8 +336,23 @@ gardă; e un prag de citit, la un moment numit.
 - **reluări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `4853dfb`
-- **ce blochează**: `facturi_api.creeaza_factura` creează cu `status="emisa"` (7 apelanți), `facturi_api.emite_factura` cu `status="de_preluat"` (6 apelanți), iar modelul `FacturaIn` (`main.py:811`) are tot `"emisa"`. **Nu există nicio tranziție între ele** — starea unei facturi e decisă o dată, la creare, de care funcție a fost chemată. După D7 amândouă sunt declarabile, deci **nu mai produce cifre greșite**; rămâne un adevăr scris în două locuri, iar următoarea regulă care se atașează de „starea unei facturi" va trebui să știe care e care.
-- **condiția de deblocare**: se decide dacă cele două funcții trebuie să producă **aceeași** stare (și atunci una dintre valori dispare), sau dacă distincția e reală și trebuie **numită** — adică ce înseamnă `emisa` față de `de_preluat`, scris în nomenclator, nu dedus din care funcție a fost chemată. E o decizie de produs, nu o măsurătoare.
+- **ce blochează**: `facturi_api.creeaza_factura` creează cu `status="emisa"` (7 apelanți), `facturi_api.emite_factura` cu `status="de_preluat"` (6 apelanți), iar modelul `FacturaIn` (`main.py:811`) are tot `"emisa"`. **Nu există nicio tranziție între ele** — starea unei facturi e decisă o dată, la creare, de care funcție a fost chemată, și nu se mai schimbă niciodată.
+
+  **MĂSURAT (22.08.2026), și cifra reîncadrează restanța.** Pe cele 17 scheme, facturile emise:
+  **27 `emisa` · 4 `de_preluat` · 10 `importata`**. Dar distribuția **nu e separată pe firme**:
+
+  | firmă | stări pe aceeași firmă |
+  |---|---|
+  | t003 | `de_preluat` 2 · `emisa` 1 |
+  | t005 | `de_preluat` 1 · `emisa` 2 |
+  | t013 | `de_preluat` 1 · `importata` 5 |
+
+  **Trei firme din douăsprezece au populații amestecate** — aceleași facturi emise, în aceeași firmă,
+  poartă stări diferite după care funcție le-a creat. Deci deblocarea **nu mai e doar o decizie de
+  nomenclator: e și o migrare de date.** O decizie care unifică stările lasă în urmă facturi vechi în
+  starea cealaltă, iar orice regulă viitoare care se atașează de „starea unei facturi" le va vedea
+  împărțite după un criteriu care nu înseamnă nimic.
+- **condiția de deblocare**: **două lucruri, în ordinea asta.** (1) Se decide dacă cele două funcții trebuie să producă **aceeași** stare — și atunci una dintre valori dispare — sau dacă distincția e reală și trebuie **numită** în nomenclator, nu dedusă din care funcție a fost chemată. (2) **Migrarea populațiilor existente**, care nu e opțională odată ce (1) s-a luat: pe cele trei firme amestecate, facturile din starea care dispare trebuie mutate, altfel decizia e adevărată doar pentru facturile viitoare. Se închide când ambele s-au făcut, nu doar prima.
 
 ### R15 — Perechile verificator/verificat copiază CONDIȚII, nu doar constante
 
@@ -347,6 +364,18 @@ gardă; e un prag de citit, la un moment numit.
 - **deschisă pe commit**: `4853dfb`
 - **ce blochează**: `test_cale_a_doua` verifică **importul** — calea a doua nu importă modulul verificat. Dar Partea V spune și *„nu-i copiază constantele"*, iar **o condiție SQL identică e o constantă compusă**. Măsurat pe cele 9 perechi `*_reconciliere.py`: **7 condiții identice, pe 3 perechi** — `d300` 4 (`COALESCE(f.taxare_inversa, false) = false`, `COALESCE(f.furnizor_tva_incasare, false) = true`, `NOT (f.directie = 'primita'…`), `d394` 2, `d101` 1. Exact clasa care a produs defectul de azi: filtrul pe status era a 5-a, iar reconcilierea n-a prins omisiunea fiindcă **vedea aceeași realitate trunchiată**. **Cifra e plafon inferior:** metoda compară fragmente textuale normalizate, deci nu vede o condiție rescrisă cu altă ordine sau alt alias; iar 2 din cele 7 sunt fragmente lungi de SELECT, tăiate imperfect de instrument — deci **~5 reale**.
 - **condiția de deblocare**: fiecare condiție comună primește ori o **sursă unică** (ca `nomenclator_status_factura.clauza_sql`), ori o **declarație scrisă** că duplicarea e deliberată și de ce — tiparul există deja: `test_d300_reconciliere.test_non_tautologie_*` apără o duplicare **voită**. Se închide când `test_cale_a_doua` capătă și axa condițiilor, nu doar a importului.
+- **ordinea la deblocare, scrisă ca să nu fie alfabetică**: observația care contează nu e că reconcilierea era slabă în general — era slabă **exact acolo unde a contat**. Filtrul pe status era a cincea condiție copiată din `d300`, iar el decidea **ce intră în declarație**. Deci: **întâi condițiile care decid ce intră în declarație** (`taxare_inversa`, `furnizor_tva_incasare`, `directie`, `tip`), **apoi restul**. O condiție care doar taie o coloană dintr-un SELECT nu are aceeași greutate cu una care hotărăște dacă o factură e declarată.
+
+### R16 — Proza care descrie codul poate fi FALSĂ DE LA NAȘTERE
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · faza 4 (instrumentele) · interdicția 18
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `554ae17`
+- **ce blochează**: docstringul din `core/export_saga.py:157` spunea că *„WinMentor cere `status='emisa'` — doar facturi emise corect, nu `de_preluat`/`anulata`"*. **Era invers, și era invers de la scriere:** F187-fix scosese tocmai acel filtru din WinMentor. **Nu e aceeași clasă cu doc-stătut** — acolo codul se schimbă sub un text care fusese adevărat; aici textul n-a fost adevărat niciodată. **Măsurat, cu proxy declarat:** docstringuri care afirmă `param='valoare'` pentru un parametru **al lor**, contrazis de semnătură — **1 instanță** (`core/observare.py:114`, `trimite_email_html()`: docstringul zice `expeditor_nume='<Firma> prin iConta'`, semnătura are `'iConta.eu'`). **Cifra e plafon inferior, și limita e chiar cazul care a produs restanța:** o afirmație despre **alt modul** — ce cere WinMentor — **n-are proxy mecanic**. Se poate verifica doar citind ambele module.
+- **condiția de deblocare**: proxy-ul pe propriile valori implicite devine gardă (ieftin: e deja scris ca măsurătoare), **iar** pentru afirmațiile despre alte module se scrie regula că o frază care descrie comportamentul altui modul poartă referința la locul din care a fost citită — cum poartă `Temei` un citat. Se închide când amândouă există; prima singură ar lăsa exact clasa care a produs restanța.
 
 ---
 
@@ -632,6 +661,30 @@ interfață n-au fost atinse (sunt în afara perimetrului, prin decizie).
 **Sonda a scris, și o declar:** `audit_log` +30 (o citire de date personale lasă urmă — excepția
 scrisă în Partea II). `declaratii_coada` și `declaratii_depuse`: **neatinse**, verificat prin snapshot
 înainte/după.
+
+### Pasul 1b — ce produce aplicația (FAMILIA B: situațiile financiare)
+
+**Măsurată abia acum, fiindcă R3 părea s-o blocheze. Nu o bloca — o bloca doar parțial.**
+
+| artefact | temei | se produce azi? | proba |
+|---|---|---|---|
+| **Bilanț (S1005)** și **Cont de profit și pierdere (F20 / S1003)** | Reglementările contabile pct. 20–21 | **producător DA, dar NU ajunge la om** — `core/bilant_api.genereaza(conn, schema, an)` produce XML pe date reale: **1065 octeți pe t013**, cu două avertismente proprii, cinstite („F20 an precedent necompletat"; „F(rd15)=4947 != J(rd49)=22210 — datorii>1an/provizioane pot explica diferența"). `core/bilant.py` are `xml_s1005`, `xml_s1003`, `f10_din_balanta`, `f20_complet_din_rulaje` | **zero rute** în `main.py` (grep pe `bilant` în declarațiile de rută: nicio potrivire), deci nici ecran |
+| **Note explicative** | pct. 20 alin. (2) și pct. 21 le cer în ambele seturi | **NU** — zero potriviri pe `note explicative` în `core/` și `main.py` | — |
+| **categoria de mărime**, care decide CARE set se datorează | pct. 9 | **derivabilă din date, dar nederivată nicăieri** | vezi mai jos |
+
+**Categoria de mărime: datele EXISTĂ.** Derivată de probă pe **toate cele 17 firme**, din
+`inregistrari_linii` (active pe clasele 2/3/5 la debit, cifră de afaceri pe 70x) și din `salariati`,
+cu regula „nu depășește limitele a cel puțin **două din trei**". Toate ies *microentitate* — dar asta
+e o proprietate a datelor de test (sume mici), nu a metodei. **Ce nu spune proba:** `active` calculat
+pe rulaje e o **aproximare**, nu totalul din bilanț; servește ca să arate că datele sunt acolo, nu ca
+să dea cifra oficială.
+
+**Verdictul familiei B, după decizia pe lista 3:**
+- **bilanțul și CPP** → **lista 3**, cauza *„producătorul există, dar nu ajunge la om"* — aceeași
+  formă ca jurnalul regim marjă, tot vina aplicației, nu a datelor;
+- **notele explicative** → **lista 3**, cauza *„nu există producător"*;
+- **categoria de mărime** rămâne precondiția care spune CARE set se datorează — dar nu mai e o
+  necunoscută, e un **calcul nefăcut**.
 
 ### Pasul 1b — ce produce aplicația (FAMILIA D: evidențele speciale)
 

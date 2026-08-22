@@ -356,3 +356,24 @@ Prinsă de `test_izolare_structurala`, care încearcă toate cele 255 de perechi
 token din alt cabinet. **Regula practică:** dacă ruta are `{tenant_id}` în cale, prima ei linie e
 verificarea accesului — indiferent ce întoarce.
 
+### 10.12 — Proza care descrie codul poate fi falsă de la naștere, nu doar îmbătrânită
+
+Registrele au deja o clasă pentru **doc-stătut**: textul a fost adevărat, codul s-a schimbat sub el,
+iar gărzile anti-stale îl prind comparând datele. **Asta e altceva:** o frază care descrie codul poate
+fi **greșită din clipa în care a fost scrisă** — și atunci nicio gardă de vechime n-o atinge, fiindcă
+nu s-a învechit nimic.
+
+**Instanța (22.08.2026):** `core/export_saga.py:157` afirma că *„WinMentor cere `status='emisa'`"*.
+F187-fix scosese acel filtru din WinMentor **înainte** ca fraza să fie scrisă. Nimeni n-a fost indus
+în eroare până acum fiindcă niciun apelant nu folosea parametrul — dar fraza ar fi îndrumat exact pe
+dos primul om care ar fi citit-o ca să afle regula.
+
+**Ce se poate verifica mecanic și ce nu:** o afirmație despre **propriile** valori implicite se poate
+confrunta cu semnătura (proxy scris, 1 instanță găsită). O afirmație despre **alt modul** nu are proxy
+— se verifică doar citind ambele. De aceea regula e: *o frază care descrie comportamentul altui modul
+poartă referința la locul din care a fost citită*, cum poartă `Temei` un citat.
+
+**Testul practic, când scrii proză despre cod:** dacă fraza ar fi fost falsă în ziua în care ai
+scris-o, ce ar fi prins-o? Dacă răspunsul e „nimic", fraza are nevoie de o referință, nu de mai multă
+grijă.
+
