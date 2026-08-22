@@ -204,6 +204,7 @@ def reconciliaza(conn, schema, an, luna, salariati_generator):
                         divergente.append({"salariat": sid, "camp": camp,
                                            "generator": emis[camp], "cale2": exp[camp], "diferenta": emis[camp] - exp[camp]})
                 continue
+            # interpretare: incadrat_la_minim
             if brut == sm:
                 if are_tichete_masa:
                     sarite.append(sid); continue   # [1b] combo facilitate+tichete la minim = sub-caz ulterior, NEACOPERIT (numit)

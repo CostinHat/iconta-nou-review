@@ -218,6 +218,9 @@ def _calcul_salariu_2018(brut, persoane=0, sub_26=False, copii_scoala=0,
         # Forma clasica (fara istoric): eligibilitate vbt==sm + proratare pe fereastra activa (alin.4
         # lit.b) angajare / lit.d) incetare). TEXT EXPLICIT (spre deosebire de prag - vezi baza_podea).
         facilitate = facilitate_val if (
+            # interpretare: incadrat_la_minim
+            # Egalitatea stricta NU e in textul legii - e alegerea noastra, declarata in
+            # core/registru_interpretari.py cu varianta respinsa (prag_maxim) si cu motivul.
             norma_intreaga and functie_baza and vbt == sm and vbt <= plafon_fac
         ) else Decimal(0)
         facilitate = facilitate * _prorata
