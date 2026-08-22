@@ -134,8 +134,32 @@ ieftină formă de orbire: `test_datorie.py:144` afirma „nimic nu scrie în `s
 | cheia pe rolul sintactic greșit | v1 al scanului a căutat aritmetică+comparații; `_ZIUA.get(tip, 25)` e un *default*, deci invizibil |
 | clasifici ramura, nu obiectul | v2 a clasat `Decimal("4050")` ca nesursată deși avea `Temei` pe același rând |
 | domeniul de căutare prea îngust | `test_datorie.py:144`; și scanul ăsta, până a fost măsurată rădăcina |
+| **act INCOMPLET în corpus** | OMFP 2634/2015 era în corpus cu **o anexă din trei**. Nomenclatorul din copia veche sare de la 14-4-4 la 14-4-13, deci „registrul de casă" nu se găsea — și absența arăta exact ca un act care nu prevede lucrul căutat |
+| **formă INIȚIALĂ citită ca formă la zi** | copia din corpus a Reglementărilor contabile (OMFP 1802/2014) e forma inițială 2014. Am citit de acolo criteriile de mărime — 350.000 EUR / 700.000 EUR — și le-am scris în registru. La zi sunt **2.250.000 lei / 4.500.000 lei**, modificate de ORDIN 4.164/2024. Actul era complet, corect și în vigoare; **forma** era veche |
 | scutire prea largă, adăugată ca precizie | scutirea `tokenize`/`ast.parse` din `core/scan_garzi.py` (sub-instrumentul C): pusă ca să scoată falsele pozitive, a scos chiar cazul canonic. Arată ca precizie, se poartă ca orbire |
 | temei prezent, dar în PROZĂ | `cote_tva.py` citează art. 291 în antet și per categorie — scanul cerea obiect `Temei`, deci îl raporta nesursat. ÎNCHISĂ 21.08: clasa E, ancorată pe valoare (proza trebuie să conțină și citarea, și valoarea). 126 → 98 |
+
+
+### Aducerea unui act e ea însăși o verificare
+
+**Un act incomplet în corpus nu se deosebește de un act care nu spune ce cauți.** Amândouă produc
+același rezultat la căutare: zero potriviri. Diferența — că într-un caz regula nu există, iar în
+celălalt pagina lipsește — nu se vede din interiorul căutării. La fel, **o formă inițială nu se
+deosebește de o formă la zi decât dacă o întrebi**: valorile citite din ea sunt reale, doar că ale
+altui an.
+
+**Deci la aducere, două lucruri obligatorii:**
+
+1. **Un act cu anexe se aduce ÎNTREG, sau se scrie ce lipsește.** Nu „am adus ordinul" — ordinul și
+   anexele lui sunt documente separate pe portal, iar regula căutată stă aproape întotdeauna în anexă.
+2. **Se scrie CE FORMĂ e** — inițială, la o dată, sau consolidată la zi — și se confruntă cu
+   `TIP_FORMA` din `anaf_surse/gen_index.py`, care deja poartă răspunsul pentru fișierele legate de
+   cote. Două instrumente care vorbesc despre același fișier și nu se confruntă e chiar tiparul de la
+   pasul 5 de mai sus.
+
+**Ce urmează din asta, ca restanță scrisă:** câte alte acte din corpus sunt parțiale sau sunt forme
+vechi citite ca fiind la zi. Se ține în `CONFORMITATE.md`, la RESTANȚE (R1 și R4), cu condiția de
+deblocare scrisă — nu aici.
 
 **Fiecare gard nou primește o aserțiune anti-vacuu:** un gard care nu găsește nimic TRECE. Un gard cu
 domeniul greșit e mai rău decât niciun gard — raportează verde despre o lume pe care n-o vede.

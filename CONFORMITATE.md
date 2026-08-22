@@ -32,12 +32,60 @@ atins fișierul, iar o modificare încă necomisă a registrului cere data de az
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
 - **pasul curent**: faza 1, pasul 1a din `PLAN_INVESTIGATII.md` — ÎNCHEIAT. Urmează **1b** (ce produce aplicația, pe date reale) și **1c** (se poate verifica pe ecran).
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
-- **ce lipsește**: operațiunea 1 (câte regimuri) și pasul 1a (ce cere legea) sunt MĂSURATE — vezi blocul „E1 — SETUL COMPLET". Mai lipsesc, ca să se termine E1: **1b** · **1c** · **categoria de mărime**, care decide setul de situații financiare și nu există ca dimensiune în aplicație · **vigoarea pe cele cinci acte structurate pe puncte, nu pe articole** (OMFP 1802/2014, OMFP 2634/2015, OPANAF 3769/2015, 2194/2025, 1783/2021).
+- **ce lipsește**: operațiunea 1 (câte regimuri) și pasul 1a (ce cere legea) sunt MĂSURATE — vezi blocul „E1 — SETUL COMPLET". Mai lipsesc, ca să se termine E1: **1b** · **1c** · plus cele **patru restanțe** de mai jos (R1–R4), dintre care R3 blochează o familie întreagă din 1a.
 - **decizii care blochează**: **niciuna deschisă.** Cele două de dimineață s-au luat: (1) *Legea 82/1991* — **se aduce actul**, nu se acceptă ordinul ca ancoră (adusă, cu amprentă, art. 20 citat verbatim); (2) *perimetrul* — **se îngheață** până trece verificarea, cu excepția cererilor unui contabil real (scris în `PLAN_LUCRU.md`, 22.08.2026).
+- **avertisment la cifre**: **NEÎNCEPUTE include interdicții măsurate în campanii anterioare, netransferate — vezi 3a din `PLAN_INVESTIGATII.md`.** Cel puțin zece au cifre în `GARZI.md` și `TESTE.md` și scriu NEÎNCEPUTĂ aici. Cifra e adevărată, dar arată mai multă muncă rămasă decât e.
 - **ultima actualizare**: 2026-08-22
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
 
 ---
+## RESTANȚE
+
+Ce a rămas neterminat, cu **felul blocajului** și **condiția de deblocare scrisă**. O restanță fără
+condiție de deblocare e o notă; una cu condiție e o poartă.
+
+**Cele trei feluri de blocaj** — derivate din ce blochează efectiv, nu alese abstract:
+**SURSĂ** (temeiul nu se poate cita complet sau corect) · **VERIFICARE** (instrumentul nu ajunge până
+acolo) · **ARTEFACT** (nu se poate spune ce datorează o firmă, deci 1b n-are ce compara).
+
+**Contorul NU se scrie**: se derivă din git — câte commituri au atins `CONFORMITATE.md` de când s-a
+deschis restanța. O restanță cu contorul peste unu a supraviețuit unei ture întregi și se arată ca
+atare în secțiunea B a raportului.
+
+### R1 — Câte alte acte din corpus sunt PARȚIALE
+
+- **felul**: SURSĂ
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `45f15ab`
+- **ce blochează**: orice temei sprijinit pe un act adus parțial se citește ca „regula nu există", nu ca „pagina lipsește". Instanța cunoscută: OMFP 2634/2015, o anexă din trei — registrul de casă părea absent din lege.
+- **condiția de deblocare**: un inventar al corpusului care spune, pentru fiecare act cu anexe, dacă anexele sunt aduse; plus regula de aducere scrisă în METODA, aplicată de acum înainte. Se închide când inventarul există și fiecare act parțial e ori completat, ori declarat parțial în `INDEX.json`.
+
+### R2 — Vigoarea PE PUNCT, nu doar pe articol
+
+- **felul**: VERIFICARE
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `45f15ab`
+- **ce blochează**: Reglementările contabile (anexa OMFP 1802/2014) și Normele OMFP 2634/2015 sunt structurate pe **puncte**; `scripts/vigoare_articol.py` delimitează pe articole. Deci pentru familia B din 1a se cunoaște doar data consolidării actului, nu starea punctului folosit.
+- **condiția de deblocare**: instrumentul citește și puncte, calibrat pe un punct despre care se ȘTIE că a fost modificat (pct. 9, ORDIN 4.164/2024) plus unul nemodificat plus un control negativ. **Cost măsurat, nu estimat din burtă: ~2 ore** — marcajele pe punct EXISTĂ și sunt mai bogate decât cele pe articol (numesc Litera, Alineatul, Punctul, Secțiunea, Capitolul: 58 de marcaje în act), dar titlul punctului e **în flux, nu la început de rând** (`9. - (1) În funcție de…`), deci delimitarea cere alt regex decât cel de articol. **E restanță de muncă, nu limită declarată.**
+
+### R3 — Categoria de mărime nu există în aplicație
+
+- **felul**: ARTEFACT
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `45f15ab`
+- **ce blochează**: componența situațiilor financiare depinde de categoria de mărime (micro / mică / mijlocie-mare). Nu e câmp în `firma_profil`, nu apare în vectorul fiscal. Pentru **niciuna** dintre cele 17 firme nu se poate spune, din date, ce set de situații financiare datorează — deci **toată familia B din 1a nu poate intra în 1b**.
+- **condiția de deblocare**: categoria se poate **deriva** (active, cifră de afaceri netă, număr mediu de salariați, două criterii din trei, la data bilanțului) — deci nu cere un câmp nou, ci un calcul pe date pe care evidența le are. Se închide când 1b poate clasifica fiecare firmă și artefactele familiei B primesc verdict.
+
+### R4 — Câte alte forme VECHI din corpus sunt citite ca fiind la zi
+
+- **felul**: SURSĂ
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `45f15ab`
+- **ce blochează**: o formă inițială dă valori reale, dar ale altui an, și nu se deosebește de o formă la zi decât dacă o întrebi. Instanța: criteriile de mărime, scrise în EUR din forma 2014, corectate în aceeași zi.
+- **condiția de deblocare**: `TIP_FORMA` din `anaf_surse/gen_index.py` poartă deja răspunsul pentru fișierele legate de cote; se închide când orice fișier din care se citește un temei are forma declarată, iar citirea dintr-o formă marcată `forma_la_data` pentru o valoare CURENTĂ e imposibilă, nu doar nerecomandată.
+
+---
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
@@ -156,8 +204,16 @@ sursa externă** (Portalul Legislativ, Ministerul Justiției), pe FORMA CONSOLID
 |---|---|---|
 | obligația de a le întocmi | **Legea 82/1991 art. 28** alin. (1): „Persoanele prevăzute la art. 1 alin. (1)-(4) au obligația să întocmească situații financiare anuale." | ÎN VIGOARE; alin. (1) modificat 01-01-2015, alin. (1^1) 26-02-2021 |
 | **termenele de depunere** | **Legea 82/1991 art. 36** alin. (1): societățile reglementate de Legea 31/1990 ș.a. — **până la 31 mai** inclusiv a exercițiului financiar următor; **celelalte persoane juridice — până la 30 aprilie** | ÎN VIGOARE; alin. (1) **modificat 05-12-2024** |
-| componența, pe categorii de mărime | OMFP 1802/2014 pct. 20 alin. (1) (micro) · pct. 20 alin. (2) (mici: bilanț prescurtat, cont de profit și pierdere, note) · pct. 21 (mijlocii/mari și interes public: plus situația modificărilor capitalului propriu și situația fluxurilor de trezorerie) | **NEVERIFICATĂ la sursă** — actul e structurat pe puncte, nu pe articole; instrumentul de vigoare lucrează pe articol |
-| criteriile de mărime | OMFP 1802/2014 pct. 9: micro — 350.000 EUR active / 700.000 EUR cifră de afaceri netă; mici — 4.000.000 / 8.000.000. **Două criterii din trei**, la data bilanțului | idem |
+| componența, pe categorii de mărime | Reglementările contabile (anexa OMFP 1802/2014) pct. 20 alin. (1) — micro · pct. 20 alin. (2) — mici: bilanț prescurtat, cont de profit și pierdere, note · pct. 21 — mijlocii/mari și interes public: plus situația modificărilor capitalului propriu și situația fluxurilor de trezorerie | citite pe **forma consolidată la zi** (adusă 22.08.2026, consolidare 19.11.2025); vigoarea PE PUNCT rămâne restanța **R2** |
+| **criteriile de mărime — CORECTATE 22.08.2026** | Reglementările contabile pct. 9: **micro** — total active **2.250.000 lei**, cifră de afaceri netă **4.500.000 lei**, număr mediu de salariați **10**; **mici** — **25.000.000 lei**, **50.000.000 lei**, **50** de salariați; **mijlocii și mari** — cele care DEPĂȘESC cel puțin două dintre aceleași trei. Două criterii din trei, la data bilanțului | **modificate de ORDIN 4.164/2024, în vigoare 23-08-2024**, citite pe forma consolidată |
+
+**O cifră falsă a intrat în registru dimineață, și a ieșit după-amiaza.** Scrisesem criteriile în EUR
+— 350.000 / 700.000 / 4.000.000 / 8.000.000 — citite din copia din corpus a Reglementărilor contabile.
+Copia aia e **forma inițială 2014**, iar `anaf_surse/gen_index.py` chiar o marca așa
+(`„forma initiala 2014; NU include Ordinul 1239/2021…"`). Nu m-am uitat la marcaj. Valorile la zi sunt
+în **lei**, modificate de ORDIN 4.164/2024. Actul era complet, corect și în vigoare; **forma** era
+veche. Forma nouă a fost adusă: `anaf_surse/omfp_1802_2014_reglementari_consolidat.{html,txt}`,
+amprentă `7636b1e1…d9cfe`. Clasa e scrisă în METODA, la formele de orbire prin construcție.
 
 **Rămâne deschis la B:** **categoria de mărime nu există ca dimensiune în aplicație** — nu e câmp în
 `firma_profil`, nu apare în vectorul fiscal. Pentru niciuna dintre cele 17 firme nu se poate spune, din
@@ -176,8 +232,8 @@ Codului fiscal (consolidare 08.08.2026)**, respectiv a Codului de procedură fis
 | **D300** | CF **art. 323** „Decontul de taxă" | ÎN VIGOARE, fără marcaj | 11 |
 | **D301** | CF **art. 324** „Decontul special de taxă și alte declarații" | ÎN VIGOARE; alin. (5) mod. 03-02-2020 | 1 confirmat (t006) |
 | **D390** | CF **art. 325** „Declarația recapitulativă" | ÎN VIGOARE; partea introductivă a alin. (1) mod. 01-07-2024 | 5 |
-| **D394** | nu e în Codul fiscal — OPANAF 3769/2015 și OPANAF 2194/2025, ambele în corpus | **NEVERIFICATĂ la sursă** | 11 |
-| **D406** | **Cod procedură fiscală art. 59^1** „Obligația de depunere a fișierului standard de control fiscal": „Contribuabilul/Plătitorul are obligația de a depune la organul fiscal central o declarație cuprinzând informații din evidența contabilă și fiscală" | ÎN VIGOARE; introdus 01-01-2022 (OG 11/2021) | de stabilit la 1b |
+| **D394** | nu e în Codul fiscal — **OPANAF 3769/2015 art. 1**: „Persoanele impozabile înregistrate în scopuri de TVA în România sunt obligate să declare livrările de bunuri, prestările de servicii și achizițiile de bunuri și servicii realizate pe teritoriul României" | ÎN VIGOARE, fără marcaj (consolidare 17.09.2025) | 11 |
+| **D406** | **Cod procedură fiscală art. 59^1** „Obligația de depunere a fișierului standard de control fiscal"; forma declarației: **OPANAF 1783/2021 art. 2** — „Fișierul standard de control fiscal (SAF-T) se transmite … prin intermediul Declarației informative D406" | ambele ÎN VIGOARE; art. 59^1 introdus 01-01-2022, ordinul consolidat 08.04.2025 | de stabilit la 1b |
 
 **D. Evidențe speciale**
 
@@ -193,10 +249,12 @@ Codului fiscal (consolidare 08.08.2026)**, respectiv a Codului de procedură fis
 **Cele patru căutări nerezolvate din prima trecere: ÎNCHISE, toate patru.** D205 → CF art. 132 ·
 registrul de casă → OMFP 2634/2015 Anexa nr. 2 · D212 → CF art. 122 · D406 → CPF art. 59^1.
 
-**Ce a rămas neverificat, numit:** vigoarea pentru **OMFP 1802/2014**, **OMFP 2634/2015** (ambele
-structurate pe puncte, nu pe articole — instrumentul lucrează pe articol) și pentru cele trei OPANAF
-(**3769/2015**, **2194/2025**, **1783/2021**). Pentru primele două se cunoaște data ultimei consolidări
-a actului (01.08.2024), ceea ce e mai puțin decât vigoarea pe articol, și se declară ca atare.
+**Ce a rămas neverificat — și o afirmație de-a mea, corectată.** Spusesem că „cele cinci acte sunt
+structurate pe puncte". **Nu sunt cinci, sunt două.** Verificat deschizându-le: OPANAF 3769/2015 are 23
+de articole, OPANAF 1783/2021 are 15 — amândouă intră azi sub instrumentul de articol, și au fost
+verificate în aceeași tură. Rămân **pe puncte**: Reglementările contabile (anexa OMFP 1802/2014, 58 de
+marcaje pe punct) și Normele OMFP 2634/2015 — restanța **R2**. Rămâne neverificat și **OPANAF
+2194/2025**, a cărui pagină de act nu expune articole (conținutul stă în anexe), deci cere altă cale.
 
 ### Ce lipsește ca să se termine E1
 

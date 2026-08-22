@@ -46,7 +46,7 @@ Fiecare are un criteriu de terminare **observabil**, nu o estimare de durată.
 
 **Ce iese:** știm dacă aplicația stă pe temeiuri valide, și dacă o modificare de lege poate fi urmărită până la codul afectat.
 
-**Ce blochează:** accesul la portalul legislativ. Dacă rămâne inaccesibil automat, verificarea vigorii e muncă manuală, iar pragurile din plan trebuie recalibrate.
+**Ce blochează:** nimic din afară. Presupunerea că portalul legislativ ar bloca accesul automat **s-a dovedit falsă pe 22.08.2026** — răspunde cu antet de browser, iar căutarea se face prin formularul lui. Verificarea vigorii pe articol e mecanică (`scripts/vigoare_articol.py`), deci pragurile din plan rămân cele scrise.
 
 ---
 

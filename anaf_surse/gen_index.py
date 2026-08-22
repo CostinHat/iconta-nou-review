@@ -38,6 +38,8 @@ TIP_FORMA = {
     "legea_207_2015_consolidat.html": "consolidat_la_zi",  # Cod procedura fiscala (consolidat la zi, OUG 38/2026)
     "omf_1235_2023.pdf": "forma_la_data",
     "legea_82_1991_consolidat.html": "consolidat_la_zi",   # adusa 22.08.2026 (art. 20/22/28/36)
+    "omfp_1802_2014_reglementari_consolidat.html": "consolidat_la_zi",  # criteriile de marime, in LEI
+    "omfp_1802_2014_ordin_consolidat.html": "consolidat_la_zi",
     "omfp_2634_2015_anexa1_norme_generale.html": "consolidat_la_zi",
     "omfp_2634_2015_anexa2_norme_specifice.html": "consolidat_la_zi",
     "omfp_2634_2015_anexa3_modele.html": "consolidat_la_zi",           # indemnizatie deplasare interna 23 lei de la 01.04.2023

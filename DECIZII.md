@@ -11039,3 +11039,44 @@ de mai sus; (2) `nomenclator_cm` rămâne ce e — denumirile, fără procente, 
 motive diferite; (3) ecranul compune eticheta la randare, pe data certificatului; (4) `CM_CODURI` din
 `flux_concediu.js` dispare. **Nereparat în tura asta** — rămâne în lista de reparat (interdicția 28 și,
 pentru procente, interdicția 1).
+
+
+### D4. Limita „accesul la sursa externă" cade din Partea 0 (22.08.2026)
+
+**Costin:** *„scrisesem în Partea 0 că accesul la portal ar putea fi blocat, deci verificarea vigorii ar
+fi muncă manuală. Nu era blocat — era un client care nu se prezenta."*
+
+Ce s-a aflat, și e acum scris în plan: `legislatie.just.ro` răspunde **403** fără antet de browser și
+**200** cu el; căutarea se face prin **formularul portalului** (POST cu token antiforgery, tip + număr +
+an), nu ghicind identificatori; iar pentru actele mari **forma consolidată la zi e un document separat**
+— pagina actului de bază conține doar cuprinsul, deci un act mare citit de acolo pare gol fără să fie.
+Consecința scrisă: **pragurile de reverificare sunt realiste, nu optimiste.**
+
+**Corectat în patru locuri, nu unul.** Aceeași presupunere trăia în `PLAN_ARHITECTURA` Partea 0, în
+`PLAN_LUCRU` (blocantul lui E2) și în `PLAN_INVESTIGATII` de două ori (faza 2 și „ce ar dovedi că planul
+e greșit"). Lăsată în trei dintre ele, ar fi devenit o scuză disponibilă pentru pasul 2 — exact
+interdicția 20, pe planuri în loc de perimetru.
+
+
+### D5. O cifră falsă intrată în registru dimineață, ieșită după-amiaza (22.08.2026)
+
+Scrisesem criteriile de mărime în **EUR** — 350.000 / 700.000 / 4.000.000 / 8.000.000 — citite din copia
+din corpus a Reglementărilor contabile. **Copia aia e forma inițială 2014.** Valorile la zi sunt în
+**lei**: micro 2.250.000 / 4.500.000 / 10 salariați; mici 25.000.000 / 50.000.000 / 50 — modificate de
+**ORDIN 4.164/2024**, în vigoare 23-08-2024.
+
+**Ce e de reținut nu e greșeala, ci de ce n-a fost prinsă:** `anaf_surse/gen_index.py` marca deja fișierul
+(*„forma initiala 2014; NU include Ordinul 1239/2021, 4291/2022, 5378/2023, OMF 52/2024"*). Doi
+observatori vorbeau despre același fișier — copia și marcajul ei — și nu s-au confruntat. E chiar pasul 5
+din METODA §5, aplicat de mine în altă parte și sărit aici.
+
+Forma consolidată a fost adusă (`omfp_1802_2014_reglementari_consolidat`, amprentă `7636b1e1…d9cfe`,
+consolidare 19.11.2025), clasa a intrat în METODA la formele de orbire, iar întrebarea „câte alte forme
+vechi sunt citite ca fiind la zi" a devenit restanța **R4**, cu condiție de deblocare scrisă.
+
+### D6. Cele trei feluri de blocaj ale unei restanțe — DERIVATE, nu alese
+
+Costin a cerut restanțele „deschise pe cele trei feluri de blocaj". Felurile nu erau numite nicăieri, iar
+cele trei exemple date de el le determină: actele parțiale blochează un **temei** (SURSĂ), vigoarea pe
+punct blochează un **instrument** (VERIFICARE), categoria de mărime blochează faptul că se poate spune ce
+**datorează** o firmă (ARTEFACT). Taxonomia asta e a mea, derivată din exemplele lui — **de confirmat**.

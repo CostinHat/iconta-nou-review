@@ -155,7 +155,7 @@ Despicarea contează: fără ea, o firmă cu date incomplete face aplicația să
 
 **49, 52, 54, 55** sunt măsurabile după ce câmpurile există. Azi nu există, deci prima operațiune e inventarul: câte acte sunt în corpus, de când, cu ce se folosesc.
 
-**50 și 59** cer verificarea vigorii la sursă externă, pe articol. Aici e cea mai mare muncă din fază, și depinde de accesul la portalul legislativ.
+**50 și 59** cer verificarea vigorii la sursă externă, pe articol. Rămâne cea mai mare muncă din fază **ca volum**, dar nu mai e blocată: portalul e accesibil (antet de browser + formularul lui de căutare), iar `scripts/vigoare_articol.py` citește starea articolului din forma consolidată la zi. Ce rămâne de făcut e să treacă prin toate articolele, nu să se găsească o cale la ele.
 
 **51, 56, 57** nu sunt măsurabile retroactiv. O regulă scrisă din memorie sau dintr-un text neînțeles nu se distinge de una scrisă corect. Sunt **reguli de proces**, aplicabile de acum înainte, iar starea lor e NEMĂSURABILĂ RETROACTIV, cu motivul scris.
 
@@ -182,7 +182,7 @@ Din cazurile cunoscute — dacă scanul nu le găsește, e rupt:
 
 ### Ce ar dovedi că planul e greșit aici
 
-Dacă pragurile de reverificare din plan se dovedesc imposibil de respectat cu accesul actual la sursa oficială, nu se completează formal — se schimbă pragurile, prin decizie, cu motivul scris.
+Dacă pragurile de reverificare din plan se dovedesc imposibil de respectat, nu se completează formal — se schimbă pragurile, prin decizie, cu motivul scris. **Motivul „nu avem acces la sursa oficială" a căzut pe 22.08.2026** și nu se mai poate invoca: portalul răspunde, iar instrumentul există.
 
 ---
 

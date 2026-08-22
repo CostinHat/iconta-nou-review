@@ -1418,13 +1418,6 @@
       "sursa": "static.anaf.ro",
       "forma": "consolidata"
     },
-    "legea_82_1991_consolidat.pdf": {
-      "exista": true,
-      "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "consolidata"
-    },
     "legea_82_1991_consolidat.txt": {
       "exista": true,
       "tip_forma": null,
@@ -1577,6 +1570,48 @@
       "exista": true,
       "tip_forma": null,
       "acopera": []
+    },
+    "omfp_1802_2014_ordin_consolidat.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": [],
+      "sursa": "legislatie.just.ro",
+      "forma": "consolidata"
+    },
+    "omfp_1802_2014_ordin_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "consolidata"
+    },
+    "omfp_1802_2014_ordin_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "consolidata"
+    },
+    "omfp_1802_2014_reglementari_consolidat.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": [],
+      "sursa": "legislatie.just.ro",
+      "forma": "consolidata"
+    },
+    "omfp_1802_2014_reglementari_consolidat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "consolidata"
+    },
+    "omfp_1802_2014_reglementari_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "consolidata"
     },
     "omfp_2634_2015.pdf": {
       "exista": true,

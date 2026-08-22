@@ -210,7 +210,7 @@ def test_se_vede_cat_e_de_facut(plan, conf):
 # (`scripts/raport_b.py`), iar ea cere si pasul, nu doar etapa. Un camp de care depinde
 # un raport, dar pe care nimic nu-l cere, dispare la prima rescriere.
 ANTET_CAMPURI = ("etapa", "pasul curent", "criteriul de terminare", "ce lipsește",
-                 "decizii care blochează", "ultima actualizare")
+                 "decizii care blochează", "avertisment la cifre", "ultima actualizare")
 
 CAP_ANTET = "## ANTET DE ETAPĂ"
 
@@ -434,3 +434,81 @@ def test_efectul_e_al_interdictiei_nu_al_grupului(conf):
         "Campul spune unde ajunge efectul ACESTEI interdictii. Doua interdictii din acelasi grup de "
         "principii au efecte diferite — daca n-au, una dintre ele nu era nevoie sa existe."
         % (len(rele), "\n".join(rele)))
+
+
+# ─────────────────────────────────────────────────────────────────── RESTANȚE
+#
+# Cerute de Costin, 22.08.2026: *„dacă restanțele nu apar nicăieri în B, B spune că nimic nu
+# blochează."* Consecința era vizibilă chiar în raportul care a produs observația: antetul spunea
+# „decizii care blochează: niciuna" într-un moment în care categoria de mărime bloca o familie
+# întreagă din 1a. Formal corect — e restanță, nu decizie — și tocmai de aceea invizibil.
+#
+# CE FACE IMPOSIBIL: o restanță fără felul blocajului · fără condiție de deblocare scrisă · cu o stare
+# din afara celor două · REZOLVATĂ fără să spună pe ce commit · un `deschisă pe commit` inventat.
+#
+# CE NU FACE, declarat: nu judecă dacă felul ales e cel potrivit, nici dacă condiția de deblocare e
+# realistă. Verifică forma și existența. Contorul nu se verifică deloc — se DERIVĂ din git, în
+# `scripts/raport_b.py`, tocmai ca să nu existe un număr scris de mână care poate rămâne în urmă.
+
+FELURI = ("SURSĂ", "VERIFICARE", "ARTEFACT")
+STARI_RESTANTA = ("DESCHISĂ", "REZOLVATĂ")
+CAMPURI_RESTANTA = ("felul", "stare", "deschisă pe commit", "ce blochează",
+                    "condiția de deblocare")
+
+
+def _restante(t=None):
+    """{cod: (titlu, corp)} pentru blocurile `### R<n> — <titlu>` din secțiunea RESTANȚE."""
+    if t is None:
+        t = io.open(CONF, encoding="utf-8").read()
+    m = re.search(r"^## RESTANȚE[ \t]*$(.*?)^## ", t, re.M | re.S)
+    if m is None:
+        return {}
+    buc = re.split(r"^### (R\d+)\s*[—-]\s*(.+)$", m.group(1), flags=re.M)
+    return {buc[k]: (buc[k + 1].strip(), buc[k + 2]) for k in range(1, len(buc), 3)}
+
+
+def test_cititorul_de_restante_chiar_vede_restante():
+    """ANTI-VACUU. Un regex rupt ar face toate testele de mai jos să treacă pe zero restanțe."""
+    fals = "## RESTANȚE\n\n### R9 — proba\n- **felul**: SURSĂ\n\n## E1 — x\n"
+    r = _restante(fals)
+    assert list(r) == ["R9"], "parsarea restanțelor s-a rupt: %r" % list(r)
+    assert _camp(r["R9"][1], "felul") == "SURSĂ"
+    assert _restante("fără secțiune\n") == {}
+
+
+def test_registrul_are_sectiunea_de_restante():
+    r = _restante()
+    assert r, (
+        "CONFORMITATE.md n-are secțiunea `## RESTANȚE`. Fără ea, secțiunea B a raportului spune că "
+        "nimic nu blochează, chiar când o familie întreagă din 1a e blocată.")
+
+
+def test_fiecare_restanta_e_completa():
+    rele = []
+    for cod, (_titlu, corp) in sorted(_restante().items()):
+        for camp in CAMPURI_RESTANTA:
+            v = _camp(corp, camp)
+            if v is None or len(v.strip("*—- ")) < 3:
+                rele.append("  %s: câmpul `%s` lipsește sau e gol" % (cod, camp))
+        fel = (_camp(corp, "felul") or "").strip("* ")
+        if fel and fel not in FELURI:
+            rele.append("  %s: felul %r — cele trei sunt: %s" % (cod, fel, ", ".join(FELURI)))
+        st = (_camp(corp, "stare") or "").strip("* ").split("(")[0].strip()
+        if st and st not in STARI_RESTANTA:
+            rele.append("  %s: stare %r — cele două sunt: %s" % (cod, st, ", ".join(STARI_RESTANTA)))
+        if st == "REZOLVATĂ" and not _camp(corp, "rezolvată pe commit"):
+            rele.append("  %s: REZOLVATĂ fără `rezolvată pe commit`" % cod)
+    assert not rele, "restanțe incomplete:\n" + "\n".join(rele)
+
+
+def test_commiturile_restantelor_exista():
+    """O restanță ancorată pe un commit inventat n-are contor, deci n-are vechime."""
+    rele = []
+    for cod, (_titlu, corp) in sorted(_restante().items()):
+        for camp in ("deschisă pe commit", "rezolvată pe commit"):
+            v = (_camp(corp, camp) or "").strip("`*— ")
+            if not v:
+                continue
+            if _git("cat-file", "-e", "%s^{commit}" % v).returncode != 0:
+                rele.append("  %s: `%s` = %r nu există în istoric" % (cod, camp, v))
+    assert not rele, "commituri inexistente în restanțe:\n" + "\n".join(rele)

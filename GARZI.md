@@ -3986,3 +3986,31 @@ a intrat in `ANTET_CAMPURI`, nu doar in fisier.
 cel mai vechi commit se NUMARA din sectiuni, la fiecare rulare. O stare scrisa de mana despre propriile
 sectiuni ar fi aceeasi clasa de defect, mutata cu un rand mai jos. Prima rulare a si aratat de ce: eu
 spusesem „8 masurate + 1 nemasurabila"; numaratoarea da **6 MASURATE + 2 PARTIAL + 1 NEMASURABILA**.
+
+
+## 22.08.2026 — RESTANTELE devin obiect gardat, nu observatie in raport
+
+**De ce (Costin):** *„daca restantele nu apar nicaieri in B, B spune ca nimic nu blocheaza."*
+Consecinta era vizibila chiar in raportul care a produs observatia: antetul spunea „decizii care
+blocheaza: niciuna" intr-un moment in care categoria de marime bloca o familie intreaga din 1a. Formal
+corect — e restanta, nu decizie — si tocmai de aceea invizibil.
+
+**Sectiunea `## RESTANTE` din CONFORMITATE.md**, cu patru intrari deschise (R1 acte partiale in corpus ·
+R2 vigoarea pe punct · R3 categoria de marime · R4 forme vechi citite ca la zi). Fiecare poarta felul
+blocajului (SURSA / VERIFICARE / ARTEFACT), starea, commitul de deschidere, ce blocheaza si **conditia de
+deblocare scrisa**. O restanta fara conditie de deblocare e o notita; una cu conditie e o poarta.
+
+**Contorul nu se scrie: se DERIVA din git** — cate commituri au atins registrul de cand s-a deschis
+restanta (`scripts/raport_b.py`). Un numar scris de mana ar fi chiar defectul pe care restantele il
+masoara, mutat cu un rand mai jos.
+
+**Patru teste + anti-vacuu pe instrument**, RED-proof **7 mutatii, 7 rosii**: sectiunea dispare · un camp
+obligatoriu golit · fel din afara celor trei · stare inventata · REZOLVATA fara `rezolvata pe commit` ·
+hash inventat · parserul rupt.
+
+**CE NU FAC, declarat:** nu judeca daca felul ales e cel potrivit, nici daca conditia de deblocare e
+realista. Verifica forma si existenta.
+
+**Plus, in antet:** `avertisment la cifre` — obligatoriu, fiindca „66 NEINCEPUTE" e adevarat si inselator
+in acelasi timp: cel putin zece interdictii au masuratori in campaniile din iulie-august, netransferate
+(transferul e la 3a). Cifra arata mai multa munca ramasa decat e.

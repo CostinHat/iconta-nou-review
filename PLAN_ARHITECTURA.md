@@ -2,6 +2,13 @@
 
 **Versiunea 14 — ultima înainte de confruntare.** Corectează P24 (revizuirea se face intern, deliberat, nu de un specialist din afară) și adaugă la Partea 00 **angajamentul de răspuns în 48 de ore** și ce cere el de la arhitectură.
 
+**Corecție 22.08.2026 — v14.1.** Din Partea 0 a fost **scoasă** limita declarată „accesul la sursa
+externă". Nu era o limită: portalul răspunde cu antet de browser, iar căutarea se face prin formularul
+lui. În locul ei s-a scris ce s-a aflat, plus consecința — pragurile de reverificare sunt realiste, nu
+optimiste. **Nu e o extindere a planului**, e o presupunere falsificată de o probă, scoasă prin decizie
+scrisă, cum cere Partea VII: *„Dacă un principiu se dovedește greșit, se schimbă documentul — prin
+decizie scrisă, cu motiv, nu prin adaptare tăcută."*
+
 Versiunea 13 adăugase **Partea 00: ce face sistemul** — fără de care nu există criteriu de proporționalitate — plus **P24, P25, P26**.
 
 **De aici nu se mai adaugă.** Planul a crescut de la 10 principii la 26 într-o singură zi. Fiecare e justificat, dar de la un punct principiul marginal costă mai mult decât apără, iar sistemul de control devine el însuși ceva de întreținut. Ce urmează e confruntarea, nu completarea.
@@ -199,11 +206,31 @@ Secvența e comportament, deci nu se poate garda integral. Ce se poate garda e *
 
 Asta nu dovedește că secvența a fost parcursă. Dovedește că nu se poate pretinde că a fost.
 
-### Două limite declarate
+### O limită declarată, și o presupunere care s-a dovedit falsă
 
-**Accesul la sursa externă.** Pasul 2 depinde de un portal legislativ accesibil. Dacă sursa oficială blochează accesul automat, verificarea se face manual, iar pragurile de mai sus devin muncă a omului. Nu e o scuză pentru a sări pasul — e un motiv pentru care pragurile trebuie să fie realiste: un termen imposibil produce câmpuri completate formal, ceea ce e mai rău decât absența lor.
+**Presupunerea, corectată la 22.08.2026: accesul la sursa externă NU e o limită.** Până atunci planul
+spunea că pasul 2 depinde de un portal legislativ care ar putea bloca accesul automat, deci verificarea
+vigorii ar deveni muncă a omului. **Nu era blocat.** Portalul Legislativ (`legislatie.just.ro`) răspunde
+**403** unui client care nu se prezintă și **200** cu un antet de browser obișnuit. Căutarea se face
+**prin formularul lui** — POST cu tokenul antiforgery al paginii, tip de document + număr + an — nu
+ghicind identificatori. Iar pentru actele mari, forma consolidată la zi e **un document separat**, legat
+din pagina actului de bază: pagina de bază conține doar cuprinsul, deci un act mare citit de acolo pare
+gol fără să fie.
 
-**Traducerea din text în formulă nu se verifică mecanic.** Citatul conține „deducerea scade cu 0,5 puncte la fiecare 50 de lei"; codul conține o expresie. Că a doua îl implementează corect pe primul **nu verifică nimic din tot ce e mai sus**. Rămâne judecată umană, iar arbitrul o acoperă doar unde validează.
+Deci verificarea vigorii pe articol e **mecanică**: `scripts/vigoare_articol.py` citește articolul din
+forma consolidată la zi și raportează starea lui plus marcajele de modificare, iar
+`scripts/portal_legislativ.py` aduce actul în corpus cu amprentă. Amândouă au fost construite și
+folosite în ziua în care presupunerea a căzut — 19 articole verificate, patru acte aduse.
+
+**Ce NU face instrumentul, declarat:** spune că articolul e în vigoare în forma asta, nu că **spune** ce
+îi atribuim. Aia e verificarea 3, și rămâne o citire.
+
+**Consecința: pragurile de reverificare sunt realiste, nu optimiste.** Argumentul vechi — „un termen
+imposibil produce câmpuri completate formal, ceea ce e mai rău decât absența lor" — rămâne adevărat ca
+principiu, dar nu se mai aplică aici: trimestrial pentru valorile curente și semestrial pentru
+articolele de fond sunt termene pe care le ține un instrument, nu o corvoadă care se bifează.
+
+**Limita care rămâne: traducerea din text în formulă nu se verifică mecanic.** Citatul conține „deducerea scade cu 0,5 puncte la fiecare 50 de lei"; codul conține o expresie. Că a doua îl implementează corect pe primul **nu verifică nimic din tot ce e mai sus**. Rămâne judecată umană, iar arbitrul o acoperă doar unde validează.
 
 ---
 
