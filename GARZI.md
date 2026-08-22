@@ -3930,3 +3930,43 @@ nimic` (reconstruit — nu există ca revizie) · `test_schema_coloane` (rev. `5
 
 **Regula care iese:** o listă de scutiri prea largă orbește exact ca un tipar mort, iar calibrarea se
 reface DUPĂ FIECARE atingere a instrumentului, nu o dată la început.
+
+
+## 22.08.2026 — registrul confruntarii nu poate imbatrani tacut (`core/test_conformitate.py`, +12 teste)
+
+**De ce (Costin):** *„un antet cu date vechi e mai rau decat niciunul"* si *„o cifra adevarata azi se
+citeste peste doua saptamani ca stare curenta, desi codul s-a miscat. Nu e o afirmatie gresita — e una
+care imbatraneste, iar data o face vizibila."*
+
+**Trei clase inchise:**
+
+1. **Antetul de etapa** — `test_antetul_exista_si_e_complet`, `test_etapa_e_dintre_cele_cinci`,
+   `test_criteriul_si_ce_lipseste_nu_sunt_aceeasi_fraza`, `test_antetul_nu_e_stale`. Prospetimea se
+   verifica pe ISTORICUL GIT, nu pe mtime (mtime se schimba la checkout si ar da verde fals): registru
+   modificat fata de HEAD -> antetul poarta data de AZI; registru curat -> data >= ziua ultimului commit
+   care l-a atins. Asa prinde INAINTE de commit, nu dupa.
+2. **Cand, si de pe ce cod** — `test_fiecare_sectiune_are_cand_si_de_pe_ce_cod`,
+   `test_o_cifra_poarta_data_si_commitul`, `test_neinceputa_nu_pretinde_masuratoare`,
+   `test_commiturile_din_registru_exista`, `test_antetul_numeste_cel_mai_vechi_commit`. Ambele directii:
+   o cifra MASURATA fara ancora pica, dar si o sectiune NEINCEPUTA care PRETINDE o masuratoare.
+   Hash-urile se rezolva cu `git cat-file` — un commit inventat arata exact ca unul adevarat.
+3. **Efectul e al interdictiei, nu al grupului** — `test_efectul_e_al_interdictiei_nu_al_grupului`.
+   Defectul, gasit de Costin: campul „unde ajunge efectul" fusese completat pe GRUPURI de principii
+   (13 purta efectul lui 15, 14 pe al lui 2). Auditul complet al celor 48 a scos **13 grupuri de text
+   partajat + 2 sectiuni cu text-substituent**; 26 de sectiuni au fost rescrise.
+
+**Anti-vacuu pe INSTRUMENT, nu doar pe date:** `test_cititorul_de_antet_chiar_vede_antetul` probeaza ca
+regexul de antet chiar gaseste blocul si intoarce None cand lipseste. Fara el, un regex rupt ar face
+toate cele patru teste de antet sa treaca pe un fisier fara antet — interdictia 19.
+
+**RED-proof: 14 mutatii, 14 rosii**, din copie de siguranta, cu curatare de `__pycache__` intre ele.
+Una a fost refacuta: prima forma a mutatiei „criteriul copiat in ce lipseste" nu facea campurile egale,
+deci gardul trecea corect — **mutatia era gresita, nu gardul**.
+
+**CE NU FAC, declarat:** nu verifica daca ce scrie in antet e ADEVARAT (ca etapa e chiar cea in care
+suntem), nu verifica daca masuratoarea a fost chiar facuta la acea data si pe acel arbore, si nu se
+aprind cand distanta fata de HEAD creste — vechimea se CITESTE, nu se blocheaza. Un prag ar transforma
+harta in poarta si ar opri lucrul tocmai cand e mai mult de facut.
+
+**Proxy-ul de la clasa 3 e slab prin natura lui:** prinde COPIEREA (text identic), nu parafrazarea.
+Cifra lui e un plafon inferior — dar prinde exact forma prin care s-a produs clasa.

@@ -1,18 +1,215 @@
 # ARHITECTURA iConta — PLAN NORMATIV
 
-**Versiunea 4** — adaugă Partea B: P14–P20, principiile de conformitate. Scopul nu e doar o aplicație care calculează corect, ci una care se poate apăra la un control.
+**Versiunea 14 — ultima înainte de confruntare.** Corectează P24 (revizuirea se face intern, deliberat, nu de un specialist din afară) și adaugă la Partea 00 **angajamentul de răspuns în 48 de ore** și ce cere el de la arhitectură.
+
+Versiunea 13 adăugase **Partea 00: ce face sistemul** — fără de care nu există criteriu de proporționalitate — plus **P24, P25, P26**.
+
+**De aici nu se mai adaugă.** Planul a crescut de la 10 principii la 26 într-o singură zi. Fiecare e justificat, dar de la un punct principiul marginal costă mai mult decât apără, iar sistemul de control devine el însuși ceva de întreținut. Ce urmează e confruntarea, nu completarea.
+
+Versiunea 10 adăugase **P21 — norma știe ce depinde de ea**: legătura dintre articol și tot ce îl implementează, navigabilă în ambele sensuri. Fără ea, P18 cere ceva ce nu se poate face.
+
+Versiunea 9 adăugase: validatorul e o constrângere, nu o sursă alternativă · întâi se modifică planul, apoi se conformează codul.
+Versiunea 8 completase etapa temeiului: „nu înțeleg" ca stare legitimă și cererea specifică · verificarea pe articol, nu pe act · ierarhia surselor · absența temeiului ca rezultat declarat · traducerea text→formulă, ca limită.
 
 Acest document spune **cum trebuie să fie**, nu cum este. Nu descrie codul existent și nu s-a scris citindu-l.
 
-Confruntarea cu ce există e o operațiune ulterioară și separată. Diferența dintre acest document și realitate e lista de reparat.
+---
+
+# PARTEA 00 — CE FACE SISTEMUL
+
+Douăzeci și șase de principii spun ce n-are voie. Niciunul nu spunea ce e. Fără asta nu există criteriu de proporționalitate: nu se poate spune „constrângerea asta e prea scumpă pentru ce apără", fiindcă nu e scris ce apără.
+
+### Ce ia
+
+**Faptele economice ale unei firme**, din patru feluri de surse, cu certitudini diferite: facturi electronice primite de la autoritate · documente încărcate de om · extrase și fișiere importate · date introduse direct.
+
+**Normele fiscale și contabile** în vigoare la data fiecărei operațiuni.
+
+**Deciziile omului** acolo unde norma nu determină rezultatul.
+
+### Ce produce
+
+**Evidența contabilă** a firmei, ținută pe perioade.
+
+**Artefactele pe care legea le cere:** registre obligatorii, situații financiare, declarații fiscale — fiecare în forma cerută și validat cu instrumentul oficial, unde există.
+
+**Dovada că fiecare cifră e corectă:** lanțul până la documentul care o justifică, și temeiul normativ pe care stă.
+
+### Pentru cine
+
+**Cabinetul de contabilitate**, care ține evidența mai multor firme și răspunde juridic pentru fiecare.
+
+Nu pentru firma care își ține singură contabilitatea, nu pentru inspector, nu pentru salariat — deși toți trei ating rezultatul.
+
+### Ce înseamnă că a reușit
+
+**Contabilul depune declarațiile din aplicație, fără să le recalculeze în altă parte.**
+
+Asta cuprinde tot restul: dacă recalculează, ori nu are încredere în cifră (P22), ori nu poate dovedi de unde vine (P14), ori a fost surprins de ceva ce nu i s-a cerut la timp (P23). Fiecare principiu din documentul ăsta apără o parte din propoziția aia.
+
+### Ce nu face
+
+Nu ține locul contabilului la judecata profesională. Nu decide încadrări acolo unde legea lasă loc — le cere. Nu verifică dacă premisele introduse sunt adevărate; poate doar semnala improbabilul.
+
+### Angajamentul față de cabinet
+
+**Răspuns în 48 de ore la orice solicitare** — ce e, cât durează, când se face.
+
+**Livrare în 48 de ore** pentru clasa de cereri care se pot livra atât de repede: o declarație în plus, un raport, o corelare nouă, un format de import.
+
+Distincția e ce face promisiunea credibilă. „Orice solicitare rezolvată în 48 de ore" se încalcă la prima cerere care înseamnă un flux rescris — iar o promisiune încălcată o dată nu mai valorează nimic. Un cabinet care primește în două zile *„e o zi de muncă, o fac joi"* e mai bine servit decât unul care primește tăcere.
+
+**Ce cere angajamentul de la arhitectură.** Livrarea în două zile e posibilă doar dacă drumul e scurt, iar el e scurt doar dacă:
+
+- **nomenclatoarele, structurile și convențiile sunt în registru** (P1) — altfel fiecare cerere le re-declară;
+- **temeiul se verifică pe o secvență cunoscută** (Partea 0) — altfel verificarea singură ia zilele;
+- **norma știe ce depinde de ea** (P21) — altfel nu se știe ce se atinge;
+- **calculul e separat de prezentare** (P3) — altfel un raport nou cere atins motorul.
+
+Fără ele, două zile devin două săptămâni. **Angajamentul nu e politică comercială — e testul practic al arhitecturii.**
+
+### Criteriul de proporționalitate
+
+Un principiu sau o interdicție se justifică dacă absența lui poate face contabilul să nu depună din aplicație, sau să nu poată apăra ce a depus.
+
+Ce nu trece testul ăsta e prudență, nu arhitectură — și costă mai mult decât apără.
+
+---
+
+# PARTEA 0 — SECVENȚA OBLIGATORIE
+
+Înaintea oricărei reguli de structură, o regulă de procedură. Se aplică **de fiecare dată** când se scrie sau se modifică ceva ce depinde de o normă.
+
+```
+1.  AM ACTUL, ȘI ÎNȚELEG CE SPUNE DESPRE CAZUL MEU?
+       nu-l am              → îl aduc
+       nu-l pot aduce       → CER, numind exact ce-mi trebuie
+       îl am, nu-l înțeleg  → CER, spunând ce am citit, ce am înțeles,
+                              și unde se oprește înțelegerea
+       nu există temei      → declar „am căutat în X, Y, Z și nu am găsit",
+                              și cer decizia
+       îl am și îl înțeleg  → mai departe
+
+2.  ARTICOLUL E ÎN VIGOARE ÎN FORMA ASTA, LA DATA OPERAȚIUNII?
+       neverificat / expirat → verific la sursă externă, notez data
+       modificat             → folosesc forma valabilă la acea dată
+       abrogat               → folosesc succesorul; actul vechi rămâne
+       în vigoare            → mai departe
+
+3.  ARTICOLUL CHIAR SPUNE CE ÎI ATRIBUI?
+       citez VERBATIM, iar citatul trebuie să conțină valoarea sau regula
+       pe care o justifică
+       nu o conține → nu e temeiul potrivit; îl caut pe cel corect
+
+4.  DACĂ AM MAI MULTE SURSE, SE CONTRAZIC?
+       da → NU aleg pe cea mai comodă. Se ridică la decizie.
+       nu → mai departe
+
+5.  TEXTUL DETERMINĂ REZULTATUL?
+       nu → MĂ OPRESC și cer decizia
+       da → mai departe
+
+6.  APLIC
+```
+
+---
+
+### Pasul 1 — „nu înțeleg" e o stare legitimă
+
+Cea mai periculoasă situație nu e „nu găsesc actul". Aia e evidentă și se rezolvă. E **„am actul, l-am citit, dar nu-mi spune ce fac în cazul ăsta"** — care nu se manifestă în niciun fel. Se produce ceva plauzibil și se merge mai departe. Plauzibil nu e corect.
+
+Toate cele trei erori din Anexa B au trecut prin punctul ăsta: textul a fost citit, n-a fost înțeles complet, și în loc de o întrebare a ieșit o interpretare.
+
+**Cererea trebuie să fie specifică.** Nu „am nevoie de ajutor cu D112", ci: *„am OUG 158/2005 art. 10; nu-mi spune cum se tratează lunile fără venituri din cele 6 — îmi trebuie normele de aplicare, sau o decizie."*
+
+Trei elemente obligatorii în orice cerere: **ce am citit** · **ce am înțeles** · **unde se oprește înțelegerea**.
+
+**Când nu există temei**, asta e un rezultat, nu un eșec. Unele valori vin din practica autorității, din documentația validatorului, sau din nicăieri. Se declară: „am căutat în X, Y, Z și nu am găsit temei" — și se cere decizia. Ce nu se face: să se blocheze la infinit, sau să se treacă tăcut.
+
+### Pasul 2 — se verifică articolul, nu actul
+
+Un act poate fi în vigoare permanent și modificat de câteva ori pe an. Codul fiscal e exemplul: verificarea „mai e în vigoare?" trece mereu, iar articolul 77 poate fi rescris de o ordonanță pe care n-o ai.
+
+**Unitatea de verificare e articolul la o dată**, nu actul.
+
+Un act nu-și anunță propria modificare, la fel cum nu-și anunță abrogarea: ambele sunt scrise în actul modificator. Absența lui din corpus nu dovedește că nu există.
+
+Consecința reală: OUG 89/2025 a modificat art. III din OUG 156/2024, iar art. LXX a fost abrogat de OUG 29/2026. Actul de bază e în vigoare; două articole din el, nu.
+
+### Pasul 3 — actul chiar spune ce îi atribui
+
+Un act corect și în vigoare poate fi **temeiul greșit**. Se întâmplă când valoarea a fost fixată de un act modificator, iar citarea trimite la actul de bază.
+
+Mecanismul: **citatul verbatim trebuie să conțină valoarea sau regula pe care o justifică.** Dacă o cotă de 16% e sprijinită pe un citat în care nu apare 16, citarea e falsă — indiferent cât de corect e actul.
+
+### Pasul 4 — ierarhia surselor
+
+Când două surse spun altceva, nivelul decide **ce se întâmplă**, nu **cine câștigă**:
+
+| Nivel | Ce e |
+|---|---|
+| 1 | Monitorul Oficial — textul legii |
+| 2 | Interpretarea oficială a autorității — norme, instrucțiuni, structuri publicate |
+| 3 | Practica validatorului — ce acceptă efectiv instrumentul |
+
+**Regula: o sursă de nivel inferior nu poate contrazice una superioară fără să se ridice la decizie** — inclusiv, și mai ales, când e mai comodă.
+
+Nu se alege tăcut nici legea, nici validatorul. Divergența dintre niveluri e chiar semnalul că cineva trebuie să decidă.
+
+**Ce înseamnă asta pentru validator, explicit.** Validatorul nu e o sursă alternativă de adevăr. Ce acceptă sau respinge el e o **constrângere**, nu o normă.
+
+Nomenclatorul se ia din sursa normativă. Dacă validatorul acceptă mai puțin decât prevede norma, sau altceva, aceea e o constrângere a arbitrului — se declară ca dezacord marcat, nu se rescrie nomenclatorul după ea.
+
+Cazul care a produs regula: nomenclatorul oficial al codurilor de indemnizație are douăzeci de poziții; enumerarea din structura tehnică publicată are cincisprezece; validatorul acceptă coduri pe care structura le respinge. **Sursa e nomenclatorul.** Structura tehnică e o constrângere mai îngustă decât realitatea, iar un nomenclator ancorat pe ea blochează depunerea unei declarații legale.
+
+### Cele cinci verificări sunt diferite, și fiecare a eșuat separat
+
+| Verificare | Ce întreabă | Cum a eșuat |
+|---|---|---|
+| **1** | am actul, și înțeleg? | „Încadrat cu salariul minim" — citit, neînțeles complet, interpretat în loc de întrebat |
+| **2** | articolul e în vigoare în forma asta? | OPANAF 394/2017, citat în nouă locuri, abrogat de 705/2020. HG 685/1999, abrogat de HG 773/2019 |
+| **3** | articolul chiar conține ce îi atribui? | Trei citări false: facilitatea de 300 lei, cota de dividende, pragul mijloacelor fixe — pe acte corecte și în vigoare |
+| **4** | sursele se contrazic? | Podeaua part-time: legea zice una, structura publicată de autoritate zice alta. S-a ales în cod |
+| **5** | textul determină rezultatul? | Aceeași instanță, cealaltă față: alegerea n-a fost cerută |
+
+Până la versiunea asta, doar prima jumătate din prima era regulă.
+
+### Pragul de reverificare a vigorii
+
+O dată de verificare fără termen devine formalitate: un articol verificat acum doi ani poartă o dată, deci trece — și poate fi rescris de un an.
+
+| Categorie | Se reverifică |
+|---|---|
+| articole care fixează valori curente — cote, praguri, salariu minim, facilități | la fiecare utilizare într-o valoare nouă, și cel puțin **trimestrial** |
+| ordine care aprobă structuri de declarații | **înainte de fiecare perioadă de raportare** în care se folosesc |
+| articole de fond stabile — Codul fiscal, legea contabilității | **semestrial**, plus la orice modificare anunțată |
+| articole care reglementează perioade închise | **niciodată** — perioada e închisă, forma de atunci e cea care contează |
+
+Ultimul rând e important: un articol abrogat azi rămâne temeiul corect pentru o perioadă în care era în vigoare. Reverificarea privește doar ce se folosește pentru perioade curente.
+
+### Ce e obligatoriu și ce e verificabil
+
+Secvența e comportament, deci nu se poate garda integral. Ce se poate garda e **urma ei**:
+
+- o valoare fără temei, sau fără declarația „nu există temei", nu intră;
+- o valoare cu articol fără dată de verificare, sau cu verificare expirată, nu intră;
+- o valoare al cărei citat verbatim **nu conține valoarea** nu intră;
+- o valoare pe un articol abrogat sau modificat, fără succesor citat, nu intră;
+- o valoare care are surse de niveluri diferite în dezacord, fără decizie, nu intră.
+
+Asta nu dovedește că secvența a fost parcursă. Dovedește că nu se poate pretinde că a fost.
+
+### Două limite declarate
+
+**Accesul la sursa externă.** Pasul 2 depinde de un portal legislativ accesibil. Dacă sursa oficială blochează accesul automat, verificarea se face manual, iar pragurile de mai sus devin muncă a omului. Nu e o scuză pentru a sări pasul — e un motiv pentru care pragurile trebuie să fie realiste: un termen imposibil produce câmpuri completate formal, ceea ce e mai rău decât absența lor.
+
+**Traducerea din text în formulă nu se verifică mecanic.** Citatul conține „deducerea scade cu 0,5 puncte la fiecare 50 de lei"; codul conține o expresie. Că a doua îl implementează corect pe primul **nu verifică nimic din tot ce e mai sus**. Rămâne judecată umană, iar arbitrul o acoperă doar unde validează.
 
 ---
 
 # PARTEA I — PRINCIPIILE
 
-Douăzeci de reguli. Fiecare e formulată ca interdicție verificabilă, nu ca intenție.
-
-Primele treisprezece privesc **corectitudinea a ceea ce producem**. Ultimele șapte privesc **ce se cere de la noi când suntem verificați** — și fără ele o aplicație poate calcula impecabil și rămâne inutilizabilă la un control.
+Douăzeci și șase de reguli. Primele treisprezece privesc **corectitudinea a ceea ce producem**; ultimele treisprezece, **ce se cere de la noi când suntem verificați** — de o autoritate, de contabilul care lucrează cu cifra, și de timp.
 
 ---
 
@@ -20,103 +217,100 @@ Primele treisprezece privesc **corectitudinea a ceea ce producem**. Ultimele șa
 
 ### P1 — Un adevăr, un loc
 
-Orice valoare, formulă, nomenclator sau regulă de eligibilitate există **într-un singur loc** și se citește de acolo. Nu se copiază, nu se re-declară, nu se recalculează în paralel.
+Orice valoare, formulă, nomenclator sau regulă de eligibilitate există **într-un singur loc** și se citește de acolo.
 
-Corolar: dacă două module au nevoie de același adevăr, îl cer din același loc. Dacă unul dintre ele „îl are deja", asta e defectul.
+**Un temei lângă o valoare nu e registrul.** O valoare care poartă actul și articolul, dar trăiește într-un modul de calcul, e tot în afara registrului. Sursa se dovedește prin locul unde stă, nu prin adnotarea de lângă ea.
 
 ### P2 — Timpul e parametru, nu context
 
 Orice adevăr fiscal se cere **pe o dată**. Nicio funcție de calcul nu citește data curentă.
 
-Consecință obligatorie: recalcularea unei perioade trecute produce exact același rezultat ca prima calculare, oricând s-ar face și indiferent ce s-a schimbat în lege între timp.
+Consecință: recalcularea unei perioade trecute produce exact același rezultat ca prima calculare.
 
 ### P3 — Cine calculează nu afișează, cine afișează nu calculează
 
-Un număr arătat unui om provine dintr-un singur calcul, făcut într-un singur loc. Stratul de prezentare primește rezultate, nu ingrediente.
+Un număr arătat unui om provine dintr-un singur calcul. Stratul de prezentare primește rezultate, nu ingrediente.
 
-Interdicție explicită: nicio regulă fiscală nu se implementează în interfață. Nici măcar o comparație, nici măcar un prag.
+Nicio regulă fiscală nu se implementează în interfață. Nici măcar o comparație, nici măcar un prag.
 
 ### P4 — Documentul emis e fapt; recalculul e a doua părere
 
-Ce a fost dat unui om sau depus la o autoritate se **îngheață cu amprentă** și nu se rescrie. Un recalcul ulterior care diferă nu corectează documentul: produce o **contradicție**, care se arată.
+Ce a fost dat unui om sau depus la o autoritate se **îngheață cu amprentă**. Un recalcul care diferă nu corectează documentul: produce o **contradicție**, care se arată.
 
-Corecția e un document nou, care îl referă pe primul. Primul rămâne.
+Corecția e un document nou, care îl referă pe primul.
 
 ### P5 — O afirmație poartă domeniul și sursele
 
-Nimic nu se afirmă despre o firmă fără să spună **la ce se referă** (perioadă sau obiect identificabil) și **pe ce s-a uitat**.
-
-O afirmație fără domeniu nu poate exista. O afirmație fără surse consultate e o opinie, nu o constatare.
+Nimic nu se afirmă despre o firmă fără să spună **la ce se referă** și **pe ce s-a uitat**.
 
 ### P6 — Verdele afirmă; ce nu s-a verificat se spune
 
-Absența unei contradicții nu e o verificare. Un verdict favorabil declară ce a fost verificat; ce nu s-a putut verifica apare distinct și nu se stinge prin partea care s-a putut face.
+Absența unei contradicții nu e o verificare.
 
-Ierarhia stărilor: **necunoscut domină favorabil**; problema domină necunoscutul.
+Ierarhia: **necunoscut domină favorabil**; problema domină necunoscutul.
 
 ### P7 — Verificarea e independentă prin construcție și prin disciplină
 
 Calea a doua nu importă calea întâi, nu-i copiază constantele, nu-i reproduce formulele.
 
-Când cele două nu coincid, întrebarea se duce la arbitru. **Nu se aliniază una la cealaltă.** O modificare simultană a ambelor cere decizie scrisă, cu motiv.
+Când cele două nu coincid, întrebarea se duce la arbitru. **Nu se aliniază una la cealaltă.**
 
-### P8 — Arbitrul e extern
+### P8 — Temeiul se verifică pe cinci axe, iar niciuna nu le acoperă pe celelalte
 
-Când legea, interpretarea noastră și validatorul oficial nu coincid, decide **validatorul**, iar dezacordul se documentează ca atare, nu se ascunde.
+**Nicio valoare fiscală nu intră în cod fără temei verificat la sursa oficială. Memoria nu e sursă.**
 
-Nicio valoare fiscală nu intră în cod fără temei verificat la sursa oficială. Memoria nu e sursă.
+Cele cinci verificări sunt detaliate în Partea 0. Pe scurt:
+
+1. **Am actul și îl înțeleg?** „Nu înțeleg" e o stare legitimă și duce la o cerere specifică, nu la o presupunere.
+2. **Articolul e în vigoare în forma asta, la data operațiunii?** Nu se răspunde din corpus.
+3. **Articolul chiar conține ce îi atribui?** Prin citat verbatim care conține valoarea.
+4. **Sursele se contrazic?** O sursă inferioară nu poate contrazice una superioară fără decizie.
+5. **Textul determină rezultatul?** Dacă nu — P11.
+
+**Fiecare articol folosit poartă:** data ultimei verificări · starea la acea dată · succesorul, dacă e cazul · categoria de reverificare.
+
+**Arbitrul e extern.** Când legea, structura publicată de autoritate și validatorul nu coincid, situația nu se tranșează la scriere.
 
 ### P9 — Perimetrul e declarat
 
-Ce nu e acoperit se scrie. Un modul, o firmă sau o funcționalitate în afara scopului e o **alegere consemnată**, nu o omisiune tăcută.
-
-O declarație de perimetru devenită neadevărată se aprinde.
+Ce nu e acoperit se scrie. O declarație de perimetru devenită neadevărată se aprinde.
 
 ### P10 — Regula scrisă e regulă păzită
 
-Fiecare principiu de aici are un mecanism care îl face imposibil de încălcat, sau e declarat explicit negardabil, cu motivul scris.
+Fiecare principiu are un mecanism care îl face imposibil de încălcat, sau e declarat explicit negardabil, cu motivul scris.
 
-Un principiu fără gardă și fără declarație de negardabilitate nu face parte din arhitectură — e o intenție.
+### P11 — Unde textul nu determină rezultatul, nu se alege — se cere decizia
 
-### P11 — Aplicația nu execută legea; o aplică la un caz, iar pasul dintre ele e vizibil
+> Când textul determină rezultatul, se aplică.
+> Când nu-l determină, **se oprește și se cere decizia**.
 
-Textul normativ nu determină singur rezultatul în fiecare situație concretă. Între lege și cifră există un pas de interpretare, iar acel pas **nu are voie să fie îngropat într-o condiție din cod**.
+Nu se alege și se marchează. **Alegerea nu e a celui care scrie codul.**
 
-Când o regulă lasă loc, alegerea se consemnează ca **interpretare**, distinctă de o valoare cu temei direct. O interpretare:
+**Testul practic:** ar citi un contabil competent același text și ar ajunge la alt rezultat?
 
-- citează textul care a lăsat loc;
-- enumeră variantele posibile;
-- spune ce s-a ales, de ce, de către cine și când;
-- rămâne **repunibilă în discuție**, spre deosebire de un temei;
-- când arbitrul o contrazice, dezacordul rămâne vizibil până la lămurire.
+**Pragul:** se oprește când alegerea schimbă o cifră care **ajunge la o autoritate sau la un om**. O alegere care afectează doar o reprezentare internă se face și se notează.
 
-Motivul: o interpretare care poartă același marcaj ca un fapt legal devine imposibil de contestat. Nimeni nu discută un articol de lege — și atunci o alegere greșită supraviețuiește la nesfârșit sub aparența unei obligații.
+**Ce se consemnează, când decizia s-a luat:** textul care a lăsat loc, citat · varianta aleasă · **varianta respinsă, numită** · motivul · cine a decis și când.
 
 ### P12 — Datele unei firme nu ies din firma ei
 
-Fiecare firmă e izolată prin construcție, nu prin filtru scris de mână. O interogare care ajunge la baza de date fără contextul firmei **eșuează**; nu întoarce date parțiale și nu întoarce date ale altcuiva.
+Izolare prin construcție, nu prin filtru scris de mână. O interogare fără contextul firmei **eșuează**.
 
-Aceeași regulă la nivelul cabinetului: un cabinet vede firmele lui. Drepturile se verifică la sursă, în interogare, nu doar în interfață.
+Drepturile se verifică în interogare, nu doar în interfață.
 
 ### P13 — Textul nu e purtător de decizie
 
-Într-o aplicație de contabilitate, aproape tot ce pare text e altceva. Confuzia e cauza unei clase întregi de defecte: cine crede că o frază e text, o rescrie — și rescrie o decizie fără să știe.
-
 | Ce e | Ce pare | Unde stă de fapt |
 |---|---|---|
-| **Nomenclatura oficială** | text | intrare în registru, cu temei; nu o scriem noi |
+| **Nomenclatura oficială** | text | intrare în registru, cu temei |
 | **Afirmația** | frază | structură: fel, domeniu, surse, remediu |
-| **Datele omului** | text | text autentic, dar al lui; nu poartă decizii de-ale noastre |
+| **Datele omului** | text | text autentic, dar al lui |
 
-**Ce e text cu adevărat:** ce e fix în interfață — etichete, titluri, ajutor. Acela primește **cheie** și loc unic de definire.
+**Ce e text cu adevărat:** ce e fix în interfață. Acela primește **cheie** și loc unic.
 
-*Ce vine din date* nu are formă textuală până la randare. Nu se stochează ca frază, nu se compară, nu se clasifică după conținut.
+**Testul:** dacă rescrii o frază și se schimbă comportamentul, textul acela nu era text.
 
-**Testul de proiectare:** dacă rescrii o frază și se schimbă comportamentul, textul acela nu era text.
-
-**Ce nu rezolvă nici cheia, nici structura:** un text corect ca formă poate fi fals ca afirmație. De aceea eticheta se **derivă din starea efectivă**, nu se alege de cine randează.
-
-**Corolarul:** între momentul în care aplicația știe ceva și momentul în care omul citește există **un singur pas**.
+Eticheta se **derivă din starea efectivă**, nu se alege de cine randează.
 
 ---
 
@@ -124,98 +318,166 @@ Aceeași regulă la nivelul cabinetului: un cabinet vede firmele lui. Drepturile
 
 ### P14 — Orice cifră se desface până la documentul care o justifică
 
-La un control, întrebarea nu e „e corectă formula", ci „arătați-mi din ce iese cifra asta". Legea contabilității cere document justificativ pentru orice înregistrare; consecința pentru aplicație e că lanțul trebuie să existe **ca dată**, nu să fie reconstituibil prin raționament.
-
-Lanțul complet, navigabil în ambele sensuri:
-
 ```
-poziție din declarație
-   ↔ înregistrare contabilă
-      ↔ document primar
-         ↔ sursa lui (fișier încărcat, factură electronică, extras, introducere manuală)
+poziție din declarație ↔ înregistrare contabilă ↔ document primar ↔ sursa lui
 ```
 
-- fiecare verigă e navigabilă la cerere, fără recalculare;
-- o poziție care nu se poate desface e un defect, nu o limitare;
-- lanțul se păstrează pentru documentele **emise**, nu se reface din starea de azi;
-- suma pozițiilor desfăcute trebuie să dea exact valoarea declarată; altfel lanțul e rupt și se spune.
-
-Corolar: pentru orice poziție dintr-o declarație depusă, aplicația produce lista documentelor care o compun — chiar dacă între timp evidența s-a schimbat.
+Fiecare verigă navigabilă la cerere, fără recalculare · lanțul se păstrează pentru documentele **emise** · suma pozițiilor desfăcute dă exact valoarea declarată.
 
 ### P15 — După închiderea unei perioade, nu se modifică; se stornează
 
-O perioadă închisă e o afirmație despre trecut. Modificarea ei retroactivă rupe corespondența dintre ce s-a declarat și ce se poate dovedi.
-
-- Închiderea e un act deliberat, cu autor și moment, nu o consecință a trecerii timpului.
-- După închidere, editarea e **imposibilă**, nu nerecomandată.
-- Corectarea se face prin înregistrare nouă care o referă pe cea corectată; cea veche rămâne.
-- Redeschiderea e posibilă, dar e act consemnat, cu motiv, și marchează documentele emise din acea perioadă ca fiind sub rezervă.
-- Numerotarea documentelor emise nu are goluri și nu se reia; un număr anulat rămâne anulat.
+Închiderea e act deliberat, cu autor · editarea devine **imposibilă** · corectarea prin înregistrare nouă · redeschiderea e act consemnat, cu motiv · numerotarea nu are goluri și nu se reia.
 
 ### P16 — Cine a autorizat, se știe
 
-Orice act cu efect juridic extern — o depunere, o emitere de factură, o închidere de perioadă, o corecție — are un autor identificat, nu doar un moment.
-
-- Autorizarea e distinctă de execuție: cine apasă poate să nu fie cine răspunde.
-- Un act făcut de sistem, fără om în spate, se marchează ca atare și e excepție declarată.
-- Urma nu se poate șterge și nu se poate edita. Se păstrează cel puțin cât obligația la care se referă.
-
-Aceeași disciplină pentru orice operațiune care atinge date fiscale: cine, ce, când, valoarea dinainte și cea de după. Jurnalizarea nu e o funcționalitate; e felul în care P14 și P16 devin verificabile.
+Orice act cu efect juridic extern are autor identificat. Autorizarea e distinctă de execuție. Urma nu se poate șterge și nu se poate edita.
 
 ### P17 — Ce se păstrează, cât și pe ce temei
 
-Termenele de păstrare nu sunt o setare, sunt obligații cu temei propriu, iar unele intră în conflict cu dreptul la ștergere.
-
-- Fiecare categorie de dată are termen și temei scris.
-- La o cerere de ștergere, ce nu poate fi șters se **numește**, cu temeiul — nu se ignoră și nu se șterge din greșeală.
-- Anonimizarea e alternativă doar acolo unde obligația privește fapta, nu identitatea.
-- Expirarea unui termen nu produce ștergere automată fără verificarea celorlalte temeiuri care ar putea acoperi aceeași dată.
+Fiecare categorie are termen și temei. La o cerere de ștergere, ce nu poate fi șters se **numește**, cu temeiul.
 
 ### P18 — Legea se schimbă retroactiv, iar aplicația știe pe cine
 
-O reglementare publicată în septembrie și aplicabilă din iulie e situația obișnuită, nu excepția. O aplicație fără ciclu de viață pentru asta produce, tăcut, declarații depuse care au devenit incorecte.
+Se determină perioadele afectate · documentele emise sub regula veche · fiecare devine **contradicție** vizibilă · listă de rectificative cu diferența · decizia e a omului.
 
-La orice modificare de regulă cu efect anterior publicării:
+Regula veche nu se șterge din registru.
 
-- se determină **perioadele afectate**;
-- se determină **documentele deja emise** sub regula veche;
-- fiecare devine o **contradicție** vizibilă, nu se rescrie;
-- rezultă o listă de rectificative posibile, cu diferența calculată;
-- decizia de a rectifica e a omului; absența deciziei rămâne vizibilă.
-
-Regula veche nu se șterge din registru. Perioadele trecute rămân interogabile sub ea — altfel P2 se rupe.
+**P18 depinde de P21.** Fără legătura de la articol la ce depinde de el, se pot determina perioadele afectate, dar nu și codul care trebuie schimbat.
 
 ### P19 — Cu exteriorul, „nu știu" e o stare legitimă
 
-Orice schimb cu o autoritate sau cu un serviciu extern poate rămâne nelămurit. O aplicație care nu modelează starea asta forțează omul între două greșeli: retrimite și depune de două ori, sau nu retrimite și ratează termenul.
-
-Stările obligatorii: **nepornită, în curs, confirmată, respinsă, nelămurită**.
-
-- „Nelămurită" nu se convertește singură în niciuna dintre celelalte.
-- Nicio retrimitere automată dintr-o stare nelămurită.
-- Reconcilierea cu autoritatea — ce spune ea că a primit — e operațiune proprie, nu presupunere.
-- Identificatorul primit de la autoritate se păstrează; fără el, confirmarea nu e confirmare.
+Stările: **nepornită, în curs, confirmată, respinsă, nelămurită**. „Nelămurită" nu se convertește singură. Identificatorul de la autoritate se păstrează.
 
 ### P20 — Proveniența se păstrează, iar o presupunere nu devine fapt
 
-Aceeași sumă poate veni dintr-o factură electronică, dintr-o recunoaștere automată de imagine, dintr-o potrivire de extras sau din tastatura contabilului. Prima e autoritate; a doua e ipoteză cu probabilitate; a treia e presupunere; a patra e afirmația omului.
+Fiecare valoare din afară poartă **sursa** și **gradul de certitudine**. Devine sigură prin **confirmare explicită**.
 
-- Fiecare valoare intrată din afară poartă **sursa** și **gradul de certitudine**.
-- O valoare nesigură nu devine sigură prin salvare. Devine sigură prin **confirmare explicită**, consemnată.
-- Un calcul care stă pe valori neconfirmate spune asta în rezultat.
-- O potrivire automată e propunere până e acceptată; refuzul se consemnează la fel ca acceptarea.
+### P21 — Norma știe ce depinde de ea
+
+P14 leagă cifra de documentul care o justifică. P21 leagă **regula de norma care o impune**. Sunt două lanțuri diferite: primul merge spre datele firmei, al doilea spre lege.
+
+**Orice element care implementează o normă poartă articolul pe care îl implementează** — nu doar valorile, ci și:
+
+- formulele de calcul;
+- condițiile de eligibilitate;
+- structurile de declarație și maparea câmpurilor;
+- nomenclatoarele și denumirile lor;
+- termenele și regulile de decalare;
+- regulile de validare;
+- convențiile de calcul.
+
+**Legătura e navigabilă în ambele sensuri.** De la o implementare se poate afla temeiul — asta există parțial azi, pentru valori. De la un articol se poate întreba **ce depinde de tine** — asta nu există deloc, și e sensul care contează la modificare.
+
+**La o modificare de articol, lista dependenților se generează, nu se reconstituie.** Nu se caută prin memorie, nu se face grep, nu se descoperă din întâmplare.
+
+**Fără P21, P18 nu se poate executa.** P18 cere ca la o schimbare retroactivă să se determine documentele afectate. Aplicația poate ști ce *perioade* sunt afectate — dar nu ce *cod* trebuie schimbat. Un articol modificat lasă în urmă implementări care nu se pot găsi decât căutându-le.
+
+Consecința reală: OPANAF 394/2017 era citat în nouă locuri. Toate nouă au fost găsite abia când cineva a căutat anume, după ce abrogarea a ieșit la iveală din întâmplare. Cu legătura inversă, întrebarea „ce depinde de 394/2017?" ar fi avut răspuns imediat.
+
+### P22 — Cifra se poate verifica de un om, pe ecran
+
+P14 face cifra apărabilă la un control. P21 o leagă de normă. **P22 o face verificabilă de contabilul care lucrează cu ea**, în ziua în care o produce.
+
+Distincția e practică: un contabil care nu poate verifica o cifră are două opțiuni — să aibă încredere, sau s-o refacă în altă parte. Amândouă sunt eșecuri ale produsului. A doua e mai frecventă, iar atunci aplicația nu i-a economisit munca, i-a adăugat una.
+
+Trei lucruri, toate la cerere, niciunul îngrămădit pe ecran:
+
+**1. Din ce se compune cifra.** Nu doar rezultatul, ci pașii: brutul, baza de contribuții, fiecare contribuție, deducerea, baza de impozit. Contabilul cunoaște formula — vrea să vadă **unde diferă**, nu să recalculeze de la zero.
+
+**2. Ce nu s-a aplicat, și de ce.** Aici greșesc oamenii: nu la ce s-a calculat greșit, ci la ce nu s-a acordat deloc. O deducere suplimentară neacordată, o facilitate pierdută, o scutire neaplicată — toate sunt invizibile dacă ecranul arată doar ce s-a aplicat.
+
+Fiecare element care **putea** interveni și n-a intervenit se arată, cu motivul și cu temeiul: *„facilitate 200 lei — neacordată: brutul depășește salariul minim (OUG 156/2024 art. LXVI)"*.
+
+O absență nemotivată nu se poate contesta, fiindcă nu se vede.
+
+**3. Ce s-a schimbat față de perioada anterioară.** Un contabil nu verifică o lună izolat; se uită la ea știind luna precedentă. Dacă un net diferă, prima întrebare e de ce.
+
+Aplicația are ambele perioade. Poate spune: *brutul e neschimbat; deducerea a scăzut cu 130 de lei, fiindcă salariul minim s-a modificat de la 1 iulie.*
+
+E cel mai puternic instrument de verificare din cele trei — mai puternic decât temeiul afișat — fiindcă atrage atenția exact acolo unde ceva s-a mișcat.
+
+**Temeiul însoțește fiecare dintre cele trei.** P21 leagă regula de articol în cod; P22 cere ca legătura să **iasă la suprafață**. O legătură care trăiește doar în cod nu ajută pe cine verifică.
+
+**Ce nu înseamnă P22:** că totul se afișează mereu. Ecranul rămâne curat; explicația se cere. Diferența dintre un produs verificabil și unul obositor e că al doilea arată tot, tot timpul.
+
+### P23 — Ce lipsește se cere la timp; ce nu s-a cerut e vina aplicației
+
+Aplicația nu răspunde de datele pe care nu le-a primit. Răspunde de a fi cerut ce-i trebuia, **când încă era util**.
+
+Trei situații, cu răspundere diferită:
+
+| Situația | A cui e |
+|---|---|
+| datele lipsesc, **aplicația a cerut** | a omului — a fost întrebat și n-a completat |
+| datele lipsesc, **aplicația n-a cerut** | **a aplicației** — cea mai gravă formă, fiindcă rezultatul pare complet |
+| artefactul nu se poate produce **indiferent de date** | a aplicației — e o lipsă a ei, nu a datelor |
+
+**A doua e cea periculoasă.** Un rezultat produs peste date lipsă, fără ca cineva să fi fost întrebat, arată identic cu unul corect. „Nu se datorează" pe o firmă cu operațiuni neînregistrate e chiar cazul: aplicația a răspuns la ce avea, nu la ce trebuia să aibă.
+
+**Cererea are un moment.** O lipsă descoperită la generare, în ziua depunerii, e o lipsă semnalată prea târziu — chiar dacă e semnalată corect. Ce lipsește se cere **când datele mai pot fi obținute**: la introducere, la închiderea perioadei, la prima verificare care le atinge.
+
+**Ce trebuie să spună cererea:** ce lipsește · de ce e necesar, cu temeiul · unde se completează · ce nu se poate face fără el.
+
+**Consecința pentru orice verdict:** un rezultat calculat peste date incomplete nu e „gata", e „gata cu ce am avut". Distincția intră în rezultat, nu într-o notă alăturată — e P6 aplicat la date, nu la verificări.
+
+### P24 — O interpretare care ajunge într-o cifră depusă se revizuiește deliberat
+
+O decizie luată, consemnată impecabil, poate fi greșită. Nimic din lanțul automat nu o poate contrazice: nu sursa, fiindcă textul e chiar cel ambiguu; nu validatorul, fiindcă el verifică structura, nu încadrarea; nu testele, fiindcă ele verifică ce s-a decis.
+
+Deci o decizie de interpretare are **două stări**:
+
+| stare | ce înseamnă |
+|---|---|
+| **luată** | s-a ales, cu varianta respinsă numită și motivul scris |
+| **revizuită** | alegerea a fost recitită deliberat, ca listă, separat de momentul în care s-a luat |
+
+**Revizuirea nu e obligatorie pentru toate.** E obligatorie pentru cele care ajung într-o cifră depusă la o autoritate sau dată unui om — aceeași treaptă de prioritate ca peste tot.
+
+**De ce e o operațiune separată, nu o a doua părere pe loc.** O alegere făcută în timpul construcției poartă contextul ei: ce era la îndemână, ce nu bloca, ce părea evident atunci. Recitită ca listă, ruptă de context, se judecă altfel — și acolo ies alegerile care păreau evidente și nu erau.
+
+Ce se citește: *legea spune X · am înțeles Y · alternativa era Z · am ales Y fiindcă…* Nu codul, nu ecranul — lista alegerilor.
+
+O decizie care ajunge într-o cifră depusă și n-a fost revizuită se declară ca atare. Nu se ascunde în spatele faptului că e bine documentată.
+
+### P25 — Evidența supraviețuiește, iar restaurarea se poate dovedi
+
+Nicăieri altundeva nu scrie că datele nu se pierd. P17 spune cât se păstrează — nu că rezistă.
+
+Pentru un cabinet care ține evidența a zeci de firme, pierderea lor nu e un incident tehnic: e răspunderea lui juridică, față de clienți și față de autoritate. Un termen de păstrare de zece ani nu înseamnă nimic dacă datele dispar în al treilea.
+
+**Ce se cere:**
+
+- **copii de siguranță**, cu ritm și retenție declarate, nu presupuse;
+- **restaurarea probată**, nu doar posibilă — o copie din care nu s-a restaurat niciodată e o presupunere;
+- **dovada că ce s-a restaurat e ce era** — prin amprentă, nu prin comparare la ochi. Fără ea, o restaurare e o afirmație;
+- **izolarea copiilor** față de ce se poate strica: o copie ștearsă odată cu originalul nu e copie.
+
+**Documentele emise au un regim mai strict.** Ele sunt fapte, nu stări; pierderea unui exemplar emis nu se repară prin regenerare, fiindcă regenerarea produce alt document.
+
+### P26 — Clientul își poate lua evidența, oricând
+
+Firma e obligată prin lege să-și păstreze documentele ani după ce relația cu cabinetul s-a încheiat. Cabinetul, la fel, față de clienții lui.
+
+Deci portabilitatea nu e o curtoazie comercială — e o precondiție ca produsul să poată fi folosit fără să încalce o obligație.
+
+**Ce se cere:**
+
+- **exportul complet**, la cererea titularului, fără intervenția noastră și fără negociere;
+- **într-o formă utilizabilă** — documentele în formatul în care au fost emise, evidența într-un format deschis, nu într-unul pe care doar noi îl citim;
+- **cu lanțul păstrat** — un export care rupe legătura dintre declarație și documentele justificative transferă date, nu evidență;
+- **la orice nivel** — o firmă care pleacă de la un cabinet; un cabinet care pleacă de la noi.
+
+**Efectul secundar contează la fel de mult:** un produs din care nu poți ieși e un produs de care te temi. Portabilitatea e ce face posibilă încrederea, nu ce o slăbește.
 
 ### Două reguli care traversează
 
-**Omul are ultimul cuvânt, iar dezacordul lui se înregistrează.** Contabilul poartă răspunderea legală, nu aplicația. Un blocaj fără cale de trecere face produsul inutilizabil profesional; o trecere tăcută pierde urma. Deci: trecerea există, cere motiv, rămâne vizibilă ca dezacord — nu ca problemă rezolvată.
+**Omul are ultimul cuvânt, iar dezacordul lui se înregistrează.**
 
-**Două scrieri simultane nu se pierd tăcut.** Doi oameni din același cabinet, pe aceeași lună: cine salvează al doilea trebuie să afle că starea s-a schimbat sub el. Suprascrierea fără avertisment produce declarații greșite pe care nimeni nu le poate explica.
+**Două scrieri simultane nu se pierd tăcut.**
 
 ---
 
 # PARTEA II — STRATURILE
-
-Dependența curge **într-o singură direcție**: fiecare strat cunoaște doar straturile de sub el. Un strat nu poate chema în sus și nu poate ocoli un nivel.
 
 ```
   7  PREZENTARE        randează, nu decide
@@ -223,66 +485,58 @@ Dependența curge **într-o singură direcție**: fiecare strat cunoaște doar s
   5  DOCUMENTE         artefacte emise, înghețate, cu lanț și autor
   4  EVIDENȚA          ce s-a întâmplat, per firmă, cu proveniență
   3  CALCUL            funcții pure: intrări + dată → rezultat
-  2  REGISTRUL         adevăruri, interpretări, reguli de produs
-  1  TEMEIURI          corpusul legislativ, imuabil
+  2  REGISTRUL         adevăruri, decizii de interpretare, reguli de produs
+  1  TEMEIURI          corpusul, cu vigoarea verificată pe articol
 
   ═  VERIFICAREA       traversează, NUMAI CITEȘTE
   ═  URMA              traversează, se scrie o dată, nu se editează
 ```
 
+Dependența curge **într-o singură direcție**.
+
 ### 1 — Temeiuri
 
-Corpusul de acte normative și documentația validatorului. Imuabil: un act nu se modifică, se abrogă și se înlocuiește. Actele abrogate rămân, cu succesor.
+Corpusul de acte normative și documentația validatorului.
+
+**Fiecare act poartă:** textul verbatim · amprenta textului, ca să se poată dovedi că n-a fost modificat după aducere · data aducerii.
+
+**Fiecare articol folosit poartă:** data verificării vigorii · starea la acea dată (în vigoare · modificat · abrogat) · succesorul · categoria de reverificare.
+
+Unitatea de verificare e **articolul**, nu actul: un act poate fi în vigoare permanent și modificat de câteva ori pe an.
+
+**Textul e imuabil.** Actele abrogate **rămân în corpus**, cu succesorul indicat.
 
 ### 2 — Registrul
 
-Tot ce e normativ: valori cu temei, interpretări, reguli de produs, convenții de calcul, nomenclatură oficială, termene de retenție. Structura lui e Partea III.
-
-Se interoghează pe dată. Nu cunoaște firme, nu cunoaște baza de date, nu cunoaște ecrane.
+Tot ce e normativ. Se interoghează pe dată.
 
 ### 3 — Calcul
 
-Funcții pure. Primesc intrări explicite și o dată, întorc un rezultat. Nu citesc baza de date, nu scriu nicăieri, nu cunosc firma, nu cunosc data curentă.
-
-Rezultatul poartă cu el **interpretările** pe care stă și **gradul de certitudine** al intrărilor.
+Funcții pure. Nu citesc baza de date, nu scriu, nu cunosc firma, nu cunosc data curentă. Rezultatul poartă **deciziile de interpretare** și **gradul de certitudine** al intrărilor.
 
 ### 4 — Evidența
 
-Ce s-a întâmplat efectiv: facturi, mișcări, salariați, pontaje, extrase, înregistrări contabile.
-
-Fiecare valoare poartă **proveniența**. Izolarea per firmă e proprietate a stratului, nu grijă a apelantului. Perioadele închise sunt imposibil de modificat de aici.
-
-**Nu calculează fiscal** — cere calculul de la stratul 3.
+Fiecare valoare poartă **proveniența**. Izolarea per firmă e proprietate a stratului. Perioadele închise sunt imposibil de modificat de aici.
 
 ### 5 — Documente
 
-Artefactele care ies către un om sau o autoritate.
-
-Fiecare poartă: **numărul exemplarului, momentul emiterii, autorul autorizării, amprenta conținutului, lanțul până la documentele primare, starea trimiterii**. Append-only.
+Numărul exemplarului, momentul, autorul autorizării, amprenta, lanțul, starea trimiterii. Append-only.
 
 ### 6 — Orchestrare
-
-Rute, flux, drepturi, coada de validare, închiderea și redeschiderea perioadelor, notificări, detecția scrierilor concurente.
 
 Decide **cine are voie și când**, niciodată **cât e**.
 
 ### 7 — Prezentare
 
-Randează ce primește. Nicio regulă fiscală, niciun prag, nicio comparație de valori.
+Singurul strat în care există text. Nu compune sens.
 
-E **singurul strat în care există text** — fraze fixe cu cheie, plus randarea structurilor primite. Nu compune sens, nu decide ce să spună.
+### Verificarea
 
-### Verificarea — transversal, doar-citire
+Nu scrie, nu emite, nu corectează. Nu-și ia dovada din proză.
 
-Recalculează independent, compară căi, confruntă cu arbitrul, reconciliază.
+### Urma
 
-**Nu scrie nimic. Nu emite nimic. Nu corectează nimic.** Nu-și ia dovada din proză: nici din docstring, nici din comentariu, nici din textul interfeței.
-
-### Urma — transversal, se scrie o dată
-
-Cine, ce, când, valoarea dinainte și cea de după. Nu se editează, nu se șterge.
-
-E singura excepție de la „o citire nu scrie": o citire de date personale poate lăsa urma faptului că a avut loc. Excepția e mecanică — orice operațiune poate jurnaliza, niciuna nu poate scrie altceva.
+Se scrie o dată. Singura excepție de la „o citire nu scrie": o citire de date personale poate lăsa urma faptului că a avut loc.
 
 ---
 
@@ -290,23 +544,23 @@ E singura excepție de la „o citire nu scrie": o citire de date personale poat
 
 ### Trei feluri de intrări, care nu se amestecă
 
-| Fel | Ce e | Cum se schimbă | Se poate contesta? |
+| Fel | Ce e | Cine îl stabilește | Se poate contesta? |
 |---|---|---|---|
-| **Temei** | legea spune direct | când se schimbă legea | nu — se verifică |
-| **Interpretare** | legea lasă loc, noi am ales | prin decizie nouă | da |
-| **Regulă de produs** | legea nu spune nimic, noi am decis | prin decizie nouă | da |
+| **Temei** | legea spune direct | nimeni — se verifică la sursă | nu |
+| **Decizie de interpretare** | legea lasă loc; s-a cerut și s-a luat o decizie | Costin | da, oricând |
+| **Regulă de produs** | legea nu spune nimic | Costin | da, oricând |
 
-Amestecarea lor e interzisă, fiindcă se **revizuiesc diferit**. Dacă o alegere de-a noastră poartă marcajul unui temei, devine imposibil de repus în discuție; dacă un temei poartă marcajul unei alegeri, devine negociabil — ceea ce e mai rău.
+Amestecarea e interzisă, fiindcă se **revizuiesc diferit**.
+
+Cele două de jos au **autor uman și dată**. Nicio intrare din aceste categorii nu apare fără să fi fost cerută.
 
 ### Ce poartă un TEMEI
 
-Valoarea, formula sau denumirea oficială · actul, articolul, alineatul · nivelul sursei · valabil de la, cu „valabil până" derivat din succesor · textul citat verbatim.
+Valoarea, formula sau denumirea oficială · **articolul din corpus, cu vigoarea verificată la data operațiunii** · nivelul sursei · valabil de la, cu „valabil până" derivat din succesor · **citatul verbatim, care conține valoarea justificată**.
 
-### Ce poartă o INTERPRETARE
+### Ce poartă o DECIZIE DE INTERPRETARE
 
-Textul care a lăsat loc, citat · de ce lasă loc · variantele posibile, enumerate · ce s-a ales · motivul · cine și când · ce spune arbitrul · dacă arbitrul contrazice, dezacordul marcat ca deschis.
-
-O interpretare fără variantele enumerate nu e interpretare, e o valoare deghizată.
+Textul care a lăsat loc, citat · de ce lasă loc · varianta aleasă · **varianta respinsă, numită** · motivul · cine a decis și când · ce spune arbitrul · dezacordul marcat ca deschis, dacă arbitrul contrazice.
 
 ### Ce poartă o REGULĂ DE PRODUS
 
@@ -327,19 +581,24 @@ Ce face · decizia care a fixat-o, cu data · motivul · temeiul intern din care
 | **Structuri** | câmpurile fiecărei declarații, regulile de validare, maparea între surse și poziții |
 | **Retenție** | ce categorie de dată se păstrează, cât, pe ce temei, ce împiedică ștergerea |
 
-Distincția dintre **Formule** și **Convenții**: formulele spun *ce* se calculează, convențiile spun *cum*.
+**Formule** spun *ce* se calculează; **convenții** spun *cum*.
 
-Lista e închisă. Un adevăr care nu se încadrează e semnal că registrul are un gol, nu că adevărul poate sta oriunde.
+Lista e închisă.
 
 ### Reguli de acces
 
-- Nimeni nu scrie o valoare din aceste categorii în afara registrului.
+- Nimeni nu scrie o valoare din aceste categorii în afara registrului. **Un temei atașat lângă valoare nu ține loc de registru.**
 - Se interoghează **pe data operațiunii**. O interogare fără dată e o eroare, nu un default.
-- O valoare fără temei, interpretare sau regulă de produs nu poate intra.
+- O valoare fără temei, decizie sau regulă de produs nu poate intra.
+- **O valoare nu intră dacă articolul n-are vigoarea verificată**, dacă verificarea a expirat, sau dacă e abrogat ori modificat fără succesor citat.
+- **O valoare nu intră dacă citatul verbatim nu conține valoarea pe care o justifică.**
+- **O valoare nu intră dacă are surse de niveluri diferite în dezacord, fără decizie.**
+- **O valoare fără temei intră doar cu declarația „am căutat în X, Y, Z și nu am găsit", plus decizie.**
 - Actele abrogate nu se șterg: primesc succesor și rămân interogabile pentru perioadele trecute.
-- O interpretare contrazisă de arbitru rămâne marcată ca dezacord deschis.
-- **Denumirile oficiale sunt intrări cu temei**, nu șiruri în cod. O etichetă reformulată e o abatere de la sursă, nu o îmbunătățire de stil.
-- **O modificare cu efect retroactiv declanșează P18**, nu se aplică tăcut.
+- O decizie contrazisă de arbitru rămâne marcată ca dezacord deschis.
+- **Denumirile oficiale sunt intrări cu temei**, nu șiruri în cod.
+- **O modificare cu efect retroactiv declanșează P18.**
+- **Nicio decizie de interpretare nu intră fără să fi fost cerută.**
 
 ### Ce e în afara registrului
 
@@ -352,7 +611,7 @@ Lista e închisă. Un adevăr care nu se încadrează e semnal că registrul are
 ```
 INTRARE          date brute → evidență, cu proveniență și grad de certitudine
    ↓
-CALCUL           evidență + registru(la_data) → rezultat + interpretări + certitudine
+CALCUL           evidență + registru(la_data) → rezultat + decizii + certitudine
    ↓
 PREVIZUALIZARE   rezultat randat, aceleași reguli ca la emitere
    ↓
@@ -367,55 +626,35 @@ PREDARE          eveniment propriu: cui, când
 RECONCILIERE     document emis ↔ evidență ↔ recalcul ↔ ce confirmă autoritatea
 ```
 
-### Reguli obligatorii pe traseu
+**Previzualizarea și emiterea folosesc același calcul.**
 
-**Previzualizarea și emiterea folosesc același calcul.** Nu două implementări, nu două reguli de validare.
+**Rezultatul poartă deciziile de interpretare pe care stă.**
 
-**Rezultatul poartă interpretările pe care stă** și gradul de certitudine al intrărilor.
+**Verificarea precedă emiterea și nu o poate declanșa.**
 
-**Verificarea precedă emiterea și nu o poate declanșa.** Un verificator care emite nu mai e verificator.
+**Emiterea e idempotentă și repetabilă.** Nicio schemă nu interzice al doilea exemplar.
 
-**Emiterea e idempotentă și repetabilă.** Fiecare emitere produce un exemplar nou, numerotat. Nicio schemă nu interzice al doilea exemplar.
-
-**Emiterea îngheață lanțul**, nu doar cifrele. Documentele care au compus o poziție rămân legate de exemplarul emis, chiar dacă evidența se schimbă după.
+**Emiterea îngheață lanțul**, nu doar cifrele.
 
 **Predarea e distinctă de emitere.**
 
-**Reconcilierea compară patru lucruri**: documentul emis, evidența din care a rezultat, recalculul de azi, și ce confirmă autoritatea că a primit.
+**Reconcilierea compară patru lucruri**: documentul emis, evidența, recalculul, și ce confirmă autoritatea.
 
-**O interpretare schimbată nu rescrie documentele emise sub cea veche.** Produce contradicții.
+**O decizie schimbată nu rescrie documentele emise sub cea veche.**
 
-**O modificare retroactivă de lege parcurge P18** — perioade afectate, documente devenite incorecte, listă de rectificative, decizie a omului.
+**O modificare retroactivă de lege parcurge P18.**
 
 ---
 
 # PARTEA V — CONTRACTE ÎNTRE MODULE
 
-### Ce declară un modul
+**Ce declară un modul:** ce primește · ce întoarce, ca tip · ce garantează · **pe ce decizii de interpretare stă** · **ce certitudine au intrările** · ce nu poate spune.
 
-Ce primește · ce întoarce, ca tip · ce garantează · **pe ce interpretări stă** · **ce certitudine au intrările** · ce nu poate spune.
+**Perechile generator ↔ verificator:** nu importă modulul verificat, nici tranzitiv · nu-i copiază constantele · nu-i reproduce formulele · nu se modifică în același commit fără decizie scrisă · **nu se aliniază la el când diverg**.
 
-### Perechile generator ↔ verificator
+**Interfața cu autoritățile:** patru componente separate — generarea, validarea, transmiterea, reconcilierea.
 
-- nu importă modulul verificat, nici tranzitiv;
-- nu-i copiază constantele — le cere din registru;
-- nu-i reproduce formulele;
-- nu se modifică în același commit fără decizie scrisă cu motiv;
-- nu se aliniază la el când diverg — diferența se duce la arbitru.
-
-Când divergența vine dintr-o interpretare, nu dintr-o eroare, interpretarea se ridică la decizie.
-
-### Interfața cu autoritățile
-
-Patru componente separate: **generarea**, **validarea**, **transmiterea**, **reconcilierea**.
-
-Un artefact validat dar netransmis, sau transmis fără validare, sunt stări distincte și vizibile. Ce spune autoritatea că a primit se confruntă cu ce credem noi că am trimis.
-
-### Erorile publicate
-
-Spun ce lipsește și unde se rezolvă · nu conțin nume de câmpuri, tabele, clase sau tipuri interne · sunt în limba interfeței, cu diacritice.
-
-Un refuz motivat nu devine niciodată eroare generică.
+**Erorile publicate:** spun ce lipsește și unde se rezolvă · fără nume interne · în limba interfeței, cu diacritice.
 
 ---
 
@@ -443,9 +682,9 @@ Un refuz motivat nu devine niciodată eroare generică.
 | 18 | O gardă care își ia dovada din proză | P10 |
 | 19 | O gardă care raportează favorabil pe zero rânduri | P10 |
 | 20 | O declarație de perimetru devenită neadevărată | P9 |
-| 21 | O interpretare care apare ca și cum ar fi text de lege | P11 |
-| 22 | O interpretare fără variantele posibile enumerate | P11 |
-| 23 | Un dezacord cu arbitrul, stins prin aliniere fără decizie | P11 |
+| 21 | O alegere de interpretare făcută la scriere, fără să fi fost cerută decizia | P11 |
+| 22 | O decizie de interpretare înregistrată fără varianta respinsă numită | P11 |
+| 23 | Un dezacord lege ↔ arbitru, tranșat în cod în loc să fie ridicat la decizie | P8·P11 |
 | 24 | O interogare fără contextul firmei | P12 |
 | 25 | Un drept verificat numai în interfață | P12 |
 | 26 | O decizie luată comparând sau clasificând text | P13 |
@@ -471,79 +710,135 @@ Un refuz motivat nu devine niciodată eroare generică.
 | 46 | O presupunere devenită fapt fără confirmare consemnată | P20 |
 | 47 | Un blocaj fără cale de trecere pentru om, sau o trecere fără urmă | traversal |
 | 48 | O suprascriere concurentă fără avertisment | traversal |
+| 49 | Un articol folosit fără dată de verificare a vigorii | Partea 0 · P8 |
+| 50 | O valoare sprijinită pe un articol abrogat sau modificat, fără succesor citat | Partea 0 · P8 |
+| 51 | O regulă scrisă din memorie, când actul lipsește din corpus | Partea 0 · P8 |
+| 52 | Un act din corpus al cărui text s-a modificat după aducere | stratul 1 |
+| 53 | Un citat verbatim care nu conține valoarea pe care o justifică | Partea 0 · P8 |
+| 54 | Un articol folosit cu verificarea vigorii expirată față de pragul lui | Partea 0 · P8 |
+| 55 | Un articol din corpus fără categorie de reverificare atribuită | stratul 1 |
+| 56 | **O regulă scrisă când textul a fost citit dar nu înțeles, fără cerere specifică** | Partea 0 · P8 |
+| 57 | **O valoare fără temei, intrată fără declarația „am căutat și nu am găsit"** | Partea 0 · P8 |
+| 58 | **O sursă de nivel inferior care contrazice una superioară, fără decizie** | Partea 0 · P8 |
+| 59 | **Verificarea vigorii făcută pe act, nu pe articolul folosit** | Partea 0 · P8 |
+| 60 | **O regulă, formulă sau structură care implementează o normă, fără articolul asociat** | P21 |
+| 61 | **Un articol din corpus fără lista dependenților, generabilă la cerere** | P21 |
+| 62 | **O modificare de articol aplicată fără parcurgerea listei dependenților** | P21·P18 |
+| 63 | **O cifră afișată fără posibilitatea de a-i vedea, la cerere, componentele** | P22 |
+| 64 | **Un element care putea interveni și n-a intervenit, fără motiv și temei afișabile** | P22 |
+| 65 | **O valoare diferită de perioada anterioară, fără explicația diferenței** | P22 |
+| 66 | **O legătură normă↔implementare care există în cod, dar nu ajunge pe ecran** | P22·P21 |
+| 67 | **Un rezultat produs peste date lipsă, fără ca lipsa să fi fost cerută** | P23 |
+| 68 | **O lipsă semnalată abia la generare, când datele nu mai pot fi obținute** | P23 |
+| 69 | **Un verdict care nu distinge „gata" de „gata cu ce am avut"** | P23·P6 |
+| 70 | **O interpretare care ajunge într-o cifră depusă, nerevizuită fără să fie declarată ca atare** | P24 |
+| 71 | **O copie de siguranță din care nu s-a restaurat niciodată** | P25 |
+| 72 | **O restaurare care nu se poate dovedi identică cu originalul** | P25 |
+| 73 | **O copie care se poate pierde odată cu originalul** | P25 |
+| 74 | **Un export care rupe lanțul dintre declarație și documentele justificative** | P26·P14 |
+| 75 | **Date care se pot lua doar cu intervenția noastră, sau într-un format închis** | P26 |
 
 ---
 
 # PARTEA VII — CUM SE FOLOSEȘTE DOCUMENTUL
 
-**Nu se modifică pentru a se potrivi cu realitatea.** Dacă o parte din aplicație îl încalcă, se schimbă aplicația. Dacă un principiu se dovedește greșit, se schimbă documentul — prin decizie scrisă, cu motiv, nu prin adaptare tăcută.
+**Întâi se modifică planul, apoi se conformează codul.** Nicio schimbare de fundament nu se face direct în aplicație. Când apare o regulă nouă sau se corectează una veche, ea intră aici mai întâi; abia apoi se confruntă și se repară.
 
-**Confruntarea e o operațiune separată.** Rezultatul se scrie în `CONFORMITATE.md`, o secțiune per interdicție, cu stare declarată: MĂSURATĂ, NEMĂSURABILĂ, PARȚIAL, NEÎNCEPUTĂ. „Investigată" nu e o stare. Un câmp gol nu e permis: dacă nu se poate măsura, se scrie de ce.
+Motivul: o regulă aplicată în cod fără să fie scrisă în plan trăiește doar în locul unde a fost aplicată. Următoarea dată când cineva atinge alt modul, n-o știe.
 
-**Ordinea reparațiilor** decurge din structură și din risc juridic:
+**Nu se modifică pentru a se potrivi cu realitatea.** Dacă aplicația îl încalcă, se schimbă aplicația. Dacă un principiu se dovedește greșit, se schimbă documentul — prin decizie scrisă, cu motiv, nu prin adaptare tăcută.
+
+**Confruntarea e o operațiune separată**, în `CONFORMITATE.md`, cu stare declarată per interdicție.
+
+**Ordinea reparațiilor:**
 
 | # | Grup | Principii | Interdicții |
 |---|---|---|---|
+| 0 | **Temeiurile** | Partea 0, P8 | 49–59 |
 | 1 | Registrul | P1, P11, P13 parțial | 1, 2, 16, 17, 21, 22, 23, 28 |
 | 2 | Inalterabilitatea și urma | P15, P16 | 34–38 |
-| 3 | Trasabilitatea | P14 | 32, 33 |
+| 3 | Trasabilitatea | P14, **P21**, **P22** | 32, 33, **60–66** |
 | 4 | Direcția dependenței | P3, P13 | 4, 5, 13, 15, 26, 27, 31 |
-| 5 | Documentele și trimiterea | P4, P19 | 6, 7, 8, 43, 44 |
+| 5 | Documentele și trimiterea | P4, P19, **P23** | 6, 7, 8, 43, 44, **67, 68, 69** |
 | 6 | Proveniența | P20 | 45, 46 |
 | 7 | Izolarea | P12 | 24, 25 |
 | 8 | Retenția și retroactivitatea | P17, P18 | 39–42 |
+| 8b | **Supraviețuirea și portabilitatea** | **P25, P26** | **71–75** |
+| 8c | **Revizuirea interpretărilor** | **P24** | **70** |
 | 9 | Restul | — | 29, 30, 47, 48 |
 
-Pasul 2 urcă înaintea trasabilității deliberat: un lanț de justificare construit peste o evidență care se poate modifica retroactiv nu dovedește nimic.
+**Grupul 0 e deasupra registrului.** O valoare corect așezată în registru, care se sprijină pe un articol abrogat, pe un citat care n-o conține, sau pe un text neînțeles, e greșită oricât de bine ar fi structurat registrul.
 
-**Fiecare interdicție primește un gard înainte de reparație**, nu după. Ordinea e singura formă tare de probă.
-
----
-
-# ANEXĂ A — DE CE P11
-
-**„Încadrat cu salariul de bază minim brut."** Egalitate strictă, sau sub un plafon? Legea nu spune. S-a ales egalitatea strictă, dar alegerea a trăit într-o comparație din cod. Consecința: un leu peste minim costă salariatul optzeci și doi.
-
-**Facilitatea la baza minimă part-time.** Legea spune că e pentru normă întreagă; structura publicată de autoritate o scade totuși din nivelul de referință, iar validatorul o implementează. S-a ales urmarea legii, contra arbitrului, cu raționament în comentariu — dar nu ca dezacord marcat. Două săptămâni mai târziu, semnalul care contrazicea alegerea fusese înghețat ca așteptat, iar a doua cale de verificare fusese aliniată la prima.
-
-**Codificarea perioadei trimestriale.** Cifra 09 pentru trimestrul al treilea arăta ca o eroare și a fost raportată ca atare. Era codificarea corectă a autorității.
-
-În toate trei, **cineva a decis ceva ce legea nu decisese**, iar decizia a devenit invizibilă în momentul în care a intrat în cod.
+**Fiecare interdicție primește un gard înainte de reparație.**
 
 ---
 
-# ANEXĂ B — DE CE P13
+# ANEXĂ A — DE CE PARTEA 0
 
-**Text care afirmă fals.** „Vector necompletat" pe firme cu vectorul complet. „Patru-ochi e dezactivat" pe o politică doar suspendată. „Validarea în doi ✓" pe un cabinet cu un singur validator. „0 firme erau deja în portofoliu" când erau.
+**Verificarea 1 — înțelegerea.** Cea mai periculoasă situație nu e „nu găsesc actul", ci „am actul, l-am citit, dar nu-mi spune ce fac în cazul ăsta". Nu se manifestă în niciun fel: se produce ceva plauzibil și se merge mai departe. La „încadrat cu salariul minim", textul a fost citit, n-a fost înțeles complet, și în loc de o întrebare a ieșit o interpretare.
 
-**Text folosit ca dată.** Clasificarea duplicatelor la import se făcea potrivind proză. O reformulare a mesajului ar fi schimbat tăcut rezultatul.
+**Verificarea 2 — vigoarea.** OPANAF 394/2017, citat în nouă locuri, era abrogat de OPANAF 705/2020. HG 685/1999, abrogat de HG 773/2019. Ambele găsite din întâmplare. Iar OUG 156/2024 e în vigoare, dar art. LXX a fost abrogat de OUG 29/2026 și art. LXVI modificat de OUG 89/2025 — de aceea unitatea de verificare e articolul, nu actul.
 
-**Text citit de o gardă ca dovadă.** Patru instanțe într-o zi: docstring luat drept SQL, comentariu luat drept randare, explicație luată drept cod.
+**Verificarea 3 — conținutul.** Trei citări false: facilitatea de 300 de lei atribuită unui act care nu o conținea; cota de dividende atribuită Codului fiscal în loc de ordonanța care o fixase; pragul mijloacelor fixe, la fel. **Actele existau și erau în vigoare.** Greșit era ce li se atribuia.
 
-**Text scris pentru programator, livrat contabilului.** Refuzuri corecte pe fond, ilizibile pentru cine le primea.
+**Verificarea 4 — ierarhia.** La podeaua part-time, legea spune una și structura publicată de autoritate spune alta. S-a ales în cod, fără decizie. Regula lipsă: o sursă inferioară nu poate contrazice una superioară fără să se ridice la decizie — mai ales când e mai comodă.
 
-**Text duplicat.** Un câmp care spunea același lucru ca afirmația structurată de alături — două surse ale aceleiași fraze.
+**Verificarea 5 — determinarea.** Aceeași instanță, cealaltă față: alegerea n-a fost cerută.
 
-Și, în nomenclatură: trei etichete de coduri de indemnizație greșite față de sursa oficială, două inversate între ele. Reformulări făcute de cineva care credea că scrie text.
+**Ce arată împreună:** „am citit actul" nu acoperă niciuna dintre celelalte patru. Sunt cinci verificări diferite, iar până acum doar prima jumătate a primei era regulă.
 
 ---
 
-# ANEXĂ C — DE CE PARTEA B
+# ANEXĂ B — DE CE P11
+
+**„Încadrat cu salariul de bază minim brut."** Egalitate strictă, sau sub un plafon? Legea nu spune. S-a ales egalitatea strictă la scriere, iar alegerea a trăit într-o comparație din cod. Consecința: un leu peste minim costă salariatul optzeci și doi.
+
+**Facilitatea la baza minimă part-time.** Legea spune că e pentru normă întreagă; structura publicată de autoritate o scade totuși din nivelul de referință, iar validatorul o implementează. S-a ales urmarea legii, contra arbitrului, cu raționamentul scris într-un comentariu. **Nimeni n-a fost întrebat.** Două săptămâni mai târziu, semnalul care contrazicea alegerea fusese înghețat ca așteptat, iar a doua cale de verificare fusese aliniată la prima. Divergența: 70,25 lei pe lună, pe fiecare salariat part-time sub minim.
+
+**Codificarea perioadei trimestriale.** Cifra 09 pentru trimestrul al treilea arăta ca o eroare. Era codificarea corectă a autorității.
+
+**De ce prima versiune era insuficientă.** Cerea ca alegerea să fie *documentată*. Dar lăsa alegerea la cel care scrie codul.
+
+Forma corectă: **alegerea nu e a lui.** Decizia intră în registru fiindcă a fost luată, nu fiindcă cineva și-a amintit s-o consemneze.
+
+---
+
+# ANEXĂ C — DE CE P13
+
+**Text care afirmă fals.** „Vector necompletat" pe firme cu vectorul complet. „Patru-ochi e dezactivat" pe o politică doar suspendată. „Validarea în doi ✓" pe un cabinet cu un singur validator.
+
+**Text folosit ca dată.** Clasificarea duplicatelor la import se făcea potrivind proză.
+
+**Text citit de o gardă ca dovadă.** Patru instanțe într-o zi.
+
+**Text scris pentru programator, livrat contabilului.**
+
+**Text duplicat.** Un câmp care spunea același lucru ca afirmația structurată de alături.
+
+Și, în nomenclatură: trei etichete de coduri de indemnizație greșite față de sursa oficială, două inversate între ele.
+
+---
+
+# ANEXĂ D — DE CE PARTEA B
 
 P1–P13 asigură că **producem cifra corectă**. P14–P20 asigură că **o putem apăra**.
 
-Distincția contează fiindcă cele două eșuează diferit. O eroare de calcul se vede: cifra e greșită, cineva o prinde. O lipsă de conformitate nu se vede până la control — și atunci nu se mai poate repara retroactiv.
-
 | Fără | Consecința la control |
 |---|---|
-| P14 trasabilitate | „De unde iese suma?" nu are răspuns; contabilul reface manual munca aplicației |
-| P15 inalterabilitate | evidența s-a schimbat după depunere; declarația nu mai corespunde nimănui |
-| P16 responsabilitate | nu se știe cine a autorizat; răspunderea nu se poate stabili |
-| P17 retenție | ori s-a șters ce trebuia păstrat, ori s-a păstrat ce trebuia șters |
+| P14 trasabilitate | „De unde iese suma?" nu are răspuns |
+| P15 inalterabilitate | evidența s-a schimbat după depunere |
+| P16 responsabilitate | nu se știe cine a autorizat |
+| P17 retenție | ori s-a șters ce trebuia păstrat, ori invers |
 | P18 retroactivitate | declarații depuse au devenit incorecte și nimeni nu știe care |
 | P19 stare externă | depunere dublă, sau termen ratat |
 | P20 proveniență | o presupunere a devenit fapt și a intrat într-o declarație |
+| P21 legătura cu norma | o modificare de lege lasă în urmă cod care nu se poate găsi |
+| P22 verificabilitate | contabilul nu poate verifica cifra, deci o reface în altă parte |
+| P23 ce lipsește | un rezultat peste date incomplete arată identic cu unul corect |
+| P24 revizuire | o interpretare greșită supraviețuiește, bine documentată |
+| P25 supraviețuire | evidența dispare, iar răspunderea rămâne a cabinetului |
+| P26 portabilitate | clientul nu-și poate lua evidența pe care legea îl obligă s-o păstreze |
 
-Niciunul dintre acestea nu e o eroare de calcul. Toate sunt motive pentru care o aplicație corectă matematic poate fi neconformă legal.
+**Consecința comercială e aceeași cu cea juridică:** dacă un contabil nu poate răspunde cu aplicația la un control, o va dubla cu evidența lui paralelă — și atunci produsul nu i-a economisit munca, i-a adăugat una.
 
-**Consecința comercială**, care e aceeași cu cea juridică: dacă un contabil nu poate răspunde cu aplicația la un control, o va dubla cu evidența lui paralelă — și atunci produsul nu i-a economisit munca, i-a adăugat una.
+Același lucru se întâmplă, la scară mai mică dar în fiecare zi, dacă nu poate verifica o cifră pe ecran. P22 nu e confort — e ce împiedică apariția evidenței paralele.

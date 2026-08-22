@@ -4902,3 +4902,48 @@ tocmai fiindcă verificarea ar trece 0==0 fără să discrimineze — tiparul co
 **Axa „scrisă înainte sau odată cu fixul": 321 odată cu fixul, 47 singure, 1 necunoscut.**
 
 **Reparat pe loc** (excepția din plan): codurile de boală. Vezi DECIZII.
+
+
+## 22.08.2026 — cele trei planuri: normativ, investigații, lucru
+
+**Ziua s-a închis cu trei documente, nu cu cod.** `PLAN_ARHITECTURA.md` a crescut de la versiunea 4
+(20 de principii, 48 de interdicții) la versiunea 14: **26 de principii, 75 de interdicții**, plus
+**Partea 00 — ce face sistemul** și **Partea 0 — secvența obligatorie a temeiului**, în șase pași.
+
+**Partea 00 a fost adăugată fiindcă lipsea criteriul de proporționalitate.** Principiile spuneau ce
+n-are voie; niciunul nu spunea ce ESTE sistemul. Fără asta nu se poate afirma „constrângerea asta e prea
+scumpă pentru ce apără". Criteriul scris: un principiu se justifică dacă absența lui poate face
+contabilul să nu depună din aplicație, sau să nu poată apăra ce a depus.
+
+**Angajamentul de 48 de ore e testul practic al arhitecturii**, nu politică comercială: răspuns în două
+zile la orice solicitare, livrare în două zile pentru clasa care se poate. E posibil doar dacă registrul,
+secvența temeiului, legătura normă↔implementare și separarea calcul/prezentare există deja.
+
+**Principiile noi:** P21 (norma știe ce depinde de ea — legătura inversă, fără de care P18 cere ceva ce
+nu se poate face) · P22 (cifra se poate verifica de un om, pe ecran) · P23 (ce lipsește se cere la timp;
+ce nu s-a cerut e vina aplicației) · P24 (interpretarea care ajunge într-o cifră depusă se revizuiește
+deliberat) · P25 (evidența supraviețuiește, iar restaurarea se poate dovedi) · P26 (clientul își poate
+lua evidența oricând).
+
+**P24 s-a corectat în aceeași zi:** revizuirea se face intern, deliberat, nu de un specialist din afară.
+
+**Și s-a scris explicit că planul nu se mai extinde.** Motivul e în document: de la un punct principiul
+marginal costă mai mult decât apără, iar sistemul de control devine el însuși ceva de întreținut. Ce
+urmează e confruntarea, nu completarea.
+
+**`PLAN_INVESTIGATII.md` (versiunea 10)** spune ce se măsoară și în ce ordine: opt faze, prima fiind
+**singura care răspunde la afirmația „aplicația face contabilitate conformă"** — setul complet de
+artefacte, pe regimurile reale. Restul de 75 de interdicții măsoară cât de FRAGIL e rezultatul; e a doua
+întrebare. Verdictul fazei 1 are **cinci liste, nu trei**: despicarea „lipsesc date cerute la timp" /
+„lipsesc date necerute" e chiar P23, și fără ea o firmă cu date incomplete face aplicația să pară
+defectă, iar una cu lipse necerute o face să pară completă.
+
+**`PLAN_LUCRU.md`** e al treilea și ultimul: cronologia (E1–E5), trei puncte de decizie, ce ține de om.
+**Stabilit, nu se mai discută:** verificarea o facem noi doi, fără actor din afară · nu există termen
+calendaristic, se termină când trece verificarea · cele 35 de declarații fără interfață se fac la cerere,
+nu preventiv · planurile nu se mai extind.
+
+**Ce a rămas nescris atunci și se scrie acum:** intrarea asta. Sesiunea s-a închis fără ISTORIC, iar cele
+trei planuri au rămas necomise — `PLAN_ARHITECTURA.md` modificat, celelalte două neurmărite de git. Iar
+poarta verde era roșie chiar din momentul scrierii planului: `core/test_conformitate.py` cere o secțiune
+per interdicție, planul avea 75, registrul 48. Măsura, nu observația: **2 teste roșii pe HEAD**.

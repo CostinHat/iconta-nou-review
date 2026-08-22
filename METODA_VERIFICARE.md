@@ -103,6 +103,25 @@ ochi, nu după cât cântărește.
 6. **Zgomotul exclus se NUMĂRĂ, nu se aruncă tăcut** — altfel filtrul devine el însuși o afirmație
    neverificată.
 
+7. **Recalibrează după FIECARE atingere a instrumentului, nu o dată la început.** O calibrare făcută
+   pe versiunea 1 nu spune nimic despre versiunea 3. Orice filtru adăugat ca să scoată zgomot poate
+   scoate și datorie, iar momentul în care se adaugă e exact momentul în care nimeni nu se mai uită la
+   cazurile cunoscute.
+
+**O listă de scutiri prea largă orbește exact ca un tipar mort — și e mai greu de văzut, fiindcă arată ca
+precizie.** (§8 din raportul I1, 22.08.2026.) Un tipar mort se vede: nu potrivește nimic, iar cifra iese
+zero. O scutire prea largă potrivește, apoi scoate — și cifra rămâne plauzibilă.
+
+Instanța: prima formă a sub-instrumentului C din `core/scan_garzi.py` scutea orice modul care folosea
+`tokenize` sau `ast.parse`, ca dovadă că „știe să scoată proza". Amândouă sunt scutiri false —
+tokenizarea *colectează* string-urile, iar `ast.parse` lasă docstringurile ca noduri `Constant` — și
+scutirea a înghițit exact cazul canonic pe care instrumentul fusese construit să-l prindă
+(`test_schema_coloane`).
+
+**Deci: scutirile se numără separat de zgomot, iar fiecare scutire primește proba că un caz cunoscut NU
+scapă prin ea.** Fără proba aia, o scutire e o afirmație despre cod, adăugată tocmai în momentul în care
+atenția era pe altceva.
+
 **Și întreabă-te unde trăiește lucrul căutat, nu unde stă fișierul de test.** Domeniul greșit e cea mai
 ieftină formă de orbire: `test_datorie.py:144` afirma „nimic nu scrie în `state_plata`" și căuta doar în
 `core/`, în timp ce `main.py` scria.
@@ -115,6 +134,7 @@ ieftină formă de orbire: `test_datorie.py:144` afirma „nimic nu scrie în `s
 | cheia pe rolul sintactic greșit | v1 al scanului a căutat aritmetică+comparații; `_ZIUA.get(tip, 25)` e un *default*, deci invizibil |
 | clasifici ramura, nu obiectul | v2 a clasat `Decimal("4050")` ca nesursată deși avea `Temei` pe același rând |
 | domeniul de căutare prea îngust | `test_datorie.py:144`; și scanul ăsta, până a fost măsurată rădăcina |
+| scutire prea largă, adăugată ca precizie | scutirea `tokenize`/`ast.parse` din `core/scan_garzi.py` (sub-instrumentul C): pusă ca să scoată falsele pozitive, a scos chiar cazul canonic. Arată ca precizie, se poartă ca orbire |
 | temei prezent, dar în PROZĂ | `cote_tva.py` citează art. 291 în antet și per categorie — scanul cerea obiect `Temei`, deci îl raporta nesursat. ÎNCHISĂ 21.08: clasa E, ancorată pe valoare (proza trebuie să conțină și citarea, și valoarea). 126 → 98 |
 
 **Fiecare gard nou primește o aserțiune anti-vacuu:** un gard care nu găsește nimic TRECE. Un gard cu

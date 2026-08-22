@@ -4,7 +4,7 @@
 cifră, listă și calibrare. Cerut de Costin pe 22.08.2026, cu motivul: *„Cifrele confruntării nu au
 voie să existe doar în raport. Raportul se citește o dată; registrul rămâne."*
 
-**O secțiune per interdicție, toate 48.** Majoritatea sunt NEÎNCEPUTE — așa se vede de la început cât
+**O secțiune per interdicție, toate 75.** Majoritatea sunt NEÎNCEPUTE — așa se vede de la început cât
 e de făcut, în loc să se descopere pe parcurs.
 
 **Câmpurile sunt obligatorii.** Un câmp gol nu e permis: dacă nu se poate măsura, se scrie
@@ -21,9 +21,198 @@ Gardat de `core/test_conformitate.py`: o interdicție din plan fără secțiune 
 câmp obligatoriu gol o oprește la fel.
 
 ---
+
+## ANTET DE ETAPĂ
+
+Cerut de `PLAN_LUCRU.md` („Unde suntem"): un singur loc care spune unde suntem, ca un om care se uită să
+poată răspunde fără să citească rapoarte vechi. Gardat de `core/test_conformitate.py` — **un antet cu
+date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra ultimului commit care a
+atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
+
+- **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
+- **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
+- **ce lipsește**: operațiunea 1 din E1 — **câte regimuri** — e MĂSURATĂ (vezi blocul „E1 — SETUL COMPLET"): 9 combinații purtate de firme, 5 regimuri speciale de TVA cu zero firme exercitate, PFA cu zero firme. Pasul 1a e o **primă trecere**: registrele, situațiile financiare, declarațiile și evidențele speciale au temei citit din corpus, dar **niciun articol n-are vigoarea verificată la sursă externă**. Mai lipsesc: patru căutări nerezolvate (D205, registrul de casă, temeiul D212, articolul care impune D406) · **categoria de mărime**, care decide setul de situații financiare și nu există ca dimensiune în aplicație · apoi 1b (ce produce aplicația, pe date reale) și 1c (se poate verifica pe ecran — interdicțiile 63–66).
+- **decizii care blochează**: **două.** (1) **Legea 82/1991 lipsește din corpus în formă consolidată** — registrele obligatorii se pot cita azi doar prin OMFP 2634/2015, adică printr-o sursă de nivel 2. Se aduce actul, sau se acceptă ordinul ca ancoră cu dezacordul de nivel declarat? Blochează închiderea familiei A din 1a. (2) **Se îngheață perimetrul până la conformitate?** (`PLAN_LUCRU.md`, „Ce ține de om") — dacă nu, lista de interdicții crește cu fiecare modul nou, iar criteriul de terminare al lui E3 se mișcă sub măsurătoare. Nu blochează E1; blochează închiderea lui E3.
+- **ultima actualizare**: 2026-08-22
+- **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
+
+---
+## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
+
+Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
+sunt interdicții, sunt măsurătorile fazei — dar poartă aceleași câmpuri, fiindcă o cifră fără dată și
+fără commit îmbătrânește la fel de tăcut aici ca oriunde.
+
+- **măsurat la**: 2026-08-22
+- **pe commit**: `84f77c4` (HEAD la momentul măsurării)
+
+### Operațiunea 1 — câte regimuri acoperă aplicația (MĂSURATĂ)
+
+**Nu trei.** Regimul nu e un câmp: e un PRODUS de nouă dimensiuni din vectorul fiscal, plus cinci
+regimuri speciale de TVA care nu se văd deloc în vector — ele se manifestă prin note contabile.
+
+| dimensiune | ce cunoaște codul | ce oferă interfața | firme, din 17 |
+|---|---|---|---|
+| `tip_firma` | `srl`, `pfa` (CHECK în `01_ddl_tip_firma.sql`) | — nu se alege din UI | **srl 17 · pfa 0** |
+| `regim_fiscal` | `micro`, `profit` | ambele | micro 10 · profit 7 |
+| `platitor_tva` | da / nu | ambele | da 11 · nu 6 |
+| `tip_decont` | L/T/S/A prin `common.perioada_tva_tip` | **doar lunar și trimestrial** | lunar 9 · trimestrial 7 · gol 1 · **semestrial 0 · anual 0** |
+| `operatiuni_ic` | da / nu | ambele | da 5 · nu 12 |
+| `inreg_art317` | da / nu | ambele | **da 1** (t006) · nu 16 |
+| `tva_la_incasare` | da / nu | ambele | **da 0** · nu 17 |
+| `pro_rata` | numeric sau NULL | câmp liber | **completat 0** · NULL 17 |
+| `baza_contabila` | `A` plus celelalte, mapate în `d406.plan_oficial` | — | **A pe toate 17** |
+
+**Combinațiile purtate efectiv de firme: 9.**
+
+| # | tip · regim · TVA · periodicitate · IC · art. 317 | firme |
+|---|---|---|
+| 1 | srl · micro · TVA · lunar | t015 |
+| 2 | srl · micro · TVA · lunar · IC | t013, t016, t017 |
+| 3 | srl · micro · TVA · trimestrial | t003, t012 |
+| 4 | srl · micro · fără TVA · trimestrial | t002, t009, t011 |
+| 5 | srl · micro · fără TVA · trimestrial · IC · art. 317 | t006 |
+| 6 | srl · profit · TVA · lunar | t001, t007, t008, t010 |
+| 7 | srl · profit · TVA · lunar · IC | t004 |
+| 8 | srl · profit · TVA · trimestrial | t005 |
+| 9 | srl · profit · fără TVA · fără periodicitate | t014 |
+
+**Regimurile speciale de TVA: modul, rută, ecran — și zero firme exercitate.**
+
+| regim | motor | rută | firma „purtătoare" | exercitat pe date? |
+|---|---|---|---|---|
+| marjă second-hand, art. 312 | `core/tva_marja.py` | `POST /tenants/{id}/vanzare-marja` | t008 „Second Hand Marja SRL" | **NU** — t008 n-are niciun rând pe nicio tabelă purtătoare |
+| marjă agenții de turism, art. 311 | `core/tva_marja_turism.py` | `.../vanzare-marja-turism` | t007 „Agentie Turism Marja SRL" | **NU** — o factură, zero note de marjă |
+| aur de investiții, art. 313 | `core/tva_aur.py` | `.../vanzare-aur-investitii` | **niciuna** | **NU** |
+| agricultori (compensare 8%), art. 315^1 | `core/tva_agricultori.py` | `.../achizitie-agricultor`, `.../vanzare-agricultor` | t009 „Ferma Agricultor Forfetar SRL" | **NU** — o factură în regim normal (TVA 2000) |
+| TVA la încasare, art. 282 | `core/tva_incasare.py` | `.../nota-tva-incasare` + `d300` | **niciuna** (`tva_la_incasare=false` pe toate 17) | latura **furnizor**: DA, pe t004 (`furnizor_tva_incasare`, deducere amânată); latura proprie: **NU** |
+
+Toate cinci au ecran: `static/js/ecrane/operatiuni_ecran.js`, categoria „TVA regimuri speciale".
+
+**Cum s-a măsurat, și ce nu vede măsurătoarea.** Regimurile speciale n-au marcaj în `firma_profil`;
+rutele lor scriu note în `inregistrari` / `inregistrari_linii` — verificat la sursă în `main.py`, ruta
+`vanzare-marja` (`INSERT INTO {schema}.inregistrari ... 'ciorna'`). Deci sonda a citit **toate cele 34
+de note contabile existente pe cei 17 tenanți**, nu un eșantion, și le-a confruntat cu unsprezece
+tipare („marj", „art. 312", „art. 311", „aur", „agricultor", „turism", „compensare", …):
+**zero potriviri**. **Ce nu vede:** un regim exercitat prin import, nu prin rută · o notă a cărei
+descriere a fost rescrisă de om. Iar „zero note" nu spune că motorul e greșit — spune că **nimeni n-a
+produs artefactul cu el**.
+
+**Taxare inversă internă (art. 331): exercitată.** 2 facturi din 41, pe t005 (construcții) și t007;
+coloanele `facturi.taxare_inversa` și `facturi.categorie_331` sunt populate. Pe t013 există o factură
+cu `categorie_331` completată și `taxare_inversa = false` — de privit la 1b.
+
+**Ce s-a verificat și NU e defect** (ca să nu se redeschidă): `tip_decont` e stocat în două convenții,
+`L`/`T` (seed vechi) și `lunar`/`trimestrial`. Nu e o divergență vie — parsarea trece printr-un singur
+punct, `common.perioada_tva_tip`, iar `tip_decont_lung` normalizează la granița UI. Citit în cod, nu
+presupus.
+
+**Semnalele care ies din operațiunea 1** — nu sunt încă defecte, sunt întrebări pentru 1b:
+
+1. **PFA / partidă simplă: 0 firme din 17**, deși `tip_firma` acceptă `pfa` și există `core/d212.py` +
+   `core/d212_engine.py`. Regimul cu cele mai multe artefacte proprii nu e exercitat de nicio firmă.
+2. **Periodicitatea semestrială și anuală**: motorul le cunoaște, interfața oferă două. Un regim pe
+   care codul îl poate calcula și omul nu-l poate alege.
+3. **Trei firme fără nicio dată**: t008 (second-hand), t011, t012. Două poartă chiar regimul din numele
+   lor. `MODEL_AUDIT_TENANT.md` numește t011 și t012 „SUB-EXERCITATE"; **t008 nu e în acea listă**, și e
+   goală — o declarație de perimetru care nu acoperă tot ce e gol (atinge interdicția 20).
+4. **`pro_rata` și `tva_la_incasare`: zero firme.** Două regimuri cu efect direct în D300.
+5. **`baza_contabila` = A pe toate 17.** Celelalte planuri de conturi, mapate în `d406`, nu sunt atinse.
+
+### Pasul 1a — ce cere legea (PRIMA TRECERE, cu temei din corpus)
+
+**Din lege, cu temei — nu din ce știe aplicația să facă.** Fiecare rând de mai jos a fost găsit prin
+căutare în `anaf_surse/`, iar numărul articolului a fost citit mergând înapoi până la titlul lui, nu
+presupus. **Ce nu e în corpus nu s-a scris** — apare ca lipsă declarată.
+
+**AVERTISMENT DE STARE (Partea 0, pasul 2):** pentru niciunul dintre articolele de mai jos nu s-a făcut
+verificarea vigorii la sursă externă în tura asta. Lista e o **PRIMĂ TRECERE**, nu un set verificat. Un
+singur exemplu de ce contează: D101 se depune **până la 25 iunie**, iar alineatul a fost modificat de
+OUG 8/2026 la 25.02.2026 — se vede în corpus, nu în memorie.
+
+**A. Registre de contabilitate obligatorii**
+
+| artefact | temei (verbatim în corpus) | cui i se aplică | firme |
+|---|---|---|---|
+| **Registrul-jurnal** (cod 14-1-1) | OMFP 2634/2015 pct. 44 și 45 — `omfp_2634_2015.txt:343` | partidă dublă | 17 |
+| **Registrul-inventar** (cod 14-1-2) | OMFP 2634/2015 pct. 44 și 46 | partidă dublă | 17 |
+| **Cartea mare** (cod 14-1-3) | OMFP 2634/2015 pct. 44 și 47 — „poate fi înlocuit cu Fișa de cont pentru operațiuni diverse" | partidă dublă | 17 |
+| **Balanța de verificare, LUNAR** | Legea 82/1991 art. 22, forma DUPĂ OUG 138/2024 — `legea_82_1991_modif_oug138_2024.txt`. Înainte era „cel puțin la încheierea exercițiului financiar" | toate | 17 |
+| **Registrul-jurnal de încasări și plăți** (14-1-1/b) + **Registrul-inventar** (14-1-2/b) | OMFP 2634/2015 pct. 48, care trimite la OMFP 170/2015 | partidă simplă (PFA) | **0** |
+
+**LIPSĂ DECLARATĂ, cu decizie cerută.** `Legea 82/1991` **nu există în corpus în formă consolidată** —
+sunt doar două documente „modificări aduse de OUG 115/2023 / OUG 138/2024", emise de o direcție
+regională ANAF, adică **sursă de nivel 2, nu Monitorul Oficial**. Am căutat în tot `anaf_surse/` după
+„registrele de contabilitate obligatorii", „registrul-jurnal", „cartea mare" și după numele actului:
+singurul loc în care lista apare verbatim e OMFP 2634/2015, care spune „potrivit prevederilor legii
+contabilității". **Deci art. 20 din Legea 82/1991 e citat printr-un intermediar.** Decizia cerută lui
+Costin: se aduce legea consolidată în corpus, sau se acceptă OMFP 2634/2015 ca ancoră, cu dezacordul de
+nivel declarat? (Partea 0 pasul 4 — o sursă inferioară nu ține locul uneia superioare fără decizie.)
+
+**B. Situații financiare anuale**
+
+Componența depinde de **categoria de mărime**, nu de regimul fiscal — o distincție pe care vectorul
+fiscal al aplicației nu o poartă deloc.
+
+| categorie | ce cuprinde | temei |
+|---|---|---|
+| microentități | situații financiare în condițiile secțiunii 12.1 „Scutiri pentru microentități" | OMFP 1802/2014 pct. 20 alin. (1) |
+| entități mici | bilanț prescurtat · cont de profit și pierdere · note explicative | OMFP 1802/2014 pct. 20 alin. (2); opțional și situația modificărilor capitalului propriu / a fluxurilor de trezorerie, alin. (4) |
+| mijlocii și mari, entități de interes public | bilanț · cont de profit și pierdere · situația modificărilor capitalului propriu · situația fluxurilor de trezorerie · note | OMFP 1802/2014 pct. 21 |
+
+**Criteriile de mărime** (OMFP 1802/2014 pct. 9): micro — total active 350.000 EUR, cifră de afaceri
+netă 700.000 EUR; mici — 4.000.000 EUR și 8.000.000 EUR. Sunt **două criterii din trei**, la data
+bilanțului.
+
+**LIPSĂ DECLARATĂ:** termenele de depunere (Legea 82/1991 art. 36) nu se pot cita — același act lipsă.
+Iar **categoria de mărime nu există ca dimensiune în aplicație**: nu e câmp în `firma_profil` și nu
+apare în vectorul fiscal. Consecința pentru 1b: pentru niciuna dintre cele 17 firme nu se poate spune,
+din date, ce set de situații financiare datorează.
+
+**C. Declarații fiscale** (după vectorul fiscal, nu după ce are aplicația)
+
+| declarație | temei, citit la sursă | cine o datorează | firme |
+|---|---|---|---|
+| **D100** | CF **art. 56** — „Microîntreprinderile au obligația de a depune, până la termenul de plată a impozitului, declarația de impozit pe veniturile microîntreprinderilor." | micro | 10 |
+| **D101** | CF **art. 42** alin. (1) — „până la data de 25 iunie inclusiv a anului următor"; alineat **modificat de OUG 8/2026** | profit | 7 |
+| **D112** | CF **art. 81** (obligația plătitorilor de salarii) și **art. 147** | orice firmă cu salariați | de numărat la 1b |
+| **D300** | CF **art. 323** — „Decontul de taxă întocmit de persoanele înregistrate conform art. 316" | plătitor de TVA | 11 |
+| **D301** | CF **art. 324** — „de către persoanele care nu sunt înregistrate și care nu trebuie să se înregistreze conform art. 316"; „numai pentru perioadele în care ia naștere exigibilitatea" | neplătitor cu operațiuni taxabile | 1 confirmat (t006) |
+| **D390** | CF **art. 325** | operațiuni intracomunitare | 5 |
+| **D394** | **nu e în Codul fiscal** — OPANAF 3769/2015 (bază) și OPANAF 2194/2025, ambele în corpus | plătitor de TVA | 11 |
+| **D406** | Codul de procedură fiscală (fișierul standard de control fiscal, definit acolo ca probă) + OPANAF 1783/2021, în corpus | după categoria de contribuabil | de stabilit la 1b |
+| **D205** | **negăsit** cu tiparele folosite în CF consolidat — de recăutat | plătitori de venituri cu reținere la sursă | — |
+| **D212** | motor `core/d212_engine.py`; temeiul **nu s-a căutat în tura asta** | PFA / II / IF | **0 firme** |
+
+**D. Evidențe speciale**
+
+| evidență | temei, citit la sursă | cui i se aplică |
+|---|---|---|
+| **Evidența operațiunilor de TVA** — „evidențe corecte și complete ale tuturor operațiunilor efectuate în desfășurarea activității lor economice" | CF **art. 321** | persoane impozabile stabilite în România |
+| **Jurnale pentru vânzări / borderouri de încasări** și **jurnale de cumpărări separate** | HG 1/2016 (norme), la regimul special al agențiilor de turism | regim special turism |
+| **Evidența operațiunilor în regim special de marjă** — „să țină evidența operațiunilor pentru care se aplică regimul special" | CF **art. 312** | second-hand |
+| **Registrul de evidență fiscală** | CF **art. 19** (impozit pe profit) și CF **art. 68** (venit net în sistem real) | profit; PFA în sistem real |
+| **Registrul de casă** | **negăsit** în OMFP 2634/2015 cu tiparul folosit — de recăutat înainte de a-l afirma | firmele cu operațiuni în numerar |
+
+### Ce lipsește ca să se termine E1
+
+1. **Decizia pe Legea 82/1991** — blochează ancorarea registrelor la nivelul 1.
+2. **Patru căutări nerezolvate**: D205 în CF · registrul de casă în OMFP 2634/2015 · temeiul D212 ·
+   articolul din Codul de procedură fiscală care impune D406 (fișierul acela n-are titluri „Articolul N"
+   citibile mecanic, deci cere altă metodă de localizare — nu o presupunere).
+3. **Categoria de mărime**, care decide setul de situații financiare, nu există ca dimensiune în
+   aplicație. Fără ea, 1b n-are ce compara pentru familia B.
+4. **Verificarea vigorii** (Partea 0 pasul 2) — nefăcută pentru toate articolele de mai sus.
+5. Apoi **1b** (ce produce aplicația, pe date reale) și **1c** (se poate verifica pe ecran —
+   interdicțiile 63–66).
+
+---
+
 ## 1 — O valoare fiscală scrisă în afara registrului
 
 - **stare**: MĂSURATĂ
+- **măsurat la**: 2026-08-22
+- **pe commit**: `ffbcb74`
 - **cifra**: **131** brut, din care ~23% zgomot pe eșantionul de 30 → **~100 reale**. Confruntare cu al doilea instrument: `core/scan_constante` raportează 93 „nesursate" (clasa C); diferența e de definiție — clasa A (48 de valori CU obiect `Temei`) e tot în afara registrului, fiindcă un `Temei` lângă o valoare nu e registrul. 131 = A(48) + C(93) + E(33) − 43 aflate chiar în `common.py`/`temeiuri.py`.
 - **instanțe**: concentrate în `salarizare.py` 33 · `d212_engine.py` 13 · `d394.py` 9 · `d101.py` 8 · `d406.py` 7 · `d406_active.py` 7 · `d300.py` 5 · `d300_reconciliere.py` 5 · `d403.py` 5 · `d104.py` 4 · `scadente.py` 4 · `tva_marja_turism.py` 4 · restul câte 1–3, în 16 fișiere. Lista completă: `./venv/bin/python -m core.scan_constante`.
 - **calibrare**: GĂSIT — cotele TVA scrise ca literal în `d300.py:41-42`, `d394.py:69`, `cote_tva.py:19`; CAS 0.25 în `salarizare.py:497` și `salariati_api.py:497`. Caz negativ NEraportat: valorile din `common.py` (43) au fost excluse corect — acolo E locul lor.
@@ -34,6 +223,8 @@ câmp obligatoriu gol o oprește la fel.
 ## 2 — O interogare a registrului fără dată
 
 - **stare**: MĂSURATĂ
+- **măsurat la**: 2026-08-22
+- **pe commit**: `ffbcb74`
 - **cifra**: **3** apeluri fără dată, din 45 (42 corecte). **O CAUZĂ UNICĂ**: `common.cota(nume, la_data=None)` — defaultul e *azi*. Interdicția 2 e posibilă doar fiindcă interdicția 14 e prezentă în punctul de intrare al registrului; scos defaultul, devine imposibilă prin construcție.
 - **instanțe**: `core/salariati_api.py:129` `cota('tichet_masa_plafon')` · `main.py:4528` `cota('tva_standard')` · `main.py:4529` `cota('tva_redusa')`.
 - **calibrare**: GĂSIT — toate trei confirmate la sursă, cu semnătura `cota(nume, la_data=None, strict=True)` citită direct. Caz negativ NEraportat: cele 42 de apeluri cu dată (poziţională sau `la_data=`) n-au intrat în listă.
@@ -44,42 +235,52 @@ câmp obligatoriu gol o oprește la fel.
 ## 3 — Un calcul fiscal care citește data curentă
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: o valoare citită pe data de azi face ca recalcularea unei perioade trecute să dea alt rezultat decât prima calculare — adeverințe și rectificative devin nereproductibile
+- **unde ajunge efectul**: un calcul care citește ceasul nu mai e o funcție de aceleași intrări: aceeași lună, recalculată în două zile diferite, dă două rezultate. Spre deosebire de 2, defectul e ÎN motor, deci nu se repară scoțând un default din registru
 
 ## 4 — O regulă fiscală implementată în stratul de prezentare
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: o regulă fiscală în stratul de prezentare se rescrie separat de motor: previzualizarea și salvarea ajung să spună lucruri diferite
+- **unde ajunge efectul**: o regulă fiscală ajunsă în interfață nu e nici testată, nici gardată, nici versionată pe dată: pragul din ecran rămâne la valoarea de anul trecut mult după ce registrul s-a actualizat, iar nimeni nu se uită acolo
 
 ## 5 — Un strat care cheamă în sus sau ocolește un nivel
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: o regulă fiscală în stratul de prezentare se rescrie separat de motor: previzualizarea și salvarea ajung să spună lucruri diferite
+- **unde ajunge efectul**: dependența care curge în ambele sensuri face ca un nivel să nu mai poată garanta nimic: ce apără stratul de jos se poate ocoli de sus, iar o schimbare într-un strat cere atinse toate celelalte — exact ce face imposibilă livrarea în 48 de ore
 
 ## 6 — O cerere de citire care modifică date de business
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: un document dat unui om care se rescrie sau nu se poate corecta printr-un al doilea exemplar rupe legătura dintre ce s-a predat și ce arată aplicația
+- **unde ajunge efectul**: o citire care scrie transformă orice privire în modificare: un raport deschis de două ori lasă evidența altfel decât a găsit-o, iar o sondă de audit devine ea însăși sursa datelor pe care le măsoară
 
 ## 7 — Un document emis care se rescrie
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
@@ -89,15 +290,19 @@ câmp obligatoriu gol o oprește la fel.
 ## 8 — O schemă care interzice al doilea exemplar
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: un document dat unui om care se rescrie sau nu se poate corecta printr-un al doilea exemplar rupe legătura dintre ce s-a predat și ce arată aplicația
+- **unde ajunge efectul**: o schemă care interzice al doilea exemplar face corecția imposibilă: eroarea dintr-un document deja predat nu se mai poate îndrepta printr-un document nou, deci singura ieșire rămâne rescrierea celui vechi — adică interdicția 7, forțată de structură
 
 ## 9 — O afirmație fără domeniu sau fără surse
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
@@ -107,6 +312,8 @@ câmp obligatoriu gol o oprește la fel.
 ## 10 — Un verdict favorabil care coexistă cu necunoscut nedeclarat
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
@@ -116,6 +323,8 @@ câmp obligatoriu gol o oprește la fel.
 ## 11 — Un verificator care importă modulul verificat
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
@@ -125,33 +334,41 @@ câmp obligatoriu gol o oprește la fel.
 ## 12 — O modificare simultană verificator/verificat fără decizie scrisă
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: o a doua cale care copiază prima nu mai verifică nimic — confirmă greșeala în loc s-o prindă
+- **unde ajunge efectul**: cele două căi se aliniază de aceeași mână, în același commit, iar divergența dispare fără să fi fost explicată. Instanță reală: pe 06.08 calea a doua a fost aliniată la prima, și semnalul care contrazicea podeaua part-time a tăcut două săptămâni
 
 ## 13 — Un refuz cu nume interne sau fără diacritice
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: o regulă fiscală în stratul de prezentare se rescrie separat de motor: previzualizarea și salvarea ajung să spună lucruri diferite
+- **unde ajunge efectul**: contabilul primește un refuz pe care nu-l poate acționa: un nume intern nu-i spune ce să completeze, iar mesajul arată ca un defect al aplicației. Efectul nu e o cifră greșită, e o cerere de ajutor către noi pentru ceva ce el putea rezolva singur
 
 ## 14 — Un parametru cu valoare implicită într-o funcție de calcul fiscal
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: o valoare citită pe data de azi face ca recalcularea unei perioade trecute să dea alt rezultat decât prima calculare — adeverințe și rectificative devin nereproductibile
+- **unde ajunge efectul**: un default ascunde o cale netestată: apelantul care uită parametrul primește tăcut valoarea comodă, iar defectul nu se vede la apel, ci mult mai târziu, în cifra rezultată. E cauza interdicției 2, dar și a oricărei alte valori implicite din motor — de trei ori într-o singură zi
 
 ## 15 — Reguli diferite la previzualizare față de salvare
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
@@ -161,6 +378,8 @@ câmp obligatoriu gol o oprește la fel.
 ## 16 — Un nomenclator derivat dintr-o sursă secundară
 
 - **stare**: MĂSURATĂ
+- **măsurat la**: 2026-08-22
+- **pe commit**: `ffbcb74`
 - **cifra**: **39** nomenclatoare ancorate pe sursă secundară, din 93 la nivel de modul (39 SECUNDAR · 39 NECITAT · 15 NORMATIV).
 - **instanțe**: `d390.TARI_UE`/`TIPURI` · `d301.VALUTE` · `d394.TIPURI`/`TIP_COTA_ZERO`/`OP1_CU_TVA`/`JUDETE_SIRUTA`/`_TARI_UE`/`_TARI_NONUE`/`CODPR_CEREALE` · `d402._STATE_UE` · `d406.UOM_UNECE`/`MISCARI_STOC`/`METODE_PLATA_ANAF`/`TAB_VALORI`/`_UE_NON_RO` · `d120.ACCIZE_FIELDS`/`_HEADER_OPT` · `d101._COD_OBLIGATIE_D101`/`_NENEG_D101` · `d300._TIP_COD` · `d307._TIP_VALIDE` · `d311._INTRARE` · `d390_reconciliere._TARI_UE`/`_EMISA_TIPURI` · `d600._SUM_KEYS` · `duk.CHEIE_DUK` · `salarizare._CM_COD_NEIMPOZABIL` · `salariati_import_api.JUDETE_CASA` · restul până la 39, listabile cu scanul de nomenclatoare.
 - **calibrare**: GĂSIT — `d390.TIPURI`/`TARI_UE` clasificate SECUNDAR, cu proza lor citată verbatim („nomenclatoare confirmate pe VALIDATORUL instalat D390_11 ... nu doar pe pdf-ul de structură 2020"). Caz negativ NEraportat: cele 15 NORMATIVE (care citează OPANAF/OUG/CF art.) n-au intrat în listă.
@@ -173,6 +392,8 @@ câmp obligatoriu gol o oprește la fel.
 ## 17 — Un adevăr din registru, re-declarat în alt modul
 
 - **stare**: MĂSURATĂ
+- **măsurat la**: 2026-08-22
+- **pe commit**: `ffbcb74`
 - **cifra**: **17a — 42** valori de registru rescrise ca literal, în 16 fișiere (~18% zgomot → ~34 reale). **17b — 1** formulă repetată, în **3 module**.
 - **instanțe**: **17a**: `d406.py` 6 · `d300.py` 5 · `d300_reconciliere.py` 5 · `d394.py` 5 · `tva_marja_turism.py` 4 · `d101.py` 3 · `cote_tva.py` 2 · `salarizare.py` 2 · `tva_agricultori.py` 2 · `tva_marja.py` 2 · restul câte 1. **17b**: podeaua part-time `sm − facilitate` în `d112.py:690`, `d112_reconciliere.py:195` și `:217`, `salarizare.py:309`.
 - **calibrare**: GĂSIT — podeaua part-time, exact în trei module, prin semnătură STRUCTURALĂ a expresiei (`SM Sub FAC`), nu prin potrivire de text: `sm - fac` și `sm - facilitate_val` sunt aceeași formulă. Caz negativ NEraportat: nicio altă formulă pe valori de registru nu apare în ≥2 module — deci semnătura nu se aprinde pe orice scădere.
@@ -183,6 +404,8 @@ câmp obligatoriu gol o oprește la fel.
 ## 18 — O gardă care își ia dovada din proză
 
 - **stare**: MĂSURATĂ
+- **măsurat la**: 2026-08-22
+- **pe commit**: `84f77c4`
 - **cifra**: **14** gărzi citesc sursă (`.py`/`.js`) fără să scoată proza — din 369 de fișiere-gardă. Una (`test_octeti_invizibili`) e **exclusă prin natura ei**: un octet invizibil dintr-un comentariu e tot un defect, deci trebuie să citească textul brut. Rămân **13 candidate**, din care **3 privite pe context**: 1 poate ASCUNDE o gaură, 2 pot doar să RAPORTEZE ÎN PLUS. Restul de 10, neprivite.
 - **instanțe**: poate ascunde o gaură — `test_golden_xsd.py:47` caută `from core import <mod>` în textul testelor, deci un docstring care pomenește modulul face un test inexistent să pară prezent (exact clasa care a lăsat d402 fără nicio probă). Pot doar raporta în plus — `test_upsert_motivat.py:25` (`"DO UPDATE"` dintr-un comentariu), `test_harta_ecrane.py:29` (`fa-*` dintr-un comentariu devine ecran fantomă). Neprivite: `test_gard_masca_zero`, `test_masti`, `test_mesaje_valueerror_publicat`, `test_nomenclatoare_ancorate`, `test_reconciliere_vie`, `test_refuz_generator_422`, `verificator_conformitate` și încă 3.
 - **calibrare**: GĂSIT, în ambele direcții. Pozitiv: `test_schema_coloane.py` la revizia `5d46d4f` (înainte de reparație) e raportat; pe HEAD, unde folosește `scan_ancore.domenii_docstring`, **nu mai e**. Negativ NEraportat: `test_proprietate_coaja.py`, care are propriul `_fara_comentarii()` — recunoscut mecanic, pe arbore (o operație peste un marcaj de comentariu), nu după numele funcției. **Prima formă a instrumentului a RATAT cazul canonic**: scutea orice modul care folosea `tokenize` sau `ast.parse`. Amândouă sunt scutiri false — tokenizarea *colectează* string-urile (docstringul e un token de string), iar `ast.parse` lasă docstringurile ca noduri `Constant`. Chiar asta era natura bug-ului lui `test_schema_coloane`. Lista de scutiri prea largă orbește la fel de bine ca un tipar mort.
@@ -193,6 +416,8 @@ câmp obligatoriu gol o oprește la fel.
 ## 19 — O gardă care raportează favorabil pe zero rânduri
 
 - **stare**: MĂSURATĂ (două forme, măsurate cu instrumente diferite)
+- **măsurat la**: 2026-08-22
+- **pe commit**: `84f77c4`
 - **cifra**: **19a — 3** tipare care nu pot potrivi nimic, din 339 extrase. **19b — 157** teste care CULEG și n-au nicio aserțiune de existență, din 696 care culeg (din 2072 cu aserțiuni); dintre ele **145 au un control pozitiv în modul** (atenuare), deci **12 n-au nici în test, nici în modul**. Zgomot măsurat pe 29 de rezultate privite: ~1/3 înainte de ultima corecție a instrumentului, adus la aproape zero prin recunoașterea aserțiunilor care fixează o valoare concretă.
 - **instanțe**: **19a** — `test_garzi_tacere_ui.py:47`, `test_import_motiv_vizibil.py:27`, `verificator_conformitate.py:996`. Toate trei sunt de forma `assert not <găsite>`: zero potriviri poate însemna „lumea e curată" SAU „tiparul e orb", iar instrumentul nu le desparte. **19b, cele 12 fără nicio atenuare** — `test_cui_cnp_test_valid:36` · `test_d112_mesaje_afisate:10` · `test_declarant_warn:14` · `test_fixturi_shared_period:18` · `test_garzi_mesaje_afisabile:25` · `test_ghiduri_servite:14` · `test_golden_xsd:33` · `test_harta_ecrane:33` și `:40` · `test_import_mesaje_afisate:15` · `test_rotunjire_fiscala:24` · `test_rute_model_body:19`. **Cinci dintre ele sunt gărzi pe care le-am construit eu în campaniile din 19–21.08** — nu e o observație despre codul moștenit.
 - **calibrare**: GĂSIT, ambele. **19a** — gardul R4 cu octetul `0x08` în regex (`test_temei_termene.py:29`, `\x08(OUG|OG|Legea|...)`) apare la revizia `29bd752` și **dispare** pe HEAD, unde a fost reparat. **19b** — `test_verificarea_nu_scrie_nimic`, care număra pe o lună fără nicio contradicție: nu există ca revizie (a fost reparat în același commit cu introducerea), deci a fost **RECONSTRUIT** din forma descrisă în GARZI.md; apare la reconstruire (158) și nu apare pe HEAD (157), iar diferența e exact testul numit. Caz negativ NEraportat: cele 25 de tipare cu zero potriviri al căror subiect e un artefact produs la RULARE — corpusul nu poate spune nimic despre ele, deci instrumentul tace.
@@ -203,6 +428,8 @@ câmp obligatoriu gol o oprește la fel.
 ## 20 — O declarație de perimetru devenită neadevărată
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
@@ -212,6 +439,8 @@ câmp obligatoriu gol o oprește la fel.
 ## 21 — O interpretare care apare ca și cum ar fi text de lege
 
 - **stare**: PARȚIAL
+- **măsurat la**: 2026-08-22
+- **pe commit**: `ffbcb74`
 - **cifra**: **15** candidate (egalități stricte pe o valoare de registru), din care **2 confirmate** la citire pe context. Raport: 56 de inegalități pe aceleași valori, care de regulă sunt chiar textul legii („nu depășește").
 - **instanțe**: confirmate — `salarizare.py:221` `vbt == sm` și `d112_reconciliere.py:207` `brut == sm` (aceeași interpretare, în două module: și interdicția 17). Ambele **marcate** acum cu `# interpretare: incadrat_la_minim`. Re-deschise, nerezolvate: `d223.py:159` (regula „100% doar cu un singur asociat" — în lege sau citirea noastră?), `d406.py:1338` și `:1367` (alegerea codului fiscal `300101` pentru cota zero e o mapare aleasă). Zgomot sigur: `cota == cota.to_integral_value()` ×4 (formatare), `cota == 0` ×2, `prag == 0/1` (stare internă), `k[0] == tp` (cheie de dicționar).
 - **calibrare**: GĂSIT — `vbt == sm` din `salarizare.py`, cazul din anexa planului. Caz negativ NEraportat: cele 56 de inegalități n-au intrat în listă, deci discriminatorul chiar deosebește `==` de `<=`.
@@ -222,26 +451,32 @@ câmp obligatoriu gol o oprește la fel.
 ## 22 — O interpretare fără variantele posibile enumerate
 
 - **stare**: NEMĂSURABILĂ
+- **măsurat la**: 2026-08-22
+- **pe commit**: `ffbcb74`
 - **cifra**: — și **nu se cere una**. Motivul, decis împreună cu Costin pe 22.08: măsurătoarea **nu are numitor**. O interpretare nemarcată e indistinguibilă de un calcul obișnuit; se poate număra ce poartă un marcaj, dar nu ce n-a fost recunoscut niciodată ca alegere. Orice cifră ar însemna „cele găsite de cine a căutat", nu „câte sunt".
 - **instanțe**: cele **2** declarate în `core/registru_interpretari.py` (`incadrat_la_minim`, `podea_part_time_minus_facilitate`) au variantele enumerate, deci nu încalcă. Câte NU sunt declarate rămâne necunoscut prin construcție.
 - **calibrare**: GĂSIT (pe direcția pozitivă) — `salarizare.py:305` enumeră explicit „Alternativa A", deci o interpretare cu variante *poate* fi recunoscută în proză. Caz negativ NEraportat: niciun număr, fiindcă niciun număr nu e apărabil aici.
 - **ce nu vede**: totul, în afară de ce poartă marcaj. **Nu e o slăbiciune a instrumentului, e forma problemei.**
-- **unde ajunge efectul**: **ce s-a făcut în loc de a măsura** — `core/interpretare.py` face interpretarea DECLARABILĂ, cu variantele obligatorii (minim două: „dacă nu poți numi cealaltă variantă, legea nu lăsa loc"), iar `core/test_comparatii_clasificate.py` închide clasa **NECLASIFICAT** — nu clasa *greșit clasificat*. Clichet: 13 comparații neclasificate. Asta e diferența dintre a măsura o clasă și a o închide
+- **unde ajunge efectul**: o decizie fără varianta respinsă numită nu se mai poate contesta: peste un an nu se știe între ce s-a ales, deci revizuirea deliberată din P24 n-are pe ce lucra, iar o interpretare greșită supraviețuiește ca fapt. **Ce s-a făcut în loc de a măsura** — `core/interpretare.py` face interpretarea DECLARABILĂ, cu variantele obligatorii (minim două: „dacă nu poți numi cealaltă variantă, legea nu lăsa loc"), iar `core/test_comparatii_clasificate.py` închide clasa **NECLASIFICAT** — nu clasa *greșit clasificat*
 
 
 ## 23 — Un dezacord cu arbitrul, stins prin aliniere fără decizie
 
 - **stare**: PARȚIAL
+- **măsurat la**: 2026-08-22
+- **pe commit**: `ffbcb74`
 - **cifra**: **0** instanțe curente. Gardat de `core/test_cale_a_doua.py` din 20.08, care trece.
 - **instanțe**: niciuna activă. Instanța istorică — 06.08.2026, podeaua part-time schimbată în `d112.py` **și în același commit** în `d112_reconciliere.py`, cu motivul scris pe linie „Aliniat cu d112.pull prag_pt" — e citată în cod cu marcajul `istoric-aliniere-ok:`, ca să nu se piardă istoricul fără să reaprindă gardul.
 - **calibrare**: GĂSIT — gardul are două colțuri, ambele exercitate: (1) fără limbaj de aliniere în modulele de verificare, zero admis; (2) co-modificarea `X.py` + `X_reconciliere.py` cere `DECIZII.md` schimbat în aceeași tură. Caz negativ NEraportat: co-modificarea legitimă (o schimbare de lege chiar cere ambele căi) NU e interzisă — doar cere motivul scris.
 - **ce nu vede**: **o aliniere TĂCUTĂ** — schimbi formula fără s-o spui — nu lasă amprentă textuală. Gardul își declară singur limita în docstring. Colțul 2 e plasa, iar arbitrul rămâne judecătorul final. **Cifra 0 e un plafon inferior**: zero pe forma scrisă, necunoscut pe forma tăcută.
-- **unde ajunge efectul**: o a doua cale care copiază prima nu mai verifică nimic. Instanță reală: două săptămâni în care sub-cazul 1c-PT era declarat „reconciliere COMPLETĂ" și confirma o cifră pe care arbitrul o semnala
+- **unde ajunge efectul**: alegerea tăcută între lege și validator ajunge direct în cifra depusă, iar dezacordul dispare din vedere: nu se mai știe că a existat, deci nimeni nu-l mai poate decide. Instanță reală: podeaua part-time, aleasă în cod contra structurii publicate, cu raționamentul scris într-un comentariu
 
 
 ## 24 — O interogare fără contextul firmei
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
@@ -251,15 +486,19 @@ câmp obligatoriu gol o oprește la fel.
 ## 25 — Un drept verificat numai în interfață
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: datele unei firme ajung la altcineva
+- **unde ajunge efectul**: ecranul ascunde scurgerea, nu o oprește: interogarea întoarce în continuare datele, iar orice altă poartă spre ea — API, export, raport — le dă mai departe. Un drept verificat doar în interfață se pierde exact acolo unde nu există interfață
 
 ## 26 — O decizie luată comparând sau clasificând text
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
@@ -269,51 +508,63 @@ câmp obligatoriu gol o oprește la fel.
 ## 27 — Un verdict stocat ca frază, nu ca structură
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: o decizie luată pe text se rupe la prima reformulare, tăcut
+- **unde ajunge efectul**: un verdict ținut ca frază nu se poate interoga, agrega sau contrazice: se citește ca adevăr, iar remediul nu se poate deriva din el. Când starea se schimbă, fraza rămâne — și afirmă fals despre firmă
 
 ## 28 — O denumire de nomenclator oficial scrisă ca literal în cod
 
 - **stare**: NEÎNCEPUTĂ
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: o decizie luată pe text se rupe la prima reformulare, tăcut
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată; **o instanță cunoscută nu e o cifră** — a intrat prin citire, nu prin scan, deci nu spune nimic despre mărimea clasei)
+- **instanțe**: **una cunoscută, ÎN LISTA DE REPARAT, nereparată deliberat** — `static/js/ecrane/flux_concediu.js:6`, `CM_CODURI`: 18 coduri de indemnizație cu etichetele scrise de mână, în timp ce sursa e `core/nomenclator_cm.py` (20 de coduri, fiecare cu temeiul lui). **Decizia lui Costin, 22.08.2026: lista se ia din `nomenclator_cm.optiuni()`.** Divergența e deja reală, nu doar duplicare: ecranul NU oferă `11` (trecere temporară în altă muncă), `91` și `92` (situații speciale de îngrijire), pe care nomenclatorul le are cu temei. Consecința pentru reparație, de dus la decizie odată cu ea: etichetele din JS poartă și procentele („01 — Boală obișnuită (55/65/75%)"), iar `nomenclator_cm` le ține deliberat afară, fiindcă procentele au altă sursă (OUG 158/2005) și altă dată de valabilitate. Deci `optiuni()` singur schimbă ce vede contabilul pe ecran.
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat; instanța de mai sus nu ține loc de calibrare — a fost adusă de o citire, nu găsită de un instrument)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele. Când se construiește, domeniul lui trebuie să cuprindă **JavaScript-ul**: e chiar punctul orb declarat la interdicția 16, iar singura instanță cunoscută a clasei trăiește acolo)
+- **unde ajunge efectul**: o denumire oficială scrisă ca literal se rupe tăcut de sursă — și nu doar la reformulare, ci și la **completare**: nomenclatorul crește cu un cod, iar ecranul rămâne cu lista veche. Instanța confirmă forma: trei coduri legale nu se pot alege din interfață, deși aplicația le acceptă
 
 ## 29 — O frază fixă de interfață fără cheie și loc unic
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: o decizie luată pe text se rupe la prima reformulare, tăcut
+- **unde ajunge efectul**: aceeași frază se schimbă într-un loc și rămâne veche în celelalte: două ecrane spun altceva despre aceeași stare, iar contabilul nu poate ști care e cel actualizat
 
 ## 30 — Două stări distincte cu aceeași etichetă
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: o decizie luată pe text se rupe la prima reformulare, tăcut
+- **unde ajunge efectul**: contabilul nu mai poate deosebi „nu s-a verificat" de „e în regulă", fiindcă ambele arată la fel. E P6 mutat pe ecran: eticheta comună face necunoscutul să se citească drept favorabil
 
 ## 31 — O etichetă aleasă de cine randează, nu derivată din stare
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: o decizie luată pe text se rupe la prima reformulare, tăcut
+- **unde ajunge efectul**: eticheta poate contrazice starea, și o face tăcut. Instanțe reale: „Vector necompletat" pe firme cu vectorul complet, „Patru-ochi e dezactivat" pe o politică doar suspendată — ecranul a afirmat fals despre datele firmei
 
 ## 32 — O poziție de declarație care nu se poate desface până la document
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
@@ -323,15 +574,19 @@ câmp obligatoriu gol o oprește la fel.
 ## 33 — Un lanț de justificare a cărui sumă nu dă valoarea declarată
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: o cifră declarată care nu se poate desface până la document nu se poate apăra la control
+- **unde ajunge efectul**: lanțul există și e fals — se apără o cifră cu documente care n-o compun. E mai rău decât lipsa lanțului de la 32, fiindcă arată complet: la control nu se descoperă o lipsă, se descoperă o neconcordanță
 
 ## 34 — Modificarea unei înregistrări dintr-o perioadă închisă
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
@@ -341,24 +596,30 @@ câmp obligatoriu gol o oprește la fel.
 ## 35 — Un număr de document reutilizat, sau o serie cu goluri
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: o perioadă închisă care se modifică rupe corespondența dintre ce s-a declarat și ce e în evidență
+- **unde ajunge efectul**: două documente cu același număr, sau un gol în serie care la control se citește ca document dispărut. Nu se poate dovedi nici că nu s-a emis nimic acolo, nici care exemplar e cel valabil
 
 ## 36 — O redeschidere de perioadă fără motiv consemnat
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: o perioadă închisă care se modifică rupe corespondența dintre ce s-a declarat și ce e în evidență
+- **unde ajunge efectul**: închiderea își pierde înțelesul: dacă se poate redeschide fără motiv consemnat, nu se mai poate spune DE CE evidența s-a schimbat după depunere — iar diferența față de declarația depusă rămâne fără explicație
 
 ## 37 — Un act cu efect juridic extern, fără autor identificat
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
@@ -368,33 +629,41 @@ câmp obligatoriu gol o oprește la fel.
 ## 38 — O urmă de audit care se poate edita sau șterge
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: un act cu efect juridic fără autor identificat nu poate fi imputat nimănui
+- **unde ajunge efectul**: urma nu mai probează nimic: ce trebuia să fie dovadă devine afirmație. Un audit care se poate edita apără exact pe cine ar trebui să identifice
 
 ## 39 — O ștergere care atinge date aflate sub obligație de păstrare
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: date șterse sub obligație de păstrare, sau păstrate fără temei
+- **unde ajunge efectul**: la un control lipsesc documente pe care legea obligă cabinetul să le păstreze, iar răspunderea e a lui, nu a celui care a cerut ștergerea. Efectul e ireversibil prin natura lui: nu se poate reface ce s-a șters
 
 ## 40 — O categorie de dată fără termen și temei de retenție
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: date șterse sub obligație de păstrare, sau păstrate fără temei
+- **unde ajunge efectul**: fără termen și temei scrise, nu se poate răspunde nici la o cerere de ștergere, nici la un control: nu se știe ce SE POATE șterge și ce NU. Ambele erori sunt posibile simultan, în aceeași firmă
 
 ## 41 — O modificare retroactivă aplicată fără lista perioadelor afectate
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
@@ -404,24 +673,30 @@ câmp obligatoriu gol o oprește la fel.
 ## 42 — O regulă veche ștearsă din registru la înlocuire
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: o modificare retroactivă fără lista perioadelor atinse lasă declarații depuse pe reguli care nu mai există
+- **unde ajunge efectul**: recalculul unei perioade trecute folosește regula nouă, fiindcă cea veche nu mai există: documentele emise atunci nu se mai pot reproduce, iar diferența arată ca o eroare de calcul, nu ca o schimbare de lege
 
 ## 43 — O retrimitere automată dintr-o stare nelămurită
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: o trimitere considerată confirmată fără identificator poate fi de fapt nedepusă
+- **unde ajunge efectul**: depunere dublă. O stare nelămurită retrimisă automat produce a doua înregistrare la autoritate, iar corectarea ei e o operațiune cu termen și cu risc de amendă
 
 ## 44 — O trimitere considerată confirmată fără identificator de la autoritate
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
@@ -431,15 +706,19 @@ câmp obligatoriu gol o oprește la fel.
 ## 45 — O valoare intrată din afară, fără sursă și grad de certitudine
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: o presupunere devenită fapt intră în declarații ca și cum ar fi fost verificată
+- **unde ajunge efectul**: o valoare importată cântărește la fel ca una confirmată, fiindcă nimic nu le deosebește. Contabilul nu poate ști ce a verificat cineva și ce a intrat dintr-un fișier, deci verifică tot sau nimic
 
 ## 46 — O presupunere devenită fapt fără confirmare consemnată
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
@@ -449,18 +728,319 @@ câmp obligatoriu gol o oprește la fel.
 ## 47 — Un blocaj fără cale de trecere pentru om, sau o trecere fără urmă
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: nedeterminat până la măsurare — se completează odată cu prima măsurătoare a acestei interdicții
+- **unde ajunge efectul**: un blocaj fără cale de trecere oprește contabilul în ziua depunerii, când nu mai are alternativă; iar o trecere fără urmă face imposibil de aflat cine a forțat-o și pe ce motiv. Cele două defecte sunt opuse și amândouă ajung în același loc — o declarație depusă pe care nimeni nu și-o asumă
 
 ## 48 — O suprascriere concurentă fără avertisment
 
 - **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
 - **cifra**: — (nemăsurată)
 - **instanțe**: — (nemăsurate)
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: nedeterminat până la măsurare — se completează odată cu prima măsurătoare a acestei interdicții
+- **unde ajunge efectul**: scrierea unuia dispare fără ca el să afle: contabilul vede „salvat" și pleacă, iar valoarea din evidență e a celuilalt. Nu se manifestă la scriere, ci la citirea de peste o lună
+
+## 49 — Un articol folosit fără dată de verificare a vigorii
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: o valoare care stă pe un articol nereverificat poate fi greșită de luni de zile fără ca nimic să semnaleze, și ajunge direct în cifra depusă — nimic din lanțul automat nu întreabă de când n-a mai fost verificat
+
+## 50 — O valoare sprijinită pe un articol abrogat sau modificat, fără succesor citat
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: cifra depusă stă pe un text care nu mai e în vigoare. Instanța reală: OPANAF 394/2017, citat în nouă locuri, abrogat de OPANAF 705/2020 — găsit din întâmplare
+
+## 51 — O regulă scrisă din memorie, când actul lipsește din corpus
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: o regulă scrisă din memorie nu se poate verifica nici măcar la o reverificare, fiindcă nu există act de recitit. Eroarea e invizibilă prin construcție, nu prin neatenție
+
+## 52 — Un act din corpus al cărui text s-a modificat după aducere
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: corpusul afirmă un text pe care sursa nu-l mai are, iar toate verificările de deasupra — vigoare, citat, ierarhie — moștenesc eroarea fără s-o poată vedea
+
+## 53 — Un citat verbatim care nu conține valoarea pe care o justifică
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: citarea e falsă chiar dacă actul e corect și în vigoare: o cotă sprijinită pe un citat în care valoarea nu apare. Trei instanțe cunoscute — facilitatea de 300 lei, cota de dividende, pragul mijloacelor fixe
+
+## 54 — Un articol folosit cu verificarea vigorii expirată față de pragul lui
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: data de verificare devine formalitate: un articol verificat acum doi ani poartă o dată, deci trece poarta, și poate fi rescris de un an
+
+## 55 — Un articol din corpus fără categorie de reverificare atribuită
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: fără categorie atribuită, pragul de reverificare nu se poate aplica, deci nici expirarea de la 54 nu se poate calcula. E interdicția care le face pe celelalte măsurabile
+
+## 56 — O regulă scrisă când textul a fost citit dar nu înțeles, fără cerere specifică
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: se produce ceva plauzibil și se merge mai departe; plauzibil nu e corect. Instanța: „încadrat cu salariul de bază minim brut" — citit, neînțeles complet, interpretat în loc de întrebat, iar un leu peste minim costă salariatul optzeci și doi
+
+## 57 — O valoare fără temei, intrată fără declarația „am căutat și nu am găsit"
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: o valoare fără sursă arată identic cu una sursată. Fără declarația „am căutat în X, Y, Z și nu am găsit", absența temeiului nu se distinge de prezența lui
+
+## 58 — O sursă de nivel inferior care contrazice una superioară, fără decizie
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: se alege tăcut sursa mai comodă. Instanța: podeaua part-time — legea spune una, structura publicată de autoritate spune alta, s-a ales în cod; divergența e 70,25 lei pe lună, pe fiecare salariat part-time sub minim
+
+## 59 — Verificarea vigorii făcută pe act, nu pe articolul folosit
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: verificarea trece mereu, fiindcă actul e în vigoare permanent, în timp ce articolul folosit poate fi abrogat separat. Instanța: OUG 156/2024 e în vigoare, dar art. LXX a fost abrogat de OUG 29/2026
+
+## 60 — O regulă, formulă sau structură care implementează o normă, fără articolul asociat
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: la o modificare de lege nu se știe ce cod trebuie atins: se pot determina perioadele afectate, dar nu implementările. Fără 60, P18 nu se poate executa
+
+## 61 — Un articol din corpus fără lista dependenților, generabilă la cerere
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: întrebarea „ce depinde de OPANAF 394/2017?" nu are răspuns decât prin căutare, adică prin noroc. Cele nouă locuri au fost găsite abia când cineva a căutat anume
+
+## 62 — O modificare de articol aplicată fără parcurgerea listei dependenților
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: după o modificare de articol rămân implementări care aplică regula veche, nedescoperite, iar declarațiile depuse între timp sunt greșite fără ca cineva să știe care
+
+## 63 — O cifră afișată fără posibilitatea de a-i vedea, la cerere, componentele
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: contabilul care nu poate desface o cifră are două opțiuni: să aibă încredere, sau s-o refacă în altă parte. A doua e mai frecventă, și atunci produsul nu i-a economisit munca, i-a adăugat una
+
+## 64 — Un element care putea interveni și n-a intervenit, fără motiv și temei afișabile
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: o deducere neacordată, o facilitate pierdută, o scutire neaplicată sunt invizibile dacă ecranul arată doar ce s-a aplicat. O absență nemotivată nu se poate contesta, fiindcă nu se vede — și aici greșesc oamenii, nu la ce s-a calculat greșit
+
+## 65 — O valoare diferită de perioada anterioară, fără explicația diferenței
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: cel mai puternic instrument de verificare lipsește exact acolo unde ceva s-a mișcat: un contabil nu verifică o lună izolat, ci știind luna precedentă. Dacă un net diferă și nimeni nu spune de ce, verificarea se mută în afara aplicației
+
+## 66 — O legătură normă↔implementare care există în cod, dar nu ajunge pe ecran
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: temeiul există în cod și nu ajută pe cine verifică. O legătură normă↔implementare care nu ajunge pe ecran apără codul, nu contabilul
+
+## 67 — Un rezultat produs peste date lipsă, fără ca lipsa să fi fost cerută
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: „nu se datorează" pe o firmă cu operațiuni neînregistrate arată identic cu „nu se datorează" pe o firmă curată. Aplicația a răspuns la ce avea, nu la ce trebuia să aibă
+
+## 68 — O lipsă semnalată abia la generare, când datele nu mai pot fi obținute
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: lipsa e semnalată corect, dar în ziua depunerii, când datele nu mai pot fi obținute. Un semnal la timp e unul la introducere sau la închiderea perioadei, nu la generare
+
+## 69 — Un verdict care nu distinge „gata" de „gata cu ce am avut"
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: un rezultat calculat peste date incomplete intră în decizie ca „gata". Distincția trebuie să fie în rezultat, nu într-o notă alăturată — e P6 aplicat la date, nu la verificări
+
+## 70 — O interpretare care ajunge într-o cifră depusă, nerevizuită fără să fie declarată ca atare
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: o interpretare greșită supraviețuiește tocmai fiindcă e bine documentată: nimic din lanțul automat n-o poate contrazice — nu sursa, fiindcă textul e chiar cel ambiguu; nu validatorul, fiindcă verifică structura; nu testele, fiindcă verifică ce s-a decis
+
+## 71 — O copie de siguranță din care nu s-a restaurat niciodată
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: copia se dovedește nefolosibilă exact în ziua în care e singura care mai există. O copie din care nu s-a restaurat niciodată e o presupunere, nu o copie
+
+## 72 — O restaurare care nu se poate dovedi identică cu originalul
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: o restaurare fără amprentă e o afirmație: nu se poate spune dacă ce a ieșit e ce era, iar răspunderea juridică a cabinetului stă pe afirmația aia
+
+## 73 — O copie care se poate pierde odată cu originalul
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: o copie ștearsă odată cu originalul nu e copie. Efectul e total și tăcut până la incident
+
+## 74 — Un export care rupe lanțul dintre declarație și documentele justificative
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: un export care rupe legătura dintre declarație și documentele justificative transferă date, nu evidență — iar firma care pleacă rămâne fără ce legea o obligă să păstreze
+
+## 75 — Date care se pot lua doar cu intervenția noastră, sau într-un format închis
+
+- **stare**: NEÎNCEPUTĂ
+- **măsurat la**: —
+- **pe commit**: —
+- **cifra**: — (nemăsurată)
+- **instanțe**: — (nemăsurate)
+- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
+- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **unde ajunge efectul**: clientul nu-și poate lua evidența decât cu voia noastră, sau într-un format pe care doar noi îl citim. Un produs din care nu poți ieși e un produs de care te temi
 

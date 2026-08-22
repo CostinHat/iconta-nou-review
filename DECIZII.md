@@ -10974,3 +10974,24 @@ piață, nu normă — dar regula de alegere a lui intră.
 **Interdicția 22 declarată NEMĂSURABILĂ**, cu motivul: nu are numitor. O interpretare nemarcată e
 indistinguibilă de un calcul; orice cifră ar însemna „cele găsite", nu „câte sunt". Interdicțiile 21
 și 23 rămân măsurabile **pe forma declarată**, cu limita scrisă în plan.
+
+
+## 22.08.2026 — codurile de boală pe ecran: sursa e nomenclatorul, nu lista din JS
+
+**Decis de Costin:** `CM_CODURI` din `static/js/ecrane/flux_concediu.js` se ia din
+`core.nomenclator_cm.optiuni()`. E interdicția 28 — o denumire de nomenclator oficial scrisă ca literal
+în cod.
+
+**Nu se repară în tura în care s-a decis**, deliberat: intră în lista de reparat din `CONFORMITATE.md`
+(secțiunea 28). Motivul e regula planului — investigăm înainte să reparăm, iar excepția („un defect care
+produce cifre greșite azi") nu se aplică: aici nu iese o cifră greșită, ci o **listă incompletă pe ecran**.
+
+**Ce s-a verificat la sursă înainte de a fi scris** (nu din memorie): JS-ul are 18 coduri, nomenclatorul
+are 20. Lipsesc de pe ecran `11`, `91`, `92`. Sensul divergenței contează: după reparația din 22.08,
+aplicația ACCEPTĂ codurile — doar interfața nu le oferă.
+
+**Ce trebuie decis odată cu reparația, nu după:** etichetele din JS poartă procentele
+(„01 — Boală obișnuită (55/65/75%)"), iar `nomenclator_cm` le ține afară cu motiv scris — procentele vin
+din OUG 158/2005 și au altă dată de valabilitate decât nomenclatorul. Deci `optiuni()` pus direct schimbă
+ce vede contabilul. Variantele: (a) ecranul pierde procentele; (b) procentele se aduc din registru, pe
+data certificatului, ca al doilea câmp. Nu se alege la scriere — P11.
