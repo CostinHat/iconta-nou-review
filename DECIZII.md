@@ -11080,3 +11080,29 @@ Costin a cerut restanțele „deschise pe cele trei feluri de blocaj". Felurile 
 cele trei exemple date de el le determină: actele parțiale blochează un **temei** (SURSĂ), vigoarea pe
 punct blochează un **instrument** (VERIFICARE), categoria de mărime blochează faptul că se poate spune ce
 **datorează** o firmă (ARTEFACT). Taxonomia asta e a mea, derivată din exemplele lui — **de confirmat**.
+
+
+## 22.08.2026 — D7. `de_preluat` e stare FINALĂ a facturii emise (prag 1, pereche verificator/verificat)
+
+**De ce e nevoie de decizie scrisă:** `core/d300.py` (calea întâi) și `core/d300_reconciliere.py`
+(calea a doua) s-au modificat **în aceeași tură**. Partea V o interzice fără decizie scrisă, iar garda
+`test_cale_a_doua.test_co_modificarea_cere_decizie_scrisa` a respins commitul. Corect: două căi
+schimbate împreună pot ajunge să coincidă fiindcă au fost aliniate, nu fiindcă au dreptate.
+
+**Ce s-a schimbat, și de ce nu e o aliniere:** amândouă aveau, scrisă TEXTUAL, aceeași listă de stări
+excluse. Nu s-au aliniat una la alta — **au fost mutate amândouă pe registru**
+(`core/nomenclator_status_factura.py`). Calea a doua nu importă calea întâi și nu-i copiază
+constantele; amândouă citesc sursa unică. Asta e P1, nu o încălcare a lui P7. Dacă mâine una dintre
+ele s-ar întoarce la o listă proprie, `test_status_factura_un_loc` o oprește.
+
+**Decizia de interpretare (P11), cu varianta respinsă numită:**
+- **aleasă:** `de_preluat` = stare finală a unei facturi EMISE → **declarabilă**;
+- **respinsă:** `de_preluat` = staging → nedeclarabilă (citirea de dinainte, din `d300.py:50`);
+- **ce a decis:** `facturi_api.emite_factura` produce chiar starea asta, iar **nimic din repo nu o
+  schimbă** — nu există niciun `UPDATE ... SET status='emisa'` pe `facturi`. Cu varianta respinsă,
+  orice factură emisă prin aplicație rămâne nedeclarabilă pentru totdeauna;
+- **măsurat:** 4 facturi, 3 plătitori de TVA, **3.052,00 lei TVA colectată** în afara decontului;
+  după reparație, aceleași ferestre: t003 0 → 889,00 · t005 0 → 2.100,00 · t013 315,00 → 378,00;
+- **cine și când:** Code, 22.08.2026, sub pragul 1. **DE CONFIRMAT de Costin.** Dacă varianta respinsă
+  e cea corectă, defectul se mută în `emite_factura` (trebuie să producă altă stare) — reparația nu se
+  anulează, se mută.

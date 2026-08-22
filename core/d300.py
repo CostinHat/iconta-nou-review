@@ -46,10 +46,13 @@ _ACHIZ_RAND = {21: "R22", 11: "R23"}   # R22=Rd.24(21%), R23=Rd.25(11%). 9% dedu
 # data_emitere (exigibil la EMITEREA facturii de avans). Data faptului generator nu mai e cod mort.
 _EXIG_NORMAL = ("(CASE WHEN f.tip_operatiune = 'avans' THEN f.data_emitere "
                 "ELSE COALESCE(f.data_faptului_generator, f.data_emitere) END)")
-# [B1 D300] Facturi CONTABILIZABILE in decont: exclude ciornele/staging/anulatele (ne-finale).
-# Statusuri observate pe facturi: emisa, importata (finale) vs ciorna, de_preluat, descarcata (staging).
-_STATUS_FINAL = ("COALESCE(f.status, 'emisa') NOT IN "
-                 "('ciorna', 'de_preluat', 'descarcata', 'anulata', 'stornata')")
+# [B1 D300] Facturi DECLARABILE in decont. Lista NU mai traieste aici: vine din
+# `core/nomenclator_status_factura.py` — un adevar, un loc (P1). Pana la 22.08.2026 lista era scrisa
+# textual in TREI locuri (aici, la :1095, si in d300_reconciliere:80), iar `de_preluat` era clasat
+# staging DESI calea de emitere a aplicatiei il produce — 4 facturi emise, 3.052,00 lei TVA colectata,
+# nu intrau in decont. Vezi decizia de interpretare din antetul nomenclatorului.
+from core import nomenclator_status_factura as _nsf
+_STATUS_FINAL = _nsf.clauza_sql("f")
 
 
 def _esc(v):
@@ -1092,7 +1095,7 @@ def genereaza(conn, schema, perioada, manual=None, reclasificari=None):
         _inc, _sf = _c.fereastra_tva(perioada, _c.perioada_tva_tip(prof))
         with conn.cursor() as _cur:
             _cur.execute("SELECT count(*) FROM facturi WHERE data_emitere >= %s AND data_emitere < %s "
-                         "AND COALESCE(status, 'emisa') NOT IN ('ciorna', 'de_preluat', 'descarcata', 'anulata', 'stornata')",
+                         "AND " + _nsf.clauza_sql(None),
                          (_inc.isoformat(), _sf.isoformat()))
             _nf = _cur.fetchone()[0]
         # [zero_base_v1 extins B1] Decont complet gol -> NU XML gol tacit: afirmatie EXPLICITA surfatata

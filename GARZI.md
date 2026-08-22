@@ -4096,3 +4096,45 @@ fost inteles — aia ramane disciplina. Dar face imposibil sa treaca TACUT, si a
 **Impreuna cu garda de ieri** („un defect mentionat are un loc"), hook-ul `commit-msg` are acum trei
 porti: fisiere noi peste prag, defect fara loc, fisier normativ fara rezumat. Toate cu escape motivat,
 niciuna care sa se poata ocoli tacand.
+
+
+## 22.08.2026 — cele doua reparatii de PRAG 1, cu garzile lor
+
+**1.1 — starile unei facturi intr-un singur loc** (`core/nomenclator_status_factura.py`,
+`core/test_status_factura_un_loc.py`). `de_preluat` era clasat *staging* in d300 si EXCLUS din decont,
+desi `facturi_api.emite_factura` il produce ca stare a unei facturi EMISE si **nimic din repo nu-l
+scoate de acolo**. Masurat inainte: 4 facturi emise, 3 platitori, **3.052,00 lei TVA colectata** in
+afara decontului. Dupa: t003 0 → 889,00 · t005 0 → 2.100,00 · t013 315,00 → 378,00.
+
+Decizia de interpretare (P11) e scrisa in antetul nomenclatorului, cu **varianta respinsa numita** si cu
+ce se intampla daca ea e cea corecta (atunci defectul e in `emite_factura`, nu in d300). **De confirmat.**
+
+**A doua cale citeste ACELASI registru, nu constanta celeilalte cai** — nu e o incalcare a lui P7:
+`d300_reconciliere` nu importa `d300`, ci amandoua importa nomenclatorul. Asta e P1.
+
+**Calibrarea gardului a prins doua forme de orbire, in constructie:**
+1. prima forma citea si DOCSTRINGURILE — se aprindea pe `export_winmentor.py:162` si `export_saga.py:157`,
+   care DESCRIU regula in proza. Reparat cu `scan_ancore.domenii_docstring`, instrumentul care exista
+   deja pentru clasa asta (nu unul nou);
+2. a doua clasifica NUMELE, nu OBIECTUL: `ciorna` si `descarcata` sunt si stari ale tabelei
+   `efactura_primite` — alt obiect, alt nomenclator. Trei false pozitive. Discriminatorul corect e
+   `de_preluat`, care apare numai la facturi.
+
+**RED-proof 5 mutatii / 5 rosii** — a cincea a picat abia dupa ce am reparat testul: prima forma cerea
+doar ca NUMELE modulului sa apara in fisier, iar o mutatie care alia importul trecea. **Un import
+nefolosit nu e o citire.** Iar prima mutatie era ea insasi gresita — o mutatie gresita si un gard slab
+arata la fel din afara.
+
+**1.2 — codurile de concediu medical vin din registru** (`core/coduri_cm_api.py`,
+`core/test_coduri_cm_din_registru.py`). Lista scrisa de mana omitea 11/91/92 — coduri legale, acceptate
+de aplicatie — deci **bloca un contabil sa introduca un cod valid**. Acum: denumirea din nomenclator,
+procentul din `salarizare.procent_cm` (doua variante DATATE ale OUG 158/2005 art.17(1)), eticheta
+compusa la randare. Proba ca eticheta urmeaza registrul, nu un sir: **cod 01 = 55/65/75% azi si 75% pe
+o data dinainte de Legea 141/2025**.
+
+Scara „55/65/75" nu e scrisa nicaieri: se obtine INTEROGAND registrul pe duratele care schimba
+rezultatul (7/14/15/30 zile) si pastrand valorile distincte. Daca legea se schimba, eticheta se
+schimba singura.
+
+**Si o a doua instanta prinsa de gard**: textul de ajutor al ecranului scria „la 75%" — tot un procent
+in JS. Scos; trimite acum la eticheta codului.

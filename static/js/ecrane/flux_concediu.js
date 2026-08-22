@@ -3,25 +3,29 @@
 // Modul ES de sine statator. nav/t/sal vin ca parametri.
 import { api, esc, confirmaCaseta, dataRo, bani, pct, eroareCamp, curataEroriCamp } from "../api.js?v=a7f9e80ae0";
 
-const CM_CODURI = [
-  ["01", "01 — Boală obișnuită (55/65/75%)"],
-  ["02", "02 — Accident de muncă (80/100%)"],
-  ["03", "03 — Accident în afara muncii (80/100%)"],
-  ["04", "04 — Boală profesională (80/100%)"],
-  ["05", "05 — Boală infectocontagioasă grupa A (100%)"],
-  ["06", "06 — Urgență medico-chirurgicală (100%)"],
-  ["07", "07 — Carantină (75%)"],
-  ["10", "10 — Reducere timp de muncă cu 1/4 (art. 19)"],
-  ["08", "08 — Maternitate (85%)"],
-  ["09", "09 — Îngrijire copil bolnav (85%)"],
-  ["12", "12 — Tuberculoză (100%)"],
-  ["13", "13 — Boli cardiovasculare (75%)"],
-  ["14", "14 — Neoplazii / SIDA (100%)"],
-  ["15", "15 — Risc maternal (75%)"],
-  ["16", "16 — Boală infectocontagioasă (75%)"],
-  ["17", "17 — Reducere cu 1/4 (oncologic) (75%)"],
-  ["51", "51 — Izolare (100%)"],
-];
+// [cm_coduri_v1 22.08.2026] Lista de coduri NU mai traieste aici. Denumirea vine din
+// nomenclator (`core/nomenclator_cm.py`), procentul din registru (`salarizare.procent_cm`,
+// doua variante datate ale OUG 158/2005 art.17(1)), iar eticheta se compune LA RANDARE, pe
+// data certificatului. Scrisa de mana, lista omitea 11/91/92 - coduri legale pe care
+// aplicatia le accepta - deci bloca introducerea lor. Vezi DECIZII.md D3.
+let CM_CODURI_CACHE = null;
+
+async function coduriCM(tenantId, laData) {
+  const cheie = laData || "";
+  if (CM_CODURI_CACHE && CM_CODURI_CACHE.cheie === cheie) return CM_CODURI_CACHE.lista;
+  const q = laData ? `?la_data=${encodeURIComponent(laData)}` : "";
+  const r = await api.get(`/tenants/${tenantId}/concedii/coduri${q}`);
+  CM_CODURI_CACHE = { cheie, lista: r.coduri || [] };
+  return CM_CODURI_CACHE.lista;
+}
+
+function optiuniCM(lista) {
+  // eticheta se COMPUNE aici: cod + denumire + procent. Niciuna nu e scrisa in fisierul asta.
+  return lista.map((c) => {
+    const p = c.procent_text ? ` (${esc(c.procent_text)})` : "";
+    return `<option value="${esc(c.cod)}">${esc(c.cod)} \u2014 ${esc(c.denumire)}${p}</option>`;
+  }).join("");
+}
 
 export async function fluxConcediu(nav, t, sal, dupaSalvare) {
   // sal = { id, nume } (salariatul selectat)
@@ -55,7 +59,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
       <div id="cm-form-zona"></div>
       <div class="pf-lista">${randuriLista}</div>`;
 
-    corp.querySelector("#cm-nou").addEventListener("click", () => deschideFormular(corp));
+    corp.querySelector("#cm-nou").addEventListener("click", async () => { await deschideFormular(corp); });
 
     corp.querySelectorAll("[data-sterge]").forEach((b) => b.addEventListener("click", () => {
       confirmaCaseta(b, "\u0218tergi acest concediu medical? Ac\u021biunea nu poate fi anulat\u0103.", async () => {
@@ -70,10 +74,10 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
     }));
   }
 
-  function deschideFormular(corp) {
+  async function deschideFormular(corp) {
     const zona = corp.querySelector("#cm-form-zona");
     const azi = new Date();
-    const optCod = CM_CODURI.map(([v, txt]) => `<option value="${v}">${txt}</option>`).join("");
+    const optCod = optiuniCM(await coduriCM(t.id, null));
     zona.innerHTML = `
       <div class="cm-form" style="display:block;margin:12px 0;max-width:720px">
         <div class="pf-frand-nume" style="margin-bottom:10px">Certificat nou</div>
@@ -92,7 +96,7 @@ export async function fluxConcediu(nav, t, sal, dupaSalvare) {
         <div class="pf-frand-nume" style="margin:14px 0 6px">Episod de boală</div>
         <label class="set-bifa"><input type="checkbox" id="cm-continuare"> <span>Certificat de continuare (același episod de boală)</span></label>
         <div id="cm-episod-zona" style="display:none;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-top:8px">
-          <label class="camp"><span class="camp-eticheta">Seria certificatului inițial<span class="oblig">*</span></span><input type="text" id="cm-serie-ini" class="camp-input" placeholder="ex. AB"><span class="camp-ajutor">Seria și numărul certificatului INIȚIAL al episodului (tipărite pe certificatul de continuare). Indemnizația se calculează pe durata întregului episod (OUG 158/2005 art.17(1)): adăugarea continuării poate ridica procentul certificatelor anterioare la 75%.</span></label>
+          <label class="camp"><span class="camp-eticheta">Seria certificatului inițial<span class="oblig">*</span></span><input type="text" id="cm-serie-ini" class="camp-input" placeholder="ex. AB"><span class="camp-ajutor">Seria și numărul certificatului INIȚIAL al episodului (tipărite pe certificatul de continuare). Indemnizația se calculează pe durata întregului episod (OUG 158/2005 art.17(1)): adăugarea continuării poate ridica procentul certificatelor anterioare (procentul valabil se vede în dreptul codului).</span></label>
           <label class="camp"><span class="camp-eticheta">Numărul certificatului inițial<span class="oblig">*</span></span><input type="text" id="cm-numar-ini" class="camp-input" placeholder="ex. 1234567"></label>
         </div>
         <div class="pf-frand-nume" style="margin:14px 0 6px">Baza de calcul (ultimele 6 luni)</div>

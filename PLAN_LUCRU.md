@@ -117,13 +117,23 @@ tabel de priorități.
 
 **Testul:** *dacă știi deja ce se repară primul fără să te uiți în tabel, n-ai nevoie de tabel.*
 
+**Instanțele din primul triaj (22.08.2026), ca pragurile să nu rămână abstracte:**
+
+| prag | ce a intrat |
+|---|---|
+| 1 | `de_preluat` exclus din D300 — 3.052 lei TVA colectată omisă, la 3 plătitori · `flux_concediu.js`, blocaj pe un cod legal |
+| 2 | interdicția 2 (o cauză, o linie) · Registrul-inventar · Cartea mare · Registrul de evidență fiscală · evidența TVA ca artefact · jurnalul regim marjă |
+| 3 | interdicțiile 1 (~100), 16 (39), 17a (42), 32 (19/33) · Registrul-jurnal, care depinde de 32 |
+
 **Fluxul restanțelor și „ce oprește planul" trimit la praguri:** pasul 2 al fluxului („decide dacă
 repari") e chiar pragul 1; ce nu-l atinge primește blocaj de ORDINE și așteaptă pragul 2 sau 3.
 
-> **Reconstruit din comandă, 22.08.2026.** Costin a descris secțiunea ca fiind deja în plan; pe disc
-> nu era — fișierul era nemodificat față de commitul `cbf7b67`, iar căutarea după „praguri" / „pragul 1"
-> / „Când se repară" n-a dat nicio potrivire. Am scris-o din descrierea din comandă, cuvânt cu cuvânt
-> unde a fost dată. **Dacă există o versiune scrisă de el, a lui câștigă și o înlocuiește pe asta.**
+> **Reconstruit din comandă, 22.08.2026 — confirmat.** Secțiunea fusese scrisă local și n-a ajuns
+> niciodată pe disc: comanda de urcare n-a fost dată. Reconstrucția din comandă a fost verificată
+> cuvânt cu cuvânt și e cea validă. **Nu mai există o a doua versiune.**
+>
+> A treia oară în aceeași zi când ceva scris n-a ajuns unde trebuia — de aici regula: după ce se
+> scrie într-un plan, comanda de urcare se dă imediat, nu la sfârșitul turei.
 
 ---
 
@@ -181,8 +191,13 @@ condiție; „la punctul de decizie 2" e.
 ### Fluxul, în cinci pași
 
 1. **CONSEMNEAZĂ ÎNTÂI**, imediat, indiferent ce urmează. Un rând: **ce e · unde · ce efect are.**
-2. **Decide dacă repari.** Întrebarea e una singură: *produce efect greșit la un om ACUM — cifră,
-   blocaj, sau afirmație falsă pe ecran?* **Da → repari. Nu → rămâne consemnat**, cu blocaj de ORDINE.
+2. **Decide dacă repari, după cele trei praguri din E5.**
+   *Pragul 1* — produce efect greșit la un om ACUM: cifră, blocaj, afirmație falsă pe ecran → **repari acum**.
+   *Pragul 2* — cauză unică dovedită și nu concurează cu nimic, sau e o absență → **la închiderea etapei**.
+   *Pragul 3* — tot restul → **rămâne consemnat**, cu blocaj de ORDINE.
+
+   Întrebarea nu e binară. O absență — un artefact fără producător — nu atinge pragul 1, dar nici nu
+   așteaptă tabelul final: n-are instanțe de ordonat.
 3. **Dacă ai reparat, marchezi ca reparat, cu commitul.**
 4. **Dacă ai încercat și n-a mers**, rămâne consemnat, iar **motivul eșecului devine condiția de
    deblocare**.

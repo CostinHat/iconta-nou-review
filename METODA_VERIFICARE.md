@@ -323,3 +323,16 @@ se sparge în funcții.
 **Și consecința care contează cel mai mult:** un patch care „sare" nu eșuează — **raportează succes**.
 De aceea greșeala se vede abia la verificarea de după, dacă se face. Verificarea de după nu e opțională.
 
+### 10.10 — Un comentariu în cod nu e o declarație de perimetru
+
+Formularea, din 22.08.2026: **un comentariu în cod nu e o declarație de perimetru — nu-l citește
+nimeni care se uită unde suntem, n-are stare, și nu se aprinde când devine neadevărat.**
+
+**Instanța:** ruta `/tenants/{id}/jurnal-marja` își declară singură, în comentariu, *„raport regim
+marjă — fără UI încă, păstrat deliberat"*. Perimetrul declarat există însă doar pentru două firme
+(t006, t001); t007 și t008, purtătoarele regimurilor de marjă, n-au niciunul. Deci absența ecranului
+era **uitată în registru și declarată lângă cod** — două lucruri diferite.
+
+**Unde se declară, deci:** în registrul de perimetru al firmei, sau ca restanță cu felul de blocaj
+potrivit. Comentariul rămâne util pentru cine citește codul; nu ține locul niciuneia.
+

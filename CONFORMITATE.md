@@ -44,7 +44,22 @@ atins fișierul, iar o modificare încă necomisă a registrului cere data de az
 Cele trei praguri sunt definite în `PLAN_LUCRU.md`, E5. Aplicate pe **ce e deja măsurat** — lista, nu
 reparațiile. **Testul lor:** dacă știi ce se repară primul fără să te uiți în tabel, n-ai nevoie de tabel.
 
-### PRAGUL 1 — imediat (efect greșit la un om ACUM)
+### PRAGUL 1 — imediat (efect greșit la un om ACUM) — **AMBELE REPARATE 22.08.2026**
+
+**1.1 — REPARAT.** `core/nomenclator_status_factura.py`: stările unei facturi într-un singur loc, cu
+decizia de interpretare scrisă (varianta aleasă: `de_preluat` = stare finală, declarabilă; varianta
+respinsă: staging — **de confirmat de Costin**). `d300.py` (două locuri) și `d300_reconciliere.py`
+citesc acum registrul, nu liste proprii. **Proba, pe aceleași ferestre, înainte → după:**
+t003 0 → **889,00 lei TVA** · t005 0 → **2.100,00** · t013 315,00 → **378,00**. Total recuperat
+**3.052,00 lei**, exact cifra măsurată înainte. Gardat de `core/test_status_factura_un_loc.py`
+(7 teste, RED-proof 5/5).
+
+**1.2 — REPARAT.** `core/coduri_cm_api.py` + ruta `/tenants/{id}/concedii/coduri`; `CM_CODURI` a
+dispărut din `flux_concediu.js`. **Proba:** ecranul oferă acum **20 de coduri** (era 18) — `11`, `91`,
+`92` au intrat — iar procentul urmează **data certificatului**: cod 01 = `55/65/75%` azi și `75%` pe o
+dată dinainte de Legea 141/2025. Gardat de `core/test_coduri_cm_din_registru.py` (5 teste). Garda a
+prins o a doua instanță, mai mică, a aceleiași clase: textul de ajutor scria „la 75%" — scos.
+
 
 | # | ce e | efectul, azi |
 |---|---|---|
@@ -160,6 +175,7 @@ gardă; e un prag de citit, la un moment numit.
 ### R1 — Câte alte acte din corpus sunt PARȚIALE
 
 - **felul**: SURSĂ
+- **cine deblochează**: INTERN
 - **unde intră**: E2 · fără interdicție (corpusul, precondiția lui 49–59)
 - **reluări**: 0
 - **stare**: DESCHISĂ
@@ -170,6 +186,7 @@ gardă; e un prag de citit, la un moment numit.
 ### R2 — Vigoarea PE PUNCT, nu doar pe articol
 
 - **felul**: VERIFICARE
+- **cine deblochează**: INTERN
 - **unde intră**: E2 · interdicțiile 49, 54
 - **reluări**: 0
 - **stare**: DESCHISĂ
@@ -180,6 +197,7 @@ gardă; e un prag de citit, la un moment numit.
 ### R3 — Categoria de mărime nu există în aplicație
 
 - **felul**: ARTEFACT
+- **cine deblochează**: INTERN
 - **unde intră**: E1 · faza 1, familia B
 - **reluări**: 0
 - **stare**: DESCHISĂ
@@ -190,6 +208,7 @@ gardă; e un prag de citit, la un moment numit.
 ### R4 — Câte alte forme VECHI din corpus sunt citite ca fiind la zi
 
 - **felul**: SURSĂ
+- **cine deblochează**: INTERN
 - **unde intră**: E2 · interdicția 52
 - **reluări**: 0
 - **stare**: DESCHISĂ
@@ -200,6 +219,7 @@ gardă; e un prag de citit, la un moment numit.
 ### R5 — Marcajele din corpus nu se citesc la FOLOSIRE
 
 - **felul**: SURSĂ
+- **cine deblochează**: INTERN
 - **unde intră**: E2 · interdicțiile 50, 52
 - **reluări**: 0
 - **stare**: DESCHISĂ
@@ -210,6 +230,7 @@ gardă; e un prag de citit, la un moment numit.
 ### R6 — Ceva a scris într-un fișier de corpus, și nu se știe ce
 
 - **felul**: SURSĂ
+- **cine deblochează**: INTERN
 - **unde intră**: E2 · interdicția 52
 - **reluări**: 0
 - **stare**: DESCHISĂ
@@ -220,6 +241,7 @@ gardă; e un prag de citit, la un moment numit.
 ### R7 — Câte câmpuri obligatorii sunt gardate ca PREZENȚĂ, dar necontrolate ca ADEVĂR
 
 - **felul**: VERIFICARE
+- **cine deblochează**: INTERN
 - **unde intră**: E3 · faza 4 (instrumentele)
 - **reluări**: 0
 - **stare**: DESCHISĂ
@@ -230,6 +252,7 @@ gardă; e un prag de citit, la un moment numit.
 ### R8 — Cele trei egalități stricte, redeschise și nereverificate
 
 - **felul**: ORDINE
+- **cine deblochează**: INTERN
 - **unde intră**: E3 · interdicția 21
 - **reluări**: 0
 - **stare**: DESCHISĂ
@@ -240,6 +263,7 @@ gardă; e un prag de citit, la un moment numit.
 ### R9 — Ecranul statului de plată: STOP nemișcat
 
 - **felul**: ORDINE
+- **cine deblochează**: DECIZIE
 - **unde intră**: E5 · fără interdicție (e o propunere vizuală, nu o clasă)
 - **reluări**: 0
 - **stare**: DESCHISĂ
@@ -250,6 +274,7 @@ gardă; e un prag de citit, la un moment numit.
 ### R10 — Cerințe din „Restanțele" (PLAN_LUCRU) fără gardă
 
 - **felul**: VERIFICARE
+- **cine deblochează**: INTERN
 - **unde intră**: E1 · fără interdicție (e disciplină de proces)
 - **reluări**: 0
 - **stare**: DESCHISĂ
@@ -260,6 +285,7 @@ gardă; e un prag de citit, la un moment numit.
 ### R11 — Datoria veche consemnată doar în proză, în GARZI.md
 
 - **felul**: ORDINE
+- **cine deblochează**: INTERN
 - **unde intră**: E3 · faza 3b (triajul)
 - **reluări**: 0
 - **stare**: DESCHISĂ
@@ -280,6 +306,7 @@ gardă; e un prag de citit, la un moment numit.
 ### R12 — Divergență între D300 și D100 pe aceeași firmă, același fapt
 
 - **felul**: ARTEFACT
+- **cine deblochează**: INTERN
 - **unde intră**: E1 · faza 1, pasul 1b · interdicția 17
 - **reluări**: 0
 - **stare**: REZOLVATĂ
@@ -287,6 +314,17 @@ gardă; e un prag de citit, la un moment numit.
 - **rezolvată pe commit**: `42c9e85`
 - **ce blochează**: (istoric) pe t003, D300 ieșea `valid` cu 0 operațiuni, iar D100 refuza pe aceeași firmă și perioadă. Nu puteau avea amândoi dreptate.
 - **condiția de deblocare**: **îndeplinită — experimentul s-a făcut.** Ipoteza inițială („facturi necontabilizate") s-a dovedit greșită la prima privire în date: facturile **erau** contate, dar notele erau `ciornă`. Experimentul s-a îngustat la **ciornă vs validat**: am validat cele două note prin ruta aplicației (`/tenants/{id}/jurnal/{nota}/valideaza`). **Rezultat: D100 refuz → `valid`, 1 operațiune. D300: `valid` cu 0 operațiuni, ÎNAINTE și DUPĂ.** Deci **D100 avea dreptate** — citea contabilitatea validată și refuza corect. **D300 nu vedea facturile în niciuna dintre stări**, iar cauza s-a găsit citind filtrul: `status='de_preluat'`, exclus prin construcție. Defectul real e mai mare decât divergența și a trecut în **pragul 1, poziția 1.1**.
+
+### R13 — Partener fără cod fiscal pe factură
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · faza 1, pasul 1b
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `44d30cf`
+- **ce blochează**: măsurat la Q2 (evidența TVA): pe t003, **una din trei facturi are `tert_cui = NULL`** (CMT149, către „Agentie Turism Marja SRL"). Un jurnal de vânzări și D394 cer partenerul cu codul lui; fără el, operațiunea nu se poate raporta pe partener. Nu e o lipsă de structură — coloana există — ci de **completitudine a datelor**, deci se rezolvă altfel decât o absență de producător.
+- **condiția de deblocare**: se măsoară **câte** facturi din matrice n-au cod de partener, pe direcție și pe plătitor de TVA, și se stabilește dacă lipsa e legitimă (persoană fizică) sau nu. Abia apoi se decide dacă aplicația trebuie să ceară codul la introducere (P23) sau doar să-l semnaleze.
 
 ---
 

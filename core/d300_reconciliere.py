@@ -38,6 +38,7 @@ PRECONDITIE: conn e pozitionat pe schema tenantului (acelasi contract ca
 `d300.pull` in calea non-tva_la_incasare, care nu seteaza search_path).
 """
 
+from core import nomenclator_status_factura as _nsf
 from core import afirmatii as _af  # [P8] necunoasterea isi poarta domeniul
 from decimal import Decimal, ROUND_HALF_UP
 
@@ -77,7 +78,7 @@ def _agrega_independent(conn, inceput, sfarsit):
          "     ELSE COALESCE(f.data_faptului_generator, f.data_emitere) END) < %s "
          "AND COALESCE(f.taxare_inversa, false) = false "  # [06.08.2026] taxare inversa -> rd.13 auto (nu col/ded), exclusa din cale2 ca in calcul_d300
          "AND COALESCE(f.tert_tara, 'RO') = 'RO' "  # [B1/F125] IC/export -> randuri proprii (rd.1/5/14/18 bunuri; rd.3/rd.7+rd.20 servicii reclasificate P/S in D390), in afara reconcilierii pe cote 21/11/9 (limita) - filtrul pe tert_tara le exclude coerent, ca la IC bunuri
-         "AND COALESCE(f.status, 'emisa') NOT IN ('ciorna', 'de_preluat', 'descarcata', 'anulata', 'stornata') "  # [B1] doar facturi contabilizabile
+         "AND " + _nsf.clauza_sql("f") + " "  # [B1] doar facturi DECLARABILE — din nomenclator, nu din lista scrisa aici (P1)
          "AND NOT (f.directie = 'primita' AND COALESCE(f.furnizor_tva_incasare, false) = true) "  # [B1] deducere amanata la plata, in afara reconcilierii pe emitere (limita)
          "ORDER BY f.id")
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:

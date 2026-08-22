@@ -6268,6 +6268,30 @@ def rip_d212(tenant_id: int, an: int, optiune_cas: bool = False, optiune_cass: b
     return rez
 
 # --- registru de casa ---
+@app.get("/tenants/{tenant_id}/concedii/coduri")  # [cm_coduri_v1] denumirea din nomenclator + procentul din registru
+def concedii_coduri(tenant_id: int, la_data: Optional[str] = None, ctx=Depends(cere_cabinet)):
+    """Codurile de indemnizatie pentru ecran, cu procentul VALABIL LA DATA certificatului.
+
+    Inainte de 22.08.2026 lista traia scrisa de mana in `flux_concediu.js` (18 coduri, cu procentele
+    lipite in eticheta): ecranul NU oferea 11/91/92 - coduri legale pe care aplicatia le accepta -
+    deci bloca un contabil sa introduca un cod valid. Vezi `core/coduri_cm_api.py`."""
+    from core import coduri_cm_api as _cc
+    import datetime as _d
+    # [izolare] ruta e sub {tenant_id}, deci ACCESUL se verifica, chiar daca raspunsul nu depinde de
+    # firma: altfel un 200 pe tenantul altui cabinet spune ca tenantul EXISTA. Prins de
+    # test_izolare_structurala, nu de mine.
+    with db.get_conn() as conn:
+        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
+            raise HTTPException(404, FARA_ACCES_TENANT)
+    d = None
+    if la_data:
+        try:
+            d = _d.date.fromisoformat(la_data)
+        except ValueError:
+            raise HTTPException(422, "Data trebuie să fie în formatul AAAA-LL-ZZ.")
+    return {"coduri": _cc.optiuni(d)}
+
+
 @app.get("/tenants/{tenant_id}/casa/registru")
 def casa_registru(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     from core import casa_api as _c

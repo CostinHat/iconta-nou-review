@@ -452,8 +452,8 @@ def test_efectul_e_al_interdictiei_nu_al_grupului(conf):
 
 FELURI = ("SURSĂ", "VERIFICARE", "ARTEFACT")
 STARI_RESTANTA = ("DESCHISĂ", "REZOLVATĂ")
-CAMPURI_RESTANTA = ("felul", "unde intră", "reluări", "stare", "deschisă pe commit",
-                    "ce blochează", "condiția de deblocare")
+CAMPURI_RESTANTA = ("felul", "cine deblochează", "unde intră", "reluări", "stare",
+                    "deschisă pe commit", "ce blochează", "condiția de deblocare")
 
 
 def _restante(t=None):
@@ -522,6 +522,7 @@ def test_commiturile_restantelor_exista():
 # acolo, „De unde vin cele două". Gardul e reparația clasei, nu doar a instanței.
 
 FELURI_4 = ("SURSĂ", "VERIFICARE", "ARTEFACT", "ORDINE")
+CINE_VALIDE = ("EXTERN", "INTERN", "DECIZIE")
 ETAPE = ("E1", "E2", "E3", "E4", "E5")
 
 
@@ -593,3 +594,44 @@ def test_cititorul_de_etape_terminate_chiar_vede():
     assert _etape_declarate_terminate("etapa E1 e TERMINATĂ") == {"E1"}
     assert _etape_declarate_terminate("E3 — încheiată") == {"E3"}
     assert _etape_declarate_terminate("etapa E1 — SETUL COMPLET, în lucru") == set()
+
+
+def test_o_restanta_EXTERN_are_cerere_specifica():
+    """Ultima dintre cele patru cerințe din `PLAN_LUCRU.md` („Ce se gardează"), rămasă neimplementată
+    după împăcarea taxonomiilor: *«o restanță cu blocaj EXTERN fără cerere specifică formulată nu
+    trece»*. A devenit gardabilă în momentul în care nota „cine deblochează" a devenit CÂMP.
+
+    O cerere specifică are trei elemente: **ce trebuie · de unde · pentru ce**. Fără ele, „aștept ceva
+    din afară" nu e o restanță blocată, e o restanță nescrisă."""
+    rele = []
+    for cod, (_t, corp) in sorted(_restante().items()):
+        cine = (_camp(corp, "cine deblochează") or "").strip("* ")
+        if cine not in CINE_VALIDE:
+            rele.append("  %s: `cine deblochează` = %r — cele trei sunt %s"
+                        % (cod, cine, ", ".join(CINE_VALIDE)))
+            continue
+        if cine != "EXTERN":
+            continue
+        cond = (_camp(corp, "condiția de deblocare") or "").lower()
+        lipsa = [e for e, chei in (("ce trebuie", ("trebuie", "cere", "lipsește")),
+                                   ("de unde", ("de la", "din ", "de unde")),
+                                   ("pentru ce", ("blochează", "pentru ", "ca să")))
+                 if not any(k in cond for k in chei)]
+        if lipsa:
+            rele.append("  %s: EXTERN fără cerere specifică — lipsește: %s" % (cod, ", ".join(lipsa)))
+    assert not rele, "restanțe cu blocaj nedeclarat sau EXTERN fără cerere:\n" + "\n".join(rele)
+
+
+def test_gardul_EXTERN_chiar_ar_prinde():
+    """ANTI-VACUU. Azi nicio restanță nu e EXTERN, deci garda de mai sus trece pe zero rânduri —
+    exact interdicția 19. Proba se face pe un corp sintetic."""
+    corp = ("- **cine deblochează**: EXTERN\n"
+            "- **condiția de deblocare**: se rezolvă cândva.\n")
+    cond = (_camp(corp, "condiția de deblocare") or "").lower()
+    lipsa = [e for e, chei in (("ce trebuie", ("trebuie", "cere", "lipsește")),
+                               ("de unde", ("de la", "din ", "de unde")),
+                               ("pentru ce", ("blochează", "pentru ", "ca să")))
+             if not any(k in cond for k in chei)]
+    assert lipsa == ["ce trebuie", "de unde", "pentru ce"], (
+        "tiparul nu prinde o cerere goală: %s" % lipsa)
+    assert _camp(corp, "cine deblochează").strip() == "EXTERN"
