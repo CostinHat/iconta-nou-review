@@ -206,8 +206,11 @@ def test_se_vede_cat_e_de_facut(plan, conf):
 # suntem, sau că „ce lipsește" e complet. Aia e o citire umană. Garda apără doar prospețimea și forma:
 # face imposibil ca antetul să MINTĂ DESPRE DATĂ, nu ca el să mintă.
 
-ANTET_CAMPURI = ("etapa", "criteriul de terminare", "ce lipsește", "decizii care blochează",
-                 "ultima actualizare")
+# `pasul curent` a intrat pe 22.08: sectiunea B a raportului se DERIVA din antet
+# (`scripts/raport_b.py`), iar ea cere si pasul, nu doar etapa. Un camp de care depinde
+# un raport, dar pe care nimic nu-l cere, dispare la prima rescriere.
+ANTET_CAMPURI = ("etapa", "pasul curent", "criteriul de terminare", "ce lipsește",
+                 "decizii care blochează", "ultima actualizare")
 
 CAP_ANTET = "## ANTET DE ETAPĂ"
 

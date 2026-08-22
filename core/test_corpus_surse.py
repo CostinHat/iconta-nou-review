@@ -99,3 +99,60 @@ def test_g3_nu_semnaleaza_valori_mo_sau_stabile():
         curent_mo = getattr(max(intrari, key=lambda iv: iv[0])[2], "nivel_sursa", None) == "MO"
         if curent_mo:
             assert nume not in set_v, "%s are valoarea curenta MO dar e semnalata" % nume
+
+
+# ────────────────────────────────────────────────────────────────────────────
+#  G4 — TIP_FORMA se verifica DIRECT contra COTE, nu contra manifestului
+#
+#  DE CE (22.08.2026, dupa un commit respins de poarta): G1..G3 si
+#  `test_index_coerent_cu_cote` citesc `INDEX.json`, care e GENERAT. Un Temei nou, adaugat pe 16.08 cu
+#  `url=anaf_surse/oug_156_2024.txt`, n-a fost vazut de niciunul dintre ele pana cand cineva a
+#  regenerat manifestul — sase zile mai tarziu, si din intamplare. Manifestul stale nu minte: pur si
+#  simplu descrie o lume mai veche.
+#
+#  CE FACE IMPOSIBIL: un fisier legat de o cota, fara `tip_forma` declarat in `TIP_FORMA`, indiferent
+#  de cand a fost regenerat `INDEX.json`.
+#
+#  CE NU FACE, declarat: nu verifica daca `tip_forma` e CORECT (consolidat_la_zi vs forma_la_data) —
+#  aia o face G2, pe succesori. Verifica doar ca declaratia EXISTA.
+# ────────────────────────────────────────────────────────────────────────────
+
+def _tip_forma_din_sursa():
+    """`TIP_FORMA` citit cu `ast` din `anaf_surse/gen_index.py`.
+
+    NU prin import: modulul acela SCRIE `INDEX.json` la incarcare, iar un test care scrie in repo e
+    exact sonda care nu e read-only. `ast` citeste litera, fara sa execute nimic."""
+    import ast
+    cale = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                        "anaf_surse", "gen_index.py")
+    with open(cale, encoding="utf-8") as f:
+        arbore = ast.parse(f.read())
+    for nod in arbore.body:
+        if isinstance(nod, ast.Assign) and any(
+                getattr(t, "id", None) == "TIP_FORMA" for t in nod.targets):
+            return ast.literal_eval(nod.value)
+    raise AssertionError("TIP_FORMA nu s-a gasit in anaf_surse/gen_index.py — gardul nu are ce citi")
+
+
+def test_tip_forma_se_citeste_din_sursa():
+    """ANTI-VACUU pe instrument: daca parsarea se rupe, G4 ar trece pe zero fisiere."""
+    tf = _tip_forma_din_sursa()
+    assert len(tf) >= 15, "doar %d intrari in TIP_FORMA — parsarea s-a rupt, nu tabela s-a golit" % len(tf)
+    assert "cod_fiscal_227_2015_consolidat.html" in tf
+
+
+def test_orice_fisier_legat_de_o_cota_are_tip_forma():
+    """G4. Direct contra COTE — nu contra `INDEX.json`, care e generat si poate fi stale."""
+    tf = _tip_forma_din_sursa()
+    lipsa = {}
+    for nume, intrari in COTE.items():
+        for d, _v, t in intrari:
+            url = getattr(t, "url", None) or ""
+            if not url.startswith(SURSE + "/"):
+                continue
+            f = url.split("/", 1)[1]
+            if f not in tf:
+                lipsa.setdefault(f, []).append("%s@%s" % (nume, d))
+    assert not lipsa, (
+        "fisiere legate de cote, fara tip_forma declarat in gen_index.TIP_FORMA:\n  "
+        + "\n  ".join("%s  <- %s" % (f, ", ".join(c[:3])) for f, c in sorted(lipsa.items())))

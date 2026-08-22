@@ -30,9 +30,10 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
+- **pasul curent**: faza 1, pasul 1a din `PLAN_INVESTIGATII.md` — ÎNCHEIAT. Urmează **1b** (ce produce aplicația, pe date reale) și **1c** (se poate verifica pe ecran).
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
-- **ce lipsește**: operațiunea 1 din E1 — **câte regimuri** — e MĂSURATĂ (vezi blocul „E1 — SETUL COMPLET"): 9 combinații purtate de firme, 5 regimuri speciale de TVA cu zero firme exercitate, PFA cu zero firme. Pasul 1a e o **primă trecere**: registrele, situațiile financiare, declarațiile și evidențele speciale au temei citit din corpus, dar **niciun articol n-are vigoarea verificată la sursă externă**. Mai lipsesc: patru căutări nerezolvate (D205, registrul de casă, temeiul D212, articolul care impune D406) · **categoria de mărime**, care decide setul de situații financiare și nu există ca dimensiune în aplicație · apoi 1b (ce produce aplicația, pe date reale) și 1c (se poate verifica pe ecran — interdicțiile 63–66).
-- **decizii care blochează**: **două.** (1) **Legea 82/1991 lipsește din corpus în formă consolidată** — registrele obligatorii se pot cita azi doar prin OMFP 2634/2015, adică printr-o sursă de nivel 2. Se aduce actul, sau se acceptă ordinul ca ancoră cu dezacordul de nivel declarat? Blochează închiderea familiei A din 1a. (2) **Se îngheață perimetrul până la conformitate?** (`PLAN_LUCRU.md`, „Ce ține de om") — dacă nu, lista de interdicții crește cu fiecare modul nou, iar criteriul de terminare al lui E3 se mișcă sub măsurătoare. Nu blochează E1; blochează închiderea lui E3.
+- **ce lipsește**: operațiunea 1 (câte regimuri) și pasul 1a (ce cere legea) sunt MĂSURATE — vezi blocul „E1 — SETUL COMPLET". Mai lipsesc, ca să se termine E1: **1b** · **1c** · **categoria de mărime**, care decide setul de situații financiare și nu există ca dimensiune în aplicație · **vigoarea pe cele cinci acte structurate pe puncte, nu pe articole** (OMFP 1802/2014, OMFP 2634/2015, OPANAF 3769/2015, 2194/2025, 1783/2021).
+- **decizii care blochează**: **niciuna deschisă.** Cele două de dimineață s-au luat: (1) *Legea 82/1991* — **se aduce actul**, nu se acceptă ordinul ca ancoră (adusă, cu amprentă, art. 20 citat verbatim); (2) *perimetrul* — **se îngheață** până trece verificarea, cu excepția cererilor unui contabil real (scris în `PLAN_LUCRU.md`, 22.08.2026).
 - **ultima actualizare**: 2026-08-22
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
 
@@ -119,92 +120,92 @@ presupus.
 4. **`pro_rata` și `tva_la_incasare`: zero firme.** Două regimuri cu efect direct în D300.
 5. **`baza_contabila` = A pe toate 17.** Celelalte planuri de conturi, mapate în `d406`, nu sunt atinse.
 
-### Pasul 1a — ce cere legea (PRIMA TRECERE, cu temei din corpus)
+### Pasul 1a — ce cere legea (temei ADUS, citat verbatim, cu vigoarea verificată)
 
-**Din lege, cu temei — nu din ce știe aplicația să facă.** Fiecare rând de mai jos a fost găsit prin
-căutare în `anaf_surse/`, iar numărul articolului a fost citit mergând înapoi până la titlul lui, nu
-presupus. **Ce nu e în corpus nu s-a scris** — apare ca lipsă declarată.
+**Din lege, cu temei.** Fiecare rând a fost găsit prin căutare în `anaf_surse/`, iar numărul
+articolului a fost citit mergând înapoi la titlul lui — nu presupus. **Vigoarea a fost verificată la
+sursa externă** (Portalul Legislativ, Ministerul Justiției), pe FORMA CONSOLIDATĂ LA ZI, cu
+`scripts/vigoare_articol.py`.
 
-**AVERTISMENT DE STARE (Partea 0, pasul 2):** pentru niciunul dintre articolele de mai jos nu s-a făcut
-verificarea vigorii la sursă externă în tura asta. Lista e o **PRIMĂ TRECERE**, nu un set verificat. Un
-singur exemplu de ce contează: D101 se depune **până la 25 iunie**, iar alineatul a fost modificat de
-OUG 8/2026 la 25.02.2026 — se vede în corpus, nu în memorie.
+**Ce a scos la iveală aducerea actelor** — două lucruri pe care corpusul le ascundea:
+
+1. **Legea 82/1991 nu era în corpus.** Erau doar două documente „modificări aduse de OUG 115/2023 /
+   OUG 138/2024", emise de o direcție regională ANAF — nivel 2. **Decizia lui Costin: se aduce actul.**
+   *„Un ordin care spune «potrivit prevederilor legii contabilității» nu e temeiul, e o trimitere la el.
+   A cita art. 20 prin OMFP 2634/2015 e exact interdicția 53: citatul nu conține regula, o referă."*
+   Adusă: `anaf_surse/legea_82_1991_consolidat.{html,txt}`, amprentă
+   `4490a223cfe5982232331763d9984f90449e3c75074861005d20bd238ddab152`, forma consolidată la 04.02.2025.
+2. **OMFP 2634/2015 era în corpus DOAR cu Anexa nr. 1.** De aceea „registrul de casă" nu se găsea:
+   nomenclatorul din copia veche sare de la 14-4-4 la 14-4-13. Aduse acum toate trei anexele, din MO
+   910 și 910 bis / 9.12.2015, forma consolidată la 01.08.2024. **Un act incomplet în corpus nu se
+   deosebește de un act care nu spune ce cauți** — e o formă de orbire prin construcție care nu era în
+   tabelul din METODA.
 
 **A. Registre de contabilitate obligatorii**
 
-| artefact | temei (verbatim în corpus) | cui i se aplică | firme |
+| artefact | temei, citat verbatim | vigoare, verificată la sursă | firme |
 |---|---|---|---|
-| **Registrul-jurnal** (cod 14-1-1) | OMFP 2634/2015 pct. 44 și 45 — `omfp_2634_2015.txt:343` | partidă dublă | 17 |
-| **Registrul-inventar** (cod 14-1-2) | OMFP 2634/2015 pct. 44 și 46 | partidă dublă | 17 |
-| **Cartea mare** (cod 14-1-3) | OMFP 2634/2015 pct. 44 și 47 — „poate fi înlocuit cu Fișa de cont pentru operațiuni diverse" | partidă dublă | 17 |
-| **Balanța de verificare, LUNAR** | Legea 82/1991 art. 22, forma DUPĂ OUG 138/2024 — `legea_82_1991_modif_oug138_2024.txt`. Înainte era „cel puțin la încheierea exercițiului financiar" | toate | 17 |
-| **Registrul-jurnal de încasări și plăți** (14-1-1/b) + **Registrul-inventar** (14-1-2/b) | OMFP 2634/2015 pct. 48, care trimite la OMFP 170/2015 | partidă simplă (PFA) | **0** |
-
-**LIPSĂ DECLARATĂ, cu decizie cerută.** `Legea 82/1991` **nu există în corpus în formă consolidată** —
-sunt doar două documente „modificări aduse de OUG 115/2023 / OUG 138/2024", emise de o direcție
-regională ANAF, adică **sursă de nivel 2, nu Monitorul Oficial**. Am căutat în tot `anaf_surse/` după
-„registrele de contabilitate obligatorii", „registrul-jurnal", „cartea mare" și după numele actului:
-singurul loc în care lista apare verbatim e OMFP 2634/2015, care spune „potrivit prevederilor legii
-contabilității". **Deci art. 20 din Legea 82/1991 e citat printr-un intermediar.** Decizia cerută lui
-Costin: se aduce legea consolidată în corpus, sau se acceptă OMFP 2634/2015 ca ancoră, cu dezacordul de
-nivel declarat? (Partea 0 pasul 4 — o sursă inferioară nu ține locul uneia superioare fără decizie.)
+| **Registrul-jurnal · Registrul-inventar · Cartea mare** | **Legea 82/1991 art. 20**: „Registrele de contabilitate obligatorii sunt: Registrul-jurnal, Registrul-inventar și Cartea mare. Întocmirea, editarea și păstrarea registrelor de contabilitate se efectuează conform normelor elaborate de Ministerul Finanțelor Publice." | ÎN VIGOARE, fără marcaj de modificare | 17 |
+| formele și codurile (14-1-1, 14-1-2, 14-1-3) | OMFP 2634/2015, **Anexa nr. 1** pct. 44–47 | act consolidat 01.08.2024 | 17 |
+| **Balanța de verificare, LUNAR** | **Legea 82/1991 art. 22**: „Pentru verificarea înregistrării corecte în contabilitate a operațiunilor efectuate, lunar se întocmește balanța de verificare." | ÎN VIGOARE; **modificat la 05-12-2024** (înainte: „cel puțin la încheierea exercițiului financiar") | 17 |
+| **Registrul-jurnal de încasări și plăți** (14-1-1/b) + **Registrul-inventar** (14-1-2/b) | OMFP 2634/2015 Anexa nr. 1 pct. 48, care trimite la OMFP 170/2015 | act consolidat 01.08.2024 | **0** (niciun PFA) |
 
 **B. Situații financiare anuale**
 
-Componența depinde de **categoria de mărime**, nu de regimul fiscal — o distincție pe care vectorul
-fiscal al aplicației nu o poartă deloc.
-
-| categorie | ce cuprinde | temei |
+| ce | temei, citat verbatim | vigoare |
 |---|---|---|
-| microentități | situații financiare în condițiile secțiunii 12.1 „Scutiri pentru microentități" | OMFP 1802/2014 pct. 20 alin. (1) |
-| entități mici | bilanț prescurtat · cont de profit și pierdere · note explicative | OMFP 1802/2014 pct. 20 alin. (2); opțional și situația modificărilor capitalului propriu / a fluxurilor de trezorerie, alin. (4) |
-| mijlocii și mari, entități de interes public | bilanț · cont de profit și pierdere · situația modificărilor capitalului propriu · situația fluxurilor de trezorerie · note | OMFP 1802/2014 pct. 21 |
+| obligația de a le întocmi | **Legea 82/1991 art. 28** alin. (1): „Persoanele prevăzute la art. 1 alin. (1)-(4) au obligația să întocmească situații financiare anuale." | ÎN VIGOARE; alin. (1) modificat 01-01-2015, alin. (1^1) 26-02-2021 |
+| **termenele de depunere** | **Legea 82/1991 art. 36** alin. (1): societățile reglementate de Legea 31/1990 ș.a. — **până la 31 mai** inclusiv a exercițiului financiar următor; **celelalte persoane juridice — până la 30 aprilie** | ÎN VIGOARE; alin. (1) **modificat 05-12-2024** |
+| componența, pe categorii de mărime | OMFP 1802/2014 pct. 20 alin. (1) (micro) · pct. 20 alin. (2) (mici: bilanț prescurtat, cont de profit și pierdere, note) · pct. 21 (mijlocii/mari și interes public: plus situația modificărilor capitalului propriu și situația fluxurilor de trezorerie) | **NEVERIFICATĂ la sursă** — actul e structurat pe puncte, nu pe articole; instrumentul de vigoare lucrează pe articol |
+| criteriile de mărime | OMFP 1802/2014 pct. 9: micro — 350.000 EUR active / 700.000 EUR cifră de afaceri netă; mici — 4.000.000 / 8.000.000. **Două criterii din trei**, la data bilanțului | idem |
 
-**Criteriile de mărime** (OMFP 1802/2014 pct. 9): micro — total active 350.000 EUR, cifră de afaceri
-netă 700.000 EUR; mici — 4.000.000 EUR și 8.000.000 EUR. Sunt **două criterii din trei**, la data
-bilanțului.
+**Rămâne deschis la B:** **categoria de mărime nu există ca dimensiune în aplicație** — nu e câmp în
+`firma_profil`, nu apare în vectorul fiscal. Pentru niciuna dintre cele 17 firme nu se poate spune, din
+date, ce set de situații financiare datorează. E precondiția lui 1b pentru toată familia B.
 
-**LIPSĂ DECLARATĂ:** termenele de depunere (Legea 82/1991 art. 36) nu se pot cita — același act lipsă.
-Iar **categoria de mărime nu există ca dimensiune în aplicație**: nu e câmp în `firma_profil` și nu
-apare în vectorul fiscal. Consecința pentru 1b: pentru niciuna dintre cele 17 firme nu se poate spune,
-din date, ce set de situații financiare datorează.
+**C. Declarații fiscale.** Toate articolele de mai jos au fost verificate pe **forma consolidată la zi a
+Codului fiscal (consolidare 08.08.2026)**, respectiv a Codului de procedură fiscală (08.08.2026).
 
-**C. Declarații fiscale** (după vectorul fiscal, nu după ce are aplicația)
-
-| declarație | temei, citit la sursă | cine o datorează | firme |
+| declarație | temei | vigoare la sursă | firme |
 |---|---|---|---|
-| **D100** | CF **art. 56** — „Microîntreprinderile au obligația de a depune, până la termenul de plată a impozitului, declarația de impozit pe veniturile microîntreprinderilor." | micro | 10 |
-| **D101** | CF **art. 42** alin. (1) — „până la data de 25 iunie inclusiv a anului următor"; alineat **modificat de OUG 8/2026** | profit | 7 |
-| **D112** | CF **art. 81** (obligația plătitorilor de salarii) și **art. 147** | orice firmă cu salariați | de numărat la 1b |
-| **D300** | CF **art. 323** — „Decontul de taxă întocmit de persoanele înregistrate conform art. 316" | plătitor de TVA | 11 |
-| **D301** | CF **art. 324** — „de către persoanele care nu sunt înregistrate și care nu trebuie să se înregistreze conform art. 316"; „numai pentru perioadele în care ia naștere exigibilitatea" | neplătitor cu operațiuni taxabile | 1 confirmat (t006) |
-| **D390** | CF **art. 325** | operațiuni intracomunitare | 5 |
-| **D394** | **nu e în Codul fiscal** — OPANAF 3769/2015 (bază) și OPANAF 2194/2025, ambele în corpus | plătitor de TVA | 11 |
-| **D406** | Codul de procedură fiscală (fișierul standard de control fiscal, definit acolo ca probă) + OPANAF 1783/2021, în corpus | după categoria de contribuabil | de stabilit la 1b |
-| **D205** | **negăsit** cu tiparele folosite în CF consolidat — de recăutat | plătitori de venituri cu reținere la sursă | — |
-| **D212** | motor `core/d212_engine.py`; temeiul **nu s-a căutat în tura asta** | PFA / II / IF | **0 firme** |
+| **D100** | CF **art. 56** „Plata impozitului și depunerea declarațiilor fiscale" | ÎN VIGOARE (alin. 1^1 abrogat 01-01-2024) | 10 |
+| **D101** | CF **art. 42** alin. (1) — „până la data de **25 iunie** inclusiv a anului următor" | ÎN VIGOARE; **modificat 25-02-2026** (OUG 8/2026) | 7 |
+| **D112** | CF **art. 81** (obligația plătitorilor de salarii) și **art. 147** (depunerea) | ambele ÎN VIGOARE (art. 81 mod. 01-01-2017; art. 147 alin. 1^1 mod. 01-01-2024) | de numărat la 1b |
+| **D205** | **CF art. 132** „Obligații declarative ale plătitorilor de venituri cu reținere la sursă" — depunere „până în **ultima zi a lunii februarie** inclusiv a anului curent" | ÎN VIGOARE; alin. (2) modificat 18-12-2021 | de numărat la 1b |
+| **D212** | **CF art. 122** „Declarația unică privind impozitul pe venit și contribuțiile sociale datorate de persoanele fizice" — „până la data de **25 mai** inclusiv a anului următor"; plus art. 116 pentru venituri din alte surse | ÎN VIGOARE | **0** (niciun PFA) |
+| **D300** | CF **art. 323** „Decontul de taxă" | ÎN VIGOARE, fără marcaj | 11 |
+| **D301** | CF **art. 324** „Decontul special de taxă și alte declarații" | ÎN VIGOARE; alin. (5) mod. 03-02-2020 | 1 confirmat (t006) |
+| **D390** | CF **art. 325** „Declarația recapitulativă" | ÎN VIGOARE; partea introductivă a alin. (1) mod. 01-07-2024 | 5 |
+| **D394** | nu e în Codul fiscal — OPANAF 3769/2015 și OPANAF 2194/2025, ambele în corpus | **NEVERIFICATĂ la sursă** | 11 |
+| **D406** | **Cod procedură fiscală art. 59^1** „Obligația de depunere a fișierului standard de control fiscal": „Contribuabilul/Plătitorul are obligația de a depune la organul fiscal central o declarație cuprinzând informații din evidența contabilă și fiscală" | ÎN VIGOARE; introdus 01-01-2022 (OG 11/2021) | de stabilit la 1b |
 
 **D. Evidențe speciale**
 
-| evidență | temei, citit la sursă | cui i se aplică |
+| evidență | temei, citat verbatim | vigoare |
 |---|---|---|
-| **Evidența operațiunilor de TVA** — „evidențe corecte și complete ale tuturor operațiunilor efectuate în desfășurarea activității lor economice" | CF **art. 321** | persoane impozabile stabilite în România |
-| **Jurnale pentru vânzări / borderouri de încasări** și **jurnale de cumpărări separate** | HG 1/2016 (norme), la regimul special al agențiilor de turism | regim special turism |
-| **Evidența operațiunilor în regim special de marjă** — „să țină evidența operațiunilor pentru care se aplică regimul special" | CF **art. 312** | second-hand |
-| **Registrul de evidență fiscală** | CF **art. 19** (impozit pe profit) și CF **art. 68** (venit net în sistem real) | profit; PFA în sistem real |
-| **Registrul de casă** | **negăsit** în OMFP 2634/2015 cu tiparul folosit — de recăutat înainte de a-l afirma | firmele cu operațiuni în numerar |
+| **Evidența operațiunilor de TVA** | CF **art. 321** „Evidența operațiunilor": „Persoanele impozabile stabilite în România trebuie să țină evidențe corecte și complete ale tuturor operațiunilor efectuate în desfășurarea activității lor economice." | ÎN VIGOARE, fără marcaj |
+| **Jurnale pentru vânzări / borderouri de încasări** și **jurnale de cumpărări separate** | HG 1/2016 (norme), la regimul special al agențiilor de turism | act, nu articol — neverificată |
+| **Evidența operațiunilor în regim special de marjă** | CF **art. 312** „Regimuri speciale pentru bunurile second-hand, opere de artă, obiecte de colecție și antichități": „să țină evidența operațiunilor pentru care se aplică regimul special" | ÎN VIGOARE |
+| **Registrul de evidență fiscală** | CF **art. 19** (impozit pe profit) și CF **art. 68** (venit net în sistem real) | ambele ÎN VIGOARE (art. 68 alin. 1 mod. 01-01-2026) |
+| **Registrul de casă** (cod **14-4-7A**, varianta **14-4-7/bA**, în valută **14-4-7/aA** și **14-4-7/cA**) | **OMFP 2634/2015, Anexa nr. 2** („Norme specifice de utilizare a documentelor financiar-contabile", MO 910 bis/9.12.2015), poz. 27–29 din nomenclator; modelul în **Anexa nr. 3** | act consolidat 01.08.2024 |
+| plafoanele de numerar | Legea 70/2015 (în corpus, deja citată în cod cu `Temei` structurat) | verificată anterior (09.08.2026) |
+
+**Cele patru căutări nerezolvate din prima trecere: ÎNCHISE, toate patru.** D205 → CF art. 132 ·
+registrul de casă → OMFP 2634/2015 Anexa nr. 2 · D212 → CF art. 122 · D406 → CPF art. 59^1.
+
+**Ce a rămas neverificat, numit:** vigoarea pentru **OMFP 1802/2014**, **OMFP 2634/2015** (ambele
+structurate pe puncte, nu pe articole — instrumentul lucrează pe articol) și pentru cele trei OPANAF
+(**3769/2015**, **2194/2025**, **1783/2021**). Pentru primele două se cunoaște data ultimei consolidări
+a actului (01.08.2024), ceea ce e mai puțin decât vigoarea pe articol, și se declară ca atare.
 
 ### Ce lipsește ca să se termine E1
 
-1. **Decizia pe Legea 82/1991** — blochează ancorarea registrelor la nivelul 1.
-2. **Patru căutări nerezolvate**: D205 în CF · registrul de casă în OMFP 2634/2015 · temeiul D212 ·
-   articolul din Codul de procedură fiscală care impune D406 (fișierul acela n-are titluri „Articolul N"
-   citibile mecanic, deci cere altă metodă de localizare — nu o presupunere).
-3. **Categoria de mărime**, care decide setul de situații financiare, nu există ca dimensiune în
-   aplicație. Fără ea, 1b n-are ce compara pentru familia B.
-4. **Verificarea vigorii** (Partea 0 pasul 2) — nefăcută pentru toate articolele de mai sus.
-5. Apoi **1b** (ce produce aplicația, pe date reale) și **1c** (se poate verifica pe ecran —
-   interdicțiile 63–66).
+1. **1b — ce produce aplicația**, pe date reale, pentru fiecare artefact de mai sus, cu despicarea din
+   P23 (date cerute la timp / necerute / artefact imposibil).
+2. **1c — se poate verifica pe ecran** (interdicțiile 63–66).
+3. **Categoria de mărime**, precondiție pentru familia B: nu există în aplicație.
+4. **Vigoarea pentru cele cinci acte structurate pe puncte** (mai sus), care cere altă unitate de
+   verificare decât articolul.
 
 ---
 
@@ -526,6 +527,8 @@ din date, ce set de situații financiare datorează.
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat; instanța de mai sus nu ține loc de calibrare — a fost adusă de o citire, nu găsită de un instrument)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele. Când se construiește, domeniul lui trebuie să cuprindă **JavaScript-ul**: e chiar punctul orb declarat la interdicția 16, iar singura instanță cunoscută a clasei trăiește acolo)
 - **unde ajunge efectul**: o denumire oficială scrisă ca literal se rupe tăcut de sursă — și nu doar la reformulare, ci și la **completare**: nomenclatorul crește cu un cod, iar ecranul rămâne cu lista veche. Instanța confirmă forma: trei coduri legale nu se pot alege din interfață, deși aplicația le acceptă
+
+  **DECIS 22.08.2026 (Costin), CUM se repară:** procentele **rămân pe ecran**, dar nu scrise de mână — sunt o valoare fiscală cu temei (**OUG 158/2005 art. 17**, modificat de Legea 141/2025; verificat la sursă: ÎN VIGOARE, alin. (1) modificat la 01-08-2025), deci intră sub **interdicția 1** la fel ca orice cotă. **Eticheta se compune la randare:** denumirea din nomenclator, procentul din registru, **pe data certificatului**. Niciuna dintre cele două nu se scrie în JS. Vezi `DECIZII.md` D3 pentru ordinea reparației. Rămâne NEREPARAT în tura asta
 
 ## 29 — O frază fixă de interfață fără cheie și loc unic
 

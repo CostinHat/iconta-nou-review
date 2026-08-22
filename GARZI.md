@@ -3970,3 +3970,19 @@ harta in poarta si ar opri lucrul tocmai cand e mai mult de facut.
 
 **Proxy-ul de la clasa 3 e slab prin natura lui:** prinde COPIEREA (text identic), nu parafrazarea.
 Cifra lui e un plafon inferior — dar prinde exact forma prin care s-a produs clasa.
+
+
+### Addendum, aceeasi zi: `pasul curent` si sectiunea B derivata
+
+Antetul a primit un camp nou, **`pasul curent`**, si el e obligatoriu ca restul. Motivul e mecanic, nu
+estetic: sectiunea „UNDE SUNTEM" a raportului **nu se mai scrie de mana** — se deriva din antet cu
+`scripts/raport_b.py`. Costin: *„daca B s-ar scrie separat, ar deveni al doilea loc unde traieste
+aceeasi stare — si s-ar invechi, exact clasa pe care o inchidem."*
+
+Un camp de care depinde un raport, dar pe care nicio garda nu-l cere, dispare la prima rescriere. De-aia
+a intrat in `ANTET_CAMPURI`, nu doar in fisier.
+
+**Ce NU deriva din antet: cifrele.** Numarul de interdictii masurate/partiale/nemasurabile/neincepute si
+cel mai vechi commit se NUMARA din sectiuni, la fiecare rulare. O stare scrisa de mana despre propriile
+sectiuni ar fi aceeasi clasa de defect, mutata cu un rand mai jos. Prima rulare a si aratat de ce: eu
+spusesem „8 masurate + 1 nemasurabila"; numaratoarea da **6 MASURATE + 2 PARTIAL + 1 NEMASURABILA**.

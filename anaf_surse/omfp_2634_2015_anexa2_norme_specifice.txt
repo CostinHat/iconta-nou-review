@@ -1,0 +1,329 @@
+NORMA (A) 05/11/2015 - Portal Legislativ 
+
+ Portal Legislativ
+
+-->
+
+ Meniu 
+
+ Meniu
+
+ Acasă
+
+ Despre Proiect
+
+ Facilități Oferite 
+
+ Legături Utile
+
+ GDPR 
+
+ Meniu
+
+ Acasă
+
+ Despre Proiect
+
+ Facilități Oferite 
+
+ Legături Utile
+
+ GDPR 
+
+ Prin portalul N-Lex se acorda acces gratuit la legislatiile nationale ale statelor membre, portalul fiind
+ conceput pe baza unei tehnologii de comunicare interne, ce permite accesarea directa a bazelor de date legislative nationale,
+ rezultatele cautarilor venind direct de la sursa.
+
+ Cuprins
+
+ Se încarcă, vă rugăm asteptati. 
+
+ + 
+ Forme act 
+
+ Forma consolidata 
+
+ + istoric consolidări
+
+ 01.08.2024 
+ 24.05.2023 
+
+ Forma de baza 
+
+ + 
+ Fișă act 
+
+ Actiuni suferite 
+
+ Actiuni Induse 
+
+ Refera pe 
+
+ Referit de 
+
+ Cuprinsul Actului
+
+ de utilizare a documentelor financiar-contabile (Anexa nr. 2)NOMENCLATORULdocumentelor financiar-contabile GRUPA I REGISTRUL-JURNAL(Cod 14-1-1)REGISTRUL-INVENTAR(Cod 14-1-2)Cartea MARE (Cod 14-1-3)Cartea MARE (ȘAH - Cod 14-1-3/a) 
+ GRUPA a II-a REGISTRUL NUMERELOR DE INVENTAR(Cod 14-2-1)FISA MIJLOCULUI FIX(Cod 14-2-2)BON DE MIȘCARE A MIJLOACELOR FIXE(Cod 14-2-3A)PROCES-VERBAL DE SCOATERE DIN FUNCȚIUNE A MIJLOACELORFIXE/DE DECLASARE A UNOR BUNURI MATERIALE(Cod 14-2-3/aA)PROCES-VERBAL DE RECEPȚIE(Cod 14-2-5)PROCES-VERBAL DE RECEPȚIE PROVIZORIE(Cod 14-2-5/a)PROCES-VERBAL DE PUNERE ÎN FUNCȚIUNE(Cod 14-2-5/b) 
+ GRUPA a III-a NOTĂ DE RECEPȚIE ȘI CONSTATARE DE DIFERENȚE(Cod 14-3-1A)BON DE PREDARE, TRANSFER, RESTITUIRE(Cod 14-3-3A)BON DE CONSUM(Cod 14-3-4A)BON DE CONSUM(colectiv - Cod 14-3-4/aA)LISTĂ ZILNICĂ DE ALIMENTE(Cod 14-3-4/dA)DISPOZIȚIE DE LIVRARE(Cod 14-3-5A)AVIZ DE ÎNSOȚIRE A MĂRFII(Cod 14-3-6A)FIȘĂ DE MAGAZIE(Cod 14-3-8)FIȘĂ DE EVIDENȚĂ A MATERIALELOR DE NATURA OBIECTELOR DE INVENTARÎN FOLOSINȚĂ(Cod 14-3-9)LISTA DE INVENTARIERE(Cod 14-3-12) și (Cod 14-3-12/b)LISTA DE INVENTARIERE(pentru gestiuni global-valorice - Cod 14-3-12/a) 
+ GRUPA a IV-a CHITANȚA(Cod 14-4-1)CHITANȚA PENTRU OPERAȚIUNI ÎN VALUTA(Cod 14-4-1/a)DISPOZIȚIE DE PLATĂ/ÎNCASARE CĂTRE CASIERIE(Cod 14-4-4)REGISTRUL DE CASĂ(Cod 14-4-7A și Cod 14-4-7bA)REGISTRUL DE CASĂ(în valută - Cod 14-4-7/aA și Cod 14-4-7/cA)BORDEROU DE ACHIZIȚIE(Cod 14-4-13)BORDEROU DE ACHIZIȚIE(de la producători individuali)(Cod 14-4-13/b)*)DECONT PENTRU OPERAȚIUNI ÎN PARTICIPAȚIE(Cod 14-4-14) 
+ GRUPA a V-a STAT DE SALARII(Cod 14-5-1)ORDIN DE DEPLASARE(DELEGAȚIE - Cod 14-5-4)ORDIN DE DEPLASARE (DELEGAȚIE) ÎN STRĂINĂTATE(transporturi internaționale - Cod 14-5-4/a)DECONT DE CHELTUIELI(pentru deplasări externe - Cod 14-5-5)DECONT DE CHELTUIELI VALUTARE(transporturi internaționale - Cod 14-5-5/a) 
+ GRUPA a VI-a NOTĂ DE DEBITARE-CREDITARE(Cod 14-6-1A)NOTĂ DE CONTABILITATE(Cod 14-6-2A)FISĂ DE CONT PENTRU OPERAȚIUNI DIVERSE(Cod 14-6-22)FISĂ DE CONT PENTRU OPERAȚIUNI DIVERSE(în valută și în lei - Cod 14-6-22/a)BALANȚĂ DE VERIFICARE(cu patru egalități - Cod 14-6-30 și Cod 14-6-30/A)BALANȚĂ DE VERIFICARE(cu cinci egalități - Cod 14-6-30/a, Cod 14-6-30/b1, Cod 14-6-30/b2)BALANȚĂ DE VERIFICARE(cu șase egalități - Cod 14-6-30/b)BALANȚĂ ANALITICĂ A STOCURILOR(Cod 14-6-30/c) 
+ GRUPA a VII-a Situația activelor gajate sau ipotecate(Cod 14-8-1)Situația bunurilor sechestrate(Cod 14-8-1/a)DECIZIE DE IMPUTARE(Cod 14-8-2)ANGAJAMENT DE PLATA(Cod 14-8-2/a) 
+
+ Reveniti in topul paginii
+
+ Forma printabilă
+
+ NORME SPECIFICE din 5 noiembrie 2015 de utilizare a documentelor financiar-contabile (Anexa nr. 2) EMITENT MINISTERUL FINANȚELOR PUBLICE
+
+ Publicat în 
+ MONITORUL OFICIAL nr. 910 bis din 9 decembrie 2015 
+
+ Notă ...
+
+ Aprobate prin ORDINUL nr. 2.634 din 5 noiembrie 2015 , publicat în Monitorul Oficial al României, Partea I, nr. 910 din 9 decembrie 2015. 
+ NOMENCLATORUL 
+ documentelor financiar-contabile Nr. crt. Denumire Cod 
+ bază variantă 
+ 0 1 2 3 
+ I. REGISTRELE DE CONTABILITATE 
+ 1. Registrul-jurnal 14-1-1 
+ 2. Registrul-inventar 14-1-2 
+ 3. Cartea mare 14-1-3 
+ 4. - Cartea mare (șah) 14-1-3/a 
+ II. MIJLOACE FIXE 
+ 5. Registrul numerelor de inventar 14-2-1 
+ 6. Fișa mijlocului fix 14-2-2 
+ 7. Bon de mișcare a mijloacelor fixe 14-2-3 A 
+ 8. - Proces-verbal de scoatere din funcțiune a mijloacelor fixe/de declasare a unor bunuri materiale 14-2-3/aA 
+ 9. Proces-verbal de recepție 14-2-5 
+ 10. - Proces-verbal de recepție provizorie 14-2-5/a 
+ 11. - Proces-verbal de punere în funcțiune 14-2-5/b 
+ III. BUNURI DE NATURA STOCURILOR 
+ 12. Notă de recepție și constatare de diferențe 14-3-1A 
+ 13. Bon de predare, transfer, restituire 14-3-3A 
+ 14. Bon de consum 14-3-4A 
+ 15. - Bon de consum (colectiv) 14-3-4/aA 
+ 16. - Listă zilnică de alimente 14-3-4/dA 
+ 17. Dispoziție de livrare 14-3-5A 
+ 18. Aviz de însoțire a mărfii 14-3-6A 
+ 18^1. Aviz de însoțire a mărfii (CASH AND CARRY) 14-3-6aA 
+ 19. Fișă de magazie 14-3-8 
+ 20. Fișă de evidență a materialelor de natura obiectelor de inventar în folosință 14-3-9 
+ 21. Listă de inventariere 14-3-12 
+ 22. - Listă de inventariere 14-3-12/b 
+ 23. - Listă de inventariere (pentru gestiuni global- valorice) 14-3-12/a 
+ IV. MIJLOACE BĂNEȘTI ȘI DECONTĂRI 
+ 24. Chitanță 14-4-1 
+ 25. - Chitanță pentru operațiuni în valută 14-4-1/a 
+ 26. Dispoziție de plată/încasare către casierie 14-4-4 
+ 27. Registru de casă 14-4-7A 
+ 28. - Registru de casă 14-4-7/bA 
+ 29. - Registru de casă (în valută) 14-4-7/aA 
+ 30. - Registru de casă (în valută) 14-4-7/cA 
+ 31. Borderou de achiziție 14-4-13 
+ 32. - Borderou de achiziție (de la producători individuali)*) 14-4-13/b 
+ 33. Decont pentru operațiuni în participație 14-4-14 
+ V. SALARII ȘI ALTE DREPTURI DE PERSONAL 
+ 34. Stat de salarii 14-5-1 
+ 35. Ordin de deplasare (delegație) 14-5-4 
+ 36. - Ordin de deplasare (delegație) în străinătate (transporturi internaționale) 14-5-4/a 
+ 37. Decont de cheltuieli (pentru deplasări externe) 14-5-5 
+ 38. Decont de cheltuieli valutare (transporturi internaționale) 14-5-5/a 
+ VI. CONTABILITATE GENERALĂ 
+ 39. Notă de debitare-creditare 14-6-1A 
+ 40. Notă de contabilitate 14-6-2A 
+ 41. Fișă de cont pentru operațiuni diverse 14-6-22 
+ 42. - Fișă de cont pentru operațiuni diverse (în valută și în lei) 14-6-22/a 
+ 43. Balanță de verificare (cu patru egalități) 14-6-30 
+ 44. - Balanță de verificare (cu patru egalități) 14-6-30/A 
+ 45. - Balanță de verificare (cu cinci egalități) 14-6-30/a 
+ 46. - Balanță de verificare (cu cinci egalități) 14-6-30/b1 
+ 47. - Balanță de verificare (cu cinci egalități) 14-6-30/b2 
+ 48. - Balanță de verificare (cu șase egalități) 14-6-30/b 
+ 49. - Balanță analitică a stocurilor 14-6-30/c 
+ VII. ALTE SUBACTIVITĂȚI 
+ 50. Situația activelor gajate sau ipotecate 14-8-1 
+ 51. - Situația bunurilor sechestrate 14-8-1/a 
+ 52. Decizie de imputare 14-8-2 
+ 53. - Angajament de plată 14-8-2/a 
+
+ (la 01-08-2024, 
+ Grupa a III-a din secțiunea Nomenclatorul documentelor financiar-contabile din Anexa nr. 2 a fost completată de Punctul 1. , Articolul I din ORDINUL nr. 4.058 din 24 iulie 2024, publicat în MONITORUL OFICIAL nr. 754 din 1 august 2024 
+ )
+
+ Notă ...
+
+ Conform art. 20 lit. a) din Legea nr. 145/2014 pentru stabilirea unor măsuri de reglementare a pieței produselor din sectorul agricol, după data de 2 mai 2015 ( 180 de zile de data intrării în vigoare a Legii nr. 145/2014 ) se interzice utilizarea borderoului de achiziție (de la producători individuali) (cod 14-4-13/b) pentru achizițiile de la producătorii agricoli, persoane fizice, definiți potrivit prevederilor respectivei legi. 
+ + 
+ GRUPA I REGISTRELE DE CONTABILITATE 
+ REGISTRUL-JURNAL 
+ (Cod 14-1-1) Registrul-jurnal este documentul contabil obligatoriu în care se înregistrează cronologic toate operațiunile economico-financiare efectuate de entitate. Registrul-jurnal se întocmește lunar prin înregistrarea cronologică a documentelor financiar-contabile în care se reflectă mișcarea elementelor de natura activelor, datoriilor și capitalurilor proprii ale entității. În cazul în care o entitate are subunități dispersate teritorial care conduc contabilitatea până la balanță de verificare, Registrul-jurnal se întocmește de către subunități. Numerotarea paginilor registrului se face în ordine crescătoare, iar volumele se numerotează în ordinea completării lor. În condițiile conducerii contabilității cu ajutorul sistemelor informatice de prelucrare automată a datelor, fiecare operațiune economico-financiară se înregistrează prin articole contabile, în mod cronologic, după data de întocmire sau de intrare a documentelor în entitate. În cazul în care entitatea folosește jurnale auxiliare, în Registrul-jurnal se poate trece totalul lunar al fiecăruia. În coloana 1 se înscrie numărul curent al operațiunilor înregistrate începând de la 1 ianuarie, sau de la începutul activității, până la sfârșitul exercițiului financiar, sau încetarea activității. În coloana 2 se trece data (anul, luna, ziua) când se efectuează înregistrarea în registru. În coloana 3 se trece felul, numărul și data documentului justificativ care stă la baza operațiunilor economice (factura, chitanța etc.) sau ale jurnalului auxiliar (jurnalul privind operațiunile de casă și bancă, jurnalul decontărilor cu furnizorii etc.). În coloana 4 se înscriu explicațiile în legătură cu operațiunea respectivă. Această coloană se completează numai atunci când este cazul. În coloanele 5 și 6 se trece simbolul conturilor debitoare și, respectiv, creditoare. În coloanele 7 și 8 se trec sumele totale, debitoare și creditoare din documentul justificativ. Sumele debitoare și sumele creditoare se totalizează lunar. Registrul-jurnal se editează la cererea organelor de control și pentru necesitățile entității. 
+ REGISTRUL-INVENTAR 
+ (Cod 14-1-2) Registrul-inventar servește ca document contabil obligatoriu de înregistrare a rezultatelor inventarierii elementelor de natura activelor, datoriilor și capitalurilor proprii. Registrul-inventar se întocmește la începutul activității, la sfârșitul exercițiului financiar sau cu ocazia încetării activității, fără ștersături și fără spații libere, pe baza datelor cuprinse în listele de inventariere și, respectiv, în procesele-verbale de inventariere a elementelor de natura activelor, datoriilor și capitalurilor proprii, prin gruparea acestora pe conturi sau grupe de conturi, după caz. Registrul-inventar se completează pe baza inventarierii faptice a elementelor de natura activelor, datoriilor și capitalurilor proprii grupate după natura lor, conform posturilor din bilanț. În cazul în care inventarierea are loc pe parcursul anului, datele rezultate din operațiunea de inventariere se actualizează cu intrările și ieșirile din perioada cuprinsă între data inventarierii și data încheierii exercițiului financiar, datele actualizate fiind apoi cuprinse în Registrul-inventar. Operațiunea de actualizare a datelor rezultate din inventariere se va efectua astfel încât la sfârșitul exercițiului financiar să fie reflectată situația reală a elementelor de natura activelor, datoriilor și capitalurilor proprii. Creanțele și obligațiile față de terți sunt supuse inventarierii pe baza confirmării extraselor soldurilor conturilor analitice debitoare și creditoare, sau a punctajelor reciproce, în funcție de necesități. În cazul încetării activității, Registrul-inventar se completează cu valoarea elementelor de natura activelor, datoriilor și capitalurilor proprii inventariate faptic la acea dată. În cazul în care o entitate are subunități dispersate teritorial care conduc contabilitatea până la nivel de balanță de verificare, Registrul-inventar se întocmește de către subunități. În coloana 1 se înscrie numărul curent al operațiunilor înregistrate în ordine cronologică, de la deschiderea registrului până la sfârșitul exercițiului financiar, sau încetarea activității. În coloana 2 vor fi recapitulate elementele inventariate, detaliat pe fiecare cont de activ și de pasiv, conturile de valori materiale putând fi defalcate pe gestiuni. În coloana 3 se înscrie valoarea contabilă a elementelor inventariate. Valoarea contabilă a unui activ este valoarea la care acesta este recunoscut după ce se deduc amortizarea acumulată, pentru activele amortizabile și ajustările acumulate din depreciere sau pierdere de valoare. În coloana 4 se înscrie valoarea de inventar a elementelor de natura activelor, datoriilor și capitalurilor proprii, stabilită cu ocazia evaluării la inventariere (pe baza listelor de inventariere și a proceselor-verbale de inventariere). În coloana 5 se trec diferențele din evaluare, calculate ca diferență între valoarea contabilă și valoarea de inventar. În coloana 6 se menționează cauzele diferențelor (deprecieri, dezmembrări, dezasortări, calamități, terți neidentificați etc.). 
+ Cartea MARE (Cod 14-1-3) Cartea mare este documentul contabil care stă la baza: - stabilirii rulajelor lunare și a soldurilor pe conturi sintetice, la entitățile care aplică forma de înregistrare "pe jurnale"; - verificării înregistrărilor contabile efectuate; - întocmirii balanței de verificare. Se întocmește lunar, pe măsura înregistrării operațiunilor, pentru debitul și, respectiv, pentru creditul fiecărui cont sintetic. Se completează pe baza documentelor justificative, documentelor centralizatoare și jurnalelor, după caz, astfel: - rulajul creditor se reportează din jurnalul contului respectiv, într-o singură sumă, fără desfășurarea pe conturi corespondente; - sumele cu care a fost debitat contul respectiv în diverse jurnale se reportează din acele jurnale, obținându-se defalcarea rulajului debitor pe conturi corespondente; - soldul debitor sau creditor al fiecărui cont se stabilește în funcție de rulajele debitoare și creditoare ale contului respectiv, ținându-se seama de soldul de la începutul exercițiului financiar (care se înscrie pe rândul destinat în acest scop). Registrul Cartea mare poate fi înlocuit cu Fișa de cont pentru operațiuni diverse. 
+ Cartea MARE (ȘAH - Cod 14-1-3/a) Cartea mare (șah) este documentul contabil care se utilizează pentru: ținerea contabilității sintetice a operațiunilor economico-financiare la entitățile care utilizează forma de înregistrare contabilă "maestru-șah". Cartea mare (șah) servește la întocmirea balanței de verificare a conturilor sintetice. Aceasta se întocmește lunar, separat pentru debitul și separat pentru creditul fiecărui cont sintetic, pe măsura înregistrării operațiunilor. Cartea mare (șah) se completează pe baza documentelor justificative, documentelor centralizatoare și a notelor de contabilitate. La începutul exercițiului financiar, la deschiderea fișelor, pe primul rând al coloanei "Suma" se înregistrează soldul inițial, pe baza balanței conturilor sintetice încheiată la finele exercițiului financiar precedent. Soldul înscris în fișă se barează și apoi se efectuează înregistrarea operațiunilor lunii ianuarie/prima lună a exercițiului financiar. Registrul Cartea mare (șah) poate fi înlocuit cu Fișa de cont pentru operațiuni diverse. 
+ + 
+ GRUPA a II-a MIJLOACE FIXE 
+ REGISTRUL NUMERELOR DE INVENTAR 
+ (Cod 14-2-1) Registrul numerelor de inventar este utilizat pentru atribuirea numerelor de inventar mijloacelor fixe (imobilizărilor corporale) existente în entitate, în vederea identificării lor. În Registrul numerelor de inventar se înregistrează cronologic mijloacele fixe intrate în entitate. Se poate folosi câte un registru pentru fiecare grupă de mijloace fixe, sau un registru pentru mai multe grupe, în funcție de numărul mijloacelor fixe existente și al celor care urmează a intra în entitate. Grupele de mijloace fixe corespund categoriilor contabile de imobilizări corporale sau grupelor din Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor fixe, aprobat prin Hotărârea Guvernului nr. 2.139/2004 , cu modificările și completările ulterioare. În scopul asigurării controlului asupra existenței mijloacelor fixe, se atribuie fiecărui mijloc fix, care constituie obiect de evidență, un număr de inventar în momentul intrării în entitate (cu excepția celor luate cu chirie), care se consemnează în Registrul numerelor de inventar. Numerotarea mijloacelor fixe în cadrul registrului se face, de regulă, în ordinea succesivă a numerelor și/sau pe grupe de mijloace fixe. Numărul de inventar atribuit unui mijloc fix urmează să fie trecut în toate documentele care privesc mijlocul fix respectiv. Modul de numerotare a mijloacelor fixe precum și modul de imprimare a numărului de inventar atribuit se stabilesc prin proceduri proprii ale entității. 
+ FISA MIJLOCULUI FIX 
+ (Cod 14-2-2) Fișa mijlocului fix servește ca document pentru evidența analitică a mijloacelor fixe. Fișa mijlocului fix se întocmește pentru fiecare mijloc fix. În cazul mijloacelor fixe de aceeași natură și de aceeași valoare, care au aceleași cote de amortizare și sunt puse în funcțiune în aceeași lună, poate fi întocmită o singură fișă a mijloacelor fixe. Se păstrează pe grupe de mijloace fixe, în ordinea codurilor din clasificarea imobilizărilor corporale conform legislației în vigoare, iar în cadrul acestora, fișele mijloacelor fixe se grupează pe locuri de folosință. Fișele mijloacelor fixe scoase din funcțiune sau transferate se arhivează. Fișa mijlocului fix se completează pe baza documentelor justificative privind mișcarea mijloacelor fixe sau modificarea valorii de intrare a acestora, ca urmare a completării, îmbunătățirii, modernizării sau reevaluării lor. 
+ BON DE MIȘCARE A MIJLOACELOR FIXE 
+ (Cod 14-2-3A) Bonul de mișcare a mijloacelor fixe servește ca: - document justificativ de predare-primire a mijloacelor fixe între două locuri de folosință ale entității; - document de însoțire a mijloacelor fixe pe timpul transportului de la secția sau subunitatea predătoare la cea primitoare; - document justificativ de înregistrare în evidența responsabilului cu mijloacele fixe la locurile de folosință și în contabilitate. 
+ PROCES-VERBAL DE SCOATERE DIN FUNCȚIUNE A MIJLOACELOR 
+ FIXE/DE DECLASARE A UNOR BUNURI MATERIALE 
+ (Cod 14-2-3/aA) Servește ca: - document de constatare a îndeplinirii condițiilor necesare scoaterii din funcțiune a mijloacelor fixe, de scoatere din uz a materialelor de natura obiectelor de inventar în folosință și de declasare a unor bunuri materiale, altele decât mijloacele fixe, potrivit dispozițiilor legale; - document de consemnare a scoaterii efective din funcțiune a mijloacelor fixe, de scoatere din uz a materialelor de natura obiectelor de inventar în folosință sau de declasare a altor bunuri materiale; - document de predare la magazie a ansamblelor, subansamblelor, pieselor componente și materialelor rezultate din scoaterea efectivă din funcțiune a mijloacelor fixe; - document justificativ de înregistrare în evidența magaziilor (depozitelor) și în contabilitate. Formularul se completează de către comisia constituită în acest scop, după caz, astfel: - capitolele I și II, cu constatările și concluziile rezultate din analiza documentației primite și din verificarea stării mijloacelor fixe propuse a fi scoase din funcțiune, scoaterii din uz a materialelor de natura obiectelor de inventar sau a altor bunuri materiale propuse pentru declasare; - capitolul III, după aprobarea propunerilor și efectuarea scoaterii din funcțiune, din uz sau declasării, cu informații referitoare la ansamblele, subansamblele, piesele, componentele și materialele rezultate. În cazul scoaterii din funcțiune a mijloacelor fixe, numărul de inventar se va trece la capitolul II în coloana "Denumirea". În situația în care capitolul III se completează în alte exerciții financiare, este necesar să se întrunească o nouă comisie care să întocmească un nou proces-verbal de scoatere din funcțiune a mijloacelor fixe/de declasare a unor bunuri materiale, care să confirme datele completate în acest capitol. 
+ PROCES-VERBAL DE RECEPȚIE 
+ (Cod 14-2-5) 
+ PROCES-VERBAL DE RECEPȚIE PROVIZORIE 
+ (Cod 14-2-5/a) 
+ PROCES-VERBAL DE PUNERE ÎN FUNCȚIUNE 
+ (Cod 14-2-5/b) Servește ca: - document de înregistrare în evidența operativă și în contabilitate; - document de consemnare a stadiului în care se află obiectivul de investiții; - document de aprobare a recepției (cod 14-2-5); - document de constatare a îndeplinirii condițiilor de recepție provizorie a obiectivului de investiții (cod 14-2-5/a); - document de aprobare a recepției provizorii a obiectivului de investiții (cod 14-25/a); - document de punere în funcțiune a obiectivului de investiții (cod 14-2-5/b). Se întocmește la data punerii în funcțiune a mijlocului fix, astfel: - Procesul-verbal de recepție (cod 14-2-5) se întocmește pentru mijloacele fixe independente care nu necesită montaj și nici probe tehnologice, acestea considerându-se puse în funcțiune la data achiziționării lor; - Procesul-verbal de recepție provizorie (cod 14-2-5/a) se întocmește pentru utilajele care necesită montaj, dar care nu necesită probe tehnologice, produse cu ciclu lung de fabricație care depășesc un exercițiu financiar/bugetar, realizate pe faze de fabricație, precum clădirile și construcțiile speciale care nu deservesc procese tehnologice, acestea considerându-se puse în funcțiune la data terminării montajului, respectiv la data terminării construcției; - Procesul-verbal de punere în funcțiune (cod 14-2-5/b) se întocmește pentru utilajele și instalațiile care necesită montaj și probe tehnologice, precum și clădirile și construcțiile speciale care deservesc procese tehnologice, acestea considerându-se puse în funcțiune la terminarea probelor tehnologice. 
+ + 
+ GRUPA a III-a BUNURI DE NATURA STOCURILOR 
+ NOTĂ DE RECEPȚIE ȘI CONSTATARE DE DIFERENȚE 
+ (Cod 14-3-1A) Nota de recepție și constatare de diferențe (NIR) servește ca: - document pentru recepția bunurilor aprovizionate; - document justificativ pentru încărcare în gestiune; - document justificativ de înregistrare în contabilitate. Nota de recepție și constatare de diferențe se folosește ca document de recepție obligatoriu numai în cazul: - bunurilor materiale cuprinse într-o factură sau aviz de însoțire a mărfii, care fac parte din gestiuni diferite; - bunurilor materiale primite spre prelucrare, în custodie sau în păstrare; - bunurilor materiale procurate de la persoane fizice; - bunurilor materiale care sosesc neînsoțite de documente de livrare; - bunurilor materiale care prezintă diferențe la recepție; - mărfurilor intrate în gestiunile la care evidența se ține la preț de vânzare. În cazurile în care nu este obligatorie întocmirea NIR-ului, recepția și încărcarea în gestiune, după caz, și înregistrarea în contabilitate se fac pe baza documentului de livrare care însoțește transportul (factura, avizul de însoțire a mărfii etc.). În cazul în care bunurile materiale sosesc în tranșe, se întocmește câte un formular pentru fiecare tranșă, care se anexează apoi la factură sau la avizul de însoțire a mărfii. În condițiile în care nu se înscriu datele valorice în Nota de recepție și constatare de diferențe, este obligatoriu ca acestea să se regăsească într-un alt document justificativ care stă la baza înregistrării în contabilitate a valorii bunurilor. În situația în care se constată diferențe la recepție, entitățile trebuie să stabilească prin proceduri proprii informațiile care trebuie să fie înscrise în Nota de recepție și constatare de diferențe (ex: cantitatea și valoare constatate plus/minus, persoanele care au făcut recepția și alte mențiuni, în funcție de necesități). 
+ BON DE PREDARE, TRANSFER, RESTITUIRE 
+ (Cod 14-3-3A) Bonul de predare, transfer, restituire (pentru produse finite, materiale refolosibile, semifabricate, materiale nefolosite) servește ca: - document justificativ pentru încărcare/descărcare în/din gestiune; - document justificativ de înregistrare în contabilitate. În situația în care se folosește ca bon de predare la magazie a produselor finite, materialelor refolosibile, semifabricatelor, materialelor nefolosite se întocmește pe măsura predării acestora la magazie, de către secție, atelier etc. În cazul utilizării ca bon de transfer între două gestiuni aflate în incinta entității, bonul de predare, transfer, restituire se întocmește pe măsură ce se efectuează transferul. Transferul se efectuează numai între gestiuni din incinta aceleiași entități. În cazul gestiunilor dispersate teritorial se întocmește Aviz de însoțire a mărfii (cod 14-3-6A). În cazul utilizării ca bon de restituire se întocmește pe măsura restituirii la magazie a valorilor materiale. 
+ BON DE CONSUM 
+ (Cod 14-3-4A) 
+ BON DE CONSUM 
+ (colectiv - Cod 14-3-4/aA) Bonul de consum servește ca: - document de eliberare din magazie a materialelor; - document justificativ de scădere din gestiune; - document justificativ de înregistrare în contabilitate. Se întocmește pe măsura eliberării materialelor din magazie pentru consum. 
+ LISTĂ ZILNICĂ DE ALIMENTE 
+ (Cod 14-3-4/dA) Listă zilnică de alimente servește: - la stabilirea meniurilor zilnice; - la calculul alocației de hrană și urmărirea încadrării în nivelul acesteia; - ca document pentru eliberarea din magazie a alimentelor necesare pregătirii hranei; - ca document justificativ de înregistrare în contabilitate. Se întocmește de către cantinele de pe lângă instituțiile publice (învățământ, sănătate, asistență socială etc.), organizații fără scop patrimonial finanțate din alocații bugetare etc. Documentul se completează de către persoana desemnată de ordonatorul de credite sau conducătorul entității, pe baza centralizatorului întocmit pe meniuri. 
+ DISPOZIȚIE DE LIVRARE 
+ (Cod 14-3-5A) Dispoziția de livrare servește ca: - document pentru eliberarea din magazie a produselor, mărfurilor sau a altor valori materiale destinate vânzării, a bunurilor cedate cu titlu gratuit sau acordate pentru stimularea vânzării, după caz; - document justificativ de scădere din gestiunea magaziei predătoare; - document de bază pentru întocmirea avizului de însoțire a mărfii sau a facturii, după caz; - document justificativ de înregistrare în contabilitate. 
+ AVIZ DE ÎNSOȚIRE A MĂRFII 
+ (Cod 14-3-6A) Avizul de însoțire a mărfii servește ca: - document de însoțire a mărfii pe timpul transportului, după caz; - document ce stă la baza întocmirii facturii, după caz; - dispoziție de transfer al valorilor materiale de la o gestiune la alta, dispersate teritorial, ale aceleiași entități; - document de primire în gestiune, după caz; - document de descărcare din gestiune a bunurilor cedate cu titlu gratuit. Avizul de însoțire a mărfii se întocmește de către entitățile care nu au posibilitatea întocmirii facturii în momentul livrării produselor, mărfurilor sau altor valori materiale, precum și în alte situații stabilite prin procedurile proprii ale entității. În condițiile în care datele valorice (prețul unitar și valoarea) nu se înscriu în Avizul de însoțire a mărfii, aceste date trebuie să se regăsească într-un alt document justificativ care stă la baza înregistrării în contabilitate a valorii bunurilor. În cazul transferului de bunuri între gestiunile aceleiași entități, dispersate teritorial, precum și al transportului bunurilor cedate cu titlu gratuit (mostre, bunuri date pentru stimularea vânzării sau testări la locul de desfacere, premii, materiale promoționale etc.), Avizul de însoțire a mărfii va purta mențiunea "Fără factură", după caz. Pe Avizul de însoțire a mărfii emis pentru valori materiale trimise pentru prelucrare la terți se face mențiunea "Pentru prelucrare la terți". În alte situații decât cele prevăzute mai sus se face mențiunea cauzei pentru care s-a întocmit Avizul de însoțire a mărfii și nu factura. 
+ + 
+
+ AVIZ DE ÎNSOȚIRE A MĂRFII 
+ (Cod CASH AND CARRY 14-3-6aA) Avizul de însoțire a mărfii (Cod CASH AND CARRY 14-3-6aA) se întocmește de către entitățile care desfășoară activitate de comerț cash and carry, în momentul livrării din magazinele cash and carry a produselor, mărfurilor sau a altor valori materiale, precum și în alte situații stabilite prin procedurile proprii ale entității. Avizul de însoțire a mărfii (Cod CASH AND CARRY 14-3-6aA) servește ca: – document de însoțire a mărfii pe timpul transportului, după caz; ... – document ce stă la baza întocmirii facturii, după caz; ... – document de primire/descărcare din gestiune, după caz; ... – document de înregistrare în registrul de casă și în contabilitate a încasărilor și plăților efectuate în numerar, situație în care ține loc de chitanță. ... Avizul de însoțire a mărfii (Cod CASH AND CARRY 14-3-6aA) se întocmește de către entitățile care desfășoară activitate de comerț cash and carry, în momentul livrării produselor, mărfurilor sau a altor valori materiale, precum și în alte situații stabilite prin procedurile proprii ale entității, cel târziu până la data transmiterii facturii în sistemul național privind factura electronică RO eFactura. 
+ (la 01-08-2024, 
+ Grupa III din Anexa nr. 2 a fost completată de Punctul 2. , Articolul I din ORDINUL nr. 4.058 din 24 iulie 2024, publicat în MONITORUL OFICIAL nr. 754 din 1 august 2024 
+ )
+
+ FIȘĂ DE MAGAZIE 
+ (Cod 14-3-8) Fișa de magazie servește ca document de evidență a intrărilor, ieșirilor și stocurilor de bunuri materiale. Fișele de magazie se țin pe fiecare loc de depozitare a valorilor materiale, pe feluri de materiale, ordonate pe conturi, grupe, eventual subgrupe, sau în ordine alfabetică. Pentru valori materiale primite spre prelucrare de la terți sau în custodie se întocmesc fișe distincte, care se țin separat de cele aferente propriilor valori materiale. Înregistrările în fișele de magazie se fac document cu document. 
+ FIȘĂ DE EVIDENȚĂ A MATERIALELOR DE NATURA OBIECTELOR DE INVENTAR 
+ ÎN FOLOSINȚĂ 
+ (Cod 14-3-9) Servește ca document de evidență a materialelor de natura obiectelor de inventar, date în folosința personalului, până la scoaterea lor din uz. Se întocmește pe măsura dării în folosință a bunurilor, pentru fiecare persoană care le primește. 
+ LISTA DE INVENTARIERE 
+ (Cod 14-3-12) și (Cod 14-3-12/b) 
+ LISTA DE INVENTARIERE 
+ (pentru gestiuni global-valorice - Cod 14-3-12/a) Lista de inventariere servește ca: - document pentru inventarierea bunurilor aflate în gestiunile entității; - document pentru stabilirea lipsurilor și plusurilor de bunuri (imobilizări, stocuri materiale) și a altor valori (elemente de trezorerie etc.); - document justificativ de înregistrare în evidența magaziilor (depozitelor) și în contabilitate a plusurilor și minusurilor constatate; - document pentru întocmirea Registrului-inventar; - document pentru determinarea ajustărilor pentru depreciere/pierdere de valoare; - document centralizator al operațiunilor de inventariere. Se întocmește la locurile de depozitare, anual sau în situațiile prevăzute de dispozițiile legale, de către comisia de inventariere, pe gestiuni, conturi de valori materiale, eventual grupe sau subgrupe, separat pentru bunurile entității și separat pentru cele aparținând altor entități, aflate asupra personalului entității la data inventarierii, primite pentru prelucrare etc. și se semnează de către membrii comisiei de inventariere și de către gestionar. În cazul bunurilor primite în custodie și/sau consignație, pentru prelucrare etc., o copie a Listei de inventariere se înaintează entității care deține bunurile respective. Listele de inventariere întocmite pentru bunurile aparținând altor entități trebuie să conțină, pe lângă elementele comune (felul materialului sau produsului finit, cantitatea, valoarea etc.), numărul și data actului de predare-primire. 
+ + 
+ GRUPA a IV-a MIJLOACE BĂNEȘTI ȘI DECONTĂRI 
+ CHITANȚA 
+ (Cod 14-4-1) 
+ CHITANȚA PENTRU OPERAȚIUNI ÎN VALUTA 
+ (Cod 14-4-1/a) Chitanța și chitanța pentru operațiuni în valută sunt documente justificative de înregistrare în registrul de casă/registrul de casă în valută și în contabilitate a încasărilor și plăților efectuate în numerar (lei/valută), precum și a depunerilor de sume la casieria entității. În condițiile în care sumele înscrise în chitanță sunt aferente livrărilor de bunuri sau prestărilor de servicii scutite fără drept de deducere conform prevederilor din Codul fiscal, formularul de chitanță este documentul justificativ care stă la baza înregistrării veniturilor în contabilitate. În condițiile utilizării aparatelor de marcat electronice fiscale, în conformitate cu prevederile legale, documentul în baza căruia se înregistrează în contabilitate veniturile aferente încasărilor zilnice este Raportul fiscal de închidere zilnică, respectiv Registrul special întocmit în condițiile defectării aparatelor de marcat electronice fiscale. Se întocmește pentru fiecare sumă încasată, de către casierul entității și se semnează de acesta pentru primirea sumei. semnează de acesta pentru primirea sumei. 
+ DISPOZIȚIE DE PLATĂ/ÎNCASARE CĂTRE CASIERIE 
+ (Cod 14-4-4) Dispoziția de plată/încasare către casierie servește ca: - dispoziție pentru casierie, în vederea achitării în numerar a unor sume, potrivit dispozițiilor legale, inclusiv a avansurilor aprobate pentru cheltuieli de deplasare, precum și a diferenței de încasat de către titularul de avans în cazul justificării unor sume mai mari decât avansul primit, pentru procurare de materiale etc.; - dispoziție pentru casierie, în vederea încasării în numerar a unor sume care nu reprezintă venituri din activitatea de exploatare, potrivit dispozițiilor legale; - document justificativ de înregistrare în Registrul de casă și în contabilitate, în cazul plăților în numerar efectuate fără alt document justificativ. Dispoziția de plată/încasare către casierie se întocmește: - în cazul utilizării ca dispoziție de plată, când nu există alte documente prin care se dispune plata (ex.: stat de salarii sau lista de avans chenzinal etc.); - în cazul utilizării ca dispoziție de plată a avansurilor pentru cheltuielile de deplasare, procurare de materiale etc.; - în cazul utilizării ca dispoziție de încasare, când nu există alte documente prin care se dispune încasarea (avize de plată, somații de plată etc.). 
+ REGISTRUL DE CASĂ 
+ (Cod 14-4-7A și Cod 14-4-7bA) 
+ REGISTRUL DE CASĂ 
+ (în valută - Cod 14-4-7/aA și Cod 14-4-7/cA) Registrul de casă servește ca: - document de înregistrare operativă a încasărilor și plăților în numerar (lei sau valută), efectuate prin casieria entității; - document de stabilire, la sfârșitul fiecărei zile, a soldului de casă; - document de înregistrare în contabilitate a operațiunilor de casă. Registrul de casă se întocmește zilnic, pe baza documentelor justificative de încasări și plăți. 
+ BORDEROU DE ACHIZIȚIE 
+ (Cod 14-4-13) 
+ BORDEROU DE ACHIZIȚIE 
+ (de la producători individuali) 
+ (Cod 14-4-13/b)*) *) Conform art. 20 lit. a) din Legea nr. 145/2014 pentru stabilirea unor măsuri de reglementare a pieței produselor din sectorul agricol, după data de 2 mai 2015 (180 de zile de data intrării în vigoare a Legii nr. 145/2014 ) se interzice utilizarea borderoului de achiziție (de la producători individuali) (cod 14-4-13/b) pentru achizițiile de la producătorii agricoli, persoane fizice, definiți potrivit prevederilor respectivei legi. Borderoul de achiziție servește ca: - document de înregistrare în gestiune a bunurilor cumpărate de la persoane fizice; - document justificativ de înregistrare în contabilitate a valorii bunurilor cumpărate; - document pentru justificarea sumelor primite ca avans spre decontare pentru achiziții sau pentru decontarea sumelor plătite pentru achiziții de la persoane fizice. Borderoul de achiziție se întocmește de către persoana care efectuează aprovizionarea cu bunuri de la persoane fizice, în momentul achiziției. 
+ DECONT PENTRU OPERAȚIUNI ÎN PARTICIPAȚIE 
+ (Cod 14-4-14) Decontul pentru operațiuni în participație se utilizează în toate domeniile de activitate în care se efectuează operațiuni în participație. Acesta servește ca document pe baza căruia se decontează cheltuielile și veniturile realizate din operațiuni în participație, precum și sumele virate între asociați. Se întocmește de către entitatea care ține contabilitatea asocierii în participație, lunar, pe fiecare asociat, cu veniturile și cheltuielile ce revin acestuia, pentru înregistrarea în contabilitatea proprie, potrivit cotelor prevăzute în contractele de asociere încheiate. Cheltuielile și veniturile vor fi grupate pe conturi din clasele de conturi de cheltuieli și venituri, potrivit planului de conturi aplicabil. În decont se înscriu și alte transferuri, reprezentând valoarea mijloacelor bănești, a profitului realizat, amortizarea mijloacelor fixe și alte sume rezultate din operațiunile în participație. 
+ + 
+ GRUPA a V-a SALARII SI ALTE DREPTURI DE PERSONAL 
+ STAT DE SALARII 
+ (Cod 14-5-1) Statul de salarii servește ca: - document pentru calculul drepturilor bănești cuvenite salariaților, precum și al contribuțiilor și al altor sume datorate; - document justificativ de înregistrare în contabilitate. Statul de salarii se întocmește lunar, pe baza documentelor de evidență a timpului lucrat efectiv, a evidenței și a documentelor privind reținerile legale, a listelor de avans chenzinal, concediilor de odihnă, a certificatelor medicale etc.. Statul de salarii se semnează, pentru confirmarea exactității calculelor, de către persoana care determină salariul cuvenit și întocmește statul de salarii. Plățile făcute în cursul lunii, cum sunt: avansul chenzinal, lichidările, indemnizațiile de concediu etc. se includ în statele de salarii, pentru a cuprinde astfel întreaga sumă a salariilor calculate și toate reținerile legale din perioada de decontare respectivă. 
+ ORDIN DE DEPLASARE 
+ (DELEGAȚIE - Cod 14-5-4) Ordinul de deplasare (delegație) servește ca: - dispoziție către persoana delegată să efectueze deplasarea pe teritoriul țării; - document pentru decontarea cheltuielilor efectuate; - document pentru stabilirea diferențelor de primit sau de restituit de titularul de avans; - document justificativ de înregistrare în contabilitate. Ordinul de deplasare (delegație) se întocmește pentru fiecare deplasare, de către persoana care urmează a efectua deplasarea, precum și pentru justificarea avansurilor acordate în vederea procurării de valori materiale cu plata în numerar. În cazul în care la decontarea avansului suma cheltuielilor efectuate este mai mare decât avansul primit, pentru diferența de primit de către titularul de avans se întocmește Dispoziție de plată către casierie (cod 14-4-4). În cazul în care, la decontare, sumele privind cheltuielile efective sunt mai mici decât avansul primit, diferența de restituit de către titularul de avans se depune la casierie pe bază de Dispoziție de încasare către casierie (cod 14-4-4). 
+ ORDIN DE DEPLASARE (DELEGAȚIE) ÎN STRĂINĂTATE 
+ (transporturi internaționale - Cod 14-5-4/a) Ordinul de deplasare (delegație) în străinătate (transporturi internaționale) servește ca: - dispoziție către conducătorii auto să efectueze transporturi în străinătate cu autovehiculele entității; - document de stabilire a avansului în valută, pentru deplasările conducătorilor auto care urmează să efectueze transporturi în străinătate, pe baza căruia aceștia ridică avansul de la casierie; - document pentru justificarea valutei ridicate de la casierie, precum și a valutei de restituit la înapoiere în țară; - document justificativ de înregistrare în Registrul de casă (în valută) și în contabilitate. 
+ DECONT DE CHELTUIELI 
+ (pentru deplasări externe - Cod 14-5-5) 
+ DECONT DE CHELTUIELI VALUTARE 
+ (transporturi internaționale - Cod 14-5-5/a) Decontul de cheltuieli (pentru deplasări externe) și decontul de cheltuieli valutare (transporturi internaționale) servesc ca: - documente pentru decontarea cheltuielilor efectuate (în valută și în lei), cu ocazia deplasării în străinătate; - documente pentru stabilirea diferențelor de primit de la titularul de avans sau de achitat acestuia; - documente justificative de înregistrare în Registrul de casă (în valută) și în contabilitate. Aceste deconturi se întocmesc de către persoana care urmează a efectua deplasarea în vederea justificării cheltuielilor efectuate pe întreaga durată a deplasării. În cazul în care, la decontare, sumele privind cheltuielile efective sunt mai mici decât avansul primit, diferența de restituit de către titularul de avans se depune la casierie pe bază de Chitanță pentru operațiuni în valută (cod 14-4-1/a) sau Dispoziție de încasare către casierie (cod 14-4-4), după caz. 
+ + 
+ GRUPA a VI-a CONTABILITATE GENERALĂ 
+ NOTĂ DE DEBITARE-CREDITARE 
+ (Cod 14-6-1A) Nota de debitare-creditare servește ca: - document de înregistrare a operațiunilor de decontare intervenite între entitate și subunități care țin contabilitate proprie și între subunități ale aceleiași entități, care țin contabilitate proprie; - document justificativ de înregistrare în contabilitate. Se întocmește pe baza documentelor justificative care stau la baza operațiunii. 
+ NOTĂ DE CONTABILITATE 
+ (Cod 14-6-2A) Nota de contabilitate servește ca document justificativ de înregistrare în contabilitatea sintetică și analitică, de regulă pentru operațiunile care nu au la bază documente justificative (stornări, repartizare profit, constituire provizioane și ajustări pentru depreciere sau pierdere de valoare etc.). 
+ FISĂ DE CONT PENTRU OPERAȚIUNI DIVERSE 
+ (Cod 14-6-22) 
+ FISĂ DE CONT PENTRU OPERAȚIUNI DIVERSE 
+ (în valută și în lei - Cod 14-6-22/a) Fișa de cont pentru operațiuni diverse servește: - la ținerea contabilității analitice a conturilor de clienți, debitori, furnizori, creditori etc.; - la ținerea contabilității sintetice a operațiunilor economico-financiare. În cazul în care se utilizează pentru ținerea contabilității sintetice a operațiunilor economico-financiare, fișele de cont se deschid pentru fiecare cont sintetic de gradul I care nu se desfășoară pe conturi sintetice de gradul II, precum și pentru conturile de gradul II prevăzute în planul de conturi aplicabil. Se completează la începutul exercițiului financiar, pe baza soldurilor de la sfârșitul exercițiului financiar precedent, iar în cursul exercițiului financiar, pe baza documentelor justificative referitoare la operațiunile intervenite. La sfârșitul fiecărei perioade, în fișele analitice se totalizează rulajele pe perioada respectivă și cumulat de la începutul anului, în vederea întocmirii balanței de verificare a conturilor analitice sau a situațiilor de solduri, iar în fișele de cont sintetic se face totalul cumulat al rulajului pe debit și credit, precum și soldul contului, în vederea întocmirii balanței de verificare a conturilor sintetice. 
+ BALANȚĂ DE VERIFICARE 
+ (cu patru egalități - Cod 14-6-30 și Cod 14-6-30/A) 
+ BALANȚĂ DE VERIFICARE 
+ (cu cinci egalități - Cod 14-6-30/a, Cod 14-6-30/b1, Cod 14-6-30/b2) 
+ BALANȚĂ DE VERIFICARE 
+ (cu șase egalități - Cod 14-6-30/b) 
+ BALANȚĂ ANALITICĂ A STOCURILOR 
+ (Cod 14-6-30/c) Balanța de verificare servește la: - verificarea înregistrării corecte în contabilitate a operațiunilor efectuate; - controlul concordanței dintre contabilitatea sintetică și analitică; - întocmirea situațiilor financiare și raportărilor contabil0 stabilite potrivit legii. Balanța de verificare se întocmește cel puțin la încheierea exercițiului financiar, la termenele de întocmire a situațiilor financiare, a raportărilor contabile, precum și la finele perioadei pentru care entitatea trebuie să întocmească declarația privind impozitul pe profit/venit, potrivit legii. Balanța de verificare cuprinde următoarele elemente: simbolul și denumirea conturilor; soldurile inițiale debitoare și creditoare; totalul sumelor debitoare și creditoare ale lunii precedente, după caz; rulajele curente debitoare și creditoare; totalul rulajelor debitoare și creditoare, după caz; totalul sumelor debitoare și creditoare; soldurile finale debitoare sau creditoare. Balanța de verificare la 1 ianuarie se completează cu soldurile finale debitoare și creditoare ale lunii decembrie a anului precedent. Pentru conturile analitice se poate întocmi numai situația soldurilor. La instituțiile publice, balanțele de verificare sintetice se întocmesc lunar, iar balanțele de verificare analitice, cel târziu la sfârșitul trimestrului pentru care se întocmesc situațiile financiare. 
+ + 
+ GRUPA a VII-a ALTE SUBACTIVITĂȚI 
+ Situația activelor gajate sau ipotecate 
+ (Cod 14-8-1) 
+ Situația bunurilor sechestrate 
+ (Cod 14-8-1/a) Cele două formulare se utilizează ca jurnale auxiliare pentru ținerea contabilității angajamentelor asumate de către entitate, reflectând eventuala datorie a entității față de terți, generată de angajamentele asumate. Acestea se întocmesc pe măsura încheierii contractelor care au la bază active gajate sau ipotecate, respectiv după încheierea procesului-verbal de sechestru de către executorul fiscal. 
+ DECIZIE DE IMPUTARE 
+ (Cod 14-8-2) Decizia de imputare servește ca: - document de imputare a valorii pagubelor produse; - titlu executoriu din momentul comunicării; - document de înregistrare în contabilitate. Decizia de imputare se întocmește pe baza actelor de constatare (procese-verbale, referate etc.). 
+ ANGAJAMENT DE PLATA 
+ (Cod 14-8-2/a) Angajamentul de plată servește ca: - titlu executoriu pentru recuperarea pagubelor; - titlu executoriu pentru executarea silită, în caz de nerespectare a angajamentului; - angajament de plată a unei sume ce reprezintă o pagubă adusă entității. Acesta se întocmește de către persoana care își ia angajamentul de plată, în condițiile în care există documente din care rezultă pagube sau alte obligații de plată (proces-verbal de control, proces-verbal al comisiei de inventariere, referat de rebut sau alte documente). --------- 
+
+ Conținutul acestui material nu reprezintă în mod obligatoriu poziția oficială a Uniunii Europene sau a Guvernului României.
+
+ Pentru informații detaliate despre celelalte programe cofinanțate de Uniunea Europeană, vă invităm să vizitați www.fonduri-ue.ro .
+
+ Copyright © 2026 - Ministerul Justiției. Toate drepturile rezervate. - Termeni și Condiții 
+
+ | Acasă
+
+ | Despre Proiect
+
+ | Facilități Oferite 
+
+ | Legături Utile
+
+ × Inchide 
+
+ Versiune Beta 
+
+ A fost lansata versiunea Beta a Portalului Legislativ
+
+ Fiind o versiune Beta, este posibil ca unele facilitati sa nu functioneze in mod corect. 
+
+ Inchide mesajul de atentionare 
+
+ × Inchide 
+
+ Datorita faptului ca folositi o versiune de Internet Explorer (Internet Explorer 8) foarte veche este posibil ca unele functionalitati sa fie dezactivate sau sa nu functioneze corect! 
+
+ Ce browser sa aleg? 
+
+ Google Chrome 
+
+ Descarca Browser 
+
+ Mozilla Firefox 
+
+ Descarca Browser 
+
+ Internet Explorer 
+
+ Descarca Browser 
+
+ Apple Safari 
+
+ Descarca Browser 
+
+ De ce sa actualizez browserul? 
+
+ Browserele invechite, cum ar fi Internet Explorer 8 (lansat în 2001) nu respecta standardele web, nu ofera unele facilitati noi browser-ului, cum ar fi de navigatie sau descarcare, managerul de tab-uri, si au probleme de securitate.
+
+ Aceasta afecteaza, de asemenea, calitatea de redare site-uri web.
+
+ Inchide mesajul de atentionare

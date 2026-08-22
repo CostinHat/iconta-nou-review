@@ -1,6 +1,6 @@
 # PLAN DE LUCRU
 
-Al treilea plan, și ultimul. Celelalte două spun **ce** și **în ce ordine**. Ăsta spune **când, cât, unde suntem, și ce ține de om.**
+Al treilea plan, și ultimul. Celelalte două spun **ce** și **în ce ordine**. Ăsta spune **când, unde suntem, ce se face cu ce rămâne în urmă, și ce ține de om.**
 
 | Plan | Ce conține |
 |---|---|
@@ -108,6 +108,66 @@ Dacă nu, ce lipsește și cât mai durează.
 
 ---
 
+## Restanțele — nu se pierde nimic, dar nimic nu blochează avansul
+
+Fiecare pas produce restanțe. Prima confruntare a scos că registrul avea un gol de categorie; a doua, că o interdicție n-are numitor; a treia, cinci regimuri cu motor și zero firme exercitate.
+
+**Bucla până la rezolvare nu funcționează:** unele restanțe nu se pot închide decât cu ce afli trei pași mai încolo. Dacă nu treci mai departe până nu le rezolvi, nu ajungi la pasul doi.
+
+**Ce blochează nu e pasul, ci închiderea etapei.** Poți trece de la 1a la 1b cu patru căutări nerezolvate; nu poți declara E1 terminat cu ele deschise.
+
+### Ce poartă o restanță
+
+Patru câmpuri, toate obligatorii:
+
+| câmp | ce conține |
+|---|---|
+| **ce e** | descrierea, în termeni verificabili |
+| **unde intră** | etapa și, dacă e cazul, interdicția |
+| **ce o închide** | condiția, nu intenția. Fără ea, o restanță e o notă |
+| **blocajul** | de care fel, din cele trei de mai jos |
+
+### Cele trei feluri de blocaj
+
+**EXTERN** — depinde de ceva ce nu se poate obține de aici.
+
+Se formulează ca **cerere specifică**: ce trebuie, de unde, pentru ce. Nu „am nevoie de ajutor cu legea contabilității", ci *„îmi trebuie Legea 82/1991 în formă consolidată; în corpus sunt doar două documente de nivel 2; blochează familia A din 1a"*.
+
+**INTERN** — depinde de un pas care urmează.
+
+Se scrie **condiția de deblocare**: *„se reia după ce categoria de mărime există ca dimensiune a firmei"*. Nu se așteaptă ca cineva să-și amintească.
+
+**DECIZIE** — depinde de om.
+
+Se pune **în capul raportului** până se rezolvă, nu la coadă.
+
+### Reaprinderea
+
+**La fiecare tură se verifică ce restanțe au blocajul dispărut.** Alea se reiau, se rezolvă, și rezultatul se spune în raport — la secțiunea A, ca orice altă muncă făcută.
+
+O restanță care poartă condiția de deblocare se reaprinde singură. Una care nu o poartă devine arhivă.
+
+### Contorul de reluări
+
+**O restanță reluată și tot nerezolvată se numără.** Dacă a fost reluată de trei ori și tot n-a mers, **condiția de deblocare e scrisă greșit** — nu restanța e grea.
+
+Atunci se rescrie condiția, prin decizie, cu motivul. Nu se mai reia a patra oară pe aceeași condiție.
+
+### Unde stau
+
+În `CONFORMITATE.md`, secțiune proprie după antet. Nu într-un fișier separat — al doilea loc unde trăiește starea se învechește.
+
+### Ce se gardează
+
+- un raport care nu enumeră restanțele deschise nu trece;
+- o restanță fără „ce o închide" nu poate fi scrisă;
+- **o etapă nu se poate declara terminată dacă are restanțe deschise care îi aparțin**;
+- o restanță cu blocaj EXTERN fără cerere specifică formulată nu trece.
+
+Ultima e importantă: „aștept ceva din afară" fără să spui exact ce, de unde și pentru ce nu e o restanță blocată — e o restanță nescrisă.
+
+---
+
 ## Unde suntem
 
 **Un singur loc:** `CONFORMITATE.md`, plus un antet nou care spune etapa curentă și ce o termină.
@@ -118,7 +178,9 @@ Azi starea e împrăștiată — stările interdicțiilor într-un loc, fronturi
 
 - etapa curentă și criteriul ei de terminare;
 - ce lipsește ca să se termine;
+- **câte restanțe deschise are etapa curentă**, pe cele trei feluri de blocaj;
 - deciziile care blochează, dacă sunt;
+- cel mai vechi commit dintre cifrele din registru;
 - data ultimei actualizări.
 
 **Se actualizează la fiecare tură**, ca orice registru. Un antet stătut e mai rău decât niciunul.
@@ -132,10 +194,12 @@ Deciziile care nu se rezolvă prin efort. Fiecare blochează ceva; niciuna nu se
 | Decizia | Ce blochează | Stare |
 |---|---|---|
 | **Câte regimuri acoperă E1** | setul de artefacte se face pe regimurile reale, nu pe trei alese arbitrar | **de măsurat la începutul E1** |
-| **Se îngheață perimetrul până la conformitate?** | dacă nu, lista de interdicții crește cu fiecare modul nou | **deschis** |
+| **Se îngheață perimetrul până la conformitate?** | dacă nu, lista de interdicții crește cu fiecare modul nou | **LUAT 22.08.2026 — DA** |
 | **Ce se repară și ce nu**, la punctul de decizie 2 | E5 | *la momentul potrivit* |
 
 **Stabilit:**
+
+- **perimetrul se îngheață (22.08.2026).** Nimic nou până trece verificarea, cu o singură excepție: cererile unui contabil real — care oricum nu există încă. Motivul e chiar cel din tabel: fără înghețare, lista de interdicții crește cu fiecare modul nou, iar criteriul de terminare al lui E3 se mișcă sub măsurătoare.
 
 - **nu există termen calendaristic.** Se termină când trece verificarea. Ce împiedică extinderea la infinit sunt criteriile de terminare per etapă și punctele de decizie — dacă o etapă nu avansează, se schimbă abordarea, nu se prelungește.
 - **verificarea o facem noi doi.** Nu se caută un actor din afară; P24 e o revizuire proprie, deliberată.
@@ -146,6 +210,10 @@ Deciziile care nu se rezolvă prin efort. Fiecare blochează ceva; niciuna nu se
 ## Ritmul
 
 **O tură = observații pe precedenta + decizii cerute în cap + comanda următoare.** Nu se sare peste prima parte: acolo se prind erorile.
+
+**Raportul are două secțiuni:** *A — răspuns la comandă*, punct cu punct, cu aceeași numerotare; *B — unde suntem*, derivată din antetul registrului, nu scrisă de mână.
+
+**La fiecare tură se verifică restanțele cu blocajul dispărut.** Ce s-a deblocat se reia și se rezolvă în tura aceea, iar rezultatul intră la secțiunea A.
 
 **Ziua se închide cu `ISTORIC.md`.** Nu după fiecare tură.
 
@@ -164,6 +232,8 @@ Deciziile care nu se rezolvă prin efort. Fiecare blochează ceva; niciuna nu se
 **Un defect produce cifre greșite azi.** Se repară pe loc.
 
 **O etapă nu avansează.** Nu se prelungește — se schimbă abordarea, prin decizie scrisă.
+
+**O restanță a fost reluată de trei ori fără rezultat.** Condiția ei de deblocare e scrisă greșit. Se rescrie, prin decizie, cu motivul — nu se mai reia a patra oară pe aceeași condiție.
 
 ---
 

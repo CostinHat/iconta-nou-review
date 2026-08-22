@@ -25,6 +25,10 @@ TIP_FORMA = {
     "anaf_limite_2025.pdf": "forma_la_data",   # tabel de limite ANAF pt 2025 (valori la date fixe)
     "legea_201_2025.html": "forma_la_data",    # act punctual (tichet 45 de la noiembrie 2025)
     "oug_156_2024.pdf": "forma_la_data",       # act punctual (plafon facilitate 4300 pt 2025)
+    # .txt-ul aceluiasi act, folosit de cota de dividende 10% (art. LXIV, de la 01.01.2025).
+    # forma_la_data, NU consolidat_la_zi: valoarea are succesor (Legea 141/2025, 16% de la 2026),
+    # iar o forma la zi n-ar mai contine-o — exact ce refuza G2.
+    "oug_156_2024.txt": "forma_la_data",
     "oug_8_2026.html": "forma_la_data",         # act punctual (plafon TVA incasare + mijloc fix 2026-2027)
     "hg_2139_2004_catalog_clasificare_durate_mijloace_fixe.html": "forma_la_data",  # catalog durate amortizare
     "hg_295_2025_reges_online_registru_salariati.html": "forma_la_data",  # REGES-ONLINE
@@ -32,7 +36,11 @@ TIP_FORMA = {
     "legea_448_2006_protectia_persoanelor_cu_handicap.html": "forma_la_data",  # cota 4% handicap (salarizare)
     "oug_89_2025.html": "forma_la_data",
     "legea_207_2015_consolidat.html": "consolidat_la_zi",  # Cod procedura fiscala (consolidat la zi, OUG 38/2026)
-    "omf_1235_2023.pdf": "forma_la_data",           # indemnizatie deplasare interna 23 lei de la 01.04.2023
+    "omf_1235_2023.pdf": "forma_la_data",
+    "legea_82_1991_consolidat.html": "consolidat_la_zi",   # adusa 22.08.2026 (art. 20/22/28/36)
+    "omfp_2634_2015_anexa1_norme_generale.html": "consolidat_la_zi",
+    "omfp_2634_2015_anexa2_norme_specifice.html": "consolidat_la_zi",
+    "omfp_2634_2015_anexa3_modele.html": "consolidat_la_zi",           # indemnizatie deplasare interna 23 lei de la 01.04.2023
         # act punctual (facilitate salariu minim + plafon 2026)
 }
 

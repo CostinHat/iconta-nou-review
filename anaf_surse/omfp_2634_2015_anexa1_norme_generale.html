@@ -1,0 +1,1168 @@
+
+
+
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <title>NORMA          (A)       05/11/2015 - Portal Legislativ</title>
+    <link href="/Content/css?v=iKXncnEnzeZrcZDXQ4gyEFYtrgIhK9GqKaiZ1xjeUOQ1" rel="stylesheet"/>
+
+    <link href="/Content/themes/base/css?v=7T_tuS9RP8sQe2HxerJdL6STYU-qCHtjrExyjsSiYcQ1" rel="stylesheet"/>
+
+    <meta name="keywords" content="NORMA          (A)       05/11/2015 - Portal Legislativ">
+    <meta name="description" content="NORMA          (A)       05/11/2015 - Portal Legislativ">
+    <meta name="title" content="NORMA          (A)       05/11/2015 - Portal Legislativ">
+    <link href="/Content/bootstrap-datepicker.css" rel="stylesheet" />
+    <link rel="icon" type="image/x-icon" href="/Content/Images/Site/temanoua/favicon.ico" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <link href="/Content/public.css" rel="stylesheet" />
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <script src="/bundles/modernizr?v=qVODBytEBVVePTNtSFXgRX0NCEjh9U_Oj8ePaSiRcGg1"></script>
+
+    <script src="/bundles/jquery?v=UgyEMAYOuSB9Bb6HcOEVHpd6fIIp54yF086SRNVcdIY1"></script>
+
+    <script src="/bundles/jqueryui?v=O4Awnx3xYnFLmC1TAsxXigS8kLERW18heIHqD0bRSTE1"></script>
+
+    <script src="/bundles/bootstrap?v=WyYa2dIFje-38fhrXc_sQiaOB-lu9j8r45bVIBgtqrw1"></script>
+
+    <script type="text/javascript" language="JavaScript">
+        var backColor = '#f0ffff';
+        var actColor = 'white';
+        var brdColor = 'black';
+        function marcheaza(id_ttl, id) {
+            /*id.style.backgroundColor=backColor;
+            id_ttl.style.cursor='pointer';
+            id.style.borderColor=brdColor;
+            id.style.borderStyle='dashed';*/
+        }
+        function demarcheaza(id_ttl, id) {
+            /*id.style.backgroundColor='transparent';
+            id_ttl.style.cursor='default';
+            id.style.borderColor=actColor;
+            id.style.borderStyle='dotted';*/
+        }
+        function plusMinus(id1, id2) {
+            if (id1.style.display == 'none') {
+                id1.style.display = 'inline';
+                id2.style.display = 'none';
+            }
+            else {
+                id1.style.display = 'none';
+                id2.style.display = 'inline';
+            }
+        }
+        function setCursor(id, tipCursor) {
+            id.style.cursor = tipCursor;
+        }
+    </script>
+    <script>
+        function pozitioneaza(id) {
+            var id_nou = id.substring(0, id.length - 4);
+           //document.getElementById('toTop').click();
+            $("#toTop").trigger("click");
+ 
+        }
+ 
+
+    </script>
+
+
+
+</head>
+
+<body data-spy="scroll" data-target="#affix-nav" data-twttr-rendered="true">
+    <a name="top"></a>
+
+
+    <div id="toTop" class="toggle-menu menu-left"><a class="toggle-menu menu-left"><img src="/Content/Images/Site/temanoua/butonmeniu.png" alt="logo" /></a> </div>
+    <div id="masterwrapper page-content">
+        <div id="header_wrapper" class="navbar navbar-default">
+            <!--navbar-fixed-top-->
+            <header>
+                <div id="header">
+                    <div class="header_top">
+                        <div class="banner">
+                            <div class="row">
+                                <img class="img-responsive center-block pozawidth" id="logoportal" src="/Content/Images/Site/header_logo.png" style="width:85%;" alt="logo" />
+                            </div>
+                        </div>
+                        <div class="row margin0" id="textlogo">
+                            <center>
+                                <h4 class="reducerespatiu logo">Portal Legislativ</h4>
+
+                            </center>
+                            <!-- <div style="float:right; position:relative; right:0; margin-top:-23px;">
+                                <a data-toggle="modal" data-target="#mesajBetaModal" style="cursor:pointer;">
+                                    <img width="50" src="/Content/Images/Site/versiunebeta.png" alt="Versiune Beta 2.0" />
+                                </a>
+                            </div>-->
+                            <hr />
+                        </div>
+                    </div>
+                    <div class="clear"></div>
+                    <div class="menu_wrapper navbar navbar-inverse" role="navigation" id="slide-nav">
+                        <div class="container">
+                            <div class="navbar-header">
+                                <a id="btnNavbar" class="navbar-toggle">
+                                    <span class="sr-only">Meniu</span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                    <span class="icon-bar"></span>
+                                </a>
+
+                            </div>
+                            <div id="slidemenu" style="cursor:pointer;">
+                                <div id="menu" onclick="pozitioneaza('')">
+                                    <a style=" cursor:pointer;" onclick="pozitioneaza('')">
+                                        <h3>Meniu</h3>
+                                    </a>
+                                    <ul></ul>
+                                    <ul class="mainmenu">
+ 
+        <li>
+            <a href="/Public/Acasa" class="main_link">
+
+                Acasă
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/NLEX" class="main_link">
+
+                Despre Proiect
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/Functionalitati" class="main_link">
+
+                Facilități Oferite 
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/LegaturiUtile" class="main_link">
+
+                Legături Utile
+
+            </a>
+        </li>
+<li>
+	<a href="https://www.just.ro/informatii-de-interes-public/protectia-datelor-cu-caracter-personal/" class="main_link" target="_blank" title="Protecţia datelor cu caracter personal">GDPR</a>
+</li>
+
+             
+                                    </ul>
+                                    <div class="clear"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="clear"></div>
+                </div>
+            </header>
+            <div class="meniunu">
+                <nav class="cbp-spmenu cbp-spmenu-vertical cbp-spmenu-left">
+                    <h3 style="padding-left:65px; margin-top:-5px;">Meniu</h3>
+                    <div id="meniutitlu"></div>
+                    <div id="meniupaginastart">
+ 
+        <li>
+            <a href="/Public/Acasa" class="main_link">
+
+                Acasă
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/NLEX" class="main_link">
+
+                Despre Proiect
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/Functionalitati" class="main_link">
+
+                Facilități Oferite 
+
+            </a>
+        </li>
+        <li>
+            <a href="/Public/LegaturiUtile" class="main_link">
+
+                Legături Utile
+
+            </a>
+        </li>
+<li>
+	<a href="https://www.just.ro/informatii-de-interes-public/protectia-datelor-cu-caracter-personal/" class="main_link" target="_blank" title="Protecţia datelor cu caracter personal">GDPR</a>
+</li>
+
+              <br />
+                        Prin portalul N-Lex se acorda acces gratuit la legislatiile nationale ale statelor membre, portalul fiind
+                        conceput pe baza unei tehnologii de comunicare interne, ce permite accesarea directa a bazelor de date legislative nationale,
+                        rezultatele cautarilor venind direct de la sursa.
+                    </div>
+                    <script>
+                        if (window.location.href.indexOf('DetaliiDocument') != -1) {
+                            $('#meniupaginastart').hide();
+                        }
+                        else {
+                            $('#meniupaginastart').show();
+                        }
+                    </script>
+                </nav>
+            </div>
+        </div>
+ 
+        <div id="page_content" style="margin-top:-15px;">
+            <div id="page_wrapper">
+                <div class="articole_wrapper">
+                    
+
+
+<style>
+    #masterwrapper, #page_content, #page_wrapper {
+        background-color: white;
+        background: white;
+    }
+
+    #document_info {
+        font-size: 15px;
+    }
+
+    #fisaact {
+        font-size: 14px;
+    }
+
+    .seincarca {
+        position: fixed;
+        z-index: 1100;
+        left: 45%;
+        /*	margin-top: -500px;*/
+        top: 45%;
+        height: 100px;
+        background-color: #ffffff;
+        -moz-box-shadow: 5px 5px 5px #400;
+        -webkit-box-shadow: 5px 5px 5px #400;
+        box-shadow: 5px 5px 5px #400;
+        border: 1px solid #dadada;
+        -moz-border-radius: 15px;
+        -webkit-border-radius: 15px;
+        -khtml-border-radius: 15px;
+        border-radius: 15px;
+    }
+
+    .cbsloader {
+        background-image: url(~/../../../Content/Images/Site/bar-circle.gif);
+        background-repeat: no-repeat;
+    }
+
+    #modal {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: url('~/../../../Content/Images/Site/tint20.png') 0 0 repeat;
+        background: rgba(0,0,0,0.2);
+    }
+    #sidebar  {
+        &.affix;
+
+    {
+        top: 10px;
+        bottom: auto;
+    }
+
+    &.affix-top {
+        position: absolute;
+        top: 20px;
+    }
+
+    &.affix-bottom {
+        position: relative;
+        top: auto;
+        bottom: auto;
+    }
+
+    }
+
+</style>
+ <script>
+
+     function imgSIZE() {
+         $("#infoactinfoact img").one("load", function() {
+             try {
+                 var theImage = new Image();
+                 theImage.src = $(this).attr("src");
+                 var imgW = theImage.width;
+                 var imgH = theImage.height;
+                 // console.log($(this).attr("src") + "   - " + imgW + ", " + imgH);
+
+                 
+                 $(this).css("max-width", "100%");
+                 $(this).css("width", imgW+"px");
+                 
+             }
+             catch(e) {
+                 // console.log("horror> "+e);
+             }
+         });
+     }
+
+ </script>
+
+<div class="container bs-docs-container"  data-target="#sidebar">
+
+    <div class="row" id="textdocumentleg">
+        <div class="col-md-3" id="meniu">
+            <div class="bs-docs-sidebar affix-top meniuaffix" id="sidebar">
+                <div class="articole_wrapper">
+                    <div class="h1_articole">
+                        <h1>Cuprins</h1>
+                        <div class="spacer"></div>
+                    </div>
+                </div>
+                <div id="loaderDiv" class="seincarca" style="display: none; text-align: center; width: auto !important; height: auto !important; padding: 40px;">
+                    <div id="modal"></div>
+                    <progress max="100">
+                        <div class="cbsloader">
+                            <div style="color:#333; margin-top:-40px; margin-left:130px;">
+                            </div>
+                            <br>
+                            <div style="color:#333; margin-left:49px; margin-top:-5px;">
+                                <b>Se încarcă, vă rugăm asteptati.</b><br><br>
+                            </div>
+                        </div>
+                    </progress>
+                </div>
+                <div class="details_navigation">
+
+                    <input type="hidden" id="id_act" name="id_act" value="286044" />
+                    <div class="nav_header expanded" data-target="FormeAct" style="margin-left:-10px; font-weight: bold !important;">
+                            <span class="trigger plus">+</span>
+                             <b><span>Forme act</span></b>
+                    </div>
+                    <div class="nav_content expanded" data-target="FormeAct" style="margin-left: -10px;">
+                            <div class="forme_act">
+<input checked="checked" id="Formaconsolidata" name="FormeAct" onchange="SchimbareFormaAct();" type="radio" value="1" /><label for="Formaconsolidata">Forma consolidata</label>                                        <div class="forme_act_chk">
+                                            
+                                            
+                                        </div>
+                                            <div>
+                                                <div id="label_forme_actz" onclick="toggle_istoric_forme_actz()" style="cursor: pointer; margin-left: -5px; margin-top: 5px;">&nbsp;&nbsp;&nbsp;+&nbsp;istoric consolidări</div>
+                                                <div id="istoric_fa" class="nav_content expanded" style="display: none; margin-left: -8px;">
+                                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a title='Consolidarea din 01.08.2024' id='fa_selectata' style='color:red;text-decoration:none;cursor:default'>01.08.2024</a><br/>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a title='Consolidarea din 24.05.2023' style='color:#428BCA' href='~/../../../Public/DetaliiDocument/267711'>24.05.2023</a><br/>
+                                                </div>
+                                            </div>
+                                <!--
+                                -->
+                            </div>
+                            <div class="forme_act">
+                                <!--
+                                -->
+                            </div>
+                            <div class="forme_act">
+                                <!--
+                                -->
+<input id="Formadebaza" name="FormeAct" onchange="incarcaFormaDeBaza(173683);" type="radio" value="3" /><label for="Formadebaza">Forma de baza</label>                            </div>
+                    </div>
+
+                    <div id="label_fisaact" class="nav_header" onclick="toggle_fisaact()" style="margin-left:-10px !important; margin-top:10px;">
+                        <span id="label_fisaact_plus_minus" style="cursor:pointer">+</span>
+                        <span style="cursor: pointer; font-weight: bold; color: #3c3636; ">Fișă act</span>
+                    </div>
+
+                    <div id="content_fisaact" class="nav_content" style="display: none;">
+                            <div class="fisa_Act">
+                                <input class="fisa_act_chk" datavalue="1" id="Actiunisuferite" name="Actiunisuferite" onchange="ArataFisaAct(this);" type="checkbox" value="true" /><input name="Actiunisuferite" type="hidden" value="false" />
+                                <label for="Actiunisuferite">Actiuni suferite</label>
+                            </div>
+                            <div class="fisa_Act">
+                                <input class="fisa_act_chk" datavalue="2" id="ActiuniInduse" name="ActiuniInduse" onchange="ArataFisaAct(this);" type="checkbox" value="true" /><input name="ActiuniInduse" type="hidden" value="false" />
+                                <label for="ActiuniInduse">Actiuni Induse</label>
+                            </div>
+                            <div class="fisa_Act">
+                                <input class="fisa_act_chk" datavalue="3" id="Referape" name="Referape" onchange="ArataFisaAct(this);" type="checkbox" value="true" /><input name="Referape" type="hidden" value="false" />
+                                <label for="Referape">Refera pe</label>
+                            </div>
+                            <div class="fisa_Act">
+                                <input class="fisa_act_chk" datavalue="4" id="Referitde" name="Referitde" onchange="ArataFisaAct(this);" type="checkbox" value="true" /><input name="Referitde" type="hidden" value="false" />
+                                <label for="Referitde">Referit de</label>
+                            </div>
+                    </div>
+
+                </div>
+                <p style="padding-top: 10px; font-variant: small-caps; border-bottom: 3px solid #BB3A3A; color: #112F5D; font-size: 18px; font-family: EB Garamond !important; ">Cuprinsul Actului</p>
+                <ul class="nav bs-docs-sidenav" style=" margin-top:5px;">
+
+                    de întocmire și utilizare a documentelor financiar-contabile
+
+                </ul>
+                <a class="back-to-top" onclick="pozitioneaza('')" href="#top">
+                    Reveniti in topul paginii
+                </a>
+                <div style="text-align:center;">
+                    
+
+                    <a target="_blank" class="btn btn-primary btn-xs" href=/Public/FormaPrintabila/00000G1KQMBRAG6FHG42N09P4GWRALEN>
+                        <span class="glyphicon glyphicon-print"></span> Forma printabilă
+                    </a>
+                </div>
+                <div class="articole_wrapper">
+                    <div class="h1_articole">
+
+                        <div class="spacer"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+ 
+
+
+
+        <div class="col-md-8" role="main" id="infoactinfoact">
+            <div class="bs-docs-section">
+                <div class="main_details">
+                    
+                    <div class="document_info" id="document_info">
+                        <div id="forme_act_container" data-id="FormeAct" data-state="loaded">
+                                    <div id="div_Formaconsolidata" class="content_forma_act" data-state="loaded">
+                                        
+                                        <span class="S_DEN">NORME GENERALE din 5 noiembrie 2015</span><span class="S_HDR">de întocmire și utilizare a documentelor financiar-contabile</span><table cellspacing="0px" cellpadding="0px" class="S_EMT"><tr valign="baseline"><td width="75px"><span class="S_EMT_TTL">EMITENT</span></td><td><span class="S_EMT_BDY"><li>MINISTERUL FINANȚELOR PUBLICE</li></span></td></tr></table><span class="S_PUB"><span class="S_PUB_TTL">Publicat în 
+			</span><span class="S_PUB_BDY">MONITORUL OFICIAL nr. 910 din 9 decembrie 2015</span></span><span id="fisaact"><span style='display:none;height:180px;overflow:auto;border:1px solid;' id='actiuni_suferite'></span><br/><span style='display:none;border:1px solid;height:180px;overflow:auto' id='actiuni_induse'></span><br/><span style='display:none;height:180px;overflow:auto;border:1px solid;' id='refera_pe'></span><br/><span style='display:none;height:180px;overflow:auto;border:1px solid;' id='referit_de'></span><br/><!----></span><span class="S_NTA" style="display: block; color:black;" id="id_ntaA226"><span class="S_NTA_TTL" id="id_ntaA226_ttl" onMouseOver="marcheaza(id_ntaA226_ttl,id_ntaA226)" onMouseOut="demarcheaza(id_ntaA226_ttl,id_ntaA226)" onMouseDown="plusMinus(id_ntaA226_scurt,id_ntaA226_lung)">
+						Notă </span><span style="display: none" class="S_NTA_SHORT" id="id_ntaA226_scurt">...
+			</span><span id="id_ntaA226_lung"><br /><span class="S_NTA_PAR" style="display: block; color:black;">Aprobate prin <A href="~/../../../Public/DetaliiDocumentAfis/286043">ORDINUL nr. 2.634 din 5 noiembrie 2015</A>, publicat în Monitorul Oficial al României, Partea I, nr. 910 din 9 decembrie 2015.</span></span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA10"><span class="S_LIT_TTL" id="id_litA10_ttl" onMouseOver="marcheaza(id_litA10_ttl,id_litA10)" onMouseOut="demarcheaza(id_litA10_ttl,id_litA10)" onMouseDown="plusMinus(id_litA10_short,id_litA10_bdy)">A.<!----></span> <span class="S_LIT_BDY" id="id_litA10_bdy">Aspecte generale<span class="S_PCT" style="display: block; color:black;" id="id_pctA11"><span class="S_PCT_TTL" id="id_pctA11_ttl" onMouseOver="marcheaza(id_pctA11_ttl,id_pctA11)" onMouseOut="demarcheaza(id_pctA11_ttl,id_pctA11)" onMouseDown="plusMinus(id_pctA11_short,id_pctA11_bdy)">1.<!----></span> <span class="S_PCT_BDY" id="id_pctA11_bdy">Persoanele prevăzute la <A href="~/../../../Public/DetaliiDocumentAfis/94309#A15">art. 1 alin. (1)-(4) din Legea contabilității nr. 82/1991</A>, republicată, cu modificările și completările ulterioare (denumite în continuare entități), consemnează operațiunile economico-financiare, în momentul efectuării lor, în documente justificative care stau la baza înregistrărilor în contabilitate (în jurnale, fișe și alte documente contabile, după caz).</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA11_short" onMouseOver="marcheaza(id_pctA11_short,id_pctA11)" onMouseOut="demarcheaza(id_pctA11_short,id_pctA11)" onMouseDown="plusMinus(id_pctA11_short,id_pctA11_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA12"><span class="S_PCT_TTL" id="id_pctA12_ttl" onMouseOver="marcheaza(id_pctA12_ttl,id_pctA12)" onMouseOut="demarcheaza(id_pctA12_ttl,id_pctA12)" onMouseDown="plusMinus(id_pctA12_short,id_pctA12_bdy)">2.<!----></span> <span class="S_PCT_BDY" id="id_pctA12_bdy">Documentele justificative trebuie să cuprindă următoarele elemente principale:<span class="S_LIN" id="id_linA13"><span class="S_LIN_TTL" id="id_linA13_ttl" onMouseOver="marcheaza(id_linA13_ttl,id_linA13)" onMouseOut="demarcheaza(id_linA13_ttl,id_linA13)" onMouseDown="plusMinus(id_linA13_short,id_linA13_bdy)">– </span><span class="S_LIN_BDY" id="id_linA13_bdy">denumirea documentului;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA13_short" onMouseOver="marcheaza(id_linA13_short,id_linA13)" onMouseOut="demarcheaza(id_linA13_short,id_linA13)" onMouseDown="plusMinus(id_linA13_short,id_linA13_bdy)"> ... </span></span><span class="S_LIN" id="id_linA14"><span class="S_LIN_TTL" id="id_linA14_ttl" onMouseOver="marcheaza(id_linA14_ttl,id_linA14)" onMouseOut="demarcheaza(id_linA14_ttl,id_linA14)" onMouseDown="plusMinus(id_linA14_short,id_linA14_bdy)">– </span><span class="S_LIN_BDY" id="id_linA14_bdy">denumirea/numele și prenumele și, după caz, sediul persoanei juridice/adresa persoanei fizice care întocmește documentul;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA14_short" onMouseOver="marcheaza(id_linA14_short,id_linA14)" onMouseOut="demarcheaza(id_linA14_short,id_linA14)" onMouseDown="plusMinus(id_linA14_short,id_linA14_bdy)"> ... </span></span><span class="S_LIN" id="id_linA15"><span class="S_LIN_TTL" id="id_linA15_ttl" onMouseOver="marcheaza(id_linA15_ttl,id_linA15)" onMouseOut="demarcheaza(id_linA15_ttl,id_linA15)" onMouseDown="plusMinus(id_linA15_short,id_linA15_bdy)">– </span><span class="S_LIN_BDY" id="id_linA15_bdy">numărul documentului și data întocmirii acestuia;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA15_short" onMouseOver="marcheaza(id_linA15_short,id_linA15)" onMouseOut="demarcheaza(id_linA15_short,id_linA15)" onMouseDown="plusMinus(id_linA15_short,id_linA15_bdy)"> ... </span></span><span class="S_LIN" id="id_linA16"><span class="S_LIN_TTL" id="id_linA16_ttl" onMouseOver="marcheaza(id_linA16_ttl,id_linA16)" onMouseOut="demarcheaza(id_linA16_ttl,id_linA16)" onMouseDown="plusMinus(id_linA16_short,id_linA16_bdy)">– </span><span class="S_LIN_BDY" id="id_linA16_bdy">menționarea părților care participă la efectuarea operațiunii economico-financiare (când este cazul);</span><span style="display:none" class="S_LIN_SHORT" id="id_linA16_short" onMouseOver="marcheaza(id_linA16_short,id_linA16)" onMouseOut="demarcheaza(id_linA16_short,id_linA16)" onMouseDown="plusMinus(id_linA16_short,id_linA16_bdy)"> ... </span></span><span class="S_LIN" id="id_linA17"><span class="S_LIN_TTL" id="id_linA17_ttl" onMouseOver="marcheaza(id_linA17_ttl,id_linA17)" onMouseOut="demarcheaza(id_linA17_ttl,id_linA17)" onMouseDown="plusMinus(id_linA17_short,id_linA17_bdy)">– </span><span class="S_LIN_BDY" id="id_linA17_bdy">conținutul operațiunii economico-financiare și, atunci când este necesar, temeiul legal al efectuării acesteia;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA17_short" onMouseOver="marcheaza(id_linA17_short,id_linA17)" onMouseOut="demarcheaza(id_linA17_short,id_linA17)" onMouseDown="plusMinus(id_linA17_short,id_linA17_bdy)"> ... </span></span><span class="S_LIN" id="id_linA18"><span class="S_LIN_TTL" id="id_linA18_ttl" onMouseOver="marcheaza(id_linA18_ttl,id_linA18)" onMouseOut="demarcheaza(id_linA18_ttl,id_linA18)" onMouseDown="plusMinus(id_linA18_short,id_linA18_bdy)">– </span><span class="S_LIN_BDY" id="id_linA18_bdy">datele cantitative și valorice aferente operațiunii economico-financiare efectuate, după caz;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA18_short" onMouseOver="marcheaza(id_linA18_short,id_linA18)" onMouseOut="demarcheaza(id_linA18_short,id_linA18)" onMouseDown="plusMinus(id_linA18_short,id_linA18_bdy)"> ... </span></span><span class="S_LIN" id="id_linA19"><span class="S_LIN_TTL" id="id_linA19_ttl" onMouseOver="marcheaza(id_linA19_ttl,id_linA19)" onMouseOut="demarcheaza(id_linA19_ttl,id_linA19)" onMouseDown="plusMinus(id_linA19_short,id_linA19_bdy)">– </span><span class="S_LIN_BDY" id="id_linA19_bdy">numele și prenumele, precum și semnăturile persoanelor care răspund de efectuarea operațiunii economico-financiare.</span><span style="display:none" class="S_LIN_SHORT" id="id_linA19_short" onMouseOver="marcheaza(id_linA19_short,id_linA19)" onMouseOut="demarcheaza(id_linA19_short,id_linA19)" onMouseDown="plusMinus(id_linA19_short,id_linA19_bdy)"> ... </span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA12_short" onMouseOver="marcheaza(id_pctA12_short,id_pctA12)" onMouseOut="demarcheaza(id_pctA12_short,id_pctA12)" onMouseDown="plusMinus(id_pctA12_short,id_pctA12_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA20"><span class="S_PCT_TTL" id="id_pctA20_ttl" onMouseOver="marcheaza(id_pctA20_ttl,id_pctA20)" onMouseOut="demarcheaza(id_pctA20_ttl,id_pctA20)" onMouseDown="plusMinus(id_pctA20_short,id_pctA20_bdy)">3.<!----></span> <span class="S_PCT_BDY" id="id_pctA20_bdy">În cuprinsul oricărui document emis de către o entitate trebuie să se menționeze și elementele prevăzute de legislația în domeniu, respectiv forma juridică, codul de identificare fiscală și capitalul social, după caz.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA20_short" onMouseOver="marcheaza(id_pctA20_short,id_pctA20)" onMouseOut="demarcheaza(id_pctA20_short,id_pctA20)" onMouseDown="plusMinus(id_pctA20_short,id_pctA20_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA21"><span class="S_PCT_TTL" id="id_pctA21_ttl" onMouseOver="marcheaza(id_pctA21_ttl,id_pctA21)" onMouseOut="demarcheaza(id_pctA21_ttl,id_pctA21)" onMouseDown="plusMinus(id_pctA21_short,id_pctA21_bdy)">4.<!----></span> <span class="S_PCT_BDY" id="id_pctA21_bdy">Documentele care stau la baza înregistrărilor în contabilitate pot dobândi calitatea de document justificativ numai în condițiile în care furnizează toate informațiile prevăzute de normele legale în vigoare.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA21_short" onMouseOver="marcheaza(id_pctA21_short,id_pctA21)" onMouseOut="demarcheaza(id_pctA21_short,id_pctA21)" onMouseDown="plusMinus(id_pctA21_short,id_pctA21_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA22"><span class="S_PCT_TTL" id="id_pctA22_ttl" onMouseOver="marcheaza(id_pctA22_ttl,id_pctA22)" onMouseOut="demarcheaza(id_pctA22_ttl,id_pctA22)" onMouseDown="plusMinus(id_pctA22_short,id_pctA22_bdy)">5.<!----></span> <span class="S_PCT_BDY" id="id_pctA22_bdy">Documentele justificative care stau la baza înregistrărilor în contabilitate angajează răspunderea persoanelor care le-au întocmit, vizat și aprobat, precum și a celor care le-au înregistrat în contabilitate.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA22_short" onMouseOver="marcheaza(id_pctA22_short,id_pctA22)" onMouseOut="demarcheaza(id_pctA22_short,id_pctA22)" onMouseDown="plusMinus(id_pctA22_short,id_pctA22_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA23"><span class="S_PCT_TTL" id="id_pctA23_ttl" onMouseOver="marcheaza(id_pctA23_ttl,id_pctA23)" onMouseOut="demarcheaza(id_pctA23_ttl,id_pctA23)" onMouseDown="plusMinus(id_pctA23_short,id_pctA23_bdy)">6.<!----></span> <span class="S_PCT_BDY" id="id_pctA23_bdy">Documentele justificative provenite din tranzacții/ operațiuni de cumpărare a unor bunuri de la persoane fizice, pe bază de borderou de achiziție/carnet de comercializare, pot fi înregistrate în contabilitate numai în cazul în care se face dovada intrării în gestiune a bunurilor respective.<span class="S_PAR" style="display: block; color:black;" id="id_parA24">Carnetul de comercializare a produselor din sectorul agricol este reglementat de <A href="~/../../../Public/DetaliiDocumentAfis/162616">Legea nr. 145/2014</A> pentru stabilirea unor măsuri de reglementare a pieței produselor din sectorul agricol.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA23_short" onMouseOver="marcheaza(id_pctA23_short,id_pctA23)" onMouseOut="demarcheaza(id_pctA23_short,id_pctA23)" onMouseDown="plusMinus(id_pctA23_short,id_pctA23_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA25"><span class="S_PCT_TTL" id="id_pctA25_ttl" onMouseOver="marcheaza(id_pctA25_ttl,id_pctA25)" onMouseOut="demarcheaza(id_pctA25_ttl,id_pctA25)" onMouseDown="plusMinus(id_pctA25_short,id_pctA25_bdy)">7.<!----></span> <span class="S_PCT_BDY" id="id_pctA25_bdy">În cazul în care documentele se referă la cheltuieli pentru prestări de servicii efectuate de persoane fizice impuse pe bază de norme de venit, pentru a fi înregistrate în contabilitate, acestea trebuie să aibă la bază contracte sau convenții civile, încheiate în acest scop, precum și documentul prin care se face dovada plății (dispoziție de plată/încasare, chitanță, ordin de plată, după caz).</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA25_short" onMouseOver="marcheaza(id_pctA25_short,id_pctA25)" onMouseOut="demarcheaza(id_pctA25_short,id_pctA25)" onMouseDown="plusMinus(id_pctA25_short,id_pctA25_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA26"><span class="S_PCT_TTL" id="id_pctA26_ttl" onMouseOver="marcheaza(id_pctA26_ttl,id_pctA26)" onMouseOut="demarcheaza(id_pctA26_ttl,id_pctA26)" onMouseDown="plusMinus(id_pctA26_short,id_pctA26_bdy)">8.<!----></span> <span class="S_PCT_BDY" id="id_pctA26_bdy">În conformitate cu prevederile <A href="~/../../../Public/DetaliiDocumentAfis/94309">Legii nr. 82/1991</A>, republicată, cu modificările și completările ulterioare, denumită în continuare legea contabilității, contabilitatea se ține în limba română și în moneda națională. Contabilitatea operațiunilor efectuate în valută se ține atât în moneda națională, cât și în valută, potrivit reglementărilor elaborate în acest sens.<span class="S_PAR" style="display: block; color:black;" id="id_parA27">Prin valută se înțelege altă monedă decât moneda națională.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA26_short" onMouseOver="marcheaza(id_pctA26_short,id_pctA26)" onMouseOut="demarcheaza(id_pctA26_short,id_pctA26)" onMouseDown="plusMinus(id_pctA26_short,id_pctA26_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA28"><span class="S_PCT_TTL" id="id_pctA28_ttl" onMouseOver="marcheaza(id_pctA28_ttl,id_pctA28)" onMouseOut="demarcheaza(id_pctA28_ttl,id_pctA28)" onMouseDown="plusMinus(id_pctA28_short,id_pctA28_bdy)">9.<!----></span> <span class="S_PCT_BDY" id="id_pctA28_bdy">Documentele financiar-contabile pot fi întocmite și într-o altă limbă și altă monedă, dacă acest fapt este prevăzut expres printr-un act normativ.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA28_short" onMouseOver="marcheaza(id_pctA28_short,id_pctA28)" onMouseOut="demarcheaza(id_pctA28_short,id_pctA28)" onMouseDown="plusMinus(id_pctA28_short,id_pctA28_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA29"><span class="S_PCT_TTL" id="id_pctA29_ttl" onMouseOver="marcheaza(id_pctA29_ttl,id_pctA29)" onMouseOut="demarcheaza(id_pctA29_ttl,id_pctA29)" onMouseDown="plusMinus(id_pctA29_short,id_pctA29_bdy)">10.<!----></span> <span class="S_PCT_BDY" id="id_pctA29_bdy">Documentele contabile (registre, jurnale, fișe, note etc.) care servesc la prelucrarea, centralizarea și înregistrarea în contabilitate a operațiunilor economico-financiare consemnate în documentele justificative, întocmite manual sau prin utilizarea sistemelor informatice de prelucrare automată a datelor, trebuie să cuprindă elemente cu privire la:<span class="S_LIN" id="id_linA30"><span class="S_LIN_TTL" id="id_linA30_ttl" onMouseOver="marcheaza(id_linA30_ttl,id_linA30)" onMouseOut="demarcheaza(id_linA30_ttl,id_linA30)" onMouseDown="plusMinus(id_linA30_short,id_linA30_bdy)">– </span><span class="S_LIN_BDY" id="id_linA30_bdy">denumirea entității;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA30_short" onMouseOver="marcheaza(id_linA30_short,id_linA30)" onMouseOut="demarcheaza(id_linA30_short,id_linA30)" onMouseDown="plusMinus(id_linA30_short,id_linA30_bdy)"> ... </span></span><span class="S_LIN" id="id_linA31"><span class="S_LIN_TTL" id="id_linA31_ttl" onMouseOver="marcheaza(id_linA31_ttl,id_linA31)" onMouseOut="demarcheaza(id_linA31_ttl,id_linA31)" onMouseDown="plusMinus(id_linA31_short,id_linA31_bdy)">– </span><span class="S_LIN_BDY" id="id_linA31_bdy">data întocmirii documentului contabil;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA31_short" onMouseOver="marcheaza(id_linA31_short,id_linA31)" onMouseOut="demarcheaza(id_linA31_short,id_linA31)" onMouseDown="plusMinus(id_linA31_short,id_linA31_bdy)"> ... </span></span><span class="S_LIN" id="id_linA32"><span class="S_LIN_TTL" id="id_linA32_ttl" onMouseOver="marcheaza(id_linA32_ttl,id_linA32)" onMouseOut="demarcheaza(id_linA32_ttl,id_linA32)" onMouseDown="plusMinus(id_linA32_short,id_linA32_bdy)">– </span><span class="S_LIN_BDY" id="id_linA32_bdy">felul, numărul și data documentului justificativ;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA32_short" onMouseOver="marcheaza(id_linA32_short,id_linA32)" onMouseOut="demarcheaza(id_linA32_short,id_linA32)" onMouseDown="plusMinus(id_linA32_short,id_linA32_bdy)"> ... </span></span><span class="S_LIN" id="id_linA33"><span class="S_LIN_TTL" id="id_linA33_ttl" onMouseOver="marcheaza(id_linA33_ttl,id_linA33)" onMouseOut="demarcheaza(id_linA33_ttl,id_linA33)" onMouseDown="plusMinus(id_linA33_short,id_linA33_bdy)">– </span><span class="S_LIN_BDY" id="id_linA33_bdy">sumele corespunzătoare operațiunilor efectuate;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA33_short" onMouseOver="marcheaza(id_linA33_short,id_linA33)" onMouseOut="demarcheaza(id_linA33_short,id_linA33)" onMouseDown="plusMinus(id_linA33_short,id_linA33_bdy)"> ... </span></span><span class="S_LIN" id="id_linA34"><span class="S_LIN_TTL" id="id_linA34_ttl" onMouseOver="marcheaza(id_linA34_ttl,id_linA34)" onMouseOut="demarcheaza(id_linA34_ttl,id_linA34)" onMouseDown="plusMinus(id_linA34_short,id_linA34_bdy)">– </span><span class="S_LIN_BDY" id="id_linA34_bdy">conturile sintetice și analitice debitoare și creditoare;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA34_short" onMouseOver="marcheaza(id_linA34_short,id_linA34)" onMouseOut="demarcheaza(id_linA34_short,id_linA34)" onMouseDown="plusMinus(id_linA34_short,id_linA34_bdy)"> ... </span></span><span class="S_LIN" id="id_linA35"><span class="S_LIN_TTL" id="id_linA35_ttl" onMouseOver="marcheaza(id_linA35_ttl,id_linA35)" onMouseOut="demarcheaza(id_linA35_ttl,id_linA35)" onMouseDown="plusMinus(id_linA35_short,id_linA35_bdy)">– </span><span class="S_LIN_BDY" id="id_linA35_bdy">semnătura persoanei responsabile cu întocmirea documentelor contabile.</span><span style="display:none" class="S_LIN_SHORT" id="id_linA35_short" onMouseOver="marcheaza(id_linA35_short,id_linA35)" onMouseOut="demarcheaza(id_linA35_short,id_linA35)" onMouseDown="plusMinus(id_linA35_short,id_linA35_bdy)"> ... </span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA29_short" onMouseOver="marcheaza(id_pctA29_short,id_pctA29)" onMouseOut="demarcheaza(id_pctA29_short,id_pctA29)" onMouseDown="plusMinus(id_pctA29_short,id_pctA29_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA36"><span class="S_PCT_TTL" id="id_pctA36_ttl" onMouseOver="marcheaza(id_pctA36_ttl,id_pctA36)" onMouseOut="demarcheaza(id_pctA36_ttl,id_pctA36)" onMouseDown="plusMinus(id_pctA36_short,id_pctA36_bdy)">11.<!----></span> <span class="S_PCT_BDY" id="id_pctA36_bdy">În condițiile în care documentele financiar-contabile (documentele justificative și documentele contabile) sunt întocmite și preluate în contabilitate prin utilizarea sistemelor informatice de prelucrare automată a datelor, semnătura nu constituie element obligatoriu. În astfel de situații trebuie să se stabilească prin proceduri proprii modalități de identificare a persoanelor care au inițiat, dispus și aprobat, după caz, efectuarea operațiunilor respective.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA36_short" onMouseOver="marcheaza(id_pctA36_short,id_pctA36)" onMouseOut="demarcheaza(id_pctA36_short,id_pctA36)" onMouseDown="plusMinus(id_pctA36_short,id_pctA36_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA37"><span class="S_PCT_TTL" id="id_pctA37_ttl" onMouseOver="marcheaza(id_pctA37_ttl,id_pctA37)" onMouseOut="demarcheaza(id_pctA37_ttl,id_pctA37)" onMouseDown="plusMinus(id_pctA37_short,id_pctA37_bdy)">12.<!----></span> <span class="S_PCT_BDY" id="id_pctA37_bdy">Documentele financiar-contabile pot fi prezentate ca documente pe suport hârtie sau în format electronic, cu condiția întocmirii acestora potrivit prezentelor norme.<span class="S_PAR" style="display: block; color:black;" id="id_parA38">Prin document în format electronic se înțelege documentul care conține informațiile prevăzute de prezentele norme și care a fost emis și primit în format electronic.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA37_short" onMouseOver="marcheaza(id_pctA37_short,id_pctA37)" onMouseOut="demarcheaza(id_pctA37_short,id_pctA37)" onMouseDown="plusMinus(id_pctA37_short,id_pctA37_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA39"><span class="S_PCT_TTL" id="id_pctA39_ttl" onMouseOver="marcheaza(id_pctA39_ttl,id_pctA39)" onMouseOut="demarcheaza(id_pctA39_ttl,id_pctA39)" onMouseDown="plusMinus(id_pctA39_short,id_pctA39_bdy)">13.<!----></span> <span class="S_PCT_BDY" id="id_pctA39_bdy">Înscrierea datelor în documente se face cu cerneală, cu pix cu pastă sau prin utilizarea sistemelor informatice de prelucrare automată a datelor, după caz.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA39_short" onMouseOver="marcheaza(id_pctA39_short,id_pctA39)" onMouseOut="demarcheaza(id_pctA39_short,id_pctA39)" onMouseDown="plusMinus(id_pctA39_short,id_pctA39_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA40"><span class="S_PCT_TTL" id="id_pctA40_ttl" onMouseOver="marcheaza(id_pctA40_ttl,id_pctA40)" onMouseOut="demarcheaza(id_pctA40_ttl,id_pctA40)" onMouseDown="plusMinus(id_pctA40_short,id_pctA40_bdy)">14.<!----></span> <span class="S_PCT_BDY" id="id_pctA40_bdy">În documentele financiar-contabile nu sunt admise ștersături, modificări sau alte asemenea procedee, și nici lăsarea de spații libere între operațiunile înscrise în acestea sau file lipsă.<span class="S_PAR" style="display: block; color:black;" id="id_parA41">Erorile se corectează prin tăierea cu o linie a textului sau a cifrei greșite, concomitent înscriindu-se alături textul sau cifra corectă.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA42">Corectarea se face în toate exemplarele documentului și se confirmă prin semnătura persoanei care a întocmit/corectat documentul, menționându-se și data efectuării corecturii.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA40_short" onMouseOver="marcheaza(id_pctA40_short,id_pctA40)" onMouseOut="demarcheaza(id_pctA40_short,id_pctA40)" onMouseDown="plusMinus(id_pctA40_short,id_pctA40_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA43"><span class="S_PCT_TTL" id="id_pctA43_ttl" onMouseOver="marcheaza(id_pctA43_ttl,id_pctA43)" onMouseOut="demarcheaza(id_pctA43_ttl,id_pctA43)" onMouseDown="plusMinus(id_pctA43_short,id_pctA43_bdy)">15.<!----></span> <span class="S_PCT_BDY" id="id_pctA43_bdy">În cazul documentelor financiar-contabile la care nu se admit corecturi, cum sunt cele pe baza cărora se primește, se eliberează sau se justifică numerarul, ori al altor documente pentru care normele de utilizare prevăd asemenea restricții, documentul întocmit greșit se anulează și se păstrează sau rămâne în carnetul respectiv.<span class="S_PAR" style="display: block; color:black;" id="id_parA44">La corectarea documentului justificativ în care se consemnează operații de predare-primire a valorilor materiale și a mijloacelor fixe este necesară confirmarea, prin semnătură, atât a predătorului, cât și a primitorului.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA45">Grupele de mijloace fixe corespund categoriilor contabile de imobilizări corporale sau grupelor din Catalogul privind clasificarea și duratele normale de funcționare a mijloacelor fixe, aprobat prin <A href="~/../../../Public/DetaliiDocumentAfis/58613">Hotărârea Guvernului nr. 2.139/2004</A>, cu modificările ulterioare.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA43_short" onMouseOver="marcheaza(id_pctA43_short,id_pctA43)" onMouseOut="demarcheaza(id_pctA43_short,id_pctA43)" onMouseDown="plusMinus(id_pctA43_short,id_pctA43_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA46"><span class="S_PCT_TTL" id="id_pctA46_ttl" onMouseOver="marcheaza(id_pctA46_ttl,id_pctA46)" onMouseOut="demarcheaza(id_pctA46_ttl,id_pctA46)" onMouseDown="plusMinus(id_pctA46_short,id_pctA46_bdy)">16.<!----></span> <span class="S_PCT_BDY" id="id_pctA46_bdy">În cazul completării documentelor prin utilizarea sistemelor informatice de prelucrare automată a datelor, corecturile sunt admise numai înainte de prelucrarea acestora. Documentele prezentate în listele de erori, anulări sau completări (pe baza cărora se fac modificări în fișiere sau în baza de date a entității) trebuie să fie semnate de persoanele împuternicite de conducerea entității.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA46_short" onMouseOver="marcheaza(id_pctA46_short,id_pctA46)" onMouseOut="demarcheaza(id_pctA46_short,id_pctA46)" onMouseDown="plusMinus(id_pctA46_short,id_pctA46_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA47"><span class="S_PCT_TTL" id="id_pctA47_ttl" onMouseOver="marcheaza(id_pctA47_ttl,id_pctA47)" onMouseOut="demarcheaza(id_pctA47_ttl,id_pctA47)" onMouseDown="plusMinus(id_pctA47_short,id_pctA47_bdy)">17.<!----></span> <span class="S_PCT_BDY" id="id_pctA47_bdy">În cazul în care prelucrarea documentelor financiar-contabile se face de către terți (persoane fizice sau juridice), în relațiile dintre terți și entitățile beneficiare este necesar ca, pentru efectuarea corespunzătoare a înregistrărilor în contabilitate, să se respecte următoarele reguli:<span class="S_LIN" id="id_linA48"><span class="S_LIN_TTL" id="id_linA48_ttl" onMouseOver="marcheaza(id_linA48_ttl,id_linA48)" onMouseOut="demarcheaza(id_linA48_ttl,id_linA48)" onMouseDown="plusMinus(id_linA48_short,id_linA48_bdy)">– </span><span class="S_LIN_BDY" id="id_linA48_bdy">documentele justificative să fie întocmite corect și la timp de către entitățile beneficiare, acestea răspunzând de realitatea datelor înscrise în documentele respective;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA48_short" onMouseOver="marcheaza(id_linA48_short,id_linA48)" onMouseOut="demarcheaza(id_linA48_short,id_linA48)" onMouseDown="plusMinus(id_linA48_short,id_linA48_bdy)"> ... </span></span><span class="S_LIN" id="id_linA49"><span class="S_LIN_TTL" id="id_linA49_ttl" onMouseOver="marcheaza(id_linA49_ttl,id_linA49)" onMouseOut="demarcheaza(id_linA49_ttl,id_linA49)" onMouseDown="plusMinus(id_linA49_short,id_linA49_bdy)">– </span><span class="S_LIN_BDY" id="id_linA49_bdy">documentele contabile, întocmite de terți pe baza documentelor justificative, trebuie predate entităților beneficiare, împreună cu documentele justificative, la termenele stabilite prin contractele sau convențiile civile încheiate, terții răspunzând de corectitudinea prelucrării datelor.</span><span style="display:none" class="S_LIN_SHORT" id="id_linA49_short" onMouseOver="marcheaza(id_linA49_short,id_linA49)" onMouseOut="demarcheaza(id_linA49_short,id_linA49)" onMouseDown="plusMinus(id_linA49_short,id_linA49_bdy)"> ... </span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA47_short" onMouseOver="marcheaza(id_pctA47_short,id_pctA47)" onMouseOut="demarcheaza(id_pctA47_short,id_pctA47)" onMouseDown="plusMinus(id_pctA47_short,id_pctA47_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA50"><span class="S_PCT_TTL" id="id_pctA50_ttl" onMouseOver="marcheaza(id_pctA50_ttl,id_pctA50)" onMouseOut="demarcheaza(id_pctA50_ttl,id_pctA50)" onMouseDown="plusMinus(id_pctA50_short,id_pctA50_bdy)">18.<!----></span> <span class="S_PCT_BDY" id="id_pctA50_bdy">În vederea înregistrării în jurnale, fișe și în celelalte documente contabile a operațiunilor economico-financiare consemnate în documentele justificative, potrivit formelor de înregistrare în contabilitate utilizate de entități, se poate face contarea documentelor justificative, indicându-se simbolurile conturilor sintetice și analitice, debitoare și creditoare, în conformitate cu planul de conturi aplicabil.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA50_short" onMouseOver="marcheaza(id_pctA50_short,id_pctA50)" onMouseOut="demarcheaza(id_pctA50_short,id_pctA50)" onMouseDown="plusMinus(id_pctA50_short,id_pctA50_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA51"><span class="S_PCT_TTL" id="id_pctA51_ttl" onMouseOver="marcheaza(id_pctA51_ttl,id_pctA51)" onMouseOut="demarcheaza(id_pctA51_ttl,id_pctA51)" onMouseDown="plusMinus(id_pctA51_short,id_pctA51_bdy)">19.<!----></span> <span class="S_PCT_BDY" id="id_pctA51_bdy">Înregistrările în contabilitate se fac prin utilizarea sistemelor informatice de prelucrare automată a datelor sau manual.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA51_short" onMouseOver="marcheaza(id_pctA51_short,id_pctA51)" onMouseOut="demarcheaza(id_pctA51_short,id_pctA51)" onMouseDown="plusMinus(id_pctA51_short,id_pctA51_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA52"><span class="S_PCT_TTL" id="id_pctA52_ttl" onMouseOver="marcheaza(id_pctA52_ttl,id_pctA52)" onMouseOut="demarcheaza(id_pctA52_ttl,id_pctA52)" onMouseDown="plusMinus(id_pctA52_short,id_pctA52_bdy)">20.<!----></span> <span class="S_PCT_BDY" id="id_pctA52_bdy">Înregistrările în contabilitatea sintetică și analitică se fac pe bază de documente justificative, fie document cu document, fie pe baza unui centralizator în care sunt înscrise mai multe documente justificative al căror conținut se referă la operațiuni de aceeași natură și din aceeași perioadă.<span class="S_PAR" style="display: block; color:black;" id="id_parA53">În cazul operațiunilor contabile pentru care nu se întocmesc documente justificative, înregistrările în contabilitate se fac pe bază de note de contabilitate care au la bază note justificative sau note de calcul, după caz.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA54">În cazul stornărilor, pe documentul inițial se menționează numărul și data notei de contabilitate prin care s-a efectuat stornarea operațiunii, iar în nota de contabilitate de stornare se menționează documentul, data și numărul de ordine ale operațiunii care face obiectul stornării.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA52_short" onMouseOver="marcheaza(id_pctA52_short,id_pctA52)" onMouseOut="demarcheaza(id_pctA52_short,id_pctA52)" onMouseDown="plusMinus(id_pctA52_short,id_pctA52_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA55"><span class="S_PCT_TTL" id="id_pctA55_ttl" onMouseOver="marcheaza(id_pctA55_ttl,id_pctA55)" onMouseOut="demarcheaza(id_pctA55_ttl,id_pctA55)" onMouseDown="plusMinus(id_pctA55_short,id_pctA55_bdy)">21.<!----></span> <span class="S_PCT_BDY" id="id_pctA55_bdy">Înregistrările în contabilitate se fac cronologic, prin respectarea succesiunii documentelor după data de întocmire sau de intrare a acestora în entitate și sistematic, în conturi sintetice și analitice, în conformitate cu regulile stabilite pentru fiecare formă de înregistrare în contabilitate.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA55_short" onMouseOver="marcheaza(id_pctA55_short,id_pctA55)" onMouseOut="demarcheaza(id_pctA55_short,id_pctA55)" onMouseDown="plusMinus(id_pctA55_short,id_pctA55_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA56"><span class="S_PCT_TTL" id="id_pctA56_ttl" onMouseOver="marcheaza(id_pctA56_ttl,id_pctA56)" onMouseOut="demarcheaza(id_pctA56_ttl,id_pctA56)" onMouseDown="plusMinus(id_pctA56_short,id_pctA56_bdy)">22.<!----></span> <span class="S_PCT_BDY" id="id_pctA56_bdy">Modelele documentelor financiar-contabile pot fi adaptate în funcție de specificul și necesitățile entităților, cu condiția respectării conținutului de informații prevăzut la pct. 2, respectiv pct. 10, precum și a normelor de întocmire și utilizare a acestora. Acestea pot fi pretipărite sau editate cu ajutorul sistemelor informatice de prelucrare automată a datelor. Numărul de exemplare al documentelor financiar-contabile se stabilește prin proceduri proprii, în funcție de necesitățile entităților.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA56_short" onMouseOver="marcheaza(id_pctA56_short,id_pctA56)" onMouseOut="demarcheaza(id_pctA56_short,id_pctA56)" onMouseDown="plusMinus(id_pctA56_short,id_pctA56_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA57"><span class="S_PCT_TTL" id="id_pctA57_ttl" onMouseOver="marcheaza(id_pctA57_ttl,id_pctA57)" onMouseOut="demarcheaza(id_pctA57_ttl,id_pctA57)" onMouseDown="plusMinus(id_pctA57_short,id_pctA57_bdy)">23.<!----></span> <span class="S_PCT_BDY" id="id_pctA57_bdy">În situația în care activitatea de întocmire a documentelor financiar-contabile este încredințată în baza unui contract de prestări de servicii unor persoane fizice sau juridice, normele proprii interne de întocmire și utilizare a documentelor respective se adaptează în mod corespunzător, fiind obligatoriu să se prevadă în contract clauze referitoare la întocmirea și utilizarea formularelor în aceste condiții.<span class="S_PAR" style="display: block; color:black;" id="id_parA58">Entitățile pot stabili norme proprii de întocmire și utilizare a documentelor financiar-contabile, cu condiția ca acestea să nu contravină reglementărilor legale în vigoare.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA57_short" onMouseOver="marcheaza(id_pctA57_short,id_pctA57)" onMouseOut="demarcheaza(id_pctA57_short,id_pctA57)" onMouseDown="plusMinus(id_pctA57_short,id_pctA57_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA59"><span class="S_PCT_TTL" id="id_pctA59_ttl" onMouseOver="marcheaza(id_pctA59_ttl,id_pctA59)" onMouseOut="demarcheaza(id_pctA59_ttl,id_pctA59)" onMouseDown="plusMinus(id_pctA59_short,id_pctA59_bdy)">24.<!----></span> <span class="S_PCT_BDY" id="id_pctA59_bdy">Entitățile vor asigura un regim intern de numerotare a documentelor financiar-contabile, astfel:<span class="S_LIN" id="id_linA60"><span class="S_LIN_TTL" id="id_linA60_ttl" onMouseOver="marcheaza(id_linA60_ttl,id_linA60)" onMouseOut="demarcheaza(id_linA60_ttl,id_linA60)" onMouseDown="plusMinus(id_linA60_short,id_linA60_bdy)">– </span><span class="S_LIN_BDY" id="id_linA60_bdy">persoanele care răspund de organizarea și conducerea contabilității vor desemna, prin decizie internă scrisă, o persoană sau mai multe, după caz, care să aibă atribuții privind alocarea și gestionarea numerelor aferente;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA60_short" onMouseOver="marcheaza(id_linA60_short,id_linA60)" onMouseOut="demarcheaza(id_linA60_short,id_linA60)" onMouseDown="plusMinus(id_linA60_short,id_linA60_bdy)"> ... </span></span><span class="S_LIN" id="id_linA61"><span class="S_LIN_TTL" id="id_linA61_ttl" onMouseOver="marcheaza(id_linA61_ttl,id_linA61)" onMouseOut="demarcheaza(id_linA61_ttl,id_linA61)" onMouseDown="plusMinus(id_linA61_short,id_linA61_bdy)">– </span><span class="S_LIN_BDY" id="id_linA61_bdy">fiecare document va avea un număr de ordine sau o serie, după caz, număr sau serie ce trebuie să fie secvențial(ă), stabilit(ă) de entitate. În alocarea numerelor se va ține cont de structura organizatorică, respectiv gestiuni, puncte de lucru, sucursale etc.;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA61_short" onMouseOver="marcheaza(id_linA61_short,id_linA61)" onMouseOut="demarcheaza(id_linA61_short,id_linA61)" onMouseDown="plusMinus(id_linA61_short,id_linA61_bdy)"> ... </span></span><span class="S_LIN" id="id_linA62"><span class="S_LIN_TTL" id="id_linA62_ttl" onMouseOver="marcheaza(id_linA62_ttl,id_linA62)" onMouseOut="demarcheaza(id_linA62_ttl,id_linA62)" onMouseDown="plusMinus(id_linA62_short,id_linA62_bdy)">– </span><span class="S_LIN_BDY" id="id_linA62_bdy">entitățile vor emite proceduri proprii de stabilire și/sau alocare de numere ori serii, după caz, prin care se va menționa, pentru fiecare exercițiu financiar, care este numărul sau seria de la care se emite primul document.</span><span style="display:none" class="S_LIN_SHORT" id="id_linA62_short" onMouseOver="marcheaza(id_linA62_short,id_linA62)" onMouseOut="demarcheaza(id_linA62_short,id_linA62)" onMouseDown="plusMinus(id_linA62_short,id_linA62_bdy)"> ... </span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA59_short" onMouseOver="marcheaza(id_pctA59_short,id_pctA59)" onMouseOut="demarcheaza(id_pctA59_short,id_pctA59)" onMouseDown="plusMinus(id_pctA59_short,id_pctA59_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA63"><span class="S_PCT_TTL" id="id_pctA63_ttl" onMouseOver="marcheaza(id_pctA63_ttl,id_pctA63)" onMouseOut="demarcheaza(id_pctA63_ttl,id_pctA63)" onMouseDown="plusMinus(id_pctA63_short,id_pctA63_bdy)">25.<!----></span> <span class="S_PCT_BDY" id="id_pctA63_bdy">Factura este document justificativ care stă la baza înregistrării în contabilitate a operațiunilor economice.<span class="S_PAR" style="display: block; color:black;" id="id_parA64">Pentru operațiunile economice pentru care, conform prevederilor Codului fiscal, nu există obligația întocmirii facturii, înregistrarea în contabilitate a acestora se efectuează pe baza contractelor încheiate între părți și a documentelor financiar-contabile sau bancare care să ateste acele operațiuni, cum sunt: aviz de însoțire a mărfii, chitanță, dispoziție de plată/încasare, extras de cont bancar, notă de contabilitate etc., după caz.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA63_short" onMouseOver="marcheaza(id_pctA63_short,id_pctA63)" onMouseOut="demarcheaza(id_pctA63_short,id_pctA63)" onMouseDown="plusMinus(id_pctA63_short,id_pctA63_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA65"><span class="S_PCT_TTL" id="id_pctA65_ttl" onMouseOver="marcheaza(id_pctA65_ttl,id_pctA65)" onMouseOut="demarcheaza(id_pctA65_ttl,id_pctA65)" onMouseDown="plusMinus(id_pctA65_short,id_pctA65_bdy)">26.<!----></span> <span class="S_PCT_BDY" id="id_pctA65_bdy">Toate operațiunile privind factura (întocmire, utilizare, arhivare, corectare, reconstituire) se efectuează conform prevederilor Codului fiscal și ale Normelor metodologice de aplicare a acestuia.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA65_short" onMouseOver="marcheaza(id_pctA65_short,id_pctA65)" onMouseOut="demarcheaza(id_pctA65_short,id_pctA65)" onMouseDown="plusMinus(id_pctA65_short,id_pctA65_bdy)"> ... </span></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA10_short" onMouseOver="marcheaza(id_litA10_short,id_litA10)" onMouseOut="demarcheaza(id_litA10_short,id_litA10)" onMouseDown="plusMinus(id_litA10_short,id_litA10_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA66"><span class="S_LIT_TTL" id="id_litA66_ttl" onMouseOver="marcheaza(id_litA66_ttl,id_litA66)" onMouseOut="demarcheaza(id_litA66_ttl,id_litA66)" onMouseDown="plusMinus(id_litA66_short,id_litA66_bdy)">B.<!----></span> <span class="S_LIT_BDY" id="id_litA66_bdy">Reconstituirea documentelor financiar-contabile pierdute, sustrase sau distruse<span class="S_PCT" style="display: block; color:black;" id="id_pctA67"><span class="S_PCT_TTL" id="id_pctA67_ttl" onMouseOver="marcheaza(id_pctA67_ttl,id_pctA67)" onMouseOut="demarcheaza(id_pctA67_ttl,id_pctA67)" onMouseDown="plusMinus(id_pctA67_short,id_pctA67_bdy)">27.<!----></span> <span class="S_PCT_BDY" id="id_pctA67_bdy">Pentru a putea fi înregistrate în contabilitate, operațiunile economico-financiare trebuie să fie justificate cu documente originale, întocmite sau reconstituite potrivit prezentelor norme.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA67_short" onMouseOver="marcheaza(id_pctA67_short,id_pctA67)" onMouseOut="demarcheaza(id_pctA67_short,id_pctA67)" onMouseDown="plusMinus(id_pctA67_short,id_pctA67_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA68"><span class="S_PCT_TTL" id="id_pctA68_ttl" onMouseOver="marcheaza(id_pctA68_ttl,id_pctA68)" onMouseOut="demarcheaza(id_pctA68_ttl,id_pctA68)" onMouseDown="plusMinus(id_pctA68_short,id_pctA68_bdy)">28.<!----></span> <span class="S_PCT_BDY" id="id_pctA68_bdy">Pentru situații în care, prin reglementări speciale, se prevede că documentul original trebuie să fie păstrat la altă entitate, la înregistrarea în contabilitate se utilizează copia documentului respectiv.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA68_short" onMouseOver="marcheaza(id_pctA68_short,id_pctA68)" onMouseOut="demarcheaza(id_pctA68_short,id_pctA68)" onMouseDown="plusMinus(id_pctA68_short,id_pctA68_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA69"><span class="S_PCT_TTL" id="id_pctA69_ttl" onMouseOver="marcheaza(id_pctA69_ttl,id_pctA69)" onMouseOut="demarcheaza(id_pctA69_ttl,id_pctA69)" onMouseDown="plusMinus(id_pctA69_short,id_pctA69_bdy)">29.<!----></span> <span class="S_PCT_BDY" id="id_pctA69_bdy">Orice persoană care constată pierderea, sustragerea sau distrugerea unor documente justificative sau contabile are obligația să aducă la cunoștință, în scris, în termen de 24 de ore de la constatare, conducătorului entității (administratorului entității, ordonatorului de credite sau altei persoane care are obligația gestionării entității respective) situația constatată.<span class="S_PAR" style="display: block; color:black;" id="id_parA70">În termen de cel mult 3 zile lucrătoare de la primirea sesizării, conducătorul entității dispune încheierea unui proces-verbal care să cuprindă:<span class="S_LIN" id="id_linA71"><span class="S_LIN_TTL" id="id_linA71_ttl" onMouseOver="marcheaza(id_linA71_ttl,id_linA71)" onMouseOut="demarcheaza(id_linA71_ttl,id_linA71)" onMouseDown="plusMinus(id_linA71_short,id_linA71_bdy)">– </span><span class="S_LIN_BDY" id="id_linA71_bdy">datele de identificare a documentelor dispărute;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA71_short" onMouseOver="marcheaza(id_linA71_short,id_linA71)" onMouseOut="demarcheaza(id_linA71_short,id_linA71)" onMouseDown="plusMinus(id_linA71_short,id_linA71_bdy)"> ... </span></span><span class="S_LIN" id="id_linA72"><span class="S_LIN_TTL" id="id_linA72_ttl" onMouseOver="marcheaza(id_linA72_ttl,id_linA72)" onMouseOut="demarcheaza(id_linA72_ttl,id_linA72)" onMouseDown="plusMinus(id_linA72_short,id_linA72_bdy)">– </span><span class="S_LIN_BDY" id="id_linA72_bdy">numele și prenumele persoanei responsabile cu păstrarea documentelor;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA72_short" onMouseOver="marcheaza(id_linA72_short,id_linA72)" onMouseOut="demarcheaza(id_linA72_short,id_linA72)" onMouseDown="plusMinus(id_linA72_short,id_linA72_bdy)"> ... </span></span><span class="S_LIN" id="id_linA73"><span class="S_LIN_TTL" id="id_linA73_ttl" onMouseOver="marcheaza(id_linA73_ttl,id_linA73)" onMouseOut="demarcheaza(id_linA73_ttl,id_linA73)" onMouseDown="plusMinus(id_linA73_short,id_linA73_bdy)">– </span><span class="S_LIN_BDY" id="id_linA73_bdy">data și împrejurările în care s-a constatat lipsa documentelor respective.</span><span style="display:none" class="S_LIN_SHORT" id="id_linA73_short" onMouseOver="marcheaza(id_linA73_short,id_linA73)" onMouseOut="demarcheaza(id_linA73_short,id_linA73)" onMouseDown="plusMinus(id_linA73_short,id_linA73_bdy)"> ... </span></span><!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA74">Procesul-verbal se semnează de către:<span class="S_LIN" id="id_linA75"><span class="S_LIN_TTL" id="id_linA75_ttl" onMouseOver="marcheaza(id_linA75_ttl,id_linA75)" onMouseOut="demarcheaza(id_linA75_ttl,id_linA75)" onMouseDown="plusMinus(id_linA75_short,id_linA75_bdy)">– </span><span class="S_LIN_BDY" id="id_linA75_bdy">conducătorul entității;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA75_short" onMouseOver="marcheaza(id_linA75_short,id_linA75)" onMouseOut="demarcheaza(id_linA75_short,id_linA75)" onMouseDown="plusMinus(id_linA75_short,id_linA75_bdy)"> ... </span></span><span class="S_LIN" id="id_linA76"><span class="S_LIN_TTL" id="id_linA76_ttl" onMouseOver="marcheaza(id_linA76_ttl,id_linA76)" onMouseOut="demarcheaza(id_linA76_ttl,id_linA76)" onMouseDown="plusMinus(id_linA76_short,id_linA76_bdy)">– </span><span class="S_LIN_BDY" id="id_linA76_bdy">conducătorul compartimentului financiar-contabil al entității sau persoana împuternicită să îndeplinească această funcție;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA76_short" onMouseOver="marcheaza(id_linA76_short,id_linA76)" onMouseOut="demarcheaza(id_linA76_short,id_linA76)" onMouseDown="plusMinus(id_linA76_short,id_linA76_bdy)"> ... </span></span><span class="S_LIN" id="id_linA77"><span class="S_LIN_TTL" id="id_linA77_ttl" onMouseOver="marcheaza(id_linA77_ttl,id_linA77)" onMouseOut="demarcheaza(id_linA77_ttl,id_linA77)" onMouseDown="plusMinus(id_linA77_short,id_linA77_bdy)">– </span><span class="S_LIN_BDY" id="id_linA77_bdy">persoana responsabilă cu păstrarea documentelor;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA77_short" onMouseOver="marcheaza(id_linA77_short,id_linA77)" onMouseOut="demarcheaza(id_linA77_short,id_linA77)" onMouseDown="plusMinus(id_linA77_short,id_linA77_bdy)"> ... </span></span><span class="S_LIN" id="id_linA78"><span class="S_LIN_TTL" id="id_linA78_ttl" onMouseOver="marcheaza(id_linA78_ttl,id_linA78)" onMouseOut="demarcheaza(id_linA78_ttl,id_linA78)" onMouseDown="plusMinus(id_linA78_short,id_linA78_bdy)">– </span><span class="S_LIN_BDY" id="id_linA78_bdy">șeful ierarhic al persoanei responsabile cu păstrarea documentelor, după caz.</span><span style="display:none" class="S_LIN_SHORT" id="id_linA78_short" onMouseOver="marcheaza(id_linA78_short,id_linA78)" onMouseOut="demarcheaza(id_linA78_short,id_linA78)" onMouseDown="plusMinus(id_linA78_short,id_linA78_bdy)"> ... </span></span><!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA79">Când dispariția documentelor se datorează însuși conducătorului entității, măsurile prevăzute de prezentele norme se iau de către ceilalți membri ai consiliului de administrație, după caz.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA80">În condițiile în care documentul pierdut, sustras sau distrus a fost întocmit de către entitate într-un singur exemplar, reconstituirea acestuia se face urmând aceleași proceduri prin care a fost întocmit documentul original, menționându-se în antetul documentului că este reconstituit, și stă la baza înregistrărilor în contabilitate.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA69_short" onMouseOver="marcheaza(id_pctA69_short,id_pctA69)" onMouseOut="demarcheaza(id_pctA69_short,id_pctA69)" onMouseDown="plusMinus(id_pctA69_short,id_pctA69_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA81"><span class="S_PCT_TTL" id="id_pctA81_ttl" onMouseOver="marcheaza(id_pctA81_ttl,id_pctA81)" onMouseOut="demarcheaza(id_pctA81_ttl,id_pctA81)" onMouseDown="plusMinus(id_pctA81_short,id_pctA81_bdy)">30.<!----></span> <span class="S_PCT_BDY" id="id_pctA81_bdy">Ori de câte ori dispariția documentelor poate constitui infracțiune, se înștiințează imediat organele de urmărire penală.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA81_short" onMouseOver="marcheaza(id_pctA81_short,id_pctA81)" onMouseOut="demarcheaza(id_pctA81_short,id_pctA81)" onMouseDown="plusMinus(id_pctA81_short,id_pctA81_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA82"><span class="S_PCT_TTL" id="id_pctA82_ttl" onMouseOver="marcheaza(id_pctA82_ttl,id_pctA82)" onMouseOut="demarcheaza(id_pctA82_ttl,id_pctA82)" onMouseDown="plusMinus(id_pctA82_short,id_pctA82_bdy)">31.<!----></span> <span class="S_PCT_BDY" id="id_pctA82_bdy">Reconstituirea documentelor se face pe baza unui "dosar de reconstituire".<span class="S_PAR" style="display: block; color:black;" id="id_parA83">Dosarul de reconstituire trebuie să conțină elementele care au legătură cu constatarea și reconstituirea documentelor dispărute, și anume:<span class="S_LIN" id="id_linA84"><span class="S_LIN_TTL" id="id_linA84_ttl" onMouseOver="marcheaza(id_linA84_ttl,id_linA84)" onMouseOut="demarcheaza(id_linA84_ttl,id_linA84)" onMouseDown="plusMinus(id_linA84_short,id_linA84_bdy)">– </span><span class="S_LIN_BDY" id="id_linA84_bdy">sesizarea scrisă a persoanei care a constatat dispariția documentelor;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA84_short" onMouseOver="marcheaza(id_linA84_short,id_linA84)" onMouseOut="demarcheaza(id_linA84_short,id_linA84)" onMouseDown="plusMinus(id_linA84_short,id_linA84_bdy)"> ... </span></span><span class="S_LIN" id="id_linA85"><span class="S_LIN_TTL" id="id_linA85_ttl" onMouseOver="marcheaza(id_linA85_ttl,id_linA85)" onMouseOut="demarcheaza(id_linA85_ttl,id_linA85)" onMouseDown="plusMinus(id_linA85_short,id_linA85_bdy)">– </span><span class="S_LIN_BDY" id="id_linA85_bdy">procesul-verbal de constatare a pierderii, sustragerii sau distrugerii;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA85_short" onMouseOver="marcheaza(id_linA85_short,id_linA85)" onMouseOut="demarcheaza(id_linA85_short,id_linA85)" onMouseDown="plusMinus(id_linA85_short,id_linA85_bdy)"> ... </span></span><span class="S_LIN" id="id_linA86"><span class="S_LIN_TTL" id="id_linA86_ttl" onMouseOver="marcheaza(id_linA86_ttl,id_linA86)" onMouseOut="demarcheaza(id_linA86_ttl,id_linA86)" onMouseDown="plusMinus(id_linA86_short,id_linA86_bdy)">– </span><span class="S_LIN_BDY" id="id_linA86_bdy">dovada sesizării organelor de urmărire penală sau dovada sancționării disciplinare a persoanei vinovate, după caz;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA86_short" onMouseOver="marcheaza(id_linA86_short,id_linA86)" onMouseOut="demarcheaza(id_linA86_short,id_linA86)" onMouseDown="plusMinus(id_linA86_short,id_linA86_bdy)"> ... </span></span><span class="S_LIN" id="id_linA87"><span class="S_LIN_TTL" id="id_linA87_ttl" onMouseOver="marcheaza(id_linA87_ttl,id_linA87)" onMouseOut="demarcheaza(id_linA87_ttl,id_linA87)" onMouseDown="plusMinus(id_linA87_short,id_linA87_bdy)">– </span><span class="S_LIN_BDY" id="id_linA87_bdy">dispoziția scrisă a conducătorului entității pentru reconstituirea documentelor;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA87_short" onMouseOver="marcheaza(id_linA87_short,id_linA87)" onMouseOut="demarcheaza(id_linA87_short,id_linA87)" onMouseDown="plusMinus(id_linA87_short,id_linA87_bdy)"> ... </span></span><span class="S_LIN" id="id_linA88"><span class="S_LIN_TTL" id="id_linA88_ttl" onMouseOver="marcheaza(id_linA88_ttl,id_linA88)" onMouseOut="demarcheaza(id_linA88_ttl,id_linA88)" onMouseDown="plusMinus(id_linA88_short,id_linA88_bdy)">– </span><span class="S_LIN_BDY" id="id_linA88_bdy">o copie a documentelor reconstituite.</span><span style="display:none" class="S_LIN_SHORT" id="id_linA88_short" onMouseOver="marcheaza(id_linA88_short,id_linA88)" onMouseOut="demarcheaza(id_linA88_short,id_linA88)" onMouseDown="plusMinus(id_linA88_short,id_linA88_bdy)"> ... </span></span><!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA82_short" onMouseOver="marcheaza(id_pctA82_short,id_pctA82)" onMouseOut="demarcheaza(id_pctA82_short,id_pctA82)" onMouseDown="plusMinus(id_pctA82_short,id_pctA82_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA89"><span class="S_PCT_TTL" id="id_pctA89_ttl" onMouseOver="marcheaza(id_pctA89_ttl,id_pctA89)" onMouseOut="demarcheaza(id_pctA89_ttl,id_pctA89)" onMouseDown="plusMinus(id_pctA89_short,id_pctA89_bdy)">32.<!----></span> <span class="S_PCT_BDY" id="id_pctA89_bdy">În cazul în care documentul dispărut a fost emis de altă entitate, reconstituirea se va face de entitatea emitentă, prin realizarea unei copii de pe documentul existent la entitatea emitentă. În acest caz, entitatea emitentă va trimite entității solicitante, în termen de cel mult 10 zile lucrătoare de la primirea cererii, documentul reconstituit.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA89_short" onMouseOver="marcheaza(id_pctA89_short,id_pctA89)" onMouseOut="demarcheaza(id_pctA89_short,id_pctA89)" onMouseDown="plusMinus(id_pctA89_short,id_pctA89_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA90"><span class="S_PCT_TTL" id="id_pctA90_ttl" onMouseOver="marcheaza(id_pctA90_ttl,id_pctA90)" onMouseOut="demarcheaza(id_pctA90_ttl,id_pctA90)" onMouseDown="plusMinus(id_pctA90_short,id_pctA90_bdy)">33.<!----></span> <span class="S_PCT_BDY" id="id_pctA90_bdy">Documentele reconstituite vor purta în mod obligatoriu și vizibil mențiunea "DUPLICAT", cu specificarea numărului și a datei dispoziției pe baza căreia s-a făcut reconstituirea.<span class="S_PAR" style="display: block; color:black;" id="id_parA91">Documentele reconstituite conform prezentelor norme constituie baza legală pentru efectuarea înregistrărilor în contabilitate.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA92">Nu se pot reconstitui documentele de cheltuieli nenominale (bonuri, bilete de călătorie nenominale etc.) pierdute, sustrase sau distruse înainte de a fi înregistrate în contabilitate.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA90_short" onMouseOver="marcheaza(id_pctA90_short,id_pctA90)" onMouseOut="demarcheaza(id_pctA90_short,id_pctA90)" onMouseDown="plusMinus(id_pctA90_short,id_pctA90_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA93"><span class="S_PCT_TTL" id="id_pctA93_ttl" onMouseOver="marcheaza(id_pctA93_ttl,id_pctA93)" onMouseOut="demarcheaza(id_pctA93_ttl,id_pctA93)" onMouseDown="plusMinus(id_pctA93_short,id_pctA93_bdy)">34.<!----></span> <span class="S_PCT_BDY" id="id_pctA93_bdy">Procedura de reconstituire în cazul pierderii, sustragerii sau distrugerii documentelor financiar-contabile se va finaliza în termen de maximum 30 de zile de la constatare, iar, în caz de forță majoră, în termen de 90 de zile de la constatarea încetării acesteia.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA93_short" onMouseOver="marcheaza(id_pctA93_short,id_pctA93)" onMouseOut="demarcheaza(id_pctA93_short,id_pctA93)" onMouseDown="plusMinus(id_pctA93_short,id_pctA93_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA94"><span class="S_PCT_TTL" id="id_pctA94_ttl" onMouseOver="marcheaza(id_pctA94_ttl,id_pctA94)" onMouseOut="demarcheaza(id_pctA94_ttl,id_pctA94)" onMouseDown="plusMinus(id_pctA94_short,id_pctA94_bdy)">35.<!----></span> <span class="S_PCT_BDY" id="id_pctA94_bdy">În cazul găsirii ulterioare a originalului, documentul reconstituit se anulează pe baza unui proces-verbal și se păstrează împreună cu procesul-verbal, în dosarul de reconstituire.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA94_short" onMouseOver="marcheaza(id_pctA94_short,id_pctA94)" onMouseOut="demarcheaza(id_pctA94_short,id_pctA94)" onMouseDown="plusMinus(id_pctA94_short,id_pctA94_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA86004320"><span class="S_PCT_TTL" id="id_pctA86004320_ttl" onMouseOver="marcheaza(id_pctA86004320_ttl,id_pctA86004320)" onMouseOut="demarcheaza(id_pctA86004320_ttl,id_pctA86004320)" onMouseDown="plusMinus(id_pctA86004320_short,id_pctA86004320_bdy)">35^1.<!----></span> <span class="S_PCT_BDY" id="id_pctA86004320_bdy">Reconstituirea prevăzută de prezentele norme este obligatorie pentru documentele financiar-contabile pierdute, sustrase sau distruse, care se află în termenul de păstrare prevăzut de legea contabilității.<span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA27019161">
+			(la 24-05-2023, 
+			Litera B.  a fost completată de <A href="~/../../../Public/DetaliiDocumentAfis/270686">Punctul 2, Articolul I din ORDINUL nr. 1.447 din 2 mai 2023, publicat în MONITORUL OFICIAL nr. 453 din 24 mai 2023</A>
+			)
+	</span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA86004320_short" onMouseOver="marcheaza(id_pctA86004320_short,id_pctA86004320)" onMouseOut="demarcheaza(id_pctA86004320_short,id_pctA86004320)" onMouseDown="plusMinus(id_pctA86004320_short,id_pctA86004320_bdy)"> ... </span></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA66_short" onMouseOver="marcheaza(id_litA66_short,id_litA66)" onMouseOut="demarcheaza(id_litA66_short,id_litA66)" onMouseDown="plusMinus(id_litA66_short,id_litA66_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA95"><span class="S_LIT_TTL" id="id_litA95_ttl" onMouseOver="marcheaza(id_litA95_ttl,id_litA95)" onMouseOut="demarcheaza(id_litA95_ttl,id_litA95)" onMouseDown="plusMinus(id_litA95_short,id_litA95_bdy)">C.<!----></span> <span class="S_LIT_BDY" id="id_litA95_bdy">Păstrarea și arhivarea registrelor de contabilitate și a celorlalte documente financiar-contabile<span class="S_PCT" style="display: block; color:black;" id="id_pctA96"><span class="S_PCT_TTL" id="id_pctA96_ttl" onMouseOver="marcheaza(id_pctA96_ttl,id_pctA96)" onMouseOut="demarcheaza(id_pctA96_ttl,id_pctA96)" onMouseDown="plusMinus(id_pctA96_short,id_pctA96_bdy)">36.<!----></span> <span class="S_PCT_BDY" id="id_pctA96_bdy">Entitățile au obligația păstrării în arhiva lor a registrelor de contabilitate, a celorlalte documente contabile, precum și a documentelor justificative care stau la baza înregistrărilor în contabilitate a operațiunilor economico-financiare.<span class="S_PAR" style="display: block; color:black;" id="id_parA97">Păstrarea documentelor justificative, a registrelor de contabilitate și a celorlalte documente financiar-contabile se face, după caz, la domiciliul fiscal, la sediul social sau la sediile secundare, pe hârtie sau pe suport electronic.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA98">În cazul păstrării pe suport electronic a documentelor financiar-contabile, inclusiv a celor care au fost convertite din format hârtie în format electronic, nu este obligatorie aplicarea prevederilor <A href="~/../../../Public/DetaliiDocumentAfis/155770">Legii nr. 135/2007</A> privind arhivarea documentelor în formă electronică, republicată.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA99">În cazul în care evidența contabilă este ținută cu ajutorul programelor informatice, documentele financiar-contabile se pot păstra pe suporturi tehnice, pe durata termenelor prevăzute de legislația în vigoare, cu condiția să poată fi listate în orice moment, în funcție de necesitățile entității sau la cererea organelor de control.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA96_short" onMouseOver="marcheaza(id_pctA96_short,id_pctA96)" onMouseOut="demarcheaza(id_pctA96_short,id_pctA96)" onMouseDown="plusMinus(id_pctA96_short,id_pctA96_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA100"><span class="S_PCT_TTL" id="id_pctA100_ttl" onMouseOver="marcheaza(id_pctA100_ttl,id_pctA100)" onMouseOut="demarcheaza(id_pctA100_ttl,id_pctA100)" onMouseDown="plusMinus(id_pctA100_short,id_pctA100_bdy)">37.<!----></span> <span class="S_PCT_BDY" id="id_pctA100_bdy">Documentele financiar-contabile se pot păstra, în baza unor contracte de prestări de servicii, cu titlu oneros, și de către operatori economici autorizați, potrivit legii, în prestarea de servicii arhivistice. Și în acest caz răspunderea privind păstrarea documentelor financiar-contabile revine administratorului, ordonatorului de credite sau altei persoane care are obligația gestionării entității beneficiare.<span class="S_PAR" style="display: block; color:black;" id="id_parA101">Cu ocazia controalelor efectuate de organele abilitate, entitățile trebuie să prezinte, la cererea acestora, documentele solicitate.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA100_short" onMouseOver="marcheaza(id_pctA100_short,id_pctA100)" onMouseOut="demarcheaza(id_pctA100_short,id_pctA100)" onMouseDown="plusMinus(id_pctA100_short,id_pctA100_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA41019905"><span class="S_PCT_TTL" id="id_pctA41019905_ttl" onMouseOver="marcheaza(id_pctA41019905_ttl,id_pctA41019905)" onMouseOut="demarcheaza(id_pctA41019905_ttl,id_pctA41019905)" onMouseDown="plusMinus(id_pctA41019905_short,id_pctA41019905_bdy)">37^1.<!----></span> <span class="S_PCT_BDY" id="id_pctA41019905_bdy">Registrele de contabilitate obligatorii și documentele justificative care stau la baza înregistrărilor în contabilitatea financiară se păstrează în arhiva persoanelor prevăzute la <A href="~/../../../Public/DetaliiDocumentAfis/263544">art. 1 din legea contabilității</A> timp de 5 ani calculați de la data de 1 iulie a anului următor celui încheierii exercițiului financiar în care au fost întocmite, inclusiv pentru statele de salarii.<span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA27019174">
+			(la 24-05-2023, 
+			Litera C.  a fost completată de <A href="~/../../../Public/DetaliiDocumentAfis/270686">Punctul 3, Articolul I din ORDINUL nr. 1.447 din 2 mai 2023, publicat în MONITORUL OFICIAL nr. 453 din 24 mai 2023</A>
+			)
+	</span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA41019905_short" onMouseOver="marcheaza(id_pctA41019905_short,id_pctA41019905)" onMouseOut="demarcheaza(id_pctA41019905_short,id_pctA41019905)" onMouseDown="plusMinus(id_pctA41019905_short,id_pctA41019905_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA86004322"><span class="S_PCT_TTL" id="id_pctA86004322_ttl" onMouseOver="marcheaza(id_pctA86004322_ttl,id_pctA86004322)" onMouseOut="demarcheaza(id_pctA86004322_ttl,id_pctA86004322)" onMouseDown="plusMinus(id_pctA86004322_short,id_pctA86004322_bdy)">38.<!----></span> <span class="S_PCT_BDY" id="id_pctA86004322_bdy">Abrogat.<span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA27019188">
+			(la 24-05-2023, 
+			Punctul 38.  din  Litera C.  a fost abrogat de <A href="~/../../../Public/DetaliiDocumentAfis/270686">Punctul 4, Articolul I din ORDINUL nr. 1.447 din 2 mai 2023, publicat în MONITORUL OFICIAL nr. 453 din 24 mai 2023</A>
+			)
+	</span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA86004322_short" onMouseOver="marcheaza(id_pctA86004322_short,id_pctA86004322)" onMouseOut="demarcheaza(id_pctA86004322_short,id_pctA86004322)" onMouseDown="plusMinus(id_pctA86004322_short,id_pctA86004322_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:blue;" id="id_pctA86004324"><span class="S_PCT_TTL" id="id_pctA86004324_ttl" onMouseOver="marcheaza(id_pctA86004324_ttl,id_pctA86004324)" onMouseOut="demarcheaza(id_pctA86004324_ttl,id_pctA86004324)" onMouseDown="plusMinus(id_pctA86004324_short,id_pctA86004324_bdy)">39.<!----></span> <span class="S_PCT_BDY" id="id_pctA86004324_bdy">Abrogat.<span class="S_PAR" style="display: block; color:blue;white-space:normal;line-height:100%;" id="id_parA27019209">
+			(la 24-05-2023, 
+			Punctul 39.  din  Litera C.  a fost abrogat de <A href="~/../../../Public/DetaliiDocumentAfis/270686">Punctul 4, Articolul I din ORDINUL nr. 1.447 din 2 mai 2023, publicat în MONITORUL OFICIAL nr. 453 din 24 mai 2023</A>
+			)
+	</span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA86004324_short" onMouseOver="marcheaza(id_pctA86004324_short,id_pctA86004324)" onMouseOut="demarcheaza(id_pctA86004324_short,id_pctA86004324)" onMouseDown="plusMinus(id_pctA86004324_short,id_pctA86004324_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA104"><span class="S_PCT_TTL" id="id_pctA104_ttl" onMouseOver="marcheaza(id_pctA104_ttl,id_pctA104)" onMouseOut="demarcheaza(id_pctA104_ttl,id_pctA104)" onMouseDown="plusMinus(id_pctA104_short,id_pctA104_bdy)">40.<!----></span> <span class="S_PCT_BDY" id="id_pctA104_bdy">Documentele financiar-contabile care atestă proveniența unor bunuri cu durată de viață mai mare de 5 ani se păstrează pe perioada corespunzătoare duratei de viață utilă a acestora.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA104_short" onMouseOver="marcheaza(id_pctA104_short,id_pctA104)" onMouseOut="demarcheaza(id_pctA104_short,id_pctA104)" onMouseDown="plusMinus(id_pctA104_short,id_pctA104_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA105"><span class="S_PCT_TTL" id="id_pctA105_ttl" onMouseOver="marcheaza(id_pctA105_ttl,id_pctA105)" onMouseOut="demarcheaza(id_pctA105_ttl,id_pctA105)" onMouseDown="plusMinus(id_pctA105_short,id_pctA105_bdy)">41.<!----></span> <span class="S_PCT_BDY" id="id_pctA105_bdy">În caz de încetare a activității societăților, documentele financiar-contabile se păstrează în conformitate cu prevederile <A href="~/../../../Public/DetaliiDocumentAfis/56732">Legii societăților nr. 31/1990</A>, republicată, cu modificările și completările ulterioare, sau se predau la arhivele statului, în conformitate cu prevederile legale în materie, după caz.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA105_short" onMouseOver="marcheaza(id_pctA105_short,id_pctA105)" onMouseOut="demarcheaza(id_pctA105_short,id_pctA105)" onMouseDown="plusMinus(id_pctA105_short,id_pctA105_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA106"><span class="S_PCT_TTL" id="id_pctA106_ttl" onMouseOver="marcheaza(id_pctA106_ttl,id_pctA106)" onMouseOut="demarcheaza(id_pctA106_ttl,id_pctA106)" onMouseDown="plusMinus(id_pctA106_short,id_pctA106_bdy)">42.<!----></span> <span class="S_PCT_BDY" id="id_pctA106_bdy">Arhivarea documentelor financiar-contabile în format hârtie se face în conformitate cu prevederile legale și cu respectarea următoarelor reguli generale:<span class="S_LIN" id="id_linA107"><span class="S_LIN_TTL" id="id_linA107_ttl" onMouseOver="marcheaza(id_linA107_ttl,id_linA107)" onMouseOut="demarcheaza(id_linA107_ttl,id_linA107)" onMouseDown="plusMinus(id_linA107_short,id_linA107_bdy)">– </span><span class="S_LIN_BDY" id="id_linA107_bdy">documentele se grupează în dosare, numerotate și șnuruite;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA107_short" onMouseOver="marcheaza(id_linA107_short,id_linA107)" onMouseOut="demarcheaza(id_linA107_short,id_linA107)" onMouseDown="plusMinus(id_linA107_short,id_linA107_bdy)"> ... </span></span><span class="S_LIN" id="id_linA108"><span class="S_LIN_TTL" id="id_linA108_ttl" onMouseOver="marcheaza(id_linA108_ttl,id_linA108)" onMouseOut="demarcheaza(id_linA108_ttl,id_linA108)" onMouseDown="plusMinus(id_linA108_short,id_linA108_bdy)">– </span><span class="S_LIN_BDY" id="id_linA108_bdy">gruparea documentelor în dosare se face cronologic și sistematic, în cadrul fiecărui exercițiu financiar la care se referă acestea. Dosarele astfel arhivate se păstrează în spații amenajate în acest scop, asigurate împotriva degradării, distrugerii sau sustragerii, dotate cu mijloace de prevenire a incendiilor.</span><span style="display:none" class="S_LIN_SHORT" id="id_linA108_short" onMouseOver="marcheaza(id_linA108_short,id_linA108)" onMouseOut="demarcheaza(id_linA108_short,id_linA108)" onMouseDown="plusMinus(id_linA108_short,id_linA108_bdy)"> ... </span></span><span class="S_PAR" style="display: block; color:black;" id="id_parA109">Evidența documentelor în arhivă se ține cu ajutorul Registrului de evidență, potrivit <A href="~/../../../Public/DetaliiDocumentAfis/157561">Legii Arhivelor Naționale nr. 16/1996</A>, republicată, în care sunt consemnate dosarele și documentele intrate în arhivă, precum și mișcarea acestora în decursul timpului.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA106_short" onMouseOver="marcheaza(id_pctA106_short,id_pctA106)" onMouseOut="demarcheaza(id_pctA106_short,id_pctA106)" onMouseDown="plusMinus(id_pctA106_short,id_pctA106_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA110"><span class="S_PCT_TTL" id="id_pctA110_ttl" onMouseOver="marcheaza(id_pctA110_ttl,id_pctA110)" onMouseOut="demarcheaza(id_pctA110_ttl,id_pctA110)" onMouseDown="plusMinus(id_pctA110_short,id_pctA110_bdy)">43.<!----></span> <span class="S_PCT_BDY" id="id_pctA110_bdy">Eliminarea din arhiva entității a documentelor financiar-contabile, al căror termen de păstrare prevăzut în prezentele norme a expirat, se face de către o comisie constituită potrivit procedurilor proprii ale entității. În această situație se întocmește un proces-verbal și se consemnează scăderea documentelor eliminate din Registrul de evidență al arhivei.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA110_short" onMouseOver="marcheaza(id_pctA110_short,id_pctA110)" onMouseOut="demarcheaza(id_pctA110_short,id_pctA110)" onMouseDown="plusMinus(id_pctA110_short,id_pctA110_bdy)"> ... </span></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA95_short" onMouseOver="marcheaza(id_litA95_short,id_litA95)" onMouseOut="demarcheaza(id_litA95_short,id_litA95)" onMouseDown="plusMinus(id_litA95_short,id_litA95_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA111"><span class="S_LIT_TTL" id="id_litA111_ttl" onMouseOver="marcheaza(id_litA111_ttl,id_litA111)" onMouseOut="demarcheaza(id_litA111_ttl,id_litA111)" onMouseDown="plusMinus(id_litA111_short,id_litA111_bdy)">D.<!----></span> <span class="S_LIT_BDY" id="id_litA111_bdy">Registrele de contabilitate<span class="S_LIT" style="display: block; color:black;" id="id_litA112"><span class="S_LIT_TTL" id="id_litA112_ttl" onMouseOver="marcheaza(id_litA112_ttl,id_litA112)" onMouseOut="demarcheaza(id_litA112_ttl,id_litA112)" onMouseDown="plusMinus(id_litA112_short,id_litA112_bdy)">D.1.<!----></span> <span class="S_LIT_BDY" id="id_litA112_bdy">Registrele de contabilitate obligatorii pentru entitățile care conduc evidența contabilă pe baza regulilor contabilității în partidă dublă<span class="S_PCT" style="display: block; color:black;" id="id_pctA113"><span class="S_PCT_TTL" id="id_pctA113_ttl" onMouseOver="marcheaza(id_pctA113_ttl,id_pctA113)" onMouseOut="demarcheaza(id_pctA113_ttl,id_pctA113)" onMouseDown="plusMinus(id_pctA113_short,id_pctA113_bdy)">44.<!----></span> <span class="S_PCT_BDY" id="id_pctA113_bdy">Potrivit prevederilor legii contabilității, registrele de contabilitate obligatorii sunt: Registrul-jurnal (cod 14-1-1), Registrul-inventar (cod 14-1-2) și Cartea mare (cod 14-1-3).<span class="S_PAR" style="display: block; color:black;" id="id_parA114">Registrele de contabilitate se utilizează în strictă concordanță cu destinația acestora și se prezintă în mod ordonat și completate astfel încât să permită în orice moment identificarea și controlul operațiunilor contabile efectuate.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA115">Registrele de contabilitate se pot prezenta sub formă de registre, foi volante sau listări informatice, după caz.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA116">Numerotarea paginilor registrelor se face în ordine crescătoare, iar volumele se numerotează în ordinea completării lor.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA113_short" onMouseOver="marcheaza(id_pctA113_short,id_pctA113)" onMouseOut="demarcheaza(id_pctA113_short,id_pctA113)" onMouseDown="plusMinus(id_pctA113_short,id_pctA113_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA117"><span class="S_PCT_TTL" id="id_pctA117_ttl" onMouseOver="marcheaza(id_pctA117_ttl,id_pctA117)" onMouseOut="demarcheaza(id_pctA117_ttl,id_pctA117)" onMouseDown="plusMinus(id_pctA117_short,id_pctA117_bdy)">45.<!----></span> <span class="S_PCT_BDY" id="id_pctA117_bdy">Registrul-jurnal (cod 14-1-1) este un document contabil obligatoriu în care se înregistrează cronologic toate operațiunile economico-financiare efectuate de entitate.<span class="S_PAR" style="display: block; color:black;" id="id_parA118">Operațiunile de aceeași natură, realizate în același loc de activitate (atelier, secție etc.), pot fi recapitulate într-un document centralizator, denumit jurnal auxiliar, care stă la baza înregistrării în Registrul-jurnal.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA119">Entitățile pot utiliza jurnale auxiliare pentru: operațiunile de casă și bancă, decontările cu furnizorii, situația încasării-achitării facturilor etc.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA120">Înregistrările din Registrul-jurnal trebuie să cuprindă elemente cu privire la: felul, numărul și data documentului justificativ, explicații privind operațiunile respective și conturile sintetice debitoare și creditoare în care s-au înregistrat sumele corespunzătoare operațiunilor efectuate.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA121">Entitățile care utilizează jurnale auxiliare pot înregistra în Registrul-jurnal sumele centralizate pe conturi, preluate din aceste jurnale. Registrul-jurnal se editează la cererea organelor de control și pentru necesitățile entității.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA117_short" onMouseOver="marcheaza(id_pctA117_short,id_pctA117)" onMouseOut="demarcheaza(id_pctA117_short,id_pctA117)" onMouseDown="plusMinus(id_pctA117_short,id_pctA117_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA122"><span class="S_PCT_TTL" id="id_pctA122_ttl" onMouseOver="marcheaza(id_pctA122_ttl,id_pctA122)" onMouseOut="demarcheaza(id_pctA122_ttl,id_pctA122)" onMouseDown="plusMinus(id_pctA122_short,id_pctA122_bdy)">46.<!----></span> <span class="S_PCT_BDY" id="id_pctA122_bdy">Registrul-inventar (cod 14-1-2) este un document contabil obligatoriu în care se înregistrează elementele de natura activelor, datoriilor și capitalurilor proprii, grupate în funcție de natura lor, inventariate de entitate, potrivit legii.<span class="S_PAR" style="display: block; color:black;" id="id_parA123">Registrul-inventar se completează pe baza inventarierii faptice a fiecărui cont de activ și de pasiv. Elementele de natura activelor, datoriilor și capitalurilor proprii înscrise în Registrul-inventar au la bază listele de inventariere sau alte documente care justifică natura acestor elemente existente la sfârșitul exercițiului financiar.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA124">În cazul în care inventarierea are loc pe parcursul anului, în Registrul-inventar se înregistrează soldurile existente la data inventarierii, la care se adaugă rulajele intrărilor și se scad rulajele ieșirilor de la data inventarierii până la data încheierii exercițiului financiar.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA122_short" onMouseOver="marcheaza(id_pctA122_short,id_pctA122)" onMouseOut="demarcheaza(id_pctA122_short,id_pctA122)" onMouseDown="plusMinus(id_pctA122_short,id_pctA122_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA125"><span class="S_PCT_TTL" id="id_pctA125_ttl" onMouseOver="marcheaza(id_pctA125_ttl,id_pctA125)" onMouseOut="demarcheaza(id_pctA125_ttl,id_pctA125)" onMouseDown="plusMinus(id_pctA125_short,id_pctA125_bdy)">47.<!----></span> <span class="S_PCT_BDY" id="id_pctA125_bdy">Cartea mare (cod 14-1-3) este un document contabil obligatoriu în care se înregistrează lunar și sistematic, prin regruparea conturilor, mișcarea și existența tuturor elementelor de natura activelor, datoriilor și capitalurilor proprii, la un moment dat. Acesta este un document contabil de sinteză și sistematizare și conține simbolul contului și al conturilor corespondente (debitoare sau creditoare), rulajul debitor și creditor, precum și soldul contului. Registrul Cartea mare poate conține câte o filă pentru fiecare cont sintetic utilizat de entitate. Acest registru stă la baza întocmirii balanței de verificare.<span class="S_PAR" style="display: block; color:black;" id="id_parA126">Registrul Cartea mare poate fi înlocuit cu Fișa de cont pentru operațiuni diverse.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA127">Listarea registrului Cartea mare se efectuează la cererea organelor de control, precum și pentru necesitățile entității.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA125_short" onMouseOver="marcheaza(id_pctA125_short,id_pctA125)" onMouseOut="demarcheaza(id_pctA125_short,id_pctA125)" onMouseDown="plusMinus(id_pctA125_short,id_pctA125_bdy)"> ... </span></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA112_short" onMouseOver="marcheaza(id_litA112_short,id_litA112)" onMouseOut="demarcheaza(id_litA112_short,id_litA112)" onMouseDown="plusMinus(id_litA112_short,id_litA112_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA128"><span class="S_LIT_TTL" id="id_litA128_ttl" onMouseOver="marcheaza(id_litA128_ttl,id_litA128)" onMouseOut="demarcheaza(id_litA128_ttl,id_litA128)" onMouseDown="plusMinus(id_litA128_short,id_litA128_bdy)">D.2.<!----></span> <span class="S_LIT_BDY" id="id_litA128_bdy">Registrele de contabilitate obligatorii pentru persoanele care conduc evidența contabilă pe baza regulilor contabilității în partidă simplă<span class="S_PCT" style="display: block; color:black;" id="id_pctA129"><span class="S_PCT_TTL" id="id_pctA129_ttl" onMouseOver="marcheaza(id_pctA129_ttl,id_pctA129)" onMouseOut="demarcheaza(id_pctA129_ttl,id_pctA129)" onMouseDown="plusMinus(id_pctA129_short,id_pctA129_bdy)">48.<!----></span> <span class="S_PCT_BDY" id="id_pctA129_bdy">Persoanele fizice care desfășoară activități producătoare de venit, definite de Codul fiscal, ale căror venituri sunt determinate în sistem real și care conduc evidența contabilă pe baza regulilor contabilității în partidă simplă întocmesc Registrul-jurnal de încasări și plăți (cod 14-1-1/b) și Registrul-inventar (cod 14-1-2/b), reglementate prin <A href="~/../../../Public/DetaliiDocumentAfis/165937">Ordinul ministrului finanțelor publice nr. 170/2015</A> pentru aprobarea reglementărilor contabile privind contabilitatea în partidă simplă.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA129_short" onMouseOver="marcheaza(id_pctA129_short,id_pctA129)" onMouseOut="demarcheaza(id_pctA129_short,id_pctA129)" onMouseDown="plusMinus(id_pctA129_short,id_pctA129_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA130"><span class="S_PCT_TTL" id="id_pctA130_ttl" onMouseOver="marcheaza(id_pctA130_ttl,id_pctA130)" onMouseOut="demarcheaza(id_pctA130_ttl,id_pctA130)" onMouseDown="plusMinus(id_pctA130_short,id_pctA130_bdy)">49.<!----></span> <span class="S_PCT_BDY" id="id_pctA130_bdy">Persoanele prevăzute la <A href="~/../../../Public/DetaliiDocumentAfis/165937#A15">art. 2 lit. a) din Ordinul ministrului finanțelor publice nr. 170/2015</A> pentru aprobarea Reglementărilor contabile privind contabilitatea în partidă simplă și care optează pentru ținerea evidenței contabile pe baza regulilor contabilității în partidă dublă întocmesc Registrul-jurnal (cod 14-1-1) și Registrul-inventar (cod 14-1-2). Întocmirea, editarea și păstrarea registrelor contabile și a celorlalte documente financiar-contabile se efectuează conform prezentelor norme.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA130_short" onMouseOver="marcheaza(id_pctA130_short,id_pctA130)" onMouseOut="demarcheaza(id_pctA130_short,id_pctA130)" onMouseDown="plusMinus(id_pctA130_short,id_pctA130_bdy)"> ... </span></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA128_short" onMouseOver="marcheaza(id_litA128_short,id_litA128)" onMouseOut="demarcheaza(id_litA128_short,id_litA128)" onMouseDown="plusMinus(id_litA128_short,id_litA128_bdy)"> ... </span></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA111_short" onMouseOver="marcheaza(id_litA111_short,id_litA111)" onMouseOut="demarcheaza(id_litA111_short,id_litA111)" onMouseDown="plusMinus(id_litA111_short,id_litA111_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA131"><span class="S_LIT_TTL" id="id_litA131_ttl" onMouseOver="marcheaza(id_litA131_ttl,id_litA131)" onMouseOut="demarcheaza(id_litA131_ttl,id_litA131)" onMouseDown="plusMinus(id_litA131_short,id_litA131_bdy)">E.<!----></span> <span class="S_LIT_BDY" id="id_litA131_bdy">Formele de înregistrare în contabilitate<span class="S_PCT" style="display: block; color:black;" id="id_pctA132"><span class="S_PCT_TTL" id="id_pctA132_ttl" onMouseOver="marcheaza(id_pctA132_ttl,id_pctA132)" onMouseOut="demarcheaza(id_pctA132_ttl,id_pctA132)" onMouseDown="plusMinus(id_pctA132_short,id_pctA132_bdy)">50.<!----></span> <span class="S_PCT_BDY" id="id_pctA132_bdy">Formele de înregistrare în contabilitate reprezintă sistemul de registre, formulare și documente contabile corelate între ele, care servesc la înregistrarea cronologică și sistematică în contabilitate a operațiunilor economico-financiare efectuate pe parcursul exercițiului financiar.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA132_short" onMouseOver="marcheaza(id_pctA132_short,id_pctA132)" onMouseOut="demarcheaza(id_pctA132_short,id_pctA132)" onMouseDown="plusMinus(id_pctA132_short,id_pctA132_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA133"><span class="S_PCT_TTL" id="id_pctA133_ttl" onMouseOver="marcheaza(id_pctA133_ttl,id_pctA133)" onMouseOut="demarcheaza(id_pctA133_ttl,id_pctA133)" onMouseDown="plusMinus(id_pctA133_short,id_pctA133_bdy)">51.<!----></span> <span class="S_PCT_BDY" id="id_pctA133_bdy">Principalele forme de înregistrare în contabilitate a operațiunilor economico-financiare în cazul unităților care conduc contabilitatea în partidă dublă sunt: "pe jurnale", "maestru-șah" și forma combinată "maestru-șah cu jurnale".</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA133_short" onMouseOver="marcheaza(id_pctA133_short,id_pctA133)" onMouseOut="demarcheaza(id_pctA133_short,id_pctA133)" onMouseDown="plusMinus(id_pctA133_short,id_pctA133_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA134"><span class="S_PCT_TTL" id="id_pctA134_ttl" onMouseOver="marcheaza(id_pctA134_ttl,id_pctA134)" onMouseOut="demarcheaza(id_pctA134_ttl,id_pctA134)" onMouseDown="plusMinus(id_pctA134_short,id_pctA134_bdy)">52.<!----></span> <span class="S_PCT_BDY" id="id_pctA134_bdy">În cadrul formei de înregistrare în contabilitate "pe jurnale", principalele registre și formulare care se utilizează sunt:<span class="S_LIN" id="id_linA135"><span class="S_LIN_TTL" id="id_linA135_ttl" onMouseOver="marcheaza(id_linA135_ttl,id_linA135)" onMouseOut="demarcheaza(id_linA135_ttl,id_linA135)" onMouseDown="plusMinus(id_linA135_short,id_linA135_bdy)">– </span><span class="S_LIN_BDY" id="id_linA135_bdy">Registrul-jurnal (cod 14-1-1);</span><span style="display:none" class="S_LIN_SHORT" id="id_linA135_short" onMouseOver="marcheaza(id_linA135_short,id_linA135)" onMouseOut="demarcheaza(id_linA135_short,id_linA135)" onMouseDown="plusMinus(id_linA135_short,id_linA135_bdy)"> ... </span></span><span class="S_LIN" id="id_linA136"><span class="S_LIN_TTL" id="id_linA136_ttl" onMouseOver="marcheaza(id_linA136_ttl,id_linA136)" onMouseOut="demarcheaza(id_linA136_ttl,id_linA136)" onMouseDown="plusMinus(id_linA136_short,id_linA136_bdy)">– </span><span class="S_LIN_BDY" id="id_linA136_bdy">Registrul-inventar (cod 14-1-2);</span><span style="display:none" class="S_LIN_SHORT" id="id_linA136_short" onMouseOver="marcheaza(id_linA136_short,id_linA136)" onMouseOut="demarcheaza(id_linA136_short,id_linA136)" onMouseDown="plusMinus(id_linA136_short,id_linA136_bdy)"> ... </span></span><span class="S_LIN" id="id_linA137"><span class="S_LIN_TTL" id="id_linA137_ttl" onMouseOver="marcheaza(id_linA137_ttl,id_linA137)" onMouseOut="demarcheaza(id_linA137_ttl,id_linA137)" onMouseDown="plusMinus(id_linA137_short,id_linA137_bdy)">– </span><span class="S_LIN_BDY" id="id_linA137_bdy">Cartea mare (cod 14-1-3);</span><span style="display:none" class="S_LIN_SHORT" id="id_linA137_short" onMouseOver="marcheaza(id_linA137_short,id_linA137)" onMouseOut="demarcheaza(id_linA137_short,id_linA137)" onMouseDown="plusMinus(id_linA137_short,id_linA137_bdy)"> ... </span></span><span class="S_LIN" id="id_linA138"><span class="S_LIN_TTL" id="id_linA138_ttl" onMouseOver="marcheaza(id_linA138_ttl,id_linA138)" onMouseOut="demarcheaza(id_linA138_ttl,id_linA138)" onMouseDown="plusMinus(id_linA138_short,id_linA138_bdy)">– </span><span class="S_LIN_BDY" id="id_linA138_bdy">jurnale auxiliare;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA138_short" onMouseOver="marcheaza(id_linA138_short,id_linA138)" onMouseOut="demarcheaza(id_linA138_short,id_linA138)" onMouseDown="plusMinus(id_linA138_short,id_linA138_bdy)"> ... </span></span><span class="S_LIN" id="id_linA139"><span class="S_LIN_TTL" id="id_linA139_ttl" onMouseOver="marcheaza(id_linA139_ttl,id_linA139)" onMouseOut="demarcheaza(id_linA139_ttl,id_linA139)" onMouseDown="plusMinus(id_linA139_short,id_linA139_bdy)">– </span><span class="S_LIN_BDY" id="id_linA139_bdy">Balanța de verificare.</span><span style="display:none" class="S_LIN_SHORT" id="id_linA139_short" onMouseOver="marcheaza(id_linA139_short,id_linA139)" onMouseOut="demarcheaza(id_linA139_short,id_linA139)" onMouseDown="plusMinus(id_linA139_short,id_linA139_bdy)"> ... </span></span><span class="S_PAR" style="display: block; color:black;" id="id_parA140">Registrul-jurnal (cod 14-1-1) se utilizează pentru înregistrarea cronologică a tuturor operațiunilor economico-financiare consemnate în documentele justificative. Pentru operațiunile care nu au la bază documente justificative se întocmește Nota de contabilitate (cod 14-6-2/A).<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA141">Notele de contabilitate au la bază note justificative sau note de calcul și se înregistrează în mod cronologic în Registrul-jurnal.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA142">Entitățile pot utiliza jurnale auxiliare pe feluri de operațiuni, cum sunt: operațiuni de casă și bancă, operațiuni privind decontările cu furnizorii, situația încasării-achitării facturilor, operațiuni privind salariile și contribuția pentru asigurări sociale, protecția socială a șomerilor și asigurările de sănătate, alte operațiuni.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA143">Lunar sau la altă perioadă prevăzută de lege, în fiecare jurnal auxiliar se stabilesc totalurile sumelor debitoare sau creditoare înregistrate în cursul lunii (perioadei), totaluri care se înscriu în Registrul-jurnal.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA144">Contabilitatea analitică se poate ține fie direct pe aceste jurnale (pentru unele conturi), fie cu ajutorul altor formulare comune (fișa de cont analitic pentru valori materiale, fișa de cont pentru operațiuni diverse etc.) sau specifice, folosite în acest scop.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA145">Înregistrările în jurnale se fac în mod cronologic în tot cursul lunii (perioadei) sau numai la sfârșitul lunii (perioadei), fie direct pe baza documentelor justificative, fie pe baza documentelor centralizatoare întocmite pentru operațiunile aferente lunii (perioadei) respective, care sunt consemnate cronologic în acestea.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA146">Cartea mare (cod 14-1-3) este documentul de sistematizare contabilă care cuprinde toate conturile sintetice și reflectă, la un moment dat, existența și mișcarea tuturor elementelor de natura activelor, datoriilor și capitalurilor proprii.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA147">Cartea mare servește la stabilirea rulajelor lunare și a soldurilor conturilor și stă la baza întocmirii balanței de verificare.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA148">Pentru stabilirea rulajelor, în Cartea mare se preia rulajul creditor din jurnalul contului respectiv, iar rulajul debitor se stabilește prin totalizarea sumelor preluate din coloanele de conturi corespondente ale jurnalelor.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA149">Soldul debitor sau creditor al fiecărui cont se stabilește în funcție de rulajele debitoare și creditoare ale contului respectiv, ținându-se seama de soldul de la începutul anului, care se înscrie pe rândul destinat în acest scop.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA150">Balanța de verificare este documentul contabil utilizat pentru verificarea înregistrării corecte în contabilitate a operațiunilor efectuate și controlul concordanței dintre contabilitatea sintetică și cea analitică, precum și principalul instrument pe baza căruia se întocmesc situațiile financiare anuale și raportările contabile stabilite potrivit legii.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA134_short" onMouseOver="marcheaza(id_pctA134_short,id_pctA134)" onMouseOut="demarcheaza(id_pctA134_short,id_pctA134)" onMouseDown="plusMinus(id_pctA134_short,id_pctA134_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA151"><span class="S_PCT_TTL" id="id_pctA151_ttl" onMouseOver="marcheaza(id_pctA151_ttl,id_pctA151)" onMouseOut="demarcheaza(id_pctA151_ttl,id_pctA151)" onMouseDown="plusMinus(id_pctA151_short,id_pctA151_bdy)">53.<!----></span> <span class="S_PCT_BDY" id="id_pctA151_bdy">În cadrul formei de înregistrare "maestru-șah", principalele registre și formulare care se utilizează sunt:<span class="S_LIN" id="id_linA152"><span class="S_LIN_TTL" id="id_linA152_ttl" onMouseOver="marcheaza(id_linA152_ttl,id_linA152)" onMouseOut="demarcheaza(id_linA152_ttl,id_linA152)" onMouseDown="plusMinus(id_linA152_short,id_linA152_bdy)">– </span><span class="S_LIN_BDY" id="id_linA152_bdy">Registrul-jurnal (cod 14-1-1);</span><span style="display:none" class="S_LIN_SHORT" id="id_linA152_short" onMouseOver="marcheaza(id_linA152_short,id_linA152)" onMouseOut="demarcheaza(id_linA152_short,id_linA152)" onMouseDown="plusMinus(id_linA152_short,id_linA152_bdy)"> ... </span></span><span class="S_LIN" id="id_linA153"><span class="S_LIN_TTL" id="id_linA153_ttl" onMouseOver="marcheaza(id_linA153_ttl,id_linA153)" onMouseOut="demarcheaza(id_linA153_ttl,id_linA153)" onMouseDown="plusMinus(id_linA153_short,id_linA153_bdy)">– </span><span class="S_LIN_BDY" id="id_linA153_bdy">Registrul-inventar (cod 14-1-2);</span><span style="display:none" class="S_LIN_SHORT" id="id_linA153_short" onMouseOver="marcheaza(id_linA153_short,id_linA153)" onMouseOut="demarcheaza(id_linA153_short,id_linA153)" onMouseDown="plusMinus(id_linA153_short,id_linA153_bdy)"> ... </span></span><span class="S_LIN" id="id_linA154"><span class="S_LIN_TTL" id="id_linA154_ttl" onMouseOver="marcheaza(id_linA154_ttl,id_linA154)" onMouseOut="demarcheaza(id_linA154_ttl,id_linA154)" onMouseDown="plusMinus(id_linA154_short,id_linA154_bdy)">– </span><span class="S_LIN_BDY" id="id_linA154_bdy">Cartea mare (șah - cod 14-1-3/a);</span><span style="display:none" class="S_LIN_SHORT" id="id_linA154_short" onMouseOver="marcheaza(id_linA154_short,id_linA154)" onMouseOut="demarcheaza(id_linA154_short,id_linA154)" onMouseDown="plusMinus(id_linA154_short,id_linA154_bdy)"> ... </span></span><span class="S_LIN" id="id_linA155"><span class="S_LIN_TTL" id="id_linA155_ttl" onMouseOver="marcheaza(id_linA155_ttl,id_linA155)" onMouseOut="demarcheaza(id_linA155_ttl,id_linA155)" onMouseDown="plusMinus(id_linA155_short,id_linA155_bdy)">– </span><span class="S_LIN_BDY" id="id_linA155_bdy">Balanța de verificare.</span><span style="display:none" class="S_LIN_SHORT" id="id_linA155_short" onMouseOver="marcheaza(id_linA155_short,id_linA155)" onMouseOut="demarcheaza(id_linA155_short,id_linA155)" onMouseDown="plusMinus(id_linA155_short,id_linA155_bdy)"> ... </span></span><span class="S_PAR" style="display: block; color:black;" id="id_parA156">Registrul-jurnal (cod 14-1-1) se utilizează pentru înregistrarea cronologică a tuturor operațiunilor economico-financiare consemnate în documentele justificative, la fel ca în cazul formei de înregistrare "pe jurnale".<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA157">Cartea mare (șah - cod 14-1-3/a) este documentul de sistematizare a înregistrărilor contabile în conturile sintetice.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA158">La sfârșitul lunii (perioadei), pentru fiecare cont sintetic din Cartea mare (șah) se stabilesc totaluri ale rulajului contului debitor sau creditor și ale conturilor corespondente. Totalul sumelor conturilor corespondente trebuie să fie egale cu rulajul debitor sau creditor al contului respectiv.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA159">Contabilitatea analitică se ține cu ajutorul formularelor comune (fișa de cont pentru operațiuni diverse, fișa de cont analitic pentru valori materiale) sau cu ajutorul formularelor specifice folosite în acest scop.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA160">Balanța de verificare se întocmește pe baza totalurilor preluate din Cartea mare (șah), respectiv din fișele deschise distinct pentru fiecare cont sintetic.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA161">Pentru verificarea înregistrărilor în contabilitatea analitică se pot întocmi balanțe de verificare analitice.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA151_short" onMouseOver="marcheaza(id_pctA151_short,id_pctA151)" onMouseOut="demarcheaza(id_pctA151_short,id_pctA151)" onMouseDown="plusMinus(id_pctA151_short,id_pctA151_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA162"><span class="S_PCT_TTL" id="id_pctA162_ttl" onMouseOver="marcheaza(id_pctA162_ttl,id_pctA162)" onMouseOut="demarcheaza(id_pctA162_ttl,id_pctA162)" onMouseDown="plusMinus(id_pctA162_short,id_pctA162_bdy)">54.<!----></span> <span class="S_PCT_BDY" id="id_pctA162_bdy">În cazul utilizării formei de înregistrare combinată "maestru-șah cu jurnale", pe lângă formularele menționate la forma de înregistrare "maestru-șah", se utilizează jurnalele auxiliare specifice formei de înregistrare "pe jurnale".<span class="S_PAR" style="display: block; color:black;" id="id_parA163">În Cartea mare (șah), pentru fiecare cont sintetic, totalurile lunare stabilite în jurnal se înscriu atât în coloana destinată rulajului debitor sau creditor, cât și în coloanele conturilor corespondente.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA162_short" onMouseOver="marcheaza(id_pctA162_short,id_pctA162)" onMouseOut="demarcheaza(id_pctA162_short,id_pctA162)" onMouseDown="plusMinus(id_pctA162_short,id_pctA162_bdy)"> ... </span></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA131_short" onMouseOver="marcheaza(id_litA131_short,id_litA131)" onMouseOut="demarcheaza(id_litA131_short,id_litA131)" onMouseDown="plusMinus(id_litA131_short,id_litA131_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA164"><span class="S_LIT_TTL" id="id_litA164_ttl" onMouseOver="marcheaza(id_litA164_ttl,id_litA164)" onMouseOut="demarcheaza(id_litA164_ttl,id_litA164)" onMouseDown="plusMinus(id_litA164_short,id_litA164_bdy)">F.<!----></span> <span class="S_LIT_BDY" id="id_litA164_bdy">Criteriile minimale privind programele informatice utilizate în activitatea financiar-contabilă<span class="S_PCT" style="display: block; color:black;" id="id_pctA165"><span class="S_PCT_TTL" id="id_pctA165_ttl" onMouseOver="marcheaza(id_pctA165_ttl,id_pctA165)" onMouseOut="demarcheaza(id_pctA165_ttl,id_pctA165)" onMouseDown="plusMinus(id_pctA165_short,id_pctA165_bdy)">55.<!----></span> <span class="S_PCT_BDY" id="id_pctA165_bdy">Sistemul informatic de prelucrare automată a datelor la nivelul fiecărei entități trebuie să asigure prelucrarea datelor înregistrate în contabilitate în conformitate cu reglementările contabile aplicabile, controlul și păstrarea acestora pe suporturi tehnice.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA165_short" onMouseOver="marcheaza(id_pctA165_short,id_pctA165)" onMouseOut="demarcheaza(id_pctA165_short,id_pctA165)" onMouseDown="plusMinus(id_pctA165_short,id_pctA165_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA166"><span class="S_PCT_TTL" id="id_pctA166_ttl" onMouseOver="marcheaza(id_pctA166_ttl,id_pctA166)" onMouseOut="demarcheaza(id_pctA166_ttl,id_pctA166)" onMouseDown="plusMinus(id_pctA166_short,id_pctA166_bdy)">56.<!----></span> <span class="S_PCT_BDY" id="id_pctA166_bdy">Programele informatice utilizate în activitatea financiar-contabilă trebuie să asigure listarea în orice moment a documentelor financiar-contabile solicitate de organele de control.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA166_short" onMouseOver="marcheaza(id_pctA166_short,id_pctA166)" onMouseOut="demarcheaza(id_pctA166_short,id_pctA166)" onMouseDown="plusMinus(id_pctA166_short,id_pctA166_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA167"><span class="S_PCT_TTL" id="id_pctA167_ttl" onMouseOver="marcheaza(id_pctA167_ttl,id_pctA167)" onMouseOut="demarcheaza(id_pctA167_ttl,id_pctA167)" onMouseDown="plusMinus(id_pctA167_short,id_pctA167_bdy)">57.<!----></span> <span class="S_PCT_BDY" id="id_pctA167_bdy">La elaborarea și adaptarea programelor informatice vor fi avute în vedere următoarele:<span class="S_LIT" style="display: block; color:black;" id="id_litA168"><span class="S_LIT_TTL" id="id_litA168_ttl" onMouseOver="marcheaza(id_litA168_ttl,id_litA168)" onMouseOut="demarcheaza(id_litA168_ttl,id_litA168)" onMouseDown="plusMinus(id_litA168_short,id_litA168_bdy)">a)<!----></span> <span class="S_LIT_BDY" id="id_litA168_bdy">cuprinderea în procedurile de prelucrare a reglementărilor în vigoare și a posibilității de actualizare a acestor proceduri, în funcție de modificările intervenite în legislație;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA168_short" onMouseOver="marcheaza(id_litA168_short,id_litA168)" onMouseOut="demarcheaza(id_litA168_short,id_litA168)" onMouseDown="plusMinus(id_litA168_short,id_litA168_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA169"><span class="S_LIT_TTL" id="id_litA169_ttl" onMouseOver="marcheaza(id_litA169_ttl,id_litA169)" onMouseOut="demarcheaza(id_litA169_ttl,id_litA169)" onMouseDown="plusMinus(id_litA169_short,id_litA169_bdy)">b)<!----></span> <span class="S_LIT_BDY" id="id_litA169_bdy">gestionarea pachetelor de produse-program, asigurarea protecției lor împotriva accesului neautorizat, realizarea confidențialității datelor din sistemul informatic;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA169_short" onMouseOver="marcheaza(id_litA169_short,id_litA169)" onMouseOut="demarcheaza(id_litA169_short,id_litA169)" onMouseDown="plusMinus(id_litA169_short,id_litA169_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA170"><span class="S_LIT_TTL" id="id_litA170_ttl" onMouseOver="marcheaza(id_litA170_ttl,id_litA170)" onMouseOut="demarcheaza(id_litA170_ttl,id_litA170)" onMouseDown="plusMinus(id_litA170_short,id_litA170_bdy)">c)<!----></span> <span class="S_LIT_BDY" id="id_litA170_bdy">stabilirea tipului de suport pentru păstrarea datelor de intrare, intermediare sau de ieșire;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA170_short" onMouseOver="marcheaza(id_litA170_short,id_litA170)" onMouseOut="demarcheaza(id_litA170_short,id_litA170)" onMouseDown="plusMinus(id_litA170_short,id_litA170_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA171"><span class="S_LIT_TTL" id="id_litA171_ttl" onMouseOver="marcheaza(id_litA171_ttl,id_litA171)" onMouseOut="demarcheaza(id_litA171_ttl,id_litA171)" onMouseDown="plusMinus(id_litA171_short,id_litA171_bdy)">d)<!----></span> <span class="S_LIT_BDY" id="id_litA171_bdy">soluționarea eventualelor erori care pot să apară în funcționarea sistemului informatic;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA171_short" onMouseOver="marcheaza(id_litA171_short,id_litA171)" onMouseOut="demarcheaza(id_litA171_short,id_litA171)" onMouseDown="plusMinus(id_litA171_short,id_litA171_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA172"><span class="S_LIT_TTL" id="id_litA172_ttl" onMouseOver="marcheaza(id_litA172_ttl,id_litA172)" onMouseOut="demarcheaza(id_litA172_ttl,id_litA172)" onMouseDown="plusMinus(id_litA172_short,id_litA172_bdy)">e)<!----></span> <span class="S_LIT_BDY" id="id_litA172_bdy">verificarea completă sau prin sondaj a modului de funcționare a procedurilor de prelucrare prevăzute de sistemul informatic;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA172_short" onMouseOver="marcheaza(id_litA172_short,id_litA172)" onMouseOut="demarcheaza(id_litA172_short,id_litA172)" onMouseDown="plusMinus(id_litA172_short,id_litA172_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA173"><span class="S_LIT_TTL" id="id_litA173_ttl" onMouseOver="marcheaza(id_litA173_ttl,id_litA173)" onMouseOut="demarcheaza(id_litA173_ttl,id_litA173)" onMouseDown="plusMinus(id_litA173_short,id_litA173_bdy)">f)<!----></span> <span class="S_LIT_BDY" id="id_litA173_bdy">verificarea totală sau prin sondaj a operațiunilor economico-financiare înregistrate în contabilitate, astfel încât acestea să fie efectuate în concordanță strictă cu prevederile actelor normative care le reglementează;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA173_short" onMouseOver="marcheaza(id_litA173_short,id_litA173)" onMouseOut="demarcheaza(id_litA173_short,id_litA173)" onMouseDown="plusMinus(id_litA173_short,id_litA173_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA174"><span class="S_LIT_TTL" id="id_litA174_ttl" onMouseOver="marcheaza(id_litA174_ttl,id_litA174)" onMouseOut="demarcheaza(id_litA174_ttl,id_litA174)" onMouseDown="plusMinus(id_litA174_short,id_litA174_bdy)">g)<!----></span> <span class="S_LIT_BDY" id="id_litA174_bdy">verificarea prin teste de control a programului informatic utilizat.</span><span style="display: none" class="S_LIT_SHORT" id="id_litA174_short" onMouseOver="marcheaza(id_litA174_short,id_litA174)" onMouseOut="demarcheaza(id_litA174_short,id_litA174)" onMouseDown="plusMinus(id_litA174_short,id_litA174_bdy)"> ... </span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA167_short" onMouseOver="marcheaza(id_pctA167_short,id_pctA167)" onMouseOut="demarcheaza(id_pctA167_short,id_pctA167)" onMouseDown="plusMinus(id_pctA167_short,id_pctA167_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA175"><span class="S_PCT_TTL" id="id_pctA175_ttl" onMouseOver="marcheaza(id_pctA175_ttl,id_pctA175)" onMouseOut="demarcheaza(id_pctA175_ttl,id_pctA175)" onMouseDown="plusMinus(id_pctA175_short,id_pctA175_bdy)">58.<!----></span> <span class="S_PCT_BDY" id="id_pctA175_bdy">Sistemele informatice de prelucrare automată a datelor în domeniul financiar-contabil trebuie să răspundă la următoarele criterii considerate minimale:<span class="S_LIT" style="display: block; color:black;" id="id_litA176"><span class="S_LIT_TTL" id="id_litA176_ttl" onMouseOver="marcheaza(id_litA176_ttl,id_litA176)" onMouseOut="demarcheaza(id_litA176_ttl,id_litA176)" onMouseDown="plusMinus(id_litA176_short,id_litA176_bdy)">a)<!----></span> <span class="S_LIT_BDY" id="id_litA176_bdy">să asigure concordanța strictă a rezultatului prelucrărilor informatice cu prevederile actelor normative care le reglementează;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA176_short" onMouseOver="marcheaza(id_litA176_short,id_litA176)" onMouseOut="demarcheaza(id_litA176_short,id_litA176)" onMouseDown="plusMinus(id_litA176_short,id_litA176_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA177"><span class="S_LIT_TTL" id="id_litA177_ttl" onMouseOver="marcheaza(id_litA177_ttl,id_litA177)" onMouseOut="demarcheaza(id_litA177_ttl,id_litA177)" onMouseDown="plusMinus(id_litA177_short,id_litA177_bdy)">b)<!----></span> <span class="S_LIT_BDY" id="id_litA177_bdy">să precizeze tipul de suport care asigură prelucrarea datelor în condiții de siguranță;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA177_short" onMouseOver="marcheaza(id_litA177_short,id_litA177)" onMouseOut="demarcheaza(id_litA177_short,id_litA177)" onMouseDown="plusMinus(id_litA177_short,id_litA177_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA178"><span class="S_LIT_TTL" id="id_litA178_ttl" onMouseOver="marcheaza(id_litA178_ttl,id_litA178)" onMouseOut="demarcheaza(id_litA178_ttl,id_litA178)" onMouseDown="plusMinus(id_litA178_short,id_litA178_bdy)">c)<!----></span> <span class="S_LIT_BDY" id="id_litA178_bdy">fiecare dată înregistrată în contabilitate trebuie să se regăsească în conținutul unui document, la care să poată avea acces atât beneficiarii, cât și organele de control;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA178_short" onMouseOver="marcheaza(id_litA178_short,id_litA178)" onMouseOut="demarcheaza(id_litA178_short,id_litA178)" onMouseDown="plusMinus(id_litA178_short,id_litA178_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA179"><span class="S_LIT_TTL" id="id_litA179_ttl" onMouseOver="marcheaza(id_litA179_ttl,id_litA179)" onMouseOut="demarcheaza(id_litA179_ttl,id_litA179)" onMouseDown="plusMinus(id_litA179_short,id_litA179_bdy)">d)<!----></span> <span class="S_LIT_BDY" id="id_litA179_bdy">să asigure listele operațiunilor efectuate în contabilitate pe bază de documente justificative, care să fie numerotate în ordine cronologică, interzicându-se inserări, intercalări, precum și orice eliminări sau adăugări ulterioare;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA179_short" onMouseOver="marcheaza(id_litA179_short,id_litA179)" onMouseOut="demarcheaza(id_litA179_short,id_litA179)" onMouseDown="plusMinus(id_litA179_short,id_litA179_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA180"><span class="S_LIT_TTL" id="id_litA180_ttl" onMouseOver="marcheaza(id_litA180_ttl,id_litA180)" onMouseOut="demarcheaza(id_litA180_ttl,id_litA180)" onMouseDown="plusMinus(id_litA180_short,id_litA180_bdy)">e)<!----></span> <span class="S_LIT_BDY" id="id_litA180_bdy">să asigure reluarea automată în calcul a soldurilor conturilor obținute anterior;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA180_short" onMouseOver="marcheaza(id_litA180_short,id_litA180)" onMouseOut="demarcheaza(id_litA180_short,id_litA180)" onMouseDown="plusMinus(id_litA180_short,id_litA180_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA181"><span class="S_LIT_TTL" id="id_litA181_ttl" onMouseOver="marcheaza(id_litA181_ttl,id_litA181)" onMouseOut="demarcheaza(id_litA181_ttl,id_litA181)" onMouseDown="plusMinus(id_litA181_short,id_litA181_bdy)">f)<!----></span> <span class="S_LIT_BDY" id="id_litA181_bdy">să asigure conservarea datelor pe o perioadă de timp care să respecte prevederile legii contabilității;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA181_short" onMouseOver="marcheaza(id_litA181_short,id_litA181)" onMouseOut="demarcheaza(id_litA181_short,id_litA181)" onMouseDown="plusMinus(id_litA181_short,id_litA181_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA182"><span class="S_LIT_TTL" id="id_litA182_ttl" onMouseOver="marcheaza(id_litA182_ttl,id_litA182)" onMouseOut="demarcheaza(id_litA182_ttl,id_litA182)" onMouseDown="plusMinus(id_litA182_short,id_litA182_bdy)">g)<!----></span> <span class="S_LIT_BDY" id="id_litA182_bdy">să precizeze procedurile și suportul magnetic extern de arhivare a produselor-program, a datelor introduse, a situațiilor financiare sau a altor documente, cu posibilitatea de reintegrare în sistem a datelor arhivate;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA182_short" onMouseOver="marcheaza(id_litA182_short,id_litA182)" onMouseOut="demarcheaza(id_litA182_short,id_litA182)" onMouseDown="plusMinus(id_litA182_short,id_litA182_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA183"><span class="S_LIT_TTL" id="id_litA183_ttl" onMouseOver="marcheaza(id_litA183_ttl,id_litA183)" onMouseOut="demarcheaza(id_litA183_ttl,id_litA183)" onMouseDown="plusMinus(id_litA183_short,id_litA183_bdy)">h)<!----></span> <span class="S_LIT_BDY" id="id_litA183_bdy">să nu permită inserări, modificări sau eliminări de date pentru o perioadă închisă;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA183_short" onMouseOver="marcheaza(id_litA183_short,id_litA183)" onMouseOut="demarcheaza(id_litA183_short,id_litA183)" onMouseDown="plusMinus(id_litA183_short,id_litA183_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA184"><span class="S_LIT_TTL" id="id_litA184_ttl" onMouseOver="marcheaza(id_litA184_ttl,id_litA184)" onMouseOut="demarcheaza(id_litA184_ttl,id_litA184)" onMouseDown="plusMinus(id_litA184_short,id_litA184_bdy)">i)<!----></span> <span class="S_LIT_BDY" id="id_litA184_bdy">să asigure următoarele elemente constitutive ale înregistrărilor contabile:<span class="S_LIN" id="id_linA185"><span class="S_LIN_TTL" id="id_linA185_ttl" onMouseOver="marcheaza(id_linA185_ttl,id_linA185)" onMouseOut="demarcheaza(id_linA185_ttl,id_linA185)" onMouseDown="plusMinus(id_linA185_short,id_linA185_bdy)">– </span><span class="S_LIN_BDY" id="id_linA185_bdy">data efectuării înregistrării contabile a operațiunii;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA185_short" onMouseOver="marcheaza(id_linA185_short,id_linA185)" onMouseOut="demarcheaza(id_linA185_short,id_linA185)" onMouseDown="plusMinus(id_linA185_short,id_linA185_bdy)"> ... </span></span><span class="S_LIN" id="id_linA186"><span class="S_LIN_TTL" id="id_linA186_ttl" onMouseOver="marcheaza(id_linA186_ttl,id_linA186)" onMouseOut="demarcheaza(id_linA186_ttl,id_linA186)" onMouseDown="plusMinus(id_linA186_short,id_linA186_bdy)">– </span><span class="S_LIN_BDY" id="id_linA186_bdy">jurnalul de origine în care se regăsesc înregistrările contabile;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA186_short" onMouseOver="marcheaza(id_linA186_short,id_linA186)" onMouseOut="demarcheaza(id_linA186_short,id_linA186)" onMouseDown="plusMinus(id_linA186_short,id_linA186_bdy)"> ... </span></span><span class="S_LIN" id="id_linA187"><span class="S_LIN_TTL" id="id_linA187_ttl" onMouseOver="marcheaza(id_linA187_ttl,id_linA187)" onMouseOut="demarcheaza(id_linA187_ttl,id_linA187)" onMouseDown="plusMinus(id_linA187_short,id_linA187_bdy)">– </span><span class="S_LIN_BDY" id="id_linA187_bdy">numărul documentului justificativ sau contabil (atribuit de emitent);</span><span style="display:none" class="S_LIN_SHORT" id="id_linA187_short" onMouseOver="marcheaza(id_linA187_short,id_linA187)" onMouseOut="demarcheaza(id_linA187_short,id_linA187)" onMouseDown="plusMinus(id_linA187_short,id_linA187_bdy)"> ... </span></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA184_short" onMouseOver="marcheaza(id_litA184_short,id_litA184)" onMouseOut="demarcheaza(id_litA184_short,id_litA184)" onMouseDown="plusMinus(id_litA184_short,id_litA184_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA188"><span class="S_LIT_TTL" id="id_litA188_ttl" onMouseOver="marcheaza(id_litA188_ttl,id_litA188)" onMouseOut="demarcheaza(id_litA188_ttl,id_litA188)" onMouseDown="plusMinus(id_litA188_short,id_litA188_bdy)">j)<!----></span> <span class="S_LIT_BDY" id="id_litA188_bdy">să asigure confidențialitatea și protecția informațiilor și a programelor prin parole, cod de identificare pentru accesul la informații, copii de siguranță pentru programe și informații;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA188_short" onMouseOver="marcheaza(id_litA188_short,id_litA188)" onMouseOut="demarcheaza(id_litA188_short,id_litA188)" onMouseDown="plusMinus(id_litA188_short,id_litA188_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA189"><span class="S_LIT_TTL" id="id_litA189_ttl" onMouseOver="marcheaza(id_litA189_ttl,id_litA189)" onMouseOut="demarcheaza(id_litA189_ttl,id_litA189)" onMouseDown="plusMinus(id_litA189_short,id_litA189_bdy)">k)<!----></span> <span class="S_LIT_BDY" id="id_litA189_bdy">să asigure listări clare, inteligibile și complete, care să conțină următoarele elemente de identificare, în antet sau pe fiecare pagină, după caz:<span class="S_LIN" id="id_linA190"><span class="S_LIN_TTL" id="id_linA190_ttl" onMouseOver="marcheaza(id_linA190_ttl,id_linA190)" onMouseOut="demarcheaza(id_linA190_ttl,id_linA190)" onMouseDown="plusMinus(id_linA190_short,id_linA190_bdy)">– </span><span class="S_LIN_BDY" id="id_linA190_bdy">tipul documentului sau al situației;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA190_short" onMouseOver="marcheaza(id_linA190_short,id_linA190)" onMouseOut="demarcheaza(id_linA190_short,id_linA190)" onMouseDown="plusMinus(id_linA190_short,id_linA190_bdy)"> ... </span></span><span class="S_LIN" id="id_linA191"><span class="S_LIN_TTL" id="id_linA191_ttl" onMouseOver="marcheaza(id_linA191_ttl,id_linA191)" onMouseOut="demarcheaza(id_linA191_ttl,id_linA191)" onMouseDown="plusMinus(id_linA191_short,id_linA191_bdy)">– </span><span class="S_LIN_BDY" id="id_linA191_bdy">denumirea entității;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA191_short" onMouseOver="marcheaza(id_linA191_short,id_linA191)" onMouseOut="demarcheaza(id_linA191_short,id_linA191)" onMouseDown="plusMinus(id_linA191_short,id_linA191_bdy)"> ... </span></span><span class="S_LIN" id="id_linA192"><span class="S_LIN_TTL" id="id_linA192_ttl" onMouseOver="marcheaza(id_linA192_ttl,id_linA192)" onMouseOut="demarcheaza(id_linA192_ttl,id_linA192)" onMouseDown="plusMinus(id_linA192_short,id_linA192_bdy)">– </span><span class="S_LIN_BDY" id="id_linA192_bdy">perioada la care se referă informația;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA192_short" onMouseOver="marcheaza(id_linA192_short,id_linA192)" onMouseOut="demarcheaza(id_linA192_short,id_linA192)" onMouseDown="plusMinus(id_linA192_short,id_linA192_bdy)"> ... </span></span><span class="S_LIN" id="id_linA193"><span class="S_LIN_TTL" id="id_linA193_ttl" onMouseOver="marcheaza(id_linA193_ttl,id_linA193)" onMouseOut="demarcheaza(id_linA193_ttl,id_linA193)" onMouseDown="plusMinus(id_linA193_short,id_linA193_bdy)">– </span><span class="S_LIN_BDY" id="id_linA193_bdy">datarea listărilor;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA193_short" onMouseOver="marcheaza(id_linA193_short,id_linA193)" onMouseOut="demarcheaza(id_linA193_short,id_linA193)" onMouseDown="plusMinus(id_linA193_short,id_linA193_bdy)"> ... </span></span><span class="S_LIN" id="id_linA194"><span class="S_LIN_TTL" id="id_linA194_ttl" onMouseOver="marcheaza(id_linA194_ttl,id_linA194)" onMouseOut="demarcheaza(id_linA194_ttl,id_linA194)" onMouseDown="plusMinus(id_linA194_short,id_linA194_bdy)">– </span><span class="S_LIN_BDY" id="id_linA194_bdy">paginarea cronologică;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA194_short" onMouseOver="marcheaza(id_linA194_short,id_linA194)" onMouseOut="demarcheaza(id_linA194_short,id_linA194)" onMouseDown="plusMinus(id_linA194_short,id_linA194_bdy)"> ... </span></span><span class="S_LIN" id="id_linA195"><span class="S_LIN_TTL" id="id_linA195_ttl" onMouseOver="marcheaza(id_linA195_ttl,id_linA195)" onMouseOut="demarcheaza(id_linA195_ttl,id_linA195)" onMouseDown="plusMinus(id_linA195_short,id_linA195_bdy)">– </span><span class="S_LIN_BDY" id="id_linA195_bdy">precizarea programului informatic și a versiunii utilizate;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA195_short" onMouseOver="marcheaza(id_linA195_short,id_linA195)" onMouseOut="demarcheaza(id_linA195_short,id_linA195)" onMouseDown="plusMinus(id_linA195_short,id_linA195_bdy)"> ... </span></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA189_short" onMouseOver="marcheaza(id_litA189_short,id_litA189)" onMouseOut="demarcheaza(id_litA189_short,id_litA189)" onMouseDown="plusMinus(id_litA189_short,id_litA189_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA196"><span class="S_LIT_TTL" id="id_litA196_ttl" onMouseOver="marcheaza(id_litA196_ttl,id_litA196)" onMouseOut="demarcheaza(id_litA196_ttl,id_litA196)" onMouseDown="plusMinus(id_litA196_short,id_litA196_bdy)">l)<!----></span> <span class="S_LIT_BDY" id="id_litA196_bdy">să asigure listarea ansamblului de situații financiare și documente de sinteză necesare conducerii operative a entității;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA196_short" onMouseOver="marcheaza(id_litA196_short,id_litA196)" onMouseOut="demarcheaza(id_litA196_short,id_litA196)" onMouseDown="plusMinus(id_litA196_short,id_litA196_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA197"><span class="S_LIT_TTL" id="id_litA197_ttl" onMouseOver="marcheaza(id_litA197_ttl,id_litA197)" onMouseOut="demarcheaza(id_litA197_ttl,id_litA197)" onMouseDown="plusMinus(id_litA197_short,id_litA197_bdy)">m)<!----></span> <span class="S_LIT_BDY" id="id_litA197_bdy">să asigure respectarea conținutului de informații prevăzut pentru documente;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA197_short" onMouseOver="marcheaza(id_litA197_short,id_litA197)" onMouseOut="demarcheaza(id_litA197_short,id_litA197)" onMouseDown="plusMinus(id_litA197_short,id_litA197_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA198"><span class="S_LIT_TTL" id="id_litA198_ttl" onMouseOver="marcheaza(id_litA198_ttl,id_litA198)" onMouseOut="demarcheaza(id_litA198_ttl,id_litA198)" onMouseDown="plusMinus(id_litA198_short,id_litA198_bdy)">n)<!----></span> <span class="S_LIT_BDY" id="id_litA198_bdy">să permită, în orice moment, reconstituirea conținutului conturilor, listelor și informațiilor supuse verificării; toate soldurile conturilor trebuie să fie rezultatul unei liste de înregistrări și al unui sold anterior al acelui cont; fiecare înregistrare trebuie să aibă la bază elemente de identificare a datelor supuse prelucrării;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA198_short" onMouseOver="marcheaza(id_litA198_short,id_litA198)" onMouseOut="demarcheaza(id_litA198_short,id_litA198)" onMouseDown="plusMinus(id_litA198_short,id_litA198_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA199"><span class="S_LIT_TTL" id="id_litA199_ttl" onMouseOver="marcheaza(id_litA199_ttl,id_litA199)" onMouseOut="demarcheaza(id_litA199_ttl,id_litA199)" onMouseDown="plusMinus(id_litA199_short,id_litA199_bdy)">o)<!----></span> <span class="S_LIT_BDY" id="id_litA199_bdy">să nu permită:<span class="S_LIN" id="id_linA200"><span class="S_LIN_TTL" id="id_linA200_ttl" onMouseOver="marcheaza(id_linA200_ttl,id_linA200)" onMouseOut="demarcheaza(id_linA200_ttl,id_linA200)" onMouseDown="plusMinus(id_linA200_short,id_linA200_bdy)">– </span><span class="S_LIN_BDY" id="id_linA200_bdy">deschiderea a două conturi cu același simbol;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA200_short" onMouseOver="marcheaza(id_linA200_short,id_linA200)" onMouseOut="demarcheaza(id_linA200_short,id_linA200)" onMouseDown="plusMinus(id_linA200_short,id_linA200_bdy)"> ... </span></span><span class="S_LIN" id="id_linA201"><span class="S_LIN_TTL" id="id_linA201_ttl" onMouseOver="marcheaza(id_linA201_ttl,id_linA201)" onMouseOut="demarcheaza(id_linA201_ttl,id_linA201)" onMouseDown="plusMinus(id_linA201_short,id_linA201_bdy)">– </span><span class="S_LIN_BDY" id="id_linA201_bdy">modificarea simbolului de cont în cazul în care au fost înregistrate date în acel cont;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA201_short" onMouseOver="marcheaza(id_linA201_short,id_linA201)" onMouseOut="demarcheaza(id_linA201_short,id_linA201)" onMouseDown="plusMinus(id_linA201_short,id_linA201_bdy)"> ... </span></span><span class="S_LIN" id="id_linA202"><span class="S_LIN_TTL" id="id_linA202_ttl" onMouseOver="marcheaza(id_linA202_ttl,id_linA202)" onMouseOut="demarcheaza(id_linA202_ttl,id_linA202)" onMouseDown="plusMinus(id_linA202_short,id_linA202_bdy)">– </span><span class="S_LIN_BDY" id="id_linA202_bdy">suprimarea unui cont în cursul exercițiului financiar curent sau aferent exercițiului financiar precedent, dacă acesta conține înregistrări sau sold;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA202_short" onMouseOver="marcheaza(id_linA202_short,id_linA202)" onMouseOut="demarcheaza(id_linA202_short,id_linA202)" onMouseDown="plusMinus(id_linA202_short,id_linA202_bdy)"> ... </span></span><span class="S_LIN" id="id_linA203"><span class="S_LIN_TTL" id="id_linA203_ttl" onMouseOver="marcheaza(id_linA203_ttl,id_linA203)" onMouseOut="demarcheaza(id_linA203_ttl,id_linA203)" onMouseDown="plusMinus(id_linA203_short,id_linA203_bdy)">– </span><span class="S_LIN_BDY" id="id_linA203_bdy">editarea a două sau a mai multor documente de același tip, cu același număr și conținut diferit de informații în cadrul aceluiași exercițiu financiar;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA203_short" onMouseOver="marcheaza(id_linA203_short,id_linA203)" onMouseOut="demarcheaza(id_linA203_short,id_linA203)" onMouseDown="plusMinus(id_linA203_short,id_linA203_bdy)"> ... </span></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA199_short" onMouseOver="marcheaza(id_litA199_short,id_litA199)" onMouseOut="demarcheaza(id_litA199_short,id_litA199)" onMouseDown="plusMinus(id_litA199_short,id_litA199_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA204"><span class="S_LIT_TTL" id="id_litA204_ttl" onMouseOver="marcheaza(id_litA204_ttl,id_litA204)" onMouseOut="demarcheaza(id_litA204_ttl,id_litA204)" onMouseDown="plusMinus(id_litA204_short,id_litA204_bdy)">p)<!----></span> <span class="S_LIT_BDY" id="id_litA204_bdy">să permită suprimarea unui cont care nu are înregistrări pe parcursul a cel puțin 2 ani (exerciții financiare), în mod automat sau manual;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA204_short" onMouseOver="marcheaza(id_litA204_short,id_litA204)" onMouseOut="demarcheaza(id_litA204_short,id_litA204)" onMouseDown="plusMinus(id_litA204_short,id_litA204_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA205"><span class="S_LIT_TTL" id="id_litA205_ttl" onMouseOver="marcheaza(id_litA205_ttl,id_litA205)" onMouseOut="demarcheaza(id_litA205_ttl,id_litA205)" onMouseDown="plusMinus(id_litA205_short,id_litA205_bdy)">q)<!----></span> <span class="S_LIT_BDY" id="id_litA205_bdy">să prevadă în documentația produsului informatic modul de organizare și tipul sistemului de prelucrare:<span class="S_LIN" id="id_linA206"><span class="S_LIN_TTL" id="id_linA206_ttl" onMouseOver="marcheaza(id_linA206_ttl,id_linA206)" onMouseOut="demarcheaza(id_linA206_ttl,id_linA206)" onMouseDown="plusMinus(id_linA206_short,id_linA206_bdy)">– </span><span class="S_LIN_BDY" id="id_linA206_bdy">monopost sau multipost;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA206_short" onMouseOver="marcheaza(id_linA206_short,id_linA206)" onMouseOut="demarcheaza(id_linA206_short,id_linA206)" onMouseDown="plusMinus(id_linA206_short,id_linA206_bdy)"> ... </span></span><span class="S_LIN" id="id_linA207"><span class="S_LIN_TTL" id="id_linA207_ttl" onMouseOver="marcheaza(id_linA207_ttl,id_linA207)" onMouseOut="demarcheaza(id_linA207_ttl,id_linA207)" onMouseDown="plusMinus(id_linA207_short,id_linA207_bdy)">– </span><span class="S_LIN_BDY" id="id_linA207_bdy">monosocietate sau multisocietate;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA207_short" onMouseOver="marcheaza(id_linA207_short,id_linA207)" onMouseOut="demarcheaza(id_linA207_short,id_linA207)" onMouseDown="plusMinus(id_linA207_short,id_linA207_bdy)"> ... </span></span><span class="S_LIN" id="id_linA208"><span class="S_LIN_TTL" id="id_linA208_ttl" onMouseOver="marcheaza(id_linA208_ttl,id_linA208)" onMouseOut="demarcheaza(id_linA208_ttl,id_linA208)" onMouseDown="plusMinus(id_linA208_short,id_linA208_bdy)">– </span><span class="S_LIN_BDY" id="id_linA208_bdy">rețea de calculatoare;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA208_short" onMouseOver="marcheaza(id_linA208_short,id_linA208)" onMouseOut="demarcheaza(id_linA208_short,id_linA208)" onMouseDown="plusMinus(id_linA208_short,id_linA208_bdy)"> ... </span></span><span class="S_LIN" id="id_linA209"><span class="S_LIN_TTL" id="id_linA209_ttl" onMouseOver="marcheaza(id_linA209_ttl,id_linA209)" onMouseOut="demarcheaza(id_linA209_ttl,id_linA209)" onMouseDown="plusMinus(id_linA209_short,id_linA209_bdy)">– </span><span class="S_LIN_BDY" id="id_linA209_bdy">portabilitatea fișierelor de date;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA209_short" onMouseOver="marcheaza(id_linA209_short,id_linA209)" onMouseOut="demarcheaza(id_linA209_short,id_linA209)" onMouseDown="plusMinus(id_linA209_short,id_linA209_bdy)"> ... </span></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA205_short" onMouseOver="marcheaza(id_litA205_short,id_litA205)" onMouseOut="demarcheaza(id_litA205_short,id_litA205)" onMouseDown="plusMinus(id_litA205_short,id_litA205_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA210"><span class="S_LIT_TTL" id="id_litA210_ttl" onMouseOver="marcheaza(id_litA210_ttl,id_litA210)" onMouseOut="demarcheaza(id_litA210_ttl,id_litA210)" onMouseDown="plusMinus(id_litA210_short,id_litA210_bdy)">r)<!----></span> <span class="S_LIT_BDY" id="id_litA210_bdy">să precizeze tipul de organizare pentru culegerea datelor:<span class="S_LIN" id="id_linA211"><span class="S_LIN_TTL" id="id_linA211_ttl" onMouseOver="marcheaza(id_linA211_ttl,id_linA211)" onMouseOut="demarcheaza(id_linA211_ttl,id_linA211)" onMouseDown="plusMinus(id_linA211_short,id_linA211_bdy)">– </span><span class="S_LIN_BDY" id="id_linA211_bdy">preluări pe loturi cu control ulterior;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA211_short" onMouseOver="marcheaza(id_linA211_short,id_linA211)" onMouseOut="demarcheaza(id_linA211_short,id_linA211)" onMouseDown="plusMinus(id_linA211_short,id_linA211_bdy)"> ... </span></span><span class="S_LIN" id="id_linA212"><span class="S_LIN_TTL" id="id_linA212_ttl" onMouseOver="marcheaza(id_linA212_ttl,id_linA212)" onMouseOut="demarcheaza(id_linA212_ttl,id_linA212)" onMouseDown="plusMinus(id_linA212_short,id_linA212_bdy)">– </span><span class="S_LIN_BDY" id="id_linA212_bdy">preluări în timp real cu efectuarea controlului imediat;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA212_short" onMouseOver="marcheaza(id_linA212_short,id_linA212)" onMouseOut="demarcheaza(id_linA212_short,id_linA212)" onMouseDown="plusMinus(id_linA212_short,id_linA212_bdy)"> ... </span></span><span class="S_LIN" id="id_linA213"><span class="S_LIN_TTL" id="id_linA213_ttl" onMouseOver="marcheaza(id_linA213_ttl,id_linA213)" onMouseOut="demarcheaza(id_linA213_ttl,id_linA213)" onMouseDown="plusMinus(id_linA213_short,id_linA213_bdy)">– </span><span class="S_LIN_BDY" id="id_linA213_bdy">combinarea celor două tipuri;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA213_short" onMouseOver="marcheaza(id_linA213_short,id_linA213)" onMouseOut="demarcheaza(id_linA213_short,id_linA213)" onMouseDown="plusMinus(id_linA213_short,id_linA213_bdy)"> ... </span></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA210_short" onMouseOver="marcheaza(id_litA210_short,id_litA210)" onMouseOut="demarcheaza(id_litA210_short,id_litA210)" onMouseDown="plusMinus(id_litA210_short,id_litA210_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA214"><span class="S_LIT_TTL" id="id_litA214_ttl" onMouseOver="marcheaza(id_litA214_ttl,id_litA214)" onMouseOut="demarcheaza(id_litA214_ttl,id_litA214)" onMouseDown="plusMinus(id_litA214_short,id_litA214_bdy)">s)<!----></span> <span class="S_LIT_BDY" id="id_litA214_bdy">să permită culegerea unui număr nelimitat de înregistrări pentru operațiunile contabile;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA214_short" onMouseOver="marcheaza(id_litA214_short,id_litA214)" onMouseOut="demarcheaza(id_litA214_short,id_litA214)" onMouseDown="plusMinus(id_litA214_short,id_litA214_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA215"><span class="S_LIT_TTL" id="id_litA215_ttl" onMouseOver="marcheaza(id_litA215_ttl,id_litA215)" onMouseOut="demarcheaza(id_litA215_ttl,id_litA215)" onMouseDown="plusMinus(id_litA215_short,id_litA215_bdy)">t)<!----></span> <span class="S_LIT_BDY" id="id_litA215_bdy">să posede documentația tehnică de utilizare a programelor informatice necesară exploatării optime a acestora;</span><span style="display: none" class="S_LIT_SHORT" id="id_litA215_short" onMouseOver="marcheaza(id_litA215_short,id_litA215)" onMouseOut="demarcheaza(id_litA215_short,id_litA215)" onMouseDown="plusMinus(id_litA215_short,id_litA215_bdy)"> ... </span></span><span class="S_LIT" style="display: block; color:black;" id="id_litA216"><span class="S_LIT_TTL" id="id_litA216_ttl" onMouseOver="marcheaza(id_litA216_ttl,id_litA216)" onMouseOut="demarcheaza(id_litA216_ttl,id_litA216)" onMouseDown="plusMinus(id_litA216_short,id_litA216_bdy)">u)<!----></span> <span class="S_LIT_BDY" id="id_litA216_bdy">să respecte reglementările în vigoare cu privire la securitatea datelor și fiabilitatea sistemului informatic de prelucrare automată a datelor.</span><span style="display: none" class="S_LIT_SHORT" id="id_litA216_short" onMouseOver="marcheaza(id_litA216_short,id_litA216)" onMouseOut="demarcheaza(id_litA216_short,id_litA216)" onMouseDown="plusMinus(id_litA216_short,id_litA216_bdy)"> ... </span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA175_short" onMouseOver="marcheaza(id_pctA175_short,id_pctA175)" onMouseOut="demarcheaza(id_pctA175_short,id_pctA175)" onMouseDown="plusMinus(id_pctA175_short,id_pctA175_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA217"><span class="S_PCT_TTL" id="id_pctA217_ttl" onMouseOver="marcheaza(id_pctA217_ttl,id_pctA217)" onMouseOut="demarcheaza(id_pctA217_ttl,id_pctA217)" onMouseDown="plusMinus(id_pctA217_short,id_pctA217_bdy)">59.<!----></span> <span class="S_PCT_BDY" id="id_pctA217_bdy">Contractele care stau la baza achiziției de programe informatice utilizate în activitatea financiar-contabilă trebuie să prevadă clauze privind întreținerea și adaptarea produselor livrate, precum și clauze care să ateste că programele informatice nu permit modificarea procedurilor de prelucrare automată a datelor de către utilizatori.</span><span style="display:none" class="S_PCT_SHORT" id="id_pctA217_short" onMouseOver="marcheaza(id_pctA217_short,id_pctA217)" onMouseOut="demarcheaza(id_pctA217_short,id_pctA217)" onMouseDown="plusMinus(id_pctA217_short,id_pctA217_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA218"><span class="S_PCT_TTL" id="id_pctA218_ttl" onMouseOver="marcheaza(id_pctA218_ttl,id_pctA218)" onMouseOut="demarcheaza(id_pctA218_ttl,id_pctA218)" onMouseDown="plusMinus(id_pctA218_short,id_pctA218_bdy)">60.<!----></span> <span class="S_PCT_BDY" id="id_pctA218_bdy">Utilizatorul trebuie:<span class="S_LIN" id="id_linA219"><span class="S_LIN_TTL" id="id_linA219_ttl" onMouseOver="marcheaza(id_linA219_ttl,id_linA219)" onMouseOut="demarcheaza(id_linA219_ttl,id_linA219)" onMouseDown="plusMinus(id_linA219_short,id_linA219_bdy)">– </span><span class="S_LIN_BDY" id="id_linA219_bdy">să se asigure de perenitatea documentației, a diferitelor versiuni ale produsului-program;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA219_short" onMouseOver="marcheaza(id_linA219_short,id_linA219)" onMouseOut="demarcheaza(id_linA219_short,id_linA219)" onMouseDown="plusMinus(id_linA219_short,id_linA219_bdy)"> ... </span></span><span class="S_LIN" id="id_linA220"><span class="S_LIN_TTL" id="id_linA220_ttl" onMouseOver="marcheaza(id_linA220_ttl,id_linA220)" onMouseOut="demarcheaza(id_linA220_ttl,id_linA220)" onMouseDown="plusMinus(id_linA220_short,id_linA220_bdy)">– </span><span class="S_LIN_BDY" id="id_linA220_bdy">să organizeze arhivarea datelor, programelor sau produselor de prelucrare astfel încât informațiile să poată fi reprocesate;</span><span style="display:none" class="S_LIN_SHORT" id="id_linA220_short" onMouseOver="marcheaza(id_linA220_short,id_linA220)" onMouseOut="demarcheaza(id_linA220_short,id_linA220)" onMouseDown="plusMinus(id_linA220_short,id_linA220_bdy)"> ... </span></span><span class="S_LIN" id="id_linA221"><span class="S_LIN_TTL" id="id_linA221_ttl" onMouseOver="marcheaza(id_linA221_ttl,id_linA221)" onMouseOut="demarcheaza(id_linA221_ttl,id_linA221)" onMouseDown="plusMinus(id_linA221_short,id_linA221_bdy)">– </span><span class="S_LIN_BDY" id="id_linA221_bdy">să dețină la sediul său, pe perioadă neprescrisă, manualul de utilizare complet și actualizat al fiecărui produs-program utilizat.</span><span style="display:none" class="S_LIN_SHORT" id="id_linA221_short" onMouseOver="marcheaza(id_linA221_short,id_linA221)" onMouseOut="demarcheaza(id_linA221_short,id_linA221)" onMouseDown="plusMinus(id_linA221_short,id_linA221_bdy)"> ... </span></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA218_short" onMouseOver="marcheaza(id_pctA218_short,id_pctA218)" onMouseOut="demarcheaza(id_pctA218_short,id_pctA218)" onMouseDown="plusMinus(id_pctA218_short,id_pctA218_bdy)"> ... </span></span><span class="S_PCT" style="display: block; color:black;" id="id_pctA222"><span class="S_PCT_TTL" id="id_pctA222_ttl" onMouseOver="marcheaza(id_pctA222_ttl,id_pctA222)" onMouseOut="demarcheaza(id_pctA222_ttl,id_pctA222)" onMouseDown="plusMinus(id_pctA222_short,id_pctA222_bdy)">61.<!----></span> <span class="S_PCT_BDY" id="id_pctA222_bdy">Pe perioada neprescrisă se va organiza o gestiune a versiunilor, modificărilor, corecturilor și schimbărilor de sistem informatic, produse-program și sistem de calcul.<span class="S_PAR" style="display: block; color:black;" id="id_parA223">Dacă entitatea, în cursul acestei perioade, a schimbat sistemul de calcul, respectiv de prelucrare a datelor, trebuie să se efectueze o reconciliere între datele arhivate și versiunile noi ale produselor-program și ale echipamentelor de calcul.<!----></span><span class="S_PAR" style="display: block; color:black;" id="id_parA224">Arhivele pe suport magnetic trebuie actualizate periodic pentru a asigura accesibilitatea datelor.<!----></span></span><span style="display:none" class="S_PCT_SHORT" id="id_pctA222_short" onMouseOver="marcheaza(id_pctA222_short,id_pctA222)" onMouseOut="demarcheaza(id_pctA222_short,id_pctA222)" onMouseDown="plusMinus(id_pctA222_short,id_pctA222_bdy)"> ... </span></span></span><span style="display: none" class="S_LIT_SHORT" id="id_litA164_short" onMouseOver="marcheaza(id_litA164_short,id_litA164)" onMouseOut="demarcheaza(id_litA164_short,id_litA164)" onMouseDown="plusMinus(id_litA164_short,id_litA164_bdy)"> ... </span></span><span class="S_PAR" style="display: block; color:black;" id="id_parA225">-----<!----></span>
+                                    </div>
+                                    <div id="div_Formerepublicate" class="content_forma_act" style="display: none" data-state="empty"></div>
+                                    <div id="div_Formadebaza" class="content_forma_act" style="display: none" data-state="empty"></div>
+
+
+                        </div>
+
+                        <div id="fisa_act_container" style="display: none" data-id="FisaAct" data-state="empty">
+                                <div id="div_Actiunisuferite" class="content_fisa_act" data-state="empty">
+                                </div>
+                                <div id="div_ActiuniInduse" class="content_fisa_act" data-state="empty">
+                                </div>
+                                <div id="div_Referape" class="content_fisa_act" data-state="empty">
+                                </div>
+                                <div id="div_Referitde" class="content_fisa_act" data-state="empty">
+                                </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+ 
+<script type="text/javascript">
+    if (navigator.appVersion.indexOf("MSIE 8.") != -1) {
+        $("#meniu").css("float", "left");
+        $("#meniu").css("width", "20%");
+        $(".affix-top").css("position", "fixed");
+        $(".affix-top").css("top", "20px");
+        $(".affix-bottom").css("top", "20px");
+        $("#infoactinfoact").css("float", "right");
+        $("#infoactinfoact").css("width", "79%");
+        //var naturalWidth = img.naturalWidth;
+        //var imagini = document.getElementsByTagName("img");
+        //for (i=0;i<imagini.length;i++)
+        //{
+         //   alert(imagini[i].naturalWidth);
+         //   imagini[i].setAttribute("style","max-width:"+imagini[i].naturalWidth+"px");
+       // }
+       //////$("#infoactinfoact img").css("max-width", +"px");
+        /////alert($("#infoactinfoact img").width);
+        $("#infoactinfoact img").css("width", "auto");
+         
+        
+ 
+    }
+    var sbarHeight = null;
+
+    $(function () {
+
+        if (document.getElementsByClassName("alert")[0])
+            document.getElementsByClassName("alert")[0].style.visibility = 'hidden';
+
+        document.getElementById("Actiunisuferite").checked = false;
+        document.getElementById("ActiuniInduse").checked = false;
+        document.getElementById("Referape").checked = false;
+        document.getElementById("Referitde").checked = false;
+
+        //alert(document.getElementById("header_wrapper").offsetHeight);
+        //alert(screen.height);
+
+        var inaltime_meniu_stanga = screen.height - document.getElementById("header_wrapper").offsetHeight;
+        //alert(inaltime_meniu_stanga);
+        //  document.getElementById("meniu_stanga").style.maxHeight = inaltime_meniu_stanga + "px";
+
+        if (window.location.href.indexOf("forma_de_baza") != -1) {
+            document.getElementById("Formadebaza").style.disabled = true;
+            document.getElementById("Formadebaza").nextSibling.style.disabled = true;
+        }
+
+        if (window.location.href.indexOf("isFormaDeBaza") != -1) {
+            if (document.getElementById('istoric_fa'))
+                document.getElementById('istoric_fa').style.display = 'none'
+            document.getElementById("Formadebaza").checked = true;
+        }
+
+        if (window.location.href.indexOf("#A") != -1) {
+            var id_elem = window.location.href.split("#")[1];
+            window.scrollTo(id_elem.offsetHeight, 0);
+        }
+        else
+            window.scrollTo(0, 0);
+
+        //alert(document.getElementById('menu'));
+
+        //afisare/ascundere radio buttons (forme consolidate, forme republicate, forma de baza)
+
+        if (window.innerWidth < 1010) {
+            document.getElementById('sidebar').id = 'sidebar1';
+            document.getElementById('meniutitlu').appendChild(document.getElementById('sidebar1'));
+            document.getElementById('sidebar1').style.display = 'block';
+        }
+
+        $('a[href*=#]:not([href=#])').click(function () {
+            if (location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '')
+        && location.hostname == this.hostname) {
+
+                var target = $(this.hash);
+                target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+                if (target.length) {
+                    $('html,body').animate({
+                        scrollTop: target.offset().top - 0 //offsets for fixed header
+                    }, 50);
+                    return false;
+                }
+            }
+        });
+        //Executed on page load with URL containing an anchor tag.
+        if ($(location.href.split("#")[1])) {
+            var target = $('#' + location.href.split("#")[1]);
+            if (target.length) {
+                $('html,body').animate({
+                    scrollTop: target.offset().top - 0 //offset height of header here too.
+                }, 50);
+                return false;
+            }
+        }
+        /*
+        $("#sidebar").affix({
+            offset: {
+                top: $("header").outerHeight(true),
+                bottom: $("footer").outerHeight(true)+10
+            }
+        });
+        */
+        //alert(inaltimediv);
+        //document.getElementsByClassName('meniuaffix')[0].style.maxHeight = inaltimediv + "px";
+      $(window).resize(function () {
+            doResizeMenu();
+        });
+        
+        // scroll pe meniu la incarcare pagina (onload jQuery)
+      doResizeMenu();
+      imgSIZE(); // redim poze
+
+      // inaltime initiala sidebar
+      if ($("#sidebar").html())
+          sbarHeight = $("#sidebar").height();
+      else
+          sbarHeight = $("#sidebar1").height();
+        
+      $(window).scroll(function () {
+          if (isScrolledIntoView($(".footer_logo"))) {
+              $("#sidebar").height(sbarHeight - 200);
+          }
+          else {
+              $("#sidebar").height(sbarHeight);
+          }
+      });
+
+      var _tipact = 3;
+        //alert(_tipact);
+        if ((_tipact == 3 || _tipact == 2) && window.location.href.indexOf('isFormaDeBaza') == -1)
+        {
+            if (document.getElementById('Formaconsolidata'))
+            {
+                document.getElementById('Formaconsolidata').checked = true;
+            }
+        }        
+        else
+        {
+            //republicare
+            if (_tipact == 4)
+            {
+                if (document.getElementById('Formerepublicate'))
+                {
+                    document.getElementById('Formerepublicate').checked = true;
+                }
+                else if (document.getElementById('Formadebaza'))
+                {
+                    document.getElementById('Formadebaza').checked = true;
+                }
+            }
+            else
+                if (document.getElementById('Formadebaza'))
+                {
+                    document.getElementById('Formadebaza').checked = true;
+                }
+        }
+        //republicata (fortez forma de baza)
+        if (_tipact == 5)
+        {
+            if (document.getElementById('Formaconsolidata'))
+            {
+                document.getElementById('Formaconsolidata').checked = true;
+            }
+        }
+
+    }); // onload jQuery END
+
+    function doResizeMenu() {
+        var proc = 65;
+        var wh = window.innerHeight;
+        var dy = Math.floor(proc*wh/100);
+        var inaltimediv = window.innerHeight;
+        //var inaltimediv = window.innerHeight - $('#header_footer').height() - 400; // $("#footer_wrapper").height();
+        var inaltimediv1 = window.innerHeight - $('#header_wrapper').height();
+        
+        $("#sidebar").height(dy);
+        $("#sidebar1").height(inaltimediv1);
+    }
+
+    function AfiseazaTextModificat(e) {
+        // console.log($(e).prop("checked"));
+    }
+    function toggle_cuprins() {
+        if (document.getElementById('tree_cuprins_act').style.display != 'none')
+            document.getElementById('tree_cuprins_act').style.display = 'none'
+        else
+            document.getElementById('tree_cuprins_act').style.display = 'block';
+    }
+
+    function toggle_fisaact() {
+        if (document.getElementById('content_fisaact').style.display != 'none') {
+            document.getElementById('label_fisaact_plus_minus').innerHTML = '+';
+            document.getElementById('content_fisaact').style.display = 'none'
+        }
+        else {
+            document.getElementById('label_fisaact_plus_minus').innerHTML = '&#8212;&#160;';
+            document.getElementById('content_fisaact').style.display = 'block';
+        }
+    }
+
+    function toggle_istoric_forme_actz() {
+        if (document.getElementById('istoric_fa').style.display != 'none') {
+            document.getElementById('istoric_fa').style.display = 'none';
+            document.getElementById('label_forme_actz').innerHTML = "&nbsp;&nbsp;&nbsp;+&nbsp;istoric consolidari";
+        }
+        else {
+            document.getElementById('istoric_fa').style.display = 'block';
+            document.getElementById('label_forme_actz').innerHTML = "&nbsp;&nbsp;&nbsp;&#8212;&nbsp;istoric consolidari";
+        }
+    }
+    function scroll_to_fa() {
+        if (document.getElementById('fa_selectata'))
+            document.getElementById('meniu_stanga').scrollTop = document.getElementById('fa_selectata').offsetTop;
+    }
+    function ArataFisaAct(elem) {
+        //alert(elem.id);
+        if (elem.id == 'Actiunisuferite')
+        {
+            if (document.getElementById('actiuni_suferite').innerHTML == '')
+            {
+                $("#loaderDiv").show();
+                $.post("/Public/actiuniSuferite", { contor: document.getElementById('id_act').value }, function (result) {
+                    if (result.acte.indexOf('Nu exist') != -1)
+                        document.getElementById('actiuni_suferite').style.height = '30px';
+                    document.getElementById('actiuni_suferite').innerHTML = result.acte;
+                    $("#loaderDiv").hide();
+                });
+            }
+
+            if (document.getElementById('actiuni_suferite').style.display == 'none')
+                document.getElementById('actiuni_suferite').style.display = 'block';            
+            else
+                document.getElementById('actiuni_suferite').style.display = 'none';
+            
+        }
+
+        if (elem.id == 'ActiuniInduse')
+        {
+            if (document.getElementById('actiuni_induse').innerHTML == '')
+            {
+                $("#loaderDiv").show();
+                $.post("/Public/actiuniInduse", { contor: document.getElementById('id_act').value }, function (result) {
+                    if (result.acte.indexOf('Nu exist') != -1)
+                        document.getElementById('actiuni_induse').style.height = '30px';
+                    document.getElementById('actiuni_induse').innerHTML = result.acte;
+                    $("#loaderDiv").hide();
+                });
+            }
+
+            if (document.getElementById('actiuni_induse').style.display == 'none')
+                document.getElementById('actiuni_induse').style.display = 'block';
+            else
+                document.getElementById('actiuni_induse').style.display = 'none';
+        }
+
+        if (elem.id == 'Referape')
+        {
+            if (document.getElementById('refera_pe').innerHTML == '')
+            {
+                $("#loaderDiv").show();
+                $.post("/Public/referaPe", { contor: document.getElementById('id_act').value }, function (result) {
+                    if (result.acte.indexOf('Nu exist') != -1)
+                        document.getElementById('refera_pe').style.height = '30px';
+                    document.getElementById('refera_pe').innerHTML = result.acte;
+                    $("#loaderDiv").hide();
+                });
+            }
+
+            if (document.getElementById('refera_pe').style.display == 'none')
+                document.getElementById('refera_pe').style.display = 'block';
+            else
+                document.getElementById('refera_pe').style.display = 'none';
+        }
+
+        if (elem.id == 'Referitde')
+        {
+            if (document.getElementById('referit_de').innerHTML == '')
+            {
+                $("#loaderDiv").show();
+                $.post("/Public/referitDe", { contor: document.getElementById('id_act').value }, function (result) {
+                    if (result.acte.indexOf('Nu exist') != -1)
+                        document.getElementById('referit_de').style.height = '30px';
+                    document.getElementById('referit_de').innerHTML = result.acte;
+                    $("#loaderDiv").hide();
+                });
+            }
+
+            if (document.getElementById('referit_de').style.display == 'none')
+                document.getElementById('referit_de').style.display = 'block';
+            else
+                document.getElementById('referit_de').style.display = 'none';
+        }
+        window.scrollTo(0, 0);
+
+    }
+    function alege_articol(tip, select) {
+        var element_selectat = select.options[select.selectedIndex].text;
+        var id_elem = '';
+
+        if (tip == 1)
+            id = "actiuni_suferite";
+        else if (tip == 2)
+            id = "actiuni_induse";
+        else if (tip == 3)
+            id = "refera_pe";
+        else
+            id = "referit_de";
+
+        var linii_tabel = document.getElementById(id).childNodes[4].childNodes[0].childNodes;
+
+        if (element_selectat == 'Toate sectiunile')
+            for (i = 0; i < linii_tabel.length; i++) {
+                linii_tabel[i].style.display = 'table-row';
+            }
+        else {
+            linii_tabel[0].style.display = 'table-row';
+            for (i = 1; i < linii_tabel.length; i++) {
+                var element_gasit = linii_tabel[i].childNodes[0].innerHTML;
+                if (element_selectat != element_gasit)
+                    linii_tabel[i].style.display = 'none';
+                else
+                    linii_tabel[i].style.display = 'table-row';
+            }
+        }
+    }
+
+    function alege_articol_ref(select) {
+        var element_selectat = select.options[select.selectedIndex].text;
+
+        $("#loaderDiv").show();
+        $.post("/Public/getReferitDe", { contor: document.getElementById('id_act').value, element: element_selectat }, function (result) {
+            if (result.acte.indexOf('Nu exist') != -1)
+                document.getElementById('referit_de').style.height = '30px';
+            document.getElementById('referit_de').innerHTML = result.acte;
+            $("#loaderDiv").hide();
+        });
+
+    }
+
+    function incarcaFormaDeBaza(contor) {
+        $.post("/Public/DetaliiDocument/286044", { isFormaDeBaza: true }, function (result) {
+            window.location.href = result.Url;
+        });
+    }
+    function myFunction() {
+        var latime = window.innerWidth;
+        if (latime < 1010) {
+            if (document.getElementById('sidebar')) {
+                document.getElementById('meniutitlu').appendChild(document.getElementById('sidebar'));
+                document.getElementById('sidebar').style.display = 'block';
+                // $("#sidebar").hide(); // display : none
+                // $("#sidebar").show(); // display : default
+                document.getElementById('sidebar').id = 'sidebar1';
+            }
+        }
+        else {
+            if (document.getElementById('sidebar1')) {
+                document.getElementById('meniu').insertBefore(document.getElementById('sidebar1'), document.getElementById('infoact'));
+                document.getElementById('sidebar1').style.display = 'block';
+                document.getElementById('sidebar1').id = 'sidebar';
+                setTimeout(function () { $("#sidebar").height(sbarHeight); }, 1000);
+                
+            }
+            else {
+                document.getElementById('meniu').insertBefore(document.getElementById('sidebar'), document.getElementById('infoact'));
+                document.getElementById('sidebar').style.display = 'block';
+                //document.getElementById('sidebar').id = 'sidebar';
+            }
+        }
+    }
+    //document.getElementById('menu').appendChild(document.getElementById('sidebar'));
+    //document.getElementById('sidebar').style.display = 'inline';
+    //document.getElementById('sidebar').style.zIndex = '999';
+    window.onresize = myFunction;
+
+    function isScrolledIntoView(elem) {
+        var docViewTop = $(window).scrollTop();
+        var docViewBottom = docViewTop + $(window).height();
+
+        var elemTop = $(elem).offset().top;
+        var elemBottom = elemTop + $(elem).height();
+
+        return ((elemBottom <= docViewBottom) && (elemTop >= docViewTop));
+    }
+    $(document).ready(function () {
+        doResizeMenu();
+    });
+    $(window).resize(function () {
+        doResizeMenu();
+    });
+</script>
+                </div>
+                <div class="clear"></div>
+
+            </div>
+            <div class="clear"></div>
+ 
+        </div>
+        <footer>
+            <div id="footer_wrapper">
+                <div class="footer_wrapper_inner bs-docs-footer">
+                    <div class="footer_inner">
+                        <div class="footer_logo"></div>
+                        <ul class="top_menu">
+                            <li class="floatnone" style="margin-left: -70px;">
+                                <center>
+                                    <div style="max-width:1024px;">
+                                        <br /><img src="/Content/Images/Site/justitie_logo.png" style="max-width:90px; position:relative; z-index:9999; width:100%; margin-top:-35px;" align="left" alt="logo" />
+                                        <p style="text-transform:none;">Conținutul acestui material nu reprezintă în mod obligatoriu poziția oficială a Uniunii Europene sau a Guvernului României.</p>
+                                        <br />
+                                        <center><p style="text-transform:none;">Pentru informații detaliate despre celelalte programe cofinanțate de Uniunea Europeană, vă invităm să vizitați <a onmouseover="this.style.color = '#386897'" onmouseout="    this.style.color = '#ffffff'" style="color: #ffffff; font-weight:bold;" href="http://www.fonduri-ue.ro">www.fonduri-ue.ro</a>.</p></center>
+                                    </div>
+                                </center>
+                            </li>
+                        </ul>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+                <div class="footer_bottom">
+                    <div class="footer_inner">
+                        <div class="copyright left">
+                            Copyright &copy; 2026 - Ministerul Justiției. Toate drepturile rezervate. - <a href="/Public/Termeni">Termeni și Condiții</a>
+                            <div id="meniufooter">
+
+                            </div>
+                        </div>
+                        <div class="copyright right">        <li class="meniufooter">
+            <a style="color: #386897;" onmouseover="this.style.color = '#fafafa'" onmouseout="this.style.color = '#386897'" href="/Public/Acasa">
+
+    &nbsp;&#124;&nbsp;Acasă
+
+</a>
+        </li>
+        <li class="meniufooter">
+            <a style="color: #386897;" onmouseover="this.style.color = '#fafafa'" onmouseout="this.style.color = '#386897'" href="/Public/NLEX">
+
+    &nbsp;&#124;&nbsp;Despre Proiect
+
+</a>
+        </li>
+        <li class="meniufooter">
+            <a style="color: #386897;" onmouseover="this.style.color = '#fafafa'" onmouseout="this.style.color = '#386897'" href="/Public/Functionalitati">
+
+    &nbsp;&#124;&nbsp;Facilități Oferite 
+
+</a>
+        </li>
+        <li class="meniufooter">
+            <a style="color: #386897;" onmouseover="this.style.color = '#fafafa'" onmouseout="this.style.color = '#386897'" href="/Public/LegaturiUtile">
+
+    &nbsp;&#124;&nbsp;Legături Utile
+
+</a>
+        </li>
+
+
+</div>
+                        <div class="clear"></div>
+                    </div>
+                </div>
+            </div>
+        </footer>
+
+
+        <script type="text/javascript">
+            $(document).ready(function () {
+                $('.toggle-menu').jPushMenu();
+
+                $('ul.mainmenu li.dropdown').hover(function () {
+                    $(this).find('a.main_link').addClass('active');
+                    $(this).find('.level2_menu').show();
+                    $('li.dropdown_2').hover(function () {
+                        $(this).find('a.second_link').addClass('second_active');
+                        $(this).find('.level3_menu').show();
+
+                    }, function () {
+                        $(this).find('a.second_link').removeClass('second_active');
+                        $('.level3_menu').hide();
+                    });
+
+                }, function () {
+                    $(this).find('a.main_link').removeClass('active');
+                    $('.level2_menu').hide();
+                });
+    
+                if (navigator.appVersion.indexOf("MSIE 8.") != -1) {
+
+                    $('#mesajIe8Modal').modal('show');
+
+                }
+            });
+            //
+
+
+
+            $(document).ready(function () {
+
+
+                //stick in the fixed 100% height behind the navbar but don't wrap it
+                $('#slide-nav.navbar-inverse').after($('<div class="inverse" id="navbar-height-col"></div>'));
+
+                $('#slide-nav.navbar-default').after($('<div id="navbar-height-col"></div>'));
+
+                // Enter your ids or classes
+                var toggler = '.navbar-toggle';
+                var pagewrapper = '#page-content';
+                var navigationwrapper = '.navbar-header';
+                var menuwidth = '100%'; // the menu inside the slide menu itself
+                var slidewidth = '60%';
+                var menuneg = '-100%';
+                var slideneg = '-60%';
+
+
+                $("#slide-nav").on("click", toggler, function (e) {
+
+                    var selected = $(this).hasClass('slide-active');
+
+                    $('#slidemenu').stop().animate({
+                        left: selected ? menuneg : '0px'
+                    });
+
+                    $('#navbar-height-col').stop().animate({
+                        left: selected ? slideneg : '0px'
+                    });
+
+                    $(pagewrapper).stop().animate({
+                        left: selected ? '0px' : slidewidth
+                    });
+
+                    $(navigationwrapper).stop().animate({
+                        left: selected ? '0px' : slidewidth
+                    });
+
+
+                    $(this).toggleClass('slide-active', !selected);
+                    $('#slidemenu').toggleClass('slide-active');
+
+
+                    $('#page-content, .navbar, body, .navbar-header').toggleClass('slide-active');
+
+
+                });
+
+
+                var selected = '#slidemenu, #page-content, body, .navbar, .navbar-header';
+
+
+                $(window).on("resize", function () {
+
+                    if ($(window).width() > 1010 && $('.navbar-toggle').is(':hidden')) {
+                        $(selected).removeClass('slide-active');
+                    }
+
+
+                });
+
+
+            });
+        </script>
+        
+    </div>
+    <script>
+
+        function replaceScript() {
+            var toReplace = '<a href="javascript:;">Proiect</a>';
+            var replaceWith = '';
+            document.body.innerHTML = document.body.innerHTML.replace(toReplace, replaceWith);
+        }
+        replaceScript();
+
+        if (navigator.appVersion.indexOf("MSIE 8.") != -1) {
+            $("#toTop").hide();
+            $(".meniunu").hide();
+            $(".icon-bar").hide();
+            $("#btnNavbar").hide();
+            $(".navbar-header").hide();
+            $("body").css("min-width", "600px");
+
+        }
+
+       /* if (navigator.appName.indexOf("Netscape") != -1) {
+            $("#page_wrapper").css("transform", "scale(0.8)");
+            alert(0);
+            $("#page_wrapper").css("transform-origin", "50% 0% ");
+        }*/
+    </script>
+    
+    <!-- BETA Mesaj -->
+    <div class="modal fade" id="mesajBetaModal" tabindex="-1" role="dialog" aria-labelledby="mesajBetaModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="max-width: 700px; margin: 5% auto; ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Inchide</span></button>
+                    <br /><div class="alert alert-danger" role="alert"> <center>Versiune Beta</center></div>
+                </div>
+                <div class="modal-body">
+                    <center>
+                        A fost lansata versiunea Beta a Portalului Legislativ<br /><br /><br />
+                    Fiind o versiune Beta, este posibil ca unele facilitati sa nu functioneze in mod corect.</center>  
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" data-dismiss="modal" class="btn btn-primary">Inchide mesajul de atentionare</button>
+                </div>
+            </div>
+        </div>
+    </div>
+ 
+    <!-- IE8 Mesaj -->
+    <div class="modal fade" id="mesajIe8Modal" tabindex="-1" role="dialog" aria-labelledby="mesajIe8ModalLabel" aria-hidden="true">
+        <div class="modal-dialog" style="max-width: 700px; margin: 5% auto; ">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Inchide</span></button>
+                    <br /><div class="alert alert-danger" role="alert"> <center>Datorita faptului ca folositi o versiune de Internet Explorer (Internet Explorer 8) foarte veche este posibil ca unele functionalitati sa fie dezactivate sau sa nu functioneze corect!</center></div>
+                </div>
+                <div class="modal-body">
+                    <div style="width:100%;">
+                        <div style="width:50%; float:left; text-transform:uppercase;">
+                            <span style="font-size:18px; font-weight:bold; text-transform:none;">Ce browser sa aleg?</span>
+                            <br /><br /><br />
+                            <div class="row">
+                                <img src="/Content/Images/Site/browsere/chrome.jpg" align="left" width="69" style="padding-right:10px;" /><b>Google Chrome</b><br />
+                                <br /><a href="http://www.google.com/chrome" target="_blank"><span style="text-transform:none; font-size:13px;">Descarca Browser</span></a>
+                            </div><br />
+
+                            <div class="row">
+                                <img src="/Content/Images/Site/browsere/firefox.jpg" align="left" width="69" style="padding-right:10px;" /><b>Mozilla Firefox</b><br />
+                                <br /><a href="https://www.mozilla.org/en-US/firefox/all/?q=romania" target="_blank"><span style="text-transform:none; font-size:13px;">Descarca Browser</span></a>
+                            </div><br />
+                            <div class="row">
+                                <img src="/Content/Images/Site/browsere/ie.jpg" align="left" width="69" style="padding-right:10px;" /><b>Internet Explorer</b><br />
+                                <br />
+                                <a href="http://www.microsoft.com/windows/internet-explorer/default.aspx" target="_blank"><span style="text-transform:none; font-size:13px;">Descarca Browser</span></a>
+                            </div><br />
+                            <div class="row">
+                                <img src="/Content/Images/Site/browsere/safari.jpg" align="left" width="69" style="padding-right:10px;" /><b>Apple Safari</b><br />
+                                <br /><a href="http://www.apple.com/safari/" target="_blank"><span style="text-transform:none; font-size:13px;">Descarca Browser</span></a>
+                            </div>
+                        </div>
+                        <div style="width:50%; float:left;">
+                            <span style="font-size:18px; font-weight:bold;">De ce sa actualizez browserul?</span>
+                            <br /><br /><br />
+                            Browserele invechite, cum ar fi Internet Explorer 8 (lansat în 2001) nu respecta standardele web, nu ofera unele facilitati noi browser-ului, cum ar fi de navigatie sau descarcare, managerul de tab-uri, si au probleme de securitate.
+                            <br /><br />
+                            Aceasta afecteaza, de asemenea, calitatea de redare site-uri web.
+                            <br /><br /><br />
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+
+                    <button type="button" data-dismiss="modal" class="btn btn-primary">Inchide mesajul de atentionare</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    
+
+</body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</html>

@@ -10995,3 +10995,47 @@ aplicația ACCEPTĂ codurile — doar interfața nu le oferă.
 din OUG 158/2005 și au altă dată de valabilitate decât nomenclatorul. Deci `optiuni()` pus direct schimbă
 ce vede contabilul. Variantele: (a) ecranul pierde procentele; (b) procentele se aduc din registru, pe
 data certificatului, ca al doilea câmp. Nu se alege la scriere — P11.
+
+
+## 22.08.2026 — trei decizii: actul se aduce, perimetrul se îngheață, procentele vin din registru
+
+### D1. Legea 82/1991 se ADUCE în corpus. Ordinul nu ține loc de lege.
+
+**Costin:** *„Un ordin care spune «potrivit prevederilor legii contabilității» nu e temeiul, e o
+trimitere la el. A cita art. 20 prin OMFP 2634/2015 e exact interdicția 53: citatul nu conține regula,
+o referă."*
+
+Adusă din Portalul Legislativ (Ministerul Justiției), forma consolidată la 04.02.2025, cu amprentă
+SHA-256, în `anaf_surse/legea_82_1991_consolidat.{html,txt}`. Art. 20 citat acum verbatim, iar citatul
+CONȚINE regula. Odată cu ea au intrat și cele trei anexe ale OMFP 2634/2015 — corpusul avea doar
+Anexa nr. 1, motiv pentru care registrul de casă „nu exista".
+
+**Ce a rămas ca unealtă, nu ca act:** `scripts/portal_legislativ.py` (caută + aduce, cu amprentă) și
+`scripts/vigoare_articol.py` (verifică vigoarea PE ARTICOL, pe forma consolidată la zi). Pasul 1 și
+pasul 2 din Partea 0 se vor repeta; un act adus manual, o dată, nu lasă în urmă nici metoda, nici
+amprenta.
+
+### D2. Perimetrul se ÎNGHEAȚĂ până trece verificarea
+
+Nimic nou, cu excepția cererilor unui contabil real — care oricum nu există încă. Scris în
+`PLAN_LUCRU.md` ca decizie luată, cu data. Fără ea, lista de interdicții crește cu fiecare modul nou și
+criteriul de terminare al lui E3 se mișcă sub măsurătoare.
+
+### D3. Procentele de pe ecranul de concediu medical: rămân pe ecran, dar vin din REGISTRU
+
+**Costin:** procentele *„sunt o valoare fiscală cu temei (OUG 158/2005 art. 17, modificat de Legea
+141/2025), deci intră sub interdicția 1 la fel ca orice cotă. Eticheta se compune la randare: denumirea
+din nomenclator, procentul din registru, pe data certificatului. Nici una din cele două nu se scrie în
+JS."*
+
+Temeiul, verificat la sursă în aceeași tură: **OUG 158/2005 art. 17 — ÎN VIGOARE, alin. (1) modificat
+la 01-08-2025**, pe forma consolidată la 01.07.2026. Textul începe: „Cuantumul brut lunar al
+indemnizației pentru incapacitate temporară de muncă cauzată de boli obișnuite sau de accidente în afara
+muncii se determină raportat la fiecare episod de boală, după cum urmează: a) prin aplicarea procentului
+de 55% asupra bazei de calcul…"
+
+**Ce cere reparația, în ordinea asta:** (1) procentele intră în registru ca valori pe dată, cu temeiul
+de mai sus; (2) `nomenclator_cm` rămâne ce e — denumirile, fără procente, fiindcă îmbătrânesc din
+motive diferite; (3) ecranul compune eticheta la randare, pe data certificatului; (4) `CM_CODURI` din
+`flux_concediu.js` dispare. **Nereparat în tura asta** — rămâne în lista de reparat (interdicția 28 și,
+pentru procente, interdicția 1).
