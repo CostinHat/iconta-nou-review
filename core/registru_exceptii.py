@@ -60,12 +60,20 @@ EXCEPTII = [
 ]
 
 
-def datorie_reala(inventar):
+def datorie_reala(inventar=None):
     """Cifra care POATE ajunge la zero: netipatele MINUS excepțiile declarate.
 
-    `inventar` = mulțimea (fisier, linie) din `scan_afirmatii.netipate_in_scop()`."""
+    UNITATEA e INTRAREA din inventar, nu poziția (fișier, linie) — aceeași unitate ca baseline-ul
+    clichetului. Prima formă primea o MULȚIME de poziții și le număra pe alea: pe 22.08 asta a dat
+    17 acolo unde clichetul număra 18, fiindcă `control_fiscal_api:960` are DOUĂ dicționare pe
+    aceeași linie. Două cifre în două unități, prezentate ca aceeași măsură — exact felul de
+    nepotrivire tăcută pe care campania asta o vânează.
+
+    Fără argument citește singură inventarul, ca să nu se mai poată da unitatea greșită din afară."""
+    from core import scan_afirmatii as _scan
+    lst = _scan.netipate_in_scop() if inventar is None else list(inventar)
     ex = {(e["fisier"], e["linie"]) for e in EXCEPTII}
-    return len(set(inventar) - ex)
+    return len([x for x in lst if (x[0], x[2]) not in ex])
 
 
 if __name__ == "__main__":

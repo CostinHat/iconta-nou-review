@@ -88,7 +88,29 @@ def test_exceptiile_nu_acopera_tot(inv):
         % (len(reg.EXCEPTII), len(inv)))
 
 
-def test_datoria_reala_se_vede_separat(inv):
-    """Cifra care contează e cea care POATE ajunge la zero: netipate MINUS excepții declarate."""
-    ex = {(e["fisier"], e["linie"]) for e in reg.EXCEPTII}
-    assert reg.datorie_reala(inv) == len(inv - ex)
+def test_datoria_reala_e_in_ACEEASI_unitate_ca_clichetul():
+    """Cifra care contează e cea care POATE ajunge la zero: netipate MINUS excepții declarate.
+
+    ȘI trebuie să fie în ACEEAȘI UNITATE ca baseline-ul clichetului — INTRĂRI, nu poziții. Pe 22.08
+    n-a fost: `datorie_reala` număra poziții (fișier, linie) distincte și dădea 17 acolo unde
+    clichetul număra 18, fiindcă `control_fiscal_api:960` are DOUĂ dicționare pe aceeași linie. Două
+    cifre în două unități, raportate ca aceeași măsură."""
+    from core.test_afirmatii_tipate import BASELINE
+    intrari = len(s.netipate_in_scop())
+    assert sum(BASELINE.values()) == intrari, (
+        "baseline-ul (%d) și inventarul (%d) nu mai sunt în aceeași unitate"
+        % (sum(BASELINE.values()), intrari))
+    assert reg.datorie_reala() == intrari - len(reg.EXCEPTII), (
+        "datorie_reala (%d) nu e inventar(%d) minus excepții(%d) — unitățile s-au despărțit"
+        % (reg.datorie_reala(), intrari, len(reg.EXCEPTII)))
+
+
+def test_o_pozitie_cu_doua_afirmatii_se_numara_de_doua_ori():
+    """ANTI-VACUU pe unitate: dacă inventarul ar deduplica pe (fișier, linie), două afirmații scrise
+    pe același rând ar conta ca una — și una dintre ele ar putea rămâne netipată pentru totdeauna
+    fără ca vreo cifră să se miște."""
+    from collections import Counter
+    c = Counter((x[0], x[2]) for x in s.netipate_in_scop())
+    assert any(n > 1 for n in c.values()), (
+        "nicio poziție cu două afirmații — cazul nu mai e exercitat, deci nu se știe dacă unitatea "
+        "ar mai fi ținută. Dacă e adevărat că nu mai există, scoate testul CU MOTIV.")
