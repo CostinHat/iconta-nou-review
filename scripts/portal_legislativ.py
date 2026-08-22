@@ -82,8 +82,14 @@ def adu(ident, nume):
     io.open(os.path.join(DIR, nume + ".html.sha256"), "w", encoding="utf-8").write(amp + "\n")
     t = text(brut)
     io.open(os.path.join(DIR, nume + ".txt"), "w", encoding="utf-8").write(t)
+    # A DOUA amprenta, pe TEXT. Cea pe pagina raspunde la "e acesta fisierul stocat?";
+    # asta raspunde la "s-a schimbat TEXTUL?" — singura care se poate reproduce prin
+    # re-descarcare, fiindca portalul versioneaza URL-urile de CSS/JS in fiecare pagina.
+    amp_t = hashlib.sha256(t.encode("utf-8")).hexdigest()
+    io.open(os.path.join(DIR, nume + ".txt.sha256"), "w", encoding="utf-8").write(amp_t + "\n")
     print("ADUS %s (id=%s): %d octeti html, %d caractere text" % (nume, ident, len(brut), len(t)))
-    print("AMPRENTA %s" % amp)
+    print("AMPRENTA pagina %s" % amp)
+    print("AMPRENTA text   %s" % amp_t)
     print("SURSA %s/Public/DetaliiDocument/%s" % (BAZA, ident))
 
 

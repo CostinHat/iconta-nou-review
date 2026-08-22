@@ -161,6 +161,15 @@ altui an.
 vechi citite ca fiind la zi. Se ține în `CONFORMITATE.md`, la RESTANȚE (R1 și R4), cu condiția de
 deblocare scrisă — nu aici.
 
+
+**Și o amprentă care nu se poate reproduce nu răspunde la întrebarea pentru care a fost pusă.**
+Descărcat de două ori, același act de pe portal dă **doi octeți diferiți**: pagina poartă URL-uri de
+CSS/JS versionate. S-a văzut la prima verificare de după commit — `legea_82_1991_consolidat.html`
+apărea modificat cu 1629 de linii, iar **textul extras era identic**. O amprentă pe pagină răspunde la
+*„e acesta fișierul pe care l-am stocat?"*; interdicția 52 întreabă altceva — *„s-a schimbat TEXTUL
+după aducere?"* — și pentru ea amprenta trebuie luată pe textul extras. De-aceea fiecare act adus
+primește acum **două**: `<nume>.html.sha256` și `<nume>.txt.sha256`.
+
 **Fiecare gard nou primește o aserțiune anti-vacuu:** un gard care nu găsește nimic TRECE. Un gard cu
 domeniul greșit e mai rău decât niciun gard — raportează verde despre o lume pe care n-o vede.
 

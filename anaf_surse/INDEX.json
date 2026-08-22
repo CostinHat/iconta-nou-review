@@ -1425,6 +1425,13 @@
       "sursa": "static.anaf.ro",
       "forma": "consolidata"
     },
+    "legea_82_1991_consolidat.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "consolidata"
+    },
     "legea_82_1991_modif_oug115_2023.pdf": {
       "exista": true,
       "tip_forma": null,
@@ -1592,6 +1599,13 @@
       "sursa": "static.anaf.ro",
       "forma": "consolidata"
     },
+    "omfp_1802_2014_ordin_consolidat.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "consolidata"
+    },
     "omfp_1802_2014_reglementari_consolidat.html": {
       "exista": true,
       "tip_forma": "consolidat_la_zi",
@@ -1607,6 +1621,13 @@
       "forma": "consolidata"
     },
     "omfp_1802_2014_reglementari_consolidat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "consolidata"
+    },
+    "omfp_1802_2014_reglementari_consolidat.txt.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": [],
@@ -1649,6 +1670,13 @@
       "sursa": "static.anaf.ro",
       "forma": "initiala"
     },
+    "omfp_2634_2015_anexa1_norme_generale.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
     "omfp_2634_2015_anexa2_norme_specifice.html": {
       "exista": true,
       "tip_forma": "consolidat_la_zi",
@@ -1670,6 +1698,13 @@
       "sursa": "static.anaf.ro",
       "forma": "initiala"
     },
+    "omfp_2634_2015_anexa2_norme_specifice.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
     "omfp_2634_2015_anexa3_modele.html": {
       "exista": true,
       "tip_forma": "consolidat_la_zi",
@@ -1685,6 +1720,13 @@
       "forma": "initiala"
     },
     "omfp_2634_2015_anexa3_modele.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "omfp_2634_2015_anexa3_modele.txt.sha256": {
       "exista": true,
       "tip_forma": null,
       "acopera": [],
