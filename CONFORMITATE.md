@@ -30,10 +30,10 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: faza 1, pasul 1a din `PLAN_INVESTIGATII.md` — ÎNCHEIAT. Urmează **1b** (ce produce aplicația, pe date reale) și **1c** (se poate verifica pe ecran).
+- **pasul curent**: faza 1, pasul **1b** din `PLAN_INVESTIGATII.md` — ÎNCEPUT: familia A (registrele) e măsurată pe date reale. Urmează familiile B, C, D, apoi **1c**.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: operațiunea 1 (câte regimuri) și pasul 1a (ce cere legea) sunt MĂSURATE — vezi blocul „E1 — SETUL COMPLET". Mai lipsesc, ca să se termine E1: **1b** · **1c** · plus cele **șase restanțe** de mai jos (R1–R6), dintre care **R3** blochează o familie întreagă din 1a, iar **R5** și **R6** privesc încrederea în corpusul pe care stă tot 1a.
-- **decizii care blochează**: **niciuna deschisă.** Cele două de dimineață s-au luat: (1) *Legea 82/1991* — **se aduce actul**, nu se acceptă ordinul ca ancoră (adusă, cu amprentă, art. 20 citat verbatim); (2) *perimetrul* — **se îngheață** până trece verificarea, cu excepția cererilor unui contabil real (scris în `PLAN_LUCRU.md`, 22.08.2026).
+- **decizii care blochează**: **una deschisă**: verdictul 1d are **cinci liste**, dar tabelul P23 are **trei cauze** — a treia, *„artefactul nu se poate produce indiferent de date"*, n-are listă, și e exact cazul găsit la familia A (Registrul-inventar, Cartea mare). Se lărgește lista 3, sau se adaugă a șasea? Blochează clasificarea artefactelor la 1d, nu măsurarea lor la 1b.
 - **avertisment la cifre**: **NEÎNCEPUTE include interdicții măsurate în campanii anterioare, netransferate — vezi 3a din `PLAN_INVESTIGATII.md`.** Cel puțin zece au cifre în `GARZI.md` și `TESTE.md` și scriu NEÎNCEPUTĂ aici. Cifra e adevărată, dar arată mai multă muncă rămasă decât e.
 - **ultima actualizare**: 2026-08-22
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
@@ -52,6 +52,12 @@ acolo) · **ARTEFACT** (nu se poate spune ce datorează o firmă, deci 1b n-are 
 deschis restanța. **Numără commituri, nu ture** — o tură poate produce mai multe, deci contorul urcă
 mai repede decât ziua; e ce poate da git fără să inventez o noțiune de „tură". O restanță cu contorul
 peste unu a supraviețuit cel puțin unei porți verzi și se arată ca atare în secțiunea B.
+
+**Pragul, scris ca să nu rămână doar în cap (Costin, 22.08.2026).** Restanțele se deschid ca să fie
+rezolvate, nu ca să fie colectate. **Punctul de control: închiderea lui 1b.** Dacă la acel moment
+niciuna dintre restanțele deschise nu s-a mișcat — nici rezolvată, nici măcar măsurată — atunci
+procedura colectează în loc să rezolve, iar asta se vede exact aici, în contoare. Nu e o regulă cu
+gardă; e un prag de citit, la un moment numit.
 
 ### R1 — Câte alte acte din corpus sunt PARȚIALE
 
@@ -100,6 +106,14 @@ peste unu a supraviețuit cel puțin unei porți verzi și se arată ca atare î
 - **deschisă pe commit**: `07d5351`
 - **ce blochează**: `legea_82_1991_consolidat.html` a apărut modificat față de commit — 1629 de linii — **fără ca vreun script al turei să-l scrie**. Textul extras era identic; diferența e în chrome-ul paginii. Dacă ceva scrie în corpus fără să știm ce, interdicția 52 e păzită împotriva unui **simptom**, nu a cauzei: data viitoare diferența poate fi în text. **Ce s-a verificat deja, ca să nu se refacă:** niciun fișier `.py` din repo nu scrie în `anaf_surse/` (căutare pe `open(...,"w")`, `write(`, `urlretrieve`, `shutil.copy/move`) · singurul client HTTP din vecinătatea corpusului e `core/monitor_fiscal.py`, care **nu scrie fișiere** (trimite email și scrie în DB) · `gen_index.py` doar CITEȘTE fișierele, scrie numai `INDEX.json`.
 - **condiția de deblocare**: scriitorul e **numit**. Garda nouă `core/test_corpus_amprenta.py` transformă tăcerea în poartă roșie: dacă se repetă, se aprinde la primul commit, iar comenzile turei sunt cunoscute, deci vinovatul e unul dintre ele. Se închide fie când garda se aprinde și scriitorul e identificat, fie când o reproducere deliberată îl numește. **Nu se închide** doar fiindcă nu s-a mai întâmplat — aia e tăcere, nu răspuns.
+
+### R7 — Câte câmpuri obligatorii sunt gardate ca PREZENȚĂ, dar necontrolate ca ADEVĂR
+
+- **felul**: VERIFICARE
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `2375d54`
+- **ce blochează**: **un câmp completat pe care nimic nu-l verifică arată identic cu unul verificat.** Instanța cunoscută nu e mică: corpusul avea **177 de amprente** și **niciun test care să le compare cu fișierele** — gardat ca prezență (fișierul `.sha256` există), necontrolat ca adevăr (nimeni nu recalcula hash-ul). Clasa e mai largă decât corpusul: `CONFORMITATE.md` gardează prezența câmpurilor `cifra`, `instanțe`, `calibrare`, `ce nu vede`, `pe commit`; `TESTE.md`, `GARZI.md`, `ISTORIC_TENANTI.md` au și ele câmpuri obligatorii. Pentru fiecare dintre ele se poate întreba dacă există un al doilea control, cel de adevăr — și **răspunsul nu e măsurat**.
+- **condiția de deblocare**: măsurătoarea e făcută — pentru fiecare câmp obligatoriu din registre se spune dacă are control de adevăr, iar fiecare câmp fără control primește **ori un control**, ori o **declarație scrisă** că prezența e tot ce se poate verifica mecanic (ca la „temeiul determină comparația", unde declarația e răspunsul corect). Se închide când lista e completă, nu când primele câteva au fost reparate. **Nu se măsoară acum** — cerut explicit de Costin: *„Nu acum, dar nu-l lăsa nescris."*
 
 ---
 
@@ -272,6 +286,45 @@ de articole, OPANAF 1783/2021 are 15 — amândouă intră azi sub instrumentul 
 verificate în aceeași tură. Rămân **pe puncte**: Reglementările contabile (anexa OMFP 1802/2014, 58 de
 marcaje pe punct) și Normele OMFP 2634/2015 — restanța **R2**. Rămâne neverificat și **OPANAF
 2194/2025**, a cărui pagină de act nu expune articole (conținutul stă în anexe), deci cere altă cale.
+
+### Pasul 1b — ce produce aplicația (FAMILIA A: registrele)
+
+**Măsurat pe date reale, nu pe rute.** *„Există ruta" nu e „produce artefactul"* — deci fiecare
+registru a fost cerut efectiv, pe firmele care au note contabile: t013 (21 note), t014 (5), t016 (2),
+t003 (3), t005 (1), t017 (1).
+
+| artefact | temei | se produce azi? | pe ce s-a probat |
+|---|---|---|---|
+| **Balanța de verificare, LUNAR** | L82 art. 22 | **DA** — `documente_api.balanta` + PDF pe rută (`/tenants/{id}/documente/balanta`) | t013 08/2026 → **26 rânduri** · t014 → 16 · t016 → 7, cu solduri inițiale, rulaje și solduri finale |
+| **Registrul-jurnal** (14-1-1) | L82 art. 20 · OMFP 2634 Anexa 1 pct. 45 | **PARȚIAL** — conținutul există și se vede pe ecran (`/tenants/{id}/jurnal`, ecranul „Registru jurnal"), dar **nu există artefact listabil** (fără PDF/export, spre deosebire de balanță), iar câmpurile cerute de pct. 45 — *„felul, numărul și data documentului justificativ"* — nu ies: ruta întoarce `sursa` și `factura_id`, nu felul/numărul/data documentului | t013 08/2026 |
+| **Registrul-inventar** (14-1-2) | L82 art. 20 · OMFP 2634 Anexa 1 pct. 46 | **NU** — niciun producător pentru partidă dublă | căutare pe `registru.?inventar`, `14-1-2` în `core/`, `main.py`, `static/js/`: singura potrivire e `rip_api.registru_inventar`, care e varianta **14-1-2/b**, de partidă simplă |
+| **Cartea mare** (14-1-3) | L82 art. 20 · OMFP 2634 Anexa 1 pct. 47 | **NU** — motorul există (`core/motor.py:32 carte_mare`), **zero consumatori în tot repo-ul**, nicio rută | grep pe `carte_mare`: o singură apariție, definiția |
+| **Registrul-jurnal de încasări și plăți** (14-1-1/b) + **Registrul-inventar** (14-1-2/b) | OMFP 2634 Anexa 1 pct. 48 · OMFP 170/2015 | **DA, dar neexercitat** — `core/rip_api.py` + ecran `rip_ecran.js` | **0 firme PFA** din 17, deci artefactul n-a fost produs niciodată pe date |
+
+**Răspunderea, după P23:** niciunul dintre cazurile de mai sus nu e „lipsesc date". Datele există —
+t013 are 21 de note și o balanță de 26 de rânduri din ele. Registrul-inventar și Cartea mare **nu se
+pot produce indiferent de date**, adică rândul al treilea din tabelul P23: **a aplicației**.
+
+**Ce nu vede măsurătoarea:** un producător care ar exista sub alt nume decât cele căutate · un export
+generic (rapoarte configurabile) care ar putea reconstitui un registru fără să-l numească · și nu
+spune nimic despre **corectitudinea** balanței, doar că iese cu rânduri pe date reale.
+
+
+### Decizie cerută la 1b: verdictul are cinci liste, dar P23 are trei cauze
+
+Tabelul P23 din 1b are **trei** cauze pentru un artefact care nu iese: date lipsă **cerute la timp**
+(a omului) · date lipsă **necerute sau cerute prea târziu** (a aplicației) · **artefactul nu se poate
+produce indiferent de date** (a aplicației).
+
+Cele cinci liste ale verdictului 1d au loc doar pentru primele două: lista 2 („nu ies, fiindcă lipsesc
+date cerute la timp") și lista 3 („nu ies, fiindcă lipsesc date necerute sau cerute prea târziu").
+**A treia cauză n-are listă** — iar ea e exact cazul găsit la familia A: Registrul-inventar și Cartea
+mare nu ies, și nu din lipsă de date.
+
+Nu aleg singur între „se lărgește lista 3" și „se adaugă o a șasea listă": planurile nu se
+interpretează. **Decizia e cerută.** Până atunci, cele două artefacte sunt scrise mai sus cu cauza
+lor, nu clasificate într-o listă.
+
 
 ### Ce lipsește ca să se termine E1
 
