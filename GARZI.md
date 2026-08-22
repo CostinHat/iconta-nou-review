@@ -4014,3 +4014,24 @@ realista. Verifica forma si existenta.
 **Plus, in antet:** `avertisment la cifre` — obligatoriu, fiindca „66 NEINCEPUTE" e adevarat si inselator
 in acelasi timp: cel putin zece interdictii au masuratori in campaniile din iulie-august, netransferate
 (transferul e la 3a). Cifra arata mai multa munca ramasa decat e.
+
+
+## 22.08.2026 — interdictia 52 primeste, in sfarsit, un mecanism (`core/test_corpus_amprenta.py`)
+
+**De ce.** Interdictia 52 — *„un act din corpus al carui text s-a modificat dupa aducere"* — avea un
+artefact (`<nume>.sha256`, 177 de bucati) si **niciun test care sa-l compare cu fisierul**. Amprenta era
+o declaratie, nu o proba. S-a vazut cand `legea_82_1991_consolidat.html` a aparut modificat fata de
+commit, cu 1629 de linii, **fara ca vreun script al turei sa-l scrie**: nimic nu s-ar fi aprins daca nu
+ma uitam din intamplare la `git status`.
+
+**Patru teste, pe toate cele 177 de perechi** (0,35 s): amprenta are forma de amprenta · nicio amprenta
+orfana · continutul nu s-a schimbat sub amprenta · plus **anti-vacuu**, care are DOUA mutatii, nu una:
+domeniul inexistent SI domeniul care exista dar e gol. A doua e cea care conteaza — un director gol nu
+arunca exceptie, doar trece.
+
+**RED-proof: 5 mutatii, 5 rosii.**
+
+**CE NU FACE, declarat:** nu spune ca textul de pe SURSA s-a schimbat — pentru asta ar trebui
+re-descarcat, iar pagina portalului nu e reproductibila octet cu octet. Raspunde la intrebarea
+dinauntru: *„fisierul din corpus e cel caruia i-am luat amprenta?"*. **Cine** l-a schimbat, nu spune —
+spune doar CA s-a schimbat, ceea ce e exact ce lipsea. Cauza ramane restanta R6.

@@ -32,7 +32,7 @@ atins fișierul, iar o modificare încă necomisă a registrului cere data de az
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
 - **pasul curent**: faza 1, pasul 1a din `PLAN_INVESTIGATII.md` — ÎNCHEIAT. Urmează **1b** (ce produce aplicația, pe date reale) și **1c** (se poate verifica pe ecran).
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
-- **ce lipsește**: operațiunea 1 (câte regimuri) și pasul 1a (ce cere legea) sunt MĂSURATE — vezi blocul „E1 — SETUL COMPLET". Mai lipsesc, ca să se termine E1: **1b** · **1c** · plus cele **patru restanțe** de mai jos (R1–R4), dintre care R3 blochează o familie întreagă din 1a.
+- **ce lipsește**: operațiunea 1 (câte regimuri) și pasul 1a (ce cere legea) sunt MĂSURATE — vezi blocul „E1 — SETUL COMPLET". Mai lipsesc, ca să se termine E1: **1b** · **1c** · plus cele **șase restanțe** de mai jos (R1–R6), dintre care **R3** blochează o familie întreagă din 1a, iar **R5** și **R6** privesc încrederea în corpusul pe care stă tot 1a.
 - **decizii care blochează**: **niciuna deschisă.** Cele două de dimineață s-au luat: (1) *Legea 82/1991* — **se aduce actul**, nu se acceptă ordinul ca ancoră (adusă, cu amprentă, art. 20 citat verbatim); (2) *perimetrul* — **se îngheață** până trece verificarea, cu excepția cererilor unui contabil real (scris în `PLAN_LUCRU.md`, 22.08.2026).
 - **avertisment la cifre**: **NEÎNCEPUTE include interdicții măsurate în campanii anterioare, netransferate — vezi 3a din `PLAN_INVESTIGATII.md`.** Cel puțin zece au cifre în `GARZI.md` și `TESTE.md` și scriu NEÎNCEPUTĂ aici. Cifra e adevărată, dar arată mai multă muncă rămasă decât e.
 - **ultima actualizare**: 2026-08-22
@@ -83,6 +83,22 @@ atare în secțiunea B a raportului.
 - **deschisă pe commit**: `45f15ab`
 - **ce blochează**: o formă inițială dă valori reale, dar ale altui an, și nu se deosebește de o formă la zi decât dacă o întrebi. Instanța: criteriile de mărime, scrise în EUR din forma 2014, corectate în aceeași zi.
 - **condiția de deblocare**: `TIP_FORMA` din `anaf_surse/gen_index.py` poartă deja răspunsul pentru fișierele legate de cote; se închide când orice fișier din care se citește un temei are forma declarată, iar citirea dintr-o formă marcată `forma_la_data` pentru o valoare CURENTĂ e imposibilă, nu doar nerecomandată.
+
+### R5 — Marcajele din corpus nu se citesc la FOLOSIRE
+
+- **felul**: SURSĂ
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `07d5351`
+- **ce blochează**: **măsurat înainte de a fi scris, nu presupus.** Din **529** de fișiere în `INDEX.json`, **47 poartă cel puțin un marcaj** (21 `forma_la_data` · 9 `consolidat_la_zi` · 11 detectate ca formă inițială · 2 abrogate · 2 cu text neextractibil), iar **18** dintre ele sunt legate de cote. **Patru poartă o notă explicită** — avertismente scrise de om: *„forma initiala 2014; NU include Ordinul 1239/2021…"* (`omfp_1802_2014.pdf` — chiar fișierul care a produs cifra falsă) · *„consolidare 2018, nu la zi"* · *„sursa legex.ro, neoficiala"* · *„abrogat de HG 773/2019 … HG 773/2019 nu e in corpus"*. **Cine citește marcajele: doar `gen_index.py` însuși și două gărzi.** Nimic la punctul de folosire — cine deschide fișierul ca să ia o valoare nu vede nimic. Asta nu e o instanță, e clasa din care instanța a ieșit.
+- **condiția de deblocare**: marcajul ajunge la folosire, nu doar în manifest. Se închide când citirea unei valori CURENTE dintr-un fișier marcat `forma_la_data` sau cu notă e **imposibilă sau zgomotoasă prin construcție** — nu doar nerecomandată. Forma minimă acceptabilă: o gardă care leagă fiecare `Temei` de forma fișierului lui și pică pe combinația „valoare fără succesor + sursă marcată ca formă veche". Până atunci, cele 4 note se citesc manual înainte de orice valoare luată din acele fișiere.
+
+### R6 — Ceva a scris într-un fișier de corpus, și nu se știe ce
+
+- **felul**: SURSĂ
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `07d5351`
+- **ce blochează**: `legea_82_1991_consolidat.html` a apărut modificat față de commit — 1629 de linii — **fără ca vreun script al turei să-l scrie**. Textul extras era identic; diferența e în chrome-ul paginii. Dacă ceva scrie în corpus fără să știm ce, interdicția 52 e păzită împotriva unui **simptom**, nu a cauzei: data viitoare diferența poate fi în text. **Ce s-a verificat deja, ca să nu se refacă:** niciun fișier `.py` din repo nu scrie în `anaf_surse/` (căutare pe `open(...,"w")`, `write(`, `urlretrieve`, `shutil.copy/move`) · singurul client HTTP din vecinătatea corpusului e `core/monitor_fiscal.py`, care **nu scrie fișiere** (trimite email și scrie în DB) · `gen_index.py` doar CITEȘTE fișierele, scrie numai `INDEX.json`.
+- **condiția de deblocare**: scriitorul e **numit**. Garda nouă `core/test_corpus_amprenta.py` transformă tăcerea în poartă roșie: dacă se repetă, se aprinde la primul commit, iar comenzile turei sunt cunoscute, deci vinovatul e unul dintre ele. Se închide fie când garda se aprinde și scriitorul e identificat, fie când o reproducere deliberată îl numește. **Nu se închide** doar fiindcă nu s-a mai întâmplat — aia e tăcere, nu răspuns.
 
 ---
 
