@@ -3,6 +3,50 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 22.08.2026 — Confruntarea are un REGISTRU, nu un raport (CONFORMITATE.md)
+
+**Cerut de Costin:** *„Rezultatul investigației nu e un raport în conversație — e un fișier."* Motivul,
+al lui: *„Cifrele confruntării nu au voie să existe doar în raport. Raportul se citește o dată;
+registrul rămâne."* Prima confruntare cu planul normativ produsese opt cifre care trăiau doar
+într-un mesaj; dacă nimeni nu le mai citea, măsurătoarea se refăcea de la zero.
+
+**Forma:** o secțiune per interdicție, **toate 48**, nu doar cele măsurate — *„așa se vede de la
+început cât e de făcut, în loc să se descopere pe parcurs."* Cinci câmpuri obligatorii: stare ·
+cifră + listă · calibrare · ce nu vede măsurătoarea · unde ajunge efectul.
+
+**Regula tare:** *„«Investigată» nu e o stare. Un câmp gol nu e permis."* Dacă nu se poate măsura,
+se scrie **NEMĂSURABILĂ cu motivul** — vezi #22, unde motivul e că măsurătoarea n-are numitor.
+Patru stări: MĂSURATĂ / PARȚIAL (cifra e un plafon inferior, și se SPUNE) / NEMĂSURABILĂ / NEÎNCEPUTĂ.
+
+Titlurile și numerele se CITESC din plan, nu se copiază — altfel registrul ar apăra o lume pe care
+planul a părăsit-o. Intră în §11 al raportului (CLAUDE.md): un raport de confruntare care nu-l
+actualizează e incomplet, indiferent ce conține în rest.
+
+## 22.08.2026 — Interdicția 16: nomenclatoarele SECUNDARE, reclasificate (decizia lui Costin)
+
+Raportasem o **tensiune** între P8 („arbitrul decide") și interdicția 16 („nu deriva nomenclatorul
+dintr-o sursă secundară"): `d390.TIPURI/TARI_UE`, `d301.VALUTE`, `d394.TIPURI` aleseseră CONȘTIENT
+validatorul, cu proba scrisă. Costin: **nu e o tensiune, e o distincție care lipsea din plan.**
+
+> *„Nomenclatorul se ia din sursa NORMATIVĂ; dacă validatorul acceptă altceva sau mai puțin, aia e o
+> CONSTRÂNGERE A ARBITRULUI, nu o sursă alternativă."*
+
+Cazul D390 e chiar exemplul: XSD-ul are 15 coduri, Nomenclatorul 9 are 20, iar validatorul acceptă
+coduri pe care XSD-ul le respinge. Deci cele **39 nu sunt nici datorie curată, nici aplicare corectă
+a lui P8: sunt nomenclatoare ancorate pe locul greșit, cu o constrângere reală deasupra.** Constrângerea
+validatorului devine o INTERPRETARE cu dezacord marcat, nu o sursă.
+
+**Codurile de boală** (decizie separată, aceeași ședință): se unifică pe **Nomenclatorul 9**, cu XSD-ul
+ca **a doua constrângere, nu ca autoritate**. *„Contradicția dintre straturi nu se semnalează — se
+elimină, fiindcă azi blochează depunerea unui D112 pe coduri legale."*
+
+## 22.08.2026 — Reparațiile încep de la defaultul lui `cota()`
+
+Costin: *„Da, începe cu defaultul din `cota()`. O cauză unică pentru toată interdicția 2 e cel mai bun
+raport efect/cost din listă."* Cele 3 instanțe ale interdicției 2 au o singură cauză —
+`common.cota(nume, la_data=None)`, unde defaultul e *azi*. Scos, interdicția devine imposibilă prin
+construcție, nu doar nemaiîncălcată.
+
 ## 27.07.2026 — D406 (SAF-T) NU e depunabil: gap cunoscut
 
 Verificat la sursa (git + ANAF). In D406 periodic, SourceDocuments (SalesInvoices/PurchaseInvoices) e OBLIGATORIU la nivel de linie de factura (InvoiceLine cu AccountID + TaxInformation). Generatorul nostru (core/d406.py) emite, de la snapshot-ul initial (cbf24ce), o SINGURA linie sintetica per factura (cont 707/371, cantitate 1, pret = net total, descriere = numele partenerului), NU liniile reale din `factura_linii` (n. atins niciodata); Payments = gol.

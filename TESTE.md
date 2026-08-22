@@ -9,6 +9,12 @@ Campania are **două sesiuni distincte** (A, B), precedate de o **Faza 0** de pr
   subiectul pe schemă efemeră din `tenant_template` (comisă + DROP pentru scriitori, ROLLBACK
   pentru cititori) sau pe fake cursor. Prerechizit pentru B — firmele F1–F7 se **construiesc**,
   nu se presupun. Gardă permanentă: `core/test_teste_decuplate.py`. Vezi DECIZII 29.07.
+- **`core/test_conformitate.py` (22.08.2026)** — gardă pe registrul confruntării. 10 teste: planul se
+  citește (anti-vacuu) · citirea câmpurilor se oprește la capătul rândului (anti-vacuu pe instrument)
+  · fiecare interdicție are secțiune · nicio secțiune orfană · starea e dintre cele patru · niciun
+  câmp obligatoriu gol · MĂSURATELE au cifră + calibrare GĂSIT · PARȚIALELE spun că cifra e plafon ·
+  NEMĂSURABILELE spun de ce · se vede cât e de făcut. Sursa: `PLAN_ARHITECTURA.md`, citită la rulare.
+
 - **Sesiunea A — alinierea la legislație.** Fiecare test fiscal se rescrie ca să afirme
   **regula de drept**, nu implementarea. Un test o dată; se validează, apoi următorul. Nu
   are nevoie de date; e pură.

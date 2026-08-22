@@ -4870,3 +4870,18 @@ link verificabil, nu pe o frază, și cu declarația a ce nu face.
 **Am greșit o afirmație și o corectez aici:** am spus „le-am privit pe toate 15". Era la nivel de
 linie, nu de context. Trei dintre cele numite zgomot merită a doua privire. „2 reale" e un plafon
 inferior.
+
+
+## 22.08.2026 — CONFORMITATE.md: confruntarea cu planul normativ devine registru
+
+Cele opt măsurători de azi au intrat într-un fișier din repo, cu gardă. 48 de secțiuni (una per
+interdicție din `PLAN_ARHITECTURA.md`), din care **8 completate**: #1 = 131 brut / ~100 reale ·
+#2 = 3, cauză unică · #16 = 39 din 93, reclasificate ca „ancorate pe locul greșit, cu o constrângere
+reală deasupra" · #17 = 42 (a) + 1 formulă în 3 module (b) · #21 = 15 brut / 2 confirmate, plafon
+inferior · #22 = NEMĂSURABILĂ, fără numitor · #23 = 0, gardat. Restul de 40, NEÎNCEPUTE — vizibile
+de la început.
+
+Garda `core/test_conformitate.py` a fost scrisă ÎNAINTE și a picat pe HEAD (fișierul lipsea). RED-proof
+în 9 mutații, cu curățare de `__pycache__`: una a trecut fals și a arătat un defect REAL în gardă —
+citirea unui câmp cu `\s*` trecea peste linia nouă, deci un câmp golit împrumuta rândul următor.
+Reparat cu `[ \t]*` + anti-vacuu pe instrument. CONFORMITATE.md a intrat în §11 din CLAUDE.md.

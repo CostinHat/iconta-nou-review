@@ -491,6 +491,15 @@ Fara titlu, raportul e incomplet.
     divergent=False), cu start-time-ul procesului DUPA data commitului. Confirmarea completa e FOUR-WAY, numind
     commit-ul: "HEAD = origin/main = backup/lant-<data> = RUNNING = <hash>". Daca procesul NU ruleaza commitul, se
     spune DE CE (restart neefectuat -> stop point comportament vizibil / decizie de produs; poarta rosie). Vezi §2.3 pct.10.
+    PLUS (CONFORMITATE.md, 22.08.2026, ceruta de Costin): **CONFORMITATE.md intra in §11, ca oricare alt registru** -
+    registrul confruntarii codului cu PLAN_ARHITECTURA.md, o sectiune per interdictie, cu stare / cifra+lista /
+    calibrare / ce nu vede masuratoarea / unde ajunge efectul. MOTIVUL, scris de Costin: *"Cifrele confruntarii nu au
+    voie sa existe doar in raport. Raportul se citeste o data; registrul ramane."* Deci: **un raport de confruntare
+    care nu-l actualizeaza e INCOMPLET, indiferent ce contine in rest** - o cifra masurata care traieste numai in
+    conversatie se pierde si munca se reface de la zero. Regula fisierului: *"«Investigata» nu e o stare. Un camp gol
+    nu e permis"* - daca nu se poate masura, se scrie NEMASURABILA CU MOTIVUL. Cele patru stari: MASURATA / PARTIAL
+    (cifra e un plafon inferior, si se SPUNE) / NEMASURABILA / NEINCEPUTA. Gardat de `core/test_conformitate.py`:
+    o interdictie noua in plan fara sectiune, un camp obligatoriu gol sau o stare inventata opresc poarta.
 
 ## 2.2.1 ACTUALIZAREA REGISTRELOR DUPA FIECARE EXECUTIE (04.08.2026, ceruta de Costin)
 

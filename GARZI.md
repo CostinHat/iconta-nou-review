@@ -3863,3 +3863,30 @@ re-citire pe context, trei dintre cele numite „zgomot" merită a doua privire 
 
 Și a patra oară azi am insistat pe editarea din shell până s-au rupt escapările, în loc să scriu
 fișierul din prima.
+
+---
+
+### CONFORMITATE.md — registrul confruntării cu planul normativ (22.08.2026)
+
+`core/test_conformitate.py` — **o interdicție din `PLAN_ARHITECTURA.md` fără secțiune în
+`CONFORMITATE.md` nu trece poarta.** Cerut de Costin: *„Cifrele confruntării nu au voie să existe
+doar în raport. Raportul se citește o dată; registrul rămâne."*
+
+Ce face imposibil: o interdicție nouă în plan fără secțiune (planul a crescut 25 → 48 într-o zi) ·
+un câmp obligatoriu gol — *„«Investigată» nu e o stare"* · o stare din afara celor patru · o secțiune
+orfană · o stare MĂSURATĂ fără cifră sau fără caz de calibrare GĂSIT · o PARȚIAL care nu spune că
+cifra e un plafon inferior · o NEMĂSURABILĂ fără motiv.
+
+**Ce NU face, declarat:** nu verifică dacă cifra e CORECTĂ. Verifică forma și completitudinea;
+adevărul unei cifre se probează prin calibrare, nu prin gardă.
+
+**Anti-vacuu, două:** (1) `test_planul_chiar_se_citeste` — dacă parsarea planului se rupe, toate
+celelalte ar trece pe zero interdicții, exact interdicția 19; (2) `test_citirea_campurilor_se_
+opreste_la_capatul_randului` — anti-vacuu pe INSTRUMENT. Prima formă a gardului citea valorile cu
+`\s*`, iar `\s` cuprinde linia nouă: un câmp golit împrumuta textul rândului următor și mutația
+„câmp obligatoriu gol" **trecea**. Prins de RED-proof, reparat cu `[ \t]*`. Un gard care citește
+peste marginea rândului măsoară alt fișier decât cel scris.
+
+**Falsificat** (9 mutații, cu curățare de `__pycache__` între ele): interdicție nouă fără secțiune ·
+câmp golit · stare inventată („Investigată") · MĂSURATĂ fără calibrare · secțiune orfană · capul de
+tabel al planului redenumit · PARȚIAL fără plafon · NEMĂSURABILĂ fără motiv. Toate pică.
