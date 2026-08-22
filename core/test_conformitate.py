@@ -635,3 +635,39 @@ def test_gardul_EXTERN_chiar_ar_prinde():
     assert lipsa == ["ce trebuie", "de unde", "pentru ce"], (
         "tiparul nu prinde o cerere goală: %s" % lipsa)
     assert _camp(corp, "cine deblochează").strip() == "EXTERN"
+
+
+def test_antetul_nu_spune_niciuna_cand_corpul_are_o_decizie():
+    """COERENȚĂ INTERNĂ, nu doar prezență. Cerută 23.08.2026, după a doua instanță în două zile:
+    antetul a scris „decizii care blochează: **niciuna deschisă**" în chiar commitul care adăuga o
+    decizie în corp — iar secțiunea B a raportului se DERIVĂ din antet, deci minciuna s-ar fi repetat
+    la fiecare citire.
+
+    Gardul de până acum cerea ca fiecare câmp să EXISTE și să nu fie gol. Un câmp plin și fals trecea.
+    Aici se compară două locuri care vorbesc despre același lucru: marcajul canonic **Decizie cerută.**
+    din corp, și câmpul din antet. Nu poate verifica dacă o decizie e „reală" — verifică doar că cele
+    două nu se contrazic, ceea ce e chiar clasa care a scăpat de două ori."""
+    corp = io.open(CONF, encoding="utf-8").read().split("## ANTET DE ETAPĂ", 1)[-1]
+    antet, restul = corp.split("\n---", 1) if "\n---" in corp else (corp, "")
+    camp = ""
+    for linie in antet.splitlines():
+        if linie.startswith("- **decizii care blochează**:"):
+            camp = linie
+            break
+    assert camp, "antetul n-are câmpul «decizii care blochează»"
+    cereri = restul.count("**Decizie cerută.**")
+    # VERDICTUL se citeste de la INCEPUTUL campului, nu din proza lui. Prima forma a gardei cauta
+    # „niciuna" oriunde si a picat pe un camp corect, fiindca explicatia continea „niciuna dintre cele
+    # trei instante". O garda de coerenta care nu-si distinge verdictul de justificare e chiar clasa
+    # pe care o pazeste.
+    val = camp.split(":", 1)[1].strip()
+    spune_niciuna = val.startswith("**niciuna")
+    assert spune_niciuna or "DESCHISĂ" in val.split(".")[0], (
+        "câmpul «decizii care blochează» nu începe cu un verdict citibil mecanic: aștept «**niciuna...» "
+        "sau un «... DESCHISĂ» în prima propoziție. Găsit: %s" % val[:80])
+    assert not (cereri and spune_niciuna), (
+        "ANTETUL SE CONTRAZICE CU CORPUL: câmpul spune «niciuna», dar corpul are %d marcaj(e) "
+        "«**Decizie cerută.**». Raportul derivă B din antet, deci ar repeta afirmația falsă." % cereri)
+    assert not (spune_niciuna is False and cereri == 0), (
+        "antetul anunță o decizie deschisă, dar corpul n-are niciun marcaj «**Decizie cerută.**» — "
+        "atunci decizia nu se poate găsi de cine citește registrul")

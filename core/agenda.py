@@ -230,11 +230,12 @@ def _functii_apelate_de_test(relpath, func, cunoscute, radacina=None):
         tree = ast.parse((rad / relpath).read_text(encoding="utf-8"))
     except (OSError, SyntaxError):
         return set()
-    for node in ast.walk(tree):
-        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)) and node.name == func:
-            return {(getattr(c.func, "attr", None) or getattr(c.func, "id", None))
-                    for c in ast.walk(node) if isinstance(c, ast.Call)} & cunoscute
-    return set()
+    # R17: cheile sunt CALIFICATE ("fisier.py::nume"), iar apelul se rezolva prin importurile
+    # fisierului de test, nu pe nume simplu. Altfel un test care cheama `salarizare.calcul_salariu`
+    # ajungea la orice functie din core/ care se numea la fel.
+    from core import graf_temei as _gt
+    del tree
+    return _gt.apeluri_din(relpath, func, radacina) & cunoscute
 
 
 def cote_cluster(rand, radacina=None):

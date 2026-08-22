@@ -30,10 +30,10 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **faza 1 e COMPLETĂ**; verdictul 1/5/9/0/11 stă în blocul 1d. **DECIS 23.08 (Costin): la punctul de decizie 2, L5 intră înaintea lui L3**, cu excepția celor obligatorii prin lege (Cartea mare, Registrul-inventar, registrul de evidență fiscală). Înainte de punctul de decizie 1: **R2** e măsurată pe cele 8 puncte pe care stă verdictul, cu o singură confruntare rămasă.
+- **pasul curent**: **faza 1 e COMPLETĂ**; verdictul 1/5/9/0/11 stă în blocul 1d, iar ordinea e decisă: **L5 înaintea lui L3**, cu excepția celor obligatorii prin lege. **R17 și R2 sunt REZOLVATE** (23.08), deci punctul de decizie 1 se poate lua pe măsurători refăcute, nu pe unele moștenite. Urmează **punctul de decizie 1**.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
-- **ce lipsește**: faza 1 nu mai are pași. Ca să se termine **E1** rămâne: **R2**, care nu mai e nemăsurată — instrumentul există (`scripts/vigoare_punct.py`, gardat) și cele **8 puncte** pe care stă verdictul sunt verificate; rămâne **o singură confruntare**: Anexa 1 a Normelor are doar 2 marcaje de consolidare în tot fișierul, suspect de puțin, deci ori n-a fost modificată acolo, ori extragerea le-a pierdut · plus restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult rămân **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
-- **decizii care blochează**: **UNA DESCHISĂ, din 23.08.2026: cum se citește pragul 1.** E definit ca „efect greșit la un om ACUM”, dar pe instalare **nu există nicio firmă reală** — toate cele 17 sunt de test. Citit literal, pragul 1 e **gol prin construcție** și niciuna dintre cele trei instanțe consemnate n-ar fi trebuit să-l atingă; citit ca **atingibilitate** (ar produce, la prima firmă reală în acea stare), toate trei rămân corecte. Ambiguitatea e a planului, nu a măsurătorii, iar planurile nu se interpretează. **Nu blochează reparațiile deja făcute** — au gardă și RED-proof — dar blochează clasificarea celor viitoare. Vezi corecția din 1d.
+- **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
+- **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
 - **avertisment la cifre**: **NEÎNCEPUTE include interdicții măsurate în campanii anterioare, netransferate — vezi 3a din `PLAN_INVESTIGATII.md`.** Cel puțin zece au cifre în `GARZI.md` și `TESTE.md` și scriu NEÎNCEPUTĂ aici. Cifra e adevărată, dar arată mai multă muncă rămasă decât e.
 - **ultima actualizare**: 2026-08-23
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
@@ -189,7 +189,8 @@ gardă; e un prag de citit, la un moment numit.
 - **cine deblochează**: INTERN
 - **unde intră**: E2 · interdicțiile 49, 54
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
+- **rezolvată pe commit**: `c7bcddb`
 - **deschisă pe commit**: `45f15ab`
 - **ce blochează**: Reglementările contabile (anexa OMFP 1802/2014) și Normele OMFP 2634/2015 sunt structurate pe **puncte**; `scripts/vigoare_articol.py` delimitează pe articole. Deci pentru familia B din 1a se cunoaște doar data consolidării actului, nu starea punctului folosit.
 - **măsurat 23.08.2026**: **instrumentul e construit** — `scripts/vigoare_punct.py`, gardat de `core/test_vigoare_punct.py` (6 teste). Costul a fost **mai mic decât la articol**, dintr-un motiv care nu se vedea până nu s-a deschis actul: în forma consolidată, **marcajul își spune singur adresa în actul de bază** — *„(la 23-08-2024, Litera a), Alineatul (2), Punctul 9., Sectiunea 1.3, Capitolul 1 a fost modificată de..."*. Deci punctul nu se deduce din poziție, se citește. **Numitorul real e 8 puncte, nu 58**: verdictul 1d stă pe pct. 9, 20, 21 (Reglementări) și 44–48 (Norme).
@@ -197,6 +198,11 @@ gardă; e un prag de citit, la un moment numit.
 - **cele două greșeli ale instrumentului, prinse la calibrare, nu după**: (1) expresia marcajului se oprea la primul `)`, care e chiar în „Litera a)", deci rata „Punctul 9." și raporta NEMODIFICAT punctul despre care **știam** că fusese modificat dimineața; (2) cunoștea un singur tipar de numerotare (`9. - (1)`), iar Normele scriu `45. Registrul-jurnal` — deci pe Anexa 1 vedea **zero puncte** și **răspundea totuși**, cu încredere. Amândouă sunt gardate acum, iar instrumentul **refuză** să răspundă pe un act în care nu vede niciun punct.
 - **ce mai lipsește ca R2 să se închidă, și e puțin**: Anexa 1 are **doar 2 marcaje de consolidare în tot fișierul**, ceea ce e suspect de puțin pentru un act din 2015 consolidat la 01.08.2024. Ori chiar n-a fost modificată în zona punctelor 44–48, ori **extragerea a pierdut marcajele**. Se confruntă cu pagina de act de pe portal — o singură verificare, nu o campanie. Până atunci, „neatins" pe 44–48 se citește **împreună cu amprenta** `bf39029e…a87f`.
 
+- **REZOLVATĂ 23.08.2026**, prin confruntarea cerută — **un caz pozitiv cunoscut din Anexa 1**: *„dacă nu-l găsește, instrumentul e rupt, nu anexa e goală."* **Era rupt.** Anexa 1 ARE modificări: ORDIN 1.447/2023 a **abrogat punctele 38 și 39**, în vigoare 24-05-2023. Instrumentul le rata din **două** cauze, amândouă prinse de cazul pozitiv și niciuna de recitire:
+  1. cerea virgulă după „Punctul 38.", iar textul scrie „Punctul 38. **din** Litera C.";
+  2. fereastra marcajului era **capturată** în expresie, nu feliată — cu `re.S` înghițea marcajele următoare, deci din 4 marcaje raporta 2. Aceeași greșeală ascundea **104 marcaje** și în Reglementări (220 → 324).
+- **rezultatul final pe cele 8 puncte pe care stă verdictul 1d**: pct. **9** — modificat 23-08-2024 de ORDIN 4.164/2024 · pct. **20**, **21** — găsite, neatinse · pct. **44–48** — găsite (64 de puncte detectate în Anexa 1), **neatinse**. „Neatins" are acum greutate: instrumentul e dovedit pe câte un caz pozitiv **din fiecare dintre cele două acte**.
+- **gardat**: `core/test_vigoare_punct.py`, 8 teste — cazul cunoscut din fiecare act, refuzul pe act fără puncte, distincția „negăsit" ≠ „neatins", și fereastra care nu înghite marcajul următor.
 - **condiția de deblocare**: instrumentul citește și puncte, calibrat pe un punct despre care se ȘTIE că a fost modificat (pct. 9, ORDIN 4.164/2024) plus unul nemodificat plus un control negativ. **Cost măsurat, nu estimat din burtă: ~2 ore** — marcajele pe punct EXISTĂ și sunt mai bogate decât cele pe articol (numesc Litera, Alineatul, Punctul, Secțiunea, Capitolul: 58 de marcaje în act), dar titlul punctului e **în flux, nu la început de rând** (`9. - (1) În funcție de…`), deci delimitarea cere alt regex decât cel de articol. **E restanță de muncă, nu limită declarată.**
 
 ### R3 — Categoria de mărime nu există în aplicație
@@ -388,7 +394,8 @@ gardă; e un prag de citit, la un moment numit.
 - **cine deblochează**: INTERN
 - **unde intră**: E3 · faza 4 (instrumentele) · interdicțiile 61–62 (lista dependenților)
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
+- **rezolvată pe commit**: `c7bcddb`
 - **deschisă pe commit**: `4033a14`
 - **ce blochează**: `core/graf_temei.construieste_graf` construiește `functii[node.name] = (fisier, node)` — un dicționar **plat, cheiat pe numele simplu**, peste tot `core/*.py`, care include și definițiile **imbricate**. Când două fișiere definesc același nume, **ultimul alfabetic câștigă**, iar toți apelanții celuilalt sunt rerutați tăcut către el. Pe graful ăsta stă `agenda.cote_cluster`, adică baza resetării propagate V3 (`test_bifele_nu_stau_pe_o_baza_schimbata`).
 
@@ -408,6 +415,19 @@ gardă; e un prag de citit, la un moment numit.
 - **câte porți verzi sunt false** (întrebarea pusă direct): **10 funcții de test stau pe graf. 7 afirmă PREZENȚA** unei muchii — o muchie dispărută le face ROȘII, deci sunt zgomotoase și în regulă. **3 devin VERZI** când o muchie dispare: `test_bifele_nu_stau_pe_o_baza_schimbata` (prag `len(stale) <= 14` — mai puține muchii, mai puține stale), `test_secventa_persistata_e_topologica` (`assert not viol` — mai puține muchii, mai puține violări) și `test_secventa_persistata_e_actuala`, care compară **două derivări ale aceluiași graf greșit** și e verde prin construcție. Cele 7 zgomotoase pin **2 muchii din 88**; restul hărții e nepăzit în direcția tăcută.
 - **prag**: **PRAGUL 2**, după definiția din `PLAN_LUCRU.md` — cauză unică dovedită (dicționarul cheiat pe nume) și nu concurează cu nimic (n-are instanțe de ordonat). Nereparat acum, cum s-a cerut.
 
+- **REPARAT 23.08.2026**, pe commit `c7bcddb`, cu ce a ieșit la iveală:
+  - **cheia**: `"fisier.py::nume"`. Verificat înainte de a alege, fiindcă definițiile imbricate stau în același fișier: `(fișier, nume)` lasă **o singură coliziune în tot `core/`** — `common.py::__init__`, două clase imbricate. Cheia e suficientă pentru 2.172 din 2.173, iar coliziunea rămasă e numărată, nu ascunsă.
+  - **jumătatea care conta mai mult**: apelurile nu se mai potrivesc pe nume. `alias.N(...)` se rezolvă prin **importurile fișierului**; `N(...)` întâi în același fișier, apoi prin `from core.M import N`; iar ce rămâne nerezolvat se leagă de **toți** candidații — supra-aproximare **deliberată**, ca greșeala să cadă în direcția zgomotoasă. Reziduul se numără: **10 nume** (`_esc` 49 candidați, `_d` 36, restul sub 10).
+  - **graful**: **1.412 → 2.180 de noduri**.
+  - **a cerut memoizare**: `cote_cluster` cerea graful o dată per cluster per funcție de test, iar graful e cu 54% mai mare — suita trecuse de bugetul porții.
+- **ce a ascuns conflatarea, măsurat după reparație** — și e direcția tăcută, cea prezisă:
+  - **`depinde_de("salariu_minim")`: 12 → 83 de funcții**, pe 16 fișiere (10 directe, 73 tranzitive). **Doar 1 dintre ele vine printr-un nume ambiguu**, deci cifra nu e umflată de supra-aproximare. *Când s-a schimbat salariul minim, lista locurilor de actualizat arăta 12.* **Nuanță onestă:** 37 din cele 83 sunt în `declaratii_api.py`, adică rutare — închiderea tranzitivă printr-un dispecer e adevărată, dar nu e „loc de actualizat".
+  - **clustere cu dependențe în graf: 30 → 41** din 79. **Muchii (cluster, cotă): 88 → 120.**
+  - **stale: 14 → 11.** Graful reparat e mai MARE și totuși stale-urile SCAD — deci cifra veche nu era doar necreditabilă, era **umflată**: conflatarea atribuia clusterelor cote de care nu depindeau. Clichetul coboară la 11.
+- **cele trei porți false, verificate una câte una** (cerut explicit — „redevin verzi din motive reale, sau abia acum arată ce ascundeau?"):
+  - `test_bifele_nu_stau_pe_o_baza_schimbata` — **verde din motiv real**: 11 stale reale, sub prag. Cifra s-a schimbat, deci poarta chiar măsura ceva.
+  - `test_secventa_persistata_e_topologica` și `test_secventa_persistata_e_actuala` — **verzi din VACUITATE, nu din corectitudine**: `secvența calculată = 0`, `persistată = 0`. Campania s-a epuizat pe 04.08.2026, deci de **19 zile** cele două teste trec fără să compare nimic. Nu devin roșii după reparație; **nu pot deveni**, până nu mai există clustere de ordonat. Asta ascundeau. *Corect e să se spună și partea bună:* mecanismul e totuși gardat, de `test_secventa_prinde_inversiune`, care rulează checker-ul pe date sintetice — deci e vidă **verificarea pe date reale**, nu unealta.
+- **cele 7 porți zgomotoase, întrebarea „au prins vreodată ceva?"**: în cele 22 de zile de la `e516a23` (01.08.2026), **git nu arată niciun commit în care să fi picat și să fi cauzat o reparație** — cele trei fișiere au fost atinse doar ca să urmeze schimbări de cod (01.08, 02.08, 17.08). **Azi au picat, toate patru** care afirmau nume — dar la o schimbare de FORMĂ a cheii, nu la o dependență pierdută. Deci **nu sunt decorative, sunt înguste**: pin spina `salarizare` / `d100` / `d212` și nimic altceva. După reparație afirmațiile lor sunt **calificate** (`salarizare.py::calcul_salariu`, nu `calcul_salariu`), deci strict mai stricte decât înainte.
 - **condiția de deblocare**: graful se cheie pe **`(fișier, nume)`**, nu pe nume; funcțiile imbricate ori se exclud, ori primesc cheie `(fișier, funcție-părinte, nume)`. Se închide când **toate trei** există: (a) cheia e calificată; (b) o gardă numără coliziunile rămase, cu clichet, ca 118 să nu crească tăcut; (c) `STALE_BAZA_BASELINE` e **re-măsurat** pe graful corectat — altfel rămâne o cifră moștenită dintr-o lume conflată. Prima singură ar muta numărul fără să spună nimeni de ce.
 
 ---
@@ -961,7 +981,7 @@ eticheta de pe fluturaș) n-ar fi trebuit să-l atingă. Citit ca **atingibilita
 prima firmă reală aflată în acea stare* — toate trei rămân corecte, iar pragul rămâne util.
 
 **Nu aleg între cele două citiri**, fiindcă e o ambiguitate a planului, nu a măsurătorii, iar regula e
-că planurile nu se interpretează. **Decizie cerută.** Până atunci, cele trei reparații rămân făcute:
+că planurile nu se interpretează. **DECIS 23.08.2026 (Costin): se citește ca ATINGIBILITATE** — lămurirea și motivul, în `PLAN_LUCRU.md`. Până atunci, cele trei reparații rămân făcute:
 niciuna n-a stricat ceva, toate au gardă și RED-proof.
 
 
@@ -980,6 +1000,29 @@ niciuna n-a stricat ceva, toate au gardă și RED-proof.
 **Formularea, ca regulă:** o cifră măsurată cu un instrument despre care s-a dovedit ulterior că vede
 greșit **nu se corectează, se invalidează** — se re-măsoară de la zero, fiindcă nu se știe în ce
 direcție greșea. Marcate ca atare mai sus; nu sunt șterse, ca să rămână urma.
+
+
+#### De când există `graf_temei` și ce s-a decis pe el (întrebarea 1)
+
+**Din 01.08.2026** — commit `e516a23`, *„Model de temei ETAPA 3: graful de dependențe fiscale, extras
+din cod"*. Deci a fost conflat **22 de zile**, iar în intervalul ăsta a stat sub el mai mult decât
+cele cinci cifre din registru:
+
+- **campania Sesiunii A, 03–04.08.2026** — cele 64 de clustere verificate „în ordine deterministă,
+  sortare topologică pe `graf_clustere`". **Verificările în sine NU sunt invalidate**: fiecare cluster
+  a fost confruntat la sursă, iar dovada e în `TESTE.md` lângă fiecare. **Ordinea lor este** — a fost
+  calculată pe un graf care lega greșit clusterele între ele. Consecința practică e mică, fiindcă
+  s-au făcut *toate*; ar fi contat dacă s-ar fi oprit la jumătate.
+- **`clustere_indirect(act)`** — unealta care răspunde *„ce se atinge când se schimbă o lege"*, prin
+  `cote_cluster`. **Asta e cea gravă**, și acum are cifra ei: pe `salariu_minim`, graful vedea **12**
+  funcții din **83**. Orice modificare legislativă propagată cu unealta asta în cele 22 de zile a
+  primit o listă de locuri de actualizat **de șapte ori mai scurtă decât realitatea**.
+- **`STALE_BAZA_BASELINE`** a fost ridicat 3 → 6 → 14 pe 02.08 și 07.08, cu motive scrise — dar toate
+  trei cifrele au fost citite de pe graful conflat.
+
+**Ce NU s-a decis pe el:** nicio valoare fiscală, niciun temei, nicio cifră de declarație. Graful
+răspunde la *„ce depinde de ce"*, nu la *„cât e"*. Daunele sunt de **acoperire a verificării**, nu de
+conținut — iar asta se repară re-măsurând, ceea ce s-a și făcut.
 
 
 ### Ce lipsește ca să se termine E1

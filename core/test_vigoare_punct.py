@@ -80,3 +80,32 @@ def test_punctele_pe_care_sta_verdictul_sunt_gasite_ca_puncte():
 def test_refuzul_pe_act_fara_puncte():
     """Un act în care nu se vede niciun punct nu primește răspuns, ci refuz."""
     assert vp.intervale("text fara nicio numerotare pe puncte") == {}
+
+
+def test_cazul_pozitiv_din_anexa_1_a_normelor():
+    """CALIBRARE PE AL DOILEA ACT, cerută de Costin: *„un caz pozitiv cunoscut din Anexa 1. Dacă nu-l
+    găsește, instrumentul e rupt, nu anexa e goală."*
+
+    Anexa 1 a Normelor ARE modificări: ORDIN 1.447/2023 a abrogat punctele 38 și 39, în vigoare
+    24-05-2023. Instrumentul le rata din două motive, amândouă prinse de cazul ăsta și nu de recitire:
+    cerea virgulă după „Punctul 38." (textul scrie „Punctul 38. din Litera C."), iar fereastra
+    marcajului era CAPTURATĂ, nu feliată — cu `re.S` înghițea marcajele următoare, deci din 4 marcaje
+    raporta 2. Fără cazul ăsta, „pct. 44–48 nemodificate" ar fi fost un răspuns dat despre un act în
+    care instrumentul nu vedea nicio modificare."""
+    d = vp.pe_punct(_text(_NORME))
+    for p in ("38", "39"):
+        assert p in d, "abrogarea pct. %s (ORDIN 1.447/2023) nu e văzută — instrumentul e rupt" % p
+        m = d[p][0]
+        assert m["data"] == "2023-05-24", "pct. %s: data %s" % (p, m["data"])
+        assert "1.447" in m["act"], "pct. %s: actul %s" % (p, m["act"])
+        assert m["fel"] == "abrogat", "pct. %s: felul %s" % (p, m["fel"])
+
+
+def test_fereastra_marcajului_nu_inghite_marcajele_urmatoare():
+    """Două marcaje lipite: amândouă trebuie văzute. Captura lacomă le contopea."""
+    brut = ("(la 01-01-2020, \n Punctul 5. din Litera A a fost abrogat de Punctul 1, Articolul I din "
+            "ORDINUL nr. 1 din 1 ianuarie 2020 \n )\n text \n"
+            "(la 02-02-2021, \n Punctul 6. din Litera A a fost abrogat de Punctul 2, Articolul I din "
+            "ORDINUL nr. 2 din 2 februarie 2021 \n )")
+    p = {m["punct"] for m in vp.marcaje(brut)}
+    assert p == {"5", "6"}, "un marcaj s-a pierdut în fereastra celuilalt: %s" % p

@@ -117,6 +117,23 @@ tabel de priorități.
 
 **Testul:** *dacă știi deja ce se repară primul fără să te uiți în tabel, n-ai nevoie de tabel.*
 
+**LĂMURIRE 23.08.2026 (Costin): pragul 1 se citește ca ATINGIBILITATE, nu literal.**
+
+*„Efect greșit la un om acum"* înseamnă: **dacă un contabil ar folosi aplicația azi, ar primi cifra
+greșită, blocajul, sau afirmația falsă.** NU înseamnă că cineva a primit-o deja.
+
+**Motivul:** citirea literală face pragul 1 **gol pe orice instalare fără clienți** — adică exact
+acum, când reparăm. *Un prag care nu se poate atinge nu ordonează nimic.*
+
+Cele trei instanțe rămân corecte pe citirea asta: TVA omisă din D300, blocajul pe codul de concediu,
+eticheta greșită de pe fluturaș. **Toate trei ar lovi primul contabil în prima lună.**
+
+Ce a declanșat lămurirea: măsurătoarea din 23.08 a arătat că toate cele 17 firme și toți cei 24 de
+salariați sunt **de test**. Fără lămurire, pragul ar fi fost gol prin construcție, iar cele trei
+reparații ar fi apărut ca făcute în afara regulii.
+
+
+
 **Instanțele din primul triaj (22.08.2026), ca pragurile să nu rămână abstracte:**
 
 | prag | ce a intrat |

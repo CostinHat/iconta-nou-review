@@ -27,8 +27,25 @@ import sys
 # „(la 23-08-2024," + o FEREASTRA fixa. NU pana la primul „)": adresa contine ea insasi paranteze
 # inchise — „Litera a)", „Alineatul (2)" — iar prima forma a instrumentului se oprea acolo si rata
 # „Punctul 9.". Prins la calibrare, pe un punct al carui raspuns era cunoscut.
-_MARCAJ = re.compile(r"\(la (\d{2})-(\d{2})-(\d{4}),(.{0,700})", re.S)
-_PUNCT = re.compile(r"Punctul\s+(\d+(?:\^\d+)?)\s*\.?\s*,", re.I)
+# NUMAI startul marcajului. Fereastra se ia prin FELIERE, nu prin captura: o captura de 700 de
+# caractere cu re.S inghite marcajele urmatoare, iar finditer sare peste ele - Anexa 1 avea 4
+# marcaje si se raportau 2. A treia oara intr-o zi cand instrumentul a raspuns despre ce nu vedea.
+_MARCAJ = re.compile(r"\(la (\d{2})-(\d{2})-(\d{4}),")
+_FEREASTRA = 700
+
+
+def _puncte_marcaj(text):
+    """[(offset, data_iso, corp)] — un rand per marcaj, cu fereastra taiata dupa el."""
+    out = []
+    for m in _MARCAJ.finditer(text):
+        out.append((m.start(), "%s-%s-%s" % (m.group(3), m.group(2), m.group(1)),
+                    text[m.end():m.end() + _FEREASTRA]))
+    return out
+# Adresa nu se termina mereu cu virgula: „Punctul 9. , Sectiunea 1.3" dar si „Punctul 38. din
+# Litera C.". Prima forma cerea virgula si rata abrogarile din Anexa 1 a Normelor - adica exact
+# cazul pozitiv cu care s-a dovedit ca instrumentul era rupt, nu anexa goala. Punctul actului
+# MODIFICATOR ramane exclus prin taierea de dinainte de „a fost", nu prin virgula.
+_PUNCT = re.compile(r"Punctul\s+(\d+(?:\^\d+)?)\s*\.?(?=\s*(?:,|din|si|și|$))", re.I)
 _ACT = re.compile(r"(ORDINUL|ORDONAN[ȚT]A|LEGEA|HOT[ĂA]R[ÂA]REA)\s+nr\.?\s*([\d.^]+)\s+din\s+"
                   r"(\d+\s+\w+\s+\d{4})", re.I)
 _FEL = re.compile(r"a fost (modificat|completat|abrogat|introdus)[a-zăâîșț]*", re.I)
@@ -37,8 +54,7 @@ _FEL = re.compile(r"a fost (modificat|completat|abrogat|introdus)[a-zăâîșț]
 def marcaje(text):
     """[(data_iso, punct, fel, act, brut)] — un rand per marcaj care numeste un PUNCT."""
     out = []
-    for m in _MARCAJ.finditer(text):
-        zi, luna, an, corp = m.group(1), m.group(2), m.group(3), m.group(4)
+    for _off, data, corp in _puncte_marcaj(text):
         # ADRESA e partea DINAINTE de „a fost ...": acolo se numeste punctul din actul de BAZA.
         # Dupa „a fost ... de" urmeaza punctul din actul MODIFICATOR — alt lucru, usor de confundat.
         taiat = _FEL.split(corp)[0]
@@ -48,7 +64,7 @@ def marcaje(text):
         fel = _FEL.search(corp)
         act = _ACT.search(corp)
         out.append({
-            "data": "%s-%s-%s" % (an, luna, zi),
+            "data": data,
             "punct": p.group(1),
             "fel": (fel.group(1).lower() if fel else "?"),
             "act": ("%s %s/%s" % (act.group(1).lower(), act.group(2), act.group(3).split()[-1])
@@ -98,15 +114,13 @@ def pe_punct(text):
         m["cum"] = "numit"
         d.setdefault(m["punct"], []).append(m)
     iv = intervale(text)
-    for m in _MARCAJ.finditer(text):
-        off = m.start()
-        zi, luna, an, corp = m.group(1), m.group(2), m.group(3), m.group(4)
+    for off, data, corp in _puncte_marcaj(text):
         fel = _FEL.search(corp)
         act = _ACT.search(corp)
         for p, spans in iv.items():
             if not any(st <= off < sf for st, sf in spans):
                 continue
-            r = {"data": "%s-%s-%s" % (an, luna, zi), "punct": p,
+            r = {"data": data, "punct": p,
                  "fel": (fel.group(1).lower() if fel else "?"),
                  "act": ("%s %s/%s" % (act.group(1).lower(), act.group(2), act.group(3).split()[-1])
                          if act else "?"),
@@ -131,7 +145,7 @@ def main():
     iv = intervale(text)
     d = pe_punct(text)
     print("puncte găsite în act: %d · marcaje de consolidare: %d, dintre care numesc un punct: %d"
-          % (len(iv), len(_MARCAJ.findall(text)), len(toate)))
+          % (len(iv), len(_puncte_marcaj(text)), len(toate)))
     # ANTI-VACUU: un instrument care nu vede niciun punct NU are voie sa raspunda la intrebari
     # despre puncte. Prima forma a raspuns „nemodificate" pe un act in care nu vazuse nimic.
     if not iv:

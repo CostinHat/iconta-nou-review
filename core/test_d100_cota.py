@@ -3,6 +3,10 @@
 hardcodat 1/16 (dependenta ascunsa V2). Rata data explicit de contabil (manual) ramane prioritara.
 Helper cu nume UNIC (_rata_impozit_default) ca dependenta sa fie vizibila in graf (genereaza se ciocneste
 pe nume cu alte module)."""
+
+# [R17 23.08.2026] Cheile grafului sunt CALIFICATE ("fisier.py::nume") de cand `graf_temei` nu mai
+# conflateaza functii omonime din fisiere diferite. Afirmatiile de mai jos numesc acum si FISIERUL:
+# inainte treceau daca ORICE functie din core/ cu numele cerut aparea in graf.
 import ast
 import pathlib
 from datetime import date
@@ -31,5 +35,5 @@ def test_d100_rata_default_prin_helper_nu_literal():
 
 def test_d100_apare_in_graful_impozit():
     """Dupa reroute: graful vede d100 depinzand de impozit_micro/profit (V2 blind-spot inchis)."""
-    assert "_rata_impozit_default" in depinde_de("impozit_profit")
-    assert "_rata_impozit_default" in depinde_de("impozit_micro")
+    assert "d100.py::_rata_impozit_default" in depinde_de("impozit_profit")
+    assert "d100.py::_rata_impozit_default" in depinde_de("impozit_micro")

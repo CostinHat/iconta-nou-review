@@ -385,7 +385,12 @@ def test_cote_cluster_leaga_deducere_de_salariu_minim():
 # care s-a dovedit (R17) ca e cheiat pe NUME SIMPLU si pierde 761 din 2173 de definitii. Nu se
 # stie in ce directie gresea, deci nu se ajusteaza - se RE-MASOARA dupa ce graful se cheie pe
 # (fisier, nume). Ramane activa ca prag pana atunci: e singurul lucru care a prins conflatarea.
-STALE_BAZA_BASELINE = 14
+# RE-MASURAT 23.08.2026, dupa repararea grafului (R17): 11, nu 14. Cifra veche NU era doar
+# necreditabila, era UMFLATA: graful conflat atribuia clusterelor cote de care nu depindeau
+# (pe 22.08, cu o coliziune in plus, sarise la 35). Graful reparat e mai MARE - 40 de clustere
+# cu cote in loc de 30, 120 de muchii in loc de 88 - si totusi stale-urile SCAD, fiindca acum
+# sunt cele reale. Baseline-ul coboara 14 -> 11 si ramane clichet.
+STALE_BAZA_BASELINE = 11
 
 
 def test_bifele_nu_stau_pe_o_baza_schimbata():
