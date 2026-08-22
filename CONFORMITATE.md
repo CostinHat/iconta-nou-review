@@ -341,10 +341,15 @@ arbitrul oficial, cu zero erori.** Nu „există ruta" — DUKIntegrator a rulat
 1. **Refuz corect, cu contradicția numită** — t013 D301 și t016/t003 D100. Aplicația **nu produce un
    „nu se datorează" peste o absență cunoscută**: spune că există achiziții IC înregistrate ca
    facturi, sau facturi emise necontabilizate. Asta e interdicția 67 funcționând, nu un defect.
-2. **Refuz pe date lipsă, semnalat LA GENERARE** — t003 D112: *„pontajul lunii nu e CONFIRMAT"*, pe
-   **șapte** perioade (12/2025 – 07/2026). **Candidat pentru interdicția 68** — o lipsă semnalată
-   corect, dar în ziua depunerii. Nu se declară defect până nu se verifică dacă confirmarea se cere
-   mai devreme, la închiderea lunii; **asta e prima întrebare de la reluarea lui 1b**.
+2. **Refuz pe date lipsă** — t003 D112: *„pontajul lunii nu e CONFIRMAT"*, pe **șapte** perioade
+   (12/2025 – 07/2026). Îl deschisesem ca **candidat pentru interdicția 68** — o lipsă semnalată abia
+   în ziua depunerii. **RĂSPUNS, în aceeași tură: NU e 68.** Confirmarea se cere **la introducere**,
+   pe ecranul unde omul lucrează, nu doar la generare: ecranul de pontaj arată *„Pontaj neconfirmat —
+   informativ; calculele din aval (tichete, statul de plată) se blochează până la confirmare"* plus
+   butonul „Confirmă pontajul lunii" (`firme.js:670`), iar statul de plată repetă avertismentul pe
+   lună și pe fiecare salariat, cu „tichete blocate" (`firme.js:775-819`). Deci lipsa a fost cerută
+   **când datele mai puteau fi obținute** — exact pragul din P23. **Merge în lista 2 a verdictului:
+   nu iese, fiindcă lipsesc date cerute la timp — a omului, nu a aplicației.**
 3. **Refuz pe absență legitimă** — D205 „fără niciun beneficiar", D301/D390 „pe zero". Corect.
 
 **Un semnal fin, de privit, nu de concluzionat:** pe t003, **D300 iese `valid` cu 0 operațiuni**, în
