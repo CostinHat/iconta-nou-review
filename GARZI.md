@@ -3890,3 +3890,43 @@ peste marginea rândului măsoară alt fișier decât cel scris.
 **Falsificat** (9 mutații, cu curățare de `__pycache__` între ele): interdicție nouă fără secțiune ·
 câmp golit · stare inventată („Investigată") · MĂSURATĂ fără calibrare · secțiune orfană · capul de
 tabel al planului redenumit · PARȚIAL fără plafon · NEMĂSURABILĂ fără motiv. Toate pică.
+
+---
+
+## 22.08.2026 — I1: instrumentele + codurile de boală
+
+### `core/test_cod_boala_nomenclator.py` — codul de indemnizație vine din Nomenclatorul 9
+Sursa e NORMATIVĂ (`core/nomenclator_cm.py`, 20 de coduri cu temei per cod), nu enumerarea XSD.
+Garda probează **poarta folosită de generator** (`_d112_genereaza` → `_cod_boala_acceptat`) și
+interzice a doua cale (`_ncm.accepta` chemat direct oriunde altundeva în `d112`).
+
+**Prima formă a gărzii a picat proba.** Extrăsesem `_cod_boala_acceptat()` dar lăsasem `genereaza` să
+cheme `_ncm.accepta` direct: mutația care întorcea `d112` la enumerarea XSD **trecea verde**. Adică
+făcusem exact logica paralelă împotriva căreia scrisesem testul. A doua slăbiciune: pragul `len >= 18`
+lăsa ștergerea unui cod legal să treacă — acum e clichet pe 20.
+
+**Falsificat** (7 mutații, cu curățare de `__pycache__`): întoarcerea la enumerarea XSD · ocolirea
+porții pe o a doua cale · codul 51 scos · un cod fără temei · un cod inventat, nenumit în documentul
+ANAF · XSD-ul redevenit autoritate · nomenclatorul golit. Toate pică.
+
+### `core/scan_garzi.py` — instrumentul rundei I1 (interdicțiile 18 și 19)
+Patru sub-instrumente, toate pe arbore sintactic sau pe EXECUȚIA tiparului, niciunul pe proză:
+**A** tipare moarte (fiecare regex dintr-o gardă, rulat pe tot corpusul; MORT se afirmă doar dacă
+subiectul e sursă din repo) · **B** teste care culeg fără nicio aserțiune de existență · **C** gărzi
+care citesc sursă fără să scoată proza · **D** gardă scrisă odată cu fixul sau singură.
+
+**Calibrat pe trei cazuri din istoric, toate găsite, toate verificate și în direcția negativă:**
+octetul `0x08` din `test_temei_termene` (rev. `29bd752`, dispare pe HEAD) · `test_verificarea_nu_scrie_
+nimic` (reconstruit — nu există ca revizie) · `test_schema_coloane` (rev. `5d46d4f`, dispare pe HEAD).
+
+**De trei ori o rafinare a ORBIT instrumentul, și de fiecare dată calibrarea a prins-o:**
+1. tracerul de subiect căuta citirea de fișier pe loc, dar ea vine prin trei salturi de variabile →
+   cazul `0x08` a dispărut. Reparat cu rezolvare tranzitivă.
+2. „controlul pozitiv în modul" era o EXCEPȚIE tăcută → a înghițit cazul B, fiindcă modulul era plin
+   de teste bune și unul singur număra pe o lună curată. Acum e atenuare raportată, nu excepție.
+3. `tokenize` și `ast.parse` erau în lista de scutiri de la C → cazul canonic n-a apărut. Amândouă
+   sunt scutiri false: tokenizarea COLECTEAZĂ string-urile, iar `ast.parse` lasă docstringurile ca
+   noduri `Constant`. Chiar asta era natura bug-ului.
+
+**Regula care iese:** o listă de scutiri prea largă orbește exact ca un tipar mort, iar calibrarea se
+reface DUPĂ FIECARE atingere a instrumentului, nu o dată la început.

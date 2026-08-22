@@ -3,6 +3,39 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 22.08.2026 — Codurile de boală: sursa e Nomenclatorul 9, XSD-ul e a doua constrângere
+
+**Decizia lui Costin (I1):** *„Codurile de boală se unifică pe Nomenclatorul 9, cu XSD-ul ca a doua
+constrângere. Contradicția nu se semnalează, se elimină: azi blochează depunerea unui D112 pe coduri
+legale."* Intră la excepția din PLAN_INVESTIGATII — produce efect greșit azi, deci se repară imediat.
+
+**ARBITRUL, întrebat direct** (pe declarație generată pe schemă efemeră, nu pe proză):
+
+| cod | răspuns DUK |
+|---|---|
+| 09 | valid |
+| **91** | **VALID** — deși codul NU e în `Str_codBoalaSType` ('01'..'15') |
+| 51 | `S101.1: dacă D_9 = '51' atunci D_12 ... nomenclatorul de boli infecto-contagioase` |
+| 17 | `S97: pe cod de indemnizație 17 trebuie completat CNP-ul ...` |
+
+Ultimele două sunt reguli de **fond** pe cod — deci codurile sunt cunoscute. Concluzia e mecanică:
+**enumerarea XSD e mai îngustă decât validatorul însuși.** Iar documentul de structură ANAF
+(`d112_struct_anaf.txt`, rândul 98) scrie pentru D_9: *„Nomenclator 9 – Cod indemnizatie boala – cod
+01-17"*, cu reguli explicite pe 51/91/92.
+
+**Ce era înainte:** `d112` valida contra enumerării XSD, cu fallback pe intervalul GHICIT `1..15` când
+XSD-ul nu se putea citi. Un certificat cu cod 16, 17, 51 sau 91 — coduri pe care chiar ecranul nostru
+le OFERĂ — era respins cu mesajul **fals** „nu e în nomenclatorul acceptat de ANAF pentru D112".
+
+**Ce e acum:** `core/nomenclator_cm.py` e sursa (20 de coduri, temei per cod). `d112` întreabă
+nomenclatorul. Fallback-ul pe interval ghicit a dispărut — când XSD-ul nu se poate citi, răspunsul e
+„nu știu", nu un interval inventat. XSD-ul rămâne citit prin `doar_in_xsd()`, ca a doua constrângere
+vizibilă.
+
+**RĂMÂNE DESCHIS, nu s-a atins:** ecranul (`flux_concediu.js`) are lista scrisă de mână, cu 18 coduri
+din 20 — îi lipsesc 11, 91, 92. Nu am modificat-o: conținutul unui ecran e decizie de produs, iar
+ecranele sunt STOP. Nomenclatorul expune `optiuni()` pentru când se decide unificarea.
+
 ## 22.08.2026 — Confruntarea are un REGISTRU, nu un raport (CONFORMITATE.md)
 
 **Cerut de Costin:** *„Rezultatul investigației nu e un raport în conversație — e un fișier."* Motivul,

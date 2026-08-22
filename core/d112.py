@@ -15,6 +15,15 @@ from core.identitate import valideaza_cnp as _vcnp_id, valideaza_cui as _vcui_id
 
 _D112_XSD = _os.path.join(_os.path.dirname(__file__), "..", "anaf_surse", "d112_06082026.xsd")
 _ENUM_XSD_CACHE = {}
+from core import nomenclator_cm as _ncm
+
+
+def _cod_boala_acceptat(cod):
+    """Poarta pe care o probeaza garda `core/test_cod_boala_nomenclator.py`. Sursa e NOMENCLATORUL,
+    nu enumerarea XSD - vezi motivul la locul folosirii."""
+    return _ncm.accepta(cod)
+
+
 def _enum_xsd(tip):
     """Valorile enumerate ale unui xs:simpleType din XSD-ul D112 (anaf_surse/d112_06082026.xsd,
     autoritatea in-repo pt nomenclatoarele inchise). Extrage <xs:enumeration value=...> din blocul
@@ -360,17 +369,21 @@ def _d112_genereaza(prof, salariati, an, luna):
                         "AsiguratDType le cere use=required în d112_06082026.xsd - un XML cu ele goale e respins de "
                         "ANAF. Completează-le în certificat (ecran Concedii medicale) - nu se emite D112 invalid."
                         % (s.get("cnp"), ", ".join(_lipsa)))
-                # [cod boala D_9 out-of-enum, 10.08.2026] D_9 type=Str_codBoalaSType (enum '01'..'15' in
-                # XSD). Un cod '99' pleca TACIT -> XSD reject. Validam contra enumerarii din XSD.
-                _cod_b = str(x.get("cod") or "01").zfill(2)
-                _codb_set = _enum_xsd("Str_codBoalaSType")
-                _codb_ok = (_cod_b in _codb_set) if _codb_set else (_cod_b.isdigit() and 1 <= int(_cod_b) <= 15)
-                if not _codb_ok:
+                # [cod boala D_9, sursa = NOMENCLATORUL 9, 22.08.2026] Pana azi se valida contra
+                # enumerarii din XSD ('01'..'15'), cu fallback pe un interval GHICIT (1..15) cand
+                # XSD-ul nu se putea citi. Amandoua erau gresite: XSD-ul e mai INGUST decat
+                # validatorul insusi. Probat la arbitru pe declaratie generata - D_9=91 iese VALID,
+                # iar 51 si 17 primesc reguli de FOND (S101.1, S97), deci sunt coduri cunoscute.
+                # Efectul de pana azi: un certificat cu cod 16/17/51/91 - coduri legale, pe care
+                # ecranul le OFERA - bloca depunerea D112, cu motivul fals „nu e in nomenclator".
+                # Vezi core/nomenclator_cm.py si registru_interpretari:nomenclator_cm_sursa.
+                _cod_b = _ncm.normalizeaza(x.get("cod") or "01")
+                if not _cod_boala_acceptat(_cod_b):
                     raise ValueError(
                         "Certificatul de concediu medical al salariatului cu CNP %s are codul de "
-                        "indemnizație '%s', care nu e în nomenclatorul acceptat de ANAF pentru D112. "
-                        "Corectează codul în certificat (ecran Concedii medicale) — un D112 trimis "
-                        "cu el ar fi respins." % (s.get("cnp"), _cod_b))
+                        "indemnizație '%s', care nu există în Nomenclatorul 9 (coduri 01-17, plus "
+                        "51, 91, 92). Corectează codul în certificat (ecran Concedii medicale) — "
+                        "un D112 trimis cu el ar fi respins." % (s.get("cnp"), _cod_b))
                 # [T6 passthrough NETRUNCHIAT, 10.08.2026] serie(D_1)/numar(D_2)/diagnostic(D_23) sunt
                 # identificatori de certificat - NU se trunchiaza tacit (spre deosebire de nume/den prin _t):
                 # o serie/numar trunchiat = alt certificat la ANAF. Overflow lungime (XSD Str5/Str10/Str3)

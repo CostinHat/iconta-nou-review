@@ -4885,3 +4885,20 @@ Garda `core/test_conformitate.py` a fost scrisă ÎNAINTE și a picat pe HEAD (f
 în 9 mutații, cu curățare de `__pycache__`: una a trecut fals și a arătat un defect REAL în gardă —
 citirea unui câmp cu `\s*` trecea peste linia nouă, deci un câmp golit împrumuta rândul următor.
 Reparat cu `[ \t]*` + anti-vacuu pe instrument. CONFORMITATE.md a intrat în §11 din CLAUDE.md.
+
+
+## 22.08.2026 — Runda I1 (instrumentele): interdicțiile 18 și 19
+
+**18 (gardă din proză): 14 brut, 13 candidate, 3 privite** — `test_golden_xsd` poate ASCUNDE o gaură
+(un docstring care pomenește un modul face un test inexistent să pară prezent, clasa care a lăsat d402
+neprobat); `test_upsert_motivat` și `test_harta_ecrane` pot doar raporta în plus.
+
+**19 (verde pe zero): 3 tipare care nu pot potrivi nimic** (din 339) **+ 157 teste care culeg fără
+nicio aserțiune de existență** (din 696), din care **12 fără nicio atenuare** — cinci dintre ele
+gărzi construite de mine în campaniile din 19–21.08.
+
+**Axa „a rulat pe date nenule": 8 sări din 2399**, toate cu motiv declarat, iar patru dintre ele sar
+tocmai fiindcă verificarea ar trece 0==0 fără să discrimineze — tiparul corect.
+**Axa „scrisă înainte sau odată cu fixul": 321 odată cu fixul, 47 singure, 1 necunoscut.**
+
+**Reparat pe loc** (excepția din plan): codurile de boală. Vezi DECIZII.

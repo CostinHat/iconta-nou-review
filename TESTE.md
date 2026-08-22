@@ -1882,3 +1882,9 @@ aceeași clasă ca reluarea de azi-dimineață.
 ### Ce NU probează
 Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face imposibil ca alegerea să fie
 **invizibilă** — atât, și atât se promite în capul fișierului.
+
+
+- **`core/test_cod_boala_nomenclator.py` (22.08.2026)** — 6 teste: nomenclatorul conține codurile
+  probate la arbitru (anti-vacuu + calibrare) · fiecare cod are temei · codurile legale nu mai sunt
+  respinse · `d112` trece prin poartă și n-are a doua cale · niciun cod inventat · XSD-ul e a doua
+  constrângere, nu autoritatea. RED-probat cu 7 mutații.
