@@ -7152,8 +7152,9 @@ def d406_stocuri_xml(tenant_id: int, data_start: str, data_end: str, cui: str,
 def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """corp: {salariat_id, an, luna (luna certificatului), zile_lucratoare_cm,
     cod?, zile_episod?, prima_zi_din_episod?, spitalizare?, data_certificat?}.
-    Media reala din state_plata: 6 luni anterioare lunii certificatului
-    (sau cate exista, art. 10 al. 4 OUG 158/2005)."""
+    Media pe 6 luni anterioare lunii certificatului (sau cate exista, art. 10 al. 4 OUG 158/2005),
+    din statele EMISE - vezi core/baza_cm.py. Raspunsul poarta `baza_temei`, care spune pe ce s-a
+    facut media (cate luni emise, cate recalculate) - o cifra fara sursa nu se poate contesta."""
     from datetime import date as _date
     from core import salarizare as _s
     from core import stat_plata_api as _sp
@@ -7164,30 +7165,20 @@ def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
             raise HTTPException(404, "tenant inexistent sau fără acces")
     an, luna = int(corp["an"]), int(corp["luna"])
     sal_id = int(corp["salariat_id"])
-    # [get_safe_v1 20.08.2026] Baza se CALCULEAZA pe cele 6 luni anterioare, nu se citeste din
-    # state_plata. Inainte, tabelul era populat ca efect secundar al lui GET /stat-plata: media legala
-    # (OUG 158/2005 art.10 al.4) depindea de ce luni deschisese cineva in interfata, iar lunile
-    # nedeschise lipseau TACIT din medie. Aceeasi functie produce aceleasi cifre, dar complet.
-    _luni = []
-    for _i in range(6, 0, -1):
-        _m = luna - _i
-        _luni.append((an - 1, _m + 12) if _m <= 0 else (an, _m))
-    venituri, zile, nr_luni = 0, 0, 0
+    # [baza_cm 22.08.2026, DECIS DE COSTIN: EMIS] Baza vine din statele EMISE; lunile neemise se
+    # recalculeaza, dar se NUMARA separat si se spun in `temei`.
+    #
+    # Argumentul din 20.08 („calculeaza, nu citi din state_plata") era corect PENTRU TABELUL DE
+    # ATUNCI: un cache de navigare, populat ca efect secundar al unui GET, in care lunile nedeschise
+    # lipseau tacit. Din 21.08 `state_plata` e REGISTRUL DOCUMENTELOR EMISE, cu amprenta si
+    # exemplare - sursa s-a schimbat sub argument. Ce s-a platit efectiv e un FAPT, iar media legala
+    # (OUG 158/2005 art.10 al.4) se face pe ce a PRIMIT omul, nu pe ce ar rezulta din calculul de azi.
+    from core import baza_cm as _bcm
+    _luni = _bcm.luni_anterioare(an, luna)
     with db.get_conn(schema) as conn:  # stat_plata foloseste nume necalificate -> search_path pe tenant
-        for _a, _l in _luni:
-            try:
-                _stat = _sp.stat_plata(conn, schema, _a, _l)
-            except Exception:
-                continue                      # luna necalculabila (date lipsa) - nu o inventez
-            _r = next((x for x in _stat if int(x.get("id") or 0) == sal_id), None)
-            if not _r:
-                continue                      # salariatul nu era angajat in luna aia
-            _zl = max(_scad.zile_lucratoare_luna(_a, _l) - int(_r.get("cm_zile") or 0), 0)
-            if _zl <= 0:
-                continue
-            venituri += _r.get("brut", 0) or 0
-            zile += _zl
-            nr_luni += 1
+        _emise, _recalc = _bcm.culege(conn, schema, sal_id, _luni)
+    _b = _bcm.aduna(_luni, _emise, _recalc, _scad.zile_lucratoare_luna)
+    venituri, zile, nr_luni = _b["venituri"], _b["zile"], _b["nr_luni"]
     if nr_luni == 0 or zile == 0:
         raise HTTPException(422, "Nu pot calcula media: salariatul nu are nicio lună lucrată în cele "
                                  "6 luni dinaintea certificatului. Verifică data angajării și pontajul.")
@@ -7204,6 +7195,11 @@ def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
     r["luni_in_baza"] = nr_luni
     r["venituri_baza"] = str(venituri)
     r["zile_baza"] = int(zile)
+    # [baza_cm 22.08.2026] PE CE s-a facut media - o cifra fara sursa nu se poate contesta. Cand se
+    # amesteca luni emise cu luni recalculate, contabilul trebuie s-o vada, nu s-o deduca.
+    r["baza_temei"] = _b["temei"]
+    r["baza_luni_emise"] = _b["luni_emise"]
+    r["baza_luni_recalculate"] = _b["luni_recalculate"]
     return r
 
 
