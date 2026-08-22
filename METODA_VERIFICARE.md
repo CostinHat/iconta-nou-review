@@ -300,3 +300,26 @@ Am definit `_schema_sau_404(tenant_id, ctx)` fără să caut întâi numele. Exi
 „Verifici la sursă înainte de a afirma «absent»" nu e doar despre funcționalități — e și despre
 simboluri. Un `grep -n "def <nume>"` înainte de a scrie `def` costă o secundă. Aici a costat o rundă
 întreagă de suită plus un diagnostic pe o urmă de eroare care arăta ca un bug în rute străine.
+
+### 10.9 — Cheia de idempotență prea largă sare peste munca reală
+
+Scripturile de patch pornesc cu `if <cheie> in text: return "deja scris, sar"`. **Cheia trebuie să fie
+unică pentru ce SCRIE funcția aceea**, nu o frază care poate ajunge acolo pe altă cale.
+
+**De trei ori într-o singură zi (22.08.2026), aceeași greșeală, cu efecte diferite:**
+
+1. Cheia `## Restanțele` — secțiunea exista deja (scrisă de Costin), deci funcția a returnat imediat și
+   **n-a mai aplicat lărgirea excepției în două locuri**. Am raportat lărgirea „în patru locuri"; erau
+   două. **O afirmație falsă într-un raport, produsă de un `return` prea devreme.**
+2. Cheia `cele trei praguri` — fraza fusese tocmai introdusă de textul excepției, în aceeași rulare,
+   deci secțiunea pragurilor n-a mai fost scrisă.
+3. Cheia `de_preluat` — cuvântul apărea deja în tabelul pragurilor, adăugat cu câteva minute înainte,
+   deci instanța din secțiunea 17 n-a mai fost adăugată.
+
+**Regula:** cheia se pune pe **titlul sau fraza pe care funcția o scrie ea însăși**, cât mai lungă și
+cât mai specifică. Iar dacă o funcție face **mai multe** schimbări, ori are o cheie per schimbare, ori
+se sparge în funcții.
+
+**Și consecința care contează cel mai mult:** un patch care „sare" nu eșuează — **raportează succes**.
+De aceea greșeala se vede abia la verificarea de după, dacă se face. Verificarea de după nu e opțională.
+

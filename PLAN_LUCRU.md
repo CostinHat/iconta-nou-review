@@ -96,7 +96,34 @@ Se stabilește **ordinea reparațiilor** și **ce nu se repară**, cu motivul sc
 
 **Regula, fără excepție:** gardă înainte de reparație. Ordinea e singura formă tare de probă.
 
-**Excepția care sare peste tot planul:** un defect care produce cifre greșite azi se repară imediat, în orice etapă. Se scrie în registru ca reparat, apoi se continuă.
+**Excepția care sare peste tot planul:** un defect care produce **efect greșit la un om acum — cifră, blocaj, sau afirmație falsă pe ecran** — se repară imediat, în orice etapă. Se scrie în registru ca reparat, apoi se continuă. Vezi „Când se repară ceva — cele trei praguri", mai jos.
+
+*Lărgită la 22.08.2026, de la „cifre greșite".* Motivul e o instanță: `flux_concediu.js` **blochează un contabil să introducă un cod legal de concediu medical**. Nu e o cifră greșită — e un blocaj — și tocmai de aceea a rămas neatins.
+
+
+### Când se repară ceva — cele trei praguri
+
+**Criteriul lipsea, iar lipsa lui a costat:** *„investigăm întâi, reparăm după"* e corect ca principiu
+și prost ca regulă absolută.
+
+**Pragul 1 — imediat.** Produce **efect greșit la un om ACUM**: o cifră, un blocaj, o afirmație falsă
+pe ecran. **Nu cere măsurătoare, nu cere tabel.**
+
+**Pragul 2 — la închiderea etapei.** **Cauză unică dovedită ȘI nu concurează cu nimic.** Aici intră și
+**absențele** — un artefact fără producător n-are instanțe de ordonat, deci n-are ce aștepta de la un
+tabel de priorități.
+
+**Pragul 3 — după tabelul final.** Tot restul.
+
+**Testul:** *dacă știi deja ce se repară primul fără să te uiți în tabel, n-ai nevoie de tabel.*
+
+**Fluxul restanțelor și „ce oprește planul" trimit la praguri:** pasul 2 al fluxului („decide dacă
+repari") e chiar pragul 1; ce nu-l atinge primește blocaj de ORDINE și așteaptă pragul 2 sau 3.
+
+> **Reconstruit din comandă, 22.08.2026.** Costin a descris secțiunea ca fiind deja în plan; pe disc
+> nu era — fișierul era nemodificat față de commitul `cbf7b67`, iar căutarea după „praguri" / „pragul 1"
+> / „Când se repară" n-a dat nicio potrivire. Am scris-o din descrierea din comandă, cuvânt cu cuvânt
+> unde a fost dată. **Dacă există o versiune scrisă de el, a lui câștigă și o înlocuiește pe asta.**
 
 ---
 
@@ -283,7 +310,7 @@ Deciziile care nu se rezolvă prin efort. Fiecare blochează ceva; niciuna nu se
 
 **O măsurătoare n-a fost calibrată.** O cifră fără caz pozitiv găsit nu e rezultat.
 
-**Un defect produce cifre greșite azi.** Se repară pe loc.
+**Un defect produce efect greșit la un om acum** — cifră, blocaj, sau afirmație falsă pe ecran. Se repară pe loc (pragul 1).
 
 **O etapă nu avansează.** Nu se prelungește — se schimbă abordarea, prin decizie scrisă.
 

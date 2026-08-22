@@ -39,6 +39,44 @@ atins fișierul, iar o modificare încă necomisă a registrului cere data de az
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
 
 ---
+## TRIAJ PE PRAGURI (22.08.2026)
+
+Cele trei praguri sunt definite în `PLAN_LUCRU.md`, E5. Aplicate pe **ce e deja măsurat** — lista, nu
+reparațiile. **Testul lor:** dacă știi ce se repară primul fără să te uiți în tabel, n-ai nevoie de tabel.
+
+### PRAGUL 1 — imediat (efect greșit la un om ACUM)
+
+| # | ce e | efectul, azi |
+|---|---|---|
+| **1.1** | **`de_preluat` înseamnă două lucruri opuse, iar D300 omite tăcut facturi emise** — GĂSIT AZI, prin experimentul de la R12 | **cifră greșită într-o declarație depusă.** `core/d300.py:50-52` tratează `de_preluat` ca **staging** și îl exclude din decont; `core/export_winmentor.py:17` scrie explicit *„'de_preluat' e starea NORMALĂ a facturii emise, nu una de exclus"*; iar `core/facturi_api.py:311` **creează facturile noi exact cu `status="de_preluat"`**. Măsurat: **4 facturi emise, la 3 plătitori de TVA, cu TVA colectată de 3.052,00 lei, nu intră în D300** (t003: 2 facturi / 889,00 · t005: 1 / 2.100,00 · t013: 1 / 63,00). Pe t013 decontul **nu e gol, e incomplet** — iese cu 18 operațiuni și o omite pe a 19-a, ceea ce e mai greu de văzut decât un zero |
+| **1.2** | **`flux_concediu.js` blochează introducerea unui cod legal** (secțiunea 28, `DECIZII` D3) | **blocaj**: codurile `11`, `91`, `92` există în nomenclator cu temei, aplicația le acceptă, ecranul nu le oferă. Consemnat, nereparat, de trei ture |
+
+### PRAGUL 2 — la închiderea etapei (cauză unică dovedită, fără concurență)
+
+| # | ce e | de ce prag 2 |
+|---|---|---|
+| **2.1** | **Interdicția 2** — 3 apeluri fără dată, **o cauză unică**: defaultul `la_data=None` din `common.cota` | cauza e o linie; scos defaultul, interdicția devine imposibilă prin construcție. Nu concurează cu nimic |
+| **2.2** | **Registrul-inventar** (14-1-2) — nu există producător pentru partidă dublă | absență: n-are instanțe de ordonat |
+| **2.3** | **Cartea mare** (14-1-3) — motorul există (`core/motor.py:32`), zero consumatori | absență, cu motorul deja scris |
+| **2.4** | **Registrul de evidență fiscală** (CF art. 19 / 68) — nu există | absență |
+| **2.5** | **Evidența TVA ca artefact** (jurnale de vânzări/cumpărări, CF art. 321) | absență **simplă** — vezi Q2: datele există la nivelul cerut de articol, lipsește doar documentul |
+| **2.6** | **Jurnalul regim marjă** — producător DA, ecran NU | absență de randare, cu producătorul scris; vezi Q1 pentru de ce nu e o absență *declarată* |
+
+### PRAGUL 3 — după tabelul final
+
+| # | ce e | de ce prag 3 |
+|---|---|---|
+| **3.1** | **Interdicția 1** — ~100 valori fiscale în afara registrului, în 16 fișiere | multe instanțe, ordinea contează, concurează între ele |
+| **3.2** | **Interdicția 16** — 39 nomenclatoare ancorate pe sursă secundară, din 93 | idem |
+| **3.3** | **Interdicția 17a** — 42 valori re-declarate | idem |
+| **3.4** | **Interdicția 32** — 19 note din 33 fără legătură la document (P14) | clasă mare, cere decizie de model de date |
+| **3.5** | **Registrul-jurnal**, ca artefact conform pct. 45 | depinde de 3.4: nu se poate randa ce nu e în date |
+
+**Ce NU intră în praguri, și de ce:** restanțele deschise (R1–R12) nu sunt defecte, sunt **muncă de
+măsurare sau de decizie**; pragurile ordonează reparațiile, nu investigația.
+
+---
+
 ## AUDITUL CONSEMNĂRII (22.08.2026)
 
 **De ce.** Un defect găsit și nereparat nu avea întotdeauna unde să fie consemnat: instanțele
@@ -216,7 +254,7 @@ gardă; e un prag de citit, la un moment numit.
 - **reluări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `1eaecbb`
-- **ce blochează**: cele **patru** cerințe din „Ce se gardează" (`PLAN_LUCRU.md`), cu starea fiecăreia la 22.08.2026 — **răspuns la întrebarea 5**: (1) *„un raport care nu enumeră restanțele deschise nu trece"* — **realizată în forma posibilă**: secțiunea B le enumeră, derivat din registru; **negardabilă mecanic**, fiindcă rapoartele nu trăiesc pe disc, iar asta se declară, nu se ascunde. (2) *„o restanță fără «ce o închide» nu poate fi scrisă"* — **implementată**, câmpul e obligatoriu. (3) *„o etapă nu se poate declara terminată dacă are restanțe deschise care îi aparțin"* — **implementată azi**, cu anti-vacuu. (4) *„o restanță cu blocaj EXTERN fără cerere specifică formulată nu trece"* — **NEIMPLEMENTATĂ, și singura rămasă**. După împăcarea taxonomiilor, EXTERN a trecut pe axa „cine deblochează", care nu se gardează azi; cerința rămâne validă ca disciplină.
+- **ce blochează**: cele **patru** cerințe din „Ce se gardează" (`PLAN_LUCRU.md`), cu starea fiecăreia la 22.08.2026 — **răspuns la întrebarea 5**: (1) *„un raport care nu enumeră restanțele deschise nu trece"* — **realizată în forma posibilă**: secțiunea B le enumeră, derivat din registru; **negardabilă mecanic**, fiindcă rapoartele nu trăiesc pe disc, iar asta se declară, nu se ascunde. (2) *„o restanță fără «ce o închide» nu poate fi scrisă"* — **implementată**, câmpul e obligatoriu. (3) *„o etapă nu se poate declara terminată dacă are restanțe deschise care îi aparțin"* — **implementată azi**, cu anti-vacuu. (4) *„o restanță cu blocaj EXTERN fără cerere specifică formulată nu trece"* — **NEIMPLEMENTATĂ, și singura rămasă**. **Răspuns la întrebarea 4: SE POATE GARDA, nu e o consecință acceptată.** Împăcarea a mutat EXTERN pe axa „cine deblochează", care azi e o notă în proză — dar nimic nu obligă să rămână așa: dacă devine **câmp** (`cine deblochează`: EXTERN / INTERN / DECIZIE), garda se scrie în trei rânduri, pe același tipar cu celelalte: valoarea EXTERN cere, în `condiția de deblocare`, cele trei elemente ale unei cereri specifice — **ce trebuie · de unde · pentru ce**. Deci rămâne restanță de muncă, cu condiția de deblocare acum concretă, nu limită declarată.
 - **condiția de deblocare**: cele două gărzi există, RED-probate. Prima are nevoie de `unde intră` pe fiecare restanță — **există de azi**, deci nu mai e blocată de nimic tehnic; a doua are nevoie de o formă scrisă a cererii specifice.
 
 ### R11 — Datoria veche consemnată doar în proză, în GARZI.md
@@ -242,12 +280,13 @@ gardă; e un prag de citit, la un moment numit.
 ### R12 — Divergență între D300 și D100 pe aceeași firmă, același fapt
 
 - **felul**: ARTEFACT
-- **unde intră**: E1 · faza 1, pasul 1b · interdicția 17 (un adevăr re-declarat în alt modul)
+- **unde intră**: E1 · faza 1, pasul 1b · interdicția 17
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `cbf7b67`
-- **ce blochează**: pe **t003, 08/2026**, `D300` iese **`valid` cu 0 operațiuni**, iar `D100` **refuză** pe aceeași firmă și aceeași perioadă, cu motivul *„nu se depune pe zero: venituri contabilizate cont 70x = 0. Există 2 facturi emise necontabilizate"*. **Nu pot avea amândoi dreptate:** ori cele două facturi trebuie să apară undeva, ori niciunul nu trebuie să le vadă. Deocamdată D300 tace despre ele și D100 le numește — deci **nu se poate spune ce datorează firma**, care e chiar definiția felului ARTEFACT. Consemnat până acum doar ca observație în narațiunea lui 1b („semnal fin, de privit"), fără stare.
-- **condiția de deblocare**: **se contabilizează cele două facturi pe t003 și se rulează amândouă din nou.** Dacă D300 rămâne pe 0 → D300 are un defect de citire. Dacă D300 le ia, iar D100 continuă să refuze → refuzul lui D100 e cel greșit. Dacă amândouă se schimbă coerent → nu era divergență de motor, ci **două straturi citite diferit** (facturi vs contabilitate), și atunci e interdicția 17, cu instanța ei.
+- **rezolvată pe commit**: `42c9e85`
+- **ce blochează**: (istoric) pe t003, D300 ieșea `valid` cu 0 operațiuni, iar D100 refuza pe aceeași firmă și perioadă. Nu puteau avea amândoi dreptate.
+- **condiția de deblocare**: **îndeplinită — experimentul s-a făcut.** Ipoteza inițială („facturi necontabilizate") s-a dovedit greșită la prima privire în date: facturile **erau** contate, dar notele erau `ciornă`. Experimentul s-a îngustat la **ciornă vs validat**: am validat cele două note prin ruta aplicației (`/tenants/{id}/jurnal/{nota}/valideaza`). **Rezultat: D100 refuz → `valid`, 1 operațiune. D300: `valid` cu 0 operațiuni, ÎNAINTE și DUPĂ.** Deci **D100 avea dreptate** — citea contabilitatea validată și refuza corect. **D300 nu vedea facturile în niciuna dintre stări**, iar cauza s-a găsit citind filtrul: `status='de_preluat'`, exclus prin construcție. Defectul real e mai mare decât divergența și a trecut în **pragul 1, poziția 1.1**.
 
 ---
 
@@ -543,6 +582,23 @@ scrisă în Partea II). `declaratii_coada` și `declaratii_depuse`: **neatinse**
 | **Evidența operațiunilor de TVA** (jurnale de vânzări / cumpărări) | CF art. 321 | **NU ca artefact** | căutat pe `jurnal_vanzari`, `jurnal_cumparari`, `jurnale_tva`, `jurnal_tva`, apoi pe `jurnal (de) vânzări/cumpărări`, `raport tva`, `situatie tva`, `registru tva` — **zero potriviri**; rutele cu „tva" în nume sunt două, și niciuna nu e un jurnal. Datele agregate există (d300, d394), **documentul nu** |
 | **Registrul de evidență fiscală** | CF art. 19 (profit) · art. 68 (venit real) | **NU** | zero potriviri pe `registru_evidenta_fiscala`, `evidenta_fiscala` |
 
+**Q1 — jurnalul regim marjă: absență DECLARATĂ sau UITATĂ?** Verificat: `ISTORIC_TENANTI.md` conține
+declarații de perimetru pentru **două firme** — t006 (regim N1) și t001 (celula S4). **t007 („Agentie
+Turism Marja") și t008 („Second Hand Marja") n-au niciuna.** Singurul loc unde absența ecranului e
+scrisă e **comentariul rutei** (`main.py:7061`): *„raport regim marjă — fără UI încă, păstrat
+deliberat"*. **Un comentariu în cod nu e o declarație de perimetru** — nu se citește de nimeni care se
+uită unde suntem, nu are stare și nu se aprinde când devine neadevărat. Deci: **absență uitată în
+registru, declarată doar lângă cod.** Rămâne prag 2, dar cauza e scrisă acum.
+
+**Q2 — evidența TVA: lipsește doar documentul, sau și datele?** Verificat pe t003, la nivelul cerut de
+art. 321: `facturi` are `data_emitere`, `numar`, `serie`, `directie`, `tert_nume`, `tert_cui`, `total`,
+`tva`, `taxare_inversa`, `categorie_331`, `tip_operatiune`; `factura_linii` are `descriere`, `um`,
+`cantitate`, `pret_unitar`, **`cota_tva`**, `cont_venit`. **Baza și TVA pe cotă sunt derivabile pe
+fiecare linie, cu partener și cod.** Deci **absență simplă — lipsește documentul, nu substanța**, și
+rămâne la pragul 2, nu e a doua instanță de P14. **O rezervă, măsurată:** una din cele trei facturi
+ale lui t003 are `tert_cui = NULL` — completitudinea datelor de partener e o chestiune separată, de
+1b, nu a structurii.
+
 **Verdictul familiei D, după decizia de azi:** registrul de casă în **lista 1**; jurnalul de marjă,
 evidența TVA și registrul de evidență fiscală în **lista 3**, cu cauza *„nu există producător"* —
 pentru jurnalul de marjă, cauza e mai exact *„producătorul există, dar nu ajunge la om"*, ceea ce e
@@ -778,7 +834,7 @@ lângă artefact**, ca să nu se piardă distincția în interiorul listei.
 - **măsurat la**: 2026-08-22
 - **pe commit**: `ffbcb74`
 - **cifra**: **17a — 42** valori de registru rescrise ca literal, în 16 fișiere (~18% zgomot → ~34 reale). **17b — 1** formulă repetată, în **3 module**.
-- **instanțe**: **17a**: `d406.py` 6 · `d300.py` 5 · `d300_reconciliere.py` 5 · `d394.py` 5 · `tva_marja_turism.py` 4 · `d101.py` 3 · `cote_tva.py` 2 · `salarizare.py` 2 · `tva_agricultori.py` 2 · `tva_marja.py` 2 · restul câte 1. **17b**: podeaua part-time `sm − facilitate` în `d112.py:690`, `d112_reconciliere.py:195` și `:217`, `salarizare.py:309`.
+- **instanțe**: **17a**: `d406.py` 6 · `d300.py` 5 · `d300_reconciliere.py` 5 · `d394.py` 5 · `tva_marja_turism.py` 4 · `d101.py` 3 · `cote_tva.py` 2 · `salarizare.py` 2 · `tva_agricultori.py` 2 · `tva_marja.py` 2 · restul câte 1. **17b**: podeaua part-time `sm − facilitate` în `d112.py:690`, `d112_reconciliere.py:195` și `:217`, `salarizare.py:309`. **Instanță nouă, 22.08.2026, de alt fel decât cele 42 de mai sus:** nu o VALOARE re-declarată, ci un **ÎNȚELES** — starea `de_preluat` a unei facturi e definită în două module cu conținut opus. `core/d300.py:50` o clasează ca **staging** și o exclude din decont; `core/export_winmentor.py:17` scrie *„'de_preluat' e starea NORMALĂ a facturii emise, nu una de exclus"*; iar `core/facturi_api.py:311` **creează facturile noi exact în starea asta**. Măsurat: **4 facturi emise, la 3 plătitori de TVA, cu 3.052,00 lei TVA colectată, nu intră în D300**. **Potrivirea cu interdicția 17 e imperfectă și o declar** — 17 vorbește despre un adevăr *din registru*, iar înțelesul unei stări nu e în registru; cel mai apropiat vecin e 30 („două stări distincte cu aceeași etichetă"), care e oglinda cazului. Instanța stă aici fiindcă mecanismul e același — **un adevăr scris în două locuri produce două răspunsuri** — iar reparația e la **pragul 1, poziția 1.1**.
 - **calibrare**: GĂSIT — podeaua part-time, exact în trei module, prin semnătură STRUCTURALĂ a expresiei (`SM Sub FAC`), nu prin potrivire de text: `sm - fac` și `sm - facilitate_val` sunt aceeași formulă. Caz negativ NEraportat: nicio altă formulă pe valori de registru nu apare în ≥2 module — deci semnătura nu se aprinde pe orice scădere.
 - **ce nu vede**: o valoare re-declarată cu altă reprezentare (`21/100` scris ca operație) · o formulă rescrisă algebric (`-(fac - sm)`) · o valoare care ajunge în cod prin baza de date. **Prima formă a măsurătorii 17a a dat 1167 — 90% zgomot**, fiindcă discriminatorul „literal egal cu o valoare de registru" e prea slab: orice `10` se potrivea cu CASS 10%, orice `9` cu TVA 9%. Refăcută pe detectorul de context deja calibrat din `scan_constante`, în loc de al doilea detector inventat.
 - **unde ajunge efectul**: un adevăr scris în două locuri produce două răspunsuri la aceeași întrebare. **Instanță reală, nu ipotetică**: între 06 și 20.08.2026 podeaua part-time a avut două valori, iar fluturașul și D112 au declarat sume diferite pentru același salariat (70,25 lei/lună)
