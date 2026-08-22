@@ -30,7 +30,7 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: faza 1, pasul **1b** din `PLAN_INVESTIGATII.md` — ÎNCEPUT: familia A (registrele) e măsurată pe date reale. Urmează familiile B, C, D, apoi **1c**.
+- **pasul curent**: faza 1, pasul **1b** din `PLAN_INVESTIGATII.md` — în lucru: **familiile A și C** (registrele și declarațiile) sunt măsurate pe date reale. Urmează **B** (blocată de R3) și **D**, apoi **1c**.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: operațiunea 1 (câte regimuri) și pasul 1a (ce cere legea) sunt MĂSURATE — vezi blocul „E1 — SETUL COMPLET". Mai lipsesc, ca să se termine E1: **1b** · **1c** · plus cele **șase restanțe** de mai jos (R1–R6), dintre care **R3** blochează o familie întreagă din 1a, iar **R5** și **R6** privesc încrederea în corpusul pe care stă tot 1a.
 - **decizii care blochează**: **una deschisă**: verdictul 1d are **cinci liste**, dar tabelul P23 are **trei cauze** — a treia, *„artefactul nu se poate produce indiferent de date"*, n-are listă, și e exact cazul găsit la familia A (Registrul-inventar, Cartea mare). Se lărgește lista 3, sau se adaugă a șasea? Blochează clasificarea artefactelor la 1d, nu măsurarea lor la 1b.
@@ -309,6 +309,57 @@ pot produce indiferent de date**, adică rândul al treilea din tabelul P23: **a
 generic (rapoarte configurabile) care ar putea reconstitui un registru fără să-l numească · și nu
 spune nimic despre **corectitudinea** balanței, doar că iese cu rânduri pe date reale.
 
+
+### Pasul 1b — ce produce aplicația (FAMILIA C: declarațiile)
+
+**Instrumentul e al aplicației, nu unul nou:** aceleași rute pe care le folosește F2 din
+`frontend_test/audit_tenant.py` — `/declaratii/tipuri`, `/control-fiscal/{id}`,
+`POST /declaratii/{tip}/valideaza`, care **generează și trece prin DUKIntegrator**. Ruta întoarce
+`stare` ∈ {valid, erori, gri}, plus `operatiuni` — numărul de operațiuni din declarație, poarta care
+face ca o declarație golită de un query rupt să nu arate ca una legitim goală.
+
+**Măsurat pe 08/2026, pe trei firme cu date:** t013 (micro · TVA lunar · IC — cea mai bogată),
+t016 (același regim, firmă de test cu defecte deliberate), t003 (micro · TVA trimestrial).
+
+| declarație | t013 | t016 | t003 |
+|---|---|---|---|
+| **D100** | **valid**, 1 op. | REFUZ: *„nu se depune pe zero: venituri 70x = 0. Există 3 facturi emise ne…"* | REFUZ, aceeași cauză (2 facturi) |
+| **D101** | **valid** | **valid** | **valid** |
+| **D112** | **valid** | REFUZ: *„A DOUA CALE: SUSPECTE … salariat 2: brut 1000 SUB salariul minim 4325"* | REFUZ: *„PERIOADA_BLOCATĂ: pontajul lunii nu e CONFIRMAT"* |
+| **D205** | **valid**, 1 op. | REFUZ: *„fără niciun beneficiar de venit"* | REFUZ, aceeași cauză |
+| **D300** | **valid**, 18 op. | **valid**, 8 op. | **valid, 0 op.** |
+| **D301** | REFUZ: *„pe zero, DAR există 1 achiziție intracomunitară înregistrată ca FACTURI în perioadă"* | REFUZ: *„nu se generează pe zero … OPANAF 592/2016"* | REFUZ, aceeași cauză |
+| **D390** | **valid**, 3 op. | **valid**, 1 op. | REFUZ: *„nu se depune pe zero: luna n-are nicio operațiune IC"* |
+| **D394** | **valid**, 1 op. | **valid**, 1 op. | **valid**, 1 op. |
+| **D406** | **valid**, 19 op. | **valid**, 4 op. | **valid**, 2 op. |
+
+**Rezultatul principal: pe firma cu date complete (t013), 8 din 9 declarații se produc ȘI trec
+arbitrul oficial, cu zero erori.** Nu „există ruta" — DUKIntegrator a rulat pe XML-ul generat.
+
+**Refuzurile NU sunt toate același lucru.** Trei feluri, iar distincția e chiar cea din P23:
+
+1. **Refuz corect, cu contradicția numită** — t013 D301 și t016/t003 D100. Aplicația **nu produce un
+   „nu se datorează" peste o absență cunoscută**: spune că există achiziții IC înregistrate ca
+   facturi, sau facturi emise necontabilizate. Asta e interdicția 67 funcționând, nu un defect.
+2. **Refuz pe date lipsă, semnalat LA GENERARE** — t003 D112: *„pontajul lunii nu e CONFIRMAT"*, pe
+   **șapte** perioade (12/2025 – 07/2026). **Candidat pentru interdicția 68** — o lipsă semnalată
+   corect, dar în ziua depunerii. Nu se declară defect până nu se verifică dacă confirmarea se cere
+   mai devreme, la închiderea lunii; **asta e prima întrebare de la reluarea lui 1b**.
+3. **Refuz pe absență legitimă** — D205 „fără niciun beneficiar", D301/D390 „pe zero". Corect.
+
+**Un semnal fin, de privit, nu de concluzionat:** pe t003, **D300 iese `valid` cu 0 operațiuni**, în
+timp ce **D100 refuză pe aceeași firmă** fiindcă „veniturile contabilizate 70x = 0, deși există 2
+facturi emise necontabilizate". Același fapt — facturi neintrate în contabilitate — produce
+**refuz** la un motor și **declarație goală validă** la altul. Nu spun care are dreptate; spun că nu
+pot avea amândoi.
+
+**Ce nu vede măsurătoarea:** o singură lună (08/2026) · trei firme din 17 · nu verifică dacă cifrele
+din declarație sunt CORECTE, doar că declarația iese și trece arbitrul · D212 și declarațiile fără
+interfață n-au fost atinse (sunt în afara perimetrului, prin decizie).
+
+**Sonda a scris, și o declar:** `audit_log` +30 (o citire de date personale lasă urmă — excepția
+scrisă în Partea II). `declaratii_coada` și `declaratii_depuse`: **neatinse**, verificat prin snapshot
+înainte/după.
 
 ### Decizie cerută la 1b: verdictul are cinci liste, dar P23 are trei cauze
 
