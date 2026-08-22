@@ -24,8 +24,24 @@ DECIZIE DE INTERPRETARE (P11), consemnată aici fiindcă alegerea nu era determi
   - motivul:           calea de emitere o produce, și nimic n-o schimbă; varianta respinsă face
                        emiterea proprie a aplicației invizibilă în decont;
   - cine și când:      Code, 22.08.2026, sub pragul 1 (efect greșit la un om acum).
-  - DE CONFIRMAT de Costin. Dacă varianta respinsă e cea corectă, atunci defectul e în `emite_factura`
-    (trebuie să producă altă stare), nu în d300 — iar reparația se mută acolo, nu se anulează.
+  - **CONFIRMAT (Costin, 22.08.2026).** Argumentul decisiv, cu vorbele lui: *„nimic nu setează
+    'emisa', deci starea alternativă nu există în practică, iar un decont care o presupune omite tăcut
+    tot ce a emis firma."*
+
+VARIANTA RESPINSĂ, ȚINUTĂ VIE (cerut explicit, nu doar consemnată). Întrebarea: *dacă intenția
+originală era ca `emisa` să existe, atunci defectul e că `emite_factura` n-o setează, iar reparația de
+acum ascunde asta.* **Verificat în tot repo-ul — răspunsul e mai fin decât „nu există nicăieri":**
+
+  - **TRANZIȚIE nu există.** Niciun `UPDATE ... SET status='emisa'` pe `facturi`, nicăieri — nici în
+    UI, nici în import, nici în e-Factura (`spv_receive` scrie doar `descarcata` / `ciorna`).
+  - **DAR `emisa` se produce la CREARE, în cealaltă funcție:** `facturi_api.creeaza_factura` are
+    `status="emisa"` implicit (7 apelanți), iar modelul `FacturaIn` (`main.py:811`) la fel;
+    `emite_factura` are `de_preluat` (6 apelanți).
+
+**Deci intenția a fost implementată — dar în cealaltă cale de creare.** Nu există un flux în care o
+factură *trece* în `emisa`; există două funcții de creare pentru același obiect, cu stări implicite
+diferite. D7 rămâne definitiv, iar divergența dintre cele două funcții e restanța **R14**: după D7 nu
+mai produce cifre greșite (amândouă sunt declarabile), dar rămâne un adevăr scris în două locuri.
 
 CE NU FACE fișierul ăsta: nu decide ce se întâmplă cu stările care NU apar aici (necunoscute). Ele
 sunt tratate ca `emisa` de `COALESCE`, la fel ca înainte — comportament păstrat deliberat, ca

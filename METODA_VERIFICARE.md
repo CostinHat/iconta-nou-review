@@ -320,6 +320,12 @@ unică pentru ce SCRIE funcția aceea**, nu o frază care poate ajunge acolo pe 
 cât mai specifică. Iar dacă o funcție face **mai multe** schimbări, ori are o cheie per schimbare, ori
 se sparge în funcții.
 
+**A patra instanță (22.08.2026), și cea mai subtilă:** cheia `"CONFIRMAT de Costin"` era **subșir** al
+textului pe care funcția urma să-l înlocuiască — `"DE CONFIRMAT de Costin"`. Nu venea din alt patch și
+nu fusese introdusă de o rulare anterioară: era **chiar în ținta înlocuirii**. Deci regula se
+strânge: **cheia se alege din textul NOU, nu din cel vechi, și se verifică să nu fie subșir al
+niciunuia dintre ele.**
+
 **Și consecința care contează cel mai mult:** un patch care „sare" nu eșuează — **raportează succes**.
 De aceea greșeala se vede abia la verificarea de după, dacă se face. Verificarea de după nu e opțională.
 
@@ -335,4 +341,18 @@ era **uitată în registru și declarată lângă cod** — două lucruri diferi
 
 **Unde se declară, deci:** în registrul de perimetru al firmei, sau ca restanță cu felul de blocaj
 potrivit. Comentariul rămâne util pentru cine citește codul; nu ține locul niciuneia.
+
+### 10.11 — Un `tenant_id` în rută nu e ornament
+
+**Formularea:** *un `tenant_id` într-o rută nu e ornament — un 200 confirmă că tenantul există.*
+
+**Instanța, 22.08.2026:** ruta nouă `GET /tenants/{tenant_id}/concedii/coduri` întorcea **200 pe
+tenantul altui cabinet**. Raționamentul care a produs-o era plauzibil și de asta e periculos:
+*„codurile de concediu nu depind de firmă, deci `tenant_id` e decorativ aici"*. Nu e: chiar dacă
+răspunsul nu conține nicio dată a firmei, **codul de stare e el însuși o informație** — spune că
+tenantul există și că nu ești refuzat. Interdicțiile 24 și 25.
+
+Prinsă de `test_izolare_structurala`, care încearcă toate cele 255 de perechi (rută × metodă) cu un
+token din alt cabinet. **Regula practică:** dacă ruta are `{tenant_id}` în cale, prima ei linie e
+verificarea accesului — indiferent ce întoarce.
 

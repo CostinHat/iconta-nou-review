@@ -326,6 +326,28 @@ gardă; e un prag de citit, la un moment numit.
 - **ce blochează**: măsurat la Q2 (evidența TVA): pe t003, **una din trei facturi are `tert_cui = NULL`** (CMT149, către „Agentie Turism Marja SRL"). Un jurnal de vânzări și D394 cer partenerul cu codul lui; fără el, operațiunea nu se poate raporta pe partener. Nu e o lipsă de structură — coloana există — ci de **completitudine a datelor**, deci se rezolvă altfel decât o absență de producător.
 - **condiția de deblocare**: se măsoară **câte** facturi din matrice n-au cod de partener, pe direcție și pe plătitor de TVA, și se stabilește dacă lipsa e legitimă (persoană fizică) sau nu. Abia apoi se decide dacă aplicația trebuie să ceară codul la introducere (P23) sau doar să-l semnaleze.
 
+### R14 — Două funcții de creare a facturii, cu stări implicite diferite
+
+- **felul**: SURSĂ
+- **cine deblochează**: DECIZIE
+- **unde intră**: E3 · interdicția 17
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `4853dfb`
+- **ce blochează**: `facturi_api.creeaza_factura` creează cu `status="emisa"` (7 apelanți), `facturi_api.emite_factura` cu `status="de_preluat"` (6 apelanți), iar modelul `FacturaIn` (`main.py:811`) are tot `"emisa"`. **Nu există nicio tranziție între ele** — starea unei facturi e decisă o dată, la creare, de care funcție a fost chemată. După D7 amândouă sunt declarabile, deci **nu mai produce cifre greșite**; rămâne un adevăr scris în două locuri, iar următoarea regulă care se atașează de „starea unei facturi" va trebui să știe care e care.
+- **condiția de deblocare**: se decide dacă cele două funcții trebuie să producă **aceeași** stare (și atunci una dintre valori dispare), sau dacă distincția e reală și trebuie **numită** — adică ce înseamnă `emisa` față de `de_preluat`, scris în nomenclator, nu dedus din care funcție a fost chemată. E o decizie de produs, nu o măsurătoare.
+
+### R15 — Perechile verificator/verificat copiază CONDIȚII, nu doar constante
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · interdicțiile 11, 12
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `4853dfb`
+- **ce blochează**: `test_cale_a_doua` verifică **importul** — calea a doua nu importă modulul verificat. Dar Partea V spune și *„nu-i copiază constantele"*, iar **o condiție SQL identică e o constantă compusă**. Măsurat pe cele 9 perechi `*_reconciliere.py`: **7 condiții identice, pe 3 perechi** — `d300` 4 (`COALESCE(f.taxare_inversa, false) = false`, `COALESCE(f.furnizor_tva_incasare, false) = true`, `NOT (f.directie = 'primita'…`), `d394` 2, `d101` 1. Exact clasa care a produs defectul de azi: filtrul pe status era a 5-a, iar reconcilierea n-a prins omisiunea fiindcă **vedea aceeași realitate trunchiată**. **Cifra e plafon inferior:** metoda compară fragmente textuale normalizate, deci nu vede o condiție rescrisă cu altă ordine sau alt alias; iar 2 din cele 7 sunt fragmente lungi de SELECT, tăiate imperfect de instrument — deci **~5 reale**.
+- **condiția de deblocare**: fiecare condiție comună primește ori o **sursă unică** (ca `nomenclator_status_factura.clauza_sql`), ori o **declarație scrisă** că duplicarea e deliberată și de ce — tiparul există deja: `test_d300_reconciliere.test_non_tautologie_*` apără o duplicare **voită**. Se închide când `test_cale_a_doua` capătă și axa condițiilor, nu doar a importului.
+
 ---
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)

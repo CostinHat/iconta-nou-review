@@ -153,8 +153,15 @@ def date_factura(conn, schema, factura_id):
 
 
 def facturi_emise_luna(conn, schema, an, luna, status=None):
-    """Id-urile facturilor EMISE (tip factura) dintr-o luna. status optional (F187: WinMentor cere
-    status='emisa' - doar facturi emise corect, nu 'de_preluat'/'anulata'); default None = comportament
+    """Id-urile facturilor EMISE (tip factura) dintr-o luna. `status` optional; default None = FARA
+    filtru, si asta e comportamentul corect.
+
+    [22.08.2026] Frazа de aici spunea ca „WinMentor cere status='emisa' - doar facturi emise corect,
+    nu 'de_preluat'/'anulata'". E INVERS, si era invers si atunci: F187-fix a scos filtrul din
+    WinMentor tocmai fiindca `de_preluat` e starea NORMALA a unei facturi emise (vezi D7 in DECIZII.md
+    si `core/nomenclator_status_factura.py`). Niciun apelant nu trimite `status` — verificat: `main.py`
+    si `export_winmentor.py` cheama fara el — deci NICIUN export n-a produs date gresite. Ce era gresit
+    era proza de aici, care ar fi indrumat urmatorul cititor exact pe dos.
     SAGA neschimbat (toate emise)."""
     filtru_status = " AND status=%s" if status else ""
     params = [an, luna] + ([status] if status else [])
