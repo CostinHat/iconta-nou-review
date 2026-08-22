@@ -23,14 +23,15 @@ import pytest
 from core import registru_exceptii as reg
 from core import scan_afirmatii as s
 
-# Instalat 22.08.2026 pe cifra MĂSURATĂ: șapte situri care nu sunt afirmații despre datele firmei.
-# NU se ridică. O intrare nouă înseamnă că ceva n-a fost reparat.
-MARIME_MAXIMA = 7
+# Instalat 22.08.2026 pe cifra MĂSURATĂ. Coborât la 5 în aceeași zi, când cheia a trecut de pe
+# LINIE pe FUNCȚIE și cele trei ramuri ale lui `raportari_ai.triaj` s-au dovedit a fi o singură
+# intrare (aceeași funcție, aceeași natură). NU se ridică.
+MARIME_MAXIMA = 5
 
 
 @pytest.fixture(scope="module")
 def inv():
-    return {(x[0], x[2]) for x in s.netipate_in_scop()}
+    return {(x[0], x[1]) for x in s.netipate_in_scop()}      # (fisier, functie)
 
 
 def test_registrul_nu_creste():
@@ -44,8 +45,8 @@ def test_registrul_nu_creste():
 def test_fiecare_exceptie_e_VIE(inv):
     """ZĂVORUL 2, cel care ține registrul onest. O intrare care nu mai corespunde unui sit real e o
     excepție acordată unei lumi care nu există — și ascunde faptul că altceva a luat locul."""
-    moarte = ["  %s:%d (%s)" % (e["fisier"], e["linie"], e["motiv"])
-              for e in reg.EXCEPTII if (e["fisier"], e["linie"]) not in inv]
+    moarte = ["  %s::%s (%s)" % (e["fisier"], e["functie"], e["motiv"])
+              for e in reg.EXCEPTII if (e["fisier"], e["functie"]) not in inv]
     assert not moarte, (
         "excepții MOARTE — situl nu mai există sau a fost convertit; scoate intrarea:\n"
         + "\n".join(moarte))
@@ -59,8 +60,8 @@ def test_motivele_sunt_dintr_un_set_inchis():
             "semn că situl trebuie REPARAT, nu declarat."
             % (e["motiv"], ", ".join(sorted(reg.RATIUNI))))
         assert e.get("de_ce"), (
-            "excepția %s:%d n-are explicație proprie — rațiunea din nomenclator e categoria, nu "
-            "argumentul" % (e["fisier"], e["linie"]))
+            "excepția %s::%s n-are explicație proprie — rațiunea din nomenclator e categoria, nu "
+            "argumentul" % (e["fisier"], e["functie"]))
 
 
 def test_ratiunea_care_s_ar_umple_nu_exista():
@@ -96,21 +97,31 @@ def test_datoria_reala_e_in_ACEEASI_unitate_ca_clichetul():
     clichetul număra 18, fiindcă `control_fiscal_api:960` are DOUĂ dicționare pe aceeași linie. Două
     cifre în două unități, raportate ca aceeași măsură."""
     from core.test_afirmatii_tipate import BASELINE
-    intrari = len(s.netipate_in_scop())
-    assert sum(BASELINE.values()) == intrari, (
+    lst = s.netipate_in_scop()
+    assert sum(BASELINE.values()) == len(lst), (
         "baseline-ul (%d) și inventarul (%d) nu mai sunt în aceeași unitate"
-        % (sum(BASELINE.values()), intrari))
-    assert reg.datorie_reala() == intrari - len(reg.EXCEPTII), (
-        "datorie_reala (%d) nu e inventar(%d) minus excepții(%d) — unitățile s-au despărțit"
-        % (reg.datorie_reala(), intrari, len(reg.EXCEPTII)))
+        % (sum(BASELINE.values()), len(lst)))
+    # O excepție e cheiată pe (fișier, FUNCȚIE), deci poate acoperi mai multe intrări — `raportari_ai
+    # .triaj` acoperă trei ramuri. Aritmetica simplă „inventar minus numărul de excepții" NU mai ține,
+    # și a fost înlocuită cu numărarea intrărilor NEACOPERITE. Prima formă ar fi dat 13 în loc de 15.
+    ex = {(e["fisier"], e["functie"]) for e in reg.EXCEPTII}
+    neacoperite = len([x for x in lst if (x[0], x[1]) not in ex])
+    assert reg.datorie_reala() == neacoperite, (
+        "datorie_reala (%d) nu numără intrările neacoperite de excepții (%d)"
+        % (reg.datorie_reala(), neacoperite))
 
 
-def test_o_pozitie_cu_doua_afirmatii_se_numara_de_doua_ori():
-    """ANTI-VACUU pe unitate: dacă inventarul ar deduplica pe (fișier, linie), două afirmații scrise
-    pe același rând ar conta ca una — și una dintre ele ar putea rămâne netipată pentru totdeauna
-    fără ca vreo cifră să se miște."""
-    from collections import Counter
-    c = Counter((x[0], x[2]) for x in s.netipate_in_scop())
-    assert any(n > 1 for n in c.values()), (
-        "nicio poziție cu două afirmații — cazul nu mai e exercitat, deci nu se știe dacă unitatea "
-        "ar mai fi ținută. Dacă e adevărat că nu mai există, scoate testul CU MOTIV.")
+def test_unitatea_e_INTRAREA_nu_pozitia():
+    """ANTI-VACUU pe unitate, SINTETIC. Dacă numărătoarea ar deduplica pe (fișier, linie), două
+    afirmații scrise pe același rând ar conta ca una — și una dintre ele ar putea rămâne netipată
+    pentru totdeauna fără ca vreo cifră să se miște. Asta s-a și întâmplat pe 22.08:
+    `control_fiscal_api:960` avea două dicționare, iar `datorie_reala` dădea 17 unde clichetul dădea 18.
+
+    Cazul nu mai există în cod (situl a fost convertit), deci se probează pe un inventar CONSTRUIT —
+    altfel testul ar trece pe gol și n-ar mai apăra nimic."""
+    fals = [("core/x.py", "f", 10, "netipata", "A_verdict", "mesaj"),
+            ("core/x.py", "f", 10, "netipata", "A_verdict", "cauza"),
+            ("core/y.py", "g", 20, "netipata", "A_verdict", "mesaj")]
+    assert reg.datorie_reala(fals) == 3, (
+        "două afirmații pe același rând s-au numărat ca una — unitatea a alunecat de la INTRARE la "
+        "poziție, iar una dintre ele ar putea rămâne netipată fără ca vreo cifră să se miște")

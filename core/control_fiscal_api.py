@@ -843,6 +843,8 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
                     "Vector fiscal necompletat — nu pot evalua obligațiile firmei.",
                     domeniu_de="%04d-12" % (azi.year - 1), domeniu_pana=None)],
                 "limite": limite_verificarii(azi),
+                # [P8] `mesaj` se DERIVA din afirmatia de mai sus, nu se scrie a doua oara: pana azi
+                # erau doua surse ale aceluiasi lucru, si puteau sa se despartă la prima rescriere.
                 "mesaj": "vector fiscal necompletat"}
 
     # [D390-fapt] semaforul intreaba faptul lunar (facturi IC + manual + d301), nu bifa statica operatiuni_ic.
@@ -957,14 +959,19 @@ def evalueaza_firma(conn_schema, conn_public, tenant_id, schema, azi=None, *, cu
         try:
             reconciliere = _ci_rec.reconciliaza_declaratii(conn_schema, schema, an_r, luna_r)
         except Exception as _e:
-            reconciliere = {"an": an_r, "luna": luna_r, "stare": "rosu", "constatari": [{
-                "stare": "rosu", "eticheta": "Reconciliere surse<->declaratii - PUNTE RUPTA",
-                "mesaj": ("Reconcilierea nu a putut fi apelata (%s: %s) - semnalat, nu ascuns "
-                          "(anti-D300 mort)." % (type(_e).__name__, _e)),
-                "temei": ("Puntea control_incrucisat.reconciliaza_declaratii a ridicat; contractul ei e să "
-                          "nu ridice. Un except->gri ar ascunde ruptura ca verdict permanent gri."),
-                "remediu": None}],
-                "explicatie": "", "limita": "Reconcilierea surse<->declarații nu a rulat.",
+            _rupt = dict(_af.afirmatie(
+                "verificare_rupta", "reconciliere",
+                "Reconcilierea nu a putut fi apelata (%s: %s) - semnalat, nu ascuns "
+                "(anti-D300 mort)." % (type(_e).__name__, _e),
+                eroare="%s: %s" % (type(_e).__name__, _e)))
+            reconciliere = {"an": an_r, "luna": luna_r, "stare": "rosu", "constatari": [dict(
+                _rupt,
+                stare="rosu", eticheta="Reconciliere surse<->declaratii - PUNTE RUPTA",
+                mesaj=_rupt["motiv"],
+                temei=("Puntea control_incrucisat.reconciliaza_declaratii a ridicat; contractul ei e să "
+                       "nu ridice. Un except->gri ar ascunde ruptura ca verdict permanent gri."),
+                remediu=None)],
+                "limita": "Reconcilierea surse<->declarații nu a rulat.",
                 "modul": "control_incrucisat", "reguli": ""}
         # severitatea vine din constatari (pastila_firma), NU dintr-un literal - un rosu de reconciliere urca
         # pastila firmei; gri-ul (nu pot verifica) NU o urca. Vezi DECIZII 23.07 + common.pastila_firma.

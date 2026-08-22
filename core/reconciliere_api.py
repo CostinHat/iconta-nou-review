@@ -61,9 +61,12 @@ def importa_extras(conn, schema, tranzactii, fisier=""):
     out = []
     with conn.cursor() as cur:
         for t, ln, rez in zip(tranzactii, linii, rezultate):
-            aloc = {"status_match": rez["status"], "motiv": rez["motiv"],
-                    "alocari": [{"factura_id": a["factura_id"], "suma": str(a["suma"])}
-                                for a in rez["alocari"]]}
+            # [P8] `rez` E DEJA o afirmatie tipata (potriveste_linie); se duce mai departe intreaga,
+            # nu se re-extrage `motiv` - altfel ar exista doua surse ale aceluiasi text.
+            aloc = dict(rez, status_match=rez["status"],
+                        alocari=[{"factura_id": a["factura_id"], "suma": str(a["suma"])}
+                                 for a in rez["alocari"]])
+            aloc.pop("status", None)
             # ai_sugestie_v1: linie fara facturi -> sugestie din istoricul invatat
             if rez["status"] == "rosu" and not t.get("nota"):
                 try:

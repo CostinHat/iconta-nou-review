@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 """Stocuri global-valorică — strat API. Motorul: core/stocuri.py.
 AI propune (note ciorne), contabilul validează în jurnal."""
+from core import afirmatii as _af  # [P8] absenta vanzarilor e un fapt
 import json
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
@@ -152,7 +153,11 @@ def descarca_luna(conn, schema, an, luna):
     rez = _m.descarcare_gv(rc_707, tva_vanzari, -si["378"], rc_378,
                            si["371"], rd_371, -si["4428"], rc_4428)
     if not rez["note"]:
-        return {"k": None, "mesaj": "fără vânzări de mărfuri în luna", "note": []}
+        # [P8] FAPT despre luna, nu un mesaj: absenta vanzarilor e o constatare, si poarta perioada.
+        return dict(_af.afirmatie(
+            "fapt", "descarcare gestiune", "fără vânzări de mărfuri în luna", an=an, luna=luna,
+            temei_completitudine="rulajele contului 707 din notele validate ale lunii"),
+            k=None, mesaj="fără vânzări de mărfuri în luna", note=[])
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         import calendar
         ultima_zi = date(an, luna, calendar.monthrange(an, luna)[1])

@@ -16,6 +16,7 @@ FISCAL:
     21% din 01.08.2025, 19% inainte), nu constanta literala. Redusa (11%) si scutit (0%) sunt
     optiunile suplimentare; daca redusa capata valabilitate parametrizata, intra in common.COTE.
 """
+from core import afirmatii as _af  # [P8] statutul e o afirmatie
 import re
 from datetime import date
 from decimal import Decimal, ROUND_HALF_UP
@@ -130,10 +131,12 @@ def adauga(conn, schema, an, luna, d):
         _cur.execute(f"SELECT platitor_tva FROM {schema}.firma_profil WHERE id=1")
         _pr = _cur.fetchone()
     if _pr and _pr[0] is True:
-        return {"eroare": "Firma e înregistrată în scopuri de TVA (plătitoare) — D301 (decontul "
-                          "special) e pentru NEplătitori. Achizițiile intracomunitare ale unui "
-                          "plătitor se declară în D390/D300, nu în D301. Dacă firma e de fapt "
-                          "neplătitoare, corectează înregistrarea în scopuri de TVA în Vectorul fiscal."}
+        _t = ("Firma e înregistrată în scopuri de TVA (plătitoare) — D301 (decontul "
+              "special) e pentru NEplătitori. Achizițiile intracomunitare ale unui "
+              "plătitor se declară în D390/D300, nu în D301. Dacă firma e de fapt "
+              "neplătitoare, corectează înregistrarea în scopuri de TVA în Vectorul fiscal.")
+        return dict(_af.afirmatie("statut", "d301", _t,
+                                  statut="platitor_tva", statut_din=None), eroare=_t)
     # [G10 rule2/4] colecteaza TOATE erorile de camp (nu fail-fast), field-keyed pt erori_campuri.
     erori = []
     try:

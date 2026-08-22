@@ -10,6 +10,7 @@ Auto-maparea (d390.calcul_d390) pune orice factură IC pe BUNURI (emisă->L, pri
 Validează tranzițiile la sursă (nu se poate face o achiziție să fie livrare). Codul partenerului
 (codO) e obligatoriu pentru L/T/P/R (ca în d390.valideaza), opțional pentru S/A.
 """
+from core import afirmatii as _af  # [P8] statutul e o afirmatie
 from decimal import Decimal
 from core.d390 import TARI_UE, TIPURI, TIPURI_DIRECTIE, operatiuni_auto, pull, pull_manual, pull_reclasificari
 
@@ -63,9 +64,11 @@ def manual_adauga(conn, schema, an, luna, tip, tara, cod, den, baza):
         _cur.execute(f"SELECT operatiuni_ic FROM {schema}.firma_profil WHERE id=1")
         _pr = _cur.fetchone()
     if _pr and _pr[0] is False:
-        return {"eroare": "Firma nu are operațiuni intracomunitare în Vectorul fiscal — D390 "
-                          "(declarația recapitulativă) nu i se aplică. Dacă firma face operațiuni "
-                          "intracomunitare, marchează-le în Vectorul fiscal."}
+        _t = ("Firma nu are operațiuni intracomunitare în Vectorul fiscal — D390 "
+              "(declarația recapitulativă) nu i se aplică. Dacă firma face operațiuni "
+              "intracomunitare, marchează-le în Vectorul fiscal.")
+        return dict(_af.afirmatie("statut", "d390", _t,
+                                  statut="fara_operatiuni_ic", statut_din=None), eroare=_t)
     # [G10 rule2/4] colecteaza TOATE erorile de camp (nu fail-fast), field-keyed.
     tip = (tip or "").strip().upper()
     tara = (tara or "").strip().upper()

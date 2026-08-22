@@ -32,6 +32,18 @@ import os
 
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
+# CHEIA `eroare` NU E AICI, si asta e o LIMITA DECLARATA a scanului, nu o omisiune.
+# [22.08.2026] Intrebarea lui Costin despre afirmatiile de tip IPOTEZA („previzualizari, simulari, ce
+# s-ar intampla daca") a scos la iveala trei afirmatii de STATUT ascunse sub cheia `eroare`:
+# „Firma NU e inregistrata in scopuri de TVA — D300 se depune doar de platitori" si inca doua ca ea.
+# Am ADAUGAT cheia in vocabular ca sa le prind - si numarul a sarit de la 25 la 60. Din cele 35 de
+# locuri noi, TREI erau afirmatii despre firma; restul sunt validari de intrare („cantitate/pret
+# invalide", „articol inexistent", „nivel minim negativ"). 91% zgomot.
+# Clasificarea NU le poate deosebi mecanic: si cele reale, si zgomotul sunt `{"eroare": "<text>"}`
+# bare, din functii de scriere. Singurul discriminator ar fi TEXTUL - adica potrivire de proza, exact
+# ce vaneaza campania. Un clichet cu 91% zgomot e mai rau decat o masuratoare lipsa (METODA §5).
+# Cele TREI cunoscute au fost convertite pe nume; daca apar altele, se gasesc cu aceeasi masuratoare
+# (`masoara_eroare`), nu cu clichetul.
 REVENDICARE = {"mesaj", "motiv", "cauza", "cauză", "avertisment", "constatare", "semnal",
                "explicatie", "explicație", "atentie", "atenție", "nereguli", "blocaj"}
 

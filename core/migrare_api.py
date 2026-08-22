@@ -166,6 +166,9 @@ REGULI = {
     "valoare_lipsa":    {"fel": "lipsa", "inseamna": "valoarea de intrare lipseste sau nu e pozitiva"},
     "data_lipsa":       {"fel": "lipsa", "inseamna": "data operatiunii lipseste"},
     "explicatie_lipsa": {"fel": "lipsa", "inseamna": "explicatia operatiunii lipseste (coloana e NOT NULL)"},
+    # scos pe 21.08 fiindca era declarat si nefolosit; repus pe 22.08 cand importul de retete a
+    # capatat un producator real. Nomenclatorul urmeaza codul, nu invers.
+    "denumire_lipsa":   {"fel": "lipsa", "inseamna": "denumirea lipseste dintr-un rand importat"},
 
     # --- invalid: valoarea E acolo, dar nu satisface regula
     "cnp_invalid":      {"fel": "invalid", "inseamna": "CNP care nu trece cifra de control"},
@@ -179,6 +182,12 @@ REGULI = {
     "data_viitor":      {"fel": "invalid", "inseamna": "data e in viitor, unde nu poate fi"},
     "tip_necunoscut":   {"fel": "invalid", "inseamna": "tipul nu exista in nomenclatorul asteptat"},
     "suma_invalida":    {"fel": "invalid", "inseamna": "suma e 0 sau neinterpretabila"},
+    "cantitate_pret_negativ": {"fel": "invalid",
+                               "inseamna": "cantitate sau pret negativ la un articol de stoc"},
+    "pret_zero_cu_stoc": {"fel": "invalid",
+                          "inseamna": "articol cu stoc dar pret unitar 0 - valoarea stocului ar fi 0"},
+    "balanta_nu_se_echilibreaza": {"fel": "incoerent",
+                                   "inseamna": "totalul debitor difera de cel creditor in fisierul incarcat"},
     "cont_nepartener":  {"fel": "invalid", "inseamna": "contul nu tine solduri pe parteneri"},
 
     # --- duplicat: valoarea intra in conflict cu una care exista deja

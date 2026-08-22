@@ -28,6 +28,7 @@ SURSA ETICHETE: OPANAF 174/2026 (anaf_surse/opanaf_174_2026_d300.txt) + structur
 (anaf_surse/d300_struct_anaf.txt, descrierea per cod R din col.2) — textul oficial cu diacritice,
 nu rescris în JS. Fiecare etichetă e ancorată pe descrierea din structură (verificată la sursă).
 """
+from core import afirmatii as _af  # [P8] statutul firmei e o afirmatie, nu un sir
 
 # Rândurile de INTRARE acceptate manual (fără col.2 sunt marcate în _FARA_TVA). Sursă:
 # d300.calcul_d300 allow-list (colectată + deductibilă). Ordinea = ordinea din formular.
@@ -148,9 +149,11 @@ def adauga(conn, schema, an, luna, d):
         _cur.execute(f"SELECT platitor_tva FROM {schema}.firma_profil WHERE id=1")
         _pr = _cur.fetchone()
     if _pr and _pr[0] is False:
-        return {"eroare": "Firma NU e înregistrată în scopuri de TVA — D300 (decontul de TVA) se "
-                          "depune doar de plătitori. Dacă firma e de fapt plătitoare, corectează "
-                          "înregistrarea în scopuri de TVA în Vectorul fiscal."}
+        _t = ("Firma NU e înregistrată în scopuri de TVA — D300 (decontul de TVA) se "
+              "depune doar de plătitori. Dacă firma e de fapt plătitoare, corectează "
+              "înregistrarea în scopuri de TVA în Vectorul fiscal.")
+        return dict(_af.afirmatie("statut", "d300", _t,
+                                  statut="neplatitor_tva", statut_din=None), eroare=_t)
     erori = []
     rand = (d.get("rand") or "").strip().upper()
     if not rand:

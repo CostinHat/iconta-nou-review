@@ -27,6 +27,7 @@ from core.common import azi_ro, stare_din_nivel, pastila_firma  # [fus] ziua RO;
 from core import common as _common
 from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
 from core import afirmatii as _af  # [P8] afirmatiile despre datele firmei sunt obiecte, nu siruri
+from core.unde import Unde as _Unde  # [P8] domeniul poate fi un OBIECT, nu o perioada
 from core.mesaje import (mesaj_din_cod, FARA_CABINET, EMAIL_INVALID, EMAIL_EXISTA,
                          EMAIL_NICIUNUL_VALID, CUI_FIRMA_LIPSA, PERIOADA_INCHISA,
                          ROL_INSUFICIENT, DOAR_ADMIN_ICONTA, DOAR_ADMIN_CABINET, DOAR_PATRON,
@@ -1798,7 +1799,14 @@ async def solduri_incarca(tenant_id: int, fisier: UploadFile = File(...), ctx=De
     td = round(sum(r["debit"] for r in randuri), 2)
     tc = round(sum(r["credit"] for r in randuri), 2)
     valida, motiv = solduri_api.balanta_valida(randuri)
-    return {"randuri": randuri, "total_debit": td, "total_credit": tc, "valida": valida, "motiv": motiv}
+    # [P8] cand fisierul NU e o balanta valida, spunem CE regula nu tine si PE CE fisier - nu doar
+    # un text. Domeniul e FISIERUL incarcat (fel de referent adaugat 22.08).
+    _baza = {"randuri": randuri, "total_debit": td, "total_credit": tc, "valida": valida}
+    if valida:
+        return dict(_baza, motiv=motiv)
+    return dict(_baza, **migrare_api.respinge(
+        "balanță de deschidere", _Unde("fisier", fisier.filename or "(fără nume)"),
+        "balanta_nu_se_echilibreaza", motiv))
 
 
 @app.get("/tenants/{tenant_id}/solduri")

@@ -38,6 +38,14 @@ FELURI_REFERENT = {
     "mijloc_fix": {"eticheta": "mijlocul fix %s", "inseamna": "un mijloc fix din registru"},
     "declaratie_depusa": {"eticheta": "declarația depusă %s",
                           "inseamna": "o depunere din istoricul importat"},
+    # [22.08.2026] Trei feluri adaugate dupa ce conversia s-a lovit de ele. Costin: „Toate trei sunt
+    # obiecte pe care contabilul le poate deschide, deci sunt referenti reali, nu ocolisuri."
+    "transport": {"eticheta": "transportul %s",
+                  "inseamna": "un transport declarat in e-Transport (UIT)"},
+    "inregistrare": {"eticheta": "inregistrarea contabila %s",
+                     "inseamna": "o nota contabila din registrul jurnal"},
+    "fisier": {"eticheta": "fisierul „%s”",
+               "inseamna": "un fisier incarcat de contabil (balanta, extras, import)"},
 }
 
 

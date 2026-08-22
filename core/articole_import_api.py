@@ -67,16 +67,26 @@ def extrage(continut, nume_fisier=""):
         um = (str(r[i_um]).strip() if 0 <= i_um < len(r) else "") or "buc"
         cont = (str(r[i_cont]).strip() if 0 <= i_cont < len(r) else "") or "302"
         ch = (str(r[i_ch]).strip() if 0 <= i_ch < len(r) else "") or "601"
-        valid, motiv = True, "ok"
+        # [P8] randul de previzualizare poarta AFIRMATIA respingerii, nu doar textul ei: `regula`
+        # nu se schimba cand se rescrie mesajul, iar `unde` numeste articolul. Codul se scrie LITERAL
+        # la fiecare ramura - trecut printr-o variabila, scanul de confruntare nu-l mai poate verifica.
+        _unde = "articolul „%s”" % (den or "?")
+        _resp = None
         if cant < 0 or pret < 0:
-            valid, motiv = False, "cantitate/preț negativ"
+            _resp = respinge("articol", _unde, "cantitate_pret_negativ", "cantitate/preț negativ")
         # [articol_pret] articol cu stoc dar pret 0/lipsa: parserul fabrica pret 0.0 (coloana absenta /
         # celula goala) -> miscarea de intrare ar avea valoare 0, CMP porneste de la 0, valoarea stocului
         # sub-raportata TACIT (DS cap.17, fara default fabricat). Un stoc real are cost > 0.
         elif cant > 0 and pret <= 0:
-            valid, motiv = False, "are stoc dar preț unitar 0/lipsă: valoarea stocului ar fi 0 - completează costul unitar (CMP)"
-        rez.append({"denumire": den[:255], "um": um[:20], "cantitate": cant, "pret": pret,
-                    "cont_stoc": cont[:10], "cont_cheltuiala": ch[:10], "valid": valid, "motiv": motiv})
+            _resp = respinge("articol", _unde, "pret_zero_cu_stoc",
+                             "are stoc dar preț unitar 0/lipsă: valoarea stocului ar fi 0 - "
+                             "completează costul unitar (CMP)")
+        _r = {"denumire": den[:255], "um": um[:20], "cantitate": cant, "pret": pret,
+              "cont_stoc": cont[:10], "cont_cheltuiala": ch[:10], "valid": _resp is None,
+              "motiv": "ok"}
+        if _resp is not None:
+            _r.update(_resp)
+        rez.append(_r)
     return rez
 
 
@@ -95,7 +105,9 @@ def importa(conn, schema, articole, data_sold=None):
     with conn.cursor() as cur:
         for a in articole:
             if not a["valid"]:
-                sarite.append({"denumire": a["denumire"], "motiv": a["motiv"]})
+                # duce mai departe AFIRMATIA construita la extragere, nu o reimpacheteaza
+                sarite.append(dict(a, denumire=a["denumire"]) if a.get("fel")
+                              else {"denumire": a["denumire"], "motiv": a["motiv"]})
                 continue
             cur.execute(f"SELECT id FROM {schema}.articole WHERE lower(denumire)=lower(%s)", (a["denumire"],))
             if cur.fetchone():

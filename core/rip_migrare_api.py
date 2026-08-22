@@ -194,7 +194,8 @@ def importa(conn, schema, operatiuni):
                 )
                 importate += 1
             except Exception as e:
-                erori.append({"op": op, "motiv": str(e)})
+                erori.append(respinge("operațiune RIP", op.get("data") or "?", "creare_esuata",
+                                      "nu s-a putut importa: %s" % e, op=op))
     if erori:
         conn.rollback()
         return {"importate": 0, "sarite_duplicat": 0, "erori": erori}

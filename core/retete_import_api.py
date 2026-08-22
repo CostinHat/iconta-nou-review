@@ -110,7 +110,15 @@ def importa(conn, schema, retete):
     with conn.cursor() as cur:
         for ret in retete:
             if not ret.get("valid"):
-                sarite.append({"denumire": ret["denumire"], "motiv": ret.get("motiv", "invalid")})
+                if ret.get("fel"):
+                    sarite.append(dict(ret))          # afirmatia vine gata de la potrivire
+                elif not ret.get("denumire"):
+                    sarite.append(respinge("rețetă", "o rețetă din fișier", "denumire_lipsa",
+                                           ret.get("motiv", "denumire lipsă")))
+                else:
+                    sarite.append(respinge("rețetă", "rețeta „%s”" % ret["denumire"],
+                                           "cantitate_pret_negativ",
+                                           ret.get("motiv", "invalid"), denumire=ret["denumire"]))
                 continue
             cur.execute(f"SELECT id FROM {schema}.retete WHERE lower(denumire)=lower(%s)", (ret["denumire"],))
             if cur.fetchone():
