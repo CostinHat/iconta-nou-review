@@ -49,8 +49,9 @@ condiție de deblocare e o notă; una cu condiție e o poartă.
 acolo) · **ARTEFACT** (nu se poate spune ce datorează o firmă, deci 1b n-are ce compara).
 
 **Contorul NU se scrie**: se derivă din git — câte commituri au atins `CONFORMITATE.md` de când s-a
-deschis restanța. O restanță cu contorul peste unu a supraviețuit unei ture întregi și se arată ca
-atare în secțiunea B a raportului.
+deschis restanța. **Numără commituri, nu ture** — o tură poate produce mai multe, deci contorul urcă
+mai repede decât ziua; e ce poate da git fără să inventez o noțiune de „tură". O restanță cu contorul
+peste unu a supraviețuit cel puțin unei porți verzi și se arată ca atare în secțiunea B.
 
 ### R1 — Câte alte acte din corpus sunt PARȚIALE
 

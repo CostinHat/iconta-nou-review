@@ -9,8 +9,9 @@ raportul îl reproduce. Dacă cele două diverg, antetul are dreptate.
 
 Ce se CITEȘTE din antet: etapa, pasul, criteriul, ce lipsește, deciziile, avertismentul.
 Ce se NUMĂRĂ sau se DERIVĂ, la fiecare rulare: stările celor 75 de interdicții · cel mai vechi commit
-dintre cifre · restanțele, cu **contorul lor derivat din git** (câte commituri au atins registrul de
-când s-a deschis restanța). Un contor scris de mână ar fi exact defectul pe care restanțele îl
+dintre cifre · restanțele, cu **contorul lor derivat din git** — câte commituri au atins registrul de când
+s-a deschis restanța. **Numără commituri, nu ture**: o tură poate produce mai multe, deci contorul
+urcă mai repede decât ziua; e ce poate da git fără să inventez o noțiune de „tură". Un contor scris de mână ar fi exact defectul pe care restanțele îl
 măsoară, mutat cu un rând mai jos.
 """
 import os
@@ -120,7 +121,7 @@ def main():
         deschise.get(fel, deschise.setdefault(fel, [])).append(
             "%s (contor %s)" % (et, "?" if c is None else c))
         if c is not None and c > 1:
-            vechi.append("%s — %d ture" % (cod, c))
+            vechi.append("%s — %d commituri pe registru" % (cod, c))
 
     total = sum(len(v) for v in deschise.values())
     print("- **restanțe DESCHISE: %d**" % total)
@@ -131,9 +132,9 @@ def main():
         if deschise[f]:
             print("  - **%s (fel nedeclarat!)**: %s" % (f, " · ".join(deschise[f])))
     if vechi:
-        print("  - ⚠ **peste o tură**: %s" % " · ".join(vechi))
+        print("  - ⚠ **a supraviețuit unei ture**: %s" % " · ".join(vechi))
     else:
-        print("  - niciuna nu a trecut de o tură (contor ≤ 1)")
+        print("  - niciuna n-a trecut de un commit pe registru (contor ≤ 1)")
     if rezolvate:
         print("- **restanțe REZOLVATE**: %s" % " · ".join(rezolvate))
 
