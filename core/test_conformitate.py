@@ -452,8 +452,8 @@ def test_efectul_e_al_interdictiei_nu_al_grupului(conf):
 
 FELURI = ("SURSĂ", "VERIFICARE", "ARTEFACT")
 STARI_RESTANTA = ("DESCHISĂ", "REZOLVATĂ")
-CAMPURI_RESTANTA = ("felul", "stare", "deschisă pe commit", "ce blochează",
-                    "condiția de deblocare")
+CAMPURI_RESTANTA = ("felul", "unde intră", "reluări", "stare", "deschisă pe commit",
+                    "ce blochează", "condiția de deblocare")
 
 
 def _restante(t=None):
@@ -488,11 +488,12 @@ def test_fiecare_restanta_e_completa():
     for cod, (_titlu, corp) in sorted(_restante().items()):
         for camp in CAMPURI_RESTANTA:
             v = _camp(corp, camp)
-            if v is None or len(v.strip("*—- ")) < 3:
+            # `reluări` e NUMERIC: „0" e un răspuns complet, deși are un caracter. Se verifică
+            # separat, în test_fiecare_restanta_spune_unde_intra_si_de_cate_ori_a_fost_reluata.
+            prag = 1 if camp == "reluări" else 3
+            if v is None or len(v.strip("*—- ")) < prag:
                 rele.append("  %s: câmpul `%s` lipsește sau e gol" % (cod, camp))
-        fel = (_camp(corp, "felul") or "").strip("* ")
-        if fel and fel not in FELURI:
-            rele.append("  %s: felul %r — cele trei sunt: %s" % (cod, fel, ", ".join(FELURI)))
+        # felul se verifica in test_felurile_de_blocaj_sunt_cele_patru (patru, nu trei)
         st = (_camp(corp, "stare") or "").strip("* ").split("(")[0].strip()
         if st and st not in STARI_RESTANTA:
             rele.append("  %s: stare %r — cele două sunt: %s" % (cod, st, ", ".join(STARI_RESTANTA)))
@@ -512,3 +513,83 @@ def test_commiturile_restantelor_exista():
             if _git("cat-file", "-e", "%s^{commit}" % v).returncode != 0:
                 rele.append("  %s: `%s` = %r nu există în istoric" % (cod, camp, v))
     assert not rele, "commituri inexistente în restanțe:\n" + "\n".join(rele)
+
+
+# ──────────────────────── ORDINE, `unde intră`, `reluări`, și închiderea etapei
+#
+# Cerute de `PLAN_LUCRU.md` („Restanțele"), secțiunea scrisă de Costin. Au stat opt commituri
+# neimplementate fiindcă secțiunea a intrat în repo într-un `git add` fără citirea diff-ului — vezi
+# acolo, „De unde vin cele două". Gardul e reparația clasei, nu doar a instanței.
+
+FELURI_4 = ("SURSĂ", "VERIFICARE", "ARTEFACT", "ORDINE")
+ETAPE = ("E1", "E2", "E3", "E4", "E5")
+
+
+def test_felurile_de_blocaj_sunt_cele_patru():
+    rele = []
+    for cod, (_t, corp) in sorted(_restante().items()):
+        fel = (_camp(corp, "felul") or "").strip("* ")
+        if fel not in FELURI_4:
+            rele.append("  %s: felul %r — cele patru sunt %s" % (cod, fel, ", ".join(FELURI_4)))
+    assert not rele, "feluri de blocaj nevalide:\n" + "\n".join(rele)
+
+
+def test_fiecare_restanta_spune_unde_intra_si_de_cate_ori_a_fost_reluata():
+    """`unde intră` face posibilă garda de mai jos; `reluări` face vizibilă condiția scrisă greșit."""
+    rele = []
+    for cod, (_t, corp) in sorted(_restante().items()):
+        u = _camp(corp, "unde intră")
+        if not u or not any(e in u for e in ETAPE):
+            rele.append("  %s: `unde intră` = %r — trebuie să numească o etapă din %s"
+                        % (cod, u, ", ".join(ETAPE)))
+        r = (_camp(corp, "reluări") or "").strip("* ")
+        if not re.fullmatch(r"\d+", r):
+            rele.append("  %s: `reluări` = %r — se scrie ca număr" % (cod, r))
+    assert not rele, "restanțe fără etapă sau fără contorul de reluări:\n" + "\n".join(rele)
+
+
+def test_trei_reluari_fara_rezultat_cer_rescrierea_conditiei():
+    """«O restanță reluată de trei ori și tot nerezolvată: condiția e scrisă greșit, nu restanța e
+    grea.» A patra reluare pe aceeași condiție nu trece."""
+    rele = []
+    for cod, (_t, corp) in sorted(_restante().items()):
+        if "DESCHISĂ" not in (_camp(corp, "stare") or ""):
+            continue
+        r = int((_camp(corp, "reluări") or "0").strip("* ") or 0)
+        if r >= 3 and "condiție rescrisă" not in corp.lower():
+            rele.append("  %s: %d reluări fără rezultat, iar condiția n-a fost rescrisă" % (cod, r))
+    assert not rele, ("restanțe reluate de ≥3 ori pe aceeași condiție:\n" + "\n".join(rele)
+                      + "\nSe rescrie condiția, prin decizie, și se notează «condiție rescrisă».")
+
+
+def _etape_declarate_terminate(a):
+    """Etapele pe care ANTETUL le declară încheiate, oricare ar fi cuvântul folosit."""
+    gasit = set()
+    for m in re.finditer(r"\b(E[1-5])\b[^.\n]{0,80}?\b(TERMINAT[ĂA]?|ÎNCHEIAT[ĂA]?|ÎNCHIS[ĂA]?|GATA)\b",
+                         a, re.I):
+        gasit.add(m.group(1))
+    return gasit
+
+
+def test_o_etapa_nu_se_inchide_peste_restantele_ei():
+    """`PLAN_LUCRU.md`: «o etapă nu se poate declara terminată dacă are restanțe deschise care îi
+    aparțin». Fără gardă, pragul de la închiderea lui 1b ar fi o intenție."""
+    a = _antet()
+    inchise = _etape_declarate_terminate(a)
+    rele = []
+    for cod, (_t, corp) in sorted(_restante().items()):
+        if "DESCHISĂ" not in (_camp(corp, "stare") or ""):
+            continue
+        u = _camp(corp, "unde intră") or ""
+        for e in inchise:
+            if re.search(r"\b%s\b" % e, u):
+                rele.append("  %s (deschisă) aparține lui %s, dar antetul îl declară terminat" % (cod, e))
+    assert not rele, "etape declarate terminate peste restanțe deschise:\n" + "\n".join(rele)
+
+
+def test_cititorul_de_etape_terminate_chiar_vede():
+    """ANTI-VACUU: fără el, garda de mai sus trece pe orice antet, fiindcă azi nicio etapă nu e
+    declarată terminată — adică pe zero rânduri."""
+    assert _etape_declarate_terminate("etapa E1 e TERMINATĂ") == {"E1"}
+    assert _etape_declarate_terminate("E3 — încheiată") == {"E3"}
+    assert _etape_declarate_terminate("etapa E1 — SETUL COMPLET, în lucru") == set()

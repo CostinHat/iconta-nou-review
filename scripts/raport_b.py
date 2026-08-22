@@ -21,7 +21,7 @@ import subprocess
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONF = os.path.join(RAD, "CONFORMITATE.md")
 STARI = ("MĂSURATĂ", "PARȚIAL", "NEMĂSURABILĂ", "NEÎNCEPUTĂ")
-FELURI = ("SURSĂ", "VERIFICARE", "ARTEFACT")
+FELURI = ("SURSĂ", "VERIFICARE", "ARTEFACT", "ORDINE")
 
 
 def _camp(corp, nume):
@@ -124,7 +124,13 @@ def main():
             vechi.append("%s — %d commituri pe registru" % (cod, c))
 
     total = sum(len(v) for v in deschise.values())
-    print("- **restanțe DESCHISE: %d**" % total)
+    et = re.match(r"\*{0,2}(E[1-5])", (_camp(a, "etapa") or "").strip())
+    et = et.group(1) if et else None
+    ale_etapei = [c for c, (_t, corp) in rest.items()
+                  if "DESCHISĂ" in (_camp(corp, "stare") or "")
+                  and et and re.search(r"\b%s\b" % et, _camp(corp, "unde intră") or "")]
+    print("- **restanțe DESCHISE: %d** (din care ale etapei %s: **%d**)"
+          % (total, et or "?", len(ale_etapei)))
     for f in FELURI:
         if deschise.get(f):
             print("  - **%s**: %s" % (f, " · ".join(deschise[f])))

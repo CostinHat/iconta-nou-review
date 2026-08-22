@@ -4035,3 +4035,42 @@ arunca exceptie, doar trece.
 re-descarcat, iar pagina portalului nu e reproductibila octet cu octet. Raspunde la intrebarea
 dinauntru: *„fisierul din corpus e cel caruia i-am luat amprenta?"*. **Cine** l-a schimbat, nu spune —
 spune doar CA s-a schimbat, ceea ce e exact ce lipsea. Cauza ramane restanta R6.
+
+
+## 22.08.2026 — un defect gasit are UN LOC: felul ORDINE, fluxul in cinci pasi, si doua garzi noi
+
+**De ce (Costin):** *„un defect care nu e nici instanta de interdictie, nici restanta blocata ramane
+doar in raport, adica se pierde."* Auditul a masurat cat de mare era gaura: din **opt** defecte
+reconstituibile de pe disc, **cinci** n-aveau niciun loc cu stare.
+
+**Al patrulea fel de blocaj: ORDINE** — nimic tehnic nu blocheaza, doar nu e momentul; conditia de
+deblocare e un MOMENT din plan. E felul care lipsea si e cel mai des intalnit: fara el, singurele
+variante erau „repar acum" sau „ramane in raport", iar a doua inseamna pierdut.
+
+**Garzi noi in `core/test_conformitate.py`** (5 teste, RED-proof 5/5):
+- `test_felurile_de_blocaj_sunt_cele_patru` — ORDINE intra in nomenclator;
+- `test_fiecare_restanta_spune_unde_intra_si_de_cate_ori_a_fost_reluata` — `unde intra` numeste o
+  etapa E1..E5, `reluari` e numar;
+- `test_trei_reluari_fara_rezultat_cer_rescrierea_conditiei` — a patra reluare pe aceeasi conditie nu
+  trece („conditia e scrisa gresit, nu restanta e grea");
+- `test_o_etapa_nu_se_inchide_peste_restantele_ei` — cerinta din PLAN_LUCRU care statea neimplementata;
+- `test_cititorul_de_etape_terminate_chiar_vede` — ANTI-VACUU, fiindca azi nicio etapa nu e declarata
+  terminata, deci garda de mai sus ar trece pe zero randuri.
+
+**Gard in `scripts/githooks/commit-msg`: un defect mentionat are un loc.** Daca mesajul semnaleaza un
+defect LASAT NEREPARAT, trebuie sa spuna unde e consemnat — `#n`, `Rn`, `CONFORMITATE.md` — sau sa
+poarte escape-ul motivat `# fara-consemnare-ok:`.
+
+**CALIBRAT INAINTE DE LIVRARE, pe 81 de mesaje reale (20-22.08).** Prima forma se aprindea pe **10 din
+81**, dar dintre ele trei erau chiar CONSEMNARI („DECIZII: divergenta podelei part-time") sau
+REPARATII („10 defecte reparate", „D1 implementat"). **Un gard care se aprinde pe consemnarea insasi
+invata pe cineva sa nu mai scrie „defect" in mesaj — exact invers decat scopul.** Ingustat la „gasit si
+lasat asa": **1 din 81**.
+
+**Proba pe hook, sase cazuri, toate corecte** — si a prins un defect al gardului insusi: `grep -E` e
+ERE, iar `R[0-9]\{1,2\}` (sintaxa BRE) nu potrivea „R8", deci un mesaj care CITA corect restanta era
+respins. Un tipar care nu poate potrivi ce trebuia — chiar clasa interdictiei 19, in gardul scris
+pentru consemnare. L-a prins proba, nu norocul.
+
+**CE NU FAC, declarat:** hook-ul pazeste MESAJUL DE COMMIT — singurul artefact de tip raport care ramane
+pe disc. **Rapoartele din conversatie nu se pot garda de aici**; ele raman in seama disciplinei.

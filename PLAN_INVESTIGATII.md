@@ -24,7 +24,7 @@ Fiecare tură: **observații pe runda precedentă** · **deciziile cerute, în c
 
 Rezultatul se scrie în `CONFORMITATE.md`, care intră în §11 al fiecărui raport. Planul stabilește ordinea și metoda; starea trăiește în registru.
 
-**Investigăm înainte să reparăm.** Excepția: un defect care produce cifre greșite azi se repară imediat.
+**Investigăm înainte să reparăm.** Excepția: un defect care produce **efect greșit la un om acum — cifră, blocaj, sau afirmație falsă pe ecran** — se repară imediat. (Lărgită la 22.08.2026; vezi `PLAN_LUCRU.md`, „Restanțele".)
 
 **Întâi se modifică planul, apoi se conformează codul.** Când investigația scoate o regulă nouă sau corectează una veche, ea intră în `PLAN_ARHITECTURA.md` mai întâi.
 
@@ -349,7 +349,7 @@ O interdicție fără criteriu ales nu se poate declara închisă.
 
 **O măsurătoare n-a fost calibrată.** O cifră fără caz pozitiv găsit nu e rezultat.
 
-**Un defect produce cifre greșite azi.** Se repară pe loc, se scrie în registru, apoi se continuă.
+**Un defect produce efect greșit la un om acum** — cifră, blocaj, sau afirmație falsă pe ecran. Se repară pe loc, se scrie în registru, apoi se continuă.
 
 **Triajul spune că nu merită.** O fază estimată la trei zile, fără instanță vie și fără risc juridic mare, se amână explicit, cu motivul scris.
 

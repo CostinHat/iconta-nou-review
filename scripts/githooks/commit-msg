@@ -17,4 +17,32 @@ if [ "$NOI" -gt "$PRAG" ] && ! grep -q "multe-fisiere-ok:" "$MSG"; then
     echo "[commit-msg] Daca NU (ai dat 'git add -A'?): scoate-le cu 'git reset HEAD -- <cale>'."
     exit 1
 fi
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Poarta: UN DEFECT MENTIONAT ARE UN LOC (22.08.2026).
+#
+# Cerut de Costin: „un raport care mentioneaza un defect fara ca el sa existe in registru nu trece.
+# Daca in text scrie «am observat ca X», X are un loc."
+#
+# CE PAZESTE, declarat: mesajul de commit — singurul artefact de tip raport care ramane pe disc.
+# Rapoartele din conversatie NU se pot garda de aici; ele raman in seama disciplinei.
+#
+# REGULA, ingustata dupa calibrare pe 81 de mesaje reale (20-22.08): se aprinde numai pe defecte
+# lasate NEREPARATE. Prima forma se aprindea si pe consemnari („DECIZII: divergenta podelei") si pe
+# reparatii („10 defecte reparate") - 10 din 81; un gard care se aprinde pe consemnarea insasi invata
+# pe cineva sa nu mai scrie „defect" in mesaj, adica exact invers. Forma ingustata: 1 din 81.
+#
+# Escape MOTIVAT, ca la celelalte: `# fara-consemnare-ok: <de ce nu are loc>`
+SEMNAL='NEREPARAT|nereparat|nu se repara acum|nu se repară acum|ramane deschis|rămâne deschis|RAMANE DESCHIS|RĂMÂNE DESCHIS|de privit|merita a doua privire|merită a doua privire|am observat|STOP nemiscat|STOP nemișcat'
+LOC='#[ ]?[0-9]{1,2}|R[0-9]{1,2}|interdictia [0-9]|interdicția [0-9]|CONFORMITATE.md|fara-consemnare-ok'
+if grep -qE "$SEMNAL" "$MSG"; then
+    if ! grep -qE "$LOC" "$MSG"; then
+        echo "[commit-msg] RESPINS: mesajul semnaleaza un defect lasat nereparat, dar nu spune UNDE e consemnat."
+        grep -nE "$SEMNAL" "$MSG" | head -4 | sed 's/^/    /'
+        echo "[commit-msg] Un defect mentionat are un loc: o interdictie (#n), o restanta (Rn), sau CONFORMITATE.md."
+        echo "[commit-msg] Daca CHIAR nu are loc: scrie '# fara-consemnare-ok: <motiv>' in mesaj."
+        exit 1
+    fi
+fi
+
 exit 0

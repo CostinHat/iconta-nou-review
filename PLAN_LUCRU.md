@@ -125,9 +125,49 @@ Patru câmpuri, toate obligatorii:
 | **ce e** | descrierea, în termeni verificabili |
 | **unde intră** | etapa și, dacă e cazul, interdicția |
 | **ce o închide** | condiția, nu intenția. Fără ea, o restanță e o notă |
-| **blocajul** | de care fel, din cele trei de mai jos |
+| **blocajul** | de care fel, din cele **patru** de mai jos |
 
-### Cele trei feluri de blocaj
+### Cele patru feluri de blocaj
+
+**Două întrebări diferite, nu două liste rivale** (împăcate la 22.08.2026, după ce au coexistat o zi
+fără să se știe una pe alta — vezi mai jos „De unde vin cele două"):
+
+- **CE e blocat** — felul restanței, cel care se scrie în registru și se gardează;
+- **CINE o deblochează** — o notă despre dependență, utilă în raport, nu un al doilea nomenclator.
+
+**CE e blocat — cele patru feluri, singurele care intră în `CONFORMITATE.md`:**
+
+| fel | ce înseamnă | condiția de deblocare arată ca |
+|---|---|---|
+| **SURSĂ** | temeiul nu se poate cita complet sau corect | „actul e adus întreg", „forma e declarată" |
+| **VERIFICARE** | instrumentul nu ajunge până acolo | „instrumentul citește și puncte, calibrat pe pct. 9" |
+| **ARTEFACT** | nu se poate spune ce datorează o firmă | „1b poate clasifica fiecare firmă" |
+| **ORDINE** | **nimic tehnic nu blochează — doar nu e momentul** | **un moment din plan**: „la punctul de decizie 2", „când se atinge ecranul" |
+
+**ORDINE e felul care lipsea, și e cel mai des întâlnit.** Cele mai multe defecte găsite în treacăt nu
+așteaptă un instrument sau un act — își așteaptă rândul. Fără el, singurele variante erau „repar acum"
+sau „rămâne în raport", iar a doua înseamnă **pierdut**.
+
+**Condiția de deblocare a unei restanțe de ORDINE e un MOMENT, nu o stare.** „Când se poate" nu e
+condiție; „la punctul de decizie 2" e.
+
+### Fluxul, în cinci pași
+
+1. **CONSEMNEAZĂ ÎNTÂI**, imediat, indiferent ce urmează. Un rând: **ce e · unde · ce efect are.**
+2. **Decide dacă repari.** Întrebarea e una singură: *produce efect greșit la un om ACUM — cifră,
+   blocaj, sau afirmație falsă pe ecran?* **Da → repari. Nu → rămâne consemnat**, cu blocaj de ORDINE.
+3. **Dacă ai reparat, marchezi ca reparat, cu commitul.**
+4. **Dacă ai încercat și n-a mers**, rămâne consemnat, iar **motivul eșecului devine condiția de
+   deblocare**.
+5. **Mergi mai departe.**
+
+**Ordinea contează, și e singurul lucru care nu se negociază.** Consemnarea e primul gest, cel care nu
+depinde de nicio judecată. Dacă decizia vine prima, **ce hotărăști să nu repari riscă să nu ajungă
+scris** — iar un defect nescris nu e datorie, e pierdere.
+
+### CINE deblochează — nota de dependență
+
+Se scrie lângă condiția de deblocare, când ajută. Nu se gardează, fiindcă nu decide nimic singură.
 
 **EXTERN** — depinde de ceva ce nu se poate obține de aici.
 
@@ -140,6 +180,20 @@ Se scrie **condiția de deblocare**: *„se reia după ce categoria de mărime e
 **DECIZIE** — depinde de om.
 
 Se pune **în capul raportului** până se rezolvă, nu la coadă.
+
+### De unde vin cele două, și de ce se scrie aici
+
+Secțiunea asta a fost scrisă de Costin în `PLAN_LUCRU.md` și a intrat în repo pe **22.08.2026, în
+commitul `45f15ab`** — un commit al meu, despre aducerea actelor, în care am dat `git add PLAN_LUCRU.md`
+**fără să citesc diff-ul**. **70 de linii scrise de el au intrat sub mesajul meu.** N-am știut că
+există, așa că am derivat separat, câteva ore mai târziu, o a doua taxonomie (SURSĂ / VERIFICARE /
+ARTEFACT) pentru același obiect, iar ea a fost confirmată în conversație — fără ca niciunul dintre noi
+să vadă că prima era deja scrisă.
+
+Nu sunt rivale: prima răspunde la *cine deblochează*, a doua la *ce e blocat*. Împăcarea de mai sus
+păstrează amândouă, cu roluri diferite. **Ce nu se păstrează e tăcerea:** un `git add` pe un fișier de
+plan, fără citirea diff-ului, e cum se pierde o cerință — iar cerințele din secțiunea asta au stat
+opt commituri neimplementate exact din motivul ăsta.
 
 ### Reaprinderea
 
@@ -178,7 +232,7 @@ Azi starea e împrăștiată — stările interdicțiilor într-un loc, fronturi
 
 - etapa curentă și criteriul ei de terminare;
 - ce lipsește ca să se termine;
-- **câte restanțe deschise are etapa curentă**, pe cele trei feluri de blocaj;
+- **câte restanțe deschise are etapa curentă**, pe cele patru feluri de blocaj;
 - deciziile care blochează, dacă sunt;
 - cel mai vechi commit dintre cifrele din registru;
 - data ultimei actualizări.

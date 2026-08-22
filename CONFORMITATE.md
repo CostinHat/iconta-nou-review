@@ -39,14 +39,74 @@ atins fișierul, iar o modificare încă necomisă a registrului cere data de az
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
 
 ---
+## AUDITUL CONSEMNĂRII (22.08.2026)
+
+**De ce.** Un defect găsit și nereparat nu avea întotdeauna unde să fie consemnat: instanțele
+interdicțiilor merg în secțiuni, restanțele blocate în secțiunea lor — dar ce nu e nici una, nici alta
+rămânea doar în raport, adică se pierdea. Auditul inventariază **ce s-a găsit și unde stă**, **din ce
+există pe disc**.
+
+**Cum s-a căutat, ca să se poată discuta ce nu prinde:** sweep mecanic pe `PREDARE_LANT.md`,
+`GARZI.md`, `DECIZII.md`, `CONFORMITATE.md`, `TESTE.md`, `ISTORIC.md`, `ISTORIC_TENANTI.md`, pe zece
+tipare declarate („NU se repară acum", „NEREPARAT", „RĂMÂNE DESCHIS", „merită a doua privire",
+„de privit", „defect LATENT", „divergență", „contrazice", „STOP", „neatins") — **154 de potriviri pe
+tot corpusul de registre**, dintre care **88 în liniile ADĂUGATE de commiturile din 20–22.08**.
+Zgomotul s-a numărat: „neatins" prinde masiv „datele firmei X neatinse" (deliberat), iar
+„contrazicere"/„divergență" prind definițiile din planuri, nu constatări. Plus: **grep pe cod după
+`TODO|FIXME|HACK|XXX` → zero**; cele trei „rămâne" din `d300.py`/`d301.py` sunt limite declarate, nu
+defecte.
+
+### Inventarul
+
+| # | ce e | unde | ce efect are | reparat? | unde era consemnat | unde e ACUM |
+|---|---|---|---|---|---|---|
+| 1 | **70 de linii scrise de Costin în `PLAN_LUCRU.md`, intrate în commitul meu `45f15ab`** printr-un `git add` fără citirea diff-ului | `PLAN_LUCRU.md:111–170` | patru cerințe au stat **opt commituri** neimplementate; între timp am derivat în paralel o a doua taxonomie pentru același obiect | **azi, parțial** — taxonomiile împăcate, două gărzi construite | **nicăieri** — nici măcar ca observație | `PLAN_LUCRU` („De unde vin cele două") + **R10** pentru gărzile rămase |
+| 2 | **Cele trei egalități stricte**: `d223.py:159`, `d406.py:1338`, `:1367` — verificate azi, toate există | cod | dacă vreuna e interpretare, nu lege, e interdicția 21; cifra „2 reale" rămâne plafon inferior | NU | proză în patru locuri, fără stare | **R8** (ORDINE) |
+| 3 | **Ecranul statului de plată — STOP nemișcat** | — | semnalul de contradicție și butoanele emite/corectează nu sunt în interfață | NU | `PREDARE_LANT.md`, care **se rescrie la fiecare predare** | **R9** (ORDINE) |
+| 4 | **preview↔salvare, trei instanțe** (checksum VIES D301 · indicatorul patru-ochi · front↔back) | `GARZI`/`ISTORIC`/`ISTORIC_TENANTI` | reguli diferite la previzualizare față de salvare | **DA, toate trei** | proză — iar **secțiunea 15 spunea „NEÎNCEPUTĂ, niciun caz"** | **secțiunea 15**, acum PARȚIAL cu 3 instanțe |
+| 5 | **D300 valid cu 0 operațiuni vs D100 care refuză**, pe t003 | `CONFORMITATE` 1b | același fapt, două motoare, două comportamente | NU | consemnat azi, în narațiunea lui 1b | rămâne la 1b — e obiect de măsurat, nu restanță |
+| 6 | **Factură cu `categorie_331` și `taxare_inversa = false`**, pe t013 | `CONFORMITATE` E1 | de lămurit la 1b | NU | consemnat azi, în narațiune | rămâne la 1b |
+| 7 | **`CM_CODURI` din `flux_concediu.js`** | cod | **blochează un contabil să introducă un cod legal** | NU (decis CUM) | secțiunea 28 + `DECIZII` D3 | **avea deja loc** |
+| 8 | **Nouă poziții vechi în `GARZI.md`** („defect LATENT", „NU se repară acum" ×2, „RĂMÂNE DESCHIS", D_8, GL neechilibrat, C3, „NEREPARAT", D300 furnizor taxare inversă, xfail deschis) | `GARZI.md`, în afara ferestrei de două zile | diverse | NU | proză, fără stare | **R11** (ORDINE), numărate — nu transcrise |
+| — | `d300_reconciliere` | — | — | — | **`DECIZII.md:10649`, 21.08: fals pozitiv corectat.** Raportasem duplicarea ca datorie; duplicarea e **deliberată** și e apărată de `test_non_tautologie` | **nu e defect**; rămâne unde e |
+
+### Cifrele
+
+| | |
+|---|---|
+| defecte găsite, în inventarul reconstituibil de pe disc | **8** |
+| dintre ele, **reparate** | **4** (trei preview↔salvare, înainte de azi; al patrulea — coliziunea de taxonomii — azi, parțial) |
+| **consemnate azi pentru prima dată** într-un loc cu stare | **5** (#1 → R10 + plan, #2 → R8, #3 → R9, #4 → secțiunea 15, #8 → R11) |
+| aveau deja loc | **1** (#7) |
+| rămân în narațiune, deliberat, ca obiecte de măsurat la 1b | **2** (#5, #6) |
+| **fals pozitive corectate** | **1** (`d300_reconciliere`) |
+| **pierdute definitiv** | **nenumărabile din disc** — vezi mai jos |
+
+**„Pierdute definitiv" nu e zero, și nu e o cifră.** Rapoartele au trăit în conversație, nu pe disc.
+Ce n-a fost scris niciodată într-un fișier **nu se poate reconstitui de aici**, iar din memorie nu se
+reconstruiește — ar fi exact greșeala pe care regula 1 a raportului o interzice. Singurul lucru care se
+poate spune cu probă: **din cele opt găsite pe disc, cinci n-aveau niciun loc cu stare**, deci rata de
+pierdere a fost mare, nu marginală.
+
+**Ce nu vede auditul:** un defect descris fără niciunul dintre cele zece tipare · unul consemnat într-un
+fișier din afara listei · unul care trăiește doar într-o captură sau într-un nume de test. Și nu spune
+nimic despre defectele **necunoscute** — inventariază ce s-a găsit, nu ce există.
+
+---
+
 ## RESTANȚE
 
 Ce a rămas neterminat, cu **felul blocajului** și **condiția de deblocare scrisă**. O restanță fără
 condiție de deblocare e o notă; una cu condiție e o poartă.
 
-**Cele trei feluri de blocaj** — derivate din ce blochează efectiv, nu alese abstract:
-**SURSĂ** (temeiul nu se poate cita complet sau corect) · **VERIFICARE** (instrumentul nu ajunge până
-acolo) · **ARTEFACT** (nu se poate spune ce datorează o firmă, deci 1b n-are ce compara).
+**Cele PATRU feluri de blocaj**, definite în `PLAN_LUCRU.md` („Restanțele"): **SURSĂ** (temeiul nu se
+poate cita complet sau corect) · **VERIFICARE** (instrumentul nu ajunge până acolo) · **ARTEFACT** (nu
+se poate spune ce datorează o firmă) · **ORDINE** (nimic tehnic nu blochează — doar nu e momentul;
+condiția de deblocare e un MOMENT din plan).
+
+**Fiecare restanță poartă și `unde intră`** — etapa, și interdicția dacă are una — plus **`reluări`**,
+de câte ori a fost reluată fără rezultat. Trei reluări fără rezultat înseamnă că **condiția de
+deblocare e scrisă greșit**, nu că restanța e grea; atunci se rescrie condiția, prin decizie.
 
 **Contorul NU se scrie**: se derivă din git — câte commituri au atins `CONFORMITATE.md` de când s-a
 deschis restanța. **Numără commituri, nu ture** — o tură poate produce mai multe, deci contorul urcă
@@ -62,6 +122,8 @@ gardă; e un prag de citit, la un moment numit.
 ### R1 — Câte alte acte din corpus sunt PARȚIALE
 
 - **felul**: SURSĂ
+- **unde intră**: E2 · fără interdicție (corpusul, precondiția lui 49–59)
+- **reluări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `45f15ab`
 - **ce blochează**: orice temei sprijinit pe un act adus parțial se citește ca „regula nu există", nu ca „pagina lipsește". Instanța cunoscută: OMFP 2634/2015, o anexă din trei — registrul de casă părea absent din lege.
@@ -70,6 +132,8 @@ gardă; e un prag de citit, la un moment numit.
 ### R2 — Vigoarea PE PUNCT, nu doar pe articol
 
 - **felul**: VERIFICARE
+- **unde intră**: E2 · interdicțiile 49, 54
+- **reluări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `45f15ab`
 - **ce blochează**: Reglementările contabile (anexa OMFP 1802/2014) și Normele OMFP 2634/2015 sunt structurate pe **puncte**; `scripts/vigoare_articol.py` delimitează pe articole. Deci pentru familia B din 1a se cunoaște doar data consolidării actului, nu starea punctului folosit.
@@ -78,6 +142,8 @@ gardă; e un prag de citit, la un moment numit.
 ### R3 — Categoria de mărime nu există în aplicație
 
 - **felul**: ARTEFACT
+- **unde intră**: E1 · faza 1, familia B
+- **reluări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `45f15ab`
 - **ce blochează**: componența situațiilor financiare depinde de categoria de mărime (micro / mică / mijlocie-mare). Nu e câmp în `firma_profil`, nu apare în vectorul fiscal. Pentru **niciuna** dintre cele 17 firme nu se poate spune, din date, ce set de situații financiare datorează — deci **toată familia B din 1a nu poate intra în 1b**.
@@ -86,6 +152,8 @@ gardă; e un prag de citit, la un moment numit.
 ### R4 — Câte alte forme VECHI din corpus sunt citite ca fiind la zi
 
 - **felul**: SURSĂ
+- **unde intră**: E2 · interdicția 52
+- **reluări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `45f15ab`
 - **ce blochează**: o formă inițială dă valori reale, dar ale altui an, și nu se deosebește de o formă la zi decât dacă o întrebi. Instanța: criteriile de mărime, scrise în EUR din forma 2014, corectate în aceeași zi.
@@ -94,6 +162,8 @@ gardă; e un prag de citit, la un moment numit.
 ### R5 — Marcajele din corpus nu se citesc la FOLOSIRE
 
 - **felul**: SURSĂ
+- **unde intră**: E2 · interdicțiile 50, 52
+- **reluări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `07d5351`
 - **ce blochează**: **măsurat înainte de a fi scris, nu presupus.** Din **529** de fișiere în `INDEX.json`, **47 poartă cel puțin un marcaj** (21 `forma_la_data` · 9 `consolidat_la_zi` · 11 detectate ca formă inițială · 2 abrogate · 2 cu text neextractibil), iar **18** dintre ele sunt legate de cote. **Patru poartă o notă explicită** — avertismente scrise de om: *„forma initiala 2014; NU include Ordinul 1239/2021…"* (`omfp_1802_2014.pdf` — chiar fișierul care a produs cifra falsă) · *„consolidare 2018, nu la zi"* · *„sursa legex.ro, neoficiala"* · *„abrogat de HG 773/2019 … HG 773/2019 nu e in corpus"*. **Cine citește marcajele: doar `gen_index.py` însuși și două gărzi.** Nimic la punctul de folosire — cine deschide fișierul ca să ia o valoare nu vede nimic. Asta nu e o instanță, e clasa din care instanța a ieșit.
@@ -102,6 +172,8 @@ gardă; e un prag de citit, la un moment numit.
 ### R6 — Ceva a scris într-un fișier de corpus, și nu se știe ce
 
 - **felul**: SURSĂ
+- **unde intră**: E2 · interdicția 52
+- **reluări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `07d5351`
 - **ce blochează**: `legea_82_1991_consolidat.html` a apărut modificat față de commit — 1629 de linii — **fără ca vreun script al turei să-l scrie**. Textul extras era identic; diferența e în chrome-ul paginii. Dacă ceva scrie în corpus fără să știm ce, interdicția 52 e păzită împotriva unui **simptom**, nu a cauzei: data viitoare diferența poate fi în text. **Ce s-a verificat deja, ca să nu se refacă:** niciun fișier `.py` din repo nu scrie în `anaf_surse/` (căutare pe `open(...,"w")`, `write(`, `urlretrieve`, `shutil.copy/move`) · singurul client HTTP din vecinătatea corpusului e `core/monitor_fiscal.py`, care **nu scrie fișiere** (trimite email și scrie în DB) · `gen_index.py` doar CITEȘTE fișierele, scrie numai `INDEX.json`.
@@ -110,10 +182,52 @@ gardă; e un prag de citit, la un moment numit.
 ### R7 — Câte câmpuri obligatorii sunt gardate ca PREZENȚĂ, dar necontrolate ca ADEVĂR
 
 - **felul**: VERIFICARE
+- **unde intră**: E3 · faza 4 (instrumentele)
+- **reluări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `2375d54`
 - **ce blochează**: **un câmp completat pe care nimic nu-l verifică arată identic cu unul verificat.** Instanța cunoscută nu e mică: corpusul avea **177 de amprente** și **niciun test care să le compare cu fișierele** — gardat ca prezență (fișierul `.sha256` există), necontrolat ca adevăr (nimeni nu recalcula hash-ul). Clasa e mai largă decât corpusul: `CONFORMITATE.md` gardează prezența câmpurilor `cifra`, `instanțe`, `calibrare`, `ce nu vede`, `pe commit`; `TESTE.md`, `GARZI.md`, `ISTORIC_TENANTI.md` au și ele câmpuri obligatorii. Pentru fiecare dintre ele se poate întreba dacă există un al doilea control, cel de adevăr — și **răspunsul nu e măsurat**.
 - **condiția de deblocare**: măsurătoarea e făcută — pentru fiecare câmp obligatoriu din registre se spune dacă are control de adevăr, iar fiecare câmp fără control primește **ori un control**, ori o **declarație scrisă** că prezența e tot ce se poate verifica mecanic (ca la „temeiul determină comparația", unde declarația e răspunsul corect). Se închide când lista e completă, nu când primele câteva au fost reparate. **Nu se măsoară acum** — cerut explicit de Costin: *„Nu acum, dar nu-l lăsa nescris."*
+
+### R8 — Cele trei egalități stricte, redeschise și nereverificate
+
+- **felul**: ORDINE
+- **unde intră**: E3 · interdicția 21
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `1eaecbb`
+- **ce blochează**: la prima citire, cele 15 potriviri ale interdicției 21 au fost triate **pe linie**; trei dintre cele numite zgomot merită a doua privire, **pe context**. Verificate azi, toate trei există în cod: `core/d223.py:159` — `len(asociati) == 1 and cota == Decimal(100)` (regula „100% doar cu un singur asociat"); `core/d406.py:1338` și `:1367` — `cota_l == 0` / `cota == 0` decid codul fiscal `300101` vs `300501`. Dacă vreuna e o **interpretare**, nu o regulă de lege, e o alegere făcută la scriere — adică exact interdicția 21, iar cifra „2 reale" rămâne plafon inferior. **Consemnate până azi doar în proză**, în patru locuri (`GARZI.md`, `ISTORIC.md`, `PREDARE_LANT.md`, câmpul „ce nu vede" al secțiunii 21) — nicăieri cu stare și condiție.
+- **condiția de deblocare**: **la reluarea interdicției 21**, sau mai devreme, la primul commit care atinge `d223.py` ori `d406.py`. Se citește fiecare pe context, se spune dacă e lege sau interpretare, iar cifra secțiunii 21 se corectează în consecință.
+
+### R9 — Ecranul statului de plată: STOP nemișcat
+
+- **felul**: ORDINE
+- **unde intră**: E5 · fără interdicție (e o propunere vizuală, nu o clasă)
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `1eaecbb`
+- **ce blochează**: semnalul de contradicție și butoanele emite/corectează **nu sunt în interfață**; capabilitatea e ajunsă prin API. Propunerea vizuală în cinci puncte așteaptă din 22.08. Reorganizarea unui ecran cere confirmare, deci nu se face în trecere — dar tocmai de aceea are nevoie de un loc cu stare, nu de un rând în `PREDARE_LANT.md`, care se rescrie la fiecare predare.
+- **condiția de deblocare**: **când se atinge ecranul statului de plată** — fie pentru propunerea vizuală confirmată, fie pentru orice altă reparație pe el.
+
+### R10 — Cerințe din „Restanțele" (PLAN_LUCRU) fără gardă
+
+- **felul**: VERIFICARE
+- **unde intră**: E1 · fără interdicție (e disciplină de proces)
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `1eaecbb`
+- **ce blochează**: secțiunea „Ce se gardează" din `PLAN_LUCRU.md` cere patru gărzi. Două există azi (o restanță fără condiție de deblocare nu se poate scrie; raportul enumeră restanțele deschise, derivat). **Două nu:** *„o etapă nu se poate declara terminată dacă are restanțe deschise care îi aparțin"* și *„o restanță cu blocaj EXTERN fără cerere specifică formulată nu trece"*. Fără prima, E1 se poate declara închis peste restanțe deschise — chiar situația pe care pragul de la închiderea lui 1b o urmărește, dar fără mecanism.
+- **condiția de deblocare**: cele două gărzi există, RED-probate. Prima are nevoie de `unde intră` pe fiecare restanță — **există de azi**, deci nu mai e blocată de nimic tehnic; a doua are nevoie de o formă scrisă a cererii specifice.
+
+### R11 — Datoria veche consemnată doar în proză, în GARZI.md
+
+- **felul**: ORDINE
+- **unde intră**: E3 · faza 3b (triajul)
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `1eaecbb`
+- **ce blochează**: sweep-ul mecanic pe registre a găsit, **în afara perimetrului de două zile**, cel puțin **nouă** poziții de forma „găsit, NU se repară acum" care trăiesc numai ca proză în `GARZI.md`: un defect declarat **LATENT** („de reparat ÎNAINTE să existe date reale", `:1005`), două „NU se repară acum/unilateral" (`:1128`, `:1163`), „RĂMÂNE DESCHIS: Finding 2b rotunjire Σ(round) vs round(total)" (`:1248`), D_8 neatins (`:1370`), GL neechilibrat (`:1389`), C3 job nocturn scopat separat (`:1502`), „NEREPARAT în această tură" (`:1576`), „D300 furnizor taxare inversă" (`:1603`), plus un xfail rămas deschis (`:1837`). Niciuna n-are stare, condiție de deblocare sau etapă.
+- **condiția de deblocare**: **la triajul din faza 3b**, care trece o dată peste toate cele 75 de interdicții — acolo fiecare dintre ele primește ori o instanță într-o secțiune, ori o restanță proprie. Până atunci rămân numărate aici, nu transcrise.
 
 ---
 
@@ -551,13 +665,13 @@ lor, nu clasificate într-o listă.
 
 ## 15 — Reguli diferite la previzualizare față de salvare
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: PARȚIAL
+- **măsurat la**: 2026-08-22
+- **pe commit**: `1eaecbb`
+- **cifra**: **3 instanțe cunoscute, toate REPARATE** — găsite incidental, la audituri de tenant, nu de un instrument. **Cifra e un plafon inferior**, nu un total: nu s-a rulat niciun scan al clasei.
+- **instanțe**: (1) **checksum VIES la introducerea D301** (19.08, audit 006/R24.1) — codul `DE 811234567` era acceptat tăcut la introducere și respins abia de DUK; calea derivată din d301 nu trecea prin `_facturi_ic`. Reparat, gardat de `test_d301_vies_la_introducere`. (2) **indicatorul patru-ochi** (20.08) — `aproba` folosea `activ ∧ posibil`, iar `GET /eu/patru-ochi` întorcea doar flagul brut, deci UI-ul decidea pe altă definiție. Reparat prin sursă unică `coada_api.patru_ochi_stare`. (3) **divergență front↔back** pe aceeași familie (`DECIZII.md:9747`). Toate trei sunt consemnate în `GARZI.md` / `ISTORIC.md` / `ISTORIC_TENANTI.md` — **și niciuna nu ajunsese în secțiunea asta**, care spunea „nemăsurată, niciun caz".
+- **calibrare**: nu s-a rulat un instrument, deci nu există calibrare în sensul metodei. Cele trei au apărut la audituri de tenant; **de aceea starea e PARȚIAL, nu MĂSURATĂ**, iar cifra e plafon inferior.
+- **ce nu vede**: nu există scan al clasei — o a patra instanță ar fi invizibilă până la următorul audit de tenant. Clasa generală („instanțe reparate care nu ajung în secțiunea interdicției lor") e transferul retrospectiv din faza **3a**
 - **unde ajunge efectul**: o regulă fiscală în stratul de prezentare se rescrie separat de motor: previzualizarea și salvarea ajung să spună lucruri diferite
 
 ## 16 — Un nomenclator derivat dintr-o sursă secundară
