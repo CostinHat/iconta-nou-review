@@ -30,7 +30,7 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **faza 1 e COMPLETĂ**; verdictul 1/5/9/0/11 stă în blocul 1d, iar ordinea e decisă: **L5 înaintea lui L3**, cu excepția celor obligatorii prin lege. **R17 și R2 sunt REZOLVATE** (23.08), deci punctul de decizie 1 se poate lua pe măsurători refăcute, nu pe unele moștenite. Urmează **punctul de decizie 1**.
+- **pasul curent**: **punctul de decizie 1: LUAT (Costin, 23.08) — se CONTINUĂ investigația**, fiindcă din 10 porți verzi 3 erau false, iar reparatul pe o hartă nemăsurată n-ar însemna nimic. **Ordinea e schimbată față de plan: faza 4 (instrumentele) urcă imediat**, apoi temeiurile (faza 2), apoi triajul. Motivul: instrumentele decid dacă restul măsurătorilor înseamnă ceva. Următorul pas: **faza 4**.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
@@ -423,12 +423,45 @@ gardă; e un prag de citit, la un moment numit.
 - **ce a ascuns conflatarea, măsurat după reparație** — și e direcția tăcută, cea prezisă:
   - **`depinde_de("salariu_minim")`: 12 → 83 de funcții**, pe 16 fișiere (10 directe, 73 tranzitive). **Doar 1 dintre ele vine printr-un nume ambiguu**, deci cifra nu e umflată de supra-aproximare. *Când s-a schimbat salariul minim, lista locurilor de actualizat arăta 12.* **Nuanță onestă:** 37 din cele 83 sunt în `declaratii_api.py`, adică rutare — închiderea tranzitivă printr-un dispecer e adevărată, dar nu e „loc de actualizat".
   - **clustere cu dependențe în graf: 30 → 41** din 79. **Muchii (cluster, cotă): 88 → 120.**
+  **Observație lipită de instrument, ca următorul care primește 83 să știe ce sunt** (cerut 23.08):
+  **37 din cele 83 sunt în `declaratii_api.py`**, adică **rutare** — dispecerul cheamă fiecare
+  generator, deci închiderea tranzitivă îl leagă de tot ce ating ei. Muchia e **adevărată**, dar nu e
+  „loc de actualizat": cine ia cele 83 ca listă de lucru va găsi o treime din ea inutilă. Se îngustează
+  **la prima folosire reală**, nu preventiv — un filtru scris acum, pe un caz imaginat, ar fi la fel de
+  necalibrat ca graful pe care tocmai l-am reparat.
+
   - **stale: 14 → 11.** Graful reparat e mai MARE și totuși stale-urile SCAD — deci cifra veche nu era doar necreditabilă, era **umflată**: conflatarea atribuia clusterelor cote de care nu depindeau. Clichetul coboară la 11.
 - **cele trei porți false, verificate una câte una** (cerut explicit — „redevin verzi din motive reale, sau abia acum arată ce ascundeau?"):
   - `test_bifele_nu_stau_pe_o_baza_schimbata` — **verde din motiv real**: 11 stale reale, sub prag. Cifra s-a schimbat, deci poarta chiar măsura ceva.
   - `test_secventa_persistata_e_topologica` și `test_secventa_persistata_e_actuala` — **verzi din VACUITATE, nu din corectitudine**: `secvența calculată = 0`, `persistată = 0`. Campania s-a epuizat pe 04.08.2026, deci de **19 zile** cele două teste trec fără să compare nimic. Nu devin roșii după reparație; **nu pot deveni**, până nu mai există clustere de ordonat. Asta ascundeau. *Corect e să se spună și partea bună:* mecanismul e totuși gardat, de `test_secventa_prinde_inversiune`, care rulează checker-ul pe date sintetice — deci e vidă **verificarea pe date reale**, nu unealta.
 - **cele 7 porți zgomotoase, întrebarea „au prins vreodată ceva?"**: în cele 22 de zile de la `e516a23` (01.08.2026), **git nu arată niciun commit în care să fi picat și să fi cauzat o reparație** — cele trei fișiere au fost atinse doar ca să urmeze schimbări de cod (01.08, 02.08, 17.08). **Azi au picat, toate patru** care afirmau nume — dar la o schimbare de FORMĂ a cheii, nu la o dependență pierdută. Deci **nu sunt decorative, sunt înguste**: pin spina `salarizare` / `d100` / `d212` și nimic altceva. După reparație afirmațiile lor sunt **calificate** (`salarizare.py::calcul_salariu`, nu `calcul_salariu`), deci strict mai stricte decât înainte.
 - **condiția de deblocare**: graful se cheie pe **`(fișier, nume)`**, nu pe nume; funcțiile imbricate ori se exclud, ori primesc cheie `(fișier, funcție-părinte, nume)`. Se închide când **toate trei** există: (a) cheia e calificată; (b) o gardă numără coliziunile rămase, cu clichet, ca 118 să nu crească tăcut; (c) `STALE_BAZA_BASELINE` e **re-măsurat** pe graful corectat — altfel rămâne o cifră moștenită dintr-o lume conflată. Prima singură ar muta numărul fără să spună nimeni de ce.
+
+### R18 — Două porți verzi care nu pot deveni roșii
+
+- **felul**: VERIFICARE
+- **cine deblochează**: DECIZIE
+- **unde intră**: E3 · faza 4 (instrumentele) · interdicția 19 (gardă care raportează favorabil pe zero rânduri)
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `241acf4`
+- **ce blochează**: `test_secventa_persistata_e_topologica` și `test_secventa_persistata_e_actuala` verifică **ordinea** celor 64 de clustere contra grafului. **Secvența calculată = 0, persistată = 0** de pe **04.08.2026**, când campania s-a epuizat. Deci de **19 zile** cele două trec fără să compare nimic, iar repararea grafului (R17) **nu le-a schimbat cu nimic** — nu sunt verzi din corectitudine, sunt verzi din **vacuitate**, și nu pot deveni roșii până nu mai există clustere de ordonat. **Ce e totuși gardat, și trebuie spus:** mecanismul în sine — `test_secventa_prinde_inversiune` rulează checker-ul topologic pe date sintetice (X depinde de Y) și chiar prinde inversiunea. E vidă **verificarea pe date reale**, nu unealta.
+- **condiția de deblocare**: **una din două, prin decizie, nu prin reparație** — (a) există iar clustere de ordonat, și atunci cele două redevin verificări reale; sau (b) se **declară scris** că ordinea se verifică doar pe date sintetice, iar cele două teste își schimbă numele și docstringul ca să nu mai pretindă că verifică secvența persistată. Ce nu e acceptabil e starea de azi: două nume care promit o verificare pe date reale și trec pe zero rânduri.
+
+### R19 — `graf_clustere` tratează utilitarele partajate ca proprietate
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · faza 4 (instrumentele) · interdicțiile 61–62 (lista dependenților)
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `241acf4`
+- **ce blochează**: al **doilea** defect al aceluiași instrument, distinct de R17 și nereparat de el. `graf_clustere` declară că o funcție e „deținută" de clusterul ale cărui teste o cheamă. Propriul docstring spune *„funcție partajată = CO-LOCAȚIE, nu dependență"*, dar filtrul aplicat e doar `if f in own: continue` — adică exclude partajarea **cu sine**, nu partajarea **între alții**. Un utilitar chemat de testele a cinci clustere e „deținut" de toate cinci, iar orice al șaselea cluster care îl atinge tranzitiv capătă **cinci muchii de dependență**.
+
+  **MĂSURAT 23.08.2026 pe graful reparat:** din **154** de funcții deținute, **70 sunt deținute de 2+ clustere**. `duk.py::valideaza` — de **21 de clustere**; `rip_migrare_api.py::get` — de 19; `duk.py::poate_valida` — de 11.
+
+  **Efectul asupra cifrelor:** cu regula de azi, harta are **960 de muchii** între clustere. Cerând ca dovada să fie o funcție cu **proprietar unic**, rămân **111**. Adică **aproape 9 din 10 muchii sunt co-locație, nu dependență** — de acolo vin absurdități ca *„facilitate salariu minim depinde de «edge canonic www/HEAD (crawler)»"*.
+- **condiția de deblocare**: proprietatea se decide altfel decât „testul o cheamă" — fie funcția aparține modulului pe care clusterul îl verifică, fie proprietarul se declară explicit în inventar. Se închide când numărul de muchii sprijinite pe funcții multi-proprietar e **zero**, iar cifra de 111 se re-măsoară — nu se moștenește cea de 960.
 
 ---
 
@@ -1023,6 +1056,98 @@ cele cinci cifre din registru:
 **Ce NU s-a decis pe el:** nicio valoare fiscală, niciun temei, nicio cifră de declarație. Graful
 răspunde la *„ce depinde de ce"*, nu la *„cât e"*. Daunele sunt de **acoperire a verificării**, nu de
 conținut — iar asta se repară re-măsurând, ceea ce s-a și făcut.
+
+
+#### A fost `graf_temei` calibrat vreodată? — și de ce contează pentru faza 4
+
+**Da, din prima zi — și tocmai de asta e instructiv că a supraviețuit 22 de zile conflat.**
+`core/test_graf_temei.py` există din `e516a23` (01.08.2026) și are calibrare **în ambele direcții**:
+
+- **pozitivă** — `depinde_de("salariu_minim")` trebuie să conțină `deducere_personala` și
+  `calcul_salariu`, iar variantele datate să apară `direct`; `_calcul_salariu_2018` trebuie să ceară
+  `salariu_minim`, `facilitate_salariu_minim` și `plafon_facilitate_salariu_minim`;
+- **negativă** — `test_graf_reflecta_codul_nu_o_lista_manuala`: o funcție care **nu** cheamă `cota()`
+  (`_q`, rotunjirea) **nu are voie** să apară ca dependență directă.
+
+**Deci n-a lipsit calibrarea. A lipsit calibrarea pe MODUL ÎN CARE INSTRUMENTUL PUTEA GREȘI.** Cele
+patru afirmații pozitive și cea negativă trec la fel de bine pe graful conflat ca pe cel reparat,
+fiindcă toate cinci privesc **spina `salarizare`**, unde numele erau unice. Nicio afirmație nu punea
+întrebarea *„ce se întâmplă dacă două fișiere definesc aceeași funcție"* — și exact acolo era defectul.
+
+**Regula, pentru criteriul lărgit al fazei 4:** *„instrumentul a fost calibrat" nu e o întrebare
+binară.* Se întreabă **pe ce a fost calibrat**, și dacă printre cazuri se află **modul de eșec propriu
+construcției lui**. Un instrument care cheie pe nume se calibrează pe o coliziune de nume; unul care
+citește marcaje se calibrează pe două marcaje lipite — cum s-a văzut la `vigoare_punct` în aceeași zi.
+Calibrarea care atinge doar cazul fericit e o probă că unealta pornește, nu că vede.
+
+#### Cele trei întrebări de la punctul de decizie 1 (23.08.2026, commit `241acf4`)
+
+**1. „Verificările nu sunt invalidate, ordinea lor este." Ce înseamnă practic?**
+
+**Ordinea NU era doar succesiunea muncii.** Regula scrisă în `TESTE.md` e semantică: *„Clusterul A vine
+după B dacă o funcție din A folosește o valoare care APARȚINE lui B"* — adică **verifici întâi
+proprietarul valorii, apoi consumatorul**. Un consumator verificat înaintea proprietarului și-a
+sprijinit verificarea pe o valoare încă neverificată.
+
+Măsurat pe graful reparat, comparând datele reale de verificare din inventar:
+
+| pe ce dovadă | muchii | în ordine | VIOLĂRI |
+|---|---|---|---|
+| orice funcție atinsă — regula folosită de gardă azi | 960 | 579 | **381 (40%)** |
+| doar funcții cu **proprietar unic** — dovadă tare | 111 | 86 | **25 (23%)** |
+
+**Cifra care contează e 25, nu 381** — restul e R19 de mai jos, nu dezordine reală. **Și 25 e tot un
+plafon superior**, dintr-un motiv pe care instrumentul nu-l poate depăși: inventarul ține **ultima**
+dată de verificare, nu prima. Un cluster verificat pe 04.08 și „dependența" lui datată 15.08 poate
+însemna că dependența a fost **re-verificată** mai târziu, nu că era neverificată atunci.
+
+**Deci: campania NU trebuie refăcută.** Ce merită privit sunt cele ~25 de perechi, dintre care cele
+mai clare stau în familia salarizare (*facilitate salariu minim* și *suprataxare part-time*, verificate
+pe 31.07 și 02.08, înaintea lui *deducere personala*, verificat pe 06.08). O verificare la sursă a
+fiecăreia dintre cele trei ar închide întrebarea, și e muncă de o tură, nu de o campanie.
+
+**2. Cei 83 conțin dependențe false din supra-aproximare?**
+
+**Aproape deloc.** Graful strict — care **taie** orice muchie printr-un nume ambiguu către alt fișier —
+dă **81** în loc de 83. Deci **cel mult 2 din 83 pot fi false** (`d390.py::genereaza`,
+`declaratii_api.py::_d390`), adică **2%**. Pe alte chei: `tva_standard` 179 → 165 (cel mult 14, 8%);
+`impozit_micro` 48 → 48 (**zero**).
+
+**Răspunsul la întrebarea pusă:** cele 12 erau prea puține cu un ordin de mărime; **83 sunt prea multe
+cu cel mult 2**. Intervalul onest e **81–83**. Rămâne separată observația de la punctul 3 de mai jos:
+37 dintre ele sunt rutare.
+
+**3. `common.py::__init__` — benignă sau pe un drum care contează?**
+
+**Benignă, și se poate arăta de ce.** Cele două definiții sunt constructorii a două clase de excepție:
+`PerioadaIndisponibila` (linia 533) și `PlafonCulturalIndisponibil` (linia 555). Nodul păstrat în graf
+are **zero cote directe**, **nu e pe drumul niciunei chei** (verificat pe `salariu_minim`), iar în graf
+**nicio funcție nu-l cheamă** — `raise Cls(...)` e un apel pe **numele clasei**, nu pe `__init__`. Deci
+coliziunea nu poate muta nicio muchie.
+
+#### `clustere_indirect(act)` — unealta nu există (verificat, cerut la punctul de decizie 1)
+
+**Nu s-a folosit între 01 și 23.08, fiindcă nu s-a construit niciodată.** Căutare în `core/` și
+`scripts/`: **zero potriviri** pe `clustere_indirect`, `clustere_direct`, `INTEROGARE`. Trăiește doar
+ca **descriere** în `TESTE.md` (§282–287), scrisă la forma prezentului, ca și cum ar fi o interogare
+disponibilă. **Semnalat ca trimitere la ceva inexistent** (regula D dintre cele cinci permanente).
+
+**Dar întrebarea din spate rămâne validă, și are un răspuns măsurat.** Modificările legislative din
+fereastră au fost propagate **de mână**, iar graful reparat poate spune dacă propagarea a fost
+completă. Sondaj pe cazul din **16.08.2026** — *„temeiul cotei CAM corectat art.220^1 → art.220^3"*:
+
+- `cam` are, pe graful reparat, **61 de funcții dependente în 10 fișiere**;
+- corectarea a ajuns în **`common.py`** (registrul, cu `Temei` structurat și `verificat_la=2026-08-16`)
+  și în **`d112.py`**;
+- **`salarizare.py` citează încă `art.220^1`** ca temei al cotei CAM, în **trei locuri** (liniile 3,
+  153, 369) — iar `salarizare.py` e unul dintre cele 10 fișiere care depind de `cam`.
+
+**Deci propagarea de mână a fost incompletă, și e prima instanță măsurată a clasei.** (`d114.py:5`
+citează `art.220^1..220^7` ca **interval de capitol** — acela e corect și nu intră la socoteală.)
+
+**Nereparat acum, cu motivul:** nu atinge pragul 1 nici pe citirea de atingibilitate — cota 2,25% e
+corectă, doar articolul citat e greșit, și trăiește în comentarii, nu pe ecran. Intră la **faza 2
+(temeiurile)**, care e chiar următoarea în ordinea decisă.
 
 
 ### Ce lipsește ca să se termine E1

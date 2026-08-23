@@ -360,3 +360,7 @@ O interdicție fără criteriu ales nu se poate declara închisă.
 ## Un lucru de făcut în afara acestui plan
 
 **Registrul de interpretări nu e doar pentru cod.** E singurul artefact pe care un contabil îl poate revizui în două ore și poate spune dacă alegerile sunt corecte. Nu e muncă de tester — e o întrebare de specialitate pusă unui specialist. Corectitudinea legală a unei interpretări nu se poate stabili altfel: sursa nu răspunde întotdeauna, iar arbitrul acoperă doar ce validează.
+
+**ORDINE SCHIMBATĂ 23.08.2026 (Costin), la punctul de decizie 1.** Faza 4 — instrumentele — **urcă imediat după acest punct, înaintea a orice altceva**. Era pe locul patru fiindcă părea ieftină; pe 23.08 s-a dovedit că e cea care decide dacă restul măsurătorilor înseamnă ceva: din 10 porți verzi care stăteau pe `graf_temei`, **3 erau false** — una raporta o cifră umflată, două treceau pe zero rânduri de 19 zile. **Ordinea de aici: instrumentele → temeiurile (ce a rămas din faza 2) → triajul → restul.**
+
+**Și criteriul fazei 4 se lărgește, tot din ce s-a văzut atunci:** nu se măsoară doar *câte gărzi își iau dovada din proză* și *câte raportează verde pe zero*, ci și **pe ce instrument stă fiecare gardă, și dacă instrumentul acela a fost calibrat**.
