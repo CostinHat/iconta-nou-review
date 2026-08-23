@@ -54,14 +54,21 @@ def test_calibrarea_nu_se_citeste_din_proza():
     assert si._clasifica(cu_literal.body[0], True)[0] == 1, "un literal pinuit nu e vazut"
 
 
-def test_controlul_negativ_al_vacuitatii():
-    """Garzile cu anti-vacuu explicit nu au voie sa apara ca vacuabile."""
-    cand, tot = si.garzi_vacuabile()
-    assert tot > 1000, "denominatorul s-a rupt: doar %d garzi cu aserttiuni" % tot
-    s = set(cand)
-    for k in (("test_conformitate.py", "test_planul_chiar_se_citeste"),
-              ("test_vigoare_punct.py", "test_tiparele_de_numerotare_acopera_ambele_acte")):
-        assert k not in s, "fals pozitiv pe o garda cu anti-vacuu explicit: %s" % (k,)
+def test_axa_vidului_delega_nu_reimplementeaza():
+    """NU exista doua masuratori ale aceleiasi clase.
+
+    Prima forma a acestui fisier avea propria masuratoare si dadea 255 din 2.131; instrumentul care
+    exista din 22.08 (`core/scan_garzi.py`, sub-instrumentul B) da 175 din 730 CARE CULEG, si e mai
+    bine fundamentat. Doua instrumente pentru aceeasi clasa = logica paralela. Garda de aici tine
+    delegarea vie: daca cineva reimplementeaza, testul cade."""
+    import inspect
+    sursa = inspect.getsource(si.garzi_vacuabile)
+    assert "scan_garzi" in sursa, "axa vidului nu mai deleaga - a reaparut logica paralela"
+    rele, tot, culeg, ctrl = si.garzi_vacuabile()
+    assert tot > 1000, "denominatorul s-a rupt: doar %d garzi cu asertiuni" % tot
+    assert 0 < culeg < tot, "culegatoarele nu se mai disting de restul: %d din %d" % (culeg, tot)
+    assert 0 < len(rele) < culeg, "vidul posibil e degenerat: %d din %d" % (len(rele), culeg)
+    assert ctrl > 0, "atenuarea prin control pozitiv in modul a disparut"
 
 
 def test_inventarul_instrumentelor_nu_e_gol():

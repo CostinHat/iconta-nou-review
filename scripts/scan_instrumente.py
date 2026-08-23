@@ -33,6 +33,7 @@ import pathlib
 import re
 
 RAD = pathlib.Path("/home/costin/iconta_nou")
+RAD_REPO = str(RAD)
 
 
 def e_instrument(p):
@@ -157,24 +158,25 @@ def instrumente_si_calibrare():
 
 
 def garzi_vacuabile():
-    """[(fisier, test)] — garzi cu aserttiuni exclusiv negative si fara afirmatie de nenulitate."""
-    cand, tot = [], 0
-    for p in sorted(RAD.glob("core/test_*.py")):
-        try:
-            tree = ast.parse(p.read_text(encoding="utf-8", errors="replace"))
-        except SyntaxError:
-            continue
-        for fn in ast.walk(tree):
-            if not (isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef))
-                    and fn.name.startswith("test_")):
-                continue
-            aserts = [a for a in ast.walk(fn) if isinstance(a, ast.Assert)]
-            if not aserts:
-                continue
-            tot += 1
-            if all(negativa(a) for a in aserts) and not afirma_nenul(fn):
-                cand.append((p.name, fn.name))
-    return cand, tot
+    """DELEGA la core.scan_garzi.fara_existenta — NU reimplementeaza.
+
+    Prima forma a acestui fisier avea propria masuratoare a vidului si dadea 255 din 2.131. Dar
+    instrumentul pentru interdictia 19 EXISTA din 22.08 (`core/scan_garzi.py`, sub-instrumentul B) si
+    da 174 din 726 CARE CULEG. Confruntate, al lui e mai bine fundamentat pe doua axe:
+      - restrange la testele care isi CULEG subiectul (fisiere plimbate, randuri interogate), fiindca
+        doar acolo multimea poate fi goala; un test unitar pe intrare construita n-are risc de vid;
+      - tine cont de un CONTROL POZITIV in acelasi modul (atenuare, nu exceptie).
+    Al meu era mai larg si mai crud. Doua instrumente pentru aceeasi clasa = logica paralela, iar cel
+    slab l-ar fi contrazis pe cel bun la prima divergenta. Retras.
+
+    ORBIREA COMUNA, declarata: niciunul nu prinde o garda care se apara cu `return` devreme - exact
+    cele doua teste de secventa din R18, gasite de mana. Instrumentul interdictiei 19 nu prinde cea
+    mai ascutita instanta a interdictiei 19 pe care o avem.
+    """
+    from core import scan_garzi as _sg
+    garzi = _sg.fisiere_garda(RAD_REPO)
+    rele, total, culeg, cu_control = _sg.fara_existenta(RAD_REPO, garzi)
+    return rele, total, culeg, cu_control
 
 
 if __name__ == "__main__":
@@ -182,6 +184,7 @@ if __name__ == "__main__":
     for n, nf, ded, nt, poz, neg in instrumente_si_calibrare():
         print("%-32s %6d %8s %6s %6s %6s"
               % (n, nf, "DA" if ded else "NU", nt or "-", poz if ded else "-", neg if ded else "-"))
-    cand, tot = garzi_vacuabile()
-    print("\ngarzi cu aserttiuni: %d · candidate la verde-pe-zero: %d (%.1f%%)"
-          % (tot, len(cand), 100.0 * len(cand) / max(tot, 1)))
+    rele, tot, culeg, ctrl = garzi_vacuabile()
+    print("")
+    print("garzi cu asertiuni: %d | care CULEG: %d | vid posibil: %d | control pozitiv in modul: %d"
+          % (tot, culeg, len(rele), ctrl))

@@ -30,7 +30,7 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **FAZA 4 — INSTRUMENTELE, în lucru.** Pașii 1 și 2 măsurați pe 23.08: **6 din 16 instrumente au gărzi pe ele și niciun test propriu** (între ele `scan_ancore`, atins din 5 fișiere, care e chiar instrumentul clasei «dovada din proza»), iar **255 din 2.131 de gărzi (12,0%) pot raporta verde pe zero rânduri**. Rămân trei întrebări din plan: proza, mutația reproductibilă, înainte-sau-după-fix.
+- **pasul curent**: **FAZA 4 — INSTRUMENTELE, în lucru.** Pașii 1 și 2 măsurați pe 23.08: **6 din 16 instrumente au gărzi pe ele și niciun test propriu** (între ele `scan_ancore`, atins din 5 fișiere, care e chiar instrumentul clasei «dovada din proză»), iar pe axa vidului cifra e **175 din 730 care culeg** — a instrumentului care exista deja, nu a celui pe care l-am construit azi și l-am retras. Rămâne: proza (după calibrarea lui `scan_ancore`), mutația reproductibilă, și despicarea lui «odată cu fixul» în înainte/după.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
@@ -1213,25 +1213,41 @@ aserțiune.
 
 ### Pasul 2 — câte gărzi pot raporta verde pe zero rânduri (interdicția 19)
 
-**255 din 2.131 — 12,0%.** Definiție structurală: toate aserțiunile funcției sunt negative (`not`,
-`<=`, `== 0`, `not in`) și niciuna nu afirmă că mulțimea pe care lucrează e nenulă.
+**Am construit un al doilea instrument pentru o clasă care avea deja unul, și l-am retras.** Îl scriu
+aici fiindcă e chiar interdicția pe care metoda o numește *reparație reală: fără logică paralelă*.
 
-| fișier | gărzi candidate |
+`core/scan_garzi.py` există din **22.08.2026**, construit pentru **exact** interdicțiile 18 și 19, cu
+patru sub-instrumente și cu `--calibrare <rev>` ca să poată măsura o revizie din istoric. Măsurătoarea
+mea proprie de azi dădea **255 din 2.131**. Confruntate, a lui e mai bine fundamentată pe două axe:
+
+- **restrânge la testele care își CULEG subiectul** (fișiere plimbate, rânduri interogate) — doar
+  acolo mulțimea poate fi goală; un test unitar pe intrare construită n-are risc de vid;
+- **ține cont de un CONTROL POZITIV în același modul** — atenuare, nu excepție.
+
+**Cifra care rămâne e a lui: 175 vid posibil, din 730 care culeg, din 2.409 gărzi cu aserțiuni**
+(163 dintre ele au control pozitiv în modul). Măsurătoarea mea e **retrasă**, iar axa deleagă acum la
+instrumentul existent — cu gardă pe delegare, ca logica paralelă să nu reapară.
+
+**Ce arată totuși sub-instrumentele lui, rulate azi:**
+
+| axă | cifra |
 |---|---|
-| `test_conformitate.py` | **18** |
-| `test_registru_functionalitati.py` | 10 |
-| `test_harta_casete.py` | 9 |
-| `test_constante_nesursate.py` · `test_d394.py` | 7 |
-| `test_limita_text_anaf.py` | 6 |
-| `test_afirmatii_tipate.py` · `test_agenda.py` · `test_corpus_surse.py` · `test_harta_temei.py` | 5 |
+| **A** tipare moarte (zero potriviri pe tot corpusul) | **5 din 353** (+26 construite dinamic, neextractibile; 25 cu zero potriviri dar subiect=RULARE) |
+| **B** vid posibil | **175 din 730** care culeg |
+| **C** gărzi care citesc sursa fără să scoată proza | **14** |
+| **D** scrisă odată cu fixul / singură | **329 / 49** |
 
-**Fișierul cu cele mai multe e garda registrului acestei confruntări**, scrisă de mine pe 22.08. Nu e
-o ironie, e cifra.
+**ORBIREA COMUNĂ, și e cea care contează.** Niciunul dintre cele două instrumente nu prinde o gardă
+care se apără cu `return` devreme — exact **cele două teste de secvență din R18**, care trec pe zero
+rânduri de 19 zile. Le-am găsit **de mână**, urmărind altceva. Deci: **instrumentul interdicției 19 nu
+prinde cea mai ascuțită instanță a interdicției 19 pe care o avem.** Nu e o cifră greșită, e o cifră
+care nu vede o formă — și forma e declarată acum, în ambele locuri.
 
-**Ce NU vede măsurătoarea, declarat:** o gardă care se apără cu `return` devreme **nu apare** —
-aserțiunea ei de nenulitate există, doar că e ocolită. Ăsta e exact cazul celor două teste de secvență
-din **R18**, care trec pe zero rânduri de 19 zile. **Deci 255 e plafon inferior, iar cazul care a
-declanșat măsurătoarea nu e printre cele numărate.**
+**Axa D merită citită încet:** **329 de gărzi scrise odată cu fixul, 49 singure.** Regula scrisă e
+„gardă înainte de reparație". Planul spune că *dacă majoritatea gărzilor sunt scrise după fix și
+totuși prind regresii reale, atunci regula e mai slabă decât credem* — iar 329 din 378 e mai mult
+decât majoritate. **Nu concluzionez**: „odată cu fixul" nu e „după fix", iar instrumentul nu distinge
+încă între ele. Aia e prima măsurătoare a pasului următor.
 
 ### Ce urmează în faza 4
 
