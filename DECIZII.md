@@ -11136,3 +11136,39 @@ produce fals-**negative**, iar fixtura mea de known-bad era scrisă cu `def` sim
 numele, nu cu efectul**. Adăugată a opta fixtură — rută `async` **fără** acces — iar RED-proof-ul cade
 acum exact pe ea. *Interdicția 76 aplicată propriei gărzi, la o oră după ce a fost scrisă.*
 
+## 23.08.2026 — Trei decizii pe reverificare și pe facturi, plus două corectări ale triajului
+
+**1. Fereastra pentru interdicția 55: TREI ANI.** Motivul lui Costin, scris: *„E suficientă ca să
+prindă un articol modificat de două ori și scurtă cât să nu conteze modificări care n-au mai revenit."*
+
+**2. `INFORMATIV` are voie să existe, dar nu la 24 de luni.** Motivul: *„O valoare fiscală expirată
+arătată unui contabil e o afirmație falsă, chiar dacă n-o folosește niciun calcul — el o citește și
+decide pe ea."* Coloana a coborât la **3 · 6 · 12**. **Partea care merită scrisă, fiindcă altfel s-ar
+pierde: cifrele contrazic motivul care le însoțea.** Decizia cerea ca *diferența față de `CALCULAT` să
+rămână, dar nu dublă*; 3 · 6 · 12 e, casetă cu casetă, **exact** coloana `CALCULAT`. Tabelul are deci
+șase praguri distincte, nu nouă. Cifrele s-au aplicat **așa cum au fost date** — o comandă numerică nu
+se rotunjește singură spre ce bănuiește executantul că s-a vrut — iar contradicția s-a scris ca punct
+deschis în `CONFORMITATE.md` §55, nu s-a rezolvat tăcut.
+
+**3. R14 — migrarea se face; decizia de nomenclator e luată.** Motivul: *„două populații cu aceeași
+etichetă înseamnă că orice regulă scrisă de acum înainte e adevărată pentru jumătate din date."* Nu
+acum — **la reparații**. Restanța și-a schimbat felul din **SURSĂ** în **ORDINE** și deblocatorul din
+**DECIZIE** în **INTERN**: nimic tehnic nu mai blochează, doar nu e momentul. Ce încă nu e numit, și
+se numește la migrare: **care dintre valori supraviețuiește**.
+
+**R18 rămâne DESCHISĂ, prin decizie, nu prin uitare.** Varianta (b) — *se declară scris că mecanismul
+se verifică doar pe date sintetice* — a fost **refuzată explicit**: *„ar fi onestă, dar ar închide o
+gardă pe care o vrem reală."* Se așteaptă primele date care generează clustere.
+
+**4. Corectare — o poziție de triaj se atribuie după CE PRODUCE modulul, nu după numele funcției.**
+Poziția 1 credita Cartea mare cu un motor pe care nu-l are (`carte_mare` = înveliș peste
+`agrega_conturi`, care întoarce rulaje totale; norma cere defalcarea rulajului debitor pe conturi
+corespondente). Verificarea celorlalte poziții a scos încă **trei** artefacte clasificate greșit, **în
+ambele direcții**: Registrul-inventar și jurnalul de marjă au producător, rută și — primul — ecran,
+dar erau trecute la *construcție*; registrul-jurnal are rută, de confruntat cu 14-1-1. Costul nu e
+simetric: prima direcție amână o construcție necesară, a doua o pornește degeaba.
+
+**5. Corectare — 3a înaintea lui 3b.** Triajul s-a pornit peste 76 de interdicții din care 50 scriu
+NEÎNCEPUTĂ, iar toate cele **douăsprezece** numite în 3a scriu încă NEÎNCEPUTĂ, deși au cifre în
+`GARZI.md` și `TESTE.md`. Un triaj pe poziții nemăsurate ordonează după presupuneri. Planul punea deja
+3a înaintea lui 3b; ordinea nu s-a respectat, și se respectă de la următoarea tură.

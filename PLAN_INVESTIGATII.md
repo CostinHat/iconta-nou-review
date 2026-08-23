@@ -218,9 +218,13 @@ Cel puțin: **6** (`test_get_fara_scriere`, 2 din 168) · **7** (statul append-o
 
 **De reparat odată cu transferul:** câmpul „unde ajunge efectul" a fost completat pe grupuri, nu per interdicție. Cel puțin trei sunt greșite.
 
-**De adăugat:** interdicțiile 49–75 n-au secțiuni în `CONFORMITATE.md` — registrul a fost scris când erau 48.
+**De adăugat:** interdicțiile 49–75 n-au secțiuni în `CONFORMITATE.md` — registrul a fost scris când erau 48. **FĂCUT (23.08.2026)**: registrul are azi **76** de secțiuni.
+
+**STARE, verificată pe 23.08.2026:** transferul **nu a început**. Toate cele douăsprezece numite mai sus — 6, 7, 8, 9, 10, 11, 12, 13, 14, 20, 26, 34 — scriu încă `NEÎNCEPUTĂ` în `CONFORMITATE.md`. **Zero transferate.**
 
 ### 3b — Triajul
+
+**ORDINEA, corectată 23.08.2026: 3a intră ÎNAINTEA lui 3b, și nu s-a respectat.** Prima tură de triaj a pornit peste toate 76, dintre care 50 scriu NEÎNCEPUTĂ — iar cel puțin douăsprezece dintre ele **au cifre** în alte registre. Un triaj pe poziții nemăsurate ordonează după presupuneri, nu după stare. Ce **nu** cade din prima tură: pragul 3 e ordonat pe **artefacte** (faza 1), nu pe interdicții, deci ordinea lui rămâne; ce cade e pretenția că triajul acoperă toate 76.
 
 O trecere **superficială** peste toate 75. Nu se măsoară; se răspunde la trei întrebări:
 

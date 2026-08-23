@@ -1888,3 +1888,9 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   probate la arbitru (anti-vacuu + calibrare) · fiecare cod are temei · codurile legale nu mai sunt
   respinse · `d112` trece prin poartă și n-are a doua cale · niciun cod inventat · XSD-ul e a doua
   constrângere, nu autoritatea. RED-probat cu 7 mutații.
+
+- **`core/test_portal_nu_scrie_gol.py` (23.08.2026)** — 6 teste: extragerea goală se oprește pe patru
+  forme de gol (`""`, spații, linii noi, mixt) **și nu lasă niciun fișier pe disc** · textul real se
+  scrie, iar amprenta e pe TEXT, nu pe pagină · **anti-vacuu**: `adu` chiar trece prin gardă, citit
+  din sursă, nu presupus. RED-probat cu mutația `if False:` pe gardă — 4 roșii din 4 posibile.
+  Păzește exact modul de eșec al lui **R20**, la producător, nu la poartă.

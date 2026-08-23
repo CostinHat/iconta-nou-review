@@ -4138,3 +4138,25 @@ schimba singura.
 
 **Si o a doua instanta prinsa de gard**: textul de ajutor al ecranului scria „la 75%" — tot un procent
 in JS. Scos; trimite acum la eticheta codului.
+
+**Unealta care aduce acte nu mai poate scrie un artefact gol** (`scripts/portal_legislativ.py`
+`_scrie_text`, `core/test_portal_nu_scrie_gol.py`, 23.08.2026). Gard **la producător**, nu la poartă.
+`adu` scria `<nume>.txt` necondiționat: `t = text(brut)` și scria, oricare ar fi `t`. Așa au intrat în
+corpus cele opt artefacte de un octet din **R20** — extragerea a produs gol și n-a spus-o. Acum se
+oprește, cu numele fișierului în mesaj, și **nu lasă în urmă nici `.txt`, nici `.txt.sha256`**: o
+amprentă rămasă fără fișier ar fi la fel de rea, o amprentă pe un act inexistent. Pagina (`.html` +
+`.html.sha256`) rămâne — ea chiar există.
+
+**De ce e nevoie de el deși clichetul e pe 0.** `test_provenienta.py` a coborât clichetul de artefacte
+goale la zero, deci orice gol pică poarta. Dar **un clichet pe 0 fără gard la sursă spune doar CĂ a
+apărut un gol, nu de unde** — ar fi căzut la prima aducere, iar întrebarea „e regresie sau
+comportament normal?" n-ar fi avut răspuns. Cauza s-a dovedit, nu s-a presupus: corpusul are **9**
+fișiere `.xsd`, iar cele opt goale erau **exact opt dintre ele** — extractorul le-a trecut prin ramura
+de HTML, iar un strip de etichete peste un XSD nu lasă nimic. Al nouălea (`d402`) a scăpat fiindcă
+fusese derivat sub alt nume. Nu opt accidente: o ramură greșită aplicată de opt ori.
+
+**RED-proof 4 mutații / 4 roșii** — mutația `if False:` pe gardă lasă cele două teste de formă verzi
+și **le pică pe toate patru cele de gol**, inclusiv cel care verifică *zero fișiere rămase pe disc*.
+Al treilea test e **anti-vacuu**: citește sursa lui `adu` cu `inspect.getsource` și cere ca garda să
+fie chiar pe drum (`_scrie_text(` prezent, `".txt"` absent) — altfel garda ar fi decorativă, ocolită
+de o a doua scriere de alături.
