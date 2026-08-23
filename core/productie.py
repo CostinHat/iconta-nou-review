@@ -59,8 +59,10 @@ def coeficient_348(sold_initial_348, rulaj_348, sold_initial_345, intrari_345):
             "soldul și intrările contului 345 pe perioada aleasă.")
     return (numarator / numitor).quantize(Decimal("0.000001"))
 
-def nota_vanzare(pret_vanzare, cost_standard_iesit, cota_tva=21, coef_348=None):
+def nota_vanzare(pret_vanzare, cost_standard_iesit, cota_tva=None, coef_348=None):
     """4111 = 701 + 4427; descarcare 711=345 standard + diferente aferente."""
+    if cota_tva is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     pv, cs = _d(pret_vanzare), _d(cost_standard_iesit)
     if pv <= 0 or cs <= 0:
         raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")

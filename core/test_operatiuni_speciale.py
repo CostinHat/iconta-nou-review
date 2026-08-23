@@ -42,7 +42,7 @@ def test_avans_platit_tva_deductibil():
 # ---------- leasing financiar (OMFP 1802 pct.212-217) ----------
 
 def test_leasing_rata_capital_dobanda_tva():
-    r = le.nota_rata_financiar(500, dobanda=50)
+    r = le.nota_rata_financiar(500, dobanda=50, cota_tva=21)  # cota DECLARATA (R26)
     assert r["tva"] == Decimal("115.50")  # 21% x (500+50)
     assert ("167", "404", Decimal("500.00")) in r["linii"]  # capital
     assert ("666", "404", Decimal("50.00")) in r["linii"]   # dobanda pe cheltuiala

@@ -11458,3 +11458,23 @@ cota 21.
 **5. `METODA_VERIFICARE.md` §16 — «înainte de a declara ceva greu, verifică dacă a fost cerut
 vreodată».** Două instanțe în două ture, aceeași formă: R10 (neîncercată, nu grea) și condițiile
 cablabile (necerute, nu greu de scris). *„Nesolicitat" nu e o scuză, e un diagnostic.*
+
+## 23.08.2026 (a unsprezecea tură) — R26 reparată, iar escaladarea ei corectată
+
+**1. Ridicarea lui R26 la prag 1 a fost a mea și greșită.** Măsurătoarea pe care stătea număra doar
+argumentele **numite**; 22 din 23 de apeluri dau cota **pozițional**, din `cota_ceruta(corp)`. Re-măsurat
+corect: **un singur** apel n-o dă, iar și acela e mort (apelantul refuză liniile fără cotă). **Zero căi
+vii.** R26 coboară la **prag 3** — clasă latentă, nu instanță.
+
+**2. Reparată totuși**, cu argumentul lui Costin: *„un default cu valoare, oricare ar fi, e aceeași
+clasă peste șase luni."* Cele 25 de literale au fost scoase; funcțiile refuză. Alegerea urmează
+`common.cota_ceruta`, decizie deja scrisă în iulie.
+
+**3. `METODA_VERIFICARE.md` §16, rescris ca formulare UNICĂ**, la întrebarea lui Costin: *„sunt trei
+lucruri diferite sau unul?"* — **unul**: *verificarea s-a făcut acolo unde era ușor, nu acolo unde era
+nevoie.* Cu patru instanțe, dintre care a patra e propria mea măsurătoare care a mișcat un prag.
+
+**4. Răspuns la întrebarea 1 (R25):** da, tiparul se repetă dincolo de cote. Măsurat: **61 de defaults
+cu valoare, în 35 de module** — praguri, plafoane, zile de termen. Deci R25 **nu e despre lărgirea
+domeniului**, e despre o clasă pe care instrumentul o vede doar când literalul are forma potrivită.
+`scan_constante` e cheiat pe **forma** literalului, nu pe **rolul** lui.

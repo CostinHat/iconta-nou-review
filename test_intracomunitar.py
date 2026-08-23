@@ -16,9 +16,9 @@ def test_desparte_gol():
         m.desparte_cod_tva("DE")
 
 def test_tva_ti():
-    assert m.tva_taxare_inversa(10000) == Decimal("2100.00")
+    assert m.tva_taxare_inversa(10000, cota=21) == Decimal("2100.00")
     with pytest.raises(ValueError):
-        m.tva_taxare_inversa(-1)
+        m.tva_taxare_inversa(-1, cota=21)
 
 def test_lic_ok():
     ok, ment = m.valideaza_lic("DE123456789", True, True)

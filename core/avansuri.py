@@ -20,8 +20,10 @@ def _d(x):
 def _tva(baza, cota):
     return (_d(baza) * Decimal(str(cota)) / 100).quantize(B, rounding=ROUND_HALF_UP)
 
-def nota_avans_platit(suma_fara_tva, cota=21, destinatie="stocuri"):
+def nota_avans_platit(suma_fara_tva, cota=None, destinatie="stocuri"):
     """Factura de avans primita de la furnizor: 409x + 4426 = 401."""
+    if cota is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     s = _d(suma_fara_tva)
     if s <= 0:
         raise ValueError("Suma trebuie să fie un număr pozitiv.")
@@ -33,9 +35,11 @@ def nota_avans_platit(suma_fara_tva, cota=21, destinatie="stocuri"):
         linii.append(("4426", "401", tva))
     return {"linii": linii, "tva": tva, "cont_avans": CONT_AVANS[destinatie]}
 
-def nota_regularizare_avans_platit(suma_fara_tva, cota=21, destinatie="stocuri"):
+def nota_regularizare_avans_platit(suma_fara_tva, cota=None, destinatie="stocuri"):
     """La factura finala: inversarea avansului (401 = 409x, 401 = 4426).
     Factura finala se inregistreaza separat, intreaga."""
+    if cota is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     s = _d(suma_fara_tva)
     if s <= 0:
         raise ValueError("Suma trebuie să fie un număr pozitiv.")
@@ -47,8 +51,10 @@ def nota_regularizare_avans_platit(suma_fara_tva, cota=21, destinatie="stocuri")
         linii.append(("401", "4426", tva))
     return {"linii": linii, "tva": tva}
 
-def nota_avans_incasat(suma_fara_tva, cota=21):
+def nota_avans_incasat(suma_fara_tva, cota=None):
     """Factura de avans emisa catre client: 4111 = % (419 + 4427)."""
+    if cota is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     s = _d(suma_fara_tva)
     if s <= 0:
         raise ValueError("Suma trebuie să fie un număr pozitiv.")
@@ -58,8 +64,10 @@ def nota_avans_incasat(suma_fara_tva, cota=21):
         linii.append(("4111", "4427", tva))
     return {"linii": linii, "tva": tva}
 
-def nota_regularizare_avans_incasat(suma_fara_tva, cota=21):
+def nota_regularizare_avans_incasat(suma_fara_tva, cota=None):
     """La factura finala: inversarea avansului (419 = 4111, 4427 = 4111)."""
+    if cota is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     s = _d(suma_fara_tva)
     if s <= 0:
         raise ValueError("Suma trebuie să fie un număr pozitiv.")

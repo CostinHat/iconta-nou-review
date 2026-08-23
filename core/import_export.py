@@ -22,11 +22,13 @@ def baza_tva_import(valoare_vamala, taxe_vamale=0, accize=0, accesorii=0):
     return (vv + tv + ac + ca).quantize(B, rounding=ROUND_HALF_UP)
 
 def calcul_import(valoare_vamala, procent_taxa_vamala=0, accize=0, accesorii=0,
-                  cota_tva=21, certificat_amanare=False, platitor_tva=True):
+                  cota_tva=None, certificat_amanare=False, platitor_tva=True):
     """Returneaza dict complet: taxa vamala, baza TVA, TVA, mod plata TVA.
     - platitor cu certificat (art. 326(4)): TVA in decont 4426=4427 (nu se plateste in vama)
     - platitor fara certificat: TVA platita in vama, 4426=446, deducere pe DVI
     - neplatitor: TVA in vama intra in COST (nu se deduce)."""
+    if cota_tva is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     vv = _d(valoare_vamala)
     if vv <= 0:
         raise ValueError("valoare vamala invalida")

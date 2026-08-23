@@ -628,32 +628,41 @@ propriei gărzi** — nu o citire, nu o recenzie.
 **Ce NU acoperă:** nu spune că o fixtură care variază e și suficientă. Acoperirea rămâne o judecată;
 regula închide doar cazul în care mutația **nu putea** să prindă nimic.
 
-## 16. ÎNAINTE DE A DECLARA CEVA GREU, verifică dacă a fost cerut vreodată
+## 16. VERIFICAREA SE FACE UNDE E NEVOIE, nu unde e ușor de făcut
 
-**Regula.** „Greu" e o afirmație despre efort, iar efortul nu s-a măsurat dacă nimeni n-a încercat.
-Înainte de a numi ceva greu — o restanță, o cerință, o formă — caută **prima cerere**. Dacă nu există,
-lucrul nu e greu: e **nesolicitat**, iar cele două nu se pot deosebi din afară.
+**Regula.** Când verifici ceva, întreabă **unde trăiește lucrul căutat** — nu unde e cel mai comod să
+te uiți. O verificare făcută în locul ușor produce un răspuns adevărat despre locul acela și fals
+despre întrebare.
 
-**Două instanțe, în două ture (23.08.2026):**
+**E o singură clasă, nu trei** — formulare unificată la cererea lui Costin, 23.08.2026, după ce a treia
+instanță a apărut în aceeași zi. Toate au aceeași formă: **s-a măsurat ce era la îndemână**.
 
-| ce părea greu | ce era | cum s-a văzut |
-|---|---|---|
-| **R10**, deschisă de 40 de commituri | **neîncercată** | încercată o dată, s-a închis în **două minute** — toate cele patru cerințe aveau deja gărzi |
-| **condițiile de deblocare cablabile** — 1 din 18 | **necerute** | **12 din 15** s-ar fi putut scrie cablabil; nimeni nu ceruse forma asta când au fost scrise |
+| instanța | unde era ușor | unde era nevoie | ce a costat |
+|---|---|---|---|
+| **R10**, „grea" de 40 de commituri | să presupui că e grea | **s-o încerci o dată** | s-a închis în două minute; 40 de commituri de amânare |
+| **condițiile de deblocare** — 1 din 18 cablabilă | să scrii proză | **să ceri forma** când se scrie condiția | 12 din 15 se puteau scrie cablabil; reaprinderea a rămas nepăzită |
+| **lista de locuri la o schimbare de valoare fiscală** | să te iei după ce **pică** | **să faci lista din COD** | *(clasa e reală, dar instanța nu s-a produs aici: în depozit n-a existat nicio campanie de actualizare a cotei — verificat, niciun commit n-a atins mai mult de șase module)* |
+| **măsurătoarea mea din 23.08** | să numeri argumentele **numite** (ușor de citit din AST) | **legarea reală a parametrului**, inclusiv pozițional | am ridicat R26 la **prag 1** pe o cifră de 23 de căi vii; cea reală e **zero** |
+| **verificarea reparației R26**, o oră mai târziu | să rulezi `core/`, unde stau majoritatea testelor | **suita întreagă** — testele din rădăcină nu sunt în `core/` | am declarat suita verde; poarta a găsit **35 de roșii** în `test_*.py` din rădăcină |
 
-**Ce le face aceeași clasă:** în amândouă, lipsa nu venea din dificultate, ci din faptul că **nimeni nu
-formulase cerința**. Iar odată formulată, costul a fost mic. O restanță veche și o formă lipsă arată
-identic cu o problemă grea — până la prima încercare.
+**A patra e cea care contează cel mai mult**, fiindcă e a mea și fiindcă a produs o **decizie**: am
+escaladat un prag pe o măsurătoare care întreba ce era ușor de întrebat. „Are apelul un `keyword` cu
+numele ăsta?" e o întrebare despre **sintaxă**; „ajunge valoarea la parametru?" e întrebarea despre
+**lume**. Prima se scrie în trei rânduri de AST, a doua cere să potrivești pozițiile.
 
 **Cum se aplică, mecanic:**
 
-1. **Caută cererea, nu soluția.** *„Unde s-a cerut ca o condiție să fie cablabilă?"* Dacă nu se
-   găsește, ai măsurat nesolicitarea, nu dificultatea.
-2. **Contorul de încercări e proba.** Zero încercări = zero informație despre efort. (`PLAN_LUCRU.md`,
-   *Prima încercare*.)
-3. **Când formulezi cerința, formuleaz-o pentru viitor**, nu doar pentru instanța de azi — altfel a
-   doua oară se redescoperă la fel.
-4. **„Nesolicitat" nu e o scuză, e un diagnostic.** Spune unde a lipsit cererea, nu cine n-a lucrat.
+1. **Numește lucrul căutat, apoi locul lui.** *„Ajunge defaultul să lucreze?"* trăiește în **legarea
+   argumentelor**, nu în lista de `keywords`. *„E grea restanța?"* trăiește în **încercare**, nu în
+   vechime.
+2. **Dacă răspunsul e ușor de obținut, bănuiește-l.** Nu e o regulă de suspiciune generală: e
+   observația că metoda comodă și metoda corectă coincid rar.
+3. **La o schimbare de valoare fiscală, lista de locuri se face din COD, nu din teste.** Un loc fără
+   test nu e un loc care nu există — iar reciproc: **un test poate ENCODA defaultul**. Măsurat la
+   scoaterea celor 25 de literale: **11 teste picau pe default**, adică îl testau.
+4. **Când corectezi o măsurătoare, corectează și ce s-a decis pe ea.** O cifră greșită care a mișcat
+   un prag nu se corectează singură — pragul se mișcă înapoi, scris.
 
-**Ce NU acoperă:** nu spune că tot ce n-a fost cerut e ieftin. Spune doar că, până la prima încercare,
-**nu știm** — iar a numi ceva greu fără să știm mută munca în viitor pe o presupunere.
+**Ce NU acoperă:** nu spune cum se găsește locul potrivit — asta rămâne judecată, și e chiar §12
+(confruntarea cu registrul) plus §11 (ce produce, nu cum se numește). Spune doar că **ușurința
+măsurătorii nu e o dovadă că e cea potrivită**.

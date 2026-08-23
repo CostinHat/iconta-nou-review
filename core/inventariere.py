@@ -70,9 +70,11 @@ def pregateste_mf_plus(corp):
 
 def nota_minus(valoare, cont_stoc="371", imputabil=False,
                valoare_imputare=None, vinovat="salariat",
-               cota_tva=21, asigurat_sau_distrus=False):
+               cota_tva=None, asigurat_sau_distrus=False):
     """Minus: descarcare 60x=3xx; imputabil -> imputare la valoarea de
     inlocuire cu TVA; neimputabil neasigurat -> ajustare TVA pe cost."""
+    if cota_tva is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     v = _d(valoare)
     if v <= 0:
         raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")

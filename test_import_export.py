@@ -18,16 +18,16 @@ def test_import_cu_certificat():
     assert r["mod_tva"] == "decont"
 
 def test_import_fara_certificat():
-    r = m.calcul_import(10000, 5, 0, 800)
+    r = m.calcul_import(10000, 5, 0, 800, cota_tva=21)
     assert r["mod_tva"] == "vama"
 
 def test_import_neplatitor():
-    r = m.calcul_import(10000, 0, 0, 0, platitor_tva=False)
+    r = m.calcul_import(10000, 0, 0, 0, platitor_tva=False, cota_tva=21)
     assert r["mod_tva"] == "cost"
 
 def test_certificat_neplatitor():
     with pytest.raises(ValueError, match="316"):
-        m.calcul_import(10000, 0, certificat_amanare=True, platitor_tva=False)
+        m.calcul_import(10000, 0, certificat_amanare=True, platitor_tva=False, cota_tva=21)
 
 def test_export_ok():
     ok, ment = m.valideaza_export("Serbia", True)

@@ -16,4 +16,4 @@ def test_marja_negativa():
 
 def test_pret_invalid():
     with pytest.raises(ValueError):
-        m.vanzare_marja(0, 100)
+        m.vanzare_marja(0, 100, cota=21)

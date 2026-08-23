@@ -16,13 +16,13 @@ def test_restituire():
     assert r["linii"] == [("461", "5311", Decimal("5.00"))]
 
 def test_autofactura():
-    r = m.nota_autofactura_returo(500, 120)
+    r = m.nota_autofactura_returo(500, 120, cota_tva=21)
     assert ("5121", "461", Decimal("500.00")) in r["linii"]
     assert ("4111", "708", Decimal("120.00")) in r["linii"]
     assert ("4111", "4427", Decimal("25.20")) in r["linii"]
 
 def test_autofactura_doar_garantii():
-    r = m.nota_autofactura_returo(500)
+    r = m.nota_autofactura_returo(500, cota_tva=21)
     assert len(r["linii"]) == 1
 
 def test_virare():

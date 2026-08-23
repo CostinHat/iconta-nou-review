@@ -17,8 +17,10 @@ def _d(x):
     return Decimal(str(x or 0)).quantize(B, rounding=ROUND_HALF_UP)
 
 def calcul(valoare_intrari, procent_limita, pierdere_constatata,
-           cota_tva=21, cont_stoc="371", degradare_dovedita_distrusa=False):
+           cota_tva=None, cont_stoc="371", degradare_dovedita_distrusa=False):
     """Returneaza limita, partea deductibila/nedeductibila, liniile notei."""
+    if cota_tva is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     vi, pl, pc = _d(valoare_intrari), Decimal(str(procent_limita)), _d(pierdere_constatata)
     if vi <= 0 or pl < 0 or pc <= 0:
         raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")

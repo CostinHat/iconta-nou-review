@@ -17,7 +17,7 @@ def test_primire_invalida():
         m.nota_primire_financiar(0, 100)
 
 def test_rata():
-    r = m.nota_rata_financiar(1000, 150, 20)
+    r = m.nota_rata_financiar(1000, 150, 20, cota_tva=21)
     assert ("167", "404", Decimal("1000.00")) in r["linii"]
     assert ("666", "404", Decimal("150.00")) in r["linii"]
     assert ("628", "404", Decimal("20.00")) in r["linii"]
@@ -25,15 +25,15 @@ def test_rata():
     assert ("891", "8051", Decimal("150.00")) in r["linii"]
 
 def test_rata_doar_capital():
-    r = m.nota_rata_financiar(1000)
+    r = m.nota_rata_financiar(1000, cota_tva=21)
     assert len(r["linii"]) == 2
 
 def test_reziduala():
-    r = m.nota_reziduala(278.15)
+    r = m.nota_reziduala(278.15, cota_tva=21)
     assert ("167", "404", Decimal("278.15")) in r["linii"]
     assert r["tva"] == Decimal("58.41")
 
 def test_operational():
-    r = m.nota_rata_operational(2500)
+    r = m.nota_rata_operational(2500, cota_tva=21)
     assert ("612", "401", Decimal("2500.00")) in r["linii"]
     assert ("4426", "401", Decimal("525.00")) in r["linii"]

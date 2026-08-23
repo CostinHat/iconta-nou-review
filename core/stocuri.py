@@ -28,7 +28,7 @@ def _urma(temei=TEMEI_GV):
     return {"modul": MODUL, "reguli": REGULI, "temei": temei}
 
 
-def nir_gv(linii, cota_tva_implicita=21, transport=0, taxe=0,
+def nir_gv(linii, cota_tva_implicita=None, transport=0, taxe=0,
           cont_transport="401", cont_taxe="446"):
     """NIR global-valoric. linii: [{denumire, cantitate, pret_achizitie (unitar, fara TVA),
     pret_vanzare (unitar, cu TVA), cota_tva?}].
@@ -45,6 +45,8 @@ def nir_gv(linii, cota_tva_implicita=21, transport=0, taxe=0,
       371 = 378   (adaos, recalculat dupa capitalizare)
       371 = 4428  (TVA neexigibila)
     371 final = valoarea la pret de vanzare cu TVA."""
+    if cota_tva_implicita is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     transport = _q(transport); taxe = _q(taxe)
     if transport < 0 or taxe < 0:
         raise ValueError("transport/taxe negative")

@@ -33,24 +33,20 @@ from core import scan_constante
 # Ieșite complet: `cote_tva.py` (2) și `d300.py` (5) — amândouă își citează actul în antet, per
 # valoare. Coborâte: d394 9->2, d212_engine 13->11, d101 8->7, d104 4->0, salarizare 19->18.
 BASELINE = {
-    # LARGIT a TREIA oara, 23.08.2026: domeniul cuprinde acum si modulele care POARTA O VALOARE din
-    # registrul de cote, oricat de putin ar vorbi. Masurat la intrebarea lui Costin: dupa doua largiri,
-    # 15 din cele 25 de functii cu `cota = 21` ca default erau INCA in afara (avansuri, comodat_chirii,
-    # intracomunitar, inventariere, leasing, obiecte_inventar, productie, sgr). C: 135 -> 162.
-    "asistenti_api.py": 3, "asociati_import_api.py": 1, "audit_preluare.py": 1, "avansuri.py": 4,
-    "beneficii_api.py": 1, "casa.py": 6, "cashflow.py": 2, "common.py": 8, "comodat_chirii.py": 3,
-    "contracte_speciale.py": 5, "control_fiscal_api.py": 1, "control_incrucisat.py": 1, "cor_api.py": 2,
-    "d101.py": 7, "d101g.py": 1, "d108.py": 1, "d169.py": 1, "d169n.py": 1, "d205.py": 2,
-    "d212_engine.py": 11, "d216.py": 1, "d394.py": 2, "d401.py": 2, "d402.py": 3, "d403.py": 5,
-    "d406.py": 5, "d406_active.py": 7, "d406_stocuri.py": 1, "d407.py": 2, "decontari_asociati.py": 1,
-    "deconturi.py": 1, "duk.py": 2, "efactura_send.py": 1, "factura_pdf.py": 1, "import_export.py": 1,
-    "intracomunitar.py": 2, "inventariere.py": 1, "leasing.py": 3, "lichidare.py": 1,
-    "monitor_fiscal.py": 1, "motor.py": 2, "notificari_scadenta.py": 2, "obiecte_inventar.py": 1,
-    "ong.py": 2, "perisabilitati.py": 1, "productie.py": 2, "produse_api.py": 1, "provizioane.py": 1,
-    "salariati_api.py": 1, "salariati_import_api.py": 2, "salarizare.py": 18, "scadentar.py": 2,
-    "scadente.py": 3, "scan_constante.py": 1, "sgr.py": 2, "sponsorizari.py": 3, "stat_plata_api.py": 1,
-    "stocuri.py": 1, "taxare_inversa.py": 1, "termene_api.py": 1, "tva_agricultori.py": 2,
-    "tva_aur.py": 1, "tva_marja.py": 2, "tva_marja_turism.py": 4,
+    # COBORAT 23.08.2026 dupa R26: cele 25 de defaults cu literalul 21 au fost SCOASE, iar
+    # clichetul a cerut singur coborarea (`test_baseline_nu_e_stat`). C: 162 -> 134.
+    "asistenti_api.py": 3, "asociati_import_api.py": 1, "audit_preluare.py": 1,
+    "beneficii_api.py": 1, "casa.py": 6, "cashflow.py": 2, "common.py": 8,
+    "contracte_speciale.py": 5, "control_fiscal_api.py": 1, "control_incrucisat.py": 1,
+    "cor_api.py": 2, "d101.py": 7, "d101g.py": 1, "d108.py": 1, "d169.py": 1, "d169n.py": 1,
+    "d205.py": 2, "d212_engine.py": 11, "d216.py": 1, "d394.py": 2, "d401.py": 2, "d402.py": 3,
+    "d403.py": 5, "d406.py": 5, "d406_active.py": 7, "d406_stocuri.py": 1, "d407.py": 2,
+    "decontari_asociati.py": 1, "deconturi.py": 1, "duk.py": 2, "efactura_send.py": 1,
+    "factura_pdf.py": 1, "monitor_fiscal.py": 1, "motor.py": 2, "notificari_scadenta.py": 2,
+    "ong.py": 2, "produse_api.py": 1, "provizioane.py": 1, "salariati_api.py": 1,
+    "salariati_import_api.py": 2, "salarizare.py": 18, "scadentar.py": 2, "scadente.py": 3,
+    "scan_constante.py": 1, "sponsorizari.py": 3, "stat_plata_api.py": 1, "termene_api.py": 1,
+    "tva_agricultori.py": 2, "tva_aur.py": 1, "tva_marja_turism.py": 1
 }
 
 

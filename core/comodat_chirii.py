@@ -35,8 +35,10 @@ def nota_comodat(valoare, moment="primire"):
         return {"linii": [("891", "8038", v)]}
     raise ValueError("moment: primire|restituire")
 
-def nota_chirie_platita(chirie, cota_tva=21, proprietar="pj"):
+def nota_chirie_platita(chirie, cota_tva=None, proprietar="pj"):
     """PJ: 612=401+4426; PF: 612=462 fara TVA (PF declara prin Declaratia Unica)."""
+    if cota_tva is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     c = _d(chirie)
     if c <= 0:
         raise ValueError("chirie invalida")
@@ -50,8 +52,10 @@ def nota_chirie_platita(chirie, cota_tva=21, proprietar="pj"):
         linii.append(("4426", "401", tva))
     return {"linii": linii}
 
-def nota_chirie_incasata(chirie, cota_tva=21):
+def nota_chirie_incasata(chirie, cota_tva=None):
     """4111 = 706 + 4427."""
+    if cota_tva is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     c = _d(chirie)
     if c <= 0:
         raise ValueError("chirie invalida")
@@ -61,10 +65,12 @@ def nota_chirie_incasata(chirie, cota_tva=21):
         linii.append(("4111", "4427", tva))
     return {"linii": linii}
 
-def nota_refacturare(total_factura_furnizor, parte_refacturata, cota_tva=21):
+def nota_refacturare(total_factura_furnizor, parte_refacturata, cota_tva=None):
     """Factura furnizor: partea proprie 605+4426=401, partea chiriasului 461=401
     (cu TVA inclus in creanta); refacturare: 4111 = 708 + 4427 cu ACEEASI cota
     (art. 271 - structura de comisionar)."""
+    if cota_tva is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     tf, pr = _d(total_factura_furnizor), _d(parte_refacturata)
     if tf <= 0 or pr < 0 or pr > tf:
         raise ValueError("valori invalide (partea refacturata <= total)")

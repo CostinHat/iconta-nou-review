@@ -44,9 +44,11 @@ def nota_restituire_consumator(nr_ambalaje=None, suma=None, sursa="casa"):
     cont = "5311" if sursa == "casa" else "5121"
     return {"linii": [("461", cont, _suma(nr_ambalaje, suma))]}
 
-def nota_autofactura_returo(garantii_returnate, tarif_gestionare=0, cota_tva=21):
+def nota_autofactura_returo(garantii_returnate, tarif_gestionare=0, cota_tva=None):
     """Autofactura lunara RetuRO: incasare garantii 5121=461.SGR (fara TVA) +
     tarif gestionare 4111=708+4427 (cu TVA)."""
+    if cota_tva is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     g = _d(garantii_returnate)
     t = _d(tarif_gestionare)
     if g < 0 or t < 0 or (g + t) <= 0:

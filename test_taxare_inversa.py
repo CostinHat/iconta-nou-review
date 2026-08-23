@@ -41,9 +41,9 @@ def test_categorie_gresita():
         m.se_aplica("altceva", 1, True, True, AZI)
 
 def test_tva_beneficiar():
-    assert m.tva_beneficiar(10000) == Decimal("2100.00")
+    assert m.tva_beneficiar(10000, cota=21) == Decimal("2100.00")
     assert m.tva_beneficiar(1234.56, 11) == Decimal("135.80")
 
 def test_tva_invalid():
     with pytest.raises(ValueError):
-        m.tva_beneficiar(0)
+        m.tva_beneficiar(0, cota=21)

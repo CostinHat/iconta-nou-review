@@ -14,7 +14,7 @@ def test_e_oi():
     assert m.e_obiect_inventar(9000, durata_sub_1_an=True)
 
 def test_achizitie():
-    r = m.nota_achizitie(1200)
+    r = m.nota_achizitie(1200, cota_tva=21)
     assert ("303", "401", Decimal("1200.00")) in r["linii"]
     assert ("4426", "401", Decimal("252.00")) in r["linii"]
 
@@ -28,4 +28,4 @@ def test_scoatere():
 
 def test_invalid():
     with pytest.raises(ValueError):
-        m.nota_achizitie(0)
+        m.nota_achizitie(0, cota_tva=21)

@@ -28,9 +28,11 @@ def determina_regim(calitate_client, locuri, optiune_normal=False, intermediar=F
         return "normal"
     return "special"
 
-def _marja_turism_special_2018(incasat, cost_ue, cost_non_ue=0, cota=21):
+def _marja_turism_special_2018(incasat, cost_ue, cost_non_ue=0, cota=None):
     """Marja = incasat - (cost_ue + cost_non_ue). Partea aferenta non-UE scutita
     proportional cu costurile (alin. 5). TVA suta marita pe marja taxabila."""
+    if cota is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     inc, cue, cnon, c = _d(incasat), _d(cost_ue), _d(cost_non_ue), _d(cota)
     if inc <= 0 or cue < 0 or cnon < 0:
         raise ValueError("Sumele introduse sunt invalide (trebuie numere pozitive).")
@@ -57,11 +59,13 @@ _VARIANTE_MARJA_TURISM = [
 ]
 
 
-def marja_turism_special(incasat, cost_ue, cost_non_ue=0, cota=21, la_data=None):
+def marja_turism_special(incasat, cost_ue, cost_non_ue=0, cota=None, la_data=None):
     """Regim special agentii de turism (marja + scutire proportionala non-UE), DISPECER pe la_data.
     Cota vine ca parametru (period-aware la apelant); dispecerul versioneaza FORMULA (suta marita + split
     UE/non-UE alin.5). TEMEI: CF art.311 (regim special agentii turism; alin.5 scutire non-UE; alin.2-4
     suta marita). nivel_sursa: REDARE. Versionata in timp: o schimbare a regulii -> varianta datata noua."""
+    if cota is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     from datetime import date as _dt
     fn, _ = _cmn.alege_varianta(_VARIANTE_MARJA_TURISM, la_data or _dt.today())
     return fn(incasat, cost_ue, cost_non_ue, cota)
@@ -83,9 +87,11 @@ def marja_turism_normal(componente):
     return {"componente": out, "total_baza": tb.quantize(B), "total_tva": tt.quantize(B),
             "total_factura": (tb + tt).quantize(B)}
 
-def comision_intermediar(comision, cota=21, tva_inclus=False):
+def comision_intermediar(comision, cota=None, tva_inclus=False):
     """Intermediar (alin. 9): baza = comisionul. Sumele colectate in numele tertilor
     nu sunt venit (OMFP 1802 pct. 432)."""
+    if cota is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     com, c = _d(comision), _d(cota)
     if com <= 0:
         raise ValueError("Comisionul trebuie să fie un număr valid.")

@@ -40,8 +40,10 @@ def verifica_vies(cod_tva, timeout=15):
             "adresa": (d.get("address") or "").strip(), "tara": tara, "numar": nr,
             "eroare": d.get("userError") if not d.get("isValid") else None}
 
-def tva_taxare_inversa(baza, cota=21):
+def tva_taxare_inversa(baza, cota=None):
     """AIC bunuri/servicii primite: TVA prin taxare inversa 4426 = 4427."""
+    if cota is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     b = Decimal(str(baza))
     if b <= 0:
         raise ValueError("baza invalida")

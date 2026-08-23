@@ -26,8 +26,10 @@ def _cota_dividend(la_data=None):
     return _c.cota("impozit_dividend", la_data)[0] * 100
 
 def nota_vanzare_activ(pret, valoare_bruta, amortizare_cumulata,
-                       cont_imobilizare="2131", cont_amortizare="2813", cota_tva=21):
+                       cont_imobilizare="2131", cont_amortizare="2813", cota_tva=None):
     """Vanzare in lichidare: 461=7583+4427 + descarcare 6583+28xx=21x."""
+    if cota_tva is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     p, vb, am = _d(pret), _d(valoare_bruta), _d(amortizare_cumulata)
     if p <= 0 or vb <= 0 or am < 0 or am > vb:
         raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")

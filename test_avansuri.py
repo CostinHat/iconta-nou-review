@@ -4,7 +4,7 @@ import pytest
 from core import avansuri as m
 
 def test_avans_platit_stocuri():
-    r = m.nota_avans_platit(1000)
+    r = m.nota_avans_platit(1000, cota=21)
     assert ("4091", "401", Decimal("1000.00")) in r["linii"]
     assert ("4426", "401", Decimal("210.00")) in r["linii"]
 
@@ -17,7 +17,7 @@ def test_destinatie_gresita():
         m.nota_avans_platit(1, 21, "altceva")
 
 def test_regularizare_platit():
-    r = m.nota_regularizare_avans_platit(1000)
+    r = m.nota_regularizare_avans_platit(1000, cota=21)
     assert ("401", "4091", Decimal("1000.00")) in r["linii"]
     assert ("401", "4426", Decimal("210.00")) in r["linii"]
 

@@ -7,7 +7,9 @@ from decimal import Decimal, ROUND_HALF_UP
 
 from core import common as _cmn
 
-def _vanzare_marja_2018(pret_vanzare, pret_cumparare, cota=21):
+def _vanzare_marja_2018(pret_vanzare, pret_cumparare, cota=None):
+    if cota is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     pv = Decimal(str(pret_vanzare))
     pc = Decimal(str(pret_cumparare))
     c = Decimal(str(cota))
@@ -30,11 +32,13 @@ _VARIANTE_VANZARE_MARJA = [
 ]
 
 
-def vanzare_marja(pret_vanzare, pret_cumparare, cota=21, la_data=None):
+def vanzare_marja(pret_vanzare, pret_cumparare, cota=None, la_data=None):
     """Regim special marja (suta marita pe marja, marja negativa -> TVA 0), DISPECER pe la_data.
     Cota vine ca parametru (period-aware la apelant); DISPECERUL versioneaza FORMULA regimului marjei.
     TEMEI: CF art.312 (regim special marja bunuri second-hand; norme pct.86). nivel_sursa: REDARE.
     Versionata in timp: o schimbare a regulii regimului -> varianta datata noua, nu 'if data' in corp."""
+    if cota is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     from datetime import date as _dt
     fn, _ = _cmn.alege_varianta(_VARIANTE_VANZARE_MARJA, la_data or _dt.today())
     return fn(pret_vanzare, pret_cumparare, cota)

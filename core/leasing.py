@@ -23,11 +23,13 @@ def nota_primire_financiar(valoare_capital, dobanda_totala, cont_imobilizare="21
         linii.append(("8051", "891", dt))  # debit extracontabil prin 891
     return {"linii": linii, "capital": vc, "dobanda_totala": dt}
 
-def nota_rata_financiar(capital, dobanda=0, comision=0, cota_tva=21,
+def nota_rata_financiar(capital, dobanda=0, comision=0, cota_tva=None,
                         tva_pe=("dobanda", "comision")):
     """Rata: %=404: 167 capital + 666 dobanda + 628 comision + 4426.
     TVA pe intreaga factura (capital+dobanda+comision) - practica curenta a
     finantatorilor RO. Concomitent C8051 cu dobanda facturata."""
+    if cota_tva is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     c, d, co = _d(capital), _d(dobanda), _d(comision)
     if c < 0 or d < 0 or co < 0 or (c + d + co) <= 0:
         raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
@@ -45,16 +47,20 @@ def nota_rata_financiar(capital, dobanda=0, comision=0, cota_tva=21,
         linii.append(("891", "8051", d))  # credit extracontabil
     return {"linii": linii, "baza": baza, "tva": tva}
 
-def nota_reziduala(valoare_reziduala, cota_tva=21):
+def nota_reziduala(valoare_reziduala, cota_tva=None):
     """Valoarea reziduala la finalul contractului: 167=404 + TVA (inchide 167)."""
+    if cota_tva is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     vr = _d(valoare_reziduala)
     if vr <= 0:
         raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")
     tva = (vr * Decimal(str(cota_tva)) / 100).quantize(B, rounding=ROUND_HALF_UP)
     return {"linii": [("167", "404", vr), ("4426", "404", tva)], "tva": tva}
 
-def nota_rata_operational(chirie, cota_tva=21, cont_cheltuiala="612"):
+def nota_rata_operational(chirie, cota_tva=None, cont_cheltuiala="612"):
     """Leasing operational: rata = chirie 612=401 + 4426."""
+    if cota_tva is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     ch = _d(chirie)
     if ch <= 0:
         raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")

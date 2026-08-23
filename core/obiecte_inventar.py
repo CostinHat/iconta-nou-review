@@ -26,7 +26,9 @@ def e_obiect_inventar(valoare, la_data=None, durata_sub_1_an=False):
     """Sub pragul MF sau durata <1 an -> obiect de inventar."""
     return durata_sub_1_an or _d(valoare) < prag_mf(la_data)
 
-def nota_achizitie(valoare, cota_tva=21):
+def nota_achizitie(valoare, cota_tva=None):
+    if cota_tva is None:
+        raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     v = _d(valoare)
     if v <= 0:
         raise ValueError("Valoarea introdusă e invalidă (trebuie un număr pozitiv).")

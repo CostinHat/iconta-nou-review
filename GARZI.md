@@ -4329,3 +4329,17 @@ sursă construită anume (`cota=21` intră, `n=7` nu), plus anti-vacuu că regis
 **Lecția, a treia oară azi:** fiecare lărgire a părut completă. Prima a prins modulele care se numesc
 fiscale, a doua pe cele care citează legea, a treia pe cele care vorbesc mult. **A patra a prins pe cele
 care nu fac niciuna — dar poartă valoarea.** Un domeniu se măsoară pe ce caută, nu pe cât pare de larg.
+
+**Cota de TVA nu mai are valoare implicită nicăieri** (25 de funcții din 14 module, 23.08.2026, R26).
+Parametrul devine `None`, iar funcția **refuză** cu motivul scris: *o cotă scrisă în cod se rupe tăcut
+de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi.*
+
+**Alegerea de a REFUZA, nu de a rezolva din registru pe dată, urmează o decizie deja scrisă în casă:**
+`common.cota_ceruta` spune, din iulie, că *„NU se ghiceste o cota implicita, nici macar cota standard
+(un default cu common.cota() ar fi tot o valoare inventata, doar actualizata)"*. Cele 25 contraziceau o
+regulă existentă, nu doar buna practică.
+
+**Ce a scos reparația:** **11 teste picau pe default** — adică îl testau (`test_stocuri` 9,
+`test_versionare_formule` 2, `test_operatiuni_speciale` 1). Toate declară acum cota. Un test care se
+sprijină pe o valoare implicită verifică defaultul, nu regula. Și **clichetul s-a coborât singur**:
+`test_baseline_nu_e_stat` a picat imediat, fiindcă datoria devenise mai mică decât pragul. **C: 162 → 134.**
