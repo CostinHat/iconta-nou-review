@@ -1,0 +1,26 @@
+{
+  "_ce_e": "Id-ul paginii de act de pe legislatie.just.ro, pentru fiecare act citat de un Temei din registrul de cote.",
+  "_de_ce": "Masurat 23.08.2026: id-ul nu era stocat nicaieri - 0 din 529 de intrari din INDEX.json, 0 din 77 de fisiere .html aduse. Deci fiecare reverificare a vigorii (interdictiile 50 si 59) incepea cu o CAUTARE in portal, iar legatura dintre actul din corpus si pagina lui nu exista deloc.",
+  "_cum_se_foloseste": "python3 scripts/vigoare_articol.py <id> <art> [<art> ...]",
+  "_masurat_la": "2026-08-23",
+  "_limita": "Pentru actele MARI (Codul fiscal), pagina de detalii e un CIOT: 4.392 de caractere, 0 titluri de articol. Textul consolidat se incarca prin JS de la alt punct, negasit inca (incercate: DetaliiDocumentAfis, isFormaDeBaza=False, FormaPrintabila). `vigoare_articol.py` REFUZA sa raspunda pe astfel de acte, in loc sa spuna NEGASIT - vezi anti-vacuul lui.",
+  "_a_doua_limita": "Un act poate avea MAI MULTE forme in portal (Ordin 484/2025 are doua). Ambiguitatea se scrie, nu se alege tacit: pana nu se citeste care formă poarta valoarea, campul `id` lipseste si sta `candidati`.",
+  "acte": {
+    "Legea 227/2015 (Codul fiscal)": {"id": 171280, "text_integral": false, "nota": "ciot; forma consolidata la alt id, negasit"},
+    "Legea 141/2025": {"id": 300022, "text_integral": true, "titluri_articol": 164},
+    "Legea 201/2025": {"id": 304840, "text_integral": true, "titluri_articol": 5},
+    "Legea 296/2020": {"id": 235513, "text_integral": true},
+    "Legea 70/2015": {"id": 167088, "text_integral": true},
+    "OG 16/2022": {"id": 257589, "text_integral": true, "titluri_articol": 39},
+    "OUG 156/2024": {"id": 293109, "text_integral": true, "titluri_articol": 179},
+    "OUG 50/2015": {"id": 172600, "text_integral": true, "titluri_articol": 10},
+    "OUG 8/2026": {"id": 307580, "text_integral": true, "titluri_articol": 32},
+    "OUG 89/2025": {"id": 305817, "text_integral": true, "titluri_articol": 105},
+    "OUG 115/2023": {"id": 277404, "text_integral": true},
+    "HG 146/2026": {"id": 308231, "text_integral": true},
+    "HG 1506/2024": {"id": 291450, "text_integral": true},
+    "HG 276/2013": {"id": 148545, "text_integral": true},
+    "Ordin 4679/2024": {"id": 288823, "text_integral": true},
+    "Ordin 484/2025": {"candidati": [294945, 295977], "nota": "DOUA forme in portal: 11/02/2025 si 18/03/2025. Registrul citeaza OMF 484/2025 pentru tichetul de masa 40,18 lei, semestrul I 2025 - care dintre ele o poarta nu s-a citit inca, deci nu se alege."}
+  }
+}

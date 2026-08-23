@@ -49,7 +49,14 @@ def cauta(tip, numar, an):
     tok = re.search(r'name="__RequestVerificationToken"[^>]*value="([^"]+)"', h).group(1)
     sel = re.search(r'<select[^>]*id="DocumentType".*?</select>', h, re.S).group(0)
     val = re.findall(r'<option[^>]*value="([^"]*)"[^>]*>([^<]*)</option>', sel)
-    cod = [v for v, t in val if t.strip().upper().startswith(tip.upper())]
+    # Portalul livreaza etichetele HTML-ESCAPATE: „HOTAR&#194;RE" pentru HOTARARE. Comparate asa
+    # cum vin, tipurile cu diacritice codate ca entitati sunt DE NEATINS - masurat 23.08.2026:
+    # HG-urile din registrul de cote (HG 146/2026, 1506/2024, 276/2013) nu se puteau cauta deloc,
+    # iar mesajul de eroare arata o lista in care „HOTARARE" chiar lipsea. Se deschid intai.
+    def _et(x):
+        return _html.unescape(x).strip().upper()
+
+    cod = [v for v, t in val if _et(t).startswith(tip.upper())]
     if not cod:
         sys.exit("tip de document necunoscut: %r (optiuni: %s)"
                  % (tip, [t.strip() for _v, t in val][:20]))
