@@ -4377,3 +4377,22 @@ răspunde la *„câte s-au blocat de mai multe ori"*; `încercări` la *„cât
 Cele două nu se confundă: **R10 a fost încercată o dată și închisă în două minute, fără să fi fost
 vreodată reluată** — cu un singur contor, munca aia era invizibilă. Gardat: câmpul e obligatoriu pe
 fiecare restanță, e număr, iar `reluări > încercări` e incoerent și pică.
+
+**Primul instrument care citește JavaScript** (`core/scan_js_texte.py`, `core/test_scan_js_texte.py`,
+23.08.2026). Punctul orb declarat la interdicția 16 — 37 de fișiere, 15.125 de rânduri pe care niciun
+instrument nu le citea — are de azi un scan. Măsoară frazele care ajung la om, grupate pe textul
+normalizat: **1.785 de fraze, 143 în mai multe locuri**.
+
+**Ce e nou la felul cum a fost construit: calibrarea negativă s-a scris ÎNAINTE de prima măsurătoare.**
+Interdicția 76 avea patru instanțe, toate prinse târziu. Cele **șase moduri** pe care un scan de
+JavaScript le poate greși sunt enumerate în antetul instrumentului, iar fiecare are un caz în gardă
+(17 teste): backtick · comentariu · **`//` dintr-un șir care NU începe un comentariu** (un regex
+greșește aici pe orice URL) · ghilimele dintr-un comentariu · zgomotul · anti-vacuu.
+
+**Trei moduri sunt NEACOPERITE — și fiecare e probat printr-un test, nu doar declarat:** concatenarea,
+eticheta de un cuvânt, textul din `.html`. *Un mod de eșec declarat și demonstrat e o limită; unul
+declarat și nedemonstrat e o speranță.*
+
+**Și euristica s-a strâns înainte de a raporta cifra, nu după:** prima formă lăsa să treacă fragmente
+de markup (`> <div class=`, `).forEach((b) => ...`) — 214 „duplicări" din care o parte era zgomot.
+După scoaterea învelișului HTML și a sintaxei de cod: **143**, toate fraze reale.

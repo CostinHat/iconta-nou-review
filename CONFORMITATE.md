@@ -468,13 +468,13 @@ condiția de deblocare e un MOMENT din plan).
 de câte ori a fost reluată fără rezultat. Trei reluări fără rezultat înseamnă că **condiția de
 deblocare e scrisă greșit**, nu că restanța e grea; atunci se rescrie condiția, prin decizie.
 
-**DOUĂ CONTOARE, nu unul (23.08.2026).** `reluări` numără de câte ori o restanță a fost **reluată
-după ce blocajul ei a dispărut** — răspunde la *„câte s-au blocat de mai multe ori"*. `încercări`
-numără de câte ori **s-a încercat**, indiferent dacă blocajul căzuse — răspunde la *„câte au fost
-atinse vreodată"*. Cele două nu se confundă: R10 a fost **încercată** o dată și închisă în două
-minute, fără să fi fost vreodată **reluată**. **Limita, scrisă:** amândouă se văd doar pe restanțele
-DESCHISE, deci o restanță încercată și închisă își ia dovada cu ea — de-aia secțiunea B le arată și
-pe cele rezolvate.
+**UN SINGUR CONTOR, și motivul pentru care al doilea a fost RETRAS (23.08.2026).** Am adăugat un
+câmp `încercări`, distinct de `reluări`, fiindcă *„câte au fost încercate"* nu se numără nicăieri.
+**Retras în aceeași zi, la decizia lui Costin, și argumentul e mai bun decât al meu:** era un câmp
+**întreținut manual** pe fiecare secțiune, purtând o informație **derivabilă din git** — exact clasa
+care a stricat antetul de patru ori. Iar *„prima încercare"* nu se poate defini fără arbitrar: o
+citire atentă e o încercare? o măsurătoare care n-a dus nicăieri? **Un contor care cere o convenție ca
+să fie completat nu e o măsurătoare, e o opinie numerotată.**
 
 **Contorul de commituri NU se scrie**: se derivă din git — câte commituri au atins `CONFORMITATE.md` de când s-a
 deschis restanța. **Numără commituri, nu ture** — o tură poate produce mai multe, deci contorul urcă
@@ -526,7 +526,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E2 · fără interdicție (corpusul, precondiția lui 49–59)
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `45f15ab`
 - **ce blochează**: orice temei sprijinit pe un act adus parțial se citește ca „regula nu există", nu ca „pagina lipsește". Instanța cunoscută: OMFP 2634/2015, o anexă din trei — registrul de casă părea absent din lege.
@@ -538,7 +537,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E2 · interdicțiile 49, 54
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: REZOLVATĂ
 - **rezolvată pe commit**: `c7bcddb`
 - **deschisă pe commit**: `45f15ab`
@@ -561,7 +559,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E1 · faza 1, familia B
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `45f15ab`
 - **ce blochează**: componența situațiilor financiare depinde de categoria de mărime (micro / mică / mijlocie-mare). Nu e câmp în `firma_profil`, nu apare în vectorul fiscal.
@@ -575,7 +572,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E2 · interdicția 52
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `45f15ab`
 - **ce blochează**: o formă inițială dă valori reale, dar ale altui an, și nu se deosebește de o formă la zi decât dacă o întrebi. Instanța: criteriile de mărime, scrise în EUR din forma 2014, corectate în aceeași zi.
@@ -587,7 +583,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E2 · interdicțiile 50, 52
 - **reluări**: 1
-- **încercări**: 1
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `07d5351`
 - **ce blochează**: **măsurat înainte de a fi scris, nu presupus.** Din **529** de fișiere în `INDEX.json`, **47 poartă cel puțin un marcaj** (21 `forma_la_data` · 9 `consolidat_la_zi` · 11 detectate ca formă inițială · 2 abrogate · 2 cu text neextractibil), iar **18** dintre ele sunt legate de cote. **Patru poartă o notă explicită** — avertismente scrise de om: *„forma initiala 2014; NU include Ordinul 1239/2021…"* (`omfp_1802_2014.pdf` — chiar fișierul care a produs cifra falsă) · *„consolidare 2018, nu la zi"* · *„sursa legex.ro, neoficiala"* · *„abrogat de HG 773/2019 … HG 773/2019 nu e in corpus"*. **Cine citește marcajele: doar `gen_index.py` însuși și două gărzi.** Nimic la punctul de folosire — cine deschide fișierul ca să ia o valoare nu vede nimic. Asta nu e o instanță, e clasa din care instanța a ieșit.
@@ -601,7 +596,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E2 · interdicția 52
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `07d5351`
 - **ce blochează**: `legea_82_1991_consolidat.html` a apărut modificat față de commit — 1629 de linii — **fără ca vreun script al turei să-l scrie**. Textul extras era identic; diferența e în chrome-ul paginii. Dacă ceva scrie în corpus fără să știm ce, interdicția 52 e păzită împotriva unui **simptom**, nu a cauzei: data viitoare diferența poate fi în text. **Ce s-a verificat deja, ca să nu se refacă:** niciun fișier `.py` din repo nu scrie în `anaf_surse/` (căutare pe `open(...,"w")`, `write(`, `urlretrieve`, `shutil.copy/move`) · singurul client HTTP din vecinătatea corpusului e `core/monitor_fiscal.py`, care **nu scrie fișiere** (trimite email și scrie în DB) · `gen_index.py` doar CITEȘTE fișierele, scrie numai `INDEX.json`.
@@ -613,7 +607,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E3 · faza 4 (instrumentele)
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `2375d54`
 - **ce blochează**: **un câmp completat pe care nimic nu-l verifică arată identic cu unul verificat.** Instanța cunoscută nu e mică: corpusul avea **177 de amprente** și **niciun test care să le compare cu fișierele** — gardat ca prezență (fișierul `.sha256` există), necontrolat ca adevăr (nimeni nu recalcula hash-ul). Clasa e mai largă decât corpusul: `CONFORMITATE.md` gardează prezența câmpurilor `cifra`, `instanțe`, `calibrare`, `ce nu vede`, `pe commit`; `TESTE.md`, `GARZI.md`, `ISTORIC_TENANTI.md` au și ele câmpuri obligatorii. Pentru fiecare dintre ele se poate întreba dacă există un al doilea control, cel de adevăr — și **răspunsul nu e măsurat**.
@@ -625,7 +618,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E3 · interdicția 21
 - **reluări**: 1
-- **încercări**: 1
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `1eaecbb`
 - **ce blochează**: la prima citire, cele 15 potriviri ale interdicției 21 au fost triate **pe linie**; trei dintre cele numite zgomot merită a doua privire, **pe context**. Verificate azi, toate trei există în cod: `core/d223.py:159` — `len(asociati) == 1 and cota == Decimal(100)` (regula „100% doar cu un singur asociat"); `core/d406.py:1338` și `:1367` — `cota_l == 0` / `cota == 0` decid codul fiscal `300101` vs `300501`. Dacă vreuna e o **interpretare**, nu o regulă de lege, e o alegere făcută la scriere — adică exact interdicția 21, iar cifra „2 reale" rămâne plafon inferior. **Consemnate până azi doar în proză**, în patru locuri (`GARZI.md`, `ISTORIC.md`, `PREDARE_LANT.md`, câmpul „ce nu vede" al secțiunii 21) — nicăieri cu stare și condiție.
@@ -643,7 +635,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E5 · fără interdicție (e o propunere vizuală, nu o clasă)
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `1eaecbb`
 - **ce blochează**: semnalul de contradicție și butoanele emite/corectează **nu sunt în interfață**; capabilitatea e ajunsă prin API. Propunerea vizuală în cinci puncte așteaptă din 22.08. Reorganizarea unui ecran cere confirmare, deci nu se face în trecere — dar tocmai de aceea are nevoie de un loc cu stare, nu de un rând în `PREDARE_LANT.md`, care se rescrie la fiecare predare.
@@ -655,7 +646,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E1 · fără interdicție (e disciplină de proces)
 - **reluări**: 1
-- **încercări**: 1
 - **stare**: REZOLVATĂ
 - **rezolvată pe commit**: `2bf9204`
 - **deschisă pe commit**: `1eaecbb`
@@ -669,7 +659,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E3 · faza 3b (triajul)
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `1eaecbb`
 - **ce blochează**: zece poziții de forma „găsit, NU se repară acum", care trăiesc numai ca proză în `GARZI.md`, în afara ferestrei de două zile. **Enumerate aici, o linie fiecare — răspuns la întrebarea 4:** transcrierea *prozei* ar fi mutat proză în proză, dar **numirea** lor nu e transcriere, e indexare: diferența dintre „nouă lucruri necunoscute" și „nouă lucruri numite" e exact ce a produs auditul.
@@ -691,7 +680,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E1 · faza 1, pasul 1b · interdicția 17
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: REZOLVATĂ
 - **deschisă pe commit**: `cbf7b67`
 - **rezolvată pe commit**: `42c9e85`
@@ -705,7 +693,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E1 · faza 1, pasul 1b
 - **reluări**: 1
-- **încercări**: 1
 - **rezolvată pe commit**: `c22a0c5`
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `44d30cf`
@@ -723,7 +710,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E3 · interdicția 17
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `4853dfb`
 - **ce blochează**: `facturi_api.creeaza_factura` creează cu `status="emisa"` (7 apelanți), `facturi_api.emite_factura` cu `status="de_preluat"` (6 apelanți), iar modelul `FacturaIn` (`main.py:811`) are tot `"emisa"`. **Nu există nicio tranziție între ele** — starea unei facturi e decisă o dată, la creare, de care funcție a fost chemată, și nu se mai schimbă niciodată.
@@ -763,7 +749,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E3 · interdicțiile 11, 12
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `4853dfb`
 - **ce blochează**: `test_cale_a_doua` verifică **importul** — calea a doua nu importă modulul verificat. Dar Partea V spune și *„nu-i copiază constantele"*, iar **o condiție SQL identică e o constantă compusă**. Măsurat pe cele 9 perechi `*_reconciliere.py`: **7 condiții identice, pe 3 perechi** — `d300` 4 (`COALESCE(f.taxare_inversa, false) = false`, `COALESCE(f.furnizor_tva_incasare, false) = true`, `NOT (f.directie = 'primita'…`), `d394` 2, `d101` 1. Exact clasa care a produs defectul de azi: filtrul pe status era a 5-a, iar reconcilierea n-a prins omisiunea fiindcă **vedea aceeași realitate trunchiată**. **Cifra e plafon inferior:** metoda compară fragmente textuale normalizate, deci nu vede o condiție rescrisă cu altă ordine sau alt alias; iar 2 din cele 7 sunt fragmente lungi de SELECT, tăiate imperfect de instrument — deci **~5 reale**.
@@ -776,7 +761,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E3 · faza 4 (instrumentele) · interdicția 18
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `554ae17`
 - **ce blochează**: docstringul din `core/export_saga.py:157` spunea că *„WinMentor cere `status='emisa'` — doar facturi emise corect, nu `de_preluat`/`anulata`"*. **Era invers, și era invers de la scriere:** F187-fix scosese tocmai acel filtru din WinMentor. **Nu e aceeași clasă cu doc-stătut** — acolo codul se schimbă sub un text care fusese adevărat; aici textul n-a fost adevărat niciodată. **Măsurat, cu proxy declarat:** docstringuri care afirmă `param='valoare'` pentru un parametru **al lor**, contrazis de semnătură — **1 instanță** (`core/observare.py:114`, `trimite_email_html()`: docstringul zice `expeditor_nume='<Firma> prin iConta'`, semnătura are `'iConta.eu'`). **Cifra e plafon inferior, și limita e chiar cazul care a produs restanța:** o afirmație despre **alt modul** — ce cere WinMentor — **n-are proxy mecanic**. Se poate verifica doar citind ambele module.
@@ -788,7 +772,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E3 · faza 4 (instrumentele) · interdicțiile 61–62 (lista dependenților)
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: REZOLVATĂ
 - **rezolvată pe commit**: `c7bcddb`
 - **deschisă pe commit**: `4033a14`
@@ -838,7 +821,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E3 · faza 4 (instrumentele) · interdicția 19 (gardă care raportează favorabil pe zero rânduri)
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `241acf4`
 - **ce blochează**: `test_secventa_persistata_e_topologica` și `test_secventa_persistata_e_actuala` verifică **ordinea** celor 64 de clustere contra grafului. **Secvența calculată = 0, persistată = 0** de pe **04.08.2026**, când campania s-a epuizat. Deci de **19 zile** cele două trec fără să compare nimic, iar repararea grafului (R17) **nu le-a schimbat cu nimic** — nu sunt verzi din corectitudine, sunt verzi din **vacuitate**, și nu pot deveni roșii până nu mai există clustere de ordonat. **Ce e totuși gardat, și trebuie spus:** mecanismul în sine — `test_secventa_prinde_inversiune` rulează checker-ul topologic pe date sintetice (X depinde de Y) și chiar prinde inversiunea. E vidă **verificarea pe date reale**, nu unealta.
@@ -851,7 +833,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E3 · faza 4 (instrumentele) · interdicțiile 61–62 (lista dependenților)
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: REZOLVATĂ
 - **rezolvată pe commit**: `f189b81`
 - **deschisă pe commit**: `241acf4`
@@ -876,7 +857,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E2 · interdicția 52 (corpusul)
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: REZOLVATĂ
 - **rezolvată pe commit**: `9510c94`
 - **deschisă pe commit**: `139bca5`
@@ -892,7 +872,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · faza 1 (setul complet) · triaj pragul 3, poziția 1
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: REZOLVATĂ
 - **rezolvată pe commit**: `936aeb3`
 - **deschisă pe commit**: `57c8189`
@@ -913,7 +892,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · faza 1 · D406 (SAF-T) · criteriile minimale de program
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: REZOLVATĂ
 - **rezolvată pe commit**: `46adff1`
 - **deschisă pe commit**: `936aeb3`
@@ -934,7 +912,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E3 · faza 4 (instrumentele) · vecin cu interdicția 16 (proza care descrie codul poate fi falsă)
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `f189b81`
 - **ce blochează**: întrebarea lui Costin, 23.08.2026: *„un import mort nu e defect, dar e semnal — la fel ca `jurnal: str = «GENERAL»`, care a stat trei săptămâni ca urmă a unei intenții. Merită verificat ce mai era început acolo."* **Scanat, AST, pe cele nouă module de declarație** — nume declarate la nivel de modul sau de `dataclass` pe care nimic din modul nu le citește: `d205` — `Beneficiar.categ`, `Beneficiar.castig1`, `Beneficiar.pierdere1` · `d300` — `REGULI`, `_LIVRARE_RAND`, `_ACHIZ_RAND` · `d301`, `d390` — `REGULI` · `d406` — `REGULI`, `MISCARI_STOC`, `MOVEMENT_IMPLICIT`, `TAB_VALORI`, `Partener.adresa`, `Factura.partener_nume`. **Separat, importuri nefolosite (ruff F401) în `core/` + `main.py`: 90.**
@@ -948,7 +925,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E3 · faza 4 (instrumentele) · vecin cu R18 (secvența care nu poate deveni roșie)
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `25b07c0`
 - **ce blochează**: după repararea proprietății (R19), ciclurile din graful de clustere au scăzut de la **321 la 3**, toate în familia salarizării: *facilitate salariu minim* ↔ *deducere personală* ↔ *concedii medicale*. Le-am numit *„par dependențe reciproce reale"* și nu le-am atins. **Observația lui Costin, care schimbă întrebarea:** o dependență reciprocă **reală** înseamnă că **nu există ordine de verificare între ele** — iar atunci **sortarea topologică nu le acoperă**, oricât de curat ar fi graful. Secvența ar trece peste ele într-o ordine arbitrară, fără să spună că e arbitrară.
@@ -960,7 +936,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E3 · faza 4 · interdicția 1 (valori fiscale în afara registrului)
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: REZOLVATĂ
 - **rezolvată pe commit**: `2bf9204`
 - **deschisă pe commit**: `25b07c0`
@@ -983,7 +958,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E3 · interdicțiile 1 și 14 · **PRAG 3** *(ridicat greșit la prag 1 pe 23.08 și coborât în aceeași zi — vezi «CORECTARE» mai jos)*
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `c22a0c5`
 - **ce blochează**: întrebarea lui Costin — *„zece module au aceeași cotă scrisă de zece ori ca valoare implicită. Când s-a schimbat de la 19 la 21, câte au fost actualizate, și de unde știm?"* — a scos o clasă mai mare decât cifra care a produs-o. **Măsurat, AST, pe tot `core/` + `main.py`: 25 de funcții au `cota = 21` ca default de parametru** (nu 10 — cifra de 10 era pe clasa C a scanului, deci pe modulele nesursate), iar **23 de apeluri de PRODUCȚIE lasă defaultul să lucreze** — **22 din ele în `main.py`**, adică în rute.
@@ -1007,7 +981,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E2 · interdicțiile 54, 55
 - **reluări**: 0
-- **încercări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `bde0502`
 - **ce blochează**: `common.cote_neconfirmate(luni=6)` aplică un **prag global unic de 6 luni** tuturor valorilor — exact ce interdicția 55 numea drept defect, și exact ce **decizia de azi a înlocuit** cu un tabel de nouă căsuțe (`VOLATIL/MIȘCĂTOR/STABIL` × `DEPUS/CALCULAT/INFORMATIV`, de la 1 la 18 luni). Găsit la triajul celor 35 de defaults cu valoare, cerut de Costin: *„valoarea de acum e cea în vigoare, sau e una veche care a supraviețuit?"* — aici nu e nici una, nici alta: e o valoare pe care **propria noastră decizie a depășit-o acum câteva ore**. Raportul intern de cote neconfirmate spune deci, azi, altceva decât regula scrisă în registru.
@@ -2360,13 +2333,14 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 29 — O frază fixă de interfață fără cheie și loc unic
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: PARȚIAL
+- **felul limitei**: DOMENIU — regiunea lăsată afară e **numită și probată**: etichetele de un singur cuvânt, frazele prin concatenare, textul din `.html`. Fiecare are un caz în calibrare
+- **măsurat la**: 2026-08-23
+- **pe commit**: `9af74be`
+- **cifra**: **1.785 de fraze de interfață** în `static/js/` (37 de fișiere, 15.125 de rânduri), din care **143 apar în MAI MULTE LOCURI** — adică fără «loc unic». Vârfurile: *«Se încarcă…»* în **26** de locuri · *«Eroare la salvare.»* în **22** · *«Cotă TVA %»* în **12**. Cifra e un **plafon inferior**: nu vede etichetele de un cuvânt, nici frazele concatenate, nici textul din `.html`
+- **instanțe**: cele 143. Cea mai instructivă nu e cea mai frecventă: *«Se încarcă...»* (cu trei puncte) și *«Se încarcă…»* (cu puncte de suspensie) sunt **două fraze pentru scan și una singură pentru om** — 26 de locuri într-o formă, 14 în cealaltă. Exact efectul scris la interdicție: *se schimbă într-un loc și rămâne veche în celelalte*
+- **calibrare**: **GĂSITĂ, și scrisă ÎNAINTE de prima măsurătoare** — prima dată când interdicția 76 se aplică înainte, nu după. Cele șase moduri de eșec ale unui scan care citește JavaScript sunt enumerate în antetul instrumentului, iar fiecare are un caz în `core/test_scan_js_texte.py` (**17 teste**): backtick cu `${}` normalizat · comentariu care nu se numără · **`//` dintr-un șir care NU începe un comentariu** (cazul pe care un regex îl greșește pe orice URL) · ghilimele dintr-un comentariu care nu deschid un șir · zgomotul (selectoare, clase, chei, markup) · anti-vacuu pe numărul de fraze și de fișiere. **Prima formă a euristicii a fost prea largă** — lăsa să treacă fragmente de markup — și s-a strâns **înainte** de a raporta cifra, nu după
+- **ce nu vede**: **trei moduri NEACOPERITE, fiecare probat printr-un test, nu doar declarat**: (a) fraza construită prin **concatenare** — scanul vede bucata, nu fraza; (b) eticheta de **un singur cuvânt**, fiindcă euristica cere un spațiu; (c) textul din **`.html`**, în afara domeniului, deci o duplicare reală poate fi raportată drept «loc unic». Cifra e un **plafon inferior**. *Un mod de eșec declarat și demonstrat e o limită; unul declarat și nedemonstrat e o speranță.*
 - **unde ajunge efectul**: aceeași frază se schimbă într-un loc și rămâne veche în celelalte: două ecrane spun altceva despre aceeași stare, iar contabilul nu poate ști care e cel actualizat
 
 ## 30 — Două stări distincte cu aceeași etichetă

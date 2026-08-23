@@ -11523,3 +11523,23 @@ restanțele deschise, deci o restanță încercată **și închisă** își ia d
 **3. Consecința practică pentru cerințe noi, în `PLAN_LUCRU.md`:** la fiecare cerință nouă, **prima
 întrebare e „se poate cabla?"** — iar dacă da, se cablează **atunci**, nu peste patruzeci de commituri.
 Motivul e măsurat: forma `atinge:` era cablabilă de la început și n-a fost cerută nimănui.
+
+## 23.08.2026 (a paisprezecea tură) — al doilea contor RETRAS, primul instrument JS construit
+
+**1. Contorul `încercări`, retras în aceeași zi în care l-am adăugat.** Argumentul lui Costin e mai bun
+decât al meu: era un câmp **întreținut manual** pe fiecare secțiune, purtând informație **derivabilă din
+git** — exact clasa care a stricat antetul de patru ori. Iar *„prima încercare"* nu se poate defini fără
+arbitrar: o citire atentă e o încercare? o măsurătoare care n-a dus nicăieri? **Un contor care cere o
+convenție ca să fie completat nu e o măsurătoare, e o opinie numerotată.**
+
+**2. Instrumentul JS, construit — și interdicția 76 aplicată ÎNAINTE, prima dată.** Cele șase moduri de
+eșec ale unui scan care citește JavaScript s-au scris în antetul instrumentului **înaintea primei
+măsurători**, fiecare cu un caz în gardă. Trei sunt neacoperite și **probate ca atare**.
+
+**3. Și calibrarea și-a dovedit rostul imediat:** prima formă a euristicii raporta **214** duplicări,
+din care o parte erau fragmente de markup. Strânsă **înainte** de a raporta cifra: **143**, toate fraze
+reale. Fără calibrarea scrisă întâi, cifra de 214 ar fi intrat în registru.
+
+**4. Interdicția 29: PARȚIAL.** 1.785 de fraze, **143 fără loc unic**. Instanța cea mai instructivă nu e
+cea mai frecventă: *„Se încarcă..."* și *„Se încarcă…"* sunt două fraze pentru scan și una pentru om —
+26 de locuri într-o formă, 14 în cealaltă. Chiar efectul scris la interdicție.

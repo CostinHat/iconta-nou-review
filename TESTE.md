@@ -1962,3 +1962,9 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   (69,42), nu cota pe preț (210,00), iar cota istorică dă altă cifră (63,87).
 - **`core/test_reaprindere.py`** — 8 teste: adăugate cele două pe contorul `încercări` (obligatoriu,
   număr, coerent cu `reluări`).
+
+- **`core/test_scan_js_texte.py` (23.08.2026)** — 17 teste, **calibrarea scrisă înaintea măsurătorii**:
+  M1 backtick cu `${}` normalizat · M2 comentarii, în ambele direcții (`//` din șir, ghilimele din
+  comentariu) · M3 zgomotul, pe șapte forme, plus limita declarată (eticheta de un cuvânt) și
+  contra-direcția (fraza scurtă cu diacritice **e** văzută) · M4 concatenarea, **probată ca
+  neacoperită** · M5 domeniul e doar `.js`, probat · M6 anti-vacuu pe fraze, fișiere și duplicări.
