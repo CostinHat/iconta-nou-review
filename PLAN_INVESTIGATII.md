@@ -220,7 +220,11 @@ Cel puțin: **6** (`test_get_fara_scriere`, 2 din 168) · **7** (statul append-o
 
 **De adăugat:** interdicțiile 49–75 n-au secțiuni în `CONFORMITATE.md` — registrul a fost scris când erau 48. **FĂCUT (23.08.2026)**: registrul are azi **76** de secțiuni.
 
-**STARE, verificată pe 23.08.2026:** transferul **nu a început**. Toate cele douăsprezece numite mai sus — 6, 7, 8, 9, 10, 11, 12, 13, 14, 20, 26, 34 — scriu încă `NEÎNCEPUTĂ` în `CONFORMITATE.md`. **Zero transferate.**
+**FĂCUT pe 23.08.2026**, la cererea lui Costin, **înaintea continuării triajului.** Rezultatul, pe cele douăsprezece: **1 MĂSURATĂ** — **6** (0 rute GET care scriu, din 172; calibrată prin mutația care repune scrierea istorică) · **8 PARȚIAL** — **9** (14 afirmații netipate în scop, din 80) · **10** (9 verdicte netipate) · **11** (9 din 9 reconcilieri cu `test_non_tautologie`) · **13** (274 de mesaje în 31 de fișiere, sub clichet) · **14** (129 de definiții cu `=None`) · **20** (§5 = 4 fațete din 9) · **26** (13 comparații neclasificate) · **34** (poarta chemată din 4 module) · **3 rămân NEÎNCEPUTE** — **7**, **8**, **12**.
+
+**De ce rămân trei.** Regula transferului — *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ* — s-a aplicat, nu s-a ocolit: pentru 7 („statul append-only") și 8 („`UNIQUE` ridicat") nu există nicăieri o cifră pe domeniu, doar proză despre instanțe și o reparație; pentru 12, instanța din 06.08 e reală, dar o instanță nu e o numărătoare. **Contorul de NEÎNCEPUTE scade de la 50 la 41, nu la 38** — și diferența e scrisă, nu ascunsă.
+
+**Ce s-a mai închis odată cu transferul:** punctul *„de reparat: câmpul «unde ajunge efectul» a fost completat pe grupuri"* **nu mai cere trecere manuală** — e gardat viu de `core/test_conformitate.py`, care pică dacă două interdicții împart același text.
 
 ### 3b — Triajul
 

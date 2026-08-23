@@ -30,7 +30,7 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **FAZA 2 — TEMEIURILE: încheiată.** Toate interdicțiile măsurabile sunt măsurate, iar **50 e acum MĂSURATĂ, nu PARȚIAL**: **16 din 16** perechi act-articol au confirmarea **ulterioară** ultimei modificări, **zero instanțe**, iar fiecare valoare e confirmată **verbatim** în textul articolului ei. Blocajul Codului fiscal s-a dizolvat: actul **nu e servit ca pagină unică** de portal, dar e **deja în corpus, amprentat** — `vigoare_articol.py` a primit mod de fișier local și vede **2,5 milioane de caractere, 1.849 de articole**. **52 e și ea închisă** (23.08, `7663e87`), dar nu prin amprentarea a tot ce mișcă: cifra *162 fără amprentă* era ea însăși greșită — scădea două domenii diferite (real 170) — iar amprentarea mecanică ar fi umflat acoperirea fără s-o crească, fiindcă **151** sunt text derivat din fișiere deja amprentate și **7** sunt note scrise de noi. Domeniul e acum complet — **348 din 348 clasificate** — prin declarație de proveniență, nu prin hash-uri. Rămâne **61** (domeniu mic) ca PARȚIAL. **TRIAJUL E PORNIT** (23.08, decizia lui Costin): pragul 2 s-a golit pe trei sferturi într-o zi — rămân `R19` și `scan_constante`, amândouă din familia *instrument fără calibrare pe propriul mod de eșec* (interdicția 76). Pragul 3 începe cu **cele trei artefacte obligatorii prin lege** — Cartea mare, Registrul-inventar, registrul de evidență fiscală. Din cele trei poziții care cereau decizie, **două s-au închis pe 23.08**: **categoriile lui 55** (axa, fereastra de **3 ani**, coloana `INFORMATIV` coborâtă la **3 · 6 · 12**) și **R14**, care nu mai e decizie de nomenclator ci **migrare, la reparații**; **R18 rămâne deschisă prin decizie**, până există date care generează clustere. **Triajul a produs și o corectare a lui însuși**: pozițiile se atribuiseră după *numele* funcțiilor, nu după ce produc — **patru artefacte reclasificate, în ambele direcții** — iar **3a (transferul retrospectiv) intră înaintea următoarei ture de triaj**, fiindcă cele **douăsprezece** interdicții măsurate în campanii vechi scriu încă NEÎNCEPUTĂ. Restanță nouă: **R21** — forma de înregistrare în contabilitate, precondiție pentru Cartea mare.
+- **pasul curent**: **FAZA 2 — TEMEIURILE: încheiată.** Toate interdicțiile măsurabile sunt măsurate, iar **50 e acum MĂSURATĂ, nu PARȚIAL**: **16 din 16** perechi act-articol au confirmarea **ulterioară** ultimei modificări, **zero instanțe**, iar fiecare valoare e confirmată **verbatim** în textul articolului ei. Blocajul Codului fiscal s-a dizolvat: actul **nu e servit ca pagină unică** de portal, dar e **deja în corpus, amprentat** — `vigoare_articol.py` a primit mod de fișier local și vede **2,5 milioane de caractere, 1.849 de articole**. **52 e și ea închisă** (23.08, `7663e87`), dar nu prin amprentarea a tot ce mișcă: cifra *162 fără amprentă* era ea însăși greșită — scădea două domenii diferite (real 170) — iar amprentarea mecanică ar fi umflat acoperirea fără s-o crească, fiindcă **151** sunt text derivat din fișiere deja amprentate și **7** sunt note scrise de noi. Domeniul e acum complet — **348 din 348 clasificate** — prin declarație de proveniență, nu prin hash-uri. Rămâne **61** (domeniu mic) ca PARȚIAL. **TRIAJUL E PORNIT** (23.08, decizia lui Costin): pragul 2 s-a golit pe trei sferturi într-o zi — rămân `R19` și `scan_constante`, amândouă din familia *instrument fără calibrare pe propriul mod de eșec* (interdicția 76). Pragul 3 începe cu **cele trei artefacte obligatorii prin lege** — Cartea mare, Registrul-inventar, registrul de evidență fiscală. Din cele trei poziții care cereau decizie, **două s-au închis pe 23.08**: **categoriile lui 55** (axa, fereastra de **3 ani**, coloana `INFORMATIV` coborâtă la **3 · 6 · 12**) și **R14**, care nu mai e decizie de nomenclator ci **migrare, la reparații**; **R18 rămâne deschisă prin decizie**, până există date care generează clustere. **Triajul a produs și o corectare a lui însuși**: pozițiile se atribuiseră după *numele* funcțiilor, nu după ce produc — **patru artefacte reclasificate, în ambele direcții** — iar **3a (transferul retrospectiv) intră înaintea următoarei ture de triaj**, fiindcă cele **douăsprezece** interdicții măsurate în campanii vechi scriu încă NEÎNCEPUTĂ. **Transferul retrospectiv 3a e FĂCUT** (23.08, înaintea continuării triajului): din cele douăsprezece, **1 MĂSURATĂ · 8 PARȚIAL · 3 rămân NEÎNCEPUTE** — deci NEÎNCEPUTELE scad de la 50 la **41**, iar triajul nu mai ordonează pe poziții necunoscute. **Poziția 2 a triajului, verificată**: *„totul e calculat"* e adevărat pe jumătate — temeiul pe ecran și desfacerea unei poziții sunt **construcție**, nu predare, deci ordinea *L5 înaintea lui L3* se îngustează la cele două intrări care chiar sunt predare. Restanțe: **R21** (forma de înregistrare) **s-a închis în ziua în care s-a deschis** — Fișa de cont înlocuiește Cartea mare în ambele forme; în locul ei, **R22**: jurnalul de origine pleacă la ANAF ca literalul `GENERAL`.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
@@ -194,7 +194,7 @@ producție, deci o gaură în el ar coborî o cifră fără ca nimic să se schi
 | ordine | ce | cifra | fel de muncă |
 |---|---|---|---|
 | **1** | **L3 obligatorii prin lege** — Cartea mare, Registrul-inventar, registrul de evidență fiscală | **nu 3 la fel**: unul lipsește complet (evidența fiscală), unul e de construit (Cartea mare), unul **are producător și ecran** (Registrul-inventar) — *corectat 23.08, vezi mai jos* | construcție pentru două; **îngustare** pentru al treilea |
-| **2** | **L5 — predare** (temeiul pe ecran, balanța pe ecran, componentele fluturașului, desfacerea unei poziții) | 10 din 11 artefacte | ore: totul e calculat, se oprește înainte de ecran |
+| **2** | **L5 — predare** (temeiul pe ecran, balanța pe ecran, componentele fluturașului, desfacerea unei poziții) | **verificat 23.08: 2 din 4 intrări nu sunt predare** | **ore** pentru balanță și fluturaș · **zile** pentru temeiul pe ecran și desfacere |
 | **3** | **L5 — interdicția 65** (explicația diferenței față de luna anterioară) | 0 mecanisme în Python, 0 în JS | **zile, nu ore** — nu e nepredat, e nescris |
 | **4** | **restul L3** — bilanț/CPP fără rute, note explicative, registrul-jurnal, evidența TVA, jurnalul de marjă, categoria de mărime | 6 artefacte, din care **două au deja producător și rută** (`jurnal-marja`, `jurnal`) — *corectat 23.08* | construcție pentru patru; **predare** pentru jurnalul de marjă |
 | **5** | **60 — legătura normă↔implementare** | **374 din 470** de elemente nu poartă nimic; structurile de declarație, termenele și validările au **zero** legături structurate | mare, dar se poate tăia pe categorii |
@@ -220,7 +220,7 @@ clasificate pe existența unui nume?** Verificat, cele 7 poziții ale pragului 3
 | poziția | pe ce stă clasificarea | verdict 23.08 |
 |---|---|---|
 | **1** — L3 obligatorii | prezența unui nume de funcție | **greșită de două ori, în direcții opuse** |
-| **2** — L5 predare (*„totul e calculat"*) | afirmație de prezență, **neverificată artefact cu artefact** | **suspectă — următoarea de verificat** |
+| **2** — L5 predare (*«totul e calculat»*) | afirmație de prezență, sprijinită pe o numărătoare de nume | **VERIFICATĂ 23.08 — greșită pe 2 din 4** |
 | **3** — interdicția 65 | absență măsurată (0 în Python, 0 în JS) | ține |
 | **4** — restul L3 | inventar de rute | **greșită pe două din șase** |
 | **5** — 60 | numărătoare (374 din 470) | ține |
@@ -252,6 +252,35 @@ norma — nu după numele funcției și nu după existența rutei.* Greșeala me
 un nume potrivit a creditat un motor inexistent, iar lipsa unui nume căutat a ascuns două artefacte
 care există. Costul de a nu o respecta nu e simetric: prima direcție amână o construcție necesară, a
 doua o pornește degeaba.
+
+#### CORECTARE 23.08 (a doua) — poziția 2 verificată: «totul e calculat» e adevărat pe jumătate
+
+Întrebarea lui Costin: *„Cele 11 artefacte din L5 au fost clasificate pe același criteriu care a greșit
+de patru ori? Dacă da, «L5 costă ore» — argumentul pe care am ordonat L5 înaintea lui L3 — s-ar putea
+să nu țină."* **Da, și pe una dintre cele patru intrări e chiar aceeași numărătoare de nume.**
+
+| intrarea din L5 | ce spunea justificarea | măsurat 23.08 | verdict |
+|---|---|---|---|
+| **temeiul pe ecran** (9 declarații) | *«valorile există: 57 de obiecte `Temei`»* | cele **57** trăiesc în `core/common.py` (**35**), `core/salarizare.py` (**10**) și module mici; **cele nouă module de declarație au ZERO** — `d101` chiar importă numele (`Temei as _Tm`) fără să construiască vreunul | **construcție** |
+| **desfacerea unei poziții** | *(se subînțelegea din aceeași frază)* | **niciun producător**: nicio funcție care, dată o casetă, să întoarcă operațiunile care au compus-o; `valideaza` întoarce `stare` și **numărul** de operațiuni | **construcție** |
+| **balanța pe ecran** | *«balanța se produce»* | adevărat: se produce și se descarcă PDF (`firme.js:2652`); lipsește doar drumul de la cifră la notele din spate | **predare** — ține |
+| **componentele fluturașului** | *«`deducere`/`facilitate` sunt în răspunsul API»* | adevărat, verificat pe cod: `core/stat_plata_api.py:109–114` întoarce deja `deducere`, `deducere_baza`, `deducere_tineri`, `deducere_copii` | **predare** — ține |
+
+**Numărătoarea de 57 măsura alt domeniu decât cel despre care afirma** — exact defectul de la poziția 1,
+în aceeași formă: o cifră adevărată despre motor și salarizare, folosită ca dovadă despre declarații.
+Iar registrul avea deja contra-măsurătoarea, la **60**: **374 din 470** de elemente nu poartă nicio
+legătură normă↔implementare, și *structurile de declarație au **zero** legături structurate*. Cele două
+propoziții — *«valorile există»* și *«zero legături»* — stăteau la 900 de rânduri una de alta.
+
+**Ce se schimbă în ordine, și ce nu.** Decizia *L5 înaintea lui L3* **nu cade**, dar temeiul ei se
+îngustează: argumentul de cost ține pentru **balanță și fluturaș**, unde valoarea chiar există și se
+oprește înainte de ecran. Pentru **temeiul pe ecran** și **desfacerea unei poziții** nu e predare — nu
+există ce preda — deci nu sunt «ore», și nu mai pot intra înaintea lui L3 pe argumentul de cost. **L5
+intră primul cu cele două intrări care sunt cu adevărat predare**, nu ca bloc.
+
+**Rata, fiindcă a devenit o rată și nu mai e o observație:** **6 artefacte greșit clasificate din 16
+atinse** — 4 din 12 la pragul 3, plus 2 din 4 aici. Toate din același gest: poziția scrisă fără să se
+deschidă modulul. De asta regula urcă în `METODA_VERIFICARE.md`.
 
 #### CORECTARE 23.08 — ordinea: **3a înaintea lui 3b**, nu invers
 
@@ -500,7 +529,19 @@ gardă; e un prag de citit, la un moment numit.
   nomenclator: e și o migrare de date.** O decizie care unifică stările lasă în urmă facturi vechi în
   starea cealaltă, iar orice regulă viitoare care se atașează de „starea unei facturi" le va vedea
   împărțite după un criteriu care nu înseamnă nimic.
-- **DECIS 23.08.2026 (Costin) — restanța NU mai e de nomenclator, e o MIGRARE.** Motivul, scris: *„două populații cu aceeași etichetă înseamnă că orice regulă scrisă de acum înainte e adevărată pentru jumătate din date."* Deci pasul (1) de mai jos **e luat**: distincția nu e reală, stările se unifică. Ce rămâne e pasul (2), și **nu e opțional** — dar **nu se face acum**: intră **la reparații**, de unde și felul schimbat din SURSĂ în ORDINE. *Ce încă nu e numit, și se numește la migrare: care dintre valori supraviețuiește.*
+- **DECIS 23.08.2026 (Costin) — restanța NU mai e de nomenclator, e o MIGRARE.** Motivul, scris: *„două populații cu aceeași etichetă înseamnă că orice regulă scrisă de acum înainte e adevărată pentru jumătate din date."* Deci pasul (1) de mai jos **e luat**: distincția nu e reală, stările se unifică. Ce rămâne e pasul (2), și **nu e opțional** — dar **nu se face acum**: intră **la reparații**, de unde și felul schimbat din SURSĂ în ORDINE. **NUMIT 23.08.2026 (Costin): supraviețuiește `emisa`.** Motivul, verbatim: *„E starea care
+  descrie faptul: factura a fost emisă. «de_preluat» descrie o intenție de proces care nu s-a întâmplat
+  niciodată — nimic n-o consumă."* **Migrarea e într-o direcție**: `de_preluat` → `emisa`, pe tot ce nu
+  e ciornă, anulată sau descărcată. **Nu invers.**
+
+  **Două lucruri de verificat la migrare, nu acum, dar scrise ca să nu se piardă.** (a) Filtrul numit
+  (*ciornă / anulată / descărcată*) e pe **aceeași coloană** `status` ca `de_preluat`, deci un rând nu
+  poate fi și una și alta; se verifică dacă vreun rând `de_preluat` poartă marcajul de ciornă/anulare
+  **într-o altă coloană** — dacă nu, filtrul e o plasă de siguranță, nu o restricție. (b) **Decizia de
+  interpretare din 22.08 devine fără obiect** și trebuie stinsă odată cu migrarea: `nomenclator_status_factura.py`
+  poartă alegerea *„`de_preluat` e stare FINALĂ, deci DECLARABILĂ"*, confirmată de Costin pe 22.08 sub
+  pragul 1. Odată ce starea dispare, interpretarea nu se șterge — se marchează **stinsă prin migrare**,
+  cu varianta respinsă ținută vie, cum cere registrul.
 - **condiția de deblocare**: **două lucruri, în ordinea asta.** (1) — **LUAT 23.08** — Se decide dacă cele două funcții trebuie să producă **aceeași** stare — și atunci una dintre valori dispare — sau dacă distincția e reală și trebuie **numită** în nomenclator, nu dedusă din care funcție a fost chemată. (2) **Migrarea populațiilor existente**, care nu e opțională odată ce (1) s-a luat: pe cele trei firme amestecate, facturile din starea care dispare trebuie mutate, altfel decizia e adevărată doar pentru facturile viitoare. Se închide când ambele s-au făcut, nu doar prima.
 
 ### R15 — Perechile verificator/verificat copiază CONDIȚII, nu doar constante
@@ -625,7 +666,8 @@ gardă; e un prag de citit, la un moment numit.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · faza 1 (setul complet) · triaj pragul 3, poziția 1
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
+- **rezolvată pe commit**: `936aeb3`
 - **deschisă pe commit**: `57c8189`
 - **ce blochează**: obligația legală **nu cere un artefact, ci unul din trei**, iar care anume depinde de forma de înregistrare a entității. Verbatim, din corpus (`anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt`, poz. 165 și 166): *„Registrul Cartea mare poate fi înlocuit cu Fișa de cont pentru operațiuni diverse."* — aceeași frază la **14-1-3** („pe jurnale") și la **14-1-3/a** („maestru-șah"). Iar Anexa 1, pct. 51: formele sunt *„pe jurnale", „maestru-șah"* și combinata *„maestru-șah cu jurnale"*. **În aplicație forma nu există**: zero potriviri în `.py`, `.js`, `.sql` pentru vreuna dintre ele sau pentru un câmp echivalent. Deci nu se poate spune **ce datorează o firmă** — de aici felul ARTEFACT, nu SURSĂ: temeiul se citează complet, ce lipsește e latura firmei.
 - **CÂMP SAU CONSECINȚĂ — răspunsul, măsurat pe schemă, nu presupus.** Întrebarea lui Costin (*„E un câmp pe firmă, sau o consecință a felului în care se fac notele? Dacă e câmp, e o zi. Dacă e consecință, e altceva."*) are răspuns **CONSECINȚĂ**, și consecința e deja determinată:
@@ -635,6 +677,19 @@ gardă; e un prag de citit, la un moment numit.
   - **Deci forma nu e liberă.** Aplicația poate produce azi **maestru-șah** și **nu poate** produce „pe jurnale" fără să construiască întâi jurnalele. Un câmp pe firmă ar fi o zi de lucru și **o minciună de o zi**: i-ar da contabilului o alegere pe care aplicația n-o poate onora. Forma e, azi, o **proprietate a aplicației** — de declarat scris, cu temei, nu de bifat per firmă. Devine câmp real abia când există jurnale auxiliare; atunci alegerea e adevărată.
   - **Și o ieșire care scurtcircuitează întrebarea, găsită la citirea normei:** fiindcă **Fișa de cont pentru operațiuni diverse înlocuiește Cartea mare în AMÂNDOUĂ formele**, construirea ei satisface obligația indiferent de formă. Atunci forma încetează să blocheze artefactul și rămâne doar o etichetă de declarat.
 - **condiția de deblocare**: **una din două, prin decizie.** (a) Se **declară scris** forma pe care o produce aplicația — *maestru-șah* — cu temeiul (Anexa 1 pct. 53), se scrie unde o vede contabilul, și se construiește **Cartea mare (șah), cod 14-1-3/a** din `inregistrari_linii`; sau (b) se construiește **Fișa de cont pentru operațiuni diverse**, care înlocuiește Cartea mare în ambele forme, iar forma rămâne doar declarată. **Ce nu e acceptabil** e un câmp pe firmă care oferă „pe jurnale" cât timp jurnalele auxiliare nu există. Se închide când firma are un artefact pe care organul de control îl poate cere, nu când câmpul există.
+- **ÎNCHISĂ 23.08.2026, în ziua în care s-a deschis — și asta se scrie, nu se ascunde.** Întrebarea lui Costin: *„Fișa de cont satisface obligația indiferent de formă. Ce mai rămâne blocat de R21? Dacă nimic, R21 e o restanță care s-a închis în ziua în care s-a deschis."* **Verificat, punct cu punct, în Anexa 1:** singura diferență între cele două forme, pe registre, e Cartea mare (14-1-3 vs 14-1-3/a) plus jurnalele auxiliare la „pe jurnale" (pct. 52 vs 53). Registrul-jurnal, Registrul-inventar și Balanța de verificare sunt **identice în ambele**. Iar Cartea mare, în **ambele** forme, se poate înlocui cu Fișa de cont. **Deci forma nu mai blochează niciun artefact** — rămâne o etichetă de declarat, nu o precondiție. Restanța se închide **fără să fi fost lucrată**: a fost deschisă înainte de a fi citită partea din normă care o stingea.
+- **Ce s-a învățat, și de asta merită să rămână scrisă în loc să fie ștearsă:** precondiția era reală în momentul în care am scris-o și falsă două paragrafe mai încolo, în același act. **O restanță deschisă înainte de a fi citit actul până la capăt e o restanță pe care o citește altcineva ca pe muncă rămasă.** Ce a rămas cu adevărat blocat e altceva, măsurat la aceeași citire, și are restanță proprie: **R22**.
+
+### R22 — Jurnalul de origine al unei înregistrări e o constantă, și pleacă așa la ANAF
+
+- **felul**: ARTEFACT
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · faza 1 · D406 (SAF-T) · criteriile minimale de program
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `936aeb3`
+- **ce blochează**: OMFP 2634/2015, Anexa 1, **pct. 58 lit. i)** cere ca programul să asigure, printre elementele constitutive ale **fiecărei** înregistrări contabile, *„jurnalul de origine în care se regăsesc înregistrările contabile"* — citit verbatim din corpus. Cerința e **independentă de forma de înregistrare**, deci nu dispare odată cu R21. Măsurat: `core/d406.py:832` scrie `<JournalID>GENERAL</JournalID>` **literal**, aceeași valoare pentru orice înregistrare, în declarația care pleacă la ANAF. Elementul **există** ca etichetă și **nu poartă nicio informație**: nu se poate răspunde la *„din ce jurnal provine rândul ăsta"*, care e chiar întrebarea pentru care norma cere câmpul. **Și datele pentru un răspuns real există deja**: coloana `inregistrari.sursa` poartă azi valori care sunt exact jurnale de origine — `casa` (`core/sgr.py:36`, `core/ong.py:27`, `core/contracte_speciale.py:90`), `salarii` (`core/control_incrucisat.py:485`), `migrare` și `iconta` (`core/istoric_declaratii_import_api.py`). Deci nu lipsește informația, lipsește legătura dintre ea și SAF-T.
+- **condiția de deblocare**: o **decizie**, fiindcă nu e determinată de text — (a) `JournalID` se derivă din `inregistrari.sursa`, cu o mapare scrisă și un temei pentru fiecare valoare, și atunci elementul devine informativ; sau (b) se **declară scris** că firma ține un singur jurnal general, cu temeiul care permite asta, și atunci constanta e adevărată, nu o umplutură. **Ce nu e acceptabil e starea de azi**: un câmp cerut de normă, completat cu o constantă, fără ca undeva să scrie că firma chiar ține un singur jurnal. Se închide când `JournalID` ori poartă originea, ori are în spate o declarație scrisă că e unic.
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
@@ -1158,7 +1213,8 @@ fluturașul iese și se validează; dar **munca** e de tip L3. Deci:
 
 | în L5 | ce fel de muncă | de ce |
 |---|---|---|
-| temeiul pe ecran (9 declarații) · balanța pe ecran · componentele fluturașului · desfacerea unei poziții | **predare** — ore | valorile există: 57 de obiecte `Temei`, balanța se produce, `deducere`/`facilitate` sunt în răspunsul API |
+| balanța pe ecran · componentele fluturașului | **predare** — ore | balanța se produce (PDF descărcabil), iar `deducere`/`deducere_baza`/`deducere_tineri`/`deducere_copii` sunt deja în răspunsul API (`core/stat_plata_api.py:109–114`) |
+| temeiul pe ecran (9 declarații) · desfacerea unei poziții | **construcție** — zile *(corectat 23.08)* | cele 57 de obiecte `Temei` sunt în `common.py`/`salarizare.py`; **modulele de declarație au zero**, iar desfacerea n-are producător. Numărătoarea de 57 măsura alt domeniu decât cel despre care afirma |
 | **interdicția 65** — explicația diferenței față de luna anterioară | **construcție** — zile | nimic nu compară două perioade; nu e nepredat, e nescris |
 
 **Lista nu se schimbă; ordinea în interiorul ei, da.** Cele patru de sus intră primele, fiindcă acolo
@@ -1704,13 +1760,13 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 6 — O cerere de citire care modifică date de business
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: MĂSURATĂ
+- **măsurat la**: 2026-08-23
+- **pe commit**: `936aeb3`
+- **cifra**: **0 rute GET care scriu în starea de business, din 172** de rute `@app.get` în `main.py`. O singură excepție, și e **mecanică pe numele tabelei**, nu o listă de rute: `public.audit_log` — jurnalul de acces GDPR, care trebuie să existe **tocmai** fiindcă e un GET
+- **instanțe**: **niciuna azi.** Instanța care a produs gardul e reparată și se numește, fiindcă e cea mai instructivă: `GET /tenants/{id}/stat-plata` chema un helper cu `INSERT ... ON CONFLICT DO UPDATE` + `commit()` și lăsase **24 de rânduri** în `stat_plata` la auditul tenant_001 — de unde media pe 6 luni a indemnizației de concediu medical depindea de ce luni deschisese cineva în interfață (**409,09 lei/zi pe 2 luni vs 425,06 pe cele 6 reale**, salariat 55)
+- **calibrare**: cazul cunoscut **găsit**: mutația care repune apelul la `_snapshot_stat_plata` într-un GET (din copia de backup a lui `main.py`) face gardul roșu **și numește ruta**. Nu e o calibrare pe nume: mutația e chiar defectul istoric
+- **ce nu vede**: analizează `main.py` — deci o scriere al cărei text SQL trăiește în alt modul se vede doar dacă apelul e urmăribil de acolo. Cifra **0** e un **plafon inferior** al defectelor existente, nu o dovadă că niciun GET din aplicație nu scrie
 - **unde ajunge efectul**: o citire care scrie transformă orice privire în modificare: un raport deschis de două ori lasă evidența altfel decât a găsit-o, iar o sondă de audit devine ea însăși sursa datelor pe care le măsoară
 
 ## 7 — Un document emis care se rescrie
@@ -1723,6 +1779,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
 - **unde ajunge efectul**: un document dat unui om care se rescrie sau nu se poate corecta printr-un al doilea exemplar rupe legătura dintre ce s-a predat și ce arată aplicația
+- **transferul retrospectiv 3a (2026-08-23)**: **rămâne NEÎNCEPUTĂ, și se spune de ce.** `PLAN_INVESTIGATII.md` §3a o dădea ca măsurată («statul append-only»), dar căutarea în `GARZI.md` și `TESTE.md` n-a găsit **nicio cifră pe domeniu** — doar proză despre instanțe și un modul de migrare (`core/migrare_declaratii_depuse_versiune.py`). Regula transferului spune: *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*. Nu se inventează o cifră ca să scadă contorul
 
 ## 8 — O schemă care interzice al doilea exemplar
 
@@ -1734,38 +1791,39 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
 - **unde ajunge efectul**: o schemă care interzice al doilea exemplar face corecția imposibilă: eroarea dintr-un document deja predat nu se mai poate îndrepta printr-un document nou, deci singura ieșire rămâne rescrierea celui vechi — adică interdicția 7, forțată de structură
+- **transferul retrospectiv 3a (2026-08-23)**: **rămâne NEÎNCEPUTĂ.** Nota din §3a («`UNIQUE` ridicat») descrie o **reparație**, nu o măsurătoare: nu există nicăieri o numărătoare a constrângerilor care ar interzice al doilea exemplar, pe niciun domeniu. Un `UNIQUE` ridicat undeva nu spune câte au mai rămas
 
 ## 9 — O afirmație fără domeniu sau fără surse
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: PARȚIAL
+- **măsurat la**: 2026-08-23
+- **pe commit**: `936aeb3`
+- **cifra**: **80 de afirmații găsite, din care 4 tipate.** În domeniul interdicției — clasele `A_verdict` și `C_import` — **14 netipate, în 10 fișiere** (`raportari_ai.py` 3 · `articole_import_api.py` 2 · `main.py` 2 · alte șapte cu câte una)
+- **instanțe**: cele 14. Netipate înseamnă: afirmația e un șir, deci **nu poartă nici domeniul, nici sursele** ca atribute — se poate cita corect și rămâne fără domeniu
+- **calibrare**: `core/afirmatii.py` + `core/test_afirmatii_tipate.py` țin clasa tipată; scanul e `core/scan_afirmatii.py`. **Calibrare pe propriul mod de eșec: nu are** — de aceea starea e PARȚIAL, nu MĂSURATĂ, conform regulii de transfer din §3a
+- **ce nu vede**: scanul recunoaște afirmațiile după tipar sintactic, pe patru clase; o afirmație scrisă altfel nu intră în numărătoare. Cifra e un **plafon inferior**: 14 e cât s-a văzut, nu cât există
 - **unde ajunge efectul**: o afirmație fără domeniu se citește peste șase luni ca adevăr permanent
 
 ## 10 — Un verdict favorabil care coexistă cu necunoscut nedeclarat
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: PARȚIAL
+- **măsurat la**: 2026-08-23
+- **pe commit**: `936aeb3`
+- **cifra**: **9 afirmații de clasa `A_verdict` netipate**, din cele 80 găsite — un verdict netipat nu poate purta câmpul «ce n-a fost verificat», deci coexistența cu necunoscutul nu se poate nici declara, nici verifica
+- **instanțe**: cele 9
+- **calibrare**: **nu are calibrare proprie** — scanul măsoară *tiparea*, nu *coexistența cu necunoscutul nedeclarat*. E cel mai slab dintre cele transferate azi, și se scrie ca atare
+- **ce nu vede**: măsoară o **precondiție** a interdicției (verdictul e obiect, deci poate purta necunoscutul), nu interdicția însăși. Un verdict tipat care **tace** despre necunoscut ar trece neobservat. Cifra e un **plafon inferior**
 - **unde ajunge efectul**: un verdict favorabil care ascunde necunoscutul îl face pe contabil să creadă că e verificat ce n-a fost verificat
 
 ## 11 — Un verificator care importă modulul verificat
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: PARȚIAL
+- **măsurat la**: 2026-08-23
+- **pe commit**: `936aeb3`
+- **cifra**: **9 din 9** module de reconciliere («a doua cale») au fiecare câte un `test_non_tautologie_*`: d100, d101, d112, d205, d300, d301, d390, d394, d406
+- **instanțe**: **niciuna pe reconcilieri.** Instanța istorică, reparată, e în antetul modulelor: a doua cale n-are voie să împartă sursa cu prima
+- **calibrare**: gardul e per-modul și e viu în suită. **Calibrare pe propriul mod de eșec: neverificată** — nu s-a probat că un `test_non_tautologie` ar deveni roșu dacă a doua cale ar începe să importe prima
+- **ce nu vede**: acoperă **doar reconcilierile de declarație**. Verificatoarele care nu sunt reconcilieri (verificator de conformitate, gărzile de registru) nu sunt în domeniu. Cifra 9/9 e un **plafon inferior** al acoperirii reale: e completă pe o formă declarată, nu pe toți verificatorii
 - **unde ajunge efectul**: o a doua cale care copiază prima nu mai verifică nimic — confirmă greșeala în loc s-o prindă
 
 ## 12 — O modificare simultană verificator/verificat fără decizie scrisă
@@ -1778,27 +1836,28 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
 - **unde ajunge efectul**: cele două căi se aliniază de aceeași mână, în același commit, iar divergența dispare fără să fi fost explicată. Instanță reală: pe 06.08 calea a doua a fost aliniată la prima, și semnalul care contrazicea podeaua part-time a tăcut două săptămâni
+- **transferul retrospectiv 3a (2026-08-23)**: **rămâne NEÎNCEPUTĂ.** Instanța din 06.08 e consemnată în «unde ajunge efectul» și e reală, dar **o instanță nu e o cifră**: nu există nicăieri o numărătoare a commiturilor care ating simultan verificatorul și verificatul. Ar fi măsurabilă mecanic din git — și tocmai de asta n-o declar transferată: măsurătoarea nu s-a făcut
 
 ## 13 — Un refuz cu nume interne sau fără diacritice
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: PARȚIAL
+- **măsurat la**: 2026-08-23
+- **pe commit**: `936aeb3`
+- **cifra**: **274 de mesaje în 31 de fișiere** expun nume interne de câmp, sub clichet **per-fișier** (`core/test_mesaje_generare_fara_camp_intern.py`, `_BASELINE`). Niciun fișier nu poate crește; un fișier nou intră cu 0. `d301` e deja pe 0, reparat
+- **instanțe**: cele 274, fiecare cu fișierul ei în clichet
+- **calibrare**: clichetul e viu și pică pe creștere. **Calibrarea pe propriul mod de eșec — dacă semnalul ratează un nume intern — nu s-a făcut**, deci PARȚIAL
+- **ce nu vede**: semnalul e un **token `snake_case` într-un șir de mesaj**, în funcțiile de validare ale generatoarelor. Un nume intern **fără underscore** (`codO`, `denO`, `Data_A`) nu se vede prin acest semnal, iar mesajele din afara generatoarelor sunt în alt gard. Cifra 274 e un **plafon inferior**
 - **unde ajunge efectul**: contabilul primește un refuz pe care nu-l poate acționa: un nume intern nu-i spune ce să completeze, iar mesajul arată ca un defect al aplicației. Efectul nu e o cifră greșită, e o cerere de ajutor către noi pentru ceva ce el putea rezolva singur
 
 ## 14 — Un parametru cu valoare implicită într-o funcție de calcul fiscal
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: PARȚIAL
+- **măsurat la**: 2026-08-23
+- **pe commit**: `936aeb3`
+- **cifra**: **129 de definiții de funcție** cu cel puțin un parametru `=None` în modulele fiscale (`core/d1xx`–`d4xx`, `salarizare.py`, `motor.py`, `common.py`)
+- **instanțe**: nedesfăcute pe instanțe: numărătoarea e pe **definiții**, nu pe parametri, și nu separă defaultul legitim de cel care ascunde o cale netestată
+- **calibrare**: **nu are.** Măsurătoarea veche din §3a — *25 din 78 de parametri cu default `None` care n-au fost NICIODATĂ `None`* (`GARZI.md`) — are **alt domeniu și alt criteriu**, deci nu se poate compara cu 129 și **nu s-a transferat ca atare**. Cele două cifre nu se adună și nu se scad
+- **ce nu vede**: numără forma (`=None` în semnătură), nu efectul (dacă apelantul chiar omite parametrul). Cifra e un **plafon inferior** al defectelor și un **plafon superior** al gravității: multe dintre cele 129 sunt defaults legitimi
 - **unde ajunge efectul**: un default ascunde o cale netestată: apelantul care uită parametrul primește tăcut valoarea comodă, iar defectul nu se vede la apel, ci mult mai târziu, în cifra rezultată. E cauza interdicției 2, dar și a oricărei alte valori implicite din motor — de trei ori într-o singură zi
 
 ## 15 — Reguli diferite la previzualizare față de salvare
@@ -1864,13 +1923,13 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 20 — O declarație de perimetru devenită neadevărată
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: PARȚIAL
+- **măsurat la**: 2026-08-23
+- **pe commit**: `936aeb3`
+- **cifra**: **4 fațete din 9** sunt declarate neacoperite — §5 calculat = **{F3, F4, F5, F7}**, computat din `MODEL_AUDIT_TENANT.md` de `core/test_perimetru_calculat.py`, nu scris de mână
+- **instanțe**: cele 4 fațete. Ce face gardul imposibil: ca §5 să rămână gol când o fațetă își pierde acoperirea
+- **calibrare**: cazul cunoscut **găsit**: gardul cere ca fiecare fațetă marcată GARDAT să numească fișiere care **există** (`test_gardat_numeste_fisiere_care_exista`), iar §5 e pinat pe baseline — o fațetă care își pierde tăcut gardul mută §5 și pică
+- **ce nu vede**: compută din **model**, deci vede perimetrul declarat, nu lumea: o zonă care nu e nici măcar o fațetă în `MODEL_AUDIT_TENANT.md` rămâne invizibilă. Cifra 4/9 e un **plafon inferior** al neacoperirii reale
 - **unde ajunge efectul**: un perimetru neadevărat face ca o zonă neacoperită să pară acoperită
 
 ## 21 — O interpretare care apare ca și cum ar fi text de lege
@@ -1933,13 +1992,13 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 26 — O decizie luată comparând sau clasificând text
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: PARȚIAL
+- **măsurat la**: 2026-08-23
+- **pe commit**: `936aeb3`
+- **cifra**: **13 comparații neclasificate** pe valori de registru, sub clichet în ambele direcții (`core/test_comparatii_clasificate.py`, `BASELINE_NECLASIFICATE`) — nu poate crește, și nu poate scădea fără să cobori clichetul conștient
+- **instanțe**: cele 13
+- **calibrare**: cazul cunoscut **găsit**, și e chiar aserțiunea anti-orbire: gardul cere să vadă **cel puțin 10** comparații (*«doar %d comparații văzute — detectorul a orbit, nu codul s-a curățat»*) și cere ca `core/salarizare.py` să fie printre fișierele văzute. Un detector care orbește pică
+- **ce nu vede**: închide clasa **NECLASIFICAT**, nu clasa *greșit clasificat* — o comparație clasificată prost trece. Și acoperă comparațiile pe **valori de registru**, nu orice decizie luată pe text. Cifra 13 e un **plafon inferior**
 - **unde ajunge efectul**: o decizie luată pe text se rupe la prima reformulare, tăcut
 
 ## 27 — Un verdict stocat ca frază, nu ca structură
@@ -2023,13 +2082,13 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 34 — Modificarea unei înregistrări dintr-o perioadă închisă
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: PARȚIAL
+- **măsurat la**: 2026-08-23
+- **pe commit**: `936aeb3`
+- **cifra**: poarta perioadei închise (`perioade_blocate` / `PERIOADA_BLOCATA`) e chemată din **4 module de producție**: `core/perioada.py`, `core/common.py`, `core/control_incrucisat.py`, `main.py`
+- **instanțe**: nedesfăcute: se știe **de unde se cheamă** poarta, nu **câte căi de scriere ocolesc**
+- **calibrare**: gărzile vii sunt `core/test_perioada.py`, `core/test_perioada_indisponibila.py`, `core/test_refuz_generator_422.py`. **Calibrare pe propriul mod de eșec — o cale de scriere care ocolește poarta — nu există**, deci PARȚIAL
+- **ce nu vede**: numără **chemările porții**, nu scrierile totale. Nu s-a numărat câte tabele de tenant se scriu în total, deci **nu se poate spune ce fracțiune e acoperită** — cifra 4 e un **plafon inferior** al acoperirii și nu spune nimic despre restul
 - **unde ajunge efectul**: o perioadă închisă care se modifică rupe corespondența dintre ce s-a declarat și ce e în evidență
 
 ## 35 — Un număr de document reutilizat, sau o serie cu goluri
@@ -2308,35 +2367,40 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
   | | DEPUS | CALCULAT | INFORMATIV |
   |---|---|---|---|
-  | **VOLATIL** | **1** | **3** | **3** |
-  | **MIȘCĂTOR** | **3** | **6** | **6** |
-  | **STABIL** | **6** | **12** | **12** |
+  | **VOLATIL** | **1** | **3** | **6** |
+  | **MIȘCĂTOR** | **3** | **6** | **12** |
+  | **STABIL** | **6** | **12** | **18** |
 
   Pragul global de azi — **6 luni pentru tot** — e chiar căsuța din mijloc. Deci tabelul nu mută
   centrul, îl **desface**: strânge unde greșeala pleacă la ANAF pe un articol care se mișcă (de la 6
-  luni la **una**), și slăbește unde nu se mișcă nimic și nu se depune nimic (de la 6 luni la **un
-  an**). Consecința măsurată la **54** — *definițiile stabile se reconfirmă inutil, iar valorile
+  luni la **una**), și slăbește unde nu se mișcă nimic și nu se depune nimic (de la 6 luni la **un an
+  și jumătate**). Consecința măsurată la **54** — *definițiile stabile se reconfirmă inutil, iar valorile
   volatile se reconfirmă prea rar* — dispare în ambele direcții.
 
-  **Coloana `INFORMATIV` a coborât la 3 · 6 · 12** prin decizia din 23.08 (era 6 · 12 · 24), cu
-  motivul scris: *o valoare fiscală expirată arătată unui contabil e o afirmație falsă chiar dacă
-  n-o folosește niciun calcul — el o citește și decide pe ea.* Deci `INFORMATIV` **are voie să
-  existe**, dar nu la doi ani.
+  **Coloana `INFORMATIV` are cifre PROPRII: 6 · 12 · 18** (23.08.2026, Costin — a doua formă a
+  deciziei; prima, 3 · 6 · 12, coincidea cu `CALCULAT` și a fost corectată în aceeași zi). Motivul,
+  verbatim: *„o valoare arătată unui contabil e citită și folosită în judecata lui, chiar dacă niciun
+  calcul n-o atinge. Nu merită același prag ca una care intră într-o cifră, dar nici dublul."* Deci
+  `INFORMATIV` **are voie să existe**, se reverifică mai rar decât `CALCULAT`, și **niciodată la doi
+  ani** — plafonul a coborât de la 24 la 18.
+
+  *Notat fiindcă registrul nu ascunde nepotriviri, oricât de mici: raportat la `CALCULAT`, cifrele sunt
+  dublu pe primele două rânduri (3→6, 6→12) și de o dată și jumătate pe al treilea (12→18). Regula
+  aplicată e cea care se citește din tabel — „informativul se reverifică mai rar decât calculatul,
+  niciodată la doi ani" — nu propoziția „nici dublul", care ține doar pe rândul STABIL.*
 
   **Și o regulă care bate tabelul, pe tiparul „faptul bate vectorul":** un marcaj de modificare
   **pe articolul folosit**, apărut după ultima confirmare, cere reverificare **imediat**, indiferent
   de prag. Pragul e pentru ce nu s-a mișcat; ce s-a mișcat nu așteaptă.
 
-  **PUNCT DESCHIS, ridicat la aplicarea deciziei — cifrele contrazic motivul care le însoțea.**
-  Motivul cerea ca *diferența față de `CALCULAT` să rămână, dar nu dublă*. Cifrele numite (3 · 6 · 12)
-  o **anulează**: sunt, casetă cu casetă, exact coloana `CALCULAT`. Tabelul are deci **șase praguri
-  distincte, nu nouă**, iar `INFORMATIV` rămâne o etichetă care nu schimbă niciun prag. Cifrele s-au
-  aplicat **așa cum au fost date** — nu le rotunjesc singur spre ce bănuiesc că s-a vrut. Ce alege
-  Costin se scrie aici: ori a treia clasă dispare ca prag (rămâne descriptivă), ori primește cifre
-  proprii între `CALCULAT` și 24.
+  **PUNCTUL DESCHIS S-A ÎNCHIS ÎN ACEEAȘI ZI.** Prima formă a deciziei (3 · 6 · 12) coincidea
+  casetă cu casetă cu `CALCULAT`, deci ștergea a treia clasă în loc s-o slăbească; ridicat la aplicare,
+  cu cifrele puse totuși **așa cum fuseseră date**. A doua formă — **6 · 12 · 18** — îi dă cifre
+  proprii. **Tabelul are din nou nouă căsuțe care spun ceva**, iar `INFORMATIV` e o clasă, nu o
+  etichetă. *Costin, la corectare: „Aveam eu confuzia, nu tu."*
 
 - **calibrare**: cazul cunoscut **găsit**, și e chiar registrul: `nivel_sursa` (`MO` / `REDARE` / `INTERPRETARE_OFICIALA` / `PRACTICA`) **arată că modelul știe deja să clasifice temeiuri** — dar clasifică **încrederea în sursă**, nu **frecvența de reverificare**. Deci lipsa nu e de concept, e de câmp
-- **ce nu vede**: măsoară doar că nu există niciun câmp care să le poarte, și că pragul unic le înlocuiește prost. **Nu decide categoriile** — le-a propus, iar Costin le-a **decis pe 23.08** (axa, fereastra de 3 ani, coloana `INFORMATIV` coborâtă la 3 · 6 · 12). Ce rămâne **nemăsurat, și e scris ca atare**: câte articole cad în fiecare căsuță — se poate calcula din marcajele articolului și din `dependenti_act`, dar încă nu s-a calculat. Până atunci tabelul e o regulă fără populație cunoscută
+- **ce nu vede**: măsoară doar că nu există niciun câmp care să le poarte, și că pragul unic le înlocuiește prost. **Nu decide categoriile** — le-a propus, iar Costin le-a **decis pe 23.08** (axa, fereastra de 3 ani, coloana `INFORMATIV` cu cifre proprii, 6 · 12 · 18). Ce rămâne **nemăsurat, și e scris ca atare**: câte articole cad în fiecare căsuță — se poate calcula din marcajele articolului și din `dependenti_act`, dar încă nu s-a calculat. Până atunci tabelul e o regulă fără populație cunoscută
 - **unde ajunge efectul**: fără categorie atribuită, pragul de reverificare nu se poate aplica, deci nici expirarea de la 54 nu se poate calcula. E interdicția care le face pe celelalte măsurabile
 
 ## 56 — O regulă scrisă când textul a fost citit dar nu înțeles, fără cerere specifică

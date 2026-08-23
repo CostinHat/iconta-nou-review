@@ -458,3 +458,35 @@ primul test.
 **Corolar, verificat de patru ori într-o zi:** greșelile astea au fost prinse **toate** de un caz
 cunoscut, și **niciuna** de recitire. Recitirea confirmă ce credeai deja; cazul cunoscut nu.
 
+## 11. O POZIȚIE se atribuie după CE PRODUCE modulul, nu după cum se numește
+
+**Regula.** Când clasifici un artefact — *există / nu există*, *predare / construcție*, *ore / zile* —
+deschizi modulul și confrunți **ce produce** cu **ce cere norma**. Numele funcției, existența rutei și
+numărătoarea de obiecte dintr-un domeniu vecin **nu sunt dovezi de acoperire**.
+
+**De ce e regulă și nu observație: e o rată, nu o instanță.** Măsurat pe 23.08.2026, la verificarea
+triajului: **6 artefacte clasificate greșit din 16 atinse** — 4 din 12 la pragul 3, 2 din 4 la poziția
+2. Toate din același gest.
+
+**Greșeala merge în AMBELE direcții, și de asta nu se prinde cu o singură bănuială:**
+
+| direcția | instanța (23.08.2026) | ce a costat |
+|---|---|---|
+| numele **creditează** un motor inexistent | `carte_mare` în `core/motor.py` — înveliș de o linie peste `agrega_conturi`, care întoarce rulaje totale. Norma cere defalcarea rulajului debitor pe conturi corespondente. Ce există e balanța de rulaje | o construcție necesară, amânată ca „predare" |
+| lipsa numelui **ascunde** ce există | `registru_inventar` în `core/rip_api.py` are producător, rută în `main.py` și ecran — și era trecut „fără producător". La fel `jurnal-marja` | o construcție pornită degeaba |
+| o numărătoare **dintr-alt domeniu** ținută drept acoperire | *„valorile există: 57 de obiecte `Temei`"* — cele 57 sunt în `core/common.py` și `core/salarizare.py`; **cele nouă module de declarație au zero** | o listă întreagă ordonată pe un cost fals |
+
+**Cum se aplică, mecanic:**
+
+1. **Numește ce produce funcția**, în termenii normei — nu în termenii ei proprii. *„Întoarce
+   `{cont: {debit, credit, sold}}`"* nu e un răspuns; *„întoarce rulaje totale, fără conturi
+   corespondente"* e.
+2. **Verifică domeniul numărătorii.** O cifră adevărată despre modulul A nu spune nimic despre modulul
+   B. Întrebarea de control: *pe ce fișiere s-a numărat?*
+3. **Caută în ambele direcții.** După ce ai confirmat că ceva lipsește, caută-l și sub alte nume: un
+   artefact poate exista pentru **alt regim** (partidă simplă vs dublă) și să pară absent.
+4. **Zero consumatori nu înseamnă zero producători, și invers.** Sunt două măsurători, nu una.
+
+**Ce NU acoperă regula:** nu spune că o clasificare făcută corect e și completă. Spune doar că una
+făcută pe nume nu e o clasificare — e o presupunere cu aspect de măsurătoare. Vezi `CONFORMITATE.md`,
+secțiunea TRIAJ, cele două corectări din 23.08.

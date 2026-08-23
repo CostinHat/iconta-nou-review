@@ -11172,3 +11172,37 @@ simetric: prima direcție amână o construcție necesară, a doua o pornește d
 NEÎNCEPUTĂ, iar toate cele **douăsprezece** numite în 3a scriu încă NEÎNCEPUTĂ, deși au cifre în
 `GARZI.md` și `TESTE.md`. Un triaj pe poziții nemăsurate ordonează după presupuneri. Planul punea deja
 3a înaintea lui 3b; ordinea nu s-a respectat, și se respectă de la următoarea tură.
+
+## 23.08.2026 (a doua tură) — INFORMATIV își primește cifrele, `emisa` supraviețuiește, regula urcă
+
+**1. `INFORMATIV` = 6 · 12 · 18**, cifre proprii. Motivul lui Costin: *„o valoare arătată unui contabil
+e citită și folosită în judecata lui, chiar dacă niciun calcul n-o atinge. Nu merită același prag ca
+una care intră într-o cifră, dar nici dublul."* Prima formă (3 · 6 · 12) coincidea cu `CALCULAT` —
+ridicat la aplicare, corectat în aceeași zi, cu vorbele lui: *„Aveam eu confuzia, nu tu."* Notat în
+registru, fiindcă nepotrivirile mici se scriu la fel ca cele mari: față de `CALCULAT`, cifrele sunt
+dublu pe primele două rânduri și de o dată și jumătate pe al treilea; regula care se aplică e cea care
+se citește din tabel, nu propoziția *„nici dublul"*.
+
+**2. R14 — supraviețuiește `emisa`.** Motivul: *„E starea care descrie faptul: factura a fost emisă.
+«de_preluat» descrie o intenție de proces care nu s-a întâmplat niciodată — nimic n-o consumă."*
+Migrarea e **într-o direcție**: `de_preluat` → `emisa`, pe tot ce nu e ciornă, anulată sau descărcată.
+**Nu invers.** Consecință care nu se pierde: decizia de interpretare din 22.08 (*`de_preluat` e stare
+finală, deci declarabilă*, confirmată atunci de Costin sub pragul 1) **rămâne fără obiect** odată ce
+starea dispare — se stinge prin migrare, cu varianta respinsă ținută vie, nu se șterge.
+
+**3. Regula „după ce produce, nu după nume" urcă în `METODA_VERIFICARE.md` (§11).** Motivul lui Costin:
+*„Ai avut dreptate să nu promovezi pe o instanță, dar acum sunt patru din 12 artefacte atinse, în
+ambele direcții. Nu mai e o observație, e o rată."* La verificarea poziției 2, rata a crescut la
+**6 din 16**.
+
+**4. R21 — închisă în ziua în care s-a deschis, și scris ca atare.** Fișa de cont pentru operațiuni
+diverse înlocuiește Cartea mare în **ambele** forme de înregistrare, deci forma nu mai blochează niciun
+artefact. Restanța a fost deschisă înainte de a fi citit actul până la capăt. Ce a rămas blocat e
+altceva, și are restanță proprie: **R22** — `JournalID` pleacă la ANAF ca literalul `GENERAL`, deși
+`inregistrari.sursa` poartă deja `casa`, `salarii`, `migrare`, `iconta`.
+
+**5. Transferul retrospectiv 3a — făcut, înaintea continuării triajului.** Cerut de Costin: *„Altfel
+triajul ordonează 26 de poziții măsurate și presupune despre 50."* Rezultatul: **1 MĂSURATĂ** (6) ·
+**8 PARȚIAL** (9, 10, 11, 13, 14, 20, 26, 34) · **3 rămân NEÎNCEPUTE** (7, 8, 12), fiindcă regula
+transferului spune că *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ* — și pentru ele nu există cifră
+pe domeniu, ci proză despre instanțe.
