@@ -71,10 +71,14 @@ def sincronizeaza(conn, schema):
         if deja_importata(conn, schema, f["sursa_numar"]):
             sarite += 1
             continue
+        # `tert_pf=True` DECLARAT, nu deduc: o comanda din magazinul online vine de la o persoana
+        # fizica fara cod fiscal. Daca WooCommerce incepe sa trimita si CUI de firma, aici se
+        # citeste codul si se scoate exceptia - pana atunci, tacerea ar fi fost o presupunere.
         rez = facturi_api.emite_factura(conn, f["linii"],
                                         tert_nume=f["tert_nume"],
                                         data_emitere=f["data"],
-                                        moneda=f["moneda"])
+                                        moneda=f["moneda"],
+                                        tert_pf=True)
         with conn.cursor() as cur:
             cur.execute(f"UPDATE {schema}.facturi SET sursa_externa=%s WHERE id=%s",
                         ("WC-" + f["sursa_numar"], rez["factura_id"]))

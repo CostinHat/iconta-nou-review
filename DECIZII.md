@@ -11410,3 +11410,23 @@ amândouă.** Întâi fiindcă întorcea un dict de proză în loc de afirmație
 era tot un dict. Rezultatul: fișa poartă acum `temei_completitudine` (la un control, exact ăla o face
 apărabilă) și `RandFisa` ca obiect. **Artefactul a ieșit din respingere mai bun decât intrase** — ăsta e
 argumentul practic pentru gărzi pe reguli de formă, nu doar pe cifre.
+
+## 23.08.2026 (a noua tură) — codul de partener se cere, iar cota implicită devine restanță de prag 2
+
+**1. R13 ÎNCHISĂ, prin decizie + reparație.** Decizia lui Costin: **se cere la introducere, nu se
+semnalează**, fiindcă *„un CUI lipsă nu se poate completa retroactiv de nimeni altcineva decât cel care
+a emis factura"*. Reparat ca prag 2, cu excepția **declarată** (`tert_pf`), nu dedusă.
+
+**2. `METODA_VERIFICARE.md` §15 — «fixtura care nu acoperă cazul».** A treia formă de orbire, distinctă
+de *tipar mort* și de *verde pe zero rânduri*: gardul e corect, datele de probă sunt prea uniforme.
+Instanța: mutația pe `sens_sold` a trecut fiindcă toate rândurile fixturii aveau sold debitor. Regula:
+**mutația se probează pe date care conțin TRANZIȚIA, nu doar starea.**
+
+**3. R26 DESCHISĂ — și e mai mare decât întrebarea care a produs-o.** Nu 10 module, ci **25 de funcții**
+cu `cota = 21` ca default, iar **23 de apeluri de producție** îl folosesc, **22 din ele în rute**.
+**Răspuns la „câte au fost actualizate la 19→21": niciunul** — toate s-au născut la 21 pe 04.07.2026,
+iar depozitul începe după schimbare. **Mecanismul de propagare n-a fost pus niciodată la încercare.**
+Și nu e un risc viitor: un default fix ignoră **data operațiunii**, deci o notă pe o operațiune de
+dinainte de 01.08.2025 primește 21% în loc de 19% — **azi**. Registrul știe amândouă valorile, cu date
+și temei; cele 23 de apeluri nu-l întreabă. **Nu am început reparația**: are două forme cu costuri
+diferite, iar cea ieftină ar arăta ca o reparație completă fără să fie.

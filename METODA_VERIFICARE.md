@@ -594,3 +594,36 @@ anecdotă.
 **Ce NU acoperă:** nu spune că o regulă gardată e și respectată în spirit — gardul apără forma. Și nu
 transformă o regulă negardabilă într-una proastă: unele nu se pot garda, iar declarația e răspunsul
 corect (vezi §11 și `CONFORMITATE.md`, R10).
+
+## 15. FIXTURA CARE NU ACOPERĂ CAZUL — o mutație care trece degeaba
+
+**Regula.** O mutație se probează pe date care conțin **tranziția**, nu doar **starea**. Dacă fixtura e
+uniformă pe dimensiunea pe care mutația o strică, mutația trece — iar gardul pare RED-probat fără să
+fie.
+
+**E o formă distinctă de orbire**, a treia, și n-avea nume până azi:
+
+| forma | ce se strică | cum se vede |
+|---|---|---|
+| **tipar mort** | detectorul nu poate deveni roșu niciodată (regex imposibil, marcaj invizibil) | mutația trece, **și nicio dată n-ar ajuta** |
+| **verde pe zero rânduri** | gardul rulează pe o mulțime goală | mutația trece, **fiindcă nu se compară nimic** |
+| **fixtura care nu acoperă cazul** | gardul e corect, datele de probă sunt **prea uniforme** | mutația trece, **iar datele potrivite ar fi prins-o** |
+
+**Instanța (23.08.2026).** `core/fisa_cont.py` calculează soldul cu sensul lui (`D`/`C`). Mutația
+*„`sens_sold` devine `"D"` fix"* **a trecut** — fiindcă în fixtură toate rândurile aveau sold
+**debitor**. Gardul era corect; datele nu conțineau **trecerea** D→C. Adăugat un caz în care soldul
+trece prin zero, plus unul de sold zero: abia atunci mutația a picat. **Propria mutație a găsit gaura
+propriei gărzi** — nu o citire, nu o recenzie.
+
+**Cum se aplică, mecanic:**
+
+1. **Numește dimensiunea pe care o strică mutația** — sens, semn, ordine, prezență, unitate.
+2. **Întreabă dacă fixtura variază pe ea.** Dacă toate rândurile au aceeași valoare pe acea
+   dimensiune, mutația e nefolositoare **înainte** de a o rula.
+3. **Probează pe tranziție**, nu pe capete: soldul care trece prin zero, luna care schimbă cota, actul
+   care se modifică între două citiri, lista care ajunge goală după ce a fost plină.
+4. **O mutație care trece nu e o veste bună.** E fie gard slab, fie fixtură uniformă — și trebuie spus
+   care dintre ele, altfel a doua se citește ca prima.
+
+**Ce NU acoperă:** nu spune că o fixtură care variază e și suficientă. Acoperirea rămâne o judecată;
+regula închide doar cazul în care mutația **nu putea** să prindă nimic.

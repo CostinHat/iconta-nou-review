@@ -4996,3 +4996,15 @@ la operațiunile din spatele ei.
 
 **Ce NU s-a schimbat, și trebuie spus:** **nu există încă ecran sau rută**. Artefactul are producător,
 nu livrare — un contabil nu-l poate cere azi din aplicație. E muncă de lista 5, următoarea.
+
+## 23.08.2026 (4) — factura nu se mai salvează fără codul fiscal al partenerului
+
+**Ce s-a schimbat pentru contabil.** La salvarea unei facturi, dacă lipsește codul fiscal al
+partenerului, aplicația **refuză** și spune de ce: fără el factura **nu intră în D394** și **nu se poate
+corela în VIES**. Refuzul oferă și ieșirea legitimă — bifa *„persoană fizică fără cod fiscal"*.
+
+**De ce refuz și nu avertisment:** codul lipsă nu poate fi completat mai târziu de altcineva decât cel
+care a emis factura. Un avertisment ar fi mutat munca de la cel care are informația la cel care n-o are.
+
+**Ce NU s-a schimbat:** facturile deja existente. Cele **2** găsite fără cod (din 42, toate pe firme de
+test) rămân — repararea lor e altă muncă, iar niciuna nu aparține unui contabil real.

@@ -680,10 +680,12 @@ scos ce nu se știa**, nu din defecte noi.
 
 ### R13 — Partener fără cod fiscal pe factură
 
+- **stare**: REZOLVATĂ
 - **felul**: ARTEFACT
 - **cine deblochează**: INTERN
 - **unde intră**: E1 · faza 1, pasul 1b
 - **reluări**: 1
+- **rezolvată pe commit**: `c22a0c5`
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `44d30cf`
 - **ce blochează**: măsurat la Q2 (evidența TVA): pe t003, **una din trei facturi are `tert_cui = NULL`** (CMT149, către „Agentie Turism Marja SRL"). Un jurnal de vânzări și D394 cer partenerul cu codul lui; fără el, operațiunea nu se poate raporta pe partener. Nu e o lipsă de structură — coloana există — ci de **completitudine a datelor**, deci se rezolvă altfel decât o absență de producător.
@@ -691,6 +693,7 @@ scos ce nu se știa**, nu din defecte noi.
 - **ÎNCERCATĂ 23.08.2026, prima jumătate a condiției e FĂCUTĂ.** Măsurat pe cele 23 de scheme: **42 de facturi în total, 2 fără cod de partener** — `tenant_003` / `CMT149`, direcție **emisă**, partener *„Agentie Turism Marja SRL"*; `tenant_013` / `PF-01`, direcție **primită**, partener *„IONESCU MARIA PFA"*. **Prima nu e legitimă**: un SRL e persoană impozabilă și are CUI, iar factura emisă către el trebuie să-l poarte. A doua e o PFA — tot persoană impozabilă, deci nici ea nu e evident legitimă, dar aici lipsa poate veni din felul în care a fost introdusă, nu din natura partenerului. **Ce a rămas**: nu s-a defalcat pe *plătitor de TVA*, fiindcă domeniul e prea mic ca defalcarea să spună ceva — 2 cazuri. Restanța nu se închide, dar nu mai e nemăsurată: **e o listă de două nume**, nu o clasă necunoscută.
 - **A DOUA JUMĂTATE A CONDIȚIEI, numită la cerere:** *„se decide dacă aplicația trebuie să **ceară codul la introducere** (P23) sau doar **să-l semnaleze**."* Aia e ce a rămas — o decizie de produs, nu o măsurătoare.
 - **DE UNDE AU VENIT CELE DOUĂ — și asta schimbă felul restanței.** `CMT149` (t003): `sursa_externa` **NULL**, `status = de_preluat` — starea produsă chiar de `emite_factura`, deci factura a intrat **prin aplicație**, nu prin import. `PF-01` (t013): `status = importata`, deci prin import. **Iar validare nu există**: `facturi_api.creeaza_factura` și `emite_factura` au amândouă `tert_cui=None` ca **default de parametru**, iar în tot `facturi_api.py` și `main.py` **nu există nicio verificare** pe `tert_cui` — nici prezență, nici checksum. **Deci un SRL fără CUI introdus prin aplicație e un defect de VALIDARE, nu o restanță de măsurat**, cum a observat Costin. Ce ține restanța deschisă e doar decizia (a cere vs a semnala); **defectul de validare e altceva și trece la reparații**, cu observația că `tert_cui` fiind default de parametru e și o instanță a interdicției **14**.
+- **DECIS 23.08.2026 (Costin): se CERE la introducere, nu se semnalează.** Motivul, verbatim: *„o factură fără CUI de partener nu intră în D394 și nu se poate corela în VIES. Nu e o coloană goală, e o declarație incompletă la prima firmă reală"* — și *„un CUI lipsă nu se poate completa retroactiv de nimeni altcineva decât cel care a emis factura"*. **REPARAT în aceeași tură, ca prag 2**: `facturi_api.cere_cod_partener`, chemată din **amândouă** căile de creare; excepția e **declarată explicit** (`tert_pf=True`), nu dedusă din nume sau din lipsă. Singurul apelant legitim fără cod — importul WooCommerce — o declară, cu motivul scris. **Poarta a respins prima încercare, și a avut dreptate a treia oară azi**: garda a prins handlerul de *achiziție de la o persoană neînregistrată* (`main.py:7748`), unde lipsa codului e **legitimă** — dar era declarată **doar într-un comentariu**, pe care nicio gardă n-o poate citi. Acum o spune codul: `tert_pf=True`. *Exact clasa interdicției 16 — proza care descrie codul — prinsă de o gardă construită pentru altceva.* Gardă: `core/test_cod_partener.py`, 9 teste, RED-probat cu 2 mutații (garda scoasă din `emite_factura` → anti-vacuu roșu; excepția devenită tăcută → 7 roșii). **Restanța se închide**: măsurătoarea era făcută, decizia e luată, reparația e în poartă.
 - **Ce NU e prag 1, și de ce o spun explicit**: toate cele 17 firme sunt de test (`Agentie Turism Marja SRL` e un nume de fixtură), deci **niciun contabil nu are azi o factură greșită**. Efectul e potențial, nu actual — dar calea de intrare e de producție. Abia apoi se decide dacă aplicația trebuie să ceară codul la introducere (P23) sau doar să-l semnaleze.
 
 ### R14 — Două funcții de creare a facturii, cu stări implicite diferite
@@ -940,6 +943,21 @@ scos ce nu se știa**, nu din defecte noi.
 
   **Cele 20 de algoritm au ieșit corect, nu prin excepție**: `CHEIE` a fost adăugat în `NOM`, unde îi era locul — e aceeași clasă cu `_CNP_W`. Rămân **30**, din care **17 fiscale: peste jumătate**. Zgomotul operațional **nu se aruncă** — intră în clichet pe fișierul lui, deci e vizibil și nu poate crește.
 - **DECIS: domeniul se lărgește.** A treia regulă în `scan_constante.in_domeniu`: *nume fiscal* **SAU** *citează legea* **SAU** *densitate de vocabular fiscal peste `PRAG_SEMNAL`*. **Clasa C: 104 → 135**; module văzute **60 → 85**. Datoria n-a crescut — a devenit vizibilă a doua oară în aceeași zi. Clichetul s-a lărgit cu fiecare fișier la valoarea lui măsurată.
+
+### R26 — Cota de TVA scrisă ca valoare implicită în 25 de funcții, iar 23 de apeluri o folosesc
+
+- **felul**: VERIFICARE
+- **cine deblochează**: DECIZIE
+- **unde intră**: E3 · interdicțiile 1 și 14 · **prag 2**
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `c22a0c5`
+- **ce blochează**: întrebarea lui Costin — *„zece module au aceeași cotă scrisă de zece ori ca valoare implicită. Când s-a schimbat de la 19 la 21, câte au fost actualizate, și de unde știm?"* — a scos o clasă mai mare decât cifra care a produs-o. **Măsurat, AST, pe tot `core/` + `main.py`: 25 de funcții au `cota = 21` ca default de parametru** (nu 10 — cifra de 10 era pe clasa C a scanului, deci pe modulele nesursate), iar **23 de apeluri de PRODUCȚIE lasă defaultul să lucreze** — **22 din ele în `main.py`**, adică în rute.
+
+  **Răspunsul la întrebarea pusă e „niciunul, și asta nu e o veste bună":** niciunul dintre module n-a purtat vreodată `19` — toate au primit `21` pe **04.07.2026**, în commituri separate, iar depozitul începe pe 01.07.2026, **după** schimbarea cotei. Deci migrarea 19→21 **nu a avut loc aici**, iar mecanismul de propagare **n-a fost pus niciodată la încercare**. Nu știm că ar funcționa; știm doar că n-a fost nevoie.
+
+  **Și nu e un risc de la următoarea schimbare — e o cifră greșită AZI.** Un default fix ignoră **data operațiunii**: o notă generată pentru o operațiune dinainte de **01.08.2025** prin oricare dintre cele 23 de căi primește **21%** în loc de **19%**. Registrul știe amândouă valorile, cu date și cu temei — `COTE["tva_standard"]` are `(2025-08-01, 0.21, Legea 141/2025)` și `(2017-01-01, 0.19, Legea 227/2015)`, iar `common.cota(nume, la_data)` întoarce valoarea validă la o dată. **Cele 23 de apeluri nu-l întreabă.**
+- **condiția de deblocare**: o **decizie de formă**, fiindcă reparația mecanică are două variante cu costuri diferite. **(a)** Defaultul devine `None`, iar funcția rezolvă din registru pe **data operațiunii** — corect, dar cere ca data să ajungă până acolo pe toate cele 23 de căi, iar azi nu ajunge peste tot. **(b)** Defaultul rămâne, dar se ia din `common.cota("tva_standard")` **la momentul apelului** — ieftin, elimină literalul, **dar nu rezolvă retroactivitatea**: o notă pe 2024 tot ar primi cota de azi. Se închide când cele 25 nu mai poartă literalul **și** se scrie care dintre cele două s-a ales, cu ce rămâne neacoperit. *Nu se începe fără decizie: (b) făcut tăcut ar arăta ca o reparație completă și n-ar fi.*
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 

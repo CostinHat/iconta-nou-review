@@ -7744,12 +7744,15 @@ def achizitie_neinregistrat(tenant_id: int, corp: dict = Body(...), ctx=Depends(
         descr = (corp.get("descriere") or "Achizitie de la neinregistrat") + " - " + furnizor_nume
         with conn.cursor() as cur:
             cur.execute(f"SET LOCAL search_path TO {schema}")
-            # tert_cui GOL -> clasifica_partener -> tip_partener 2 (N); PF nu factureaza TVA -> linie cota 0
+            # tert_cui GOL -> clasifica_partener -> tip_partener 2 (N); PF nu factureaza TVA -> linie cota 0.
+            # `tert_pf=True` (23.08.2026): pana azi lipsa codului era declarata DOAR in comentariul de
+            # deasupra, iar garda noua de la `cere_cod_partener` n-avea cum s-o citeasca. Achizitia de la
+            # o persoana neinregistrata E cazul legitim fara cod - acum o spune CODUL, nu proza.
             fres = _fa.creeaza_factura(conn, numar=numar, data_emitere=corp["data"], directie="primita",
                                        linii=[{"descriere": descr[:200], "cantitate": 1,
                                                "pret_unitar": str(val), "cota_tva": 0}],
                                        tert_nume=furnizor_nume, tert_cui="", categorie_331=categorie,
-                                       status="importata", tert_platitor_tva=False)
+                                       status="importata", tert_platitor_tva=False, tert_pf=True)
             fid = fres["factura_id"]
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)
                             VALUES (%s,%s,%s,'facturi','ciorna') RETURNING id""",

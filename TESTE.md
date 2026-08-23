@@ -1941,3 +1941,8 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
 - **`core/test_fisa_cont.py`** — crescut la **17 teste**: fișa e afirmație **tipată** (`fapt`, cu
   `temei_completitudine` care numește de ce credem că am văzut tot) · rândul e **obiect cu atribute**
   (`RandFisa`), nu dict, iar conversia se face la margine.
+
+- **`core/test_cod_partener.py` (23.08.2026)** — 9 teste: lipsa codului oprește salvarea și mesajul
+  spune **despre cine** · gol/spații nu trec ca prezent · mesajul poartă consecința, ieșirea și temeiul ·
+  fără nume interne (Regula 14.4) · persoana fizică **declarată** trece · codul prezent se curăță ·
+  anti-vacuu pe cablare (ambele căi de creare chiar cheamă garda, citit din sursă). RED-probat 2 mutații.

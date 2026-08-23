@@ -74,18 +74,48 @@ def totaluri_din_linii(linii):
 from core import curs_bnr
 
 
+# ─────────────────────────────────────────── CODUL DE PARTENER (prag 2, 23.08.2026)
+# NORMA: Codul fiscal art. 319 alin. (20) cere pe factura codul de identificare fiscala al
+# beneficiarului. Pana azi `tert_cui` era default de parametru (`None`) si NIMIC nu-l verifica -
+# nici prezenta, nici cifra de control. Masurat: 2 din 42 de facturi fara cod, una catre un SRL,
+# intrata PRIN APLICATIE (status `de_preluat`, produs de `emite_factura`).
+#
+# DE CE PRAG 2 SI NU O SEMNALARE (decizia lui Costin, 23.08): o factura fara CUI de partener
+# NU INTRA IN D394 si nu se poate corela in VIES. Nu e o coloana goala, e o DECLARATIE INCOMPLETA
+# la prima firma reala. Iar un CUI lipsa nu se poate completa retroactiv de nimeni altcineva decat
+# cel care a emis factura - deci momentul e introducerea, nu un raport de mai tarziu.
+#
+# EXCEPTIA e EXPLICITA, nu dedusa: `tert_pf=True` spune ca partenerul e persoana fizica fara cod de
+# identificare fiscala. Nu se ghiceste din nume si nici din lipsa codului - a ghici ar readuce exact
+# tacerea pe care o inlocuim.
+def cere_cod_partener(tert_cui, tert_pf=False, tert_nume=None):
+    """Ridica daca lipseste codul de partener si nu s-a declarat persoana fizica."""
+    if tert_pf:
+        return None
+    cod = (tert_cui or "").strip()
+    if cod:
+        return cod
+    cine = (" (%s)" % tert_nume.strip()) if (tert_nume or "").strip() else ""
+    raise ValueError(
+        "Factura nu se poate salva fără codul fiscal al partenerului%s. Completează-l, sau bifează "
+        "că partenerul e persoană fizică fără cod fiscal. Fără el, factura nu intră în D394 și nu "
+        "se poate corela în VIES, iar codul nu mai poate fi completat mai târziu de altcineva decât "
+        "cel care a emis-o (Cod fiscal art. 319 alin. 20)." % cine)
+
+
 def creeaza_factura(conn, numar, data_emitere, directie, linii,
                     client_id=None, tert_nume=None, tert_cui=None, tert_adresa=None,
                     data_scadenta=None, moneda="RON", status="emisa",
                     categorie_331=None, data_faptului_generator=None, taxare_inversa=False,
                     tert_platitor_tva=None, tert_tara="RO", tip_operatiune="normal",
-                    furnizor_tva_incasare=False):
+                    furnizor_tva_incasare=False, tert_pf=False):
     """
     Inserează factura + liniile, într-o tranzacție. total/tva calculate din linii.
     Întoarce {ok, factura_id, total, tva}.
     """
     if not linii:
         raise ValueError("factura trebuie să aibă cel puțin o linie")
+    cere_cod_partener(tert_cui, tert_pf, tert_nume)
     for _l in linii:
         if _l.get("cota_tva") is None:
             raise ValueError("Linia %r nu are cotă de TVA. Completează cota pe linie — 0 (scutit) "
@@ -309,7 +339,7 @@ def _potriveste_linii(conn, linii, platitor_tva=True):
 def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, tert_adresa=None,
                   data_emitere=None, data_scadenta=None, moneda="RON",
                   platitor_tva=True, status="de_preluat", curs_manual=None, tip="factura",
-                  tert_tara="RO", tip_operatiune="normal"):
+                  tert_tara="RO", tip_operatiune="normal", tert_pf=False):
     """
     Emite o factura noua (directie=emisa):
       - potriveste cota pe liniile fara cota (nomenclator/AI)
@@ -317,6 +347,7 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
       - salveaza + incrementeaza contorul
     Intoarce {ok, factura_id, numar, serie, total, tva}.
     """
+    cere_cod_partener(tert_cui, tert_pf, tert_nume)
     import datetime
     if not linii:
         raise ValueError("factura trebuie sa aiba cel putin o linie")

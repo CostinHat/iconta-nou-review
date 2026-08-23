@@ -144,7 +144,8 @@ def test_proba_d300_factura_scutita_prin_granita_reparata_duk_valid(conn_schema_
         conn_schema_d300,
         [{"descriere": "Consultanta IT", "cantitate": 1, "pret_unitar": 1000, "cota_tva": 21},
          {"descriere": "Servicii medicale scutite", "cantitate": 1, "pret_unitar": 500, "cota_tva": 0}],
-        data_emitere="2026-06-15", moneda="RON", platitor_tva=True)
+        data_emitere="2026-06-15", moneda="RON", platitor_tva=True,
+        tert_cui="RO1234567897")
     assert r.get("factura_id"), "emitere esuata: %r" % r
     xml, res = d300.genereaza(conn_schema_d300, SCHEMA_T, Perioada(2026, luna=6))
     rez = _duk.valideaza(xml, "d300", an=2026, luna=6)

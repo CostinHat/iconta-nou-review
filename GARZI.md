@@ -4294,3 +4294,22 @@ pare evidentă.
 despre datele firmei; tipată ca `fapt`, cu `temei_completitudine`. A doua: **rândul** era tot un dict;
 devenit `RandFisa` (dataclass), cu conversia la dict mutată la margine. **Gărzile vechi au făcut
 artefactul nou mai bun decât îl scrisesem** — și au prins exact clasa pentru care fuseseră construite.
+
+**Codul fiscal al partenerului se cere la introducere** (`core/facturi_api.cere_cod_partener`,
+`core/test_cod_partener.py`, 23.08.2026). **Prag 2.** Până azi `tert_cui` era **default de parametru**
+(`None`) în amândouă funcțiile de creare, iar nimic nu-l verifica. Măsurat: 2 din 42 de facturi fără
+cod, una către un **SRL**, intrată **prin aplicație**.
+
+**Ce urcă defectul la prag 2**, cu vorbele deciziei: *o factură fără CUI de partener nu intră în D394 și
+nu se poate corela în VIES — nu e o coloană goală, e o declarație incompletă la prima firmă reală.* Iar
+codul nu se poate completa retroactiv de nimeni altcineva decât cel care a emis factura, deci momentul
+e **introducerea**, nu un raport de mai târziu.
+
+**Excepția e DECLARATĂ, nu dedusă**: `tert_pf=True`. Nu se ghicește din nume și nici din lipsa codului —
+a ghici ar readuce exact tăcerea pe care o înlocuiește. Singurul apelant legitim fără cod (importul
+WooCommerce) o declară, cu motivul scris lângă apel.
+
+**RED-proof 2 mutații**: garda scoasă din `emite_factura` → anti-vacuu roșu (citește sursa ambelor căi,
+nu doar existența funcției); excepția devenită tăcută (`tert_pf or True`) → 7 teste roșii. Mesajul e
+gardat separat: poartă **consecința** (D394, VIES), **ieșirea** (persoană fizică) și **temeiul**
+(art. 319 alin. 20), fără niciun nume intern de câmp.
