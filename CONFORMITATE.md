@@ -30,7 +30,7 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **FAZA 2 — TEMEIURILE, începută 23.08.2026** (după faza 4, în ordinea decisă). Prima măsurată: **interdicția 53**, pe care planul o numește *«cea mai măsurabilă din tot planul»* — **34 din 34** de intrări din registrul de cote își au valoarea în substanța citatului, pe un domeniu de **34 din 53** de obiecte `Temei`. Instrumentul e nou, fiindcă `scan_citate` măsura altceva; a dat 34/34 și din motiv fals înainte de a fi calibrat pe cifrele din adresa articolului.
+- **pasul curent**: **FAZA 2 — TEMEIURILE, în lucru.** Măsurate pe 23.08: **53** (34/34 valorile își au citatul), **49** (0 din 53 fără dată de verificare), **52** (0 modificate din 177 de perechi — **dar 162 din 339 de acte n-au amprentă**, deci PARȚIAL), **54** (0 expirate; pragul de 6 luni **există** și rulează lunar, contrar presupunerii planului), **55** (**53 din 53 fără categorie de reverificare — câmpul nu există**; pragul global unic o înlocuiește prost). Rămân: **50** și **59** (vigoarea pe articol la sursă — cea mai mare ca volum), **58**, **60** (cea mai valoroasă), **61** (trivial: zero). Iar **51, 56, 57, 62** sunt declarate de plan nemăsurabile retroactiv.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
@@ -2017,13 +2017,13 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 49 — Un articol folosit fără dată de verificare a vigorii
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: MĂSURATĂ
+- **măsurat la**: 2026-08-23
+- **pe commit**: `bfd9f10`
+- **cifra**: **0 din 53.** Fiecare obiect `Temei()` construit în `core/` poartă `verificat_la`. La fel `nivel_sursa`: 0 fără. **16 din 53 n-au `url`** — nu pot fi confruntate cu un document, deci nici justificate; sunt aceleași 16 care n-au nici `text_citat` (vezi 53)
+- **instanțe**: niciuna. Măsurat pe **AST**, nu la rulare: prima formă a inventarului a citit doar obiectele de la nivel de modul și a văzut 34 din `common` plus 34 din `expirare_cote` — adică **aceleași temeiuri numărate de două ori**, ratând pe cele construite în corpul funcțiilor. Domeniul corect e AST-ul: **53 de construcții `Temei()`**
+- **calibrare**: cazul cunoscut **găsit**: cele 16 fără `url` sunt exact cele fără `text_citat` măsurate independent la interdicția 53 — două scanuri diferite, aceeași mulțime. Dacă instrumentul ar fi ratat câmpuri, cele două cifre n-ar fi coincis
+- **ce nu vede**: numără **câmpul**, nu adevărul lui: un `verificat_la` scris fără ca verificarea să se fi făcut trece. Interdicția 49 e satisfăcută mecanic; dacă data e onestă ține de disciplină, și e chiar clasa pe care planul o declară nemăsurabilă retroactiv (51, 56, 57)
 - **unde ajunge efectul**: o valoare care stă pe un articol nereverificat poate fi greșită de luni de zile fără ca nimic să semnaleze, și ajunge direct în cifra depusă — nimic din lanțul automat nu întreabă de când n-a mai fost verificat
 
 ## 50 — O valoare sprijinită pe un articol abrogat sau modificat, fără succesor citat
@@ -2050,13 +2050,13 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 52 — Un act din corpus al cărui text s-a modificat după aducere
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: PARȚIAL
+- **măsurat la**: 2026-08-23
+- **pe commit**: `bfd9f10`
+- **cifra**: **0 acte modificate după aducere, din 177 de perechi amprentă/fișier verificate.** Toate 177 se potrivesc, zero amprente orfane. **Dar pe disc sunt 339 de acte** (html/txt/pdf), deci **162 n-au amprentă deloc — 48% din corpus**. Cifra „0 modificate” e un **plafon inferior**: e o afirmație despre jumătatea acoperită, iar cealaltă jumătate nu se poate nici confirma, nici acuza
+- **instanțe**: niciuna în domeniul acoperit. **Starea e PARȚIAL, nu MĂSURATĂ**, fiindcă domeniul e jumătate: un act fără amprentă nu poate fi nici confirmat, nici acuzat — se poate schimba sub noi fără ca nimic să se aprindă, ceea ce e chiar formularea interdicției
+- **calibrare**: mecanismul a fost construit pe 22.08 **pornind de la un caz real, găsit**: `legea_82_1991_consolidat.html` apăruse modificat față de commit, cu 1629 de linii, fără ca vreun script din tură să-l scrie — și nimic nu s-ar fi aprins. Gardat de `core/test_corpus_amprenta.py`
+- **ce nu vede**: nu spune că textul **de pe sursă** s-a schimbat — pentru asta ar trebui re-descărcat, iar pagina portalului nu e reproductibilă octet cu octet. Răspunde la întrebarea dinăuntru: *fișierul din corpus e cel căruia i-am luat amprenta?* · și **nu acoperă cele 162 fără amprentă**, care e cifra de închis
 - **unde ajunge efectul**: corpusul afirmă un text pe care sursa nu-l mai are, iar toate verificările de deasupra — vigoare, citat, ierarhie — moștenesc eroarea fără s-o poată vedea
 
 ## 53 — Un citat verbatim care nu conține valoarea pe care o justifică
@@ -2072,24 +2072,24 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 54 — Un articol folosit cu verificarea vigorii expirată față de pragul lui
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: MĂSURATĂ
+- **măsurat la**: 2026-08-23
+- **pe commit**: `bfd9f10`
+- **cifra**: **0 confirmări expirate.** Pragul **există** și e declarat: `CONFIRMARE_COTE_PRAG_LUNI`, implicit **6 luni**, în `core/expirare_cote.py`, rulat **lunar din cron** ca RAPORT, nu ca blocaj la calcul. Cea mai veche confirmare din registru are **16 zile**
+- **instanțe**: niciuna. **Planul presupunea că pragul nu există** («azi nu există câmpurile»); măsurat, el există din 01.08.2026 și e chiar corectarea unui model greșit anterior: jobul de dinainte semnala apropierea de un `data_out` **inventat**, iar Modelul de temei l-a înlocuit cu vechimea confirmării — *o lege spune de CÂND intră în vigoare, nu până când*
+- **calibrare**: cazul cunoscut a fost **găsit**, si e chiar acoperirea raportului, gardată mecanic: `acoperire_lipsa()` întoarce `([], [])` — fiecare cheie din registru are etichetă umană și fiecare etichetă are cheie. O valoare nouă fără etichetă ar produce un mesaj sărac; o etichetă rămasă fără cheie ar fi drift. Ambele ar apărea
+- **ce nu vede**: pragul e **unic și global**. Nu distinge o cotă care se schimbă anual de o definiție care nu se schimbă niciodată — vezi interdicția 55, care e chiar despre asta. Deci „0 expirate” înseamnă „0 față de un prag care nu ține cont de natura articolului”
 - **unde ajunge efectul**: data de verificare devine formalitate: un articol verificat acum doi ani poartă o dată, deci trece poarta, și poate fi rescris de un an
 
 ## 55 — Un articol din corpus fără categorie de reverificare atribuită
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: MĂSURATĂ
+- **măsurat la**: 2026-08-23
+- **pe commit**: `bfd9f10`
+- **cifra**: **53 din 53 fără categorie de reverificare** — fiindcă **câmpul nu există**. Câmpurile unui `Temei` sunt: `tip`, `nr`, `an`, `art`, `alin`, `lit`, `data_in`, `data_out`, `url`, `verificat_la`, `de_cine`, `nivel_sursa`, `text_citat`, `lant_acte`. Niciunul nu e o categorie de reverificare
+- **instanțe**: toate. **Există în schimb un prag global unic** (6 luni, vezi 54), aplicat identic tuturor articolelor. Asta **nu e** ce cere interdicția: o cotă de TVA care se poate schimba la fiecare rectificare bugetară și o definiție din Codul fiscal care n-a fost atinsă din 2015 au azi **același prag de reverificare**. Consecința e în ambele direcții: definițiile stabile se reconfirmă inutil, iar valorile volatile se reconfirmă prea rar
+- **calibrare**: cazul cunoscut **găsit**, și e chiar registrul: `nivel_sursa` (`MO` / `REDARE` / `INTERPRETARE_OFICIALA` / `PRACTICA`) **arată că modelul știe deja să clasifice temeiuri** — dar clasifică **încrederea în sursă**, nu **frecvența de reverificare**. Deci lipsa nu e de concept, e de câmp
+- **ce nu vede**: nu propune categoriile — alea sunt o decizie de conținut. Măsoară doar că nu există niciun câmp care să le poarte, și că pragul unic le înlocuiește prost
 - **unde ajunge efectul**: fără categorie atribuită, pragul de reverificare nu se poate aplica, deci nici expirarea de la 54 nu se poate calcula. E interdicția care le face pe celelalte măsurabile
 
 ## 56 — O regulă scrisă când textul a fost citit dar nu înțeles, fără cerere specifică
