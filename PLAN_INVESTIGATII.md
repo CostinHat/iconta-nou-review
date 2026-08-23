@@ -206,6 +206,29 @@ Dacă pragurile de reverificare din plan se dovedesc imposibil de respectat, nu 
 
 ---
 
+## Regula de ALEGERE a măsurătorii (23.08.2026)
+
+**Verificarea se face unde e nevoie, nu unde e ușor de făcut.** Regula trăiește în
+`METODA_VERIFICARE.md` §16 cu cele cinci instanțe ale ei; **aici** e locul ei fiindcă planul de
+investigații e locul unde **se alege ce se măsoară**, iar regula e despre alegere, nu despre execuție.
+
+**Ce cere, când se scrie o fază sau un pas de plan:**
+
+1. **Numește lucrul căutat, apoi locul lui** — și scrie locul în plan. *„Ajunge defaultul să lucreze?"*
+   trăiește în legarea argumentelor, nu în lista de `keywords`; *„e grea restanța?"* trăiește în
+   încercare, nu în vechime.
+2. **Dacă domeniul propus e cel comod, spune de ce e și cel potrivit.** `core/` e comod; suita
+   întreagă e potrivită. Diferența a costat 35 de teste roșii găsite de poartă, nu de mine.
+3. **La o schimbare de valoare fiscală, lista de locuri se face din COD, nu din teste.** Un loc fără
+   test nu e un loc care nu există — iar un test poate **encoda** defaultul (măsurat: 11 teste picau
+   pe el, adică îl testau).
+4. **Când o măsurătoare se corectează, se corectează și ce s-a decis pe ea** — inclusiv pragurile.
+
+*Regula s-a scris după o zi cu cinci instanțe, dintre care trei ale mele. Nu e o observație despre
+altcineva.*
+
+---
+
 # FAZA 3 — UNDE STĂM CU FRAGILITATEA
 
 ### 3a — Inventarul retrospectiv

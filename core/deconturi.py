@@ -72,9 +72,16 @@ def nota_avans(suma, sursa="casa"):
         raise ValueError("Suma trebuie să fie un număr pozitiv.")
     return {"linii": [("542", "5311" if sursa == "casa" else "5121", s)]}
 
-def nota_decont(avans, diurna=0, transport=0, cazare=0, cota_tva=0, sursa="casa"):
+def nota_decont(avans, diurna=0, transport=0, cazare=0, cota_tva=None, sursa="casa"):
     """Decont: 625 = 542 (+4426 pe cazare/transport cu factura daca cota>0);
     diferenta: daca cheltuieli < avans -> restituire rest; daca > -> plata diferentei."""
+    # R26, a doua rundă: `cota_tva=0` era tot un default cu VALOARE - si mai periculos decat 21,
+    # fiindca 0 e o cota VALIDA (scutit). Un decont cu cazare pe factura, trimis fara cota, primea
+    # tacit 0% -> zero TVA deductibila. `0` ramane raspuns bun, dar DECLARAT.
+    if cota_tva is None:
+        raise ValueError("Cota de TVA nu s-a dat. Pentru un decont fără facturi cu TVA declară "
+                         "explicit cota 0 — absența nu se poate deosebi de scutire, iar tăcerea ar "
+                         "șterge TVA-ul deductibil de pe cazare sau transport.")
     av = _d(avans)
     d, t, c = _d(diurna), _d(transport), _d(cazare)
     if av < 0 or d < 0 or t < 0 or c < 0 or (d + t + c) <= 0:

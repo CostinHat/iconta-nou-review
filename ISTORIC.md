@@ -5008,3 +5008,15 @@ care a emis factura. Un avertisment ar fi mutat munca de la cel care are informa
 
 **Ce NU s-a schimbat:** facturile deja existente. Cele **2** găsite fără cod (din 42, toate pe firme de
 test) rămân — repararea lor e altă muncă, iar niciuna nu aparține unui contabil real.
+
+## 23.08.2026 (5) — decontul nu mai pierde tăcut TVA-ul deductibil
+
+**Ce s-a schimbat pentru contabil.** La un decont de deplasare, cota de TVA se **cere explicit**. Până
+azi, un decont trimis fără cotă primea tăcut **0%** — adică, dacă avea cazare sau transport **pe
+factură cu TVA**, TVA-ul deductibil se pierdea fără niciun semn.
+
+**`0` rămâne un răspuns bun** — un decont cu diurnă și bonuri fără TVA chiar are cota 0. Diferența e că
+trebuie **declarat**: absența nu se poate deosebi de scutire, iar tăcerea ștergea o deducere reală.
+
+**Ce NU s-a schimbat:** deconturile deja înregistrate. Niciunul nu aparține unui contabil real (toate
+firmele sunt de test).

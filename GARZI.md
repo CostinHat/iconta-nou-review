@@ -4343,3 +4343,17 @@ regulă existentă, nu doar buna practică.
 `test_versionare_formule` 2, `test_operatiuni_speciale` 1). Toate declară acum cota. Un test care se
 sprijină pe o valoare implicită verifică defaultul, nu regula. Și **clichetul s-a coborât singur**:
 `test_baseline_nu_e_stat` a picat imediat, fiindcă datoria devenise mai mică decât pragul. **C: 162 → 134.**
+
+**Refuzul de cotă chiar se produce, nu doar se scrie** (`core/test_cota_fara_default.py`, 23.08.2026).
+Întrebarea lui Costin după reparația R26: *„testele acoperă căile, sau doar confirmă că defaultul a
+dispărut din semnătură?"* Răspunsul era **a doua** — cele 15 fișiere actualizate **dau** cota. Gardul
+nou cheamă fiecare funcție care poartă refuzul **fără** cotă și cere `ValueError`. Ținta se citește din
+**cod** (parametru `None` **și** `raise` în corp), nu din nume: funcțiile care tratează `None` ca „nu se
+aplică" (`d101`, `facturi.calcul_tva`) sunt altă clasă și ar fi fals-pozitive.
+
+**Și a găsit un al 26-lea caz în prima rulare**: `deconturi.nota_decont(cota_tva=0)`. **`0` e o cotă
+validă (scutit)**, deci un default de 0 e aceeași clasă — pe care propria mea listă de excluderi o
+ascundea (scosesem `0, 1, -1, 2, 100` ca „structurale"). **Și e singurul VIU din toată clasa**: ruta
+punea `corp.get("cota", 0)` fără să cheme `cota_ceruta`, deci un decont cu cazare pe factură trimis
+fără cotă primea tăcut 0% → **zero TVA deductibilă**. *Un default de 0 nu adaugă o cifră greșită — o
+șterge pe cea corectă, ceea ce e mai greu de văzut.*

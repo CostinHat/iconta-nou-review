@@ -11478,3 +11478,30 @@ nevoie.* Cu patru instanțe, dintre care a patra e propria mea măsurătoare car
 cu valoare, în 35 de module** — praguri, plafoane, zile de termen. Deci R25 **nu e despre lărgirea
 domeniului**, e despre o clasă pe care instrumentul o vede doar când literalul are forma potrivită.
 `scan_constante` e cheiat pe **forma** literalului, nu pe **rolul** lui.
+
+## 23.08.2026 (a douăsprezecea tură) — garda a găsit ce măsurătoarea ascunsese
+
+**1. Două afirmații din comandă, verificate: `_perioada_din_context` NU EXISTĂ** (zero potriviri în tot
+depozitul), și **nicio funcție nu derivă perioada din numele fișierului**. N-am deschis restanță pe o
+premisă neverificabilă. Iar defaults-urile cu valoare, altele decât cote, sunt **35 în 21 de module**,
+nu 26.
+
+**2. Triajul celor 35, cerut:** ~6 fiscale (`impozit_dobanda_pct=10` · `procent=8` la agricultori, ×2 ·
+`ore=8` la zilieri · `cate=6` la media de concediu medical · `luni=6` la reverificare) și ~29
+operaționale (timeout-uri, limite de paginare, zile de alertă, lățimea unui logo). **Verificate contra
+registrului**: `impozit_venit` e 10% (CF art. 78) — se potrivește; media de 6 luni pentru CM e OUG
+158/2005 art. 10 — se potrivește. **Neverificat, și scris ca atare:** procentul forfetar de 8% al
+agricultorilor n-a putut fi confirmat verbatim în corpus.
+
+**3. Și una NU e nici în vigoare, nici veche — e depășită de decizia noastră de azi:**
+`cote_neconfirmate(luni=6)`, pragul global unic pe care tabelul lui 55 l-a înlocuit acum câteva ore.
+**R27 deschisă.**
+
+**4. R26, a doua rundă — și aici e singura instanță VIE.** Gardul construit ca răspuns la întrebarea
+lui Costin a găsit `nota_decont(cota_tva=0)` la prima rulare. `0` e cotă validă, deci default de 0 e
+aceeași clasă; **propria mea listă de excluderi o ascundea**. Ruta nu chema `cota_ceruta`, deci un
+decont cu cazare fără cotă pierdea TVA-ul deductibil. Reparat.
+
+**5. `METODA_VERIFICARE.md` §16 urcă și în `PLAN_INVESTIGATII.md`**, la regulile de alegere a
+măsurătorii — motivul lui Costin, acceptat: e o regulă despre **ce se măsoară**, iar planul e locul
+unde se alege.

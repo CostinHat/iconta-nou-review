@@ -1950,3 +1950,8 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
 - **`core/test_constante_nesursate.py`** — crescut la **21 de teste**: a patra regulă de domeniu
   (modulul care poartă o valoare din registru), calibrată în ambele direcții pe sursă construită, cu
   anti-vacuu pe registrul de cote. BASELINE lărgit a treia oară: **64 de fișiere**, C = 162.
+
+- **`core/test_cota_fara_default.py` (23.08.2026)** — 28 de teste: anti-vacuu pe ținte · nicio cotă nu
+  mai are default cu valoare (regresie de formă) · **fiecare funcție care poartă refuzul chiar refuză**
+  când e chemată fără cotă. Ținta se citește din cod, nu din nume. A găsit `nota_decont(cota_tva=0)` la
+  prima rulare.

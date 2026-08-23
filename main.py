@@ -8689,9 +8689,11 @@ def nota_decont_deplasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
                 r = _dp.nota_avans(corp["suma"], corp.get("sursa", "casa"))
                 d0 = "Avans spre decontare 542"
             elif fel == "decont":
+                # cota CERUTA, ca la celelalte 14 rute: `corp.get("cota", 0)` punea tacit 0,
+                # adica „scutit", pe un decont care putea avea cazare cu TVA (R26, a doua runda).
                 r = _dp.nota_decont(corp.get("avans", 0), corp.get("diurna", 0),
                                     corp.get("transport", 0), corp.get("cazare", 0),
-                                    corp.get("cota", 0), corp.get("sursa", "casa"))
+                                    _common.cota_ceruta(corp), corp.get("sursa", "casa"))
                 info = {"total_cheltuieli": str(r["total_cheltuieli"]),
                         "diferenta": str(r["diferenta"])}
                 d0 = "Decont deplasare 625=542 (ordin de deplasare + justificative)"

@@ -964,6 +964,19 @@ scos ce nu se știa**, nu din defecte noi.
 - **REPARATĂ TOTUȘI, în aceeași tură, cu argumentul lui Costin:** *„un default cu valoare, oricare ar fi, e aceeași clasă peste șase luni."* Cele **25 de literale au fost scoase** — parametrul devine `None`, iar funcția **refuză** cu un mesaj care spune de ce nu se ghicește (*o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi*). Alegerea de a **refuza**, nu de a rezolva din registru pe dată, urmează o decizie **deja scrisă în același modul**: `common.cota_ceruta` spune, din iulie, că *„NU se ghiceste o cota implicita, nici macar cota standard (un default cu common.cota() ar fi tot o valoare inventata, doar actualizata)"*. Cele 25 de funcții contraziceau o regulă a casei, nu doar buna practică.
 - **Ce a scos reparația, și e o măsurătoare, nu o impresie: 11 teste picau pe default** — adică **îl testau**. `test_stocuri` (9), `test_versionare_formule` (2), `test_operatiuni_speciale` (1). Toate au fost făcute să **declare** cota. Un test care se sprijină pe o valoare implicită nu verifică regula, verifică defaultul.
 - **Clichetul s-a coborât singur**: `test_baseline_nu_e_stat` a picat imediat după reparație, fiindcă datoria devenise mai mică decât pragul. **C: 162 → 134.**
+- **A DOUA RUNDĂ, 23.08 — și aici e singura instanță VIE din toată clasa.** Întrebarea lui Costin — *„reparația a fost verificată cum? Testele acoperă căile, sau doar confirmă că defaultul a dispărut din semnătură?"* — avea răspunsul **a doua**: cele 15 fișiere actualizate **dau** cota, deci verificau doar calculul **cu** ea. Am construit garda care lipsea (`core/test_cota_fara_default.py`, exercită **refuzul** pe fiecare funcție care îl poartă), **iar ea a găsit un al 26-lea caz în prima rulare**: `deconturi.nota_decont(cota_tva=0)`.
+- **`0` e o cotă VALIDĂ (scutit), deci un default de 0 e aceeași clasă — și mai periculos decât 21.** Propria mea listă de excluderi îl ascundea: la măsurarea defaults-urilor am scos `0, 1, -1, 2, 100` ca „structurale". **Iar ăsta e VIU**: ruta punea `corp.get("cota", 0)` și **nu** chema `cota_ceruta`, deci un decont cu cazare pe factură, trimis fără cotă, primea tăcut **0%** → **zero TVA deductibilă**. Reparat: funcția refuză, ruta cere cota ca celelalte 14. *Un default de 0 nu adaugă o cifră greșită — o șterge pe cea corectă, ceea ce e mai greu de văzut.*
+
+### R27 — Pragul de reverificare din cod e încă cel global, deși tabelul lui 55 l-a înlocuit azi
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · interdicțiile 54, 55
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `bde0502`
+- **ce blochează**: `common.cote_neconfirmate(luni=6)` aplică un **prag global unic de 6 luni** tuturor valorilor — exact ce interdicția 55 numea drept defect, și exact ce **decizia de azi a înlocuit** cu un tabel de nouă căsuțe (`VOLATIL/MIȘCĂTOR/STABIL` × `DEPUS/CALCULAT/INFORMATIV`, de la 1 la 18 luni). Găsit la triajul celor 35 de defaults cu valoare, cerut de Costin: *„valoarea de acum e cea în vigoare, sau e una veche care a supraviețuit?"* — aici nu e nici una, nici alta: e o valoare pe care **propria noastră decizie a depășit-o acum câteva ore**. Raportul intern de cote neconfirmate spune deci, azi, altceva decât regula scrisă în registru.
+- **condiția de deblocare**: `cote_neconfirmate` citește pragul din **categoria valorii** (clasa A × clasa B din 55), nu dintr-un parametru global. Precondiție: categoriile trebuie **atribuite** valorilor — ceea ce interdicția 55 declară nemăsurat („câte articole cad în fiecare căsuță"). **Deci se închide după 55, nu înaintea ei** — dar se scrie acum, ca decizia de azi să nu rămână o regulă fără aplicare.
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 

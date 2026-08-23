@@ -26,12 +26,12 @@ def test_avans():
     assert m.nota_avans(1000, "banca")["linii"] == [("542", "5121", Decimal("1000.00"))]
 
 def test_decont_cu_rest():
-    r = m.nota_decont(1000, diurna=287.50, transport=200, cazare=400)
+    r = m.nota_decont(1000, diurna=287.50, transport=200, cazare=400, cota_tva=0)  # cota DECLARATA (R26)
     assert ("625", "542", Decimal("887.50")) in r["linii"]
     assert ("5311", "542", Decimal("112.50")) in r["linii"]
 
 def test_decont_cu_plata_diferentei():
-    r = m.nota_decont(500, diurna=287.50, transport=200, cazare=400)
+    r = m.nota_decont(500, diurna=287.50, transport=200, cazare=400, cota_tva=0)  # cota DECLARATA (R26)
     assert ("542", "5311", Decimal("387.50")) in r["linii"]
 
 def test_decont_cu_tva():
