@@ -8,42 +8,92 @@
   },
   "_scris_la": "2026-08-23",
   "fisiere": {
-    "d100_struct_anaf.txt": {"clasa": "ADUS", "motiv": "extras pdftotext din structura XML D100/710 publicata de ANAF; text integral ANAF, fara interventie"},
-    "d101_struct_anaf.txt": {"clasa": "ADUS", "motiv": "extras din structura XML D101 conf. OPANAF 206/11.02.2025; text integral ANAF"},
-    "d112_struct_anaf.txt": {"clasa": "ADUS", "motiv": "extras din structura XML D112, cu lista de versiuni ANAF; text integral ANAF"},
-    "d205_struct_anaf.txt": {"clasa": "ADUS", "motiv": "extras din structura XML D205, modif. 12.02.2026; text integral ANAF"},
-    "d300_struct_anaf.txt": {"clasa": "ADUS", "motiv": "extras din structura XML D300, UniversalCode D300_A10.0.0 din 01.08.2025; text integral ANAF"},
-    "d402_20160226.xsd": {"clasa": "ADUS", "motiv": "schema XSD D402 adusa de la ANAF; amprenta exista din 14.08 in d402_surse_sha256.txt, se promoveaza in .sha256 ca s-o vada garda"},
-    "opanaf_1292_2014_d106_instructiuni.pdf": {"clasa": "ADUS", "motiv": "instructiunile OPANAF 1292/2014 pentru D106, aduse ca PDF"},
-    "structuraXML_D402_2022.pdf": {"clasa": "ADUS", "motiv": "structura XML D402 2022, adusa ca PDF; amprenta exista din 14.08 in d402_surse_sha256.txt"},
-
-    "d301_struct_anaf.txt": {"clasa": "ADUS_ADNOTAT", "motiv": "structura D301 din 28.01.2013 (D301_A1.0.0), peste care am scris antetul '# !!! INVECHIT (04.08.2026)': validatorul instalat e D301_9. Amprenta pineaza versiunea noastra adnotata"},
-    "d390_struct_anaf.txt": {"clasa": "ADUS_ADNOTAT", "motiv": "structura D390 din 18.03.2020 (OPANAF 705/2020), cu antet '# !!! INVECHIT (04.08.2026)': validatorul instalat e D390_11"},
-    "d394_struct_anaf.txt": {"clasa": "ADUS_ADNOTAT", "motiv": "extras din structD394_02092020.pdf (J4.0.0, OPANAF 3281/2020), cu antet '# !!! INVECHIT (03.08.2026)': validatorul instalat e J8.0.2"},
-
-    "cf_art291_2016_forma_initiala.txt": {"clasa": "SCRIS", "motiv": "nota proprie despre forma initiala a CF art. 291 la 01.01.2016, cu sursa si observatiile citate in antet"},
-    "cf_art56_alin15_istoric_micro_sponsorizare.txt": {"clasa": "SCRIS", "motiv": "istoric propriu al creditului de sponsorizare pentru microintreprinderi, CF art. 56"},
-    "d177_structura_note.txt": {"clasa": "SCRIS", "motiv": "note proprii de structura D177; isi declara singur sursa primara (OPANAF_3562_2024_D177.pdf, amprentat)"},
-    "d394_codpr_gaze_naturale.txt": {"clasa": "SCRIS", "motiv": "concluzie proprie despre codPR pentru gaze naturale in taxare inversa, CF art. 331 alin.(2) lit. l)"},
-    "hg518_1995_diurna_externa.txt": {"clasa": "SCRIS", "motiv": "temei fiscal istoric redactat de noi pentru diurna externa, cu sursele de cercetare citate"},
-    "hg714_2018_diurna_interna.txt": {"clasa": "SCRIS", "motiv": "temei fiscal istoric redactat de noi pentru diurna interna, cu sursele de cercetare citate"},
-    "impozit_dividende_istoric_cote.txt": {"clasa": "SCRIS", "motiv": "istoricul cotei de impozit pe dividende, redactat de noi, cu data verificarii la sursa in antet"},
-
-    "d402_20160226_xsd_linii.txt": {"clasa": "DERIVAT_MANUAL", "sursa": "d402_20160226.xsd", "motiv": "acelasi XSD, cu liniile numerotate, ca sa se poata cita rand cu rand"},
-    "d402_surse_sha256.txt": {"clasa": "DERIVAT_MANUAL", "sursa": "d402_20160226.xsd", "motiv": "lista de amprente scrisa de mana pe 14.08 pentru cele doua surse D402. Amprentele sunt corecte - verificate 23.08, ambele OK - dar stateau intr-o forma pe care nicio garda n-o citea"}
+    "d100_struct_anaf.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras pdftotext din structura XML D100/710 publicata de ANAF; text integral ANAF, fara interventie"
+    },
+    "d101_struct_anaf.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras din structura XML D101 conf. OPANAF 206/11.02.2025; text integral ANAF"
+    },
+    "d112_struct_anaf.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras din structura XML D112, cu lista de versiuni ANAF; text integral ANAF"
+    },
+    "d205_struct_anaf.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras din structura XML D205, modif. 12.02.2026; text integral ANAF"
+    },
+    "d300_struct_anaf.txt": {
+      "clasa": "ADUS",
+      "motiv": "extras din structura XML D300, UniversalCode D300_A10.0.0 din 01.08.2025; text integral ANAF"
+    },
+    "d402_20160226.xsd": {
+      "clasa": "ADUS",
+      "motiv": "schema XSD D402 adusa de la ANAF; amprenta exista din 14.08 in d402_surse_sha256.txt, se promoveaza in .sha256 ca s-o vada garda"
+    },
+    "opanaf_1292_2014_d106_instructiuni.pdf": {
+      "clasa": "ADUS",
+      "motiv": "instructiunile OPANAF 1292/2014 pentru D106, aduse ca PDF"
+    },
+    "structuraXML_D402_2022.pdf": {
+      "clasa": "ADUS",
+      "motiv": "structura XML D402 2022, adusa ca PDF; amprenta exista din 14.08 in d402_surse_sha256.txt"
+    },
+    "d301_struct_anaf.txt": {
+      "clasa": "ADUS_ADNOTAT",
+      "motiv": "structura D301 din 28.01.2013 (D301_A1.0.0), peste care am scris antetul '# !!! INVECHIT (04.08.2026)': validatorul instalat e D301_9. Amprenta pineaza versiunea noastra adnotata"
+    },
+    "d390_struct_anaf.txt": {
+      "clasa": "ADUS_ADNOTAT",
+      "motiv": "structura D390 din 18.03.2020 (OPANAF 705/2020), cu antet '# !!! INVECHIT (04.08.2026)': validatorul instalat e D390_11"
+    },
+    "d394_struct_anaf.txt": {
+      "clasa": "ADUS_ADNOTAT",
+      "motiv": "extras din structD394_02092020.pdf (J4.0.0, OPANAF 3281/2020), cu antet '# !!! INVECHIT (03.08.2026)': validatorul instalat e J8.0.2"
+    },
+    "cf_art291_2016_forma_initiala.txt": {
+      "clasa": "SCRIS",
+      "motiv": "nota proprie despre forma initiala a CF art. 291 la 01.01.2016, cu sursa si observatiile citate in antet"
+    },
+    "cf_art56_alin15_istoric_micro_sponsorizare.txt": {
+      "clasa": "SCRIS",
+      "motiv": "istoric propriu al creditului de sponsorizare pentru microintreprinderi, CF art. 56"
+    },
+    "d177_structura_note.txt": {
+      "clasa": "SCRIS",
+      "motiv": "note proprii de structura D177; isi declara singur sursa primara (OPANAF_3562_2024_D177.pdf, amprentat)"
+    },
+    "d394_codpr_gaze_naturale.txt": {
+      "clasa": "SCRIS",
+      "motiv": "concluzie proprie despre codPR pentru gaze naturale in taxare inversa, CF art. 331 alin.(2) lit. l)"
+    },
+    "hg518_1995_diurna_externa.txt": {
+      "clasa": "SCRIS",
+      "motiv": "temei fiscal istoric redactat de noi pentru diurna externa, cu sursele de cercetare citate"
+    },
+    "hg714_2018_diurna_interna.txt": {
+      "clasa": "SCRIS",
+      "motiv": "temei fiscal istoric redactat de noi pentru diurna interna, cu sursele de cercetare citate"
+    },
+    "impozit_dividende_istoric_cote.txt": {
+      "clasa": "SCRIS",
+      "motiv": "istoricul cotei de impozit pe dividende, redactat de noi, cu data verificarii la sursa in antet"
+    },
+    "d402_20160226_xsd_linii.txt": {
+      "clasa": "DERIVAT_MANUAL",
+      "sursa": "d402_20160226.xsd",
+      "motiv": "acelasi XSD, cu liniile numerotate, ca sa se poata cita rand cu rand"
+    },
+    "d402_surse_sha256.txt": {
+      "clasa": "DERIVAT_MANUAL",
+      "sursa": "d402_20160226.xsd",
+      "motiv": "lista de amprente scrisa de mana pe 14.08 pentru cele doua surse D402. Amprentele sunt corecte - verificate 23.08, ambele OK - dar stateau intr-o forma pe care nicio garda n-o citea"
+    }
   },
   "goale_cunoscute": {
-    "_de_ce": "Opt artefacte de UN OCTET, cu nume de declaratie, produse pe 13-14.08 langa XSD-uri reale si amprentate. Nu le citeste nimeni: zero citari literale in cod, teste, registre. Sunt iesirea unei derivari care a produs gol si n-a spus-o. Nu se sterg si nu se regenereaza fara decizie - continutul intentionat nu se poate deduce, iar a-l inventa ar fi mai rau decat gol. Clichetul e 8: unul nou pica poarta.",
-    "restanta": "de decis: stergere sau regenerare din XSD-ul de alaturi",
-    "lista": [
-      "d104.txt",
-      "d110_20260330.txt",
-      "d112_06082026.txt",
-      "d220_20180108.txt",
-      "d221_20170303.txt",
-      "d223_20160113.txt",
-      "d307_20171205.txt",
-      "d311_20210129.txt"
-    ]
+    "_de_ce": "Opt artefacte de UN OCTET, cu nume de declaratie, produse pe 13-14.08 langa XSD-uri reale si amprentate, cu ZERO cititori. STERSE pe 23.08.2026, prin decizia lui Costin (restanta R20): a le regenera din XSD ar fi insemnat sa inventam ce trebuiau sa contina, iar un gol declarat e mai bun decat un continut plauzibil. Lista ramane GOALA si clichetul e 0: de acum, orice artefact gol pica poarta.",
+    "sterse_pe": "2026-08-23",
+    "lista": []
   }
 }

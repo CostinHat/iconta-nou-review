@@ -30,7 +30,7 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **FAZA 2 — TEMEIURILE: încheiată.** Toate interdicțiile măsurabile sunt măsurate, iar **50 e acum MĂSURATĂ, nu PARȚIAL**: **16 din 16** perechi act-articol au confirmarea **ulterioară** ultimei modificări, **zero instanțe**, iar fiecare valoare e confirmată **verbatim** în textul articolului ei. Blocajul Codului fiscal s-a dizolvat: actul **nu e servit ca pagină unică** de portal, dar e **deja în corpus, amprentat** — `vigoare_articol.py` a primit mod de fișier local și vede **2,5 milioane de caractere, 1.849 de articole**. **52 e și ea închisă** (23.08, `7663e87`), dar nu prin amprentarea a tot ce mișcă: cifra *162 fără amprentă* era ea însăși greșită — scădea două domenii diferite (real 170) — iar amprentarea mecanică ar fi umflat acoperirea fără s-o crească, fiindcă **151** sunt text derivat din fișiere deja amprentate și **7** sunt note scrise de noi. Domeniul e acum complet — **348 din 348 clasificate** — prin declarație de proveniență, nu prin hash-uri. Rămâne **61** (domeniu mic) ca PARȚIAL. Urmează **triajul**, pregătit; deciziile marcate acolo sunt ale lui Costin.
+- **pasul curent**: **FAZA 2 — TEMEIURILE: încheiată.** Toate interdicțiile măsurabile sunt măsurate, iar **50 e acum MĂSURATĂ, nu PARȚIAL**: **16 din 16** perechi act-articol au confirmarea **ulterioară** ultimei modificări, **zero instanțe**, iar fiecare valoare e confirmată **verbatim** în textul articolului ei. Blocajul Codului fiscal s-a dizolvat: actul **nu e servit ca pagină unică** de portal, dar e **deja în corpus, amprentat** — `vigoare_articol.py` a primit mod de fișier local și vede **2,5 milioane de caractere, 1.849 de articole**. **52 e și ea închisă** (23.08, `7663e87`), dar nu prin amprentarea a tot ce mișcă: cifra *162 fără amprentă* era ea însăși greșită — scădea două domenii diferite (real 170) — iar amprentarea mecanică ar fi umflat acoperirea fără s-o crească, fiindcă **151** sunt text derivat din fișiere deja amprentate și **7** sunt note scrise de noi. Domeniul e acum complet — **348 din 348 clasificate** — prin declarație de proveniență, nu prin hash-uri. Rămâne **61** (domeniu mic) ca PARȚIAL. **TRIAJUL E PORNIT** (23.08, decizia lui Costin): pragul 2 s-a golit pe trei sferturi într-o zi — rămân `R19` și `scan_constante`, amândouă din familia *instrument fără calibrare pe propriul mod de eșec* (interdicția 76). Pragul 3 începe cu **cele trei artefacte obligatorii prin lege** — Cartea mare, Registrul-inventar, registrul de evidență fiscală. Cele trei poziții care cer decizie (R18, R14, categoriile lui 55) **nu blochează restul**.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
@@ -149,10 +149,15 @@ nimic despre defectele **necunoscute** — inventariază ce s-a găsit, nu ce ex
 
 ### TRIAJ — ce s-a măsurat pe 23.08.2026, așezat pe praguri
 
-**PREGĂTIT, NU DECIS.** Pragurile se atribuie după regulile deja luate: **pragul 1 se citește ca
-ATINGIBILITATE** (lămurirea din `PLAN_LUCRU.md`), iar în pragul 3 **lista 5 intră înaintea listei 3**,
-cu excepția artefactelor obligatorii prin lege. Ce nu e acoperit de o regulă deja luată e marcat
-**cere decizie** — nu îl ordonez singur.
+**PORNIT prin decizia lui Costin, 23.08.2026.** Era *PREGĂTIT, NU DECIS*; de acum e ordinea de lucru.
+Pragurile s-au atribuit după regulile deja luate: **pragul 1 se citește ca ATINGIBILITATE**
+(lămurirea din `PLAN_LUCRU.md`), iar în pragul 3 **lista 5 intră înaintea listei 3**, cu excepția
+artefactelor obligatorii prin lege. Cele trei poziții care nu sunt acoperite de o regulă deja luată
+rămân marcate **cere decizie** și **nu blochează restul** — se lucrează în jurul lor.
+
+**Tabelul se recitește la fiecare tură.** La prima citire de după scriere, patru rânduri din cinci ale
+pragului 2 și două din pragul 3 erau deja **stătute** — se închiseseră în ziua în care fuseseră scrise.
+Un tabel de triaj care nu se recitește ordonează muncă făcută.
 
 #### PRAGUL 1 — imediat
 
@@ -163,24 +168,24 @@ minim, eticheta spunea *Deducere personala* peste cifra **1.513,75**, când dedu
 numite, gardat cu 13 teste, RED-proof de două ori. *(A treia instanță de prag 1 din campanie.)*
 
 **Nimic altceva măsurat azi nu atinge pragul 1** — și o spun explicit, fiindcă s-au măsurat multe:
-niciuna dintre cele opt interdicții din faza 2, niciuna din faza 4, și niciuna dintre cele două
-restanțe noi nu produce o cifră greșită, un blocaj sau o afirmație falsă la un contabil care ar
-folosi aplicația azi.
+niciuna dintre cele opt interdicții din faza 2, niciuna din faza 4, și niciuna dintre restanțele noi
+nu produce o cifră greșită, un blocaj sau o afirmație falsă la un contabil care ar folosi aplicația azi.
 
 #### PRAGUL 2 — la închiderea etapei (cauză unică dovedită, fără concurență)
 
 | ce | cauza unică | stare |
 |---|---|---|
-| **R17** — graful cheiat pe nume simplu | dicționar plat, cheie prea scurtă | **REZOLVAT 23.08** |
-| **R2** — vigoarea pe punct | instrumentul lipsea | **REZOLVAT 23.08** |
-| **R19** — `graf_clustere` tratează utilitarele partajate ca proprietate | filtrul exclude partajarea **cu sine**, nu **între alții** | deschis |
-| **datoria 31.07 — `verificator_conformitate` fără nicio gardă** | analizorul lui nu e testat pe fixturi known-good / known-bad | deschis de **23 de zile** |
-| **`scan_constante` — gardă cu ZERO calibrare pozitivă** | 2 teste, niciunul nu pinează un caz concret | deschis |
+| **R17** — graful cheiat pe nume simplu | dicționar plat, cheie prea scurtă | **REZOLVAT** 23.08 (`c7bcddb`) |
+| **R2** — vigoarea pe punct | instrumentul lipsea | **REZOLVAT** 23.08 (`c7bcddb`) |
+| **datoria 31.07 — `verificator_conformitate` fără nicio gardă** | analizorul lui nu e testat pe fixturi known-good / known-bad | **REZOLVAT** 23.08 (`139bca5`), după **23 de zile** |
+| **R20** — opt artefacte de un octet în corpus | o derivare care a produs gol și n-a spus-o | **REZOLVAT** 23.08 (`9510c94`), prin decizie: șterse |
+| **R19** — `graf_clustere` tratează utilitarele partajate ca proprietate | filtrul exclude partajarea **cu sine**, nu **între alții** | **deschis — următorul la rând** |
+| **`scan_constante` — gardă cu ZERO calibrare pozitivă** | 2 teste, niciunul nu pinează un caz concret | **deschis** |
 
-**Cea mai grea dintre ele e a doua**, și nu fiindcă e cea mai veche: `verificator_conformitate` rulează
-la **fiecare poartă**, e citat în fiecare raport („verificator: TOTAL 0"), a produs deja **13
-fals-pozitive prin propriul bug** — și **niciun test nu-l importă**. E cel mai executat instrument din
-proiect și cel mai neverificat. Datoria din 31.07 cere exact fixturile care lipsesc.
+**Pragul 2 s-a golit pe trei sferturi într-o zi.** Rămân două, amândouă din aceeași familie — *un
+instrument pe care stau măsurători, fără calibrare pe propriul mod de eșec* (**interdicția 76**).
+`scan_constante` e cel mai expus dintre cele două: ține clichetul de 93 de constante nesursate în
+producție, deci o gaură în el ar coborî o cifră fără ca nimic să se schimbe.
 
 #### PRAGUL 3 — după tabelul final
 
@@ -188,24 +193,32 @@ proiect și cel mai neverificat. Datoria din 31.07 cere exact fixturile care lip
 
 | ordine | ce | cifra | fel de muncă |
 |---|---|---|---|
-| **1** | **L3 obligatorii prin lege** — Cartea mare, Registrul-inventar, registrul de evidență fiscală | 3 artefacte fără producător | construcție — *absența lor nu e neplăcută, e neconformă* |
+| **1** | **L3 obligatorii prin lege** — Cartea mare, Registrul-inventar, registrul de evidență fiscală | 3 artefacte fără producător *(motorul Cărții mari există: `core/motor.py:32`, zero consumatori)* | construcție — *absența lor nu e neplăcută, e neconformă* |
 | **2** | **L5 — predare** (temeiul pe ecran, balanța pe ecran, componentele fluturașului, desfacerea unei poziții) | 10 din 11 artefacte | ore: totul e calculat, se oprește înainte de ecran |
 | **3** | **L5 — interdicția 65** (explicația diferenței față de luna anterioară) | 0 mecanisme în Python, 0 în JS | **zile, nu ore** — nu e nepredat, e nescris |
 | **4** | **restul L3** — bilanț/CPP fără rute, note explicative, registrul-jurnal, evidența TVA, jurnalul de marjă, categoria de mărime | 6 artefacte | construcție |
 | **5** | **60 — legătura normă↔implementare** | **374 din 470** de elemente nu poartă nimic; structurile de declarație, termenele și validările au **zero** legături structurate | mare, dar se poate tăia pe categorii |
-| **6** | **52 — amprentele corpusului** | **162 din 339** de acte fără amprentă | volum mecanic |
-| **7** | **50 — vigoarea la sursă** | **8 acte din 9** neverificate | volum, cu instrumentul reparat azi |
-| **8** | **55 — categoria de reverificare** | câmpul nu există; un prag global unic pentru toate | **cere decizie**: categoriile sunt conținut, nu măsurătoare |
-| **9** | **61 — lista dependenților** | 16 din 17, dar domeniul e registrul de cote, nu corpusul | îngustare, la prima folosire reală |
+| **6** | **55 — categoria de reverificare** | câmpul nu există; un prag global unic pentru toate | **axa DECISĂ 23.08**; categoriile **propuse**, așteaptă confirmarea |
+| **7** | **61 — lista dependenților** | 16 din 17, dar domeniul e registrul de cote, nu corpusul | îngustare, la prima folosire reală |
+
+**Ieșite din tabel, fiindcă s-au închis:** **52** (era *„162 din 339 de acte fără amprentă, volum
+mecanic"*) — închisă pe `7663e87`, și nu prin volum: cifra 162 era ea însăși greșită, iar amprentarea
+mecanică ar fi umflat acoperirea fără s-o crească · **50** (era *„8 acte din 9 neverificate"*) —
+închisă pe `d115f28`, 16 din 16, zero instanțe.
 
 #### Ce NU intră în praguri, fiindcă cere o decizie, nu o reparație
+
+Cele trei rămân aici și **nu blochează restul** (Costin, 23.08).
 
 - **R18 — cele două porți vide.** Nu se repară cu cod: ori există iar clustere de ordonat, ori se
   declară că mecanismul se verifică doar pe date sintetice. **Cere decizie.**
 - **R14 — cele două populații de facturi.** Decizia de nomenclator, apoi migrarea; a doua nu e
   opțională odată ce prima s-a luat.
-- **cum se citește pragul 1 pe o instalare fără clienți** — **LĂMURIT 23.08**: atingibilitate.
+- **55 — categoriile de reverificare.** Axa e decisă (frecvența istorică a articolului, ponderată de
+  consecință); **categoriile concrete sunt propuse la secțiunea 55** și așteaptă confirmarea.
 
+*(A patra, „cum se citește pragul 1 pe o instalare fără clienți", a fost **LĂMURITĂ 23.08**:
+atingibilitate.)*
 
 ## RESTANȚE
 
@@ -531,10 +544,12 @@ gardă; e un prag de citit, la un moment numit.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E2 · interdicția 52 (corpusul)
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
+- **rezolvată pe commit**: `9510c94`
 - **deschisă pe commit**: `139bca5`
 - **ce blochează**: `d104.txt`, `d110_20260330.txt`, `d112_06082026.txt`, `d220_20180108.txt`, `d221_20170303.txt`, `d223_20160113.txt`, `d307_20171205.txt`, `d311_20210129.txt` — toate de **un octet** (o linie goală), create pe **13–14.08.2026**, fiecare **lângă un `.xsd` real și amprentat**. Sunt ieșirea unei derivări care a produs gol și n-a spus-o. **Nimeni nu le citește**: zero citări literale în cod, teste sau registre — verificat. Dar un fișier gol cu nume de act e **mai rău decât unul lipsă**: pentru orice instrument arată ca *act PREZENT și TĂCUT*, deci produce o absență falsă, nu o lipsă vizibilă. E aceeași clasă cu corolarul interdicției **76** — cazul în care lucrul e absent dar semnul lui e prezent.
 - **condiția de deblocare**: o decizie între **ștergere** (XSD-ul de alături e prezent și amprentat, deci nu se pierde nimic) și **regenerare** din XSD, pe tiparul lui `d402_20160226_xsd_linii.txt`. **Nu se face fără decizie**: conținutul intenționat nu se poate deduce din nimic de pe disc, iar a-l inventa ar fi mai rău decât gol. Până atunci sunt sub clichet declarat în `anaf_surse/PROVENIENTA.json` (`goale_cunoscute`), iar `core/test_provenienta.py::test_niciun_artefact_gol_nou` face imposibil să apară al nouălea. Se închide când cele opt sunt ori șterse, ori au conținut, iar clichetul coboară la 0.
+- **cum s-a închis (23.08.2026)**: **ȘTERSE**, prin decizia lui Costin — *„a le regenera din XSD ar însemna să inventăm ce trebuiau să conțină; un gol declarat e mai bun decât un conținut plauzibil.”* Înainte de ștergere, fiecare a fost verificat încă o dată **pe disc**: cel mult 2 octeti, cu XSD-ul de alături **prezent și amprentat** — deci nu s-a pierdut nimic. Clichetul a coborât **8 → 0**: de acum nu doar un artefact gol *nou* pică poarta, ci **orice** artefact gol din corpus.
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
@@ -2128,7 +2143,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 - **stare**: MĂSURATĂ
 - **măsurat la**: 2026-08-23
 - **pe commit**: `139bca5`
-- **cifra**: **0 acte modificate după aducere, din 188 de amprente verificate** — iar acoperirea e acum **completă: 348 din 348 de fișiere de corpus au o clasă**, nu jumătate. Împărțirea: **188 AMPRENTATE** · **151 DERIVATE** dintr-un fișier amprentat · **9 ale noastre** (7 note scrise, 2 derivări manuale) · **0 nedeclarate**
+- **cifra**: **0 acte modificate după aducere, din 188 de amprente verificate** — iar acoperirea e acum **completă: 340 din 340 de fișiere de corpus au o clasă**, nu jumătate. Împărțirea: **188 AMPRENTATE** · **143 DERIVATE** dintr-un fișier amprentat · **9 ale noastre** (7 note scrise, 2 derivări manuale) · **0 nedeclarate**. *(Corpusul era 348 la măsurătoare; cele 8 artefacte de un octet au fost șterse în aceeași zi — vezi R20.)*
 - **instanțe**: **niciuna.** Starea a trecut din PARȚIAL în MĂSURATĂ nu prin amprentarea a tot ce mișcă, ci prin **întrebarea corectă**. Formularea de dinainte era *«162 fără amprentă — 48% din corpus»*, cu concluzia firească *«se amprentează și restul, e mecanic»*. Măsurând **înainte** de a amprenta, s-au văzut trei lucruri:
 
   **(a) Cifra 162 era ea însăși greșită.** Se calculase `339 − 177`, dar 8 dintre cele 177 de amprente sunt pe fișiere din afara celor 339 (`.xsd`, `.zip`). Numărul real era **170**. Două instrumente numărau două domenii și se scădeau unul din altul.
@@ -2171,8 +2186,61 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 - **pe commit**: `bfd9f10`
 - **cifra**: **53 din 53 fără categorie de reverificare** — fiindcă **câmpul nu există**. Câmpurile unui `Temei` sunt: `tip`, `nr`, `an`, `art`, `alin`, `lit`, `data_in`, `data_out`, `url`, `verificat_la`, `de_cine`, `nivel_sursa`, `text_citat`, `lant_acte`. Niciunul nu e o categorie de reverificare
 - **instanțe**: toate. **Există în schimb un prag global unic** (6 luni, vezi 54), aplicat identic tuturor articolelor. Asta **nu e** ce cere interdicția: o cotă de TVA care se poate schimba la fiecare rectificare bugetară și o definiție din Codul fiscal care n-a fost atinsă din 2015 au azi **același prag de reverificare**. Consecința e în ambele direcții: definițiile stabile se reconfirmă inutil, iar valorile volatile se reconfirmă prea rar
+
+  **CATEGORIILE PROPUSE (23.08.2026), pe axa acceptată de Costin.** Axa: *frecvența istorică de
+  modificare a **articolului**, ponderată de **consecința** unei valori expirate.* Volatilitatea
+  **actului** a fost respinsă ca axă, cu motiv măsurat: OUG 89/2025 are șase marcaje de consolidare,
+  iar art. III — cel care poartă valorile — **niciunul**. O axă pe act ar declara suspecte permanent
+  toate valorile sprijinite pe acte mari, iar un semnal permanent se ignoră (vezi **59**).
+
+  **Amândouă măsurile sunt mecanice** — asta e ce face categoriile calculabile, nu atribuibile:
+
+  - **A. Frecvența articolului** se citește din marcajele de consolidare ale articolului în corpus,
+    cu `scripts/vigoare_articol.py`, care le vede deja pe fiecare (mod de fișier local, 1.849 de
+    titluri).
+  - **B. Consecința** se citește din **unde ajunge** valoarea: `core/dependenti_act.py` dă funcțiile
+    care o ating, iar modulul lor spune categoria — `d1xx`/`d3xx`/`d4xx` = intră într-o declarație.
+
+  **A — frecvența articolului** (ferestră: ultimii 3 ani):
+
+  | clasă | criteriu |
+  |---|---|
+  | **VOLATIL** | modificat în **cel puțin 2 din ultimii 3 ani** |
+  | **MIȘCĂTOR** | modificat **o dată sau de două ori** în ultimii 3 ani, dar nu în cel puțin doi ani distincți |
+  | **STABIL** | **niciun** marcaj în ultimii 3 ani |
+
+  **B — consecința unei valori expirate**:
+
+  | clasă | criteriu |
+  |---|---|
+  | **DEPUS** | valoarea intră într-o declarație generată — greșeala pleacă la ANAF |
+  | **CALCULAT** | intră într-o cifră arătată omului (fluturaș, balanță, decont) fără să fie depusă |
+  | **INFORMATIV** | apare pe ecran ca informație, nu intră în niciun calcul |
+
+  **Pragul de reverificare, în luni** — nouă valori în loc de una singură:
+
+  | | DEPUS | CALCULAT | INFORMATIV |
+  |---|---|---|---|
+  | **VOLATIL** | **1** | **3** | **6** |
+  | **MIȘCĂTOR** | **3** | **6** | **12** |
+  | **STABIL** | **6** | **12** | **24** |
+
+  Pragul global de azi — **6 luni pentru tot** — e chiar căsuța din mijloc. Deci propunerea nu mută
+  centrul, îl **desface**: strânge unde greșeala pleacă la ANAF pe un articol care se mișcă (de la 6
+  luni la **una**), și slăbește unde nu se mișcă nimic și nu se depune nimic (de la 6 luni la **doi
+  ani**). Consecința măsurată la **54** — *definițiile stabile se reconfirmă inutil, iar valorile
+  volatile se reconfirmă prea rar* — dispare în ambele direcții.
+
+  **Și o regulă care bate tabelul, pe tiparul „faptul bate vectorul":** un marcaj de modificare
+  **pe articolul folosit**, apărut după ultima confirmare, cere reverificare **imediat**, indiferent
+  de prag. Pragul e pentru ce nu s-a mișcat; ce s-a mișcat nu așteaptă.
+
+  **Ce încă nu e decis, și e al lui Costin**: fereastra de 3 ani pentru A, și dacă `INFORMATIV` are
+  voie să existe — o valoare fiscală arătată unui contabil, expirată, e tot o afirmație falsă, chiar
+  dacă n-o folosește niciun calcul.
+
 - **calibrare**: cazul cunoscut **găsit**, și e chiar registrul: `nivel_sursa` (`MO` / `REDARE` / `INTERPRETARE_OFICIALA` / `PRACTICA`) **arată că modelul știe deja să clasifice temeiuri** — dar clasifică **încrederea în sursă**, nu **frecvența de reverificare**. Deci lipsa nu e de concept, e de câmp
-- **ce nu vede**: nu propune categoriile — alea sunt o decizie de conținut. Măsoară doar că nu există niciun câmp care să le poarte, și că pragul unic le înlocuiește prost
+- **ce nu vede**: măsoară doar că nu există niciun câmp care să le poarte, și că pragul unic le înlocuiește prost. **Nu decide categoriile** — le propune (mai sus, pe axa acceptată 23.08); alegerea rămâne a lui Costin, la fel ca fereastra de 3 ani și existența clasei `INFORMATIV`. Iar propunerea **nu e măsurată pe corpus**: câte articole cad în fiecare căsuță din cele nouă se poate calcula, dar încă nu s-a calculat
 - **unde ajunge efectul**: fără categorie atribuită, pragul de reverificare nu se poate aplica, deci nici expirarea de la 54 nu se poate calcula. E interdicția care le face pe celelalte măsurabile
 
 ## 56 — O regulă scrisă când textul a fost citit dar nu înțeles, fără cerere specifică

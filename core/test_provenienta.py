@@ -30,7 +30,8 @@ import pytest
 from core import scan_provenienta as sp
 
 MIN_FISIERE = 300  # anti-vacuu: corpusul avea 348 pe 23.08
-GOALE_CLICHET = 8  # cele de pe 13-14.08; una noua pica poarta
+GOALE_CLICHET = 0  # 8 -> 0 pe 23.08: cele de pe 13-14.08 au fost STERSE prin decizie (R20).
+                   # De acum orice artefact gol din corpus pica poarta, nu doar unul nou.
 
 
 class _Corpus(object):
