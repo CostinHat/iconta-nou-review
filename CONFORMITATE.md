@@ -30,7 +30,7 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **FAZA 2 — TEMEIURILE: toate interdicțiile măsurabile sunt MĂSURATE** (23.08.2026). **53, 49, 54, 55, 59, 60** — MĂSURATE; **52, 50, 58, 61** — PARȚIAL, cu domeniul scris la fiecare; **51, 56, 57, 62** — nemăsurabile retroactiv, prin declarația planului. Ce rămâne e **volum, nu metodă**: 8 acte din 9 de verificat la sursă pentru 50, și 162 de acte fără amprentă pentru 52. Urmează, în ordinea decisă la punctul de decizie 1: **triajul**.
+- **pasul curent**: **TRIAJUL e PREGĂTIT** (23.08.2026), în ordinea decisă la punctul de decizie 1. Pragul 1: o singură instanță nouă, **reparată în aceeași tură**. Pragul 2: **5 poziții**, dintre care două rezolvate azi; cea mai grea e datoria din **31.07** — `verificator_conformitate` rulează la fiecare poartă și **niciun test nu-l importă**. Pragul 3: **9 poziții ordonate**, cu L3-ul obligatoriu prin lege înaintea lui L5. Trei lucruri **cer decizie**, nu reparație — sunt numite separat. **Nu ordonez peste regulile deja luate.**
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
@@ -146,6 +146,66 @@ fișier din afara listei · unul care trăiește doar într-o captură sau într
 nimic despre defectele **necunoscute** — inventariază ce s-a găsit, nu ce există.
 
 ---
+
+### TRIAJ — ce s-a măsurat pe 23.08.2026, așezat pe praguri
+
+**PREGĂTIT, NU DECIS.** Pragurile se atribuie după regulile deja luate: **pragul 1 se citește ca
+ATINGIBILITATE** (lămurirea din `PLAN_LUCRU.md`), iar în pragul 3 **lista 5 intră înaintea listei 3**,
+cu excepția artefactelor obligatorii prin lege. Ce nu e acoperit de o regulă deja luată e marcat
+**cere decizie** — nu îl ordonez singur.
+
+#### PRAGUL 1 — imediat
+
+**O singură instanță nouă, și e REPARATĂ în aceeași tură.** Eticheta **„Deducere personala"** de pe
+fluturaș tipărea `deducere['total']`, care include și deducerile suplimentare: pe un tânăr la salariul
+minim, eticheta spunea *Deducere personala* peste cifra **1.513,75**, când deducerea personală e
+**865,00**. **3 din 5** cazuri obișnuite, **2 din 24** de salariați existenți. Reparat cu rânduri
+numite, gardat cu 13 teste, RED-proof de două ori. *(A treia instanță de prag 1 din campanie.)*
+
+**Nimic altceva măsurat azi nu atinge pragul 1** — și o spun explicit, fiindcă s-au măsurat multe:
+niciuna dintre cele opt interdicții din faza 2, niciuna din faza 4, și niciuna dintre cele două
+restanțe noi nu produce o cifră greșită, un blocaj sau o afirmație falsă la un contabil care ar
+folosi aplicația azi.
+
+#### PRAGUL 2 — la închiderea etapei (cauză unică dovedită, fără concurență)
+
+| ce | cauza unică | stare |
+|---|---|---|
+| **R17** — graful cheiat pe nume simplu | dicționar plat, cheie prea scurtă | **REZOLVAT 23.08** |
+| **R2** — vigoarea pe punct | instrumentul lipsea | **REZOLVAT 23.08** |
+| **R19** — `graf_clustere` tratează utilitarele partajate ca proprietate | filtrul exclude partajarea **cu sine**, nu **între alții** | deschis |
+| **datoria 31.07 — `verificator_conformitate` fără nicio gardă** | analizorul lui nu e testat pe fixturi known-good / known-bad | deschis de **23 de zile** |
+| **`scan_constante` — gardă cu ZERO calibrare pozitivă** | 2 teste, niciunul nu pinează un caz concret | deschis |
+
+**Cea mai grea dintre ele e a doua**, și nu fiindcă e cea mai veche: `verificator_conformitate` rulează
+la **fiecare poartă**, e citat în fiecare raport („verificator: TOTAL 0"), a produs deja **13
+fals-pozitive prin propriul bug** — și **niciun test nu-l importă**. E cel mai executat instrument din
+proiect și cel mai neverificat. Datoria din 31.07 cere exact fixturile care lipsesc.
+
+#### PRAGUL 3 — după tabelul final
+
+**Ordinea în interiorul lui e decisă**: L5 înaintea L3, cu excepția celor obligatorii prin lege.
+
+| ordine | ce | cifra | fel de muncă |
+|---|---|---|---|
+| **1** | **L3 obligatorii prin lege** — Cartea mare, Registrul-inventar, registrul de evidență fiscală | 3 artefacte fără producător | construcție — *absența lor nu e neplăcută, e neconformă* |
+| **2** | **L5 — predare** (temeiul pe ecran, balanța pe ecran, componentele fluturașului, desfacerea unei poziții) | 10 din 11 artefacte | ore: totul e calculat, se oprește înainte de ecran |
+| **3** | **L5 — interdicția 65** (explicația diferenței față de luna anterioară) | 0 mecanisme în Python, 0 în JS | **zile, nu ore** — nu e nepredat, e nescris |
+| **4** | **restul L3** — bilanț/CPP fără rute, note explicative, registrul-jurnal, evidența TVA, jurnalul de marjă, categoria de mărime | 6 artefacte | construcție |
+| **5** | **60 — legătura normă↔implementare** | **374 din 470** de elemente nu poartă nimic; structurile de declarație, termenele și validările au **zero** legături structurate | mare, dar se poate tăia pe categorii |
+| **6** | **52 — amprentele corpusului** | **162 din 339** de acte fără amprentă | volum mecanic |
+| **7** | **50 — vigoarea la sursă** | **8 acte din 9** neverificate | volum, cu instrumentul reparat azi |
+| **8** | **55 — categoria de reverificare** | câmpul nu există; un prag global unic pentru toate | **cere decizie**: categoriile sunt conținut, nu măsurătoare |
+| **9** | **61 — lista dependenților** | 16 din 17, dar domeniul e registrul de cote, nu corpusul | îngustare, la prima folosire reală |
+
+#### Ce NU intră în praguri, fiindcă cere o decizie, nu o reparație
+
+- **R18 — cele două porți vide.** Nu se repară cu cod: ori există iar clustere de ordonat, ori se
+  declară că mecanismul se verifică doar pe date sintetice. **Cere decizie.**
+- **R14 — cele două populații de facturi.** Decizia de nomenclator, apoi migrarea; a doua nu e
+  opțională odată ce prima s-a luat.
+- **cum se citește pragul 1 pe o instalare fără clienți** — **LĂMURIT 23.08**: atingibilitate.
+
 
 ## RESTANȚE
 
