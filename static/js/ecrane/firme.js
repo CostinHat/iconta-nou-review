@@ -1020,33 +1020,16 @@ async function ecranSalariati(corp, nav, t) {
         <button class="buton-primar" id="salariu-save">Salvează</button>
         <button class="buton-secundar" id="salariu-cancel">Renunță</button></div>
         <div class="camp-eticheta" style="color:var(--gri)">Salariul de bază brut lunar (lei), din contractul de muncă (mai mare ca 0). „De la" = data de când e valabil: o mărire creează o intrare nouă în istoric; o corecție pune data angajării.</div>
-        <div id="salariu-efect"></div>
         <div id="salariu-msg"></div>`;
       corp.querySelector("#salariu-input").focus();
-      // [prag_minim_v1] consecinta INAINTE de buton (DS cap.6): la un leu peste salariul minim se stinge
-      // facilitatea si netul SCADE. Calculul vine de la server (salarizare.calcul_salariu) - nicio
-      // regula fiscala nu se rescrie aici.
-      let tEfect = null;
-      const arataEfect = async () => {
-        const v = Number(corp.querySelector("#salariu-input").value);
-        const d = corp.querySelector("#salariu-data").value || "";
-        const zona = corp.querySelector("#salariu-efect");
-        if (!zona) return;
-        if (!(v > 0)) { zona.innerHTML = ""; return; }
-        try {
-          // [P8 22.08] `salariat_id` se trimite acum: avertismentul e o afirmatie despre SALARIATUL
-          // asta, iar o afirmatie fara referent n-are adresa. Ecranul il avea deja (`sid`).
-          const r = await api.get(`/tenants/${t.id}/salariu-efect?brut=${v}&salariat_id=${sid}${d ? "&valabil_din=" + d : ""}`);
-          zona.innerHTML = r.avertisment
-            ? `<div class="mig-avert">${esc(r.avertisment)}</div>`
-            : `<div class="camp-ajutor">Net estimat: ${bani(r.net)} lei.</div>`;
-        } catch { zona.innerHTML = ""; }
-      };
-      corp.querySelector("#salariu-input").addEventListener("input", () => {
-        clearTimeout(tEfect); tEfect = setTimeout(arataEfect, 400);
-      });
-      corp.querySelector("#salariu-data").addEventListener("change", arataEfect);
-      arataEfect();
+      // [R28, decizia lui Costin 24.08.2026 - varianta 3: NIMIC] Aici se afisa „Net estimat: X lei"
+      // si un avertisment cu doua cifre de net, calculate prin /salariu-efect. S-au SCOS, nu s-au
+      // corectat. Motivul e masurat, nu de gust: ruta chema calcul_salariu(brut, la_data) - deci
+      // din 18 parametri pasa DOI, iar restul luau valorile implicite: persoane=0, sub_26=False,
+      // copii_scoala=0, norma_intreaga=True, data_angajare=None. Pentru un salariat cu persoane in
+      // intretinere, sub 26 de ani, cu norma partiala sau angajat la mijloc de luna, cifra afisata
+      // NU putea coincide cu fluturasul de peste o luna. La angajare se negociaza BRUTUL; netul si
+      // costul angajatorului se calculeaza dupa salvare, cu toate elementele.
       corp.querySelector("#salariu-cancel").addEventListener("click", () => { zonaSalariu.innerHTML = ""; });
       corp.querySelector("#salariu-save").addEventListener("click", async () => {
         const val = Number(corp.querySelector("#salariu-input").value);

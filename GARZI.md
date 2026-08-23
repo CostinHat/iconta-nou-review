@@ -4445,3 +4445,18 @@ euristică**, și ar putea ascunde o formulă scrisă într-un șablon.
 și a șirurilor trebuie să **păstreze numărul de linii**. Prima rulare a calibrării pe nume neutre le
 colapsa, deci raporta numere de linie ale **altor** linii — un instrument care trimite omul la locul
 greșit. Acum sursa curățată se compară cu originalul, linie cu linie, înainte de orice măsurătoare.
+
+**Un AN scris în cerere îngheață ecranul în trecut** (`core/test_an_hardcodat.py`, 24.08.2026).
+Întrebarea lui Costin era despre **valori** îmbătrânite în JS. Măsurat: **niciuna** — nicio cotă
+depășită (19%, 9%, 5%) nu apare de sine stătătoare în textul ecranelor, iar cele prezente se
+potrivesc cu registrul. Ce s-a găsit e o formă **vecină și mai tăcută**: `rip_ecran.js:142` cere
+`/rip/d212/2025`, cu anul în URL. Nu afișează o cifră greșită — o afișează pe cea de anul trecut,
+corect etichetată, și nu poate ajunge la anul curent. Clichet **1**, ancorat pe fișier: dacă se
+repară ăla și apare altul, cifra ar rămâne 1 și gardul ar tăcea — de-aia se verifică și **care**.
+
+**Și un fals negativ al propriului meu scan, prins pe cazul cunoscut** (24.08.2026). Prima formă a
+lui `core/scan_valori_afisate.py` arunca șirurile care conțin `class=` sau `style=`, ca zgomot de
+CSS. În codul ăsta **textul afișat trăiește înăuntrul șabloanelor HTML**, deci filtrul a aruncat
+chiar singurul caz pe care îl știam dinainte — eticheta cu salariul minim din `rip_ecran.js`. Corectat:
+se scot **etichetele**, rămâne **textul**. Cifra a urcat de la 25 la **46**. Calibrarea pe un caz
+cunoscut nu e o formalitate: aici a fost singura care a arătat că instrumentul măsura altceva.

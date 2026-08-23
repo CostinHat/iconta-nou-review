@@ -5032,3 +5032,17 @@ regăsească totalul pe care l-a văzut.
 
 **Ce NU s-a schimbat:** facturile deja salvate. Cifra lor era cea corectă; greșit era ce se afișa
 înainte de salvare.
+
+## 24.08.2026 — ecranul de angajare nu mai arată un net estimat
+
+**Ce s-a schimbat pentru contabil.** La introducerea salariului de bază nu mai apare *«Net estimat: X
+lei»* și nici avertismentul despre pierderea facilitații la depășirea salariului minim.
+
+**De ce.** Cifra se calcula pasând **doi** din cei **18** parametri ai funcției de salarizare — restul
+luau valorile implicite: fără persoane în întreținere, peste 26 de ani, normă întreagă, fără dată de
+angajare. Pentru un salariat care nu se potrivea acestei descrieri, cifra **nu putea** coincide cu
+fluturașul de peste o lună. La angajare se negociază **brutul**; netul și costul angajatorului se
+calculează după salvare, cu toate elementele.
+
+**Ce se pierde, și se știe:** avertismentul despre prăpastia salariului minim era o protecție reală.
+Dacă se întoarce, și în ce formă, e **R30**.

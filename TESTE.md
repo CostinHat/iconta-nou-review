@@ -1972,3 +1972,8 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
 - **`core/test_aritmetica_in_prezentare.py` (23.08.2026)** — 10 teste: șase cazuri pe care ecranul și
   serverul trebuie să dea aceeași cifră · anti-vacuu că forma veche **chiar diverge** (≥9 bani) ·
   rotunjirea pe linie citită din **sursa JS** · clichet pe o a treia formulă apărută în prezentare.
+
+- **`core/test_an_hardcodat.py` (24.08.2026)** — 6 teste: anti-vacuu pe domeniu · calibrare pozitivă
+  pe forma reală · **calibrare negativă în trei feluri** (an din variabilă, an doar în text, an care
+  nu e într-o cerere) · clichet la 1 · anti-stale (dacă R31 se rezolvă și clichetul rămâne, pică) ·
+  clichetul e ancorat pe **fișierul** cunoscut, nu doar pe număr. RED-proof prin mutație.

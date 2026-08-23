@@ -11616,3 +11616,29 @@ numerele raportate erau ale altor linii. Reparat, cu aserțiune anti-derapaj.
 art. 15 CF»*, dar formularul nu declară niciunul dintre cele trei câmpuri necesare — deci opțiunea
 întoarce **422 cu textul `venituri_economice`**, un nume de câmp intern arătat unui contabil, pe o cale
 care **nu poate reuși niciodată**. Prag 2, consemnat în R28, **nereparat în tura asta**.
+
+## 24.08.2026 (a optsprezecea tură) — varianta 3, executată după ce premisa a fost verificată
+
+**1. R28 închisă pe varianta 3 («nimic»), iar premisa deciziei s-a dovedit adevărată — și mai tare
+decât fusese enunțată.** Ruta `/salariu-efect` pasa **2 din 18** parametri către `calcul_salariu`:
+`persoane=0`, `sub_26=False`, `copii_scoala=0`, `norma_intreaga=True` erau toate presupuse. Iar
+`salariat_id`, care **se trimitea**, era folosit doar ca **referent al afirmației**, nu în calcul.
+Ecranul spunea *«despre salariatul ăsta»* calculând ca și cum n-ar avea pe nimeni în întreținere.
+Blocul scos din ecran, ruta ștearsă din `main.py` (nimeni altcineva n-o chema).
+
+**2. Ce lipsește ca decizia să fie completă, spus:** **simulatorul** la care trimite (*«cine vrea să
+compare scenarii deschide simulatorul»*) **nu există** — zero potriviri în `static/js/` și `main.py`.
+Și costul angajatorului tot nu apare nicăieri. Varianta 3 spune **nu aici**, nu **nicăieri**.
+
+**3. R30: avertismentul de prăpastie a plecat colateral.** Era o protecție reală (prag: un leu peste
+salariul minim stinge facilitatea), dar textul lui conținea **două cifre de net** din același calcul
+invalidat. Se întoarce fără cifre? E o decizie, nu o reparație — o afirmație de drept e adevărată
+pentru oricine, dar a alege singur ce spune un ecran e chiar ce s-a cerut să nu fac.
+
+**4. Cele trei premise ale turii, verificate: două false, una adevărată.** *«A cincea formulă —
+CAS/CASS pe brut, pe ecranul POS»*: **nu există ecran POS** ca fișier, iar toate cele 11 apariții
+`CAS`/`CASS` din JS sunt **valori interpolate de la server** (`${d.cas.cas}`), zero aritmetică.
+*«3750 hardcodat»*: **zero** în `static/`; în Python există, dar ca **interpretare datată și
+înregistrată** (`registru_interpretari.py`, S1 2026 = 3750 / S2 = 4125, cu ce spune arbitrul) — adică
+opusul unei valori uitate. *«Valori corecte în ianuarie, nu și acum»*: **tiparul e real**, dar nu pe
+valori — pe **anul** scris în cerere. → R31.
