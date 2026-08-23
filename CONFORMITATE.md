@@ -289,7 +289,17 @@ clasificate pe existența unui nume?** Verificat, cele 7 poziții ale pragului 3
 `facturi`, deci **datele există, artefactul nu**. Amândouă rămân unde erau.
 
 **REGULA, scrisă în tabel:** *o poziție de triaj se atribuie după *ce produce* modulul, confruntat cu
-norma — nu după numele funcției și nu după existența rutei.* Greșeala merge în **ambele** direcții:
+norma — nu după numele funcției și nu după existența rutei.*
+
+**A DOUA REGULĂ, adăugată 23.08 fiindcă prima nu era de ajuns: *o poziție se RECITEȘTE LA SURSĂ înainte
+de a fi lucrată, indiferent cât de recentă pare.*** Motivul e o **rată, nu o observație**: din **patru**
+poziții deschise și verificate, **patru** s-au dovedit descrise fără să fi fost deschis modulul —
+poziția 1 (Cartea mare, Registrul-inventar), poziția 2 (*„totul e calculat"*), poziția 4 (jurnalul de
+marjă, registrul-jurnal) și rândul lui `scan_constante` din pragul 2 (*„ZERO calibrare pozitivă, 2
+teste"*, când avea 14 teste și patru calibrări). **4 din 4 nu mai e un accident, e o proprietate a
+tabelului**: el a fost scris într-o singură trecere, iar o trecere unică peste 76 de poziții nu poate
+deschide 76 de module. Recitirea nu e neîncredere în cine a scris tabelul — e recunoașterea că tabelul
+a fost scris exact așa cum spune că a fost scris: *o trecere superficială* (`PLAN_INVESTIGATII.md`, 3b). Greșeala merge în **ambele** direcții:
 un nume potrivit a creditat un motor inexistent, iar lipsa unui nume căutat a ascuns două artefacte
 care există. Costul de a nu o respecta nu e simetric: prima direcție amână o construcție necesară, a
 doua o pornește degeaba.
@@ -390,6 +400,39 @@ niciuna dintre restanțele deschise nu s-a mișcat — nici rezolvată, nici mă
 procedura colectează în loc să rezolve, iar asta se vede exact aici, în contoare. Nu e o regulă cu
 gardă; e un prag de citit, la un moment numit.
 
+**CITIT PE 23.08.2026, la cerere.** La `ccf6cb3` (închiderea lui 1b, 22.08) erau **15 restanțe
+deschise**. Urmărite până azi: **1 rezolvată** (R2) · **2 mișcate fără rezolvare** (R14 — decizia
+luată, devenită migrare; R16 — corp modificat) · **12 neatinse**.
+
+**Pragul, citit literal, NU e atins:** trei s-au mișcat, deci nu „niciuna". **Citit pe fond, e la un
+pas:** 12 din 15 stau neatinse la o zi după punctul de control, iar dintre ele **doar 3 au blocaj de
+ORDINE** (R8, R9, R11) — adică doar trei își așteaptă legitim rândul. **Celelalte nouă** (R1, R3, R4,
+R5, R6, R7, R10, R13, R15) n-au niciun moment de așteptat: patru SURSĂ, trei VERIFICARE, două ARTEFACT.
+
+**Ce a scos citirea, și e mai grav decât pragul.** Contorul de **reluări e 0 pe TOATE cele 25 de
+restanțe** — de la prima până la ultima. `PLAN_LUCRU.md` („Reaprinderea") cere ca la fiecare tură să se
+verifice ce restanțe au blocajul dispărut; regula era **scrisă și nepăzită, deci se citea ca
+respectată**. **Reaprinderea n-a funcționat niciodată.** Trei condiții s-au îndeplinit fără să fie
+observate:
+
+| restanța | condiția | când s-a îndeplinit |
+|---|---|---|
+| **R8** | *„la primul commit care atinge `d223.py` ori `d406.py`"* | **de două ori pe 23.08**, prin commituri proprii (`c3938af`, `25b07c0`) — declanșator **mecanic**, ratat |
+| **R10** | prima jumătate cere `unde intră` pe fiecare restanță | textul restanței spune singur *„**există de azi**, deci nu mai e blocată de nimic tehnic"* |
+| **R11** | *„la triajul din faza 3b"* | triajul a pornit pe 23.08 și a trecut prin pragurile 1 și 2 |
+
+**Ce s-a construit din asta:** `core/test_reaprindere.py` face reaprinderea mecanică pentru clasa în
+care declanșatorul E mecanic — o condiție care numește un fișier și verbul *„atinge"*. Gardul a fost
+**roșu de la prima rulare, pe R8** — nu e RED-probat pe o mutație inventată, ci pe instanța reală care
+l-a cerut. Ce nu acoperă, scris: declanșatoarele care nu sunt fișiere („la punctul de decizie 2")
+rămân de citit de om.
+
+**BILANȚUL ZILEI, pe restanțe** (de la `57c8189`, prima tură, la `2fe86ae`): deschise la început **16** ·
+**închise 3** (R19, R21, R22) · **deschise noi 5** (R21, R22, R23, R24, R25 — dintre care R21 și R22
+s-au și închis în aceeași zi) · **deschise acum 18**. **Intrări − ieșiri = +2.** Etapa nu se apropie de
+închidere: se mișcă. Iar mișcarea e de un fel anume — restanțele noi vin din **măsurători care au
+scos ce nu se știa**, nu din defecte noi.
+
 ### R1 — Câte alte acte din corpus sunt PARȚIALE
 
 - **felul**: SURSĂ
@@ -485,11 +528,17 @@ gardă; e un prag de citit, la un moment numit.
 - **felul**: ORDINE
 - **cine deblochează**: INTERN
 - **unde intră**: E3 · interdicția 21
-- **reluări**: 0
+- **reluări**: 1
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `1eaecbb`
 - **ce blochează**: la prima citire, cele 15 potriviri ale interdicției 21 au fost triate **pe linie**; trei dintre cele numite zgomot merită a doua privire, **pe context**. Verificate azi, toate trei există în cod: `core/d223.py:159` — `len(asociati) == 1 and cota == Decimal(100)` (regula „100% doar cu un singur asociat"); `core/d406.py:1338` și `:1367` — `cota_l == 0` / `cota == 0` decid codul fiscal `300101` vs `300501`. Dacă vreuna e o **interpretare**, nu o regulă de lege, e o alegere făcută la scriere — adică exact interdicția 21, iar cifra „2 reale" rămâne plafon inferior. **Consemnate până azi doar în proză**, în patru locuri (`GARZI.md`, `ISTORIC.md`, `PREDARE_LANT.md`, câmpul „ce nu vede" al secțiunii 21) — nicăieri cu stare și condiție.
 - **condiția de deblocare**: **la reluarea interdicției 21**, sau mai devreme, la primul commit care atinge `d223.py` ori `d406.py`. Se citește fiecare pe context, se spune dacă e lege sau interpretare, iar cifra secțiunii 21 se corectează în consecință.
+- **RELUATĂ 23.08.2026 — declanșatorul se produsese, și nu fusese observat.** Condiția s-a îndeplinit **de două ori în aceeași zi**, prin commituri proprii care au atins `core/d406.py` (`c3938af` — reparația R22; `25b07c0` — felurile de jurnal). Reluarea s-a făcut abia după ce a fost căutată anume. **Două din trei sunt lămurite:**
+
+  **`d406.py:1436` și `:1465` — INTERPRETARE, nu lege.** `tcod_l = "300101" if (r["ti"] or cota_l == 0) else "300501"`. Două dovezi, amândouă mecanice: (a) **modulul o declară singur** — antetul lui, la linia 21, scrie *„TaxCode achizitii pe deductibilitate reala (acum **grosier** 300501)"*; (b) `cota == 0` **contopește situații distincte în drept** — scutit **cu** drept de deducere, scutit **fără** drept, și operațiune neimpozabilă — care nu au același cod în nomenclatorul SAF-T. A alege un singur cod pentru toate trei e o decizie luată la scriere, nu o regulă citită din normă.
+
+  **`d223.py:159` — RĂMÂNE DESCHISĂ, cu partea ei izolată.** `not (0 < cota < 100) and not (len(asociati) == 1 and cota == 100)`. Partea *„=100 doar cu un singur asociat"* **nu e interpretare**: e o consecință aritmetică a regulii de alături — suma cotelor trebuie să fie 100, deci cu un singur asociat singura valoare admisibilă e 100. Ce **nu** e derivabil e inegalitatea **strictă de jos**: `0 < cota` interzice un asociat cu cotă **zero**, iar asta nu decurge din suma = 100. E o alegere, până se citește norma D223 la sursă.
+- **ce mai lipsește ca să se închidă**: verdictul pe `0 < cota` din `d223.py`, citit din actul care reglementează distribuirea la asociere. Restul e făcut.
 
 ### R9 — Ecranul statului de plată: STOP nemișcat
 
@@ -1358,6 +1407,7 @@ niciuna n-a stricat ceva, toate au gardă și RED-proof.
 | `TESTE.md:193` | `depinde_de("salariu_minim") = 12 funcții` | **INVALIDATĂ** — aceeași cauză |
 | `TESTE.md:491` | „29 clustere structurale · 40 fiscale, majoritatea zero în graf" | **INVALIDATĂ** — cifrele au fost citite de pe graful conflat |
 | `TESTE.md:332` | **secvența persistată** — ordinea deterministă a celor 64 de clustere, sortată topologic pe `graf_clustere` | **INVALIDATĂ ca ordine.** Nu e o cifră: e ordinea în care s-a executat campania din 03–04.08. Nu spune că verificările sunt greșite — spune că **ordinea lor n-a fost cea calculată** |
+| `CONFORMITATE.md`, interdicția **1** | `131` brut (din care ~100 reale, pe eșantion de 30) | **INVALIDATĂ 23.08.2026** — nu se corectează, se re-măsoară. Termenii ei (`A+C+E−43`) au fost recalculați pe un domeniu **lărgit** (`scan_constante`, calibrarea negativă), deci descompunerea nu se mai poate reface, iar cifra nu se poate crede ca atare. *O cifră ai cărei termeni nu se mai pot reconstitui se invalidează, nu se corectează* — aceeași regulă ca la `STALE_BAZA_BASELINE` |
 | `TESTE.md:284` | `clustere_indirect(act)` — instrumentul care răspunde *„ce se atinge când se schimbă o lege"* | **INVALIDAT ca instrument.** Cel mai grav consumator: e unealta de propagare a modificărilor legislative |
 
 **Formularea, ca regulă:** o cifră măsurată cu un instrument despre care s-a dovedit ulterior că vede
@@ -1809,7 +1859,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 - **stare**: MĂSURATĂ
 - **măsurat la**: 2026-08-23
 - **pe commit**: `25b07c0`
-- **cifra**: **131** brut, din care ~23% zgomot pe eșantionul de 30 → **~100 reale** *(cifra brută e de pe 22.08, `ffbcb74`, pe domeniul VECHI al celuilalt instrument — nu s-a re-măsurat)*. Confruntare cu al doilea instrument, **re-măsurată 23.08 după calibrarea negativă a lui `scan_constante`**: clasa **C urcă de la 93 la 104**, **A de la 48 la 60**, **E de la 33 la 37**, fiindcă domeniul scanului s-a lărgit de la o listă de nume la *„nume fiscal SAU modulul citează legea"* — patru module care construiesc `Temei` erau invizibile. **Datoria n-a crescut, a devenit vizibilă.** Diferența de definiție rămâne: clasa A e tot în afara registrului, fiindcă un `Temei` lângă o valoare nu e registrul. **Descompunerea veche (131 = A+C+E−43) NU se mai poate reface**: termenii ei sunt pe două domenii diferite, iar a-i scădea ar fi exact greșeala pe care registrul a mai făcut-o o dată (cifra *162 fără amprentă*, la 52).
+- **cifra**: **131 — INVALIDATĂ 23.08.2026** (vezi tabelul cifrelor invalidate). Era: **131** brut, din care ~23% zgomot pe eșantionul de 30 → **~100 reale** *(cifra brută e de pe 22.08, `ffbcb74`, pe domeniul VECHI al celuilalt instrument — nu s-a re-măsurat)*. Confruntare cu al doilea instrument, **re-măsurată 23.08 după calibrarea negativă a lui `scan_constante`**: clasa **C urcă de la 93 la 104**, **A de la 48 la 60**, **E de la 33 la 37**, fiindcă domeniul scanului s-a lărgit de la o listă de nume la *„nume fiscal SAU modulul citează legea"* — patru module care construiesc `Temei` erau invizibile. **Datoria n-a crescut, a devenit vizibilă.** Diferența de definiție rămâne: clasa A e tot în afara registrului, fiindcă un `Temei` lângă o valoare nu e registrul. **Descompunerea veche (131 = A+C+E−43) NU se mai poate reface**: termenii ei sunt pe două domenii diferite, iar a-i scădea ar fi exact greșeala pe care registrul a mai făcut-o o dată (cifra *162 fără amprentă*, la 52).
 - **instanțe**: concentrate în `salarizare.py` 33 · `d212_engine.py` 13 · `d394.py` 9 · `d101.py` 8 · `d406.py` 7 · `d406_active.py` 7 · `d300.py` 5 · `d300_reconciliere.py` 5 · `d403.py` 5 · `d104.py` 4 · `scadente.py` 4 · `tva_marja_turism.py` 4 · restul câte 1–3, în 16 fișiere. Lista completă: `./venv/bin/python -m core.scan_constante`.
 - **calibrare**: GĂSIT — cotele TVA scrise ca literal în `d300.py:41-42`, `d394.py:69`, `cote_tva.py:19`; CAS 0.25 în `salarizare.py:497` și `salariati_api.py:497`. Caz negativ NEraportat: valorile din `common.py` (43) au fost excluse corect — acolo E locul lor.
 - **ce nu vede**: o valoare construită din altele (`sm * 3`) apare doar dacă un operand e literal · o valoare citită din baza de date (parametru per firmă) · o valoare ascunsă într-un șir formatat („cota 21%") · testele, scanurile și migrările (excluse deliberat). Zgomot identificat pe eșantion: numere de act citite ca valori (`158` din OUG 158/2005), constante de precizie (`0.0001`), coduri interne.
@@ -2046,9 +2096,9 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 - **stare**: PARȚIAL
 - **felul limitei**: DOMENIU — regiunea e numită: **alegerile care nu iau forma unei comparații** (codificări, ordine de aplicare, rotunjiri). Calibrare găsită, cu caz negativ neraportat
-- **măsurat la**: 2026-08-22
-- **pe commit**: `ffbcb74`
-- **cifra**: **15** candidate (egalități stricte pe o valoare de registru), din care **2 confirmate** la citire pe context. Raport: 56 de inegalități pe aceleași valori, care de regulă sunt chiar textul legii („nu depășește").
+- **măsurat la**: 2026-08-23
+- **pe commit**: `2fe86ae`
+- **cifra**: **15** candidate (egalități stricte pe o valoare de registru), din care **4 confirmate** la citire pe context — **erau 2, iar cele două noi vin din reluarea lui R8** (`d406.py:1436` și `:1465`, alegerea codului de taxă pe `cota == 0`). Cifra rămâne **plafon inferior**: `d223.py:159` e încă necitit la sursă. Raport: 56 de inegalități pe aceleași valori, care de regulă sunt chiar textul legii („nu depășește").
 - **instanțe**: confirmate — `salarizare.py:221` `vbt == sm` și `d112_reconciliere.py:207` `brut == sm` (aceeași interpretare, în două module: și interdicția 17). Ambele **marcate** acum cu `# interpretare: incadrat_la_minim`. Re-deschise, nerezolvate: `d223.py:159` (regula „100% doar cu un singur asociat" — în lege sau citirea noastră?), `d406.py:1338` și `:1367` (alegerea codului fiscal `300101` pentru cota zero e o mapare aleasă). Zgomot sigur: `cota == cota.to_integral_value()` ×4 (formatare), `cota == 0` ×2, `prag == 0/1` (stare internă), `k[0] == tp` (cheie de dicționar).
 - **calibrare**: GĂSIT — `vbt == sm` din `salarizare.py`, cazul din anexa planului. Caz negativ NEraportat: cele 56 de inegalități n-au intrat în listă, deci discriminatorul chiar deosebește `==` de `<=`.
 - **ce nu vede**: alegerile care NU iau forma unei comparații — codificarea trimestrială `09`, ordinea de aplicare a scăzămintelor, felul de rotunjire, alegerea unui default. Niciuna n-ar apărea vreodată. **Cifra e un plafon inferior, nu un total.** Și: prima citire a celor 15 a fost la nivel de LINIE; pe context, trei dintre cele numite zgomot merită a doua privire — corectat aici.

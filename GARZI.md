@@ -4241,3 +4241,19 @@ anume: un test care ar aștepta o instanță reală n-ar prinde-o niciodată.
 
 **RED-proof 1 mutație / 2 roșii**, dintre care `test_baseline_nu_e_stat` — adică chiar clichetul, nu
 doar testul de domeniu.
+
+**O restanță al cărei declanșator s-a produs nu poate rămâne nereluată** (`core/test_reaprindere.py`,
+23.08.2026). `PLAN_LUCRU.md` cere reaprinderea la fiecare tură; măsurat la cerere, **contorul de
+`reluări` era 0 pe toate cele 25 de restanțe** — de la prima până la ultima. Regula era **scrisă și
+nepăzită, deci se citea ca respectată**.
+
+Gardul închide clasa în care declanșatorul e **mecanic**: o condiție care numește un fișier și verbul
+*„atinge"*. Pentru fiecare restanță deschisă, compară `deschisă pe commit` cu istoricul fișierului; dacă
+s-a atins și `reluări` e încă 0, pică. Plus: contorul trebuie să fie un **număr** (altfel pragul de trei
+din plan nu se poate compara) și nu poate depăși **3** fără rescrierea condiției.
+
+**Nu e RED-probat pe o mutație inventată — a fost roșu de la prima rulare, pe cazul real:** R8, a cărei
+condiție (*„la primul commit care atinge `d223.py` ori `d406.py`"*) se declanșase de **două ori în
+aceeași zi**, prin commituri proprii. **Ce nu acoperă, declarat:** declanșatoarele care nu sunt fișiere
+(*„la punctul de decizie 2"*, *„când există iar clustere"*) rămân de citit de om — gardul închide clasa
+mecanică, nu clasa întreagă.

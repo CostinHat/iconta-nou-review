@@ -1921,3 +1921,7 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   · `BOTEZ_BASELINE` (coliziunile nume-de-nomenclator × nume-fiscal, numite) · anti-vacuu pe exceptare
   · gaura de botez **probată sintetic**, fiindcă în producție clasa e azi goală. RED-probat cu o
   mutație → 2 roșii.
+
+- **`core/test_reaprindere.py` (23.08.2026)** — 4 teste: anti-vacuu (există măcar un declanșator
+  mecanic) · o restanță cu declanșatorul produs a fost **reluată** · contorul e un număr · pragul de
+  trei reluări e respectat. Roșu de la prima rulare, pe R8 — instanța reală, nu o mutație.

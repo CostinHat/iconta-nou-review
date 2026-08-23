@@ -11304,3 +11304,33 @@ fie poartă blocantă pe cod existent."* Cifra a scăzut între timp de la ~115 
 clichet — deci curățenia s-a întâmplat incidental. Tiparul propriu al proiectului pentru „prea zgomotos
 ca poartă" e **clichetul per fișier**; F401 la 90 ar intra direct, și e chiar una dintre variantele
 scrise în condiția de deblocare a lui R23.
+
+## 23.08.2026 (a șasea tură) — pragul lui 1b, citit; reaprinderea, măsurată
+
+**1. Pragul de la închiderea lui 1b, citit la cerere.** La `ccf6cb3` erau **15 restanțe deschise**;
+urmărite până azi: **1 rezolvată** (R2), **2 mișcate** (R14, R16), **12 neatinse**. **Literal, pragul nu
+e atins** — trei s-au mișcat, deci nu „niciuna". **Pe fond, e la un pas**: dintre cele 12 neatinse, doar
+**3 au blocaj de ORDINE** (R8, R9, R11), adică doar trei își așteaptă legitim rândul.
+
+**2. Reaprinderea n-a funcționat niciodată — măsurat, nu bănuit.** `reluări` = **0 pe toate cele 25**.
+Trei condiții se îndepliniseră fără să fie observate: **R8** (declanșator mecanic, produs de două ori
+în aceeași zi de commituri proprii pe `d406.py`), **R10** (textul ei spune singur *„există de azi"*),
+**R11** (momentul — triajul 3b — a venit azi). O regulă scrisă și nepăzită se citește ca respectată.
+
+**3. R8 reluat, două din trei lămurite.** `d406.py:1436` și `:1465` sunt **INTERPRETARE**, cu două
+dovezi mecanice: modulul își declară singur maparea *„grosieră"*, iar `cota == 0` contopește trei
+situații distincte în drept. `d223.py:159` rămâne: partea *„=100 cu un singur asociat"* e consecință
+aritmetică, dar `0 < cota` — interzicerea unui asociat cu cotă zero — e o alegere necitită încă la
+sursă. **Interdicția 21: 2 → 4 confirmate.**
+
+**4. Cifra `131` de la interdicția 1 — INVALIDATĂ, nu corectată.** Termenii ei au fost re-măsurați pe un
+domeniu lărgit, deci descompunerea nu se mai poate reface. *O cifră ai cărei termeni nu se mai pot
+reconstitui se invalidează* — aceeași regulă ca la `STALE_BAZA_BASELINE`.
+
+**5. A doua regulă în tabelul de triaj: o poziție se RECITEȘTE LA SURSĂ înainte de a fi lucrată.**
+Rata: **4 din 4** poziții verificate erau descrise fără să fi fost deschis modulul. Nu e un accident —
+e o proprietate a tabelului, care a fost scris într-o singură trecere peste 76 de poziții.
+
+**BILANȚUL ZILEI pe restanțe:** deschise la început **16** · închise **3** · deschise noi **5** ·
+deschise acum **18**. **Intrări − ieșiri = +2.** Etapa nu se apropie de închidere, se mișcă — iar
+restanțele noi vin din **măsurători care au scos ce nu se știa**, nu din defecte noi.
