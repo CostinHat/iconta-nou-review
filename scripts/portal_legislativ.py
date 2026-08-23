@@ -82,18 +82,38 @@ def cauta(tip, numar, an):
         print("   <niciun rezultat>")
 
 
+def _scrie_text(nume, t):
+    """Scrie <nume>.txt + <nume>.txt.sha256 si intoarce amprenta pe TEXT.
+
+    SE OPRESTE daca extragerea n-a produs nimic, si nu lasa in urma niciunul din cele doua fisiere.
+    Motivul, masurat (R20, CONFORMITATE.md): opt artefacte de un octet au intrat in corpus pe
+    13.08.2026 fiindca extragerea a produs gol si n-a spus-o. Un .txt gol e MAI RAU decat unul
+    lipsa: pentru orice instrument care se uita la corpus arata ca act PREZENT si TACUT, deci
+    produce o absenta falsa in loc de o lipsa vizibila. Pagina (.html + .html.sha256) ramane pe
+    disc — ea chiar exista; ce lipseste e textul, si asta se spune, nu se scrie ca gol.
+
+    A DOUA amprenta, pe TEXT. Cea pe pagina raspunde la "e acesta fisierul stocat?"; asta raspunde
+    la "s-a schimbat TEXTUL?" — singura care se poate reproduce prin re-descarcare, fiindca
+    portalul versioneaza URL-urile de CSS/JS in fiecare pagina.
+    """
+    if not t or not t.strip():
+        raise ValueError(
+            "EXTRAGERE GOALA pentru %r: nu scriu %s.txt si nici amprenta lui. Pagina e salvata "
+            "(%s.html + .sha256); textul se aduce altfel sau lipsa se declara. Un .txt gol ar "
+            "arata ca act prezent si tacut." % (nume, nume, nume))
+    io.open(os.path.join(DIR, nume + ".txt"), "w", encoding="utf-8").write(t)
+    amp_t = hashlib.sha256(t.encode("utf-8")).hexdigest()
+    io.open(os.path.join(DIR, nume + ".txt.sha256"), "w", encoding="utf-8").write(amp_t + "\n")
+    return amp_t
+
+
 def adu(ident, nume):
     brut = get(BAZA + "/Public/DetaliiDocument/%s" % ident)
     amp = hashlib.sha256(brut).hexdigest()
     io.open(os.path.join(DIR, nume + ".html"), "wb").write(brut)
     io.open(os.path.join(DIR, nume + ".html.sha256"), "w", encoding="utf-8").write(amp + "\n")
     t = text(brut)
-    io.open(os.path.join(DIR, nume + ".txt"), "w", encoding="utf-8").write(t)
-    # A DOUA amprenta, pe TEXT. Cea pe pagina raspunde la "e acesta fisierul stocat?";
-    # asta raspunde la "s-a schimbat TEXTUL?" — singura care se poate reproduce prin
-    # re-descarcare, fiindca portalul versioneaza URL-urile de CSS/JS in fiecare pagina.
-    amp_t = hashlib.sha256(t.encode("utf-8")).hexdigest()
-    io.open(os.path.join(DIR, nume + ".txt.sha256"), "w", encoding="utf-8").write(amp_t + "\n")
+    amp_t = _scrie_text(nume, t)
     print("ADUS %s (id=%s): %d octeti html, %d caractere text" % (nume, ident, len(brut), len(t)))
     print("AMPRENTA pagina %s" % amp)
     print("AMPRENTA text   %s" % amp_t)
