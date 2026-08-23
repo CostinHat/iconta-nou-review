@@ -30,7 +30,7 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **FAZA 2 — TEMEIURILE, în lucru.** Măsurate pe 23.08: **53, 49, 52, 54, 55, 60, 61**, plus **50** (PARȚIAL — 1 act din 9 verificat la sursă, **zero instanțe**, valorile confruntate verbatim) și **59** (MĂSURATĂ — o instanță **demonstrată azi**: verificarea pe ACT ar fi ridicat alarmă pe 3 valori, cea pe ARTICOL arată că articolul n-a fost atins). A cerut **patru reparații în `vigoare_articol.py`**, dintre care una e chiar clasa reparată dimineața la `vigoare_punct`. Rămâne **58**, și restul celor 8 acte pentru 50. **51, 56, 57, 62**: nemăsurabile retroactiv.
+- **pasul curent**: **FAZA 2 — TEMEIURILE: toate interdicțiile măsurabile sunt MĂSURATE** (23.08.2026). **53, 49, 54, 55, 59, 60** — MĂSURATE; **52, 50, 58, 61** — PARȚIAL, cu domeniul scris la fiecare; **51, 56, 57, 62** — nemăsurabile retroactiv, prin declarația planului. Ce rămâne e **volum, nu metodă**: 8 acte din 9 de verificat la sursă pentru 50, și 162 de acte fără amprentă pentru 52. Urmează, în ordinea decisă la punctul de decizie 1: **triajul**.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
@@ -2116,13 +2116,13 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 58 — O sursă de nivel inferior care contrazice una superioară, fără decizie
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: PARȚIAL
+- **măsurat la**: 2026-08-23
+- **pe commit**: `8477b17`
+- **cifra**: **0 conflicte nedecise — plafon inferior**, fiindcă instrumentul vede doar conflictele deja RECUNOSCUTE (vezi «ce nu vede»). Măsurat pe două domenii, fiindcă interdicția atinge două locuri diferite: **(a) registrul de cote** — toate **34** de intrări sunt la nivelul **MO**, cel mai înalt, deci nu există nicio sursă inferioară care să poată contrazice ceva; **(b) registrul de interpretări** — **2** intrări, **ambele decise**, `deschise()` întoarce lista goală
+- **instanțe**: **niciuna deschisă**, iar cazul clasei e **rezolvat și consemnat structurat**. Din cele două interpretări, una e exact forma pe care o numește interdicția — `forma="forma_publicata_difera_de_text"`: **podeaua part-time**, unde *structura publicată de autoritate pune diminuarea ÎNĂUNTRUL formulei part_time, iar textul legii vorbește de normă întreagă*. Decizia poartă tot ce cere o alegere între surse: ambele variante numite, `ales`, `motiv`, `de_cine`, `la_data`, plus **arbitrul** (`DUK regula SP1B4_1`) cu ce spune el, și `temei_legat`. Și poartă **consecința măsurată** a alegerii inverse: *între 06 și 20.08.2026, sume diferite pe fluturaș și pe D112 pentru același salariat — 70,25 lei/lună*
+- **calibrare**: cazul cunoscut din plan — *podeaua part-time, unde structura publicată contrazice legea și s-a ales în cod* — a fost **găsit**, și e chiar una din cele două intrări. Instrumentul nu e un scan nou: e registrul de interpretări însuși, care există tocmai ca alegerile de felul ăsta să nu trăiască în comentarii. **Ce dovedește calibrarea:** clasa are un loc, iar locul e populat
+- **ce nu vede**: **cel mai important: nu poate găsi conflictele NEÎNREGISTRATE.** Un conflict între o sursă inferioară și una superioară pe care nimeni nu l-a observat nu apare nicăieri — nici în cote (toate MO), nici în interpretări (doar ce s-a scris). Deci *0 nedecise* înseamnă **0 dintre cele cunoscute**, nu 0 în cod. · Planul spune că 58 e *măsurabilă doar unde ambele surse sunt în corpus*; aici a doua sursă (structura publicată de ANAF) **este** în corpus, dar comparația text-cu-text s-a făcut de om, nu mecanic — două surse pot spune altceva fără ca vreun scan s-o vadă. · Numărul de interpretări recunoscute (**2**) e declarat de propriul lor registru ca fiind *numărul celor RECUNOSCUTE, nu numărul interpretărilor din aplicație*
 - **unde ajunge efectul**: se alege tăcut sursa mai comodă. Instanța: podeaua part-time — legea spune una, structura publicată de autoritate spune alta, s-a ales în cod; divergența e 70,25 lei pe lună, pe fiecare salariat part-time sub minim
 
 ## 59 — Verificarea vigorii făcută pe act, nu pe articolul folosit
