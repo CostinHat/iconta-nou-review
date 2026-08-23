@@ -30,7 +30,7 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **FAZA 4 — INSTRUMENTELE, în lucru.** Pașii 1 și 2 măsurați pe 23.08: **6 din 16 instrumente au gărzi pe ele și niciun test propriu** (între ele `scan_ancore`, atins din 5 fișiere, care e chiar instrumentul clasei «dovada din proză»), iar pe axa vidului cifra e **175 din 730 care culeg** — a instrumentului care exista deja, nu a celui pe care l-am construit azi și l-am retras. Rămâne: proza (după calibrarea lui `scan_ancore`), mutația reproductibilă, și despicarea lui «odată cu fixul» în înainte/după.
+- **pasul curent**: **FAZA 4 — INSTRUMENTELE, în lucru.** Pașii 1 și 2 măsurați pe 23.08, **pasul 1 corectat în aceeași tură** — prima formă a instrumentului greșea pe trei axe, toate «formă de suprafață luată drept fapt». Cifre: **5 din 16 instrumente n-au nicio gardă**, **doar 4 din 12 au calibrare NEGATIVĂ**, `scan_constante` are gardă și **zero calibrare pozitivă**, iar pe axa vidului **175 din 730 care culeg**. Rămâne: proza, mutația reproductibilă, despicarea lui «odată cu fixul» în înainte/după.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
@@ -1183,33 +1183,57 @@ aserțiune.
 
 ### Pasul 1 — pe ce instrument stă fiecare gardă, și e calibrat
 
-**16 instrumente**, după criteriu declarat (`scan_*`, `sonda_*`, `audit_*`, `vigoare_*`, plus
-`graf_temei`, `agenda`, `agenda_drift`, `verificator_conformitate`).
+**CORECTAT 23.08.2026, în aceeași tură. Prima formă a măsurătorii era greșită pe trei axe**, iar
+cifrele pe care le-am raportat din ea — *„6 din 16 instrumente n-au test propriu"*, *„`scan_ancore`
+n-a fost niciodată calibrat"* — **erau false**. Le scriu, fiindcă toate trei sunt aceeași familie:
+**o formă de suprafață luată drept fapt** — chiar clasa pe care faza 4 o numără.
 
-| instrument | fișiere de test care îl ating | test propriu | calib+ | calib− |
+| forma greșită | ce raporta | de ce era fals |
+|---|---|---|
+| calibrarea căutată după **cuvântul** „calibrare" în docstring | `graf_temei` cu **0** calibrări | are patru afirmații pozitive și una negativă din 01.08. **Instrumentul care numără gărzi ce-și iau dovada din proză își lua dovada din proză** |
+| legătura gardă↔instrument căutată prin **numele fișierului** (`test_<modul>.py`) | `scan_ancore` „fără test propriu" | garda lui există din **21.08** și se numește `core/test_ancore_in_cod.py`, cu clichet de acoperire și cu cele trei cazuri cunoscute scrise în ea |
+| „testul **atinge** instrumentul" căutat prin pomenirea numelui de modul | `graf_temei` cu **0** teste | testele lui importă numele **direct** (`from core.graf_temei import depinde_de`) și cheamă `depinde_de(...)` fără prefix |
+
+**Forma de acum e structurală pe AST**: fișierul e legat de instrument dacă **importă** din el (orice
+formă, inclusiv `importlib` pe cale); se adună **numele aduse** de acel import; o funcție **atinge**
+instrumentul dacă referă vreunul; **calibrează** dacă atinge și pinează un **literal concret**.
+
+**Cifrele corecte:**
+
+| instrument | fișiere-gardă | teste | calib+ | calib− |
 |---|---|---|---|---|
-| `scan_ancore.py` | **5** | **NU** | — | — |
-| `graf_temei.py` | 4 | DA | 9 | 1 |
-| `audit_preluare.py` | 3 | DA | 28 | 4 |
-| `scan_afirmatii.py` | 2 | **NU** | — | — |
-| `audit_retentie.py` | 2 | **NU** | — | — |
-| `agenda.py` | 2 | DA | 11 | 1 |
-| `audit_schema.py` | 2 | DA | 7 | **0** |
-| `scan_citate.py` · `scan_constante.py` · `scan_respingeri.py` | 1 fiecare | **NU** | — | — |
-| `vigoare_punct.py` | 1 | DA | 9 | 0 |
+| `audit_preluare.py` | 2 | 16 | **31** | **4** |
+| `graf_temei.py` | 4 | 9 | 20 | 1 |
+| `vigoare_punct.py` | 2 | 11 | 18 | 0 |
+| `agenda.py` | 2 | 14 | 5 | 0 |
+| `audit_schema.py` | 1 | 11 | 7 | 0 |
+| `scan_afirmatii.py` | 2 | 7 | 9 | **3** |
+| `scan_ancore.py` | 3 | 3 | 3 | **5** |
+| `scan_citate.py` · `scan_respingeri.py` | 1 | 2 | 2 · 1 | 0 |
+| `scan_constante.py` | 1 | 2 | **0** | 0 |
+| `agenda_drift` · `audit_retentie` · `scan_garzi_culegere` · `scan_garzi_subiect` · `vigoare_articol` | **0** | 0 | 0 | 0 |
 
-**Ce iese, în ordinea gravității:**
+**Ce iese, după corecție:**
 
-1. **Șase instrumente au gărzi pe ele și niciun test propriu.** Cel mai greu:
-   **`scan_ancore.py`, atins din 5 fișiere de test** — și el e chiar instrumentul clasei *„gardă
-   care-și ia dovada din proză"* (`fara_proza`, #14 din registrul de instrumente). **Instrumentul care
-   detectează dovada-din-proză n-a fost niciodată calibrat pe un caz cunoscut.**
-2. **Trei instrumente n-au nicio gardă pe ele** — `scan_garzi.py`, `scan_garzi_culegere.py`,
-   `scan_garzi_subiect.py` — plus `agenda_drift.py` și `vigoare_articol.py`. Ori sunt manuale, ori
-   sunt cod mort; **nu se poate spune care, din cod.**
-3. **Doar 3 din 5 instrumente cu test propriu au și calibrare NEGATIVĂ** (un caz care NU trebuie
-   găsit). `audit_schema` și `vigoare_punct` n-au — iar calibrarea negativă e cea care prinde un
-   instrument prea larg, adică exact felul în care s-a orbit un scan pe 22.08.
+1. **`scan_ancore` e cel mai bine calibrat NEGATIV din tot inventarul — 5 cazuri care NU trebuie
+   găsite.** Exact opusul a ce raportasem. Instrumentul clasei „dovada din proză" e, de fapt, singurul
+   care a fost calibrat pe felul în care putea greși: să găsească ceva unde nu e.
+2. **`scan_constante.py` are gardă, dar ZERO calibrare pozitivă** — 2 teste, niciunul nu pinează un caz
+   concret. E instrumentul clichetului de constante nesursate, deci al unei cifre care se citește
+   des (93 în clasa C).
+3. **Cinci instrumente n-au nicio gardă**: `agenda_drift`, `audit_retentie`, `scan_garzi_culegere`,
+   `scan_garzi_subiect`, `vigoare_articol`. Două sunt ajutoare importate de `scan_garzi`, unul e CLI,
+   unul e unealtă periodică declarată în `CLAUDE.md`. **Niciunul nu e cod mort** — verificat.
+4. **`scan_garzi.py` însuși — instrumentul interdicțiilor 18 și 19, construit pe 22.08 — e importat
+   de un singur fișier: garda scrisă azi.** Instrumentul fazei 4 n-avea, până acum, nicio gardă.
+5. **Doar 4 din 12 instrumente cu gărzi au calibrare NEGATIVĂ.** Iar negativa e cea care prinde un
+   instrument **prea larg** — adică felul în care s-a orbit un scan pe 22.08, și felul în care mi-au
+   greșit azi toate trei formele de mai sus.
+
+**Ce nu vede măsurătoarea, declarat:** „calibrare" înseamnă aici *o aserțiune care pinează un literal
+concret*. Un test care pinează un caz prin altă formă — o valoare calculată dintr-o fixtură, un
+golden file — **nu se numără**. Deci `calib+` e plafon inferior, iar zero pe `scan_constante` cere
+citire, nu concluzie.
 
 ### Pasul 2 — câte gărzi pot raporta verde pe zero rânduri (interdicția 19)
 
