@@ -1930,3 +1930,14 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   (≥40 constatări, `main.py` prezent) · clichet per fișier la **90**, fișier nou = 0 · anti-datorie-
   stătută. A prins imediat un import mort scris de mine cu o oră înainte.
 - **`core/test_constante_nesursate.py`** — BASELINE lărgit a doua oară: **51 de fișiere**, C = 135.
+
+- **`core/test_fisa_cont.py` (23.08.2026)** — 15 teste: fiecare rând poartă contul corespondent · sensul
+  rândului vine din capătul pe care stă contul · soldul se poartă din rând în rând **cu sens**, se
+  schimbă D→C când trece prin zero, iar zero nu e nici D nici C · soldul creditor nu se arată negativ ·
+  invariantul `SI + D − C = SF` · soldul inițial nedat **se declară** · cronologia se păstrează · cont
+  lipsă și lună invalidă sunt refuzate · anti-vacuu. RED-probat cu 2 mutații, a doua adăugată **după** ce
+  a trecut prima oară.
+
+- **`core/test_fisa_cont.py`** — crescut la **17 teste**: fișa e afirmație **tipată** (`fapt`, cu
+  `temei_completitudine` care numește de ce credem că am văzut tot) · rândul e **obiect cu atribute**
+  (`RandFisa`), nu dict, iar conversia se face la margine.

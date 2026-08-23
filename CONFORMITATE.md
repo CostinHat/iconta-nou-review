@@ -344,6 +344,26 @@ intră primul cu cele două intrări care sunt cu adevărat predare**, nu ca blo
 atinse** — 4 din 12 la pragul 3, plus 2 din 4 aici. Toate din același gest: poziția scrisă fără să se
 deschidă modulul. De asta regula urcă în `METODA_VERIFICARE.md`.
 
+#### CORECTARE 23.08 (a patra) — un NUME din normă poate acoperi DOUĂ obligații, pe regimuri diferite
+
+Al treilea criteriu de recitire, **distinct** de *„ce produce, nu cum se numește"*: un nume luat din
+normă poate ascunde **două artefacte**, cu **coduri de formular și regimuri diferite**. Verificat pe
+toate numele din pozițiile 1 și 4, contra Anexei 1 pct. 44 și **pct. 48** (verbatim: *„Persoanele fizice
+[…] care conduc evidența contabilă pe baza regulilor contabilității în partidă simplă întocmesc
+Registrul-jurnal de încasări și plăți (**cod 14-1-1/b**) și Registrul-inventar (**cod 14-1-2/b**)"*):
+
+| numele din triaj | partidă dublă | partidă simplă | verdict |
+|---|---|---|---|
+| **Registrul-inventar** | cod **14-1-2** | cod **14-1-2/b** | **DOUĂ** — iar cel simplu **există deja** (`rip_api.registru_inventar`) |
+| **Registrul-jurnal** | cod **14-1-1** | cod **14-1-1/b** (*de încasări și plăți*) | **DOUĂ** — iar cel simplu **există deja** (`rip_api`, modulul e chiar el) |
+| **registrul de evidență fiscală** | CF art. 19 alin. (7) | CF art. 68 alin. (8) | **DOUĂ** — verdicte opuse, vezi mai jos |
+| **Cartea mare** | 14-1-3 / 14-1-3/a | *(nu se aplică)* | **UNU**, în două forme, ambele înlocuibile cu Fișa de cont |
+
+**Deci trei din patru nume acopereau două obligații**, iar în două cazuri **artefactul de partidă simplă
+era deja construit** și trecea drept absent. Asta explică de ce poziția 1 s-a corectat de trei ori:
+criteriul *„ce produce"* prinde modulul greșit numit, dar nu prinde **obligația numărată o dată când
+sunt două**.
+
 #### CORECTARE 23.08 (a treia) — registrul de evidență fiscală: nu e un artefact, sunt DOUĂ
 
 Cerută de Costin, cu criteriul de azi: *„Registrul de evidență fiscală e o listă de ajustări între
@@ -374,7 +394,31 @@ greșeli, și e chiar singurul artefact pe care îl dădusem drept verificat.**
   **CONSTRUCȚIE — și mai mare decât părea**: nu e o randare care lipsește, e o clasificare per
   operațiune care nu s-a scris.
 
-**Ce se schimbă în poziția 1:** nu „3 artefacte fără producător", ci — după cele trei corectări —
+**CONSTRUIT 23.08.2026, primul artefact din pragul 3: `core/fisa_cont.py` — Fișa de cont pentru
+operațiuni diverse (cod 14-6-22).** Aleasă prima fiindcă **stinge obligația Cărții mari în AMÂNDOUĂ
+formele de înregistrare** — norma o spune la fel la 14-1-3 și la 14-1-3/a — deci un artefact în loc de
+doi, și fără să depindă de R21 (forma de înregistrare). Ce produce, și e exact ce pierdea
+`motor.carte_mare`: **cronologia** și **contul corespondent pe fiecare rând**, plus soldul purtat din
+rând în rând **cu sensul lui** (D/C). Nu inventează sold inițial: dacă nu i se dă unul, pornește de la
+zero **și o declară** (`sold_initial_declarat=False`), fiindcă o fișă care pornește tăcut de la zero
+afirmă că înainte n-a fost nimic. Gardă: `core/test_fisa_cont.py`, **15 teste**, RED-probat cu **2
+mutații** — prima (fișa pierde contul corespondent, redevine balanță) a picat imediat; **a doua (soldul
+își pierde sensul) a TRECUT**, iar gardul a fost completat cu cazul în care soldul trece prin zero D→C.
+*Propria mutație a găsit gaura propriei gărzi.*
+
+  **ȘI POARTA A RESPINS-O, de două ori, pe reguli existente — se scrie fiindcă e chiar dovada că
+  gărzile vechi lucrează.** (1) `test_afirmatii_tipate` a picat: fișa întorcea un **dict de proză**,
+  deși e o afirmație despre datele firmei (P3, 21.08). Tipată ca `fapt`, cu **`temei_completitudine`**
+  — *toate liniile care ating contul, pe note validate, în interval, cronologic; ciornele nu sunt
+  evidență*. La un control, exact câmpul ăla o face apărabilă: spune **de ce credem că am văzut tot**.
+  (2) A picat din nou: **rândul** era tot un dict. Devenit `RandFisa`, dataclass — un rând care spune
+  *„contul 5311 a primit 1000 de la 4111, sold 1000 D"* e o afirmație, iar conversia la dict se face la
+  **margine** (`ca_dict`), pentru randare. **Artefactul a ieșit mai bun din respingere decât intrase.**
+
+  **Ce NU s-a făcut**: randarea — fișa are producător, nu
+  ecran; aia e lista 5.
+
+**Ce se schimbă în poziția 1:** nu „3 artefacte fără producător", ci — după cele patru corectări —
 **Cartea mare: construcție · Registrul-inventar: îngustare (există, regim simplu) · registrul de
 evidență fiscală: DOUĂ, unul predare (simplă) și unul construcție mare (dublă)**. Din trei poziții
 descrise, **niciuna nu era descrisă corect**.
@@ -644,7 +688,10 @@ scos ce nu se știa**, nu din defecte noi.
 - **deschisă pe commit**: `44d30cf`
 - **ce blochează**: măsurat la Q2 (evidența TVA): pe t003, **una din trei facturi are `tert_cui = NULL`** (CMT149, către „Agentie Turism Marja SRL"). Un jurnal de vânzări și D394 cer partenerul cu codul lui; fără el, operațiunea nu se poate raporta pe partener. Nu e o lipsă de structură — coloana există — ci de **completitudine a datelor**, deci se rezolvă altfel decât o absență de producător.
 - **condiția de deblocare**: se măsoară **câte** facturi din matrice n-au cod de partener, pe direcție și pe plătitor de TVA, și se stabilește dacă lipsa e legitimă (persoană fizică) sau nu.
-- **ÎNCERCATĂ 23.08.2026, prima jumătate a condiției e FĂCUTĂ.** Măsurat pe cele 23 de scheme: **42 de facturi în total, 2 fără cod de partener** — `tenant_003` / `CMT149`, direcție **emisă**, partener *„Agentie Turism Marja SRL"*; `tenant_013` / `PF-01`, direcție **primită**, partener *„IONESCU MARIA PFA"*. **Prima nu e legitimă**: un SRL e persoană impozabilă și are CUI, iar factura emisă către el trebuie să-l poarte. A doua e o PFA — tot persoană impozabilă, deci nici ea nu e evident legitimă, dar aici lipsa poate veni din felul în care a fost introdusă, nu din natura partenerului. **Ce a rămas**: nu s-a defalcat pe *plătitor de TVA*, fiindcă domeniul e prea mic ca defalcarea să spună ceva — 2 cazuri. Restanța nu se închide, dar nu mai e nemăsurată: **e o listă de două nume**, nu o clasă necunoscută. Abia apoi se decide dacă aplicația trebuie să ceară codul la introducere (P23) sau doar să-l semnaleze.
+- **ÎNCERCATĂ 23.08.2026, prima jumătate a condiției e FĂCUTĂ.** Măsurat pe cele 23 de scheme: **42 de facturi în total, 2 fără cod de partener** — `tenant_003` / `CMT149`, direcție **emisă**, partener *„Agentie Turism Marja SRL"*; `tenant_013` / `PF-01`, direcție **primită**, partener *„IONESCU MARIA PFA"*. **Prima nu e legitimă**: un SRL e persoană impozabilă și are CUI, iar factura emisă către el trebuie să-l poarte. A doua e o PFA — tot persoană impozabilă, deci nici ea nu e evident legitimă, dar aici lipsa poate veni din felul în care a fost introdusă, nu din natura partenerului. **Ce a rămas**: nu s-a defalcat pe *plătitor de TVA*, fiindcă domeniul e prea mic ca defalcarea să spună ceva — 2 cazuri. Restanța nu se închide, dar nu mai e nemăsurată: **e o listă de două nume**, nu o clasă necunoscută.
+- **A DOUA JUMĂTATE A CONDIȚIEI, numită la cerere:** *„se decide dacă aplicația trebuie să **ceară codul la introducere** (P23) sau doar **să-l semnaleze**."* Aia e ce a rămas — o decizie de produs, nu o măsurătoare.
+- **DE UNDE AU VENIT CELE DOUĂ — și asta schimbă felul restanței.** `CMT149` (t003): `sursa_externa` **NULL**, `status = de_preluat` — starea produsă chiar de `emite_factura`, deci factura a intrat **prin aplicație**, nu prin import. `PF-01` (t013): `status = importata`, deci prin import. **Iar validare nu există**: `facturi_api.creeaza_factura` și `emite_factura` au amândouă `tert_cui=None` ca **default de parametru**, iar în tot `facturi_api.py` și `main.py` **nu există nicio verificare** pe `tert_cui` — nici prezență, nici checksum. **Deci un SRL fără CUI introdus prin aplicație e un defect de VALIDARE, nu o restanță de măsurat**, cum a observat Costin. Ce ține restanța deschisă e doar decizia (a cere vs a semnala); **defectul de validare e altceva și trece la reparații**, cu observația că `tert_cui` fiind default de parametru e și o instanță a interdicției **14**.
+- **Ce NU e prag 1, și de ce o spun explicit**: toate cele 17 firme sunt de test (`Agentie Turism Marja SRL` e un nume de fixtură), deci **niciun contabil nu are azi o factură greșită**. Efectul e potențial, nu actual — dar calea de intrare e de producție. Abia apoi se decide dacă aplicația trebuie să ceară codul la introducere (P23) sau doar să-l semnaleze.
 
 ### R14 — Două funcții de creare a facturii, cu stări implicite diferite
 
@@ -2063,7 +2110,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 - **felul limitei**: ORBIRE — numără **forma** (`=None` în semnătură), nu **efectul**; nu există instrument care să spună câți apelanți chiar omit parametrul
 - **măsurat la**: 2026-08-23
 - **pe commit**: `936aeb3`
-- **cifra**: **129 de definiții de funcție** cu cel puțin un parametru `=None` în modulele fiscale (`core/d1xx`–`d4xx`, `salarizare.py`, `motor.py`, `common.py`)
+- **cifra**: **19 constante fiscale ca DEFAULT DE PARAMETRU**, în **15 module** — dintre care **10 sunt cota de TVA 21** (`import_export`, `lichidare`, `perisabilitati`, `stocuri`, `taxare_inversa`, `tva_marja` ×2, `tva_marja_turism` ×3), 2 sunt cota forfetară de 8% a agricultorilor, iar restul impozitul pe dobândă de 10%, remunerația minimă și altele. **RECIFRATĂ 23.08.2026, a doua oară în aceeași zi, și motivul contează:** cifra transferată dimineața — *129 de definiții cu cel puțin un parametru `=None`* — măsura **forma**, nu clasa. Era **prea largă** (mai toate `=None` sunt legitime: forțează apelantul să dea valoarea) și **prea îngustă** (rata exact defaultul periculos — cel cu **valoare**, care furnizează tăcut o cotă greșită). Cifra nouă vine din `scan_constante`, casa **H3**, pe domeniul lărgit. *Cele 19 se numără **și** la interdicția 1 (valoare fiscală în afara registrului): sunt două interdicții despre aceleași instanțe, nu o dublare.*
 - **instanțe**: nedesfăcute pe instanțe: numărătoarea e pe **definiții**, nu pe parametri, și nu separă defaultul legitim de cel care ascunde o cale netestată
 - **calibrare**: **nu are.** Măsurătoarea veche din §3a — *25 din 78 de parametri cu default `None` care n-au fost NICIODATĂ `None`* (`GARZI.md`) — are **alt domeniu și alt criteriu**, deci nu se poate compara cu 129 și **nu s-a transferat ca atare**. Cele două cifre nu se adună și nu se scad
 - **ce nu vede**: numără forma (`=None` în semnătură), nu efectul (dacă apelantul chiar omite parametrul). Cifra e un **plafon inferior** al defectelor și un **plafon superior** al gravității: multe dintre cele 129 sunt defaults legitimi

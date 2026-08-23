@@ -4980,3 +4980,19 @@ formulare proprie, oricât de apropiată, e o încadrare făcută de noi în loc
 **Ce NU s-a schimbat:** identificatorii (`CASA`, `BANCA`, `FACTURI`, `SALARII`, `AMORTIZARE`,
 `DIVERSE`), gruparea notelor, cifrele și ordinea. Identificatorul rămâne decizia noastră — schema îl
 lasă text liber — iar felul e al normei.
+
+## 23.08.2026 (3) — aplicația poate produce Fișa de cont pentru operațiuni diverse
+
+**Ce s-a schimbat.** Există un producător pentru **Fișa de cont pentru operațiuni diverse (cod
+14-6-22)** — `core/fisa_cont.py`. Norma spune, la fel la Cartea mare (14-1-3) și la Cartea mare șah
+(14-1-3/a): *„Registrul Cartea mare poate fi înlocuit cu Fișa de cont pentru operațiuni diverse."* Deci
+un registru obligatoriu care lipsea complet are de azi cu ce fi produs, **indiferent de forma de
+înregistrare** a firmei.
+
+**Ce vede contabilul, când va vedea:** pe fiecare rând — data, documentul, explicația, **contul
+corespondent**, debit, credit, soldul curent cu sensul lui. Contul corespondent e chiar ce lipsea:
+balanța de rulaje, care exista deja, îl pierde la însumare, iar fără el nu se poate merge de la o cifră
+la operațiunile din spatele ei.
+
+**Ce NU s-a schimbat, și trebuie spus:** **nu există încă ecran sau rută**. Artefactul are producător,
+nu livrare — un contabil nu-l poate cere azi din aplicație. E muncă de lista 5, următoarea.

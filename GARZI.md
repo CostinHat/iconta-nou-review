@@ -4276,3 +4276,21 @@ una înainte de decizie — **17 fiscale · 20 de algoritm · 11 operaționale**
 checksum-ului CNP e aceeași clasă cu `_CNP_W`). Rămân 30, din care **17 fiscale — peste jumătate**, deci
 lărgirea s-a decis **pe compoziție, nu pe teamă**. **C: 104 → 135**, module văzute **60 → 85**. Zgomotul
 operațional nu se aruncă: intră în clichet pe fișierul lui, vizibil și blocat la creștere.
+
+**Fișa de cont nu poate redeveni o balanță** (`core/fisa_cont.py`, `core/test_fisa_cont.py`,
+23.08.2026). Primul artefact construit din pragul 3. Gardul apără exact ce pierdea `motor.carte_mare`:
+**contul corespondent pe fiecare rând** și **cronologia**, plus soldul purtat cu **sensul** lui (D/C),
+plus refuzul unei fișe pe un cont nenumit — o fișă goală arată ca *„acest cont n-a avut mișcare"*.
+
+**RED-proof 2 mutații — și a doua e lecția.** Prima (contul corespondent devine contul însuși, adică
+fișa redevine agregare) a picat imediat. **A doua (soldul își pierde sensul, `sens_sold = "D"` fix) a
+TRECUT** — fiindcă toate rândurile din fixtura mea aveau sold debitor. Gardul a fost completat cu cazul
+în care soldul trece prin zero D→C și cu cel de sold zero; abia atunci mutația a picat. **Propria
+mutație a găsit gaura propriei gărzi** — de asta se probează în ambele direcții, nu doar pe cea care
+pare evidentă.
+
+**Adăugire la fișa de cont (aceeași tură):** poarta a respins-o **de două ori** pe reguli existente,
+înainte de a intra. Prima: `test_afirmatii_tipate` — fișa întorcea un dict de proză, deși e o afirmație
+despre datele firmei; tipată ca `fapt`, cu `temei_completitudine`. A doua: **rândul** era tot un dict;
+devenit `RandFisa` (dataclass), cu conversia la dict mutată la margine. **Gărzile vechi au făcut
+artefactul nou mai bun decât îl scrisesem** — și au prins exact clasa pentru care fuseseră construite.

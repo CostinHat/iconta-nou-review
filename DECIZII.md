@@ -11371,3 +11371,42 @@ greșit pentru un clichet.
 
 **5. R25 — ÎNCHISĂ, pe cifra completă.** 48 de constante în 21 din 46 de module, clasificate înainte de
 decizie: **17 fiscale · 20 algoritm · 11 operaționale**. Decizia s-a luat pe compoziție. C: 104 → 135.
+
+## 23.08.2026 (a opta tură) — două reguli din experiment, și primul artefact din pragul 3
+
+**1. „O restanță nu e grea până n-a fost încercată" — regulă în `PLAN_LUCRU.md`.** Din experiment, nu
+din principiu: R10 avea 40 de commituri și zero încercări, iar închiderea a durat două minute.
+**Contorul de reluări începe de la PRIMA încercare**, altfel o restanță neatinsă arată identic cu una
+încercată și eșuată.
+
+**2. „Condiția se scrie cablabil dacă se poate" — cerință în `PLAN_LUCRU.md`.** Costin: *„asta e mai
+valoroasă decât garda."* Măsurat, ca să nu rămână preferință: din 15 stări de citit, **12 s-ar fi putut
+scrie cablabil**. Cea mai clară e **R9** — *„când se atinge ecranul statului de plată"* — care e **exact
+forma lui R8**, scrisă ca frază în loc de fișier. Restul de 3 depind de o decizie sau de un eveniment
+din afara depozitului; acolo motivul scris e de ajuns.
+
+**3. Al treilea criteriu de recitire: un NUME din normă poate acoperi DOUĂ obligații.** Verificat:
+**trei din patru** nume din pozițiile 1 și 4 acopereau două artefacte, pe regimuri diferite
+(Registrul-inventar 14-1-2 / 14-1-2/b · Registrul-jurnal 14-1-1 / 14-1-1/b · registrul de evidență
+fiscală art. 19(7) / art. 68(8)). **În două cazuri artefactul de partidă simplă era deja construit** și
+trecea drept absent. Criteriul e distinct de *„ce produce, nu cum se numește"*.
+
+**4. Interdicția 14, recifrată: 129 → 19.** Cifra de dimineață măsura **forma** (`=None`), nu clasa: era
+prea largă și, mai rău, rata exact defaultul periculos — cel cu **valoare**. Cele 19 se numără **și** la
+interdicția 1: două interdicții despre aceleași instanțe, nu o dublare.
+
+**5. R13, răspuns complet.** A doua jumătate a condiției e **decizia** (a cere codul la introducere vs a-l
+semnala). Iar cele două facturi: `CMT149` a intrat **prin aplicație** (`de_preluat`), `PF-01` prin
+import. **Validare pe `tert_cui` nu există nicăieri** — e default de parametru în ambele funcții de
+creare. Deci, cum a observat Costin, **un SRL fără CUI introdus prin aplicație e un defect de validare**,
+nu o restanță de măsurat; restanța rămâne doar pe decizie.
+
+**6. Pragul 3 pornit: `core/fisa_cont.py`.** Aleasă prima fiindcă stinge Cartea mare în **amândouă**
+formele, deci nu depinde de forma de înregistrare. Construcția mare — evidența per operațiune pentru
+impozitul pe profit — rămâne la urmă, cum s-a stabilit.
+
+**7. Poarta a respins fișa de două ori, pe reguli scrise cu zile înainte — și a avut dreptate de
+amândouă.** Întâi fiindcă întorcea un dict de proză în loc de afirmație tipată; apoi fiindcă **rândul**
+era tot un dict. Rezultatul: fișa poartă acum `temei_completitudine` (la un control, exact ăla o face
+apărabilă) și `RandFisa` ca obiect. **Artefactul a ieșit din respingere mai bun decât intrase** — ăsta e
+argumentul practic pentru gărzi pe reguli de formă, nu doar pe cifre.

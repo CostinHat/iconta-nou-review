@@ -268,6 +268,36 @@ garda:** clasa în care declanșatorul e mecanic — o condiție care numește u
 Deci garda e o felie îngustă, iar pârghia adevărată e **cum se scrie condiția**: una de forma *„la primul
 commit care atinge `X`"* se poate cabla; una de forma *„se închide când inventarul există"* nu.
 
+### Prima încercare — o restanță nu e grea până n-a fost încercată
+
+**Regulă, 23.08.2026, din experiment.** **R10** avea **40 de commituri pe registru și zero încercări**;
+încercată o dată, s-a închis în **două minute** — toate cele patru cerințe ale ei aveau deja gărzi, de o
+zi. Nu era grea: **era neîncercată**, iar cele două nu se pot deosebi din afară.
+
+**Consecința practică: la fiecare tură, o restanță neîncercată SE ÎNCEARCĂ.** Nu se rezolvă neapărat —
+se încearcă. Un eșec e un rezultat bun: motivul lui devine condiția de deblocare (pasul 4 din flux).
+
+**Contorul de reluări începe de la PRIMA încercare, nu de la a doua.** Altfel „reluare" numește doar
+repetarea, iar o restanță care n-a fost atinsă niciodată arată identic cu una încercată o dată și
+eșuată — exact confuzia care a ținut nouă restanțe nemișcate patruzeci de commituri.
+
+### Forma condiției de deblocare — cablabilă dacă se poate
+
+**Cerință, 23.08.2026.** O condiție de deblocare **se scrie în formă cablabilă dacă se poate**; dacă nu
+se poate, **motivul se scrie lângă ea**. Cine scrie condiția decide dacă ea va putea fi păzită vreodată
+— asta e mai valoroasă decât orice gardă construită după.
+
+**Formă cablabilă** înseamnă că un test poate decide singur dacă s-a îndeplinit: *„la primul commit care
+atinge `X`"* · *„când fișierul Y are câmpul Z"* · *„când numărul N ajunge la zero"*. **Formă necablabilă**:
+*„se închide când inventarul există"*, *„când se atinge ecranul"* — adevărate, dar de citit de om.
+
+**Măsurat, ca să nu rămână o preferință.** Din **18** restanțe deschise, **una singură** avea condiție
+cablabilă (R8). Trecute în revistă cele 15 stări de citit: **12 s-ar fi putut scrie cablabil** dacă
+cineva s-ar fi gândit la asta când le-a scris. Cea mai clară e **R9** — *„când se atinge ecranul statului
+de plată"* — care e **exact forma lui R8** (un declanșator pe fișier), scrisă ca frază în loc de fișier.
+Restul de 3 (R6, R11, R18) depind de o decizie sau de un eveniment din afara depozitului, iar acolo
+motivul se scrie și e de ajuns.
+
 ### Contorul de reluări
 
 **O restanță reluată și tot nerezolvată se numără.** Dacă a fost reluată de trei ori și tot n-a mers, **condiția de deblocare e scrisă greșit** — nu restanța e grea.
