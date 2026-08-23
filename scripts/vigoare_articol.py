@@ -9,6 +9,9 @@ modificare poarta („(la <data>, ... a fost modificat de ...)") · data ultimei
 Ce NU face, declarat: nu spune ca articolul SPUNE ce ii atribuim — aia e pasul 3, si e o citire.
 Verifica STAREA articolului la data de azi, pe forma consolidata publicata de Ministerul Justitiei.
 """
+import os
+import io
+import hashlib
 import html as _html
 import re
 import sys
@@ -36,12 +39,25 @@ def text(h):
 
 ident = sys.argv[1]
 arts = sys.argv[2:]
-t = text(ia("https://legislatie.just.ro/Public/DetaliiDocument/%s" % ident))
 
-m = re.search(r"istoric consolid[ăa]ri\s*(.{0,200})", t, re.S | re.I)
-cons = re.findall(r"\d{2}\.\d{2}\.\d{4}", m.group(1)) if m else []
-print("ACT id=%s | ultima consolidare: %s | %d caractere"
-      % (ident, cons[0] if cons else "?", len(t)))
+# MOD FISIER LOCAL (23.08.2026). Portalul NU serveste actele mari ca pagina unica: pentru Codul
+# fiscal, `DetaliiDocument` da un CIOT de 4.392 de caractere cu 0 titluri de articol, iar JS-ul
+# paginii nu incarca niciun text (verificat: singurele apeluri sunt actiuniSuferite / actiuniInduse /
+# referaPe / referitDe). Dar actul E DEJA IN CORPUS, adus si amprentat - iar copia poarta aceleasi
+# marcaje de consolidare „(la ZZ-LL-AAAA, ... a fost modificat de ...)". Deci se citeste de acolo.
+# Amprenta ramane garda: `test_corpus_amprenta` verifica la fiecare poarta ca fisierul e cel adus.
+if os.path.exists(ident):
+    _brut = io.open(ident, "rb").read()
+    t = text(_brut.decode("utf-8", "replace"))
+    print("ACT din corpus: %s | amprenta %s | %d caractere"
+          % (os.path.basename(ident), hashlib.sha256(_brut).hexdigest()[:16], len(t)))
+    cons = re.findall(r"\d{2}\.\d{2}\.\d{4}", t[:4000])
+else:
+    t = text(ia("https://legislatie.just.ro/Public/DetaliiDocument/%s" % ident))
+    m = re.search(r"istoric consolid[ăa]ri\s*(.{0,200})", t, re.S | re.I)
+    cons = re.findall(r"\d{2}\.\d{2}\.\d{4}", m.group(1)) if m else []
+    print("ACT id=%s | ultima consolidare: %s | %d caractere"
+          % (ident, cons[0] if cons else "?", len(t)))
 
 # ANTI-VACUU (23.08.2026). Pagina `DetaliiDocument` contine textul integral pentru actele MICI, dar
 # pentru cele mari e un CIOT: Codul fiscal a venit in 4.407 caractere, iar instrumentul a raspuns
