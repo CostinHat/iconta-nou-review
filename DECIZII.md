@@ -11543,3 +11543,26 @@ reale. Fără calibrarea scrisă întâi, cifra de 214 ar fi intrat în registru
 **4. Interdicția 29: PARȚIAL.** 1.785 de fraze, **143 fără loc unic**. Instanța cea mai instructivă nu e
 cea mai frecventă: *„Se încarcă..."* și *„Se încarcă…"* sunt două fraze pentru scan și una pentru om —
 26 de locuri într-o formă, 14 în cealaltă. Chiar efectul scris la interdicție.
+
+## 23.08.2026 (a cincisprezecea tură) — interdicția 4 e prag 1, măsurat cu numere
+
+**1. Verificat înainte de a lucra: R28, R29, R30 NU EXISTĂ** (ultima e R27), iar interdicțiile **4, 5,
+30, 31 sunt toate NEÎNCEPUTE, cu cifra «— (nemăsurată)»**. Nu există «7 semafoare» numărate, nici «24
+de etichete», nici «5 formule lăsate la 4»: cuvântul *semafor* apare de **0 ori** în `CONFORMITATE.md`
+— deși semafoare există în cod (63 de apariții în JS), deci conceptul e real, doar nemăsurat.
+
+**2. Interdicția 4 — MĂSURATĂ, și e PRAG 1.** Trei locuri calculează TVA în prezentare și **toate trei
+afișează cifra**. Unul dintre ele **producea o cifră greșită, dovedit**: 629,69 pe ecran față de 629,50
+în factură, pe 50 de rânduri obișnuite. Reparat în aceeași tură — criteriul lui Costin (*«dacă una
+calculează ceva ce se afișează, e prag 1»*), aplicat consecvent cu R22 și R26.
+
+**3. Interdicția 5 — PARȚIAL, iar prima formă a secțiunii a fost GREȘITĂ și scrisă de mine.** Afirmam
+că *«JS-ul n-are import, deci graful nu există de măsurat»*. **Fals: are 107 muchii.** Verificarea
+rulată alături a contrazis-o în aceeași tură — prima dată când prind una **înainte** de poartă.
+Măsurat corect: **0 încălcări pe verticală** (cele 7 infra→ecran sunt routerul, care prin definiție
+cunoaște ecranele), **47 de muchii laterale** care nu se pot împărți mecanic în compunere și cuplare
+fără un nivel declarat pe fișier.
+
+**4. Răspuns la «ce anume nu se poate verifica»:** trei drumuri — duplicarea prin **rescriere** (nu
+import), apelul în sus prin **HTTP**, și împărțirea muchiilor laterale. Deci **nu e adevărat că
+mecanica cheamă în sus prin natura ei**: pe importuri se vede, și e curată.

@@ -1968,3 +1968,7 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   comentariu) · M3 zgomotul, pe șapte forme, plus limita declarată (eticheta de un cuvânt) și
   contra-direcția (fraza scurtă cu diacritice **e** văzută) · M4 concatenarea, **probată ca
   neacoperită** · M5 domeniul e doar `.js`, probat · M6 anti-vacuu pe fraze, fișiere și duplicări.
+
+- **`core/test_aritmetica_in_prezentare.py` (23.08.2026)** — 10 teste: șase cazuri pe care ecranul și
+  serverul trebuie să dea aceeași cifră · anti-vacuu că forma veche **chiar diverge** (≥9 bani) ·
+  rotunjirea pe linie citită din **sursa JS** · clichet pe o a treia formulă apărută în prezentare.

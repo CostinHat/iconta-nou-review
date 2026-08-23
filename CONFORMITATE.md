@@ -2034,24 +2034,25 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 4 — O regulă fiscală implementată în stratul de prezentare
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: MĂSURATĂ
+- **măsurat la**: 2026-08-23
+- **pe commit**: `60a7b15`
+- **cifra**: **3 locuri** în stratul de prezentare calculează TVA, și **toate trei afișează cifra**: `emitere_ecran.js:300` (totalul facturii în lucru) · `facturi_ecran.js:432` (defalcarea pe cote din detaliul facturii) · `declaratii.js:447` (previzualizarea D301, cu textul *«se stochează»*). Din 15.125 de rânduri de JS, doar acestea combină un nume fiscal cu o cotă literală
+- **instanțe**: **una dintre ele producea o cifră GREȘITĂ, dovedit cu numere.** Serverul rotunjește **pe linie** (`Decimal.quantize`, ROUND_HALF_UP), iar ecranul aduna în `float` și rotunjea o singură dată, la afișare. Pe o factură obișnuită de **50 de rânduri × 3 × 19,99 la 21%**: serverul salvează **629,50**, ecranul arăta **629,69** — **19 bani** pe care contabilul îi vedea și factura nu-i avea. Pe 20 de rânduri mici: **+9 bani**. **REPARAT în aceeași tură** (rotunjire pe linie, ca la server), fiindcă o cifră greșită arătată unui om e prag 1 — criteriul lui Costin, aplicat consecvent cu R22 și R26. `declaratii.js` **nu s-a atins**: rotunjește la leu întreg, iar D301 stochează întregi — de verificat separat, nu de presupus
+- **calibrare**: cazul cunoscut **GĂSIT**, și e chiar reparația: forma veche a aritmeticii e păstrată în gardă (`_ecran_vechi`) ca să se poată proba că datele de test **chiar despart** cele două aritmetici — fără asta, testul ar putea trece fiindcă niciun caz nu discriminează (`METODA` §15, fixtura care nu acoperă cazul). Caz negativ NEraportat: cele două cazuri simple (o linie, două cote) dau aceeași cifră în ambele forme, deci nu discriminează — și se spune
+- **ce nu vede**: scanul cere ca linia să combine **un nume fiscal** cu **o cotă literală**; o regulă fiscală scrisă fără cotă (un prag, o condiție de scutire) nu intră. Iar gardul **nu scoate regula din prezentare** — oprește divergența, nu duplicarea: calculul rămâne netestat pe cale reală, negardat și neversionat pe dată. Cifra **3** e un **plafon inferior**
 - **unde ajunge efectul**: o regulă fiscală ajunsă în interfață nu e nici testată, nici gardată, nici versionată pe dată: pragul din ecran rămâne la valoarea de anul trecut mult după ce registrul s-a actualizat, iar nimeni nu se uită acolo
 
 ## 5 — Un strat care cheamă în sus sau ocolește un nivel
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: PARȚIAL
+- **felul limitei**: DOMENIU — se verifică mecanic **o singură direcție** din două, iar cealaltă e numită mai jos
+- **măsurat la**: 2026-08-23
+- **pe commit**: `60a7b15`
+- **cifra**: **107 muchii de import în `static/js/`**, clasificate pe straturi: **46 ecran → infrastructură** (în jos, normal) · **7 infrastructură → ecran**, toate din `app.js` și `navigator.js`, adică **routerul**, care prin definiție cunoaște ecranele — nu e o încălcare · **47 ecran → ecran** (lateral) · 7 infra → infra. **Zero încălcări dovedite pe verticală.** Pe partea Python: **0** module din `core/` importă din stratul de prezentare — cele trei potriviri sunt **comentarii**, iar una dintre ele (`pdf_util.py`) declară deschis o duplicare: *«Python al bani()/dataRo() din static/js/api.js: o singură regulă, două limbaje»*
+- **instanțe**: **niciuna pe verticală. Dar cele 47 de muchii laterale nu se pot împărți mecanic** în compunere legitimă și cuplare încrucișată: `admin.js → admin_analytics.js` e un ecran care își compune panourile; `termene.js → firme.js` și `capacitate.js → asistenti.js` sunt altceva — un panou care cheamă un ecran întreg. **Diferența cere un nivel declarat pe fișier, care nu există.** Iar interdicția 4, măsurată azi, e aceeași clasă pe alt drum: regula fiscală a ajuns în prezentare nu printr-un import, ci prin **rescriere** — trei formule de TVA scrise a doua oară în JS, care nu apar în niciun graf de importuri
+- **calibrare**: **nu are, și de-aia rămâne PARȚIAL.** Cifra 0 pe verticală e credibilă doar dacă scanul chiar ar vedea o încălcare — și asta nu s-a probat pe un caz construit. *Prima formă a acestei secțiuni, scrisă azi, afirma că «JS-ul n-are `import`, deci graful nu există de măsurat». **Fals: are 107 muchii.** Am scris-o înainte s-o verific, iar verificarea rulată alături a contrazis-o în aceeași tură — a șaptea instanță a lui `METODA` §16 și singura prinsă înainte de a intra în poartă*
+- **ce nu vede**: **ce anume rămâne neverificabil, exact** — răspunsul la întrebarea pusă: (a) **duplicarea prin rescriere**, nu prin import — un ecran care recalculează o regulă n-are nicio muchie (măsurat: 3 cazuri la interdicția 4); (b) **apelul în sus prin HTTP** — JS-ul cheamă rute, iar un ecran care ocolește un nivel chemând direct o rută de nivel jos nu apare în importuri; (c) **împărțirea celor 47 de muchii laterale** în compunere și cuplare, care cere un **nivel declarat pe fișier**. Deci nu e adevărat că mecanica «cheamă în sus prin natura ei»: pe importuri se vede, și e curată. Ce nu se vede sunt celelalte două drumuri. Cifra 0 e un **plafon inferior**
 - **unde ajunge efectul**: dependența care curge în ambele sensuri face ca un nivel să nu mai poată garanta nimic: ce apără stratul de jos se poate ocoli de sus, iar o schimbare într-un strat cere atinse toate celelalte — exact ce face imposibilă livrarea în 48 de ore
 
 ## 6 — O cerere de citire care modifică date de business

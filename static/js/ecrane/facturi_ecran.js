@@ -5,7 +5,7 @@
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
 import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=a7f9e80ae0";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
-import { randeazaEmitere } from "./emitere_ecran.js?v=b20eda8143";
+import { randeazaEmitere } from "./emitere_ecran.js?v=ef1e8e0687";
 
 const dirEticheta = (d) => (d === "iesire" || d === "emisa") ? "emis\u0103"
   : (d === "intrare" || d === "primita") ? "primit\u0103" : (d || "");
@@ -429,7 +429,8 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
     const pret = Number(l.pret_unitar) || 0;
     const cota = Number(l.cota_tva) || 0;
     const baza = cant * pret;
-    const tva = baza * cota / 100;
+    // [interdictia 4, 23.08.2026] rotunjire pe linie, ca la server - vezi emitere_ecran.js
+    const tva = Math.round(baza * cota / 100 * 100) / 100;
     if (!peCota[cota]) peCota[cota] = { baza: 0, tva: 0 };
     peCota[cota].baza += baza;
     peCota[cota].tva += tva;

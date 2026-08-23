@@ -5020,3 +5020,15 @@ trebuie **declarat**: absența nu se poate deosebi de scutire, iar tăcerea ște
 
 **Ce NU s-a schimbat:** deconturile deja înregistrate. Niciunul nu aparține unui contabil real (toate
 firmele sunt de test).
+
+## 23.08.2026 (6) — ecranul de emitere nu mai arată alt TVA decât factura salvată
+
+**Ce s-a schimbat pentru contabil.** Totalul afișat în timp ce scrie factura (Bază · TVA · Total) și
+defalcarea pe cote din detaliul facturii se calculează acum **rotunjind pe linie**, exact ca serverul.
+
+**Cât conta.** Pe o factură de 50 de rânduri a 19,99 lei × 3 bucăți, cu 21%: ecranul arăta **629,69**
+lei TVA, iar factura salvată avea **629,50**. Nouăsprezece bani — destui cât contabilul să nu
+regăsească totalul pe care l-a văzut.
+
+**Ce NU s-a schimbat:** facturile deja salvate. Cifra lor era cea corectă; greșit era ce se afișa
+înainte de salvare.

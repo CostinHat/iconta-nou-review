@@ -297,7 +297,11 @@ function formularEmitere(corp, nav, tenantId, num, opt) {
       if (!l) return;
       const val = (l.cantitate || 0) * (l.pret_unitar || 0);
       baza += val;
-      tva += val * ((l.cota_tva || 0) / 100);
+      // [interdictia 4, 23.08.2026] ROTUNJIRE PE LINIE, ca la server. Suma nerotunjita diverge:
+      // 50 de randuri de 3 x 19,99 la 21% -> serverul 629,50, ecranul arata 629,69. Contabilul vedea
+      // un total pe care factura salvata nu-l avea. Calculul RAMANE o duplicare a regulii fiscale in
+      // prezentare (chiar interdictia 4) - aici se opreste doar cifra gresita, nu duplicarea.
+      tva += Math.round(val * ((l.cota_tva || 0) / 100) * 100) / 100;
     });
     const total = baza + tva;
     corp.querySelector("#em-total").innerHTML = `

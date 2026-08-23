@@ -4396,3 +4396,18 @@ declarat și nedemonstrat e o speranță.*
 **Și euristica s-a strâns înainte de a raporta cifra, nu după:** prima formă lăsa să treacă fragmente
 de markup (`> <div class=`, `).forEach((b) => ...`) — 214 „duplicări" din care o parte era zgomot.
 După scoaterea învelișului HTML și a sintaxei de cod: **143**, toate fraze reale.
+
+**Ecranul nu mai arată alt TVA decât factura salvată** (`core/test_aritmetica_in_prezentare.py`,
+23.08.2026). **Prag 1, măsurat cu numere:** serverul rotunjește **pe linie**, ecranul aduna în `float`
+și rotunjea o singură dată. Pe o factură obișnuită de **50 de rânduri × 3 × 19,99 la 21%**: serverul
+**629,50**, ecranul **629,69** — **19 bani** pe care contabilul îi vedea și factura nu-i avea.
+
+**Gardul are trei straturi**, fiindcă niciunul singur n-ar ajunge: (1) reproduce **ambele aritmetici**
+pe aceleași date și cere să dea la fel; (2) **anti-vacuu pe cazuri** — păstrează forma veche și cere ca
+datele de probă să **chiar despartă** cele două aritmetici, altfel testul ar trece fiindcă niciun caz
+nu discriminează (`METODA` §15); (3) verifică pe **sursa JS** că rotunjirea pe linie e chiar acolo — o
+reproducere rămasă verde peste o sursă schimbată ar minți. Plus clichet: o a treia formulă de cotă
+apărută în prezentare, fără rotunjire, pică.
+
+**Ce NU face, scris:** nu scoate regula fiscală din prezentare. Oprește **cifra greșită**, nu
+**duplicarea** — pentru a doua e nevoie de o cale prin server.
