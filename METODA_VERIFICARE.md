@@ -553,3 +553,44 @@ ar fi arătat complet, iar întrebarea *„ce fel de jurnal nu ținem?"* n-ar ma
 **Ce NU acoperă regula:** nu spune că nomenclatorul e corect — spune doar că diferența față de mapare e
 vizibilă. Un act citit greșit produce un nomenclator greșit, complet și verificabil literal. Pentru
 asta e §12: confruntarea cu ce spune deja registrul.
+
+## 14. O REGULĂ SCRISĂ ȘI NEPĂZITĂ se citește ca respectată
+
+**Regula.** O regulă de proces care are mecanism scris, dar niciun gard, **nu produce efect** — și, mai
+rău, **consumă atenția care ar fi găsit-o**: cine o citește în plan o bifează ca existentă. Deci: orice
+regulă de proces cu mecanism scris ori primește un gard, ori primește o **declarație scrisă** că nu e
+gardabilă și cum se verifică altfel.
+
+**Instanța nu e un caz, e o populație întreagă, măsurată la 100%** (23.08.2026). *Reaprinderea* e
+scrisă în `PLAN_LUCRU.md` cu mecanism explicit — la fiecare tură se verifică ce restanțe au blocajul
+dispărut, iar contorul de reluări crește. Măsurat: **`reluări` = 0 pe toate cele 25 de restanțe**, de la
+prima până la ultima. **Regula n-a funcționat niciodată de când există.** Nu una dintre restanțe a fost
+ratată — **niciuna n-a fost vreodată reluată.**
+
+Iar consecința nu era teoretică: trei condiții se îndepliniseră fără să fie observate, dintre care una
+(**R8**) se declanșase de două ori **în aceeași zi, prin commituri proprii**. Când reaprinderea s-a
+făcut anume, prima restanță încercată (**R10**) s-a închis în **două minute** — nu era grea, era
+neîncercată.
+
+**De ce se promovează pe o singură instanță**, contra disciplinei de la §11 (*o instanță nu e o rată*):
+fiindcă **instanța ESTE rata**. Populația măsurată e întreaga aplicare a regulii, de la nașterea ei, iar
+rata de eșec e **100%**. O clasă cu o singură populație măsurată, în care populația e totul, nu e o
+anecdotă.
+
+**Cum se aplică, mecanic:**
+
+1. **Fiecare regulă de proces cu mecanism scris primește un gard sau o declarație.** Declarația e
+   acceptabilă — *„rapoartele nu trăiesc pe disc, deci enumerarea restanțelor nu se poate garda"* e un
+   răspuns bun. Tăcerea nu e.
+2. **Contorul e primul lucru de privit.** Un contor care n-a crescut niciodată nu spune „n-a fost
+   nevoie"; spune „nimeni nu l-a atins".
+3. **Se măsoară acoperirea gardului, nu doar existența lui.** Garda de reaprindere închide clasa în
+   care declanșatorul e mecanic: măsurat, **1 din 18** condiții deschise are forma aceea. Un gard care
+   acoperă 6% dintr-o clasă e un început, nu o rezolvare — și se scrie ca atare.
+4. **Pârghia e adesea în FORMA regulii, nu în gard.** O condiție de deblocare scrisă *„la primul commit
+   care atinge `X`"* se poate cabla; una scrisă *„se închide când inventarul există"* nu. Cine scrie
+   condiția alege dacă ea va putea fi păzită.
+
+**Ce NU acoperă:** nu spune că o regulă gardată e și respectată în spirit — gardul apără forma. Și nu
+transformă o regulă negardabilă într-una proastă: unele nu se pot garda, iar declarația e răspunsul
+corect (vezi §11 și `CONFORMITATE.md`, R10).

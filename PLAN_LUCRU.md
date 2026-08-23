@@ -260,6 +260,14 @@ opt commituri neimplementate exact din motivul ăsta.
 
 O restanță care poartă condiția de deblocare se reaprinde singură. Una care nu o poartă devine arhivă.
 
+**GARDATĂ, din 23.08.2026 — și regula spune unde:** `core/test_reaprindere.py`. Până atunci era scrisă
+și nepăzită, deci se citea ca respectată: contorul de `reluări` era **0 pe toate cele 25 de restanțe**,
+iar condiția lui R8 se declanșase de două ori în aceeași zi fără ca nimeni s-o observe. **Ce închide
+garda:** clasa în care declanșatorul e mecanic — o condiție care numește un fișier și verbul *„atinge"*.
+**Ce NU închide, măsurat:** **17 din 18** condiții deschise azi nu au forma asta și rămân de citit de om.
+Deci garda e o felie îngustă, iar pârghia adevărată e **cum se scrie condiția**: una de forma *„la primul
+commit care atinge `X`"* se poate cabla; una de forma *„se închide când inventarul există"* nu.
+
 ### Contorul de reluări
 
 **O restanță reluată și tot nerezolvată se numără.** Dacă a fost reluată de trei ori și tot n-a mers, **condiția de deblocare e scrisă greșit** — nu restanța e grea.

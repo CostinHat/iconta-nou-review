@@ -4257,3 +4257,22 @@ condiție (*„la primul commit care atinge `d223.py` ori `d406.py`"*) se declan
 aceeași zi**, prin commituri proprii. **Ce nu acoperă, declarat:** declanșatoarele care nu sunt fișiere
 (*„la punctul de decizie 2"*, *„când există iar clustere"*) rămân de citit de om — gardul închide clasa
 mecanică, nu clasa întreagă.
+
+**Importurile nefolosite nu mai pot crește** (`core/test_importuri_nefolosite.py`, 23.08.2026).
+**Clichet la 90**, per fișier, pe `ruff --select F401`. Motivul din `ruff.toml` (18.08) — *„prea
+zgomotoase ca să fie poartă blocantă pe cod existent"* — **rămâne valabil pentru o poartă și e greșit
+pentru un clichet**: un clichet nu cere curățenie acum, împiedică doar creșterea. Cifra scăzuse de la
+~115 la 90 **incidental**, deci nimic nu garanta că nu urcă la loc. Anti-vacuu: dacă parsarea se rupe,
+contorul devine 0 și clichetul ar trece pe gol — gardul cere **cel puțin 40** de constatări și prezența
+lui `main.py`. Primul lucru pe care l-a prins a fost **importul mort din propriul meu test de o oră
+înainte** (`pytest` în `test_reaprindere.py`), scos pe loc — nu baseline-at.
+
+---
+
+**Domeniul lui `scan_constante` are acum a treia regulă** (23.08.2026, a doua lărgire din aceeași zi).
+După sondajul COMPLET pe cele 46 de module rămase: **48 de constante de clasă C**, clasificate una câte
+una înainte de decizie — **17 fiscale · 20 de algoritm · 11 operaționale**. Cele 20 de algoritm au ieșit
+**corect**, nu prin excepție: `CHEIE` a intrat în `NOM`, unde îi era locul (vectorul de ponderi al
+checksum-ului CNP e aceeași clasă cu `_CNP_W`). Rămân 30, din care **17 fiscale — peste jumătate**, deci
+lărgirea s-a decis **pe compoziție, nu pe teamă**. **C: 104 → 135**, module văzute **60 → 85**. Zgomotul
+operațional nu se aruncă: intră în clichet pe fișierul lui, vizibil și blocat la creștere.

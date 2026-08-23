@@ -72,7 +72,7 @@ FIS = re.compile(r"^(d\d{3}[a-z_]*|salarizare|scadente|stat_plata_api|salariati_
                  r"tva_\w+|bilant\w*|impozit\w*|contributii\w*|control_fiscal\w*|common)\.py$")
 NF = re.compile(r"prag|plafon|cota|cote|salariu|salar|venit|impozit|contrib|cas\b|cass\b|cam\b|"
                 r"deduc|scutir|termen|scadent|zi_dep|micro|profit|dividend|tichet|norma|baza|minim|maxim", re.I)
-NOM = re.compile(r"_W$|_WEIGHT|_KEY$|CNP|CUI|JUD|SIRUTA|TIPURI|TIP_|_TIP|FORMA|LIMITE_TEXT|LIMITE|"
+NOM = re.compile(r"_W$|_WEIGHT|_KEY$|CHEIE|CNP|CUI|JUD|SIRUTA|TIPURI|TIP_|_TIP|FORMA|LIMITE_TEXT|LIMITE|"
                  r"TAXCODE|COD_|CODURI|_REL_|_PER_|CAEN|VALUT|TARA|_MAP$|SCHEMA|XSD|NOMENCL|SARB|"
                  r"HEADER|_STR_|_OPT$|PERIODIC|_CAT_|CATEG", re.I)
 
@@ -348,11 +348,34 @@ def _citeaza_legea(src):
     return False
 
 
+PRAG_SEMNAL = 20   # potriviri `NF` in sursa; vezi `in_domeniu`
+
+
 def in_domeniu(f, src):
-    """Un modul e in domeniul scanului daca poarta un NUME fiscal (`FIS`) SAU daca CITEAZA legea."""
+    """Un modul e in domeniul scanului daca: poarta un NUME fiscal (`FIS`), SAU CITEAZA legea
+    (construieste un `Temei`), SAU are DENSITATE de vocabular fiscal peste `PRAG_SEMNAL`.
+
+    A TREIA regula, adaugata 23.08.2026 dupa sondajul COMPLET cerut de Costin. Primele doua prindeau
+    modulele care se numesc fiscale sau stiu ca sunt. A treia le prinde pe cele care nici nu se
+    numesc, nici nu stiu - si acolo statea datoria: 48 de constante de clasa C in 21 din cele 46 de
+    module ramase.
+
+    PRAGUL NU E ALES PE GUST - e ales pe COMPOZITIE, masurata pe toate cele 48 inainte de a decide:
+      17 FISCALE reale  - plafoanele de casa (Legea 70/2015, sase valori intr-un modul al carui
+                          comentariu spune „cu temei" si nu poarta niciunul), cota 21 ca DEFAULT DE
+                          PARAMETRU in sase module, plafonul de 10% si cota de 16% din `ong.py`,
+                          pragul de 270 de zile de la art. 26(1)c, impozitul pe dobanda de 10%,
+                          norma de 8 ore/zi;
+      20 ALGORITM       - vectorul de ponderi al checksum-ului CNP (`_CHEIE`, de doua ori cate noua)
+                          si decodarea secolului din CNP. Acestea NU intra: `CHEIE` a fost adaugat in
+                          `NOM`, unde ii era locul - e aceeasi clasa cu `_CNP_W`;
+      11 OPERATIONALE   - praguri de zile pentru notificari, orizonturi de scadentar, paginare,
+                          latimea unui logo in PDF.
+    Dupa scoaterea celor 20 de algoritm raman 30, din care 17 fiscale - peste jumatate. Zgomotul
+    operational NU se arunca: intra in clichet pe fisierul lui, deci e VIZIBIL si nu poate creste."""
     if not f.endswith(".py") or f.startswith("test_"):
         return False
-    return bool(FIS.match(f)) or _citeaza_legea(src)
+    return bool(FIS.match(f)) or _citeaza_legea(src) or len(NF.findall(src)) >= PRAG_SEMNAL
 
 
 def inventar(rad=RAD):

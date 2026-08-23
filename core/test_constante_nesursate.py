@@ -33,15 +33,22 @@ from core import scan_constante
 # Ieșite complet: `cote_tva.py` (2) și `d300.py` (5) — amândouă își citează actul în antet, per
 # valoare. Coborâte: d394 9->2, d212_engine 13->11, d101 8->7, d104 4->0, salarizare 19->18.
 BASELINE = {
-    "common.py": 8, "control_fiscal_api.py": 1, "d101.py": 7, "d101g.py": 1,
-    "d108.py": 1, "d169.py": 1, "d169n.py": 1, "d205.py": 2, "d212_engine.py": 11,
-    "d216.py": 1, "d394.py": 2,
-    "d401.py": 2, "d402.py": 3, "d403.py": 5, "d406.py": 5, "d406_active.py": 7,
-    # Intrate 23.08.2026 prin LARGIREA DOMENIULUI: module care CITEAZA legea (construiesc `Temei`)
-    # si erau invizibile fiindca `FIS` e o lista de nume. Datoria nu a crescut - a devenit vizibila.
-    "contracte_speciale.py": 5, "sponsorizari.py": 3, "deconturi.py": 1, "motor.py": 2,
-    "d406_stocuri.py": 1, "d407.py": 2, "salariati_api.py": 1, "salarizare.py": 18,
-    "scadente.py": 3, "stat_plata_api.py": 1, "tva_agricultori.py": 2, "tva_aur.py": 1,
+    # LARGIT 23.08.2026 (a doua oara, dupa sondajul COMPLET): domeniul cuprinde acum si modulele cu
+    # DENSITATE de vocabular fiscal peste `scan_constante.PRAG_SEMNAL`. Compozitia celor 48 gasite a
+    # fost masurata INAINTE de decizie: 17 fiscale reale, 20 de algoritm (scoase corect prin `CHEIE`
+    # in `NOM`), 11 operationale. Cele operationale NU se arunca - intra in clichet pe fisierul lor,
+    # deci sunt vizibile si nu pot creste. Datoria n-a crescut; s-a facut vizibila: C 104 -> 135.
+    "asociati_import_api.py": 1, "audit_preluare.py": 1, "beneficii_api.py": 1, "casa.py": 6,
+    "common.py": 8, "contracte_speciale.py": 5, "control_fiscal_api.py": 1, "control_incrucisat.py": 1,
+    "d101.py": 7, "d101g.py": 1, "d108.py": 1, "d169.py": 1, "d169n.py": 1, "d205.py": 2,
+    "d212_engine.py": 11, "d216.py": 1, "d394.py": 2, "d401.py": 2, "d402.py": 3, "d403.py": 5,
+    "d406.py": 5, "d406_active.py": 7, "d406_stocuri.py": 1, "d407.py": 2, "decontari_asociati.py": 1,
+    "deconturi.py": 1, "efactura_send.py": 1, "factura_pdf.py": 1, "import_export.py": 1,
+    "lichidare.py": 1, "monitor_fiscal.py": 1, "motor.py": 2, "notificari_scadenta.py": 2, "ong.py": 2,
+    "perisabilitati.py": 1, "produse_api.py": 1, "provizioane.py": 1, "salariati_api.py": 1,
+    "salariati_import_api.py": 2, "salarizare.py": 18, "scadentar.py": 2, "scadente.py": 3,
+    "scan_constante.py": 1, "sponsorizari.py": 3, "stat_plata_api.py": 1, "stocuri.py": 1,
+    "taxare_inversa.py": 1, "termene_api.py": 1, "tva_agricultori.py": 2, "tva_aur.py": 1,
     "tva_marja.py": 2, "tva_marja_turism.py": 4,
 }
 

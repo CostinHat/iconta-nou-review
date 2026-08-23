@@ -344,6 +344,41 @@ intră primul cu cele două intrări care sunt cu adevărat predare**, nu ca blo
 atinse** — 4 din 12 la pragul 3, plus 2 din 4 aici. Toate din același gest: poziția scrisă fără să se
 deschidă modulul. De asta regula urcă în `METODA_VERIFICARE.md`.
 
+#### CORECTARE 23.08 (a treia) — registrul de evidență fiscală: nu e un artefact, sunt DOUĂ
+
+Cerută de Costin, cu criteriul de azi: *„Registrul de evidență fiscală e o listă de ajustări între
+rezultatul contabil și cel fiscal. Aplicația calculează D101, deci undeva face diferențele. Întrebarea
+nu e dacă există modulul, ci dacă există **calculul**."* Îl declarasem *rezistă la verificare* pe baza
+lui *„zero potriviri în `.py`, `.js`, `.html`"* — adică **pe nume**. **A cincea instanță a aceleiași
+greșeli, și e chiar singurul artefact pe care îl dădusem drept verificat.**
+
+**Norma, citită verbatim: sunt două registre, pe două regimuri, cu temeiuri diferite.**
+
+| regim | temei | ce cere să conțină |
+|---|---|---|
+| **impozit pe profit** | **CF art. 19 alin. (7)** | *„contribuabilii sunt obligați să evidențieze în registrul de evidență fiscală **veniturile impozabile** înregistrate într-un an fiscal […] precum și **cheltuielile efectuate în scopul desfășurării activității economice** […] potrivit art. 25"* |
+| **activități independente, sistem real** | **CF art. 68 alin. (8)–(9)** | *„au obligația să completeze Registrul de evidență fiscală, **în vederea stabilirii venitului net anual**"*; modelul se aprobă prin ordin |
+
+**Verdictul, per regim — și sunt opuse:**
+
+- **Partidă simplă: CALCULUL EXISTĂ, artefactul nu.** `core/rip_api.py` clasifică **fiecare
+  operațiune** (`CATEGORII_PLATA` = *cheltuiala_deductibila · cheltuiala_limitata ·
+  cheltuiala_nedeductibila · aport_retragere · rambursare_credit*), iar `deductibilitate` e **câmp
+  obligatoriu** la validare; `fisa_d212()` agregă pe an, iar `d212_engine.calculeaza_d212(venit_brut,
+  cheltuieli_deductibile, …)` produce **venitul net**. Aia e **exact** ce cere art. 68 să stabilească
+  registrul. Deci poziția nu e „artefact fără producător": e **PREDARE** — lipsește forma, nu calculul.
+- **Partidă dublă (profit): CALCULUL NU EXISTĂ.** `d101.calcul_d101` primește `P1, P2, P4, P5` *„din
+  contabilitate"* **plus ajustările fiscale „din manual"** — le tastează contabilul, nu se derivă. Iar
+  `inregistrari` / `inregistrari_linii` **n-au nicio coloană de deductibilitate** (spre deosebire de
+  RIP). Deci evidența **per operațiune** pe care o cere art. 19 alin. (7) nu există nicăieri.
+  **CONSTRUCȚIE — și mai mare decât părea**: nu e o randare care lipsește, e o clasificare per
+  operațiune care nu s-a scris.
+
+**Ce se schimbă în poziția 1:** nu „3 artefacte fără producător", ci — după cele trei corectări —
+**Cartea mare: construcție · Registrul-inventar: îngustare (există, regim simplu) · registrul de
+evidență fiscală: DOUĂ, unul predare (simplă) și unul construcție mare (dublă)**. Din trei poziții
+descrise, **niciuna nu era descrisă corect**.
+
 #### CORECTARE 23.08 — ordinea: **3a înaintea lui 3b**, nu invers
 
 Triajul s-a pornit peste **76** de interdicții, din care **50 scriu NEÎNCEPUTĂ** — iar avertismentul
@@ -495,11 +530,13 @@ scos ce nu se știa**, nu din defecte noi.
 - **felul**: SURSĂ
 - **cine deblochează**: INTERN
 - **unde intră**: E2 · interdicțiile 50, 52
-- **reluări**: 0
+- **reluări**: 1
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `07d5351`
 - **ce blochează**: **măsurat înainte de a fi scris, nu presupus.** Din **529** de fișiere în `INDEX.json`, **47 poartă cel puțin un marcaj** (21 `forma_la_data` · 9 `consolidat_la_zi` · 11 detectate ca formă inițială · 2 abrogate · 2 cu text neextractibil), iar **18** dintre ele sunt legate de cote. **Patru poartă o notă explicită** — avertismente scrise de om: *„forma initiala 2014; NU include Ordinul 1239/2021…"* (`omfp_1802_2014.pdf` — chiar fișierul care a produs cifra falsă) · *„consolidare 2018, nu la zi"* · *„sursa legex.ro, neoficiala"* · *„abrogat de HG 773/2019 … HG 773/2019 nu e in corpus"*. **Cine citește marcajele: doar `gen_index.py` însuși și două gărzi.** Nimic la punctul de folosire — cine deschide fișierul ca să ia o valoare nu vede nimic. Asta nu e o instanță, e clasa din care instanța a ieșit.
 - **condiția de deblocare**: marcajul ajunge la folosire, nu doar în manifest. Se închide când citirea unei valori CURENTE dintr-un fișier marcat `forma_la_data` sau cu notă e **imposibilă sau zgomotoasă prin construcție** — nu doar nerecomandată. Forma minimă acceptabilă: o gardă care leagă fiecare `Temei` de forma fișierului lui și pică pe combinația „valoare fără succesor + sursă marcată ca formă veche". Până atunci, cele 4 note se citesc manual înainte de orice valoare luată din acele fișiere.
+- **ÎNCERCATĂ 23.08.2026 — a mers pe jumătate, iar eșecul e informativ.** Aleasă fiindcă antetul o numește, alături de R6, drept una dintre cele **două care blochează cel mai mult**. Prima citire a lui `INDEX.json` a dat **zero** fișiere marcate, deși restanța spune 47 — cauza: structura nu e o listă, ci `{"fisiere": {nume: {...}}}`. **Cu structura corectă, măsurătoarea legăturii cerute de condiție EXISTĂ acum: din 34 de obiecte `Temei` cu `url`, 23 arată spre un fișier care poartă un marcaj.** Deci gardul cerut de condiție **are pe ce lucra** — nu e vid, cum ar fi părut după prima citire.
+- **UNDE S-A OPRIT, exact**: detectorul de marcaj e încă prea larg — a prins printre „marcate" și `gen_index.py`, care e un **script**, nu un act. Un gard construit pe el ar produce fals-pozitive din prima zi, iar un gard care se aprinde degeaba se dezactivează și moare. **Condiția de deblocare se ascute cu asta**: întâi se separă mecanic marcajele care spun ceva despre **forma actului** (`forma_la_data`, formă inițială, abrogat, sursă neoficială) de restul câmpurilor din `INDEX.json`; abia apoi se leagă de `Temei` fără `data_out`. *Motivul eșecului a devenit condiția, cum cere fluxul în cinci pași.*
 
 ### R6 — Ceva a scris într-un fișier de corpus, și nu se știe ce
 
@@ -556,11 +593,13 @@ scos ce nu se știa**, nu din defecte noi.
 - **felul**: VERIFICARE
 - **cine deblochează**: INTERN
 - **unde intră**: E1 · fără interdicție (e disciplină de proces)
-- **reluări**: 0
-- **stare**: DESCHISĂ
+- **reluări**: 1
+- **stare**: REZOLVATĂ
+- **rezolvată pe commit**: `2bf9204`
 - **deschisă pe commit**: `1eaecbb`
 - **ce blochează**: cele **patru** cerințe din „Ce se gardează" (`PLAN_LUCRU.md`), cu starea fiecăreia la 22.08.2026 — **răspuns la întrebarea 5**: (1) *„un raport care nu enumeră restanțele deschise nu trece"* — **realizată în forma posibilă**: secțiunea B le enumeră, derivat din registru; **negardabilă mecanic**, fiindcă rapoartele nu trăiesc pe disc, iar asta se declară, nu se ascunde. (2) *„o restanță fără «ce o închide» nu poate fi scrisă"* — **implementată**, câmpul e obligatoriu. (3) *„o etapă nu se poate declara terminată dacă are restanțe deschise care îi aparțin"* — **implementată azi**, cu anti-vacuu. (4) *„o restanță cu blocaj EXTERN fără cerere specifică formulată nu trece"* — **NEIMPLEMENTATĂ, și singura rămasă**. **Răspuns la întrebarea 4: SE POATE GARDA, nu e o consecință acceptată.** Împăcarea a mutat EXTERN pe axa „cine deblochează", care azi e o notă în proză — dar nimic nu obligă să rămână așa: dacă devine **câmp** (`cine deblochează`: EXTERN / INTERN / DECIZIE), garda se scrie în trei rânduri, pe același tipar cu celelalte: valoarea EXTERN cere, în `condiția de deblocare`, cele trei elemente ale unei cereri specifice — **ce trebuie · de unde · pentru ce**. Deci rămâne restanță de muncă, cu condiția de deblocare acum concretă, nu limită declarată.
 - **condiția de deblocare**: cele două gărzi există, RED-probate. Prima are nevoie de `unde intră` pe fiecare restanță — **există de azi**, deci nu mai e blocată de nimic tehnic; a doua are nevoie de o formă scrisă a cererii specifice.
+- **ÎNCERCATĂ ȘI ÎNCHISĂ 23.08.2026 — costul încercării: două minute.** Aleasă anume ca **prima** dintre cele nouă neatinse fără blocaj de ORDINE, fiindcă textul ei spunea deja *„există de azi, deci nu mai e blocată de nimic tehnic"*. Verificate cele patru cerințe, una câte una, în `core/test_conformitate.py`: (1) *raportul enumeră restanțele* — realizată în forma posibilă, negardabilă mecanic, **declarat**; (2) *restanță fără „ce o închide"* — `CAMPURI_RESTANTA` include `condiția de deblocare`, obligatoriu; (3) *etapa nu se închide peste restanțele ei* — `test_o_etapa_nu_se_inchide_peste_restantele_ei`, cu anti-vacuu (`test_cititorul_de_etape_terminate_chiar_vede`); (4) *EXTERN fără cerere specifică* — `test_o_restanta_EXTERN_are_cerere_specifica`, cu anti-vacuu (`test_gardul_EXTERN_chiar_ar_prinde`). **Toate patru sunt acoperite, și erau de pe 22.08.** Restanța n-a fost grea: **n-a fost încercată**. Asta e chiar răspunsul pe care îl căuta încercarea.
 
 ### R11 — Datoria veche consemnată doar în proză, în GARZI.md
 
@@ -600,11 +639,12 @@ scos ce nu se știa**, nu din defecte noi.
 - **felul**: ARTEFACT
 - **cine deblochează**: INTERN
 - **unde intră**: E1 · faza 1, pasul 1b
-- **reluări**: 0
+- **reluări**: 1
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `44d30cf`
 - **ce blochează**: măsurat la Q2 (evidența TVA): pe t003, **una din trei facturi are `tert_cui = NULL`** (CMT149, către „Agentie Turism Marja SRL"). Un jurnal de vânzări și D394 cer partenerul cu codul lui; fără el, operațiunea nu se poate raporta pe partener. Nu e o lipsă de structură — coloana există — ci de **completitudine a datelor**, deci se rezolvă altfel decât o absență de producător.
-- **condiția de deblocare**: se măsoară **câte** facturi din matrice n-au cod de partener, pe direcție și pe plătitor de TVA, și se stabilește dacă lipsa e legitimă (persoană fizică) sau nu. Abia apoi se decide dacă aplicația trebuie să ceară codul la introducere (P23) sau doar să-l semnaleze.
+- **condiția de deblocare**: se măsoară **câte** facturi din matrice n-au cod de partener, pe direcție și pe plătitor de TVA, și se stabilește dacă lipsa e legitimă (persoană fizică) sau nu.
+- **ÎNCERCATĂ 23.08.2026, prima jumătate a condiției e FĂCUTĂ.** Măsurat pe cele 23 de scheme: **42 de facturi în total, 2 fără cod de partener** — `tenant_003` / `CMT149`, direcție **emisă**, partener *„Agentie Turism Marja SRL"*; `tenant_013` / `PF-01`, direcție **primită**, partener *„IONESCU MARIA PFA"*. **Prima nu e legitimă**: un SRL e persoană impozabilă și are CUI, iar factura emisă către el trebuie să-l poarte. A doua e o PFA — tot persoană impozabilă, deci nici ea nu e evident legitimă, dar aici lipsa poate veni din felul în care a fost introdusă, nu din natura partenerului. **Ce a rămas**: nu s-a defalcat pe *plătitor de TVA*, fiindcă domeniul e prea mic ca defalcarea să spună ceva — 2 cazuri. Restanța nu se închide, dar nu mai e nemăsurată: **e o listă de două nume**, nu o clasă necunoscută. Abia apoi se decide dacă aplicația trebuie să ceară codul la introducere (P23) sau doar să-l semnaleze.
 
 ### R14 — Două funcții de creare a facturii, cu stări implicite diferite
 
@@ -838,10 +878,21 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E3 · faza 4 · interdicția 1 (valori fiscale în afara registrului)
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
+- **rezolvată pe commit**: `2bf9204`
 - **deschisă pe commit**: `25b07c0`
 - **ce blochează**: criteriul nou de domeniu — *„nume fiscal SAU modulul construiește un `Temei`"* — prinde modulele care **știu** că sunt fiscale. Nu le prinde pe cele care **ar trebui să știe**. Măsurat 23.08.2026, pe cele 210 module din afara lui `FIS`: **50 au semnal fiscal** (construiesc `Temei` sau au ≥20 de potriviri cu vocabularul fiscal), din care 4 au intrat prin criteriul nou. Sondat pe **10** dintre cele rămase — `casa.py` (6 de clasă C), `notificari_scadenta.py` (2), `control_incrucisat.py` (1), `beneficii_api.py` (1), `stat_plata_emis.py` (1), `facturi_api.py` (1), iar `expirare_cote.py`, `salariu_istoric.py`, `plan_omfp.py`, `declaratii_api.py` cu **0** — **12 constante de clasă C nevăzute**. Cifra e un **plafon inferior**: s-au sondat 10 din 46.
 - **condiția de deblocare**: o **decizie**, fiindcă lărgirea are un cost simetric — un domeniu prea larg aduce zgomot operațional în clasa C (măsurat deja o dată: cele 14 constante din `main.py`, toate de infrastructură), iar unul prea îngust lasă datorie invizibilă. Variantele: (a) se adaugă în `FIS` modulele sondate care au clasă C nenulă, cu clichetul lor măsurat; (b) se rulează sonda pe toate cele 46 și se decide pe cifra completă; (c) se declară scris că domeniul rămâne la *„module care citează legea"*, cu motivul. Se închide când domeniul e ales **pe o cifră completă**, nu pe un eșantion de 10.
+- **SONDAJUL COMPLET, 23.08.2026 — și decizia luată pe compoziție, nu pe teamă.** Toate cele **46** de module rămase: **48 de constante de clasă C**, în **21** dintre ele. Extrapolarea de la eșantionul de 10 ar fi dat ~55 — aproape, dar **distribuția e ce contează**, și ea nu se extrapolează. Clasificate una câte una:
+
+  | fel | câte | ce sunt |
+  |---|---|---|
+  | **FISCALE reale** | **17** | plafoanele de casă (6, Legea 70/2015 — într-un modul al cărui comentariu scrie *„cu temei"* și nu poartă niciunul) · **cota 21 ca DEFAULT DE PARAMETRU** în șase module (`import_export`, `lichidare`, `perisabilitati`, `stocuri`, `taxare_inversa`, `produse_api`) · plafonul de 10% și cota de 16% din `ong.py` · pragul de **270 de zile** de la art. 26(1)c · impozitul pe dobândă de 10% · norma de 8 ore/zi |
+  | **ALGORITM** | **20** | vectorul de ponderi al checksum-ului CNP (`_CHEIE`, de două ori câte nouă) și decodarea secolului din CNP |
+  | **OPERAȚIONALE** | **11** | praguri de zile pentru notificări, orizont de scadențar, paginare, lățimea unui logo în PDF |
+
+  **Cele 20 de algoritm au ieșit corect, nu prin excepție**: `CHEIE` a fost adăugat în `NOM`, unde îi era locul — e aceeași clasă cu `_CNP_W`. Rămân **30**, din care **17 fiscale: peste jumătate**. Zgomotul operațional **nu se aruncă** — intră în clichet pe fișierul lui, deci e vizibil și nu poate crește.
+- **DECIS: domeniul se lărgește.** A treia regulă în `scan_constante.in_domeniu`: *nume fiscal* **SAU** *citează legea* **SAU** *densitate de vocabular fiscal peste `PRAG_SEMNAL`*. **Clasa C: 104 → 135**; module văzute **60 → 85**. Datoria n-a crescut — a devenit vizibilă a doua oară în aceeași zi. Clichetul s-a lărgit cu fiecare fișier la valoarea lui măsurată.
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 

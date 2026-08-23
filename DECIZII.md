@@ -11334,3 +11334,40 @@ e o proprietate a tabelului, care a fost scris într-o singură trecere peste 76
 **BILANȚUL ZILEI pe restanțe:** deschise la început **16** · închise **3** · deschise noi **5** ·
 deschise acum **18**. **Intrări − ieșiri = +2.** Etapa nu se apropie de închidere, se mișcă — iar
 restanțele noi vin din **măsurători care au scos ce nu se știa**, nu din defecte noi.
+
+## 23.08.2026 (a șaptea tură) — trei restanțe încercate, și ce a ieșit din încercare
+
+**1. Cele trei alese, cu motivul fiecăreia.** Dintre cele nouă neatinse **fără** blocaj de ORDINE:
+**R10** — fiindcă textul ei spunea deja *„există de azi, deci nu mai e blocată de nimic tehnic"*, deci
+era cel mai ieftin test al întrebării *grea sau neîncercată*; **R5** — fiindcă antetul o numește, cu R6,
+drept una dintre cele **două care blochează cel mai mult**, deci informația valorează cel mai mult
+acolo; **R13** — fiindcă e o măsurătoare pură pe date reale, fără dependențe, deci un eșec ar fi dovedit
+„grea", nu presupus-o.
+
+*Nu am ales **R7**, deși e în listă: textul ei poartă o instrucțiune explicită — „**Nu se măsoară acum**
+— cerut explicit de Costin". R7 nu e neatinsă din neglijență, e amânată prin decizie. Merită scos din
+lista celor nouă: rămân **opt**.*
+
+**2. Rezultatele. R10 — ÎNCHISĂ în două minute.** Toate cele patru cerințe aveau deja gărzi, de pe
+22.08. **Nu era grea: era neîncercată.** Ăsta e răspunsul pe care îl căuta încercarea, și e cel mai prost
+posibil pentru procedură.
+
+**R13 — jumătate din condiție, făcută.** 42 de facturi pe 23 de scheme, **2 fără cod de partener**, și
+prima nu e legitimă: *„Agentie Turism Marja SRL"* — un SRL are CUI. Restanța nu se închide, dar nu mai e
+o clasă necunoscută: **e o listă de două nume.**
+
+**R5 — a mers pe jumătate, iar eșecul e informativ.** Prima citire a lui `INDEX.json` a dat zero fișiere
+marcate (structura e `{"fisiere": {...}}`, nu o listă). Cu structura corectă: **23 din 34 de `Temei` cu
+`url` arată spre un fișier marcat** — deci gardul cerut **are pe ce lucra**. S-a oprit pe un pas precis:
+detectorul de marcaj e prea larg, a prins și `gen_index.py`. **Motivul eșecului a devenit condiția.**
+
+**3. „O regulă scrisă și nepăzită se citește ca respectată" URCĂ în METODA (§14).** Argumentul lui
+Costin, acceptat: instanța nu e R8, e **reaprinderea întreagă** — o regulă din plan, cu mecanism scris,
+care n-a funcționat **niciodată de când există**. Nu o instanță, ci o clasă cu o singură populație
+măsurată, iar populația e **100%**.
+
+**4. F401 intră ca clichet la 90.** Motivul din 18.08 rămâne valabil pentru o poartă blocantă și e
+greșit pentru un clichet.
+
+**5. R25 — ÎNCHISĂ, pe cifra completă.** 48 de constante în 21 din 46 de module, clasificate înainte de
+decizie: **17 fiscale · 20 algoritm · 11 operaționale**. Decizia s-a luat pe compoziție. C: 104 → 135.

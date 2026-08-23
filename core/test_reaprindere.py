@@ -19,8 +19,6 @@ import os
 import re
 import subprocess
 
-import pytest
-
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CONF = os.path.join(_RAD, "CONFORMITATE.md")
 _FIS = re.compile(r"`([A-Za-z0-9_/]+\.(?:py|js|sql|json))`")
