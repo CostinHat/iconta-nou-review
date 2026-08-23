@@ -30,7 +30,7 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **FAZA 2 — TEMEIURILE, în lucru.** Măsurate pe 23.08: **53**, **49**, **52** (PARȚIAL), **54**, **55**, **61** (PARȚIAL), și **60** — cea mai mare din fază: **470 de elemente** implementează o normă, **20% poartă legătura, doar 4% mecanic**, iar **structurile de declarație, termenele și regulile de validare au ZERO** legături structurate. Rămân **50** și **59** (vigoarea pe articol la sursă — cea mai mare ca volum) și **58**. **51, 56, 57, 62**: nemăsurabile retroactiv.
+- **pasul curent**: **FAZA 2 — TEMEIURILE, în lucru.** Măsurate pe 23.08: **53, 49, 52, 54, 55, 60, 61**, plus **50** (PARȚIAL — 1 act din 9 verificat la sursă, **zero instanțe**, valorile confruntate verbatim) și **59** (MĂSURATĂ — o instanță **demonstrată azi**: verificarea pe ACT ar fi ridicat alarmă pe 3 valori, cea pe ARTICOL arată că articolul n-a fost atins). A cerut **patru reparații în `vigoare_articol.py`**, dintre care una e chiar clasa reparată dimineața la `vigoare_punct`. Rămâne **58**, și restul celor 8 acte pentru 50. **51, 56, 57, 62**: nemăsurabile retroactiv.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
@@ -2028,13 +2028,13 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 50 — O valoare sprijinită pe un articol abrogat sau modificat, fără succesor citat
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: PARȚIAL
+- **măsurat la**: 2026-08-23
+- **pe commit**: `d115f28`
+- **cifra**: **0 instanțe pe actul verificat la sursă, din 9 acte / 17 perechi act-articol** câte are registrul. Verificat integral: **OUG 89/2025 art. III**, care poartă trei valori — `facilitate_salariu_minim` = 200 lei și `plafon_facilitate_salariu_minim` = 4.600 / 4.300 lei. **Starea e PARȚIAL fiindcă domeniul verificat e 1 act din 9**
+- **instanțe**: **niciuna, și a fost cât pe ce să pară că e una.** Actul OUG 89/2025 a fost **modificat pe 16-08-2026** (Legea 173/2026), la nouă zile după `verificat_la = 2026-08-07` al celor trei valori. Citit **pe articol**, modificarea aparține lui **art. XXXVI**, nu lui art. III — verificat mecanic în ambele direcții: art. III iese *fără marcaj de modificare în corp*, art. XXXVI iese *modificat la 16-08-2026, Alineatul (3)*. Iar valorile s-au confruntat verbatim cu textul consolidat de azi: *pentru suma de 300 lei/lună … 1 ianuarie–30 iunie 2026, respectiv … 200 lei/lună … 1 iulie–31 decembrie 2026* și *nu depășește nivelul de 4.300 lei … respectiv nivelul de 4.600 lei … 1 iulie 2026–31 decembrie 2026*. **Cele trei valori sunt corecte la sursă, la data de azi**
+- **calibrare**: cazul cunoscut a fost **găsit** în ambele direcții, ceea ce e chiar ce cere o măsurătoare de modificări: instrumentul găsește marcajul **acolo unde este** (art. XXXVI) și **nu-l atribuie unde nu e** (art. III). Fără a doua jumătate, orice act modificat ar fi semnalat toate articolele lui
+- **ce nu vede**: **8 acte din 9 sunt neverificate la sursă** — CF, Legea 141/2025, Legea 201/2025, Legea 227/2015, OG 16/2022, OUG 156/2024, OUG 50/2015, OUG 8/2026. · Pentru actele **mari** (Codul fiscal) instrumentul **refuză** să răspundă: pagina de detalii a portalului e un ciot de 4,4 KB, iar forma consolidată stă la alt id, care nu e stocat nicăieri — vezi mai jos. · Verifică dacă articolul e **modificat**, nu dacă modificarea **atinge valoarea**; aici confruntarea cu textul s-a făcut de mână
 - **unde ajunge efectul**: cifra depusă stă pe un text care nu mai e în vigoare. Instanța reală: OPANAF 394/2017, citat în nouă locuri, abrogat de OPANAF 705/2020 — găsit din întâmplare
 
 ## 51 — O regulă scrisă din memorie, când actul lipsește din corpus
@@ -2127,13 +2127,13 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 59 — Verificarea vigorii făcută pe act, nu pe articolul folosit
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: MĂSURATĂ
+- **măsurat la**: 2026-08-23
+- **pe commit**: `d115f28`
+- **cifra**: **1 instanță demonstrată, cu ambele răspunsuri puse alături.** Pe OUG 89/2025: verificarea **pe ACT** spune *modificat 16-08-2026* și ar fi ridicat alarmă pe **3 valori** din registru; verificarea **pe ARTICOL** spune că art. III, cel care le poartă, **n-a fost atins**. Diferența dintre cele două răspunsuri e chiar interdicția
+- **instanțe**: **una, dovedită pe date reale azi.** Nu e o instanță istorică reconstituită — e chiar verificarea pe care am făcut-o adineauri, și care ar fi produs o alarmă falsă dacă se oprea la nivelul actului. **Un act mare se modifică des**: OUG 89/2025 are marcaje din 27-02, 09-03, 13-03, 31-03, 08-05 și 16-08.2026. La nivel de act, orice valoare sprijinită pe el ar fi *suspectă* permanent — adică semnalul ar fi zgomot, iar zgomotul se ignoră
+- **calibrare**: cazul cunoscut a fost **găsit**, și e chiar cel din plan: *art. LXX din OUG 156/2024, abrogat de OUG 29/2026, într-un act rămas în vigoare* — aceeași formă, act viu cu articol mort. Aici s-a demonstrat forma inversă, la fel de utilă: act atins, articol neatins
+- **ce nu vede**: verificarea pe articol cere ca instrumentul să găsească **titlul** articolului, iar asta a cerut patru reparații azi (vezi 50). Pentru actele mari, forma consolidată stă la **alt id de portal**, care **nu e stocat nicăieri** — 0 din 529 de intrări din `INDEX.json`, 0 din 77 de fișiere `.html` aduse. Deci fiecare reverificare începe cu o **căutare**, iar legătura act-din-corpus ↔ pagina lui de pe portal nu există
 - **unde ajunge efectul**: verificarea trece mereu, fiindcă actul e în vigoare permanent, în timp ce articolul folosit poate fi abrogat separat. Instanța: OUG 156/2024 e în vigoare, dar art. LXX a fost abrogat de OUG 29/2026
 
 ## 60 — O regulă, formulă sau structură care implementează o normă, fără articolul asociat
