@@ -4313,3 +4313,19 @@ WooCommerce) o declară, cu motivul scris lângă apel.
 nu doar existența funcției); excepția devenită tăcută (`tert_pf or True`) → 7 teste roșii. Mesajul e
 gardat separat: poartă **consecința** (D394, VIES), **ieșirea** (persoană fizică) și **temeiul**
 (art. 319 alin. 20), fără niciun nume intern de câmp.
+
+**A patra regulă de domeniu la `scan_constante`: un modul care POARTĂ o valoare din registru e fiscal**
+(`_poarta_valoare_de_registru`, 23.08.2026). Măsurat la întrebarea lui Costin: **după două lărgiri în
+aceeași zi, 15 din cele 25 de funcții cu `cota = 21` ca default erau ÎNCĂ în afara domeniului** —
+`avansuri`, `comodat_chirii`, `intracomunitar`, `inventariere`, `leasing`, `obiecte_inventar`,
+`productie`, `sgr`. Niciunul nu se numește fiscal, niciunul nu citează legea, toate vorbesc prea puțin
+pentru pragul de densitate — **dar fiecare ține o cotă de TVA**.
+
+Criteriul e mecanic și **se întreține singur**: valorile se citesc din `common.COTE`, nu se scriu în
+scan (altfel ar fi chiar constanta nesursată pe care o caută), iar când se schimbă o cotă în registru
+domeniul se mută cu ea. **C: 135 → 162**, module văzute **85 → 97**. Calibrare în ambele direcții, pe
+sursă construită anume (`cota=21` intră, `n=7` nu), plus anti-vacuu că registrul nu e gol.
+
+**Lecția, a treia oară azi:** fiecare lărgire a părut completă. Prima a prins modulele care se numesc
+fiscale, a doua pe cele care citează legea, a treia pe cele care vorbesc mult. **A patra a prins pe cele
+care nu fac niciuna — dar poartă valoarea.** Un domeniu se măsoară pe ce caută, nu pe cât pare de larg.

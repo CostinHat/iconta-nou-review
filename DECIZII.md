@@ -11430,3 +11430,31 @@ iar depozitul începe după schimbare. **Mecanismul de propagare n-a fost pus ni
 dinainte de 01.08.2025 primește 21% în loc de 19% — **azi**. Registrul știe amândouă valorile, cu date
 și temei; cele 23 de apeluri nu-l întreabă. **Nu am început reparația**: are două forme cu costuri
 diferite, iar cea ieftină ar arăta ca o reparație completă fără să fie.
+
+## 23.08.2026 (a zecea tură) — R26 urcă la prag 1 prin consecvență, iar domeniul se lărgește a treia oară
+
+**1. Două afirmații din comandă s-au dovedit neîntemeiate, verificate la sursă.** *„Cele două defaulturi
+rămase la 19"* — **nu există niciunul**: căutat prin AST în tot `core/` + `main.py`, zero defaults cu
+valoarea 19 (cele două potriviri de grep sunt un comentariu despre un `R74=19%` legacy și un
+`leading=19` dintr-un PDF). *„`f30ecfb` a atins zece defaulturi și a schimbat trei"* — **commitul nu
+există** pe nicio referință și nici în reflog; iar niciun commit din istorie n-a atins zece dintre ele
+(maximul e `fe77dd1`, șase module, și e o campanie de gărzi, nu de cote). **Nu s-a lucrat pe ele.**
+
+**2. R26 RIDICATĂ LA PRAG 1, prin consecvență cu R22.** Criteriul aplicat de Costin clasei vecine —
+*„dacă vreo cale ajunge la default, produc o cifră greșită"* — se aplică aici: **23 de căi ajung**, iar
+rutele primesc data operațiunii din cererea utilizatorului, deci o operațiune dinainte de 01.08.2025
+produce 21% în loc de 19%, **la cerere, azi**. La R22 am declarat prag 1 cu **zero** depuneri afectate,
+fiindcă calea de generare era vie. Două praguri pentru același fel de defect ar fi fost incoerent.
+
+**3. Și abaterea se scrie, nu se ascunde:** un prag 1 se repară în aceeași tură. **N-am reparat R26**,
+fiindcă forma reparației nu e determinată și varianta ieftină ar arăta ca una completă. E prima muncă
+din tura următoare, **înaintea pragului 3**.
+
+**4. A patra regulă de domeniu.** După două lărgiri în aceeași zi, 15 din 25 de defaulturi de cotă erau
+încă invizibile. Criteriul nou — *modulul poartă o valoare din registrul de cote* — le-a adus pe toate.
+**C: 135 → 162.** Interdicția 14, a treia recifrare a zilei: **43 în 27 de module**, din care 25 sunt
+cota 21.
+
+**5. `METODA_VERIFICARE.md` §16 — «înainte de a declara ceva greu, verifică dacă a fost cerut
+vreodată».** Două instanțe în două ture, aceeași formă: R10 (neîncercată, nu grea) și condițiile
+cablabile (necerute, nu greu de scris). *„Nesolicitat" nu e o scuză, e un diagnostic.*

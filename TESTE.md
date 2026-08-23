@@ -1946,3 +1946,7 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   spune **despre cine** · gol/spații nu trec ca prezent · mesajul poartă consecința, ieșirea și temeiul ·
   fără nume interne (Regula 14.4) · persoana fizică **declarată** trece · codul prezent se curăță ·
   anti-vacuu pe cablare (ambele căi de creare chiar cheamă garda, citit din sursă). RED-probat 2 mutații.
+
+- **`core/test_constante_nesursate.py`** — crescut la **21 de teste**: a patra regulă de domeniu
+  (modulul care poartă o valoare din registru), calibrată în ambele direcții pe sursă construită, cu
+  anti-vacuu pe registrul de cote. BASELINE lărgit a treia oară: **64 de fișiere**, C = 162.

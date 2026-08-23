@@ -33,23 +33,24 @@ from core import scan_constante
 # Ieșite complet: `cote_tva.py` (2) și `d300.py` (5) — amândouă își citează actul în antet, per
 # valoare. Coborâte: d394 9->2, d212_engine 13->11, d101 8->7, d104 4->0, salarizare 19->18.
 BASELINE = {
-    # LARGIT 23.08.2026 (a doua oara, dupa sondajul COMPLET): domeniul cuprinde acum si modulele cu
-    # DENSITATE de vocabular fiscal peste `scan_constante.PRAG_SEMNAL`. Compozitia celor 48 gasite a
-    # fost masurata INAINTE de decizie: 17 fiscale reale, 20 de algoritm (scoase corect prin `CHEIE`
-    # in `NOM`), 11 operationale. Cele operationale NU se arunca - intra in clichet pe fisierul lor,
-    # deci sunt vizibile si nu pot creste. Datoria n-a crescut; s-a facut vizibila: C 104 -> 135.
-    "asociati_import_api.py": 1, "audit_preluare.py": 1, "beneficii_api.py": 1, "casa.py": 6,
-    "common.py": 8, "contracte_speciale.py": 5, "control_fiscal_api.py": 1, "control_incrucisat.py": 1,
+    # LARGIT a TREIA oara, 23.08.2026: domeniul cuprinde acum si modulele care POARTA O VALOARE din
+    # registrul de cote, oricat de putin ar vorbi. Masurat la intrebarea lui Costin: dupa doua largiri,
+    # 15 din cele 25 de functii cu `cota = 21` ca default erau INCA in afara (avansuri, comodat_chirii,
+    # intracomunitar, inventariere, leasing, obiecte_inventar, productie, sgr). C: 135 -> 162.
+    "asistenti_api.py": 3, "asociati_import_api.py": 1, "audit_preluare.py": 1, "avansuri.py": 4,
+    "beneficii_api.py": 1, "casa.py": 6, "cashflow.py": 2, "common.py": 8, "comodat_chirii.py": 3,
+    "contracte_speciale.py": 5, "control_fiscal_api.py": 1, "control_incrucisat.py": 1, "cor_api.py": 2,
     "d101.py": 7, "d101g.py": 1, "d108.py": 1, "d169.py": 1, "d169n.py": 1, "d205.py": 2,
     "d212_engine.py": 11, "d216.py": 1, "d394.py": 2, "d401.py": 2, "d402.py": 3, "d403.py": 5,
     "d406.py": 5, "d406_active.py": 7, "d406_stocuri.py": 1, "d407.py": 2, "decontari_asociati.py": 1,
-    "deconturi.py": 1, "efactura_send.py": 1, "factura_pdf.py": 1, "import_export.py": 1,
-    "lichidare.py": 1, "monitor_fiscal.py": 1, "motor.py": 2, "notificari_scadenta.py": 2, "ong.py": 2,
-    "perisabilitati.py": 1, "produse_api.py": 1, "provizioane.py": 1, "salariati_api.py": 1,
-    "salariati_import_api.py": 2, "salarizare.py": 18, "scadentar.py": 2, "scadente.py": 3,
-    "scan_constante.py": 1, "sponsorizari.py": 3, "stat_plata_api.py": 1, "stocuri.py": 1,
-    "taxare_inversa.py": 1, "termene_api.py": 1, "tva_agricultori.py": 2, "tva_aur.py": 1,
-    "tva_marja.py": 2, "tva_marja_turism.py": 4,
+    "deconturi.py": 1, "duk.py": 2, "efactura_send.py": 1, "factura_pdf.py": 1, "import_export.py": 1,
+    "intracomunitar.py": 2, "inventariere.py": 1, "leasing.py": 3, "lichidare.py": 1,
+    "monitor_fiscal.py": 1, "motor.py": 2, "notificari_scadenta.py": 2, "obiecte_inventar.py": 1,
+    "ong.py": 2, "perisabilitati.py": 1, "productie.py": 2, "produse_api.py": 1, "provizioane.py": 1,
+    "salariati_api.py": 1, "salariati_import_api.py": 2, "salarizare.py": 18, "scadentar.py": 2,
+    "scadente.py": 3, "scan_constante.py": 1, "sgr.py": 2, "sponsorizari.py": 3, "stat_plata_api.py": 1,
+    "stocuri.py": 1, "taxare_inversa.py": 1, "termene_api.py": 1, "tva_agricultori.py": 2,
+    "tva_aur.py": 1, "tva_marja.py": 2, "tva_marja_turism.py": 4,
 }
 
 
@@ -415,3 +416,22 @@ def test_gaura_de_botez_e_REALA_probata_sintetic():
         "și rescrie testul; dacă nu, e o schimbare tăcută de clasificare")
     assert cls("CATEG_PLAFON = 300000") == "B"
     assert cls("PLAFON_MICRO = 300000") == "C", "plafonul cinstit a fugit din țintă"
+
+
+def test_domeniul_prinde_modulul_care_POARTA_o_valoare_de_registru():
+    """A patra regulă (23.08.2026): un modul care ține o cotă din registru ca default de parametru e
+    fiscal, oricât de puțin ar vorbi. Calibrare în ambele direcții, pe sursă construită anume."""
+    cu = "def f(x, cota=21):" + chr(10) + "    return x" + chr(10)
+    fara = "def f(x, n=7):" + chr(10) + "    return x" + chr(10)
+    assert scan_constante._poarta_valoare_de_registru(cu) is True
+    assert scan_constante._poarta_valoare_de_registru(fara) is False
+    assert scan_constante.in_domeniu("modul_oarecare.py", cu) is True
+    assert scan_constante.in_domeniu("modul_oarecare.py", fara) is False
+
+
+def test_ANTIVACUU_valorile_de_registru_nu_sunt_goale():
+    """Dacă `COTE` nu se poate citi, regula de mai sus tace și domeniul se îngustează în tăcere."""
+    v = scan_constante._valori_de_registru()
+    assert len(v) >= 3, "registrul de cote pare gol pentru regula de domeniu: %r" % v
+    assert 21 in v, "cota standard nu se regăsește în valorile de registru: %r" % sorted(v)[:10]
+

@@ -375,7 +375,61 @@ def in_domeniu(f, src):
     operational NU se arunca: intra in clichet pe fisierul lui, deci e VIZIBIL si nu poate creste."""
     if not f.endswith(".py") or f.startswith("test_"):
         return False
-    return bool(FIS.match(f)) or _citeaza_legea(src) or len(NF.findall(src)) >= PRAG_SEMNAL
+    return (bool(FIS.match(f)) or _citeaza_legea(src) or len(NF.findall(src)) >= PRAG_SEMNAL
+            or _poarta_valoare_de_registru(src))
+
+
+def _valori_de_registru():
+    """Valorile CURENTE din registrul de cote, ca intregi si ca procente. Citite din `common.COTE`,
+    nu scrise aici - altfel ar fi chiar constanta nesursata pe care o cautam."""
+    try:
+        from core.common import COTE
+    except Exception:
+        return set()
+    out = set()
+    for intrari in COTE.values():
+        for el in intrari:
+            try:
+                val = el[1]
+            except Exception:
+                continue
+            try:
+                f = float(val)
+            except Exception:
+                continue
+            if 0 < f < 1:                       # cotele stau ca fractii: 0.21 -> si 21
+                out.add(round(f * 100, 4))
+            out.add(f)
+    return {v for v in out if v >= 1}           # pragurile mari raman, fractiile de sub 1 ies
+
+
+def _poarta_valoare_de_registru(src):
+    """True daca un DEFAULT DE PARAMETRU e egal cu o valoare din registrul de cote.
+
+    A PATRA directie oarba, masurata 23.08.2026, la intrebarea lui Costin. Dupa doua largiri, 15 din
+    cele 25 de functii cu `cota = 21` ca default erau INCA in afara domeniului: `avansuri.py`,
+    `comodat_chirii.py`, `intracomunitar.py`, `inventariere.py`, `leasing.py`, `obiecte_inventar.py`,
+    `productie.py`, `sgr.py`. Niciunul nu se numeste fiscal, niciunul nu citeaza legea, si toate
+    vorbesc prea putin ca sa treaca de pragul de densitate - dar fiecare poarta o COTA DE TVA.
+
+    Criteriul: un modul care poarta o VALOARE din registru e fiscal, oricat de putin ar vorbi. E
+    mecanic si se intretine singur - cand se schimba o cota in registru, domeniul se muta cu ea."""
+    import ast as _ast
+    valori = _valori_de_registru()
+    if not valori:
+        return False
+    try:
+        arb = _ast.parse(src)
+    except SyntaxError:
+        return False
+    for n in _ast.walk(arb):
+        if not isinstance(n, (_ast.FunctionDef, _ast.AsyncFunctionDef)):
+            continue
+        a = n.args
+        for d in list(a.defaults) + list(a.kw_defaults):
+            if isinstance(d, _ast.Constant) and isinstance(d.value, (int, float))                and not isinstance(d.value, bool) and float(d.value) in valori:
+                return True
+    return False
 
 
 def inventar(rad=RAD):

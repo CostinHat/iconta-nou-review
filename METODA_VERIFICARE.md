@@ -627,3 +627,33 @@ propriei gărzi** — nu o citire, nu o recenzie.
 
 **Ce NU acoperă:** nu spune că o fixtură care variază e și suficientă. Acoperirea rămâne o judecată;
 regula închide doar cazul în care mutația **nu putea** să prindă nimic.
+
+## 16. ÎNAINTE DE A DECLARA CEVA GREU, verifică dacă a fost cerut vreodată
+
+**Regula.** „Greu" e o afirmație despre efort, iar efortul nu s-a măsurat dacă nimeni n-a încercat.
+Înainte de a numi ceva greu — o restanță, o cerință, o formă — caută **prima cerere**. Dacă nu există,
+lucrul nu e greu: e **nesolicitat**, iar cele două nu se pot deosebi din afară.
+
+**Două instanțe, în două ture (23.08.2026):**
+
+| ce părea greu | ce era | cum s-a văzut |
+|---|---|---|
+| **R10**, deschisă de 40 de commituri | **neîncercată** | încercată o dată, s-a închis în **două minute** — toate cele patru cerințe aveau deja gărzi |
+| **condițiile de deblocare cablabile** — 1 din 18 | **necerute** | **12 din 15** s-ar fi putut scrie cablabil; nimeni nu ceruse forma asta când au fost scrise |
+
+**Ce le face aceeași clasă:** în amândouă, lipsa nu venea din dificultate, ci din faptul că **nimeni nu
+formulase cerința**. Iar odată formulată, costul a fost mic. O restanță veche și o formă lipsă arată
+identic cu o problemă grea — până la prima încercare.
+
+**Cum se aplică, mecanic:**
+
+1. **Caută cererea, nu soluția.** *„Unde s-a cerut ca o condiție să fie cablabilă?"* Dacă nu se
+   găsește, ai măsurat nesolicitarea, nu dificultatea.
+2. **Contorul de încercări e proba.** Zero încercări = zero informație despre efort. (`PLAN_LUCRU.md`,
+   *Prima încercare*.)
+3. **Când formulezi cerința, formuleaz-o pentru viitor**, nu doar pentru instanța de azi — altfel a
+   doua oară se redescoperă la fel.
+4. **„Nesolicitat" nu e o scuză, e un diagnostic.** Spune unde a lipsit cererea, nu cine n-a lucrat.
+
+**Ce NU acoperă:** nu spune că tot ce n-a fost cerut e ieftin. Spune doar că, până la prima încercare,
+**nu știm** — iar a numi ceva greu fără să știm mută munca în viitor pe o presupunere.
