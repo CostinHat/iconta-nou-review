@@ -42,6 +42,7 @@ def _restante():
 
         out[b.group(1)] = {"titlu": b.group(2).strip(), "stare": g("stare").strip("* "),
                            "reluari": g("reluări").strip("* "), "cond": g("condiția de deblocare"),
+                           "incercari": g("încercări").strip("* "),
                            "commit": g("deschisă pe commit").strip("`")}
     return out
 
@@ -114,3 +115,25 @@ def test_pragul_de_trei_reluari_e_respectat():
             if "DESCHISĂ" in r["stare"] and r["reluari"].isdigit() and int(r["reluari"]) > 3]
     assert not rele, ("restanțe reluate de peste trei ori pe aceeași condiție — rescrie condiția, "
                       "prin decizie, cu motivul:\n" + "\n".join(rele))
+
+
+def test_fiecare_restanta_are_AMBELE_contoare():
+    """Două contoare, nu unul (23.08.2026): `reluări` = de câte ori a fost reluată **după ce blocajul
+    a dispărut**; `încercări` = de câte ori s-a **încercat**, indiferent de blocaj. R10 a fost
+    încercată o dată și închisă în două minute, fără să fi fost vreodată reluată — cu un singur
+    contor, munca aia era invizibilă."""
+    rele = []
+    for c, r in sorted(_restante().items()):
+        if not r["incercari"].isdigit():
+            rele.append("  %s: `încercări` = %r" % (c, r["incercari"] or "(lipsă)"))
+    assert not rele, "restanțe fără contorul de încercări: %r" % rele
+
+
+def test_o_reluare_presupune_o_incercare():
+    """Coerență între cele două: nu poți relua ceva ce n-ai încercat niciodată."""
+    rele = ["  %s: reluări=%s > încercări=%s" % (c, r["reluari"], r["incercari"])
+            for c, r in sorted(_restante().items())
+            if r["reluari"].isdigit() and r["incercari"].isdigit()
+            and int(r["reluari"]) > int(r["incercari"])]
+    assert not rele, "contoare incoerente: %r" % rele
+

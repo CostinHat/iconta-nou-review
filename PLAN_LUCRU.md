@@ -298,6 +298,18 @@ de plată"* — care e **exact forma lui R8** (un declanșator pe fișier), scri
 Restul de 3 (R6, R11, R18) depind de o decizie sau de un eveniment din afara depozitului, iar acolo
 motivul se scrie și e de ajuns.
 
+### Consecința practică: „se poate cabla?" e PRIMA întrebare la o cerință nouă
+
+**Regulă, 23.08.2026, după a șasea instanță din aceeași zi.** Când primesc o cerință nouă — de proces,
+de formă, de registru — prima întrebare nu e *cât costă*, ci **„se poate cabla?"**. Dacă da, **se
+cablează atunci**, nu peste patruzeci de commituri.
+
+Motivul e măsurat, nu principial: forma `atinge:` din condiția lui R8 era cablabilă **de la început** și
+n-a fost cerută nimănui; 12 din 15 condiții deschise s-ar fi putut scrie așa. Costul de a cabla la
+scriere e minut; costul de a cabla după e o campanie plus restanțele care au trecut între timp
+nepăzite. *Vezi `METODA_VERIFICARE.md` §16: verificarea se face unde e nevoie, nu unde e ușor — iar
+„ușor" include și „mai târziu".*
+
 ### Contorul de reluări
 
 **O restanță reluată și tot nerezolvată se numără.** Dacă a fost reluată de trei ori și tot n-a mers, **condiția de deblocare e scrisă greșit** — nu restanța e grea.

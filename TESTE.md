@@ -1955,3 +1955,10 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   mai are default cu valoare (regresie de formă) · **fiecare funcție care poartă refuzul chiar refuză**
   când e chemată fără cotă. Ținta se citește din cod, nu din nume. A găsit `nota_decont(cota_tva=0)` la
   prima rulare.
+
+- **`core/test_cota_efect.py` (23.08.2026)** — 14 teste golden **pe efect**: decontul deduce 126,00 la
+  21% și nimic la 0, iar diferența dintre ele **e chiar TVA-ul pierdut** · cota urmată pe patru valori,
+  inclusiv 19% istoric · taxarea inversă pe trei cote, cu rotunjire la ban · marja aplică suta mărită
+  (69,42), nu cota pe preț (210,00), iar cota istorică dă altă cifră (63,87).
+- **`core/test_reaprindere.py`** — 8 teste: adăugate cele două pe contorul `încercări` (obligatoriu,
+  număr, coerent cu `reluări`).

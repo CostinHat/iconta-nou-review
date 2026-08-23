@@ -11505,3 +11505,21 @@ decont cu cazare fără cotă pierdea TVA-ul deductibil. Reparat.
 **5. `METODA_VERIFICARE.md` §16 urcă și în `PLAN_INVESTIGATII.md`**, la regulile de alegere a
 măsurătorii — motivul lui Costin, acceptat: e o regulă despre **ce se măsoară**, iar planul e locul
 unde se alege.
+
+## 23.08.2026 (a treisprezecea tură) — verificarea pe efect, al doilea contor, și pragul 3 numit
+
+**1. Testele funcționale, făcute — și nu ca datorie separată.** Costin: *„o cotă corectă care nu e
+verificată nu e reparată, e mutată."* Trei căi, alese fiindcă cota schimbă cifra **în feluri diferite**:
+decontul (cota decide existența liniei 4426), taxarea inversă (cota apare de două ori și se anulează în
+total, dar nu în declarație), marja (cota intră în **formulă**, prin suta mărită). Cifrele verificate
+**și de mână** — un golden calculat ca funcția pe care o păzește e un ecou. **Măsura defectului e ea
+însăși un test:** 126,00 lei, diferența dintre decontul la 21% și cel la 0%.
+
+**2. Al doilea contor, adăugat.** Observația lui Costin e corectă: `reluări` răspunde la *„câte s-au
+blocat de mai multe ori"*, iar *„câte au fost încercate"* nu se număra nicăieri. Acum se numără, cu
+gardă (obligatoriu, număr, `reluări ≤ încercări`). **Limita rămâne scrisă**: ambele se văd doar pe
+restanțele deschise, deci o restanță încercată **și închisă** își ia dovada cu ea.
+
+**3. Consecința practică pentru cerințe noi, în `PLAN_LUCRU.md`:** la fiecare cerință nouă, **prima
+întrebare e „se poate cabla?"** — iar dacă da, se cablează **atunci**, nu peste patruzeci de commituri.
+Motivul e măsurat: forma `atinge:` era cablabilă de la început și n-a fost cerută nimănui.

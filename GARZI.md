@@ -4357,3 +4357,23 @@ ascundea (scosesem `0, 1, -1, 2, 100` ca „structurale"). **Și e singurul VIU 
 punea `corp.get("cota", 0)` fără să cheme `cota_ceruta`, deci un decont cu cazare pe factură trimis
 fără cotă primea tăcut 0% → **zero TVA deductibilă**. *Un default de 0 nu adaugă o cifră greșită — o
 șterge pe cea corectă, ceea ce e mai greu de văzut.*
+
+**Golden pe EFECT, nu pe formă, pentru cotele reparate** (`core/test_cota_efect.py`, 23.08.2026).
+Costin: *„o cotă corectă care nu e verificată nu e reparată, e mutată. Nu «ce cotă a folosit», ci ce
+iese."* Trei căi, alese fiindcă cota schimbă cifra în feluri **diferite**: `nota_decont` (cota decide
+dacă apare linia 4426 și cu ce sumă — **singura cale vie**) · `tva_beneficiar` (cota apare de două ori,
+4426=4427, se anulează în total dar **nu** în declarație) · `vanzare_marja` (cota intră în **formulă**,
+prin suta mărită, nu se aplică pe preț).
+
+**Cifrele sunt verificate și de mână, nu doar de cod**: 400 × 21/121 = 69,42 · 400 × 19/119 = 63,87 ·
+333,33 × 21% = 70,00. Un golden care se calculează la fel ca funcția pe care o păzește e un ecou.
+**Și măsura defectului e ea însăși un test**: diferența dintre decontul la 21% și cel la 0% e
+**126,00 lei** — exact TVA-ul pe care tăcerea îl ștergea.
+
+---
+
+**Al doilea contor pe restanțe: `încercări`** (`core/test_reaprindere.py`, 23.08.2026). `reluări`
+răspunde la *„câte s-au blocat de mai multe ori"*; `încercări` la *„câte au fost atinse vreodată"*.
+Cele două nu se confundă: **R10 a fost încercată o dată și închisă în două minute, fără să fi fost
+vreodată reluată** — cu un singur contor, munca aia era invizibilă. Gardat: câmpul e obligatoriu pe
+fiecare restanță, e număr, iar `reluări > încercări` e incoerent și pică.
