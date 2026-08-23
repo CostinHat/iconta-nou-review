@@ -764,6 +764,31 @@ RECONCILIERE     document emis ↔ evidență ↔ recalcul ↔ ce confirmă auto
 | 73 | **O copie care se poate pierde odată cu originalul** | P25 |
 | 74 | **Un export care rupe lanțul dintre declarație și documentele justificative** | P26·P14 |
 | 75 | **Date care se pot lua doar cu intervenția noastră, sau într-un format închis** | P26 |
+| 76 | **Un instrument de măsurare fără calibrare pe propriul mod de eșec** | P24 |
+
+**Interdicția 76, adăugată 23.08.2026 (Costin), cu motivul ei.** Calibrarea **pozitivă** dovedește că
+instrumentul **găsește ce caută**. Nu dovedește că **nu ratează**. Patru instanțe într-o singură zi,
+toate cu calibrare care trecea:
+
+| instrument | forma pe care s-a legat | calibrarea existentă, și de ce trecea |
+|---|---|---|
+| `graf_temei` | cheie pe **numele simplu** al funcției | patru afirmații pozitive și una negativă din prima zi — toate pe o zonă unde numele erau unice |
+| `vigoare_punct` | marcajul se termină la primul `)` · un singur tipar de numerotare | cazul pct. 9, care n-are paranteze în adresă |
+| `scan_instrumente` (calibrarea) | **cuvântul** „calibrare" în docstring | nicio calibrare — era instrument nou |
+| `scan_instrumente` (legătura) | **numele fișierului** `test_<modul>.py` | idem |
+
+**Corolarul, fiindcă e partea folosibilă — un instrument se calibrează pe felul în care POATE greși:**
+
+- unul **cheiat pe nume** → pe o **coliziune de nume**;
+- unul care **citește marcaje** → pe **două marcaje lipite**, și pe unul cu paranteze în adresă;
+- unul care **caută un cuvânt** → pe un caz unde **cuvântul lipsește dar lucrul există**, și pe unul
+  unde cuvântul există dar lucrul nu;
+- unul care **numără o clasă** → pe un membru pe care **nu trebuie** să-l găsească.
+
+**Nu e o regulă despre cum lucrăm, ci despre ce face un instrument credibil** — iar pe instrumente
+stau toate măsurătorile de după.
+
+
 
 ---
 

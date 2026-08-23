@@ -1179,6 +1179,13 @@ a doua recunoaște calibrarea **structural**, pe AST: o aserțiune al cărei cap
 concret pinează un CAZ; una fără literal (`assert rez`) e o proprietate.
 
 **Denominator: 2.230 de funcții de test în 367 de fișiere**, dintre care 2.131 au cel puțin o
+
+**CORECȚIE LA DENOMINATOR, 23.08.2026.** Toate cifrele de mai sus au fost măsurate pe `core/`. Există
+**44 de fișiere de test în rădăcina repo-ului, cu 324 de gărzi** — **12,6% din total** — pe care
+**niciunul dintre cele două instrumente nu le vede**: `scan_garzi.fisiere_garda` primește `RAD/core`,
+iar globul meu era `core/test_*.py`. Denominatorul real e **412 fișiere / 2.563 de gărzi**, nu 368 /
+2.239. Cifrele pașilor 1–4 rămân valabile **pe domeniul lor**, care e scris acum; nu se extrapolează.
+
 aserțiune.
 
 ### Pasul 1 — pe ce instrument stă fiecare gardă, și e calibrat
@@ -1350,6 +1357,62 @@ Dacă o gardă a prins vreodată ceva **nu se poate afla din git** — un test r
 doar reparația care i-a urmat, iar aceea nu-l citează. Am verificat deja pe cele 7 gărzi ale grafului:
 în 22 de zile, **niciun commit în care să fi picat și să fi cauzat o reparație**. Ca să se poată
 răspunde în general, ar trebui ca poarta să **consemneze** ce test a picat — ceea ce azi nu face.
+
+#### Cele trei întrebări de la interdicția 76 (23.08.2026)
+
+**1. „0 din 13 verificabile, din 44" — care e cifra de închidere, și cine o declară?**
+
+**O declar aici, ca să existe un criteriu de oprire.** Clichetul de acoperire al lui `scan_ancore` nu
+poate urca la nesfârșit fără țintă, iar „ambiguu + nerezolvat = 0" nu e o țintă atinsă vreodată: 16
+sunt funcții care citesc **mai multe surse** (nu se știe care aserțiune se referă la care), 15 au căi
+construite dinamic. Ambele forme sunt legitime în cod.
+
+**Criteriul de închidere, scris: zero ancore NEDECLARATE.** Adică fiecare dintre cele 44 e ori
+**rezolvată** (13 azi), ori poartă o **declarație scrisă** de ce nu poate fi — o linie lângă gardă,
+nu o cifră globală. Clasa se închide când `ambiguu + nerezolvat` **rămân doar cele declarate**, iar
+clichetul măsoară atunci **numărul de nedeclarate, care trebuie să fie 0** — nu procentul de acoperire,
+care nu are prag natural.
+
+**De ce așa:** un prag procentual („80% acoperire") ar fi o cifră inventată. „Zero nedeclarate" e
+verificabil mecanic și nu cere să ghicim cât e destul. Dacă nu ești de acord cu criteriul, el e scris
+într-un singur loc și se schimbă într-o linie.
+
+**2. Instrumentele vechi au fost calibrate negativ vreodată?**
+
+**Nu, și mai rău: n-au fost calibrate deloc.** `verificator_conformitate.py` și `verificator_sageti.py`
+sunt din **09.07.2026** — cele mai vechi instrumente din proiect. **Niciunul nu e importat de vreun
+test.** Zero gărzi, zero calibrare.
+
+**Deci ai avut dreptate: cifra 4 din 12 e despre instrumentele NOI.** Cele vechi n-au fost în domeniul
+măsurătorii — iar `verificator_conformitate` rulează la **fiecare poartă**, e citat în fiecare raport
+(„verificator: TOTAL 0") și pe el stau gărzi mai vechi decât tot ce am măsurat azi.
+
+**Și clasa era deja scrisă, de 23 de zile.** `core/test_datorie.py:283`, xfail(strict) din 31.07: după
+ce verificatorul a produs **13 fals-pozitive prin propriul bug** (regexul de rute rata `async def`),
+datoria spune *„instrumentul care MĂSOARĂ conformitatea nu e el însuși măsurat"* și cere fixturi
+known-good / known-bad. **Nu s-a făcut.** Interdicția 76 nu deschide clasa — o ridică din datorie în
+regulă.
+
+**3. Dintre cele scrise după fix, câte au prins vreodată o regresie reală?**
+
+**Nu se poate afla din istoric, și motivul e în construcția porții — nu în lipsa datelor.**
+
+Căutat în **1.725 de commituri**: doar **4** citează un test și poartă vocabular de reparație, și
+**toate patru repară testul însuși** (import greșit, conftest, ordine de import), niciunul nu descrie
+o gardă care a prins o regresie în producție.
+
+**Zero nu înseamnă că nu s-a întâmplat.** Poarta rulează **înainte** de commit: un test roșu
+**oprește** commitul, omul repară, și ce ajunge în istorie e deja verde. **Prin construcție, o gardă
+care prinde o regresie nu lasă urmă.** Istoria conține doar succesele.
+
+**Dovada că clasa nu e goală o am din ziua asta, și e din afara istoricului:** azi, două gărzi au
+prins probleme reale și au **blocat poarta** — `test_bifele_nu_stau_pe_o_baza_schimbata` (a prins
+conflatarea grafului, sărind 14 → 35) și `test_verificarile_A_nu_sunt_in_urma_codului` (a prins o bifă
+rămasă în urma codului, și a cerut reverificarea la sursă, care s-a făcut). **Niciuna dintre cele două
+nu apare nicăieri în git.**
+
+**Deci întrebarea are răspuns doar dacă poarta consemnează ce test a picat.** Azi nu o face. Asta e o
+observație, nu o propunere — hook-ul e al lui Costin.
 
 ### Ce urmează în faza 4
 
@@ -2197,4 +2260,17 @@ plan: *orice gardă care parsează `.md` are gaura citirii peste marginea rându
 - **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
 - **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
 - **unde ajunge efectul**: clientul nu-și poate lua evidența decât cu voia noastră, sau într-un format pe care doar noi îl citim. Un produs din care nu poți ieși e un produs de care te temi
+
+
+## 76 — Un instrument de măsurare fără calibrare pe propriul mod de eșec
+
+- **stare**: MĂSURATĂ
+- **măsurat la**: 2026-08-23
+- **pe commit**: `942e2c4`
+- **cifra**: **4 din 12** instrumente cu gărzi au **calibrare NEGATIVĂ** (un caz care NU trebuie găsit): `audit_preluare` (4), `scan_ancore` (5), `scan_afirmatii` (3), `graf_temei` (1). **Plafon inferior**, fiindcă „calibrare" se recunoaște aici ca *aserțiune care pinează un literal concret* — un caz pinuit printr-o fixtură sau un golden file nu se numără.
+- **instanțe**: patru într-o singură zi, toate la instrumente scrise în ultimele trei săptămâni — vezi tabelul din `PLAN_ARHITECTURA.md`. **Dar cea mai veche instanță are 23 de zile și era deja scrisă:** `core/test_datorie.py:283`, xfail(strict) din **31.07.2026**, o numește exact — *„unealtă care se înșală singură: `verificator_conformitate.py` a produs 13 fals-pozitive prin propriul bug… **instrumentul care MĂSOARĂ conformitatea nu e el însuși măsurat**… un gard cu fals-NEGATIVE tace pe un leak real"*. Clasa n-a fost descoperită azi; azi a primit cifră.
+- **cele două instrumente cele mai vechi, măsurate la cerere**: `verificator_conformitate.py` și `verificator_sageti.py`, amândouă din **09.07.2026**. **Niciunul nu e importat de vreun test** — zero gărzi, zero calibrare, nici pozitivă nici negativă. Cele 5 fișiere care îl „pomenesc" pe primul îl citesc ca **text** (`open(...).read()`) sau îl numesc într-un `reason` de xfail; niciunul nu-i verifică analizorul. Iar `verificator_conformitate` **rulează la fiecare poartă** — e cel mai executat instrument din proiect și cel mai neverificat.
+- **calibrare**: cazul cunoscut a fost **găsit**: `graf_temei` avea calibrare completă în ambele direcții din 01.08 și a trecut 22 de zile conflat — deci măsurătoarea distinge „are calibrare" de „are calibrarea potrivită", care e chiar întrebarea interdicției.
+- **ce nu vede**: „calibrare negativă" se recunoaște ca aserțiune sub `not` / `not in` cu literal. Un instrument calibrat negativ prin altă formă — o fixtură known-bad, un golden care trebuie să difere — nu se numără. Iar domeniul măsurătorii a fost `core/` și `scripts/`: instrumentele din rădăcină au intrat abia la cererea din 23.08.
+- **unde ajunge efectul**: un instrument necalibrat pe modul lui de eșec produce cifre care se citesc ca măsurători și sunt opinii. Efectul nu e o cifră greșită într-un raport — e că **toate măsurătorile care stau pe el moștenesc orbirea**, iar direcția tăcută (ratează, nu inventează) nu aprinde nimic. `graf_temei` a arătat 12 consumatori ai salariului minim în loc de 83, timp de 22 de zile, fără ca vreun test să pice
 
