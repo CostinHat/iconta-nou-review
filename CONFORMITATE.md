@@ -30,7 +30,7 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **FAZA 2 — TEMEIURILE, în lucru.** Măsurate pe 23.08: **53**, **49**, **52** (PARȚIAL — 162 din 339 de acte fără amprentă), **54** (pragul **există**, contrar presupunerii planului), **55** (**câmpul de categorie nu există**), **61** (PARȚIAL — **16 din 17**, iar *trivial: zero* din plan **e falsificat de reparația R17 din aceeași zi**; unealta e construită acum). Rămân: **50** și **59** (vigoarea pe articol la sursă), **58**, **60** (cea mai valoroasă). **51, 56, 57, 62** sunt nemăsurabile retroactiv, prin declarația planului.
+- **pasul curent**: **FAZA 2 — TEMEIURILE, în lucru.** Măsurate pe 23.08: **53**, **49**, **52** (PARȚIAL), **54**, **55**, **61** (PARȚIAL), și **60** — cea mai mare din fază: **470 de elemente** implementează o normă, **20% poartă legătura, doar 4% mecanic**, iar **structurile de declarație, termenele și regulile de validare au ZERO** legături structurate. Rămân **50** și **59** (vigoarea pe articol la sursă — cea mai mare ca volum) și **58**. **51, 56, 57, 62**: nemăsurabile retroactiv.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
@@ -2138,13 +2138,22 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 60 — O regulă, formulă sau structură care implementează o normă, fără articolul asociat
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: MĂSURATĂ
+- **măsurat la**: 2026-08-23
+- **pe commit**: `b3b6a89`
+- **cifra**: **470 de elemente** care implementează o normă, dintre care **doar 96 poartă legătura — 20%**, și **doar 17 o poartă verificabil mecanic — 4%**. Restul de **374 (80%) nu poartă nimic**.
+
+| categorie | total | STRUCTURAT | PROZĂ | NIMIC |
+|---|---|---|---|---|
+| nomenclator | 260 | 14 | 46 | **200** |
+| structură de declarație | 97 | **0** | 11 | 86 |
+| regulă de validare | 73 | **0** | 11 | 62 |
+| formulă | 24 | 3 | 7 | 14 |
+| termen | 16 | **0** | 4 | 12 |
+| **TOTAL** | **470** | **17** | **79** | **374** |
+- **instanțe**: **Structurile de declarație, termenele și regulile de validare au ZERO legături structurate — toate trei.** Adică exact ce prezicea planul: *azi doar valorile poartă temei*. Dar măsurătoarea **corectează** partea a doua a frazei: planul spune că celelalte *nu poartă nimic*; în realitate **20% poartă legătura ca PROZĂ** — un marcaj `TEMEI:` sau o citare `art.NN` în docstring. Diferența nu e cosmetică: o legătură în proză e verificabilă de un **om** care citește fișierul, dar nu răspunde la întrebarea *ce se atinge dacă se schimbă articolul* — vezi interdicția 61, unde unealta funcționează **doar** peste legăturile structurate
+- **calibrare**: cele trei legături pe care planul le numește cunoscute au fost **găsite**, și una a rupt prima formă a scanului: **deducerea personală ↔ art. 77 alin. (4)** ieșea PROZĂ în loc de STRUCTURAT, fiindcă temeiul nu stă în corpul funcției, ci în **registrul de variante** (`_VARIANTE_X = [(dată, funcție, Temei(...))]`) — tiparul de versionare al casei, pe care `graf_temei` a trebuit și el să-l trateze special. Reparat, și pinat în gardă. Celelalte două: **podeaua part-time ↔ art. 146(5^6)/168(6^1)** → STRUCTURAT, tot prin registru; **nomenclatorul codurilor de indemnizație ↔ documentul de structură** → PROZĂ, cu rândul 98 citat. Gardat: `core/test_norma_implementare.py`, 6 teste, cu clichet pe cele 17 structurate
+- **ce nu vede**: **numitorul e o ALEGERE, declarată ca să poată fi contrazisă**: cinci categorii, fiecare cu proxy mecanic — formulă (cere `cota()`), structură (`build_xml` / `calcul_dNNN`), nomenclator (constantă NUME_MARE de tip dict/tuple/set în modul fiscal), termen (`scadenta`/`termen` în nume), validare (`valideaza*`/`erori_generare`). Un element care implementează o normă fără să cadă în vreuna dintre ele **nu e numărat**, deci 470 e plafon inferior. · Nu spune că articolul citat e cel **potrivit** — asta e interdicția 53, măsurată separat. · Nu vede o legătură scrisă în alt fișier decât cel care implementează
 - **unde ajunge efectul**: la o modificare de lege nu se știe ce cod trebuie atins: se pot determina perioadele afectate, dar nu implementările. Fără 60, P18 nu se poate executa
 
 ## 61 — Un articol din corpus fără lista dependenților, generabilă la cerere
