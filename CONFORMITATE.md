@@ -196,12 +196,35 @@ nu produce o cifră greșită, un blocaj sau o afirmație falsă la un contabil 
 | **datoria 31.07 — `verificator_conformitate` fără nicio gardă** | analizorul lui nu e testat pe fixturi known-good / known-bad | **REZOLVAT** 23.08 (`139bca5`), după **23 de zile** |
 | **R20** — opt artefacte de un octet în corpus | o derivare care a produs gol și n-a spus-o | **REZOLVAT** 23.08 (`9510c94`), prin decizie: șterse |
 | **R19** — `graf_clustere` tratează utilitarele partajate ca proprietate | filtrul exclude partajarea **cu sine**, nu **între alții** | **REZOLVAT** 23.08 — mecanic, nu prin decizie |
-| **`scan_constante` — gardă cu ZERO calibrare pozitivă** | 2 teste, niciunul nu pinează un caz concret | **deschis** |
+| **`scan_constante` — gardă fără calibrare NEGATIVĂ** | *(rândul spunea «ZERO calibrare pozitivă, 2 teste» — **stătut cu trei zile**: avea 14 teste și patru calibrări pozitive)* | **REZOLVAT** 23.08 — două găuri tăcute, măsurate și închise |
 
 **Pragul 2 s-a golit pe trei sferturi într-o zi**, iar la reluarea triajului a mai căzut una: R19,
-**mecanic** — o funcție partajată nu primește alt proprietar, ci niciunul. **Rămâne una singură:
-`scan_constante`**, din familia *instrument pe care stau măsurători, fără calibrare pe propriul mod de
-eșec* (**interdicția 76**).
+**mecanic** — o funcție partajată nu primește alt proprietar, ci niciunul. Apoi a căzut și
+`scan_constante`, ultima. **PRAGUL 2 E GOL.**
+
+**Ce a scos calibrarea lui `scan_constante`, și de ce contează mai mult decât închiderea lui.** Rândul
+din tabel îl descria cu *„ZERO calibrare pozitivă, 2 teste"* — **stătut cu trei zile și patru
+commituri**: gardul avea deja **14 teste** și **patru calibrări pozitive**, adăugate pe 20–21.08. E a
+**patra** poziție de triaj descrisă fără să fie deschis modulul. Dar cererea lui Costin — *„calibrează
+în ambele direcții, dar mai ales negativ: dacă instrumentul vede mai puțin decât crede, clichetul
+păzește un prag fals, iar direcția aia e tăcută"* — a nimerit exact ce lipsea: **toate cele patru
+calibrări erau pozitive sau contra-direcții ale clasei E. Niciuna nu întreba ce rămâne AFARĂ.**
+
+**Două găuri tăcute, amândouă numite chiar de docstringul scanului, niciuna testată până azi:**
+
+| gaura | măsurat | ce s-a făcut |
+|---|---|---|
+| **DOMENIUL** — `FIS` e o listă de NUME | **79 din 289** de module `core/` erau în domeniu; **50** dintre cele rămase aveau semnal fiscal, iar **4 construiesc `Temei`** — adică sunt fiscale prin propria mărturisire | domeniul e acum `FIS` **SAU** *modulul construiește un `Temei`* — criteriu **mecanic**, care se întreține singur: un modul intră în ziua în care citează legea |
+| **BOTEZUL** — un nume care se potrivește cu `NOM` trimite valoarea în B, tăcut | probat sintetic: `TIP_COTA = 21` → **B**; `COD_COTA = 21` → **B**; `CATEG_PLAFON = 300000` → **B**. Pe date reale: **15 coliziuni, 7 nume, toate coduri de categorie** — gaura e reală, dar **azi goală** | **nu s-a schimbat regula** (NF peste NOM ar fi mutat exact acele 15 clasificări corecte în C, umflând clichetul cu false pozitive). S-a făcut **vizibilă**: `BOTEZ_BASELINE`, cu fiecare coliziune numită; a opta pică |
+
+**CIFRA S-A MIȘCAT: clasa C urcă de la 93 la 104** — nu fiindcă datoria a crescut, ci fiindcă a
+devenit vizibilă. Cele 11 sunt în `contracte_speciale.py` (5) · `sponsorizari.py` (3) · `motor.py` (2)
+· `deconturi.py` (1). **Clichetul a fost lărgit cu ele, nu ridicat**: fiecare modul nou intră cu
+datoria lui măsurată și nu mai poate crește. Consecința pe care Costin a anticipat-o: **se mișcă și
+interdicția 1**, unde 93 era unul dintre termenii confruntării.
+
+**Gardă**: `core/test_constante_nesursate.py`, **14 → 19 teste**. RED-probat: domeniul readus la lista
+de nume → **2 teste roșii**, dintre care `test_baseline_nu_e_stat`, adică chiar clichetul.
 `scan_constante` e cel mai expus dintre cele două: ține clichetul de 93 de constante nesursate în
 producție, deci o gaură în el ar coborî o cifră fără ca nimic să se schimbe.
 
@@ -748,6 +771,28 @@ gardă; e un prag de citit, la un moment numit.
 
   **Ce NU spune scanul, și de asta e restanță, nu constatare.** Scanul e **pe nume**, deci moștenește exact limitele clasei pe care o urmărim: (a) nu vede citirile prin `getattr(obj, "nume")` — chiar `Nota.jurnal` apare „mort" în el, deși e citit de la reparația R22 încoace; (b) nu vede citirile **din alt modul** (`REGULI` e o convenție de marcaj, citită în `facturi.py` prin `MODUL`/`REGULI`, deci probabil legitimă peste tot). **Deci lista de mai sus e o listă de CANDIDAȚI, nu de defecte** — iar a o trata ca listă de defecte ar fi a treia instanță a aceleiași greșeli într-o zi.
 - **condiția de deblocare**: fiecare candidat verificat **individual**, la sursă, cu întrebarea *„a fost început ceva aici și s-a oprit, sau e o convenție citită din altă parte?"*, iar rezultatul scris pe două coloane — **convenție** (rămâne, cu motivul) sau **urmă de intenție** (se duce la capăt sau se scoate). Pentru cele 90 de importuri: fie clichet per fișier pe `F401` în poartă (tiparul deja folosit la mesajele cu nume interne), fie o decizie că nu merită. Se închide când niciun nume din cele nouă module nu e „declarat și necitit" fără o explicație scrisă lângă el. *Precedentul care justifică restanța: `jurnal: str = "GENERAL"` a stat de la prima zi a modulului ca urmă a unei intenții, iar reparația de prag 1 din R22 a aterizat exact acolo.*
+
+### R24 — Trei cicluri în graful de clustere: reciproce în fapt, sau doar în graf?
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · faza 4 (instrumentele) · vecin cu R18 (secvența care nu poate deveni roșie)
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `25b07c0`
+- **ce blochează**: după repararea proprietății (R19), ciclurile din graful de clustere au scăzut de la **321 la 3**, toate în familia salarizării: *facilitate salariu minim* ↔ *deducere personală* ↔ *concedii medicale*. Le-am numit *„par dependențe reciproce reale"* și nu le-am atins. **Observația lui Costin, care schimbă întrebarea:** o dependență reciprocă **reală** înseamnă că **nu există ordine de verificare între ele** — iar atunci **sortarea topologică nu le acoperă**, oricât de curat ar fi graful. Secvența ar trece peste ele într-o ordine arbitrară, fără să spună că e arbitrară.
+- **condiția de deblocare**: se stabilește dacă cele trei sunt reciproce **în fapt** sau doar **în graf**. *În graf* ar însemna că muchia dintr-o direcție vine dintr-un utilitar comun rămas cu proprietar unic din întâmplare — atunci se repară proprietatea și ciclul dispare. *În fapt* ar însemna că valorile chiar se determină reciproc (deducerea depinde de baza pe care o schimbă facilitatea, și invers) — atunci **ciclul nu e un defect al grafului, ci o proprietate a legii**, și trebuie **declarat**: cele trei se verifică împreună, ca un singur nod, nu una după alta. Se închide când fiecare dintre cele trei cicluri poartă un verdict scris — *reparat* sau *declarat* — nu când numărul ajunge la zero.
+
+### R25 — Module fiscale care NU citează legea, deci rămân în afara domeniului scanului
+
+- **felul**: VERIFICARE
+- **cine deblochează**: DECIZIE
+- **unde intră**: E3 · faza 4 · interdicția 1 (valori fiscale în afara registrului)
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `25b07c0`
+- **ce blochează**: criteriul nou de domeniu — *„nume fiscal SAU modulul construiește un `Temei`"* — prinde modulele care **știu** că sunt fiscale. Nu le prinde pe cele care **ar trebui să știe**. Măsurat 23.08.2026, pe cele 210 module din afara lui `FIS`: **50 au semnal fiscal** (construiesc `Temei` sau au ≥20 de potriviri cu vocabularul fiscal), din care 4 au intrat prin criteriul nou. Sondat pe **10** dintre cele rămase — `casa.py` (6 de clasă C), `notificari_scadenta.py` (2), `control_incrucisat.py` (1), `beneficii_api.py` (1), `stat_plata_emis.py` (1), `facturi_api.py` (1), iar `expirare_cote.py`, `salariu_istoric.py`, `plan_omfp.py`, `declaratii_api.py` cu **0** — **12 constante de clasă C nevăzute**. Cifra e un **plafon inferior**: s-au sondat 10 din 46.
+- **condiția de deblocare**: o **decizie**, fiindcă lărgirea are un cost simetric — un domeniu prea larg aduce zgomot operațional în clasa C (măsurat deja o dată: cele 14 constante din `main.py`, toate de infrastructură), iar unul prea îngust lasă datorie invizibilă. Variantele: (a) se adaugă în `FIS` modulele sondate care au clasă C nenulă, cu clichetul lor măsurat; (b) se rulează sonda pe toate cele 46 și se decide pe cifra completă; (c) se declară scris că domeniul rămâne la *„module care citează legea"*, cu motivul. Se închide când domeniul e ales **pe o cifră completă**, nu pe un eșantion de 10.
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
@@ -1762,9 +1807,9 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 1 — O valoare fiscală scrisă în afara registrului
 
 - **stare**: MĂSURATĂ
-- **măsurat la**: 2026-08-22
-- **pe commit**: `ffbcb74`
-- **cifra**: **131** brut, din care ~23% zgomot pe eșantionul de 30 → **~100 reale**. Confruntare cu al doilea instrument: `core/scan_constante` raportează 93 „nesursate" (clasa C); diferența e de definiție — clasa A (48 de valori CU obiect `Temei`) e tot în afara registrului, fiindcă un `Temei` lângă o valoare nu e registrul. 131 = A(48) + C(93) + E(33) − 43 aflate chiar în `common.py`/`temeiuri.py`.
+- **măsurat la**: 2026-08-23
+- **pe commit**: `25b07c0`
+- **cifra**: **131** brut, din care ~23% zgomot pe eșantionul de 30 → **~100 reale** *(cifra brută e de pe 22.08, `ffbcb74`, pe domeniul VECHI al celuilalt instrument — nu s-a re-măsurat)*. Confruntare cu al doilea instrument, **re-măsurată 23.08 după calibrarea negativă a lui `scan_constante`**: clasa **C urcă de la 93 la 104**, **A de la 48 la 60**, **E de la 33 la 37**, fiindcă domeniul scanului s-a lărgit de la o listă de nume la *„nume fiscal SAU modulul citează legea"* — patru module care construiesc `Temei` erau invizibile. **Datoria n-a crescut, a devenit vizibilă.** Diferența de definiție rămâne: clasa A e tot în afara registrului, fiindcă un `Temei` lângă o valoare nu e registrul. **Descompunerea veche (131 = A+C+E−43) NU se mai poate reface**: termenii ei sunt pe două domenii diferite, iar a-i scădea ar fi exact greșeala pe care registrul a mai făcut-o o dată (cifra *162 fără amprentă*, la 52).
 - **instanțe**: concentrate în `salarizare.py` 33 · `d212_engine.py` 13 · `d394.py` 9 · `d101.py` 8 · `d406.py` 7 · `d406_active.py` 7 · `d300.py` 5 · `d300_reconciliere.py` 5 · `d403.py` 5 · `d104.py` 4 · `scadente.py` 4 · `tva_marja_turism.py` 4 · restul câte 1–3, în 16 fișiere. Lista completă: `./venv/bin/python -m core.scan_constante`.
 - **calibrare**: GĂSIT — cotele TVA scrise ca literal în `d300.py:41-42`, `d394.py:69`, `cote_tva.py:19`; CAS 0.25 în `salarizare.py:497` și `salariati_api.py:497`. Caz negativ NEraportat: valorile din `common.py` (43) au fost excluse corect — acolo E locul lor.
 - **ce nu vede**: o valoare construită din altele (`sm * 3`) apare doar dacă un operand e literal · o valoare citită din baza de date (parametru per firmă) · o valoare ascunsă într-un șir formatat („cota 21%") · testele, scanurile și migrările (excluse deliberat). Zgomot identificat pe eșantion: numere de act citite ca valori (`158` din OUG 158/2005), constante de precizie (`0.0001`), coduri interne.

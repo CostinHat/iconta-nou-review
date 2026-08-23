@@ -311,14 +311,61 @@ def _este_precizie(h):
     return bool(re.search(r"_RANG_STARE|_ORDINE|_PRIORIT", h["ctx"]))
 
 
+def _citeaza_legea(src):
+    """True daca modulul CONSTRUIESTE un `Temei` - sub orice alias, rezolvat prin AST.
+
+    DIRECTIA TACUTA, masurata 23.08.2026. Domeniul scanului era o LISTA DE NUME (`FIS`): 79 din 289
+    de module `core/`. Restul erau invizibile prin constructie, iar un scan tacut se citeste ca
+    absenta. Masurat: 50 de module din afara aveau semnal fiscal, iar PATRU dintre ele construiesc
+    `Temei` - adica sunt fiscale prin propria lor marturisire: `contracte_speciale.py`,
+    `sponsorizari.py`, `deconturi.py`, `motor.py`. Clasa C din ele: 14, nevazute.
+
+    De ce criteriul asta si nu o lista mai lunga de nume: e MECANIC si se intretine singur. Un modul
+    care citeaza legea intra in domeniu in ziua in care o citeaza, fara ca cineva sa-si aminteasca
+    sa-l adauge in `FIS`. Un nume nou in `FIS` cere memorie; un `Temei(...)` nu.
+
+    CE NU ACOPERA, scris: un modul fiscal care NU citeaza legea deloc ramane afara (masurat: inca 10
+    module cu semnal fiscal, 12 constante de clasa C - vezi R25). Criteriul prinde modulele care
+    stiu ca sunt fiscale, nu pe cele care ar trebui sa stie."""
+    try:
+        arb = ast.parse(src)
+    except SyntaxError:
+        return False
+    alias = set()
+    for n in ast.walk(arb):
+        if isinstance(n, ast.ImportFrom):
+            for a in n.names:
+                if a.name == "Temei":
+                    alias.add(a.asname or a.name)
+        elif isinstance(n, ast.ClassDef) and n.name == "Temei":
+            alias.add("Temei")
+    for n in ast.walk(arb):
+        if isinstance(n, ast.Call):
+            f = n.func
+            if (isinstance(f, ast.Name) and f.id in alias) or \
+               (isinstance(f, ast.Attribute) and f.attr == "Temei"):
+                return True
+    return False
+
+
+def in_domeniu(f, src):
+    """Un modul e in domeniul scanului daca poarta un NUME fiscal (`FIS`) SAU daca CITEAZA legea."""
+    if not f.endswith(".py") or f.startswith("test_"):
+        return False
+    return bool(FIS.match(f)) or _citeaza_legea(src)
+
+
 def inventar(rad=RAD):
     """Toti literalii clasificati din modulele fiscale. Fara efecte in afara de citit."""
     hits = []
     for f in sorted(os.listdir(rad)):
-        if not f.endswith(".py") or f.startswith("test_") or not FIS.match(f):
+        if not f.endswith(".py") or f.startswith("test_"):
             continue
         with open(os.path.join(rad, f), encoding="utf-8", errors="replace") as fh:
-            hits += scan(f, fh.read())
+            _src = fh.read()
+        if not in_domeniu(f, _src):
+            continue
+        hits += scan(f, _src)
     vaz, U = set(), []
     for h in hits:
         k = (h["f"], h["l"], h["v"])

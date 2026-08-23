@@ -4220,3 +4220,24 @@ lucruri cu consecințe diferite: **DOMENIU** (regiune cunoscută lăsată afară
 fără calibrare pe propriul mod de eșec). Nu e o stare nouă — cele patru stări descriu ce s-a întâmplat
 cu MĂSURĂTOAREA, orbirea e o proprietate a INSTRUMENTULUI. **Cifra, acum derivabilă: 7 ORBIRE / 7
 DOMENIU** din 14. RED-probat: o secțiune PARȚIAL fără câmp → roșu.
+
+**`scan_constante` nu mai vede doar o listă de nume** (`core/scan_constante.py` `in_domeniu` +
+`_citeaza_legea`, `core/test_constante_nesursate.py`, 23.08.2026). **Calibrare NEGATIVĂ**, cerută
+explicit: *dacă instrumentul vede mai puțin decât crede, clichetul păzește un prag fals, iar direcția
+aia e tăcută.* Gardul avea **patru calibrări**, toate pozitive sau contra-direcții ale clasei E;
+niciuna nu întreba ce rămâne **afară**.
+
+**Gaura 1 — DOMENIUL.** `FIS` acoperea **79 din 289** de module `core/`. Dintre cele 210 rămase, **50**
+aveau semnal fiscal, iar **4 construiesc `Temei`** — fiscale prin propria mărturisire. Domeniul e acum
+*nume fiscal SAU modulul citează legea*: criteriu **mecanic**, care se întreține singur. **Clasa C:
+93 → 104.** Datoria n-a crescut — a devenit vizibilă. Clichetul s-a **lărgit** cu cele 4 module, nu s-a
+ridicat.
+
+**Gaura 2 — BOTEZUL.** Un nume care se potrivește cu `NOM` trimite valoarea în B, tăcut: `TIP_COTA = 21`
+→ B, `CATEG_PLAFON = 300000` → B. **Nu s-a schimbat regula** — ar fi mutat 15 clasificări corecte în C.
+S-a făcut **vizibilă**: `BOTEZ_BASELINE` numește cele 7 coliziuni reale (toate coduri de categorie); a
+opta pică. Gaura e reală și **azi goală** — de aceea calibrarea ei e **sintetică**, pe cod construit
+anume: un test care ar aștepta o instanță reală n-ar prinde-o niciodată.
+
+**RED-proof 1 mutație / 2 roșii**, dintre care `test_baseline_nu_e_stat` — adică chiar clichetul, nu
+doar testul de domeniu.

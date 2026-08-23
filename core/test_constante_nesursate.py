@@ -37,6 +37,9 @@ BASELINE = {
     "d108.py": 1, "d169.py": 1, "d169n.py": 1, "d205.py": 2, "d212_engine.py": 11,
     "d216.py": 1, "d394.py": 2,
     "d401.py": 2, "d402.py": 3, "d403.py": 5, "d406.py": 5, "d406_active.py": 7,
+    # Intrate 23.08.2026 prin LARGIREA DOMENIULUI: module care CITEAZA legea (construiesc `Temei`)
+    # si erau invizibile fiindca `FIS` e o lista de nume. Datoria nu a crescut - a devenit vizibila.
+    "contracte_speciale.py": 5, "sponsorizari.py": 3, "deconturi.py": 1, "motor.py": 2,
     "d406_stocuri.py": 1, "d407.py": 2, "salariati_api.py": 1, "salarizare.py": 18,
     "scadente.py": 3, "stat_plata_api.py": 1, "tva_agricultori.py": 2, "tva_aur.py": 1,
     "tva_marja.py": 2, "tva_marja_turism.py": 4,
@@ -302,3 +305,106 @@ def test_confruntarea_chiar_vede_ceva(inv):
     assert len(excl) >= 8 and "cote_tva.py" in excl, \
         "lista de excluse a verificatorului e implauzibilă: %s" % excl
     assert any(h["f"] in excl for h in inv), "scanul nu vede niciun fișier dintre cele excluse"
+
+
+# ─────────── CALIBRARE NEGATIVĂ: ce NU vede scanul (23.08.2026) ───────────
+# Cerută de Costin: *„calibrează în ambele direcții — dar mai ales negativ: dacă instrumentul vede
+# mai puțin decât crede, clichetul păzește un prag fals, iar direcția aia e tăcută."*
+# Cele patru calibrări de mai sus sunt POZITIVE (scanul vede ce trebuie) sau contra-direcții ale
+# clasei E. Niciuna nu întreba ce rămâne AFARĂ. Măsurat, două găuri, amândouă numite de docstringul
+# scanului și niciuna testată până azi:
+#   (1) DOMENIUL — `FIS` e o listă de NUME: 79 din 289 de module `core/`. Patru module care
+#       construiesc `Temei` erau afară; clasa C a urcat 93 → 104 când au intrat.
+#   (2) BOTEZUL — un nume care se potrivește cu `NOM` trimite valoarea în B, tăcut. Probat sintetic:
+#       `TIP_COTA = 21` → B, `COD_COTA = 21` → B, `CATEG_PLAFON = 300000` → B.
+
+def _module_core():
+    import glob
+    import io
+    import os
+    rad = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "core")
+    for p in sorted(glob.glob(os.path.join(rad, "*.py"))):
+        f = os.path.basename(p)
+        if f.startswith("test_"):
+            continue
+        yield f, io.open(p, encoding="utf-8", errors="replace").read()
+
+
+def test_domeniul_prinde_orice_modul_care_CITEAZA_legea():
+    """Un modul care construiește un `Temei` e fiscal prin propria lui mărturisire. Criteriul e
+    mecanic, deci se întreține singur: un modul nou intră în domeniu în ziua în care citează legea,
+    fără să-și amintească cineva să-l adauge în `FIS`."""
+    afara = [f for f, src in _module_core()
+             if scan_constante._citeaza_legea(src) and not scan_constante.in_domeniu(f, src)]
+    assert not afara, "module care citează legea, dar sunt în afara domeniului scanului: %s" % afara
+
+
+def test_ANTIVACUU_largirea_chiar_a_adus_module():
+    """Fără module câștigate prin criteriul nou, testul de mai sus ar trece pe zero rânduri și ar
+    raporta verde despre o lume pe care n-o vede."""
+    castigate = [f for f, src in _module_core()
+                 if not scan_constante.FIS.match(f) and scan_constante._citeaza_legea(src)]
+    assert len(castigate) >= 4, (
+        "criteriul «citează legea» nu mai aduce niciun modul peste `FIS` (%s) — ori s-au redenumit, "
+        "ori detectorul de `Temei` s-a rupt" % castigate)
+
+
+# BOTEZUL: coliziunile NOM × NF, NUMITE. Fiecare e un cod de categorie, nu o valoare fiscală —
+# de-aia rămân în B. O a opta care apare NU e presupusă bună: pică, și se citește.
+# NU se schimbă regula (NF peste NOM), fiindcă asta ar muta exact aceste 7 nume în C și ar umfla
+# clichetul cu 15 false pozitive. Gaura e reală, dar AZI GOALĂ; ce se schimbă e că nu mai e tăcută.
+BOTEZ_BASELINE = {
+    ("d201.py", "_CATEG_SALARII"): "cod de categorie de venit salarial (nomenclator ANAF)",
+    ("d204.py", "_CATEG_VENIT"): "coduri de categorie de venit — nomenclator, nu cote",
+    ("d204.py", "act['categ_venit']"): "comparație cu codul de categorie, nu cu o valoare",
+    ("d301_operatiuni_api.py", "TIPURI_ETICHETE"): "coduri de tip de operațiune",
+    ("d402.py", "_TIP_VENIT"): "cod de tip de venit (nomenclator D402)",
+    ("d402.py", "_PER_VENIT"): "cod de periodicitate",
+    ("d403.py", "_R_TIP_BAZA"): "cod de tip de bază (nomenclator D403)",
+}
+
+
+def _botez(inv):
+    import re
+    out = {}
+    for h in inv:
+        if h["cls"] != "B" or not scan_constante.NF.search(h["ctx"] or ""):
+            continue
+        m = re.search(r"`([^`]+)`", h["ctx"] or "")
+        k = (h["f"], m.group(1) if m else h["ctx"])
+        out[k] = out.get(k, 0) + 1
+    return out
+
+
+def test_botezul_nu_mai_inghite_tacut(inv):
+    """Miezul direcției negative. Un nume care se potrivește cu `NOM` scoate valoarea din țintă —
+    fals negativ, pe care nimeni nu-l VEDE. Nu se poate repara prin regulă fără să strice 15
+    clasificări corecte, deci se face VIZIBIL: fiecare coliziune e numită, iar una nouă pică."""
+    noi = sorted(k for k in _botez(inv) if k not in BOTEZ_BASELINE)
+    assert not noi, (
+        "nume care se potrivesc ȘI cu nomenclatorul ȘI cu vocabularul fiscal, nedeclarate: %r. "
+        "Dacă e un cod, adaugă-l în BOTEZ_BASELINE cu ce măsoară. Dacă e o VALOARE fiscală, "
+        "redenumește-o — altfel scanul n-o va vedea niciodată." % (noi,))
+
+
+def test_botezul_declarat_nu_imbatraneste(inv):
+    """Anti-vacuu pe exceptare, a treia oară în fișierul ăsta: o coliziune declarată care nu mai
+    există e o notă despre o lume care nu mai e."""
+    real = _botez(inv)
+    moarte = sorted(k for k in BOTEZ_BASELINE if k not in real)
+    assert not moarte, "coliziuni declarate care nu mai există — scoate-le: %s" % moarte
+
+
+def test_gaura_de_botez_e_REALA_probata_sintetic():
+    """Calibrarea negativă propriu-zisă: se probează pe cod construit anume, fiindcă în producție
+    clasa e AZI GOALĂ. Un test care așteaptă să apară o instanță reală n-ar prinde niciodată gaura."""
+    def cls(linie):
+        h = scan_constante.scan("proba.py", linie + "\n")
+        return h[0]["cls"] if h else None
+
+    assert cls("COTA_TVA = 21") == "C", "scanul nu mai vede nici cazul cinstit — s-a rupt"
+    assert cls("TIP_COTA = 21") == "B", (
+        "botezul nu mai trimite în B — dacă regula s-a schimbat deliberat, coboară BOTEZ_BASELINE "
+        "și rescrie testul; dacă nu, e o schimbare tăcută de clasificare")
+    assert cls("CATEG_PLAFON = 300000") == "B"
+    assert cls("PLAFON_MICRO = 300000") == "C", "plafonul cinstit a fugit din țintă"

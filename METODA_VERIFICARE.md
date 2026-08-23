@@ -517,3 +517,39 @@ amândouă adevărate, **niciodată confruntate** — iar din prima s-a ordonat 
 3. **Când se contrazic, întâi verifică domeniile** — de obicei nu una e falsă, ci măsoară altceva.
 4. **Instrumentul se numește lângă cifră.** „57" nu spune nimic; „57, AST, constructori sub orice
    alias, `core/` fără teste" se poate contesta.
+
+## 13. Un NOMENCLATOR se completează din NORMĂ, nu din ce produce aplicația
+
+**Regula.** Când construiești un nomenclator care are o sursă oficială, îl completezi **din act**, cu
+toate intrările pe care actul le numește — inclusiv pe cele pe care aplicația nu le produce azi. Ce
+lipsește din mapare **nu se șterge din nomenclator**. Diferența dintre *ce numește norma* și *ce
+produce aplicația* e o **măsurătoare**, nu o lipsă de îngrijire.
+
+**Instanța care a produs regula (23.08.2026).** Maparea `inregistrari.sursa` → jurnal de origine, în
+D406. Norma (OMFP 2634/2015, Anexa 1 pct. 52) numește cinci feluri de jurnal auxiliar; aplicația
+produce patru. Al cincilea — *„operațiuni privind decontările cu furnizorii"* — a rămas în nomenclator
+**fără mapare**, cu asta scris lângă el. Dacă l-aș fi șters fiindcă „nu-l produce nimeni", nomenclatorul
+ar fi arătat complet, iar întrebarea *„ce fel de jurnal nu ținem?"* n-ar mai fi avut unde să se pună.
+
+**Ce se câștigă, concret:**
+
+1. **Absența devine numărabilă.** „4 din 5 feluri au mapare" e o cifră; „nomenclatorul e complet" e o
+   impresie.
+2. **Nomenclatorul nu se rescrie** când aplicația crește. Ziua în care apare o sursă de furnizori,
+   intrarea e deja acolo, cu temeiul ei.
+3. **Se vede în ce direcție e datoria.** Un nomenclator mai bogat decât maparea = funcționalitate
+   lipsă. O mapare mai bogată decât nomenclatorul = **ceva ce inventăm** — iar aia e o afirmație către
+   autoritate, nu o scăpare.
+
+**Cum se aplică, mecanic:**
+
+- Nomenclatorul se ancorează pe **textul actului**, verbatim, gardat prin căutare **literală în
+  corpus** — o reformulare îl face roșu (vezi `core/test_d406_jurnal_origine.py`).
+- Maparea stă **separat**, și e decizie de produs; fiecare abatere de la lista normei se scrie ca
+  abatere, cu motivul (la D406: `CASA`/`BANCA` sunt două identificatoare pentru un singur fel al
+  normei; `AMORTIZARE` intră la *„alte operațiuni"*).
+- Intrarea fără mapare **rămâne**, cu o notă de o linie: *nimic nu o produce azi*.
+
+**Ce NU acoperă regula:** nu spune că nomenclatorul e corect — spune doar că diferența față de mapare e
+vizibilă. Un act citit greșit produce un nomenclator greșit, complet și verificabil literal. Pentru
+asta e §12: confruntarea cu ce spune deja registrul.

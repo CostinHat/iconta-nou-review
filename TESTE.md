@@ -1915,3 +1915,9 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
 - **`core/test_conformitate.py`** — două gărzi noi: plafon de **300 de caractere** pe `pasul curent`
   (gard care nu citește proză) și `felul limitei` obligatoriu pe PARȚIAL (`DOMENIU` / `ORBIRE`).
   Amândouă RED-probate.
+
+- **`core/test_constante_nesursate.py`** — extins de la 14 la **19 teste**, cu **calibrarea negativă**:
+  domeniul prinde orice modul care construiește un `Temei` · anti-vacuu că lărgirea chiar a adus module
+  · `BOTEZ_BASELINE` (coliziunile nume-de-nomenclator × nume-fiscal, numite) · anti-vacuu pe exceptare
+  · gaura de botez **probată sintetic**, fiindcă în producție clasa e azi goală. RED-probat cu o
+  mutație → 2 roșii.

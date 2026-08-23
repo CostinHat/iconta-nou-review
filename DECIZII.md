@@ -11271,3 +11271,36 @@ face. **Dar semnalul din spatele întrebării era corect și a deschis R23**: sc
 au **13 nume declarate și necitite** (câmpuri de `dataclass` și constante), iar `core/` + `main.py` au
 **90 de importuri nefolosite**. Lista e de **candidați**, nu de defecte — scanul e pe nume, deci nu vede
 citirile prin `getattr` (chiar `Nota.jurnal` apare „mort" în el) și nici pe cele din alt modul.
+
+## 23.08.2026 (a cincea tură) — calibrarea negativă mută cifra: 93 → 104
+
+**1. `scan_constante`, calibrat în direcția tăcută.** Cererea lui Costin: *„calibrează în ambele
+direcții — dar mai ales negativ: dacă instrumentul vede mai puțin decât crede, clichetul păzește un
+prag fals."* Gardul avea deja patru calibrări; **toate pozitive**. Măsurat, două găuri, amândouă numite
+de docstringul scanului și niciuna testată: **domeniul** (79 din 289 de module) și **botezul** (un nume
+de nomenclator scoate valoarea din țintă).
+
+**2. Cifra s-a mișcat, și consecința e cea anticipată.** Clasa C: **93 → 104**; A: 48 → 60; E: 33 → 37.
+Cele 11 noi sunt în module care **citează legea** și erau invizibile. **Se mișcă și interdicția 1**,
+unde 93 era un termen al confruntării — iar **descompunerea veche (131 = A+C+E−43) nu se mai poate
+reface**, fiindcă termenii ar veni de pe două domenii diferite. A o reface ar fi exact greșeala de la
+interdicția 52 (*162 fără amprentă*, două domenii scăzute unul din altul).
+
+**3. Ce NU s-a făcut, deliberat: nu s-a schimbat regula de clasificare.** `NF` peste `NOM` ar fi mutat
+15 clasificări **corecte** (coduri de categorie) în clasa C. Gaura de botez e reală, dar **azi goală**;
+alegerea a fost s-o fac **vizibilă**, nu s-o „repar" umflând clichetul cu false pozitive.
+
+**4. A patra poziție de triaj descrisă fără să fie deschis modulul.** Rândul spunea *„gardă cu ZERO
+calibrare pozitivă, 2 teste"*; gardul avea **14 teste și patru calibrări**, de trei zile. Aceeași clasă
+ca la Cartea mare, Registrul-inventar și „totul e calculat".
+
+**5. Pragul 2 al triajului e GOL.**
+
+**6. Răspuns la întrebarea despre `F401`.** Nu e dezactivat de nimeni — **n-a fost niciodată selectat**.
+`ruff.toml` (adăugat 18.08.2026, `b88b13d`) poartă motivul scris: poarta a fost pornită **deliberat
+minimal**, doar pe familia „undefined" (F821/F822/F823) = bug-uri de **crash** care scapă de pytest;
+*„F401 (unused import ~115) / F811 (~11) / F841 rămân pentru un cleanup viitor — prea zgomotoase ca să
+fie poartă blocantă pe cod existent."* Cifra a scăzut între timp de la ~115 la **90**, fără niciun
+clichet — deci curățenia s-a întâmplat incidental. Tiparul propriu al proiectului pentru „prea zgomotos
+ca poartă" e **clichetul per fișier**; F401 la 90 ar intra direct, și e chiar una dintre variantele
+scrise în condiția de deblocare a lui R23.
