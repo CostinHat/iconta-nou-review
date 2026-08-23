@@ -30,7 +30,7 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **FAZA 2 — TEMEIURILE, în lucru.** Măsurate pe 23.08: **53** (34/34 valorile își au citatul), **49** (0 din 53 fără dată de verificare), **52** (0 modificate din 177 de perechi — **dar 162 din 339 de acte n-au amprentă**, deci PARȚIAL), **54** (0 expirate; pragul de 6 luni **există** și rulează lunar, contrar presupunerii planului), **55** (**53 din 53 fără categorie de reverificare — câmpul nu există**; pragul global unic o înlocuiește prost). Rămân: **50** și **59** (vigoarea pe articol la sursă — cea mai mare ca volum), **58**, **60** (cea mai valoroasă), **61** (trivial: zero). Iar **51, 56, 57, 62** sunt declarate de plan nemăsurabile retroactiv.
+- **pasul curent**: **FAZA 2 — TEMEIURILE, în lucru.** Măsurate pe 23.08: **53**, **49**, **52** (PARȚIAL — 162 din 339 de acte fără amprentă), **54** (pragul **există**, contrar presupunerii planului), **55** (**câmpul de categorie nu există**), **61** (PARȚIAL — **16 din 17**, iar *trivial: zero* din plan **e falsificat de reparația R17 din aceeași zi**; unealta e construită acum). Rămân: **50** și **59** (vigoarea pe articol la sursă), **58**, **60** (cea mai valoroasă). **51, 56, 57, 62** sunt nemăsurabile retroactiv, prin declarația planului.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
@@ -2149,13 +2149,13 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 61 — Un articol din corpus fără lista dependenților, generabilă la cerere
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: PARȚIAL
+- **măsurat la**: 2026-08-23
+- **pe commit**: `60c2370`
+- **cifra**: **16 din 17.** Atâtea articole distincte citează temeiurile din registrul de cote, și pentru 16 dintre ele lista dependenților **se poate genera** (al 17-lea citează o cotă pe care nicio funcție n-o atinge prin `cota()`). **Cifra e un plafon superior pe un domeniu mic**: 17 articole, față de **339 de acte** pe disc și **53** de obiecte `Temei` în cod
+- **instanțe**: **Planul spunea: se măsoară trivial azi, zero, legătura inversă nu există deloc. Nu mai e adevărat, și e consecința directă a reparației din aceeași zi:** R17 a făcut ca `depinde_de(cotă)` să vadă **83** de consumatori ai salariului minim în loc de 12, iar compunerea `articol → cote care-l citează → funcții care depind de ele` a devenit fiabilă. **Pe graful conflat, unealta ar fi dat răspunsuri scurte cu încredere — mai rău decât să lipsească.** Construită acum: `core/dependenti_act.py`, gardată de `core/test_dependenti_act.py` (6 teste). **Închide și o trimitere la ceva inexistent:** `TESTE.md` §282–287 descria `clustere_indirect(act)` la forma prezentului, ca interogare disponibilă, fără să existe nicăieri — semnalat azi ca regula D. Asta e implementarea ei, la nivel de funcții
+- **calibrare**: cazul cunoscut a fost **găsit**, de două ori și pe acte diferite: **art. 291 CF** (cotele de TVA, schimbat prin Legea 227/2015 originar și Legea 141/2025 la zi) → 4 cote, **183 de funcții**, mai multe fișiere; **OUG 89/2025** → facilitatea salariului minim, 66 de funcții. Ambele pinate cu **cifre**, nu cu forme, fiindcă modul de eșec al uneltei e **tăcerea**: dacă una dintre cele două hărți se golește, răspunsul devine: nimic nu depinde de articolul ăsta — exact răspunsul greșit pe care nimeni nu-l verifică. Gardat și celălalt mod de eșec, potrivirea prea largă: un articol inexistent dă mulțimea vidă, iar un apel fără niciun câmp **ridică**, fiindcă un răspuns cu tot codebase-ul ar părea foarte util
+- **ce nu vede**: vede doar articolele care apar într-un `Temei` **din registrul de cote**. Un articol citat prin `Temei` fără `url` (**16 din 53**) sau doar în proză nu e acolo. · Vede dependența doar prin `cota()` — un literal scris de mână ocolește graful, limită moștenită de la `graf_temei` și declarată acolo. · Lista e a **funcțiilor**, nu a testelor sau a ecranelor: răspunde la *ce cod calculează altfel*, nu la *ce trebuie retestat*. **Starea rămâne PARȚIAL** tocmai fiindcă domeniul e registrul de cote, nu corpusul
 - **unde ajunge efectul**: întrebarea „ce depinde de OPANAF 394/2017?" nu are răspuns decât prin căutare, adică prin noroc. Cele nouă locuri au fost găsite abia când cineva a căutat anume
 
 ## 62 — O modificare de articol aplicată fără parcurgerea listei dependenților
