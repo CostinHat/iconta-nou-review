@@ -30,7 +30,7 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **FAZA 4 — INSTRUMENTELE, în lucru.** Pașii 1–3 măsurați pe 23.08 (pasul 1 corectat în aceeași tură). Cifre: **5 din 16 instrumente n-au nicio gardă** · **doar 4 din 12 au calibrare NEGATIVĂ** · vid posibil **175 din 730 care culeg** · proza: **0 instanțe dovedite, dar pe 29% acoperire**, cu 14 gărzi expuse la clasă. Rămân: mutația reproductibilă, și despicarea lui «odată cu fixul» în înainte/după.
+- **pasul curent**: **FAZA 4 — INSTRUMENTELE, în lucru.** Pașii 1–4 măsurați pe 23.08. Cifre: **5 din 16 instrumente n-au nicio gardă** · **doar 4 din 12 au calibrare NEGATIVĂ** · vid posibil **175 din 730 care culeg** · proza **0 instanțe dovedite, pe 29% acoperire** · scrise după fix **18 din 376 (4,8%)**, deci testul de falsificare al planului **nu se confirmă**. Rămâne un singur pas: **mutația care probează garda e reproductibilă azi**.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
@@ -1302,6 +1302,54 @@ vede", iar cât se vede e scris.
 (`ACOPERIRE_BASELINE = 12`, ridicat la 13 azi prin măsurătoare). Clasa se închide când clichetul urcă
 suficient încât *ambiguu* + *nerezolvat* să scadă sub o cifră declarată — nu când „PROZA" rămâne zero,
 fiindcă zero pe 29% acoperire nu e o afirmație despre restul.
+
+### Pasul 4 — scrisă înainte, odată cu, sau după fix (axa D, despicată)
+
+**Planul își pune singur testul de falsificare aici:** *„dacă majoritatea gărzilor sunt scrise după fix
+și totuși prind regresii reale, atunci regula «gardă înainte de reparație» e mai slabă decât credem."*
+Ca să se poată răspunde, cifra brută a instrumentului — **327 „odată cu fixul" / 49 „singură"** — nu
+ajunge: `scan_garzi` își declară singur limita în docstring, *„singură (înainte, SAU pe cod existent)"*.
+Amândouă categoriile ascund câte două lucruri.
+
+**Despicat 23.08.2026** (definiții și parametri declarați mai jos):
+
+| categorie | cifra | ce înseamnă |
+|---|---|---|
+| „odată cu fixul", commit de **REPARAȚIE** | **67** | garda a venit **împreună** cu reparația — regula e respectată |
+| „odată cu fixul", commit de **ADUCERE** | **260** | garda a venit împreună cu **cod nou** — regula nici nu se aplică |
+| „singură", **după** o reparație a subiectului (≤14 zile) | **18** | **singura categorie suspectă** |
+| „singură", fără reparație recentă a subiectului | 13 | gardă pe cod existent |
+| „singură", fără modul `core` identificabil | 18 | subiectul nu se poate stabili din importuri |
+
+**Răspunsul la testul planului: NU se confirmă.** Candidate la *„scrisă după fix"*: **18 din 376 —
+4,8%**. Majoritatea nu e scrisă după fix, deci ipoteza care ar fi slăbit regula nu ține.
+
+**Dar cifra spune altceva, mai interesant, și n-o trec sub tăcere: 260 din 327 de gărzi au venit cu o
+funcționalitate NOUĂ, nu cu o reparație.** Adică modul dominant al populației de gărzi **nu e** „gardă
+care apără un fix" — doar **98 din 376** (67 + 18 + 13) au vreo legătură cu o reparație. Regula *„gardă
+înainte de reparație"* guvernează **un sfert** din gărzi; restul de trei sferturi sunt acoperire venită
+odată cu codul. **Nu e un defect** — dar înseamnă că regula nu poate fi judecată după populația totală,
+iar cifra „378 de gărzi" nu e o măsură a disciplinei de reparație.
+
+**Cele 18 suspecte, câteva pe nume:** `test_audit_campuri_oficiale` (după reparația limitei ANAF de 75
+de caractere în `d100`) · `test_cai_fisiere_date` (după corectarea unui claim pe `d406`) ·
+`test_izolare_structurala` și `test_izolare_incrucisata` (amândouă după un fix pe `auth_api`) ·
+`test_d394` (după CORECȚIA #91 pe `common`). Ele **nu sunt greșite** — sunt gărzile care ar fi trebuit
+să existe înainte.
+
+**Ce NU măsoară asta, declarat de trei ori fiindcă e ușor de citit greșit:**
+1. **Nu există în date legătura „garda X păzește fixul Y".** Se măsoară proximitatea în timp și
+   subiectul prin importuri — indiciu, nu identitate.
+2. **„Reparație" e un proxy pe mesajul de commit** (`repar`, `fix`, `corect`, `neconformitate`, `bug`,
+   `greșit`). Un fix cu mesaj neutru nu se vede.
+3. **Fereastra de 14 zile e o alegere**, nu o constantă a lumii. La 7 zile cifra scade, la 30 crește.
+   E scrisă ca să poată fi contrazisă.
+
+**Și jumătatea a doua a întrebării din plan rămâne nemăsurată:** *„și totuși prind regresii reale"*.
+Dacă o gardă a prins vreodată ceva **nu se poate afla din git** — un test roșu nu lasă urmă în istoric,
+doar reparația care i-a urmat, iar aceea nu-l citează. Am verificat deja pe cele 7 gărzi ale grafului:
+în 22 de zile, **niciun commit în care să fi picat și să fi cauzat o reparație**. Ca să se poată
+răspunde în general, ar trebui ca poarta să **consemneze** ce test a picat — ceea ce azi nu face.
 
 ### Ce urmează în faza 4
 
