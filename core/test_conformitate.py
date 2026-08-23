@@ -214,6 +214,19 @@ ANTET_CAMPURI = ("etapa", "pasul curent", "criteriul de terminare", "ce lipseșt
 
 CAP_ANTET = "## ANTET DE ETAPĂ"
 
+# `pasul curent` PLAFONAT (23.08.2026, decizia lui Costin). De doua ori in doua zile antetul a ramas
+# in urma corpului, si de fiecare data pe partea NUMARABILA. Regula scrisa in registru: daca o
+# propozitie se poate confrunta cu o cifra, nu e a antetului - e a derivatorului. Plafonul e gardul
+# care NU citeste proza si totusi o disciplineaza: nu judeca ce scrie, face imposibila acumularea.
+LIMITA_PAS_CURENT = 300
+
+# `felul limitei` pe PARTIAL (23.08.2026). PARTIAL acoperea DOUA lucruri diferite: o regiune cunoscuta
+# lasata afara (DOMENIU) si un instrument fara calibrare pe propriul mod de esec (ORBIRE). Al doilea e
+# mai grav. NU e o stare noua - cele patru stari descriu ce s-a intamplat cu MASURATOAREA, iar orbirea
+# e o proprietate a INSTRUMENTULUI. Motivul pentru care nu ajunge sa fie scris in proza sectiunii:
+# proza nu se numara, si tocmai de asta nu s-a vazut ca sunt doua populatii.
+FELURI_LIMITA = ("DOMENIU", "ORBIRE")
+
 
 def _antet(t=None):
     """Blocul dintre capul de antet și primul separator `---`. None dacă antetul lipsește."""
@@ -671,3 +684,48 @@ def test_antetul_nu_spune_niciuna_cand_corpul_are_o_decizie():
     assert not (spune_niciuna is False and cereri == 0), (
         "antetul anunță o decizie deschisă, dar corpul n-are niciun marcaj «**Decizie cerută.**» — "
         "atunci decizia nu se poate găsi de cine citește registrul")
+
+
+def test_pasul_curent_nu_devine_naratiune():
+    """Plafon MECANIC pe `pasul curent`. Nu citește proza: numără caractere.
+
+    CE FACE IMPOSIBIL: ca antetul să acumuleze o narațiune care repetă cifre derivabile și
+    îmbătrânește. CE NU FACE: nu verifică dacă ce scrie e adevărat — plafonul e o limită de formă.
+    """
+    text = io.open(CONF, encoding="utf-8").read()
+    corp = text.split(CAP_ANTET, 1)[-1]
+    linie = ""
+    for l in corp.splitlines():
+        if l.startswith("- **pasul curent**:"):
+            linie = l
+            break
+    assert linie, "antetul n-are câmpul «pasul curent» — plafonul ar trece pe zero rânduri"
+    val = linie.split(":", 1)[1].strip()
+    assert val, "«pasul curent» e gol"
+    assert len(val) <= LIMITA_PAS_CURENT, (
+        "«pasul curent» are %d caractere, plafonul e %d. Regula: dacă o propoziție se poate "
+        "confrunta cu o cifră, nu e a antetului — e a derivatorului (scripts/raport_b.py). "
+        "Mută-o în secțiunea ei." % (len(val), LIMITA_PAS_CURENT))
+
+
+def test_partialele_declara_FELUL_limitei(conf):
+    """O stare PARȚIAL spune că măsurătoarea nu e completă; nu spune DE CE. Cele două motive au
+    consecințe diferite: o regiune cunoscută lăsată afară se poate acoperi cu efort (DOMENIU), un
+    instrument necalibrat pe propriul mod de eșec nu știe nici măcar ce ratează (ORBIRE).
+
+    CE FACE IMPOSIBIL: ca cele două să rămână amestecate sub aceeași etichetă, unde nu se pot
+    număra. CE NU FACE: nu judecă dacă felul ales e cel potrivit — aia e o citire de om.
+    """
+    rele, vazute = [], 0
+    for n, (_titlu, corp) in sorted(conf.items()):
+        if "PARȚIAL" not in (_camp(corp, "stare") or ""):
+            continue
+        vazute += 1
+        brut = (_camp(corp, "felul limitei") or "").strip("* ")
+        val = brut.split("—")[0].split("-")[0].strip()
+        if val not in FELURI_LIMITA:
+            rele.append("  #%d: `felul limitei` = %r — cele două sunt: %s"
+                        % (n, val or "(lipsă)", ", ".join(FELURI_LIMITA)))
+    assert vazute, "nicio secțiune PARȚIAL — garda ar raporta verde pe zero rânduri"
+    assert not rele, "PARȚIAL fără felul limitei declarat:\n" + "\n".join(rele)
+

@@ -16,6 +16,7 @@ ARBITRU: structura cu mai multe `<Journal>` a fost trecută prin validatorul ofi
 (DUKIntegrator, D406, reguli 2026.1) pe tenant_013/2026-08 — **valid, zero erori**.
 """
 import inspect
+import io
 import re
 from datetime import date
 from decimal import Decimal
@@ -65,8 +66,8 @@ def test_valorile_incap_in_tipurile_SCHEMEI():
     """Limitele sunt ale schemei ANAF, citite din `anaf_surse/d406_schema_anaf.xlsx`:
     GL.5 JournalID = SAFshorttextType (18) · GL.6 Description = SAFlongtextType (256) ·
     GL.7 Type = SAFcodeType (9). O denumire prea lungă e respinsă de ANAF, nu de noi."""
-    toate = list(d406._JURNALE.values()) + [d406._JURNAL_DIVERSE]
-    assert toate, "nomenclatorul de jurnale e gol — gardul ar trece pe zero rânduri"
+    toate = [d406.jurnal_din_sursa(s) for s in list(d406._JURNALE) + ["ceva_nemapat"]]
+    assert len(toate) > 1, "nomenclatorul de jurnale e gol — gardul ar trece pe zero rânduri"
     for jid, desc, tip in toate:
         assert 0 < len(jid) <= 18, "JournalID %r depășește SAFshorttextType (18)" % jid
         assert 0 < len(desc) <= 256, "Description pentru %s depășește SAFlongtextType (256)" % jid
@@ -120,3 +121,44 @@ def test_pull_chiar_citeste_sursa_si_genereaza_chiar_avertizeaza():
     sg = inspect.getsource(d406.genereaza)
     assert "surse_necunoscute" in sg and "avertismente" in sg, \
         "o sursă nemapată ar deveni DIVERSE în tăcere — exact defaultul tacit interzis"
+
+
+# ──────────────────────────────── FELURILE sunt ale NORMEI, nu ale noastre (interdicția 28)
+_CORPUS = "/home/costin/iconta_nou/anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt"
+
+
+def test_felurile_de_jurnal_sunt_VERBATIM_din_norma():
+    """`Description` nu e o denumire inventată de noi: e felul de operațiuni numit de OMFP 2634/2015,
+    Anexa 1 pct. 52. Gardul nu citește proză — caută textul LITERAL în corpus. O reformulare, oricât
+    de nevinovată, îl face roșu; asta e chiar clasa interdicției 28."""
+    corpus = io.open(_CORPUS, encoding="utf-8").read()
+    assert d406._FELURI, "nomenclatorul felurilor e gol"
+    lipsa = [f for f in d406._FELURI.values() if f not in corpus]
+    assert not lipsa, "feluri care NU se regăsesc verbatim în corpus: %r" % lipsa
+
+
+def test_gardul_verbatim_chiar_ar_prinde_o_reformulare():
+    """ANTI-VACUU: dacă textul de căutat ar fi gol sau corpusul lipsă, testul de mai sus ar trece
+    degeaba. Se probează pe o reformulare plauzibilă, care NU e în act."""
+    corpus = io.open(_CORPUS, encoding="utf-8").read()
+    assert len(corpus) > 10000, "corpusul normei e gol sau trunchiat — gardul de mai sus e vid"
+    assert "operațiuni de casă și de bancă" not in corpus, "reformularea de probă e totuși în act — alege alta"
+
+def test_fiecare_jurnal_emis_arata_un_fel_al_normei():
+    """Legătura dintre cele două: orice JournalID pe care îl putem emite duce la un fel din
+    nomenclator, nu la un text liber."""
+    feluri = set(d406._FELURI.values())
+    for s in list(d406._JURNALE) + [None, "necunoscut"]:
+        _jid, desc, _tip = d406.jurnal_din_sursa(s)
+        assert desc in feluri, "sursa %r produce o descriere din afara nomenclatorului: %r" % (s, desc)
+
+
+def test_temeiul_felurilor_e_citabil_si_dateaza():
+    """Nomenclatorul poartă temeiul, nu doar textul — altfel la o modificare a normei nu se poate
+    face grep după locurile care o citează (rolul lui `Temei`)."""
+    tm = d406.TEMEI_JURNALE
+    assert tm.tip == "OMFP" and tm.nr == 2634 and tm.an == 2015
+    assert "52" in str(tm.art), "temeiul nu numește punctul din anexă: %r" % tm.art
+    assert tm.nivel_sursa == "MO"
+    assert tm.verificat_la is not None, "temei fără dată de confirmare"
+

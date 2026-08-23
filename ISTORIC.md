@@ -4965,3 +4965,18 @@ validatorul **oficial ANAF** (DUKIntegrator D406, reguli 2026.1): `valid`, zero 
 
 **Ce vede contabilul dacă o sursă nu e mapată:** un avertisment care numește nota și valoarea, nu o
 încadrare tăcută în `DIVERSE`.
+
+## 23.08.2026 (2) — descrierea jurnalului din D406 e acum textul normei, nu al nostru
+
+**Ce s-a schimbat pentru firmă.** `<Description>` de lângă fiecare `<JournalID>` nu mai poartă o
+formulare scrisă de noi („Jurnal de casă"), ci **felul de operațiuni numit de OMFP 2634/2015, Anexa 1
+pct. 52**, verbatim: *„operațiuni de casă și bancă"*, *„situația încasării-achitării facturilor"*,
+*„operațiuni privind salariile și contribuția pentru asigurări sociale, protecția socială a șomerilor
+și asigurările de sănătate"*, *„alte operațiuni"*.
+
+**De ce contează.** La un control, descrierea jurnalului e citită ca încadrare, nu ca etichetă. O
+formulare proprie, oricât de apropiată, e o încadrare făcută de noi în locul contabilului.
+
+**Ce NU s-a schimbat:** identificatorii (`CASA`, `BANCA`, `FACTURI`, `SALARII`, `AMORTIZARE`,
+`DIVERSE`), gruparea notelor, cifrele și ordinea. Identificatorul rămâne decizia noastră — schema îl
+lasă text liber — iar felul e al normei.

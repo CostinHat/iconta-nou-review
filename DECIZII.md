@@ -11235,3 +11235,39 @@ același obiect, înainte de a fi scrisă.* Cerut de Costin, pe instanța *„va
 legături"* aflate la 900 de rânduri una de alta. **Și a doua instanță, în aceeași zi: corectarea mea a
 fost ea însăși măsurată cu `grep 'Temei('`**, care nu vede aliasul `_Tm(` din `d101` — concluzia a
 rezistat (2 din 57, niciuna pe o casetă), instrumentul nu.
+
+## 23.08.2026 (a patra tură) — cele trei „da", și două corectări venite din întrebări
+
+**1. Plafon de 300 de caractere pe `pasul curent`, cu regula scrisă.** Costin: *„E gardul care nu
+citește proză și totuși o disciplinează."* Regula, în registru: **dacă o propoziție se poate confrunta
+cu o cifră, nu e a antetului** — e a derivatorului. Antetul avea **2.784** de caractere; are acum sub
+300. Ce s-a pierdut: narațiunea. Ce nu se pierde: intenția, singurul lucru nederivabil.
+
+**2. `felul limitei` pe PARȚIAL: `DOMENIU` / `ORBIRE`.** Nu o stare — cele patru stări descriu ce s-a
+întâmplat cu **măsurătoarea**, iar orbirea e o proprietate a **instrumentului**. Și nu e destul ca
+motivul să fie scris în secțiune: era scris în toate 14, și tocmai de asta nu se vedea că sunt două
+populații — **proza nu se numără**. **Cifra, cerută explicit: 7 ORBIRE / 7 DOMENIU.**
+
+*Bănuiala mea — „cele opt transferate sunt ORBIRE" — se confirmă în direcție, nu în tărie:* dintre cele
+opt transferate ieri, **6 sunt ORBIRE** (9, 10, 11, 13, 14, 34) și **2 sunt DOMENIU** (20, 26, care au
+calibrare găsită și regiune numită). Dintre cele **șase** PARȚIAL mai vechi, doar **una** e ORBIRE (15).
+Deci transferul retrospectiv a adus în registru, aproape în bloc, populația cea gravă — ceea ce e chiar
+argumentul pentru care câmpul trebuia să existe.
+
+**3. R19 — închisă MECANIC, nu prin cele 79 de decizii.** Întrebarea *„cine o completează"* a fost pusă
+înainte de a începe, cum ai cerut, iar răspunsul măsurat a scos o a treia variantă, pe care condiția de
+deblocare n-o numea: **o funcție partajată nu primește un alt proprietar — nu primește niciunul.**
+Coloana de proprietar declarat **nu mai e necesară**: 154 → 84 funcții deținute, 960 → 111 muchii, 0
+muchii pe funcții multi-proprietar, 321 → 3 cicluri.
+
+**4. Corectare — felurile de jurnal sunt ale NORMEI.** Le declarasem decizie de produs; Anexa 1 pct. 45
+și 52 le numește, deci sunt nomenclator oficial, iar literalul e **interdicția 28**. Refăcut cu textele
+verbatim + `Temei`, gardat prin căutare **literală în corpus**. Rămân ale noastre, declarat:
+identificatorii, splitul CASA/BANCA (norma le grupează) și `AMORTIZARE` la „alte operațiuni".
+
+**5. `import datetime as _dt` din `d100.py` — scos acum, nu în restanță.** Un import provabil
+nereferit e o ștergere de o linie cu risc zero; a-l trimite în restanță ar fi costat mai mult decât
+face. **Dar semnalul din spatele întrebării era corect și a deschis R23**: scanat AST, cele nouă module
+au **13 nume declarate și necitite** (câmpuri de `dataclass` și constante), iar `core/` + `main.py` au
+**90 de importuri nefolosite**. Lista e de **candidați**, nu de defecte — scanul e pe nume, deci nu vede
+citirile prin `getattr` (chiar `Nota.jurnal` apare „mort" în el) și nici pe cele din alt modul.

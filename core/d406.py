@@ -38,7 +38,7 @@ Separare strictă: construcție pură / validare / XML / DB / orchestrare.
 """
 import re
 from core import common as c
-from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM  # limite text SAF-T din XSD (03.08.2026)
+from core.common import text_anaf as _t, LIMITE_TEXT_ANAF as _LIM, Temei as _Tm  # limite text SAF-T din XSD (03.08.2026)
 from core.identitate import valideaza_cui as _vcui, valideaza_cif as _vcif  # T1/E3 (CATALOG_INVALIDITATE.md): checksum CUI/CNP + tip 03 CNP pre-DUK, sursa canonica read-only (LEAF, fara db)
 from dataclasses import dataclass, field
 from datetime import date, timedelta
@@ -382,30 +382,66 @@ class LinieNota:
 # FELURILE de jurnal auxiliar sunt numite de norma insasi, Anexa 1 pct. 45: "operatiunile de casa
 # si banca, decontarile cu furnizorii, situatia incasarii-achitarii facturilor, operatiuni privind
 # salariile si contributia pentru asigurari sociale".
-_JURNALE = {
-    "casa":       ("CASA",       "Jurnal de casă", "GL"),
-    "banca":      ("BANCA",      "Jurnal de bancă", "GL"),
-    "facturi":    ("FACTURI",    "Situația încasării-achitării facturilor", "GL"),
-    "salarii":    ("SALARII",    "Jurnal privind salariile și contribuțiile", "GL"),
-    "amortizare": ("AMORTIZARE", "Jurnal de amortizări", "GL"),
+# FELURILE de jurnal auxiliar sunt ALE NORMEI, nu ale noastre - altfel ar fi o denumire de
+# nomenclator oficial scrisa ca literal (interdictia 28). Textele de mai jos sunt VERBATIM din
+# OMFP 2634/2015, Anexa 1, pct. 52 ("Entitatile pot utiliza jurnale auxiliare pe feluri de
+# operatiuni, cum sunt: ..."), aceleasi feluri fiind numite pe scurt si la pct. 45. Lista e
+# ILUSTRATIVA ("cum sunt"), nu inchisa: un fel in plus e permis, dar felurile NUMITE se iau de
+# acolo, nu se reformuleaza. Gardat: `test_d406_jurnal_origine` cere ca fiecare text sa se
+# regaseasca LITERAL in corpus.
+TEMEI_JURNALE = _Tm("OMFP", 2634, 2015, art="Anexa 1 pct. 52", nivel_sursa="MO",
+                    de_cine="Code", verificat_la="2026-08-23",
+                    url="anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt",
+                    text_citat="Entitățile pot utiliza jurnale auxiliare pe feluri de operațiuni, "
+                               "cum sunt: operațiuni de casă și bancă, operațiuni privind "
+                               "decontările cu furnizorii, situația încasării-achitării facturilor, "
+                               "operațiuni privind salariile și contribuția pentru asigurări "
+                               "sociale, protecția socială a șomerilor și asigurările de sănătate, "
+                               "alte operațiuni")
+_FELURI = {
+    "casa_banca": "operațiuni de casă și bancă",
+    "furnizori":  "operațiuni privind decontările cu furnizorii",
+    "facturi":    "situația încasării-achitării facturilor",
+    "salarii":    "operațiuni privind salariile și contribuția pentru asigurări sociale, "
+                  "protecția socială a șomerilor și asigurările de sănătate",
+    "alte":       "alte operațiuni",
 }
+# MAPAREA `inregistrari.sursa` -> (JournalID, fel). `JournalID` e text liber in schema
+# (SAFshorttextType, 18) si e DECIZIE DE PRODUS; FELUL, care ajunge in <Description>, e AL NORMEI.
+# Doua abateri de la lista normei, declarate aici fiindca sunt ale noastre:
+#   1. CASA si BANCA sunt DOUA identificatoare pentru UN SINGUR fel ("operatiuni de casa si banca").
+#      Norma le grupeaza; aplicatia le tine in registre distincte, iar un jurnal mai fin e mai
+#      informativ, nu mai putin conform - lista fiind ilustrativa.
+#   2. AMORTIZARE nu e un fel numit de norma: intra la "alte operatiuni".
+_JURNALE = {
+    "casa":       ("CASA",       "casa_banca"),
+    "banca":      ("BANCA",      "casa_banca"),
+    "facturi":    ("FACTURI",    "facturi"),
+    "salarii":    ("SALARII",    "salarii"),
+    "amortizare": ("AMORTIZARE", "alte"),
+}
+# `furnizori` sta in nomenclator FARA mapare: niciun `inregistrari.sursa` nu-l produce azi.
+# Se scrie asa, nu se sterge - nomenclatorul e complet, maparea e partiala, si diferenta se vede.
 # O nota fara jurnal auxiliar declarat NU primeste un jurnal inventat: intra in jurnalul de
 # operatiuni diverse, care e o notiune reala (Nota de contabilitate, cod 14-6-2/A, Anexa 1 pct. 52
 # - "pentru operatiunile care nu au la baza documente justificative se intocmeste Nota de
 # contabilitate"). Default DECLARAT, nu tacit: cate note au intrat asa dintr-o sursa NECUNOSCUTA
 # se spune in avertisment, cu valoarea numita (acelasi tipar ca UM necunoscute, [B17]).
-_JURNAL_DIVERSE = ("DIVERSE", "Jurnal de operațiuni diverse (note contabile)", "GL")
-_ANTET_JURNAL = dict([(v[0], (v[1], v[2])) for v in _JURNALE.values()]
-                     + [(_JURNAL_DIVERSE[0], (_JURNAL_DIVERSE[1], _JURNAL_DIVERSE[2]))])
+_JURNAL_DIVERSE = ("DIVERSE", "alte")
+_ANTET_JURNAL = dict([(v[0], v[1]) for v in _JURNALE.values()] + [_JURNAL_DIVERSE])
+TIP_JURNAL = "GL"   # GL.7 Type, SAFcodeType(9): mecanismul de grupare; unul singur, nu se inventeaza
 
 
 def jurnal_din_sursa(sursa):
-    """`inregistrari.sursa` -> (JournalID, Description, Type). Necunoscut sau NULL -> DIVERSE."""
-    return _JURNALE.get((sursa or "").strip().lower(), _JURNAL_DIVERSE)
+    """`inregistrari.sursa` -> (JournalID, Description, Type). Necunoscut sau NULL -> DIVERSE.
+    Description e FELUL, verbatim din norma; JournalID e al nostru."""
+    jid, fel = _JURNALE.get((sursa or "").strip().lower(), _JURNAL_DIVERSE)
+    return jid, _FELURI[fel], TIP_JURNAL
 
 
 def _antet_jurnal(jid):
-    return _ANTET_JURNAL.get(jid, (_JURNAL_DIVERSE[1], _JURNAL_DIVERSE[2]))
+    """(Description, Type) pentru un JournalID emis."""
+    return _FELURI[_ANTET_JURNAL.get(jid, _JURNAL_DIVERSE[1])], TIP_JURNAL
 
 
 @dataclass
@@ -877,8 +913,8 @@ def _gl_entries(res):
     # interiorul unui jurnal ordinea notelor ramane cea din `pull` (ORDER BY i.id), deci
     # gruparea nu rescrie ordinea tranzactiilor.
     _jact = None
-    for n in sorted(res.note, key=lambda x: (getattr(x, "jurnal", "") or _JURNAL_DIVERSE[0])):
-        _jid = getattr(n, "jurnal", "") or _JURNAL_DIVERSE[0]
+    for n in sorted(res.note, key=lambda x: (x.jurnal or _JURNAL_DIVERSE[0])):
+        _jid = n.jurnal or _JURNAL_DIVERSE[0]
         if _jid != _jact:
             if _jact is not None:
                 G.append('    </Journal>')

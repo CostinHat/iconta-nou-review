@@ -4181,3 +4181,42 @@ cel care verifică *un `<Journal>` per origine, cu tranzacțiile care nu se ames
 trece sursa prin mapare → testul **anti-vacuu** roșu, cel care citește sursa lui `pull`/`genereaza` cu
 `inspect.getsource`. **Arbitru extern**: structura cu patru jurnale a trecut validatorul **oficial ANAF**
 (DUKIntegrator, D406, reguli 2026.1) pe `tenant_013`/2026-08 — `valid`, zero erori.
+
+**O funcție partajată între clustere nu e proprietatea niciunuia** (`core/agenda.py`
+`proprietari_unici`, `core/test_graf_clustere_proprietar.py`, 23.08.2026). **R19, închisă mecanic.**
+Filtrul vechi era `if f in own: continue` — excludea partajarea **cu sine**, nu partajarea **între
+alții**. Regula nouă nu mută proprietatea, o **ridică**: partajata nu primește alt proprietar, ci
+niciunul. Măsurat: funcții deținute **154 → 84**, muchii **960 → 111**, muchii pe funcții
+multi-proprietar **0**, cicluri **321 → 3**.
+
+**Anti-vacuu, pe inventarul real**: garda cere să existe **cel puțin 10 funcții partajate** de exclus
+— fără ele ar raporta verde despre o lume pe care n-o vede. **Clichet în ambele direcții** pe 111
+muchii: nu poate crește tăcut (regula slăbită) și nu poate ajunge la zero (un graf vid n-ar ordona
+nimic — R18). **RED-proof 1 mutație / 5 teste roșii din 6.**
+
+---
+
+**Felurile de jurnal din D406 sunt VERBATIM din normă, nu denumiri proprii** (`core/d406.py`
+`_FELURI` + `TEMEI_JURNALE`, 23.08.2026). Corectare la întrebarea lui Costin: le pusesem ca decizie de
+produs, dar **Anexa 1 pct. 45 și 52 le numesc** — deci partea aceea e nomenclator oficial, iar
+scrierea lui ca literal e **interdicția 28**. Gardul **nu citește proză**: caută fiecare fel **literal
+în corpus** (`anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt`). O reformulare îl face roșu.
+Anti-vacuu propriu: corpusul trebuie să fie nenul, iar o reformulare de probă trebuie să LIPSEASCĂ din
+act. Ce rămâne al nostru — `JournalID`, splitul CASA/BANCA, AMORTIZARE la „alte operațiuni" — e scris
+ca decizie de produs, lângă temei.
+
+---
+
+**Antetul nu mai poate acumula narațiune** (`core/test_conformitate.py`
+`test_pasul_curent_nu_devine_naratiune`, 23.08.2026). Plafon **mecanic de 300 de caractere** pe
+`pasul curent`. Gardul **nu citește proza** — numără caractere; nu judecă ce scrie, face imposibilă
+acumularea. Motivul e măsurat: în două zile antetul a rămas în urma corpului de **două ori**, de
+fiecare dată pe partea **numărabilă**. Regula scrisă în registru: *dacă o propoziție se poate confrunta
+cu o cifră, nu e a antetului — e a derivatorului.* RED-probat: `pasul curent` umflat la 400 de
+caractere → roșu.
+
+**Și `felul limitei` pe PARȚIAL** (`test_partialele_declara_FELUL_limitei`). PARȚIAL acoperea două
+lucruri cu consecințe diferite: **DOMENIU** (regiune cunoscută lăsată afară) și **ORBIRE** (instrument
+fără calibrare pe propriul mod de eșec). Nu e o stare nouă — cele patru stări descriu ce s-a întâmplat
+cu MĂSURĂTOAREA, orbirea e o proprietate a INSTRUMENTULUI. **Cifra, acum derivabilă: 7 ORBIRE / 7
+DOMENIU** din 14. RED-probat: o secțiune PARȚIAL fără câmp → roșu.

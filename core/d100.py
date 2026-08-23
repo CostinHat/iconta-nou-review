@@ -35,7 +35,6 @@ from core.common import text_anaf as _t, cheie_manual, LIMITE_TEXT_ANAF as _LIM 
 from core.identitate import valideaza_cui  # T1 (CATALOG_INVALIDITATE.md): sursa CANONICA checksum CUI, import READ-ONLY (LEAF, fara db)
 from dataclasses import dataclass, field
 from decimal import Decimal, ROUND_HALF_UP
-import datetime as _dt
 
 NS = "mfp:anaf:dgti:d100:declaratie:v2"
 

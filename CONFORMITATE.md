@@ -29,8 +29,18 @@ poată răspunde fără să citească rapoarte vechi. Gardat de `core/test_confo
 date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra ultimului commit care a
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
+**Ce are voie să stea aici, și de ce e plafonat.** `pasul curent` e limitat **mecanic la 300 de
+caractere**. Motivul e măsurat, nu estetic: în două zile, antetul a rămas în urma corpului de **două
+ori**, și de fiecare dată pe partea **numărabilă** — o coloană de cifre depășită, un transfer scris la
+viitor după ce fusese făcut, un avertisment despre un contor care se schimbase. Regula, scrisă:
+**dacă o propoziție se poate confrunta cu o cifră, nu e a antetului** — e a derivatorului
+(`scripts/raport_b.py`), care o recalculează la fiecare raport. Aici rămâne doar ce nu se derivă din
+nimic: **de ce pasul curent e pasul curent**. Plafonul nu citește proza și nu judecă ce scrie în ea;
+face doar imposibilă acumularea unei narațiuni care să îmbătrânească. *(Decizia lui Costin, 23.08.2026,
+după a doua oară: „e gardul care nu citește proză și totuși o disciplinează".)*
+
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **FAZA 2 — TEMEIURILE: încheiată.** Toate interdicțiile măsurabile sunt măsurate, iar **50 e acum MĂSURATĂ, nu PARȚIAL**: **16 din 16** perechi act-articol au confirmarea **ulterioară** ultimei modificări, **zero instanțe**, iar fiecare valoare e confirmată **verbatim** în textul articolului ei. Blocajul Codului fiscal s-a dizolvat: actul **nu e servit ca pagină unică** de portal, dar e **deja în corpus, amprentat** — `vigoare_articol.py` a primit mod de fișier local și vede **2,5 milioane de caractere, 1.849 de articole**. **52 e și ea închisă** (23.08, `7663e87`), dar nu prin amprentarea a tot ce mișcă: cifra *162 fără amprentă* era ea însăși greșită — scădea două domenii diferite (real 170) — iar amprentarea mecanică ar fi umflat acoperirea fără s-o crească, fiindcă **151** sunt text derivat din fișiere deja amprentate și **7** sunt note scrise de noi. Domeniul e acum complet — **348 din 348 clasificate** — prin declarație de proveniență, nu prin hash-uri. Rămâne **61** (domeniu mic) ca PARȚIAL. **TRIAJUL E PORNIT** (23.08, decizia lui Costin): pragul 2 s-a golit pe trei sferturi într-o zi — rămân `R19` și `scan_constante`, amândouă din familia *instrument fără calibrare pe propriul mod de eșec* (interdicția 76). Pragul 3 începe cu **cele trei artefacte obligatorii prin lege** — Cartea mare, Registrul-inventar, registrul de evidență fiscală. Din cele trei poziții care cereau decizie, **două s-au închis pe 23.08**: **categoriile lui 55** (axa, fereastra de **3 ani**, coloana `INFORMATIV` cu cifre proprii, **6 · 12 · 18**) și **R14**, care nu mai e decizie de nomenclator ci **migrare, la reparații**; **R18 rămâne deschisă prin decizie**, până există date care generează clustere. **Triajul a produs și o corectare a lui însuși**: pozițiile se atribuiseră după *numele* funcțiilor, nu după ce produc — **patru artefacte reclasificate, în ambele direcții** — **Transferul retrospectiv 3a e FĂCUT** (23.08, înaintea continuării triajului): din cele douăsprezece, **1 MĂSURATĂ · 8 PARȚIAL · 3 rămân NEÎNCEPUTE** — deci NEÎNCEPUTELE scad de la 50 la **41**, iar triajul nu mai ordonează pe poziții necunoscute. **Poziția 2 a triajului, verificată**: *„totul e calculat"* e adevărat pe jumătate — temeiul pe ecran și desfacerea unei poziții sunt **construcție**, nu predare, deci ordinea *L5 înaintea lui L3* se îngustează la cele două intrări care chiar sunt predare. Restanțe: **R21** (forma de înregistrare) **s-a închis în ziua în care s-a deschis** — Fișa de cont înlocuiește Cartea mare în ambele forme; în locul ei, **R22**: jurnalul de origine pleacă la ANAF ca literalul `GENERAL`.
+- **pasul curent**: **triajul, în ordinea lui** — pragul 1 golit, pragul 2 în lucru. De ce acum: ordinea fazei 5 nu se poate stabili peste poziții nemăsurate. Ce s-a măsurat și ce s-a decis stă în secțiuni.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
@@ -185,11 +195,13 @@ nu produce o cifră greșită, un blocaj sau o afirmație falsă la un contabil 
 | **R2** — vigoarea pe punct | instrumentul lipsea | **REZOLVAT** 23.08 (`c7bcddb`) |
 | **datoria 31.07 — `verificator_conformitate` fără nicio gardă** | analizorul lui nu e testat pe fixturi known-good / known-bad | **REZOLVAT** 23.08 (`139bca5`), după **23 de zile** |
 | **R20** — opt artefacte de un octet în corpus | o derivare care a produs gol și n-a spus-o | **REZOLVAT** 23.08 (`9510c94`), prin decizie: șterse |
-| **R19** — `graf_clustere` tratează utilitarele partajate ca proprietate | filtrul exclude partajarea **cu sine**, nu **între alții** | **deschis — următorul la rând** |
+| **R19** — `graf_clustere` tratează utilitarele partajate ca proprietate | filtrul exclude partajarea **cu sine**, nu **între alții** | **REZOLVAT** 23.08 — mecanic, nu prin decizie |
 | **`scan_constante` — gardă cu ZERO calibrare pozitivă** | 2 teste, niciunul nu pinează un caz concret | **deschis** |
 
-**Pragul 2 s-a golit pe trei sferturi într-o zi.** Rămân două, amândouă din aceeași familie — *un
-instrument pe care stau măsurători, fără calibrare pe propriul mod de eșec* (**interdicția 76**).
+**Pragul 2 s-a golit pe trei sferturi într-o zi**, iar la reluarea triajului a mai căzut una: R19,
+**mecanic** — o funcție partajată nu primește alt proprietar, ci niciunul. **Rămâne una singură:
+`scan_constante`**, din familia *instrument pe care stau măsurători, fără calibrare pe propriul mod de
+eșec* (**interdicția 76**).
 `scan_constante` e cel mai expus dintre cele două: ține clichetul de 93 de constante nesursate în
 producție, deci o gaură în el ar coborî o cifră fără ca nimic să se schimbe.
 
@@ -651,7 +663,8 @@ gardă; e un prag de citit, la un moment numit.
 - **cine deblochează**: INTERN
 - **unde intră**: E3 · faza 4 (instrumentele) · interdicțiile 61–62 (lista dependenților)
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
+- **rezolvată pe commit**: `f189b81`
 - **deschisă pe commit**: `241acf4`
 - **ce blochează**: al **doilea** defect al aceluiași instrument, distinct de R17 și nereparat de el. `graf_clustere` declară că o funcție e „deținută" de clusterul ale cărui teste o cheamă. Propriul docstring spune *„funcție partajată = CO-LOCAȚIE, nu dependență"*, dar filtrul aplicat e doar `if f in own: continue` — adică exclude partajarea **cu sine**, nu partajarea **între alții**. Un utilitar chemat de testele a cinci clustere e „deținut" de toate cinci, iar orice al șaselea cluster care îl atinge tranzitiv capătă **cinci muchii de dependență**.
 
@@ -660,7 +673,11 @@ gardă; e un prag de citit, la un moment numit.
   **Efectul asupra cifrelor:** cu regula de azi, harta are **960 de muchii** între clustere. Cerând ca dovada să fie o funcție cu **proprietar unic**, rămân **111**. Adică **aproape 9 din 10 muchii sunt co-locație, nu dependență** — de acolo vin absurdități ca *„facilitate salariu minim depinde de «edge canonic www/HEAD (crawler)»"*.
 - **condiția de deblocare**: proprietatea se decide altfel decât „testul o cheamă" — fie funcția aparține modulului pe care clusterul îl verifică, fie proprietarul se declară explicit în inventar. Se închide când numărul de muchii sprijinite pe funcții multi-proprietar e **zero**, iar cifra de 111 se re-măsoară — nu se moștenește cea de 960.
 - **MĂSURAT 23.08.2026, la reluarea triajului: PRIMA VARIANTĂ NU E CALCULABILĂ AZI.** *„Funcția aparține modulului pe care clusterul îl verifică"* presupune că inventarul știe **ce modul** verifică un cluster. Nu știe: coloana `fisiere` poartă **fișierul de TEST**, nu modulul-sursă. Cifrele: **79 de clustere · 35 de fișiere de test distincte · 95 de perechi (cluster, fișier)**; doar **19** fișiere aparțin unui singur cluster, iar `test_salarizare.py` e împărțit de **8** clustere, `test_d300.py` / `test_d394.py` / `test_d406.py` de câte **7**. Probat mecanic: construind proprietatea din modul, pe cheile grafului (`fisier.py::functie`), rezultă **0 funcții cu proprietar** — potrivirea nu se poate face, fiindcă numele din inventar e al testului.
-- **Deci varianta (a) ar muta ambiguitatea, n-ar rezolva-o**: opt clustere care împart `test_salarizare.py` ar deveni opt proprietari ai lui `salarizare.py` — exact co-locația de azi, urcată un nivel. **Rămâne varianta (b)**, și e o construcție, nu un fix: o coloană de **proprietar declarat** pe cele 79 de rânduri ale inventarului, plus decizia cine o completează. *Restanța nu se închide în tura asta, și nu se pretinde că e aproape: e la fel de deschisă, dar acum se știe pe ce.*
+- **Deci varianta (a) ar muta ambiguitatea, n-ar rezolva-o**: opt clustere care împart `test_salarizare.py` ar deveni opt proprietari ai lui `salarizare.py` — exact co-locația de azi, urcată un nivel.
+- **REZOLVATĂ 23.08.2026 — și nu prin niciuna dintre cele două variante scrise.** Întrebarea lui Costin — *„dacă e o decizie per cluster, sunt 79 de decizii și e a mea; dacă se poate deriva din ce verifică testul, e mecanic"* — a fost pusă **înainte** de a începe, și răspunsul măsurat e **mecanic**. A treia variantă, pe care condiția de deblocare n-o numea: **o funcție partajată nu primește un ALT proprietar — nu primește NICIUNUL.** Faptul că testele a două clustere o cheamă nu e o dovadă că vreunul o deține; e chiar definiția co-locației din docstringul instrumentului.
+- **Cifrele, măsurate pe graful reparat:** funcții deținute **154 → 84** (cele **70** partajate ies din proprietate) · muchii **960 → 111** · clustere cu cel puțin o dependență **54 → 46** · **muchii sprijinite pe funcții multi-proprietar: 0** — chiar criteriul scris de închidere. **Nu s-a moștenit cifra de 960**, s-a re-măsurat. Bonus nesolicitat, dar semnificativ: **ciclurile scad de la 321 la 3** — o sortare topologică peste 321 de cicluri nu ordona nimic.
+- **Ce rămâne, și se scrie:** cele **3 cicluri** rămase sunt în familia salarizării (*facilitate salariu minim* ↔ *deducere personală* ↔ *concedii medicale*) și par dependențe reciproce reale, nu artefacte ale regulii. Nu s-au atins.
+- **Gardă**: `core/test_graf_clustere_proprietar.py`, **6 teste** — calibrare în ambele direcții pe caz sintetic, anti-vacuu pe inventarul real (*dacă nu există funcții partajate, gardul ar trece pe zero rânduri*) și **clichet pe 111 muchii**, care nu poate crește tăcut și nici coborî la zero (un graf vid n-ar ordona nimic — vezi R18). RED-probat: proprietatea readusă la *„toți cei care cheamă"* → **5 teste din 6 roșii**.
 
 ---
 
@@ -715,7 +732,22 @@ gardă; e un prag de citit, la un moment numit.
 - **CÂTE D406 DEPUSE POARTĂ `GENERAL`: zero, și motivul contează.** `public.declaratii_depuse` are **17 rânduri D406**, toate cu `sursa='migrare'` și **`xml` gol** — sunt depuneri de istoric importate, nu declarații generate de aplicație. Deci constanta **nu a plecat încă la ANAF prin aplicație**; defectul era pe calea de generare, viu pentru orice D406 generat de azi înainte. *Se scrie explicit, fiindcă „zero depuse afectate" și „defectul nu exista" sunt două lucruri diferite.*
 - **REPARAȚIA**: `core/d406.py` — nomenclator `_JURNALE` (casa · banca · facturi · salarii · amortizare), cu felurile de jurnal auxiliar **numite de normă** (Anexa 1 pct. 45); `pull` citește `i.sursa`; `_gl_entries` emite **un `<Journal>` per jurnal de origine**, cu sortare **stabilă** (ordinea notelor în interiorul unui jurnal rămâne cea din `ORDER BY i.id`). O notă fără sursă intră în **`DIVERSE`** — Nota de contabilitate, cod 14-6-2/A, Anexa 1 pct. 52 — iar o sursă **nemapată** nu devine `DIVERSE` în tăcere: se numește în avertisment, cu nota și valoarea (tiparul `[B17]` de la UM necunoscute).
 - **PROBAT PE DATE REALE ȘI LA ARBITRU**: `tenant_013`, 2026-08, 13 note din 4 surse → **`AMORTIZARE`, `BANCA`, `CASA`, `DIVERSE`**, zero `GENERAL`. Trecut prin **validatorul oficial ANAF** (DUKIntegrator, D406, reguli 2026.1): **`stare = valid`, zero erori** — deci structura cu mai multe jurnale nu e o presupunere.
-- **GARDĂ**: `core/test_d406_jurnal_origine.py`, **14 teste**, RED-probat cu **2 mutații / 2 roșii** (constanta se întoarce → 3 teste roșii; `pull` nu mai trece sursa prin mapare → testul anti-vacuu roșu). Include limitele schemei (18/256/9) și anti-vacuu pe cablare, citit din sursa lui `pull`/`genereaza`.
+- **CORECTARE 23.08, la întrebarea lui Costin: denumirile NU erau decizie de produs pe de-a-ntregul.** Le pusesem pe toate cinci ca alegere a noastră. **Anexa 1 pct. 45 și 52 numesc felurile** de jurnal auxiliar — deci partea aceea e **nomenclator oficial**, iar scrierea lui ca literal e chiar **interdicția 28**. Refăcut: `_FELURI` poartă textele **verbatim** din pct. 52 (*„operațiuni de casă și bancă" · „operațiuni privind decontările cu furnizorii" · „situația încasării-achitării facturilor" · „operațiuni privind salariile și contribuția pentru asigurări sociale, protecția socială a șomerilor și asigurările de sănătate" · „alte operațiuni"*), cu `TEMEI_JURNALE` (`Temei` structurat, `nivel_sursa=MO`) lângă ele; `<Description>` ia felul din nomenclator, iar `JournalID` rămâne al nostru (text liber în schemă). **Gardat mecanic**: un test caută fiecare fel **literal în corpus** — o reformulare, oricât de nevinovată, îl face roșu.
+- **Cele două abateri de la lista normei, declarate ca fiind ale noastre:** (1) `CASA` și `BANCA` sunt **două identificatoare pentru un singur fel** — norma le grupează („operațiuni de casă și bancă"), aplicația le ține în registre distincte, iar lista fiind *ilustrativă* („cum sunt"), un jurnal mai fin e mai informativ, nu mai puțin conform; (2) `AMORTIZARE` **nu e un fel numit de normă** — intră la „alte operațiuni". Iar `furnizori` stă în nomenclator **fără mapare**: niciun `inregistrari.sursa` nu-l produce azi. Nomenclatorul e complet, maparea e parțială, și diferența se vede.
+- **GARDĂ**: `core/test_d406_jurnal_origine.py`, **18 teste**, RED-probat cu **2 mutații / 2 roșii** (constanta se întoarce → 3 teste roșii; `pull` nu mai trece sursa prin mapare → testul anti-vacuu roșu). Include limitele schemei (18/256/9) și anti-vacuu pe cablare, citit din sursa lui `pull`/`genereaza`.
+
+### R23 — Urme de intenție: nume declarate pe care nu le citește nimeni
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · faza 4 (instrumentele) · vecin cu interdicția 16 (proza care descrie codul poate fi falsă)
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `f189b81`
+- **ce blochează**: întrebarea lui Costin, 23.08.2026: *„un import mort nu e defect, dar e semnal — la fel ca `jurnal: str = «GENERAL»`, care a stat trei săptămâni ca urmă a unei intenții. Merită verificat ce mai era început acolo."* **Scanat, AST, pe cele nouă module de declarație** — nume declarate la nivel de modul sau de `dataclass` pe care nimic din modul nu le citește: `d205` — `Beneficiar.categ`, `Beneficiar.castig1`, `Beneficiar.pierdere1` · `d300` — `REGULI`, `_LIVRARE_RAND`, `_ACHIZ_RAND` · `d301`, `d390` — `REGULI` · `d406` — `REGULI`, `MISCARI_STOC`, `MOVEMENT_IMPLICIT`, `TAB_VALORI`, `Partener.adresa`, `Factura.partener_nume`. **Separat, importuri nefolosite (ruff F401) în `core/` + `main.py`: 90.**
+
+  **Ce NU spune scanul, și de asta e restanță, nu constatare.** Scanul e **pe nume**, deci moștenește exact limitele clasei pe care o urmărim: (a) nu vede citirile prin `getattr(obj, "nume")` — chiar `Nota.jurnal` apare „mort" în el, deși e citit de la reparația R22 încoace; (b) nu vede citirile **din alt modul** (`REGULI` e o convenție de marcaj, citită în `facturi.py` prin `MODUL`/`REGULI`, deci probabil legitimă peste tot). **Deci lista de mai sus e o listă de CANDIDAȚI, nu de defecte** — iar a o trata ca listă de defecte ar fi a treia instanță a aceleiași greșeli într-o zi.
+- **condiția de deblocare**: fiecare candidat verificat **individual**, la sursă, cu întrebarea *„a fost început ceva aici și s-a oprit, sau e o convenție citită din altă parte?"*, iar rezultatul scris pe două coloane — **convenție** (rămâne, cu motivul) sau **urmă de intenție** (se duce la capăt sau se scoate). Pentru cele 90 de importuri: fie clichet per fișier pe `F401` în poartă (tiparul deja folosit la mesajele cu nume interne), fie o decizie că nu merită. Se închide când niciun nume din cele nouă module nu e „declarat și necitit" fără o explicație scrisă lângă el. *Precedentul care justifică restanța: `jurnal: str = "GENERAL"` a stat de la prima zi a modulului ca urmă a unei intenții, iar reparația de prag 1 din R22 a aterizat exact acolo.*
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
@@ -1822,6 +1854,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 9 — O afirmație fără domeniu sau fără surse
 
 - **stare**: PARȚIAL
+- **felul limitei**: ORBIRE — scanul recunoaște afirmațiile după **tipar sintactic**, iar tiparele pe care nu le recunoaște nu lasă urmă — nu se poate spune ce ratează
 - **măsurat la**: 2026-08-23
 - **pe commit**: `936aeb3`
 - **cifra**: **80 de afirmații găsite, din care 4 tipate.** În domeniul interdicției — clasele `A_verdict` și `C_import` — **14 netipate, în 10 fișiere** (`raportari_ai.py` 3 · `articole_import_api.py` 2 · `main.py` 2 · alte șapte cu câte una)
@@ -1833,6 +1866,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 10 — Un verdict favorabil care coexistă cu necunoscut nedeclarat
 
 - **stare**: PARȚIAL
+- **felul limitei**: ORBIRE — măsoară **precondiția** (verdictul e obiect), nu interdicția; un verdict tipat care tace despre necunoscut n-ar fi văzut de nimic
 - **măsurat la**: 2026-08-23
 - **pe commit**: `936aeb3`
 - **cifra**: **9 afirmații de clasa `A_verdict` netipate**, din cele 80 găsite — un verdict netipat nu poate purta câmpul «ce n-a fost verificat», deci coexistența cu necunoscutul nu se poate nici declara, nici verifica
@@ -1844,6 +1878,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 11 — Un verificator care importă modulul verificat
 
 - **stare**: PARȚIAL
+- **felul limitei**: ORBIRE — nu s-a probat că un `test_non_tautologie` ar deveni roșu dacă a doua cale ar începe să importe prima — deci nu se știe dacă gardul ar prinde chiar defectul lui
 - **măsurat la**: 2026-08-23
 - **pe commit**: `936aeb3`
 - **cifra**: **9 din 9** module de reconciliere («a doua cale») au fiecare câte un `test_non_tautologie_*`: d100, d101, d112, d205, d300, d301, d390, d394, d406
@@ -1867,6 +1902,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 13 — Un refuz cu nume interne sau fără diacritice
 
 - **stare**: PARȚIAL
+- **felul limitei**: ORBIRE — semnalul e `snake_case`; un nume intern **fără underscore** (`codO`, `denO`) e invizibil, și nimic nu măsoară cât de des apare forma asta
 - **măsurat la**: 2026-08-23
 - **pe commit**: `936aeb3`
 - **cifra**: **274 de mesaje în 31 de fișiere** expun nume interne de câmp, sub clichet **per-fișier** (`core/test_mesaje_generare_fara_camp_intern.py`, `_BASELINE`). Niciun fișier nu poate crește; un fișier nou intră cu 0. `d301` e deja pe 0, reparat
@@ -1878,6 +1914,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 14 — Un parametru cu valoare implicită într-o funcție de calcul fiscal
 
 - **stare**: PARȚIAL
+- **felul limitei**: ORBIRE — numără **forma** (`=None` în semnătură), nu **efectul**; nu există instrument care să spună câți apelanți chiar omit parametrul
 - **măsurat la**: 2026-08-23
 - **pe commit**: `936aeb3`
 - **cifra**: **129 de definiții de funcție** cu cel puțin un parametru `=None` în modulele fiscale (`core/d1xx`–`d4xx`, `salarizare.py`, `motor.py`, `common.py`)
@@ -1889,6 +1926,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 15 — Reguli diferite la previzualizare față de salvare
 
 - **stare**: PARȚIAL
+- **felul limitei**: ORBIRE — nu există scan al clasei — cele trei instanțe au venit din audituri de tenant, deci a patra ar fi invizibilă până la următorul audit
 - **măsurat la**: 2026-08-22
 - **pe commit**: `1eaecbb`
 - **cifra**: **3 instanțe cunoscute, toate REPARATE** — găsite incidental, la audituri de tenant, nu de un instrument. **Cifra e un plafon inferior**, nu un total: nu s-a rulat niciun scan al clasei.
@@ -1950,6 +1988,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 20 — O declarație de perimetru devenită neadevărată
 
 - **stare**: PARȚIAL
+- **felul limitei**: DOMENIU — regiunea lăsată afară e **numită**: compută din `MODEL_AUDIT_TENANT.md`, deci vede perimetrul declarat, nu lumea. Gardul are caz de calibrare găsit
 - **măsurat la**: 2026-08-23
 - **pe commit**: `936aeb3`
 - **cifra**: **4 fațete din 9** sunt declarate neacoperite — §5 calculat = **{F3, F4, F5, F7}**, computat din `MODEL_AUDIT_TENANT.md` de `core/test_perimetru_calculat.py`, nu scris de mână
@@ -1961,6 +2000,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 21 — O interpretare care apare ca și cum ar fi text de lege
 
 - **stare**: PARȚIAL
+- **felul limitei**: DOMENIU — regiunea e numită: **alegerile care nu iau forma unei comparații** (codificări, ordine de aplicare, rotunjiri). Calibrare găsită, cu caz negativ neraportat
 - **măsurat la**: 2026-08-22
 - **pe commit**: `ffbcb74`
 - **cifra**: **15** candidate (egalități stricte pe o valoare de registru), din care **2 confirmate** la citire pe context. Raport: 56 de inegalități pe aceleași valori, care de regulă sunt chiar textul legii („nu depășește").
@@ -1985,6 +2025,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 23 — Un dezacord cu arbitrul, stins prin aliniere fără decizie
 
 - **stare**: PARȚIAL
+- **felul limitei**: DOMENIU — regiunea e numită și declarată în docstringul gardului: **alinierea tăcută**, care nu lasă amprentă textuală. Ambele colțuri ale gardului sunt exercitate
 - **măsurat la**: 2026-08-22
 - **pe commit**: `ffbcb74`
 - **cifra**: **0** instanțe curente. Gardat de `core/test_cale_a_doua.py` din 20.08, care trece.
@@ -2019,6 +2060,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 26 — O decizie luată comparând sau clasificând text
 
 - **stare**: PARȚIAL
+- **felul limitei**: DOMENIU — regiunea e numită: închide clasa **NECLASIFICAT**, nu clasa *greșit clasificat*. Are aserțiune anti-orbire proprie (cel puțin 10 comparații văzute)
 - **măsurat la**: 2026-08-23
 - **pe commit**: `936aeb3`
 - **cifra**: **13 comparații neclasificate** pe valori de registru, sub clichet în ambele direcții (`core/test_comparatii_clasificate.py`, `BASELINE_NECLASIFICATE`) — nu poate crește, și nu poate scădea fără să cobori clichetul conștient
@@ -2087,6 +2129,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 32 — O poziție de declarație care nu se poate desface până la document
 
 - **stare**: PARȚIAL
+- **felul limitei**: DOMENIU — regiunea e numită: nu urmărește lanțul de la înregistrare spre poziția din declarație. Calibrare găsită, pozitiv și negativ
 - **măsurat la**: 2026-08-22
 - **pe commit**: `cbf7b67`
 - **cifra**: **19 din 33 de note contabile** nu au nicio legătură către documentul care le justifică. Măsurat **un nivel mai jos decât spune interdicția** — pe înregistrare, nu pe poziția din declarație — fiindcă acolo se rupe lanțul întâi: o poziție nu se poate desface până la document dacă nici înregistrarea din spatele ei nu poate. **Cifra e un plafon inferior**: nu s-a măsurat câte poziții de declarație sunt afectate, ci câte note nu pot fi desfăcute.
@@ -2109,6 +2152,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 34 — Modificarea unei înregistrări dintr-o perioadă închisă
 
 - **stare**: PARȚIAL
+- **felul limitei**: ORBIRE — numără **chemările porții**, nu scrierile; nu s-a numărat câte căi de scriere există, deci nu se știe câte o ocolesc
 - **măsurat la**: 2026-08-23
 - **pe commit**: `936aeb3`
 - **cifra**: poarta perioadei închise (`perioade_blocate` / `PERIOADA_BLOCATA`) e chemată din **4 module de producție**: `core/perioada.py`, `core/common.py`, `core/control_incrucisat.py`, `main.py`
@@ -2456,6 +2500,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 58 — O sursă de nivel inferior care contrazice una superioară, fără decizie
 
 - **stare**: PARȚIAL
+- **felul limitei**: DOMENIU — regiunea e numită: contradicția **se citește, nu se deduce** — scanul dă candidați, verdictul e al omului. Calibrare găsită
 - **măsurat la**: 2026-08-23
 - **pe commit**: `8477b17`
 - **cifra**: **0 conflicte nedecise dintre cele CUNOSCUTE — plafon inferior**, fiindcă instrumentul vede doar conflictele deja recunoscute (vezi «ce nu vede»); și — măsurat separat, 23.08 — **29 de locuri unde s-a putut alege**, dintre care unul singur e consemnat ca decizie. Măsurat pe trei domenii: **(a) registrul de cote** — toate **34** de intrări la nivel **MO**, deci nicio sursă inferioară care să contrazică; **(b) registrul de interpretări** — **2** intrări, ambele decise, `deschise()` gol; **(c) codul** — **29 de blocuri** în **20 de fișiere** unde o citare legală și o autoritate de nivel inferior (structura ANAF, validatorul, XSD, jar) apar împreună
@@ -2500,6 +2545,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 61 — Un articol din corpus fără lista dependenților, generabilă la cerere
 
 - **stare**: PARȚIAL
+- **felul limitei**: DOMENIU — regiunea e numită: vede doar articolele care apar într-un `Temei` **din registrul de cote**. Calibrare găsită de două ori, pe acte diferite
 - **măsurat la**: 2026-08-23
 - **pe commit**: `60c2370`
 - **cifra**: **16 din 17.** Atâtea articole distincte citează temeiurile din registrul de cote, și pentru 16 dintre ele lista dependenților **se poate genera** (al 17-lea citează o cotă pe care nicio funcție n-o atinge prin `cota()`). **Cifra e un plafon superior pe un domeniu mic**: 17 articole, față de **339 de acte** pe disc și **53** de obiecte `Temei` în cod

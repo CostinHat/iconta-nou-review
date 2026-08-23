@@ -1902,3 +1902,16 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   jurnale · ordinea notelor în interiorul unui jurnal rămâne cea din `pull` · **anti-vacuu pe cablare**:
   `pull` chiar citește `i.sursa` și `genereaza` chiar avertizează, citit din sursă. RED-probat cu 2
   mutații. Probat și la arbitrul oficial (DUK D406, `valid`).
+
+- **`core/test_graf_clustere_proprietar.py` (23.08.2026)** — 6 teste: calibrare în ambele direcții pe
+  caz sintetic (partajata pierde proprietarul, cea proprie îl păstrează) · o partajată nu primește ALT
+  proprietar · anti-vacuu pe inventarul real (≥10 funcții partajate de exclus) · nicio funcție
+  multi-proprietar nu supraviețuiește · clichet 111 muchii, în ambele direcții. RED-probat cu 1
+  mutație → 5 roșii.
+- **`core/test_d406_jurnal_origine.py`** — extins la **18 teste**: felurile de jurnal se caută
+  **literal în corpus**, cu anti-vacuu propriu (corpus nenul + o reformulare de probă care trebuie să
+  lipsească din act) · fiecare `JournalID` emis duce la un fel din nomenclator · temeiul e citabil și
+  datează.
+- **`core/test_conformitate.py`** — două gărzi noi: plafon de **300 de caractere** pe `pasul curent`
+  (gard care nu citește proză) și `felul limitei` obligatoriu pe PARȚIAL (`DOMENIU` / `ORBIRE`).
+  Amândouă RED-probate.

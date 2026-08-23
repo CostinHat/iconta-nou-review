@@ -274,16 +274,10 @@ def cota_valori(src, nume):
     return "<ABSENT>"
 
 
-def graf_clustere():
-    """{cluster: set(clustere de care depinde)}. Edge A->B: o functie a lui A (testele -> functii-sursa ->
-    inchidere pe graf_temei) atinge o functie DETINUTA de B (verificata de testele lui B), fara ca A s-o
-    detina (functie partajata = CO-LOCATIE, nu dependenta). Cele mai multe clustere = radacini (structura/
-    declaratii ce depind doar de cote de baza). LIMITA (V2): vede doar prin cota()/apeluri; un literal ascuns
-    ramane invizibil."""
-    from core import graf_temei as _gt
-    graf = _gt.construieste_graf()
+def functii_per_cluster(graf, rows):
+    """{cluster: set(functii-sursa atinse de testele lui)}. Extras din `graf_clustere` ca gardul
+    proprietatii (`test_graf_clustere_proprietar`) sa masoare ACEEASI multime, nu una paralela."""
     cunoscute = set(graf)
-    rows = stare_sesiune_a()["rows"]
     cf = {}
     for r in rows:
         s = set()
@@ -292,6 +286,40 @@ def graf_clustere():
             for tf in r["functie"]:
                 s |= _functii_apelate_de_test(rel, tf, cunoscute)
         cf[r["cluster"]] = s
+    return cf
+
+
+def proprietari_unici(cf):
+    """{functie: {cluster}} pastrand DOAR functiile cu proprietar UNIC (R19, 23.08.2026).
+
+    Docstringul lui `graf_clustere` spunea de la inceput "functie partajata = CO-LOCATIE, nu
+    dependenta", dar filtrul aplicat era `if f in own: continue` - adica excludea partajarea CU SINE,
+    nu partajarea INTRE ALTII. Un utilitar chemat de testele a cinci clustere era "detinut" de toate
+    cinci, iar orice al saselea cluster care il atingea tranzitiv capata cinci muchii.
+
+    MASURAT 23.08.2026: din 154 de functii detinute, 70 erau detinute de 2+ clustere
+    (`duk.py::valideaza` de 21). Cu regula asta raman 84 de functii cu proprietar, iar muchiile scad
+    de la 960 la 111 - adica noua din zece muchii erau co-locatie, nu dependenta.
+
+    O functie partajata NU primeste un alt proprietar: nu primeste NICIUNUL. Faptul ca testele a doua
+    clustere o cheama nu e o dovada ca vreunul dintre ele o detine."""
+    owner = {}
+    for cl, fns in cf.items():
+        for f in fns:
+            owner.setdefault(f, set()).add(cl)
+    return dict((f, v) for f, v in owner.items() if len(v) == 1)
+
+
+def graf_clustere():
+    """{cluster: set(clustere de care depinde)}. Edge A->B: o functie a lui A (testele -> functii-sursa ->
+    inchidere pe graf_temei) atinge o functie DETINUTA de B (verificata de testele lui B), fara ca A s-o
+    detina (functie partajata = CO-LOCATIE, nu dependenta). Cele mai multe clustere = radacini (structura/
+    declaratii ce depind doar de cote de baza). LIMITA (V2): vede doar prin cota()/apeluri; un literal ascuns
+    ramane invizibil."""
+    from core import graf_temei as _gt
+    graf = _gt.construieste_graf()
+    rows = stare_sesiune_a()["rows"]
+    cf = functii_per_cluster(graf, rows)
 
     def _clo(fns):
         seen, st = set(), list(fns)
@@ -303,10 +331,7 @@ def graf_clustere():
             st += list(graf[f]["apeleaza"])
         return seen
 
-    owner = {}
-    for cl, fns in cf.items():
-        for f in fns:
-            owner.setdefault(f, set()).add(cl)
+    owner = proprietari_unici(cf)
     edges = {}
     for r in rows:
         A = r["cluster"]
