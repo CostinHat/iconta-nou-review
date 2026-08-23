@@ -4433,3 +4433,15 @@ contra registrului, dar la o schimbare de cotă **cifra vine corectă și etiche
 **Și un fals pozitiv propriu, numit:** tiparul include `121` (suta mărită 21/121) și prinde codul de
 obligație `121`. Îl taie filtrul pe numărul de ghilimele — care **nu e o regulă fiscală, e o
 euristică**, și ar putea ascunde o formulă scrisă într-un șablon.
+
+**Domeniul unui gard e o afirmație, la fel ca cifra lui** (24.08.2026). `DEFAULT_FISCAL_TACIT` citește
+**Python**. Pe 23.08 a confirmat că cele 25 de valori implicite de cotă au dispărut din `core/` și
+`main.py`; pe 24.08 s-a văzut că aceeași valoare implicită era scrisă de **trei ori** în
+`static/js/ecrane/firme.js` și că **ea** era cea care rula. Gardul n-a greșit — n-a fost întrebat.
+**Un gard cu domeniul pe un singur limbaj raportează verde despre limbajul pe care nu-l vede**
+(`METODA` §17). Până când domeniul lui include `static/js/`, diferența e ținută de **R29**.
+
+**Și o aserțiune anti-derapaj pe instrumentele care citesc JS** (24.08.2026): scoaterea comentariilor
+și a șirurilor trebuie să **păstreze numărul de linii**. Prima rulare a calibrării pe nume neutre le
+colapsa, deci raporta numere de linie ale **altor** linii — un instrument care trimite omul la locul
+greșit. Acum sursa curățată se compară cu originalul, linie cu linie, înainte de orice măsurătoare.

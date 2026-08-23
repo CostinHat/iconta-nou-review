@@ -666,3 +666,23 @@ numele ăsta?" e o întrebare despre **sintaxă**; „ajunge valoarea la paramet
 **Ce NU acoperă:** nu spune cum se găsește locul potrivit — asta rămâne judecată, și e chiar §12
 (confruntarea cu registrul) plus §11 (ce produce, nu cum se numește). Spune doar că **ușurința
 măsurătorii nu e o dovadă că e cea potrivită**.
+
+## §17 — O CLASĂ GOLITĂ SE GOLEȘTE PE TOATE LIMBAJELE ÎN CARE POATE EXISTA
+
+**Instanța, 24.08.2026.** R26 a scos **25** de valori implicite de cotă TVA din Python, măsurate prin
+AST pe `core/` + `main.py`, și a încheiat cu *«zero căi vii ajung la vreun default»*. Adevărat —
+**despre Python**. Aceeași valoare implicită trăia în `firme.js`, scrisă de **trei** ori, iar aceea era
+cea care rula: ecranul completează `cota_tva: l.cota_tva || 21` **înainte** ca serverul s-o vadă, deci
+refuzul pe care serverul tocmai îl învățase nu se putea declanșa niciodată din ecranul acela.
+
+**Regula.** Când se declară golită o clasă de defect, se numesc **limbajele și straturile** în care
+clasa poate exista, nu doar cel în care s-a măsurat. Dacă măsurătoarea a acoperit unul singur,
+concluzia se scrie cu domeniul în ea — *«zero în Python»*, nu *«zero»*.
+
+**Și consecința pe gărzi.** Un gard cu domeniul pe un singur limbaj — `DEFAULT_FISCAL_TACIT` citește
+Python — **raportează verde despre limbajul pe care nu-l vede**. E aceeași formă cu *gardul care nu se
+verifică pe sine*: nu minte despre ce măsoară, minte prin **tăcerea** despre ce nu măsoară. Un gard nou
+își declară domeniul **în text**, iar dacă domeniul e mai îngust decât clasa, o restanță ține diferența.
+
+**Ce nu spune regula:** că orice gard trebuie să citească toate limbajele. Costul e real. Spune doar că
+**diferența dintre clasă și domeniu se scrie**, ca să nu fie citită drept zero.

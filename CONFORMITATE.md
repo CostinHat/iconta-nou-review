@@ -40,12 +40,12 @@ face doar imposibilă acumularea unei narațiuni care să îmbătrânească. *(D
 după a doua oară: „e gardul care nu citește proză și totuși o disciplinează".)*
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **triajul, în ordinea lui** — pragurile 1 și 2 golite, urmează pragul 3. De ce acum: ordinea fazei 5 nu se poate stabili peste poziții nemăsurate. Ce s-a măsurat și ce s-a decis stă în secțiuni.
+- **pasul curent**: **triajul, în ordinea lui** — pragul 3 e următorul, dar intră după **R29**: o cotă implicită scrisă în ecran anulează refuzul pe care serverul îl învățase. De ce ordinea asta: un prag 1 viu nu așteaptă o construcție de prag 3.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
-- **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
+- **decizii care blochează**: **una — R28, DESCHISĂ** din 24.08.2026: *ce trebuie să arate ecranul de angajare, dacă arată ceva*. Nu e o decizie de formă: ecranul arată azi **netul salariatului**, iar asta e una dintre variante, aleasă deliberat și scrisă în cod — deci întrebarea nu e «ce punem», ci «rămâne ce e, sau se adaugă costul angajatorului».
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
-- **ultima actualizare**: 2026-08-23
+- **ultima actualizare**: 2026-08-24
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
 
 ---
@@ -985,6 +985,32 @@ scos ce nu se știa**, nu din defecte noi.
 - **deschisă pe commit**: `bde0502`
 - **ce blochează**: `common.cote_neconfirmate(luni=6)` aplică un **prag global unic de 6 luni** tuturor valorilor — exact ce interdicția 55 numea drept defect, și exact ce **decizia de azi a înlocuit** cu un tabel de nouă căsuțe (`VOLATIL/MIȘCĂTOR/STABIL` × `DEPUS/CALCULAT/INFORMATIV`, de la 1 la 18 luni). Găsit la triajul celor 35 de defaults cu valoare, cerut de Costin: *„valoarea de acum e cea în vigoare, sau e una veche care a supraviețuit?"* — aici nu e nici una, nici alta: e o valoare pe care **propria noastră decizie a depășit-o acum câteva ore**. Raportul intern de cote neconfirmate spune deci, azi, altceva decât regula scrisă în registru.
 - **condiția de deblocare**: `cote_neconfirmate` citește pragul din **categoria valorii** (clasa A × clasa B din 55), nu dintr-un parametru global. Precondiție: categoriile trebuie **atribuite** valorilor — ceea ce interdicția 55 declară nemăsurat („câte articole cad în fiecare căsuță"). **Deci se închide după 55, nu înaintea ei** — dar se scrie acum, ca decizia de azi să nu rămână o regulă fără aplicare.
+
+### R28 — Ce trebuie să arate ecranul de angajare, dacă arată ceva
+
+- **felul**: ARTEFACT
+- **cine deblochează**: DECIZIE
+- **unde intră**: E5 · triaj · **PRAG 3** *(structură — nicio cifră greșită azi)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `e325f7c`
+- **ce blochează**: Costin a cerut *scoaterea* unei cifre afișate sub eticheta „Impozit estimat", cu motivul că **nu e impozit și nu e nimic numibil**. **Cifra aceea nu există.** Verificat pe tot depozitul: `impozit estimat` are **zero** potriviri în `static/` — singura apariție e `core/ong.py:52`, în **Python**, unde cheia `impozit_estimat` întoarce impozitul pe profit al excedentului economic al unui ONG (art. 15 alin. 3 CF). **Nu se afișează nicăieri** — vezi mai jos de ce. Ce **există** pe ecranul de salariu (`firme.js:1042`) e altceva: **„Net estimat: … lei"**.
+- **INTENȚIA, GĂSITĂ SCRISĂ — răspuns la întrebarea pusă.** Există comentariu, și e explicit, la trei rânduri deasupra (`firme.js:1026–1028`): *„consecința ÎNAINTE de buton (DS cap. 6): la un leu peste salariul minim se stinge facilitatea și netul SCADE. Calculul vine de la server (`salarizare.calcul_salariu`) — nicio regulă fiscală nu se rescrie aici."* Deci: **(a)** cifra e a serverului, nu a ecranului — nicio formulă în JS; **(b)** scopul nu e o estimare, e **o consecință arătată înainte de apăsarea butonului**, cu temei de design citat; **(c)** varianta implementată e, dintre cele trei propuse, exact **„netul salariatului"** — aleasă, nu nimerită.
+- **condiția de deblocare**: **Decizie cerută.** Rămâne deschisă fiindcă întrebarea e **bună chiar dacă premisa n-a fost**: azi ecranul arată netul (varianta 2), iar **costul total lunar pentru angajator** — ce interesează efectiv la angajare — **nu apare nicăieri**. Variantele: **(a)** rămâne netul singur, cu motivul scris; **(b)** se adaugă costul total al angajatorului lângă net, ca a doua consecință; **(c)** se înlocuiește netul cu costul total. Se închide când e scris **care** și **de ce**. *Nu se începe fără decizie: oricare dintre ele ar alege singură ce înseamnă ecranul — exact ce a cerut Costin să nu fac.*
+- **ȘI O CIFRĂ CARE CHIAR NU AJUNGE LA NIMENI, găsită pe drum.** `impozit_estimat` din `core/ong.py` **nu poate fi produsă din aplicație**: ecranul de operațiuni (`operatiuni_ecran.js:264`) oferă opțiunea *„Calcul scutire art. 15 CF"*, dar **formularul nu declară niciunul** dintre cele trei câmpuri de care are nevoie (`venituri_economice`, `venituri_neimpozabile`, `curs_eur`) — toate câmpurile condiționate sunt pe ramura *„Venit AFSP"*. Cererea pleacă fără ele, `main.py:9078` face `corp["venituri_economice"]`, iar `KeyError` e prins și întors ca **422 cu textul `venituri_economice`** — adică un **nume de câmp intern** afișat unui contabil, pe o opțiune care **nu poate reuși niciodată**. Prag 2, clasă de mesaj — consemnat aici fiindcă a ieșit din aceeași verificare, **nu reparat în tura asta**.
+
+### R29 — Cota de TVA ca valoare implicită în ECRAN, care anulează refuzul învățat de server
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · interdicțiile 1 și 14 · **PRAG 1** *(o cifră implicită ajunge în date salvate)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `e325f7c`
+- **ce blochează**: **R26 a scos 25 de valori implicite de cotă din Python și a declarat clasa golită. Aceeași valoare implicită trăiește în JavaScript, și ea e cea care rulează.** Ecranul de NIR o scrie de **trei ori**: `firme.js:1649` — o linie nouă pornește cu `cota_tva: 21`; `firme.js:1660` — lista de opțiuni e `[21, 11]`, scrisă literal, iar selecția implicită e `(l.cota_tva || 21)`; `firme.js:1738` — **în corpul trimis la server**: `cota_tva: l.cota_tva || 21`.
+- **de ce e prag 1, și nu latență.** `main.py:798` poartă comentariul deliberat *„None → potrivire automată / eroare la lipsă (**fără valoare implicită**)"*, iar R26 a încheiat cu constatarea că *„apelantul refuză orice linie de NIR fără `cota_tva` explicită"*. **Refuzul acela nu se poate declanșa niciodată din ecranul de NIR**, fiindcă ecranul completează valoarea **înainte** ca serverul s-o vadă. Serverul a fost învățat să întrebe; clientul răspunde în locul contabilului. Cifra ajunge în **date salvate** (cota pe linia de NIR → TVA neexigibilă, adaos, valoarea stocului), nu doar pe un ecran.
+- **și de ce măsurătoarea lui R26 era corectă și totuși incompletă**: a fost făcută prin **AST pe Python**. Domeniul a fost `core/` + `main.py`. Nu era greșită înăuntrul lui — era prea îngustă, iar concluzia *„zero căi vii ajung la vreun default"* a fost **adevărată despre Python și falsă despre aplicație**. Aceeași formă cu gardul `DEFAULT_FISCAL_TACIT`, care are și el domeniu Python: **un gard cu domeniul pe un singur limbaj raportează verde despre limbajul pe care nu-l vede.**
+- **condiția de deblocare**: cele trei literale scoase din ecran **și** un gard care are `static/js/` în domeniu — altfel a patra apariție intră mâine fără să se vadă. Lista `[21, 11]` cere o decizie separată de formă (cotele vin de la server, sau ecranul rămâne cu o listă care trebuie ținută la zi cu mâna), fiindcă azi **ambele valori sunt corecte** — 21% standard și 11% redusă, Legea 141/2025 — deci nu e o cifră greșită, e o listă care **va** îmbătrâni. Se închide când ecranul nu mai poartă niciun literal de cotă și gardul îl poate proba.
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
@@ -2035,8 +2061,8 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 4 — O regulă fiscală implementată în stratul de prezentare
 
 - **stare**: MĂSURATĂ
-- **măsurat la**: 2026-08-23
-- **pe commit**: `60a7b15`
+- **măsurat la**: 2026-08-24
+- **pe commit**: `e325f7c`
 - **cifra**: **3 locuri** în stratul de prezentare calculează TVA, și **toate trei afișează cifra**: `emitere_ecran.js:300` (totalul facturii în lucru) · `facturi_ecran.js:432` (defalcarea pe cote din detaliul facturii) · `declaratii.js:447` (previzualizarea D301, cu textul *«se stochează»*). Din 15.125 de rânduri de JS, doar acestea combină un nume fiscal cu o cotă literală
 - **instanțe**: **una dintre ele producea o cifră GREȘITĂ, dovedit cu numere.** Serverul rotunjește **pe linie** (`Decimal.quantize`, ROUND_HALF_UP), iar ecranul aduna în `float` și rotunjea o singură dată, la afișare. Pe o factură obișnuită de **50 de rânduri × 3 × 19,99 la 21%**: serverul salvează **629,50**, ecranul arăta **629,69** — **19 bani** pe care contabilul îi vedea și factura nu-i avea. Pe 20 de rânduri mici: **+9 bani**. **REPARAT în aceeași tură** (rotunjire pe linie, ca la server), fiindcă o cifră greșită arătată unui om e prag 1 — criteriul lui Costin, aplicat consecvent cu R22 și R26. `declaratii.js` **nu s-a atins**: rotunjește la leu întreg, iar D301 stochează întregi — de verificat separat, nu de presupus
 - **calibrare**: cazul cunoscut **GĂSIT**, și e chiar reparația: forma veche a aritmeticii e păstrată în gardă (`_ecran_vechi`) ca să se poată proba că datele de test **chiar despart** cele două aritmetici (`METODA` §15). **Plus calibrarea DETECTORULUI, măsurată prin relaxarea fiecărui filtru pe rând — interdicția 76 aplicată instrumentului, nu doar reparației:**
@@ -2054,7 +2080,9 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
   **Și un fals pozitiv al meu, numit:** tiparul de cotă include `121` (pentru suta mărită 21/121) și prinde din întâmplare **codul de obligație 121** din `declaratii.js:512`. Filtrul pe numărul de ghilimele îl elimină — deci cifra 3 e curată, dar filtrul acela **nu e o regulă fiscală, e o euristică**, și ar putea ascunde o formulă scrisă într-un șablon.
 - **ce nu vede**: **măsurat, nu presupus** (vezi tabelul de la calibrare): lungimea liniei și fișierele `.html` **nu ascund nimic** — relaxate, adaugă zero. Ce ascunde cu adevărat cerința de **cotă literală** nu sunt formule, ci **cote scrise ca text**. Rămân neacoperite: o regulă fiscală **fără nicio cifră** (un prag, o condiție de scutire exprimată doar prin nume), o formulă întinsă pe **mai multe rânduri**, și una scrisă într-un **șablon** cu multe ghilimele — pe care filtrul euristic o taie. Iar gardul **nu scoate regula din prezentare**: oprește divergența, nu duplicarea. Cifra **3** e un **plafon inferior**
 - **unde ajunge efectul**: o regulă fiscală ajunsă în interfață nu e nici testată, nici gardată, nici versionată pe dată: pragul din ecran rămâne la valoarea de anul trecut mult după ce registrul s-a actualizat, iar nimeni nu se uită acolo
-
+- **CALIBRARE A DOUA, 24.08.2026 — pe întrebarea lui Costin: «vede o formulă scrisă pe nume neutre — `a`, `val`, `x`?»** Relaxarea F2 de ieri dăduse **+7**, dar le **numărasem**, nu le **citisem** — iar o cifră necitită nu e un răspuns. Rulat acum pe toate cele **42** de fișiere `.js`, cu comentariile **și** șirurile scoase (o formulă e cod, nu text afișat), împărțit în două: cu nume fiscal pe linie **1**, fără nume fiscal **2**. **Cele 2 sunt aritmetică pe date calendaristice** — `api.js:288` (`slice(0, 10)` peste o potrivire de dată) și `facturi_ecran.js:388` (`Date.now() + 30 * 864e5`). **Zero formule fiscale scrise pe nume neutre.** Deci lacuna numită ieri **există ca posibilitate, dar nu are instanță** — și acum se știe, nu se presupune.
+- **BUG PROPRIU, prins la prima rulare a acestei calibrări.** Funcția care taie comentariile **colapsa liniile**, deci numerele de linie raportate erau ale **altor** linii — instrumentul ar fi trimis un om la locul greșit. Reparat (newline-urile se păstrează) și **prins de o aserțiune anti-derapaj** care cere ca sursa curățată să aibă exact același număr de linii ca originalul. *Interdicția 76 pe instrumentul care măsura interdicția 76.*
+- **ȘI CE A SCOS, deși nu asta căuta:** `firme.js:1649/1660/1738` — cota de TVA scrisă de **trei ori** ca valoare implicită în ecranul de NIR. Vezi **R29**: e prag 1, și e chiar clasa pe care R26 o declarase golită.
 ## 5 — Un strat care cheamă în sus sau ocolește un nivel
 
 - **stare**: PARȚIAL

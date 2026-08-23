@@ -11585,3 +11585,34 @@ schimbare de cotă eticheta minte lângă o cifră corectă.
 
 **4. Și un fals pozitiv al detectorului meu, numit în registru:** `121` din tiparul suta-mărită prinde
 codul de obligație 121. Îl taie o euristică pe ghilimele, care ar putea ascunde o formulă din șablon.
+
+## 24.08.2026 (a șaptesprezecea tură) — cifra cerută spre ștergere nu există; cea găsită în loc e prag 1
+
+**1. NU AM ȘTERS NIMIC, fiindcă nu era ce.** Comanda cerea scoaterea unei cifre afișate sub eticheta
+«Impozit estimat». Verificat pe tot depozitul: **zero** potriviri în `static/`. Singurul
+`impozit_estimat` e în `core/ong.py:52` — **Python**, impozitul pe profit al excedentului economic al
+unui ONG (art. 15 alin. 3 CF) — și **nu ajunge pe niciun ecran**. Ștergerea ar fi lovit fie nimic, fie
+`«Net estimat»` din `firme.js:1042`, care e **altceva** și e corect.
+
+**2. Intenția ecranului de angajare EXISTĂ SCRISĂ.** `firme.js:1026–1028`: *«consecința ÎNAINTE de
+buton (DS cap. 6): la un leu peste salariul minim se stinge facilitatea și netul SCADE. Calculul vine
+de la server — nicio regulă fiscală nu se rescrie aici.»* Cifra e a serverului, scopul e o
+**consecință arătată înainte de buton**, iar varianta implementată e exact **«netul salariatului»** —
+aleasă, nu nimerită. **R28** rămâne deschisă pentru partea care chiar lipsește: **costul total al
+angajatorului** nu apare nicăieri.
+
+**3. R29, prag 1: R26 a golit clasa în Python, iar ea trăia în JavaScript.** `firme.js` scrie cota
+implicită de **trei** ori, iar `:1738` o trimite **în corpul cererii** — deci refuzul pe care serverul
+îl învățase prin R26 (`main.py:798`, *«fără valoare implicită»*) **nu se poate declanșa din ecranul de
+NIR**. Măsurătoarea lui R26 nu era greșită; domeniul ei era. → `METODA` §17.
+
+**4. Calibrarea pe nume neutre, cerută: ZERO instanțe.** Cele 42 de fișiere `.js`, comentarii și șiruri
+scoase: **2** linii cu aritmetică și cotă literală fără nume fiscal, **ambele calendaristice**
+(`slice(0, 10)`, `30 * 864e5`). Lacuna numită ieri **există ca posibilitate, fără instanță** — și acum
+se știe. **Plus un bug al meu**, prins la prima rulare: tăierea comentariilor colapsa liniile, deci
+numerele raportate erau ale altor linii. Reparat, cu aserțiune anti-derapaj.
+
+**5. Un mesaj care nu poate reuși, găsit pe drum.** Ecranul de operațiuni oferă *«Calcul scutire
+art. 15 CF»*, dar formularul nu declară niciunul dintre cele trei câmpuri necesare — deci opțiunea
+întoarce **422 cu textul `venituri_economice`**, un nume de câmp intern arătat unui contabil, pe o cale
+care **nu poate reuși niciodată**. Prag 2, consemnat în R28, **nereparat în tura asta**.
