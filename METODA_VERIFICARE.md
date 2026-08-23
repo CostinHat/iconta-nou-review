@@ -424,3 +424,37 @@ e prea scurtă — și adaugă întrebarea a doua: *pe care direcție a greșeli
 că era conflat nu devine falsă, dar devine **necreditabilă** — se re-măsoară, nu se moștenește.
 `STALE_BAZA_BASELINE = 14` e într-o astfel de poziție.
 
+### 10.15 — Un instrument se calibrează pe modul în care POATE greși, nu pe cazul fericit
+
+Ziua de 23.08.2026 a dat patru instanțe ale aceleiași greșeli, la patru instrumente diferite, toate
+scrise de mine, toate în câteva ore:
+
+| instrument | forma de suprafață pe care s-a legat | ce ar fi trebuit |
+|---|---|---|
+| `graf_temei` | cheie pe **numele simplu** al funcției | `(fișier, nume)` |
+| `vigoare_punct` | marcajul se termină la primul `)` · un singur tipar de numerotare | fereastră feliată · ambele tipare |
+| `scan_instrumente` (calibrarea) | **cuvântul** „calibrare" în docstring | aserțiune care pinează un literal |
+| `scan_instrumente` (legătura) | **numele fișierului** `test_<modul>.py` · pomenirea modulului | importul, și numele aduse de el |
+
+**Ce au în comun:** fiecare avea calibrare, și fiecare trecea. `graf_temei` are patru afirmații
+pozitive și una negativă **din prima zi** — toate cinci trec la fel de bine pe graful conflat ca pe cel
+reparat, fiindcă toate privesc o zonă unde numele erau unice. Calibrarea exista; **nu atingea modul în
+care instrumentul putea greși.**
+
+**Regula:** *„a fost calibrat" nu e o întrebare binară.* Se întreabă **pe ce**, și dacă printre cazuri
+se află **modul de eșec propriu construcției lui**:
+
+- un instrument care **cheie** ceva → se calibrează pe o **coliziune de chei**;
+- unul care **citește marcaje** → pe **două marcaje lipite**, și pe unul cu paranteze în adresă;
+- unul care **decide după un cuvânt** → pe un text unde cuvântul apare **fără** lucrul, și pe unul unde
+  lucrul apare **fără** cuvânt;
+- unul care **numără o clasă** → pe un membru al clasei pe care nu trebuie să-l găsească (**calibrare
+  negativă**). Măsurat pe 23.08: **doar 4 din 12** instrumente cu gărzi o au.
+
+**Testul practic:** înainte de a folosi un instrument, scrie în două rânduri **cum ar arăta un caz pe
+care construcția lui îl ratează prin natura ei**. Dacă nu poți, nu-l cunoști încă. Dacă poți, ăla e
+primul test.
+
+**Corolar, verificat de patru ori într-o zi:** greșelile astea au fost prinse **toate** de un caz
+cunoscut, și **niciuna** de recitire. Recitirea confirmă ce credeai deja; cazul cunoscut nu.
+

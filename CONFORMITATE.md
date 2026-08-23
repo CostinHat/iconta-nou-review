@@ -30,7 +30,7 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **FAZA 4 — INSTRUMENTELE, în lucru.** Pașii 1 și 2 măsurați pe 23.08, **pasul 1 corectat în aceeași tură** — prima formă a instrumentului greșea pe trei axe, toate «formă de suprafață luată drept fapt». Cifre: **5 din 16 instrumente n-au nicio gardă**, **doar 4 din 12 au calibrare NEGATIVĂ**, `scan_constante` are gardă și **zero calibrare pozitivă**, iar pe axa vidului **175 din 730 care culeg**. Rămâne: proza, mutația reproductibilă, despicarea lui «odată cu fixul» în înainte/după.
+- **pasul curent**: **FAZA 4 — INSTRUMENTELE, în lucru.** Pașii 1–3 măsurați pe 23.08 (pasul 1 corectat în aceeași tură). Cifre: **5 din 16 instrumente n-au nicio gardă** · **doar 4 din 12 au calibrare NEGATIVĂ** · vid posibil **175 din 730 care culeg** · proza: **0 instanțe dovedite, dar pe 29% acoperire**, cu 14 gărzi expuse la clasă. Rămân: mutația reproductibilă, și despicarea lui «odată cu fixul» în înainte/după.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
@@ -1272,6 +1272,36 @@ care nu vede o formă — și forma e declarată acum, în ambele locuri.
 totuși prind regresii reale, atunci regula e mai slabă decât credem* — iar 329 din 378 e mai mult
 decât majoritate. **Nu concluzionez**: „odată cu fixul" nu e „după fix", iar instrumentul nu distinge
 încă între ele. Aia e prima măsurătoare a pasului următor.
+
+### Pasul 3 — gărzi care își iau dovada din proză (interdicția 18)
+
+**Nu s-a construit niciun instrument nou.** Clasa are deja două, complementare, iar întrebarea se
+răspunde din ele — lecția zilei fiind exact că un al treilea ar fi fost logică paralelă.
+
+| instrument | ce măsoară | cifra, azi |
+|---|---|---|
+| `core/scan_ancore.py` (21.08) | ancore de forma `"ȘIR" in <sursă citită>`: șirul există în **cod**, sau doar în comentariu/docstring? | **44 de ancore**: 13 în **cod** · **0 în PROZĂ** · 16 **ambiguu** · 15 **nerezolvat** |
+| `core/scan_garzi.py`, axa C (22.08) | gărzi care **deschid un fișier sursă și caută în text fără să scoată proza** | **14** |
+
+**Cele două nu se contrazic — măsoară lucruri diferite**, și amândouă trebuie citite ca să nu iasă un
+răspuns fals liniștitor:
+
+- `scan_ancore` spune **zero gărzi ancorate în proză**, dar **poate decide doar pentru 13 din 44**
+  (29%). Restul de 31 sunt raportate ca *ambiguu* sau *nerezolvat* — **nu ca trecute**, și asta e o
+  onestitate construită în instrument, nu o omisiune: *„absența unei verificări nu e o verificare"*.
+  Cifra corectă de citit **nu e „0 în proză"**, ci **„0 din 13 verificabile"**.
+- `scan_garzi` axa C spune **14 gărzi citesc sursa fără să scoată proza** — adică sunt **expuse** la
+  clasă, chiar dacă ancora lor de azi se întâmplă să fie în cod. Ele sunt suprafața pe care clasa
+  poate reapărea la prima editare.
+
+**Ce iese:** clasa **nu are azi nicio instanță dovedită**, dar **acoperirea verificării e 29%**, iar
+**14 gărzi stau pe forma care a produs-o de patru ori** în istoric. Nu e „curat"; e „curat pe cât se
+vede", iar cât se vede e scris.
+
+**Ce ar închide-o, și e ieftin:** `scan_ancore` are deja clichet de acoperire
+(`ACOPERIRE_BASELINE = 12`, ridicat la 13 azi prin măsurătoare). Clasa se închide când clichetul urcă
+suficient încât *ambiguu* + *nerezolvat* să scadă sub o cifră declarată — nu când „PROZA" rămâne zero,
+fiindcă zero pe 29% acoperire nu e o afirmație despre restul.
 
 ### Ce urmează în faza 4
 

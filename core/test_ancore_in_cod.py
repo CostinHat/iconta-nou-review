@@ -23,7 +23,12 @@ from core import scan_ancore
 
 # Instalat 21.08.2026 pe o lume curată (0 în proză). Acoperirea se RIDICĂ dacă rezolvarea se
 # îmbunătățește; nu se coboară tăcut.
-ACOPERIRE_BASELINE = 12
+# RIDICAT 23.08.2026: 12 -> 13. Masurat la faza 4: din 44 de ancore, 13 se rezolva la COD.
+# Clichetul urca fiindca rezolvarea s-a imbunatatit, nu fiindca s-a schimbat pragul.
+# CE NU SPUNE cifra, si e partea care conteaza: acoperirea e 13 din 44, adica 29%. „0 in PROZA"
+# e o afirmatie despre cele 13, NU despre celelalte 31 (16 ambigue, 15 nerezolvate). Clasa se
+# inchide cand ambiguu+nerezolvat scad sub o cifra declarata, nu cand PROZA ramane zero.
+ACOPERIRE_BASELINE = 13
 
 
 @pytest.fixture(scope="module")
