@@ -30,7 +30,7 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **FAZA 4 — INSTRUMENTELE: COMPLETĂ** (23.08.2026, cei cinci pași). Rezultat: instrumentele nu mint pe cifrele lor, dar **aproape niciunul nu e apărat de propriul mod de eșec** — 4 din 12 au calibrare negativă, **1,6%** dintre gărzi își au mutația în suită, iar cele două instrumente cele mai vechi (09.07) n-au nicio gardă. De aici a ieșit **interdicția 76**. Urmează, în ordinea decisă: **temeiurile** (ce a rămas din faza 2), apoi triajul.
+- **pasul curent**: **FAZA 2 — TEMEIURILE, începută 23.08.2026** (după faza 4, în ordinea decisă). Prima măsurată: **interdicția 53**, pe care planul o numește *«cea mai măsurabilă din tot planul»* — **34 din 34** de intrări din registrul de cote își au valoarea în substanța citatului, pe un domeniu de **34 din 53** de obiecte `Temei`. Instrumentul e nou, fiindcă `scan_citate` măsura altceva; a dat 34/34 și din motiv fals înainte de a fi calibrat pe cifrele din adresa articolului.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
@@ -2061,13 +2061,13 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 53 — Un citat verbatim care nu conține valoarea pe care o justifică
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: MĂSURATĂ
+- **măsurat la**: 2026-08-23
+- **pe commit**: `045c53e`
+- **cifra**: **34 din 34** de intrări din registrul de cote au valoarea **în substanța citatului propriu**. Zero nejustificate mecanic. **Dar domeniul e 34 din 53**: atâtea obiecte `Temei()` există în `core/`, iar instrumentul le vede doar pe cele din `common.py`. Din cele **19 din afară**, doar **3** au `text_citat` (în `salarizare.py`), iar **16 n-au deloc** — deci nu pot fi nici justificate, nici acuzate
+- **instanțe**: **niciuna în domeniu.** Cifra e curată, și e curată *după* ce instrumentul a fost reparat — vezi calibrarea. **Instrumentul e NOU** (`core/scan_valoare_in_citat.py`, 23.08.2026), fiindcă `scan_citate` măsoară **altceva**, iar confundarea lor ar fi atribuit interdicției 53 o măsurătoare care nu e a ei: `scan_citate._verbatim` verifică dacă citatul **există** în documentul citat (*citatul e real*); 53 cere ca citatul să **conțină valoarea** (*citatul justifică*). Un citat poate fi perfect real și să nu justifice nimic
+- **calibrare**: **cazul cunoscut a fost GĂSIT, și era al meu.** Prima formă a dat tot **34 din 34** — un rezultat prea curat ca să fie crezut fără să fie provocat. Inspectând contextul fiecărei potriviri: `impozit_micro` = `0.01` producea forma «1», care se potrivea în **«art.51 alin.(1)»** — adică în **adresa** articolului, nu în substanță. Reparat: adresele (`art.`, `alin.`, `lit.`, `pct.`, `nr.`, date, ani) se scot înainte de căutare. După reparație `impozit_micro` trece din motiv real, pe «...este de **1%**». Gardat: `core/test_valoare_in_citat.py`, 6 teste, dintre care **două pinează chiar modurile de eșec** — cifra din adresă, și subșirul de număr («2.250.000» în «12.250.000»)
+- **ce nu vede**: **trei cauze pe care nu le deosebește**, dacă valoarea lipsește: citatul e localizator sau parafrază (formă legitimă, vezi `scan_citate`) · valoarea e exprimată în cuvinte («o pătrime») · citatul chiar nu justifică. Le pune pe toate în «nejustificat mecanic», **nu** în «greșit». · **Supra-tăiere:** tiparul de adrese taie și fragmente de cuvânt («ca**lit**atea» → «ca tea»); nu afectează potrivirea de numere, dar ar afecta o valoare scrisă în litere. · **Domeniul e registrul de cote**, unde perechea valoare↔temei e structurală; celelalte 19 obiecte `Temei` n-au valoare atașată mecanic, deci cer altă măsurătoare
 - **unde ajunge efectul**: citarea e falsă chiar dacă actul e corect și în vigoare: o cotă sprijinită pe un citat în care valoarea nu apare. Trei instanțe cunoscute — facilitatea de 300 lei, cota de dividende, pragul mijloacelor fixe
 
 ## 54 — Un articol folosit cu verificarea vigorii expirată față de pragul lui
