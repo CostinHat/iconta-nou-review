@@ -33,13 +33,16 @@ if [ "$RC" -ne 0 ]; then
     # istorie e deja verde - deci, PRIN CONSTRUCTIE, o garda care prinde o regresie nu lasa nicio
     # urma. Masurat: in 1.725 de commituri, patru citeaza un test, si toate patru repara TESTUL, nu
     # ceva prins de el. Intrebarea „a prins vreodata garda X o regresie reala?" n-avea cum sa aiba
-    # raspuns. De aici incolo are: fiecare respingere se scrie, cu data, testele picate si subiectul
-    # commitului care urma. Jurnalul NU intra in istoric (e in .gitignore) - nu e un artefact de
+    # raspuns. De aici incolo are: fiecare respingere se scrie, cu data, testele picate si CE ERA
+    # IN STAGE (nu mesajul: la pre-commit el nu exista inca - vezi nota de mai jos). Jurnalul NU intra in istoric (e in .gitignore) - nu e un artefact de
     # versionat, e o urma care exista.
     JURNAL="$ROOT/.poarta_jurnal.log"
     {
         echo "=== $(date -Is) RESPINS pytest exit $RC"
-        echo "    mesaj: $(head -1 "$ROOT/.git/COMMIT_EDITMSG" 2>/dev/null | cut -c1-100)"
+        echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)"
+        # NU se scrie mesajul commitului: cu `git commit -F`, .git/COMMIT_EDITMSG inca
+        # nu e scris la momentul pre-commit, deci ar contine mesajul commitului PRECEDENT.
+        # Dovedit pe prima respingere reala (23.08): scria prima linie a lui HEAD.
         echo "    HEAD : $(git rev-parse --short HEAD 2>/dev/null)"
         grep -E "^(FAILED|ERROR) " /tmp/precommit_pytest.log 2>/dev/null | sed "s/^/    /" | head -40
         tail -1 /tmp/precommit_pytest.log | sed "s/^/    /"
@@ -54,7 +57,7 @@ case "$TOT" in
     *"TOTAL: 0"*) echo "[pre-commit] OK - poarta verde, commit permis." ; exit 0 ;;
     *) echo "[pre-commit] RESPINS: verificatorul nu da TOTAL 0." ;
        { echo "=== $(date -Is) RESPINS verificator"; echo "    $TOT";
-         echo "    mesaj: $(head -1 "$ROOT/.git/COMMIT_EDITMSG" 2>/dev/null | cut -c1-100)";
+         echo "    stage: $(git diff --cached --name-only | tr '\n' ' ' | cut -c1-160)";
        } >> "$ROOT/.poarta_jurnal.log" ;
        exit 1 ;;
 esac

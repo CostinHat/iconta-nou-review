@@ -525,6 +525,17 @@ gardă; e un prag de citit, la un moment numit.
 
 ---
 
+### R20 — Opt artefacte de UN OCTET în corpus, cu nume de declarație
+
+- **felul**: ARTEFACT
+- **cine deblochează**: DECIZIE
+- **unde intră**: E2 · interdicția 52 (corpusul)
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `139bca5`
+- **ce blochează**: `d104.txt`, `d110_20260330.txt`, `d112_06082026.txt`, `d220_20180108.txt`, `d221_20170303.txt`, `d223_20160113.txt`, `d307_20171205.txt`, `d311_20210129.txt` — toate de **un octet** (o linie goală), create pe **13–14.08.2026**, fiecare **lângă un `.xsd` real și amprentat**. Sunt ieșirea unei derivări care a produs gol și n-a spus-o. **Nimeni nu le citește**: zero citări literale în cod, teste sau registre — verificat. Dar un fișier gol cu nume de act e **mai rău decât unul lipsă**: pentru orice instrument arată ca *act PREZENT și TĂCUT*, deci produce o absență falsă, nu o lipsă vizibilă. E aceeași clasă cu corolarul interdicției **76** — cazul în care lucrul e absent dar semnul lui e prezent.
+- **condiția de deblocare**: o decizie între **ștergere** (XSD-ul de alături e prezent și amprentat, deci nu se pierde nimic) și **regenerare** din XSD, pe tiparul lui `d402_20160226_xsd_linii.txt`. **Nu se face fără decizie**: conținutul intenționat nu se poate deduce din nimic de pe disc, iar a-l inventa ar fi mai rău decât gol. Până atunci sunt sub clichet declarat în `anaf_surse/PROVENIENTA.json` (`goale_cunoscute`), iar `core/test_provenienta.py::test_niciun_artefact_gol_nou` face imposibil să apară al nouălea. Se închide când cele opt sunt ori șterse, ori au conținut, iar clichetul coboară la 0.
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
@@ -2114,13 +2125,21 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 52 — Un act din corpus al cărui text s-a modificat după aducere
 
-- **stare**: PARȚIAL
+- **stare**: MĂSURATĂ
 - **măsurat la**: 2026-08-23
-- **pe commit**: `bfd9f10`
-- **cifra**: **0 acte modificate după aducere, din 177 de perechi amprentă/fișier verificate.** Toate 177 se potrivesc, zero amprente orfane. **Dar pe disc sunt 339 de acte** (html/txt/pdf), deci **162 n-au amprentă deloc — 48% din corpus**. Cifra „0 modificate” e un **plafon inferior**: e o afirmație despre jumătatea acoperită, iar cealaltă jumătate nu se poate nici confirma, nici acuza
-- **instanțe**: niciuna în domeniul acoperit. **Starea e PARȚIAL, nu MĂSURATĂ**, fiindcă domeniul e jumătate: un act fără amprentă nu poate fi nici confirmat, nici acuzat — se poate schimba sub noi fără ca nimic să se aprindă, ceea ce e chiar formularea interdicției
-- **calibrare**: mecanismul a fost construit pe 22.08 **pornind de la un caz real, găsit**: `legea_82_1991_consolidat.html` apăruse modificat față de commit, cu 1629 de linii, fără ca vreun script din tură să-l scrie — și nimic nu s-ar fi aprins. Gardat de `core/test_corpus_amprenta.py`
-- **ce nu vede**: nu spune că textul **de pe sursă** s-a schimbat — pentru asta ar trebui re-descărcat, iar pagina portalului nu e reproductibilă octet cu octet. Răspunde la întrebarea dinăuntru: *fișierul din corpus e cel căruia i-am luat amprenta?* · și **nu acoperă cele 162 fără amprentă**, care e cifra de închis
+- **pe commit**: `139bca5`
+- **cifra**: **0 acte modificate după aducere, din 188 de amprente verificate** — iar acoperirea e acum **completă: 348 din 348 de fișiere de corpus au o clasă**, nu jumătate. Împărțirea: **188 AMPRENTATE** · **151 DERIVATE** dintr-un fișier amprentat · **9 ale noastre** (7 note scrise, 2 derivări manuale) · **0 nedeclarate**
+- **instanțe**: **niciuna.** Starea a trecut din PARȚIAL în MĂSURATĂ nu prin amprentarea a tot ce mișcă, ci prin **întrebarea corectă**. Formularea de dinainte era *«162 fără amprentă — 48% din corpus»*, cu concluzia firească *«se amprentează și restul, e mecanic»*. Măsurând **înainte** de a amprenta, s-au văzut trei lucruri:
+
+  **(a) Cifra 162 era ea însăși greșită.** Se calculase `339 − 177`, dar 8 dintre cele 177 de amprente sunt pe fișiere din afara celor 339 (`.xsd`, `.zip`). Numărul real era **170**. Două instrumente numărau două domenii și se scădeau unul din altul.
+
+  **(b) Amprentarea oarbă ar fi umflat acoperirea fără s-o crească.** Din cele 170, **151 sunt text derivat** dintr-un pdf/html/xsd care **are deja amprentă** — a le amprenta separat nu adaugă nimic despre act. Alte **7 sunt note scrise de noi** (istoricul cotei de dividende, diurna internă/externă, forma inițială a art. 291): o amprentă pe ele răspunde la *«nu l-am editat»*, pe care git îl răspunde deja — **nu** la *«actul s-a schimbat sub noi»*, care e întrebarea interdicției. Cifra ar fi ajuns la 100% fără ca vreun act în plus să fie păzit.
+
+  **(c) Amprentele a două acte existau deja, dar într-o formă pe care nicio gardă n-o citea.** `anaf_surse/d402_surse_sha256.txt` — scris de mână pe 14.08 — conținea exact hash-urile celor două fișiere D402 neamprentate. Verificate pe 23.08: **ambele se potrivesc**, deci pentru ele răspunsul lui 52 e real, nu presupus: **neschimbate de 9 zile**. Promovate în `.sha256`, intră sub garda existentă.
+
+  Amprentate efectiv: **11** — cele declarate `ADUS` (8 extrase de structură ANAF, 2 PDF-uri aduse, 1 XSD) și `ADUS_ADNOTAT` (3 structuri peste care am scris antet propriu «INVECHIT»; amprenta pinează **versiunea noastră**, și asta e scris, nu ascuns)
+- **calibrare**: mecanismul de amprentă a fost construit pe 22.08 **pornind de la un caz real, găsit** (`legea_82_1991_consolidat.html`, modificat față de commit fără ca vreun script să-l scrie). Instrumentul nou, `core/scan_provenienta.py`, are **calibrare negativă** — cerută de interdicția 76: trei mutații care îl orbesc (pragul de gol, cererea de amprentă pe ADUS, detectorul de declarații orfane) au fost aplicate, și **fiecare a fost prinsă exact de testul construit pentru ea**. Partea care contează: **niciuna n-a fost prinsă de testele pe corpusul real**, fiindcă azi corpusul e curat — deci fără calibrarea negativă, gărzile ar fi dovedit doar că instrumentul găsește ce e deja în regulă. Gardat: `core/test_provenienta.py`, 12 teste, dintre care **6 de calibrare negativă** și unul anti-vacuu (un verde pe zero fișiere nu e o afirmație despre corpus)
+- **ce nu vede**: nu spune că textul **de pe sursă** s-a schimbat — pentru asta ar trebui re-descărcat, iar pagina portalului nu e reproductibilă octet cu octet. · **Cele 151 de fișiere derivate nu sunt pinate ele însele**: o editare a lor n-ar fi prinsă de amprentă (git o arată, garda nu). · Clasa **DERIVAT se stabilește după NUME**, nu după conținut: un `x.txt` care nu provine din `x.pdf` ar fi clasat greșit. · Clasa declarată e o **afirmație de om** — instrumentul verifică doar că e scrisă și consecventă cu faptele mecanice, nu că e adevărată
 - **unde ajunge efectul**: corpusul afirmă un text pe care sursa nu-l mai are, iar toate verificările de deasupra — vigoare, citat, ierarhie — moștenesc eroarea fără s-o poată vedea
 
 ## 53 — Un citat verbatim care nu conține valoarea pe care o justifică
