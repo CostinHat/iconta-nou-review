@@ -167,6 +167,12 @@ minim, eticheta spunea *Deducere personala* peste cifra **1.513,75**, când dedu
 **865,00**. **3 din 5** cazuri obișnuite, **2 din 24** de salariați existenți. Reparat cu rânduri
 numite, gardat cu 13 teste, RED-proof de două ori. *(A treia instanță de prag 1 din campanie.)*
 
+**A DOUA INTRARE DE PRAG 1 (23.08.2026): `JournalID` = `GENERAL` în D406.** Reclasificată de Costin
+din restanță în prag 1, cu motivul: *un element care pleacă la ANAF purtând o valoare inventată nu e o
+absență, e o afirmație falsă — iar destinatarul e autoritatea, treapta de deasupra unui om.* Măsurat,
+reparat, probat la validatorul oficial și gardat în aceeași tură — vezi **R22**. *(A patra instanță de
+prag 1 din campanie.)*
+
 **Nimic altceva măsurat azi nu atinge pragul 1** — și o spun explicit, fiindcă s-au măsurat multe:
 niciuna dintre cele opt interdicții din faza 2, niciuna din faza 4, și niciuna dintre restanțele noi
 nu produce o cifră greșită, un blocaj sau o afirmație falsă la un contabil care ar folosi aplicația azi.
@@ -261,13 +267,24 @@ să nu țină."* **Da, și pe una dintre cele patru intrări e chiar aceeași nu
 
 | intrarea din L5 | ce spunea justificarea | măsurat 23.08 | verdict |
 |---|---|---|---|
-| **temeiul pe ecran** (9 declarații) | *«valorile există: 57 de obiecte `Temei`»* | cele **57** trăiesc în `core/common.py` (**35**), `core/salarizare.py` (**10**) și module mici; **cele nouă module de declarație au ZERO** — `d101` chiar importă numele (`Temei as _Tm`) fără să construiască vreunul | **construcție** |
+| **temeiul pe ecran** (9 declarații) | *«valorile există: 57 de obiecte `Temei`»* | **57 confirmat prin AST** (`common.py` 34 · `salarizare.py` 10 · alte opt module 13); în **cele nouă module de declarație sunt 2**, amândouă în `d101`, amândouă pe **termenul de depunere**, niciuna pe o casetă *(cifră corectată — vezi mai jos)* | **construcție** |
 | **desfacerea unei poziții** | *(se subînțelegea din aceeași frază)* | **niciun producător**: nicio funcție care, dată o casetă, să întoarcă operațiunile care au compus-o; `valideaza` întoarce `stare` și **numărul** de operațiuni | **construcție** |
 | **balanța pe ecran** | *«balanța se produce»* | adevărat: se produce și se descarcă PDF (`firme.js:2652`); lipsește doar drumul de la cifră la notele din spate | **predare** — ține |
 | **componentele fluturașului** | *«`deducere`/`facilitate` sunt în răspunsul API»* | adevărat, verificat pe cod: `core/stat_plata_api.py:109–114` întoarce deja `deducere`, `deducere_baza`, `deducere_tineri`, `deducere_copii` | **predare** — ține |
 
 **Numărătoarea de 57 măsura alt domeniu decât cel despre care afirma** — exact defectul de la poziția 1,
 în aceeași formă: o cifră adevărată despre motor și salarizare, folosită ca dovadă despre declarații.
+
+**CORECTAREA CORECTĂRII (23.08, aceeași zi) — și e a mea, nu a triajului.** Am scris *„cele nouă module
+au ZERO"*. **Fals: sunt 2**, amândouă în `d101:211–212`, construite prin **aliasul `_Tm(`** — iar eu
+măsurasem cu `grep 'Temei('`, care nu vede aliasul. Deci corectarea unei clasificări făcute pe nume a
+fost ea însăși măsurată **pe nume**. Re-măsurat cu AST, rezolvând aliasurile de import: **57 în `core/`
+fără teste** (cifra veche se confirmă), din care **2 în cele nouă module de declarație**. Ambele sunt
+pe `_scadenta` (termenul de depunere, variante datate, `35b4732`), **niciuna pe o casetă**.
+
+**Concluzia nu se schimbă, se întărește:** 2 obiecte din 57, într-un modul din nouă, niciunul legat de
+o casetă — deci *temeiul pe ecran* rămâne **construcție**. Ce se schimbă e încrederea în instrument:
+un `grep` pe numele clasei nu măsoară construcția obiectelor.
 Iar registrul avea deja contra-măsurătoarea, la **60**: **374 din 470** de elemente nu poartă nicio
 legătură normă↔implementare, și *structurile de declarație au **zero** legături structurate*. Cele două
 propoziții — *«valorile există»* și *«zero legături»* — stăteau la 900 de rânduri una de alta.
@@ -686,10 +703,17 @@ gardă; e un prag de citit, la un moment numit.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · faza 1 · D406 (SAF-T) · criteriile minimale de program
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
+- **rezolvată pe commit**: `46adff1`
 - **deschisă pe commit**: `936aeb3`
 - **ce blochează**: OMFP 2634/2015, Anexa 1, **pct. 58 lit. i)** cere ca programul să asigure, printre elementele constitutive ale **fiecărei** înregistrări contabile, *„jurnalul de origine în care se regăsesc înregistrările contabile"* — citit verbatim din corpus. Cerința e **independentă de forma de înregistrare**, deci nu dispare odată cu R21. Măsurat: `core/d406.py:832` scrie `<JournalID>GENERAL</JournalID>` **literal**, aceeași valoare pentru orice înregistrare, în declarația care pleacă la ANAF. Elementul **există** ca etichetă și **nu poartă nicio informație**: nu se poate răspunde la *„din ce jurnal provine rândul ăsta"*, care e chiar întrebarea pentru care norma cere câmpul. **Și datele pentru un răspuns real există deja**: coloana `inregistrari.sursa` poartă azi valori care sunt exact jurnale de origine — `casa` (`core/sgr.py:36`, `core/ong.py:27`, `core/contracte_speciale.py:90`), `salarii` (`core/control_incrucisat.py:485`), `migrare` și `iconta` (`core/istoric_declaratii_import_api.py`). Deci nu lipsește informația, lipsește legătura dintre ea și SAF-T.
 - **condiția de deblocare**: o **decizie**, fiindcă nu e determinată de text — (a) `JournalID` se derivă din `inregistrari.sursa`, cu o mapare scrisă și un temei pentru fiecare valoare, și atunci elementul devine informativ; sau (b) se **declară scris** că firma ține un singur jurnal general, cu temeiul care permite asta, și atunci constanta e adevărată, nu o umplutură. **Ce nu e acceptabil e starea de azi**: un câmp cerut de normă, completat cu o constantă, fără ca undeva să scrie că firma chiar ține un singur jurnal. Se închide când `JournalID` ori poartă originea, ori are în spate o declarație scrisă că e unic.
+- **RECLASIFICATĂ ȘI REPARATĂ 23.08.2026 — nu era restanță, era PRAG 1.** Costin: *„E un element din declarație care pleacă la ANAF purtând o valoare inventată — nu o absență, o afirmație falsă. […] Nu e «efect greșit la un om», e efect greșit la autoritate, ceea ce e treapta de deasupra."* Am deschis-o ca restanță fiindcă am citit-o ca lipsă de legătură; e o **afirmație falsă emisă**, deci intră în pragul 1 și trece înaintea a tot ce e în triaj. Aleasă **varianta (a)**.
+- **CE ACCEPTĂ SCHEMA, verificat la sursă** (`anaf_surse/d406_schema_anaf.xlsx`, foaia *3. GeneralLedgerEntries*): **GL.4 `Journal` are cardinalitate `0..*`** — mai multe jurnale sunt permise · **GL.5 `JournalID` e `SAFshorttextType` = `xs:string`, `maxLength = 18`** — deci **NU e nomenclator închis**, e text liber · GL.7 `Type` e `SAFcodeType`, max 9. **Sursa se mapează totuși**, dar nu fiindcă ar cere-o schema: `inregistrari.sursa` poartă **nume interne** (un nume intern într-un document citit de autoritate = interdicția 13), iar `migrare` și `iconta`, care există în coloană, **nu sunt jurnale** — sunt proveniența unui import.
+- **CÂTE D406 DEPUSE POARTĂ `GENERAL`: zero, și motivul contează.** `public.declaratii_depuse` are **17 rânduri D406**, toate cu `sursa='migrare'` și **`xml` gol** — sunt depuneri de istoric importate, nu declarații generate de aplicație. Deci constanta **nu a plecat încă la ANAF prin aplicație**; defectul era pe calea de generare, viu pentru orice D406 generat de azi înainte. *Se scrie explicit, fiindcă „zero depuse afectate" și „defectul nu exista" sunt două lucruri diferite.*
+- **REPARAȚIA**: `core/d406.py` — nomenclator `_JURNALE` (casa · banca · facturi · salarii · amortizare), cu felurile de jurnal auxiliar **numite de normă** (Anexa 1 pct. 45); `pull` citește `i.sursa`; `_gl_entries` emite **un `<Journal>` per jurnal de origine**, cu sortare **stabilă** (ordinea notelor în interiorul unui jurnal rămâne cea din `ORDER BY i.id`). O notă fără sursă intră în **`DIVERSE`** — Nota de contabilitate, cod 14-6-2/A, Anexa 1 pct. 52 — iar o sursă **nemapată** nu devine `DIVERSE` în tăcere: se numește în avertisment, cu nota și valoarea (tiparul `[B17]` de la UM necunoscute).
+- **PROBAT PE DATE REALE ȘI LA ARBITRU**: `tenant_013`, 2026-08, 13 note din 4 surse → **`AMORTIZARE`, `BANCA`, `CASA`, `DIVERSE`**, zero `GENERAL`. Trecut prin **validatorul oficial ANAF** (DUKIntegrator, D406, reguli 2026.1): **`stare = valid`, zero erori** — deci structura cu mai multe jurnale nu e o presupunere.
+- **GARDĂ**: `core/test_d406_jurnal_origine.py`, **14 teste**, RED-probat cu **2 mutații / 2 roșii** (constanta se întoarce → 3 teste roșii; `pull` nu mai trece sursa prin mapare → testul anti-vacuu roșu). Include limitele schemei (18/256/9) și anti-vacuu pe cablare, citit din sursa lui `pull`/`genereaza`.
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
@@ -2384,10 +2408,12 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
   `INFORMATIV` **are voie să existe**, se reverifică mai rar decât `CALCULAT`, și **niciodată la doi
   ani** — plafonul a coborât de la 24 la 18.
 
-  *Notat fiindcă registrul nu ascunde nepotriviri, oricât de mici: raportat la `CALCULAT`, cifrele sunt
-  dublu pe primele două rânduri (3→6, 6→12) și de o dată și jumătate pe al treilea (12→18). Regula
-  aplicată e cea care se citește din tabel — „informativul se reverifică mai rar decât calculatul,
-  niciodată la doi ani" — nu propoziția „nici dublul", care ține doar pe rândul STABIL.*
+  **CONFIRMAT 23.08.2026, după ce nepotrivirea a fost ridicată.** Raportat la `CALCULAT`, cifrele sunt
+  dublu pe primele două rânduri (3→6, 6→12) și de o dată și jumătate pe al treilea (12→18) — ridicat,
+  și **plafonul rămâne 18**. Costin: *„asta nu mă deranjează — ce voiam să evit era ca o valoare
+  informativă să stea doi ani neverificată. Formularea mea era greșită, cifrele sunt bune."* Deci
+  regula care guvernează nu e propoziția „nici dublul", ci **plafonul**: nicio valoare informativă nu
+  stă doi ani neverificată. Punctul e închis, nu rămâne deschis.
 
   **Și o regulă care bate tabelul, pe tiparul „faptul bate vectorul":** un marcaj de modificare
   **pe articolul folosit**, apărut după ultima confirmare, cere reverificare **imediat**, indiferent

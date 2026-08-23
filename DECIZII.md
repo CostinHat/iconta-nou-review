@@ -11206,3 +11206,32 @@ triajul ordonează 26 de poziții măsurate și presupune despre 50."* Rezultatu
 **8 PARȚIAL** (9, 10, 11, 13, 14, 20, 26, 34) · **3 rămân NEÎNCEPUTE** (7, 8, 12), fiindcă regula
 transferului spune că *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ* — și pentru ele nu există cifră
 pe domeniu, ci proză despre instanțe.
+
+## 23.08.2026 (a treia tură) — R22 e prag 1, nu restanță; plafonul de 18 luni rămâne
+
+**1. R22 reclasificată din restanță în PRAG 1, și reparată în aceeași tură.** Costin: *„E un element din
+declarație care pleacă la ANAF purtând o valoare inventată — nu o absență, o afirmație falsă. […] Nu e
+«efect greșit la un om», e efect greșit la autoritate, ceea ce e treapta de deasupra."* Deschisă greșit
+ca restanță fiindcă o citisem ca lipsă de legătură. **Aleasă varianta (a)**: `JournalID` se derivă din
+`inregistrari.sursa`, printr-o mapare scrisă.
+
+**Cele două lucruri cerute la reparație, amândouă măsurate înainte de a scrie cod:**
+- **Ce acceptă structura SAF-T**: `JournalID` e `SAFshorttextType`, `maxLength 18` — **text liber, NU
+  nomenclator închis**; `Journal` are cardinalitate `0..*`. Deci maparea **nu** e impusă de schemă. Se
+  face totuși, din motive proprii: numele interne n-au ce căuta într-un document citit de autoritate, iar
+  `migrare`/`iconta` nu sunt jurnale.
+- **Câte D406 depuse poartă `GENERAL`**: **zero** — cele 17 depuneri D406 din `public.declaratii_depuse`
+  au toate `sursa='migrare'` și `xml` **gol** (istoric importat). Defectul era pe calea de **generare**,
+  viu pentru orice D406 generat de acum înainte. *„Zero depuse afectate" și „defectul nu exista" sunt
+  două lucruri diferite, și se scriu separat.*
+
+**2. Plafonul de 18 luni pentru `INFORMATIV`: RĂMÂNE.** Ridicasem că, față de `CALCULAT`, primele două
+rânduri sunt exact dublu. Costin: *„asta nu mă deranjează — ce voiam să evit era ca o valoare informativă
+să stea doi ani neverificată. Formularea mea era greșită, cifrele sunt bune."* Deci regula care
+guvernează e **plafonul**, nu raportul. Punctul se închide.
+
+**3. `METODA_VERIFICARE.md` §12** — *o măsurătoare nouă se confruntă cu ce spune deja registrul despre
+același obiect, înainte de a fi scrisă.* Cerut de Costin, pe instanța *„valorile există"* / *„zero
+legături"* aflate la 900 de rânduri una de alta. **Și a doua instanță, în aceeași zi: corectarea mea a
+fost ea însăși măsurată cu `grep 'Temei('`**, care nu vede aliasul `_Tm(` din `d101` — concluzia a
+rezistat (2 din 57, niciuna pe o casetă), instrumentul nu.

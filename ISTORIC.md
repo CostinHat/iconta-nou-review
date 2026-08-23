@@ -4947,3 +4947,21 @@ nu preventiv · planurile nu se mai extind.
 trei planuri au rămas necomise — `PLAN_ARHITECTURA.md` modificat, celelalte două neurmărite de git. Iar
 poarta verde era roșie chiar din momentul scrierii planului: `core/test_conformitate.py` cere o secțiune
 per interdicție, planul avea 75, registrul 48. Măsura, nu observația: **2 teste roșii pe HEAD**.
+
+## 23.08.2026 — D406 nu mai declară că toate înregistrările vin din același jurnal
+
+**Ce s-a schimbat pentru firmă.** Până azi, orice SAF-T generat de aplicație purta
+`<JournalID>GENERAL</JournalID>` pe **toate** înregistrările. De azi poartă jurnalul din care vine nota:
+`CASA`, `BANCA`, `FACTURI`, `SALARII`, `AMORTIZARE`, iar notele fără sursă intră în `DIVERSE` (Nota de
+contabilitate, cod 14-6-2/A). Pe `tenant_013`, august 2026: **13 note → 4 jurnale**, în loc de unul.
+
+**De ce contează pentru un contabil.** La un control, întrebarea *„din ce jurnal provine rândul ăsta?"*
+avea până azi un singur răspuns posibil, același pentru tot — adică niciun răspuns. Elementul e cerut de
+OMFP 2634/2015 Anexa 1 pct. 58 lit. i) tocmai ca să existe răspunsul.
+
+**Ce NU s-a schimbat:** cifrele. Totalurile, tranzacțiile, liniile și ordinea lor în interiorul unui
+jurnal sunt neatinse — gruparea sortează stabil, doar pe jurnal. Structura nouă a fost trecută prin
+validatorul **oficial ANAF** (DUKIntegrator D406, reguli 2026.1): `valid`, zero erori.
+
+**Ce vede contabilul dacă o sursă nu e mapată:** un avertisment care numește nota și valoarea, nu o
+încadrare tăcută în `DIVERSE`.

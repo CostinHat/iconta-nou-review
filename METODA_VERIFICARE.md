@@ -490,3 +490,30 @@ triajului: **6 artefacte clasificate greșit din 16 atinse** — 4 din 12 la pra
 **Ce NU acoperă regula:** nu spune că o clasificare făcută corect e și completă. Spune doar că una
 făcută pe nume nu e o clasificare — e o presupunere cu aspect de măsurătoare. Vezi `CONFORMITATE.md`,
 secțiunea TRIAJ, cele două corectări din 23.08.
+
+## 12. O MĂSURĂTOARE NOUĂ se confruntă cu ce spune deja registrul despre același obiect
+
+**Regula.** Înainte de a scrie o cifră, caută în registru ce s-a mai spus despre **același obiect** și
+pune cele două afirmații una lângă alta. Dacă nu se confruntă, registrul poate ține ani întregi două
+propoziții contradictorii despre același lucru, fiecare adevărată în contextul ei.
+
+**Instanța care a produs regula (23.08.2026).** În `CONFORMITATE.md` stăteau, la **900 de rânduri** una
+de alta: *„valorile există: 57 de obiecte `Temei`"* (justificarea pentru care lista 5 era „predare, ore")
+și *„structurile de declarație au **zero** legături structurate"* (interdicția 60). Amândouă măsurate,
+amândouă adevărate, **niciodată confruntate** — iar din prima s-a ordonat o listă întreagă de muncă.
+
+**A doua instanță, în aceeași zi, și e a corectării înseși.** Corectarea a fost măsurată cu
+`grep 'Temei('` și a scris *„cele nouă module au ZERO"*. Fals: `d101` construiește două prin **aliasul
+`_Tm(`**, pe care grep-ul nu-l vede. Re-măsurat cu AST, rezolvând aliasurile: 57 în `core/`, din care 2
+în cele nouă module. **Concluzia a rezistat; instrumentul, nu.** De unde a treia formă a regulii de la
+§11: *nici măcar corectarea unei măsurători pe nume nu se face pe nume.*
+
+**Cum se aplică, mecanic:**
+
+1. **Caută obiectul, nu formularea** — „ce mai spune registrul despre modulele de declarație?", nu „ce
+   mai spune despre `Temei`".
+2. **Pune cifrele una lângă alta în text**, chiar dacă se confirmă. O confruntare care nu se vede n-a
+   avut loc.
+3. **Când se contrazic, întâi verifică domeniile** — de obicei nu una e falsă, ci măsoară altceva.
+4. **Instrumentul se numește lângă cifră.** „57" nu spune nimic; „57, AST, constructori sub orice
+   alias, `core/` fără teste" se poate contesta.

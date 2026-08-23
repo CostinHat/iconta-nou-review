@@ -1894,3 +1894,11 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   scrie, iar amprenta e pe TEXT, nu pe pagină · **anti-vacuu**: `adu` chiar trece prin gardă, citit
   din sursă, nu presupus. RED-probat cu mutația `if False:` pe gardă — 4 roșii din 4 posibile.
   Păzește exact modul de eșec al lui **R20**, la producător, nu la poartă.
+
+- **`core/test_d406_jurnal_origine.py` (23.08.2026)** — 14 teste: fiecare sursă cunoscută își găsește
+  jurnalul · o sursă necunoscută (inclusiv `migrare`, `iconta`, gol, `None`) cade în `DIVERSE`, nu într-un
+  jurnal inventat · valorile încap în tipurile schemei ANAF (JournalID 18, Description 256, Type 9) ·
+  niciun `GENERAL` în XML · un `<Journal>` per origine, cu tranzacțiile care **nu se amestecă** între
+  jurnale · ordinea notelor în interiorul unui jurnal rămâne cea din `pull` · **anti-vacuu pe cablare**:
+  `pull` chiar citește `i.sursa` și `genereaza` chiar avertizează, citit din sursă. RED-probat cu 2
+  mutații. Probat și la arbitrul oficial (DUK D406, `valid`).

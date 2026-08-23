@@ -4160,3 +4160,24 @@ fusese derivat sub alt nume. Nu opt accidente: o ramură greșită aplicată de 
 Al treilea test e **anti-vacuu**: citește sursa lui `adu` cu `inspect.getsource` și cere ca garda să
 fie chiar pe drum (`_scrie_text(` prezent, `".txt"` absent) — altfel garda ar fi decorativă, ocolită
 de o a doua scriere de alături.
+
+**`JournalID` din D406 poartă jurnalul de ORIGINE, nu o constantă** (`core/d406.py` `_JURNALE` +
+`_gl_entries`, `core/test_d406_jurnal_origine.py`, 23.08.2026). **Prag 1**: nu o absență, o **afirmație
+falsă** trimisă autorității. Până azi se scria literalul `GENERAL` pe fiecare înregistrare, deși
+OMFP 2634/2015 Anexa 1 **pct. 58 lit. i)** cere *„jurnalul de origine în care se regăsesc înregistrările
+contabile"* — elementul exista și nu purta nicio informație.
+
+**Ce a decis construcția, citit la sursă** (`anaf_surse/d406_schema_anaf.xlsx`): `Journal` e **`0..*`**
+(deci mai multe jurnale sunt permise), iar `JournalID` e **`SAFshorttextType`, maxLength 18 — text
+liber, NU nomenclator închis**. Deci maparea nu e cerută de schemă; e cerută de noi, fiindcă
+`inregistrari.sursa` poartă **nume interne** (interdicția 13) și fiindcă `migrare`/`iconta`, care există
+în coloană, **nu sunt jurnale** ci proveniența unui import.
+
+**Default DECLARAT, nu tacit:** o notă fără sursă intră în `DIVERSE` (Nota de contabilitate, cod
+14-6-2/A); o sursă **nemapată** e numită în avertisment, cu nota și valoarea — tiparul `[B17]`.
+
+**RED-proof 2 mutații / 2 roșii**: constanta readusă în `_gl_entries` → trei teste roșii, printre care
+cel care verifică *un `<Journal>` per origine, cu tranzacțiile care nu se amestecă*; `pull` care nu mai
+trece sursa prin mapare → testul **anti-vacuu** roșu, cel care citește sursa lui `pull`/`genereaza` cu
+`inspect.getsource`. **Arbitru extern**: structura cu patru jurnale a trecut validatorul **oficial ANAF**
+(DUKIntegrator, D406, reguli 2026.1) pe `tenant_013`/2026-08 — `valid`, zero erori.

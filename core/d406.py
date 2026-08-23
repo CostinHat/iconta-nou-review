@@ -364,12 +364,56 @@ class LinieNota:
     cont_partener_id: str = ""
 
 
+# ──────────────────────────────────────────────── JURNALUL DE ORIGINE (R22, prag 1)
+# NORMA: OMFP 2634/2015, Anexa 1, pct. 58 lit. i) - programul trebuie sa asigure, printre
+# elementele constitutive ale FIECAREI inregistrari contabile, "jurnalul de origine in care se
+# regasesc inregistrarile contabile". Pana la 23.08.2026 aici se scria literalul "GENERAL" pe
+# tot: elementul exista si nu purta nicio informatie, deci pleca la ANAF o valoare inventata.
+#
+# SCHEMA, citita la sursa (anaf_surse/d406_schema_anaf.xlsx, foaia "3. GeneralLedgerEntries"):
+#   GL.4 Journal    - cardinalitate 0..*  -> MAI MULTE jurnale sunt permise;
+#   GL.5 JournalID  - SAFshorttextType = xs:string, maxLength 18 -> TEXT LIBER, NU nomenclator
+#                     inchis. Deci sursa NU trebuie mapata pentru ca ar cere-o schema;
+#   GL.7 Type       - SAFcodeType, maxLength 9.
+# Se mapeaza TOTUSI, din doua motive proprii: `inregistrari.sursa` poarta NUME INTERNE (un nume
+# intern intr-un document citit de autoritate = interdictia 13), iar unele valori care exista in
+# coloana (`migrare`, `iconta`) nu sunt jurnale deloc, ci provenienta unui import.
+#
+# FELURILE de jurnal auxiliar sunt numite de norma insasi, Anexa 1 pct. 45: "operatiunile de casa
+# si banca, decontarile cu furnizorii, situatia incasarii-achitarii facturilor, operatiuni privind
+# salariile si contributia pentru asigurari sociale".
+_JURNALE = {
+    "casa":       ("CASA",       "Jurnal de casă", "GL"),
+    "banca":      ("BANCA",      "Jurnal de bancă", "GL"),
+    "facturi":    ("FACTURI",    "Situația încasării-achitării facturilor", "GL"),
+    "salarii":    ("SALARII",    "Jurnal privind salariile și contribuțiile", "GL"),
+    "amortizare": ("AMORTIZARE", "Jurnal de amortizări", "GL"),
+}
+# O nota fara jurnal auxiliar declarat NU primeste un jurnal inventat: intra in jurnalul de
+# operatiuni diverse, care e o notiune reala (Nota de contabilitate, cod 14-6-2/A, Anexa 1 pct. 52
+# - "pentru operatiunile care nu au la baza documente justificative se intocmeste Nota de
+# contabilitate"). Default DECLARAT, nu tacit: cate note au intrat asa dintr-o sursa NECUNOSCUTA
+# se spune in avertisment, cu valoarea numita (acelasi tipar ca UM necunoscute, [B17]).
+_JURNAL_DIVERSE = ("DIVERSE", "Jurnal de operațiuni diverse (note contabile)", "GL")
+_ANTET_JURNAL = dict([(v[0], (v[1], v[2])) for v in _JURNALE.values()]
+                     + [(_JURNAL_DIVERSE[0], (_JURNAL_DIVERSE[1], _JURNAL_DIVERSE[2]))])
+
+
+def jurnal_din_sursa(sursa):
+    """`inregistrari.sursa` -> (JournalID, Description, Type). Necunoscut sau NULL -> DIVERSE."""
+    return _JURNALE.get((sursa or "").strip().lower(), _JURNAL_DIVERSE)
+
+
+def _antet_jurnal(jid):
+    return _ANTET_JURNAL.get(jid, (_JURNAL_DIVERSE[1], _JURNAL_DIVERSE[2]))
+
+
 @dataclass
 class Nota:
     id: str               # TransactionID
     data: date
     descriere: str
-    jurnal: str = "GENERAL"
+    jurnal: str = ""      # JournalID; gol -> DIVERSE la emitere (vezi _gl_entries)
     linii: list = field(default_factory=list)
 
 
@@ -828,12 +872,22 @@ def _gl_entries(res):
     G.append('    <NumberOfEntries>%d</NumberOfEntries>' % nr)
     G.append('    <TotalDebit>%s</TotalDebit>' % _dec(td))
     G.append('    <TotalCredit>%s</TotalCredit>' % _dec(tc))
-    G.append('    <Journal>')
-    G.append('      <JournalID>GENERAL</JournalID>')
-    G.append('      <Description>Jurnal general</Description>')
-    G.append('      <Type>GL</Type>')
     cod_propriu = _cod_propriu(res.prof)
-    for n in res.note:
+    # Un <Journal> per jurnal de ORIGINE (GL.4 e 0..*). Sortare STABILA doar pe jurnal: in
+    # interiorul unui jurnal ordinea notelor ramane cea din `pull` (ORDER BY i.id), deci
+    # gruparea nu rescrie ordinea tranzactiilor.
+    _jact = None
+    for n in sorted(res.note, key=lambda x: (getattr(x, "jurnal", "") or _JURNAL_DIVERSE[0])):
+        _jid = getattr(n, "jurnal", "") or _JURNAL_DIVERSE[0]
+        if _jid != _jact:
+            if _jact is not None:
+                G.append('    </Journal>')
+            _jdesc, _jtip = _antet_jurnal(_jid)
+            G.append('    <Journal>')
+            G.append('      <JournalID>%s</JournalID>' % _esc(_jid))
+            G.append('      <Description>%s</Description>' % _esc(_jdesc))
+            G.append('      <Type>%s</Type>' % _esc(_jtip))
+            _jact = _jid
         G.append('      <Transaction>')
         G.append('        <TransactionID>%s</TransactionID>' % _esc(n.id))
         G.append('        <Period>%d</Period>' % res.luna)
@@ -901,7 +955,8 @@ def _gl_entries(res):
             G.append('          </TaxInformation>')
             G.append('        </TransactionLine>')
         G.append('      </Transaction>')
-    G.append('    </Journal>')
+    if _jact is not None:
+        G.append('    </Journal>')
     G.append('  </GeneralLedgerEntries>')
     return G
 
@@ -1238,17 +1293,24 @@ def pull(conn, schema, an, luna):
             # primeau toate CustomerID-ul aceluiasi client, fiscal incorect - Auchan
             # Italia aparea pe factura ALTEX). Notele fara factura_id (dividende,
             # inregistrari manuale) raman fara partener - nu se aplica.
-            cur.execute("SELECT i.id, i.data, i.descriere, l.cont_debit, l.cont_credit, l.suma, "
-                        "f.tert_cui, f.tert_nume "
+            cur.execute("SELECT i.id, i.data, i.descriere, i.sursa, l.cont_debit, l.cont_credit, "
+                        "l.suma, f.tert_cui, f.tert_nume "
                         "FROM inregistrari i JOIN inregistrari_linii l ON l.inregistrare_id = i.id "
                         "LEFT JOIN facturi f ON f.id = i.factura_id "
                         "WHERE i.status = 'validata' AND i.data >= %s AND i.data < %s "
                         "ORDER BY i.id, l.id", (di, ds))
             nmap = {}
+            surse_necunoscute = []   # R22: sursa nemapata -> DIVERSE, dar NUMITA in avertisment
             for r in cur.fetchall():
                 n = nmap.get(r["id"])
                 if n is None:
-                    n = Nota(id=str(r["id"]), data=r["data"], descriere=r["descriere"] or "")
+                    # R22: jurnalul de origine, din i.sursa. O sursa necunoscuta NU devine tacit
+                    # DIVERSE: se NUMESTE in avertisment (nota, valoarea).
+                    _s = (r["sursa"] or "").strip()
+                    if _s and _s.lower() not in _JURNALE:
+                        surse_necunoscute.append((str(r["id"]), _s))
+                    n = Nota(id=str(r["id"]), data=r["data"], descriere=r["descriere"] or "",
+                             jurnal=jurnal_din_sursa(_s)[0])
                     nmap[r["id"]] = n
                 suma = Decimal(str(r["suma"] or 0))
                 pid = _partener_registration_number(r["tert_cui"], eticheta=r["tert_nume"]) if r["tert_cui"] else ""
@@ -1385,7 +1447,8 @@ def pull(conn, schema, an, luna):
             # produca SalesInvoices/PurchaseInvoices goale intr-un XML valid structural.
             # Clasa de bug din 16.07. Orice garda pusa deasupra ar fi fost inghitita aici.
             raise RuntimeError("D406: citirea facturilor a eșuat - %s" % e) from e
-    return prof, conturi, clienti, furnizori, note, facturi_vanzare, facturi_cumparare, plati, strain, um_necunoscute, cote_necunoscute
+    return (prof, conturi, clienti, furnizori, note, facturi_vanzare, facturi_cumparare, plati,
+            strain, um_necunoscute, cote_necunoscute, surse_necunoscute)
 
 
 def erori_generare(prof):
@@ -1410,7 +1473,8 @@ def erori_generare(prof):
 def genereaza(conn, schema, an, luna):
     if luna < 1 or luna > 12:
         raise ValueError("Luna invalidă: %r" % luna)
-    prof, conturi, clienti, furnizori, note, fv, fc, plati, strain, um_necunoscute, cote_necunoscute = pull(conn, schema, an, luna)
+    (prof, conturi, clienti, furnizori, note, fv, fc, plati, strain, um_necunoscute,
+     cote_necunoscute, surse_necunoscute) = pull(conn, schema, an, luna)
     _er = erori_generare(prof)
     if _er:
         raise ValueError("D406 nu se poate genera: " + " ".join(_er))
@@ -1433,6 +1497,12 @@ def genereaza(conn, schema, an, luna):
         res.avertismente.insert(0, "ATENTIE: %d cont(uri) EXCLUS(e) din D406 - nu apartin normei contabile "
                                    "declarate (%s), ANAF le-ar respinge: %s. Verifică planul de conturi / baza "
                                    "contabila a firmei." % (len(strain), prof.get("baza_contabila") or "A", lista))
+    if surse_necunoscute:
+        _dets = "; ".join("nota %s: sursa %r" % (nid, s) for nid, s in surse_necunoscute)
+        res.avertismente.insert(0, "ATENȚIE (D406): %d notă/note cu sursă NEMAPATĂ la un jurnal "
+                                   "auxiliar au intrat în jurnalul de operațiuni diverse (DIVERSE) "
+                                   "- NU tacit. %s. Mapează sursa în `d406._JURNALE` sau corectează "
+                                   "sursa notei." % (len(surse_necunoscute), _dets))
     if um_necunoscute:
         _detu = "; ".join("factura %s: UM %r" % (nrf, um) for nrf, um in um_necunoscute)
         res.avertismente.insert(0, "ATENTIE (D406): unitate(i) de masura necunoscută(e) înlocuită(e) "
