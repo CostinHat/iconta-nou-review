@@ -30,7 +30,7 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **punctul de decizie 1: LUAT (Costin, 23.08) — se CONTINUĂ investigația**, fiindcă din 10 porți verzi 3 erau false, iar reparatul pe o hartă nemăsurată n-ar însemna nimic. **Ordinea e schimbată față de plan: faza 4 (instrumentele) urcă imediat**, apoi temeiurile (faza 2), apoi triajul. Motivul: instrumentele decid dacă restul măsurătorilor înseamnă ceva. Următorul pas: **faza 4**.
+- **pasul curent**: **FAZA 4 — INSTRUMENTELE, în lucru.** Pașii 1 și 2 măsurați pe 23.08: **6 din 16 instrumente au gărzi pe ele și niciun test propriu** (între ele `scan_ancore`, atins din 5 fișiere, care e chiar instrumentul clasei «dovada din proza»), iar **255 din 2.131 de gărzi (12,0%) pot raporta verde pe zero rânduri**. Rămân trei întrebări din plan: proza, mutația reproductibilă, înainte-sau-după-fix.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
@@ -1161,6 +1161,84 @@ corectă, doar articolul citat e greșit, și trăiește în comentarii, nu pe e
    nicăieri — R3, îngustată.
 4. **Vigoarea pentru cele cinci acte structurate pe puncte** (mai sus), care cere altă unitate de
    verificare decât articolul.
+
+## FAZA 4 — INSTRUMENTELE (începută 23.08.2026, pe commit `d26f0c5`)
+
+**Urcată aici prin decizia de la punctul de decizie 1.** Se măsoară cele patru întrebări din plan
+(dovada din proză · a rulat pe date nenule · mutația e reproductibilă azi · scrisă înainte sau după
+fix), **plus a cincea, adăugată de Costin**: *pe ce instrument stă fiecare gardă, și instrumentul acela
+a fost calibrat.*
+
+**Instrument:** `scripts/scan_instrumente.py`, gardat de `core/test_scan_instrumente.py` (5 teste).
+
+**Prima formă a instrumentului era greșită, și o scriu fiindcă e chiar clasa pe care faza 4 o
+numără.** Căuta cuvântul „calibrare" în docstring și raporta **`graf_temei` cu ZERO calibrări**, deși
+are patru afirmații pozitive și una negativă scrise din 01.08. Adică **instrumentul care numără gărzi
+ce-și iau dovada din proză își lua dovada din proză.** Prins pe un caz cunoscut, nu la recitire. Forma
+a doua recunoaște calibrarea **structural**, pe AST: o aserțiune al cărei capăt așteptat e un literal
+concret pinează un CAZ; una fără literal (`assert rez`) e o proprietate.
+
+**Denominator: 2.230 de funcții de test în 367 de fișiere**, dintre care 2.131 au cel puțin o
+aserțiune.
+
+### Pasul 1 — pe ce instrument stă fiecare gardă, și e calibrat
+
+**16 instrumente**, după criteriu declarat (`scan_*`, `sonda_*`, `audit_*`, `vigoare_*`, plus
+`graf_temei`, `agenda`, `agenda_drift`, `verificator_conformitate`).
+
+| instrument | fișiere de test care îl ating | test propriu | calib+ | calib− |
+|---|---|---|---|---|
+| `scan_ancore.py` | **5** | **NU** | — | — |
+| `graf_temei.py` | 4 | DA | 9 | 1 |
+| `audit_preluare.py` | 3 | DA | 28 | 4 |
+| `scan_afirmatii.py` | 2 | **NU** | — | — |
+| `audit_retentie.py` | 2 | **NU** | — | — |
+| `agenda.py` | 2 | DA | 11 | 1 |
+| `audit_schema.py` | 2 | DA | 7 | **0** |
+| `scan_citate.py` · `scan_constante.py` · `scan_respingeri.py` | 1 fiecare | **NU** | — | — |
+| `vigoare_punct.py` | 1 | DA | 9 | 0 |
+
+**Ce iese, în ordinea gravității:**
+
+1. **Șase instrumente au gărzi pe ele și niciun test propriu.** Cel mai greu:
+   **`scan_ancore.py`, atins din 5 fișiere de test** — și el e chiar instrumentul clasei *„gardă
+   care-și ia dovada din proză"* (`fara_proza`, #14 din registrul de instrumente). **Instrumentul care
+   detectează dovada-din-proză n-a fost niciodată calibrat pe un caz cunoscut.**
+2. **Trei instrumente n-au nicio gardă pe ele** — `scan_garzi.py`, `scan_garzi_culegere.py`,
+   `scan_garzi_subiect.py` — plus `agenda_drift.py` și `vigoare_articol.py`. Ori sunt manuale, ori
+   sunt cod mort; **nu se poate spune care, din cod.**
+3. **Doar 3 din 5 instrumente cu test propriu au și calibrare NEGATIVĂ** (un caz care NU trebuie
+   găsit). `audit_schema` și `vigoare_punct` n-au — iar calibrarea negativă e cea care prinde un
+   instrument prea larg, adică exact felul în care s-a orbit un scan pe 22.08.
+
+### Pasul 2 — câte gărzi pot raporta verde pe zero rânduri (interdicția 19)
+
+**255 din 2.131 — 12,0%.** Definiție structurală: toate aserțiunile funcției sunt negative (`not`,
+`<=`, `== 0`, `not in`) și niciuna nu afirmă că mulțimea pe care lucrează e nenulă.
+
+| fișier | gărzi candidate |
+|---|---|
+| `test_conformitate.py` | **18** |
+| `test_registru_functionalitati.py` | 10 |
+| `test_harta_casete.py` | 9 |
+| `test_constante_nesursate.py` · `test_d394.py` | 7 |
+| `test_limita_text_anaf.py` | 6 |
+| `test_afirmatii_tipate.py` · `test_agenda.py` · `test_corpus_surse.py` · `test_harta_temei.py` | 5 |
+
+**Fișierul cu cele mai multe e garda registrului acestei confruntări**, scrisă de mine pe 22.08. Nu e
+o ironie, e cifra.
+
+**Ce NU vede măsurătoarea, declarat:** o gardă care se apără cu `return` devreme **nu apare** —
+aserțiunea ei de nenulitate există, doar că e ocolită. Ăsta e exact cazul celor două teste de secvență
+din **R18**, care trec pe zero rânduri de 19 zile. **Deci 255 e plafon inferior, iar cazul care a
+declanșat măsurătoarea nu e printre cele numărate.**
+
+### Ce urmează în faza 4
+
+Celelalte trei întrebări din plan, nemăsurate încă: **dovada din proză** (instrumentul există,
+`scan_ancore.fara_proza` — dar el însuși e necalibrat, deci se calibrează întâi) · **mutația
+reproductibilă azi** · **scrisă înainte sau după fixul pe care o păzește**. Plus datoria moștenită din
+plan: *orice gardă care parsează `.md` are gaura citirii peste marginea rândului — de scanat toate.*
 
 ---
 
