@@ -11106,3 +11106,33 @@ ele s-ar întoarce la o listă proprie, `test_status_factura_un_loc` o oprește.
 - **cine și când:** Code, 22.08.2026, sub pragul 1. **DE CONFIRMAT de Costin.** Dacă varianta respinsă
   e cea corectă, defectul se mută în `emite_factura` (trebuie să producă altă stare) — reparația nu se
   anulează, se mută.
+
+## 23.08.2026 — Analizatorul verificatorului are teste pe clasificare (datoria din 31.07, închisă)
+
+**Datoria, textual:** *„`verificator_conformitate.py` a produs 13 fals-pozitive prin propriul bug —
+regexul de rute rata `async def` și a marcat 13 rute ca fără `schema_tenant` când ele îl aveau.
+Instrumentul care MĂSOARĂ conformitatea nu e el însuși măsurat."* Deschisă **23 de zile**. E cea mai
+veche instanță a **interdicției 76** (scrisă tot azi) și cea mai expusă: verificatorul rulează la
+**fiecare poartă** și e citat în fiecare raport.
+
+**Ce s-a făcut.** Analiza de izolare a fost **extrasă în `analiza_izolare(rad)`** — nu ca refactorizare,
+ci fiindcă altfel testele ar fi trebuit să **reimplementeze** logica, adică logică paralelă. Extragerea
+e **dovedită neutră**: ieșirea verificatorului, comparată înainte/după, e **identică**.
+
+**O singură abatere a apărut și a fost tăiată la sursă:** funcția nou-extrasă conține `"schema_tenant"`
+în predicatul ei, deci se număra **pe sine** ca resolver (183 → 184). Tăietura e pe **nume**, nu pe
+fișier — excluderea întregului `verificator*` ar fi scos și doi resolveri numărați dinainte
+(183 → 181), adică ar fi schimbat comportamentul în loc să-l păstreze.
+
+**Gardă:** `core/test_verificator_izolare.py`, **8 fixturi**, în ambele direcții — fals-pozitiv (gardul
+acuză o rută care are acces → se dezactivează și moare) și fals-negativ (tace pe una care n-are → tace
+pe un leak real).
+
+**Și partea care merită scrisă, fiindcă altfel s-ar pierde: prima formă a fixturilor NU prindea bug-ul
+pe care pretindea că-l prinde.** RED-proof-ul — mutația care scoate `(?:async )?` din cele trei
+regexuri, exact bug-ul din 31.07 — a lăsat toate cele 7 fixturi **verzi**. Citind pe cod de ce: cu
+mutația, o rută `async def` nu-și mai găsește granița corpului și e **sărită**, nu acuzată — deci
+produce fals-**negative**, iar fixtura mea de known-bad era scrisă cu `def` simplu. Calibrarea era **cu
+numele, nu cu efectul**. Adăugată a opta fixtură — rută `async` **fără** acces — iar RED-proof-ul cade
+acum exact pe ea. *Interdicția 76 aplicată propriei gărzi, la o oră după ce a fost scrisă.*
+

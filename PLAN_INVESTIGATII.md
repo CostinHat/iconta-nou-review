@@ -153,7 +153,9 @@ Despicarea contează: fără ea, o firmă cu date incomplete face aplicația să
 
 **53 e cel mai măsurabil din tot planul.** Citatul verbatim conține valoarea justificată, sau nu. Se verifică mecanic, fără judecată.
 
-**49, 52, 54, 55** sunt măsurabile după ce câmpurile există. Azi nu există, deci prima operațiune e inventarul: câte acte sunt în corpus, de când, cu ce se folosesc.
+**49, 52, 55** sunt măsurabile după ce câmpurile există. Prima operațiune e inventarul: câte acte sunt în corpus, de când, cu ce se folosesc.
+
+**54 nu mai e aici, iar textul de dinainte era greșit** (corectat 23.08.2026): spunea că *„azi nu există câmpurile"*. **Pragul există din 01.08.2026** — `CONFIRMARE_COTE_PRAG_LUNI`, implicit 6 luni, în `core/expirare_cote.py`, rulat **lunar din cron** ca RAPORT, nu ca blocaj. Măsurat: **0 confirmări expirate**, cea mai veche având 16 zile. Planul a fost scris înaintea muncii care l-a schimbat.
 
 **50 și 59** cer verificarea vigorii la sursă externă, pe articol. Rămâne cea mai mare muncă din fază **ca volum**, dar nu mai e blocată: portalul e accesibil (antet de browser + formularul lui de căutare), iar `scripts/vigoare_articol.py` citește starea articolului din forma consolidată la zi. Ce rămâne de făcut e să treacă prin toate articolele, nu să se găsească o cale la ele.
 
@@ -163,9 +165,27 @@ Despicarea contează: fără ea, o firmă cu date incomplete face aplicația să
 
 **60 e cea mai mare din fază, și cea mai valoroasă.** Azi doar valorile poartă temei; formulele, condițiile de eligibilitate, structurile de declarație, nomenclatoarele, termenele și regulile de validare nu poartă nimic. Măsurătoarea nu e „câte au temei", ci **câte elemente care implementează o normă există, și câte dintre ele îl poartă**. Numitorul e greu — de aceea se calibrează pe cazuri unde legătura e cunoscută: formula deducerii personale ↔ art. 77 alin. (4); podeaua part-time ↔ art. 146 alin. (5^6) și art. 168 alin. (6^1); nomenclatorul codurilor de indemnizație ↔ ordinul care îl aprobă.
 
-**61 se măsoară trivial azi: zero.** Legătura inversă nu există deloc. Ce se măsoară e cât ar costa construirea ei — nu câte instanțe sunt.
+**61 — textul de dinainte spunea *„se măsoară trivial azi: zero, legătura inversă nu există deloc"*, și nu mai e adevărat** (corectat 23.08.2026). Legătura inversă **se poate genera pentru 16 din cele 17 articole** citate de registrul de cote, iar unealta e construită: `core/dependenti_act.py`. Ce a făcut-o posibilă e o reparație din **aceeași zi** — R17, cheia grafului: pe graful conflat, unealta ar fi dat răspunsuri scurte cu încredere, mai rău decât să lipsească. Ce rămâne e domeniul: 17 articole, față de 339 de acte în corpus.
 
 **62 e nemăsurabilă retroactiv.** E regulă de proces. Dar are un test: se ia o modificare legislativă recentă și se întreabă *ce ar fi trebuit schimbat*. Dacă răspunsul cere căutare, legătura lipsește.
+
+
+### REGULA, adăugată 23.08.2026 (Costin): fiecare „se măsoară trivial" se verifică înainte de a fi transcris
+
+Planul a fost scris **înaintea muncii care l-a schimbat**. În aceeași fază, două afirmații ale lui s-au
+dovedit false în aceeași zi — **54** („azi nu există câmpurile": pragul exista de trei săptămâni) și
+**61** („trivial: zero": era 16 din 17, deblocat de o reparație făcută cu ore înainte).
+
+Niciuna nu e un defect al planului. Amândouă sunt afirmații care erau adevărate când s-au scris și au
+încetat să fie, fără ca nimic să se aprindă — **doc-stătut, la nivel de plan**.
+
+**Deci:** o propoziție din plan care spune *„se măsoară trivial"*, *„nu există"*, *„e zero"* sau
+*„azi nu se poate" * **se verifică înainte de a fi transcrisă într-un registru sau într-un raport.**
+Costul verificării e mic — o comandă — iar costul netransciderii e o cifră falsă care intră în lanț și
+se propagă mai departe cu autoritatea planului.
+
+Aceeași disciplină pe care o cere **interdicția 76** pentru instrumente: nu întrebi *dacă* a fost
+adevărat, ci *dacă mai e*.
 
 ### Calibrare obligatorie
 

@@ -52,3 +52,7 @@ venv/lib/python3.12/site-packages/playwright-*.dist-info/
 venv/lib/python3.12/site-packages/pyee/
 venv/lib/python3.12/site-packages/pyee-*.dist-info/
 .lant_tmp/
+
+# Jurnalul portii (23.08.2026): urma respingerilor, ca sa se poata raspunde la
+# "a prins vreodata garda X o regresie reala?". NU se versioneaza - e o urma locala.
+.poarta_jurnal.log

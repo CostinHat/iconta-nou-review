@@ -29,12 +29,32 @@ echo "[pre-commit] pytest (suita intreaga, ~32s)..."
 RC=$?
 tail -1 /tmp/precommit_pytest.log
 if [ "$RC" -ne 0 ]; then
+    # JURNALUL PORTII (23.08.2026). Un test rosu OPRESTE commitul, omul repara, si ce ajunge in
+    # istorie e deja verde - deci, PRIN CONSTRUCTIE, o garda care prinde o regresie nu lasa nicio
+    # urma. Masurat: in 1.725 de commituri, patru citeaza un test, si toate patru repara TESTUL, nu
+    # ceva prins de el. Intrebarea „a prins vreodata garda X o regresie reala?" n-avea cum sa aiba
+    # raspuns. De aici incolo are: fiecare respingere se scrie, cu data, testele picate si subiectul
+    # commitului care urma. Jurnalul NU intra in istoric (e in .gitignore) - nu e un artefact de
+    # versionat, e o urma care exista.
+    JURNAL="$ROOT/.poarta_jurnal.log"
+    {
+        echo "=== $(date -Is) RESPINS pytest exit $RC"
+        echo "    mesaj: $(head -1 "$ROOT/.git/COMMIT_EDITMSG" 2>/dev/null | cut -c1-100)"
+        echo "    HEAD : $(git rev-parse --short HEAD 2>/dev/null)"
+        grep -E "^(FAILED|ERROR) " /tmp/precommit_pytest.log 2>/dev/null | sed "s/^/    /" | head -40
+        tail -1 /tmp/precommit_pytest.log | sed "s/^/    /"
+    } >> "$JURNAL"
     echo "[pre-commit] RESPINS: pytest exit $RC (suita rosie). Log complet: /tmp/precommit_pytest.log"
+    echo "[pre-commit] consemnat in .poarta_jurnal.log ($(grep -c '^=== ' "$JURNAL" 2>/dev/null) respingeri)"
     exit 1
 fi
 TOT=$("$PY" verificator_conformitate.py 2>&1 | grep -i "TOTAL")
 echo "[pre-commit] verificator: $TOT"
 case "$TOT" in
     *"TOTAL: 0"*) echo "[pre-commit] OK - poarta verde, commit permis." ; exit 0 ;;
-    *) echo "[pre-commit] RESPINS: verificatorul nu da TOTAL 0." ; exit 1 ;;
+    *) echo "[pre-commit] RESPINS: verificatorul nu da TOTAL 0." ;
+       { echo "=== $(date -Is) RESPINS verificator"; echo "    $TOT";
+         echo "    mesaj: $(head -1 "$ROOT/.git/COMMIT_EDITMSG" 2>/dev/null | cut -c1-100)";
+       } >> "$ROOT/.poarta_jurnal.log" ;
+       exit 1 ;;
 esac

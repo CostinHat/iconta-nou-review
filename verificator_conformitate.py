@@ -957,9 +957,20 @@ except Exception as _epf:
 # nu doar main.py @app - ca sa nu taca la migrarea spre APIRouter / fisiere separate. META-GARD:
 # semnaleaza un APIRouter definit dar nemontat (rute posibil neverificate). Ratchet: baseline 0.
 IZOLARE_BASELINE = 0
-try:
+def analiza_izolare(rad):
+    """Analiza gardului de IZOLARE TENANTI, extrasa ca FUNCTIE (23.08.2026).
+
+    Logica e neschimbata; singura diferenta e ca primeste radacina in loc s-o ia din BAZA_PY. De ce:
+    datoria din 31.07.2026 (core/test_datorie.py) spune ca *instrumentul care masoara conformitatea nu
+    e el insusi masurat* - verificatorul produsese 13 FALS-POZITIVE prin propriul bug (regexul de rute
+    rata `async def`), iar un gard cu fals-pozitive se dezactiveaza si moare, unul cu fals-NEGATIVE
+    tace pe un leak real. Ca sa poata fi testat pe FIXTURI known-good / known-bad, analiza trebuie sa
+    fie apelabila pe o radacina oarecare - altfel testul ar reimplementa logica, adica logica paralela.
+
+    Intoarce: {gap, resolveri, route_files, router_defs, meta}.
+    """
     _iz_files = []
-    for _r, _d, _fs in os.walk(BAZA_PY):
+    for _r, _d, _fs in os.walk(rad):
         if any(_x in _r for _x in ("venv", "/.", "_arhiva", "/static", "/duk", "node_modules")):
             continue
         for _f in _fs:
@@ -970,9 +981,11 @@ try:
     _reredef = re.compile(r"\s*(?:async )?def ")
     _repath = re.compile(r"@\w+\.\w+\(.([^\"]+)")
     _redn = re.compile(r"(?:async )?def (\w+)")
+
     def _iz_resolver(_bd):
         return ("schema_tenant" in _bd or
                 ("public.tenants" in _bd and ("accounting_firm_id" in _bd or "user_tenants" in _bd)))
+
     _resolveri = set()
     _route_files = []
     _router_defs = []
@@ -989,6 +1002,13 @@ try:
             _j = _k + 1
             while _j < len(_ds) and _ds[_j][2] > _ds[_k][2]:
                 _j += 1
+            # `analiza_izolare` e UNEALTA, nu cod de aplicatie: contine "schema_tenant" in
+            # predicatul ei si s-ar numara singura ca resolver (183 -> 184) dupa ce a fost
+            # extrasa in functie. Taietura e pe NUME, nu pe fisier: excluderea intregului
+            # `verificator*` ar fi scos si doi resolveri numarati dinainte (183 -> 181), adica
+            # ar fi schimbat comportamentul in loc sa-l pastreze.
+            if _ds[_k][1] == "analiza_izolare":
+                continue
             if _iz_resolver("\n".join(_ls[_ds[_k][0]:_ds[_j][0]])):
                 _resolveri.add(_ds[_k][1])
         if _reroute.search(_src):
@@ -1020,6 +1040,17 @@ try:
     _allsrc = "\n".join(open(_p, encoding="utf-8").read() for _p in _iz_files)
     _meta = [(os.path.basename(_pf), _rv) for _pf, _rv in _router_defs
              if ("include_router(%s" % _rv) not in _allsrc]
+    return {"gap": _iz_gap, "resolveri": _resolveri, "route_files": _route_files,
+            "router_defs": _router_defs, "meta": _meta}
+
+
+try:
+    _rez_iz = analiza_izolare(BAZA_PY)
+    _iz_gap = _rez_iz["gap"]
+    _resolveri = _rez_iz["resolveri"]
+    _route_files = _rez_iz["route_files"]
+    _router_defs = _rez_iz["router_defs"]
+    _meta = _rez_iz["meta"]
     if len(_iz_gap) > IZOLARE_BASELINE or _meta:
         rap["izolare_fara_acces"] = (
             [("LEAK-POTENTIAL", 0, _pp, "ruta {tenant_id} atinge DB fara acces in %s: %s" % (_ff, _dd)) for _ff, _pp, _dd in _iz_gap]
