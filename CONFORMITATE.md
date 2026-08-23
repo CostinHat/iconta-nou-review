@@ -30,7 +30,7 @@ date vechi e mai rău decât niciunul**, deci data se verifică mecanic: contra 
 atins fișierul, iar o modificare încă necomisă a registrului cere data de azi.
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **FAZA 4 — INSTRUMENTELE, în lucru.** Pașii 1–4 măsurați pe 23.08. Cifre: **5 din 16 instrumente n-au nicio gardă** · **doar 4 din 12 au calibrare NEGATIVĂ** · vid posibil **175 din 730 care culeg** · proza **0 instanțe dovedite, pe 29% acoperire** · scrise după fix **18 din 376 (4,8%)**, deci testul de falsificare al planului **nu se confirmă**. Rămâne un singur pas: **mutația care probează garda e reproductibilă azi**.
+- **pasul curent**: **FAZA 4 — INSTRUMENTELE: COMPLETĂ** (23.08.2026, cei cinci pași). Rezultat: instrumentele nu mint pe cifrele lor, dar **aproape niciunul nu e apărat de propriul mod de eșec** — 4 din 12 au calibrare negativă, **1,6%** dintre gărzi își au mutația în suită, iar cele două instrumente cele mai vechi (09.07) n-au nicio gardă. De aici a ieșit **interdicția 76**. Urmează, în ordinea decisă: **temeiurile** (ce a rămas din faza 2), apoi triajul.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna deschisă.** Cea de la pragul 1 (literal vs atingibilitate), deschisă azi-dimineață, a fost **luată în aceeași zi**: se citește ca **atingibilitate**, cu motivul scris în `PLAN_LUCRU.md` — *un prag care nu se poate atinge nu ordonează nimic*.
@@ -1414,14 +1414,65 @@ nu apare nicăieri în git.**
 **Deci întrebarea are răspuns doar dacă poarta consemnează ce test a picat.** Azi nu o face. Asta e o
 observație, nu o propunere — hook-ul e al lui Costin.
 
-### Ce urmează în faza 4
+### Pasul 5 — mutația care probează garda e reproductibilă azi?
 
-Celelalte trei întrebări din plan, nemăsurate încă: **dovada din proză** (instrumentul există,
-`scan_ancore.fara_proza` — dar el însuși e necalibrat, deci se calibrează întâi) · **mutația
-reproductibilă azi** · **scrisă înainte sau după fixul pe care o păzește**. Plus datoria moștenită din
-plan: *orice gardă care parsează `.md` are gaura citirii peste marginea rândului — de scanat toate.*
+**Măsurat pe domeniul COMPLET: 409 fișiere, 2.563 de gărzi** — inclusiv cele 44 din rădăcină, pe care
+pașii 1–4 le-au ratat.
 
----
+O gardă se dovedește printr-un RED-proof: strici codul, garda se aprinde. Întrebarea planului nu e
+*dacă s-a făcut*, ci **dacă se mai poate face azi** — adică dacă dovada mai există, sau a rămas o
+afirmație despre trecut. Nu se pot rula 2.563 de mutații; dar există o formă în care mutația e
+reproductibilă **prin construcție**: garda are un **tovarăș în suită**, un al doilea test care
+construiește intrarea stricată și arată că mecanismul o prinde. Acela nu e o afirmație despre trecut —
+**e o mutație care rulează la fiecare poartă.**
+
+**Măsurat pe două definiții, și confruntate** (o singură definiție ar fi fost o opinie):
+
+| definiție | cifra | ce prinde |
+|---|---|---|
+| **convenție** — tovarășul se numește `_prinde_` / `_detectează_` / `_respinge_` | **41, în 32 de fișiere — 1,6%** | doar tovarășii **numiți** ca atare |
+| **structural** — test cu intrare construită local, care cheamă același ajutor ca alt test din fișier | 720, în 212 fișiere — 28,1% | și tovarășii nenumiți, **dar și teste unitare obișnuite** care împart un ajutor |
+
+**Diferență de 17,6×** — deci cea largă **nu se poate raporta**: e un plafon superior contaminat.
+**Cifra care se raportează e cea strictă: 41 din 2.563, adică 1,6%.**
+
+**Calibrarea trece:** cele trei cazuri cunoscute de tovarăși reali — `test_secventa_prinde_inversiune`,
+`test_fisiere_coloana_completa_prinde_gol`, `test_garzi_si_duplicat_prind_defectul` — sunt **toate
+găsite** de definiția strictă.
+
+**Ce înseamnă: pentru 98,4% dintre gărzi, mutația nu trăiește în suită.** Dacă RED-proof-ul s-a făcut,
+el există într-un docstring sau într-un mesaj de commit — adică **o afirmație despre trecut, pe care
+nimeni n-o mai poate rula**. **377 din 409 fișiere n-au niciun tovarăș.**
+
+**Instanța de azi, ca să nu pară o cifră despre alții:** am făcut **două** RED-proof-uri pe garda
+fluturașului — revenirea la rândul unic (4 roșii) și o componentă fără rând (alte 4). Amândouă au
+funcționat, amândouă sunt scrise în mesajul de commit, și **niciuna nu se poate reproduce de altcineva
+fără să refacă mutația de mână.** Garda mea e printre cele 98,4%.
+
+**Ce NU spune măsurătoarea:** că mutația celorlalte **nu** s-ar mai reproduce — n-am rulat-o. Spune
+doar că **nu e mecanizată**, deci nu se poate ști fără să o refaci. Distincția e chiar cea dintre „s-a
+verificat" și „se verifică".
+
+### Faza 4 — ce a ieșit, întreg
+
+| pas | cifra | limita declarată |
+|---|---|---|
+| 1 · instrument ↔ calibrare | **4 din 12** instrumente cu gărzi au calibrare **negativă**; cele două cele mai vechi (09.07) n-au **nicio** gardă | „calibrare" = aserțiune care pinează un literal; fixturile nu se numără |
+| 2 · verde pe zero rânduri | **175 din 730** care culeg | nu prinde gărzile care se apără cu `return` devreme — exact **R18** |
+| 3 · dovada din proză | **0 instanțe dovedite, pe 29% acoperire**; 14 gărzi expuse la clasă | „0 în proză" e o afirmație despre 13 din 44 |
+| 4 · înainte / odată cu / după fix | **18 din 376 — 4,8%** scrise după fix; testul de falsificare al planului **nu se confirmă** | „reparație" e proxy pe mesajul de commit; fereastra de 14 zile e o alegere |
+| 5 · mutația reproductibilă | **41 din 2.563 — 1,6%** au mutația în suită | nu s-a testat dacă restul s-ar reproduce, doar că nu e mecanizat |
+
+**Rezultatul fazei, într-o propoziție:** instrumentele nu mint pe cifrele lor, dar **aproape niciunul
+nu e apărat de propriul mod de eșec** — 4 din 12 au calibrare negativă, 1,6% dintre gărzi își au
+mutația în suită, iar cele mai vechi două instrumente n-au fost verificate niciodată. **De aceea
+interdicția 76**, și de aceea faza a urcat prima.
+
+**Ce a scos faza, dincolo de cifre:** patru instanțe ale interdicției 76 într-o zi, toate la
+instrumente scrise de mine · două restanțe noi (**R18**, **R19**) · o corecție de denominator de 12,6%
+· și confirmarea că testul de falsificare al planului nu ține, deci regula „gardă înainte de reparație"
+rămâne — dar guvernează **un sfert** din gărzi, nu toate.
+
 
 ## 1 — O valoare fiscală scrisă în afara registrului
 
