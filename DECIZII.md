@@ -11566,3 +11566,22 @@ fără un nivel declarat pe fișier.
 **4. Răspuns la «ce anume nu se poate verifica»:** trei drumuri — duplicarea prin **rescriere** (nu
 import), apelul în sus prin **HTTP**, și împărțirea muchiilor laterale. Deci **nu e adevărat că
 mecanica cheamă în sus prin natura ei**: pe importuri se vede, și e curată.
+
+## 23.08.2026 (a șaisprezecea tură) — calibrarea detectorului, cu cifre pe fiecare filtru
+
+**1. Verificat înainte de a lucra, a treia oară la rând.** `estimare_impozit`, `plafon_ded`,
+`ded_pers_estimare`, `plafon_micro` — **niciunul nu există** în `static/js/`; nici valoarea `3750`.
+Nicio constantă fiscală de forma `plafon… = <cifre>` în JS. Și **zero** module din `core/` care importă
+din prezentare — cele trei potriviri de ieri erau comentarii, verificat din nou pe `^import`/`^from`.
+
+**2. Răspunsul la «care e modul în care poate greși un scan care caută formule fiscale în JS»:
+măsurat, nu enumerat.** Fiecare filtru relaxat pe rând, cu numărul de candidate. Lungimea liniei și
+fișierele `.html` **nu ascund nimic**. Cerința de cotă literală ascunde **text, nu formule** — dar
+tocmai relaxarea ei a scos clasa etichetelor cu cotă hardcodată.
+
+**3. Clasă nouă, consemnată ca prag 3:** cotele scrise ca **text în etichetă** lângă valori calculate
+de server. Corecte azi (verificate contra `COTE`: cas 0,25 · cass 0,10 · impozit_venit 0,10), dar la o
+schimbare de cotă eticheta minte lângă o cifră corectă.
+
+**4. Și un fals pozitiv al detectorului meu, numit în registru:** `121` din tiparul suta-mărită prinde
+codul de obligație 121. Îl taie o euristică pe ghilimele, care ar putea ascunde o formulă din șablon.

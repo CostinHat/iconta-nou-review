@@ -4411,3 +4411,25 @@ apărută în prezentare, fără rotunjire, pică.
 
 **Ce NU face, scris:** nu scoate regula fiscală din prezentare. Oprește **cifra greșită**, nu
 **duplicarea** — pentru a doua e nevoie de o cale prin server.
+
+**Calibrarea DETECTORULUI de formule fiscale din JS, prin relaxarea fiecărui filtru** (23.08.2026).
+Interdicția 76 aplicată instrumentului, nu doar reparației — și de data asta cu **cifre pe fiecare
+filtru**, nu cu o listă de temeri:
+
+| filtrul relaxat | candidate | ce aduce |
+|---|---|---|
+| *(bază)* | **3** | cele trei formule |
+| fără cotă literală | 34 | **+30, niciuna formulă** — dar scoate o clasă nouă |
+| fără nume fiscal | 11 | +7, aritmetică generică |
+| fără limita de lungime | 3 | **zero** |
+| inclusiv `.html` | 3 | **zero** |
+
+**Două rezultate care nu s-ar fi văzut altfel.** (1) Lungimea liniei și fișierele `.html` **nu ascund
+nimic** — măsurat, nu presupus; două temeri scoase din listă. (2) Relaxarea pe cotă a scos o **clasă
+structurală nouă**: `rip_ecran.js:148–150` scrie cotele ca **text în etichetă** — «CAS (25%)»,
+«CASS (10%)», «Impozit (10%)» — lângă valori venite calculate de la server. Corecte azi, verificate
+contra registrului, dar la o schimbare de cotă **cifra vine corectă și eticheta de lângă ea minte**.
+
+**Și un fals pozitiv propriu, numit:** tiparul include `121` (suta mărită 21/121) și prinde codul de
+obligație `121`. Îl taie filtrul pe numărul de ghilimele — care **nu e o regulă fiscală, e o
+euristică**, și ar putea ascunde o formulă scrisă într-un șablon.
