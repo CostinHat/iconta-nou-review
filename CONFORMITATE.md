@@ -1110,7 +1110,7 @@ scos ce nu se știa**, nu din defecte noi.
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `bf16f32`
 - **ce blochează**: toate cele **54** de depuneri înregistrate vin din **importul istoric**, care nu captează valorile. Calea care le persistă (`coada_api.py:300`) e scrisă și gardată, dar **n-a fost folosită niciodată** — coada are 3 elemente, toate în `la_senior`. Deci lanțul *poziție depusă → cont → note → document* n-a fost parcurs nici măcar o dată pe date reale, iar sonda care-l parcurge întoarce **zero** dintr-un motiv care nu se poate deosebi mecanic de „totul e în regulă".
-- **ce s-a făcut totuși, ca absența să nu treacă drept sănătate**: D112 preferă de azi XML-ul depus și, când regenerează, **își declară limita în temei**. `verifica_tva` rămâne pe regenerare — fereastra TVA are reguli proprii, și nu se atinge fără măsurătoare separată.
+- **ce s-a făcut totuși, ca absența să nu treacă drept sănătate**: **toate cele trei** verificări care compară o declarație preferă acum ce s-a **depus**, și, când regenerează, **își declară limita** — în temei și în `limita` afișată. Erau **1 din 3** (doar `verifica_d390`). La `verifica_tva`, cheia depunerii **nu e luna curentă**, ci **ultima lună a ferestrei TVA**: coada scrie eticheta decontului (3/6/9/12 pentru trimestriali), deci o căutare pe `luna` ar fi ratat **sistematic și tăcut** exact firmele trimestriale, căzând liniștit înapoi pe regenerare cu un temei care pretinde că s-a căutat. Gardat structural în `core/test_compara_ce_s_a_depus.py`, cu RED-proof pe chiar mutația aia.
 - **condiția de deblocare**: **trebuie** o **primă depunere reală prin coadă** — aprobare de senior + depunere efectivă — **de la** Costin sau de la un contabil care folosește aplicația, **pentru ca** sonda de lanț să aibă ce parcurge. Fără ea, lanțul *poziție depusă → cont → note → document* **blochează** măsurarea interdicției 32 la nivelul ei, iar sonda întoarce zero dintr-un motiv care nu se poate deosebi mecanic de „totul e în regulă" (interdicția 19). O firmă de test e suficientă. Până atunci, orice afirmație despre „lanțul funcționează" e despre cod, nu despre date.
 
 ### R39 — Coloana pe care se sprijină verificarea D112 nu se scrie de nicăieri
@@ -2565,6 +2565,14 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 > **Rămâne PLAFON INFERIOR**: o listă golită de un `parametrize`, de un filtru care nu potrivește
 > nimic, sau de o fixtură care întoarce `[]` nu se vede structural de aici.
 >
+> **ȘI E O PROPRIETATE, NU UN PROCENT.** *O aserțiune pe text trece pe date goale — cu excepția
+> celor care caută un **mesaj de eroare**, adică ceva ce apare **doar când ceva merge prost**. Restul
+> caută ceva ce apare **oricum**.* Nu e o observație despre un eșantion, e o proprietate a formei:
+> `"X" in ceva` întreabă *există X undeva*, nu *s-a întâmplat ce trebuia*. Măsurat cu direcția erorii
+> scrisă (`fel_ancorei`): **119 din 1341 (8,9%)** ancorează pe un semn de rău, **1222** pe ceva ce
+> apare oricum — iar clasificatorul supraevaluează semnul de rău, deci **119 e plafon SUPERIOR** și
+> **1222 plafon INFERIOR**.
+>
 > **Consecința pentru următoarea măsurătoare pe 18**: nu are voie să presupună disjuncția. Un
 > instrument care numără „gărzi pe proză" și unul care numără „gărzi pe zero rânduri" raportează, în
 > parte, **aceleași aserțiuni** — iar adunarea celor două cifre ar supraestima, în timp ce tratarea
@@ -2791,9 +2799,10 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 > declarația nu se păstrează. Sonda care pornea din poziția depusă a găsit **0 poziții** de desfăcut
 > — și **asta nu e un verde**, e chiar interdicția 19: absența datelor, nu absența defectului.
 >
-> **3. Cine compară ce.** Din patru verificări încrucișate, **una singură citea ce s-a depus**
-> (`verifica_d390`, prin `_d300_depus_randuri`); celelalte trei **regenerau** declarația din datele de
-> azi. O verificare care regenerează compară *evidența de azi* cu *declarația care s-ar genera azi* —
+> **3. Cine compară ce.** Din patru verificări încrucișate, trei compară o declarație — și **una
+> singură citea ce s-a depus** (`verifica_d390`, prin `_d300_depus_randuri`); celelalte două
+> **regenerau**. *(A patra, `verifica_cota_tva`, nu compară o declarație, deci nu e în clasă.)*
+> **Reparate amândouă, 24.08**: D112 și D300 preferă acum depusul. **3 din 3.** O verificare care regenerează compară *evidența de azi* cu *declarația care s-ar genera azi* —
 > iar divergența care contează, între ce ține ANAF și ce spun registrele, **nu poate apărea în ea**.
 >
 > **4. Disciplina exista deja în casă.** `compara_d390_vs_d300` tratează corect `randuri is None`:

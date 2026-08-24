@@ -199,3 +199,35 @@ def test_CALIBRARE_o_aserțiune_directa_NU_e_vacua(tmp_path):
         "    t = io.open('main.py').read()\n"
         "    assert 'def tenant_jurnal' in t\n"))
     assert not _s.vacue(r), "o aserțiune directă e acuzată că trece pe gol"
+
+
+# ── proprietatea: ce fel de lucru caută ancora ───────────────────────────────
+def test_ancorele_pe_ceva_ce_apare_oricum_nu_cresc(pin):
+    """Clichet pe clasa MARE. O ancoră care caută ceva prezent și în starea «nu s-a întâmplat
+    nimic» nu discriminează între cele două lumi pe care testul ar trebui să le separe."""
+    n = _s.pe_fel()["apare_oricum"]
+    assert n <= pin["_pe_fel"]["apare_oricum"], (
+        "aserțiuni ancorate pe ceva ce apare oricum: %d > %d — caută un semn care apare DOAR când "
+        "comportamentul testat s-a produs, sau asertează pe structură"
+        % (n, pin["_pe_fel"]["apare_oricum"]))
+
+
+def test_CALIBRARE_un_mesaj_de_eroare_e_recunoscut():
+    """Excepția din proprietate. Un mesaj de eroare nu poate fi produs de starea normală."""
+    assert _s.fel_ancorei("Nu am putut încărca registrul") == "mesaj_de_rau"
+    assert _s.fel_ancorei("declarantul lipsește din profil") == "mesaj_de_rau"
+
+
+def test_CALIBRARE_un_identificator_NU_e_semn_de_rau():
+    """Direcția opusă: numele unei funcții, o clasă CSS sau o cheie apar și când totul e normal."""
+    assert _s.fel_ancorei("randeazaListaFirme") == "apare_oricum"
+    assert _s.fel_ancorei("pct-verde") == "apare_oricum"
+    assert _s.fel_ancorei("ROW_NUMBER() OVER") == "apare_oricum"
+
+
+def test_proportia_confirma_proprietatea(pin):
+    """Proprietatea spune că excepția e MICĂ. Dacă s-ar inversa, textul din METODA §23 ar descrie
+    altă lume și ar trebui rescris — nu lăsat să pară confirmat."""
+    d = pin["_pe_fel"]
+    assert d["mesaj_de_rau"] < d["apare_oricum"] / 4, (
+        "excepția nu mai e excepție (%r) — rescrie proprietatea din METODA §23" % d)

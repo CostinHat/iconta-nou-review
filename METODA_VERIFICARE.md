@@ -811,6 +811,27 @@ presupune disjuncția.* Adunarea cifrelor supraestimează; tratarea lor ca alter
 exact instanțele cele mai slabe — cele care cad în **amândouă**, și care trec din două motive
 independente, deci rezistă la două reparații diferite.
 
+### Proprietatea, nu procentul
+
+**O aserțiune pe text trece pe date goale — cu o singură excepție: cele care caută un mesaj de
+eroare, adică ceva ce apare doar când ceva merge prost. Restul caută ceva ce apare oricum.**
+
+Nu e o observație despre un eșantion, e o proprietate a **formei**. `"X" in ceva` întreabă *există X
+undeva*, nu *s-a întâmplat ce trebuia*. Când X e prezent și în starea „nu s-a întâmplat nimic" — un
+nume de funcție, o clasă CSS, o cheie, un fragment de cod — aserțiunea **nu discriminează** între
+cele două lumi pe care testul ar trebui să le separe. Un mesaj de eroare e altceva: **nu poate fi
+produs de starea normală**, deci găsirea lui chiar spune ceva.
+
+De aici iese și legătura cu §22 și cu suprapunerea 18/19: aserțiunea pe text nu-și verifică nici
+**premisa** (a avut ce compara?), nici **locul** potrivirii (unde a găsit-o?), nici **discriminarea**
+(ar fi trecut și fără ca lucrul testat să se întâmple?). Trei întrebări, același gol.
+
+**Măsurat, cu direcția erorii scrisă** (`core/scan_garzi_pe_text.fel_ancorei`): din **1341** de
+aserțiuni, **119 (8,9%)** ancorează pe un semn de rău; **1222** pe ceva ce apare oricum.
+Clasificatorul **supraevaluează deliberat** semnul de rău — prinde și SQL, de pildă
+`'NOT NULL fara default'` — deci **119 e plafon SUPERIOR** și **1222 plafon INFERIOR**. Excepția e
+mai mică decât pare, nu mai mare.
+
 ### Ce cere, practic
 
 1. **Sursa de adevăr a unei gărzi e structura**: `json.loads` + câmp și valoare · parsare XML +

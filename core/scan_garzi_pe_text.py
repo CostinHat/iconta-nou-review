@@ -231,3 +231,39 @@ def vacue(radacini=None):
                     linii.add(m.lineno)
         out.extend(a for a in lista if a["linia"] in linii)
     return out
+
+
+# Semne ca ancora descrie ceva ce apare DOAR cand merge prost. Lista supraevalueaza deliberat
+# (prinde si SQL de tipul "NOT NULL fara default"), deci `mesaj_de_rau` e plafon SUPERIOR, iar
+# `apare_oricum` plafon INFERIOR. Directia se scrie, nu se presupune.
+SEMNE_RAU = (
+    "eroare", "erori", "lipse", "lipsa", "lipsă", "nu se poate", "nu poate", "nu am putut",
+    "invalid", "gresit", "greșit", "atentie", "atenție", "blocat", "blocaj", "refuz", "esec",
+    "eșec", "necunoscut", "nevalid", "obligatoriu", "trebuie", "nu exista", "nu există",
+    "imposibil", "conflict", "duplicat", "expirat", "depasit", "depășit", "avertism",
+    "nu s-a", "n-are", "nu are", "fara", "fără", "raise", "except", "traceback", "failed",
+    "error", "warning", "not found", "missing", "denied", "necontabiliz", "neconfirm",
+)
+
+
+def fel_ancorei(ancora):
+    """`mesaj_de_rau` | `apare_oricum`.
+
+    PROPRIETATEA, nu un procent (Costin, 24.08.2026): *o aserțiune pe text trece pe date goale —
+    cu excepția celor care caută un mesaj de eroare, adică ceva ce apare doar când ceva merge prost.
+    Restul caută ceva ce apare oricum.*
+
+    Nu e o proprietate a esantionului, e a FORMEI. `"X" in ceva` intreaba *exista X undeva*, nu
+    *s-a intamplat ce trebuia*. Cand X e prezent si in starea "nu s-a intamplat nimic" — un nume de
+    functie, o clasa CSS, o cheie, un fragment de cod — aserțiunea nu discrimineaza intre cele doua
+    lumi pe care ar trebui sa le separe. Un mesaj de eroare nu poate fi produs de starea normala,
+    deci gasirea lui chiar spune ceva."""
+    low = ancora.strip().lower()
+    return "mesaj_de_rau" if any(x in low for x in SEMNE_RAU) else "apare_oricum"
+
+
+def pe_fel(radacini=None):
+    d = {"mesaj_de_rau": 0, "apare_oricum": 0}
+    for a in aserțiuni(radacini):
+        d[fel_ancorei(a["ancora"])] += 1
+    return d

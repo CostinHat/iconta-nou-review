@@ -27,6 +27,7 @@
   "core/test_coada_vizualizare.py": 3,
   "core/test_cod_partener.py": 4,
   "core/test_coduri_cm_din_registru.py": 2,
+  "core/test_compara_ce_s_a_depus.py": 1,
   "core/test_conformitate.py": 1,
   "core/test_cota_fara_default.py": 1,
   "core/test_cron.py": 1,
@@ -39,7 +40,6 @@
   "core/test_d112_caen_codboala.py": 5,
   "core/test_d112_cert_overflow.py": 1,
   "core/test_d112_cnp_angajat.py": 5,
-  "core/test_d112_compara_ce_s_a_depus.py": 1,
   "core/test_d112_nume_dataang.py": 6,
   "core/test_d112_reconciliere.py": 18,
   "core/test_d177_formular.py": 1,
@@ -128,6 +128,11 @@
  "_vacue": 221,
  "_vacue_de_ce": "aserțiuni din clasă care trec ȘI pe iterabil gol — suprapunerea cu interdicția 19. Clasele NU sunt disjuncte. Plafon inferior.",
  "_motive": {
-  "core/test_d112_compara_ce_s_a_depus.py": "1 aserțiune, declarată în fișier: temeiul e proza CITITĂ DE CONTABIL, iar cerința e chiar că fraza destinată lui spune limita regenerării. Nu există structură sub o propoziție - subiectul aserțiunii ESTE proza. Perechea ei structurală (`sursa_declarat` ca CÂMP) e testul de deasupra. Nu e într-o buclă, deci nu poate trece pe listă goală."
- }
+  "core/test_compara_ce_s_a_depus.py": "1 aserțiune, declarată în fișier: temeiul e proza CITITĂ DE CONTABIL, iar cerința e chiar că fraza destinată lui spune limita regenerării. Nu există structură sub o propoziție - subiectul aserțiunii ESTE proza. Perechea ei structurală (`sursa_declarat` ca CÂMP) e testul de deasupra. Nu e într-o buclă, deci nu poate trece pe listă goală. (Fisierul se numea test_d112_...; redenumit cand a inceput sa acopere si D300.)"
+ },
+ "_pe_fel": {
+  "mesaj_de_rau": 119,
+  "apare_oricum": 1222
+ },
+ "_pe_fel_de_ce": "PROPRIETATE, nu procent: o aserțiune pe text trece pe date goale, exceptand cele care cauta un mesaj de eroare. `mesaj_de_rau` e plafon SUPERIOR (clasificatorul supraevalueaza), `apare_oricum` plafon INFERIOR."
 }

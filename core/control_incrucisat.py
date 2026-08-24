@@ -279,7 +279,8 @@ def _actiune_valideaza(patru_ochi):
     return "Validează nota (din ciornă în evidență)."
 
 
-def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True):
+def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True,
+                sursa_declarat="regenerat"):
     """PURA: compara randurile D300 cu rulajele contabile.
 
     [P8, 21.08.2026] `an`/`luna` sunt OBLIGATORII. Prima forma le-a pus optionale, „ca sa nu ating
@@ -290,6 +291,10 @@ def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True):
     necontate: facturi FARA nota validata, fiecare cu are_ciorna (nota propusa, nevalidata).
     Ciorna nu intra in rulaj si NU inchide constatarea: verdele vine dupa patru-ochi."""
     necontate = necontate or []
+    # [interdictia 32] DIN CE s-a comparat, spus o data si folosit in ambele temeiuri de mai jos.
+    _de_unde = ("din rândurile DEPUSE, persistate la depunere" if sursa_declarat == "depus"
+                else "REGENERAT acum — nu s-a păstrat ce s-a depus, deci comparația e evidența "
+                     "de azi față de decontul care S-AR genera azi")
     # TVA deductibilă = R27_2 (TOTAL taxă deductibilă), NU R31_2 (care e doar AJUSTAREA
     # pro-rata, goala la pro_rata 100%). Bug dovedit 16.07.2026: pe tenant_002 D300
     # declara corect R27_2=210 (achizitie ORANGE), dar comparatia pe R31_2=0 vs 4426=210
@@ -308,13 +313,13 @@ def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True):
         fara_nota = [f for f in grup if not f.get("are_ciorna")]
         cu_ciorna = [f for f in grup if f.get("are_ciorna")]
         tva_grup = sum(_d(f.get("tva")) for f in grup)
-        temei = (f"D300 rând {rand} (facturi {fel} în lună, art. 281 CF) vs "
+        temei = (f"D300 rând {rand} ({_de_unde}; facturi {fel} în lună, art. 281 CF) vs "
                  f"rulaj {sens} cont {cont} pe lună, numai note validate "
                  f"(ciorna e propunere, nu evidență).")
         mesaj = (f"{eticheta}: D300 declară {_lei(decl)}, contul {cont} are {_lei(contabil)} "
                  f"(diferență {_lei(dif)}).")
         baza = {"eticheta": eticheta, "declarat": decl, "contabil": contabil,
-                "diferenta": dif, "temei": temei}
+                "diferenta": dif, "temei": temei, "sursa_declarat": sursa_declarat}
         if abs(dif) <= TOLERANTA:
             rez.append(dict(baza, stare="verde",
                             mesaj=f"{eticheta}: D300 și contul {cont} coincid.",
@@ -363,11 +368,11 @@ def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True):
         if decl == 0 and contabil == 0:
             continue
         dif = decl - contabil
-        temei = (f"D300 rând {rand} (rezultatul decontului, sold la sfârșitul perioadei fiscale) vs "
+        temei = (f"D300 rând {rand} ({_de_unde}; rezultatul decontului, sold la sfârșitul perioadei fiscale) vs "
                  f"rulaj {sens} cont {cont}, numai note validate. Reconciliază rezultatul, nu doar "
                  f"totalurile colectată/deductibilă.")
         baza = {"eticheta": eticheta, "declarat": decl, "contabil": contabil,
-                "diferenta": dif, "temei": temei}
+                "diferenta": dif, "temei": temei, "sursa_declarat": sursa_declarat}
         if abs(dif) <= TOLERANTA:
             rez.append(dict(baza, stare="verde",
                             mesaj=f"{eticheta}: D300 și contul {cont} coincid ({_lei(decl)}).",
@@ -669,16 +674,33 @@ def verifica_tva(conn, schema, an, luna):
     # dadea rosu fals garantat. Foloseste perioada fiscala TVA din vectorul firmei (tip_decont).
     _inc, _sf = fereastra_tva(Perioada(an, luna=luna), perioada_tva_tip(_prof))
     _de, _pana = _inc.isoformat(), _sf.isoformat()
+    # [interdictia 32 / R40] Intai ce s-a DEPUS. Cheia depunerii NU e luna curenta, ci ULTIMA LUNA A
+    # FERESTREI TVA: pentru trimestriali, coada scrie luna 3/6/9/12 (eticheta decontului), nu luna
+    # calendaristica. Fereastra e semi-deschisa [inceput, sfarsit), deci ultima luna e sfarsit-1 zi.
+    # Fara corectia asta, cautarea ar rata sistematic exact firmele trimestriale - si ar rata TACUT.
+    from datetime import timedelta as _td
+    _ult = _sf - _td(days=1)
+    _gasit_dep, _randuri_dep = _d300_depus_randuri(conn, schema, _ult.year, _ult.month)
+    sursa_declarat = "regenerat"
+    if _gasit_dep and _randuri_dep:
+        _R_dep = (_randuri_dep or {}).get("R") or {}
+        if _R_dep:
+            R, sursa_declarat = _R_dep, "depus"
     necontate = facturi_necontabilizate(conn, schema, _de, _pana)
     rulaje = rulaje_interval(conn, schema, _de, _pana, ("4427", "4426", "4423", "4424", "4428"))
     constatari = compara_tva(R, rulaje, an, luna, necontate,
+                             sursa_declarat=sursa_declarat,
                              patru_ochi=_patru_ochi_activ(conn, schema))
     stare = "rosu" if any(c["stare"] == "rosu" for c in constatari) else "verde"
     return {
         "an": an, "luna": luna, "stare": stare, "constatari": constatari,
         "facturi_necontabilizate": necontate,
 
-        "limita": ("Verificat: D300 (calculat din facturile lunii) vs conturile 4427/4426. "
+        "limita": (("Verificat: D300 DEPUS (rândurile persistate la depunere) vs conturile "
+                    "4427/4426. " if sursa_declarat == "depus" else
+                    "Verificat: D300 REGENERAT acum din facturile lunii — nu s-a păstrat ce s-a "
+                    "depus, deci comparația e evidența de azi față de decontul care s-ar genera "
+                    "azi — vs conturile 4427/4426. ") +
                    "Evidența = note validate; ciornele nu intră în rulaj. "
                    "NEVERIFICAT: dacă D300 depus efectiv la ANAF coincide cu cel calculat aici "
                    "(necesită SPV)."),
