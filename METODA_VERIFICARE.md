@@ -712,6 +712,60 @@ două** e — altfel „4 module nelegate" amestecă o datorie de livrare cu o v
 
 ---
 
+## §23 — O GARDĂ ASERTEAZĂ PE STRUCTURĂ, NU PE TEXT
+
+**Regula, dată de Costin 24.08.2026.** Nu *„cheia apare undeva în răspuns"*, ci *„câmpul are valoarea
+asta"*. Un răspuns JSON se **parsează** și se verifică pe câmpuri; un XML, pe elemente; o randare, pe
+arbore; codul, pe **AST**. **Unde nu se poate asertă pe structură, se declară de ce, lângă gardă** —
+nu se strecoară un `in` pe șir ca și cum ar fi echivalent.
+
+**De ce.** Un `"cheie" in text` nu păzește lucrul, păzește **proza de lângă lucru**. Nu poate deosebi
+*„e implementat"* de *„e descris"*. Iar cea mai rea formă e cea auto-referențială: gardul citește
+**documentația lucrului pe care îl păzește**, deci trece verde exact pentru că altcineva a scris
+despre lucru — sau pentru că l-a scris el însuși.
+
+### Instanțele — trei într-o singură zi, toate ale mele
+
+Toate din reparația Registrului-jurnal (24.08), toate prinse de RED-proof, niciuna de poartă:
+
+| # | forma | ce s-a întâmplat |
+|---|---|---|
+| 1 | `'"nr_curent":' in ruta` | șirul era în **docstringul rutei, scris de mine** — gardul trecea verde fără ca ruta să producă cheia |
+| 2 | curățarea de docstring cu `re.sub` lacom | ștergea și **SQL-ul din același f-string**, iar gardul acuza fals că numerotarea dispăruse |
+| 3 | `'note_fara_document' in ruta` | aceeași ca 1, pe altă coloană — **auto-referențială** |
+
+A doua e cea instructivă: încercarea de a repara o gardă textuală **tot cu text** a produs un
+instrument care greșea în **ambele direcții** — deci fără plafon, nici superior, nici inferior (§22).
+Ieșirea nu era o curățare mai bună, ci **schimbarea sursei de adevăr**: `ast.parse` + cheile din
+nodurile `Dict`. Un docstring nu e un `ast.Dict`, iar un comentariu nu ajunge deloc în AST — deci
+distincția *construit* vs *descris* devine imposibil de ratat, nu doar improbabil.
+
+### Cifra, și de ce nu e 13
+
+Interdicția **18** spunea **14** gărzi (una exclusă prin natura ei → 13), măsurat **ad-hoc** pe 22.08,
+pe 369 de fișiere-gardă. Măsurătoarea aia **n-a lăsat niciun instrument în urmă**: azi sunt 397 de
+fișiere și cifra nu se poate recalcula. Reconstruită pe un domeniu **declarat** — fișierul numește o
+sursă `.py`/`.js`, o deschide, și asertează `"șir" in ceva`, fără s-o curețe de proză — clasa e **50**.
+
+Deci 13 nu era un inventar, era un **plafon inferior al unui domeniu mai îngust**. *O cifră care nu
+se poate recalcula nu e o măsurătoare, e o amintire* — și îmbătrânește tăcut, ceea ce e chiar clasa
+pe care o păzește registrul confruntării.
+
+### Ce cere, practic
+
+1. **Sursa de adevăr a unei gărzi e structura**: `json.loads` + câmp și valoare · parsare XML +
+   element · arbore de randare · `ast.parse` + noduri. Nu textul din care s-a construit.
+2. **Compromisul textual se îngustează și se declară.** Dacă o aserțiune chiar trebuie să cadă pe
+   text (SQL, de pildă, e șir chiar și în AST), atunci **AST-ul localizează** constanta și abia
+   înăuntrul ei se caută — iar motivul se scrie lângă gardă.
+3. **Clichet, nu campanie.** Cele 50 nu se repară azi, dar numărul lor **nu poate crește**:
+   `core/test_garzi_pe_text.py` cu calibrare în ambele direcții. O gardă nouă pe șir e o **regresie**,
+   nu un compromis.
+
+Legat de [[§22]] (ambele direcții de eșec) și de interdicția **18**, căreia îi dă instrumentul viu.
+
+---
+
 ## §22 — UN INSTRUMENT CARE GREȘEȘTE ÎN AMBELE DIRECȚII N-ARE NICI PLAFON SUPERIOR, NICI INFERIOR
 
 **Regula, dată de Costin 24.08.2026.** Interdicția **76** cere calibrare pe propriul mod de eșec.

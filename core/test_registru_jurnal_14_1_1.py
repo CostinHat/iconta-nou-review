@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
 """GARD — Registrul-jurnal păstrează cele trei coloane cerute de norma 14-1-1.
 
-  core/test_registru_jurnal_14_1_1.py
-
 Confruntat cu OMFP 2634/2015 anexa 2 (cod 14-1-1) pe 24.08.2026: din opt coloane, patru ieșeau, iar
 trei lipseau — **coloana 1** (numărul curent de la 1 ianuarie), **coloana 3** (felul, numărul și data
 documentului justificativ) și **totalizarea lunară**. Reparate prin derivare la citire.
@@ -10,18 +8,26 @@ documentului justificativ) și **totalizarea lunară**. Reparate prin derivare l
 CE FACE IMPOSIBIL: ca vreuna dintre cele trei să dispară tăcut dintr-un artefact care se prezintă la
 control. Un registru din care lipsește coloana documentului justificativ nu se poate apăra.
 
+ASERTEAZĂ PE STRUCTURĂ, NU PE TEXT (regula lui Costin, 24.08.2026). Prima formă a acestui fișier a
+fost chiar instanța care a produs regula: căuta `nr_curent` și `note_fara_document` ca **șiruri**
+oriunde în rută — și le găsea în **docstringul rutei, scris de mine**. Curățarea de docstring, la
+încercarea următoare, ștergea și SQL-ul din același f-string, deci gardul greșea în **ambele**
+direcții. Acum ruta se **parsează** (`ast`), iar cheile de răspuns se citesc din **nodurile `Dict`**
+ale funcției — o cheie care nu e construită nu poate fi găsită într-un comentariu.
+
+UNDE NU SE POATE ASERTĂ PE STRUCTURĂ, ȘI DE CE: fereastra `ROW_NUMBER` trăiește într-un **SQL**, iar
+SQL-ul e un șir chiar și în AST. Nu există aici un parser de SQL, iar a aduce unul pentru o aserțiune
+ar fi mai mult risc decât acoperire. Compromisul e declarat și îngustat: AST-ul **localizează**
+constanta (deci nu se poate confunda cu un comentariu sau cu un docstring), și abia în interiorul ei
+se caută textul. Restul aserțiunilor n-au nevoie de asta.
+
 CE NU VERIFICĂ, declarat: dacă valorile sunt corecte pe datele unei firme anume — aia cere baza de
 date și e o probă, nu un gard. Aici se păzește **contractul**: că cele trei elemente sunt produse, și
 că numerotarea e pe AN, nu pe lună.
-
-DOUĂ ASERȚIUNI AU FOST MUTATE DE PE PROZĂ PE COD, după ce RED-proof-ul le-a prins verzi: căutau
-`nr_curent` și `note_fara_document` *oriunde* în rută — iar amândouă apar și în **docstringul** rutei,
-scris de mine. Un gard care se potrivește pe proza de lângă cod nu păzește codul. Acum se caută forma
-de **cheie în răspuns** (`"nume":`), pe textul cu docstring și comentarii **scoase**.
 """
+import ast
 import io
 import os
-import re
 from datetime import date
 
 from core import jurnal_api as _j
@@ -29,27 +35,31 @@ from core import jurnal_api as _j
 RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 
-def _ruta():
-    t = io.open(os.path.join(RAD, "main.py"), encoding="utf-8").read()
-    m = re.search(r'@app\.get\("/tenants/\{tenant_id\}/jurnal"\).*?\n(?=@app\.)', t, re.S)
-    assert m, "nu mai gasesc ruta /jurnal in main.py — gardul masoara ce nu vede"
-    return m.group(0)
+def _functia():
+    """Nodul AST al rutei `tenant_jurnal` din main.py — structură, nu text."""
+    arb = ast.parse(io.open(os.path.join(RAD, "main.py"), encoding="utf-8").read())
+    for n in ast.walk(arb):
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)) and n.name == "tenant_jurnal":
+            return n
+    raise AssertionError("nu mai găsesc funcția `tenant_jurnal` în main.py — gardul măsoară ce nu vede")
 
 
-def _cod():
-    """Ruta FĂRĂ docstringul ei și fără comentarii — ce vede interpretorul, nu ce scrie lângă.
+def _chei_construite():
+    """Cheile literale ale TUTUROR dicționarelor construite în rută.
 
-    Se scoate DOAR docstringul funcției, nu orice bloc triplu-citat: SQL-ul rutei trăiește într-un
-    `f\"\"\"...\"\"\"`, iar o curățare lacomă îl șterge și el — prima formă a acestui helper făcea exact
-    asta și lăsa gardul să acuze că numerotarea a dispărut."""
-    r = _ruta()
-    i = r.find('"""')
-    if i != -1 and (i == 0 or r[i - 1] != "f"):
-        j = r.find('"""', i + 3)
-        if j != -1:
-            r = r[:i] + " " + r[j + 3:]
-    r = re.sub(r"(?m)^\s*#.*$", " ", r)
-    return r
+    Un docstring nu e un `ast.Dict`, un comentariu nu ajunge în AST. Deci ce se găsește aici e
+    **construit**, nu descris — exact distincția pe care forma veche a acestui gard n-o putea face."""
+    return {k.value
+            for n in ast.walk(_functia()) if isinstance(n, ast.Dict)
+            for k in n.keys
+            if isinstance(k, ast.Constant) and isinstance(k.value, str)}
+
+
+def _sql():
+    """Constantele de șir lungi din rută, concatenate: SQL-ul, localizat prin AST."""
+    return "\n".join(n.value for n in ast.walk(_functia())
+                     if isinstance(n, ast.Constant) and isinstance(n.value, str)
+                     and len(n.value) > 200)
 
 
 # ── coloana 3: derivarea documentului justificativ ────────────────────────────
@@ -75,41 +85,58 @@ def test_CALIBRARE_fara_sursa_documentul_ramane_LIPSA():
     assert _j.document_justificativ("   ", None, None, None, None) is None
 
 
-# ── coloanele 1 si totalizarea, in CODUL rutei ───────────────────────────────
-def test_ruta_produce_numarul_curent():
-    assert '"nr_curent":' in _cod(), "coloana 1 (numarul curent) nu mai e cheie in raspuns"
+# ── coloanele 1, 3 si totalizarea: CHEI CONSTRUITE in rută ───────────────────
+def test_ruta_construieste_numarul_curent():
+    assert "nr_curent" in _chei_construite(), (
+        "coloana 1 (numărul curent) nu mai e cheie construită în răspuns")
 
 
-def test_CALIBRARE_numerotarea_e_pe_AN_nu_pe_luna():
-    """Partea subtila, si singura care poate regresa tacit: norma cere numerotare *incepand de la 1
-    ianuarie*. Daca fereastra ROW_NUMBER ar fi pe luna, fiecare luna ar reincepe de la 1 — raspunsul
-    ar arata la fel de plauzibil, dar registrul ar fi gresit."""
-    r = _cod()
-    assert "ROW_NUMBER() OVER" in r, "numerotarea nu mai e calculata"
-    i = r.index("WITH pe_an")
-    fereastra = r[i:r.index("ROW_NUMBER() OVER", i) + 200]
-    assert "date_trunc('year'" in fereastra, (
-        "fereastra de numerotare nu mai e pe AN — daca e pe luna, numarul curent reincepe lunar, "
-        "contra normei 14-1-1 col. 1")
+def test_ruta_construieste_documentul_justificativ():
+    assert "document" in _chei_construite(), "coloana 3 nu mai e cheie construită în răspuns"
 
 
 def test_ruta_totalizeaza_lunar():
-    r = _cod()
-    for cheie in ('"total_debit":', '"total_credit":'):
-        assert cheie in r, "totalizarea lunara ceruta de 14-1-1 lipseste: %s" % cheie
+    chei = _chei_construite()
+    for c in ("total_debit", "total_credit"):
+        assert c in chei, "totalizarea lunară cerută de 14-1-1 lipsește: %s" % c
 
 
 def test_absenta_documentului_se_NUMARA_nu_se_ascunde():
     """P6: ce nu se poate deriva se spune. Un registru cu jumatate din coloana 3 goala, fara sa spuna
     cate, arata la fel cu unul complet."""
-    assert '"note_fara_document":' in _cod(), (
-        "numarul notelor fara document justificativ nu mai e cheie in raspuns")
+    assert "note_fara_document" in _chei_construite(), (
+        "numarul notelor fara document justificativ nu mai e cheie construita in raspuns")
 
 
-def test_CALIBRARE_gardul_citeste_COD_nu_PROZA():
-    """Modul de esec al gardului insusi, prins de RED-proof: doua aserțiuni cautau numele *oriunde*
-    in ruta si treceau din DOCSTRING. Aici se dovedeste ca `_cod()` chiar scoate proza."""
-    r = _ruta()
-    c = _cod()
-    assert "Confruntat cu norma" in r, "premisa calibrarii a disparut din docstringul rutei"
-    assert "Confruntat cu norma" not in c, "`_cod()` nu mai scoate docstringul — gardul citeste proza"
+def test_ruta_chiar_cheama_derivarea():
+    """Cheia `document` ar putea exista și plină cu altceva. Aici se cere **apelul** helperului —
+    tot din AST, deci un apel comentat nu contează."""
+    apeluri = {getattr(n.func, "attr", None) or getattr(n.func, "id", None)
+               for n in ast.walk(_functia()) if isinstance(n, ast.Call)}
+    assert "document_justificativ" in apeluri, (
+        "ruta nu mai cheamă derivarea documentului — cheia poate fi acolo, dar goală")
+
+
+# ── singura aserțiune pe text, cu motivul declarat mai sus ───────────────────
+def test_CALIBRARE_numerotarea_e_pe_AN_nu_pe_luna():
+    """Partea subtila, si singura care poate regresa tacit: norma cere numerotare *incepand de la 1
+    ianuarie*. Daca fereastra ROW_NUMBER ar fi pe luna, fiecare luna ar reincepe de la 1 — raspunsul
+    ar arata la fel de plauzibil, dar registrul ar fi gresit."""
+    sql = _sql()
+    assert "ROW_NUMBER() OVER" in sql, "numerotarea nu mai e calculata in SQL-ul rutei"
+    i = sql.index("WITH pe_an")
+    fereastra = sql[i:sql.index("ROW_NUMBER() OVER", i) + 200]
+    assert "date_trunc('year'" in fereastra, (
+        "fereastra de numerotare nu mai e pe AN — daca e pe luna, numarul curent reincepe lunar, "
+        "contra normei 14-1-1 col. 1")
+
+
+def test_CALIBRARE_gardul_citeste_STRUCTURA_nu_PROZA():
+    """Modul de esec al gardului insusi, prins de RED-proof si numit de Costin ca regula: forma veche
+    gasea numele in DOCSTRINGUL rutei. Aici se dovedeste ca sursa de adevar e AST-ul.
+
+    `Confruntat cu norma` **exista** in docstringul rutei si **nu poate** aparea printre chei."""
+    doc = ast.get_docstring(_functia()) or ""
+    assert "Confruntat cu norma" in doc, "premisa calibrarii a disparut din docstringul rutei"
+    assert "Confruntat cu norma" not in _chei_construite(), (
+        "proza rutei ajunge printre cheile construite — extractorul s-a rupt")

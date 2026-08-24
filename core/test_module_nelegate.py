@@ -35,6 +35,10 @@ PIN = {
     "core/salarii_contare.py":
         "PRODUCTIE, nelegat — control_coerenta() e verificare incrucisata nota-vs-declaratie; "
         "salarizare.py:296 o NUMESTE, dar intr-un COMENTARIU",
+    "core/scan_garzi_pe_text.py":
+        "INSTRUMENT DE MASURA, nu cale de productie (aceeasi clasa cu scan_ancore): singurul lui "
+        "consumator legitim e gardul core/test_garzi_pe_text.py, iar sonda exclude importatorii de "
+        "test. Un apel din productie ar fi gresit — nu masoara date de firma, masoara garzile",
     "core/scan_valori_afisate.py":
         "FALS POZITIV DECLARAT (modul de esec E2): unealta rulata din linia de comanda, fara garda "
         "`if __name__ == \"__main__\"`, deci sonda n-o poate deosebi de un modul nelegat",
