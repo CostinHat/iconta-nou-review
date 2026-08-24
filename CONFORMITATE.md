@@ -283,6 +283,34 @@ clasificate pe existența unui nume?** Verificat, cele 7 poziții ale pragului 3
   (`main.py:3799`) întoarce înregistrările lunii cu dată, număr, descriere, cont debitor, cont
   creditor și sumă. De confruntat cu 14-1-1 înainte de a fi tratat ca absent.
 
+  > **CONFRUNTAT 24.08.2026 (pragul 3, poziția 1), pe commit `56768af`.** Norma: OMFP 2634/2015,
+  > anexa 2, cod 14-1-1 — opt coloane, enumerate în text. Măsurat pe **34 de note reale**, pe toate
+  > cele 17 scheme.
+  >
+  > | col. | ce cere norma | ce produce ruta | verdict |
+  > |---|---|---|---|
+  > | **1** | numărul curent al operațiunilor, **de la 1 ianuarie** până la sfârșitul exercițiului | `numar` populat **1 din 34 (3%)**; `id` e cheie de bază de date, nu număr curent — iar ruta e **lunară**, deci nu poate produce o secvență cumulativă pe an | **ABSENT** |
+  > | 2 | data (an, lună, zi) a înregistrării | `data` | prezent |
+  > | **3** | **felul, numărul și data documentului justificativ** (factura, chitanța…) sau ale jurnalului auxiliar | `factura_id` la **15 din 34 (44%)**; coloana **`document_ref` EXISTĂ în schemă** și e populată **0 din 34 (0%)** | **ABSENT** |
+  > | 4 | explicațiile | `descriere` | prezent |
+  > | 5, 6 | simbolul conturilor debitoare / creditoare | `cont_debit`, `cont_credit` | prezent |
+  > | 7, 8 | sumele totale, debitoare și creditoare, **din documentul justificativ** | `suma`, o singură coloană pe linie | parțial |
+  > | — | *„sumele debitoare și creditoare se **totalizează lunar**"* | ruta întoarce `{"note": [...]}`, **fără niciun total** | **ABSENT** |
+  >
+  > **Verdictul se schimbă: Registrul-jurnal NU e un artefact absent.** Are producător, iar 4 din 8
+  > coloane ies corect. Ce lipsește e precis: **coloana 1** (numerotare cronologică anuală),
+  > **coloana 3** (identificarea documentului justificativ) și **totalizarea lunară**. Deci trece din
+  > lista 3 a verdictului 1d (*„nu iese"*) în **lista 4** (*„iese, dar nu se validează"*) — altă
+  > clasă, alt cost, altă reparație.
+  >
+  > **Și coloana 3 e chiar interdicția 32**, pe artefactul ei: `document_ref` nu e un câmp care
+  > lipsește din model, e un câmp **care există și nu se scrie niciodată**. Reparația registrului
+  > trece prin popularea lui, nu prin construirea unui artefact nou — ceea ce e mult mai ieftin decât
+  > spunea încadrarea de dinainte.
+  >
+  > *Regula pe care o aplică asta e chiar cea din tabelul de triaj: o poziție se atribuie după CE
+  > PRODUCE modulul, confruntat cu norma — nu după numele funcției și nu după existența rutei.*
+
 **Ce a rezistat verificării, și se spune la fel de explicit:** **registrul de evidență fiscală** are
 într-adevăr **zero** potriviri în `.py`, `.js`, `.html` — apare doar în corpusul de acte. Și
 **evidența TVA** n-are producător sub niciun nume de jurnal: `calcul_d300` agregă direct din
