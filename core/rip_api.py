@@ -3,7 +3,7 @@
 Convenție: funcții (conn, schema, ...). Tot ce e generat automat = ciorna."""
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
-from core.d212_engine import calculeaza_d212, PLAFOANE_VENIT_2025
+from core import d212_engine as _e
 
 CATEGORII_INCASARE = {"activitate", "aport", "credit", "subventie", "alte_incasari"}
 CATEGORII_PLATA = {"cheltuiala_deductibila", "cheltuiala_limitata",
@@ -142,10 +142,21 @@ def import_casa(conn, schema, an, luna, user_id=None):
 
 
 def fisa_d212(conn, schema, an, optiune_cas=False, optiune_cass=False):
-    """Fisa calcul D212 din operatiunile VALIDATE. Plafoane verificate doar pt venituri 2025."""
-    if an != 2025:
-        return {"eroare": "plafoane verificate doar pentru venituri 2025; "
-                          "pentru alt an verifică întâi sursele oficiale"}
+    """Fisa calcul D212 din operatiunile VALIDATE, pe anul de venit `an`.
+
+    [an_derivat 24.08.2026 — PRAG 1] Inainte: `if an != 2025: eroare`, iar plafoanele veneau din
+    constanta `PLAFOANE_VENIT_2025`. Efectul pe o instalare din august 2026: butonul «Fisa D212» nu
+    putea produce DECAT fisa anului trecut, pentru orice PFA — iar `PLAFOANE_VENIT_2026`, construit si
+    VERIFICAT LA SURSA pe 03.08.2026 (Legea 239/2025 art.XII pct.19, CASS 72 sm in loc de 60), nu era
+    chemat de nimeni. Capabilitate verificata si NELEGATA: aceeasi clasa cu R33.
+
+    Refuzul RAMANE, dar pe motivul lui real — anii pentru care plafoanele sunt verificate la sursa
+    (`d212_engine.ANI_VERIFICATI`). Nu se largeste dincolo de dovada: 2027 se refuza in continuare.
+    """
+    if an not in _e.ANI_VERIFICATI:
+        return {"eroare": "plafoane verificate doar pentru venituri %s; "
+                          "pentru alt an verifică întâi sursele oficiale"
+                          % "/".join(str(a) for a in _e.ANI_VERIFICATI)}
     with conn.cursor() as cur:
         cur.execute(f"""SELECT
               COALESCE(SUM(suma) FILTER (WHERE tip='incasare' AND categorie='activitate'),0),
@@ -157,7 +168,11 @@ def fisa_d212(conn, schema, an, optiune_cas=False, optiune_cass=False):
         cur.execute(f"""SELECT COUNT(*) FROM {schema}.rip_operatiuni
                         WHERE EXTRACT(YEAR FROM data_operatiune)=%s AND status='ciorna'""", (an,))
         ciorne = cur.fetchone()[0]
-    r = calculeaza_d212(float(vb), float(cd), PLAFOANE_VENIT_2025, optiune_cas, optiune_cass)
+    p = _e.plafoane_an(an)
+    r = _e.calculeaza_d212(float(vb), float(cd), p, optiune_cas, optiune_cass)
+    # anul si reperul PLEACA de la server: ecranul nu are de unde sa le stie (P3).
+    r["an"] = an
+    r["salariu_minim"] = p.salariu_minim
     r["cheltuieli_limitate_de_analizat"] = float(cl)
     r["ciorne_nevalidate"] = ciorne
     if cl or ciorne:

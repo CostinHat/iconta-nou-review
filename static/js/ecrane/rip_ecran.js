@@ -139,10 +139,10 @@ export async function ecranRip(corp, nav, t) {
 
     corp.querySelector("#r-d212").addEventListener("click", async () => {
       try {
-        const d = await api.get(`/tenants/${t.id}/rip/d212/2025`);
+        const d = await api.get(`/tenants/${t.id}/rip/d212/${an}`);
         zonaMsg.innerHTML = `
           <div class="pf-frand" style="display:block">
-            <div class="pf-frand-nume">Fi\u0219a de calcul D212 \u00b7 venituri 2025 (sm 4.050 lei)</div>
+            <div class="pf-frand-nume">Fi\u0219a de calcul D212 \u00b7 venituri ${d.an} (sm ${bani(d.salariu_minim)} lei)</div>
             <div class="pf-frand-sub">
               Venit brut: <b>${d.venit_brut}</b> \u00b7 Cheltuieli deductibile: <b>${d.cheltuieli_deductibile}</b> \u00b7 Venit net: <b>${d.venit_net}</b><br>
               CAS (25%): <b>${d.cas.cas}</b> lei${d.cas.obligatoriu ? "" : " (neobligatoriu - sub 12 salarii minime)"} \u00b7 baza ${d.cas.baza}<br>

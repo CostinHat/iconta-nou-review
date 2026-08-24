@@ -28,7 +28,8 @@ BAZA = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
 CERERE = re.compile(r"""(?:api\.(?:get|post|put|delete)|fetch)\s*\(\s*[`'"][^`'"]*?\b(20\d\d)\b""")
 
 # CLICHET: cate sunt azi. Nu poate creste. Coboara cand R31 se rezolva.
-CLICHET = 1
+# 1 -> 0 pe 24.08.2026: `rip_ecran.js` cere acum `/rip/d212/${an}`, cu anul din stare.
+CLICHET = 0
 
 
 def _fisiere():

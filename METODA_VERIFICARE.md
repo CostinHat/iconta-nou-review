@@ -687,6 +687,53 @@ verifică pe sine*: nu minte despre ce măsoară, minte prin **tăcerea** despre
 **Ce nu spune regula:** că orice gard trebuie să citească toate limbajele. Costul e real. Spune doar că
 **diferența dintre clasă și domeniu se scrie**, ca să nu fie citită drept zero.
 
+## §19 — UN MODUL DE VERIFICARE NELEGAT E O GARDĂ CARE NU PĂZEȘTE
+
+**Regula, cerută de Costin 24.08.2026.** Un modul care verifică ceva și pe care **nu-l cheamă nimeni**
+nu e cod mort inofensiv: e o **verificare pe care toată lumea o crede făcută**. Iar de la ce se vede,
+arată identic cu unul viu.
+
+**De ce nu se aprinde nimic.** Un modul mort care **pică** ar fi fost găsit demult. Unul mort care
+**trece** e invizibil, fiindcă **testele lui îl țin verde** — verdele lor e chiar alibiul. Aceeași
+formă cu „regula scrisă și nepăzită se citește ca respectată" (§14), mutată un nivel mai jos: aici
+regula e păzită, dar paznicul nu e chemat.
+
+**Cum se măsoară: prin AST, nu prin grep — și diferența ESTE rezultatul.** Un `grep <nume_modul>` dă
+zeci de potriviri, majoritatea **comentarii**. Proza care numește un modul nu-l apelează. Instrument:
+`core/scan_module_nelegate.py`, cu cele cinci moduri de eșec scrise în antet înaintea primei
+măsurători (interdicția 76). Gard: `core/test_module_nelegate.py`, clichet pe **NUME**, nu pe număr.
+
+### Cele trei instanțe măsurate
+
+1. **`core/echilibru_perioada.py`** — verificare de echilibru + orfani, **zero importatori de
+   producție**, ȘI există o **a doua implementare, legată**: `main.py:4389` calculează „echilibru" prin
+   `verificatoare.verifica_balanta`. Deci nu e doar nelegat — e **logica paralelă** pe care o interzice
+   P7, în forma cea mai greu de văzut: cea în care varianta nealeasă tace.
+2. **`core/salarii_contare.py`** — `control_coerenta`, verificare încrucișată **notă contabilă vs
+   declarație**, zero importatori. `core/salarizare.py:296` **o numește** — *„incrucisat
+   nota-vs-declaratie"* — dar într-un **COMENTARIU**. Un scan pe text ar fi raportat modulul ca legat.
+3. **`rip_api.fisa_d212` ↔ `d212_engine.PLAFOANE_VENIT_2026`** — instanța cea mai ascuțită, și e la
+   nivel de **FUNCȚIE**, nu de modul: modulul era legat, dar plafoanele 2026 — **verificate la sursă pe
+   03.08.2026**, Legea 239/2025 art. XII pct. 19, CASS 72 sm în loc de 60 — nu erau chemate de nimeni,
+   fiindcă `fisa_d212` refuza orice an ≠ 2025 și folosea constanta anului trecut. Efect pe o instalare
+   din august 2026: **butonul «Fișa D212» nu putea produce decât fișa anului trecut, pentru orice PFA.**
+   Reparată 24.08.2026 (prag 1).
+
+### Ce spune contra-instanța, și de ce se scrie aici
+
+**`control_incrucisat` a fost PRESUPUS nelegat** în aceeași zi. Măsurat: **6 importatori de producție**
+și data nașterii **15.07.2026**. Verificarea încrucișată rulează în producție din iulie. *O presupunere
+despre o legătură lipsă nu e o măsurătoare* — de aceea modulul stă acum în **calibrarea negativă** a
+gardului: dacă sonda ar începe să-l raporteze, ea e ruptă, nu codul.
+
+### Limita, declarată
+
+Măsurătoarea e la nivel de **MODUL**. Instanța 3 — cea cu efect real la un om — e la nivel de
+**FUNCȚIE**, și a fost găsită **de mână**, nu de sondă. Un modul importat pentru o funcție, cu alte
+trei moarte, trece neatins. **Clasa nu e închisă**, iar cifra „4 module" e un plafon inferior.
+
+---
+
 ## §18 — LA O SCHIMBARE DE VALOARE FISCALĂ, JS-UL SE CAUTĂ EXPLICIT
 
 **Observația lui Costin, 24.08.2026:** *«JS-ul nu e atins de campaniile fiscale fiindcă nu e căutat

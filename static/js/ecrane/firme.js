@@ -5,7 +5,7 @@ import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULOR
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { fluxConcediu } from "./flux_concediu.js?v=ec0eaa8e7b";  /* cm_flux_v1 */
 import { randeazaFacturi } from "./facturi_ecran.js?v=10d469f862";
-import { ecranRip } from "./rip_ecran.js?v=aee3ed851b";
+import { ecranRip } from "./rip_ecran.js?v=e1b8bf534a";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=7019abe613";
 import { ecranEtransport } from "./etransport_ecran.js?v=0dca1ea392";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=05a5b55996";  // [p96_import_firma] + [Q4] import in masa

@@ -47,6 +47,12 @@ PLAFOANE_VENIT_2025 = plafoane_an(2025)
 # reperul = salariul minim la 1 ian 2026 = 4050 (fix pe an, majorarea 4325 din iulie NU-l atinge).
 PLAFOANE_VENIT_2026 = plafoane_an(2026)
 
+# Anii de venit pentru care plafoanele sunt VERIFICATE LA SURSA. `fisa_d212` refuza restul:
+# un an neverificat ar produce o fisa PLAUZIBILA pe praguri neconfirmate, iar aia e mai rea
+# decat un refuz. Un an se adauga DUPA ce plafoanele lui sunt verificate la sursa si scrise
+# deasupra, nu inainte. [an_derivat 24.08.2026]
+ANI_VERIFICATI = (2025, 2026)
+
 
 def calculeaza_cas(venit_net: float, plafoane: PlafoaneD212, optiune_cas: bool = False) -> dict:
     """
