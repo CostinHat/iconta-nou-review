@@ -1065,6 +1065,32 @@ scos ce nu se știa**, nu din defecte noi.
 - **de ce contează totuși**: e aceeași clasă cu campania **#2** (CUI/CNP de test care nu treceau cifra de control) — *un instrument calibrat pe date invalide raportează despre o lume care nu există*. Aici efectul e ascuțit: orice gard viitor care confruntă **antetul cu liniile** — exact felul de verificare încrucișată pe care se sprijină D394 și D300 — ar găsi trei „defecte" care sunt de fapt fixturi, sau ar fi calibrat să le tolereze și ar deveni orb pe cazul real.
 - **condiția de deblocare**: seeder-ul scrie antetul **din linii**, nu pe lângă ele — sau, dacă divergența e intenționată pentru un scenariu anume, o declară explicit (o coloană, un marcaj) ca să poată fi deosebită de una reală. Se închide când recalcularea din linii coincide pe toate cele 41, **sau** când cele 3 sunt marcate ca divergente-cu-intenție și un test le numără.
 
+### R33 — Module de verificare care n-au fost NICIODATĂ legate
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · P7 · **PRAG 2** *(nu produce o cifră greșită — produce o verificare care nu se întâmplă)*
+- **notă de dependență**: legarea e INTERNĂ (un apel lipsă), dar **unde** se leagă `echilibru_perioada` cere o **decizie**: azi există două implementări ale echilibrului, iar cea legată e `verificatoare.verifica_balanta`. Nota nu se gardează — nu decide nimic singură (`PLAN_LUCRU`, „CINE deblochează").
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `88bc33b`
+- **măsurat la**: 2026-08-24 · **pe commit**: `88bc33b`
+- **ce blochează**: **4 module de producție din `core/` au funcții publice, teste care trec, și ZERO importatori în afara testelor.** Clasa, formulată de Costin: *„nu s-a stricat, n-a fost niciodată legat."* Ce o face invizibilă: **testele le țin verzi**, deci nimic nu semnalează. Un modul mort care pică ar fi fost găsit demult; unul mort care trece nu se deosebește de unul viu.
+
+  | modul | publice | ce e |
+  |---|---|---|
+  | `core/echilibru_perioada.py` | 3 | **verificare** — `echilibru_perioada(linii)`, `orfani(...)`, `echilibru_perioada_db(...)` |
+  | `core/salarii_contare.py` | 3 | **verificare** — `control_coerenta(note, ...)`, notă contabilă vs declarație |
+  | `core/compensare.py` | 5 | `pull(conn, schema)`, `propune_compensari(...)`, `necesita_sistem_electronic(...)` |
+  | `core/fisa_cont.py` | 3 | `fisa_cont(...)`, `conturi_cu_miscare(...)` |
+
+- **CELE DOUĂ FAPTE CARE TAIE, amândouă găsite pentru că măsurătoarea e pe AST, nu pe text.** *(1)* `core/salarizare.py:296` **numește** `salarii_contare.control_coerenta` — *„incrucisat nota-vs-declaratie"* — dar e un **COMENTARIU**. Proza descrie o legătură care nu există, iar un `grep` ar fi raportat modulul ca legat. Aceeași clasă cu **R16** (proza care descrie codul poate fi falsă de la naștere). *(2)* `main.py:4389` chiar calculează „echilibru", dar prin `verificatoare.verifica_balanta` — deci `echilibru_perioada` nu e doar cod nelegat, e **a doua implementare a aceleiași verificări**, cea care n-a fost aleasă. Asta o mută lângă P7 și lângă interdicția „reparație reală, fără logică paralelă".
+- **CUM S-A MĂSURAT, și ce NU vede.** `core/scan_module_nelegate.py` (instrument nou), pe AST: **839** de fișiere `.py`, **361** de module ne-test cu funcții publice. Modurile de eșec sunt scrise în antetul instrumentului **înaintea** primei măsurători (interdicția 76): **E1** import dinamic prin șir — raportat separat, nu înghițit (singurul din `main.py` e `__import__("time")`); **E2** puncte de intrare cu `__main__` — 77, excluse, dar **sub-detectate**: un script fără gardă `__main__` cade greșit în listă, iar instanța e chiar `core/scan_valori_afisate.py`, ținută în clichet ca **fals pozitiv declarat**; **E3** module încărcate de altceva decât un import Python — `main.py`, pe care uvicorn îl încarcă; **E4** **NEACOPERIT** — un modul *importat* ale cărui funcții publice nu se cheamă niciodată; sonda e la nivel de **modul**, nu de funcție; **E5** module fără suprafață publică.
+- **CALIBRARE NEGATIVĂ, în gardă, nu doar în proză.** `control_incrucisat`, `common`, `d300`, `control_fiscal_api`, `verificatoare` — toate au importatori de producție și niciunul nu apare în listă. `control_incrucisat` e acolo **deliberat**: pe 24.08 a fost presupus nelegat, iar măsurătoarea a arătat **6 importatori de producție** (`main.py:4358`, `control_fiscal_api` ×3, `d301.py:370`, `salarii_contare.py:74`, `alerte_control_fiscal.py:52`) și data nașterii **15.07.2026**, nu „acum patru zile".
+- **gardat**: `core/test_module_nelegate.py` — clichet ancorat pe **NUME**, nu pe număr (o înlocuire cap-la-cap ar fi trecut printr-un contor), bidirecțional: pică și când intră unul nou, și când unul se leagă și rămâne în pin. Fiecare intrare poartă **motivul** scris. RED-probat pe trei mutații, dintre care una pe **instrument**: sonda pusă să numere proza ca apel → gardul devine roșu.
+- **condiția de deblocare**: fiecare dintre cele **patru** primește ori un apelant în producție, ori o declarație scrisă de ce rămâne nelegat — iar `echilibru_perioada` cere în plus o **decizie**: care dintre cele două implementări ale echilibrului rămâne, fiindcă a le păstra pe amândouă e chiar logica paralelă. Se închide când `PIN` din `core/test_module_nelegate.py` nu mai conține niciun modul marcat `PRODUCTIE, nelegat`.
+- **ce NU închide**: nivelul FUNCȚIE (E4). Un modul importat pentru o funcție, cu alte trei moarte, trece neatins. Aia e o măsurătoare separată, mai scumpă, și n-a fost făcută.
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
