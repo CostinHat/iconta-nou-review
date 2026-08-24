@@ -435,7 +435,14 @@ def toleranta_d112(nr_salariati):
 
 
 def compara_d112(totaluri, rulaje, note_ciorna=0, nr_salariati=0, patru_ochi=True):
-    """PURA: totaluri declarate (din XML) vs rulaj CREDIT pe conturile de datorii."""
+    """PURA: totaluri declarate (din XML) vs rulaj CREDIT pe conturile de datorii.
+
+    `note_ciorna` are TREI valori, nu doua: un numar (se stie cate note in ciorna sunt), `0` (se
+    stie ca nu e niciuna) si **`None` = NU SE POATE STI**. A treia exista fiindca filtrul care le
+    numara se sprijina pe `inregistrari.document_ref`, o coloana pe care nu o scrie nicio cale de
+    INSERT (R39). Un `0` de acolo n-ar fi o observatie, ci o constanta - iar o cauza afirmata pe el
+    ar fi interdictia 10.
+    """
     rez = []
     tol = toleranta_d112(nr_salariati)
     for eticheta, coduri, cont in COD_CONT_D112:
@@ -455,7 +462,23 @@ def compara_d112(totaluri, rulaje, note_ciorna=0, nr_salariati=0, patru_ochi=Tru
             continue
         mesaj = (f"{eticheta}: D112 declară {_lei(decl)}, contul {cont} are {_lei(contabil)} "
                  f"(diferență {_lei(dif)}).")
-        if contabil == 0 and decl > 0 and not note_ciorna:
+        if contabil == 0 and decl > 0 and note_ciorna is None:
+            # [R39/interdictia 10] NU se afirma cauza: nu se stie daca statul e necontabilizat sau
+            # doar lasat in ciorna, fiindca `document_ref` nu se scrie de nicaieri (0 din 48 de cai
+            # de INSERT). Se spune ce se vede, se declara ce nu se stie, si se numesc AMANDOUA
+            # actiunile - un verdict care alege una din ele ar fi ghicit.
+            rez.append(dict(baza, stare="rosu", mesaj=mesaj, remediu={
+                "fel": "investigatie",
+                "cauza": (f"Contul {cont} nu are rulaj în lună — se numără doar notele validate. "
+                          f"Dacă statul de plată e înregistrat și lăsat în ciornă nu se poate ști: "
+                          f"nota nu poartă documentul justificativ care ar deosebi cele două "
+                          f"situații."),
+                "actiune": ("Verifică dacă statul de plată e contabilizat. Dacă nu este, "
+                            "contabilizează-l; dacă este și a rămas în ciornă, "
+                            + _actiune_valideaza(patru_ochi)),
+                "facturi": [],
+            }))
+        elif contabil == 0 and decl > 0 and not note_ciorna:
             rez.append(dict(baza, stare="rosu", mesaj=mesaj, remediu={
                 "fel": "executabil",
                 "cauza": f"Statul de plată nu este contabilizat: contul {cont} nu are rulaj în lună.",
@@ -480,11 +503,27 @@ def compara_d112(totaluri, rulaje, note_ciorna=0, nr_salariati=0, patru_ochi=Tru
     return rez
 
 
+def _document_ref_populat(conn, schema):
+    """Coloana `document_ref` e scrisa VREODATA pe schema asta?
+
+    [R39/interdictia 32] Daca nu e, orice filtru pe ea nu poate deosebi nimic, iar un 0 din el nu e
+    o observatie - e o constanta. Masurat 24.08.2026: 0 din 48 de cai de INSERT o ating."""
+    with conn.cursor() as cur:
+        cur.execute(f"""SELECT EXISTS (SELECT 1 FROM {schema}.inregistrari
+                                       WHERE document_ref IS NOT NULL)""")
+        return bool(cur.fetchone()[0])
+
+
 def note_salarii_ciorna(conn, schema, an, luna):
     """DOAR statul de plata (document_ref 'SAL LL/AAAA'). nota_contract_special
     (zilieri/cenzori) scrie tot sursa='salarii' - nu e stat de plata, nu se numara."""
     inceput = "%04d-%02d-01" % (an, luna)
     sfarsit = ("%04d-01-01" % (an + 1,)) if luna == 12 else ("%04d-%02d-01" % (an, luna + 1))
+    # [R39] Necunoscutul se DECLARA, nu se rotunjeste la 0: daca nimeni n-a scris niciodata
+    # `document_ref`, filtrul de mai jos nu poate distinge statul de plata de restul, iar cifla lui
+    # ar fi 0 indiferent de realitate. P6: ce nu se poate sti se spune, nu se presupune favorabil.
+    if not _document_ref_populat(conn, schema):
+        return None
     with conn.cursor() as cur:
         cur.execute(f"""SELECT count(*) FROM {schema}.inregistrari
                         WHERE data >= %s AND data < %s AND status = 'ciorna'

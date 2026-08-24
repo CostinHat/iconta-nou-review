@@ -1101,6 +1101,18 @@ scos ce nu se știa**, nu din defecte noi.
 - **REPARAT 24.08.2026**, pe regula lui Costin: *„dacă starea se poate deriva, se derivă; dacă nu se poate deriva încă, se scoate semaforul, nu se lasă verde. Absența unui indicator e onestă; un verde care nu verifică nimic nu e."* Instanța **1** — starea are acum trei valori (`derivat`), iar când nu se poate deriva **semaforul lipsește**, nu devine verde. Instanțele **2** și **3** — culoarea devine condiționată, ca frații de lângă ele. Instanța 3 **nu** s-a derivat din `control_incrucisat`, cum cerea comanda: `cab.depuse_luna` vine din `core/capacitate_api.py:57`, un `COUNT(*) FILTER (WHERE depus_la >= început_de_lună)` — numărătoare de volum al cabinetului, fără legătură cu controlul fiscal, deci n-are ce deriva de acolo. Gardat de `core/test_verde_derivat.py`, RED-probat prin mutație.
 - **CE NU ÎNCHIDE LĂRGIREA, și e condiția de deblocare a clasei:** cele trei sunt pinuite pe **fișier și formă**, nu pe **clasă**. Un scan care găsește *orice* verde emis fără condiție în `static/js/` **nu există** — până există, a patra apariție intră mâine fără să se vadă, exact tiparul lui R29 (clasă golită pe un limbaj, vie în altul). Se închide când gardul are domeniul `static/js/` pe clasă, nu pe cele trei situri, **sau** când clasa primește restanță proprie ca s-o prindă cifra din B.
 
+### R39 — Coloana pe care se sprijină verificarea D112 nu se scrie de nicăieri
+
+- **felul**: ORDINE
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · interdicția 32 · interdicția 10 · **PRAG 3** *(azi mesajul nimerește adevărul; devine fals în ziua în care R33 se leagă)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `0a96ebf`
+- **ce blochează**: `inregistrari.document_ref` e scrisă de **0 din 48** de căi de INSERT, dar citită de `note_salarii_ciorna()`, care de aceea întoarce **0 prin construcție**. Ramura „note în ciornă, așteaptă validare" din `compara_d112` e **cod mort**. Ca să încete să fie, cineva trebuie să **scrie** coloana la crearea notei statului de plată — iar calea aia nu există încă (`salarii_contare` nelegat, R33), și **cine o creează** e chiar întrebarea din **R36**.
+- **ce s-a făcut totuși, ca minciuna să nu aștepte deblocarea**: `note_salarii_ciorna` întoarce de azi **`None` = necunoscut** când coloana e goală pe toată schema, iar `compara_d112` nu mai **afirmă cauza** pe un necunoscut — spune ce vede și numește **amândouă** acțiunile posibile. Gardat de `core/test_document_ref_necunoscut.py`.
+- **condiția de deblocare**: se răspunde la **R36** (cine și când contabilizează), fiindcă abia atunci se știe **cine scrie** `document_ref` pe nota statului de plată. Când calea aia se leagă, filtrul redevine o măsurătoare și ramura „ciornă" redevine vie — **în aceeași tură**, nu după.
+
 ### R38 — Lista de cote din ecranul de NIR e scrisă de mână, fiindcă serverul n-o poate da
 
 - **felul**: ORDINE
@@ -2675,13 +2687,56 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 - **stare**: PARȚIAL
 - **felul limitei**: DOMENIU — regiunea e numită: nu urmărește lanțul de la înregistrare spre poziția din declarație. Calibrare găsită, pozitiv și negativ
-- **măsurat la**: 2026-08-22
-- **pe commit**: `cbf7b67`
+- **măsurat la**: 2026-08-24
+- **pe commit**: `0a96ebf`
 - **cifra**: **19 din 33 de note contabile** nu au nicio legătură către documentul care le justifică. Măsurat **un nivel mai jos decât spune interdicția** — pe înregistrare, nu pe poziția din declarație — fiindcă acolo se rupe lanțul întâi: o poziție nu se poate desface până la document dacă nici înregistrarea din spatele ei nu poate. **Cifra e un plafon inferior**: nu s-a măsurat câte poziții de declarație sunt afectate, ci câte note nu pot fi desfăcute.
 - **instanțe**: pe toți cei șase tenanți cu note (t003, t005, t013, t014, t016, t017): `document_ref` populat **0 din 33** · `numar` **1 din 33** (doar `AMORT-2026-08`) · `factura_id` **14 din 33**. Coloana `inregistrari.document_ref` **există și nu o scrie nimeni**: singurele apariții în cod sunt o CITIRE în `core/control_incrucisat.py:491` (caută `document_ref = 'SAL LL/AAAA'`, o valoare pe care n-o produce nimic) și `core/registratura_api.py`, care lucrează pe altă tabelă.
 - **calibrare**: GĂSIT — cazul pozitiv e nota de amortizare de pe t013 (`id=30`, `numar=AMORT-2026-08`), singura cu identificator propriu; cazul negativ NEraportat sunt cele 14 note cu `factura_id`, care **au** legătură și n-au intrat în cifră.
 - **ce nu vede**: nu urmărește lanțul mai departe, de la înregistrare spre poziția din declarație și înapoi · nu spune dacă o notă **trebuie** să aibă document justificativ extern (amortizarea, de pildă, e o notă internă legitimă) — deci o parte din cele 19 pot fi corecte; de aceea cifra e plafon inferior și pentru datorie, nu doar pentru acoperire
 - **unde ajunge efectul**: o cifră declarată care nu se poate desface până la document nu se poate apăra la control
+
+> **RELUAT 24.08.2026 (pragul 3, poziția 2), pe commit `0a96ebf`** — de data asta pe **consumatorul**
+> coloanei, nu pe date. Măsurătoarea de pe 22.08 spunea *„`document_ref` există și nu o scrie
+> nimeni"*. Întrebarea care n-a fost pusă atunci: **ce face codul care o citește?**
+>
+> **1. Scriitori: 0 din 48.** Toate cele 48 de căi de `INSERT INTO …inregistrari` folosesc exact trei
+> forme — `(data, descriere, sursa, status)` ×38, `(data, factura_id, …)` ×6, `(data, numar, …)` ×4.
+> **Niciuna nu atinge `document_ref`.** Singurii care scriu numele coloanei în tot codul sunt
+> `core/registratura_api.py` (**altă tabelă**) și `core/salarii_contare.document_ref(an, luna)`, care
+> doar **compune** șirul `"SAL LL/AAAA"` — și e el însuși nelegat (R33).
+>
+> **2. Cititorul, și ce iese din el.** `core/control_incrucisat.py:483`, `note_salarii_ciorna()`,
+> filtrează `… AND sursa = 'salarii' AND document_ref = 'SAL LL/AAAA'`. Cum nimic nu scrie coloana,
+> funcția **întoarce 0 prin construcție** — pentru orice firmă, orice lună, orice date. *Nu e o cifră,
+> e o constantă deghizată în măsurătoare.*
+>
+> **3. Unde ajunge acel 0.** La `:525` intră în `compara_d112(…, note_ciorna=ciorne, …)`. Acolo,
+> ramura `elif note_ciorna:` — remediu **„sugerat"**, cauza *„N note de salarii în ciornă, așteaptă
+> validare"*, acțiunea *„validează"* — e **cod mort: nu poate fi atinsă niciodată**. În locul ei se
+> ia mereu prima ramură, care **afirmă o cauză**: *„Statul de plată nu este contabilizat: contul 4315
+> nu are rulaj în lună"*, cu remediu **„executabil"**: *„Contabilizează statul de plată."*
+>
+> **4. De ce rămâne prag 3, și nu urcă azi.** Afirmația nu e falsă **pe datele de azi**: nicio cale nu
+> creează nota statului de plată (`salarii_contare` e nelegat, R33), iar rulajul numără doar
+> `status = 'validata'` (`rulaje_interval`). Deci azi „nu e contabilizat" nimerește adevărul.
+> **Devine falsă în ziua în care R33 se leagă** — atunci aplicația îi va spune contabilului să facă
+> exact lucrul pe care tocmai l-a făcut, ascunzându-i acțiunea reală („validează"). E o dependență de
+> **ORDINE**, nu de timp: se repară *înainte sau odată cu* legarea lui `salarii_contare`, nu „mai
+> târziu".
+>
+> **5. Ce e totuși greșit AZI, independent de R33 — și e altă interdicție.** Prima ramură nu descrie
+> ce vede, ci **afirmă o cauză**, sprijinită pe `not note_ciorna`. Iar acel `0` **nu e informație**:
+> nu poate fi altceva decât `0`. Un verdict care se sprijină pe un necunoscut nedeclarat e
+> **interdicția 10**, pe cale vie, chiar dacă azi nimerește. Reparat în același commit: `None` =
+> necunoscut, declarat ca atare.
+>
+> **6. Testul care apăra funcția, nu lanțul.** `test_d112_ciorna_da_sugerat_nu_executabil` trece de
+> luni de zile — fiindcă îi dă `note_ciorna=1` **direct**. Funcția pură e corectă; **intrarea ei e
+> moartă**. Un test unitar verde peste un lanț rupt e aceeași clasă cu gărzile de la §19: dovedește
+> că mecanismul *poate* funcționa, nu că *funcționează*.
+>
+> **Cifra de pe 22.08 rămâne validă și devine mai gravă**: `document_ref` 0 din 33 nu era doar o
+> coloană goală, era o coloană goală **pe care se sprijină o decizie afișată**.
 
 ## 33 — Un lanț de justificare a cărui sumă nu dă valoarea declarată
 
