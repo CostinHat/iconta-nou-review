@@ -5,7 +5,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 ## ANTET — cât de veche e predarea asta
 
 - **ultima rescriere**: **2026-08-24**
-- **pe commit**: `afb709e`
+- **pe commit**: `a2a8bb4`
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire, nu la câteva zile.** Regula e
   scrisă aici fiindcă a fost încălcată: versiunea dinainte era din **22.08** și conținea **trei
   afirmații false** — starea pe `backup/lant-2026-08-22`, cifra `131` (invalidată între timp) și un
@@ -20,8 +20,8 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## STAREA LA PREDARE
 
-`HEAD = origin/main = backup/lant-2026-08-24 = RUNNING = afb709e`. Poartă verde: **3008 passed**,
-8 skipped, 14 xfailed · ruff OK · verificator **TOTAL 0** · site 200 · arbore curat (rămân artefacte
+`HEAD = origin/main = backup/lant-2026-08-24 = RUNNING = a2a8bb4`. Poartă verde: **3014 passed**,
+8 skipped, 14 xfailed · ruff OK · verificator **TOTAL 0** · site 200 · *(cifra de teste e a commitului ăsta — se reverifică rulând poarta, nu se crede pe cuvânt)* · arbore curat (rămân artefacte
 **neurmărite** în `frontend_test/`, din rulările vizuale — nu sunt modificări).
 
 **Unde suntem**: E1, faza 1 **completă**; se lucrează **triajul pe cele 76 de interdicții** din
