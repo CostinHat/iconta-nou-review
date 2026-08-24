@@ -56,6 +56,10 @@ TABEL = [
     ("static/js/ecrane/produse_ecran.js", '<option value="21">', "tva_standard", "{p}%"),
     ("static/js/ecrane/produse_ecran.js", '<option value="11">', "tva_redusa", "{p}%"),
     ("static/js/ecrane/facturi_ecran.js", "<span>TVA 21%</span>", "tva_standard", "{p}%"),
+    # [R29 24.08.2026] Selectorul de cota din ecranul de NIR. Lista ramane scrisa de mana pana
+    # la decizia de forma (server vs mana) - dar VALORILE ei nu mai pot imbatrani tacit.
+    ("static/js/ecrane/firme.js", "[21, 11].map", "tva_standard", "{p}"),
+    ("static/js/ecrane/firme.js", "[21, 11].map", "tva_redusa", "{p}"),
 ]
 
 

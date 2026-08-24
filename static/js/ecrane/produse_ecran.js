@@ -45,6 +45,11 @@ export async function randeazaProduse(corp, nav, tenantId, opt = {}) {
 }
 
 function badgeCota(cota, sursa) {
+  // [R29] LIPSA nu e 0%: `Number(null)` da 0, deci un produs fara cota s-ar fi afisat
+  // „fara TVA" - o afirmatie falsa despre un produs necompletat.
+  if (cota === null || cota === undefined || cota === "") {
+    return `<span class="pr-badge prc-lipsa">cot\u0103 lips\u0103</span>`;
+  }
   const c = Number(cota);
   const cls = c === 0 ? "prc-0" : (c === 11 ? "prc-11" : "prc-21");
   const eticheta = c === 0 ? "f\u0103r\u0103 TVA" : `TVA ${c}%`;

@@ -22,7 +22,10 @@ def lista(conn, doar_confirmate=False):
         for r in cur.fetchall():
             d = dict(r)
             d["pret_unitar"] = float(d["pret_unitar"]) if d["pret_unitar"] is not None else 0.0
-            d["cota_tva"] = float(d["cota_tva"]) if d["cota_tva"] is not None else 21.0
+            # [R29 24.08.2026] NULL ramane NULL. Inainte: `else 21.0` - un produs fara cota
+            # era prezentat ca 21%, pe o cale VIE (main.py:2513). Aceeasi clasa cu defaultul
+            # din ecranul de NIR, dar in Python - clasa pe care R26 o declarase golita.
+            d["cota_tva"] = float(d["cota_tva"]) if d["cota_tva"] is not None else None
             out.append(d)
     return out
 

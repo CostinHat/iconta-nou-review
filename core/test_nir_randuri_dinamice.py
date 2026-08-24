@@ -19,9 +19,13 @@ FILL = [
     {"denumire": "Faina alba", "cantitate": "10", "pret_achizitie": "3", "pret_vanzare": "5"},
     {"denumire": "Ulei floarea", "cantitate": "4", "pret_achizitie": "8", "pret_vanzare": "12"},
 ]
+# [R29 24.08.2026] Astepta `cota_tva: 21` desi FILL nu alege nicio cota - adica testul
+# CIMENTA defaultul tacit din ecran: „daca omul nu alege, ecranul alege 21". Aia era chiar
+# clasa reparata (clasa „teste care apara buguri", DECIZII 03.08). O linie fara cota aleasa
+# pleaca acum FARA cota, iar serverul o refuza (main.py:798) - ceea ce e scopul.
 CANONICAL_LINII = [
-    {"denumire": "Faina alba", "cantitate": 10, "pret_achizitie": 3, "pret_vanzare": 5, "cota_tva": 21},
-    {"denumire": "Ulei floarea", "cantitate": 4, "pret_achizitie": 8, "pret_vanzare": 12, "cota_tva": 21},
+    {"denumire": "Faina alba", "cantitate": 10, "pret_achizitie": 3, "pret_vanzare": 5, "cota_tva": None},
+    {"denumire": "Ulei floarea", "cantitate": 4, "pret_achizitie": 8, "pret_vanzare": 12, "cota_tva": None},
 ]
 
 

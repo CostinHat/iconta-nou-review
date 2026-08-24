@@ -43,7 +43,7 @@ BASELINE = {
     "d403.py": 5, "d406.py": 5, "d406_active.py": 7, "d406_stocuri.py": 1, "d407.py": 2,
     "decontari_asociati.py": 1, "deconturi.py": 1, "duk.py": 2, "efactura_send.py": 1,
     "factura_pdf.py": 1, "monitor_fiscal.py": 1, "motor.py": 2, "notificari_scadenta.py": 2,
-    "ong.py": 2, "produse_api.py": 1, "provizioane.py": 1, "salariati_api.py": 1,
+    "ong.py": 2, "produse_api.py": 0, "provizioane.py": 1, "salariati_api.py": 1,
     "salariati_import_api.py": 2, "salarizare.py": 18, "scadentar.py": 2, "scadente.py": 3,
     "scan_constante.py": 1, "sponsorizari.py": 3, "stat_plata_api.py": 1, "termene_api.py": 1,
     "tva_agricultori.py": 2, "tva_aur.py": 1, "tva_marja_turism.py": 1

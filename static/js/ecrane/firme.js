@@ -11,7 +11,7 @@ import { ecranEtransport } from "./etransport_ecran.js?v=0dca1ea392";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=05a5b55996";  // [p96_import_firma] + [Q4] import in masa
 import { declaratiiPerFirma } from "./declaratii.js?v=cc81187e9a";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=3a84046f2a";  // renderer unic verdict control fiscal (DS cap.20)
-import { randeazaProduse } from "./produse_ecran.js?v=930762c3c4";  // [produse_firma_v1]
+import { randeazaProduse } from "./produse_ecran.js?v=2caaba5417";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=ae22f440bf";  // [wc_extras_v1]
 import { randeazaDateFirma } from "./date_firma.js?v=0f99052ac6";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=cec020b9da";  // [ecran_mf_v1]
@@ -1629,7 +1629,7 @@ export async function ecranStocuri(corp, nav, t) {
             <div class="pf-frand-sub">cost ${n.cost_total} \u00b7 adaos ${n.adaos_total} \u00b7 TVA neex. ${n.tva_neexigibila} \u00b7 raft ${bani(n.valoare_vanzare)} lei</div>
           </div>
         </div>`).join("");
-    const linieNouaNir = () => ({ denumire: "", cantitate: "", pret_achizitie: "", pret_vanzare: "", cota_tva: 21 });
+    const linieNouaNir = () => ({ denumire: "", cantitate: "", pret_achizitie: "", pret_vanzare: "", cota_tva: "" });   // [R29] fără cotă implicită: serverul refuză lipsa (main.py:798), iar ecranul nu răspunde în locul contabilului
     const _vn = (x) => (x === "" || x == null) ? "" : esc(String(x));
     // randeaza O linie NIR DIN MODEL, id-uri pozitionale nir-l{i}-* (cap.24: id derivat din pozitie -> backendul
     // leaga eroarea de camp, cap.6); buton de stergere pe fiecare rand (regula 3).
@@ -1640,7 +1640,7 @@ export async function ecranStocuri(corp, nav, t) {
         <input type="number" step="0.001" class="camp-input" id="nir-l${i}-cantitate" placeholder="cant." aria-label="Cantitate" value="${_vn(l.cantitate)}" style="width:90px">
         <input type="number" step="0.0001" class="camp-input" id="nir-l${i}-pret_achizitie" placeholder="preț achiziție" aria-label="Preț achiziție" value="${_vn(l.pret_achizitie)}" style="width:120px">
         <input type="number" step="0.0001" class="camp-input" id="nir-l${i}-pret_vanzare" placeholder="preț raft (cu TVA)" aria-label="Preț raft cu TVA" value="${_vn(l.pret_vanzare)}" style="width:140px">
-        <select class="camp-input" id="nir-l${i}-cota_tva" aria-label="Cota TVA" style="width:80px">${[21, 11].map((c) => `<option value="${c}"${(l.cota_tva || 21) == c ? " selected" : ""}>${c}%</option>`).join("")}</select>
+        <select class="camp-input" id="nir-l${i}-cota_tva" aria-label="Cota TVA" style="width:90px"><option value=""${!l.cota_tva ? " selected" : ""}>alege</option>${[21, 11].map((c) => `<option value="${c}"${String(l.cota_tva) === String(c) ? " selected" : ""}>${c}%</option>`).join("")}</select>
         <button type="button" class="buton-sters nir-l-sterge" data-idx="${i}" title="Șterge">×</button>
       </div>`;
     }
@@ -1718,7 +1718,7 @@ export async function ecranStocuri(corp, nav, t) {
       const linii = liniiNir.map((l) => ({
         denumire: l.denumire, cantitate: parseFloat(l.cantitate) || 0,
         pret_achizitie: parseFloat(l.pret_achizitie) || 0, pret_vanzare: parseFloat(l.pret_vanzare) || 0,
-        cota_tva: l.cota_tva || 21,
+        cota_tva: (l.cota_tva === "" || l.cota_tva == null) ? null : Number(l.cota_tva),   // [R29]
       }));
       try {
         const r = await api.post(`/tenants/${t.id}/stocuri/nir`, {

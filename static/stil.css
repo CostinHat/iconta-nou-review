@@ -1751,6 +1751,9 @@ html, body {
 .prc-21 { background:#eef2f7; color:#475569; }
 .prc-11 { background:#e7f6ee; color:#15803d; }
 .prc-0  { background:#f3e8ff; color:#7e22ce; }
+/* [R29] cota NECOMPLETATA - nu e 0%, e absenta. Gri de stare (DS cap.8); textul e #5c6675,
+   nu --gri-semafor (#9aa3b2 = 2.16 contrast, sub AA - vezi DS v2.43). */
+.prc-lipsa { background:var(--gri-fundal-semafor); color:#5c6675; }
 .pr-sterge { background:none; border:none; color:#cbd5e1; font-size: var(--text-titlu); line-height:1; cursor:pointer; padding:0 4px; }
 .pr-sterge:hover { color:#ef4444; }
 
