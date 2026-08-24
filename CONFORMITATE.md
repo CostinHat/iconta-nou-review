@@ -40,7 +40,7 @@ face doar imposibilă acumularea unei narațiuni care să îmbătrânească. *(D
 după a doua oară: „e gardul care nu citește proză și totuși o disciplinează".)*
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **triajul, în ordinea lui** — R29 (prag 1) urmează, apoi pragul 3. De ce în ordinea asta: un prag 1 viu nu așteaptă o construcție. R28 s-a închis pe varianta 3, iar ce a lăsat în urmă e o pierdere, nu un câștig — de-aia R30 e o decizie, nu o reparație.
+- **pasul curent**: **triajul, în ordinea lui** — R29 (prag 1) urmează, apoi pragul 3. De ce în ordinea asta: un prag 1 viu nu așteaptă o construcție. Cifrele afișate de ecrane nu se mai țin minte: de azi se confruntă mecanic cu registrul de cote.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **una — R30, DESCHISĂ** din 24.08.2026: *se întoarce avertismentul de prăpastie al salariului minim, fără cifre?* R28 s-a închis pe varianta 3 («nimic»), iar odată cu estimarea a plecat și avertismentul care spunea că peste salariul minim se pierde facilitatea — o protecție reală, pierdută colateral.
@@ -1037,6 +1037,18 @@ scos ce nu se știa**, nu din defecte noi.
 - **deschisă pe commit**: `fa3330c`
 - **ce blochează**: `rip_ecran.js:142` cere `/rip/d212/**2025**` — anul scris literal în URL. Butonul *«Fișa D212»* aduce, în august 2026, fișa de calcul pe **2025**: CAS, CASS, impozit, total datorat. Eticheta spune cinstit *«venituri 2025 (sm 4.050 lei)»*, iar **4.050 e valoarea corectă pentru 2025** — deci nu e o cifră falsă. E altceva: **ecranul nu poate ajunge la anul curent, niciodată**, iar valoarea din etichetă va rămâne corectă pentru un an care se îndepărtează. Ecranul are deja variabila `an` în stare (o folosește la importul din casă), deci reparația URL-ului e mecanică; partea de etichetă cere ca serverul să întoarcă anul și salariul minim al lui, nu ecranul să le știe.
 - **condiția de deblocare**: `CLICHET` din `core/test_an_hardcodat.py` coboară la **0** — momentul în care nicio cerere din `static/js/` nu mai poartă un an literal. Gardul are deja aserțiunea care **pică dacă clichetul rămâne peste realitate**, deci nu poate fi uitat deschis.
+
+### R32 — Date de test al căror antet își contrazice propriile linii
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · **PRAG 3** *(nicio cifră greșită la un om — dar orice confruntare antet↔linii minte pe ele)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `f9e0f29`
+- **ce blochează**: din cele **41** de facturi din bază, **3** au TVA-ul de pe antet în dezacord cu suma calculată din propriile linii: `tenant_004 COER-T5` și `tenant_009 COER-T5` (antet **2.000**, din linii **0** — linia are `cota_tva = 0`) și `tenant_007 COER-T6` (antet **0**, din linii **8.400** — linia are `cota_tva = 21`). Toate trei sunt din `date_test/seed/transa2_coerenta_tva.py`, seria `COER`, scrise **direct în tabele**: antetul cu o valoare fixată de scenariu, liniile cu alta. **Nu e un defect al aplicației** — nicio factură emisă prin ecran nu diverge. E un defect al **datelor pe care se măsoară**.
+- **de ce contează totuși**: e aceeași clasă cu campania **#2** (CUI/CNP de test care nu treceau cifra de control) — *un instrument calibrat pe date invalide raportează despre o lume care nu există*. Aici efectul e ascuțit: orice gard viitor care confruntă **antetul cu liniile** — exact felul de verificare încrucișată pe care se sprijină D394 și D300 — ar găsi trei „defecte" care sunt de fapt fixturi, sau ar fi calibrat să le tolereze și ar deveni orb pe cazul real.
+- **condiția de deblocare**: seeder-ul scrie antetul **din linii**, nu pe lângă ele — sau, dacă divergența e intenționată pentru un scenariu anume, o declară explicit (o coloană, un marcaj) ca să poată fi deosebită de una reală. Se închide când recalcularea din linii coincide pe toate cele 41, **sau** când cele 3 sunt marcate ca divergente-cu-intenție și un test le numără.
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
@@ -2109,6 +2121,9 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 - **CALIBRARE A DOUA, 24.08.2026 — pe întrebarea lui Costin: «vede o formulă scrisă pe nume neutre — `a`, `val`, `x`?»** Relaxarea F2 de ieri dăduse **+7**, dar le **numărasem**, nu le **citisem** — iar o cifră necitită nu e un răspuns. Rulat acum pe toate cele **42** de fișiere `.js`, cu comentariile **și** șirurile scoase (o formulă e cod, nu text afișat), împărțit în două: cu nume fiscal pe linie **1**, fără nume fiscal **2**. **Cele 2 sunt aritmetică pe date calendaristice** — `api.js:288` (`slice(0, 10)` peste o potrivire de dată) și `facturi_ecran.js:388` (`Date.now() + 30 * 864e5`). **Zero formule fiscale scrise pe nume neutre.** Deci lacuna numită ieri **există ca posibilitate, dar nu are instanță** — și acum se știe, nu se presupune.
 - **BUG PROPRIU, prins la prima rulare a acestei calibrări.** Funcția care taie comentariile **colapsa liniile**, deci numerele de linie raportate erau ale **altor** linii — instrumentul ar fi trimis un om la locul greșit. Reparat (newline-urile se păstrează) și **prins de o aserțiune anti-derapaj** care cere ca sursa curățată să aibă exact același număr de linii ca originalul. *Interdicția 76 pe instrumentul care măsura interdicția 76.*
 - **ȘI CE A SCOS, deși nu asta căuta:** `firme.js:1649/1660/1738` — cota de TVA scrisă de **trei ori** ca valoare implicită în ecranul de NIR. Vezi **R29**: e prag 1, și e chiar clasa pe care R26 o declarase golită.
+- **CE FACE `recalc()` CU VALOAREA — întrebat de Costin 24.08.2026, măsurat: SE AFIȘEAZĂ ȘI SE PIERDE.** `baza`, `tva`, `total` sunt **variabile locale**; singurul lor efect e `innerHTML` pe `#em-total`. Nu ating modelul `linii`, nu intră în niciun câmp. Iar corpul trimis la `/facturi/emite` poartă **doar** `descriere · cantitate · pret_unitar · cota_tva · articol_id` — **niciun total**. Serverul îi calculează singur și îi întoarce (`{ok, factura_id, numar, serie, total, tva}`). **Deci divergența reparată pe 23.08 n-a atins niciodată evidența** — a fost, tot timpul, o cifră pe ecran.
+- **Și verificat pe DATE, nu doar pe cod** (24.08.2026, `SELECT` curat, fără apel de API): **41 de facturi** pe **12 firme** din 17. TVA-ul stocat pe fiecare, recalculat din linii cu rotunjire pe linie: **38 se potrivesc la bani**. Cele **3** care nu — seria `COER`, descrierea *«coerenta R3»* — sunt **puse de seeder** (`date_test/seed/transa2_coerenta_tva.py`), nu emise prin ecran: antetul lor a fost scris direct, iar liniile separat. Vezi **R32**.
+
 ## 5 — Un strat care cheamă în sus sau ocolește un nivel
 
 - **stare**: PARȚIAL

@@ -4460,3 +4460,22 @@ CSS. În codul ăsta **textul afișat trăiește înăuntrul șabloanelor HTML**
 chiar singurul caz pe care îl știam dinainte — eticheta cu salariul minim din `rip_ecran.js`. Corectat:
 se scot **etichetele**, rămâne **textul**. Cifra a urcat de la 25 la **46**. Calibrarea pe un caz
 cunoscut nu e o formalitate: aici a fost singura care a arătat că instrumentul măsura altceva.
+
+**Cotele din ecrane se confruntă cu registrul, nu cu memoria** (`core/test_valori_fiscale_js.py`,
+24.08.2026). Nouă teste: șase perechi ecran↔`COTE` (CAS 25% · CASS 10% · impozit 10% din `rip_ecran`;
+TVA 11% și 21% din Raportul Z al `firme.js`), plus anti-vacuu pe ancore, calibrare negativă, și
+verificarea că fiecare cheie confruntată chiar există în registru cu temei. **RED-proof prin mutație:
+cu `CAS (24%)` în ecran, gardul cade și scrie ce zice registrul.** Când o cotă se schimbă, testul
+numește ecranul rămas în urmă — vezi `METODA` §18.
+
+**Calibrarea pe nume neutre a devenit clichet** (`core/test_aritmetica_in_prezentare.py`, +4 teste).
+Măsurat: **2**, ambele aritmetică pe date calendaristice, **zero fiscale**. Cifra nu mai trăiește
+într-un raport, ci într-un test care cade dacă apare a treia. Include o calibrare **pe propriul mod de
+eșec**: curățarea comentariilor trebuie să păstreze numărul de linii, altfel tot ce raportează gardul
+trimite omul la locul greșit.
+
+**Și o greșeală proprie, în chiar fișierul de gărzi:** am definit `_JS` peste un `_JS` care exista deja
+în `test_aritmetica_in_prezentare.py` și arăta spre `static/js/ecrane`. Redefinirea a mutat tăcut
+domeniul a două gărzi vechi, care au picat cu *«fișier inexistent»*. **Un nume reciclat într-un fișier
+de gărzi nu e o scăpare de stil — mută domeniul altui gard.** Redenumit `_JS_TOT`, cu motivul scris
+acolo.

@@ -686,3 +686,24 @@ verifică pe sine*: nu minte despre ce măsoară, minte prin **tăcerea** despre
 
 **Ce nu spune regula:** că orice gard trebuie să citească toate limbajele. Costul e real. Spune doar că
 **diferența dintre clasă și domeniu se scrie**, ca să nu fie citită drept zero.
+
+## §18 — LA O SCHIMBARE DE VALOARE FISCALĂ, JS-UL SE CAUTĂ EXPLICIT
+
+**Observația lui Costin, 24.08.2026:** *«JS-ul nu e atins de campaniile fiscale fiindcă nu e căutat
+acolo. Nu decurge din nimic.»* Are trei instanțe măsurate în două zile, toate în JS, toate defecte
+**din prima zi**, nu regresii: cota implicită din ecranul de NIR (R29), anul înghețat în cererea D212
+(R31), și cotele scrise ca etichetă lângă valori venite de la server.
+
+**Cauza, numită exact:** campaniile fiscale au pornit de fiecare dată dintr-un instrument care citește
+**Python** — AST pe `core/`, scanul de constante, verificatorul. Niciunul nu deschide un `.js`. Nu
+pentru că cineva a decis așa, ci pentru că **domeniul n-a fost niciodată pus în discuție** (`§17`).
+
+**Regula ar fi fost: „la fiecare schimbare de valoare fiscală, se caută explicit și în JS".** N-a
+rămas regulă, fiindcă o regulă care depinde de memorie se rupe exact când e nevoie de ea. A devenit
+**gard**: `core/test_valori_fiscale_js.py` confruntă fiecare cotă scrisă literal într-un ecran cu
+`COTE`, la data de azi. Când o cotă se schimbă în registru, testul devine **roșu și numește fișierul
+de ecran** rămas în urmă. Căutarea nu se mai ține minte — se întâmplă singură.
+
+**Ce rămâne de ținut minte, fiindcă gardul nu poate:** tabelul lui e **scris de om**, alimentat din
+`core/scan_valori_afisate.py`. O valoare fiscală nouă apărută într-un ecran nu intră singură. De-aia
+scanul rămâne, lângă gard: unul măsoară, celălalt păzește.

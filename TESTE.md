@@ -1977,3 +1977,11 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   pe forma reală · **calibrare negativă în trei feluri** (an din variabilă, an doar în text, an care
   nu e într-o cerere) · clichet la 1 · anti-stale (dacă R31 se rezolvă și clichetul rămâne, pică) ·
   clichetul e ancorat pe **fișierul** cunoscut, nu doar pe număr. RED-proof prin mutație.
+
+- **`core/test_valori_fiscale_js.py` (24.08.2026)** — 9 teste: șase perechi ecran↔registru pe cote
+  scrise literal · anti-vacuu pe ancore · calibrare negativă · fiecare cheie confruntată există în
+  `COTE` cu temei. RED-proof prin mutație pe sursa ecranului.
+- **`core/test_aritmetica_in_prezentare.py` — +4 teste (24.08.2026)**: clichet pe aritmetica cu cotă
+  literală scrisă pe **nume neutre** (măsurat 2, ambele calendaristice) · calibrare pozitivă pe forma
+  temută (`a * 21 / 100`) · calibrare pe modul propriu de eșec (curățarea păstrează numerotarea) ·
+  anti-stale pe clichet.

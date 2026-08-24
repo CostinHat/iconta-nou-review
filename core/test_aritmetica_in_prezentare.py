@@ -107,3 +107,120 @@ def test_nicio_ALTA_aritmetica_de_cota_fara_rotunjire_in_ecrane():
     assert not rele, ("aritmetică de cotă fără rotunjire pe linie, în stratul de prezentare:\n"
                       + "\n".join(rele) + "\n\nVezi interdicția 4: regula fiscală n-are ce căuta în "
                       "ecran; până se scoate, măcar să nu dea altă cifră decât serverul.")
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# CALIBRAREA PE NUME NEUTRE, ca CIFRA PAZITA (24.08.2026).
+#
+# NOTA, dintr-o greseala proprie de acum cinci minute: constanta de mai jos se
+# numeste `_JS_TOT`, nu `_JS`, fiindca `_JS` EXISTA deja in acest fisier si
+# arata spre `static/js/ecrane`. Redefinirea a schimbat tacit ce masurau doua
+# garzi vechi, iar ele au picat cu «fisier inexistent». Un nume reciclat intr-un
+# fisier de garzi nu e o scapare de stil: muta domeniul altui gard.
+#
+# Costin, de doua ori: «cifra "N formule" e plafon inferior pana la calibrarea pe
+# nume neutre, iar noi am tratat-o ca lista completa». Masuratoarea s-a facut si a
+# dat ZERO — dar o masuratoare care traieste intr-un raport se uita. Aici devine
+# test: daca cineva scrie o formula fiscala pe `a`, `val`, `x`, cifra creste si
+# gardul o numeste.
+#
+# CE NU VEDE, declarat: o formula fara nicio cifra literala; una intinsa pe mai
+# multe randuri; una construita din siruri.
+import os as _os
+import re as _re
+
+_JS_TOT = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))),
+                    "static", "js")
+_COTA = _re.compile(r"(?<![\w.])(0\.(19|21|10|25|16|09|05|08)|19|21|10|25|16|121|119|110|105)(?![\w.])")
+_ARIT = _re.compile(r"[*/]|\bMath\.round\b")
+_FISCAL = _re.compile(r"(?i)\b\w*(tva|cota|baza|impozit|cas|cass|net|brut|deduc|plafon|"
+                      r"acciz|contrib|taxa|scutit)\w*")
+
+# Cele doua sunt aritmetica pe DATE calendaristice, nu fiscala:
+#   api.js            — `slice(0, 10)` peste o potrivire de data
+#   facturi_ecran.js  — `Date.now() + 30 * 864e5`
+NUME_NEUTRE_CLICHET = 2
+
+
+def _fara_comentarii_si_siruri(src):
+    """Scoate comentariile SI sirurile, PASTRAND newline-urile.
+
+    Prima forma a acestei functii, 24.08.2026, colapsa liniile — deci raporta
+    numere de linie ale ALTOR linii. De-aia exista aserttiunea de mai jos.
+    """
+    out, i, n = [], 0, len(src)
+    while i < n:
+        c, d = src[i], src[i:i + 2]
+        if d == "//":
+            j = src.find("\n", i)
+            if j < 0:
+                out.append(" " * (n - i))
+                break
+            out.append(" " * (j - i))
+            i = j
+        elif d == "/*":
+            j = src.find("*/", i + 2)
+            j = n if j < 0 else j + 2
+            out.append("".join(ch if ch == "\n" else " " for ch in src[i:j]))
+            i = j
+        elif c in "\"'`":
+            j, q = i + 1, c
+            while j < n:
+                if src[j] == "\\":
+                    j += 2
+                    continue
+                if src[j] == q:
+                    break
+                j += 1
+            j = min(j, n - 1)
+            out.append("".join(ch if ch == "\n" else " " for ch in src[i:j + 1]))
+            i = j + 1
+        else:
+            out.append(c)
+            i += 1
+    return "".join(out)
+
+
+def _aritmetica_pe_nume_neutre():
+    """(fisier, linie, text) — aritmetica cu cota literala, FARA nume fiscal pe linie."""
+    gasite = []
+    for rad, _, nume in _os.walk(_JS_TOT):
+        for f in sorted(nume):
+            if not f.endswith(".js"):
+                continue
+            cale = _os.path.join(rad, f)
+            src = io.open(cale, encoding="utf-8").read()
+            orig = src.split("\n")
+            curat = _fara_comentarii_si_siruri(src)
+            assert len(curat.split("\n")) == len(orig), cale   # anti-derapaj
+            for nr, linie in enumerate(curat.split("\n"), 1):
+                if _COTA.search(linie) and _ARIT.search(linie) and not _FISCAL.search(linie):
+                    gasite.append((_os.path.relpath(cale, _JS_TOT), nr, orig[nr - 1].strip()))
+    return gasite
+
+
+def test_curatarea_pastreaza_numerotarea():
+    """CALIBRARE pe modul propriu de esec: daca taierea colapseaza liniile, tot ce
+    raporteaza gardul trimite omul la locul gresit."""
+    s = 'const a = 1;\n// comentariu\n/* pe\ndoua */\nconst b = "sir\ncu newline";\nconst c = 2;\n'
+    assert len(_fara_comentarii_si_siruri(s).split("\n")) == len(s.split("\n"))
+
+
+def test_tiparul_prinde_o_formula_scrisa_pe_nume_neutre():
+    """CALIBRARE POZITIVA — chiar cazul de care se temea Costin."""
+    linie = "  const x = a * 21 / 100;"
+    assert _COTA.search(linie) and _ARIT.search(linie) and not _FISCAL.search(linie)
+
+
+def test_nicio_formula_noua_pe_nume_neutre():
+    """CLICHET. Masurat 24.08.2026: 2, ambele calendaristice. Zero fiscale."""
+    g = _aritmetica_pe_nume_neutre()
+    assert len(g) <= NUME_NEUTRE_CLICHET, (
+        "aritmetica noua cu cota literala pe nume neutre — daca e fiscala, scanul de "
+        "formule NU o vede:\n" + "\n".join("  %s:%d  %s" % x for x in g))
+
+
+def test_clichetul_de_nume_neutre_nu_ramane_peste_realitate():
+    g = _aritmetica_pe_nume_neutre()
+    if len(g) < NUME_NEUTRE_CLICHET:
+        raise AssertionError("sunt doar %d — coboara NUME_NEUTRE_CLICHET la %d" % (len(g), len(g)))

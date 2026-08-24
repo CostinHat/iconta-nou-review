@@ -11642,3 +11642,36 @@ CAS/CASS pe brut, pe ecranul POS»*: **nu există ecran POS** ca fișier, iar to
 înregistrată** (`registru_interpretari.py`, S1 2026 = 3750 / S2 = 4125, cu ce spune arbitrul) — adică
 opusul unei valori uitate. *«Valori corecte în ianuarie, nu și acum»*: **tiparul e real**, dar nu pe
 valori — pe **anul** scris în cerere. → R31.
+
+## 24.08.2026 (a nouăsprezecea tură) — ce face `recalc()` cu valoarea: o afișează și o pierde
+
+**1. Răspunsul la întrebarea 1, măsurat pe cod: NU se salvează.** `recalc()` din `emitere_ecran.js`
+ține `baza`, `tva`, `total` în **variabile locale**, iar singurul efect e `innerHTML`. Corpul trimis la
+`/facturi/emite` poartă doar `descriere · cantitate · pret_unitar · cota_tva · articol_id` — **niciun
+total**. Serverul le calculează și le întoarce. Deci divergența reparată pe 23.08 **n-a atins
+niciodată evidența**, și clasa nu urcă peste celelalte.
+
+**2. Răspunsul la întrebarea 2, măsurat pe DATE** (`SELECT` curat, fără apel de API — o sondă prin API
+poate comite): **41 de facturi pe 12 firme din 17**. TVA-ul stocat, recalculat din linii cu rotunjire
+pe linie: **38 se potrivesc la bani**. Cele 3 care nu sunt **fixturi de seeder** (seria `COER`), scrise
+direct în tabele → **R32**. Precizare: întrebarea vorbea de *«part-time sau la minim»* — acelea sunt
+contracte de muncă, iar `recalc()` e pe ecranul de **emitere a facturii**, nu pe cel de angajare.
+
+**3. Calibrarea pe nume neutre — făcută a treia oară, și de data asta PĂZITĂ.** Rezultatul e același:
+**2 candidate, ambele calendaristice, zero fiscale**. Dar am înțeles obiecția: o măsurătoare care
+trăiește într-un raport se uită, iar cifra a fost tratată de două ori ca listă completă. Acum e clichet
+într-un test.
+
+**4. Cele trei premise ale comenzii, verificate:** `_recalc()` **nu există** ca nume, dar `recalc()`
+există și e chiar funcția reparată la interdicția 4 — am răspuns despre ea. **R33 nu există** (ultima
+e R31, deschisă ieri), și nu există nici o măsurătoare de **«12 constante fiscale în JS»** — cifra
+măsurată e **46 de șiruri** cu vocabular fiscal și valoare literală, din care majoritatea sunt
+**numere de articol** (art. 317, 319, 282) și **coduri de formular** (121, 103). Nici **«5 formule»**:
+registrul scrie **3**.
+
+**5. Și verificarea pe care a cerut-o, făcută complet:** fiecare valoare fiscală scrisă literal într-un
+ecran, confruntată cu `COTE` la data de azi. **Toate în vigoare** — TVA 21% și 11%, CAS 25%, CASS 10%,
+impozit 10%; salariul minim de 4.050 din `rip_ecran` e corect **pentru 2025**, anul pe care îl
+etichetează. **Nicio cotă depășită** (19%, 9%, 5%) nu apare de sine stătătoare în textul ecranelor.
+Singura valoare afișată **fără corespondent în registru** e cota micro de **3%** din
+`declaratii.js:528` (*«1% sau 3%»*): `COTE` cunoaște doar `impozit_micro = 0.01`.
