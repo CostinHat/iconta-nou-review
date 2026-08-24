@@ -3797,28 +3797,61 @@ def perioada_deblocheaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_ro
 
 @app.get("/tenants/{tenant_id}/jurnal")
 def tenant_jurnal(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    """Registrul-jurnal (OMFP 2634/2015, cod 14-1-1), pe luna ceruta.
+
+    Confruntat cu norma pe 24.08.2026: coloana 1 (nr. curent de la 1 ianuarie), coloana 3
+    (felul/numarul/data documentului justificativ) si totalizarea lunara lipseau. Toate trei
+    se DERIVA aici, la citire - nicio cale de scriere nu se atinge. Ce nu se poate deriva
+    ramane null: `note_fara_document` spune cate sunt, ca absenta sa fie numarata, nu ascunsa.
+    """
+    from core import jurnal_api as _j
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
+            # [14-1-1] `nr_curent` se numara de la 1 IANUARIE, nu de la inceputul lunii: norma cere
+            # "numarul curent al operatiunilor inregistrate incepand de la 1 ianuarie ... pana la
+            # sfarsitul exercitiului financiar". De aceea fereastra e pe AN, iar filtrul pe luna se
+            # aplica DUPA numerotare - altfel fiecare luna ar reincepe de la 1.
             cur.execute(f"""
-                SELECT i.id, i.data, i.numar, i.descriere, i.sursa, i.status, i.factura_id,
+                WITH pe_an AS (
+                    SELECT id, data, numar, descriere, sursa, status, factura_id, document_ref,
+                           ROW_NUMBER() OVER (ORDER BY data, id) AS nr_curent
+                    FROM {schema}.inregistrari
+                    WHERE date_trunc('year', data) = %s
+                )
+                SELECT n.id, n.data, n.numar, n.descriere, n.sursa, n.status, n.factura_id,
+                       n.document_ref, n.nr_curent,
+                       f.tip, f.serie, f.numar, f.data_emitere,
                        l.cont_debit, l.cont_credit, l.suma, l.centru_cost_id, cc.nume AS centru_nume
-                FROM {schema}.inregistrari i
-                JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = i.id
+                FROM pe_an n
+                JOIN {schema}.inregistrari_linii l ON l.inregistrare_id = n.id
+                LEFT JOIN {schema}.facturi f ON f.id = n.factura_id
                 LEFT JOIN {schema}.centre_cost cc ON cc.id = l.centru_cost_id
-                WHERE date_trunc('month', i.data) = %s
-                ORDER BY i.data, i.id, l.id
-            """, (f"{an}-{luna:02d}-01",))
-            note = {}
-            for iid, data, nr, desc, sursa, status, fid, deb, cre, suma, cc_id, cc_nume in cur.fetchall():
+                WHERE date_trunc('month', n.data) = %s
+                ORDER BY n.data, n.id, l.id
+            """, (f"{an}-01-01", f"{an}-{luna:02d}-01"))
+            note, total = {}, 0.0
+            for (iid, data, nr, desc, sursa, status, fid, dref, nrc,
+                 f_tip, f_serie, f_nr, f_data,
+                 deb, cre, suma, cc_id, cc_nume) in cur.fetchall():
                 if iid not in note:
-                    note[iid] = {"id": iid, "data": data.isoformat(), "numar": nr,
-                                 "descriere": desc, "sursa": sursa, "status": status, "factura_id": fid, "linii": []}
+                    note[iid] = {"id": iid, "nr_curent": int(nrc), "data": data.isoformat(),
+                                 "numar": nr, "descriere": desc, "sursa": sursa, "status": status,
+                                 "factura_id": fid,
+                                 "document": _j.document_justificativ(dref, f_tip, f_serie, f_nr, f_data),
+                                 "linii": []}
                 note[iid]["linii"].append({"debit": deb, "credit": cre, "suma": float(suma),
                                            "centru_cost_id": cc_id, "centru_nume": cc_nume})
-    return {"note": list(note.values())}
+                total += float(suma)
+    # [14-1-1] "Sumele debitoare si sumele creditoare se totalizeaza lunar." In partida dubla fiecare
+    # linie e simultan debit si credit, deci cele doua totaluri sunt egale prin constructie - se dau
+    # amandoua, cum cere formularul, nu unul singur.
+    lista = list(note.values())
+    fara_document = sum(1 for n in lista if not n["document"])
+    return {"note": lista, "total_debit": round(total, 2), "total_credit": round(total, 2),
+            "note_fara_document": fara_document}
 @app.post("/tenants/{tenant_id}/horeca/import-amef")
 async def horeca_import_amef(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     """Upload p7b/XML AMEF (OPANAF 146/2018 II.7) -> nota Raport Z CIORNA.

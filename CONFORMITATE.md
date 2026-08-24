@@ -310,6 +310,27 @@ clasificate pe existența unui nume?** Verificat, cele 7 poziții ale pragului 3
   >
   > *Regula pe care o aplică asta e chiar cea din tabelul de triaj: o poziție se atribuie după CE
   > PRODUCE modulul, confruntat cu norma — nu după numele funcției și nu după existența rutei.*
+  >
+  > **REPARAT 24.08.2026, în aceeași tură.** Cele trei lipsuri se acoperă **prin derivare la citire**,
+  > deci **nicio cale de scriere nu se atinge** — reparația nu depinde de **R36**:
+  > **col. 1** — `nr_curent` calculat cu `ROW_NUMBER()` pe fereastră de **AN** (nu de lună: altfel
+  > numerotarea ar reîncepe lunar, contra normei); **col. 3** — `document_justificativ()` în
+  > `core/jurnal_api.py`, care compune *„Factură <serie><număr> din <dată>"* din factura legată, ia
+  > `document_ref` ca atare când e scris, și **întoarce `None` când n-are din ce deriva**;
+  > **totalizarea** — `total_debit` / `total_credit` pe lună, egale prin construcție în partidă dublă.
+  >
+  > **Ce NU s-a fabricat, și e partea care contează:** o notă fără factură și fără `document_ref`
+  > primește coloana 3 **goală**, iar răspunsul poartă `note_fara_document` — absența se **numără**,
+  > nu se ascunde. Un registru care ar completa un document inexistent ar face exact ce s-a scos din
+  > ecranul de NIR prin R29: ar răspunde în locul omului.
+  >
+  > **Probat pe date reale** (`tenant_013`, 2026-08): 18 note, total D=C **28.055,00**, coloana 3
+  > ieșită pe **8**, lipsă pe 10 — de la **0 din 34** înainte. Gardat de
+  > `core/test_registru_jurnal_14_1_1.py`, RED-probat pe **6 mutații**, între care regresia tăcută a
+  > ferestrei de numerotare de la an la lună.
+  >
+  > **Rămâne**: forma e conformă pe 7 din 8 coloane; **conținutul** coloanei 3 e incomplet fiindcă
+  > `document_ref` nu se scrie niciodată — aia e **interdicția 32**, și ea atârnă de R36.
 
 **Ce a rezistat verificării, și se spune la fel de explicit:** **registrul de evidență fiscală** are
 într-adevăr **zero** potriviri în `.py`, `.js`, `.html` — apare doar în corpusul de acte. Și

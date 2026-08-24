@@ -144,3 +144,24 @@ def valideaza(conn, schema, nota_id):
             _obs.esec_secundar("invatare AI la validare nota", _e)  # inghitit, dar nu tacut (27.07.2026)
     conn.commit()
     return {"ok": True}
+
+
+def document_justificativ(document_ref, fel, serie, numar, data):
+    """Coloana 3 din Registrul-jurnal (OMFP 2634/2015, cod 14-1-1): *„felul, numărul și data
+    documentului justificativ care stă la baza operațiunilor (factura, chitanța etc.)"*.
+
+    Se DERIVĂ, nu se fabrică. Trei căi, în ordine:
+      1. `document_ref` scris explicit pe notă — se ia ca atare;
+      2. factura legată prin `factura_id` — se compune „Factură <serie><număr> din <data>";
+      3. nimic din care s-o derivi -> **None**, adică lipsă vizibilă.
+
+    A treia e importantă: un registru care ar completa un document inexistent ar face exact ce am
+    scos din ecranul de NIR — ar răspunde în locul omului. O coloană goală e onestă.
+    """
+    if document_ref:
+        return str(document_ref).strip() or None
+    if numar is None:
+        return None
+    nr = "%s%s" % (serie or "", numar)
+    et = "Factură" if (fel or "factura") == "factura" else str(fel).capitalize()
+    return "%s %s din %s" % (et, nr, data.isoformat() if hasattr(data, "isoformat") else data)
