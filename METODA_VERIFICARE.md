@@ -712,6 +712,53 @@ două** e — altfel „4 module nelegate" amestecă o datorie de livrare cu o v
 
 ---
 
+## §22 — UN INSTRUMENT CARE GREȘEȘTE ÎN AMBELE DIRECȚII N-ARE NICI PLAFON SUPERIOR, NICI INFERIOR
+
+**Regula, dată de Costin 24.08.2026.** Interdicția **76** cere calibrare pe propriul mod de eșec.
+Regula asta spune ce se întâmplă când modurile de eșec sunt **două, opuse**: *un instrument care poate
+și să rateze ce există, și să revendice ce nu există, **nu produce nici măcar o margine**. Cifra lui
+nu se poate folosi până nu e calibrat pe amândouă direcțiile.*
+
+**De ce contează.** Un instrument care doar **ratează** dă un **plafon inferior** — „cel puțin atâtea".
+Unul care doar **inventează** dă un **plafon superior** — „cel mult atâtea". Amândouă sunt folosibile
+la triaj, cu semnul scris. **Unul care face amândouă nu dă nimic**: cifra lui poate fi și prea mare,
+și prea mică, în același timp, iar cele două erori nu se anulează — se ascund una pe alta.
+
+### Instanța, măsurată pe 24.08.2026
+
+Același instrument — „ce acte citate de ghiduri lipsesc din corpus" — în trei forme, în aceeași zi:
+
+| formă | cum potrivea | ce a raportat |
+|---|---|---|
+| **v1** | numele fișierului | **40 de acte lipsă** |
+| **v2** | tip+număr+an oriunde în conținut, toleranță 60 de caractere | **20 „recuperate" — toate FALSE** |
+| **v3** | titlul propriu al actului, în antet | **0 recuperări peste v1** |
+
+**v2 „a găsit" HG 479/2003 în Codul de procedură fiscală**, care doar o **menționează**. Și Legea
+1/2020 în Legea 141/2025. Și OG 6/2026 în Codul fiscal. *O mențiune nu e posesie* — aceeași distincție
+ca proza-care-numește-un-modul față de apelul lui (§19), dar pe direcția opusă: **nu ratează ce e
+prezent, ci revendică ce n-are.**
+
+**Dacă aș fi raportat cifra lui v2 fără calibrare, 20 de acte ar fi fost declarate „în corpus" și
+nimeni nu le-ar mai fi adus.** Costul unui fals „prezent" e mai mare decât al unui fals „lipsă": al
+doilea trimite pe cineva să caute degeaba; primul închide căutarea definitiv.
+
+### Ce cere, practic
+
+1. **Numește amândouă direcțiile de eșec înainte de prima măsurătoare**, nu doar una. Antetul lui
+   `scan_module_nelegate` are cinci moduri de eșec, dar toate pe direcția „nu vede" — niciunul pe
+   „revendică greșit". Aia a fost o listă pe jumătate.
+2. **Calibrează pe câte un caz din fiecare direcție**, construit: un membru pe care instrumentul
+   **trebuie** să-l găsească, și unul pe care **nu trebuie**.
+3. **Până atunci, cifra se scrie cu semnul ei** — „plafon inferior" sau „plafon superior" — sau nu se
+   scrie deloc. „40 de acte lipsă" fără să spui în ce direcție greșește instrumentul nu e o măsurătoare.
+
+Legat de [[§21]] (a declara corect fără a confrunta) și de interdicția **19** (verde pe zero rânduri):
+toate trei sunt forme ale aceleiași întrebări — *ce anume nu poate vedea instrumentul, și în ce parte
+te împinge asta*.
+
+---
+
 ## §21 — A DECLARA CEVA CORECT FĂRĂ SĂ-L FI CONFRUNTAT E CALIBRARE DOAR POZITIVĂ
 
 **Regula, dată de Costin 24.08.2026.** Interdicția **76** cere ca un instrument să fie calibrat pe
