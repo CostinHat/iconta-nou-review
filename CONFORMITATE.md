@@ -1140,6 +1140,34 @@ scos ce nu se știa**, nu din defecte noi.
 - **condiția de deblocare**: un verdict nu poate fi **verde** cât timp `facturi_necontabilizate > 0` pe perioada lui — devine **gri** (necunoaștere, cu domeniul ei) sau roșu, după caz. Se închide când sonda de mai sus întoarce **zero perechi verzi cu necontabilizate nenule**, iar gardul care o probează are în domeniu toate cele 17 scheme.
 - **sonda NU a scris**: instantaneu `pg_stat_user_tables` înainte/după, zero inserări/actualizări/ștergeri.
 
+### R36 — Cum ajung faptele economice în contabilitate nu e o alegere DECLARATĂ nicăieri
+
+- **felul**: ARTEFACT
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · E3 · **P11** · interdicția **21** · **PRAG 2** *(nu o cifră greșită — o alegere de arhitectură luată prin scriere de cod, fără să fi fost cerută)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `37c5fa6`
+- **măsurat la**: 2026-08-24 · **pe commit**: `37c5fa6`
+- **ce blochează**: Întrebarea lui Costin, și e cea care mută tot restul: *„aplicația a fost proiectată să contabilizeze automat facturile, sau să primească notele din altă parte?"* **Căutat în `DECIZII.md`, `PLAN_ARHITECTURA.md`, `DESIGN_SYSTEM.md` și `CONFORMITATE.md`: nicio decizie, niciun principiu, nicio regulă de produs care să spună care dintre cele două e modelul.** Alegerea nu e luată — e **nimerită**, prin ce s-a scris. Exact P11: *„unde textul nu determină rezultatul, nu se alege — se cere decizia"*, iar aici nici măcar nu era vorba de un text de lege, ci de forma produsului.
+- **CE EXISTĂ, măsurat pe toate cele 17 scheme** — 41 de facturi, **34 de note**:
+
+  | sursa notei | note | ce înseamnă |
+  |---|---|---|
+  | `(null)` | **19** | fără sursă declarată — fixturi scrise direct în tabele |
+  | `banca` | 6 | din reconcilierea extrasului |
+  | `casa` | 5 | din registrul de casă |
+  | **`facturi`** | **3** | **singura cale document → notă, pe toată instalarea** |
+  | `amortizare` | 1 | |
+
+  Și: **15** note poartă `factura_id`, **19** nu poartă niciunul.
+
+- **Deci răspunsul e „nici una, nici alta, complet".** Există o cale document→notă, dar e o **rută manuală, per factură**, apăsată de om, care a produs **3 note** în toată instalarea. Nu există niciun mecanism care să contabilizeze un lot, nicio declanșare la emitere, nicio coadă. Iar restul evidenței vine din alte trei căi (bancă, casă, amortizare) plus 19 note fără nicio proveniență. **Nu e „lipsește un modul întreg" și nu e „notele vin din altă parte": e că nu s-a hotărât care din două, iar codul le are pe amândouă pe jumătate.**
+- **De ce contează mai mult decât pare**: `P14` cere ca orice cifră să se desfacă până la documentul care o justifică. O notă fără `factura_id` și fără `sursa` **nu se poate desface** — și sunt 19 din 34, adică **56%** din evidența existentă. Iar `P20` cere proveniență pe orice valoare din afară. Ambele sunt încălcate nu de un defect, ci de **absența alegerii**.
+- **LIMITĂ DECLARATĂ, și e importantă pentru verdictele fazei 1**: baza pe care s-a măsurat orice despre evidența contabilă e **41 de facturi și 34 de note, pe 17 firme, toate de test**. E o bază **subțire**, iar un verdict de fază 1 dat pe ea poartă incertitudinea asta. Nu se poate spune „aplicația produce evidența corect" pe 34 de note — se poate spune doar ce s-a văzut. *Consemnat ca limită, nu ca cifră: procentele derivate din baza asta se citesc ca plafoane, nu ca proporții.*
+- **condiția de deblocare**: se scrie, ca **decizie de produs** în `DECIZII.md`, care e modelul — *(a)* aplicația contabilizează documentele automat, și atunci ruta manuală devine excepția declarată; *(b)* contabilul introduce notele, și atunci contarea automată nu se construiește, iar D300 nu mai poate declara ce evidența n-are fără să semnaleze; *(c)* hibrid, cu granița scrisă. Se închide când alegerea, varianta respinsă și motivul sunt scrise, iar `R35` și `R34` se re-citesc pe ea — amândouă atârnă de răspuns.
+- **ce NU e**: nu e o reformulare a lui R35. R35 e un **verdict fals pe ecran** (verde peste o factură necontabilizată cunoscută), prag 1, măsurat pe 9 perechi — rămâne cum e. R36 e cauza din spatele lui, și e o **absență**, nu un defect: de aceea prag 2, nu 1.
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
