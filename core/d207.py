@@ -12,7 +12,7 @@ SURSA STRUCTURII = VALIDATORUL OFICIAL ANAF (D207Validator.jar, arbitrul peste a
 Timps/imps1 OBLIGATORII - confirmate de validator (mesaj "atributul trebuie sa existe"); extragerea din
 bytecode le ratase, dar mesajele de eroare ale validatorului sunt sursa definitiva (arbitrul).
 
-SEMANTICA/REGULI din ACT (anaf_surse/structura_D207_2025 + OPANAF_179_2022_D207, in corpus):
+SEMANTICA/REGULI din ACT (anaf_surse/structura_D207_2025 + opanaf_179_2022_d205_d207_baza, in corpus):
   - tip_venit: cod C(2) din nomenclatorul naturii veniturilor (01=dividende art.223(1)a, 02=dobanzi, 03=redevente, ...
     22=dividende cf. conventii; 12-21=venituri SCUTITE). Codul se ALEGE de contabil din nomenclator - modulul NU-l
     ghiceste, il primeste ca input; valideaza doar ca e in (01..25, 26; fara 09).

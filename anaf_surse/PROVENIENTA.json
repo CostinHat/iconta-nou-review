@@ -109,6 +109,26 @@
     "ordin_2066_2025.html": {
       "clasa": "ADUS",
       "motiv": "copie nemodificata a Ordinului comun 2066/248/1377/3103 ANAF/CNPP/CNAS/ANOFM din 2025. LIMITA DECLARATA: contine DOAR TEXTUL ordinului, FARA ANEXELE TEHNICE - trei mentiuni 'Anexa', zero coduri de camp. NU e sursa pentru structura D112: structura versiunii 08/2025 pe care o aproba se citeste din d112_struct_anaf.txt (care il si numeste ca act de baza), iar tipurile si lungimile campurilor din d112_06082026.xsd. Anexele tehnice sunt pe static.anaf.ro, nu pe portalul legislativ - deci absenta lor nu se poate inchide de aici"
+    },
+    "hg_1094_2025.html": {
+      "clasa": "ADUS",
+      "motiv": "HOTARARE nr. 1.094 din 11 decembrie 2025 (MO 1162/15.12.2025) - schema de ajutor de stat pentru compensarea partiala a accizei la motorina. TITLU VERIFICAT in continut, nu doar in numele fisierului. Forma consolidata de pe portalul legislativ, adusa 24.08.2026. REVERIFICARE: trimestrial (poarta valori curente - cuantumul compensarii)"
+    },
+    "legea_1_2020.html": {
+      "clasa": "ADUS",
+      "motiv": "LEGE nr. 1 din 6 ianuarie 2020 privind pensiile ocupationale (MO 10/8.01.2020). TITLU VERIFICAT: numarul 1 se repeta intre ani, iar obiectul confirma actul cerut de ghid/d112-pensie-ocupationala-legea-1-2020. Forma consolidata de pe portal, adusa 24.08.2026. REVERIFICARE: semestrial (act de fond)"
+    },
+    "legea_161_2026.html": {
+      "clasa": "ADUS",
+      "motiv": "LEGE nr. 161 din 4 august 2026 privind unele masuri fiscal-bugetare (MO 642/4.08.2026). TITLU VERIFICAT in continut. Actul citat de ghid/cote-tva-2026 si ghid/tva-9-la-suta-locuinte-prelungire-2026. Forma consolidata de pe portal, adusa 24.08.2026. REVERIFICARE: trimestrial (poarta cote si plafoane curente)"
+    },
+    "legea_160_2026.html": {
+      "clasa": "ADUS",
+      "motiv": "LEGE nr. 160 din 23 iulie 2026 pentru modificarea Legii energiei electrice si a gazelor naturale (MO 603/23.07.2026). TITLU VERIFICAT in continut. Actul citat de ghid/prosumator-fotovoltaice-obligatii-fiscale. Forma consolidata de pe portal, adusa 24.08.2026. REVERIFICARE: semestrial (act de fond)"
+    },
+    "opanaf_3562_2024.html": {
+      "clasa": "ADUS",
+      "motiv": "ORDIN nr. 3.562 din 28 iunie 2024 pentru aprobarea Procedurii privind redirectionarea impozitului pe profit pentru sponsorizari (MO 643/5.07.2024). TITLU VERIFICAT in continut. Forma consolidata de pe portal, adusa 24.08.2026. REVERIFICARE: inaintea fiecarei perioade de raportare in care se foloseste (ordin care aproba o procedura/structura)"
     }
   },
   "goale_cunoscute": {

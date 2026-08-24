@@ -10,6 +10,11 @@ from core.common import COTE
 #   forma_la_data     = forma la o data fixa (forma initiala / HG punctual / ordin) -> contine valoarea
 #                       de la acea data chiar daca exista valori mai noi in alte acte.
 TIP_FORMA = {
+    "opanaf_3562_2024.html": "consolidat_la_zi",
+    "legea_160_2026.html": "consolidat_la_zi",
+    "legea_161_2026.html": "consolidat_la_zi",
+    "legea_1_2020.html": "consolidat_la_zi",
+    "hg_1094_2025.html": "consolidat_la_zi",
     "cod_fiscal_227_2015_consolidat.html": "consolidat_la_zi",
     "legea_141_2025_consolidat.html": "consolidat_la_zi",
     "cf_art291_2016_forma_initiala.txt": "forma_la_data",

@@ -1,6 +1,6 @@
 """Teste D207 (informativa impozit retinut la sursa - beneficiari nerezidenti).
 Structura din validatorul oficial (D207Validator.jar, v2 in vigoare) + semantica din anaf_surse
-(structura_D207_2025 + OPANAF_179_2022_D207). Proba pe DUKIntegrator -v D207."""
+(structura_D207_2025 + opanaf_179_2022_d205_d207_baza). Proba pe DUKIntegrator -v D207."""
 import os
 import pytest
 from core import d207
