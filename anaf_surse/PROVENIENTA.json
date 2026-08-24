@@ -89,6 +89,26 @@
       "clasa": "DERIVAT_MANUAL",
       "sursa": "d402_20160226.xsd",
       "motiv": "lista de amprente scrisa de mana pe 14.08 pentru cele doua surse D402. Amprentele sunt corecte - verificate 23.08, ambele OK - dar stateau intr-o forma pe care nicio garda n-o citea"
+    },
+    "hg_1074_2021.html": {
+      "clasa": "ADUS",
+      "motiv": "copie nemodificata de pe portalul legislativ, HG 1074/2021; adusa pentru ghidurile care o citeaza. Text integral, fara interventie"
+    },
+    "hg_145_2026.html": {
+      "clasa": "ADUS",
+      "motiv": "copie nemodificata, HG 145/2026 (restituire acciza motorina); adusa ca temeiul citat in ghid/restituire-acciza-motorina-2026 sa poata fi confruntat. Text integral"
+    },
+    "hg_518_1995.html": {
+      "clasa": "ADUS",
+      "motiv": "copie nemodificata, HG 518/1995 (diurna externa); adusa pentru cele doua ghiduri de diurna care o citeaza. Text integral"
+    },
+    "legea_226_2023.html": {
+      "clasa": "ADUS",
+      "motiv": "copie nemodificata, Legea 226/2023; adusa pentru ghid/tollro-strr-31-august-2026. Text integral"
+    },
+    "ordin_2066_2025.html": {
+      "clasa": "ADUS",
+      "motiv": "copie nemodificata a Ordinului comun 2066/248/1377/3103 ANAF/CNPP/CNAS/ANOFM din 2025. LIMITA DECLARATA: contine DOAR TEXTUL ordinului, FARA ANEXELE TEHNICE - trei mentiuni 'Anexa', zero coduri de camp. NU e sursa pentru structura D112: structura versiunii 08/2025 pe care o aproba se citeste din d112_struct_anaf.txt (care il si numeste ca act de baza), iar tipurile si lungimile campurilor din d112_06082026.xsd. Anexele tehnice sunt pe static.anaf.ro, nu pe portalul legislativ - deci absenta lor nu se poate inchide de aici"
     }
   },
   "goale_cunoscute": {

@@ -49,4 +49,3 @@ Operațiunile cu locul în afara UE, importurile, livrările către persoane nei
 ### Ce face iConta
 
 Fiecare operațiune exclusă din D390 apare în diagnosticul de generare cu motivul numit și temeiul citat, nu dispare tăcut. Codul de TVA e verificat algoritmic la introducere, pe țară, iar reconcilierea cu decontul de TVA marchează diferențele de exigibilitate ca legitime, nu ca erori.
-# GHIDURI 27–31 · Concedii medicale (II)

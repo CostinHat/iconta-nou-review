@@ -47,4 +47,3 @@ Diagnosticul. Codul de diagnostic din clasificarea CIM-10 e informație medical�
 ### Ce face iConta
 
 Câmpurile obligatorii pe fiecare cod se cer la introducerea certificatului, nu la generarea D112 — inclusiv CNP-ul persoanei îngrijite și referința la certificatul inițial. Stagiul, suprapunerile și duratele cumulate pe an se verifică automat, cu semnal înainte de plată.
-# GHIDURI 32–36 · Salarii și contribuții

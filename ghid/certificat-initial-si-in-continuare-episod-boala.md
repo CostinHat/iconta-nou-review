@@ -52,4 +52,3 @@ Excepția e codul 51 — izolare — unde ziua nu se scade.
 ### Ce face iConta
 
 Episodul e unitatea de calcul, nu certificatul: procentul se determină pe zilele cumulate ale episodului, iar reducerea de o zi se aplică o singură dată, la certificatul inițial. Când un certificat în continuare schimbă procentul, diferența aferentă lunii anterioare se calculează automat și se raportează în luna curentă, fără rectificativă.
-# GHIDURI 12–16 · D112 după iulie 2026

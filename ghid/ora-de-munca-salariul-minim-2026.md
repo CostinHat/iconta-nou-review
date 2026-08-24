@@ -46,4 +46,3 @@ Actele adiționale se încheie **înainte** de data de la care se aplică noul n
 ### Ce face iConta
 
 La modificarea salariului minim, contractele care ajung sub prag sunt listate automat, cu brutul minim necesar pentru fiecare, calculat din tariful orar al lunii și din norma contractuală. Verificarea acoperă toate contractele part-time, nu doar pe cele încadrate la minim.
-# GHIDURI 37–40 · TVA intracomunitar

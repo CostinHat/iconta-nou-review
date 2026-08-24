@@ -53,4 +53,3 @@ O diferență neexplicată înseamnă că o operațiune a fost clasificată gre�
 ### Ce face iConta
 
 Derivă D390 din operațiunile D301, cu maparea explicită tip 1 și 3 → A, tip 5 → S. Fiecare operațiune exclusă apare în diagnostic cu motivul, nu dispare tăcut. Codul de TVA e verificat algoritmic la introducere și la generare, pentru țările cu algoritm cunoscut offline; restul se deferă validatorului, dar cu semnal, nu cu tăcere.
-# GHIDURI 7–11 · Codurile de concediu medical

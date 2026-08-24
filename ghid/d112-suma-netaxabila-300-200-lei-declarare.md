@@ -51,4 +51,3 @@ Derogarea din OUG 156/2024 art. LXVI, menținută prin OUG 89/2025 art. III, **r
 ### Ce face iConta
 
 Cuantumul facilitații se alege pe luna venitului, nu pe data calculului, iar cele patru condiții se verifică lunar pe fiecare salariat. Podeaua part-time folosește aceeași valoare — salariul minim diminuat cu facilitatea — atât în statul de plată, cât și în D112, ca fluturașul și declarația să nu spună lucruri diferite despre aceeași lună.
-# GHIDURI 17–20 · Salarii, deduceri și baza minimă

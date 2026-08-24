@@ -31,9 +31,11 @@ Scutirea se aplică doar dacă salariul de bază brut lunar e la nivelul salariu
 
 Pare o modificare pur tehnică, dar un cod greșit duce la respingerea declarației sau la raportări eronate în evidențele ANAF, CNPP și CNAS. Maparea codurilor din programul de salarizare trebuie verificată înainte de depunerea pentru iulie.
 
-**3. Câmpuri noi pentru concedii medicale, plus eliminarea rectificativelor.**
+**3. Eliminarea rectificativelor pentru concedii medicale.**
 
 Prin art. VII din OUG nr. 89/2025 s-a modificat art. 17 din OUG nr. 158/2005, astfel încât angajatorii **să nu mai fie obligați să recalculeze indemnizațiile pentru concedii medicale și să depună declarații 112 rectificative pentru lunile anterioare**. Dispozițiile intră în vigoare de la 1 iulie 2026.
+
+**Ce s-a schimbat efectiv în structură, verificat pe XSD.** Câmpurile introduse din 07.2026 **nu sunt pentru concedii medicale**: sunt `C2_155`, `C2_156` (secțiunea C2 angajator), `E2_156` (secțiunea E2), `B3_7D`, `C_10D`, `D_14`/`D_14a`, `D_15`/`D_15a`, `D_16`/`D_16a`, `D_20a`, `D_21a` și **`E3_97`** — contribuțiile la un fond de pensii ocupaționale, poziția 8.5.6. Restul modificărilor aduse de ordin sunt **de conținut, nu de câmp**: suma netaxabilă de la 300 la 200 de lei si actualizarea nomenclatorului „Tip asigurat”.
 
 E singura schimbare care scade volumul de muncă, nu îl crește.
 
