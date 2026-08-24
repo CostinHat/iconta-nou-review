@@ -17,7 +17,7 @@ import { randeazaPachete } from "./pachete.js?v=8c32cbb767"; // [p63_pachete]
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
 import { randeazaValidat } from "./validat.js?v=1aa4c6b904";
 import { randeazaAsistenti } from "./asistenti.js?v=3749bc9e55";
-import { randeazaCapacitate } from "./capacitate.js?v=5159e31f44"; // [p71_capacitate]
+import { randeazaCapacitate } from "./capacitate.js?v=eb31833ad4"; // [p71_capacitate]
 import { randeazaTipare } from "./tipare.js?v=e88a7f5eba"; // [p72_tipare]
 
 // iconițe SVG inline (autonome, fără dependență externă de rețea)
@@ -99,9 +99,9 @@ async function randeazaSintezaAzi(corp, nav) {  // [p74_brief_modal] Sinteza ca 
   }
   const cifre = [
     cifra(t.create || 0, "pregatite", "activitate"),
-    cifra(t.aprobate || 0, "validate", "activitate", "var(--verde)"),
+    cifra(t.aprobate || 0, "validate", "activitate", (t.aprobate ? "var(--verde)" : null)),
     cifra(t.respinse || 0, "respinse", "tipare", (t.respinse ? "var(--rosu-semafor)" : null)),
-    cifra(t.depuse || 0, "depuse", "activitate", "var(--verde)"),
+    cifra(t.depuse || 0, "depuse", "activitate", (t.depuse ? "var(--verde)" : null)),
     cifra(t.in_asteptare || 0, "de validat", "validat", (t.in_asteptare ? "var(--galben)" : null)),
     cifra(rap.necitite || 0, "sesiz\u0103ri noi", "raport", (rap.necitite ? "var(--rosu-semafor)" : null)),
   ].join("");
@@ -418,10 +418,16 @@ async function actualizeazaAsistenti(grila) {
     const r = await api.get("/asistenti");
     const n = (r && r.sumar && r.sumar.activi) || 0;
     /* [patch10_card_sem] */
-    let pastila = ""; let randuri = "";
+    /* [verde_derivat 24.08.2026] Verdele de aici era SCRIS, nu derivat: `randuri || <pct-verde>`
+       picta „Echipa activa" SI cand /asistenti/echipa/semafor ARUNCA (catch) sau intorcea !ok — adica
+       exact cand nu se comparase nimic. P6: absenta unei contradictii nu e o verificare, iar omul nu
+       poate deosebi un verde derivat de unul scris. Starea are acum TREI valori; cand nu se poate
+       deriva, semaforul LIPSESTE (absenta e onesta). CONFORMITATE R30 + core/test_verde_derivat.py. */
+    let pastila = ""; let randuri = ""; let derivat = false;
     try {
       const sm = await api.get("/asistenti/echipa/semafor");
       if (sm && sm.ok) {
+        derivat = true;
         const c = sm.counts || {rosu:0, galben:0, verde:0};
         const na = (c.rosu || 0) + (c.galben || 0);
         randuri = na === 0 ? "" : _semaforCard([
@@ -429,7 +435,7 @@ async function actualizeazaAsistenti(grila) {
         ], "");
       }
     } catch {}
-    zona.innerHTML = randuri || `<span class="cab-stare"><span class="cab-pct pct-verde"></span>Echipă activă</span>`;  // [p76_comasare_font]
+    zona.innerHTML = randuri || (derivat ? `<span class="cab-stare"><span class="cab-pct pct-verde"></span>Echipă activă</span>` : "");  // [p76_comasare_font] [verde_derivat]
     void n;
   } catch {}
 }
