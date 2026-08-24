@@ -1172,6 +1172,21 @@ scos ce nu se știa**, nu din defecte noi.
 - **condiția de deblocare**: se scrie, ca **decizie de produs** în `DECIZII.md`, care e modelul — *(a)* aplicația contabilizează documentele automat, și atunci ruta manuală devine excepția declarată; *(b)* contabilul introduce notele, și atunci contarea automată nu se construiește, iar D300 nu mai poate declara ce evidența n-are fără să semnaleze; *(c)* hibrid, cu granița scrisă. Se închide când alegerea, varianta respinsă și motivul sunt scrise, iar `R35` și `R34` se re-citesc pe ea — amândouă atârnă de răspuns.
 - **ce NU e**: nu e o reformulare a lui R35. R35 e un **verdict fals pe ecran** (verde peste o factură necontabilizată cunoscută), prag 1, măsurat pe 9 perechi — rămâne cum e. R36 e cauza din spatele lui, și e o **absență**, nu un defect: de aceea prag 2, nu 1.
 
+### R37 — Nota contabilă n-are autor, iar `sursa` ei e un nomenclator de fapt, scris în 48 de locuri
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · P16 · P13 · interdicțiile **17**, **28**, **37** · **PRAG 2**
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `6091024`
+- **măsurat la**: 2026-08-24 · **pe commit**: `6091024`
+- **ce blochează**: **(1) Nicio înregistrare contabilă nu poartă autor.** `core/jurnal_api.py` și `core/casa_api.py` scriu în `inregistrari` fără `creat_de`, `user_id` sau `autor` — verificat, câmpurile nu există. Consecința măsurabilă: **nu se poate deosebi o notă introdusă de un om prin ecran de una scrisă de un script care cheamă ruta.** Întrebarea a fost pusă explicit (Costin, 24.08) și **nu are răspuns din date, prin construcție**. Iar nota alimentează D300 și D112, care se depun — deci e **interdicția 37**: act cu efect juridic extern, fără autor identificat. Prin contrast, `state_plata` **are** autor (`emis_de`, `motiv_de`), deci tiparul corect există deja în casă.
+- **(2) `sursa` e un nomenclator care nu există ca registru**: șir liber, scris **literal în 48 de locuri**, cu **9 valori distincte** — `facturi` (28×), `banca` (6), `stocuri` (5), `casa` (4), plus câte una pentru `manual`, `horeca_z`, `bon`, `amortizare`, `amef`. Nicio listă închisă, nicio validare, niciun loc unic. **Interdicțiile 17 și 28.** O valoare scrisă greșit într-o rută nouă nu e prinsă de nimic, iar orice raport care grupează pe `sursa` ar tăcea despre ea.
+- **ce NU e**: nu e un nomenclator de TIPURI DE NOTĂ. Așa ceva **nu există** — `NOTE_TIP` a fost căutat, zero potriviri. Iar absența lui **nu blochează** propunerea automată: maparea document→conturi există deja **per tip de operațiune**, în ~50 de rute, fiecare știindu-și conturile. Nu e nevoie de un strat tip-factură → tip-notă. *Vezi R36: singurul gol e declanșarea.*
+- **și un rezultat NEGATIV, care merită scris fiindcă infirmă o predicție**: conturile scrise literal în ecrane au fost confruntate cu planul de conturi al fiecărei firme — **8 conturi** (`2131`, `2133`, `2813`, `301`, `371`, `401`, `4111`, `446`), **toate prezente în planul tuturor celor 17 firme. Zero greșite.** Deci **nu** e a cincea instanță de valoare expirată în ecran. *Calibrare, ca numărătoarea să nu fie reluată greșit:* o căutare fără filtru de context ar fi dat și `121`/`103` din `declaratii.js` — care sunt **coduri de obligație ANAF**, nu conturi — și `101` din `etransport_ecran.js`, care e cod de tip de document. Trei fals-pozitive din unsprezece.
+- **condiția de deblocare**: `sursa` devine nomenclator închis, într-un loc unic, cu validare la scriere (după modelul `nomenclator_status_factura`); și `inregistrari` primește autor, pe regulile lui `state_plata`. Se închide când un scan pe `INSERT INTO ... inregistrari` găsește **zero** literale de `sursa` în afara nomenclatorului, iar coloana de autor e nenulă pe orice notă nouă.
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
@@ -1189,6 +1204,13 @@ fără commit îmbătrânește la fel de tăcut aici ca oriunde.
 > invalidată — e o cifră al cărei numitor e declarat**, iar deosebirea contează: nu se corectează, se
 > **remăsoară** după ce modelul de intrare a faptelor e decis (**R36**) și aplicat. Până atunci,
 > secțiunile de mai jos care ating evidența contabilă **nu se citează ca verdict**. Cauza, cu vorbele
+> **PRECIZARE 24.08.2026 (Costin), și schimbă ce înseamnă marcajul:** motivul nu e că *nu se produce
+> contabilitate* — se produce, pe ~50 de căi (**R36**). E că **notele se introduc printr-un act uman,
+> iar firmele de test n-au avut cine să-l facă**: fluxul automat a fost apăsat de 3 ori, cel manual de
+> 0 ori. **Consecința, și e cea care contează: artefactele familiei A pot fi perfect corecte pe o firmă
+> cu evidență ținută — asta nu s-a măsurat niciodată.** Marcajul nu spune *artefactele sunt greșite*,
+> spune *n-au fost văzute pe date reale*. Remăsurarea cere **o firmă cu evidență ținută, nu un
+> instrument nou.**
 > lui Costin: *„întrebarea corectă era dacă notele acoperă documentele"* — iar `METODA` §16 spune de ce
 > se ratează: verificarea se face unde e nevoie, nu unde e vizibilă.
 
