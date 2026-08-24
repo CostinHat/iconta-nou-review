@@ -1101,6 +1101,18 @@ scos ce nu se știa**, nu din defecte noi.
 - **REPARAT 24.08.2026**, pe regula lui Costin: *„dacă starea se poate deriva, se derivă; dacă nu se poate deriva încă, se scoate semaforul, nu se lasă verde. Absența unui indicator e onestă; un verde care nu verifică nimic nu e."* Instanța **1** — starea are acum trei valori (`derivat`), iar când nu se poate deriva **semaforul lipsește**, nu devine verde. Instanțele **2** și **3** — culoarea devine condiționată, ca frații de lângă ele. Instanța 3 **nu** s-a derivat din `control_incrucisat`, cum cerea comanda: `cab.depuse_luna` vine din `core/capacitate_api.py:57`, un `COUNT(*) FILTER (WHERE depus_la >= început_de_lună)` — numărătoare de volum al cabinetului, fără legătură cu controlul fiscal, deci n-are ce deriva de acolo. Gardat de `core/test_verde_derivat.py`, RED-probat prin mutație.
 - **CE NU ÎNCHIDE LĂRGIREA, și e condiția de deblocare a clasei:** cele trei sunt pinuite pe **fișier și formă**, nu pe **clasă**. Un scan care găsește *orice* verde emis fără condiție în `static/js/` **nu există** — până există, a patra apariție intră mâine fără să se vadă, exact tiparul lui R29 (clasă golită pe un limbaj, vie în altul). Se închide când gardul are domeniul `static/js/` pe clasă, nu pe cele trei situri, **sau** când clasa primește restanță proprie ca s-o prindă cifra din B.
 
+### R40 — Nicio declarație depusă prin aplicație, deci lanțul de apărare nu e exercitat niciodată
+
+- **felul**: VERIFICARE
+- **cine deblochează**: EXTERN
+- **unde intră**: E1 · interdicția 32 · interdicția 19 · **PRAG 3** *(nimic fals pe ecran azi; ce lipsește e proba, nu corectitudinea)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `bf16f32`
+- **ce blochează**: toate cele **54** de depuneri înregistrate vin din **importul istoric**, care nu captează valorile. Calea care le persistă (`coada_api.py:300`) e scrisă și gardată, dar **n-a fost folosită niciodată** — coada are 3 elemente, toate în `la_senior`. Deci lanțul *poziție depusă → cont → note → document* n-a fost parcurs nici măcar o dată pe date reale, iar sonda care-l parcurge întoarce **zero** dintr-un motiv care nu se poate deosebi mecanic de „totul e în regulă".
+- **ce s-a făcut totuși, ca absența să nu treacă drept sănătate**: D112 preferă de azi XML-ul depus și, când regenerează, **își declară limita în temei**. `verifica_tva` rămâne pe regenerare — fereastra TVA are reguli proprii, și nu se atinge fără măsurătoare separată.
+- **condiția de deblocare**: **trebuie** o **primă depunere reală prin coadă** — aprobare de senior + depunere efectivă — **de la** Costin sau de la un contabil care folosește aplicația, **pentru ca** sonda de lanț să aibă ce parcurge. Fără ea, lanțul *poziție depusă → cont → note → document* **blochează** măsurarea interdicției 32 la nivelul ei, iar sonda întoarce zero dintr-un motiv care nu se poate deosebi mecanic de „totul e în regulă" (interdicția 19). O firmă de test e suficientă. Până atunci, orice afirmație despre „lanțul funcționează" e despre cod, nu despre date.
+
 ### R39 — Coloana pe care se sprijină verificarea D112 nu se scrie de nicăieri
 
 - **felul**: ORDINE
@@ -2718,7 +2730,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 - **stare**: PARȚIAL
 - **felul limitei**: DOMENIU — regiunea e numită: nu urmărește lanțul de la înregistrare spre poziția din declarație. Calibrare găsită, pozitiv și negativ
 - **măsurat la**: 2026-08-24
-- **pe commit**: `0a96ebf`
+- **pe commit**: `bf16f32`
 - **cifra**: **19 din 33 de note contabile** nu au nicio legătură către documentul care le justifică. Măsurat **un nivel mai jos decât spune interdicția** — pe înregistrare, nu pe poziția din declarație — fiindcă acolo se rupe lanțul întâi: o poziție nu se poate desface până la document dacă nici înregistrarea din spatele ei nu poate. **Cifra e un plafon inferior**: nu s-a măsurat câte poziții de declarație sunt afectate, ci câte note nu pot fi desfăcute.
 - **instanțe**: pe toți cei șase tenanți cu note (t003, t005, t013, t014, t016, t017): `document_ref` populat **0 din 33** · `numar` **1 din 33** (doar `AMORT-2026-08`) · `factura_id` **14 din 33**. Coloana `inregistrari.document_ref` **există și nu o scrie nimeni**: singurele apariții în cod sunt o CITIRE în `core/control_incrucisat.py:491` (caută `document_ref = 'SAL LL/AAAA'`, o valoare pe care n-o produce nimic) și `core/registratura_api.py`, care lucrează pe altă tabelă.
 - **calibrare**: GĂSIT — cazul pozitiv e nota de amortizare de pe t013 (`id=30`, `numar=AMORT-2026-08`), singura cu identificator propriu; cazul negativ NEraportat sunt cele 14 note cu `factura_id`, care **au** legătură și n-au intrat în cifră.
@@ -2764,6 +2776,35 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 > luni de zile — fiindcă îi dă `note_ciorna=1` **direct**. Funcția pură e corectă; **intrarea ei e
 > moartă**. Un test unitar verde peste un lanț rupt e aceeași clasă cu gărzile de la §19: dovedește
 > că mecanismul *poate* funcționa, nu că *funcționează*.
+>
+> **NIVELUL EI, în sfârșit (24.08.2026, `bf16f32`).** Ambele măsurători de până acum au fost **un
+> nivel mai jos** — pe *înregistrare*. Interdicția vorbește despre **poziția de declarație**. Măsurat
+> de acolo, pe date reale:
+>
+> **1. Ce s-a depus nu se păstrează — pe datele de azi.** `public.declaratii_depuse` **are**
+> coloanele `xml` și `randuri`, dar sunt populate **0 din 54**. Motivul nu e că nu le scrie nimeni:
+> `core/coada_api.py:300` **le persistă**. Toate cele 54 vin din **importul istoric**
+> (`istoric_declaratii_import_api.py:207`), care consemnează *că* s-a depus, nu *ce* s-a depus —
+> `sursa` e populată 54/54. Calea care păstrează **n-a fost încă folosită** de nicio firmă.
+>
+> **2. Deci lanțul n-are capăt de pornire.** O poziție nu se poate desface până la document dacă nici
+> declarația nu se păstrează. Sonda care pornea din poziția depusă a găsit **0 poziții** de desfăcut
+> — și **asta nu e un verde**, e chiar interdicția 19: absența datelor, nu absența defectului.
+>
+> **3. Cine compară ce.** Din patru verificări încrucișate, **una singură citea ce s-a depus**
+> (`verifica_d390`, prin `_d300_depus_randuri`); celelalte trei **regenerau** declarația din datele de
+> azi. O verificare care regenerează compară *evidența de azi* cu *declarația care s-ar genera azi* —
+> iar divergența care contează, între ce ține ANAF și ce spun registrele, **nu poate apărea în ea**.
+>
+> **4. Disciplina exista deja în casă.** `compara_d390_vs_d300` tratează corect `randuri is None`:
+> **GRI**, cu temeiul *„absența datelor nu e divergență"*. Deci nu era o formă de inventat, ci una de
+> **aplicat**. Reparat azi pe D112: preferă XML-ul **depus** când există, altfel regenerează **și o
+> spune în temei** — *„nu s-a păstrat ce s-a depus, deci comparația e evidența de azi față de
+> declarația care S-AR genera azi"*. Gardat de `core/test_d112_compara_ce_s_a_depus.py`.
+>
+> **Rămâne PARȚIAL, și se vede acum de ce**: coloana 3 a lanțului (înregistrare→document) e reparată
+> prin derivare, capătul de sus (poziție→înregistrare) e reparat pe D112, dar **niciun capăt nu e
+> exercitat pe date reale** cât timp nicio depunere nu trece prin coadă. **R40**.
 >
 > **Cifra de pe 22.08 rămâne validă și devine mai gravă**: `document_ref` 0 din 33 nu era doar o
 > coloană goală, era o coloană goală **pe care se sprijină o decizie afișată**.

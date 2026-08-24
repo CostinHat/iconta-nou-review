@@ -5,12 +5,12 @@
  "_categorii": {
   "sursa": 113,
   "randare": 6,
-  "reprezentare": 250,
+  "reprezentare": 251,
   "container": 71,
-  "nedeterminat": 899
+  "nedeterminat": 900
  },
- "_total_aserțiuni": 1339,
- "_in_clasa": 369,
+ "_total_aserțiuni": 1341,
+ "_in_clasa": 370,
  "fisiere": {
   "core/test_11_deducere_copii_gard.py": 1,
   "core/test_a11y_landmarks.py": 8,
@@ -39,6 +39,7 @@
   "core/test_d112_caen_codboala.py": 5,
   "core/test_d112_cert_overflow.py": 1,
   "core/test_d112_cnp_angajat.py": 5,
+  "core/test_d112_compara_ce_s_a_depus.py": 1,
   "core/test_d112_nume_dataang.py": 6,
   "core/test_d112_reconciliere.py": 18,
   "core/test_d177_formular.py": 1,
@@ -125,5 +126,8 @@
   "core/test_vector_camp_marcat.py": 6
  },
  "_vacue": 221,
- "_vacue_de_ce": "aserțiuni din clasă care trec ȘI pe iterabil gol — suprapunerea cu interdicția 19. Clasele NU sunt disjuncte. Plafon inferior."
+ "_vacue_de_ce": "aserțiuni din clasă care trec ȘI pe iterabil gol — suprapunerea cu interdicția 19. Clasele NU sunt disjuncte. Plafon inferior.",
+ "_motive": {
+  "core/test_d112_compara_ce_s_a_depus.py": "1 aserțiune, declarată în fișier: temeiul e proza CITITĂ DE CONTABIL, iar cerința e chiar că fraza destinată lui spune limita regenerării. Nu există structură sub o propoziție - subiectul aserțiunii ESTE proza. Perechea ei structurală (`sursa_declarat` ca CÂMP) e testul de deasupra. Nu e într-o buclă, deci nu poate trece pe listă goală."
+ }
 }

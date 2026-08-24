@@ -434,7 +434,8 @@ def toleranta_d112(nr_salariati):
     return max(TOLERANTA, Decimal("0.5") * Decimal(str(nr_salariati or 0)))
 
 
-def compara_d112(totaluri, rulaje, note_ciorna=0, nr_salariati=0, patru_ochi=True):
+def compara_d112(totaluri, rulaje, note_ciorna=0, nr_salariati=0, patru_ochi=True,
+                 sursa_declarat="regenerat"):
     """PURA: totaluri declarate (din XML) vs rulaj CREDIT pe conturile de datorii.
 
     `note_ciorna` are TREI valori, nu doua: un numar (se stie cate note in ciorna sunt), `0` (se
@@ -450,12 +451,18 @@ def compara_d112(totaluri, rulaje, note_ciorna=0, nr_salariati=0, patru_ochi=Tru
         contabil = _d(rulaje.get(cont, {}).get("credit", 0))
         dif = decl - contabil
         cod_txt = "+".join(coduri)
-        temei = (f"D112 angajatorA cod {cod_txt} (din XML-ul generat) vs "
+        de_unde = ("din XML-ul DEPUS, persistat la depunere" if sursa_declarat == "depus"
+                   else "din XML-ul REGENERAT acum — nu s-a păstrat ce s-a depus, deci comparația "
+                        "e evidența de azi față de declarația care S-AR genera azi")
+        temei = (f"D112 angajatorA cod {cod_txt} ({de_unde}) vs "
                  f"rulaj credit cont {cont} pe lună, numai note validate. "
                  f"Toleranță {_lei(tol)}: D112 rotunjește la leu, evidența ține bani "
                  f"({nr_salariati} salariați × 0,5 lei).")
+        # [interdictia 32] DIN CE s-a comparat e un FAPT despre constatare, deci e camp - nu doar o
+        # fraza in temei. Un consumator (ecran, gard, raport) trebuie sa poata intreba structura,
+        # nu sa caute un cuvant intr-o proza destinata omului.
         baza = {"eticheta": eticheta, "declarat": decl, "contabil": contabil,
-                "diferenta": dif, "temei": temei}
+                "diferenta": dif, "temei": temei, "sursa_declarat": sursa_declarat}
         if abs(dif) <= tol:
             rez.append(dict(baza, stare="verde",
                             mesaj=f"{eticheta}: D112 și contul {cont} coincid.", remediu=None))
@@ -532,11 +539,41 @@ def note_salarii_ciorna(conn, schema, an, luna):
         return int(cur.fetchone()[0] or 0)
 
 
+def _d112_depus_xml(conn, schema, an, luna):
+    """XML-ul D112 EFECTIV DEPUS pentru (an, luna), sau None daca nu s-a pastrat.
+
+    [interdictia 32] O pozitie de declaratie nu se poate desface pana la document daca nici
+    declaratia nu se pastreaza. Calea de coada (`coada_api`) persista `xml`; importul istoric
+    (`istoric_declaratii_import_api`) NU - el consemneaza CA s-a depus, nu CE s-a depus.
+    Masurat 24.08.2026: 0 din 54 de depuneri au xml, fiindca toate cele 54 sunt importuri.
+
+    Aceeasi disciplina cu `_d300_depus_randuri`: trei valori, nu doua - aici None inseamna
+    "nu se poate sti ce s-a depus", si NU se rotunjeste la "s-a depus ce as genera eu acum"."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT id FROM public.tenants WHERE schema_name = %s", (schema,))
+        row = cur.fetchone()
+        if not row:
+            return None
+        cur.execute("SELECT xml FROM public.declaratii_depuse_curente "
+                    "WHERE tenant_id = %s AND tip = 'd112' AND an = %s AND luna = %s",
+                    (row[0], an, luna))
+        r = cur.fetchone()
+    return r[0] if r and r[0] else None
+
+
 def verifica_d112(conn, schema, an, luna):
     """F162: D112 vs contabilitate. Gri daca declaratia nu se poate genera."""
     from core import d112 as _d112
+    # [interdictia 32] Intai ce s-a DEPUS. Daca s-a pastrat, aia e declaratia care traieste la ANAF
+    # si aia trebuie confruntata cu evidenta. Regenerarea e a doua alegere, si se spune in temei.
+    sursa_declarat = "regenerat"
     try:
+        # Generarea ramane PRIMA, ca semantica erorilor sa nu se schimbe: "gri daca declaratia nu se
+        # poate genera" e contractul functiei, si el se decide inainte de orice preferinta de sursa.
         xml, _av = _d112.genereaza(conn, schema, an, luna)
+        depus = _d112_depus_xml(conn, schema, an, luna)
+        if depus:
+            xml, sursa_declarat = depus, "depus"
     except Exception as e:
         from core.perioada import PerioadaNeconfirmata
         if isinstance(e, PerioadaNeconfirmata):
@@ -569,7 +606,9 @@ def verifica_d112(conn, schema, an, luna):
         return {"an": an, "luna": luna, "stare": "verde", "constatari": [],
                 "limita": "Fără salariați în lună — D112 nu se datorează, nimic de verificat.",
                 "modul": MODUL, "reguli": REGULI}
-    constatari = compara_d112(totaluri, rulaje, ciorne, nr_sal, patru_ochi=_patru_ochi_activ(conn, schema))
+    constatari = compara_d112(totaluri, rulaje, ciorne, nr_sal,
+                              sursa_declarat=sursa_declarat,
+                              patru_ochi=_patru_ochi_activ(conn, schema))
     stare = "rosu" if any(c["stare"] == "rosu" for c in constatari) else "verde"
     return {"an": an, "luna": luna, "stare": stare, "constatari": constatari,
 
