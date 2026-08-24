@@ -712,6 +712,37 @@ două** e — altfel „4 module nelegate" amestecă o datorie de livrare cu o v
 
 ---
 
+## §21 — A DECLARA CEVA CORECT FĂRĂ SĂ-L FI CONFRUNTAT E CALIBRARE DOAR POZITIVĂ
+
+**Regula, dată de Costin 24.08.2026.** Interdicția **76** cere ca un instrument să fie calibrat pe
+**propriul mod de eșec**, nu doar pe cazul fericit. Regula asta o mută pe o suprafață nouă: nu
+instrumentul, ci **măsurătoarea**. *O măsurătoare care declară ceva corect fiindcă «pare corect», fără
+să-l fi confruntat cu sursa, e o măsurătoare cu calibrare doar pozitivă* — și se citește la fel ca una
+făcută.
+
+**Testul, și e mecanic:** pentru fiecare lucru declarat corect, se poate numi **cu ce a fost
+confruntat**? Dacă răspunsul e „cu nimic, dar arăta bine", declarația nu e rezultat, e impresie.
+
+**Instanța, măsurată — și e a unui gard propriu.** `core/test_valori_fiscale_js.py` a fost construit ca
+să confrunte cotele scrise în ecrane cu registrul, și **făcea exact asta, corect**, pe cele 6 situri
+din tabelul lui. Ce nu spunea nimeni cu voce tare e că tabelul e **scris de om**: gardul verde însemna
+*„cele 6 pe care le știu coincid"*, dar se citea ca *„cotele din ecrane coincid"*. La măsurătoarea din
+24.08 au ieșit **10** situri reale — **4 nu fuseseră niciodată confruntate**, printre ele fratele de pe
+linia următoare a unui rând care era deja în tabel. Valorile lor s-au dovedit corecte; **dar asta s-a
+aflat abia la confruntare, nu înainte.** Diferența dintre „e corect" și „am verificat că e corect" e
+fix diferența dintre noroc și măsurătoare.
+
+**De ce nu se prinde singură:** un tabel scris de om nu-și declară golurile. Gardul care stă pe el
+raportează despre **domeniul lui**, nu despre lume — iar cine îl citește presupune lumea. Aceeași formă
+cu §17 (o clasă golită pe un singur limbaj) și cu interdicția 19 (verde pe zero rânduri), pe încă o
+față: **verde pe un domeniu mai mic decât cel presupus.**
+
+**Ce cere, practic:** orice cifră care spune „N corecte" poartă și **numitorul**, și **cum a fost
+stabilit**. „8 din 8 conturi din ecrane sunt în planul tuturor celor 17 firme" e o măsurătoare. „Cele 4
+par corecte" nu e.
+
+---
+
 ## §19 — UN MODUL DE VERIFICARE NELEGAT E O GARDĂ CARE NU PĂZEȘTE
 
 **Regula, cerută de Costin 24.08.2026.** Un modul care verifică ceva și pe care **nu-l cheamă nimeni**
