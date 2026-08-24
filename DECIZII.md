@@ -11700,3 +11700,44 @@ trece în cea nouă. Unul s-a confirmat viu — `core/common.py:658` face încă
 date.today()`, deci interdicția 2 e tot deschisă și tot cea mai ieftină. Unul era rezolvat și a fost
 scos. Restul cifrelor vechii predări nu s-au preluat deloc: se citesc din `CONFORMITATE.md`, unde
 fiecare poartă `măsurat la` și `pe commit`.
+
+## 24.08.2026 (a douăzeci și una tură) — coada devine coadă, iar „De depus" încetează să mintă
+
+**Ce s-a decis, de Costin, după citirea lui `TRASEE.md`.** Trei lucruri, în ordinea în care se
+construiesc:
+
+**1. Verdictul se persistă — precondiție pentru orice altceva.** *„Fără el, «gata de depus» nu se
+poate defini."* Se scriu **patru** câmpuri, nu unul: **rezultatul** validării · **momentul** ·
+**versiunea validatorului** · **amprenta fișierului validat**.
+
+Ultima e miezul, și e cea care transformă un verdict dintr-o etichetă într-o afirmație verificabilă:
+*un verdict pe un XML care s-a regenerat între timp nu mai e verdict.* Dacă amprenta stocată diferă
+de a XML-ului din coadă, verdictul e **stătut** — se tratează ca absent, nu ca favorabil. E aceeași
+formă cu regula de la D112/D300 din aceeași zi (*compară ce s-a depus, nu ce s-ar genera azi*): un
+verdict, ca și o declarație, e despre **un anumit conținut**, nu despre un moment.
+
+**2. Ecranul devine coadă reală.** Verdict păstrat și afișat · blocare pe **respins sau lipsă** ·
+trecere peste blocare doar **explicit și consemnat**. Iar „De depus" arată **doar ce e gata de
+depus**; ce e generat și nevalidat stă într-o listă **separată**, cu ce îi lipsește.
+
+**Motivul, în cuvintele lui Costin, și e o distincție de clasă:** *„azi ecranul spune «de depus»
+despre lucruri care nu sunt de depus. E o afirmație falsă, nu o listă incompletă."* O listă
+incompletă se completează; o afirmație falsă se retrage. De aceea reparația nu e „mai adaugă o
+coloană", ci **separarea celor două populații**.
+
+**3. Traseele nu se opresc aici.** Partea VII din `TRASEE.md` se completează din cod cât se poate, iar
+ce cere decizie se enumeră ca decizie — nu se scrie plauzibil. *„Traseele sunt lista de verificare
+care lipsea; fără ea, măsurătorile de până acum au acoperit ce s-a nimerit."*
+
+**Ce a schimbat citirea codului față de ce raportasem eu.** Două afirmații ale mele erau false, și
+amândouă în direcția „lipsește", nu „există":
+
+- spusesem că **calea cozii nu cheamă niciodată validarea DUK**. O cheamă: `GET /coada/{id}/continut`
+  rulează DUKIntegrator la **fiecare deschidere** a unui element. Ce lipsește nu e validarea, e
+  **memoria** ei;
+- spusesem că **aplicația nu transmite nimic la ANAF, niciodată**. Transmite: `efactura_send` trimite
+  e-Factura prin `spv_conector.apel_anaf`. Adevărul mai îngust e că **calea de depunere a
+  declarațiilor** n-are apel extern.
+
+Consemnate ca atare fiindcă a doua a fost repetată de două ori într-un raport, iar prima a stat la
+baza unei restanțe.

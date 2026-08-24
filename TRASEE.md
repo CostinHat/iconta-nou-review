@@ -239,3 +239,119 @@ Altfel rămân în aer: nici verificate, nici declarate.
 **Ce nu are voie** — din interdicțiile din plan, aplicate la traseu.
 
 Un traseu completat din presupunere e mai rău decât unul lipsă: se verifică ceva care nu există, iar verificarea trece.
+
+
+---
+
+# IX. COMPLETAT DIN COD — 24.08.2026, pe commit `6d3a414`
+
+Ce urmează **nu e scris din presupunere**: fiecare bloc e extras din sursă și poartă cifra lui. Ce n-a
+putut fi extras rămâne marcat, și e enumerat în Partea X ca decizie.
+
+## A. ROLURILE — complet din cod
+
+Măsurat pe **400 de rute HTTP**, din care **378 poartă o gardă** în semnătură:
+
+| gardă | rute | ce înseamnă |
+|---|---|---|
+| `cere_cabinet` | **242** | orice utilizator autentificat al unui cabinet — fără distincție de rol |
+| `cere_context` | 55 | context de cabinet/firmă |
+| `cere_rol` | **57** | `admin_firma` **30** · `admin_firma`+`angajat` **19** · `superadmin` **8** |
+| `cere_client` | 19 | portalul clientului |
+| `cere_api_key` | 5 | integrări |
+
+**Drepturile fine nu sunt roluri.** `poate_pregati` · `poate_valida` · `poate_depune` sunt **coloane
+booleene pe `public.users`**, verificate **în corpul rutei** prin `_are_permisiune`, nu în gardă.
+
+**Ce trebuie știut la testare, și e în cod:** `_are_permisiune` întoarce `True` **necondiționat pentru
+`superadmin`**, înaintea oricărei citiri din bază. *Patru-ochi verificat cu superadmin nu verifică
+patru-ochi* — nu e o precauție, e o ramură scrisă.
+
+## B. STĂRILE ȘI TRANZIȚIILE IMPLEMENTATE
+
+**Coada de declarații are singurul tabel explicit de tranziții din aplicație** (`core/coada_api.py`):
+
+| acțiune | din stare | în stare |
+|---|---|---|
+| `aproba` | `la_senior` | `aprobata` |
+| `respinge` | `la_senior` | `respinsa` |
+| `depune` | `aprobata` | `depusa` |
+
+Verificat de `poate_tranzitiona`. **`depusa` nu are nicio ieșire** — e terminală prin construcție, nu
+prin regulă scrisă.
+
+**Restul stărilor nu au tabel, ci literale împrăștiate.** Măsurat pe `main.py` + `core/`:
+
+- `status = '…'` → `validata` (46) · `ciorna` (7) · `emisa` (6) · `extras` (5) · `de_verificat` (3) ·
+  `aprobat` (3) · `contat` (3) · `ignorat` (2) · `descarcata` (2) · `de_preluat` (2) · `nou` ·
+  `respinsa` · `raspuns` · `potrivit`
+- `stare = '…'` → `la_senior` (3) · `respinsa` (3) · `noua` (3) · `inchisa` · `prezent` ·
+  `fara_token` · `nevalidat` · `deja_trimisa` · `erori` · `aprobata` · `depusa` · `investigatie`
+
+**Două vocabulare sunt declarate ca module** — `core/nomenclator_status_factura.py`,
+`core/nomenclator_cm.py`. Restul nu. **Nicăieri nu e scris care tranziție e interzisă.**
+
+## C. PRECONDIȚIILE, ÎN FORMĂ NEGATIVĂ
+
+Codul nu declară ce **trebuie** să existe; declară **ce refuză când lipsește**. Aia se extrage:
+
+- **519** `HTTPException` și **35** `ValueError` ridicate în `main.py`;
+- **`PerioadaNeconfirmata`** — excepție proprie, definită în `core/perioada.py`, tratată în
+  `core/d112.py` și `core/control_incrucisat.py`. E singura precondiție cu **nume propriu**;
+- **coduri de eșec cu nume**, din răspunsurile structurate: `INEXISTENT` (11) · `CAMPURI_LIPSA` (3) ·
+  `TEXT_GOL` (3) · `STARE_GRESITA` (3) · `AUTH_ESEC` (3) · `LINII_INCOMPLETE` (2) ·
+  `CABINET_SUSPENDAT` (2) · `NUME_EXISTA` (2) · `FARA_PROFIL` · `TVA_LIPSA` · `IC_LIPSA` ·
+  `DECONT_INVALID` · `REGIM_INVALID` · `REGIM_LA_PARTIDA_SIMPLA` · `TVA_INCEPUT_INVALID`.
+
+**Ce NU se poate extrage:** *care firmă poate exercita care traseu*. Nu e o proprietate a codului, e
+una a datelor — și pe **41 de facturi și 34 de note** (măsurat pe toate cele 17 scheme, 24.08.2026)
+majoritatea traseelor n-au ce parcurge.
+
+## D. TRASEELE NEGATIVE TRATATE AZI
+
+Din cele cinci cerute în Partea I, **una singură există**: respingerea de către validator
+(`respinge`, cu **motiv obligatoriu**). Codurile de refuz ale cozii sunt `PATRU_OCHI`,
+`STARE_GRESITA`, `DEJA_IN_COADA`, `INEXISTENT`.
+
+**Nu există:** autoritatea respinge · datele se schimbă după generare · retragerea.
+**Există pe jumătate:** rectificativa — `nr_depunere` versionează depunerile și vederea
+`declaratii_depuse_curente` alege maximul, dar **nimic nu leagă o rectificativă de cea pe care o
+înlocuiește**, și nimic nu spune că e rectificativă.
+
+## E. MARGINEA EXTERIORULUI — cine iese din aplicație
+
+Măsurat pe `core/`, module care ating exteriorul real:
+
+| modul | prin ce | ce face |
+|---|---|---|
+| `efactura_send.py` | `requests` → `spv_conector.apel_anaf` | **TRANSMITE e-Factura la ANAF** |
+| `spv_receive.py` / `spv_refresh.py` | prin `spv_conector` | primesc mesaje SPV, rotesc token |
+| `anaf_api.py`, `monitor_fiscal.py`, `woocommerce.py` | `requests` | interogări externe |
+| `curs_bnr.py`, `intracomunitar.py`, `reges_client.py`, `observare.py` | `urlopen` | idem |
+| **`duk.py`** | `subprocess` (Java) | **validatorul oficial DUKIntegrator, local** |
+| `amef_import.py`, `agenda*.py`, `versiune.py`, `scan_garzi.py` | `subprocess` | unelte locale |
+
+**Corectură la o afirmație anterioară a mea:** spusesem *„aplicația nu transmite nimic la ANAF,
+niciodată"*. **Fals.** `efactura_send` transmite. Ce e adevărat e mai îngust: **calea de depunere a
+declarațiilor (`coada_api`) n-are niciun apel extern** — „depunerea" acolo înseamnă *„marchează ca
+depusă și păstrează ce s-a depus"*.
+
+**Iar DUKIntegrator nu e o margine netestabilă**: rulează local, prin `subprocess`, fără rețea.
+
+## F. PASUL 3 DIN TRASEUL DECLARAȚIEI — există, dar se aruncă
+
+Corectură la a doua afirmație a mea, și e cea care contează. Spusesem că *„calea cozii nu cheamă
+niciodată validarea DUK"*. **Fals.** Validatorul e legat în **două** locuri:
+
+- `POST /declaratii/{tip}/valideaza` — rută de sine stătătoare;
+- **`GET /coada/{coada_id}/continut`** — rulează DUKIntegrator **de fiecare dată când cineva deschide
+  un element din coadă**, și întoarce `stare`, `erori`, `severitate`, `temei`, `limita`.
+
+Docstringul rutei spune **`Read-only`**, și e exact problema: verdictul oficial se **produce**, se
+afișează, și **nu se scrie nicăieri**. Coloana care l-ar ține — `declaratii_coada.coerenta` — e
+parametru cu default `None` în `adauga_in_coada`, iar singurul apelant nu-l trimite niciodată. Nici
+`aproba`, nici `marcheaza_depusa` nu-l consultă.
+
+**Deci pasul 3 nu lipsește din traseu — lipsește din memoria lui.** Iar regula scrisă la „După 3" în
+Partea I — *„Un verdict care nu se păstrează nu s-a produs"* — descrie literal starea de azi.
+
