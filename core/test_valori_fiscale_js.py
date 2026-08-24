@@ -49,6 +49,13 @@ TABEL = [
     ("static/js/ecrane/firme.js", "Total 11%", "tva_redusa", "{p}%"),
     ("static/js/ecrane/firme.js", "TVA 11%:", "tva_redusa", "{p}%"),
     ("static/js/ecrane/firme.js", "TVA 21%:", "tva_standard", "{p}%"),
+    # [24.08.2026] Patru situri gasite prin `scan_valori_afisate` + citire, NEacoperite pana acum.
+    # Primul e fratele de pe linia urmatoare a unui rand care era deja in tabel: raportul Z avea
+    # „Total 11%" confruntat si „Total 21%" nu. Un tabel scris de om are gauri exact acolo.
+    ("static/js/ecrane/firme.js", "Total 21%", "tva_standard", "{p}%"),
+    ("static/js/ecrane/produse_ecran.js", '<option value="21">', "tva_standard", "{p}%"),
+    ("static/js/ecrane/produse_ecran.js", '<option value="11">', "tva_redusa", "{p}%"),
+    ("static/js/ecrane/facturi_ecran.js", "<span>TVA 21%</span>", "tva_standard", "{p}%"),
 ]
 
 
@@ -72,7 +79,9 @@ def test_valoarea_din_ecran_e_cea_din_registru(rel, ancora, cheie, forma):
 
 def test_tabelul_nu_e_gol_si_ancorele_traiesc():
     """ANTI-VACUU. Un tabel din care ancorele au disparut ar trece pe vid."""
-    assert len(TABEL) >= 6
+    assert len(TABEL) >= 10, (
+        "tabelul a scazut sub cate situri erau confruntate pe 24.08.2026 — un rand scos "
+        "tacit inseamna un ecran care nu se mai confrunta cu registrul")
     for rel, ancora, _c, _f in TABEL:
         assert _linii_cu(_sursa(rel), ancora), "ancora moarta: %s / %r" % (rel, ancora)
 
