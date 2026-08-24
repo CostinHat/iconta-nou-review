@@ -74,6 +74,27 @@ def validatoare_instalate(dist=DIST):
             and f != "Validator.jar"}
 
 
+def versiune_validator(tip, dist=DIST):
+    """CU CE s-a validat: numele jarului ANAF si amprenta lui, sau None daca nu e instalat.
+
+    [R41] Un verdict dat de un validator vechi nu e acelasi lucru cu unul dat de cel curent.
+    Pachetul DUKIntegrator se actualizeaza de la ANAF, iar jarurile se schimba sub noi - deci
+    versiunea nu se poate citi dintr-o constanta, se citeste de pe DISC, ca si `validatoare_instalate`.
+    """
+    import hashlib
+    cheie = CHEIE_DUK.get(tip)
+    if not cheie:
+        return None
+    cale = os.path.join(dist, "lib", "%sValidator.jar" % cheie)
+    if not os.path.exists(cale):
+        return None
+    h = hashlib.sha256()
+    with open(cale, "rb") as fh:
+        for bucata in iter(lambda: fh.read(1 << 20), b""):
+            h.update(bucata)
+    return "%sValidator.jar sha256:%s" % (cheie, h.hexdigest()[:16])
+
+
 def poate_valida(tip, dist=DIST):
     cheie = CHEIE_DUK.get(tip)
     return bool(cheie) and cheie in validatoare_instalate(dist)

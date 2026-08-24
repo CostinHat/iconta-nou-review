@@ -114,6 +114,11 @@ def _pune_coada_aprobata(cur, tip, xml, res):
     return cur.fetchone()[0]
 
 
+def _verdict_valid(conn, cid, xml):
+    """[R41] Depunerea cere un verdict proaspat si valid. Fixtura il pune pe XML-ul ei real."""
+    coada_api.scrie_verdict(conn, cid, {"stare": "valid", "erori": ""}, "test-validator", xml)
+
+
 def test_rectificativa_versioneaza_si_vederea_da_valorile_noi():
     """TESTUL CARE JUSTIFICA TEMA: re-depunere acelasi tip aceeasi perioada -> DOUA randuri
     (nr_depunere 1 si 2), fiecare cu xml/randuri proprii; vederea 'curente' da valorile NOI;
@@ -123,9 +128,11 @@ def test_rectificativa_versioneaza_si_vederea_da_valorile_noi():
         # ux_coada_activa (partial, exclude 'depusa') cere: depui prima INAINTE de a pune a doua
         with conn.cursor() as cur:
             id1 = _pune_coada_aprobata(cur, "d300", "<INITIAL/>", _RezFake(colectata=Decimal("100")))
+        _verdict_valid(conn, id1, "<INITIAL/>")                      # [R41] fara verdict, poarta refuza
         coada_api.marcheaza_depusa(conn, id1, depus_de="tester")     # id1 -> 'depusa'
         with conn.cursor() as cur:
             id2 = _pune_coada_aprobata(cur, "d300", "<RECTIFICAT/>", _RezFake(colectata=Decimal("200")))
+        _verdict_valid(conn, id2, "<RECTIFICAT/>")                   # [R41]
         coada_api.marcheaza_depusa(conn, id2, depus_de="tester")     # rectificativa -> nr_depunere 2
 
         with conn.cursor() as cur:

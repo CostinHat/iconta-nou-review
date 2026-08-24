@@ -1023,6 +1023,7 @@ class RespingeIn(BaseModel):
     motiv: str
 
 class DepuneIn(BaseModel):
+    motiv_trecere: Optional[str] = None  # [R41] trecere explicită peste verdict lipsă/stătut/cu erori
     spv_index: Optional[str] = None
 
 
@@ -3234,6 +3235,15 @@ def coada_continut(coada_id: int, ctx=Depends(cere_cabinet)):
     else:
         rez = {"stare": "gri", "erori": "", "severitate": None,
                "temei": "XML lipsă din payload-ul cozii.", "limita": ""}
+    # [R41] Verdictul se PĂSTREAZĂ. Până azi se producea aici și se arunca, iar ecranul numea
+    # „De depus" o listă care conținea declarații fără verdict. Nu se adaugă o a doua rulare de
+    # validator: se scrie exact rezultatul celei care se făcea oricum, cu amprenta XML-ului validat.
+    try:
+        with db.get_conn() as conn:
+            coada_api.scrie_verdict(conn, coada_id, rez, _duk.versiune_validator(tip), xml)
+    except Exception as _e:
+        import logging
+        logging.getLogger("iconta").warning("verdict nepersistat (coada %s): %s", coada_id, _e)
     return {"tip": tip,
             "xml_b64": _b64.b64encode(xml.encode()).decode(),
             "avertismente": payload.get("avertismente") or [],
@@ -3243,14 +3253,19 @@ def coada_continut(coada_id: int, ctx=Depends(cere_cabinet)):
 
 
 @app.post("/coada/{coada_id}/aproba")
-def coada_aproba(coada_id: int, ctx=Depends(cere_rol("admin_firma", "angajat"))):
+def coada_aproba(coada_id: int, date: dict = Body(default={}),
+                 ctx=Depends(cere_rol("admin_firma", "angajat"))):
     with db.get_conn() as conn:
         if not _are_permisiune(ctx, "poate_valida"):
             raise HTTPException(status_code=403, detail=FARA_DREPT_VALIDARE)
-        r = coada_api.aproba(conn, coada_id, str(ctx["uid"]), aprobat_de_id=int(ctx["uid"]))
+        # [R41] `motiv_trecere` = trecerea EXPLICITĂ peste un verdict lipsă, stătut sau cu erori.
+        # Fără el, acțiunea e refuzată; cu el, se consemnează cine și de ce.
+        r = coada_api.aproba(conn, coada_id, str(ctx["uid"]), aprobat_de_id=int(ctx["uid"]),
+                             motiv_trecere=(date or {}).get("motiv_trecere"))
     if not r["ok"]:
         cod = r.get("cod")
-        http = 409 if cod == "STARE_GRESITA" else (403 if cod == "PATRU_OCHI" else 404)
+        http = (409 if cod == "STARE_GRESITA" else
+                403 if cod in ("PATRU_OCHI", "FARA_VERDICT") else 404)
         raise HTTPException(http, r.get("mesaj", cod))
     # [p57_notif] notifica pregatitorul
     try:
@@ -3287,10 +3302,13 @@ def coada_depune(coada_id: int, date: DepuneIn = DepuneIn(),
     with db.get_conn() as conn:
         if not _are_permisiune(ctx, "poate_depune"):
             raise HTTPException(status_code=403, detail=FARA_DREPT_DEPUNERE)
-        r = coada_api.marcheaza_depusa(conn, coada_id, date.spv_index, depus_de=str(ctx["uid"]), depus_de_id=int(ctx["uid"]))
+        r = coada_api.marcheaza_depusa(conn, coada_id, date.spv_index, depus_de=str(ctx["uid"]),
+                                       depus_de_id=int(ctx["uid"]),
+                                       motiv_trecere=getattr(date, "motiv_trecere", None))
     if not r["ok"]:
-        raise HTTPException(409 if r.get("cod") == "STARE_GRESITA" else 404,
-                            r.get("mesaj", r.get("cod")))
+        cod = r.get("cod")
+        raise HTTPException(409 if cod == "STARE_GRESITA" else (403 if cod == "FARA_VERDICT" else 404),
+                            r.get("mesaj", cod))
     return r
 
 # [p57_notif] RUTE NOTIFICARI

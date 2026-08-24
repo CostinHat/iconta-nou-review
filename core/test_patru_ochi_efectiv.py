@@ -115,6 +115,18 @@ def test_stare_efectiv_e_conjunctia_politica_x_aplicabilitate(cab):
     assert st["posibil"] is True and st["activ"] is False and st["efectiv"] is False, st
 
 
+def _verdict_valid(conn, cid):
+    """[R41] «gata de aprobat» include de azi un verdict PROASPAT si VALID.
+
+    Fixtura nu ocoleste poarta (n-ar avea voie: `motiv_trecere` ar consemna o trecere care nu s-a
+    intamplat) — pune starea pe care testul o presupunea implicit. Amprenta se calculeaza pe
+    payload-ul real al elementului, ca verdictul sa fie despre CONTINUTUL lui."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT payload->>'xml' FROM public.declaratii_coada WHERE id=%s", (cid,))
+        xml = (cur.fetchone() or [None])[0] or ""
+    coada_api.scrie_verdict(conn, cid, {"stare": "valid", "erori": ""}, "test-validator", xml)
+
+
 def test_enforcement_nu_produce_deadlock_pe_cabinet_cu_un_validator(cab):
     """Latura COMPORTAMENTALA: unicul validator isi poate aproba propria lucrare cat timp nimeni
     altcineva nu o poate aproba - altfel declaratia ramane inchisa in coada pentru totdeauna."""
@@ -128,6 +140,7 @@ def test_enforcement_nu_produce_deadlock_pe_cabinet_cu_un_validator(cab):
             "VALUES (%s,-1,'d300','2099-01','la_senior',%s,%s) RETURNING id",
             (fid, str(patron), patron))
         cid = cur.fetchone()[0]
+    _verdict_valid(conn, cid)
     r = coada_api.aproba(conn, cid, str(patron), aprobat_de_id=patron)
     assert r.get("ok") is True, (
         "auto-aprobarea refuzata desi NU exista al doilea validator -> declaratia e blocata "
@@ -147,6 +160,7 @@ def test_enforcement_blocheaza_auto_aprobarea_cand_e_efectiv(cab):
             "VALUES (%s,-1,'d300','2099-01','la_senior',%s,%s) RETURNING id",
             (fid, str(patron), patron))
         cid = cur.fetchone()[0]
+    _verdict_valid(conn, cid)
     r = coada_api.aproba(conn, cid, str(patron), aprobat_de_id=patron)
     assert r.get("ok") is False and r.get("cod") == "PATRU_OCHI", r
     # dar al DOILEA validator o poate aproba - lucrarile din coada nu se blocheaza retroactiv

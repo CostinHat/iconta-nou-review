@@ -202,7 +202,75 @@ def patru_ochi_stare(conn, cabinet_id):
     return {"activ": activ, "posibil": posibil, "efectiv": bool(activ and posibil)}
 
 
-def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None):
+def amprenta_xml(xml):
+    """Amprenta continutului validat. [R41] Un verdict e despre UN XML, nu despre un moment."""
+    import hashlib
+    return hashlib.sha256((xml or "").encode("utf-8")).hexdigest()
+
+
+def scrie_verdict(conn, coada_id, rez, versiune, xml):
+    """Persista verdictul oficial: rezultat, erori, moment, versiunea validatorului, amprenta.
+
+    [R41] Se cheama de acolo de unde DEJA se rula validatorul (`GET /coada/{id}/continut`). Nu se
+    adauga o a doua rulare: se pastreaza cea care se facea si se arunca."""
+    with conn.cursor() as cur:
+        cur.execute(
+            "UPDATE public.declaratii_coada SET verdict=%s, verdict_erori=%s, verdict_la=now(), "
+            "verdict_versiune=%s, verdict_amprenta=%s WHERE id=%s",
+            ((rez or {}).get("stare"), (rez or {}).get("erori") or None,
+             versiune, amprenta_xml(xml), coada_id))
+    return {"ok": True}
+
+
+def verdict_stare(conn, coada_id):
+    """TREI valori, nu doua: `proaspat` | `statut` | `lipsa`.
+
+    `statut` = exista un verdict, dar pe ALT continut decat cel din coada acum. Se trateaza ca
+    ABSENT, nu ca favorabil (P6: necunoscutul domina favorabilul). Fara distinctia asta, o
+    regenerare tacuta ar pastra un verdict care nu mai e despre nimic."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT verdict, verdict_erori, verdict_amprenta, verdict_la, verdict_versiune, "
+                    "payload->>'xml' FROM public.declaratii_coada WHERE id=%s", (coada_id,))
+        r = cur.fetchone()
+    if r is None:
+        return {"stare": "lipsa", "motiv": "element inexistent",
+                "actiune": "verifică id-ul elementului din coadă"}
+    verdict, erori, amp, la, versiune, xml = r
+    if not verdict or not amp:
+        return {"stare": "lipsa", "motiv": "nu s-a păstrat niciun verdict pentru elementul ăsta",
+                "actiune": "deschide elementul în ecranul de validare — validatorul rulează și verdictul se păstrează"}
+    acum = amprenta_xml(xml or "")
+    if amp != acum:
+        return {"stare": "statut", "verdict": verdict, "motiv":
+                "verdictul e pe alt conținut decât cel din coadă (XML-ul s-a regenerat între timp)",
+                "actiune": "redeschide elementul ca să fie validat conținutul CURENT",
+                "amprenta_verdict": amp[:16], "amprenta_acum": acum[:16]}
+    return {"stare": "proaspat", "verdict": verdict, "erori": erori, "la": la,
+            "versiune": versiune}
+
+
+def _poarta_verdict(conn, coada_id, actiune, motiv, cine_id):
+    """Refuza actiunea daca verdictul lipseste, e statut, sau nu e `valid` - afara de cazul in care
+    se trece EXPLICIT, cu motiv, si trecerea se CONSEMNEAZA.
+
+    [R41] «gata de depus» nu se poate defini fara verdict pastrat. Un buton care confirma depunerea
+    a ceva nevalidat nu e o scurtatura, e o afirmatie falsa despre starea lucrului."""
+    st = verdict_stare(conn, coada_id)
+    if st["stare"] == "proaspat" and st.get("verdict") == "valid":
+        return None
+    if not motiv or not str(motiv).strip():
+        return {"ok": False, "cod": "FARA_VERDICT",
+                "mesaj": "nu pot %s: %s" % (
+                    actiune, st.get("motiv") or "validatorul a raportat '%s'" % st.get("verdict")),
+                "actiune": st.get("actiune") or "deschide elementul ca să fie validat, sau treci peste explicit, cu motiv scris",
+                "verdict": st}
+    with conn.cursor() as cur:
+        cur.execute("UPDATE public.declaratii_coada SET trecere_motiv=%s, trecut_de_id=%s, "
+                    "trecut_la=now() WHERE id=%s", (str(motiv).strip()[:500], cine_id, coada_id))
+    return None
+
+
+def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None, motiv_trecere=None):
     """la_senior -> aprobata. Refuză dacă starea nu permite SAU dacă
     aprobatorul e chiar pregătitorul (control „patru ochi")."""
     with conn.cursor() as cur:
@@ -228,6 +296,11 @@ def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None):
             return {"ok": False, "cod": "PATRU_OCHI",
                     "mesaj": "nu poți aproba o declarație pe care ai pregătit-o tu însuți "
                              "(control intern: pregătirea și validarea se fac de persoane diferite)"}
+        # [R41] Poarta pe verdict vine DUPA patru-ochi: ordinea conteaza, ca mesajul primit sa
+        # numeasca primul obstacol real, nu pe al doilea.
+        refuz = _poarta_verdict(conn, coada_id, "aproba", motiv_trecere, aprobat_de_id)
+        if refuz:
+            return refuz
         cur.execute(
             "UPDATE public.declaratii_coada SET stare='aprobata', "
             "aprobat_de=%s, aprobat_de_id=%s, aprobat_la=now() WHERE id=%s",
@@ -258,7 +331,8 @@ def respinge(conn, coada_id, respins_de, motiv, respins_de_id=None):
 # ============================================================
 #  DEPUNERE — DB (aprobata -> depusa + jurnal declaratii_depuse)
 # ============================================================
-def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=None):
+def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=None,
+                     motiv_trecere=None):
     """
     aprobata -> depusa. Scrie și în declaratii_depuse (jurnal final).
     an/luna se iau din payload (_an/_luna; pt trim/anual: luna finală/12).
@@ -273,6 +347,11 @@ def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=
         if not poate_tranzitiona(r["stare"], "depune"):
             return {"ok": False, "cod": "STARE_GRESITA",
                     "mesaj": "nu pot depune din starea '%s'" % r["stare"]}
+        # [R41] Depunerea e tranzitia IREVERSIBILA - `depusa` n-are nicio iesire in TRANZITII.
+        # Poarta e cu atat mai necesara aici: dupa ea nu se mai poate reveni prin nicio ruta.
+        refuz = _poarta_verdict(conn, coada_id, "depune", motiv_trecere, depus_de_id)
+        if refuz:
+            return refuz
         p = r["payload"] or {}
         an = p.get("_an")
         # luna pt jurnal: lunar->luna; trimestrial->luna finală trim; anual->12
