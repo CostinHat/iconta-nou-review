@@ -1106,6 +1106,23 @@ scos ce nu se știa**, nu din defecte noi.
 - **INSTANȚĂ NOUĂ, la nivel de FUNCȚIE, reparată 24.08.2026:** `d212_engine.PLAFOANE_VENIT_2026` — verificat la sursă pe 03.08.2026 (Legea 239/2025 art. XII pct. 19, CASS 72 sm) — **nu era chemat de nimeni**, fiindcă `rip_api.fisa_d212` refuza orice an ≠ 2025. Modulul era legat; **capabilitatea nu.** E chiar modul de eșec **E4** al sondei, declarat înainte de măsurătoare și găsit apoi **de mână**, nu de instrument. Vezi R31 (închisă) și `METODA` §19.
 - **ce NU închide**: nivelul FUNCȚIE (E4). Un modul importat pentru o funcție, cu alte trei moarte, trece neatins. Aia e o măsurătoare separată, mai scumpă, și n-a fost făcută.
 
+### R34 — Nota contabilă de salarii contrazice D112-ul depus, pe 10 din 40 de perechi
+
+- **felul**: VERIFICARE
+- **cine deblochează**: DECIZIE
+- **unde intră**: E5 · P7 · interdicțiile 11–12 · **PRAG 1** *(o cifră care ar intra în evidență contrazice una depusă la ANAF)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `6097d5a`
+- **măsurat la**: 2026-08-24 · **pe commit**: `6097d5a`
+- **ce blochează**: Întrebarea lui Costin — *„când le legi, ce găsesc pe datele existente? Dacă una raportează diferențe pe o firmă de test, aia nu e o gardă nouă care merge — e un defect care aștepta să fie văzut."* **Rulat, fără să leg nimic: 40 de perechi (firmă × lună) verificate, 29 de divergențe pe 10 perechi.** Nota pe care ar scrie-o aplicația diferă de D112-ul pe care îl declară, pe pozițiile 444 (impozit), 4315 (CAS), 4316 (CASS), 436 (CAM). Cea mai mare: `tenant_001` 2026-06 — CAS **24.114,54** în notă vs **28.539** declarat (**4.424,46** lei), CASS **9.645,81** vs **13.629** (**3.983,19**), impozit **5.719,89** vs **9.027** (**3.307,11**). Nu e o gardă care merge: e o divergență care exista și pe care nimic nu o putea arăta.
+- **de ce e PRAG 1 pe citirea de atingibilitate**: toate cele 17 firme sunt **de test** (măsurat 23.08), deci nimeni n-a fost lovit. Dar pragul se citește ca **atingibilitate** (lămurirea din 23.08): *dacă un contabil ar folosi aplicația azi*, ar contabiliza salariile cu alte cifre decât cele pe care le-a depus. Aceeași formă cu cele trei instanțe din primul triaj.
+- **ce NU spune măsurătoarea, și e partea grea**: **care dintre cele două are dreptate.** `d112.pull` calculează salariatul, iar `salarii_contare.note_lunare` îl **recalculează** prin `salarizare.calcul_salariu` — deși comentariul lui spune *„NU recalculăm: al doilea calcul ar fi a doua cifră"*. Deci sunt două căi care produc aceeași cifră și nu coincid: **P7**, iar P7 spune că întrebarea se duce la arbitru, **nu se aliniază una la cealaltă**. Nu se repară până nu e scris care e sursa.
+- **efect azi: NICIUNUL, și de asta n-a fost văzut.** `salarii_contare` nu e chemat de nimeni (R33), deci nota nu se scrie niciodată din calea asta. Divergența devine vizibilă exact în clipa în care modulul se leagă — adică reparația cerută la R33 **produce 29 de constatări roșii în prima rulare**. Ordinea corectă e: mai întâi se decide care cale are dreptate, apoi se leagă.
+- **două lucruri găsite pe drum, de sondă**: `tenant_003` are pontajul neconfirmat pe **10 luni**, iar D112 e blocat corect cu mesaj explicit (garda funcționează); `tenant_016` are un salariat cu brut **1.000** lei sub salariul minim 4.050 pe normă întreagă, respins de calea a doua ca *„date corupte, nu caz fiscal legitim"* — aceeași clasă cu **R32** (date de test invalide).
+- **sonda NU a scris**: instantaneu `pg_stat_user_tables` înainte/după, zero inserări/actualizări/ștergeri pe toate tabelele. *(A treia formă a sondei; primele două au raportat „0 divergențe" pe **0 rulări** — rezultat favorabil pe vid, interdicția 19, produs de mine în chiar instrumentul cu care măsuram clasa asta.)*
+- **condiția de deblocare**: se scrie **care cale e sursa** pentru contribuțiile din nota de salarii — `d112.pull` sau `salarizare.calcul_salariu` — cu motivul; apoi cealaltă o citește, nu o recalculează. Se închide când sonda de mai sus întoarce **0 divergențe pe cele 40 de perechi**, iar `control_coerenta` e legat.
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu

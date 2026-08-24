@@ -28,7 +28,9 @@ PIN = {
         "PRODUCTIE, nelegat — SI are o a doua implementare LEGATA: main.py:4389 cheama "
         "verificatoare.verifica_balanta pentru «echilibru». Logica paralela, nu doar cod nelegat",
     "core/fisa_cont.py":
-        "PRODUCTIE, nelegat — fisa_cont() + conturi_cu_miscare()",
+        "PRODUCATOR FARA LIVRARE, declarat (METODA §20) — Fisa de cont 14-6-22, care inlocuieste "
+        "Cartea mare 14-1-3; zero rute si zero ecrane, spus in ISTORIC 23.08.2026 (3): «artefactul "
+        "are producator, nu livrare». NU e omisiune - conditia lui de deblocare e LIVRAREA, nu un apel",
     "core/salarii_contare.py":
         "PRODUCTIE, nelegat — control_coerenta() e verificare incrucisata nota-vs-declaratie; "
         "salarizare.py:296 o NUMESTE, dar intr-un COMENTARIU",

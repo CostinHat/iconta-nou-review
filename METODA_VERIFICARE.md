@@ -687,6 +687,31 @@ verifică pe sine*: nu minte despre ce măsoară, minte prin **tăcerea** despre
 **Ce nu spune regula:** că orice gard trebuie să citească toate limbajele. Costul e real. Spune doar că
 **diferența dintre clasă și domeniu se scrie**, ca să nu fie citită drept zero.
 
+## §20 — O VERIFICARE CARE NU POATE FI LEGATĂ POATE FI SIMPTOMUL UNEI ABSENȚE
+
+**Formă nouă, dată de Costin 24.08.2026, alături de §19.** Un modul nelegat nu e automat o omisiune.
+Poate fi un **producător fără livrare**: codul există, artefactul pe care îl servește **nu se produce
+încă**. Atunci „leagă-l" nu are unde.
+
+**Testul care le deosebește, și e mecanic:** *există o suprafață de livrare pentru artefactul lui?* Dacă
+da — ecran, rută, export — modulul e nelegat **din omisiune**, și se leagă. Dacă nu, e nelegat **prin
+construcție**, iar condiția lui de deblocare nu e un apel, ci **apariția artefactului**.
+
+**Instanța măsurată: `core/fisa_cont.py`.** Produce *Fișa de cont pentru operațiuni diverse* (cod
+14-6-22), care înlocuiește **Cartea mare** (14-1-3) — un registru obligatoriu care lipsea complet.
+Zero consumatori: **nicio rută, niciun ecran**. Iar `ISTORIC.md` 23.08.2026 (3) o spunea deja, cu o zi
+înainte de măsurătoare: *„nu există încă ecran sau rută. Artefactul are producător, nu livrare."*
+**Deci nu e o omisiune — e lista 5 din verdictul fazei 1**, iar condiția de deblocare e livrarea.
+
+**Contra-exemplul, din același set de patru:** `salarii_contare.control_coerenta` are artefact (D112 se
+produce și se depune) și **suprafață** (control fiscal, închiderea lunii). Ăla e nelegat din omisiune,
+e prag 1, și legarea lui scoate 29 de divergențe (**R34**).
+
+**Consecința pentru clichet:** o intrare din registrul modulelor nelegate trebuie să poarte **care din
+două** e — altfel „4 module nelegate" amestecă o datorie de livrare cu o verificare care nu rulează.
+
+---
+
 ## §19 — UN MODUL DE VERIFICARE NELEGAT E O GARDĂ CARE NU PĂZEȘTE
 
 **Regula, cerută de Costin 24.08.2026.** Un modul care verifică ceva și pe care **nu-l cheamă nimeni**

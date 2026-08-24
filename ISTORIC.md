@@ -5033,6 +5033,32 @@ regăsească totalul pe care l-a văzut.
 **Ce NU s-a schimbat:** facturile deja salvate. Cifra lor era cea corectă; greșit era ce se afișa
 înainte de salvare.
 
+## 24.08.2026 (2) — o verificare pentru o declarație depusă, care nu rulase niciodată
+
+**Propoziția care contează.** Din **4** module de verificare din `core/` cu funcții publice, **niciunul
+nu era chemat în producție**. Unul dintre ele — `salarii_contare.control_coerenta` — confruntă **nota
+contabilă de salarii cu D112-ul depus la ANAF**. Era scris, avea teste care treceau, și **n-a rulat
+niciodată.**
+
+**Ce a găsit când l-am rulat, fără să-l leg.** 40 de perechi firmă × lună: **29 de divergențe pe 10
+perechi**, pe impozit (444), CAS (4315), CASS (4316) și CAM (436). Cea mai mare, pe `tenant_001` în
+iunie 2026: CAS **24.114,54** lei în notă față de **28.539** declarați — **4.424,46** lei diferență, pe
+12 salariați. Nu e o gardă nouă care merge. **E un defect care aștepta să fie văzut, iar nimic nu-l
+putea arăta fiindcă paznicul nu era chemat.**
+
+**Ce nu spune încă.** Care dintre cele două căi are dreptate. `d112.pull` calculează salariatul, iar
+`note_lunare` îl recalculează — două căi pentru aceeași cifră, care nu coincid. P7 spune că asta se
+duce la arbitru, nu se aliniază una la cealaltă. Deci nu s-a reparat: s-a scris, ca **R34**, cu cifrele.
+
+**Toate cele 17 firme sunt de test**, deci nimeni n-a fost lovit. Dar pragul 1 se citește ca
+atingibilitate: un contabil care ar folosi aplicația azi ar contabiliza salariile cu alte cifre decât
+cele pe care le-a depus.
+
+**O notă despre metodă, fiindcă greșeala e a mea:** primele două forme ale sondei au raportat *„0
+divergențe"* pe **0 rulări** — un rezultat favorabil pe vid, exact interdicția 19, produs în chiar
+instrumentul cu care măsuram clasa. A treia formă numește erorile și **refuză concluzia** când numărul
+de rulări e zero.
+
 ## 24.08.2026 — ecranul de angajare nu mai arată un net estimat
 
 **Ce s-a schimbat pentru contabil.** La introducerea salariului de bază nu mai apare *«Net estimat: X
