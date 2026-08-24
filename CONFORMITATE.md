@@ -1123,6 +1123,23 @@ scos ce nu se știa**, nu din defecte noi.
 - **sonda NU a scris**: instantaneu `pg_stat_user_tables` înainte/după, zero inserări/actualizări/ștergeri pe toate tabelele. *(A treia formă a sondei; primele două au raportat „0 divergențe" pe **0 rulări** — rezultat favorabil pe vid, interdicția 19, produs de mine în chiar instrumentul cu care măsuram clasa asta.)*
 - **condiția de deblocare**: se scrie **care cale e sursa** pentru contribuțiile din nota de salarii — `d112.pull` sau `salarizare.calcul_salariu` — cu motivul; apoi cealaltă o citește, nu o recalculează. Se închide când sonda de mai sus întoarce **0 divergențe pe cele 40 de perechi**, iar `control_coerenta` e legat.
 
+### R35 — Verdict VERDE pe o lună cu factură necontabilizată, cunoscută în chiar payload-ul verdictului
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · P6 · interdicțiile **10** și **19** · **PRAG 1** *(un verdict favorabil pe ecran, peste un necunoscut pe care verdictul îl are în mână)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `8a10080`
+- **măsurat la**: 2026-08-24 · **pe commit**: `8a10080`
+- **ce blochează**: Întrebarea lui Costin — *„verde pe date reale sau verde pe zero? Interdicția 19 e chiar asta."* **Măsurat pe 9 perechi firmă × lună, cu `control_incrucisat.verifica_tva` chemat pe datele reale: 6 sunt roșii corect, iar 3 sunt VERZI deși payload-ul lor poartă `facturi_necontabilizate = 1`.** `tenant_004` 2026-06, `tenant_017` 2026-11 și `tenant_017` 2026-09 afișează *„TVA colectată: D300 și contul 4427 coincid"* — pe o lună în care **există o factură care nu e în evidență**. Cele două cifre coincid fiindcă sunt **amândouă zero**: verdele nu vine dintr-o potrivire, ci din absența ambilor termeni.
+- **de ce e PRAG 1, nu igienă de gardă**: nu e „o verificare raportează greșit". E o **afirmație falsă pe ecran**: contabilul citește *„TVA-ul lunii coincide"* pe o lună în care o factură emisă stă în afara conturilor. **P6**: absența unei contradicții nu e o verificare, iar *necunoscutul domină favorabilul*. Verdictul are necunoscutul **în mână** — `facturi_necontabilizate` e în același payload — și îl ignoră la culoare. Asta e chiar **interdicția 10** (verdict favorabil care coexistă cu necunoscut nedeclarat), suprapusă peste **19** (favorabil pe zero rânduri).
+- **contextul măsurat, care arată că nu e un caz izolat**: din **43** de facturi declarabile pe 17 scheme (stările declarabile din `nomenclator_status_factura`: `de_preluat`, `emisa`, `importata`), **28 nu sunt contate deloc** — **65%** — purtând **102.260,00 lei** TVA, pe **10 firme din 17**. Nu e o firmă cu date incomplete: e majoritatea. Două firme (`tenant_013`, `tenant_014`) au zero necontate, deci nici tiparul invers nu e universal.
+- **și de ce nu e o restanță despre `de_preluat`**: decizia din 22.08.2026 (`nomenclator_status_factura`) e **întreagă pe partea ei** — D300 și `d300_reconciliere` citesc amândouă nomenclatorul, `de_preluat` e declarabilă, iar `_STATUS_FINAL` vine din sursa unică. Ce nu există e o legătură în **cealaltă** direcție: contarea unei facturi e o rută **manuală, per document** (`main.py`, `INSERT INTO inregistrari ... 'ciorna'`), care **nu consultă nomenclatorul** și nu e declanșată de nimic. Deci nu e „o tranziție care nu se mai întâmplă" — **nu există nicio tranziție**: contarea e un act al omului, iar declararea nu-l așteaptă.
+- **ce e corect și trebuie spus**: garda **funcționează** pe majoritatea cazurilor — 6 din 9 luni sunt roșii, cu **ambele valori numite** (*„D300 declară 3.150,00 lei, contul 4427 are 0,00 lei"*). Defectul e strict la **culoarea verdictului când ambii termeni sunt zero**, nu la mecanism.
+- **condiția de deblocare**: un verdict nu poate fi **verde** cât timp `facturi_necontabilizate > 0` pe perioada lui — devine **gri** (necunoaștere, cu domeniul ei) sau roșu, după caz. Se închide când sonda de mai sus întoarce **zero perechi verzi cu necontabilizate nenule**, iar gardul care o probează are în domeniu toate cele 17 scheme.
+- **sonda NU a scris**: instantaneu `pg_stat_user_tables` înainte/după, zero inserări/actualizări/ștergeri.
+
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
 Faza 1 e singura care răspunde la afirmația „aplicația face contabilitate conformă". Ce urmează nu
