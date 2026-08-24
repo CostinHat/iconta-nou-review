@@ -1177,6 +1177,17 @@ fără commit îmbătrânește la fel de tăcut aici ca oriunde.
 - **măsurat la**: 2026-08-22
 - **pe commit**: `84f77c4` (HEAD la momentul măsurării)
 
+> **⚠ BAZA DE EVIDENȚĂ, marcată 24.08.2026 — orice măsurătoare de aici despre evidența contabilă se
+> citește ca PLAFON, nu ca proporție.** Măsurat pe `b17efea`, pe toate cele 17 scheme: **41 de facturi
+> și 34 de note**, din care **3** produse pe calea document→notă (`sursa='facturi'`), **19** fără nicio
+> proveniență și fără `factura_id`. Cu o bază atât de subțire, un verdict de fază 1 despre evidență nu
+> spune *„aplicația produce evidența corect"*, ci doar *ce s-a văzut pe 34 de note*. **Nu e o cifră
+> invalidată — e o cifră al cărei numitor e declarat**, iar deosebirea contează: nu se corectează, se
+> **remăsoară** după ce modelul de intrare a faptelor e decis (**R36**) și aplicat. Până atunci,
+> secțiunile de mai jos care ating evidența contabilă **nu se citează ca verdict**. Cauza, cu vorbele
+> lui Costin: *„întrebarea corectă era dacă notele acoperă documentele"* — iar `METODA` §16 spune de ce
+> se ratează: verificarea se face unde e nevoie, nu unde e vizibilă.
+
 ### Operațiunea 1 — câte regimuri acoperă aplicația (MĂSURATĂ)
 
 **Nu trei.** Regimul nu e un câmp: e un PRODUS de nouă dimensiuni din vectorul fiscal, plus cinci
