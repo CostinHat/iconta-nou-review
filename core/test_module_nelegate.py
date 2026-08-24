@@ -14,6 +14,7 @@ CE NU ACOPERĂ, declarat (vezi și modurile de eșec din antetul instrumentului)
 Un modul importat pentru o funcție, cu alte trei moarte, nu apare aici. Aia e o măsurătoare separată.
 """
 import ast
+import io
 import os
 
 import pytest
@@ -102,6 +103,67 @@ def test_proza_nu_conteaza_ca_apel():
     assert "d300" in gasite, "sonda nu mai vede importurile LAZY, din corpul functiei"
     assert "modul_doar_pomenit" not in gasite, (
         "sonda numara PROZA ca import — un comentariu sau un docstring nu leaga nimic")
+
+
+def test_o_suprafata_doar_privata_NU_e_suprafata_publica():
+    """Calibrare NEGATIVA pe E5, ceruta de Costin 24.08.2026: sonda numara „functii publice", deci
+    trebuie dovedit ca un modul care are DOAR functii private e sarit — nu raportat ca nelegat.
+
+    Cazul e CONSTRUIT, nu citit dintr-un fisier real: asa nu depinde de ce contine azi depozitul."""
+    sursa = (
+        '"""Modul cu cod, dar fara nicio suprafata publica."""\n'
+        "_CONST = 3\n"
+        "def _ajutor(x):\n"
+        "    def imbricata(y):\n"
+        "        return y\n"
+        "    return imbricata(x)\n"
+        "class _Intern:\n"
+        "    def metoda_publica_dar_pe_clasa_privata(self):\n"
+        "        return 1\n"
+    )
+    assert scan._publice(ast.parse(sursa)) == [], (
+        "sonda numara ca PUBLIC ceva ce e privat sau imbricat — atunci lista de module nelegate "
+        "contine module care n-au ce lega")
+
+
+def test_o_functie_publica_la_nivel_de_modul_CHIAR_se_vede():
+    """Cealalta directie a calibrarii: daca prima ar trece fiindca `_publice` intoarce mereu [],
+    aserțiunea de mai sus n-ar dovedi nimic."""
+    sursa = "def face(x):\n    return x\n\ndef _ascuns(y):\n    return y\n"
+    assert scan._publice(ast.parse(sursa)) == ["face"]
+
+
+def test_cat_din_domeniu_vede_sonda(rez):
+    """CIFRA CARE FACE UTILIZABILE celelalte cifre. Fara ea, „44 nelegate" nu se poate folosi la
+    triaj: nu se stie din CE numitor.
+
+    Masurat 24.08.2026 pe `b5e1e5b`: 402 module ne-test, din care 361 au suprafata publica (89,8%)
+    si 41 nu au (invizibile prin E5). Din cele 41, doar 5 au cod propriu — restul n-au nicio
+    definitie la nivel de modul (scripturi, constante, configurari).
+
+    Se garda RAPORTUL, nu cifra exacta: un depozit viu adauga module. Ce nu are voie sa creasca tacit
+    e PUNCTUL ORB."""
+    total = vizibile = 0
+    for cale in scan._fisiere(scan.RAD):
+        if scan.e_test(cale):
+            continue
+        b = os.path.basename(cale)[:-3]
+        if b == "__init__":
+            continue
+        try:
+            arb = ast.parse(io.open(cale, encoding="utf-8").read())
+        except (SyntaxError, UnicodeDecodeError):
+            continue
+        total += 1
+        if scan._publice(arb):
+            vizibile += 1
+    assert total > 300, "domeniu suspect de mic (%d module) — anti-vacuu" % total
+    acoperire = vizibile / float(total)
+    assert acoperire >= 0.85, (
+        "sonda vede doar %.1f%% din module (%d din %d) — punctul orb E5 a crescut; cifrele de "
+        "module nelegate nu se mai pot folosi la triaj fara re-declararea numitorului"
+        % (acoperire * 100, vizibile, total))
+    del rez
 
 
 def test_perimetrul_dinamic_e_raportat_nu_inghitit(rez):
