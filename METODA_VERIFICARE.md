@@ -740,16 +740,46 @@ Ieșirea nu era o curățare mai bună, ci **schimbarea sursei de adevăr**: `as
 nodurile `Dict`. Un docstring nu e un `ast.Dict`, iar un comentariu nu ajunge deloc în AST — deci
 distincția *construit* vs *descris* devine imposibil de ratat, nu doar improbabil.
 
-### Cifra, și de ce nu e 13
+### Două clase, nu două cifre pentru același lucru
 
-Interdicția **18** spunea **14** gărzi (una exclusă prin natura ei → 13), măsurat **ad-hoc** pe 22.08,
-pe 369 de fișiere-gardă. Măsurătoarea aia **n-a lăsat niciun instrument în urmă**: azi sunt 397 de
-fișiere și cifra nu se poate recalcula. Reconstruită pe un domeniu **declarat** — fișierul numește o
-sursă `.py`/`.js`, o deschide, și asertează `"șir" in ceva`, fără s-o curețe de proză — clasa e **50**.
+Interdicția **18** spunea **13**. Măsurătoarea de azi spune **369**. Nu se contrazic — **măsoară
+lucruri diferite**, iar confuzia dintre ele e chiar felul în care o clasă rămâne nemăsurată ani.
 
-Deci 13 nu era un inventar, era un **plafon inferior al unui domeniu mai îngust**. *O cifră care nu
-se poate recalcula nu e o măsurătoare, e o amintire* — și îmbătrânește tăcut, ceea ce e chiar clasa
-pe care o păzește registrul confruntării.
+| | ce număra | cifra | domeniu |
+|---|---|---|---|
+| **îngustă** | gărzi care își iau dovada din **documentația codului** | **13** | ad-hoc, faza 4, 22.08, 369 de fișiere |
+| **largă** | **orice aserțiune care poate trece dintr-un motiv străin** | **369** | declarat, reproductibil, 24.08, 397 de fișiere |
+
+Cea îngustă e o **specie**; cea largă e **genul**. Un docstring nu e singurul motiv străin din care
+poate trece o aserțiune — mai sunt HTML-ul de lângă randare, și reprezentarea unei structuri. **Clasa
+largă n-a fost măsurată până azi**, iar cifra îngustă, folosită singură, dădea impresia că problema e
+mică și aproape închisă.
+
+Cifra îngustă are și un defect propriu: **nu se poate recalcula**. N-a lăsat niciun instrument în
+urmă, iar între timp fișierele-gardă au crescut de la 369 la 397. *O cifră care nu se poate recalcula
+nu e o măsurătoare, e o amintire.*
+
+### Cele trei sub-categorii se numără separat
+
+Fiindcă nu sunt același defect și nu se repară la fel:
+
+1. **sursa** (113) — se caută un șir în **codul păzit**. Nu deosebește *„e implementat"* de
+   *„e descris"*. Reparația: `ast.parse` + noduri.
+2. **randare** (6) — se caută în **HTML**. Un `<div>` dintr-un comentariu trece la fel de bine ca
+   unul randat. Reparația: arbore de randare.
+3. **reprezentare** (250) — `"x" in str(d)`, `in json.dumps(d)`, `in resp.text`. **Cea mai
+   insidioasă**: *arată ca apartenență la o cheie și e sub-șir pe reprezentare.* `"total" in str(d)`
+   trece și când `d = {"subtotal_vechi": 1}`. E și **cea mai mare dintre cele trei** — dacă ar fi
+   topită în total, n-ar exista nicio pârghie s-o ataci pe ea. Reparația: câmp și valoare.
+
+Și o a patra formă, care **nu** e în clasă dar merită numită: **`in` pe un container**. Acolo `in`
+*chiar e* apartenență — dar e sigur doar cât timp dreapta rămâne container. `"nr_curent" in chei` se
+transformă tăcut în sub-șir dacă `chei` devine vreodată un `str`, **și arată identic**. Forma care nu
+poate degrada e operatorul de mulțime: **`chei >= {"nr_curent"}` crapă pe un șir**, în loc să treacă.
+
+**369 e PLAFON INFERIOR.** Din 1339 de forme găsite, **899 (67%) rămân `nedeterminat`** — nu s-a
+putut rezolva ce stă în dreapta. Nu se raportează ca trecute: absența unei verificări nu e o
+verificare. Cifra se scrie cu semnul ei (§22).
 
 ### Ce cere, practic
 

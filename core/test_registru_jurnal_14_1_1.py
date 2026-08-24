@@ -8,7 +8,15 @@ documentului justificativ) și **totalizarea lunară**. Reparate prin derivare l
 CE FACE IMPOSIBIL: ca vreuna dintre cele trei să dispară tăcut dintr-un artefact care se prezintă la
 control. Un registru din care lipsește coloana documentului justificativ nu se poate apăra.
 
-ASERTEAZĂ PE STRUCTURĂ, NU PE TEXT (regula lui Costin, 24.08.2026). Prima formă a acestui fișier a
+ASERTEAZĂ PE STRUCTURĂ, NU PE TEXT (regula lui Costin, 24.08.2026).
+
+**Și nici prin `in` pe un set.** A doua trecere, tot 24.08: cinci aserțiuni de aici erau `"x" in
+chei` — apartenență **adevărată** cât timp `chei` e un set, dar care se transformă tăcut în sub-șir
+dacă dreapta devine vreodată un `str`, **arătând identic**. Forma folosită acum e operatorul de
+mulțime, `chei >= {"x"}`: pe un șir **crapă**, în loc să treacă. Fișierul care a produs regula n-are
+voie să fie excepția ei.
+
+Prima formă a acestui fișier a
 fost chiar instanța care a produs regula: căuta `nr_curent` și `note_fara_document` ca **șiruri**
 oriunde în rută — și le găsea în **docstringul rutei, scris de mine**. Curățarea de docstring, la
 încercarea următoare, ștergea și SQL-ul din același f-string, deci gardul greșea în **ambele**
@@ -87,24 +95,23 @@ def test_CALIBRARE_fara_sursa_documentul_ramane_LIPSA():
 
 # ── coloanele 1, 3 si totalizarea: CHEI CONSTRUITE in rută ───────────────────
 def test_ruta_construieste_numarul_curent():
-    assert "nr_curent" in _chei_construite(), (
+    assert _chei_construite() >= {"nr_curent"}, (
         "coloana 1 (numărul curent) nu mai e cheie construită în răspuns")
 
 
 def test_ruta_construieste_documentul_justificativ():
-    assert "document" in _chei_construite(), "coloana 3 nu mai e cheie construită în răspuns"
+    assert _chei_construite() >= {"document"}, "coloana 3 nu mai e cheie construită în răspuns"
 
 
 def test_ruta_totalizeaza_lunar():
-    chei = _chei_construite()
-    for c in ("total_debit", "total_credit"):
-        assert c in chei, "totalizarea lunară cerută de 14-1-1 lipsește: %s" % c
+    lipsa = {"total_debit", "total_credit"} - _chei_construite()
+    assert not lipsa, "totalizarea lunară cerută de 14-1-1 lipsește: %s" % sorted(lipsa)
 
 
 def test_absenta_documentului_se_NUMARA_nu_se_ascunde():
     """P6: ce nu se poate deriva se spune. Un registru cu jumatate din coloana 3 goala, fara sa spuna
     cate, arata la fel cu unul complet."""
-    assert "note_fara_document" in _chei_construite(), (
+    assert _chei_construite() >= {"note_fara_document"}, (
         "numarul notelor fara document justificativ nu mai e cheie construita in raspuns")
 
 
@@ -113,7 +120,7 @@ def test_ruta_chiar_cheama_derivarea():
     tot din AST, deci un apel comentat nu contează."""
     apeluri = {getattr(n.func, "attr", None) or getattr(n.func, "id", None)
                for n in ast.walk(_functia()) if isinstance(n, ast.Call)}
-    assert "document_justificativ" in apeluri, (
+    assert apeluri >= {"document_justificativ"}, (
         "ruta nu mai cheamă derivarea documentului — cheia poate fi acolo, dar goală")
 
 
@@ -136,7 +143,9 @@ def test_CALIBRARE_gardul_citeste_STRUCTURA_nu_PROZA():
     gasea numele in DOCSTRINGUL rutei. Aici se dovedeste ca sursa de adevar e AST-ul.
 
     `Confruntat cu norma` **exista** in docstringul rutei si **nu poate** aparea printre chei."""
+    # PE TEXT, ȘI DE CE: aserțiunea asta e DESPRE proză — verifică chiar că fraza trăiește în
+    # docstring. Un `in` pe un docstring nu e o scurtătură, e subiectul. Perechea ei e pe structură.
     doc = ast.get_docstring(_functia()) or ""
     assert "Confruntat cu norma" in doc, "premisa calibrarii a disparut din docstringul rutei"
-    assert "Confruntat cu norma" not in _chei_construite(), (
+    assert not (_chei_construite() & {"Confruntat cu norma"}), (
         "proza rutei ajunge printre cheile construite — extractorul s-a rupt")
