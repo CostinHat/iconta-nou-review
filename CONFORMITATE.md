@@ -40,7 +40,7 @@ face doar imposibilă acumularea unei narațiuni care să îmbătrânească. *(D
 după a doua oară: „e gardul care nu citește proză și totuși o disciplinează".)*
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **triajul, în ordinea lui** — pragul 1 e gol, iar din pragul 3 sunt făcute pozițiile 1 și 2. Urmează **poziția 3**. De ce în ordinea asta: un prag 1 viu nu așteaptă o construcție.
+- **pasul curent**: **R41** — verdictul de validare nu se persistă, deci „De depus" numește și ce nu e de depus. **Prag 1, are precedență peste triaj.** Din pragul 3 sunt făcute pozițiile 1 și 2; poziția 3 urmează după R41.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **una — R30, DESCHISĂ** din 24.08.2026: *se întoarce avertismentul de prăpastie al salariului minim, fără cifre?* R28 s-a închis pe varianta 3 («nimic»), iar odată cu estimarea a plecat și avertismentul care spunea că peste salariul minim se pierde facilitatea — o protecție reală, pierdută colateral.
