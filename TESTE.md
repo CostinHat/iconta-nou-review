@@ -1985,3 +1985,8 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   literală scrisă pe **nume neutre** (măsurat 2, ambele calendaristice) · calibrare pozitivă pe forma
   temută (`a * 21 / 100`) · calibrare pe modul propriu de eșec (curățarea păstrează numerotarea) ·
   anti-stale pe clichet.
+
+- **`core/test_predare_proaspata.py` (24.08.2026)** — 6 teste: predarea are dată reală și commit în
+  cap · spune când se rescrie · avertismentul de vechime există în `pre-commit` · **nu poate deveni
+  blocaj** · anti-vacuu pe hook · cifra 131 nu poate apărea în predare nemarcată ca invalidată.
+  RED-proof pe trei direcții.

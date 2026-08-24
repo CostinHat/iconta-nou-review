@@ -11675,3 +11675,28 @@ impozit 10%; salariul minim de 4.050 din `rip_ecran` e corect **pentru 2025**, a
 etichetează. **Nicio cotă depășită** (19%, 9%, 5%) nu apare de sine stătătoare în textul ecranelor.
 Singura valoare afișată **fără corespondent în registru** e cota micro de **3%** din
 `declaratii.js:528` (*«1% sau 3%»*): `COTE` cunoaște doar `impozit_micro = 0.01`.
+
+## 24.08.2026 (a douăzecea tură) — predarea rescrisă, și vechimea ei gardată
+
+**1. `PREDARE_LANT.md` rescris integral pe starea de la `afb709e`.** Cel vechi era din 22.08 și
+instruia sesiunea nouă să-l citească **primul**, purtând trei afirmații false. Nu s-a corectat rând cu
+rând — s-a rescris, fiindcă a treia posibilitate (că unele rânduri mai sunt bune) e exact ce nu poate
+ști cine citește.
+
+**2. Cifra 131 — INVALIDATĂ, nu corectată**, cu motivul scris în predare: termenii ei au fost
+recalculați pe un domeniu lărgit de trei ori, deci descompunerea nu se mai poate reface. Aceeași regulă
+ca la `STALE_BAZA_BASELINE`. În locul ei, predarea trimite la clichetul viu din
+`core/test_constante_nesursate.py`, care **se poate crede**.
+
+**3. Antet cu dată și commit**, ca la `CONFORMITATE` — o predare fără dată nu-și poate arăta vechimea.
+
+**4. Gardat pe COMMIT, fiindcă pe `/clear` nu se poate.** Poarta **avertizează** (nu blochează) când
+`HEAD` a plecat cu peste 10 commituri de la ultima rescriere. La instalare era în urmă cu **68** —
+deci pragul n-a fost ales teoretic. Decizia *avertisment, nu blocaj* e ea însăși gardată: un test cade
+dacă blocul devine `exit 1`.
+
+**5. Verificat, nu preluat:** fronturile din vechea predare au fost recitite la sursă înainte de a
+trece în cea nouă. Unul s-a confirmat viu — `core/common.py:658` face încă `la_data = la_data or
+date.today()`, deci interdicția 2 e tot deschisă și tot cea mai ieftină. Unul era rezolvat și a fost
+scos. Restul cifrelor vechii predări nu s-au preluat deloc: se citesc din `CONFORMITATE.md`, unde
+fiecare poartă `măsurat la` și `pe commit`.

@@ -4479,3 +4479,21 @@ trimite omul la locul greșit.
 domeniul a două gărzi vechi, care au picat cu *«fișier inexistent»*. **Un nume reciclat într-un fișier
 de gărzi nu e o scăpare de stil — mută domeniul altui gard.** Redenumit `_JS_TOT`, cu motivul scris
 acolo.
+
+**Predarea își arată vechimea, iar avertismentul nu poate dispărea tăcut**
+(`core/test_predare_proaspata.py` + `scripts/githooks/pre-commit`, 24.08.2026). Versiunea de atunci a
+lui `PREDARE_LANT.md` era din **22.08** și purta **trei afirmații false** — starea pe alt commit,
+cifra `131` (invalidată între timp) și un front deja rezolvat. Costin: *«un PREDARE_LANȚ care
+instruiește sesiunea nouă să-l citească primul și conține trei afirmații false e mai rău decât unul
+absent — cine îl citește n-are cum să știe care rând mai e adevărat.»*
+
+**Ce s-a construit.** Predarea are acum **antet cu dată și commit**, ca `CONFORMITATE`. Poarta
+**avertizează** când `HEAD` a plecat cu peste **10** commituri de la ultima rescriere — măsurat la
+instalare: era în urmă cu **68**. Șase teste țin de mecanism: data există și e o dată reală · regula
+*«se rescrie înainte de fiecare oprire»* e scrisă · blocul din hook nu poate fi șters · **nu poate
+deveni blocaj** (decizia a fost avertisment: un blocaj pe vechime ar face din predare un impozit pe
+reparațiile mici) · anti-vacuu pe hook · cifra 131 nu poate reapărea nemarcată. **RED-proof pe trei
+direcții**, toate cu restaurare verificată identic.
+
+**Ce NU face, declarat:** nu verifică dacă ce scrie în predare e **adevărat** — asta nu se măsoară. Și
+**un `/clear` nu se poate garda deloc** din git; se gardează doar commitul.

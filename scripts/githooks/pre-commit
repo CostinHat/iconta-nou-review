@@ -51,6 +51,26 @@ if [ "$RC" -ne 0 ]; then
     echo "[pre-commit] consemnat in .poarta_jurnal.log ($(grep -c '^=== ' "$JURNAL" 2>/dev/null) respingeri)"
     exit 1
 fi
+# ── vechimea PREDARII (24.08.2026, cerut de Costin) ──────────────────────────
+# Un /clear nu se poate garda din hook. Ce SE poate garda e commitul: daca HEAD a
+# plecat cu mai mult de PRAG_PREDARE commituri de la ultima rescriere a predarii,
+# poarta o SPUNE. Nu blocheaza — un blocaj pe fiecare commit ar face din predare
+# un impozit pe reparatiile mici. Pragul suna ~o data pe zi de lucru.
+PRAG_PREDARE=10
+if git diff --cached --name-only | grep -qx "PREDARE_LANT.md"; then
+    :   # se rescrie chiar acum
+else
+    ULT=$(git log -1 --format=%H -- PREDARE_LANT.md 2>/dev/null)
+    if [ -n "$ULT" ]; then
+        VECHI=$(git rev-list --count "$ULT"..HEAD 2>/dev/null || echo 0)
+        if [ "$VECHI" -gt "$PRAG_PREDARE" ]; then
+            echo "[pre-commit] ATENTIE: PREDARE_LANT.md e cu $VECHI commituri in urma lui HEAD (prag $PRAG_PREDARE)."
+            echo "[pre-commit]   O predare statuta e mai rea decat una absenta: cine o citeste nu stie care rand mai e adevarat."
+            echo "[pre-commit]   Rescrie-o inainte de oprire. Commitul NU e blocat."
+        fi
+    fi
+fi
+
 TOT=$("$PY" verificator_conformitate.py 2>&1 | grep -i "TOTAL")
 echo "[pre-commit] verificator: $TOT"
 case "$TOT" in
