@@ -355,3 +355,156 @@ parametru cu default `None` în `adauga_in_coada`, iar singurul apelant nu-l tri
 **Deci pasul 3 nu lipsește din traseu — lipsește din memoria lui.** Iar regula scrisă la „După 3" în
 Partea I — *„Un verdict care nu se păstrează nu s-a produs"* — descrie literal starea de azi.
 
+
+---
+
+# X. CELE NOUĂ TRASEE DIN PARTEA VI, COMPLETATE DIN COD — 25.08.2026, pe `7cc646e`
+
+**Sunt nouă, nu 25.** Partea VI le enumeră într-o singură frază, iar numărătoarea contează fiindcă
+„completează cele 25" ar fi însemnat să inventez șaisprezece.
+
+**Cum s-a extras, ca să se poată discuta ce nu prinde.** Pentru fiecare traseu: rutele din `main.py`
+(cale, metodă, gardă), modulele din `core/` pe care le cheamă, tabelele în care scriu, stările pe care
+le pun, și numărul de refuzuri explicite. **Ce nu s-a găsit nu s-a scris.**
+
+**Extractorul a greșit de două ori, în aceeași direcție — „lipsește" — și amândouă corectate înainte
+de a scrie ceva aici:**
+1. raporta *„fără gardă"* pentru rutele păzite cu `cere_cabinet`/`cere_context`, fiindcă nu le citea
+   din argumentele funcției. **Toate rutele de mai jos sunt păzite**;
+2. raporta *„nu scrie nimic"* pentru module care scriu cu tabelă **necalificată** (`UPDATE
+   firma_profil`, fără prefix de schemă — conexiunea e deja poziționată). A produs o absență falsă pe
+   `firma_profil_api`, prinsă prin citire directă.
+
+*Ambele sunt exact clasa pe care documentul ăsta o interzice: o verificare care trece pentru că
+n-a văzut, nu pentru că nu era.*
+
+---
+
+## 1. IMPORTUL DE e-FACTURA — 5 rute
+
+`POST /tenants/{id}/import-efactura` · `GET|POST /tenants/{id}/facturi-primite[/{id}/valideaza|respinge|xml]`
+Gardă: `cere_context`. Module: `efactura_import` (citire/calcul), `spv_receive` (scrie
+`efactura_primite`), `efactura_send` (scrie `efactura_trimiteri`).
+
+**Scrie în:** `efactura_primite`, `facturi`. **Stări:** `validata`, `respinsa` — plus, pe trimitere:
+`fara_token`, `nevalidat`, `deja_trimisa`. **Refuzuri:** 13.
+
+**Singurul traseu care atinge exteriorul real în ambele sensuri:** `spv_receive` primește,
+`efactura_send` transmite prin `spv_conector.apel_anaf`. `[de decis]` unde se oprește traseul intern
+testabil — vezi Partea VII.3.
+
+## 2. EXTRASUL BANCAR ȘI POTRIVIREA — 9 rute
+
+`POST .../banca/parse-extras` · `GET .../banca/reconciliere` · `POST .../reconciliere/import` ·
+`POST .../reconciliere/{linie}/contabilizeaza|ignora|repotriveste` · `POST .../rip/import-banca`.
+Gardă: `cere_cabinet`. Module: `banca_parser` (pur), `reconciliere_api`, `rip_api`.
+
+**Scrie în:** `extras_linii` (INSERT + UPDATE), și — prin `reconciliere_api` — **`inregistrari` +
+`inregistrari_linii`**. **Stări:** `nou`, `ignorat`, `contat`. **Refuzuri:** 13.
+
+**E una dintre cele patru căi care produc note contabile** (`sursa='banca'`, 6 note măsurate). Aici
+lanțul document→notă **există** și e automat pe potrivire, spre deosebire de facturi.
+
+## 3. NIR ȘI RECEPȚIA — 2 rute
+
+`GET|POST /tenants/{id}/stocuri/nir`. Gardă: `cere_cabinet`. Modul: `stocuri_api`.
+
+**Scrie în:** `nir`, `nir_linii`, `inregistrari`, `inregistrari_linii`. **Stare pusă: `validata`.**
+**Refuzuri:** 3.
+
+**Notabil, și de confruntat cu R36:** NIR-ul creează nota direct **validată**, sărind peste ciornă.
+Toate celelalte căi de creare de notă pun `ciorna`. Nu spun că e greșit — spun că e **o excepție
+netratată nicăieri**, iar dacă modelul ales la R36 e „AI propune, omul validează", NIR-ul îl încalcă
+deja.
+
+## 4. CASA ȘI REGISTRUL DE CASĂ — 15 rute
+
+`POST|DELETE /tenants/{id}/casa/operatiuni` · `GET .../casa/registru` · fluxul de bonuri
+(`/portal/bon`, `/tenants/{id}/bonuri/{id}/aproba|stinge`, imagini) · `POST .../nota-tva-incasare`.
+Gardă: `cere_cabinet`. Module: `casa_api`, `tva_incasare` (pur), `ai_client`, `rip_api`.
+
+**Scrie în:** `casa_operatiuni`, `bonuri`, `inregistrari`, `inregistrari_linii`, `facturi`; **și
+ȘTERGE** din `casa_operatiuni` și `inregistrari`. **Stări:** `extras`, `de_verificat`, `aprobat`.
+**Refuzuri:** 29 — cele mai multe din toate cele nouă.
+
+**Singurul traseu care ȘTERGE înregistrări contabile.** `[de decis]` dacă ștergerea unei note e o
+tranziție permisă — vezi Partea VII.1: azi nu e scrisă nicăieri ca interzisă, deci e permisă tăcut.
+
+## 5. INVENTARIEREA — 4 rute
+
+`POST /tenants/{id}/nota-inventariere` · `POST .../nota-obiect-inventar` · `POST .../stocuri/inventar` ·
+`GET .../rip/inventar/{an}`. Gardă: `cere_cabinet`. Module: `inventariere` (pur), `stocuri_cv_api`,
+`obiecte_inventar` (pur), `d406_active` (pur).
+
+**Scrie în:** `inregistrari`, `inregistrari_linii`, `mijloace_fixe`, și prin `stocuri_cv_api`
+**`miscari_stoc`** (5 INSERT) + `articole`. **Stări:** niciuna proprie. **Refuzuri:** 6.
+
+**Trei din patru module sunt de citire.** Inventarierea **calculează** mult și **persistă** doar prin
+`stocuri_cv_api`. `[de completat]` dacă rezultatul inventarierii (listele, diferențele) se păstrează
+ca artefact — n-am găsit tabelă proprie.
+
+## 6. ÎNCHIDEREA LUNII — 5 rute
+
+`GET .../facturi/perioada` · `POST .../facturi/perioada/confirma|redeschide` ·
+`POST|DELETE .../perioade-blocate`. **Gardă: `rol:admin_firma` pe 4 din 5** — singurul traseu din
+cele nouă cu gardă de rol pe aproape tot.
+
+**Scrie în:** `perioade_blocate`. Module: `inchidere_luna` (pur), `perioada` (un UPDATE dinamic).
+**Refuzuri:** 3.
+
+**Are deja ce lipsește altora:** `PerioadaNeconfirmata` e singura precondiție cu nume propriu din
+aplicație, iar `redeschide` există — deci închiderea **e reversibilă prin rută**. `[de decis]` dacă
+trebuie să rămână (Partea VII.1 o numește printre cele ireversibile).
+
+## 7. ÎNCHIDEREA ANULUI ȘI SITUAȚIILE FINANCIARE — 4 rute
+
+`POST /tenants/{id}/s1003-valideaza` · `GET .../s1003-xml` · aceleași pentru `s1005`.
+Gardă: `cere_cabinet`. Modul: `bilant_api`.
+
+**Scrie în: NIMIC.** Verificat în ambele forme, după corectarea extractorului. **Refuzuri:** 8.
+
+**Aceeași clasă cu verdictul de validare de la R41:** situațiile financiare anuale se **produc** —
+XML validat — și **nu se păstrează nicăieri**. Nu intră nici în coadă (nu există `POST /coada` pentru
+s1003/s1005), nici în `declaratii_depuse`. Deci artefactul care încheie exercițiul financiar nu are
+memorie. **De deschis ca restanță proprie** — nu o scriu aici ca decizie, e o constatare.
+
+## 8. TRECEREA DE REGIM FISCAL — 4 rute
+
+`POST /tenants/{id}/firma-profil/regim-tva` · `GET|POST /tenants/{id}/vector` (POST cu
+`rol:admin_firma`) · `GET /migrare/vector`. Module: `firma_profil_api`.
+
+**Scrie în:** `firma_profil` — **4 UPDATE-uri**, plus unul inline în rută
+(`UPDATE firma_profil SET platitor_tva = %s`). **Refuzuri:** 2 — cele mai puține din cele nouă.
+
+**Traseul cu cea mai mare consecință fiscală și cele mai puține refuzuri.** O trecere micro↔profit
+sau plătitor↔neplătitor schimbă ce declarații se datorează, pe ce perioade, cu ce cote. `[de
+completat din cod]` n-am găsit **nicio** verificare de coerență la schimbare: nici că perioada
+afectată e deschisă, nici că declarațiile deja depuse pe regimul vechi rămân explicabile.
+
+## 9. PRELUAREA UNEI FIRME — 16 rute
+
+`POST /migrare/incarca|fisier|importa` (importa cu `rol:admin_firma`) · `GET /migrare/{solduri,
+plan-conturi, parteneri, salariati, mijloace-fixe, asociati, straturi, status}` ·
+`GET /control-fiscal/{id}/audit-preluare`. Module: `migrare_api` (scrie `migrare_status`),
+`audit_preluare` (pur).
+
+**Scrie în:** `migrare_status`, plus UPDATE-uri dinamice. **Refuzuri:** 7.
+
+**Cel mai multe rute din cele nouă, și cel mai mult de citire:** paisprezece din șaisprezece sunt
+`GET` de previzualizare. `audit_preluare` **nu scrie nimic** — auditul de preluare e un calcul care
+se afișează. `[de completat]` dacă verdictul lui se păstrează; după tiparul de la R41 și de la punctul
+7, presupunerea implicită ar fi că nu, dar **nu o scriu ca fapt fără s-o măsor**.
+
+---
+
+## Ce NU conțin cele nouă, și e aceeași lipsă la toate
+
+Fiecare traseu de mai sus are **pașii, stările, cine și refuzurile** — extrase. Le lipsesc, la toate,
+exact cele două lucruri pe care codul nu le poate da:
+
+- **ce trebuie să fie adevărat după fiecare pas** — codul spune ce s-a schimbat, nu ce *trebuia* să
+  se schimbe (Partea VII.5);
+- **traseele negative care ar trebui să existe** — se vede doar ce se tratează azi (Partea VII.4).
+
+Amândouă sunt decizii, și sunt scrise ca atare. Un traseu completat fără ele e o hartă a codului, nu
+o listă de verificare — util, dar nu suficient.
