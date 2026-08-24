@@ -781,6 +781,36 @@ poate degrada e operatorul de mulțime: **`chei >= {"nr_curent"}` crapă pe un �
 putut rezolva ce stă în dreapta. Nu se raportează ca trecute: absența unei verificări nu e o
 verificare. Cifra se scrie cu semnul ei (§22).
 
+### Clasele nu sunt disjuncte
+
+O aserțiune pe text e permisivă în **două direcții simultan**: trece **pe proză** și trece **pe listă
+goală**. Nu sunt două defecte care coexistă întâmplător — e aceeași slăbiciune văzută din două părți:
+*aserțiunea nu-și verifică propria premisă.* Nu întreabă nici **unde** a găsit potrivirea, nici
+**dacă a avut ce compara**.
+
+**Măsurat 24.08.2026: 221 din 1339** de aserțiuni (**17%**) trăiesc într-un context care dispare pe
+iterabil gol — `all(… for x in L)` sau corpul unui `for x in L:`.
+
+**Unde stau contează mai mult decât cifra.** Doar **18** sunt în clasa clasificată (369); **202 sunt
+în `nedeterminat`**. Rata e **5% în clasă** față de **22% în nedeterminat**. Deci cele 899 de
+aserțiuni nerezolvate nu sunt un rest neutru pe care îl declari și mergi mai departe — sunt **locul
+unde se adună cele mai slabe**, iar „nu știu ce e în dreapta" e corelat cu „nu compară nimic".
+
+**Cele două goluri sunt același gol.** Într-un `all("x" in l for l in lista)`, dreapta lui `in` e
+variabila de buclă, pe care clasificatorul o dă `nedeterminat` — deci tocmai formele vacue ieșeau din
+clasă *înainte* de a putea fi numărate. Prima măsurătoare a raportat **18** exact din motivul ăsta,
+și a fost prinsă de **propria calibrare pozitivă**: cerea ca un `all(...)` peste o listă filtrată să
+fie recunoscut, și nu era. Un instrument construit ca să numere o slăbiciune a picat în ea.
+*Calibrarea a valorat cât măsurătoarea.*
+
+Rămâne **plafon inferior**: o listă golită de un `parametrize`, de un filtru care nu potrivește nimic
+sau de o fixtură care întoarce `[]` nu se vede structural.
+
+**Regula care rezultă, pentru orice măsurătoare viitoare pe interdicțiile 18, 19 și §23:** *nu
+presupune disjuncția.* Adunarea cifrelor supraestimează; tratarea lor ca alternative exclusive ascunde
+exact instanțele cele mai slabe — cele care cad în **amândouă**, și care trec din două motive
+independente, deci rezistă la două reparații diferite.
+
 ### Ce cere, practic
 
 1. **Sursa de adevăr a unei gărzi e structura**: `json.loads` + câmp și valoare · parsare XML +

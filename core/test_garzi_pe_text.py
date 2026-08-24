@@ -168,3 +168,34 @@ def test_CALIBRARE_operatorul_de_multime_iese_complet_din_domeniu(tmp_path):
         "    chei = {'nr_curent'}\n"
         "    assert chei >= {'nr_curent'}\n"))
     assert not _s.aserțiuni(r), "forma pe operator de mulțime e încă numărată ca aserțiune pe text"
+
+
+# ── suprapunerea cu interdicția 19: clasele NU sunt disjuncte ────────────────
+def test_suprapunerea_cu_19_nu_creste(pin):
+    """O aserțiune pe text trece pe proză ȘI pe listă goală. Cele care cad în amândouă rezistă la
+    două reparații diferite — deci se numără separat, și nu au voie să crească."""
+    n = len(_s.vacue())
+    assert n <= pin["_vacue"], (
+        "aserțiuni care trec și pe iterabil gol: %d > %d — o gardă nouă care nu-și verifică nici "
+        "premisa, nici locul potrivirii" % (n, pin["_vacue"]))
+
+
+def test_CALIBRARE_vacuu_pe_lista_goala_e_prins(tmp_path):
+    """Direcția «ratează»: `all(...)` pe o listă care poate fi goală trece fără să compare nimic."""
+    r = _scrie(tmp_path, "test_v.py", (
+        "import io\n"
+        "def test_x():\n"
+        "    t = io.open('main.py').read()\n"
+        "    linii = [x for x in t.split() if x.startswith('zzz')]\n"
+        "    assert all('def ' in l for l in linii)\n"))
+    assert _s.vacue(r), "un `all(...)` peste o listă filtrată nu e recunoscut ca vacuu"
+
+
+def test_CALIBRARE_o_aserțiune_directa_NU_e_vacua(tmp_path):
+    """Direcția «revendică»: o aserțiune care compară o dată, direct, nu poate trece pe gol."""
+    r = _scrie(tmp_path, "test_w.py", (
+        "import io\n"
+        "def test_x():\n"
+        "    t = io.open('main.py').read()\n"
+        "    assert 'def tenant_jurnal' in t\n"))
+    assert not _s.vacue(r), "o aserțiune directă e acuzată că trece pe gol"

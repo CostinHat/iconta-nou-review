@@ -123,5 +123,7 @@
   "core/test_tichet_2025.py": 2,
   "core/test_upsert_motivat.py": 1,
   "core/test_vector_camp_marcat.py": 6
- }
+ },
+ "_vacue": 221,
+ "_vacue_de_ce": "aserțiuni din clasă care trec ȘI pe iterabil gol — suprapunerea cu interdicția 19. Clasele NU sunt disjuncte. Plafon inferior."
 }

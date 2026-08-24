@@ -185,3 +185,49 @@ def pe_categorie(radacini=None):
     for a in aserțiuni(radacini):
         d[a["categorie"]] = d.get(a["categorie"], 0) + 1
     return d
+
+
+def vacue(radacini=None):
+    """Aserțiunile din clasă care trec ȘI pe iterabil gol — suprapunerea cu interdicția 19.
+
+    O aserțiune pe text e permisivă în DOUĂ direcții simultan: trece pe **proză** (motiv străin) și
+    trece pe **listă goală**. Nu sunt două defecte care coexistă întâmplător — e aceeași slăbiciune
+    văzută din două părți: *aserțiunea nu-și verifică propria premisă.*
+
+    Două forme, amândouă structurale:
+      - `all(… for x in L)` / `any(…)` — `all` pe `L` gol e True;
+      - corpul unui `for x in L:` — nu se execută deloc pe `L` gol.
+
+    PLAFON INFERIOR, declarat: o listă golită de un `parametrize`, de un filtru care nu potrivește
+    nimic sau de o fixtură care întoarce `[]` **nu se vede** de aici. Deci clasele 18, 19 și §23 nu
+    sunt disjuncte, iar nicio măsurătoare viitoare n-are voie să presupună că sunt.
+    """
+    # PESTE TOATE aserțiunile, nu doar peste cele clasificate în CLASA. Motivul e o gaură găsită
+    # de propria calibrare pozitivă: într-un `all("x" in l for l in lista)`, dreapta e variabila de
+    # buclă, pe care clasificatorul o dă `nedeterminat` — deci exact formele vacue ieșeau din clasă
+    # ÎNAINTE de a fi verificate pentru vacuitate. Vacuitatea e ortogonală pe categorie.
+    ase = aserțiuni(radacini)
+    pe_fisier = {}
+    for a in ase:
+        pe_fisier.setdefault(a["fisier"], []).append(a)
+    out = []
+    for rel, lista in sorted(pe_fisier.items()):
+        cale = rel if os.path.isabs(rel) else os.path.join(RAD, rel)
+        try:
+            arb = ast.parse(io.open(cale, encoding="utf-8").read())
+        except (SyntaxError, OSError):
+            continue
+        linii = set()
+        for n in ast.walk(arb):
+            ctx = None
+            if isinstance(n, ast.Call) and getattr(n.func, "id", None) in ("all", "any") and n.args:
+                ctx = n.args[0]
+            elif isinstance(n, ast.For):
+                ctx = ast.Module(body=n.body, type_ignores=[])
+            if ctx is None:
+                continue
+            for m in ast.walk(ctx):
+                if isinstance(m, ast.Compare):
+                    linii.add(m.lineno)
+        out.extend(a for a in lista if a["linia"] in linii)
+    return out

@@ -2529,6 +2529,35 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 - **unde ajunge efectul**: o gardă care nu se poate încălca decât în aparență lasă clasa deschisă și dă încredere falsă. Instanțe reale, toate din 20–21.08: TEMA D se aprindea pe propria explicație · `lit.` se aprindea pe „po-LIT-e)" · `test_schema_coloane` a inventat coloane numite `document`, `aplicația` dintr-un docstring · gardul de clasificare a prozei s-a aprins pe propriul meu comentariu. Instrumentul din `core/scan_garzi.py` (sub-instrumentul C) reproduce cifra
 
 
+> **CELE DOUĂ CLASE NU SUNT DISJUNCTE (24.08.2026, `081c4e7`).** O aserțiune pe text e permisivă
+> în **două direcții simultan**: trece **pe proză** (motiv străin — clasa asta) *și* trece **pe listă
+> goală** (interdicția **19**). Nu sunt două defecte care se întâmplă să coexiste, sunt aceeași
+> slăbiciune văzută din două părți: *aserțiunea nu-și verifică propria premisă*.
+>
+> **Măsurat: 221 din 1339** de aserțiuni (**17%**) trăiesc într-un context care **dispare pe
+> iterabil gol** — `all(… for x in L)` sau corpul unui `for x in L:` — deci trec și fără să compare
+> nimic.
+>
+> **Unde stau contează mai mult decât cifra.** Doar **18** sunt în clasa clasificată (369); **202
+> sunt în `nedeterminat`**. Rata e **5% în clasă** față de **22% în nedeterminat** — de peste patru
+> ori mai mare. *Deci `nedeterminat` nu e un rest neutru: e exact locul unde se adună cele mai slabe
+> aserțiuni.*
+>
+> **Și e aceeași gaură, nu două.** Într-un `all("x" in l for l in lista)`, dreapta lui `in` e
+> **variabila de buclă** — pe care clasificatorul o dă `nedeterminat`. Deci tocmai formele vacue
+> ieșeau din clasă **înainte** de a putea fi numărate. Prima măsurătoare de azi a raportat **18**
+> fiindcă filtra pe clasă înainte de a verifica vacuitatea; a fost prinsă de **propria calibrare
+> pozitivă**, care cerea ca un `all(...)` peste o listă filtrată să fie recunoscut și nu era.
+> Vacuitatea se măsoară acum peste **toate** aserțiunile, fiindcă e ortogonală pe categorie.
+>
+> **Rămâne PLAFON INFERIOR**: o listă golită de un `parametrize`, de un filtru care nu potrivește
+> nimic, sau de o fixtură care întoarce `[]` nu se vede structural de aici.
+>
+> **Consecința pentru următoarea măsurătoare pe 18**: nu are voie să presupună disjuncția. Un
+> instrument care numără „gărzi pe proză" și unul care numără „gărzi pe zero rânduri" raportează, în
+> parte, **aceleași aserțiuni** — iar adunarea celor două cifre ar supraestima, în timp ce tratarea
+> lor ca alternative exclusive ar ascunde exact instanțele cele mai slabe: cele care cad în amândouă.
+
 ## 19 — O gardă care raportează favorabil pe zero rânduri
 
 - **stare**: MĂSURATĂ (două forme, măsurate cu instrumente diferite)
@@ -2538,6 +2567,7 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 - **instanțe**: **19a** — `test_garzi_tacere_ui.py:47`, `test_import_motiv_vizibil.py:27`, `verificator_conformitate.py:996`. Toate trei sunt de forma `assert not <găsite>`: zero potriviri poate însemna „lumea e curată" SAU „tiparul e orb", iar instrumentul nu le desparte. **19b, cele 12 fără nicio atenuare** — `test_cui_cnp_test_valid:36` · `test_d112_mesaje_afisate:10` · `test_declarant_warn:14` · `test_fixturi_shared_period:18` · `test_garzi_mesaje_afisabile:25` · `test_ghiduri_servite:14` · `test_golden_xsd:33` · `test_harta_ecrane:33` și `:40` · `test_import_mesaje_afisate:15` · `test_rotunjire_fiscala:24` · `test_rute_model_body:19`. **Cinci dintre ele sunt gărzi pe care le-am construit eu în campaniile din 19–21.08** — nu e o observație despre codul moștenit.
 - **calibrare**: GĂSIT, ambele. **19a** — gardul R4 cu octetul `0x08` în regex (`test_temei_termene.py:29`, `\x08(OUG|OG|Legea|...)`) apare la revizia `29bd752` și **dispare** pe HEAD, unde a fost reparat. **19b** — `test_verificarea_nu_scrie_nimic`, care număra pe o lună fără nicio contradicție: nu există ca revizie (a fost reparat în același commit cu introducerea), deci a fost **RECONSTRUIT** din forma descrisă în GARZI.md; apare la reconstruire (158) și nu apare pe HEAD (157), iar diferența e exact testul numit. Caz negativ NEraportat: cele 25 de tipare cu zero potriviri al căror subiect e un artefact produs la RULARE — corpusul nu poate spune nimic despre ele, deci instrumentul tace.
 - **ce nu vede**: **19a** — tiparele construite dinamic (24, f-string sau concatenare) nu se pot extrage · un tipar mort *față de subiectul lui* dar care potrivește altundeva în repo nu e prins (implicația merge într-o singură direcție, cea sigură) · nimic despre tiparele aplicate pe artefacte de rulare. **19b** — o mulțime culeasă poate fi goală **la rulare** fără ca instrumentul s-o știe: el citește forma aserțiunii, nu execuția. Cifra e un **plafon inferior** pentru „ar trece pe o lume goală" și un plafon superior pentru „chiar trece". Iar controlul de modul e o atenuare, nu o dovadă — a fost mai întâi o EXCEPȚIE tăcută în instrument, și chiar ea a înghițit cazul de calibrare.
+- **suprapunere cu 18 și cu §23, măsurată 24.08.2026**: **221 de aserțiuni** din cele 1339 măsurate la interdicția 18 (`core/scan_garzi_pe_text.vacue()`) sunt **și** instanțe de 19 — din care doar 18 în clasa clasificată și **202 în `nedeterminat`**, adică 22% acolo față de 5% în clasă — trăiesc într-un `all(… for x in L)` sau în corpul unui `for`, deci trec pe iterabil gol. **Nu sunt numărate în 19a/19b**, fiindcă instrumentele de acolo caută altceva: tipare moarte și teste fără aserțiune de existență. Deci cifrele lui 19 sunt **plafoane inferioare**, iar clasele **nu sunt disjuncte**.
 - **unde ajunge efectul**: o gardă care raportează favorabil pe zero rânduri e datorie eternă indistinctibilă de datorie reală — nu poate deveni verde prin reparație, fiindcă e deja verde. Instanțe reale: gardul R4 a stat verde pe un regex care nu putea potrivi niciodată, iar `verificarea nu scrie` ar fi trecut și dacă verificarea emitea singură corecții. Reproducerea cifrelor: `./venv/bin/python -m core.scan_garzi`
 
 
