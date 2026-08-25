@@ -3759,6 +3759,75 @@ def bon_aproba(tenant_id: int, bon_id: int, b: BonAproba, ctx=Depends(cere_cabin
                 WHERE id=%s
             """, (b.comerciant, b.data, b.total, iid, bon_id))
     return {"ok": True, "nota_id": iid}
+# [R33] Nota propusa mecanic intra CIORNA. Validarea o face al doilea om - patru-ochi.
+STARE_CIORNA = "ciorna"
+
+
+@app.post("/tenants/{tenant_id}/salarii-contare/propunere")
+# [R33, decizia Costin 25.08.2026] Semnalul de coerenta nota-vs-D112 apare LA PROPUNERE:
+# *„singurul moment in care omul poate face ceva cu informatia; la inchiderea lunii e prea tarziu,
+# iar pe suprafata de control fiscal e o constatare despre trecut."*
+#
+# POST desi nu scrie nimic - acelasi precedent ca `calcul-cm` si `prapastie-salariu`. Regula pe
+# care o respecta e cealalta: un GET n-are voie sa scrie (interdictia 6). Aici nu scrie nimeni.
+def salarii_contare_propunere(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    """Nota pe care ar scrie-o statul de plata + divergentele fata de D112, cu ambele cifre."""
+    from core import salarii_contare as _sc
+    schema = _schema_cabinet_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        try:
+            p = _sc.propunere(conn, schema, an, luna)
+        except ValueError as e:
+            # D112 nu se poate genera (profil incomplet). Refuzul lui e scris pentru contabil;
+            # fara asta ar ajunge la el ca 500 gol.
+            raise HTTPException(422, str(e))
+    with db.get_conn(schema) as conn, conn.cursor() as cur:
+        cur.execute("SELECT id FROM inregistrari WHERE numar = %s", (p["document_ref"],))
+        r = cur.fetchone()
+    p["deja_contata"] = bool(r)
+    p["nota_id"] = r[0] if r else None
+    return p
+
+
+@app.post("/tenants/{tenant_id}/salarii-contare")
+# [R33] Actul: scrie nota CIORNA a statului de plata. Semnaleaza, NU blocheaza - divergenta se
+# intoarce si dupa contare, ca sa nu se stinga prin ignorare (regula de la contradictiile pe
+# statul de plata). Ciorna, nu validata: patru-ochi ramane.
+def salarii_contare_scrie(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    """Scrie nota ciorna a statului de plata. Idempotent pe `document_ref` (interdictia 8:
+    schema nu lasa un al doilea exemplar)."""
+    from datetime import date as _date
+    from core import salarii_contare as _sc
+    schema = _schema_cabinet_sau_404(ctx, tenant_id)
+    with db.get_conn(schema) as conn:
+        # [R42 (a)] Nota poarta ultima zi a lunii declarate; intr-o luna inchisa nu se scrie.
+        ultima = _date(an, luna, 28)
+        _cere_luna_deschisa(conn, schema, ultima)
+        try:
+            p = _sc.propunere(conn, schema, an, luna)
+        except ValueError as e:
+            raise HTTPException(422, str(e))
+        with conn.cursor() as cur:
+            cur.execute("SELECT id FROM inregistrari WHERE numar = %s", (p["document_ref"],))
+            r = cur.fetchone()
+            if r:
+                return {**p, "deja_contata": True, "nota_id": r[0],
+                         "cod": "DEJA_CONTATA"}
+            # Statusul e PARAMETRU, nu text in SQL: asa se poate asertaza pe structura ca nota
+            # intra CIORNA (patru-ochi), nu cautand `'ciorna'` intr-un sir (METODA §23).
+            cur.execute("INSERT INTO inregistrari (data, numar, descriere, sursa, status) "
+                        "VALUES (%s,%s,%s,%s,%s) RETURNING id",
+                        (ultima, p["document_ref"],
+                         "Stat de plata %02d/%d" % (luna, an), "salarii", STARE_CIORNA))
+            nota_id = cur.fetchone()[0]
+            for n in p["note"]:
+                cur.execute("INSERT INTO inregistrari_linii "
+                            "(inregistrare_id, cont_debit, cont_credit, suma) VALUES (%s,%s,%s,%s)",
+                            (nota_id, n["debit"], n["credit"], n["suma"]))
+        conn.commit()
+    return {**p, "deja_contata": True, "nota_id": nota_id, "cod": "CONTATA"}
+
+
 @app.post("/tenants/{tenant_id}/amortizare")
 def tenant_amortizare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     """Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ."""

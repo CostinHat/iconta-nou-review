@@ -4780,3 +4780,32 @@ Măsurătoarea din R52 a dat **25** de rute care predau un document, **17** făr
 progres — e **raza**: măsurătoarea a urmărit și ce livrează modulele chemate. Clichetul e pus pe
 **8**, cifra pe care instrumentul o poate recalcula; restul până la 17 **nu sunt păzite acolo**, și
 scrie asta. *Un clichet pe o cifră care nu se poate reproduce ar fi o amintire.*
+
+---
+
+## R33 — semnalul notă-vs-D112: la propunere, și semnalează (25.08.2026)
+
+`core/test_coerenta_salarii.py` — **10 teste, 6 mutații probate**, plus o probă pe procesul viu,
+desktop și Pixel 5.
+
+**Ce a ieșit legând verificarea: modulul era nelegat în întregime.** `note_lunare` —
+contabilizarea statului de plată — n-avea niciun apelant. Salariile nu deveneau niciodată notă
+contabilă. Restanța număra funcții publice fără importatori; lipsea **actul**, nu doar verificarea.
+
+**A doua instanță de R16 în același fișier.** Docstringul promitea *„nota se scrie DOAR dacă
+totalul coincide… refuzăm să scriem"*. Nimic nu scria și nimic nu refuza. Prima instanță era
+comentariul din `salarizare.py:296`; a doua e chiar promisiunea de garanție a modulului. Amândouă
+verzi, fiindcă testele cheamă funcțiile direct.
+
+**Semnalul arată AMBELE cifre.** Divergențele sunt obiecte — `{eticheta, cont, nota, declaratie,
+diferenta, toleranta}` — nu fraze: cifrele nu se pot compune înapoi dintr-o propoziție. Pe firma de
+probă, semnalul a găsit o divergență reală: **impozit pe venit, nota 161,12 în 444 vs D112 204,00,
+diferență 42,88.**
+
+**Prima probă a dat zero, fals.** Înlocuia intrări în `sys.modules`, dar `from core import d112`
+citește atributul de pe pachet — deci măsura funcția reală pe o bază inexistentă. Rescrisă cu
+`monkeypatch` pe funcții.
+
+**Ce NU face gardul, declarat:** nu verifică plasarea pe ecran (asta e proba vizuală), și nu spune
+nimic despre celelalte trei module nelegate — `echilibru_perioada` rămâne logică paralelă, decizie
+de prag 2.

@@ -28,7 +28,7 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _SCAN = os.path.join(_RAD, "scripts", "scan_trasee.py")
 
 # Clichet la 25.08.2026, pe commitul care introduce inventarul. Se schimbă DELIBERAT.
-_CLICHET = {"MECANIC": 27, "PARTIAL": 3, "MANUAL": 5}
+_CLICHET = {"MECANIC": 30, "PARTIAL": 0, "MANUAL": 5}
 _TRASEE_TOTAL = 35
 
 
@@ -254,6 +254,76 @@ def test_cele_TREI_documente_cu_date_de_tert_au_rol(st):
         assert c in dupa_cale, "ruta %s a disparut — reciteste decizia inainte s-o repari" % c
         assert dupa_cale[c], (
             "%s poarta datele unui tert si nu mai cere rol — decizia lui Costin, 25.08.2026" % c)
+
+
+def _db_pentru_tabele():
+    try:
+        from core import db as _db
+        _db.init_pool()
+        with _db.get_conn():
+            return True
+    except Exception:
+        return False
+
+
+def test_fiecare_pas_din_loturi_spune_CE_face(st):
+    """[Costin, 25.08.2026] *«Se verifica prin efect» spune ca EXISTA un efect, nu care e.*
+
+    Un pas fara efect descris e un pas la care nu se poate scrie verificarea. Clichetul e ZERO:
+    la prima masuratoare erau cinci, si toate cinci s-au rezolvat - doua fiindca fisierul de
+    tabele cunoscute era invechit (vezi testul urmator), trei fiindca efectul se deriva din ce
+    INTOARCE ruta, nu doar din ce scrie.
+
+    Daca reapare unul, nu e o nota de subsol: e o cifra."""
+    pasi = st.pasii_ordonati()
+    assert len(pasi) >= 150, "instrumentul vede doar %d pasi - s-a stricat?" % len(pasi)
+    fara = sorted("%s %s" % (m, c) for _t, _n, m, c, ce in pasi if "NU SE POATE DERIVA" in ce)
+    assert not fara, (
+        "pasi fara efect derivabil (%d) - la ei nu se poate scrie o verificare:%s  %s"
+        % (len(fara), chr(10), (chr(10) + "  ").join(fara)))
+
+
+def test_toate_loturile_acopera_toti_pasii(st):
+    """Lotizarea nu poate pierde pe drum. Suma loturilor = numarul de pasi, fara suprapuneri."""
+    pasi = st.pasii_ordonati()
+    vazuti, n = [], 1
+    while True:
+        text = st.redare_lot(n)
+        if text.startswith("lot inexistent"):
+            break
+        vazuti += [l for l in text.split(chr(10)) if l.startswith("- **`")]
+        n += 1
+    assert len(vazuti) == len(pasi), (
+        "loturile arata %d pasi, dar inventarul are %d" % (len(vazuti), len(pasi)))
+    assert len(set(vazuti)) == len(vazuti), "un pas apare in doua loturi"
+
+
+@pytest.mark.skipif(not _db_pentru_tabele(), reason="DB indisponibil")
+def test_fisierul_de_tabele_cunoscute_nu_imbatraneste(st):
+    """Instanta (25.08.2026): `artefacte_produse` exista in baza din 25.08, dar
+    `scripts/trasee_tabele.json` fusese generat inainte. Filtrul care taie numele inventate de
+    regexul de SQL taia si o tabela REALA - iar doua rute de bilant apareau ca si cum n-ar scrie
+    nimic. Un filtru invechit nu produce zgomot, produce TACERE, si aia nu se vede.
+
+    Gardul compara fisierul cu baza: orice tabela in care codul chiar scrie si care exista in DB
+    trebuie sa fie in fisier. Regenerare: `scan_trasee.py --tabele`."""
+    import json
+    cunoscute = set(json.load(io.open(st.CALE_TABELE, encoding="utf-8"))["tabele"])
+    scrise = set()
+    for r in st.citeste_rute():
+        scrise.update(r["scrie_inline"])
+    for info in st.citeste_module().values():
+        scrise.update(info["scrie"])
+    from core import db as _db
+    _db.init_pool()
+    with _db.get_conn() as c, c.cursor() as cur:
+        cur.execute("SELECT table_name FROM information_schema.tables "
+                    "WHERE table_schema IN ('public', 'tenant_001')")
+        in_db = {r[0] for r in cur.fetchall()}
+    lipsa = sorted((scrise & in_db) - cunoscute)
+    assert not lipsa, (
+        "tabele REALE, in care codul scrie, taiate de filtrul invechit: %s%s  "
+        "regenereaza: ./venv/bin/python scripts/scan_trasee.py --tabele" % (lipsa, chr(10)))
 
 
 def test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul(st):

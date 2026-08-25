@@ -14,9 +14,19 @@ RECALCULEAZA cas/cass/impozit pe salariatii cu concediu medical (baza CM) si ada
 suprataxa part-time separat. O nota construita din pull() ar contrazice declaratia
 exact pe cazurile grele -- adica ar fabrica chiar erorile pe care F163 le prinde.
 
-GARANTIA (control_coerenta): nota se scrie DOAR daca totalul ei coincide cu XML-ul
-D112 in limita toleranta_d112(N). Daca nu coincide, refuzam sa scriem si spunem de ce.
-Un buton care baga in evidenta cifre diferite de declaratie e mai rau decat lipsa lui.
+CE FACE control_coerenta, DUPA DECIZIA DIN 25.08.2026 (Costin, R33): compara totalul notei
+propuse cu XML-ul D112, cont cu cont, in limita toleranta_d112(N), si SEMNALEAZA divergentele.
+NU blocheaza. Motivul, in cuvintele lui: *"aplicatia compara o propunere cu o declaratie generata
+din alte date. Cand cele doua difera, nu se stie CARE greseste - poate declaratia e veche, poate
+nota e corecta. Un blocaj ar presupune ca declaratia are dreptate."* Masurat: 10 din 40 de perechi
+diverg; un blocaj pe un sfert din cazuri, fara sa stim cine greseste, opreste munca fara sa spuna
+nimic.
+
+TEXTUL DE MAI SUS A FOST FALS PANA AZI, si merita spus fiindca e clasa R16. Scria: *"nota se scrie
+DOAR daca totalul coincide ... refuzam sa scriem"*. Nimic nu se scria si nimic nu refuza:
+`control_coerenta` n-avea niciun apelant, si nici `note_lunare` - deci salariile nu deveneau
+niciodata nota contabila. Proza descria o garantie inexistenta, iar testele treceau, fiindca
+testele cheama functiile direct.
 """
 from decimal import Decimal
 
@@ -68,8 +78,26 @@ def note_lunare(conn, schema, an, luna):
     return [(d, c, s) for (d, c), s in sorted(agg.items()) if s > 0], len(salariati)
 
 
+def _bani(x):
+    return float(_d(x).quantize(Decimal("0.01")))
+
+
 def control_coerenta(note, conn, schema, an, luna):
-    """Nota propusa vs D112 declarat. Intoarce lista de divergente (goala = coerent)."""
+    """Nota propusa vs D112 declarat. Intoarce lista de DIVERGENTE (goala = coerent).
+
+    Fiecare divergenta e un obiect cu ambele cifre, nu o fraza:
+
+        {"eticheta": "CAS", "cont": "4315",
+         "nota": 1234.00,          # ce ar scrie nota propusa
+         "declaratie": 1200.00,    # ce declara D112
+         "diferenta": -34.00,      # declaratie - nota
+         "toleranta": 4.00}
+
+    Costin, 25.08.2026: *"ce trebuie sa arate semnalul: ce spune nota, ce spune declaratia, si
+    care e diferenta. Nu «exista o divergenta» - cifrele amandoua."* Textul il compune ecranul
+    (DS cap.13: textul nu e purtator de decizie), iar cifrele nu se pot compune din proza inapoi.
+
+    NU ridica si nu refuza nimic: semnalul e informatie pentru om, nu o poarta."""
     from core import d112 as _d112
     from core import control_incrucisat as _ci
     xml, _av = _d112.genereaza(conn, schema, an, luna)
@@ -83,9 +111,32 @@ def control_coerenta(note, conn, schema, an, luna):
         decl = sum(_d(totaluri.get(k, 0)) for k in coduri)
         prop = rulaj.get(cont, {}).get("credit", Decimal("0"))
         if abs(decl - prop) > tol:
-            div.append("%s: nota ar scrie %s lei in %s, D112 declara %s lei (diferenta %s)"
-                       % (eticheta, prop, cont, decl, decl - prop))
+            div.append({"eticheta": eticheta, "cont": cont,
+                        "nota": _bani(prop), "declaratie": _bani(decl),
+                        "diferenta": _bani(decl - prop), "toleranta": _bani(tol)})
     return div
+
+
+def propunere(conn, schema, an, luna):
+    """Propunerea de nota a statului de plata, IMPREUNA cu semnalul de coerenta.
+
+    Cele doua stau intr-un singur raspuns fiindca decizia lui Costin le leaga: semnalul apare
+    *"la propunere - singurul moment in care omul poate face ceva cu informatia; la inchiderea
+    lunii e prea tarziu, iar pe suprafata de control fiscal e o constatare despre trecut."*
+
+    NU SCRIE NIMIC. `note_lunare` si `control_coerenta` doar citesc si calculeaza; generarea D112
+    din interior nu persista (verificat: `d112.py`, `d112_reconciliere.py` si `reconciliere_emis.py`
+    n-au niciun INSERT/UPDATE/DELETE)."""
+    note, nr = note_lunare(conn, schema, an, luna)
+    div = control_coerenta(note, conn, schema, an, luna)
+    return {
+        "an": an, "luna": luna,
+        "document_ref": document_ref(an, luna),
+        "nr_salariati": nr,
+        "note": [{"debit": d, "credit": c, "suma": _bani(v)} for d, c, v in note],
+        "total": _bani(sum(v for _d1, _c1, v in note)),
+        "divergente": div,
+    }
 
 
 def _nr_salariati_xml(xml):

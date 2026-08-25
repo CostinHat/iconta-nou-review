@@ -38,9 +38,6 @@ PIN = {
         "PRODUCATOR FARA LIVRARE, declarat (METODA §20) — Fisa de cont 14-6-22, care inlocuieste "
         "Cartea mare 14-1-3; zero rute si zero ecrane, spus in ISTORIC 23.08.2026 (3): «artefactul "
         "are producator, nu livrare». NU e omisiune - conditia lui de deblocare e LIVRAREA, nu un apel",
-    "core/salarii_contare.py":
-        "PRODUCTIE, nelegat — control_coerenta() e verificare incrucisata nota-vs-declaratie; "
-        "salarizare.py:296 o NUMESTE, dar intr-un COMENTARIU",
     "core/scan_garzi_pe_text.py":
         "INSTRUMENT DE MASURA, nu cale de productie (aceeasi clasa cu scan_ancore): singurul lui "
         "consumator legitim e gardul core/test_garzi_pe_text.py, iar sonda exclude importatorii de "

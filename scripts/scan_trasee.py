@@ -59,7 +59,10 @@ TRASEE = [
       r"^/tenants/\{\}/facturi-recurente", r"^/api/v1/firme/\{\}/facturi"],
      ["facturi", "factura_linii", "facturi_recurente"]),
     ("T03", "Statul de plată și fluturașul",
-     [r"^/tenants/\{\}/stat-plata", r"^/tenants/\{\}/fluturas"],
+     # [R33, 25.08.2026] `salarii-contare` intra AICI, nu la nota contabila (T05): actul e
+     # contabilizarea STATULUI DE PLATA, iar semnalul de coerenta se uita la D112 al aceleiasi luni.
+     [r"^/tenants/\{\}/stat-plata", r"^/tenants/\{\}/fluturas",
+      r"^/tenants/\{\}/salarii-contare"],
      ["state_plata", "beneficii_lunare"]),
     ("T04", "Concediul medical",
      [r"^/tenants/\{\}/salariati/\{\}/concedii", r"^/tenants/\{\}/concedii/coduri",
@@ -872,6 +875,43 @@ _GEN_DECL = ("d100", "d101", "d107", "d112", "d177", "d205", "d207", "d212", "d2
              "spv_conector", "spv_receive")
 
 
+def _efect_declarat(fn):
+    """Ce IESE dintr-o rută care nu scrie în nicio tabelă cunoscută.
+
+    Trei surse, în ordinea în care răspund la «ce iese»: cheile dicționarului întors · apelul a
+    cărui valoare se întoarce · faptul că livrează un fișier. Niciuna nu inventează: toate se
+    citesc din AST-ul rutei. Unde nu dă nimic, se scrie că nu se poate deriva — «se verifică prin
+    efect» spune că EXISTĂ un efect, nu CARE e, deci nu e o descriere din care se poate scrie o
+    verificare (Costin, 25.08.2026)."""
+    chei, apeluri, fisier = [], [], False
+    corp = ast.unparse(fn).lower()
+    if any(m in corp for m in ("content-disposition", "fileresponse", "application/pdf",
+                               "application/zip", "media_type")):
+        fisier = True
+    for n in ast.walk(fn):
+        if not isinstance(n, ast.Return) or n.value is None:
+            continue
+        v = n.value
+        if isinstance(v, ast.Dict):
+            for k in v.keys:
+                if isinstance(k, ast.Constant) and isinstance(k.value, str):
+                    chei.append(k.value)
+        elif isinstance(v, ast.Call):
+            f = v.func
+            if isinstance(f, ast.Attribute) and isinstance(f.value, ast.Name):
+                apeluri.append("%s.%s" % (f.value.id, f.attr))
+            elif isinstance(f, ast.Name):
+                apeluri.append(f.id)
+    parti = []
+    if fisier:
+        parti.append("livreaza un fisier")
+    if chei:
+        parti.append("intoarce {%s}" % ", ".join(sorted(set(chei))[:8]))
+    if apeluri:
+        parti.append("intoarce ce da %s" % ", ".join("`%s()`" % a for a in sorted(set(apeluri))[:3]))
+    return " · ".join(parti)
+
+
 def _atinge_o_iesire(t):
     """Traseul ajunge la ceva care se DEPUNE sau pleaca in afara?
 
@@ -898,6 +938,9 @@ def pasii_ordonati():
     """
     rute = citeste_rute()
     per_traseu, _o, _d, _n = acoperire(rute)
+    arbore = ast.parse(open(os.path.join(RAD, "main.py"), encoding="utf-8").read())
+    noduri = {x.name: x for x in ast.walk(arbore)
+              if isinstance(x, (ast.FunctionDef, ast.AsyncFunctionDef))}
     mod = citeste_module()
     # Acelasi filtru pe tabele CUNOSCUTE ca in `construieste`: fara el, regexul de SQL intoarce si
     # fragmente (`factur`, `validata` - o valoare de stare luata drept nume de tabel). Un nume de
@@ -937,7 +980,9 @@ def pasii_ordonati():
             if prin:
                 parti.append("prin " + ", ".join("`%s`" % m for m in prin))
             if not parti:
-                parti.append("nu scrie nimic vizibil din cod — pasul se verifica prin efect, nu prin tabel")
+                ef = _efect_declarat(noduri.get(r["fn"])) if noduri.get(r["fn"]) else ""
+                parti.append(ef or "EFECTUL NU SE POATE DERIVA DIN COD — pas fara "
+                             "verificare derivabila")
             pasi.append((t["id"], dupa_id[t["id"]]["nume"], r["metoda"].upper(),
                          r["cale"], " — ".join(parti)))
     return pasi

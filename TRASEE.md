@@ -1212,22 +1212,26 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T03 — Statul de plată și fluturașul
 
-**Clasa:** MECANIC · **rute:** 6 (din care schimba date: 3) · **refuzuri explicite:** 19
+**Clasa:** MECANIC · **rute:** 8 (din care schimba date: 5) · **refuzuri explicite:** 21
 
-**Cine:** rol cerut: `admin_firma` · drept fin: `poate_valida`. **Rute care schimba date fara nicio verificare de rol: 0 din 3.**
+**Cine:** rol cerut: `admin_firma` · drept fin: `poate_valida`. **Rute care schimba date fara nicio verificare de rol: 2 din 5.**
 
 **Pasii, din cod:**
 
 - `GET /tenants/{tenant_id}/fluturas/{salariat_id}` — garda `cere_rol` rol:admin_firma
+- `POST /tenants/{tenant_id}/salarii-contare` — garda `cere_cabinet`
+- `POST /tenants/{tenant_id}/salarii-contare/propunere` — garda `cere_cabinet`
 - `GET /tenants/{tenant_id}/stat-plata` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/stat-plata/corectie` — garda `cere_cabinet` drept:poate_valida
 - `GET /tenants/{tenant_id}/stat-plata/emis` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/stat-plata/emite` — garda `cere_rol` rol:admin_firma drept:poate_valida
 - `POST /tenants/{tenant_id}/stat-plata/motiv` — garda `cere_cabinet` drept:poate_valida
 
-**Module:** `stat_plata_api`, `stat_plata_emis`
+**Module:** `salarii_contare`, `stat_plata_api`, `stat_plata_emis`
 
-**Scrie in:** `state_plata` (INSERT/UPDATE)
+**Scrie in:** `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `state_plata` (INSERT/UPDATE)
+
+**Stari puse:** `validata`
 
 **Firme care il pot exercita azi: 2** — `tenant_001`, `tenant_003`
 
@@ -1428,7 +1432,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T12 — Închiderea anului și situațiile financiare
 
-**Clasa:** PARTIAL · **rute:** 4 (din care schimba date: 2) · **refuzuri explicite:** 12
+**Clasa:** MECANIC · **rute:** 4 (din care schimba date: 2) · **refuzuri explicite:** 12
 
 **Cine:** nicio verificare de rol pe tot traseul — orice utilizator autentificat al cabinetului. **2 din 2 rute care schimba date.**
 
@@ -1441,7 +1445,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Module:** `artefacte`, `bilant_api`, `duk`
 
-**Scrie in: NIMIC.** Se produce si nu se pastreaza.
+**Scrie in:** `artefacte_produse` (INSERT)
 
 **Stari puse:** `erori`, `validata`
 
@@ -1513,7 +1517,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Module:** `anaf_api`, `artefacte`, `articole_import_api`, `asociati_import_api`, `audit_preluare`, `cor_api`, `istoric_declaratii_import_api`, `migrare_api`, `mijloace_fixe_import_api`, `observare`, `retete_import_api`, `rip_migrare_api`, `salariati_import_api`, `solduri_api`, `solduri_parteneri_api`, `tenant_provisioning`
 
-**Scrie in:** `articole` (INSERT) · `asociati` (DELETE/INSERT) · `declaratii_depuse` (DELETE/INSERT) · `firma_profil` (INSERT/UPDATE) · `migrare_status` (INSERT) · `mijloace_fixe` (DELETE/INSERT) · `miscari_stoc` (INSERT) · `plan_conturi` (INSERT) · `rip_operatiuni` (INSERT) · `salariati` (INSERT) · `solduri_initiale` (DELETE/INSERT) · `solduri_parteneri` (DELETE/INSERT) · `tenants` (INSERT/UPDATE) · `user_tenants` (INSERT)
+**Scrie in:** `artefacte_produse` (INSERT) · `articole` (INSERT) · `asociati` (DELETE/INSERT) · `declaratii_depuse` (DELETE/INSERT) · `firma_profil` (INSERT/UPDATE) · `migrare_status` (INSERT) · `mijloace_fixe` (DELETE/INSERT) · `miscari_stoc` (INSERT) · `plan_conturi` (INSERT) · `rip_operatiuni` (INSERT) · `salariati` (INSERT) · `solduri_initiale` (DELETE/INSERT) · `solduri_parteneri` (DELETE/INSERT) · `tenants` (INSERT/UPDATE) · `user_tenants` (INSERT)
 
 **Stari puse:** `validata`
 
@@ -1576,7 +1580,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T17 — Plata salariilor — fișierul către bancă
 
-**Clasa:** PARTIAL · **rute:** 2 (din care schimba date: 1) · **refuzuri explicite:** 10
+**Clasa:** MECANIC · **rute:** 2 (din care schimba date: 1) · **refuzuri explicite:** 10
 
 **Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 0 din 1.**
 
@@ -1587,7 +1591,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Module:** `artefacte`, `plata_salarii`
 
-**Scrie in: NIMIC.** Se produce si nu se pastreaza.
+**Scrie in:** `artefacte_produse` (INSERT)
 
 **Firme care il pot exercita azi:** *nu se poate sti din date* — traseul n-are tabela proprie.
 
@@ -1915,7 +1919,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T33 — Exportul contabil (SAGA, WinMentor)
 
-**Clasa:** PARTIAL · **rute:** 3 (din care schimba date: 2) · **refuzuri explicite:** 12
+**Clasa:** MECANIC · **rute:** 3 (din care schimba date: 2) · **refuzuri explicite:** 12
 
 **Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 0 din 2.**
 
@@ -1927,7 +1931,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Module:** `artefacte`, `export_saga`, `export_winmentor`
 
-**Scrie in: NIMIC.** Se produce si nu se pastreaza.
+**Scrie in:** `artefacte_produse` (INSERT)
 
 **Stari puse:** `emisa`
 

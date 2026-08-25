@@ -847,7 +847,9 @@ async function ecranSalariati(corp, nav, t) {
         <button class="buton-secundar" id="sp-reges-cfg" style="margin-left:12px">Chei REGES</button>
         <button class="buton-secundar" id="sp-reges-poll"${regesOk ? "" : " disabled"}>R\u0103spunsuri REGES</button>
         <button class="buton-primar" id="sp-salariat-nou" style="margin-left:12px">+ Salariat nou</button>
-        <button class="buton-secundar" id="sp-plata-card" style="margin-left:12px"${areIban ? "" : " disabled"}>Fișier plată card (SEPA)</button></p>
+        <button class="buton-secundar" id="sp-plata-card" style="margin-left:12px"${areIban ? "" : " disabled"}>Fișier plată card (SEPA)</button>
+        <button class="buton-secundar" id="sp-contare">Contabilizează statul</button></p>
+      <div id="sp-contare-zona"></div>
       <div id="sp-plata-zona"></div>
       <div id="sp-reges-zona"></div>
       <div id="sp-vac-zona"></div>
@@ -866,6 +868,65 @@ async function ecranSalariati(corp, nav, t) {
     corp.querySelector("#sp-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });
     corp.querySelector("#sp-next").addEventListener("click", () => { luna++; if (luna > 12) { luna = 1; an++; } deseneaza(); });
     corp.querySelector("#sp-salariat-nou").addEventListener("click", () => nav.mergi("Salariat nou", (c2) => formularSalariatNou(c2, nav, t, deseneaza)));
+    // [R33, decizia Costin 25.08.2026] Semnalul de coerenta nota-vs-D112, LA PROPUNERE.
+    // SEMNALEAZA, nu blocheaza: aplicatia compara o propunere cu o declaratie generata din alte
+    // date, iar cand cele doua difera nu se stie CARE greseste. Un blocaj ar presupune ca
+    // declaratia are dreptate. Semnalul arata AMBELE cifre si diferenta - nu "exista o divergenta".
+    // Divergenta ramane vizibila si dupa contare: se recalculeaza de fiecare data, deci nu se
+    // stinge prin ignorare.
+    const zonaContare = corp.querySelector("#sp-contare-zona");
+    const randDivergente = (p) => !p.divergente.length
+      ? `<div class="caseta-info"><span class="ci-mesaj">Nota propusă coincide cu D112 pe toate cele patru conturi, în limita de toleranță.</span></div>`
+      : `<div class="caseta-atentie">
+          <b>Nota propusă nu coincide cu D112 pe ${p.divergente.length} ${p.divergente.length === 1 ? "cont" : "conturi"}.</b>
+          <div class="tip-micut">Nu se blochează nimic: nu se poate ști din afară care dintre cele două greșește — poate declarația e veche, poate nota e corectă.</div>
+          <table class="tabel-simplu" style="margin-top:8px">
+            <thead><tr><th>Ce</th><th>Cont</th><th>Nota ar scrie</th><th>D112 declară</th><th>Diferență</th></tr></thead>
+            <tbody>${p.divergente.map((d) => `<tr>
+              <td>${esc(d.eticheta)}</td>
+              <td>${esc(d.cont)}</td>
+              <td>${bani(d.nota)}</td>
+              <td>${bani(d.declaratie)}</td>
+              <td style="color:var(--rosu);font-weight:600">${bani(d.diferenta)}</td>
+            </tr>`).join("")}</tbody>
+          </table>
+          <div class="tip-micut">Toleranța aplicată: ${bani(p.divergente[0].toleranta)} lei (${p.nr_salariati} salariați).</div>
+        </div>`;
+    const arataPropunerea = (p) => {
+      zonaContare.innerHTML = `<div class="pf-frand" style="display:block;margin:10px 0">
+        <div class="pf-frand-nume">${esc(p.document_ref)} — ${p.note.length} ${p.note.length === 1 ? "linie" : "linii"}, total ${bani(p.total)} lei</div>
+        ${randDivergente(p)}
+        <table class="tabel-simplu" style="margin-top:8px">
+          <thead><tr><th>Debit</th><th>Credit</th><th>Sumă</th></tr></thead>
+          <tbody>${p.note.map((n) => `<tr><td>${esc(n.debit)}</td><td>${esc(n.credit)}</td><td>${bani(n.suma)}</td></tr>`).join("")}</tbody>
+        </table>
+        <p style="margin-top:10px">${p.deja_contata
+          ? `<span class="tip-micut">Nota există deja în jurnal (ciornă #${p.nota_id}). Semnalul de mai sus se recalculează de fiecare dată, deci rămâne vizibil cât timp cifrele diferă.</span>`
+          : `<button class="buton-primar" id="sp-contare-scrie">Scrie nota ciornă</button>
+             <span class="tip-micut" style="margin-left:8px">Ciornă, nu validată: validării îi rămâne al doilea om.</span>`}</p>
+      </div>`;
+      const b = corp.querySelector("#sp-contare-scrie");
+      if (b) b.addEventListener("click", async () => {
+        b.disabled = true; b.textContent = "Se scrie…";
+        try {
+          const r = await api.post(`/tenants/${t.id}/salarii-contare?an=${an}&luna=${luna}`, {});
+          arataPropunerea(r);
+        } catch (e) {
+          b.disabled = false; b.textContent = "Scrie nota ciornă";
+          arataMesaj(zonaContare, (e && e.mesaj) || "Nu am putut scrie nota.", "eroare");
+        }
+      });
+    };
+    corp.querySelector("#sp-contare").addEventListener("click", async () => {
+      zonaContare.innerHTML = `<p class="ecran-nota">Se calculează propunerea…</p>`;
+      try {
+        arataPropunerea(await api.post(`/tenants/${t.id}/salarii-contare/propunere?an=${an}&luna=${luna}`, {}));
+      } catch (e) {
+        zonaContare.innerHTML = "";
+        arataMesaj(zonaContare, (e && e.mesaj) || "Nu am putut calcula propunerea.", "eroare");
+      }
+    });
+
     // [F134] fisier de plata pe card (SEPA pain.001): preview (cati, total, cine fara IBAN) -> download
     const zonaPlata = corp.querySelector("#sp-plata-zona");
     corp.querySelector("#sp-plata-card").addEventListener("click", async () => {

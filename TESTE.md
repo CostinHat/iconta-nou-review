@@ -2061,3 +2061,14 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   de modul (un `with ... as _c` care fura `casa_api`), în ambele direcții; și clichetul R52 pe
   rutele care predau un document fără rol (**8**), cu testul care asertează pe nume că **exact
   cele trei** documente cu date de terț cer rol — clichetul singur ar trece și dacă ele l-ar pierde.
+
+- **`core/test_coerenta_salarii.py` (25.08.2026)** — 10 teste, R33: divergența e **obiect** cu
+  ambele cifre (calibrat în ambele direcții — și că afirmă când diferă, și că **tace** când
+  coincid); propunerea întoarce și nota, și semnalul; ruta de propunere **nu scrie nimic**; ruta
+  care scrie **nu blochează** pe divergență (structural: niciun `raise` condiționat de
+  `divergente`); nota intră **ciornă**; divergența se întoarce **și** pe ramura «există deja».
+  RED-proof: **6 mutații**, toate prinse, fișierele restaurate identic.
+- **`core/test_trasee.py` — +3 teste (25.08.2026)**: fiecare pas din loturi spune **ce face**
+  (clichet 0 pași fără efect derivabil); loturile acoperă toți pașii, fără suprapuneri; fișierul de
+  tabele cunoscute **nu îmbătrânește** — instanța: `artefacte_produse` lipsea din el, iar filtrul
+  tăia o tabelă reală, ținând trei trasee clasificate PARȚIAL după ce persistența fusese construită.

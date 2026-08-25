@@ -161,6 +161,18 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/fluturas/{salariat_id}`, `/tenants/{tenant_id}/stat-plata`, `/tenants/{tenant_id}/stat-plata/emis`*
 
+### `POST /tenants/{tenant_id}/salarii-contare/propunere`
+
+*garda `cere_cabinet` · nu scrie nimic*
+
+- [ ] 
+
+### `POST /tenants/{tenant_id}/salarii-contare`
+
+*garda `cere_cabinet` · scrie nota ciorna a statului de plata*
+
+- [ ] 
+
 ### `POST /tenants/{tenant_id}/stat-plata/corectie`
 
 *garda `cere_cabinet` · **fara rol***
