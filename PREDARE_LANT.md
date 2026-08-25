@@ -1,11 +1,11 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — cele 192 de locuri de verificare, și ierarhia surselor (25.08.2026)
+# PREDARE LANȚ — R33 închisă prin măsurătoare, lotul 1 scris (26.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-25**, *a patra oară în aceeași zi*
-- **pe commit**: `d312bf8`
+- **ultima rescriere**: **2026-08-26**, *prima din ziua asta*
+- **pe commit**: `d0bd859`
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire, nu la câteva zile.** Regula e
   scrisă aici fiindcă a fost încălcată de trei ori. Prima dată (22.08) versiunea veche conținea trei
   afirmații false. A doua oară (24→25.08) a rămas **38 de commituri** în urmă. A treia oară e **azi**:
@@ -27,7 +27,7 @@ four-way HEAD = `origin/main` = ramura de backup = procesul viu. *(Cifra de test
 rulând poarta, nu se crede pe cuvânt.)* Rămân artefacte **neurmărite** în `frontend_test/` din
 rulările vizuale; nu sunt modificări.
 
-**Unde suntem**: **E1, faza 1**. **Cifrele nu se scriu aici** — se derivă cu `scripts/raport_b.py`,
+**Unde suntem**: **E1, faza 1**. *(La `d0bd859` — cifrele de mai jos se re-derivă, nu se cred.)* **Cifrele nu se scriu aici** — se derivă cu `scripts/raport_b.py`,
 sursa secțiunii 6 a fiecărui raport. La `4926e15`: interdicții MĂSURATE 21 · PARȚIAL 16 ·
 NEMĂSURABILE 1 · NEÎNCEPUTE 38; restanțe deschise **32** (E1: **9**).
 
@@ -79,17 +79,17 @@ Ziua a avut trei jumătăți; astea sunt cele care contează pentru cine continu
    inventarul de trasee e o **hartă a codului**, nu o listă de verificare. E cel mai mare lucru rămas,
    și **nu e muncă de-a mea**. **Cadența, fixată 25.08: un lot pe tură** — eu dau lotul
    (`scan_trasee.py --loturi N`), el scrie verificările în fișier, apoi trec la următorul.
-   **Lotul 1 din 7 e predat** (30 de pași: T01 ×8, T06 ×4, T12 ×2, T14 ×16). Următorul de dat: **lotul 2**.
-2. **R33, jumătatea rămasă — DECIZIE, dar ÎNTREBAREA S-A SCHIMBAT (măsurat 25.08.2026).**
-   `echilibru_perioada` **nu** e a doua implementare a verificării legate (`verificatoare.verifica_balanta`,
-   `main.py:4634`). Rulate pe aceleași date, **modurile de eșec sunt disjuncte**: prima prinde linia cu o
-   parte lipsă și orfanii — pe care a doua îi ratează tăcut sau crapă; a doua prinde soldurile inițiale
-   dezechilibrate — pe care prima nu le citește deloc. **Deci nu se poate alege una fără să se șteargă o
-   verificare**, iar varianta (b) din comandă, aplicată literal, ar face exact asta. În plus, jumătatea
-   `BALANTA_INEGALA` a funcției legate e **tautologică** pe intrarea pe care i-o dă `main.py` (0 din 2000
-   de seturi aleatoare o pot face să pice). Cifrele și calibrarea: `CONFORMITATE.md`, R33.
-   **Nu se începe fără decizie** — iar decizia cerută acum e *unde se leagă* și *ce se face cu jumătatea
-   tautologică*, nu *care iese*.
+   **Lotul 1 e SCRIS în fișier** (30 de locuri completate, **162 rămase**). Următorul de dat: **lotul 2**.
+   **Rândul `*ce face:*` din lot distinge acum** ce e măsurat pe rută (`scrie …`) de ce e moștenit de
+   la modul (`poate atinge, prin modul (PLAFON, nemăsurat pe rută)`) — vezi **R53**. Lotul 1 a fost
+   dat cu formularea veche, care le amesteca.
+2. **R33 — ÎNCHISĂ pe jumătatea de prag 2 (26.08.2026, varianta b′′).** `echilibru_perioada` e legat
+   **lângă** `verificatoare.verifica_balanta`, ramura tautologică `BALANTA_INEGALA` e scoasă, iar cele
+   două se arată ca **un singur** „Echilibru". Din cele patru module nelegate mai rămâne **unul**:
+   `compensare` (`fisa_cont` are declarație scrisă). Detaliile: `CONFORMITATE.md`, R33.
+   **Ce a rămas deschis de aici: R54** — contul din corpul cererii e normalizat, dar **nu e confruntat
+   cu planul de conturi**. Decizie: se refuză, sau se semnalează? Atinge cele 12 câmpuri de cont în
+   text liber din ecranul de operațiuni. **E singura decizie care blochează acum.**
 3. **Cele 129 de rute care schimbă date fără verificare de rol.** Criteriul lui Costin e aplicat pe
    clasele numite (28 de rute în patru aplicări). Restul se triază pe **același** criteriu, iar cifra
    trebuie să devină clichet — azi nu e.
@@ -155,4 +155,8 @@ Măsurat 25.08, pe toate cele 17 firme:
   rămas nimic în urmă"**. Se compară sha256 înainte/după.
 - **Nu regenera `TRASEE_VERIFICARI.md`.** E singurul document scris de om.
 - **Nu curăța `__pycache__` doar la sfârșit.**
+- **Nu citi un `or "<implicit>"` ca pe o validare.** E o mască: transformă `None` și `""` în implicit
+  și lasă `"   "` să treacă verbatim. 19 situri, iar consecința era invizibilă în trei straturi deodată.
+- **Nu scrie o aserțiune pe un rând `poate atinge, prin modul`.** Acela e un plafon superior, nu o
+  măsurătoare pe rută: 108 din 192 de pași îl poartă (R53).
 - **Nu amâna rescrierea predării fiindcă ai raportat-o.** Vezi antetul.

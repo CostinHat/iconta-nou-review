@@ -142,6 +142,24 @@ ieftină formă de orbire: `test_datorie.py:144` afirma „nimic nu scrie în `s
 | **filtru ÎNVECHIT — nu produce zgomot, produce TĂCERE** | `scripts/trasee_tabele.json` fusese generat **înainte** ca tabela `artefacte_produse` să existe, deci filtrul care trebuia să scoată numele inventate tăia o tabelă **reală**. Consecința s-a propagat tăcut: **patru trasee** păreau că nu scriu nimic, **trei** rămâneau clasificate PARȚIAL — *„produce și nu se păstrează”* — o zi întreagă după ce persistența fusese construită. **Distincția față de celelalte forme din tabel:** un filtru prea larg produce **zgomot**, care se vede și se numără; unul învechit produce **absență**, iar absența arată exact ca un rezultat corect. Un instrument care se lărgește greșit se aude; unul care se îngustează greșit tace. **Consecința de metodă:** orice fișier generat pe care se sprijină un filtru poartă întrebarea *„mai vechi decât ce filtrează?”* — vechimea lui se compară cu lumea pe care o descrie, nu se presupune. |
 
 
+### Două forme de mascare, adăugate 26.08.2026
+
+**`or <implicit>` pe o intrare de la om nu e o gardă, e o MASCĂ.** `str(corp.get("cont_x") or "707")`
+citește ca „dacă lipsește, pune 707". Face și altceva: lasă **orice** valoare adevărată să treacă
+neatinsă, inclusiv `"   "`. Diferența nu se vede la citire, fiindcă ochiul completează „deci e
+validat". Instanța: 19 situri, iar consecința era invizibilă în trei straturi deodată — `NOT NULL`
+nu oprește spațiile, un `CHECK (cont <> '')` nu le-ar fi oprit, și nici verificarea de echilibru
+nu le vedea, fiindcă `if cont` e adevărat pe un șir de spații. **Regula: pe o valoare venită din
+afară, normalizarea și validarea sunt două operațiuni, iar `or` nu e niciuna.**
+
+**Un PLAFON SUPERIOR scris ca măsurătoare.** `scan_trasee` atribuia unei rute reuniunea tabelelor
+scrise **oriunde** în modulele pe care ruta le atinge. În text arăta identic cu SQL-ul măsurat pe
+rută: `scrie solduri_initiale (DELETE/INSERT)`. Măsurat: **108 din 192** de pași purtau doar
+atribuiri moștenite. Instanța care a scos-o la iveală n-a fost un instrument, ci **omul care scria
+verificările**: patru rute de `/incarca` cu docstring *„nu salvează"* apăreau ca scriind în tabele
+de date. **Regula: o supra-aproximare are voie să existe, dar trebuie să se NUMEASCĂ** — altfel cine
+o citește scrie o aserțiune pe ea. Forma: `poate atinge, prin modul (PLAFON, nemăsurat pe rută)`.
+
 ### Aducerea unui act e ea însăși o verificare
 
 **Un act incomplet în corpus nu se deosebește de un act care nu spune ce cauți.** Amândouă produc

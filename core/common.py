@@ -247,9 +247,20 @@ CODURI = {
     "TVA_COTA_GRESITA": (
         "TVA declarat {gasit} lei, dar baza {baza} × {cota_pct}% = {asteptat} lei. Diferență {diferenta} lei.",
         "Legea 141/2025 — cota standard TVA 21% din 01.08.2025"),
-    "BALANTA_INEGALA": (
-        "Balanță dezechilibrată: sume debitoare {debit} ≠ sume creditoare {credit}.",
-        "OMFP 1802/2014 — egalitatea balanței de verificare"),
+    # [R33 b′′, 26.08.2026] BALANTA_INEGALA a fost SCOASA. Nu era o verificare: era o
+    # tautologie. `verificatoare.balanta()` adauga ACEEASI suma pe rulaj_d[debit] si pe
+    # rulaj_c[credit], deci totalul debitor si cel creditor sunt egale PRIN CONSTRUCTIE pe
+    # intrarea pe care i-o da main._verificari_contabile. Masurat pe 2000 de seturi aleatoare
+    # (inclusiv cu conturi NULL si goale): 0 in care ar putea diferi. Egalitatea Sigma debit =
+    # Sigma credit se verifica acum unde se POATE rupe - pe liniile brute ale ledgerului, in
+    # core/echilibru_perioada.py, cu LEDGER_DEZECHILIBRAT de mai jos.
+    "LEDGER_DEZECHILIBRAT": (
+        "Partidă dublă ruptă pe {perioada}: Σ debit {debit} ≠ Σ credit {credit} "
+        "(diferență {diferenta} lei) — există linii cu o parte lipsă.",
+        "OMFP 1802/2014 — principiul partidei duble"),
+    "ORFANI_IN_LEDGER": (
+        "{numar} linie(i) contabile trimit la o înregistrare care nu există — referință ruptă.",
+        "OMFP 1802/2014 — înregistrările contabile se sprijină pe documente justificative"),
     "BALANTA_SI_DEZECHILIBRATA": (
         "Solduri inițiale dezechilibrate: diferența {diferenta_solduri} lei "
         "(SI debitoare ≠ SI creditoare) — verifică introducerea soldurilor.",

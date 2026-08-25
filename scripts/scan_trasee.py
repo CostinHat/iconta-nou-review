@@ -961,22 +961,35 @@ def pasii_ordonati():
         for r in per_traseu[t["id"]]:
             if r["metoda"].upper() not in ("POST", "PUT", "PATCH", "DELETE"):
                 continue
-            tabele = {tab: set(op) for tab, op in r.get("scrie_inline", {}).items()}
-            prin = []
+            # [26.08.2026] Cele doua feluri de scriere nu se mai amesteca intr-un singur „scrie".
+            # PROPRIU = SQL gasit in CORPUL rutei: masurat pe calea pe care ruta chiar o parcurge.
+            # MOSTENIT = reuniunea tabelelor scrise ORIUNDE in modulele pe care ruta le atinge:
+            # un PLAFON SUPERIOR, nu o masuratoare — alta functie din acelasi modul poate scrie
+            # acolo fara ca ruta asta s-o cheme. Masurat: din 192 de pasi, 65 au scrieri proprii,
+            # 108 doar mostenite, 19 niciuna. Instanta care a scos diferenta la iveala: cele patru
+            # rute de `/incarca`, cu docstring „nu salveaza", care chiar nu scriu nimic — dar
+            # aparau ca scriu `solduri_initiale`, `salariati`, `articole`, `miscari_stoc`.
+            # Cine scrie verificarea trebuie sa stie care e care: pe un plafon superior nu se
+            # poate scrie „dupa pas exista rand in X" ca aserttiune.
+            propriu = {tab: set(op) for tab, op in r.get("scrie_inline", {}).items()}
+            mostenit, prin = {}, []
             for m in r["module"]:
                 info = mod.get(m)
                 if not info or not info.get("scrie"):
                     continue
                 prin.append(m)
                 for tab, op in info["scrie"].items():
-                    tabele.setdefault(tab, set()).update(op)
-            scrie = " · ".join("%s (%s)" % (tab, "/".join(sorted(op)))
-                                 for tab, op in sorted(tabele.items()))
+                    if tab not in propriu:
+                        mostenit.setdefault(tab, set()).update(op)
+            _lista = lambda d: " · ".join("%s (%s)" % (tab, "/".join(sorted(op)))
+                                          for tab, op in sorted(d.items()))
             parti = []
             if r.get("doc"):
                 parti.append(r["doc"])
-            if scrie:
-                parti.append("scrie " + scrie)
+            if propriu:
+                parti.append("scrie " + _lista(propriu))
+            if mostenit:
+                parti.append("poate atinge, prin modul (PLAFON, nemasurat pe ruta): " + _lista(mostenit))
             if prin:
                 parti.append("prin " + ", ".join("`%s`" % m for m in prin))
             if not parti:

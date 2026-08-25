@@ -1,5 +1,5 @@
 {
- "ui_hash": "9a5328ca0cd67fae",
+ "ui_hash": "5842d554cf3d8c3a",
  "ecrane": {
   "import_mijloace_fixe": {
    "axe_desktop": [],
@@ -233,6 +233,25 @@
    "axe_desktop": [],
    "apasare": {
     "vazute": 11,
+    "apasate": 5,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
+  "verificari": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 7,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false

@@ -57,13 +57,13 @@ def pregateste_mf_plus(corp):
     if not data_pif:
         raise ValueError("Data punerii in functiune e obligatorie.")
     pif = data_pif if hasattr(data_pif, "year") else _date.fromisoformat(str(data_pif))
-    cont_imo = str(corp.get("cont_imobilizare") or "2131")
+    cont_imo = (str(corp.get("cont_imobilizare") or "").strip() or "2131")
     metoda = _d406a._norm_metoda(corp.get("metoda") or "liniara")
     _d406a._verifica_categorie({"cod": corp.get("cod"), "cont_imobilizare": cont_imo}, metoda, pif)
     return {"cod": corp.get("cod") or "MF-PLUS",
             "denumire": (corp.get("denumire") or corp.get("descriere") or "Mijloc fix (plus inventar)")[:200],
             "cont_imobilizare": cont_imo,
-            "cont_amortizare": str(corp.get("cont_amortizare") or "2813"),
+            "cont_amortizare": (str(corp.get("cont_amortizare") or "").strip() or "2813"),
             "valoare": v, "rezidual": _d(corp.get("rezidual") or 0),
             "dnf_luni": dnf, "data_pif": pif, "metoda": metoda}
 

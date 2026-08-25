@@ -2072,3 +2072,19 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   (clichet 0 pași fără efect derivabil); loturile acoperă toți pașii, fără suprapuneri; fișierul de
   tabele cunoscute **nu îmbătrânește** — instanța: `artefacte_produse` lipsea din el, iar filtrul
   tăia o tabelă reală, ținând trei trasee clasificate PARȚIAL după ce persistența fusese construită.
+
+- **`core/test_echilibru_legat.py` (26.08.2026)** — 14 teste, R33 varianta b′′: codul tautologic
+  `BALANTA_INEGALA` nu mai există în registru · **proba prin construcție că ramura scoasă chiar era
+  tautologică** (2000 de seturi, 0 divergențe — dacă ar pica, decizia de a o scoate era greșită) ·
+  ce a rămas din `verifica_balanta` **chiar poate deveni roșu** · cele cinci moduri de eșec ajung în
+  verdict (linie cu cont NULL / gol / **din spații** · orfan · solduri inițiale) · cele două chiar
+  sunt **disjuncte**, măsurat, nu declarat · `neverificat` nu se rotunjește la „în regulă" ·
+  constatările poartă **cifre**, nu fraze · anti-vacuu pe domeniu.
+  RED-proof: **5 mutații**, fiecare pe testul așteptat, fișierele restaurate identic.
+- **`core/test_cont_din_corp_normalizat.py` (26.08.2026)** — 3 teste, R54: orice cont citit din
+  corpul cererii trece prin `strip()`, asertat pe **AST** (strămoș `.strip()` care conține nodul),
+  nu pe text · calibrare pozitivă pe propriul mod de eșec (sonda deosebește normalizat de
+  nenormalizat) · PIN gol. Anti-vacuu: sub 15 citiri găsite = sonda s-a rupt, nu codul s-a curățat.
+  RED-proof: un sit repus în forma mascată → roșu, numind fișierul și linia.
+- **`core/test_module_nelegate.py` — PIN scade la 5** (26.08.2026): `echilibru_perioada` iese,
+  fiindcă s-a legat. Clichetul e bidirecțional, deci ieșirea din pin e cerută, nu opțională.

@@ -60,13 +60,26 @@ def balanta(note, solduri_initiale=None):
 
 
 def verifica_balanta(bal):
-    """Egalitatea balanței: total sume debitoare = total sume creditoare. BLOCANT."""
+    """Închiderea SOLDURILOR pe balanță: Σ solduri = 0 (SI debitoare = SI creditoare). BLOCANT.
+
+    [R33 varianta b′′, decizia lui Costin 26.08.2026] Funcția avea, până azi, DOUĂ ramuri.
+    Prima — `total debit != total credit` — a fost SCOASĂ, cu motivul măsurat: era
+    **tautologică pe intrarea reală**. `balanta()` de mai sus adaugă aceeași sumă `s` atât pe
+    `rulaj_d[debit]` cât și pe `rulaj_c[credit]`, deci cele două totaluri sunt egale PRIN
+    CONSTRUCȚIE. Măsurat 25.08.2026 pe 2000 de seturi aleatoare (inclusiv cu conturi NULL și
+    goale): **0** în care ar fi putut diferi. O ramură care nu poate deveni roșie e mai rea
+    decât o verificare absentă — absența se vede, tautologia **raportează**.
+
+    Egalitatea Σ debit = Σ credit NU s-a pierdut: se verifică acolo unde se poate rupe, pe
+    liniile BRUTE ale ledgerului — `core/echilibru_perioada.echilibru_perioada`. Cele două nu
+    sunt implementații rivale: modurile lor de eșec sunt disjuncte (CONFORMITATE.md, R33).
+
+    Ce rămâne aici e singura ramură care POATE pica: soldurile inițiale, care intră în
+    `balanta()` din afară (`solduri_initiale`) și deci nu sunt egale prin construcție.
+    Non-tautologia ei e păzită mecanic de `core/test_echilibru_legat.py`.
+    """
     td = sum((v["debit"] for v in bal.values()), Decimal(0))
     tc = sum((v["credit"] for v in bal.values()), Decimal(0))
-    if _q(td) != _q(tc):
-        return c.problema("BALANTA_INEGALA", nivel=c.BLOCANT,
-                          debit=_q(td), credit=_q(tc))
-    # echilibru_si_v1: si soldurile trebuie sa se inchida (SI debitor = SI creditor)
     ts = sum((v["sold"] for v in bal.values()), Decimal(0))
     if _q(ts) != 0:
         return c.problema("BALANTA_SI_DEZECHILIBRATA", nivel=c.BLOCANT,

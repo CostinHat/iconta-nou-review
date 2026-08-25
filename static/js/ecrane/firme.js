@@ -435,7 +435,7 @@ async function randeazaSolicitariCabinet(corp, nav, t) {
 // cardul din fisa). Citit ca TEXT de verificator_conformitate.py (paritate de randare, al doilea consumator), nu
 // la runtime. Randare noua NU se adauga aici — doar declaratia; cross-check-urile raman exclusiv in verdict.
 const VC_VERIFICARI = {
-  echilibru:             "randat — Echilibru balanță",
+  echilibru:             "randat — Echilibru (partidă dublă pe perioadă + orfani + solduri inițiale), prin randEchilibru",
   trezorerie:            "randat — Trezorerie (solduri creditoare)",
   documente_pozate:      "randat — Documente pozate de clienți",
   tva:                   "randat — TVA (rezultat + sold)",
@@ -445,6 +445,41 @@ const VC_VERIFICARI = {
   d390_incrucisat:       "IGNORAT — idem (operațiuni intracomunitare D390 vs evidență)",
   cota_tva_conformitate: "IGNORAT — idem (cotă TVA facturi emise vs perioadă)",
 };
+// [R33 varianta b\u2032\u2032, 26.08.2026] «Echilibru» e UN rand pe ecran, dar DOUA verificari in spate,
+// cu moduri de esec DISJUNCTE (partida dubla pe liniile perioadei + orfani; inchiderea soldurilor
+// initiale). Costin: *"cele doua se arata ca una singura, cu ce a gasit fiecare. Contabilul nu
+// trebuie sa stie ca sunt doua module."* Randorul NU decide nimic: primeste `constatari` ca OBIECTE
+// cu cifre (DS cap.13) si le pune in cuvinte. Textul se DERIVA din `fel`, nu se alege aici (P13).
+// De ce nu merge prin `rand()` generic: acela citeste `.cod`, iar verdictul compus n-are un singur
+// cod \u2014 are o lista. Trecut prin `rand()`, un verdict ROSU fara `.cod` ar fi iesit VERDE.
+function detaliuEchilibru(x) {
+  if (x.fel === "ledger_dezechilibrat")
+    return `partid\u0103 dubl\u0103 rupt\u0103: \u03a3 debit ${bani(x.sigma_debit)} vs \u03a3 credit ${bani(x.sigma_credit)} (diferen\u021b\u0103 ${bani(x.diferenta)} lei)`;
+  if (x.fel === "orfani")
+    return `${x.numar} linie(i) trimit la o \u00eenregistrare care nu exist\u0103`;
+  if (x.fel === "solduri_dezechilibrate")
+    return `solduri ini\u021biale: diferen\u021b\u0103 ${bani(x.diferenta_solduri)} lei`;
+  if (x.fel === "neverificat")
+    return `nu am putut verifica ${esc(x.ce || "")}${x.motiv ? " \u2014 " + esc(x.motiv) : ""}`;
+  return esc(x.fel || "");
+}
+function randEchilibru(e) {
+  if (!e) return "";
+  const c = e.constatari || [];
+  const necunoscut = c.some((x) => x.fel === "neverificat");
+  const detaliu = e.ok ? "\u00een regul\u0103" : c.map(detaliuEchilibru).join(" \u00b7 ");
+  // gri pentru necunoscut, rosu pentru problema gasita: necunoscutul NU se randeaza ca defect,
+  // dar nici ca "in regula" (P6 \u2014 necunoscut domina favorabil, problema domina necunoscutul).
+  const clasa = e.ok ? "pct-verde" : (necunoscut && !c.some((x) => x.fel !== "neverificat") ? "pct-info" : "pct-rosu");
+  return `<div class="pf-frand">
+        <div class="pf-frand-text">
+          <div class="pf-frand-nume">Echilibru</div>
+          <div class="pf-frand-sub">${detaliu}</div>
+        </div>
+        <span class="cab-pct ${clasa}"></span>
+      </div>`;
+}
+
 async function ecranVerificari(corp, nav, t) {
   const azi = new Date();
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
@@ -473,7 +508,7 @@ async function ecranVerificari(corp, nav, t) {
         <button class="buton-secundar" id="vf-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="vf-next">luna \u2192</button></p>
       <div class="pf-lista">
-        ${r ? rand("Echilibru balan\u021b\u0103", r.echilibru) : ""}
+        ${r ? randEchilibru(r.echilibru) : ""}
         ${r ? rand("Trezorerie (f\u0103r\u0103 solduri creditoare)", r.trezorerie) : ""}
         ${r && r.documente_pozate ? `<div class="pf-frand"><div class="pf-frand-text">
           <div class="pf-frand-nume">Documente pozate de clien\u021bi</div>

@@ -59,7 +59,7 @@ def intrare(conn, schema, corp):
             cur.execute(f"""INSERT INTO {schema}.articole (denumire, um, cont_stoc, cont_cheltuiala)
                             VALUES (%s,%s,%s,%s) RETURNING id""",
                         (corp["denumire"], corp.get("um", "buc"),
-                         corp.get("cont_stoc", "371"), corp.get("cont_cheltuiala", "607")))
+                         (str(corp.get("cont_stoc") or "").strip() or "371"), (str(corp.get("cont_cheltuiala") or "").strip() or "607")))
             aid = cur.fetchone()["id"]
         cant = Decimal(str(corp["cantitate"]))
         pret = Decimal(str(corp["pret_unitar"]))

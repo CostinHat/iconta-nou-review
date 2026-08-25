@@ -5267,3 +5267,31 @@ aia e o măsurătoare, nu o alegere."* S-au rulat. Diferă, și diferă în felu
 
 Măsurătoarea, tabelul de calibrare și ce nu vede: `CONFORMITATE.md`, R33.
 
+### 26.08.2026 — R33 varianta b′′ aplicată, și cele două lucruri găsite legând-o
+
+Costin a ales **b′′**: se leagă `echilibru_perioada` **lângă** cea existentă, iar din
+`verifica_balanta` se scoate ramura tautologică. Motivul lui, scris: *„o ramură care nu poate pica e
+mai rea decât o verificare absentă: absența se vede, tautologia raportează."*
+
+- **Aplicat**: modulul e legat din `main._verificari_contabile`; `BALANTA_INEGALA` e scos și din
+  ramură, și din `common.CODURI`; cele două se compun într-un singur verdict `echilibru`, **la
+  construcție**; ecranul arată **un rând** cu ce a găsit fiecare. Gardă: `test_echilibru_legat.py`,
+  14 teste, 5 mutații.
+- **GĂSIT LEGÂND-O, și nu era în decizie: orbirea la contul format din SPAȚII.** `if l.get("cont_debit")`
+  e adevărat pe `"   "`, deci un cont alb numara drept prezent. Măsurat: **19 situri** scriau contul
+  cu `str(corp.get("cont_x") or "<implicit>")`, fără `strip()`. Probat pe schemă efemeră: nici
+  `NOT NULL`, nici un `CHECK` pe șirul gol, nici vreuna dintre cele două verificări nu-l vedeau.
+- **Și de aici a ieșit că întrebarea lui Costin despre CHECK era corect pusă.** El a cerut: *„întâi
+  cele 52 de situri: câte pot produce șir gol? Dacă niciunul, CHECK-ul e o centură pe o gaură
+  teoretică."* Măsurat: **niciunul** nu poate produce șirul gol — fiecare cale ori îl refuză, ori îl
+  convertește în implicit. Deci CHECK-ul pe `''` ar fi fost exact centura aceea. Ce **era** atingibil
+  e spațiul alb, pe care CHECK-ul acela nu l-ar fi prins. **Măsurătoarea a decis singură, și a decis
+  altceva decât ambele variante puse pe masă.**
+- **A treia constatare, din lotul 1: inventarul de trasee supra-atribuie scrieri.** Costin a observat
+  că patru rute de `/incarca` apar ca scriind în tabele de date deși spun *„nu salvează"*. Citite
+  toate patru: **previzualizarea nu salvează — inventarul era inexact.** Și nu e al celor patru:
+  **108 din 192** de pași moștenesc de la modul, nu măsoară pe rută. Rândul din lot le distinge acum.
+- **Lista 3 are prima cifră:** categoria de mărime **nu există nicăieri în cod** (zero potriviri pe
+  `.py` și `.js`), deci `s1005-valideaza` și `s1003-valideaza` produc un artefact fără să poată ști
+  dacă e cel datorat. 2 artefacte × 17 firme.
+- **Lotul 1 e scris în `TRASEE_VERIFICARI.md`**: 30 de locuri completate, 162 rămase.

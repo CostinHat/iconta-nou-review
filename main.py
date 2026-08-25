@@ -4595,6 +4595,25 @@ def _verificari_contabile(schema, an, luna):
         cur.execute(f"SELECT cont, SUM(sold_debitor) - SUM(sold_creditor) FROM {schema}.solduri_initiale GROUP BY cont")
         si = {r[0]: r[1] for r in cur.fetchall()}
     bal = _vf.balanta(note, si)
+    # [R33 varianta b'', 26.08.2026] ECHILIBRUL E UN VERDICT COMPUS DIN DOUA VERIFICARI.
+    # Pana azi aici rula doar `verifica_balanta`, iar `core/echilibru_perioada` -- scris, testat,
+    # cu garda proprie -- nu era chemat de nimeni. Se credea ca e "a doua implementare a aceleiasi
+    # verificari"; masurat pe aceleasi date (25.08.2026), modurile de esec sunt DISJUNCTE:
+    #   echilibru_perioada -> linia cu o parte lipsa (NULL, gol sau numai spatii) si orfanul;
+    #   verifica_balanta   -> soldurile initiale care nu se inchid.
+    # Fiecare o rateaza pe cealalta, deci a alege una ar fi STERS o verificare (CONFORMITATE R33).
+    # Cele doua se compun intr-un SINGUR verdict `echilibru` -- contabilul nu trebuie sa stie ca
+    # sunt doua module -- iar compunerea se face LA CONSTRUCTIE, in verdict_echilibru (pur).
+    # LIMITA DECLARATA: felia de ledger e LUNA curenta si doar notele `validata` (domeniul
+    # modulului); o ciorna cu contul rupt se vede abia dupa validare, cand devine evidenta.
+    from core import echilibru_perioada as _ep
+    try:
+        with db.get_conn() as _cl:
+            _ledger = _ep.echilibru_perioada_db(_cl, schema, an, luna)
+    except Exception as _e:
+        # verificare RUPTA, nu date curate: verdict_echilibru o trece la `neverificat`, deci
+        # verdele nu se poate afirma peste ea (P6).
+        _ledger = {"eroare": "%s: %s" % (type(_e).__name__, _e)}
     # [control_incrucisat_v1 + F163_ui] punti declaratie <-> contabilitate/evidenta (D-vs-contabilitate):
     #   D300 vs 4427/4426 · D112 (salarii) vs 444/4315/4316/436 · D390 (bunuri IC) vs evidenta validata.
     # Motoare SEPARATE (core/control_incrucisat), doar EXPUSE aici - aceeasi anatomie (trei stari + temei +
@@ -4631,7 +4650,8 @@ def _verificari_contabile(schema, an, luna):
         "d112_incrucisat": d112_incr,
         "d390_incrucisat": d390_incr,
         "cota_tva_conformitate": cota_tva_incr,
-        "echilibru": _vf.verifica_balanta(bal),
+        "echilibru": _ep.verdict_echilibru(_ledger, _vf.verifica_balanta(bal),
+                                           "%04d-%02d" % (an, luna)),
         "trezorerie": _vf.verifica_trezorerie(bal),
         "tva": _vf.coerenta_tva(bal.get("4427", {}).get("credit", 0), bal.get("4426", {}).get("debit", 0)),
         "note": len(note),
@@ -8079,11 +8099,11 @@ def vanzare_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
         try:
             if corp.get("tip") == "servicii":
                 ok, ment = _ic.valideaza_prestare_ic(corp["cod_tva_client"], v["valid"])
-                cont_venit = str(corp.get("cont_venit") or "704")
+                cont_venit = (str(corp.get("cont_venit") or "").strip() or "704")
             else:
                 ok, ment = _ic.valideaza_lic(corp["cod_tva_client"], v["valid"],
                                              bool(corp.get("dovada_transport")))
-                cont_venit = str(corp.get("cont_venit") or "707")
+                cont_venit = (str(corp.get("cont_venit") or "").strip() or "707")
             val = Decimal(str(corp["valoare"]))
             if val <= 0:
                 raise ValueError("valoare invalidă")
@@ -8178,7 +8198,7 @@ def export_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
                 raise ValueError("valoare invalidă")
         except (ValueError, KeyError) as e:
             raise HTTPException(422, str(e))
-        cont_venit = str(corp.get("cont_venit") or "707")
+        cont_venit = (str(corp.get("cont_venit") or "").strip() or "707")
         descr = (corp.get("descriere") or "Export") + f" ({corp['tara_client']}) - " + ment
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
@@ -8276,8 +8296,8 @@ def decontare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_ca
             data = _date.fromisoformat(corp["data"])
             curs_dec, _dcurs, _sursa = _cb.curs_pentru(conn, corp.get("moneda", "EUR"), data)
             r = _dc.nota_decontare(corp["valoare_valuta"], corp["curs_evidenta"],
-                                   curs_dec, corp["tip"], str(corp["cont_tert"]),
-                                   str(corp.get("cont_banca") or "5124"))
+                                   curs_dec, corp["tip"], str(corp["cont_tert"]).strip(),
+                                   (str(corp.get("cont_banca") or "").strip() or "5124"))
         except (ValueError, KeyError) as e:
             raise HTTPException(422, str(e))
         d = r["diferenta"]
@@ -8369,7 +8389,7 @@ def nota_leasing(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabine
             if tip == "primire":
                 r = _ls.nota_primire_financiar(corp["valoare_capital"],
                                                corp.get("dobanda_totala", 0),
-                                               str(corp.get("cont_imobilizare") or "2133"))
+                                               (str(corp.get("cont_imobilizare") or "").strip() or "2133"))
                 d0 = "Primire bun leasing financiar (2133=167 + D8051 dobanda)"
             elif tip == "rata":
                 r = _ls.nota_rata_financiar(corp["capital"], corp.get("dobanda", 0),
@@ -8380,7 +8400,7 @@ def nota_leasing(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabine
                 d0 = "Valoare reziduala leasing (167=404, inchide 167)"
             elif tip == "operational":
                 r = _ls.nota_rata_operational(corp["chirie"], _common.cota_ceruta(corp),
-                                              str(corp.get("cont_cheltuiala") or "612"))
+                                              (str(corp.get("cont_cheltuiala") or "").strip() or "612"))
                 d0 = "Rata leasing operational (612=401)"
             else:
                 raise ValueError("tip: primire|rata|reziduala|operational")
@@ -8672,7 +8692,7 @@ def nota_provizion_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
                 info = {"deductibil": r["deductibil"]}
                 d0 = f"Provizion {corp.get('tip','garantii')} ({act})" +                      ("" if r["deductibil"] else " - NEDEDUCTIBIL fiscal")
             elif fel == "stoc":
-                r = _pv.nota_ajustare_stoc(corp["suma"], corp.get("cont_ajustare", "397"), act)
+                r = _pv.nota_ajustare_stoc(corp["suma"], (str(corp.get("cont_ajustare") or "").strip() or "397"), act)
                 info = {"deductibil": False}
                 d0 = f"Ajustare depreciere stocuri ({act}) - nedeductibil fiscal"
             else:
@@ -8889,7 +8909,7 @@ def nota_subventie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
         try:
             if fel == "exploatare":
                 r = _sb.nota_subventie_exploatare(corp["suma"], corp.get("moment", "drept"),
-                                                  corp.get("cont_venit", "741"))
+                                                  (str(corp.get("cont_venit") or "").strip() or "741"))
                 d0 = f"Subventie exploatare ({corp.get('moment','drept')})"
             elif fel == "investitii":
                 r = _sb.nota_subventie_investitii(corp["suma"], corp.get("moment", "drept"))
@@ -9136,7 +9156,7 @@ def nota_perisabilitati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere
         try:
             r = _pe.calcul(corp["valoare_intrari"], corp["procent_limita"],
                            corp["pierdere_constatata"], _common.cota_ceruta(corp),
-                           str(corp.get("cont_stoc") or "371"),
+                           (str(corp.get("cont_stoc") or "").strip() or "371"),
                            bool(corp.get("degradare_dovedita_distrusa")))
         except (ValueError, KeyError) as e:
             raise HTTPException(422, str(e))
@@ -9254,7 +9274,7 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
         mf_id = None
         try:
             if op == "plus":
-                r = _iv.nota_plus(corp["valoare"], str(corp.get("cont_stoc") or "371"))
+                r = _iv.nota_plus(corp["valoare"], (str(corp.get("cont_stoc") or "").strip() or "371"))
                 d0 = "Plus la inventar stocuri"
             elif op == "plus_mf":
                 # [ruptura mijloc-fix post-migrare 14.08.2026] valideaza (art.28 alin.5/8^1) SI inscrie
@@ -9263,7 +9283,7 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
                 r = _iv.nota_plus_mf(corp["valoare"], mf_reg["cont_imobilizare"])
                 d0 = "Plus la inventar mijloace fixe (21x=4754)"
             elif op == "minus":
-                r = _iv.nota_minus(corp["valoare"], str(corp.get("cont_stoc") or "371"),
+                r = _iv.nota_minus(corp["valoare"], (str(corp.get("cont_stoc") or "").strip() or "371"),
                                    bool(corp.get("imputabil")),
                                    corp.get("valoare_imputare"),
                                    corp.get("vinovat", "salariat"),
@@ -9293,8 +9313,8 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
                 else:
                     r = _iv.nota_casare_mf(corp["valoare_bruta"],
                                            corp["amortizare_cumulata"],
-                                           str(corp.get("cont_imobilizare") or "2131"),
-                                           str(corp.get("cont_amortizare") or "2813"))
+                                           (str(corp.get("cont_imobilizare") or "").strip() or "2131"),
+                                           (str(corp.get("cont_amortizare") or "").strip() or "2813"))
                     d0 = "Casare mijloc fix (PV comisie)"
             else:
                 raise ValueError("operatie: plus|plus_mf|minus|casare")
@@ -9348,8 +9368,8 @@ def nota_lichidare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
             if op == "vanzare_activ":
                 r = _li.nota_vanzare_activ(corp["pret"], corp["valoare_bruta"],
                                            corp["amortizare_cumulata"],
-                                           str(corp.get("cont_imobilizare") or "2131"),
-                                           str(corp.get("cont_amortizare") or "2813"),
+                                           (str(corp.get("cont_imobilizare") or "").strip() or "2131"),
+                                           (str(corp.get("cont_amortizare") or "").strip() or "2813"),
                                            _common.cota_ceruta(corp))
                 d0 = "Lichidare: valorificare activ (7583 + descarcare)"
             elif op == "partaj":

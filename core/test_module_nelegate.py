@@ -31,9 +31,6 @@ PIN = {
         "legitim e gardul core/test_nomenclator_pe_norma.py (aceeasi clasa cu scan_garzi_pe_text)",
     "core/compensare.py":
         "PRODUCTIE, nelegat — 5 functii publice, inclusiv pull(conn, schema) si propune_compensari()",
-    "core/echilibru_perioada.py":
-        "PRODUCTIE, nelegat — SI are o a doua implementare LEGATA: main.py:4389 cheama "
-        "verificatoare.verifica_balanta pentru «echilibru». Logica paralela, nu doar cod nelegat",
     "core/fisa_cont.py":
         "PRODUCATOR FARA LIVRARE, declarat (METODA §20) — Fisa de cont 14-6-22, care inlocuieste "
         "Cartea mare 14-1-3; zero rute si zero ecrane, spus in ISTORIC 23.08.2026 (3): «artefactul "

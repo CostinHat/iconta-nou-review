@@ -29,7 +29,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
 
-- [ ] 
+- [x] declarația intră în coadă **numai cu verdict de validare păstrat** — altfel ruta refuză și spune de ce
+- rândul din coadă poartă: tip, perioadă, firmă, cine a pregătit, momentul
+- nu se creează rând în `declaratii_depuse` la intrarea în coadă — depunerea nu s-a întâmplat
 
 ### `POST /coada/{coada_id}/aproba`
 
@@ -37,7 +39,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
 
-- [ ] 
+- [x] cine aprobă e consemnat, și e diferit de cine a pregătit dacă patru ochi e activ **și** posibil
+- dacă patru ochi e activ și imposibil (un singur validator), ruta refuză cu motivul, nu tace
+- starea trece în „aprobată", nu direct în „depusă"
 
 ### `POST /coada/{coada_id}/depune`
 
@@ -45,7 +49,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
 
-- [ ] 
+- [x] ruta refuză o declarație fără verdict de validare păstrat, sau cu verdict pe altă amprentă decât fișierul curent
+- se scrie în `declaratii_depuse`: tip, perioadă, momentul, autorul autorizării, amprenta fișierului, indexul de la autoritate dacă există
+- dacă indexul lipsește, starea nu e „confirmată" — e „nelămurită", conform P19
+- declarația iese din coadă numai după ce rândul de depunere există
 
 ### `POST /coada/{coada_id}/respinge`
 
@@ -53,7 +60,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
 
-- [ ] 
+- [x] respingerea poartă **motivul**, obligatoriu
+- declarația nu dispare din coadă — rămâne, cu starea „respinsă" și motivul vizibil
+- cine a pregătit vede respingerea; nu se stinge prin ignorare
 
 ### `POST /declaratii/{tip}`
 
@@ -61,7 +70,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: intoarce {avertismente, note_rezultat, operatiuni, tip, xml}*
 
-- [ ] 
+- [x] fiecare operațiune din evidență care ar trebui să apară în declarație, apare — absența nu e vizibilă în structură
+- `operatiuni` conține și cele excluse, cu motivul și temeiul excluderii, nu doar cele incluse
+- `avertismente` e gol înseamnă „nimic de semnalat", nu „n-am verificat"
+- două generări succesive pe aceleași date produc același XML — altfel amprenta din verdict nu poate fi de încredere
 
 ### `POST /declaratii/{tip}/valideaza`
 
@@ -69,7 +81,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Genereaza declaratia si o trece prin validatorul OFICIAL ANAF (DUKIntegrator)*
 
-- [ ] 
+- [x] verdictul se **păstrează**, cu momentul, versiunea validatorului și **amprenta fișierului validat**
+- un verdict pe un XML regenerat între timp nu mai e verdict — dacă amprenta diferă, se marchează stătut
+- respingerea validatorului e o stare a documentului, nu o eroare a aplicației: se păstrează cu ce a spus validatorul
 
 ### `POST /tenants/{tenant_id}/istoric-declaratii-import`
 
@@ -77,7 +91,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie declaratii_depuse (DELETE/INSERT) — prin `istoric_declaratii_import_api`*
 
-- [ ] 
+- [x] același conținut ca la pasul de încărcare — ce s-a văzut la previzualizare e ce s-a salvat
+- o a doua rulare cu același fișier nu dublează rândurile
 
 ### `POST /tenants/{tenant_id}/istoric-declaratii-import/incarca`
 
@@ -85,7 +100,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie declaratii_depuse (DELETE/INSERT) · migrare_status (INSERT) — prin `istoric_declaratii_import_api`, `migrare_api`*
 
-- [ ] 
+- [x] fiecare declarație din fișier are un rând în `declaratii_depuse`, cu tip, perioadă și dată de depunere
+- numărul de rânduri scrise = numărul de declarații din fișier, minus cele respinse, iar respinsele sunt numite
+- un `DELETE/INSERT` nu lasă în urmă rânduri din import-ul anterior care nu mai sunt în fișier — sau, dacă le lasă, se spune care
+- `migrare_status` marchează stratul ca parcurs, cu momentul
 
 ## T02 — Factura emisă — creare, contabilizare, ieșiri
 
@@ -483,7 +501,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Respinge o factura primita: status=respinsa + motiv — scrie efactura_primite (UPDATE)*
 
-- [ ] 
+- [x] respingerea poartă motivul, obligatoriu
+- ciorna rămâne, cu starea „respinsă" — nu se șterge; e o urmă a ceea ce a sosit
 
 ### `POST /tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza`
 
@@ -491,7 +510,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) + leaga factura_id + status=validata — scrie efactura_primite (UPDATE) · facturi (UPDATE)*
 
-- [ ] 
+- [x] cine validează e consemnat, și e diferit de cine a importat dacă patru ochi e activ și posibil
+- factura creată poartă legătura către ciorna din care a ieșit — lanțul nu se rupe
+- valorile confirmate nu mai poartă „grad de certitudine": confirmarea e explicită și consemnată
+- dacă a ieșit și o cheltuială, aceasta e legată de factură, nu independentă
 
 ### `POST /tenants/{tenant_id}/facturi/{factura_id}/trimite-spv`
 
@@ -499,7 +521,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Trimite o factura emisa in SPV (F126/F160) — scrie efactura_trimiteri (INSERT/UPDATE) — prin `efactura_send`*
 
-- [ ] 
+- [x] rândul poartă starea explicită: în curs / confirmată / respinsă / **nelămurită**
+- fără identificator de la autoritate, starea nu e „confirmată"
+- o a doua apăsare pe aceeași factură nu produce o a doua trimitere fără avertisment — dublarea la autoritate nu se repară
 
 ### `POST /tenants/{tenant_id}/import-efactura`
 
@@ -507,7 +531,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Upload XML/ZIP e-Factura*
 
-- [ ] 
+- [x] fiecare factură din fișier ajunge în `efactura_primite` ca **ciornă**, nu ca factură validată
+- valorile preluate poartă **sursa** (e-Factura) și **gradul de certitudine** — nimic nu devine fapt fără confirmare
+- ce nu s-a putut citi din XML se numește, nu se ghicește: data, cota, partenerul
+- un fișier importat de două ori nu creează ciorne duplicate
 
 ## T07 — Extrasul bancar și potrivirea
 
@@ -655,7 +682,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie artefacte_produse (INSERT) — prin `artefacte`*
 
-- [ ] 
+- [x] aceleași ca mai sus
+- **plus:** un artefact produs pe regimul greșit e conform ca formă și fals ca fond. Ruta refuză, sau spune că nu poate verifica regimul
 
 ### `POST /tenants/{tenant_id}/s1005-valideaza`
 
@@ -663,7 +691,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie artefacte_produse (INSERT) — prin `artefacte`*
 
-- [ ] 
+- [x] artefactul se păstrează cu: conținutul, momentul, autorul, amprenta, numărul exemplarului
+- verdictul validării se păstrează cu artefactul, nu separat
+- **verificare de fond:** situațiile financiare cerute depind de categoria de mărime a firmei. Dacă aceasta nu există ca dimensiune, ruta nu poate ști ce datorează firma — se declară, nu se presupune
 
 ## T13 — Trecerea de regim fiscal
 
@@ -723,7 +753,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Primește un CSV/XLSX, extrage CUI-urile și le validează la ANAF.*
 
-- [ ] 
+- [x] numărul de CUI-uri extrase = numărul de rânduri din fișier, minus cele nevalide, iar nevalidele sunt numite cu rândul lor
+- un CUI care nu trece cifra de control se semnalează la extragere, nu la interogare
 
 ### `POST /migrare/importa`
 
@@ -731,7 +762,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Creează câte un tenant pentru fiecare firmă selectată — scrie firma_profil (INSERT/UPDATE) · migrare_status (INSERT) · tenants (INSERT/UPDATE) · user_tenants (INSERT) — prin `migrare_api`, `tenant_provisioning`*
 
-- [ ] 
+- [x] fiecare firmă selectată primește **schemă proprie**, iar `tenants` are rândul ei — o firmă fără schemă e o afirmație falsă despre lume
+- `user_tenants` leagă firma de cabinetul care a importat-o
+- o firmă importată de două ori nu creează două scheme
+- dacă crearea schemei eșuează, rândul din `tenants` nu rămâne — sau, dacă rămâne, e marcat incomplet
 
 ### `POST /migrare/incarca`
 
@@ -739,7 +773,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Primește un fișier (.csv/.xlsx), extrage CUI-urile și le validează la ANAF.*
 
-- [ ] 
+- [x] ce se vede la previzualizare e ce se importă la pasul următor — aceleași reguli, același rezultat
 
 ### `POST /migrare/status`
 
@@ -747,7 +781,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Marchează un strat 'gata' sau 'in_lucru' (cu notă obligatorie la in_lucru). — scrie migrare_status (INSERT) — prin `migrare_api`*
 
-- [ ] 
+- [x] trecerea în „in_lucru" cere notă, cum spune ruta — verifică că o refuză fără ea
+- starea poartă cine a marcat-o și când
 
 ### `POST /migrare/valideaza`
 
@@ -755,7 +790,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Verifică o listă de CUI-uri la ANAF; întoarce denumirea + status.*
 
-- [ ] 
+- [x] fiecare CUI primește un răspuns explicit: găsit / negăsit / **nu s-a putut verifica**
+- „nu s-a putut verifica" nu se convertește în „negăsit" — sunt stări diferite
+- răspunsul de la ANAF se păstrează cu momentul, altfel se reinterogează la fiecare pas
 
 ### `POST /tenants/{tenant_id}/articole-import`
 
@@ -771,7 +808,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie articole (INSERT) · miscari_stoc (INSERT) — prin `articole_import_api`*
 
-- [ ] 
+- [x] **previzualizarea scrie în stoc?** Dacă `articole` și `miscari_stoc` se scriu la încărcare, nu e previzualizare — e import. Verifică și spune care e
+- articolele cu cod duplicat în fișier se semnalează, nu se suprascriu între ele
 
 ### `POST /tenants/{tenant_id}/asociati-import`
 
@@ -779,7 +817,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie asociati (DELETE/INSERT) — prin `asociati_import_api`*
 
-- [ ] 
+- [x] `DELETE/INSERT` — verifică ce se întâmplă cu asociații care nu mai sunt în fișier: se șterg, iar aia e o schimbare de structură a firmei, nu un import
 
 ### `POST /tenants/{tenant_id}/asociati-import/incarca`
 
@@ -787,7 +825,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie asociati (DELETE/INSERT) · migrare_status (INSERT) — prin `asociati_import_api`, `migrare_api`*
 
-- [ ] 
+- [x] previzualizarea nu salvează
+- suma procentelor de participare = 100, sau se semnalează
 
 ### `POST /tenants/{tenant_id}/mijloace-fixe-import`
 
@@ -811,7 +850,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Salveaza soldurile partenerilor unei firme (inlocuieste ce era). — scrie solduri_parteneri (DELETE/INSERT) — prin `solduri_parteneri_api`*
 
-- [ ] 
+- [x] ce s-a văzut la previzualizare e ce s-a salvat
+- divergența față de balanță, dacă a existat, rămâne vizibilă după salvare — nu se stinge prin acceptare
 
 ### `POST /tenants/{tenant_id}/parteneri/incarca`
 
@@ -819,7 +859,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Parseaza fisierul de parteneri si intoarce preview + verificare coerenta vs balanta. — scrie migrare_status (INSERT) · solduri_parteneri (DELETE/INSERT) — prin `migrare_api`, `solduri_parteneri_api`*
 
-- [ ] 
+- [x] verificarea de coerență față de balanță: suma soldurilor partenerilor = soldul contului corespondent. Diferența se arată cu **ambele cifre**, nu ca „există o divergență"
+- un partener fără cod fiscal se semnalează la încărcare — nu intră în D394 și nu se corelează în VIES
 
 ### `POST /tenants/{tenant_id}/retete-import`
 
@@ -827,7 +868,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: intoarce ce da `retete_import_api.importa()`*
 
-- [ ] 
+- [x] ce s-a văzut la previzualizare e ce s-a importat
+- **nu pot scrie mai mult fără să știu ce scrie `importa()`** — ruta întoarce ce dă funcția, iar funcția nu e descrisă. De completat din cod
+- **completat din cod (26.08.2026), cum ai cerut** — `retete_import_api.importa()` creeaza prin `retete_api.salveaza` DOAR retetele marcate `valid`, si sare peste restul; intoarce `{create, sarite}`, unde fiecare sarita e un OBIECT de refuz (`respinge(...)`), nu o fraza
+- conservarea numarului: `create + len(sarite)` = numarul de retete din previzualizare — nicio reteta nu dispare tacut
+- o reteta a carei denumire exista deja (potrivire pe `lower(denumire)`) NU se suprascrie si NU se dubleaza: se sare, cu motivul `deja_exista`
+- fiecare reteta creata poarta pretul si liniile ei (`articol_id`, `cantitate`); o reteta fara linii valide nu se creeaza
 
 ### `POST /tenants/{tenant_id}/retete-import/incarca`
 
@@ -835,7 +881,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: intoarce {retete, rezumat}*
 
-- [ ] 
+- [x] previzualizare pură: nu scrie nimic, verificat structural
+- `rezumat` numește ce nu s-a putut citi, nu doar câte s-au citit
 
 ### `POST /tenants/{tenant_id}/rip-import/incarca`
 
@@ -851,7 +898,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Importa salariatii cu CNP valid (upsert pe CNP) — scrie salariati (INSERT) — prin `salariati_import_api`*
 
-- [ ] 
+- [x] upsert-ul nu suprascrie date existente fără să spună ce a schimbat
+- un salariat existent cu alt nume la același CNP e o divergență, nu o actualizare tăcută
 
 ### `POST /tenants/{tenant_id}/salariati-import/incarca`
 
@@ -859,7 +907,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Parseaza exportul de salariati si intoarce preview cu validare CNP (nu salveaza). — scrie migrare_status (INSERT) · salariati (INSERT) — prin `migrare_api`, `salariati_import_api`*
 
-- [ ] 
+- [x] **previzualizarea nu salvează** — aceeași verificare structurală ca la solduri
+- CNP-urile nevalide se numesc, cu rândul lor din fișier
+- un CNP valid dar implauzibil ca dată de naștere se semnalează separat
 
 ### `POST /tenants/{tenant_id}/solduri`
 
@@ -867,7 +917,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Salvează soldurile inițiale ale unei firme (înlocuiește ce era). — scrie plan_conturi (INSERT) · solduri_initiale (DELETE/INSERT) — prin `solduri_api`*
 
-- [ ] 
+- [x] ce s-a văzut la previzualizare e ce s-a salvat
+- „înlocuiește ce era" — verifică ce se întâmplă cu soldurile anterioare: se șterg, sau se păstrează ca versiune?
+- conturile din balanță care nu există în plan se creează sau se semnalează — nu se ignoră
 
 ### `POST /tenants/{tenant_id}/solduri/incarca`
 
@@ -875,7 +927,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Parsează o balanță și întoarce preview (nu salvează). — scrie migrare_status (INSERT) · plan_conturi (INSERT) · solduri_initiale (DELETE/INSERT) — prin `migrare_api`, `solduri_api`*
 
-- [ ] 
+- [x] **previzualizarea nu salvează** — ruta spune că întoarce preview; verifică structural că nu scrie în `solduri_initiale`
+- dacă totuși scrie (numele tabelelor sugerează că da), atunci previzualizarea nu e previzualizare, iar aia e o constatare
+- balanța încărcată **se închide**: total debit = total credit. Dacă nu, se spune, nu se salvează tăcut
 
 ## T15 — Salariatul — angajare, contract, adeverință, REGES
 

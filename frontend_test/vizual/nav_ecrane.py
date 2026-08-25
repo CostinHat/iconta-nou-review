@@ -74,6 +74,17 @@ def ecran_etransport(pg): _ecran_shell(pg, "fa-etransport")
 def ecran_centrecost(pg): _ecran_shell(pg, "fa-centrecost")
 def ecran_casa(pg): _ecran_shell(pg, "fa-casa")
 
+
+# [R33 b'', 26.08.2026] Ecranul «Verificari» lipsea din inventarul vizual, desi e chiar ecranul
+# pe care se randeaza verdictul de echilibru. Poarta verde vizuala (CLAUDE.md 2.3 pct.11) cere
+# uneltele pe ECRANELE ATINSE — iar un ecran care nu e in lista nu poate fi atins de ele, deci
+# regula trecea vid. Se asteapta randarea listei, nu doar un timeout.
+def ecran_verificari(pg):
+    deschide_firma(pg)
+    pg.click("#fa-verificari")
+    pg.wait_for_selector(".pf-lista, .pf-frand, .ecran-nota", timeout=14000)
+    pg.wait_for_timeout(1200)
+
 ECRANE = [
     ("import_mijloace_fixe", ecran_import_mijloace_fixe),
     ("vector_fiscal", ecran_vector_fiscal),
@@ -88,4 +99,5 @@ ECRANE = [
     ("etransport", ecran_etransport),
     ("centrecost", ecran_centrecost),
     ("casa", ecran_casa),
+    ("verificari", ecran_verificari),
 ]

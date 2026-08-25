@@ -4811,3 +4811,40 @@ nimic despre celelalte trei module nelegate — `echilibru_perioada` rămâne ne
 **CORECTAT 25.08.2026:** nu e „logică paralelă". Rulate amândouă pe aceleași date, `echilibru_perioada`
 și `verificatoare.verifica_balanta` au moduri de eșec **disjuncte** — fiecare prinde exact ce cealaltă
 ratează. Măsurătoarea, calibrarea pe ambele direcții și ce nu vede: `CONFORMITATE.md`, R33.
+
+## R33, varianta b′′ — echilibrul e UN verdict din DOUĂ verificări (26.08.2026)
+
+**Categoria: Integritate în timp (C3) + Verificare care nu se întâmplă.**
+
+`core/echilibru_perioada` e **legat** din `main._verificari_contabile`. Nu înlocuiește
+`verificatoare.verifica_balanta` și nu e înlocuit de ea: modurile lor de eșec sunt **disjuncte**,
+măsurat 25.08 pe aceleași date. Cele două se compun într-un singur verdict `echilibru`, la
+**construcție** (`verdict_echilibru`, pură), iar contabilul vede **un rând** cu ce a găsit fiecare.
+
+**Ce a ieșit din `verifica_balanta`: ramura `BALANTA_INEGALA`.** Era tautologică pe intrarea reală
+— `balanta()` adaugă aceeași sumă pe ambele părți, deci totalurile sunt egale prin construcție
+(0 din 2000 de seturi aleatoare o puteau face să pice). Motivul e scris pe locul ramurii, iar codul
+e scos și din `common.CODURI`, ca să nu poată fi rechemat de cineva care n-are de unde ști.
+
+**GARDĂ NOUĂ: `core/test_echilibru_legat.py`** — 14 teste, **5 mutații** probate.
+Ce face imposibil: reîntoarcerea ramurii tautologice · o ramură a verdictului care nu poate deveni
+roșie · pierderea vreunuia din cele trei moduri de eșec · reîntoarcerea orbirii la contul din
+spații · rotunjirea unei verificări care n-a rulat la „în regulă".
+**Ce NU face, declarat:** nu atinge baza (readerul e testat separat), nu verifică randarea, și nu
+pretinde că cele trei moduri de eșec sunt TOATE modurile posibile.
+
+**LIMITA DECLARATĂ a feliei de ledger:** luna curentă, doar notele `validata`. O ciornă cu contul
+rupt se vede abia după validare, când devine evidență.
+
+## R54 — contul din corpul cererii trece prin `strip()` (26.08.2026)
+
+**Categoria: Intrare date.** Tiparul `str(corp.get("cont_x") or "<implicit>")` **pare gardă și e
+mască**: `or` transformă `None` și `""` în implicit, dar lasă `"   "` să treacă verbatim. 19 situri
+reparate cu tiparul deja corect din același cod.
+
+**GARDĂ NOUĂ: `core/test_cont_din_corp_normalizat.py`** — pe **AST**, nu pe text: se cere ca nodul
+care citește contul să aibă un strămoș `.strip()` care îl conține. Clichet **gol**. RED-probată.
+**Calibrare găsită de gard pe el însuși la prima rulare:** `corp.get("continut")` — conținutul unui
+mesaj — trecea drept cont. Prefixul „cont" era prea larg; cheia e `cont` exact sau `cont_<ceva>`.
+**Ce NU face, declarat:** oprește contul **alb**, nu contul **greșit**. `"7O7"` cu litera O trece.
+Confruntarea cu `plan_conturi` e decizie deschisă — R54.
