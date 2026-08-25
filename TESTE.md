@@ -2031,3 +2031,9 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
 - **`core/test_artefacte_pastrate.py` — al patrulea artefact (25.08.2026)**: `POST
   /control-fiscal/{}/audit-preluare` intră în lista rutelor care trebuie să fie acte și să cheme
   `pastreaza`. R45 e completă: 4 din 4.
+
+- **`core/test_contract_ecran_ruta.py` (25.08.2026)** — 5 teste, R51: prescurtarea ES6 se citește
+  (calibrare pe modul propriu de eșec, care produsese 30 de diferențe false) · cheile din obiecte
+  imbricate nu urcă la primul nivel · un `:` dintr-un șir nu devine cheie · clichet **0** pe
+  contracte rupte · **anti-vacuu**: se cere ca instrumentul să compare cel puțin 60 de perechi,
+  altfel „zero diferențe" ar putea însemna „n-am citit nimic".

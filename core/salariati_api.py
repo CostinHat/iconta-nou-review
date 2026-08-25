@@ -235,12 +235,20 @@ def detalii_salariat(conn, salariat_id):
 # ============================================================
 #  EDITARE (doar câmpurile trimise, validate)
 # ============================================================
-def actualizeaza_salariat(conn, salariat_id, **date):
+def actualizeaza_salariat(conn, salariat_id, _golite=(), **date):
     """Editează câmpurile date (validate). salariu_brut e o SCHIMBARE DE SALARIU -> intrare NOUĂ în
-    salariu_istoric la valabil_din (implicit azi), nu UPDATE pe salariati (PASUL 2b, sursă unică)."""
+    salariu_istoric la valabil_din (implicit azi), nu UPDATE pe salariati (PASUL 2b, sursă unică).
+
+    [R51] `_golite` = cheile pe care apelantul le-a trimis EXPLICIT cu `null`. Fără ele, `None`
+    ar însemna și „n-am trimis câmpul", și „golește-l" — iar o dată de încetare pusă din
+    greșeală n-ar mai putea fi scoasă. Apelanții vechi nu-l trimit; comportamentul lor nu se
+    schimbă."""
     from core import salariu_istoric as _si
     from datetime import date as _dm
     campuri_api = {k: v for k, v in date.items() if k in _CAMPURI_API and v is not None}
+    for k in (_golite or ()):
+        if k in _CAMPURI_API:
+            campuri_api[k] = None
     _sb = date.get("salariu_brut")
     if not campuri_api and _sb is None:
         return {"ok": True, "neschimbat": True}

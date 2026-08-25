@@ -13,53 +13,56 @@ autorul lui — de unde a rezultat că raportul părea să atribuie comenzii cev
 
 ## Șablonul
 
+**Ordinea nu e o preferință de stil.** Cele patru secțiuni care se sar — cerințele,
+presupunerile, plusul/minusul, registrele — stau **înaintea** narațiunii, fiindcă narațiunea se
+citește și contabilitatea se sare. *(Costin, 25.08.2026, cu instanțele: R40 era în lista de
+cerințe și n-a fost văzută · „TRASEE.md netracked" era în §11 · §7b a lipsit două ture la rând.)*
+
 ```
 RAPORT — <ce s-a lucrat> | <data> | <HEAD intrare> → <HEAD ieșire>
 
-## ÎNȚELEGEREA
+## 0. CERINTE
 
-Ce am înțeles că s-a cerut, în propriile cuvinte, înainte de muncă.
+Numerotat. Ce e · ce blochează dacă rămâne nedat · detaliile care ajută
+decizia · de câte ture o ceri.
+Dacă tura nu cere nimic: „nimic".
 
-## A. RĂSPUNS LA COMANDĂ
+## 1. CE AM PRESUPUS
 
-1. <punctul 1 din comandă, citat>
-   <răspunsul>
-2. <punctul 2 din comandă, citat>
-   <răspunsul>
-...
+Ce am presupus și nu era în comandă. Dacă nimic: „nimic presupus".
 
-## §7 — ÎN PLUS / MAI PUȚIN
+## 2. CE AM FĂCUT ÎN PLUS / MAI PUȚIN
 
-Ce am făcut peste ce s-a cerut. Ce am făcut mai puțin.
+Peste ce s-a cerut. Sub ce s-a cerut. Ambele direcții, explicit.
 
-## §7b — PRESUPUNERI
+## 3. CE AM ACTUALIZAT
 
-Ce am presupus și nu era în comandă.
+Fiecare registru, cu ce s-a scris în el. Un registru neatins:
+„nimic de actualizat, fiindcă…". `CONFORMITATE.md` apare întotdeauna.
 
-## §11 — CE AM ACTUALIZAT
+## 4. ÎNȚELEGEREA
 
-Fiecare registru, cu ce s-a scris în el. Un registru neatins se scrie
-„nimic de actualizat, fiindcă…", nu se omite.
+Ce am înțeles că s-a cerut, în propriile cuvinte.
 
-## B. UNDE SUNTEM
+## 5. RĂSPUNS LA COMANDĂ
+
+Punct cu punct, cu numerotarea COMENZII. Un punct nefăcut:
+„nefăcut, fiindcă…".
+
+## 6. UNDE SUNTEM
 
 Derivat cu `scripts/raport_b.py`. Nu se scrie de mână.
 
-## POARTA
+## 7. POARTA
 
 Teste, verificator, four-way, site.
-
-## CERINTE:
-
-1. <ce e> — <ce blochează dacă rămâne nedată> — <detalii care ajută decizia> — <a câta tură>
-2. ...
-
-(sau, dacă tura nu cere nimic: „nimic")
 ```
 
----
+**Niciuna nu se poate omite.** Dacă n-are conținut, se scrie **de ce** n-are.
 
 ## Regulile fiecărei secțiuni
+
+*Ordinea de mai jos e cea a raportului: 0 → 7. O regulă scrisă pentru o secțiune care s-a mutat rămâne valabilă — s-a schimbat locul, nu conținutul.*
 
 ### ÎNȚELEGEREA
 Se scrie **înainte de muncă**, nu după. E locul în care o citire greșită a comenzii devine vizibilă
@@ -140,8 +143,27 @@ Nu la început, nu pe parcurs: la final, ca act separat.
 3. **Confirmă** că fiecare are răspuns **cu același număr**, în aceeași ordine.
 4. **Confirmă** că `§11` există și **enumeră registrele**, inclusiv pe cele neatinse.
 5. **Confirmă** că `B` e **derivat**, nu scris.
-6. **Confirmă** că `CERINTE` există, e la SFÂRȘIT, e numerotată, și că nicio cerință nu e
-   scrisă în altă parte a raportului. Dacă nu se cere nimic, scrie „nimic".
+6. **Confirmă** că `0. CERINTE` există, e **PRIMA** după titlu, e numerotată, și că nicio
+   cerință nu e scrisă în altă parte a raportului. Dacă nu se cere nimic, scrie „nimic".
+6b. **Confirmă ORDINEA**: 0 CERINTE · 1 CE AM PRESUPUS · 2 ÎN PLUS/MAI PUȚIN · 3 CE AM
+   ACTUALIZAT · 4 ÎNȚELEGEREA · 5 RĂSPUNS LA COMANDĂ · 6 UNDE SUNTEM · 7 POARTA. **Toate opt
+   există**; una fără conținut spune de ce.
 7. **Confirmă** că nicio afirmație despre ce s-a cerut nu adaugă și nu scoate ceva față de textul
    comenzii — regula B în oglindă: nu doar că *ce afirmă comanda se verifică*, ci și că *nu i se
    atribuie ce nu conține*.
+
+---
+
+## Ce se așteaptă ÎNAPOI, de la Costin
+
+*Cerut de el, 25.08.2026, ca să se poată vedea dacă raportul a fost citit tot.* Răspunsul lui
+are **două părți**:
+
+- **A. OBSERVAȚII** — obligatoriu **câte un rând despre secțiunile 1, 2 și 3** (ce am presupus ·
+  ce am făcut în plus/mai puțin · ce am actualizat). Dacă una lipsește din raportul meu, o
+  spune.
+- **B. RĂSPUNS LA CERINȚE** — punct cu punct, cu numerotarea din secțiunea **0**. Un punct fără
+  răspuns: *„fără răspuns, fiindcă…"*.
+
+**Dacă răspunsul n-are ambele părți, sau A nu atinge cele trei secțiuni, i-o spun.** E semnul că
+raportul n-a fost citit tot — și e mai ieftin de spus decât de descoperit peste patru ture.

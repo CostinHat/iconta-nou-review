@@ -856,6 +856,9 @@ class SalariatEdit(BaseModel):
     prenume: Optional[str] = None
     cnp: Optional[str] = None
     data_angajare: Optional[str] = None
+    # [R51] Lipsea, iar ecranul o trimitea: pydantic o ignora TACIT si ruta raspundea 200.
+    # Backendul o sustine pe tot restul drumului (_CAMPURI_API, validare, „in serviciu").
+    data_incetare: Optional[str] = None
     tip_norma: Optional[str] = None
     ore_zi: Optional[float] = None
     salariu_brut: Optional[float] = None
@@ -3080,9 +3083,14 @@ def salariat_detalii(tenant_id: int, salariat_id: int, ctx=Depends(cere_cabinet)
 def salariat_actualizeaza(tenant_id: int, salariat_id: int, date: SalariatEdit,
                           ctx=Depends(cere_rol("admin_firma", "angajat"))):
     schema = _schema_sau_404(ctx, tenant_id)
+    # [R51] `None` inseamna doua lucruri diferite: „n-am trimis campul" si „goleste-l".
+    # `exclude_unset` le separa — ce a trimis clientul EXPLICIT cu null e o golire ceruta.
+    trimise = date.model_dump(exclude_unset=True)
+    golite = [k for k, v in trimise.items() if v is None]
     try:
         with db.get_conn(schema) as conn:
-            return salariati_api.actualizeaza_salariat(conn, salariat_id, **date.model_dump())
+            return salariati_api.actualizeaza_salariat(conn, salariat_id,
+                                                       _golite=golite, **date.model_dump())
     except ValueError as e:
         _ec = getattr(e, "erori_campuri", None)  # [G10] contract {detail, erori_campuri}
         raise HTTPException(422, detail={"mesaj": str(e), "erori_campuri": _ec} if _ec else str(e))

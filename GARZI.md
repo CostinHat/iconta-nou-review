@@ -4658,3 +4658,35 @@ preluare *„se randează la deschiderea ecranului"* — dedus din `api.get`, f�
 deja în spatele unui buton (`ruleazaAudit`). Predecesoarele: „rută fără gardă" pentru rute păzite
 prin argument, și „modulul nu scrie nimic" pentru tabele necalificate. **Toate trei în aceeași
 direcție: lipsește.**
+
+**Un câmp trimis și necerut e ignorat TĂCUT, iar ruta răspunde 200**
+(`scripts/scan_contract_ecran.py` + `core/test_contract_ecran_ruta.py`, R51, 25.08.2026).
+Ipoteza pusă în față era *„ecranul trimite un câmp, ruta cere altul, iar diferența e o
+literă"*. Măsurat pe **67 de perechi** ecran↔rută: **una** singură diferea — și nu în direcția
+bănuită. Nu un 422, ci o **scriere care nu se întâmplă**: ecranul de salariați trimitea
+`data_incetare`, `SalariatEdit` n-o avea, pydantic o arunca înainte ca ruta s-o vadă, iar
+răspunsul era `{"ok": true, "neschimbat": true}`.
+
+**Probat pe ruta reală**, nu dedus: `PUT /tenants/4784/salariati/49` cu `{"data_incetare":
+"2026-08-31"}` → **200**, coloana rămâne `NULL`. Ecranul spune chiar acolo *„la plecare NU se
+șterge salariatul — se completează data încetării"*: singura cale corectă era cea care nu
+funcționa, iar salariatul plecat rămânea în serviciu și în D112.
+
+**Instrumentul a raportat întâi 30 de diferențe, și toate primele trei verificate erau false.**
+Extractorul de chei vedea doar `cheie: valoare` și rata **prescurtarea ES6** (`{ an, luna }`) —
+forma cea mai des folosită în ecrane. Calibrarea pe cazuri cunoscute a prins-o **înainte** ca
+cifra să ajungă într-un raport. Rescris, cifra e **1**, iar după reparație **0**. Gardul are
+teste pe chiar modul ăsta de eșec, plus unul anti-vacuu: dacă extractorul se strică și nu mai
+citește nimic, „zero diferențe" ar trece — deci se cere ca numărul de perechi comparate să
+rămână ≥ 60.
+
+**Ce NU vede, declarat:** 62 de apeluri merg spre rute **fără model pydantic** (`corp: dict`),
+unde nu există contract de verificat; 18 au corpul într-o variabilă sau cu răspândire. Alea se
+numără ca domeniu neatins, nu ca fiind în regulă.
+
+**Punctul orb al măsurătorilor mele de rol, găsit tot azi:** am numărat mereu doar rutele care
+**schimbă date**. Un document care ajunge la un om poate pleca și pe un **GET** — un PDF, un
+atașament. Măsurat: **25** de rute predau un document, **17** fără niciun rol, toate GET; scăzând
+paginile publice, rămân **9 documente ale firmei** predate fără verificare de rol, între care
+`GET /tenants/{}/fluturas/{salariat_id}` — fluturașul unui salariat. *„Iese către un om" nu e
+totuna cu „scrie ceva", iar clasificarea mea le confundase.*
