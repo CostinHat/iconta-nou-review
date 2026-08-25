@@ -121,12 +121,27 @@ def lista_coada(conn, cabinet_id, stare=None):
             "(c.payload->>'_an')::int   AS p_an, "
             "(c.payload->>'_luna')::int AS p_luna, "
             "(c.payload->>'_trim')::int AS p_trim, "
-            "COALESCE(u.nume, u.email) AS creat_de_nume "  # [val_nume_v1] numele pregatitorului, nu UID brut
+            "COALESCE(u.nume, u.email) AS creat_de_nume, "  # [val_nume_v1] numele pregatitorului, nu UID brut
+            # [R41 partea II] verdictul oficial ajunge in lista, ca ecranul sa nu-si mai
+            # inventeze o eticheta. XML-ul NU se intoarce - doar amprenta lui, calculata aici.
+            "c.verdict, c.verdict_erori, c.verdict_amprenta, c.verdict_la, c.verdict_versiune, "
+            "c.trecere_motiv, c.trecut_la, "
+            "c.payload->>'xml' AS _xml "
             "FROM public.declaratii_coada c "
             "LEFT JOIN public.users u ON u.id = c.creat_de_id "
             "WHERE " + " AND ".join("c." + x for x in cond) +
             " ORDER BY c.creat_la DESC", val)
-        return [dict(r) for r in cur.fetchall()]
+        out = []
+        for r in cur.fetchall():
+            d = dict(r)
+            xml = d.pop("_xml", None)
+            d["verdict_stare"] = verdict_din_rand(
+                d.pop("verdict", None), d.pop("verdict_erori", None),
+                d.pop("verdict_amprenta", None), d.pop("verdict_la", None),
+                d.pop("verdict_versiune", None), xml)
+            d["gata_de_depus"] = gata_de_depus(d["verdict_stare"])
+            out.append(d)
+        return out
 
 
 def _stare_curenta(cur, coada_id):
@@ -222,20 +237,17 @@ def scrie_verdict(conn, coada_id, rez, versiune, xml):
     return {"ok": True}
 
 
-def verdict_stare(conn, coada_id):
-    """TREI valori, nu doua: `proaspat` | `statut` | `lipsa`.
+def verdict_din_rand(verdict, erori, amp, la, versiune, xml):
+    """PURA. Starea verdictului pentru un rand deja citit: `proaspat` | `statut` | `lipsa`.
 
     `statut` = exista un verdict, dar pe ALT continut decat cel din coada acum. Se trateaza ca
     ABSENT, nu ca favorabil (P6: necunoscutul domina favorabilul). Fara distinctia asta, o
-    regenerare tacuta ar pastra un verdict care nu mai e despre nimic."""
-    with conn.cursor() as cur:
-        cur.execute("SELECT verdict, verdict_erori, verdict_amprenta, verdict_la, verdict_versiune, "
-                    "payload->>'xml' FROM public.declaratii_coada WHERE id=%s", (coada_id,))
-        r = cur.fetchone()
-    if r is None:
-        return {"stare": "lipsa", "motiv": "element inexistent",
-                "actiune": "verifică id-ul elementului din coadă"}
-    verdict, erori, amp, la, versiune, xml = r
+    regenerare tacuta ar pastra un verdict care nu mai e despre nimic.
+
+    [R41 partea II] Extrasa ca functie pura fiindca o cheama DOUA locuri: poarta care refuza
+    depunerea (`verdict_stare`) si lista pe care o vede omul (`lista_coada`). A doua
+    implementare ar fi putut diverge tacit de prima - adica ecranul ar fi aratat verde exact
+    acolo unde serverul refuza."""
     if not verdict or not amp:
         return {"stare": "lipsa", "motiv": "nu s-a păstrat niciun verdict pentru elementul ăsta",
                 "actiune": "deschide elementul în ecranul de validare — validatorul rulează și verdictul se păstrează"}
@@ -249,6 +261,27 @@ def verdict_stare(conn, coada_id):
             "versiune": versiune}
 
 
+def gata_de_depus(v):
+    """PURA. Singura definitie a lui «gata de depus», folosita si de poarta, si de ecran.
+
+    [R41 partea II] Pana azi ecranul isi alegea singur populatia listei „De depus"; poarta din
+    server avea alta regula. Doua definitii ale aceleiasi propozitii = ecranul putea numi „de
+    depus" ceva ce serverul refuza. Acum e una."""
+    return bool(v) and v.get("stare") == "proaspat" and v.get("verdict") == "valid"
+
+
+def verdict_stare(conn, coada_id):
+    """Starea verdictului pentru un element din coada. Citeste randul si deleaga calculul."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT verdict, verdict_erori, verdict_amprenta, verdict_la, verdict_versiune, "
+                    "payload->>'xml' FROM public.declaratii_coada WHERE id=%s", (coada_id,))
+        r = cur.fetchone()
+    if r is None:
+        return {"stare": "lipsa", "motiv": "element inexistent",
+                "actiune": "verifică id-ul elementului din coadă"}
+    return verdict_din_rand(*r)
+
+
 def _poarta_verdict(conn, coada_id, actiune, motiv, cine_id):
     """Refuza actiunea daca verdictul lipseste, e statut, sau nu e `valid` - afara de cazul in care
     se trece EXPLICIT, cu motiv, si trecerea se CONSEMNEAZA.
@@ -256,7 +289,9 @@ def _poarta_verdict(conn, coada_id, actiune, motiv, cine_id):
     [R41] «gata de depus» nu se poate defini fara verdict pastrat. Un buton care confirma depunerea
     a ceva nevalidat nu e o scurtatura, e o afirmatie falsa despre starea lucrului."""
     st = verdict_stare(conn, coada_id)
-    if st["stare"] == "proaspat" and st.get("verdict") == "valid":
+    # [R41 partea II] Aceeasi functie pe care o foloseste lista pe care o vede omul.
+    # Poarta si ecranul nu pot diverge fiindca nu exista doua conditii, ci una.
+    if gata_de_depus(st):
         return None
     if not motiv or not str(motiv).strip():
         return {"ok": False, "cod": "FARA_VERDICT",

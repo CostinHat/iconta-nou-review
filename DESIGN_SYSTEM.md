@@ -167,6 +167,7 @@ Toate butoanele au umbră. Butoanele deschise la culoare au și bordură. Paddin
 
 - Culorile din cod folosesc EXCLUSIV variabile canonice: `var(--ardezie)` (text), `var(--gri)`/`var(--gri-clar)` (secundar), `var(--rosu)`/`var(--verde)`/`var(--galben)`/`var(--albastru)` (stări), `var(--linie)` (borduri), `var(--fundal)`/`var(--alb)` (fundaluri). INTERZIS hex ad-hoc (`#ddd`, `#8a97a5`, `#fff`) în aplicație.
 - Border-radius folosește `var(--raza)` (6px). INTERZIS valoare literală (`border-radius:8px`). Excepție: `50%` pentru cercuri.
+- **Amberul de TEXT (v2.33, 25.08.2026)**: `--galben` (#c9961f) e culoarea semaforului, nu a textului — pe `--galben-fundal` dă **2.42:1**, sub prag. Textul de avertizare pe fundal deschis folosește **`var(--galben-text)`** (#92500a, 5.64:1). Adăugat cu ocazia R41 partea II, unde eticheta „verdict stătut" cerea un amber lizibil. `.cf-galben` rămâne pe hexul lui până la o migrare separată.
 - Landing page (`pagina-*`, login) e sistem vizual separat (marketing) — nu se supune paletei aplicației.
 
 ---

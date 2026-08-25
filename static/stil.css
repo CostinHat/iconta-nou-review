@@ -29,6 +29,7 @@
   --gri-fundal-semafor: #eef0f3;
   --rosu-fundal: #fce8e6;
   --galben-fundal: #fbf3e2;
+  --galben-text: #92500a;      /* amber de TEXT: --galben pe --galben-fundal da 2.42:1, sub prag */
   --portocaliu: #c8651b;        /* navigare: ieși / la bază */
   --portocaliu-fundal: #fdf0e6;
   --albastru-gri: #9fb1c7;      /* bara de jos — firma în lucru */
@@ -797,8 +798,18 @@ html, body {
 .val-titlu { font-size: var(--text-mic); color: #1f2937; }
 .val-sub { font-size: 12.5px; color: #6a7585; margin-top: 2px; }
 .val-coer { font-size: 12.5px; padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
-.val-coer-ok { background: #e6f6ec; color: #1d7a4d; }
-.val-coer-gri { background: #eef0f3; color: #6a7585; }
+.val-coer-ok { background: var(--verde-fundal); color: var(--verde); }
+/* [R41 partea II] gri era #6a7585 pe #eef0f3 = 4.09:1, sub prag. `--gri` da 5.18:1. */
+.val-coer-gri { background: var(--gri-fundal-semafor); color: var(--gri); }
+.val-coer-rau { background: var(--rosu-fundal); color: var(--rosu); }
+.val-coer-atentie { background: var(--galben-fundal); color: var(--galben-text); }
+/* linia care spune CE lipseste si PE UNDE se iese — DS cap.6 (cauza + iesire, fara fundatura) */
+.val-lipsa { font-size: 12.5px; color: var(--galben-text); margin-top: 4px; }
+.val-lipsa-iesire { color: var(--gri); }
+.val-trece { background: var(--galben-fundal); color: var(--galben-text); }
+.val-trece:hover { background: #f6e9cf; }
+.val-valideaza { background: var(--albastru); color: var(--alb); }
+.val-valideaza:hover { background: var(--albastru-inchis); }
 .val-actiuni { display: flex; gap: 7px; }
 .val-btn {
   padding: 7px 14px; border-radius: 8px; border: none; font-family: inherit; font-size: var(--text-mic);

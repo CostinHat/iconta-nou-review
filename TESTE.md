@@ -2005,3 +2005,10 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   (doc↔cod, RED-proof prin mutație cu restaurare verificată prin amprentă) · datele de firme există și
   acoperă toate cele 17 (anti-vacuu pe sursa numerelor) · un traseu fără tabelă proprie **nu**
   raportează zero firme, ci necunoscut.
+
+- **`core/test_coada_gata_de_depus.py` (25.08.2026)** — 8 teste pe R41 partea II: cele patru stări
+  ale verdictului ca date (lipsă · stătut · proaspăt-valid · proaspăt-erori) · stătutul **nu** e
+  favorabil, și poartă cauza și ieșirea (P6) · **poarta și lista cheamă aceeași funcție**, asertat
+  pe AST, nu pe text (METODA §23) · lista nu scoate XML-ul din bază · **calibrare negativă**:
+  `gata_de_depus` chiar discriminează între cele patru stări, altfel toate celelalte aserțiuni ar
+  trece și pe un instrument care spune „gata" despre orice. RED-proof pe două mutații.

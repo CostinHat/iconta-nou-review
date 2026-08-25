@@ -1,4 +1,9 @@
 // validat.js — coada de validare/depunere a declarațiilor (perspectiva seniorului / admin_firma).
+// [R41 partea II] „De depus" arată DOAR ce e gata de depus. Ce s-a generat și n-a trecut prin
+// validator stă într-o listă separată, care spune CE lipsește și PE UNDE se iese (DS cap.6).
+// Populația celor două liste vine din `gata_de_depus`, calculat de SERVER (coada_api.gata_de_depus),
+// nu din vreo regulă scrisă aici: două definiții ale aceleiași propoziții ar fi lăsat ecranul să
+// numească „de depus" exact ce serverul refuză.
 // Cu patru-ochi ACTIV: "De validat" (la_senior -> Aprobă/Respinge) + "Aprobate, de depus" (aprobata -> Depune).
 // Cu patru-ochi DEZACTIVAT (mono-utilizator): nu există validare în doi — tot ce e în coadă e "De depus";
 //   pentru un item la_senior, „Confirmă depunerea" înlănțuie aproba+depune (backendul permite auto-aprobarea
@@ -14,6 +19,34 @@ import { sesiune } from "../sesiune.js?v=5d142951c9";
 function numeFirma(firme, tid) {
   const f = firme.find((x) => x.tenant_id === tid || x.id === tid);
   return f ? f.nume : `firma #${tid}`;
+}
+
+// [R41 partea II] Eticheta verdictului — DERIVATĂ din starea întoarsă de server (interdicția 31:
+// eticheta nu se alege de cine randează). Până azi cardul purta `c.coerenta`, care e NULL pe TOATE
+// elementele, deci scria „neverificat" despre orice — inclusiv despre o declarație pe care
+// validatorul o dăduse validă cu o clipă înainte.
+function verdictInfo(c) {
+  const v = (c && c.verdict_stare) || { stare: "lipsa" };
+  const gata = !!(c && c.gata_de_depus);
+  if (gata) {
+    return { gata: true, clasa: "val-coer-ok", text: "validat cu DUKIntegrator",
+             lipsa: "", iesire: "" };
+  }
+  if (v.stare === "proaspat") {
+    // verdict proaspăt, dar nefavorabil: validatorul a rulat pe conținutul ăsta și a respins
+    return { gata: false, clasa: "val-coer-rau",
+             text: v.verdict === "erori" ? "validatorul a găsit erori" : `validator: ${v.verdict || "necunoscut"}`,
+             lipsa: "DUKIntegrator a rulat pe conținutul curent și nu l-a acceptat.",
+             iesire: "Deschide declarația ca să vezi ce a raportat, apoi regenerează." };
+  }
+  if (v.stare === "statut") {
+    return { gata: false, clasa: "val-coer-atentie", text: "verdict stătut",
+             lipsa: v.motiv || "verdictul e pe alt conținut decât cel din coadă.",
+             iesire: v.actiune || "Redeschide elementul ca să fie validat conținutul curent." };
+  }
+  return { gata: false, clasa: "val-coer-gri", text: "nevalidat",
+           lipsa: v.motiv || "nu s-a păstrat niciun verdict pentru elementul ăsta.",
+           iesire: v.actiune || "Deschide elementul — validatorul rulează și verdictul se păstrează." };
 }
 
 // uid-ul actorului curent, ca string (creat_de/aprobat_de sunt UID-uri text în coadă)
@@ -75,15 +108,20 @@ export async function randeazaValidat(corp, nav) {
     <p class="mig-intro">${intro}</p>
     <div id="val-deValidat"></div>
     <div id="val-deDepus"></div>
+    <div id="val-nevalidate"></div>
     <div class="mig-eroare" id="val-eroare"></div>
   `;
   const z1 = corp.querySelector("#val-deValidat");
   const z2 = corp.querySelector("#val-deDepus");
+  const z3 = corp.querySelector("#val-nevalidate");
 
   if (laSenior.length === 0 && aprobate.length === 0) {
     z1.innerHTML = `<div class="stare-goala">${patruOchi ? "Nimic de validat. Coada e goală." : "Nimic de depus. Coada e goală."}</div>`;
     return;
   }
+
+  // [R41 partea II] «gata de depus» vine de la server, per element. Nu se recalculează aici.
+  const gata = (c) => !!c.gata_de_depus;
 
   if (patruOchi) {
     // ── patru-ochi ACTIV: validare în doi ──
@@ -91,21 +129,52 @@ export async function randeazaValidat(corp, nav) {
       z1.innerHTML = `<div class="cf-grup-titlu cf-galben">De validat (${laSenior.length})</div>`;
       laSenior.forEach((c) => z1.appendChild(randDeclaratie(c, firme, corp, nav, "valida", perm, patruOchi)));
     }
-    if (aprobate.length) {
-      z2.innerHTML = `<div class="cf-grup-titlu" style="color:var(--verde)">Aprobate, de depus (${aprobate.length})</div>`;
-      aprobate.forEach((c) => z2.appendChild(randDeclaratie(c, firme, corp, nav, "depune", perm, patruOchi)));
+    const apGata = aprobate.filter(gata);
+    const apNu = aprobate.filter((c) => !gata(c));
+    if (apGata.length) {
+      z2.innerHTML = `<div class="cf-grup-titlu" style="color:var(--verde)">Aprobate, de depus (${apGata.length})</div>`;
+      apGata.forEach((c) => z2.appendChild(randDeclaratie(c, firme, corp, nav, "depune", perm, patruOchi)));
     }
+    if (apNu.length) z3.appendChild(zonaNevalidate(apNu, firme, corp, nav, perm, patruOchi, "Aprobate, dar nevalidate"));
   } else {
-    // ── patru-ochi DEZACTIVAT: mono-utilizator, totul e „de depus" ──
+    // ── patru-ochi DEZACTIVAT: mono-utilizator, pregătește și depune singur ──
     const deDepus = [...laSenior, ...aprobate];
-    z1.innerHTML = `<div class="cf-grup-titlu" style="color:var(--verde)">De depus (${deDepus.length})</div>`;
-    deDepus.forEach((c) => z1.appendChild(randDeclaratie(c, firme, corp, nav, "depune", perm, patruOchi)));
+    const dGata = deDepus.filter(gata);
+    const dNu = deDepus.filter((c) => !gata(c));
+    if (dGata.length) {
+      z1.innerHTML = `<div class="cf-grup-titlu" style="color:var(--verde)">De depus (${dGata.length})</div>`;
+      dGata.forEach((c) => z1.appendChild(randDeclaratie(c, firme, corp, nav, "depune", perm, patruOchi)));
+    } else {
+      // DS cap.6: gol + cauză + ieșire. Fundătura („Nimic de depus.") e interzisă, iar aici
+      // golul are o cauză precisă — există lucrări, dar niciuna validată.
+      z1.innerHTML = `<div class="cf-grup-titlu" style="color:var(--verde)">De depus (0)</div>
+        <div class="stare-goala">Nimic gata de depus. ${dNu.length} ${dNu.length === 1 ? "declarație e generată" : "declarații sunt generate"}, dar ${dNu.length === 1 ? "n-a trecut" : "n-au trecut"} prin validatorul oficial.<br>Deschide-le mai jos — validatorul rulează și verdictul se păstrează.</div>`;
+    }
+    if (dNu.length) z2.appendChild(zonaNevalidate(dNu, firme, corp, nav, perm, patruOchi, "Generate, nevalidate"));
   }
+}
+
+// [R41 partea II] Lista separată. Titlul nu spune „de depus" — fiindcă nu sunt.
+function zonaNevalidate(lista, firme, corp, nav, perm, patruOchi, titlu) {
+  const frag = document.createDocumentFragment();
+  const cap = document.createElement("div");
+  cap.className = "cf-grup-titlu cf-galben";
+  cap.textContent = `${titlu} (${lista.length})`;
+  frag.appendChild(cap);
+  const nota = document.createElement("p");
+  nota.className = "ecran-nota";
+  nota.textContent = "Serverul refuză depunerea lor. Se poate trece peste refuz, dar numai explicit, cu un motiv scris — iar motivul se consemnează cu cine și când.";
+  frag.appendChild(nota);
+  lista.forEach((c) => frag.appendChild(randDeclaratie(c, firme, corp, nav, "depune", perm, patruOchi)));
+  return frag;
 }
 
 // [patru-ochi-vizibil] deschide continutul unui element din coada pentru validare: declaratie
 // (avertismente/note) + XML + verdictul DUK. Read-only. Fara asta, cine aproba nu vede ce aproba.
-async function deschideContinut(c, nav) {
+async function deschideContinut(c, nav, corpLista) {
+  // [R41 partea II] Ruta asta RULEAZĂ validatorul și PĂSTREAZĂ verdictul. Deci după închiderea
+  // ferestrei, lista de dedesubt e stătută — se reîncarcă. Fără asta, omul validează, se întoarce,
+  // și vede aceeași etichetă „nevalidat" pe care tocmai a schimbat-o.
   const titlu = `${(c.tip || "").toUpperCase()} \u00b7 ${fmtPerioadaDecl(c)}`;
   nav.deschide(titlu, async (corp) => {
     corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103 declara\u021bia\u2026</p>`;
@@ -132,6 +201,7 @@ async function deschideContinut(c, nav) {
       ${avert}
       <details open><summary>XML generat</summary><pre class="dec-xml-pre">${esc(xml)}</pre></details>
     `;
+    if (corpLista) randeazaValidat(corpLista, nav);
   }, { nivel: "cabinet" });
 }
 
@@ -139,9 +209,8 @@ async function deschideContinut(c, nav) {
 function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
   const div = document.createElement("div");
   div.className = "val-card";
-  const coer = c.coerenta
-    ? `<span class="val-coer val-coer-ok">✓ ${c.coerenta}</span>`
-    : `<span class="val-coer val-coer-gri">neverificat</span>`;
+  const vi = verdictInfo(c);
+  const coer = `<span class="val-coer ${vi.clasa}">${vi.gata ? "✓ " : ""}${esc(vi.text)}</span>`;
 
   const uid = uidCurent();
   const euAmPregatit = uid != null && c.creat_de != null && String(c.creat_de) === uid;
@@ -166,8 +235,15 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
     const potDepune = perm.poate_depune && (!needsAproba || perm.poate_valida);
     if (!potDepune) {
       actiuni += `<span class="val-nota-perm">nu ai dreptul de depunere</span>`;
-    } else {
+    } else if (vi.gata) {
       actiuni += `<button class="buton-primar val-btn val-depune" data-act="depune">Confirmă depunerea</button>`;
+    } else {
+      // [R41 partea II] Nu e gata: acțiunea principală devine cea care REPARĂ (deschide, ca
+      // validatorul să ruleze și verdictul să se păstreze). Depunerea rămâne posibilă, dar
+      // explicită și consemnată — nu ascunsă, fiindcă un blocaj fără cale de trecere pentru om
+      // e interdicția 47.
+      actiuni += `<button class="val-btn val-valideaza" data-act="vezi">Deschide ca să fie validat</button>`;
+      actiuni += `<button class="val-btn val-trece" data-act="trece">Depune totuși…</button>`;
     }
     // Cu patru-ochi OFF, mono-utilizatorul poate renunța la un item încă neaprobat (respinge din la_senior)
     if (!patruOchi && needsAproba && perm.poate_valida) {
@@ -181,16 +257,21 @@ function randDeclaratie(c, firme, corp, nav, mod, perm, patruOchi) {
       <div class="val-titlu"><b>${(c.tip||"").toUpperCase()}</b> · ${perDecl}</div>
       <div class="val-sub">${numeFirma(firme, c.tenant_id)} · pregătit de ${c.creat_de_nume || c.creat_de || "—"}</div>
       <div class="val-termen">termen (scadență): ${c.perioada || "—"}</div>
+      ${vi.gata ? "" : `<div class="val-lipsa">${esc(vi.lipsa)} <span class="val-lipsa-iesire">${esc(vi.iesire)}</span></div>`}
+      ${c.trecere_motiv ? `<div class="val-lipsa">trecut peste refuz, motiv: ${esc(c.trecere_motiv)}</div>` : ""}
       <button type="button" class="btn-link val-vezi" data-act="vezi">Vezi declarația, XML și verdictul DUK →</button>
     </div>
     <div class="val-mij">${coer}</div>
     <div class="val-actiuni">${actiuni}</div>
   `;
   div.querySelectorAll(".val-btn").forEach((btn) => {
-    btn.addEventListener("click", () => actioneaza(c, btn.dataset.act, firme, corp, nav));
+    btn.addEventListener("click", () => {
+      if (btn.dataset.act === "vezi") { deschideContinut(c, nav, corp); return; }
+      actioneaza(c, btn.dataset.act, firme, corp, nav);
+    });
   });
   const _vezi = div.querySelector(".val-vezi");
-  if (_vezi) _vezi.addEventListener("click", () => deschideContinut(c, nav));
+  if (_vezi) _vezi.addEventListener("click", () => deschideContinut(c, nav, corp));
   return div;
 }
 
@@ -208,6 +289,26 @@ async function actioneaza(c, act, firme, corp, nav) {
       butonClasa: "val-respinge",
       onConfirm: async (motiv) => {
         await api.post(`/coada/${c.id}/respinge`, { motiv });
+        nav.inapoi();
+        randeazaValidat(corp, nav);
+      },
+    });
+    return;
+  }
+  if (act === "trece") {
+    // [R41 partea II] Trecerea peste refuz: motiv OBLIGATORIU, consemnat cu cine și când.
+    dialogInput(nav, {
+      titlu: "Depune fără verdict de validare",
+      eticheta: `${(c.tip||"").toUpperCase()} (${perDecl}) nu are verdict valid de la DUKIntegrator. De ce o depui totuși?`,
+      placeholder: "ex: validatorul nu pornește, iar termenul e azi",
+      obligatoriu: true,
+      buton: "Depune, cu motivul de mai sus",
+      butonClasa: "val-trece",
+      onConfirm: async (motiv) => {
+        if (c.stare === "la_senior") {
+          await api.post(`/coada/${c.id}/aproba`, { motiv_trecere: motiv });
+        }
+        await api.post(`/coada/${c.id}/depune`, { motiv_trecere: motiv });
         nav.inapoi();
         randeazaValidat(corp, nav);
       },

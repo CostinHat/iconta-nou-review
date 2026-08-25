@@ -4549,3 +4549,26 @@ rula fără DB. Cu trei gărzi pe el: fișierul există și acoperă toate cele 
 complet goală fără să se vadă · **un traseu fără tabelă proprie NU poate raporta „zero firme"**
 (interdicția 32 aplicată instrumentului: un necunoscut rotunjit la zero ar umfla exact cifra care
 contează).
+
+**Ecranul nu mai poate numi „de depus" ce serverul refuză** (`core/test_coada_gata_de_depus.py`,
+R41 partea II, 25.08.2026). Reparația nu e o etichetă schimbată: e că **nu mai există două
+definiții**. `_poarta_verdict` — care refuză depunerea — și `lista_coada` — care alimentează
+ecranul — cheamă **aceeași funcție**, `gata_de_depus`. Gardul asertează **pe structură** (AST:
+cine cheamă ce), fiindcă o condiție rescrisă inline în poartă ar arăta identic la citire și ar
+putea diverge tăcut.
+
+**RED-proof pe două mutații**, amândouă restaurate cu amprentă verificată: condiția rescrisă
+inline în poartă → roșu; `gata_de_depus` care întoarce mereu `True` → roșu. A doua e chiar
+calibrarea pe propriul mod de eșec: un instrument care spune „gata" despre orice ar fi trecut
+toate celelalte aserțiuni.
+
+**Ce a prins proba comportamentală și niciun test nu prindea:** prima formă a cardului de pe
+tabloul cabinetului număra **toate** rândurile din răspuns — deci includea o declarație **deja
+depusă** — iar cifra de pe card (3) nu era despre aceeași populație ca cifra de pe ecran (2).
+*Două cifre sub aceeași etichetă, despre populații diferite: aceeași clasă cu R41, cu un nivel
+mai sus.* Proba are acum o aserțiune care compară chiar cele două cifre.
+
+**Ce NU acoperă, declarat:** ecranul cozii nu e în `nav_ecrane.ECRANE`, deci scanul vizual/a11y
+**nu-l atinge** — `test_acoperire_vizuala` trece pe el **vacuu**. Comportamentul și consola sunt
+probate cu `frontend_test/proba_r41_coada.py` (desktop + Pixel 5), nu axe/contrast pe toată
+suprafața. Gaură numită, nu descoperită mai târziu.

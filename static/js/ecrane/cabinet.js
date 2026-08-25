@@ -15,7 +15,7 @@ import { randeazaRecomanda } from "./recomanda.js?v=4dcc56e1ec"; // [p31_recoman
 import { randeazaRaporteaza } from "./raporteaza.js?v=f800de9e77"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js?v=8c32cbb767"; // [p63_pachete]
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
-import { randeazaValidat } from "./validat.js?v=1aa4c6b904";
+import { randeazaValidat } from "./validat.js?v=e771e38cc0";
 import { randeazaAsistenti } from "./asistenti.js?v=3749bc9e55";
 import { randeazaCapacitate } from "./capacitate.js?v=eb31833ad4"; // [p71_capacitate]
 import { randeazaTipare } from "./tipare.js?v=e88a7f5eba"; // [p72_tipare]
@@ -396,17 +396,31 @@ async function actualizeazaValidat(grila) {
     // singur validator, unde nimeni nu are pe cine astepta.
     const patruOchi = !!(rpo && rpo.efectiv);
     const laSenior = coada.filter((c) => c.stare === "la_senior").length;
-    const aprobate = coada.filter((c) => c.stare === "aprobata").length;
+    // [R41 partea II] „de depus" numara DOAR ce e gata de depus — `gata_de_depus` vine de la
+    // server (coada_api.gata_de_depus), aceeasi definitie pe care o foloseste poarta care refuza
+    // depunerea. Pana azi cardul numara tot ce e in coada, deci spunea „3 declaratii de depus"
+    // despre trei declaratii pe care serverul le refuza. Cifra si eticheta ei sunt o afirmatie
+    // despre starea lucrurilor, nu un contor de randuri.
+    const aprobate = coada.filter((c) => c.stare === "aprobata");
+    const apGata = aprobate.filter((c) => c.gata_de_depus).length;
+    // NUMAI ce e inca in lucru. Un element `depusa` a iesit din coada: a-l numara ca
+    // „nevalidat, de deschis" ar trimite omul dupa o lucrare terminata. Aceeasi populatie
+    // ca pe ecran (validat.js), altfel cele doua cifre sunt despre lucruri diferite.
+    const inLucruLista = coada.filter((c) => c.stare === "la_senior" || c.stare === "aprobata");
+    const nevalidate = inLucruLista.filter((c) => !c.gata_de_depus).length;
     _coadaTitlu = patruOchi ? "De validat" : "De depus";
     if (patruOchi) {
       if (titluEl) titluEl.textContent = "De validat";
       let s = `<b class="tip-figura">${laSenior}</b> declaraț${laSenior === 1 ? "ie de validat" : "ii de validat"}`;
-      if (aprobate) s += ` · <b class="tip-figura">${aprobate}</b> de depus`;
+      if (apGata) s += ` · <b class="tip-figura">${apGata}</b> de depus`;
+      if (nevalidate) s += ` · <b class="tip-figura">${nevalidate}</b> nevalidat${nevalidate === 1 ? "ă" : "e"}`;
       zona.innerHTML = s;
     } else {
       if (titluEl) titluEl.textContent = "De depus";
-      const n = laSenior + aprobate;
-      zona.innerHTML = `<b class="tip-figura">${n}</b> declaraț${n === 1 ? "ie de depus" : "ii de depus"}`;
+      const gata = inLucruLista.filter((c) => c.gata_de_depus).length;
+      let s = `<b class="tip-figura">${gata}</b> declaraț${gata === 1 ? "ie de depus" : "ii de depus"}`;
+      if (nevalidate) s += ` · <b class="tip-figura">${nevalidate}</b> nevalidat${nevalidate === 1 ? "ă, de deschis" : "e, de deschis"}`;
+      zona.innerHTML = s;
     }
   } catch {}
 }
