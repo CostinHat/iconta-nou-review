@@ -102,6 +102,7 @@ TRASEE = [
     ("T15", "Salariatul — angajare, contract, adeverință, REGES",
      [r"^/tenants/\{\}/salariati$", r"^/tenants/\{\}/salariati/\{\}$",
       r"^/tenants/\{\}/salariati/\{\}/(adeverinta|beneficiu-lunar)",
+      r"^/tenants/\{\}/prapastie-salariu",
       r"^/tenants/\{\}/contracte", r"^/contracte/marcaje", r"^/tenants/\{\}/reges-",
       r"^/cor$"],
      ["salariati", "salariu_istoric", "contracte_sabloane"]),

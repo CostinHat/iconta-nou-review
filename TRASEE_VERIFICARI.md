@@ -115,7 +115,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ### `PUT /tenants/{tenant_id}/facturi/numerotare`
 
-*garda `cere_context` · **fara rol***
+*garda `cere_rol` · rol:admin_firma*
 
 - [ ] 
 
@@ -139,7 +139,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ### `PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare`
 
-*garda `cere_context` · **fara rol***
+*garda `cere_rol` · rol:admin_firma*
 
 - [ ] 
 
@@ -151,7 +151,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ### `POST /tenants/{tenant_id}/facturi/{factura_id}/transforma`
 
-*garda `cere_context` · **fara rol** · scrie in facturi*
+*garda `cere_rol` · rol:admin_firma · scrie in facturi*
 
 - [ ] 
 
@@ -367,7 +367,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ### `POST /tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza`
 
-*garda `cere_context` · **fara rol** · scrie in efactura_primite, factur, facturi, validata*
+*garda `cere_rol` · rol:admin_firma · scrie in efactura_primite, factur, facturi, validata*
 
 - [ ] 
 
@@ -673,7 +673,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T15 — Salariatul — angajare, contract, adeverință, REGES
 
-*clasa MANUAL · 16 rute · 11 schimba date · 8 firme il pot exercita azi*
+*clasa MANUAL · 17 rute · 12 schimba date · 8 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/contracte/marcaje`, `/cor`, `/tenants/{tenant_id}/contracte/sabloane`, `/tenants/{tenant_id}/salariati`, `/tenants/{tenant_id}/salariati/{salariat_id}`*
 
@@ -690,6 +690,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - [ ] 
 
 ### `DELETE /tenants/{tenant_id}/contracte/sabloane/{sid}`
+
+*garda `cere_cabinet` · **fara rol***
+
+- [ ] 
+
+### `POST /tenants/{tenant_id}/prapastie-salariu`
 
 *garda `cere_cabinet` · **fara rol***
 
@@ -805,7 +811,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ### `PUT /tenants/{tenant_id}/scadentar/opt-in`
 
-*garda `cere_context` · **fara rol***
+*garda `cere_rol` · rol:admin_firma*
 
 - [ ] 
 
@@ -955,7 +961,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ### `POST /tenants/{tenant_id}/bonuri/{bon_id}/stinge`
 
-*garda `cere_cabinet` · **fara rol** · scrie in bonuri, facturi*
+*garda `cere_rol` · rol:admin_firma · scrie in bonuri, facturi*
 
 - [ ] 
 
@@ -989,7 +995,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ### `POST /tenants/{tenant_id}/woocommerce/sincronizeaza`
 
-*garda `cere_context` · **fara rol***
+*garda `cere_rol` · rol:admin_firma*
 
 - [ ] 
 
@@ -1031,7 +1037,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ### `POST /tenants/{tenant_id}/achizitie-ic`
 
-*garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+*garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii*
 
 - [ ] 
 
@@ -1073,19 +1079,19 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ### `POST /tenants/{tenant_id}/achizitie-necorporala`
 
-*garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii, mijloace_fixe*
+*garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii, mijloace_fixe*
 
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/achizitie-neinregistrat`
 
-*garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+*garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii*
 
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/achizitie-taxare-inversa`
 
-*garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+*garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii*
 
 - [ ] 
 

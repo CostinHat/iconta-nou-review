@@ -572,11 +572,56 @@ function formularSalariatNou(corp, nav, t, dupaSalvare) {
       ${camp("tichet_masa_valoare", "Tichet de mas\u0103 (lei/zi lucrat\u0103, 0 = f\u0103r\u0103)", "numar")}
       ${camp("scutit_contrib_minim", "Scutit contribu\u021bie minim\u0103", "checkbox")}
     </div>
+    <div id="sn-prapastie"></div>
     <p style="margin-top:12px">
       <button class="buton-primar" id="sn-salveaza">Salveaz\u0103</button>
       <button class="buton-secundar" id="sn-gata" style="margin-left:6px">Gata, \u00eenapoi la list\u0103</button></p>
     <div id="sn-mesaj"></div>`;
   legaCorLookup(corp, "sn");  // [F137] lookup ocupatie COR
+
+  // [R49 (c)] Prapastia salariului minim, cu CIFRE. Nu se calculeaza in ecran (P3): ecranul
+  // trimite elementele completate si afiseaza ce intoarce serverul. Apare INAINTE de buton
+  // (DS cap.6, ghidaj preventiv), si dispare cand nu se aplica.
+  const zonaPrapastie = corp.querySelector("#sn-prapastie");
+  let ceasPrapastie = null;
+  async function verificaPrapastia() {
+    if (!zonaPrapastie) return;
+    const brut = Number(corp.querySelector("#sn-salariu_brut").value) || 0;
+    if (!(brut > 0)) { zonaPrapastie.innerHTML = ""; return; }
+    let r;
+    try {
+      r = await api.post(`/tenants/${t.id}/prapastie-salariu`, {
+        salariu_brut: brut,
+        persoane_intretinere: Number(corp.querySelector("#sn-persoane_intretinere").value) || 0,
+        data_nastere: corp.querySelector("#sn-data_nastere").value || null,
+        copii_scolarizati: Number(corp.querySelector("#sn-copii_scolarizati").value) || 0,
+        declaratie_copii: corp.querySelector("#sn-declaratie_copii").checked,
+        tip_norma: corp.querySelector("#sn-tip_norma").value,
+        ore_zi: Number(corp.querySelector("#sn-ore_zi").value) || null,
+        data_angajare: corp.querySelector("#sn-data_angajare").value || null,
+        scutit_contrib_minim: corp.querySelector("#sn-scutit_contrib_minim").checked,
+      });
+    } catch (e) { zonaPrapastie.innerHTML = ""; return; }
+    if (!r || !r.aplicabil) { zonaPrapastie.innerHTML = ""; return; }
+    const brutIntrodus = Number(corp.querySelector("#sn-salariu_brut").value);
+    zonaPrapastie.innerHTML = `<div class="caseta-atentie">
+      <b>Peste salariul minim, netul SCADE.</b>
+      La ${bani(r.prag)} lei brut, netul e <b>${bani(r.net_la_prag)}</b> lei.
+      La ${bani(brutIntrodus)} lei brut, netul e
+      <b>${bani(r.net_acum)}</b> lei — cu <b>${bani(r.pierdere)}</b> lei mai puțin.
+      ${r.brut_egal ? `Netul redevine cel de la minim abia de la <b>${bani(r.brut_egal)}</b> lei brut.` : ""}
+      <div class="tip-micut">${esc(r.temei || "")} · prag: ${esc(r.prag_temei || "")}</div>
+    </div>`;
+  }
+  ["#sn-salariu_brut", "#sn-persoane_intretinere", "#sn-data_nastere", "#sn-copii_scolarizati",
+   "#sn-declaratie_copii", "#sn-tip_norma", "#sn-ore_zi", "#sn-data_angajare",
+   "#sn-scutit_contrib_minim"].forEach((sel) => {
+    const el = corp.querySelector(sel);
+    if (el) el.addEventListener("input", () => {
+      clearTimeout(ceasPrapastie);
+      ceasPrapastie = setTimeout(verificaPrapastia, 400);
+    });
+  });
   corp.querySelector("#sn-gata").addEventListener("click", () => nav.inapoiPas());
   corp.querySelector("#sn-salveaza").addEventListener("click", async () => {
     const zona = corp.querySelector("#sn-mesaj");

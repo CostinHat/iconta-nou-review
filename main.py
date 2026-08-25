@@ -2586,7 +2586,9 @@ def facturi_numerotare_get(tenant_id: int, ctx=Depends(cere_context)):
         return facturi_api.numerotare(conn)
 
 @app.put("/tenants/{tenant_id}/facturi/numerotare")
-def facturi_numerotare_set(tenant_id: int, date: NumerotareIn, ctx=Depends(cere_context)):
+# [R42] Seria documentelor emise: o schimbare aici lasa goluri intr-o numerotare (interdictia 35).
+def facturi_numerotare_set(tenant_id: int, date: NumerotareIn,
+                           ctx=Depends(cere_rol("admin_firma"))):
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         r = facturi_api.seteaza_numerotare(conn, serie=date.serie, numar_start=date.numar_start)
@@ -2607,7 +2609,8 @@ class OptInScadentarIn(BaseModel):
     activ: bool
 
 @app.put("/tenants/{tenant_id}/scadentar/opt-in")
-def scadentar_optin(tenant_id: int, date: OptInScadentarIn, ctx=Depends(cere_context)):
+def scadentar_optin(tenant_id: int, date: OptInScadentarIn,
+                    ctx=Depends(cere_rol("admin_firma"))):
     """F131: activeaza/dezactiveaza notificarile email de scadenta pt firma (default OFF)."""
     from core import scadentar as _sc
     schema = _schema_sau_404(ctx, tenant_id)
@@ -2622,7 +2625,8 @@ class SupapaScadentarIn(BaseModel):
     amanata_pana: Optional[str] = None
 
 @app.put("/tenants/{tenant_id}/facturi/{factura_id}/notificare")
-def scadentar_supapa(tenant_id: int, factura_id: int, date: SupapaScadentarIn, ctx=Depends(cere_context)):
+def scadentar_supapa(tenant_id: int, factura_id: int, date: SupapaScadentarIn,
+                     ctx=Depends(cere_rol("admin_firma"))):
     """F131: supapa per factura - nu notifica (stop) / amana pana la data X."""
     from core import scadentar as _sc
     schema = _schema_sau_404(ctx, tenant_id)
@@ -2943,7 +2947,7 @@ def factura_creeaza(tenant_id: int, date: FacturaIn,
 
 
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/transforma")
-def proforma_transforma(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
+def proforma_transforma(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("admin_firma"))):
     """Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal)."""
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
@@ -4028,7 +4032,9 @@ def tenant_stat_plata(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabin
             _reges_ok = _rc.fetchone() is not None
         return {"stat": stat, "reges_configurat": _reges_ok}
 @app.get("/tenants/{tenant_id}/fluturas/{salariat_id}")
-def tenant_fluturas(tenant_id: int, salariat_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+# [R52] Poartă salariul unei PERSOANE — date despre cineva care nu e firma.
+def tenant_fluturas(tenant_id: int, salariat_id: int, an: int, luna: int,
+                    ctx=Depends(cere_rol("admin_firma"))):
     from fastapi.responses import Response
     from core import stat_plata_api as _sp
     with db.get_conn() as conn:  # [search_path_tenant_v1] schema + nume firma pe conn public
@@ -4640,7 +4646,9 @@ def portal_bon_imagine(bon_id: int, n: int, tenant_id: Optional[int] = None, ctx
     return FileResponse(cale)
 
 @app.get("/tenants/{tenant_id}/bonuri/{bon_id}/imagine/{n}")
-def cabinet_bon_imagine(tenant_id: int, bon_id: int, n: int, ctx=Depends(cere_cabinet)):
+# [R52] Fotografia unui bon: orice apare pe hârtia aia, inclusiv ce nu ține de firmă.
+def cabinet_bon_imagine(tenant_id: int, bon_id: int, n: int,
+                        ctx=Depends(cere_rol("admin_firma"))):
     from fastapi.responses import FileResponse
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -4689,7 +4697,8 @@ class ChitantaStinge(BaseModel):
     factura_id: Optional[int] = None
 
 @app.post("/tenants/{tenant_id}/bonuri/{bon_id}/stinge")
-def chitanta_stinge(tenant_id: int, bon_id: int, c: ChitantaStinge, ctx=Depends(cere_cabinet)):
+def chitanta_stinge(tenant_id: int, bon_id: int, c: ChitantaStinge,
+                    ctx=Depends(cere_rol("admin_firma"))):
     """Chitanta certificata de contabil: plata furnizor prin Registrul de casa
     (casa_api.adauga -> 401=5311 ciorna + operatiune casa + verificare plafon).
     Optional leaga si marcheaza platita factura primita."""
@@ -4792,7 +4801,8 @@ def chitante_lista(tenant_id: int, factura_id: Optional[int] = None, ctx=Depends
     return {"chitante": chi}
 
 @app.get("/tenants/{tenant_id}/chitante/{chitanta_id}/pdf")
-def chitanta_pdf(tenant_id: int, chitanta_id: int, ctx=Depends(cere_context)):
+# [R52] Poartă numele și suma plătită de un terț.
+def chitanta_pdf(tenant_id: int, chitanta_id: int, ctx=Depends(cere_rol("admin_firma"))):
     from fastapi.responses import Response
     from core import chitante as _ch
     schema = _schema_sau_404(ctx, tenant_id)
@@ -4984,7 +4994,7 @@ def apiv1_factura_emite(tenant_id: int, corp: dict = Body(...), actx=Depends(cer
 
 
 @app.post("/tenants/{tenant_id}/woocommerce/sincronizeaza")  # wc_sinc_v1
-def wc_sinc(tenant_id: int, ctx=Depends(cere_context)):
+def wc_sinc(tenant_id: int, ctx=Depends(cere_rol("admin_firma"))):
     from core import woocommerce as _wc
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
@@ -7293,6 +7303,28 @@ def d406_stocuri_xml(tenant_id: int, data_start: str, data_end: str, cui: str,
 
 
 
+class PrapastieIn(BaseModel):
+    salariu_brut: float
+    persoane_intretinere: int = 0
+    data_nastere: Optional[str] = None
+    copii_scolarizati: int = 0
+    declaratie_copii: bool = False
+    tip_norma: str = "intreaga"
+    ore_zi: Optional[float] = None
+    data_angajare: Optional[str] = None
+    scutit_contrib_minim: bool = False
+
+
+@app.post("/tenants/{tenant_id}/prapastie-salariu")
+# [R49, varianta (c)] Cat pierde salariatul daca brutul trece peste salariul minim — cu cifre,
+# calculate cu TOATE elementele formularului, nu cu valori implicite (aia a invalidat R28).
+# NU scrie nimic: e un calcul peste ce s-a completat pe ecran.
+def tenant_prapastie_salariu(tenant_id: int, date: PrapastieIn, ctx=Depends(cere_cabinet)):
+    from core import prapastie_salariu as _pr
+    _schema_sau_404(ctx, tenant_id)
+    return _pr.prapastie(date.salariu_brut, date.model_dump())
+
+
 @app.post("/tenants/{tenant_id}/calcul-cm")  # [api_intern_v1] calculator CM - fara UI inca, pastrat deliberat
 def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
     """corp: {salariat_id, an, luna (luna certificatului), zile_lucratoare_cm,
@@ -7510,7 +7542,7 @@ def factura_primita_xml(tenant_id: int, primita_id: int, ctx=Depends(cere_contex
 
 @app.post("/tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza")
 def factura_primita_valideaza(tenant_id: int, primita_id: int, corp: dict = Body(default={}),
-                              ctx=Depends(cere_context)):
+                              ctx=Depends(cere_rol("admin_firma"))):
     """FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) +
     leaga factura_id + status=validata. Idempotent (FOR UPDATE + verifica status). cont sugerat,
     confirmat de om. Gard = acces la tenant + actiune umana explicita; NU identitate != importator."""
@@ -7682,7 +7714,8 @@ def reges_poll(tenant_id: int, ctx=Depends(cere_cabinet)):
 
 
 @app.post("/tenants/{tenant_id}/achizitie-taxare-inversa")
-def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...),
+                             ctx=Depends(cere_rol("admin_firma"))):
     """corp: {data, categorie, valoare (fara TVA), cont_destinatie, cota?,
     furnizor_platitor_tva, descriere?}. Beneficiarul (firma) trebuie platitor TVA.
     Nota ciorna: cont_dest=401 valoare + 4426=4427 TVA (norme pct. 109)."""
@@ -7764,7 +7797,8 @@ def verifica_vies_ep(tenant_id: int, cod_tva: str, ctx=Depends(cere_context)):
 
 
 @app.post("/tenants/{tenant_id}/achizitie-ic")
-def achizitie_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def achizitie_ic(tenant_id: int, corp: dict = Body(...),
+                 ctx=Depends(cere_rol("admin_firma"))):
     """AIC bunuri/servicii primite (art. 268 / 278(2), plata = beneficiar art. 308).
     corp: {data, valoare (RON), cont_destinatie, cota?, tip bunuri|servicii, descriere?}.
     Nota ciorna: cont_dest=401 + 4426=4427 (norme 109)."""
@@ -7817,7 +7851,8 @@ def achizitie_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabine
 
 
 @app.post("/tenants/{tenant_id}/achizitie-neinregistrat")
-def achizitie_neinregistrat(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def achizitie_neinregistrat(tenant_id: int, corp: dict = Body(...),
+                            ctx=Depends(cere_rol("admin_firma"))):
     """Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2).
     corp: {data, furnizor_nume (obligatoriu), valoare, cont_cheltuiala, numar?, categorie? (CODPR_N lit.D),
     descriere?}. Fara CUI furnizor -> tip N. categorie OPTIONALA: FARA ea N ramane EXCLUS din D394 cu avertisment
@@ -8300,7 +8335,8 @@ def nota_avans(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
 
 
 @app.post("/tenants/{tenant_id}/achizitie-necorporala")
-def achizitie_necorporala(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+def achizitie_necorporala(tenant_id: int, corp: dict = Body(...),
+                          ctx=Depends(cere_rol("admin_firma"))):
     """corp: {data, denumire, valoare (fara TVA), tip software|licenta|brevet|
     dezvoltare|constituire, dnf_luni?, cota?, cod?}.
     Art. 28(9): software = 36 luni (fix); licenta/brevet = durata contract (dnf_luni
