@@ -1999,3 +1999,9 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   · **calibrare în ambele direcții** (METODA §22): instrumentul vede o rută orfană inventată **și** nu
   inventează una acolo unde nu e · mutație pe propriul mod de eșec: aliasul **local** de import bate pe
   cel de modul, altfel ruta de NIR primește `salarizare`.
+
+- **`core/test_trasee.py` — +3 teste (25.08.2026)**: blocul generat din `TRASEE.md` Partea XII e
+  **identic** cu ce produce `scan_trasee.py --md`, cu prima linie de divergență numită în mesaj
+  (doc↔cod, RED-proof prin mutație cu restaurare verificată prin amprentă) · datele de firme există și
+  acoperă toate cele 17 (anti-vacuu pe sursa numerelor) · un traseu fără tabelă proprie **nu**
+  raportează zero firme, ci necunoscut.

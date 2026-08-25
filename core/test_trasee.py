@@ -19,6 +19,7 @@ Ce NU ține, scris ca să nu se creadă altceva: că un traseu e CORECT. Testul 
 harta acoperă codul, nu că drumul e bun.
 """
 import importlib.util
+import io
 import os
 
 import pytest
@@ -138,3 +139,52 @@ def test_aliasul_local_bate_pe_cel_de_modul(st):
     assert set(nir[0]["module"]) == {"stocuri_api"}, (
         "ruta de NIR nu mai e legată exact de `stocuri_api`, ci de %s — harta aliasurilor "
         "locale s-a stricat" % sorted(nir[0]["module"]))
+
+def test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul(st):
+    """doc↔cod. Partea XII din `TRASEE.md` e GENERATĂ (`--md`). Dacă cineva o editează cu
+    mâna, sau dacă inventarul se schimbă și documentul rămâne, cele două diverg — și
+    atunci documentul descrie o aplicație care nu mai există. Regenerarea:
+    `./venv/bin/python scripts/scan_trasee.py --md` + rescrierea blocului dintre marcaje."""
+    doc = io.open(os.path.join(_RAD, "TRASEE.md"), encoding="utf-8").read()
+    assert st.MARCA_START in doc and st.MARCA_STOP in doc, (
+        "TRASEE.md n-are marcajele blocului generat — Partea XII a fost ștearsă?")
+    a = doc.index(st.MARCA_START)
+    b = doc.index(st.MARCA_STOP) + len(st.MARCA_STOP)
+    din_doc = doc[a:b]
+    generat = st.redare_md()
+    if din_doc != generat:
+        ld, lg = din_doc.split(chr(10)), generat.split(chr(10))
+        prima = next((i for i in range(max(len(ld), len(lg)))
+                      if (ld[i] if i < len(ld) else None) != (lg[i] if i < len(lg) else None)),
+                     0)
+        raise AssertionError(
+            "blocul din TRASEE.md diferă de ce generează scan_trasee.py --md, "
+            "prima diferență la linia %d a blocului:%s  doc:     %r%s  generat: %r%s"
+            "Regenerează: ./venv/bin/python scripts/scan_trasee.py --md"
+            % (prima + 1, chr(10), ld[prima] if prima < len(ld) else "(lipsește)", chr(10),
+               lg[prima] if prima < len(lg) else "(lipsește)", chr(10)))
+
+
+def test_datele_de_firme_exista_si_acopera_toate_firmele(st):
+    """Anti-vacuu pe sursa numerelor de firme. Un fișier absent ar face redarea să tacă
+    despre precondiții, iar tăcerea s-ar citi ca «nu s-a măsurat» — sau, mai rău, ca zero."""
+    f = st.firme_cunoscute()
+    assert f, ("scripts/trasee_firme.json lipsește sau e gol — regenerează cu "
+               "`scripts/scan_trasee.py --firme`")
+    assert len(f) >= 17, ("datele acoperă doar %d firme; instalarea are cel puțin 17. "
+                          "Fișierul e stătut." % len(f))
+    goale = [s for s, n in f.items() if not any(n.values())]
+    assert not goale, ("firme fără niciun rând în nicio tabelă: %s — fie măsurătoarea "
+                       "n-a văzut schema, fie firma chiar e goală; ambele merită privite"
+                       % goale)
+
+
+def test_traseele_fara_tabela_proprie_nu_raporteaza_ZERO_firme(st):
+    """Interdicția 32 aplicată instrumentului: un traseu fără tabelă proprie NU poate
+    spune «nicio firmă» — nu se poate ști din date. Un necunoscut rotunjit la zero ar
+    umfla cifra care contează („câte trasee nu se pot parcurge")."""
+    d = st.construieste()
+    rele = [t["id"] for t in d["trasee"]
+            if not t["tabele_declarate"] and t.get("firme_nr") is not None]
+    assert not rele, ("trasee fără tabelă proprie care raportează totuși un număr de "
+                      "firme: %s — necunoscutul s-a rotunjit" % rele)

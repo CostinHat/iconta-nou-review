@@ -4534,3 +4534,18 @@ din bază** (`--tabele`), nu se scrie în cod.
 
 **Ce NU face, declarat:** nu spune că un traseu e **corect**. Spune că harta acoperă codul, nu că
 drumul e bun. Nu vede „ce trebuie să fie adevărat după fiecare pas" — aia e decizie, nu cod.
+
+**Cele 35 de trasee sunt SCRISE în document, dar generate din cod** (`TRASEE.md` Partea XII +
+`scan_trasee.py --md`, 25.08.2026). Alternativa era să le scriu de mână — și ar fi fost **al doilea
+loc în care trăiește starea**, exact ce interzice `PLAN_LUCRU.md` („Unde stau"). Așa, documentul
+poartă conținutul (pașii cu gardă și rol, modulele, tabelele, stările, refuzurile, marginea, firmele
+care îl pot exercita), iar `core/test_trasee.py` verifică să fie **identic**, caracter cu caracter, cu
+ce produce instrumentul. **RED-proof prin mutație**, cu restaurare verificată prin amprentă: o cifră
+schimbată cu mâna în bloc pică testul și îi spune omului linia.
+
+**Numerele de firme trăiesc ca fișier** (`scripts/trasee_firme.json`, regenerat cu `--firme`), nu ca
+apel la bază — altfel redarea n-ar fi determinist comparabilă la poartă, iar testul doc↔cod n-ar putea
+rula fără DB. Cu trei gărzi pe el: fișierul există și acoperă toate cele 17 firme · nicio firmă nu e
+complet goală fără să se vadă · **un traseu fără tabelă proprie NU poate raporta „zero firme"**
+(interdicția 32 aplicată instrumentului: un necunoscut rotunjit la zero ar umfla exact cifra care
+contează).

@@ -224,6 +224,7 @@ NEMARGINI = {
 
 
 CALE_TABELE = os.path.join(RAD, "scripts", "trasee_tabele.json")
+CALE_FIRME = os.path.join(RAD, "scripts", "trasee_firme.json")
 
 
 def tabele_cunoscute():
@@ -232,6 +233,18 @@ def tabele_cunoscute():
     fragmente de f-string (`factur`, `pe`) și le raportează ca tabele."""
     try:
         return set(json.load(open(CALE_TABELE, encoding="utf-8"))["tabele"])
+    except OSError:
+        return None
+
+
+def firme_cunoscute():
+    """Numaratoarea pe firme, regenerata din baza cu `--firme`.
+
+    Traieste ca FISIER, nu ca apel live, din acelasi motiv ca lista de tabele: ca
+    redarea in TRASEE.md sa fie deterministă si sa se poata compara intr-un test care
+    ruleaza fara baza de date. `--db` forteaza citirea live si rescrie fisierul."""
+    try:
+        return json.load(open(CALE_FIRME, encoding="utf-8"))["firme"]
     except OSError:
         return None
 
@@ -473,7 +486,7 @@ def construieste(cu_db=False):
             info["scrie"] = {k: v for k, v in info["scrie"].items() if k in cunoscute}
     ext = module_margine(mod)
     per_traseu, orfane, dublate, nedoc = acoperire(rute)
-    firme = masoara_firme() if cu_db else None
+    firme = masoara_firme() if cu_db else firme_cunoscute()
 
     out = {"total_rute": len(rute), "orfane": orfane, "dublate": dublate,
            "nedocumentare": len(nedoc), "trasee": []}
@@ -523,6 +536,97 @@ def construieste(cu_db=False):
                 t["firme_nr"] = len(t["firme"])
         out["trasee"].append(t)
     return out
+
+
+# ============================================================
+#  REDAREA ÎN TRASEE.md — generata, nu scrisa de mana
+# ============================================================
+MARCA_START = "<!-- trasee:auto:start -->"
+MARCA_STOP = "<!-- trasee:auto:stop -->"
+
+
+def _rute_traseu(rute, tid):
+    per, _, _, _ = acoperire(rute)
+    return per[tid]
+
+
+def redare_md(cu_db=False):
+    """Blocul care intra intre marcaje in TRASEE.md.
+
+    De ce GENERAT: 27 de trasee scrise de mana ar fi un al doilea loc in care traieste
+    starea, iar al doilea loc se invecheste (PLAN_LUCRU, "Unde stau"). Asa, documentul
+    poarta continutul, iar `core/test_trasee.py` verifica ca blocul din document e IDENTIC
+    cu ce genereaza instrumentul. Doc si cod nu pot diverge tacit.
+    """
+    d = construieste(cu_db)
+    rute = citeste_rute()
+    per, _, _, _ = acoperire(rute)
+    L = []
+    A = L.append
+    A(MARCA_START)
+    A("")
+    A("*Blocul de mai jos e **generat** cu `scripts/scan_trasee.py --md`, iar")
+    A("`core/test_trasee.py` verifica sa fie identic cu ce genereaza instrumentul. Nu se")
+    A("editeaza cu mana: o corectura se face in inventar si se regenereaza.*")
+    A("")
+    for t in d["trasee"]:
+        A("### %s — %s" % (t["id"], t["nume"]))
+        A("")
+        A("**Clasa:** %s · **rute:** %d (din care schimba date: %d) · **refuzuri explicite:** %d"
+          % (t["clasa"], t["rute"], t["mutante"], t["refuzuri"]))
+        A("")
+        # cine
+        if t["roluri"] or t["fine"]:
+            buc = []
+            if t["roluri"]:
+                buc.append("rol cerut: %s" % ", ".join("`%s`" % r for r in t["roluri"]))
+            if t["fine"]:
+                buc.append("drept fin: %s" % ", ".join("`%s`" % r for r in t["fine"]))
+            A("**Cine:** %s. **Rute care schimba date fara nicio verificare de rol: %d din %d.**"
+              % (" · ".join(buc), t["fara_rol"], t["mutante"]))
+        else:
+            A("**Cine:** nicio verificare de rol pe tot traseul — orice utilizator "
+              "autentificat al cabinetului. **%d din %d rute care schimba date.**"
+              % (t["fara_rol"], t["mutante"]))
+        A("")
+        # pasii = rutele, in ordinea caii
+        A("**Pasii, din cod:**")
+        A("")
+        for r in sorted(per[t["id"]], key=lambda r: (r["cale"], r["metoda"])):
+            g = ",".join(r["garzi"]) or "FARA GARDA"
+            rol = (" rol:" + ",".join(r["roluri"])) if r["roluri"] else ""
+            fin = (" drept:" + ",".join(r["fine"])) if r["fine"] else ""
+            A("- `%s %s` — garda `%s`%s%s" % (r["metoda"], r["cale"], g, rol, fin))
+        A("")
+        if t["module"]:
+            A("**Module:** %s" % ", ".join("`%s`" % m for m in t["module"]))
+            A("")
+        if t["scrie"]:
+            A("**Scrie in:** %s" % " · ".join(
+                "`%s` (%s)" % (k, "/".join(v)) for k, v in sorted(t["scrie"].items())))
+            A("")
+        else:
+            A("**Scrie in: NIMIC.** Se produce si nu se pastreaza.")
+            A("")
+        if t["stari"]:
+            A("**Stari puse:** %s" % ", ".join("`%s`" % x for x in t["stari"]))
+            A("")
+        if t["exterior"]:
+            A("**Margine:** %s" % " · ".join(
+                "`%s` (%s)" % (m, MARGINI[m]) for m in t["exterior"] if m in MARGINI))
+            A("")
+        if "firme_nr" in t:
+            if t["firme_nr"] is None:
+                A("**Firme care il pot exercita azi:** *nu se poate sti din date* — "
+                  "traseul n-are tabela proprie.")
+            elif t["firme_nr"] == 0:
+                A("**Firme care il pot exercita azi: NICIUNA.**")
+            else:
+                A("**Firme care il pot exercita azi: %d** — %s"
+                  % (t["firme_nr"], ", ".join("`%s`" % f for f in t["firme"])))
+            A("")
+    A(MARCA_STOP)
+    return chr(10).join(L)
 
 
 def masoara_firme():
@@ -585,9 +689,24 @@ def scrie_tabele():
     print("scris %s: %d tabele din %s" % (CALE_TABELE, len(tab), ", ".join(scheme)))
 
 
+def scrie_firme():
+    """Regenereaza `scripts/trasee_firme.json` — cate randuri are fiecare firma in fiecare
+    tabela. Se ruleaza cand se schimba datele de test, nu la fiecare rulare."""
+    f = masoara_firme()
+    json.dump({"firme": f}, open(CALE_FIRME, "w", encoding="utf-8"),
+              ensure_ascii=False, indent=1, sort_keys=True)
+    print("scris %s: %d firme" % (CALE_FIRME, len(f)))
+
+
 def main():
     if "--tabele" in sys.argv:
         scrie_tabele()
+        return 0
+    if "--firme" in sys.argv:
+        scrie_firme()
+        return 0
+    if "--md" in sys.argv:
+        print(redare_md("--db" in sys.argv))
         return 0
     cu_db = "--db" in sys.argv
     d = construieste(cu_db)
