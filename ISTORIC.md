@@ -5128,3 +5128,112 @@ de două ori *„lipsește"* despre lucruri care existau — „rute fără gard
 scrie nimic" pentru module care scriu fără prefix de schemă. Amândouă prinse prin citire directă
 înainte de a ajunge în document. Un traseu completat din presupunere e mai rău decât unul lipsă: se
 verifică ceva care nu există, iar verificarea trece.
+
+## 25.08.2026 (3) — plecarea unui salariat se salvează, salariile devin notă contabilă, iar o parte din operațiuni cer administratorul firmei
+
+*Ziua a avut 28 de commituri. Primele două intrări de mai sus acoperă dimineața. Asta acoperă restul,
+și e scrisă pe ce simte un contabil, nu pe ce s-a construit.*
+
+### Un salariat plecat rămânea în serviciu, iar aplicația spunea că l-a salvat
+
+**Ce s-a schimbat.** Când completezi data încetării contractului, se salvează. Până azi **nu se
+salva**, iar ecranul răspundea ca și cum s-ar fi salvat.
+
+**Consecința era pe declarație, nu pe ecran.** Salariatul rămânea în serviciu, deci **continua să
+apară în D112** luna următoare. Nimic nu semnala nimic: contabilul completa data, primea confirmarea,
+închidea fereastra. Defectul a ieșit din citirea unei rute, nu dintr-o reclamație — și e prag 1
+fiindcă produce o declarație greșită către ANAF fără să spună.
+
+### La un leu peste salariul minim, ecranul spune din nou cât pierde salariatul — dar acum cu cifre reale
+
+**Ce s-a schimbat.** La angajare, dacă brutul introdus trece peste salariul minim, apare, **înainte de
+buton**, cât scade netul: *„la 4325 lei brut netul e 2699,63; la 4326 e 2617,21 — cu 82,42 lei mai
+puțin; netul redevine cel de la minim abia de la 4478 lei brut."*
+
+**De ce cu cifre, și de ce abia acum.** Avertismentul exista, dar a plecat colateral pe 24.08 odată cu
+o estimare care se calcula greșit: pasa **doi din optsprezece** parametri, deci cifra nu putea coincide
+cu fluturașul unui salariat cu persoane în întreținere sau cu normă parțială. Costin a decis varianta
+cu cifre — *„contabilul care mărește un salariu cu 100 de lei are nevoie să vadă CÂT pierde salariatul,
+nu că pierde"* — cu condiția ca ele să fie calculate cu **toate** elementele. Sunt: se recalculează la
+fiecare tastă, cu persoanele în întreținere, norma, data angajării și restul.
+
+Pragul și plafonul vin din registrul de valori fiscale, cu temeiul lor (OUG 89/2025 art. III), nu din
+cod.
+
+### Statul de plată devine notă contabilă, iar aplicația spune când nu se potrivește cu D112
+
+**Ce s-a schimbat.** Pe ecranul de stat de plată e un buton nou, **„Contabilizează statul"**. Îți arată
+nota pe care ar scrie-o, linie cu linie, și — sub ea — dacă totalurile ei **nu se potrivesc cu D112-ul
+lunii**, cu **ambele cifre**: ce ar scrie nota, ce declară D112, și diferența. Nota se scrie ca
+**ciornă**; validarea rămâne a doua pereche de ochi.
+
+**Nu blochează.** Poți scrie nota și când cifrele diferă. Motivul, în cuvintele lui Costin: *„aplicația
+compară o propunere cu o declarație generată din alte date. Când cele două diferă, nu se știe care
+greșește — poate declarația e veche, poate nota e corectă. Un blocaj ar presupune că declarația are
+dreptate."*
+
+**Ce era înainte.** Nimic: **salariile nu deveneau niciodată notă contabilă în aplicație.** Modulul care
+face contabilizarea era scris, testat, și nu-l chema nimeni. Iar în capul lui scria că *„nota se scrie
+doar dacă totalul coincide cu D112 — altfel refuzăm"*. Nimic nu scria și nimic nu refuza.
+
+**Semnalul a găsit ceva din prima**, pe firma de probă: impozitul pe venit — nota ar scrie 161,12 lei
+în contul 444, D112 declară 204,00. Diferență de 42,88 lei, pe care nimeni n-o vedea.
+
+### O notă nu se mai poate scrie într-o lună închisă
+
+**Ce s-a schimbat.** Dacă ai închis o lună, nu se mai poate **crea** o notă datată în ea. Până azi se
+putea: verificarea exista pentru modificarea, ștergerea și validarea unei note care există, dar
+**crearea intra pe altă ușă**. O notă nouă datată într-o lună închisă e tot o modificare a perioadei
+închise.
+
+Sunt **39 de operațiuni** care primesc verificarea: toate notele contabile, plus amortizarea,
+contabilizarea unei facturi, raportul Z al zilei, aprobarea unui bon și operațiunile de regim special.
+Ce s-a închis, rămâne închis; ce e greșit se **stornează**, nu se rescrie.
+
+### O parte din operațiuni cer acum administratorul firmei
+
+**Ce s-a schimbat pentru un asistent.** Nu mai poate: confirma o depunere · emite un document ·
+închide sau redeschide o lună · șterge ceva emis · deschide **fluturașul unui salariat**, o
+**chitanță** sau **imaginea unui bon** · schimba regimul de TVA al firmei · porni sau opri canalul
+către magazinul online.
+
+**Poate în continuare** tot restul muncii zilnice: introduce, generează, validează, pregătește. Inclusiv
+notele contabile — **toate**. Criteriul e al lui Costin: *„tot ce iese din aplicație către o autoritate
+sau către un om, plus tot ce închide sau redeschide o perioadă. Restul se poate reface; ce am numit
+mai sus, nu."* Plus, adăugat la cele patru cazuri de graniță: **ce schimbă ce datorează firma**.
+
+Cele trei documente cu date personale — fluturașul, chitanța, imaginile de bon — au intrat pe alt
+criteriu: *„tot ce poartă datele unui terț"*. Un PDF de factură rămâne deschis oricui din cabinet.
+
+**Notă onestă: nimeni nu poate exercita restricția azi.** Instalarea are un singur cont de asistent, și
+el n-are nicio firmă atribuită. Restricția e scrisă și păzită; se va vedea pe primul cabinet cu doi
+oameni.
+
+### O limită a instrumentului, spusă pe față
+
+**Ce s-a schimbat: nimic în aplicație. S-a schimbat ce scrie despre ea.** La D301, aplicația acceptă 20
+de valute. Nu fiindcă legea le limitează — ordinul spune *„tipul valutei (de exemplu: USD, euro…)"*, deci
+nu închide lista — ci fiindcă **atâtea acceptă validatorul ANAF**. O operațiune făcută legal într-o
+valută din afara celor 20 **nu se poate depune** prin aplicație.
+
+Nu se poate repara în cod. Se poate doar numi, și de azi e numită. Aceeași verificare a arătat că
+aplicația citea o formă depășită a ordinului pentru D394: cea în vigoare (septembrie 2025) era în
+corpus și n-o citise nimeni. Vocabularul e identic, deci nicio declarație n-a fost greșită — dar
+citarea era la un act care nu mai e forma curentă.
+
+### Ce NU s-a schimbat, și se vede
+
+- **Nicio declarație n-a fost încă depusă prin aplicație.** Lanțul de apărare construit în ultimele
+  zile — verdictul păstrat, coada care refuză, verificările încrucișate — **nu s-a exercitat niciodată
+  de la capăt la capăt**. Rămâne cea mai mare necunoscută.
+- **Două firme șterse lasă în urmă 67 de rânduri** în tabele partajate — **65** în jurnalul de audit
+  și **2** în alertele de control — legate de firme care nu mai există. Nu s-au șters prin aplicație;
+  jurnalul serverului arată o ștergere rulată manual pe 16.08, care a și eșuat la jumătate. Iar
+  funcția care se numește *„ștergere completă cabinet"* nu atinge tabelele partajate: o va produce din
+  nou.
+- **Pe ecranul statului de plată lipsesc în continuare semnalul de contradicție și butoanele de
+  emitere/corecție** — capabilitatea există, dar se ajunge la ea doar prin API. Propunerea vizuală
+  așteaptă din 22.08, fiindcă reorganizarea unui ecran cere confirmare.
+- **`echilibru_perioada` — o verificare de balanță — rămâne o a doua implementare** a ceva ce există
+  deja legat, și nu o cheamă nimeni.
+
