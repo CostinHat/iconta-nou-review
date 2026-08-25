@@ -37,7 +37,10 @@ NEÎNCEPUTE 38; restanțe deschise **35** (E1: **12**), ultima **R48**.
   IX–X l-au completat din cod; **Partea XI** îi dă un **inventar calculat**.
 - **`scripts/scan_trasee.py` + `core/test_trasee.py`** — inventarul celor **35 de trasee**, acoperirea
   celor **400 de rute** (orfane: **0**), clasificarea mecanică (**MECANIC 27 · PARȚIAL 3 · MANUAL 5**,
-  clichet), și, cu `--db`, **care firmă poate exercita care traseu**.
+  clichet), și **care firmă poate exercita care traseu**. **Partea XII din `TRASEE.md` le SCRIE pe
+  toate 35 — generat cu `--md`, nu de mână**, iar garda compară blocul din document cu ce produce
+  instrumentul: doc și cod nu pot diverge tăcut. **Blocul nu se editează cu mâna** — se corectează
+  inventarul și se regenerează.
 - **R41 partea I** — verdictul oficial de validare se **păstrează** (rezultat · moment · versiunea
   validatorului · amprenta XML-ului), iar aprobarea și depunerea se refuză fără verdict proaspăt.
   **Partea II — ecranul — NU e făcută.** E a treia tură în care se amână.
