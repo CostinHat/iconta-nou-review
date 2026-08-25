@@ -4,9 +4,9 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-25**
-- **pe commit**: `3cb6c44` — starea de **intrare** a turei care a scris fișierul ăsta. Commitul care
-  îl aduce e cel imediat următor, iar de la el se numără vechimea.
+- **ultima rescriere**: **2026-08-25** *(a doua oară în aceeași zi — s-au închis două restanțe și
+  s-au luat patru decizii, deci tot ce scria la „fronturi deschise" se schimbase)*
+- **pe commit**: `5ee504c`
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire, nu la câteva zile.** Regula e
   scrisă aici fiindcă a fost încălcată de două ori. Prima dată (22.08) versiunea veche conținea **trei
   afirmații false**. A doua oară (24→25.08) n-a fost rescrisă deloc: a rămas **38 de commituri în
@@ -41,9 +41,19 @@ NEÎNCEPUTE 38; restanțe deschise **35** (E1: **12**), ultima **R48**.
   toate 35 — generat cu `--md`, nu de mână**, iar garda compară blocul din document cu ce produce
   instrumentul: doc și cod nu pot diverge tăcut. **Blocul nu se editează cu mâna** — se corectează
   inventarul și se regenerează.
-- **R41 partea I** — verdictul oficial de validare se **păstrează** (rezultat · moment · versiunea
-  validatorului · amprenta XML-ului), iar aprobarea și depunerea se refuză fără verdict proaspăt.
-  **Partea II — ecranul — NU e făcută.** E a treia tură în care se amână.
+- **R41 — ÎNCHISĂ, amândouă părțile.** Partea I: verdictul oficial se **păstrează** (rezultat ·
+  moment · versiunea validatorului · amprenta XML-ului), iar aprobarea și depunerea se refuză fără
+  verdict proaspăt. **Partea a II-a (25.08): ecranul.** „De depus" conține doar ce e gata; restul stă
+  în „Generate, nevalidate", care spune ce lipsește și pe unde se iese; eticheta e derivată, cu patru
+  stări; trecerea peste refuz cere motiv scris. **Și cardul** de pe tabloul cabinetului, care spunea
+  *„3 declarații de depus"* despre trei pe care serverul le refuză.
+- **Cele patru decizii ale lui Costin (25.08)** — R30 (MĂSURATĂ ȘI ACCEPTATĂ, reluare la grupul 4) ·
+  R42 (criteriul: ce iese către o autoritate sau către un om, plus perioada — **14 rute** trecute pe
+  `admin_firma`) · R45 (ce se păstrează: artefactul · momentul · autorul · amprenta · numărul
+  exemplarului, plus verdictul la declarații) · și **`TRASEE_VERIFICARI.md`**, al cincilea document.
+- **`TRASEE_VERIFICARI.md`** — **singurul document care NU se generează.** Scheletul o dată
+  (`scripts/scan_trasee.py --verificari`); conținutul îl scrie Costin. **187 de locuri**, câte unul
+  per pas care schimbă ceva. **Nu se regenerează peste el** — ar șterge tot ce s-a scris.
 - **Cele trei decizii din Partea VII, luate** — roluri, margini netestabile, precondiții. Sunt în
   `DECIZII.md` 25.08, iar consecințele lor sunt R42, R43, R48.
 - **Cele două mixturi, desfăcute** — factura n-are 4 ieșiri, are **20 de consumatori**; nota n-are 4
@@ -64,29 +74,29 @@ poartă `măsurat la` și `pe commit`, iar o gardă cade dacă îmbătrânesc t�
 
 ## FRONTURI DESCHISE, în ordine
 
-1. **R41 partea a II-a — ECRANUL. Se face prima.** Serverul refuză deja depunerea fără verdict
-   proaspăt, dar ecranul **încă numește „De depus"** o listă în care intră și ce nu e gata. Decizia e
-   luată și scrisă (`DECIZII.md` 24.08): verdict afișat · blocare pe respins **sau lipsă** · trecere
-   explicită și consemnată · două liste separate, iar cea de nevalidate spune **ce lipsește**.
-2. **R30 — DECIZIE, îl așteaptă pe Costin. Cea mai veche.** Avertismentul despre prăpastia salariului
-   minim a plecat odată cu estimarea scoasă prin R28. Se întoarce fără cifre, se mută la salvare, sau
-   nu se întoarce? **Nu se începe fără decizie.**
-3. **R42 — DECIZIE.** Care operațiuni cer `admin_firma`. **144** de rute care schimbă date nu verifică
-   niciun rol; pe traseul notei contabile, **24 din 24**. A pune `admin_firma` peste tot ar bloca
-   asistenții pe munca lor zilnică — de-aia e decizie, nu reparație.
-4. **R45 — DECIZIE.** Se păstrează un artefact produs, și cu ce câmpuri? Patru instanțe ale aceleiași
-   clase (situații financiare · fișierul de salarii · exportul contabil · auditul de preluare), plus
-   R41 ca a cincea. O decizie, nu patru.
-5. **Pragul 3 din triaj** — amânat de opt ture, și e cea mai mare datorie rămasă: îngustarea
-   Registrului-inventar la partidă dublă, livrarea registrului de evidență fiscală pe partidă simplă
-   (calculul există în `rip_api` + `d212_engine`), iar la sfârșit deductibilitatea per operațiune.
-6. **R43, R44, R46, R47, R48** — deschise azi, din inventarul traseelor. Vezi `CONFORMITATE.md`.
-7. **R8** (cele trei egalități stricte) și **R9** (ecranul statului de plată, STOP nemișcat) —
+1. **`TRASEE_VERIFICARI.md` — îl completează Costin.** 187 de locuri goale. Până se scriu, inventarul
+   de trasee e o **hartă a codului**, nu o listă de verificare. E cel mai mare lucru rămas, și nu e
+   muncă de-a mea.
+2. **R49 — DECIZIE, îl așteaptă pe Costin.** Avertismentul de prăpastie al salariului minim,
+   desprins din R30 fiindcă R30 avea două condiții de închidere. (a) nu se întoarce · (b) se întoarce
+   fără cifre · (c) cu cifre, calculate cu toate elementele. **Nu se începe fără decizie.**
+3. **R42 — cele 134 rămase.** Criteriul e luat și aplicat pe clasa numită (14 rute). Restul de **134**
+   de rute care schimbă date și nu verifică niciun rol se triază pe același criteriu, iar cifra devine
+   clichet în `core/test_trasee.py`.
+4. **R45 — de construit.** Decizia e scrisă (cele cinci câmpuri). Patru artefacte o așteaptă:
+   situațiile financiare · fișierul de plată a salariilor · exportul contabil · auditul de preluare.
+5. **R44 — un cuvânt, apoi se închide.** Refuzul e construit; rămâne ce se face cu rândul orfan care
+   există (id 2020, `tenant_id` 13245): se șterge, sau se releagă de `tenant_017`, firma din payload.
+6. **Pragul 3 din triaj** — amânat de nouă ture, cea mai mare datorie rămasă: îngustarea
+   Registrului-inventar la partidă dublă, registrul de evidență fiscală pe partidă simplă (calculul
+   există în `rip_api` + `d212_engine`), apoi deductibilitatea per operațiune.
+7. **R43, R46, R47, R48** — deschise pe 25.08 din inventarul traseelor. Vezi `CONFORMITATE.md`.
+8. **R8** (cele trei egalități stricte) și **R9** (ecranul statului de plată, STOP nemișcat) —
    deschise de peste 80 de commituri fiecare.
-8. **Tensiunea P8 ↔ interdicția 16, NEREZOLVATĂ.** P8: *„arbitrul decide"*. Interdicția 16: *„nu
+9. **Tensiunea P8 ↔ interdicția 16, NEREZOLVATĂ.** P8: *„arbitrul decide"*. Interdicția 16: *„nu
    deriva nomenclatorul dintr-o sursă secundară"*. `d390.TIPURI/TARI_UE`, `d301.VALUTE`,
    `d394.TIPURI` au ales **conștient** validatorul, cu probă scrisă. Planul nu spune care câștigă.
-   **Decizie cerută lui Costin** — nu e aceeași cu R30.
+   **Decizie cerută lui Costin** — nu e aceeași cu R49.
 
 ## CE TREBUIE ȘTIUT DESPRE DATE, ÎNAINTE DE ORICE MĂSURĂTOARE
 
@@ -128,5 +138,11 @@ Măsurat 25.08, pe toate cele 17 firme:
 - **Nu edita scripturi de conversie din shell.** Escapările se rup pe ghilimelele românești și pe
   `\u`. Se scrie **fișierul** și se trimite octet cu octet (`METODA` §10.3).
 - **Nu rula un RED-proof cu `git checkout`** când arborele are muncă necomisă.
+- **Un RED-proof pe un REFUZ scrie.** Instanța: mutația care a ținut garda lui R44 pe `if False` a
+  făcut ca un test care pe cod sănătos **nu scrie nimic** să insereze două rânduri orfane într-o
+  tabelă partajată. Prinse de clichet și șterse — dar verificarea nu e „testul a picat", ci **„testul
+  a picat ȘI n-a rămas nimic în urmă"**.
+- **Nu regenera `TRASEE_VERIFICARI.md`.** E singurul document scris de om. `--verificari` produce
+  scheletul; rulat peste fișierul completat, îl golește.
 - **Nu curăța `__pycache__` doar la sfârșit.** Două mutații de aceeași dimensiune în aceeași secundă
   reciclează bytecode-ul și proba devine falsă.
