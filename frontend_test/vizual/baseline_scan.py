@@ -8,6 +8,12 @@ Doua moduri:
              self-diff = masura de FLAKINESS (cat de determinist e ecranul). Salveaza
              baseline/<ecran>.png. Daca self-diff e mare, baseline-ul ar fi zgomotos ->
              se propune prag / mascare, nu se impune tacut.
+  ATENTIE, cele doua moduri raspund la INTREBARI DIFERITE si se confunda usor:
+    implicit -> „e ecranul STABIL de la o captura la alta?" (zgomot de randare)
+    --compare -> „s-a SCHIMBAT ecranul fata de referinta?" (regresie vizuala)
+  Un „STABIL" din modul implicit NU spune nimic despre schimbare. Baseline-urile NU sunt
+  urmarite in git (decizia lui Costin, 26.08.2026): sunt referinte locale, regenerabile.
+
   --compare  COMPARA: captura curenta vs baseline/<ecran>.png -> pixeli diferiti + %,
              salveaza diff_<ecran>.png la depasire. Asa iese o schimbare vizuala
              neintentionata singura la tura urmatoare.
@@ -83,7 +89,11 @@ def main():
                     r.update(self_pixeli_dif=d, self_procent=round(pct, 4), dim_egala=egal)
                     r["flakiness"] = ("STABIL" if pct < 0.02 else
                                       "USOR" if pct < 0.2 else "ZGOMOTOS")
-                    # baseline = prima captura
+                    # baseline = prima captura. Se SPUNE daca exista una inainte: „STABIL"
+                    # singur se citeste ca „am comparat cu referinta si nu s-a schimbat", desi e
+                    # self-diff intre doua capturi din aceeasi rulare. (Costin, 26.08.2026: „azi
+                    # absenta ar da vid, iar vidul arata ca stabilitate".)
+                    r["referinta"] = "RESCRISA" if os.path.exists(base) else "NOUA"
                     Image.open(c1).save(base)
                     r["baseline"] = os.path.relpath(base, HERE)
                     sz = Image.open(base).size
@@ -104,11 +114,15 @@ def main():
                 r["ecran"], r.get("stare", "?"), r.get("pixeli_dif", "-"),
                 ("%.4f%%" % r["procent"]) if "procent" in r else "-"))
     else:
-        linii.append("%-22s %10s %11s %9s %10s" % ("ECRAN", "DIM", "FLAKINESS", "PIXELI", "PROCENT"))
+        linii.append("ATENTIE: FLAKINESS e self-diff intre DOUA capturi din ACEEASI rulare —")
+        linii.append("NU e o comparatie cu referinta de dinainte. Pentru aia: --compare.")
+        linii.append("")
+        linii.append("%-22s %10s %10s %11s %9s %10s"
+                     % ("ECRAN", "DIM", "REFERINTA", "FLAKINESS", "PIXELI", "PROCENT"))
         for r in rez:
             if not r.get("ok"): linii.append("%-22s EROARE %s" % (r["ecran"], r.get("error"))); continue
-            linii.append("%-22s %10s %11s %9d %9.4f%%" % (
-                r["ecran"], r.get("dim", "?"), r.get("flakiness", "?"),
+            linii.append("%-22s %10s %10s %11s %9d %9.4f%%" % (
+                r["ecran"], r.get("dim", "?"), r.get("referinta", "?"), r.get("flakiness", "?"),
                 r.get("self_pixeli_dif", 0), r.get("self_procent", 0.0)))
     txt = "\n".join(linii)
     open(os.path.join(HERE, "raport_baseline.txt"), "w", encoding="utf-8").write(txt)

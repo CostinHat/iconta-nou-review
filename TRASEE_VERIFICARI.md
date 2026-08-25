@@ -745,7 +745,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: F183: audit de PRELUARE firma — coerenta INTERNA a pachetului preluat de la contabilul anterior (balanta echilibrata, defalcare parteneri vs sintetic, solduri fiscale vs  — scrie artefacte_produse (INSERT) — prin `artefacte`*
 
-- [ ] 
+- [x] auditul spune ce a găsit **și pe ce s-a uitat** — o firmă preluată fără evidență completă nu primește verdict favorabil, primește „nu pot verifica" cu lista domeniilor
+- fiecare constatare poartă domeniul și perioada la care se referă
+- absența unei categorii de date nu se convertește în „conform" — e P6
 
 ### `POST /migrare/fisier`
 
@@ -800,7 +802,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie articole (INSERT) · miscari_stoc (INSERT) — prin `articole_import_api`*
 
-- [ ] 
+- [x] ce s-a văzut la previzualizare e ce s-a importat — același număr, aceleași articole
+- articolele cu cod duplicat în fișier se semnalează, nu se suprascriu între ele
+- fiecare articol importat cu stoc inițial produce o mișcare de stoc, iar suma mișcărilor = stocul declarat
+- un import repetat cu același fișier nu dublează nici articolele, nici mișcările
 
 ### `POST /tenants/{tenant_id}/articole-import/incarca`
 
@@ -834,7 +839,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie mijloace_fixe (DELETE/INSERT) — prin `mijloace_fixe_import_api`*
 
-- [ ] 
+- [x] ce s-a văzut la previzualizare e ce s-a importat
+- amortizarea cumulată la data preluării nu depășește valoarea de intrare
+- un mijloc fix complet amortizat intră cu valoare rămasă zero, nu se respinge
 
 ### `POST /tenants/{tenant_id}/mijloace-fixe-import/incarca`
 
@@ -842,7 +849,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie migrare_status (INSERT) · mijloace_fixe (DELETE/INSERT) — prin `migrare_api`, `mijloace_fixe_import_api`*
 
-- [ ] 
+- [x] **nu scrie nimic** — verificat structural, nu prin absența efectului
+- durata de amortizare a fiecărui mijloc fix e confruntată cu catalogul; cele din afara intervalului se numesc, cu rândul lor
+- valoarea de intrare sub pragul de mijloc fix se semnalează — e obiect de inventar, nu mijloc fix
 
 ### `POST /tenants/{tenant_id}/parteneri`
 
@@ -890,7 +899,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Import registru incasari-plati la preluarea unui PFA — scrie migrare_status (INSERT) · rip_operatiuni (INSERT) — prin `migrare_api`, `rip_migrare_api`*
 
-- [ ] 
+- [x] **nu pot scrie verificarea fără să știu ce e RIP.** Registrul de inventar și producție? Registrul imobilizărilor? De completat din cod, ca la `retete-import`
+- **completat din cod (26.08.2026), cum ai cerut** — **RIP = Registrul de Încasări și Plăți** (partidă simplă, PFA). `core/rip_migrare_api.py`: partida simplă **nu are balanță de deschidere**; registrul e CRONOLOGIC, deci la preluare se importă operațiunile anului curent de la 1 ianuarie până la data preluării, iar soldul e implicit din sumă, nu un rând
+- operațiunile importate intră cu `status='validata'` — sunt istoric preluat, nu ciornă de verificat. Verificarea care contează: **preluarea nu certifică** corectitudinea contabilului anterior, iar limita e declarată în antetul modulului
+- sumele se citesc cu parserul din `solduri_api` (paranteze = negativ, format contabil RO/EN, sufixe RON/lei) — un singur loc pentru interpretarea sumelor
+- numărul de operațiuni importate = numărul de linii din fișier minus cele respinse, iar respinsele sunt numite cu rândul lor
 
 ### `POST /tenants/{tenant_id}/salariati-import`
 
@@ -943,7 +956,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie contracte_sabloane (DELETE/INSERT/UPDATE) — prin `contracte_api`*
 
-- [ ] 
+- [x] contractul generat se păstrează cu momentul, autorul, amprenta, numărul exemplarului
+- toate marcajele din șablon sunt înlocuite; unul rămas necompletat oprește generarea, nu produce un contract cu paranteze
+- datele din contract coincid cu fișa salariatului la data generării, nu cu cea de azi
 
 ### `POST /tenants/{tenant_id}/contracte/sabloane`
 
@@ -951,7 +966,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie contracte_sabloane (DELETE/INSERT/UPDATE) — prin `contracte_api`*
 
-- [ ] 
+- [x] șablonul salvat conține marcajele declarate; unul necunoscut se semnalează la salvare, nu la generare
+- un șablon cu același nume nu se suprascrie tăcut
 
 ### `DELETE /tenants/{tenant_id}/contracte/sabloane/{sid}`
 
@@ -959,7 +975,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie contracte_sabloane (DELETE/INSERT/UPDATE) — prin `contracte_api`*
 
-- [ ] 
+- [x] ștergerea unui șablon nu atinge contractele generate din el — acelea sunt documente emise
+- dacă șablonul e folosit de contracte existente, se spune câte
 
 ### `POST /tenants/{tenant_id}/prapastie-salariu`
 
@@ -967,7 +984,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: intoarce ce da `_pr.prapastie()`*
 
-- [ ] 
+- [x] răspunsul conține **ambele cifre** — netul la salariul actual și netul la cel propus — plus diferența, nu doar „se pierde facilitatea"
+- pragul de la care netul revine la nivelul actual e calculat, nu aproximat
+- cifrele sunt calculate cu toate elementele salariatului: persoane în întreținere, tip de contract, normă
+- dacă vreun element lipsește și cifra n-ar fi exactă, se spune — nu se dă o cifră parțială ca exactă
 
 ### `POST /tenants/{tenant_id}/reges-config`
 
@@ -975,7 +995,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {username, parola, mediu test|prod} — scrie reges_chei (INSERT)*
 
-- [ ] 
+- [x] **cheile nu se întorc niciodată în răspuns**, nici mascate, nici parțial
+- o cheie salvată e verificată că funcționează, sau se spune că n-a fost verificată
+- suprascrierea unei chei existente e consemnată: cine, când
 
 ### `POST /tenants/{tenant_id}/reges-poll`
 
@@ -983,7 +1005,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Citeste+consuma un mesaj din coada REGES; salveaza referintele in reges_mesaje. — scrie reges_mesaje (UPDATE)*
 
-- [ ] 
+- [x] răspunsul de la REGES se păstrează cu momentul, nu doar starea derivată din el
+- o trimitere fără răspuns după un interval rămâne „nelămurită", nu trece în „confirmată" prin lipsă de veste
+- polling-ul nu schimbă starea unei trimiteri deja confirmate
 
 ### `POST /tenants/{tenant_id}/reges-trimite-salariat`
 
@@ -991,7 +1015,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {salariat_id, adresa, contract {numar, data_contract, data_inceput, salariu, cor, ...}?} — scrie reges_mesaje (INSERT)*
 
-- [ ] 
+- [x] starea trimiterii e explicită: în curs / confirmată / respinsă / **nelămurită**
+- fără identificator de la REGES, starea nu e „confirmată"
+- o a doua trimitere pentru același salariat și aceeași modificare nu se face fără avertisment
+- ce s-a trimis se păstrează, nu doar că s-a trimis — la o neconcordanță, contează conținutul
 
 ### `POST /tenants/{tenant_id}/salariati`
 
@@ -999,7 +1026,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
 
-- [ ] 
+- [x] CNP-ul trece cifra de control; unul care nu trece se refuză cu motivul, nu se salvează
+- un CNP care există deja în firmă se refuză — nu se creează al doilea salariat cu același CNP
+- data angajării nu e în viitor față de perioada deschisă
+- salariul de bază nu e sub minimul aplicabil la data angajării, proratat cu norma. Dacă e, se refuză cu cifra minimului
 
 ### `DELETE /tenants/{tenant_id}/salariati/{salariat_id}`
 
@@ -1007,7 +1037,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
 
-- [ ] 
+- [x] **un salariat cu stat de plată emis nu se șterge.** Se marchează încetat, cu data. Ștergerea ar rupe lanțul către documentele emise
+- dacă ștergerea e permisă, verifică ce rămâne în urmă: fluturași, note contabile, rânduri în D112 deja depuse
+- încetarea se propagă în REGES — sau, dacă nu, se spune
 
 ### `PUT /tenants/{tenant_id}/salariati/{salariat_id}`
 
@@ -1015,7 +1047,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
 
-- [ ] 
+- [x] o modificare de salariu produce **istoric**, nu suprascriere: valoarea veche rămâne, cu perioada în care a fost valabilă
+- modificarea nu atinge lunile pentru care s-a emis deja stat de plată — sau, dacă le atinge, produce contradicție vizibilă
+- schimbarea normei recalculează pragul minim; dacă noul salariu cade sub el, se refuză
 
 ### `POST /tenants/{tenant_id}/salariati/{salariat_id}/adeverinta`
 
@@ -1023,7 +1057,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: F136: adeverinta de salariat (art*
 
-- [ ] 
+- [x] adeverința se păstrează: conținutul, momentul, autorul, amprenta, numărul exemplarului
+- cifrele din adeverință coincid cu statele de plată emise pentru perioada acoperită — nu se recalculează la emitere
+- dacă o lună din perioadă n-are stat emis, adeverința spune asta, nu o completează din recalcul
 
 ### `PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar`
 
@@ -1031,7 +1067,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: [F133 Faza 2a] beneficiu one-off pe luna (vacanta/cadou/cultural) — scrie beneficii_lunare (DELETE/INSERT) — prin `beneficii_api`*
 
-- [ ] 
+- [x] beneficiul intră cu perioada lui, nu cu „de acum înainte"
+- plafonul neimpozabil aplicabil e cel de la data lunii, nu de la data introducerii
+- ce depășește plafonul devine venit impozabil, iar partea impozabilă e vizibilă separat — nu se topește în brut
 
 ## T16 — Pontajul
 
@@ -1081,7 +1119,16 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie facturi (UPDATE) — prin `plati`*
 
-- [ ] 
+- [x] confirmarea se acceptă **numai** dacă e semnată de procesator, cu semnătura verificată. Altfel oricine cu referința poate marca o factură ca plătită
+- referința e imposibil de ghicit — nu incrementală, nu derivată din numărul facturii
+- o confirmare pe o referință deja confirmată nu produce a doua încasare
+- suma confirmată se compară cu suma din link; o diferență nu se acceptă tăcut
+- încasarea produsă poartă sursa „plată online", nu se confundă cu una introdusă manual
+- **verificat la sursă (26.08.2026): SEMNĂTURA NU SE VERIFICĂ — dar nu există procesator care s-o dea.** `plati.provider_activ()` întoarce `mock` cât timp lipsesc `STRIPE_SECRET_KEY`/`NETOPIA_API_KEY`, iar `genereaza_link` **ridică `NotImplementedError`** pentru orice alt provider. `confirma_plata(conn, schema, ref)` primește **doar `ref`** și face `UPDATE facturi SET platita_la=now()`
+- **și totuși NU e prag 1, măsurat**: `plata_ref` e **0 pe toate cele 17 firme** — niciun link n-a fost generat vreodată, deci efectul n-a fost produs. Iar `ref` e `secrets.token_urlsafe(16)`, adică 128 de biți: *cine are referința* înseamnă *cine a primit linkul*, nu *oricine*. E **R43**, deschisă, prag 2, blocată EXTERN pe cheile unui procesator real
+- problema e **semantica, nu secretul**: aplicația nu deosebește *clientul a apăsat butonul de demo* de *banii au intrat*. Pagina spune literal *„Apăsați pentru a simula plata”*, dar `platita_la` care rezultă arată identic cu unul real
+- ruta **parcurge toate schemele de firme** căutând `ref` — nu e o scurgere (nu întoarce nimic din alte firme), dar e o căutare care ar trebui să plece de la firma din `ref`
+- **confirmarea nu produce nicio încasare în evidență** — niciun rând în `casa_operatiuni`, niciun `inregistrari`. Marchează factura, atât
 
 ### `POST /tenants/{tenant_id}/chitante`
 
@@ -1089,7 +1136,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar: numerotare pe serie per firma + operatiune in Registrul de casa prin casa_api (5311=4111, nota ci — scrie casa_operatiuni (DELETE/INSERT) · chitante (INSERT) · facturi (UPDATE) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`*
 
-- [ ] 
+- [x] chitanța se păstrează cu numărul exemplarului, momentul, autorul, amprenta
+- **numerotarea nu are goluri și nu se reia** — o chitanță anulată își păstrează numărul
+- suma chitanței nu depășește soldul neîncasat al facturii la care se leagă
+- dacă nu se leagă de nicio factură, se spune la ce se leagă
 
 ### `POST /tenants/{tenant_id}/facturi/{factura_id}/link-plata`
 
@@ -1097,7 +1147,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie facturi (UPDATE) — prin `plati`*
 
-- [ ] 
+- [x] link-ul poartă suma exactă a facturii, nu una editabilă de plătitor
+- link-ul expiră; expirarea e o stare, nu o eroare
+- un al doilea link pe aceeași factură invalidează primul, sau se refuză — nu coexistă două
 
 ## T19 — Scadențarul și notificările de scadență
 
@@ -1337,7 +1389,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie firma_profil (UPDATE)*
 
-- [ ] 
+- [x] cheile de acces nu se întorc în răspuns
+- schimbarea configurației nu atinge facturile deja sincronizate
+- o configurație salvată e verificată că se conectează, sau se spune că n-a fost verificată
 
 ### `POST /tenants/{tenant_id}/woocommerce/sincronizeaza`
 
@@ -1345,7 +1399,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie facturi (UPDATE) · firma_profil (UPDATE) — prin `woocommerce`*
 
-- [ ] 
+- [x] fiecare comandă sincronizată produce **o singură** factură; o a doua rulare nu dublează
+- cota de TVA vine din articol sau din configurație — **nu se ghicește din denumire**
+- comenzile care nu s-au putut transforma în factură se numesc, cu motivul; nu se sar tăcut
+- ultima sincronizare reușită se păstrează, ca următoarea să știe de unde continuă
 
 ## T26 — Registratura
 
@@ -1373,7 +1430,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: intoarce {nota, xml}*
 
-- [ ] 
+- [x] XML-ul generat conține toate câmpurile obligatorii; unul lipsă oprește generarea cu numele lui
+- codurile din nomenclatoare — scop, tip de operațiune, unități — vin din registru, nu din literali
+- greutatea și valoarea sunt cele din documentul de transport, nu recalculate
 
 ### `POST /tenants/{tenant_id}/etransport/trimite`
 
@@ -1381,7 +1440,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Trimite notificarea UIT in SPV (F121): genereaza XML + trimite() cu PORTI in ordine (garda de timp -> idempotency -> validare pe TEST -> upload) — scrie etransport_trimiteri (INSERT/UPDATE) — prin `etransport_send`*
 
-- [ ] 
+- [x] cele patru porți rulează **în ordine**: garda de timp → idempotență → validare pe TEST → încărcare. O poartă sărită e un defect, nu o optimizare
+- codul UIT primit se păstrează; fără el, starea e „nelămurită"
+- garda de timp refuză o trimitere după termenul legal — și spune care e termenul
+- idempotența e pe conținut, nu pe moment: același transport trimis de două ori e prins chiar dacă a trecut timp
 
 ## T28 — Operațiunile intracomunitare, VIES și Intrastat
 
@@ -1441,7 +1503,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, valoare (fara taxa), cont_cheltuiala, agricultor_in_registru, agricultor?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] compensația în cotă forfetară se calculează pe cota în vigoare la data operațiunii
+- agricultorul e verificat că e în regimul special — altfel e o achiziție obișnuită
+- compensația plătită e deductibilă la cumpărător; verifică unde ajunge în D300
 
 ### `POST /tenants/{tenant_id}/achizitie-necorporala`
 
@@ -1465,7 +1529,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, categorie, valoare (fara TVA), cont_destinatie, cota?, furnizor_platitor_tva, descriere?} — scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `facturi_api`*
 
-- [ ] 
+- [x] bunul sau serviciul e din lista art. 331 — altfel taxarea inversă nu se aplică
+- pragul de 22.500 lei pentru telefoane, tablete, laptopuri, console e verificat pe factură, nu pe operațiune
+- TVA-ul se înregistrează simultan ca deductibil și colectat, iar cele două se anulează în decont
+- furnizorul e înregistrat în scopuri de TVA — altfel regimul nu se aplică
 
 ### `POST /tenants/{tenant_id}/export-extracomunitar`
 
@@ -1489,7 +1556,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, pret (fara taxa), descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] **nu pot scrie verificarea fără să știu ce reprezintă.** O vânzare CĂTRE un agricultor în regim special, sau o vânzare FĂCUTĂ de firmă dacă ea e agricultorul? Cele două au tratamente opuse. De completat din cod
+- **completat din cod (26.08.2026) — și răspunsul contrazice docstringul.** Contarea e `4111 = 704` pentru **preț** ȘI pentru **compensație**, iar corpul cere doar `{data, pret, descriere?}`: **nicio identificare a agricultorului, niciun `in_registru`** — spre deosebire de `achizitie-agricultor`, care le cere. Deci **firma E agricultorul** în regim special și vinde; clientul îi datorează preț + compensație de 8%, iar compensația e **venitul ei**, nu TVA. Descrierea generată — *„Livrare produse agricole”* — spune la fel
+- **docstringul rutei spune „Client agricultor regim special”, adică exact pe dos.** A treia instanță de R16 (proza care descrie codul poate fi falsă de la naștere) — și e chiar cea care ți-a produs întrebarea. Docstringul e corectat în același commit
+- compensația se calculează pe cota în vigoare la data operațiunii, din `tva_agricultori` (8%, art. 315^1 alin. 2) — nu dintr-un literal în rută
+- **ce NU am verificat**: dacă tratamentul contabil `4111=704` pentru compensație e cel corect fiscal. Am citit ce FACE codul și ce spune modulul; **n-am confruntat cu actul** dacă vânzătorul în regim special contează compensația ca venit sau altfel
 
 ### `POST /tenants/{tenant_id}/vanzare-aur-investitii`
 
@@ -1497,7 +1568,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, tip lingou|plancheta|moneda, puritate, an_emisie?, pret_unitar?, valoare_aur?, suma, optiune_taxare?, calitate_client PF|PJ, client_identificare, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] operațiunea e scutită fără drept de deducere; nu se colectează TVA
+- dacă firma a optat pentru taxare, opțiunea e consemnată și verificată la fiecare operațiune
+- aurul de investiții e definit prin puritate și formă — verifică dacă se validează, sau se acceptă orice
 
 ### `POST /tenants/{tenant_id}/vanzare-marja`
 
@@ -1505,7 +1578,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, pret_vanzare, pret_cumparare, cota?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] marja se calculează ca preț de vânzare minus preț de cumpărare, iar TVA-ul se aplică **pe marjă**, nu pe preț
+- o marjă negativă nu produce TVA negativă — se tratează ca marjă zero, sau se semnalează
+- prețul de cumpărare vine de la achiziția legată, nu se introduce liber
 
 ### `POST /tenants/{tenant_id}/vanzare-marja-turism`
 
@@ -1513,7 +1588,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, calitate_client PF|PJ, locuri [RO|UE|NONUE], optiune_normal?, intermediar?, cota?, descriere?} + per regim: special: incasat, cost_ue, cost_non_ue? | normal: — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] aceleași ca la marjă, plus: locul prestării e România pentru ca regimul să se aplice
+- serviciile prestate de terți în afara UE au tratament distinct — verifică dacă se disting
 
 ## T30 — Operațiunile în valută
 

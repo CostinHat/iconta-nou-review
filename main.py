@@ -27,6 +27,7 @@ from core.common import azi_ro, stare_din_nivel, pastila_firma  # [fus] ziua RO;
 from core import common as _common
 from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
 from core import afirmatii as _af  # [P8] afirmatiile despre datele firmei sunt obiecte, nu siruri
+from core import cont_valid as _cv  # [R54] contul din corpul cererii se confrunta cu planul firmei
 from core.unde import Unde as _Unde  # [P8] domeniul poate fi un OBIECT, nu o perioada
 from core.mesaje import (mesaj_din_cod, FARA_CABINET, EMAIL_INVALID, EMAIL_EXISTA,
                          EMAIL_NICIUNUL_VALID, CUI_FIRMA_LIPSA, PERIOADA_INCHISA,
@@ -1021,6 +1022,7 @@ class CoadaIn(BaseModel):
     date_extra: Optional[dict] = None
     ca_an_precedent_eur: Optional[float] = None
     inceput_la: Optional[str] = None  # [p15] ISO, momentul deschiderii formularului
+    motiv_trecere: Optional[str] = None  # trecerea EXPLICITA peste un verdict care nu e `valid`
 
 class RespingeIn(BaseModel):
     motiv: str
@@ -3225,7 +3227,44 @@ def coada_adauga(date: CoadaIn, ctx=Depends(cere_rol("admin_firma", "angajat")))
                "avertismente": (res if isinstance(res, list) else getattr(res, "avertismente", None)),
                "note_rezultat": ([] if isinstance(res, list) else (getattr(res, "note_rezultat", None) or [])),
                "randuri": coada_api.randuri_din_res(res)}
-    # 2) pune în coadă (pe public), stare 'la_senior'
+    # 2) POARTA: se VALIDEAZĂ ÎNAINTE de a intra în coadă (decizia lui Costin, 26.08.2026).
+    #
+    # Până azi coada primea orice se genera, iar validatorul rula abia când cineva deschidea
+    # elementul (`GET /coada/{id}/continut`). Poarta exista, dar la DEPUNERE. Consecința: lista
+    # pe care ecranul o numește „De depus" putea conține declarații care n-au trecut niciodată
+    # prin validator — o afirmație falsă despre propria stare (P13). Cazul care a produs regula
+    # e chiar cel din antetul lui `TRASEE.md`: trei declarații în coadă fără verdict, găsite
+    # fiindcă cineva a apăsat un buton, nu de vreo măsurătoare.
+    #
+    # NU se adaugă o a doua rulare de validator în lanț: rularea de aici e cea care oricum se
+    # făcea la prima deschidere, mutată mai devreme. Verdictul se PĂSTREAZĂ imediat după
+    # inserare, cu amprenta XML-ului validat, deci elementul intră în coadă purtându-l din
+    # naștere — nu îl capătă când se uită cineva la el.
+    #
+    # `gri` (nu am putut valida) NU trece drept favorabil (P6): se refuză la fel ca `erori`.
+    # Portița e aceeași ca la aprobare și depunere — `motiv_trecere` scris explicit, care se
+    # păstrează. Fără ea, un validator picat ar bloca toată munca; cu ea, trecerea are autor.
+    from core import duk as _duk_poarta
+    _rez = _duk_poarta.valideaza(xml, date.tip, an=date.an, luna=date.luna) if xml else {
+        "stare": "gri", "erori": "", "severitate": None,
+        "temei": "Generarea n-a produs XML.", "limita": ""}
+    _motiv = (date.motiv_trecere or "").strip()
+    if _rez.get("stare") != "valid" and not _motiv:
+        # Refuzul poartă CE lipsește, nu doar că lipsește — altfel contabilul află ce are de
+        # făcut abia deschizând altceva.
+        raise HTTPException(422, detail={
+            "mesaj": ("Declarația nu intră în coadă: validatorul oficial a răspuns „%s”."
+                      % _rez.get("stare")),
+            "stare": _rez.get("stare"), "erori": _rez.get("erori") or "",
+            "severitate": _rez.get("severitate"), "temei": _rez.get("temei"),
+            "limita": _rez.get("limita"),
+            # Mesajul NU numește câmpul intern al cererii (Regula 14 pct.4): contabilul vede
+            # ce are de făcut, nu numele coloanei. Câmpul rămâne în contractul API, la `detalii`.
+            "actiune": ("Corectează ce semnalează validatorul și generează din nou. Dacă treci "
+                        "peste deliberat, scrie motivul trecerii — se păstrează cu numele tău."),
+            "camp_trecere": "motiv_trecere"})
+
+    # 3) pune în coadă (pe public), stare 'la_senior'
     with db.get_conn() as conn:
         r = coada_api.adauga_in_coada(
             conn, ctx["firm"], date.tenant_id, date.tip, date.an, payload,
@@ -3233,6 +3272,17 @@ def coada_adauga(date: CoadaIn, ctx=Depends(cere_rol("admin_firma", "angajat")))
             inceput_la=date.inceput_la)  # [p15]
     if not r["ok"] and r.get("cod") == "DEJA_IN_COADA":
         raise HTTPException(409, r["mesaj"])
+    # verdictul intră odată cu elementul, nu la prima privire asupra lui
+    if r.get("ok") and r.get("coada_id"):
+        try:
+            with db.get_conn() as conn:
+                coada_api.scrie_verdict(conn, r["coada_id"], _rez,
+                                        _duk_poarta.versiune_validator(date.tip), xml)
+        except Exception as _e:
+            import logging
+            logging.getLogger("iconta").warning("verdict nepersistat la intrarea in coada (%s): %s",
+                                                r.get("coada_id"), _e)
+    r["verdict"] = {"stare": _rez.get("stare"), "trecut_cu_motiv": _motiv or None}
     # [p57_notif] notifica validatorii ca e ceva de validat
     if r.get("ok"):
         try:
@@ -7313,9 +7363,10 @@ def achizitie_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
         _cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             r = _m.achizitie_de_la_agricultor(corp["valoare"], corp["agricultor_in_registru"])
-            cont = str(corp["cont_cheltuiala"]).strip()
-            if not cont:
-                raise ValueError("cont_cheltuiala obligatoriu")
+            # [R54] confruntarea cu planul firmei inlocuieste verificarea de PREZENTA:
+            # `cere_cont` refuza si absenta, si contul care nu exista in plan, si spune CE
+            # cont si UNDE se creeaza. Doua verificari suprapuse ar fi doua locuri.
+            cont = _cv.cere_cont(conn, schema, corp.get("cont_cheltuiala"), "cont_cheltuiala")
         except (ValueError, KeyError) as e:
             raise HTTPException(422, str(e))
         descr = (corp.get("descriere") or "Achizitie agricultor regim special (art. 315^1)") \
@@ -7336,8 +7387,20 @@ def achizitie_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
 
 @app.post("/tenants/{tenant_id}/vanzare-agricultor")
 def vanzare_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
-    """corp: {data, pret (fara taxa), descriere?}. Client agricultor regim special:
-    factura fara TVA, mentiune regim + 8% + compensatie. Nota: 4111 = 704 pret + 704 compensatie."""
+    """corp: {data, pret (fara taxa), descriere?}. FIRMA E AGRICULTORUL in regim special si
+    VINDE: factura fara TVA, mentiune regim + compensatie 8%. Nota: 4111 = 704 pret + 704
+    compensatie — compensatia e VENITUL firmei, nu TVA (art. 315^1 alin. 1 lit. h si alin. 2).
+
+    [R16, corectat 26.08.2026] Textul de aici spunea „Client agricultor regim special", adica
+    EXACT PE DOS — ca si cum firma ar vinde CATRE un agricultor. Codul spune altceva, si o spune
+    de trei ori: corpul cere doar {data, pret}, FARA identificarea agricultorului si FARA
+    `in_registru` (pe care sora ei, /achizitie-agricultor, le cere); descrierea generata e
+    „Livrare produse agricole"; iar compensatia se contabilizeaza ca VENIT al firmei, ceea ce
+    are sens doar daca firma e cea care o incaseaza. Proza a produs o intrebare reala cand
+    Costin a scris verificarea pasului: nu se putea sti in ce sens merge operatiunea.
+
+    CE NU S-A VERIFICAT, declarat: daca `4111 = 704` pentru compensatie e tratamentul contabil
+    corect. S-a citit ce FACE codul si ce cita modulul; nu s-a confruntat cu actul."""
     from core import tva_agricultori as _m
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -7909,9 +7972,7 @@ def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...),
                                          corp.get("furnizor_platitor_tva", True),
                                          beneficiar_tva,
                                          _date.fromisoformat(corp["data"]))
-            cont = str(corp["cont_destinatie"]).strip()
-            if not cont:
-                raise ValueError("cont_destinatie obligatoriu")
+            cont = _cv.cere_cont(conn, schema, corp.get("cont_destinatie"), "cont_destinatie")  # [R54]
             val = Decimal(str(corp["valoare"]))
             cota = _common.cota_ceruta(corp)
             tva = _ti.tva_beneficiar(val, cota)
@@ -7985,9 +8046,7 @@ def achizitie_ic(tenant_id: int, corp: dict = Body(...),
         try:
             val = Decimal(str(corp["valoare"]))
             tva = _ic.tva_taxare_inversa(val, _common.cota_ceruta(corp))
-            cont = str(corp["cont_destinatie"]).strip()
-            if not cont:
-                raise ValueError("cont_destinatie obligatoriu")
+            cont = _cv.cere_cont(conn, schema, corp.get("cont_destinatie"), "cont_destinatie")  # [R54]
             cod_tva_furnizor = str(corp.get("cod_tva_furnizor") or "").strip().upper().replace(" ", "")
             if not cod_tva_furnizor:
                 raise ValueError("cod TVA furnizor UE obligatoriu (fara el achizitia NU ajunge in D390)")
@@ -8045,9 +8104,7 @@ def achizitie_neinregistrat(tenant_id: int, corp: dict = Body(...),
             val = Decimal(str(corp["valoare"]))
             if val <= 0:
                 raise ValueError("valoare invalidă")
-            cont = str(corp.get("cont_cheltuiala") or "").strip()
-            if not cont:
-                raise ValueError("cont_cheltuiala obligatoriu")
+            cont = _cv.cere_cont(conn, schema, corp.get("cont_cheltuiala"), "cont_cheltuiala")  # [R54]
             numar = str(corp.get("numar") or "").strip() or ("BORDEROU-" + str(corp["data"]))
             categorie = str(corp.get("categorie") or "").strip() or None
             if categorie and not _d394.codpr_N_din_categorie(categorie):
@@ -8099,11 +8156,13 @@ def vanzare_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
         try:
             if corp.get("tip") == "servicii":
                 ok, ment = _ic.valideaza_prestare_ic(corp["cod_tva_client"], v["valid"])
-                cont_venit = (str(corp.get("cont_venit") or "").strip() or "704")
+                cont_venit = _cv.cere_cont(conn, schema, corp.get("cont_venit"), "cont_venit", "704")
+                cont_venit = _cv.cere_cont(conn, schema, cont_venit, "cont_venit")
             else:
                 ok, ment = _ic.valideaza_lic(corp["cod_tva_client"], v["valid"],
                                              bool(corp.get("dovada_transport")))
-                cont_venit = (str(corp.get("cont_venit") or "").strip() or "707")
+                cont_venit = _cv.cere_cont(conn, schema, corp.get("cont_venit"), "cont_venit", "707")
+                cont_venit = _cv.cere_cont(conn, schema, cont_venit, "cont_venit")
             val = Decimal(str(corp["valoare"]))
             if val <= 0:
                 raise ValueError("valoare invalidă")
@@ -8146,9 +8205,7 @@ def import_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
                                   corp.get("accize", 0), corp.get("accesorii", 0),
                                   _common.cota_ceruta(corp),
                                   bool(corp.get("certificat_amanare")), platitor)
-            cont = str(corp["cont_destinatie"]).strip()
-            if not cont:
-                raise ValueError("cont_destinatie obligatoriu")
+            cont = _cv.cere_cont(conn, schema, corp.get("cont_destinatie"), "cont_destinatie")  # [R54]
             val = Decimal(str(corp["valoare_vamala"]))
         except (ValueError, KeyError) as e:
             raise HTTPException(422, str(e))
@@ -8196,9 +8253,13 @@ def export_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
             val = Decimal(str(corp["valoare"]))
             if val <= 0:
                 raise ValueError("valoare invalidă")
+            # [R54] confruntarea cu planul firmei stă ÎN try: refuzul e un mesaj pentru om
+            # (422), nu o defecțiune (500). Era după `except`, deci ar fi ieșit 500.
+            cont_venit = _cv.cere_cont(conn, schema,
+                                       _cv.cere_cont(conn, schema, corp.get("cont_venit"), "cont_venit", "707"),
+                                       "cont_venit")
         except (ValueError, KeyError) as e:
             raise HTTPException(422, str(e))
-        cont_venit = (str(corp.get("cont_venit") or "").strip() or "707")
         descr = (corp.get("descriere") or "Export") + f" ({corp['tara_client']}) - " + ment
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
@@ -8296,8 +8357,9 @@ def decontare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_ca
             data = _date.fromisoformat(corp["data"])
             curs_dec, _dcurs, _sursa = _cb.curs_pentru(conn, corp.get("moneda", "EUR"), data)
             r = _dc.nota_decontare(corp["valoare_valuta"], corp["curs_evidenta"],
-                                   curs_dec, corp["tip"], str(corp["cont_tert"]).strip(),
-                                   (str(corp.get("cont_banca") or "").strip() or "5124"))
+                                   curs_dec, corp["tip"],
+                                    _cv.cere_cont(conn, schema, corp.get("cont_tert"), "cont_tert"),
+                                   _cv.cere_cont(conn, schema, corp.get("cont_banca"), "cont_banca", "5124"))
         except (ValueError, KeyError) as e:
             raise HTTPException(422, str(e))
         d = r["diferenta"]
@@ -8389,7 +8451,7 @@ def nota_leasing(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabine
             if tip == "primire":
                 r = _ls.nota_primire_financiar(corp["valoare_capital"],
                                                corp.get("dobanda_totala", 0),
-                                               (str(corp.get("cont_imobilizare") or "").strip() or "2133"))
+                                               _cv.cere_cont(conn, schema, corp.get("cont_imobilizare"), "cont_imobilizare", "2133"))
                 d0 = "Primire bun leasing financiar (2133=167 + D8051 dobanda)"
             elif tip == "rata":
                 r = _ls.nota_rata_financiar(corp["capital"], corp.get("dobanda", 0),
@@ -8400,7 +8462,7 @@ def nota_leasing(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabine
                 d0 = "Valoare reziduala leasing (167=404, inchide 167)"
             elif tip == "operational":
                 r = _ls.nota_rata_operational(corp["chirie"], _common.cota_ceruta(corp),
-                                              (str(corp.get("cont_cheltuiala") or "").strip() or "612"))
+                                              _cv.cere_cont(conn, schema, corp.get("cont_cheltuiala"), "cont_cheltuiala", "612"))
                 d0 = "Rata leasing operational (612=401)"
             else:
                 raise ValueError("tip: primire|rata|reziduala|operational")
@@ -8692,7 +8754,7 @@ def nota_provizion_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
                 info = {"deductibil": r["deductibil"]}
                 d0 = f"Provizion {corp.get('tip','garantii')} ({act})" +                      ("" if r["deductibil"] else " - NEDEDUCTIBIL fiscal")
             elif fel == "stoc":
-                r = _pv.nota_ajustare_stoc(corp["suma"], (str(corp.get("cont_ajustare") or "").strip() or "397"), act)
+                r = _pv.nota_ajustare_stoc(corp["suma"], _cv.cere_cont(conn, schema, corp.get("cont_ajustare"), "cont_ajustare", "397"), act)
                 info = {"deductibil": False}
                 d0 = f"Ajustare depreciere stocuri ({act}) - nedeductibil fiscal"
             else:
@@ -8909,7 +8971,7 @@ def nota_subventie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
         try:
             if fel == "exploatare":
                 r = _sb.nota_subventie_exploatare(corp["suma"], corp.get("moment", "drept"),
-                                                  (str(corp.get("cont_venit") or "").strip() or "741"))
+                                                  _cv.cere_cont(conn, schema, corp.get("cont_venit"), "cont_venit", "741"))
                 d0 = f"Subventie exploatare ({corp.get('moment','drept')})"
             elif fel == "investitii":
                 r = _sb.nota_subventie_investitii(corp["suma"], corp.get("moment", "drept"))
@@ -9156,7 +9218,7 @@ def nota_perisabilitati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere
         try:
             r = _pe.calcul(corp["valoare_intrari"], corp["procent_limita"],
                            corp["pierdere_constatata"], _common.cota_ceruta(corp),
-                           (str(corp.get("cont_stoc") or "").strip() or "371"),
+                           _cv.cere_cont(conn, schema, corp.get("cont_stoc"), "cont_stoc", "371"),
                            bool(corp.get("degradare_dovedita_distrusa")))
         except (ValueError, KeyError) as e:
             raise HTTPException(422, str(e))
@@ -9274,7 +9336,7 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
         mf_id = None
         try:
             if op == "plus":
-                r = _iv.nota_plus(corp["valoare"], (str(corp.get("cont_stoc") or "").strip() or "371"))
+                r = _iv.nota_plus(corp["valoare"], _cv.cere_cont(conn, schema, corp.get("cont_stoc"), "cont_stoc", "371"))
                 d0 = "Plus la inventar stocuri"
             elif op == "plus_mf":
                 # [ruptura mijloc-fix post-migrare 14.08.2026] valideaza (art.28 alin.5/8^1) SI inscrie
@@ -9283,7 +9345,7 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
                 r = _iv.nota_plus_mf(corp["valoare"], mf_reg["cont_imobilizare"])
                 d0 = "Plus la inventar mijloace fixe (21x=4754)"
             elif op == "minus":
-                r = _iv.nota_minus(corp["valoare"], (str(corp.get("cont_stoc") or "").strip() or "371"),
+                r = _iv.nota_minus(corp["valoare"], _cv.cere_cont(conn, schema, corp.get("cont_stoc"), "cont_stoc", "371"),
                                    bool(corp.get("imputabil")),
                                    corp.get("valoare_imputare"),
                                    corp.get("vinovat", "salariat"),
@@ -9313,8 +9375,8 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
                 else:
                     r = _iv.nota_casare_mf(corp["valoare_bruta"],
                                            corp["amortizare_cumulata"],
-                                           (str(corp.get("cont_imobilizare") or "").strip() or "2131"),
-                                           (str(corp.get("cont_amortizare") or "").strip() or "2813"))
+                                           _cv.cere_cont(conn, schema, corp.get("cont_imobilizare"), "cont_imobilizare", "2131"),
+                                           _cv.cere_cont(conn, schema, corp.get("cont_amortizare"), "cont_amortizare", "2813"))
                     d0 = "Casare mijloc fix (PV comisie)"
             else:
                 raise ValueError("operatie: plus|plus_mf|minus|casare")
@@ -9368,8 +9430,8 @@ def nota_lichidare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
             if op == "vanzare_activ":
                 r = _li.nota_vanzare_activ(corp["pret"], corp["valoare_bruta"],
                                            corp["amortizare_cumulata"],
-                                           (str(corp.get("cont_imobilizare") or "").strip() or "2131"),
-                                           (str(corp.get("cont_amortizare") or "").strip() or "2813"),
+                                           _cv.cere_cont(conn, schema, corp.get("cont_imobilizare"), "cont_imobilizare", "2131"),
+                                           _cv.cere_cont(conn, schema, corp.get("cont_amortizare"), "cont_amortizare", "2813"),
                                            _common.cota_ceruta(corp))
                 d0 = "Lichidare: valorificare activ (7583 + descarcare)"
             elif op == "partaj":

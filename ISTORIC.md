@@ -5295,3 +5295,25 @@ mai rea decât o verificare absentă: absența se vede, tautologia raportează."
   `.py` și `.js`), deci `s1005-valideaza` și `s1003-valideaza` produc un artefact fără să poată ști
   dacă e cel datorat. 2 artefacte × 17 firme.
 - **Lotul 1 e scris în `TRASEE_VERIFICARI.md`**: 30 de locuri completate, 162 rămase.
+
+### 26.08.2026, tura a doua — cele patru decizii, aplicate
+
+- **R54 — se REFUZĂ.** `core/cont_valid.py`, un singur loc; refuzul numește contul, câmpul și
+  unde se creează. Legat în **19** din 27 de citiri; 8 rămân, fiecare cu motivul citit la sursă.
+  Regula a intrat și în `PLAN_ARHITECTURA` Partea III, cum a cerut Costin.
+- **Poarta de coadă s-a mutat la intrare.** `POST /coada` validează înainte de a insera; verdictul
+  intră odată cu elementul. Motivul lui: *„«coada = gata de depus» e ce spune ecranul, iar o listă
+  numită «De depus» care conține lucruri nevalidate e o afirmație falsă."*
+- **Baseline-urile ies din git**, iar `baseline_scan` nu mai lasă absența să arate ca stabilitate.
+- **R43 verificată, rămâne prag 2.** Semnătura procesatorului **nu se verifică** — dar nu există
+  procesator: `provider_activ()` întoarce `mock`, iar `genereaza_link` ridică `NotImplementedError`
+  pentru orice altceva. Și `plata_ref` e **0 pe toate cele 17 firme**, deci efectul n-a fost produs.
+- **Lotul 2 scris** (30 de locuri; 60 din 192 completate). Trei completări din cod: **RIP** =
+  Registrul de Încasări și Plăți · `/public/plata` · și `vanzare-agricultor`, unde răspunsul a
+  contrazis docstringul — **firma E agricultorul și vinde**, nu vinde către un agricultor. A treia
+  instanță de R16, corectată.
+- **Două restanțe noi din observațiile lui Costin pe lot:** **R55** (șapte rute scriu evidență
+  contabilă pentru aceeași clasă de operațiune, șase fără rol, una cu — o regulă care nu există) și
+  **R56** (trei rute manipulează credențiale externe fără rol).
+- **Etichetele lotului 1: 20 din 30** stăteau pe `scrie X` care e de fapt `poate atinge X prin
+  modul`; 10 nu s-au schimbat, 0 sunt mixte.

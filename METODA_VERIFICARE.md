@@ -1133,3 +1133,31 @@ Nu lipsea decizia. Lipsea citirea.
 sensul a două paragrafe de proză. Acoperă doar cazul în care una dintre reguli are gardă: atunci gardă
 contra text e o confruntare pe care o poate face un om în cinci minute, dacă știe s-o caute. Iar asta
 e tot ce cere §25: **să se caute.**
+
+### Motivul dintr-un clichet se VERIFICĂ, nu se presupune (26.08.2026)
+
+Un clichet cere ca fiecare intrare tolerată să poarte **de ce**. Regula tace despre partea grea:
+motivul e o afirmație despre cod, deci poate fi **falsă**, exact ca orice altă proză (R16).
+
+Instanța, din aceeași zi: eram gata să scriu, pentru jumătate din intrările clichetului R54,
+motivul *„modul pur, fără conn/schema în domeniu"*. Sunase plauzibil fiindcă **una** dintre ele
+chiar era așa. Citite la sursă, șapte nu erau: `conn` și `schema` erau în domeniu, expresia era
+în `try` care prinde `ValueError`, iar singurul lucru care le ținea nelegate era **forma
+patch-ului meu**. S-au legat toate șapte.
+
+**Un motiv de clichet scris din analogie transformă „n-am făcut" în „nu se poate" — și atunci
+clichetul nu mai e o datorie, e o justificare.** Testul, ieftin: pentru fiecare intrare, deschide
+funcția și verifică exact propoziția pe care vrei s-o scrii.
+
+### Ghilimelele românești rup șirul Python (26.08.2026, a patra oară în aceeași zi)
+
+Un ghilimel de închidere ASCII pus după unul de deschidere românesc încheie **șirul Python**, nu
+citatul: `„ceva"` într-un literal cu ghilimele duble e o eroare de sintaxă la linia următoare.
+S-a întâmplat de patru ori într-o singură tură, iar mesajul pe care îl dă interpretorul arată
+spre caracterul greșit — de obicei o linie-două mai jos.
+
+**Și „reparația" automată e mai periculoasă decât greșeala:** un înlocuitor care transformă orice
+`"` de după `„` în ghilimel de închidere nu știe unde se termină literalul Python, deci strică
+și șirurile corecte. Instanța: a stricat trei literale valide într-un fișier pe care încerca să-l
+repare. **Se scrie corect de la început** — perechea tipografică, în tot textul românesc — sau
+textul stă într-un fișier separat, nu într-un literal.

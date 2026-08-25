@@ -2088,3 +2088,13 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   RED-proof: un sit repus în forma mascată → roșu, numind fișierul și linia.
 - **`core/test_module_nelegate.py` — PIN scade la 5** (26.08.2026): `echilibru_perioada` iese,
   fiindcă s-a legat. Clichetul e bidirecțional, deci ieșirea din pin e cerută, nu opțională.
+
+- **`core/test_cont_din_corp_normalizat.py` — extins la 8 teste (26.08.2026)**, R54 partea a doua:
+  orice cont din corpul cererii e **normalizat** (`.strip()` sau `cere_cont`, care îl subsumează)
+  · clichet **bidirecțional** pe cele neconfruntate cu planul, ancorat pe **funcție**, nu pe linie
+  · fiecare intrare din clichet poartă motivul, verificat la sursă · refuzul **numește contul,
+  câmpul și unde se creează** · `normalizeaza` e într-un singur loc (P1).
+  RED-proof: un sit repus în forma mascată → roșu, numind fișierul și linia.
+- **Fereastra de detecție a gardului, corectată în aceeași zi**: privea doar înainte, deci raporta
+  ca nelegată chiar citirea pe care tocmai o legasem (forma `x = cere_cont(conn, schema,` pe un
+  rând, argumentul pe următorul). Un gard care nu se vede pe sine.

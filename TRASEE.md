@@ -1146,7 +1146,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T01 — Declarația — generare, validare, coadă, aprobare, depunere
 
-**Clasa:** MECANIC · **rute:** 15 (din care schimba date: 8) · **refuzuri explicite:** 35
+**Clasa:** MECANIC · **rute:** 15 (din care schimba date: 8) · **refuzuri explicite:** 36
 
 **Cine:** rol cerut: `admin_firma`, `angajat` · drept fin: `poate_depune`, `poate_valida`. **Rute care schimba date fara nicio verificare de rol: 1 din 8.**
 
@@ -1292,9 +1292,9 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `GET /tenants/{tenant_id}/plan-conturi` — garda `cere_context`
 - `POST /tenants/{tenant_id}/plan-conturi` — garda `cere_context`
 
-**Module:** `avansuri`, `bacsis`, `comodat_chirii`, `contracte_speciale`, `credite`, `d406_active`, `decontari_asociati`, `deconturi`, `documente_api`, `inventariere`, `jurnal_api`, `leasing`, `lichidare`, `obiecte_inventar`, `ong`, `perisabilitati`, `productie`, `provizioane`, `sgr`, `sponsorizari`, `subventii`, `tenant_provisioning`, `tva_incasare`
+**Module:** `avansuri`, `bacsis`, `comodat_chirii`, `contracte_speciale`, `credite`, `d406_active`, `decontari_asociati`, `deconturi`, `documente_api`, `inventariere`, `jurnal_api`, `leasing`, `lichidare`, `obiecte_inventar`, `ong`, `perisabilitati`, `productie`, `provizioane`, `sgr`, `sponsorizari`, `stocuri_cv_api`, `subventii`, `tenant_provisioning`, `tva_incasare`
 
-**Scrie in:** `ai_corectii` (INSERT) · `casa_operatiuni` (DELETE) · `extras_linii` (UPDATE) · `firma_profil` (INSERT/UPDATE) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `mijloace_fixe` (INSERT/UPDATE) · `plan_conturi` (INSERT) · `tenants` (INSERT/UPDATE) · `user_tenants` (INSERT)
+**Scrie in:** `ai_corectii` (INSERT) · `articole` (INSERT/UPDATE) · `casa_operatiuni` (DELETE) · `extras_linii` (UPDATE) · `firma_profil` (INSERT/UPDATE) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `mijloace_fixe` (INSERT/UPDATE) · `miscari_stoc` (INSERT) · `plan_conturi` (INSERT) · `tenants` (INSERT/UPDATE) · `user_tenants` (INSERT)
 
 **Stari puse:** `contat`, `potrivit`, `validata`
 
@@ -1823,9 +1823,9 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `GET /tenants/{tenant_id}/verifica-cui/{cui}` — garda `cere_context`
 - `GET /tenants/{tenant_id}/verifica-vies` — garda `cere_context`
 
-**Module:** `anaf_api`, `d390_clasificare_api`, `facturi_api`, `intracomunitar`, `intrastat`
+**Module:** `anaf_api`, `d390_clasificare_api`, `facturi_api`, `intracomunitar`, `intrastat`, `stocuri_cv_api`
 
-**Scrie in:** `d390_manual` (DELETE/INSERT) · `d390_reclasificare` (DELETE/INSERT) · `factura_linii` (INSERT) · `facturi` (DELETE/INSERT/UPDATE) · `firma_profil` (UPDATE) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT)
+**Scrie in:** `articole` (INSERT/UPDATE) · `d390_manual` (DELETE/INSERT) · `d390_reclasificare` (DELETE/INSERT) · `factura_linii` (INSERT) · `facturi` (DELETE/INSERT/UPDATE) · `firma_profil` (UPDATE) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `miscari_stoc` (INSERT)
 
 **Firme care il pot exercita azi: 2** — `tenant_013`, `tenant_017`
 
@@ -1849,9 +1849,9 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/vanzare-marja` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/vanzare-marja-turism` — garda `cere_cabinet`
 
-**Module:** `afirmatii`, `anaf_api`, `d394`, `facturi_api`, `import_export`, `taxare_inversa`, `tva_agricultori`, `tva_aur`, `tva_marja`, `tva_marja_turism`
+**Module:** `afirmatii`, `anaf_api`, `d394`, `facturi_api`, `import_export`, `stocuri_cv_api`, `taxare_inversa`, `tva_agricultori`, `tva_aur`, `tva_marja`, `tva_marja_turism`
 
-**Scrie in:** `factura_linii` (INSERT) · `facturi` (DELETE/INSERT/UPDATE) · `firma_profil` (UPDATE) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `mijloace_fixe` (INSERT)
+**Scrie in:** `articole` (INSERT/UPDATE) · `factura_linii` (INSERT) · `facturi` (DELETE/INSERT/UPDATE) · `firma_profil` (UPDATE) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `mijloace_fixe` (INSERT) · `miscari_stoc` (INSERT)
 
 **Firme care il pot exercita azi:** *nu se poate sti din date* — traseul n-are tabela proprie.
 
@@ -1866,9 +1866,9 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/decontare-valuta` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/reevaluare-valuta` — garda `cere_cabinet`
 
-**Module:** `afirmatii`, `curs_bnr`, `diferente_curs`
+**Module:** `afirmatii`, `curs_bnr`, `diferente_curs`, `stocuri_cv_api`
 
-**Scrie in:** `curs_bnr_zilnic` (INSERT) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT)
+**Scrie in:** `articole` (INSERT/UPDATE) · `curs_bnr_zilnic` (INSERT) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `miscari_stoc` (INSERT)
 
 **Firme care il pot exercita azi:** *nu se poate sti din date* — traseul n-are tabela proprie.
 

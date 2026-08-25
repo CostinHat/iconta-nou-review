@@ -624,6 +624,7 @@ Lista e închisă.
 - Actele abrogate nu se șterg: primesc succesor și rămân interogabile pentru perioadele trecute.
 - O decizie contrazisă de arbitru rămâne marcată ca dezacord deschis.
 - **Denumirile oficiale sunt intrări cu temei**, nu șiruri în cod.
+- **O intrare din AFARA unui nomenclator de registru se REFUZĂ, nu se semnalează.** *(Adăugat 26.08.2026, prin decizia lui Costin, după R54.)* Planul spunea deja că nimeni nu scrie o valoare din aceste categorii în afara registrului, dar nu spunea ce se face cu o valoare care **vine din afară** și nu se regăsește în el. Motivul deciziei, scris: *„o notă cu cont inexistent nu e evidență, e un rând care arată ca evidență. Nu se poate depune, nu se poate desface la control, iar contabilul află abia când generează ceva.”* Argumentul contrar — că refuzul blochează pe cine lucrează repede — se rezolvă altfel: cine vrea o intrare nouă o creează în nomenclator, **și aia e chiar decizia pe care trebuie s-o ia conștient**. **Refuzul numește intrarea și spune unde se creează** — nu „valoare invalidă”, ci *„contul 7O7 nu există în planul firmei; îl adaugi din Plan de conturi”*. Fără partea a doua, refuzul mută munca fără s-o îndrume.
 - **O modificare cu efect retroactiv declanșează P18.**
 - **Nicio decizie de interpretare nu intră fără să fi fost cerută.**
 

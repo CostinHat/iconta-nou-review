@@ -1,3 +1,10 @@
+# capturile de referinta ale uneltelor vizuale (decizia lui Costin, 26.08.2026)
+# Un baseline vizual e o referinta LOCALA, nu un artefact partajat: doua statii cu randari
+# usor diferite ar produce diferente care nu sunt regresii. Iar ~2 MB de PNG care cresc la
+# fiecare recapturare sunt cost permanent pentru ceva regenerabil cu `baseline_scan.py`.
+# Starea de dinainte era cea mai proasta dintre cele trei: 5 urmarite din 14.
+frontend_test/vizual/baseline/
+
 # backup-uri de la patch-uri (nu versionam - git e istoricul acum)
 *.bak_*
 *.bak

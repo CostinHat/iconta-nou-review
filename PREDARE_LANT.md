@@ -1,11 +1,11 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — R33 închisă prin măsurătoare, lotul 1 scris (26.08.2026)
+# PREDARE LANȚ — patru decizii aplicate, loturile 1 și 2 scrise (26.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-26**, *prima din ziua asta*
-- **pe commit**: `d0bd859`
+- **ultima rescriere**: **2026-08-26**, *a doua din ziua asta*
+- **pe commit**: `e47b60e`
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire, nu la câteva zile.** Regula e
   scrisă aici fiindcă a fost încălcată de trei ori. Prima dată (22.08) versiunea veche conținea trei
   afirmații false. A doua oară (24→25.08) a rămas **38 de commituri** în urmă. A treia oară e **azi**:
@@ -79,17 +79,19 @@ Ziua a avut trei jumătăți; astea sunt cele care contează pentru cine continu
    inventarul de trasee e o **hartă a codului**, nu o listă de verificare. E cel mai mare lucru rămas,
    și **nu e muncă de-a mea**. **Cadența, fixată 25.08: un lot pe tură** — eu dau lotul
    (`scan_trasee.py --loturi N`), el scrie verificările în fișier, apoi trec la următorul.
-   **Lotul 1 e SCRIS în fișier** (30 de locuri completate, **162 rămase**). Următorul de dat: **lotul 2**.
-   **Rândul `*ce face:*` din lot distinge acum** ce e măsurat pe rută (`scrie …`) de ce e moștenit de
-   la modul (`poate atinge, prin modul (PLAFON, nemăsurat pe rută)`) — vezi **R53**. Lotul 1 a fost
-   dat cu formularea veche, care le amesteca.
-2. **R33 — ÎNCHISĂ pe jumătatea de prag 2 (26.08.2026, varianta b′′).** `echilibru_perioada` e legat
-   **lângă** `verificatoare.verifica_balanta`, ramura tautologică `BALANTA_INEGALA` e scoasă, iar cele
-   două se arată ca **un singur** „Echilibru". Din cele patru module nelegate mai rămâne **unul**:
-   `compensare` (`fisa_cont` are declarație scrisă). Detaliile: `CONFORMITATE.md`, R33.
-   **Ce a rămas deschis de aici: R54** — contul din corpul cererii e normalizat, dar **nu e confruntat
-   cu planul de conturi**. Decizie: se refuză, sau se semnalează? Atinge cele 12 câmpuri de cont în
-   text liber din ecranul de operațiuni. **E singura decizie care blochează acum.**
+   **Loturile 1 și 2 sunt SCRISE** (60 de locuri completate, **132 rămase**). Următorul de dat:
+   **lotul 3** (dat deja în raport). **Rândul `*ce face:*` distinge** ce e măsurat pe rută (`scrie …`)
+   de ce e moștenit de la modul (`poate atinge, prin modul (PLAFON, nemăsurat pe rută)`) — **R53**.
+   **Lotul 1 a primit formularea veche**, iar Costin a cerut lista celor afectate: **20 din 30** stăteau
+   pe o etichetă care s-a schimbat integral, **10** nu, **0** mixte. Lista e în raportul turei.
+2. **R33 și R54 — ÎNCHISE pe partea care blochează (26.08.2026).** `echilibru_perioada` e legat lângă
+   `verifica_balanta`, tautologia e scoasă, iar cele două se arată ca **un singur** „Echilibru".
+   Contul din corpul cererii **se refuză** dacă nu e în planul firmei (`core/cont_valid.py`, legat în
+   **19** din 27 de citiri; 8 rămân în clichet, fiecare cu motivul **citit la sursă**).
+   **Nicio decizie nu mai blochează.** Deschise fără să blocheze: **R53** (inventarul supra-atribuie
+   scrieri), **R55** (șapte rute scriu evidență contabilă, șase fără rol, una cu — o regulă care nu
+   există), **R56** (trei rute cu credențiale externe, fără rol). Din cele patru module nelegate mai e
+   **unul**: `compensare`.
 3. **Cele 129 de rute care schimbă date fără verificare de rol.** Criteriul lui Costin e aplicat pe
    clasele numite (28 de rute în patru aplicări). Restul se triază pe **același** criteriu, iar cifra
    trebuie să devină clichet — azi nu e.
@@ -159,4 +161,14 @@ Măsurat 25.08, pe toate cele 17 firme:
   și lasă `"   "` să treacă verbatim. 19 situri, iar consecința era invizibilă în trei straturi deodată.
 - **Nu scrie o aserțiune pe un rând `poate atinge, prin modul`.** Acela e un plafon superior, nu o
   măsurătoare pe rută: 108 din 192 de pași îl poartă (R53).
+- **Nu scrie un motiv de clichet din analogie.** E o afirmație despre cod, deci poate fi falsă (R16).
+  Instanța: eram gata să scriu „modul pur, fără conn/schema" pentru șapte intrări; citite la sursă,
+  aveau și `conn`, și `schema`, și erau în `try`. Un motiv presupus transformă „n-am făcut" în „nu se
+  poate", iar atunci clichetul nu mai e datorie, e justificare.
+- **Nu închide un ghilimel românesc cu `"` ASCII într-un literal Python.** Încheie ȘIRUL, nu citatul,
+  iar eroarea apare o linie mai jos. S-a întâmplat de **patru ori** într-o tură. Și **nu „repara"
+  automat**: un înlocuitor care nu știe unde se termină literalul strică și șirurile corecte — a
+  stricat trei într-un fișier pe care încerca să-l repare.
+- **Nu citi „STABIL" din `baseline_scan` ca pe o comparație.** În modul implicit e **self-diff** între
+  două capturi din aceeași rulare. Pentru comparație: `--compare`. Instanța e a mea, în raportul de ieri.
 - **Nu amâna rescrierea predării fiindcă ai raportat-o.** Vezi antetul.

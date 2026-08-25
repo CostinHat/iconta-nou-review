@@ -4848,3 +4848,25 @@ care citește contul să aibă un strămoș `.strip()` care îl conține. Cliche
 mesaj — trecea drept cont. Prefixul „cont" era prea larg; cheia e `cont` exact sau `cont_<ceva>`.
 **Ce NU face, declarat:** oprește contul **alb**, nu contul **greșit**. `"7O7"` cu litera O trece.
 Confruntarea cu `plan_conturi` e decizie deschisă — R54.
+
+## Cele patru decizii din 26.08.2026, și ce garduri au lăsat în urmă
+
+**R54 — contul din corpul cererii se REFUZĂ dacă nu e în planul firmei.** Un singur loc:
+`core/cont_valid.py`. Legat în **19** din 27 de citiri; **8** rămân în clichet, fiecare cu motivul
+**citit la sursă**, nu presupus. Gard: `core/test_cont_din_corp_normalizat.py`, 8 teste, clichet
+bidirecțional ancorat pe **fișier + funcție + expresie** (nu pe linie — liniile se mută).
+**Ce NU face, declarat:** oprește contul care nu există; nu spune dacă e contul *potrivit* pentru
+operațiune. Aia rămâne judecata contabilului.
+
+**Poarta de coadă s-a mutat la INTRARE.** `POST /coada` validează cu DUK înainte de a insera, iar
+verdictul se scrie odată cu elementul, cu amprenta. `gri` nu trece drept favorabil (P6); portița e
+`motiv_trecere`, aceeași ca la aprobare și depunere, și se păstrează cu autorul.
+**Ce NU face:** nu împiedică o declarație validă să devină stătută după aceea — aia rămâne treaba
+lui `verdict_din_rand`, care marchează `statut` când amprenta diferă.
+
+**Baseline-urile vizuale NU se urmăresc în git.** `.gitignore` acoperă tot directorul; cele 5
+urmărite s-au scos din index (rămân pe disc). Iar `baseline_scan` spune acum, în modul implicit,
+dacă referința e **NOUĂ** sau **RESCRISĂ**, și scrie în antet că `FLAKINESS` e self-diff, nu
+comparație. Motivul lui Costin: *„azi absența ar da vid, iar vidul arată ca stabilitate."*
+**Instanța e a mea:** am raportat „STABIL 0px" pentru un ecran nou ca și cum ar fi fost o
+comparație, și era self-diff.
