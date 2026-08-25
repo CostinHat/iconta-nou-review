@@ -188,3 +188,45 @@ def test_traseele_fara_tabela_proprie_nu_raporteaza_ZERO_firme(st):
             if not t["tabele_declarate"] and t.get("firme_nr") is not None]
     assert not rele, ("trasee fără tabelă proprie care raportează totuși un număr de "
                       "firme: %s — necunoscutul s-a rotunjit" % rele)
+
+def test_fiecare_pas_care_schimba_ceva_are_LOC_de_verificare(st):
+    """`TRASEE_VERIFICARI.md` e singurul document care NU se generează: conținutul lui e scris
+    de om. Instrumentul păzește un singur lucru — **niciun pas care schimbă ceva să nu rămână
+    fără loc**. O rută nouă apare aici ca lipsă; nu se suprascrie nimic.
+
+    De ce doar pașii care schimbă: pe un `GET`, «ce trebuie să fie adevărat după» e vid prin
+    construcție — n-a schimbat nimic. Citirile rămân listate ca context, fără slot."""
+    cale = os.path.join(_RAD, "TRASEE_VERIFICARI.md")
+    assert os.path.isfile(cale), (
+        "TRASEE_VERIFICARI.md lipsește. Se generează O DATĂ cu "
+        "`scripts/scan_trasee.py --verificari > TRASEE_VERIFICARI.md`, apoi se completează de mână")
+    doc = io.open(cale, encoding="utf-8").read()
+    rute = st.citeste_rute()
+    per, _, _, _ = st.acoperire(rute)
+    lipsa = []
+    for tid, _nume, _tip, _tab in st.TRASEE:
+        for r in per[tid]:
+            if r["metoda"] == "GET":
+                continue
+            cap = "### `%s %s`" % (r["metoda"], r["cale"])
+            if cap not in doc:
+                lipsa.append("  %s: %s %s" % (tid, r["metoda"], r["cale"]))
+    assert not lipsa, (
+        "pași care schimbă ceva și n-au loc de verificare în TRASEE_VERIFICARI.md (%d): %s "
+        "— adaugă-i cu mâna. Regenerarea peste fișier ȘTERGE ce s-a scris în el."
+        % (len(lipsa), " · ".join(x.strip() for x in lipsa[:12])))
+
+
+def test_locurile_de_verificare_nu_dispar(st):
+    """Anti-vacuu în cealaltă direcție: un fișier golit ar trece testul de mai sus doar dacă
+    și inventarul s-ar goli. Aici se cere ca numărul de locuri să fie cel puțin cât numărul
+    de pași care schimbă ceva — altfel cineva a șters secțiuni."""
+    doc = io.open(os.path.join(_RAD, "TRASEE_VERIFICARI.md"), encoding="utf-8").read()
+    rute = st.citeste_rute()
+    per, _, _, _ = st.acoperire(rute)
+    acte = sum(1 for tid, _n, _t, _tb in st.TRASEE
+               for r in per[tid] if r["metoda"] != "GET")
+    locuri = doc.count("- [ ]") + doc.count("- [x]")
+    assert locuri >= acte, (
+        "TRASEE_VERIFICARI.md are %d locuri pentru %d pași care schimbă ceva — s-au șters "
+        "secțiuni" % (locuri, acte))

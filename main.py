@@ -2705,7 +2705,9 @@ class EmailFacturaIn(BaseModel):
     mesaj: Optional[str] = None
 
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/email")
-def factura_email(tenant_id: int, factura_id: int, date: EmailFacturaIn, ctx=Depends(cere_context)):
+# [R42] Trimiterea către client: „iese către un om". Un email plecat nu se poate reface.
+def factura_email(tenant_id: int, factura_id: int, date: EmailFacturaIn,
+                  ctx=Depends(cere_rol("admin_firma"))):
     schema = _schema_sau_404(ctx, tenant_id)
     email = (date.email or "").strip()
     if "@" not in email or "." not in email:
@@ -2774,7 +2776,8 @@ def fr_sterge(tenant_id: int, sid: int, ctx=Depends(cere_context)):
     return r
 
 @app.post("/tenants/{tenant_id}/facturi/emite")
-def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_context)):
+# [R42] „emiterea unui document" — factura primește număr din serie și ajunge la un om.
+def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_rol("admin_firma"))):
     schema = _schema_sau_404(ctx, tenant_id)
     linii = [l.model_dump() for l in date.linii]
     if not (date.tert_nume or "").strip():
@@ -2811,7 +2814,8 @@ def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_context)):
     return r
 
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/storno")
-def facturi_storno(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
+# [R42] Stornarea nu corectează documentul emis — emite AL DOILEA document (P4).
+def facturi_storno(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("admin_firma"))):
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         try:
@@ -2899,8 +2903,10 @@ def facturi_lista(tenant_id: int, an: Optional[int] = None,
 
 
 @app.post("/tenants/{tenant_id}/facturi")
+# [R42] A doua cale de creare a facturii (vezi R14: două funcții, stări implicite diferite).
+# Amândouă produc un document numerotat, deci amândouă intră la „emiterea unui document".
 def factura_creeaza(tenant_id: int, date: FacturaIn,
-                    ctx=Depends(cere_rol("admin_firma", "angajat"))):
+                    ctx=Depends(cere_rol("admin_firma"))):
     schema = _schema_sau_404(ctx, tenant_id)
     linii = [l.model_dump() for l in date.linii]
     try:
@@ -2962,8 +2968,9 @@ def factura_detalii(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
 
 
 @app.delete("/tenants/{tenant_id}/facturi/{factura_id}")
+# [R42] „ștergerea a ceva emis" — o factură ștearsă lasă un gol în serie (interdicția 35).
 def factura_sterge(tenant_id: int, factura_id: int,
-                   ctx=Depends(cere_rol("admin_firma", "angajat"))):
+                   ctx=Depends(cere_rol("admin_firma"))):
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
         return facturi_api.sterge_factura(conn, factura_id)
@@ -3297,8 +3304,10 @@ def coada_respinge(coada_id: int, date: RespingeIn,
 
 
 @app.post("/coada/{coada_id}/depune")
+# [R42] „confirmarea depunerii" — declarația pleacă la autoritate și nu se mai poate reface.
+# Validarea (`aproba`/`respinge`) rămâne la asistent: aia se poate reface.
 def coada_depune(coada_id: int, date: DepuneIn = DepuneIn(),
-                 ctx=Depends(cere_rol("admin_firma", "angajat"))):
+                 ctx=Depends(cere_rol("admin_firma"))):
     with db.get_conn() as conn:
         if not _are_permisiune(ctx, "poate_depune"):
             raise HTTPException(status_code=403, detail=FARA_DREPT_DEPUNERE)
@@ -3407,7 +3416,8 @@ def pachet_preview(tenant_id: int, an: int, luna: int, text: str = "", ctx=Depen
     return {"html": html}
 
 @app.post("/pachete/{tenant_id}/trimite")
-def pachet_trimite(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+# [R42] „iese către un om" — pachetul lunar pleacă la clientul cabinetului.
+def pachet_trimite(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol("admin_firma"))):
     schema = _pachet_schema(ctx, tenant_id)
     with db.get_conn(schema) as cs, db.get_conn() as cp:
         semnatura = _pachete.semnatura_cabinet(cp, ctx.get("uid"), ctx.get("firm"))
@@ -4027,7 +4037,10 @@ def _cere_an_luna(corp):
 
 
 @app.post("/tenants/{tenant_id}/stat-plata/emite")
-def tenant_stat_emite(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+# [R42] „iese către un om" — statul se îngheață cu amprentă, exemplar numerotat (P4).
+# Dreptul fin `poate_valida` rămâne, verificat în corp: rolul e condiția, dreptul e a doua.
+def tenant_stat_emite(tenant_id: int, corp: dict = Body(...),
+                      ctx=Depends(cere_rol("admin_firma"))):
     """corp: {an, luna}. Idempotent: cine are deja exemplar nu primeste al doilea (ala e o corectie)."""
     from core import stat_plata_emis as _spe
     # ORDINEA: acces (404) -> drept (403) -> validarea corpului (422). Prima forma citea `corp["an"]`
@@ -4275,7 +4288,9 @@ class AdeverintaIn(BaseModel):  # F136
     luna: Optional[int] = None
 
 @app.post("/tenants/{tenant_id}/salariati/{salariat_id}/adeverinta")
-def tenant_adeverinta(tenant_id: int, salariat_id: int, date: AdeverintaIn, ctx=Depends(cere_cabinet)):
+# [R42] „iese către un om" — adeverința pleacă la salariat (art. 34(5) Codul muncii).
+def tenant_adeverinta(tenant_id: int, salariat_id: int, date: AdeverintaIn,
+                      ctx=Depends(cere_rol("admin_firma"))):
     """F136: adeverinta de salariat (art. 34(5) Codul muncii) -> PDF."""
     from fastapi.responses import Response
     from core import adeverinta as _adv
@@ -4682,7 +4697,8 @@ class ChitantaEmite(BaseModel):
     factura_id: Optional[int] = None
 
 @app.post("/tenants/{tenant_id}/chitante")
-def chitanta_emite(tenant_id: int, c: ChitantaEmite, ctx=Depends(cere_context)):
+# [R42] „iese către un om" — chitanța (14-4-1) e document cu regim de numerotare.
+def chitanta_emite(tenant_id: int, c: ChitantaEmite, ctx=Depends(cere_rol("admin_firma"))):
     """Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar:
     numerotare pe serie per firma + operatiune in Registrul de casa prin casa_api
     (5311=4111, nota ciorna, verificare plafon Legea 70/2015)."""
@@ -5975,7 +5991,9 @@ def contracte_sabloane_sterge(tenant_id: int, sid: int, ctx=Depends(cere_cabinet
     return rez
 
 @app.post("/tenants/{tenant_id}/contracte/genereaza")
-def contracte_genereaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+# [R42] „iese către un om" — contractul individual de muncă.
+def contracte_genereaza(tenant_id: int, corp: dict = Body(...),
+                        ctx=Depends(cere_rol("admin_firma"))):
     from core import contracte_api as _ct
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -6715,7 +6733,9 @@ def etransport_xml(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
 
 
 @app.post("/tenants/{tenant_id}/etransport/trimite")
-def etransport_trimite(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_context)):
+# [R42] „iese către o autoritate" — declarația UIT ajunge la ANAF.
+def etransport_trimite(tenant_id: int, corp: dict = Body(...),
+                       ctx=Depends(cere_rol("admin_firma"))):
     """Trimite notificarea UIT in SPV (F121): genereaza XML + trimite() cu PORTI in ordine (garda de timp
     -> idempotency -> validare pe TEST -> upload). Poll-ul stare NU e sincron. Live pending drept e-Transport."""
     import re as _re2
@@ -7241,7 +7261,8 @@ def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
 
 
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/trimite-spv")
-def factura_trimite_spv(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
+# [R42] „iese către o autoritate" — e-Factura ajunge la ANAF.
+def factura_trimite_spv(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("admin_firma"))):
     """Trimite o factura emisa in SPV (F126/F160). Porti in ordine fixa (efactura_send.trimite):
     token viu -> validare/FACT1 -> idempotency -> upload pe tokenul PRINCIPALULUI (cabinet/gratuit).
     Poll-ul stareMesaj/descarcare ramane pe cron. Recipisa live = pending drept (ca F176)."""
@@ -7495,7 +7516,9 @@ def reges_config(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabine
 
 
 @app.post("/tenants/{tenant_id}/reges-trimite-salariat")
-def reges_trimite_salariat(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+# [R42] „iese către o autoritate" — salariatul ajunge în registrul de evidență a muncii.
+def reges_trimite_salariat(tenant_id: int, corp: dict = Body(...),
+                           ctx=Depends(cere_rol("admin_firma"))):
     """corp: {salariat_id, adresa, contract {numar, data_contract, data_inceput, salariu, cor, ...}?}.
     Trimite InregistrareSalariat (+ AdaugareContract daca vine si contract dupa referinta)."""
     from core import reges_client as _rg

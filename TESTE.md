@@ -2012,3 +2012,10 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   pe AST, nu pe text (METODA §23) · lista nu scoate XML-ul din bază · **calibrare negativă**:
   `gata_de_depus` chiar discriminează între cele patru stări, altfel toate celelalte aserțiuni ar
   trece și pe un instrument care spune „gata" despre orice. RED-proof pe două mutații.
+
+- **`core/test_coada_firma_exista.py` (25.08.2026)** — 3 teste, R44: poarta de intrare în coadă
+  interoghează `public.tenants` · codul de refuz `FIRMA_INEXISTENTA` există · **refuzul e înaintea
+  `INSERT`-ului** (unul scris după n-ar refuza, ar curăța) · plus clichet pe orfanii din date.
+- **`core/test_trasee.py` — +2 teste (25.08.2026)**: fiecare pas care **schimbă ceva** are un loc de
+  verificare în `TRASEE_VERIFICARI.md` (o rută nouă apare ca lipsă, nu se suprascrie nimic) · locurile
+  nu dispar (anti-vacuu în cealaltă direcție: un fișier golit ar trece primul test).

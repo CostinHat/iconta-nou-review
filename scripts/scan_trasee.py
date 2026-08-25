@@ -629,6 +629,75 @@ def redare_md(cu_db=False):
     return chr(10).join(L)
 
 
+def schelet_verificari():
+    """Scheletul lui `TRASEE_VERIFICARI.md`: fiecare traseu, fiecare pas, si sub el un LOC GOL
+    in care Costin scrie ce trebuie sa fie adevarat dupa pasul ala.
+
+    De ce un fisier SEPARAT, si nu blocul generat din Partea XII: acolo textul e generat si se
+    compara caracter cu caracter, deci orice scriere de mana ar pica testul. Aici e invers —
+    continutul e SCRIS de om, iar instrumentul doar verifica sa nu ramana pasi fara loc.
+    """
+    d = construieste()
+    rute = citeste_rute()
+    per, _, _, _ = acoperire(rute)
+    L = []
+    A = L.append
+    A("# TRASEE — CE TREBUIE SA FIE ADEVARAT DUPA FIECARE PAS")
+    A("")
+    A("Al cincilea document, si singurul care NU se genereaza. `TRASEE.md` Partea XII spune")
+    A("**ce face** fiecare pas — extras din cod. Aici se scrie **ce trebuie sa fie adevarat")
+    A("dupa el** — iar aia nu se poate extrage din cod: codul spune ce s-a schimbat, nu ce")
+    A("*trebuia* sa se schimbe.")
+    A("")
+    A("**Cum se completeaza.** Sub fiecare pas e un rand care incepe cu `- [ ]`. Se inlocuieste")
+    A("cu propozitia care trebuie sa fie adevarata dupa pasul ala. Diferenta care conteaza")
+    A("(`TRASEE.md` VII.5): *«butonul a functionat, coada a trecut de la 3 la 2»* e o")
+    A("observatie; *«declaratia are stare depusa, cu autor si moment, iar verdictul de")
+    A("validare e pastrat»* e o verificare.")
+    A("")
+    A("**Ce pazeste instrumentul aici:** ca niciun pas sa nu ramana fara loc. `--verificari`")
+    A("NU rescrie ce s-a scris — listeaza doar ce lipseste. Un pas nou (o ruta noua) apare ca")
+    A("lipsa in `core/test_trasee.py`, nu suprascrie nimic.")
+    A("")
+    A("---")
+    A("")
+    for t in d["trasee"]:
+        A("## %s — %s" % (t["id"], t["nume"]))
+        A("")
+        A("*clasa %s · %d rute · %d schimba date · %s*"
+          % (t["clasa"], t["rute"], t["mutante"],
+             "nicio firma nu-l poate exercita azi" if t.get("firme_nr") == 0
+             else ("nu se poate sti din date" if t.get("firme_nr") is None
+                   else "%d firme il pot exercita azi" % t["firme_nr"])))
+        A("")
+        rr = sorted(per[t["id"]], key=lambda r: (r["cale"], r["metoda"]))
+        citiri = [r for r in rr if r["metoda"] == "GET"]
+        acte = [r for r in rr if r["metoda"] != "GET"]
+        # Slot DOAR pe pasii care SCHIMBA ceva. Pe un GET, „ce trebuie sa fie adevarat dupa"
+        # e vid prin constructie — n-a schimbat nimic. Citirile raman listate ca context.
+        if citiri:
+            A("*citiri (nu schimba nimic): %s*"
+              % ", ".join("`%s`" % r["cale"] for r in citiri))
+            A("")
+        if not acte:
+            A("**Traseul nu are niciun pas care schimba ceva.** Ce trebuie sa fie adevarat")
+            A("dupa el e o proprietate a IESIRII, nu a unui pas:")
+            A("")
+            A("- [ ] ")
+            A("")
+            continue
+        for r in acte:
+            rol = ("rol:" + ",".join(r["roluri"])) if r["roluri"] else "**fara rol**"
+            A("### `%s %s`" % (r["metoda"], r["cale"]))
+            A("")
+            A("*garda `%s` · %s%s*" % (",".join(r["garzi"]) or "FARA GARDA", rol,
+                                       (" · scrie in " + ", ".join(sorted(r["scrie_inline"])))
+                                       if r["scrie_inline"] else ""))
+            A("")
+            A("- [ ] ")
+            A("")
+    return chr(10).join(L)
+
 def masoara_firme():
     """Rândurile din fiecare tabelă, pe fiecare firmă. Cere DB.
 
@@ -704,6 +773,9 @@ def main():
         return 0
     if "--firme" in sys.argv:
         scrie_firme()
+        return 0
+    if "--verificari" in sys.argv:
+        print(schelet_verificari())
         return 0
     if "--md" in sys.argv:
         print(redare_md("--db" in sys.argv))

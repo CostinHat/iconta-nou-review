@@ -11795,3 +11795,71 @@ tabele se regenerează din bază, nu se scrie în cod.
 traseele din Partea VI *„sunt nouă, nu 25"*. Adevărat despre Partea VI, dar nu despre aplicație:
 inventarul complet, calculat ca acoperire a celor 400 de rute, are **35**. Nici 9, nici 25 — iar
 diferența nu e o corectare de cifră, ci trecerea de la o **amintire** la o cifră care se poate reface.
+
+## 25.08.2026 (2) — Patru decizii: R30, R42, R45, și cine scrie verificările
+
+**1. R30 — MĂSURATĂ ȘI ACCEPTATĂ, cu reluare la grupul 4.** *„Cele patru semafoare derivate care aleg
+culoarea în randor: migrarea la structură se face, dar la reparații, cu celelalte etichete. E prag 3.
+Ce închide restanța acum: cele trei hardcodate sunt reparate, iar restul e datorie declarată."*
+
+Plus regula de proces, care valorează mai mult decât decizia: *„O restanță care așteaptă 29 de
+commituri fără să se poată închide n-are condiția scrisă bine."*
+
+**Ce a arătat măsurătoarea, și de ce cele două cifre erau amândouă adevărate.** Costin a numit
+**patru** semafoare; registrul numea **trei**. Patru sunt **instanțele** din `control_verdict.js`;
+trei sunt **fișierele**. Clasa întreagă, măsurată acum: **14 instanțe în 3 fișiere**.
+
+**Și de ce cifra n-a ieșit din prima.** Instrumentul a greșit de **două** ori, în aceeași direcție —
+„lipsește": prima formă vedea doar harta cu obiect imbricat (`verde: { txt: … }`) și rata harta plată
+(`verde: "fără probleme"`), deci dădea 4 într-un singur fișier; a doua respingea orice valoare de un
+singur cuvânt ca „nume de cheie" și pierdea **„probleme"**, o etichetă reală. A treia e calibrată pe
+**toate cele trei fișiere numite în registru** — interdicția 76, aplicată în timp real.
+
+**Ce am făcut peste decizie, și de ce.** R30 avea **două** subiecte. Decizia le privește pe cel al
+semafoarelor; **avertismentul de prăpastie al salariului minim** n-a fost atins de ea, iar întrebarea
+lui (a)/(b)/(c) e tot fără răspuns. Închizându-l odată cu R30 aș fi **ales singur varianta (a)** —
+*«nu se întoarce»* — care e exact alegerea pe care condiția o interzice. **Desprins ca `R49`.** *E
+chiar instanța regulii de mai sus: R30 n-a putut fi închisă fiindcă avea două condiții de închidere.*
+
+**2. R42 — criteriul, aplicat.** *„Tot ce iese din aplicație către o autoritate sau către un om, plus
+tot ce închide sau redeschide o perioadă. Concret: confirmarea depunerii · emiterea unui document ·
+închiderea lunii · redeschiderea ei · ștergerea a ceva emis. Restul — introducere, generare, validare,
+pregătire — poate face un asistent. Motivul: alea se pot reface. Ce am numit mai sus, nu."*
+
+**14 rute** trecute pe `admin_firma`. Rutele care schimbă date și nu verifică **niciun** rol scad de
+la **144 la 134**.
+
+Două consecințe care nu decurg evident din criteriu, scrise ca să nu surprindă:
+
+- **`poate_depune` pe un `angajat` nu mai poate fi exercitat.** Dreptul fin rămâne, dar devine o *a
+  doua* condiție peste rol, nu o cale paralelă. Patru-ochi nu e atins: validarea rămâne la asistent.
+- **Cele două rute de creare a facturii nu separă „introducerea" de „emiterea".** Amândouă produc un
+  document numerotat (R14), deci amândouă au intrat la „emiterea unui document". Dacă separarea se
+  face, partea de introducere se poate întoarce la asistent.
+
+**3. R45 — ce se păstrează.** *„Artefactul însuși, momentul, autorul, amprenta conținutului, și
+numărul exemplarului. Iar dacă e o declarație, plus verdictul de validare cu amprenta fișierului
+validat. Un artefact produs și nepăstrat nu se poate apăra. E chiar P4."*
+
+Cinci câmpuri, plus al șaselea condiționat. **Numărul exemplarului** e cel care leagă decizia de P4:
+emiterea e idempotentă și repetabilă, iar al doilea exemplar e un **fapt**, nu o eroare.
+
+*O notă de numerotare:* legătura cerută „la R44" e **R41** — R44 din registru e orfanul din coadă.
+Aceeași abatere ca la deschiderea lui R41, pe care Costin a numit-o R44 de trei ori. Am legat-o de
+R41, unde e mecanismul; se redenumește la un cuvânt.
+
+**4. „Ce trebuie să fie adevărat după fiecare pas" — o scrie el, pe trasee.** *„Nu pot scrie în gol ce
+trebuie să fie adevărat după un pas pe care nu-l am în față."*
+
+A intrat **`TRASEE_VERIFICARI.md`** — al cincilea document, și **singurul care NU se generează**.
+Scheletul se produce o dată (`scripts/scan_trasee.py --verificari`); conținutul e scris de om.
+**187 de locuri**, câte unul pentru fiecare pas care **schimbă ceva**, cu garda, rolul și tabelele
+scrise deasupra.
+
+**Nu pe fiecare rută, ci pe fiecare ACT.** Pe un `GET`, *„ce trebuie să fie adevărat după"* e vid prin
+construcție — n-a schimbat nimic. Citirile rămân listate ca context, fără loc de completat; altfel
+documentul ar fi avut **309** locuri, din care o treime fără sens.
+
+**Ce păzește instrumentul aici, și ce nu.** Păzește ca **niciun pas care schimbă ceva să nu rămână
+fără loc** — o rută nouă apare ca lipsă în `core/test_trasee.py`. **Nu** rescrie fișierul: regenerarea
+peste el ar șterge tot ce s-a scris, și scrie asta în capul documentului.

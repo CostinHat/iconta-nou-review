@@ -83,6 +83,16 @@ def adauga_in_coada(conn, cabinet_id, tenant_id, tip, an, payload,
     """
     import psycopg2
     import psycopg2.extras as _E
+    # [R44] O declaratie legata de o firma care nu exista sta in coada fara ca nimic s-o
+    # semnaleze — masurat: 1 din 3 elemente. `declaratii_coada` n-are cheie straina catre
+    # `public.tenants` (firmele traiesc si ca scheme, iar tabela e partajata), deci refuzul
+    # se scrie aici, unde e singura poarta de intrare in coada.
+    with conn.cursor() as _cur:
+        _cur.execute("SELECT 1 FROM public.tenants WHERE id = %s", (tenant_id,))
+        if _cur.fetchone() is None:
+            return {"ok": False, "cod": "FIRMA_INEXISTENTA",
+                    "mesaj": "firma #%s nu există — o declarație nu poate intra în coadă "
+                             "legată de o firmă ștearsă sau necreată" % tenant_id}
     perioada = scadente.scadenta(tip, an, luna=luna, trim=trim)
     # asigurăm an/luna în payload pentru declaratii_depuse la depunere
     payload = {**(payload or {}), "_an": an, "_luna": luna, "_trim": trim}

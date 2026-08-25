@@ -4572,3 +4572,40 @@ mai sus.* Proba are acum o aserțiune care compară chiar cele două cifre.
 **nu-l atinge** — `test_acoperire_vizuala` trece pe el **vacuu**. Comportamentul și consola sunt
 probate cu `frontend_test/proba_r41_coada.py` (desktop + Pixel 5), nu axe/contrast pe toată
 suprafața. Gaură numită, nu descoperită mai târziu.
+
+**O declarație nu mai poate intra în coadă legată de o firmă care nu există**
+(`core/test_coada_firma_exista.py`, R44 reluată, 25.08.2026). Măsurat: **1 din 3** elemente din
+coadă avea `tenant_id` = 13245, care nu e în `public.tenants` și n-are schemă. Refuzul stă în
+`adauga_in_coada`, nu ca cheie străină — `declaratii_coada` e tabelă **partajată**, iar firmele
+trăiesc și ca **scheme**; o cheie străină ar lega două modele de date diferite. Trei teste, pe
+structură: interogarea există · codul de refuz există · **refuzul e ÎNAINTEA `INSERT`-ului**,
+fiindcă unul scris după n-ar refuza, ar curăța. Clichet **1** pe orfanii existenți: rândul de azi
+rămâne până se decide ce se face cu el, dar al doilea nu mai poate apărea.
+
+**Reaprinderea a funcționat, prima dată de când e gardată.** R44 avea condiția *„la primul commit
+care atinge `core/coada_api.py`"*; R41 partea II l-a atins, iar `core/test_reaprindere.py` a **oprit
+commitul** până la reluare. Nu e o observație de proces — e prima dovadă că garda din 23.08 chiar
+prinde momentul, pe o restanță care altfel ar fi așteptat.
+
+**Cele 187 de locuri de verificare nu pot rămâne fără pas** (`TRASEE_VERIFICARI.md` +
+`core/test_trasee.py`, 25.08.2026). Documentul e **singurul care nu se generează**: scheletul se
+produce o dată cu `--verificari`, conținutul îl scrie omul. Gardul cere ca **fiecare pas care schimbă
+ceva** să aibă un loc, și ca locurile să nu dispară. **Nu** rescrie fișierul — regenerarea peste el ar
+șterge tot, și scrie asta în capul documentului.
+
+**De ce locuri doar pe acte, nu pe rute:** pe un `GET`, *„ce trebuie să fie adevărat după"* e vid prin
+construcție — n-a schimbat nimic. Prima formă a scheletului avea **309** locuri, din care o treime
+fără sens; a doua are **187**, câte unul per act.
+
+**O mutație care dezactivează un REFUZ transformă un test care nu scrie într-unul care scrie**
+(25.08.2026, instanța: RED-proof-ul lui R44). Testul cheamă `adauga_in_coada` cu o firmă inventată
+și verifică refuzul — pe cod sănătos nu scrie nimic, fiindcă refuzul e înaintea `INSERT`-ului.
+Cât mutația ținea garda pe `if False`, aceeași chemare a **inserat**: două rânduri orfane în
+`public.declaratii_coada`, într-o tabelă partajată. Prinse imediat (clichetul de orfani a sărit de la
+1 la 3) și șterse — dar numai cele cu id-ul inventat de mine; rândul real, subiectul lui R44, n-a fost
+atins.
+
+*E aceeași clasă cu „sonda de citire scrie până n-o dovedești", cu o față nouă: nu sonda scria, ci
+**mutația** a făcut-o să scrie. Consecința practică: un RED-proof pe un refuz curăță după el, sau
+rulează pe schemă efemeră. Verificarea nu e „testul a picat", ci „testul a picat ȘI n-a rămas nimic în
+urmă".*
