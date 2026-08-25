@@ -1472,13 +1472,13 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T14 — Preluarea unei firme
 
-**Clasa:** MECANIC · **rute:** 32 (din care schimba date: 20) · **refuzuri explicite:** 55
+**Clasa:** MECANIC · **rute:** 32 (din care schimba date: 21) · **refuzuri explicite:** 57
 
-**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 10 din 20.**
+**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 10 din 21.**
 
 **Pasii, din cod:**
 
-- `GET /control-fiscal/{tenant_id}/audit-preluare` — garda `cere_cabinet`
+- `POST /control-fiscal/{tenant_id}/audit-preluare` — garda `cere_rol` rol:admin_firma
 - `GET /migrare/asociati` — garda `cere_cabinet`
 - `POST /migrare/fisier` — garda `cere_cabinet`
 - `POST /migrare/importa` — garda `cere_rol` rol:admin_firma
@@ -1511,7 +1511,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/solduri` — garda `cere_rol` rol:admin_firma
 - `POST /tenants/{tenant_id}/solduri/incarca` — garda `cere_cabinet`
 
-**Module:** `anaf_api`, `articole_import_api`, `asociati_import_api`, `audit_preluare`, `cor_api`, `istoric_declaratii_import_api`, `migrare_api`, `mijloace_fixe_import_api`, `observare`, `retete_import_api`, `rip_migrare_api`, `salariati_import_api`, `solduri_api`, `solduri_parteneri_api`, `tenant_provisioning`
+**Module:** `anaf_api`, `artefacte`, `articole_import_api`, `asociati_import_api`, `audit_preluare`, `cor_api`, `istoric_declaratii_import_api`, `migrare_api`, `mijloace_fixe_import_api`, `observare`, `retete_import_api`, `rip_migrare_api`, `salariati_import_api`, `solduri_api`, `solduri_parteneri_api`, `tenant_provisioning`
 
 **Scrie in:** `articole` (INSERT) · `asociati` (DELETE/INSERT) · `declaratii_depuse` (DELETE/INSERT) · `firma_profil` (INSERT/UPDATE) · `migrare_status` (INSERT) · `mijloace_fixe` (DELETE/INSERT) · `miscari_stoc` (INSERT) · `plan_conturi` (INSERT) · `rip_operatiuni` (INSERT) · `salariati` (INSERT) · `solduri_initiale` (DELETE/INSERT) · `solduri_parteneri` (DELETE/INSERT) · `tenants` (INSERT/UPDATE) · `user_tenants` (INSERT)
 
@@ -1577,11 +1577,11 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Clasa:** PARTIAL · **rute:** 2 (din care schimba date: 1) · **refuzuri explicite:** 10
 
-**Cine:** nicio verificare de rol pe tot traseul — orice utilizator autentificat al cabinetului. **1 din 1 rute care schimba date.**
+**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 0 din 1.**
 
 **Pasii, din cod:**
 
-- `POST /tenants/{tenant_id}/plata-salarii-fisier` — garda `cere_cabinet`
+- `POST /tenants/{tenant_id}/plata-salarii-fisier` — garda `cere_rol` rol:admin_firma
 - `GET /tenants/{tenant_id}/plata-salarii-preview` — garda `cere_cabinet`
 
 **Module:** `artefacte`, `plata_salarii`
@@ -1916,12 +1916,12 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Clasa:** PARTIAL · **rute:** 3 (din care schimba date: 2) · **refuzuri explicite:** 12
 
-**Cine:** nicio verificare de rol pe tot traseul — orice utilizator autentificat al cabinetului. **2 din 2 rute care schimba date.**
+**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 0 din 2.**
 
 **Pasii, din cod:**
 
-- `POST /tenants/{tenant_id}/facturi/export-saga` — garda `cere_context`
-- `POST /tenants/{tenant_id}/facturi/export-winmentor` — garda `cere_context`
+- `POST /tenants/{tenant_id}/facturi/export-saga` — garda `cere_rol` rol:admin_firma
+- `POST /tenants/{tenant_id}/facturi/export-winmentor` — garda `cere_rol` rol:admin_firma
 - `GET /tenants/{tenant_id}/facturi/{factura_id}/export-saga` — garda `cere_context`
 
 **Module:** `artefacte`, `export_saga`, `export_winmentor`

@@ -37,6 +37,7 @@ _ACTE = {
     "/tenants/{tenant_id}/plata-salarii-fisier": "post",
     "/tenants/{tenant_id}/facturi/export-saga": "post",
     "/tenants/{tenant_id}/facturi/export-winmentor": "post",
+    "/control-fiscal/{tenant_id}/audit-preluare": "post",
 }
 
 

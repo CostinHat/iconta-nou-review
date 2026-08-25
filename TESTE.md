@@ -2027,3 +2027,7 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   `decode(errors="replace")`, care strică octeții tăcut) · amprenta **discriminează** (calibrare:
   una constantă ar lăsa toate celelalte aserțiuni să treacă) · **rutele care produc artefacte nu
   sunt GET** · fiecare dintre ele chiar cheamă `pastreaza`, asertat pe AST.
+
+- **`core/test_artefacte_pastrate.py` — al patrulea artefact (25.08.2026)**: `POST
+  /control-fiscal/{}/audit-preluare` intră în lista rutelor care trebuie să fie acte și să cheme
+  `pastreaza`. R45 e completă: 4 din 4.

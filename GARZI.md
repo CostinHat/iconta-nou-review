@@ -4636,3 +4636,25 @@ ar fi trecut, iar o reordonare de coloane ar fi picat degeaba. Acum se citesc di
 **Al patrulea artefact NU s-a construit, deliberat:** auditul de preluare se randează la
 deschiderea ecranului, deci un POST ar produce un exemplar **la fiecare privire**. Îi trebuie un
 act propriu în ecran — o decizie de design, nu una de-a mea.
+
+**Cifra care se schimbă când o citești altfel: 3 vs 77** (R42, reclasificare pe fapt,
+25.08.2026). Prima clasificare a rutelor fără rol a folosit **tipare pe calea rutei** și a găsit
+**trei** care ies către un om. A doua nu se uită la nume, ci la ce **scrie** și pe unde **ajunge**:
+`SE_DEPUNE` = scrie într-o tabelă pe care o citește un modul `core/d*.py`; `SE_PREDĂ` = scrie
+într-o tabelă de artefact dat unui om; `IESE_AFARĂ` = ajunge la un modul-margine sau trimite un
+email, detectat din AST. Rezultat: **77 din 134**.
+
+*Nu e o corectură de cifră, e diferența dintre a citi eticheta și a citi fapta.* Aceeași clasă cu
+„nomenclatorul derivat dintr-o sursă secundară": un criteriu aplicat pe nume măsoară cum și-a
+numit cineva rutele, nu ce fac ele.
+
+**Și o consecință proprie, prinsă doar la remăsurare:** reparația lui R45 a **înrăutățit** cifra
+lui R42 cu trei. Trei rute care produceau artefacte pe `GET` au trecut pe `POST` — devenind acte
+— și au intrat în populația „schimbă date, fără rol". *O reparație care schimbă populația altei
+măsurători trebuie s-o remăsoare, nu să presupună că n-a atins-o.*
+
+**A treia absență falsă afirmată citind un singur loc, în două zile.** Scrisesem că auditul de
+preluare *„se randează la deschiderea ecranului"* — dedus din `api.get`, fără contextul lui. E
+deja în spatele unui buton (`ruleazaAudit`). Predecesoarele: „rută fără gardă" pentru rute păzite
+prin argument, și „modulul nu scrie nimic" pentru tabele necalificate. **Toate trei în aceeași
+direcție: lipsește.**

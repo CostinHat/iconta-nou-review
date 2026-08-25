@@ -2372,8 +2372,10 @@ def control_fiscal_detaliu(tenant_id: int, ctx=Depends(cere_cabinet)):
     return r
 
 
-@app.get("/control-fiscal/{tenant_id}/audit-preluare")
-def control_fiscal_audit_preluare(tenant_id: int, ctx=Depends(cere_cabinet)):
+@app.post("/control-fiscal/{tenant_id}/audit-preluare")
+# [R45] POST: auditul e declansat de un buton, deci e un ACT — iar verdictul lui se pastreaza.
+# Un GET n-are voie sa scrie (interdictia 6).
+def control_fiscal_audit_preluare(tenant_id: int, ctx=Depends(cere_rol("admin_firma"))):
     """F183: audit de PRELUARE firma — coerenta INTERNA a pachetului preluat de la contabilul anterior
     (balanta echilibrata, defalcare parteneri vs sintetic, solduri fiscale vs istoric declaratii, RIP la
     PFA). Motor separat (core/audit_preluare), NU control_incrucisat: la preluare ambele surse sunt EXTERNE.
@@ -2388,6 +2390,20 @@ def control_fiscal_audit_preluare(tenant_id: int, ctx=Depends(cere_cabinet)):
             row = cur.fetchone()
     r["data"] = datetime.datetime.now().isoformat(timespec="minutes")  # cu ora: doua rulari/zi se disting
     r["in_iconta_din"] = row[0].date().isoformat() if row and row[0] else None  # data simpla (scara = luni)
+    # [R45] Verdictul se pastreaza: continut (verdictul intreg, serializat), moment, autor,
+    # amprenta, numar de exemplar. Cheia e ANUL rularii — doua audituri in ani diferiti sunt
+    # doua artefacte, doua in aceeasi zi sunt exemplarul 1 si 2 ale aceluiasi.
+    try:
+        import json as _json
+        from core import artefacte as _art
+        with db.get_conn(schema) as _c:
+            _art.pastreaza(_c, schema, "audit_preluare", str(datetime.date.today().year),
+                           _json.dumps(r, ensure_ascii=False, default=str),
+                           produs_de_id=int(ctx["uid"]),
+                           produs_de=ctx.get("nume") or str(ctx["uid"]))
+    except Exception as _e:
+        import logging
+        logging.getLogger("iconta").warning("[R45] audit de preluare nepastrat: %s", _e)
     return r
 
 
@@ -4128,7 +4144,8 @@ def tenant_plata_salarii_preview(tenant_id: int, an: int, luna: int, ctx=Depends
 @app.post("/tenants/{tenant_id}/plata-salarii-fisier")
 # [R45] POST, nu GET: producerea fișierului care pleacă la bancă e un ACT, iar un GET n-are
 # voie să scrie (interdicția 6, `core/test_get_fara_scriere.py`). Metoda contrazicea fapta.
-def tenant_plata_salarii_fisier(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+def tenant_plata_salarii_fisier(tenant_id: int, an: int, luna: int,
+                                ctx=Depends(cere_rol("admin_firma"))):
     """[F134] Fisierul SEPA/ISO 20022 pain.001.001.03 de plata a salariilor NET pe card (download).
     [R45] Se pastreaza: continut, moment, autor, amprenta, numar de exemplar."""
     from fastapi.responses import Response
@@ -6037,7 +6054,7 @@ def export_saga_factura(tenant_id: int, factura_id: int, ctx=Depends(cere_contex
 @app.post("/tenants/{tenant_id}/facturi/export-saga")
 # [R45] POST: exportul e un act (ce s-a exportat și când e chiar întrebarea la o preluare
 # inversă), iar un GET n-are voie să scrie.
-def export_saga_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_context)):
+def export_saga_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol("admin_firma"))):
     from core import export_saga as _xs
     from core import artefacte as _art
     import io as _io, zipfile as _zip
@@ -6068,7 +6085,8 @@ def export_saga_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_contex
 
 @app.post("/tenants/{tenant_id}/facturi/export-winmentor")  # [F187]
 # [R45] POST: acelasi motiv ca la SAGA — exportul e un act, iar un GET n-are voie sa scrie.
-def export_winmentor_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_context)):
+def export_winmentor_luna(tenant_id: int, an: int, luna: int,
+                          ctx=Depends(cere_rol("admin_firma"))):
     """Export WinMENTOR: Facturi.txt + Articole.txt (Windows-1250) co-locate intr-un zip.
     Facturile emise ale lunii (paritate cu SAGA, fara filtru status). Dependenta de config nomenclator WinMentor (vezi export_winmentor)."""
     from core import export_winmentor as _wm

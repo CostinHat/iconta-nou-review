@@ -296,7 +296,8 @@ export function legaVerdict(corp, nav, firma) {
     if (btn) { btn.disabled = true; btn.textContent = "Se rulează…"; }
     let a;
     try {
-      a = await api.get(`/control-fiscal/${firma.tenant_id}/audit-preluare`);
+      // [R45] POST: auditul e un act (butonul de deasupra), iar verdictul lui se pastreaza.
+      a = await api.post(`/control-fiscal/${firma.tenant_id}/audit-preluare`, {});
     } catch (e) {
       if (btn) { btn.disabled = false; btn.textContent = "Rulează auditul de preluare"; }
       arataMesaj(zona, `Nu am putut rula auditul: ${e.mesaj || e.message}`, "avert");

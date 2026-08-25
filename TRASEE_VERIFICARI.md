@@ -541,9 +541,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T14 — Preluarea unei firme
 
-*clasa MECANIC · 32 rute · 20 schimba date · 5 firme il pot exercita azi*
+*clasa MECANIC · 32 rute · 21 schimba date · 5 firme il pot exercita azi*
 
-*citiri (nu schimba nimic): `/control-fiscal/{tenant_id}/audit-preluare`, `/migrare/asociati`, `/migrare/istoric-declaratii`, `/migrare/mijloace-fixe`, `/migrare/parteneri`, `/migrare/plan-conturi`, `/migrare/salariati`, `/migrare/solduri`, `/migrare/status`, `/migrare/straturi`, `/tenants/{tenant_id}/parteneri`, `/tenants/{tenant_id}/solduri`*
+*citiri (nu schimba nimic): `/migrare/asociati`, `/migrare/istoric-declaratii`, `/migrare/mijloace-fixe`, `/migrare/parteneri`, `/migrare/plan-conturi`, `/migrare/salariati`, `/migrare/solduri`, `/migrare/status`, `/migrare/straturi`, `/tenants/{tenant_id}/parteneri`, `/tenants/{tenant_id}/solduri`*
+
+### `POST /control-fiscal/{tenant_id}/audit-preluare`
+
+*garda `cere_rol` · rol:admin_firma*
+
+- [ ] 
 
 ### `POST /migrare/fisier`
 
@@ -763,7 +769,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ### `POST /tenants/{tenant_id}/plata-salarii-fisier`
 
-*garda `cere_cabinet` · **fara rol***
+*garda `cere_rol` · rol:admin_firma*
 
 - [ ] 
 
@@ -1209,13 +1215,13 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ### `POST /tenants/{tenant_id}/facturi/export-saga`
 
-*garda `cere_context` · **fara rol***
+*garda `cere_rol` · rol:admin_firma*
 
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/facturi/export-winmentor`
 
-*garda `cere_context` · **fara rol***
+*garda `cere_rol` · rol:admin_firma*
 
 - [ ] 
 
