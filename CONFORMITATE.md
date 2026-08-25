@@ -1160,7 +1160,27 @@ scos ce nu se știa**, nu din defecte noi.
 - **DOUĂ CONSECINȚE, scrise fiindcă nu decurg evident din criteriu:**
   1. **`poate_depune` pe un `angajat` nu mai poate fi exercitat.** Dreptul fin rămâne verificat în corpul rutei, dar poarta de rol e acum `admin_firma`, deci dreptul devine o **a doua** condiție peste rol, nu o cale paralelă. Patru-ochi nu e atins: *validarea* (`aproba`/`respinge`) rămâne la asistent — se poate reface.
   2. **Cele două rute de creare a facturii nu separă „introducerea" de „emiterea".** `POST /facturi` și `POST /facturi/emite` produc amândouă un document numerotat (R14: două funcții, stări implicite diferite), deci amândouă intră la *„emiterea unui document"*. Dacă separarea se face vreodată, partea de introducere se poate întoarce la asistent.
-- **condiția de deblocare**: cele 134 rămase se triază pe același criteriu, iar cifra devine clichet în `core/test_trasee.py`. Se închide când numărul nu mai poate crește tăcut. *Restanța rămâne DESCHISĂ: decizia e luată și aplicată pe clasa numită, dar clasa numită nu e tot ce a măsurat cifra.*
+- **A DOUA APLICARE, 25.08.2026 — criteriul dus pe toate cele 134.** Rezultatul, pe categoriile criteriului:
+
+  | categorie | rute | ce s-a făcut |
+  |---|---|---|
+  | închide/redeschide o perioadă | **0** | toate cinci erau deja păzite |
+  | iese către o autoritate | **0** | `import-efactura` și `reges-poll` **aduc**, nu trimit |
+  | iese către un om | **3** | trecute pe `admin_firma` |
+  | șterge ceva **emis** | **0** | ștergerile ating note, registre și nomenclatoare — niciun document emis |
+  | asistent (introducere, generare, validare, pregătire) | **118** | rămân |
+  | **ambigue** | **13** | **nu s-au schimbat**, sunt numite mai jos |
+
+- **Cele 3 care ies către un om**, verificate în corpul rutei, nu ghicite din nume: `POST /tenants/{}/solicitari` (trimite email clientului) · `POST /pachete/{}/poveste` (pe `status=aprobat` trimite raportul lunar) · `POST /tenants/{}/facturi/{}/link-plata` (produce linkul pe care îl primește clientul, și de care atârnă `platita_la` — R43).
+- **Cele 13 AMBIGUE, pe fel, cu ce nu decide criteriul:**
+  - **3 ștergeri care ating contabilitatea** (`casa/operatiuni/{}`, `jurnal/{}`, `rip/operatiuni/{}`) — o notă nu e „emisă", dar e evidență contabilă;
+  - **3 ștergeri de completări manuale la o declarație care se depune** (`d300-manual/{}`, `d301-operatiuni/{}`, `d390-clasificare/manual/{}`) — nu sunt „ceva emis", dar schimbă cifra care pleacă la ANAF;
+  - **3 de regim fiscal** (`firma-profil/{date,model,regim-tva}`) — nu emit nimic, dar schimbă ce se datorează (R46);
+  - **2 de canal către client** (`scadentar/opt-in`, `facturi/{}/notificare`) — pornesc sau **opresc** ce pleacă la client; nu trimit ele însele;
+  - **`PUT /facturi/numerotare`** — nu emite, dar controlează seria documentelor emise (interdicția 35: serie fără goluri);
+  - **`POST /recomanda`** — trimite email unui terț, dar e marketing, nu artefact al firmei.
+- **Cifra acum: 131** de rute care schimbă date și nu verifică niciun rol (era 144 la deschidere, 134 după prima aplicare).
+- **condiția de deblocare**: se decid cele **13 ambigue**, apoi cifra devine clichet în `core/test_trasee.py`. Se închide când numărul nu mai poate crește tăcut. *Restanța rămâne DESCHISĂ: criteriul e aplicat pe tot ce decide singur; ce nu decide e numit, nu tăcut.*
 
 ### R43 — Confirmarea de plată marchează o factură încasată fără să fi intrat un leu, și caută prin toate firmele
 
@@ -1183,7 +1203,12 @@ scos ce nu se știa**, nu din defecte noi.
 - **unde intră**: E1 · TRASEE XI.4 · interdicția 32 · **PRAG 3**
 - **reluări**: 1
 - **când s-a reluat**: 25.08.2026 — declanșatorul s-a produs (`core/coada_api.py` atins de R41 partea II), iar `core/test_reaprindere.py` a cerut reluarea **în aceeași tură**. Reaprinderea nu e opțională.
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
+- **rezolvată pe commit**: `91b77ec`
+- **notă la închidere**: acolo coboară clichetul de orfani la 0; ștergerea rândului 2020 e o operațiune pe **date**, făcută în aceeași tură, nu un commit.
+- **cum s-a închis**: rândul 2020 **s-a șters**, la decizia lui Costin (25.08.2026). Clichetul de orfani din `core/test_coada_firma_exista.py` coboară la **0**, iar poarta de intrare îl ține acolo. Copia integrală a rândului, înainte de ștergere, e în `/tmp/coada_2020_inainte_de_stergere.json` — dovada supraviețuiește ștergerii.
+- **CORECTURĂ LA PREMISA DECIZIEI, fiindcă măsurătoarea o contrazice.** Costin: *„E un rând de test dintr-o rulare a probei, cu id fabricat, pe o firmă care nu există."* **Nu era.** Rândul e din **15.08.2026, ora 15:44** — cu zece zile înaintea oricărei probe din sesiunea asta. Firma 13245 a **existat și a fost folosită**: `public.audit_log` are **21 de rânduri** pe ea, între 15:21 și 17:41 în aceeași zi, toate de la userul 1968, inclusiv un **`PUT /tenants/13245/facturi/numerotare`** — o scriere. Nu e reziduu de probă; e o firmă ștearsă care și-a lăsat declarația în urmă. *Rândurile care chiar veneau din proba mea (3847, 3848, `tenant_id` 999000777) fuseseră deja șterse, tot în tura aia, cu cauza scrisă în `GARZI.md`.*
+- **A DOUA CONSTATARE, care nu era căutată**: **ștergerea unui cabinet nu curăță tabelele partajate.** `core/gdpr_sterge.executa` face `DROP SCHEMA CASCADE` și șterge din `audit_log`, `user_tenants`, `tenants`, `users`, `accounting_firms` — dar **nu atinge** `public.declaratii_coada` și `public.declaratii_depuse`. Ăsta e mecanismul care produce orfani, și va produce alții. Deschis ca **R50**.
 - **deschisă pe commit**: `3cb6c44`
 - **măsurat la**: 2026-08-25 · **pe commit**: `3cb6c44`
 - **CE S-A FĂCUT LA RELUARE**: **refuzul e construit.** `adauga_in_coada` interoghează `public.tenants` **înaintea** inserării și întoarce `FIRMA_INEXISTENTA`. Nu e cheie străină, și motivul e scris în cod: `declaratii_coada` e tabelă **partajată**, iar firmele trăiesc și ca **scheme** — o cheie străină ar lega două modele de date diferite. Poarta de intrare în coadă e una singură, deci acolo stă refuzul. Gardat de `core/test_coada_firma_exista.py` (3 teste, pe structură): interogarea există · codul de refuz există · refuzul e **înaintea** `INSERT`-ului, fiindcă unul scris după n-ar refuza, ar curăța.
@@ -1220,7 +1245,14 @@ scos ce nu se știa**, nu din defecte noi.
   | **numărul exemplarului** | P4: emiterea e idempotentă și repetabilă, iar al doilea exemplar e un fapt, nu o eroare |
   | **verdictul de validare + amprenta fișierului validat** | **doar la declarații** — aceleași patru câmpuri construite la R41 |
 - **ce leagă ultimul rând, și e o observație despre numerotare**: Costin a numit legătura *„cea de la R44"*. R44 din registru e orfanul din coadă; verdictul cu amprentă e **R41** — aceeași abatere de numerotare ca la deschiderea lui R41, pe care el a numit-o R44 de trei ori. **Am legat-o de R41, fiindcă acolo e mecanismul.** Se redenumește la un cuvânt.
-- **condiția de deblocare**: fiecare dintre cele patru artefacte lasă un rând cu cele cinci câmpuri (plus al șaselea la declarații). Se închide când `scripts/scan_trasee.py` nu mai raportează niciun traseu **PARȚIAL** din cauza asta — azi sunt trei (T12, T17, T33) plus auditul de preluare, care n-are traseu propriu.
+- **CONSTRUIT, 25.08.2026 — trei din patru.** `core/artefacte.py` + `core/migrare_artefacte.py` (tabela `artefacte_produse`, aplicată pe **17/17** scheme, cu mirror în `tenant_template.sql`). Un singur loc, nu patru: aceeași cauză, aceeași reparație — patru implementări ar fi însemnat patru vocabulare pentru același lucru.
+  - **situațiile financiare (S1003, S1005)** — se păstrează la `-valideaza`, cu toate cele cinci câmpuri **plus verdictul** și amprenta XML-ului validat, luate de la `duk.versiune_validator` (aceeași sursă ca R41);
+  - **fișierul de plată a salariilor** — se păstrează;
+  - **exportul contabil (SAGA, WinMentor)** — arhiva se păstrează întreagă, base64 în coloană, cu amprenta pe **octeții** ei.
+- **OBSTACOLUL, prins la wiring și nu ocolit**: trei din cele patru se produceau pe **GET**, iar `core/test_get_fara_scriere.py` interzice unui GET să scrie în starea de business (interdicția 6 — garda a ieșit din cele 24 de rânduri lăsate în `state_plata` de o simplă deschidere de ecran). Deci *„se păstrează"* a cerut ca **producerea lor să devină un act**: cele trei rute au trecut pe **POST**, împreună cu cele trei apeluri din ecran. Erau deja declanșate de un buton — doar metoda le contrazicea fapta.
+- **AL PATRULEA NU S-A FĂCUT, și motivul e o decizie, nu o lipsă de timp**: **auditul de preluare** se randează **la deschiderea ecranului** (`control_verdict.js`), deci un POST ar produce un exemplar **la fiecare privire**. Ca să se păstreze, îi trebuie un act propriu în ecran — un buton — adică o **decizie de design** (DS cap. 2a și 6), pe care n-o iau eu.
+- **ce a prins gardul propriu, în chiar commitul lui**: `export-winmentor` trecuse pe POST și **nu păstra nimic**. *O rută care și-a schimbat metoda fără să capete fapta e mai rea decât una nemodificată — arată reparată.*
+- **condiția de deblocare**: se decide cum se păstrează auditul de preluare (act propriu în ecran). Se închide când `scripts/scan_trasee.py` nu mai raportează niciun traseu **PARȚIAL** din cauza asta.
 
 ### R46 — Trecerea de regim fiscal are cea mai mare consecință și cele mai puține verificări
 
@@ -1271,6 +1303,21 @@ scos ce nu se știa**, nu din defecte noi.
 - **de ce e o restanță proprie**: era **a doua jumătate a lui R30**, care avea două subiecte cu două condiții de închidere diferite — și de aia n-a putut fi închisă **29 de commituri**. Costin a decis pe 25.08.2026 jumătatea „verde scris, nu derivat" (MĂSURAT ȘI ACCEPTAT, reluare la grupul 4); jumătatea asta n-a fost atinsă de decizia aia. A o închide odată cu R30 ar fi însemnat să aleg singur varianta (a), *«nu se întoarce»* — exact alegerea pe care condiția o interzice. *Regula, în cuvintele lui: „o restanță care așteaptă 29 de commituri fără să se poată închide n-are condiția scrisă bine."*
 - **ce blochează**: **Decizie cerută.** R28 a scos blocul de estimare de pe ecranul de angajare, iar în același bloc trăia și avertismentul că **la un leu peste salariul minim se stinge facilitatea și netul SCADE** (OUG 156/2024 art. LXVI / OUG 89/2025 art. III), cu brutul de la care netul redevine cel de la minim. Nu era o estimare de confort — era o **prăpastie** pe care un contabil o poate călca fără s-o vadă, iar ecranul o arăta **înainte de buton** (`DS` cap. 6). A plecat colateral, și e corect că a plecat **așa cum era**: textul lui conținea **două cifre de net**, calculate cu aceleași valori implicite care au invalidat estimarea.
 - **condiția de deblocare**: se alege una și se scrie de ce. **(a)** Nu se întoarce — prăpastia se semnalează la salvare, de server, unde toate elementele sunt cunoscute. **(b)** Se întoarce **fără nicio cifră**: *«brutul introdus e peste salariul minim — se pierde facilitatea de scutire»*. E o afirmație de **drept**, adevărată pentru oricine, independentă de persoane în întreținere sau de normă, deci nu poate contrazice fluturașul. **(c)** Se întoarce cu cifre, dar calculate cu **toate** elementele salariatului. Se închide când e scris **care** și **de ce**. *Nu se începe fără decizie: (b) pare evident ieftin, dar a alege singur ce spune un ecran e chiar ce s-a cerut să nu fac.*
+
+### R50 — Ștergerea unui cabinet nu curăță tabelele partajate, iar datele lui rămân în ele
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E4 · P17 · interdicția 39 · **PRAG 2** *(cauză unică, dovedită, nu concurează cu nimic)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `91b77ec`
+- **măsurat la**: 2026-08-25 · **pe commit**: `dcf5c25`
+- **ce blochează**: `core/gdpr_sterge.executa` se numește *„ștergere completă cabinet"* și face `DROP SCHEMA CASCADE` pe fiecare firmă, plus `DELETE` din `audit_log`, `user_tenants`, `tenants`, `users`, `accounting_firms`. **Nu atinge `public.declaratii_coada` și `public.declaratii_depuse`** — două tabele partajate, cheiate pe `tenant_id`. Ce rămâne în urmă nu e o referință goală: `payload`-ul unei declarații conține **CUI-ul, denumirea, adresa, contul bancar al firmei și numele și prenumele declarantului**. Verificat pe rândul 2020, șters azi: toate erau acolo, la zece zile după ce firma dispăruse.
+- **de ce e mai mult decât un orfan**: e mecanismul care a produs R44 și îl va produce din nou. Iar pe latura de retenție, o ștergere care se declară completă și lasă date personale în urmă e chiar interdicția **39** citită invers — nu „s-a șters ce trebuia păstrat", ci „n-a fost șters ce trebuia șters".
+- **ce NU se afirmă**: **nu se știe dacă firma 13245 a fost ștearsă prin calea asta.** Dacă ar fi fost, `audit_log` s-ar fi golit de rândurile ei — și cele 21 sunt încă acolo. Deci calea ei rămâne necunoscută; gaura din `gdpr_sterge` e dovedită **prin citirea codului**, independent de cazul ăla.
+- **măsurat, ca ordin de mărime**: **65** de rânduri de `audit_log` poartă `tenant_id`-uri care nu mai există — aceeași clasă, altă tabelă.
+- **condiția de deblocare**: la primul commit care atinge `core/gdpr_sterge.py`, `executa` șterge și din `declaratii_coada` și `declaratii_depuse` pentru firmele cabinetului, iar previzualizarea le **numără** înainte, ca omul să vadă ce dispare. Se închide când o ștergere de cabinet nu mai lasă niciun rând pe firmele lui, probat pe o schemă efemeră.
 
 ### R40 — Nicio declarație depusă prin aplicație, deci lanțul de apărare nu e exercitat niciodată
 
