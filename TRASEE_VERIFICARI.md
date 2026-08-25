@@ -27,11 +27,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
+*ce face: scrie declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
+
 - [ ] 
 
 ### `POST /coada/{coada_id}/aproba`
 
 *garda `cere_rol` · rol:admin_firma,angajat*
+
+*ce face: scrie declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
 
 - [ ] 
 
@@ -39,11 +43,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: scrie declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
+
 - [ ] 
 
 ### `POST /coada/{coada_id}/respinge`
 
 *garda `cere_rol` · rol:admin_firma,angajat*
+
+*ce face: scrie declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
 
 - [ ] 
 
@@ -51,11 +59,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
+*ce face: intoarce {avertismente, note_rezultat, operatiuni, tip, xml}*
+
 - [ ] 
 
 ### `POST /declaratii/{tip}/valideaza`
 
 *garda `cere_rol` · rol:admin_firma,angajat*
+
+*ce face: Genereaza declaratia si o trece prin validatorul OFICIAL ANAF (DUKIntegrator)*
 
 - [ ] 
 
@@ -63,11 +75,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: scrie declaratii_depuse (DELETE/INSERT) — prin `istoric_declaratii_import_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/istoric-declaratii-import/incarca`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie declaratii_depuse (DELETE/INSERT) · migrare_status (INSERT) — prin `istoric_declaratii_import_api`, `migrare_api`*
 
 - [ ] 
 
@@ -81,11 +97,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_api_key` · **fara rol***
 
+*ce face: scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/facturi`
 
 *garda `cere_rol` · rol:admin_firma*
+
+*ce face: scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
 - [ ] 
 
@@ -93,11 +113,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol***
 
+*ce face: scrie facturi_recurente (DELETE/INSERT/UPDATE) — prin `facturi_recurente`*
+
 - [ ] 
 
 ### `DELETE /tenants/{tenant_id}/facturi-recurente/{sid}`
 
 *garda `cere_context` · **fara rol***
+
+*ce face: scrie facturi_recurente (DELETE/INSERT/UPDATE) — prin `facturi_recurente`*
 
 - [ ] 
 
@@ -105,11 +129,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol***
 
+*ce face: scrie facturi_recurente (DELETE/INSERT/UPDATE) — prin `facturi_recurente`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/facturi/emite`
 
 *garda `cere_rol` · rol:admin_firma*
+
+*ce face: scrie articole (INSERT/UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `facturi_api`, `stocuri_cv_api`*
 
 - [ ] 
 
@@ -117,11 +145,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
+
 - [ ] 
 
 ### `DELETE /tenants/{tenant_id}/facturi/{factura_id}`
 
 *garda `cere_rol` · rol:admin_firma*
+
+*ce face: scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
 - [ ] 
 
@@ -129,11 +161,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
+*ce face: Nota ciorna din factura (AI propune, contabilul valideaza) — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/facturi/{factura_id}/email`
 
 *garda `cere_rol` · rol:admin_firma*
+
+*ce face: scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`, `firma_profil_api`*
 
 - [ ] 
 
@@ -141,17 +177,23 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: F131: supapa per factura — scrie facturi (UPDATE) · firma_profil (UPDATE) — prin `scadentar`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/facturi/{factura_id}/storno`
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/facturi/{factura_id}/transforma`
 
 *garda `cere_rol` · rol:admin_firma · scrie in facturi*
+
+*ce face: Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal). — scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
 - [ ] 
 
@@ -165,11 +207,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · nu scrie nimic*
 
+*ce face: Nota pe care ar scrie-o statul de plata + divergentele fata de D112, cu ambele cifre.*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/salarii-contare`
 
 *garda `cere_cabinet` · scrie nota ciorna a statului de plata*
+
+*ce face: Scrie nota ciorna a statului de plata — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
 - [ ] 
 
@@ -177,17 +223,23 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: corp: {salariat_id, an, luna} — scrie state_plata (INSERT/UPDATE) — prin `stat_plata_emis`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/stat-plata/emite`
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: corp: {an, luna} — scrie state_plata (INSERT/UPDATE) — prin `stat_plata_emis`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/stat-plata/motiv`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: corp: {exemplar_id, motiv} — scrie state_plata (INSERT/UPDATE) — prin `stat_plata_emis`*
 
 - [ ] 
 
@@ -201,17 +253,23 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: corp: {salariat_id, an, luna (luna certificatului), zile_lucratoare_cm, cod?, zile_episod?, prima_zi_din_episod?, spitalizare?, data_certificat?}*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/salariati/{salariat_id}/concedii`
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
+*ce face: scrie concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
+
 - [ ] 
 
 ### `DELETE /tenants/{tenant_id}/salariati/{salariat_id}/concedii/{cm_id}`
 
 *garda `cere_rol` · rol:admin_firma,angajat*
+
+*ce face: scrie concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
 
 - [ ] 
 
@@ -225,11 +283,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
+
 - [ ] 
 
 ### `DELETE /tenants/{tenant_id}/jurnal/{nota_id}`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
 
 - [ ] 
 
@@ -237,11 +299,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
 
 - [ ] 
 
@@ -249,11 +315,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
+*ce face: corp: {data, operatie dividend|regularizare|imprumut, descriere?, + dividend{brut, interimar?, cu_plata?}; regularizare{total_interimar, dividend_anual}; imprumut{suma, f — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/nota-avans`
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+
+*ce face: corp: {data, operatie avans_platit|regularizare_platit|avans_incasat| regularizare_incasat, suma (fara TVA), cota?, destinatie? (platit: stocuri|servicii|imobilizari|imob — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
 - [ ] 
 
@@ -261,11 +331,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
+*ce face: corp: {data, fel incasare|distribuire, suma, sursa card|numerar (incasare) / banca|casa (distribuire), descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/nota-chirie`
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+
+*ce face: corp: {data, fel comodat|chirie_platita|chirie_incasata|refacturare, descriere?, cota?, + comodat{valoare, moment primire|restituire}; chirie_platita{chirie, proprietar p — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
 - [ ] 
 
@@ -273,11 +347,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
+*ce face: corp: {data, fel zilier|cenzor|mandat, brut, sursa casa|banca, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/nota-credit`
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+
+*ce face: corp: {data, operatie primire|dobanda|plata|restanta|garantie, tip lung|scurt, descriere?, + pe operatie: primire{suma}; dobanda{dobanda}; plata{rata?, dobanda?, comision — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
 - [ ] 
 
@@ -285,11 +363,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
+*ce face: corp: {data, fel avans|decont|plafon, descriere?, sursa casa|banca, + avans{suma}; decont{avans, diurna?, transport?, cazare?, cota?}; plafon{diurna_pe_zi, zile, salariu_ — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/nota-inventariere`
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii, mijloace_fixe*
+
+*ce face: corp: {data, operatie plus|plus_mf|minus|casare, descriere?, + plus{valoare, cont_stoc?}; plus_mf{valoare, cont_imobilizare?}; minus{valoare, cont_stoc?, imputabil?, valo — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT/UPDATE)*
 
 - [ ] 
 
@@ -297,11 +379,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
+*ce face: corp: {data, tip primire|rata|reziduala|operational, descriere?, cota?, + campuri pe tip: primire{valoare_capital, dobanda_totala, cont_imobilizare?}; rata{capital, doban — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/nota-lichidare`
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+
+*ce face: corp: {data, operatie vanzare_activ|partaj, descriere?, + vanzare_activ{pret, valoare_bruta, amortizare_cumulata, conturi?, cota?}; partaj{capital_social, rezerve?, profi — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
 - [ ] 
 
@@ -309,11 +395,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
+*ce face: corp: {data, operatie achizitie|dare_folosinta|scoatere, valoare, cota?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/nota-ong`
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+
+*ce face: corp: {data, operatie venit|scutire, descriere?, + venit{suma, fel cotizatie|contributie|donatie|sponsorizare|financiar| fonduri|ocazional|alte, sursa casa|banca}; scutir — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
 - [ ] 
 
@@ -321,11 +411,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
+*ce face: corp: {data, valoare_intrari, procent_limita (coef — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/nota-productie`
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+
+*ce face: corp: {data, operatie obtinere|pic|vanzare, descriere?, + obtinere{cost_standard, cost_efectiv?}; pic{suma, moment constatare|reluare}; vanzare{pret_vanzare, cost_standar — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
 - [ ] 
 
@@ -333,11 +427,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
+*ce face: corp: {data, fel creanta|provizion|stoc, actiune constituire|reluare, suma, descriere?, + creanta{zile_depasire?, garantata?, afiliata?, faliment?} | provizion{tip litigi — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/nota-sgr`
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+
+*ce face: corp: {data, operatie achizitie|vanzare|restituire|autofactura|virare, descriere?, + nr_ambalaje|suma, sursa casa|banca, + autofactura{garantii_returnate, tarif_gestionar — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
 - [ ] 
 
@@ -345,11 +443,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
+*ce face: corp: {data, suma, mod contract|plata, descriere?, + optional pentru calcul credit: cifra_afaceri, impozit_profit, tip_impozit profit|micro, beneficiar_in_registru} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/nota-subventie`
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+
+*ce face: corp: {data, fel exploatare|investitii|reluare, descriere?, + exploatare/investitii{suma, moment drept|incasare}; reluare{valoare_activ, subventie, amortizare_lunara}}. — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
 - [ ] 
 
@@ -357,11 +459,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
+*ce face: corp: {data, sens incasare|plata, suma_incasata, cota?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/plan-conturi`
 
 *garda `cere_context` · **fara rol** · scrie in plan_conturi*
+
+*ce face: scrie plan_conturi (INSERT)*
 
 - [ ] 
 
@@ -375,11 +481,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol** · scrie in efactura_primite, factur, validata*
 
+*ce face: Respinge o factura primita: status=respinsa + motiv — scrie efactura_primite (UPDATE)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza`
 
 *garda `cere_rol` · rol:admin_firma · scrie in efactura_primite, factur, facturi, validata*
+
+*ce face: FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) + leaga factura_id + status=validata — scrie efactura_primite (UPDATE) · facturi (UPDATE)*
 
 - [ ] 
 
@@ -387,11 +497,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: Trimite o factura emisa in SPV (F126/F160) — scrie efactura_trimiteri (INSERT/UPDATE) — prin `efactura_send`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/import-efactura`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: Upload XML/ZIP e-Factura*
 
 - [ ] 
 
@@ -405,11 +519,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: intoarce {nr, tranzactii}*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/banca/reconciliere/import`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie extras_linii (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `reconciliere_api`*
 
 - [ ] 
 
@@ -417,17 +535,23 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie extras_linii (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `reconciliere_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/ignora`
 
 *garda `cere_cabinet` · **fara rol** · scrie in extras_linii*
 
+*ce face: scrie extras_linii (UPDATE)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/reactiveaza`
 
 *garda `cere_cabinet` · **fara rol** · scrie in extras_linii*
+
+*ce face: scrie extras_linii (UPDATE)*
 
 - [ ] 
 
@@ -441,6 +565,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · nir (INSERT) · nir_linii (INSERT) — prin `stocuri_api`*
+
 - [ ] 
 
 ## T09 — Casa și registrul de casă
@@ -453,11 +579,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie casa_operatiuni (DELETE/INSERT) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`*
+
 - [ ] 
 
 ### `DELETE /tenants/{tenant_id}/casa/operatiuni/{op_id}`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie casa_operatiuni (DELETE/INSERT) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`*
 
 - [ ] 
 
@@ -471,6 +601,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
+
 - [ ] 
 
 ## T11 — Închiderea lunii
@@ -483,11 +615,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: [cap.23] Declara luna INCHISA pe facturi: evidenta ei devine autoritativa, iar semaforul se poate sprijini pe ea cand spune ca o declaratie nu se datoreaza*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/facturi/perioada/redeschide`
 
 *garda `cere_rol` · rol:admin_firma*
+
+*ce face: [cap.23] Redeschide luna (o corectie de facturi cere redeschiderea)*
 
 - [ ] 
 
@@ -495,11 +631,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma · scrie in perioade_blocate*
 
+*ce face: scrie perioade_blocate (DELETE)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/perioade-blocate`
 
 *garda `cere_rol` · rol:admin_firma · scrie in perioade_blocate*
+
+*ce face: scrie perioade_blocate (INSERT)*
 
 - [ ] 
 
@@ -513,11 +653,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie artefacte_produse (INSERT) — prin `artefacte`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/s1005-valideaza`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie artefacte_produse (INSERT) — prin `artefacte`*
 
 - [ ] 
 
@@ -531,11 +675,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie firma_profil (UPDATE) — prin `firma_profil_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/firma-profil/model`
 
 *garda `cere_context` · **fara rol***
+
+*ce face: scrie firma_profil (UPDATE) — prin `firma_profil_api`*
 
 - [ ] 
 
@@ -543,11 +691,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol** · scrie in firma_profil*
 
+*ce face: scrie firma_profil (UPDATE) — prin `firma_profil_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/vector`
 
 *garda `cere_rol` · rol:admin_firma*
+
+*ce face: scrie firma_profil (INSERT/UPDATE) · migrare_status (INSERT) — prin `firma_profil_api`, `migrare_api`, `vector_fiscal_api`*
 
 - [ ] 
 
@@ -561,11 +713,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: F183: audit de PRELUARE firma — coerenta INTERNA a pachetului preluat de la contabilul anterior (balanta echilibrata, defalcare parteneri vs sintetic, solduri fiscale vs  — scrie artefacte_produse (INSERT) — prin `artefacte`*
+
 - [ ] 
 
 ### `POST /migrare/fisier`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: Primește un CSV/XLSX, extrage CUI-urile și le validează la ANAF.*
 
 - [ ] 
 
@@ -573,11 +729,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: Creează câte un tenant pentru fiecare firmă selectată — scrie firma_profil (INSERT/UPDATE) · migrare_status (INSERT) · tenants (INSERT/UPDATE) · user_tenants (INSERT) — prin `migrare_api`, `tenant_provisioning`*
+
 - [ ] 
 
 ### `POST /migrare/incarca`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: Primește un fișier (.csv/.xlsx), extrage CUI-urile și le validează la ANAF.*
 
 - [ ] 
 
@@ -585,11 +745,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: Marchează un strat 'gata' sau 'in_lucru' (cu notă obligatorie la in_lucru). — scrie migrare_status (INSERT) — prin `migrare_api`*
+
 - [ ] 
 
 ### `POST /migrare/valideaza`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: Verifică o listă de CUI-uri la ANAF; întoarce denumirea + status.*
 
 - [ ] 
 
@@ -597,11 +761,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: scrie articole (INSERT) · miscari_stoc (INSERT) — prin `articole_import_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/articole-import/incarca`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie articole (INSERT) · miscari_stoc (INSERT) — prin `articole_import_api`*
 
 - [ ] 
 
@@ -609,11 +777,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: scrie asociati (DELETE/INSERT) — prin `asociati_import_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/asociati-import/incarca`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie asociati (DELETE/INSERT) · migrare_status (INSERT) — prin `asociati_import_api`, `migrare_api`*
 
 - [ ] 
 
@@ -621,11 +793,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: scrie mijloace_fixe (DELETE/INSERT) — prin `mijloace_fixe_import_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/mijloace-fixe-import/incarca`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie migrare_status (INSERT) · mijloace_fixe (DELETE/INSERT) — prin `migrare_api`, `mijloace_fixe_import_api`*
 
 - [ ] 
 
@@ -633,11 +809,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: Salveaza soldurile partenerilor unei firme (inlocuieste ce era). — scrie solduri_parteneri (DELETE/INSERT) — prin `solduri_parteneri_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/parteneri/incarca`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: Parseaza fisierul de parteneri si intoarce preview + verificare coerenta vs balanta. — scrie migrare_status (INSERT) · solduri_parteneri (DELETE/INSERT) — prin `migrare_api`, `solduri_parteneri_api`*
 
 - [ ] 
 
@@ -645,11 +825,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: intoarce ce da `retete_import_api.importa()`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/retete-import/incarca`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: intoarce {retete, rezumat}*
 
 - [ ] 
 
@@ -657,11 +841,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: Import registru incasari-plati la preluarea unui PFA — scrie migrare_status (INSERT) · rip_operatiuni (INSERT) — prin `migrare_api`, `rip_migrare_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/salariati-import`
 
 *garda `cere_rol` · rol:admin_firma*
+
+*ce face: Importa salariatii cu CNP valid (upsert pe CNP) — scrie salariati (INSERT) — prin `salariati_import_api`*
 
 - [ ] 
 
@@ -669,17 +857,23 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: Parseaza exportul de salariati si intoarce preview cu validare CNP (nu salveaza). — scrie migrare_status (INSERT) · salariati (INSERT) — prin `migrare_api`, `salariati_import_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/solduri`
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: Salvează soldurile inițiale ale unei firme (înlocuiește ce era). — scrie plan_conturi (INSERT) · solduri_initiale (DELETE/INSERT) — prin `solduri_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/solduri/incarca`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: Parsează o balanță și întoarce preview (nu salvează). — scrie migrare_status (INSERT) · plan_conturi (INSERT) · solduri_initiale (DELETE/INSERT) — prin `migrare_api`, `solduri_api`*
 
 - [ ] 
 
@@ -693,11 +887,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: scrie contracte_sabloane (DELETE/INSERT/UPDATE) — prin `contracte_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/contracte/sabloane`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie contracte_sabloane (DELETE/INSERT/UPDATE) — prin `contracte_api`*
 
 - [ ] 
 
@@ -705,11 +903,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie contracte_sabloane (DELETE/INSERT/UPDATE) — prin `contracte_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/prapastie-salariu`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: intoarce ce da `_pr.prapastie()`*
 
 - [ ] 
 
@@ -717,11 +919,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in reges_chei*
 
+*ce face: corp: {username, parola, mediu test|prod} — scrie reges_chei (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/reges-poll`
 
 *garda `cere_cabinet` · **fara rol** · scrie in reges_mesaje*
+
+*ce face: Citeste+consuma un mesaj din coada REGES; salveaza referintele in reges_mesaje. — scrie reges_mesaje (UPDATE)*
 
 - [ ] 
 
@@ -729,11 +935,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma · scrie in reges_mesaje*
 
+*ce face: corp: {salariat_id, adresa, contract {numar, data_contract, data_inceput, salariu, cor, ...}?} — scrie reges_mesaje (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/salariati`
 
 *garda `cere_rol` · rol:admin_firma,angajat*
+
+*ce face: scrie concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
 
 - [ ] 
 
@@ -741,11 +951,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
+*ce face: scrie concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
+
 - [ ] 
 
 ### `PUT /tenants/{tenant_id}/salariati/{salariat_id}`
 
 *garda `cere_rol` · rol:admin_firma,angajat*
+
+*ce face: scrie concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
 
 - [ ] 
 
@@ -753,11 +967,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: F136: adeverinta de salariat (art*
+
 - [ ] 
 
 ### `PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar`
 
 *garda `cere_rol` · rol:admin_firma,angajat*
+
+*ce face: [F133 Faza 2a] beneficiu one-off pe luna (vacanta/cadou/cultural) — scrie beneficii_lunare (DELETE/INSERT) — prin `beneficii_api`*
 
 - [ ] 
 
@@ -771,11 +989,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: [cap.23] Confirma pontajul lunii -> devine AUTORITATIV pentru salarizare (tichete pe zile efectiv lucrate)*
+
 - [ ] 
 
 ### `PUT /tenants/{tenant_id}/salariati/{salariat_id}/pontaj`
 
 *garda `cere_context` · **fara rol***
+
+*ce face: F135: seteaza starea unei zile (stare goala/prezent = sterge exceptia). — scrie pontaj (DELETE/INSERT) — prin `pontaj`*
 
 - [ ] 
 
@@ -789,6 +1011,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: [F134] Fisierul SEPA/ISO 20022 pain.001.001.03 de plata a salariilor NET pe card (download) — scrie artefacte_produse (INSERT) — prin `artefacte`*
+
 - [ ] 
 
 ## T18 — Chitanța și încasarea
@@ -801,17 +1025,23 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `FARA GARDA` · **fara rol***
 
+*ce face: scrie facturi (UPDATE) — prin `plati`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/chitante`
 
 *garda `cere_rol` · rol:admin_firma · scrie in chitante, facturi*
 
+*ce face: Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar: numerotare pe serie per firma + operatiune in Registrul de casa prin casa_api (5311=4111, nota ci — scrie casa_operatiuni (DELETE/INSERT) · chitante (INSERT) · facturi (UPDATE) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/facturi/{factura_id}/link-plata`
 
 *garda `cere_rol` · rol:admin_firma*
+
+*ce face: scrie facturi (UPDATE) — prin `plati`*
 
 - [ ] 
 
@@ -825,6 +1055,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: F131: activeaza/dezactiveaza notificarile email de scadenta pt firma (default OFF). — scrie facturi (UPDATE) · firma_profil (UPDATE) — prin `scadentar`*
+
 - [ ] 
 
 ## T20 — Mișcarea de stoc — intrare, ieșire, transfer, reclasificare
@@ -837,11 +1069,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/stocuri/articole/{articol_id}/nivel-minim`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
 - [ ] 
 
@@ -849,11 +1085,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · nir (INSERT) · nir_linii (INSERT) — prin `stocuri_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/stocuri/iesire`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
 - [ ] 
 
@@ -861,17 +1101,23 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/stocuri/reclasificare`
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/stocuri/transfer`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
 - [ ] 
 
@@ -885,11 +1131,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie produse (DELETE/INSERT/UPDATE) — prin `produse_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/produse/potriveste`
 
 *garda `cere_context` · **fara rol***
+
+*ce face: scrie produse (DELETE/INSERT/UPDATE) — prin `produse_api`*
 
 - [ ] 
 
@@ -897,11 +1147,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie produse (DELETE/INSERT/UPDATE) — prin `produse_api`*
+
 - [ ] 
 
 ### `PUT /tenants/{tenant_id}/produse/{produs_id}`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie produse (DELETE/INSERT/UPDATE) — prin `produse_api`*
 
 - [ ] 
 
@@ -909,17 +1163,23 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) · retete (DELETE/INSERT/UPDATE) · retete_linii (DELETE/INSERT) — prin `retete_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/retete/descarca`
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) · retete (DELETE/INSERT/UPDATE) · retete_linii (DELETE/INSERT) — prin `retete_api`*
+
 - [ ] 
 
 ### `DELETE /tenants/{tenant_id}/retete/{reteta_id}`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) · retete (DELETE/INSERT/UPDATE) · retete_linii (DELETE/INSERT) — prin `retete_api`*
 
 - [ ] 
 
@@ -933,11 +1193,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
+*ce face: Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ. — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/reevaluare-imobilizare`
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+
+*ce face: corp: {data, operatie reevaluare|surplus, + reevaluare{mijloc_fix_id, valoare_justa, sold_105_activ?, pierdere_655_anterioara?} | surplus{suma}} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
 - [ ] 
 
@@ -951,11 +1215,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol** · scrie in bonuri*
 
+*ce face: Extrage datele bonului cu AI si salveaza ca DRAFT (status='extras') + pozele pe disc — scrie bonuri (DELETE/INSERT)*
+
 - [ ] 
 
 ### `DELETE /portal/bon/{bon_id}`
 
 *garda `cere_context` · **fara rol** · scrie in bonuri*
+
+*ce face: Clientul reface poza -> draftul (status='extras') si pozele lui se sterg. — scrie bonuri (DELETE)*
 
 - [ ] 
 
@@ -963,17 +1231,23 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol** · scrie in bonuri*
 
+*ce face: Clientul confirma ca poza e intreaga si lizibila -> bonul intra la contabil. — scrie bonuri (UPDATE)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/bonuri/{bon_id}/aproba`
 
 *garda `cere_cabinet` · **fara rol** · scrie in bonuri, inregistrari, inregistrari_linii*
 
+*ce face: scrie bonuri (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/bonuri/{bon_id}/stinge`
 
 *garda `cere_rol` · rol:admin_firma · scrie in bonuri, facturi*
+
+*ce face: Chitanta certificata de contabil: plata furnizor prin Registrul de casa (casa_api.adauga -> 401=5311 ciorna + operatiune casa + verificare plafon) — scrie bonuri (UPDATE) · casa_operatiuni (DELETE/INSERT) · facturi (UPDATE) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`*
 
 - [ ] 
 
@@ -985,11 +1259,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
+*ce face: Upload p7b/XML AMEF (OPANAF 146/2018 II.7) -> nota Raport Z CIORNA — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/horeca/raport-z`
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+
+*ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
 - [ ] 
 
@@ -1003,11 +1281,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol** · scrie in firma_profil*
 
+*ce face: scrie firma_profil (UPDATE)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/woocommerce/sincronizeaza`
 
 *garda `cere_rol` · rol:admin_firma*
+
+*ce face: scrie facturi (UPDATE) · firma_profil (UPDATE) — prin `woocommerce`*
 
 - [ ] 
 
@@ -1021,6 +1303,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie registratura (INSERT) — prin `registratura_api`*
+
 - [ ] 
 
 ## T27 — e-Transport
@@ -1033,11 +1317,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: intoarce {nota, xml}*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/etransport/trimite`
 
 *garda `cere_rol` · rol:admin_firma*
+
+*ce face: Trimite notificarea UIT in SPV (F121): genereaza XML + trimite() cu PORTI in ordine (garda de timp -> idempotency -> validare pe TEST -> upload) — scrie etransport_trimiteri (INSERT/UPDATE) — prin `etransport_send`*
 
 - [ ] 
 
@@ -1051,11 +1339,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii*
 
+*ce face: AIC bunuri/servicii primite (art — scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `facturi_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/d390-clasificare/manual`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: Adauga linie pur manuala: {an, luna, tip, tara, cod, den, baza}. — scrie d390_manual (DELETE/INSERT) · d390_reclasificare (DELETE/INSERT) — prin `d390_clasificare_api`*
 
 - [ ] 
 
@@ -1063,17 +1355,23 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie d390_manual (DELETE/INSERT) · d390_reclasificare (DELETE/INSERT) — prin `d390_clasificare_api`*
+
 - [ ] 
 
 ### `PUT /tenants/{tenant_id}/d390-clasificare/reclasificare`
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: Override tip pe o operatiune auto: {an, luna, directie, tara, cod, tip}. — scrie d390_manual (DELETE/INSERT) · d390_reclasificare (DELETE/INSERT) — prin `d390_clasificare_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/vanzare-ic`
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+
+*ce face: LIC bunuri (art — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
 - [ ] 
 
@@ -1087,11 +1385,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
+*ce face: corp: {data, valoare (fara taxa), cont_cheltuiala, agricultor_in_registru, agricultor?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/achizitie-necorporala`
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii, mijloace_fixe*
+
+*ce face: corp: {data, denumire, valoare (fara TVA), tip software|licenta|brevet| dezvoltare|constituire, dnf_luni?, cota?, cod?} — scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT) — prin `facturi_api`*
 
 - [ ] 
 
@@ -1099,11 +1401,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii*
 
+*ce face: Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2) — scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `facturi_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/achizitie-taxare-inversa`
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii*
+
+*ce face: corp: {data, categorie, valoare (fara TVA), cont_destinatie, cota?, furnizor_platitor_tva, descriere?} — scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `facturi_api`*
 
 - [ ] 
 
@@ -1111,11 +1417,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
+*ce face: corp: {data, valoare, tara_client, dovada_export, cont_venit?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/import-extracomunitar`
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+
+*ce face: corp: {data, valoare_vamala (RON), procent_taxa_vamala?, accize?, accesorii?, cota?, certificat_amanare?, cont_destinatie, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
 - [ ] 
 
@@ -1123,11 +1433,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
+*ce face: corp: {data, pret (fara taxa), descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/vanzare-aur-investitii`
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+
+*ce face: corp: {data, tip lingou|plancheta|moneda, puritate, an_emisie?, pret_unitar?, valoare_aur?, suma, optiune_taxare?, calitate_client PF|PJ, client_identificare, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
 - [ ] 
 
@@ -1135,11 +1449,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
+*ce face: corp: {data, pret_vanzare, pret_cumparare, cota?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/vanzare-marja-turism`
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+
+*ce face: corp: {data, calitate_client PF|PJ, locuri [RO|UE|NONUE], optiune_normal?, intermediar?, cota?, descriere?} + per regim: special: incasat, cost_ue, cost_non_ue? | normal: — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
 - [ ] 
 
@@ -1151,11 +1469,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
+*ce face: Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765 — scrie curs_bnr_zilnic (INSERT) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `curs_bnr`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/reevaluare-valuta`
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
+
+*ce face: Reevaluare lunara solduri valuta (OMFP 1802 pct — scrie curs_bnr_zilnic (INSERT) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `curs_bnr`*
 
 - [ ] 
 
@@ -1169,11 +1491,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: Adauga/actualizeaza un rand manual D300: {an, luna, rand, baza, tva, descriere}. — scrie d300_manual (DELETE/INSERT) — prin `d300_manual_api`*
+
 - [ ] 
 
 ### `DELETE /tenants/{tenant_id}/d300-manual/{rid}`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie d300_manual (DELETE/INSERT) — prin `d300_manual_api`*
 
 - [ ] 
 
@@ -1181,11 +1507,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: Adauga o operatiune: {an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, cota}. — scrie d301_operatiuni (DELETE/INSERT) — prin `d301_operatiuni_api`*
+
 - [ ] 
 
 ### `DELETE /tenants/{tenant_id}/d301-operatiuni/{op_id}`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie d301_operatiuni (DELETE/INSERT) — prin `d301_operatiuni_api`*
 
 - [ ] 
 
@@ -1199,11 +1529,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/rip/import-casa`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
 
 - [ ] 
 
@@ -1211,17 +1545,23 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
+
 - [ ] 
 
 ### `DELETE /tenants/{tenant_id}/rip/operatiuni/{op_id}`
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
+
 - [ ] 
 
 ### `PUT /tenants/{tenant_id}/rip/operatiuni/{op_id}/valideaza`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
 
 - [ ] 
 
@@ -1235,11 +1575,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: scrie artefacte_produse (INSERT) — prin `artefacte`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/facturi/export-winmentor`
 
 *garda `cere_rol` · rol:admin_firma*
+
+*ce face: Export WinMENTOR: Facturi.txt + Articole.txt (Windows-1250) co-locate intr-un zip — scrie artefacte_produse (INSERT) — prin `artefacte`*
 
 - [ ] 
 
@@ -1253,11 +1597,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie bugete (INSERT) · centre_cost (INSERT/UPDATE) — prin `centre_cost_api`*
+
 - [ ] 
 
 ### `PUT /tenants/{tenant_id}/centre-cost/{centru_id}`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie bugete (INSERT) · centre_cost (INSERT/UPDATE) — prin `centre_cost_api`*
 
 - [ ] 
 
@@ -1265,17 +1613,23 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: Seteaza bugetul anual (cheltuieli + venituri) al unui centru pe un an. — scrie bugete (INSERT) · centre_cost (INSERT/UPDATE) — prin `centre_cost_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/rapoarte-salvate`
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie rapoarte_salvate (DELETE/INSERT) — prin `rapoarte_comerciale_api`*
+
 - [ ] 
 
 ### `DELETE /tenants/{tenant_id}/rapoarte-salvate/{vid}`
 
 *garda `cere_cabinet` · **fara rol***
+
+*ce face: scrie rapoarte_salvate (DELETE/INSERT) — prin `rapoarte_comerciale_api`*
 
 - [ ] 
 
@@ -1289,11 +1643,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
+*ce face: scrie pachet_povestea (INSERT) — prin `pachete_api`*
+
 - [ ] 
 
 ### `POST /pachete/{tenant_id}/poveste`
 
 *garda `cere_rol` · rol:admin_firma*
+
+*ce face: scrie pachet_povestea (INSERT) — prin `pachete_api`*
 
 - [ ] 
 
@@ -1301,11 +1659,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
+*ce face: scrie pachet_povestea (INSERT) — prin `pachete_api`*
+
 - [ ] 
 
 ### `POST /portal/acces-cont/acces`
 
 *garda `cere_client` · rol:verificat-în-corp · scrie in user_tenants, users*
+
+*ce face: scrie user_tenants (INSERT) · users (INSERT/UPDATE)*
 
 - [ ] 
 
@@ -1313,11 +1675,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_client` · **fara rol** · scrie in user_tenants, users*
 
+*ce face: scrie user_tenants (DELETE) · users (UPDATE)*
+
 - [ ] 
 
 ### `PUT /portal/acces-cont/email`
 
 *garda `cere_client` · **fara rol** · scrie in users*
+
+*ce face: scrie users (UPDATE)*
 
 - [ ] 
 
@@ -1325,11 +1691,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_client` · **fara rol***
 
+*ce face: intoarce {ok, rezultate}*
+
 - [ ] 
 
 ### `POST /portal/solicitari`
 
 *garda `cere_client` · **fara rol** · scrie in solicitari_client*
+
+*ce face: scrie notificari (INSERT/UPDATE) · solicitari_client (INSERT) — prin `notificari_api`*
 
 - [ ] 
 
@@ -1337,11 +1707,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat,verificat-în-corp*
 
+*ce face: Emite un token de PREVIZUALIZARE (read-only, tab-local) pentru portalul clientului firmei*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/client-acces`
 
 *garda `cere_rol` · rol:admin_firma,verificat-în-corp · scrie in user_tenants, users*
+
+*ce face: scrie firma_profil (INSERT/UPDATE) · tenants (INSERT/UPDATE) · user_tenants (INSERT) · users (INSERT/UPDATE) — prin `tenant_provisioning`*
 
 - [ ] 
 
@@ -1349,11 +1723,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma · scrie in users*
 
+*ce face: scrie users (UPDATE)*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/clienti`
 
 *garda `cere_rol` · rol:admin_firma,angajat*
+
+*ce face: scrie clienti (DELETE/INSERT/UPDATE) — prin `clienti_api`*
 
 - [ ] 
 
@@ -1361,17 +1739,23 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
+*ce face: scrie clienti (DELETE/INSERT/UPDATE) — prin `clienti_api`*
+
 - [ ] 
 
 ### `PUT /tenants/{tenant_id}/clienti/{client_id}`
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
+*ce face: scrie clienti (DELETE/INSERT/UPDATE) — prin `clienti_api`*
+
 - [ ] 
 
 ### `POST /tenants/{tenant_id}/solicitari`
 
 *garda `cere_rol` · rol:admin_firma · scrie in solicitari_client*
+
+*ce face: scrie solicitari_client (INSERT)*
 
 - [ ] 
 

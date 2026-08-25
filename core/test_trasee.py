@@ -326,6 +326,29 @@ def test_fisierul_de_tabele_cunoscute_nu_imbatraneste(st):
         "regenereaza: ./venv/bin/python scripts/scan_trasee.py --tabele" % (lipsa, chr(10)))
 
 
+def test_fiecare_loc_de_verificare_spune_CE_face_pasul(st):
+    """Descrierea efectului sta unde se SCRIE verificarea, nu doar in lotul care se citeste.
+
+    Loturile sunt o ordine de citire; TRASEE_VERIFICARI.md e fisierul in care se scrie. Daca
+    descrierea ar sta doar in lot, ar fi in fata ochilor cand se alege pasul si absenta cand se
+    scrie propozitia. Aici se cere ca fiecare pas sa aiba randul `*ce face: ...*`.
+
+    Un pas nou apare intai FARA el (scheletul `--verificari` nu-l genereaza), deci gardul spune
+    exact ce lipseste. NU se repara prin regenerare: regenerarea sterge ce s-a scris."""
+    doc = io.open(os.path.join(_RAD, "TRASEE_VERIFICARI.md"), encoding="utf-8").read()
+    blocuri = doc.split(chr(10) + "### ")[1:]
+    assert len(blocuri) >= 150, "TRASEE_VERIFICARI.md are doar %d locuri - s-a golit?" % len(blocuri)
+    fara = []
+    for b in blocuri:
+        cap = b.split(chr(10), 1)[0].strip()
+        corp = b.split(chr(10) + "- [ ]")[0]
+        if "*ce face:" not in corp:
+            fara.append(cap)
+    assert not fara, (
+        "locuri de verificare fara descrierea efectului (%d) - la ele nu se poate scrie ce trebuie "
+        "sa fie adevarat:%s  %s" % (len(fara), chr(10), (chr(10) + "  ").join(fara[:12])))
+
+
 def test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul(st):
     """doc↔cod. Partea XII din `TRASEE.md` e GENERATĂ (`--md`). Dacă cineva o editează cu
     mâna, sau dacă inventarul se schimbă și documentul rămâne, cele două diverg — și
