@@ -140,6 +140,122 @@ def test_aliasul_local_bate_pe_cel_de_modul(st):
         "ruta de NIR nu mai e legată exact de `stocuri_api`, ci de %s — harta aliasurilor "
         "locale s-a stricat" % sorted(nir[0]["module"]))
 
+_FALS_UMBRIT = [
+    "from core import casa_api as _c",
+    "",
+    "@app.post('/tenants/{tenant_id}/umbrit')",
+    "def umbrit(tenant_id: int):",
+    "    with conn.cursor() as _c:",
+    "        _c.execute('SELECT 1')",
+    "    return {}",
+    "",
+    "@app.post('/tenants/{tenant_id}/liber')",
+    "def liber(tenant_id: int):",
+    "    return _c.pull(conn)",
+]
+
+
+def test_CALIBRARE_un_nume_umbrit_local_NU_mai_e_alias_de_modul(st, tmp_path, monkeypatch):
+    """A doua față a atribuirii false (25.08.2026), găsită fiindcă a produs-o chiar codul meu.
+
+    `main.py` are, la nivel de modul, `from core import casa_api as _c`. O rută care scrie
+    `with conn.cursor() as _c:` primea `casa_api` în lista ei de module — și, prin el, trei tabele
+    în care nu scrie. Testul de deasupra nu prindea cazul: acolo numele e legat de un IMPORT local,
+    aici de o variabilă.
+
+    Măsurat la reparație: **două** atribuiri false în inventar — a mea, și una mai veche
+    (`rapoarte_comerciale_api`, cu tabela `rapoarte_salvate`, pe traseul statului de plată).
+    O absență ar fi fost vizibilă; o atribuire falsă trece verde și intră în document."""
+    io.open(os.path.join(str(tmp_path), "main.py"), "w", encoding="utf-8").write(
+        chr(10).join(_FALS_UMBRIT) + chr(10))
+    monkeypatch.setattr(st, "RAD", str(tmp_path))
+    rute = {r["cale"]: r for r in st.citeste_rute()}
+
+    assert not {"casa_api"} <= set(rute["/tenants/{tenant_id}/umbrit"]["module"]), (
+        "`_c` e legat local de un cursor, nu de modul — atribuirea lui `casa_api` e FALSĂ")
+
+    # Cealaltă direcție: fără umbrire, aliasul de modul trebuie să funcționeze. Fără proba asta, o
+    # reparație care ar scoate TOATE aliasurile ar trece testul de sus și ar goli inventarul.
+    assert {"casa_api"} <= set(rute["/tenants/{tenant_id}/liber"]["module"]), (
+        "aliasul de modul nu mai e citit deloc — reparația a mers prea departe")
+
+
+_DOC_PREDAT = ("content-disposition", "application/pdf", "fileresponse",
+               "application/vnd.openxmlformats", "application/zip", "image/")
+
+# [R52] Clichet pe rutele care PREDAU un document fara verificare de rol. Poate scadea, niciodata
+# creste.
+#
+# CONFRUNTAREA CELOR DOUA INSTRUMENTE, scrisa fiindca cifrele NU coincid. Masuratoarea din R52
+# (25.08.2026) a dat 25 de rute care predau un document, 17 fara rol. Gardul asta, cu ACELEASI
+# marcaje dar citind doar CORPUL rutei, gaseste 18 si 8. Diferenta nu e un progres - e raza:
+# masuratoarea a urmarit si ce livreaza modulele chemate, gardul se opreste la ruta. Deci:
+#   - clichetul e 8, cifra pe care gardul o poate reproduce de fiecare data;
+#   - restul de pana la 17 NU sunt pazite aici, si asta se scrie, nu se tace.
+# Un clichet pe o cifra pe care instrumentul n-o poate recalcula ar fi o amintire, nu o masuratoare.
+_CLICHET_DOC_FARA_ROL = 8
+
+
+def _rute_care_predau_document(st):
+    """Rutele al caror corp livreaza un fisier catre om. Se citeste din CORPUL rutei (antet
+    Content-Disposition, tip MIME, FileResponse), nu din numele ei: `documente/balanta` si
+    `d406-active` n-au «pdf» in cale si totusi predau un fisier."""
+    import ast
+    import os
+    src = io.open(os.path.join(st.RAD, "main.py"), encoding="utf-8").read()
+    tree = ast.parse(src)
+    out = []
+    for fn in ast.walk(tree):
+        if not isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            continue
+        for dec in fn.decorator_list:
+            if not isinstance(dec, ast.Call) or getattr(dec.func, "attr", None) not in st.METODE:
+                continue
+            if not dec.args or not isinstance(dec.args[0], ast.Constant):
+                continue
+            corp = ast.unparse(fn).lower()
+            if not any(m in corp for m in _DOC_PREDAT):
+                continue
+            _g, roluri, fine = st._garzi_si_rol(fn, dec)
+            out.append((dec.func.attr.upper(), dec.args[0].value, bool(roluri or fine)))
+    return out
+
+
+def test_ANTI_VACUU_se_gasesc_rutele_care_predau_un_document(st):
+    """Daca detectorul nu mai vede nicio ruta, clichetul de mai jos ar raporta 0 si ar parea
+    progres. Cifra masurata pe 25.08: 25 de rute predau un document."""
+    r = _rute_care_predau_document(st)
+    assert len(r) >= 15, "detectorul vede doar %d rute care predau un document — s-a stricat?" % len(r)
+
+
+def test_clichet_documente_predate_fara_rol(st):
+    """[R52] Un document care ajunge la un om poate pleca pe un GET, iar acolo nu se verifica
+    niciun rol. Toate masuratorile mele de rol de pana atunci numarasera doar rutele care SCRIU —
+    punctul orb: *«iese catre un om» nu e totuna cu «scrie ceva»*.
+
+    Decizia lui Costin (25.08.2026) a fost aplicata; clichetul e ce ramane, ca numarul sa nu poata
+    creste tacut. O ruta noua care preda un document fara rol pica aici."""
+    fara = sorted(c for _m, c, are_rol in _rute_care_predau_document(st) if not are_rol)
+    assert len(fara) <= _CLICHET_DOC_FARA_ROL, (
+        "au aparut rute care predau un document fara verificare de rol (clichet %d, acum %d):%s  %s"
+        % (_CLICHET_DOC_FARA_ROL, len(fara), chr(10), (chr(10) + "  ").join(fara)))
+    assert len(fara) == _CLICHET_DOC_FARA_ROL, (
+        "clichetul e depasit — coboara-l la %d" % len(fara))
+
+
+def test_cele_TREI_documente_cu_date_de_tert_au_rol(st):
+    """Cealalta directie: clichetul singur ar trece si daca cele trei si-ar pierde rolul, atata
+    timp cat totalul nu creste (o alta ruta ar putea capata rol in schimb). Criteriul lui Costin
+    numeste exact trei, deci exact trei se asertaza pe nume."""
+    dupa_cale = {c: are_rol for _m, c, are_rol in _rute_care_predau_document(st)}
+    for c in ("/tenants/{tenant_id}/fluturas/{salariat_id}",
+              "/tenants/{tenant_id}/chitante/{chitanta_id}/pdf",
+              "/tenants/{tenant_id}/bonuri/{bon_id}/imagine/{n}"):
+        assert c in dupa_cale, "ruta %s a disparut — reciteste decizia inainte s-o repari" % c
+        assert dupa_cale[c], (
+            "%s poarta datele unui tert si nu mai cere rol — decizia lui Costin, 25.08.2026" % c)
+
+
 def test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul(st):
     """doc↔cod. Partea XII din `TRASEE.md` e GENERATĂ (`--md`). Dacă cineva o editează cu
     mâna, sau dacă inventarul se schimbă și documentul rămâne, cele două diverg — și

@@ -2662,7 +2662,11 @@ class RegimTvaIn(BaseModel):
     platitor_tva: bool
 
 @app.post("/tenants/{tenant_id}/firma-profil/regim-tva")  # [tva_config_v1] setat la Configurare emitere
-def firma_profil_regim_tva(tenant_id: int, date: RegimTvaIn, ctx=Depends(cere_context)):
+# [R42 (c)] Criteriul adăugat de Costin: *ce schimbă CE DATOREAZĂ firma cere `admin_firma`*.
+# Nu e o ieșire — nu pleacă nimic — dar `platitor_tva` decide dacă firma datorează D300/D394 și
+# pe ce perioade. O schimbare greșită nu produce o eroare vizibilă: produce declarații care nu se
+# mai depun, sau se depun greșit.
+def firma_profil_regim_tva(tenant_id: int, date: RegimTvaIn, ctx=Depends(cere_rol("admin_firma"))):
     schema = _schema_sau_404(ctx, tenant_id)
     # [F180] CUI din public.tenants -> apel ANAF live FARA a tine conexiunea pe schema
     with db.get_conn() as cpub:
@@ -3731,6 +3735,7 @@ def bon_aproba(tenant_id: int, bon_id: int, b: BonAproba, ctx=Depends(cere_cabin
                 raise HTTPException(404, "bon inexistent")
             if (rt[0] or "bon") != "bon":
                 raise HTTPException(400, "documentul e chitanță; folosește stingerea de factură, nu contarea pe cheltuială")
+        _cere_luna_deschisa(conn, schema, b.data)   # [R42 (a)] nota poartă data bonului
         suma_linii = sum(l.valoare for l in b.linii)
         if abs(suma_linii - b.total) > 0.05:
             raise HTTPException(400, f"suma articolelor ({suma_linii}) != total ({b.total})")
@@ -3763,6 +3768,8 @@ def tenant_amortizare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabin
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        # [R42 (a)] Nota de amortizare se datează în ziua 28 a lunii cerute (mai jos).
+        _cere_luna_deschisa(conn, schema, _date(an, luna, 1).replace(day=28))
         ref = _date(an, luna, 1)
         with conn.cursor() as cur:
             cur.execute(f"""
@@ -3812,6 +3819,53 @@ def _perioada_blocata(conn, schema, data_nota):
         cur.execute(f"SELECT 1 FROM {schema}.perioade_blocate WHERE an=%s AND luna=%s",
                     (int(d[:4]), int(d[5:7])))
         return cur.fetchone() is not None
+
+def _cere_luna_deschisa(conn, schema, data):
+    """[R42 (a), 25.08.2026] P15 pe o notă NOUĂ, nu doar pe una existentă.
+
+    Decizia lui Costin: *„o notă contabilă nu e ceva emis — e o înregistrare în evidență, nu un
+    artefact predat. Dar nu e nici liberă: o notă care a intrat în evidență nu se șterge, se
+    stornează."* Deci nu `admin_firma`, ci verificarea de perioadă.
+
+    `_cere_perioada_deschisa` de mai jos păzea editarea, ștergerea și validarea unei note care
+    EXISTĂ. Crearea intra pe altă ușă și nu era păzită: o notă nouă datată într-o lună închisă e
+    tot o modificare a perioadei închise."""
+    if data and _perioada_blocata(conn, schema, data):
+        raise HTTPException(423, PERIOADA_INCHISA)
+
+
+def _cere_admin_firma(ctx, mesaj):
+    """Verificarea pe care o face `cere_rol("admin_firma")`, dar în corp — pentru cazurile în care
+    rolul cerut depinde de STAREA datelor, nu de rută. Aceeași comparație, ca să nu existe două
+    definiții ale lui «e administrator» (P1)."""
+    if ctx["rol"] not in ("admin_firma", "superadmin"):
+        raise HTTPException(403, mesaj)
+
+
+def _declaratie_generata(conn, tenant_id, tip, an, luna):
+    """[R42 (b)] Există deja o declarație generată pentru perioada asta — în coadă sau depusă?
+
+    Decizia lui Costin: *„o completare manuală e parte din declarație DA, după generare; NU,
+    înainte. Înainte de generare e pregătire — se poate schimba fără consecință. După, declarația
+    existentă nu mai corespunde datelor din care a ieșit."* Asta e P4 citit invers: documentul
+    emis e fapt, deci ce l-a produs nu mai poate dispărea în tăcere."""
+    from core import scadente as _sc
+    try:
+        perioada = _sc.scadenta(tip, an, luna=luna)
+    except Exception:
+        perioada = None
+    with conn.cursor() as cur:
+        if perioada:
+            cur.execute("SELECT 1 FROM public.declaratii_coada "
+                        "WHERE tenant_id=%s AND tip=%s AND perioada=%s LIMIT 1",
+                        (tenant_id, tip, perioada))
+            if cur.fetchone():
+                return True
+        cur.execute("SELECT 1 FROM public.declaratii_depuse "
+                    "WHERE tenant_id=%s AND tip=%s AND an=%s AND luna=%s LIMIT 1",
+                    (tenant_id, tip, an, luna))
+        return cur.fetchone() is not None
+
 
 def _cere_perioada_deschisa(conn, schema, nota_id):
     with conn.cursor() as cur:
@@ -3963,6 +4017,7 @@ def horeca_raport_z(tenant_id: int, rz: RaportZ, ctx=Depends(cere_cabinet)):
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, rz.data)   # [R42 (a)] nota poartă data raportului Z
         total = D(str(rz.total_11)) + D(str(rz.total_21))
         if total <= 0:
             raise HTTPException(400, "totalul pe cote trebuie să fie pozitiv")
@@ -4235,6 +4290,13 @@ def d390_manual_sterge(tenant_id: int, mid: int, an: int, luna: int, ctx=Depends
     from core import d390_clasificare_api as _cl
     schema = _schema_cabinet_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
+        # [R42 (b)] Înainte de generare linia manuală e pregătire — o poate scoate un asistent.
+        # După, e parte din declarația care există deja, iar ștergerea o face să nu mai
+        # corespundă datelor din care a ieșit.
+        if _declaratie_generata(conn, tenant_id, "D390", an, luna):
+            _cere_admin_firma(ctx, "declarația D390 pe %02d/%d e deja generată — o linie completată "
+                                   "manual face parte din ea, iar scoaterea ei o face să nu mai "
+                                   "corespundă datelor din care a ieșit" % (luna, an))
         return _cl.manual_sterge(conn, schema, an, luna, mid)
 
 
@@ -4303,6 +4365,15 @@ def d300_manual_sterge(tenant_id: int, rid: int, ctx=Depends(cere_cabinet)):
     from core import d300_manual_api as _dm
     schema = _schema_cabinet_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
+        # [R42 (b)] Aceeași regulă ca la D390. Perioada nu vine din cerere, ci din rândul însuși —
+        # altfel s-ar putea șterge un rând dintr-o lună generată trimițând altă lună.
+        with conn.cursor() as _cur_per:
+            _cur_per.execute(f"SELECT an, luna FROM {schema}.d300_manual WHERE id=%s", (rid,))
+            _r = _cur_per.fetchone()
+        if _r and _declaratie_generata(conn, tenant_id, "D300", _r[0], _r[1]):
+            _cere_admin_firma(ctx, "declarația D300 pe %02d/%d e deja generată — un rând completat "
+                                   "manual face parte din ea, iar scoaterea lui o face să nu mai "
+                                   "corespundă datelor din care a ieșit" % (_r[1], _r[0]))
         return _dm.sterge(conn, schema, rid)
 
 
@@ -5017,7 +5088,10 @@ def wc_config_get(tenant_id: int, ctx=Depends(cere_context)):
         return {"configurat": False, "url": None}
     return {"configurat": bool(r[0] and r[1]), "url": r[0]}
 @app.put("/tenants/{tenant_id}/woocommerce/config")  # wc_sinc_v1
-def wc_config(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_context)):
+# [R42 (d)] Pornirea și oprirea unui canal cer `admin_firma`. Costin: *„nu e organizare internă —
+# e o decizie despre cum comunică firma cu autoritatea și cu clienții."* Ruta asta scrie chiar
+# cheile canalului: cu ele pline canalul e pornit, golite îl oprește.
+def wc_config(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_rol("admin_firma"))):
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn() as conn, conn.cursor() as cur:
         cur.execute(f"""UPDATE {schema}.firma_profil
@@ -6148,6 +6222,7 @@ def jurnal_creeaza(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         return _jurnal_rez(_j.creeaza(conn, schema, corp.get("descriere"), corp.get("data"), corp.get("linii")))
 @app.put("/tenants/{tenant_id}/jurnal/{nota_id}")
 def jurnal_editeaza(tenant_id: int, nota_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
@@ -6926,6 +7001,8 @@ def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_cab
             f = cur.fetchone()
             if not f:
                 raise HTTPException(404, "factură inexistentă")
+            # [R42 (a)] Luna se știe abia acum: nota moștenește data emiterii facturii, nu ziua de azi.
+            _cere_luna_deschisa(conn, schema, f.get("data_emitere"))
             if (f.get("tip") or "factura") != "factura":  # proforma_fara_nota_v1
                 raise HTTPException(422, "proforma/avizul nu se contabilizeaza (nu e document fiscal)")
             cur.execute(f"SELECT COUNT(*) AS n FROM {schema}.inregistrari WHERE factura_id=%s", (factura_id,))
@@ -7003,6 +7080,7 @@ def vanzare_marja(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabin
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             r = _m.vanzare_marja(corp["pret_vanzare"], corp["pret_cumparare"], _common.cota_ceruta(corp))
         except (ValueError, KeyError) as e:
@@ -7044,6 +7122,7 @@ def vanzare_marja_turism(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             regim = _m.determina_regim(corp["calitate_client"], corp.get("locuri", ["RO"]),
                                        corp.get("optiune_normal", False),
@@ -7102,6 +7181,7 @@ def vanzare_aur_investitii(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             ok, motiv = _m.este_aur_investitii(corp["tip"], corp["puritate"],
                                                corp.get("an_emisie"), corp.get("pret_unitar"),
@@ -7141,6 +7221,7 @@ def achizitie_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             r = _m.achizitie_de_la_agricultor(corp["valoare"], corp["agricultor_in_registru"])
             cont = str(corp["cont_cheltuiala"]).strip()
@@ -7173,6 +7254,7 @@ def vanzare_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             r = _m.compensatie(corp["pret"])
         except (ValueError, KeyError) as e:
@@ -7726,6 +7808,7 @@ def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...),
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         with conn.cursor() as cur:
             cur.execute(f"SELECT COALESCE(platitor_tva, true) FROM {schema}.firma_profil LIMIT 1")
             rand = cur.fetchone()
@@ -7808,6 +7891,7 @@ def achizitie_ic(tenant_id: int, corp: dict = Body(...),
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         from core import facturi_api as _fa
         try:
             val = Decimal(str(corp["valoare"]))
@@ -7864,6 +7948,7 @@ def achizitie_neinregistrat(tenant_id: int, corp: dict = Body(...),
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             furnizor_nume = str(corp.get("furnizor_nume") or "").strip()
             if not furnizor_nume:
@@ -7915,6 +8000,7 @@ def vanzare_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             v = _ic.verifica_vies(corp["cod_tva_client"])
         except ValueError as e:
@@ -7960,6 +8046,7 @@ def import_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         with conn.cursor() as cur:
             cur.execute(f"SELECT COALESCE(platitor_tva, true) FROM {schema}.firma_profil LIMIT 1")
             rand = cur.fetchone()
@@ -8013,6 +8100,7 @@ def export_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             ok, ment = _ie.valideaza_export(corp.get("tara_client"),
                                             bool(corp.get("dovada_export")))
@@ -8081,6 +8169,7 @@ def nota_tva_incasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         sens = corp.get("sens")
         if sens not in ("incasare", "plata"):
             raise HTTPException(422, "sens invalid (incasare/plata)")
@@ -8113,6 +8202,7 @@ def decontare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_ca
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             data = _date.fromisoformat(corp["data"])
             curs_dec, _dcurs, _sursa = _cb.curs_pentru(conn, corp.get("moneda", "EUR"), data)
@@ -8151,6 +8241,7 @@ def reevaluare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             data = _date.fromisoformat(corp["data"])
             solduri = corp["solduri"]
@@ -8203,6 +8294,7 @@ def nota_leasing(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabine
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         tip = corp.get("tip")
         try:
             if tip == "primire":
@@ -8250,6 +8342,7 @@ def nota_credit(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         tip = corp.get("tip", "lung")
         try:
@@ -8299,6 +8392,7 @@ def nota_avans(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         dest = corp.get("destinatie", "stocuri")
         try:
@@ -8352,6 +8446,7 @@ def achizitie_necorporala(tenant_id: int, corp: dict = Body(...),
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         tip = corp.get("tip")
         if tip not in TIPURI:
             raise HTTPException(422, "tip: " + "|".join(TIPURI))
@@ -8427,6 +8522,7 @@ def reevaluare_imobilizare(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie", "reevaluare")
         try:
             if op == "surplus":
@@ -8490,6 +8586,7 @@ def nota_provizion_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         fel = corp.get("fel")
         act = corp.get("actiune", "constituire")
         info = {}
@@ -8538,6 +8635,7 @@ def nota_productie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         try:
             if op == "obtinere":
@@ -8579,6 +8677,7 @@ def nota_obiect_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         try:
             if op == "achizitie":
@@ -8625,6 +8724,7 @@ def nota_asociati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabin
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         info = {}
         try:
@@ -8674,6 +8774,7 @@ def nota_sponsorizare_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             r = _sp.nota_sponsorizare(corp["suma"], corp.get("mod", "contract"))
             info = {}
@@ -8713,6 +8814,7 @@ def nota_subventie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         fel = corp.get("fel")
         info = {}
         try:
@@ -8759,6 +8861,7 @@ def nota_chirie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         fel = corp.get("fel")
         note = []  # [(descriere, linii)]
         info = {}
@@ -8817,6 +8920,7 @@ def nota_decont_deplasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         fel = corp.get("fel")
         info = {}
         try:
@@ -8866,6 +8970,7 @@ def nota_bacsis(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         fel = corp.get("fel")
         info = {}
         try:
@@ -8906,6 +9011,7 @@ def nota_sgr(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         try:
             if op == "achizitie":
@@ -8957,6 +9063,7 @@ def nota_perisabilitati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             r = _pe.calcul(corp["valoare_intrari"], corp["procent_limita"],
                            corp["pierdere_constatata"], _common.cota_ceruta(corp),
@@ -8993,6 +9100,7 @@ def nota_contract_special(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             r = _cs.nota(corp["brut"], corp.get("fel", "zilier"),
                          corp.get("sursa", "casa"))
@@ -9072,6 +9180,7 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         mf_id = None
         try:
@@ -9163,6 +9272,7 @@ def nota_lichidare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         info = {}
         try:
@@ -9212,6 +9322,7 @@ def nota_ong(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        _cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie", "venit")
         try:
             if op == "scutire":

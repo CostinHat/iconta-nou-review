@@ -2050,3 +2050,14 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   în plan** (METODA §25, clichet 10); (3) „Decizie cerută" nu rămâne în corpul unei restanțe închise —
   chiar rotația care făcuse numărătoarea să treacă verde. RED-proof: 6 mutații, toate prinse.
 
+- **`core/test_r42_criteriu.py` (25.08.2026)** — 16 teste, cele patru decizii ale lui Costin la R42:
+  (a) fiecare rută care creează o notă verifică perioada — **și** că nota NU e trecută pe
+  `admin_firma`, cealaltă jumătate a deciziei; (b) ștergerea unei completări manuale cere
+  administratorul **doar** dacă declarația e generată, în coadă sau depusă; (c)/(d) `regim-tva` și
+  cheile canalului WooCommerce cer rol. Probe funcționale pe schemă efemeră: refuză ziua din luna
+  închisă, **lasă** lunile deschise, prinde **marginile** (1 și 31 — un `>` în loc de `>=` le-ar
+  lăsa să treacă). RED-proof: **5 mutații**, toate prinse, `main.py` restaurat cu sha256 identic.
+- **`core/test_trasee.py` — +4 teste (25.08.2026)**: calibrarea pe **umbrirea locală** a unui alias
+  de modul (un `with ... as _c` care fura `casa_api`), în ambele direcții; și clichetul R52 pe
+  rutele care predau un document fără rol (**8**), cu testul care asertează pe nume că **exact
+  cele trei** documente cu date de terț cer rol — clichetul singur ar trece și dacă ele l-ar pierde.

@@ -44,7 +44,7 @@ CAP_TABEL = "CE E INTERZIS PRIN CONSTRUCȚIE"
 
 # [METODA §25] Cate restante DESCHISE deblocate de DECIZIE inca nu spun unde au cautat in plan.
 # Coboara pe masura ce fiecare e confruntata cu planul - NU se umple prin copiere.
-_CLICHET_FARA_PLAN = 10
+_CLICHET_FARA_PLAN = 9
 
 
 def _camp(corp, nume):

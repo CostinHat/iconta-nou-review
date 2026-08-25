@@ -4732,3 +4732,51 @@ ce interzice METODA §23 și a fost prinsă de `test_garzi_pe_text`. Câmpul `co
 
 **Clichet: 6** nomenclatoare probate pe validator n-au încă sursă normativă. Coboară prin citire,
 una câte una — o citire copiată ar trece verde și ar fi mai rea decât absența.
+
+---
+
+## R42, cele patru răspunsuri — și clasa care era mai mare decât întrebarea (25.08.2026)
+
+`core/test_r42_criteriu.py` — **16 teste, 5 mutații probate**, plus trei probe funcționale pe
+schemă efemeră.
+
+**Ce a ieșit peste întrebare.** Costin a decis despre *„cele 24 de rute `nota-*`"*: nu
+`admin_firma`, ci verificarea de perioadă de la P15. Am scris gardul pe **structură** — orice rută
+care inserează în `inregistrari` — și el a găsit **încă 19** care scriu note și nu verificau
+nimic: operațiunile de regim special, amortizarea, contabilizarea unei facturi, raportul Z,
+aprobarea unui bon. Motivul deciziei (*„o notă care a intrat în evidență nu se șterge, se
+stornează"*) le acoperă pe toate. **39 de rute** au primit verificarea.
+
+**Ce lipsea, exact.** `_cere_perioada_deschisa` păzea **editarea, ștergerea și validarea** unei note
+care există. **Crearea intra pe altă ușă.** O notă nouă datată într-o lună închisă e tot o
+modificare a perioadei închise — doar că nu trecea pe unde se uita nimeni.
+
+**Trei gărzi au căzut pe codul meu nou, și una a scos un defect mai vechi:**
+
+1. **Atribuire falsă, a doua față.** `main.py` are `from core import casa_api as _c` la nivel de
+   modul. Am scris `with conn.cursor() as _c:` într-o rută, iar instrumentul a raportat că ruta
+   cheamă `casa_api` — și, prin el, **trei tabele în care nu scrie**. Reparația din tura trecută
+   acoperea aliasurile locale de **import**; aici numele e legat de o **variabilă**. Reparat în
+   ambele locuri (codul meu **și** instrumentul), cu calibrare în ambele direcții.
+   **La regenerare au dispărut DOUĂ atribuiri false, nu una:** a mea, plus
+   `rapoarte_comerciale_api` (cu tabela `rapoarte_salvate`) pe traseul statului de plată, care era
+   în inventar de la început. *O absență s-ar fi văzut; o atribuire falsă trece verde și intră în
+   document.*
+2. **Nume de tabel inventate.** Generatorul de loturi arăta `factur (UPDATE)` și
+   `validata (UPDATE)` — fragmente scoase de regexul de SQL, una fiind o **valoare de stare** luată
+   drept nume de tabel. `construieste` filtra deja pe tabelele cunoscute; `pasii_ordonati` nu.
+   *Un nume de tabel inventat într-o listă de verificat cere să se verifice ceva ce nu există.*
+3. **Prima formă a detectorului vedea ZERO.** Căuta `insert into {schema}.inregistrari` într-un
+   f-string, unde `{schema}` e un `FormattedValue`, nu text — deci textul real e
+   `insert into .inregistrari`. Anti-vacuul a prins-o: *„detectorul vede doar 0 rute — s-a stricat?"*
+
+**Ce NU s-a schimbat, cu cifra gardată: 7.** Operațiunile de regim special rămân la `cere_cabinet`
+— sunt **introducere**, iar criteriul spune explicit că introducerea o poate face un asistent.
+
+## R52 — clichetul, și confruntarea celor două instrumente
+
+Măsurătoarea din R52 a dat **25** de rute care predau un document, **17** fără rol. Gardul, cu
+**aceleași marcaje** dar citind doar **corpul rutei**, găsește **18** și **8**. Diferența nu e
+progres — e **raza**: măsurătoarea a urmărit și ce livrează modulele chemate. Clichetul e pus pe
+**8**, cifra pe care instrumentul o poate recalcula; restul până la 17 **nu sunt păzite acolo**, și
+scrie asta. *Un clichet pe o cifră care nu se poate reproduce ar fi o amintire.*

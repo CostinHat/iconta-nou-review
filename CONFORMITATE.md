@@ -40,10 +40,10 @@ face doar imposibilă acumularea unei narațiuni care să îmbătrânească. *(D
 după a doua oară: „e gardul care nu citește proză și totuși o disciplinează".)*
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **`TRASEE_VERIFICARI.md`** — 190 de locuri goale, unul per pas care schimbă ceva; le scrie Costin. Până atunci, inventarul de trasee e o hartă a codului, nu o listă de verificare.
+- **pasul curent**: **`TRASEE_VERIFICARI.md`** — 190 de locuri goale, unul per pas care schimbă ceva; le scrie Costin, în loturi de câte 30 (`scan_trasee.py --loturi N`, 7 loturi). Până atunci, inventarul de trasee e o hartă a codului, nu o listă de verificare.
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
-- **decizii care blochează**: **una — R42, DESCHISĂ**: *care operațiuni cer `admin_firma`?* Criteriul e dat și aplicat de trei ori (14 + 3 + 11 rute); au rămas **patru întrebări** pe care criteriul nu le decide singur — o notă contabilă e ceva emis? o completare manuală e parte din declarație? trecerea de regim e o ieșire? cine pornește sau oprește un canal către client? **Decizie cerută.**
+- **decizii care blochează**: **una — R33, DESCHISĂ**, iar acum e cea mai veche cerere nerezolvată de pe listă: *unde apare verificarea de coerență notă-vs-declarație, și pe divergență blochează contarea sau doar o semnalează?* Amândouă schimbă ce înseamnă ecranul, deci intră sub «reorganizare de ecran = STOP» și sub P11. **E prag 1, nu prag 2.** *Cele două care blocau până azi — criteriul de rol și documentele predate — s-au închis pe răspunsurile lui Costin.* **Decizie cerută.**
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
 - **ultima actualizare**: 2026-08-25
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
@@ -1143,13 +1143,33 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · TRASEE XI.2 · **PRAG 3** *(nimic fals pe ecran azi; lipsește o restricție, iar instalarea n-are al doilea actor care s-o exercite)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **planul**: NEACOPERIT. Căutat în PLAN_ARHITECTURA la P16 („Cine a autorizat, se știe" — cere ca actorul să fie identificabil, nu spune CARE actor are voie), la P11 („unde textul nu determină rezultatul, nu se alege — se cere decizia", care confirmă că se cere, dar nu răspunde) și în Partea 00 „Angajamentul față de cabinet". Planul nu repartizează operațiuni pe roluri. Criteriul l-a dat Costin pe 25.08; cele **patru întrebări** rămase sunt tot decizie, nu citire. (METODA §25)
 - **deschisă pe commit**: `3cb6c44`
 - **măsurat la**: 2026-08-25 · **pe commit**: `3cb6c44`
 - **ce blochează**: din **229** de rute care schimbă ceva (POST/PUT/PATCH/DELETE), **144 cer doar să fii un utilizator autentificat al cabinetului** — nici gardă de rol, nici verificare în corp, nici ajutor, nici drept fin. `cere_cabinet` verifică exact două lucruri: că nu ești `client`, și că nu e cabinetul suspendat. **Un `angajat` și un `admin_firma` sunt același actor pe toate cele 144.** Concentrarea contează mai mult decât totalul: pe traseul **notei contabile (T05) sunt 24 din 24** — toate cele optsprezece rute `nota-*`, plus crearea, editarea, ștergerea și validarea din jurnal; pe **factură (T02) 11 din 13**; pe **regimurile speciale de TVA (T29) 10 din 10**. Singurele trasee păzite pe tot ce scriu sunt **închiderea lunii**, **pontajul** și **statul de plată**. *Perioada, prezența și statul sunt păzite; contabilitatea nu.*
 - **de ce NU e prag 1**: efectul cere un al doilea actor, iar instalarea n-are unul — singurul cont `angajat` (`asistent@prisma-cont.test`) **n-are nicio firmă atribuită** în `public.user_tenants` și are toate cele trei drepturi fine pe `false`. Deci azi nimeni nu poate exercita lipsa. Pe primul cabinet cu doi oameni, poate.
 - **ce s-a măsurat corect abia la a treia formă a instrumentului**: primele două au raportat „nu verifică nimic" despre rute care verifică — o dată fiindcă nu citeau garda din argument, a doua oară fiindcă nu vedeau nici comparația din corp, nici ajutorul `_cer_admin_cabinet`. Cifra 144 e de la forma care le vede pe toate patru. Instrument: `scripts/scan_trasee.py`.
+- **CELE PATRU ÎNTREBĂRI, RĂSPUNSE (Costin, 25.08.2026) — și aplicate.**
+
+  **(a) O notă contabilă e ceva emis?** *„Nu. E o înregistrare în evidență, nu un artefact predat. Se emit documentele care ies — factura, fluturașul, declarația. Nota rămâne înăuntru. Dar nu e nici liberă: o notă care a intrat în evidență nu se șterge, se stornează. Deci cele 24 de rute `nota-*` nu primesc `admin_firma` — primesc verificarea de la P15."*
+  **Aplicat, și mai larg decât întrebarea.** `_cere_perioada_deschisa` păzea deja **editarea, ștergerea și validarea** unei note care există. **Crearea intra pe altă ușă și nu era păzită** — o notă nouă datată într-o lună închisă e tot o modificare a perioadei închise. Au primit verificarea **39 de rute**: cele 20 de creare din T05 (19 `nota-*` + `POST /jurnal`), plus **19 găsite de gardă**, pe care întrebarea nu le numea dar motivul deciziei le acoperă — operațiunile de regim special, amortizarea, contabilizarea unei facturi, raportul Z, aprobarea unui bon. *Toate scriu în `inregistrari`; a le lăsa afară ar fi însemnat un clichet cu 19 excepții, adică regulă scrisă pe jumătate de clasă.*
+  `POST /tenants/{tenant_id}/plan-conturi` **nu** a primit-o, cu motivul: un cont din planul de conturi n-are dată, deci n-are perioadă.
+
+  **(b) O completare manuală e parte din declarație?** *„Da, după generare. Nu, înainte. […] Deci ștergerea cere `admin_firma` dacă declarația e generată."*
+  **Aplicat** pe `DELETE /d390-clasificare/manual/{mid}` și `DELETE /d300-manual/{rid}` — verificare **în corp**, nu dependență statică: condiția e pe starea datelor, iar o dependență ar cere administratorul și înainte de generare, unde decizia spune explicit că nu. „Generată" înseamnă **și în coadă, și depusă**: o declarație generată și nedepusă e tot generată, iar fereastra dintre ele e exact cea în care contează.
+  La D300 perioada se citește **din rândul însuși**, nu din cerere — altfel s-ar putea șterge un rând dintr-o lună generată trimițând altă lună.
+
+  **(c) Trecerea de regim e o ieșire?** *„Nu e o ieșire, dar cere `admin_firma`. […] Adaug criteriul: ce schimbă ce datorează firma cere `admin_firma`."*
+  **Aplicat** pe `POST /firma-profil/regim-tva` (`platitor_tva`). **Nu** s-au atins, cu motivul scris: `firma-profil/model` (font, culoare, logo — nu schimbă nimic din ce se datorează) și `firma-profil/date` (nume, CUI, CAEN, adresă — **identifică** firma, nu decid ce datorează; vectorul o face, și el cere deja `admin_firma`).
+
+  **(d) Cine pornește sau oprește un canal către client?** *„Pornirea și oprirea unui canal cer `admin_firma`. […] Nu e organizare internă — e o decizie despre cum comunică firma cu autoritatea și cu clienții."*
+  **Aplicat** pe `PUT /woocommerce/config` — ruta scrie chiar cheile canalului: cu ele pline canalul e pornit, golite îl oprește. Nu există azi o rută de pornire/oprire pentru e-Factura/SPV; măsurat, nu presupus.
+
+- **CE NU S-A SCHIMBAT, cu cifra.** Cele **7** operațiuni de regim special din T29 (vânzare în marjă, marjă-turism, aur de investiții, achiziție și vânzare de la agricultor, import și export extracomunitar) rămân la `cere_cabinet`: sunt **introducere**, iar criteriul spune explicit că introducerea o poate face un asistent. Cifra e gardată, ca să nu devină impresie.
+- **GARDA**: `core/test_r42_criteriu.py` — 16 teste, **5 mutații** probate (verificarea care nu ridică niciodată · o rută care pierde apelul · `regim-tva` care pierde rolul · o notă strecurată pe `admin_firma` · ștergerea manuală care nu mai întreabă). Probele funcționale pe schemă efemeră verifică **și** refuzul, **și** că lunile deschise trec, **și** marginile lunii închise (1 și 31) — un `>` în loc de `>=` ar lăsa exact zilele de la capete.
+- **condiția de deblocare**: **ÎNDEPLINITĂ.** Decizia e dată, aplicată pe toate patru ramurile, și păzită structural.
+- **rezolvată pe commit**: `187a151`
 - **DECIZIA, 25.08.2026 (Costin).** Criteriul, în cuvintele lui: *„tot ce iese din aplicație către o autoritate sau către un om, plus tot ce închide sau redeschide o perioadă. Concret: confirmarea depunerii · emiterea unui document · închiderea lunii · redeschiderea ei · ștergerea a ceva emis. Restul — introducere, generare, validare, pregătire — poate face un asistent. Motivul: alea se pot reface. Ce am numit mai sus, nu."*
 - **APLICAT — 14 rute trecute pe `cere_rol("admin_firma")`**, fiecare în dreptul termenului din criteriu care o prinde:
   - *confirmarea depunerii*: `POST /coada/{id}/depune`;
@@ -1397,7 +1417,6 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · TRASEE XI.2 · P12 · **PRAG 3** *(nimic fals pe ecran; lipsește o restricție, iar instalarea n-are al doilea actor care s-o exercite)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
 - **deschisă pe commit**: `c9d1724`
 - **măsurat la**: 2026-08-25 · **pe commit**: `8a25308`
 - **ce blochează**: **punctul orb al tuturor măsurătorilor mele de rol.** Am numărat de fiecare dată **rutele care schimbă date** — 229, apoi 131 fără rol. Dar *„iese către un om"* nu e totuna cu *„scrie ceva"*: un document poate pleca pe un **GET**. Măsurat pe corpul rutelor (Content-Disposition, `application/pdf`, `FileResponse`), nu pe nume: **25** de rute predau un document, **17** fără niciun rol, **toate GET**. Scăzând cele 8 pagini publice (`/`, ghid, robots, sitemap, termeni, pagina de plată), rămân **9 documente ale firmei**:
@@ -1407,7 +1426,10 @@ scos ce nu se știa**, nu din defecte noi.
 - **DECIZIA, 25.08.2026 (Costin)**: *„Tot ce poartă date ale unui terț — deci trei: fluturașul, chitanța, imaginile de bon. Criteriul nu e «e document predat», ci «conține date despre cineva care nu e firma». Un asistent trebuie să poată deschide un PDF de factură; un fluturaș poartă salariul unei persoane."*
 - **APLICAT**: `GET /tenants/{}/fluturas/{salariat_id}` · `GET /tenants/{}/chitante/{}/pdf` · `GET /tenants/{}/bonuri/{}/imagine/{n}` — toate trei pe `cere_rol("admin_firma")`. Documentele predate fără rol scad de la **17 la 14**; dintre cele **9 ale firmei**, rămân **6**.
 - **ce NU s-a atins, cu motivul**: `GET /portal/bon/{}/imagine/{n}` e ruta **clientului**, care își privește propriul bon prin portal — a-i cere `admin_firma` ar închide portalul. Restul de 5 (`facturi/{}/pdf`, `facturi/{}/export-saga`, `documente/balanta`, `d406-active`, `d406-stocuri`) sunt documente ale **firmei**, nu ale unui terț, deci rămân la asistent prin criteriul dat.
-- **condiția de deblocare**: se închide când numărul documentelor predate fără rol devine clichet în `core/test_trasee.py`, ca să nu poată crește tăcut. *Rămâne DESCHISĂ pentru clichet, nu pentru decizie: decizia e luată și aplicată.*
+- **condiția de deblocare**: **ÎNDEPLINITĂ (25.08.2026).** clichetul există în `core/test_trasee.py` (`test_clichet_documente_predate_fara_rol`), plus un test care asertează pe nume că **exact cele trei** documente cu date de terț cer rol — clichetul singur ar trece și dacă ele l-ar pierde, atât timp cât totalul nu crește.
+- **CONFRUNTAREA CELOR DOUĂ INSTRUMENTE, fiindcă cifrele NU coincid.** Măsurătoarea de mai sus a dat **25** de rute care predau un document, **17** fără rol. Gardul, cu **aceleași marcaje** dar citind doar **corpul rutei**, găsește **18** și **8**. Diferența nu e un progres — e **raza**: măsurătoarea a urmărit și ce livrează modulele chemate, gardul se oprește la rută. Clichetul e pus pe **8**, cifra pe care instrumentul o poate recalcula de fiecare dată; restul până la 17 **nu sunt păzite aici**, și asta se scrie. *Un clichet pe o cifră pe care instrumentul n-o poate reproduce ar fi o amintire, nu o măsurătoare.*
+- **stare**: REZOLVATĂ
+- **rezolvată pe commit**: `187a151`
 
 ### R40 — Nicio declarație depusă prin aplicație, deci lanțul de apărare nu e exercitat niciodată
 
@@ -1474,11 +1496,12 @@ scos ce nu se știa**, nu din defecte noi.
 ### R33 — Module de verificare care n-au fost NICIODATĂ legate
 
 - **felul**: VERIFICARE
-- **cine deblochează**: INTERN
+- **cine deblochează**: DECIZIE
 - **unde intră**: E3 · P7 · **PRAG 2** *(nu produce o cifră greșită — produce o verificare care nu se întâmplă)*
 - **notă de dependență**: legarea e INTERNĂ (un apel lipsă), dar **unde** se leagă `echilibru_perioada` cere o **decizie**: azi există două implementări ale echilibrului, iar cea legată e `verificatoare.verifica_balanta`. Nota nu se gardează — nu decide nimic singură (`PLAN_LUCRU`, „CINE deblochează").
 - **reluări**: 0
 - **stare**: DESCHISĂ
+- **planul**: NEACOPERIT. Căutat în PLAN_ARHITECTURA la **P11** (*«unde textul nu determină rezultatul, nu se alege — se cere decizia»* — confirmă că se cere, nu spune care), la **interdicția 47** (*un blocaj fără cale de trecere pentru om* — constrânge CUM poate arăta un blocaj, nu DACĂ se blochează) și la **P6 aplicat la date** (Partea 0: *un rezultat calculat peste date incomplete nu e gata, e gata-cu-ce-am-avut* — cel mai aproape de răspuns, dar vorbește despre VERDICT, nu despre unde apare verificarea pe ecran). Planul nu așază verificări pe ecrane. (METODA §25)
 - **deschisă pe commit**: `88bc33b`
 - **măsurat la**: 2026-08-24 · **pe commit**: `88bc33b`
 - **ce blochează**: **4 module de producție din `core/` au funcții publice, teste care trec, și ZERO importatori în afara testelor.** Clasa, formulată de Costin: *„nu s-a stricat, n-a fost niciodată legat."* Ce o face invizibilă: **testele le țin verzi**, deci nimic nu semnalează. Un modul mort care pică ar fi fost găsit demult; unul mort care trece nu se deosebește de unul viu.

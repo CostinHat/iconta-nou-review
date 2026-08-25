@@ -1225,9 +1225,9 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/stat-plata/emite` — garda `cere_rol` rol:admin_firma drept:poate_valida
 - `POST /tenants/{tenant_id}/stat-plata/motiv` — garda `cere_cabinet` drept:poate_valida
 
-**Module:** `rapoarte_comerciale_api`, `stat_plata_api`, `stat_plata_emis`
+**Module:** `stat_plata_api`, `stat_plata_emis`
 
-**Scrie in:** `rapoarte_salvate` (DELETE/INSERT) · `state_plata` (INSERT/UPDATE)
+**Scrie in:** `state_plata` (INSERT/UPDATE)
 
 **Firme care il pot exercita azi: 2** — `tenant_001`, `tenant_003`
 
@@ -1451,7 +1451,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Clasa:** MECANIC · **rute:** 8 (din care schimba date: 4) · **refuzuri explicite:** 9
 
-**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 3 din 4.**
+**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 2 din 4.**
 
 **Pasii, din cod:**
 
@@ -1460,7 +1460,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `GET /tenants/{tenant_id}/firma-profil/date` — garda `cere_context`
 - `POST /tenants/{tenant_id}/firma-profil/date` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/firma-profil/model` — garda `cere_context`
-- `POST /tenants/{tenant_id}/firma-profil/regim-tva` — garda `cere_context`
+- `POST /tenants/{tenant_id}/firma-profil/regim-tva` — garda `cere_rol` rol:admin_firma
 - `GET /tenants/{tenant_id}/vector` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/vector` — garda `cere_rol` rol:admin_firma
 
@@ -1747,12 +1747,12 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Clasa:** MANUAL · **rute:** 3 (din care schimba date: 2) · **refuzuri explicite:** 1
 
-**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 1 din 2.**
+**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 0 din 2.**
 
 **Pasii, din cod:**
 
 - `GET /tenants/{tenant_id}/woocommerce/config` — garda `cere_context`
-- `PUT /tenants/{tenant_id}/woocommerce/config` — garda `cere_context`
+- `PUT /tenants/{tenant_id}/woocommerce/config` — garda `cere_rol` rol:admin_firma
 - `POST /tenants/{tenant_id}/woocommerce/sincronizeaza` — garda `cere_rol` rol:admin_firma
 
 **Module:** `woocommerce`

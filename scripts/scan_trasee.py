@@ -301,6 +301,19 @@ def _garzi_si_rol(fn, dec):
     return sorted(garzi), sorted(roluri), sorted(fine)
 
 
+def _prima_fraza(doc):
+    """Prima fraza din docstringul unei rute, normalizata. E singura descriere a lui *ce face pasul*
+    care exista in cod; unde lipseste, se spune ca lipseste - nu se inventeaza din numele functiei."""
+    if not doc:
+        return ""
+    t = " ".join(doc.split())
+    for cap in (". ", " \u2014 ", " - "):
+        if cap in t:
+            t = t.split(cap)[0]
+            break
+    return t[:170]
+
+
 def citeste_rute():
     """Rutele din main.py. Aliasurile de import se REZOLVĂ la numele real al modulului
     (`from core import efactura_send as _efs` -> `_efs` = `efactura_send`); fără asta,
@@ -336,6 +349,26 @@ def citeste_rute():
             # `salarizare` drept modul. E mai rău decât o absență — e o atribuire falsă,
             # și de-aia se citește harta locală întâi.
             local = dict(alias)
+            # Un nume LEGAT LOCAL prin altceva decat un import nu mai e alias de modul. Instanta
+            # (25.08.2026): main.py are `from core import casa_api as _c` la nivel de modul; o ruta
+            # care scrie `with conn.cursor() as _c` primea `casa_api` in lista de module. O absenta
+            # ar fi fost vizibila; o atribuire falsa trece verde si intra in inventar.
+            for n in ast.walk(fn):
+                tinte = []
+                if isinstance(n, ast.Assign):
+                    tinte = n.targets
+                elif isinstance(n, (ast.AnnAssign, ast.AugAssign)):
+                    tinte = [n.target]
+                elif isinstance(n, ast.withitem) and n.optional_vars is not None:
+                    tinte = [n.optional_vars]
+                elif isinstance(n, (ast.For, ast.AsyncFor)):
+                    tinte = [n.target]
+                for t in tinte:
+                    for x in ast.walk(t):
+                        if isinstance(x, ast.Name):
+                            local.pop(x.id, None)
+            for a in list(fn.args.args) + list(fn.args.kwonlyargs) + list(fn.args.posonlyargs):
+                local.pop(a.arg, None)
             for n in ast.walk(fn):
                 if isinstance(n, ast.ImportFrom) and n.module and n.module.startswith("core"):
                     for al in n.names:
@@ -362,7 +395,8 @@ def citeste_rute():
                          "linie": fn.lineno, "garzi": garzi, "roluri": roluri,
                          "fine": fine, "module": sorted(chemate),
                          "scrie_inline": {k: sorted(v) for k, v in sorted(propriu.items())},
-                         "refuzuri": ast.unparse(fn).count("HTTPException(")})
+                         "refuzuri": ast.unparse(fn).count("HTTPException("),
+                         "doc": _prima_fraza(ast.get_docstring(fn))})
     return rute
 
 
@@ -775,6 +809,11 @@ def main():
     if "--firme" in sys.argv:
         scrie_firme()
         return 0
+    if "--loturi" in sys.argv:
+        i = sys.argv.index("--loturi")
+        nr = int(sys.argv[i + 1]) if len(sys.argv) > i + 1 else 1
+        print(redare_lot(nr))
+        return 0
     if "--verificari" in sys.argv:
         print(schelet_verificari())
         return 0
@@ -816,6 +855,112 @@ def main():
         print("TRASEE FĂRĂ TABELĂ PROPRIE (nu se poate ști din date): %d — %s"
               % (len(n), " ".join(n)))
     return 0
+
+
+# ============================================================
+#  LOTURI DE VERIFICARE  (--loturi N)
+# ============================================================
+# Cerut de Costin (25.08.2026): *"Format: traseu \u00b7 pas \u00b7 ce face pasul. Incepe cu traseele care
+# ating o iesire care se depune."* Motivul lotizarii, in cuvintele lui: *"190 intr-un mesaj nu se
+# pot citi cu atentie."*
+#
+# E GENERAT, nu scris: daca apare o ruta noua, lotul in care cade se schimba singur. O lista
+# scrisa de mana ar imbatrani tacut - exact ce pazeste `test_trasee`.
+_GEN_DECL = ("d100", "d101", "d107", "d112", "d177", "d205", "d207", "d212", "d224", "d300",
+             "d301", "d307", "d311", "d390", "d394", "d402", "d406", "d710", "duk", "coada_api",
+             "declaratii_api", "efactura_send", "efactura_import", "etransport_send",
+             "spv_conector", "spv_receive")
+
+
+def _atinge_o_iesire(t):
+    """Traseul ajunge la ceva care se DEPUNE sau pleaca in afara?
+
+    Trei semne, oricare ajunge: scrie in coada/depuse \u00b7 are un modul de generator de declaratie
+    sau de canal \u00b7 e declarat MARGINE. Nu e o judecata - sunt campuri deja masurate."""
+    if set(t["scrie"]) & {"declaratii_coada", "declaratii_depuse"}:
+        return True
+    if any(m in _GEN_DECL for m in t["module"]):
+        return True
+    return bool(t.get("exterior"))
+
+
+def pasii_ordonati():
+    """[(traseu_id, traseu_nume, metoda, cale, ce_face)] - pasii, cu traseele de iesire intai.
+
+    Un pas = o ruta care SCHIMBA ceva. Acelasi criteriu ca la scheletul din TRASEE_VERIFICARI.md,
+    ca sa nu existe doua definitii ale lui "pas".
+
+    "Ce face pasul" se compune din trei surse, in ordinea in care sunt de incredere: prima fraza
+    din docstring (scrisa de om), tabelele in care se scrie (masurate din SQL - si ale rutei, si
+    ale modulului chemat), si modulul prin care trece. Prima forma arata doar SQL-ul din ruta, iar
+    pentru rutele care deleaga scria "ce scrie nu e vizibil" - adevarat despre ruta, inutil pentru
+    cine trebuie sa scrie verificarea.
+    """
+    rute = citeste_rute()
+    per_traseu, _o, _d, _n = acoperire(rute)
+    mod = citeste_module()
+    # Acelasi filtru pe tabele CUNOSCUTE ca in `construieste`: fara el, regexul de SQL intoarce si
+    # fragmente (`factur`, `validata` - o valoare de stare luata drept nume de tabel). Un nume de
+    # tabel inventat intr-o lista de verificat e mai rau decat o absenta: cere sa se verifice ceva
+    # ce nu exista.
+    cunoscute = tabele_cunoscute()
+    if cunoscute:
+        for r in rute:
+            r["scrie_inline"] = {k: v for k, v in r["scrie_inline"].items() if k in cunoscute}
+        for info in mod.values():
+            info["scrie"] = {k: v for k, v in info["scrie"].items() if k in cunoscute}
+    d = construieste(False)
+    dupa_id = {t["id"]: t for t in d["trasee"]}
+    ordine = ([t for t in d["trasee"] if _atinge_o_iesire(t)]
+              + [t for t in d["trasee"] if not _atinge_o_iesire(t)])
+    pasi = []
+    for t in ordine:
+        for r in per_traseu[t["id"]]:
+            if r["metoda"].upper() not in ("POST", "PUT", "PATCH", "DELETE"):
+                continue
+            tabele = {tab: set(op) for tab, op in r.get("scrie_inline", {}).items()}
+            prin = []
+            for m in r["module"]:
+                info = mod.get(m)
+                if not info or not info.get("scrie"):
+                    continue
+                prin.append(m)
+                for tab, op in info["scrie"].items():
+                    tabele.setdefault(tab, set()).update(op)
+            scrie = " · ".join("%s (%s)" % (tab, "/".join(sorted(op)))
+                                 for tab, op in sorted(tabele.items()))
+            parti = []
+            if r.get("doc"):
+                parti.append(r["doc"])
+            if scrie:
+                parti.append("scrie " + scrie)
+            if prin:
+                parti.append("prin " + ", ".join("`%s`" % m for m in prin))
+            if not parti:
+                parti.append("nu scrie nimic vizibil din cod — pasul se verifica prin efect, nu prin tabel")
+            pasi.append((t["id"], dupa_id[t["id"]]["nume"], r["metoda"].upper(),
+                         r["cale"], " — ".join(parti)))
+    return pasi
+
+
+def redare_lot(nr, marime=30):
+    pasi = pasii_ordonati()
+    n_loturi = (len(pasi) + marime - 1) // marime
+    if nr < 1 or nr > n_loturi:
+        return "lot inexistent: sunt %d loturi (%d pasi)" % (n_loturi, len(pasi))
+    bucata = pasi[(nr - 1) * marime:nr * marime]
+    out = ["LOTUL %d din %d \u2014 %d pasi din %d" % (nr, n_loturi, len(bucata), len(pasi)), ""]
+    ultim = None
+    for tid, tnume, met, cale, ce in bucata:
+        if tid != ultim:
+            out.append("")
+            out.append("## %s \u2014 %s" % (tid, tnume))
+            out.append("")
+            ultim = tid
+        out.append("- **`%s %s`**" % (met, cale))
+        out.append("  *%s*" % ce)
+        out.append("  - [ ] ")
+    return "\n".join(out)
 
 
 if __name__ == "__main__":
