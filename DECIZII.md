@@ -11741,3 +11741,57 @@ amândouă în direcția „lipsește", nu „există":
 
 Consemnate ca atare fiindcă a doua a fost repetată de două ori într-un raport, iar prima a stat la
 baza unei restanțe.
+
+## 25.08.2026 — Cele trei decizii din Partea VII a lui TRASEE, luate
+
+Costin le-a dat pe toate trei într-o comandă, iar forma lor e la fel de importantă ca fondul:
+**fiecare interzice o formă de invenție.**
+
+**1. ROLURILE.** *„Cele trei roluri sunt de acord. Dar nu inventa scenarii de test pe cabinete care nu
+există. Pentru fiecare pas din trasee: ce rol îl poate face, citit din verificările de drepturi. Unde
+codul nu verifică nimic, spune — e mai important decât o matrice corectă."*
+
+Modelul cu trei roluri (`admin_firma`, `angajat`, `superadmin`, plus `client` pe portal) **rămâne**.
+Ce se cere nu e o matrice ideală, ci **cartografierea celei reale**, plus golurile ei. *O matrice
+corectă scrisă peste un cod care nu verifică nimic ar fi exact clasa de verificare care trece fiindcă
+n-a văzut.*
+
+Măsurat (TRASEE XI.2): din **229** de rute care schimbă date, **144 cer doar un utilizator
+autentificat al cabinetului** — niciun rol, în niciuna din cele patru forme în care codul verifică
+drepturi. Deschisă ca **R42**. Iar interdicția de a inventa scenarii are un temei în date: singurul
+cont `angajat` din instalare **n-are nicio firmă atribuită** și n-are niciun drept fin, deci
+**patru-ochi nu se poate exercita azi pe nicio firmă**.
+
+**2. CE NU SE TESTEAZĂ NICIODATĂ.** *„Declară-le ca netestabile, cu ce se testează în locul lor: până
+unde merge traseul intern și unde se oprește. La e-Factura, dacă există mediu de test, folosește-l."*
+
+Cinci trasee ating exteriorul, calculate, nu enumerate din memorie: **T06 e-Factura · T15 REGES ·
+T18 plata · T25 magazinul online · T27 e-Transport**. Pentru fiecare s-a scris **unde se oprește
+traseul intern** și **ce se declară netestat** (TRASEE XI.3).
+
+Două lucruri ies din decizia asta, și niciunul nu era știut înainte:
+
+- **mediul de test la e-Factura EXISTĂ și e deja implicit** — `mediu="test"` e valoarea implicită în
+  `upload_ubl`, `stare_mesaj`, `descarca`, `lista_mesaje`, `trimite`. Ce blochează testarea live nu e
+  „ANAF-ul e în afara noastră", ci **lipsa certificatului**: `public.spv_token` = 0 rânduri. Sunt
+  lucruri diferite — primul e permanent, al doilea se rezolvă;
+- **plata NU e o margine, e o absență.** Nu există procesator; pagina de plată spune singură că
+  *„se simulează"*. Deschisă ca **R43**.
+
+**3. PRECONDIȚIILE.** *„Pe firmele existente, nu inventa firme noi. Pentru fiecare traseu: care firmă
+îl poate exercita azi, și ce lipsește ca să poată fi parcurs. Dacă niciun traseu nu se poate parcurge
+pe nicio firmă, aia e cifra care contează."*
+
+Măsurat pe toate cele 17 firme, pe **numele reale** ale tabelelor: **21 de trasee au cel puțin o firmă
+· 6 n-au niciuna · 8 nu se pot ști din date** (n-au tabelă proprie — și `?` **nu se rotunjește la
+zero**, interdicția 32). Deschisă ca **R48** pentru cele patru care n-au niciun blocaj din afară.
+
+**Ce a schimbat măsurătoarea față de ce credeam.** Prima formă a ei a raportat zece tabele ca absente
+pe toate cele 17 firme; **nouă existau** — trei partajate în `public`, șase sub alt nume. Nume
+ghicite, necăutate la sursă, exact interdicția pe care o repetă `PREDARE_LANT`. De aceea lista de
+tabele se regenerează din bază, nu se scrie în cod.
+
+**Și o corectură la o afirmație a mea, păstrată fiindcă e utilă.** Spusesem, în raportul de ieri, că
+traseele din Partea VI *„sunt nouă, nu 25"*. Adevărat despre Partea VI, dar nu despre aplicație:
+inventarul complet, calculat ca acoperire a celor 400 de rute, are **35**. Nici 9, nici 25 — iar
+diferența nu e o corectare de cifră, ci trecerea de la o **amintire** la o cifră care se poate reface.

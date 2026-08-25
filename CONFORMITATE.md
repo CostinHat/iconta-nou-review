@@ -1117,6 +1117,102 @@ scos ce nu se știa**, nu din defecte noi.
 - **ce mai cere, pe ecran** *(decis 24.08.2026, vezi `DECIZII.md`)*: coadă reală — verdict păstrat și afișat · blocare pe respins **sau lipsă** · trecere explicită și **consemnată** peste blocare · iar „De depus" arată **doar** ce e gata de depus, cu generatul-nevalidat într-o listă separată care spune **ce lipsește**.
 - **condiția de deblocare**: cele patru câmpuri se persistă la generare/validare, `aproba` și `depune` le consultă, iar ecranul separă cele două liste. Se închide când o declarație fără verdict proaspăt **nu poate** ajunge în „De depus", probat prin mutație.
 
+### R42 — 144 de rute care schimbă date nu verifică niciun rol, iar 24 din 24 dintre ele fac contabilitate
+
+- **felul**: ORDINE
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · TRASEE XI.2 · **PRAG 3** *(nimic fals pe ecran azi; lipsește o restricție, iar instalarea n-are al doilea actor care s-o exercite)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `3cb6c44`
+- **măsurat la**: 2026-08-25 · **pe commit**: `3cb6c44`
+- **ce blochează**: din **229** de rute care schimbă ceva (POST/PUT/PATCH/DELETE), **144 cer doar să fii un utilizator autentificat al cabinetului** — nici gardă de rol, nici verificare în corp, nici ajutor, nici drept fin. `cere_cabinet` verifică exact două lucruri: că nu ești `client`, și că nu e cabinetul suspendat. **Un `angajat` și un `admin_firma` sunt același actor pe toate cele 144.** Concentrarea contează mai mult decât totalul: pe traseul **notei contabile (T05) sunt 24 din 24** — toate cele optsprezece rute `nota-*`, plus crearea, editarea, ștergerea și validarea din jurnal; pe **factură (T02) 11 din 13**; pe **regimurile speciale de TVA (T29) 10 din 10**. Singurele trasee păzite pe tot ce scriu sunt **închiderea lunii**, **pontajul** și **statul de plată**. *Perioada, prezența și statul sunt păzite; contabilitatea nu.*
+- **de ce NU e prag 1**: efectul cere un al doilea actor, iar instalarea n-are unul — singurul cont `angajat` (`asistent@prisma-cont.test`) **n-are nicio firmă atribuită** în `public.user_tenants` și are toate cele trei drepturi fine pe `false`. Deci azi nimeni nu poate exercita lipsa. Pe primul cabinet cu doi oameni, poate.
+- **ce s-a măsurat corect abia la a treia formă a instrumentului**: primele două au raportat „nu verifică nimic" despre rute care verifică — o dată fiindcă nu citeau garda din argument, a doua oară fiindcă nu vedeau nici comparația din corp, nici ajutorul `_cer_admin_cabinet`. Cifra 144 e de la forma care le vede pe toate patru. Instrument: `scripts/scan_trasee.py`.
+- **condiția de deblocare**: o **decizie** — care operațiuni cer `admin_firma` (candidații numiți în TRASEE XI.2: crearea/ștergerea de note contabile, ștergerea din casă, trecerea de regim fiscal) — urmată de gărzi pe ele. Se închide când numărul de rute mutante fără nicio verificare de rol scade sub un clichet **ales deliberat**, gardat de `core/test_trasee.py`. *Nu se începe fără decizie: a pune `admin_firma` peste tot ar bloca asistenții pe munca lor zilnică.*
+
+### R43 — Confirmarea de plată marchează o factură încasată fără să fi intrat un leu, și caută prin toate firmele
+
+- **felul**: ARTEFACT
+- **cine deblochează**: EXTERN
+- **unde intră**: E1 · TRASEE XI.3, T18 · **PRAG 2** *(cauză unică, dovedită, nu concurează cu nimic)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `3cb6c44`
+- **măsurat la**: 2026-08-25 · **pe commit**: `3cb6c44`
+- **ce blochează**: `GET /public/plata/{ref}` întoarce o pagină al cărei text spune, literal, *„Integrarea cu procesatorul de plăți urmează. Apăsați pentru a simula plata."* Butonul ei cheamă `POST /public/plata/{ref}/confirma`, care e **neautentificată**, **parcurge toate schemele de firme** din `public.tenants` și pune `platita_la = now()` pe prima factură cu `plata_ref` potrivit. Deci cine primește linkul poate marca factura încasată **fără să fi plătit**, iar `platita_la` devine o afirmație despre bani care nu e sprijinită de nimic.
+- **ce NU e**: nu e o scurgere. `ref` e `"pl_" + secrets.token_urlsafe(16)` — 128 de biți, neghicibil. Iar căutarea prin toate schemele nu expune nimic în afara firmei care a emis linkul. **Problema e semantica, nu secretul**: aplicația nu deosebește „clientul a apăsat butonul de demo" de „banii au intrat".
+- **de ce e prag 2 și nu 1**: nicio firmă din cele 17 n-a generat vreun link (`plata_ref` gol peste tot), deci efectul n-a fost produs; dar e o **cauză unică**, dovedită, care nu concurează cu nimic.
+- **condiția de deblocare**: **trebuie cheile unui procesator de plăți real** (Stripe, Netopia sau echivalent), **de la Costin**, **pentru ca** `platita_la` să însemne bani intrați, nu un buton apăsat — `provider_activ()` ridică deja `NotImplementedError` pentru orice provider în afară de `mock`, deci calea e pregătită. Până atunci, se închide parțial dacă `platita_la` scris pe calea `mock` poartă o **marcă de simulare** care se vede în evidență. Se închide complet când confirmarea vine de la provider, semnată, și când ruta nu mai parcurge toate schemele, ci pleacă de la firma din `ref`.
+
+### R44 — Un element din coadă e legat de o firmă care nu există
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · TRASEE XI.4 · interdicția 32 · **PRAG 3**
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `3cb6c44`
+- **măsurat la**: 2026-08-25 · **pe commit**: `3cb6c44`
+- **ce blochează**: `public.declaratii_coada.id = 2020` are `tenant_id = 13245`. În `public.tenants` **nu există** rândul, iar schema `tenant_13245` **nu există** în bază. Conținutul lui e un D300 pe august 2026 al firmei *„Firma Grea Audit SRL"*, care e `tenant_017`, id **14769**. Deci o declarație stă în coadă, în starea `la_senior`, legată de o firmă ștearsă sau niciodată creată — și **nimic n-o semnalează**: nici ecranul cozii, nici vreo verificare. Coada are 3 elemente; **unul din trei e orfan**.
+- **ce NU se știe încă, și nu se scrie ca fapt**: dacă firma a existat și a fost ștearsă (caz în care ștergerea nu curăță coada), sau dacă `tenant_id` a fost scris greșit de la început. `public.audit_log` nu conține nicio urmă a lui 13245 — deci nu se poate reconstitui, doar constata.
+- **condiția de deblocare**: la primul commit care atinge `core/coada_api.py`, `adauga_in_coada` refuză un `tenant_id` care nu există în `public.tenants`, iar o gardă numără elementele orfane și cere zero. Se închide când numărătoarea e zero **și** inserarea unui orfan e imposibilă, probat prin mutație.
+
+### R45 — Patru artefacte se produc, se descarcă, și nu rămân nicăieri
+
+- **felul**: ARTEFACT
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · TRASEE XI.7 · interdicția 32 · **PRAG 2** *(sunt absențe: n-au instanțe de ordonat)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `3cb6c44`
+- **măsurat la**: 2026-08-25 · **pe commit**: `3cb6c44`
+- **ce blochează**: e **aceeași clasă cu R41**, în patru locuri diferite — artefactul se produce, se afișează sau se descarcă, și nu se păstrează:
+  - **situațiile financiare anuale (S1003, S1005)** — 4 rute, `bilant_api` **nu scrie nimic**; nu intră nici în coadă (nu există `POST /coada` pentru ele), nici în `declaratii_depuse`. *Artefactul care încheie exercițiul financiar n-are memorie.*
+  - **fișierul de plată a salariilor** — 2 rute, amândouă `GET`; nu se consemnează că s-a generat, pentru ce lună, de cine. „Salariile s-au plătit" nu e o stare a aplicației.
+  - **exportul contabil (SAGA, WinMentor)** — 3 rute, toate `GET`, zero scrieri. La o preluare inversă, „ce s-a exportat și când" e exact întrebarea.
+  - **auditul de preluare** — `audit_preluare` **nu scrie nimic**; verdictul lui se afișează și se pierde. *Măsurat acum, nu presupus — Partea X îl lăsase marcat ca nemăsurat, tocmai ca să nu fie scris ca fapt.*
+- **de ce ca o singură restanță, nu patru**: au aceeași cauză (nu există un loc unde se ține un artefact produs) și aceeași reparație (un rând cu ce s-a produs, când, de cine, cu amprenta conținutului — exact cele patru câmpuri alese la R41). Patru restanțe ar ordona de patru ori aceeași decizie.
+- **condiția de deblocare**: se decide **dacă un artefact produs se păstrează** și cu ce câmpuri, apoi se aplică la toate patru. Se închide când fiecare dintre cele patru lasă un rând, iar `scan_trasee.py` nu mai raportează niciun traseu PARȚIAL din cauza asta.
+
+### R46 — Trecerea de regim fiscal are cea mai mare consecință și cele mai puține verificări
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · TRASEE X.8 și XI · **PRAG 3**
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `3cb6c44`
+- **măsurat la**: 2026-08-25 · **pe commit**: `3cb6c44`
+- **ce blochează**: constatarea e din Partea X (24.08) și **n-a avut până azi loc cu stare** — trăia în narațiune, exact clasa măsurată pe 22.08 (din opt defecte, cinci fără loc cu stare). O trecere micro↔profit sau plătitor↔neplătitor schimbă **ce declarații se datorează, pe ce perioade, cu ce cote**. Traseul are **8 rute, 4 care scriu, dintre care 3 fără nicio verificare de rol**, și **nu s-a găsit nicio verificare de coerență la schimbare**: nici că perioada afectată e deschisă, nici că declarațiile deja depuse pe regimul vechi rămân explicabile. Pentru comparație, casa are 29 de refuzuri; asta are 9 pe tot traseul.
+- **condiția de deblocare**: la primul commit care atinge `core/firma_profil_api.py`, schimbarea de regim refuză (sau cere trecere explicită, consemnată) când perioada afectată e închisă sau când există declarații depuse pe regimul vechi în intervalul atins. Se închide când refuzul există și e probat prin mutație.
+
+### R47 — NIR-ul creează nota contabilă direct validată, sărind peste ciornă
+
+- **felul**: ORDINE
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · TRASEE X.3 · legată de **R36** · **PRAG 3**
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `3cb6c44`
+- **măsurat la**: 2026-08-25 · **pe commit**: `3cb6c44`
+- **ce blochează**: `stocuri_api` pune starea `validata` pe nota creată la recepție. **Toate celelalte căi de creare de notă pun `ciorna`.** Nu spun că e greșit — spun că e **o excepție netratată nicăieri**: dacă modelul ales la **R36** e „aplicația propune, omul validează", recepția îl încalcă deja, iar dacă modelul e altul, atunci celelalte căi sunt cele care trebuie schimbate. Ca și R46, constatarea e din 24.08 și n-a avut loc cu stare până azi.
+- **condiția de deblocare**: se răspunde la **R36**, apoi NIR-ul se aliniază modelului ales (sau excepția se scrie ca excepție, cu motivul). Se închide când starea pusă de `stocuri_api` e aceeași cu cea a celorlalte căi **sau** când abaterea e declarată în `DECIZII.md`.
+
+### R48 — Patru trasee nu se pot exercita pe nicio firmă, și nimic din afară nu le blochează
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · TRASEE XI.4 · interdicția 19 · **PRAG 3**
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `3cb6c44`
+- **măsurat la**: 2026-08-25 · **pe commit**: `3cb6c44`
+- **ce blochează**: măsurat pe toate cele 17 firme, pe numele **reale** ale tabelelor. **Șase** trasee n-au nicio firmă care să le poată exercita azi; **două** au o cauză din afară (T06 e-Factura și T27 e-Transport — `public.spv_token` = 0, deci lipsește certificatul), iar **patru n-au niciun blocaj: pur și simplu nimeni n-a introdus date** — **T08 NIR** (`nir` = 0), **T16 pontajul** (`pontaj` = 0), **T19 scadențarul** (`notificari_scadenta` = 0), **T32 partida simplă** (`rip_operatiuni` = 0). Toate patru, zero pe toate cele 17.
+- **de ce contează, cu instanța**: (a) Partea III scrie că *„pontajul trebuie să existe — fără el calculul stă pe zile presupuse"*; cele două state de plată emise, pe `tenant_003`, poartă `zile_lucrate = 21` — **o lună întreagă presupusă** — iar tabela `pontaj` a firmei e goală. (b) partida simplă are motor scris (`rip_api` + `d212_engine`) și **zero probe pe date**, deși e una dintre datoriile numite la pragul 3. (c) NIR-ul e traseul din care a ieșit **R47**, iar constatarea aia n-a putut fi confruntată cu date reale.
+- **de ce e o restanță și nu o notă**: orice verificare care atinge cele patru trasee întoarce azi **zero dintr-un motiv care nu se poate deosebi mecanic de „totul e în regulă"** — interdicția 19, produsă de date, nu de instrument.
+- **condiția de deblocare**: se introduc date pe cele patru trasee, pe firmele care le potrivesc, și se parcurge fiecare până la ieșirea lui. Se închide când `scripts/scan_trasee.py --db` raportează cel puțin o firmă pentru T08, T16, T19 și T32.
+
 ### R40 — Nicio declarație depusă prin aplicație, deci lanțul de apărare nu e exercitat niciodată
 
 - **felul**: VERIFICARE

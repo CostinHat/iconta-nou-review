@@ -89,8 +89,16 @@ Consecința lipsei, măsurată: s-a verificat că D301 iese și se validează, d
       ↓
 3. CONTABILIZARE  [știut: nu se face automat; propunerea de conturi lipsește]
       ↓
-4. INTRĂ ÎN: D300 · D394 · e-Factura · jurnalul de vânzări
+   AICI SE TERMINĂ TRASEUL FACTURII.
 ```
+
+> **CORECTAT 25.08.2026 (Costin: „e o mixtură, nu un traseu unic").** Pasul 4 scria
+> *„INTRĂ ÎN: D300 · D394 · e-Factura · jurnalul de vânzări"*. Nu e un pas: e punctul în
+> care traseul facturii se termină și încep **alte** trasee, fiecare cu producătorul,
+> perioada și refuzurile lui. Măsurat, factura are **20 de consumatori**, nu patru — iar
+> *„jurnalul de vânzări"* **nu există**: singura apariție a expresiei în tot codul e un
+> placeholder de formular (`static/js/ecrane/validat.js:205`). Lista completă și ce se
+> pierde dacă rămâne scris ca traseu unic: **Partea XI.5a**.
 
 **Ce se verifică:** `[știut]` o factură emisă apare în toate ieșirile care o cuprind. Cazul: `de_preluat` era exclus din D300 și inclus în export.
 
@@ -155,8 +163,16 @@ Consecința lipsei, măsurată: s-a verificat că D301 iese și se validează, d
       ↓
 4. NOTĂ SALVATĂ
       ↓
-5. INTRĂ ÎN: registrul-jurnal · cartea mare · balanță · D406
+   AICI SE TERMINĂ TRASEUL NOTEI. Registrul-jurnal E TRASEUL ĂSTA, nu o ieșire a lui.
 ```
+
+> **CORECTAT 25.08.2026 (Costin: „e o mixtură, nu un traseu unic").** Pasul 5 scria
+> *„INTRĂ ÎN: registrul-jurnal · cartea mare · balanță · D406"*. Măsurat, nota are **21 de
+> consumatori**, nu patru. Și cele patru nu sunt de același fel: **cartea mare și balanța
+> nu sunt trasee, sunt vederi** — `fisa_cont` și `documente_api` le calculează la cerere din
+> aceleași `inregistrari_linii` și **nu persistă nimic**; registrul-jurnal e traseul însuși;
+> singurul care e cu adevărat traseu propriu e **D406**, fiindcă are XSD, validator, coadă
+> și depunere. Lista completă: **Partea XI.5b**.
 
 **Starea măsurată:** `[știut]` 9.981 din 10.023 de facturi n-au notă. Cele 42 cu notă au fost create manual, prin ecran.
 
@@ -508,3 +524,591 @@ exact cele două lucruri pe care codul nu le poate da:
 
 Amândouă sunt decizii, și sunt scrise ca atare. Un traseu completat fără ele e o hartă a codului, nu
 o listă de verificare — util, dar nu suficient.
+
+---
+
+# XI. INVENTARUL COMPLET, CELE TREI DECIZII, ȘI CELE DOUĂ MIXTURI — 25.08.2026, pe `3cb6c44`
+
+Partea X a completat cele nouă trasee din Partea VI. Partea asta face trei lucruri pe
+care Partea X nu le putea face: **numără traseele**, **răspunde la cele trei decizii din
+Partea VII** cu măsurători, și **desface cele două trasee care s-au dovedit mixturi**.
+
+## 0. De ce inventarul e un INSTRUMENT, nu o listă
+
+Până azi, „câte trasee sunt" era o **amintire**. Comanda a numit **25**; Partea X a numit
+**nouă**; niciuna dintre cifre nu se putea recalcula, fiindcă nu exista nimic care să
+enumere traseele altfel decât citindu-le din proză. *O cifră care nu se poate recalcula nu
+e o măsurătoare.*
+
+Deci inventarul trăiește acum în **`scripts/scan_trasee.py`**, iar **`core/test_trasee.py`**
+nu-l lasă să îmbătrânească. Instrumentul:
+
+- ține **inventarul declarat** — 35 de trasee, fiecare cu tiparele lui de rută și tabelele lui;
+- verifică **acoperirea**: fiecare dintre cele **400 de rute** din `main.py` intră **fie**
+  într-un traseu, **fie** într-una din suprafețele declarate ne-documentare (91 de rute:
+  autentificare, cabinet, GDPR, suport, administrarea furnizorului). **Orfane: 0.** O rută
+  nouă care nu intră nicăieri **pică testul**;
+- extrage per traseu, din cod: rutele cu gardă și rol, modulele, tabelele scrise, stările, refuzurile;
+- clasifică traseul **din trei fapte măsurate**, nu din impresie;
+- cu `--db`, spune **care firmă îl poate exercita azi**.
+
+**Ce nu vede, scris ca să nu se creadă altceva.** Nu vede *ce trebuie să fie adevărat după
+un pas* — aia e decizie (Partea VII.5). Nu vede traseele negative care *ar trebui* să
+existe, doar pe cele tratate. Iar clasa `MECANIC` spune că traseul **se poate scrie** din
+cod, nu că **e corect**.
+
+**Instrumentul a greșit de trei ori până să dea cifrele de mai jos, toate în aceeași
+direcție — „lipsește" sau „e altceva" — și toate prinse prin citire directă:**
+
+1. raporta *„fără gardă"* pentru rutele păzite prin argument (`Depends(cere_cabinet)`);
+2. raporta *„nu verifică rolul"* pentru rute care îl verifică **în corp** sau printr-un
+   **ajutor** (`_cer_admin_cabinet`) — prins citind `/asistenti/{uid}/permisiuni`, care
+   arăta nepăzită și nu e;
+3. **atribuia ruta de NIR modulului `salarizare`.** Multe rute își importă modulul **în
+   corp** (`from core import stocuri_api as _s`), iar `_s` e refolosit în zeci de locuri
+   pentru module diferite. Fără harta locală de aliasuri, instrumentul lega ruta de ultimul
+   `_s` de la nivel de fișier. **E mai rău decât o absență: e o atribuire falsă**, iar o
+   atribuire falsă trece verde.
+
+Toate trei au acum test propriu în `core/test_trasee.py`, plus **calibrare în ambele
+direcții** (METODA §22): instrumentul trebuie să **vadă** o rută orfană inventată **și** să
+**nu inventeze** una acolo unde nu e.
+
+---
+
+## 1. CÂTE SUNT — și de ce nu 25
+
+**Sunt 35.** Cifra nu e o alegere: e numărul de trasee necesare ca cele 400 de rute să fie
+acoperite **fără orfane și fără dublare**, la granularitatea „un document, de la intrare la
+ieșire". Comanda a numit 25; Partea X a numit 9. **Nu era greșită niciuna** — se refereau
+la altceva: cele 9 erau enumerarea din Partea VI, cele 25 erau o estimare. Cifra care se
+poate reface e 35, iar dacă granularitatea trebuie schimbată, se schimbă în `TRASEE` din
+instrument și se recalculează totul.
+
+### Cele trei clase, cu criteriul mecanic
+
+| clasă | criteriul, calculat | ce înseamnă practic |
+|---|---|---|
+| **MANUAL** | traseul cheamă un modul-**margine** — artefactul firmei ajunge la un terț care acționează pe baza lui | traseul intern se scrie din cod, dar **unde se oprește** e decizie (Partea VII.6) |
+| **PARȚIAL** | traseul **nu scrie în nicio tabelă** | se produce ceva ce **nu se păstrează nicăieri** — aceeași clasă cu verdictul de la R41 |
+| **MECANIC** | restul | pașii, stările, cine și refuzurile se citesc integral din cod |
+
+**Rezultat: MECANIC 27 · PARȚIAL 3 · MANUAL 5.**
+
+**Marginea nu e „modulul cheamă rețeaua".** `requests` nu deosebește o trimitere de o
+citire, iar dacă se ia închiderea tranzitivă peste toate modulele de rețea, `observare`
+(email) trage după el jumătate din aplicație și clasa nu mai deosebește nimic. Deci lista
+de margini e **enumerată, cu motivul lângă fiecare**, iar `NEMARGINI` spune de ce
+celelalte module de rețea **nu** sunt margini: `observare` (pleacă o copie, nu artefactul),
+`anaf_api` / `curs_bnr` / `intracomunitar` / `monitor_fiscal` (citiri), și **`duk`**, care
+rulează local prin `subprocess`, fără rețea.
+
+### Tabelul
+
+| id | clasă | rute | mutante | fără rol | firme | traseu |
+|---|---|---|---|---|---|---|
+| T01 | MECANIC | 15 | 8 | 1 | 7 | Declarația — generare, validare, coadă, aprobare, depunere |
+| T02 | MECANIC | 19 | 13 | 11 | 12 | Factura emisă — creare, contabilizare, ieșiri |
+| T03 | MECANIC | 6 | 3 | 0 | 2 | Statul de plată și fluturașul |
+| T04 | MECANIC | 5 | 3 | 1 | 4 | Concediul medical |
+| T05 | MECANIC | 28 | 24 | **24** | 17 | Nota contabilă — de la document la registrul-jurnal |
+| T06 | **MANUAL** | 7 | 4 | 4 | **0** | Importul de e-Factura și transmiterea prin SPV |
+| T07 | MECANIC | 7 | 5 | 5 | 2 | Extrasul bancar și potrivirea |
+| T08 | MECANIC | 2 | 1 | 1 | **0** | NIR și recepția |
+| T09 | MECANIC | 3 | 2 | 2 | 2 | Casa și registrul de casă |
+| T10 | MECANIC | 5 | 1 | 1 | ? | Inventarierea |
+| T11 | MECANIC | 6 | 4 | 0 | 1 | Închiderea lunii |
+| T12 | **PARȚIAL** | 4 | 2 | 2 | ? | Închiderea anului și situațiile financiare |
+| T13 | MECANIC | 8 | 4 | 3 | 17 | Trecerea de regim fiscal |
+| T14 | MECANIC | 32 | 20 | 10 | 5 | Preluarea unei firme |
+| T15 | **MANUAL** | 16 | 11 | 7 | 8 | Salariatul — angajare, contract, adeverință, REGES |
+| T16 | MECANIC | 4 | 2 | 1 | **0** | Pontajul |
+| T17 | **PARȚIAL** | 2 | 0 | 0 | ? | Plata salariilor — fișierul către bancă |
+| T18 | **MANUAL** | 6 | 3 | 2 | 1 | Chitanța și încasarea |
+| T19 | MECANIC | 2 | 1 | 1 | **0** | Scadențarul și notificările de scadență |
+| T20 | MECANIC | 12 | 7 | 7 | 2 | Mișcarea de stoc — intrare, ieșire, transfer, reclasificare |
+| T21 | MECANIC | 9 | 7 | 7 | 1 | Rețeta și producția |
+| T22 | MECANIC | 3 | 2 | 2 | 2 | Mijlocul fix și amortizarea |
+| T23 | MECANIC | 9 | 5 | 5 | 2 | Bonul de la client — portalul și decontul |
+| T24 | MECANIC | 2 | 2 | 2 | ? | Bonul fiscal și raportul Z (AMEF, horeca) |
+| T25 | **MANUAL** | 3 | 2 | 2 | ? | Comanda din magazinul online (WooCommerce) |
+| T26 | MECANIC | 2 | 1 | 1 | 1 | Registratura |
+| T27 | **MANUAL** | 3 | 2 | 2 | **0** | e-Transport |
+| T28 | MECANIC | 10 | 5 | 5 | 2 | Operațiunile intracomunitare, VIES și Intrastat |
+| T29 | MECANIC | 11 | 10 | 10 | ? | Regimurile speciale de TVA — marjă, aur, agricultori, taxare inversă |
+| T30 | MECANIC | 2 | 2 | 2 | ? | Operațiunile în valută |
+| T31 | MECANIC | 6 | 4 | 4 | 3 | Completările manuale la o declarație (D300, D301) |
+| T32 | MECANIC | 7 | 5 | 5 | **0** | Registrul de încasări și plăți (partida simplă) |
+| T33 | **PARȚIAL** | 3 | 0 | 0 | ? | Exportul contabil (SAGA, WinMentor) |
+| T34 | MECANIC | 14 | 5 | 5 | 1 | Rapoartele comerciale, centrele de cost, rapoartele salvate |
+| T35 | MECANIC | 36 | 15 | 8 | 1 | Pachetul lunar către client și solicitările lui |
+
+**`?` nu înseamnă zero.** Înseamnă că traseul **n-are tabelă proprie**, deci întrebarea
+„care firmă îl poate exercita" nu se poate răspunde din date. *Un necunoscut nu se
+rotunjește la „știu că nu"* — interdicția 32. Opt trasee sunt în situația asta: T10, T12,
+T17, T24, T25, T29, T30, T33. **Patru dintre ele sunt și PARȚIAL sau MANUAL** (T12, T17,
+T25, T33) — aceeași cauză: nu persistă nimic. Celelalte patru scriu, dar **în tabelele
+altor trasee**: regimurile speciale și valuta produc note contabile, inventarierea și
+raportul Z la fel.
+
+---
+
+## 2. DECIZIA 1 — ROLURILE, citite din verificările de drepturi
+
+*Comanda: „cele trei roluri sunt de acord. Dar nu inventa scenarii de test pe cabinete care
+nu există. Pentru fiecare pas din trasee: ce rol îl poate face, citit din verificările de
+drepturi. Unde codul nu verifică nimic, spune — e mai important decât o matrice corectă."*
+
+### Cele patru forme în care codul verifică un drept
+
+Nu una, patru — iar trei dintre ele nu se văd în semnătura rutei. Cifrele de mai jos sunt
+**rute clasificate după PRIMA formă găsită** (o rută poate avea două; se numără o dată):
+
+| formă | unde stă | rute din 400 |
+|---|---|---|
+| `cere_rol("admin_firma", …)` | în semnătură | **57** |
+| comparație pe `ctx["rol"]` sau `_are_permisiune` | în corpul rutei | **21** |
+| ajutor care ridică 403 (`_cer_admin_cabinet`) | apel în corp | **18** |
+| `cere_client` / `cere_api_key` | în semnătură | 24 |
+| **nimic** | — | **280** |
+
+Formele 2 și 3 sunt cele care au produs prima măsurătoare greșită: o rută pazită prin
+`_cer_admin_cabinet` arăta nepăzită. `_are_permisiune` apare pe **6** rute — cele trei
+tranziții ale cozii (`poate_valida`, `poate_depune`) și cele trei de stat de plată
+(`poate_valida`).
+
+### Unde codul NU verifică nimic — cifra care contează
+
+Din **229 de rute care schimbă ceva** (POST/PUT/PATCH/DELETE):
+
+- **48** cer un rol prin gardă;
+- **13** îl verifică în corp;
+- **9** printr-un ajutor;
+- **6** sunt portal de client sau cheie de API;
+- **144 cer doar să fii un utilizator autentificat al cabinetului. Niciun rol.**
+- restul de **9** sunt public prin construcție (login, activare, resetare de parolă).
+
+**`cere_cabinet` nu e un rol.** Verifică exact două lucruri: că nu ești `client`, și că
+cabinetul nu e suspendat. **Un `angajat` și un `admin_firma` sunt același actor pe 144 de
+rute care scriu.**
+
+**Unde doare cel mai tare, per traseu:**
+
+- **T05, nota contabilă — 24 din 24 de rute care scriu nu verifică niciun rol.** Toate cele
+  optsprezece rute `nota-*`, plus crearea, editarea, ștergerea și validarea din jurnal.
+  *Orice utilizator al cabinetului poate crea, valida și șterge o înregistrare contabilă.*
+- **T02, factura — 11 din 13.** Crearea și ștergerea cer `admin_firma`/`angajat`; emiterea,
+  stornarea, transformarea, numerotarea și trimiterea la SPV nu cer nimic.
+- **T29, regimurile speciale de TVA — 10 din 10.**
+- **T20/T21, stocul și producția — 7 din 7.**
+
+**Excepțiile, și ele spun ceva:** singurele trei trasee cu rol pe tot ce scrie sunt
+**T11 închiderea lunii** (`admin_firma` pe toate cele 4 rute care scriu), **T16 pontajul** (`admin_firma` pe
+confirmare) și **T03 statul de plată** (`poate_valida` pe emitere, corecție și motiv).
+Adică: *perioada, prezența și statul sunt păzite; contabilitatea nu.*
+
+### Superadmin trece peste tot
+
+`cere_rol` lasă `superadmin` să treacă **înainte de orice verificare**, iar
+`_are_permisiune` întoarce `True` **necondiționat** pentru el, înaintea oricărei citiri din
+bază. *Patru-ochi verificat cu superadmin nu verifică patru-ochi.* Nu e o precauție — e o
+ramură scrisă (`main.py:5743`).
+
+### Ce roluri există AZI, măsurat — și de ce nu se pot inventa scenarii
+
+**12 conturi, în 7 cabinete:**
+
+| rol | conturi | `poate_pregati/valida/depune` |
+|---|---|---|
+| `superadmin` | 2 | (trec oricum) |
+| `admin_firma` | 7 | toți: da/da/da |
+| `angajat` | **1** | **nu/nu/nu** |
+| `client` | 2 | — |
+
+**Singurul `angajat` din instalare** — `asistent@prisma-cont.test`, cabinetul 1968 — **n-are
+nicio firmă atribuită** (nu apare în `public.user_tenants`) și **n-are niciun drept fin**.
+
+**Consecința, și e cifra care contează:** *pe nicio firmă din cele 17 nu se poate exercita
+azi un traseu care cere doi oameni.* Patru-ochi are nevoie de **doi validatori activi** în
+același cabinet (`coada_api.patru_ochi_posibil`); cabinetul 1968 are **unul**. Restul
+cabinetelor au **un singur utilizator**. Nu e o lipsă de scenariu de test — e o lipsă de
+actori, și se vede în date: **cele trei elemente din coadă sunt create toate de același
+utilizator (1968), iar cel depus a fost și aprobat, și depus, de el.**
+
+---
+
+## 3. DECIZIA 2 — CE NU SE TESTEAZĂ NICIODATĂ, și ce ține locul
+
+*Comanda: „declară-le ca netestabile, cu ce se testează în locul lor: până unde merge
+traseul intern și unde se oprește. La e-Factura, dacă există mediu de test, folosește-l."*
+
+**Cinci trasee ating exteriorul. Nu opt, nu două** — cinci, calculate:
+
+### T06 — e-Factura. **Mediul de test EXISTĂ, și e deja implicit.**
+
+`efactura_send.fctel_base(mode)` construiește `https://api.anaf.ro/{prod|test}/FCTEL/rest`,
+iar `upload_ubl`, `stare_mesaj`, `descarca`, `lista_mesaje` și `trimite` au toate
+**`mediu="test"` ca valoare implicită**. Deci răspunsul la „dacă există mediu de test,
+folosește-l" e: **există, și e folosit**.
+
+**Ce blochează totuși testarea live, măsurat:** `public.spv_token` are **0 rânduri** și
+`public.spv_cui_acoperit` are **0**. Fără un token OAuth obținut cu certificat calificat,
+nici mediul de test nu răspunde. **Deci limita nu e „ANAF-ul e în afara noastră", ci „nu
+avem certificat".** Sunt lucruri diferite: primul e permanent, al doilea se rezolvă.
+
+- **Traseul intern testabil se oprește la:** XML-ul UBL generat și validat structural, plus
+  rândul din `efactura_trimiteri` cu una din stările `fara_token`, `nevalidat`,
+  `deja_trimisa`. Astea se pot proba integral fără rețea.
+- **Se declară NETESTAT:** răspunsul ANAF, indexul de încărcare, starea mesajului, descărcarea.
+- **Ce se schimbă când apare certificatul:** traseul devine testabil până la capăt **pe
+  mediul de test**, fără nicio modificare de cod.
+
+### T27 — e-Transport. **Poarta pe test e deja SCRISĂ în cod.**
+
+`etransport_send` nu are client propriu: trece prin `spv_conector`, cu același token.
+Docstringul lui declară deja regula — *„POARTA PRE-TRIMITERE = validare pe TEST
+(mediu=test); nu se trimite pe prod nevalidat"* — și numește onest ce nu e dovedit:
+formatul exact al răspunsului `upload`/`stareMesaj` e din tiparul ANAF, **nu văzut live**,
+deci parsarea e defensivă.
+
+- **Traseul intern se oprește la:** XML-ul UIT generat + garda de timp (declarare cu maximum
+  3 zile înainte de mișcare, valabilitate 5 zile național / 15 intracomunitar) + rândul din
+  `etransport_trimiteri`.
+- **Se declară NETESTAT:** UIT-ul întors de ANAF și starea lui.
+
+### T15 — REGES. Contractul de muncă pleacă la registrul de evidență a muncii.
+
+`reges_client` trimite salariatul prin `urlopen`. `public.reges_chei` = **0 rânduri**,
+`reges_mesaje` = **0**. Aceeași structură ca la e-Factura: cheia lipsește, nu calea.
+
+- **Traseul intern se oprește la:** rândul din `reges_mesaje` cu starea lui de trimitere.
+- **Se declară NETESTAT:** confirmarea registrului.
+
+### T18 — plata. **Nu e margine. E o absență.**
+
+`GET /public/plata/{ref}` întoarce o pagină al cărei text spune, literal, *„Integrarea cu
+procesatorul de plăți urmează. Apăsați pentru a simula plata."* Nu există procesator.
+
+**Și e o rută care merită privită separat:** `POST /public/plata/{ref}/confirma` e
+**neautentificată**, **parcurge toate schemele de firme** și marchează factura încasată pe
+prima care se potrivește. `ref` e secret și pagina e `noindex`, dar traseul rămâne: *o
+cerere fără niciun token schimbă starea unei facturi într-o firmă.*
+
+- **Nu se declară netestabil.** Se declară **neimplementat**, iar ruta de confirmare e o
+  restanță proprie.
+
+### T25 — WooCommerce. Margine reală, dar către un terț al clientului, nu către stat.
+
+`woocommerce` citește prin `requests.get` și scrie înapoi în `facturi`. Nicio firmă din cele
+17 n-are configurație de magazin.
+
+- **Traseul intern se oprește la:** configurația salvată în `firma_profil` și rezultatul
+  sincronizării.
+- **Se declară NETESTAT:** răspunsul magazinului.
+
+### Corectură la o afirmație a mea, păstrată fiindcă e utilă
+
+În Partea IX scrisesem că **DUKIntegrator nu e margine**. Rămâne adevărat, și instrumentul
+o pune acum în cod: `duk` e în `NEMARGINI`, cu motivul — rulează local prin `subprocess`,
+fără rețea. **Validatorul oficial e testabil integral.** Singurul lucru care lipsea era
+memoria verdictului, și aia s-a construit la R41.
+
+---
+
+## 4. DECIZIA 3 — PRECONDIȚIILE, pe firmele care există
+
+*Comanda: „pe firmele existente, nu inventa firme noi. Pentru fiecare traseu: care firmă îl
+poate exercita azi, și ce lipsește ca să poată fi parcurs. Dacă niciun traseu nu se poate
+parcurge pe nicio firmă, aia e cifra care contează."*
+
+Măsurat pe **toate cele 17 firme**, pe **47 de tabele** fiecare, plus tabelele partajate din
+`public` care poartă `tenant_id`.
+
+### Cifra care contează
+
+**Din 35 de trasee: 21 au cel puțin o firmă care le poate exercita · 6 nu au niciuna · 8 nu
+se pot ști din date** (n-au tabelă proprie).
+
+**Cele șase pe care nicio firmă nu le poate exercita azi:**
+
+| traseu | ce lipsește, exact |
+|---|---|
+| **T06 e-Factura** | `efactura_primite` = 0 și `efactura_trimiteri` = 0 pe toate cele 17. Plus `spv_token` = 0 |
+| **T08 NIR** | `nir` = 0 și `nir_linii` = 0 pe toate cele 17 |
+| **T16 Pontajul** | `pontaj` = **0 pe toate cele 17** |
+| **T19 Scadențarul** | `notificari_scadenta` = 0 pe toate cele 17 |
+| **T27 e-Transport** | `etransport_trimiteri` = 0 pe toate cele 17 |
+| **T32 Registrul de încasări și plăți** | `rip_operatiuni` = **0 pe toate cele 17** |
+
+**Două dintre ele contrazic ceva scris.** `pontaj` = 0 peste tot, iar Partea III spune
+*„pontajul trebuie să existe — fără el, tichetele se blochează, iar calculul stă pe zile
+presupuse"*: deci **cele două state de plată emise — singura firmă care are, `tenant_003` — au fost
+calculate fără pontaj**. Iar `rip_operatiuni` = 0 peste tot înseamnă că **partida simplă n-a fost exercitată
+niciodată**, deși motorul ei există (`rip_api` + `d212_engine`) — exact datoria numită la
+pragul 3 în predare.
+
+### Unde stau datele, pe firme
+
+**Evidența e concentrată în două firme.** `tenant_013` (ALFA MICRO) are rânduri în **26** de
+tabele; `tenant_003` (Comert Micro TVA) în **14**. Restul de 15 firme au între **2 și 11**
+tabele nevide, iar patru dintre ele (`tenant_006`, `008`, `011`, `012`) au **exact două**:
+planul de conturi și profilul.
+
+| ce | total pe toate cele 17 |
+|---|---|
+| facturi | **41** |
+| note contabile (`inregistrari`) | **34** |
+| salariați | **24** |
+| state de plată emise | **2**, pe o singură firmă |
+| declarații depuse | **55**, pe 6 firme |
+| elemente în coadă | **3**, toate în cabinetul 1968 |
+| pontaje | **0** |
+| operațiuni de partidă simplă | **0** |
+| NIR-uri | **0** |
+
+### Trei lucruri ieșite din măsurătoare, care nu erau căutate
+
+1. **Un element din coadă aparține unei firme care nu există.** `declaratii_coada.id=2020`
+   are `tenant_id = 13245`; în `public.tenants` nu există rândul, iar schema `tenant_13245`
+   nu există. Conținutul lui e un D300 al firmei *„Firma Grea Audit SRL"* — care e
+   `tenant_017`, id **14769**. Deci o declarație stă în coadă legată de o firmă ștearsă sau
+   niciodată creată, și nimic n-o semnalează.
+2. **Niciunul dintre cele 3 elemente din coadă n-are verdict păstrat** (`verdict` = `NULL`
+   pe toate trei), inclusiv D301-ul deja **depus**. Consecvent cu ce s-a scris la R41: poarta
+   e nouă, elementele sunt vechi.
+3. **Prima formă a măsurătorii a raportat zece tabele ca „absente pe toate cele 17 firme".
+   Nouă dintre cele zece existau.** Trei trăiesc în `public`, partajate, cu `tenant_id`
+   (`declaratii_depuse`, `declaratii_coada`, `migrare_status`) — și tocmai de-aia traseul
+   declarației arăta „nicio firmă" pe o instalare cu **55 de declarații depuse**. Șase
+   există **sub alt nume**: `facturi_linii` e `factura_linii`; `stat_plata` e `state_plata`;
+   `perioada` e `perioada_confirmata`; `parteneri` sunt `clienti` + `furnizori`; `scadentar`
+   e `notificari_scadenta`; `contracte` e `contracte_sabloane`. Una singură chiar nu există:
+   `cote_tva` **nu e tabelă** — verificat, niciun `FROM cote_tva` în `core/`.
+   O absență falsă de nouă ori, dintr-un singur motiv: **nume ghicite, necăutate la sursă.**
+   De aceea `scripts/trasee_tabele.json` se **regenerează din bază** (`--tabele`), nu se
+   scrie de mână.
+
+---
+
+## 5. CELE DOUĂ MIXTURI, DESFĂCUTE
+
+*Comanda: „corectează cele două trasee din TRASEE care s-au dovedit mixturi: factura →
+declarație și nota → registru. Erau scrise de mine ca trasee unice și nu sunt."*
+
+Corect, și măsurătoarea arată **de ce**: în amândouă, pasul final scrie *„INTRĂ ÎN: A · B ·
+C · D"* — ca și cum ar fi un pas. Nu e un pas. **E punctul în care un traseu se termină și
+încep altele**, fiecare cu producătorul lui, perioada lui, refuzurile lui și verdictul lui.
+
+### 5a. Factura NU intră în patru ieșiri. Intră în douăzeci de consumatori.
+
+Partea II scria: *„4. INTRĂ ÎN: D300 · D394 · e-Factura · jurnalul de vânzări"*.
+
+Măsurat — modulele din `core/` care **citesc** `facturi`:
+
+`clienti_api` · `control_fiscal_api` · `control_incrucisat` · `d100` · `d300` ·
+`d300_reconciliere` · `d390` · `d390_reconciliere` · `d394` · `d394_reconciliere` ·
+`d406` · `efactura_send` · `export_saga` · `facturi_api` · `notificari_scadenta` ·
+`plati` · `rapoarte_comerciale_api` · `reconciliere_api` · `scadentar` · `woocommerce`
+
+**Douăzeci, nu patru.** Iar lista veche greșea în ambele direcții:
+
+- **lipseau**: D100, D390, D406, exportul SAGA, reconcilierea bancară, scadențarul,
+  controlul încrucișat și fișa de client;
+- **„jurnalul de vânzări" nu există.** Căutat la sursă: singura apariție a expresiei în tot
+  frontendul e un **placeholder de formular** (`static/js/ecrane/validat.js:205`,
+  *„ex: TVA necorelată cu jurnalul de vânzări"*). Nu există modul care să-l producă, nu
+  există rută, nu există tabelă. `/tenants/{}/jurnal` e **jurnalul de note contabile**, alt
+  lucru; `/tenants/{}/jurnal-marja` e jurnalul regimului marjei, al treilea lucru.
+
+**Deci traseul II se termină la pasul 3** — factura contabilizată — și de acolo pornesc
+trasee separate. Cel care se depune e **T01**, iar factura intră în el **prin declarație**,
+nu direct.
+
+**Ce se pierde dacă rămâne scris ca traseu unic:** verificarea „factura apare în toate
+ieșirile care o cuprind" pare o singură verificare, și sunt douăzeci — cu douăzeci de
+perioade și douăzeci de feluri de a fi omisă. *Cazul care a produs regula (`de_preluat`
+exclus din D300 și inclus în export) e exact o divergență între doi consumatori, iar un
+traseu unic n-avea unde s-o pună.*
+
+### 5b. Nota contabilă NU intră în patru registre. Are douăzeci și unu de consumatori.
+
+Partea V scria: *„5. INTRĂ ÎN: registrul-jurnal · cartea mare · balanță · D406"*.
+
+Măsurat — modulele care **citesc** `inregistrari_linii`:
+
+`bilant_api` · `centre_cost_api` · `control_incrucisat` · `d100` · `d100_reconciliere` ·
+`d101` · `d101_reconciliere` · `d205` · `d205_reconciliere` · `d300` · `d300_reconciliere` ·
+`d406` · `d406_reconciliere` · `documente_api` · `echilibru_perioada` · `fisa_cont` ·
+`jurnal_api` · `pachete_api` · `rapoarte_comerciale_api` · `reconciliere_api` · `stocuri_api`
+
+**Douăzeci și unu.** Și aici lista veche greșea în ambele direcții:
+
+- **lipseau**: D100, D101, D205, situațiile financiare (`bilant_api`), fișa de cont,
+  echilibrul perioadei, centrele de cost, pachetul lunar către client;
+- **„cartea mare" și „balanța" nu sunt trasee, sunt vederi.** `fisa_cont` și
+  `documente_api` le calculează **la cerere**, din aceleași `inregistrari_linii`, și **nu
+  persistă nimic**. Un registru care nu se păstrează nu are traseu — are o rută.
+
+**Singurul dintre cele patru care e cu adevărat un traseu propriu e D406**, fiindcă are
+XSD, validator, coadă și depunere. Registrul-jurnal e **T05 însuși**, nu o ieșire a lui.
+
+**Ce se pierde dacă rămâne scris ca traseu unic:** cele patru „ieșiri" par egale, și nu
+sunt. Trei sunt calcule reproducibile oricând; una pleacă la ANAF și nu se mai poate
+retrage. *Regula „nota poartă documentul justificativ" contează pentru toate patru, dar
+consecința unei note fără document e diferită într-o vedere și într-o declarație depusă.*
+
+---
+
+## 6. CELE CINCI TRASEE MANUALE, SCRISE — cu ce am citit ca să le scriu
+
+*Comanda: „începe cu cele care ating o ieșire care se depune, și spune la fiecare ce ai
+citit ca să-l scrii."*
+
+Trei din cinci ating o ieșire care se depune: **T06** (factura, la ANAF), **T27** (UIT-ul,
+la ANAF), **T15** (contractul, la REGES). Cu ele încep. **T18** și **T25** nu depun nimic.
+
+### T06 — e-Factura
+
+```
+1. FACTURA EXISTĂ ȘI E COMPLETĂ  (cod fiscal de partener, linii, cote)
+      ↓
+2. GENERARE UBL          efactura_send.construieste  →  XML CIUS-RO
+      ↓
+3. VALIDARE DE STRUCTURĂ  fctel_validare_url("FACT1")  — fără token
+      ↓
+4. TOKEN SPV            spv_token pentru CIF-ul emitentului
+      ↓  lipsă → stare `fara_token`, traseul se OPREȘTE aici
+5. UPLOAD  mediu=test    api.anaf.ro/test/FCTEL/rest/upload
+      ↓  ── MARGINEA. Ce urmează nu se testează. ──
+6. INDEX DE ÎNCĂRCARE
+      ↓
+7. STARE MESAJ → descărcare confirmare
+```
+
+**Ce am citit:** `core/efactura_send.py` (`fctel_base`, `fctel_validare_url`,
+`CUSTOMIZATION_ID`, `upload_ubl`, `stare_mesaj`, `descarca`, `lista_mesaje`, `trimite`),
+`core/spv_conector.py` (URL-urile OAuth, `apel_anaf`), `core/efactura_import.py`, rutele
+`/tenants/{}/import-efactura` și `/tenants/{}/facturi/{}/trimite-spv` din `main.py`, plus
+numărătoarea din `public.spv_token` și `efactura_trimiteri`.
+
+**Stări:** `fara_token` · `nevalidat` · `deja_trimisa` (la trimitere); `validata` ·
+`respinsa` (la primire). **Refuzuri: 27.**
+**Cine:** 4 rute care scriu, **niciuna nu verifică vreun rol**.
+**Precondiție care lipsește azi:** tokenul. Fără el traseul se oprește la pasul 4, pe toate
+cele 17 firme.
+
+### T27 — e-Transport
+
+```
+1. MIȘCAREA DE BUNURI E CUNOSCUTĂ  (transport, cantități, parteneri)
+      ↓
+2. GENERARE XML UIT
+      ↓
+3. GARDA DE TIMP   declarare max 3 zile ÎNAINTE de mișcare
+      ↓
+4. VALIDARE PE MEDIUL DE TEST   — scrisă ca poartă obligatorie în cod
+      ↓
+5. UPLOAD prin spv_conector, cu tokenul SPV (același ca la e-Factura)
+      ↓  ── MARGINEA ──
+6. UIT ÎNTORS DE ANAF, valabil 5 zile (național) / 15 (intracomunitar)
+      ↓
+7. FOLOSIREA UIT-ULUI DUPĂ EXPIRARE — blocată
+```
+
+**Ce am citit:** `core/etransport_send.py` (docstringul care declară poarta pe test și
+limita de parsare, garda de timp), `core/etransport.py`, rutele `/tenants/{}/etransport-xml`,
+`/tenants/{}/etransport/trimite`, `/tenants/{}/etransport/trimiteri`.
+
+**Scrie în:** `etransport_trimiteri`. **Refuzuri: 11.** **Cine:** 2 rute care scriu, niciun rol.
+**Notabil:** e **singurul traseu din cele cinci manuale care are poarta pe mediul de test
+scrisă explicit în cod**, înaintea trimiterii pe producție. Ce s-a decis aici acum e ce
+lipsește la celelalte patru.
+
+### T15 — Salariatul, contractul și REGES
+
+```
+1. SALARIAT CREAT          salariati_api  →  salariati + salariu_istoric
+      ↓
+2. CONTRACT GENERAT        contracte_api, din contracte_sabloane
+      ↓
+3. CHEIE REGES CONFIGURATĂ  reges_chei
+      ↓  lipsă → traseul se OPREȘTE aici
+4. TRIMITERE SALARIAT      reges_client  →  reges_mesaje
+      ↓  ── MARGINEA ──
+5. CONFIRMARE DIN REGISTRU  (reges-poll)
+```
+
+**Ce am citit:** `core/salariati_api.py`, `core/contracte_api.py`, `core/reges_client.py`,
+`core/adeverinta.py`, `core/beneficii_api.py`, rutele `/tenants/{}/salariati*`,
+`/tenants/{}/contracte/*`, `/tenants/{}/reges-{config,trimite-salariat,poll}`.
+
+**Scrie în:** `salariati`, `salariu_istoric`, `contracte_sabloane`, `beneficii_lunare`,
+`reges_chei`, `reges_mesaje` — și **`DELETE` pe `pontaj` și `salariu_istoric`** la ștergerea
+unui salariat. **Refuzuri: 38.** **Cine:** 11 rute care scriu, din care **7 nu verifică
+niciun rol**; crearea/modificarea/ștergerea salariatului cer `admin_firma`/`angajat`.
+**Firme: 8** au salariați. **`contracte_sabloane` = 0 pe toate cele 17** — deci pasul 2 n-a
+fost parcurs niciodată.
+
+### T18 — Chitanța și încasarea
+
+```
+1. FACTURĂ EMISĂ, NEÎNCASATĂ
+      ↓
+2a. CHITANȚĂ pe hârtie     chitante  →  casa_operatiuni + notă contabilă
+2b. LINK DE PLATĂ          plati.genereaza_link  →  ref secret
+      ↓
+3. CONFIRMARE              POST /public/plata/{ref}/confirma
+      ↓
+4. FACTURA MARCATĂ ÎNCASATĂ
+```
+
+**Ce am citit:** `core/chitante.py`, `core/plati.py`, ruta `/public/plata/{ref}` (textul
+paginii, care declară integrarea ca nefăcută) și `/public/plata/{ref}/confirma`.
+
+**Nu e o margine — e o absență.** Pasul 3 nu iese nicăieri: pagina e un formular care
+apelează propria aplicație. **Restanță proprie:** ruta de confirmare e neautentificată și
+caută `ref` prin **toate schemele de firme**. **Firme: 1** (`tenant_013`, 2 chitanțe).
+
+### T25 — Comanda din magazinul online
+
+```
+1. CONFIGURAȚIE MAGAZIN      firma_profil
+      ↓
+2. SINCRONIZARE              woocommerce  →  requests.get
+      ↓  ── MARGINEA ──
+3. COMENZI CITITE → facturi
+```
+
+**Ce am citit:** `core/woocommerce.py`, rutele `/tenants/{}/woocommerce/{config,sincronizeaza}`.
+**Refuzuri: 1** — cele mai puține din toate cele 35 de trasee. **Nicio firmă configurată.**
+
+---
+
+## 7. CELE TREI TRASEE PARȚIALE — ce se produce și nu se păstrează
+
+Toate trei sunt aceeași clasă cu verdictul de la R41: **artefactul se produce, se afișează
+sau se descarcă, și nu rămâne.**
+
+- **T12 — situațiile financiare (S1003, S1005).** 4 rute, `bilant_api` **nu scrie nimic**.
+  Nu intră nici în coadă (nu există `POST /coada` pentru s1003/s1005), nici în
+  `declaratii_depuse`. *Artefactul care încheie exercițiul financiar n-are memorie.*
+- **T17 — plata salariilor.** 2 rute, amândouă `GET`. Fișierul către bancă se generează și
+  se descarcă. Nu se consemnează **că** s-a generat, **pentru ce lună**, **de cine**. Deci
+  „salariile s-au plătit" nu e o stare a aplicației.
+- **T33 — exportul contabil (SAGA, WinMentor).** 3 rute, toate `GET`, zero scrieri. Nu se
+  știe ce s-a exportat și când — iar la o preluare inversă (firma pleacă) asta e exact
+  întrebarea.
+
+**Împreună cu R41 și cu auditul de preluare (`audit_preluare` nu scrie nimic), sunt cinci
+instanțe ale aceleiași clase.** Merită o restanță proprie, nu cinci.
+
+---
+
+## 8. CE RĂMÂNE, NUMIT
+
+- **Ce trebuie să fie adevărat după fiecare pas** — nescris, pentru toate cele 35. Nu se
+  poate extrage din cod (Partea VII.5). E singura parte care face din inventar o listă de
+  verificare, nu o hartă.
+- **Traseele negative care ar trebui să existe** — se vede doar ce se tratează azi.
+- **Tranzițiile interzise** — un singur tabel explicit în toată aplicația (`coada_api`).
+  Restul stărilor sunt literale împrăștiate. Rămâne decizie.

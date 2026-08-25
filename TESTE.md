@@ -1990,3 +1990,12 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   cap · spune când se rescrie · avertismentul de vechime există în `pre-commit` · **nu poate deveni
   blocaj** · anti-vacuu pe hook · cifra 131 nu poate apărea în predare nemarcată ca invalidată.
   RED-proof pe trei direcții.
+
+- **`core/test_trasee.py` (25.08.2026)** — 10 teste pe inventarul traseelor: **zero rute în afara
+  inventarului** (anti-vacuu pe acoperire) · nicio rută în două trasee (altfel cifrele se numără de
+  două ori) · clichet pe numărul de trasee (**35**) · clichet pe clase (**MECANIC 27 · PARȚIAL 3 ·
+  MANUAL 5**) · fiecare traseu are cel puțin o rută (un traseu gol ar trece verde degeaba) · modulele
+  din `MARGINI` și `NEMARGINI` există încă în `core/` (o listă scrisă cu mâna care îmbătrânește minte)
+  · **calibrare în ambele direcții** (METODA §22): instrumentul vede o rută orfană inventată **și** nu
+  inventează una acolo unde nu e · mutație pe propriul mod de eșec: aliasul **local** de import bate pe
+  cel de modul, altfel ruta de NIR primește `salarizare`.

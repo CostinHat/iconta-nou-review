@@ -4497,3 +4497,40 @@ direcții**, toate cu restaurare verificată identic.
 
 **Ce NU face, declarat:** nu verifică dacă ce scrie în predare e **adevărat** — asta nu se măsoară. Și
 **un `/clear` nu se poate garda deloc** din git; se gardează doar commitul.
+
+**Traseele nu mai sunt proză, iar harta nu poate rămâne în urma codului**
+(`scripts/scan_trasee.py` + `core/test_trasee.py`, 25.08.2026). Până azi, „câte trasee sunt", „câte se
+pot scrie din cod" și „care firmă poate parcurge care traseu" erau **amintiri**: comanda numea 25,
+`TRASEE.md` Partea X numea 9, și nimic nu le putea reface. *O cifră care nu se poate recalcula nu e o
+măsurătoare.*
+
+**Ce s-a construit.** Inventarul e declarat în instrument — **35 de trasee** — iar instrumentul
+verifică **acoperirea**: fiecare dintre cele **400 de rute** din `main.py` intră fie într-un traseu,
+fie într-una din suprafețele declarate ne-documentare (91). **Orfane: 0**, iar o rută nouă care nu
+intră nicăieri **pică testul**. Clasificarea e mecanică, din două fapte măsurate — atinge o margine?
+scrie într-o tabelă? — și dă **MECANIC 27 · PARȚIAL 3 · MANUAL 5**, clichet.
+
+**Marginea NU e „modulul cheamă rețeaua".** `requests` nu deosebește o trimitere de o citire, iar
+închiderea tranzitivă peste toate modulele de rețea face din `observare` (email) o margine și trage
+după el jumătate din aplicație — clasa n-ar mai deosebi nimic. Deci `MARGINI` e **enumerată, cu
+motivul lângă fiecare**, și există `NEMARGINI` care spune de ce celelalte nu sunt: `duk` rulează local
+prin `subprocess`, `curs_bnr` are istoric local, `observare` trimite o **copie**, nu artefactul.
+
+**Trei greșeli ale instrumentului, toate în direcția „lipsește" sau „e altceva", toate prinse prin
+citire directă înainte de a ajunge în document:**
+1. „fără gardă" pentru rute păzite prin argument (`Depends(cere_cabinet)`);
+2. „nu verifică rolul" pentru rute care îl verifică **în corp** sau printr-un **ajutor**
+   (`_cer_admin_cabinet`) — prinsă citind `/asistenti/{uid}/permisiuni`;
+3. **atribuia ruta de NIR modulului `salarizare`.** Multe rute își importă modulul **în corp**
+   (`from core import stocuri_api as _s`), iar `_s` e refolosit în zeci de locuri. **O atribuire falsă
+   e mai rea decât o absență** — trece verde. Are test propriu.
+
+**Și o a patra, în măsurătoarea de firme, nu în instrument:** zece tabele au ieșit „absente pe toate
+cele 17 firme". **Nouă dintre ele existau** — trei în `public`, partajate cu `tenant_id` (de-aia
+traseul declarației arăta „nicio firmă" pe o instalare cu 55 de declarații depuse), șase sub alt nume
+(`factura_linii`, `state_plata`, `perioada_confirmata`, `clienti`+`furnizori`, `notificari_scadenta`,
+`contracte_sabloane`). **Nume ghicite, necăutate la sursă.** De aceea lista de tabele se **regenerează
+din bază** (`--tabele`), nu se scrie în cod.
+
+**Ce NU face, declarat:** nu spune că un traseu e **corect**. Spune că harta acoperă codul, nu că
+drumul e bun. Nu vede „ce trebuie să fie adevărat după fiecare pas" — aia e decizie, nu cod.
