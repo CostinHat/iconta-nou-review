@@ -34,7 +34,14 @@ NS = "mfp:anaf:dgti:d301:declaratie:v1"
 REGULI = "2026.1"
 _NEDIGIT = re.compile(r"\D")
 TIPURI_OP = (1, 2, 3, 4, 5)
-# Nomenclatorul tip_valuta ANCORAT PE VALIDATORUL INSTALAT (D301_9), nu pe pdf-ul de structura din 2013
+# ATENTIE la ce e lista asta (reancorare 25.08.2026): NU e nomenclatorul normei. OPANAF 592/2016 nu
+# inchide lista - spune "se mentioneaza tipul valutei (de exemplu: USD, euro...)". Cele 20 de mai jos
+# sunt ce ACCEPTA ARBITRUL, enumerate prin proba DUK. Consecinta, spusa pe fata: o operatiune facuta
+# legal intr-o valuta din afara celor 20 nu se poate depune prin acest instrument - limita a
+# validatorului, nu interdictie fiscala. Dezacordul e consemnat in core/nomenclatoare.py (ANCORE_NORMA)
+# si pazit de core/test_nomenclator_pe_norma.py.
+#
+# Istoric (de ce lista e totusi a validatorului si nu a pdf-ului 2013)
 # (d301_struct_anaf.txt, marcat INVECHIT). Setul acceptat de validator a fost enumerat prin proba DUK boundary
 # 04.08.2026 (fiecare cod ISO trecut prin DUKIntegrator): validatorul accepta 20 de valute. VALUTE de mai jos
 # are 20 - cele 19 din pdf-ul 2013 + HRK (kuna croata, adaugata de ANAF post-2013, validator-acceptata).

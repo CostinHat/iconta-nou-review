@@ -23,6 +23,12 @@ from core import scan_module_nelegate as scan
 
 # Fiecare intrare poartă DE CE e aici. O intrare fără motiv ar face clichetul o listă de tolerat.
 PIN = {
+    "core/nomenclatoare.py":
+        "REGISTRU DE ANCORE, si NU TREBUIE sa aiba apelant din productie. Tine, separat, ce enumera "
+        "NORMA si ce accepta VALIDATORUL, ca sa poata fi comparate cu ce e in generatoare (d390/d301/"
+        "d394). Daca `d390.TIPURI` s-ar importa de aici, comparatia ar deveni o tautologie - exact "
+        "modul de esec pazit de test_enumerarea_nu_e_copiata_din_constrangere. Consumatorul lui "
+        "legitim e gardul core/test_nomenclator_pe_norma.py (aceeasi clasa cu scan_garzi_pe_text)",
     "core/compensare.py":
         "PRODUCTIE, nelegat — 5 functii publice, inclusiv pull(conn, schema) si propune_compensari()",
     "core/echilibru_perioada.py":

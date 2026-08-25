@@ -4690,3 +4690,45 @@ atașament. Măsurat: **25** de rute predau un document, **17** fără niciun ro
 paginile publice, rămân **9 documente ale firmei** predate fără verificare de rol, între care
 `GET /tenants/{}/fluturas/{salariat_id}` — fluturașul unui salariat. *„Iese către un om" nu e
 totuna cu „scrie ceva", iar clasificarea mea le confundase.*
+
+---
+
+## Nomenclatoarele se iau din NORMĂ; validatorul e constrângere (25.08.2026, C6)
+
+`core/nomenclatoare.py` + `core/test_nomenclator_pe_norma.py` — **8 teste, 12 mutații prinse.**
+
+Decizia lui Costin: *„Norma câștigă. Validatorul e constrângere, nu sursă."* Răspunsul era deja
+scris în `PLAN_ARHITECTURA`, Partea 0, Pasul 4, iar restanța îl ceruse de cinci ture. Vezi METODA
+§25.
+
+**Ce s-a găsit citind cele patru nomenclatoare la sursă, nu în comentariile lor:**
+
+| | Ce spune NORMA | Ce spunea codul despre sine |
+|---|---|---|
+| `d390.TIPURI` | OPANAF 705/2020 **enumeră** exact cele șase (L, T, A, P, S, R) | „confirmat pe validatorul D390_11" |
+| `d394.TIPURI` | **enumeră** exact cele opt — dar norma în vigoare e **OPANAF 2194/2025** (MO 852/17.09.2025), nu 77/2022 din cod | „tool-ul urmează validatorul, ca la D101" |
+| `d390.TARI_UE` | **NU enumeră** — trimite la „codul țării care a emis codul de TVA" | „nomenclator oficial țări" |
+| `d301.VALUTE` | **NU enumeră** — „tipul valutei (**de exemplu**: USD, euro…)" | „ancorat pe validatorul instalat D301_9" |
+
+Două dintre patru aveau normă deschisă și lista închisă tăcut de arbitru. Una cita o formă depășită
+a ordinului — iar OPANAF 2194/2025 era **în corpus**, necitit. Eliminarea lui `ASI`, decisă în
+08.2026 pe autoritatea validatorului, e de fapt **susținută de normă**; nimeni nu verificase,
+fiindcă validatorul închisese discuția.
+
+**Consecința pe care o scrie acum codul, și n-o scria:** o operațiune făcută legal într-o valută
+din afara celor 20 **nu se poate depune** prin acest instrument. Nu e o regulă fiscală — e limita
+arbitrului, și nu se poate repara în cod. Se poate doar numi.
+
+**Perechea de gărzi = ierarhia.** `test_nomenclatoare_ancorate.py` (04.08) rămâne exact ce era —
+proba de nivel 3, pe validatorul instalat — dar titlul lui („ancorat pe validator, **nu pe un
+document**") inversa ierarhia și de aceea a câștigat tăcut împotriva METODA §13, scrisă cu două zile
+înainte în sens opus. Gardul nou cere sursa; împreună cer amândouă niveluri și **consemnarea
+diferenței**.
+
+**Dezacordul e obiect, nu proză** (`Dezacord(cine, ce, consecinta)`): legătura cu arbitrul se
+asertează prin **identitate**, nu căutându-i numele în text — prima formă a gardului făcea exact
+ce interzice METODA §23 și a fost prinsă de `test_garzi_pe_text`. Câmpul `consecinta` e obligatoriu
+și lung: partea incomodă — *ce nu se mai poate face* — lipsea din toate comentariile vechi.
+
+**Clichet: 6** nomenclatoare probate pe validator n-au încă sursă normativă. Coboară prin citire,
+una câte una — o citire copiată ar trece verde și ar fi mai rea decât absența.

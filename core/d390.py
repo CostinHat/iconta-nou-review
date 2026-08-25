@@ -56,9 +56,17 @@ TARI_UE = {
 # test_croatia_emite_HR_nu_CR + test_croatia_HR_trece_duk.
 _TARA_XML = {}
 
-# TIPURI + TARI_UE: nomenclatoare confirmate pe VALIDATORUL instalat D390_11 (proba DUK boundary
-# 04.08.2026), nu doar pe pdf-ul de structura 2020 (INVECHIT). Fiecare tip valid / fiecare tara aplica
-# algoritmul R24.1; niciun cod mort, niciun gap. Pazit de test_nomenclatoare_d390_ancorate_pe_validator_nu_pe_pdf_2020.
+# TIPURI: SURSA e NORMA - OPANAF 705/2020 enumera exact cele sase tipuri la instructiunile de
+# completare ("L - pentru livrari intracomunitare de bunuri catre alte state membre" s.u.). Proba pe
+# validatorul instalat D390_11 (04.08.2026) ramane, dar ca ce e: CONSTRANGERE, nu sursa. Cele doua sunt
+# de acord aici - ce s-a schimbat pe 25.08 e de UNDE se ia nomenclatorul, nu ce contine.
+#
+# TARI_UE: norma NU enumera tarile - trimite la "codul tarii care a emis codul de inregistrare in
+# scopuri de TVA". Lista de mai jos e o INCHIDERE construita de noi peste o norma deschisa; dezacordul
+# (inclusiv GB post-Brexit si XI) e consemnat, nu tacut.
+#
+# Ancorele, structurate si pazite: core/nomenclatoare.py (ANCORE_NORMA) + core/test_nomenclator_pe_norma.py.
+# Proba pe validator: test_nomenclatoare_d390_ancorate_pe_validator_nu_pe_pdf_2020.
 TIPURI = ("L", "T", "A", "P", "S", "R")
 
 # Tipurile legale per DIRECTIE (OPANAF 705/2020: L/T/P/R = latura de livrare/prestare; A/S = latura de

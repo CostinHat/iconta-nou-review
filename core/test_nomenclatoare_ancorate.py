@@ -1,6 +1,14 @@
 # -*- coding: utf-8 -*-
-"""GARD DE CLASA (04.08.2026, campania "reimprospatarea surselor invechite"): fiecare nomenclator care
-ajunge la ANAF e ANCORAT PE VALIDATORUL INSTALAT, nu pe un document.
+"""GARD DE CLASA (04.08.2026): fiecare nomenclator care ajunge la ANAF e PROBAT pe validatorul INSTALAT.
+
+CORECTIE DE IERARHIE (25.08.2026, decizia lui Costin la C6). Titlul acestui gard spunea "ancorat pe
+validator, NU pe un document", iar asta inversa ierarhia surselor din PLAN_ARHITECTURA Partea 0 Pasul 4:
+validatorul e nivelul 3, o CONSTRANGERE, nu o sursa. Un nomenclator ancorat pe arbitru nu mai poate
+detecta ca arbitrul e mai ingust decat legea - il copiaza si trece verde.
+Ce ramane valabil, si de ce gardul nu se sterge: divergenta fata de validatorul instalat e un risc real
+si a ascuns doua defecte (ASI, HRK). Deci gardul asta ramane exact ce era - proba de nivel 3 - iar SURSA
+o cere core/test_nomenclator_pe_norma.py, care mai cere si ca diferenta dintre cele doua sa fie scrisa.
+Perechea celor doua garzi = ierarhia. Textul de mai jos e cel original, cu acea rezerva.
 
 DE CE ancorare-pe-validator si NU un prag de vechime (N ani):
 Vechimea NU e riscul. Un nomenclator din 2013 poate fi perfect CURENT (ex. D301 tipuri operatiune 1-5, inca

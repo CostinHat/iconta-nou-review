@@ -42,6 +42,11 @@ CAMPURI = ("stare", "cifra", "instanțe", "calibrare", "ce nu vede", "unde ajung
 CAP_TABEL = "CE E INTERZIS PRIN CONSTRUCȚIE"
 
 
+# [METODA §25] Cate restante DESCHISE deblocate de DECIZIE inca nu spun unde au cautat in plan.
+# Coboara pe masura ce fiecare e confruntata cu planul - NU se umple prin copiere.
+_CLICHET_FARA_PLAN = 10
+
+
 def _camp(corp, nume):
     """Valoarea câmpului `nume`, sau None dacă lipsește. Se oprește la capătul RÂNDULUI."""
     m = re.search(r"^[ \t]*[-*]?[ \t]*\*\*%s\*\*[ \t]*:[ \t]*(.*)$" % re.escape(nume),
@@ -684,6 +689,81 @@ def test_antetul_nu_spune_niciuna_cand_corpul_are_o_decizie():
     assert not (spune_niciuna is False and cereri == 0), (
         "antetul anunță o decizie deschisă, dar corpul n-are niciun marcaj «**Decizie cerută.**» — "
         "atunci decizia nu se poate găsi de cine citește registrul")
+
+
+def test_deciziile_numite_in_antet_sunt_DESCHISE():
+    """Ce n-a putut prinde garda de coerență de mai sus, și s-a întâmplat azi: antetul numea `R49`
+    la «decizii care blochează» după ce R49 se închisese. Marcajul `**Decizie cerută.**` rămăsese în
+    paragraful ei istoric, deci numărătoarea trecea — iar secțiunea B a raportului se derivă din
+    antet, deci ar fi repetat o decizie rezolvată la fiecare citire.
+
+    Aici se compară NUMELE din antet cu STAREA restanței numite. E a patra oară într-o singură zi
+    când proza antetului rămâne în urma cifrelor; proza nu se poate deriva, deci se păzește."""
+    text = io.open(CONF, encoding="utf-8").read()
+    corp = text.split("## ANTET DE ETAPĂ", 1)[-1]
+    antet = corp.split(chr(10) + "---", 1)[0]
+    camp = next((l for l in antet.splitlines()
+                 if l.startswith("- **decizii care blochează**:")), "")
+    assert camp, "antetul n-are câmpul «decizii care blochează»"
+    numite = sorted(set(re.findall(r"\bR(\d+)\b", camp)))
+    if not numite:
+        return                      # „niciuna" — acoperit de garda precedentă
+    stari = {cod: (_camp(c, "stare") or "").strip()
+             for cod, (_t, c) in _restante().items()}
+    rele = []
+    for n in numite:
+        cod = "R" + n
+        st = stari.get(cod)
+        if st is None:
+            rele.append("  %s: numită în antet, dar nu există în registru" % cod)
+        elif not st.startswith("DESCHIS"):
+            rele.append("  %s: numită ca decizie care blochează, dar e %s" % (cod, st))
+    assert not rele, ("antetul numește ca decizii care blochează restanțe care nu blochează:"
+                      + chr(10) + chr(10).join(rele))
+
+
+def test_restanta_care_cere_decizie_a_citit_planul():
+    """GARD [METODA §25, 25.08.2026]: o restanță DESCHISĂ pe care o deblochează o DECIZIE trebuie să
+    spună unde a căutat răspunsul în plan.
+
+    Instanța: ierarhia surselor era scrisă în PLAN_ARHITECTURA, Partea 0, Pasul 4 — *„validatorul e
+    constrângere, nu sursă"* — iar restanța a cerut decizia cinci ture la rând. Costin: *„problema nu
+    e condiția restanței, e că restanța nu citește planul."*
+
+    Câmpul `- **planul**:` are două forme legitime: locul din plan care RĂSPUNDE (și atunci restanța
+    se închide pe el, nu se mai cere), sau `NEACOPERIT` cu ce s-a citit. A treia formă — absența —
+    e chiar defectul. Clichet, fiindcă cele existente cer citirea planului una câte una: se coboară,
+    nu se umple prin copiere (o citire copiată e mai rea decât absența — trece verde)."""
+    fara = []
+    for cod, (_t, corp) in sorted(_restante().items(), key=lambda x: int(x[0][1:])):
+        stare = (_camp(corp, "stare") or "").strip()
+        cine = (_camp(corp, "cine deblochează") or "").strip()
+        if not stare.startswith("DESCHIS") or cine != "DECIZIE":
+            continue
+        plan = _camp(corp, "planul")
+        if not plan or len(plan.strip()) < 40:
+            fara.append(cod)
+    assert len(fara) <= _CLICHET_FARA_PLAN, (
+        "restanțe DESCHISE deblocate de DECIZIE care nu spun unde au căutat în plan "
+        "(clichet %d, acum %d): %s" % (_CLICHET_FARA_PLAN, len(fara), fara))
+    assert len(fara) == _CLICHET_FARA_PLAN, (
+        "clichetul e depășit — coboară-l la %d" % len(fara))
+
+
+def test_decizie_ceruta_nu_ramane_intr_o_restanta_inchisa():
+    """Perechea gardului de antet: marcajul `**Decizie cerută.**` rămas în corpul unei restanțe
+    ÎNCHISE e chiar ce a făcut numărătoarea să treacă verde în timp ce antetul repeta o decizie
+    rezolvată. Într-o restanță închisă, cererea de atunci se scrie ca istorie: `[atunci]`."""
+    rele = []
+    for cod, (_t, corp) in sorted(_restante().items(), key=lambda x: int(x[0][1:])):
+        stare = (_camp(corp, "stare") or "").strip()
+        if stare.startswith("DESCHIS"):
+            continue
+        if re.search(r"\*\*Decizie cerută\.\*\*", corp):
+            rele.append(cod)
+    assert not rele, (
+        "restanțe ÎNCHISE care mai poartă «Decizie cerută» în corp (scrie-l ca istorie, "
+        "`**Decizie cerută [atunci].**`): %s" % rele)
 
 
 def test_pasul_curent_nu_devine_naratiune():

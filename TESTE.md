@@ -2037,3 +2037,16 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   imbricate nu urcă la primul nivel · un `:` dintr-un șir nu devine cheie · clichet **0** pe
   contracte rupte · **anti-vacuu**: se cere ca instrumentul să compare cel puțin 60 de perechi,
   altfel „zero diferențe" ar putea însemna „n-am citit nimic".
+
+- **`core/test_nomenclator_pe_norma.py` (25.08.2026)** — 8 teste, C6: fiecare nomenclator care ajunge
+  la ANAF e ancorat pe **normă** (nivel MO), cu citat verbatim care **se rezolvă în corpus**, iar
+  constrângerea validatorului stă separat, cu dezacordul scris ca obiect. RED-proof: **12 mutații**,
+  toate prinse — cod în plus/în minus față de normă, citat inventat, url inexistent, sursă strecurată
+  ca `PRACTICA`, normă deschisă închisă tăcut, dezacord fără consecință, dezacord legat de alt
+  arbitru, registru golit, clichet depășit.
+- **`core/test_conformitate.py` — +3 teste (25.08.2026)**: (1) deciziile numite în antet la „decizii
+  care blochează" sunt **DESCHISE** — antetul numea `R49` după ce se închisese, iar secțiunea B a
+  raportului se derivă din antet; (2) o restanță DESCHISĂ deblocată de DECIZIE spune **unde a căutat
+  în plan** (METODA §25, clichet 10); (3) „Decizie cerută" nu rămâne în corpul unei restanțe închise —
+  chiar rotația care făcuse numărătoarea să treacă verde. RED-proof: 6 mutații, toate prinse.
+

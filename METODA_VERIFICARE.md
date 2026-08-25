@@ -545,6 +545,9 @@ ar fi arătat complet, iar întrebarea *„ce fel de jurnal nu ținem?"* n-ar ma
 
 - Nomenclatorul se ancorează pe **textul actului**, verbatim, gardat prin căutare **literală în
   corpus** — o reformulare îl face roșu (vezi `core/test_d406_jurnal_origine.py`).
+- **Ca CLASĂ, din 25.08.2026:** `core/nomenclatoare.py` (registrul ancorelor) + `core/
+  test_nomenclator_pe_norma.py`. Până atunci regula asta trăia gardată **pe un singur fișier**, iar
+  peste ea trecea un gard de clasă care cerea opusul — vezi §25.
 - Maparea stă **separat**, și e decizie de produs; fiecare abatere de la lista normei se scrie ca
   abatere, cu motivul (la D406: `CASA`/`BANCA` sunt două identificatoare pentru un singur fel al
   normei; `AMORTIZARE` intră la *„alte operațiuni"*).
@@ -1057,3 +1060,46 @@ jumătate în unul care nu.
 
 Nu ajută la o reparație care e **întreagă** într-un singur strat și greșită. Aia se prinde cu
 mutație (§22), nu cu repornire. §24 e despre **granița dintre straturi**, nu despre corectitudine.
+
+---
+
+## §25 — CÂND DOUĂ REGULI SCRISE SE CONTRAZIC, CÂȘTIGĂ CEA PĂZITĂ — ȘI O FACE TĂCUT
+
+**Regula.** O regulă scrisă și nepăzită nu e doar „mai slabă" decât una păzită (§14). În prezența
+unei reguli păzite **care spune contrariul**, ea e *inoperantă* — iar contradicția nu se semnalează
+nicăieri, fiindcă amândouă sunt verzi: una fiindcă nimic n-o verifică, cealaltă fiindcă exact ea e
+verificată. Deci: **înainte de a scrie o regulă, se caută regula pe care o contrazice.** Și înainte
+de a cere o decizie, se caută răspunsul în ce e deja scris.
+
+**Instanța 1 — nomenclatoarele (25.08.2026).** METODA §13, scrisă pe 23.08: *„un nomenclator se
+completează din NORMĂ"*, ancorat pe textul actului. `core/test_nomenclatoare_ancorate.py`, scris pe
+04.08: *„fiecare nomenclator e ancorat pe VALIDATORUL INSTALAT, **nu pe un document**"* — cu asertare
+care **pică** dacă ancora nu atinge validatorul. Aceeași chestiune, două reguli scrise, în sens opus.
+A câștigat cea din 04.08, fără ca cineva să aleagă: era singura cu gardă de clasă. §13 avea gardă doar
+pentru D406, deci a rămas adevărată pe un singur fișier și inertă pe restul.
+
+Consecința nu e teoretică: `d301.VALUTE` are douăzeci de valute fiindcă atâtea acceptă DUKIntegrator,
+în timp ce OPANAF 592/2016 **nu închide lista** — spune *„de exemplu: USD, euro…"*. O operațiune
+făcută legal într-o altă valută nu se poate depune, iar până azi asta nu era scris nicăieri ca
+dezacord: era scris ca *ancorare corectă*.
+
+**Instanța 2 — restanța care nu citește planul (25.08.2026, Costin).** *„Dacă o ceri de cinci ture
+deși răspunsul e în plan, problema nu e condiția restanței — e că restanța nu citește planul."*
+Aceeași formă: răspunsul exista scris (PLAN_ARHITECTURA, Partea 0, Pasul 4 — ierarhia surselor, cu
+validatorul declarat explicit *constrângere, nu normă*), iar restanța a cerut decizia de cinci ori.
+Nu lipsea decizia. Lipsea citirea.
+
+**Cum se aplică, mecanic:**
+
+- O restanță **DESCHISĂ** deblocată de **DECIZIE** poartă un câmp `- **planul**:` cu una din două:
+  locul din plan care răspunde (și atunci restanța se închide, nu se cere), sau **NEACOPERIT** cu ce
+  anume s-a citit. Gardat de `test_restanta_care_cere_decizie_a_citit_planul` (clichet, coboară).
+- O regulă nouă în METODA/CLAUDE.md se caută întâi în celelalte: dacă există una care o contrazice,
+  **contradicția se rezolvă în aceeași tură**, nu se lasă amândouă scrise.
+- Perechea de gărzi rămâne perechea: sursa (normă) și constrângerea (validator) se probează *separat*,
+  iar diferența dintre ele se consemnează. Un singur gard, oricare, reașază tăcut ierarhia.
+
+**Ce NU acoperă regula.** Nu detectează contradicția automat — nu există instrument care să compare
+sensul a două paragrafe de proză. Acoperă doar cazul în care una dintre reguli are gardă: atunci gardă
+contra text e o confruntare pe care o poate face un om în cinci minute, dacă știe s-o caute. Iar asta
+e tot ce cere §25: **să se caute.**

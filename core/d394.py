@@ -53,6 +53,14 @@ NS = "mfp:anaf:dgti:d394:declaratie:v5"
 # persoane care aplica regimul special (agentii turism, second-hand, arta, colectie, antichitati)" - fara
 # sub-distinctia dupa sistemul de TVA al partenerului, deci fost-ASI se consolideaza in AS. (03.08.2026,
 # greenlight Costin - tool-ul urmeaza validatorul, ca la D101.)
+# SURSA (reancorare 25.08.2026): norma, nu validatorul. Norma IN VIGOARE nu e insa OPANAF 77/2022 din
+# comentariul de mai sus, ci OPANAF 3769/2015 modificat ultima data de OPANAF 2194/2025 (MO 852/
+# 17.09.2025, art.III: se aplica operatiunilor de la 1.08.2025) - act aflat in corpus si necitat nicaieri
+# in cod pana azi. Vocabularul e identic in ambele forme ("Tip L/A/LS/AS/AI/V/C/N/I1/I2"), deci
+# eliminarea lui ASI - decisa in 08.2026 pe autoritatea validatorului - e sustinuta de NORMA. Nimeni nu
+# verificase; validatorul inchisese discutia.
+# Doua dezacorduri consemnate in core/nomenclatoare.py: norma scrie AI cu diacritica, iar I1/I2
+# (incasari prin aparate de marcat) sunt in norma dar neconstruite in iConta.
 TIPURI = ("A", "L", "C", "V", "AI", "LS", "AS", "N")
 
 # tip_partener (pct. 216/36)
