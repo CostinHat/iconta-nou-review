@@ -992,3 +992,68 @@ de ecran** rămas în urmă. Căutarea nu se mai ține minte — se întâmplă 
 **Ce rămâne de ținut minte, fiindcă gardul nu poate:** tabelul lui e **scris de om**, alimentat din
 `core/scan_valori_afisate.py`. O valoare fiscală nouă apărută într-un ecran nu intră singură. De-aia
 scanul rămâne, lângă gard: unul măsoară, celălalt păzește.
+
+---
+
+## §24 — O PROBĂ CARE CONFIRMĂ IPOTEZA FIINDCĂ JUMĂTATE DIN REPARAȚIE NU RULEAZĂ
+
+**Cerută de Costin, 25.08.2026, ca formă proprie.** Nu e „verde pe zero" (interdicția 19) și
+nu e „gardă care își ia dovada din proză" (interdicția 18). E a treia:
+
+> **Proba rulează pe un sistem în care doar o parte din reparație e activă. Partea inactivă
+> produce exact starea pe care proba o aștepta. Verdele nu vine din reparație — vine din
+> absența ei.**
+
+**Ce o face periculoasă e chiar potrivirea.** Un rezultat care contrazice așteptarea se
+investighează. Unul care o confirmă, nu. Aici confirmarea e produsă de defect, deci semnalul
+care ar fi cerut o a doua privire lipsește prin construcție.
+
+### Instanța, cu mecanismul ei
+
+R41 partea a II-a: ecranul cozii nu mai trebuia să numească „De depus" o listă în care intră
+și ce nu e gata. Reparația avea două jumătăți — **serverul** (`lista_coada` întoarce
+`gata_de_depus`) și **ecranul** (două liste, după acel câmp).
+
+Proba a dat **16/16**. Dar:
+
+- **JS-ul se servește de pe disc** → era cel nou;
+- **`core/coada_api.py` rulează în serviciu**, care nu se repornise → era cel vechi;
+- deci `gata_de_depus` **lipsea din răspuns**, `c.gata_de_depus` era `undefined`, **tot** ce
+  era în coadă cădea în „nevalidat";
+- iar așteptarea de atunci era exact *„De depus (0)"*, fiindcă niciuna nu era validată.
+
+**Proba a confirmat ipoteza pentru că serverul o contrazicea.** Rulată după repornire, pe o
+coadă cu stare **mixtă** (una gata, una nu), a dat 12/12 — și abia atunci a dovedit ceva:
+listele chiar se separă, butoanele chiar diferă pe rând.
+
+### Unde apare, generalizat
+
+Oriunde **o parte a sistemului se încarcă altfel decât alta**:
+
+| ce se încarcă la fiecare cerere | ce se încarcă o dată, la pornire |
+|---|---|
+| fișiere statice (JS, CSS, șabloane) | codul Python al serviciului |
+| conținutul unui fișier de date citit la rulare | modulele importate |
+| rândurile din bază | schema, migrările aplicate |
+| variabile de mediu citite la apel (`cfg`) | cele citite la import |
+
+**Riscul e maxim când reparația trece granița** — jumătate într-un strat care se reîncarcă,
+jumătate în unul care nu.
+
+### Ce se face
+
+1. **Proba comportamentală se rulează DUPĂ ce partea care nu se reîncarcă a fost repornită.**
+   La noi: după commit, fiindcă `post-commit` repornește serviciul. Înainte de asta, proba
+   spune despre un sistem hibrid care nu va exista niciodată în producție.
+2. **Se verifică four-way că procesul viu are codul probei** — ora de pornire ulterioară
+   commitului. Verificarea aia exista deja pentru publicare; se aplică și probelor.
+3. **Așteptarea nu se fixează pe o cifră care coincide cu starea de defect.** Dacă „0" e și
+   rezultatul corect, și rezultatul defectului, aserțiunea nu discriminează. La R41 s-a
+   reparat derivând așteptarea din starea reală a cozii, nu fixând-o.
+4. **Proba se rulează pe o stare MIXTĂ**, nu pe una uniformă. O coadă în care totul e
+   nevalidat nu poate arăta că cele două liste se separă — arată doar că una e goală.
+
+### Ce nu rezolvă
+
+Nu ajută la o reparație care e **întreagă** într-un singur strat și greșită. Aia se prinde cu
+mutație (§22), nu cu repornire. §24 e despre **granița dintre straturi**, nu despre corectitudine.

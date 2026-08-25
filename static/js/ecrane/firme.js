@@ -4,7 +4,7 @@
 import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=a7f9e80ae0";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { fluxConcediu } from "./flux_concediu.js?v=ec0eaa8e7b";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js?v=10d469f862";
+import { randeazaFacturi } from "./facturi_ecran.js?v=cc67d99e4b";
 import { ecranRip } from "./rip_ecran.js?v=e1b8bf534a";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=7019abe613";
 import { ecranEtransport } from "./etransport_ecran.js?v=0dca1ea392";
@@ -841,7 +841,9 @@ async function ecranSalariati(corp, nav, t) {
       corp.querySelector("#plata-inchide").addEventListener("click", () => { zonaPlata.innerHTML = ""; });
       corp.querySelector("#plata-descarca").addEventListener("click", async () => {
         try {
+          // [R45] POST: producerea fisierului care pleaca la banca e un act, si se pastreaza.
           const resp = await fetch(`/tenants/${t.id}/plata-salarii-fisier?an=${an}&luna=${luna}`, {
+            method: "POST",
             headers: { "Authorization": "Bearer " + sesiune.token() } });
           if (!resp.ok) throw new Error();
           const blob = await resp.blob();

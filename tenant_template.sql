@@ -2253,6 +2253,30 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.rapoarte_salvate (
 );
 
 --
+-- R45 (un artefact produs se pastreaza) — mirror al core/migrare_artefacte.py
+-- Cele cinci campuri decise 25.08.2026: continut, moment, autor, amprenta, exemplar;
+-- plus verdictul, la felurile care se valideaza. UNIQUE include `exemplar`: al doilea
+-- exemplar TREBUIE sa poata exista (P4), doar numarul lui nu se poate repeta.
+--
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.artefacte_produse (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    fel text NOT NULL,
+    cheie text NOT NULL,
+    exemplar integer NOT NULL,
+    continut text,
+    amprenta text NOT NULL,
+    produs_la timestamptz NOT NULL DEFAULT now(),
+    produs_de_id integer,
+    produs_de text,
+    verdict text,
+    verdict_la timestamptz,
+    verdict_versiune text,
+    verdict_amprenta text,
+    CONSTRAINT artefacte_exemplar_unic UNIQUE (fel, cheie, exemplar)
+);
+CREATE INDEX IF NOT EXISTS artefacte_fel_cheie ON TENANT_PLACEHOLDER.artefacte_produse (fel, cheie);
+
+--
 -- F146 (registratura documente) — mirror al core/migrare_registratura.py
 --
 CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.registratura (

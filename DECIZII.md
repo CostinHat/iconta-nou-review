@@ -11863,3 +11863,35 @@ documentul ar fi avut **309** locuri, din care o treime fără sens.
 **Ce păzește instrumentul aici, și ce nu.** Păzește ca **niciun pas care schimbă ceva să nu rămână
 fără loc** — o rută nouă apare ca lipsă în `core/test_trasee.py`. **Nu** rescrie fișierul: regenerarea
 peste el ar șterge tot ce s-a scris, și scrie asta în capul documentului.
+
+## 25.08.2026 (3) — Rândul 2020, criteriul pe cele 134, și cele patru artefacte
+
+**1. Rândul 2020 din coadă — se șterge** (Costin). Șters, cu copie integrală păstrată înainte.
+**Premisa deciziei nu se confirmă, și o scriu fiindcă schimbă ce urmează.** Costin: *„E un rând
+de test dintr-o rulare a probei, cu id fabricat, pe o firmă care nu există."* Măsurat: rândul e
+din **15.08.2026, 15:44** — cu zece zile înaintea oricărei probe din sesiunea asta. Firma 13245
+a **existat și a fost folosită**: 21 de rânduri de `audit_log` între 15:21 și 17:41, inclusiv un
+`PUT .../facturi/numerotare`. Nu e reziduu; e o firmă ștearsă care și-a lăsat declarația în urmă.
+
+**Din verificare a ieșit ce nu se căuta:** `core/gdpr_sterge.executa`, care se numește *„ștergere
+completă cabinet"*, **nu atinge** `public.declaratii_coada` și `public.declaratii_depuse`. Iar
+`payload`-ul unei declarații conține CUI, denumire, adresă, cont bancar și numele declarantului.
+Deschis ca **R50**. *Nu se afirmă că firma 13245 a dispărut pe calea aia — dacă ar fi fost așa,
+`audit_log` s-ar fi golit de ea, și nu s-a golit. Gaura e dovedită prin citirea codului, nu prin
+cazul ăla.*
+
+**2. Criteriul lui R42, dus pe toate cele 134.** Rezultatul: **0** perioadă (erau deja păzite) ·
+**0** ies către o autoritate (`import-efactura` și `reges-poll` **aduc**) · **3** ies către un om
+(trecute pe `admin_firma`) · **0** șterg ceva *emis* · **118** asistent · **13 ambigue, numite,
+neschimbate**. Cifra scade de la 134 la **131**.
+
+*Cele 13 nu sunt un rest, sunt patru întrebări:* ștergerile care ating contabilitatea (3), cele
+care ating o completare manuală la o declarație care se depune (3), regimul fiscal (3), și
+canalul către client (2 + numerotarea + recomandarea).
+
+**3. Cele patru artefacte — trei construite, unul refuzat cu motiv.** Vezi R45 și `GARZI.md`.
+Partea care contează pentru viitor: **decizia „se păstrează" a cerut o schimbare de metodă, nu
+de schemă.** Trei artefacte se produceau pe GET, iar un GET n-are voie să scrie.
+
+**4. METODA §24** — verdele fals care vine din faptul că jumătate din reparație nu rulează.
+Cerut de Costin ca formă proprie: *„nu e «verde pe zero» și nu e «gardă care citește proză»"*.

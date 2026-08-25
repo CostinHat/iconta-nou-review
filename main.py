@@ -3386,7 +3386,9 @@ def _nume_tenant(conn, tenant_id):
     return r[0] if r else ""
 
 @app.post("/pachete/{tenant_id}/poveste")
-def pachet_poveste_set(tenant_id: int, an: int, luna: int, date: PachetTextIn, ctx=Depends(cere_cabinet)):
+# [R42] „iese către un om" — pe `status=aprobat` pleacă raportul lunar la client.
+def pachet_poveste_set(tenant_id: int, an: int, luna: int, date: PachetTextIn,
+                       ctx=Depends(cere_rol("admin_firma"))):
     _pachet_schema(ctx, tenant_id)
     with db.get_conn() as cp:
         r = _pachete.salveaza_poveste(cp, tenant_id, an, luna, date.text, status=date.status or "ciorna")
@@ -4123,11 +4125,15 @@ def tenant_plata_salarii_preview(tenant_id: int, an: int, luna: int, ctx=Depends
     return meta
 
 
-@app.get("/tenants/{tenant_id}/plata-salarii-fisier")
+@app.post("/tenants/{tenant_id}/plata-salarii-fisier")
+# [R45] POST, nu GET: producerea fișierului care pleacă la bancă e un ACT, iar un GET n-are
+# voie să scrie (interdicția 6, `core/test_get_fara_scriere.py`). Metoda contrazicea fapta.
 def tenant_plata_salarii_fisier(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
-    """[F134] Fisierul SEPA/ISO 20022 pain.001.001.03 de plata a salariilor NET pe card (download)."""
+    """[F134] Fisierul SEPA/ISO 20022 pain.001.001.03 de plata a salariilor NET pe card (download).
+    [R45] Se pastreaza: continut, moment, autor, amprenta, numar de exemplar."""
     from fastapi.responses import Response
     from core import plata_salarii as _ps
+    from core import artefacte as _art
     with db.get_conn() as conn:  # [search_path_tenant_v1] schema + nume firma pe conn public
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -4139,6 +4145,8 @@ def tenant_plata_salarii_fisier(tenant_id: int, an: int, luna: int, ctx=Depends(
             xml, meta = _ps.genereaza_pain001(conn, schema, an, luna, nume_firma_fallback=nf)
         except ValueError as e:
             raise HTTPException(422, str(e))
+        _art.pastreaza(conn, schema, "plata_salarii", "%04d-%02d" % (an, luna), xml,
+                       produs_de_id=int(ctx["uid"]), produs_de=ctx.get("nume") or str(ctx["uid"]))
     return Response(content=xml, media_type="application/xml",
                     headers={"Content-Disposition": f'attachment; filename="{meta["fisier"]}"'})
 
@@ -4890,7 +4898,8 @@ def apiv1_balanta(tenant_id: int, an: int, luna: int, actx=Depends(cere_api_key)
 
 # === LINK PLATA === # plati_link_v1
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/link-plata")
-def factura_link_plata(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
+# [R42] „iese către un om" — linkul ajunge la client, iar `platita_la` atârnă de el (R43).
+def factura_link_plata(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("admin_firma"))):
     from core import plati as _pl
     schema = _schema_sau_404(ctx, tenant_id)
     baza = os.environ.get("ICONTA_BAZA_URL", "https://iconta.eu")
@@ -5192,7 +5201,9 @@ def cabinet_solicitari_lista(tenant_id: int, ctx=Depends(cere_context)):
     return {"solicitari": rows}
 
 @app.post("/tenants/{tenant_id}/solicitari")
-def cabinet_solicitari_raspunde(tenant_id: int, date: SolicitareIn, ctx=Depends(cere_context)):
+# [R42] „iese către un om" — răspunsul pleacă pe email la clientul firmei.
+def cabinet_solicitari_raspunde(tenant_id: int, date: SolicitareIn,
+                                ctx=Depends(cere_rol("admin_firma"))):
     _schema_sau_404(ctx, tenant_id)
     with db.get_conn() as conn:
         with conn.cursor() as cur:
@@ -6023,9 +6034,12 @@ def export_saga_factura(tenant_id: int, factura_id: int, ctx=Depends(cere_contex
     return Response(content=xml, media_type="application/xml",
                     headers={"Content-Disposition": 'attachment; filename="%s"' % nume})
 
-@app.get("/tenants/{tenant_id}/facturi/export-saga")
+@app.post("/tenants/{tenant_id}/facturi/export-saga")
+# [R45] POST: exportul e un act (ce s-a exportat și când e chiar întrebarea la o preluare
+# inversă), iar un GET n-are voie să scrie.
 def export_saga_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_context)):
     from core import export_saga as _xs
+    from core import artefacte as _art
     import io as _io, zipfile as _zip
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -6044,15 +6058,21 @@ def export_saga_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_contex
                 z.writestr(_xs.nume_fisier(firma.get("cui"), factura.get("numar"), factura.get("data_emitere")),
                            _xs.xml_factura(firma, factura, linii))
     nume_zip = "export_saga_%04d_%02d.zip" % (an, luna)
+    # [R45] Arhiva se păstrează întreagă (base64 în coloană), iar amprenta e pe OCTEȚII ei.
+    with db.get_conn() as _c:
+        _art.pastreaza(_c, schema, "export_saga", "%04d-%02d" % (an, luna), buf.getvalue(),
+                       produs_de_id=int(ctx["uid"]), produs_de=ctx.get("nume") or str(ctx["uid"]))
     return Response(content=buf.getvalue(), media_type="application/zip",
                     headers={"Content-Disposition": 'attachment; filename="%s"' % nume_zip})
 
 
-@app.get("/tenants/{tenant_id}/facturi/export-winmentor")  # [F187]
+@app.post("/tenants/{tenant_id}/facturi/export-winmentor")  # [F187]
+# [R45] POST: acelasi motiv ca la SAGA — exportul e un act, iar un GET n-are voie sa scrie.
 def export_winmentor_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_context)):
     """Export WinMENTOR: Facturi.txt + Articole.txt (Windows-1250) co-locate intr-un zip.
     Facturile emise ale lunii (paritate cu SAGA, fara filtru status). Dependenta de config nomenclator WinMentor (vezi export_winmentor)."""
     from core import export_winmentor as _wm
+    from core import artefacte as _art
     import io as _io, zipfile as _zip
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -6069,6 +6089,10 @@ def export_winmentor_luna(tenant_id: int, an: int, luna: int, ctx=Depends(cere_c
         for nume, continut in fisiere.items():
             z.writestr(nume, continut)
     nume_zip = "export_winmentor_%04d_%02d.zip" % (an, luna)
+    # [R45] Arhiva se pastreaza intreaga (base64), amprenta pe octetii ei.
+    with db.get_conn() as _c:
+        _art.pastreaza(_c, schema, "export_winmentor", "%04d-%02d" % (an, luna), buf.getvalue(),
+                       produs_de_id=int(ctx["uid"]), produs_de=ctx.get("nume") or str(ctx["uid"]))
     return Response(content=buf.getvalue(), media_type="application/zip",
                     headers={"Content-Disposition": 'attachment; filename="%s"' % nume_zip})
 
@@ -6545,9 +6569,13 @@ def s1005_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     return {"xml": xml, "avertismente": av}
 
 @app.post("/tenants/{tenant_id}/s1005-valideaza")
+# [R45] Artefactul care încheie exercițiul financiar se PĂSTREAZĂ: conținutul, momentul,
+# autorul, amprenta, numărul exemplarului — plus verdictul cu amprenta fișierului validat.
+# Se scrie aici, nu pe `-xml`: aia e o citire (GET), asta e actul.
 def s1005_valideaza(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     import base64, subprocess, tempfile, os
     from core import bilant_api as _ba
+    from core import artefacte as _art
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -6568,6 +6596,21 @@ def s1005_valideaza(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
         if os.path.exists(err_f):
             erori = open(err_f, encoding="utf-8").read()
     ok = "fara erori" in (r.stdout + r.stderr)
+    # [R45] Artefactul se pastreaza AICI, dupa ce verdictul exista: cele cinci campuri plus
+    # verdictul cu amprenta fisierului validat. `verdict_amprenta` e amprenta XML-ului care a
+    # intrat in validator — daca se regenereaza, verdictul devine statut (aceeasi regula ca R41).
+    try:
+        from core import duk as _duk
+        with db.get_conn() as _c:
+            _art.pastreaza(_c, schema, "s1005", str(an), xml,
+                           produs_de_id=int(ctx["uid"]),
+                           produs_de=ctx.get("nume") or str(ctx["uid"]),
+                           verdict=("valid" if ok else "erori"),
+                           verdict_versiune=_duk.versiune_validator("s1005"),
+                           verdict_amprenta=_art.amprenta(xml))
+    except Exception as _e:
+        import logging
+        logging.getLogger("iconta").warning("[R45] artefact s1005 nepastrat: %s", _e)
     return {"ok": ok, "erori": erori, "avertismente": av,
             "xml_b64": base64.b64encode(xml.encode()).decode()}
 
@@ -6589,9 +6632,13 @@ def s1003_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     return {"xml": xml, "avertismente": av}
 
 @app.post("/tenants/{tenant_id}/s1003-valideaza")
+# [R45] Artefactul care încheie exercițiul financiar se PĂSTREAZĂ: conținutul, momentul,
+# autorul, amprenta, numărul exemplarului — plus verdictul cu amprenta fișierului validat.
+# Se scrie aici, nu pe `-xml`: aia e o citire (GET), asta e actul.
 def s1003_valideaza(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     import base64, subprocess, tempfile, os
     from core import bilant_api as _ba
+    from core import artefacte as _art
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -6611,6 +6658,21 @@ def s1003_valideaza(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
         if os.path.exists(cale + ".err.txt"):
             erori = open(cale + ".err.txt", encoding="utf-8").read()
     ok = "fara erori" in (r.stdout + r.stderr)
+    # [R45] Artefactul se pastreaza AICI, dupa ce verdictul exista: cele cinci campuri plus
+    # verdictul cu amprenta fisierului validat. `verdict_amprenta` e amprenta XML-ului care a
+    # intrat in validator — daca se regenereaza, verdictul devine statut (aceeasi regula ca R41).
+    try:
+        from core import duk as _duk
+        with db.get_conn() as _c:
+            _art.pastreaza(_c, schema, "s1003", str(an), xml,
+                           produs_de_id=int(ctx["uid"]),
+                           produs_de=ctx.get("nume") or str(ctx["uid"]),
+                           verdict=("valid" if ok else "erori"),
+                           verdict_versiune=_duk.versiune_validator("s1003"),
+                           verdict_amprenta=_art.amprenta(xml))
+    except Exception as _e:
+        import logging
+        logging.getLogger("iconta").warning("[R45] artefact s1003 nepastrat: %s", _e)
     return {"ok": ok, "erori": erori, "avertismente": av,
             "xml_b64": base64.b64encode(xml.encode()).decode()}
 

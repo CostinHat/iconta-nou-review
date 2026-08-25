@@ -2019,3 +2019,11 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
 - **`core/test_trasee.py` — +2 teste (25.08.2026)**: fiecare pas care **schimbă ceva** are un loc de
   verificare în `TRASEE_VERIFICARI.md` (o rută nouă apare ca lipsă, nu se suprascrie nimic) · locurile
   nu dispar (anti-vacuu în cealaltă direcție: un fișier golit ar trece primul test).
+
+- **`core/test_artefacte_pastrate.py` (25.08.2026)** — 13 teste, R45: cele cinci câmpuri există
+  **în tabelă** (catalogul bazei, nu textul DDL-ului) · constrângerea de unicitate include
+  `exemplar`, deci al doilea exemplar rămâne posibil (interdicția 8) · un fel necunoscut e
+  refuzat · **binarul supraviețuiește** round-trip-ului base64 (prima formă îl trecea prin
+  `decode(errors="replace")`, care strică octeții tăcut) · amprenta **discriminează** (calibrare:
+  una constantă ar lăsa toate celelalte aserțiuni să treacă) · **rutele care produc artefacte nu
+  sunt GET** · fiecare dintre ele chiar cheamă `pastreaza`, asertat pe AST.

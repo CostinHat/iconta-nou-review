@@ -4609,3 +4609,30 @@ atins.
 **mutația** a făcut-o să scrie. Consecința practică: un RED-proof pe un refuz curăță după el, sau
 rulează pe schemă efemeră. Verificarea nu e „testul a picat", ci „testul a picat ȘI n-a rămas nimic în
 urmă".*
+
+**Un artefact produs se păstrează, iar producerea lui e un ACT** (`core/artefacte.py` +
+`core/migrare_artefacte.py` + `core/test_artefacte_pastrate.py`, R45, 25.08.2026). Cele cinci
+câmpuri decise de Costin — artefactul, momentul, autorul, amprenta conținutului, numărul
+exemplarului — plus verdictul cu amprenta fișierului validat, la declarații. **Un singur loc,
+nu patru**: aceeași cauză, aceeași reparație; patru implementări ar fi însemnat patru
+vocabulare pentru același lucru.
+
+**Obstacolul, care e partea instructivă.** Trei din cele patru artefacte se produceau pe
+**GET**, iar un GET n-are voie să scrie (interdicția 6, `core/test_get_fara_scriere.py` — garda
+ieșită din cele 24 de rânduri lăsate în `state_plata` de o simplă deschidere de ecran). Deci
+*„se păstrează"* n-a fost o adăugare de coloane: a cerut ca **producerea lor să devină un act**.
+Cele trei rute au trecut pe POST, împreună cu apelurile din ecran. Erau deja declanșate de un
+buton — **doar metoda le contrazicea fapta**.
+
+**Ce a prins gardul, în chiar commitul lui:** `export-winmentor` trecuse pe POST și **nu păstra
+nimic**. *O rută care și-a schimbat metoda fără să capete fapta e mai rea decât una nemodificată
+— arată reparată.*
+
+**Și două aserțiuni de-ale mele, mutate de pe text pe structură** (METODA §23): verificau
+`"UNIQUE (fel, cheie, exemplar)" in DDL` — un șir în textul DDL-ului. O constrângere comentată
+ar fi trecut, iar o reordonare de coloane ar fi picat degeaba. Acum se citesc din
+`information_schema`: coloanele și constrângerea, așa cum există în bază.
+
+**Al patrulea artefact NU s-a construit, deliberat:** auditul de preluare se randează la
+deschiderea ecranului, deci un POST ar produce un exemplar **la fiecare privire**. Îi trebuie un
+act propriu în ecran — o decizie de design, nu una de-a mea.

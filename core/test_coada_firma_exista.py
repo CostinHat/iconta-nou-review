@@ -22,8 +22,9 @@ from core import coada_api, db
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Orfani cunoscuți la 25.08.2026, pe commitul care aduce gardul. Scade la ștergere; nu crește.
-_ORFANI_CLICHET = 1
+# Orfani în coadă. A fost 1 (rândul 2020, dintr-o firmă ștearsă pe 15.08); s-a șters la
+# decizia lui Costin pe 25.08, iar poarta de intrare îl ține la zero. Nu mai are voie să crească.
+_ORFANI_CLICHET = 0
 # id care nu poate exista: `public.tenants.id` e serial, iar aici e deliberat în afara oricărei
 # secvențe plauzibile. Nu se inserează nimic cu el — tocmai asta se probează.
 _FIRMA_INEXISTENTA = 999_000_777

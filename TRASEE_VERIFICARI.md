@@ -757,12 +757,13 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T17 — Plata salariilor — fișierul către bancă
 
-*clasa PARTIAL · 2 rute · 0 schimba date · nu se poate sti din date*
+*clasa PARTIAL · 2 rute · 1 schimba date · nu se poate sti din date*
 
-*citiri (nu schimba nimic): `/tenants/{tenant_id}/plata-salarii-fisier`, `/tenants/{tenant_id}/plata-salarii-preview`*
+*citiri (nu schimba nimic): `/tenants/{tenant_id}/plata-salarii-preview`*
 
-**Traseul nu are niciun pas care schimba ceva.** Ce trebuie sa fie adevarat
-dupa el e o proprietate a IESIRII, nu a unui pas:
+### `POST /tenants/{tenant_id}/plata-salarii-fisier`
+
+*garda `cere_cabinet` · **fara rol***
 
 - [ ] 
 
@@ -786,7 +787,7 @@ dupa el e o proprietate a IESIRII, nu a unui pas:
 
 ### `POST /tenants/{tenant_id}/facturi/{factura_id}/link-plata`
 
-*garda `cere_context` · **fara rol***
+*garda `cere_rol` · rol:admin_firma*
 
 - [ ] 
 
@@ -1202,12 +1203,19 @@ dupa el e o proprietate a IESIRII, nu a unui pas:
 
 ## T33 — Exportul contabil (SAGA, WinMentor)
 
-*clasa PARTIAL · 3 rute · 0 schimba date · nu se poate sti din date*
+*clasa PARTIAL · 3 rute · 2 schimba date · nu se poate sti din date*
 
-*citiri (nu schimba nimic): `/tenants/{tenant_id}/facturi/export-saga`, `/tenants/{tenant_id}/facturi/export-winmentor`, `/tenants/{tenant_id}/facturi/{factura_id}/export-saga`*
+*citiri (nu schimba nimic): `/tenants/{tenant_id}/facturi/{factura_id}/export-saga`*
 
-**Traseul nu are niciun pas care schimba ceva.** Ce trebuie sa fie adevarat
-dupa el e o proprietate a IESIRII, nu a unui pas:
+### `POST /tenants/{tenant_id}/facturi/export-saga`
+
+*garda `cere_context` · **fara rol***
+
+- [ ] 
+
+### `POST /tenants/{tenant_id}/facturi/export-winmentor`
+
+*garda `cere_context` · **fara rol***
 
 - [ ] 
 
@@ -1261,7 +1269,7 @@ dupa el e o proprietate a IESIRII, nu a unui pas:
 
 ### `POST /pachete/{tenant_id}/poveste`
 
-*garda `cere_cabinet` · **fara rol***
+*garda `cere_rol` · rol:admin_firma*
 
 - [ ] 
 
@@ -1339,7 +1347,7 @@ dupa el e o proprietate a IESIRII, nu a unui pas:
 
 ### `POST /tenants/{tenant_id}/solicitari`
 
-*garda `cere_context` · **fara rol** · scrie in solicitari_client*
+*garda `cere_rol` · rol:admin_firma · scrie in solicitari_client*
 
 - [ ] 
 

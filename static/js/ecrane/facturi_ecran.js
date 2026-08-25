@@ -246,7 +246,8 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
     corp.querySelector("#fac-saga-luna")?.addEventListener("click", async () => {  // [export_saga_v1] F171
       const zona = corp.querySelector("#fac-saga-zona");
       try {
-        const resp = await fetch(`/tenants/${tenantId}/facturi/export-saga?an=${an}&luna=${luna}`, { headers: { Authorization: "Bearer " + sesiune.token() } });
+        // [R45] POST: exportul e un act — se pastreaza ce s-a exportat si cand.
+        const resp = await fetch(`/tenants/${tenantId}/facturi/export-saga?an=${an}&luna=${luna}`, { method: "POST", headers: { Authorization: "Bearer " + sesiune.token() } });
         if (resp.status === 404) { arataMesaj(zona, "Nicio factură emisă în luna aceasta.", "info"); return; }
         if (!resp.ok) throw new Error("eroare " + resp.status);
         const url = URL.createObjectURL(await resp.blob());
@@ -261,7 +262,8 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
       const btn = corp.querySelector("#fac-winmentor-luna");
       const _t = btn.textContent; btn.disabled = true; btn.textContent = "Se generează…";  // cap.1 feedback async
       try {
-        const resp = await fetch(`/tenants/${tenantId}/facturi/export-winmentor?an=${an}&luna=${luna}`, { headers: { Authorization: "Bearer " + sesiune.token() } });
+        // [R45] POST, acelasi motiv ca la SAGA.
+        const resp = await fetch(`/tenants/${tenantId}/facturi/export-winmentor?an=${an}&luna=${luna}`, { method: "POST", headers: { Authorization: "Bearer " + sesiune.token() } });
         if (resp.status === 404) { arataMesaj(zona, "Nicio factură emisă în luna aceasta.", "info"); return; }
         if (!resp.ok) throw new Error("eroare " + resp.status);
         const url = URL.createObjectURL(await resp.blob());
