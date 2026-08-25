@@ -5072,3 +5072,59 @@ calculează după salvare, cu toate elementele.
 
 **Ce se pierde, și se știe:** avertismentul despre prăpastia salariului minim era o protecție reală.
 Dacă se întoarce, și în ce formă, e **R30**.
+
+## 25.08.2026 — coada nu mai confirmă depunerea unei declarații nevalidate
+
+**Ce s-a schimbat pentru contabil.** Când deschizi o declarație din coadă, validatorul oficial ANAF
+(DUKIntegrator) rulează — ca și până acum — dar **verdictul lui se păstrează**. Aprobarea și
+confirmarea depunerii **se refuză** dacă nu există un verdict proaspăt și valid. Se poate trece peste
+refuz, dar numai explicit, cu un motiv scris, iar motivul se consemnează cu cine și când.
+
+**De ce.** Validatorul rula deja la fiecare deschidere a unui element, însă ruta era `Read-only`:
+verdictul se **producea, se afișa și se arunca**. Consecința se vedea pe ecran — fiecare declarație
+purta eticheta *„neverificat"*, indiferent ce spusese validatorul, fiindcă nu se scria nicăieri. Iar
+lista *„De depus"* cuprindea și declarații care nu trecuseră prin nicio verificare. Nu era o listă
+incompletă; era o afirmație falsă despre starea lor.
+
+**Ce se păstrează, și de ce sunt patru lucruri, nu unul:** rezultatul · momentul · **versiunea
+validatorului** (pachetul ANAF se actualizează, iar un verdict dat de o versiune veche nu e același
+lucru) · și **amprenta fișierului validat**.
+
+Ultima e cea care contează în practică: *un verdict pe un XML care s-a regenerat între timp nu mai e
+verdict*. Dacă declarația a fost regenerată după validare, verdictul e **stătut** și se tratează ca
+**absent** — nu ca favorabil. E aceeași regulă cu cea aplicată cu o zi înainte verificărilor
+încrucișate: un verdict, ca și o declarație, e despre **un anumit conținut**, nu despre un moment.
+
+**Ce NU s-a schimbat încă, și se vede:** ecranul încă numește *„De depus"* o listă în care intră și
+ce nu e gata. Serverul refuză deja; afișajul rămâne de reparat. Iar **D301 pe iunie 2026**, depusă
+ieri, rămâne fără verdict păstrat — la momentul apăsării nu exista unde să fie păstrat.
+
+## 25.08.2026 (2) — traseele documentelor există scrise, iar trei lipsuri au ieșit din ele
+
+**Ce s-a schimbat în felul în care se verifică.** A intrat `TRASEE.md`, al patrulea document: ce
+parcurge un document de la intrare până la ieșire. Celelalte trei spun **cum** se construiește, **ce**
+se măsoară și **când**. Ăsta spune **pe unde trece**.
+
+**De ce era nevoie.** Verificarea de până acum arăta că o declarație **iese** și **se validează** —
+nu că traseul până la ea e complet. De aceea trei declarații fără verdict au putut sta în *„De
+depus"* fără să iasă din nicio măsurătoare.
+
+**Cele nouă trasee rămase de completat au fost completate din cod** — rute, gărzi, tabele scrise,
+stări, refuzuri — iar din ele au ieșit trei lipsuri pe care nicio măsurătoare de până acum nu le
+atinsese:
+
+- **NIR-ul creează nota contabilă direct validată**, sărind peste ciornă. Toate celelalte căi pun
+  `ciornă`. Dacă modelul de contabilizare ales va fi *„aplicația propune, contabilul validează"*,
+  recepția îl încalcă deja.
+- **Situațiile financiare anuale nu se păstrează nicăieri.** Se generează, se validează, se descarcă
+   — și nu rămân. Artefactul care încheie exercițiul financiar n-are memorie.
+- **Trecerea de regim fiscal are cea mai mare consecință și cele mai puține verificări** — două
+  refuzuri, față de 29 la casă. O trecere micro↔profit sau plătitor↔neplătitor schimbă ce declarații
+  se datorează; nimic nu verifică azi dacă perioada afectată e deschisă sau dacă declarațiile deja
+  depuse pe regimul vechi rămân explicabile.
+
+**O notă despre metodă, fiindcă greșeala e a mea:** instrumentul cu care am citit traseele a raportat
+de două ori *„lipsește"* despre lucruri care existau — „rute fără gardă" pentru rute păzite, și „nu
+scrie nimic" pentru module care scriu fără prefix de schemă. Amândouă prinse prin citire directă
+înainte de a ajunge în document. Un traseu completat din presupunere e mai rău decât unul lipsă: se
+verifică ceva care nu există, iar verificarea trece.
