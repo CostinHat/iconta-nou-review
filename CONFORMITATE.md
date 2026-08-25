@@ -1339,6 +1339,38 @@ scos ce nu se știa**, nu din defecte noi.
 - **ce înseamnă asta pentru restanță**: gaura din `gdpr_sterge` rămâne dovedită **prin citirea codului** și va produce aceiași orfani la prima ștergere reală; dar cauza celor două de azi e **în afara codului**, deci R50 nu le poate preveni retroactiv. *Se scrie așa ca să nu pară că reparația lui `gdpr_sterge` explică tot ce s-a găsit.*
 - **condiția de deblocare**: la primul commit care atinge `core/gdpr_sterge.py`, `executa` șterge și din `declaratii_coada` și `declaratii_depuse` pentru firmele cabinetului, iar previzualizarea le **numără** înainte, ca omul să vadă ce dispare. Se închide când o ștergere de cabinet nu mai lasă niciun rând pe firmele lui, probat pe o schemă efemeră.
 
+### R51 — Data încetării contractului nu ajungea în bază, iar ruta răspundea 200
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E5 · interdicția 32 · **PRAG 1** *(contabilul completează data plecării, primește confirmare, iar salariatul rămâne în serviciu — deci continuă să apară în D112)*
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **rezolvată pe commit**: `c9d1724`
+- **deschisă pe commit**: `8a25308`
+- **măsurat la**: 2026-08-25 · **pe commit**: `8a25308`
+- **ce blochează**: *(istoric — rezolvat)* ecranul de salariați are un dialog dedicat pentru data încetării, cu textul lui explicit — *„Gol = contract activ. La plecare NU se șterge salariatul — se completează data încetării (istoricul susține declarațiile depuse)"* — și trimite `{ data_incetare }` pe `PUT /tenants/{}/salariati/{}`. **`SalariatEdit` n-avea câmpul.** Pydantic îl arunca **înainte** ca ruta să-l vadă, deci `actualizeaza_salariat` nu primea nimic și întorcea `{"ok": true, "neschimbat": true}`. Probat pe ruta reală: **200**, coloana rămâne `NULL`.
+- **de ce e prag 1**: `salariati_api` susține câmpul pe **tot restul drumului** — e în `_CAMPURI_API`, e validat contra `data_angajare`, iar *„în serviciu"* e **definit** prin el. Ștergerea salariatului e refuzată tocmai ca să se folosească data încetării. Deci **singura cale corectă era cea care nu funcționa**, iar rezultatul e un salariat plecat care rămâne în D112 — fără niciun semn pe ecran.
+- **a doua jumătate, care nu se rezolva doar adăugând câmpul**: ecranul trimite `null` pentru *„gol = contract activ"*, iar `actualizeaza_salariat` filtra `v is not None` — deci `null` însemna **„netrimis"**, nu **„golește"**. O dată pusă din greșeală n-ar mai fi putut fi scoasă. Ruta calculează acum ce chei au fost **efectiv trimise** (`exclude_unset`) și le trece mai departe ca golire cerută; apelanții vechi nu-și schimbă comportamentul. *E aceeași formă cu interdicția 32, în oglindă: acolo un necunoscut se rotunjea la „știu că nu"; aici două lucruri diferite împărțeau aceeași valoare.*
+- **cum s-a probat**, pe procesul viu, după repornire (METODA §24): `{"data_incetare": "2026-08-31"}` → 200 și coloana devine `2026-08-31`; `{"data_incetare": null}` → 200 și coloana revine la `NULL`. Restaurat la starea inițială, verificat.
+- **cum a ieșit**: `scripts/scan_contract_ecran.py`, instrument nou — compară cheile trimise de fiecare `api.post/put` din `static/js` cu câmpurile modelului rutei. **67 de perechi, 1 diferență, după reparație 0.** Gardat de `core/test_contract_ecran_ruta.py`, cu anti-vacuu pe domeniu.
+- **condiția de deblocare**: *(îndeplinită)* câmpul ajunge în bază la trimitere și se poate goli la cerere, probat pe procesul viu; iar clasa întreagă e păzită — clichetul de contracte rupte din `core/test_contract_ecran_ruta.py` e **0** și nu poate crește tăcut.
+
+### R52 — Un document care ajunge la un om poate pleca pe un GET, iar acolo nu se verifică niciun rol
+
+- **felul**: ORDINE
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · TRASEE XI.2 · P12 · **PRAG 3** *(nimic fals pe ecran; lipsește o restricție, iar instalarea n-are al doilea actor care s-o exercite)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `c9d1724`
+- **măsurat la**: 2026-08-25 · **pe commit**: `8a25308`
+- **ce blochează**: **punctul orb al tuturor măsurătorilor mele de rol.** Am numărat de fiecare dată **rutele care schimbă date** — 229, apoi 131 fără rol. Dar *„iese către un om"* nu e totuna cu *„scrie ceva"*: un document poate pleca pe un **GET**. Măsurat pe corpul rutelor (Content-Disposition, `application/pdf`, `FileResponse`), nu pe nume: **25** de rute predau un document, **17** fără niciun rol, **toate GET**. Scăzând cele 8 pagini publice (`/`, ghid, robots, sitemap, termeni, pagina de plată), rămân **9 documente ale firmei**:
+  `chitante/{}/pdf` · `facturi/{}/pdf` · `facturi/{}/export-saga` · `documente/balanta` · `d406-active` · `d406-stocuri` · `bonuri/{}/imagine/{n}` · `portal/bon/{}/imagine/{n}` · **`fluturas/{salariat_id}`**.
+- **cel mai ascuțit e ultimul**: fluturașul unui salariat se ia cu un `GET`, de orice utilizator al cabinetului, fără nicio verificare de rol. E documentul cu cele mai personale date din aplicație.
+- **de ce e o restanță separată de R42**: R42 e despre acte (POST/PUT/DELETE) și criteriul lui e „ce se poate reface". Aici nu se reface nimic — se **citește**. Criteriul lui Costin (*„tot ce iese către o autoritate sau către un om"*) le prinde, dar decizia de rol pe **citiri** n-a fost luată, iar a o lua singur ar bloca asistenții pe munca lor zilnică (un asistent trebuie să poată deschide un PDF de factură).
+- **condiția de deblocare**: se decide **care documente predate cer `admin_firma`** — candidatul evident e fluturașul, fiindcă poartă date personale ale unui terț față de cabinet. Se închide când decizia e scrisă și rutele alese o poartă, iar numărul de documente predate fără rol devine clichet în `core/test_trasee.py`.
+
 ### R40 — Nicio declarație depusă prin aplicație, deci lanțul de apărare nu e exercitat niciodată
 
 - **felul**: VERIFICARE
