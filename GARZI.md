@@ -4807,5 +4807,7 @@ citește atributul de pe pachet — deci măsura funcția reală pe o bază inex
 `monkeypatch` pe funcții.
 
 **Ce NU face gardul, declarat:** nu verifică plasarea pe ecran (asta e proba vizuală), și nu spune
-nimic despre celelalte trei module nelegate — `echilibru_perioada` rămâne logică paralelă, decizie
-de prag 2.
+nimic despre celelalte trei module nelegate — `echilibru_perioada` rămâne nelegată, decizie de prag 2.
+**CORECTAT 25.08.2026:** nu e „logică paralelă". Rulate amândouă pe aceleași date, `echilibru_perioada`
+și `verificatoare.verifica_balanta` au moduri de eșec **disjuncte** — fiecare prinde exact ce cealaltă
+ratează. Măsurătoarea, calibrarea pe ambele direcții și ce nu vede: `CONFORMITATE.md`, R33.

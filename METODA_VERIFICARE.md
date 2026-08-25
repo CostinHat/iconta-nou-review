@@ -947,9 +947,20 @@ măsurători (interdicția 76). Gard: `core/test_module_nelegate.py`, clichet pe
 ### Cele trei instanțe măsurate
 
 1. **`core/echilibru_perioada.py`** — verificare de echilibru + orfani, **zero importatori de
-   producție**, ȘI există o **a doua implementare, legată**: `main.py:4389` calculează „echilibru" prin
-   `verificatoare.verifica_balanta`. Deci nu e doar nelegat — e **logica paralelă** pe care o interzice
-   P7, în forma cea mai greu de văzut: cea în care varianta nealeasă tace.
+   producție**, ȘI există o funcție legată cu nume apropiat: `main.py:4634` calculează „echilibru" prin
+   `verificatoare.verifica_balanta` (balanța se construiește la `main.py:4597`).
+   **CORECTAT 25.08.2026 — „logica paralelă" era o afirmație despre NUME, nu despre comportament, și
+   e falsificată.** Rulate amândouă pe aceleași date, **modurile de eșec sunt disjuncte**:
+   `echilibru_perioada` prinde linia cu o parte lipsă și orfanii, pe care cealaltă îi ratează tăcut;
+   `verifica_balanta` prinde soldurile inițiale dezechilibrate, pe care prima nu le citește deloc.
+   Deci nu sunt două implementări ale aceleiași verificări, iar a alege una **șterge** o verificare.
+   Cifrele, calibrarea și ce nu vede măsurătoarea: `CONFORMITATE.md`, R33.
+   **Lecția care rămâne pentru METODA, și e mai mare decât instanța: două funcții care poartă același
+   cuvânt — „echilibru", „balanță" — nu se declară duplicate până nu li se dă ACELAȘI caz și nu se
+   compară VERDICTELE.** Afirmația veche a supraviețuit patru registre și 37 de commituri fiindcă
+   nimeni nu le rulase pe amândouă; o măsurătoare de zece minute a răsturnat-o. E aceeași clasă cu
+   **R16** (proza care descrie codul poate fi falsă de la naștere), aplicată la proza pe care am
+   scris-o eu.
 2. **`core/salarii_contare.py`** — `control_coerenta`, verificare încrucișată **notă contabilă vs
    declarație**, zero importatori. `core/salarizare.py:296` **o numește** — *„incrucisat
    nota-vs-declaratie"* — dar într-un **COMENTARIU**. Un scan pe text ar fi raportat modulul ca legat.

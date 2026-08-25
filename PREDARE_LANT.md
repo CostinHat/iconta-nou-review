@@ -4,8 +4,8 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-25**, *a treia oară în aceeași zi*
-- **pe commit**: `4926e15`
+- **ultima rescriere**: **2026-08-25**, *a patra oară în aceeași zi*
+- **pe commit**: `d312bf8`
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire, nu la câteva zile.** Regula e
   scrisă aici fiindcă a fost încălcată de trei ori. Prima dată (22.08) versiunea veche conținea trei
   afirmații false. A doua oară (24→25.08) a rămas **38 de commituri** în urmă. A treia oară e **azi**:
@@ -75,12 +75,21 @@ Ziua a avut trei jumătăți; astea sunt cele care contează pentru cine continu
 
 ## FRONTURI DESCHISE, în ordine
 
-1. **`TRASEE_VERIFICARI.md` — îl completează Costin.** 192 de locuri. Până se scriu, inventarul de
-   trasee e o **hartă a codului**, nu o listă de verificare. E cel mai mare lucru rămas, și **nu e
-   muncă de-a mea**.
-2. **R33, jumătatea rămasă — DECIZIE.** `echilibru_perioada` e **a doua implementare** a unei
-   verificări care există deja legată (`verificatoare.verifica_balanta`, `main.py:4389`). Nu e cod
-   nelegat, e **logică paralelă**. Variantele sunt scrise în restanță. **Nu se începe fără decizie.**
+1. **`TRASEE_VERIFICARI.md` — îl completează Costin.** 192 de locuri, **0 scrise**. Până se scriu,
+   inventarul de trasee e o **hartă a codului**, nu o listă de verificare. E cel mai mare lucru rămas,
+   și **nu e muncă de-a mea**. **Cadența, fixată 25.08: un lot pe tură** — eu dau lotul
+   (`scan_trasee.py --loturi N`), el scrie verificările în fișier, apoi trec la următorul.
+   **Lotul 1 din 7 e predat** (30 de pași: T01 ×8, T06 ×4, T12 ×2, T14 ×16). Următorul de dat: **lotul 2**.
+2. **R33, jumătatea rămasă — DECIZIE, dar ÎNTREBAREA S-A SCHIMBAT (măsurat 25.08.2026).**
+   `echilibru_perioada` **nu** e a doua implementare a verificării legate (`verificatoare.verifica_balanta`,
+   `main.py:4634`). Rulate pe aceleași date, **modurile de eșec sunt disjuncte**: prima prinde linia cu o
+   parte lipsă și orfanii — pe care a doua îi ratează tăcut sau crapă; a doua prinde soldurile inițiale
+   dezechilibrate — pe care prima nu le citește deloc. **Deci nu se poate alege una fără să se șteargă o
+   verificare**, iar varianta (b) din comandă, aplicată literal, ar face exact asta. În plus, jumătatea
+   `BALANTA_INEGALA` a funcției legate e **tautologică** pe intrarea pe care i-o dă `main.py` (0 din 2000
+   de seturi aleatoare o pot face să pice). Cifrele și calibrarea: `CONFORMITATE.md`, R33.
+   **Nu se începe fără decizie** — iar decizia cerută acum e *unde se leagă* și *ce se face cu jumătatea
+   tautologică*, nu *care iese*.
 3. **Cele 129 de rute care schimbă date fără verificare de rol.** Criteriul lui Costin e aplicat pe
    clasele numite (28 de rute în patru aplicări). Restul se triază pe **același** criteriu, iar cifra
    trebuie să devină clichet — azi nu e.

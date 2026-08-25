@@ -5237,3 +5237,33 @@ citarea era la un act care nu mai e forma curentă.
 - **`echilibru_perioada` — o verificare de balanță — rămâne o a doua implementare** a ceva ce există
   deja legat, și nu o cheamă nimeni.
 
+### 25.08.2026, târziu — R33: măsurătoarea care răstoarnă premisa, și nu decizia (SUPERSEDEAZĂ rândul de mai sus)
+
+Comanda cerea varianta (b) — *se leagă `echilibru_perioada`, se scoate cealaltă* — dar cu o condiție
+pusă înainte: *„rulează amândouă pe aceleași date și spune-mi dacă dau același rezultat. Dacă diferă,
+aia e o măsurătoare, nu o alegere."* S-au rulat. Diferă, și diferă în felul care taie decizia.
+
+- **Pe date reale au dat același rezultat — și tocmai de asta rezultatul nu însemna nimic.** 7 firme,
+  12 perioade, 50 de linii de evidență: amândouă OK peste tot, fiindcă nu există **niciun** rând pe
+  care vreuna să poată pica (0 linii cu o parte lipsă, 0 orfani, 0 solduri dezechilibrate).
+  **Interdicția 19, în forma ei cea mai politicoasă: două instrumente care sunt de acord pe zero
+  instanțe nu s-au comparat.**
+- **Calibrate pe modurile lor de eșec, sunt disjuncte.** `echilibru_perioada` prinde linia cu o parte
+  lipsă (NULL sau șir gol) și orfanii; `verifica_balanta` crapă cu `TypeError` pe prima formă, ratează
+  tăcut a doua, și n-are conceptul de orfan. În schimb prinde soldurile inițiale dezechilibrate, pe
+  care `echilibru_perioada` nu le citește niciodată. **Fiecare prinde exact ce cealaltă ratează.**
+- **Deci premisa era falsă, nu decizia.** *„A doua implementare a aceleiași verificări"* fusese scrisă
+  din **numele** funcțiilor. A supraviețuit în patru registre — CONFORMITATE, METODA, GARZI,
+  PREDARE_LANT — și 37 de commituri, fiindcă nimeni nu le rulase pe amândouă. Zece minute de sondă au
+  răsturnat-o. Aceeași clasă cu R16, dar pe proza scrisă de mine.
+- **Al treilea lucru, care n-a fost căutat:** jumătatea `BALANTA_INEGALA` a funcției legate e
+  **tautologică** pe intrarea pe care i-o dă `main.py` — `balanta()` adaugă aceeași sumă pe ambele
+  părți, deci totalurile sunt egale prin construcție. 0 din 2000 de seturi aleatoare o pot face să
+  pice. Ce lucrează efectiv din ea e doar verificarea pe soldurile inițiale. Clasa R18.
+- **Nu s-a legat și nu s-a șters nimic.** Varianta (b) aplicată literal ar fi șters verificarea
+  soldurilor inițiale, fără înlocuitor; inversul ei ar fi șters-o pe cea a liniilor rupte. Nicio
+  variantă nu e neutră, iar alegerea schimbă ce vede contabilul pe `GET /firme/{tenant_id}/verificari`
+  — decizie de produs, §2.3 pct.2. **Oprit și cerut.**
+
+Măsurătoarea, tabelul de calibrare și ce nu vede: `CONFORMITATE.md`, R33.
+
