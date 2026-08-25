@@ -48,6 +48,13 @@ Derivat cu `scripts/raport_b.py`. Nu se scrie de mână.
 ## POARTA
 
 Teste, verificator, four-way, site.
+
+## CERINTE:
+
+1. <ce e> — <ce blochează dacă rămâne nedată> — <detalii care ajută decizia> — <a câta tură>
+2. ...
+
+(sau, dacă tura nu cere nimic: „nimic")
 ```
 
 ---
@@ -96,6 +103,28 @@ Atenție la partea derivată vs. partea scrisă: cifrele se derivă, dar **proza
 rămas stătută cel puțin o dată (23.08: antetul spunea că 52 e PARȚIALĂ în commitul în care nu mai
 era). Proza antetului se recitește la fiecare raport.
 
+### CERINTE
+**Toate cerințele către Costin stau AICI, la sfârșitul raportului, numerotate.** Nu se
+împrăștie prin raport, nu se lasă pe la mijloc, nu se scriu ca observații. **Dacă nu e în lista
+asta, nu e o cerință — e o observație.**
+
+Fiecare poziție are patru lucruri:
+
+| ce | de ce |
+|---|---|
+| **ce e** — decizia sau lucrul de făcut | fără el, cererea nu se poate îndeplini |
+| **ce blochează dacă rămâne nedată** | fără el, nu se poate prioritiza |
+| **detalii care ajută decizia** | variantele, cifra, instanța — ca răspunsul să nu ceară o a doua tură |
+| **a câta tură se cere** | o cerință repetată de trei ori e o cerință scrisă prost, nu una ignorată |
+
+**Dacă tura nu cere nimic, secțiunea scrie „nimic".** Nu se omite — altfel nu se poate deosebi
+„n-am avut ce cere" de „am uitat".
+
+**Motivul, cu instanțele.** *(Costin, 25.08.2026)* Cerințele împrăștiate prin raport se ratează:
+**R40** a fost cerută **patru ture** și n-a fost văzută · *„TRASEE.md e netracked"* era scris în
+`§11` și n-a fost citit · **trei din patru decizii** dintr-o tură au rămas fără răspuns. O listă
+numerotată la sfârșit **se poate confrunta**: dacă răspunsul n-are punctul 3, se vede.
+
 ### POARTA
 Teste (numărul, verde/roșu) · verificator (TOTAL) · **four-way** (HEAD = `origin/main` = ramura de
 backup = procesul viu, cu ora de pornire ulterioară commitului) · site (cod HTTP).
@@ -111,6 +140,8 @@ Nu la început, nu pe parcurs: la final, ca act separat.
 3. **Confirmă** că fiecare are răspuns **cu același număr**, în aceeași ordine.
 4. **Confirmă** că `§11` există și **enumeră registrele**, inclusiv pe cele neatinse.
 5. **Confirmă** că `B` e **derivat**, nu scris.
-6. **Confirmă** că nicio afirmație despre ce s-a cerut nu adaugă și nu scoate ceva față de textul
+6. **Confirmă** că `CERINTE` există, e la SFÂRȘIT, e numerotată, și că nicio cerință nu e
+   scrisă în altă parte a raportului. Dacă nu se cere nimic, scrie „nimic".
+7. **Confirmă** că nicio afirmație despre ce s-a cerut nu adaugă și nu scoate ceva față de textul
    comenzii — regula B în oglindă: nu doar că *ce afirmă comanda se verifică*, ci și că *nu i se
    atribuie ce nu conține*.
