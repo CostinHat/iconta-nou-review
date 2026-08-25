@@ -58,6 +58,26 @@ def _contor(h):
     return int(r.stdout.strip()) if r.returncode == 0 and r.stdout.strip() else None
 
 
+def _locuri():
+    """Cate locuri de verificare sunt scrise si cate mai sunt goale — NUMARAT, nu citit din proza.
+
+    A stat deja o data in antet („192 goale" dupa ce 30 fusesera scrise), iar garda
+    `test_pasul_curent_nu_devine_naratiune` a spus reparatia: o propozitie confruntabila cu o
+    cifra apartine derivatorului. Daca fisierul lipseste, se SPUNE — nu se raporteaza zero."""
+    import os as _os
+    cale = _os.path.join(_os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))),
+                         "TRASEE_VERIFICARI.md")
+    if not _os.path.isfile(cale):
+        return "TRASEE_VERIFICARI.md lipseste — nu se poate număra"
+    d = open(cale, encoding="utf-8").read()
+    scrise = sum(1 for l in d.splitlines() if l.startswith("- [x] "))
+    goale = sum(1 for l in d.splitlines() if l.rstrip() == "- [ ]")
+    tot = scrise + goale
+    if not tot:
+        return "0 locuri — fisierul s-a golit?"
+    return "**%d scrise / %d goale** din %d (%d%%)" % (scrise, goale, tot, round(100 * scrise / tot))
+
+
 def main():
     with open(CONF, encoding="utf-8") as f:
         t = f.read()
@@ -91,6 +111,7 @@ def main():
     print()
     print("- **etapa**: %s" % (_camp(a, "etapa") or "?"))
     print("- **pasul curent**: %s" % (_camp(a, "pasul curent") or "?"))
+    print("- **locuri de verificare**: %s" % _locuri())
     print("- **criteriul de terminare**: %s" % (_camp(a, "criteriul de terminare") or "?"))
     print("- **ce mai lipsește**: %s" % (_camp(a, "ce lipsește") or "?"))
     print("- **interdicții, din %d**: MĂSURATE %d · PARȚIAL %d · NEMĂSURABILE %d · NEÎNCEPUTE %d%s"
