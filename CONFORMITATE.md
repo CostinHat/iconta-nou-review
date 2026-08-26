@@ -1594,6 +1594,23 @@ scos ce nu se știa**, nu din defecte noi.
 
 - **condiția de deblocare**: partea (1) — urma — e **ÎNDEPLINITĂ**. Rămâne deschisă pentru ce a amânat Costin: echilibrul și orfanii ca posibile condiții de blocare, după o măsurătoare pe ce s-ar bloca pe firme reale. **Ce NU e păzit încă, și se spune:** nu există un test care să asertea că poarta refuză — azi e o probă funcțională, nu un clichet. Ciorne rămase? Dezechilibru pe `echilibru_perioada`? Orfani? Sau blocajul deja existent din `inchidere_luna`, mutat pe poartă? Se închide când poarta refuză motivat cel puțin pe condiția aleasă, cu gard.
 
+### R59 — Reevaluarea schimbă valoarea contabilă, dar registrul care conduce amortizarea rămâne pe cea veche
+
+- **felul**: VERIFICARE
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · TRASEE T22 · P6 · **PRAG 2** *(măsurat, nu presupus: **0 note de reevaluare** pe toate cele 17 scheme, pe 3 mijloace fixe active în total — efectul nu e produs azi)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `abc0bc2`
+- **măsurat la**: 2026-08-26 · **pe commit**: `abc0bc2`
+- **planul**: NEACOPERIT. Am citit `PLAN_ARHITECTURA.md` după *reevaluare*, *amortizare* și *mijloace fixe*: **niciun cuvânt**. Cel mai aproape e **P6** — *verdele afirmă, necunoscutul domină favorabilul* — dar aici nu e un verdict care afirmă prea mult, ci **două înregistrări care spun lucruri diferite despre același activ, iar niciuna nu știe de cealaltă**. Planul nu spune ce se întâmplă când un registru operațional și evidența contabilă divergează prin construcție. (METODA §25)
+- **ce blochează**: `POST /reevaluare-imobilizare` **nu atinge `mijloace_fixe`** — citește valoarea și amortizarea cumulată (`SELECT … WHERE id=%s AND activ=true`) și scrie **doar o notă ciornă**. Niciun `UPDATE` pe registru, verificat pe tot corpul rutei. Iar `POST /amortizare` calculează „per MF activ" din **exact acel registru**. Deci după o reevaluare: nota contabilă spune o valoare, registrul spune alta, iar amortizarea lunii următoare se calculează pe cea veche.
+
+  **Nu e o scăpare tăcută** — docstringul o declară: *„actualizeaza valoarea/dnf ramane manual (raport evaluator)"*. Dar o limită declarată **în docstring** nu e o limită declarată **contabilului**: aplicația nu spune nicăieri, la niciun ecran, că baza de amortizare a rămas în urmă.
+- **de unde a ieșit**: din măsurătoarea cerută de Costin la lotul 5 — *„reevaluare-imobilizare, care schimbă baza de amortizare (deci impozitul pe profit) dar nu scrie `validata`"*. **Premisa lui era mai bună decât realitatea**: ruta nici măcar nu schimbă baza. Întrebarea era despre rol; răspunsul e despre consistență.
+- **ce NU e**: nu e o restanță de rol. Criteriul de la R55 (scrie `validata` direct) n-o prinde, și **corect** — scrie ciornă. Dacă registrul ar începe să fie actualizat aici, ar deveni o schimbare imediată de bază fiscală, iar atunci criteriul s-ar reaplica.
+- **condiția de deblocare**: decizia lui Costin între **(a)** ruta actualizează `mijloace_fixe` la validarea notei — reevaluarea devine un act complet, cu riscul că un `UPDATE` pe registru se face dintr-o ciornă; **(b)** ruta rămâne cum e, dar aplicația **spune** divergența — un semnal pe mijlocul fix reevaluat și pe ecranul de amortizare, până la actualizarea manuală; **(c)** altceva. Se închide când divergența ori nu mai există, ori e vizibilă contabilului — cu gard.
+
 ### R40 — Nicio declarație depusă prin aplicație, deci lanțul de apărare nu e exercitat niciodată
 
 - **felul**: VERIFICARE
