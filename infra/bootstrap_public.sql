@@ -426,8 +426,7 @@ CREATE TABLE IF NOT EXISTS public.tenants (
     plan_importat_la timestamp with time zone,
     balanta_importata_la timestamp with time zone,
     salariati_importati_la timestamp with time zone,
-    creat_la timestamp with time zone DEFAULT now() NOT NULL,
-    principal_client_id integer
+    creat_la timestamp with time zone DEFAULT now() NOT NULL
 );
 
 DO $$ BEGIN
@@ -790,11 +789,8 @@ DO $$ BEGIN
   END IF;
 END $$;
 
-DO $$ BEGIN
-  IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='tenants_principal_client_id_fkey' AND connamespace='public'::regnamespace) THEN
-    ALTER TABLE public.tenants ADD CONSTRAINT tenants_principal_client_id_fkey FOREIGN KEY (principal_client_id) REFERENCES public.users(id);
-  END IF;
-END $$;
+-- [R62 (b), 26.08.2026] `tenants.principal_client_id` si cheia ei straina au fost SCOASE:
+-- coloana avea drum de citire si zero drum de scriere. Vezi core/migrare_portal.py.
 
 DO $$ BEGIN
   IF NOT EXISTS (SELECT 1 FROM pg_constraint WHERE conname='user_tenants_tenant_id_fkey' AND connamespace='public'::regnamespace) THEN

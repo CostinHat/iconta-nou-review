@@ -82,6 +82,9 @@ MESAJ_Z_DUPLICAT = ("Raportul Z %(numar)s e deja înregistrat pe %(data)s (nota 
                     "corecție, stornează nota existentă; dacă e alt aparat, folosește NUI-ul lui.")
 # [R62, 26.08.2026] Portalul clientului: izolarea între cabinete, și confirmarea adresei.
 MESAJ_CLIENT_ALT_CABINET = ("Adresa asta aparține unui cont dezactivat al altui cabinet. Nu poate fi reactivat de aici — datele unui cabinet nu trec la altul. Folosește altă adresă, sau cere-i cabinetului care deține contul să-l elibereze.")
+# [R62 (b), 26.08.2026] Titularul = PRIMUL cont de client al firmei. Refuzul spune REGULA,
+# nu doar ca nu ai voie: altfel omul nu poate sti pe cine sa intrebe.
+MESAJ_DOAR_TITULARUL = ("Doar titularul contului firmei poate face asta — titularul e primul cont de client al firmei. Cere-i lui, sau contabilului tău.")
 MESAJ_EMAIL_ACELASI = "Adresa nouă e aceeași cu cea curentă. Nu e nimic de schimbat."
 MESAJ_EMAIL_TOKEN_INVALID = ("Linkul de confirmare e expirat sau a fost deja folosit. Cere din nou schimbarea adresei din Acces cont.")
 MESAJ_EMAIL_DE_CONFIRMAT = ("Ți-am trimis un link de confirmare pe adresa nouă. Adresa se schimbă abia după ce îl deschizi — până atunci intri tot cu cea veche.")

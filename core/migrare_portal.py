@@ -78,10 +78,30 @@ CREATE INDEX IF NOT EXISTS urme_portal_tenant_idx
 """
 
 
+# [R62 (b), 26.08.2026] `tenants.principal_client_id` SE SCOATE.
+#
+# Coloana avea drum de CITIRE si zero drum de SCRIERE: patru SELECT-uri in `main.py`, niciun
+# INSERT, niciun UPDATE, niciun ecran, iar `tenant_provisioning` insereaza fara ea. Masurat: 0 din
+# 17 firme o aveau completata, si n-aveau cum. Iar citirea avea FALLBACK pe primul cont de client
+# in timp ce scrierile comparau direct cu coloana — de unde afirmatia falsa de pe ecran, PRAG 1.
+#
+# Decizia lui Costin (varianta b): intrebarea *cine e titularul* se pune altfel — primul cont de
+# client — regula pe care citirea o folosea deja. Iar coloana se scoate, nu se lasa: *„o coloana
+# cu drum de citire si fara drum de scriere e chiar ce am gasit azi; a o lasa inseamna a lasa a
+# treia cale prin care intrebarea se poate pune altfel maine."*
+#
+# Reversibil: coloana era GOALA pe toate cele 17 scheme, deci stergerea nu pierde nicio valoare.
+DDL_SCOATERE = """
+ALTER TABLE public.tenants DROP CONSTRAINT IF EXISTS tenants_principal_client_id_fkey;
+ALTER TABLE public.tenants DROP COLUMN IF EXISTS principal_client_id;
+"""
+
+
 def aplica(conn):
-    """Creează cele două tabele din `public`. Idempotent."""
+    """Creează cele două tabele din `public` și scoate coloana fără scriitor. Idempotent."""
     with conn.cursor() as cur:
         cur.execute(DDL)
+        cur.execute(DDL_SCOATERE)
     conn.commit()
 
 
@@ -95,7 +115,12 @@ def main():
             cur.execute("SELECT to_regclass('public.schimbari_email'), "
                         "to_regclass('public.urme_portal')")
             a, b = cur.fetchone()
-    print("schimbari_email: %s · urme_portal: %s" % (a, b))
+            cur.execute("""SELECT count(*) FROM information_schema.columns
+                           WHERE table_schema='public' AND table_name='tenants'
+                             AND column_name='principal_client_id'""")
+            ramasa = cur.fetchone()[0]
+    print("schimbari_email: %s · urme_portal: %s · principal_client_id ramas: %s"
+          % (a, b, ramasa))
     return 0
 
 

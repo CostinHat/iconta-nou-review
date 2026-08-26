@@ -4972,7 +4972,9 @@ asertea că poarta refuză: azi e o probă funcțională, nu un gard.
 
 **Unde stă ruta de confirmare:** `POST /public/confirma-email`, lângă `activare`, `magic-login` și `reset-parola/seteaza` — familia rutelor care se dovedesc cu un **token**, nu cu o sesiune. Sub `/portal/`, unde tot restul e pe `cere_client`, ar fi fost a patra instanță în șapte loturi a aceleiași forme: aceeași clasă, tratament diferit.
 
-**Ce NU face, declarat:** e o gardă pe cod. `principal_client_id` e completat pe **0 din 17** firme, deci niciuna din rute nu se poate exercita azi pe date reale — punctul orb e firma, nu ecranul. Condiția de închidere a lui R62 e chiar asta: primul client real cu acces la portal.
+**Ce NU face, declarat:** e o gardă pe cod, nu o probă pe date.
+
+*(Nota de dinainte spunea că rutele nu se pot exercita, fiindcă `principal_client_id` e 0 din 17. Nu mai e adevărată, și de-aia se rescrie: coloana s-a scos, iar titularul e acum **primul cont de client** — regula pe care citirea o folosea deja. Cu ea, rutele SE POT exercita pe firma #8396.)*
 
 ## Docstringul nu e cod (26.08.2026)
 
@@ -4981,3 +4983,15 @@ asertea că poarta refuză: azi e o probă funcțională, nu un gard.
 E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pomenește INSERT n-are voie să treacă drept scriere* — doar că acolo era în gard, iar aici în **instrumentul pe care stau toate celelalte măsurători**. Direcția e zgomotoasă, deci se vede — **atâta timp cât numele inventat nu seamănă cu unul real**. `oarb` sărea în ochi; `facturi` n-ar fi sărit.
 
 **Ambele direcții probate:** proza nu produce tabelă, SQL-ul din corp produce. Fără a doua, o reparație care ar tăia toate șirurile ar fi golit inventarul de scrieri proprii.
+
+## Cele patru rute răspund LA FEL la „cine e titularul” (26.08.2026, R62 b, PRAG 1)
+
+**`core/test_portal_acces.py`, test nou.** Regula era scrisă în **două** locuri și era **diferită**: citirea cădea pe primul cont de client când `tenants.principal_client_id` era NULL, cele trei scrieri comparau direct cu coloana — iar coloana n-avea nicio cale de scriere.
+
+**Ce a produs:** ecranul îi spunea omului *„ești titularul”* și îi arăta butoanele, iar rutele îi răspundeau **403**. Nu o funcționalitate care așteaptă date — o **afirmație falsă pe ecran**, la un om real (#8284, firma #8396). Costin a ridicat-o la **PRAG 1**: *ecranul spune una, serverul face alta* — P13, în forma cea mai directă.
+
+**Ce face imposibil:** ca cele patru rute să ia răspunsul din locuri diferite. Toate cheamă `_titular_client`, iar citirea și-a pierdut fallback-ul — helperul **este** regula, deci n-are pe ce să cadă.
+
+**Și coloana s-a scos**, nu doar ocolit: *o coloană cu drum de citire și fără drum de scriere e a treia cale prin care întrebarea s-ar putea pune altfel mâine*.
+
+**Ce NU face, declarat:** spune că cele patru iau răspunsul din același loc, **nu** că nu mai există niciun alt loc din care s-ar putea lua.

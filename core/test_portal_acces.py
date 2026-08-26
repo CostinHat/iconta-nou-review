@@ -21,10 +21,14 @@ CUM ASERTEAZĂ: pe **apeluri din AST** și pe **mulțimea de tabele scrise**, de
 instrumentul inventarului (`scan_trasee`). Nicăieri nu se caută un șir într-un text — nici măcar
 în SQL, fiindcă întrebarea *„scrie în `users`?"* are o formă structurată gata măsurată.
 
-CE NU FACE, declarat: nu probează pe date. `principal_client_id` e completat pe **0 din 17** firme,
-deci niciuna din rutele astea nu se poate exercita azi — punctul orb e firma, nu ecranul. Și nu
-verifică ce vede cabinetul pe ECRAN: urma se scrie și se poate citi, dar dacă un ecran o arată e
-altă întrebare.
+CE NU FACE, declarat: nu probează pe date — e o gardă pe structura rutelor. Nu verifică nici ce
+vede cabinetul pe ECRAN: urma se scrie și se poate citi, dar dacă un ecran o arată e altă întrebare.
+Iar despre titular spune că cele patru rute iau răspunsul din **același loc**, nu că nu mai există
+niciun alt loc din care s-ar putea lua.
+
+*(Nota de dinainte — „niciuna din rute nu se poate exercita azi, `principal_client_id` e 0 din 17"
+— nu mai e adevărată, și de-aia se rescrie: regula nu mai atârnă de coloana aia, care s-a și scos.
+Cu titularul = primul cont de client, rutele SE POT exercita pe firma #8396.)*
 """
 import ast
 import importlib.util
@@ -38,6 +42,9 @@ _SCAN = os.path.join(_RAD, "scripts", "scan_trasee.py")
 
 # rutele care pot LEGA un cont existent de o firmă: amândouă căile, nu doar cea a clientului
 _LEAGA = ("portal_adauga_acces", "client_acces_creeaza")
+# cele patru rute care răspund la întrebarea „cine e titularul contului firmei"
+_TITULAR = ("portal_acces_cont", "portal_schimba_email", "portal_adauga_acces",
+            "portal_revoca_acces")
 # actele de acces sau de identitate: fiecare lasă urmă
 _CU_URMA = ("portal_adauga_acces", "portal_revoca_acces", "client_acces_creeaza",
             "client_acces_revoca", "portal_schimba_email", "portal_confirma_email")
@@ -70,11 +77,26 @@ def scrie():
 
 
 def test_ANTI_VACUU_toate_rutele_se_gasesc(fns, scrie):
-    lipsa = (set(_LEAGA) | set(_CU_URMA)) - set(fns)
+    lipsa = (set(_LEAGA) | set(_CU_URMA) | set(_TITULAR)) - set(fns)
     assert not lipsa, "rute negăsite în main.py: %s — gardul s-ar uita în gol" % sorted(lipsa)
     fara_inventar = {"/portal/acces-cont/email", "/public/confirma-email"} - set(scrie)
     assert not fara_inventar, (
         "rute dispărute din inventar: %s — gardul n-ar avea ce măsura" % sorted(fara_inventar))
+
+
+def test_cele_patru_rute_raspund_LA_FEL_la_cine_e_titularul(fns):
+    """PRAG 1, R62 (b). Regula era scrisă în două locuri și era **diferită**: citirea cădea pe
+    primul cont de client când `tenants.principal_client_id` era NULL, scrierile comparau direct cu
+    coloana — iar coloana n-avea nicio cale de scriere. Rezultatul: ecranul îi spunea omului
+    *„ești titularul"* și îi arăta butoanele, iar rutele îi răspundeau 403. Un om real: #8284.
+
+    Decizia lui Costin: aceeași regulă peste tot, și e regula citirii — primul cont de client.
+    Gardul cere ca toate patru s-o ia din **același loc**; două locuri înseamnă din nou două
+    răspunsuri, iar divergența nu se vede până n-o vede un om pe ecran."""
+    rele = [r for r in _TITULAR if not _apeluri(fns[r]) >= {"_titular_client"}]
+    assert not rele, (
+        "rute care răspund altfel la «cine e titularul»: %s — dacă citirea și scrierea folosesc "
+        "reguli diferite, ecranul și serverul spun lucruri diferite" % rele)
 
 
 def test_izolarea_intre_cabinete_e_ceruta_pe_AMANDOUA_caile(fns):

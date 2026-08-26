@@ -33,6 +33,7 @@ from core.mesaje import (mesaj_din_cod, FARA_CABINET, EMAIL_INVALID, EMAIL_EXIST
                          EMAIL_NICIUNUL_VALID, CUI_FIRMA_LIPSA, PERIOADA_INCHISA,
                               MESAJ_Z_DUPLICAT, MESAJ_Z_FARA_CHEIE,
                               MESAJ_CLIENT_ALT_CABINET, MESAJ_EMAIL_ACELASI,
+                              MESAJ_DOAR_TITULARUL,
                               MESAJ_EMAIL_TOKEN_INVALID, MESAJ_EMAIL_DE_CONFIRMAT,
                          ROL_INSUFICIENT, DOAR_ADMIN_ICONTA, DOAR_ADMIN_CABINET, DOAR_PATRON,
                          FARA_DREPT_VALIDARE, FARA_DREPT_DEPUNERE, FARA_ACCES_TENANT,
@@ -3656,18 +3657,48 @@ class AdaugaAccesIn(BaseModel):
     tenant_id: Optional[int] = None
     email: str
     nume: str = ""
+def _titular_client(cur, tenant_id):
+    """[R62 (b), 26.08.2026] Cine e titularul contului de portal: PRIMUL cont de client al firmei.
+
+    Regula era scrisa in DOUA locuri si era DIFERITA. Citirea (`GET /portal/acces-cont`) cadea pe
+    primul cont cand `tenants.principal_client_id` era NULL; cele trei scrieri comparau direct cu
+    coloana. Cum coloana n-avea NICIO cale de scriere — zero INSERT, zero UPDATE, niciun ecran,
+    iar `tenant_provisioning` insereaza fara ea — ecranul ii spunea omului *„esti titularul"* si ii
+    arata butoanele, iar rutele ii raspundeau 403. **O afirmatie falsa pe ecran, la un om real**
+    (utilizatorul #8284, firma #8396). Costin a ridicat-o la PRAG 1: *„ecranul spune una, serverul
+    face alta"* — P13, in forma cea mai directa.
+
+    Decizia lui, varianta (b): intrebarea se pune ALTFEL — primul cont de client — fiindca aia e
+    regula pe care citirea o folosea deja. *„Alinierea lor nu adauga nimic — scoate o
+    inconsistenta."* Iar *titular = primul venit* e o decizie de produs, asumata: la o firma mica,
+    primul care primeste acces la portal e patronul sau administratorul. Daca se dovedeste gresita,
+    se repara printr-o CALE de schimbare a titularului — alta functionalitate, nu o coloana.
+
+    De aceea `principal_client_id` s-a si SCOS: o coloana cu drum de citire si fara drum de scriere
+    e a treia cale prin care intrebarea s-ar putea pune altfel maine."""
+    cur.execute("""SELECT u.id FROM public.users u
+                   JOIN public.user_tenants ut ON ut.user_id = u.id
+                   WHERE ut.tenant_id = %s AND u.rol = 'client'
+                   ORDER BY u.id LIMIT 1""", (tenant_id,))
+    r = cur.fetchone()
+    if not r:
+        return None
+    return r["id"] if isinstance(r, dict) else r[0]
+
+
 @app.get("/portal/acces-cont")
 def portal_acces_cont(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
     t = _tenant_client(ctx, tenant_id)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute("SELECT principal_client_id FROM public.tenants WHERE id=%s", (t["id"],))
-            pid = cur.fetchone()["principal_client_id"]
+            pid = _titular_client(cur, t["id"])
             cur.execute("""SELECT u.id, u.email, u.nume FROM public.users u
                            JOIN public.user_tenants ut ON ut.user_id=u.id
                            WHERE ut.tenant_id=%s AND u.rol='client' ORDER BY u.id""", (t["id"],))
             conturi = cur.fetchall()
-    principal = next((c for c in conturi if c["id"] == pid), (conturi[0] if conturi else None))
+    # Fara fallback: `_titular_client` ESTE regula, deci n-are pe ce sa cada. Fallback-ul de aici
+    # era chiar jumatatea care mintea — citirea il avea, scrierile nu.
+    principal = next((c for c in conturi if c["id"] == pid), None)
     suplimentare = [c for c in conturi if principal and c["id"] != principal["id"]]
     # [R63] A DOUA adresa a aceleiasi persoane. Pachetul lunar NU pleaca la `users.email`, ci la
     # `firma_profil` (`pachete_api`: patron_email, altfel email). Ecranul le arata pe amandoua si
@@ -3783,10 +3814,9 @@ def portal_schimba_email(date: SchimbaEmailIn, ctx=Depends(cere_client)):
         raise HTTPException(400, EMAIL_INVALID)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute("SELECT principal_client_id FROM public.tenants WHERE id=%s", (t["id"],))
-            pid = cur.fetchone()["principal_client_id"]
-            if pid != ctx["uid"]:
-                raise HTTPException(403, "doar patronul poate schimba emailul principal")
+            pid = _titular_client(cur, t["id"])   # [R62 (b)] aceeasi regula ca la citire
+            if pid is None or pid != ctx["uid"]:
+                raise HTTPException(403, MESAJ_DOAR_TITULARUL)
             _adresa_e_libera(cur, email_nou, ctx["uid"])
             # [R62 (1)] NU se mai scrie `users.email` aici. Adresa e identitatea de autentificare
             # (intrarea se face prin magic-link pe email), deci un UPDATE imediat insemna ca cine
@@ -3829,10 +3859,9 @@ def portal_adauga_acces(date: AdaugaAccesIn, ctx=Depends(cere_client)):
         raise HTTPException(400, EMAIL_INVALID)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute("SELECT principal_client_id FROM public.tenants WHERE id=%s", (t["id"],))
-            pid = cur.fetchone()["principal_client_id"]
-            if pid != ctx["uid"]:
-                raise HTTPException(403, "doar patronul poate adăuga acces")
+            pid = _titular_client(cur, t["id"])   # [R62 (b)] aceeasi regula ca la citire
+            if pid is None or pid != ctx["uid"]:
+                raise HTTPException(403, MESAJ_DOAR_TITULARUL)
             cur.execute("SELECT accounting_firm_id FROM public.tenants WHERE id=%s", (t["id"],))
             firm_id = cur.fetchone()["accounting_firm_id"]
             cur.execute("SELECT id, rol, activ, accounting_firm_id FROM public.users "
@@ -3869,10 +3898,9 @@ def portal_revoca_acces(user_id: int, tenant_id: Optional[int] = None, ctx=Depen
     t = _tenant_client(ctx, tenant_id)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute("SELECT principal_client_id FROM public.tenants WHERE id=%s", (t["id"],))
-            pid = cur.fetchone()["principal_client_id"]
-            if pid != ctx["uid"]:
-                raise HTTPException(403, "doar patronul poate revoca acces")
+            pid = _titular_client(cur, t["id"])   # [R62 (b)] aceeasi regula ca la citire
+            if pid is None or pid != ctx["uid"]:
+                raise HTTPException(403, MESAJ_DOAR_TITULARUL)
             if user_id == pid:
                 raise HTTPException(400, "nu poți revoca propriul acces principal")
             cur.execute("DELETE FROM public.user_tenants WHERE user_id=%s AND tenant_id=%s", (user_id, t["id"]))
