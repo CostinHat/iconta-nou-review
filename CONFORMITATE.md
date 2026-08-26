@@ -1242,6 +1242,8 @@ scos ce nu se știa**, nu din defecte noi.
 
 ### R44 — Un element din coadă e legat de o firmă care nu există
 
+> **27.08.2026** — necunoscuta pe care sta si R44, si R50 (*ce anume depinde de un `tenant_id` in `public`*) e **masurata**: 13 tabele, din care 10 fara cheie straina, 67 de randuri orfane pe doi tenanti disparuti. Lista, in **R72**; ce inseamna pentru calea de stergere, in **R50**.
+
 - **felul**: ARTEFACT
 - **cine deblochează**: INTERN
 - **unde intră**: E1 · TRASEE XI.4 · interdicția 32 · **PRAG 3**
@@ -1388,6 +1390,9 @@ scos ce nu se știa**, nu din defecte noi.
   | **total orfani** | — | **65** | — | **2** |
 
   Cele 44 de rânduri de pe 14963 sunt **tot ce a mai rămas din firma aia**. Nu e o urmă tehnică: e evidența că a fost lucrată, fără nimic din ce s-a lucrat.
+- **REMĂSURAT 27.08.2026, și clasa A CRESCUT peste noapte** *(pe commit `3fb126e`, numai SELECT)*: nu **12** tabele din `public` cu `tenant_id`, ci **13**. Al treisprezecelea e `public.schimbari_email`, creat ieri la 13:34 (`70b20f9`, reparația punctului (1) din R62) — și **nu e nici el în `gdpr_sterge`**. Asta e partea care contează mai mult decât cifra: **lista se lungește la fiecare funcționalitate nouă, iar calea de ștergere nu se uită la ea.** `gdpr_sterge.executa` atinge **2 din 13** (`audit_log`, `user_tenants`) și apoi face `DELETE FROM public.tenants`; celelalte **11** rămân.
+- **ȘI DOUĂ DINTRE ELE AR OPRI ȘTERGEREA LA MIJLOC**, ceea ce e mai rău decât să lase urme: din cele 13, doar **3** au cheie străină pe `tenant_id` — `user_tenants` cu **ON DELETE CASCADE**, iar `anunturi_cabinet` și `solicitari_client` cu **ON DELETE NO ACTION**. În ziua în care un cabinet are un anunț sau o solicitare de client, `DELETE FROM public.tenants` **eșuează cu violare de cheie străină**, după ce `DROP SCHEMA CASCADE` a rulat deja pe firmele lui. Azi nu lovește fiindcă amândouă au **0** rânduri — deci calea n-a fost niciodată exercitată pe un caz cu conținut, exact ca la instanța din jurnalul PostgreSQL de mai jos.
+- **restul de 10 n-au nicio cheie străină**: `alerte_control_emise`, `audit_log`, `declaratii_coada`, `declaratii_depuse`, `pachet_povestea`, `reges_chei`, `reges_mesaje`, `schimbari_email`, `spv_token`, `urme_portal`. Nimic nu le leagă, deci nimic nu le-ar opri să rămână în urmă. **Lista completă, cu rânduri și indecși, e în R72** — acolo a fost cerută ca pas 1 al căii de ștergere a unei firme.
 - **CORECTURĂ LA CE AM SCRIS IERI, din jurnalul PostgreSQL.** Scrisesem că *„niciuna n-a fost ștearsă prin aplicație"*, pe temeiul că `public.gdpr_stergeri` e gol. **Jurnalul serverului arată altceva**, iar el nu putea fi citit din bază:
 
   ```
