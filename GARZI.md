@@ -4935,3 +4935,17 @@ baza refuză o redeschidere fără motiv, nu doar ruta. Migrare 17/17 + oglindă
 **Ce NU face, declarat:** nu verifică echilibrul și nici orfanii — Costin le-a amânat explicit
 până la o măsurătoare pe ce s-ar bloca pe firme reale. Și **nu există încă un clichet** care să
 asertea că poarta refuză: azi e o probă funcțională, nu un gard.
+
+## Un modul atribuit unei rute trebuie să fie VIZIBIL ei (26.08.2026, R60)
+
+**`scripts/scan_trasee.py` reparat + `core/test_trasee.py` — 2 gărzi noi.** Harta de aliasuri de nivel-modul se construia cu `ast.walk(tree)`, care intră **și** în corpurile funcțiilor: `from core import stocuri_cv_api as _cv` dintr-o rută îl suprascria pe `from core import cont_valid as _cv` de la linia 30. **Măsurat: 1 alias umbrit, 14 rute** care primeau `articole` și `miscari_stoc` pe care nu le ating.
+
+**Ce face imposibil:** un alias legat corect la nivel de modul, umbrit de importul din corpul **altei** funcții · un modul atribuit unei rute fără să fie importat de unde ruta îl poate vedea (anti-vacuu pe `main.py` real, nu pe fișier sintetic) · adnotarea `ce face` din `TRASEE_VERIFICARI.md` care nu mai spune ce măsoară instrumentul.
+
+**A treia față a aceleiași greșeli**, și de-aia sunt trei teste, nu unul: prima era un nume legat local de un **import** (ruta de NIR, 25.08), a doua un nume legat local de o **variabilă** (`with conn.cursor() as _c`, 25.08), a treia e un nume legat **corect**, stricat din altă parte. Fiecare are și direcția inversă probată, ca o reparație prea largă să nu golească inventarul.
+
+**Direcția tăcută e cea care a cerut gardul (METODA §22).** Pe cele 14 instrumentul **adăuga** tabele — zgomotos, se vede. Dar ruta care chiar cheamă `stocuri_cv_api` primea răspunsul corect **dintr-un accident**, iar direcția care ar fi **scos** un modul real n-ar fi produs zgomot, ci tăcere.
+
+**Și o gardă doc↔cod care lipsea de tot:** `TRASEE_VERIFICARI.md` cerea doar ca rândul `ce face` să **existe**, nu să coincidă cu instrumentul. Măsurat la construcție: **121 din 192 difereau**, din care doar 4 din reparația de azi — restul de **117** stătute din ziua în care `scrie X` s-a despărțit de `poate atinge, prin modul X`. Verificările se scriau pe o afirmație mai tare decât măsurătoarea.
+
+**Ce NU face, declarat:** garda spune când adnotarea diverge de instrument; **nu** spune dacă propoziția scrisă sub ea mai are obiect. Cele două verificări rămase fără obiect (`nota-inventariere`, `achizitie-neinregistrat`) au fost găsite citind, nu măsurând. Iar `main.py` e singurul fișier în care se caută umbrirea.

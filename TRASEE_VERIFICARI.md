@@ -27,7 +27,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: scrie declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
 
 - [x] declarația intră în coadă **numai cu verdict de validare păstrat** — altfel ruta refuză și spune de ce
 - rândul din coadă poartă: tip, perioadă, firmă, cine a pregătit, momentul
@@ -37,7 +37,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: scrie declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
 
 - [x] cine aprobă e consemnat, și e diferit de cine a pregătit dacă patru ochi e activ **și** posibil
 - dacă patru ochi e activ și imposibil (un singur validator), ruta refuză cu motivul, nu tace
@@ -47,7 +47,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
 
 - [x] ruta refuză o declarație fără verdict de validare păstrat, sau cu verdict pe altă amprentă decât fișierul curent
 - se scrie în `declaratii_depuse`: tip, perioadă, momentul, autorul autorizării, amprenta fișierului, indexul de la autoritate dacă există
@@ -58,7 +58,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: scrie declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
 
 - [x] respingerea poartă **motivul**, obligatoriu
 - declarația nu dispare din coadă — rămâne, cu starea „respinsă" și motivul vizibil
@@ -89,7 +89,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie declaratii_depuse (DELETE/INSERT) — prin `istoric_declaratii_import_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_depuse (DELETE/INSERT) — prin `istoric_declaratii_import_api`*
 
 - [x] același conținut ca la pasul de încărcare — ce s-a văzut la previzualizare e ce s-a salvat
 - o a doua rulare cu același fișier nu dublează rândurile
@@ -98,7 +98,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie declaratii_depuse (DELETE/INSERT) · migrare_status (INSERT) — prin `istoric_declaratii_import_api`, `migrare_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_depuse (DELETE/INSERT) · migrare_status (INSERT) — prin `istoric_declaratii_import_api`, `migrare_api`*
 
 - [x] fiecare declarație din fișier are un rând în `declaratii_depuse`, cu tip, perioadă și dată de depunere
 - numărul de rânduri scrise = numărul de declarații din fișier, minus cele respinse, iar respinsele sunt numite
@@ -115,7 +115,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_api_key` · **fara rol***
 
-*ce face: scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `facturi_api`, `stocuri_cv_api`*
 
 - [x] ruta cu cheie de API aplică **aceleași reguli** ca ruta din interfață: numerotare, cod fiscal obligatoriu, notă cu conturi valide
 - o cheie de API nu are rol, deci nu poate face ce cere admin_firma pe ruta echivalentă — verifică dacă asta e adevărat sau dacă cheia ocolește restricția
@@ -131,7 +131,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
 - [x] **nu pot scrie verificarea fără să știu ce o deosebește de `/facturi/emite`.** Creează ciornă? Emite direct? De completat din cod
 - dacă emite, se aplică verificările de la `emite`
@@ -143,7 +143,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol***
 
-*ce face: scrie facturi_recurente (DELETE/INSERT/UPDATE) — prin `facturi_recurente`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): facturi_recurente (DELETE/INSERT/UPDATE) — prin `facturi_recurente`*
 
 - [x] șablonul recurent nu emite nimic singur — emiterea trece prin `facturi/emite`, cu regulile ei
 - modificarea unui șablon nu atinge facturile deja emise din el
@@ -155,7 +155,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol***
 
-*ce face: scrie facturi_recurente (DELETE/INSERT/UPDATE) — prin `facturi_recurente`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): facturi_recurente (DELETE/INSERT/UPDATE) — prin `facturi_recurente`*
 
 - [x] șablonul recurent nu emite nimic singur — emiterea trece prin `facturi/emite`, cu regulile ei
 - modificarea unui șablon nu atinge facturile deja emise din el
@@ -166,7 +166,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol***
 
-*ce face: scrie facturi_recurente (DELETE/INSERT/UPDATE) — prin `facturi_recurente`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): facturi_recurente (DELETE/INSERT/UPDATE) — prin `facturi_recurente`*
 
 - [x] șablonul recurent nu emite nimic singur — emiterea trece prin `facturi/emite`, cu regulile ei
 - modificarea unui șablon nu atinge facturile deja emise din el
@@ -178,7 +178,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie articole (INSERT/UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `facturi_api`, `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `facturi_api`, `stocuri_cv_api`*
 
 - [x] factura primește **următorul număr din serie**, fără goluri; două emiteri simultane nu produc același număr
 - exemplarul se îngheață cu amprenta; o regenerare ulterioară produce alt exemplar, nu îl rescrie pe primul
@@ -190,7 +190,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
 - [x] schimbarea seriei sau a numărului de start **nu poate produce un număr deja folosit** — se refuză, cu numărul care ar fi intrat în conflict
 - numerotarea nu se poate reduce sub ultimul număr emis
@@ -200,7 +200,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
 - [x] **o factură emisă nu se șterge.** Se stornează. Ștergerea ar produce un gol în serie
 - o factură cu notă contabilă nu se șterge — se rupe lanțul P14
@@ -223,7 +223,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`, `firma_profil_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`, `firma_profil_api`*
 
 - [x] trimiterea e un **eveniment de predare**: cui, când, la ce adresă, cu ce atașament
 - se trimite exemplarul emis, cu amprenta lui — nu o regenerare la momentul trimiterii
@@ -234,7 +234,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: F131: supapa per factura — scrie facturi (UPDATE) · firma_profil (UPDATE) — prin `scadentar`*
+*ce face: F131: supapa per factura — poate atinge, prin modul (PLAFON, nemasurat pe ruta): facturi (UPDATE) · firma_profil (UPDATE) — prin `scadentar`*
 
 - [x] oprirea notificărilor pe o factură nu schimbă scadența și nu afectează calculul de întârziere
 - starea se consemnează cu autorul — e o decizie despre relația cu clientul
@@ -243,7 +243,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
 - [x] stornarea e un **document nou**, care o referă pe cea stornată. Factura originală rămâne, cu numărul ei
 - suma stornată nu depășește suma facturii
@@ -254,7 +254,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma · scrie in facturi*
 
-*ce face: Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal). — scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
+*ce face: Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal). — scrie facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · firma_profil (UPDATE) — prin `facturi_api`*
 
 - [x] proforma sau avizul devine factură fiscală cu **numerotare nouă**, din seria de facturi, nu cu numărul proformei
 - documentul original rămâne, cu starea „transformat" și legătura către factura rezultată
@@ -292,7 +292,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: corp: {salariat_id, an, luna} — scrie state_plata (INSERT/UPDATE) — prin `stat_plata_emis`*
+*ce face: corp: {salariat_id, an, luna} — poate atinge, prin modul (PLAFON, nemasurat pe ruta): state_plata (INSERT/UPDATE) — prin `stat_plata_emis`*
 
 - [x] corecția e **al doilea exemplar**, cu referință la primul. Primul rămâne
 - diferența față de exemplarul corectat e vizibilă, pe fiecare cifră schimbată
@@ -302,7 +302,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: corp: {an, luna} — scrie state_plata (INSERT/UPDATE) — prin `stat_plata_emis`*
+*ce face: corp: {an, luna} — poate atinge, prin modul (PLAFON, nemasurat pe ruta): state_plata (INSERT/UPDATE) — prin `stat_plata_emis`*
 
 - [x] statul se îngheață cu amprentă, exemplar numerotat, autor, moment
 - cifrele emise nu se mai recalculează la citire; un recalcul care diferă produce contradicție vizibilă, nu rescriere
@@ -313,7 +313,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: corp: {exemplar_id, motiv} — scrie state_plata (INSERT/UPDATE) — prin `stat_plata_emis`*
+*ce face: corp: {exemplar_id, motiv} — poate atinge, prin modul (PLAFON, nemasurat pe ruta): state_plata (INSERT/UPDATE) — prin `stat_plata_emis`*
 
 - [x] motivul marchează contradicția ca **asumată**, nu o stinge — rândul rămâne în listă, cu motivul, cine și când
 - un motiv gol se refuză
@@ -341,7 +341,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: scrie concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
 
 - [x] codul de indemnizație e din nomenclatorul oficial; unul din afară se refuză
 - pentru codurile care cer CNP-ul persoanei îngrijite — 09, 17, 91, 92 — câmpul e obligatoriu la introducere, nu la generarea D112
@@ -354,7 +354,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: scrie concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
 
 - [x] **un certificat care a intrat într-un stat de plată emis nu se șterge** — se corectează prin exemplar nou
 - ștergerea recalculează episodul: dacă certificatul șters era inițial, procentul celorlalte din episod se schimbă
@@ -370,7 +370,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
 
 - [x] nota respectă partida dublă la creare, nu la validare
 - conturile există în plan — acum se refuză
@@ -383,7 +383,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
 
 - [x] o notă validată nu se șterge — se stornează. Ștergerea ar rupe lanțul către documentul justificativ
 - ștergerea unei ciorne nu atinge documentul din care a ieșit
@@ -393,7 +393,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
 
 - [x] o notă **validată** nu se editează — se stornează
 - editarea unei ciorne păstrează partida dublă
@@ -404,7 +404,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
 
 - [x] validarea verifică **înainte** de a marca: partidă dublă, conturi existente, perioadă deschisă, document justificativ prezent
 - nota validată intră în evidență; din acel moment nu se mai editează și nu se șterge
@@ -502,6 +502,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - nota atinge și `mijloace_fixe`: verifică ce se întâmplă cu un mijloc fix lipsă la inventar
 - mișcările de stoc au aceeași dată cu nota
 - **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
+- **ADNOTARE SCHIMBATĂ 26.08.2026 — R60.** Din rândul `ce face` s-a ȘTERS *«poate atinge, prin modul: `articole`, `miscari_stoc` — prin `stocuri_cv_api`»*. Nu ruta s-a schimbat, ci instrumentul: `scan_trasee.py` rezolva aliasul `_cv` prin harta altcuiva, iar aici `_cv` e `cont_valid` — care doar confruntă contul cu planul firmei și nu scrie nimic. Verificările de mai sus rămân valabile **ca intenție**; ce nu se mai poate afirma e unde ajunge efectul. Verificarea *«mișcările de stoc au aceeași dată cu nota»* rămâne **fără obiect**: ruta nu produce nicio mișcare de stoc. Că o notă de inventariere nu mișcă stocul e o absență care merită întrebată separat — dar nu se mai poate verifica aici. Restul rândurilor, inclusiv cel despre `mijloace_fixe`, stau pe scrierea PROPRIE a rutei și rămân.
 
 ### `POST /tenants/{tenant_id}/nota-leasing`
 
@@ -514,6 +515,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - la operațional, rata e cheltuială integral
 - dobânda din rată e separată de principal, nu topită în cheltuială
 - **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
+- **ADNOTARE SCHIMBATĂ 26.08.2026 — R60.** Din rândul `ce face` s-a ȘTERS *«poate atinge, prin modul: `articole`, `miscari_stoc` — prin `stocuri_cv_api`»*. Nu ruta s-a schimbat, ci instrumentul: `scan_trasee.py` rezolva aliasul `_cv` prin harta altcuiva, iar aici `_cv` e `cont_valid` — care doar confruntă contul cu planul firmei și nu scrie nimic. Verificările de mai sus rămân valabile **ca intenție**; ce nu se mai poate afirma e unde ajunge efectul.
 
 ### `POST /tenants/{tenant_id}/nota-lichidare`
 
@@ -525,6 +527,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - impozitul pe dividende se aplică la distribuirea din lichidare
 - verifică dacă ruta permite lichidarea unei firme cu datorii nestinse
 - **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
+- **ADNOTARE SCHIMBATĂ 26.08.2026 — R60.** Din rândul `ce face` s-a ȘTERS *«poate atinge, prin modul: `articole`, `miscari_stoc` — prin `stocuri_cv_api`»*. Nu ruta s-a schimbat, ci instrumentul: `scan_trasee.py` rezolva aliasul `_cv` prin harta altcuiva, iar aici `_cv` e `cont_valid` — care doar confruntă contul cu planul firmei și nu scrie nimic. Verificările de mai sus rămân valabile **ca intenție**; ce nu se mai poate afirma e unde ajunge efectul.
 
 ### `POST /tenants/{tenant_id}/nota-obiect-inventar`
 
@@ -558,6 +561,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - verifică dacă limita se cere din registru sau e literal
 - perisabilitățile se constată la inventar, nu în orice moment
 - **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
+- **ADNOTARE SCHIMBATĂ 26.08.2026 — R60.** Din rândul `ce face` s-a ȘTERS *«poate atinge, prin modul: `articole`, `miscari_stoc` — prin `stocuri_cv_api`»*. Nu ruta s-a schimbat, ci instrumentul: `scan_trasee.py` rezolva aliasul `_cv` prin harta altcuiva, iar aici `_cv` e `cont_valid` — care doar confruntă contul cu planul firmei și nu scrie nimic. Verificările de mai sus rămân valabile **ca intenție**; ce nu se mai poate afirma e unde ajunge efectul.
 
 ### `POST /tenants/{tenant_id}/nota-productie`
 
@@ -580,6 +584,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - verifică dacă ruta distinge deductibil de nedeductibil, sau lasă totul deductibil
 - provizionul se reia când motivul dispare — verifică dacă există calea inversă
 - **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
+- **ADNOTARE SCHIMBATĂ 26.08.2026 — R60.** Din rândul `ce face` s-a ȘTERS *«poate atinge, prin modul: `articole`, `miscari_stoc` — prin `stocuri_cv_api`»*. Nu ruta s-a schimbat, ci instrumentul: `scan_trasee.py` rezolva aliasul `_cv` prin harta altcuiva, iar aici `_cv` e `cont_valid` — care doar confruntă contul cu planul firmei și nu scrie nimic. Verificările de mai sus rămân valabile **ca intenție**; ce nu se mai poate afirma e unde ajunge efectul.
 
 ### `POST /tenants/{tenant_id}/nota-sgr`
 
@@ -614,6 +619,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - subvenția de exploatare e venit în perioada în care se acoperă cheltuiala
 - verifică dacă cele două se disting
 - **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
+- **ADNOTARE SCHIMBATĂ 26.08.2026 — R60.** Din rândul `ce face` s-a ȘTERS *«poate atinge, prin modul: `articole`, `miscari_stoc` — prin `stocuri_cv_api`»*. Nu ruta s-a schimbat, ci instrumentul: `scan_trasee.py` rezolva aliasul `_cv` prin harta altcuiva, iar aici `_cv` e `cont_valid` — care doar confruntă contul cu planul firmei și nu scrie nimic. Verificările de mai sus rămân valabile **ca intenție**; ce nu se mai poate afirma e unde ajunge efectul.
 
 ### `POST /tenants/{tenant_id}/nota-tva-incasare`
 
@@ -668,7 +674,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: Trimite o factura emisa in SPV (F126/F160) — scrie efactura_trimiteri (INSERT/UPDATE) — prin `efactura_send`*
+*ce face: Trimite o factura emisa in SPV (F126/F160) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): efactura_trimiteri (INSERT/UPDATE) — prin `efactura_send`*
 
 - [x] rândul poartă starea explicită: în curs / confirmată / respinsă / **nelămurită**
 - fără identificator de la autoritate, starea nu e „confirmată"
@@ -706,7 +712,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie extras_linii (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `reconciliere_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): extras_linii (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `reconciliere_api`*
 
 - [x] fiecare tranzacție importată produce **o singură** linie de extras
 - un extras importat de două ori nu dublează liniile — verifică pe numărul extrasului și pe conținut
@@ -718,7 +724,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie extras_linii (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `reconciliere_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): extras_linii (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `reconciliere_api`*
 
 - [x] nota produsă respectă partida dublă și folosește conturi existente
 - linia de extras trece în starea „contată" și nu se mai poate conta a doua oară
@@ -758,7 +764,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · nir (INSERT) · nir_linii (INSERT) — prin `stocuri_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): inregistrari (INSERT) · inregistrari_linii (INSERT) · nir (INSERT) · nir_linii (INSERT) — prin `stocuri_api`*
 
 - [x] NIR-ul primește **număr din serie**, fără goluri
 - cantitățile recepționate nu depășesc cantitățile de pe factură — sau diferența e consemnată ca minus la recepție
@@ -777,7 +783,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie casa_operatiuni (DELETE/INSERT) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (DELETE/INSERT) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`*
 
 - [x] **soldul casei nu poate deveni negativ** — o plată peste sold se refuză
 - plafonul de plăți în numerar către o persoană juridică se verifică pe zi și pe operațiune
@@ -789,7 +795,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie casa_operatiuni (DELETE/INSERT) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (DELETE/INSERT) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`*
 
 - [x] **o operațiune de casă dintr-o zi închisă nu se șterge** — registrul de casă se închide zilnic
 - ștergerea recalculează soldul; dacă soldul ar deveni negativ la vreo operațiune ulterioară, se refuză
@@ -810,7 +816,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
 - [x] inventarul compară **stocul faptic** cu cel scriptic; diferența e plus sau minus, nu se ajustează tăcut
 - fiecare diferență produce o mișcare de stoc, iar suma mișcărilor = diferența totală
@@ -851,7 +857,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma · scrie in perioade_blocate*
 
-*ce face: scrie perioade_blocate (DELETE)*
+*ce face: scrie perioade_blocate (DELETE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_inchideri (INSERT) — prin `migrare_inchideri`*
 
 - [x] redeschiderea e act consemnat, cu **motiv obligatoriu** — P15
 - redeschiderea marchează documentele emise din acea perioadă ca fiind **sub rezervă**
@@ -864,7 +870,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma · scrie in perioade_blocate*
 
-*ce face: scrie perioade_blocate (INSERT)*
+*ce face: scrie perioade_blocate (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): perioade_inchideri (INSERT) — prin `migrare_inchideri`*
 
 - [x] închiderea e un act deliberat, cu **autor și moment** consemnate
 - după închidere, nicio scriere în perioada aceea nu mai trece — verificat pe toate cele 39 de operațiuni, nu doar pe cele testate
@@ -885,7 +891,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie artefacte_produse (INSERT) — prin `artefacte`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): artefacte_produse (INSERT) — prin `artefacte`*
 
 - [x] aceleași ca mai sus
 - **plus:** un artefact produs pe regimul greșit e conform ca formă și fals ca fond. Ruta refuză, sau spune că nu poate verifica regimul
@@ -894,7 +900,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie artefacte_produse (INSERT) — prin `artefacte`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): artefacte_produse (INSERT) — prin `artefacte`*
 
 - [x] artefactul se păstrează cu: conținutul, momentul, autorul, amprenta, numărul exemplarului
 - verdictul validării se păstrează cu artefactul, nu separat
@@ -910,7 +916,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie firma_profil (UPDATE) — prin `firma_profil_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (UPDATE) — prin `firma_profil_api`*
 
 - [x] **datele fiscale de aici intră în declarații** — CUI, denumire, adresă, capital. O modificare fără rol schimbă ce se depune
 - CUI-ul modificat: verifică dacă e permis deloc. Un CUI schimbat pe o firmă cu declarații depuse rupe corespondența cu tot ce s-a depus
@@ -925,7 +931,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol***
 
-*ce face: scrie firma_profil (UPDATE) — prin `firma_profil_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (UPDATE) — prin `firma_profil_api`*
 
 - [x] **nu pot scrie verificarea fără să știu ce e „model".** Model de firmă? De document? De contare? De completat din cod
 - **completat din cod (26.08.2026): „model” e MODELUL VIZUAL AL FACTURII** — `font`, `culoare`, `logo`, prin `firma_profil_api.salveaza_model`. Nu e model de date si nu e regim fiscal: e aspectul PDF-ului predat clientului. De aceea e pe `cere_context` — o preferinta de prezentare, nu o decizie despre ce datoreaza firma
@@ -947,7 +953,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie firma_profil (INSERT/UPDATE) · migrare_status (INSERT) — prin `firma_profil_api`, `migrare_api`, `vector_fiscal_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (INSERT/UPDATE) · migrare_status (INSERT) — prin `firma_profil_api`, `migrare_api`, `vector_fiscal_api`*
 
 - [x] vectorul decide ce declarații datorează firma — o schimbare produce declarații noi datorate și altele care nu mai sunt
 - schimbarea are dată de la care se aplică; perioadele anterioare rămân sub vectorul vechi
@@ -964,7 +970,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: F183: audit de PRELUARE firma — coerenta INTERNA a pachetului preluat de la contabilul anterior (balanta echilibrata, defalcare parteneri vs sintetic, solduri fiscale vs  — scrie artefacte_produse (INSERT) — prin `artefacte`*
+*ce face: F183: audit de PRELUARE firma — coerenta INTERNA a pachetului preluat de la contabilul anterior (balanta echilibrata, defalcare parteneri vs sintetic, solduri fiscale vs  — poate atinge, prin modul (PLAFON, nemasurat pe ruta): artefacte_produse (INSERT) — prin `artefacte`*
 
 - [x] auditul spune ce a găsit **și pe ce s-a uitat** — o firmă preluată fără evidență completă nu primește verdict favorabil, primește „nu pot verifica" cu lista domeniilor
 - fiecare constatare poartă domeniul și perioada la care se referă
@@ -983,7 +989,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: Creează câte un tenant pentru fiecare firmă selectată — scrie firma_profil (INSERT/UPDATE) · migrare_status (INSERT) · tenants (INSERT/UPDATE) · user_tenants (INSERT) — prin `migrare_api`, `tenant_provisioning`*
+*ce face: Creează câte un tenant pentru fiecare firmă selectată — poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (INSERT/UPDATE) · migrare_status (INSERT) · tenants (INSERT/UPDATE) · user_tenants (INSERT) — prin `migrare_api`, `tenant_provisioning`*
 
 - [x] fiecare firmă selectată primește **schemă proprie**, iar `tenants` are rândul ei — o firmă fără schemă e o afirmație falsă despre lume
 - `user_tenants` leagă firma de cabinetul care a importat-o
@@ -1002,7 +1008,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: Marchează un strat 'gata' sau 'in_lucru' (cu notă obligatorie la in_lucru). — scrie migrare_status (INSERT) — prin `migrare_api`*
+*ce face: Marchează un strat 'gata' sau 'in_lucru' (cu notă obligatorie la in_lucru). — poate atinge, prin modul (PLAFON, nemasurat pe ruta): migrare_status (INSERT) — prin `migrare_api`*
 
 - [x] trecerea în „in_lucru" cere notă, cum spune ruta — verifică că o refuză fără ea
 - starea poartă cine a marcat-o și când
@@ -1021,7 +1027,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie articole (INSERT) · miscari_stoc (INSERT) — prin `articole_import_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT) · miscari_stoc (INSERT) — prin `articole_import_api`*
 
 - [x] ce s-a văzut la previzualizare e ce s-a importat — același număr, aceleași articole
 - articolele cu cod duplicat în fișier se semnalează, nu se suprascriu între ele
@@ -1032,7 +1038,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie articole (INSERT) · miscari_stoc (INSERT) — prin `articole_import_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT) · miscari_stoc (INSERT) — prin `articole_import_api`*
 
 - [x] **previzualizarea scrie în stoc?** Dacă `articole` și `miscari_stoc` se scriu la încărcare, nu e previzualizare — e import. Verifică și spune care e
 - articolele cu cod duplicat în fișier se semnalează, nu se suprascriu între ele
@@ -1041,7 +1047,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie asociati (DELETE/INSERT) — prin `asociati_import_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): asociati (DELETE/INSERT) — prin `asociati_import_api`*
 
 - [x] `DELETE/INSERT` — verifică ce se întâmplă cu asociații care nu mai sunt în fișier: se șterg, iar aia e o schimbare de structură a firmei, nu un import
 
@@ -1049,7 +1055,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie asociati (DELETE/INSERT) · migrare_status (INSERT) — prin `asociati_import_api`, `migrare_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): asociati (DELETE/INSERT) · migrare_status (INSERT) — prin `asociati_import_api`, `migrare_api`*
 
 - [x] previzualizarea nu salvează
 - suma procentelor de participare = 100, sau se semnalează
@@ -1058,7 +1064,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie mijloace_fixe (DELETE/INSERT) — prin `mijloace_fixe_import_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): mijloace_fixe (DELETE/INSERT) — prin `mijloace_fixe_import_api`*
 
 - [x] ce s-a văzut la previzualizare e ce s-a importat
 - amortizarea cumulată la data preluării nu depășește valoarea de intrare
@@ -1068,7 +1074,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie migrare_status (INSERT) · mijloace_fixe (DELETE/INSERT) — prin `migrare_api`, `mijloace_fixe_import_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): migrare_status (INSERT) · mijloace_fixe (DELETE/INSERT) — prin `migrare_api`, `mijloace_fixe_import_api`*
 
 - [x] **nu scrie nimic** — verificat structural, nu prin absența efectului
 - durata de amortizare a fiecărui mijloc fix e confruntată cu catalogul; cele din afara intervalului se numesc, cu rândul lor
@@ -1078,7 +1084,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: Salveaza soldurile partenerilor unei firme (inlocuieste ce era). — scrie solduri_parteneri (DELETE/INSERT) — prin `solduri_parteneri_api`*
+*ce face: Salveaza soldurile partenerilor unei firme (inlocuieste ce era). — poate atinge, prin modul (PLAFON, nemasurat pe ruta): solduri_parteneri (DELETE/INSERT) — prin `solduri_parteneri_api`*
 
 - [x] ce s-a văzut la previzualizare e ce s-a salvat
 - divergența față de balanță, dacă a existat, rămâne vizibilă după salvare — nu se stinge prin acceptare
@@ -1087,7 +1093,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: Parseaza fisierul de parteneri si intoarce preview + verificare coerenta vs balanta. — scrie migrare_status (INSERT) · solduri_parteneri (DELETE/INSERT) — prin `migrare_api`, `solduri_parteneri_api`*
+*ce face: Parseaza fisierul de parteneri si intoarce preview + verificare coerenta vs balanta. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): migrare_status (INSERT) · solduri_parteneri (DELETE/INSERT) — prin `migrare_api`, `solduri_parteneri_api`*
 
 - [x] verificarea de coerență față de balanță: suma soldurilor partenerilor = soldul contului corespondent. Diferența se arată cu **ambele cifre**, nu ca „există o divergență"
 - un partener fără cod fiscal se semnalează la încărcare — nu intră în D394 și nu se corelează în VIES
@@ -1118,7 +1124,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: Import registru incasari-plati la preluarea unui PFA — scrie migrare_status (INSERT) · rip_operatiuni (INSERT) — prin `migrare_api`, `rip_migrare_api`*
+*ce face: Import registru incasari-plati la preluarea unui PFA — poate atinge, prin modul (PLAFON, nemasurat pe ruta): migrare_status (INSERT) · rip_operatiuni (INSERT) — prin `migrare_api`, `rip_migrare_api`*
 
 - [x] **nu pot scrie verificarea fără să știu ce e RIP.** Registrul de inventar și producție? Registrul imobilizărilor? De completat din cod, ca la `retete-import`
 - **completat din cod (26.08.2026), cum ai cerut** — **RIP = Registrul de Încasări și Plăți** (partidă simplă, PFA). `core/rip_migrare_api.py`: partida simplă **nu are balanță de deschidere**; registrul e CRONOLOGIC, deci la preluare se importă operațiunile anului curent de la 1 ianuarie până la data preluării, iar soldul e implicit din sumă, nu un rând
@@ -1130,7 +1136,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: Importa salariatii cu CNP valid (upsert pe CNP) — scrie salariati (INSERT) — prin `salariati_import_api`*
+*ce face: Importa salariatii cu CNP valid (upsert pe CNP) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): salariati (INSERT) — prin `salariati_import_api`*
 
 - [x] upsert-ul nu suprascrie date existente fără să spună ce a schimbat
 - un salariat existent cu alt nume la același CNP e o divergență, nu o actualizare tăcută
@@ -1139,7 +1145,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: Parseaza exportul de salariati si intoarce preview cu validare CNP (nu salveaza). — scrie migrare_status (INSERT) · salariati (INSERT) — prin `migrare_api`, `salariati_import_api`*
+*ce face: Parseaza exportul de salariati si intoarce preview cu validare CNP (nu salveaza). — poate atinge, prin modul (PLAFON, nemasurat pe ruta): migrare_status (INSERT) · salariati (INSERT) — prin `migrare_api`, `salariati_import_api`*
 
 - [x] **previzualizarea nu salvează** — aceeași verificare structurală ca la solduri
 - CNP-urile nevalide se numesc, cu rândul lor din fișier
@@ -1149,7 +1155,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: Salvează soldurile inițiale ale unei firme (înlocuiește ce era). — scrie plan_conturi (INSERT) · solduri_initiale (DELETE/INSERT) — prin `solduri_api`*
+*ce face: Salvează soldurile inițiale ale unei firme (înlocuiește ce era). — poate atinge, prin modul (PLAFON, nemasurat pe ruta): plan_conturi (INSERT) · solduri_initiale (DELETE/INSERT) — prin `solduri_api`*
 
 - [x] ce s-a văzut la previzualizare e ce s-a salvat
 - „înlocuiește ce era" — verifică ce se întâmplă cu soldurile anterioare: se șterg, sau se păstrează ca versiune?
@@ -1159,7 +1165,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: Parsează o balanță și întoarce preview (nu salvează). — scrie migrare_status (INSERT) · plan_conturi (INSERT) · solduri_initiale (DELETE/INSERT) — prin `migrare_api`, `solduri_api`*
+*ce face: Parsează o balanță și întoarce preview (nu salvează). — poate atinge, prin modul (PLAFON, nemasurat pe ruta): migrare_status (INSERT) · plan_conturi (INSERT) · solduri_initiale (DELETE/INSERT) — prin `migrare_api`, `solduri_api`*
 
 - [x] **previzualizarea nu salvează** — ruta spune că întoarce preview; verifică structural că nu scrie în `solduri_initiale`
 - dacă totuși scrie (numele tabelelor sugerează că da), atunci previzualizarea nu e previzualizare, iar aia e o constatare
@@ -1175,7 +1181,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie contracte_sabloane (DELETE/INSERT/UPDATE) — prin `contracte_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): contracte_sabloane (DELETE/INSERT/UPDATE) — prin `contracte_api`*
 
 - [x] contractul generat se păstrează cu momentul, autorul, amprenta, numărul exemplarului
 - toate marcajele din șablon sunt înlocuite; unul rămas necompletat oprește generarea, nu produce un contract cu paranteze
@@ -1185,7 +1191,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie contracte_sabloane (DELETE/INSERT/UPDATE) — prin `contracte_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): contracte_sabloane (DELETE/INSERT/UPDATE) — prin `contracte_api`*
 
 - [x] șablonul salvat conține marcajele declarate; unul necunoscut se semnalează la salvare, nu la generare
 - un șablon cu același nume nu se suprascrie tăcut
@@ -1194,7 +1200,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie contracte_sabloane (DELETE/INSERT/UPDATE) — prin `contracte_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): contracte_sabloane (DELETE/INSERT/UPDATE) — prin `contracte_api`*
 
 - [x] ștergerea unui șablon nu atinge contractele generate din el — acelea sunt documente emise
 - dacă șablonul e folosit de contracte existente, se spune câte
@@ -1245,7 +1251,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: scrie concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
 
 - [x] CNP-ul trece cifra de control; unul care nu trece se refuză cu motivul, nu se salvează
 - un CNP care există deja în firmă se refuză — nu se creează al doilea salariat cu același CNP
@@ -1256,7 +1262,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: scrie concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
 
 - [x] **un salariat cu stat de plată emis nu se șterge.** Se marchează încetat, cu data. Ștergerea ar rupe lanțul către documentele emise
 - dacă ștergerea e permisă, verifică ce rămâne în urmă: fluturași, note contabile, rânduri în D112 deja depuse
@@ -1266,7 +1272,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: scrie concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
 
 - [x] o modificare de salariu produce **istoric**, nu suprascriere: valoarea veche rămâne, cu perioada în care a fost valabilă
 - modificarea nu atinge lunile pentru care s-a emis deja stat de plată — sau, dacă le atinge, produce contradicție vizibilă
@@ -1286,7 +1292,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: [F133 Faza 2a] beneficiu one-off pe luna (vacanta/cadou/cultural) — scrie beneficii_lunare (DELETE/INSERT) — prin `beneficii_api`*
+*ce face: [F133 Faza 2a] beneficiu one-off pe luna (vacanta/cadou/cultural) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): beneficii_lunare (DELETE/INSERT) — prin `beneficii_api`*
 
 - [x] beneficiul intră cu perioada lui, nu cu „de acum înainte"
 - plafonul neimpozabil aplicabil e cel de la data lunii, nu de la data introducerii
@@ -1313,7 +1319,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol***
 
-*ce face: F135: seteaza starea unei zile (stare goala/prezent = sterge exceptia). — scrie pontaj (DELETE/INSERT) — prin `pontaj`*
+*ce face: F135: seteaza starea unei zile (stare goala/prezent = sterge exceptia). — poate atinge, prin modul (PLAFON, nemasurat pe ruta): pontaj (DELETE/INSERT) — prin `pontaj`*
 
 - [x] zilele pontate nu depășesc zilele lucrătoare din lună
 - pontajul nu se poate modifica pentru o lună cu stat de plată emis — sau, dacă se poate, produce contradicție vizibilă
@@ -1330,7 +1336,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: [F134] Fisierul SEPA/ISO 20022 pain.001.001.03 de plata a salariilor NET pe card (download) — scrie artefacte_produse (INSERT) — prin `artefacte`*
+*ce face: [F134] Fisierul SEPA/ISO 20022 pain.001.001.03 de plata a salariilor NET pe card (download) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): artefacte_produse (INSERT) — prin `artefacte`*
 
 - [x] fișierul se păstrează: conținutul, momentul, autorul, amprenta, numărul exemplarului
 - sumele din fișier coincid cu **netul din statul de plată emis** — nu se recalculează la generare
@@ -1348,7 +1354,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `FARA GARDA` · **fara rol***
 
-*ce face: scrie facturi (UPDATE) — prin `plati`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): facturi (UPDATE) — prin `plati`*
 
 - [x] confirmarea se acceptă **numai** dacă e semnată de procesator, cu semnătura verificată. Altfel oricine cu referința poate marca o factură ca plătită
 - referința e imposibil de ghicit — nu incrementală, nu derivată din numărul facturii
@@ -1365,7 +1371,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma · scrie in chitante, facturi*
 
-*ce face: Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar: numerotare pe serie per firma + operatiune in Registrul de casa prin casa_api (5311=4111, nota ci — scrie casa_operatiuni (DELETE/INSERT) · chitante (INSERT) · facturi (UPDATE) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`*
+*ce face: Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar: numerotare pe serie per firma + operatiune in Registrul de casa prin casa_api (5311=4111, nota ci — scrie chitante (INSERT) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (DELETE/INSERT) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`*
 
 - [x] chitanța se păstrează cu numărul exemplarului, momentul, autorul, amprenta
 - **numerotarea nu are goluri și nu se reia** — o chitanță anulată își păstrează numărul
@@ -1376,7 +1382,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie facturi (UPDATE) — prin `plati`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): facturi (UPDATE) — prin `plati`*
 
 - [x] link-ul poartă suma exactă a facturii, nu una editabilă de plătitor
 - link-ul expiră; expirarea e o stare, nu o eroare
@@ -1392,7 +1398,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: F131: activeaza/dezactiveaza notificarile email de scadenta pt firma (default OFF). — scrie facturi (UPDATE) · firma_profil (UPDATE) — prin `scadentar`*
+*ce face: F131: activeaza/dezactiveaza notificarile email de scadenta pt firma (default OFF). — poate atinge, prin modul (PLAFON, nemasurat pe ruta): facturi (UPDATE) · firma_profil (UPDATE) — prin `scadentar`*
 
 - [x] opt-in-ul poartă autorul și momentul — e o decizie despre comunicarea cu clienții firmei
 - verifică ce se trimite: notificări către clienți în numele firmei, sau doar către cabinet?
@@ -1408,7 +1414,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
 - [x] un cod de bare duplicat în firmă se refuză — altfel scanarea devine ambiguă
 - modificarea nu atinge stocul și nu produce mișcare
@@ -1417,7 +1423,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
 - [x] nivelul minim e o alertă, nu o restricție — verifică dacă blochează ieșirile sub el, ceea ce ar fi greșit
 - modificarea nu atinge stocul
@@ -1426,7 +1432,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · nir (INSERT) · nir_linii (INSERT) — prin `stocuri_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): inregistrari (INSERT) · inregistrari_linii (INSERT) · nir (INSERT) · nir_linii (INSERT) — prin `stocuri_api`*
 
 - [x] descărcarea se leagă de un document — factură, bon, consum. O descărcare fără document rupe lanțul P14
 - metoda de evaluare la ieșire (FIFO, CMP) e cea configurată pe firmă, nu aleasă la operațiune
@@ -1436,7 +1442,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
 - [x] **nu pot scrie verificarea fără să știu ce o deosebește de `descarcare`.** De completat din cod
 - dacă sunt aceeași operațiune pe două rute, e interdicția 15
@@ -1448,7 +1454,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
 - [x] intrarea se leagă de un document — NIR, producție, transfer
 - costul de intrare cuprinde ce trebuie: preț, transport, taxe nedeductibile. Verifică ce cuprinde efectiv
@@ -1458,7 +1464,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
 - [x] reclasificarea schimbă categoria, nu cantitatea și nu valoarea
 - verifică dacă poate muta un articol între categorii cu tratamente fiscale diferite — marfă în materie primă schimbă contul, deci nota
@@ -1467,7 +1473,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
 - [x] transferul între gestiuni nu schimbă valoarea totală a stocului — suma iese dintr-o gestiune și intră în alta, la același cost
 - transferul nu produce venit sau cheltuială
@@ -1483,7 +1489,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie produse (DELETE/INSERT/UPDATE) — prin `produse_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): produse (DELETE/INSERT/UPDATE) — prin `produse_api`*
 
 - [x] codul produsului e unic în firmă
 - produsul cu rețetă are cost calculat din componente, nu introdus liber
@@ -1492,7 +1498,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_context` · **fara rol***
 
-*ce face: scrie produse (DELETE/INSERT/UPDATE) — prin `produse_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): produse (DELETE/INSERT/UPDATE) — prin `produse_api`*
 
 - [x] potrivirea e o **propunere**, nu o legătură creată — verifică structural că nu scrie
 - fiecare potrivire propusă poartă gradul de certitudine; una slabă nu se prezintă ca sigură
@@ -1501,7 +1507,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie produse (DELETE/INSERT/UPDATE) — prin `produse_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): produse (DELETE/INSERT/UPDATE) — prin `produse_api`*
 
 - [x] un produs cu mișcări de stoc nu se șterge — se dezactivează
 - ștergerea nu atinge producțiile trecute
@@ -1510,7 +1516,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie produse (DELETE/INSERT/UPDATE) — prin `produse_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): produse (DELETE/INSERT/UPDATE) — prin `produse_api`*
 
 - [x] modificarea rețetei unui produs **nu recalculează costul producțiilor trecute** — acelea au costul de la momentul lor
 - dacă recalculează, produce contradicție cu notele deja scrise
@@ -1519,7 +1525,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) · retete (DELETE/INSERT/UPDATE) · retete_linii (DELETE/INSERT) — prin `retete_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) · retete (DELETE/INSERT/UPDATE) · retete_linii (DELETE/INSERT) — prin `retete_api`*
 
 - [x] componentele rețetei există ca articole
 - cantitățile sunt pozitive, iar unitatea de măsură a componentei coincide cu cea a articolului
@@ -1528,7 +1534,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) · retete (DELETE/INSERT/UPDATE) · retete_linii (DELETE/INSERT) — prin `retete_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) · retete (DELETE/INSERT/UPDATE) · retete_linii (DELETE/INSERT) — prin `retete_api`*
 
 - [x] descărcarea pe rețetă scoate din stoc **componentele**, la cantitățile din rețetă, înmulțite cu cantitatea produsă
 - produsul finit intră în stoc la costul componentelor descărcate
@@ -1539,7 +1545,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) · retete (DELETE/INSERT/UPDATE) · retete_linii (DELETE/INSERT) — prin `retete_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) · retete (DELETE/INSERT/UPDATE) · retete_linii (DELETE/INSERT) — prin `retete_api`*
 
 - [x] o rețetă folosită într-o producție nu se șterge — se dezactivează
 - ștergerea nu schimbă costul producțiilor trecute
@@ -1626,7 +1632,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma · scrie in bonuri, facturi*
 
-*ce face: Chitanta certificata de contabil: plata furnizor prin Registrul de casa (casa_api.adauga -> 401=5311 ciorna + operatiune casa + verificare plafon) — scrie bonuri (UPDATE) · casa_operatiuni (DELETE/INSERT) · facturi (UPDATE) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`*
+*ce face: Chitanta certificata de contabil: plata furnizor prin Registrul de casa (casa_api.adauga -> 401=5311 ciorna + operatiune casa + verificare plafon) — scrie bonuri (UPDATE) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (DELETE/INSERT) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`*
 
 - [ ] 
 
@@ -1670,7 +1676,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie facturi (UPDATE) · firma_profil (UPDATE) — prin `woocommerce`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): facturi (UPDATE) · firma_profil (UPDATE) — prin `woocommerce`*
 
 - [x] fiecare comandă sincronizată produce **o singură** factură; o a doua rulare nu dublează
 - cota de TVA vine din articol sau din configurație — **nu se ghicește din denumire**
@@ -1687,7 +1693,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie registratura (INSERT) — prin `registratura_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): registratura (INSERT) — prin `registratura_api`*
 
 - [ ] 
 
@@ -1711,7 +1717,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: Trimite notificarea UIT in SPV (F121): genereaza XML + trimite() cu PORTI in ordine (garda de timp -> idempotency -> validare pe TEST -> upload) — scrie etransport_trimiteri (INSERT/UPDATE) — prin `etransport_send`*
+*ce face: Trimite notificarea UIT in SPV (F121): genereaza XML + trimite() cu PORTI in ordine (garda de timp -> idempotency -> validare pe TEST -> upload) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): etransport_trimiteri (INSERT/UPDATE) — prin `etransport_send`*
 
 - [x] cele patru porți rulează **în ordine**: garda de timp → idempotență → validare pe TEST → încărcare. O poartă sărită e un defect, nu o optimizare
 - codul UIT primit se păstrează; fără el, starea e „nelămurită"
@@ -1728,7 +1734,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii*
 
-*ce face: AIC bunuri/servicii primite (art — scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `facturi_api`*
+*ce face: AIC bunuri/servicii primite (art — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
 - [ ] 
 
@@ -1736,7 +1742,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: Adauga linie pur manuala: {an, luna, tip, tara, cod, den, baza}. — scrie d390_manual (DELETE/INSERT) · d390_reclasificare (DELETE/INSERT) — prin `d390_clasificare_api`*
+*ce face: Adauga linie pur manuala: {an, luna, tip, tara, cod, den, baza}. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): d390_manual (DELETE/INSERT) · d390_reclasificare (DELETE/INSERT) — prin `d390_clasificare_api`*
 
 - [ ] 
 
@@ -1744,7 +1750,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie d390_manual (DELETE/INSERT) · d390_reclasificare (DELETE/INSERT) — prin `d390_clasificare_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): d390_manual (DELETE/INSERT) · d390_reclasificare (DELETE/INSERT) — prin `d390_clasificare_api`*
 
 - [ ] 
 
@@ -1752,7 +1758,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: Override tip pe o operatiune auto: {an, luna, directie, tara, cod, tip}. — scrie d390_manual (DELETE/INSERT) · d390_reclasificare (DELETE/INSERT) — prin `d390_clasificare_api`*
+*ce face: Override tip pe o operatiune auto: {an, luna, directie, tara, cod, tip}. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): d390_manual (DELETE/INSERT) · d390_reclasificare (DELETE/INSERT) — prin `d390_clasificare_api`*
 
 - [ ] 
 
@@ -1779,12 +1785,13 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - [x] compensația în cotă forfetară se calculează pe cota în vigoare la data operațiunii
 - agricultorul e verificat că e în regimul special — altfel e o achiziție obișnuită
 - compensația plătită e deductibilă la cumpărător; verifică unde ajunge în D300
+- **ADNOTARE SCHIMBATĂ 26.08.2026 — R60.** Din rândul `ce face` s-a ȘTERS *«poate atinge, prin modul: `articole`, `miscari_stoc` — prin `stocuri_cv_api`»*. Nu ruta s-a schimbat, ci instrumentul: `scan_trasee.py` rezolva aliasul `_cv` prin harta altcuiva, iar aici `_cv` e `cont_valid` — care doar confruntă contul cu planul firmei și nu scrie nimic. Verificările de mai sus rămân valabile **ca intenție**; ce nu se mai poate afirma e unde ajunge efectul.
 
 ### `POST /tenants/{tenant_id}/achizitie-necorporala`
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii, mijloace_fixe*
 
-*ce face: corp: {data, denumire, valoare (fara TVA), tip software|licenta|brevet| dezvoltare|constituire, dnf_luni?, cota?, cod?} — scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT) — prin `facturi_api`*
+*ce face: corp: {data, denumire, valoare (fara TVA), tip software|licenta|brevet| dezvoltare|constituire, dnf_luni?, cota?, cod?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
 - [x] durata normală de funcționare vine din catalog pentru tipul respectiv; `dnf_luni` din corp nu o poate coborî sub minim
 - valoarea sub pragul de imobilizare nu produce mijloc fix — e cheltuială. Verifică pragul la data operațiunii
@@ -1795,23 +1802,25 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii*
 
-*ce face: Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2) — scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `facturi_api`*
+*ce face: Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2) — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
 - [x] operațiunea apare în D394 ca tip N, cu `tip_partener=2` — verificat pe declarația generată, nu pe intenția din cod
 - persoana fizică nu are cod fiscal, deci nu se cere; dar se cere o identificare, altfel operațiunea n-are partener
 - TVA-ul nu se deduce — achiziția de la neînregistrat nu poartă TVA deductibilă
 - dacă atinge stocul prin modul, mișcarea de stoc are aceeași dată cu nota
+- **ADNOTARE SCHIMBATĂ 26.08.2026 — R60.** Din rândul `ce face` s-a ȘTERS *«poate atinge, prin modul: `articole`, `miscari_stoc` — prin `stocuri_cv_api`»*. Nu ruta s-a schimbat, ci instrumentul: `scan_trasee.py` rezolva aliasul `_cv` prin harta altcuiva, iar aici `_cv` e `cont_valid` — care doar confruntă contul cu planul firmei și nu scrie nimic. Verificările de mai sus rămân valabile **ca intenție**; ce nu se mai poate afirma e unde ajunge efectul. Verificarea *«dacă atinge stocul prin modul, mișcarea de stoc are aceeași dată cu nota»* avea condiția scrisă în față; condiția e acum cunoscută **falsă**, deci rândul rămâne fără obiect. Restul stau pe `facturi_api`, care e real.
 
 ### `POST /tenants/{tenant_id}/achizitie-taxare-inversa`
 
 *garda `cere_rol` · rol:admin_firma · scrie in inregistrari, inregistrari_linii*
 
-*ce face: corp: {data, categorie, valoare (fara TVA), cont_destinatie, cota?, furnizor_platitor_tva, descriere?} — scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `facturi_api`*
+*ce face: corp: {data, categorie, valoare (fara TVA), cont_destinatie, cota?, furnizor_platitor_tva, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
 - [x] bunul sau serviciul e din lista art. 331 — altfel taxarea inversă nu se aplică
 - pragul de 22.500 lei pentru telefoane, tablete, laptopuri, console e verificat pe factură, nu pe operațiune
 - TVA-ul se înregistrează simultan ca deductibil și colectat, iar cele două se anulează în decont
 - furnizorul e înregistrat în scopuri de TVA — altfel regimul nu se aplică
+- **ADNOTARE SCHIMBATĂ 26.08.2026 — R60.** Din rândul `ce face` s-a ȘTERS *«poate atinge, prin modul: `articole`, `miscari_stoc` — prin `stocuri_cv_api`»*. Nu ruta s-a schimbat, ci instrumentul: `scan_trasee.py` rezolva aliasul `_cv` prin harta altcuiva, iar aici `_cv` e `cont_valid` — care doar confruntă contul cu planul firmei și nu scrie nimic. Verificările de mai sus rămân valabile **ca intenție**; ce nu se mai poate afirma e unde ajunge efectul.
 
 ### `POST /tenants/{tenant_id}/export-extracomunitar`
 
@@ -1824,6 +1833,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - verifică ce se întâmplă când `dovada_export` lipsește sau e o frază: se refuză, sau se scutește pe încredere?
 - țara clientului e din afara UE — o țară din UE face operațiunea livrare intracomunitară, nu export
 - **fără rol, deși scrie evidență** — R55
+- **ADNOTARE SCHIMBATĂ 26.08.2026 — R60.** Din rândul `ce face` s-a ȘTERS *«poate atinge, prin modul: `articole`, `miscari_stoc` — prin `stocuri_cv_api`»*. Nu ruta s-a schimbat, ci instrumentul: `scan_trasee.py` rezolva aliasul `_cv` prin harta altcuiva, iar aici `_cv` e `cont_valid` — care doar confruntă contul cu planul firmei și nu scrie nimic. Verificările de mai sus rămân valabile **ca intenție**; ce nu se mai poate afirma e unde ajunge efectul.
 
 ### `POST /tenants/{tenant_id}/import-extracomunitar`
 
@@ -1836,6 +1846,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - fără certificat, TVA-ul plătit în vamă e deductibil pe baza declarației vamale, nu a facturii furnizorului
 - cota aplicată e cea de la data operațiunii, cerută din registru
 - **fără rol, deși scrie evidență** — R55
+- **ADNOTARE SCHIMBATĂ 26.08.2026 — R60.** Din rândul `ce face` s-a ȘTERS *«poate atinge, prin modul: `articole`, `miscari_stoc` — prin `stocuri_cv_api`»*. Nu ruta s-a schimbat, ci instrumentul: `scan_trasee.py` rezolva aliasul `_cv` prin harta altcuiva, iar aici `_cv` e `cont_valid` — care doar confruntă contul cu planul firmei și nu scrie nimic. Verificările de mai sus rămân valabile **ca intenție**; ce nu se mai poate afirma e unde ajunge efectul.
 
 ### `POST /tenants/{tenant_id}/vanzare-agricultor`
 
@@ -1886,7 +1897,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765 — scrie curs_bnr_zilnic (INSERT) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `curs_bnr`*
+*ce face: Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765 — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): curs_bnr_zilnic (INSERT) — prin `curs_bnr`*
 
 - [ ] 
 
@@ -1894,7 +1905,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: Reevaluare lunara solduri valuta (OMFP 1802 pct — scrie curs_bnr_zilnic (INSERT) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `curs_bnr`*
+*ce face: Reevaluare lunara solduri valuta (OMFP 1802 pct — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): curs_bnr_zilnic (INSERT) — prin `curs_bnr`*
 
 - [ ] 
 
@@ -1908,7 +1919,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: Adauga/actualizeaza un rand manual D300: {an, luna, rand, baza, tva, descriere}. — scrie d300_manual (DELETE/INSERT) — prin `d300_manual_api`*
+*ce face: Adauga/actualizeaza un rand manual D300: {an, luna, rand, baza, tva, descriere}. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): d300_manual (DELETE/INSERT) — prin `d300_manual_api`*
 
 - [ ] 
 
@@ -1916,7 +1927,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie d300_manual (DELETE/INSERT) — prin `d300_manual_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): d300_manual (DELETE/INSERT) — prin `d300_manual_api`*
 
 - [ ] 
 
@@ -1924,7 +1935,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: Adauga o operatiune: {an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, cota}. — scrie d301_operatiuni (DELETE/INSERT) — prin `d301_operatiuni_api`*
+*ce face: Adauga o operatiune: {an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, cota}. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): d301_operatiuni (DELETE/INSERT) — prin `d301_operatiuni_api`*
 
 - [ ] 
 
@@ -1932,7 +1943,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie d301_operatiuni (DELETE/INSERT) — prin `d301_operatiuni_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): d301_operatiuni (DELETE/INSERT) — prin `d301_operatiuni_api`*
 
 - [ ] 
 
@@ -1946,7 +1957,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
 
 - [ ] 
 
@@ -1954,7 +1965,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
 
 - [ ] 
 
@@ -1962,7 +1973,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
 
 - [ ] 
 
@@ -1970,7 +1981,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
 
 - [ ] 
 
@@ -1978,7 +1989,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
 
 - [ ] 
 
@@ -1992,7 +2003,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie artefacte_produse (INSERT) — prin `artefacte`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): artefacte_produse (INSERT) — prin `artefacte`*
 
 - [ ] 
 
@@ -2000,7 +2011,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: Export WinMENTOR: Facturi.txt + Articole.txt (Windows-1250) co-locate intr-un zip — scrie artefacte_produse (INSERT) — prin `artefacte`*
+*ce face: Export WinMENTOR: Facturi.txt + Articole.txt (Windows-1250) co-locate intr-un zip — poate atinge, prin modul (PLAFON, nemasurat pe ruta): artefacte_produse (INSERT) — prin `artefacte`*
 
 - [ ] 
 
@@ -2014,7 +2025,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie bugete (INSERT) · centre_cost (INSERT/UPDATE) — prin `centre_cost_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): bugete (INSERT) · centre_cost (INSERT/UPDATE) — prin `centre_cost_api`*
 
 - [ ] 
 
@@ -2022,7 +2033,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie bugete (INSERT) · centre_cost (INSERT/UPDATE) — prin `centre_cost_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): bugete (INSERT) · centre_cost (INSERT/UPDATE) — prin `centre_cost_api`*
 
 - [ ] 
 
@@ -2030,7 +2041,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: Seteaza bugetul anual (cheltuieli + venituri) al unui centru pe un an. — scrie bugete (INSERT) · centre_cost (INSERT/UPDATE) — prin `centre_cost_api`*
+*ce face: Seteaza bugetul anual (cheltuieli + venituri) al unui centru pe un an. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): bugete (INSERT) · centre_cost (INSERT/UPDATE) — prin `centre_cost_api`*
 
 - [ ] 
 
@@ -2038,7 +2049,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie rapoarte_salvate (DELETE/INSERT) — prin `rapoarte_comerciale_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): rapoarte_salvate (DELETE/INSERT) — prin `rapoarte_comerciale_api`*
 
 - [ ] 
 
@@ -2046,7 +2057,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie rapoarte_salvate (DELETE/INSERT) — prin `rapoarte_comerciale_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): rapoarte_salvate (DELETE/INSERT) — prin `rapoarte_comerciale_api`*
 
 - [ ] 
 
@@ -2060,7 +2071,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol***
 
-*ce face: scrie pachet_povestea (INSERT) — prin `pachete_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): pachet_povestea (INSERT) — prin `pachete_api`*
 
 - [ ] 
 
@@ -2068,7 +2079,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie pachet_povestea (INSERT) — prin `pachete_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): pachet_povestea (INSERT) — prin `pachete_api`*
 
 - [ ] 
 
@@ -2076,7 +2087,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: scrie pachet_povestea (INSERT) — prin `pachete_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): pachet_povestea (INSERT) — prin `pachete_api`*
 
 - [ ] 
 
@@ -2116,7 +2127,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_client` · **fara rol** · scrie in solicitari_client*
 
-*ce face: scrie notificari (INSERT/UPDATE) · solicitari_client (INSERT) — prin `notificari_api`*
+*ce face: scrie solicitari_client (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): notificari (INSERT/UPDATE) — prin `notificari_api`*
 
 - [ ] 
 
@@ -2132,7 +2143,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,verificat-în-corp · scrie in user_tenants, users*
 
-*ce face: scrie firma_profil (INSERT/UPDATE) · tenants (INSERT/UPDATE) · user_tenants (INSERT) · users (INSERT/UPDATE) — prin `tenant_provisioning`*
+*ce face: scrie user_tenants (INSERT) · users (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (INSERT/UPDATE) · tenants (INSERT/UPDATE) — prin `tenant_provisioning`*
 
 - [ ] 
 
@@ -2148,7 +2159,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: scrie clienti (DELETE/INSERT/UPDATE) — prin `clienti_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): clienti (DELETE/INSERT/UPDATE) — prin `clienti_api`*
 
 - [ ] 
 
@@ -2156,7 +2167,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: scrie clienti (DELETE/INSERT/UPDATE) — prin `clienti_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): clienti (DELETE/INSERT/UPDATE) — prin `clienti_api`*
 
 - [ ] 
 
@@ -2164,7 +2175,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: scrie clienti (DELETE/INSERT/UPDATE) — prin `clienti_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): clienti (DELETE/INSERT/UPDATE) — prin `clienti_api`*
 
 - [ ] 
 

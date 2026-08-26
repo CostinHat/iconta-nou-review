@@ -180,6 +180,98 @@ def test_CALIBRARE_un_nume_umbrit_local_NU_mai_e_alias_de_modul(st, tmp_path, mo
         "aliasul de modul nu mai e citit deloc — reparația a mers prea departe")
 
 
+_UMBRIT_DIN_ALT_CORP = [
+    "from core import cont_valid as _cv",
+    "",
+    "@app.post('/tenants/{tenant_id}/de_sus')",
+    "def de_sus(tenant_id: int):",
+    "    return _cv.cere_cont(conn, 's', 1, 'c')",
+    "",
+    "@app.post('/tenants/{tenant_id}/cu_import_local')",
+    "def cu_import_local(tenant_id: int):",
+    "    from core import stocuri_cv_api as _cv",
+    "    return _cv.adauga(conn)",
+]
+
+
+def test_CALIBRARE_un_import_din_ALT_corp_nu_umbreste_aliasul_de_modul(st, tmp_path, monkeypatch):
+    """A TREIA față a atribuirii false (26.08.2026, R60). Primele două sunt deasupra.
+
+    Aici numele nu e legat local nici de un import (prima), nici de o variabilă (a doua) — e
+    legat corect la nivel de modul, iar stricăciunea vine din corpul ALTEI funcții. Harta de
+    aliasuri se construia cu `ast.walk(tree)`, care intră și în corpuri: `from core import
+    stocuri_cv_api as _cv` dintr-o rută îl suprascria pe `from core import cont_valid as _cv`
+    de la linia 30, iar cele 14 rute care se bazau pe importul de sus primeau modulul altcuiva.
+
+    Direcția tăcută contează mai mult decât cea zgomotoasă: pe cele 14 se ADAUGĂ tabele
+    inexistente și se vede, dar ruta care chiar cheamă `stocuri_cv_api` primea răspunsul corect
+    dintr-un ACCIDENT — iar un accident nu e o măsurătoare. METODA §22."""
+    io.open(os.path.join(str(tmp_path), "main.py"), "w", encoding="utf-8").write(
+        chr(10).join(_UMBRIT_DIN_ALT_CORP) + chr(10))
+    monkeypatch.setattr(st, "RAD", str(tmp_path))
+    rute = {r["cale"]: r for r in st.citeste_rute()}
+
+    assert set(rute["/tenants/{tenant_id}/de_sus"]["module"]) == {"cont_valid"}, (
+        "ruta se bazează pe importul de la nivel de modul; a primit %s — un import din corpul "
+        "ALTEI funcții i-a umbrit aliasul"
+        % sorted(rute["/tenants/{tenant_id}/de_sus"]["module"]))
+
+    # Cealaltă direcție: importul local trebuie să funcționeze mai departe. Fără proba asta, o
+    # reparație care ar citi DOAR nivelul de modul ar trece testul de sus și ar goli inventarul
+    # rutelor care își importă modulul în corp — adică exact prima față, întoarsă.
+    assert set(rute["/tenants/{tenant_id}/cu_import_local"]["module"]) == {"stocuri_cv_api"}, (
+        "importul din corpul PROPRIU nu mai e citit; a primit %s — reparația a mers prea departe"
+        % sorted(rute["/tenants/{tenant_id}/cu_import_local"]["module"]))
+
+
+def _importuri_core(nod, st):
+    """Modulele din `core` importate de nodurile date, ca mulțime de nume reale."""
+    import ast
+    out = set()
+    for n in nod:
+        if isinstance(n, ast.ImportFrom) and n.module and n.module.startswith("core"):
+            out |= {al.name for al in n.names}
+        elif isinstance(n, ast.Import):
+            out |= {al.name.split(".")[-1] for al in n.names if al.name.startswith("core.")}
+    return out
+
+
+def test_ANTI_VACUU_modulul_atribuit_unei_rute_e_VIZIBIL_ei(st):
+    """Invariantul din care s-a născut R60, verificat pe `main.py` REAL, nu pe un fișier sintetic.
+
+    Un modul atribuit unei rute trebuie să fie importat undeva de unde ruta îl poate vedea: la
+    nivel de modul, sau în propriul ei corp. Orice altceva înseamnă că numele a fost rezolvat
+    prin harta altcuiva.
+
+    Testul de deasupra probează mecanismul pe două rute inventate; ăsta măsoară dacă mecanismul
+    ține pe toate cele ~200. Sub rezolvarea veche pica: `POST /tenants/{}/decontare-valuta`
+    primea `stocuri_cv_api`, care nu e nici importat la nivel de modul, nici în corpul ei."""
+    import ast
+    src = io.open(os.path.join(st.RAD, "main.py"), encoding="utf-8").read()
+    tree = ast.parse(src)
+
+    nivel = _importuri_core(st._noduri_nivel_modul(tree), st)
+    local = {}
+    for fn in ast.walk(tree):
+        if isinstance(fn, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            local[(fn.name, fn.lineno)] = _importuri_core(ast.walk(fn), st)
+
+    rute = st.citeste_rute()
+    assert len(rute) > 150, (
+        "anti-vacuu: doar %d rute citite din main.py — testul ar fi trecut pe o mulțime "
+        "aproape goală" % len(rute))
+
+    rele = []
+    for r in rute:
+        vizibile = nivel | local.get((r["fn"], r["linie"]), set())
+        lipsa = sorted(set(r["module"]) - vizibile)
+        if lipsa:
+            rele.append("%s %s <- %s" % (r["metoda"], r["cale"], ", ".join(lipsa)))
+    assert not rele, (
+        "%d rute au primit un modul pe care nu-l pot vedea — harta de aliasuri s-a stricat "
+        "din nou:%s%s" % (len(rele), chr(10), chr(10).join(rele)))
+
+
 _DOC_PREDAT = ("content-disposition", "application/pdf", "fileresponse",
                "application/vnd.openxmlformats", "application/zip", "image/")
 
@@ -347,6 +439,55 @@ def test_fiecare_loc_de_verificare_spune_CE_face_pasul(st):
     assert not fara, (
         "locuri de verificare fara descrierea efectului (%d) - la ele nu se poate scrie ce trebuie "
         "sa fie adevarat:%s  %s" % (len(fara), chr(10), (chr(10) + "  ").join(fara[:12])))
+
+
+def test_adnotarea_din_TRASEE_VERIFICARI_e_IDENTICA_cu_ce_masoara_instrumentul(st):
+    """doc↔cod, a doua oară. Rândul `*ce face:*` e derivat din cod, ca blocul din `TRASEE.md` —
+    dar până azi nimic nu-l compara cu instrumentul: testul de deasupra cere doar să EXISTE.
+
+    Măsurat la construcție (26.08.2026): **121 din 192 difereau**. Patru din reparația R60;
+    117 rămase din ziua în care `scrie X` s-a despărțit de `poate atinge, prin modul X` fără ca
+    fișierul în care se SCRIU verificările să fie regenerat. Adică verificările se scriau
+    uitându-se la un rând care spunea *„ruta scrie în T"* acolo unde instrumentul măsurase
+    *„un modul chemat de ea scrie în T"* — o afirmație mai tare decât măsurătoarea, exact
+    inversul a ce apără cuvântul PLAFON.
+
+    De ce e o gardă și nu o regenerare la fiecare rulare: regenerarea din schelet ȘTERGE
+    verificările scrise. Se repară cu un patch care atinge doar rândul, iar gardul spune când."""
+    import re
+    canonic = {(m, c): ce for _t, _n, m, c, ce, _g in st.pasii_ordonati()}
+    assert len(canonic) > 150, "anti-vacuu: doar %d pași canonici" % len(canonic)
+
+    linii = io.open(os.path.join(_RAD, "TRASEE_VERIFICARI.md"), encoding="utf-8").read().split(chr(10))
+    cap_re = re.compile(r"^### `([A-Z]+) (/.*)`\s*$")
+    diferite, lipsa, vazute = [], [], 0
+    for i, ln in enumerate(linii):
+        m = cap_re.match(ln)
+        if not m:
+            continue
+        cheie = (m.group(1), m.group(2))
+        if cheie not in canonic:
+            continue
+        vazute += 1
+        rand = None
+        for j in range(i + 1, len(linii)):
+            if linii[j].startswith("### ") or linii[j].startswith("## "):
+                break
+            if linii[j].startswith("*ce face:"):
+                rand = linii[j]
+                break
+        if rand is None:
+            lipsa.append("%s %s" % cheie)
+        elif rand != "*ce face: %s*" % canonic[cheie]:
+            diferite.append("%s %s" % cheie)
+
+    assert vazute > 150, (
+        "anti-vacuu: doar %d capete de pas regăsite în TRASEE_VERIFICARI.md — formatul "
+        "titlurilor s-a schimbat și gardul se uită în gol" % vazute)
+    assert not lipsa and not diferite, (
+        "adnotări care nu mai spun ce măsoară instrumentul: %d diferite, %d lipsă.%s%s%s"
+        "Verificările scrise sub ele stau pe o descriere a efectului care nu mai e adevărată."
+        % (len(diferite), len(lipsa), chr(10), chr(10).join((diferite + lipsa)[:12]), chr(10)))
 
 
 def test_blocul_din_TRASEE_e_identic_cu_ce_genereaza_instrumentul(st):

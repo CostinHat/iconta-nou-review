@@ -317,6 +317,28 @@ def _prima_fraza(doc):
     return t[:170]
 
 
+def _noduri_nivel_modul(tree):
+    """Nodurile din AFARA oricarui corp de functie sau clasa.
+
+    [R60, 26.08.2026] Harta de aliasuri de nivel-modul se construia cu `ast.walk(tree)`, care
+    intra SI in corpurile functiilor. `main.py` are `from core import cont_valid as _cv` la
+    linia 30 si `from core import stocuri_cv_api as _cv` in corpul unei rute; al doilea il
+    suprascria pe primul, iar cele 14 rute care se bazeaza pe importul de sus primeau modulul
+    altcuiva. Harta LOCALA per-functie exista tocmai ca sa previna asta, dar se construia
+    pornind de la harta deja stricata — deci apara doar rutele care fac ele insele importul.
+
+    Greseala mergea in AMBELE directii: pe cele 14 adauga tabele inexistente (zgomotos, se
+    vede), iar pe ruta care chiar cheama `stocuri_cv_api` raspunsul corect venea dintr-un
+    accident (tacut, nu se vede). METODA §22.
+    """
+    for n in ast.iter_child_nodes(tree):
+        if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            continue
+        yield n
+        for x in _noduri_nivel_modul(n):
+            yield x
+
+
 def citeste_rute():
     """Rutele din main.py. Aliasurile de import se REZOLVĂ la numele real al modulului
     (`from core import efactura_send as _efs` -> `_efs` = `efactura_send`); fără asta,
@@ -324,7 +346,7 @@ def citeste_rute():
     src = open(os.path.join(RAD, "main.py"), encoding="utf-8").read()
     tree = ast.parse(src)
     alias = {}
-    for n in ast.walk(tree):
+    for n in _noduri_nivel_modul(tree):
         if isinstance(n, ast.ImportFrom) and n.module and n.module.startswith("core"):
             for al in n.names:
                 alias[al.asname or al.name] = al.name

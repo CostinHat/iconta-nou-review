@@ -2118,3 +2118,6 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   BAZĂ · urma păstrează două acte după ștergerea rândului), dar nu un clichet. Ce ar trebui
   cablat: un test care asertează că `POST /perioade-blocate` refuză pe o perioadă cu ciorne, și
   că `perioade_inchideri` primește un act la fiecare închidere/redeschidere.
+
+- **`core/test_trasee.py` — +2 teste (26.08.2026, R60)**: a treia față a atribuirii false de modul — un alias de nivel-modul umbrit de importul din corpul **altei** funcții (pe fișier sintetic, cu ambele direcții: aliasul de sus nu se umbrește · importul din corpul propriu funcționează mai departe); și **anti-vacuu pe `main.py` real** — un modul atribuit unei rute trebuie să fie importat de unde ruta îl poate vedea. A doua **pica** sub rezolvarea veche, pe `POST /tenants/{}/decontare-valuta`: RED-probată pe instanța reală care a cerut-o, nu pe o mutație inventată.
+- **`core/test_trasee.py` — +1 test doc↔cod (26.08.2026, R60)**: adnotarea `ce face` din `TRASEE_VERIFICARI.md` trebuie să fie **identică** cu ce măsoară instrumentul, nu doar să existe. Măsurat la construcție: **121 din 192 difereau**, din care 117 stătute dinainte.
