@@ -1,227 +1,176 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — R58 aplicat, trei restanțe închise, loturile 1–5 scrise (26.08.2026)
+# PREDARE LANȚ — 193 din 193, și prima exercitare pe date (26.08.2026, seara)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-26**, *rescriere COMPLETĂ, nu petic*
-- **pe commit**: `7e07265`
-- **de ce completă și nu incrementală**: versiunea de dinainte fusese peticită de cinci ori într-o
-  zi și ajunsese să se contrazică singură — titlul spunea „loturile 1 și 2", o secțiune spunea
-  „192 de locuri, **0 scrise**", alta „loturile 1–5 sunt SCRISE", iar R55 apărea cu **cifra
-  greșită** pe care o corectasem deja de două ture. *Un document care se contrazice nu e „parțial
-  vechi": cine îl citește nu poate ști care rând mai e adevărat.* De aici înainte se **rescrie**,
-  nu se peticește.
-- **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.** Regula stă aici fiindcă a
-  fost încălcată de patru ori: 22.08 (trei afirmații false), 24→25.08 (**38 de commituri** în
-  urmă), 26.08 dimineața (avertismentul a sunat pe **trei rapoarte la rând** și a fost raportat de
-  fiecare dată fără să fie executat), 26.08 seara (a cerut-o Costin explicit, a doua oară).
-  **Lecția e despre avertismente, nu despre hook:** un avertisment care se raportează corect și nu
-  se execută e o linie de raport, nu o gardă.
-- **gardat**: `scripts/githooks/pre-commit` **avertizează** când `HEAD` e cu mai mult de **10**
-  commituri mai nou decât ultimul care a atins fișierul ăsta, iar `core/test_predare_proaspata.py`
-  nu lasă avertismentul să dispară tăcut. **Avertizează, nu blochează** — un blocaj pe fiecare
-  commit ar face din predare un impozit pe reparațiile mici.
+- **ultima rescriere**: **2026-08-26** (seara), *rescriere COMPLETĂ, nu petic*
+- **pe commit**: `ada9d23`
+- **de ce completă**: regula stă din 26.08 dimineața și e respectată. Versiunea de dinainte era
+  scrisă la `7e07265`, adică **cu 12 commituri în urmă**, și afirma lucruri care nu mai sunt
+  adevărate: *„150 din 192 de locuri scrise, 42 goale"*, *„rămâne lotul 7"*, *„restanțe deschise
+  36"*. Toate trei s-au schimbat. **Un document care se contrazice nu e „parțial vechi": cine îl
+  citește nu poate ști care rând mai e adevărat.**
+- **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.** Azi avertismentul porții a
+  sunat la `ada9d23` și **a fost executat în aceeași tură, la cererea lui Costin** — nu doar
+  raportat. Diferența contează: în zilele dinainte a fost raportat corect de trei ori la rând și
+  n-a fost executat niciodată. *Un avertisment care se raportează și nu se execută e o linie de
+  raport, nu o gardă.*
+- **gardat**: `scripts/githooks/pre-commit` **avertizează** peste 10 commituri de la ultima
+  atingere; `core/test_predare_proaspata.py` nu lasă avertismentul să dispară tăcut. Avertizează,
+  nu blochează.
+
+---
 
 ## STAREA LA PREDARE
 
-Poartă verde: **3267 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** · site 200 ·
-four-way `HEAD = origin/main = backup/lant-2026-08-26 = 7e07265`, proces viu pornit **după** commit.
-*(Cifra de teste se reverifică rulând poarta, nu se crede pe cuvânt.)* Rămân artefacte
-**neurmărite** în `frontend_test/` din rulările vizuale, plus `LOT_*_VERIFICARI.md`; nu sunt
-modificări.
+Poartă verde la `ada9d23`: **3293 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator
+**TOTAL 0** · site 200 · four-way `HEAD = origin/main = backup/lant-2026-08-26 = ada9d23`, proces
+viu pornit **după** commit. *(Cifra de teste se reverifică rulând poarta, nu se crede pe cuvânt.)*
 
-**Unde suntem**: **E1, faza 1.** **Cifrele nu se scriu aici** — se derivă cu `scripts/raport_b.py`,
-sursa secțiunii 6 a fiecărui raport. *(Ce urmează e o fotografie de la `7e07265`, ca să nu porniți
-orb; se re-derivă, nu se crede.)* Interdicții: MĂSURATE 21 · PARȚIAL 16 · NEMĂSURABILE 1 ·
-NEÎNCEPUTE 38. Restanțe deschise **36** (E1: **13**), rezolvate **24**.
+Rămân **neurmărite**: cele șapte `LOT_*_VERIFICARI.md`, `corectii_lot_1.md`, și artefacte din
+rulările vizuale în `frontend_test/`. Nu sunt modificări necomise.
 
-**Pasul curent, și e al lui Costin, nu al meu:** `TRASEE_VERIFICARI.md` — **150 din 192 de locuri
-scrise, 42 goale**. Se citesc în **7 loturi de câte 30** (`scan_trasee.py --loturi N`).
-**Loturile 1–5 sunt scrise. Lotul 6 e dat** (`~/iconta_nou/LOT_6_VERIFICARI.md`, 30 de pași).
-**Rămâne lotul 7 — ultimul, 12 pași.** **Nu se regenerează fișierul** — regenerarea șterge ce s-a
-scris.
+**Cifrele nu se scriu aici** — se derivă cu `scripts/raport_b.py`. Fotografia de la `ada9d23`:
+interdicții MĂSURATE 21 · PARȚIAL 16 · NEMĂSURABILE 1 · NEÎNCEPUTE 38; restanțe deschise **43**
+(E1: **20**).
 
-**Forma lotului, fixată 26.08:** fiecare pas poartă **garda** (`garda X · rol:… · fără rol`) și
-rândul `*ce face: …*`, care distinge ce e măsurat pe rută (`scrie …`) de ce e moștenit de la modul
-(`poate atinge, prin modul (PLAFON, nemăsurat pe rută)` — **R53**). Loturile 1 și 2 au fost date
-fără gardă; lotul 1 a primit și formularea veche a efectului (**20 din 30** de pași stăteau pe o
-etichetă schimbată integral, 10 nu, 0 mixte — lista e în raportul turei).
+---
 
-## CE S-A ÎNTÂMPLAT ÎN ZIUA ASTA — ce contează pentru cine continuă
+## PASUL CURENT ȘI-A ATINS CRITERIUL — și asta schimbă ce urmează
 
-**Șase ture, ~34 de commituri.** Detaliul fiecărei restanțe e în `CONFORMITATE.md`, cu `măsurat la`
-și `pe commit`; aici stă doar ce schimbă felul în care lucrezi mâine.
+**`TRASEE_VERIFICARI.md`: 193 din 193 de locuri scrise, 0 goale.** Loturile 6 și 7 au fost scrise
+de Costin și **mutate** în fișierul canonic; loturile rămân netracked ca istoric, nu se șterg.
 
-- **R33 — ÎNCHISĂ, varianta b′′.** `echilibru_perioada` e legat **lângă** `verifica_balanta`,
-  `BALANTA_INEGALA` a ieșit fiindcă era **tautologică** (probat: 0 din 2000 de seturi aleatorii o
-  puteau aprinde), iar ecranul arată **un singur rând „Echilibru"** cu ce a găsit fiecare.
-  *Premisa comenzii inițiale („logică paralelă") era falsă — de-aia s-a măsurat înainte de a alege.*
-- **R54 — ÎNCHISĂ. Contul din corpul cererii SE REFUZĂ**, nu se semnalează. `core/cont_valid.py`,
-  legat în **19** din 27 de citiri; **8 rămân în clichet**, fiecare cu motivul **citit la sursă**.
-  Refuzul numește contul ȘI unde se creează: *„Contul 7O7 nu există în planul firmei (câmpul
-  «cont_venit»). Îl adaugi din Plan de conturi (Import date › Plan de conturi)."*
-- **Poarta de coadă s-a MUTAT la intrare.** „Coadă = gata de depus" e ce spune ecranul
-  contabilului; ce e generat-și-nevalidat apare separat. Escape: `motiv_trecere`.
-- **R55, R56, R57 — REZOLVATE** (marcate pe `19db8b0`, în `abc0bc2`). Roluri pe efect, nu pe nume:
-  `plan-conturi`, `jurnal/{id}/valideaza`, `amortizare`, `bonuri/{id}/aproba`, `horeca/raport-z`,
-  `reges-config`, `reges-poll`. Pe calea de API, factura cu linie de stoc **se refuză** fără
-  `marfa_pleaca_cu_factura`.
-- **R58 — poarta de închidere VERIFICĂ, redeschiderea LASĂ URMĂ.** `POST /perioade-blocate` refuză
-  **422** pe ciorne sau pe blocajul existent din `inchidere_luna`. Tabelă nouă
-  **`perioade_inchideri`**, append-only, cu constrângerea de motiv **în BAZĂ**. Migrare **17/17**
-  scheme + oglindă în `tenant_template.sql`. **Rămâne deschisă** doar pentru ce a amânat Costin:
-  echilibrul și orfanii ca posibile condiții.
-- **R59 — CONSEMNATĂ, nu decisă.** Reevaluarea de imobilizare **nu atinge `mijloace_fixe`**: scrie
-  o notă ciornă, iar `POST /amortizare` calculează din registrul rămas pe valoarea veche. Prag 2
-  **măsurat**: 0 note de reevaluare pe toate cele 17 scheme.
-- **Gard nou pe EFECT:** `core/test_rol_pe_efect.py` — rolul se cere după **ce face** ruta, nu după
-  cum se numește. Mulțimea se derivă din AST, aserțiunea e pe **mulțime** (nu pe cardinal), cheia e
-  **metodă + cale**. Cele **șase moduri de eșec** ale gardului sunt scrise în antetul lui, înaintea
-  primei măsurători.
-- **Baseline-urile vizuale NU se urmăresc în git** (decizia lui Costin). `baseline_scan` spune
-  explicit când lipsește o referință — **absența nu se mai citește ca „STABIL"**.
-- **`METODA_VERIFICARE.md` a primit trei secțiuni**: o gardă care încodează o decizie **numește axa**
-  pe care păzește · o mutație care probează o calibrare trebuie să lovească **linia care face
-  distincția** · un filtru învechit **nu produce zgomot, produce tăcere**.
+Cifra e **193, nu 192**: o rută nouă (`POST /public/confirma-email`, R62) a adăugat un pas.
 
-## CIFRE INVALIDATE — nu se corectează, se RE-MĂSOARĂ
+**Ce urmează NU mai e scriere.** E ce scrie chiar `TRASEE.md` la început: *un traseu se parcurge,
+nu se citește.* Din cele 193 de verificări, **niciuna n-a fost rulată pe date** — cu o singură
+excepție, care e cea mai importantă lecție a zilei (mai jos).
 
-*O cifră ai cărei termeni nu se mai pot reconstitui se **invalidează**, nu se corectează.*
+---
 
-| cifra | unde apărea | de ce e invalidată |
+## TREI LUCRURI CARE SCHIMBĂ FELUL ÎN CARE LUCREZI MÂINE
+
+### 1. Prima exercitare pe date a găsit un prag 1 pe cod gardat și verde
+
+Costin a parcurs pe o firmă de test cei opt pași ai probei R62. A găsit un defect pe care
+**nicio gardă nu-l vedea**: `POST /public/confirma-email` era scrisă, gardată, trecea toată suita
+— și **nimic n-o chema**. Linkul din email ducea în SPA cu fragmentul `#email-nou=`, pe care
+`app.js` nu-l cunoștea. Clientul credea că și-a schimbat adresa; nu se schimbase nimic.
+
+Gărzile verificau ce face ruta **dacă** e chemată. Niciuna nu întreba **dacă** e chemată.
+
+**Regula care iese, și e a treia formă a aceleiași reguli:** *ruta și calea ei de apelare intră
+împreună* — ca *coloana și calea ei de scriere*. Consemnat în **R70**, cu măsurătoare: **5 din
+193** de rute n-au apelant în `static/`, una declarată intenționat, patru nu.
+
+### 2. Forma nouă a zilei: drum de citire fără drum de scriere
+
+Găsită de **trei** ori, în aceeași zi, în trei locuri diferite:
+
+| coloana | ce citea | ce s-a făcut |
+|---|---|---|
+| `tenants.principal_client_id` | patru SELECT-uri; citirea avea *fallback*, scrierile nu | **scoasă** (R62) — ecranul spunea unui om real „ești titularul", rutele răspundeau 403 |
+| `firma_profil.patron_email` | avea **precedență** la trimiterea pachetului | **scoasă** (R65) — `coalesce` o ascundea azi și ar fi activat-o mâine |
+| `firma_profil.patron_nume` | se **tipărește** pe adeverințe și contracte | **reparată** (R66) — a primit câmp în *Date firmă*, apoi documentele refuză fără el |
+
+Prima e vizibilă (produce un refuz), a doua e tăcută (produce comportamentul corect), a treia lasă
+un gol pe hârtie. **Aceeași formă, trei semne diferite.**
+
+### 3. Calea de scriere nu e un fapt textual — de patru ori într-o zi
+
+Fiecare instrument construit ca scan pe text a greșit, în ambele direcții:
+
+- `_siruri` citea **docstringurile** ca SQL → tabela inventată `oarb`;
+- instrumentul pentru „coloane citite și scrise de nimic" a dat **17**, iar calibrarea pe un caz
+  cunoscut rezolvat (R51) l-a infirmat → cifra **nu s-a publicat**;
+- „teste cuplate la firme reale": **18 → 6 → 4**, iar cifra reală, obținută **citind**, e **3** —
+  și garda permanentă din 29.07 le ratează pe toate trei, raportând zero;
+- „rute fără apelant": **5**, declarat ca **plafon superior**.
+
+**Consecința practică:** în codul ăsta calea de scriere sau de apelare se asamblează la rulare
+(`UPDATE … SET " + ", ".join(seturi)`, liste de coloane generate, căi compuse). *Cine scrie
+coloana* și *cine cheamă ruta* nu se pot răspunde citind textul. **Un scan pe text pe clasele
+astea se calibrează pe un caz cunoscut rezolvat înainte de a publica orice cifră.**
+
+---
+
+## CE S-A ÎNCHIS ȘI CE S-A DESCHIS AZI
+
+**26 de commituri.** Detaliul e în `CONFORMITATE.md`, cu `măsurat la` și `pe commit`.
+
+**Închise:** **R60** (instrumentul atribuia rutei modulul importat de altcineva — 14 rute cu
+atribuire falsă) · **R61** (raportul Z tastat nu avea verificare de duplicat; cheia e
+`Z-{NUI}-{nr}`, nu data) · **R62** (portalul muta identitatea fără confirmare — **prag 1**) ·
+**R65** (`patron_email` cu precedență și fără scriitor) · **R46** (schimbarea de regim peste o
+perioadă închisă — **prima reaprindere mecanică reală** de când există mecanismul: s-a aprins pe
+un fișier atins pentru altceva, și s-a închis în aceeași tură).
+
+**Deschise:** **R63** (două adrese pentru aceeași persoană — decis: rămân două, se numesc diferit)
+· **R64** (contabilitatea și stocul, două evidențe disjuncte — decis: documentele operaționale
+produc mișcarea; **nefăcut**, cere `articol_id` pe `nir_linii` întâi) · **R66** (aplicat, rămâne
+deschis pe restul clasei) · **R67** (suita rulează pe baza de **producție**; decis: utilizator de
+test restrâns — **nu se poate face de mine**, cere `postgres`) · **R68** (bază de test separată,
+după ce cele 3 teste se decuplează) · **R69** (declarație depusă pe un regim schimbat între timp —
+**6 firme, 55 de declarații**, mai mare decât poarta care o precede) · **R70**, **R71**.
+
+---
+
+## CE BLOCHEAZĂ, ÎN ORDINE
+
+1. **R67 cere `postgres`.** `iconta_user` n-are CREATEROLE. Comanda e scrisă în raportul turei;
+   fără ea, bariera dintre teste și firmele reale rămâne o convenție.
+2. **R64 cere o decizie de construcție**: `nir_linii` are `denumire` ca text liber, fără
+   `articol_id`. Coloana și calea ei intră împreună — de aceea nu s-a adăugat singură.
+3. **Cele două firme `PROBA PORTAL SRL`** rămân în bază ca dovadă până se confirmă reparația
+   defectului de prag 1. Se șterg amândouă după.
+4. **Reparația de la R70 nu e confirmată.** Am reparat-o; **n-o pot proba** — cere apăsarea unui
+   link dintr-un email la care n-am acces. Se probează de Costin, iar eu verific în bază
+   (`schimbari_email.confirmat_la`, `users.email`, `urme_portal`).
+
+---
+
+## REGULI EXERCITATE AZI, CU INSTANȚA LOR
+
+- **Consemnează întâi, decide după.** Toate cele nouă restanțe noi au fost scrise înainte de a fi
+  decise; niciuna n-a așteptat o decizie ca să existe.
+- **O măsurătoare se calibrează înainte de a fi publicată.** Cifra 17 a murit **înainte** de a
+  intra în registru, nu după. E prima dată.
+- **Clichetul 50 respinge și gărzile proprii.** Două fișiere de gardă scrise azi au fost rescrise
+  pe structură după ce scanul le-a numărat aserțiuni pe text. Forma acceptată: operator de mulțime
+  (`>= {…}`), nu `in`.
+- **Un refuz numește lucrul și locul.** `UNDE_ADMINISTRATOR`, `UNDE_PERIOADE` — valori cu nume, ca
+  gardul să asertea că mesajul e **compus** din ele, nu că fraza conține un șir.
+- **Poarta a respins de trei ori azi** (a 23-a, 24-a, 25-a din jurnal), de fiecare dată pe ceva
+  produs de propria reparație: import nefolosit, reaprindere neexecutată, blocul din `TRASEE.md`
+  desincronizat, fixtură care numea o tabelă reală.
+- **Mesajele de commit se trimit ca FIȘIER.** Un heredoc neghilimelat prin `ssh` a executat
+  backtick-urile și a golit un cuvânt din `892b337`. Regula era notată; s-a sărit la un retuș, nu
+  la actul principal.
+
+---
+
+## CIFRE INVALIDATE — se păstrează, nu se șterg
+
+*O cifră ai cărei termeni nu se mai pot reconstitui se **INVALIDEAZĂ**, nu se corectează.*
+Tabelul se moștenește din predările dinainte: o cifră ștearsă se poate reîntoarce.
+
+| cifra | unde apărea | de ce e INVALIDATĂ |
 |---|---|---|
 | **131** (valori fiscale în afara registrului) | predarea din 22.08 | termenii recalculați pe domeniu lărgit de trei ori. Clichetul viu e în `core/test_constante_nesursate.py` |
-| **„25 de trasee"** | comenzile din 24–25.08 | nu exista instrument care să le numere. Cifra care se poate reface e **35** |
-| **„25 de rute predau un document, 17 fără rol"** (R52) | 25.08 dimineață | gardul citește doar **corpul rutei** și găsește **18** și **8**. Diferența e **raza**, nu progresul. Clichetul stă pe **8** |
-| **„129 de rute schimbă date fără rol"** | predarea din 26.08 dimineață | raza nu se mai poate reconstitui. Re-măsurat pe **metodă + cale** la `7e07265`: **236 de rute ne-GET, din care 145 fără nicio verificare de rol**. **145 > 129 nu e regres** — e alt domeniu |
-| **„R55: șapte rute"** | comanda și predarea din 26.08 | proxy pe **numele grupului**. Real: **40** de rute în clasă, din care **36 scriu `ciorna`** (deci criteriul nu li se aplică) și **3 scriu `validata` direct** |
-| `STALE_BAZA_BASELINE = 14` | `core/test_agenda.py` | măsurată pe graful conflat |
+| **„25 de trasee”** | comenzile din 24 si 25.08 | nu exista instrument care să le numere. Cifra care se poate reface e **35** |
+| **„129 de rute schimbă date fără rol”** | predarea din 26.08 dimineață | raza nu se mai poate reconstitui; re-măsurat pe **metodă + cale** dă alt domeniu, nu alt progres |
+| **„R55: șapte rute”** | comanda din 26.08 | proxy pe **numele grupului**. Real: **40** de rute în clasă, din care 36 scriu `ciorna` și **3** scriu `validata` direct |
+| **17** (coloane citite și scrise de nimic) | instrumentul construit **26.08 seara** | **INVALIDATĂ înainte de a fi publicată** — calibrarea pe un caz cunoscut rezolvat (R51) a infirmat-o. Cifra reală, obținută citind, e **3** |
+| **18** (teste cuplate la firme reale) | raportul din 26.08 | grep naiv; numărările succesive au dat 18, 6, 4, iar cifra reală, prin citire, e **3** |
 
-## FRONTURI DESCHISE, în ordine
+## CE NU E ADEVĂRAT DESPRE STAREA ASTA, ȘI SE SPUNE
 
-1. **`TRASEE_VERIFICARI.md` — îl completează Costin.** 42 de locuri rămase, **un lot pe tură**.
-   Eu dau lotul, el scrie verificările, trec la următorul. **Lotul 7 e ultimul.** Până se scriu
-   toate, inventarul de trasee e o **hartă a codului**, nu o listă de verificare.
-2. **Trei cerințe pe masa lui Costin, din raportul de la `7e07265`:** (1) R59 — reevaluarea
-   actualizează registrul, sau aplicația **spune** divergența? (2) `firma-profil/date` primește
-   `admin_firma`? Scrie câmpurile pe care se sprijină **nouă declarații** și n-are rol — punct orb
-   al gardului mecanic, fiindcă scrie în `firma_profil`, nu `validata`. (3) Se construiește
-   verificarea „suma mișcărilor de articol dintr-o lună se regăsește în descărcarea lunii"?
-3. **Cele 145 de rute ne-GET fără rol.** Criteriul lui Costin — *ce schimbă ce datorează firma* —
-   e aplicat pe clasele numite. Restul se triază pe **același** criteriu, iar cifra trebuie să
-   devină **clichet** — azi nu e.
-4. **Poarta de închidere n-are clichet.** Are o probă funcțională pe schemă efemeră, nu un test
-   care asertează că refuză. Scris în R58 și în `TESTE.md`, cu ce ar trebui cablat.
-5. **Pragul 3 din triaj** — amânat de zece ture, cea mai mare datorie: îngustarea
-   Registrului-inventar la partidă dublă, registrul de evidență fiscală pe partidă simplă
-   (`rip_api` + `d212_engine`), apoi deductibilitatea per operațiune.
-6. **R50** — ștergerea unui cabinet nu curăță tabelele partajate. Două firme-fantomă, 44 de rânduri
-   de audit pe un tenant care nu mai există.
-7. **R5, R6** (încrederea în corpus) — deschise de peste 108 commituri, și blochează tot 1a.
-   **R8, R9** — peste 102 fiecare.
-8. **Cele 91 de rute ne-documentare** — declarate ca atare în inventar, dar nimeni n-a verificat că
-   declarația e adevărată pentru fiecare.
-9. **`core/compensare.py`** — singurul modul rămas nelegat din cele patru, pinat cu motivul.
-
-## CE TREBUIE ȘTIUT DESPRE DATE, ÎNAINTE DE ORICE MĂSURĂTOARE
-
-Măsurat 25–26.08, pe toate cele 17 firme:
-
-- **evidența e concentrată în două firme** — `tenant_013` are rânduri în 26 de tabele, `tenant_003`
-  în 14; patru firme au **exact două**;
-- **41 de facturi · 34 de note · 24 de salariați · 2 state de plată · 55 de declarații depuse ·
-  3 mijloace fixe active · 0 note de reevaluare · 0 pontaje · 0 operațiuni de partidă simplă ·
-  0 NIR-uri**;
-- **12 conturi în 7 cabinete**, din care **un singur `angajat`** — fără nicio firmă atribuită.
-  **Patru-ochi nu se poate exercita azi pe nicio firmă**, deci nu se inventează scenarii de test pe
-  cabinete care nu există;
-- **`public.api_chei` = 0** — nicio cheie de API n-a fost creată vreodată. Orice schimbare pe calea
-  de integrare e prag 2 azi;
-- **`public.spv_token` = 0** și **`reges_chei` = 0** — e-Factura, e-Transport și REGES se opresc la
-  pasul „token", nu la marginea ANAF;
-- **mediul de test e-Factura EXISTĂ și e cel implicit**; ce lipsește e certificatul.
-
-**Punctul orb e FIRMA, nu ecranul:** un scan vede doar stările pe care le produc datele firmei pe
-care rulează.
-
-## CUM SE RULEAZĂ CEVA CARE ARE NEVOIE DE BAZĂ
-
-Shell-ul neinteractiv **nu** are `DB_*` în mediu. Nu căuta credențiale — folosește exact
-mecanismul testelor: `conftest.py` sursează `~/.iconta/db.env` la import.
-
-```python
-import sys; sys.path.insert(0, "/home/costin/iconta_nou")
-import conftest            # sursează db.env, ca la pytest
-from core import db
-```
-
-Pentru un script din `scripts/`: `runpy.run_path("scripts/x.py", run_name="__main__")` după
-`import conftest`, cu `sys.argv` pus manual.
-
-## CE SĂ NU FACI
-
-- **Nu porni de la un nume primit în comandă fără să-l cauți la sursă.** Comenzi succesive au numit
-  `estimare_impozit`, `_recalc()`, „ecranul POS", „cele 12 constante", „3750 în JS", „25 de
-  trasee", „jurnalul de vânzări" — **majoritatea nu existau**. Caută **eticheta pe care o vede
-  omul**, nu doar identificatorul.
-- **Nu măsura pe un PROXY.** Trei erori într-o singură zi, toate ale mele: **numele funcției**
-  (R33 — „a doua implementare" era falsă), **numele grupului** (R55 — „7 rute" erau 40), **calea
-  fără metodă** (R56 — am citit garda `GET`-ului și am scris-o în dreptul `PUT`-ului). Se măsoară
-  pe **metodă + cale**, pe **efect**, pe **conținut**.
-- **Nu ghici numele unei tabele.** Lista reală se regenerează din bază: `scan_trasee.py --tabele`.
-- **Nu te încrede într-un fișier generat fără să-i verifici vechimea.** `trasee_tabele.json` era
-  mai vechi decât `artefacte_produse`, deci filtrul tăia o tabelă **reală**, iar trei trasee au
-  rămas clasificate greșit o zi întreagă. **Un filtru învechit nu produce zgomot, produce TĂCERE.**
-  *(Garda scrisă pentru asta mi-a prins azi propria tabelă nouă, `perioade_inchideri`.)*
-- **Un tabel nou cere trei locuri, nu unul**: DDL-ul (sursă unică în `core/migrare_*.py`), oglinda
-  în `tenant_template.sql`, **și clasificarea în perimetrul firmelor** din `ISTORIC_TENANTI.md` —
-  un tabel gol e ambiguu, iar garda de perimetru refuză ambiguitatea. Plus regenerarea filtrului.
-- **Antetul nu poartă stări care se pot confrunta cu un câmp.** Am scris „R55, R56, R57 sunt
-  REZOLVATE" în antetul lui `CONFORMITATE.md` și a picat
-  `test_deciziile_numite_in_antet_sunt_DESCHISE`. Starea se citește din câmpul `stare`. *Dacă o
-  propoziție se poate confrunta cu o cifră, nu e a antetului — e a derivatorului.*
-- **Un refuz care ajunge la om e o AFIRMAȚIE**, deci poartă `fel` din nomenclator (`core/afirmatii.py`),
-  nu proză într-un dicționar. Un refuz de închidere e `neconformitate` — cu `unde` și `regula`.
-  `afirmatie()` ridică dacă lipsește un câmp, deci proba se face **și la runtime**, nu doar pe AST.
-- **Nu lega o rută de un modul după un nume, fără să verifici că numele nu e umbrit local.**
-  `from core import stocuri_api as _s` **în corp**, și `with conn.cursor() as _c` peste
-  `from core import casa_api as _c`. **O atribuire falsă e mai rea decât o absență** — trece verde.
-- **Nu căuta un șir într-un f-string ca și cum ar fi text.** `f"INSERT INTO {schema}.x"` nu conține
-  `{schema}` — `FormattedValue` nu e text. Un detector construit așa vede **zero** și pare verde.
-- **Nu asertui pe text într-o gardă nouă.** Clichetul 50 e per fișier, iar **un fișier nou pornește
-  de la zero**. Se trece pe **seturi**, pe **structură**, pe **noduri de AST** — iar dacă nu se
-  poate, motivul se scrie lângă gardă.
-- **Nu înlocui intrări în `sys.modules` ca să falsifici un modul.** `from core import d112` citește
-  **atributul de pe pachet**. Se folosește `monkeypatch` pe **funcții**.
-- **Nu ținti o mutație pe orice linie din funcția pe care o probezi.** Poate pica alt test, din alt
-  motiv, iar atunci proba confirmă altceva. Instanța: poarta `INSERT|UPDATE|DELETE` se
-  scurtcircuita înaintea liniei mutate. **Bucla de mutații ține numele testului AȘTEPTAT.**
-- **Nu presupune că un gard care pică te contrazice.** Poate păzi o decizie de pe **altă axă**.
-  Instanța: `test_nota_contabila_NU_cere_admin_firma` încoda R42 (nota nu e artefact predat); R55
-  punea rol fiindcă schimbă starea. **Nu se relaxează — se numește axa.**
-- **Nu edita scripturi de conversie din shell.** Escapările se rup pe ghilimelele românești, pe
-  `\u` și pe `\n`. Se scrie **fișierul** pe stație, se trimite octet cu octet (`cat fișier | ssh …`),
-  iar scriptul de patch **rulează pe server** (`METODA` §10.3).
-- **Nu închide un ghilimel românesc cu `"` ASCII într-un literal Python.** Încheie ȘIRUL, nu
-  citatul, iar eroarea apare o linie mai jos. S-a întâmplat de **patru ori** într-o tură. Și
-  **nu „repara" automat**: un înlocuitor care nu știe unde se termină literalul strică și șirurile
-  corecte — a stricat trei într-un fișier pe care încerca să-l repare.
-- **Nu rula un RED-proof cu `git checkout`** când arborele are muncă necomisă. **Un RED-proof pe un
-  REFUZ scrie**: verificarea nu e „testul a picat", ci **„a picat ȘI n-a rămas nimic în urmă"** —
-  se compară sha256 înainte/după.
-- **Nu regenera `TRASEE_VERIFICARI.md`.** E singurul document scris de om.
-- **Nu curăța `__pycache__` doar la sfârșit.**
-- **Nu citi un `or "<implicit>"` ca pe o validare.** E o mască: transformă `None` și `""` în
-  implicit și lasă `"   "` să treacă verbatim. 19 situri.
-- **Nu scrie o aserțiune pe un rând `poate atinge, prin modul`.** Acela e un plafon superior, nu o
-  măsurătoare pe rută: 108 din 192 de pași îl poartă (R53).
-- **Nu scrie un motiv de clichet din analogie.** E o afirmație despre cod, deci poate fi falsă
-  (R16). Un motiv presupus transformă „n-am făcut" în „nu se poate", iar atunci clichetul nu mai e
-  datorie, e justificare.
-- **Nu citi „STABIL" din `baseline_scan` ca pe o comparație.** În modul implicit e **self-diff**
-  între două capturi din aceeași rulare. Pentru comparație: `--compare`.
-- **Nu lărgi un scan ca să scadă un număr.** S-a încercat de două ori.
-- **Nu recicla un nume într-un fișier de gărzi.** **Nu declara o clasă golită pe un singur limbaj**
-  (`METODA` §17).
-- **Nu amâna rescrierea predării fiindcă ai raportat-o.** Vezi antetul.
+- **Verde nu înseamnă exercitat.** 3293 de teste trec, și tot un defect de prag 1 a stat ascuns o
+  zi întreagă pe cod gardat. Ce prinde suita e ce știe să întrebe.
+- **Cele 193 de verificări sunt scrise, nu rulate.** Una singură a fost exercitată pe date (proba
+  R62), și a găsit un defect. Rata nu se extrapolează dintr-un caz — dar nici nu se ignoră.
+- **Trei observații din R71 sunt de așezare** (refuz sub câmpul greșit, fereastră sub marginea
+  ecranului, buton nereseta) — clasa e declarată **nemăsurabilă** în CLAUDE.md, iar verificatorul
+  nu ajunge acolo. Se repară pe judecată, se confirmă pe ochi.
