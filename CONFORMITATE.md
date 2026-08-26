@@ -1730,8 +1730,9 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · TRASEE T35 · **PRAG 3** *(măsurat: **0 din 17** firme o au completată, deci `coalesce` cade azi pe `email` și nimic nu pleacă greșit. Ce lipsește e o cale, nu o corectitudine)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `60fd000`
+- **rezolvată pe commit**: `3afa338`
 - **măsurat la**: 2026-08-26 · **pe commit**: `60fd000`
 - **planul**: **NEACOPERIT**, aceeași lipsă ca la R62 și R63: `PLAN_ARHITECTURA.md` nu spune nicăieri câte adrese are un om, care dintre ele contează, și cine o scrie. Citit după *patron_email*, *identitate*, *portal*: zero rezultate pe primul, iar celelalte duc la reguli despre **valori fiscale**, nu despre persoane. (METODA §25)
 - **ce blochează**: `core/pachete_api.py` trimite pachetul lunar la `coalesce(patron_email, email)` din `firma_profil` — deci `patron_email` are **precedență**. Dar **niciun ecran nu o scrie**: `grep` pe tot `static/` întoarce zero, iar ecranul de date ale firmei are un singur câmp de email, care scrie `email`. E a doua coloană cu drum de citire și fără drum de scriere găsită în aceeași tură, după `principal_client_id`.
