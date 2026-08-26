@@ -169,7 +169,8 @@ TRASEE = [
      ["rapoarte_salvate", "centre_cost", "bugete"]),
     ("T35", "Pachetul lunar către client și solicitările lui",
      [r"^/pachete", r"^/portal/(?!bon)", r"^/tenants/\{\}/solicitari",
-      r"^/tenants/\{\}/(client-acces|acces-portal)", r"^/tenants/\{\}/clienti"],
+      r"^/public/confirma-email",   # tokenul e dovada, dar pasul e al portalului
+      r"^/tenants/\{\}/(client-acces|acces-portal|urme-portal)", r"^/tenants/\{\}/clienti"],
      ["clienti"]),
 ]
 
@@ -440,7 +441,22 @@ def _siruri(src):
         t = ast.parse(src)
     except SyntaxError:
         return [src]
+    # [26.08.2026] DOCSTRINGUL nu e cod. O proza care pomeneste `UPDATE x` producea o tabela
+    # inventata: instanta e chiar docstringul rutei de confirmare a adresei, din care a iesit
+    # tabela `oarb`. E aceeasi clasa cu regula pe care o tine gardul rutei de raport Z — *un
+    # comentariu care pomeneste INSERT n-are voie sa treaca drept scriere* — doar ca aici era in
+    # instrument, nu in gard. Directia e ZGOMOTOASA (adauga tabele), deci se vede; nu si daca
+    # tabela inventata se cheama ca una reala.
+    docstringuri = set()
     for n in ast.walk(t):
+        if isinstance(n, (ast.Module, ast.FunctionDef, ast.AsyncFunctionDef, ast.ClassDef)):
+            corp = getattr(n, "body", None)
+            if corp and isinstance(corp[0], ast.Expr) and isinstance(corp[0].value, ast.Constant) \
+                    and isinstance(corp[0].value.value, str):
+                docstringuri.add(id(corp[0].value))
+    for n in ast.walk(t):
+        if id(n) in docstringuri:
+            continue
         if isinstance(n, ast.Constant) and isinstance(n.value, str):
             out.append(n.value)
         elif isinstance(n, ast.JoinedStr):

@@ -78,6 +78,7 @@
   "rip_operatiuni",
   "salariati",
   "salariu_istoric",
+  "schimbari_email",
   "solduri_initiale",
   "solduri_parteneri",
   "solicitari_client",
@@ -86,6 +87,7 @@
   "state_plata",
   "tenants",
   "tokene_activare",
+  "urme_portal",
   "user_tenants",
   "users"
  ]

@@ -500,7 +500,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - [x] plusul de inventar e venit; minusul e cheltuială, deductibilă doar în limita perisabilităților
 - minusul imputabil se recuperează de la gestionar — verifică dacă se distinge de cel neimputabil
 - nota atinge și `mijloace_fixe`: verifică ce se întâmplă cu un mijloc fix lipsă la inventar
-- mișcările de stoc au aceeași dată cu nota
+- plusul și minusul se scriu pe conturile lor, iar suma notei se închide — nota nu rămâne dezechilibrată dacă o categorie lipsește
+- mijlocul fix constatat lipsă iese din `mijloace_fixe` cu dată și motiv, nu doar din notă
+- **stocul NU se ajustează de aici, iar asta e o absență, nu o verificare** — un inventar care nu mișcă stocul lasă evidența cantitativă și cea contabilă să divergeze. Consemnat separat (R64); aici nu se poate verifica, fiindcă ruta n-o face
 - **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 - **ADNOTARE SCHIMBATĂ 26.08.2026 — R60.** Din rândul `ce face` s-a ȘTERS *«poate atinge, prin modul: `articole`, `miscari_stoc` — prin `stocuri_cv_api`»*. Nu ruta s-a schimbat, ci instrumentul: `scan_trasee.py` rezolva aliasul `_cv` prin harta altcuiva, iar aici `_cv` e `cont_valid` — care doar confruntă contul cu planul firmei și nu scrie nimic. Verificările de mai sus rămân valabile **ca intenție**; ce nu se mai poate afirma e unde ajunge efectul. Verificarea *«mișcările de stoc au aceeași dată cu nota»* rămâne **fără obiect**: ruta nu produce nicio mișcare de stoc. Că o notă de inventariere nu mișcă stocul e o absență care merită întrebată separat — dar nu se mai poate verifica aici. Restul rândurilor, inclusiv cel despre `mijloace_fixe`, stau pe scrierea PROPRIE a rutei și rămân.
 
@@ -1634,7 +1636,14 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Chitanta certificata de contabil: plata furnizor prin Registrul de casa (casa_api.adauga -> 401=5311 ciorna + operatiune casa + verificare plafon) — scrie bonuri (UPDATE) · facturi (UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): casa_operatiuni (DELETE/INSERT) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`*
 
-- [ ] 
+- [x] stingerea produce **o singură** operațiune de casă; o a doua apăsare nu produce a doua plată
+- suma stinsă nu depășește soldul neplătit al bonului
+- plafonul de plăți în numerar se verifică — ruta îl cheamă, verifică că refuză când e depășit
+- soldul casei nu devine negativ
+- bonul trece în „stins" și nu se mai poate stinge
+- data operațiunii de casă e într-o perioadă deschisă
+
+---
 
 ## T24 — Bonul fiscal și raportul Z (AMEF, horeca)
 
@@ -1646,7 +1655,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Upload p7b/XML AMEF (OPANAF 146/2018 II.7) -> nota Raport Z CIORNA — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] nota produsă e **ciornă** — verificat pe starea scrisă
+- fișierul p7b e verificat ca semnătură, nu doar citit — altfel orice XML poate deveni raport Z
+- totalurile din notă coincid cu cele din fișier: total încasări, TVA pe cote, număr de bonuri
+- un fișier importat de două ori nu produce a doua notă — verificat pe conținut, nu pe nume
+- data raportului Z e într-o perioadă deschisă
 
 ### `POST /tenants/{tenant_id}/horeca/raport-z`
 
@@ -1654,7 +1667,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] **nu pot scrie verificarea fără să știu ce o deosebește de `import-amef`.** Ambele produc nota de raport Z; una are rol, cealaltă nu
+- dacă e introducere manuală a raportului Z, verifică: totalurile pe cote de TVA se adună la totalul general
+- dacă e aceeași operațiune pe două căi, e interdicția 15 — iar rolul diferit o face vizibilă
+
+---
 
 ## T25 — Comanda din magazinul online (WooCommerce)
 
@@ -1695,7 +1712,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): registratura (INSERT) — prin `registratura_api`*
 
-- [ ] 
+- [x] numărul de înregistrare e **din serie, fără goluri** — registratura e un registru, nu o listă
+- data înregistrării nu e în viitor
+- un document înregistrat nu se poate șterge; se anulează, cu numărul păstrat
+- verifică dacă numerotarea se reia la începutul anului sau e continuă — amândouă sunt legitime, dar trebuie să fie una
+
+---
 
 ## T27 — e-Transport
 
@@ -1736,7 +1758,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: AIC bunuri/servicii primite (art — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
-- [ ] 
+- [x] taxarea inversă: TVA-ul se înregistrează simultan deductibil și colectat, iar cele două se anulează în decont
+- cursul e cel de la data exigibilității, cerut din registru — nu introdus liber
+- codul de TVA al furnizorului e validat algoritmic și, dacă se poate, în VIES
+- operațiunea intră în D390 cu codul corect, și în D300 la rândurile de achiziții intracomunitare
+- **`firma_profil` se atinge, și se știe de ce**: `facturi_api` face `UPDATE firma_profil SET urmator_numar_factura` — contorul de numerotare a facturii. Verifică-l pe efect: două achiziții consecutive primesc numere consecutive, iar un refuz nu consumă un număr
+- **stocul nu se mișcă de aici** — ruta cheamă `facturi_api` și `intracomunitar`, niciun modul de stoc. Pentru o achiziție intracomunitară de bunuri asta e o absență, consemnată la R64
 
 ### `POST /tenants/{tenant_id}/d390-clasificare/manual`
 
@@ -1744,7 +1771,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Adauga linie pur manuala: {an, luna, tip, tara, cod, den, baza}. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): d390_manual (DELETE/INSERT) · d390_reclasificare (DELETE/INSERT) — prin `d390_clasificare_api`*
 
-- [ ] 
+- [x] linia manuală poartă **motivul** existenței ei: ce operațiune reprezintă și de ce nu vine din evidență
+- codul de TVA e validat algoritmic pentru țara respectivă, la introducere
+- tipul e din nomenclatorul oficial — după reancorarea pe normă, nu pe XSD
+- o linie manuală pe o lună cu D390 depus produce contradicție
+- **fără rol, deși adaugă direct într-o declarație**
 
 ### `DELETE /tenants/{tenant_id}/d390-clasificare/manual/{mid}`
 
@@ -1752,7 +1783,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): d390_manual (DELETE/INSERT) · d390_reclasificare (DELETE/INSERT) — prin `d390_clasificare_api`*
 
-- [ ] 
+- [x] ștergerea unei linii dintr-o lună cu D390 depus produce contradicție — declarația depusă conținea linia
+- ștergerea se consemnează: cine, când, ce conținea linia
+- **fără rol** — iar ștergerea unei linii dintr-o declarație e mai gravă decât adăugarea: dispare fără urmă
 
 ### `PUT /tenants/{tenant_id}/d390-clasificare/reclasificare`
 
@@ -1760,7 +1793,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Override tip pe o operatiune auto: {an, luna, directie, tara, cod, tip}. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): d390_manual (DELETE/INSERT) · d390_reclasificare (DELETE/INSERT) — prin `d390_clasificare_api`*
 
-- [ ] 
+- [x] reclasificarea **schimbă ce se declară** — o operațiune mutată din tip L în tip T schimbă D390
+- override-ul poartă motivul: de ce clasificarea automată era greșită
+- o reclasificare pe o lună cu D390 deja depus produce contradicție vizibilă, nu rescriere tăcută
+- codul de țară și codul de TVA rămân neschimbate — reclasificarea privește tipul, nu partenerul
+- **fără rol, deși schimbă conținutul unei declarații**
 
 ### `POST /tenants/{tenant_id}/vanzare-ic`
 
@@ -1768,7 +1805,14 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: LIC bunuri (art — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] livrarea intracomunitară e scutită cu drept de deducere; nu se colectează TVA
+- scutirea cere **dovada transportului** și codul de TVA valid al clientului. Fără ele, operațiunea nu e scutită
+- codul de TVA al clientului e verificat în VIES la data operațiunii, iar rezultatul se păstrează — o verificare care nu se păstrează nu se poate dovedi la control
+- operațiunea intră în D390 cu cod L
+- **fără rol, deși `achizitie-ic` — aceeași clasă — cere admin_firma**
+- **livrarea nu scoate bunurile din stoc** — ruta cheamă `intracomunitar` și `cont_valid`, niciun modul de stoc. La o livrare de BUNURI asta e cea mai vizibilă formă a absenței de la R64: marfa pleacă din firmă în contabilitate și rămâne în evidența cantitativă
+
+---
 
 ## T29 — Regimurile speciale de TVA — marjă, aur, agricultori, taxare inversă
 
@@ -1807,7 +1851,6 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - [x] operațiunea apare în D394 ca tip N, cu `tip_partener=2` — verificat pe declarația generată, nu pe intenția din cod
 - persoana fizică nu are cod fiscal, deci nu se cere; dar se cere o identificare, altfel operațiunea n-are partener
 - TVA-ul nu se deduce — achiziția de la neînregistrat nu poartă TVA deductibilă
-- dacă atinge stocul prin modul, mișcarea de stoc are aceeași dată cu nota
 - **ADNOTARE SCHIMBATĂ 26.08.2026 — R60.** Din rândul `ce face` s-a ȘTERS *«poate atinge, prin modul: `articole`, `miscari_stoc` — prin `stocuri_cv_api`»*. Nu ruta s-a schimbat, ci instrumentul: `scan_trasee.py` rezolva aliasul `_cv` prin harta altcuiva, iar aici `_cv` e `cont_valid` — care doar confruntă contul cu planul firmei și nu scrie nimic. Verificările de mai sus rămân valabile **ca intenție**; ce nu se mai poate afirma e unde ajunge efectul. Verificarea *«dacă atinge stocul prin modul, mișcarea de stoc are aceeași dată cu nota»* avea condiția scrisă în față; condiția e acum cunoscută **falsă**, deci rândul rămâne fără obiect. Restul stau pe `facturi_api`, care e real.
 
 ### `POST /tenants/{tenant_id}/achizitie-taxare-inversa`
@@ -1899,7 +1942,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Incasare creanta / plata datorie in valuta cu diferenta de curs 665/765 — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): curs_bnr_zilnic (INSERT) — prin `curs_bnr`*
 
-- [ ] 
+- [x] diferența de curs se calculează între cursul de la înregistrarea creanței și cel de la decontare
+- cursul vine din `curs_bnr_zilnic`; dacă lipsește pentru data respectivă, se aduce sau se refuză — **nu se folosește cel mai apropiat fără să se spună**
+- diferența favorabilă merge în 765, cea nefavorabilă în 665 — verifică semnul
+- decontarea parțială stinge proporțional, iar diferența de curs se calculează pe partea decontată
+- **cursul folosit se SPUNE, nu doar se aplică**: regula legală e *cel mai recent curs cu data ≤ data operațiunii*, iar `curs_din_harta` chiar o aplică și întoarce ziua cursului — dar ruta aruncă ziua aia (`_dcurs`) și nu o pune nici în descriere, nici în răspuns. Verifică pe o dată de weekend: nota trebuie să spună din ce zi e cursul
 
 ### `POST /tenants/{tenant_id}/reevaluare-valuta`
 
@@ -1907,7 +1954,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Reevaluare lunara solduri valuta (OMFP 1802 pct — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): curs_bnr_zilnic (INSERT) — prin `curs_bnr`*
 
-- [ ] 
+- [x] reevaluarea se face la **finalul lunii**, pe soldurile în valută rămase — verifică dacă ruta o poate rula la orice dată
+- cursul e cel din ultima zi bancară a lunii
+- reevaluarea se aplică tuturor soldurilor în valută, nu doar celor selectate — o reevaluare parțială lasă bilanțul greșit
+- o a doua reevaluare pe aceeași lună nu produce a doua notă — sau, dacă o produce, prima se stornează
+
+---
 
 ## T31 — Completările manuale la o declarație (D300, D301)
 
@@ -1921,7 +1973,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Adauga/actualizeaza un rand manual D300: {an, luna, rand, baza, tva, descriere}. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): d300_manual (DELETE/INSERT) — prin `d300_manual_api`*
 
-- [ ] 
+- [x] rândul manual e din nomenclatorul de rânduri D300 — unul inexistent se refuză
+- baza și TVA-ul sunt coerente cu cota rândului respectiv
+- rândul manual poartă **motivul**: ce reprezintă și de ce nu vine din evidență
+- suma rândurilor manuale plus cele derivate = totalul declarat; verifică că nu se dublează cu ce vine din facturi
+- **fără rol, deși scrie direct în decontul de TVA**
 
 ### `DELETE /tenants/{tenant_id}/d300-manual/{rid}`
 
@@ -1929,7 +1985,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): d300_manual (DELETE/INSERT) — prin `d300_manual_api`*
 
-- [ ] 
+- [x] ștergerea pe o lună cu D300 depus produce contradicție
+- ștergerea se consemnează cu ce conținea rândul
+- **fără rol**
+
+---
 
 ### `POST /tenants/{tenant_id}/d301-operatiuni`
 
@@ -1937,7 +1997,13 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Adauga o operatiune: {an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, cota}. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): d301_operatiuni (DELETE/INSERT) — prin `d301_operatiuni_api`*
 
-- [ ] 
+**Din lotul în care s-a scris, valabil pentru tot traseul:** **Grupa cea mai gravă din lot: patru rute fără rol care scriu direct în ce intră în D300 și D301.**
+
+- [x] `temei_307` e obligatoriu pentru operațiunile de tip 4 — construit pe 22.08, verifică că refuză fără el
+- cursul e cel de la data documentului, cerut din registru
+- valuta e din nomenclatorul de 20, iar limita e declarată — o valută legală din afara listei nu se poate depune
+- o operațiune adăugată pe o lună cu D301 depus produce contradicție vizibilă
+- **fără rol, deși scrie direct într-o declarație**
 
 ### `DELETE /tenants/{tenant_id}/d301-operatiuni/{op_id}`
 
@@ -1945,7 +2011,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): d301_operatiuni (DELETE/INSERT) — prin `d301_operatiuni_api`*
 
-- [ ] 
+- [x] ștergerea pe o lună cu D301 depus produce contradicție — declarația conținea operațiunea
+- ștergerea se consemnează cu ce conținea operațiunea
+- **fără rol** — o operațiune ștearsă din declarație dispare fără urmă
 
 ## T32 — Registrul de încasări și plăți (partida simplă)
 
@@ -1959,7 +2027,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
 
-- [ ] 
+- [x] fiecare tranzacție din extras produce **o singură** operațiune RIP
+- un extras importat de două ori nu dublează — verificat pe conținut
+- operațiunile importate intră ca **ciorne**, nu validate; categoria fiscală se atribuie de om
+- tranzacțiile care nu s-au putut clasifica se numesc, nu se sar
 
 ### `POST /tenants/{tenant_id}/rip/import-casa`
 
@@ -1967,7 +2038,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
 
-- [ ] 
+- [x] aceleași ca la bancă
+- **verifică dacă o operațiune de casă poate ajunge în RIP de două ori** — o dată din registrul de casă, o dată din import
+
+---
 
 ### `POST /tenants/{tenant_id}/rip/operatiuni`
 
@@ -1975,7 +2049,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
 
-- [ ] 
+**Din lotul în care s-a scris, valabil pentru tot traseul:** **Partida simplă. Verificări comune celor cinci:** - firma e în partidă simplă — altfel RIP nu se aplică - data operațiunii e într-o perioadă deschisă - numerotarea în registru nu are goluri
+
+- [x] operațiunea e **încasare sau plată efectivă**, nu angajament — în partidă simplă contează fluxul, nu factura
+- încasările impozabile se disting de cele neimpozabile; plățile deductibile de cele nedeductibile
+- fiecare operațiune poartă documentul justificativ
+- operațiunea intră în D212 la rândul corespunzător
 
 ### `DELETE /tenants/{tenant_id}/rip/operatiuni/{op_id}`
 
@@ -1983,7 +2062,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
 
-- [ ] 
+- [x] o operațiune **validată** nu se șterge — se stornează
+- ștergerea pe o lună cu D212 depus produce contradicție
+- **fără rol**
 
 ### `PUT /tenants/{tenant_id}/rip/operatiuni/{op_id}/valideaza`
 
@@ -1991,7 +2072,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): rip_operatiuni (DELETE/INSERT/UPDATE) — prin `rip_api`*
 
-- [ ] 
+- [x] **validarea transformă o ciornă în evidență** — după ea, operațiunea nu se mai editează
+- validarea verifică înainte: document justificativ prezent, dată în perioadă deschisă, categorie fiscală atribuită
+- cine a validat se consemnează
+- **fără rol, iar aceasta e ruta care produce evidența în partidă simplă** — echivalentul lui `jurnal/{id}/valideaza`
 
 ## T33 — Exportul contabil (SAGA, WinMentor)
 
@@ -2005,7 +2089,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): artefacte_produse (INSERT) — prin `artefacte`*
 
-- [ ] 
+- [x] fișierul exportat se păstrează ca artefact: conținut, moment, autor, amprentă, exemplar
+- numărul de facturi din fișier = numărul de facturi din perioada exportată, iar cele excluse se numesc cu motivul
+- codificarea fișierului e cea cerută de SAGA — verifică diacriticele
+- o factură exportată de două ori nu creează două intrări la destinație — sau, dacă poate, se avertizează
 
 ### `POST /tenants/{tenant_id}/facturi/export-winmentor`
 
@@ -2013,7 +2100,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Export WinMENTOR: Facturi.txt + Articole.txt (Windows-1250) co-locate intr-un zip — poate atinge, prin modul (PLAFON, nemasurat pe ruta): artefacte_produse (INSERT) — prin `artefacte`*
 
-- [ ] 
+- [x] aceleași ca la SAGA
+- `Facturi.txt` și `Articole.txt` sunt coerente între ele: fiecare articol referit în facturi există în fișierul de articole
+- codificarea Windows-1250 nu pierde diacritice — verifică pe un partener cu ș, ț, ă
+- cele două fișiere sunt în același zip și au aceeași perioadă
+
+---
 
 ## T34 — Rapoartele comerciale, centrele de cost și rapoartele salvate
 
@@ -2027,7 +2119,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): bugete (INSERT) · centre_cost (INSERT/UPDATE) — prin `centre_cost_api`*
 
-- [ ] 
+- [x] codul centrului e unic în firmă
+- centrul nou nu atinge repartizările deja făcute
 
 ### `PUT /tenants/{tenant_id}/centre-cost/{centru_id}`
 
@@ -2035,7 +2128,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): bugete (INSERT) · centre_cost (INSERT/UPDATE) — prin `centre_cost_api`*
 
-- [ ] 
+- [x] redenumirea unui centru nu schimbă repartizările istorice
+- dezactivarea unui centru cu cheltuieli repartizate nu-l șterge — verifică ce se întâmplă
 
 ### `PUT /tenants/{tenant_id}/centre-cost/{centru_id}/buget`
 
@@ -2043,7 +2137,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Seteaza bugetul anual (cheltuieli + venituri) al unui centru pe un an. — poate atinge, prin modul (PLAFON, nemasurat pe ruta): bugete (INSERT) · centre_cost (INSERT/UPDATE) — prin `centre_cost_api`*
 
-- [ ] 
+- [x] bugetul e pe an; modificarea unui an încheiat se refuză, sau se consemnează
+- bugetul nu constrânge cheltuielile reale — e o referință, nu o limită. Verifică dacă blochează ceva, ceea ce ar fi greșit
+- suma bugetelor pe centre nu trebuie să dea un total impus — nu e o repartizare
+
+---
 
 ### `POST /tenants/{tenant_id}/rapoarte-salvate`
 
@@ -2051,7 +2149,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): rapoarte_salvate (DELETE/INSERT) — prin `rapoarte_comerciale_api`*
 
-- [ ] 
+- [x] raportul salvat păstrează **criteriile**, nu rezultatul — altfel devine o fotografie care se învechește
+- dacă păstrează rezultatul, poartă data la care a fost calculat, iar la deschidere se spune că e vechi
 
 ### `DELETE /tenants/{tenant_id}/rapoarte-salvate/{vid}`
 
@@ -2059,7 +2158,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): rapoarte_salvate (DELETE/INSERT) — prin `rapoarte_comerciale_api`*
 
-- [ ] 
+- [x] ștergerea nu atinge datele din care raportul se calculează
+- un raport partajat cu altcineva din cabinet — verifică cine îl poate șterge
 
 ## T35 — Pachetul lunar către client și solicitările lui
 
@@ -2073,7 +2173,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): pachet_povestea (INSERT) — prin `pachete_api`*
 
-- [ ] 
+- [x] pachetul generat conține **cifrele lunii închise**, nu recalculul de azi — dacă luna nu e închisă, se spune
+- generarea nu trimite nimic; e o previzualizare până la `trimite`
+- o a doua generare pe aceeași lună produce a doua versiune, nu suprascrie prima — sau, dacă suprascrie, se spune
+- **fără rol, deși `poveste` și `trimite` cer admin_firma, iar toate trei ating aceeași tabelă**
 
 ### `POST /pachete/{tenant_id}/poveste`
 
@@ -2081,7 +2184,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): pachet_povestea (INSERT) — prin `pachete_api`*
 
-- [ ] 
+- [x] textul scris de contabil se păstrează cu autorul și momentul
+- textul nu conține cifre calculate de el — sau, dacă le conține, ele nu se confruntă cu cele din pachet, iar aia e o divergență posibilă
+- modificarea poveștii după trimitere produce o a doua versiune; ce s-a trimis rămâne
 
 ### `POST /pachete/{tenant_id}/trimite`
 
@@ -2089,7 +2194,13 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): pachet_povestea (INSERT) — prin `pachete_api`*
 
-- [ ] 
+- [x] **trimiterea e un eveniment de predare**: cui, când, la ce adresă, cu ce conținut
+- se trimite versiunea generată, cu amprenta ei — nu o regenerare la momentul trimiterii
+- o a doua trimitere e un al doilea eveniment, nu suprascrie primul
+- eșecul trimiterii e o stare vizibilă, nu o eroare pierdută — pachetul rămâne netrimis
+- clienții fără adresă validă se numesc înainte de trimitere, nu după
+
+---
 
 ### `POST /portal/acces-cont/acces`
 
@@ -2097,7 +2208,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie user_tenants (INSERT) · users (INSERT/UPDATE)*
 
-- [ ] 
+- [x] accesul dat nu poate depăși accesul celui care îl dă — un client nu poate acorda mai mult decât are
+- accesul e **doar pe firma lui**, verificat pe rândul din `user_tenants`, nu pe ce trimite în corp
+- utilizatorul creat primește acces la portal, nu la aplicația cabinetului — verifică pe drepturile efective, nu pe intenție
+- dacă adresa aparține unui utilizator existent — al altei firme, sau al cabinetului — ruta refuză, sau leagă contul existent? A doua variantă e o cale de escaladare
+- crearea se consemnează cu cine a dat accesul, iar **cabinetul vede** că un client a adăugat pe cineva
+- parola inițială nu se trimite prin canal nesigur
 
 ### `DELETE /portal/acces-cont/acces/{user_id}`
 
@@ -2105,15 +2221,37 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie user_tenants (DELETE) · users (UPDATE)*
 
-- [ ] 
+- [x] clientul poate retrage doar accese pe **firma lui** — verificat pe rândul șters, nu pe ce cere
+- clientul nu se poate retrage pe sine, sau, dacă poate, firma rămâne fără niciun acces de client
+- `user_tenants` se șterge, dar utilizatorul rămâne — ce a făcut nu devine anonim
+- retragerea e imediată: sesiunile active se închid, sau se spune că nu se închid
+- retragerea se consemnează, iar cabinetul o vede
 
 ### `PUT /portal/acces-cont/email`
 
 *garda `cere_client` · **fara rol** · scrie in users*
 
-*ce face: scrie users (UPDATE)*
+*ce face: scrie schimbari_email (DELETE/INSERT)*
 
-- [ ] 
+**Din lotul în care s-a scris, valabil pentru tot traseul:** **Actorul e clientul. `cere_client` verifică identitatea, nu rolul — corect prin construcție.**
+
+- [x] schimbarea adresei de autentificare cere **confirmare pe adresa nouă** înainte de a intra în vigoare — altfel cineva cu sesiunea deschisă poate muta contul
+- adresa veche primește o notificare despre schimbare
+- schimbarea se consemnează: când, de la ce la ce
+- cabinetul vede că adresa clientului s-a schimbat — altfel pachetele merg în altă parte fără ca nimeni să afle
+
+### `POST /public/confirma-email`
+
+*garda `FARA GARDA` · **fara rol** · scrie in oarb, schimbari_email, users*
+
+*ce face: [R62 (1)] Confirmarea schimbarii de adresa — scrie schimbari_email (UPDATE) · users (UPDATE)*
+
+- [x] **confirmarea e dovada că adresa nouă e citită de om, nu că sesiunea e deschisă** — ruta nu cere sesiune, deliberat; tokenul ajunge doar pe adresa nouă
+- până la confirmare, `users.email` e neatins: cine intră cu adresa veche intră în continuare
+- tokenul expiră (48h) și e de unică folosință — o a doua deschidere a linkului nu mai schimbă nimic
+- adresa nouă se reconfruntă cu `users` **la confirmare**, nu doar la cerere: între cele două momente altcineva poate lua adresa
+- confirmarea lasă urmă cu **de la ce, la ce** — o urmă care spune doar „s-a schimbat” nu permite nimănui să vadă ce s-a pierdut
+- cabinetul vede în `urme-portal` **amândouă** actele: cererea și confirmarea. O cerere neconfirmată rămâne vizibilă — e chiar semnalul că cineva a încercat
 
 ### `POST /portal/recomanda`
 
@@ -2121,7 +2259,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: intoarce {ok, rezultate}*
 
-- [ ] 
+- [x] **nu pot scrie verificarea fără să știu ce recomandă.** Recomandă cabinetul altcuiva? Recomandă clientului ce să facă? De completat din cod
+- oricare ar fi: nu scrie nimic, deci verificarea e că **nu scrie nimic** — verificat structural
 
 ### `POST /portal/solicitari`
 
@@ -2129,7 +2268,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie solicitari_client (INSERT) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): notificari (INSERT/UPDATE) — prin `notificari_api`*
 
-- [ ] 
+- [x] solicitarea e legată de firma clientului, verificat pe context, nu pe ce trimite
+- textul solicitării nu poate schimba date — e o cerere, nu o comandă
+- cabinetul primește notificare; dacă notificarea eșuează, solicitarea rămâne, iar cineva o vede
+- clientul își vede propriile solicitări și starea lor
+
+---
 
 ### `POST /tenants/{tenant_id}/acces-portal`
 
@@ -2137,7 +2281,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Emite un token de PREVIZUALIZARE (read-only, tab-local) pentru portalul clientului firmei*
 
-- [ ] 
+- [x] tokenul e **read-only** și expiră — verifică ambele, nu doar că e declarat așa
+- tokenul e legat de firmă și de utilizatorul care l-a emis
+- emiterea se consemnează: cine, când, pentru ce firmă
+- un token expirat nu mai dă acces, iar reînnoirea e o operațiune nouă, nu o prelungire tăcută
+
+---
 
 ### `POST /tenants/{tenant_id}/client-acces`
 
@@ -2145,7 +2294,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie user_tenants (INSERT) · users (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (INSERT/UPDATE) · tenants (INSERT/UPDATE) — prin `tenant_provisioning`*
 
-- [ ] 
+- [x] **ruta creează un utilizator** — verifică ce drepturi primește: doar pe firma respectivă, doar citire, doar portalul
+- un utilizator existent legat de altă firmă nu primește acces la asta fără o operațiune explicită
+- parola inițială nu se trimite prin canal nesigur, și se schimbă la prima intrare
+- **atinge `tenants` prin modul** — verifică de ce: crearea unui acces de client n-ar trebui să atingă tabela de firme
+- crearea se consemnează: cine a dat accesul, când, cui
 
 ### `DELETE /tenants/{tenant_id}/client-acces/{user_id}`
 
@@ -2153,7 +2306,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie users (UPDATE)*
 
-- [ ] 
+- [x] retragerea accesului e imediată — sesiunile active se închid, sau se spune că nu se închid
+- utilizatorul nu se șterge; se dezactivează. Ce a făcut rămâne în urmă cu autorul identificabil
+- retragerea se consemnează
 
 ### `POST /tenants/{tenant_id}/clienti`
 
@@ -2161,7 +2316,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): clienti (DELETE/INSERT/UPDATE) — prin `clienti_api`*
 
-- [ ] 
+**Din lotul în care s-a scris, valabil pentru tot traseul:** **Nu știu dacă „clienți" înseamnă aici partenerii comerciali ai firmei sau persoanele de contact care primesc pachetul lunar.** Verificările de mai jos sunt scrise pentru a doua interpretare, fiindcă traseul e T35 — pachetul lunar. Dacă sunt parteneri comerciali, verificările se schimbă: atunci codul fiscal e obligatoriu, iar legătura cu facturile contează.
+
+- [x] adresa de email e validată la introducere, nu la prima trimitere — un pachet trimis la o adresă greșită se pierde tăcut
+- un client cu aceeași adresă în aceeași firmă se refuză, sau se spune că există
+- clientul nou nu primește automat acces la portal — accesul e o operațiune separată
+- crearea se consemnează: cine, când
 
 ### `DELETE /tenants/{tenant_id}/clienti/{client_id}`
 
@@ -2169,7 +2329,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): clienti (DELETE/INSERT/UPDATE) — prin `clienti_api`*
 
-- [ ] 
+- [x] un client care a primit pachete nu se șterge — se dezactivează. Istoricul trimiterilor rămâne cu destinatarul identificabil
+- dacă are acces la portal, ștergerea îl retrage? Sau rămâne un cont fără client? Verifică
+- ștergerea se consemnează
+
+---
 
 ### `PUT /tenants/{tenant_id}/clienti/{client_id}`
 
@@ -2177,7 +2341,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): clienti (DELETE/INSERT/UPDATE) — prin `clienti_api`*
 
-- [ ] 
+- [x] schimbarea adresei de email **nu retrimite pachetele anterioare** și nu schimbă la cine au ajuns
+- dacă clientul are acces la portal, schimbarea adresei aici schimbă și adresa de autentificare? Verifică — dacă da, cineva poate prelua un cont schimbând un câmp
+- modificarea se consemnează cu valoarea veche
 
 ### `POST /tenants/{tenant_id}/solicitari`
 
@@ -2185,5 +2351,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie solicitari_client (INSERT)*
 
-- [ ] 
+- [x] **nu pot scrie verificarea fără să știu ce face cabinetul aici.** Răspunde la o solicitare? Creează una în numele clientului?
+- dacă creează în numele clientului, verifică că se distinge de una făcută de client — altfel istoricul devine ambiguu
+- dacă răspunde, verifică unde ajunge răspunsul: pe solicitare, sau ca notificare separată
+
+---
 

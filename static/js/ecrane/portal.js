@@ -153,9 +153,10 @@ async function ecranAccesCont(corp, nav) {
       const val = corp.querySelector("#ac-email-nou-val").value.trim();
       b.disabled = true; b.textContent = "Se salvează...";
       try {
-        await api.put("/portal/acces-cont/email", { email: val });
+        // [R62] Adresa NU se schimba aici: pleaca un link de confirmare pe adresa noua.
+        const rasp = await api.put("/portal/acces-cont/email", { email: val });
         d = await api.get("/portal/acces-cont");
-        mesajSucces = "Email actualizat.";
+        mesajSucces = rasp.mesaj || "Ți-am trimis un link de confirmare pe adresa nouă.";
         randeazaEcran();
       } catch (e) { b.disabled = false; b.textContent = "Salvează"; arataMesaj(msg, e.mesaj || "Eroare.", "eroare"); }
     });

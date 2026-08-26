@@ -76,6 +76,18 @@ CUI_FIRMA_LIPSA = "CUI-ul firmei lipsește din Profilul firmei. Completează-l �
 PERIOADA_INCHISA = ("Perioada e blocată (luna închisă). Cere-i administratorului cabinetului să o "
                     "redeschidă sau înregistrează în luna curentă.")
 
+# [R61, 26.08.2026] Refuzul NUMEȘTE ce s-a găsit și spune ce se face cu el — nu „duplicat".
+MESAJ_Z_DUPLICAT = ("Raportul Z %(numar)s e deja înregistrat pe %(data)s (nota #%(id)s, "
+                    "%(cum)s). Un raport Z e unic pe casă de marcat și pe zi. Dacă e o "
+                    "corecție, stornează nota existentă; dacă e alt aparat, folosește NUI-ul lui.")
+# [R62, 26.08.2026] Portalul clientului: izolarea între cabinete, și confirmarea adresei.
+MESAJ_CLIENT_ALT_CABINET = ("Adresa asta aparține unui cont dezactivat al altui cabinet. Nu poate fi reactivat de aici — datele unui cabinet nu trec la altul. Folosește altă adresă, sau cere-i cabinetului care deține contul să-l elibereze.")
+MESAJ_EMAIL_ACELASI = "Adresa nouă e aceeași cu cea curentă. Nu e nimic de schimbat."
+MESAJ_EMAIL_TOKEN_INVALID = ("Linkul de confirmare e expirat sau a fost deja folosit. Cere din nou schimbarea adresei din Acces cont.")
+MESAJ_EMAIL_DE_CONFIRMAT = ("Ți-am trimis un link de confirmare pe adresa nouă. Adresa se schimbă abia după ce îl deschizi — până atunci intri tot cu cea veche.")
+MESAJ_Z_FARA_CHEIE = ("NUI-ul casei de marcat și numărul raportului Z sunt obligatorii — ele fac "
+                      "raportul unic. Le găsești pe bonul de raport Z tipărit, în antet.")
+
 
 # --- G3: garduri de rol/acces (403) — explicit: ce drept lipsește + cine îl acordă ---
 ROL_INSUFICIENT = "Nu ai rolul necesar pentru această acțiune. Cere-i administratorului cabinetului dreptul potrivit."

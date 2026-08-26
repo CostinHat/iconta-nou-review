@@ -4949,3 +4949,35 @@ asertea că poarta refuză: azi e o probă funcțională, nu un gard.
 **Și o gardă doc↔cod care lipsea de tot:** `TRASEE_VERIFICARI.md` cerea doar ca rândul `ce face` să **existe**, nu să coincidă cu instrumentul. Măsurat la construcție: **121 din 192 difereau**, din care doar 4 din reparația de azi — restul de **117** stătute din ziua în care `scrie X` s-a despărțit de `poate atinge, prin modul X`. Verificările se scriau pe o afirmație mai tare decât măsurătoarea.
 
 **Ce NU face, declarat:** garda spune când adnotarea diverge de instrument; **nu** spune dacă propoziția scrisă sub ea mai are obiect. Cele două verificări rămase fără obiect (`nota-inventariere`, `achizitie-neinregistrat`) au fost găsite citind, nu măsurând. Iar `main.py` e singurul fișier în care se caută umbrirea.
+
+## Raportul Z nu se poate înregistra de două ori (26.08.2026, R61)
+
+**`core/test_raport_z_unic.py`** — 4 teste, calibrare pe **ambele** forme ale greșelii.
+
+**Ce face imposibil:** o rută de raport Z care scrie în `inregistrari` **înainte** de a fi întrebat dacă raportul există deja · una care scrie fără poarta de perioadă închisă · o verificare de unicitate care se uită **într-o singură sursă** (tastate da, importate nu — adică jumătate de poartă, care arată exact ca o poartă întreagă).
+
+**Cheia nu e data, e casa de marcat.** Decizia lui Costin: `Z-{NUI}-{nr_raport}`, ca la `import-amef` — *„o firmă cu două case de marcat are două rapoarte Z pe zi, legitim”*. Cheia comună face ca un raport importat să nu mai poată fi tastat, și invers.
+
+**Ordinea, nu doar prezența.** Gardul cere ca apelul să fie **înaintea** scrierii, comparând liniile din AST. Forma insidioasă a greșelii e a doua: codul conține numele gărzii, deci un gard scris pe text ar fi trecut verde pe o verificare făcută **după** INSERT. Calibrarea negativă probează exact asta.
+
+**Ce NU face, declarat:** nu probează pe date că baza refuză — e o gardă pe structura rutei, nu o probă funcțională. Și nu spune că totalurile sunt corecte; spune că nota nu se poate dubla.
+
+## Portalul nu mută identitatea fără confirmare, și nu trece un cont dintr-un cabinet în altul (26.08.2026, R62)
+
+**`core/test_portal_acces.py`** — 6 teste. Ordinea reparației e a lui Costin, iar ea e argumentul: **izolarea între cabinete întâi** (P12), abia apoi confirmarea și urma.
+
+**Ce face imposibil:** reactivarea unui cont de client al **altui** cabinet, pe **oricare** din cele două căi — a clientului și a cabinetului · scrierea directă a adresei de autentificare din ruta de portal · un act de acces sau de identitate fără urmă · o confirmare care aplică adresa fără s-o reconfrunte cu `users`.
+
+**Gardul repară CLASA, nu instanța, și calibrarea e chiar pe asta:** fișierul sintetic are una din cele două căi gardată și cealaltă nu. Un gard scris doar pe ruta din care a ieșit constatarea ar fi trecut verde pe el.
+
+**Unde stă ruta de confirmare:** `POST /public/confirma-email`, lângă `activare`, `magic-login` și `reset-parola/seteaza` — familia rutelor care se dovedesc cu un **token**, nu cu o sesiune. Sub `/portal/`, unde tot restul e pe `cere_client`, ar fi fost a patra instanță în șapte loturi a aceleiași forme: aceeași clasă, tratament diferit.
+
+**Ce NU face, declarat:** e o gardă pe cod. `principal_client_id` e completat pe **0 din 17** firme, deci niciuna din rute nu se poate exercita azi pe date reale — punctul orb e firma, nu ecranul. Condiția de închidere a lui R62 e chiar asta: primul client real cu acces la portal.
+
+## Docstringul nu e cod (26.08.2026)
+
+**`scan_trasee._siruri` nu mai citește docstringurile ca SQL**, iar `core/test_trasee.py` are calibrarea. **Instanța e proprie**: docstringul rutei de confirmare a adresei spunea *„un UPDATE orb ar sparge unicitatea”*, iar instrumentul a extras din proza aia o tabelă pe care a numit-o `oarb` și a scris-o în inventar ca **scriere proprie a rutei**.
+
+E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pomenește INSERT n-are voie să treacă drept scriere* — doar că acolo era în gard, iar aici în **instrumentul pe care stau toate celelalte măsurători**. Direcția e zgomotoasă, deci se vede — **atâta timp cât numele inventat nu seamănă cu unul real**. `oarb` sărea în ochi; `facturi` n-ar fi sărit.
+
+**Ambele direcții probate:** proza nu produce tabelă, SQL-ul din corp produce. Fără a doua, o reparație care ar tăia toate șirurile ar fi golit inventarul de scrieri proprii.

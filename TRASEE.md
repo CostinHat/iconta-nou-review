@@ -1172,7 +1172,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Scrie in:** `declaratii_coada` (INSERT/UPDATE) · `declaratii_depuse` (DELETE/INSERT) · `migrare_status` (INSERT)
 
-**Stari puse:** `aprobata`, `depusa`, `descarcata`, `erori`, `respinsa`
+**Stari puse:** `aprobata`, `depusa`, `descarcata`, `respinsa`
 
 **Firme care il pot exercita azi: 7** — `tenant_003`, `tenant_005`, `tenant_006`, `tenant_013`, `tenant_014`, `tenant_015`, `tenant_016`
 
@@ -1230,8 +1230,6 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 **Module:** `salarii_contare`, `stat_plata_api`, `stat_plata_emis`
 
 **Scrie in:** `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `state_plata` (INSERT/UPDATE)
-
-**Stari puse:** `validata`
 
 **Firme care il pot exercita azi: 2** — `tenant_001`, `tenant_003`
 
@@ -1319,8 +1317,6 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 **Module:** `efactura_import`, `efactura_send`, `spv_rute`
 
 **Scrie in:** `efactura_primite` (UPDATE) · `efactura_trimiteri` (INSERT/UPDATE) · `facturi` (UPDATE)
-
-**Stari puse:** `deja_trimisa`, `fara_token`, `nevalidat`
 
 **Margine:** `efactura_send` (transmite factura firmei la ANAF (SPV))
 
@@ -1448,7 +1444,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Scrie in:** `artefacte_produse` (INSERT)
 
-**Stari puse:** `erori`, `validata`
+**Stari puse:** `validata`
 
 **Firme care il pot exercita azi:** *nu se poate sti din date* — traseul n-are tabela proprie.
 
@@ -1574,8 +1570,6 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 **Module:** `perioada`, `pontaj`, `scadente`
 
 **Scrie in:** `pontaj` (DELETE/INSERT)
-
-**Stari puse:** `prezent`
 
 **Firme care il pot exercita azi: NICIUNA.**
 
@@ -1934,8 +1928,6 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Scrie in:** `artefacte_produse` (INSERT)
 
-**Stari puse:** `emisa`
-
 **Firme care il pot exercita azi:** *nu se poate sti din date* — traseul n-are tabela proprie.
 
 ### T34 — Rapoartele comerciale, centrele de cost și rapoartele salvate
@@ -1971,9 +1963,9 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T35 — Pachetul lunar către client și solicitările lui
 
-**Clasa:** MECANIC · **rute:** 36 (din care schimba date: 15) · **refuzuri explicite:** 33
+**Clasa:** MECANIC · **rute:** 38 (din care schimba date: 16) · **refuzuri explicite:** 35
 
-**Cine:** rol cerut: `admin_firma`, `angajat`, `verificat-în-corp`. **Rute care schimba date fara nicio verificare de rol: 5 din 15.**
+**Cine:** rol cerut: `admin_firma`, `angajat`, `verificat-în-corp`. **Rute care schimba date fara nicio verificare de rol: 5 din 16.**
 
 **Pasii, din cod:**
 
@@ -2002,6 +1994,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `GET /portal/solicitari` — garda `cere_client`
 - `POST /portal/solicitari` — garda `cere_client`
 - `GET /portal/solicitari/contor` — garda `cere_client`
+- `POST /public/confirma-email` — garda `FARA GARDA`
 - `POST /tenants/{tenant_id}/acces-portal` — garda `cere_rol` rol:admin_firma,angajat,verificat-în-corp
 - `GET /tenants/{tenant_id}/client-acces` — garda `cere_rol` rol:admin_firma,angajat
 - `POST /tenants/{tenant_id}/client-acces` — garda `cere_rol` rol:admin_firma,verificat-în-corp
@@ -2013,10 +2006,11 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `PUT /tenants/{tenant_id}/clienti/{client_id}` — garda `cere_rol` rol:admin_firma,angajat
 - `GET /tenants/{tenant_id}/solicitari` — garda `cere_context`
 - `POST /tenants/{tenant_id}/solicitari` — garda `cere_rol` rol:admin_firma
+- `GET /tenants/{tenant_id}/urme-portal` — garda `cere_cabinet`
 
 **Module:** `cashflow`, `clienti_api`, `control_fiscal_api`, `documente_api`, `facturi_api`, `kpi_client`, `notificari_api`, `observare`, `pachete_api`, `portal_api`, `tenant_provisioning`
 
-**Scrie in:** `clienti` (DELETE/INSERT/UPDATE) · `factura_linii` (INSERT) · `facturi` (DELETE/INSERT/UPDATE) · `firma_profil` (INSERT/UPDATE) · `notificari` (INSERT/UPDATE) · `pachet_povestea` (INSERT) · `solicitari_client` (INSERT) · `tenants` (INSERT/UPDATE) · `user_tenants` (DELETE/INSERT) · `users` (INSERT/UPDATE)
+**Scrie in:** `clienti` (DELETE/INSERT/UPDATE) · `factura_linii` (INSERT) · `facturi` (DELETE/INSERT/UPDATE) · `firma_profil` (INSERT/UPDATE) · `notificari` (INSERT/UPDATE) · `pachet_povestea` (INSERT) · `schimbari_email` (DELETE/INSERT/UPDATE) · `solicitari_client` (INSERT) · `tenants` (INSERT/UPDATE) · `user_tenants` (DELETE/INSERT) · `users` (INSERT/UPDATE)
 
 **Stari puse:** `aprobat`, `descarcata`, `validata`
 

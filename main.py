@@ -31,6 +31,9 @@ from core import cont_valid as _cv  # [R54] contul din corpul cererii se confrun
 from core.unde import Unde as _Unde  # [P8] domeniul poate fi un OBIECT, nu o perioada
 from core.mesaje import (mesaj_din_cod, FARA_CABINET, EMAIL_INVALID, EMAIL_EXISTA,
                          EMAIL_NICIUNUL_VALID, CUI_FIRMA_LIPSA, PERIOADA_INCHISA,
+                              MESAJ_Z_DUPLICAT, MESAJ_Z_FARA_CHEIE,
+                              MESAJ_CLIENT_ALT_CABINET, MESAJ_EMAIL_ACELASI,
+                              MESAJ_EMAIL_TOKEN_INVALID, MESAJ_EMAIL_DE_CONFIRMAT,
                          ROL_INSUFICIENT, DOAR_ADMIN_ICONTA, DOAR_ADMIN_CABINET, DOAR_PATRON,
                          FARA_DREPT_VALIDARE, FARA_DREPT_DEPUNERE, FARA_ACCES_TENANT,
                          FARA_ACCES_RAPORTARE, FARA_ACCES)
@@ -1248,10 +1251,14 @@ def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
             raise HTTPException(404, "tenant inexistent sau fără acces")
         d = tenant_provisioning.detalii_tenant(conn, tenant_id)
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute("SELECT id, rol, activ FROM public.users WHERE lower(email)=%s", (email,))
+            cur.execute("SELECT id, rol, activ, accounting_firm_id FROM public.users "
+                        "WHERE lower(email)=%s", (email,))
             _ex = cur.fetchone()
             if _ex and (_ex["rol"] != "client" or _ex["activ"]):
                 raise HTTPException(400, EMAIL_EXISTA)
+            # [R62 (2)] Aceeasi ramura de reactivare exista si aici. Gardul repara CLASA, nu
+            # instanta: daca ar sta doar pe ruta clientului, calea prin cabinet ar ramane deschisa.
+            _cere_acelasi_cabinet(_ex, ctx["firm"])
             if _ex:  # client_mesaj_v1: reinvitare client dezactivat
                 uid = _ex["id"]
                 cur.execute("UPDATE public.users SET activ=true, nume=%s WHERE id=%s",
@@ -1264,6 +1271,9 @@ def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
                             (email, _nucleu.hash_parola(parola_temp), date.nume or email.split("@")[0], ctx["firm"]))
                 uid = cur.fetchone()["id"]
                 cur.execute("INSERT INTO public.user_tenants (user_id, tenant_id) VALUES (%s, %s)", (uid, tenant_id))
+            _urma_portal(cur, tenant_id, "acces_dat",
+                         "cabinetul a dat acces la portal lui %s (utilizator #%s)" % (email, uid),
+                         ctx["uid"])
     # client_activare_v2: link magic (fara parola)
     import secrets as _sec
     tok = "ml_" + _sec.token_urlsafe(32)
@@ -1510,6 +1520,8 @@ def client_acces_revoca(tenant_id: int, user_id: int, ctx=Depends(cere_rol("admi
             cur.execute("""UPDATE public.users SET activ=false WHERE id=%s AND rol='client'
                            AND id IN (SELECT user_id FROM public.user_tenants WHERE tenant_id=%s)""",
                         (user_id, tenant_id))
+            _urma_portal(cur, tenant_id, "acces_retras",
+                         "cabinetul a retras accesul utilizatorului #%s" % user_id, ctx["uid"])
     return {"ok": True}
 
 
@@ -3659,6 +3671,97 @@ def portal_acces_cont(tenant_id: Optional[int] = None, ctx=Depends(cere_client))
     suplimentare = [c for c in conturi if principal and c["id"] != principal["id"]]
     return {"principal": principal, "suplimentare": suplimentare,
             "eu_principal": bool(principal) and principal["id"] == ctx["uid"]}
+def _adresa_e_libera(cur, email, exclude_user_id):
+    """[R62] Adresa nu e a altcuiva. UN singur loc, chemat si la cerere, si la confirmare.
+
+    Intre cele doua momente pot trece 48 de ore: daca intrebarea ar fi pusa doar la cerere, o
+    adresa luata intre timp ar fi aplicata peste, iar unicitatea s-ar sparge. Un loc, ca gardul
+    sa poata asertea STRUCTURAL ca amandoua rutele il cheama."""
+    cur.execute("SELECT id FROM public.users WHERE lower(email)=%s AND id<>%s",
+                (email, exclude_user_id))
+    if cur.fetchone():
+        raise HTTPException(400, EMAIL_EXISTA)
+
+
+def _urma_portal(cur, tenant_id, actiune, detaliu, autor_id):
+    """[R62 (3), 26.08.2026] Urma pe care o vede CABINETUL.
+
+    Pana azi, un client putea sa-si schimbe adresa de autentificare si sa creeze un utilizator
+    SUB cabinet, fara ca acesta sa afle: niciun rand de audit, nicio notificare. Singurul email
+    pleca la cel invitat. Append-only, `actiune` dintr-o lista inchisa in BAZA, `detaliu` care nu
+    poate fi gol — o urma care nu spune nimic nu e o urma."""
+    cur.execute("INSERT INTO public.urme_portal (tenant_id, actiune, detaliu, autor_id) "
+                "VALUES (%s, %s, %s, %s)", (tenant_id, actiune, detaliu, autor_id))
+
+
+def _cere_acelasi_cabinet(ex, firm_id):
+    """[R62 (2), 26.08.2026] Un cont de client DEZACTIVAT al altui cabinet nu se reactiveaza aici.
+
+    Ruta refuza deja o adresa care apartine unui cont ACTIV, sau unuia care nu e `client`. Dar un
+    cont de client dezactivat intra pe ramura de reactivare si se lega de firma pastrandu-si
+    `accounting_firm_id`-ul vechi — care poate fi al altui cabinet. Rezultatul: un utilizator care
+    apartine, dupa coloana, cabinetului A, avand acces la o firma a cabinetului B.
+
+    Costin a cerut punctul asta PRIMUL din cele trei: *„e singura cale prin care date ale unui
+    cabinet ajung la altul, iar aia nu e o chestiune de urma, e izolarea din P12."*"""
+    if not ex:
+        return
+    al_lui = ex.get("accounting_firm_id") if isinstance(ex, dict) else None
+    if al_lui is not None and firm_id is not None and al_lui != firm_id:
+        raise HTTPException(400, MESAJ_CLIENT_ALT_CABINET)
+
+
+class ConfirmaEmailIn(BaseModel):
+    token: str
+
+
+# Sub `/public/`, nu sub `/portal/`, si asta e o alegere: toate rutele care se dovedesc cu un
+# TOKEN si nu cu o sesiune stau acolo — `/public/activare`, `/public/magic-login`,
+# `/public/reset-parola/seteaza`. O ruta fara garda ascunsa intre cele `/portal/*`, care sunt
+# toate pe `cere_client`, ar fi fost aceeasi clasa cu tratament diferit.
+@app.post("/public/confirma-email")
+def portal_confirma_email(date: ConfirmaEmailIn):
+    """[R62 (1)] Confirmarea schimbarii de adresa. FARA garda de sesiune, deliberat.
+
+    Dovada nu e sesiunea — sesiunea o are si cel care a cerut schimbarea, iar chiar aia era
+    problema. Dovada e tokenul trimis pe adresa NOUA: il are doar cine o citeste. Tokenul se
+    stocheaza doar ca hash, ca la magic-link.
+
+    Adresa se reconfrunta cu `users` la confirmare: intre cerere si confirmare, altcineva poate
+    lua adresa, iar o scriere facuta pe nevazute ar sparge unicitatea."""
+    with db.get_conn() as conn:
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+            cur.execute("SELECT id, user_id, tenant_id, email_vechi, email_nou "
+                        "FROM public.schimbari_email "
+                        "WHERE token_hash=%s AND confirmat_la IS NULL AND expira > now()",
+                        (_hash_tok(date.token),))
+            r = cur.fetchone()
+            if not r:
+                raise HTTPException(400, MESAJ_EMAIL_TOKEN_INVALID)
+            _adresa_e_libera(cur, r["email_nou"], r["user_id"])
+            cur.execute("UPDATE public.users SET email=%s WHERE id=%s",
+                        (r["email_nou"], r["user_id"]))
+            cur.execute("UPDATE public.schimbari_email SET confirmat_la=now() WHERE id=%s",
+                        (r["id"],))
+            _urma_portal(cur, r["tenant_id"], "email_confirmat",
+                         "adresa de autentificare schimbata: %s -> %s"
+                         % (r["email_vechi"], r["email_nou"]), r["user_id"])
+    return {"ok": True, "email": r["email_nou"]}
+
+
+@app.get("/tenants/{tenant_id}/urme-portal")
+def cabinet_urme_portal(tenant_id: int, ctx=Depends(cere_cabinet)):
+    """[R62 (3)] Urma se poate CITI. Lectia din R58: o urma care nu se poate citi e scrisa degeaba."""
+    with db.get_conn() as conn:
+        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+            cur.execute("SELECT actiune, detaliu, autor_id, creat_la FROM public.urme_portal "
+                        "WHERE tenant_id=%s ORDER BY creat_la DESC LIMIT 200", (tenant_id,))
+            urme = [dict(x) for x in cur.fetchall()]
+    return {"urme": urme, "nr": len(urme)}
+
+
 @app.put("/portal/acces-cont/email")
 def portal_schimba_email(date: SchimbaEmailIn, ctx=Depends(cere_client)):
     t = _tenant_client(ctx, date.tenant_id)
@@ -3671,11 +3774,40 @@ def portal_schimba_email(date: SchimbaEmailIn, ctx=Depends(cere_client)):
             pid = cur.fetchone()["principal_client_id"]
             if pid != ctx["uid"]:
                 raise HTTPException(403, "doar patronul poate schimba emailul principal")
-            cur.execute("SELECT id FROM public.users WHERE lower(email)=%s AND id<>%s", (email_nou, ctx["uid"]))
-            if cur.fetchone():
-                raise HTTPException(400, EMAIL_EXISTA)
-            cur.execute("UPDATE public.users SET email=%s WHERE id=%s", (email_nou, ctx["uid"]))
-    return {"ok": True}
+            _adresa_e_libera(cur, email_nou, ctx["uid"])
+            # [R62 (1)] NU se mai scrie `users.email` aici. Adresa e identitatea de autentificare
+            # (intrarea se face prin magic-link pe email), deci un UPDATE imediat insemna ca cine
+            # are o sesiune deschisa muta contul, definitiv, dintr-un singur camp.
+            cur.execute("SELECT email FROM public.users WHERE id=%s", (ctx["uid"],))
+            email_vechi = ((cur.fetchone() or {}).get("email") or "").strip().lower()
+            if email_vechi == email_nou:
+                raise HTTPException(400, MESAJ_EMAIL_ACELASI)
+            import secrets as _sec3
+            tok = "se_" + _sec3.token_urlsafe(32)
+            cur.execute("DELETE FROM public.schimbari_email "
+                        "WHERE user_id=%s AND confirmat_la IS NULL", (ctx["uid"],))
+            cur.execute("INSERT INTO public.schimbari_email "
+                        "(user_id, tenant_id, email_vechi, email_nou, token_hash, expira) "
+                        "VALUES (%s, %s, %s, %s, %s, now() + interval '48 hours')",
+                        (ctx["uid"], t["id"], email_vechi, email_nou, _hash_tok(tok)))
+            _urma_portal(cur, t["id"], "email_cerut",
+                         "schimbare de adresa ceruta: %s -> %s" % (email_vechi, email_nou),
+                         ctx["uid"])
+    baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
+    link = baza + "/#email-nou=" + tok
+    _obs.trimite_email_html(email_nou, "Confirmă adresa nouă — iConta.eu",
+        "<p>Bună,</p><p>S-a cerut mutarea contului iConta.eu pe adresa asta.</p>"
+        "<p><a href='%s' style='display:inline-block;background:#3d8fd6;color:#fff;"
+        "padding:10px 22px;border-radius:6px;text-decoration:none'>Confirmă adresa</a></p>"
+        "<p>Linkul e valabil 48 de ore. Dacă nu ai cerut tu, ignoră mesajul — "
+        "nu se schimbă nimic.</p>" % link)
+    # Adresa VECHE afla, chiar daca nu ea confirma: altfel o mutare de cont ar fi tacuta
+    # exact pentru cel care pierde accesul.
+    _obs.trimite_email_html(email_vechi, "Cerere de schimbare a adresei — iConta.eu",
+        "<p>Bună,</p><p>S-a cerut mutarea contului tău iConta.eu pe adresa "
+        "<b>%s</b>.</p><p>Dacă nu ai cerut tu, spune-i cabinetului acum: "
+        "schimbarea se face doar după confirmarea de pe adresa nouă.</p>" % email_nou)
+    return {"ok": True, "confirmare_ceruta": True, "mesaj": MESAJ_EMAIL_DE_CONFIRMAT}
 @app.post("/portal/acces-cont/acces")
 def portal_adauga_acces(date: AdaugaAccesIn, ctx=Depends(cere_client)):
     t = _tenant_client(ctx, date.tenant_id)
@@ -3690,10 +3822,12 @@ def portal_adauga_acces(date: AdaugaAccesIn, ctx=Depends(cere_client)):
                 raise HTTPException(403, "doar patronul poate adăuga acces")
             cur.execute("SELECT accounting_firm_id FROM public.tenants WHERE id=%s", (t["id"],))
             firm_id = cur.fetchone()["accounting_firm_id"]
-            cur.execute("SELECT id, rol, activ FROM public.users WHERE lower(email)=%s", (email,))
+            cur.execute("SELECT id, rol, activ, accounting_firm_id FROM public.users "
+                        "WHERE lower(email)=%s", (email,))
             ex = cur.fetchone()
             if ex and (ex["rol"] != "client" or ex["activ"]):
                 raise HTTPException(400, EMAIL_EXISTA)
+            _cere_acelasi_cabinet(ex, firm_id)   # [R62 (2)] izolarea intre cabinete, P12
             import secrets as _sec2
             if ex:
                 uid = ex["id"]
@@ -3707,6 +3841,9 @@ def portal_adauga_acces(date: AdaugaAccesIn, ctx=Depends(cere_client)):
                 cur.execute("INSERT INTO public.user_tenants (user_id, tenant_id) VALUES (%s, %s)", (uid, t["id"]))
             tok = "ml_" + _sec2.token_urlsafe(32)
             _pune_token(cur, tok, uid, "48 hours")
+            _urma_portal(cur, t["id"], "acces_dat",
+                         "clientul a dat acces la portal lui %s (utilizator #%s)" % (email, uid),
+                         ctx["uid"])
     baza = os.environ.get("ICONTA_BAZA_URL", "http://localhost:8010")
     link = baza + "/#magic=" + tok
     html = ("<p>Buna,</p><p>Ai primit acces la portalul iConta.eu pentru firma <b>%s</b>.</p>"
@@ -3729,6 +3866,8 @@ def portal_revoca_acces(user_id: int, tenant_id: Optional[int] = None, ctx=Depen
             cur.execute("SELECT count(*) AS n FROM public.user_tenants WHERE user_id=%s", (user_id,))
             if cur.fetchone()["n"] == 0:
                 cur.execute("UPDATE public.users SET activ=false WHERE id=%s", (user_id,))
+            _urma_portal(cur, t["id"], "acces_retras",
+                         "clientul a retras accesul utilizatorului #%s" % user_id, ctx["uid"])
     return {"ok": True}
 
 
@@ -3742,6 +3881,11 @@ def portal_firma(tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
 
 class RaportZ(BaseModel):
     data: str
+    # [R61] NUI-ul casei de marcat + numarul raportului Z. Sunt CHEIA de unicitate, nu
+    # data: o firma cu doua case de marcat are doua rapoarte Z legitime in aceeasi zi.
+    # Aceeasi cheie ca la `import-amef`, ca notele tastate si cele importate sa se vada.
+    nui: str = ""
+    nr_raport: str = ""
     total_11: float = 0
     total_21: float = 0
     numerar: float = 0
@@ -4176,6 +4320,34 @@ def tenant_jurnal(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet))
     fara_document = sum(1 for n in lista if not n["document"])
     return {"note": lista, "total_debit": round(total, 2), "total_credit": round(total, 2),
             "note_fara_document": fara_document}
+# Sursele in care traieste un raport Z. Constanta, nu literal in SQL: gardul o citeste din AST
+# si compara MULTIMEA, in loc sa caute un sir intr-un text (METODA §23).
+_SURSE_Z = ("horeca_z", "amef")
+
+
+def _cere_z_unic(cur, schema, numar):
+    """[R61, 26.08.2026] Un raport Z e unic pe casa de marcat si pe zi — deci pe NUI + numar.
+
+    Decizia lui Costin: *„raportul Z e un document al casei de marcat, unic pe zi si pe aparat.
+    Doua rapoarte Z pe aceeasi data nu exista in realitate, deci nici in evidenta."* Varianta (a)
+    din R61: a doua nota se REFUZA, nu se accepta cu stornare — un duplicat nu e o corectie, e o
+    greseala de operare.
+
+    Cauta in AMANDOUA sursele. Cheia e aceeasi la ruta tastata si la import, deci un raport deja
+    importat nu mai poate fi tastat a doua oara, si invers — altfel poarta ar fi tinut doar
+    jumatate din drum."""
+    cur.execute("SELECT id, data, sursa FROM %s.inregistrari "
+                "WHERE sursa = ANY(%%s) AND numar = %%s LIMIT 1" % schema,
+                (list(_SURSE_Z), numar))
+    r = cur.fetchone()
+    if not r:
+        return
+    iid, data_ex, sursa = (r["id"], r["data"], r["sursa"]) if isinstance(r, dict) else r
+    raise HTTPException(409, MESAJ_Z_DUPLICAT % {
+        "numar": numar, "data": data_ex, "id": iid,
+        "cum": "importata din fisier AMEF" if sursa == "amef" else "tastata"})
+
+
 @app.post("/tenants/{tenant_id}/horeca/import-amef")
 async def horeca_import_amef(tenant_id: int, fisier: UploadFile = File(...), ctx=Depends(cere_cabinet)):
     """Upload p7b/XML AMEF (OPANAF 146/2018 II.7) -> nota Raport Z CIORNA.
@@ -4194,13 +4366,13 @@ async def horeca_import_amef(tenant_id: int, fisier: UploadFile = File(...), ctx
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+        # [R61] Poarta de perioada lipsea DOAR aici, iar asta era pe dos: ruta fara rol era si
+        # cea fara poarta. O nota intr-o luna inchisa e aceeasi clasa indiferent ca e ciorna.
+        _cere_luna_deschisa(conn, schema, rz["data"])
         numerar = sum((p["suma"] for p in rz["plati"] if p["tip"] == "numerar"), D("0"))
         rest = sum((p["suma"] for p in rz["plati"] if p["tip"] != "numerar"), D("0"))
         with conn.cursor() as cur:
-            cur.execute(f"""SELECT 1 FROM {schema}.inregistrari
-                            WHERE sursa='amef' AND numar=%s""", (f"Z-{rz['nui']}-{rz['nr_raport']}",))
-            if cur.fetchone():
-                raise HTTPException(409, "raportul Z e deja importat (NUI+nr raport)")
+            _cere_z_unic(cur, schema, f"Z-{rz['nui']}-{rz['nr_raport']}")
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
                             VALUES (%s,%s,%s,'amef','ciorna') RETURNING id""",
                         (rz["data"], f"Z-{rz['nui']}-{rz['nr_raport']}",
@@ -4236,6 +4408,11 @@ def horeca_raport_z(tenant_id: int, rz: RaportZ,
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         _cere_luna_deschisa(conn, schema, rz.data)   # [R42 (a)] nota poartă data raportului Z
+        nui = (rz.nui or "").strip()
+        nr_raport = (rz.nr_raport or "").strip()
+        if not nui or not nr_raport:
+            raise HTTPException(400, MESAJ_Z_FARA_CHEIE)
+        numar = "Z-%s-%s" % (nui, nr_raport)
         total = D(str(rz.total_11)) + D(str(rz.total_21))
         if total <= 0:
             raise HTTPException(400, "totalul pe cote trebuie să fie pozitiv")
@@ -4247,10 +4424,11 @@ def horeca_raport_z(tenant_id: int, rz: RaportZ,
         baza11 = D(str(rz.total_11)) - tva11
         baza21 = D(str(rz.total_21)) - tva21
         with conn.cursor() as cur:
+            _cere_z_unic(cur, schema, numar)
             cur.execute(f"""
                 INSERT INTO {schema}.inregistrari (data, numar, descriere, sursa, status)
                 VALUES (%s, %s, %s, 'horeca_z', 'validata') RETURNING id
-            """, (rz.data, f"Z-{rz.data}", f"Raport Z {rz.data}"))
+            """, (rz.data, numar, "Raport Z %s casa %s nr %s" % (rz.data, nui, nr_raport)))
             iid = cur.fetchone()[0]
             linii = []
             if rz.numerar: linii.append(("5311", "707", rz.numerar))

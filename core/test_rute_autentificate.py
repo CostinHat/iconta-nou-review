@@ -37,6 +37,7 @@ PUBLICE = {
     ("post", "/public/magic-link"),             # login fara parola: cerere
     ("post", "/public/magic-login"),            # login fara parola: consum token
     ("post", "/public/activare"),               # activare cont din email
+    ("post", "/public/confirma-email"),         # R62: dovada e tokenul de pe adresa NOUA, nu sesiunea
     ("get",  "/public/verifica-cui/{cui}"),     # verificare CUI la inregistrare (rate-limited)
     ("get",  "/public/plata/{ref}"),            # pagina de plata: platitorul NU e user
     ("post", "/public/plata/{ref}/confirma"),   # confirmare plata (ref = secret in URL)

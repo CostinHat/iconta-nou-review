@@ -2179,13 +2179,15 @@ async function ecranRaportZ(corp, nav, t) {
   const azi = new Date().toISOString().slice(0, 10);
   corp.innerHTML = `
     <h2 class="pf-titlu">Raport Z</h2>
-    <p class="pf-intro">Totaluri cu TVA inclus. Numerar + card = total.</p>
+    <p class="pf-intro">Totaluri cu TVA inclus. Numerar + card = total. NUI-ul casei de marcat și numărul raportului sunt în antetul bonului Z tipărit — ele fac raportul unic, ca să nu se înregistreze de două ori.</p>
     <p><label class="buton-secundar" style="cursor:pointer">Import fi\u0219ier AMEF (p7b/XML)
       <input type="file" id="z-amef" accept=".p7b,.xml" style="display:none"></label></p>
     <div id="z-amef-msg"></div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;max-width:480px">
       <label class="camp"><span class="camp-eticheta">Data</span><input type="date" id="z-data" class="camp-input"></label>
       <span></span>
+      <label class="camp"><span class="camp-eticheta">NUI casă de marcat</span><input id="z-nui" class="camp-input" placeholder="8000000001"></label>
+      <label class="camp"><span class="camp-eticheta">Nr. raport Z</span><input id="z-nr" class="camp-input" placeholder="0042"></label>
       <label class="camp"><span class="camp-eticheta">Total 11% (m\u00e2ncare)</span><input type="number" step="0.01" id="z-11" class="camp-input" placeholder="0,00"></label>
       <label class="camp"><span class="camp-eticheta">Total 21% (alcool, sucuri)</span><input type="number" step="0.01" id="z-21" class="camp-input" placeholder="0,00"></label>
       <label class="camp"><span class="camp-eticheta">Numerar</span><input type="number" step="0.01" id="z-num" class="camp-input" placeholder="0,00"></label>
@@ -2214,6 +2216,9 @@ async function ecranRaportZ(corp, nav, t) {
     try {
       const r = await api.post(`/tenants/${t.id}/horeca/raport-z`, {
         data: corp.querySelector("#z-data").value,
+        // [R61] cheia de unicitate a raportului Z: casa de marcat + numarul raportului
+        nui: corp.querySelector("#z-nui").value.trim(),
+        nr_raport: corp.querySelector("#z-nr").value.trim(),
         total_11: v("#z-11"), total_21: v("#z-21"),
         numerar: v("#z-num"), card: v("#z-card"),
       });

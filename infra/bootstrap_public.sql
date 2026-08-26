@@ -815,3 +815,38 @@ DO $$ BEGIN
 END $$;
 
 RESET SESSION AUTHORIZATION;
+
+-- [R62, 26.08.2026] Oglinda DDL-ului din core/migrare_portal.py (sursa UNICA e acolo).
+-- Confirmarea schimbarii de adresa + urma pe care o vede cabinetul.
+CREATE TABLE IF NOT EXISTS public.schimbari_email (
+    id             serial PRIMARY KEY,
+    user_id        integer NOT NULL,
+    tenant_id      integer NOT NULL,
+    email_vechi    text NOT NULL,
+    email_nou      text NOT NULL,
+    token_hash     text NOT NULL,
+    expira         timestamp with time zone NOT NULL,
+    cerut_la       timestamp with time zone DEFAULT now() NOT NULL,
+    confirmat_la   timestamp with time zone,
+    CONSTRAINT schimbari_email_alta_adresa
+        CHECK (lower(btrim(email_nou)) <> lower(btrim(email_vechi)))
+);
+
+CREATE INDEX IF NOT EXISTS schimbari_email_token_idx
+    ON public.schimbari_email (token_hash);
+
+CREATE TABLE IF NOT EXISTS public.urme_portal (
+    id          serial PRIMARY KEY,
+    tenant_id   integer NOT NULL,
+    actiune     text NOT NULL,
+    detaliu     text NOT NULL,
+    autor_id    integer,
+    creat_la    timestamp with time zone DEFAULT now() NOT NULL,
+    CONSTRAINT urme_portal_actiune_cunoscuta
+        CHECK (actiune IN ('email_cerut', 'email_confirmat', 'acces_dat', 'acces_retras')),
+    CONSTRAINT urme_portal_detaliu_nevid
+        CHECK (btrim(detaliu) <> '')
+);
+
+CREATE INDEX IF NOT EXISTS urme_portal_tenant_idx
+    ON public.urme_portal (tenant_id, creat_la DESC);

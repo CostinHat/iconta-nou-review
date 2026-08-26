@@ -236,6 +236,49 @@ def _importuri_core(nod, st):
     return out
 
 
+_DOCSTRING_CU_SQL = [
+    "@app.post('/tenants/{tenant_id}/proza')",
+    "def proza(tenant_id: int):",
+    '    """Nu scrie nimic. Aici doar POVESTESC ca un UPDATE tabela_de_proba orb ar strica ceva."""',
+    "    return {}",
+    "",
+    "@app.post('/tenants/{tenant_id}/chiar_scrie')",
+    "def chiar_scrie(tenant_id: int):",
+    '    """Asta chiar scrie."""',
+    "    with conn.cursor() as cur:",
+    "        cur.execute('UPDATE tabela_de_proba SET numar=1')",
+    "    return {}",
+]
+
+
+def test_CALIBRARE_docstringul_nu_e_citit_ca_SQL(st, tmp_path, monkeypatch):
+    """Instanța, 26.08.2026: docstringul rutei de confirmare a adresei spunea *„o scriere făcută
+    pe nevăzute ar sparge unicitatea"* — în prima formă, *„un UPDATE orb"*. Instrumentul a extras
+    din proza aia o tabelă pe care a numit-o `oarb`, și a scris-o în inventar ca scriere proprie
+    a rutei.
+
+    E aceeași clasă cu regula pe care o ține gardul rutei de raport Z — *un comentariu care
+    pomenește INSERT n-are voie să treacă drept scriere* — doar că acolo era în gard, iar aici
+    în instrumentul pe care stau toate celelalte măsurători.
+
+    Direcția e zgomotoasă (adaugă o tabelă), deci se vede — **atâta timp cât numele inventat nu
+    seamănă cu unul real**. `oarb` sărea în ochi; `facturi` n-ar fi sărit.
+
+    Ambele direcții, ca la celelalte calibrări: proza NU produce tabelă, iar SQL-ul din corp
+    produce. Fără a doua, o reparație care ar tăia toate șirurile ar trece prima și ar goli
+    inventarul de scrieri proprii."""
+    io.open(os.path.join(str(tmp_path), "main.py"), "w", encoding="utf-8").write(
+        chr(10).join(_DOCSTRING_CU_SQL) + chr(10))
+    monkeypatch.setattr(st, "RAD", str(tmp_path))
+    rute = {r["cale"]: r for r in st.citeste_rute()}
+
+    assert not rute["/tenants/{tenant_id}/proza"]["scrie_inline"], (
+        "proza din docstring a devenit scriere: %s"
+        % rute["/tenants/{tenant_id}/proza"]["scrie_inline"])
+    assert set(rute["/tenants/{tenant_id}/chiar_scrie"]["scrie_inline"]) >= {"tabela_de_proba"}, (
+        "SQL-ul din CORP nu mai e văzut — reparația a mers prea departe și golește inventarul")
+
+
 def test_ANTI_VACUU_modulul_atribuit_unei_rute_e_VIZIBIL_ei(st):
     """Invariantul din care s-a născut R60, verificat pe `main.py` REAL, nu pe un fișier sintetic.
 
