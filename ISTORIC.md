@@ -5454,3 +5454,35 @@ commituri, poarta verde la fiecare.*
 poate deveni roșu, luna care nu se închide peste ciorne) opresc pierderi tăcute de evidență, nu
 doar afișează mai bine. Trei dintre reparațiile zilei **nu schimbă nimic azi**, fiindcă
 precondițiile lor nu există pe nicio firmă — și se scrie așa, nu ca realizare.
+
+## 26.08.2026 (seara) — ZIUA, partea a doua: de la verificări scrise la prima exercitare pe date
+
+*Intrarea de mai sus acoperă primele șase ture. Asta acoperă restul zilei — încă ~14 ture și 26 de commituri, poarta verde la fiecare. Același criteriu: **ce vede omul care ține contabilitatea unei firme**, nu ce am construit.*
+
+### CE SE SCHIMBĂ PENTRU EL DE MÂINE DIMINEAȚĂ — și primul lucru îl blochează
+
+1. **Adeverința și contractul de muncă REFUZĂ să se producă fără numele administratorului.** Până azi îl tipăreau gol: `firma_profil.patron_nume` era citită de trei module și **scrisă de nimic** — nu exista niciun ecran care s-o completeze. Acum există câmpul *Date firmă › Nume administrator*, iar documentele refuză motivat: *„Adeverința nu se poate emite: lipsește numele administratorului. Completează-l în Date firmă › Nume administrator.”*
+   **Măsurat, și e partea care contează: câmpul e GOL pe toate cele 19 firme, iar 8 au salariați.** Deci pe cele opt, prima adeverință de mâine se oprește până completează cineva un câmp care până ieri nu putea fi completat. E o oprire **corectă** — documentul ieșea cu un gol la un om — dar e o oprire, și se scrie ca atare, nu ca îmbunătățire.
+2. **Crearea unei firme se confirmă.** Până azi formularul se închidea în tăcere; omul nu putea ști dacă a mers, apăsa din nou, iar a doua apăsare era refuzată de poarta de CUI duplicat — refuz care **arăta** ca ignorat, fiindcă firma exista deja. Cauza nu era poarta, era tăcerea de după succes. *(Instanța: două firme create în patru minute în proba de azi.)*
+3. **Vectorul fiscal, regimul de TVA și CUI-ul nu se mai schimbă peste o lună închisă.** Refuzul spune și calea: *redeschide perioada din Perioade blocate, cu motiv, schimbă, închide la loc* — trei acte consemnate în loc de unul tăcut. Nu atinge telefonul sau adresa: doar câmpurile care decid **ce se datorează**. Măsurat: **o singură firmă din 17** are perioade închise azi.
+4. **Cererea unui link de logare nu mai afirmă că a plecat.** Din *„ai primit linkul de logare”* în *„Am primit cererea. Dacă adresa e în sistem, linkul ajunge în câteva minute.”* Iar dacă trimiterea eșuează, **eșecul lasă urmă** — patru trimiteri de email (resetare parolă, link de logare, invitație asistent, bun venit) erau înghițite de `except: pass`; trei dintre ele sunt singura ușă de intrare.
+5. **Cele două adrese ale clientului se numesc diferit**: *Adresa de autentificare* și *Adresa la care primești pachetul lunar*. Când coincid, ecranul o spune — un ecran care arată aceeași adresă în două câmpuri fără să spună că sunt distincte produce chiar presupunerea greșită.
+
+### CE NU SCHIMBĂ NIMIC PENTRU NIMENI, AZI — și se scrie ca atare
+
+- **Raportul Z nu se mai poate înregistra de două ori** (cheia e casa de marcat + numărul raportului, nu data). Măsurat: **zero** note de raport Z pe toate cele 17 firme. Nimeni nu folosește ecranul.
+- **Portalul clientului** a primit trei reparații — izolarea între cabinete, confirmarea adresei, urma pentru cabinet — dar există **un singur cont de client real** în tot sistemul, pe o singură firmă. Iar **urma nu se vede pe niciun ecran**: ruta există, ecranul nu.
+- **Două coloane au fost scoase din schemă** (`principal_client_id`, `patron_email`). Erau goale pe toate firmele; nu se pierde nimic, și nu se câștigă nimic vizibil.
+
+### CE A COSTAT ZIUA
+
+- **Patru rapoarte de defect care au căzut pe o premisă.** Trei erau ale lui Costin — o măsurătoare de-a mea citită ca stare curentă (era veche de 40 de minute), un cont căutat la o adresă care tocmai se schimbase, și un ecran deschis pe firma **duplicat**. Al patrulea e al meu: am declarat că `s1003`/`s1005` n-au ecran; ecranul există și cheamă ruta printr-o cale compusă la rulare.
+- **Șapte instanțe ale aceleiași limite**: *calea nu e un fapt textual*. Docstringul citit ca SQL · coloane «scrise de nimic» (17, invalidată **înainte** de a intra în registru) · teste cuplate la firme reale (18 → 6 → 4 → **3**, prin citire) · rute fără apelant (13 → 6 → zeci → 32 → **5**, prin citire). În codul ăsta, calea de scriere și cea de apelare se **asamblează la rulare**.
+- **Poarta a respins de trei ori**, de fiecare dată pe ceva produs de propria reparație. Una merită numită: **prima reaprindere mecanică reală** de când există mecanismul — R46 s-a aprins singură fiindcă am atins un fișier pentru altceva, și s-a închis în aceeași tură.
+- **Un cuvânt pierdut dintr-un mesaj de commit**, prin heredoc neghilimelat peste `ssh`. Regula era notată; s-a sărit la un retuș, nu la actul principal.
+
+### VERDICTUL ZILEI, partea a doua
+
+**Da, schimbă ceva — iar cel mai mare lucru e o oprire, nu o adăugare.** Opt firme nu vor mai putea emite adeverințe până când cineva completează un câmp care până ieri nu exista. Restul reparațiilor ating suprafețe pe care azi nu le folosește nimeni.
+
+**Iar ce a scos ziua nu e cod, e o măsurătoare:** din cele 193 de verificări scrise, **una singură a fost exercitată pe date** — proba portalului — și a produs mai multe restanțe decât o zi întreagă de gărzi. Verde nu înseamnă exercitat.
