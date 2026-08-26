@@ -4921,3 +4921,17 @@ pinat cu motivul. **E2** (rol verificat în corp, nu în decorator) e închis: s
 
 **Ce NU face, declarat:** nu spune dacă `admin_firma` e rolul POTRIVIT — spune că există un rol
 acolo unde efectul îl cere. Alegerea rolului rămâne decizia lui Costin.
+
+## Închiderea perioadei verifică, iar redeschiderea lasă urmă (26.08.2026, R58)
+
+**Poarta.** `POST /perioade-blocate` refuză 422 dacă perioada are note `ciorna` sau dacă
+`inchidere_luna.blocaj` întoarce ceva. Verificarea de e-Facturi **nu se duplică** — se cheamă
+funcția existentă din 21.08, mutată de pe **afirmație** pe **poartă**.
+
+**Urma.** `perioade_inchideri`, append-only, cu constrângerea de motiv **în bază**:
+`CHECK (actiune <> 'redeschisa' OR btrim(coalesce(motiv,'')) <> '')`. Probat pe schemă efemeră:
+baza refuză o redeschidere fără motiv, nu doar ruta. Migrare 17/17 + oglindă în template.
+
+**Ce NU face, declarat:** nu verifică echilibrul și nici orfanii — Costin le-a amânat explicit
+până la o măsurătoare pe ce s-ar bloca pe firme reale. Și **nu există încă un clichet** care să
+asertea că poarta refuză: azi e o probă funcțională, nu un gard.

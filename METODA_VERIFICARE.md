@@ -160,6 +160,30 @@ verificările**: patru rute de `/incarca` cu docstring *„nu salvează"* apăre
 de date. **Regula: o supra-aproximare are voie să existe, dar trebuie să se NUMEASCĂ** — altfel cine
 o citește scrie o aserțiune pe ea. Forma: `poate atinge, prin modul (PLAFON, nemăsurat pe rută)`.
 
+### O mutație care probează o CALIBRARE trebuie să lovească exact linia care face distincția (26.08.2026)
+
+**Cerut de Costin**, după instanța din aceeași zi. O mutație e proba că un test poate deveni roșu.
+Dar un test poate deveni roșu **din alt motiv decât cel probat** — și atunci proba confirmă
+altceva decât crede cine a scris-o.
+
+**Instanța.** Gardul `test_rol_pe_efect` are o calibrare: *sonda de credențiale nu prinde o simplă
+citire*. Am mutat sonda ca să întoarcă `True` mai des, aștept­ându-mă ca acea calibrare să pice. A
+picat **testul principal** (multe rute deodată fără rol), iar calibrarea a rămas **verde** —
+fiindcă distincția citire/scriere se face pe **altă linie**, o poartă `INSERT|UPDATE|DELETE` care
+se scurtcircuitează înainte de linia mutată. Mutația era reală, roșul era real, și totuși nu
+proba nimic despre ce voiam să probez.
+
+**Regula:** *o mutație care probează o calibrare trebuie să lovească **linia care face distincția**,
+nu o linie din aceeași funcție.* Verificarea e ieftină și e mecanică: **se cere ca mutația să facă
+roșu TESTUL ANUME**, nu suita. Dacă pică alt test, mutația e greșit țintită — nu gardul e slab.
+
+**Cum se scrie**, ca să nu depindă de memorie: bucla de mutații ține, lângă fiecare mutație,
+**numele testului așteptat**, și cade dacă a picat altul. Fără asta, „trei mutații, trei roșii" e o
+propoziție adevărată despre altceva.
+
+*Aceeași familie cu interdicția 76 — calibrarea pozitivă nu dovedește că instrumentul nu ratează —
+dar un pas mai jos: aici nici proba calibrării nu dovedește ce pare.*
+
 ### O gardă care încodează o decizie NUMEȘTE AXA pe care păzește (26.08.2026)
 
 **Cerut de Costin, cu motivul lui:** *„R42 spunea că nota nu primește rol fiindcă nu e artefact

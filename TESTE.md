@@ -2112,3 +2112,9 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   calculat dinamic se **numește**, nu se înghite în niciuna din direcții.
 - **`core/test_r42_criteriu.py` — +1 test (26.08.2026)**: excepțiile de pe altă axă sunt reale și
   motivate (bidirecțional — o excepție care și-a pierdut rolul sau ruta pică).
+
+- **Niciun gard nou pentru R58 (26.08.2026), și se spune de ce**: poarta de închidere are o
+  **probă funcțională** pe schemă efemeră (ciorne numărate · redeschidere fără motiv refuzată de
+  BAZĂ · urma păstrează două acte după ștergerea rândului), dar nu un clichet. Ce ar trebui
+  cablat: un test care asertează că `POST /perioade-blocate` refuză pe o perioadă cu ciorne, și
+  că `perioade_inchideri` primește un act la fiecare închidere/redeschidere.

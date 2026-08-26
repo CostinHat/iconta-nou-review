@@ -1411,7 +1411,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T11 — Închiderea lunii
 
-**Clasa:** MECANIC · **rute:** 6 (din care schimba date: 4) · **refuzuri explicite:** 5
+**Clasa:** MECANIC · **rute:** 7 (din care schimba date: 4) · **refuzuri explicite:** 9
 
 **Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 0 din 4.**
 
@@ -1423,10 +1423,11 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `DELETE /tenants/{tenant_id}/perioade-blocate` — garda `cere_rol` rol:admin_firma
 - `GET /tenants/{tenant_id}/perioade-blocate` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/perioade-blocate` — garda `cere_rol` rol:admin_firma
+- `GET /tenants/{tenant_id}/perioade-blocate/istoric` — garda `cere_cabinet`
 
-**Module:** `inchidere_luna`
+**Module:** `afirmatii`, `inchidere_luna`, `migrare_inchideri`
 
-**Scrie in:** `perioade_blocate` (DELETE/INSERT)
+**Scrie in:** `perioade_blocate` (DELETE/INSERT) · `perioade_inchideri` (INSERT)
 
 **Firme care il pot exercita azi: 1** — `tenant_001`
 

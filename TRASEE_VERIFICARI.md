@@ -830,7 +830,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: [cap.23] Declara luna INCHISA pe facturi: evidenta ei devine autoritativa, iar semaforul se poate sprijini pe ea cand spune ca o declaratie nu se datoreaza*
 
-- [ ] 
+- [x] **nu pot scrie verificarea fără să știu ce o deosebește de `POST /perioade-blocate`.** Sunt două acte de închidere pe aceeași tabelă? De completat din cod
+- dacă e închiderea pe domeniul facturi, verifică ce se întâmplă când unul e închis și celălalt nu — o perioadă parțial închisă e o stare sau o inconsistență?
+- **completat din cod (26.08.2026): NU e duplicat cu `perioade-blocate` — sunt obiecte diferite, iar grija ta era exact cea potrivită.** `facturi/perioada/confirma` cheamă `inchidere_luna.confirma`, care scrie în `perioada`, pe domeniul `facturi`: e o **AFIRMAȚIE** despre completitudine, pe care se sprijină semaforul când spune că o declarație nu se datorează. **Nu oprește nicio scriere.** `perioade-blocate` e **poarta** — o citește `_cere_luna_deschisa` la fiecare notă
+- **și da, una putea ocoli verificările celeilalte** — până azi. `confirma` refuza motivat pe e-Facturi neînregistrate; `perioade-blocate` nu verifica nimic. **R58 a mutat verificarea pe poartă**: închiderea cheamă acum `inchidere_luna.blocaj`, plus refuză pe ciorne nevalidate
+- verificarea care rămâne: după confirmare, `stare()` întoarce `confirmat=True` cu autorul și momentul, iar o **modificare de facturi de-confirmă automat** (`facturi_api` cheamă `perioada.deconfirma`) — o confirmare care supraviețuiește unei modificări ar spune „complet” despre alte date
 
 ### `POST /tenants/{tenant_id}/facturi/perioada/redeschide`
 
@@ -838,7 +842,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: [cap.23] Redeschide luna (o corectie de facturi cere redeschiderea)*
 
-- [ ] 
+- [x] redeschiderea poartă **motiv obligatoriu** — P15
+- urma închiderii nu se șterge: cine a închis, când, rămân. E interdicția 36
+- documentele emise din perioada redeschisă se marchează sub rezervă
+- verifică relația cu `DELETE /perioade-blocate`: dacă cele două redeschid același lucru pe căi diferite, una poate ocoli verificările celeilalte
 
 ### `DELETE /tenants/{tenant_id}/perioade-blocate`
 
@@ -905,7 +912,14 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie firma_profil (UPDATE) — prin `firma_profil_api`*
 
-- [ ] 
+- [x] **datele fiscale de aici intră în declarații** — CUI, denumire, adresă, capital. O modificare fără rol schimbă ce se depune
+- CUI-ul modificat: verifică dacă e permis deloc. Un CUI schimbat pe o firmă cu declarații depuse rupe corespondența cu tot ce s-a depus
+- modificarea se consemnează: cine, când, de la ce la ce
+- **poziție, nu notă:** ruta cere rol pe regim-tva și nu pe datele care ajung în același loc
+- **MASURAT 26.08.2026, la cererea ta: da, datele intra in declaratii — si e mai mult decat pare.** `firma_profil_api.OBLIGATORII` mapeaza fiecare camp la declaratiile care il cer: `cui` -> **8 declaratii** (D100, D101, D205, D300, D301, D390, D394, D406) · `declarant_nume` si `declarant_functie` -> **9 fiecare** (cele de mai sus + D112 + Bilant) · `nume` -> 7 · `caen` -> 3 · `adresa` -> 3 · `banca` si `iban` -> 2 · `telefon` -> D394 · `reg_com` -> Bilant
+- **deci o ruta fara niciun rol scrie campurile pe care se sprijina noua declaratii**, alaturi de `regim-tva`, care cere `admin_firma`. Criteriul tau de la R55 — *ce schimba ce datoreaza firma* — o prinde; criteriul MECANIC al gardului (scrie `validata`) nu, fiindca ruta scrie in `firma_profil`. **Punct orb al gardului, numit**
+- ce face ruta corect: refuza un camp obligatoriu golit, cu mesaj care **numeste declaratiile** care nu se mai pot depune fara el; iar `cont_venit_implicit` se refuza daca nu e clasa 70
+- *(antetul din lot spune `PUT`; ruta reala e `POST`)*
 
 ### `POST /tenants/{tenant_id}/firma-profil/model`
 
@@ -913,7 +927,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie firma_profil (UPDATE) — prin `firma_profil_api`*
 
-- [ ] 
+- [x] **nu pot scrie verificarea fără să știu ce e „model".** Model de firmă? De document? De contare? De completat din cod
+- **completat din cod (26.08.2026): „model” e MODELUL VIZUAL AL FACTURII** — `font`, `culoare`, `logo`, prin `firma_profil_api.salveaza_model`. Nu e model de date si nu e regim fiscal: e aspectul PDF-ului predat clientului. De aceea e pe `cere_context` — o preferinta de prezentare, nu o decizie despre ce datoreaza firma
+- verificarea care ramane: schimbarea modelului **nu atinge facturile deja emise** — acelea sunt exemplare inghetate cu amprenta (P4); o regenerare cu alt logo ar produce **alt** document
+- *(antetul din lot spune `PUT`; ruta reala e `POST` — notat, nu corectat in tacere)*
 
 ### `POST /tenants/{tenant_id}/firma-profil/regim-tva`
 
@@ -921,7 +938,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie firma_profil (UPDATE) — prin `firma_profil_api`*
 
-- [ ] 
+- [x] schimbarea regimului are **dată de la care se aplică**, nu se aplică retroactiv tăcut
+- perioadele închise sub regimul vechi rămân sub el — recalcularea lor produce contradicție, nu rescriere
+- trecerea de la plătitor la neplătitor cere ajustarea TVA la bunuri de capital; verifică dacă se semnalează
+- declarațiile datorate se recalculează din noul regim, iar cele generate sub cel vechi se marchează
 
 ### `POST /tenants/{tenant_id}/vector`
 
@@ -929,7 +949,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie firma_profil (INSERT/UPDATE) · migrare_status (INSERT) — prin `firma_profil_api`, `migrare_api`, `vector_fiscal_api`*
 
-- [ ] 
+- [x] vectorul decide ce declarații datorează firma — o schimbare produce declarații noi datorate și altele care nu mai sunt
+- schimbarea are dată de la care se aplică; perioadele anterioare rămân sub vectorul vechi
+- o declarație deja generată pentru o poziție scoasă din vector se marchează, nu dispare
+- vectorul se confruntă cu faptele: dacă firma are operațiuni intracomunitare și vectorul nu are D390, se semnalează — e chiar cazul de la 006
 
 ## T14 — Preluarea unei firme
 
@@ -1281,7 +1304,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: [cap.23] Confirma pontajul lunii -> devine AUTORITATIV pentru salarizare (tichete pe zile efectiv lucrate)*
 
-- [ ] 
+- [x] confirmarea e ce **deblochează tichetele** — fără ea, statul nu le acordă. Verifică că blocajul e real, nu doar semnalat
+- confirmarea poartă autorul și momentul
+- după confirmare, pontajul nu se mai modifică fără o operațiune de deconfirmare consemnată
+- confirmarea verifică întâi coerența: toți salariații activi au pontaj, sau se spune cine lipsește
 
 ### `PUT /tenants/{tenant_id}/salariati/{salariat_id}/pontaj`
 
@@ -1289,7 +1315,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: F135: seteaza starea unei zile (stare goala/prezent = sterge exceptia). — scrie pontaj (DELETE/INSERT) — prin `pontaj`*
 
-- [ ] 
+- [x] zilele pontate nu depășesc zilele lucrătoare din lună
+- pontajul nu se poate modifica pentru o lună cu stat de plată emis — sau, dacă se poate, produce contradicție vizibilă
+- concediile medicale și cele de odihnă se scad din zilele lucrate, nu se adună separat
+- pontajul unei luni închise se refuză
 
 ## T17 — Plata salariilor — fișierul către bancă
 
@@ -1303,7 +1332,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: [F134] Fisierul SEPA/ISO 20022 pain.001.001.03 de plata a salariilor NET pe card (download) — scrie artefacte_produse (INSERT) — prin `artefacte`*
 
-- [ ] 
+- [x] fișierul se păstrează: conținutul, momentul, autorul, amprenta, numărul exemplarului
+- sumele din fișier coincid cu **netul din statul de plată emis** — nu se recalculează la generare
+- fiecare salariat din fișier are IBAN valid; cei fără IBAN se numesc, iar fișierul nu se generează parțial fără să spună
+- totalul fișierului = suma neturilor, verificat explicit
+- un fișier generat de două ori pentru aceeași lună produce al doilea exemplar, nu suprascrie primul — iar dublarea plății e riscul, deci se avertizează
 
 ## T18 — Chitanța și încasarea
 
@@ -1361,7 +1394,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: F131: activeaza/dezactiveaza notificarile email de scadenta pt firma (default OFF). — scrie facturi (UPDATE) · firma_profil (UPDATE) — prin `scadentar`*
 
-- [ ] 
+- [x] opt-in-ul poartă autorul și momentul — e o decizie despre comunicarea cu clienții firmei
+- verifică ce se trimite: notificări către clienți în numele firmei, sau doar către cabinet?
+- dacă merge către clienți, opt-out-ul trebuie să existe și să fie la fel de simplu
 
 ## T20 — Mișcarea de stoc — intrare, ieșire, transfer, reclasificare
 
@@ -1375,7 +1410,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
-- [ ] 
+- [x] un cod de bare duplicat în firmă se refuză — altfel scanarea devine ambiguă
+- modificarea nu atinge stocul și nu produce mișcare
 
 ### `POST /tenants/{tenant_id}/stocuri/articole/{articol_id}/nivel-minim`
 
@@ -1383,7 +1419,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
-- [ ] 
+- [x] nivelul minim e o alertă, nu o restricție — verifică dacă blochează ieșirile sub el, ceea ce ar fi greșit
+- modificarea nu atinge stocul
 
 ### `POST /tenants/{tenant_id}/stocuri/descarcare`
 
@@ -1391,7 +1428,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · nir (INSERT) · nir_linii (INSERT) — prin `stocuri_api`*
 
-- [ ] 
+- [x] descărcarea se leagă de un document — factură, bon, consum. O descărcare fără document rupe lanțul P14
+- metoda de evaluare la ieșire (FIFO, CMP) e cea configurată pe firmă, nu aleasă la operațiune
+- costul descărcat vine din intrări, nu se introduce liber
 
 ### `POST /tenants/{tenant_id}/stocuri/iesire`
 
@@ -1399,7 +1438,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
-- [ ] 
+- [x] **nu pot scrie verificarea fără să știu ce o deosebește de `descarcare`.** De completat din cod
+- dacă sunt aceeași operațiune pe două rute, e interdicția 15
+- **completat din cod (26.08.2026): NU e duplicat cu `stocuri/descarcare`, și nu e nici măcar același fel de lucru.** `iesire` = **o mișcare pe UN articol**, din corpul cererii (`articol_id`, cantitate), valoare la **CMP**, notă ciornă `cont_cheltuiala = cont_stoc`. `descarcare` = **descărcarea gestiunii pe LUNĂ** (`an`, `luna`, fără corp), calculată din **rulajele reale ale notelor validate**, cumulat de la 1 ianuarie (OMFP 1802), pe conturile 371/378/4428, cu soldurile inițiale preluate din `solduri_initiale`
+- deci nu e **interdicția 15**: nu sunt două intrări pentru aceeași operațiune, ci o mișcare de articol și un calcul de perioadă. Granularitate diferită, module diferite (`stocuri_cv_api` vs `stocuri_api`), obiecte diferite
+- verificarea de fond care REZULTĂ din asta: **suma mișcărilor de articol dintr-o lună trebuie să se regăsească în descărcarea lunii**. Dacă cele două nu se leagă, una din ele minte — iar asta e o verificare pe care nimeni n-o face azi
 
 ### `POST /tenants/{tenant_id}/stocuri/intrare`
 
@@ -1407,7 +1450,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
-- [ ] 
+- [x] intrarea se leagă de un document — NIR, producție, transfer
+- costul de intrare cuprinde ce trebuie: preț, transport, taxe nedeductibile. Verifică ce cuprinde efectiv
+- o intrare pe un articol inexistent creează articolul sau se refuză — verifică ce face
 
 ### `POST /tenants/{tenant_id}/stocuri/reclasificare`
 
@@ -1415,7 +1460,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
-- [ ] 
+- [x] reclasificarea schimbă categoria, nu cantitatea și nu valoarea
+- verifică dacă poate muta un articol între categorii cu tratamente fiscale diferite — marfă în materie primă schimbă contul, deci nota
 
 ### `POST /tenants/{tenant_id}/stocuri/transfer`
 
@@ -1423,7 +1469,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
-- [ ] 
+- [x] transferul între gestiuni nu schimbă valoarea totală a stocului — suma iese dintr-o gestiune și intră în alta, la același cost
+- transferul nu produce venit sau cheltuială
+- gestiunea sursă și cea destinație există și sunt diferite
 
 ## T21 — Rețeta și producția
 
@@ -1437,7 +1485,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie produse (DELETE/INSERT/UPDATE) — prin `produse_api`*
 
-- [ ] 
+- [x] codul produsului e unic în firmă
+- produsul cu rețetă are cost calculat din componente, nu introdus liber
 
 ### `POST /tenants/{tenant_id}/produse/potriveste`
 
@@ -1445,7 +1494,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie produse (DELETE/INSERT/UPDATE) — prin `produse_api`*
 
-- [ ] 
+- [x] potrivirea e o **propunere**, nu o legătură creată — verifică structural că nu scrie
+- fiecare potrivire propusă poartă gradul de certitudine; una slabă nu se prezintă ca sigură
 
 ### `DELETE /tenants/{tenant_id}/produse/{produs_id}`
 
@@ -1453,7 +1503,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie produse (DELETE/INSERT/UPDATE) — prin `produse_api`*
 
-- [ ] 
+- [x] un produs cu mișcări de stoc nu se șterge — se dezactivează
+- ștergerea nu atinge producțiile trecute
 
 ### `PUT /tenants/{tenant_id}/produse/{produs_id}`
 
@@ -1461,7 +1512,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie produse (DELETE/INSERT/UPDATE) — prin `produse_api`*
 
-- [ ] 
+- [x] modificarea rețetei unui produs **nu recalculează costul producțiilor trecute** — acelea au costul de la momentul lor
+- dacă recalculează, produce contradicție cu notele deja scrise
 
 ### `POST /tenants/{tenant_id}/retete`
 
@@ -1469,7 +1521,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) · retete (DELETE/INSERT/UPDATE) · retete_linii (DELETE/INSERT) — prin `retete_api`*
 
-- [ ] 
+- [x] componentele rețetei există ca articole
+- cantitățile sunt pozitive, iar unitatea de măsură a componentei coincide cu cea a articolului
 
 ### `POST /tenants/{tenant_id}/retete/descarca`
 
@@ -1477,7 +1530,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) · retete (DELETE/INSERT/UPDATE) · retete_linii (DELETE/INSERT) — prin `retete_api`*
 
-- [ ] 
+- [x] descărcarea pe rețetă scoate din stoc **componentele**, la cantitățile din rețetă, înmulțite cu cantitatea produsă
+- produsul finit intră în stoc la costul componentelor descărcate
+- suma valorii componentelor ieșite = valoarea produsului intrat
+- dacă o componentă nu are stoc suficient, operațiunea se refuză întreagă — nu descarcă parțial
 
 ### `DELETE /tenants/{tenant_id}/retete/{reteta_id}`
 
@@ -1485,7 +1541,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) · retete (DELETE/INSERT/UPDATE) · retete_linii (DELETE/INSERT) — prin `retete_api`*
 
-- [ ] 
+- [x] o rețetă folosită într-o producție nu se șterge — se dezactivează
+- ștergerea nu schimbă costul producțiilor trecute
 
 ## T22 — Mijlocul fix și amortizarea
 
@@ -1499,7 +1556,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ. — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] amortizarea lunară se calculează din valoarea de intrare și durata rămasă, la data lunii
+- un mijloc fix complet amortizat nu mai produce amortizare
+- amortizarea contabilă și cea fiscală pot diferi — verifică dacă se disting, sau se calculează una singură
+- **scrie `validata` direct**, deci a primit rol azi. Verifică că nu se poate rula de două ori pe aceeași lună
 
 ### `POST /tenants/{tenant_id}/reevaluare-imobilizare`
 
@@ -1507,7 +1567,14 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, operatie reevaluare|surplus, + reevaluare{mijloc_fix_id, valoare_justa, sold_105_activ?, pierdere_655_anterioara?} | surplus{suma}} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] reevaluarea schimbă valoarea de intrare, deci **schimbă amortizarea viitoare** — dar nu pe cea trecută
+- diferența din reevaluare merge la rezervă, nu la venit — verifică unde ajunge
+- reevaluarea în minus sub valoarea contabilă e cheltuială, nu rezervă negativă
+- **fără rol, deși schimbă o bază de calcul care intră în declarația de profit** — poziție, nu notă
+- **MĂSURAT 26.08.2026, la cererea ta — și răspunsul e altul decât presupuneai, în direcția mai proastă.** Ruta **NU schimbă baza de amortizare**: citește valoarea și amortizarea cumulată din `mijloace_fixe` (`SELECT … WHERE id=%s AND activ=true`) și scrie **doar o notă ciornă**. Niciun `UPDATE` pe `mijloace_fixe` — verificat pe tot corpul rutei
+- **deci reevaluarea schimbă valoarea contabilă, dar registrul care conduce amortizarea rămâne pe valoarea veche** — iar `POST /amortizare` calculează „per MF activ” din exact acel registru. Docstringul o recunoaște: *„actualizeaza valoarea/dnf ramane manual (raport evaluator)”*. Nu e o scăpare tăcută; e o limită declarată. Dar consecința e că **nota și registrul spun două lucruri diferite despre același activ**
+- deci verificarea de fond nu e „cere rol”, ci: **după reevaluare, amortizarea lunii următoare se calculează pe valoarea reevaluată** — sau, dacă nu, aplicația o spune. Azi nu o spune nicăieri
+- iar despre rol: criteriul de la R55 (scrie `validata`) **nu o prinde**, corect — scrie ciornă. Dar dacă registrul ar începe să fie actualizat aici, ar deveni o schimbare imediată de bază fiscală, iar atunci criteriul ar trebui reaplicat
 
 ## T23 — Bonul de la client — portalul și decontul
 
@@ -1521,7 +1588,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Extrage datele bonului cu AI si salveaza ca DRAFT (status='extras') + pozele pe disc — scrie bonuri (DELETE/INSERT)*
 
-- [ ] 
+- [x] clientul poate încărca doar pe firma lui — verificat pe context, nu pe rol
+- bonul intră ca **nevalidat**; clientul nu produce evidență
+- imaginea se păstrează, nu doar datele citite din ea
 
 ### `DELETE /portal/bon/{bon_id}`
 
@@ -1529,7 +1598,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Clientul reface poza -> draftul (status='extras') si pozele lui se sterg. — scrie bonuri (DELETE)*
 
-- [ ] 
+- [x] clientul poate șterge doar bonuri **neaprobate** — unul aprobat a devenit evidență
+- ștergerea nu lasă în urmă imaginea orfană, sau o lasă și se spune
+- ștergerea se consemnează — un bon care dispare fără urmă e o cheltuială care nu se mai poate reconstitui
 
 ### `POST /portal/bon/{bon_id}/confirma`
 
@@ -1537,7 +1608,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Clientul confirma ca poza e intreaga si lizibila -> bonul intra la contabil. — scrie bonuri (UPDATE)*
 
-- [ ] 
+- [x] confirmarea clientului nu e aprobare — bonul rămâne de validat de cabinet
+- verifică ce poate schimba clientul la confirmare: dacă poate modifica sumele, cabinetul trebuie să vadă ce a modificat
 
 ### `POST /tenants/{tenant_id}/bonuri/{bon_id}/aproba`
 
@@ -1545,7 +1617,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie bonuri (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] aprobarea produce evidență — de aceea a primit rol azi
+- bonul aprobat poartă legătura către imaginea din care a ieșit
+- cifrele aprobate coincid cu cele citite din imagine, sau diferența e consemnată ca modificată de om
+- un bon aprobat de două ori nu produce două note
 
 ### `POST /tenants/{tenant_id}/bonuri/{bon_id}/stinge`
 

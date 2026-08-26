@@ -5379,3 +5379,21 @@ doar lista de rute."* Avea dreptate de doua ori.
   36 si P15, direct.
 - **METODA:** o garda care incodeaza o decizie NUMESTE AXA pe care pazeste. Cealalta jumatate a
   lui §25 — cum faci ca tacerea sa nu se produca.
+
+### 26.08.2026, tura a sasea — R58 aplicat, si trei perechi care pareau duplicate
+
+- **Poarta de inchidere verifica** (ciorne + blocajul care exista deja), iar **redeschiderea lasa
+  urma**: tabela `perioade_inchideri`, append-only, cu constrangerea de motiv IN BAZA. Migrare
+  17/17 scheme + oglinda in template. Probat pe schema efemera.
+- **De ce o tabela separata:** poarta `_cere_luna_deschisa` ruleaza la fiecare scriere de nota; un
+  marcaj pe acelasi rand ar fi cerut o schimbare intr-un drum cald pentru o cerinta de istoric.
+- **Trei perechi verificate, ZERO duplicate:** `facturi/perioada/confirma` vs `perioade-blocate`
+  (afirmatie vs poarta) · `stocuri/iesire` vs `stocuri/descarcare` (miscare de articol vs calcul
+  de luna) · iar „model" din `firma-profil/model` e **modelul VIZUAL al facturii**, nu un model de
+  date. A doua oara cand grija de duplicat se dovedeste nefondata — dar de fiecare data masurata.
+- **Doua masuratori pe pozitiile fara rol:** `firma-profil/date` scrie campurile pe care se
+  sprijina **noua declaratii** (`cui` -> 8, `declarant_*` -> 9 fiecare) si n-are rol — punct orb
+  al gardului mecanic, fiindca scrie in `firma_profil`, nu `validata`. Iar `reevaluare-imobilizare`
+  **NU schimba baza de amortizare**: citeste `mijloace_fixe` si scrie doar o nota. Deci nota si
+  registrul spun doua lucruri diferite despre acelasi activ — limita e declarata in docstring.
+- **METODA:** o mutatie care probeaza o CALIBRARE trebuie sa loveasca linia care face distinctia.

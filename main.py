@@ -4020,28 +4020,104 @@ def perioade_blocate_lista(tenant_id: int, ctx=Depends(cere_cabinet)):
             cur.execute(f"SELECT an, luna FROM {schema}.perioade_blocate ORDER BY an, luna")
             return {"blocate": [{"an": r[0], "luna": r[1]} for r in cur.fetchall()]}
 
+def _ciorne_in_perioada(cur, schema, an, luna):
+    """Câte note NEVALIDATE are perioada. [R58] O ciornă închisă înăuntru nu se mai poate valida,
+    nu se mai poate șterge, și nu apare nicăieri — Costin: *„e o cheltuială sau un venit care
+    dispare fără urmă."*"""
+    from datetime import date as _d
+    sfarsit = _d(an + (luna == 12), (luna % 12) + 1, 1)
+    cur.execute(f"""SELECT count(*) FROM {schema}.inregistrari
+                    WHERE status='ciorna' AND data >= %s AND data < %s""",
+                (_d(an, luna, 1), sfarsit))
+    return cur.fetchone()[0]
+
+
 @app.post("/tenants/{tenant_id}/perioade-blocate")
+# [R58, decizia lui Costin 26.08.2026] Poarta VERIFICĂ înainte de a închide. Până azi făcea un
+# singur INSERT — măsurat: închiderea lunii curente pe o firmă reală ar fi lăsat 5 ciorne
+# închise înăuntru. Două condiții, amândouă cerute de el:
+#   (1) ciorne nevalidate în perioadă — *„o ciornă închisă înăuntru nu se mai poate valida, nu se
+#       mai poate șterge, și nu apare nicăieri"*;
+#   (2) blocajul care EXISTĂ DEJA în `inchidere_luna` (e-Facturi primite și neînregistrate) —
+#       *„o verificare care refuză motivat, dar nu oprește scrierile, e o afirmație despre
+#       perioadă, nu o poartă."* Verificarea era scrisă și testată din 21.08; lipsea doar de pe
+#       poartă. NU se duplică: se cheamă exact `inchidere_luna.blocaj`.
+# Ce NU s-a adăugat, cu motivul lui: echilibrul și orfanii — cer o măsurătoare pe ce s-ar bloca
+# azi pe firme reale, iar aia se discută separat.
 def perioada_blocheaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol("admin_firma"))):
+    from core import inchidere_luna as _il
+    from core import migrare_inchideri as _ui
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
+            ciorne = _ciorne_in_perioada(cur, schema, an, luna)
+        bl = _il.blocaj(conn, schema, an, luna)
+        if ciorne or bl:
+            # Refuzul spune CE oprește și UNDE se rezolvă — nu doar că nu se poate.
+            motive = []
+            if ciorne:
+                motive.append("%d notă(e) rămân în ciornă în perioadă; validează-le sau șterge-le "
+                              "din Jurnal, altfel rămân închise înăuntru și nu mai apar nicăieri"
+                              % ciorne)
+            if bl:
+                motive.append(str(bl) + " Înregistrează-le (sau respinge-le) în e-Factura.")
+            # Refuzul e o AFIRMAȚIE DESPRE DATELE FIRMEI, deci poartă `fel` din nomenclator (P8):
+            # o valoare — starea perioadei — nu satisface o regulă. `unde` și `regula` sunt cerute
+            # tocmai fiindcă un refuz fără adresă e un reproș.
+            raise HTTPException(422, detail=dict(
+                _af.afirmatie(
+                    "neconformitate", "inchidere_perioada",
+                    "Luna %02d/%04d nu se poate închide." % (luna, an),
+                    unde="perioada %02d/%04d" % (luna, an),
+                    regula="o perioadă se închide doar după ce tot ce s-a întâmplat în ea e "
+                           "înregistrat și validat"),
+                cod="PERIOADA_NU_SE_POATE_INCHIDE",
+                motive=motive, ciorne=ciorne, blocaj=bl))
+        with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.perioade_blocate (an, luna, blocat_de)
                             VALUES (%s,%s,%s) ON CONFLICT DO NOTHING""", (an, luna, ctx["uid"]))
+        _ui.scrie(conn, schema, an, luna, "inchisa", ctx["uid"])
         conn.commit()
     return {"blocat": f"{luna:02d}/{an}"}
 
 @app.delete("/tenants/{tenant_id}/perioade-blocate")
-def perioada_deblocheaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol("admin_firma"))):
+# [R58] Redeschiderea e ACT CONSEMNAT, CU MOTIV — P15 și interdicția 36, care o cereau explicit.
+# Până azi `DELETE` ștergea rândul, iar odată cu el dispăreau `blocat_de`, `blocat_la` și însuși
+# faptul că perioada fusese închisă. Urma trăiește acum în `perioade_inchideri` (append-only,
+# cu constrângerea de motiv în BAZĂ, nu doar aici — o urmă care se poate scrie fără motiv de pe
+# altă cale n-ar fi o urmă). Poarta rămâne neatinsă: `_cere_luna_deschisa` citește ca înainte.
+def perioada_deblocheaza(tenant_id: int, an: int, luna: int, motiv: str = "",
+                         ctx=Depends(cere_rol("admin_firma"))):
+    from core import migrare_inchideri as _ui
+    if not (motiv or "").strip():
+        raise HTTPException(422, detail={
+            "cod": "REDESCHIDERE_FARA_MOTIV",
+            "mesaj": "Redeschiderea unei perioade închise se consemnează cu motiv.",
+            "camp": "motiv",
+            "temei": "OMFP 1802/2014 — o perioadă închisă se redeschide ca act, nu prin ștergere."})
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
             cur.execute(f"DELETE FROM {schema}.perioade_blocate WHERE an=%s AND luna=%s", (an, luna))
+        _ui.scrie(conn, schema, an, luna, "redeschisa", ctx["uid"], motiv.strip())
         conn.commit()
     return {"deblocat": f"{luna:02d}/{an}"}
+
+@app.get("/tenants/{tenant_id}/perioade-blocate/istoric")
+# [R58] Urma se poate CITI — altfel ar fi scrisă degeaba. Cine a închis, cine a redeschis, când
+# și de ce.
+def perioade_istoric(tenant_id: int, an: Optional[int] = None, luna: Optional[int] = None,
+                     ctx=Depends(cere_cabinet)):
+    from core import migrare_inchideri as _ui
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+        return {"istoric": _ui.istoric(conn, schema, an, luna)}
 
 @app.get("/tenants/{tenant_id}/jurnal")
 def tenant_jurnal(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):

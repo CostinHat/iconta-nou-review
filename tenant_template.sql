@@ -2276,6 +2276,25 @@ CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.artefacte_produse (
 );
 CREATE INDEX IF NOT EXISTS artefacte_fel_cheie ON TENANT_PLACEHOLDER.artefacte_produse (fel, cheie);
 
+-- [R58, 26.08.2026] Urma inchiderii/redeschiderii unei perioade. Sursa DDL: core/migrare_inchideri.py
+-- (idempotent, aplicat pe tenantii existenti cu `python3 -m core.migrare_inchideri`).
+-- P15 + interdictia 36: redeschiderea e ACT CONSEMNAT, CU MOTIV. Constrangerea de motiv sta in
+-- BAZA, nu doar in ruta -- o urma care se poate scrie fara motiv de pe alta cale n-ar fi o urma.
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.perioade_inchideri (
+    id integer GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    an integer NOT NULL,
+    luna integer NOT NULL,
+    actiune text NOT NULL,
+    motiv text,
+    cine_id integer,
+    cand timestamptz NOT NULL DEFAULT now(),
+    CONSTRAINT perioade_inchideri_actiune CHECK (actiune IN ('inchisa', 'redeschisa')),
+    CONSTRAINT perioade_inchideri_motiv_la_redeschidere
+        CHECK (actiune <> 'redeschisa' OR btrim(coalesce(motiv, '')) <> '')
+);
+CREATE INDEX IF NOT EXISTS perioade_inchideri_perioada
+    ON TENANT_PLACEHOLDER.perioade_inchideri (an, luna, cand);
+
 --
 -- F146 (registratura documente) — mirror al core/migrare_registratura.py
 --
