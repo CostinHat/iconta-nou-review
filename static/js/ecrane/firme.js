@@ -13,7 +13,7 @@ import { declaratiiPerFirma } from "./declaratii.js?v=cc81187e9a";  // [decl_fir
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=ddd1606ae8";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=2caaba5417";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=ae22f440bf";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=337fc5dd2d";  // [date_firma_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=c5d8271d65";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=cec020b9da";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri

@@ -4995,3 +4995,15 @@ E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pome
 **Și coloana s-a scos**, nu doar ocolit: *o coloană cu drum de citire și fără drum de scriere e a treia cale prin care întrebarea s-ar putea pune altfel mâine*.
 
 **Ce NU face, declarat:** spune că cele patru iau răspunsul din același loc, **nu** că nu mai există niciun alt loc din care s-ar putea lua.
+
+## Un document nu se produce cu un gol în locul administratorului (26.08.2026, R66)
+
+**`core/firma_profil_api.cere_administrator`**, chemat din `adeverinta` și din `contracte_api`, convertit în **422** de rute. Nu e un test — e o **poartă în cod**, iar asta se spune: clichetul lipsește deocamdată.
+
+**De ce a apărut abia acum:** `patron_nume` avea drum de citire și **niciun** drum de scriere. Adeverința și contractul îl tipăreau, iar aplicația nu-l putea completa. Refuzul singur ar fi fost necinstit; de aceea câmpul din **Date firmă** și refuzul au intrat în aceeași tură — *coloana și calea ei intră împreună*.
+
+**Refuzul numește documentul și locul:** *„Adeverința nu se poate emite: lipsește numele administratorului. Completează-l în Date firmă › Nume administrator.”* Fără partea a doua, un refuz mută munca fără s-o îndrume.
+
+**Ce a prins în aceeași zi:** un test care emitea adeverință pe o schemă fără `patron_nume`, și care avea un `pytest.raises(ValueError)` pe **altceva**. Fără fixtura completată, ar fi trecut verde pe refuzul greșit.
+
+**Ce NU face, declarat:** apără două documente, nu clasa. Alte artefacte care tipăresc date de firmă nu sunt verificate, iar mulțimea lor n-a fost măsurată.

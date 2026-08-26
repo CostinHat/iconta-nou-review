@@ -2127,3 +2127,6 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
 - **`core/test_trasee.py` — +1 test (26.08.2026)**: docstringul nu se citește ca SQL. Instanță proprie — tabela `oarb`, extrasă din proza unui docstring scris cu o oră înainte. Ambele direcții: proza nu produce tabelă, SQL-ul din corp produce.
 
 - **`core/test_portal_acces.py` — +1 test (26.08.2026, R62 b, PRAG 1)**: cele patru rute care răspund la *cine e titularul* o iau din același loc (`_titular_client`). Regula era în două locuri și diferită, iar diferența se vedea abia pe ecranul unui om real. Plus docstringul fișierului, corectat: nota care spunea că rutele nu se pot exercita nu mai e adevărată.
+
+- **Niciun test nou pentru R66 (26.08.2026), și se spune de ce**: poarta e în cod (`cere_administrator` → 422), probată prin faptul că a **picat un test existent** — `test_perioada_indisponibila`, care emitea adeverință fără administrator. Ce ar trebui cablat: un clichet care asertează că cele două documente refuză, și că refuzul numește documentul și locul.
+- **`core/test_perioada_indisponibila.py` — fixtură completată (26.08.2026, R66)**: pune `patron_nume`, ca `pytest.raises(ValueError)` de dedesubt să cadă pe golul de tichet 2025, nu pe refuzul de administrator. Un verde pe motivul nepotrivit e tot verde fals.

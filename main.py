@@ -4845,7 +4845,10 @@ def tenant_adeverinta(tenant_id: int, salariat_id: int, date: AdeverintaIn,
     from core import adeverinta as _adv
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
-        pdf = _adv.pdf(conn, schema, salariat_id, date.dict())
+        try:
+            pdf = _adv.pdf(conn, schema, salariat_id, date.dict())
+        except ValueError as e:   # [R66 (c)] refuzul numeste documentul si unde se completeaza
+            raise HTTPException(422, str(e))
     if pdf is None:
         raise HTTPException(404, "salariat inexistent")
     return Response(content=pdf, media_type="application/pdf",
@@ -6623,7 +6626,10 @@ def contracte_genereaza(tenant_id: int, corp: dict = Body(...),
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
-        pdf = _ct.genereaza_pdf(conn, schema, corp.get("sablon_id"), corp)
+        try:
+            pdf = _ct.genereaza_pdf(conn, schema, corp.get("sablon_id"), corp)
+        except ValueError as e:   # [R66 (c)]
+            raise HTTPException(422, str(e))
     if pdf is None:
         raise HTTPException(404, "sablon inexistent")
     return Response(content=pdf, media_type="application/pdf",

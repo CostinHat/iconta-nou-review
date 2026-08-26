@@ -73,6 +73,11 @@ def test_adeverinta_2025_blocaj_2026_ok():
                 cur.execute(_tp.parametrizeaza_template(
                     open("tenant_template.sql", encoding="utf-8").read(), SCHEMA_T))
                 cur.execute("SET search_path TO %s, public" % SCHEMA_T)
+                # [R66] Adeverinta cere numele administratorului — fara el, ruta refuza
+                # motivat. Fixtura il pune ca proba de mai jos sa cada pe ce testeaza EA
+                # (golul de tichet 2025), nu pe refuzul asta.
+                cur.execute("INSERT INTO firma_profil (id, nume, cui, patron_nume) "
+                            "VALUES (1, 'PROBA SRL', '14399840', 'POPESCU ION')")
             sid = sa.creeaza_salariat(conn, nume="POP", prenume="I", cnp="1900101410011",
                                       data_angajare="2025-01-01", salariu_brut=4050,
                                       tip_norma="intreaga", cor="522101")["salariat_id"]

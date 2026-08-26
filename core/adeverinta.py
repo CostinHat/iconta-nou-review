@@ -35,6 +35,8 @@ def date_auto(conn, schema, salariat_id, an, luna):
     """Datele care se completeaza AUTOMAT din DB. None daca salariatul nu exista."""
     from core import salariu_istoric as _si
     _brut = 0.0
+    from core import firma_profil_api as _fpa
+    _fpa.cere_administrator(conn, "Adeverința")   # [R66 (c)]
     with conn.cursor() as cur:
         cur.execute("SELECT nume, cui, adresa, patron_nume, declarant_nume, "
                     "declarant_functie FROM firma_profil WHERE id = 1")

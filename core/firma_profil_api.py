@@ -6,6 +6,8 @@ Folosit de ecranul "Model factura": datele firmei (pt preview) + personalizare
 """
 from __future__ import annotations
 
+from core.mesaje import MESAJ_FARA_ADMINISTRATOR
+
 from core import afirmatii as _af  # [P8] blocajul numeste regula
 
 MODUL = "firma_profil_api"
@@ -147,8 +149,14 @@ def salveaza_model(conn, font=None, culoare=None, logo=None):
 # "LIPSA <camp>" cand declaratia nu se poate genera. Dovedit 15.07.2026 pe
 # validatorul oficial ANAF. Fiecare camp obligatoriu are asterisc in interfata
 # (DS cap.6) si blocheaza salvarea daca lipseste.
+# [R66, 26.08.2026] `patron_nume` a intrat aici fiindca avea drum de CITIRE si niciun drum de
+# SCRIERE: il citesc `adeverinta`, `contracte_api` si `pachete_api` — deci se TIPARESTE pe
+# documente care ajung la oameni — iar nimic din aplicatie nu-l scria. A treia coloana din clasa
+# asta gasita in aceeasi zi, si singura care nu se putea scoate: primele doua aveau inlocuitor,
+# asta lasa un gol pe hartie. Decizia lui Costin: *„numele administratorului e un fapt al firmei,
+# ca denumirea si CUI-ul. Nu se derivă din nimic — cine tine evidenta nu e neaparat cine semneaza."*
 CAMPURI_FISCALE = ("nume", "cui", "reg_com", "caen", "adresa", "oras", "judet",
-                   "cod_postal", "banca", "iban", "telefon", "email",
+                   "cod_postal", "banca", "iban", "telefon", "email", "patron_nume",
                    "declarant_nume", "declarant_prenume", "declarant_functie")
 
 # camp -> declaratiile care il cer OBLIGATORIU (pentru mesajul din interfata)
@@ -215,6 +223,22 @@ def blocaje(conn, profil):
                 unde="vectorul fiscal al firmei", regula="data_inceput_tva_lipsa"),
                 declaratie="D300/D394/D406"))
     return out
+
+
+def cere_administrator(conn, document):
+    """[R66 (c), 26.08.2026] Un document care TIPARESTE numele administratorului nu se produce fara el.
+
+    Pana azi, `patron_nume` n-avea nicio cale de scriere, iar adeverinta si contractul ieseau cu un
+    gol in locul lui — interdictia 20 in forma ei de zi cu zi: un artefact care se produce si nu
+    spune nimic. Refuzul singur n-ar fi fost onest cat timp omul nu putea completa campul; de aceea
+    intra IMPREUNA cu el, in aceeasi tura (*„coloana si calea ei intra impreuna"*).
+
+    Refuzul NUMESTE documentul si spune UNDE se completeaza — altfel muta munca fara s-o indrume."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT patron_nume FROM firma_profil WHERE id = 1")
+        r = cur.fetchone()
+    if not str((r[0] if r else None) or "").strip():
+        raise ValueError(MESAJ_FARA_ADMINISTRATOR % document)
 
 
 def citeste_date(conn):

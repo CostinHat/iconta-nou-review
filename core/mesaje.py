@@ -84,6 +84,9 @@ MESAJ_Z_DUPLICAT = ("Raportul Z %(numar)s e deja înregistrat pe %(data)s (nota 
 MESAJ_CLIENT_ALT_CABINET = ("Adresa asta aparține unui cont dezactivat al altui cabinet. Nu poate fi reactivat de aici — datele unui cabinet nu trec la altul. Folosește altă adresă, sau cere-i cabinetului care deține contul să-l elibereze.")
 # [R62 (b), 26.08.2026] Titularul = PRIMUL cont de client al firmei. Refuzul spune REGULA,
 # nu doar ca nu ai voie: altfel omul nu poate sti pe cine sa intrebe.
+# [R66, 26.08.2026] Un document care se produce cu un gol e interdictia 20 in forma ei de zi cu
+# zi. Refuzul numeste DOCUMENTUL si UNDE se completeaza — altfel muta munca fara s-o indrume.
+MESAJ_FARA_ADMINISTRATOR = ("%s nu se poate emite: lipsește numele administratorului. Completează-l în Date firmă › Nume administrator.")
 MESAJ_DOAR_TITULARUL = ("Doar titularul contului firmei poate face asta — titularul e primul cont de client al firmei. Cere-i lui, sau contabilului tău.")
 MESAJ_EMAIL_ACELASI = "Adresa nouă e aceeași cu cea curentă. Nu e nimic de schimbat."
 MESAJ_EMAIL_TOKEN_INVALID = ("Linkul de confirmare e expirat sau a fost deja folosit. Cere din nou schimbarea adresei din Acces cont.")

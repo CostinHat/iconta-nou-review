@@ -77,6 +77,9 @@ def sterge_sablon(conn, schema, sablon_id):
 
 def _date_firma(conn, schema):
     with conn.cursor() as cur:
+        # [R66 (c)] contractul tipareste numele administratorului; fara el nu se produce
+        from core import firma_profil_api as _fpa
+        _fpa.cere_administrator(conn, "Contractul de muncă")
         cur.execute("SELECT nume, cui, adresa, patron_nume, declarant_nume FROM firma_profil WHERE id=1")
         f = cur.fetchone() or (None,) * 5
     return {"firma_nume": f[0] or "", "firma_cui": f[1] or "", "firma_adresa": f[2] or "",
