@@ -1660,8 +1660,9 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · TRASEE T35 · interdicția 46 · P13 · **PRAG 1** *(ridicat de Costin, 26.08.2026, după măsurătoare: „ce face pragul nu e gravitatea, e că se poate atinge azi. Un om deschide portalul, vede butoane, apasă, primește 403 pe un mesaj care îi spune că nu e titularul. Aia e afirmația falsă din P13, în forma cea mai directă: ecranul spune una, serverul face alta.” Precedentul: R22, prag 1 pe zero depuneri, fiindcă **calea era vie**; aici calea e vie ȘI omul e real — #8284, firma #8396)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `57656a6`
+- **rezolvată pe commit**: `e564e3d`
 - **măsurat la**: 2026-08-26 · **pe commit**: `57656a6`
 - **planul**: **NEACOPERIT.** Citit `PLAN_ARHITECTURA.md` după *portal*, *identitate*, *autentificare*, *acces*, *confirmare*. Secțiunea **„Reguli de acces”** e despre accesul la **registrul legislativ**, nu la aplicație — nu răspunde. Cel mai aproape ca formă e **interdicția 46** (*„o presupunere devenită fapt fără confirmare consemnată”*, P20) împreună cu Partea III — *„fiecare valoare din afară poartă sursa și gradul de certitudine; devine sigură prin **confirmare explicită**”*. Forma se potrivește exact (o adresă venită din afară devine fapt fără confirmare), dar planul o scrie despre **valori fiscale**, nu despre **identitatea unui om**. Planul n-are nicăieri regula de schimbare a identității. (METODA §25)
 - **ce blochează**: **fața întâi — `PUT /portal/acces-cont/email`.** Face `UPDATE public.users SET email=%s` **imediat**. Nu există confirmare pe adresa nouă, nu pleacă nicio notificare pe cea veche, nu se consemnează nicăieri de la ce la ce. Iar adresa aia **este** identitatea de autentificare (intrarea se face prin magic-link pe email), deci cine are o sesiune deschisă mută contul. Singurele verificări: doar patronul o poate face, și adresa nouă să nu fie a altui utilizator.
