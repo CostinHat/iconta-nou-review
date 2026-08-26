@@ -43,9 +43,9 @@ după a doua oară: „e gardul care nu citește proză și totuși o discipline
 - **pasul curent**: **`TRASEE_VERIFICARI.md`** — ce trebuie să fie adevărat după fiecare pas. Le scrie Costin, în loturi de câte 30 (`scan_trasee.py --loturi N`). Până se scriu toate, inventarul de trasee e o hartă a codului, nu o listă de verificare. *(Cifrele se derivă.)*
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
-- **decizii care blochează**: **niciuna.** Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53**, **R55**, **R56**. *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
+- **decizii care blochează**: **niciuna.** Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp. *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
-- **ultima actualizare**: 2026-08-26 *(a doua oară în aceeași zi)*
+- **ultima actualizare**: 2026-08-26 *(a treia oară în aceeași zi)*
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
 
 ---
@@ -1475,8 +1475,9 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · TRASEE T29 · P12 · **PRAG 2** *(nu produce o cifră greșită; produce o restricție care se aplică inconsecvent)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `e47b60e`
+- **rezolvată pe commit**: `19db8b0`
 - **măsurat la**: 2026-08-26 *(remăsurat în aceeași zi, pe domeniul corect)* · **pe commit**: `d681e1e`
 - **planul**: NEACOPERIT. `PLAN_ARHITECTURA` are **P12** (drepturile se verifică în interogare, nu doar în interfață) și **interdicția 25** (un drept verificat numai în interfață), dar amândouă spun *cum* se verifică un drept, nu **care operațiune cere care rol**. Planul nu repartizează operațiuni pe roluri — aceeași constatare ca la R42. (METODA §25)
 - **ce blochează**: găsit de Costin scriind verificările lotului 2, apoi măsurat la sursă.
@@ -1525,7 +1526,7 @@ scos ce nu se știa**, nu din defecte noi.
 - **NU E O CLASĂ NOUĂ.** Cele trei care scriau `validata` direct sunt exact bugul pe care **R33 l-a reparat pe 25.08** la nota de salarii — antetul lui `core/salarii_contare.py` îl scrie: *„status='validata' direct — ocolea patru-ochi"*. Trei instanțe rămăseseră nereparate. **Generalizarea pe clasă nu s-a făcut atunci**, iar asta e chiar pasul 2 din ciclul de neconformitate.
 
 - **GARDUL EXISTĂ (26.08.2026): `core/test_rol_pe_efect.py`**, 8 teste, **3 mutații** probate. Rolul se cere după **ce face** ruta, nu după cum se numește: mulțimea rutelor care scriu `validata` direct se **derivă din AST**, nu se citește dintr-o listă (altfel a 41-a rută n-ar fi văzută), iar aserțiunea e pe **mulțime**, nu pe cardinal — un clichet pe număr ar trece la o inversare. Cele **șase moduri de eșec ale gardului** sunt scrise în antetul lui, înaintea primei măsurători, inclusiv cele două pe care nu le închide (rol calculat dinamic; stare scrisă din parametru, cazul `salarii-contare`, pinat cu motivul).
-- **condiția de deblocare**: ÎNDEPLINITĂ pe partea mecanică; **stare rămâne DESCHISĂ** până se marchează cu hash-ul commitului care o închide. Criteriul e al lui Costin — „ce schimbă ce datorează firma” — iar `core/test_trasee.py` nu mai are nevoie de testul cerut inițial: l-a înlocuit gardul de mai sus, care e pe **efect**, nu pe nume (un clichet pe număr ar trece și dacă s-ar inversa între ele). **Prima instanță de rezolvat, oricare ar fi criteriul: `achizitie-agricultor`**, care rupe singurul tipar existent.
+- **condiția de deblocare**: ÎNDEPLINITĂ. **Marcată REZOLVATĂ pe `19db8b0`.** Criteriul e al lui Costin — „ce schimbă ce datorează firma” — iar `core/test_trasee.py` nu mai are nevoie de testul cerut inițial: l-a înlocuit gardul de mai sus, care e pe **efect**, nu pe nume (un clichet pe număr ar trece și dacă s-ar inversa între ele). **Prima instanță de rezolvat, oricare ar fi criteriul: `achizitie-agricultor`**, care rupe singurul tipar existent.
 
 ### R56 — Trei rute manipulează credențiale ale unor sisteme externe, fără rol
 
@@ -1533,8 +1534,9 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · TRASEE T15, T25 · P12 · **PRAG 2** *(niciun cabinet n-are azi al doilea actor care să exercite diferența — vezi R52)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `e47b60e`
+- **rezolvată pe commit**: `19db8b0`
 - **măsurat la**: 2026-08-26 · **pe commit**: `e47b60e`
 - **planul**: NEACOPERIT, la fel ca R55 — planul nu repartizează operațiuni pe roluri. Cel mai aproape e **P12** (izolarea datelor firmei), dar cheile nu sunt *date ale firmei*, sunt **mijloace de acces** la sisteme terțe; distincția nu e scrisă nicăieri. (METODA §25)
 - **ce blochează**: observația lui Costin, verbatim: *„Cheile de acces la sisteme externe nu sunt date de firmă — sunt credențiale."*
@@ -1546,7 +1548,7 @@ scos ce nu se știa**, nu din defecte noi.
   Rămân, și au primit `admin_firma` azi: `POST /reges-config` (scrie `reges_chei`) și `POST /reges-poll` (consumă coada REGES).
 - **ce NU e**: nu e o scurgere — niciuna nu întoarce cheile în răspuns (verificarea e scrisă la pașii lor în `TRASEE_VERIFICARI.md` și rămâne de exercitat).
 - **DECIZIA (Costin, 26.08.2026): `admin_firma`, nu drept fin.** *„Un drept nou e un al doilea sistem de autorizare de întreținut, iar cele trei rute nu justifică unul."* **APLICAT** pe cele două rămase.
-- **condiția de deblocare**: ÎNDEPLINITĂ. Decizia e aplicată, iar partea care lipsea — gardul — există: `core/test_rol_pe_efect.py::test_orice_ruta_care_atinge_credentiale_cere_rol` **derivă** mulțimea din cod (rute ne-GET care scriu într-o tabelă de credențiale), cu anti-vacuu propriu, și e RED-probat prin scoaterea rolului de pe `reges-config`. **Stare rămâne DESCHISĂ** până se marchează cu hash-ul commitului care o închide.
+- **condiția de deblocare**: ÎNDEPLINITĂ. Decizia e aplicată, iar partea care lipsea — gardul — există: `core/test_rol_pe_efect.py::test_orice_ruta_care_atinge_credentiale_cere_rol` **derivă** mulțimea din cod (rute ne-GET care scriu într-o tabelă de credențiale), cu anti-vacuu propriu, și e RED-probat prin scoaterea rolului de pe `reges-config`. **Marcată REZOLVATĂ pe `19db8b0`.**
 
 ### R57 — Calea de API emite facturi fără poarta de gestiune pe care o are ecranul
 
@@ -1554,15 +1556,16 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · TRASEE T02 · P4 · **PRAG 2** *(`public.api_chei` = 0 — nicio cheie n-a fost creată vreodată, deci efectul n-a fost produs)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `ba72b39`
+- **rezolvată pe commit**: `19db8b0`
 - **măsurat la**: 2026-08-26 · **pe commit**: `ba72b39`
 - **planul**: NEACOPERIT. `PLAN_ARHITECTURA` cere la **P4** ca documentul emis să fie fapt înghețat, și la **Partea V** ca interfața cu exteriorul să aibă componente separate — dar nu spune ce se întâmplă când **aceeași operațiune** are două căi de intrare cu porți diferite. Cel mai aproape e **interdicția 15** („reguli diferite la previzualizare față de salvare"), care e despre același gest în două momente, nu despre același gest pe două căi. (METODA §25)
 - **ce blochează**: `POST /api/v1/firme/{id}/facturi` și `POST /tenants/{id}/facturi/emite` cheamă **aceeași** `emite_factura`. Două diferențe erau **defecte și s-au reparat azi** (`platitor_tva` venea din corpul cererii peste faptul din `firma_profil`; numele beneficiarului nu era cerut). A treia **nu e defect, e decizie**: ruta din ecran are poarta *„pleacă marfa acum?"* — care decide dacă se descarcă gestiunea — iar pe o cale neinteractivă nu se poate pune fără să alegem în locul integratorului.
 - **ce NU e**: nu e ocolire de rol. `cere_api_key` chiar n-are rol, dar cheia se creează doar prin `POST /cabinet/api-chei`, care cere `admin_firma`: e **delegare explicită**, nu escaladare — un `angajat` nu-și poate face singur cheie. Iar `_api_schema` verifică apartenența firmei la cabinetul cheii.
 - **DECIZIA (Costin, 26.08.2026): SE REFUZĂ fără câmp explicit în corp.** *„Cele două căi produc documente diferite din același corp, iar asta e chiar interdicția 15. Un implicit, oricare ar fi, alege în locul integratorului: «descarcă» îl face să descarce gestiunea fără să știe; «nu descarcă» lasă stocul greșit fără să afle. Iar refuzul e ieftin acum: `api_chei` = 0, nimeni nu e afectat. Peste un an, un implicit ales azi ar fi imposibil de schimbat."* Plus cerința de formă: *„câmpul se numește explicit — nu `descarca: bool`, ci ceva care spune ce se întâmplă."*
 - **APLICAT.** Câmpul e **`marfa_pleaca_cu_factura`**. Poarta e aceeași ca în ecran (`tip == "factura"` **și** există linie cu `articol_id`), refuzul e **422** cu cod `POARTA_GESTIUNE_FARA_RASPUNS`, numește câmpul și spune ce înseamnă fiecare valoare. La răspuns afirmativ, descărcarea se face în **aceeași tranzacție** cu emiterea, exact ca în ecran — nu într-un al doilea apel al integratorului.
-- **condiția de deblocare**: ÎNDEPLINITĂ; **stare rămâne DESCHISĂ** până se marchează cu hash-ul commitului. Ce **nu** e închis și se spune: nu există încă un gard care să oprească reapariția unui implicit pe vreo cale nouă de emitere.
+- **condiția de deblocare**: ÎNDEPLINITĂ. **Marcată REZOLVATĂ pe `19db8b0`.** Ce **nu** e închis și se spune: nu există încă un gard care să oprească reapariția unui implicit pe vreo cale nouă de emitere.
 
 ### R58 — Închiderea perioadei nu verifică nimic, iar redeschiderea nu lasă urmă
 
