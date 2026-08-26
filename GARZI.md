@@ -5046,6 +5046,8 @@ E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pome
 
 **Ce NU face, declarat:** nu spune că baseline-ul e curat. Spune că nu crește.
 
+**Al șaselea test, adăugat 27.08.2026:** cele **cinci** rute fără ecran își declară lipsa în cod, cu marcajul `[api_intern_v1]` pe linia decoratorului — *o declarație care se poate șterge tăcut e o promisiune, nu o declarație*. Asertează pe prezența marcajului, nu pe textul motivului. Corectat cu ocazia asta: **3 din 5 erau declarate dinainte**, nu 1 — registrul se contrazicea singur, la două locuri distanță.
+
 ## Patru trimiteri de email nu mai eșuează tăcut (26.08.2026, R73)
 
 **Nu e o gardă, e o reparație — și se spune.** Cele patru `except Exception: pass` din jurul lui `trimite_email_html` au trecut pe `observare.esec_secundar`, cu **`alerta=True`** pe cele trei căi de **acces** și fără alertă pe emailul de bun venit.
@@ -5054,4 +5056,18 @@ E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pome
 
 **Și mesajul nu mai afirmă trimiterea:** din *„ai primit linkul de logare”* în *„Am primit cererea. Dacă adresa e în sistem, linkul ajunge în câteva minute.”* Costin: *„e diferența dintre a afirma și a presupune.”*
 
-**Ce NU face, declarat:** niciun clichet nu ține cele patru pe `esec_secundar`. O revenire la `pass` ar trece.
+**~~Ce NU face, declarat: niciun clichet nu ține cele patru pe `esec_secundar`. O revenire la `pass` ar trece.~~ — ÎNCHIS 27.08.2026, mai jos.**
+
+## Un eșec de trimitere a emailului nu se mai stinge tăcut (27.08.2026, R73)
+
+**`core/test_esec_trimitere_email.py`** — 12 teste, structural pe AST (`Try`/`ExceptHandler`), nu pe text. Construit pe argumentul lui Costin: *„o lipsă declarată rămâne lipsă. Reparația e o schimbare de apel — o revenire la `except: pass` n-ar pica nimic."*
+
+**Ce face imposibil:** un `except` care prinde un `trimite_email_html` și nu cheamă `esec_secundar` — gol, cu `print`, sau cu `log` · una din cele trei căi de **acces** care pierde `alerta=True` · o alertă pusă pe bun-venit, care ar face alertele să nu mai fie citite · dispariția tăcută a domeniului, dacă subiectul unui email se schimbă.
+
+**Regula se aplică peste tot fiindcă a fost măsurată întâi:** din **17** apeluri `trimite_email_html`, **4** sunt prinse de un `try` cu `except` (exact cele patru reparate), **12** lasă excepția să urce, **1** e într-un `try/finally`. **Zero excepții de declarat** — deci nicio listă de baseline.
+
+**Calibrarea cerută, cu forma subtilă:** `except Exception: log(...)` fără `esec_secundar` e prinsă — *arată ca disciplină și tace la fel*. Direcția inversă, ca gardul să nu raporteze tot: forma reparată, un `except:` fără tip dar cu urmă, și `try/finally`-ul din `sinteza_zilnica.py` nu sunt raportate.
+
+**RED-proof pe SURSA REALĂ, nu doar pe șabloane:** `main.py` mutat în memorie, patru mutații, patru roșii.
+
+**Ce NU face, declarat:** niciun clichet pe cele **28** de `except …: pass` rămase — n-au fost citite una câte una. Și nu verifică dacă emailul chiar pleacă; doar că, dacă nu pleacă, rămâne urmă.

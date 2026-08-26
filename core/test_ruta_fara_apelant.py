@@ -46,11 +46,14 @@ _BASELINE = {
     ("GET", "/portal/facturi"), ("GET", "/portal/firme"),
     ("GET", "/portal/solicitari/contor"),
     ("GET", "/public/plata/{ref}"), ("POST", "/public/plata/{ref}/confirma"),
-    ("POST", "/tenants/{tenant_id}/banca/parse-extras"),
-    ("POST", "/tenants/{tenant_id}/calcul-cm"),
+    # --- CELE CINCI REALE, cu motivul fiecareia (27.08.2026). Toate cinci isi declara
+    # lipsa ecranului in `main.py`, iar `test_cele_cinci_reale_isi_declara_lipsa_ecranului`
+    # verifica declaratia. Trei o aveau deja de dinainte; doua au primit-o pe 27.08.
+    ("POST", "/tenants/{tenant_id}/banca/parse-extras"),   # declarata dinainte: parsare la upload, fara UI
+    ("POST", "/tenants/{tenant_id}/calcul-cm"),            # declarata dinainte: calculator CM, producator intreg (core/baza_cm.py), fara ecran
     ("GET", "/tenants/{tenant_id}/d406-active"), ("GET", "/tenants/{tenant_id}/d406-stocuri"),
-    ("POST", "/tenants/{tenant_id}/import-efactura"),
-    ("GET", "/tenants/{tenant_id}/jurnal-marja"),
+    ("POST", "/tenants/{tenant_id}/import-efactura"),      # declarata 27.08: upload manual fara buton; calea automata (spv_receive) NU trece pe aici
+    ("GET", "/tenants/{tenant_id}/jurnal-marja"),          # declarata dinainte: raport regim marja (CF art. 311/312), fara ecran
     ("GET", "/tenants/{tenant_id}/perioade-blocate/istoric"),
     ("POST", "/tenants/{tenant_id}/s1003-valideaza"), ("GET", "/tenants/{tenant_id}/s1003-xml"),
     ("POST", "/tenants/{tenant_id}/s1005-valideaza"), ("GET", "/tenants/{tenant_id}/s1005-xml"),
@@ -58,7 +61,7 @@ _BASELINE = {
     ("GET", "/tenants/{tenant_id}/stat-plata/emis"),
     ("POST", "/tenants/{tenant_id}/stat-plata/emite"),
     ("POST", "/tenants/{tenant_id}/stat-plata/motiv"),
-    ("GET", "/tenants/{tenant_id}/urme-portal"),
+    ("GET", "/tenants/{tenant_id}/urme-portal"),           # declarata 27.08: urma se SCRIE, n-o citeste niciun om -> punctul (3) din R62 ramane NESATISFACUT
 }
 
 
@@ -146,3 +149,33 @@ def test_CALIBRARE_o_ruta_chiar_nechemata_E_raportata():
     gasite = _fara_apelant(
         [{"metoda": "POST", "cale": "/tenants/{tenant_id}/ruta-inventata-fara-ecran"}], "// nimic")
     assert gasite == {("POST", "/tenants/{tenant_id}/ruta-inventata-fara-ecran")}, gasite
+
+
+# Cele CINCI care chiar n-au ecran, dupa citire (26-27.08.2026). Restul din `_BASELINE` sunt
+# artefacte ale detectorului (cai compuse la rulare), nu rute orfane -- vezi antetul.
+_CELE_CINCI_REALE = [
+    ("main.py", '@app.post("/tenants/{tenant_id}/banca/parse-extras")'),
+    ("main.py", '@app.post("/tenants/{tenant_id}/calcul-cm")'),
+    ("main.py", '@app.post("/tenants/{tenant_id}/import-efactura")'),
+    ("main.py", '@app.get("/tenants/{tenant_id}/jurnal-marja")'),
+    ("main.py", '@app.get("/tenants/{tenant_id}/urme-portal")'),
+]
+
+
+def test_cele_cinci_reale_isi_declara_lipsa_ecranului():
+    """Costin, 27.08: cele nedeclarate «se declara sau se scot». Declaratia e in cod, langa ruta,
+    ca marcajul `[api_intern_v1]` -- si de aici incolo nu mai poate disparea tacut.
+
+    Nu asertez pe TEXTUL motivului (ar fi gard pe text, METODA §23): asertez ca linia
+    decoratorului rutei poarta marcajul. Continutul motivului e treaba omului care citeste."""
+    fara = []
+    for fis, decorator in _CELE_CINCI_REALE:
+        text = io.open(os.path.join(_RAD, fis), encoding="utf-8").read()
+        linii = [l for l in text.splitlines() if l.startswith(decorator)]
+        assert len(linii) == 1, "decoratorul %s apare de %d ori in %s" % (decorator, len(linii), fis)
+        if "[api_intern_v1]" not in linii[0]:
+            fara.append("%s: %s" % (fis, decorator))
+    assert not fara, (
+        "rute fara ecran care nu-si mai declara lipsa in cod:\n  " + "\n  ".join(fara)
+        + "\n\nO ruta pastrata deliberat spune de ce; una care tace e o ramasita. "
+          "Marcajul e `# [api_intern_v1] <motivul>` pe linia decoratorului.")

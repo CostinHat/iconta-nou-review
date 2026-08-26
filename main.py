@@ -3804,7 +3804,7 @@ def portal_confirma_email(date: ConfirmaEmailIn):
     return {"ok": True, "email": r["email_nou"]}
 
 
-@app.get("/tenants/{tenant_id}/urme-portal")
+@app.get("/tenants/{tenant_id}/urme-portal")  # [api_intern_v1] scrisa, NECITITA de om: niciun ecran n-o cheama, deci punctul (3) din R62 ramane NESATISFACUT. Iese din lista cand se construieste ecranul. (27.08.2026)
 def cabinet_urme_portal(tenant_id: int, ctx=Depends(cere_cabinet)):
     """[R62 (3)] Urma se poate CITI. Lectia din R58: o urma care nu se poate citi e scrisa degeaba."""
     with db.get_conn() as conn:
@@ -8071,7 +8071,7 @@ def _factura_din_parsat(cur, schema, f):
     return fid, True
 
 
-@app.post("/tenants/{tenant_id}/import-efactura")
+@app.post("/tenants/{tenant_id}/import-efactura")  # [api_intern_v1] upload manual XML/ZIP - fara buton in UI, pastrat deliberat. Calea AUTOMATA nu trece pe aici: core/spv_receive cheama direct _factura_din_parsat. Verificat 27.08.2026 - niciun apelant in static/, in crontab sau in timerele systemd. (R70)
 async def import_efactura(tenant_id: int, fisiere: list[UploadFile] = File(...),
                           ctx=Depends(cere_cabinet)):
     """Upload XML/ZIP e-Factura. Parseaza UBL, directie auto (CUI firma vs furnizor),
