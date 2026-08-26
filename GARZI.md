@@ -5007,3 +5007,15 @@ E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pome
 **Ce a prins în aceeași zi:** un test care emitea adeverință pe o schemă fără `patron_nume`, și care avea un `pytest.raises(ValueError)` pe **altceva**. Fără fixtura completată, ar fi trecut verde pe refuzul greșit.
 
 **Ce NU face, declarat:** apără două documente, nu clasa. Alte artefacte care tipăresc date de firmă nu sunt verificate, iar mulțimea lor n-a fost măsurată.
+
+## Refuzul NUMEȘTE documentul și locul, nu doar refuză (26.08.2026, R66)
+
+**`core/test_document_fara_administrator.py`** — 6 teste. Poarta exista de dimineață în cod; ce lipsea era clichetul, iar lipsa era **declarată**, nu ascunsă. Costin: *azi poarta e probată de faptul că a picat un test existent — adică de un accident, nu de o probă*.
+
+**Ce face imposibil:** un producător de document care nu mai cere administratorul · un apel care nu spune CE document se refuză · o rută care lasă `ValueError` să iasă ca **500** în loc de 422 · un mesaj care nu mai e compus din `UNDE_ADMINISTRATOR`, adică nu mai spune unde se completează.
+
+**Calibrarea e pe partea care contează**, cerută de el: *probează că refuzul NUMEȘTE documentul și locul, nu doar că refuză. Un refuz generic ar trece un test care verifică doar codul 422.* Fișierul sintetic are apelul **prezent**, dar documentul vine dintr-o variabilă — deci un gard care ar verifica doar prezența apelului ar trece verde.
+
+**Locul a devenit o VALOARE cu nume**, `mesaje.UNDE_ADMINISTRATOR`, iar gardul asertează că mesajul e **compus din ea** — nu că fraza conține un anumit șir. Același tipar ca `cont_valid.UNDE_SE_CREEAZA` (clichetul 50 / METODA §23).
+
+**Ce NU face, declarat:** apără două documente, nu clasa; mulțimea artefactelor care tipăresc date de firmă n-a fost măsurată. Și nu probează pe date că ruta întoarce 422.

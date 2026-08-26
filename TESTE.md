@@ -2130,3 +2130,5 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
 
 - **Niciun test nou pentru R66 (26.08.2026), și se spune de ce**: poarta e în cod (`cere_administrator` → 422), probată prin faptul că a **picat un test existent** — `test_perioada_indisponibila`, care emitea adeverință fără administrator. Ce ar trebui cablat: un clichet care asertează că cele două documente refuză, și că refuzul numește documentul și locul.
 - **`core/test_perioada_indisponibila.py` — fixtură completată (26.08.2026, R66)**: pune `patron_nume`, ca `pytest.raises(ValueError)` de dedesubt să cadă pe golul de tichet 2025, nu pe refuzul de administrator. Un verde pe motivul nepotrivit e tot verde fals.
+
+- **`core/test_document_fara_administrator.py` — NOU, 6 teste (26.08.2026, R66)**: lipsa declarată ieri, construită azi. Asertează pe AST — apeluri, argumente literale, handlere de excepție — și pe faptul că mesajul e compus din `UNDE_ADMINISTRATOR`. Calibrarea e pe refuzul **generic**: apelul există, documentul vine dintr-o variabilă.

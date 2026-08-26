@@ -86,7 +86,12 @@ MESAJ_CLIENT_ALT_CABINET = ("Adresa asta aparține unui cont dezactivat al altui
 # nu doar ca nu ai voie: altfel omul nu poate sti pe cine sa intrebe.
 # [R66, 26.08.2026] Un document care se produce cu un gol e interdictia 20 in forma ei de zi cu
 # zi. Refuzul numeste DOCUMENTUL si UNDE se completeaza — altfel muta munca fara s-o indrume.
-MESAJ_FARA_ADMINISTRATOR = ("%s nu se poate emite: lipsește numele administratorului. Completează-l în Date firmă › Nume administrator.")
+# UNDE se completează, ca valoare cu nume — nu ca bucată de frază. Gardul asertează pe
+# STRUCTURĂ: că mesajul e COMPUS din constanta asta, nu că fraza conține un anumit șir
+# (clichetul 50 / METODA §23). Același tipar ca `cont_valid.UNDE_SE_CREEAZA`.
+UNDE_ADMINISTRATOR = "Date firmă › Nume administrator"
+MESAJ_FARA_ADMINISTRATOR = ("%s nu se poate emite: lipsește numele administratorului. "
+                            "Completează-l în " + UNDE_ADMINISTRATOR + ".")
 MESAJ_DOAR_TITULARUL = ("Doar titularul contului firmei poate face asta — titularul e primul cont de client al firmei. Cere-i lui, sau contabilului tău.")
 MESAJ_EMAIL_ACELASI = "Adresa nouă e aceeași cu cea curentă. Nu e nimic de schimbat."
 MESAJ_EMAIL_TOKEN_INVALID = ("Linkul de confirmare e expirat sau a fost deja folosit. Cere din nou schimbarea adresei din Acces cont.")
