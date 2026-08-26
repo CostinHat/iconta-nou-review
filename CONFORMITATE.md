@@ -1477,17 +1477,26 @@ scos ce nu se știa**, nu din defecte noi.
 - **reluări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `e47b60e`
-- **măsurat la**: 2026-08-26 · **pe commit**: `e47b60e`
+- **măsurat la**: 2026-08-26 *(remăsurat în aceeași zi, pe domeniul corect)* · **pe commit**: `d681e1e`
 - **planul**: NEACOPERIT. `PLAN_ARHITECTURA` are **P12** (drepturile se verifică în interogare, nu doar în interfață) și **interdicția 25** (un drept verificat numai în interfață), dar amândouă spun *cum* se verifică un drept, nu **care operațiune cere care rol**. Planul nu repartizează operațiuni pe roluri — aceeași constatare ca la R42. (METODA §25)
-- **ce blochează**: găsit de Costin scriind verificările lotului 2, apoi măsurat la sursă. **Șapte rute scriu în `inregistrari` și `inregistrari_linii` pentru aceeași clasă de operațiune — regimuri speciale de TVA și achiziții asimilate. Șase cer doar `cere_cabinet` (niciun rol); una cere `admin_firma`.**
+- **ce blochează**: găsit de Costin scriind verificările lotului 2, apoi măsurat la sursă.
 
-  | rută | gardă |
-  |---|---|
-  | `vanzare-marja` · `vanzare-marja-turism` · `vanzare-aur-investitii` · `achizitie-agricultor` · `vanzare-agricultor` | `cere_cabinet` — **fără rol** |
-  | `achizitie-taxare-inversa` · `achizitie-neinregistrat` | `cere_rol("admin_firma")` |
+  **CIFRA DIN PRIMA VERSIUNE ERA GREȘITĂ, și corectura e instructivă.** Am scris *„șapte rute, șase fără rol, una cu"* — pentru că îmi luasem domeniul din **numele traseului** („regimuri speciale de TVA"), nu din cod. Lotul 3, care poartă acum și garda pe fiecare pas, a arătat imediat că familia e mai mare: `import-extracomunitar` și `export-extracomunitar` scriu tot în `inregistrari_linii` și sunt tot fără rol.
 
-- **de ce contează**: nu e o gaură de acces (toate cer cabinet), e o **regulă care nu există**. Cine se uită la cod nu poate spune care e criteriul, fiindcă nu există unul: două rute care fac același fel de lucru cer lucruri diferite. Orice alegere viitoare va fi la fel de arbitrară până se scrie criteriul.
-- **condiția de deblocare**: **decizia lui Costin** — care e criteriul pentru „operațiune care scrie evidență contabilă"? Apoi se aplică la toate șapte, iar `core/test_trasee.py` primește un test care asertează pe **nume** că exact acelea cer rolul (un clichet pe număr ar trece și dacă s-ar inversa între ele).
+  **Măsurat pe criteriul mecanic — rute care scriu în `inregistrari_linii` ÎN CORPUL LOR, adică direct în evidența contabilă: 40. Dintre ele 36 fără niciun rol, 4 cu `admin_firma`.**
+
+  **Și există un tipar, contrar a ce am scris prima dată.** Cele 4 cu rol sunt **toate** `achizitie-*`:
+  `achizitie-ic` · `achizitie-necorporala` · `achizitie-neinregistrat` · `achizitie-taxare-inversa`.
+  Deci regula de fapt e *„achizițiile cer `admin_firma`"* — iar **`achizitie-agricultor` e singura excepție de la ea**, a cincea rută `achizitie-*` și singura fără rol.
+
+  | grup | câte | gardă |
+  |---|---|---|
+  | `achizitie-*` | **4 din 5** | `cere_rol("admin_firma")` |
+  | `achizitie-agricultor` | **1** | `cere_cabinet` — **excepția** |
+  | tot restul: `vanzare-*`, `nota-*` (18), `reevaluare-*`, `amortizare`, `salarii-contare`, `horeca/*`, `bonuri/{}/aproba`, `facturi/{}/contabilizeaza`, `decontare-valuta` | **35** | `cere_cabinet` — **fără rol** |
+
+- **de ce contează, reformulat**: nu e „nicio regulă", cum am scris. E o **regulă nescrisă care acoperă o cincime din clasă și are deja o excepție**. Asta e mai rău decât absența, fiindcă arată ca intenție: cine adaugă a 41-a rută va copia vecinul, iar vecinul e ales la întâmplare. Și niciuna dintre cele 40 nu e o gaură de acces — toate cer cabinet; ce lipsește e criteriul.
+- **condiția de deblocare**: **decizia lui Costin** — care e criteriul pentru „operațiune care scrie evidență contabilă”? Cele **40** primesc apoi același tratament, iar `core/test_trasee.py` primește un test care asertează pe **nume** care cer rol (un clichet pe număr ar trece și dacă s-ar inversa între ele). **Prima instanță de rezolvat, oricare ar fi criteriul: `achizitie-agricultor`**, care rupe singurul tipar existent.
 
 ### R56 — Trei rute manipulează credențiale ale unor sisteme externe, fără rol
 

@@ -79,8 +79,10 @@ Ziua a avut trei jumătăți; astea sunt cele care contează pentru cine continu
    inventarul de trasee e o **hartă a codului**, nu o listă de verificare. E cel mai mare lucru rămas,
    și **nu e muncă de-a mea**. **Cadența, fixată 25.08: un lot pe tură** — eu dau lotul
    (`scan_trasee.py --loturi N`), el scrie verificările în fișier, apoi trec la următorul.
-   **Loturile 1 și 2 sunt SCRISE** (60 de locuri completate, **132 rămase**). Următorul de dat:
-   **lotul 3** (dat deja în raport). **Rândul `*ce face:*` distinge** ce e măsurat pe rută (`scrie …`)
+   **Loturile 1 și 2 sunt SCRISE** (60 de locuri completate, **132 rămase**). **Lotul 3 e dat**,
+   în forma nouă. **Din 26.08 lotul poartă și GARDA fiecărui pas** (`garda X · rol:… · drept:…`),
+   nu doar efectul — cerut de Costin, fiindcă altfel cine scrie verificarea trebuie s-o caute în
+   alt fișier. Loturile 1 și 2 au fost date fără ea. **Rândul `*ce face:*` distinge** ce e măsurat pe rută (`scrie …`)
    de ce e moștenit de la modul (`poate atinge, prin modul (PLAFON, nemăsurat pe rută)`) — **R53**.
    **Lotul 1 a primit formularea veche**, iar Costin a cerut lista celor afectate: **20 din 30** stăteau
    pe o etichetă care s-a schimbat integral, **10** nu, **0** mixte. Lista e în raportul turei.

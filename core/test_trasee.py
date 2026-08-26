@@ -277,7 +277,7 @@ def test_fiecare_pas_din_loturi_spune_CE_face(st):
     Daca reapare unul, nu e o nota de subsol: e o cifra."""
     pasi = st.pasii_ordonati()
     assert len(pasi) >= 150, "instrumentul vede doar %d pasi - s-a stricat?" % len(pasi)
-    fara = sorted("%s %s" % (m, c) for _t, _n, m, c, ce in pasi if "NU SE POATE DERIVA" in ce)
+    fara = sorted("%s %s" % (m, c) for _t, _n, m, c, ce, _g in pasi if "NU SE POATE DERIVA" in ce)
     assert not fara, (
         "pasi fara efect derivabil (%d) - la ei nu se poate scrie o verificare:%s  %s"
         % (len(fara), chr(10), (chr(10) + "  ").join(fara)))

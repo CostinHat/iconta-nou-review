@@ -5317,3 +5317,24 @@ mai rea decât o verificare absentă: absența se vede, tautologia raportează."
   **R56** (trei rute manipulează credențiale externe fără rol).
 - **Etichetele lotului 1: 20 din 30** stăteau pe `scrie X` care e de fapt `poate atinge X prin
   modul`; 10 nu s-au schimbat, 0 sunt mixte.
+
+### 26.08.2026, tura a treia — lotul poarta garda, si asta a corectat o cifra de-a mea
+
+Costin: *„Da-mi lotul 3 cu randul «ce face» si garda pe fiecare pas, ca la lotul 2. In raport am
+doar lista de rute."* Avea dreptate de doua ori.
+
+- **Garda a intrat in instrument**, nu in raport: `pasii_ordonati()` intoarce acum si garda, iar
+  `redare_lot` o scrie deasupra efectului. Motivul e acelasi pentru care randul `ce face` a intrat
+  in lot pe 25.08: **ce-ti trebuie ca sa scrii propozitia trebuie sa fie in fata ochilor cand o
+  scrii**, nu in alt fisier.
+- **Si imediat ce a aparut garda in lot, a scos la iveala ca R55 era masurata gresit.** Scrisesem
+  *„sapte rute, sase fara rol, una cu"* — dar imi luasem domeniul din **numele traseului**
+  („regimuri speciale de TVA"), nu din cod. Masurat pe criteriul mecanic — rute care scriu in
+  `inregistrari_linii` **in corpul lor** — sunt **40**: **36 fara rol, 4 cu**.
+- **Si exista un tipar, contrar a ce scrisesem.** Cele 4 cu rol sunt **toate** `achizitie-*`, iar
+  `achizitie-agricultor` e **singura exceptie** de la el. Deci nu e „nicio regula", e o **regula
+  nescrisa care acopera o cincime din clasa si are deja o exceptie** — mai rau decat absenta,
+  fiindca arata ca intentie: cine adauga a 41-a ruta va copia vecinul, iar vecinul e la intamplare.
+- **Lectia, pentru mine:** un domeniu luat din **numele** unui grup nu e un domeniu masurat. E a
+  doua oara in doua zile cand o cifra a mea se corecteaza fiindca plecase de la un nume, nu de la
+  cod (prima: „a doua implementare a aceleiasi verificari", la R33).

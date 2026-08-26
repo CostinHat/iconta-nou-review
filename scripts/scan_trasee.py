@@ -924,8 +924,20 @@ def _atinge_o_iesire(t):
     return bool(t.get("exterior"))
 
 
+def _garda_scrisa(r):
+    """Garda unui pas, in forma in care o citeste omul: `garda X · rol:a,b · drept:c`.
+
+    Aceeasi compunere ca in scheletul din TRASEE_VERIFICARI.md — un singur fel de a numi garda,
+    ca sa nu existe doua descrieri ale aceluiasi lucru in doua fisiere."""
+    parti = ["garda `%s`" % (",".join(r["garzi"]) or "FARA GARDA")]
+    parti.append(("rol:" + ",".join(r["roluri"])) if r["roluri"] else "**fara rol**")
+    if r.get("fine"):
+        parti.append("drept:" + ",".join(r["fine"]))
+    return " · ".join(parti)
+
+
 def pasii_ordonati():
-    """[(traseu_id, traseu_nume, metoda, cale, ce_face)] - pasii, cu traseele de iesire intai.
+    """[(traseu_id, traseu_nume, metoda, cale, ce_face, garda)] - pasii, cu traseele de iesire intai.
 
     Un pas = o ruta care SCHIMBA ceva. Acelasi criteriu ca la scheletul din TRASEE_VERIFICARI.md,
     ca sa nu existe doua definitii ale lui "pas".
@@ -997,7 +1009,7 @@ def pasii_ordonati():
                 parti.append(ef or "EFECTUL NU SE POATE DERIVA DIN COD — pas fara "
                              "verificare derivabila")
             pasi.append((t["id"], dupa_id[t["id"]]["nume"], r["metoda"].upper(),
-                         r["cale"], " — ".join(parti)))
+                         r["cale"], " — ".join(parti), _garda_scrisa(r)))
     return pasi
 
 
@@ -1009,14 +1021,15 @@ def redare_lot(nr, marime=30):
     bucata = pasi[(nr - 1) * marime:nr * marime]
     out = ["LOTUL %d din %d \u2014 %d pasi din %d" % (nr, n_loturi, len(bucata), len(pasi)), ""]
     ultim = None
-    for tid, tnume, met, cale, ce in bucata:
+    for tid, tnume, met, cale, ce, garda in bucata:
         if tid != ultim:
             out.append("")
             out.append("## %s \u2014 %s" % (tid, tnume))
             out.append("")
             ultim = tid
         out.append("- **`%s %s`**" % (met, cale))
-        out.append("  *%s*" % ce)
+        out.append("  *%s*" % garda)
+        out.append("  *ce face: %s*" % ce)
         out.append("  - [ ] ")
     return "\n".join(out)
 
