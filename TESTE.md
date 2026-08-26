@@ -2134,3 +2134,6 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
 - **`core/test_document_fara_administrator.py` — NOU, 6 teste (26.08.2026, R66)**: lipsa declarată ieri, construită azi. Asertează pe AST — apeluri, argumente literale, handlere de excepție — și pe faptul că mesajul e compus din `UNDE_ADMINISTRATOR`. Calibrarea e pe refuzul **generic**: apelul există, documentul vine dintr-o variabilă.
 
 - **`core/test_regim_peste_perioada_inchisa.py` — NOU, 5 teste (26.08.2026, R46)**: cele trei căi care ating câmpuri decisive cheamă aceeași poartă; mulțimea `CAMPURI_CARE_DECID` nu se poate lărgi peste `CAMPURI_FISCALE` și nici goli; refuzul e compus din `UNDE_PERIOADE`, deci spune pe ce cale se face totuși. Calibrare pe o cale care scrie fără poartă.
+
+- **`core/test_ruta_fara_apelant.py` — NOU, 5 teste (26.08.2026, R70)**: o rută nouă fără apelant nu trece; `_BASELINE` ca fotografie, clichet pe mulțime în ambele direcții. Calibrare pe dispecerizarea prin tabel — forma care a doborât al doilea detector.
+- **Niciun test pentru R73, și se spune de ce**: reparația e o schimbare de apel, iar un clichet care s-o țină n-a fost construit. O revenire la `pass` ar trece neobservată.

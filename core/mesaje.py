@@ -94,6 +94,12 @@ UNDE_ADMINISTRATOR = "Date firmă › Nume administrator"
 # ar rescrie trecutul pentru luni în care declarațiile s-au depus deja. Refuzul spune ce s-a
 # oprit, de ce, și pe ce cale se face totuși — trei acte consemnate în loc de unul tăcut.
 UNDE_PERIOADE = "Perioade blocate"
+# [R73 (c), 26.08.2026] Nu se afirmă ce nu se știe. Vechiul text spunea „ai primit linkul de
+# logare" — o afirmație despre o trimitere care poate să fi eșuat, iar eșecul era înghițit.
+# Costin: *„nu e o schimbare de formulare — e diferența dintre a afirma și a presupune."*
+# Ce spune acum: cererea a fost primită, iar linkul vine DACĂ adresa e în sistem.
+MESAJ_LINK_LOGARE_CERUT = ("Am primit cererea. Dacă adresa e în sistem, linkul de logare "
+                           "ajunge în câteva minute — verifică și în Spam.")
 MESAJ_PESTE_PERIOADA_INCHISA = (
     "%(ce)s nu se poate schimba: firma are perioade închise (prima: %(an)s-%(luna)02d). "
     "Câmpul ăsta decide ce se datorează, iar pentru lunile închise declarațiile s-au depus "

@@ -33,7 +33,7 @@ from core.mesaje import (mesaj_din_cod, FARA_CABINET, EMAIL_INVALID, EMAIL_EXIST
                          EMAIL_NICIUNUL_VALID, CUI_FIRMA_LIPSA, PERIOADA_INCHISA,
                               MESAJ_Z_DUPLICAT, MESAJ_Z_FARA_CHEIE,
                               MESAJ_CLIENT_ALT_CABINET, MESAJ_EMAIL_ACELASI,
-                              MESAJ_DOAR_TITULARUL,
+                              MESAJ_DOAR_TITULARUL, MESAJ_LINK_LOGARE_CERUT,
                               MESAJ_EMAIL_TOKEN_INVALID, MESAJ_EMAIL_DE_CONFIRMAT,
                          ROL_INSUFICIENT, DOAR_ADMIN_ICONTA, DOAR_ADMIN_CABINET, DOAR_PATRON,
                          FARA_DREPT_VALIDARE, FARA_DREPT_DEPUNERE, FARA_ACCES_TENANT,
@@ -1103,8 +1103,9 @@ def register(date: RegisterIn):
                 "<p>Te poti loga oricand cu emailul <b>%s</b> la <a href='https://iconta.eu'>iconta.eu</a>.</p>"
                 "<p>Firma proprie a cabinetului este deja adaugata in portofoliu.</p>") % (date.nume_cabinet, date.email)
         _obs.trimite_email_html(date.email, "Bine ai venit pe iConta.eu", html)
-    except Exception:
-        pass
+    except Exception as _e:
+        # [R73] fara alerta: bun venit nu e cale de ACCES, doar politete
+        _obs.esec_secundar("email bun venit cabinet", _e)
     try:  # [alerta_cont_nou_v1] notificare interna la fiecare cont nou de cabinet (fara date personale)
         from datetime import datetime as _dt
         from zoneinfo import ZoneInfo as _Z
@@ -1421,8 +1422,10 @@ def reset_parola_cere(date: ResetCereIn, request: Request):
                     "Daca nu tu ai cerut resetarea, ignora acest mesaj — parola ramane neschimbata.</p>"
                     % ((" " + nume) if nume else "", link))
             _obs.trimite_email_html(u["email"], "Resetare parola iConta.eu", html)
-        except Exception:
-            pass
+        except Exception as _e:
+            # [R73] ALERTA: e cale de acces. Tacerea aici inseamna ca omul nu mai poate intra
+            # si nimeni nu afla — chiar criteriul din docstringul lui `esec_secundar`.
+            _obs.esec_secundar("email resetare parola", _e, alerta=True)
         try:
             with db.get_conn() as c, c.cursor() as cur:
                 cur.execute("INSERT INTO public.audit_log (user_id, actiune) VALUES (%s,'reset_parola_cerut')", (u["user_id"],))
@@ -1470,9 +1473,10 @@ def magic_link_cere(date: MagicCereIn, request: Request):
                     "<p>Linkul e valabil 15 minute si poate fi folosit o singura data.</p>") % link
             try:
                 _obs.trimite_email_html(email, "Link de logare iConta.eu", html)
-            except Exception:
-                pass
-    return {"ok": True, "mesaj": "Dacă emailul există, ai primit linkul de logare."}
+            except Exception as _e:
+                # [R73] ALERTA: SINGURA usa de intrare in portalul clientului.
+                _obs.esec_secundar("email link de logare", _e, alerta=True)
+    return {"ok": True, "mesaj": MESAJ_LINK_LOGARE_CERUT}
 
 class MagicLoginIn(BaseModel):
     token: str
@@ -5935,8 +5939,9 @@ def asistent_creeaza(date: AsistentNouIn, ctx=Depends(cere_rol("admin_firma"))):
             "<p>Dupa activare, intra cu emailul <b>%s</b> si parola setata. Linkul e valabil 48 de ore.</p>") % (link, email)
     try:
         _obs.trimite_email_html(email, "Acces asistent iConta.eu", html)
-    except Exception:
-        pass
+    except Exception as _e:
+        # [R73] ALERTA: fara linkul de activare, asistentul nu are cont.
+        _obs.esec_secundar("email invitatie asistent", _e, alerta=True)
     return {"ok": True, "user_id": uid}
 
 @app.post("/asistenti/{uid}/permisiuni")

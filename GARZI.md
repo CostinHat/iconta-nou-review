@@ -5033,3 +5033,25 @@ E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pome
 **Măsurat, și măsurătoarea a fost un plafon:** 14 din 16 câmpuri sunt citite de generatoarele de declarații — dar *citit* nu e *decide*. Aplicând criteriul lui Costin a ieșit că **vectorul și regimul nu sunt în `CAMPURI_FISCALE`**, iar de acolo rămâne unul singur: `cui`.
 
 **Ce NU face, declarat:** nu acoperă a doua jumătate a condiției lui R46 — *declarații depuse pe regimul vechi* fără perioadă închisă. Poarta e pe perioada închisă, care e proxy-ul mecanic.
+
+## O rută NOUă fără apelant nu trece poarta (26.08.2026, R70)
+
+**`core/test_ruta_fara_apelant.py`** — 5 teste. Instanța: am scris o rută, i-am construit gardul, a trecut toată suita — și nimic n-o chema. Un **prag 1** pe cod gardat în aceeași zi, găsit de exercitarea pe date, nu de un instrument.
+
+**Domeniul e îngust, deliberat:** clichet pe **mulțime**, nu poartă retroactivă. Cele existente stau într-un `_BASELINE` descris ca **fotografie, nu listă de vinovați**.
+
+**Antetul scrie toate cele patru detectoare încercate și cum greșește fiecare.** Întrebarea *cine cheamă ruta asta* nu are răspuns textual: UI-ul compune căi la rulare și dispeceriză prin tabele. Cifrele succesive: 13, 6, zeci, 32 — iar cea verificată prin citire e **5**. *A patra regulă e cea mai puțin greșită, nu cea corectă.*
+
+**Calibrare pe ambele direcții, cu instanțe reale:** dispecerizarea prin tabel NU e raportată; o rută inventată fără ecran E raportată.
+
+**Ce NU face, declarat:** nu spune că baseline-ul e curat. Spune că nu crește.
+
+## Patru trimiteri de email nu mai eșuează tăcut (26.08.2026, R73)
+
+**Nu e o gardă, e o reparație — și se spune.** Cele patru `except Exception: pass` din jurul lui `trimite_email_html` au trecut pe `observare.esec_secundar`, cu **`alerta=True`** pe cele trei căi de **acces** și fără alertă pe emailul de bun venit.
+
+**Remediul exista din 27.07** și era folosit în zeci de locuri; nu fusese aplicat exact unde tăcerea costă cel mai mult. Măsurat: 32 de `except …: pass` în producție, 5 în jurul unei operațiuni externe, **4 reale**. După reparație: **28**.
+
+**Și mesajul nu mai afirmă trimiterea:** din *„ai primit linkul de logare”* în *„Am primit cererea. Dacă adresa e în sistem, linkul ajunge în câteva minute.”* Costin: *„e diferența dintre a afirma și a presupune.”*
+
+**Ce NU face, declarat:** niciun clichet nu ține cele patru pe `esec_secundar`. O revenire la `pass` ar trece.
