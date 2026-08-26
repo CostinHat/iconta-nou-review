@@ -5397,3 +5397,60 @@ doar lista de rute."* Avea dreptate de doua ori.
   **NU schimba baza de amortizare**: citeste `mijloace_fixe` si scrie doar o nota. Deci nota si
   registrul spun doua lucruri diferite despre acelasi activ — limita e declarata in docstring.
 - **METODA:** o mutatie care probeaza o CALIBRARE trebuie sa loveasca linia care face distinctia.
+
+## 26.08.2026 — ZIUA, judecată de la ecranul contabilului
+
+*Cerut de Costin: „dă ISTORIC pe ziua curentă; dacă ziua n-a schimbat nimic pentru un contabil,
+scrie-o ca atare." Cele șase intrări de mai sus sunt turele. Asta e ziua, pe alt criteriu decât
+„ce am construit": **ce vede omul care ține contabilitatea unei firme.** Șase ture, ~34 de
+commituri, poarta verde la fiecare.*
+
+### CE S-A SCHIMBAT PENTRU EL — patru lucruri, toate vizibile fără să știe nimic despre cod
+
+1. **Verificarea de echilibru poate deveni roșie.** Până azi una din cele două jumătăți era
+   **verde prin construcție** — `BALANTA_INEGALA` nu putea să se aprindă (probat: 0 din 2000 de
+   seturi aleatorii). A ieșit, iar `echilibru_perioada` s-a legat în locul ei: dezechilibru de
+   ledger și conturi orfane. Pe ecran e **un singur rând „Echilibru"** — contabilul nu trebuie să
+   știe că sunt două module.
+2. **O notă cu cont inexistent nu mai intră.** `7O7` (cu litera O) era acceptat și scris ca
+   evidență. Acum se refuză, iar refuzul spune **care cont** și **unde se creează**: *„Contul 7O7
+   nu există în planul firmei (câmpul «cont_venit»). Îl adaugi din Plan de conturi (Import date ›
+   Plan de conturi), apoi reia operațiunea."* Atinge cele 12 câmpuri de cont în text liber din
+   ecranul de operațiuni.
+3. **Coada înseamnă acum „gata de depus".** Poarta DUK s-a mutat **la intrarea** în coadă. Ce e
+   generat-și-nevalidat apare separat, nu amestecat cu ce se poate depune.
+4. **Luna nu se mai închide peste ciorne.** `POST /perioade-blocate` refuză motivat dacă perioada
+   are note nevalidate sau e-Facturi primite și neînregistrate. **Măsurat pe date reale:**
+   închiderea lunii curente pe `tenant_013` ar fi lăsat **5 ciorne** închise înăuntru — o
+   cheltuială sau un venit care nu se mai putea valida, nu se mai putea șterge, și nu mai apărea
+   nicăieri. Iar **redeschiderea cere motiv și lasă urmă** (`perioade_inchideri`, append-only,
+   constrângerea în bază; migrare 17/17 scheme).
+
+### CE N-A SCHIMBAT NIMIC PENTRU NIMENI, AZI — și se scrie ca atare
+
+- **Rolurile puse pe șapte rute** (`plan-conturi`, `jurnal/valideaza`, `amortizare`,
+  `bonuri/aproba`, `horeca/raport-z`, `reges-config`, `reges-poll`) **nu se pot exercita**: există
+  **un singur cont `angajat`** în toate cele 7 cabinete, fără nicio firmă atribuită. Patru-ochi nu
+  are azi al doilea ochi. Reparația e reală; efectul ei, nu.
+- **Refuzul de pe calea de API** (factura cu linie de stoc fără `marfa_pleaca_cu_factura`) nu
+  atinge pe nimeni: **`public.api_chei` = 0**, nicio cheie n-a fost creată vreodată. De-aia s-a și
+  făcut acum — un implicit ales azi ar fi fost imposibil de schimbat peste un an.
+- **R59, consemnată azi, nu s-a produs niciodată**: 0 note de reevaluare pe toate cele 17 scheme.
+
+### CE A COSTAT ZIUA, ȘI MERITĂ ȚINUT MINTE
+
+- **Trei erori de măsurare pe PROXY, toate ale mele, într-o singură zi**: numele funcției (R33),
+  numele grupului (R55 — „7 rute" erau 40), calea fără metodă (R56 — am citit garda `GET`-ului și
+  am scris-o în dreptul `PUT`-ului). Niciuna n-a ajuns în cod; toate au ajuns în comenzi.
+- **Poarta a respins prima încercare a lui R58**, cu cinci roșii. Una merită numită: tabela nouă
+  era tăiată de filtrul învechit de tabele — adică **chiar garda „un filtru învechit nu produce
+  zgomot, produce tăcere"**, scrisă săptămâna asta, prinzându-mi propria tabelă.
+- **Trei restanțe (R55, R56, R57) au stat marcate DESCHISE după ce fuseseră rezolvate**, până a
+  cerut Costin marcajul. *Mai bine o referință incompletă decât o stare falsă.*
+
+### VERDICTUL ZILEI
+
+**Da, ziua a schimbat ceva pentru un contabil** — patru lucruri, dintre care două (echilibrul care
+poate deveni roșu, luna care nu se închide peste ciorne) opresc pierderi tăcute de evidență, nu
+doar afișează mai bine. Trei dintre reparațiile zilei **nu schimbă nimic azi**, fiindcă
+precondițiile lor nu există pe nicio firmă — și se scrie așa, nu ca realizare.
