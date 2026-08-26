@@ -117,7 +117,15 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
-- [ ] 
+- [x] ruta cu cheie de API aplică **aceleași reguli** ca ruta din interfață: numerotare, cod fiscal obligatoriu, notă cu conturi valide
+- o cheie de API nu are rol, deci nu poate face ce cere admin_firma pe ruta echivalentă — verifică dacă asta e adevărat sau dacă cheia ocolește restricția
+- **dacă ocolește: e prag 1.** Un integrator cu cheie ar putea emite facturi pe care un asistent nu le poate emite
+- **verificat la sursă (26.08.2026): DA, ocolește rolul — dar nu e escaladare, și NU e prag 1.** `cere_api_key` verifică doar cheia și întoarce `{firm}`; nu există utilizator, deci nu există rol. Ruta cheamă **aceeași** `emite_factura` ca `/facturi/emite`, care cere `admin_firma`.
+- **de ce nu e escaladare:** cheia se creează doar prin `POST /cabinet/api-chei`, care cere `admin_firma`. Un `angajat` nu-și poate face singur o cheie, deci nu se poate ridica singur. E **delegare explicită** de la un admin, nu ocolire. Iar `_api_schema` verifică apartenența firmei la cabinetul cheii, deci izolarea per firmă se păstrează.
+- **de ce nu e prag 1, măsurat:** `public.api_chei` = **0**. Nicio cheie n-a fost creată vreodată, deci efectul n-a fost produs. Aceeași încadrare ca R43, pe același criteriu.
+- **CE AM GĂSIT ÎN SCHIMB, și era mai grav decât rolul — reparat azi.** Ruta lua **`platitor_tva` din CORPUL CERERII**, cu implicit `True`, în timp ce ruta din ecran îl citește din `firma_profil`. Valoarea intră în `_potriveste_linii` → `cote_tva.potriveste_cota`, deci **decide cota de pe liniile facturii**: un integrator care nu-l trimitea ar fi facturat cu TVA o firmă **neplătitoare**. E interdicția 45 (P20) — o valoare din afară peste un fapt pe care îl știm. Acum se citește din firmă, ca în ecran.
+- **a doua diferență, tot reparată:** numele beneficiarului nu era cerut, deși ruta din ecran îl refuză explicit. O factură fără beneficiar nu e factură.
+- **ce RĂMÂNE diferit, declarat:** poarta „pleacă marfa acum?” (descărcarea gestiunii) nu se poate pune pe o cale neinteractivă fără să alegem în locul integratorului. E decizie de produs, consemnată, nu diferență tehnică.
 
 ### `POST /tenants/{tenant_id}/facturi`
 
@@ -125,7 +133,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
-- [ ] 
+- [x] **nu pot scrie verificarea fără să știu ce o deosebește de `/facturi/emite`.** Creează ciornă? Emite direct? De completat din cod
+- dacă emite, se aplică verificările de la `emite`
+- **completat din cod (26.08.2026): ce o deosebește de `/facturi/emite`.** `/facturi` cheamă `creeaza_factura(numar, data_emitere, directie, …)` — **numărul vine de la apelant**, iar `directie` poate fi `emisa` sau **`primita`**. E calea prin care se ÎNREGISTREAZĂ o factură care există deja (inclusiv una primită). `/facturi/emite` cheamă `emite_factura(…)` — **aplicația dă numărul din serie**, cere numele beneficiarului, are poarta „pleacă marfa acum?” și citește `platitor_tva` din `firma_profil`. E calea prin care se EMITE una nouă.
+- starea implicită diferă, și e chiar **R14**: `creeaza_factura` pune `emisa`, `emite_factura` pune `de_preluat`. Două populații în aceeași firmă, iar starea nu se mai schimbă niciodată
+- deci verificarea corectă pentru `/facturi` **nu** e cea de la `emite`: aici numărul e dat de om, deci se verifică **unicitatea în serie** și că nu creează goluri; la `emite` se verifică că numărul vine din serie
 
 ### `POST /tenants/{tenant_id}/facturi-recurente`
 
@@ -133,7 +145,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie facturi_recurente (DELETE/INSERT/UPDATE) — prin `facturi_recurente`*
 
-- [ ] 
+- [x] șablonul recurent nu emite nimic singur — emiterea trece prin `facturi/emite`, cu regulile ei
+- modificarea unui șablon nu atinge facturile deja emise din el
+- ștergerea nu atinge facturile emise; dacă șablonul are facturi, se spune câte
+- data următoarei emiteri se recalculează la modificare, iar dacă ar cădea în trecut se refuză
+- *(verificările sunt scrise de Costin o singura data, pentru toate trei rutele de sablon recurent)*
 
 ### `DELETE /tenants/{tenant_id}/facturi-recurente/{sid}`
 
@@ -141,7 +157,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie facturi_recurente (DELETE/INSERT/UPDATE) — prin `facturi_recurente`*
 
-- [ ] 
+- [x] șablonul recurent nu emite nimic singur — emiterea trece prin `facturi/emite`, cu regulile ei
+- modificarea unui șablon nu atinge facturile deja emise din el
+- ștergerea nu atinge facturile emise; dacă șablonul are facturi, se spune câte
+- data următoarei emiteri se recalculează la modificare, iar dacă ar cădea în trecut se refuză
 
 ### `PUT /tenants/{tenant_id}/facturi-recurente/{sid}`
 
@@ -149,7 +168,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie facturi_recurente (DELETE/INSERT/UPDATE) — prin `facturi_recurente`*
 
-- [ ] 
+- [x] șablonul recurent nu emite nimic singur — emiterea trece prin `facturi/emite`, cu regulile ei
+- modificarea unui șablon nu atinge facturile deja emise din el
+- ștergerea nu atinge facturile emise; dacă șablonul are facturi, se spune câte
+- data următoarei emiteri se recalculează la modificare, iar dacă ar cădea în trecut se refuză
+- *(verificările sunt scrise de Costin o singura data, pentru toate trei rutele de sablon recurent)*
 
 ### `POST /tenants/{tenant_id}/facturi/emite`
 
@@ -157,7 +180,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie articole (INSERT/UPDATE) · factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `facturi_api`, `stocuri_cv_api`*
 
-- [ ] 
+- [x] factura primește **următorul număr din serie**, fără goluri; două emiteri simultane nu produc același număr
+- exemplarul se îngheață cu amprenta; o regenerare ulterioară produce alt exemplar, nu îl rescrie pe primul
+- nota contabilă generată respectă partida dublă, iar conturile vin din mapare, nu din literali
+- mișcările de stoc au aceeași dată cu factura
+- factura fără cod fiscal de partener se refuză — nu intră în D394 și nu se corelează în VIES
 
 ### `PUT /tenants/{tenant_id}/facturi/numerotare`
 
@@ -165,7 +192,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
-- [ ] 
+- [x] schimbarea seriei sau a numărului de start **nu poate produce un număr deja folosit** — se refuză, cu numărul care ar fi intrat în conflict
+- numerotarea nu se poate reduce sub ultimul număr emis
+- schimbarea se consemnează: cine, când, de la ce la ce. E P15 — seria nu are goluri și nu se reia
 
 ### `DELETE /tenants/{tenant_id}/facturi/{factura_id}`
 
@@ -173,7 +202,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
-- [ ] 
+- [x] **o factură emisă nu se șterge.** Se stornează. Ștergerea ar produce un gol în serie
+- o factură cu notă contabilă nu se șterge — se rupe lanțul P14
+- dacă ștergerea e permisă pe ciorne, verifică ce o deosebește de o factură emisă; iar dacă nu există distincția, aia e constatarea
 
 ### `POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza`
 
@@ -181,7 +212,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Nota ciorna din factura (AI propune, contabilul valideaza) — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] nota produsă e **ciornă**, nu evidență validată — descrierea o spune, verifică structural
+- propunerea de conturi vine din maparea corectată; nu se ghicește din denumire
+- ciorna poartă legătura către factura din care a ieșit
+- o factură contabilizată de două ori nu produce două note
+- **fără rol, deși scrie în `inregistrari`** — R55, iar aici e cea mai vizibilă instanță
+- **Măsurat 26.08.2026: nota E ciornă** — verificat pe `INSERT`-ul din corpul rutei, nu pe descriere. Deci nu produce evidență, iar poarta e la validare (`admin_firma` de azi). Din **40** de rute care scriu în `inregistrari_linii` în corpul lor, **36 scriu `ciorna`**; singurele trei care scriau `validata` direct — `amortizare`, `bonuri/{id}/aproba`, `horeca/raport-z` — au primit rol azi.
 
 ### `POST /tenants/{tenant_id}/facturi/{factura_id}/email`
 
@@ -189,7 +225,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`, `firma_profil_api`*
 
-- [ ] 
+- [x] trimiterea e un **eveniment de predare**: cui, când, la ce adresă, cu ce atașament
+- se trimite exemplarul emis, cu amprenta lui — nu o regenerare la momentul trimiterii
+- o a doua trimitere e un al doilea eveniment, nu suprascrie primul
+- eșecul trimiterii e o stare, nu o eroare pierdută: factura rămâne netrimisă și se vede
 
 ### `PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare`
 
@@ -197,7 +236,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: F131: supapa per factura — scrie facturi (UPDATE) · firma_profil (UPDATE) — prin `scadentar`*
 
-- [ ] 
+- [x] oprirea notificărilor pe o factură nu schimbă scadența și nu afectează calculul de întârziere
+- starea se consemnează cu autorul — e o decizie despre relația cu clientul
 
 ### `POST /tenants/{tenant_id}/facturi/{factura_id}/storno`
 
@@ -205,7 +245,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
-- [ ] 
+- [x] stornarea e un **document nou**, care o referă pe cea stornată. Factura originală rămâne, cu numărul ei
+- suma stornată nu depășește suma facturii
+- nota de stornare inversează exact nota originală — nu o șterge
+- o factură deja stornată nu se stornează a doua oară
 
 ### `POST /tenants/{tenant_id}/facturi/{factura_id}/transforma`
 
@@ -213,7 +256,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal). — scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
-- [ ] 
+- [x] proforma sau avizul devine factură fiscală cu **numerotare nouă**, din seria de facturi, nu cu numărul proformei
+- documentul original rămâne, cu starea „transformat" și legătura către factura rezultată
+- nota contabilă se generează la transformare, nu la emiterea proformei — proforma nu e document contabil
 
 ## T03 — Statul de plată și fluturașul
 
@@ -227,7 +272,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Nota pe care ar scrie-o statul de plata + divergentele fata de D112, cu ambele cifre.*
 
-- [ ] 
+- [x] propunerea arată **ambele cifre** la fiecare divergență față de D112 — nu doar că există una
+- nu scrie nimic; verificat structural
+- dacă statul de plată nu e emis pentru luna cerută, se spune, nu se calculează din recalcul
 
 ### `POST /tenants/{tenant_id}/salarii-contare`
 
@@ -235,7 +282,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Scrie nota ciorna a statului de plata — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] nota e ciornă, iar totalurile coincid cu propunerea văzută înainte
+- divergența față de D112, dacă a existat la propunere, rămâne consemnată pe notă — nu se stinge prin salvare
+- o a doua contare pe aceeași lună nu produce a doua notă
+- **fără rol** — R55
+- **Măsurat: nota e ciornă** (R33 a reparat-o pe 25.08; antetul modulului spune de ce — forma veche scria `validata` direct și *„ocolea patru-ochi”*). Deci „fără rol” aici nu e o gaură spre evidență: e o propunere, iar poarta e la validare.
 
 ### `POST /tenants/{tenant_id}/stat-plata/corectie`
 
@@ -243,7 +294,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {salariat_id, an, luna} — scrie state_plata (INSERT/UPDATE) — prin `stat_plata_emis`*
 
-- [ ] 
+- [x] corecția e **al doilea exemplar**, cu referință la primul. Primul rămâne
+- diferența față de exemplarul corectat e vizibilă, pe fiecare cifră schimbată
+- corecția nu poate atinge o lună închisă fără redeschidere consemnată
 
 ### `POST /tenants/{tenant_id}/stat-plata/emite`
 
@@ -251,7 +304,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {an, luna} — scrie state_plata (INSERT/UPDATE) — prin `stat_plata_emis`*
 
-- [ ] 
+- [x] statul se îngheață cu amprentă, exemplar numerotat, autor, moment
+- cifrele emise nu se mai recalculează la citire; un recalcul care diferă produce contradicție vizibilă, nu rescriere
+- emiterea e idempotentă: a doua apăsare produce **al doilea exemplar**, nu suprascrie primul
+- pontajul trebuie confirmat; fără el, tichetele nu se acordă, iar statul o spune
 
 ### `POST /tenants/{tenant_id}/stat-plata/motiv`
 
@@ -259,7 +315,8 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {exemplar_id, motiv} — scrie state_plata (INSERT/UPDATE) — prin `stat_plata_emis`*
 
-- [ ] 
+- [x] motivul marchează contradicția ca **asumată**, nu o stinge — rândul rămâne în listă, cu motivul, cine și când
+- un motiv gol se refuză
 
 ## T04 — Concediul medical
 
@@ -273,7 +330,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {salariat_id, an, luna (luna certificatului), zile_lucratoare_cm, cod?, zile_episod?, prima_zi_din_episod?, spitalizare?, data_certificat?}*
 
-- [ ] 
+- [x] media zilnică se calculează din veniturile a 6 luni, **din sursă**, nu dintr-un tabel intermediar
+- lunile lipsă din bază se numesc, cu numărul lor — nu produc tăcut o medie mai mică
+- procentul se determină pe **episod cumulat**, nu pe certificat
+- diminuarea cu o zi lucrătoare se aplică o dată pe episod, cu excepția codului 51
+- plafonul de 12 salarii minime se verifică la media lunară
+- regimul aplicabil e cel de la data certificatului **inițial** al episodului, nu de la data calculului
 
 ### `POST /tenants/{tenant_id}/salariati/{salariat_id}/concedii`
 
@@ -281,7 +343,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
 
-- [ ] 
+- [x] codul de indemnizație e din nomenclatorul oficial; unul din afară se refuză
+- pentru codurile care cer CNP-ul persoanei îngrijite — 09, 17, 91, 92 — câmpul e obligatoriu la introducere, nu la generarea D112
+- un certificat „în continuare" poartă seria, numărul și data celui inițial; fără ele se refuză
+- perioada nu se suprapune cu alt certificat al aceluiași salariat
+- stagiul de asigurare e verificat, sau codul e dintre cele exceptate — altfel se semnalează
+- durata cumulată pe an nu depășește plafoanele: 183 de zile, 45 pentru codul 09, 45 pentru codul 17
 
 ### `DELETE /tenants/{tenant_id}/salariati/{salariat_id}/concedii/{cm_id}`
 
@@ -289,7 +356,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie concedii_medicale (DELETE/INSERT/UPDATE) · pontaj (DELETE) · salariati (DELETE/INSERT/UPDATE) · salariu_istoric (DELETE) — prin `salariati_api`*
 
-- [ ] 
+- [x] **un certificat care a intrat într-un stat de plată emis nu se șterge** — se corectează prin exemplar nou
+- ștergerea recalculează episodul: dacă certificatul șters era inițial, procentul celorlalte din episod se schimbă
+- ștergerea unui certificat dintr-o lună declarată în D112 produce contradicție vizibilă
 
 ## T05 — Nota contabilă — de la document la registrul-jurnal
 
@@ -303,7 +372,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
 
-- [ ] 
+- [x] nota respectă partida dublă la creare, nu la validare
+- conturile există în plan — acum se refuză
+- data notei e într-o perioadă deschisă
+- documentul justificativ e cerut: felul, numărul, data. Fără el, nota nu se poate desface — P14
+- **fără rol** — R55
+- **RĂMÂNE fără rol, cu motivul măsurat (26.08.2026).** Citite la sursă, `jurnal_api.editeaza` și `.sterge` refuză orice notă care nu e `ciorna`, iar `creeaza` scrie tot `ciorna`. O ciornă **nu schimbă ce datorează firma** — deci criteriul lui Costin nu o prinde. Poarta e la validare, care de azi cere `admin_firma`.
 
 ### `DELETE /tenants/{tenant_id}/jurnal/{nota_id}`
 
@@ -311,7 +385,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
 
-- [ ] 
+- [x] o notă validată nu se șterge — se stornează. Ștergerea ar rupe lanțul către documentul justificativ
+- ștergerea unei ciorne nu atinge documentul din care a ieșit
+- **fără rol** — R55
 
 ### `PUT /tenants/{tenant_id}/jurnal/{nota_id}`
 
@@ -319,7 +395,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
 
-- [ ] 
+- [x] o notă **validată** nu se editează — se stornează
+- editarea unei ciorne păstrează partida dublă
+- editarea nu poate muta nota într-o perioadă închisă
+- **fără rol** — R55
 
 ### `POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza`
 
@@ -327,7 +406,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie ai_corectii (INSERT) · casa_operatiuni (DELETE) · extras_linii (UPDATE) · inregistrari (DELETE/INSERT/UPDATE) · inregistrari_linii (DELETE/INSERT) — prin `jurnal_api`*
 
-- [ ] 
+- [x] validarea verifică **înainte** de a marca: partidă dublă, conturi existente, perioadă deschisă, document justificativ prezent
+- nota validată intră în evidență; din acel moment nu se mai editează și nu se șterge
+- cine a validat se consemnează
+- **fără rol, iar aceasta e ruta care transformă o ciornă în evidență.** E instanța cea mai gravă din cele patru — R55
+- **REZOLVAT 26.08.2026, în aceeași tură: ruta cere acum `admin_firma`.** Motivul, al lui Costin: *„validarea unei note e ce transformă o ciornă în evidență”*. Rândul „fără rol” de mai sus descrie starea de dinainte.
 
 ### `POST /tenants/{tenant_id}/nota-asociati`
 
@@ -487,7 +570,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie plan_conturi (INSERT)*
 
-- [ ] 
+- [x] contul adăugat respectă structura planului general: clasa, grupa, sintetic de gradul I și II
+- un cont care nu există în planul general de conturi se refuză, sau se marchează ca analitic al unui sintetic existent
+- un cont duplicat se refuză
+- **fără rol, iar aceasta e ruta care poate anula refuzul lui `cont_valid`.** Cine adaugă un cont face să treacă orice notă cu el — R55, prima instanță de rezolvat
+- **REZOLVAT 26.08.2026, în aceeași tură: ruta cere acum `admin_firma`.** Observația de mai sus — *cine adaugă un cont face să treacă orice notă cu el* — a fost criteriul, iar Costin a numit-o prima instanță de rezolvat din R55. Rândul „fără rol” de mai sus descrie starea de dinainte și rămâne ca să se vadă ce s-a schimbat.
 
 ## T06 — Importul de e-Factura și transmiterea prin SPV
 
@@ -1513,7 +1600,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, denumire, valoare (fara TVA), tip software|licenta|brevet| dezvoltare|constituire, dnf_luni?, cota?, cod?} — scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT) — prin `facturi_api`*
 
-- [ ] 
+- [x] durata normală de funcționare vine din catalog pentru tipul respectiv; `dnf_luni` din corp nu o poate coborî sub minim
+- valoarea sub pragul de imobilizare nu produce mijloc fix — e cheltuială. Verifică pragul la data operațiunii
+- rândul din `mijloace_fixe` și nota din `inregistrari` au aceeași valoare de intrare
+- amortizarea începe din luna următoare punerii în funcțiune, nu din luna achiziției
 
 ### `POST /tenants/{tenant_id}/achizitie-neinregistrat`
 
@@ -1521,7 +1611,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2) — scrie factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `facturi_api`*
 
-- [ ] 
+- [x] operațiunea apare în D394 ca tip N, cu `tip_partener=2` — verificat pe declarația generată, nu pe intenția din cod
+- persoana fizică nu are cod fiscal, deci nu se cere; dar se cere o identificare, altfel operațiunea n-are partener
+- TVA-ul nu se deduce — achiziția de la neînregistrat nu poartă TVA deductibilă
+- dacă atinge stocul prin modul, mișcarea de stoc are aceeași dată cu nota
 
 ### `POST /tenants/{tenant_id}/achizitie-taxare-inversa`
 
@@ -1540,7 +1633,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, valoare, tara_client, dovada_export, cont_venit?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] exportul e scutit cu drept de deducere; nu se colectează TVA
+- scutirea cere **dovada exportului** — declarația vamală de export. Fără ea, operațiunea nu e scutită, iar ruta primește `dovada_export` ca text liber
+- verifică ce se întâmplă când `dovada_export` lipsește sau e o frază: se refuză, sau se scutește pe încredere?
+- țara clientului e din afara UE — o țară din UE face operațiunea livrare intracomunitară, nu export
+- **fără rol, deși scrie evidență** — R55
 
 ### `POST /tenants/{tenant_id}/import-extracomunitar`
 
@@ -1548,7 +1645,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, valoare_vamala (RON), procent_taxa_vamala?, accize?, accesorii?, cota?, certificat_amanare?, cont_destinatie, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] baza de TVA la import = valoarea vamală + taxa vamală + accize + accesorii până la primul loc de destinație. Verifică pe cifre, nu pe formulă
+- cu certificat de amânare, TVA-ul nu se plătește în vamă: se înregistrează simultan colectat și deductibil, iar cele două se anulează în decont
+- fără certificat, TVA-ul plătit în vamă e deductibil pe baza declarației vamale, nu a facturii furnizorului
+- cota aplicată e cea de la data operațiunii, cerută din registru
+- **fără rol, deși scrie evidență** — R55
 
 ### `POST /tenants/{tenant_id}/vanzare-agricultor`
 

@@ -198,18 +198,52 @@ def test_exceptia_de_la_perioada_e_UNA_si_are_motiv():
         assert c in cai, "excepția %s nu mai există ca rută — scoate-o" % c
 
 
+# Rutele din traseul notei care au totuși `admin_firma` — și NU pe criteriul lui R42, ci pe altul,
+# scris. O listă de excepții care poate crește e o gardă care se stinge singură (vezi
+# `_FARA_PERIOADA` mai sus), deci fiecare intrare poartă decizia care o justifică.
+_ROL_PE_ALT_CRITERIU = {
+    "/tenants/{tenant_id}/jurnal/{nota_id}/valideaza":
+        "R55, decizia lui Costin 26.08.2026: «validarea unei note e ce transformă o ciornă în "
+        "evidență». Criteriul e «ce schimbă ce datorează firma», nu «e artefact predat» — deci nu "
+        "contrazice R42, care spune doar că nota nu primește rol pentru că ar fi PREDATĂ. "
+        "Crearea, editarea și ștergerea rămân fără rol: citite la sursă, ating doar ciorne",
+    "/tenants/{tenant_id}/plan-conturi":
+        "R55, aceeași decizie: «cine adaugă un cont poate anula orice refuz» — ruta extinde "
+        "nomenclatorul pe care stă refuzul din R54, deci schimbă ce poate înregistra firma. "
+        "Nu e nota însăși; e nomenclatorul din care se scrie nota",
+}
+
+
 def test_nota_contabila_NU_cere_admin_firma():
     """Cealaltă direcție a deciziei, la fel de importantă: nota NU e artefact predat, deci NU se
-    strecoară pe `admin_firma`. Fără proba asta, „am păzit nota" ar putea însemna și că am
-    restricționat-o — adică exact ce Costin a spus să nu fac."""
+    strecoară pe `admin_firma` PE CRITERIUL ĂSTA. Fără proba asta, „am păzit nota" ar putea
+    însemna și că am restricționat-o — adică exact ce Costin a spus să nu fac.
+
+    [26.08.2026] Garda a prins o contradicție reală între două decizii ale lui, și a avut
+    dreptate s-o prindă. Rezolvarea nu e s-o relax: R42 și R55 vorbesc despre **axe diferite** —
+    una despre *ce se predă*, alta despre *ce schimbă starea*. Garda încoda doar prima, deci
+    acum o spune, iar excepțiile pe cealaltă axă sunt numite una câte una, cu decizia lor."""
     rele = []
     for nume, (_m, cale, n) in _rute().items():
-        if cale not in _cai_traseu_nota():
+        if cale not in _cai_traseu_nota() or cale in _ROL_PE_ALT_CRITERIU:
             continue
         if _roluri(n) & {"admin_firma"}:
             rele.append(cale)
     assert not rele, ("rute de notă trecute pe admin_firma, deși decizia spune că nota rămâne "
-                      "înăuntru și nu e artefact predat: %s" % rele)
+                      "înăuntru și nu e artefact predat: %s — dacă rolul stă pe ALT criteriu "
+                      "scris, intră în _ROL_PE_ALT_CRITERIU cu decizia care îl justifică" % rele)
+
+
+def test_exceptiile_de_pe_alta_axa_sunt_reale_si_motivate():
+    """Clichet bidirecțional pe lista de excepții: o intrare care nu mai are rolul, sau care nu mai
+    e rută, e o amintire — se scoate. Iar una fără motiv scris ar face lista o listă de tolerat."""
+    rute = _rute()
+    cai = {c: n for _nume, (_m, c, n) in rute.items()}
+    for cale, motiv in _ROL_PE_ALT_CRITERIU.items():
+        assert len(motiv) > 80, "%s e în listă fără decizia care o justifică" % cale
+        assert cale in cai, "%s nu mai e rută — scoate-o din listă" % cale
+        assert _roluri(cai[cale]) & {"admin_firma"}, (
+            "%s nu mai cere admin_firma — dacă rolul s-a scos, se scoate și excepția" % cale)
 
 
 # ── (b) completarea manuală ──────────────────────────────────────────────────

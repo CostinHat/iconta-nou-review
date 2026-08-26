@@ -1178,7 +1178,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T02 — Factura emisă — creare, contabilizare, ieșiri
 
-**Clasa:** MECANIC · **rute:** 19 (din care schimba date: 13) · **refuzuri explicite:** 42
+**Clasa:** MECANIC · **rute:** 19 (din care schimba date: 13) · **refuzuri explicite:** 43
 
 **Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 5 din 13.**
 
@@ -1259,7 +1259,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Clasa:** MECANIC · **rute:** 28 (din care schimba date: 24) · **refuzuri explicite:** 154
 
-**Cine:** nicio verificare de rol pe tot traseul — orice utilizator autentificat al cabinetului. **24 din 24 rute care schimba date.**
+**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 22 din 24.**
 
 **Pasii, din cod:**
 
@@ -1269,7 +1269,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/jurnal` — garda `cere_cabinet`
 - `DELETE /tenants/{tenant_id}/jurnal/{nota_id}` — garda `cere_cabinet`
 - `PUT /tenants/{tenant_id}/jurnal/{nota_id}` — garda `cere_cabinet`
-- `POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza` — garda `cere_cabinet`
+- `POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza` — garda `cere_rol` rol:admin_firma
 - `POST /tenants/{tenant_id}/nota-asociati` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/nota-avans` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/nota-bacsis` — garda `cere_cabinet`
@@ -1290,7 +1290,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/nota-subventie` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/nota-tva-incasare` — garda `cere_cabinet`
 - `GET /tenants/{tenant_id}/plan-conturi` — garda `cere_context`
-- `POST /tenants/{tenant_id}/plan-conturi` — garda `cere_context`
+- `POST /tenants/{tenant_id}/plan-conturi` — garda `cere_rol` rol:admin_firma
 
 **Module:** `avansuri`, `bacsis`, `comodat_chirii`, `contracte_speciale`, `credite`, `d406_active`, `decontari_asociati`, `deconturi`, `documente_api`, `inventariere`, `jurnal_api`, `leasing`, `lichidare`, `obiecte_inventar`, `ong`, `perisabilitati`, `productie`, `provizioane`, `sgr`, `sponsorizari`, `stocuri_cv_api`, `subventii`, `tenant_provisioning`, `tva_incasare`
 
@@ -1527,7 +1527,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Clasa:** MANUAL · **rute:** 17 (din care schimba date: 12) · **refuzuri explicite:** 38
 
-**Cine:** rol cerut: `admin_firma`, `angajat`. **Rute care schimba date fara nicio verificare de rol: 5 din 12.**
+**Cine:** rol cerut: `admin_firma`, `angajat`. **Rute care schimba date fara nicio verificare de rol: 3 din 12.**
 
 **Pasii, din cod:**
 
@@ -1538,8 +1538,8 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/contracte/sabloane` — garda `cere_cabinet`
 - `DELETE /tenants/{tenant_id}/contracte/sabloane/{sid}` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/prapastie-salariu` — garda `cere_cabinet`
-- `POST /tenants/{tenant_id}/reges-config` — garda `cere_cabinet`
-- `POST /tenants/{tenant_id}/reges-poll` — garda `cere_cabinet`
+- `POST /tenants/{tenant_id}/reges-config` — garda `cere_rol` rol:admin_firma
+- `POST /tenants/{tenant_id}/reges-poll` — garda `cere_rol` rol:admin_firma
 - `POST /tenants/{tenant_id}/reges-trimite-salariat` — garda `cere_rol` rol:admin_firma
 - `GET /tenants/{tenant_id}/salariati` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/salariati` — garda `cere_rol` rol:admin_firma,angajat
@@ -1692,11 +1692,11 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Clasa:** MECANIC · **rute:** 3 (din care schimba date: 2) · **refuzuri explicite:** 12
 
-**Cine:** nicio verificare de rol pe tot traseul — orice utilizator autentificat al cabinetului. **2 din 2 rute care schimba date.**
+**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 1 din 2.**
 
 **Pasii, din cod:**
 
-- `POST /tenants/{tenant_id}/amortizare` — garda `cere_cabinet`
+- `POST /tenants/{tenant_id}/amortizare` — garda `cere_rol` rol:admin_firma
 - `GET /tenants/{tenant_id}/mijloace-fixe` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/reevaluare-imobilizare` — garda `cere_cabinet`
 
@@ -1710,7 +1710,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Clasa:** MECANIC · **rute:** 9 (din care schimba date: 5) · **refuzuri explicite:** 20
 
-**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 4 din 5.**
+**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 3 din 5.**
 
 **Pasii, din cod:**
 
@@ -1719,7 +1719,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /portal/bon/{bon_id}/confirma` — garda `cere_context`
 - `GET /portal/bon/{bon_id}/imagine/{n}` — garda `cere_context`
 - `GET /tenants/{tenant_id}/bonuri/de-verificat` — garda `cere_cabinet`
-- `POST /tenants/{tenant_id}/bonuri/{bon_id}/aproba` — garda `cere_cabinet`
+- `POST /tenants/{tenant_id}/bonuri/{bon_id}/aproba` — garda `cere_rol` rol:admin_firma
 - `GET /tenants/{tenant_id}/bonuri/{bon_id}/facturi-candidate` — garda `cere_cabinet`
 - `GET /tenants/{tenant_id}/bonuri/{bon_id}/imagine/{n}` — garda `cere_rol` rol:admin_firma
 - `POST /tenants/{tenant_id}/bonuri/{bon_id}/stinge` — garda `cere_rol` rol:admin_firma
@@ -1734,12 +1734,12 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Clasa:** MECANIC · **rute:** 2 (din care schimba date: 2) · **refuzuri explicite:** 9
 
-**Cine:** nicio verificare de rol pe tot traseul — orice utilizator autentificat al cabinetului. **2 din 2 rute care schimba date.**
+**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 1 din 2.**
 
 **Pasii, din cod:**
 
 - `POST /tenants/{tenant_id}/horeca/import-amef` — garda `cere_cabinet`
-- `POST /tenants/{tenant_id}/horeca/raport-z` — garda `cere_cabinet`
+- `POST /tenants/{tenant_id}/horeca/raport-z` — garda `cere_rol` rol:admin_firma
 
 **Module:** `amef_import`
 

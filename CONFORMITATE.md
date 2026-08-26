@@ -1496,6 +1496,34 @@ scos ce nu se știa**, nu din defecte noi.
   | tot restul: `vanzare-*`, `nota-*` (18), `reevaluare-*`, `amortizare`, `salarii-contare`, `horeca/*`, `bonuri/{}/aproba`, `facturi/{}/contabilizeaza`, `decontare-valuta` | **35** | `cere_cabinet` — **fără rol** |
 
 - **de ce contează, reformulat**: nu e „nicio regulă", cum am scris. E o **regulă nescrisă care acoperă o cincime din clasă și are deja o excepție**. Asta e mai rău decât absența, fiindcă arată ca intenție: cine adaugă a 41-a rută va copia vecinul, iar vecinul e ales la întâmplare. Și niciuna dintre cele 40 nu e o gaură de acces — toate cer cabinet; ce lipsește e criteriul.
+- **DECIZIA (Costin, 26.08.2026): criteriul rămâne cel de la R42, extins — *„ce schimbă ce datorează firma cere `admin_firma`"*. Plus o cerere de măsurătoare înainte de aplicare: *„din cele 36, câte sunt operațiuni curente pe care le face un asistent zilnic? Dacă majoritatea sunt, criteriul e prea larg pentru operațiuni interne."*
+
+- **MĂSURAT, ȘI RĂSPUNSUL E MAI BUN DECÂT ÎNTREBAREA.** Prima măsurătoare, pe proxy-ul „e pe suprafața de lucru": **30 din 36** sunt pe ecranul de operațiuni, deci majoritatea **sunt** muncă zilnică — iar pe testul lui Costin criteriul ar fi fost prea larg. Dar a doua măsurătoare taie altfel, și o face inutilă pe prima: **cu ce STARE intră nota?**
+
+  | stare scrisă | câte | ce înseamnă |
+  |---|---|---|
+  | `ciorna` | **36 din 40** | **propun**, nu schimbă ce datorează firma. Poarta e la validare |
+  | `validata` direct | **3** | **produc evidență**, sărind peste validare |
+  | nedeterminat pe AST | 1 | `salarii-contare` — citit la sursă: e `ciorna` (statusul e parametru de la R33) |
+
+  **Deci criteriul nu se aplică celor 36: o ciornă nu schimbă nimic.** Iar cele 4 rute `achizitie-*` care aveau deja rol scriu **tot ciornă** — adică rolul de pe ele e inconsecvent în cealaltă direcție: cer `admin_firma` pentru o propunere, în timp ce 32 de surori nu cer nimic pentru aceeași propunere.
+
+- **APLICAT — lanțul, exact cum l-a numit Costin.** *„Prima instanță de rezolvat nu e una dintre cele 36 — e lanțul `plan-conturi` → `jurnal` → validare. Cine adaugă un cont poate anula orice refuz."*
+
+  | rută | înainte | acum | de ce |
+  |---|---|---|---|
+  | `POST /plan-conturi` | `cere_context` | **`admin_firma`** | extinde nomenclatorul pe care stă refuzul din R54 |
+  | `POST /jurnal/{id}/valideaza` | `cere_cabinet` | **`admin_firma`** | transformă ciorna în evidență |
+  | `POST /amortizare` | `cere_cabinet` | **`admin_firma`** | scrie `validata` **direct** |
+  | `POST /bonuri/{id}/aproba` | `cere_cabinet` | **`admin_firma`** | idem |
+  | `POST /horeca/raport-z` | `cere_cabinet` | **`admin_firma`** | idem |
+
+  **`POST/PUT/DELETE /jurnal` rămân fără rol**, cu motivul citit la sursă: `jurnal_api.editeaza` și `.sterge` refuză orice notă care nu e `ciorna`, iar `creeaza` scrie tot `ciorna`. E munca zilnică a asistentului, și nu atinge evidența.
+
+  **După aplicare: fiecare rută care scrie `validata` direct cere `admin_firma`.** Măsurat, nu declarat.
+
+- **NU E O CLASĂ NOUĂ.** Cele trei care scriau `validata` direct sunt exact bugul pe care **R33 l-a reparat pe 25.08** la nota de salarii — antetul lui `core/salarii_contare.py` îl scrie: *„status='validata' direct — ocolea patru-ochi"*. Trei instanțe rămăseseră nereparate. **Generalizarea pe clasă nu s-a făcut atunci**, iar asta e chiar pasul 2 din ciclul de neconformitate.
+
 - **condiția de deblocare**: **decizia lui Costin** — care e criteriul pentru „operațiune care scrie evidență contabilă”? Cele **40** primesc apoi același tratament, iar `core/test_trasee.py` primește un test care asertează pe **nume** care cer rol (un clichet pe număr ar trece și dacă s-ar inversa între ele). **Prima instanță de rezolvat, oricare ar fi criteriul: `achizitie-agricultor`**, care rupe singurul tipar existent.
 
 ### R56 — Trei rute manipulează credențiale ale unor sisteme externe, fără rol
@@ -1508,9 +1536,30 @@ scos ce nu se știa**, nu din defecte noi.
 - **deschisă pe commit**: `e47b60e`
 - **măsurat la**: 2026-08-26 · **pe commit**: `e47b60e`
 - **planul**: NEACOPERIT, la fel ca R55 — planul nu repartizează operațiuni pe roluri. Cel mai aproape e **P12** (izolarea datelor firmei), dar cheile nu sunt *date ale firmei*, sunt **mijloace de acces** la sisteme terțe; distincția nu e scrisă nicăieri. (METODA §25)
-- **ce blochează**: observația lui Costin, verbatim: *„Cheile de acces la sisteme externe nu sunt date de firmă — sunt credențiale."* Cele trei: `POST /tenants/{}/reges-config` (scrie `reges_chei`) · `POST /tenants/{}/reges-poll` (consumă coada REGES) · `PUT /tenants/{}/woocommerce/config` (scrie `firma_profil`). Toate pe `cere_cabinet`, fără rol fin.
+- **ce blochează**: observația lui Costin, verbatim: *„Cheile de acces la sisteme externe nu sunt date de firmă — sunt credențiale."*
+
+  **CIFRA MEA ERA GREȘITĂ: sunt DOUĂ rute, nu trei.** `PUT /woocommerce/config` **avea deja** `admin_firma`, aplicat pe 25.08 prin R42 (d) — *„pornirea și oprirea unui canal cer `admin_firma`"* — iar registrul o scrie corect acolo. Am măsurat garda cu un **grep pe CALE**, iar pe aceeași cale există și un `GET` (citirea configurației), care chiar e `cere_context`. **Am citit garda GET-ului și am scris-o în dreptul PUT-ului.**
+
+  **De ce n-a ajuns răspunsul la restanță — verificat, cum a cerut Costin.** Nu registrul a tăcut și nu decizia s-a pierdut: **decizia a ajuns și e aplicată**. Ce n-a ajuns e măsurătoarea mea, iar nimic n-a contrazis-o fiindcă **lotul 2 nu purta garda**. De la lotul 3, o poartă — și tocmai de aceea a cerut-o. Dacă lotul 2 ar fi avut-o, eroarea s-ar fi văzut în aceeași propoziție în care am scris-o.
+
+  Rămân, și au primit `admin_firma` azi: `POST /reges-config` (scrie `reges_chei`) și `POST /reges-poll` (consumă coada REGES).
 - **ce NU e**: nu e o scurgere — niciuna nu întoarce cheile în răspuns (verificarea e scrisă la pașii lor în `TRASEE_VERIFICARI.md` și rămâne de exercitat).
-- **condiția de deblocare**: decizia — credențialele externe cer `admin_firma`, sau un drept fin propriu? Apoi gardă pe nume, ca la R55.
+- **DECIZIA (Costin, 26.08.2026): `admin_firma`, nu drept fin.** *„Un drept nou e un al doilea sistem de autorizare de întreținut, iar cele trei rute nu justifică unul."* **APLICAT** pe cele două rămase.
+- **condiția de deblocare**: decizia e **aplicată** — toate rutele care ating credențiale externe cer `admin_firma`, verificat pe metodă, nu pe cale. Restanța rămâne **DESCHISĂ** fiindcă mai lipsește partea care o ține: un test care asertează pe **nume** că exact acelea cer rolul. Fără el, o rută nouă l-ar putea rata fără să pice nimic — iar eu tocmai am arătat că măsurătoarea manuală se poate înșela.
+
+### R57 — Calea de API emite facturi fără poarta de gestiune pe care o are ecranul
+
+- **felul**: ORDINE
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · TRASEE T02 · P4 · **PRAG 2** *(`public.api_chei` = 0 — nicio cheie n-a fost creată vreodată, deci efectul n-a fost produs)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `ba72b39`
+- **măsurat la**: 2026-08-26 · **pe commit**: `ba72b39`
+- **planul**: NEACOPERIT. `PLAN_ARHITECTURA` cere la **P4** ca documentul emis să fie fapt înghețat, și la **Partea V** ca interfața cu exteriorul să aibă componente separate — dar nu spune ce se întâmplă când **aceeași operațiune** are două căi de intrare cu porți diferite. Cel mai aproape e **interdicția 15** („reguli diferite la previzualizare față de salvare"), care e despre același gest în două momente, nu despre același gest pe două căi. (METODA §25)
+- **ce blochează**: `POST /api/v1/firme/{id}/facturi` și `POST /tenants/{id}/facturi/emite` cheamă **aceeași** `emite_factura`. Două diferențe erau **defecte și s-au reparat azi** (`platitor_tva` venea din corpul cererii peste faptul din `firma_profil`; numele beneficiarului nu era cerut). A treia **nu e defect, e decizie**: ruta din ecran are poarta *„pleacă marfa acum?"* — care decide dacă se descarcă gestiunea — iar pe o cale neinteractivă nu se poate pune fără să alegem în locul integratorului.
+- **ce NU e**: nu e ocolire de rol. `cere_api_key` chiar n-are rol, dar cheia se creează doar prin `POST /cabinet/api-chei`, care cere `admin_firma`: e **delegare explicită**, nu escaladare — un `angajat` nu-și poate face singur cheie. Iar `_api_schema` verifică apartenența firmei la cabinetul cheii.
+- **condiția de deblocare**: decizia — pe calea de API, o factură cu linie de stoc **descarcă gestiunea implicit**, **nu o descarcă implicit**, sau **se refuză** fără un câmp explicit în corp? Se închide când cele două căi au aceeași poartă sau o diferență scrisă în contractul API.
 
 ### R40 — Nicio declarație depusă prin aplicație, deci lanțul de apărare nu e exercitat niciodată
 

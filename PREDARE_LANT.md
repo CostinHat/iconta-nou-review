@@ -4,8 +4,8 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-26**, *a doua din ziua asta*
-- **pe commit**: `e47b60e`
+- **ultima rescriere**: **2026-08-26**, *a treia din ziua asta*
+- **pe commit**: `ba72b39`
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire, nu la câteva zile.** Regula e
   scrisă aici fiindcă a fost încălcată de trei ori. Prima dată (22.08) versiunea veche conținea trei
   afirmații false. A doua oară (24→25.08) a rămas **38 de commituri** în urmă. A treia oară e **azi**:
@@ -79,7 +79,7 @@ Ziua a avut trei jumătăți; astea sunt cele care contează pentru cine continu
    inventarul de trasee e o **hartă a codului**, nu o listă de verificare. E cel mai mare lucru rămas,
    și **nu e muncă de-a mea**. **Cadența, fixată 25.08: un lot pe tură** — eu dau lotul
    (`scan_trasee.py --loturi N`), el scrie verificările în fișier, apoi trec la următorul.
-   **Loturile 1 și 2 sunt SCRISE** (60 de locuri completate, **132 rămase**). **Lotul 3 e dat**,
+   **Loturile 1, 2 și 3 sunt SCRISE** (90 de locuri completate, **102 rămase**). **Lotul 4 e dat**,
    în forma nouă. **Din 26.08 lotul poartă și GARDA fiecărui pas** (`garda X · rol:… · drept:…`),
    nu doar efectul — cerut de Costin, fiindcă altfel cine scrie verificarea trebuie s-o caute în
    alt fișier. Loturile 1 și 2 au fost date fără ea. **Rândul `*ce face:*` distinge** ce e măsurat pe rută (`scrie …`)
@@ -173,4 +173,7 @@ Măsurat 25.08, pe toate cele 17 firme:
   stricat trei într-un fișier pe care încerca să-l repare.
 - **Nu citi „STABIL" din `baseline_scan` ca pe o comparație.** În modul implicit e **self-diff** între
   două capturi din aceeași rulare. Pentru comparație: `--compare`. Instanța e a mea, în raportul de ieri.
+- **Nu măsura o gardă cu un grep pe CALE.** Pe aceeași cale pot exista `GET` și `PUT` cu gărzi
+  diferite — iar tu o vei citi pe prima. Instanța: am scris „`woocommerce/config` fără rol" citind
+  garda GET-ului, când PUT-ul avea `admin_firma` din 25.08. Se măsoară pe **metodă + cale**.
 - **Nu amâna rescrierea predării fiindcă ai raportat-o.** Vezi antetul.

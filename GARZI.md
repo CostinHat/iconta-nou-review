@@ -4870,3 +4870,32 @@ dacă referința e **NOUĂ** sau **RESCRISĂ**, și scrie în antet că `FLAKINE
 comparație. Motivul lui Costin: *„azi absența ar da vid, iar vidul arată ca stabilitate."*
 **Instanța e a mea:** am raportat „STABIL 0px" pentru un ecran nou ca și cum ar fi fost o
 comparație, și era self-diff.
+
+## Lanțul plan-conturi → jurnal → validare, închis (26.08.2026)
+
+**Ce a arătat măsurătoarea, și e mai important decât rolurile puse:** din **40** de rute care scriu
+în `inregistrari_linii` în corpul lor, **36 scriu `ciorna`** — propun, nu produc evidență. Doar
+**3** scriau `validata` direct, sărind peste validare: `amortizare`, `bonuri/{id}/aproba`,
+`horeca/raport-z`. Toate trei au primit `admin_firma`.
+
+**Deci poarta reală nu e pe cele 36, e la VALIDARE** — `POST /jurnal/{id}/valideaza`, care cere de
+azi `admin_firma`. Plus `POST /plan-conturi`, fiindcă cine adaugă un cont poate face să treacă
+orice refuz al lui `cont_valid` (R54).
+
+**Nu e o clasă nouă:** cele trei sunt exact bugul reparat de R33 la nota de salarii pe 25.08
+(*„status='validata' direct — ocolea patru-ochi"*), rămas negeneralizat în trei locuri.
+
+**Ce NU face, declarat:** nu există încă un test care să asertea pe **nume** că exact rutele care
+scriu `validata` cer rol. Azi e o măsurătoare, nu un clichet — și se spune.
+
+## Ruta de API nu mai primește un fapt al firmei din corpul cererii (26.08.2026)
+
+`POST /api/v1/firme/{id}/facturi` lua **`platitor_tva` din corpul cererii**, implicit `True`, în
+timp ce ruta din ecran îl citește din `firma_profil`. Valoarea decide **cota de pe liniile
+facturii** (`_potriveste_linii` → `cote_tva.potriveste_cota`): un integrator care n-o trimitea ar
+fi facturat cu TVA o firmă **neplătitoare**. Interdicția **45** (P20). Reparat: se citește din
+firmă. Plus numele beneficiarului, care nu era cerut.
+
+**Măsurat înainte de reparație: `public.api_chei` = 0** — nicio cheie n-a fost creată vreodată,
+deci efectul n-a fost produs. **Ce rămâne diferit, declarat:** poarta „pleacă marfa acum?" nu se
+poate pune pe o cale neinteractivă fără să alegem în locul integratorului — R57.

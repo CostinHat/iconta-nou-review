@@ -2098,3 +2098,8 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
 - **Fereastra de detecție a gardului, corectată în aceeași zi**: privea doar înainte, deci raporta
   ca nelegată chiar citirea pe care tocmai o legasem (forma `x = cere_cont(conn, schema,` pe un
   rând, argumentul pe următorul). Un gard care nu se vede pe sine.
+
+- **Niciun gard nou (26.08.2026, tura a treia)** — s-au pus **roluri**, nu verificări. Ce ar trebui
+  cablat, și se scrie ca să nu se piardă: un test care asertează pe **nume** că exact rutele care
+  scriu `validata` direct cer rol (azi sunt 3, măsurate), și unul pentru credențialele externe
+  (R56). Un clichet pe **număr** ar trece și dacă s-ar inversa între ele.

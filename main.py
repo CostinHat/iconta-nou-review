@@ -1744,7 +1744,12 @@ class PlanContIn(BaseModel):  # [p95_plan_conturi]
 
 
 @app.post("/tenants/{tenant_id}/plan-conturi")  # [p95_plan_conturi] adauga cont nou (analitic/nestandard)
-def tenant_plan_conturi_adauga(tenant_id: int, date: PlanContIn, ctx=Depends(cere_context)):
+# [R55, 26.08.2026] Rolul e AICI, nu doar la validarea notei. Motivul, al lui Costin: refuzul pe
+# cont inexistent (R54) „nu apara nimic daca oricine poate adauga contul". Planul de conturi e
+# nomenclator de registru (PLAN_ARHITECTURA Partea III), iar a-l extinde e o decizie despre ce
+# poate inregistra firma — nu o completare de formular.
+def tenant_plan_conturi_adauga(tenant_id: int, date: PlanContIn,
+                               ctx=Depends(cere_rol("admin_firma"))):
     schema = _schema_sau_404(ctx, tenant_id)
     simbol = (date.simbol or "").strip()
     denumire = (date.denumire or "").strip()
@@ -3773,7 +3778,13 @@ class BonAproba(BaseModel):
     tva: float = 0
     linii: list[BonLinie]
 @app.post("/tenants/{tenant_id}/bonuri/{bon_id}/aproba")
-def bon_aproba(tenant_id: int, bon_id: int, b: BonAproba, ctx=Depends(cere_cabinet)):
+# [R55, 26.08.2026] Rolul e aici fiindca ruta scrie nota `validata` DIRECT — deci produce
+# EVIDENTA, nu o propunere, si sare peste poarta de validare. Din cele 40 de rute care scriu
+# in `inregistrari_linii`, 36 scriu `ciorna`; astea trei nu. E aceeasi clasa pe care R33 a
+# reparat-o la nota de salarii (vezi antetul `core/salarii_contare.py`: „status='validata'
+# direct -- ocolea patru-ochi"), ramasa nereparata in trei locuri.
+def bon_aproba(tenant_id: int, bon_id: int, b: BonAproba,
+               ctx=Depends(cere_rol("admin_firma"))):
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -3879,7 +3890,13 @@ def salarii_contare_scrie(tenant_id: int, an: int, luna: int, ctx=Depends(cere_c
 
 
 @app.post("/tenants/{tenant_id}/amortizare")
-def tenant_amortizare(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+# [R55, 26.08.2026] Rolul e aici fiindca ruta scrie nota `validata` DIRECT — deci produce
+# EVIDENTA, nu o propunere, si sare peste poarta de validare. Din cele 40 de rute care scriu
+# in `inregistrari_linii`, 36 scriu `ciorna`; astea trei nu. E aceeasi clasa pe care R33 a
+# reparat-o la nota de salarii (vezi antetul `core/salarii_contare.py`: „status='validata'
+# direct -- ocolea patru-ochi"), ramasa nereparata in trei locuri.
+def tenant_amortizare(tenant_id: int, an: int, luna: int,
+                      ctx=Depends(cere_rol("admin_firma"))):
     """Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ."""
     from datetime import date as _date
     from decimal import Decimal as D
@@ -4130,7 +4147,13 @@ async def horeca_import_amef(tenant_id: int, fisier: UploadFile = File(...), ctx
             "numerar": str(numerar), "card_altele": str(rest)}
 
 @app.post("/tenants/{tenant_id}/horeca/raport-z")
-def horeca_raport_z(tenant_id: int, rz: RaportZ, ctx=Depends(cere_cabinet)):
+# [R55, 26.08.2026] Rolul e aici fiindca ruta scrie nota `validata` DIRECT — deci produce
+# EVIDENTA, nu o propunere, si sare peste poarta de validare. Din cele 40 de rute care scriu
+# in `inregistrari_linii`, 36 scriu `ciorna`; astea trei nu. E aceeasi clasa pe care R33 a
+# reparat-o la nota de salarii (vezi antetul `core/salarii_contare.py`: „status='validata'
+# direct -- ocolea patru-ochi"), ramasa nereparata in trei locuri.
+def horeca_raport_z(tenant_id: int, rz: RaportZ,
+                    ctx=Depends(cere_rol("admin_firma"))):
     from decimal import Decimal as D
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -5181,7 +5204,24 @@ def plata_confirma(ref: str):
 
 @app.post("/api/v1/firme/{tenant_id}/facturi")  # api_public_v1
 def apiv1_factura_emite(tenant_id: int, corp: dict = Body(...), actx=Depends(cere_api_key)):
+    # [26.08.2026] DOUA DIFERENTE FATA DE RUTA DIN ECRAN, amandoua reparate aici.
+    #
+    # (1) `platitor_tva` venea DIN CORPUL CERERII, cu implicit `True`. E un FAPT DESPRE FIRMA,
+    #     nu despre cerere: intra in `_potriveste_linii` -> `cote_tva.potriveste_cota`, deci
+    #     decide COTA de pe liniile facturii. Un integrator care nu-l trimite ar fi facturat cu
+    #     TVA o firma neplatitoare. Ruta din ecran il citeste din `firma_profil`
+    #     (`_platitor_tva_firma`); acum si aceasta. E interdictia 45 (P20): o valoare intrata
+    #     din afara, fara sursa si grad de certitudine, peste un fapt pe care il stim.
+    #     Masurat inainte de reparatie: `public.api_chei` = 0, deci efectul n-a fost produs.
+    # (2) Numele beneficiarului nu era cerut, desi ruta din ecran il refuza explicit — iar o
+    #     factura fara beneficiar nu e factura.
+    #
+    # CE RAMANE DIFERIT, DECLARAT: poarta „pleaca marfa acum?" (descarcarea gestiunii) nu se
+    # poate pune pe o cale neinteractiva fara sa alegem in locul integratorului. E o decizie de
+    # produs, consemnata, nu una tehnica.
     schema = _api_schema(actx, tenant_id)
+    if not str(corp.get("tert_nume") or "").strip():
+        raise HTTPException(422, "Denumirea beneficiarului e obligatorie pe factură.")
     with db.get_conn(schema) as conn:
         r = facturi_api.emite_factura(
             conn,
@@ -5193,7 +5233,7 @@ def apiv1_factura_emite(tenant_id: int, corp: dict = Body(...), actx=Depends(cer
             data_emitere=corp.get("data_emitere"),
             data_scadenta=corp.get("data_scadenta"),
             moneda=corp.get("moneda", "RON"),
-            platitor_tva=corp.get("platitor_tva", True),
+            platitor_tva=_platitor_tva_firma(conn),
             status=corp.get("status", "de_preluat"),
             curs_manual=corp.get("curs_manual"),
             tip=corp.get("tip", "factura"),
@@ -6385,7 +6425,11 @@ def jurnal_sterge(tenant_id: int, nota_id: int, ctx=Depends(cere_cabinet)):
         return _jurnal_rez(_j.sterge(conn, schema, nota_id))
 
 @app.post("/tenants/{tenant_id}/jurnal/{nota_id}/valideaza")
-def jurnal_valideaza(tenant_id: int, nota_id: int, ctx=Depends(cere_cabinet)):
+# [R55, 26.08.2026] Validarea e pasul care transforma o CIORNA in EVIDENTA — deci intra sub
+# criteriul „ce schimba ce datoreaza firma" (R42, extins). Crearea, editarea si stergerea raman
+# pe `cere_cabinet`: citite la sursa, `jurnal_api.editeaza` si `.sterge` refuza orice nota care
+# nu e `ciorna`, deci nu ating evidenta. E munca zilnica a asistentului.
+def jurnal_valideaza(tenant_id: int, nota_id: int, ctx=Depends(cere_rol("admin_firma"))):
     from core import jurnal_api as _j
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -7849,7 +7893,12 @@ def factura_primita_respinge(tenant_id: int, primita_id: int, corp: dict = Body(
 
 
 @app.post("/tenants/{tenant_id}/reges-config")
-def reges_config(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+# [R56, 26.08.2026] Cheile de acces la un sistem extern nu sunt date ale firmei — sunt
+# CREDENTIALE. Costin: *„admin_firma, nu drept fin. Un drept nou e un al doilea sistem de
+# autorizare de intretinut, iar cele trei rute nu justifica unul."* Acelasi criteriu ca la
+# R42 (d), pornirea/oprirea unui canal — deja aplicat pe `PUT /woocommerce/config`.
+def reges_config(tenant_id: int, corp: dict = Body(...),
+                 ctx=Depends(cere_rol("admin_firma"))):
     """corp: {username, parola, mediu test|prod}. Chei API din aplicatia REGES Angajator."""
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -7912,7 +7961,11 @@ def reges_trimite_salariat(tenant_id: int, corp: dict = Body(...),
 
 
 @app.post("/tenants/{tenant_id}/reges-poll")
-def reges_poll(tenant_id: int, ctx=Depends(cere_cabinet)):
+# [R56, 26.08.2026] Cheile de acces la un sistem extern nu sunt date ale firmei — sunt
+# CREDENTIALE. Costin: *„admin_firma, nu drept fin. Un drept nou e un al doilea sistem de
+# autorizare de intretinut, iar cele trei rute nu justifica unul."* Acelasi criteriu ca la
+# R42 (d), pornirea/oprirea unui canal — deja aplicat pe `PUT /woocommerce/config`.
+def reges_poll(tenant_id: int, ctx=Depends(cere_rol("admin_firma"))):
     """Citeste+consuma un mesaj din coada REGES; salveaza referintele in reges_mesaje."""
     from core import reges_client as _rg
     import re as _re

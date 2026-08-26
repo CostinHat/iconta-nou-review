@@ -5338,3 +5338,24 @@ doar lista de rute."* Avea dreptate de doua ori.
 - **Lectia, pentru mine:** un domeniu luat din **numele** unui grup nu e un domeniu masurat. E a
   doua oara in doua zile cand o cifra a mea se corecteaza fiindca plecase de la un nume, nu de la
   cod (prima: „a doua implementare a aceleiasi verificari", la R33).
+
+### 26.08.2026, tura a patra — lanțul închis, și două cifre de-ale mele corectate
+
+- **Lanțul `plan-conturi` → `jurnal` → validare e închis.** Rol pe adăugarea contului și pe
+  validare; crearea/editarea/ștergerea rămân fără rol, cu motivul citit la sursă (sunt ciorne).
+- **Măsurătoarea care a schimbat întrebarea:** din **40** de rute care scriu în
+  `inregistrari_linii` în corpul lor, **36 scriu `ciorna`**. Deci criteriul lui Costin nu li se
+  aplică — o ciornă nu schimbă ce datorează firma. Trei scriau `validata` **direct**, sărind peste
+  validare: `amortizare`, `bonuri/{id}/aproba`, `horeca/raport-z`. Toate trei au primit rol.
+  **Nu e clasă nouă:** e exact bugul reparat de R33 la nota de salarii pe 25.08, rămas
+  negeneralizat în trei locuri.
+- **R56: cifra mea era greșită — două rute, nu trei.** `PUT /woocommerce/config` avea deja rolul
+  din 25.08. Am măsurat garda cu un grep **pe cale**, iar pe aceeași cale există și un `GET`, care
+  chiar e `cere_context`. Am citit garda GET-ului și am scris-o în dreptul PUT-ului. Costin ceruse
+  *„verifică de ce"* — și răspunsul e că decizia lui ajunsese; măsurătoarea mea nu.
+- **Ruta de API lua `platitor_tva` din corpul cererii**, peste faptul din `firma_profil`. Decide
+  cota de pe liniile facturii: un integrator care n-o trimitea ar fi facturat cu TVA o firmă
+  neplătitoare. Interdicția 45. Reparat. `api_chei` = 0, deci efectul n-a fost produs.
+- **Lotul 3 scris**: 90 din 192 completate.
+- **A treia zi la rând în care o cifră de-a mea se corectează fiindcă am măsurat pe un PROXY în
+  loc de lucru**: numele funcției (R33), numele grupului (R55), calea fără metodă (R56).
