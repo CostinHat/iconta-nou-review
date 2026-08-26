@@ -1825,6 +1825,45 @@ scos ce nu se știa**, nu din defecte noi.
 - **ce NU vede măsurătoarea**: câte schimbări de vector s-au făcut **deja** peste declarații depuse. `firma_profil` n-are istoric al vectorului — se scrie peste — deci întrebarea *s-a întâmplat vreodată?* nu se poate pune pe date. Dacă răspunsul contează, istoricul trebuie să existe înainte, iar aia e o construcție separată.
 - **condiția de deblocare**: la schimbarea vectorului sau a regimului, declarațiile depuse din intervalul atins sunt **numite** — nu numărate — iar starea lor devine vizibilă acolo unde se vede declarația, nu doar în răspunsul rutei. Se închide când o schimbare de regim pe o firmă cu declarații depuse produce o contradicție pe care contabilul o vede fără s-o caute, cu gard.
 
+### R70 — O rută poate fi scrisă, gardată și verde, fără ca nimic s-o cheme
+
+- **felul**: VERIFICARE
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · TRASEE · METODA §22 · **PRAG 2** *(măsurat: **5 din 193** de pași n-au apelant în `static/`; unul e declarat în cod ca intenționat, patru nu)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `0851725`
+- **măsurat la**: 2026-08-26 · **pe commit**: `0851725`
+- **planul**: **NEACOPERIT.** `PLAN_ARHITECTURA.md` descrie ciclul unui **document** și regulile registrului; nu spune nicăieri că o cale de cod trebuie să fie **ajunsă**. Cel mai aproape ca formă e **P13** (*ecranul spune una, serverul face alta*), dar acolo cele două există și se contrazic; aici a doua nu e chemată deloc. (METODA §25)
+- **ce blochează**: instanța e a mea și e de ieri. Ruta `POST /public/confirma-email` a fost scrisă, i s-a construit **gardul** (`test_portal_acces.py` verifică că aplică schimbarea și că reconfruntă adresa), a trecut **toată** suita, a intrat prin poarta verde — și **nimic n-o chema**. Linkul din email ducea în SPA cu fragmentul `#email-nou=`, pe care `app.js` nu-l cunoștea; SPA randa pagina publică, iar tokenul rămânea neconsumat. Verificat pe date după probă: `schimbari_email.confirmat_la` = **NULL**, `users.email` neschimbat, `urme_portal` cu `email_cerut` și fără `email_confirmat`.
+- **de ce n-a văzut-o nicio gardă**: toate gărzile pe care le-am construit verifică ce face ruta **dacă e chemată**. Niciuna nu întreabă **dacă e chemată**. E aceeași formă cu *coloana și calea ei de scriere*, mutată un nivel mai sus: **ruta și calea ei de apelare intră împreună**.
+- **măsurat, ca să nu rămână la instanță**: din cele **193** de rute care schimbă date, **5** n-au niciun apelant în `static/` — `banca/parse-extras`, `calcul-cm`, `import-efactura`, `s1003-valideaza`, `s1005-valideaza`. Prima e **declarată** în cod: *`[api_intern_v1] parsare extras la upload - fara UI inca, pastrat deliberat`*. Celelalte patru nu spun nimic. Deci clasa are membri legitimi, iar un instrument are nevoie de o cale de **declarare**, ca `NEDOCUMENTARE` la trasee — altfel ar cere ștergerea a ce e păstrat intenționat.
+- **ce NU vede măsurătoarea**: caută ultimul segment al căii în textul din `static/`. O rută chemată printr-o cale **compusă la rulare** (`"/tenants/" + id + sufix`) n-ar fi găsită — deci cifra 5 e un **plafon superior** al celor fără apelant, nu un număr exact. Aceeași limită ca la celelalte scanuri pe text din zilele astea, a patra oară.
+- **condiția de deblocare**: decizia lui Costin între **(a)** gard cu clichet pe 5 și cale de declarare pentru cele intenționate — cele patru nedeclarate se declară sau se scot; **(b)** doar cele patru se lămuresc acum, iar gardul se face după; **(c)** altceva. Se închide când *o rută nouă fără apelant* nu mai poate trece poarta tăcut.
+
+### R71 — Ce a scos prima exercitare pe date: șapte lucruri pe care nicio gardă nu le vede
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · TRASEE T35 · DS cap.6 · **PRAG 3** *(niciunul nu produce o cifră falsă; toate produc un om care nu înțelege ce s-a întâmplat)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `0851725`
+- **măsurat la**: 2026-08-26 · **pe commit**: `0851725`
+- **planul**: **ACOPERIT ca principiu, neacoperit ca listă.** `DESIGN_SYSTEM cap.6` cere validări preventive **cu mesaj explicativ**, iar P13 cere ca ecranul și serverul să spună același lucru. Cele șapte sunt instanțe, nu o clasă nouă. (METODA §25)
+- **ce blochează**: Costin a parcurs cei opt pași ai probei R62 pe o firmă de test și a adus **șapte observații**, consemnate aici ca listă închisă, în ordinea în care le-a întâlnit:
+  1. **Refuzul despre email apare sub câmpul de CUI** la crearea firmei — omul se uită la câmpul greșit.
+  2. **Lista nu confirmă crearea firmei**, iar contorul rămâne pe cifra veche până la reîncărcare. *(REPARAT 26.08 — vezi mai jos: era cauza a ceea ce părea al doilea defect.)*
+  3. **Ghidul de bun venit apare și în portalul clientului**, cu pașii cabinetului (migrare, vector fiscal, solduri, salariați). Clientul nu face niciunul.
+  4. **Fereastra „Acces cont” se deschide parțial sub marginea ecranului** — butoanele nu se văd fără micșorarea paginii.
+  5. **Mesajul „link expirat sau folosit” nu distinge două lucruri diferite** — cine l-a folosit deja crede că a pierdut cele 48 de ore.
+  6. **Emailul de confirmare a adresei nu spune că linkul e de unică folosință**, deși cel de logare o spune. Mențiunea lipsește exact unde contează mai mult.
+  7. **Butonul „Trimis ✓” nu se resetează** când se schimbă adresa în câmp — rămâne confirmat de la cererea anterioară și nu se poate apăsa.
+- **5 și 6 merg împreună** *(Costin)*: mesajul care distinge *folosit* de *expirat*, și mențiunea în email că linkul e de unică folosință.
+- **ȘI O REÎNCADRARE, măsurată pe date**: ce părea *al doilea defect* — *firma se creează în ciuda refuzului afișat* — **nu e asta**. Poarta de duplicat **există și funcționează**: `tenant_provisioning` refuză cu `ValueError` → 400, per cabinet. Verificat pe date: cele două firme `PROBA PORTAL SRL` au CUI-uri **diferite** (`14399840` la 18:58:07 și `2816464` la 19:02:26), amândouă sub cabinetul 1968 — deci a doua **nu era** un duplicat. Reconstituirea: prima apăsare a creat firma **în tăcere** (observația 2), omul n-a putut ști că a mers, a apăsat din nou, iar poarta a refuzat **corect** — dar refuzul a **arătat** ca și cum ar fi fost ignorat, fiindcă firma exista deja. **Cauza nu e poarta, e tăcerea de după succes.** Reparat azi: crearea se confirmă, iar lista se reîncarcă înainte de confirmare.
+- **ce NU vede măsurătoarea**: n-am reprodus fiecare din cele șapte pe cont propriu — sunt observațiile lui, notate ca atare. Trei dintre ele (1, 4, 7) sunt de așezare sau de stare a ecranului, iar acolo verificatorul nu ajunge — clasa e declarată nemăsurabilă în CLAUDE.md.
+- **condiția de deblocare**: se închide când toate șapte sunt **reparate sau retrase, una câte una** — nu ca grup. Costin a cerut explicit: *„consemnează-le. Nu le repara acum.”* Prima (2) e deja închisă, fiindcă era cauza unui defect dovedit.
+
 ### R40 — Nicio declarație depusă prin aplicație, deci lanțul de apărare nu e exercitat niciodată
 
 - **felul**: VERIFICARE

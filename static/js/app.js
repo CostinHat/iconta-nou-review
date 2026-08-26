@@ -24,6 +24,22 @@ function _bannerLoginEroare(txt) {
   setTimeout(() => { if (b.parentNode) b.remove(); }, 12000);
 }
 
+/* [R62, 26.08.2026] Fratele pozitiv al bannerului de mai sus. A lipsit, iar lipsa lui a
+   ascuns un defect de prag 1: linkul de confirmare a adresei ducea pe pagina publica FARA
+   NICIUN MESAJ, iar clientul credea ca si-a schimbat adresa. O confirmare tacuta e chiar
+   ce ascunde un esec — si chiar ce a ascuns unul real, gasit prin exercitare pe date. */
+function _bannerLoginBine(txt) {
+  const vechi = document.getElementById("login-boot-bine");
+  if (vechi) vechi.remove();
+  const b = document.createElement("div");
+  b.id = "login-boot-bine";
+  b.className = "caseta-info";   /* albastru-pal: confirmare, nu atentionare */
+  b.style.cssText = "position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:99999;max-width:min(520px,92vw)";
+  b.innerHTML = `<div class="ci-mesaj">${txt}</div>`;   /* clasa proprie casetei-info */
+  document.body.appendChild(b);
+  setTimeout(() => { if (b.parentNode) b.remove(); }, 12000);
+}
+
 window.addEventListener("error", (e) => _bannerEroareGlobala(e.error || e.message));
 window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reason));
 
@@ -126,6 +142,26 @@ function randeaza() {
         location.reload();
       })
       .catch(() => { randeaza(); _bannerLoginEroare("Nu am putut finaliza logarea prin link (probabil o problema de retea). Reincearca, sau intra cu emailul si parola."); });
+    return;
+  }
+  /* [R62, 26.08.2026] Confirmarea schimbarii de adresa. Ruta si gardul ei existau de ieri;
+     ce lipsea era CHEMAREA — linkul din email ducea in SPA, iar SPA nu stia fragmentul, deci
+     randa pagina publica si tokenul ramanea neconsumat. Ruta si calea ei de apelare intra
+     impreuna, exact ca o coloana si calea ei de scriere. */
+  const _eml = (location.hash.match(/#email-nou=([\w-]+)/) || [])[1];
+  if (_eml) {
+    location.hash = "";
+    fetch("/public/confirma-email", { method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ token: _eml }) })
+      .then((r) => r.json().then((d) => ({ ok: r.ok, d })))
+      .then(({ ok, d }) => {
+        randeaza();
+        if (!ok) { _bannerLoginEroare(d.detail || "Nu am putut confirma adresa."); return; }
+        _bannerLoginBine("Adresa a fost schimbată în <b>" + (d.email || "adresa nouă")
+          + "</b>. De acum intri în portal cu ea.");
+      })
+      .catch(() => { randeaza(); _bannerLoginEroare("Nu am putut confirma adresa (probabil o problemă de rețea). Deschide din nou linkul din email."); });
     return;
   }
   const _hp = new URLSearchParams(location.hash.slice(1));  /* [F-preview] #acces=<token>&u=<json user> */

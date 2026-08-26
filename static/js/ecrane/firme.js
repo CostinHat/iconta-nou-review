@@ -92,7 +92,14 @@ export function randeazaListaFirme(container, nav, inapoi) {
         try {
           const rT = await api.post("/tenants", { nume: nume.value.trim(), cui: cui.value.replace(/\D/g, ""), tip_firma: corp.querySelector("#fn-tip").value });  /* [tip_firma_v1] */
           if (emailCl) await api.post(`/tenants/${rT.tenant_id}/client-acces`, { email: emailCl, nume: "" });
-          nav.inapoi(); incarca();
+          /* [26.08.2026] Crearea SE CONFIRMA. Pana azi formularul se inchidea in tacere, iar
+             omul nu putea sti daca a mers — deci apasa din nou. A doua apasare era refuzata
+             corect de poarta de CUI duplicat, iar refuzul ARATA ca si cum ar fi fost ignorat:
+             firma exista deja, fiindca prima apasare o crease. Cauza n-a fost poarta, ci
+             tacerea de dupa succes. Exercitat pe date 26.08: doua firme create in 4 minute. */
+          nav.inapoi();
+          await incarca();
+          _bannerFirmaCreata(nume.value.trim());
         } catch (e) {
           info.textContent = e.mesaj || e.message || "Eroare la creare.";
           btn.disabled = false; btn.textContent = "Adaugă firma";
@@ -2172,6 +2179,20 @@ async function ecranBanca(corp, nav, t) {
   });
 
   incarca();
+}
+
+/* Confirmarea crearii unei firme. Acelasi mecanism ca bannerul de la confirmarea adresei
+   (app.js): un act care schimba starea si nu spune nimic il face pe om sa-l repete. */
+function _bannerFirmaCreata(nume) {
+  const vechi = document.getElementById("firma-creata-bine");
+  if (vechi) vechi.remove();
+  const b = document.createElement("div");
+  b.id = "firma-creata-bine";
+  b.className = "caseta-info";
+  b.style.cssText = "position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:99999;max-width:min(520px,92vw)";
+  b.innerHTML = `<div class="ci-mesaj">Firma <b>${esc(nume)}</b> a fost creată și apare în listă.</div>`;
+  document.body.appendChild(b);
+  setTimeout(() => { if (b.parentNode) b.remove(); }, 8000);
 }
 
 // [horeca] Raport Z zilnic
