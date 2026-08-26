@@ -5019,3 +5019,17 @@ E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pome
 **Locul a devenit o VALOARE cu nume**, `mesaje.UNDE_ADMINISTRATOR`, iar gardul asertează că mesajul e **compus din ea** — nu că fraza conține un anumit șir. Același tipar ca `cont_valid.UNDE_SE_CREEAZA` (clichetul 50 / METODA §23).
 
 **Ce NU face, declarat:** apără două documente, nu clasa; mulțimea artefactelor care tipăresc date de firmă n-a fost măsurată. Și nu probează pe date că ruta întoarce 422.
+
+## Ce decide ce se datorează nu se schimbă peste o lună închisă (26.08.2026, R46)
+
+**`core/test_regim_peste_perioada_inchisa.py`** — 5 teste. Poarta: `firma_profil_api.cere_perioade_deschise`, un loc unic, chemat din **cele trei** căi care ating câmpuri ce decid — vectorul, regimul de TVA, CUI-ul.
+
+**De unde vine:** R46 s-a **reaprins mecanic**. Condiția ei numea `firma_profil_api.py`, iar `test_reaprindere` a oprit un commit care atingea fișierul pentru altceva. Prima reaprindere reală de când mecanismul există.
+
+**Ce face imposibil:** una din cele trei căi care scrie fără să întrebe de perioade închise · lărgirea tăcută a mulțimii `CAMPURI_CARE_DECID` peste `CAMPURI_FISCALE`, sau golirea ei · un refuz care nu spune pe ce cale se face totuși schimbarea.
+
+**Jumătatea care contează la fel de mult:** refuzul se aplică **doar** câmpurilor care decid. Un telefon corectat pe o firmă cu ianuarie închis trece mai departe — altfel poarta ar bloca munca de zi cu zi ca să apere trecutul.
+
+**Măsurat, și măsurătoarea a fost un plafon:** 14 din 16 câmpuri sunt citite de generatoarele de declarații — dar *citit* nu e *decide*. Aplicând criteriul lui Costin a ieșit că **vectorul și regimul nu sunt în `CAMPURI_FISCALE`**, iar de acolo rămâne unul singur: `cui`.
+
+**Ce NU face, declarat:** nu acoperă a doua jumătate a condiției lui R46 — *declarații depuse pe regimul vechi* fără perioadă închisă. Poarta e pe perioada închisă, care e proxy-ul mecanic.

@@ -2695,6 +2695,11 @@ def firma_profil_regim_tva(tenant_id: int, date: RegimTvaIn, ctx=Depends(cere_ro
             row = cur.fetchone()
     anaf_val, avert, tva_inceput = _anaf_tva_check(row[0] if row else None, date.platitor_tva)
     with db.get_conn(schema) as conn:
+        # [R46] `platitor_tva` decide daca firma datoreaza D300/D394 si pe ce perioade.
+        try:
+            _fp.cere_perioade_deschise(conn, "Regimul de TVA")
+        except ValueError as e:
+            raise HTTPException(422, str(e))
         with conn.cursor() as cur:
             cur.execute("UPDATE firma_profil SET platitor_tva = %s", (date.platitor_tva,))
         if anaf_val is not None:                      # ANAF a raspuns -> reimprospateaza snapshot (+ data inceput TVA)

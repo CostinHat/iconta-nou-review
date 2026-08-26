@@ -117,6 +117,14 @@ def salveaza(conn_schema, regim_fiscal, platitor_tva, tip_decont, operatiuni_ic,
                         "mesaj": "Regim fiscal: alege microîntreprindere sau impozit pe profit (obligatoriu)."}
             regim = regim_in
         if exista:
+            # [R46, 26.08.2026] Vectorul DECIDE ce declaratii se datoreaza. Peste o perioada
+            # inchisa nu se schimba: ar rescrie ce s-a datorat pentru luni deja depuse. Calea
+            # ramane deschisa — redeschide perioada, schimba, inchide la loc.
+            from core import firma_profil_api as _fpa
+            try:
+                _fpa.cere_perioade_deschise(conn_schema, "Vectorul fiscal")
+            except ValueError as _e:
+                return {"ok": False, "cod": "PESTE_PERIOADA_INCHISA", "mesaj": str(_e)}
             cur.execute(
                 "UPDATE firma_profil "
                 "   SET regim_fiscal = %s, platitor_tva = %s, "

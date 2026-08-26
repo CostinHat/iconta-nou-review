@@ -90,6 +90,15 @@ MESAJ_CLIENT_ALT_CABINET = ("Adresa asta aparține unui cont dezactivat al altui
 # STRUCTURĂ: că mesajul e COMPUS din constanta asta, nu că fraza conține un anumit șir
 # (clichetul 50 / METODA §23). Același tipar ca `cont_valid.UNDE_SE_CREEAZA`.
 UNDE_ADMINISTRATOR = "Date firmă › Nume administrator"
+# [R46, 26.08.2026] Un câmp care decide CE SE DATOREAZĂ nu se schimbă peste o perioadă închisă:
+# ar rescrie trecutul pentru luni în care declarațiile s-au depus deja. Refuzul spune ce s-a
+# oprit, de ce, și pe ce cale se face totuși — trei acte consemnate în loc de unul tăcut.
+UNDE_PERIOADE = "Perioade blocate"
+MESAJ_PESTE_PERIOADA_INCHISA = (
+    "%(ce)s nu se poate schimba: firma are perioade închise (prima: %(an)s-%(luna)02d). "
+    "Câmpul ăsta decide ce se datorează, iar pentru lunile închise declarațiile s-au depus "
+    "deja — o schimbare peste ele ar rescrie trecutul. Dacă e nevoie: redeschide perioada din "
+    + UNDE_PERIOADE + ", cu motiv, schimbă, apoi închide la loc.")
 MESAJ_FARA_ADMINISTRATOR = ("%s nu se poate emite: lipsește numele administratorului. "
                             "Completează-l în " + UNDE_ADMINISTRATOR + ".")
 MESAJ_DOAR_TITULARUL = ("Doar titularul contului firmei poate face asta — titularul e primul cont de client al firmei. Cere-i lui, sau contabilului tău.")

@@ -6,7 +6,7 @@ Folosit de ecranul "Model factura": datele firmei (pt preview) + personalizare
 """
 from __future__ import annotations
 
-from core.mesaje import MESAJ_FARA_ADMINISTRATOR
+from core.mesaje import MESAJ_FARA_ADMINISTRATOR, MESAJ_PESTE_PERIOADA_INCHISA
 
 from core import afirmatii as _af  # [P8] blocajul numeste regula
 
@@ -225,6 +225,34 @@ def blocaje(conn, profil):
     return out
 
 
+# [R46] Ce DECIDE ce se datorează, nu ce doar apare pe declarație. Măsurat 26.08.2026: din cele
+# 16 câmpuri din `CAMPURI_FISCALE`, 14 sunt citite de generatoarele de declarații — dar aia e un
+# PLAFON, nu răspunsul: `telefon`, `adresa`, `judet` ajung în antetul formularului, nu în ce se
+# datorează. Costin a numit criteriul: *„vectorul, regimul, CUI-ul. Nu telefonul sau adresa de
+# corespondență."* Vectorul și regimul nu sunt în `CAMPURI_FISCALE` — trăiesc pe rutele lor.
+CAMPURI_CARE_DECID = ("cui",)
+
+
+def cere_perioade_deschise(conn, ce):
+    """[R46, 26.08.2026] Un câmp care decide ce se datorează nu se schimbă peste o perioadă închisă.
+
+    Decizia lui Costin, cu motivul: *„o schimbare de date fiscale ale firmei într-o perioadă închisă
+    nu e o corecție, e o rescriere a trecutului. Iar datele acelea decid ce declarații s-au datorat
+    pentru perioada aceea — declarații care s-au depus deja."*
+
+    De ce REFUZ și nu trecere consemnată, deși R58 a ales invers pentru redeschidere: *„trecerea
+    consemnată e potrivită acolo unde actul e legitim și rar — redeschiderea unei perioade. Acolo
+    omul ia o decizie despre perioadă. Aici ar lua o decizie despre trecut fără să redeschidă nimic,
+    iar urma ar rămâne singura care știe."* Calea corectă rămâne deschisă și e mai bună: redeschide,
+    schimbă, închide — trei acte consemnate în loc de unul tăcut."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT an, luna FROM perioade_blocate ORDER BY an, luna LIMIT 1")
+        r = cur.fetchone()
+    if r:
+        raise ValueError(MESAJ_PESTE_PERIOADA_INCHISA
+                         % {"ce": ce, "an": r[0], "luna": int(r[1])})
+
+
 def cere_administrator(conn, document):
     """[R66 (c), 26.08.2026] Un document care TIPARESTE numele administratorului nu se produce fara el.
 
@@ -262,6 +290,11 @@ def salveaza_date(conn, date):
     explicativ, nu doar refuz)."""
     curat = {k: (str(date.get(k)).strip() if date.get(k) is not None else None)
              for k in CAMPURI_FISCALE if k in (date or {})}
+    # [R46] Doar câmpurile care DECID. Un telefon corectat pe o firmă cu ianuarie închis trebuie
+    # să treacă mai departe — altfel poarta ar bloca munca de zi cu zi ca să apere trecutul.
+    decid = sorted(set(curat) & set(CAMPURI_CARE_DECID))
+    if decid:
+        cere_perioade_deschise(conn, "CUI-ul firmei" if decid == ["cui"] else ", ".join(decid))
     for camp, decl in OBLIGATORII.items():
         if camp in curat and not curat[camp]:
             return {"ok": False, "camp": camp,

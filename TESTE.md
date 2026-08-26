@@ -2132,3 +2132,5 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
 - **`core/test_perioada_indisponibila.py` — fixtură completată (26.08.2026, R66)**: pune `patron_nume`, ca `pytest.raises(ValueError)` de dedesubt să cadă pe golul de tichet 2025, nu pe refuzul de administrator. Un verde pe motivul nepotrivit e tot verde fals.
 
 - **`core/test_document_fara_administrator.py` — NOU, 6 teste (26.08.2026, R66)**: lipsa declarată ieri, construită azi. Asertează pe AST — apeluri, argumente literale, handlere de excepție — și pe faptul că mesajul e compus din `UNDE_ADMINISTRATOR`. Calibrarea e pe refuzul **generic**: apelul există, documentul vine dintr-o variabilă.
+
+- **`core/test_regim_peste_perioada_inchisa.py` — NOU, 5 teste (26.08.2026, R46)**: cele trei căi care ating câmpuri decisive cheamă aceeași poartă; mulțimea `CAMPURI_CARE_DECID` nu se poate lărgi peste `CAMPURI_FISCALE` și nici goli; refuzul e compus din `UNDE_PERIOADE`, deci spune pe ce cale se face totuși. Calibrare pe o cale care scrie fără poartă.
