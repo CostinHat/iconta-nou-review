@@ -1306,8 +1306,9 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E1 · TRASEE X.8 și XI · **PRAG 3**
 - **reluări**: 1
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `3cb6c44`
+- **rezolvată pe commit**: `892b337`
 - **măsurat la**: 2026-08-25 · **pe commit**: `3cb6c44`
 - **ce blochează**: constatarea e din Partea X (24.08) și **n-a avut până azi loc cu stare** — trăia în narațiune, exact clasa măsurată pe 22.08 (din opt defecte, cinci fără loc cu stare). O trecere micro↔profit sau plătitor↔neplătitor schimbă **ce declarații se datorează, pe ce perioade, cu ce cote**. Traseul are **8 rute, 4 care scriu, dintre care 3 fără nicio verificare de rol**, și **nu s-a găsit nicio verificare de coerență la schimbare**: nici că perioada afectată e deschisă, nici că declarațiile deja depuse pe regimul vechi rămân explicabile. Pentru comparație, casa are 29 de refuzuri; asta are 9 pe tot traseul.
 - **RELUATĂ 26.08.2026 — declanșatorul mecanic s-a produs, iar `core/test_reaprindere.py` a oprit commitul.** Am atins `core/firma_profil_api.py` pentru **altceva** (R66: `patron_nume` intră în `CAMPURI_FISCALE`, plus `cere_administrator`), nu pentru regimul fiscal. Declanșatorul e legat de **fișier**, deci s-a aprins corect chiar dacă munca era pe altă temă — și exact aia e valoarea lui: *reaprinderea n-a funcționat niciodată până n-a fost mecanică*.
