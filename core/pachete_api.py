@@ -37,7 +37,7 @@ def _note_lunii(conn_schema, an, luna):
 
 def _profil(conn_schema):
     with conn_schema.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        cur.execute("SELECT nume, email, patron_nume, patron_email FROM firma_profil WHERE id = 1")
+        cur.execute("SELECT nume, email, patron_nume FROM firma_profil WHERE id = 1")
         return cur.fetchone() or {}
 
 
@@ -59,7 +59,10 @@ def rezumat_luna(conn_schema, conn_public, tenant_id, an, luna):
         "ok": True,
         "nume_firma": prof.get("nume"),
         "patron_nume": prof.get("patron_nume"),
-        "email": (prof.get("patron_email") or prof.get("email") or "").strip(),
+        # [R65, 26.08.2026] O SINGURA adresa. `patron_email` avea precedenta aici si nicio cale
+        # de scriere — coloana s-a si scos. Daca apare nevoia unei adrese separate de a firmei,
+        # se construieste atunci, cu ecran si cu explicatie.
+        "email": (prof.get("email") or "").strip(),
         "venituri": float(rez["venituri"]),
         "cheltuieli": float(rez["cheltuieli"]),
         "rezultat": float(rez["rezultat"]),

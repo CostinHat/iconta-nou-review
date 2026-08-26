@@ -3707,7 +3707,9 @@ def portal_acces_cont(tenant_id: Optional[int] = None, ctx=Depends(cere_client))
     # ca sunt distincte produce chiar presupunerea gresita.
     with db.get_conn(t["schema_name"]) as conn_s:
         with conn_s.cursor() as cur:
-            cur.execute("SELECT coalesce(patron_email, email) FROM firma_profil WHERE id = 1")
+            # [R65] O SINGURA adresa: `patron_email` s-a scos din schema, avea precedenta si niciun
+            # scriitor. Aici era a doua folosire a lui `coalesce`, pusa ieri pentru R63.
+            cur.execute("SELECT email FROM firma_profil WHERE id = 1")
             rand = cur.fetchone()
     email_pachet = ((rand[0] if rand else None) or "").strip()
     email_logare = ((principal or {}).get("email") or "").strip()

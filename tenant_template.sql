@@ -495,7 +495,8 @@ CREATE TABLE TENANT_PLACEHOLDER.firma_profil (
     declarant_prenume text,
     declarant_functie text,
     patron_nume text,
-    patron_email text,
+    -- [R65, 26.08.2026] `patron_email` scos: avea precedenta la trimiterea
+    -- pachetului si nicio cale de scriere. Vezi core/migrare_patron_email.py.
     logo text,
     tip_decont text,
     cont_venit_implicit character varying(10) DEFAULT '707',
