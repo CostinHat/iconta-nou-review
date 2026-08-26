@@ -3669,8 +3669,21 @@ def portal_acces_cont(tenant_id: Optional[int] = None, ctx=Depends(cere_client))
             conturi = cur.fetchall()
     principal = next((c for c in conturi if c["id"] == pid), (conturi[0] if conturi else None))
     suplimentare = [c for c in conturi if principal and c["id"] != principal["id"]]
+    # [R63] A DOUA adresa a aceleiasi persoane. Pachetul lunar NU pleaca la `users.email`, ci la
+    # `firma_profil` (`pachete_api`: patron_email, altfel email). Ecranul le arata pe amandoua si
+    # le numeste diferit, fiindca decizia lui Costin e ca raman doua: cine INTRA si cine PRIMESTE
+    # pot fi persoane diferite. Un ecran care arata aceeasi adresa in doua campuri fara sa spuna
+    # ca sunt distincte produce chiar presupunerea gresita.
+    with db.get_conn(t["schema_name"]) as conn_s:
+        with conn_s.cursor() as cur:
+            cur.execute("SELECT coalesce(patron_email, email) FROM firma_profil WHERE id = 1")
+            rand = cur.fetchone()
+    email_pachet = ((rand[0] if rand else None) or "").strip()
+    email_logare = ((principal or {}).get("email") or "").strip()
     return {"principal": principal, "suplimentare": suplimentare,
-            "eu_principal": bool(principal) and principal["id"] == ctx["uid"]}
+            "eu_principal": bool(principal) and principal["id"] == ctx["uid"],
+            "email_pachet": email_pachet,
+            "aceeasi_adresa": bool(email_pachet) and email_pachet.lower() == email_logare.lower()}
 def _adresa_e_libera(cur, email, exclude_user_id):
     """[R62] Adresa nu e a altcuiva. UN singur loc, chemat si la cerere, si la confirmare.
 

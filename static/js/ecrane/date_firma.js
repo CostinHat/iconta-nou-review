@@ -24,7 +24,9 @@ const CAMPURI = [
   { k: "banca", e: "Banca", ob: true, aj: "Banca prin care se fac decont\u0103rile." },
   { k: "iban", e: "IBAN", ob: true },
   { k: "telefon", e: "Telefon", ob: true },
-  { k: "email", e: "E-mail" },
+  // [R63] Nu „E-mail": la adresa asta pleaca pachetul lunar (`pachete_api`), iar ea NU e adresa
+  // cu care clientul intra in portal. Doua campuri, doua nume.
+  { k: "email", e: "E-mail firmă (aici se trimite pachetul lunar)" },
   { k: "declarant_nume", e: "Nume declarant", ob: true },
   { k: "declarant_prenume", e: "Prenume declarant" },
   { k: "declarant_functie", e: "Func\u021bia declarantului", ob: true },

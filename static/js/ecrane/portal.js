@@ -106,7 +106,9 @@ async function ecranAccesCont(corp, nav) {
     const p = d.principal || {};
     corp.innerHTML = `
       ${mesajSucces ? '<p style="color:var(--verde);font-weight:600;margin:0 0 14px">' + mesajSucces + '</p>' : ""}
-      <div style="margin-bottom:6px"><b>Email de logare:</b> ${p.email || "-"}</div>
+      <div style="margin-bottom:6px"><b>Adresa de autentificare:</b> ${p.email || "-"}</div>
+      <div style="margin-bottom:6px"><b>Adresa la care primești pachetul lunar:</b> ${d.email_pachet || "-"}</div>
+      ${d.aceeasi_adresa ? '<p class="ecran-nota" style="margin:0 0 10px">Sunt aceeași adresă acum, dar rămân două câmpuri diferite: schimbând-o pe prima nu se schimbă și a doua. Pentru a doua, spune-i contabilului.</p>' : ""}
       ${d.eu_principal ? '<button class="buton-secundar" id="ac-btn-schimba-email" style="margin-bottom:24px">Schimbă adresa de email</button>' : '<p class="ecran-nota" style="margin:0 0 24px">Doar titularul contului poate schimba acest email.</p>'}
       <h3 style="margin:0 0 8px">Alte persoane cu acces</h3>
       <div id="ac-lista-suplimentar" style="margin-bottom:16px"></div>
@@ -141,7 +143,7 @@ async function ecranAccesCont(corp, nav) {
         <label class="camp-eticheta">Adresa nouă de email<span class="oblig">*</span></label>
         <input class="camp-input" id="ac-email-nou-val" value="${p.email || ""}" autofocus>
       </div>
-      <p class="ecran-nota" style="margin:0 0 14px">Data viitoare când te loghezi, vei primi linkul la această adresă.</p>
+      <p class="ecran-nota" style="margin:0 0 14px">Data viitoare când te loghezi, vei primi linkul la această adresă. <b>Pachetul lunar nu urmează schimbarea</b> — el pleacă la adresa firmei, pe care o schimbă contabilul.</p>
       <button class="buton-primar" id="ac-salveaza-email">Salvează</button>
       <button class="btn-link" id="ac-anuleaza-email" style="margin-left:10px">Renunță</button>
       <p class="ecran-nota" id="ac-email-msg" style="margin:10px 0 0"></p>
