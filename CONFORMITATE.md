@@ -1808,6 +1808,23 @@ scos ce nu se știa**, nu din defecte noi.
 - **ce NU vede măsurătoarea**: cifra **3** s-a obținut **citind**, după ce trei scanuri succesive au dat 18 → 6 → 4. Dacă apare un al patrulea test cuplat, niciun instrument de azi nu-l va vedea — nici garda din 29.07, nici scanurile mele. Asta e chiar motivul pentru care bariera trebuie să fie în **drepturi**, nu în măsurătoare.
 - **condiția de deblocare**: **când cele 3 nu mai depind de firme reale** — fiecare ori își construiește subiectul (schemă efemeră din `tenant_template.sql`), ori dispare. Abia atunci baza separată devine posibilă fără a pierde acoperire. Se închide când `conftest` poate refuza să pornească pe `iconta_v2` și suita rămâne verde.
 
+### R69 — O declarație depusă pe un regim care s-a schimbat între timp nu contrazice pe nimeni
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · **P18** · TRASEE X.8 și XI · **PRAG 2** *(nimic fals afișat azi, dar efectul e producibil pe **6 firme din 17**, cu **55 de declarații depuse**)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `dfc129d`
+- **măsurat la**: 2026-08-26 · **pe commit**: `dfc129d`
+- **planul**: **ACOPERIT, și acoperirea e chiar formularea restanței.** `PLAN_ARHITECTURA.md`: *„O modificare cu efect retroactiv declanșează **P18**”*, iar P18 cere ca efectul asupra a ce s-a depus să producă **contradicție vizibilă**, nu aplicare tăcută. Planul nu cere o poartă aici — cere o afirmație care se arată. De aceea nu e o a doua jumătate a lui R46, ci altă clasă. (METODA §25)
+- **ce blochează**: `POST /firma-profil/regim-tva` și `PUT /vector` schimbă ce se datorează. Din 26.08 refuză peste o **perioadă închisă** (R46). Dar o declarație se poate depune pe o lună care **nu** e închisă — iar atunci schimbarea trece, iar declarația rămâne depusă pe un regim care nu mai există, fără ca nimic să spună asta.
+- **de ce e clasa mai mare, măsurat**: poarta de la R46 se aplică unde există perioade închise — **1 firmă din 17**. Contradicția de aici se aplică unde există declarații depuse — **6 firme din 17, cu 55 de declarații** (20 · 20 · 12 · 1 · 1 · 1). Deci partea neacoperită de R46 nu era o rămășiță: era **majoritatea cazului**.
+- **ce trebuie, în cuvintele lui Costin**: *„la schimbarea vectorului sau a regimului, se determină declarațiile deja depuse în intervalul atins, iar fiecare devine vizibilă ca «depusă pe un regim care s-a schimbat între timp». Iar decizia de a rectifica rămâne a omului, cum spune planul.”* **Nu e o poartă — e o contradicție care se arată.** Distincția e aceeași cu cea din R58: `inchidere_luna` afirmă, `perioade_blocate` oprește; aici avem nevoie de prima, nu de a doua.
+- **de ce restanță proprie și nu condiție rămasă în R46** *(decizia lui)*: *„e o clasă diferită, nu o jumătate rămasă. Poarta pe perioada închisă apără trecutul consemnat ca închis. Cealaltă apără trecutul DEPUS.”* Plus regula generală pe care a numit-o: *„o restanță care rămâne deschisă pentru altceva decât ce numește devine o listă de lucruri neterminate, nu o restanță.”*
+- **ce NU vede măsurătoarea**: câte schimbări de vector s-au făcut **deja** peste declarații depuse. `firma_profil` n-are istoric al vectorului — se scrie peste — deci întrebarea *s-a întâmplat vreodată?* nu se poate pune pe date. Dacă răspunsul contează, istoricul trebuie să existe înainte, iar aia e o construcție separată.
+- **condiția de deblocare**: la schimbarea vectorului sau a regimului, declarațiile depuse din intervalul atins sunt **numite** — nu numărate — iar starea lor devine vizibilă acolo unde se vede declarația, nu doar în răspunsul rutei. Se închide când o schimbare de regim pe o firmă cu declarații depuse produce o contradicție pe care contabilul o vede fără s-o caute, cu gard.
+
 ### R40 — Nicio declarație depusă prin aplicație, deci lanțul de apărare nu e exercitat niciodată
 
 - **felul**: VERIFICARE
