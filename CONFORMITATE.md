@@ -1618,8 +1618,9 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · TRASEE (toate cele 35) · METODA §22 · **PRAG 3** *(nimic fals pe ecranul unui om; ce s-a stricat e ce se putea AFIRMA despre cod — iar pe asta s-au scris verificări)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `b86be82`
+- **rezolvată pe commit**: `70b20f9`
 - **măsurat la**: 2026-08-26 · **pe commit**: `b86be82`
 - **planul**: **ACOPERIT pe jumătate, și jumătatea acoperită numește exact cazul.** `PLAN_ARHITECTURA.md`, **interdicția 76** (*„un instrument de măsurare fără calibrare pe propriul mod de eșec”*, P24) și corolarul ei: *„un instrument se calibrează pe felul în care POATE greși — unul **cheiat pe nume** → pe o **coliziune de nume**.”* Instrumentul ăsta e cheiat pe un nume (aliasul `_cv`), iar defectul E o coliziune de nume. Planul spunea deja ce trebuia făcut, iar calibrarea lipsea; s-a construit azi, deci partea asta nu mai cere decizie. **NEACOPERIT** rămâne cealaltă jumătate, și n-am găsit-o nicăieri (citit după *instrument*, *inventar*, *măsurătoare*, *alias*): ce se întâmplă cu **afirmațiile deja scrise pe o măsurătoare care s-a schimbat**. Interdicția 76 apără instrumentul; nu spune nimic despre ce s-a construit peste el cât timp era greșit. (METODA §25)
 - **ce blochează**: `scripts/scan_trasee.py` construia harta de aliasuri de nivel-modul cu `ast.walk(tree)`, care intră **și** în corpurile funcțiilor. `main.py` are `from core import cont_valid as _cv` la linia 30 și `from core import stocuri_cv_api as _cv` în corpul unei rute (linia 2841); al doilea îl suprascria pe primul. **Măsurat: 1 alias umbrit, 14 rute cu atribuire falsă** — cele șase `nota-*` (leasing, lichidare, perisabilități, provizion, subvenție, inventariere), plus `achizitie-agricultor`, `achizitie-taxare-inversa`, `achizitie-ic`, `achizitie-neinregistrat`, `vanzare-ic`, `import-extracomunitar`, `export-extracomunitar`, `decontare-valuta`. Fiecare primea `articole (INSERT/UPDATE)` și `miscari_stoc (INSERT)` pe care nu le atinge: `cont_valid` are **zero** `INSERT`/`UPDATE`/`DELETE`, doar confruntă contul cu planul firmei.
@@ -1639,8 +1640,9 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · TRASEE T24 · interdicția 15 · **PRAG 2** *(măsurat, nu presupus: **zero** note cu sursa `horeca_z` sau `amef` pe toate cele 17 scheme — ecranul nu e folosit azi)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `b86be82`
+- **rezolvată pe commit**: `70b20f9`
 - **măsurat la**: 2026-08-26 · **pe commit**: `b86be82`
 - **planul**: **NEACOPERIT.** Citit `PLAN_ARHITECTURA.md` după *raport Z*, *horeca*, *AMEF*, *duplicat*, *dublare*, *storno*, *ciornă*, *evidență*. Cel mai aproape e **Partea IV — ciclul de viață al unui document**, care începe cu *„INTRARE: date brute → evidență, cu proveniență și grad de certitudine”* și care spune, mai jos, *„emiterea e idempotentă și repetabilă — nicio schemă nu interzice al doilea exemplar”*. Dar regula aia e despre **EMITERE**: al doilea exemplar al **aceluiași** document. Aici a doua apăsare nu produce un al doilea exemplar, ci **o a doua evidență** — alt venit, nu altă copie. Planul n-are nicăieri regula de idempotență la **INTRARE**, iar **P15** (*„după închiderea unei perioade, nu se modifică; se stornează”*) privește perioada închisă, nu ziua repetată. (METODA §25)
 - **ce blochează**: `POST /tenants/{tenant_id}/horeca/raport-z` scrie nota cu `status='validata'` **direct** și cu numărul `Z-{data}`, fără să întrebe dacă mai există una pe aceeași dată. Un al doilea apel produce **a doua notă validată cu același număr**: venitul zilei se contabilizează de două ori, direct în evidență, sărind etapa de ciornă. Ruta pereche — `POST /horeca/import-amef` — **are** verificarea (pe `sursa='amef'` și numărul `Z-{NUI}-{nr_raport}`, cu 409 la a doua încercare), iar ea produce doar o **ciornă**. Deci verificarea există exact acolo unde greșeala ar fi fost reparabilă, și lipsește acolo unde nu e.
