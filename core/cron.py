@@ -66,9 +66,16 @@ def ruleaza(nume, fn):
 # ============================================================
 #  HEARTBEAT — jobul care NU porneste deloc
 # ============================================================
-# Ritmul fiecarui job (din crontab, 27.07.2026) si pragul in ore peste care lipsa devine
-# alerta. Pragul = ritm x2 + marja: o rulare ratata nu alarmeaza, doua consecutive da.
+# Ritmul fiecarui job si pragul in ore peste care lipsa devine alerta.
+# Pragul = ritm x2 + marja: o rulare ratata nu alarmeaza, doua consecutive da.
 # sinteza_zilnica ruleaza doar luni-vineri -> vineri 19:00 pana luni 19:00 sunt 72h normale.
+#
+# DOUA SURSE, nu una (R74, 27.08.2026). Lista era "din crontab" si atat - iar cele trei joburi
+# SPV ruleaza din TIMERE SYSTEMD, deci n-au fost niciodata in ea. Rezultatul: au rulat un
+# interpretor inexistent (/opt/iconta/venv/, sters pe 27.07) si au esuat cu status 203 la
+# fiecare declansare timp de ~31 de zile, in tacere. Deadman-ul nu se uita la ele fiindca
+# lista lui era o COPIE a crontab-ului, nu o citire a sistemului.
+# `core/test_joburi_supravegheate.py` citeste acum ambele surse si compara cu lista asta.
 RITMURI = {
     "alerta_acces":        2,     # la 15 minute
     "audit_retentie":      50,    # zilnic 04:00
@@ -78,7 +85,95 @@ RITMURI = {
     "monitor_fiscal":      50,    # zilnic 09:00 + luni 08:00
     "sinteza_zilnica":     96,    # luni-vineri 19:00 (72h peste weekend + marja)
     "expirare_cote":       800,   # LUNAR, ziua 1 06:00 (~730h; 800 prinde o luna ratata)
+    # --- timere systemd (nu crontab), adaugate 27.08.2026 pe R74 ---
+    "spv_poll":            2,     # timer spv-poll, la 30 de minute (*:07,37)
+    "spv_receive":         2,     # timer spv-receive, la 30 de minute (*:17,47)
+    "spv_refresh":         50,    # timer spv-refresh, zilnic 03:30
 }
+
+# Ce NU se supravegheaza aici, si de ce - ca absenta sa fie declarata, nu tacuta:
+#   `cron`            = heartbeat-ul insusi. Cine il supravegheaza pe el cere un deadman
+#                       EXTERN; limita e scrisa in verifica_batai si nu se rezolva azi.
+#   `iconta-backup`   = shell, nu modul Python: nu poate chema `bate()`. Isi alerteaza singur
+#                       esecurile consecutive (FAIL_PRAG in iconta-backup.sh), deci nu e tacut.
+NESUPRAVEGHEATE = {"cron": "heartbeat-ul insusi - cere deadman EXTERN",
+                   "iconta-backup": "shell, nu modul; alerteaza singur (iconta-backup.sh)"}
+
+
+# ============================================================
+#  DE UNDE SE AFLA JOBURILE — din SISTEM, nu dintr-o copie scrisa de mana
+# ============================================================
+# R74, 27.08.2026. Gardul de pana acum compara `RITMURI` cu un set scris in test - deci se
+# compara cu propria copie a raspunsului si n-avea cum sa vada un job pe care nu-l stia deja.
+# Functiile de mai jos sunt PURE (primesc text, intorc structura), ca sa poata fi calibrate;
+# `citeste_sistemul()` e singura care atinge discul.
+
+def joburi_din_crontab(text):
+    """Modulele `core.X` chemate din liniile necomentate ale unui crontab. -> set(nume)."""
+    import re
+    gasite = set()
+    for linie in (text or "").splitlines():
+        if linie.strip().startswith("#") or not linie.strip():
+            continue
+        gasite.update(re.findall(r"-m\s+core\.([A-Za-z_][A-Za-z_0-9]*)", linie))
+    return gasite
+
+
+def _camp_unitate(text, cheie):
+    for linie in (text or "").splitlines():
+        s = linie.strip()
+        if s.startswith(cheie + "="):
+            return s[len(cheie) + 1:].strip()
+    return None
+
+
+def unitati_systemd(perechi):
+    """perechi = [(nume_timer, text_timer, nume_service, text_service)].
+
+    -> [{timer, service, modul, interpretor, calendar}]. `modul` e None cand serviciul nu
+    ruleaza un modul Python (shell) - acela nu poate bate si se declara in NESUPRAVEGHEATE.
+    """
+    import re
+    out = []
+    for timer, t_txt, service, s_txt in perechi:
+        exec_start = _camp_unitate(s_txt, "ExecStart") or ""
+        m = re.search(r"-m\s+core\.([A-Za-z_][A-Za-z_0-9]*)", exec_start)
+        out.append({
+            "timer": timer,
+            "service": service,
+            "modul": m.group(1) if m else None,
+            "interpretor": exec_start.split()[0] if exec_start.split() else None,
+            "calendar": _camp_unitate(t_txt, "OnCalendar"),
+        })
+    return out
+
+
+def citeste_sistemul(dir_unitati="/etc/systemd/system"):
+    """(joburi_din_crontab, unitati_systemd) citite de pe masina asta. Atinge discul."""
+    import glob
+    import io as _io
+    import os
+    import subprocess
+    try:
+        r = subprocess.run(["crontab", "-l"], capture_output=True, text=True, timeout=20)
+        ct = r.stdout if r.returncode == 0 else ""
+    except (OSError, subprocess.SubprocessError):
+        ct = ""
+    perechi = []
+    for cale_t in sorted(glob.glob(os.path.join(dir_unitati, "*.timer"))):
+        try:
+            t_txt = _io.open(cale_t, encoding="utf-8", errors="ignore").read()
+        except OSError:
+            continue
+        nume_t = os.path.basename(cale_t)
+        tinta = _camp_unitate(t_txt, "Unit") or (nume_t[:-6] + ".service")
+        cale_s = os.path.join(dir_unitati, tinta)
+        try:
+            s_txt = _io.open(cale_s, encoding="utf-8", errors="ignore").read()
+        except OSError:
+            s_txt = ""
+        perechi.append((nume_t, t_txt, tinta, s_txt))
+    return joburi_din_crontab(ct), unitati_systemd(perechi)
 
 
 def bate(nume, durata_sec=None):

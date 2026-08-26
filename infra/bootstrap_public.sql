@@ -846,3 +846,28 @@ CREATE TABLE IF NOT EXISTS public.urme_portal (
 
 CREATE INDEX IF NOT EXISTS urme_portal_tenant_idx
     ON public.urme_portal (tenant_id, creat_la DESC);
+
+
+-- [R72, 27.08.2026] Oglinda DDL-ului din core/migrare_firme_scoase.py (sursa UNICA e acolo).
+-- Urma unei firme scoase din portofoliu. NU are chei straine: tinta (tenant, user) nu mai
+-- exista in momentul in care randul devine util. Poarta `tenant_id`, dar NU se sterge odata cu
+-- firma - e declarata in tenant_stergere.NU_SE_STERG, iar garda verifica declaratia.
+CREATE TABLE IF NOT EXISTS public.firme_scoase (
+    id              bigserial PRIMARY KEY,
+    tenant_id       integer     NOT NULL,
+    nume            text        NOT NULL,
+    cui             text,
+    schema_name     text        NOT NULL,
+    cabinet_id      integer,
+    motiv           text        NOT NULL,
+    randuri_sterse  jsonb,
+    scos_de_user_id integer,
+    scos_la         timestamptz NOT NULL DEFAULT now(),
+    CONSTRAINT firme_scoase_motiv_ck
+        CHECK (motiv IN ('scoatere_firma', 'gdpr_cabinet')),
+    CONSTRAINT firme_scoase_nume_nevid_ck
+        CHECK (btrim(nume) <> '')
+);
+
+CREATE INDEX IF NOT EXISTS idx_firme_scoase_cabinet ON public.firme_scoase (cabinet_id, scos_la DESC);
+CREATE INDEX IF NOT EXISTS idx_firme_scoase_tenant  ON public.firme_scoase (tenant_id);

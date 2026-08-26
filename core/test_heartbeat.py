@@ -17,11 +17,21 @@ from core import cron
 
 
 def test_fiecare_job_din_crontab_are_prag():
-    """Un job nou fara prag n-ar fi supravegheat deloc."""
-    din_crontab = {"alerta_acces", "audit_retentie", "facturi_recurente", "woocommerce",
-                   "notificari_scadenta", "monitor_fiscal", "sinteza_zilnica"}
-    lipsa = din_crontab - set(cron.RITMURI)
-    assert not lipsa, "joburi fara prag de heartbeat: %s" % lipsa
+    """Un job nou fara prag n-ar fi supravegheat deloc.
+
+    RESCRIS 27.08.2026 (R74). Pana azi, testul asta compara `RITMURI` cu un set SCRIS AICI, de
+    mana - deci se compara cu propria copie a raspunsului si n-avea cum sa vada un job pe care
+    nu-l stia deja. Exact asta s-a intamplat: cele trei joburi SPV ruleaza din TIMERE SYSTEMD,
+    n-au fost niciodata in setul asta, si au esuat tacut ~31 de zile.
+
+    Acum lista se CITESTE din sistem (`cron.citeste_sistemul`), iar acoperirea - inclusiv a
+    doua sursa, unitatile systemd - se verifica in `core/test_joburi_supravegheate.py`. Aici
+    ramane doar proba ca sursa se poate citi si ca nimic din ea nu lipseste."""
+    din_crontab, _unitati = cron.citeste_sistemul()
+    assert len(din_crontab) >= 6, (
+        "doar %d joburi citite din crontab - testul s-ar uita in gol" % len(din_crontab))
+    lipsa = din_crontab - set(cron.RITMURI) - set(cron.NESUPRAVEGHEATE)
+    assert not lipsa, "joburi fara prag de heartbeat: %s" % sorted(lipsa)
 
 
 def test_pragul_e_mai_mare_decat_ritmul():

@@ -346,29 +346,39 @@ def schema_tenant(conn, user_id, tenant_id):
     return row[0] if row else None
 
 
-def tenantii_userului(conn, user_id):
+def tenantii_userului(conn, user_id, doar_active=True):
     """
     Lista tenanților la care userul are acces: [{id, nume, schema_name, cui, activ}].
       - superadmin: toate firmele active
       - admin_firma: firmele cabinetului lui
       - restul: doar prin user_tenants
+
+    `doar_active=False` cuprinde ȘI firmele dezactivate. Implicit rămâne `True`: toate cele 13
+    locuri care cheamă funcția asta cer portofoliul de LUCRU. [R72, 27.08.2026] O firmă cu
+    evidență nu se șterge — se dezactivează; fără calea asta ar ieși din listă fără nicio cale
+    de întoarcere, iar o ușă cu sens unic e o pierdere, nu o ordonare.
+
+    Filtrul e PARAMETRU, nu SQL construit prin concatenare: `(%s OR activ = true)`.
     """
     import psycopg2.extras as _E
     rol, firm = _rol_si_firma(conn, user_id)
+    toate = not doar_active
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         if rol == "superadmin":
             # GDPR: superadmin vede in lista DOAR conturi gratuite (fara cabinet).
             cur.execute("SELECT id, nume, schema_name, cui, activ FROM public.tenants "
-                        "WHERE accounting_firm_id IS NULL AND activ = true ORDER BY nume")
+                        "WHERE accounting_firm_id IS NULL AND (%s OR activ = true) ORDER BY nume",
+                        (toate,))
         elif rol == "admin_firma":
             cur.execute("SELECT id, nume, schema_name, cui, activ FROM public.tenants "
-                        "WHERE accounting_firm_id = %s AND activ = true ORDER BY nume", (firm,))
+                        "WHERE accounting_firm_id = %s AND (%s OR activ = true) ORDER BY nume",
+                        (firm, toate))
         else:
             cur.execute(
                 "SELECT t.id, t.nume, t.schema_name, t.cui, t.activ FROM public.tenants t "
                 "JOIN public.user_tenants ut ON ut.tenant_id = t.id "
-                "WHERE ut.user_id = %s AND t.activ = true ORDER BY t.nume",
-                (user_id,))
+                "WHERE ut.user_id = %s AND (%s OR t.activ = true) ORDER BY t.nume",
+                (user_id, toate))
         lista = [dict(r) for r in cur.fetchall()]
     # [tip_firma_v1] tip_firma traieste in {schema}.firma_profil (schema-per-tenant),
     # nu in public.tenants -> il aducem per firma. Default 'srl' daca profilul lipseste.

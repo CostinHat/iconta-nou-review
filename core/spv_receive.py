@@ -136,4 +136,5 @@ def ruleaza(_dormi=None):
 
 
 if __name__ == "__main__":
-    ruleaza()
+    from core import cron  # [R74] alerta la esec + bataie la reusita
+    cron.ruleaza("spv_receive", ruleaza)

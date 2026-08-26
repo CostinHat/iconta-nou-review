@@ -2,9 +2,9 @@
 Sterge: scheme tenant (DROP SCHEMA CASCADE), randuri public (audit_log/user_tenants/tenants/users/accounting_firms), fisiere disc.
 Logheaza in public.gdpr_stergeri (FARA date personale) — logul supravietuieste.
 NU se sterge: backup Storage Box (dump integral, stergere selectiva imposibila, expira 30 zile)."""
-import os, glob, shutil
+import os
 import psycopg2.extras as _E
-from core import db
+from core import tenant_stergere  # [R72] o singura cale de stergere a unei firme
 
 BON_DIR_BAZA = os.path.expanduser("~/iconta_date/bonuri")
 EFACTURA_ZIP_DIR = os.environ.get("EFACTURA_ZIP_DIR", os.path.expanduser("~/iconta_nou/efactura_zip"))
@@ -36,11 +36,20 @@ def executa(conn, cabinet_id, confirmare, sters_de_user_id):
         tid = [t["id"] for t in tens] or [-1]
         cur.execute("SELECT id FROM public.users WHERE accounting_firm_id=%s", (cabinet_id,))
         us = cur.fetchall(); uid = [r["id"] for r in us] or [-1]; nr_useri = len(us)
-        for sch in scheme:
-            if not db.schema_valida(sch): raise ValueError("schema invalida: %r" % sch)
-            cur.execute('DROP SCHEMA IF EXISTS "%s" CASCADE' % sch)
-        cur.execute("DELETE FROM public.audit_log WHERE user_id=ANY(%s) OR tenant_id=ANY(%s)", (uid, tid))
-        cur.execute("DELETE FROM public.user_tenants WHERE user_id=ANY(%s) OR tenant_id=ANY(%s)", (uid, tid))
+        # [R72, 27.08.2026] O SINGURA cale de stergere a unei firme, nu doua.
+        # Ce era aici pana azi: DROP SCHEMA pe fiecare firma, apoi DELETE din DOUA tabele din
+        # `public` (audit_log, user_tenants). Masurat pe 27.08: **13** tabele poarta tenant_id,
+        # deci 11 ramaneau in urma. Iar `anunturi_cabinet` si `solicitari_client` au FK cu
+        # ON DELETE NO ACTION: la primul cabinet cu un anunt sau o solicitare, DELETE FROM
+        # tenants ar fi esuat -- DUPA ce DROP SCHEMA rulase deja. Schema disparuta, cabinetul
+        # ramas, stergerea oprita la mijloc.
+        # Costin: "daca R72 construieste stergerea corecta pentru o firma, gdpr_sterge trebuie
+        # s-o foloseasca pentru fiecare firma a cabinetului, nu sa aiba propria lista."
+        for t in tens:
+            tenant_stergere.sterge(conn, t["id"], "gdpr_cabinet", sters_de_user_id)
+        # Ce ramane specific CABINETULUI: randurile legate de userii lui, nu de firme.
+        cur.execute("DELETE FROM public.audit_log WHERE user_id=ANY(%s)", (uid,))
+        cur.execute("DELETE FROM public.user_tenants WHERE user_id=ANY(%s)", (uid,))
         cur.execute("DELETE FROM public.tenants WHERE accounting_firm_id=%s", (cabinet_id,))
         cur.execute("DELETE FROM public.users WHERE accounting_firm_id=%s", (cabinet_id,))
         cur.execute("DELETE FROM public.accounting_firms WHERE id=%s", (cabinet_id,))
@@ -51,11 +60,6 @@ def executa(conn, cabinet_id, confirmare, sters_de_user_id):
     conn.commit()
     fisiere = 0
     for sch in scheme:
-        d = os.path.join(BON_DIR_BAZA, sch)
-        if os.path.isdir(d):
-            shutil.rmtree(d, ignore_errors=True); fisiere += 1
-        for f in glob.glob(os.path.join(EFACTURA_ZIP_DIR, "%s_*.zip" % sch)):
-            try: os.remove(f); fisiere += 1
-            except OSError: pass
+        fisiere += tenant_stergere.sterge_fisiere(sch)   # [R72] aceeasi curatare de disc
     return {"cabinet_id": cabinet_id, "scheme_sterse": scheme, "nr_useri": nr_useri, "nr_tenanti": len(scheme),
             "fisiere_sterse": fisiere, "log_id": log["id"], "sters_la": str(log["sters_la"]), "NU_se_sterge": NU_SE_STERGE}

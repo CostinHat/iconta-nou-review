@@ -100,4 +100,5 @@ def _alerteaza_esecuri(esecuri):
 
 
 if __name__ == "__main__":
-    ruleaza()
+    from core import cron  # [R74] alerta la esec + bataie la reusita
+    cron.ruleaza("spv_refresh", ruleaza)

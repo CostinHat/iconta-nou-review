@@ -184,7 +184,12 @@ NEDOCUMENTARE = [
     (r"^/gdpr/", "GDPR"),
     (r"^/raportari|^/recomanda|^/api/eveniment-public|^/ajutor/", "suport și telemetrie"),
     (r"^/notificari", "notificări"),
-    (r"^/tenants$|^/tenants/\{\}$", "firma ca obiect de administrare"),
+    # [R72, 27.08.2026] Previzualizarea scoaterii si comutarea activ/inactiv stau pe
+    # ACEEASI suprafata ca crearea firmei (POST /tenants) si scoaterea ei
+    # (DELETE /tenants/{}): firma ca obiect de administrare al cabinetului, nu un pas
+    # de traseu contabil. Daca ciclul de viata al firmei devine traseu propriu, se muta
+    # toate patru odata - si atunci clichetul de trasee urca de la 35 la 36.
+    (r"^/tenants$|^/tenants/\{\}$|^/tenants/\{\}/(scoatere|activare)$", "firma ca obiect de administrare"),
     (r"^/api/v1/firme$", "cheia de integrare"),
 ]
 

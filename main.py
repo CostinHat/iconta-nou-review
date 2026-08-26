@@ -25,6 +25,7 @@ from core import nucleu as _nucleu, articole_import_api, retete_import_api, rip_
 from core.pdf_util import bani, data_ro
 from core.common import azi_ro, stare_din_nivel, pastila_firma  # [fus] ziua RO; [verdict] nivel->culoare + escaladare pastila
 from core import common as _common
+from core import tenant_stergere  # [R72] calea UNICA de scoatere a unei firme
 from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
 from core import afirmatii as _af  # [P8] afirmatiile despre datele firmei sunt obiecte, nu siruri
 from core import cont_valid as _cv  # [R54] contul din corpul cererii se confrunta cu planul firmei
@@ -1187,9 +1188,57 @@ def register(date: RegisterIn):
 #  TENANȚI — firmele la care userul are acces
 # ============================================================
 @app.get("/tenants")
-def tenants(ctx=Depends(cere_cabinet)):
+def tenants(inactive: bool = False, ctx=Depends(cere_cabinet)):
+    """`inactive=true` cuprinde ȘI firmele dezactivate — altfel o firmă dezactivată ar ieși din
+    listă fără nicio cale de întoarcere. [R72]"""
     with db.get_conn() as conn:
-        return {"tenants": auth_api.tenantii_userului(conn, ctx["uid"])}
+        return {"tenants": auth_api.tenantii_userului(conn, ctx["uid"], doar_active=not inactive)}
+
+
+@app.get("/tenants/{tenant_id}/scoatere")
+def tenant_scoatere_previzualizare(tenant_id: int, ctx=Depends(cere_cabinet)):
+    """[R72] Ce se întâmplă dacă firma se scoate: are evidență sau nu, și ce anume s-a găsit.
+    Se citește ÎNAINTE de apăsare — un refuz care apare abia după apăsare e o surpriză."""
+    with db.get_conn() as conn:
+        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+        return tenant_stergere.previzualizare(conn, tenant_id)
+
+
+class FirmaActivareIn(BaseModel):
+    activ: bool
+
+
+@app.post("/tenants/{tenant_id}/activare")
+def tenant_activare(tenant_id: int, date: FirmaActivareIn, ctx=Depends(cere_rol("admin_firma"))):
+    """[R72] Dezactivează / reactivează firma. O firmă CU evidență nu se șterge — iese din listă
+    pe calea asta, iar documentele ei rămân."""
+    with db.get_conn() as conn:
+        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+        try:
+            return tenant_stergere.comuta_activ(conn, tenant_id, date.activ, ctx["uid"])
+        except ValueError as e:
+            raise HTTPException(400, str(e))
+
+
+@app.delete("/tenants/{tenant_id}")
+def tenant_scoate(tenant_id: int, confirmare: str = "", ctx=Depends(cere_rol("admin_firma"))):
+    """[R72] Scoate din portofoliu o firmă FĂRĂ evidență. Confirmarea e CUI-ul, nu numele:
+    instanța care a produs restanța sunt două firme cu ACELAȘI nume."""
+    with db.get_conn() as conn:
+        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+        try:
+            r = tenant_stergere.sterge(conn, tenant_id, "scoatere_firma", ctx["uid"],
+                                       confirmare=confirmare)
+        except PermissionError as e:
+            raise HTTPException(409, str(e))
+        except ValueError as e:
+            raise HTTPException(400, str(e))
+    # DUPĂ commit: un `rmtree` nu se dă înapoi.
+    r["fisiere_sterse"] = tenant_stergere.sterge_fisiere(r["schema"])
+    return r
 
 
 @app.get("/tenants/{tenant_id}")

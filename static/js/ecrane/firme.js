@@ -29,6 +29,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
       <input type="text" id="firme-q" class="camp-input" placeholder="Caută după nume sau CUI" autocomplete="off">
     </div>
     <div class="firme-lista" id="firme-lista"><div class="ecran-nota">Se încarcă firmele…</div></div>
+    <div id="firme-dezactivate"></div>
   `;
 
   container.querySelector("#firme-import-masa")?.addEventListener("click", () =>
@@ -98,7 +99,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
              firma exista deja, fiindca prima apasare o crease. Cauza n-a fost poarta, ci
              tacerea de dupa succes. Exercitat pe date 26.08: doua firme create in 4 minute. */
           nav.inapoi();
-          await incarca();
+          await incarcaFirme();   /* [27.08.2026] era `incarca()` — nedefinita in scopul asta */
           _bannerFirmaCreata(nume.value.trim());
         } catch (e) {
           info.textContent = e.mesaj || e.message || "Eroare la creare.";
@@ -110,7 +111,8 @@ export function randeazaListaFirme(container, nav, inapoi) {
 
   const lista = container.querySelector("#firme-lista");
   const cautare = container.querySelector("#firme-q");
-  let toate = [];
+  const zonaDez = container.querySelector("#firme-dezactivate");
+  let toate = [], dezactivate = [];
 
   function deseneaza(filtru) {
     const f = (filtru || "").trim().toLowerCase();
@@ -143,9 +145,70 @@ export function randeazaListaFirme(container, nav, inapoi) {
 
   cautare.addEventListener("input", () => deseneaza(cautare.value));
 
-  api.get("/tenants")
-    .then((r) => { toate = (r && r.tenants) || []; deseneaza(""); })
-    .catch(() => { lista.innerHTML = `<div class="firme-gol">Firmele nu au putut fi încărcate.</div>`; });
+  // [R72] O firmă cu evidență nu se șterge — se dezactivează. Dacă ar ieși din listă fără nicio
+  // cale de întoarcere, dezactivarea ar fi o ușă cu sens unic. De aceea lista se cere cu
+  // `inactive=true` și se desparte aici: portofoliul de lucru sus, cele scoase din lucru jos.
+  async function incarcaFirme() {
+    try {
+      const r = await api.get("/tenants?inactive=true");
+      const lst = (r && r.tenants) || [];
+      toate = lst.filter((t) => t.activ !== false);
+      dezactivate = lst.filter((t) => t.activ === false);
+    } catch {
+      lista.innerHTML = `<div class="firme-gol">Firmele nu au putut fi încărcate.</div>`;
+      return;
+    }
+    deseneaza(cautare.value);
+    deseneazaDezactivate();
+  }
+
+  function deseneazaDezactivate() {
+    if (!zonaDez) return;
+    if (!dezactivate.length) { zonaDez.innerHTML = ""; return; }
+    zonaDez.innerHTML = `
+      <div class="firme-cap" style="margin-top:18px">
+        <span class="firme-spatiu"></span>
+        <button class="buton-secundar" id="firme-vezi-dez">Firme dezactivate (${dezactivate.length})</button>
+      </div>`;
+    zonaDez.querySelector("#firme-vezi-dez").addEventListener("click", () =>
+      nav.deschide("Firme dezactivate", (c2) => {
+        c2.innerHTML = `
+          <p class="ecran-nota">Firmele de aici nu apar în portofoliul de lucru. Documentele lor
+             au rămas neatinse; reactivarea le aduce înapoi exact cum erau.</p>
+          <div class="firme-lista" id="fd-lista"></div>
+          <div id="fd-mesaj"></div>`;
+        const zl = c2.querySelector("#fd-lista"), zm = c2.querySelector("#fd-mesaj");
+        zl.innerHTML = "";
+        dezactivate.forEach((t) => {
+          const rand = document.createElement("div");
+          rand.className = "firme-rand";
+          rand.innerHTML = `
+            <div class="firme-rand-text">
+              <div class="firme-rand-nume">${esc(t.nume) || "(fără nume)"}</div>
+              <div class="firme-rand-cui">CUI ${esc(String(t.cui || "—"))}</div>
+            </div>`;
+          const b = document.createElement("button");
+          b.className = "buton-secundar";
+          b.textContent = "Reactivează";
+          b.addEventListener("click", async () => {
+            b.disabled = true;
+            try {
+              await api.post(`/tenants/${t.id}/activare`, { activ: true });
+              arataMesaj(zm, `„${t.nume}" e din nou în portofoliu.`, "ok");
+              await incarcaFirme();
+              nav.inapoi();
+            } catch (e) {
+              b.disabled = false;
+              arataMesaj(zm, e.mesaj || e.message || "Nu am putut reactiva firma.", "eroare");
+            }
+          });
+          rand.appendChild(b);
+          zl.appendChild(rand);
+        });
+      }));
+  }
+
+  incarcaFirme();
 }
 
 // deschide o firmă: setează "În lucru" + spațiul de lucru (meniu de acțiuni)
@@ -273,7 +336,16 @@ function meniuFirma(corp, nav, t) {
           <div class="firme-optiune-titlu">${o.titlu}</div>
           <div class="firme-optiune-desc">${o.desc}${o.activ ? "" : " \u00b7 \u00een cur\u00e2nd"}</div>
         </button>`).join("")}
+    </div>
+    <div class="firme-scoatere" style="margin-top:24px;padding-top:14px;border-top:1px solid #e5e7eb">
+      <button class="buton-secundar" id="firma-scoate">Scoate firma din portofoliu</button>
+      <p class="ecran-nota" style="margin:8px 0 0">O firmă adăugată din greșeală se scoate cu
+         totul. Una care a produs documente nu se șterge — se dezactivează, iar documentele rămân.</p>
     </div>`;
+
+  const bScoate = corp.querySelector("#firma-scoate");
+  if (bScoate) bScoate.addEventListener("click", () =>
+    nav.deschide("Scoate firma", (c2) => ecranScoateFirma(c2, nav, t)));
 
   const bAcces = corp.querySelector("#fa-acces");
   if (bAcces) bAcces.addEventListener("click", () => nav.deschide("Acces client", (c2) => ecranAccesClient(c2, nav, t)));
@@ -2183,6 +2255,89 @@ async function ecranBanca(corp, nav, t) {
 
 /* Confirmarea crearii unei firme. Acelasi mecanism ca bannerul de la confirmarea adresei
    (app.js): un act care schimba starea si nu spune nimic il face pe om sa-l repete. */
+
+
+// [R72, 27.08.2026] Scoaterea unei firme din portofoliu.
+// Instanța: două firme `PROBA PORTAL SRL` create din greșeală au rămas în portofoliu fiindcă nu
+// exista nicio cale de a le scoate. Iar duplicatul a costat în aceeași zi — un ecran corect
+// („Niciun cont de client încă") a fost citit ca fals, fiindcă se deschisese cealaltă firmă.
+// De aceea confirmarea de aici e pe CUI, NU pe nume: numele se pot repeta, CUI-ul nu.
+async function ecranScoateFirma(corp, nav, t) {
+  corp.innerHTML = `<p class="ecran-nota" id="sf-stare">Se verifică ce a produs firma…</p>
+                    <div id="sf-corp"></div><div id="sf-mesaj"></div>`;
+  const zonaM = corp.querySelector("#sf-mesaj");
+  let p;
+  try { p = await api.get(`/tenants/${t.id}/scoatere`); }
+  catch (e) {
+    arataMesaj(corp.querySelector("#sf-stare"),
+               e.mesaj || e.message || "Nu am putut verifica firma.", "eroare");
+    return;
+  }
+  corp.querySelector("#sf-stare").remove();
+  const zona = corp.querySelector("#sf-corp");
+  const cap = `<h3 style="margin:0 0 4px">${esc(p.nume || "")}</h3>
+               <p class="ecran-nota" style="margin:0 0 16px">CUI ${esc(String(p.cui || "—"))}</p>`;
+
+  if (p.se_poate_sterge) {
+    zona.innerHTML = `${cap}
+      <div class="caseta-atentie">
+        <div class="ca-mesaj">Firma nu a produs niciun document: nicio declarație depusă sau în
+          coadă, nicio notă contabilă, factură, chitanță sau stat de plată. Se poate scoate cu
+          totul. <strong>Ștergerea este definitivă</strong> — datele firmei și schema ei dispar,
+          iar backupul off-site nu se poate șterge selectiv.</div>
+      </div>
+      <div class="camp" style="margin:14px 0">
+        <label class="camp-eticheta" for="sf-cui">Scrie CUI-ul firmei ca să confirmi</label>
+        <input class="camp-input" id="sf-cui" autocomplete="off" placeholder="${esc(String(p.cui || ""))}">
+        <p class="camp-ajutor">Se cere CUI-ul, nu numele: două firme pot avea același nume.</p>
+      </div>
+      <button class="buton-primar" id="sf-sterge" disabled>Scoate firma definitiv</button>`;
+    const inp = zona.querySelector("#sf-cui"), btn = zona.querySelector("#sf-sterge");
+    inp.addEventListener("input", () => {
+      btn.disabled = inp.value.trim() !== String(p.cui || "").trim();
+    });
+    btn.addEventListener("click", async () => {
+      btn.disabled = true; btn.textContent = "Se scoate…";
+      try {
+        await api.del(`/tenants/${t.id}?confirmare=${encodeURIComponent(inp.value.trim())}`);
+        nav.acasa();
+        nav.setFirmaInLucru("");
+      } catch (e) {
+        btn.disabled = false; btn.textContent = "Scoate firma definitiv";
+        arataMesaj(zonaM, e.mesaj || e.message || "Nu am putut scoate firma.", "eroare");
+      }
+    });
+    return;
+  }
+
+  // Are evidență: nu se șterge. Se SPUNE ce s-a găsit — un refuz fără motiv nu se poate verifica.
+  const motive = (p.evidenta && p.evidenta.motive) || [];
+  zona.innerHTML = `${cap}
+    <div class="caseta-atentie">
+      <div class="ca-mesaj">Firma <strong>nu se poate șterge</strong>: a produs documente care au
+        ajuns la cineva din afară. Ce s-a găsit:
+        <ul style="margin:8px 0 0 18px">${motive.map((m) => `<li>${esc(m)}</li>`).join("")}</ul>
+      </div>
+    </div>
+    <p class="ecran-nota" style="margin:14px 0">O poți <strong>dezactiva</strong>: iese din
+       portofoliul de lucru, iar documentele ei rămân neatinse. O găsești oricând sub
+       „Firme dezactivate", de unde se poate reactiva.</p>
+    <button class="buton-primar" id="sf-dezactiveaza">Dezactivează firma</button>`;
+  zona.querySelector("#sf-dezactiveaza").addEventListener("click", async () => {
+    const b = zona.querySelector("#sf-dezactiveaza");
+    b.disabled = true; b.textContent = "Se dezactivează…";
+    try {
+      await api.post(`/tenants/${t.id}/activare`, { activ: false });
+      nav.acasa();
+      nav.setFirmaInLucru("");
+    } catch (e) {
+      b.disabled = false; b.textContent = "Dezactivează firma";
+      arataMesaj(zonaM, e.mesaj || e.message || "Nu am putut dezactiva firma.", "eroare");
+    }
+  });
+}
+
+
 function _bannerFirmaCreata(nume) {
   const vechi = document.getElementById("firma-creata-bine");
   if (vechi) vechi.remove();
