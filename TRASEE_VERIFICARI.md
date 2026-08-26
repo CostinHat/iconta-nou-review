@@ -418,7 +418,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, operatie dividend|regularizare|imprumut, descriere?, + dividend{brut, interimar?, cu_plata?}; regularizare{total_interimar, dividend_anual}; imprumut{suma, f — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] distincția între aport, împrumut și retragere e obligatorie: au tratamente fiscale diferite
+- retragerea de bani fără temei e chiar cazul din ghidul „bani din firmă fără temei" — verifică dacă ruta o permite fără să semnaleze
+- împrumutul de la asociat poartă dobândă deductibilă limitat; verifică dacă se aplică plafonul
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 
 ### `POST /tenants/{tenant_id}/nota-avans`
 
@@ -426,7 +429,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, operatie avans_platit|regularizare_platit|avans_incasat| regularizare_incasat, suma (fara TVA), cota?, destinatie? (platit: stocuri|servicii|imobilizari|imob — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] avansul încasat **nu e venit** — e datorie până la livrare
+- TVA-ul se colectează la încasarea avansului, dacă firma e plătitoare
+- la livrare, avansul se stinge, iar TVA-ul nu se colectează a doua oară pe partea avansată
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 
 ### `POST /tenants/{tenant_id}/nota-bacsis`
 
@@ -434,7 +440,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, fel incasare|distribuire, suma, sursa card|numerar (incasare) / banca|casa (distribuire), descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] bacșișul are regim fiscal propriu din 2023 — venit al salariatului, cu impozit reținut, fără contribuții
+- verifică dacă se distinge de venit al firmei
+- bacșișul încasat prin card trece prin casă sau prin bancă — verifică traseul
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 
 ### `POST /tenants/{tenant_id}/nota-chirie`
 
@@ -442,7 +451,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, fel comodat|chirie_platita|chirie_incasata|refacturare, descriere?, cota?, + comodat{valoare, moment primire|restituire}; chirie_platita{chirie, proprietar p — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] chiria plătită unei persoane fizice atrage impozit și, uneori, CASS — verifică dacă se rețin
+- chiria în valută produce diferențe de curs
+- chiria plătită în avans se eșalonează pe perioada acoperită, nu e cheltuială integral
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 
 ### `POST /tenants/{tenant_id}/nota-contract-special`
 
@@ -450,7 +462,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, fel zilier|cenzor|mandat, brut, sursa casa|banca, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] **nu pot scrie verificarea fără să știu ce contract.** De completat din cod
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
+- **completat din cod (26.08.2026), cum ai cerut.** Sunt **contractele de munca speciale**, trei feluri, prin motorul pur `core/contracte_speciale.py`, cu temeiurile citate in antet: **zilieri** (Legea 52/2011) - impozit 10% + CAS 25%, **fara CASS si fara CAM** (art. 9^1), impozit pe (brut - CAS), remuneratia orara minima = salariul minim orar, max 90 zile/an la acelasi beneficiar (120 in agricultura); **cenzori / mandat administrator fara CIM** (art. 76 alin. 2 lit. g/i CF, venituri asimilate salariilor) - CAS 25% + CASS 10% + impozit 10% pe (brut - CAS - CASS), **fara CAM**, fiindca nu exista raport de munca
+- deci verificarea de fond: **cele trei feluri nu au aceleasi contributii**, iar daca aplicatia le-ar trata la fel, un zilier ar plati CASS pe care legea nu i-o cere. Se verifica pe cifre, per fel, nu pe existenta notei
+- nota difera si ea: zilieri `641.zilieri = 421`; cenzori/mandat `621 = 421`. Contul de cheltuiala spune ce fel de raport e - daca e acelasi, informatia s-a pierdut
+- declararea in D112 e obligatorie pentru toate trei; verifica plafonul de zile la zilieri, fiindca depasirea il scoate din regim
 
 ### `POST /tenants/{tenant_id}/nota-credit`
 
@@ -458,7 +475,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, operatie primire|dobanda|plata|restanta|garantie, tip lung|scurt, descriere?, + pe operatie: primire{suma}; dobanda{dobanda}; plata{rata?, dobanda?, comision — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] rambursarea se desface în principal și dobândă; principalul stinge datoria, dobânda e cheltuială
+- comisioanele au tratament propriu — verifică dacă se disting
+- creditul în valută produce diferențe de curs la fiecare rambursare
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 
 ### `POST /tenants/{tenant_id}/nota-decont-deplasare`
 
@@ -466,7 +486,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, fel avans|decont|plafon, descriere?, sursa casa|banca, + avans{suma}; decont{avans, diurna?, transport?, cazare?, cota?}; plafon{diurna_pe_zi, zile, salariu_ — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] diurna neimpozabilă e plafonată; ce depășește e venit asimilat salariilor
+- plafonul intern și cel extern sunt diferite, iar cel extern diferă pe țară — verifică dacă se cere din registru
+- cheltuielile de transport și cazare sunt separate de diurnă
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 
 ### `POST /tenants/{tenant_id}/nota-inventariere`
 
@@ -474,7 +497,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, operatie plus|plus_mf|minus|casare, descriere?, + plus{valoare, cont_stoc?}; plus_mf{valoare, cont_imobilizare?}; minus{valoare, cont_stoc?, imputabil?, valo — scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · mijloace_fixe (INSERT/UPDATE)*
 
-- [ ] 
+- [x] plusul de inventar e venit; minusul e cheltuială, deductibilă doar în limita perisabilităților
+- minusul imputabil se recuperează de la gestionar — verifică dacă se distinge de cel neimputabil
+- nota atinge și `mijloace_fixe`: verifică ce se întâmplă cu un mijloc fix lipsă la inventar
+- mișcările de stoc au aceeași dată cu nota
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 
 ### `POST /tenants/{tenant_id}/nota-leasing`
 
@@ -482,7 +509,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, tip primire|rata|reziduala|operational, descriere?, cota?, + campuri pe tip: primire{valoare_capital, dobanda_totala, cont_imobilizare?}; rata{capital, doban — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] financiar sau operațional — cele două au tratamente contabile opuse. Verifică dacă ruta le distinge, sau presupune unul
+- la leasing financiar, bunul intră ca imobilizare și se amortizează; rata se desface în principal și dobândă
+- la operațional, rata e cheltuială integral
+- dobânda din rată e separată de principal, nu topită în cheltuială
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 
 ### `POST /tenants/{tenant_id}/nota-lichidare`
 
@@ -490,7 +521,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, operatie vanzare_activ|partaj, descriere?, + vanzare_activ{pret, valoare_bruta, amortizare_cumulata, conturi?, cota?}; partaj{capital_social, rezerve?, profi — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] lichidarea închide conturile; verifică ordinea: se sting datoriile, apoi se distribuie asociaților
+- impozitul pe dividende se aplică la distribuirea din lichidare
+- verifică dacă ruta permite lichidarea unei firme cu datorii nestinse
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 
 ### `POST /tenants/{tenant_id}/nota-obiect-inventar`
 
@@ -498,7 +532,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, operatie achizitie|dare_folosinta|scoatere, valoare, cota?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] valoarea e **sub pragul** de mijloc fix la data operațiunii — altfel e imobilizare, nu obiect de inventar
+- pragul se cere din registru, pe dată
+- darea în folosință e o operațiune distinctă de achiziție — verifică dacă se disting
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 
 ### `POST /tenants/{tenant_id}/nota-ong`
 
@@ -506,7 +543,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, operatie venit|scutire, descriere?, + venit{suma, fel cotizatie|contributie|donatie|sponsorizare|financiar| fonduri|ocazional|alte, sursa casa|banca}; scutir — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] activitatea fără scop patrimonial e separată de cea economică — verifică dacă se disting
+- veniturile neimpozabile ale ONG au plafon; peste el se impozitează
+- verifică dacă se aplică cele două plafoane cumulate
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 
 ### `POST /tenants/{tenant_id}/nota-perisabilitati`
 
@@ -514,7 +554,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, valoare_intrari, procent_limita (coef — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] limita legală de perisabilitate e pe categorie de produs; ce depășește e cheltuială nedeductibilă
+- verifică dacă limita se cere din registru sau e literal
+- perisabilitățile se constată la inventar, nu în orice moment
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 
 ### `POST /tenants/{tenant_id}/nota-productie`
 
@@ -522,7 +565,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, operatie obtinere|pic|vanzare, descriere?, + obtinere{cost_standard, cost_efectiv?}; pic{suma, moment constatare|reluare}; vanzare{pret_vanzare, cost_standar — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] costul de producție cuprinde materialele, manopera și cota de indirecte — verifică ce cuprinde efectiv
+- produsul finit intră în stoc la cost, nu la preț de vânzare
+- mișcarea de stoc are aceeași dată cu nota
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 
 ### `POST /tenants/{tenant_id}/nota-provizion`
 
@@ -530,7 +576,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, fel creanta|provizion|stoc, actiune constituire|reluare, suma, descriere?, + creanta{zile_depasire?, garantata?, afiliata?, faliment?} | provizion{tip litigi — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] provizionul deductibil fiscal e limitat prin lege; ce depășește e cheltuială nedeductibilă
+- verifică dacă ruta distinge deductibil de nedeductibil, sau lasă totul deductibil
+- provizionul se reia când motivul dispare — verifică dacă există calea inversă
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 
 ### `POST /tenants/{tenant_id}/nota-sgr`
 
@@ -538,7 +587,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, operatie achizitie|vanzare|restituire|autofactura|virare, descriere?, + nr_ambalaje|suma, sursa casa|banca, + autofactura{garantii_returnate, tarif_gestionar — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] garanția de ambalaje **nu e venit și nu e cheltuială** — e datorie, respectiv creanță
+- TVA-ul nu se aplică garanției
+- returnarea stinge datoria, nu produce venit
+- temeiul e HG 1074/2021, adus în corpus pe 24.08
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 
 ### `POST /tenants/{tenant_id}/nota-sponsorizare`
 
@@ -546,7 +599,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, suma, mod contract|plata, descriere?, + optional pentru calcul credit: cifra_afaceri, impozit_profit, tip_impozit profit|micro, beneficiar_in_registru} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] creditul fiscal e minimul dintre 0,75% din cifra de afaceri și 20% din impozit — verifică dacă se calculează, sau se ia suma integral
+- beneficiarul e în Registrul entităților; altfel sponsorizarea nu dă credit fiscal
+- sponsorizarea intră în D107 — verifică legătura
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 
 ### `POST /tenants/{tenant_id}/nota-subventie`
 
@@ -554,7 +610,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, fel exploatare|investitii|reluare, descriere?, + exploatare/investitii{suma, moment drept|incasare}; reluare{valoare_activ, subventie, amortizare_lunara}}. — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] subvenția pentru investiții se recunoaște la venit **pe măsura amortizării**, nu integral la încasare
+- subvenția de exploatare e venit în perioada în care se acoperă cheltuiala
+- verifică dacă cele două se disting
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 
 ### `POST /tenants/{tenant_id}/nota-tva-incasare`
 
@@ -562,7 +621,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: corp: {data, sens incasare|plata, suma_incasata, cota?, descriere?} — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
 
-- [ ] 
+- [x] TVA-ul se colectează la **încasare**, nu la facturare — nota se leagă de plată, nu de factură
+- firma e în regimul de TVA la încasare la data operațiunii; altfel regimul nu se aplică
+- plafonul de aplicare a regimului e verificat pe cifra de afaceri, la data operațiunii
+- **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 
 ### `POST /tenants/{tenant_id}/plan-conturi`
 
@@ -635,7 +697,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: intoarce {nr, tranzactii}*
 
-- [ ] 
+- [x] **nu scrie nimic** — verificat structural
+- fiecare tranzacție din fișier apare în răspuns; cele care nu s-au putut citi se numesc, cu rândul lor
+- soldul final din extras = soldul inițial + suma tranzacțiilor. Dacă nu, fișierul e incomplet și se spune
+- data valutei și data operațiunii sunt distincte — verifică dacă se citesc amândouă
 
 ### `POST /tenants/{tenant_id}/banca/reconciliere/import`
 
@@ -643,7 +708,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie extras_linii (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `reconciliere_api`*
 
-- [ ] 
+- [x] fiecare tranzacție importată produce **o singură** linie de extras
+- un extras importat de două ori nu dublează liniile — verifică pe numărul extrasului și pe conținut
+- liniile importate poartă **sursa** (extras bancar) și gradul de certitudine
+- potrivirea automată cu facturi e o **propunere**, nu un fapt: verifică dacă rezultatul e ciornă sau evidență
+- soldul contului de bancă după import = soldul din extras
 
 ### `POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/conteaza`
 
@@ -651,7 +720,10 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie extras_linii (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) — prin `reconciliere_api`*
 
-- [ ] 
+- [x] nota produsă respectă partida dublă și folosește conturi existente
+- linia de extras trece în starea „contată" și nu se mai poate conta a doua oară
+- dacă linia se leagă de o factură, suma nu depășește soldul neîncasat
+- data notei e data operațiunii din extras, nu data contării
 
 ### `POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/ignora`
 
@@ -659,7 +731,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie extras_linii (UPDATE)*
 
-- [ ] 
+- [x] ignorarea poartă **motivul** — o linie ignorată fără motiv e o sumă care dispare din reconciliere
+- linia rămâne vizibilă în listă, cu starea „ignorată", nu dispare
+- soldul de reconciliat include liniile ignorate, sau le exclude explicit — verifică ce face și dacă se vede
 
 ### `POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/reactiveaza`
 
@@ -667,7 +741,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie extras_linii (UPDATE)*
 
-- [ ] 
+- [x] reactivarea unei linii contate anulează nota produsă? Sau doar pe cele ignorate se poate?
+- dacă anulează o notă validată, se refuză — se stornează
+- reactivarea se consemnează: cine, când
+- **completat din cod (26.08.2026).** Ruta readuce o linie de extras din `ignorat` în `nou` — un singur `UPDATE extras_linii SET status='nou' WHERE id=%s AND status='ignorat'`. Dacă linia nu e `ignorat`, **refuză 422** („linia nu e ignorata”). **Nu atinge nicio notă** și nu poate reactiva o linie deja contată
+- **ce NU face, și e constatarea:** nu consemnează **cine** și **când** a reactivat. Ignorarea și reactivarea sunt decizii despre ce intră în evidență, iar amândouă sunt reversibile fără urmă. Perechea `ignora`/`reactiveaza` e o stare care se poate plimba oricâte ori, fără istoric
+- verificarea care rămâne de exercitat: după reactivare, linia reapare în lista de potrivit cu aceleași sume ca înainte de ignorare — ignorarea nu e o modificare de conținut
 
 ## T08 — NIR și recepția
 
@@ -681,7 +760,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie inregistrari (INSERT) · inregistrari_linii (INSERT) · nir (INSERT) · nir_linii (INSERT) — prin `stocuri_api`*
 
-- [ ] 
+- [x] NIR-ul primește **număr din serie**, fără goluri
+- cantitățile recepționate nu depășesc cantitățile de pe factură — sau diferența e consemnată ca minus la recepție
+- adaosul comercial, dacă se aplică, e calculat pe cotă, nu introdus liber
+- mișcarea de stoc are aceeași dată cu NIR-ul
+- nota contabilă și NIR-ul au aceeași valoare totală
+- un NIR pe o factură deja recepționată se refuză, sau produce recepție parțială — verifică ce face
 
 ## T09 — Casa și registrul de casă
 
@@ -695,7 +779,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie casa_operatiuni (DELETE/INSERT) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`*
 
-- [ ] 
+- [x] **soldul casei nu poate deveni negativ** — o plată peste sold se refuză
+- plafonul de plăți în numerar către o persoană juridică se verifică pe zi și pe operațiune
+- plafonul de încasări în numerar de la o persoană se verifică la fel
+- operațiunea produce o linie în registrul de casă, cu numărul curent
+- data operațiunii e într-o perioadă deschisă
 
 ### `DELETE /tenants/{tenant_id}/casa/operatiuni/{op_id}`
 
@@ -703,7 +791,14 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie casa_operatiuni (DELETE/INSERT) · inregistrari (DELETE/INSERT) · inregistrari_linii (INSERT) — prin `casa_api`*
 
-- [ ] 
+- [x] **o operațiune de casă dintr-o zi închisă nu se șterge** — registrul de casă se închide zilnic
+- ștergerea recalculează soldul; dacă soldul ar deveni negativ la vreo operațiune ulterioară, se refuză
+- numerotarea nu se reia după ștergere — rămâne golul, sau se renumerotează? Verifică și spune care
+- dacă operațiunea are notă validată, se refuză
+- **completat din cod (26.08.2026): numerotarea casei nu se rupe, fiindcă NU EXISTĂ.** `casa_operatiuni` are coloanele `id, data, tip, categorie, document, partener, cui, suma, inregistrare_id, creat_la` — **niciun număr curent**. Iar `casa.registru_casa()` calculează doar **soldul rulant**, nu un rând numerotat. Deci ștergerea nu poate lăsa un gol într-o serie care nu există
+- **ce face ștergerea, verificat:** `casa_api.sterge` șterge operațiunea **și nota legată**, dar **doar dacă nota e ciornă** — pe una validată refuză cu *„nota legată e validată; nu se mai poate șterge”*. Deci lanțul către evidență nu se rupe
+- **constatarea de fond:** Registrul de casă (cod 14-4-7A, OMFP 2634/2015) e un registru obligatoriu, iar registrele obligatorii poartă număr curent — la fel ca Registrul-jurnal 14-1-1, unde numărul curent a fost **derivat la citire** pe 24.08 după confruntarea cu norma. **N-am confruntat cu actul** dacă 14-4-7A îl cere; dacă îl cere, e aceeași clasă și aceeași reparație
+- verificarea care rămâne: după ștergere, soldul rulant al zilei se recalculează, iar soldul de la sfârșitul zilei nu depășește plafonul de casierie
 
 ## T10 — Inventarierea
 
@@ -717,7 +812,11 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie articole (INSERT/UPDATE) · inregistrari (INSERT) · inregistrari_linii (INSERT) · miscari_stoc (INSERT) — prin `stocuri_cv_api`*
 
-- [ ] 
+- [x] inventarul compară **stocul faptic** cu cel scriptic; diferența e plus sau minus, nu se ajustează tăcut
+- fiecare diferență produce o mișcare de stoc, iar suma mișcărilor = diferența totală
+- minusul se compară cu limita de perisabilitate pe categorie; ce depășește e nedeductibil
+- inventarul se face la o dată, iar mișcările de după acea dată nu-l afectează
+- un articol care nu apare în listă rămâne cu stocul scriptic sau se consideră zero? Verifică — diferența e mare
 
 ## T11 — Închiderea lunii
 
@@ -747,7 +846,12 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie perioade_blocate (DELETE)*
 
-- [ ] 
+- [x] redeschiderea e act consemnat, cu **motiv obligatoriu** — P15
+- redeschiderea marchează documentele emise din acea perioadă ca fiind **sub rezervă**
+- declarațiile depuse pentru perioada redeschisă produc contradicție vizibilă, nu se rescriu
+- o perioadă nu se poate redeschide dacă cea următoare e închisă
+- **redeschiderea nu consemnează nimic** — vezi pasul de închidere. `DELETE` șterge rândul, deci nu rămâne nici cine a redeschis, nici când, nici de ce. Interdicția 36 + P15
+- verificarea care ar trebui să fie adevărată după pas — și azi nu poate fi: **există o urmă care spune că perioada a fost închisă de X la momentul T și redeschisă de Y la momentul U, cu motivul Z**
 
 ### `POST /tenants/{tenant_id}/perioade-blocate`
 
@@ -755,7 +859,14 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: scrie perioade_blocate (INSERT)*
 
-- [ ] 
+- [x] închiderea e un act deliberat, cu **autor și moment** consemnate
+- după închidere, nicio scriere în perioada aceea nu mai trece — verificat pe toate cele 39 de operațiuni, nu doar pe cele testate
+- închiderea verifică întâi că perioada e coerentă: balanța se închide, notele sunt validate, nu există ciorne. Sau, dacă nu verifică, se spune ce nu verifică
+- o perioadă nu se poate închide dacă cea anterioară e deschisă
+- **verificat la sursă (26.08.2026): NU verifică nimic. Ai presupus corect, și e mai rău.** `POST /perioade-blocate` face **un singur `INSERT`** în `perioade_blocate (an, luna, blocat_de)`. Nicio verificare de ciorne rămase, de echilibru, de orfani. **Măsurat azi: dacă s-ar închide luna curentă pe `tenant_013`, ar rămâne 5 ciorne închise înăuntru** (`tenant_003`: 1)
+- **și sunt DOUĂ acte de închidere, dintre care doar unul verifică.** `core/inchidere_luna.py` (21.08) verifică un blocaj real — e-Facturi primite și neînregistrate — și **refuză motivat**, iar o modificare **de-confirmă automat**. Dar el scrie în `perioada`, pe domeniul `facturi`: e o **afirmație** despre completitudine. **Poarta care oprește scrierile e `perioade_blocate`** (citită de `_cere_luna_deschisa` la fiecare notă) — și aceea nu verifică nimic. **Verificarea există, dar nu e pe poartă.**
+- **redeschiderea nu lasă urmă.** `DELETE /perioade-blocate` **șterge rândul**: dispare și `blocat_de`, și `blocat_la`, și faptul că perioada a fost vreodată închisă. Tabela n-are coloană de motiv. Asta e **interdicția 36** („o redeschidere de perioadă fără motiv consemnat”) și **P15** („redeschiderea e act consemnat, cu motiv”) — direct, nu prin analogie
+- **cifra care încadrează:** o singură perioadă e blocată azi, pe toate cele 17 firme (`tenant_001`). Deci efectul n-a fost produs — e prag 2, cauză unică, dovedită
 
 ## T12 — Închiderea anului și situațiile financiare
 

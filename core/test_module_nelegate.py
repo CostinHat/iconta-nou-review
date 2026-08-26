@@ -35,6 +35,13 @@ PIN = {
         "PRODUCATOR FARA LIVRARE, declarat (METODA §20) — Fisa de cont 14-6-22, care inlocuieste "
         "Cartea mare 14-1-3; zero rute si zero ecrane, spus in ISTORIC 23.08.2026 (3): «artefactul "
         "are producator, nu livrare». NU e omisiune - conditia lui de deblocare e LIVRAREA, nu un apel",
+    "core/scan_rol_pe_efect.py":
+        "INSTRUMENT DE MASURA, nu cale de productie (aceeasi clasa cu scan_garzi_pe_text si "
+        "scan_module_nelegate): singurul lui consumator legitim e gardul core/test_rol_pe_efect.py, "
+        "iar sonda exclude importatorii de test. Un apel din productie ar fi gresit -- nu masoara "
+        "date de firma, masoara RUTELE aplicatiei (cine scrie evidenta, cine atinge credentiale). "
+        "Traieste separat de garda tocmai fiindca citeste SQL, adica TEXT, iar clichetul 50 nu lasa "
+        "o aserttiune pe text intr-un fisier de garda -- si pe drept",
     "core/scan_garzi_pe_text.py":
         "INSTRUMENT DE MASURA, nu cale de productie (aceeasi clasa cu scan_ancore): singurul lui "
         "consumator legitim e gardul core/test_garzi_pe_text.py, iar sonda exclude importatorii de "

@@ -4899,3 +4899,25 @@ firmă. Plus numele beneficiarului, care nu era cerut.
 **Măsurat înainte de reparație: `public.api_chei` = 0** — nicio cheie n-a fost creată vreodată,
 deci efectul n-a fost produs. **Ce rămâne diferit, declarat:** poarta „pleacă marfa acum?" nu se
 poate pune pe o cale neinteractivă fără să alegem în locul integratorului — R57.
+
+## Rolul se cere după CE FACE ruta, nu după cum se numește (26.08.2026)
+
+**`core/test_rol_pe_efect.py`** — 8 teste, **3 mutații** probate. Cerut de Costin după ce
+măsurătoarea manuală s-a înșelat de trei ori în trei zile, de fiecare dată pe un **proxy**: numele
+funcției (R33), numele grupului (R55), calea fără metodă (R56).
+
+**Ce face imposibil:** o rută care scrie o înregistrare `validata` **direct** (deci produce
+evidență, sărind peste validare) fără rol · o rută care atinge credențiale externe fără rol ·
+dispariția tăcută a mulțimii (anti-vacuu pe ambele sonde).
+
+**Cum e construit, și de ce așa:** mulțimea se **derivă din AST**, nu dintr-o listă — o listă n-ar
+vedea a 41-a rută. Aserțiunea e pe **mulțime**, nu pe cardinal — un clichet pe număr ar trece la o
+inversare. Cheia e **calea + metoda**, nu numele funcției.
+
+**Cele șase moduri de eșec sunt scrise în antet, înaintea primei măsurători** (interdicția 76),
+inclusiv cele pe care NU le închide: **E3** rol calculat dinamic (măsurat azi: 0 apeluri, dar dacă
+apare unul e numit, nu înghițit) și **E6** stare scrisă din parametru — cazul `salarii-contare`,
+pinat cu motivul. **E2** (rol verificat în corp, nu în decorator) e închis: sonda îl citește.
+
+**Ce NU face, declarat:** nu spune dacă `admin_firma` e rolul POTRIVIT — spune că există un rol
+acolo unde efectul îl cere. Alegerea rolului rămâne decizia lui Costin.

@@ -160,6 +160,33 @@ verificările**: patru rute de `/incarca` cu docstring *„nu salvează"* apăre
 de date. **Regula: o supra-aproximare are voie să existe, dar trebuie să se NUMEASCĂ** — altfel cine
 o citește scrie o aserțiune pe ea. Forma: `poate atinge, prin modul (PLAFON, nemăsurat pe rută)`.
 
+### O gardă care încodează o decizie NUMEȘTE AXA pe care păzește (26.08.2026)
+
+**Cerut de Costin, cu motivul lui:** *„R42 spunea că nota nu primește rol fiindcă nu e artefact
+predat. R55 pune rol fiindcă schimbă starea. O gardă care încodează o decizie trebuie să numească
+axa pe care păzește — altfel a doua decizie pe altă axă o face să pară contrazisă."*
+
+**Instanța, din aceeași zi.** `test_nota_contabila_NU_cere_admin_firma` încoda R42 (25.08): *nota
+nu e artefact predat, deci nu primește rol*. Când R55 (26.08) a pus rol pe validare — pe criteriul
+*ce schimbă ce datorează firma* — garda a picat. **Și a avut dreptate să pice:** o decizie nouă
+atinsese ceva ce o decizie veche păzea. Ce lipsea era ca garda să spună **pentru ce** păzea, ca
+diferența dintre „te contrazic” și „vorbim despre altceva” să fie citibilă fără să reciteșt
+ambele decizii.
+
+**Ce cere regula, practic:**
+
+1. **Numele testului și mesajul de eșec spun axa**, nu doar concluzia. Nu *„nota nu cere rol”*, ci
+   *„nota nu cere rol PE CRITERIUL «artefact predat»”*.
+2. **Excepțiile pe altă axă se enumeră**, fiecare cu decizia care o justifică — nu se topesc în
+   condiția testului.
+3. **Lista de excepții e bidirecțională**: o intrare care și-a pierdut motivul (ruta a dispărut,
+   rolul s-a scos) trebuie să PICE, altfel lista devine amintire.
+
+**De ce contează mai mult decât pare:** `METODA` §25 spune deja că *între două reguli scrise care
+se contrazic câștigă cea păzită, și o face tăcut*. Regula asta e cealaltă jumătate — **cum faci ca
+tăcerea aia să nu se producă**: o gardă care își numește axa nu poate anula o decizie de pe altă
+axă fără ca cineva să vadă.
+
 ### Aducerea unui act e ea însăși o verificare
 
 **Un act incomplet în corpus nu se deosebește de un act care nu spune ce cauți.** Amândouă produc

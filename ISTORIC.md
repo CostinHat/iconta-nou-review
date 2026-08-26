@@ -5359,3 +5359,23 @@ doar lista de rute."* Avea dreptate de doua ori.
 - **Lotul 3 scris**: 90 din 192 completate.
 - **A treia zi la rând în care o cifră de-a mea se corectează fiindcă am măsurat pe un PROXY în
   loc de lucru**: numele funcției (R33), numele grupului (R55), calea fără metodă (R56).
+
+### 26.08.2026, tura a cincea — gardul pe EFECT, si inchiderea perioadei
+
+- **Gardul cerut de Costin exista:** `core/test_rol_pe_efect.py`, 8 teste, 3 mutatii. Rolul se
+  cere dupa CE FACE ruta, nu dupa cum se numeste — mulțimea se deriva din AST, aserttiunea e pe
+  mulțime (nu pe cardinal), cheia e calea + metoda. Cele sase moduri de esec ale gardului sunt
+  scrise inaintea primei masuratori, inclusiv cele doua pe care nu le inchide.
+- **R57 aplicat:** pe calea de API, factura cu linie de stoc se REFUZA fara raspuns explicit la
+  poarta de gestiune. Campul se numeste `marfa_pleaca_cu_factura` si spune ce se intampla, nu ce
+  face codul.
+- **Cele 19 rute `nota-*` CALCULEAZA** — fiecare cheama un motor pur din `core/`, iar unde
+  intervine cota o cere din registru. Zero care doar scriu ce li se da. *(Si sunt 19, nu 20 —
+  cifra pe care am scris-o eu gresit, repetata apoi in comanda.)*
+- **Inchiderea perioadei nu verifica nimic** (R58). `POST /perioade-blocate` = un singur INSERT.
+  Masurat: inchiderea lunii curente pe `tenant_013` ar lasa 5 ciorne inauntru. Si exista DOUA acte
+  de inchidere, dintre care doar unul verifica — iar cel care verifica **nu e poarta**.
+  **Redeschiderea sterge randul**, deci dispare si faptul ca perioada a fost inchisa: interdictia
+  36 si P15, direct.
+- **METODA:** o garda care incodeaza o decizie NUMESTE AXA pe care pazeste. Cealalta jumatate a
+  lui §25 — cum faci ca tacerea sa nu se produca.

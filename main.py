@@ -5222,6 +5222,26 @@ def apiv1_factura_emite(tenant_id: int, corp: dict = Body(...), actx=Depends(cer
     schema = _api_schema(actx, tenant_id)
     if not str(corp.get("tert_nume") or "").strip():
         raise HTTPException(422, "Denumirea beneficiarului e obligatorie pe factură.")
+    # [R57, decizia lui Costin 26.08.2026] Aceeași poartă ca în ecran, dar pe o cale
+    # neinteractivă nu se poate ÎNTREBA — deci se REFUZĂ fără răspuns explicit. Motivul lui:
+    # *„un implicit, oricare ar fi, alege în locul integratorului: «descarcă» îl face să descarce
+    # gestiunea fără să știe; «nu descarcă» lasă stocul greșit fără să afle."* Iar refuzul e
+    # ieftin acum — `public.api_chei` = 0 — și ar fi imposibil de introdus peste un an.
+    # Câmpul spune CE SE ÎNTÂMPLĂ, nu ce face codul: `marfa_pleaca_cu_factura`.
+    _linii = corp.get("linii") or []
+    _tip = corp.get("tip", "factura")
+    _poarta_ceruta = (_tip == "factura") and any(
+        isinstance(l, dict) and l.get("articol_id") for l in _linii)
+    _pleaca = corp.get("marfa_pleaca_cu_factura")
+    if _poarta_ceruta and _pleaca is None:
+        raise HTTPException(422, detail={
+            "cod": "POARTA_GESTIUNE_FARA_RASPUNS",
+            "mesaj": ("Factura are linii de stoc, deci trebuie spus dacă marfa pleacă odată cu ea. "
+                      "Nu există un răspuns implicit: unul ar descărca gestiunea fără știrea ta, "
+                      "celălalt ar lăsa stocul greșit fără să afli."),
+            "camp": "marfa_pleaca_cu_factura",
+            "valori": {"true": "marfa pleacă acum — se descarcă gestiunea în aceeași tranzacție",
+                       "false": "marfa nu pleacă acum — factura e doar fiscală, stocul rămâne"}})
     with db.get_conn(schema) as conn:
         r = facturi_api.emite_factura(
             conn,
@@ -5236,8 +5256,16 @@ def apiv1_factura_emite(tenant_id: int, corp: dict = Body(...), actx=Depends(cer
             platitor_tva=_platitor_tva_firma(conn),
             status=corp.get("status", "de_preluat"),
             curs_manual=corp.get("curs_manual"),
-            tip=corp.get("tip", "factura"),
+            tip=_tip,
         )
+        # [R57] Acelasi efect ca in ecran: descarcarea se face DOAR la raspuns afirmativ si in
+        # ACEEASI tranzactie cu emiterea (atomic), nu intr-un al doilea apel al integratorului.
+        if _poarta_ceruta and _pleaca is True and isinstance(r, dict) and r.get("factura_id"):
+            from core import stocuri_cv_api as _cv_api
+            from datetime import date as _dt_api
+            r["descarcare"] = _cv_api.descarca_factura(
+                conn, schema, r["factura_id"],
+                corp.get("data_emitere") or _dt_api.today().isoformat())
     if not r.get("ok", True) and r.get("cod") == "CURS_INDISPONIBIL":
         raise HTTPException(422, r.get("mesaj"))
     return r

@@ -2103,3 +2103,12 @@ Că interpretarea aleasă e cea corectă. Nicio mașină nu poate. Gardul face i
   cablat, și se scrie ca să nu se piardă: un test care asertează pe **nume** că exact rutele care
   scriu `validata` direct cer rol (azi sunt 3, măsurate), și unul pentru credențialele externe
   (R56). Un clichet pe **număr** ar trece și dacă s-ar inversa între ele.
+
+- **`core/test_rol_pe_efect.py` (26.08.2026)** — 8 teste, **3 mutații**: o rută care scrie
+  `validata` pierde rolul → roșu · o rută cu credențiale pierde rolul → roșu · sonda pusă să
+  confunde `ciorna` cu `validata` → roșu pe trei teste deodată, inclusiv pe calibrarea proprie.
+  Include **trei teste de calibrare** pe modurile proprii de eșec: sonda deosebește `validata` de
+  `ciorna` și de `inregistrari_linii` · rolul se vede și din CORP, nu doar din decorator · un rol
+  calculat dinamic se **numește**, nu se înghite în niciuna din direcții.
+- **`core/test_r42_criteriu.py` — +1 test (26.08.2026)**: excepțiile de pe altă axă sunt reale și
+  motivate (bidirecțional — o excepție care și-a pierdut rolul sau ruta pică).
