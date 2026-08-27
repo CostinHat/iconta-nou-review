@@ -218,6 +218,67 @@ export function randeazaListaFirme(container, nav, inapoi) {
   incarcaFirme();
 }
 
+// [nume_anaf_v1, 27.08.2026] Denumirea din aplicație lângă cea de la ANAF.
+// Decizia lui Costin, varianta (b): numele rămâne EDITABIL, dar instantaneul ANAF se păstrează cu
+// data lui, iar divergența se ARATĂ. Varianta (a) — câmp needitabil — ar fi blocat firmele pe care
+// ANAF nu le întoarce: „un câmp needitabil care nu se poate completa e mai rău decât unul editabil
+// greșit."
+// Precedentul e în aceeași aplicație: `platitor_tva` lângă `platitor_tva_anaf` + data lui.
+const _NUME_ANAF_ZILE_STATUT = 180;
+
+function _numeNrm(s) {
+  return String(s || "").trim().replace(/\s+/g, " ").toLocaleLowerCase("ro");
+}
+
+// -> null (nimic de arătat) | {fel: "divergenta"|"veche", anaf, zile}
+function _divergentaNume(t) {
+  const anaf = (t && t.nume_anaf) || "";
+  if (!anaf || !_numeNrm(anaf) || _numeNrm(anaf) === _numeNrm(t.nume)) return null;
+  // `nume_anaf_la` decide când e stătut: „o denumire ANAF veche de un an nu e divergență, e o
+  // măsurătoare veche" (Costin). Fără dată, nu se poate spune — și atunci se spune asta.
+  const la = t.nume_anaf_la ? new Date(t.nume_anaf_la) : null;
+  const zile = la && !isNaN(la) ? Math.floor((Date.now() - la.getTime()) / 864e5) : null;
+  return { fel: (zile === null || zile <= _NUME_ANAF_ZILE_STATUT) ? "divergenta" : "veche",
+           anaf, zile };
+}
+
+function _randDivergentaNume(corp, nav, t) {
+  const d = _divergentaNume(t);
+  if (!d) return;
+  const zona = document.createElement("div");
+  if (d.fel === "veche") {
+    zona.className = "caseta-info";
+    zona.innerHTML = `<p style="margin:0">Ultima denumire văzută la ANAF era
+      <strong>${esc(d.anaf)}</strong>, dar măsurătoarea are ${d.zile} de zile — <strong>nu e o
+      divergență, e o citire veche</strong>. Se reîmprospătează la următoarea verificare de CUI.</p>`;
+  } else {
+    zona.className = "caseta-atentie";
+    zona.innerHTML = `
+      <div class="ca-mesaj">Denumirea din aplicație diferă de cea de la ANAF${
+        d.zile !== null ? ` (citită acum ${d.zile === 0 ? "azi" : d.zile + " zile"})` : ""}:
+        <br>· în aplicație: <strong>${esc(t.nume || "")}</strong>
+        <br>· la ANAF: <strong>${esc(d.anaf)}</strong>
+        <br>Amândouă se păstrează. Denumirea din aplicație e cea folosită în documente.</div>
+      <div class="ca-actiuni"><button class="buton-secundar" id="dn-ia-anaf">Ia denumirea de la ANAF</button></div>`;
+  }
+  corp.insertBefore(zona, corp.children[1] || null);
+  zona.querySelector("#dn-ia-anaf")?.addEventListener("click", async () => {
+    const b = zona.querySelector("#dn-ia-anaf");
+    b.disabled = true; b.textContent = "Se schimbă…";
+    try {
+      await api.put(`/tenants/${t.id}`, { nume: d.anaf });
+      nav.acasa();
+      nav.setFirmaInLucru("");
+    } catch (e) {
+      b.disabled = false; b.textContent = "Ia denumirea de la ANAF";
+      const m = document.createElement("p");
+      m.className = "msg-eroare";
+      m.textContent = e.mesaj || e.message || "Nu am putut schimba denumirea.";
+      zona.appendChild(m);
+    }
+  });
+}
+
 // deschide o firmă: setează "În lucru" + spațiul de lucru (meniu de acțiuni)
 export function deschideFirma(t, nav) {   // [P2] reutilizat din termene.js — deschide fisa firmei
   nav.setFirmaInLucru(t.nume || "");
@@ -351,6 +412,8 @@ function meniuFirma(corp, nav, t) {
          <strong>ștergerea</strong> nu e (firma dispare cu totul, și se poate doar dacă n-a produs
          niciun document). Ecranul următor spune care se poate și de ce.</p>
     </div>`;
+
+  _randDivergentaNume(corp, nav, t);   // [nume_anaf_v1]
 
   const bScoate = corp.querySelector("#firma-scoate");
   if (bScoate) bScoate.addEventListener("click", () =>

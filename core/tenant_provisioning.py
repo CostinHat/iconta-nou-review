@@ -212,6 +212,16 @@ def precompleteaza_din_anaf(conn, schema_name, cui, seteaza_nume=False):
     if not (rez and rez[0].get("gasit")):
         return False
     d = rez[0]
+    # [nume_anaf_v1, 27.08.2026] Denumirea de la ANAF se PASTREAZA intotdeauna, cu data ei, pe
+    # `public.tenants` — chiar si cand `seteaza_nume=False`, adica la add-firm si import, unde
+    # numele afisat e al contabilului. Pana azi denumirea ANAF nu se retinea nicaieri: de-aia
+    # „firma cu CUI validat la ANAF" nu insemna „denumire de la ANAF", iar campul se putea edita
+    # liber fara sa se loveasca de nimic. Decizia lui Costin: varianta (b) — se pastreaza amandoua.
+    _den = (d.get("denumire") or "").strip()
+    if _den:
+        with conn.cursor() as _c:
+            _c.execute("UPDATE public.tenants SET nume_anaf=%s, nume_anaf_la=now() "
+                       "WHERE schema_name=%s", (_den, schema_name))
     seturi, par = [], []
     if seteaza_nume:
         seturi.append("nume = COALESCE(NULLIF(%s, ''), nume)")

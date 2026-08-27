@@ -5074,6 +5074,28 @@ E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pome
 
 **Ce NU face, declarat:** niciun clichet pe cele **28** de `except …: pass` rămase — n-au fost citite una câte una. Și nu verifică dacă emailul chiar pleacă; doar că, dacă nu pleacă, rămâne urmă.
 
+## O decizie cerută de trei ori nu mai arată ca cerută o dată (27.08.2026)
+
+**`core/test_reluari_decizie.py`** — 5 teste. Costin a întrebat de două ori în aceeași tură: *„dacă ți-am dat-o de două ori și tot apare ca deschisă, verifică de ce nu ajunge la restanță."*
+
+**Răspunsul, măsurat:** din restanțele DESCHISE deblocate de DECIZIE, **19 aveau `reluări: 0`** deși registrul se mișcase sub ele — **R9 de 133 de commituri**, R18 de 122, R26 de 90. Câmpul există, garda lui există (sare la ≥3), dar **contorul nu urca niciodată — deci garda n-a putut să se aprindă nici o dată.**
+
+**Și partea mai rea decât omisiunea:** clasa era **deja găsită și scrisă** în `CONFORMITATE.md` — *„regula era scrisă și nepăzită, deci se citea ca respectată"* — și lăsată ca **disciplină**. A rămas 0 pe 69 din 76.
+
+**Ce NU face, declarat:** nu numără de câte ori am cerut eu — numără **commituri de registru supraviețuite**, un proxy. Și **nu știe dacă răspunsul a fost dat**: din afară, „n-a răspuns" și „n-am scris" arată la fel. Aia rămâne pe disciplină, și se spune.
+
+## Procesul care servește ecranele intră în deadman (27.08.2026, R75)
+
+**`core/sonda_web.py` + `core/test_sonda_web.py`** — 7 teste. Al 12-lea nume din `cron.RITMURI` nu e un job, e **procesul care le servește pe toate**. **Cere pagina** (viu **și** răspunde) și **compară ora de pornire** cu cea de la sonda precedentă.
+
+**Afirmația mai slabă, scrisă ca atare:** prinde **repornirea**, nu **durata**. Între două sonde la 15 minute, o cădere de trei secunde și una de paisprezece minute arată identic.
+
+**Calibrarea a prins un defect al meu:** constantele erau legate ca argument implicit, deci calea de eșec nu se putea proba. Reparat, și gardat împotriva formei.
+
+## Denumirea de la ANAF stă lângă cea editabilă (27.08.2026)
+
+**`core/test_nume_anaf.py`** — 4 teste. Instantaneul se captează **pe toate căile**, nu doar unde numele vine de la ANAF — structural, verificat că nu ajunge sub `if seteaza_nume`. **Ce NU face:** nu cere alegerea (slotul T36 o cere; azi se arată amândouă și se oferă o acțiune), nu reîmprospătează instantaneul, nu se aplică retroactiv.
+
 ## Verificările T36 sunt scrise — 197/197 (27.08.2026)
 
 **`TRASEE_VERIFICARI.md`** — cele patru sloturi ale ciclului de viață al firmei, scrise de Costin. Locurile de verificare revin la **197 scrise / 0 goale**. Antetul, garda și rândul `*ce face:*` **nu s-au copiat** din fișierul lui: s-au luat de la instrument, ca garda de identitate să le compare cu ce măsoară el.

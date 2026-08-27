@@ -26,6 +26,36 @@ A le trata la fel ar goli-o pe prima."*
 necondiționat nu trece. Probat în ambele direcții pe firme sintetice: la scoatere urmele ajung
 întregi în `urme_pastrate`; la GDPR coloana rămâne `NULL`.
 
+## 27.08.2026 — Denumirea firmei: rămâne editabilă, dar instantaneul ANAF stă lângă ea
+
+**Decizia lui Costin: varianta (b).** *„Nume editabil, cu `nume_anaf` + `nume_anaf_la` alături,
+iar divergența se arată pe ecran."*
+
+**Premisa întrebării era alta decât credeam amândoi.** Întrebarea a fost *„de ce se poate schimba
+denumirea unei firme cu CUI validat la ANAF?"*. Măsurat: `precompleteaza_din_anaf` scria în
+`{schema}.firma_profil`, **nu** în `public.tenants`; iar `seteaza_nume=True` apărea **într-un
+singur loc** — firma proprie a cabinetului. Deci `tenants.nume`, numele din portofoliu și cel care
+s-a duplicat, **nu era scris de ANAF pe nicio cale**. Câmpul era editabil fiindcă **n-a fost
+niciodată sursat** — nu fiindcă cineva a decis că se poate edita.
+
+**De ce (b) și nu (a)** *(motivul lui)*: *„(a) blochează firmele pe care ANAF nu le întoarce —
+nou-înființate, sau ANAF jos. Un câmp needitabil care nu se poate completa e mai rău decât unul
+editabil greșit."* Iar (b) **e precedent, nu invenție**: `platitor_tva` stă deja lângă
+`platitor_tva_anaf` + `platitor_tva_anaf_data`, în aceeași aplicație.
+
+**Ce s-a construit:** `public.tenants.nume_anaf` + `nume_anaf_la`, scrise **pe toate căile** de
+precompletare (inclusiv add-firm și import, unde numele afișat e al contabilului — *„dacă omul
+schimbă sugestia, cele două se păstrează amândouă din prima"*). Divergența se arată în fișa firmei,
+cu amândouă denumirile.
+
+**Vechimea decide felul mesajului**, tot regula lui: *„o denumire ANAF veche de un an nu e
+divergență, e o măsurătoare veche."* Peste **180 de zile**, ecranul nu mai spune „divergență", spune
+„citire veche".
+
+**Ce NU s-a construit, declarat:** *„se cere alegerea"* din slotul T36. Azi se **arată** amândouă și
+se oferă **o** acțiune (ia denumirea de la ANAF); a păstra pe a ta = a nu face nimic, iar divergența
+rămâne vizibilă. Jumătatea „se cere" e lipsă, scrisă ca lipsă.
+
 ## 27.08.2026 — Două firme cu același nume, în același cabinet: refuzat
 
 **Cerința lui Costin:** *„Nici Registrul Comerțului, nici ANAF nu permit. O denumire de firmă e

@@ -366,16 +366,19 @@ def tenantii_userului(conn, user_id, doar_active=True):
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         if rol == "superadmin":
             # GDPR: superadmin vede in lista DOAR conturi gratuite (fara cabinet).
-            cur.execute("SELECT id, nume, schema_name, cui, activ FROM public.tenants "
+            cur.execute("SELECT id, nume, schema_name, cui, activ, nume_anaf, nume_anaf_la "
+                        "FROM public.tenants "
                         "WHERE accounting_firm_id IS NULL AND (%s OR activ = true) ORDER BY nume",
                         (toate,))
         elif rol == "admin_firma":
-            cur.execute("SELECT id, nume, schema_name, cui, activ FROM public.tenants "
+            cur.execute("SELECT id, nume, schema_name, cui, activ, nume_anaf, nume_anaf_la "
+                        "FROM public.tenants "
                         "WHERE accounting_firm_id = %s AND (%s OR activ = true) ORDER BY nume",
                         (firm, toate))
         else:
             cur.execute(
-                "SELECT t.id, t.nume, t.schema_name, t.cui, t.activ FROM public.tenants t "
+                "SELECT t.id, t.nume, t.schema_name, t.cui, t.activ, t.nume_anaf, t.nume_anaf_la "
+                "FROM public.tenants t "
                 "JOIN public.user_tenants ut ON ut.tenant_id = t.id "
                 "WHERE ut.user_id = %s AND (%s OR t.activ = true) ORDER BY t.nume",
                 (user_id, toate))

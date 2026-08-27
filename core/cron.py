@@ -85,6 +85,13 @@ RITMURI = {
     "monitor_fiscal":      50,    # zilnic 09:00 + luni 08:00
     "sinteza_zilnica":     96,    # luni-vineri 19:00 (72h peste weekend + marja)
     "expirare_cote":       800,   # LUNAR, ziua 1 06:00 (~730h; 800 prinde o luna ratata)
+    # --- procesul care serveste ecranele (R75 (b), 27.08.2026) ---
+    # Al 12-lea job supravegheat NU e un job: e `iconta-nou.service`, procesul care le serveste pe
+    # toate. Pana azi joburile de fundal aveau deadman si el nu avea nimic. `core/sonda_web` cere
+    # pagina (viu SI RASPUNDE, cum a cerut Costin) si compara ora de pornire a unitatii cu cea de
+    # la sonda precedenta - o repornire intre doua sonde se vede, chiar daca a durat trei secunde.
+    # Ce NU se poate spune de aici: CAT a fost jos. Limita e scrisa in antetul sondei.
+    "sonda_web":           2,     # la 15 minute (crontab)
     # --- timere systemd (nu crontab), adaugate 27.08.2026 pe R74 ---
     "spv_poll":            2,     # timer spv-poll, la 30 de minute (*:07,37)
     "spv_receive":         2,     # timer spv-receive, la 30 de minute (*:17,47)
@@ -174,6 +181,20 @@ def citeste_sistemul(dir_unitati="/etc/systemd/system"):
             s_txt = ""
         perechi.append((nume_t, t_txt, tinta, s_txt))
     return joburi_din_crontab(ct), unitati_systemd(perechi)
+
+
+DDL_DETALII = """
+-- [R75 (b), 27.08.2026] Memoria sondei web: ce a observat la rularea precedenta (ora de pornire
+-- a unitatii). Fara ea, sonda ar putea spune doar „raspunde acum", nu „a repornit intre timp".
+ALTER TABLE public.cron_batai ADD COLUMN IF NOT EXISTS detalii jsonb;
+"""
+
+
+def asigura_detalii(conn):
+    """Idempotent. Se cheama o data, din `python3 -m core.cron --migrare`."""
+    with conn.cursor() as cur:
+        cur.execute(DDL_DETALII)
+    return True
 
 
 def bate(nume, durata_sec=None):
@@ -283,6 +304,13 @@ def _main_verificare():
 
 
 if __name__ == "__main__":
+    if "--migrare" in sys.argv:          # [R75 (b)] coloana `detalii` pe cron_batai
+        from core import db as _db
+        _db.init_pool()
+        with _db.get_conn() as _c:
+            asigura_detalii(_c)
+        print("cron_batai.detalii: gata")
+        sys.exit(0)
     # Exit 0 chiar cand exista joburi intarziate: verificarea SI-A FACUT treaba, iar semnalul
     # e ALERTA, nu codul de iesire. Cu exit 1, systemd marcheaza serviciul "failed" la fiecare
     # rulare cu constatari - si atunci un esec REAL al heartbeat-ului (DB jos, cod stricat) ar

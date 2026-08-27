@@ -872,6 +872,13 @@ CREATE TABLE IF NOT EXISTS public.firme_scoase (
 CREATE INDEX IF NOT EXISTS idx_firme_scoase_cabinet ON public.firme_scoase (cabinet_id, scos_la DESC);
 CREATE INDEX IF NOT EXISTS idx_firme_scoase_tenant  ON public.firme_scoase (tenant_id);
 
+-- [nume_anaf_v1, 27.08.2026] Denumirea asa cum a intors-o ANAF, langa cea editabila, cu data
+-- masuratorii. Aceeasi forma ca firma_profil.platitor_tva_anaf + _data: valoarea omului langa
+-- instantaneul autoritatii, nu in locul lui. `nume` ramane editabil - varianta (a), needitabil,
+-- ar fi blocat firmele pe care ANAF nu le intoarce (nou-infiintate, sau ANAF jos).
+ALTER TABLE public.tenants ADD COLUMN IF NOT EXISTS nume_anaf text;
+ALTER TABLE public.tenants ADD COLUMN IF NOT EXISTS nume_anaf_la timestamptz;
+
 -- Urmele portalului, copiate la scoatere. NUMAI pe motiv='scoatere_firma' - la GDPR nu se
 -- copiaza nimic, fiindca acolo scopul actului e chiar disparitia datelor.
 ALTER TABLE public.firme_scoase ADD COLUMN IF NOT EXISTS urme_pastrate jsonb;
