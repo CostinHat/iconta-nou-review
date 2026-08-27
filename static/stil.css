@@ -2103,6 +2103,19 @@ input[type=file] { min-height: 24px; }  /* a11y tinta atingere >=24px (AA 2.5.8)
 }
 .caseta-atentie .ca-mesaj { font-size: var(--text-mic); color: #7a2020; line-height: 1.4; margin-bottom: 12px; }
 .caseta-atentie .ca-actiuni { display: flex; gap: 8px; }
+/* [refuz_vazut_v1 27.08.2026] Plasa de sub toate ecranele: un refuz al serverului la o SCRIERE,
+   pe care nu-l arata nimeni, apare aici. Aceeasi familie cromatica cu .caseta-atentie (rosu =
+   ceva s-a oprit), dar fixat jos si trecator - nu e o stare a ecranului, e un lucru de citit. */
+.refuz-nevazut {
+  position: fixed; left: 50%; transform: translateX(-50%); bottom: 24px; z-index: 9999;
+  max-width: min(560px, 92vw); background: #fdf3f3;
+  border: 2px solid #d98c8c; border-left-width: 6px; border-radius: var(--raza);
+  box-shadow: 0 6px 24px rgba(20, 30, 45, 0.22);
+  padding: 14px 16px; display: flex; gap: 12px; align-items: flex-start;
+}
+.refuz-nevazut .rn-mesaj { flex: 1; font-size: var(--text-mic); color: #7a2020; line-height: 1.45; }
+.refuz-nevazut .rn-inchide { flex: none; min-height: 32px; min-width: 96px; }
+
 /* caseta-info (v2.12): nota informativa STANDING, ne-distructiva (albastru-pal, nu rosu).
    Distincta semantic de caseta-atentie (rosu = atentionare/actiune distructiva). */
 .caseta-info {

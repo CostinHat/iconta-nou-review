@@ -44,7 +44,7 @@ window.addEventListener("error", (e) => _bannerEroareGlobala(e.error || e.messag
 window.addEventListener("unhandledrejection", (e) => _bannerEroareGlobala(e.reason));
 
 import { sesiune } from "./sesiune.js?v=5d142951c9";
-import { api } from "./api.js?v=a7f9e80ae0";
+import { api } from "./api.js?v=c20d0584e2";
 import { ecranBunVenit } from "./ecrane/ansamblu.js?v=534adc8486";  // [bun_venit_v1]
 import { ecranLogin } from "./ecrane/login.js?v=cad92f35d3";
 import { creeazaNavigator } from "./navigator.js?v=84aece4253";

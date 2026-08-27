@@ -39,16 +39,21 @@ import os
 
 from core import cron
 
-# BASELINE la 27.08.2026 — unitățile al căror interpretor NU există pe disc. E o **fotografie**,
-# nu o listă de vinovați: descrie starea în ziua în care gardul s-a construit, ca poarta să nu
-# fie retroactivă. Clichet în AMBELE direcții — o unitate nouă stricată nu poate intra, iar una
-# reparată trebuie SCOASĂ deliberat, altfel baseline-ul păstrează morți.
-# Se golește prin repararea celor trei (`sudo`, mâna lui Costin) — vezi R74, varianta (a).
-_INTERPRETOARE_LIPSA = {
-    "spv-poll.service",
-    "spv-receive.service",
-    "spv-refresh.service",
-}
+# BASELINE — **GOL din 27.08.2026**, și asta e chiar povestea lui.
+#
+# S-a născut în aceeași zi cu trei intrări: `spv-poll`, `spv-receive`, `spv-refresh`, unitățile
+# care rulau un interpretor șters cu o lună înainte. Era o **fotografie**, nu o listă de vinovați:
+# descria starea din ziua construcției, ca poarta să nu fie retroactivă.
+#
+# Clichetul avea AMBELE direcții. Prima — o unitate nouă stricată nu poate intra — n-a fost încă
+# exercitată. **A doua s-a aprins la prima reparație**: Costin a corectat cele trei `ExecStart`,
+# a rulat suita, iar testul a devenit ROȘU cerând exact ce trebuia — *„scoate-le din baseline"*.
+# Costin: *„clichetul a funcționat în ambele direcții — a doua, cea care nu păstrează morți, s-a
+# aprins la prima reparație."*
+#
+# Rămâne GOL, nu șters: o mulțime goală spune *„azi nicio unitate nu e stricată"*, ceea ce e o
+# afirmație. Absența listei n-ar spune nimic.
+_INTERPRETOARE_LIPSA = set()
 
 
 def _sistem():

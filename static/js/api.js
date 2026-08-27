@@ -74,12 +74,70 @@ async function _cere(metoda, cale, corp) {
   try { date = await r.json(); } catch { date = null; }
 
   if (!r.ok) {
-    throw { cod: r.status, mesaj: _mesajEroare(r.status, date), erori_campuri: _erisCampuri(date) };
+    const eroare = { cod: r.status, mesaj: _mesajEroare(r.status, date), erori_campuri: _erisCampuri(date) };
+    _refuzNevazut(eroare, metoda);   // [refuz_vazut_v1]
+    throw eroare;
   }
   return date;
 }
 
 // [p36_postform] trimitere multipart (FormData) - pt upload fisiere/imagini
+// ── [refuz_vazut_v1, 27.08.2026] Un refuz la o SCRIERE nu poate rămâne nevăzut ──────────
+// Costin: „am pierdut o jumătate de oră pe «butonul nu face nimic» […] eroarea e prinsă și nu
+// ajunge la om. Consecința nu e neplăcerea, e că nu se poate diagnostica nimic din afară."
+// Aceeași clasă cu observația 2 din R71 (ReferenceError înghițit de un `catch`) și cu
+// `except Exception: pass` de la R73 — doar mutată în stratul de prezentare.
+//
+// MĂSURAT ÎNTÂI (`core/scan_refuz_tacut.py`, 27.08.2026): din 243 de `catch`-uri peste un apel
+// `api.*`, **227 arată ceva**, iar **16 sunt scrieri care pot refuza fără să spună motivul**.
+// Reparația e UNA, aici — nu șaisprezece, formular cu formular.
+//
+// CUM: după un refuz la o scriere, se așteaptă puțin. Dacă mesajul NU apare nicăieri în pagină,
+// îl arată stratul de prezentare. Verificarea e pe DOM-ul randat, nu pe cooperarea apelantului:
+// un ecran care afișează prin `insertAdjacentHTML`, prin `arataMesaj` sau altfel e recunoscut
+// la fel, fără să fie modificat.
+//
+// CE NU FACE, declarat:
+//   - **nu se aplică la GET.** O citire de fundal care eșuează (un badge, un contor) nu trebuie
+//     să întrerupă omul; acelea sunt 70, și rămân tăcute deliberat.
+//   - **nu repară mesajul**, doar îl face vizibil. Dacă serverul răspunde prost, banner-ul o
+//     arată la fel de prost — și e mai bine să se vadă.
+//   - **nu prinde refuzurile care nu trec prin `api.*`.**
+const _REFUZ_ASTEPTARE_MS = 700;
+
+function _bannerRefuz(mesaj) {
+  const vechi = document.getElementById("refuz-nevazut");
+  if (vechi) vechi.remove();
+  const d = document.createElement("div");
+  d.id = "refuz-nevazut";
+  d.setAttribute("role", "alert");
+  d.setAttribute("aria-live", "assertive");
+  d.className = "refuz-nevazut";   // stilul trăiește în `stil.css`, nu aici (DS: raza din token)
+  const t = document.createElement("div");
+  t.className = "rn-mesaj";
+  t.textContent = mesaj;
+  const b = document.createElement("button");
+  b.type = "button";
+  b.textContent = "Am înțeles";
+  b.className = "buton-secundar rn-inchide";
+  b.addEventListener("click", () => d.remove());
+  d.appendChild(t);
+  d.appendChild(b);
+  document.body.appendChild(d);
+  setTimeout(() => { if (d.isConnected) d.remove(); }, 12000);
+}
+
+function _refuzNevazut(eroare, metoda) {
+  if (metoda === "GET") return;
+  const m = String((eroare && eroare.mesaj) || "").trim();
+  if (!m) return;
+  setTimeout(() => {
+    const text = document.body ? (document.body.innerText || "") : "";
+    if (text.indexOf(m) >= 0) return;   // cineva l-a arătat deja — nu dublăm
+    _bannerRefuz(m);
+  }, _REFUZ_ASTEPTARE_MS);
+}
+
 async function cereForm(cale, formData) {
   const deblocheaza = blocheazaButon("POST");
   try {
@@ -99,7 +157,9 @@ async function _cereForm(cale, formData) {
   let date = null;
   try { date = await r.json(); } catch { date = null; }
   if (!r.ok) {
-    throw { cod: r.status, mesaj: _mesajEroare(r.status, date), erori_campuri: _erisCampuri(date) };
+    const eroare = { cod: r.status, mesaj: _mesajEroare(r.status, date), erori_campuri: _erisCampuri(date) };
+    _refuzNevazut(eroare, "POST");   // [refuz_vazut_v1] cereForm e mereu POST
+    throw eroare;
   }
   return date;
 }

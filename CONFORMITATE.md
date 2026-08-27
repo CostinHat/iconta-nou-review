@@ -1970,13 +1970,31 @@ scos ce nu se știa**, nu din defecte noi.
 - **ce NU face, declarat**: **niciun clichet pe cele 28 de `except …: pass` rămase.** Costin, explicit: *„pe alea nu le-am măsurat și nu știm care sunt legitime."* Și nu verifică dacă emailul chiar pleacă — doar că, dacă nu pleacă, rămâne urmă.
 - **condiția de deblocare**: decizia lui Costin între **(a)** toate patru trec pe `esec_secundar`, cu `alerta=True` pe cele trei căi de intrare — tăcerea acolo are cost de acces, ceea ce docstringul lui numește drept criteriu; **(b)** doar log, fără alertă, pe toate patru; **(c)** mesajul de pe ecran se schimbă și el, ca să nu mai afirme trimiterea. Se închide când un eșec de trimitere lasă urmă, cu gard.
 
+### R75 — Joburile de fundal au deadman; procesul care servește ecranele, nu
+
+- **felul**: VERIFICARE
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · P13 · **PRAG 3** *(azi nu minte nimic pe ecran — dar o cădere a serviciului web nu lasă nicio urmă pe care s-o vadă cineva, iar a doua oară va arăta tot ca un accident izolat)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `8e02a76`
+- **măsurat la**: 2026-08-27 · **pe commit**: `8e02a76`
+- **planul**: **NEACOPERIT.** `PLAN_ARHITECTURA.md` cere ca ecranul și serverul să nu spună lucruri diferite (P13), dar nu spune nimic despre **disponibilitatea** procesului care le servește. `core/cron.py` scrie principiul — *„un job care nu pornește deloc arată exact ca unul care n-a avut ce face"* — și îl aplică **numai joburilor de fundal**. (METODA §25)
+- **ce blochează**: *(primul punct — Costin: „aia e o lipsă, nu o observație")* — **deadman-ul nu acoperă serviciul web.** `cron.RITMURI` supraveghează 11 joburi — 8 din `crontab`, 3 din timere systemd (R74). `iconta-nou.service`, procesul care servește **toate** ecranele, nu e supravegheat de nimic: nici de `verifica_batai` (n-are cum să bată), nici de o sondă externă. `Restart=always` îl ridică înapoi, dar **nu spune nimănui că a căzut.**
+- **instanța, și e de azi**: procesul s-a oprit la **06:45:01** și a revenit în trei secunde. În `uvicorn.log` scrie **„Shutting down"** — oprire curată, pe semnal, nu crash. În `journalctl` **nu există niciun `sudo systemctl` la ora aia** (singurul de azi e post-commit-ul de la 05:37). Efectul măsurabil: scanul vizual care rula chiar atunci a raportat `ERR_CONNECTION_REFUSED` pe jumătate din ecrane — **singurul motiv pentru care am aflat.** Dacă n-ar fi rulat nimic, căderea ar fi trecut fără urmă.
+- **ce NU vede măsurătoarea**: **cauza opririi.** `journalctl -u iconta-nou` n-are intrări (unitatea scrie în fișier), iar `dmesg` nu e accesibil din contul care rulează aplicația. Nu se poate spune dacă a fost OOM, un semnal extern, sau altceva. *Restanța nu se deschide ca să fie investigată acum — se deschide ca să existe unde se adune, dacă se mai întâmplă.*
+- **de ce e o clasă, nu o instanță**: e a treia oară în două zile când forma e aceeași — **ceva funcționează sau nu, și nimeni nu întreabă**. La R70 o rută pe care n-o cheamă nimic; la R74 un job care nu pornește; aici procesul care servește tot. Gărzile verifică ce face lucrul **dacă** rulează.
+- **condiția de deblocare**: decizia lui Costin între **(a)** o sondă **externă** (ping de la un serviciu terț care alertează la lipsa semnalului) — singura care acoperă și cazul „serverul e jos", limită deja scrisă în `cron.verifica_batai`; **(b)** o supraveghere **locală** (`OnFailure=` pe unitate + un job care compară `ActiveEnterTimestamp` cu ultima valoare știută) — mai ieftină, dar oarbă exact când contează; **(c)** se declară acceptat că o cădere scurtă trece nevăzută, cu motivul scris. Se închide când o oprire a serviciului web lasă o urmă pe care o vede cineva fără să fi rulat din întâmplare altceva.
+
+
 ### R74 — Trei joburi de fundal sunt oprite de o lună, iar deadman-ul nu se uită la ele
 
 - **felul**: VERIFICARE
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · P13 · **PRAG 3** *(azi nu minte nimic pe ecran: `spv_token` are 0 rânduri, deci nicio firmă n-are SPV conectat. Devine prag 1 în ziua în care prima firmă îl conectează — atunci facturile furnizorilor nu mai intră, iar nimeni nu află)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
+- **rezolvată pe commit**: `8e02a76`
 - **deschisă pe commit**: `3fb126e`
 - **măsurat la**: 2026-08-27 · **pe commit**: `3fb126e`
 - **planul**: **ACOPERIT ca principiu.** `PLAN_ARHITECTURA.md` cere, la **P13**, ca ecranul și serverul să nu spună lucruri diferite; iar `core/cron.py` scrie deja principiul în antet: *„un job care nu pornește deloc arată exact ca unul care n-a avut ce face"*. Ce lipsește nu e regula, e **acoperirea** ei: deadman-ul a fost construit pentru joburile din `crontab`, iar astea nu sunt acolo. (METODA §25)
@@ -1990,8 +2008,14 @@ scos ce nu se știa**, nu din defecte noi.
   - **și verifică dacă interpretorul fiecărei unități există pe disc** — asta ar fi prins defectul în ziua 1. Cele trei stricate stau într-un baseline cu clichet în **ambele** direcții: când se repară, testul devine ROȘU și cere scoaterea lor;
   - `NESUPRAVEGHEATE` declară ce **nu** intră, cu motivul: `cron` (heartbeat-ul însuși — cere deadman EXTERN) și `iconta-backup` (shell, nu modul; își alertează singur eșecurile).
   - **de la commitul `3391371`, heartbeat-ul alertează la fiecare 6 ore** că cele trei n-au bătut niciodată. E corect — chiar n-au. Se oprește când unitățile sunt reparate.
-- **ce rămâne**: `sudo sed -i` pe cele trei `ExecStart`, `daemon-reload`, o pornire de probă, apoi scoaterea lor din `_INTERPRETOARE_LIPSA`.
-- **condiția de deblocare**: decizia lui Costin între **(a)** cele trei unități se corectează pe `venv`-ul real **și** cele trei joburi intră în `cron.RITMURI` cu pragul lor, iar gardul citește lista din sistem în loc s-o copieze; **(b)** joburile SPV se mută în `crontab`, unde deadman-ul ajunge deja; **(c)** se opresc deliberat până există o firmă cu SPV conectat, **declarat** — o oprire declarată nu e o oprire tăcută. Corectarea unităților cere `sudo`, deci mâna lui. Se închide când un job de fundal care nu pornește nu mai poate trece o lună neobservat.
+- **REZOLVATĂ 27.08.2026 — Costin a rulat comanda, cu toate patru verificările:**
+  1. `ExecStart` pe toate trei arată acum `/home/costin/iconta_nou/venv/bin/python`;
+  2. `Result=success`, `ExecMainStatus=0` la toate trei — erau **203** de ~31 de zile;
+  3. logurile au linii de azi, iar la final *„job OK: spv_poll (0.0s)"* și *„job OK: spv_receive (0.1s)"* — deci trec **și** prin `cron.ruleaza`, adică alertează la eșec și **bat** la reușită. În `spv_receive`: *„SKIP auth: nu are token SPV activ"*, 19 tenanți — normal, niciun cabinet n-a conectat SPV;
+  4. `cron.verifica_batai()` întoarce `[]` — **deadman-ul nu mai are ce reclama.** Înainte întorcea exact cele trei.
+- **ȘI CLICHETUL S-A APRINS ÎN A DOUA DIRECȚIE, la prima reparație.** `test_baseline_de_unitati_stricate_NU_pastreaza_morti` a devenit ROȘU cu chiar mesajul scris pentru cazul ăsta: *„unități din `_INTERPRETOARE_LIPSA` care NU mai sunt stricate: […] — scoate-le din baseline."* Costin: *„clichetul a funcționat în ambele direcții — a doua, cea care nu păstrează morți, s-a aprins la prima reparație."* Baseline-ul e acum **gol, nu șters**: o mulțime goală spune *„azi nicio unitate nu e stricată"*, ceea ce e o afirmație; absența listei n-ar spune nimic.
+- **ce NU s-a rezolvat, și a devenit R75**: joburile de fundal au acum deadman; **procesul care servește ecranele, nu.**
+- **condiția de deblocare**: *(cea de atunci, ÎNDEPLINITĂ)* decizia lui Costin între **(a)** cele trei unități se corectează pe `venv`-ul real **și** cele trei joburi intră în `cron.RITMURI` cu pragul lor, iar gardul citește lista din sistem în loc s-o copieze; **(b)** joburile SPV se mută în `crontab`, unde deadman-ul ajunge deja; **(c)** se opresc deliberat până există o firmă cu SPV conectat, **declarat** — o oprire declarată nu e o oprire tăcută. Corectarea unităților cere `sudo`, deci mâna lui. Se închide când un job de fundal care nu pornește nu mai poate trece o lună neobservat.
 
 
 ### R40 — Nicio declarație depusă prin aplicație, deci lanțul de apărare nu e exercitat niciodată

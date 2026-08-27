@@ -3,6 +3,50 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 27.08.2026 — Urma unei firme scoase: se păstrează la scoatere, NU la ștergerea GDPR
+
+**Decizia lui Costin, confirmată:** *„La GDPR nu se păstrează nimic."*
+
+**Ce se păstrează, și de ce.** Când o firmă e scoasă din portofoliu, urmele portalului
+(`urme_portal` + `schimbari_email`) se copiază în `firme_scoase.urme_pastrate` înainte de
+ștergere. Cererea lui: *„sunt singura dovadă că traseul R62 a fost parcurs pe date. Registrul
+spune ce am făcut; alea arată ce a înregistrat aplicația."*
+
+**Ce NU se păstrează, și de ce.** Urmele conțin **adrese de email** — date personale. La o
+ștergere GDPR (`motiv='gdpr_cabinet'`) coloana rămâne `NULL`. Motivul, în forma în care l-am
+propus: **un log care păstrează ce trebuia să dispară anulează chiar ștergerea pe care o
+consemnează.**
+
+**Consecința, adăugată de Costin și e partea care generalizează:** *„ștergerea GDPR și scoaterea
+unei firme sunt două acte cu scopuri opuse — una face să dispară, cealaltă face să rămână urma.
+A le trata la fel ar goli-o pe prima."*
+
+**Cum se apără:** condiția e pe `motiv`, iar garda din `core/test_tenant_stergere.py` o citește
+**structural**, ca nod de comparație (`motiv == "scoatere_firma"`), nu ca text — un apel
+necondiționat nu trece. Probat în ambele direcții pe firme sintetice: la scoatere urmele ajung
+întregi în `urme_pastrate`; la GDPR coloana rămâne `NULL`.
+
+## 27.08.2026 — Două firme cu același nume, în același cabinet: refuzat
+
+**Cerința lui Costin:** *„Nici Registrul Comerțului, nici ANAF nu permit. O denumire de firmă e
+unică în România — deci două rânduri cu același nume în portofoliul unui cabinet sunt un fapt
+imposibil în realitate."*
+
+**Costul plătit deja:** pe duplicatul din 26.08 a căzut diagnosticul de la pasul 8 al probei
+R62. Un ecran corect a fost citit ca fals fiindcă se deschisese cealaltă firmă.
+
+**Ce s-a decis, dincolo de cerere:** poarta se aplică **și la redenumire**, nu doar la creare.
+A doua întrebare a lui — *„de ce se poate schimba denumirea unei firme cu CUI validat la ANAF?"*
+— a scos că `actualizeaza_tenant` era un `UPDATE` **gol de orice poartă**: nici cifra de control
+a CUI-ului, nici unicitatea lui, nici a numelui. Toate verificările de la creare se puteau ocoli
+cu o redenumire. **O regulă care se poate ocoli nu e o regulă.**
+
+**Ce NU normalizează, declarat:** forma juridică. `SRL` rămâne diferit de `S.R.L.` — o
+normalizare mai agresivă ar refuza firme care chiar sunt diferite, iar aici refuzul fals e mai
+scump decât duplicatul: pe duplicat omul apasă din nou, pe refuz fals nu poate deloc.
+
+**Ce NU face:** nu e retroactivă. Perechea existentă rămâne, cu clichet în ambele direcții.
+
 ## 22.08.2026 — Codurile de boală: sursa e Nomenclatorul 9, XSD-ul e a doua constrângere
 
 **Decizia lui Costin (I1):** *„Codurile de boală se unifică pe Nomenclatorul 9, cu XSD-ul ca a doua

@@ -5074,6 +5074,26 @@ E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pome
 
 **Ce NU face, declarat:** niciun clichet pe cele **28** de `except …: pass` rămase — n-au fost citite una câte una. Și nu verifică dacă emailul chiar pleacă; doar că, dacă nu pleacă, rămâne urmă.
 
+## Un refuz la o scriere nu mai rămâne nevăzut (27.08.2026)
+
+**`core/scan_refuz_tacut.py` + `core/test_refuz_tacut.py`** — 9 teste. Costin: *„am pierdut o jumătate de oră pe «butonul nu face nimic» […] consecința nu e neplăcerea, e că nu se poate diagnostica nimic din afară."*
+
+**Măsurat ÎNTÂI, cum a cerut:** din **243** de `catch`-uri peste un apel `api.*`, **227 arată ceva**, **16 sunt scrieri mute**, **70 sunt citiri mute** (badge-uri, contoare). Prima măsurătoare dăduse 25 — citite una câte una, nouă foloseau `insertAdjacentHTML`, pe care detectorul nu-l știa. **Calibrat pe instanțe reale înainte de a scrie cifra.**
+
+**Reparația e UNA, nu șaisprezece:** în `api.js`, după un refuz la o **scriere**, dacă mesajul nu apare nicăieri în pagină, îl arată stratul de prezentare. Verificarea e pe **DOM-ul randat**, nu pe cooperarea apelantului — niciun ecran n-a fost modificat.
+
+**Probat în trei direcții**, cu răspunsuri servite din browser: scriere înghițită → banner cu mesajul serverului · scriere deja afișată → **fără dublură** · citire înghițită → **fără banner**.
+
+**Ce NU face, declarat:** nu spune că mesajul e bun, doar că ajunge. Și **nu scade clasa** — cele 16 rămân mute la locul lor; un mesaj lângă buton e mai bun decât un banner. Clichetul e ca să nu crească.
+
+## Două firme cu același nume nu mai încap în același cabinet (27.08.2026)
+
+**`core/test_nume_firma_unic.py`** — 7 teste. O denumire de firmă e unică la Registrul Comerțului; două rânduri cu același nume sunt un fapt imposibil. **Costul era plătit deja:** pe duplicatul din 26.08 a căzut diagnosticul de la pasul 8 al probei R62.
+
+**Poarta e pe AMÂNDOUĂ căile** — creare **și** redenumire. A doua întrebare a lui Costin a scos că `actualizeaza_tenant` era un `UPDATE` gol de orice poartă: nici cifra de control a CUI-ului, nici unicitatea lui, nici a numelui. **O regulă care se poate ocoli cu un `PUT` nu e o regulă.**
+
+**Ce NU normalizează, declarat:** forma juridică (`SRL` ≠ `S.R.L.`). Refuzul fals e mai scump aici decât duplicatul. **Ce NU face:** nu e retroactivă — perechea existentă stă într-un clichet cu ambele direcții, care cere coborârea când e scoasă.
+
 ## Cititorul de șiruri JS greșea în amândouă direcțiile (27.08.2026)
 
 **`core/test_aritmetica_in_prezentare.py`** — nu o gardă nouă, o **reparație de instrument**, și merită scrisă fiindcă e forma cea mai rea de orbire: cititorul care scoate comentariile și șirurile din JS **nu știa de `${…}`**. La un template imbricat, primul backtick **interior** închidea șirul, iar de acolo încolo era **defazat** — ce era text trecea drept cod și invers.
@@ -5103,5 +5123,7 @@ E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pome
 **Ce face imposibil:** un job din `crontab` sau dintr-un timer systemd fără prag în `RITMURI` · un prag rămas pentru un job care nu mai există (o alarmă care sună mereu nu mai e alarmă) · **o unitate care rulează un interpretor inexistent** — chiar defectul, prins de unde se putea vedea · un instrument care se uită în gol: dacă nu vede nici `crontab`, nici unități, **pică**.
 
 **Aceeași clasă cu R70, un nivel mai jos:** acolo *o rută pe care n-o cheamă nimic*, aici *un job care nu pornește*. Amândouă verificau ce face lucrul **dacă** rulează; niciuna **dacă** rulează.
+
+**Clichetul s-a aprins în a doua direcție la PRIMA reparație (27.08.2026):** Costin a corectat cele trei `ExecStart`, iar testul a devenit roșu cerând scoaterea lor din baseline. Baseline-ul e acum **gol, nu șters** — o mulțime goală afirmă *„azi nicio unitate nu e stricată"*; absența listei n-ar afirma nimic.
 
 **Ce NU face, declarat:** nu verifică dacă jobul chiar a rulat (aia e treaba lui `verifica_batai`, la rulare) · nu vede dincolo de mașina asta · nu acoperă `iconta-backup` (shell, nu modul — motivul e scris în `cron.NESUPRAVEGHEATE`) · nu pornește și nu repară nimic: unitățile cer `sudo`.

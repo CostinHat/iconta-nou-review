@@ -92,6 +92,46 @@ def cui_valid(cui):
     return r == ctrl
 
 
+def nume_normalizat(nume):
+    """Numele unei firme, adus la forma pe care o comparăm: spații colapsate, fără majuscule.
+
+    NU normalizează forma juridică („SRL" vs „S.R.L.") — o normalizare mai agresivă ar refuza
+    firme care chiar sunt diferite, iar refuzul fals e mai scump aici decât duplicatul: pe
+    duplicat omul apasă din nou, pe refuz fals nu poate deloc.
+    """
+    return " ".join((nume or "").split()).casefold()
+
+
+def cere_nume_unic(conn, nume, accounting_firm_id, exclude_id=None):
+    """[nume_unic_v1, 27.08.2026] Un nume de firmă o singură dată per cabinet.
+
+    Costin: *„nici Registrul Comerțului, nici ANAF nu permit. O denumire de firmă e unică în
+    România — deci două rânduri cu același nume în portofoliul unui cabinet sunt un fapt
+    imposibil în realitate."*
+
+    Iar costul l-am plătit deja: pe duplicatul din 26.08 a căzut diagnosticul de la pasul 8 al
+    probei R62 — un ecran corect (*„Niciun cont de client încă"*) a fost citit ca fals, fiindcă
+    se deschisese cealaltă firmă cu același nume.
+
+    Se aplică ȘI la redenumire, nu doar la creare: altfel regula s-ar putea ocoli cu un `PUT`.
+    """
+    n = nume_normalizat(nume)
+    if not n:
+        raise ValueError("Denumirea firmei nu poate fi goală")
+    with conn.cursor() as cur:
+        cur.execute(
+            "SELECT id, nume FROM public.tenants "
+            "WHERE accounting_firm_id = %s AND lower(btrim(regexp_replace(nume, '\\s+', ' ', 'g'))) = %s "
+            "  AND (%s::int IS NULL OR id <> %s)",
+            (accounting_firm_id, n, exclude_id, exclude_id))
+        r = cur.fetchone()
+    if r:
+        raise ValueError(
+            "Ai deja în portofoliu o firmă cu denumirea „%s” (CUI-ul o deosebește, denumirea nu). "
+            "O denumire de firmă e unică la Registrul Comerțului, deci două firme cu același "
+            "nume nu pot exista. Verifică dacă n-ai adăugat-o deja." % r[1])
+
+
 def provision_tenant(conn, nume, cui, accounting_firm_id, user_id, sql_template, tip_firma="srl"):
     # cui_control_v1: cifra de control CUI validata OFFLINE, inainte de orice - ANAF
     # (anaf_api.valideaza_cui) e best-effort in rutele de register (except: pass), deci
@@ -106,6 +146,8 @@ def provision_tenant(conn, nume, cui, accounting_firm_id, user_id, sql_template,
                    (str(cui), accounting_firm_id))
         if _c.fetchone():
             raise ValueError("Firma cu acest CUI exista deja in portofoliu")
+    # nume_unic_v1: si denumirea, o singura data per cabinet (vezi `cere_nume_unic`)
+    cere_nume_unic(conn, nume, accounting_firm_id)
     """
     Creează un tenant complet, totul-sau-nimic:
       1. generează schema_name nou (tenant_NNN)
@@ -214,7 +256,31 @@ def detalii_tenant(conn, tenant_id):
 
 
 def actualizeaza_tenant(conn, tenant_id, nume=None, cui=None):
-    """Editează nume/cui (NU schema_name — fix). Întoarce {ok}."""
+    """Editează nume/cui (NU schema_name — fix). Întoarce {ok}.
+
+    [27.08.2026] Până azi funcția asta era un `UPDATE` gol de orice poartă: nici cifra de control
+    a CUI-ului, nici unicitatea lui, nici a numelui. Adică **toate** verificările de la creare se
+    puteau ocoli cu o singură redenumire. Costin a întrebat *„de ce se poate schimba denumirea
+    unei firme cu CUI validat la ANAF?"* — răspunsul e că nu exista nimic care s-o oprească.
+    Acum trec pe aceleași porți ca la creare: **o regulă care se poate ocoli nu e o regulă.**
+    """
+    with conn.cursor() as cur:
+        cur.execute("SELECT accounting_firm_id FROM public.tenants WHERE id = %s", (tenant_id,))
+        r = cur.fetchone()
+    if not r:
+        raise ValueError("firmă inexistentă")
+    cabinet = r[0]
+    if cui is not None:
+        if not cui_valid(cui):
+            raise ValueError("CUI invalid: cifra de control nu corespunde (%r)" % cui)
+        with conn.cursor() as cur:
+            cur.execute("SELECT id FROM public.tenants "
+                        "WHERE cui = %s AND accounting_firm_id = %s AND id <> %s",
+                        (str(cui), cabinet, tenant_id))
+            if cur.fetchone():
+                raise ValueError("Firma cu acest CUI exista deja in portofoliu")
+    if nume is not None:
+        cere_nume_unic(conn, nume, cabinet, exclude_id=tenant_id)
     seturi, valori = [], []
     if nume is not None:
         seturi.append("nume = %s"); valori.append(nume)

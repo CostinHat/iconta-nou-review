@@ -501,6 +501,24 @@ def test_registrul_are_sectiunea_de_restante():
         "nimic nu blochează, chiar când o familie întreagă din 1a e blocată.")
 
 
+def _aproape(corp, camp):
+    """Dacă în corp există un rând care ÎNCEPE cu eticheta dar nu se potrivește, îl arată.
+
+    [27.08.2026] Cauza reală a trei eșecuri într-o singură zi, toate ale mele: un sufix strecurat
+    ÎNTRE etichetă și cele două puncte — `- **condiția de deblocare** *(atunci)*: …`. Cititorul
+    cere eticheta exactă, deci vede câmpul ca **absent**, iar mesajul spunea „lipsește sau e gol"
+    pe un rând care era acolo, sub ochi. Un mesaj care numește cauza costă cinci rânduri și scade
+    de trei ori căutarea.
+    """
+    for linie in corp.splitlines():
+        s = linie.strip()
+        if s.startswith("- **" + camp) and not s.startswith("- **" + camp + "**:"):
+            return (" — dar există un rând care începe cu eticheta și NU se potrivește: %r. "
+                    "Forma cerută e `- **%s**: …`; orice sufix între etichetă și cele două "
+                    "puncte face câmpul invizibil." % (s[:90], camp))
+    return ""
+
+
 def test_fiecare_restanta_e_completa():
     rele = []
     for cod, (_titlu, corp) in sorted(_restante().items()):
@@ -510,7 +528,8 @@ def test_fiecare_restanta_e_completa():
             # separat, în test_fiecare_restanta_spune_unde_intra_si_de_cate_ori_a_fost_reluata.
             prag = 1 if camp == "reluări" else 3
             if v is None or len(v.strip("*—- ")) < prag:
-                rele.append("  %s: câmpul `%s` lipsește sau e gol" % (cod, camp))
+                rele.append("  %s: câmpul `%s` lipsește sau e gol%s"
+                            % (cod, camp, _aproape(corp, camp)))
         # felul se verifica in test_felurile_de_blocaj_sunt_cele_patru (patru, nu trei)
         st = (_camp(corp, "stare") or "").strip("* ").split("(")[0].strip()
         if st and st not in STARI_RESTANTA:
