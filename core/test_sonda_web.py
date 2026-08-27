@@ -89,6 +89,43 @@ def test_ora_pornirii_se_poate_citi():
         "e oarbă, iar sonda ar trebui s-o spună, nu s-o presupună" % v)
 
 
+def test_deploy_ul_NU_alerteaza_iar_caderea_DA():
+    """`post-commit` repornește serviciul la FIECARE commit. Fără distincția asta, sonda ar fi
+    alertat de zece ori pe zi despre reporniri pe care le-am cerut noi — iar *„un semnal care se
+    aprinde mereu nu mai e semnal"* e chiar doctrina din `core/cron.py`.
+
+    Cele patru direcții, pe funcția PURĂ:"""
+    f = sonda_web.fel_repornirii
+    assert f("A", "A", "c1", "c1") is None, "n-a repornit, dar se raportează ceva"
+    assert f("A", "B", "c1", "c2") == "deploy", "repornire cu ALT commit = deploy, nu cădere"
+    assert f("A", "B", "c1", "c1") == "cadere", "repornire cu ACELAȘI commit = cădere"
+    assert f("A", "B", None, "c1") == "necunoscut", (
+        "fără unul din commituri, sonda trebuie să SPUNĂ că nu poate deosebi, nu să tacă")
+    assert f(None, "B", None, "c1") is None, "prima rulare n-are cu ce compara"
+
+
+def test_sonda_NU_citeste_commitul_din_memoria_altui_proces():
+    """`versiune.stare()['running']` e ștampilat în memoria procesului WEB. Un proces CLI îl
+    citește `None`, deci sonda ar raporta veșnic «necunoscut» — și ar alerta la fiecare deploy,
+    exact ce distincția voia să evite. Prins la prima rulare reală, nu la scriere."""
+    arb = _arbore()
+    fn = next(n for n in ast.walk(arb)
+              if isinstance(n, ast.FunctionDef) and n.name == "commitul_de_pe_disc")
+    chemate = {n.func.attr for n in ast.walk(fn)
+               if isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)}
+    assert chemate >= {"git_head"}, (
+        "sursa commitului nu mai e `HEAD` de pe disc: %s" % sorted(chemate))
+    assert chemate.isdisjoint({"stare"}), (
+        "sonda citește iar din memoria procesului web — acolo va găsi mereu None")
+
+
+def test_pe_viu_commitul_se_poate_citi():
+    c = sonda_web.commitul_de_pe_disc()
+    assert c and len(c) >= 7, (
+        "commitul de pe disc nu se poate citi (%r) — sonda ar raporta orice repornire ca "
+        "«necunoscut», deci ar alerta și la deploy" % c)
+
+
 def test_CALIBRARE_o_unitate_inexistenta_NU_inventeaza_o_ora():
     """Direcția «pretinde că știe»: sonda are voie să nu știe, nu are voie să fabrice."""
     assert sonda_web.ora_pornirii("unitate-care-nu-exista-r75.service") in (None, ""), (
