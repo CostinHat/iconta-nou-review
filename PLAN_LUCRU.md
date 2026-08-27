@@ -407,3 +407,13 @@ Deciziile care nu se rezolvă prin efort. Fiecare blochează ceva; niciuna nu se
 **Ce se întâmplă după primul contabil.** Un produs care intră în folosință primește o clasă nouă de întrebări — suport, incidente, cereri de funcționalitate. Alt plan, altă dată.
 
 **Legislația care se schimbă.** E întreținere permanentă, nu proiect. Se bugetează separat, nu se speră că se termină.
+
+---
+
+## Direcții de produs, nedatate
+
+*Nu sunt restanțe: n-au contor, n-au condiție de deblocare și nu se numără la „ce blochează". Sunt lucruri de făcut cândva, scrise ca să nu se piardă.*
+
+**Import portofoliu, asistat de AI.** Recunoașterea structurii fișierului se face **o dată**, cu AI; rezultatul se sedimentează ca **amprentă de fișier** (set de anteturi, ordine, separator zecimal, unde începe tabelul), iar exporturile următoare cu aceeași amprentă intră **determinist, fără interpretare**. Amprenta e cheia, nu numele aplicației — același program are versiuni care exportă diferit. Potrivirea e **exactă sau inexistentă**: „aproape ca X" se tratează ca structură nouă. Proba aritmetică (balanța închide pe fiecare cont și pe total) rămâne **obligatorie și la amprentele deja cunoscute** — recunoașterea sare peste interpretare, nu peste verificare. Corecțiile contabilului la mapare se întorc în amprentă.
+
+**Blocat de:** **R79** — dacă numele de schemă se reciclează și `DROP`-ul nu e real, un import în masă poate scrie peste date reziduale ale unei firme șterse. **R81** — treapta de confruntare a CUI-ului cu ANAF multiplică divergența de denumire la scara întregului portofoliu.
