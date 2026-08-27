@@ -1985,7 +1985,8 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · P17 · interdicția 39 · **PRAG 3** *(un rând de audit, nu o cifră falsă. Dar e exact clasa pe care R44 și R50 au numit-o, produsă de calea construită ca s-o prevină)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
+- **rezolvată pe commit**: `0963d7f`
 - **deschisă pe commit**: `c9bf964`
 - **măsurat la**: 2026-08-27 · **pe commit**: `c9bf964`
 - **planul**: **ACOPERIT** — `PLAN_ARHITECTURA.md`, **P17**: *„ce categorie de dată se păstrează, cât, pe ce temei"*. Un rând de audit care trimite la o firmă inexistentă nu se poate citi de nimeni: nu se poate spune nici ce firmă era, nici de ce a rămas. (METODA §25)
@@ -2004,6 +2005,26 @@ scos ce nu se știa**, nu din defecte noi.
 - **de ce n-am reparat-o pe loc**: Costin, în aceeași tură: *„azi ai dus patru fire deodată, iar ultimele două reparații au ieșit din rulare, nu din construcție."* Se consemnează, se repară după.
 - **condiția de deblocare**: decizia lui Costin între **(a)** auditul de cerere scrie `tenant_id = NULL` când firma nu mai există, cu id-ul mutat în `detalii` — se pierde filtrarea pe firmă, se păstrează fapta; **(b)** cheie străină pe `audit_log.tenant_id` cu `ON DELETE SET NULL` — repară **clasa**, nu instanța, dar schimbă comportamentul tuturor ștergerilor; **(c)** ruta de ștergere își curăță propriul rând la final — cel mai îngust și cel mai fragil. Se închide când o ștergere de firmă lasă **zero** rânduri care trimit la ea.
 
+- **REZOLVATĂ 27.08.2026** — Costin a cerut **(b)**, *„dar măsoară întâi ce se schimbă… iar dacă măsurătoarea arată că (b) ar rupe ceva, spune-mi și trecem pe (a)."* **Măsurătoarea a arătat că rupe**, în două feluri pe care numele variantei nu le lăsa să se vadă:
+  1. **Pe 10 din cele 13 tabele, coloana e `tenant_id NOT NULL`.** `ON DELETE SET NULL` pe o coloană `NOT NULL` nu e o contradicție la definire — se acceptă. Se rupe **la ștergere**: PostgreSQL încearcă să pună `NULL`, constrângerea îl refuză, și **ștergerea firmei devine imposibilă** (`NotNullViolation`). Adică exact calea construită ieri ar fi încetat să funcționeze. Probat pe `audit_log`, într-o tranzacție întoarsă.
+  2. **Pe coloanele nullable, nu repară cazul nostru.** `ON DELETE SET NULL` acționează la **ștergerea părintelui**. Rândul nostru se scrie **la 78 ms după** ce părintele a murit — deci nu e „un copil care rămâne orfan", e un `INSERT` cu un părinte inexistent. Cheia străină îl **respinge** (`ForeignKeyViolation`): linia de audit ar **dispărea**, nu ar deveni `NULL`. Am fi schimbat un rând ilizibil pe un rând absent.
+- **măsurătoarea cerută, pe fiecare din cele 13 tabele** *(«câte rânduri din `audit_log` ar deveni NULL la o ștergere»)*, pe o firmă-etalon:
+
+  | tabelă | coloana | rânduri ale firmei | orfani azi |
+  |---|---|---|---|
+  | `audit_log` | nullable | **601** | **67** |
+  | `user_tenants` | NOT NULL | 2 | 0 |
+  | `alerte_control_emise` | NOT NULL | 1 | 2 |
+  | celelalte 10 | 10× NOT NULL, 2× nullable | 0 | 0 |
+  | **total** | | **604** | **69** |
+
+  Deci „câte ar deveni NULL" are un răspuns numeric — **604** — și un răspuns care contează mai mult: pe **10** din cele 13 coloane, `NULL` nici nu se poate scrie.
+- **o cifră de-a mea, corectată aici**: am scris întâi **8** coloane `NOT NULL`. Recitite din `information_schema`: **10 NOT NULL, 3 nullable** (`anunturi_cabinet`, `audit_log`, `spv_token`). Prima cifră a fost numărată pe drum, fără instrument — și a apucat să intre în mesajul commitului `0963d7f`, unde rămâne. Concluzia nu se schimbă, se întărește.
+- **cum s-a închis, pe (a)**: nu printr-un al doilea drum la bază, ci printr-o **sub-interogare în chiar `INSERT`-ul care exista deja** — `(SELECT id FROM public.tenants WHERE id = %s)` dă `NULL` când firma nu mai e, în același statement, fără fereastră între verificare și scriere.
+- **probat în trei direcții**: firmă vie → `tenant_id` păstrat · firmă ștearsă între timp → `NULL`, iar fapta rămâne în `detalii` · fără nicio firmă → `NULL`.
+- **gardat**: `core/test_tenant_stergere.py::test_auditul_nu_mai_produce_orfani_dupa_stergere` citește **AST**-ul lui `main.py` și pică pe orice `INSERT INTO public.audit_log` care poartă `tenant_id` fără sub-interogare — deci repară **clasa**, nu rândul. Plus `test_niciun_orfan_NOU_dupa_ultima_stergere`, clichet pe date la **69**.
+- **ce NU acoperă**: cei **67** de orfani dinainte (firme dispărute prin SQL ad-hoc, R50) rămân. Gardul îi îngheață, nu îi curăță — o curățare retroactivă e o decizie separată, fiindcă ștergerea lor ar șterge singura urmă că firmele alea au existat.
+
 
 ### R78 — Actul cel mai distructiv al aplicației stă sub 26 de carduri, iar cine îl caută nu-l găsește
 
@@ -2011,7 +2032,8 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · DS cap.25 · **PRAG 2** *(nimic fals pe ecran; dar o cale construită, gardată și probată azi nu poate fi folosită de omul care a cerut-o — ceea ce o face, practic, inexistentă)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
+- **rezolvată pe commit**: `0963d7f`
 - **deschisă pe commit**: `c9bf964`
 - **măsurat la**: 2026-08-27 · **pe commit**: `c9bf964`
 - **planul**: **ACOPERIT ca principiu, în `DESIGN_SYSTEM cap.25`** — ecranul ca entitate, cu *aspecte* (proprietari de spațiu) și *chiriași* (ocupanți, după întrebarea la care răspund). Zona de scoatere e un chiriaș **fără contract**: a fost adăugată la coada gridului fiindcă acolo era loc, nu fiindcă acolo o caută cineva. (METODA §25)
@@ -2021,13 +2043,25 @@ scos ce nu se știa**, nu din defecte noi.
 - **de ce nu am mutat-o singur**: *„Reorganizare ecran = STOP"* — rearanjarea cere confirmare, iar verificatorul nu prinde așezarea. Aici e chiar cazul: mutarea zonei schimbă ordinea a ceea ce vede omul primul.
 - **condiția de deblocare**: decizia lui Costin între **(a)** zona urcă sus, lângă antetul firmei, ca acțiune de nivelul firmei, nu ca al 27-lea card; **(b)** intră în grilă ca un card propriu (`#fa-scoate`), la coadă, dar vizibil ca toate celelalte — cere înregistrare în harta ecranelor; **(c)** rămâne unde e, iar descoperirea se rezolvă altfel (o trimitere din „Date firmă"). Se închide când omul care vrea să scoată o firmă ajunge la acțiune fără să i se spună unde e.
 
+- **REZOLVATĂ 27.08.2026**, pe o **a patra** variantă, dată de Costin: butonul stă **pe rândul fiecărei firme din listă** și deschide **același** ecran de previzualizare, cu confirmarea pe CUI. Nu șterge din listă: *„un act ireversibil la un click de listă e prea aproape."*
+- **de ce e mai bună decât cele trei**: mută decizia **înainte** de a intra în firmă. Cine vrea să scoată o firmă n-a venit să lucreze în ea — n-are de ce să treacă prin ecranul ei de lucru ca să iasă din portofoliu.
+- **măsurat, în aceeași fereastră ca defectul**: butonul e la **y = 381 px** într-o fereastră de **793 px** (era **1361 px**). Se vede **fără derulare**. Ținta de atingere: **38 px** (pragul e 32). Câte unul pe fiecare rând: **13 rânduri, 13 butoane**.
+- **răspuns la întrebarea „se aplică «Reorganizare ecran = STOP»?"**: **nu s-a aplicat, și n-a fost nevoie să se aplice** — dar nu din motivul pe care îl invocase întrebarea. Costin a scris: *„o poziție nouă în listă nu rearanjează nimic din ce e deja acolo."* Corect ca efect vizual. Dar **prima mea implementare a rearanjat**, altundeva: un `<button>` nu poate conține alt `<button>` (HTML invalid), deci am transformat rândul din `<button class="firme-rand">` în `<div>`, iar deschiderea a trecut pe `.firme-rand-deschide`.
+- **ce a costat asta, măsurat înainte de commit**: **36 de fișiere** selectează `button.firme-rand` — între ele `frontend_test/w_auth.py::deschide_firma`, adică **poarta de intrare a întregii infrastructuri vizuale** (axe, mobil, baseline, interacțiune). Prima probă de după schimbare a picat exact acolo: `Timeout: waiting for locator("button.firme-rand")`. Deci „nu rearanjează nimic" era adevărat **despre pixeli** și fals **despre structură**.
+- **cum s-a rezolvat, fără să rearanjeze**: rândul **rămâne** `button.firme-rand`, iar acțiunea se așază **lângă** el, într-un înveliș `.firme-rand-linie` care preia linia și dungile. Zero fișiere atinse din cele 36. *Constrângerea HTML nu cerea să schimb rândul — cerea să nu bag butonul în el.*
+- **probat**: `frontend_test/vizual_scoatere.py` — apăsarea pe **rând** deschide firma; apăsarea pe **Scoate** deschide previzualizarea și **nu** șterge. Ecranul are două fețe și amândouă sunt probate pe date reale: firmă **cu** evidență → doar dezactivare, fără câmp de CUI; firmă **fără** evidență → câmp de CUI gol, butonul ireversibil **blocat**, dezactivarea alături.
+- **o greșeală a sondei, prinsă de sondă**: prima versiune clasifica fața ecranului după textul din `<body>` și a raportat că **toate cele 13** firme au evidență. Fals: ecranele anterioare rămân în DOM sub cel curent, iar `inner_text("body")` le adună pe toate — citea textul unui ecran vechi. Trecută pe **structură** (`#sf-sterge` în ecranul curent), a găsit imediat ambele clase. Greșea în **ambele** direcții, deci n-avea niciun plafon (METODA §22).
+- **a11y**: axe-core pe ambele ecrane — **0 violări**, cu anti-vacuu: **462** și **302** noduri inspectate cu succes, pe 41 și 37 de reguli. `axe_scan.py` merge pe cele 5 ecrane din `nav_ecrane` — lista de firme **nu e** printre ele, deci schimbarea de azi n-ar fi fost văzută de nimeni; de aici `frontend_test/vizual/axe_firme.py`.
+
 ### R77 — Divergența de denumire se ARATĂ, dar alegerea nu se CERE
 
 - **felul**: ARTEFACT
 - **cine deblochează**: INTERN
 - **unde intră**: E1 · T36 · **PRAG 3** *(nimic fals: amândouă denumirile se arată. Ce lipsește e actul — iar cine nu apasă nimic moștenește ce era acolo fără să afle că a fost o divergență)*
-- **reluări**: 0
-- **stare**: DESCHISĂ
+- **reluări**: 1
+- **contorul, explicat**: o singură reluare **după** deschiderea restanței. Cele două cereri de dinainte sunt scrise mai jos, dar nu se numără aici — contorul a pornit odată cu restanța, ceea ce e exact defectul pe care restanța îl numește.
+- **stare**: REZOLVATĂ
+- **rezolvată pe commit**: `0963d7f`
 - **deschisă pe commit**: `c9bf964`
 - **măsurat la**: 2026-08-27 · **pe commit**: `c9bf964`
 - **planul**: **ACOPERIT.** Slotul scris de Costin pentru `POST /tenants` (T36) o cere textual: *„denumirea preluată de la ANAF nu se suprascrie tăcut cu ce a tastat omul, și nici invers. Dacă cele două diferă, **se arată amândouă și se cere alegerea**."* Nu e o cerință nouă — e jumătatea neconstruită a uneia scrise. (METODA §25)
@@ -2037,6 +2071,15 @@ scos ce nu se știa**, nu din defecte noi.
 - **și de ce e restanță, nu un rând în raport**: fiindcă asta e lecția turei. Decizia de denumire n-a ajuns niciodată la o restanță — **a trăit doar în §5 al rapoartelor** — iar Costin a trebuit s-o dea de două ori. *O cerință fără restanță n-are contor, n-are condiție de deblocare și nu supraviețuiește turei.*
 - **ce NU vede măsurătoarea**: azi **nicio** firmă n-are `nume_anaf` (0 din 19) — instantaneul se captează de la următoarea precompletare încolo. Deci divergența **nu se poate vedea pe niciun ecran acum**, iar construcția va trebui probată pe date făcute anume.
 - **condiția de deblocare**: două butoane explicite, niciunul implicit, iar alegerea „păstrez denumirea mea" lasă urmă. Se închide când verificarea din slotul T36 se poate bifa fără rezerve.
+
+- **REZOLVATĂ 27.08.2026.** Trei coloane noi pe `public.tenants` — `nume_ales` (`CHECK IN ('aplicatie','anaf')`), `nume_ales_la`, `nume_ales_de` — și o singură funcție, `tenant_provisioning.alege_denumirea()`, în care **amândouă** ramurile scriu. „Ia denumirea de la ANAF" schimbă denumirea, **prin aceleași porți ca o redenumire** (deci și unicitatea în cabinet). „Păstrez denumirea mea" nu schimbă nimic — dar consemnează că a fost păstrată **deliberat**.
+- **de ce contează a doua**: fără ea, tăcerea arăta identic cu o decizie. Costin: *„cine nu apasă nimic nu decide — moștenește ce era acolo, și nu află niciodată că a fost o divergență."*
+- **întrebarea nu se pune la infinit, și nici o singură dată**: se compară `nume_anaf_la` cu `nume_ales_la`. Cine a răspuns nu mai e întrebat; o citire ANAF **mai nouă** decât alegerea **redeschide** întrebarea. *Alegerea de azi nu acoperă o denumire schimbată la registru mâine.*
+- **probat pe server, pe date reale, într-o tranzacție întoarsă la savepoint**: „păstrez" → denumirea neatinsă, `nume_ales='aplicatie'`, datată, cu autor · „ANAF" → denumirea schimbată, `nume_ales='anaf'` · **două** rânduri de audit `nume_ales`, nu unul · refuză o alegere necunoscută și una goală · refuză să ia de la ANAF un nume deja folosit de altă firmă din cabinet. După `ROLLBACK`: 0 firme cu `nume_anaf`, 0 cu alegere — nicio firmă reală n-a rămas atinsă.
+- **probat pe ecran** (`frontend_test/vizual_nume.py`, stabil 3 rulări din 3): **două** butoane, niciunul `buton-primar`, niciunul blocat, niciun bifat implicit · „Păstrez denumirea mea" **trimite** `{"alege":"aplicatie"}` — adică nu mai e „a nu face nimic" · „Ia denumirea de la ANAF" trimite `{"alege":"anaf"}` · după un răspuns, caseta **dispare** · la o citire ANAF mai nouă decât alegerea, **reapare**.
+- **ce NU probează asta, spus limpede**: divergența nu se vede pe niciun ecran real. **0 din 17** firme au `nume_anaf` (erau 0 din 19 la deschidere — între timp Costin a scos două firme). Deci partea de ecran e probată pe un răspuns **fabricat**, prin interceptarea listei: dovedește ce **randează** ecranul și ce **trimite** la apăsare, nu ce răspunde serverul pentru o firmă cu divergență adevărată. Partea de server e probată separat, pe date reale.
+- **ce rămâne, și e al lui Costin**: o firmă de probă cu un CUI ales de el — oferită în aceeași tură — ar închide și ultima verigă: o precompletare ANAF reală care captează `nume_anaf`, urmată de divergență văzută pe ecran fără nicio interceptare.
+- **gardat**: `core/test_nume_anaf.py::test_alegerea_are_AMANDOUA_ramurile_si_amandoua_SCRIU` citește **AST**-ul funcției și pică dacă consemnarea ajunge sub ramura „anaf" — adică dacă „păstrez denumirea mea" redevine tăcere. Plus `test_o_citire_ANAF_mai_noua_REDESCHIDE_intrebarea`.
 
 
 ### R76 — „Googlebot" într-un log nu mai e o informație: 70% din cererile care se declară așa sunt scanere

@@ -5165,7 +5165,8 @@ E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pome
 **Ce n-a văzut niciun gard scris în aceeași zi:** `test_tenant_stergere` verifica ce rămâne **în momentul** ștergerii, nu ce se scrie **după**. Un gard poate fi complet despre actul pe care îl păzește și orb la ce urmează după el.
 
 **De ce nu cheie străină cu `ON DELETE SET NULL`, deși aia s-a cerut** — măsurat, nu presupus, în ambele forme de coloană:
-- pe cele **8** tabele cu `tenant_id NOT NULL`, `SET NULL` **se acceptă la definire** și rupe **la ștergere**: `NotNullViolation`, adică ștergerea de firmă ar deveni imposibilă;
+- pe cele **10** tabele cu `tenant_id NOT NULL`, `SET NULL` **se acceptă la definire** și rupe **la ștergere**: `NotNullViolation`, adică ștergerea de firmă ar deveni imposibilă;
+  *(Cifra a fost scrisă întâi **8**, dintr-o numărare făcută pe drum. Recitită din `information_schema`: **10 NOT NULL, 3 nullable**. Concluzia nu se schimbă — se întărește — dar cifra greșită a apucat să intre în mesajul commitului `0963d7f`, unde rămâne. **O cifră scrisă fără instrument nu se poate recalcula, deci nu e o măsurătoare.**)*
 - pe coloanele nullable **nu repară cazul**: `SET NULL` acționează la ștergerea părintelui, iar rândul nostru se scrie **după**. Cheia străină l-ar fi **respins** — linia de audit ar fi **dispărut**, nu ar fi devenit `NULL`.
 
 **Ce NU face, declarat:** nu curăță cei **67** de orfani dinainte (R50). Îi îngheață — `test_niciun_orfan_NOU_dupa_ultima_stergere`, clichet pe date la **69** — fiindcă ștergerea lor ar șterge singura urmă că firmele alea au existat. Și nu vede scrierile de audit de după **alte** acte distructive decât ștergerea: doar ea a fost exercitată.

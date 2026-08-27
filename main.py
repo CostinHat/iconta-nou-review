@@ -244,7 +244,7 @@ def _inregistreaza_activitate(method, path, status, auth_header):
                 # Sub-interogarea intoarce NULL cand firma nu mai e, in ACELASI statement: nu se
                 # adauga niciun drum dus-intors, iar fapta se pastreaza intreaga (cine, cand, ce a
                 # cerut) - se pierde doar filtrarea pe o firma care nu mai exista.
-                # De ce nu cheie straina cu ON DELETE SET NULL: masurat 27.08 - pe cele 8 tabele cu
+                # De ce nu cheie straina cu ON DELETE SET NULL: masurat 27.08 - pe cele 10 tabele cu
                 # `tenant_id NOT NULL` ar face stergerea IMPOSIBILA (NotNullViolation), iar pe cele
                 # nullable ar RESPINGE randul de dupa stergere, nu l-ar trece pe NULL. Adica linia
                 # de audit ar disparea in loc sa ramana orfana. Vezi R79.

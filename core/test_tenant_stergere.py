@@ -358,7 +358,7 @@ def test_auditul_nu_mai_produce_orfani_dupa_stergere():
     `NULL` când firma nu mai e, în același statement, fără drum dus-întors.
 
     De ce nu cheie străină cu `ON DELETE SET NULL` — măsurat 27.08, în ambele forme de coloană:
-    pe cele **8** tabele cu `tenant_id NOT NULL` ar face ștergerea **imposibilă**
+    pe cele **10** tabele cu `tenant_id NOT NULL` ar face ștergerea **imposibilă**
     (`NotNullViolation`), iar pe cele nullable ar **respinge** rândul de după ștergere, nu l-ar
     trece pe NULL: linia de audit ar **dispărea**, nu ar rămâne orfană.
     """

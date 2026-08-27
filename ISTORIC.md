@@ -5411,6 +5411,24 @@ doar lista de rute."* Avea dreptate de doua ori.
 **Ce a costat ziua:** o reparație de ieri care nu funcționa și pe care o raportasem ca făcută; o cale de ștergere care ar fi eșuat la mijloc la primul cabinet cu o solicitare de client; trei joburi de fundal moarte de o lună fără ca nimeni să afle.
 
 
+## 27.08.2026 (seara) — două firme au ieșit din portofoliu, iar butonul care le-a scos s-a mutat unde se caută
+
+**Prima folosire reală a căii construite dimineața.** Costin a scos cele două `PROBA PORTAL SRL` la **13:42** și **13:44**, prin ecran. Portofoliul are acum **17** firme, nu 19. Urmele portalului — patru rânduri din `urme_portal` și confirmarea din `schimbari_email` — **au supraviețuit**, cu conținut cu tot, în `firme_scoase.urme_pastrate`; cele două conturi de client au fost **dezactivate**, nu șterse. *Nota de dimineață — „cele două firme de probă rămân în portofoliu până apasă cineva" — nu mai e adevărată.*
+
+**Ce se schimbă pentru omul care ține contabilitatea:**
+
+1. **Butonul „Scoate" e pe rândul fiecărei firme din listă.** Până acum stătea în fișa firmei, sub 26 de carduri de lucru — la **1361 px** într-o fereastră de **793**. Exista, dar nu se găsea: Costin l-a căutat și a spus *„în fișa firmei nu era niciun buton de scoatere"*, ceea ce era o descriere corectă a experienței. Acum e la **381 px**, adică **fără derulare**, pe fiecare rând. Nu șterge de acolo — deschide **aceeași** previzualizare, cu confirmarea pe CUI. *Un act ireversibil la un click de listă e prea aproape.*
+2. **Textul care distinge dezactivarea de ștergere s-a mutat odată cu butonul**, deasupra listei. Una e reversibilă, cealaltă nu — iar asta trebuie citit **înainte** de a apăsa, nu după.
+3. **Când denumirea din aplicație diferă de cea de la ANAF, se cere o alegere — cu două butoane.** Până acum ecranul arăta amândouă denumirile și oferea **o** acțiune: *„Ia denumirea de la ANAF"*. A păstra pe a ta însemna a nu apăsa nimic. Acum ambele căi sunt butoane, niciuna nu e presetată, iar **amândouă lasă urmă**: cine păstrează denumirea proprie a **decis** asta, nu a uitat. Alegerea se datează și își știe autorul; dacă ANAF va spune altceva mai târziu, întrebarea se pune din nou.
+
+**Ce nu schimbă nimic pentru nimeni, azi — și se scrie ca atare:**
+
+- **Alegerea de denumire nu se poate vedea pe nicio firmă.** **0 din 17** au o denumire citită de la ANAF: instantaneul se captează doar de la o precompletare încolo. Calea e construită, gardată și probată — dar pe date făcute anume, nu pe o firmă a cabinetului.
+- **Rândurile de audit nu mai trimit la firme inexistente.** Fiecare ștergere lăsa exact unul: rândul care consemna cererea `DELETE` se scria la **78 de milisecunde după** ce firma dispărea. Nimeni n-ar fi observat — până când cineva ar fi citit auditul unei firme care nu mai există. Cei **67** de dinainte rămân, înghețați: ștergerea lor ar șterge singura urmă că firmele alea au existat.
+
+**Ce a costat seara:** o cheie străină cerută, măsurată și **respinsă** — `ON DELETE SET NULL` ar fi făcut ștergerea de firmă imposibilă pe 10 din 13 tabele; o primă implementare a butonului care rearanja structura rândului și rupea **36 de fișiere** de probă; și o sondă care a raportat, cu încredere, că toate cele 13 firme au evidență — fiindcă citea textul unui ecran rămas dedesubt.
+
+
 ## 26.08.2026 — ZIUA, judecată de la ecranul contabilului
 
 *Cerut de Costin: „dă ISTORIC pe ziua curentă; dacă ziua n-a schimbat nimic pentru un contabil,

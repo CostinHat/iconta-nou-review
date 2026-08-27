@@ -173,7 +173,7 @@ instantaneul ANAF al denumirii · plasa pentru refuzurile înghițite.
 
 1. **Numele unei variante nu spune ce face varianta.** Costin a cerut cheia străină cu
    `ON DELETE SET NULL` — și a cerut măsurarea înainte. Măsurarea a arătat că `SET NULL` pe o
-   coloană `NOT NULL` **se acceptă la definire** și rupe **la ștergere**, pe **8 din 13** tabele;
+   coloană `NOT NULL` **se acceptă la definire** și rupe **la ștergere**, pe **10 din 13** tabele;
    iar pe coloanele nullable nici nu atinge cazul nostru, fiindcă rândul se scrie **după** ce
    părintele a murit — deci ar fi fost **respins**, nu trecut pe `NULL`. *Fără măsurătoarea cerută,
    aș fi livrat o cheie străină care oprea ștergerea de firmă.*
