@@ -2357,3 +2357,40 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ---
 
+## T36 — Ciclul de viață al firmei — creare, identitate, dezactivare, scoatere
+
+*clasa MECANIC · 7 rute · 4 schimba date · nu se poate sti din date*
+
+*citiri (nu schimba nimic): `/tenants`, `/tenants/{tenant_id}`, `/tenants/{tenant_id}/scoatere`*
+
+### `POST /tenants/{tenant_id}/activare`
+
+*garda `cere_rol` · rol:admin_firma*
+
+*ce face: [R72] Dezactivează / reactivează firma — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · firme_scoase (INSERT/UPDATE) · tenants (DELETE/UPDATE) · users (UPDATE) — prin `tenant_stergere`*
+
+- [ ] 
+
+### `DELETE /tenants/{tenant_id}`
+
+*garda `cere_rol` · rol:admin_firma*
+
+*ce face: [R72] Scoate din portofoliu o firmă FĂRĂ evidență — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · firme_scoase (INSERT/UPDATE) · tenants (DELETE/UPDATE) · users (UPDATE) — prin `tenant_stergere`*
+
+- [ ] 
+
+### `POST /tenants`
+
+*garda `cere_rol` · rol:admin_firma*
+
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (INSERT/UPDATE) · tenants (INSERT/UPDATE) · user_tenants (INSERT) — prin `tenant_provisioning`*
+
+- [ ] 
+
+### `PUT /tenants/{tenant_id}`
+
+*garda `cere_rol` · rol:admin_firma*
+
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (INSERT/UPDATE) · tenants (INSERT/UPDATE) · user_tenants (INSERT) — prin `tenant_provisioning`*
+
+- [ ] 

@@ -75,6 +75,8 @@ def _felul_operatiei(sql):
         return "schema"
     if sql.startswith("DELETE FROM public.tenants WHERE id"):
         return "rand"
+    if sql.startswith("UPDATE public.users SET activ=false"):
+        return "clienti"
     return None
 
 
@@ -214,7 +216,7 @@ def test_ordinea_ceruta_urma_public_schema_randul_firmei():
     Se citește ORDINEA operațiilor din arborele funcției — felul fiecărui `cur.execute`, în
     ordinea liniilor — nu textul fișierului."""
     ordine = [f for f in (_felul_operatiei(s) for s in _sql_executat(_functia("sterge"))) if f]
-    assert ordine == ["urma", "public", "schema", "rand"], (
+    assert ordine[:4] == ["urma", "public", "schema", "rand"], (
         "ordinea operațiilor din `sterge` nu mai e cea cerută: %s" % ordine)
 
 
@@ -242,6 +244,53 @@ def test_previzualizarea_numara_randurile_INAINTE():
         cab = cur.fetchone()[0]
         if cab:
             assert set(gdpr_sterge.previzualizare(conn, cab)) >= {"randuri_de_sters"}
+
+
+def test_niciun_cont_de_client_nu_ramane_fara_nicio_firma():
+    """INVARIANT pe date, măsurat 27.08.2026: clasa e **goală** (0 conturi de client fără firmă).
+
+    Un cont de client fără nicio firmă poate cere în continuare un link de logare, intră în portal
+    și nu vede nimic. E orfanul din R44/R50 mutat pe un **om**. Prima ștergere de firmă i-ar fi
+    produs pe primii doi — de aceea `sterge` îi dezactivează, iar aserțiunea asta ține clasa goală.
+    """
+    db.init_pool()
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute("""SELECT u.id, u.email FROM public.users u
+                       WHERE u.rol = 'client' AND u.activ
+                         AND NOT EXISTS (SELECT 1 FROM public.user_tenants ut
+                                         WHERE ut.user_id = u.id)""")
+        orfani = cur.fetchall()
+        cur.execute("SELECT count(*) FROM public.users WHERE rol='client'")
+        total = cur.fetchone()[0]
+    assert total > 0, "niciun cont de client în bază — invariantul n-ar discrimina nimic"
+    assert not orfani, (
+        "conturi de client ACTIVE fără nicio firmă: %s — pot cere un link de logare și intra "
+        "într-un portal gol. Ori se leagă de o firmă, ori se dezactivează." % orfani)
+
+
+def test_stergerea_dezactiveaza_clientul_ramas_fara_firma():
+    """Structural, pe arborele lui `sterge`: rândul din `users` NU se șterge (identitatea nu e a
+    firmei — R62), dar se trece pe `activ=false`. Și numai DUPĂ ce legăturile au fost rupte,
+    altfel numărătoarea „câte firme mai are" ar fi cea de dinainte."""
+    ordine = [f for f in (_felul_operatiei(s) for s in _sql_executat(_functia("sterge"))) if f]
+    assert ordine == ["urma", "public", "schema", "rand", "clienti"], (
+        "ordinea operațiilor din `sterge` nu mai e cea așteptată: %s" % ordine)
+    sql = _sql_executat(_functia("sterge"))
+    assert not [s for s in sql if s.startswith("DELETE FROM public.users")], (
+        "`sterge` șterge rânduri din `users` — un cont de om nu e al firmei; se dezactivează")
+
+
+def test_previzualizarea_numeste_conturile_care_raman_fara_firma():
+    """Refuzul și consecința se văd ÎNAINTE de apăsare, cu numele lor — nu după."""
+    db.init_pool()
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute("SELECT id FROM public.tenants ORDER BY id LIMIT 1")
+        p = ts.previzualizare(conn, cur.fetchone()[0])
+        assert set(p) >= {"clienti_de_dezactivat"}, sorted(p)
+        rele = [c for c in p["clienti_de_dezactivat"] if set(c) < {"id", "email"}]
+        assert not rele, (
+            "previzualizarea listează conturi fără email — omul n-ar ști pe cine dezactivează: %s"
+            % rele)
 
 
 def test_tabela_de_urma_exista_in_baza():

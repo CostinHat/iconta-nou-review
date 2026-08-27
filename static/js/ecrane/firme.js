@@ -2283,6 +2283,13 @@ async function ecranScoateFirma(corp, nav, t) {
     // tot" nu se poate confrunta cu nimic după.
     const rd = p.randuri_de_sters || {};
     const chei = Object.keys(rd);
+    const cl = p.clienti_de_dezactivat || [];
+    const ceCuClientii = cl.length
+      ? `<p class="ecran-nota" style="margin:10px 0 0"><strong>${cl.length} cont${cl.length === 1 ? "" : "uri"} de client</strong>
+           ${cl.length === 1 ? "rămâne" : "rămân"} fără nicio firmă și ${cl.length === 1 ? "va fi dezactivat" : "vor fi dezactivate"}:
+           ${cl.map((c) => esc(c.email)).join(" · ")}. Contul nu se șterge — persoana nu e a firmei —
+           dar nu mai poate intra în portal.</p>`
+      : "";
     const ceDispare = chei.length
       ? `<p class="ecran-nota" style="margin:10px 0 0">Dispar și: ${chei.map((k) =>
            `${rd[k]} × <code>${esc(k)}</code>`).join(" · ")}, plus schema de date a firmei.</p>`
@@ -2296,6 +2303,7 @@ async function ecranScoateFirma(corp, nav, t) {
           iar backupul off-site nu se poate șterge selectiv.</div>
       </div>
       ${ceDispare}
+      ${ceCuClientii}
       <div class="camp" style="margin:14px 0">
         <label class="camp-eticheta" for="sf-cui">Scrie CUI-ul firmei ca să confirmi</label>
         <input class="camp-input" id="sf-cui" autocomplete="off" placeholder="${esc(String(p.cui || ""))}">

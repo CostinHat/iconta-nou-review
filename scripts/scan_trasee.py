@@ -172,6 +172,14 @@ TRASEE = [
       r"^/public/confirma-email",   # tokenul e dovada, dar pasul e al portalului
       r"^/tenants/\{\}/(client-acces|acces-portal|urme-portal)", r"^/tenants/\{\}/clienti"],
      ["clienti"]),
+    # [R72, 27.08.2026] Decizia lui Costin: "cea mai distructiva ruta din aplicatie e singura
+    # fara «ce trebuie sa fie adevarat dupa». Iar suprafata de administrare a fost o incadrare
+    # corecta cat timp acolo era doar crearea. Acum sunt patru rute care schimba EXISTENTA unei
+    # firme. Aia e un ciclu de viata, nu administrare."
+    # Fara tabela proprie: ciclul nu se masoara in randurile unei firme, ci in existenta ei.
+    ("T36", "Ciclul de viață al firmei — creare, identitate, dezactivare, scoatere",
+     [r"^/tenants$", r"^/tenants/\{\}$", r"^/tenants/\{\}/(scoatere|activare)$"],
+     []),
 ]
 
 # Suprafețe care NU poartă un document — declarate, ca să nu fie confundate cu o lipsă.
@@ -184,12 +192,6 @@ NEDOCUMENTARE = [
     (r"^/gdpr/", "GDPR"),
     (r"^/raportari|^/recomanda|^/api/eveniment-public|^/ajutor/", "suport și telemetrie"),
     (r"^/notificari", "notificări"),
-    # [R72, 27.08.2026] Previzualizarea scoaterii si comutarea activ/inactiv stau pe
-    # ACEEASI suprafata ca crearea firmei (POST /tenants) si scoaterea ei
-    # (DELETE /tenants/{}): firma ca obiect de administrare al cabinetului, nu un pas
-    # de traseu contabil. Daca ciclul de viata al firmei devine traseu propriu, se muta
-    # toate patru odata - si atunci clichetul de trasee urca de la 35 la 36.
-    (r"^/tenants$|^/tenants/\{\}$|^/tenants/\{\}/(scoatere|activare)$", "firma ca obiect de administrare"),
     (r"^/api/v1/firme$", "cheia de integrare"),
 ]
 

@@ -5046,6 +5046,8 @@ E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pome
 
 **Ce NU face, declarat:** nu spune că baseline-ul e curat. Spune că nu crește.
 
+**Baseline-ul s-a despărțit în două, 27.08.2026:** jumătatea **derivată** (`declarate()` — rutele al căror decorator poartă `[api_intern_v1]`, citit ca nod de AST) și jumătatea **de mână** (`_ARTEFACTE` — 25 de cazuri în care greșește detectorul, grupate pe felul greșelii). *Ieri gardul verifica o listă, azi verifică un marcaj.* Clichetul rămâne doar pe artefacte: cele declarate ies singure când marcajul dispare.
+
 **Al șaselea test, adăugat 27.08.2026:** cele **cinci** rute fără ecran își declară lipsa în cod, cu marcajul `[api_intern_v1]` pe linia decoratorului — *o declarație care se poate șterge tăcut e o promisiune, nu o declarație*. Asertează pe prezența marcajului, nu pe textul motivului. Corectat cu ocazia asta: **3 din 5 erau declarate dinainte**, nu 1 — registrul se contrazicea singur, la două locuri distanță.
 
 ## Patru trimiteri de email nu mai eșuează tăcut (26.08.2026, R73)

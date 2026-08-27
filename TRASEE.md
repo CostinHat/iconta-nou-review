@@ -2016,4 +2016,26 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Firme care il pot exercita azi: 1** — `tenant_013`
 
+### T36 — Ciclul de viață al firmei — creare, identitate, dezactivare, scoatere
+
+**Clasa:** MECANIC · **rute:** 7 (din care schimba date: 4) · **refuzuri explicite:** 18
+
+**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 0 din 4.**
+
+**Pasii, din cod:**
+
+- `GET /tenants` — garda `cere_cabinet`
+- `POST /tenants` — garda `cere_rol` rol:admin_firma
+- `DELETE /tenants/{tenant_id}` — garda `cere_rol` rol:admin_firma
+- `GET /tenants/{tenant_id}` — garda `cere_cabinet`
+- `PUT /tenants/{tenant_id}` — garda `cere_rol` rol:admin_firma
+- `POST /tenants/{tenant_id}/activare` — garda `cere_rol` rol:admin_firma
+- `GET /tenants/{tenant_id}/scoatere` — garda `cere_cabinet`
+
+**Module:** `observare`, `tenant_provisioning`, `tenant_stergere`
+
+**Scrie in:** `audit_log` (INSERT) · `firma_profil` (INSERT/UPDATE) · `firme_scoase` (INSERT/UPDATE) · `tenants` (DELETE/INSERT/UPDATE) · `user_tenants` (INSERT) · `users` (UPDATE)
+
+**Firme care il pot exercita azi:** *nu se poate sti din date* — traseul n-are tabela proprie.
+
 <!-- trasee:auto:stop -->

@@ -179,6 +179,30 @@ def randuri_de_sters(conn, tenant_id):
     return out
 
 
+def clienti_ramasi_fara_firma(conn, tenant_id):
+    """Conturile de CLIENT legate de firma asta și de niciuna alta. [{id, email}]
+
+    DE CE EXISTĂ, măsurat 27.08.2026 înainte de prima apăsare reală: ștergerea firmei ia rândurile
+    din `user_tenants`, dar **nu** rândul din `users`. Un cont de client rămas fără nicio firmă e un
+    orfan de aceeași speță cu cei din R44/R50 — doar că e un **om**: poate cere în continuare un
+    link de logare, intră în portal și nu vede nimic. Clasa era **goală** (0 clienți fără firmă);
+    prima ștergere ar fi produs primii doi.
+
+    NU se șterge contul, se **dezactivează**: identitatea unui om nu e proprietatea unei firme
+    (chiar lecția din R62), iar `activ=false` oprește magic-link-ul, care e singura ușă a portalului.
+    Un cabinetist (`rol != 'client'`) nu intră aici: el ține de cabinet, nu de firmă.
+    """
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        cur.execute(
+            "SELECT u.id, u.email FROM public.users u "
+            "JOIN public.user_tenants ut ON ut.user_id = u.id "
+            "WHERE ut.tenant_id = %s AND u.rol = 'client' AND u.activ "
+            "  AND NOT EXISTS (SELECT 1 FROM public.user_tenants x "
+            "                  WHERE x.user_id = u.id AND x.tenant_id <> %s) "
+            "ORDER BY u.id", (tenant_id, tenant_id))
+        return [dict(r) for r in cur.fetchall()]
+
+
 def previzualizare(conn, tenant_id):
     """Ce se întâmplă dacă se apasă. Se cere ÎNAINTE de ștergere, ca omul să vadă ce pierde."""
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
@@ -195,6 +219,7 @@ def previzualizare(conn, tenant_id):
         "confirmare_ceruta": f["cui"],
         "tabele_curatate": list(TABELE_TENANT),
         "randuri_de_sters": randuri_de_sters(conn, tenant_id),   # R50 (c)
+        "clienti_de_dezactivat": clienti_ramasi_fara_firma(conn, tenant_id),
     }
 
 
@@ -225,6 +250,8 @@ def sterge(conn, tenant_id, motiv, sters_de_user_id, confirmare=None):
         # dispar odată cu rândul din `tenants`. `firme_scoase` NU e în `TABELE_TENANT` (vezi
         # `NU_SE_STERG`), deci supraviețuiește propriei ștergeri.
         sters = {}
+        # ÎNAINTE de a rupe legăturile: cine rămâne fără nicio firmă.
+        clienti = clienti_ramasi_fara_firma(conn, tenant_id)
         cur.execute(
             "INSERT INTO public.firme_scoase (tenant_id, nume, cui, schema_name, cabinet_id, "
             "motiv, scos_de_user_id) VALUES (%s,%s,%s,%s,%s,%s,%s) RETURNING id, scos_la",
@@ -240,11 +267,16 @@ def sterge(conn, tenant_id, motiv, sters_de_user_id, confirmare=None):
         # 3. rândul firmei — la urmă: cât timp el există, `schema_name` spune ce mai e de curățat.
         cur.execute("DELETE FROM public.tenants WHERE id=%s", (tenant_id,))
         sters["tenants"] = cur.rowcount
+        # 4. conturile de client rămase fără nicio firmă: DEZACTIVATE, nu șterse.
+        if clienti:
+            cur.execute("UPDATE public.users SET activ=false WHERE id=ANY(%s)",
+                        ([c["id"] for c in clienti],))
+            sters["clienti_dezactivati"] = cur.rowcount
         cur.execute("UPDATE public.firme_scoase SET randuri_sterse=%s WHERE id=%s",
                     (_E.Json(sters), urma["id"]))
     return {"tenant_id": tenant_id, "nume": f["nume"], "cui": f["cui"], "schema": schema,
             "motiv": motiv, "randuri_sterse": sters, "urma_id": urma["id"],
-            "scos_la": str(urma["scos_la"])}
+            "clienti_dezactivati": clienti, "scos_la": str(urma["scos_la"])}
 
 
 def sterge_fisiere(schema):

@@ -14,6 +14,21 @@ existente rămân, cu lista declarată — clichet, nu poartă retroactivă."* I
 `d406-active`, `s1003-*`, `s1005-*`), și artefacte ale detectorului (căi compuse la rulare pe care
 nu le-am verificat una câte una). Fiecare intrare primește motivul **când e atinsă**, nu înainte.
 
+CE A DEVENIT GARDUL PE 27.08.2026, și se scrie aici fiindcă e o schimbare de sens, nu una de
+conținut: **ieri verifica o LISTĂ, azi verifică un MARCAJ.** `_BASELINE` era un singur set ținut
+de mână, în care stăteau amestecate două lucruri diferite — rute păstrate **deliberat** fără ecran,
+și **artefacte ale detectorului** (căi compuse la rulare, pe care el nu le poate vedea). Cele două
+se despart acum:
+
+  * `declarate()` — **DERIVAT din cod**, nu scris aici: rutele al căror decorator poartă
+    `# [api_intern_v1] <motivul>`. O rută care primește ecran și pierde marcajul **iese singură**
+    din mulțime; una care e păstrată deliberat **trebuie** să spună de ce, lângă ea, în `main.py`.
+  * `_ARTEFACTE` — ce rămâne: cazurile în care **detectorul greșește**, grupate pe felul greșelii.
+    Aici lista de mână e legitimă, fiindcă descrie limitele instrumentului, nu intenția codului.
+
+Cine citește trebuie să știe: **o intrare nouă în `_ARTEFACTE` e o mărturisire despre detector; un
+marcaj nou în `main.py` e o decizie despre produs.** Nu se mai pot confunda.
+
 CUM DETECTEAZĂ, și de ce așa după patru încercări. Întrebarea *„cine cheamă ruta asta?"* nu are
 răspuns textual în codul ăsta: UI-ul compune căi la rulare și dispecerizează prin tabele
 (`operatiuni_ecran.js`: `ruta: "nota-sgr"`). Patru reguli succesive au greșit alternativ:
@@ -34,26 +49,21 @@ import os
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _SCAN = os.path.join(_RAD, "scripts", "scan_trasee.py")
 
-# BASELINE la 26.08.2026 — vezi antetul: e o fotografie, nu o listă de vinovați.
-_BASELINE = {
+# ARTEFACTELE DETECTORULUI, 27.08.2026 — grupate pe FELUL greșelii, nu înșirate.
+# Aici nu stă nicio decizie despre produs: stau limitele instrumentului. Cele păstrate deliberat
+# fără ecran își spun motivul în `main.py`, iar `declarate()` le citește de acolo.
+_ARTEFACTE = {
+    # (a) contract EXTERN, chemat de integratori, nu din `static/` — suprafața „cheia de integrare"
     ("GET", "/api/v1/firme"), ("GET", "/api/v1/firme/{tenant_id}/balanta"),
     ("GET", "/api/v1/firme/{tenant_id}/facturi"), ("POST", "/api/v1/firme/{tenant_id}/facturi"),
     ("GET", "/api/v1/firme/{tenant_id}/kpi"),
+    # (b) cerute de BROWSER, nu de JS — legitime prin construcție
     ("GET", "/favicon.ico"), ("GET", "/robots.txt"), ("GET", "/sitemap.xml"),
-    ("POST", "/gdpr/sterge-cabinet/{cabinet_id}/executa"),
-    ("POST", "/gdpr/sterge-cabinet/{cabinet_id}/previzualizare"),
-    ("POST", "/migrare/fisier"),
+    # (c) cale compusă la rulare, pe care detectorul nu o poate vedea (limita din antet)
     ("GET", "/portal/facturi"), ("GET", "/portal/firme"),
     ("GET", "/portal/solicitari/contor"),
     ("GET", "/public/plata/{ref}"), ("POST", "/public/plata/{ref}/confirma"),
-    # --- CELE CINCI REALE, cu motivul fiecareia (27.08.2026). Toate cinci isi declara
-    # lipsa ecranului in `main.py`, iar `test_cele_cinci_reale_isi_declara_lipsa_ecranului`
-    # verifica declaratia. Trei o aveau deja de dinainte; doua au primit-o pe 27.08.
-    ("POST", "/tenants/{tenant_id}/banca/parse-extras"),   # declarata dinainte: parsare la upload, fara UI
-    ("POST", "/tenants/{tenant_id}/calcul-cm"),            # declarata dinainte: calculator CM, producator intreg (core/baza_cm.py), fara ecran
-    ("GET", "/tenants/{tenant_id}/d406-active"), ("GET", "/tenants/{tenant_id}/d406-stocuri"),
-    ("POST", "/tenants/{tenant_id}/import-efactura"),      # declarata 27.08: upload manual fara buton; calea automata (spv_receive) NU trece pe aici
-    ("GET", "/tenants/{tenant_id}/jurnal-marja"),          # declarata dinainte: raport regim marja (CF art. 311/312), fara ecran
+    ("POST", "/migrare/fisier"),
     ("GET", "/tenants/{tenant_id}/perioade-blocate/istoric"),
     ("POST", "/tenants/{tenant_id}/s1003-valideaza"), ("GET", "/tenants/{tenant_id}/s1003-xml"),
     ("POST", "/tenants/{tenant_id}/s1005-valideaza"), ("GET", "/tenants/{tenant_id}/s1005-xml"),
@@ -61,8 +71,43 @@ _BASELINE = {
     ("GET", "/tenants/{tenant_id}/stat-plata/emis"),
     ("POST", "/tenants/{tenant_id}/stat-plata/emite"),
     ("POST", "/tenants/{tenant_id}/stat-plata/motiv"),
-    ("GET", "/tenants/{tenant_id}/urme-portal"),           # declarata 27.08: urma se SCRIE, n-o citeste niciun om -> punctul (3) din R62 ramane NESATISFACUT
+    # (d) chiar fără ecran, pe o suprafață declarată ne-documentară (GDPR)
+    ("POST", "/gdpr/sterge-cabinet/{cabinet_id}/executa"),
+    ("POST", "/gdpr/sterge-cabinet/{cabinet_id}/previzualizare"),
 }
+
+_MARCAJ = "[api_intern_v1]"
+_METODE = ("get", "post", "put", "patch", "delete")
+
+
+def declarate(fisier="main.py"):
+    """Rutele care își declară în COD lipsa ecranului. DERIVAT, nu ținut de mână.
+
+    Decoratorul se citește ca **nod de AST** (`app.<metodă>("cale")`), iar marcajul se caută pe
+    **linia lui**, aflată din `lineno` — nu se caută nicăieri altundeva în fișier. Un comentariu
+    rătăcit la 50 de linii distanță nu poate declara nimic.
+    """
+    import ast
+    sursa = io.open(os.path.join(_RAD, fisier), encoding="utf-8").read()
+    linii = sursa.split(chr(10))
+    out = set()
+    for n in ast.walk(ast.parse(sursa)):
+        if not isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            continue
+        for d in n.decorator_list:
+            if not (isinstance(d, ast.Call) and isinstance(d.func, ast.Attribute)
+                    and isinstance(d.func.value, ast.Name) and d.func.value.id == "app"
+                    and d.func.attr in _METODE and d.args
+                    and isinstance(d.args[0], ast.Constant)):
+                continue
+            if _MARCAJ in linii[d.lineno - 1]:
+                out.add((d.func.attr.upper(), d.args[0].value))
+    return out
+
+
+def acceptate():
+    """Ce nu se raportează: ce spune codul că e deliberat, plus ce știm că detectorul ratează."""
+    return declarate() | _ARTEFACTE
 
 
 def _scan():
@@ -104,13 +149,15 @@ def _fara_apelant(rute, js):
 def test_nicio_ruta_NOUA_fara_apelant():
     st = _scan()
     gasite = _fara_apelant(st.citeste_rute(), _static())
-    noi = sorted(gasite - _BASELINE)
+    noi = sorted(gasite - acceptate())
     assert not noi, (
         "rute noi pe care nu le cheamă nimic din `static/`:\n  "
         + "\n  ".join("%s %s" % r for r in noi)
         + "\n\nO rută scrisă, gardată și verde, dar nechemată, e cod care nu se execută — "
           "instanța care a produs gardul ăsta a stat ascunsă o zi. Cheam-o dintr-un ecran, "
-          "sau adaug-o în `_BASELINE` cu motivul, dacă e intenționat internă.")
+          "sau pune-i `# [api_intern_v1] <motivul>` pe linia decoratorului, dacă e păstrată "
+          "deliberat fără ecran. `_ARTEFACTE` e numai pentru cazurile în care greșește "
+          "DETECTORUL, nu pentru intenții.")
 
 
 def test_ANTI_VACUU_detectorul_chiar_vede_rute():
@@ -120,15 +167,47 @@ def test_ANTI_VACUU_detectorul_chiar_vede_rute():
     assert _static(), "nu s-a citit niciun fișier din static/ — detectorul ar raporta tot"
 
 
-def test_baseline_nu_creste_tacut():
-    """Clichet pe mulțime, nu pe cifră: o intrare care dispare din baseline (ruta a primit ecran,
-    sau a fost ștearsă) trebuie scoasă DELIBERAT, ca lista să nu devină o colecție de morți."""
+def test_artefactele_nu_pastreaza_morti():
+    """Clichet pe mulțime, în direcția cealaltă: o intrare care nu mai e raportată (ruta a primit
+    ecran, sau a fost ștearsă) trebuie scoasă DELIBERAT, ca lista să nu devină o colecție de morți.
+
+    Se aplică DOAR artefactelor. Cele declarate în cod ies singure: dacă marcajul dispare odată cu
+    ruta, `declarate()` nu le mai vede — de-aia partea aia nu mai are nevoie de clichet."""
     st = _scan()
     gasite = _fara_apelant(st.citeste_rute(), _static())
-    disparute = sorted(_BASELINE - gasite)
+    disparute = sorted(_ARTEFACTE - gasite)
     assert not disparute, (
-        "intrări din `_BASELINE` care nu mai sunt fără apelant: %s — scoate-le din listă"
-        % ["%s %s" % r for r in disparute])
+        "intrări din `_ARTEFACTE` care nu mai sunt raportate: %s — scoate-le, altfel lista "
+        "scuză o problemă care nu mai există" % ["%s %s" % r for r in disparute])
+
+
+def test_ANTI_VACUU_marcajele_chiar_se_citesc():
+    """Dacă `declarate()` s-ar întoarce goală — decorator schimbat, marcaj redenumit — jumătatea
+    derivată ar dispărea în tăcere, iar `_ARTEFACTE` ar părea că acoperă tot."""
+    d = declarate()
+    assert len(d) >= 5, (
+        "doar %d rute cu marcaj `%s` citite din `main.py` — cititorul s-a rupt" % (len(d), _MARCAJ))
+    assert not (d & _ARTEFACTE), (
+        "rute care stau în AMÂNDOUĂ listele: %s — o intenție declarată nu e un artefact al "
+        "detectorului; ține-o într-un singur loc" % sorted(d & _ARTEFACTE))
+
+
+def test_CALIBRARE_marcajul_de_pe_ALTA_linie_nu_declara_nimic(tmp_path):
+    """Direcția «acceptă pe nedrept»: un comentariu rătăcit nu poate scuza o rută."""
+    f = tmp_path / "m.py"
+    f.write_text('# [api_intern_v1] motiv ratacit' + chr(10) +
+                 '@app.get("/x/inventata")' + chr(10) +
+                 'def x():' + chr(10) + '    pass' + chr(10), encoding="utf-8")
+    global _RAD
+    vechi = _RAD
+    try:
+        _RAD = str(tmp_path)
+        assert declarate("m.py") == set(), "un marcaj de pe altă linie a declarat o rută"
+        f.write_text('@app.get("/x/inventata")  # [api_intern_v1] motiv' + chr(10) +
+                     'def x():' + chr(10) + '    pass' + chr(10), encoding="utf-8")
+        assert declarate("m.py") == {("GET", "/x/inventata")}, "marcajul de pe linia bună nu e citit"
+    finally:
+        _RAD = vechi
 
 
 def test_CALIBRARE_dispecerizarea_prin_tabel_NU_e_raportata():

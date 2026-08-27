@@ -28,8 +28,11 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _SCAN = os.path.join(_RAD, "scripts", "scan_trasee.py")
 
 # Clichet la 25.08.2026, pe commitul care introduce inventarul. Se schimbă DELIBERAT.
-_CLICHET = {"MECANIC": 30, "PARTIAL": 0, "MANUAL": 5}
-_TRASEE_TOTAL = 35
+# [R72, 27.08.2026] 30 -> 31: T36, ciclul de viata al firmei. Decizia lui Costin: cele patru
+# rute care schimba EXISTENTA unei firme nu mai stau pe suprafata de administrare, fiindca
+# incadrarea aia era corecta cat timp acolo era doar crearea.
+_CLICHET = {"MECANIC": 31, "PARTIAL": 0, "MANUAL": 5}
+_TRASEE_TOTAL = 36
 
 
 def _scan():
