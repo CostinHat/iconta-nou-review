@@ -5423,10 +5423,42 @@ doar lista de rute."* Avea dreptate de doua ori.
 
 **Ce nu schimbă nimic pentru nimeni, azi — și se scrie ca atare:**
 
-- **Alegerea de denumire nu se poate vedea pe nicio firmă.** **0 din 17** au o denumire citită de la ANAF: instantaneul se captează doar de la o precompletare încolo. Calea e construită, gardată și probată — dar pe date făcute anume, nu pe o firmă a cabinetului.
+- **Alegerea de denumire nu se poate vedea pe nicio firmă.** **0 din 17** au o denumire citită de la ANAF: instantaneul se captează doar de la o precompletare încolo. Calea e construită, gardată și probată — dar pe date făcute anume, nu pe o firmă a cabinetului. *(A încetat să fie adevărat la 19:12, în aceeași seară: vezi intrarea de mai jos. Rândul rămâne fiindcă descrie starea în care s-a construit.)*
 - **Rândurile de audit nu mai trimit la firme inexistente.** Fiecare ștergere lăsa exact unul: rândul care consemna cererea `DELETE` se scria la **78 de milisecunde după** ce firma dispărea. Nimeni n-ar fi observat — până când cineva ar fi citit auditul unei firme care nu mai există. Cei **67** de dinainte rămân, înghețați: ștergerea lor ar șterge singura urmă că firmele alea au existat.
 
 **Ce a costat seara:** o cheie străină cerută, măsurată și **respinsă** — `ON DELETE SET NULL` ar fi făcut ștergerea de firmă imposibilă pe 10 din 13 tabele; o primă implementare a butonului care rearanja structura rândului și rupea **36 de fișiere** de probă; și o sondă care a raportat, cu încredere, că toate cele 13 firme au evidență — fiindcă citea textul unui ecran rămas dedesubt.
+
+
+## 27.08.2026 (noaptea) — ZIUA, judecată de la ecranul contabilului: pentru un contabil care doar ține contabilitate, nu s-a schimbat aproape nimic
+
+**Verdictul întâi, ca să nu se piardă în detalii: din tot ce s-a construit azi, un contabil care înregistrează facturi, face salarii și depune declarații ar observa UN singur lucru** — că butonul de scoatere a unei firme e acum pe rândul din listă, nu îngropat sub 26 de carduri. Restul atinge acte pe care le face de câteva ori pe an, sau niciodată.
+
+**Ce se schimbă pentru el, în ordinea cât de des dă peste ele:**
+
+1. **Scoaterea unei firme se găsește.** Butonul **Scoate** e pe rândul fiecărei firme din listă, la **381 px** într-o fereastră de 793 — se vede fără derulare. Înainte era la **1361 px**, sub 26 de carduri de lucru, și Costin l-a căutat fără să-l găsească. Nu șterge de acolo: deschide previzualizarea, cu confirmarea pe CUI. *Un act ireversibil la un click de listă e prea aproape.*
+2. **Denumirea firmei se poate corecta din „Date firmă".** Până azi nu exista niciun ecran care s-o schimbe — o firmă redenumită la Registrul Comerțului rămânea în aplicație cu numele vechi.
+3. **Iar dacă denumirea tastată diferă de cea de la ANAF, se cere o alegere** — cu **două** butoane, niciunul presetat. Până azi ecranul arăta amândouă denumirile și oferea o singură acțiune; a păstra pe a ta însemna a nu apăsa nimic. Acum ambele scriu: cine păstrează denumirea proprie a **decis** asta, cu nume și dată. *Prima firmă pe care s-a văzut: `Antibiotice Iasi`, adăugată azi la 19:12; ANAF spune `ANTIBIOTICE SA`.*
+4. **Ecranul spune acum că firma are DOUĂ denumiri** — cea din portofoliu (lista) și cea fiscală (declarațiile și bilanțul) — și **care dintre ele pleacă pe hârtie**. Nu e o îmbunătățire: e o problemă care era acolo și nu se vedea. **Pe 4 firme din 18 cele două diferă deja.**
+
+### CE NU SCHIMBĂ NIMIC PENTRU NIMENI, AZI — și se scrie ca atare
+
+- **Rândurile de audit nu mai trimit la firme care nu mai există.** Fiecare ștergere lăsa exact una: se scria la **78 de milisecunde după** ce firma dispărea. Nimeni n-ar fi observat, până când cineva ar fi citit auditul unei firme șterse. Verificat pe viu: a treia scoatere reală, la 19:25, a lăsat rândul cu `tenant_id` gol, iar totalul a rămas la 69.
+- **Cei 67 de dinainte rămân**, înghețați. Ștergerea lor ar șterge singura urmă că firmele alea au existat.
+- **Un gard intern știe acum despre ce nu poate vorbi.** Verificarea „nicio rută fără apelant" e oarbă pe **51 din 411** rute, fiindcă se sprijină pe un cuvânt din adresă care apare peste tot. Nu s-a reparat — s-a **numit**, iar verdele ei spune de acum *„acoperire reală: 360 din 411 (88%)"*.
+- **Trei joburi de fundal moarte de o lună** au fost repornite dimineață, iar deadman-ul le vede acum. Niciun contabil n-a aflat vreodată că erau oprite.
+
+### CE A COSTAT ZIUA
+
+- **Trei măsurători care au schimbat construcția, nu au confirmat-o.** O cheie străină cerută s-a dovedit că ar fi făcut ștergerea de firmă **imposibilă**; „13 rute care ating denumirea" erau **5**; iar ecranul care urma să primească un câmp de denumire **avea deja unul** — care scrie în alt loc.
+- **Patru instrumente de-ale mele au greșit, toate în direcția comodă.** Un detector de scrieri raporta 1 loc în loc de 2, fiindcă `SET` se asamblează la rulare. O măsurătoare de orbire raporta 1 rută în loc de 51, fiindcă spărgea un șir în caractere. O sondă a raportat că toate firmele au evidență, citind ecranele rămase dedesubt. Și o cifră — „8 coloane" în loc de 10 — a fost numărată pe drum, fără instrument.
+- **O primă implementare care rupea 36 de fișiere.** Butonul „Scoate" nu putea sta într-un `<button>`, deci rândul devenise `<div>` — iar `button.firme-rand` e selectorul pe care stă toată infrastructura vizuală. Refăcut fără să atingă niciunul.
+- **Un mesaj de commit trunchiat la jumătate**, a doua oară azi când un heredoc peste `ssh` mănâncă text. Rămâne așa: e împins, iar `--force` pe main e interzis.
+
+### VERDICTUL ZILEI
+
+**Ziua n-a adăugat aproape nimic la contabilitatea propriu-zisă — a reparat trei feluri de tăcere.** Un buton care exista dar nu se găsea. O alegere care se prezenta ca o singură opțiune. Un rând de audit care trimitea într-un gol. Niciuna nu apare în bilanț.
+
+**Iar ce a scos ziua nu e cod, e o regulă:** de trei ori din trei, măsurătoarea cerută înainte de construcție a schimbat **ce** trebuia construit. Fără ea, aș fi livrat o cheie străină care oprea ștergerea de firmă, un al doilea câmp cu aceeași etichetă ca primul, și o poartă pe un drum pe care nu trecea nimeni.
 
 
 ## 26.08.2026 — ZIUA, judecată de la ecranul contabilului
