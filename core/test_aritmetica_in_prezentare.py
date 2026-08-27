@@ -142,43 +142,123 @@ _FISCAL = _re.compile(r"(?i)\b\w*(tva|cota|baza|impozit|cas|cass|net|brut|deduc|
 NUME_NEUTRE_CLICHET = 2
 
 
-def _fara_comentarii_si_siruri(src):
-    """Scoate comentariile SI sirurile, PASTRAND newline-urile.
+def _sfarsit_sir(src, i, n):
+    """Indexul de DUPĂ șirul care începe la `i`. Tratează `${…}` din template literals."""
+    q = src[i]
+    j = i + 1
+    while j < n:
+        c = src[j]
+        if c == "\\":
+            j += 2
+            continue
+        if q == "`" and src[j:j + 2] == "${":
+            j = _sfarsit_expresie(src, j + 2, n)
+            continue
+        if c == q:
+            return j + 1
+        if q != "`" and c == "\n":     # un șir simplu nu trece de capătul rândului
+            return j
+        j += 1
+    return n
 
-    Prima forma a acestei functii, 24.08.2026, colapsa liniile — deci raporta
-    numere de linie ale ALTOR linii. De-aia exista aserttiunea de mai jos.
+
+def _sfarsit_expresie(src, i, n):
+    """Din interiorul unui `${`, indexul de după acolada care îl închide. Sare peste șiruri."""
+    adanc, j = 1, i
+    while j < n:
+        c = src[j]
+        if c in "\"'`":
+            j = _sfarsit_sir(src, j, n)
+            continue
+        if c == "{":
+            adanc += 1
+        elif c == "}":
+            adanc -= 1
+            if adanc == 0:
+                return j + 1
+        j += 1
+    return n
+
+
+def _albeste(bucata, out):
+    for ch in bucata:
+        out.append("\n" if ch == "\n" else " ")
+
+
+def _curata_sir(src, i, n, out):
+    """Albește textul unui șir, dar PĂSTREAZĂ ce e între `${` și `}` — acolo e cod.
+
+    A doua parte e cea care contează: dacă interpolarea ar fi albită, o cotă scrisă în
+    `` `TVA: ${suma * 21 / 100}` `` ar trece nevăzută, iar gardul ar fi liniștit degeaba.
+    Propria calibrare a prins prima variantă, care făcea exact asta.
     """
-    out, i, n = [], 0, len(src)
+    q = src[i]
+    out.append(" ")                       # ghilimeaua de deschidere
+    j = i + 1
+    while j < n:
+        c = src[j]
+        if c == "\\":
+            _albeste(src[j:j + 2], out)
+            j += 2
+            continue
+        if q == "`" and src[j:j + 2] == "${":
+            out.append("  ")
+            k = _sfarsit_expresie(src, j + 2, n)
+            _curata(src, j + 2, k - 1, out)   # interiorul e COD, se curăță recursiv
+            out.append(" ")                   # acolada de închidere
+            j = k
+            continue
+        if c == q:
+            out.append(" ")
+            return j + 1
+        out.append("\n" if c == "\n" else " ")
+        j += 1
+    return n
+
+
+def _curata(src, i, n, out):
+    """Scoate comentariile și textul șirurilor din `src[i:n]`, caracter cu caracter."""
     while i < n:
         c, d = src[i], src[i:i + 2]
         if d == "//":
             j = src.find("\n", i)
-            if j < 0:
-                out.append(" " * (n - i))
-                break
-            out.append(" " * (j - i))
+            j = n if j < 0 or j > n else j
+            _albeste(src[i:j], out)
             i = j
         elif d == "/*":
             j = src.find("*/", i + 2)
-            j = n if j < 0 else j + 2
-            out.append("".join(ch if ch == "\n" else " " for ch in src[i:j]))
+            j = n if j < 0 or j + 2 > n else j + 2
+            _albeste(src[i:j], out)
             i = j
         elif c in "\"'`":
-            j, q = i + 1, c
-            while j < n:
-                if src[j] == "\\":
-                    j += 2
-                    continue
-                if src[j] == q:
-                    break
-                j += 1
-            j = min(j, n - 1)
-            out.append("".join(ch if ch == "\n" else " " for ch in src[i:j + 1]))
-            i = j + 1
+            i = _curata_sir(src, i, n, out)
         else:
             out.append(c)
             i += 1
-    return "".join(out)
+    return i
+
+
+def _fara_comentarii_si_siruri(src):
+    """Scoate comentariile SI textul sirurilor, PASTRAND newline-urile si LUNGIMEA.
+
+    Prima forma a acestei functii, 24.08.2026, colapsa liniile — deci raporta numere de linie
+    ale ALTOR linii. De-aia exista aserttiunea de mai jos.
+
+    REPARATĂ de două ori pe 27.08.2026, și amândouă merită scrise:
+      1. nu știa de `${…}`: primul backtick **interior** al unui template imbricat închidea
+         șirul, iar de acolo încolo cititorul era **defazat** — ce era text trecea drept cod și
+         invers. **Greșea în amândouă direcțiile**, deci clichetul „2" nu era o măsurătoare, era
+         o coincidență de sincronizare. Găsit nu de un instrument, ci de poarta făcută roșie de
+         un ecran nou.
+      2. prima reparație albea și **interiorul** interpolării — adică exact codul. O cotă scrisă
+         în `` `${suma * 21 / 100}` `` ar fi trecut nevăzută. Prinsă de calibrarea scrisă în
+         aceeași tură, pe direcția «ratează».
+    """
+    out = []
+    _curata(src, 0, len(src), out)
+    rez = "".join(out)
+    assert len(rez) == len(src), "cititorul a schimbat lungimea — numerele de linie ar sări"
+    return rez
 
 
 def _aritmetica_pe_nume_neutre():
@@ -210,6 +290,33 @@ def test_tiparul_prinde_o_formula_scrisa_pe_nume_neutre():
     """CALIBRARE POZITIVA — chiar cazul de care se temea Costin."""
     linie = "  const x = a * 21 / 100;"
     assert _COTA.search(linie) and _ARIT.search(linie) and not _FISCAL.search(linie)
+
+
+def test_CALIBRARE_template_imbricat_ramane_SIR():
+    """Direcția «acuză pe nedrept». Forma care a doborât cititorul vechi: un template literal cu
+    interpolare care conține alt template literal. Tot ce e text trebuie să rămână text."""
+    js = "const h = `<ul>${a.map((u) => `<li>Total 21% (bere)</li>`).join(\"\")}</ul>`;"
+    curat = _fara_comentarii_si_siruri(js)
+    assert curat.count("21%") == 0, (
+        "HTML dintr-un template imbricat a scapat ca fiind cod: %r" % curat)
+    assert len(curat) == len(js), "cititorul a schimbat lungimea — numerele de linie ar sari"
+
+
+def test_CALIBRARE_aritmetica_din_interpolare_RAMANE_VIZIBILA():
+    """Direcția care contează mai mult: ce e între `${` și `}` **e cod**. Dacă cititorul l-ar
+    înghiți ca șir, o cotă scrisă acolo ar trece nevăzută — iar gardul ar fi liniștit degeaba."""
+    js = "const h = `TVA: ${suma * 21 / 100}`;"
+    curat = _fara_comentarii_si_siruri(js)
+    assert curat.count("* 21 / 100") == 1, (
+        "aritmetica din interpolare a fost înghițită ca șir: %r" % curat)
+    assert curat.count("TVA:") == 0, "textul din jurul interpolării trebuia albit: %r" % curat
+
+
+def test_CALIBRARE_apostroful_dintr_un_sir_nu_deschide_alt_sir():
+    """Un `'` scăpat într-un șir cu ghilimele duble nu trebuie să defazeze cititorul."""
+    js = 'const a = "n-ar trebui"; const b = x * 21 / 100;'
+    curat = _fara_comentarii_si_siruri(js)
+    assert curat.count("* 21 / 100") == 1, curat
 
 
 def test_nicio_formula_noua_pe_nume_neutre():

@@ -42,6 +42,10 @@ def _arbore(modul):
     return ast.parse(io.open(os.path.join(_RAD, "core", modul + ".py"), encoding="utf-8").read())
 
 
+def _arbore_main():
+    return ast.parse(io.open(os.path.join(_RAD, "main.py"), encoding="utf-8").read())
+
+
 def _functia(nume, modul="tenant_stergere"):
     return next(n for n in ast.walk(_arbore(modul))
                 if isinstance(n, ast.FunctionDef) and n.name == nume)
@@ -228,7 +232,8 @@ def test_previzualizarea_numara_randurile_INAINTE():
         cur.execute("SELECT id FROM public.tenants ORDER BY id LIMIT 1")
         tid = cur.fetchone()[0]
         p = ts.previzualizare(conn, tid)
-        assert set(p) >= {"randuri_de_sters", "tabele_curatate", "confirmare_ceruta"}, sorted(p)
+        assert set(p) >= {"randuri_de_sters", "tabele_curatate", "confirmare_ceruta",
+                          "urme_de_pastrat"}, sorted(p)
         rd = p["randuri_de_sters"]
         assert set(rd).issubset(set(ts.TABELE_TENANT)), (
             "previzualizarea numără tabele care nu sunt în lista de curățat: %s"
@@ -291,6 +296,58 @@ def test_previzualizarea_numeste_conturile_care_raman_fara_firma():
         assert not rele, (
             "previzualizarea listează conturi fără email — omul n-ar ști pe cine dezactivează: %s"
             % rele)
+
+
+def test_urmele_portalului_supravietuiesc_SCOATERII_dar_nu_stergerii_GDPR():
+    """Cerut de Costin înainte de prima apăsare: *„cele 4 rânduri din `urme_portal` se păstrează.
+    Sunt singura dovadă că traseul R62 a fost parcurs pe date."*
+
+    Și jumătatea care nu se vede din cerere: urmele conțin **adrese de email**. La o ștergere
+    **GDPR** nu se copiază nimic — acolo scopul actului e chiar dispariția datelor, iar un log
+    care le-ar păstra ar anula ștergerea pe care o consemnează.
+
+    Structural: în `sterge`, `urme_de_pastrat` se cheamă **condiționat de `motiv`**. Un apel
+    necondiționat ar copia și la GDPR."""
+    fn = _functia("sterge")
+    apeluri = [n for n in ast.walk(fn)
+               if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)
+               and n.func.id == "urme_de_pastrat"]
+    assert len(apeluri) == 1, (
+        "aștept exact un apel la `urme_de_pastrat` în `sterge`, găsite %d" % len(apeluri))
+    conditionate = [n for n in ast.walk(fn)
+                    if isinstance(n, ast.IfExp) and any(a is apeluri[0] for a in ast.walk(n.body))]
+    assert conditionate, (
+        "`urme_de_pastrat` se cheamă NECONDIȚIONAT în `sterge` — atunci se copiază și la o "
+        "ștergere GDPR, iar logul ar reintroduce exact ce trebuia să dispară")
+    # condiția se citește ca NOD, nu ca text: `motiv == "scoatere_firma"`
+    t = conditionate[0].test
+    forma = (isinstance(t, ast.Compare) and isinstance(t.left, ast.Name) and t.left.id == "motiv"
+             and len(t.ops) == 1 and isinstance(t.ops[0], ast.Eq)
+             and isinstance(t.comparators[0], ast.Constant)
+             and t.comparators[0].value == "scoatere_firma")
+    assert forma, (
+        "condiția nu e `motiv == \"scoatere_firma\"`, ci %r — orice altă formă poate lăsa "
+        "copierea să se producă și la GDPR" % ast.unparse(t))
+
+
+def test_urma_pastrata_se_poate_CITI_de_om():
+    """`public.firme_scoase` era, în ziua în care s-a construit, a doua instanță a clasei
+    declarate dimineață la `urme-portal`: **scrisă, necitită de om**. Costin: *„o urmă pe care
+    n-o poate deschide nimeni fără `psql` nu e urmă pentru cabinet, e urmă pentru administratorul
+    serverului."* Aici se cere ca ruta de citire să existe; că e chemată dintr-un ecran o cere
+    `core/test_ruta_fara_apelant.py`."""
+    arb = _arbore_main()
+    cai = set()
+    for n in ast.walk(arb):
+        if not isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            continue
+        for d in n.decorator_list:
+            if (isinstance(d, ast.Call) and isinstance(d.func, ast.Attribute)
+                    and isinstance(d.func.value, ast.Name) and d.func.value.id == "app"
+                    and d.args and isinstance(d.args[0], ast.Constant)):
+                cai.add((d.func.attr.upper(), d.args[0].value))
+    assert cai >= {("GET", "/firme-scoase")}, (
+        "nu există nicio rută care citește `firme_scoase` — urma ar rămâne scrisă și necitită")
 
 
 def test_tabela_de_urma_exista_in_baza():

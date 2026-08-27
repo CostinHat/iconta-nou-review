@@ -24,10 +24,19 @@ CE PĂSTREAZĂ, și de ce exact câmpurile astea:
                     fără cifră.
   scos_de_user_id — cine. Fără FK din același motiv ca `tenant_id`: la GDPR dispare și userul.
   scos_la         — când.
+  urme_pastrate   — urmele portalului (`urme_portal` + `schimbari_email`) ale firmei, copiate
+                    la scoatere. **Numai pe `scoatere_firma`, NU pe `gdpr_cabinet`** — vezi mai jos.
 
 CE NU E AICI, declarat: **nicio dată personală** din firmă (nici sold, nici salariat, nici
-partener). Urma spune *că s-a șters* și *ce s-a șters ca volum*, nu *ce conținea*. Aceeași
-regulă ca la `gdpr_stergeri`: logul unei ștergeri GDPR n-are voie să reintroducă ce s-a șters.
+partener). Urma spune *că s-a șters* și *ce s-a șters ca volum*, nu *ce conținea*.
+
+**SINGURA EXCEPȚIE, și de-aia e condiționată de `motiv`: `urme_pastrate`.** Urmele portalului
+conțin adrese de email — deci date personale. Se copiază **numai** când firma e scoasă din
+portofoliu de către cabinet (`scoatere_firma`), unde ele sunt evidența cabinetului despre cine a
+primit acces la datele lui. La o ștergere **GDPR** (`gdpr_cabinet`) **nu se copiază nimic**: acolo
+scopul actului e chiar dispariția datelor, iar un log care le păstrează ar anula ștergerea.
+Aceeași regulă ca la `gdpr_stergeri`, dusă un pas mai departe: *logul unei ștergeri GDPR n-are voie
+să reintroducă ce s-a șters.*
 
 TABELA ASTA NU SE ȘTERGE ODATĂ CU FIRMA, deși poartă `tenant_id` — e declarată în
 `tenant_stergere.NU_SE_STERG` cu motivul, iar garda din `core/test_tenant_stergere.py`
@@ -54,6 +63,11 @@ CREATE TABLE IF NOT EXISTS public.firme_scoase (
 );
 CREATE INDEX IF NOT EXISTS idx_firme_scoase_cabinet ON public.firme_scoase (cabinet_id, scos_la DESC);
 CREATE INDEX IF NOT EXISTS idx_firme_scoase_tenant  ON public.firme_scoase (tenant_id);
+
+-- [27.08.2026] Urmele portalului supravietuiesc scoaterii firmei. Cerut de Costin inainte de
+-- prima apasare: "sunt singura dovada ca traseul R62 a fost parcurs pe date. Registrul spune ce
+-- am facut; alea arata ce a inregistrat aplicatia."
+ALTER TABLE public.firme_scoase ADD COLUMN IF NOT EXISTS urme_pastrate jsonb;
 """
 
 

@@ -178,7 +178,8 @@ TRASEE = [
     # firme. Aia e un ciclu de viata, nu administrare."
     # Fara tabela proprie: ciclul nu se masoara in randurile unei firme, ci in existenta ei.
     ("T36", "Ciclul de viață al firmei — creare, identitate, dezactivare, scoatere",
-     [r"^/tenants$", r"^/tenants/\{\}$", r"^/tenants/\{\}/(scoatere|activare)$"],
+     [r"^/tenants$", r"^/tenants/\{\}$", r"^/tenants/\{\}/(scoatere|activare)$",
+      r"^/firme-scoase$"],
      []),
 ]
 

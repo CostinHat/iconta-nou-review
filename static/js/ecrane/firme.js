@@ -112,7 +112,7 @@ export function randeazaListaFirme(container, nav, inapoi) {
   const lista = container.querySelector("#firme-lista");
   const cautare = container.querySelector("#firme-q");
   const zonaDez = container.querySelector("#firme-dezactivate");
-  let toate = [], dezactivate = [];
+  let toate = [], dezactivate = [], scoase = [];
 
   function deseneaza(filtru) {
     const f = (filtru || "").trim().toLowerCase();
@@ -158,19 +158,26 @@ export function randeazaListaFirme(container, nav, inapoi) {
       lista.innerHTML = `<div class="firme-gol">Firmele nu au putut fi încărcate.</div>`;
       return;
     }
+    try { scoase = ((await api.get("/firme-scoase")) || {}).firme || []; } catch { scoase = []; }
     deseneaza(cautare.value);
     deseneazaDezactivate();
   }
 
   function deseneazaDezactivate() {
     if (!zonaDez) return;
-    if (!dezactivate.length) { zonaDez.innerHTML = ""; return; }
+    if (!dezactivate.length && !scoase.length) { zonaDez.innerHTML = ""; return; }
     zonaDez.innerHTML = `
       <div class="firme-cap" style="margin-top:18px">
         <span class="firme-spatiu"></span>
-        <button class="buton-secundar" id="firme-vezi-dez">Firme dezactivate (${dezactivate.length})</button>
+        ${dezactivate.length ? `<button class="buton-secundar" id="firme-vezi-dez">Firme dezactivate (${dezactivate.length})</button>` : ""}
+        ${scoase.length ? `<button class="buton-secundar" id="firme-vezi-scoase">Firme scoase (${scoase.length})</button>` : ""}
       </div>`;
-    zonaDez.querySelector("#firme-vezi-dez").addEventListener("click", () =>
+    // [27.08.2026] O urmă pe care n-o poate deschide nimeni fără `psql` nu e urmă pentru cabinet,
+    // e urmă pentru administratorul serverului. (Costin) După o ștergere, asta e singura dovadă
+    // că firma a existat.
+    zonaDez.querySelector("#firme-vezi-scoase")?.addEventListener("click", () =>
+      nav.deschide("Firme scoase", (c3) => randeazaFirmeScoase(c3, scoase)));
+    zonaDez.querySelector("#firme-vezi-dez")?.addEventListener("click", () =>
       nav.deschide("Firme dezactivate", (c2) => {
         c2.innerHTML = `
           <p class="ecran-nota">Firmele de aici nu apar în portofoliul de lucru. Documentele lor
@@ -2304,6 +2311,15 @@ async function ecranScoateFirma(corp, nav, t) {
       </div>
       ${ceDispare}
       ${ceCuClientii}
+      ${(() => {
+        const u = p.urme_de_pastrat || {};
+        const n = Object.values(u).reduce((a, b) => a + b, 0);
+        return n
+          ? `<p class="ecran-nota" style="margin:10px 0 0">Se <strong>păstrează</strong> ${n} urme
+               de portal (cine a primit acces, ce adresă s-a schimbat și când). Le găsești după
+               ștergere sub „Firme scoase".</p>`
+          : "";
+      })()}
       <div class="camp" style="margin:14px 0">
         <label class="camp-eticheta" for="sf-cui">Scrie CUI-ul firmei ca să confirmi</label>
         <input class="camp-input" id="sf-cui" autocomplete="off" placeholder="${esc(String(p.cui || ""))}">
@@ -2353,6 +2369,54 @@ async function ecranScoateFirma(corp, nav, t) {
       arataMesaj(zonaM, e.mesaj || e.message || "Nu am putut dezactiva firma.", "eroare");
     }
   });
+}
+
+
+
+
+// [R72, 27.08.2026] Urma firmelor scoase — CITITĂ, nu doar scrisă.
+// `public.firme_scoase` era, în ziua în care s-a construit, a doua instanță a clasei declarate
+// dimineață la `urme-portal`: scrisă, necitită de om. Ecranul ăsta o închide.
+function randeazaFirmeScoase(corp, scoase) {
+  if (!scoase.length) {
+    corp.innerHTML = `<p class="ecran-nota">Nicio firmă scoasă din portofoliu.</p>`;
+    return;
+  }
+  const rand = (f) => {
+    const rs = f.randuri_sterse || {};
+    const chei = Object.keys(rs).filter((k) => k !== "tenants" && rs[k]);
+    const up = (f.urme_pastrate || {}).urme_portal || [];
+    const se = (f.urme_pastrate || {}).schimbari_email || [];
+    return `
+      <div class="firme-rand" style="display:block;cursor:default">
+        <div class="firme-rand-nume">${esc(f.nume || "(fără nume)")}</div>
+        <div class="firme-rand-cui">CUI ${esc(String(f.cui || "—"))} · schema <code>${esc(f.schema_name || "")}</code></div>
+        <p class="ecran-nota" style="margin:6px 0 0">
+          Scoasă la <strong>${esc(dataRo(f.scos_la, "cu_ora"))}</strong>
+          de <strong>${esc(f.scos_de || "utilizator șters")}</strong>
+          ${f.motiv === "gdpr_cabinet" ? "· prin ștergerea cabinetului (GDPR)" : ""}
+        </p>
+        <p class="ecran-nota" style="margin:6px 0 0">S-au curățat: ${
+          chei.length ? chei.map((k) => `${rs[k]} × <code>${esc(k)}</code>`).join(" · ") : "niciun rând în tabelele comune"
+        }, plus schema de date.</p>
+        ${up.length || se.length ? `
+          <details style="margin-top:8px">
+            <summary style="cursor:pointer">Urme păstrate din portal (${up.length + se.length})</summary>
+            <ul style="margin:8px 0 0 18px">
+              ${up.map((u) => `<li><strong>${esc(u.actiune)}</strong> — ${esc(u.detaliu)}
+                    <span class="ecran-nota">(${esc(dataRo(u.creat_la, "cu_ora"))})</span></li>`).join("")}
+              ${se.map((s) => `<li><strong>schimbare de adresă</strong> — ${esc(s.email_vechi)} →
+                    ${esc(s.email_nou)} <span class="ecran-nota">(cerută ${esc(dataRo(s.cerut_la, "cu_ora"))}${
+                      s.confirmat_la ? ", confirmată " + esc(dataRo(s.confirmat_la, "cu_ora")) : ", NECONFIRMATĂ"})</span></li>`).join("")}
+            </ul>
+          </details>` : `<p class="ecran-nota" style="margin:6px 0 0">Nicio urmă de portal păstrată.</p>`}
+      </div>`;
+  };
+  corp.innerHTML = `
+    <p class="ecran-nota">Firmele de aici nu mai există. Rândul rămâne ca dovadă că au existat,
+       cine le-a scos și ce s-a curățat odată cu ele. Urmele de portal se păstrează la scoaterea
+       din portofoliu; la o ștergere GDPR nu se păstrează nimic.</p>
+    <div class="firme-lista">${scoase.map(rand).join("")}</div>`;
 }
 
 

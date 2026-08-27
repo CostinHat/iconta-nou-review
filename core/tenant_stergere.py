@@ -203,6 +203,34 @@ def clienti_ramasi_fara_firma(conn, tenant_id):
         return [dict(r) for r in cur.fetchall()]
 
 
+# Ce se COPIAZĂ înainte de ștergere, ca să supraviețuiască. Fiecare intrare: (tabelă, coloane).
+# NU e o listă de „tot ce ține de firmă" — sunt exact urmele care spun **cine a primit acces la
+# datele firmei și când**, adică evidența cabinetului despre portal. Restul dispare.
+URME_DE_PASTRAT = (
+    ("urme_portal", "id, actiune, detaliu, autor_id, creat_la"),
+    ("schimbari_email", "id, user_id, email_vechi, email_nou, cerut_la, confirmat_la"),
+)
+
+
+def urme_de_pastrat(conn, tenant_id):
+    """Urmele portalului ale firmei, ca structură. -> {tabelă: [rânduri]}, fără cheile goale.
+
+    DE CE, cerut de Costin înainte de prima apăsare reală: *„sunt singura dovadă că traseul R62 a
+    fost parcurs pe date. Registrul spune ce am făcut; alea arată ce a înregistrat aplicația."*
+    Fără copierea asta, cele patru rânduri ale probei din 26.08 ar fi dispărut odată cu firma.
+    """
+    out = {}
+    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
+        for tabel, coloane in URME_DE_PASTRAT:
+            cur.execute('SELECT %s FROM public."%s" WHERE tenant_id=%%s ORDER BY id'
+                        % (coloane, tabel), (tenant_id,))
+            randuri = [{k: (v if not hasattr(v, "isoformat") else v.isoformat())
+                        for k, v in dict(r).items()} for r in cur.fetchall()]
+            if randuri:
+                out[tabel] = randuri
+    return out
+
+
 def previzualizare(conn, tenant_id):
     """Ce se întâmplă dacă se apasă. Se cere ÎNAINTE de ștergere, ca omul să vadă ce pierde."""
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
@@ -220,6 +248,7 @@ def previzualizare(conn, tenant_id):
         "tabele_curatate": list(TABELE_TENANT),
         "randuri_de_sters": randuri_de_sters(conn, tenant_id),   # R50 (c)
         "clienti_de_dezactivat": clienti_ramasi_fara_firma(conn, tenant_id),
+        "urme_de_pastrat": {k: len(v) for k, v in urme_de_pastrat(conn, tenant_id).items()},
     }
 
 
@@ -252,11 +281,17 @@ def sterge(conn, tenant_id, motiv, sters_de_user_id, confirmare=None):
         sters = {}
         # ÎNAINTE de a rupe legăturile: cine rămâne fără nicio firmă.
         clienti = clienti_ramasi_fara_firma(conn, tenant_id)
+        # ȘI ÎNAINTE de a șterge: urmele portalului, copiate ca să supraviețuiască.
+        # NUMAI pe `scoatere_firma`. La GDPR nu se copiază nimic — acolo scopul actului e chiar
+        # dispariția datelor, iar ele conțin adrese de email. Un log care le-ar păstra ar anula
+        # ștergerea pe care o consemnează.
+        urme = urme_de_pastrat(conn, tenant_id) if motiv == "scoatere_firma" else {}
         cur.execute(
             "INSERT INTO public.firme_scoase (tenant_id, nume, cui, schema_name, cabinet_id, "
-            "motiv, scos_de_user_id) VALUES (%s,%s,%s,%s,%s,%s,%s) RETURNING id, scos_la",
+            "motiv, scos_de_user_id, urme_pastrate) "
+            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id, scos_la",
             (tenant_id, f["nume"], f["cui"], schema, f["accounting_firm_id"], motiv,
-             sters_de_user_id))
+             sters_de_user_id, _E.Json(urme) if urme else None))
         urma = cur.fetchone()
         # 1. cele 13 din `public` — ÎNTÂI, ca schema să rămână dacă vreuna refuză.
         for tabel in TABELE_TENANT:
@@ -276,7 +311,9 @@ def sterge(conn, tenant_id, motiv, sters_de_user_id, confirmare=None):
                     (_E.Json(sters), urma["id"]))
     return {"tenant_id": tenant_id, "nume": f["nume"], "cui": f["cui"], "schema": schema,
             "motiv": motiv, "randuri_sterse": sters, "urma_id": urma["id"],
-            "clienti_dezactivati": clienti, "scos_la": str(urma["scos_la"])}
+            "clienti_dezactivati": clienti,
+            "urme_pastrate": {k: len(v) for k, v in urme.items()},
+            "scos_la": str(urma["scos_la"])}
 
 
 def sterge_fisiere(schema):

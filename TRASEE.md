@@ -2018,12 +2018,13 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T36 — Ciclul de viață al firmei — creare, identitate, dezactivare, scoatere
 
-**Clasa:** MECANIC · **rute:** 7 (din care schimba date: 4) · **refuzuri explicite:** 18
+**Clasa:** MECANIC · **rute:** 8 (din care schimba date: 4) · **refuzuri explicite:** 18
 
 **Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 0 din 4.**
 
 **Pasii, din cod:**
 
+- `GET /firme-scoase` — garda `cere_cabinet`
 - `GET /tenants` — garda `cere_cabinet`
 - `POST /tenants` — garda `cere_rol` rol:admin_firma
 - `DELETE /tenants/{tenant_id}` — garda `cere_rol` rol:admin_firma

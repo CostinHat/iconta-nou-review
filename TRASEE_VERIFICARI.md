@@ -2359,9 +2359,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T36 — Ciclul de viață al firmei — creare, identitate, dezactivare, scoatere
 
-*clasa MECANIC · 7 rute · 4 schimba date · nu se poate sti din date*
+*clasa MECANIC · 8 rute · 4 schimba date · nu se poate sti din date*
 
-*citiri (nu schimba nimic): `/tenants`, `/tenants/{tenant_id}`, `/tenants/{tenant_id}/scoatere`*
+*citiri (nu schimba nimic): `/firme-scoase`, `/tenants`, `/tenants/{tenant_id}`, `/tenants/{tenant_id}/scoatere`*
 
 ### `POST /tenants/{tenant_id}/activare`
 

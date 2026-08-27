@@ -871,3 +871,7 @@ CREATE TABLE IF NOT EXISTS public.firme_scoase (
 
 CREATE INDEX IF NOT EXISTS idx_firme_scoase_cabinet ON public.firme_scoase (cabinet_id, scos_la DESC);
 CREATE INDEX IF NOT EXISTS idx_firme_scoase_tenant  ON public.firme_scoase (tenant_id);
+
+-- Urmele portalului, copiate la scoatere. NUMAI pe motiv='scoatere_firma' - la GDPR nu se
+-- copiaza nimic, fiindca acolo scopul actului e chiar disparitia datelor.
+ALTER TABLE public.firme_scoase ADD COLUMN IF NOT EXISTS urme_pastrate jsonb;

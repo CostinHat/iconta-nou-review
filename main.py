@@ -1195,6 +1195,24 @@ def tenants(inactive: bool = False, ctx=Depends(cere_cabinet)):
         return {"tenants": auth_api.tenantii_userului(conn, ctx["uid"], doar_active=not inactive)}
 
 
+@app.get("/firme-scoase")
+def firme_scoase(ctx=Depends(cere_cabinet)):
+    """[R72] Urma firmelor scoase din portofoliu — CITITĂ, nu doar scrisă.
+
+    Fără ruta asta, `public.firme_scoase` ar fi a doua instanță, în aceeași zi, a clasei
+    declarate dimineață la `urme-portal`: *scrisă, necitită de om*. După o ștergere, ea e
+    singura dovadă că firma a existat.
+    """
+    with db.get_conn() as conn, conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
+        cur.execute(
+            "SELECT id, tenant_id, nume, cui, schema_name, motiv, randuri_sterse, "
+            "       urme_pastrate, scos_de_user_id, scos_la, "
+            "       (SELECT u.email FROM public.users u WHERE u.id = fs.scos_de_user_id) AS scos_de "
+            "FROM public.firme_scoase fs WHERE cabinet_id = %s "
+            "ORDER BY scos_la DESC LIMIT 200", (ctx["firm"],))
+        return {"firme": [dict(r) for r in cur.fetchall()]}
+
+
 @app.get("/tenants/{tenant_id}/scoatere")
 def tenant_scoatere_previzualizare(tenant_id: int, ctx=Depends(cere_cabinet)):
     """[R72] Ce se întâmplă dacă firma se scoate: are evidență sau nu, și ce anume s-a găsit.

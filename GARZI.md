@@ -5074,11 +5074,25 @@ E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pome
 
 **Ce NU face, declarat:** niciun clichet pe cele **28** de `except …: pass` rămase — n-au fost citite una câte una. Și nu verifică dacă emailul chiar pleacă; doar că, dacă nu pleacă, rămâne urmă.
 
+## Cititorul de șiruri JS greșea în amândouă direcțiile (27.08.2026)
+
+**`core/test_aritmetica_in_prezentare.py`** — nu o gardă nouă, o **reparație de instrument**, și merită scrisă fiindcă e forma cea mai rea de orbire: cititorul care scoate comentariile și șirurile din JS **nu știa de `${…}`**. La un template imbricat, primul backtick **interior** închidea șirul, iar de acolo încolo era **defazat** — ce era text trecea drept cod și invers.
+
+**Deci clichetul „2" nu era o măsurătoare, era o coincidență de sincronizare.** A ținut până când un ecran nou a schimbat parcursul cititorului.
+
+**N-a găsit-o niciun instrument — a găsit-o POARTA**, făcută roșie de o linie de HTML din `firme.js`.
+
+**Reparat de două ori, și a doua oară contează mai mult:** prima reparație albea și **interiorul** interpolării, adică exact codul — o cotă scrisă în `` `${suma * 21 / 100}` `` ar fi trecut nevăzută. A prins-o **calibrarea scrisă în aceeași tură**, pe direcția «ratează». Fără ea, o orbire ar fi fost înlocuită cu alta.
+
+**Trei calibrări noi**, pe ambele direcții. După reparație cifra reală e **tot 2** — aceleași două calendaristice. Clichetul nu se mișcă; ce s-a schimbat e că acum e o măsurătoare.
+
 ## Calea de ștergere a unei firme nu poate rămâne în urma bazei (27.08.2026, R72 + R50)
 
 **`core/test_tenant_stergere.py`** — 13 teste. E o gardă despre **liste**, nu despre ștergere: `gdpr_sterge` curăța 2 din 13 tabele nu fiindcă alesese cineva două, ci fiindcă **atâtea erau când s-a scris**. Pe 25.08 erau 12; pe 27.08 sunt 13 — a treisprezecea, `schimbari_email`, apăruse cu o zi înainte.
 
 **Ce face imposibil:** o a paisprezecea tabelă cu `tenant_id` care intră fără să fie clasificată (ori curățată, ori declarată cu motivul) · o tabelă rămasă în listă după ce a dispărut din bază · **o a doua cale de ștergere** — `gdpr_sterge` trebuie să cheme aceeași funcție, verificat pe AST · o firmă cu evidență ștearsă pe calea de scoatere · **urma ștearsă de propriul act** · un `motiv` inventat, care ar ocoli și confirmarea, și verificarea evidenței · ordinea de ștergere schimbată (urmă → `public` → schemă → rândul firmei, citită ca **secvență de operații** din arborele funcției).
+
+**Trei teste în plus, 27.08 noaptea:** urmele portalului supraviețuiesc scoaterii **dar nu** unei ștergeri GDPR (condiția se citește ca **nod de comparație**, nu ca text — un apel necondiționat ar copia date personale într-un log care trebuia să le vadă dispărând) · urma se poate **citi** de om (există rută) · previzualizarea numește conturile care rămân fără firmă.
 
 **Ce NU face, declarat:** **nu șterge nimic ca să probeze.** Suita rulează pe baza de PRODUCȚIE (R67); un test care creează și șterge o firmă adevărată ar fi exact sonda-care-scrie din care am învățat o dată. Se probează **decizia**, nu efectul distructiv — iar efectul s-a probat separat, pe firme sintetice, o singură dată, cu curățare.
 
