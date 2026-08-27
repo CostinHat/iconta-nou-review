@@ -268,6 +268,24 @@ def detalii_tenant(conn, tenant_id):
 ALEGERI_NUME = ("aplicatie", "anaf")
 
 
+def _consemneaza_alegerea(conn, tenant_id, alege, user_id, nume, nume_anaf):
+    """Scrie CE s-a ales, CÂND și de CINE. Un singur loc pentru amândouă căile.
+
+    Există separat de `alege_denumirea` fiindcă alegerea se poate face în **două** feluri:
+    apăsând un buton în caseta de divergență, sau **tastând** o denumire diferită de cea de la
+    ANAF. A doua e tot un act deliberat — Costin, 27.08: *„editarea liberă, fără să treacă prin
+    întrebare, nu mai are rost… se consemnează ca alegere deliberată, cu autor."*
+    """
+    with conn.cursor() as cur:
+        cur.execute("UPDATE public.tenants SET nume_ales=%s, nume_ales_la=now(), nume_ales_de=%s "
+                    "WHERE id=%s", (alege, user_id, tenant_id))
+        cur.execute(
+            "INSERT INTO public.audit_log (user_id, tenant_id, actiune, entitate, entitate_id, detalii) "
+            "VALUES (%s, (SELECT id FROM public.tenants WHERE id = %s), 'nume_ales', 'tenant', %s, %s)",
+            (user_id, tenant_id, str(tenant_id),
+             __import__("json").dumps({"alege": alege, "nume": nume, "nume_anaf": nume_anaf})))
+
+
 def alege_denumirea(conn, tenant_id, alege, user_id):
     """[R77] Alegerea între denumirea din aplicație și cea de la ANAF, ca **act**.
 
@@ -298,18 +316,11 @@ def alege_denumirea(conn, tenant_id, alege, user_id):
         with conn.cursor() as cur:
             cur.execute("UPDATE public.tenants SET nume=%s WHERE id=%s", (nume_anaf, tenant_id))
         nume = nume_anaf
-    with conn.cursor() as cur:
-        cur.execute("UPDATE public.tenants SET nume_ales=%s, nume_ales_la=now(), nume_ales_de=%s "
-                    "WHERE id=%s", (alege, user_id, tenant_id))
-        cur.execute(
-            "INSERT INTO public.audit_log (user_id, tenant_id, actiune, entitate, entitate_id, detalii) "
-            "VALUES (%s, (SELECT id FROM public.tenants WHERE id = %s), 'nume_ales', 'tenant', %s, %s)",
-            (user_id, tenant_id, str(tenant_id),
-             __import__("json").dumps({"alege": alege, "nume": nume, "nume_anaf": nume_anaf})))
+    _consemneaza_alegerea(conn, tenant_id, alege, user_id, nume, nume_anaf)
     return {"tenant_id": tenant_id, "alege": alege, "nume": nume}
 
 
-def actualizeaza_tenant(conn, tenant_id, nume=None, cui=None):
+def actualizeaza_tenant(conn, tenant_id, nume=None, cui=None, user_id=None):
     """Editează nume/cui (NU schema_name — fix). Întoarce {ok}.
 
     [27.08.2026] Până azi funcția asta era un `UPDATE` gol de orice poartă: nici cifra de control
@@ -319,11 +330,12 @@ def actualizeaza_tenant(conn, tenant_id, nume=None, cui=None):
     Acum trec pe aceleași porți ca la creare: **o regulă care se poate ocoli nu e o regulă.**
     """
     with conn.cursor() as cur:
-        cur.execute("SELECT accounting_firm_id FROM public.tenants WHERE id = %s", (tenant_id,))
+        cur.execute("SELECT accounting_firm_id, nume_anaf FROM public.tenants WHERE id = %s",
+                    (tenant_id,))
         r = cur.fetchone()
     if not r:
         raise ValueError("firmă inexistentă")
-    cabinet = r[0]
+    cabinet, nume_anaf = r
     if cui is not None:
         if not cui_valid(cui):
             raise ValueError("CUI invalid: cifra de control nu corespunde (%r)" % cui)
@@ -346,4 +358,11 @@ def actualizeaza_tenant(conn, tenant_id, nume=None, cui=None):
     with conn.cursor() as cur:
         cur.execute("UPDATE public.tenants SET %s WHERE id = %%s"
                     % ", ".join(seturi), valori)
+    # [R77, partea a doua] O redenumire care se depărtează de denumirea de la ANAF e ea însăși o
+    # alegere — se consemnează, nu se refuză. Dacă firma n-are `nume_anaf`, nu se consemnează
+    # nimic: n-are cu ce să difere, iar o alegere între o denumire și nimic n-ar fi o alegere.
+    if nume is not None and (nume_anaf or "").strip():
+        acelasi = nume_normalizat(nume) == nume_normalizat(nume_anaf)
+        _consemneaza_alegerea(conn, tenant_id, "anaf" if acelasi else "aplicatie",
+                              user_id, nume, nume_anaf)
     return {"ok": True}

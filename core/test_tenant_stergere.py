@@ -377,7 +377,17 @@ def test_auditul_nu_mai_produce_orfani_dupa_stergere():
 def test_niciun_orfan_NOU_dupa_ultima_stergere():
     """Clichet pe date: orfanii nu mai cresc. 69 la 27.08, după cele două ștergeri reale ale lui
     Costin — dintre care 67 sunt de dinainte (firme dispărute prin SQL ad-hoc, vezi R50) și 2 sunt
-    chiar cei produși de ștergere, înainte de reparație."""
+    chiar cei produși de ștergere, înainte de reparație.
+
+    **Cifra 69 nu e o măsură a sănătății, e o constantă istorică.** (Costin, 27.08 seara, la
+    decizia de a-i lăsa pe loc.) Cei 67 s-au produs **în afara aplicației**, într-o fereastră care
+    nu mai există; nu se curăță, fiindcă ștergerea lor ar șterge singura urmă că firmele alea au
+    existat. Diferența față de R79: acolo orfanul se producea **de-acum înainte**, deci trebuia
+    oprit la sursă.
+
+    **Deci informația nu e totalul, ci creșterea.** Dacă testul ăsta devine roșu, nu înseamnă
+    „baza e mai murdară cu unu" — înseamnă că **o cale nouă scrie iar o referință care moare
+    înaintea ei**, și aia se caută, nu se ridică pragul."""
     db.init_pool()
     with db.get_conn() as conn, conn.cursor() as cur:
         n = 0

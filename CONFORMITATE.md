@@ -1979,6 +1979,25 @@ scos ce nu se știa**, nu din defecte noi.
 - **ce NU face, declarat**: **niciun clichet pe cele 28 de `except …: pass` rămase.** Costin, explicit: *„pe alea nu le-am măsurat și nu știm care sunt legitime."* Și nu verifică dacă emailul chiar pleacă — doar că, dacă nu pleacă, rămâne urmă.
 - **condiția de deblocare**: decizia lui Costin între **(a)** toate patru trec pe `esec_secundar`, cu `alerta=True` pe cele trei căi de intrare — tăcerea acolo are cost de acces, ceea ce docstringul lui numește drept criteriu; **(b)** doar log, fără alertă, pe toate patru; **(c)** mesajul de pe ecran se schimbă și el, ca să nu mai afirme trimiterea. Se închide când un eșec de trimitere lasă urmă, cu gard.
 
+### R80 — Pentru 51 din 411 rute, gardul „rută fără apelant" nu poate afirma nimic
+
+- **felul**: VERIFICARE
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · METODA §22 · **PRAG 3** *(nimic fals pe ecran. Ce se strică e o SURSĂ DE VERIFICARE: un gard construit anume pentru o clasă e mut pe 12% din suprafață, și tace la fel de convingător ca atunci când chiar nu e nimic)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `04e6f38`
+- **măsurat la**: 2026-08-27 · **pe commit**: `04e6f38`
+- **planul**: **ACOPERIT** — e chiar clasa pe care o numește R70, măsurată acum pe propriul ei instrument. (METODA §22: un instrument se măsoară pe modul lui de eșec, nu pe reușitele lui.)
+- **ce blochează**: azi am mutat butonul de divergență de pe `PUT /tenants/{tenant_id}` pe `POST /tenants/{tenant_id}/nume-ales`. Ruta veche a rămas cu **zero apelanți** în `static/` — măsurat direct, cu anti-vacuu (același tipar, cu un segment în plus, găsește 20 de apeluri). **Gardul R70 nu a raportat-o.** Nu din neatenție: regula lui caută bucățile literale ale căii, iar singura bucată literală a rutei e `tenants`, care apare de **235** de ori în JS. Pentru ruta asta, detectorul răspunde **întotdeauna** „are apelant".
+- **cifra**: **51 din 411** rute au și cea mai rară ancoră literală apărând de peste 40 de ori în `static/`. Printre ele: toate cele cinci `/tenants` de nivel înalt, toate cele cinci `/coada`, `/portal/*`, `/api/v1/firme`.
+- **cine a produs-o**: nu detectorul — **forma căilor**. O cale de forma `/substantiv/{id}` n-are cum să fie identificată printr-un cuvânt care e și numele conceptului folosit peste tot în UI.
+- **ce NU vede măsurătoarea**: **nu spune care rute chiar n-au apelant** — spune despre care dintre ele detectorul e mut. O rută din listă poate fi chemată de zece ecrane; ce lipsește e capacitatea de a afla. Și nu acoperă căile compuse pe grup, care erau deja declarate ca artefacte în R70.
+- **gardat cât se poate azi**: `scripts/scan_ancore_rute.py` + `core/test_ancore_rute.py` — clichet **51** în ambele direcții, anti-vacuu pe textul JS, și o calibrare pe instanța cunoscută. Nu repară orbirea; o **numără**, ca să nu crească tăcut.
+- **o greșeală a măsurătorii, prinsă de cazul cunoscut**: prima versiune raporta **1 din 411**. `_static()` întoarce un **șir**, iar `"\n".join(șir)` îl sparge în caractere — toate frecvențele ieșeau 0. Cifra falsă era în direcția comodă („aproape nicio orbire"). A prins-o faptul că se contrazicea cu cazul concret, nu recitirea.
+- **condiția de deblocare**: decizia lui Costin între **(a)** a cincea regulă de detecție — se urmărește cum compune fiecare ecran calea la rulare, scump și incert; **(b)** rutele de nivel înalt primesc căi mai specifice (`/tenants/{id}/date` în loc de `/tenants/{id}`), ceea ce e o schimbare de API; **(c)** rămâne măsurat și clichetat, iar rutele din clasă se verifică cu mâna când sunt atinse. Se închide când, pentru fiecare rută din cele 51, se poate spune dacă are apelant — sau când clasa e goală.
+
+
 ### R79 — Ștergerea unei firme își produce propriul orfan, la 78 de milisecunde după ce a terminat
 
 - **felul**: ARTEFACT
@@ -2080,6 +2099,14 @@ scos ce nu se știa**, nu din defecte noi.
 - **ce NU probează asta, spus limpede**: divergența nu se vede pe niciun ecran real. **0 din 17** firme au `nume_anaf` (erau 0 din 19 la deschidere — între timp Costin a scos două firme). Deci partea de ecran e probată pe un răspuns **fabricat**, prin interceptarea listei: dovedește ce **randează** ecranul și ce **trimite** la apăsare, nu ce răspunde serverul pentru o firmă cu divergență adevărată. Partea de server e probată separat, pe date reale.
 - **ce rămâne, și e al lui Costin**: o firmă de probă cu un CUI ales de el — oferită în aceeași tură — ar închide și ultima verigă: o precompletare ANAF reală care captează `nume_anaf`, urmată de divergență văzută pe ecran fără nicio interceptare.
 - **gardat**: `core/test_nume_anaf.py::test_alegerea_are_AMANDOUA_ramurile_si_amandoua_SCRIU` citește **AST**-ul funcției și pică dacă consemnarea ajunge sub ramura „anaf" — adică dacă „păstrez denumirea mea" redevine tăcere. Plus `test_o_citire_ANAF_mai_noua_REDESCHIDE_intrebarea`.
+
+- **PARTEA A DOUA, 27.08.2026 seara** *(decizia lui Costin la întrebarea lui de fond)*: **denumirea nu rămâne editabilă liber, dar nici nu se blochează.** *„Denumirea firmei e un fapt al registrului, nu o preferință a cabinetului… editarea liberă, fără să treacă prin întrebare, nu mai are rost."* Deci `PUT /tenants/{id}` cu o denumire diferită de `nume_anaf` **trece prin aceeași alegere**: nu se refuză, se **consemnează** ca alegere deliberată, cu autor și dată. Dacă firma n-are `nume_anaf`, editarea rămâne liberă — n-are cu ce să difere.
+- **măsurat înainte, fiindcă Costin a cerut-o**: câte căi ar trece prin poarta asta. **Nu 13** — cifra aia e numărul tabelelor cu `tenant_id`, purtată din cerința anterioară. Căile care ating denumirea sunt **5**: trei o **pun la creare** (`POST /tenants`, `POST /auth/register`, `POST /migrare/importa`, toate prin `precompleteaza_din_anaf`), una e **chiar alegerea** (`POST /tenants/{id}/nume-ales`), și **una singură** o poate schimba liber: `PUT /tenants/{id}`.
+- **blochează vreun flux? Nu — și dintr-un motiv care e el însuși o problemă**: `PUT /tenants/{id}` are **zero apelanți** în tot `static/`. Singurul era butonul de divergență, care a trecut azi pe `nume-ales`. Deci poarta nouă nu poate bloca munca nimănui, fiindcă pe calea aia nu trece nimeni. *De aici a ieșit **R80**.*
+- **locurile care scriu denumirea sunt 2, nu 1** — și al doilea a fost invizibil pentru prima versiune a instrumentului meu: `actualizeaza_tenant` asamblează `SET` la rulare (`", ".join(seturi)`), deci niciun literal dat lui `execute` nu conține cuvântul `nume`. Un detector care se uită doar la argumentul lui `execute` raportează **zero** și pare complet. *A opta instanță a aceleiași limite: calea nu e un fapt textual.*
+- **cum s-a construit**: o singură funcție, `_consemneaza_alegerea`, pentru **amândouă** căile de a alege — butonul și tastatura. Nu două consemnări care se pot despărți în tăcere (instanța: R62, *„regula era în două locuri și diferită"*).
+- **probat pe date reale, în tranzacție întoarsă la savepoint, în șase direcții**: fără `nume_anaf` → redenumire liberă, **nicio** consemnare · cu `nume_anaf`, tastez altceva → `nume_ales='aplicatie'`, cu autor, +1 rând de audit · tastez exact denumirea ANAF (altă formă) → `nume_ales='anaf'` · schimb doar CUI-ul → **nicio** alegere scrisă · refuză un nume duplicat în cabinet · refuză un CUI care nu trece cifra de control.
+- **RED-proof pe sursa reală**, mutată în memorie (fișierele de pe disc neatinse): **4 mutații, 4 roșii** — consemnarea devine necondiționată · redenumirea nu mai consemnează nimic · ruta nu mai duce autorul · consemnarea comună dispare.
 
 
 ### R76 — „Googlebot" într-un log nu mai e o informație: 70% din cererile care se declară așa sunt scanere

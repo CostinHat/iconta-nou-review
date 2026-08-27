@@ -1659,7 +1659,10 @@ def tenant_actualizeaza(tenant_id: int, date: TenantEdit,
     with db.get_conn() as conn:
         if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
             raise HTTPException(404, "tenant inexistent sau fără acces")
-        r = tenant_provisioning.actualizeaza_tenant(conn, tenant_id, date.nume, date.cui)
+        # [R77] `ctx["uid"]` nu e decorativ: o redenumire care se departeaza de denumirea de la
+        # ANAF se consemneaza ca alegere deliberata, iar o alegere fara autor nu e o alegere.
+        r = tenant_provisioning.actualizeaza_tenant(conn, tenant_id, date.nume, date.cui,
+                                                    user_id=ctx["uid"])
     return r
 
 

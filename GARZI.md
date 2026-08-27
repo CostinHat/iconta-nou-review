@@ -5179,4 +5179,24 @@ E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pome
 
 **Perechea lui:** `test_o_citire_ANAF_mai_noua_REDESCHIDE_intrebarea` — întrebarea nu se pune nici la infinit, nici o singură dată. Se compară `nume_anaf_la` cu `nume_ales_la`: *alegerea de azi nu acoperă o denumire schimbată la registru mâine.*
 
+**Al treilea, adăugat în aceeași zi** — `test_REDENUMIREA_libera_e_si_ea_o_alegere_consemnata`. Costin, la întrebarea lui de fond: *„denumirea firmei e un fapt al registrului, nu o preferință a cabinetului… editarea liberă, fără să treacă prin întrebare, nu mai are rost."* Deci **a tasta** o denumire diferită de cea de la ANAF e tot un act de alegere, nu doar **a apăsa** un buton. Gardul cere ca amândouă căile să treacă prin **aceeași** funcție de consemnare — nu două care se pot despărți în tăcere (instanța: R62, *„regula era în două locuri și diferită"*) — și ca redenumirea să **nu** consemneze nimic pe firmele fără `nume_anaf`, unde n-ar exista a doua denumire cu care să difere.
+
+**RED-proof pe sursa reală**, mutată în memorie: **4 mutații, 4 roșii** — consemnarea devine necondiționată · redenumirea tace · ruta pierde autorul · consemnarea comună dispare.
+
+## Un gard care nu poate vorbi despre 12% din suprafața lui (27.08.2026, R80)
+
+**`scripts/scan_ancore_rute.py` + `core/test_ancore_rute.py`** — 4 teste, clichet **51**.
+
+**Nu e un gard nou peste o clasă nouă. E măsura orbirii unui gard existent.** R70 verifică dacă o rută are apelant în `static/`. Regula lui caută bucățile literale ale căii. Pentru `PUT /tenants/{tenant_id}`, singura bucată literală e `tenants` — care apare de **235** de ori în JS. Deci pentru ruta aia, R70 răspunde **întotdeauna** „are apelant", indiferent de adevăr.
+
+**Cum s-a aflat:** am mutat un buton de pe acea rută pe alta, în aceeași zi. Ruta veche a rămas cu **zero** apelanți — verificat direct. R70 n-a clipit.
+
+**Cifra:** **51 din 411** rute au și cea mai rară ancoră apărând de peste 40 de ori. Toate cele cinci `/tenants` de nivel înalt, toate cele cinci `/coada`, `/portal/*`, `/api/v1/firme`.
+
+**Ce face imposibil:** ca a 52-a să intre tăcut. Clichet în ambele direcții, anti-vacuu pe textul JS, și o **calibrare pe instanța cunoscută** — dacă `PUT /tenants/{tenant_id}` iese din clasă, ori i s-a dat o cale mai specifică, ori măsurătoarea s-a rupt; oricum, se citește.
+
+**O greșeală a măsurătorii, prinsă de cazul cunoscut, nu de recitire:** prima versiune raporta **1 din 411**. `_static()` întoarce un **șir**, iar `"\n".join(șir)` îl sparge în caractere — toate frecvențele ieșeau 0. Cifra falsă era în direcția comodă.
+
+**Ce NU face, declarat:** **nu spune care rute chiar n-au apelant** — spune despre care dintre ele detectorul e mut. O rută din listă poate fi chemată de zece ecrane; ce lipsește e capacitatea de a afla. Și nu repară detectorul: a patra regulă e deja *„cea mai puțin greșită, nu cea corectă"*, iar a cincea cere decizia lui Costin (R80).
+
 **Ce NU face, declarat:** nu poate vedea divergența pe date reale — **0 din 17** firme au `nume_anaf`, fiindcă instantaneul se captează doar de la o precompletare ANAF încolo. Partea de ecran e probată pe un răspuns **fabricat** prin interceptare (`frontend_test/vizual_nume.py`): dovedește ce randează ecranul și ce trimite la apăsare, nu ce răspunde serverul pentru o divergență adevărată. Partea de server e probată separat, pe date reale, într-o tranzacție întoarsă la savepoint (`proba_r77.py`).
