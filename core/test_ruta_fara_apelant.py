@@ -146,12 +146,47 @@ def _fara_apelant(rute, js):
             if bucati(r["cale"]) and not all(b in js for b in bucati(r["cale"]))}
 
 
-def test_nicio_ruta_NOUA_fara_apelant():
+# [R80, 27.08.2026] Numitorul, scris o dată și verificat mecanic.
+#
+# Costin: *„un gard care spune «nicio rută fără apelant» trebuie să spună și «despre 88% din
+# suprafață»."* Verdele unui test e **numele** lui — de aceea numele de mai jos poartă
+# `DINTRE_CELE_VIZIBILE`, nu o cifră care ar îmbătrâni în el. Cifra stă aici și se recalculează.
+_OARBE = 51          # rute pentru care ancora literală nu discriminează (măsurat 27.08.2026)
+_TOTAL_LA_MASURARE = 411
+
+
+def _acoperire():
+    """(vizibile, total, procent) — recalculat, nu ținut minte."""
+    import sys as _sys
+    _s = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "scripts")
+    if _s not in _sys.path:
+        _sys.path.insert(0, _s)
+    from scan_ancore_rute import masoara
+    rute, _js, orbi, _v = masoara()
+    return len(rute) - len(orbi), len(rute), round(100.0 * (len(rute) - len(orbi)) / len(rute))
+
+
+def test_gardul_isi_spune_NUMITORUL():
+    """Doc↔cod pe propria orbire. Dacă `_OARBE` nu mai e adevărat, gardul ar continua să treacă
+    verde afirmând o acoperire pe care n-o mai are — și tocmai asta e clasa pe care o păzește."""
+    vizibile, total, procent = _acoperire()
+    assert total - vizibile == _OARBE, (
+        "rutele oarbe sunt %d, iar `_OARBE` scrie %d. Actualizează cifra ȘI restanța R80 — "
+        "altfel verdele de mai jos afirmă o acoperire care nu mai există."
+        % (total - vizibile, _OARBE))
+    assert total == _TOTAL_LA_MASURARE or total > 300, "numitorul s-a mutat: %d" % total
+    print("\n[R70] acoperire reală: %d din %d rute (%d%%) — despre restul, gardul e mut"
+          % (vizibile, total, procent))
+
+
+def test_nicio_ruta_NOUA_fara_apelant_DINTRE_CELE_VIZIBILE():
     st = _scan()
     gasite = _fara_apelant(st.citeste_rute(), _static())
     noi = sorted(gasite - acceptate())
+    vizibile, total, procent = _acoperire()
     assert not noi, (
-        "rute noi pe care nu le cheamă nimic din `static/`:\n  "
+        "rute noi pe care nu le cheamă nimic din `static/` (verificate: %d din %d, %d%%):\n  "
+        % (vizibile, total, procent)
         + "\n  ".join("%s %s" % r for r in noi)
         + "\n\nO rută scrisă, gardată și verde, dar nechemată, e cod care nu se execută — "
           "instanța care a produs gardul ăsta a stat ascunsă o zi. Cheam-o dintr-un ecran, "
@@ -165,11 +200,20 @@ def test_ANTI_VACUU_detectorul_chiar_vede_rute():
     rute = st.citeste_rute()
     assert len(rute) > 300, "doar %d rute citite — gardul s-ar uita în gol" % len(rute)
     assert _static(), "nu s-a citit niciun fișier din static/ — detectorul ar raporta tot"
+    # Anti-vacuu de al doilea fel: nu „vede ceva", ci „nu vede TOT". Instanța, 27.08.2026:
+    # `PUT /tenants/{tenant_id}` a rămas fără niciun apelant, iar gardul n-a clipit — singura ei
+    # ancoră literală e `tenants`, care apare de 235 de ori în JS.
+    vizibile, total, _p = _acoperire()
+    assert vizibile < total, (
+        "detectorul se declară complet. Nu e: vezi R80. Dacă orbirea chiar a dispărut, "
+        "scoate testul ăsta deliberat.")
 
 
 def test_artefactele_nu_pastreaza_morti():
     """Clichet pe mulțime, în direcția cealaltă: o intrare care nu mai e raportată (ruta a primit
     ecran, sau a fost ștearsă) trebuie scoasă DELIBERAT, ca lista să nu devină o colecție de morți.
+
+    Se aplică pe partea VIZIBILĂ a suprafeței — vezi `test_gardul_isi_spune_NUMITORUL` și R80.
 
     Se aplică DOAR artefactelor. Cele declarate în cod ies singure: dacă marcajul dispare odată cu
     ruta, `declarate()` nu le mai vede — de-aia partea aia nu mai are nevoie de clichet."""

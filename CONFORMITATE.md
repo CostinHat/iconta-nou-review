@@ -1979,6 +1979,24 @@ scos ce nu se știa**, nu din defecte noi.
 - **ce NU face, declarat**: **niciun clichet pe cele 28 de `except …: pass` rămase.** Costin, explicit: *„pe alea nu le-am măsurat și nu știm care sunt legitime."* Și nu verifică dacă emailul chiar pleacă — doar că, dacă nu pleacă, rămâne urmă.
 - **condiția de deblocare**: decizia lui Costin între **(a)** toate patru trec pe `esec_secundar`, cu `alerta=True` pe cele trei căi de intrare — tăcerea acolo are cost de acces, ceea ce docstringul lui numește drept criteriu; **(b)** doar log, fără alertă, pe toate patru; **(c)** mesajul de pe ecran se schimbă și el, ca să nu mai afirme trimiterea. Se închide când un eșec de trimitere lasă urmă, cu gard.
 
+### R81 — O firmă are denumirea în două locuri, iar pe 4 din 17 ele diferă deja
+
+- **felul**: ARTEFACT
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · R63 (aceeași clasă) · **PRAG 2** *(nimic fals pe ecran de azi înainte — ecranul le arată acum distinct. Dar denumirea fiscală pleacă în declarații depuse la ANAF, iar cea din portofoliu e singura pe care o vede contabilul în listă)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `7c0f603`
+- **măsurat la**: 2026-08-27 · **pe commit**: `7c0f603`
+- **planul**: **ACOPERIT ca tipar**, în R63: *„aceeași persoană are două adrese în aplicație, iar nimic nu le confruntă."* Acolo erau două adrese ale clientului; aici, două denumiri ale firmei. Rezolvarea de acolo — două nume distincte, iar când coincid se spune — s-a aplicat și aici, pentru **vizibilitate**. Ce lipsește e **regula**.
+- **ce blochează**: `public.tenants.nume` e denumirea din portofoliu — lista, bara de sus. `<schema>.firma_profil.nume` e cea **fiscală**: pleacă în **D100, D101, D205, D301, D390, D394, D406** și pe bilanț. Nimic nu le confruntă, iar cele două ecrane care le scriu sunt diferite.
+- **cifra**: **4 din 17** firme diferă azi — `ALFA MICRO` / `ALFA MICRO SRL`, `BETA PROFIT` / `BETA PROFIT SRL`, `DELTA DEFECT-LUNA` / `DELTA DEFECT-LUNA SRL`, `GAMA DEFECT-MIGRARE` / `GAMA DEFECT-MIGRARE SRL`. Toate patru la același cabinet, toate patru cu forma juridică **prezentă în cea fiscală și lipsă în cea din portofoliu**.
+- **cum s-a găsit**: nu căutând-o. Costin a cerut ca „Date firmă" să primească un câmp de denumire; ecranul **avea deja** unul, etichetat *„Denumirea firmei"* — dar care scrie în `firma_profil`. Al doilea câmp nu se putea adăuga fără ca ecranul să aibă două câmpuri cu aceeași etichetă.
+- **ce s-a făcut azi, și e doar jumătate**: cele două sunt numite distinct (*„Denumirea din portofoliu"* / *„Denumirea fiscală (apare în declarații și pe bilanț)"*), iar când diferă ecranul o spune și **numește care pleacă pe hârtie**. Plus clichet pe date la **4**, în ambele direcții.
+- **ce NU vede măsurătoarea**: dacă vreo declarație **deja depusă** poartă o denumire diferită de cea din portofoliu de azi. N-am confruntat XML-urile depuse cu starea curentă — e o măsurătoare separată, pe `declaratii_depuse`.
+- **condiția de deblocare**: decizia lui Costin între **(a)** una singură, iar a doua devine derivată — cea fiscală e adevărul, portofoliul o afișează; **(b)** rămân două, dar o divergență se **arată** ca alegere, ca la ANAF, cu consemnare; **(c)** rămân două și independente, iar clichetul le ține doar să nu crească. Se închide când, pentru orice firmă, se poate spune **fără să deschizi baza** ce denumire pleacă în următoarea declarație.
+
+
 ### R80 — Pentru 51 din 411 rute, gardul „rută fără apelant" nu poate afirma nimic
 
 - **felul**: VERIFICARE

@@ -259,7 +259,9 @@ def detalii_tenant(conn, tenant_id):
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
         cur.execute(
             "SELECT id, schema_name, nume, cui, accounting_firm_id, activ, "
-            "plan_importat_la, balanta_importata_la, salariati_importati_la "
+            "plan_importat_la, balanta_importata_la, salariati_importati_la, "
+            # [R77] Ecranul de date nu poate arăta divergența dacă n-o primește.
+            "nume_anaf, nume_anaf_la, nume_ales, nume_ales_la "
             "FROM public.tenants WHERE id = %s", (tenant_id,))
         r = cur.fetchone()
     return dict(r) if r else None

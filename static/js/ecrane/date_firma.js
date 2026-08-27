@@ -11,7 +11,11 @@ import { api, arataMesaj, esc, eroareCamp, curataEroriCamp } from "../api.js?v=c
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.
 const CAMPURI = [
-  { k: "nume", e: "Denumirea firmei", ob: true },
+  // [R81, 27.08.2026] Eticheta era „Denumirea firmei" — dar firma are DOUĂ denumiri, în două
+  // locuri, iar pe 4 din 17 ele diferă azi. Asta e cea FISCALĂ (`firma_profil.nume`): pleacă în
+  // declarații și pe bilanț. Cea din portofoliu (`tenants.nume`) se editează mai sus.
+  { k: "nume", e: "Denumirea fiscal\u0103 (apare \u00een declara\u021bii \u0219i pe bilan\u021b)", ob: true,
+    aj: "Se trimite \u00een D100, D101, D205, D301, D390, D394, D406 \u0219i pe bilan\u021b. Poate diferi de denumirea din portofoliu \u2014 dac\u0103 difer\u0103, ecranul o spune." },
   { k: "cui", e: "CUI", ob: true },
   { k: "reg_com", e: "Nr. registrul comer\u021bului", ob: true,
     aj: "Din certificatul de \u00eenregistrare (ex. J40/1234/2020). Cerut la bilan\u021b." },
@@ -104,16 +108,63 @@ function campVector(c, val) {
     </label>`;
 }
 
+// [R77 + R81, 27.08.2026] Denumirea firmei, scrisă o dată și explicată o dată.
+//
+// Costin: *„un cabinet trebuie să poată corecta o denumire — o firmă se redenumește la registru,
+// iar aplicația nu poate refuza să urmeze."* Deci câmpul există. Iar poarta construită în aceeași
+// zi devine vie: cine tastează altceva decât spune ANAF face o **alegere**, consemnată cu autor
+// și dată — nu o editare tăcută.
+//
+// De ce sunt două câmpuri și nu unul: firma are două denumiri, în două locuri. Cea din
+// PORTOFOLIU (`tenants.nume`) e cea din listă și din bara de sus. Cea FISCALĂ
+// (`firma_profil.nume`) pleacă în declarații și pe bilanț. Măsurat 27.08: pe **4 din 17** firme
+// ele diferă deja. Tiparul e cel din R63 — două lucruri diferite, două nume, iar când coincid se
+// spune. A treia, `nume_anaf`, nu se editează: e ce zice registrul.
+function _blocDenumire(t, profil) {
+  const nume = (t && t.nume) || "";
+  const anaf = (t && t.nume_anaf) || "";
+  const fiscal = (profil && profil.nume) || "";
+  const nrm = (s) => String(s || "").trim().replace(/\s+/g, " ").toLowerCase();
+
+  const randAnaf = anaf
+    ? `<p class="camp-ajutor">La ANAF: <strong>${esc(anaf)}</strong>${
+        t.nume_anaf_la ? ` (citit\u0103 la ${esc(String(t.nume_anaf_la).slice(0, 10))})` : ""}.
+       Dac\u0103 scrii altceva, alegerea se consemneaz\u0103 \u2014 cu cine a f\u0103cut-o \u0219i c\u00e2nd.</p>`
+    : `<p class="camp-ajutor">Pentru firma asta nu avem \u00eenc\u0103 denumirea de la ANAF, deci nu exist\u0103 cu ce s\u0103 difere. C\u00e2mpul e liber.</p>`;
+
+  const divergenta = (fiscal && nrm(fiscal) !== nrm(nume))
+    ? `<div class="dec-avert">
+         <div class="dec-avert-cap">Cele dou\u0103 denumiri difer\u0103</div>
+         <ul><li>\u00een portofoliu: <b>${esc(nume)}</b> \u2014 ce vezi \u00een list\u0103 \u0219i \u00een bara de sus</li>
+             <li>\u00een declara\u021bii: <b>${esc(fiscal)}</b> \u2014 <b>asta pleac\u0103 pe h\u00e2rtie</b></li></ul>
+       </div>`
+    : "";
+
+  return `
+    <h2 class="pf-titlu">Denumirea firmei</h2>
+    ${divergenta}
+    <div class="grila-doc">
+      <label class="camp">
+        <span class="camp-eticheta">Denumirea din portofoliu<span class="oblig">*</span></span>
+        ${randAnaf}
+        <input type="text" class="camp-input" id="df-nume-portofoliu" value="${esc(nume)}">
+      </label>
+    </div>`;
+}
+
+
 export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
   if (nav && nav.setInapoi) nav.setInapoi(opt.inapoi || null);
   corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103\u2026</p>`;
 
   let d = { profil: {}, lipsuri: [] };
   let v = {};
+  let t = {};   // [R77] rândul din `public.tenants`: denumirea din portofoliu + ce spune ANAF
   try {
-    [d, v] = await Promise.all([
+    [d, v, t] = await Promise.all([
       api.get(`/tenants/${tenantId}/firma-profil/date`),
       api.get(`/tenants/${tenantId}/vector`).catch(() => ({})),
+      api.get(`/tenants/${tenantId}`).catch(() => ({})),
     ]);
   } catch (e) {
     corp.innerHTML = `<div id="df-msg"></div>`;
@@ -139,6 +190,7 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     <h2 class="pf-titlu">Date firm\u0103</h2>
     <p class="pf-intro">Datele pe care ANAF le cere \u00een declara\u021bii. C\u00e2mpurile cu <span class="oblig">*</span> sunt obligatorii \u2014 f\u0103r\u0103 ele declara\u021biile nu se pot depune.</p>
     ${avert}
+    ${_blocDenumire(t, d.profil)}
     <div class="grila-doc">${CAMPURI.map((c) => camp(c, d.profil[c.k])).join("")}</div>
 
     <h2 class="pf-titlu" style="margin-top:26px">Vector fiscal</h2>
@@ -183,6 +235,12 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     curataEroriCamp(corp);
     const goale = CAMPURI.filter((c) => c.ob && !date[c.k]);
     goale.forEach((c) => eroareCamp(corp, "df-" + c.k, "Completează " + c.e + "."));
+    // [R77] denumirea din portofoliu: alt tabel, deci alt apel — dar o singură apăsare pentru om.
+    const numePortofoliu = (corp.querySelector("#df-nume-portofoliu").value || "").trim();
+    if (!numePortofoliu) {
+      eroareCamp(corp, "df-nume-portofoliu", "Completează denumirea din portofoliu.");
+      goale.push({ k: "nume-portofoliu" });
+    }
     // vectorul: periodicitatea TVA e obligatorie DOAR la platitorii de TVA (vector_fiscal_api.salveaza - sursa unica)
     // [alege] tri-stare: "" (placeholder neales) -> null, NU false tacit. Backendul refuza null cu mesaj
     // clar (regim REGIM_INVALID pt SRL, TVA_LIPSA, IC_LIPSA); dar validam preventiv aici (DS cap.6).
@@ -221,6 +279,12 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     btn.disabled = true;
     btn.textContent = "Se salveaz\u0103\u2026";
     try {
+      // [R77] Denumirea din portofoliu stă în alt tabel, deci e alt apel — dar o singură
+      // apăsare pentru om. Se trimite DOAR dacă s-a schimbat: un `PUT` la fiecare salvare ar
+      // consemna o „alegere" pe care nimeni n-a făcut-o.
+      if (numePortofoliu !== ((t && t.nume) || "")) {
+        await api.put(`/tenants/${tenantId}`, { nume: numePortofoliu });
+      }
       await api.post(`/tenants/${tenantId}/firma-profil/date`, date);
       await api.post(`/tenants/${tenantId}/vector`, vf);
       await randeazaDateFirma(corp, nav, tenantId, opt);

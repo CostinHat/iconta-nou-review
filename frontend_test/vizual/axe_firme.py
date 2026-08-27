@@ -50,8 +50,20 @@ with sync_playwright() as pw:
     pg.locator("button.firme-rand-scoate").first.click(); pg.wait_for_timeout(1200)
     c = scan(pg, "ecranul de scoatere")
 
+    # [R81] ecranul de date, unde a intrat campul denumirii din portofoliu
+    pg.goto(BAZA + "/", wait_until="domcontentloaded")
+    pg.wait_for_selector(".cab-card", timeout=15000); pg.wait_for_timeout(300)
+    pg.get_by_text("Firme", exact=True).first.click(timeout=8000); pg.wait_for_timeout(300)
+    pg.get_by_text("Firme existente", exact=False).first.click(timeout=8000)
+    pg.wait_for_selector("button.firme-rand", timeout=10000); pg.wait_for_timeout(400)
+    pg.locator("button.firme-rand").first.click()
+    pg.wait_for_selector("#fa-datefirma", timeout=12000); pg.wait_for_timeout(400)
+    pg.locator("#fa-datefirma").click()
+    pg.wait_for_selector("#df-nume-portofoliu", timeout=12000); pg.wait_for_timeout(700)
+    e = scan(pg, "Date firma (R81: doua denumiri, numite distinct)")
+
     total = {}
-    for d in (a, c):
+    for d in (a, c, e):
         for k, n in d.items():
             total[k] = total.get(k, 0) + n
     print("\nrezumat: contrast=%d | fara eticheta=%d | total violari=%d"

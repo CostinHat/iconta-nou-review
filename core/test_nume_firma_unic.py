@@ -132,3 +132,64 @@ def test_cate_duplicate_mai_sunt_in_baza(conn):
         "au rămas doar %d perechi (clichet %d) — coboară `_DUPLICATE_CUNOSCUTE`. "
         "Dacă tocmai ai scos firma de probă, ăsta e mesajul care ți-o cere."
         % (len(perechi), _DUPLICATE_CUNOSCUTE))
+
+
+# ── [R81, 27.08.2026] A DOUA denumire ────────────────────────────────────────
+# O firmă are denumire în două locuri: `public.tenants.nume` (portofoliul — lista, bara de sus)
+# și `<schema>.firma_profil.nume` (fiscală — pleacă în D100/D101/D205/D301/D390/D394/D406 și pe
+# bilanț). Nimic nu le confruntă. Măsurat 27.08.2026: **4 din 17** diferă deja.
+#
+# Ecranul le arată acum distinct și spune care pleacă pe hârtie. Ce se decide dacă diferă —
+# se împacă automat, se refuză, sau rămâne o alegere — e decizia lui Costin (R81).
+# Până atunci, clasa nu mai crește.
+_DIVERGENTE_CUNOSCUTE = 4
+
+
+def _perechi_de_denumiri():
+    db.init_pool()
+    perechi = []
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute("SELECT id, nume, schema_name FROM public.tenants ORDER BY id")
+        for tid, nume, schema in cur.fetchall():
+            try:
+                cur.execute('SELECT nume FROM "%s".firma_profil WHERE id = 1' % schema)
+                r = cur.fetchone()
+            except Exception:
+                conn.rollback()
+                continue
+            perechi.append((tid, nume, r[0] if r else None))
+    return perechi
+
+
+def _nrm(s):
+    return " ".join(str(s or "").split()).lower()
+
+
+def test_cele_doua_denumiri_ale_unei_firme_nu_divergeaza_mai_mult():
+    perechi = _perechi_de_denumiri()
+    assert len(perechi) > 5, "[anti-vacuu] doar %d firme citite" % len(perechi)
+    difera = [(t, a, b) for t, a, b in perechi if b and _nrm(a) != _nrm(b)]
+    assert len(difera) <= _DIVERGENTE_CUNOSCUTE, (
+        "firme la care denumirea din portofoliu diferă de cea fiscală: %d, clichetul e %d.\n  %s\n"
+        "Cea fiscală e cea care pleacă pe hârtie. O firmă nouă n-are voie să intre în clasa asta."
+        % (len(difera), _DIVERGENTE_CUNOSCUTE,
+           "\n  ".join("%s  ≠  %s" % (a, b) for _t, a, b in difera[:6])))
+
+
+def test_clichetul_divergentelor_nu_pastreaza_morti():
+    """A doua direcție: dacă s-au împăcat, cifra coboară deliberat — altfel rămâne o amintire."""
+    difera = [1 for _t, a, b in _perechi_de_denumiri() if b and _nrm(a) != _nrm(b)]
+    assert len(difera) >= _DIVERGENTE_CUNOSCUTE, (
+        "divergențele au scăzut de la %d la %d — coboară `_DIVERGENTE_CUNOSCUTE`, ca următoarea "
+        "creștere să fie prinsă de la cifra reală" % (_DIVERGENTE_CUNOSCUTE, len(difera)))
+
+
+def test_ecranul_ARATA_ca_sunt_doua_si_care_pleaca_pe_hartie():
+    """Structural, nu pe text: cele două câmpuri există, au id-uri distincte, iar blocul care le
+    compară e o funcție — nu o propoziție lipită într-un șablon."""
+    js = io.open(os.path.join(_RAD, "static", "js", "ecrane", "date_firma.js"),
+                 encoding="utf-8").read()
+    assert js.count("df-nume-portofoliu") >= 3, (
+        "câmpul denumirii din portofoliu a dispărut din «Date firmă» — atunci singura cale de "
+        "corecție a unei denumiri redenumite la registru dispare cu el")
+    assert js.count("_blocDenumire") >= 2, "blocul care compară cele două denumiri nu se mai cheamă"

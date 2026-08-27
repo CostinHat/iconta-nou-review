@@ -5179,9 +5179,27 @@ E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pome
 
 **Perechea lui:** `test_o_citire_ANAF_mai_noua_REDESCHIDE_intrebarea` — întrebarea nu se pune nici la infinit, nici o singură dată. Se compară `nume_anaf_la` cu `nume_ales_la`: *alegerea de azi nu acoperă o denumire schimbată la registru mâine.*
 
+**Al patrulea, și e despre a DOUA denumire** — `test_cele_doua_denumiri_ale_unei_firme_nu_divergeaza_mai_mult` (R81). O firmă are denumire în **două** locuri: `tenants.nume` (portofoliul — lista, bara de sus) și `firma_profil.nume` (**fiscala** — pleacă în D100/D101/D205/D301/D390/D394/D406 și pe bilanț). Nimic nu le confrunta. **4 din 17 diferă azi**, toate patru cu forma juridică prezentă în cea fiscală și lipsă în cea din portofoliu.
+
+Găsit **nu căutându-l**: Costin a cerut ca „Date firmă" să primească un câmp de denumire, iar ecranul avea deja unul — care scrie în `firma_profil`. Al doilea câmp nu se putea adăuga fără două etichete distincte.
+
+**Ce face imposibil:** o a cincea divergență care intră tăcut (clichet **4**, ambele direcții) · dispariția câmpului din ecran · dispariția blocului care le compară. **Ce NU face:** nu decide care e adevărul — asta e R81, și e a lui Costin.
+
 **Al treilea, adăugat în aceeași zi** — `test_REDENUMIREA_libera_e_si_ea_o_alegere_consemnata`. Costin, la întrebarea lui de fond: *„denumirea firmei e un fapt al registrului, nu o preferință a cabinetului… editarea liberă, fără să treacă prin întrebare, nu mai are rost."* Deci **a tasta** o denumire diferită de cea de la ANAF e tot un act de alegere, nu doar **a apăsa** un buton. Gardul cere ca amândouă căile să treacă prin **aceeași** funcție de consemnare — nu două care se pot despărți în tăcere (instanța: R62, *„regula era în două locuri și diferită"*) — și ca redenumirea să **nu** consemneze nimic pe firmele fără `nume_anaf`, unde n-ar exista a doua denumire cu care să difere.
 
 **RED-proof pe sursa reală**, mutată în memorie: **4 mutații, 4 roșii** — consemnarea devine necondiționată · redenumirea tace · ruta pierde autorul · consemnarea comună dispare.
+
+## Verdele unui gard poartă acum numitorul (27.08.2026, R80, cerința lui Costin)
+
+**`core/test_ruta_fara_apelant.py`** — două schimbări mici, cu efect asupra a ce se **citește** din verde.
+
+Costin: *„un gard care spune «nicio rută fără apelant» trebuie să spună și «despre 88% din suprafață». Altfel cine îl citește mâine crede că e despre tot."*
+
+**Verdele unui test e NUMELE lui.** De aceea testul se cheamă acum `test_nicio_ruta_NOUA_fara_apelant_DINTRE_CELE_VIZIBILE` — calificativul stă în nume, iar cifra **nu**, ca să nu îmbătrânească acolo. Cifra se recalculează: `test_gardul_isi_spune_NUMITORUL` compară `_OARBE` cu măsurătoarea și pică dacă au divergat. Doc↔cod pe propria orbire.
+
+Iar la rulare, gardul **scrie** ce acoperă: *„acoperire reală: 360 din 411 rute (88%) — despre restul, gardul e mut."*
+
+**Al doilea fel de anti-vacuu**, adăugat aici: nu *„vede ceva"*, ci *„nu se declară complet"*. Dacă vizibile == total, testul cere ca ștergerea declarației de orbire să fie **deliberată**.
 
 ## Un gard care nu poate vorbi despre 12% din suprafața lui (27.08.2026, R80)
 
