@@ -36,11 +36,17 @@ Nu de cod — **de mediu**. Cine continuă trebuie să știe că nu sunt ale lui
 
 1. **O linie nouă în `crontab`**, la 15 minute: `core.sonda_web`. Am pus-o eu, fiindcă propria
    gardă din R74 respinge un prag pentru un job care nu există nicăieri. Backup înainte:
-   `/home/costin/crontab_inainte_sonda.bak`. **Costin n-a confirmat-o încă.**
+   `/home/costin/crontab_inainte_sonda.bak`. **Confirmată de Costin** — dar rămâne scrisă aici ca
+   fiind a mea: *„o schimbare pe mașină, făcută de tine, e altceva decât una în repo."*
 2. **O alertă pe email**, trimisă de mine la **12:42** din greșeală, în timpul probei sondei —
    subiect *„nu pot spune dacă a fost deploy"*. E de ignorat.
 
-Iar `firma_profil.patron_nume` rămâne **goală pe toate cele 19 firme, iar 8 au salariați**.
+**Cele două firme `PROBA PORTAL SRL` au fost scoase** de Costin la 13:42 și 13:44, prin ecran.
+Portofoliul are acum **17** firme. Urmele R62 — patru rânduri din `urme_portal` plus confirmarea
+din `schimbari_email` — **au supraviețuit**, în `firme_scoase.urme_pastrate`, cu conținut cu tot.
+Cele două conturi de client au fost **dezactivate**, nu șterse.
+
+Iar `firma_profil.patron_nume` rămâne **goală pe toate cele 17 firme, iar 8 au salariați**.
 Neschimbat față de ieri: prima adeverință cerută pe oricare din cele opt **se oprește**. Oprirea e
 corectă; cine continuă trebuie s-o știe **înainte** să dea de ea.
 
@@ -97,7 +103,9 @@ orbire ar fi fost înlocuită cu alta și raportată ca reparație.
 **R71 obs. 2** — închisă **abia acum**, fiindcă reparația din 26.08 **nu funcționa**.
 
 **Deschise azi:** **R75** (procesul web n-avea deadman) · **R76** (70% din cererile care se declară
-Googlebot sunt scanere).
+Googlebot sunt scanere) · **R77** (divergența de denumire se arată, dar alegerea nu se cere) ·
+**R78** (butonul de scoatere stă sub 26 de carduri) · **R79** (ștergerea își produce propriul
+orfan, la 78 ms după ce a terminat).
 
 **Aplicate fără restanță proprie:** denumirea unică per cabinet (creare **și** redenumire) ·
 instantaneul ANAF al denumirii · plasa pentru refuzurile înghițite.
@@ -106,12 +114,15 @@ instantaneul ANAF al denumirii · plasa pentru refuzurile înghițite.
 
 ## CE BLOCHEAZĂ, ÎN ORDINE
 
-1. **Cele două firme `PROBA PORTAL SRL`** (CUI `14399840`, `2816464`) — Costin a spus că le șterge.
-   Calea există, e probată, ecranul spune care act e reversibil. **Când le scoate, clichetul din
-   `test_nume_firma_unic.py` devine roșu și cere coborârea lui `_DUPLICATE_CUNOSCUTE` de la 1 la 0.**
-2. **Linia de `crontab` pentru sondă** — pusă de mine, neconfirmată. Vezi „primul lucru de știut".
-3. **„Se cere alegerea"** la divergența de denumire (slotul T36): azi se **arată** amândouă și se
-   oferă **o** acțiune. Jumătatea „se cere" nu e construită, și e scrisă ca lipsă.
+1. **R79 — ștergerea își produce propriul orfan.** Măsurat pe prima ștergere reală: rândul de
+   audit al cererii `DELETE` se scrie la **78 ms după** ce firma a dispărut, cu `tenant_id`-ul ei.
+   Orfanii au crescut **67 → 69**, câte unul per ștergere. **Aceeași clasă cu R44 și R50, produsă
+   de calea construită azi ca să le repare.**
+2. **R78 — butonul de scoatere nu se găsește** de la prima privire: stă la **1361 px** într-o
+   fereastră de **793**, sub **26 de carduri**. Costin l-a găsit totuși și a șters amândouă
+   firmele — dar căutarea a costat o tură.
+3. **R77 — „se cere alegerea"** la divergența de denumire. Amânată deliberat de Costin la tura
+   următoare: *„un al cincilea fir pe aceeași tură e cum au apărut cele două greșeli de la sondă."*
 4. **R67 cere `postgres`.** Neschimbat: `iconta_user` n-are CREATEROLE.
 5. **Cele 19 restanțe cu `reluări: 0`** stau într-o fotografie. Nu le-am urcat contorul: aș inventa
    cifre pe care nu le pot recalcula.

@@ -37,9 +37,12 @@ from core import db, tenant_provisioning as tp
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Perechi de nume duplicate existente în bază, măsurat 27.08.2026: UNA
-# (`PROBA PORTAL SRL`, CUI 2816464 și 14399840, cabinet 1968). Scade la 0 când sunt scoase.
-_DUPLICATE_CUNOSCUTE = 1
+# Perechi de nume duplicate existente în bază.
+#   27.08.2026, dimineața: UNA — `PROBA PORTAL SRL`, CUI 2816464 și 14399840, cabinet 1968.
+#   27.08.2026, 13:44:    ZERO. Costin le-a scos prin ecran, iar clichetul s-a aprins în a doua
+#   direcție cerând coborârea — exact mesajul scris pentru cazul ăsta. A doua oară azi când
+#   direcția „nu păstra morți" se aprinde la prima reparație reală (prima: R74).
+_DUPLICATE_CUNOSCUTE = 0
 
 
 def _arbore():

@@ -1979,6 +1979,66 @@ scos ce nu se știa**, nu din defecte noi.
 - **ce NU face, declarat**: **niciun clichet pe cele 28 de `except …: pass` rămase.** Costin, explicit: *„pe alea nu le-am măsurat și nu știm care sunt legitime."* Și nu verifică dacă emailul chiar pleacă — doar că, dacă nu pleacă, rămâne urmă.
 - **condiția de deblocare**: decizia lui Costin între **(a)** toate patru trec pe `esec_secundar`, cu `alerta=True` pe cele trei căi de intrare — tăcerea acolo are cost de acces, ceea ce docstringul lui numește drept criteriu; **(b)** doar log, fără alertă, pe toate patru; **(c)** mesajul de pe ecran se schimbă și el, ca să nu mai afirme trimiterea. Se închide când un eșec de trimitere lasă urmă, cu gard.
 
+### R79 — Ștergerea unei firme își produce propriul orfan, la 78 de milisecunde după ce a terminat
+
+- **felul**: ARTEFACT
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · P17 · interdicția 39 · **PRAG 3** *(un rând de audit, nu o cifră falsă. Dar e exact clasa pe care R44 și R50 au numit-o, produsă de calea construită ca s-o prevină)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `c9bf964`
+- **măsurat la**: 2026-08-27 · **pe commit**: `c9bf964`
+- **planul**: **ACOPERIT** — `PLAN_ARHITECTURA.md`, **P17**: *„ce categorie de dată se păstrează, cât, pe ce temei"*. Un rând de audit care trimite la o firmă inexistentă nu se poate citi de nimeni: nu se poate spune nici ce firmă era, nici de ce a rămas. (METODA §25)
+- **ce blochează**: măsurat **imediat după prima ștergere reală**, făcută de Costin prin ecran:
+
+  | id | tenant_id | acțiunea | scrisă la | firma ștearsă la |
+  |---|---|---|---|---|
+  | 1254228 | 32205 | `DELETE /tenants/32205` | 13:42:13.786 | 13:42:13.708 |
+  | 1254263 | 32234 | `DELETE /tenants/32234` | 13:44:40.983 | 13:44:40.909 |
+
+  **78 de milisecunde** între ștergere și rândul care o consemnează. Auditul de cerere scrie
+  `tenant_id` **după** ce tranzacția a comis — deci referința e deja moartă când se naște.
+- **cifra**: orfanii au crescut de la **67** la **69**. Doi noi, câte unul per ștergere. *Legea e liniară: fiecare firmă scoasă lasă exact un orfan.*
+- **de ce e mai mult decât un rând**: e **aceeași clasă** cu R44 (*un element din coadă legat de o firmă care nu există*) și R50 (*ștergerea nu curăță tabelele partajate*) — produsă de **calea construită azi ca să le repare**. Iar gărzile scrise azi n-o văd: `test_tenant_stergere` verifică ce rămâne **în momentul** ștergerii, nu ce se scrie **după**.
+- **ce NU vede măsurătoarea**: dacă mai există alte scrieri de audit **după** un act distructiv (dezactivare, GDPR). N-am măsurat decât ștergerea, fiindcă doar ea a fost exercitată.
+- **de ce n-am reparat-o pe loc**: Costin, în aceeași tură: *„azi ai dus patru fire deodată, iar ultimele două reparații au ieșit din rulare, nu din construcție."* Se consemnează, se repară după.
+- **condiția de deblocare**: decizia lui Costin între **(a)** auditul de cerere scrie `tenant_id = NULL` când firma nu mai există, cu id-ul mutat în `detalii` — se pierde filtrarea pe firmă, se păstrează fapta; **(b)** cheie străină pe `audit_log.tenant_id` cu `ON DELETE SET NULL` — repară **clasa**, nu instanța, dar schimbă comportamentul tuturor ștergerilor; **(c)** ruta de ștergere își curăță propriul rând la final — cel mai îngust și cel mai fragil. Se închide când o ștergere de firmă lasă **zero** rânduri care trimit la ea.
+
+
+### R78 — Actul cel mai distructiv al aplicației stă sub 26 de carduri, iar cine îl caută nu-l găsește
+
+- **felul**: ARTEFACT
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · DS cap.25 · **PRAG 2** *(nimic fals pe ecran; dar o cale construită, gardată și probată azi nu poate fi folosită de omul care a cerut-o — ceea ce o face, practic, inexistentă)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `c9bf964`
+- **măsurat la**: 2026-08-27 · **pe commit**: `c9bf964`
+- **planul**: **ACOPERIT ca principiu, în `DESIGN_SYSTEM cap.25`** — ecranul ca entitate, cu *aspecte* (proprietari de spațiu) și *chiriași* (ocupanți, după întrebarea la care răspund). Zona de scoatere e un chiriaș **fără contract**: a fost adăugată la coada gridului fiindcă acolo era loc, nu fiindcă acolo o caută cineva. (METODA §25)
+- **ce blochează**: Costin a spus *„le șterg acum"* și apoi *„la ultima verificare, în fișa firmei nu era niciun buton de scoatere."* **Butonul există** — verificat pe procesul viu — dar stă la **top = 1361 px** într-o fereastră de **793 px** (desktop 1440×900) și **613 px** (laptop 1280×720), **sub 26 de carduri**. De derulat: **591 px** pe desktop, **771 px** pe laptop. Deci *„nu era niciun buton"* e o descriere **corectă a experienței**, nu o eroare de observație.
+- **cine a produs-o**: eu, azi. Am pus zona la coada grilei fiindcă era locul cel mai puțin invaziv — un criteriu despre **mine** (să nu rearanjez), nu despre **om** (să găsească).
+- **ce NU vede măsurătoarea**: n-am probat pe mobil. Pe Pixel 5 grila e pe o coloană, deci distanța e mai mare, nu mai mică — dar cifra n-o am.
+- **de ce nu am mutat-o singur**: *„Reorganizare ecran = STOP"* — rearanjarea cere confirmare, iar verificatorul nu prinde așezarea. Aici e chiar cazul: mutarea zonei schimbă ordinea a ceea ce vede omul primul.
+- **condiția de deblocare**: decizia lui Costin între **(a)** zona urcă sus, lângă antetul firmei, ca acțiune de nivelul firmei, nu ca al 27-lea card; **(b)** intră în grilă ca un card propriu (`#fa-scoate`), la coadă, dar vizibil ca toate celelalte — cere înregistrare în harta ecranelor; **(c)** rămâne unde e, iar descoperirea se rezolvă altfel (o trimitere din „Date firmă"). Se închide când omul care vrea să scoată o firmă ajunge la acțiune fără să i se spună unde e.
+
+### R77 — Divergența de denumire se ARATĂ, dar alegerea nu se CERE
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · T36 · **PRAG 3** *(nimic fals: amândouă denumirile se arată. Ce lipsește e actul — iar cine nu apasă nimic moștenește ce era acolo fără să afle că a fost o divergență)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `c9bf964`
+- **măsurat la**: 2026-08-27 · **pe commit**: `c9bf964`
+- **planul**: **ACOPERIT.** Slotul scris de Costin pentru `POST /tenants` (T36) o cere textual: *„denumirea preluată de la ANAF nu se suprascrie tăcut cu ce a tastat omul, și nici invers. Dacă cele două diferă, **se arată amândouă și se cere alegerea**."* Nu e o cerință nouă — e jumătatea neconstruită a uneia scrise. (METODA §25)
+- **ce blochează**: azi ecranul arată amândouă denumirile și oferă **o** acțiune — *„Ia denumirea de la ANAF"*. A păstra pe a ta = **a nu apăsa nimic**. Costin: *„«a păstra pe a ta = a nu face nimic» nu e o alegere. Cine nu apasă nimic nu decide — moștenește ce era acolo, și nu află niciodată că a fost o divergență."*
+- **ce se cere**: **amândouă butoanele, iar niciunul implicit.** Alegerea „păstrez denumirea mea" trebuie să fie un **act consemnat**, nu absența unui act — altfel divergența rămâne vizibilă la infinit și devine zgomot, sau se stinge tăcut și devine o decizie neluată.
+- **de ce nu acum** *(decizia lui Costin, 27.08)*: *„azi ai dus patru fire deodată, iar ultimele două reparații au ieșit din rulare, nu din construcție. Un al cincilea fir pe aceeași tură e cum au apărut cele două greșeli de la sondă."*
+- **și de ce e restanță, nu un rând în raport**: fiindcă asta e lecția turei. Decizia de denumire n-a ajuns niciodată la o restanță — **a trăit doar în §5 al rapoartelor** — iar Costin a trebuit s-o dea de două ori. *O cerință fără restanță n-are contor, n-are condiție de deblocare și nu supraviețuiește turei.*
+- **ce NU vede măsurătoarea**: azi **nicio** firmă n-are `nume_anaf` (0 din 19) — instantaneul se captează de la următoarea precompletare încolo. Deci divergența **nu se poate vedea pe niciun ecran acum**, iar construcția va trebui probată pe date făcute anume.
+- **condiția de deblocare**: două butoane explicite, niciunul implicit, iar alegerea „păstrez denumirea mea" lasă urmă. Se închide când verificarea din slotul T36 se poate bifa fără rezerve.
+
+
 ### R76 — „Googlebot" într-un log nu mai e o informație: 70% din cererile care se declară așa sunt scanere
 
 - **felul**: VERIFICARE
@@ -2002,7 +2062,7 @@ scos ce nu se știa**, nu din defecte noi.
 - **și o instanță care arată cât de repede se strecoară**: chiar în tura în care s-a găsit, cifra `623` a intrat într-un raport ca fapt despre Googlebot. N-a apucat să intre într-un registru — dar drumul de la log la registru are un singur pas.
 - **CE AR TREBUI, ca notă, nu ca reparație acum**: orice măsurătoare care filtrează după User-Agent trece întâi IP-urile prin **rDNS + confirmare înainte** (`gethostbyaddr` → nume care se termină în `.googlebot.com`/`.google.com` → `gethostbyname_ex` întoarce IP-ul de plecare). Scriptul care a produs cifrele de mai sus e reproductibil; nu s-a păstrat ca instrument fiindcă n-are încă un consumator.
 - **ce NU vede măsurătoarea**: (a) **fereastra**: 11 zile, atât se păstrează. Un scaner care a trecut în iulie nu se mai vede; (b) **doar `Googlebot`** — n-am măsurat `bingbot`, `AhrefsBot` sau altele, deci proporția e a unui singur nume, nu a traficului de roboți în general; (c) o cerere de la un IP fără rDNS e clasificată **falsă** — corect pentru Googlebot, care are întotdeauna rDNS, dar regula nu se poate muta pe alt robot fără verificarea lui proprie.
-- **amănuntul cu IP-ul propriu, acum cu data și cu ce a cerut** *(Costin: „scrie când s-a întâmplat și ce a cerut. Poate se recunoaște din context")*: **13.08.2026, 13:00:10 — `GET /sitemap.xml`, 200, 2.234 octeți**, cu User-Agent-ul Googlebot, de la `178.105.201.56`, adică de la serverul ăsta. Contextul îl recunoaște: **13.08 e cu două zile înainte de allow-list-ul din 15.08**, adică exact în timpul pregătirii reparației SEO. Iar de la același IP vin **267** de cereri în fereastra de loguri, toate pe suprafața publică — `/` (63), `/sitemap.xml` (22), `/ghid` (16), ghiduri. **Forma e de verificare făcută de pe server**, cum a presupus Costin: cineva a cerut sitemap-ul „ca Googlebot" ca să vadă ce primește. Rămâne o presupunere despre intenție — dar una care se potrivește cu data, cu calea și cu restul traficului de la acel IP, nu una liberă.
+- **amănuntul cu IP-ul propriu, acum cu data și cu ce a cerut** *(Costin: „scrie când s-a întâmplat și ce a cerut. Poate se recunoaște din context")*: **13.08.2026, 13:00:10 — `GET /sitemap.xml`, 200, 2.234 octeți**, cu User-Agent-ul Googlebot, de la `178.105.201.56`, adică de la serverul ăsta. Contextul îl recunoaște: **13.08 e cu două zile înainte de allow-list-ul din 15.08**, adică exact în timpul pregătirii reparației SEO. Iar de la același IP vin **267** de cereri în fereastra de loguri, toate pe suprafața publică — `/` (63), `/sitemap.xml` (22), `/ghid` (16), ghiduri. **Forma e de verificare făcută de pe server**, cum a presupus Costin: cineva a cerut sitemap-ul „ca Googlebot" ca să vadă ce primește. Rămâne o presupunere despre intenție — dar una care se potrivește cu data, cu calea și cu restul traficului de la acel IP, nu una liberă. **ÎNCHIS aici de Costin, 27.08.2026**: *„se potrivește cu o verificare făcută de pe server. Rămâne presupunere despre intenție, și așa e scrisă. Închide-o acolo."* Nu se mai investighează; dacă reapare, reapare cu o dată nouă.
 - **condiția de deblocare**: la **prima măsurătoare care filtrează după User-Agent** — atunci verificarea prin rDNS intră în ea, iar cifra se dă pe lotul confirmat, nu pe cel declarat. Se închide când nicio cifră despre roboți nu mai vine dintr-un câmp scris de cel măsurat.
 
 
@@ -2030,6 +2090,7 @@ scos ce nu se știa**, nu din defecte noi.
 - **și a doua greșeală, prinsă abia la rulare, nu la scriere**: prima variantă citea commitul din `versiune.stare()["running"]` — ștampilat în memoria procesului **web**. Sonda e alt proces, deci îl citea `None` și raporta veșnic *„necunoscut"*, adică exact alerta pe care distincția voia s-o evite. Se citește `HEAD` **de pe disc**. *Testul care ar fi prins-o n-ar fi fost unul de structură — a prins-o prima rulare reală.*
 - **și un cost pe care l-am produs**: rularea aia de probă a trimis **o alertă** pe email către Costin, la 12:42, cu subiectul *„nu pot spune dacă a fost deploy"*. E de ignorat; o scriu fiindcă am produs-o.
 - **probat în trei direcții**, fără să trimită niciun email și fără să oprească nimic: stare normală → nicio alertă · ora mutată în memorie → repornire observată, cu **amândouă** orele în alertă · proces care nu răspunde → ridică, deci `cron.ruleaza` alertează și iese 1. *Iar calibrarea a prins un defect al meu: constantele erau legate ca argument implicit, deci calea de eșec nu se putea proba. Reparat, și gardat.*
+- **CONFIRMATĂ de Costin, 27.08.2026**: *„e consecința deciziei (b), pe care am dat-o de trei ori. A o refuza acum ar însemna să cer supraveghere și să refuz mijlocul."* Și: *„ai făcut bine că ai întrebat — o schimbare pe mașină, făcută de tine, e altceva decât una în repo. Rămâne consemnată în predare ca fiind a ta."*
 - **LINIA DE `crontab` AM PUS-O EU, 27.08.2026 — și o spun fiindcă am schimbat ceva pe mașină.** Scrisesem că rămâne la Costin, presupunând că `crontab`-ul e al lui; el n-a spus asta, iar decizia (b) descrie o stare în care sonda **rulează**. Iar propria mea gardă din R74 (`test_RITMURI_nu_pastreaza_joburi_care_nu_mai_exista`) a respins commitul exact pe asta: un prag pentru un job care nu există nicăieri e o fantomă. Deci ori scoteam pragul, ori puneam jobul — am pus jobul.
   Backup înainte: `/home/costin/crontab_inainte_sonda.bak`. Se scoate cu `crontab -e`, un rând.
   Linia:
