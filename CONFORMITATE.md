@@ -1979,6 +1979,33 @@ scos ce nu se știa**, nu din defecte noi.
 - **ce NU face, declarat**: **niciun clichet pe cele 28 de `except …: pass` rămase.** Costin, explicit: *„pe alea nu le-am măsurat și nu știm care sunt legitime."* Și nu verifică dacă emailul chiar pleacă — doar că, dacă nu pleacă, rămâne urmă.
 - **condiția de deblocare**: decizia lui Costin între **(a)** toate patru trec pe `esec_secundar`, cu `alerta=True` pe cele trei căi de intrare — tăcerea acolo are cost de acces, ceea ce docstringul lui numește drept criteriu; **(b)** doar log, fără alertă, pe toate patru; **(c)** mesajul de pe ecran se schimbă și el, ca să nu mai afirme trimiterea. Se închide când un eșec de trimitere lasă urmă, cu gard.
 
+### R76 — „Googlebot" într-un log nu mai e o informație: 70% din cererile care se declară așa sunt scanere
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · METODA §22 · **PRAG 3** *(nimic fals pe ecran, nimeni păgubit azi. Ce se strică e o SURSĂ DE MĂSURĂTOARE: orice cifră viitoare filtrată după User-Agent va fi greșită cu un factor de trei, și va arăta la fel de credibilă)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `66c2f1f`
+- **măsurat la**: 2026-08-27 · **pe commit**: `66c2f1f`
+- **planul**: **NEACOPERIT.** `PLAN_ARHITECTURA.md` nu spune nimic despre logurile serverului ca sursă de măsurătoare — ele n-au fost până acum o sursă. `METODA_VERIFICARE.md` §22 spune însă exact ce se întâmplă aici: un instrument care greșește într-o direcție are un plafon; iar User-Agent-ul **nu e un instrument**, e o declarație a celui măsurat. (METODA §25)
+- **ce blochează**: **măsurat 27.08.2026**, pe toate logurile păstrate (17–27.08, 40.878 de linii): **878** de cereri se declară `Googlebot`, de la **31 de IP-uri**. Verificate prin **DNS invers cu confirmare înainte** — singura metodă care distinge, fiindcă un scaner poate scrie orice în User-Agent, dar nu poate face DNS-ul Google să-l numească: **261 sunt reale (29,7%)**, **617 sunt false (70,3%)**. Un singur IP, `87.120.104.29`, fără rDNS, aduce **600** din cele 617.
+- **și diferența dintre cele două loturi e cea care contează**, fiindcă arată cât de mult ar minți o cifră nefiltrată:
+
+  | | cereri | 200 | 404 | ce cer |
+  |---|---|---|---|---|
+  | **Googlebot REAL** | 261 | 210 | **11** | `/robots.txt` (122), `/`, `/static/*` |
+  | **fals** | 617 | 5 | **612** | `/.env`, `/.git/index`, `/config/database.yml`, `/wp-config.php.*` |
+
+  Deci *„Googlebot a primit 623 de 404-uri"* — cifra pe care am scris-o eu ieri fără să filtrez — e falsă: Googlebot **real** a primit **11**. Restul sunt sondaje de credențiale, la care 404 e răspunsul corect.
+- **de ce e o restanță și nu o observație** *(formularea lui Costin)*: *„nu pentru cererile în sine — un 404 pe `/.env` e răspunsul corect. Ci pentru consecința: cuvântul «Googlebot» într-un log nu mai înseamnă nimic dacă 71% din cereri sunt scanere. Iar aia atinge orice măsurătoare viitoare pe loguri, nu doar asta."*
+- **și o instanță care arată cât de repede se strecoară**: chiar în tura în care s-a găsit, cifra `623` a intrat într-un raport ca fapt despre Googlebot. N-a apucat să intre într-un registru — dar drumul de la log la registru are un singur pas.
+- **CE AR TREBUI, ca notă, nu ca reparație acum**: orice măsurătoare care filtrează după User-Agent trece întâi IP-urile prin **rDNS + confirmare înainte** (`gethostbyaddr` → nume care se termină în `.googlebot.com`/`.google.com` → `gethostbyname_ex` întoarce IP-ul de plecare). Scriptul care a produs cifrele de mai sus e reproductibil; nu s-a păstrat ca instrument fiindcă n-are încă un consumator.
+- **ce NU vede măsurătoarea**: (a) **fereastra**: 11 zile, atât se păstrează. Un scaner care a trecut în iulie nu se mai vede; (b) **doar `Googlebot`** — n-am măsurat `bingbot`, `AhrefsBot` sau altele, deci proporția e a unui singur nume, nu a traficului de roboți în general; (c) o cerere de la un IP fără rDNS e clasificată **falsă** — corect pentru Googlebot, care are întotdeauna rDNS, dar regula nu se poate muta pe alt robot fără verificarea lui proprie.
+- **și un amănunt pe care nu-l explic**: unul din IP-urile care se declară Googlebot e **`178.105.201.56` — chiar serverul ăsta**, o singură cerere. Nu știu ce a produs-o. Se scrie fiindcă e ciudat, nu fiindcă am o explicație.
+- **condiția de deblocare**: la **prima măsurătoare care filtrează după User-Agent** — atunci verificarea prin rDNS intră în ea, iar cifra se dă pe lotul confirmat, nu pe cel declarat. Se închide când nicio cifră despre roboți nu mai vine dintr-un câmp scris de cel măsurat.
+
+
 ### R75 — Joburile de fundal au deadman; procesul care servește ecranele, nu
 
 - **felul**: VERIFICARE

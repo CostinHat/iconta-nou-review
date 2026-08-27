@@ -10359,10 +10359,44 @@ def public_sitemap():
 
 @app.get("/robots.txt")
 def public_robots():
-    # [robots_allowlist 15.08.2026] Allow: / lasa Google sa parcurga app.js si sa culeaga fragmente de rute
-    # construite prin concatenare (/depune, /tva?an, /d406-mapare, /auth/change-password) -> 18x404 in Search
-    # Console (prima detectare 05.08.2026). 404 e corect, dar lista se reface la orice modificare de JS.
-    # Fragmentele stau la RADACINA, nu sub un prefix -> allow-list a suprafetei publice indexabile, restul Disallow.
+    # [robots_allowlist 15.08.2026] Allow-list a suprafetei publice indexabile; restul Disallow.
+    # Adaugat ca REPARATIE pentru un raport Search Console de 404-uri pe cai care nu exista
+    # (prima detectare 05.08.2026, 18 cai la RADACINA, de forma /depune, /tva?an, /d406-mapare).
+    #
+    # CE S-A MASURAT, 27.08.2026, dupa ce Costin a raportat 17 cai ramase:
+    #   sitemap.xml            NU le contine. Generatorul (`public_sitemap`) listeaza EXCLUSIV
+    #                          ghid/*.md + landing + termeni; nu atinge inventarul de rute.
+    #   HTML-ul public randat  NU le contine (landing 4 linkuri interne, toate /static/; /ghid 208,
+    #                          toate ghiduri; /public/termeni 2).
+    #   cele 202 de ghiduri    NU le contin.
+    #   JS-ul servit azi       3 din 17 apar ca sub-sir, si acelea in COMENTARII sau ca segment al
+    #                          unei cai reale (`/tenants/${id}/salariati`).
+    #   istoria git            `d205-beneficiari`, `nota-manuala`, `pacht`, `documents/list`,
+    #                          `facturi/primita`, `feedback/cabinet`: ZERO commituri, niciodata,
+    #                          nicaieri in repo. Iar "pacht" e "pachet" scris gresit - un fragment
+    #                          cules dintr-un bundle ar reproduce bundle-ul, nu o eroare de tastare.
+    #   logurile nginx         0 cereri catre cele 17 cai, in 40.878 de linii (17-27.08).
+    #
+    # DECI: mecanismul presupus initial - Googlebot culege fragmente concatenate din app.js - a fost
+    # verificat si NU SE SUSTINE pentru cel putin sase din 17. A stat trei saptamani citit ca fapt,
+    # iar comentariul asta era singura sursa din repo pentru doua dintre caile pe care le explica.
+    # (Clasa R16: proza care descrie codul, falsa de la nastere.)
+    #
+    # DATELE DE ACCESARE, din Search Console (Costin, 27.08.2026) - ele inchid intrebarea:
+    #   ultima accesare cu crawlere, pe toate 17: 30 iul · 27 iul (x4) · 26 iul · 24 iul ·
+    #   23 iul (x3) · 13 iul · 4 iul · 15 iun (x2) · 14 iun (x2) · 12 iul.
+    #   NICIUNA dupa 17.08. Cea mai recenta e 30 iulie. Deci raportul din Search Console e
+    #   REZIDUU: descrie o stare veche, nu una care se produce acum.
+    #
+    # CE NU SE POATE AFIRMA, si e o limita a inferentei, nu a masuratorii: ca allow-list-ul a OPRIT
+    # accesarile. Ultima e din 30 iulie, adica cu SAISPREZECE ZILE inainte de el (15.08). Google
+    # incetase deja. Absenta de dupa 17.08 arata ca starea e curata, NU ca reparatia a produs-o.
+    # Ce garanteaza reparatia e altceva, si se verifica direct: suprafata e Disallow de-acum incolo.
+    #
+    # CE RAMANE NECUNOSCUT: de unde le stia Google atunci. Fereastra - iunie/iulie - nu mai exista
+    # in loguri (se pastreaza 11 zile), iar Search Console nu pastreaza referrerul pentru accesari
+    # atat de vechi. Nu se mai poate masura de nicaieri. Se scrie asa, nu se umple cu o ipoteza:
+    # necunoscut, masurat pana aici.
     txt = ("User-agent: *\n"
            "Allow: /$\n"                    # exact landing-ul
            "Allow: /ghid\n"                 # index + /ghid/{slug}
