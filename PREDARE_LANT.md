@@ -6,6 +6,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 - **ultima rescriere**: **2026-08-27**, *rescriere COMPLETĂ, nu petic*
 - **pe commit**: `03a5245`
+- **actualizată** *(nu rescrisă)*: **2026-08-27**, după tura R77–R79. Trei restanțe închise, zero deschise. Secțiunile atinse: „CE S-A ÎNCHIS", „CE BLOCHEAZĂ", plus una nouă la coadă. Restul rămâne valabil — de aceea e petic, nu rescriere.
 - **de ce acum**: **și pragul, și conținutul.** Contorul arăta **11** commituri de la ultima
   rescriere (`cf945fc`), peste pragul de 10 — deci avertismentul a sunat. Dar s-ar fi rescris
   oricum: **două restanțe închise, două deschise, opt gărzi noi, două decizii aplicate, patru
@@ -107,6 +108,10 @@ Googlebot sunt scanere) · **R77** (divergența de denumire se arată, dar alege
 **R78** (butonul de scoatere stă sub 26 de carduri) · **R79** (ștergerea își produce propriul
 orfan, la 78 ms după ce a terminat).
 
+**Închise în tura de seară, toate trei deschise în aceeași zi:** **R79** (auditul nu mai lasă
+referințe moarte) · **R78** (butonul e pe rândul fiecărei firme din listă) · **R77** (două butoane,
+niciunul implicit, amândouă scriu). *Deci din cele cinci deschise azi rămân două: R75 și R76.*
+
 **Aplicate fără restanță proprie:** denumirea unică per cabinet (creare **și** redenumire) ·
 instantaneul ANAF al denumirii · plasa pentru refuzurile înghițite.
 
@@ -114,18 +119,16 @@ instantaneul ANAF al denumirii · plasa pentru refuzurile înghițite.
 
 ## CE BLOCHEAZĂ, ÎN ORDINE
 
-1. **R79 — ștergerea își produce propriul orfan.** Măsurat pe prima ștergere reală: rândul de
-   audit al cererii `DELETE` se scrie la **78 ms după** ce firma a dispărut, cu `tenant_id`-ul ei.
-   Orfanii au crescut **67 → 69**, câte unul per ștergere. **Aceeași clasă cu R44 și R50, produsă
-   de calea construită azi ca să le repare.**
-2. **R78 — butonul de scoatere nu se găsește** de la prima privire: stă la **1361 px** într-o
-   fereastră de **793**, sub **26 de carduri**. Costin l-a găsit totuși și a șters amândouă
-   firmele — dar căutarea a costat o tură.
-3. **R77 — „se cere alegerea"** la divergența de denumire. Amânată deliberat de Costin la tura
-   următoare: *„un al cincilea fir pe aceeași tură e cum au apărut cele două greșeli de la sondă."*
-4. **R67 cere `postgres`.** Neschimbat: `iconta_user` n-are CREATEROLE.
-5. **Cele 19 restanțe cu `reluări: 0`** stau într-o fotografie. Nu le-am urcat contorul: aș inventa
+1. **R67 cere `postgres`.** Neschimbat: `iconta_user` n-are CREATEROLE.
+2. **Cele 19 restanțe cu `reluări: 0`** stau într-o fotografie. Nu le-am urcat contorul: aș inventa
    cifre pe care nu le pot recalcula.
+3. **Divergența de denumire nu se poate vedea pe nicio firmă reală.** **0 din 17** au `nume_anaf` —
+   instantaneul se captează doar de la o precompletare ANAF încolo. Calea R77 e construită, gardată
+   și probată (server pe date reale, ecran pe răspuns fabricat), dar **veriga de capăt lipsește**:
+   o firmă nouă, cu CUI ales de Costin, care să treacă prin ANAF și să producă divergența singură.
+   Costin a oferit-o în tura asta; e cea mai ieftină verificare rămasă deschisă.
+4. **`ISTORIC.md` n-a primit încă rândul celor două firme scoase din portofoliu.** Datorie declarată
+   de mine, „la închiderea zilei", și încă neplătită.
 
 ---
 
@@ -163,6 +166,27 @@ instantaneul ANAF al denumirii · plasa pentru refuzurile înghițite.
 | **25** (scrieri care refuză fără motiv) | prima măsurătoare, 27.08 | **16** după calibrare: nouă foloseau `insertAdjacentHTML` |
 | **623** (404-uri primite de Googlebot) | raportul meu din 27.08 | **11**. Restul sunt scanere care se dau drept el — 70,3%, verificat prin rDNS cu confirmare |
 | **„2" (aritmetică pe nume neutre)** | clichet din 24.08 | cifra e tot 2, dar **termenii** erau greșiți: cititorul era defazat. Acum e o măsurătoare |
+
+---
+
+## TURA R77–R79: CE S-A ÎNVĂȚAT, ÎN TREI RÂNDURI
+
+1. **Numele unei variante nu spune ce face varianta.** Costin a cerut cheia străină cu
+   `ON DELETE SET NULL` — și a cerut măsurarea înainte. Măsurarea a arătat că `SET NULL` pe o
+   coloană `NOT NULL` **se acceptă la definire** și rupe **la ștergere**, pe **8 din 13** tabele;
+   iar pe coloanele nullable nici nu atinge cazul nostru, fiindcă rândul se scrie **după** ce
+   părintele a murit — deci ar fi fost **respins**, nu trecut pe `NULL`. *Fără măsurătoarea cerută,
+   aș fi livrat o cheie străină care oprea ștergerea de firmă.*
+2. **„Nu rearanjează nimic" poate fi adevărat despre pixeli și fals despre structură.** Un
+   `<button>` nu poate conține alt `<button>`, deci prima implementare a butonului „Scoate" a
+   transformat rândul în `<div>`. Nimic nu se mișca pe ecran — dar **36 de fișiere** selectează
+   `button.firme-rand`, între ele `w_auth.deschide_firma`, poarta întregii infrastructuri vizuale.
+   Refăcut: rândul rămâne buton, acțiunea se așază **lângă** el. *Constrângerea nu cerea să schimb
+   rândul, cerea să nu bag butonul în el.*
+3. **O sondă care citește `inner_text("body")` citește și ecranele de dedesubt.** Prima versiune a
+   probei de scoatere a raportat că **toate cele 13** firme au evidență. Fals: ecranele anterioare
+   rămân în DOM. Trecută pe structură (`#sf-sterge` în ecranul curent), a găsit imediat ambele
+   clase. *Greșea în ambele direcții — deci n-avea niciun plafon (METODA §22).*
 
 ---
 

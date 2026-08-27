@@ -991,7 +991,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: Creează câte un tenant pentru fiecare firmă selectată — poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (INSERT/UPDATE) · migrare_status (INSERT) · tenants (INSERT/UPDATE) · user_tenants (INSERT) — prin `migrare_api`, `tenant_provisioning`*
+*ce face: Creează câte un tenant pentru fiecare firmă selectată — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · firma_profil (INSERT/UPDATE) · migrare_status (INSERT) · tenants (INSERT/UPDATE) · user_tenants (INSERT) — prin `migrare_api`, `tenant_provisioning`*
 
 - [x] fiecare firmă selectată primește **schemă proprie**, iar `tenants` are rândul ei — o firmă fără schemă e o afirmație falsă despre lume
 - `user_tenants` leagă firma de cabinetul care a importat-o
@@ -2292,7 +2292,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,verificat-în-corp · scrie in user_tenants, users*
 
-*ce face: scrie user_tenants (INSERT) · users (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (INSERT/UPDATE) · tenants (INSERT/UPDATE) — prin `tenant_provisioning`*
+*ce face: scrie user_tenants (INSERT) · users (INSERT/UPDATE) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · firma_profil (INSERT/UPDATE) · tenants (INSERT/UPDATE) — prin `tenant_provisioning`*
 
 - [x] **ruta creează un utilizator** — verifică ce drepturi primește: doar pe firma respectivă, doar citire, doar portalul
 - un utilizator existent legat de altă firmă nu primește acces la asta fără o operațiune explicită
@@ -2403,11 +2403,31 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - confirmarea se cere **pe CUI, nu pe nume** — numele se repetă, iar chiar asta a produs restanța
 - **la ștergerea unui cabinet întreg (GDPR), nu se păstrează nimic.** Un log care păstrează ce trebuia să dispară anulează ștergerea pe care o consemnează
 
+### `POST /tenants/{tenant_id}/nume-ales`
+
+*garda `cere_rol` · rol:admin_firma*
+
+*ce face: [R77] Alegerea între denumirea din aplicație și cea de la ANAF — poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · firma_profil (INSERT/UPDATE) · tenants (INSERT/UPDATE) · user_tenants (INSERT) — prin `tenant_provisioning`*
+
+**Ce trebuie să fie adevărat după:**
+
+- [x] **amândouă căile scriu.** „Păstrez denumirea mea" nu e absența unui act — dacă a păstra pe a ta înseamnă a nu apăsa nimic, nu e o alegere, e o moștenire
+- [x] **niciuna nu e implicită.** Niciun buton primar, niciun bifat dinainte. Un răspuns sugerat e tot un răspuns dat în locul omului
+- [x] **alegerea se datează și își știe autorul.** Altfel, peste un an, „denumirea asta e cea corectă" n-are pe ce sta
+- [x] **întrebarea nu se pune la infinit**: cine a răspuns nu mai e întrebat
+- [x] **și nici o singură dată**: o citire ANAF mai nouă decât alegerea o redeschide. Alegerea de azi nu acoperă o denumire schimbată la registru mâine
+- [x] **a lua denumirea de la ANAF trece prin aceleași porți ca o redenumire** — inclusiv unicitatea în cabinet. Altfel calea asta ar fi o ușă din spate pentru un duplicat
+- **ce se întâmplă cu documentele emise sub denumirea veche.** O declarație depusă poartă numele de atunci; ecranul nu spune azi nimic despre asta
+- **ce se întâmplă dacă ANAF răspunde cu o denumire goală sau evident greșită** — refuzul există în cod, dar n-a fost exercitat pe un răspuns real
+- **cine are voie să aleagă.** Azi: `admin_firma`. De verificat dacă un asistent care lucrează în firmă ar trebui măcar să vadă că există o divergență nerezolvată
+
+**Iar întrebarea care contează, și e a lui Costin:** de ce se poate schimba denumirea unei firme cu CUI validat la ANAF? Alegerea de aici tratează **simptomul** — face divergența vizibilă și decizia consemnată. Nu răspunde de ce identitatea e editabilă după ce a fost confirmată la sursă.
+
 ### `POST /tenants`
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (INSERT/UPDATE) · tenants (INSERT/UPDATE) · user_tenants (INSERT) — prin `tenant_provisioning`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · firma_profil (INSERT/UPDATE) · tenants (INSERT/UPDATE) · user_tenants (INSERT) — prin `tenant_provisioning`*
 
 **Ce trebuie să fie adevărat după:**
 
@@ -2427,7 +2447,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): firma_profil (INSERT/UPDATE) · tenants (INSERT/UPDATE) · user_tenants (INSERT) — prin `tenant_provisioning`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): audit_log (INSERT) · firma_profil (INSERT/UPDATE) · tenants (INSERT/UPDATE) · user_tenants (INSERT) — prin `tenant_provisioning`*
 
 **Ce trebuie să fie adevărat după:**
 

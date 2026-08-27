@@ -265,6 +265,50 @@ def detalii_tenant(conn, tenant_id):
     return dict(r) if r else None
 
 
+ALEGERI_NUME = ("aplicatie", "anaf")
+
+
+def alege_denumirea(conn, tenant_id, alege, user_id):
+    """[R77] Alegerea între denumirea din aplicație și cea de la ANAF, ca **act**.
+
+    Costin: *„«a păstra pe a ta = a nu face nimic» nu e o alegere. Cine nu apasă nimic nu decide —
+    moștenește ce era acolo, și nu află niciodată că a fost o divergență."*
+
+    Amândouă ramurile **scriu** ceva: `anaf` schimbă denumirea (prin aceleași porți ca o
+    redenumire), `aplicatie` o păstrează — dar consemnează că a fost păstrată **deliberat**.
+    Fără a doua, tăcerea ar fi arătat identic cu o decizie.
+
+    O citire ANAF mai NOUĂ decât alegerea **redeschide** întrebarea: alegerea de azi nu acoperă o
+    denumire care se schimbă la registru mâine.
+    """
+    if alege not in ALEGERI_NUME:
+        raise ValueError("alegere necunoscută: %r (cele două sunt %s)"
+                         % (alege, ", ".join(ALEGERI_NUME)))
+    with conn.cursor() as cur:
+        cur.execute("SELECT nume, nume_anaf, accounting_firm_id FROM public.tenants WHERE id=%s",
+                    (tenant_id,))
+        r = cur.fetchone()
+    if not r:
+        raise ValueError("firmă inexistentă")
+    nume, nume_anaf, cabinet = r
+    if alege == "anaf":
+        if not (nume_anaf or "").strip():
+            raise ValueError("nu există o denumire de la ANAF pentru firma asta")
+        cere_nume_unic(conn, nume_anaf, cabinet, exclude_id=tenant_id)
+        with conn.cursor() as cur:
+            cur.execute("UPDATE public.tenants SET nume=%s WHERE id=%s", (nume_anaf, tenant_id))
+        nume = nume_anaf
+    with conn.cursor() as cur:
+        cur.execute("UPDATE public.tenants SET nume_ales=%s, nume_ales_la=now(), nume_ales_de=%s "
+                    "WHERE id=%s", (alege, user_id, tenant_id))
+        cur.execute(
+            "INSERT INTO public.audit_log (user_id, tenant_id, actiune, entitate, entitate_id, detalii) "
+            "VALUES (%s, (SELECT id FROM public.tenants WHERE id = %s), 'nume_ales', 'tenant', %s, %s)",
+            (user_id, tenant_id, str(tenant_id),
+             __import__("json").dumps({"alege": alege, "nume": nume, "nume_anaf": nume_anaf})))
+    return {"tenant_id": tenant_id, "alege": alege, "nume": nume}
+
+
 def actualizeaza_tenant(conn, tenant_id, nume=None, cui=None):
     """Editează nume/cui (NU schema_name — fix). Întoarce {ok}.
 

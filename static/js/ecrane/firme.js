@@ -24,6 +24,10 @@ export function randeazaListaFirme(container, nav, inapoi) {
       <button class="buton-secundar" id="firme-import-masa">Import în masă (CSV)</button>
       <button class="buton-primar" id="firme-adauga">+ Adaugă firmă</button>
     </div>
+    <p class="ecran-nota" style="margin:0 0 10px">Butonul <strong>Scoate</strong> de pe fiecare rând
+       deschide o previzualizare, nu șterge. Acolo se vede care act e care:
+       <strong>dezactivarea</strong> e reversibilă (firma iese din listă, datele rămân),
+       <strong>ștergerea</strong> nu e — și se poate doar dacă firma n-a produs niciun document.</p>
     <div class="firme-cautare">
       <label class="camp-eticheta" for="firme-q">Caut\u0103</label>
       <input type="text" id="firme-q" class="camp-input" placeholder="Caută după nume sau CUI" autocomplete="off">
@@ -129,17 +133,37 @@ export function randeazaListaFirme(container, nav, inapoi) {
     }
     lista.innerHTML = "";
     vizibile.forEach((t) => {
-      const rand = document.createElement("button");
-      rand.className = "firme-rand";
-      rand.innerHTML = `
+      // [R78, 27.08.2026] Decizia de a scoate o firmă se ia UNDE VEZI PORTOFOLIUL, nu după ce
+      // intri în firmă și derulezi 26 de carduri de lucru. Măsurat înainte: butonul de dinainte
+      // stătea la 1361 px într-o fereastră de 793 — exista, dar nu se găsea.
+      // Un <button> nu poate conține alt <button>. Iar `button.firme-rand` e selectorul pe care
+      // stau 36 de fișiere (`w_auth` și toată infra vizuală), deci randul RĂMÂNE buton: acțiunea
+      // se așază lângă el, într-un înveliș. Se schimbă împrejurimea, nu rândul.
+      const linie = document.createElement("div");
+      linie.className = "firme-rand-linie";
+      const deschide = document.createElement("button");
+      deschide.className = "firme-rand";
+      deschide.innerHTML = `
         <div class="firme-rand-text">
           <div class="firme-rand-nume">${esc(t.nume) || "(fără nume)"}</div>
-          <div class="firme-rand-cui">CUI ${t.cui || "—"}</div>
+          <div class="firme-rand-cui">CUI ${esc(String(t.cui || "—"))}</div>
         </div>
         <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#9aa3af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>
       `;
-      rand.addEventListener("click", () => deschideFirma(t, nav));
-      lista.appendChild(rand);
+      deschide.addEventListener("click", () => deschideFirma(t, nav));
+      const scoate = document.createElement("button");
+      scoate.className = "buton-secundar firme-rand-scoate";
+      scoate.textContent = "Scoate";
+      scoate.title = "Scoate firma din portofoliu — se deschide o previzualizare, nu se șterge de aici";
+      // NU șterge de aici: un act ireversibil la un click de listă e prea aproape. Deschide
+      // ACELAȘI ecran de previzualizare, cu confirmarea pe CUI.
+      scoate.addEventListener("click", (ev) => {
+        ev.stopPropagation();
+        nav.deschide("Scoate firma", (c2) => ecranScoateFirma(c2, nav, t));
+      });
+      linie.appendChild(deschide);
+      linie.appendChild(scoate);
+      lista.appendChild(linie);
     });
   }
 
@@ -234,6 +258,13 @@ function _numeNrm(s) {
 function _divergentaNume(t) {
   const anaf = (t && t.nume_anaf) || "";
   if (!anaf || !_numeNrm(anaf) || _numeNrm(anaf) === _numeNrm(t.nume)) return null;
+  // [R77] Dacă întrebarea a primit deja răspuns, nu se mai pune — până când ANAF spune altceva.
+  // O citire ANAF mai NOUĂ decât alegerea o redeschide: alegerea de azi nu acoperă o denumire
+  // schimbată la registru mâine.
+  if (t.nume_ales_la) {
+    const ales = new Date(t.nume_ales_la), citit = t.nume_anaf_la ? new Date(t.nume_anaf_la) : null;
+    if (!citit || isNaN(citit) || citit <= ales) return null;
+  }
   // `nume_anaf_la` decide când e stătut: „o denumire ANAF veche de un an nu e divergență, e o
   // măsurătoare veche" (Costin). Fără dată, nu se poate spune — și atunci se spune asta.
   const la = t.nume_anaf_la ? new Date(t.nume_anaf_la) : null;
@@ -252,31 +283,47 @@ function _randDivergentaNume(corp, nav, t) {
       <strong>${esc(d.anaf)}</strong>, dar măsurătoarea are ${d.zile} de zile — <strong>nu e o
       divergență, e o citire veche</strong>. Se reîmprospătează la următoarea verificare de CUI.</p>`;
   } else {
+    // [R77, 27.08.2026] AMÂNDOUĂ butoanele, niciunul implicit. Costin: „«a păstra pe a ta = a nu
+    // face nimic» nu e o alegere. Cine nu apasă nimic nu decide — moștenește ce era acolo, și nu
+    // află niciodată că a fost o divergență." Deci și „păstrez denumirea mea" e un act care scrie.
     zona.className = "caseta-atentie";
     zona.innerHTML = `
-      <div class="ca-mesaj">Denumirea din aplicație diferă de cea de la ANAF${
+      <div class="ca-mesaj"><strong>Două denumiri, și trebuie aleasă una.</strong> Denumirea din
+        aplicație diferă de cea de la ANAF${
         d.zile !== null ? ` (citită acum ${d.zile === 0 ? "azi" : d.zile + " zile"})` : ""}:
         <br>· în aplicație: <strong>${esc(t.nume || "")}</strong>
         <br>· la ANAF: <strong>${esc(d.anaf)}</strong>
-        <br>Amândouă se păstrează. Denumirea din aplicație e cea folosită în documente.</div>
-      <div class="ca-actiuni"><button class="buton-secundar" id="dn-ia-anaf">Ia denumirea de la ANAF</button></div>`;
+        <br>Denumirea din aplicație e cea folosită în documente. Alegerea se consemnează — dacă
+        ANAF va spune altceva mai târziu, întrebarea se pune din nou.</div>
+      <div class="ca-actiuni">
+        <button class="buton-secundar" id="dn-ia-anaf">Ia denumirea de la ANAF</button>
+        <button class="buton-secundar" id="dn-pastrez">Păstrez denumirea mea</button>
+      </div>`;
   }
   corp.insertBefore(zona, corp.children[1] || null);
-  zona.querySelector("#dn-ia-anaf")?.addEventListener("click", async () => {
-    const b = zona.querySelector("#dn-ia-anaf");
-    b.disabled = true; b.textContent = "Se schimbă…";
-    try {
-      await api.put(`/tenants/${t.id}`, { nume: d.anaf });
-      nav.acasa();
-      nav.setFirmaInLucru("");
-    } catch (e) {
-      b.disabled = false; b.textContent = "Ia denumirea de la ANAF";
-      const m = document.createElement("p");
-      m.className = "msg-eroare";
-      m.textContent = e.mesaj || e.message || "Nu am putut schimba denumirea.";
-      zona.appendChild(m);
-    }
-  });
+
+  const alege = async (id, alegere, textLucru, textInapoi) => {
+    const b = zona.querySelector(id);
+    if (!b) return;
+    b.addEventListener("click", async () => {
+      zona.querySelectorAll("button").forEach((x) => { x.disabled = true; });
+      b.textContent = textLucru;
+      try {
+        await api.post(`/tenants/${t.id}/nume-ales`, { alege: alegere });
+        nav.acasa();
+        nav.setFirmaInLucru("");
+      } catch (e) {
+        zona.querySelectorAll("button").forEach((x) => { x.disabled = false; });
+        b.textContent = textInapoi;
+        const m = document.createElement("p");
+        m.className = "msg-eroare";
+        m.textContent = e.mesaj || e.message || "Nu am putut consemna alegerea.";
+        zona.appendChild(m);
+      }
+    });
+  };
+  alege("#dn-ia-anaf", "anaf", "Se schimbă…", "Ia denumirea de la ANAF");
+  alege("#dn-pastrez", "aplicatie", "Se consemnează…", "Păstrez denumirea mea");
 }
 
 // deschide o firmă: setează "În lucru" + spațiul de lucru (meniu de acțiuni)

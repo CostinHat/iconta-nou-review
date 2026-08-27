@@ -5155,3 +5155,27 @@ E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pome
 **Clichetul s-a aprins în a doua direcție la PRIMA reparație (27.08.2026):** Costin a corectat cele trei `ExecStart`, iar testul a devenit roșu cerând scoaterea lor din baseline. Baseline-ul e acum **gol, nu șters** — o mulțime goală afirmă *„azi nicio unitate nu e stricată"*; absența listei n-ar afirma nimic.
 
 **Ce NU face, declarat:** nu verifică dacă jobul chiar a rulat (aia e treaba lui `verifica_batai`, la rulare) · nu vede dincolo de mașina asta · nu acoperă `iconta-backup` (shell, nu modul — motivul e scris în `cron.NESUPRAVEGHEATE`) · nu pornește și nu repară nimic: unitățile cer `sudo`.
+
+## Un act distructiv nu-și mai lasă în urmă o referință moartă (27.08.2026, R79)
+
+**`core/test_tenant_stergere.py::test_auditul_nu_mai_produce_orfani_dupa_stergere`** — citește **AST**-ul lui `main.py` și pică pe orice `INSERT INTO public.audit_log` care poartă `tenant_id` fără sub-interogarea care îl trece pe `NULL` când firma nu mai există.
+
+**De unde vine:** calea de ștergere construită ieri **ca să repare** R44 și R50 producea exact clasa lor. Rândul de audit al cererii `DELETE /tenants/{id}` se scria la **78 de milisecunde după** ce tranzacția comisese — deci referința era moartă când se năștea. Legea era liniară: **fiecare firmă scoasă lăsa exact un orfan.** Orfanii au crescut 67 → 69 la primele două ștergeri reale.
+
+**Ce n-a văzut niciun gard scris în aceeași zi:** `test_tenant_stergere` verifica ce rămâne **în momentul** ștergerii, nu ce se scrie **după**. Un gard poate fi complet despre actul pe care îl păzește și orb la ce urmează după el.
+
+**De ce nu cheie străină cu `ON DELETE SET NULL`, deși aia s-a cerut** — măsurat, nu presupus, în ambele forme de coloană:
+- pe cele **8** tabele cu `tenant_id NOT NULL`, `SET NULL` **se acceptă la definire** și rupe **la ștergere**: `NotNullViolation`, adică ștergerea de firmă ar deveni imposibilă;
+- pe coloanele nullable **nu repară cazul**: `SET NULL` acționează la ștergerea părintelui, iar rândul nostru se scrie **după**. Cheia străină l-ar fi **respins** — linia de audit ar fi **dispărut**, nu ar fi devenit `NULL`.
+
+**Ce NU face, declarat:** nu curăță cei **67** de orfani dinainte (R50). Îi îngheață — `test_niciun_orfan_NOU_dupa_ultima_stergere`, clichet pe date la **69** — fiindcă ștergerea lor ar șterge singura urmă că firmele alea au existat. Și nu vede scrierile de audit de după **alte** acte distructive decât ștergerea: doar ea a fost exercitată.
+
+## „A păstra pe a ta" nu mai poate fi „a nu face nimic" (27.08.2026, R77)
+
+**`core/test_nume_anaf.py::test_alegerea_are_AMANDOUA_ramurile_si_amandoua_SCRIU`** — citește arborele funcției `alege_denumirea` și cere ca **o singură** consemnare `UPDATE public.tenants SET nume_ales=…` să acopere **ambele** ramuri. Pică dacă consemnarea alunecă sub ramura „anaf" — adică dacă „păstrez denumirea mea" redevine tăcere.
+
+**Ce păzește, ca principiu:** o alegere în care una din căi e „nu apăsa nimic" nu e o alegere. Cine nu apasă nu decide — moștenește ce era acolo și nu află niciodată că a fost o divergență. Gardul e pe **structura deciziei**, nu pe textul butoanelor.
+
+**Perechea lui:** `test_o_citire_ANAF_mai_noua_REDESCHIDE_intrebarea` — întrebarea nu se pune nici la infinit, nici o singură dată. Se compară `nume_anaf_la` cu `nume_ales_la`: *alegerea de azi nu acoperă o denumire schimbată la registru mâine.*
+
+**Ce NU face, declarat:** nu poate vedea divergența pe date reale — **0 din 17** firme au `nume_anaf`, fiindcă instantaneul se captează doar de la o precompletare ANAF încolo. Partea de ecran e probată pe un răspuns **fabricat** prin interceptare (`frontend_test/vizual_nume.py`): dovedește ce randează ecranul și ce trimite la apăsare, nu ce răspunde serverul pentru o divergență adevărată. Partea de server e probată separat, pe date reale, într-o tranzacție întoarsă la savepoint (`proba_r77.py`).

@@ -879,6 +879,15 @@ CREATE INDEX IF NOT EXISTS idx_firme_scoase_tenant  ON public.firme_scoase (tena
 ALTER TABLE public.tenants ADD COLUMN IF NOT EXISTS nume_anaf text;
 ALTER TABLE public.tenants ADD COLUMN IF NOT EXISTS nume_anaf_la timestamptz;
 
+-- [R77, 27.08.2026] ALEGEREA, ca act consemnat. Costin: „«a pastra pe a ta = a nu face nimic» nu
+-- e o alegere. Cine nu apasa nimic nu decide - mosteneste ce era acolo, si nu afla niciodata ca a
+-- fost o divergenta." Deci se scrie CE s-a ales, CAND si de CINE. Iar o citire ANAF mai NOUA
+-- decat alegerea redeschide intrebarea: `nume_anaf_la > nume_ales_la` -> divergenta reapare.
+ALTER TABLE public.tenants ADD COLUMN IF NOT EXISTS nume_ales text
+    CHECK (nume_ales IS NULL OR nume_ales IN ('aplicatie', 'anaf'));
+ALTER TABLE public.tenants ADD COLUMN IF NOT EXISTS nume_ales_la timestamptz;
+ALTER TABLE public.tenants ADD COLUMN IF NOT EXISTS nume_ales_de integer;
+
 -- Urmele portalului, copiate la scoatere. NUMAI pe motiv='scoatere_firma' - la GDPR nu se
 -- copiaza nimic, fiindca acolo scopul actului e chiar disparitia datelor.
 ALTER TABLE public.firme_scoase ADD COLUMN IF NOT EXISTS urme_pastrate jsonb;

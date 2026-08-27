@@ -100,6 +100,46 @@ def test_lista_de_firme_poarta_cele_doua_campuri():
         "pentru rolurile alea" % fara)
 
 
+def test_alegerea_are_AMANDOUA_ramurile_si_amandoua_SCRIU():
+    """[R77] Costin: *„«a păstra pe a ta = a nu face nimic» nu e o alegere."* Deci și ramura
+    „păstrez denumirea mea" trebuie să scrie ceva — altfel tăcerea arată identic cu o decizie."""
+    from core import tenant_provisioning as tp
+    assert set(tp.ALEGERI_NUME) == {"aplicatie", "anaf"}
+    sursa = io.open(os.path.join(_RAD, "core", "tenant_provisioning.py"), encoding="utf-8").read()
+    fn = next(n for n in ast.walk(ast.parse(sursa))
+              if isinstance(n, ast.FunctionDef) and n.name == "alege_denumirea")
+    sql = []
+    for n in ast.walk(fn):
+        if (isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
+                and n.func.attr == "execute" and n.args):
+            a = n.args[0]
+            while isinstance(a, ast.BinOp):
+                a = a.left
+            if isinstance(a, ast.Constant) and isinstance(a.value, str):
+                sql.append(" ".join(a.value.split()))
+    consemnari = [s for s in sql if s.startswith("UPDATE public.tenants SET nume_ales=")]
+    assert len(consemnari) == 1, (
+        "alegerea nu se consemnează într-un singur loc, pentru AMBELE ramuri: %s" % sql)
+    # consemnarea NU are voie să stea sub ramura „anaf"
+    for n in ast.walk(fn):
+        if isinstance(n, ast.If) and ast.unparse(n.test).count("anaf"):
+            corp = " ".join(ast.unparse(s) for s in n.body)
+            assert corp.count("nume_ales=") == 0, (
+                "consemnarea a ajuns sub ramura ANAF — atunci «păstrez denumirea mea» n-ar mai "
+                "scrie nimic, iar tăcerea ar redeveni o decizie")
+
+
+def test_o_citire_ANAF_mai_noua_REDESCHIDE_intrebarea():
+    """Alegerea de azi nu acoperă o denumire schimbată la registru mâine. Regula trăiește în
+    ecran: se compară `nume_anaf_la` cu `nume_ales_la`."""
+    js = io.open(os.path.join(_RAD, "static", "js", "ecrane", "firme.js"), encoding="utf-8").read()
+    assert js.count("nume_ales_la") >= 2, (
+        "ecranul nu mai știe dacă întrebarea a primit răspuns — ori nu se mai pune niciodată, "
+        "ori se pune la infinit")
+    assert js.count("dn-pastrez") >= 2, (
+        "butonul «Păstrez denumirea mea» a dispărut — rămâne o singură ramură, adică nicio alegere")
+
+
 def test_ecranul_stie_cand_o_citire_e_VECHE_nu_divergenta():
     """Regula lui Costin, în ecran: peste prag, nu mai e divergență, e o măsurătoare veche."""
     js = io.open(os.path.join(_RAD, "static", "js", "ecrane", "firme.js"), encoding="utf-8").read()

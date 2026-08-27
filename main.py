@@ -237,9 +237,20 @@ def _inregistreaza_activitate(method, path, status, auth_header):
     try:
         with db.get_conn() as conn:
             with conn.cursor() as cur:
+                # [R79, 27.08.2026] `tenant_id` trece printr-o SUB-INTEROGARE, nu direct.
+                # Instanta: la stergerea unei firme, randul asta se scrie la ~78 ms DUPA ce
+                # tranzactia a comis - deci trimitea la o firma care nu mai exista. Fiecare firma
+                # scoasa lasa exact un orfan; masurat pe primele doua, 67 -> 69.
+                # Sub-interogarea intoarce NULL cand firma nu mai e, in ACELASI statement: nu se
+                # adauga niciun drum dus-intors, iar fapta se pastreaza intreaga (cine, cand, ce a
+                # cerut) - se pierde doar filtrarea pe o firma care nu mai exista.
+                # De ce nu cheie straina cu ON DELETE SET NULL: masurat 27.08 - pe cele 8 tabele cu
+                # `tenant_id NOT NULL` ar face stergerea IMPOSIBILA (NotNullViolation), iar pe cele
+                # nullable ar RESPINGE randul de dupa stergere, nu l-ar trece pe NULL. Adica linia
+                # de audit ar disparea in loc sa ramana orfana. Vezi R79.
                 cur.execute(
                     "INSERT INTO public.audit_log (user_id, tenant_id, actiune, detalii) "
-                    "VALUES (%s,%s,%s,%s)",
+                    "VALUES (%s, (SELECT id FROM public.tenants WHERE id = %s), %s, %s)",
                     (uid, tenant_id, actiune, _json_audit.dumps({"status": status})))
     except Exception as _e:
         _obs.esec_secundar("audit_log activitate", _e)  # inghitit, dar nu tacut (27.07.2026)
@@ -1236,6 +1247,23 @@ def tenant_activare(tenant_id: int, date: FirmaActivareIn, ctx=Depends(cere_rol(
             raise HTTPException(404, "tenant inexistent sau fără acces")
         try:
             return tenant_stergere.comuta_activ(conn, tenant_id, date.activ, ctx["uid"])
+        except ValueError as e:
+            raise HTTPException(400, str(e))
+
+
+class NumeAlesIn(BaseModel):
+    alege: str
+
+
+@app.post("/tenants/{tenant_id}/nume-ales")
+def tenant_nume_ales(tenant_id: int, date: NumeAlesIn, ctx=Depends(cere_rol("admin_firma"))):
+    """[R77] Alegerea între denumirea din aplicație și cea de la ANAF. **Amândouă** ramurile scriu:
+    a păstra pe a ta e un act, nu absența unuia."""
+    with db.get_conn() as conn:
+        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+        try:
+            return tenant_provisioning.alege_denumirea(conn, tenant_id, date.alege, ctx["uid"])
         except ValueError as e:
             raise HTTPException(400, str(e))
 

@@ -438,6 +438,18 @@ html, body {
   display: flex; align-items: center; gap: 12px;
   transition: background 0.12s;
 }
+/* [R78, 27.08.2026] Actiunea de scoatere sta LANGA rand, nu in el.
+   Un <button> nu poate contine alt <button>. Prima varianta transforma randul in <div> — dar
+   `button.firme-rand` e selectorul folosit de 36 de fisiere (w_auth si toata infra vizuala),
+   deci l-am pastrat: randul ramane buton, iar invelisul `.firme-rand-linie` poarta linia si
+   dungile. Ce se schimba e imprejurimea, nu randul. */
+.firme-rand-linie {
+  display: flex; align-items: center; gap: 8px; padding-right: 12px;
+  border-bottom: 0.5px solid var(--linie); background: var(--alb);
+}
+.firme-rand-linie:last-child { border-bottom: none; }
+.firme-rand-linie > .firme-rand { border-bottom: none; flex: 1; min-width: 0; background: none; }
+.firme-rand-scoate { flex: none; min-height: 32px; }
 .firme-rand:last-child { border-bottom: none; }
 .firme-rand:hover { background: #f3f6fa; }
 .firme-rand-text { flex: 1; min-width: 0; }
@@ -2293,6 +2305,14 @@ select:focus, textarea:focus {
 .zebra-lista > .pf-frand:nth-of-type(even) { background: var(--alb) !important; }
 .firme-lista > .firme-rand:nth-of-type(odd) { background: var(--albastru-clar) !important; }
 .firme-lista > .firme-rand:nth-of-type(even) { background: var(--alb) !important; }
+/* [R78] Acelasi zebra si acelasi hover, cand randul e invelit ca sa aiba actiune langa el.
+   Culoarea trece pe INVELIS; randul dinauntru nu se mai coloreaza singur, altfel s-ar aprinde
+   doar jumatate de linie la trecerea cu mausul. */
+.firme-lista > .firme-rand-linie:nth-of-type(odd) { background: var(--albastru-clar) !important; }
+.firme-lista > .firme-rand-linie:nth-of-type(even) { background: var(--alb) !important; }
+.firme-rand-linie:hover { background: #dce7f3 !important; }
+.firme-rand-linie > .firme-rand,
+.firme-rand-linie > .firme-rand:hover { background: none !important; }
 .firme-rand:hover { background: #dce7f3 !important; }
 table tbody tr:nth-child(odd) td { background: var(--albastru-clar); }
 table tbody tr:nth-child(even) td { background: var(--alb); }

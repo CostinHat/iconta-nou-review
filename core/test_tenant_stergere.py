@@ -350,6 +350,46 @@ def test_urma_pastrata_se_poate_CITI_de_om():
         "nu există nicio rută care citește `firme_scoase` — urma ar rămâne scrisă și necitită")
 
 
+def test_auditul_nu_mai_produce_orfani_dupa_stergere():
+    """[R79] Instanța: rândul de audit al cererii `DELETE` se scrie la ~78 ms **după** ce firma a
+    dispărut — deci trimitea la o firmă inexistentă. Fiecare firmă scoasă lăsa exact un orfan.
+
+    Reparat printr-o **sub-interogare** în chiar `INSERT`-ul care exista deja: `tenant_id` devine
+    `NULL` când firma nu mai e, în același statement, fără drum dus-întors.
+
+    De ce nu cheie străină cu `ON DELETE SET NULL` — măsurat 27.08, în ambele forme de coloană:
+    pe cele **8** tabele cu `tenant_id NOT NULL` ar face ștergerea **imposibilă**
+    (`NotNullViolation`), iar pe cele nullable ar **respinge** rândul de după ștergere, nu l-ar
+    trece pe NULL: linia de audit ar **dispărea**, nu ar rămâne orfană.
+    """
+    sursa = io.open(os.path.join(_RAD, "main.py"), encoding="utf-8").read()
+    inserturi = [s for s in _sql_executat(ast.parse(sursa))
+                 if s.startswith("INSERT INTO public.audit_log")]
+    assert inserturi, "n-am găsit niciun INSERT în audit_log"
+    fara_gard = [s[:90] for s in inserturi
+                 if s.count("tenant_id") and not s.count("SELECT id FROM public.tenants WHERE id")]
+    assert not fara_gard, (
+        "scrieri în `audit_log` cu `tenant_id` direct, fără sub-interogarea care îl trece pe NULL "
+        "când firma nu mai există:\n  %s\nFiecare ștergere ar lăsa din nou un orfan."
+        % "\n  ".join(fara_gard))
+
+
+def test_niciun_orfan_NOU_dupa_ultima_stergere():
+    """Clichet pe date: orfanii nu mai cresc. 69 la 27.08, după cele două ștergeri reale ale lui
+    Costin — dintre care 67 sunt de dinainte (firme dispărute prin SQL ad-hoc, vezi R50) și 2 sunt
+    chiar cei produși de ștergere, înainte de reparație."""
+    db.init_pool()
+    with db.get_conn() as conn, conn.cursor() as cur:
+        n = 0
+        for tabel in ts.TABELE_TENANT:
+            cur.execute('SELECT count(*) FROM public."%s" x WHERE x.tenant_id IS NOT NULL '
+                        'AND NOT EXISTS (SELECT 1 FROM public.tenants p WHERE p.id=x.tenant_id)'
+                        % tabel)
+            n += cur.fetchone()[0]
+    assert n <= 69, (
+        "orfanii au crescut de la 69 la %d — o cale scrie iar o referință care moare înaintea ei" % n)
+
+
 def test_tabela_de_urma_exista_in_baza():
     db.init_pool()
     with db.get_conn() as conn, conn.cursor() as cur:
