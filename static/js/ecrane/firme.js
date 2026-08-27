@@ -13,7 +13,7 @@ import { declaratiiPerFirma } from "./declaratii.js?v=cc81187e9a";  // [decl_fir
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=ddd1606ae8";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=2caaba5417";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=ae22f440bf";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=410c457136";  // [date_firma_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=9270212180";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=cec020b9da";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
@@ -287,17 +287,32 @@ function _randDivergentaNume(corp, nav, t) {
     // face nimic» nu e o alegere. Cine nu apasă nimic nu decide — moștenește ce era acolo, și nu
     // află niciodată că a fost o divergență." Deci și „păstrez denumirea mea" e un act care scrie.
     zona.className = "caseta-atentie";
+    // [F1/F2/F3, 28.08.2026] Textul de dinainte spunea „Denumirea din aplicație e cea folosită în
+    // documente." **Era fals.** În documente pleacă `firma_profil.nume` — probat 27.08.2026 pe D100
+    // T3/2026, D205 2026 și bilanț S1005, generate în tranzacție întoarsă (R81). Caseta asta atinge
+    // NUMAI `public.tenants.nume`, adică eticheta din portofoliu, iar de azi o spune. Nu s-a
+    // schimbat NIMIC din ce scrie ramura `anaf` — aia e R81 și nu e decisă.
+    // Nodul e marcat E1 (DS cap.26): declară perechea, arată sursa pe care o are, numește care
+    // produce efectul, și declară pe cea care nu ajunge pe ecranul ăsta.
     zona.innerHTML = `
-      <div class="ca-mesaj"><strong>Două denumiri, și trebuie aleasă una.</strong> Denumirea din
-        aplicație diferă de cea de la ANAF${
+      <div class="ca-mesaj" data-e1="denumire-firma"><strong>Două denumiri, și trebuie aleasă
+        una.</strong> Denumirea din portofoliu diferă de cea de la ANAF${
         d.zile !== null ? ` (citită acum ${d.zile === 0 ? "azi" : d.zile + " zile"})` : ""}:
-        <br>· în aplicație: <strong>${esc(t.nume || "")}</strong>
+        <br>· în portofoliu: <strong data-e1-sursa="portofoliu">${esc(t.nume || "")}</strong>
         <br>· la ANAF: <strong>${esc(d.anaf)}</strong>
-        <br>Denumirea din aplicație e cea folosită în documente. Alegerea se consemnează — dacă
-        ANAF va spune altceva mai târziu, întrebarea se pune din nou.</div>
+        <br><span data-e1-efect="fiscal" data-e1-absent="fiscal">Alegerea de aici schimbă
+        <strong>numai denumirea din portofoliu</strong> — cea din listă și din bara de sus. Pe
+        declarații și pe bilanț pleacă <strong>denumirea fiscală</strong>, ținută separat, în
+        „Date firmă"; caseta asta nu o schimbă.</span>
+        <br>· <strong>„Pune denumirea ANAF în portofoliu"</strong> înlocuiește eticheta din listă cu
+        cea de la ANAF.
+        <br>· <strong>„Păstrez denumirea din portofoliu"</strong> nu schimbă nicio denumire —
+        consemnează că ai ales deliberat.
+        <br>Alegerea se consemnează — dacă ANAF va spune altceva mai târziu, întrebarea se pune din
+        nou.</div>
       <div class="ca-actiuni">
-        <button class="buton-secundar" id="dn-ia-anaf">Ia denumirea de la ANAF</button>
-        <button class="buton-secundar" id="dn-pastrez">Păstrez denumirea mea</button>
+        <button class="buton-secundar" id="dn-ia-anaf">Pune denumirea ANAF în portofoliu</button>
+        <button class="buton-secundar" id="dn-pastrez">Păstrez denumirea din portofoliu</button>
       </div>`;
   }
   corp.insertBefore(zona, corp.children[1] || null);
@@ -322,8 +337,8 @@ function _randDivergentaNume(corp, nav, t) {
       }
     });
   };
-  alege("#dn-ia-anaf", "anaf", "Se schimbă…", "Ia denumirea de la ANAF");
-  alege("#dn-pastrez", "aplicatie", "Se consemnează…", "Păstrez denumirea mea");
+  alege("#dn-ia-anaf", "anaf", "Se schimbă…", "Pune denumirea ANAF în portofoliu");
+  alege("#dn-pastrez", "aplicatie", "Se consemnează…", "Păstrez denumirea din portofoliu");
 }
 
 // deschide o firmă: setează "În lucru" + spațiul de lucru (meniu de acțiuni)

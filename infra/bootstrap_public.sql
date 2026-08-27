@@ -857,7 +857,15 @@ CREATE TABLE IF NOT EXISTS public.firme_scoase (
     tenant_id       integer     NOT NULL,
     nume            text        NOT NULL,
     cui             text,
-    schema_name     text        NOT NULL,
+    schema_name     text        NOT NULL,   -- [G3, 28.08.2026] INFORMATIV. NUMELE SE RECICLEAZA:
+        -- `urmator_schema_name` ia max(NNN)+1 peste firmele VII, deci cand cea mai mare e stearsa,
+        -- numarul se refoloseste. Masurat 27.08.2026: doua randuri din trei poarta 'tenant_019',
+        -- pentru doua firme diferite, iar 'tenant_018' e acum schema unei firme VII.
+        -- NICIO CITIRE NU SE CHEIAZA PE COLOANA ASTA. Randul ramane dezambiguizat de `tenant_id`,
+        -- care vine dintr-o secventa si nu se recicleaza niciodata; celelalte 14 coloane de
+        -- legatura din `public` sunt tot `tenant_id integer`. O interogare cheiata pe `schema_name`
+        -- ar intoarce randul gresit FARA nicio eroare -> gard:
+        -- core/test_tenant_stergere.py::test_nicio_citire_nu_se_cheiaza_pe_NUMELE_schemei
     cabinet_id      integer,
     motiv           text        NOT NULL,
     randuri_sterse  jsonb,

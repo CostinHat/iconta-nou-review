@@ -133,10 +133,10 @@ function _blocDenumire(t, profil) {
     : `<p class="camp-ajutor">Pentru firma asta nu avem \u00eenc\u0103 denumirea de la ANAF, deci nu exist\u0103 cu ce s\u0103 difere. C\u00e2mpul e liber.</p>`;
 
   const divergenta = (fiscal && nrm(fiscal) !== nrm(nume))
-    ? `<div class="dec-avert">
+    ? `<div class="dec-avert" data-e1="denumire-firma">
          <div class="dec-avert-cap">Cele dou\u0103 denumiri difer\u0103</div>
-         <ul><li>\u00een portofoliu: <b>${esc(nume)}</b> \u2014 ce vezi \u00een list\u0103 \u0219i \u00een bara de sus</li>
-             <li>\u00een declara\u021bii: <b>${esc(fiscal)}</b> \u2014 <b>asta pleac\u0103 pe h\u00e2rtie</b></li></ul>
+         <ul><li>\u00een portofoliu: <b data-e1-sursa="portofoliu">${esc(nume)}</b> \u2014 ce vezi \u00een list\u0103 \u0219i \u00een bara de sus</li>
+             <li>\u00een declara\u021bii: <b data-e1-sursa="fiscal">${esc(fiscal)}</b> \u2014 <b data-e1-efect="fiscal">asta pleac\u0103 pe h\u00e2rtie</b></li></ul>
        </div>`
     : "";
 

@@ -30,6 +30,7 @@ CE NU FACE, declarat:
 import ast
 import io
 import os
+import re
 
 import pytest
 
@@ -374,6 +375,10 @@ def test_auditul_nu_mai_produce_orfani_dupa_stergere():
         % "\n  ".join(fara_gard))
 
 
+# [R79 · G1] Clichetul pe date al orfanilor. Se citește în AMÂNDOUĂ direcțiile — vezi docstringul.
+_ORFANI_CUNOSCUTI = 69
+
+
 def test_niciun_orfan_NOU_dupa_ultima_stergere():
     """Clichet pe date: orfanii nu mai cresc. 69 la 27.08, după cele două ștergeri reale ale lui
     Costin — dintre care 67 sunt de dinainte (firme dispărute prin SQL ad-hoc, vezi R50) și 2 sunt
@@ -387,17 +392,37 @@ def test_niciun_orfan_NOU_dupa_ultima_stergere():
 
     **Deci informația nu e totalul, ci creșterea.** Dacă testul ăsta devine roșu, nu înseamnă
     „baza e mai murdară cu unu" — înseamnă că **o cale nouă scrie iar o referință care moare
-    înaintea ei**, și aia se caută, nu se ridică pragul."""
+    înaintea ei**, și aia se caută, nu se ridică pragul.
+
+    **[G1, 28.08.2026] Și în cealaltă direcție.** Costin: *„un contor care poate doar să crească nu
+    e contor. O scădere neexplicată e la fel de suspectă ca o creștere."* Până azi aserțiunea era
+    `n <= 69` — o scădere trecea neobservată. Iar aici scăderea e chiar cea care doare: cei 67 de
+    dinainte sunt **singura urmă** că firmele alea au existat (de-aia s-a decis să rămână pe loc).
+    Dacă dispar, ceva i-a șters — o curățare retroactivă nedecisă, un `DELETE` de mână, o migrare
+    care a măturat mai mult decât spunea. **Un registru care se subțiază singur nu e o reparație, e
+    o pierdere de probe.** Când scăderea e voită, se coboară `_ORFANI_CUNOSCUTI` **deliberat**, cu
+    motivul scris — exact ca la orice clichet."""
     db.init_pool()
+    per_tabel = {}
     with db.get_conn() as conn, conn.cursor() as cur:
-        n = 0
         for tabel in ts.TABELE_TENANT:
             cur.execute('SELECT count(*) FROM public."%s" x WHERE x.tenant_id IS NOT NULL '
                         'AND NOT EXISTS (SELECT 1 FROM public.tenants p WHERE p.id=x.tenant_id)'
                         % tabel)
-            n += cur.fetchone()[0]
-    assert n <= 69, (
-        "orfanii au crescut de la 69 la %d — o cale scrie iar o referință care moare înaintea ei" % n)
+            per_tabel[tabel] = cur.fetchone()[0]
+    assert len(per_tabel) == len(ts.TABELE_TENANT) and len(per_tabel) > 5, (
+        "[anti-vacuu] s-au numărat doar %d tabele — cifra ar coborî fiindcă instrumentul vede mai "
+        "puțin, nu fiindcă baza s-ar fi curățat" % len(per_tabel))
+    n = sum(per_tabel.values())
+    detaliu = ", ".join("%s=%d" % (t, k) for t, k in sorted(per_tabel.items()) if k)
+    assert n <= _ORFANI_CUNOSCUTI, (
+        "orfanii au crescut de la %d la %d — o cale scrie iar o referință care moare înaintea ei "
+        "(%s)" % (_ORFANI_CUNOSCUTI, n, detaliu))
+    assert n >= _ORFANI_CUNOSCUTI, (
+        "orfanii au SCĂZUT de la %d la %d (%s). Nu e o veste bună până nu se spune cine i-a scos: "
+        "cei 67 de dinainte sunt singura urmă că firmele alea au existat. Caută actul care i-a "
+        "șters; dacă a fost voit, coboară `_ORFANI_CUNOSCUTI` cu motivul scris."
+        % (_ORFANI_CUNOSCUTI, n, detaliu or "niciun tabel cu orfani"))
 
 
 def test_tabela_de_urma_exista_in_baza():
@@ -408,3 +433,106 @@ def test_tabela_de_urma_exista_in_baza():
         assert cur.fetchone()[0] == 1, (
             "`public.firme_scoase` lipsește — rulează `python3 -m core.migrare_firme_scoase`. "
             "Fără ea, prima ștergere crapă la mijloc.")
+
+
+# ── [G3, 28.08.2026] `firme_scoase.schema_name` — singura referință prin NUME de schemă ──────
+#
+# CE S-A MĂSURAT (27.08.2026, pe date): numele de schemă **se reciclează**. `urmator_schema_name`
+# ia `max(NNN)+1` peste firmele **vii**, deci când cea mai mare e ștearsă, maximul coboară și
+# numărul se refolosește. Azi `public.firme_scoase` are trei rânduri, iar **două** poartă
+# `schema_name = 'tenant_019'` — două firme diferite. `tenant_018` e acum schema unei firme **vii**.
+#
+# DE CE NU E PIERDUTĂ URMA: rândul rămâne dezambiguizat de `tenant_id`, care vine dintr-o secvență
+# și **nu se reciclează niciodată**. Toate celelalte 14 coloane de legătură din `public` sunt
+# `tenant_id integer`. Deci `schema_name` e **informativ** — scrie ce schemă a purtat firma atunci —
+# și **nicio citire nu se cheiază pe el**.
+#
+# CE PĂZEȘTE GARDUL DE MAI JOS: apariția unei citiri care s-ar cheia pe el. Pe `schema_name` singur,
+# `tenant_019` trimite la două firme diferite: o astfel de interogare ar întoarce rândul greșit,
+# **fără nicio eroare**, și ar arăta exact ca una corectă.
+# Cuvintele-cheie care GUVERNEAZĂ o poziție. `IN`, `NOT`, `EXISTS`, `LIKE` lipsesc **deliberat**:
+# sunt operatori în interiorul unui predicat, iar mersul înapoi trebuie să treacă peste ei până la
+# `WHERE`/`AND`/`ON`.
+_PREDICAT = {"WHERE", "AND", "OR", "ON", "USING", "HAVING"}
+_GUVERNEAZA = _PREDICAT | {"SELECT", "INSERT", "INTO", "VALUES", "SET", "FROM", "JOIN", "GROUP",
+                           "ORDER", "BY", "LIMIT", "OFFSET", "RETURNING", "UPDATE", "DELETE",
+                           "DISTINCT", "UNION", "EXCEPT", "INTERSECT", "WITH", "CASE", "WHEN",
+                           "THEN", "ELSE", "END", "CONFLICT", "DO", "NOTHING"}
+
+
+def _pozitia_lui(sql, cuvant):
+    """Pozițiile în care `cuvant` apare ca **cheie de căutare** — adică guvernat de un cuvânt-cheie
+    de predicat. Se merge înapoi peste operanzi și operatori până la primul cuvânt-cheie SQL:
+    `ON a.s = f.schema_name` e cheie, `SELECT id, schema_name FROM …` nu e, iar
+    `WHERE x IN (SELECT schema_name …)` nu e (îl guvernează `SELECT`-ul din interior).
+
+    Se citește pe **jetoane**, nu pe subșiruri: un `nume_schema_name_vechi` nu e `schema_name`, iar
+    numele calificat `f.schema_name` e **același** lucru cu `schema_name` — de-aia se compară ultimul
+    segment.
+
+    **Limita, scrisă aici fiindcă gardul nu e un parser de SQL:** nu urmărește domenii de vizibilitate
+    și nu deosebește o sub-interogare corelată de una independentă. Ce poate spune e ce poziție are
+    cuvântul în frază; calibrarea de mai jos îi ține amândouă direcțiile.
+    """
+    jetoane = re.findall(r"[A-Za-z_][\w]*(?:\.[A-Za-z_][\w]*)*", sql)
+    gasite = []
+    for i, j in enumerate(jetoane):
+        if j.split(".")[-1] != cuvant:
+            continue
+        for k in range(i - 1, -1, -1):
+            g = jetoane[k].upper()
+            if g not in _GUVERNEAZA:
+                continue
+            if g in _PREDICAT:
+                gasite.append(i)
+            break
+    return gasite
+
+
+def _sql_de_productie():
+    """SQL-urile literale din `main.py` + `core/*.py`, fara teste. Refoloseste `_sql_executat` —
+    o a doua extragere de SQL in acelasi fisier ar fi chiar tiparul „regula in doua locuri"."""
+    out = []
+    for rel in ["main.py"] + ["core/" + f for f in sorted(os.listdir(os.path.join(_RAD, "core")))
+                              if f.endswith(".py") and not f.startswith("test_")]:
+        sursa = io.open(os.path.join(_RAD, rel), encoding="utf-8").read()
+        try:
+            arb = ast.parse(sursa)
+        except SyntaxError:      # pragma: no cover
+            continue
+        for s in _sql_executat(arb):
+            out.append((rel, s))
+    return out
+
+
+def test_nicio_citire_nu_se_cheiaza_pe_NUMELE_schemei():
+    """[G3] `firme_scoase.schema_name` e informativ. O interogare care caută pe el ar întoarce
+    rândul greșit fără nicio eroare, fiindcă numele se reciclează."""
+    toate = _sql_de_productie()
+    assert len(toate) > 200, ("[anti-vacuu] doar %d interogări citite — scanul nu vede codul"
+                              % len(toate))
+    ating = [(r, s) for r, s in toate if re.search(r"\bfirme_scoase\b", s)]
+    assert ating, "[anti-vacuu] nicio interogare nu mai atinge `firme_scoase`"
+    rele = [(r, s[:110]) for r, s in ating if _pozitia_lui(s, "schema_name")]
+    assert not rele, (
+        "citiri cheiate pe `firme_scoase.schema_name` (%d):\n  %s\n"
+        "Numele de schemă se reciclează — azi `tenant_019` trimite la două firme diferite. "
+        "Cheia stabilă e `tenant_id`."
+        % (len(rele), "\n  ".join("%s: %s" % x for x in rele)))
+
+
+def test_CALIBRARE_gardul_deosebeste_o_COLOANA_de_o_CHEIE():
+    """Modul de eșec propriu construcției: un `\"schema_name\" in sql` ar fi raportat toate cele
+    trei interogări de azi, care doar **scriu** sau **listează** coloana. Ambele direcții."""
+    cheie = ("SELECT id FROM public.firme_scoase WHERE schema_name = %s",
+             "SELECT a.id FROM public.firme_scoase f JOIN x a ON a.s = f.schema_name",
+             "SELECT id FROM public.firme_scoase WHERE (schema_name = %s AND id > 0)")
+    for s in cheie:
+        assert _pozitia_lui(s, "schema_name"), "n-a văzut cheia în: %s" % s
+    coloana = ("SELECT id, tenant_id, nume, schema_name, motiv FROM public.firme_scoase WHERE id=%s",
+               "INSERT INTO public.firme_scoase (tenant_id, nume, schema_name) VALUES (%s,%s,%s)",
+               "UPDATE public.firme_scoase SET randuri_sterse=%s WHERE id=%s",
+               "SELECT id FROM public.firme_scoase WHERE tenant_id IN "
+               "(SELECT schema_name FROM x)")
+    for s in coloana:
+        assert not _pozitia_lui(s, "schema_name"), "a raportat pe nedrept: %s" % s

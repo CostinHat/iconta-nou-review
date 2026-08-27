@@ -45,7 +45,7 @@ după a doua oară: „e gardul care nu citește proză și totuși o discipline
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna.** Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp. *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
-- **ultima actualizare**: 2026-08-27
+- **ultima actualizare**: 2026-08-28
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
 
 ---
@@ -1994,9 +1994,59 @@ scos ce nu se știa**, nu din defecte noi.
 - **și asta e partea care doare**: convenția nu lipsește din fișier — e aplicată pe actul **reversibil** (reactivarea) și lipsește pe cel **ireversibil** (scoaterea firmei). Pe calea de **eroare**, toate patru arată un mesaj. Deci ecranul știe să vorbească; tace numai când reușește.
 - **ce NU vede măsurătoarea**: s-a numărat un singur fișier, `firme.js`. Restul ecranelor n-au fost parcurse, deci **4 din 6** e un plafon inferior pe o suprafață declarată, nu clasa întreagă. Și nu spune nimic despre ecranele care confirmă cu un text prea slab („Salvat"), fiindcă acolo criteriul e altul.
 - **condiția de deblocare**: fiecare act cu efect asupra unei firme se încheie cu o confirmare vizibilă care **numește entitatea și consecința** — nu „Salvat" —, iar o gardă structurală o cere, nu o convenție de scris. Se închide când, pe ecran, „a mers" nu se mai deduce din ce a dispărut.
+- **INSTANȚĂ CU EFECT FISCAL, REPARATĂ 28.08.2026 (F1–F4) — și nu e de prag 1.** Reclasificarea e a
+  lui Costin: *„NU e prag 1. E o afirmație falsă despre ce pleacă pe declarația fiscală, afișată în
+  momentul în care utilizatorul alege, pe un ecran unde alegerea s-a și făcut o dată, pe o firmă
+  reală."* Intră aici, nu la R81, fiindcă e aceeași clasă cu restul restanței: **ecranul nu spune
+  adevărul despre actul pe care tocmai l-ai făcut.** Acolo tăcea după succes; aici vorbea, și
+  spunea altceva decât se întâmpla.
+  - **F1 — ce scria, și de ce era fals.** Caseta de divergență din lista de firme
+    (`static/js/ecrane/firme.js`) scria *„Denumirea din aplicație e cea folosită în documente."*
+    Probele A5/A6 arată contrariul: în documente pleacă `firma_profil.nume` — D100 T3/2026,
+    D205 2026 și bilanț S1005, generate pe `tenant_013` în tranzacție întoarsă la savepoint, poartă
+    toate trei `den="ALFA MICRO SRL"`, denumirea **fiscală**. **Scris ce e adevărat azi:** alegerea
+    din casetă schimbă **numai denumirea din portofoliu** — cea din listă și din bara de sus —, iar
+    pe declarații și pe bilanț pleacă denumirea **fiscală**, ținută separat, în „Date firmă"; caseta
+    **nu o schimbă**.
+  - **F2 — butoanele spun ce fac.** *„Ia denumirea de la ANAF"* → **„Pune denumirea ANAF în
+    portofoliu"**; *„Păstrez denumirea mea"* → **„Păstrez denumirea din portofoliu"**. Fiecare are
+    lângă el o propoziție care spune ce atinge: primul înlocuiește eticheta din listă, al doilea nu
+    schimbă nicio denumire și doar consemnează că alegerea a fost deliberată. Id-urile
+    (`dn-ia-anaf`, `dn-pastrez`) și ce se trimite la apăsare **rămân neatinse** — proba de ecran
+    `frontend_test/vizual_nume.py` se ancorează pe ele.
+  - **F3 — intră sub regula E1** (`DESIGN_SYSTEM.md` cap.26, scris azi): aceeași entitate, un
+    atribut în două locuri, ecranul spune care produce efectul. Nodul e marcat structural
+    (`data-e1`, `data-e1-sursa`, `data-e1-efect`), iar denumirea fiscală — pe care lista **n-o
+    primește** de la `GET /tenants` — se **declară lipsă** (`data-e1-absent`), nu se trece sub
+    tăcere. Aceeași pereche e marcată și în „Date firmă", unde amândouă valorile există.
+  - **F4 — testul care ține textul.** `core/test_nume_anaf.py::test_alegerea_de_denumire_NU_atinge_denumirea_FISCALA`
+    citește din AST tabelele în care scriu `alege_denumirea` și `_consemneaza_alegerea`. Dacă ramura
+    `anaf` ajunge vreodată să scrie în `firma_profil`, **textul devine fals invers** — ecranul ar
+    spune că nu atinge hârtia, iar el ar atinge-o — și testul pică, cerând ca textul să se schimbe
+    odată cu codul. Ancorat pe **comportament**, nu pe șirul de text. Nu e o interdicție: R81 nu e
+    decisă, iar dacă decizia va fi să scrie, se schimbă amândouă împreună. Calibrat în direcția
+    inversă, pe forma exactă a schimbării (un `UPDATE "%s".firma_profil` compus la rulare, unde
+    schema e interpolată și numele tabelei n-ar apărea într-un literal întreg).
+  - **Ce NU s-a atins, deliberat:** nimic din ce **scrie** ramura `anaf`. Aia e R81 și nu e decisă.
+- **CIFRA, RE-MĂSURATĂ CU INSTRUMENT — 28.08.2026, pe commit `4ffbcd1`: 4 din 7, nu 4 din 6.**
+  `core/scan_ecran_reguli.py` citește actele pe **calea pe care o lovesc**, nu pe fișierul în care
+  stau. Cele **patru** tăcute sunt **aceleași** — alegerea de denumire, scoaterea definitivă, cele
+  două dezactivări. Al **șaptelea** act e `PUT /tenants/{id}` din `date_firma.js`, care **confirmă**,
+  și pe care numărătoarea de mână nu-l văzuse fiindcă se uita numai în `firme.js`. Deci **numitorul
+  se corectează, numărătorul nu** — iar limita declarată atunci (*„s-a numărat un singur fișier"*)
+  s-a dovedit exact acolo unde spunea că e.
+- **GARDAT de azi**, cât timp restanța rămâne deschisă: `core/scan_ecran_reguli.py` +
+  `core/test_reguli_ecran.py` (clichet **4 din 7**, în ambele direcții, plus mulțimea exactă a
+  rutelor tăcute) + un bloc în `verificator_conformitate.py`. **Calibrarea care contează** e
+  negativă: un `arataMesaj` din `catch` **nu** confirmă nimic — un gard care s-ar uita în handler,
+  nu în blocul `try`, ar fi declarat toate patru confirmate, fiindcă toate patru vorbesc pe calea de
+  eroare. Adică ar fi fost verde exact pe clasa pentru care a fost construit.
+- **Ce rămâne, și de-aia restanța NU se închide:** cele patru acte tot nu confirmă nimic. S-a scris
+  regula (`DESIGN_SYSTEM.md` cap.27), s-a măsurat clasa și s-a pus clichetul; **repararea lor e
+  altă tură**, iar condiția de deblocare de mai sus rămâne cea care o judecă.
 
 
-### R81 — O firmă are denumirea în două locuri, iar cele 4 divergențe de azi sunt toate pe fixturi
+### R81 — Denumirea unei firme stă în două locuri, iar redenumirea atinge unul singur
 
 - **felul**: ARTEFACT
 - **cine deblochează**: DECIZIE
@@ -2029,11 +2079,40 @@ scos ce nu se știa**, nu din defecte noi.
   | bara de sus a ferestrei | `ALFA MICRO` |
 
   Sursa e aceeași în toate cele trei acte fiscale: `SELECT nume … FROM firma_profil WHERE id = 1` (`core/d100.py` l. 283, `core/d205.py` l. 318, `core/bilant_api.py` l. 77 → `core/bilant.py` l. 130). Bara ia cealaltă denumire: `deschideFirma` (`static/js/ecrane/firme.js` l. 331-332) cheamă `nav.setFirmaInLucru(t.nume)` și `nav.deschide(t.nume + " · CUI …")`, iar `t` vine din `GET /tenants` — adică `public.tenants.nume`. **ENTITATEA din bară și denumirea de pe declarație sunt două șiruri diferite, prin construcție.**
-- **și un lucru FALS pe un ecran de azi, găsit de probă**: caseta de divergență din listă (`firme.js` l. 297) scrie *„Denumirea din aplicație e cea folosită în documente."* **Nu e.** În documente pleacă `firma_profil.nume`. Ecranul „Date firmă" spune corect — *„în declarații: … asta pleacă pe hârtie"* — iar lista spune invers. **Două ecrane, două afirmații, una falsă.** E prag 1, și nu depinde de decizia R81.
+- **și un lucru FALS pe un ecran de azi, găsit de probă**: caseta de divergență din listă (`firme.js` l. 297) scrie *„Denumirea din aplicație e cea folosită în documente."* **Nu e.** În documente pleacă `firma_profil.nume`. Ecranul „Date firmă" spune corect — *„în declarații: … asta pleacă pe hârtie"* — iar lista spune invers. **Două ecrane, două afirmații, una falsă.** *(Textul de dinainte spunea „e prag 1, și nu depinde de decizia R81". Prima jumătate a fost **reclasificată de Costin, 28.08.2026**: **nu e prag 1** — e o afirmație falsă despre **ce pleacă pe declarația fiscală**, afișată chiar în momentul în care omul alege, pe un ecran unde alegerea s-a și făcut o dată, pe o firmă reală. A doua jumătate rămâne adevărată: **nu depinde de decizia R81**, și de-aia s-a reparat fără ea. Instanța, cu tot ce s-a construit pentru ea, e scrisă la **R82**.)*
 - **cine scrie în `public.tenants.nume` — toate locurile**: **trei**, toate în `core/tenant_provisioning.py`. (1) l. 172, `INSERT`-ul de la creare (`provision_tenant`). (2) l. 319, `alege_denumirea`, ramura `anaf`. (3) l. 361, `actualizeaza_tenant`, adică `PUT /tenants/{id}`. **În afară de `PUT`: două.** `grep` pe `UPDATE public.tenants` nu dă nimic altceva decât `activ`, `nume_anaf`, `nume_ales`. *(Un al patrulea candidat — l. 227, `nume = COALESCE(NULLIF(%s,''), nume)` sub `seteaza_nume=True`, pe calea `POST /auth/register` (`main.py` l. 1165) — **nu intră**: setul acela se aplică la `UPDATE "<schema>".firma_profil` (l. 249), nu la `tenants`. **Prima formă a acestui rând îl număra, greșit — e greșeala mea**, corectată aici la a doua citire.)*
 - **și consecința care atinge R77**: ramura *„Ia denumirea de la ANAF"* face `UPDATE public.tenants SET nume=%s` (l. 319) — **și atât**. `firma_profil.nume` rămâne neatins. Deci alegerea consemnată ieri **nu ajunge pe hârtie**: butonul schimbă eticheta din listă, nu faptul fiscal.
 - **dacă adevărul ar deveni cel fiscal, caseta R77 s-ar muta**: azi se ancorează pe `t.nume` vs `t.nume_anaf` (`_divergentaNume`, `firme.js` l. 259-260), iar `detalii_tenant` (`tenant_provisioning.py` l. 261-265) selectează **numai** coloane din `public.tenants` — `firma_profil.nume` nu ajunge nici în listă, nici în `GET /tenants/{id}`. Ar muta: sursa casetei, sarcina utilă a listei, ramura `anaf` a lui `alege_denumirea` (ar trebui să scrie în schemă), și consemnarea din `actualizeaza_tenant`. **Ecranul „Date firmă" construit ieri NU s-ar muta** — el citește deja `profil.nume` din `GET /tenants/{id}/firma-profil/date` și numește corect care pleacă pe hârtie.
 - **etichetă scurtă per firmă: NU EXISTĂ.** Nici pe `public.tenants` (15 coloane), nici pe `firma_profil` (`tenant_template.sql` l. 480-520). `grep` pe `alias|denumire_scurta|nume_scurt|eticheta_firma|porecla` în cod propriu — zero. Nu se construiește acum; se scrie doar că nu e.
+- **CONSTATAREA CARE SCHIMBĂ ÎNTREBAREA — 28.08.2026, pe commit `4ffbcd1`** *(cerută de Costin
+  odată cu blocul F: „R81 primește constatarea că divergența nu se poate naște la creare")*:
+  **divergența nu se poate naște la creare.** `provision_tenant` scrie **același** șir în
+  `public.tenants` (`core/tenant_provisioning.py` l. 172) **și** în `{schema}.firma_profil`
+  (l. 190), în aceeași tranzacție; `precompleteaza_din_anaf(seteaza_nume=False)`, chemat imediat
+  după la `POST /tenants`, nu atinge niciuna. **Se naște numai prin redenumire ulterioară** —
+  fiindcă amândouă căile care redenumesc ating **un singur loc din două**: `PUT /tenants/{id}`
+  (`actualizeaza_tenant`, l. 361) scrie în `public.tenants`, iar ramura `anaf` a lui
+  `alege_denumirea` (l. 319) scrie tot acolo. **`firma_profil.nume` — cel care pleacă pe hârtie —
+  n-are nicio cale de redenumire dinspre portofoliu.** Singurul loc care îl scrie după creare e
+  ecranul „Date firmă", pe cealaltă rută.
+- **Deci întrebarea restanței nu mai e „care denumire e adevărul", ci „DE CE redenumirea atinge
+  unul singur".** Diferența nu e de formulare, e de obiect: prima întrebare cere o **decizie de
+  produs** (care e sursa de adevăr); a doua cere o **explicație a codului de azi** — de ce două
+  ecrane care schimbă *denumirea firmei* scriu în două locuri diferite, și dacă asta a fost vreodată
+  o alegere. Cele patru divergențe de fixtură sunt exact urma mecanismului: cineva a tastat un nume
+  într-un loc, semănătorul a scris altul în celălalt, și **nimic nu le-a confruntat**. Titlul
+  restanței s-a rescris în forma asta.
+- **Ce NU se schimbă:** decizia rămâne a lui Costin, restanța rămâne **DESCHISĂ**, și **nu s-a
+  construit nimic pe ea**. Ramura `anaf` scrie azi exact ce scria ieri. Ce s-a reparat pe 28.08 e
+  **afirmația de pe ecran** (vezi R82), nu comportamentul.
+- **Și o cifră care se poate reface acum, fiindcă populația e declarată** *(H1/H2, 28.08.2026)*:
+  clichetul `_DIVERGENTE_CUNOSCUTE` din `core/test_nume_firma_unic.py` a coborât de la **4** la
+  **0**. Vechea valoare era un **clichet pe fixturi** — instrumentul citea toate firmele, fără
+  filtru de cabinet. Populația e acum scrisă lângă clichet: **14 firme reale, cabinetul 1968**,
+  excluzând explicit cabinetul de test **4163** cu motivul și cu decizia din `DECIZII.md` (09.08).
+  Excluderea are propriul anti-vacuu — dacă `id`-ul 4163 nu mai poartă numele sub care a fost
+  exclus, poarta cade —, iar cele **4** divergențe de fixtură se verifică separat, ca afirmația
+  „erau ale semănătorului" să nu îmbătrânească netestată.
 
 
 ### R80 — Pentru 51 din 411 rute, gardul „rută fără apelant" nu poate afirma nimic

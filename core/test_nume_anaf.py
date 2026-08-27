@@ -30,6 +30,7 @@ CE NU FACE, declarat:
 import ast
 import io
 import os
+import re
 
 from core import db
 
@@ -205,8 +206,26 @@ def test_alegerea_are_AMANDOUA_ramurile_si_amandoua_SCRIU():
 
 
 def test_o_citire_ANAF_mai_noua_REDESCHIDE_intrebarea():
-    """Alegerea de azi nu acoperă o denumire schimbată la registru mâine. Regula trăiește în
-    ecran: se compară `nume_anaf_la` cu `nume_ales_la`."""
+    """**GARDĂ PE CALE MOARTĂ.** Ramura pe care o păzește e corectă și **nedeclanșabilă azi.**
+
+    Alegerea de azi nu acoperă o denumire schimbată la registru mâine. Regula trăiește în ecran: se
+    compară `nume_anaf_la` cu `nume_ales_la`, iar dacă citirea e mai nouă decât alegerea, caseta
+    reapare.
+
+    **[G2, 28.08.2026] De ce se marchează.** `nume_anaf` și `nume_anaf_la` se scriu într-un singur
+    loc — `precompleteaza_din_anaf` —, chemat din **trei** rute, **toate pe o firmă abia
+    provizionată**; importul în masă respinge un CUI existent înainte să ajungă acolo. **Nicio rută
+    nu re-citește ANAF pentru o firmă existentă.** Deci condiția `nume_anaf_la > nume_ales_la` n-are
+    cum să devină adevărată, iar testul ăsta e **verde pe vecie fără să demonstreze nimic** —
+    aceeași familie cu semaforul permanent verde. Costin, 28.08: *nu îl șterge; marchează-l acolo
+    unde se citește, cu condiția care l-ar învia.*
+
+    **CONDIȚIA CARE ÎL ÎNVIE**, și e una singură: o cale prin care ANAF se re-citește pentru o firmă
+    **care există deja** — o reîmprospătare periodică, un buton „verifică la ANAF", o revalidare de
+    CUI la redenumire. În ziua în care apare, marcajul ăsta se **scoate**, iar testul redevine o
+    gardă vie. Până atunci, ce îl ține onest e `test_calea_care_ar_REDESCHIDE_intrebarea_e_INCA_moarta`,
+    care numără chiar căile: dacă apare a patra, poarta cade și cere scoaterea marcajului.
+    """
     js = io.open(os.path.join(_RAD, "static", "js", "ecrane", "firme.js"), encoding="utf-8").read()
     assert js.count("nume_ales_la") >= 2, (
         "ecranul nu mai știe dacă întrebarea a primit răspuns — ori nu se mai pune niciodată, "
@@ -223,3 +242,113 @@ def test_ecranul_stie_cand_o_citire_e_VECHE_nu_divergenta():
         "divergență")
     assert js.count('fel: "veche"') >= 0 and js.count('"veche"') >= 2, (
         "ramura «citire veche» nu mai există în ecran")
+
+
+# ── [G2, 28.08.2026] Cât timp calea rămâne moartă ────────────────────────────
+# Cele trei căi de captare a instantaneului ANAF, toate pe o firmă **abia provizionată**:
+#   `main.py` — `POST /auth/register`, `POST /tenants` (adăugare firmă), `POST /migrare/importa`.
+# Numărul e clichet în AMÂNDOUĂ direcțiile, și nu fiindcă trei ar fi o cifră bună: cât timp e
+# **exact** mulțimea de la creare, marcajul „gardă pe cale moartă" de mai sus e adevărat. A patra
+# cale e chiar evenimentul care îl face fals.
+_CAPTARI_ANAF = 3
+
+
+def _apeluri_catre(nume_functie):
+    """Apelurile către `nume_functie` din codul de producție, ca (fișier, linie). Se citește
+    APELUL din AST, nu numele scris în text: o pomenire într-un comentariu n-are voie să conteze,
+    iar un apel scris pe două rânduri n-are voie să scape."""
+    gasite = []
+    for rel in ["main.py"] + ["core/" + f for f in sorted(os.listdir(os.path.join(_RAD, "core")))
+                              if f.endswith(".py") and not f.startswith("test_")]:
+        sursa = io.open(os.path.join(_RAD, rel), encoding="utf-8").read()
+        try:
+            arb = ast.parse(sursa)
+        except SyntaxError:      # pragma: no cover
+            continue
+        for c in ast.walk(arb):
+            if not isinstance(c, ast.Call):
+                continue
+            n = c.func.attr if isinstance(c.func, ast.Attribute) else getattr(c.func, "id", None)
+            if n == nume_functie:
+                gasite.append((rel, c.lineno))
+    return sorted(gasite)
+
+
+def test_calea_care_ar_REDESCHIDE_intrebarea_e_INCA_moarta():
+    """[G2] Marcajul de mai sus e o afirmație despre cod, deci poate deveni fals mâine. Asta îl ține."""
+    ap = _apeluri_catre("precompleteaza_din_anaf")
+    assert len(ap) <= _CAPTARI_ANAF, (
+        "au apărut căi noi care citesc ANAF: %s. Dacă vreuna se aplică unei firme care EXISTĂ deja, "
+        "`nume_anaf_la` poate depăși `nume_ales_la` — adică ramura de redeschidere devine "
+        "declanșabilă, iar marcajul «gardă pe cale moartă» din "
+        "`test_o_citire_ANAF_mai_noua_REDESCHIDE_intrebarea` devine FALS și se scoate." % ap)
+    assert len(ap) >= _CAPTARI_ANAF, (
+        "captarea ANAF se face acum din %d locuri, nu din %d (%s) — dacă o cale s-a scos "
+        "deliberat, coboară `_CAPTARI_ANAF`; altfel instantaneul nu se mai păstrează pe undeva"
+        % (len(ap), _CAPTARI_ANAF, ap))
+
+
+# ── [F4, 28.08.2026] Ce ține textul reparat de pe ecran ──────────────────────
+def _tabelele_din(arb, nume_functie):
+    """Tabelele în care scrie funcția, citite din SQL-ul dat lui `execute` — un NOD, nu un șir
+    căutat în fișier. Pe un SQL compus (`'… "%s".t …' % schema`) se coboară pe stânga, unde stă
+    litera; de-aia se vede și o scriere într-o schemă de tenant, unde schema e interpolată."""
+    fn = next((n for n in ast.walk(arb)
+               if isinstance(n, ast.FunctionDef) and n.name == nume_functie), None)
+    assert fn is not None, "funcția `%s` nu mai există" % nume_functie
+    out = set()
+    for n in ast.walk(fn):
+        if (isinstance(n, ast.Call) and isinstance(n.func, ast.Attribute)
+                and n.func.attr == "execute" and n.args):
+            a = n.args[0]
+            while isinstance(a, ast.BinOp):
+                a = a.left
+            if not (isinstance(a, ast.Constant) and isinstance(a.value, str)):
+                continue
+            sql = " ".join(a.value.split())
+            m = re.match(r'^(?:INSERT INTO|UPDATE|DELETE FROM)\s+(?:"?[^\s(]+"?\.)?([A-Za-z_]\w*)',
+                         sql, re.I)
+            if m:
+                out.add(m.group(1))
+    return out
+
+
+def _tabelele_scrise(nume_functie):
+    sursa = io.open(os.path.join(_RAD, "core", "tenant_provisioning.py"), encoding="utf-8").read()
+    return _tabelele_din(ast.parse(sursa), nume_functie)
+
+
+def test_alegerea_de_denumire_NU_atinge_denumirea_FISCALA():
+    """[F4] Ecranul spune de azi că alegerea schimbă **numai** eticheta din portofoliu, și că pe
+    declarații pleacă denumirea fiscală, pe care caseta n-o atinge. **E o afirmație despre
+    comportament**, deci se păzește pe comportament, nu pe șirul de text.
+
+    Dacă ramura `anaf` ajunge vreodată să scrie în `firma_profil` — ceea ce e chiar una din
+    variantele deschise ale lui R81 —, textul devine fals **invers**: ecranul ar spune că nu atinge
+    hârtia, iar el ar atinge-o. Testul trebuie să pice atunci, ca textul să se schimbe odată cu
+    codul. **Nu e o interdicție**: R81 nu e decisă, iar dacă decizia e să scrie, se scrie — se
+    schimbă atunci și textul, și testul, împreună.
+    """
+    # Operatorul de mulțime, nu `in`: `"x" in scrise` ar trece tăcut dacă `scrise` ar deveni
+    # vreodată un șir, iar `>=` crapă. (METODA §23, forma recomandată de `scan_garzi_pe_text`.)
+    for f in ("alege_denumirea", "_consemneaza_alegerea"):
+        scrise = _tabelele_din(ast.parse(io.open(
+            os.path.join(_RAD, "core", "tenant_provisioning.py"), encoding="utf-8").read()), f)
+        assert not (scrise & {"firma_profil"}), (
+            "`%s` scrie acum în `firma_profil` (%s), deci alegerea ATINGE denumirea care pleacă pe "
+            "declarații. Caseta din `static/js/ecrane/firme.js` spune exact pe dos — schimbă textul "
+            "odată cu codul, altfel ecranul minte în cealaltă direcție." % (f, sorted(scrise)))
+        assert scrise >= {"tenants"}, (
+            "[anti-vacuu] `%s` nu mai scrie nici măcar în `public.tenants` — extractorul nu vede "
+            "SQL-ul, deci absența lui `firma_profil` nu dovedește nimic" % f)
+
+
+def test_CALIBRARE_F4_o_scriere_in_firma_profil_chiar_s_ar_vedea():
+    """Direcția inversă, pe forma exactă a schimbării care ar face textul fals: un `UPDATE` într-o
+    schemă de tenant, compus la rulare. Un extractor care s-ar uita la literalul întreg n-ar vedea
+    numele tabelei, fiindcă schema e interpolată — iar absența lui ar arăta ca o dovadă."""
+    fals = ast.parse(
+        'def alege_denumirea(conn, tid):\n'
+        '    with conn.cursor() as cur:\n'
+        '        cur.execute(\'UPDATE "%s".firma_profil SET nume=%%s\' % schema, (n,))\n')
+    assert _tabelele_din(fals, "alege_denumirea") == {"firma_profil"}

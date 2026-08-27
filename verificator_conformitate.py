@@ -1142,6 +1142,63 @@ except Exception as _ebn:
     print("")
     print("### GARD POARTA BAZEI NULE: NEVERIFICAT (%s)" % _ebn)
 
+# --- GARD E1 / E2 (DS cap.26 si cap.27, 28.08.2026): cele doua reguli de ecran, pe STRUCTURA.
+#
+# E1 - un atribut al aceleiasi entitati tinut in DOUA locuri: nodul de randare care declara perechea
+#      (`data-e1`) trebuie sa NUMEASCA sursa care produce efectul si sa nu taca despre niciuna. O
+#      sursa pe care ecranul n-o are se DECLARA lipsa (`data-e1-absent`), nu se trece sub tacere.
+#      PRAG 0, nu clichet: un nod declarat pe jumatate e chiar defectul din care s-a scris regula
+#      (F1 - caseta de alegere a denumirii spunea ca eticheta din portofoliu pleaca in documente).
+#
+# E2 - un act cu efect asupra unei entitati se incheie cu o confirmare vizibila. CLICHET, nu prag:
+#      4 din 7 acte de nivel firma se termina azi in tacere, iar repararea lor e R82, nu tura asta.
+#
+# DE CE NU AICI CIFRELE: sursa unica e core/scan_ecran_reguli.py, citita si de core/test_reguli_ecran.py.
+# Doua clichete pe acelasi lucru se pot desparti in tacere - lectia R62 („regula era in doua locuri
+# si diferita"). Verificatorul afiseaza si blocheaza; nu tine numar propriu.
+rap["e1_pereche_incompleta"] = []
+rap["e2_act_fara_confirmare"] = []
+try:
+    import sys as _sys_ser
+    if BAZA_PY not in _sys_ser.path:
+        _sys_ser.path.insert(0, BAZA_PY)
+    from core import scan_ecran_reguli as _ser
+    _e1_nec, _e1_ner = _ser.scaneaza_e1()
+    _e1_declarate = sum(len(_ser.perechi_pe_ecran(open(_c, encoding='utf-8').read()))
+                        for _c in _ser._fisiere_ecran())
+    for _f, _l, _k, _cod, _m in _e1_nec:
+        rap["e1_pereche_incompleta"].append((_f, _l, _k, _m))
+    for _k in _e1_ner:
+        rap["e1_pereche_incompleta"].append(
+            ("REGISTRU", 0, _k, "pereche declarata in PERECHI pe care niciun ecran n-o mai arata"))
+    _e2_fara, _e2_toate = _ser.scaneaza_e2()
+    if len(_e2_fara) > _ser.CLICHET_E2_FARA_CONFIRMARE:
+        for _f, _l, _a, _r in _e2_fara:
+            rap["e2_act_fara_confirmare"].append((_f, _l, _a, _r))
+    if len(_e2_toate) != _ser.CLICHET_E2_ACTE:
+        rap["e2_act_fara_confirmare"].append(
+            ("REGISTRU", 0, "ANTI-VACUU",
+             "clasa actelor de nivel firma are %d membri, nu %d - o ruta redenumita ar goli clasa"
+             % (len(_e2_toate), _ser.CLICHET_E2_ACTE)))
+    print("")
+    print("### GARD E1 (DS cap.26 — doua nume distincte, si care produce efectul):")
+    print("  noduri care declara o pereche: %d · neconforme: %d (prag 0)%s" % (
+        _e1_declarate, len(_e1_nec), "  <== BLOCHEAZA" if _e1_nec else ""))
+    for _f, _l, _k, _c, _m in _e1_nec:
+        print("  NECONFORM %-30s %5d  [%s] %s" % (_f, _l, _k, _m))
+    print("  perechi din registru nerandate: %d %s" % (len(_e1_ner), _e1_ner or ""))
+    print("### GARD E2 (DS cap.27 — actul se incheie cu o confirmare vizibila):")
+    print("  acte de nivel firma fara confirmare: %d din %d (clichet %d din %d)%s" % (
+        len(_e2_fara), len(_e2_toate), _ser.CLICHET_E2_FARA_CONFIRMARE, _ser.CLICHET_E2_ACTE,
+        "  <== BLOCHEAZA" if len(_e2_fara) > _ser.CLICHET_E2_FARA_CONFIRMARE else ""))
+    for _f, _l, _a, _r in _e2_fara:
+        print("  TACUT  %-30s %5d  %-9s %s" % (_f, _l, _a, _r))
+    if len(_e2_fara) < _ser.CLICHET_E2_FARA_CONFIRMARE:
+        print("  -> a scazut la %d: coboara CLICHET_E2_FARA_CONFIRMARE in core/scan_ecran_reguli.py"
+              % len(_e2_fara))
+except Exception as _e_ser:
+    rap["e1_pereche_incompleta"].append(("verificator", 0, "EROARE", "gard E1/E2: " + str(_e_ser)))
+
 print("=" * 92)
 print("RAPORT DE CONFORMITATE v2 — Design System")
 print("=" * 92)

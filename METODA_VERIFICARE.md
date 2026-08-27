@@ -528,6 +528,28 @@ primul test.
 **Corolar, verificat de patru ori într-o zi:** greșelile astea au fost prinse **toate** de un caz
 cunoscut, și **niciuna** de recitire. Recitirea confirmă ce credeai deja; cazul cunoscut nu.
 
+### 10.16 — O stare afirmată ca ACTUALĂ se recitește imediat înainte de a fi scrisă
+
+**Regula.** **Orice stare afirmată ca ACTUALĂ se recitește imediat înainte de a fi scrisă în raport,
+nu la începutul turei.** O stare citită la minutul 3 al unei ture de 30 și raportată la minutul 30 e
+o **amintire**, nu o măsurătoare — și se scrie cu ora citirii. Corolarul: nicio propoziție de forma
+„e exact cum ai lăsat-o" fără o recitire între ea și trimiterea raportului. **Sunt doi actori pe baza
+asta, nu unul.**
+
+**Instanța, 27.08.2026, ora 19:27:** am raportat `nume_ales` ca **NULL** — la **11 minute** după ce
+fusese scris. Citirea era adevărată când am făcut-o și falsă când am scris-o, iar între cele două
+apăsase Costin un buton. Nimic din raport nu spunea la ce oră fusese citit, deci nimic nu-l putea
+pune la îndoială.
+
+**De ce nu e o neatenție, ci o clasă.** Baza nu e a mea. Orice stare care se poate schimba prin ecran
+— portofoliul, alegerile consemnate, perioadele confirmate — are **doi** actori, iar al doilea nu-mi
+spune când apasă. O măsurătoare pe cod poate îmbătrâni numai dacă schimb eu codul; una pe **date**
+îmbătrânește singură.
+
+**Testul practic, înainte de a trimite raportul:** pentru fiecare propoziție care spune *este*, nu
+*a fost*, întreabă când a fost citită. Dacă răspunsul nu e „acum", ori se recitește, ori se scrie ora
+și devine o afirmație despre trecut. Ora e mai ieftină decât recitirea și e întotdeauna disponibilă.
+
 ## 11. O POZIȚIE se atribuie după CE PRODUCE modulul, nu după cum se numește
 
 **Regula.** Când clasifici un artefact — *există / nu există*, *predare / construcție*, *ore / zile* —
@@ -1212,3 +1234,36 @@ spre caracterul greșit — de obicei o linie-două mai jos.
 și șirurile corecte. Instanța: a stricat trei literale valide într-un fișier pe care încerca să-l
 repare. **Se scrie corect de la început** — perechea tipografică, în tot textul românesc — sau
 textul stă într-un fișier separat, nu într-un literal.
+
+## §26 — O CIFRĂ DESPRE „FIRME REALE" DECLARĂ POPULAȚIA PE CARE S-A CALCULAT, SAU NU SE SCRIE
+
+**Regula.** O măsurătoare care spune ceva despre *firmele reale*, *utilizatorii reali* sau *datele de
+producție* scrie, lângă cifră, **pe cine s-a calculat** — și cum se poate reface acea mulțime. Fără
+asta, cifra e adevărată despre o populație pe care nimeni n-o poate numi, iar cine o recitește peste
+o săptămână o va citi despre alta.
+
+**Instanța, 27–28.08.2026.** Clichetul `_DIVERGENTE_CUNOSCUTE = 4` din `core/test_nume_firma_unic.py`
+măsura *„firme la care denumirea din portofoliu diferă de cea fiscală"*. Interogarea lui era
+`SELECT id, nume, schema_name FROM public.tenants` — **fără niciun filtru**. Măsurat pe populația
+declarată: **toate cele patru divergențe sunt la cabinetul de test 4163**, creat deliberat pe
+09.08.2026 (`DECIZII.md`) ca mediu izolat, cu firme adăugate manual și profil fiscal scris de un
+semănător din afara repo-ului. **Pe cele 14 firme reale: 0.** Deci clichetul nu măsura aplicația, ci
+**semănătorul** — și l-ar fi ținut pe 4 la infinit, cu aerul unei datorii tehnice.
+
+**De ce nu e o greșeală de interogare.** Instrumentul era corect; ce lipsea era **declarația**. Baza
+nu avea — și, prin decizia lui Costin din 28.08, nu primește — nicio coloană care să spună „cabinet de
+test"; populația se declară **lângă clichet**, ca listă explicită de cabinete excluse, cu motivul și
+cu decizia care le-a creat. Iar excluderea își cere propriul anti-vacuu: garda verifică faptul că
+cabinetul exclus **încă poartă numele sub care a fost exclus**, altfel un `id` reciclat ar scoate
+tăcut din măsurătoare un cabinet real.
+
+**Ce cere, practic:**
+
+1. **numește mulțimea** — „14 firme, cabinetul 1968" e o populație; „firmele din bază" nu e;
+2. **numește ce ai scos și de ce**, cu trimitere la decizia care a creat excepția;
+3. **verifică excluderea**, nu doar aplic-o: un identificator se poate recicla;
+4. **anti-vacuu pe rest** — dacă populația declarată se golește, cifra devine 0 și arată ca o
+   reparație. Se asertează că mai are membri.
+
+**Corolarul, și e mai larg decât R81:** orice măsurătoare viitoare *„pe firme reale"* lovește aceeași
+lipsă. Cifra care nu-și declară populația nu se corectează — **nu se scrie.**

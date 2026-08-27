@@ -499,7 +499,109 @@ design. Fără graniță, devine un proiect de traduceri și moare.
 **NU se asamblează șabloane.** Un mesaj compus din câmpuri sună a formular („Obligație: D100.
 Perioadă: T4 2025."). Proza rămâne scrisă de om; structura stă lângă ea, nu în locul ei.
 
+## 26. Un atribut ținut în DOUĂ locuri — două nume distincte, și care produce efectul (v2.61, 28.08.2026)
+
+**Regula.** **Două lucruri diferite primesc două nume distincte.** Când aceeași entitate are un
+atribut în două locuri, ecranul nu alege tăcut între ele: le arată pe amândouă, cu etichete care
+spun **de unde vine fiecare**, iar când **diferă**, spune **care dintre ele produce efectul**
+(pleacă pe hârtie, ajunge la client, intră în calcul). Când coincid, se spune și asta.
+
+### 26.1 Cele două instanțe din care s-a scris
+
+- **R63 — aceeași persoană are două adrese în aplicație.** `public.users.email` e adresa cu care
+  clientul **intră** în portal; `firma_profil.email` e cea la care **primește** pachetul lunar.
+  Decizia lui Costin a fost **(c)**: *rămân două, fiindcă înseamnă lucruri diferite… cine intră în
+  portal și cine primește pachetul lunar chiar pot fi persoane diferite.* Ce s-a schimbat au fost
+  **numele** — *Adresa de autentificare* și *Adresa la care primești pachetul lunar* —, iar
+  formularul spune explicit că pachetul **nu** urmează schimbarea. Tot de acolo vine și jumătatea
+  care se uită ușor: *un ecran care arată aceeași adresă în două câmpuri fără să spună că sunt
+  distincte produce chiar presupunerea greșită.*
+- **R81 — o firmă are denumirea în două locuri.** `public.tenants.nume` e denumirea din
+  **portofoliu** — lista și bara de sus. `"<schema>".firma_profil.nume` e cea **fiscală**: pleacă în
+  D100, D101, D205, D301, D390, D394, D406 și pe bilanț. Probat 27.08.2026 pe declarații generate
+  într-o tranzacție întoarsă la savepoint. **Restanța rămâne deschisă** — care dintre ele e adevărul
+  e decizia lui Costin —, dar partea de ecran nu așteaptă decizia: cele două se **numesc** distinct,
+  iar unde diferă se spune **care pleacă pe hârtie**.
+
+### 26.2 Cazul în care ecranul nu are amândouă valorile
+
+Se întâmplă, și nu e o scuză să taci. Lista de firme vine din `GET /tenants`, care citește numai
+`public` — denumirea fiscală nu ajunge acolo. Regula nu cere **valoarea**; cere **să nu se aleagă
+tăcut**. Deci o sursă pe care ecranul n-o are se **declară lipsă**, pe nodul care o spune în limba
+omului: *„pe declarații și pe bilanț pleacă denumirea fiscală, ținută separat, în «Date firmă»;
+caseta asta nu o schimbă."* Ce rămâne interzis e să nu fie pomenită deloc — forma din care s-a
+născut **F1**, unde caseta de alegere afirma exact invers.
+
+### 26.3 Cum se marchează, ca să poată fi gardat
+
+Nodul de randare își declară perechea, iar gardul citește **noduri**, nu text:
+
+| atribut | pe ce nod | ce spune |
+|---|---|---|
+| `data-e1="<cheie>"` | nodul care ține perechea | „aici se arată un atribut ținut în două locuri" |
+| `data-e1-sursa="<sursă>"` | nodul cu **valoarea** | din care dintre cele două locuri vine |
+| `data-e1-absent="<sursă>"` | nodul care **spune** că lipsește | sursa asta nu se vede pe ecranul ăsta |
+| `data-e1-efect="<sursă>"` | nodul care numește efectul | care dintre ele pleacă pe hârtie |
+
+Cheile trăiesc în `core/scan_ecran_reguli.py::PERECHI`, cu cele două locuri scrise pe numele lor de
+coloană. Gard: `core/test_reguli_ecran.py` + un bloc în `verificator_conformitate.py`.
+
+### 26.4 Ce NU acoperă gardul, declarat
+
+- **Nu citește textul.** Că eticheta chiar spune de unde vine valoarea e o judecată de om.
+- **Nu prinde R63.** Cele două adrese trăiesc pe **două ecrane diferite**, prin chiar decizia (c) a
+  restanței. Regula „același nod le arată pe amândouă" n-are ce să aserteze acolo; ce se aplică e
+  partea de **nume distincte**, care nu e mecanică. Se scrie aici ca să nu pară omisiune.
+- **Nu cere «când coincid, se spune și asta».** Partea aia e condiționată la rulare, iar un scan
+  static nu poate deosebi ramura care se randează de cea care nu. Rămâne regulă scrisă, nepăzită.
+
+## 27. Un act se încheie cu o CONFIRMARE VIZIBILĂ, nu cu dispariția ecranului (v2.61, 28.08.2026)
+
+**Regula.** **Un act cu efect asupra unei entități se încheie cu o confirmare vizibilă care numește
+entitatea și consecința.** Nu „Salvat": *„«BORG DESIGN SRL» a fost scoasă din portofoliu — datele ei
+nu mai există."* Demontarea ecranului **nu e** confirmare: „a dispărut" arată identic cu „a reușit"
+și cu „s-a rupt ceva". Cu cât actul e mai puțin reversibil, cu atât confirmarea e mai obligatorie.
+
+### 27.1 Instanța măsurată, cu liniile ei
+
+27.08.2026, la 19:16:24, Costin a apăsat *„Păstrez denumirea mea"*. Scrierea s-a făcut și e probată
+în bază. **Ecranul n-a spus nimic.** Caseta a dispărut fiindcă `nav.acasa()` demontează ecranul, nu
+fiindcă actul ar fi confirmat ceva.
+
+Măsurat atunci în `static/js/ecrane/firme.js`: **4 din 6** acte de nivel firmă se termină fără nicio
+confirmare, și sunt exact cele cu efectul cel mai mare — **alegerea de denumire** (l. 312),
+**scoaterea definitivă** (l. 2465) și **cele două dezactivări** (l. 2450, l. 2493). Toate patru au
+aceeași formă: `api.post`/`api.del` → `nav.acasa()` → `setFirmaInLucru("")`, fără `arataMesaj`.
+Celelalte două **confirmă**: crearea (`_bannerFirmaCreata`, l. 107) și reactivarea (*„«X» e din nou
+în portofoliu."*, l. 228).
+
+**Și partea care doare:** convenția nu lipsește din fișier — e aplicată pe actul **reversibil**
+(reactivarea) și lipsește pe cel **ireversibil** (scoaterea firmei). Pe calea de **eroare**, toate
+patru arată un mesaj. **Ecranul știe să vorbească; tace numai când reușește.**
+
+**Numitorul s-a corectat la măsurarea cu instrument (28.08.2026): 4 din 7, nu 4 din 6.** Numărătoarea
+de atunci se uita într-un singur fișier; al șaptelea act e `PUT /tenants/{id}` din `date_firma.js`,
+care **confirmă**. Cele patru tăcute sunt aceleași.
+
+### 27.2 Ce e „act de nivel firmă", și de ce se declară
+
+Nu se poate citi din forma căii: `/tenants/{id}/activare` și `/tenants/{id}/vector` arată identic,
+iar al doilea e o **dată** a firmei, nu firma. Deci domeniul se **declară**, în
+`core/scan_ecran_reguli.py::ACTE_DE_FIRMA`: creare, redenumire, scoatere, (de)activare, alegerea de
+denumire. Numărul actelor găsite e el însuși clichet — o rută redenumită ar goli clasa, iar cifra ar
+coborî la zero arătând ca o reparație.
+
+### 27.3 Ce NU acoperă gardul, declarat
+
+- **Nu judecă textul.** „Salvat" trece pe mecanică. Că mesajul numește entitatea și consecința se
+  citește, nu se scanează — aceeași limită pe care o declară și R82.
+- **Nu se aplică în afara domeniului declarat.** Cele 95 de mutații care lovesc `/tenants/*` în tot
+  frontendul **nu** sunt în clasă; a le trata la fel ar fi confundat un act asupra firmei cu unul
+  asupra datelor din ea.
+
 ## Changelog
+**v2.61 (28.08.2026)** — **Două reguli de ecran, scrise și gardate: E1 (cap.26) și E2 (cap.27).** **E1:** când aceeași entitate are un atribut în două locuri, ecranul nu alege tăcut — le arată pe amândouă cu etichete care spun de unde vine fiecare, iar când diferă spune **care produce efectul**; o sursă pe care ecranul n-o are se **declară lipsă**, nu se trece sub tăcere. Instanțele: R63 (două adrese ale aceleiași persoane) și R81 (denumirea din portofoliu vs. cea fiscală). **E2:** un act cu efect asupra unei entități se încheie cu o confirmare vizibilă care numește entitatea și consecința; demontarea ecranului nu e confirmare. Instanța măsurată: **4 acte de nivel firmă din 7** se termină în tăcere, iar toate patru **vorbesc pe calea de eroare**. Ambele sunt gardate pe **structură**, nu pe text: nodurile de randare se parsează din literalii de șablon (`data-e1*`), iar actele se citesc pe **blocul `try`** care le cuprinde — un `arataMesaj` din `catch` **nu** confirmă nimic, ceea ce e chiar defectul. Instrument: `core/scan_ecran_reguli.py`; gărzi: `core/test_reguli_ecran.py` (22 de teste, din care 11 de calibrare, cu mutație pe modul propriu de eșec) + bloc în `verificator_conformitate.py`. Reparat odată cu ele: **F1/F2** — caseta de alegere a denumirii spunea *„Denumirea din aplicație e cea folosită în documente"*, ceea ce e fals, iar butoanele nu spuneau ce ating.
+
 **v2.60 (20.08.2026)** — **Indicatorul de stare nu are voie să mintă: politică ≠ aplicabilitate (audit tenant_006, cabinet 1968).** Indicatorul patru-ochi din `.subbara` afișa „Validarea în doi asistenți ✓" ori de câte ori politica era pornită, inclusiv pe un cabinet cu UN singur validator — unde enforcement-ul permitea deja auto-aprobarea. Pe același ecran, subbara zicea „validare în doi ✓" iar cardul zicea „De depus": contradicție cu sine. **Regula:** un indicator de stare afișează ce se APLICĂ (`efectiv`), nu ce s-a CONFIGURAT (`activ`); cele două se calculează într-un singur loc consumat și de backend și de UI. **Trei stări, nu două** — pornit-și-în-vigoare (bifă + `var(--verde-inchis)`), pornit-dar-suspendat (`var(--ardezie)`, FĂRĂ bifă și FĂRĂ verde — verdele e afirmația „funcționează"), oprit (absent). **„Oprit" și „suspendat" nu se spun cu același cuvânt:** textul cozii („Patru-ochi e dezactivat") îl lăsa pe patron să creadă că i s-a stins setarea; acum spune golul + cauza + ieșirea (cap.6, stare goală): „pornită, dar suspendată: ești singurul validator… reintră în vigoare de îndată ce un coleg primește dreptul de validare (cardul Asistenți)". **Trecerea graniței se anunță în DOUĂ registre:** cromul persistent (subbara = starea, o vede oricine deschide spațiul de lucru) + punctul de acțiune (dialogul „Acorzi dreptul de validare lui X?" → mesaj `ok` la salvare = momentul). Gărzi: `core/test_patru_ochi_efectiv.py` (adevărul indicatorului + o singură definiție a mulțimii de validatori + fundătura), `core/test_a11y_contrast_tokens.py` extins (ambele culori ale indicatorului ≥4,5:1 pe bara #dfe4ea; starea suspendată nu poate purta un token verde). Vezi DECIZII 20.08.2026.
 
 **v2.59 (19.08.2026)** — **Gard anti-suprascriere-tacuta (#1 din roadmap-ul de instrumente).** Orice `INSERT ... ON CONFLICT DO UPDATE` din producție (suprascriere TACITĂ a unui rând existent) cere o justificare inline `# upsert-ok: <motiv>`, altfel pică `core/test_upsert_motivat.py`. Suprascrierea tăcută devine o alegere CONȘTIENTĂ, cu motiv scris. Grounded: bug plan_conturi (adăugarea manuală de cont făcea `DO UPDATE` și redenumea tăcit contul OMFP standard — n-avea nicio justificare). Gardul a scos **15** upsert-uri în producție (grep-ul inițial văzuse 6) — toate revizuite și confirmate legitime (chei naturale). Roadmap-ul celor 11 instrumente propuse trăiește în `INSTRUMENTE_ROADMAP.md`, păzit de `core/test_instrumente_roadmap.py` (CONSTRUIT numește fișiere care există). Vezi [[regula-scrisa-nu-e-regula-pazita]].

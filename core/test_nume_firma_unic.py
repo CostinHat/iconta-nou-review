@@ -134,23 +134,60 @@ def test_cate_duplicate_mai_sunt_in_baza(conn):
         % (len(perechi), _DUPLICATE_CUNOSCUTE))
 
 
-# ── [R81, 27.08.2026] A DOUA denumire ────────────────────────────────────────
+# ── [R81, 27.08.2026 · H1/H2, 28.08.2026] A DOUA denumire ────────────────────
 # O firmă are denumire în două locuri: `public.tenants.nume` (portofoliul — lista, bara de sus)
 # și `<schema>.firma_profil.nume` (fiscală — pleacă în D100/D101/D205/D301/D390/D394/D406 și pe
-# bilanț). Nimic nu le confruntă. Măsurat 27.08.2026: **4 din 17** diferă deja.
+# bilanț). Nimic nu le confruntă.
 #
-# Ecranul le arată acum distinct și spune care pleacă pe hârtie. Ce se decide dacă diferă —
-# se împacă automat, se refuză, sau rămâne o alegere — e decizia lui Costin (R81).
-# Până atunci, clasa nu mai crește.
-_DIVERGENTE_CUNOSCUTE = 4
+# **POPULAȚIA, DECLARATĂ (H1).** Prima cifră — *4 din 17* — se măsura pe TOATE firmele din bază,
+# `SELECT id, nume, schema_name FROM public.tenants`, **fără niciun filtru de cabinet**. De-aia era
+# un clichet pe FIXTURI, nu pe aplicație: toate patru divergențele sunt la cabinetul de test 4163,
+# unde firmele s-au adăugat **manual prin ecran** (deci `tenants.nume` e ce a tastat omul, fără
+# forma juridică), iar profilul fiscal l-a scris un semănător din afara repo-ului, cu forma juridică
+# în el. Semănătorul din repo (`date_test/seed/transa2_coerenta_tva.py`) trece **același** șir prin
+# amândouă locurile — de-aia cabinetul real are 0.
+#
+# **Cum se declară, și de ce așa.** Costin, 28.08.2026: *rezolvă cel mai ieftin — listă explicită de
+# cabinete excluse, scrisă lângă clichet, cu motivul și cu decizia care creează cabinetul. Fără
+# coloană nouă în `accounting_firms`.* Deci nu există marker în bază; există lista de mai jos, iar
+# `test_cabinetul_exclus_e_INCA_cel_declarat` verifică faptul că `id`-ul **mai poartă numele sub care
+# a fost exclus** — un identificator reciclat ar scoate tăcut din măsurătoare un cabinet real.
+#
+# **Ce NU e exclus, și se scrie fiindcă a fost măsurat:** mai sunt trei cabinete cu nume de probă —
+# 9775 și 9776 (*Proba Test SRL*), 9777 (*Proba Valid SRL*) —, dar au **0 firme** azi, deci nu ating
+# cifra. Nu se exclud, fiindcă pentru ele n-am o decizie de citat; în ziua în care primesc firme,
+# cifra crește și întrebarea se pune atunci, cu date.
+_CABINETE_DE_TEST = {
+    4163: ("CABINET TEST FIR INTRARE SRL",
+           "mediu de test izolat, creat deliberat pe 09.08.2026 (DECIZII.md): datele de test "
+           "importate în cabinetul real ar fi făcut verdictele Controlului fiscal neatribuibile. "
+           "Firmele lui au CUI-uri false și s-au adăugat manual, ocolind fluxul ANAF."),
+}
+
+# **[H2, 28.08.2026] Recalculat pe populația declarată: ZERO.** Valoarea de dinainte, **4**, era un
+# clichet pe fixturi — măsura semănătorul din `~/date_test_cabinet`, nu aplicația, și l-ar fi ținut
+# pe 4 la infinit cu aerul unei datorii tehnice. Pe cele 14 firme reale nu există nicio divergență,
+# fiindcă `provision_tenant` scrie **același** șir în amândouă locurile (l. 172 și l. 190) și nicio
+# redenumire nu s-a făcut de atunci. Deci clasa e goală, iar clichetul o ține goală.
+_DIVERGENTE_CUNOSCUTE = 0
+
+# Ce trebuie să rămână adevărat despre partea EXCLUSĂ, altfel povestea de mai sus devine falsă fără
+# ca nimic să clipească: cele patru divergențe sunt încă acolo, la cabinetul de test.
+_DIVERGENTE_LA_CABINETELE_DE_TEST = 4
 
 
-def _perechi_de_denumiri():
+def _perechi_de_denumiri(doar_cabinetele_de_test=False):
+    """Perechile (portofoliu, fiscal) pe **populația declarată** — sau, invers, exact pe cea
+    exclusă. Un singur loc care citește, ca cele două mulțimi să nu se poată despărți în tăcere."""
     db.init_pool()
     perechi = []
     with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute("SELECT id, nume, schema_name FROM public.tenants ORDER BY id")
-        for tid, nume, schema in cur.fetchall():
+        cur.execute("SELECT id, nume, schema_name, accounting_firm_id FROM public.tenants "
+                    "ORDER BY id")
+        for tid, nume, schema, cabinet in cur.fetchall():
+            e_de_test = cabinet in _CABINETE_DE_TEST
+            if e_de_test != doar_cabinetele_de_test:
+                continue
             try:
                 cur.execute('SELECT nume FROM "%s".firma_profil WHERE id = 1' % schema)
                 r = cur.fetchone()
@@ -165,23 +202,67 @@ def _nrm(s):
     return " ".join(str(s or "").split()).lower()
 
 
+def _divergente(perechi):
+    return [(t, a, b) for t, a, b in perechi if b and _nrm(a) != _nrm(b)]
+
+
+def test_cabinetul_exclus_e_INCA_cel_declarat():
+    """[H1] Anti-vacuu pe **excludere**, nu pe măsurătoare. Excluderea se face pe `id`, iar un `id`
+    poate ajunge să însemne altceva. Dacă 4163 nu mai e cabinetul de test, măsurătoarea de mai jos
+    ar scoate din calcul un cabinet **real** — și ar face-o tăcut, arătând mai curată."""
+    db.init_pool()
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute("SELECT id, nume FROM public.accounting_firms WHERE id = ANY(%s)",
+                    (sorted(_CABINETE_DE_TEST),))
+        gasite = dict(cur.fetchall())
+    for cid, (nume, motiv) in sorted(_CABINETE_DE_TEST.items()):
+        assert cid in gasite, (
+            "cabinetul %d, exclus din măsurătoare pe motivul «%s», nu mai există. Scoate-l din "
+            "listă sau spune de ce rămâne." % (cid, motiv))
+        assert _nrm(gasite[cid]) == _nrm(nume), (
+            "cabinetul %d se numește acum «%s», nu «%s» — identificatorul a fost refolosit, iar "
+            "excluderea scoate din măsurătoare alt cabinet decât cel declarat."
+            % (cid, gasite[cid], nume))
+
+
+def test_populatia_declarata_nu_e_goala():
+    """[H1] A doua față a aceleiași griji: dacă filtrul înghite totul, `0 divergențe` devine
+    adevărat fiindcă nu se mai uită nimeni la nimic. **Zero pe zero firme nu e o măsurătoare.**"""
+    reale = _perechi_de_denumiri()
+    assert len(reale) >= 10, (
+        "[anti-vacuu] populația declarată are %d firme — cifra de mai jos n-ar mai fi despre "
+        "aplicație. Firmele excluse: %s" % (len(reale), sorted(_CABINETE_DE_TEST)))
+
+
 def test_cele_doua_denumiri_ale_unei_firme_nu_divergeaza_mai_mult():
+    """[H2] Pe **14 firme reale, cabinetul 1968**. Populația e cea declarată mai sus."""
     perechi = _perechi_de_denumiri()
-    assert len(perechi) > 5, "[anti-vacuu] doar %d firme citite" % len(perechi)
-    difera = [(t, a, b) for t, a, b in perechi if b and _nrm(a) != _nrm(b)]
+    difera = _divergente(perechi)
     assert len(difera) <= _DIVERGENTE_CUNOSCUTE, (
-        "firme la care denumirea din portofoliu diferă de cea fiscală: %d, clichetul e %d.\n  %s\n"
+        "firme la care denumirea din portofoliu diferă de cea fiscală: %d din %d (populația "
+        "declarată, fără cabinetele %s), clichetul e %d.\n  %s\n"
         "Cea fiscală e cea care pleacă pe hârtie. O firmă nouă n-are voie să intre în clasa asta."
-        % (len(difera), _DIVERGENTE_CUNOSCUTE,
+        % (len(difera), len(perechi), sorted(_CABINETE_DE_TEST), _DIVERGENTE_CUNOSCUTE,
            "\n  ".join("%s  ≠  %s" % (a, b) for _t, a, b in difera[:6])))
 
 
-def test_clichetul_divergentelor_nu_pastreaza_morti():
-    """A doua direcție: dacă s-au împăcat, cifra coboară deliberat — altfel rămâne o amintire."""
-    difera = [1 for _t, a, b in _perechi_de_denumiri() if b and _nrm(a) != _nrm(b)]
-    assert len(difera) >= _DIVERGENTE_CUNOSCUTE, (
-        "divergențele au scăzut de la %d la %d — coboară `_DIVERGENTE_CUNOSCUTE`, ca următoarea "
-        "creștere să fie prinsă de la cifra reală" % (_DIVERGENTE_CUNOSCUTE, len(difera)))
+def test_cele_patru_divergente_de_FIXTURA_sunt_inca_la_cabinetul_de_test():
+    """[H2, direcția a doua] La zero, aserțiunea «nu a scăzut» n-are conținut — ar fi un semafor
+    verde pe vecie. Ce are conținut e afirmația pe care se sprijină cifra: **cele patru divergențe
+    de dinainte erau ale fixturilor, și sunt încă acolo.** Dacă dispar, ori s-a curățat cabinetul
+    de test, ori semănătorul s-a schimbat — și atunci explicația scrisă lângă `_DIVERGENTE_CUNOSCUTE`
+    a devenit falsă și trebuie rescrisă, nu moștenită."""
+    de_test = _perechi_de_denumiri(doar_cabinetele_de_test=True)
+    assert de_test, ("[anti-vacuu] niciun tenant la cabinetele excluse %s — atunci excluderea nu "
+                     "scoate nimic, iar cifra n-a fost niciodată contaminată de ele"
+                     % sorted(_CABINETE_DE_TEST))
+    difera = _divergente(de_test)
+    assert len(difera) == _DIVERGENTE_LA_CABINETELE_DE_TEST, (
+        "cabinetele de test au acum %d divergențe, nu %d (%s). Explicația scrisă lângă clichet — "
+        "«cele patru erau artefact de fixtură» — nu se mai verifică; recitește-o înainte de a "
+        "schimba cifra."
+        % (len(difera), _DIVERGENTE_LA_CABINETELE_DE_TEST,
+           ", ".join("%s ≠ %s" % (a, b) for _t, a, b in difera[:6])))
 
 
 def test_ecranul_ARATA_ca_sunt_doua_si_care_pleaca_pe_hartie():
