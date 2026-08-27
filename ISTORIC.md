@@ -5461,6 +5461,67 @@ doar lista de rute."* Avea dreptate de doua ori.
 **Iar ce a scos ziua nu e cod, e o regulă:** de trei ori din trei, măsurătoarea cerută înainte de construcție a schimbat **ce** trebuia construit. Fără ea, aș fi livrat o cheie străină care oprea ștergerea de firmă, un al doilea câmp cu aceeași etichetă ca primul, și o poartă pe un drum pe care nu trecea nimeni.
 
 
+## 27.08.2026 (târziu) — ZIUA, partea a patra: pentru un contabil nu s-a schimbat NIMIC, iar asta e tot ce e de spus despre ea
+
+*Cerut de Costin: „dă ISTORIC pe ziua curentă; dacă ziua n-a schimbat nimic pentru un contabil, scrie-o ca atare."*
+
+**Verdictul întâi: ZERO.** Un contabil care înregistrează facturi, face salarii și depune declarații **nu ar observa absolut nimic** din ultimele două commituri ale zilei. Nu s-a atins niciun ecran, nicio rută, niciun generator de declarație, nicio regulă de calcul. S-au scris **numai registre**. Partea zilei care chiar a schimbat ceva pentru el e mai sus, la „noaptea" — butonul de scoatere mutat pe rând, denumirea corectabilă din „Date firmă", alegerea de denumire cerută cu două butoane.
+
+### CE A FĂCUT, ATUNCI, PARTEA ASTA A ZILEI
+
+**A desființat premisa unei restanțe deschise cu trei ore înainte.** R81 spunea că „4 din 17 firme au denumirea din portofoliu diferită de cea fiscală", și pe cifra aia urma să se ia o decizie de arhitectură. Măsurat înainte de decizie, cum s-a cerut:
+
+- **toate cele patru sunt la cabinetul de test `4163`**, mediul izolat creat deliberat pe 09.08.2026;
+- **excluzând cabinetele de test: 0 divergențe din 14 firme reale**;
+- **divergența n-a produs-o niciun utilizator** — firmele au fost adăugate manual prin ecran (deci numele din portofoliu e ce a tastat omul, fără formă juridică), iar profilul fiscal a fost scris de un semănător din afara repo-ului, cu `"ALFA MICRO SRL"`. Semănătorul din repo trece **același** șir prin amândouă locurile — de aceea cabinetul real are zero.
+
+**Deci decizia care urma să se ia pe „4 din 17" s-ar fi luat pe o măsurătoare a fixturilor.** Și clichetul care păzea clasa măsura tot fixturile: citea toate firmele, fără filtru de cabinet.
+
+### CE A IEȘIT DIN PROBE, ȘI NU DIN CITIRE
+
+Cerința era **probă**, nu inspecție de cod: generează o declarație reală pe o firmă unde cele două denumiri diferă și arată care a plecat. Generat pe `tenant_013`, în tranzacție întoarsă la savepoint:
+
+| act | ce a plecat |
+|---|---|
+| D100 T3/2026 | `den="ALFA MICRO SRL"` — **fiscală** |
+| D205 2026 | `den="ALFA MICRO SRL"` — **fiscală** |
+| bilanț S1005, 2026 și 2025 | `den="ALFA MICRO SRL"` — **fiscală** |
+| bara de sus a ferestrei | `ALFA MICRO` — **portofoliu** |
+
+**Iar din proba asta a ieșit o afirmație falsă pe un ecran viu:** caseta care cere alegerea de denumire scrie *„Denumirea din aplicație e cea folosită în documente."* Nu e — în documente pleacă cea fiscală, iar ecranul „Date firmă" spune exact invers, și corect. **Două ecrane, două afirmații, una falsă**, chiar în momentul în care omul alege. Nereparată azi: comanda era de citire. *(Costin a reclasificat-o apoi: nu e prag 1, e o afirmație falsă despre ce pleacă pe declarația fiscală.)*
+
+**Și un al doilea lucru pe care nimeni nu-l ceruse:** butonul *„Ia denumirea de la ANAF"* — construit ieri, exercitat de un om la 19:16 — schimbă **numai** eticheta din portofoliu. Denumirea care pleacă pe hârtie rămâne neatinsă. **Alegerea consemnată nu ajunge pe hârtie.**
+
+### CE S-A MĂSURAT DESPRE ȘTERGEREA UNEI FIRME, ȘI CE A IEȘIT
+
+R79 fusese închisă seara pe criteriul „orfanii au rămas 69". Recontrolată la cerere, pe ce nu se măsurase:
+
+- **`user_tenants` nu păstrează nimic** — zero rânduri orfane; cheia străină e pe **id stabil**, cu `ON DELETE CASCADE`, iar ștergerea golește tabela explicit.
+- **Schema firmei chiar se șterge** — `DROP SCHEMA … CASCADE`. `tenant_019` **nu mai există**.
+- **Dar numele de schemă SE RECICLEAZĂ.** Algoritmul e `max(N)+1` peste firmele **vii**: când cea mai mare e ștearsă, numărul coboară și se refolosește. Dovada: `tenant_019` apare la **două** firme scoase în aceeași zi, iar `tenant_018` — schema unei firme scoase la 13:42 — e **acum** schema firmei vii adăugate la 19:12. Confirmat pe OID-uri: schema a fost ștearsă și **creată din nou**.
+- **Consecința reală e mică și precisă:** o singură coloană din toată baza referă un tenant prin **numele schemei** (`firme_scoase.schema_name`, fără cheie străină). Rândul rămâne dezambiguizat de `tenant_id`, deci urma nu e pierdută — dar orice citire cheiată pe numele schemei ar minți.
+- **Numărătoarea orfanilor NU e cheiată pe nume de schemă**, ci pe id întreg dintr-o secvență care nu se reciclează. Deci „69 neschimbat" **nu** era verde fals.
+
+### PATRU FELURI DE VERDE CARE NU DEMONSTREAZĂ NIMIC, GĂSITE ÎN ACEEAȘI TURĂ
+
+1. **Un clichet pe date care măsoară fixturile**, nu aplicația.
+2. **O gardă corectă și nedeclanșabilă** — verifică redeschiderea întrebării de denumire la o citire ANAF mai nouă, dar **nicio rută nu re-citește ANAF pentru o firmă existentă**. Verde pe vecie.
+3. **Un contor într-o singură direcție** — orfanii sunt `n <= 69`; o scădere neexplicată n-ar fi prinsă.
+4. **O „verificare" a mesajului de commit care nu e gard** — compara o lungime în octeți cu una în caractere și trecea verde pe o nepotrivire. Strânsă azi la ce trebuia să fie de la început: `diff` caracter cu caracter între fișierul trimis și mesajul comis. *(Gardul propriu-zis tot nu există.)*
+
+### CE AM GREȘIT EU, ÎN ACEEAȘI ZI
+
+- **Am raportat o stare veche ca fiind actuală.** La 19:27 am scris că alegerea de denumire e neconsemnată *„exact cum ai lăsat-o la 19:12"* — Costin o făcuse la **19:16:24**. N-am citit greșit: am **presupus** că, dacă eu nu scriu, nimeni nu scrie. E o clasă, nu un accident, și a devenit o regulă.
+- **Două cifre proprii, false, scrise și comise**, corectate douăsprezece minute mai târziu la recitire: costul unei liste pe denumire fiscală (bucla per-schemă **există deja**) și numărul locurilor care scriu denumirea din portofoliu (**trei**, nu patru — iar rândul se contrazicea singur). Amândouă trecuseră poarta verde: sunt afirmații despre cod, nu despre teste.
+- **O cifră a lui Costin, repetată a treia oară**: *„PREDARE_LANT.md e cu 12 commituri în urmă, peste prag."* Măsurat cu chiar formula din hook: **2**, pragul e 10, avertismentul n-a apărut niciodată azi. Predarea s-a rescris oricum — dar pe motivul care ține: **conținutul îmbătrânise, nu contorul.**
+
+### VERDICTUL ZILEI, PARTEA ASTA
+
+**N-a produs nimic pentru un contabil, și a împiedicat o decizie de arhitectură luată pe cifre de fixtură.** Asta e tot ce a făcut. Dacă ziua ar fi fost judecată după cod livrat, ar fi zero; judecată după decizii nescrise pe temeiuri false, e singura parte a zilei care a schimbat direcția.
+
+**Regula pe care a scos-o**, a patra oară din patru azi: *măsoară întâi, construiește după* — dar cu o precizare pe care nu o aveam dimineața: **măsurătoarea declară populația pe care s-a făcut, altfel e o cifră despre altă lume decât cea despre care se decide.**
+
+
 ## 26.08.2026 — ZIUA, judecată de la ecranul contabilului
 
 *Cerut de Costin: „dă ISTORIC pe ziua curentă; dacă ziua n-a schimbat nimic pentru un contabil,
