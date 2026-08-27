@@ -19,8 +19,17 @@ def previzualizare(conn, cabinet_id):
         tens = cur.fetchall()
         cur.execute("SELECT count(*) AS n FROM public.users WHERE accounting_firm_id=%s", (cabinet_id,))
         nu = cur.fetchone()["n"]
+        cur.execute("SELECT id FROM public.tenants WHERE accounting_firm_id=%s", (cabinet_id,))
+        tid = [t["id"] for t in cur.fetchall()]
+    # [R50 (c)] Cate randuri dispar din fiecare tabela partajata, INAINTE de a apasa.
+    # O stergere care spune doar "se sterge tot" nu se poate confrunta cu nimic dupa.
+    randuri = {}
+    for t in tid:
+        for tabel, n in tenant_stergere.randuri_de_sters(conn, t).items():
+            randuri[tabel] = randuri.get(tabel, 0) + n
     return {"cabinet_id": cabinet_id, "nume": cab["nume"], "nr_tenanti": len(tens), "nr_useri": nu,
             "scheme": [t["schema_name"] for t in tens], "confirmare_ceruta": cab["nume"],
+            "randuri_de_sters": randuri,
             "avertisment": "Ireversibil. NU se șterge: " + NU_SE_STERGE}
 
 def executa(conn, cabinet_id, confirmare, sters_de_user_id):

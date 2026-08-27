@@ -218,6 +218,32 @@ def test_ordinea_ceruta_urma_public_schema_randul_firmei():
         "ordinea operațiilor din `sterge` nu mai e cea cerută: %s" % ordine)
 
 
+def test_previzualizarea_numara_randurile_INAINTE():
+    """R50 (c): *«previzualizarea numără rândurile înainte, ca omul să vadă ce dispare»*. O
+    ștergere care spune doar «se șterge tot» nu se poate confrunta cu nimic după."""
+    db.init_pool()
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute("SELECT id FROM public.tenants ORDER BY id LIMIT 1")
+        tid = cur.fetchone()[0]
+        p = ts.previzualizare(conn, tid)
+        assert set(p) >= {"randuri_de_sters", "tabele_curatate", "confirmare_ceruta"}, sorted(p)
+        rd = p["randuri_de_sters"]
+        assert set(rd).issubset(set(ts.TABELE_TENANT)), (
+            "previzualizarea numără tabele care nu sunt în lista de curățat: %s"
+            % sorted(set(rd) - set(ts.TABELE_TENANT)))
+        # lista celor stricate, nu `all(...)`: pe un dicționar gol `all` ar trece fără să compare
+        rele = [k for k, v in rd.items() if not isinstance(v, int) or v <= 0]
+        assert not rele, (
+            "numărătoarea trebuie să conțină doar tabelele NEGOALE, ca lista să însemne ceva: %s"
+            % {k: rd[k] for k in rele})
+        # și cabinetul, pe aceeași cale — altfel GDPR ar rămâne fără cifră
+        from core import gdpr_sterge
+        cur.execute("SELECT accounting_firm_id FROM public.tenants WHERE id=%s", (tid,))
+        cab = cur.fetchone()[0]
+        if cab:
+            assert set(gdpr_sterge.previzualizare(conn, cab)) >= {"randuri_de_sters"}
+
+
 def test_tabela_de_urma_exista_in_baza():
     db.init_pool()
     with db.get_conn() as conn, conn.cursor() as cur:

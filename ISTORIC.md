@@ -5398,6 +5398,19 @@ doar lista de rute."* Avea dreptate de doua ori.
   registrul spun doua lucruri diferite despre acelasi activ — limita e declarata in docstring.
 - **METODA:** o mutatie care probeaza o CALIBRARE trebuie sa loveasca linia care face distinctia.
 
+## 27.08.2026 — o firmă adăugată din greșeală se poate, în sfârșit, scoate
+
+**Ce se schimbă pentru omul care ține contabilitatea:**
+1. **Firma adăugată din greșeală se scoate.** Fișa firmei are jos *„Scoate firma din portofoliu"*. Dacă firma n-a produs nimic — nicio declarație, nicio notă, nicio factură, nicio chitanță, niciun stat de plată — se poate șterge cu totul, după ce se scrie **CUI-ul** ca să confirmi. Se cere CUI-ul, nu numele, fiindcă două firme pot avea același nume: chiar așa s-a citit greșit un ecran săptămâna asta.
+2. **Firma care a produs documente NU se șterge.** Ecranul spune ce a găsit — *„20 declarații depuse, 21 note contabile, 6 facturi, 2 chitanțe"* — și oferă altceva: **dezactivarea**. Firma iese din portofoliul de lucru, documentele rămân neatinse, iar sub *„Firme dezactivate"* se poate aduce înapoi oricând.
+3. **Înainte de a apăsa, se vede ce dispare** — câte rânduri din fiecare tabelă comună, plus schema de date a firmei.
+4. **Confirmarea creării unei firme chiar apare.** Până azi nu apărea: reparația de ieri chema o funcție care nu exista acolo, iar eroarea era înghițită. Acum se vede *„Firma … a fost creată și apare în listă."*
+
+**Ce nu schimbă nimic azi:** ștergerea unui cabinet întreg (GDPR) curăță acum toate tabelele comune, nu două — dar n-a fost folosită de nimeni; cele două firme de probă rămân în portofoliu până apasă cineva.
+
+**Ce a costat ziua:** o reparație de ieri care nu funcționa și pe care o raportasem ca făcută; o cale de ștergere care ar fi eșuat la mijloc la primul cabinet cu o solicitare de client; trei joburi de fundal moarte de o lună fără ca nimeni să afle.
+
+
 ## 26.08.2026 — ZIUA, judecată de la ecranul contabilului
 
 *Cerut de Costin: „dă ISTORIC pe ziua curentă; dacă ziua n-a schimbat nimic pentru un contabil,

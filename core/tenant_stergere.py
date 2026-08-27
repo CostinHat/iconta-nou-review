@@ -162,6 +162,23 @@ def evidenta(conn, tenant_id, schema=None):
     return {"are": bool(motive), "detalii": detalii, "motive": motive, "nedecis": nedecis}
 
 
+def randuri_de_sters(conn, tenant_id):
+    """Câte rânduri ar dispărea din fiecare din cele 13 tabele. Numai cele NEGOALE.
+
+    Cerut de **R50 (c)**: *„previzualizarea numără rândurile înainte, ca omul să vadă ce
+    dispare."* O ștergere care spune doar «se șterge tot» nu se poate confrunta cu nimic după.
+    """
+    out = {}
+    with conn.cursor() as cur:
+        for tabel in TABELE_TENANT:
+            cur.execute('SELECT count(*) FROM public."%s" WHERE tenant_id=%%s' % tabel,
+                        (tenant_id,))
+            n = cur.fetchone()[0]
+            if n:
+                out[tabel] = n
+    return out
+
+
 def previzualizare(conn, tenant_id):
     """Ce se întâmplă dacă se apasă. Se cere ÎNAINTE de ștergere, ca omul să vadă ce pierde."""
     with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
@@ -177,6 +194,7 @@ def previzualizare(conn, tenant_id):
         # confirmare pe nume ar fi acceptat ștergerea celeilalte.
         "confirmare_ceruta": f["cui"],
         "tabele_curatate": list(TABELE_TENANT),
+        "randuri_de_sters": randuri_de_sters(conn, tenant_id),   # R50 (c)
     }
 
 

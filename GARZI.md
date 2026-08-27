@@ -5071,3 +5071,21 @@ E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pome
 **RED-proof pe SURSA REALĂ, nu doar pe șabloane:** `main.py` mutat în memorie, patru mutații, patru roșii.
 
 **Ce NU face, declarat:** niciun clichet pe cele **28** de `except …: pass` rămase — n-au fost citite una câte una. Și nu verifică dacă emailul chiar pleacă; doar că, dacă nu pleacă, rămâne urmă.
+
+## Calea de ștergere a unei firme nu poate rămâne în urma bazei (27.08.2026, R72 + R50)
+
+**`core/test_tenant_stergere.py`** — 13 teste. E o gardă despre **liste**, nu despre ștergere: `gdpr_sterge` curăța 2 din 13 tabele nu fiindcă alesese cineva două, ci fiindcă **atâtea erau când s-a scris**. Pe 25.08 erau 12; pe 27.08 sunt 13 — a treisprezecea, `schimbari_email`, apăruse cu o zi înainte.
+
+**Ce face imposibil:** o a paisprezecea tabelă cu `tenant_id` care intră fără să fie clasificată (ori curățată, ori declarată cu motivul) · o tabelă rămasă în listă după ce a dispărut din bază · **o a doua cale de ștergere** — `gdpr_sterge` trebuie să cheme aceeași funcție, verificat pe AST · o firmă cu evidență ștearsă pe calea de scoatere · **urma ștearsă de propriul act** · un `motiv` inventat, care ar ocoli și confirmarea, și verificarea evidenței · ordinea de ștergere schimbată (urmă → `public` → schemă → rândul firmei, citită ca **secvență de operații** din arborele funcției).
+
+**Ce NU face, declarat:** **nu șterge nimic ca să probeze.** Suita rulează pe baza de PRODUCȚIE (R67); un test care creează și șterge o firmă adevărată ar fi exact sonda-care-scrie din care am învățat o dată. Se probează **decizia**, nu efectul distructiv — iar efectul s-a probat separat, pe firme sintetice, o singură dată, cu curățare.
+
+## Un job de fundal care nu pornește nu mai trece o lună neobservat (27.08.2026, R74)
+
+**`core/test_joburi_supravegheate.py`** — 12 teste. Lista deadman-ului se compară cu **sistemul**, nu cu o copie a ei. Gardul de dinainte compara `cron.RITMURI` cu un set **scris de mână în test** — deci se compara cu propria copie a răspunsului și n-avea cum să vadă un job pe care nu-l știa deja. Rezultatul: trei timere systemd au rulat un interpretor inexistent **~31 de zile**, ~48 de porniri pe zi, toate cu status 203, în tăcere.
+
+**Ce face imposibil:** un job din `crontab` sau dintr-un timer systemd fără prag în `RITMURI` · un prag rămas pentru un job care nu mai există (o alarmă care sună mereu nu mai e alarmă) · **o unitate care rulează un interpretor inexistent** — chiar defectul, prins de unde se putea vedea · un instrument care se uită în gol: dacă nu vede nici `crontab`, nici unități, **pică**.
+
+**Aceeași clasă cu R70, un nivel mai jos:** acolo *o rută pe care n-o cheamă nimic*, aici *un job care nu pornește*. Amândouă verificau ce face lucrul **dacă** rulează; niciuna **dacă** rulează.
+
+**Ce NU face, declarat:** nu verifică dacă jobul chiar a rulat (aia e treaba lui `verifica_batai`, la rulare) · nu vede dincolo de mașina asta · nu acoperă `iconta-backup` (shell, nu modul — motivul e scris în `cron.NESUPRAVEGHEATE`) · nu pornește și nu repară nimic: unitățile cer `sudo`.

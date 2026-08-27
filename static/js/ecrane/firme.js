@@ -2279,6 +2279,15 @@ async function ecranScoateFirma(corp, nav, t) {
                <p class="ecran-nota" style="margin:0 0 16px">CUI ${esc(String(p.cui || "—"))}</p>`;
 
   if (p.se_poate_sterge) {
+    // [R50 (c)] Ce dispare, numărat înainte de apăsare. O ștergere care spune doar „se șterge
+    // tot" nu se poate confrunta cu nimic după.
+    const rd = p.randuri_de_sters || {};
+    const chei = Object.keys(rd);
+    const ceDispare = chei.length
+      ? `<p class="ecran-nota" style="margin:10px 0 0">Dispar și: ${chei.map((k) =>
+           `${rd[k]} × <code>${esc(k)}</code>`).join(" · ")}, plus schema de date a firmei.</p>`
+      : `<p class="ecran-nota" style="margin:10px 0 0">Firma nu are niciun rând în tabelele
+           comune. Dispare doar schema ei de date.</p>`;
     zona.innerHTML = `${cap}
       <div class="caseta-atentie">
         <div class="ca-mesaj">Firma nu a produs niciun document: nicio declarație depusă sau în
@@ -2286,6 +2295,7 @@ async function ecranScoateFirma(corp, nav, t) {
           totul. <strong>Ștergerea este definitivă</strong> — datele firmei și schema ei dispar,
           iar backupul off-site nu se poate șterge selectiv.</div>
       </div>
+      ${ceDispare}
       <div class="camp" style="margin:14px 0">
         <label class="camp-eticheta" for="sf-cui">Scrie CUI-ul firmei ca să confirmi</label>
         <input class="camp-input" id="sf-cui" autocomplete="off" placeholder="${esc(String(p.cui || ""))}">
