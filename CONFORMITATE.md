@@ -2051,7 +2051,8 @@ scos ce nu se știa**, nu din defecte noi.
 - **felul**: ARTEFACT
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · R63 (aceeași clasă) · **PRAG 2** *(nimic fals pe ecran de azi înainte — ecranul le arată acum distinct. Dar denumirea fiscală pleacă în declarații depuse la ANAF, iar cea din portofoliu e singura pe care o vede contabilul în listă)*
-- **reluări**: 0
+- **reluări**: 1
+- **contorul, explicat**: decizia se cere **a doua oară** în raportul din 28.08.2026, secțiunea 0. Prima cerere n-a primit răspuns, iar un contor pe zero ar face bucla să arate ca o cerere de-o zi.
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `7c0f603`
 - **măsurat la**: 2026-08-27 · **pe commit**: `7c0f603`
@@ -2120,7 +2121,8 @@ scos ce nu se știa**, nu din defecte noi.
 - **felul**: VERIFICARE
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · METODA §22 · **PRAG 3** *(nimic fals pe ecran. Ce se strică e o SURSĂ DE VERIFICARE: un gard construit anume pentru o clasă e mut pe 12% din suprafață, și tace la fel de convingător ca atunci când chiar nu e nimic)*
-- **reluări**: 0
+- **reluări**: 1
+- **contorul, explicat**: decizia se cere **a doua oară** în raportul din 28.08.2026, secțiunea 0. Prima cerere n-a primit răspuns, iar un contor pe zero ar face bucla să arate ca o cerere de-o zi.
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `04e6f38`
 - **măsurat la**: 2026-08-27 · **pe commit**: `04e6f38`
