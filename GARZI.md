@@ -5074,6 +5074,12 @@ E aceeași regulă pe care o ține gardul de la R61 — *un comentariu care pome
 
 **Ce NU face, declarat:** niciun clichet pe cele **28** de `except …: pass` rămase — n-au fost citite una câte una. Și nu verifică dacă emailul chiar pleacă; doar că, dacă nu pleacă, rămâne urmă.
 
+## Verificările T36 sunt scrise — 197/197 (27.08.2026)
+
+**`TRASEE_VERIFICARI.md`** — cele patru sloturi ale ciclului de viață al firmei, scrise de Costin. Locurile de verificare revin la **197 scrise / 0 goale**. Antetul, garda și rândul `*ce face:*` **nu s-au copiat** din fișierul lui: s-au luat de la instrument, ca garda de identitate să le compare cu ce măsoară el.
+
+**Ce a scos scrierea lor**, și e mai mult decât o completare: două rute păreau să atingă tabele neașteptate (verificat — **artefacte de atribuire pe modul**, consemnate în R53 ca instanțe cu răspuns cunoscut), ecranul nu spunea care act e reversibil (**reparat**), iar întrebarea de fond — de ce se poate redenumi o firmă cu CUI validat — a rămas **decizie**.
+
 ## Un refuz la o scriere nu mai rămâne nevăzut (27.08.2026)
 
 **`core/scan_refuz_tacut.py` + `core/test_refuz_tacut.py`** — 9 teste. Costin: *„am pierdut o jumătate de oră pe «butonul nu face nimic» […] consecința nu e neplăcerea, e că nu se poate diagnostica nimic din afară."*

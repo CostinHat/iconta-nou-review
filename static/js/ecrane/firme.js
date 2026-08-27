@@ -346,8 +346,10 @@ function meniuFirma(corp, nav, t) {
     </div>
     <div class="firme-scoatere" style="margin-top:24px;padding-top:14px;border-top:1px solid #e5e7eb">
       <button class="buton-secundar" id="firma-scoate">Scoate firma din portofoliu</button>
-      <p class="ecran-nota" style="margin:8px 0 0">O firmă adăugată din greșeală se scoate cu
-         totul. Una care a produs documente nu se șterge — se dezactivează, iar documentele rămân.</p>
+      <p class="ecran-nota" style="margin:8px 0 0">Două acte diferite, în același loc:
+         <strong>dezactivarea</strong> e reversibilă (firma iese din listă, datele rămân),
+         <strong>ștergerea</strong> nu e (firma dispare cu totul, și se poate doar dacă n-a produs
+         niciun document). Ecranul următor spune care se poate și de ce.</p>
     </div>`;
 
   const bScoate = corp.querySelector("#firma-scoate");
@@ -2304,10 +2306,10 @@ async function ecranScoateFirma(corp, nav, t) {
            comune. Dispare doar schema ei de date.</p>`;
     zona.innerHTML = `${cap}
       <div class="caseta-atentie">
-        <div class="ca-mesaj">Firma nu a produs niciun document: nicio declarație depusă sau în
-          coadă, nicio notă contabilă, factură, chitanță sau stat de plată. Se poate scoate cu
-          totul. <strong>Ștergerea este definitivă</strong> — datele firmei și schema ei dispar,
-          iar backupul off-site nu se poate șterge selectiv.</div>
+        <div class="ca-mesaj"><strong>Act ireversibil.</strong> Firma nu a produs niciun document:
+          nicio declarație depusă sau în coadă, nicio notă contabilă, factură, chitanță sau stat de
+          plată. Se poate scoate cu totul. <strong>Ștergerea nu se poate întoarce</strong> — datele
+          firmei și schema ei dispar, iar backupul off-site nu se poate șterge selectiv.</div>
       </div>
       ${ceDispare}
       ${ceCuClientii}
@@ -2325,7 +2327,24 @@ async function ecranScoateFirma(corp, nav, t) {
         <input class="camp-input" id="sf-cui" autocomplete="off" placeholder="${esc(String(p.cui || ""))}">
         <p class="camp-ajutor">Se cere CUI-ul, nu numele: două firme pot avea același nume.</p>
       </div>
-      <button class="buton-primar" id="sf-sterge" disabled>Scoate firma definitiv</button>`;
+      <button class="buton-primar" id="sf-sterge" disabled>Scoate firma definitiv</button>
+      <p class="ecran-nota" style="margin:16px 0 6px"><strong>Sau, dacă vrei doar s-o scoți din
+         listă:</strong> dezactivarea e <strong>reversibilă</strong> — firma iese din portofoliul
+         de lucru, datele rămân neatinse, iar de sub „Firme dezactivate" o poți aduce înapoi
+         oricând. Ștergerea de mai sus <strong>nu se poate întoarce</strong>.</p>
+      <button class="buton-secundar" id="sf-dezactiveaza-2">Dezactivează firma (reversibil)</button>`;
+    const bDez2 = zona.querySelector("#sf-dezactiveaza-2");
+    bDez2.addEventListener("click", async () => {
+      bDez2.disabled = true; bDez2.textContent = "Se dezactivează…";
+      try {
+        await api.post(`/tenants/${t.id}/activare`, { activ: false });
+        nav.acasa();
+        nav.setFirmaInLucru("");
+      } catch (e) {
+        bDez2.disabled = false; bDez2.textContent = "Dezactivează firma (reversibil)";
+        arataMesaj(zonaM, e.mesaj || e.message || "Nu am putut dezactiva firma.", "eroare");
+      }
+    });
     const inp = zona.querySelector("#sf-cui"), btn = zona.querySelector("#sf-sterge");
     inp.addEventListener("input", () => {
       btn.disabled = inp.value.trim() !== String(p.cui || "").trim();
@@ -2353,10 +2372,10 @@ async function ecranScoateFirma(corp, nav, t) {
         <ul style="margin:8px 0 0 18px">${motive.map((m) => `<li>${esc(m)}</li>`).join("")}</ul>
       </div>
     </div>
-    <p class="ecran-nota" style="margin:14px 0">O poți <strong>dezactiva</strong>: iese din
-       portofoliul de lucru, iar documentele ei rămân neatinse. O găsești oricând sub
-       „Firme dezactivate", de unde se poate reactiva.</p>
-    <button class="buton-primar" id="sf-dezactiveaza">Dezactivează firma</button>`;
+    <p class="ecran-nota" style="margin:14px 0">O poți <strong>dezactiva</strong> — act
+       <strong>reversibil</strong>: iese din portofoliul de lucru, documentele rămân neatinse, iar
+       de sub „Firme dezactivate" o aduci înapoi oricând, în starea de dinainte.</p>
+    <button class="buton-primar" id="sf-dezactiveaza">Dezactivează firma (reversibil)</button>`;
   zona.querySelector("#sf-dezactiveaza").addEventListener("click", async () => {
     const b = zona.querySelector("#sf-dezactiveaza");
     b.disabled = true; b.textContent = "Se dezactivează…";
