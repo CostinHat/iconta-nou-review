@@ -3,6 +3,68 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 28.08.2026 — Cifrele despre DATE din predare se generează, nu se citează
+
+**Decizia lui Costin:** *„da, se construiește."*
+
+**Instanța, și e a doua în două zile.** Am scris în `PREDARE_LANT.md` *„**0 din 18** firme au
+`nume_anaf`"*. Real: **1 din 18**. Cifra fusese **deja invalidată o dată**, iar corectura era scrisă
+în tabelul „cifre invalidate" **din aceeași predare**. Am purtat-o mai departe **din memorie**, peste
+propriul meu tabel, la **douăzeci de minute** după ce scrisesem `METODA §10.16` — regula care
+interzice exact asta.
+
+**TEMEIUL: cost mic, clasă de eroare repetată.**
+- **cost mic** — instrumentul e o singură interogare pe conexiunea existentă, iar garda e tiparul
+  deja folosit de două ori azi (Partea XII din `TRASEE.md`, inventarul din `GARZI.md`). Nicio
+  structură nouă, niciun mecanism de învățat.
+- **clasă repetată** — nu e o scăpare, e un tipar: „0 din 17" → „1 din 18" (27.08), apoi „0 din 18"
+  → „1 din 18" (28.08). *O regulă scrisă nu ține fără control mecanic* (§14 aplicată unei reguli din §10).
+
+**CE INTRĂ ÎN BLOC:** portofoliu, cabinete, divergențe de denumire, instantanee ANAF, urme de
+scoatere, scheme, contorul de schemă, orfani, duplicate. Fiecare a fost scrisă greșit cel puțin o
+dată. **CE RĂMÂNE AFARĂ, deliberat:** cifrele de **proces** („a câta tură") — nu se pot interoga de
+nicăieri; **judecățile** — sunt proză; **cifrele despre cod** — au deja instrumentele lor (regula
+sursei unice).
+
+**O decizie de construcție care merită scrisă, fiindcă a fost învățată pe loc:** blocul **nu poartă
+ora măsurătorii**. Ar fi fost firesc s-o poarte, și ar fi fost greșit — comparația doc↔cod ar fi
+picat la **fiecare** rulare, iar cineva ar fi scos garda ca să poată comite. Aceeași lecție ca la
+inventarul din `GARZI.md`, cu două ore înainte.
+
+**LIMITA, asumată:** blocul e derivat din date **vii**, nu din cod. Codul nu se mișcă singur în
+timpul porții; datele da. Dacă portofoliul se schimbă în cele ~12,5 minute ale porții, garda pică —
+**și pe drept**. Remediul e regenerarea, nu o toleranță. Consecința: **predarea nu se mai poate scrie
+fără acces la bază**; scenariul în care asta doare e un incident cu baza jos, când nu se poate rula
+nici poarta, dar handover-ul e blocat exact când e mai necesar.
+
+## 28.08.2026 — Mesajul de commit nu poate purta octeți de control
+
+**Decizia lui Costin:** *„da, se construiește."*
+
+**Instanța, și e chiar cea care a cerut regula.** Am scris un escape de tip BACKSPACE într-un literal
+Python **ne-raw**, într-un script de patch; el a ajuns în fișier ca octet de control.
+`core/test_octeti_invizibili.py` l-a prins **în cod**, și poarta a picat. Apoi am scris **exact
+aceeași greșeală în mesajul de commit care descria prima greșeală** — unde nu o prindea nimic. Am
+văzut-o cu ochii, la recitire, și am oprit commitul în timp ce rula.
+
+**TEMEIUL: cost mic, clasă de eroare repetată.** Trei rânduri în `commit-msg`, zero risc de zgomot —
+nu există mesaj legitim cu octeți de control. Iar clasa se repetase în **aceeași oră**, ceea ce e
+definiția unui tipar, nu a unei scăpări.
+
+**De ce în hook și nu în disciplină:** mesajul de commit e **singurul artefact de tip raport care
+rămâne pe disc**. Un octet de control în el nu se vede la citire — terminalul îl consumă —, dar
+corupe fișierul și orice căutare peste istoric. „Verificat caracter cu caracter după fiecare commit"
+exista deja ca practică; practica a eșuat de două ori în aceeași zi.
+
+**CE TRECE:** `\n` și `\t`. **CE NU:** restul clasei, NUL inclusiv. **N-are escape motivat**, spre
+deosebire de celelalte trei porți din același hook — fiindcă nu există motiv de ocolit.
+
+**O greșeală de construcție, prinsă de propria calibrare:** prima formă folosea
+`grep -q '[[:cntrl:]]'`, care pe un **NUL** tratează intrarea ca binară și **nu potrivește**. Testul
+parametrizat pe cinci octeți a arătat-o imediat. Forma de acum numără ce rămâne după ce se șterg
+caracterele tipăribile, `\n`, `\t` și octeții peste 127 — ultimii fiindcă altfel **orice mesaj cu
+diacritice** ar fi fost respins, adică gardul ar fi respins tot.
+
 ## 28.08.2026 — R80: gardul rămâne măsurat și clichetat, dar GRI nu se mai falsifică în verde
 
 **Decizia lui Costin:** varianta **(c)** — *gardul rămâne măsurat/clichetat. (a) și (b) deferate.*

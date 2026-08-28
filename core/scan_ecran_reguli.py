@@ -96,11 +96,17 @@ ACTE_DE_FIRMA = (
 # pot despărți în tăcere; instanța din care s-a învățat asta e R62 (*regula era în două locuri și
 # diferită*).
 #
-# **28.08.2026, măsurat cu instrumentul de mai jos:** 4 acte fără confirmare din 7. Cifra din R82
-# era *4 din 6* — numărată cu mâna, pe un singur fișier. Cele patru sunt aceleași; al șaptelea act
-# e `PUT /tenants/{}` din `date_firma.js`, care **confirmă**, și pe care numărătoarea de atunci nu
-# l-a văzut fiindcă se uita în `firme.js`. Deci numitorul se corectează, numărătorul nu.
-CLICHET_E2_FARA_CONFIRMARE = 4
+# **28.08.2026, dimineața:** 4 acte fără confirmare din 7. (Cifra din R82 era *4 din 6* — numărată
+# cu mâna, pe un singur fișier; al șaptelea act e `PUT /tenants/{}` din `date_firma.js`, care
+# **confirmă**. Numitorul s-a corectat, numărătorul nu.)
+#
+# **28.08.2026, după BLOC AA: ZERO din 7.** Cele patru au primit confirmare vizibilă, prin
+# `_bannerFirma` — un banner pe `document.body`, care supraviețuiește lui `nav.acasa()`. De aici
+# încolo cifra e un **PRAG, nu un clichet**: nu există motiv ca un act de nivel firmă să se termine
+# în tăcere, iar al optulea care ar apărea așa **blochează poarta**. Direcția „nu păstra morți" nu
+# mai are conținut la zero; ce ține gardul onest e că numărul actelor (7) e el însuși clichetat, și
+# că fiecare act e verificat pe **cum** confirmă, nu doar pe dacă.
+CLICHET_E2_FARA_CONFIRMARE = 0
 CLICHET_E2_ACTE = 7
 
 # **Confirmare** = un apel care lasă ceva pe ecran după ce actul a reușit. Cele două forme din
@@ -314,7 +320,8 @@ def acte(sursa, domeniu):
     de asta e a apelantului: „act de nivel firmă" nu se poate citi din forma căii
     (`/tenants/{}/activare` și `/tenants/{}/vector` arată la fel), se declară.
 
-    Întoarce [(linie, apel, ruta, confirmat, in_try)].
+    Întoarce [(linie, apel, ruta, confirmat, in_try, confirmari)] — `confirmari` e lista
+    numelor găsite, ca garda să poată cere **cum** se confirmă, nu doar **dacă**.
     """
     tokens, _sab = tokenizeaza(sursa)
     blocuri = _blocuri(tokens)
@@ -331,11 +338,12 @@ def acte(sursa, domeniu):
         cuprind = [(d, f, t) for d, f, t in blocuri if d < j < f]
         in_try = any(t for _d, _f, t in cuprind)
         alese = [(d, f) for d, f, t in cuprind if t] or [(d, f) for d, f, _t in cuprind]
-        confirmat = False
+        confirmari = []
         if alese:
             d, f = max(alese)
-            confirmat = any(e_confirmare(m) for _p, _ob, m, _j in _apeluri(tokens, d, f))
-        out.append((linia(sursa, poz), "api." + nume, ruta, confirmat, in_try))
+            confirmari = sorted({m for _p, _ob, m, _j in _apeluri(tokens, d, f) if e_confirmare(m)})
+        out.append((linia(sursa, poz), "api." + nume, ruta, bool(confirmari), in_try,
+                    confirmari))
     return out
 
 
@@ -461,8 +469,8 @@ def scaneaza_e2():
     for cale in _fisiere_ecran():
         sursa = io.open(cale, encoding="utf-8").read()
         rel = os.path.relpath(cale, RAD).replace(os.sep, "/")
-        for ln, apel, ruta, confirmat, in_try in acte(sursa, ACTE_DE_FIRMA):
-            toate.append((rel, ln, apel, ruta, confirmat, in_try))
+        for ln, apel, ruta, confirmat, in_try, confirmari in acte(sursa, ACTE_DE_FIRMA):
+            toate.append((rel, ln, apel, ruta, confirmat, in_try, confirmari))
             if not confirmat:
                 fara.append((rel, ln, apel, ruta))
     return fara, toate

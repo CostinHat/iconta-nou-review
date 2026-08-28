@@ -551,35 +551,58 @@ spune când apasă. O măsurătoare pe cod poate îmbătrâni numai dacă schimb
 și devine o afirmație despre trecut. Ora e mai ieftină decât recitirea și e întotdeauna disponibilă.
 
 
-### 10.16b — A doua instanță, la douăzeci de minute după ce regula fusese scrisă (28.08.2026)
+### 10.16b — A doua instanță, și mecanismul care a ieșit din ea (28.08.2026)
 
-Regula de mai sus s-a scris pe 28.08.2026, dimineața. **În aceeași zi, la douăzeci de minute după ce
-am comis-o**, am scris în `PREDARE_LANT.md`: *„**0 din 18** firme au `nume_anaf`, deci caseta de
-alegere nu se poate declanșa azi."* Recitit pe date la 04:40:45: **1 din 18** — `Antibiotice Iasi`,
-iar denumirea chiar diferea de cea de la ANAF. Concluzia rămânea adevărată (caseta nu apare), dar din
-alt motiv: **alegerea fusese deja făcută**. Adică o stare complet diferită — calea *există* și e la o
-resetare de alegere distanță.
+Regula din §10.16 s-a scris pe 28.08.2026, dimineața. **În aceeași zi, la douăzeci de minute după ce
+am comis-o**, am scris în `PREDARE_LANT.md`: *„**0 din 18** firme au `nume_anaf`."* Recitit pe date:
+**1 din 18** — iar denumirea chiar diferea de cea de la ANAF. Concluzia rămânea adevărată din
+întâmplare (caseta nu apare), dar din **alt motiv**: alegerea fusese deja făcută.
 
 **Ce face instanța asta mai utilă decât reparația ei:** cifra fusese **deja invalidată o dată**.
-Tabelul „cifre invalidate" din **aceeași predare** scria, negru pe alb, că *„0 din 17"* fusese
-invalidată pe 27.08 în favoarea lui *„1 din 18"*. Am purtat-o mai departe **din memorie**, peste
-propriul meu tabel, la douăzeci de minute după ce scrisesem regula care o interzice.
+Tabelul „cifre invalidate" din **aceeași predare** scria că *„0 din 17"* fusese invalidată în ziua
+precedentă în favoarea lui *„1 din 18"*. Am purtat-o mai departe **din memorie**, peste propriul meu
+tabel, la douăzeci de minute după ce scrisesem regula care o interzice.
 
 **Concluzia, și e despre metodă, nu despre atenție:** *o regulă scrisă nu ține fără control mecanic.*
-E chiar §14, aplicată unei reguli din §10. Recitirea nu e „mai multă grijă" — e **o comandă rulată**.
+E chiar §14, aplicată unei reguli din §10.
 
-**UNDE AR INTRA CONTROLUL — propunere, nu regulă** *(Costin a cerut-o ca notă, iar construcția e a
-altei ture)*: orice cifră de forma **„X din Y"** scrisă în `PREDARE_LANT.md` se **recalculează**
-înainte de commit, nu se citează din raportul precedent. Forma concretă: cifrele despre date stau
-într-un bloc **generat** (același tipar ca Partea XII din `TRASEE.md` sau ca inventarul din
-`GARZI.md`), produs de un instrument care interoghează baza, iar o gardă compară blocul din document
-cu ce iese din instrument. Ce nu se poate genera nu se scrie ca cifră, ci ca afirmație datată, cu ora
-citirii.
+### Mecanismul, construit (28.08.2026, decizia lui Costin: „da, se construiește")
 
-**Ce ar costa, declarat:** predarea ar căpăta o dependență de bază — nu s-ar mai putea scrie fără
-`db.env`. Și ar acoperi numai cifrele despre **date**; cele despre **cod** (câte fișiere, câte rute)
-au deja instrumentele lor, iar cele despre **proces** (a câta tură) n-au cum. Deci nu e o plasă
-completă; e o plasă pe clasa care a greșit de două ori în două zile.
+**Cifrele despre DATE din predare sunt un bloc GENERAT.** `scripts/scan_predare_cifre.py`
+interoghează baza și produce tabelele — portofoliu, cabinete, divergențe, instantanee ANAF, urme de
+scoatere, scheme, contor, orfani, duplicate. `core/test_predare_cifre.py` compară blocul din document
+cu interogarea **de la rulare**, caracter cu caracter, și pică dacă diferă. Același tipar ca Partea
+XII din `TRASEE.md` și ca inventarul din `GARZI.md`.
+
+**Trei lucruri pe care garda le face, și merită numite separat:**
+1. **doc↔cod** — o cifră care nu mai descrie baza pică poarta;
+2. **nicio cifră culeasă nu rămâne nescrisă** — dacă instrumentul măsoară ceva ce nu ajunge în tabel,
+   blocul ar fi identic cu el însuși și ar **tăcea** despre ea; a doua direcție se verifică separat;
+3. **blocul nu poartă ora măsurătorii** — ar fi fost firesc s-o poarte, și ar fi fost greșit:
+   comparația ar fi picat la **fiecare** rulare, iar cineva ar fi scos garda ca să poată comite.
+
+**CE RĂMÂNE AFIRMAȚIE DATATĂ, deliberat** *(regula, nu doar practica de azi)*:
+- **cifrele de PROCES** — „a câta tură", „câte commituri în urmă", „a doua respingere a porții". Nu
+  se pot interoga de nicăieri; se scriu cu **ora citirii**, nu ca fapte atemporale.
+- **judecățile** — „ce nu e adevărat despre starea asta" e proză, și rămâne proză.
+- **cifrele despre COD** — rute, gărzi, teste — au deja instrumentele lor, fiecare cu garda ei; nu se
+  dublează aici (regula sursei unice).
+
+**CE NU FACE, declarat:** nu interzice o cifră de date în **proza** predării. Narațiunea are voie să
+spună „cele patru firme"; ce nu mai are voie e ca **tabelul** să fie scris din memorie. Un gard care
+ar interzice orice cifră din proză ar fi zgomot pe fiecare frază.
+
+**LIMITA OPERAȚIONALĂ, măsurată la construcție și scrisă aici fiindcă e reală:** blocul e derivat din
+date **vii**, nu din cod. Codul nu se mișcă singur în timpul porții; datele da. Deci:
+- dacă portofoliul se schimbă între generarea blocului și sfârșitul porții (**~12,5 minute**), garda
+  pică — **și pe drept**: documentul chiar nu mai descrie baza. Remediul e regenerarea, nu o
+  toleranță. Operațional: blocul se regenerează **ultimul**, imediat înainte de commit.
+- **predarea nu se mai poate scrie fără acces la bază.** În fluxul de azi asta e întotdeauna
+  adevărat — se lucrează pe server, cu `db.env` încărcat, iar suita cere oricum baza. **Scenariul în
+  care nu e:** un incident în care baza e jos. Atunci nu se poate nici rula poarta, deci nu se poate
+  comite nimic — dar merită știut că handover-ul e blocat **exact când e mai necesar**. Dacă apare, se
+  scrie predarea fără bloc și se declară de ce; garda va cere blocul înapoi la prima rulare verde.
+
 ## 11. O POZIȚIE se atribuie după CE PRODUCE modulul, nu după cum se numește
 
 **Regula.** Când clasifici un artefact — *există / nu există*, *predare / construcție*, *ore / zile* —

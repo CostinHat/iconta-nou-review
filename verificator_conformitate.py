@@ -1193,6 +1193,8 @@ try:
         "  <== BLOCHEAZA" if len(_e2_fara) > _ser.CLICHET_E2_FARA_CONFIRMARE else ""))
     for _f, _l, _a, _r in _e2_fara:
         print("  TACUT  %-30s %5d  %-9s %s" % (_f, _l, _a, _r))
+    if not _e2_fara:
+        print("  toate actele de nivel firma confirma vizibil (R82 inchisa 28.08.2026)")
     if len(_e2_fara) < _ser.CLICHET_E2_FARA_CONFIRMARE:
         print("  -> a scazut la %d: coboara CLICHET_E2_FARA_CONFIRMARE in core/scan_ecran_reguli.py"
               % len(_e2_fara))

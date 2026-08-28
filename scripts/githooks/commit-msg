@@ -70,4 +70,35 @@ if [ -n "$NORMATIVE" ]; then
     fi
 fi
 
+# ─────────────────────────────────────────────────────────────────────────────
+# Poarta: MESAJUL NU POARTA OCTETI DE CONTROL (28.08.2026).
+#
+# Instanta, si e din aceeasi zi: am scris `\b` intr-un literal Python ne-raw, intr-un script de
+# patch, iar el a ajuns in fisier ca octet BACKSPACE. `core/test_octeti_invizibili.py` l-a prins in
+# COD — si poarta a picat, corect. Apoi am scris exact aceeasi greseala in MESAJUL DE COMMIT care
+# descria prima greseala, unde nu o prindea nimic. Am vazut-o cu ochii, la recitire.
+#
+# Mesajul de commit e SINGURUL artefact de tip raport care ramane pe disc. Un octet de control in el
+# nu se vede la citire (terminalul il consuma), dar corupe fisierul si orice cautare peste istoric.
+# Verificarea „caracter cu caracter dupa fiecare commit" exista deja ca practica; aici devine poarta.
+#
+# CE TRECE: `\n` si `\t`. CE NU: restul clasei — BACKSPACE, VT, FF, ESC, NUL si ceilalti.
+# CE NU FACE, declarat: nu se uita la CONTINUT (aia e treaba celorlalte trei porti de mai sus) si nu
+# are escape motivat — spre deosebire de ele. Nu exista mesaj legitim cu un octet de control in el,
+# deci nu exista motiv de ocolit.
+# `grep [[:cntrl:]]` NU e de ajuns: pe un NUL, grep trateaza intrarea ca binara si nu
+# potriveste. Se numara ce RAMANE dupa ce se sterg caracterele tiparibile, newline, tab si
+# octetii peste 127 (continuarile UTF-8 ale diacriticelor — altfel orice mesaj romanesc ar fi
+# respins). Ce ramane sunt exact octetii de control ASCII, NUL inclusiv.
+_CTRL=$(LC_ALL=C tr -d '\n\t' < "$MSG" | LC_ALL=C tr -d '[:print:]\200-\377' | wc -c)
+if [ "$_CTRL" -gt 0 ]; then
+    echo "[commit-msg] RESPINS: mesajul contine OCTETI DE CONTROL (altii decat newline si tab)."
+    echo "[commit-msg] Randurile, cu octetii facuti vizibili (sed -n l):"
+    LC_ALL=C sed -n l "$MSG" | grep -n '\\[bvfae]\|\\0' | head -5 | sed 's/^/    /'
+    echo "[commit-msg] Cel mai probabil un escape de tip BACKSPACE scris intr-un literal Python"
+    echo "[commit-msg] ne-raw, in scriptul care a produs mesajul. Rescrie mesajul."
+    exit 1
+fi
+
+
 exit 0

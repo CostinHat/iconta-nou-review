@@ -1,82 +1,145 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — cele patru restanțe de denumire sunt închise, iar o orbire care se citea VERDE de două zile s-a făcut vizibilă (28.08.2026)
+# PREDARE LANȚ — cifrele despre date nu se mai scriu din memorie, iar cele patru acte tăcute vorbesc (28.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-28**, a treia oară în aceeași zi. *Rescriere COMPLETĂ, nu petic.*
-- **pe commit**: `184add3` — starea pe care o descrie.
-- **rescrierea de dinainte**: `3362fbb`, aceeași zi. Între ele a încăput **1 commit**.
-- **de ce acum**: șase blocuri de decizii aplicate într-o tură (R, S, T, U, V, X + proba W). Predarea
-  de dimineață descria trei restanțe deschise care s-au închis între timp. *Conținutul, nu contorul*
-  — măsurat cu formula din `pre-commit`: **1** commit în urmă, pragul e **10**.
+- **ultima rescriere**: **2026-08-28**, a patra oară în aceeași zi. *Rescriere COMPLETĂ, nu petic.*
+- **pe commit**: `4f3c195` — ultimul commit intrat. *Predarea asta se scrie ÎNAINTE de commitul care
+  poartă munca descrisă mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e
+  arborele care devine commitul următor.*
+- **rescrierea de dinainte**: `4f3c195`, aceeași zi. Între ele a încăput **1 commit**.
+- **de ce acum**: trei blocuri aplicate (Y, Z, AA), iar unul din ele schimbă **cum se scrie chiar
+  fișierul ăsta**. *Conținutul, nu contorul* — măsurat cu formula din `pre-commit`: **1** commit în
+  urmă, pragul e **10**.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **gardat**: `scripts/githooks/pre-commit` avertizează peste 10 commituri;
-  `core/test_predare_proaspata.py` nu lasă avertismentul să dispară tăcut.
+  `core/test_predare_proaspata.py` nu lasă avertismentul să dispară tăcut; **de azi**,
+  `core/test_predare_cifre.py` nu lasă cifrele despre date să îmbătrânească.
 
 ---
 
-## PRIMUL LUCRU DE ȘTIUT: NU E NICIO CERINȚĂ COMANDATĂ NEÎNCEPUTĂ
+## PRIMUL LUCRU DE ȘTIUT: CIFRELE DE MAI JOS SUNT INTEROGATE, NU SCRISE
 
-Toate cele șase blocuri sunt aplicate, plus proba W. **R79, R80 și R81 nu mai blochează.**
+Blocul următor e **generat** din bază de `scripts/scan_predare_cifre.py`, iar
+`core/test_predare_cifre.py` îl compară cu interogarea **de la rulare**, caracter cu caracter. Dacă
+nu se potrivesc, **poarta cade**. Nu se editează cu mâna. Regenerare:
+`./venv/bin/python scripts/scan_predare_cifre.py --md`.
 
-| bloc | ce s-a făcut |
+**De ce există:** pe 28.08 am scris aici *„0 din 18 firme au `nume_anaf`"*. Real: **1 din 18**. Cifra
+fusese **deja invalidată o dată**, iar corectura era în tabelul „cifre invalidate" **din aceeași
+predare**. Am purtat-o din memorie, peste propriul meu tabel, la douăzeci de minute după ce
+scrisesem regula care o interzice (`METODA §10.16`). *O regulă scrisă nu ține fără control mecanic.*
+
+<!-- CIFRE-DATE:START (generat de scripts/scan_predare_cifre.py --md) -->
+
+*Generat din bază. **Nu se scrie cu mâna** — `core/test_predare_cifre.py` compară blocul cu interogarea curentă și pică dacă diferă. Regenerare: `./venv/bin/python scripts/scan_predare_cifre.py --md`.*
+
+**Portofoliu**
+
+| cifra | ce e |
 |---|---|
-| **R** | cele două casete de denumire s-au **comasat** — duplicatul iese, legarea de acum câteva ore se scoate |
-| **S** | **GRI nu se mai falsifică în verde**: patru verdicte pe rute, GRI numărat separat în raportul porții |
-| **T** | numele de schemă **nu se mai reciclează** — secvență Postgres pornită de la maximul istoric |
-| **U** | `GARZI.md` rămâne **viu**: backfill 23–28.08 + inventar **generat** și păzit |
-| **V** | convenția `REGISTRE` vs. blocurile cu literă, scrisă verbatim în `CLAUDE.md` §2.2.1b |
-| **X** | excluderea cabinetelor de test trece de la **listă de id-uri** la **tipar de nume**, cu clichet |
-| **W** | divergență **vie**, văzută pe ecran real, apoi ștearsă |
+| **18** | firme în portofoliu |
+| **18** | din care active |
+| **14** | la cabinete reale |
+| **4** | la cabinete de test |
+| **0** | perechi de firme cu același nume în același cabinet |
+
+**Cabinete**
+
+| cifra | ce e |
+|---|---|
+| **7** | cabinete |
+| **4** | din care declarate de test (tipar pe nume: TEST / PROBA) |
+
+**Denumirea firmei (R81)**
+
+| cifra | ce e |
+|---|---|
+| **0** | divergențe portofoliu ↔ fiscal, pe populația declarată |
+| **0** | divergențe pe TOATĂ populația, fără nicio excludere |
+| **1** | firme cu instantaneu ANAF (`nume_anaf`) |
+| **1** | din care cu denumirea DIFERITĂ de cea de la ANAF |
+| **1** | din care cu alegerea deja consemnată (deci caseta nu apare) |
+
+**Scoatere și scheme (R79)**
+
+| cifra | ce e |
+|---|---|
+| **3** | rânduri în `public.firme_scoase` |
+| **2** | nume de schemă distincte în ele |
+| **18** | scheme `tenant_NNN` în bază |
+| **27** | contorul `tenant_schema_seq` |
+| **19** | maximul istoric de nume de schemă |
+
+**Referințe moarte**
+
+| cifra | ce e |
+|---|---|
+| **69** | rânduri care trimit la o firmă inexistentă |
+| **13** | tabele din `public` cu `tenant_id`, numărate |
+
+<!-- CIFRE-DATE:STOP -->
+
+**Ce NU e în bloc, și rămâne afirmație datată, cu ora citirii** (`METODA §10.16b`): cifrele de
+**proces** („a câta tură", „câte commituri în urmă"), **judecățile**, și cifrele despre **cod**
+(rute, gărzi, teste) — alea au instrumentele lor.
 
 ---
 
-## CE A GĂSIT FIECARE, DINCOLO DE CE A REPARAT
+## AL DOILEA: R82 E REPARATĂ — CELE PATRU ACTE VORBESC
 
-**S — o orbire care se citea VERDE de două zile.** Detectorul de apelanți avea **două** răspunsuri;
-rutele pe care ancora literală nu le identifică cădeau **prin construcție** în primul, fiindcă ancora
-lor apare peste tot. Deci „nicio rută fără apelant" era adevărat despre 334 de rute și **mut** despre
-45, iar mutul se citea ca verde. Acum: **411 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 32**, tipărit
-în raportul porții la fiecare commit.
+Toate patru se terminau cu `nav.acasa()`, adică ecranul dispărea. Un `arataMesaj` obișnuit n-ar fi
+ținut: zona lui se demontează odată cu ecranul. Confirmarea stă acum pe `document.body`, prin
+`_bannerFirma` — mecanismul construit pe 26.08 pentru crearea firmei, generalizat. **Zero clase noi.**
 
-**W — două lucruri pe care niciun scan nu le prinsese.** (1) Caseta de divergență **nu e în lista de
-firme**, cum scrisesem în R81, ci pe ecranul **firmei**; prima formă a probei a căutat-o în listă și
-a raportat *„nu apare"* — **măsurătoarea greșea, nu ecranul**. (2) Textul spunea *„(citită acum
-azi)"*. Un `axe` n-are ce să reclame la asta; **se vede numai cu ochii**, care e chiar motivul pentru
-care W a fost cerut.
+**Exercitate pe ecran real**, pe un cabinet nou și curat, cu o firmă cu divergență vie (CUI real),
+ștearsă după — plus a patra pe o firmă **cu evidență** din cabinetul de test:
 
-**U — un registru care s-ar fi stricat prin propria actualizare.** Prima formă a inventarului generat
-grupa gărzile pe ziua primului commit — dar fișierele din commitul **curent** n-au încă una. Blocul
-ar fi intrat cu `—` și s-ar fi schimbat singur imediat după commit, făcând garda doc↔cod roșie la
-următoarea rulare. Inventarul e acum **fără date**; datele trăiesc în intrările narative.
+| act | ce spune ecranul |
+|---|---|
+| alegerea de denumire, *păstrez* | *„**Antibiotice** rămâne denumirea firmei. Alegerea a fost consemnată, cu data și autorul ei…"* |
+| alegerea de denumire, *ANAF* | *„Denumirea firmei e acum **ANTIBIOTICE SA**, cea de la ANAF. Se folosește peste tot — în listă, în bara de sus și pe declarații."* |
+| dezactivarea (fără evidență) | *„**X** a fost dezactivată — iese din portofoliul de lucru, iar datele ei rămân neatinse…"* |
+| scoaterea definitivă | *„**X** a fost scoasă definitiv din portofoliu — datele ei nu mai există. A rămas doar urma scoaterii…"* |
+| dezactivarea (cu evidență) | *„**ALFA MICRO SRL** a fost dezactivată — … documentele ei rămân neatinse…"* |
 
-**Poarta, de două ori.** Un octet `BACKSPACE` strecurat într-un comentariu (scrisesem un `\b` într-un
-literal ne-raw, în scriptul de patch) — și apoi **din nou în mesajul de commit care descria
-greșeala**. Iar `test_g9_oblig_backend` a picat pe scoaterea câmpului `nume` din `CAMPURI`:
-reparația **nu** a fost să scot obligația din backend, ci să învăț **garda** să vadă caseta de
-deasupra grilei. Obligația nu dispăruse, se mutase.
+Capturile sunt **comise**, în `frontend_test/aa_*.png` și `w_*.png`. Nu sunt baseline-uri: sunt
+**probe ale unei stări care nu mai există** (firma de test e ștearsă), deci nu se pot regenera. De
+aceea nu intră sub decizia din 26.08, care le scotea din repo pe cele **regenerabile**.
+
+---
+
+## AL TREILEA: MESAJUL DE COMMIT NU MAI POATE PURTA OCTEȚI DE CONTROL
+
+A patra poartă din `commit-msg`. Instanța: am scris un escape de tip BACKSPACE într-un literal
+Python ne-raw; `core/test_octeti_invizibili.py` l-a prins **în cod**, iar apoi am scris exact aceeași
+greșeală **în mesajul de commit care o descria**, unde nu-l prindea nimic.
+
+**Nu are escape motivat**, spre deosebire de celelalte trei porți: nu există mesaj legitim cu octeți
+de control. `\n` și `\t` trec. Gard: `core/test_mesaj_commit_curat.py`, 10 teste, cu calibrare pe
+mesaje reale (diacritice, ghilimele românești, tab) și pe faptul că **poarta nouă nu le stinge pe
+celelalte trei**.
 
 ---
 
 ## STAREA LA PREDARE
 
-Poartă verde la `184add3`: **3450 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
-rute **411 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 32** · site **200** · four-way
-`HEAD = origin/main = origin/backup/lant-2026-08-28`. *(Se reverifică rulând poarta.)*
+Poartă verde pe arborele care devine commitul următor: **3460 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
+rute **411 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 32** · acte de nivel firmă **0 tăcute din 7** ·
+site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 
 **Cifrele nu se scriu aici** — `scripts/raport_b.py`. **Poarta durează ~12,5 minute.**
 
 ---
 
-## CE E ADEVĂRAT ACUM DESPRE RESTANȚELE DE DENUMIRE ȘI DE RUTE
+## CE E ADEVĂRAT ACUM DESPRE RESTANȚE
 
 | | |
 |---|---|
-| **R81** (REZOLVATĂ) | Simetrie de scriere pe toate cele **patru** căi + cele două casete comasate. Nu s-a construit niciun alias. |
-| **R82** (DESCHISĂ, INTERN) | Cele **patru** acte de nivel firmă tot se termină în tăcere (**4 din 7**). Regula e scrisă, clasa e clichetată. **Repararea lor e altă tură** — și e singura restanță de ecran rămasă. |
-| **R79** (REZOLVATĂ) | Amândouă jumătățile probate: auditul nu mai lasă orfani (27.08) **și** numele de schemă nu se mai reciclează (azi, probat A→`tenant_020`, ștearsă, B→`tenant_021`). |
-| **R80** (DESCHISĂ, **INTERN**) | Decizia (c) e luată, deci nu mai așteaptă răspuns: `cine deblochează` a trecut din DECIZIE în INTERN. Ce o ține deschisă e **munca** — clasa GRI se golește când se construiește (a) sau (b). |
+| **R82** (reparată; se închide în registru în commitul următor, care o poate numi) | Cele patru acte confirmă, exercitate pe ecran. Clichetul a coborât de la 4 la **0**, iar zero e de acum **prag**: al optulea act tăcut blochează poarta. |
+| **R81, R79, R80** | Neatinse azi după închiderea lor / decizia (c). R80 rămâne deschisă pe **muncă**, nu pe răspuns. |
+| **restul** | Vezi `CONFORMITATE.md` — nu s-a atins nimic altceva. |
 
 ---
 
@@ -84,6 +147,9 @@ rute **411 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 32** · site **200** · fou
 
 *O cifră ai cărei termeni nu se mai pot reconstitui se **INVALIDEAZĂ**, nu se corectează. Tabelul se
 POARTĂ, nu se deleagă în istoric.*
+
+**De azi, clasa asta are un mecanism, nu doar un tabel:** cifrele despre **date** nu mai pot
+îmbătrâni, fiindcă sunt generate. Tabelul rămâne pentru cele despre cod și proces — și ca istorie.
 
 | cifra | unde apărea | de ce e INVALIDATĂ |
 |---|---|---|
@@ -116,51 +182,45 @@ POARTĂ, nu se deleagă în istoric.*
 
 ## CE NU E ADEVĂRAT DESPRE STAREA ASTA, ȘI SE SPUNE
 
-- **GRI nu e „aproape verde".** Cele 45 de rute rămân rute despre care **nu se poate afirma nimic**.
-  Ce s-a reparat e că nu mai *arată* ca verzi; orbirea e aceeași.
-- **Contorul de scheme oprește reciclarea DE-ACUM ÎNAINTE.** Cele două rânduri `tenant_019` din
-  `firme_scoase` **rămân** — sunt istorie, dezambiguizată de `tenant_id`. R79 se închide fiindcă *nu
-  se mai poate produce*, nu fiindcă trecutul s-ar fi curățat.
-- **Backfill-ul din `GARZI.md` NU spune de ce a fost construită fiecare gardă.** Spune **ce** a intrat
-  și **ce afirmă fiecare despre sine** — amândouă verificabile. *De ce*-ul zilelor 23–26.08 ar fi fost
-  reconstruit din numele fișierelor, adică exact ce METODA interzice.
-- **Inventarul generat nu judecă dacă o gardă e bună.** Nu numără aserțiuni, nu spune dacă păzește
-  ceva viu. Pentru aia sunt instrumentele de FAZA 4.
-- **Tiparul de cabinet de test nu prinde „TESTARE SRL"** — `\b` cere cuvântul întreg. **Deliberat**:
-  un cabinet de test nedeclarat intră în cifră și o strică **vizibil**; unul real exclus tăcut ar face
-  cifra să arate mai curată. Prima greșeală se vede, a doua nu.
-- **Textul nou de pe ecran a fost văzut o dată, pe o firmă fabricată de mine.** Nu de un contabil, pe
-  firma lui.
-- **`Antibiotice Iasi` (33394) rămâne cu alegerea consemnată** — nu s-a atins, cum s-a cerut.
-- **Propunerea din `METODA §10.16b` e NECONSTRUITĂ:** cifrele „X din Y" din predare se scriu tot de
-  mână. Ce s-a scris e unde ar intra controlul, nu controlul.
+- **Blocul de cifre e derivat din date VII, nu din cod.** Dacă portofoliul se schimbă între
+  generarea blocului și sfârșitul porții (~12,5 min), garda **pică** — și pe drept: documentul chiar
+  nu mai descrie baza. Remediul e regenerarea. Operațional: blocul se regenerează **ultimul**.
+- **Predarea nu se mai poate scrie fără acces la bază.** În fluxul de azi e întotdeauna adevărat.
+  Scenariul în care nu e: un incident cu baza jos — atunci nu se poate rula nici poarta, deci nu se
+  comite nimic, dar **handover-ul e blocat exact când e mai necesar**.
+- **Gardul de cifre nu interzice o cifră de date în PROZA predării.** Ce nu mai are voie e ca
+  **tabelul** să fie scris din memorie.
+- **Confirmările nu sunt citite de nimeni în afară de mine.** Că textul e bun pentru un contabil e o
+  judecată de om, nu o măsurătoare. Ce s-a probat e că **apare** și **ce scrie**.
+- **A patra confirmare a fost exercitată în cabinetul de test**, pe `ALFA MICRO SRL`, care a fost
+  dezactivată și **reactivată** imediat. Portofoliul a rămas cu **0 firme inactive**.
+- **Cele 45 de rute GRI rămân GRI.** S-a reparat raportarea, nu orbirea.
+- **`_bannerFirma` dispare după 8 secunde.** Cine se uită în altă parte pierde confirmarea — la fel
+  ca înainte, dar acum are ce pierde. Nu s-a măsurat dacă 8 secunde ajung.
 
 ---
 
 ## OPERAȚIONAL — ce se rupe repetat
 
-- Serverul e `ssh iconta`. `psql` direct e **blocat**: script prin stdin,
-  `cat x.py | ssh iconta '… ./venv/bin/python -'`, cu `db.init_pool()`.
+- Serverul e `ssh iconta`; `psql` direct e blocat — script prin stdin, cu `db.init_pool()`.
 - **Env obligatoriu**: `set -a && . ~/.iconta/db.env && . ~/.iconta/api_keys.env && set +a`.
-- **`\b` într-un literal Python ne-raw devine un octet BACKSPACE.** S-a întâmplat de **două** ori
-  azi, a doua oară chiar în mesajul care descria prima. `core/test_octeti_invizibili.py` îl prinde în
-  cod; în **mesajul de commit** nu-l prinde nimic — se verifică de mână.
-- **Ghilimelele românești rup șirul Python** — remediul e literalul triplu.
+- **Un escape de tip BACKSPACE într-un literal ne-raw devine octet de control.** Prins în cod de
+  `test_octeti_invizibili`, iar de azi **și în mesajul de commit**.
+- **Ghilimelele românești rup șirul Python** — literal triplu.
 - **O probă care ține o tranzacție deschisă nu poate deschide o a doua conexiune pe același rând.**
-- **Un patch rulează PE SERVER** (CRLF tăcut pe Windows). După: `b.count(b"\r\n") == 0`.
+- **O probă pe ecran care dezactivează o firmă nu mai găsește lista de firme** — se așteaptă
+  `button.firme-rand, .firme-gol`, nu doar primul.
+- **Un patch rulează PE SERVER** (CRLF tăcut pe Windows).
 - **O schimbare de JS cere**: `versioneaza_assets.py --scrie` **și**
-  `frontend_test/vizual/interactiune_scan.py` (~8 min, artefactul se comite).
-- **O schimbare de cod care adaugă refuzuri explicite cere regenerarea blocului din `TRASEE.md`**;
-  **o gardă nouă cere regenerarea inventarului din `GARZI.md`**
-  (`scripts/scan_garzi_inventar.py --md`).
-- **Mesajul de commit se trimite prin FIȘIER**, și se verifică după commit.
+  `frontend_test/vizual/interactiune_scan.py` (~7 min, artefactul se comite).
+- **Trei blocuri generate cer regenerare**: `TRASEE.md` (la refuzuri noi), `GARZI.md` (la gărzi noi),
+  **`PREDARE_LANT.md`** (la orice schimbare de date).
 
 ---
 
 ## DACĂ CONTINUI DE AICI
 
 1. **Nu e nicio cerință comandată neîncepută.** Ce așteaptă e răspunsul lui Costin la §0.
-2. **R82 e singura restanță de ecran deschisă**: cele patru acte tăcute.
-3. **Nu porni nicio construcție fără măsurătoare.**
-4. **`scripts/raport_b.py` derivă „Unde suntem".** Nu se scrie de mână.
-5. **Raportul se scrie din `SABLON_RAPORT.md`.**
+2. **Nu porni nicio construcție fără măsurătoare.**
+3. **`scripts/raport_b.py` derivă „Unde suntem".** Nu se scrie de mână.
+4. **Raportul se scrie din `SABLON_RAPORT.md`.**

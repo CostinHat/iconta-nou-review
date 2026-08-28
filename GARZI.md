@@ -5379,9 +5379,9 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**457 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**460 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 450
+### `core/` — 452
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -5704,6 +5704,7 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 - `core/test_manual_decl_cere_eligibil.py` — GARD (sweep audit tenant_006): rutele de intrare MANUALĂ de declarație verifică eligibilitatea față
 - `core/test_masti.py` — Garda: nicio masca TACUTA peste un query.
 - `core/test_matrice_control_fiscal.py` — Matrice de stari pe control fiscal - PURA, aserții pe FORMĂ (nu valori). NU testeaza UI, NU repara.
+- `core/test_mesaj_commit_curat.py` — GARD [Z, 28.08.2026]: mesajul de commit nu poate purta octeți de control.
 - `core/test_mesaje_fara_camp_intern.py` — core/test_mesaje_fara_camp_intern.py — GARD: mesaj user-facing FĂRĂ nume intern de câmp.
 - `core/test_mesaje_generare_fara_camp_intern.py` — GARD (F5/Regula 14.4): mesajele de VALIDARE ale generatoarelor de declaratii (functiile
 - `core/test_mesaje_valueerror_publicat.py` — GARD (D7/D8/D9, 20.08.2026): mesajele `ValueError` PUBLICATE contabilului sunt în limba lui.
@@ -5746,6 +5747,7 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 - `core/test_prapastie_salariu.py` — GARD [R49, varianta (c)]: prăpastia salariului minim se spune CU CIFRE, și cifrele sunt ale
 - `core/test_precizie_import.py` — Gard: float-ul din `numere.numar()` nu compromite verificarile de echilibru.
 - `core/test_precompletare_anaf_unificata.py` — GARD precompletare_anaf_unificata: cele trei cai de creare a unei firme (register, add-firm,
+- `core/test_predare_cifre.py` — GARD [Y, 28.08.2026]: cifrele despre DATE din predare se recalculează, nu se citează.
 - `core/test_predare_proaspata.py` — PREDARE_LANT.md isi arata vechimea, iar avertismentul din poarta nu poate disparea tacit.
 - `core/test_premisa_restanta.py` — [Regula 4 + Regula 6] TEST-GARDA: NICIO restanta fara premisa demonstrabila.
 - `core/test_preview_salvare_poarta.py` — GARD Q5 — preview = salvare, O SINGURA POARTA (tura import CUBUS, 16.08.2026).
@@ -5834,7 +5836,7 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 7
+### `scripts/` — 8
 
 - `scripts/scan_ancore_rute.py` — Pentru cate rute e ORB PRIN CONSTRUCTIE detectorul de apelanti din R70.
 - `scripts/scan_axa_garzi.py` — FAZA 4, axa D despicata: „odata cu fixul" ascunde DOUA lucruri, iar „singura" ascunde alte doua.
@@ -5842,6 +5844,7 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 - `scripts/scan_garzi_inventar.py` — Inventarul gărzilor, DERIVAT din cod — blocul generat din `GARZI.md`.
 - `scripts/scan_instrumente.py` — scripts/scan_instrumente.py - FAZA 4: pe ce instrument sta fiecare garda, si a fost calibrat.
 - `scripts/scan_mutatie_garzi.py` — FAZA 4, pasul 5: mutatia care probeaza garda e REPRODUCTIBILA azi?
+- `scripts/scan_predare_cifre.py` — Cifrele despre DATE din `PREDARE_LANT.md`, interogate din bază — blocul generat.
 - `scripts/scan_trasee.py` — scripts/scan_trasee.py — INVENTARUL TRASEELOR, calculat, nu ținut minte.
 
 <!-- INVENTAR-GARZI:STOP -->

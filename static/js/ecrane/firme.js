@@ -331,8 +331,17 @@ function _randDivergentaNume(corp, nav, t) {
       b.textContent = textLucru;
       try {
         await api.post(`/tenants/${t.id}/nume-ales`, { alege: alegere });
+        // [R82/AA1] Actul ăsta a fost apăsat de un om pe 27.08 la 19:16:24, iar ecranul n-a spus
+        // nimic: caseta a dispărut fiindcă `nav.acasa()` demontează tot. Confirmarea numește
+        // entitatea ȘI consecința, și e diferită pe cele două ramuri, fiindcă fac lucruri diferite.
+        const _den = alegere === "anaf" ? (d.anaf || "") : (t.nume || "");
         nav.acasa();
         nav.setFirmaInLucru("");
+        _bannerFirma(alegere === "anaf"
+          ? `Denumirea firmei e acum <b>${esc(_den)}</b>, cea de la ANAF. Se folosește peste tot —
+             în listă, în bara de sus și pe declarații.`
+          : `<b>${esc(_den)}</b> rămâne denumirea firmei. Alegerea a fost consemnată, cu data și
+             autorul ei; întrebarea nu se mai pune până când ANAF spune altceva.`);
       } catch (e) {
         zona.querySelectorAll("button").forEach((x) => { x.disabled = false; });
         b.textContent = textInapoi;
@@ -2471,6 +2480,8 @@ async function ecranScoateFirma(corp, nav, t) {
         await api.post(`/tenants/${t.id}/activare`, { activ: false });
         nav.acasa();
         nav.setFirmaInLucru("");
+        _bannerFirma(`<b>${esc(t.nume || "Firma")}</b> a fost dezactivată — iese din portofoliul de
+           lucru, iar datele ei rămân neatinse. O aduci înapoi din „Firme dezactivate".`);
       } catch (e) {
         bDez2.disabled = false; bDez2.textContent = "Dezactivează firma (reversibil)";
         arataMesaj(zonaM, e.mesaj || e.message || "Nu am putut dezactiva firma.", "eroare");
@@ -2486,6 +2497,11 @@ async function ecranScoateFirma(corp, nav, t) {
         await api.del(`/tenants/${t.id}?confirmare=${encodeURIComponent(inp.value.trim())}`);
         nav.acasa();
         nav.setFirmaInLucru("");
+        // Cel mai puțin reversibil act al aplicației — deci cel la care confirmarea e cea mai
+        // obligatorie (DS cap.27). Spune și ce a rămas, fiindcă „nu mai există" fără nuanță ar fi
+        // fals: urma scoaterii se păstrează (R72).
+        _bannerFirma(`<b>${esc(t.nume || "Firma")}</b> a fost scoasă definitiv din portofoliu —
+           datele ei nu mai există. A rămas doar urma scoaterii, sub „Firme scoase".`);
       } catch (e) {
         btn.disabled = false; btn.textContent = "Scoate firma definitiv";
         arataMesaj(zonaM, e.mesaj || e.message || "Nu am putut scoate firma.", "eroare");
@@ -2514,6 +2530,8 @@ async function ecranScoateFirma(corp, nav, t) {
       await api.post(`/tenants/${t.id}/activare`, { activ: false });
       nav.acasa();
       nav.setFirmaInLucru("");
+      _bannerFirma(`<b>${esc(t.nume || "Firma")}</b> a fost dezactivată — iese din portofoliul de
+         lucru, iar documentele ei rămân neatinse. O aduci înapoi din „Firme dezactivate".`);
     } catch (e) {
       b.disabled = false; b.textContent = "Dezactivează firma";
       arataMesaj(zonaM, e.mesaj || e.message || "Nu am putut dezactiva firma.", "eroare");
@@ -2570,16 +2588,31 @@ function randeazaFirmeScoase(corp, scoase) {
 }
 
 
-function _bannerFirmaCreata(nume) {
+// [R82/AA1, 28.08.2026] Confirmarea care SUPRAVIEȚUIEȘTE navigării.
+//
+// Regula (DS cap.27, E2): *un act cu efect asupra unei entități se încheie cu o confirmare vizibilă
+// care numește entitatea și consecința. Demontarea ecranului NU e confirmare.* Cele patru acte de
+// nivel firmă se terminau toate cu `nav.acasa()` — adică ecranul dispărea, iar „a dispărut" arăta
+// identic cu „a reușit" și cu „s-a rupt ceva".
+//
+// Un `arataMesaj` obișnuit n-ar fi ținut: zona lui e demontată odată cu ecranul. De-aia banner-ul
+// stă pe `document.body`, în afara oricărui ecran — exact mecanismul construit pe 26.08 pentru
+// crearea firmei, acum generalizat. **Zero clase noi**: `caseta-info` / `ci-mesaj`, ca înainte.
+function _bannerFirma(html) {
   const vechi = document.getElementById("firma-creata-bine");
   if (vechi) vechi.remove();
   const b = document.createElement("div");
   b.id = "firma-creata-bine";
   b.className = "caseta-info";
   b.style.cssText = "position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:99999;max-width:min(520px,92vw)";
-  b.innerHTML = `<div class="ci-mesaj">Firma <b>${esc(nume)}</b> a fost creată și apare în listă.</div>`;
+  b.innerHTML = `<div class="ci-mesaj">${html}</div>`;
   document.body.appendChild(b);
   setTimeout(() => { if (b.parentNode) b.remove(); }, 8000);
+  return b;
+}
+
+function _bannerFirmaCreata(nume) {
+  return _bannerFirma(`Firma <b>${esc(nume)}</b> a fost creată și apare în listă.`);
 }
 
 // [horeca] Raport Z zilnic

@@ -71,23 +71,43 @@ def test_E2_actele_de_nivel_firma_nu_se_inmultesc_in_tacere():
         % (len(toate), s.CLICHET_E2_ACTE, "\n  ".join("%s:%d %s %s" % r[:4] for r in toate)))
 
 
-def test_E2_clichetul_nu_pastreaza_morti():
-    """A doua direcție. Când unul din cele patru primește confirmare, cifra coboară deliberat."""
-    fara, _toate = s.scaneaza_e2()
-    assert len(fara) >= s.CLICHET_E2_FARA_CONFIRMARE, (
-        "actele fără confirmare au scăzut de la %d la %d — coboară `CLICHET_E2_FARA_CONFIRMARE`, "
-        "ca următoarea creștere să fie prinsă de la cifra reală"
-        % (s.CLICHET_E2_FARA_CONFIRMARE, len(fara)))
+def test_TOATE_actele_de_nivel_firma_CONFIRMA():
+    """[R82, închisă 28.08.2026] Testul ăsta a înlocuit două: unul care număra actele tăcute în
+    direcția „nu crește", și unul care pina **mulțimea** celor patru. Amândouă erau corecte cât timp
+    clasa era nevidă; la zero, primul devine tautologie, iar al doilea n-are ce să pineze.
+
+    Ce are conținut acum e afirmația inversă: **fiecare** act de nivel firmă confirmă, și se vede
+    **cum**. Un act care ar pierde confirmarea reapare aici cu numele lui, nu ca o cifră care crește.
+    """
+    _fara, toate = s.scaneaza_e2()
+    tacute = [(r[0], r[1], r[3]) for r in toate if not r[4]]
+    assert not tacute, (
+        "acte de nivel firmă care se termină în tăcere (%d):\n  %s\n"
+        "Demontarea ecranului nu e confirmare (DS cap.27). Cu cât actul e mai puțin reversibil, cu "
+        "atât confirmarea e mai obligatorie." % (len(tacute), "\n  ".join("%s:%d %s" % x for x in tacute)))
 
 
-def test_cele_patru_sunt_EXACT_actele_din_R82():
-    """Cifra nu e anonimă: sunt exact alegerea de denumire, scoaterea definitivă și cele două
-    dezactivări. Dacă mulțimea se schimbă fără ca numărul să se schimbe, clichetul n-ar clipi."""
-    fara, _toate = s.scaneaza_e2()
-    rute = sorted(r[3] for r in fara)
-    assert rute == ["/tenants/{}", "/tenants/{}/activare", "/tenants/{}/activare",
-                    "/tenants/{}/nume-ales"], (
-        "mulțimea actelor tăcute s-a schimbat, deși numărul poate fi același: %s" % rute)
+def test_cele_PATRU_acte_reparate_confirma_prin_BANNER_nu_prin_arataMesaj():
+    """Cele patru se termină cu `nav.acasa()`, adică **ecranul lor dispare**. Un `arataMesaj`
+    obișnuit scrie într-o zonă care e demontată odată cu el — deci ar fi trecut mecanic și n-ar fi
+    fost văzut de nimeni. Confirmarea trebuie să supraviețuiască navigării, iar singurul mecanism
+    care o face aici e banner-ul pe `document.body`.
+
+    De-aia gardul cere **cum**, nu doar **dacă**: e chiar diferența dintre o confirmare și una care
+    pare o confirmare."""
+    _fara, toate = s.scaneaza_e2()
+    reparate = {"/tenants/{}/nume-ales", "/tenants/{}", "/tenants/{}/activare"}
+    interes = [r for r in toate if r[3] in reparate and r[2] in ("api.post", "api.del")
+               and r[0].endswith("firme.js")]
+    # cele patru + reactivarea (care confirma prin `arataMesaj`, si e legitim: ecranul ei NU se
+    # demonteaza inainte de mesaj — asa a fost scrisa pe 26.08 si asa functioneaza)
+    prin_banner = [r for r in interes if r[6].count("_bannerFirma")]
+    assert len(prin_banner) >= 4, (
+        "doar %d din actele de nivel firmă din `firme.js` confirmă printr-un banner care "
+        "supraviețuiește navigării:\n  %s" % (len(prin_banner),
+                                              "\n  ".join("%s:%d %s -> %s" % (r[0], r[1], r[3], r[5])
+                                                          for r in interes)))
+    assert all(r[4] for r in interes), "un act din firme.js nu mai confirmă deloc"
 
 
 # ────────────────────────────────────────────────── calibrare: E1, ambele direcții
@@ -167,7 +187,7 @@ def test_CALIBRARE_E2_confirmarea_din_CATCH_nu_confirma_nimic():
     """**Modul de eșec propriu construcției**, și chiar defectul din R82: toate patru actele tăcute
     au `arataMesaj` pe calea de eroare. Un gard care s-ar uita în handler, nu în blocul `try`, le-ar
     declara pe toate confirmate — și ar fi verde exact pe clasa pe care a fost construit s-o vadă."""
-    (ln, apel, ruta, confirmat, in_try), = s.acte(_E2_TACUT, _DOMENIU)
+    (ln, apel, ruta, confirmat, in_try, _conf), = s.acte(_E2_TACUT, _DOMENIU)
     assert (apel, ruta, confirmat, in_try) == ("api.post", "/tenants/{}/activare", False, True)
     assert ln == 4
 
@@ -175,13 +195,13 @@ def test_CALIBRARE_E2_confirmarea_din_CATCH_nu_confirma_nimic():
 def test_CALIBRARE_E2_confirmarea_din_TRY_confirma():
     sursa = _E2_TACUT.replace("    nav.acasa();",
                               '    arataMesaj(zm, "«X» e din nou în portofoliu.", "ok");')
-    (_ln, _apel, _ruta, confirmat, _t), = s.acte(sursa, _DOMENIU)
+    (_ln, _apel, _ruta, confirmat, _t, _conf), = s.acte(sursa, _DOMENIU)
     assert confirmat is True
 
 
 def test_CALIBRARE_E2_bannerul_conteaza_si_el_ca_confirmare():
     sursa = _E2_TACUT.replace("    nav.acasa();", "    _bannerFirmaCreata(nume);")
-    (_ln, _apel, _ruta, confirmat, _t), = s.acte(sursa, _DOMENIU)
+    (_ln, _apel, _ruta, confirmat, _t, _conf), = s.acte(sursa, _DOMENIU)
     assert confirmat is True
 
 
@@ -190,7 +210,7 @@ def test_CALIBRARE_E2_un_arataMesaj_din_COMENTARIU_nu_confirma():
     care spune «aici ar trebui un arataMesaj»."""
     sursa = _E2_TACUT.replace("    nav.acasa();",
                               "    // de făcut: arataMesaj(zm, ...) după succes\n    nav.acasa();")
-    (_ln, _apel, _ruta, confirmat, _t), = s.acte(sursa, _DOMENIU)
+    (_ln, _apel, _ruta, confirmat, _t, _conf), = s.acte(sursa, _DOMENIU)
     assert confirmat is False
 
 
@@ -206,7 +226,7 @@ b.addEventListener("click", async () => {
   nav.acasa();
 });
 """
-    (_ln, _apel, _ruta, confirmat, in_try), = s.acte(sursa, _DOMENIU)
+    (_ln, _apel, _ruta, confirmat, in_try, _conf), = s.acte(sursa, _DOMENIU)
     assert (confirmat, in_try) == (False, False), "un act fără `try` n-are voie să treacă neluat"
 
 
@@ -222,7 +242,7 @@ try {
   await api.post(`/tenants/${id}/activare`, {});
 } catch (e) { arataMesaj(z, "x", "eroare"); }
 """
-    (_ln, _apel, _ruta, confirmat, in_try), = s.acte(sursa, _DOMENIU)
+    (_ln, _apel, _ruta, confirmat, in_try, _conf), = s.acte(sursa, _DOMENIU)
     assert (confirmat, in_try) == (False, True)
 
 
@@ -245,7 +265,7 @@ try {
   await api.post(`/tenants/${id}/activare`, {});
 } catch (e) { arataMesaj(z, "x", "eroare"); }
 """
-    (_ln, _apel, _ruta, confirmat, in_try), = s.acte(sursa, _DOMENIU)
+    (_ln, _apel, _ruta, confirmat, in_try, _conf), = s.acte(sursa, _DOMENIU)
     assert (confirmat, in_try) == (False, True)
 
 
