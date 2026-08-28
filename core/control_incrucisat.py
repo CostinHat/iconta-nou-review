@@ -321,9 +321,40 @@ def compara_tva(d300_R, rulaje, an, luna, necontate=None, patru_ochi=True,
         baza = {"eticheta": eticheta, "declarat": decl, "contabil": contabil,
                 "diferenta": dif, "temei": temei, "sursa_declarat": sursa_declarat}
         if abs(dif) <= TOLERANTA:
-            rez.append(dict(baza, stare="verde",
-                            mesaj=f"{eticheta}: D300 și contul {cont} coincid.",
-                            remediu=None))
+            # [R35, 28.08.2026] NECUNOSCUTUL DOMINA FAVORABILUL (P6, interdictia 10).
+            # Pana azi ramura asta dadea VERDE fara sa se uite deloc la `necontate` - desi lista
+            # aia e chiar in apelul curent. Cand ambii termeni sunt ZERO (factura neinregistrata
+            # nu intra nici in rulaj, nici in decontul REGENERAT din evidenta), egalitatea se
+            # producea prin ABSENTA amandurora, iar ecranul spunea „D300 si contul coincid" pe o
+            # luna in care o factura emisa statea in afara conturilor. Masurat pe 27 de perechi
+            # (schema x luna cu facturi): 6 verzi peste un necunoscut din propriul payload.
+            # Nu devine ROSU: nu se stie ca cifrele sunt gresite - se stie ca nu se poate afirma
+            # ca sunt bune. Deci GRI, cu domeniul necunoasterii numit.
+            if grup:
+                _tva_txt = (f"TVA-ul lor ({_lei(tva_grup)})" if tva_grup
+                            else "TVA-ul lor e 0,00 sau nu se cunoaste")
+                # [DS cap.13 / clichet 50] necunoscutul e un OBIECT cu atribute, nu un sir:
+                # cate facturi si ce TVA. `tva=None` inseamna „0 sau nu se cunoaste" - cele doua
+                # NU se pot deosebi azi, fiindca o valoare absenta si un zero arata la fel in
+                # `f.get("tva")` (aceeasi clasa cu interdictia 32). Textul il compune ecranul;
+                # cifrele nu se pot compune inapoi dintr-o fraza.
+                rez.append(dict(baza, stare="gri",
+                    necunoscut={"cate": len(grup), "tva": (tva_grup if tva_grup else None),
+                                "fara_nota": len(fara_nota), "cu_ciorna": len(cu_ciorna)},
+                    mesaj=(f"{eticheta}: D300 și contul {cont} coincid ({_lei(decl)}), dar "
+                           f"{len(grup)} facturi {fel} din lună nu sunt în evidență — "
+                           f"{_tva_txt}. Coincidența NU spune nimic despre ele."),
+                    remediu={"fel": "investigatie",
+                             "cauza": ("Egalitatea se poate produce și prin absența ambilor "
+                                       "termeni: o factură necontabilizată lipsește deopotrivă "
+                                       "din rulaj și din decontul regenerat."),
+                             "actiune": ("Contabilizează facturile listate, apoi reia "
+                                         "verificarea — abia atunci egalitatea afirmă ceva."),
+                             "facturi": [f["id"] for f in fara_nota]}))
+            else:
+                rez.append(dict(baza, stare="verde",
+                                mesaj=f"{eticheta}: D300 și contul {cont} coincid.",
+                                remediu=None))
             continue
         # cauza DOVEDITA: diferenta se explica exact prin facturile fara nota validata
         if tva_grup and abs(dif - tva_grup) <= TOLERANTA:
@@ -691,7 +722,17 @@ def verifica_tva(conn, schema, an, luna):
     constatari = compara_tva(R, rulaje, an, luna, necontate,
                              sursa_declarat=sursa_declarat,
                              patru_ochi=_patru_ochi_activ(conn, schema))
-    stare = "rosu" if any(c["stare"] == "rosu" for c in constatari) else "verde"
+    # [R35, 28.08.2026] A DOUA INSTANTA, in aceeasi functie, si nu se vede din prima: agregarea
+    # era `rosu if any(rosu) else verde` - fara ramura de GRI. Orice constatare gri (semnalul pe
+    # 4428 exista de dinainte, iar de azi si verdele-peste-necunoscut) se COLAPSA in verde la
+    # nivelul de sus. Fara randul asta, reparatia de mai sus ar fi aratat facuta si n-ar fi fost.
+    # Aceeasi forma pe care o au deja `verifica_d390` si `verifica_d112`.
+    if any(c["stare"] == "rosu" for c in constatari):
+        stare = "rosu"
+    elif any(c["stare"] == "gri" for c in constatari):
+        stare = "gri"
+    else:
+        stare = "verde"
     return {
         "an": an, "luna": luna, "stare": stare, "constatari": constatari,
         "facturi_necontabilizate": necontate,

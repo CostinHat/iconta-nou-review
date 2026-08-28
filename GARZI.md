@@ -5414,9 +5414,9 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**462 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**464 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 454
+### `core/` — 456
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -5723,6 +5723,7 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 - `core/test_impozit_dividend.py` — PAS 0 versionare formule: impozitul pe dividende (regim dividende + lichidare) = COTE period-aware,
 - `core/test_inchidere_luna.py` — ACTUL DE ÎNCHIDERE a lunii pe domeniul `facturi` (21.08.2026) — DESIGN_SYSTEM cap.23.
 - `core/test_infra_vizuala.py` — GARDĂ: infrastructura de testare vizuală (frontend_test/vizual) nu poate dispărea tăcut.
+- `core/test_inlocuire_afirmata.py` — GARD [YY/METODA §28, 28.08.2026]: o inlocuire de text intr-un document AFIRMA ca a gasit potrivirea.
 - `core/test_instrumente_roadmap.py` — [metoda-ca-poarta] GARD: INSTRUMENTE_ROADMAP.md nu minte — un instrument marcat CONSTRUIT trebuie sa
 - `core/test_interpretare.py` — GARDĂ: o interpretare e un OBIECT declarabil, cu variantele obligatorii. (P11, 22.08.2026)
 - `core/test_inventar_a.py` — Inventar A generat PARTIAL din common.COTE + overlay separat pentru judecatile umane.
@@ -5863,6 +5864,7 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 - `core/test_vector_camp_marcat.py` — [Regula 14.4 pct.4] GARD: eroarea de camp obligatoriu la vectorul fiscal NUMESTE campul vinovat ('camp'),
 - `core/test_vector_platitor_tva_oblig.py` — core/test_vector_platitor_tva_oblig.py — GARD: `platitor_tva` necompletat (None) la salvarea
 - `core/test_verde_derivat.py` — Verdele de semafor se DERIVĂ; unde nu se poate deriva, semaforul LIPSEȘTE.
+- `core/test_verde_peste_necunoscut.py` — GARD [R35/XX3, 28.08.2026]: un verdict nu poate fi VERDE peste un necunoscut pe care il are in mana.
 - `core/test_verdict_persistat.py` — GARD — verdictul de validare se păstrează, și un verdict stătut nu ține locul unuia proaspăt.
 - `core/test_verdict_stare.py` — —
 - `core/test_verificator_izolare.py` — GARDĂ PESTE VERIFICATOR: analizorul lui de izolare clasifică corect rute known-good / known-bad.

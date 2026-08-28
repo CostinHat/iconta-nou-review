@@ -604,6 +604,49 @@ date **vii**, nu din cod. Codul nu se mișcă singur în timpul porții; datele 
   scrie predarea fără bloc și se declară de ce; garda va cere blocul înapoi la prima rulare verde.
 
 
+## §28 — O ÎNLOCUIRE DE TEXT ÎNTR-UN INSTRUMENT DE GENERARE AFIRMĂ CĂ A GĂSIT POTRIVIREA
+
+*(28.08.2026, a treia recurență — regula se scrie abia acum, și asta e chiar partea de reținut.)*
+
+`str.replace` **nu se plânge** când nu potrivește nimic: întoarce textul neatins. Un script care
+peticește un document și nu verifică tipărește *„OK"* peste o modificare **care nu s-a produs**, iar
+documentul rămâne în forma **veche** — care de acum arată curentă. Aceeași formă are `re.sub`, și
+orice generator care rescrie un bloc între marcaje fără să verifice că marcajele mai există.
+
+**REGULA:** orice înlocuire de text într-un instrument care **scrie un document** trebuie să afirme
+că potrivirea s-a găsit — și **de câte ori** s-a găsit. Nu „a mers", ci *„s-a potrivit exact o dată"*.
+Unealta care o face e `scripts/inlocuieste.py`; păzită de `core/test_inlocuire_afirmata.py`.
+
+**Cele patru feluri de ratare, toate tăcute:**
+
+| ratarea | ce se întâmplă fără aserțiune |
+|---|---|
+| ancora **nu se potrivește** (documentul s-a schimbat sub script) | scriptul zice OK, documentul rămâne vechi |
+| ancora e **ambiguă** | se schimbă **toate** aparițiile, nu cea vizată |
+| `vechi == nou` | trece verde și nu face nimic |
+| **marcajul de bloc lipsește** (generator) | blocul generat nu-și găsește locul, documentul rămâne pe generația veche |
+
+**INSTANȚA, cu prețul ei.** Tabelul de restanțe din `PREDARE_LANT.md` a driftat de **trei ture
+consecutive**: șablonul local rămăsese în urma peticului aplicat direct pe server, iar înlocuirile
+următoare n-au mai potrivit nimic. De fiecare dată predarea a ieșit cu rânduri vechi despre restanțe
+închise — adică **exact minciuna pe care predarea e construită s-o prevină**. Primele două ori am
+corectat rândul; a treia oară am pus aserțiunea, iar ea a prins-o pe loc.
+
+**De ce nu s-a pus un clichet pe „instrumente care înlocuiesc fără să verifice":** **măsurat, în repo
+nu există niciunul.** Pe fișierele urmărite de git (fără `venv/`), șase funcții cheamă
+`.replace`/`.sub` și scriu un fișier în același loc — și toate șase sunt **formatări de șir sau
+transformări de conținut** (`core/duk.py` taie un mesaj de eroare, `main.py` construiește răspunsuri,
+`portal_legislativ` curăță HTML, `versioneaza_assets` face `re.sub` **cu raportare de erori**).
+Niciuna nu peticește un document pe o ancoră. Clasa trăiește în scripturile de patch **de fiecare
+tură**, care nu sunt urmărite de git. *Un clichet peste un domeniu gol ar fi chiar tiparul pe care
+metoda asta îl combate: un verde care nu poate deveni roșu.*
+
+**Corolarul, mai larg decât înlocuirea:** o operație care poate eșua **întorcând un rezultat
+plauzibil** are nevoie de o afirmație despre efectul ei, nu despre rularea ei. *Un `replace` fără
+aserțiune nu e o modificare, e o speranță.*
+
+---
+
 ## §27 — DOUĂ FELURI DE CAPTURI DE ECRAN, ȘI NUMAI UNUL INTRĂ ÎN REPO
 
 O captură de ecran nu e un fel de artefact, sunt **două**, iar diferența dintre ele decide dacă intră

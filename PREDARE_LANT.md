@@ -1,17 +1,18 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — ultima capcană din familia salariilor s-a închis, și harta e măsurată, nu citată (28.08.2026)
+# PREDARE LANȚ — singura restanță de prag 1 s-a închis, iar regula pentru un `replace` tăcut e scrisă (28.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-28**, a treisprezecea oară în aceeași zi. *Rescriere COMPLETĂ, nu petic.*
-- **pe commit**: `202ee87` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
+- **ultima rescriere**: **2026-08-28**, a paisprezecea oară în aceeași zi. *Rescriere COMPLETĂ, nu petic.*
+- **pe commit**: `dcd3e04` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
   munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e arborele care
   devine commitul următor.*
-- **rescrierea de dinainte**: `202ee87`, aceeași zi. Între ele au încăput **2 commituri**.
-- **de ce acum**: **R85 s-a închis** — ultima din familia salariilor. Și s-a măsurat harta:
-  restanțe deschise pe prag, clustere rămase, progresul pe E1. *Conținutul, nu contorul* — măsurat
-  cu formula din `pre-commit`: **2** commituri în urmă, pragul e **10**.
+- **rescrierea de dinainte**: `dcd3e04`, aceeași zi. Între ele au încăput **2 commituri**.
+- **de ce acum**: **R35 s-a închis** — singura restanță de **prag 1** care mai era deschisă. Plus
+  regula pentru clasa care m-a lovit de trei ori: un `replace` care nu potrivește nimic și tace.
+  *Conținutul, nu contorul* — măsurat cu formula din `pre-commit`: **2** commituri în urmă,
+  pragul e **10**.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **gardat**: `scripts/githooks/pre-commit` avertizează peste 10 commituri;
   `core/test_predare_proaspata.py` nu lasă avertismentul să dispară tăcut; **de azi**,
@@ -87,45 +88,56 @@ scrisesem regula care o interzice (`METODA §10.16`). *O regulă scrisă nu țin
 
 ---
 
-## AL DOILEA: `cam` SE SCRIE PE SALARIAT — DAR CU CE ESTE ȘI CE NU E, LÂNGĂ EA
+## AL DOILEA: VERDELE NU MAI TRECE PESTE UN NECUNOSCUT DIN PROPRIUL PAYLOAD (R35)
 
-`pull()` scria înapoi trei contribuții din patru. A patra lipsea, fără motiv scris — iar cine suma
-`s.get("cam")` primea **0, tăcut**. E chiar bugul nr.1 din antetul lui `salarii_contare`, dovedit pe
-15.07, pe care reconstrucția l-a **ocolit**, nu desființat.
+`compara_tva` decidea culoarea pe **prima** ramură — `abs(dif) <= TOLERANTA → verde` — fără să se
+uite **deloc** la `necontate`, deși lista e chiar în apelul curent. Când ambii termeni sunt **zero**,
+egalitatea se produce prin **absența amândurora**: o factură neînregistrată lipsește deopotrivă din
+rulaj **și** din decontul regenerat din evidență. Ecranul spunea *„D300 și contul coincid"*.
 
-**Ce s-a măsurat înainte de a scrie cheia**, ca să nu iasă o capcană nouă în locul celei vechi: e
-valoarea din `calcul_salariu`, **pre-emisie**, pe brutul **întreg**. Obligația declarată (codul 480)
-se calculează din `sum_bazac` — **baza contributivă**, fără facilitate — și se rotunjește la leu pe
-**total**. Diferența, măsurată pe 30 de perechi: **cel mult 6,78 lei la 12 salariați** = 2,25% × 300
-(facilitatea) + rotunjire; 4,54–4,69 pe lunile cu facilitate de 200; sub 0,50 lei pe restul.
-**Aceeași diferență structurală ca la R86-B.**
+**Reparația are DOUĂ locuri, iar al doilea nu se vede din primul.** Agregarea din `verifica_tva` era
+`rosu if any(rosu) else verde` — **fără ramură de gri**. Fără ea, reparația de sus ar fi **arătat
+făcută și n-ar fi fost**: constatarea gri exista, verdictul rămânea verde. `verifica_d390` și
+`verifica_d112` aveau deja ramura; asta nu.
 
-**Concluzia operațională, scrisă lângă cheie:** cine are nevoie de cifra **declarată** folosește
-`d112.obligatii(...)["480"]`, nu suma asta.
+| pe 27 de perechi (schemă activă × lună cu facturi) | înainte | după |
+|---|---|---|
+| verzi peste un necunoscut din propriul payload | **6** | **0** |
+| verzi peste o constatare gri | 0 *(latent)* | 0 |
 
-**Și o asimetrie care RĂMÂNE, spusă ca să nu fie descoperită a doua oară:** `cas` și `cass` sunt
-**rescrise** de `_d112_genereaza` cu valorile emise; `cam` n-are corespondent per salariat acolo,
-deci rămâne pre-emisie. Cheia există acum pentru toate patru — **dar nu toate patru înseamnă același
-lucru.**
+**GRI, nu roșu:** nu se știe că cifrele sunt greșite — se știe că **nu se poate afirma** că sunt
+bune. La **4 din 6**, TVA-ul facturii e 0,00 **sau necunoscut**, iar mesajul nu-l prezintă ca pe o
+cifră știută.
+
+**Și un defect al propriei mele sonde, prins de ea însăși:** prima formă întreba de coloana `data`
+pe `facturi` (se numește `data_emitere`), excepția era înghițită de `rollback`, iar sonda a raportat
+liniștit **„0 perechi · 0 verzi"** — un rezultat **favorabil pe o lume pe care n-o vedea**, chiar în
+instrumentul cu care măsuram clasa asta. Domeniul gol e acum o **eroare**, nu un răspuns.
 
 ---
 
-## AL TREILEA: HARTA, MĂSURATĂ ACUM
+## AL TREILEA: REGULA PENTRU UN `replace` CARE TACE (METODA §28)
 
-- **restanțe DESCHISE: 44** — prag 1: **1** (`R35`) · prag 2: **15** · prag 3: **12** · fără prag
-  declarat: **16** *(cele vechi, R1–R27)*. Pe cine deblochează: **INTERN 23 · DECIZIE 19 · EXTERN 2**.
-- **clustere topologice**: `core.agenda.urmator_cluster()` → **`(None, 0, 0)`**. Inventarul are **79**
-  de rânduri, **79 bifate**, **0 blocate**; fiscal **41/41**, structură **34/34**. **Secvența e
-  epuizată** din 04.08.2026 — nu există „următorul programat".
-- **progres E1**: **203 locuri de verificare scrise / 0 goale, din 203 (100%)** — rulat acum cu
-  `scripts/raport_b.py`, nu citat.
-- **interdicții, din 76**: MĂSURATE 21 · PARȚIAL 16 · NEMĂSURABILE 1 · NEÎNCEPUTE 38.
+Tabelul de restanțe din predarea asta a driftat **trei ture la rând**: șablonul rămăsese în urma
+peticului aplicat pe server, iar înlocuirile următoare n-au mai potrivit nimic. De fiecare dată
+predarea a ieșit cu rânduri vechi despre restanțe închise — **exact minciuna pe care predarea e
+construită s-o prevină**.
+
+`scripts/inlocuieste.py` afirmă **de câte ori** s-a potrivit, și ridică pe toate cele patru feluri de
+ratare: ancoră care nu potrivește · ancoră ambiguă · `vechi == nou` · marcaj de bloc lipsă sau
+dublat. Păzit de `core/test_inlocuire_afirmata.py`. **§28 a fost scrisă chiar cu unealta ei.**
+
+**Ce NU s-a făcut, și e măsurat, nu presupus:** niciun clichet pe „instrumente care înlocuiesc fără
+să verifice" — **în repo nu există niciunul**. Pe fișierele urmărite de git (fără `venv/`), șase
+funcții cheamă `.replace`/`.sub` și scriu un fișier, și toate șase sunt formatări de șir sau
+transformări de conținut. Clasa trăiește în scripturile de patch **de fiecare tură**, care nu sunt
+urmărite. *Un clichet peste un domeniu gol ar fi chiar tiparul pe care metoda îl combate.*
 
 ---
 
 ## STAREA LA PREDARE
 
-Poartă verde pe arborele care devine commitul următor: **3474 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
+Poartă verde pe arborele care devine commitul următor: **3490 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
 rute **411 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 32** · acte de nivel firmă **0 tăcute din 7** ·
 site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 
@@ -137,10 +149,9 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 
 | | |
 |---|---|
-| **R85** (REZOLVATĂ pe `dcd3e04`) | Cheia se scrie, iar ce este și ce nu e stă lângă ea. |
-| **din familia salariilor** | **nimic deschis.** R33, R34, R85, R86 — toate închise. |
-| **R84, R83, R82** | Închise. Neatinse azi. |
-| **cea mai apăsătoare rămasă** | **R35**, singura de **prag 1**: verdict VERDE pe o lună cu factură necontabilizată, cunoscută în chiar payload-ul verdictului. Deblocată **INTERN**. |
+| **R35** (închisă; registrul o numește în commitul următor) | 6 → 0 perechi verzi peste un necunoscut. Reparat în două locuri, al doilea invizibil din primul. |
+| **prag 1** | **niciuna deschisă.** R35 era ultima. |
+| **R33, R34, R84, R85, R86** | Închise. Neatinse azi. |
 | **R81, R79, R80** | Neatinse azi după închiderea lor / decizia (c). R80 rămâne deschisă pe **muncă**, nu pe răspuns. |
 | **restul** | Vezi `CONFORMITATE.md` — nu s-a atins nimic altceva. |
 
@@ -202,6 +213,9 @@ POARTĂ, nu se deleagă în istoric.*
   despre aia.
 - **Brutul din notă nu mai e confruntat cu nimic**, și e o pierdere asumată, nu un câștig.
 - **Nimeni nu consumă încă `s["cam"]`.** Reparația scoate **capcana**, nu adaugă o capabilitate.
+- **Clasa „verde peste gri" e azi LATENTĂ** — n-a fost prinsă nicio instanță vie, fiindcă semnalul
+  pe 4428 nu se aprinde pe datele curente. S-a reparat pe **clasă**, nu pe instanță.
+- **Sonda R35 nu întreabă dacă facturile alea CHIAR trebuiau contabilizate în luna aia.**
 - **Cele 16 restanțe „fără prag declarat" sunt cele vechi (R1–R27)** — nu înseamnă că sunt ușoare,
   înseamnă că n-au fost încadrate când s-a introdus scara de praguri.
 - **Câmpul `fel` e aditiv: ecranul nu-l citește.** Azi nu ascunde nimic — cele patru nu pot diverge —
@@ -237,8 +251,8 @@ POARTĂ, nu se deleagă în istoric.*
 
 ## DACĂ CONTINUI DE AICI
 
-1. **Nu e nicio cerință comandată neîncepută, și din familia salariilor nu mai e nimic deschis.**
-   Harta e mai sus; **nu e propus niciun pas următor** — ordinea o dă Costin.
+1. **Nu e nicio cerință comandată neîncepută. Nicio restanță de prag 1 deschisă.**
+   Harta e în raportul din 28.08; **nu e propus niciun pas următor** — ordinea o dă Costin.
 2. **Nu porni nicio construcție fără măsurătoare.**
 3. **`scripts/raport_b.py` derivă „Unde suntem".** Nu se scrie de mână.
 4. **Raportul se scrie din `SABLON_RAPORT.md`.**
