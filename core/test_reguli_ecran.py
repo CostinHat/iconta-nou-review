@@ -99,8 +99,16 @@ def test_cele_PATRU_acte_reparate_confirma_prin_BANNER_nu_prin_arataMesaj():
     reparate = {"/tenants/{}/nume-ales", "/tenants/{}", "/tenants/{}/activare"}
     interes = [r for r in toate if r[3] in reparate and r[2] in ("api.post", "api.del")
                and r[0].endswith("firme.js")]
-    # cele patru + reactivarea (care confirma prin `arataMesaj`, si e legitim: ecranul ei NU se
-    # demonteaza inainte de mesaj — asa a fost scrisa pe 26.08 si asa functioneaza)
+    # cele patru + reactivarea.
+    #
+    # [CORECTAT 28.08.2026] Randul asta scria ieri ca reactivarea „confirma prin `arataMesaj`, si e
+    # legitim: ecranul ei NU se demonteaza inainte de mesaj". **Era fals**, si l-am scris din citirea
+    # CELEILALTE ramuri: `arataMesaj(zm, …)` scria in `#fd-mesaj`, o zona din fereastra pe care
+    # `nav.inapoi()` o inchidea randul urmator. Confirmarea traia o fractiune de secunda.
+    #
+    # Nu l-a prins nicio recitire — l-a prins o proba pe ecran care astepta `.msg-ok` si nu-l gasea
+    # niciodata. Reactivarea trece acum tot prin `_bannerFirma`, deci cele cinci acte de nivel firma
+    # din `firme.js` confirma toate printr-un banner care supravietuieste navigarii.
     prin_banner = [r for r in interes if r[6].count("_bannerFirma")]
     assert len(prin_banner) >= 4, (
         "doar %d din actele de nivel firmă din `firme.js` confirmă printr-un banner care "

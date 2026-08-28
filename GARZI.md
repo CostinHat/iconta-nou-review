@@ -5220,6 +5220,30 @@ Iar la rulare, gardul **scrie** ce acoperă: *„acoperire reală: 360 din 411 r
 **Ce NU face, declarat:** nu poate vedea divergența pe date reale — **0 din 17** firme au `nume_anaf`, fiindcă instantaneul se captează doar de la o precompletare ANAF încolo. Partea de ecran e probată pe un răspuns **fabricat** prin interceptare (`frontend_test/vizual_nume.py`): dovedește ce randează ecranul și ce trimite la apăsare, nu ce răspunde serverul pentru o divergență adevărată. Partea de server e probată separat, pe date reale, într-o tranzacție întoarsă la savepoint (`proba_r77.py`).
 
 
+## 28.08.2026 — o captură comisă fără proprietar în registru pică poarta
+
+**De ce (Costin):** convenția din `METODA §27` — *„o captură fără proprietar e suspectă"* — **devine
+gard, nu doar principiu**.
+
+**Instanța, și e din aceeași zi cu regula:** prima rulare a scanului a găsit **16 din 17** capturi
+comise **nenumite**. Opt erau pomenite printr-un **glob** — o mențiune pentru un om și nimic pentru
+un instrument; opt erau de dinainte ca regula să existe. Adică regula era încălcată de propriul ei
+autor, în ziua în care a scris-o, iar fără gard n-ar fi aflat nimeni.
+
+**Ce face imposibil:** un `.png` comis sub `frontend_test/` al cărui nume de fișier nu apare în
+`CONFORMITATE.md`. Se citește din **index**, deci prinde captura la commitul care o aduce.
+
+**CE NU FACE, declarat:** nu judecă dacă e baseline sau probă — distincția e o judecată (§27), iar
+gardul cere doar un **proprietar scris**. Nu verifică dacă mențiunea e **adevărată**; aia rămâne
+citire. Și nu se aplică retroactiv: cele opt de pe 20.08 stau într-o listă declarată, cu clichet în
+ambele direcții — nu are voie nici să crească, nici să păstreze morți.
+
+**Calibrare, două direcții:** o captură inexistentă e raportată; una numită nu e; iar un **glob** în
+registru **nu ține loc de nume** — chiar forma greșelii găsite.
+
+`core/test_capturi_numite.py`
+
+
 # ─────────────────────────────────────────────────────────────────────────────
 # BACKFILL 23–28.08.2026 (scris pe 28.08.2026, la cererea lui Costin: „rămâne viu, nu se îngheață")
 # ─────────────────────────────────────────────────────────────────────────────
@@ -5390,9 +5414,9 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**460 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**461 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 452
+### `core/` — 453
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -5452,6 +5476,7 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 - `core/test_c7_periodicitate_trimestriala.py` — GARD C7 — generarea TVA-decont (d300/d394/d406) urmeaza periodicitatea EFECTIVA a firmei (tip_decont),
 - `core/test_cai_fisiere_date.py` — GARD CLASA "cale de fisier construita relativ la radacina" (01.08.2026).
 - `core/test_cale_a_doua.py` — GARD (20.08.2026): a doua cale nu poate fi mutată peste prima în tăcere.
+- `core/test_capturi_numite.py` — GARD [HH, 28.08.2026]: o captură comisă fără proprietar în registru pică poarta.
 - `core/test_cashflow.py` — —
 - `core/test_catch_vizibil.py` — GARD DEFECT-3 (08.08.2026): (A) frontend - un catch{} GOL care inghite un api.* transforma un 500 intr-o
 - `core/test_cauza_precisa_business.py` — GARD cauza_precisa: cand un verificator din control_incrucisat prinde o eroare de BUSINESS

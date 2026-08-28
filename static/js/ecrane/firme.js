@@ -225,9 +225,20 @@ export function randeazaListaFirme(container, nav, inapoi) {
             b.disabled = true;
             try {
               await api.post(`/tenants/${t.id}/activare`, { activ: true });
-              arataMesaj(zm, `„${t.nume}" e din nou în portofoliu.`, "ok");
               await incarcaFirme();
               nav.inapoi();
+              // [GG, 28.08.2026] Aici era un `arataMesaj(zm, …)` ÎNAINTE de `nav.inapoi()` — adică
+              // mesajul se scria în `#fd-mesaj`, o zonă din fereastra pe care rândul următor o
+              // închide. Confirmarea exista o fracțiune de secundă și murea cu fereastra.
+              //
+              // Gardul E2 o vedea drept confirmată: `arataMesaj` chiar e chemat, în blocul `try`.
+              // Iar eu am scris, în docstringul gardului, că „ecranul ei NU se demontează înainte de
+              // mesaj" — **fals**, scris din citirea celeilalte ramuri. A prins-o proba pe ecran, nu
+              // recitirea: aștepta `.msg-ok` și nu-l găsea niciodată.
+              //
+              // E chiar clasa lui R82, ascunsă în spatele unui apel care PARE o confirmare.
+              _bannerFirma(`<b>${esc(t.nume || "Firma")}</b> e din nou în portofoliu, în starea de
+                 dinainte. O găsești în listă.`);
             } catch (e) {
               b.disabled = false;
               arataMesaj(zm, e.mesaj || e.message || "Nu am putut reactiva firma.", "eroare");
@@ -2627,8 +2638,14 @@ function _bannerFirma(html, autoDismiss = true) {
   b.style.cssText = "position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:99999;"
     + "max-width:min(520px,92vw)" + (autoDismiss ? "" : ";padding-right:44px");
   b.innerHTML = `<div class="ci-mesaj">${html}</div>`
+    // [FF1, 28.08.2026] Starea de REPAUS a butonului. `nav-x` e hover-only, si acolo e corect:
+    // in fereastra de lucru „✕" e redundant (ai si Escape, si click in afara, si butonul de inapoi).
+    // Aici e SINGURA iesire — banner-ul nu mai dispare singur —, iar un „✕" pe care nu-l vezi
+    // transforma o confirmare intr-un obstacol. Contur + fundal alb, pe tokeni, nu culori scrise
+    // de mana. Restul locurilor unde se foloseste `nav-x` raman NEATINSE.
     + (autoDismiss ? "" : `<button type="button" class="nav-x" id="firma-banner-x"
-         style="position:absolute;top:6px;right:6px" title="Închide" aria-label="Închide">✕</button>`);
+         style="position:absolute;top:6px;right:6px;background:var(--alb);border:1px solid var(--linie)"
+         title="Închide" aria-label="Închide">✕</button>`);
   document.body.appendChild(b);
   if (autoDismiss) {
     setTimeout(() => { if (b.parentNode) b.remove(); }, 8000);

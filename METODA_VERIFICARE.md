@@ -635,6 +635,21 @@ transforma o distincție utilă într-o campanie.
 cineva să numească „probă" o captură pe care ar fi putut-o regenera. Ce o ține onestă e obligația de
 a o lega de o restanță: o captură fără proprietar în registru e, prin construcție, suspectă.
 
+**ȘI DE AZI E GARDATĂ, fiindcă „suspectă" nu se autoverifică** (`core/test_capturi_numite.py`, HH):
+fiecare `.png` **comis** sub `frontend_test/` trebuie să aibă **numele de fișier** scris în
+`CONFORMITATE.md`. Se citește din **index**, nu de pe disc — o captură abia pusă în stage e prinsă la
+commitul care o aduce, nu la următorul.
+
+**Prima rulare a găsit 16 din 17 capturi comise fără proprietar** — adică regula era încălcată **de
+propriul ei autor, în ziua în care a scris-o**. Două clase, tratate diferit:
+- **opt de ieri**, pomenite printr-un **glob** (`frontend_test/aa_*.png`). Un glob e o mențiune
+  pentru un om și **nimic** pentru un instrument, iar peste o lună nici omul nu mai știe care erau.
+  **Reparate**: fiecare are acum un rând cu numele ei și cu ce arată.
+- **opt de pe 20.08**, dinainte ca regula să existe (`po_*.png`, patru-ochi). **Excepție declarată**,
+  într-o listă pinată în gardă, care **nu are voie să crească**. A le numi acum ar însemna să scriu,
+  opt zile mai târziu, ce probează fiecare — exact **repovestirea** refuzată la `GARZI.md`. Iar
+  decizia lui Costin a fost explicită: *„nu adăuga alte capturi retroactiv."*
+
 ## 11. O POZIȚIE se atribuie după CE PRODUCE modulul, nu după cum se numește
 
 **Regula.** Când clasifici un artefact — *există / nu există*, *predare / construcție*, *ore / zile* —

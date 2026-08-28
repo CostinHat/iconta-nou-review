@@ -1979,6 +1979,25 @@ scos ce nu se știa**, nu din defecte noi.
 - **ce NU face, declarat**: **niciun clichet pe cele 28 de `except …: pass` rămase.** Costin, explicit: *„pe alea nu le-am măsurat și nu știm care sunt legitime."* Și nu verifică dacă emailul chiar pleacă — doar că, dacă nu pleacă, rămâne urmă.
 - **condiția de deblocare**: decizia lui Costin între **(a)** toate patru trec pe `esec_secundar`, cu `alerta=True` pe cele trei căi de intrare — tăcerea acolo are cost de acces, ceea ce docstringul lui numește drept criteriu; **(b)** doar log, fără alertă, pe toate patru; **(c)** mesajul de pe ecran se schimbă și el, ca să nu mai afirme trimiterea. Se închide când un eșec de trimitere lasă urmă, cu gard.
 
+### R83 — O firmă dezactivată nu se poate reactiva: poarta de acces o consideră inexistentă
+
+- **felul**: ARTEFACT
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · R72 · R82 (textele care trimit acolo) · **PRAG 1** *(efect greșit la un om ACUM: ecranul „Firme dezactivate" listează firma, butonul „Reactivează" e acolo, iar apăsarea lui întoarce „tenant inexistent sau fără acces". Iar două confirmări de pe alt ecran îi spun omului exact să folosească drumul ăsta.)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `7555897`
+- **măsurat la**: 2026-08-28 · **pe commit**: `7555897`
+- **planul**: **NEACOPERIT.** Citit `PLAN_ARHITECTURA.md` după *dezactivare*, *reactivare*, *acces*, *rol*: singura secțiune „Reguli de acces" (l. 615) e despre **registrul de valori fiscale** — cine poate scrie o valoare și cu ce temei —, nu despre accesul unui utilizator la o firmă. Planul nu spune nicăieri ce înseamnă o firmă **inactivă** pentru drepturile de acces, și tocmai asta e întrebarea. (METODA §25)
+- **ce blochează**: `main.py` l. 1245 — ruta `POST /tenants/{id}/activare` se apără cu `auth_api.schema_tenant(...)`, iar funcția aia cere `activ = true` pe **toate trei** ramurile de rol (`core/auth_api.py` l. 335, 337, 343). Deci pentru o firmă dezactivată poarta întoarce `None`, iar ruta răspunde **404** — inclusiv atunci când actul cerut e chiar **reactivarea**. Dezactivarea merge (firma e activă când o apeși); reactivarea **nu poate reuși niciodată**.
+- **cifra**: **1 rută**, **2 ecrane** care trimit acolo (cele două confirmări de dezactivare) și **1 buton** care eșuează de fiecare dată. Probat pe **amândouă** ramurile — firmă fără evidență și firmă cu evidență.
+- **cum s-a găsit**: nu căutând-o. Comanda cerea proba drumului *banner → „Firme dezactivate" → reactivare*, pe ecran, nu din bază. Prima rulare a raportat *„firma nu s-a întors"*, iar diagnosticul a arătat mesajul de eroare de pe ecran.
+- **probat mecanic, în tranzacție întoarsă la savepoint**: cu firma **activă**, `schema_tenant` întoarce `tenant_013`; după `comuta_activ(..., False)`, aceeași funcție întoarce `None`. Deci poarta rutei dă 404. După `ROLLBACK`, firma a rămas activă.
+- **ce NU vede măsurătoarea**: dacă mai există alte rute care se apără cu `schema_tenant` și au sens **numai** pe o firmă inactivă. N-am căutat clasa, am măsurat instanța — și clasa e chiar întrebarea deciziei.
+- **de ce nu am reparat-o**: reparația atinge o **poartă de acces**, nu un text. Variantele au consecințe diferite asupra izolării între cabinete, iar alegerea nu e a mea. *(Și pentru că e a doua oară azi când o probă cerută pentru altceva scoate un defect propriu — se consemnează, se repară după.)*
+- **condiția de deblocare**: decizia lui Costin între **(a)** ruta de activare își face propria verificare de acces, care nu cere `activ` — cea mai îngustă, atinge o singură rută; **(b)** `schema_tenant` primește un parametru explicit (`si_inactive=False`), iar rutele care lucrează pe firme inactive îl cer — repară **clasa**, dar schimbă semnătura unei funcții folosite peste tot; **(c)** o firmă dezactivată rămâne accesibilă pentru **toate** rutele, iar `activ` decide doar ce se vede în listă — cea mai simplă și cea mai largă, deci cea cu cel mai mare efect asupra izolării. Se închide când un om poate dezactiva și reactiva o firmă din ecran, probat pe amândouă ramurile.
+
+
 ### R82 — Cele patru acte cu cel mai mare efect asupra unei firme se termină în tăcere
 
 - **felul**: ARTEFACT
@@ -2105,11 +2124,26 @@ scos ce nu se știa**, nu din defecte noi.
   | dezactivare (cu evidență) | *„«ALFA MICRO SRL» a fost dezactivată — … documentele ei rămân neatinse…"* |
 
   După probă: **18 firme, 7 cabinete, 0 firme inactive** — nimic rămas.
-- **AA4 — capturile sunt COMISE** (`frontend_test/aa_*.png`, `w_*.png`). Nu intră sub decizia din
-  26.08 care scotea capturile din repo: alea erau **baseline-uri** — referințe locale, regenerabile
-  cu `baseline_scan.py`, care cresc la fiecare recapturare. Astea sunt **probe ale unei stări care nu
-  mai există** (firma de test e ștearsă, cabinetul și userul la fel), deci nu se pot regenera: nu
-  sunt cost permanent, sunt singura urmă.
+- **AA4 — capturile sunt COMISE.** Nu intră sub decizia din 26.08 care scotea capturile din repo:
+  alea erau **baseline-uri** — referințe locale, regenerabile cu `baseline_scan.py`, care cresc la
+  fiecare recapturare. Astea sunt **probe ale unei stări care nu mai există** (firma de test e
+  ștearsă, cabinetul și userul la fel), deci nu se pot regenera: nu sunt cost permanent, sunt singura
+  urmă. *(Regula, scrisă ulterior: `METODA_VERIFICARE.md` §27.)*
+- **fiecare captură, cu ce arată** *(corectat 28.08.2026: prima formă a rândului de mai sus le
+  pomenea printr-un **glob** — `frontend_test/aa_*.png`, `w_*.png`. Un glob e o mențiune pentru un om
+  și **nimic** pentru un instrument, iar peste o lună nici omul nu mai știe care erau. Găsit de
+  `core/test_capturi_numite.py`, la prima lui rulare, în ziua în care s-a scris regula)*:
+
+  | fișier | ce arată |
+  |---|---|
+  | `aa_1_alegere_denumire.png` | banner-ul de la *„Păstrez denumirea mea"* |
+  | `aa_1b_alegere_ANAF.png` | banner-ul de la *„Ia denumirea de la ANAF"* — cealaltă ramură, alt mesaj |
+  | `aa_2_dezactivare_fara_evidenta.png` | banner-ul dezactivării, ramura fără evidență (`#sf-dezactiveaza-2`) |
+  | `aa_3_scoatere_definitiva.png` | banner-ul scoaterii definitive, **în forma de dinainte de BB1** |
+  | `aa_4_dezactivare_cu_evidenta.png` | banner-ul dezactivării, ramura cu evidență (`#sf-dezactiveaza`) |
+  | `w_divergenta_vie.png` | ecranul firmei cu divergență ANAF vie, întreg |
+  | `w_divergenta_caseta.png` | caseta de alegere, decupată — textul F1/F2 lizibil |
+  | `w_date_firma_o_caseta.png` | „Date firmă" **după** comasare: o singură casetă de denumire (BLOC R) |
 - **gardat**: clichetul din `core/scan_ecran_reguli.py` a coborât de la **4** la **0**, iar zero e de
   acum **PRAG, nu clichet**: nu există motiv ca un act de nivel firmă să se termine în tăcere, iar al
   optulea care ar apărea așa **blochează poarta**. Verificatorul tipărește starea la fiecare commit.
@@ -2159,6 +2193,63 @@ scos ce nu se știa**, nu din defecte noi.
   - **ce rămâne o judecată, nu o măsurătoare:** că textele sunt bune **pentru un contabil**. Cele
     cinci sunt reproduse verbatim în raportul din 28.08, ca să poată fi citite fără să se deschidă
     aplicația.
+- **[28.08.2026] VERIFICAREA MANUALĂ A LUI COSTIN — pe ecran real, de un om, nu de un scan.**
+  Făcută în `Cabinet Contabil Ionescu SRL` (9746), pe firme fictive create și șterse de el. E prima
+  citire a textelor astea de către altcineva decât autorul lor, și e alt fel de probă decât a mea:
+  eu am măsurat că **apar** și **ce scriu**; el a citit **ce înțelege**.
+  - **dezactivarea, ramura FĂRĂ evidență** (CUI 14837428): *„banner clar, numește firma, menționează
+    destinația («Firme dezactivate»)."*
+  - **navigarea banner → „Firme dezactivate"**: *„găsită fără căutare în meniu. Butonul «Firme
+    dezactivate (1)» era vizibil direct în ecranul Firme."* **Deci nu e clasa R78** — confirmat de un
+    om, nu dedus dintr-o coordonată. *(Ce a confirmat el e **drumul**; că butonul „Reactivează", odată
+    apăsat, **eșuează**, e altceva — vezi R83, măsurat separat.)*
+  - **scoaterea definitivă** (CUI 1973096): *„textul BB1 (rescris) apare corect pe ecran, fără
+    contradicția din versiunea veche."*
+  - **„✕"**: *„văzut imediat, fără să fie căutat, fără hover."*
+- **[FF, 28.08.2026] Devenit OPȚIONAL prin verificarea de mai sus — construit oricum, și de ce.**
+  Costin: *„BLOC FF devine OPȚIONAL — nu construi decât dacă rămâne timp după restul; nu e blocant
+  pentru nimic."* Mesajul a ajuns **după** ce FF1 și FF2 erau făcute, iar starea de repaus **rămâne**:
+  nu e o schimbare de comportament, e o schimbare de vizibilitate, deja probată, iar a o scoate ar fi
+  costat mai mult decât a o lăsa. **Ce se schimbă e statutul cerinței, nu codul** — iar dacă ✕-ul era
+  deja vizibil pentru el, atunci FF a fost o îmbunătățire, nu o reparație. Se scrie ca atare.
+- **[FF + II, 28.08.2026] „✕"-ul e vizibil în repaus, și banner-ul ține pe ecran îngust.**
+  - **FF1:** `nav-x` e **hover-only**, și acolo e corect — în fereastra de lucru „✕" e redundant (ai
+    și Escape, și click în afara, și butonul de înapoi). Pe banner-ul de scoatere e **singura
+    ieșire**, iar un „✕" pe care nu-l vezi transformă o confirmare într-un obstacol. Primește
+    contur + fundal, **pe tokeni**: măsurat în browser, `background: rgb(255,255,255)`,
+    `border: 1px rgb(226,229,234)` (`--linie`), text `rgb(91,101,115)` (`--gri`). **Restul
+    locurilor unde se folosește `nav-x` rămân neatinse.**
+  - **FF2:** captură nouă — `frontend_test/ff_scoatere_x_repaus.png`.
+  - **II — ecran îngust (375 px), NU era testat până acum.** Măsurat pe viewport de 375: banner-ul
+    stă **întreg în fereastră** (94→281 px), textul **nu e tăiat** (`scrollWidth ≤ clientWidth` și
+    pe banner, și pe mesaj), „✕"-ul **nu e acoperit** (`elementFromPoint` îl întoarce pe el), și
+    **nu se suprapune peste prima linie de text** (linia se termină la 223, butonul începe la 240).
+    **Nu s-a reparat nimic — nu era nimic de reparat** (II2). Capturi:
+    `frontend_test/ii_scoatere_375px.png` și `frontend_test/ii_scoatere_375px_intreg.png`.
+  - **și o observație pe care măsurătoarea a scos-o fără s-o caute:** pe 375 px banner-ul ocupă
+    **188 px din 375**, iar textul se rupe în **15 rânduri**. Nu e un defect după criteriul cerut —
+    nu se taie, nu se suprapune, se citește — dar e o coloană îngustă pentru un ecran de telefon.
+    Cauza e forma lui: `position:fixed` fără lățime declarată, deci se strânge la conținut.
+    **Nelăsat nereparat din comoditate: nu era în cerință, iar lărgirea lui e o schimbare de așezare.**
+- **[GG, 28.08.2026] Drumul din banner spre reactivare — probat, și a scos DOUĂ lucruri.**
+  - **primul, reparat pe loc:** reactivarea își scria confirmarea prin `arataMesaj(zm, …)` în
+    `#fd-mesaj` — o zonă din fereastra pe care rândul **următor**, `nav.inapoi()`, o închidea.
+    Confirmarea trăia o fracțiune de secundă. **Gardul E2 o vedea drept confirmată** (`arataMesaj`
+    chiar e chemat, în blocul `try`), iar eu scrisesem în docstringul lui, ieri, că *„ecranul ei NU
+    se demontează înainte de mesaj"* — **fals, scris din citirea celeilalte ramuri**. N-a prins-o
+    nicio recitire: a prins-o o probă care aștepta `.msg-ok` și nu-l găsea niciodată. Reactivarea
+    trece acum tot prin `_bannerFirma`. **E chiar clasa lui R82, ascunsă în spatele unui apel care
+    PARE o confirmare.**
+  - **al doilea, NEREPARAT, și e mai grav — vezi R83:** butonul „Reactivează" **eșuează**, pe
+    amândouă ramurile, cu *„tenant inexistent sau fără acces"*. Deci cele două texte de confirmare
+    ale dezactivării — *„O aduci înapoi din «Firme dezactivate»"* — **spun azi ceva ce nu se poate
+    face**. Textele rămân neschimbate până se decide R83: ele descriu intenția corectă, iar
+    schimbarea lor ar ascunde defectul în loc să-l repare.
+  - **ce s-a probat totuși despre drum (GG3):** butonul „Firme dezactivate (N)" **există** și e
+    **vizibil fără derulare** pe amândouă ramurile (y=660 și y=693, într-o fereastră de 900), iar
+    ecranul se deschide și listează firma. **Nu e clasa R78** — nu e ascuns; e stricat.
+- **cifra, după GG:** actele de nivel firmă rămân **7**, tăcute **0**, dar acum **cinci** din cele
+  din `firme.js` confirmă prin banner (era patru): reactivarea a intrat în clasă.
 
 
 ### R81 — Denumirea unei firme stă în două locuri, iar redenumirea atinge unul singur
