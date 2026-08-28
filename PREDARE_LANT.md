@@ -145,7 +145,7 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 
 | | |
 |---|---|
-| **R86** (închisă; registrul o numește în commitul următor) | Cauza A **reparată**, cauza B **decisă** — varianta (b). Sonda: 0 divergențe. |
+| **R86** (REZOLVATĂ pe `202ee87`) | Cauza A **reparată**, cauza B **decisă** — varianta (b). Sonda: 0 divergențe. |
 | **R85** (DESCHISĂ, INTERN, prag 3) | **Singura rămasă din familia asta.** `pull()` fără `cam` — capcană, nu defect viu. |
 | **R33, R34, R84, R83, R82** | Închise. Neatinse azi. |
 | **R81, R79, R80** | Neatinse azi după închiderea lor / decizia (c). R80 rămâne deschisă pe **muncă**, nu pe răspuns. |

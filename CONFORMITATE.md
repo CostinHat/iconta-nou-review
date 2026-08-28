@@ -1985,10 +1985,11 @@ scos ce nu se știa**, nu din defecte noi.
 - **felul**: VERIFICARE
 - **cine deblochează**: INTERN
 - **unde intră**: E5 · P7 · R34 (aceeași pereche notă↔declarație, celelalte două poziții) · **PRAG 1** *(pe citirea de atingibilitate, aceeași cu R34: toate firmele sunt de test, deci nimeni n-a fost lovit — dar dacă un contabil ar folosi aplicația azi, cheltuiala cu tichetele n-ar intra în contabilitate **deloc**, iar salariile brute ar intra cu altă cifră decât cea depusă)*
-- **reluări**: 1
-- **stare**: DESCHISĂ
+- **reluări**: 2
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `202ee87`
 - **deschisă pe commit**: `f3576d9`
-- **măsurat la**: 2026-08-28 · **pe commit**: `76ceb12`
+- **măsurat la**: 2026-08-28 · **pe commit**: `202ee87`
 - **planul**: **ACOPERIT.** `PLAN_ARHITECTURA.md` cere la **P7** ca două căi care produc aceeași cifră să nu se contrazică, iar arbitrul să fie numit. Aici arbitrul **e deja numit** — D112, decizia de la R34 — deci nu se cere o decizie nouă; se cere ca nota să-l urmeze și pe pozițiile pe care încă le calculează singură. (METODA §25)
 - **cum s-a găsit**: nu căutând-o. Reclasificarea cerută la BLOC QQ a pus, pentru prima dată, o contra-valoare declarată în dreptul celor două poziții rămase. **Verificarea reală, la prima ei rulare, a găsit ceva** — exact ce prezisese Costin la deschiderea lui R33: *„dacă una raportează diferențe pe o firmă de test, aia nu e o gardă nouă care merge — e un defect care aștepta să fie văzut."*
 - **cifra**: **10 divergențe pe 5 perechi** din cele 30 măsurabile, toate pe `tenant_001` — singura firmă din eșantion care are **și** tichete, **și** concediu medical. Sonda: `./venv/bin/python scripts/sonda_r34.py`, divergențele cu `fel = "verificare"`.
@@ -2011,6 +2012,17 @@ scos ce nu se știa**, nu din defecte noi.
   - **de ce nu s-a reparat**: cerut explicit (RR4). Și e alegerea bună: reparația nu e o corectură de cod, e o **decizie** — ori 641 se compară cu altceva, ori nu se compară cu D112 deloc, ori toleranța devine „facilitatea lunii", ceea ce ar cere ca instrumentul să știe o regulă fiscală. Diagnosticul e complet; alegerea nu e a mea.
 - **CE NU VEDE, actualizat**: cele 5 divergențe rămase sunt **toate** de la un singur salariat, de pe o singură firmă. Din 30 de perechi măsurabile, **25** n-au nici tichete, nici concediu medical, nici salariat la minim — deci nu pot arăta **nimic** despre niciuna din cele două cauze.
 - **condiția de deblocare, rescrisă după RR**: cauza **A** e închisă (`642/5328` coincide, măsurat). Rămâne **B**: se decide cu ce se compară `641/421`, știind că D112 n-are un element care să însemne *salariu brut realizat*. Se închide când `scripts/sonda_r34.py` întoarce **0** divergențe cu `fel = "verificare"` pe cele 30 de perechi, **fără** ca toleranța să fi fost lărgită ca să le înghită.
+- **[BLOC UU, 28.08.2026] ÎNCHISĂ — cauza B a primit decizia lui Costin: varianta (b).** *„`641/421` iese din `VERIFICARE_REALA`. Rămâne doar `642/5328`. Motivul: D112 n-are un câmp care să reprezinte brutul realizat — baza contributivă, brutul contractual (`B4_3`) și venitul brut total (`E1_1`) sunt, fiecare, altă mărime, din motive structurale, nu lipsă de acuratețe. A compara forțat ar fi precizie falsă, nu verificare."*
+- **de ce (b) și nu (a) sau (c):**
+  - **(a) — se compară cu alt element din declarație.** **Nu există niciunul.** Cele trei candidate sunt fiecare altceva **prin construcție**: `B2_5` exclude facilitatea, `B4_3` e contractual (pe o lună cu concediu medical diferă oricum — măsurat: ar fi produs 7 perechi „divergente" din 30), `E1_1` include tichetele. A alege „cel mai apropiat" ar fi mutat zgomotul pe altă clasă de firme, nu l-ar fi scos.
+  - **(c) — toleranța devine „facilitatea lunii".** Ar cere ca instrumentul de măsură să **știe o regulă fiscală** — salariul minim, nivelul de referință diminuat, prorata pe zile lucrate — și s-o țină la zi la fiecare schimbare. *Un instrument care replică regula pe care ar trebui s-o verifice nu mai verifică nimic.*
+  - **(b) — se scoate, cu motivul scris.** Cea mai puțin spectaculoasă, și singura care nu adaugă o a doua sursă de eroare.
+- **UU1 — ce s-a schimbat în cod**: `VERIFICARE_REALA` din `core/salarii_contare.py` are acum **o singură** intrare, `642/5328 ↔ E3_10 + E3_75`.
+- **UU2 — motivul stă lângă cod, nu doar în registru**: comentariul de deasupra hărții spune de ce 641/421 a fost acolo o zi și de ce a ieșit, cu cifrele măsurate. **Gardul păzește și direcția inversă**: `core/test_coerenta_salarii.py` cere explicit ca `421` să **nu** revină în mulțime — *„nu fiindcă nota ar greși, ci fiindcă declarația n-are cu ce să-l confrunte, iar o comparație fără contrapartidă raportează roșu pe date corecte"*.
+- **UU3 — măsurat pe toate cele 30 de perechi măsurabile**: forma nouă **0 divergențe** (regresie **0** · verificare **0**). Forma **veche**, păstrată ca linie de bază, dă în continuare **29** (regresie 24 · verificare 5) — **deci sonda n-a devenit oarbă, a devenit exactă.** Fără linia de bază, un „0" n-ar fi dovedit nimic (interdicția 19). Zero scrieri: `pg_stat_user_tables` `ins=+0 upd=+0 del=+0`.
+- **CE NU MAI E VERIFICAT, și se scrie ca PIERDERE, nu ca simplificare:** brutul din nota de salarii **nu mai e confruntat cu nimic**. Dacă mâine `note_lunare` ar calcula greșit salariile brute, `control_coerenta` n-ar spune nimic. *Dar nici azi n-ar fi spus ceva util* — semnala și când nota era corectă. **O verificare care nu poate distinge corectul de greșit nu devine mai bună dacă o păstrezi; devine doar mai greu de scos.** Ce rămâne sub control real: **o singură poziție**, plus cele patru fiscale ca gardă de regresie.
+- **cum se citește închiderea, pe ambele cauze:** **A** — reparată și măsurată (`642/5328` coincide cu declarația pe toate cele 5 luni ale lui `tenant_001`, era 0,00). **B** — nu reparată, ci **decisă**: nu era un defect, era o comparație fără obiect. *O restanță se poate închide și prin a afla că întrebarea ei era greșit pusă — cu condiția să se scrie asta, nu să se declare victorie.*
+- **condiția de deblocare, cum a fost îndeplinită**: *„se închide când `scripts/sonda_r34.py` întoarce 0 divergențe cu `fel = "verificare"` pe cele 30 de perechi, **fără** ca toleranța să fi fost lărgită ca să le înghită."* **Toleranța n-a fost atinsă** — `toleranta_d112` e neschimbată. Poziția a ieșit din mulțime cu motivul scris, ceea ce e altceva decât a o face să tacă.
 
 
 ### R85 — `d112.pull` întoarce un salariat cu CAS, CASS și impozit, dar fără CAM
