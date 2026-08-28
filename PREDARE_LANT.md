@@ -144,7 +144,7 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 | | |
 |---|---|
 | **R82** (REZOLVATĂ) | Neschimbată. A primit confirmarea finală: fluxul întreg, probat pe ecran, cu textele devenite adevărate. |
-| **R83** (reparată; se închide în registru în commitul următor, care o poate numi) | Reparată cu varianta (a), probată mecanic și pe ecran. |
+| **R83** (REZOLVATĂ pe `5adb1d9`) | Reparată cu varianta (a), probată mecanic și pe ecran. |
 | **R84** (DESCHISĂ, DECIZIE) | **13 rute GET de citire istorică** (export, rapoarte, jurnal, urme) răspund azi 404 pe o firmă dezactivată. Catalogare, nu reparare — decizia dacă trecutul unei firme scoase din portofoliu rămâne citibil e a lui Costin. |
 | **R81, R79, R80** | Neatinse azi după închiderea lor / decizia (c). R80 rămâne deschisă pe **muncă**, nu pe răspuns. |
 | **restul** | Vezi `CONFORMITATE.md` — nu s-a atins nimic altceva. |

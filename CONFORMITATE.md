@@ -1979,16 +1979,36 @@ scos ce nu se știa**, nu din defecte noi.
 - **ce NU face, declarat**: **niciun clichet pe cele 28 de `except …: pass` rămase.** Costin, explicit: *„pe alea nu le-am măsurat și nu știm care sunt legitime."* Și nu verifică dacă emailul chiar pleacă — doar că, dacă nu pleacă, rămâne urmă.
 - **condiția de deblocare**: decizia lui Costin între **(a)** toate patru trec pe `esec_secundar`, cu `alerta=True` pe cele trei căi de intrare — tăcerea acolo are cost de acces, ceea ce docstringul lui numește drept criteriu; **(b)** doar log, fără alertă, pe toate patru; **(c)** mesajul de pe ecran se schimbă și el, ca să nu mai afirme trimiterea. Se închide când un eșec de trimitere lasă urmă, cu gard.
 
+### R84 — Trecutul unei firme scoase din portofoliu nu se mai poate citi: 13 rute de raport răspund 404
+
+- **felul**: ARTEFACT
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · R83 (aceeași poartă) · R72 · **PRAG 2** *(nu e un om păgubit ACUM — nu există azi nicio firmă inactivă în portofoliu, deci efectul nu s-a produs. Dar se produce la prima dezactivare a unei firme cu evidență, iar textul care o însoțește promite explicit că «datele ei rămân neatinse»)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `5adb1d9`
+- **măsurat la**: 2026-08-28 · **pe commit**: `5adb1d9`
+- **planul**: **NEACOPERIT.** Regula scrisă azi în `PLAN_ARHITECTURA.md` spune **cum** se face o excepție de acces, nu **care** rute merită una. Ce înseamnă o firmă inactivă pentru **citirea trecutului** ei rămâne nescris — și e chiar întrebarea. (METODA §25)
+- **cum s-a găsit**: catalogare cerută explicit (BLOC JJ0), nu o probă. Comanda: *„care dintre rutele păzite de `schema_tenant` ar avea sens pe o firmă inactivă — listă, nu reparație."*
+- **cifra, măsurată pe AST în `main.py`, nu estimată** *(pe `1feeb8a`, înainte de reparația R83; pe `5adb1d9` sunt **153**, fiindcă ruta de activare a ieșit din mulțime — cele 13 de mai jos nu s-au atins)*: **154** de rute păzite de `schema_tenant`; dintre ele **13** sunt `GET`-uri care **doar citesc** date deja existente: `/tenants/{id}/casa/registru`, `/centre-cost/raport`, `/documente/balanta`, `/facturi-primite/{id}/xml`, `/facturi/{id}/export-saga`, `/jurnal`, `/jurnal-marja`, `/perioade-blocate/istoric`, `/rapoarte-comerciale`, `/rapoarte-comerciale/fisa`, `/rapoarte-salvate`, `/stocuri/articole/{id}/fisa`, `/urme-portal`.
+- **ce blochează**: aceeași poartă ca R83 — `auth_api.schema_tenant` cere `activ = true` pe toate trei ramurile de rol. Pentru o firmă dezactivată, toate 13 răspund **404**.
+- **de ce contează, și de ce NU e prag 1**: confirmarea dezactivării spune azi, pe ecran, *„iese din portofoliul de lucru, iar datele ei rămân neatinse"*. **Datele chiar rămân** — nu se șterge nimic, afirmația nu e falsă. Ce nu spune nimeni e că **nu se mai pot citi**. Un contabil care dezactivează o firmă în martie și are nevoie de jurnalul ei în mai o trebuie să reactiveze întâi. Asta e o **inconveniență cu ocol existent**, nu o pierdere — de-aia prag 2.
+- **ce NU vede măsurătoarea**: dacă cineva a avut nevoie vreodată de vreunul din cele 13 pe o firmă inactivă. Nu există urmă — portofoliul n-a avut firme inactive persistente.
+- **de ce nu am reparat-o**: pentru că nu e un defect, e o **politică**. Un raport pe o firmă scoasă din portofoliul de lucru poate fi ceva ce **trebuie** să meargă (trecutul nu dispare) sau ceva ce **nu trebuie** (firma a ieșit din evidență, tocmai ca să nu mai apară nicăieri). Alegerea e a lui Costin. Și: comanda spunea explicit *„nu extinde scopul azi"*.
+- **condiția de deblocare**: decizia lui Costin între **(a)** cele 13 rute de citire capătă, fiecare, verificarea locală de la R83 — repară clasa, dar **treisprezece** excepții locale sunt deja un tipar, nu o excepție, iar tiparul ăsta cere gard propriu; **(b)** se face **o** poartă declarată pentru citire-istorică (`schema_tenant_citire`), iar cele 13 rute o cer explicit — mai curat, dar e o funcție comună nouă, deci trebuie măsurat că nimeni n-o cheamă din greșeală; **(c)** rămâne cum e: o firmă inactivă nu se citește, iar textul de pe ecran se completează ca să **spună** asta. Se închide când citirea trecutului unei firme inactive are un răspuns scris — fie „merge", cu gard, fie „nu merge", cu textul care o spune.
+
+
 ### R83 — O firmă dezactivată nu se poate reactiva: poarta de acces o consideră inexistentă
 
 - **felul**: ARTEFACT
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · R72 · R82 (textele care trimit acolo) · **PRAG 1** *(efect greșit la un om ACUM: ecranul „Firme dezactivate" listează firma, butonul „Reactivează" e acolo, iar apăsarea lui întoarce „tenant inexistent sau fără acces". Iar două confirmări de pe alt ecran îi spun omului exact să folosească drumul ăsta.)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: **REZOLVATĂ**
 - **deschisă pe commit**: `7555897`
+- **rezolvată pe commit**: `5adb1d9`
 - **măsurat la**: 2026-08-28 · **pe commit**: `7555897`
-- **planul**: **NEACOPERIT.** Citit `PLAN_ARHITECTURA.md` după *dezactivare*, *reactivare*, *acces*, *rol*: singura secțiune „Reguli de acces" (l. 615) e despre **registrul de valori fiscale** — cine poate scrie o valoare și cu ce temei —, nu despre accesul unui utilizator la o firmă. Planul nu spune nicăieri ce înseamnă o firmă **inactivă** pentru drepturile de acces, și tocmai asta e întrebarea. (METODA §25)
+- **planul**: **NEACOPERIT** *(golul a fost închis odată cu reparația — vezi „ce s-a scris în plan" mai jos)*. Citit `PLAN_ARHITECTURA.md` după *dezactivare*, *reactivare*, *acces*, *rol*: singura secțiune „Reguli de acces" (l. 615) e despre **registrul de valori fiscale** — cine poate scrie o valoare și cu ce temei —, nu despre accesul unui utilizator la o firmă. Planul nu spune nicăieri ce înseamnă o firmă **inactivă** pentru drepturile de acces, și tocmai asta e întrebarea. (METODA §25)
 - **ce blochează**: `main.py` l. 1245 — ruta `POST /tenants/{id}/activare` se apără cu `auth_api.schema_tenant(...)`, iar funcția aia cere `activ = true` pe **toate trei** ramurile de rol (`core/auth_api.py` l. 335, 337, 343). Deci pentru o firmă dezactivată poarta întoarce `None`, iar ruta răspunde **404** — inclusiv atunci când actul cerut e chiar **reactivarea**. Dezactivarea merge (firma e activă când o apeși); reactivarea **nu poate reuși niciodată**.
 - **cifra**: **1 rută**, **2 ecrane** care trimit acolo (cele două confirmări de dezactivare) și **1 buton** care eșuează de fiecare dată. Probat pe **amândouă** ramurile — firmă fără evidență și firmă cu evidență.
 - **cum s-a găsit**: nu căutând-o. Comanda cerea proba drumului *banner → „Firme dezactivate" → reactivare*, pe ecran, nu din bază. Prima rulare a raportat *„firma nu s-a întors"*, iar diagnosticul a arătat mesajul de eroare de pe ecran.
@@ -1996,6 +2016,21 @@ scos ce nu se știa**, nu din defecte noi.
 - **ce NU vede măsurătoarea**: dacă mai există alte rute care se apără cu `schema_tenant` și au sens **numai** pe o firmă inactivă. N-am căutat clasa, am măsurat instanța — și clasa e chiar întrebarea deciziei.
 - **de ce nu am reparat-o**: reparația atinge o **poartă de acces**, nu un text. Variantele au consecințe diferite asupra izolării între cabinete, iar alegerea nu e a mea. *(Și pentru că e a doua oară azi când o probă cerută pentru altceva scoate un defect propriu — se consemnează, se repară după.)*
 - **condiția de deblocare**: decizia lui Costin între **(a)** ruta de activare își face propria verificare de acces, care nu cere `activ` — cea mai îngustă, atinge o singură rută; **(b)** `schema_tenant` primește un parametru explicit (`si_inactive=False`), iar rutele care lucrează pe firme inactive îl cer — repară **clasa**, dar schimbă semnătura unei funcții folosite peste tot; **(c)** o firmă dezactivată rămâne accesibilă pentru **toate** rutele, iar `activ` decide doar ce se vede în listă — cea mai simplă și cea mai largă, deci cea cu cel mai mare efect asupra izolării. Se închide când un om poate dezactiva și reactiva o firmă din ecran, probat pe amândouă ramurile.
+
+- **REZOLVATĂ 28.08.2026 (BLOC JJ), decizia lui Costin: varianta (a).** *„`POST /tenants/{id}/activare` nu mai folosește `auth_api.schema_tenant` standard (care cere `activ=true`). Restul rutelor rămân neatinse — nicio semnătură comună nu se schimbă, izolarea rămâne exact cum era."*
+- **de ce (a), și de ce NU (b) sau (c)** — scris aici fiindcă peste o lună alegerea o să pară arbitrară:
+  - **(a) e locală și reversibilă.** Excepția e o funcție privată, `main._acces_pentru_activare`, chemată dintr-**un singur** loc. Dacă se dovedește greșită, se scoate fără să atingă nimic altceva. Regula de **rol** rămâne identică cu a porții comune — `superadmin` doar pe firme fără cabinet, restul doar pe cabinetul lor; **singura** diferență e `activ`, și e chiar diferența cerută.
+  - **(b) respinsă: semnătură comună, nemăsurată.** Un parametru `si_inactive=` pe `schema_tenant` ar fi reparat **clasa**, dar funcția e chemată din **154** de rute în `main.py` — numărate pe AST, pe `1feeb8a`, adică **înainte** de reparație; pe `5adb1d9` sunt **153**, fiindcă activarea a ieșit din mulțime. A schimba o semnătură folosită de atâtea rute cere să știi ce face fiecare — iar aia e o măsurătoare care nu s-a făcut. Și: *un parametru implicit pe o funcție de acces e o poartă care se poate uita deschisă.*
+  - **(c) respinsă: efect asupra izolării.** Ar fi dat acces la **conținutul** oricărei firme scoase din portofoliu, pe toate căile acelea, ca **efect secundar** al unei reparații despre un buton.
+- **JJ1 — reparația, și o decizie luată pe drum.** `main.py`: `_acces_pentru_activare(conn, rol, firm, tenant_id)` întoarce un `bool` — dreptul de a comuta un rând din `public.tenants` —, **nu** schema și **nu** acces la conținut. Refuzul păstrează **același mesaj** ca poarta comună (*„tenant inexistent sau fără acces"*), deliberat: „inexistent" și „fără acces" nu se despart, ca să nu se poată afla din afară ce firme există.
+  **Decizia cerută explicit — ce se întâmplă pe o firmă deja activă: no-op idempotent, nu eroare.** `comuta_activ` întoarce `{"schimbat": false}` și nu scrie nimic — nici rând, nici audit. Motivul e al ecranului: butonul se poate apăsa de două ori, iar o a doua apăsare care ar da eroare ar arăta ca un defect acolo unde nu e niciunul. **Un refuz se păstrează pentru ce nu se poate face, nu pentru ce e deja făcut.** *(Comportamentul exista deja în `tenant_stergere.comuta_activ`; ce s-a adăugat e decizia scrisă și gardul care o ține.)*
+- **JJ2 — gardul mecanic: `core/test_activare_firma_inactiva.py`, 5 teste.** Cerința avea două jumătăți, și amândouă sunt măsurate:
+  - *o firmă dezactivată se poate reactiva* — pe **date**, în tranzacție întoarsă la savepoint: cu firma dezactivată, poarta **comună** o refuză (`None`) și poarta **rutei** o acceptă (`True`). Exact diferența cerută, măsurată, nu presupusă. Plus anti-vacuu: dacă firma nu e accesibilă **nici activă**, testul pică în loc să treacă în gol.
+  - *celelalte rute NU capătă acces ca efect secundar* — trei aserțiuni pe structură: ruta de activare **nu mai cheamă** `schema_tenant`; excepția are **exact un apelant** (`_acces_pentru_activare` chemată de a doua oară ar fi varianta (b) pe furiș); iar poarta **comună** trebuie să ceară în continuare `activ = true` pe **toate trei** ramurile — citite ca **noduri de SQL date lui `execute`**, nu ca text căutat în fișier (METODA §23). A patra ține regula de rol în excepție: un admin din alt cabinet e refuzat, `superadmin` pe o firmă **cu** cabinet e refuzat.
+- **JJ3 — probat pe ecran, nu din bază.** `FIRMA TEST UNU SRL` (id 34061, CUI 14837428, cabinet 9746) — firma rămasă dezactivată din verificarea manuală a lui Costin — **reactivată din interfață**, pe drumul complet: `Firme` → *„Firme dezactivate (1)"* → *„Reactivează"* → banner *„FIRMA TEST UNU SRL e din nou în portofoliu, în starea de dinainte. O găsești în listă."* Firma a rămas **activă**, cum s-a cerut.
+- **ce s-a scris în plan (golul care a produs restanța):** `PLAN_ARHITECTURA.md`, „Reguli de acces" — implicit orice rută trece prin poarta comună, care cere firma activă; o excepție se scrie **local pe rută**, cu rolul păstrat identic; **funcția comună nu se modifică pentru o excepție**; iar excepția are un singur apelant, păzit mecanic. Restanța s-a deschis pentru că planul **nu spunea nimic** despre ce înseamnă „inactivă" pentru drepturile de acces — acum spune.
+- **JJ0 — catalogare, NU reparare** *(comanda: „nu extinde scopul azi")*. Întrebarea: care dintre rutele păzite de `schema_tenant` ar avea **sens** pe o firmă inactivă. Măsurat pe AST în `main.py`, pe `1feeb8a` — înainte de reparație, deci activarea încă e în mulțime: **154** de rute păzite, din care **13** sunt `GET`-uri de **citire istorică** — nu ating date, doar le arată: `/tenants/{id}/casa/registru`, `/centre-cost/raport`, `/documente/balanta`, `/facturi-primite/{id}/xml`, `/facturi/{id}/export-saga`, `/jurnal`, `/jurnal-marja`, `/perioade-blocate/istoric`, `/rapoarte-comerciale`, `/rapoarte-comerciale/fisa`, `/rapoarte-salvate`, `/stocuri/articole/{id}/fisa`, `/urme-portal`. Toate răspund azi **404** pe o firmă dezactivată. **A apărut ceva, deci se deschide restanță separată: R84.** Nu e un defect probat la un om — e o întrebare de politică, iar răspunsul ei nu e al meu.
+- **ce NU acoperă reparația, declarat**: nu trece prin **HTTP**. Gardul verifică poarta și efectul ei pe date; că ruta cheamă poarta cea nouă se citește din AST; că un om poate apăsa butonul s-a probat pe ecran (JJ3/KK1), nu în test.
 
 
 ### R82 — Cele patru acte cu cel mai mare efect asupra unei firme se termină în tăcere
@@ -2157,6 +2192,20 @@ scos ce nu se știa**, nu din defecte noi.
 - **ce rămâne, și e o judecată, nu o măsurătoare:** că textele astea sunt bune **pentru un
   contabil**. S-a probat că **apar** și **ce scriu**; dacă vreunul sună a limbaj de programator, se
   schimbă textul, nu mecanismul. Și: banner-ul dispare după **8 secunde** — nu s-a măsurat dacă ajung.
+- **[KK, 28.08.2026] CONFIRMAREA FINALĂ: fluxul întreg, pe o firmă nouă, de la un capăt la altul.**
+  Până azi, R82 fusese probată **pe acte**, fiecare separat. Ce lipsea era **lanțul** — și acolo
+  stătea defectul care contează: cele două confirmări de dezactivare promit *„O aduci înapoi din
+  «Firme dezactivate»"*, iar drumul ăla **eșua** (R83). Un banner adevărat la capătul unui act care
+  nu se poate desface e tot o afirmație falsă, doar că mai greu de văzut.
+  - **KK1 — drumul complet, pe cabinet și firmă noi** (`CABINET PROBA FLUX SRL`, `PROBA FLUX ÎNTREG
+    SRL`, CUI 40000085): dezactivare → banner *„PROBA FLUX INTREG SRL a fost dezactivată — iese din
+    portofoliul de lucru, iar datele ei rămân neatinse. O aduci înapoi din «Firme dezactivate»."* →
+    butonul **„Firme dezactivate (1)"**, găsit pe ecranul Firme → *„Reactivează"* → banner *„… e din
+    nou în portofoliu, în starea de dinainte. O găsești în listă."* → firma **în listă**.
+    **Textul e adevărat de la un capăt la altul.** Abia acum.
+  - **KK2 — curățenie:** firma ștearsă prin `tenant_stergere.sterge`, apoi cabinetul, userul,
+    legăturile și urmele lui. După: **19 firme, 7 cabinete, 0 inactive** *(19, nu 18: `FIRMA TEST
+    UNU SRL` a rămas reactivată, cum a cerut JJ3)*.
 
 - **[BB1 + CC1, 28.08.2026] Amândouă întrebările de mai sus au primit răspuns, și restanța rămâne
   REZOLVATĂ** — ce urmează sunt **instanțe** ale ei, nu o redeschidere.
@@ -2231,6 +2280,14 @@ scos ce nu se știa**, nu din defecte noi.
     nu se taie, nu se suprapune, se citește — dar e o coloană îngustă pentru un ecran de telefon.
     Cauza e forma lui: `position:fixed` fără lățime declarată, deci se strânge la conținut.
     **Nelăsat nereparat din comoditate: nu era în cerință, iar lărgirea lui e o schimbare de așezare.**
+  - **[LL, 28.08.2026] ÎNCHISĂ — lățimea e declarată, și s-a re-măsurat.** Costin a cerut
+    schimbarea, deci așezarea nu se mai atinge tăcut: `width: calc(100% - 32px)` lângă
+    `max-width: min(520px, 92vw)` care exista deja. Pe **desktop nu se schimbă nimic** —
+    `max-width` îl ține la 520 —, iar pe telefon banner-ul primește lățimea ferestrei minus marginile.
+  - **LL2 — re-măsurat pe 375 px, aceleași criterii ca la II:** **343 px din 375** *(era 188)*,
+    textul în **8 rânduri** *(erau 15)*, întreg în fereastră, **netăiat**, „✕"-ul **neacoperit**
+    (`elementFromPoint` îl întoarce pe el) și **fără suprapunere** peste prima linie de text.
+    Captură: `frontend_test/ll_scoatere_375px_latit.png`.
 - **[GG, 28.08.2026] Drumul din banner spre reactivare — probat, și a scos DOUĂ lucruri.**
   - **primul, reparat pe loc:** reactivarea își scria confirmarea prin `arataMesaj(zm, …)` în
     `#fd-mesaj` — o zonă din fereastra pe care rândul **următor**, `nav.inapoi()`, o închidea.
@@ -2240,11 +2297,13 @@ scos ce nu se știa**, nu din defecte noi.
     nicio recitire: a prins-o o probă care aștepta `.msg-ok` și nu-l găsea niciodată. Reactivarea
     trece acum tot prin `_bannerFirma`. **E chiar clasa lui R82, ascunsă în spatele unui apel care
     PARE o confirmare.**
-  - **al doilea, NEREPARAT, și e mai grav — vezi R83:** butonul „Reactivează" **eșuează**, pe
+  - **al doilea, NEREPARAT ATUNCI, reparat în aceeași zi la BLOC JJ — vezi R83:** butonul „Reactivează" **eșuează**, pe
     amândouă ramurile, cu *„tenant inexistent sau fără acces"*. Deci cele două texte de confirmare
     ale dezactivării — *„O aduci înapoi din «Firme dezactivate»"* — **spun azi ceva ce nu se poate
     face**. Textele rămân neschimbate până se decide R83: ele descriu intenția corectă, iar
-    schimbarea lor ar ascunde defectul în loc să-l repare.
+    schimbarea lor ar ascunde defectul în loc să-l repare. *(28.08.2026, câteva ore mai târziu:
+    decizia a venit — varianta (a) —, R83 e reparată și probată pe ecran, iar textele au devenit
+    adevărate **fără să fie atinse**. Exact motivul pentru care nu s-au schimbat.)*
   - **ce s-a probat totuși despre drum (GG3):** butonul „Firme dezactivate (N)" **există** și e
     **vizibil fără derulare** pe amândouă ramurile (y=660 și y=693, într-o fereastră de 900), iar
     ecranul se deschide și listează firma. **Nu e clasa R78** — nu e ascuns; e stricat.

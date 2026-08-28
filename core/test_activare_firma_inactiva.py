@@ -14,7 +14,8 @@ CE FACE IMPOSIBIL:
   2. **răspândirea excepției**: `_acces_pentru_activare` are voie să fie chemată dintr-un
      **singur** loc. A doua chemare ar face-o o poartă paralelă, adică exact varianta (b) pe furiș;
   3. slăbirea porții COMUNE: `schema_tenant` trebuie să ceară în continuare `activ` pe toate trei
-     ramurile — altfel toate celelalte 154 de rute ar căpăta acces la firme inactive **ca efect
+     ramurile — altfel toate celelalte rute păzite de ea (153, măsurate pe AST) ar căpăta acces
+     la firme inactive **ca efect
      secundar**, ceea ce decizia (a) refuză explicit;
   4. pierderea regulii de rol în excepție: superadmin doar pe firme fără cabinet, restul doar pe
      cabinetul lor.

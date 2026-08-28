@@ -630,7 +630,9 @@ Lista e închisă.
 
 **O EXCEPȚIE DE ACCES SE SCRIE LOCAL PE RUTĂ, NICIODATĂ ÎN FUNCȚIA COMUNĂ** *(28.08.2026, după R83)*
 
-`auth_api.schema_tenant` — poarta prin care trec **154** de rute din `main.py` — cere `activ = true`
+`auth_api.schema_tenant` — poarta prin care trec **153** de rute din `main.py` *(măsurat pe
+`5adb1d9`; erau 154 înainte ca activarea să iasă din mulțime — cifra se redatează, nu se copiază)* —
+cere `activ = true`
 pe toate trei ramurile de rol. Asta e **implicit și corect**: o firmă scoasă din portofoliul de lucru
 n-are de ce să răspundă la cereri de conținut.
 
@@ -646,7 +648,7 @@ răspundea 404 întotdeauna** (R83).
   scrie **propria verificare, local**, cu regula de **rol păstrată identică**; singurul lucru care
   diferă e `activ`;
 - **funcția comună nu se modifică pentru o excepție.** Un parametru implicit pe o funcție de acces
-  chemată din 154 de locuri e o poartă care se poate uita deschisă;
+  chemată din atâtea locuri e o poartă care se poate uita deschisă;
 - **excepția are un singur apelant**, iar asta se păzește mecanic. A doua chemare o transformă într-o
   poartă paralelă — adică într-o schimbare a funcției comune, pe furiș.
 

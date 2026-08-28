@@ -20,7 +20,9 @@ confirmări de pe alt ecran îi spuneau omului exact să încerce.
   altceva. Regula de **rol** rămâne identică cu a porții comune — superadmin doar pe firme fără
   cabinet, restul doar pe cabinetul lor; singura diferență e `activ`, și e chiar diferența cerută.
 - **(b) — respinsă: semnătură comună, nemăsurată.** Un parametru `si_inactive=` pe `schema_tenant`
-  ar fi reparat **clasa**, dar funcția e chemată din **154** de locuri în `main.py`. A schimba o
+  ar fi reparat **clasa**, dar funcția e chemată din **154** de rute în `main.py` — măsurat pe AST
+`1feeb8a`, adică **înainte** de reparație; după ea sunt **153**, fiindcă activarea a ieșit din
+mulțime. A schimba o
   semnătură folosită de atâtea rute cere să știi ce face fiecare — iar aia e o măsurătoare pe care
   n-am făcut-o. *Un parametru implicit pe o funcție de acces e o poartă care se poate uita deschisă.*
 - **(c) — respinsă: risc de izolare.** *„O firmă dezactivată rămâne accesibilă tuturor rutelor, iar

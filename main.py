@@ -1250,7 +1250,8 @@ def _acces_pentru_activare(conn, rol, firm, tenant_id):
     DE CE AICI ȘI NU ÎN `schema_tenant`. Decizia lui Costin — varianta **(a)**: *„restul rutelor
     rămân neatinse — nicio semnătură comună nu se schimbă, izolarea rămâne exact cum era."*
     Un parametru `si_inactive=` pe funcția comună ar fi reparat clasa, dar ar fi atins o semnătură
-    folosită în **154** de locuri, fiecare cu propriul risc. Excepția e locală, deci și riscul e.
+    folosită în **154** de rute, fiecare cu propriul risc *(numărate pe AST înainte de reparație;
+    după ea sunt 153 — ruta asta a ieșit din mulțime)*. Excepția e locală, deci și riscul e.
 
     CE PĂSTREAZĂ NEATINS: **regula de rol**, identică cu a funcției comune —
       * `superadmin` ajunge doar la firme **fără cabinet** (GDPR: nu vede conținutul clienților);
