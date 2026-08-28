@@ -3,6 +3,45 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 28.08.2026 — R83: excepția de acces pentru activare se scrie LOCAL pe rută, varianta (a)
+
+**Decizia lui Costin:** *„`POST /tenants/{id}/activare` nu mai folosește `auth_api.schema_tenant`
+standard (care cere `activ=true`). Restul rutelor rămân neatinse — nicio semnătură comună nu se
+schimbă, izolarea rămâne exact cum era."*
+
+**Ce repară.** Poarta comună cere `activ = true` pe **toate trei** ramurile de rol. Pentru o firmă
+dezactivată întorcea `None`, deci ruta răspundea **404** — inclusiv când actul cerut era chiar
+**reactivarea**. O firmă dezactivată **nu se putea reactiva niciodată prin ecran**, iar două
+confirmări de pe alt ecran îi spuneau omului exact să încerce.
+
+**TEMEIUL, pe cele trei variante:**
+- **(a) — aleasă: local și reversibil.** Excepția atinge **o singură rută** și **o singură funcție
+  privată**, chemată dintr-un singur loc. Dacă se dovedește greșită, se scoate fără să atingă nimic
+  altceva. Regula de **rol** rămâne identică cu a porții comune — superadmin doar pe firme fără
+  cabinet, restul doar pe cabinetul lor; singura diferență e `activ`, și e chiar diferența cerută.
+- **(b) — respinsă: semnătură comună, nemăsurată.** Un parametru `si_inactive=` pe `schema_tenant`
+  ar fi reparat **clasa**, dar funcția e chemată din **154** de locuri în `main.py`. A schimba o
+  semnătură folosită de atâtea rute cere să știi ce face fiecare — iar aia e o măsurătoare pe care
+  n-am făcut-o. *Un parametru implicit pe o funcție de acces e o poartă care se poate uita deschisă.*
+- **(c) — respinsă: risc de izolare.** *„O firmă dezactivată rămâne accesibilă tuturor rutelor, iar
+  `activ` decide doar ce se vede în listă"* e cea mai simplă și cea cu cel mai mare efect: ar da
+  acces la **conținutul** oricărei firme scoase din portofoliul de lucru, pe toate cele 154 de căi,
+  ca **efect secundar** al unei reparații despre un buton.
+
+**Ce s-a decis explicit pe drum (JJ1):** activarea e **idempotentă**. A cere activarea unei firme
+deja active **nu e o eroare**: `comuta_activ` întoarce `{"schimbat": false}` și nu scrie nimic — nici
+rând, nici audit. Motivul e al ecranului: butonul se poate apăsa de două ori, iar o a doua apăsare
+care ar da eroare ar arăta ca un defect acolo unde nu e niciunul. *Un refuz se păstrează pentru ce nu
+se poate face, nu pentru ce e deja făcut.*
+
+**Gardat**: `core/test_activare_firma_inactiva.py` — ruta nu mai cheamă poarta comună · excepția are
+**un singur apelant** (a doua chemare ar fi varianta (b) pe furiș) · poarta **comună** cere în
+continuare `activ = true` pe toate trei ramurile · regula de rol e păstrată în excepție · și, pe
+date, în tranzacție întoarsă: cu firma inactivă, poarta comună o refuză și cea a rutei o acceptă.
+
+**Probat pe ecran**, nu din bază: `FIRMA TEST UNU SRL` — firma rămasă din verificarea manuală a lui
+Costin — a fost reactivată **din interfață**, pe drumul complet.
+
 ## 28.08.2026 — Capturile de ecran: BASELINE stă afară, PROBĂ intră
 
 **Decizia lui Costin:** distincția se scrie ca **regulă**, nu se lasă ca excepție ad-hoc — plus:

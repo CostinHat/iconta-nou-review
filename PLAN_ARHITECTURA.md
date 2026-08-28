@@ -628,6 +628,30 @@ Lista e închisă.
 - **O modificare cu efect retroactiv declanșează P18.**
 - **Nicio decizie de interpretare nu intră fără să fi fost cerută.**
 
+**O EXCEPȚIE DE ACCES SE SCRIE LOCAL PE RUTĂ, NICIODATĂ ÎN FUNCȚIA COMUNĂ** *(28.08.2026, după R83)*
+
+`auth_api.schema_tenant` — poarta prin care trec **154** de rute din `main.py` — cere `activ = true`
+pe toate trei ramurile de rol. Asta e **implicit și corect**: o firmă scoasă din portofoliul de lucru
+n-are de ce să răspundă la cereri de conținut.
+
+Golul, găsit pe 28.08.2026: planul **nu spunea nimic** despre ce înseamnă o firmă **inactivă** pentru
+drepturile de acces, iar secțiunea de față era despre registrul de valori fiscale — cine poate scrie
+o valoare și cu ce temei —, nu despre accesul unui om la o firmă. Consecința a fost un act imposibil:
+`POST /tenants/{id}/activare` se apăra cu poarta comună, deci **reactivarea unei firme dezactivate
+răspundea 404 întotdeauna** (R83).
+
+**Regula, scrisă acum:**
+- **implicit, orice rută trece prin poarta comună**, care cere firma **activă**;
+- o rută al cărei act are sens **tocmai pe o firmă inactivă** — azi una singură, activarea — își
+  scrie **propria verificare, local**, cu regula de **rol păstrată identică**; singurul lucru care
+  diferă e `activ`;
+- **funcția comună nu se modifică pentru o excepție.** Un parametru implicit pe o funcție de acces
+  chemată din 154 de locuri e o poartă care se poate uita deschisă;
+- **excepția are un singur apelant**, iar asta se păzește mecanic. A doua chemare o transformă într-o
+  poartă paralelă — adică într-o schimbare a funcției comune, pe furiș.
+
+*(Decizia lui Costin, varianta (a); gard: `core/test_activare_firma_inactiva.py`.)*
+
 ### Ce e în afara registrului
 
 **Cursul valutar** — valoare pe dată, dar fapt de piață, nu normă. Regula de alegere a lui e însă convenție de calcul și intră.

@@ -5414,9 +5414,9 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**461 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**462 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 453
+### `core/` — 454
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -5446,6 +5446,7 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 - `core/test_absenta_nu_e_neaplicabil.py` — GARD DE CLASĂ (21.08.2026): „niciun X înregistrat" nu poate deveni „nu se datorează".
 - `core/test_achizitii_factura.py` — NECONFORMITATE ACTIVA reparata (04.08): operatiunile de achizitie (achizitie_ic, achizitie_taxare_inversa)
 - `core/test_acoperire_vizuala.py` — [Regula 14 + metoda-ca-poarta, cerut de Costin 19.08.2026] GARD: o schimbare de UI cere un scan
+- `core/test_activare_firma_inactiva.py` — GARD [R83/JJ2, 28.08.2026]: reactivarea e posibilă, iar excepția rămâne LOCALĂ.
 - `core/test_afirmatii.py` — GARD (P3, 21.08.2026): o afirmație despre datele firmei își declară FELUL și poartă câmpurile
 - `core/test_afirmatii_tipate.py` — CLICHET: afirmațiile despre datele firmei nu mai pot fi proză. (P8, 21.08.2026)
 - `core/test_agenda.py` — Garda anti-stale a agendei: pica daca TESTE.md a ramas in urma codului. Diferenta fata de DE_FACUT.md

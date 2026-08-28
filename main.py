@@ -1238,12 +1238,57 @@ class FirmaActivareIn(BaseModel):
     activ: bool
 
 
+def _acces_pentru_activare(conn, rol, firm, tenant_id):
+    """[R83/JJ1, 28.08.2026] Poarta rutei de ACTIVARE — scrisă **local**, nu în funcția comună.
+
+    DE CE EXISTĂ. `auth_api.schema_tenant` cere `activ = true` pe **toate trei** ramurile de rol.
+    E corect pentru orice rută care lucrează *în* firmă — o firmă scoasă din portofoliul de lucru
+    n-are de ce să răspundă la cereri de conținut. Dar ruta de activare e **singura** al cărei act
+    are sens tocmai pe o firmă **inactivă**: reactivarea. Cu poarta comună, ea răspundea 404
+    întotdeauna, deci **reactivarea nu se putea face niciodată** (R83, probat pe 28.08.2026).
+
+    DE CE AICI ȘI NU ÎN `schema_tenant`. Decizia lui Costin — varianta **(a)**: *„restul rutelor
+    rămân neatinse — nicio semnătură comună nu se schimbă, izolarea rămâne exact cum era."*
+    Un parametru `si_inactive=` pe funcția comună ar fi reparat clasa, dar ar fi atins o semnătură
+    folosită în **154** de locuri, fiecare cu propriul risc. Excepția e locală, deci și riscul e.
+
+    CE PĂSTREAZĂ NEATINS: **regula de rol**, identică cu a funcției comune —
+      * `superadmin` ajunge doar la firme **fără cabinet** (GDPR: nu vede conținutul clienților);
+      * oricine altcineva ajunge doar la firmele **cabinetului lui**.
+    Singura diferență față de `schema_tenant` e `activ`, și e diferența cerută.
+
+    CE NU FACE: nu întoarce schema și nu dă acces la **conținut**. Întoarce un `bool` — dreptul de a
+    comuta un rând din `public.tenants`. Cine vrea conținutul firmei trece tot prin poarta comună.
+
+    Refuzul e **același mesaj** ca al porții comune, deliberat: „inexistent" și „fără acces" nu se
+    despart, ca să nu se poată afla din afară ce firme există.
+    """
+    with conn.cursor() as cur:
+        cur.execute("SELECT accounting_firm_id FROM public.tenants WHERE id = %s", (tenant_id,))
+        r = cur.fetchone()
+    if not r:
+        return False
+    cabinet = r[0]
+    if rol == "superadmin":
+        return cabinet is None
+    return cabinet is not None and cabinet == firm
+
+
 @app.post("/tenants/{tenant_id}/activare")
 def tenant_activare(tenant_id: int, date: FirmaActivareIn, ctx=Depends(cere_rol("admin_firma"))):
     """[R72] Dezactivează / reactivează firma. O firmă CU evidență nu se șterge — iese din listă
-    pe calea asta, iar documentele ei rămân."""
+    pe calea asta, iar documentele ei rămân.
+
+    [R83] Poarta e `_acces_pentru_activare`, nu `auth_api.schema_tenant`: aia cere `activ = true`,
+    ceea ce făcea reactivarea imposibilă. Vezi funcția pentru de ce excepția stă aici și nu acolo.
+
+    IDEMPOTENT, decis explicit (JJ1): a cere activarea unei firme deja active **nu e o eroare**.
+    `comuta_activ` întoarce `{"schimbat": false}` și nu scrie nimic — nici rând, nici audit. Motivul
+    e al ecranului: butonul se poate apăsa de două ori, iar o a doua apăsare care ar da eroare ar
+    arăta ca un defect acolo unde nu e niciunul. Un refuz se păstrează pentru ce **nu se poate
+    face**, nu pentru ce **e deja făcut**."""
     with db.get_conn() as conn:
-        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
+        if not _acces_pentru_activare(conn, ctx["rol"], ctx.get("firm"), tenant_id):
             raise HTTPException(404, "tenant inexistent sau fără acces")
         try:
             return tenant_stergere.comuta_activ(conn, tenant_id, date.activ, ctx["uid"])

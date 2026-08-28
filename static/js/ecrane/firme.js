@@ -2635,8 +2635,14 @@ function _bannerFirma(html, autoDismiss = true) {
   const b = document.createElement("div");
   b.id = "firma-creata-bine";
   b.className = "caseta-info";
+  // [LL1, 28.08.2026] LATIME EXPLICITA. Un element `position:fixed` fara latime se stange la
+  // continut, iar pe telefon asta insemna o coloana de 188 px din 375 — text rupt in 15 randuri,
+  // lizibil dar inghesuit (masurat la 375 px, II). `calc(100% - 32px)` ii da latimea disponibila,
+  // minus o margine de o parte si de alta; `max-width` il tine la 520 pe ecran mare, deci desktopul
+  // ramane exact cum era.
   b.style.cssText = "position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:99999;"
-    + "max-width:min(520px,92vw)" + (autoDismiss ? "" : ";padding-right:44px");
+    + "width:calc(100% - 32px);max-width:min(520px,92vw)"
+    + (autoDismiss ? "" : ";padding-right:44px");
   b.innerHTML = `<div class="ci-mesaj">${html}</div>`
     // [FF1, 28.08.2026] Starea de REPAUS a butonului. `nav-x` e hover-only, si acolo e corect:
     // in fereastra de lucru „✕" e redundant (ai si Escape, si click in afara, si butonul de inapoi).
