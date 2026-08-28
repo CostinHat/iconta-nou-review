@@ -1985,7 +1985,8 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: INTERN
 - **unde intră**: E1 · DS cap.6 · R77 (partea nedovedită) · **PRAG 2** *(nimic fals pe ecran, dar omul care apasă nu află că a reușit — deduce reușita din ce a dispărut. Iar dacă deduce greșit, apasă a doua oară un act ireversibil)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
+- **rezolvată pe commit**: `57882ca`
 - **deschisă pe commit**: `f07f8e6`
 - **măsurat la**: 2026-08-27 · **pe commit**: `f07f8e6`
 - **planul**: **ACOPERIT ca principiu** — `DESIGN_SYSTEM cap.6` fixează convenția de mesaj (`arataMesaj`), iar `cap.25` cere ca fiecare chiriaș al ecranului să răspundă la o întrebare. Ce lipsește nu e convenția: e aplicarea ei exact acolo unde efectul e cel mai mare. (METODA §25)
@@ -2076,6 +2077,52 @@ scos ce nu se știa**, nu din defecte noi.
 - **Ce rămâne, și de-aia restanța NU se închide:** cele patru acte tot nu confirmă nimic. S-a scris
   regula (`DESIGN_SYSTEM.md` cap.27), s-a măsurat clasa și s-a pus clichetul; **repararea lor e
   altă tură**, iar condiția de deblocare de mai sus rămâne cea care o judecă.
+- **REZOLVATĂ 28.08.2026 (BLOC AA).** Cele patru acte confirmă acum vizibil, iar confirmarea
+  **numește entitatea și consecința** — regula scrisă în aceeași zi în `DESIGN_SYSTEM.md` cap.27,
+  aplicată, nu doar documentată.
+- **CUM, și de ce nu prin `arataMesaj`.** Toate patru se termină cu `nav.acasa()`: **ecranul lor
+  dispare**. Un `arataMesaj` obișnuit scrie într-o zonă care se demontează odată cu el — ar fi trecut
+  **mecanic** și n-ar fi fost văzut de nimeni. Confirmarea stă pe `document.body`, prin
+  `_bannerFirma` — mecanismul construit pe 26.08 pentru crearea firmei, generalizat acum. **Zero
+  clase noi** (`caseta-info` / `ci-mesaj`, ca înainte).
+- **cele patru, numite pe rută, nu pe fișier** *(comanda spunea „activare firmă"; măsurătoarea spune
+  altceva, și se scrie ce spune ea)*: **alegerea de denumire** (`POST /tenants/{id}/nume-ales`),
+  **dezactivarea pe ramura FĂRĂ evidență** (`#sf-dezactiveaza-2`), **scoaterea definitivă**
+  (`DELETE /tenants/{id}`) și **dezactivarea pe ramura CU evidență** (`#sf-dezactiveaza`).
+  **Reactivarea nu era printre ele** — confirmă de pe 26.08, prin `arataMesaj`, și e legitim acolo:
+  ecranul ei nu se demontează înainte de mesaj.
+- **AA3 — PROBĂ pe ecran real, nu pe scan.** Cabinet **nou și curat** (nu 1968, nu 4163), firmă cu
+  **CUI real** (1973096) și divergență vie, ștearsă după; a patra pe o firmă **cu evidență** din
+  cabinetul de test, dezactivată și **reactivată imediat**. **Cinci** confirmări văzute — alegerea
+  are două ramuri, cu mesaje diferite:
+
+  | act | ce spune ecranul |
+  |---|---|
+  | alegere, *păstrez* | *„«Antibiotice» rămâne denumirea firmei. Alegerea a fost consemnată, cu data și autorul ei…"* |
+  | alegere, *ANAF* | *„Denumirea firmei e acum «ANTIBIOTICE SA», cea de la ANAF. Se folosește peste tot — în listă, în bara de sus și pe declarații."* |
+  | dezactivare (fără evidență) | *„«X» a fost dezactivată — iese din portofoliul de lucru, iar datele ei rămân neatinse…"* |
+  | scoatere definitivă | *„«X» a fost scoasă definitiv din portofoliu — datele ei nu mai există. A rămas doar urma scoaterii…"* |
+  | dezactivare (cu evidență) | *„«ALFA MICRO SRL» a fost dezactivată — … documentele ei rămân neatinse…"* |
+
+  După probă: **18 firme, 7 cabinete, 0 firme inactive** — nimic rămas.
+- **AA4 — capturile sunt COMISE** (`frontend_test/aa_*.png`, `w_*.png`). Nu intră sub decizia din
+  26.08 care scotea capturile din repo: alea erau **baseline-uri** — referințe locale, regenerabile
+  cu `baseline_scan.py`, care cresc la fiecare recapturare. Astea sunt **probe ale unei stări care nu
+  mai există** (firma de test e ștearsă, cabinetul și userul la fel), deci nu se pot regenera: nu
+  sunt cost permanent, sunt singura urmă.
+- **gardat**: clichetul din `core/scan_ecran_reguli.py` a coborât de la **4** la **0**, iar zero e de
+  acum **PRAG, nu clichet**: nu există motiv ca un act de nivel firmă să se termine în tăcere, iar al
+  optulea care ar apărea așa **blochează poarta**. Verificatorul tipărește starea la fiecare commit.
+- **două teste s-au rescris, și motivul e o lecție despre clichete**: la zero, *„nu crește"* devine
+  tautologie, iar *„mulțimea celor patru"* n-are ce să pineze. Ce are conținut acum e afirmația
+  inversă — **fiecare** act confirmă —, plus una care cere **CUM**: cele patru trebuie să confirme
+  prin `_bannerFirma`, nu prin orice. E chiar diferența dintre o confirmare și una care **pare** o
+  confirmare.
+- **ce NU s-a atins (AA2):** nimic din simetria de scriere — nici ramura `anaf`, nici `PUT`. R82 e
+  despre **feedback vizual**, nu despre ce se scrie.
+- **ce rămâne, și e o judecată, nu o măsurătoare:** că textele astea sunt bune **pentru un
+  contabil**. S-a probat că **apar** și **ce scriu**; dacă vreunul sună a limbaj de programator, se
+  schimbă textul, nu mecanismul. Și: banner-ul dispare după **8 secunde** — nu s-a măsurat dacă ajung.
 
 
 ### R81 — Denumirea unei firme stă în două locuri, iar redenumirea atinge unul singur

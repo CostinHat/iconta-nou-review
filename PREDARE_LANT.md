@@ -5,9 +5,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 ## ANTET — cât de veche e predarea asta
 
 - **ultima rescriere**: **2026-08-28**, a patra oară în aceeași zi. *Rescriere COMPLETĂ, nu petic.*
-- **pe commit**: `4f3c195` — ultimul commit intrat. *Predarea asta se scrie ÎNAINTE de commitul care
-  poartă munca descrisă mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e
-  arborele care devine commitul următor.*
+- **pe commit**: `57882ca` — starea pe care o descrie.
 - **rescrierea de dinainte**: `4f3c195`, aceeași zi. Între ele a încăput **1 commit**.
 - **de ce acum**: trei blocuri aplicate (Y, Z, AA), iar unul din ele schimbă **cum se scrie chiar
   fișierul ăsta**. *Conținutul, nu contorul* — măsurat cu formula din `pre-commit`: **1** commit în
@@ -125,7 +123,7 @@ celelalte trei**.
 
 ## STAREA LA PREDARE
 
-Poartă verde pe arborele care devine commitul următor: **3460 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
+Poartă verde la `57882ca`: **3462 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
 rute **411 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 32** · acte de nivel firmă **0 tăcute din 7** ·
 site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 
@@ -137,7 +135,7 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 
 | | |
 |---|---|
-| **R82** (reparată; se închide în registru în commitul următor, care o poate numi) | Cele patru acte confirmă, exercitate pe ecran. Clichetul a coborât de la 4 la **0**, iar zero e de acum **prag**: al optulea act tăcut blochează poarta. |
+| **R82** (REZOLVATĂ pe `57882ca`) | Cele patru acte confirmă, exercitate pe ecran. Clichetul a coborât de la 4 la **0**, iar zero e de acum **prag**: al optulea act tăcut blochează poarta. |
 | **R81, R79, R80** | Neatinse azi după închiderea lor / decizia (c). R80 rămâne deschisă pe **muncă**, nu pe răspuns. |
 | **restul** | Vezi `CONFORMITATE.md` — nu s-a atins nimic altceva. |
 
