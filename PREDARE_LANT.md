@@ -1,18 +1,17 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — o comparație fără obiect a ieșit din verificare, cu motivul scris (28.08.2026)
+# PREDARE LANȚ — ultima capcană din familia salariilor s-a închis, și harta e măsurată, nu citată (28.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-28**, a douăsprezecea oară în aceeași zi. *Rescriere COMPLETĂ, nu petic.*
-- **pe commit**: `76ceb12` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
+- **ultima rescriere**: **2026-08-28**, a treisprezecea oară în aceeași zi. *Rescriere COMPLETĂ, nu petic.*
+- **pe commit**: `202ee87` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
   munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e arborele care
   devine commitul următor.*
-- **rescrierea de dinainte**: `76ceb12`, aceeași zi. Între ele au încăput **2 commituri**.
-- **de ce acum**: **R86 s-a închis**, iar sonda dă **0 divergențe** pe toate cele 30 de perechi
-  măsurabile — nu fiindcă s-a lărgit o toleranță, ci fiindcă o comparație **fără obiect** a ieșit
-  din verificare, cu motivul scris. *Conținutul, nu contorul* — măsurat cu formula din
-  `pre-commit`: **2** commituri în urmă, pragul e **10**.
+- **rescrierea de dinainte**: `202ee87`, aceeași zi. Între ele au încăput **2 commituri**.
+- **de ce acum**: **R85 s-a închis** — ultima din familia salariilor. Și s-a măsurat harta:
+  restanțe deschise pe prag, clustere rămase, progresul pe E1. *Conținutul, nu contorul* — măsurat
+  cu formula din `pre-commit`: **2** commituri în urmă, pragul e **10**.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **gardat**: `scripts/githooks/pre-commit` avertizează peste 10 commituri;
   `core/test_predare_proaspata.py` nu lasă avertismentul să dispară tăcut; **de azi**,
@@ -88,46 +87,39 @@ scrisesem regula care o interzice (`METODA §10.16`). *O regulă scrisă nu țin
 
 ---
 
-## AL DOILEA: `641/421` IESE DIN VERIFICARE — ȘI ASTA E O PIERDERE, NU O SIMPLIFICARE
+## AL DOILEA: `cam` SE SCRIE PE SALARIAT — DAR CU CE ESTE ȘI CE NU E, LÂNGĂ EA
 
-Ancora aleasă alaltăieri raporta **roșu pe o notă corectă**: din 12 salariați, diverge exact unul —
-cel de la salariul minim — și exact cu **facilitatea** (300,00 în aprilie–iunie, 200,00 în
-iulie–august). `calc["brut"]` e salariul brut **realizat, întreg**; `B_brutSalarii` e **baza
-contributivă**, din care facilitatea e scăzută. *Nu o nepotrivire de cifre — o nepotrivire de mărimi.*
+`pull()` scria înapoi trei contribuții din patru. A patra lipsea, fără motiv scris — iar cine suma
+`s.get("cam")` primea **0, tăcut**. E chiar bugul nr.1 din antetul lui `salarii_contare`, dovedit pe
+15.07, pe care reconstrucția l-a **ocolit**, nu desființat.
 
-**Decizia lui Costin, varianta (b):** iese din comparație. Motivul: **D112 n-are niciun câmp care să
-însemne „brutul realizat"**. Cele trei candidate sunt fiecare altceva **prin construcție** — baza
-contributivă (fără facilitate), brutul **contractual** (pe o lună cu CM diferă oricum) și venitul
-brut **total** (cu tichete). *„A compara forțat ar fi precizie falsă, nu verificare."*
+**Ce s-a măsurat înainte de a scrie cheia**, ca să nu iasă o capcană nouă în locul celei vechi: e
+valoarea din `calcul_salariu`, **pre-emisie**, pe brutul **întreg**. Obligația declarată (codul 480)
+se calculează din `sum_bazac` — **baza contributivă**, fără facilitate — și se rotunjește la leu pe
+**total**. Diferența, măsurată pe 30 de perechi: **cel mult 6,78 lei la 12 salariați** = 2,25% × 300
+(facilitatea) + rotunjire; 4,54–4,69 pe lunile cu facilitate de 200; sub 0,50 lei pe restul.
+**Aceeași diferență structurală ca la R86-B.**
 
-**De ce nu celelalte două:** *(a)* „cel mai apropiat element" ar fi **mutat** zgomotul pe altă clasă
-de firme, nu l-ar fi scos. *(c)* o toleranță egală cu facilitatea ar cere ca instrumentul să **știe o
-regulă fiscală** și s-o țină la zi — *un instrument care replică regula pe care ar trebui s-o
-verifice nu mai verifică nimic*.
+**Concluzia operațională, scrisă lângă cheie:** cine are nevoie de cifra **declarată** folosește
+`d112.obligatii(...)["480"]`, nu suma asta.
 
-**CE NU MAI E VERIFICAT, scris ca pierdere:** brutul din notă **nu mai e confruntat cu nimic**. Dacă
-mâine `note_lunare` ar calcula greșit salariile brute, nimic n-ar spune. *Dar nici azi n-ar fi spus
-ceva util* — semnala și când nota era corectă. **O verificare care nu poate distinge corectul de
-greșit nu devine mai bună dacă o păstrezi; devine doar mai greu de scos.**
+**Și o asimetrie care RĂMÂNE, spusă ca să nu fie descoperită a doua oară:** `cas` și `cass` sunt
+**rescrise** de `_d112_genereaza` cu valorile emise; `cam` n-are corespondent per salariat acolo,
+deci rămâne pre-emisie. Cheia există acum pentru toate patru — **dar nu toate patru înseamnă același
+lucru.**
 
 ---
 
-## AL TREILEA: SONDA E CURATĂ, ȘI SE POATE ARĂTA CĂ N-A ORBIT
+## AL TREILEA: HARTA, MĂSURATĂ ACUM
 
-| formă | divergențe | regresie | verificare |
-|---|---|---|---|
-| **veche** (linie de bază, păstrată) | **29** | 24 | 5 |
-| **nouă** | **0** | 0 | 0 |
-
-Forma veche e păstrată în sondă tocmai pentru asta: fără ea, un „0" n-ar dovedi nimic (interdicția
-19). Zero scrieri. **Toleranța n-a fost atinsă** — `toleranta_d112` e neschimbată; poziția a ieșit
-din mulțime cu motivul scris, ceea ce e altceva decât a o face să tacă.
-
-**Ce rămâne sub control real:** o singură poziție, `642/5328` — biletele de valoare, cu contrapartida
-exactă în secțiunea 8.3. Plus cele patru poziții fiscale, ca **gardă de regresie**.
-
-**Și gardul păzește direcția inversă:** `421` **nu are voie** să revină în mulțime — nu fiindcă nota
-ar greși, ci fiindcă declarația n-are cu ce s-o confrunte.
+- **restanțe DESCHISE: 44** — prag 1: **1** (`R35`) · prag 2: **15** · prag 3: **12** · fără prag
+  declarat: **16** *(cele vechi, R1–R27)*. Pe cine deblochează: **INTERN 23 · DECIZIE 19 · EXTERN 2**.
+- **clustere topologice**: `core.agenda.urmator_cluster()` → **`(None, 0, 0)`**. Inventarul are **79**
+  de rânduri, **79 bifate**, **0 blocate**; fiscal **41/41**, structură **34/34**. **Secvența e
+  epuizată** din 04.08.2026 — nu există „următorul programat".
+- **progres E1**: **203 locuri de verificare scrise / 0 goale, din 203 (100%)** — rulat acum cu
+  `scripts/raport_b.py`, nu citat.
+- **interdicții, din 76**: MĂSURATE 21 · PARȚIAL 16 · NEMĂSURABILE 1 · NEÎNCEPUTE 38.
 
 ---
 
@@ -145,7 +137,7 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 
 | | |
 |---|---|
-| **R86** (REZOLVATĂ pe `202ee87`) | Cauza A **reparată**, cauza B **decisă** — varianta (b). Sonda: 0 divergențe. |
+| **R86** (închisă; registrul o numește în commitul următor) | Cauza A **reparată**, cauza B **decisă** — varianta (b). Sonda: 0 divergențe. |
 | **R85** (DESCHISĂ, INTERN, prag 3) | **Singura rămasă din familia asta.** `pull()` fără `cam` — capcană, nu defect viu. |
 | **R33, R34, R84, R83, R82** | Închise. Neatinse azi. |
 | **R81, R79, R80** | Neatinse azi după închiderea lor / decizia (c). R80 rămâne deschisă pe **muncă**, nu pe răspuns. |
@@ -208,6 +200,9 @@ POARTĂ, nu se deleagă în istoric.*
   spune mult mai puțin decât pare — iar cele 25 de perechi fără tichete nu pot arăta nimic nici
   despre aia.
 - **Brutul din notă nu mai e confruntat cu nimic**, și e o pierdere asumată, nu un câștig.
+- **Nimeni nu consumă încă `s["cam"]`.** Reparația scoate **capcana**, nu adaugă o capabilitate.
+- **Cele 16 restanțe „fără prag declarat" sunt cele vechi (R1–R27)** — nu înseamnă că sunt ușoare,
+  înseamnă că n-au fost încadrate când s-a introdus scara de praguri.
 - **Câmpul `fel` e aditiv: ecranul nu-l citește.** Azi nu ascunde nimic — cele patru nu pot diverge —
   dar în ziua în care ar apărea un roșu de regresie, omul l-ar vedea la fel cu unul real.
 - **Cifra R34 de azi (24 pe 7) nu e cea din 24.08 (29 pe 10).** Măsurătoarea de atunci n-a lăsat
@@ -241,8 +236,8 @@ POARTĂ, nu se deleagă în istoric.*
 
 ## DACĂ CONTINUI DE AICI
 
-1. **Nu e nicio cerință comandată neîncepută, și nicio decizie în așteptare din familia salariilor.**
-   Ce rămâne deschis acolo e **R85** (prag 3, capcana din `pull`), deblocată INTERN.
+1. **Nu e nicio cerință comandată neîncepută, și din familia salariilor nu mai e nimic deschis.**
+   Harta e mai sus; **nu e propus niciun pas următor** — ordinea o dă Costin.
 2. **Nu porni nicio construcție fără măsurătoare.**
 3. **`scripts/raport_b.py` derivă „Unde suntem".** Nu se scrie de mână.
 4. **Raportul se scrie din `SABLON_RAPORT.md`.**

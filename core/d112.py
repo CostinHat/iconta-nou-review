@@ -760,6 +760,27 @@ def pull(conn, schema, an, luna):
         s["facilitate"] = r.get("facilitate", 0)
         s["cas"] = r.get("cas", 0)
         s["cass"] = r.get("cass", 0)
+        # [R85, 28.08.2026] A PATRA CONTRIBUTIE, pusa inapoi ca celelalte trei.
+        # Pana azi `cam` era singura care nu se scria pe salariat, si fara motiv scris. Cine suma
+        # `s.get("cam")` peste salariatii intorsi de `pull` primea 0, TACUT - o cheie absenta e
+        # indistincta de valoarea zero. E chiar bugul nr.1 din antetul lui `core/salarii_contare.py`,
+        # dovedit pe 15.07.2026 pe versiunea veche (`_sum("cam") = 0` -> contul 436 ramanea gol), pe
+        # care reconstructia l-a OCOLIT, nu desfiintat. Aceeasi clasa cu intrarile de tichete (R86/RR1).
+        #
+        # CE ESTE, si de ce nu se poate folosi in locul declaratiei: CAM-ul salariatului calculat pe
+        # brutul LUI INTREG, valoare PRE-EMISIE - la fel ca `cas` si `cass` de mai sus. Obligatia
+        # DECLARATA (codul 480) se calculeaza altfel: `_d112_genereaza` o scoate o singura data, din
+        # `sum_bazac` - baza contributiva, din care facilitatea de la salariul minim e SCAZUTA - si o
+        # rotunjeste la leu pe TOTAL, nu per salariat.
+        # MASURAT pe cele 30 de perechi (28.08.2026): suma per salariat difera de codul 480 cu cel
+        # mult **6,78 lei pe 12 salariati** - adica 2,25% x 300 (facilitatea) + rotunjire; pe lunile
+        # cu facilitate de 200 devine 4,54-4,69; pe firmele fara salariat la minim, doar rotunjire
+        # (sub 0,5 lei). Aceeasi diferenta structurala ca la R86-B: brut realizat vs baza contributiva.
+        # DECI: cine are nevoie de cifra DECLARATA foloseste `d112.obligatii(...)["480"]`, nu suma
+        # asta. Iar diferenta ei fata de `cas`/`cass` e ca alea sunt REscrise de `_d112_genereaza` cu
+        # valorile emise, pe cand `cam` nu are corespondent per salariat acolo - deci ramane pre-emisie.
+        s["cam"] = r.get("cam", 0)
+
         s["exces_vacanta"] = _exces_van   # [D3] intra in brutul declarat (B4 base)
         # [R86/RR1, 28.08.2026] INTRARILE de tichete, puse inapoi in salariat.
         # Pana azi pull() punea inapoi doar IESIRILE lui calcul_salariu (cas, cass, impozit,
