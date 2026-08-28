@@ -3,6 +3,43 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 29.08.2026 — R36: aplicația contabilizează AUTOMAT, varianta (a)
+
+**Decizia lui Costin:** *„Aplicația contabilizează automat orice fapt economic nou construit. Ruta
+manuală există doar acolo unde e declarată explicit ca excepție, cu motivul scris — nu implicit,
+prin absența contabilizării automate."*
+
+**Ce repară, și nu e ce părea.** Restanța se numea *„cum ajung faptele economice în contabilitate
+nu e o alegere DECLARATĂ nicăieri"* — și asta e chiar formularea corectă. **Nu era „ce direcție",
+era „direcția nescrisă".** Măsurat azi: din faptele pe care aplicația le gestionează, **cele mai
+multe contabilizează deja automat** — NIR-ul, descărcarea de gestiune, casa, chitanța, bonul,
+raportul Z, ieșirile din stoc, rețetele, și toate cele ~30 de operațiuni speciale. Direcția exista
+**în fapt**, în cod, de mult. Ce lipsea era **regula**, iar fără ea fiecare modul nou putea alege
+altfel, la fel de legitim.
+
+**De ce (a) și nu (b) sau (c):**
+- **(b) — contabilul introduce notele.** Ar fi cerut **desfacerea** a tot ce contabilizează deja
+  automat: NIR, casă, stocuri, rețete, cele ~30 de operațiuni. A alege direcția pe care aplicația
+  **nu** o are ar fi însemnat să numesc „decizie" o rescriere a jumătate din produs.
+- **(c) — hibrid, cu granița scrisă.** E, formal, ce se întâmplă azi. Dar granița trasată **acum**
+  ar fi înghețat exact starea de fapt, inclusiv golurile — iar cele două goluri găsite azi
+  (**factura emisă** și **factura primită**) ar fi devenit „graniță", nu restanță. *O regulă care
+  descrie ce e nu mai poate arăta ce lipsește.*
+- **(a) — automat implicit, manual declarat.** Inversează sarcina probei: **absența** contabilizării
+  automate nu mai e o stare neutră, e o **lipsă care trebuie justificată**. De-aia harta de la ZZ2
+  a putut produce restanțe: sub (c) aceleași două cazuri ar fi trecut drept „așa e proiectat".
+
+**Ce NU decide asta:** nu spune că nota se scrie **validată**. Patru-ochi rămâne unde e (R47 e
+despre asta, separat), iar propunerea de la salarii — decizia din 25.08 — rămâne cum a fost decisă.
+*„Automat" e despre CINE produce nota, nu despre în ce stare intră.*
+
+**Consecința imediată, măsurată, nu presupusă:** din 6 fapte care **au deja un obiect** în aplicație
+și cer un act separat pentru notă, **4 sunt excepții legitime** (nota liberă din jurnal,
+reconcilierea bancară, salariile, amortizarea) — declarate acum lângă cod — și **2 sunt goluri**:
+factura **emisă** și factura **primită**. Devin **R87** și **R88**. *Efectul lor se vedea deja, doar
+că nu se numea așa: R35 a măsurat că 28 din 43 de facturi declarabile (65%, 102.260 lei TVA) nu sunt
+contate deloc.*
+
 ## 28.08.2026 — R86: `641/421` iese din comparația cu D112, varianta (b)
 
 **Decizia lui Costin:** *„`641/421` iese din `VERIFICARE_REALA`. Rămâne doar `642/5328`. Motivul:

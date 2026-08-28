@@ -672,6 +672,29 @@ Cele două restanțe s-au reparat în aceeași zi, cu forme **diferite**, iar di
   câte un `POST` — au rămas pe poarta comună. *O firmă scoasă din portofoliu se citește, nu se
   modifică*, iar asta e păzit, nu doar scris aici.
 
+**ORICE FAPT ECONOMIC NOU CONSTRUIT PRODUCE NOTA CONTABILĂ AUTOMAT** *(29.08.2026, decizia R36)*
+
+Regula, în formă normativă:
+
+- **implicit, actul care construiește faptul economic scrie și nota.** Nu există un al doilea act
+  („contabilizează") pe care omul să trebuiască să și-l amintească. Dacă faptul există în aplicație,
+  evidența lui există odată cu el.
+- **o rută manuală se acceptă numai cu declarație explicită**, scrisă **lângă cod** — în docstringul
+  rutei sau al modulului —, nu doar în registru. Declarația spune **de ce** actul rămâne separat:
+  fiindcă cere o **alegere** care nu se poate deriva (ce factură stinge o încasare), fiindcă e o
+  **rulare de perioadă** fără act declanșator (amortizarea), sau fiindcă e **supapa** pentru fapte
+  pe care aplicația nu le modelează (nota liberă din jurnal).
+- **absența contabilizării automate NU e o stare neutră.** E o lipsă, și se numește ca atare. Sarcina
+  probei stă pe manual, nu pe automat.
+- ce **nu** decide regula: **starea** în care intră nota. Patru-ochi, ciornă vs validată, propunerea
+  de la salarii — toate rămân unde sunt. *„Automat" e despre cine produce nota, nu despre în ce stare
+  intră.*
+
+**De ce contează forma asta și nu „hibrid, cu granița scrisă":** o graniță trasată peste starea de
+fapt îngheață și golurile. *O regulă care descrie ce e nu mai poate arăta ce lipsește.* Cu regula de
+mai sus, harta din 29.08.2026 a produs două restanțe (R87, R88) exact acolo unde altfel s-ar fi citit
+„așa e proiectat".
+
 ### Ce e în afara registrului
 
 **Cursul valutar** — valoare pe dată, dar fapt de piață, nu normă. Regula de alegere a lui e însă convenție de calcul și intră.
