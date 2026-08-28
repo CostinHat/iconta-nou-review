@@ -1994,6 +1994,31 @@ scos ce nu se știa**, nu din defecte noi.
 - **cum s-a găsit**: cartografierea cerută la ZZ2, nu o probă. Ruta nu apare printre cele 48 de funcții care scriu în `inregistrari`.
 - **de ce NU e o excepție legitimă**: validarea *este* actul prin care firma recunoaște cheltuiala — patru-ochi s-a consumat deja acolo. Nu mai rămâne nicio **alegere** de făcut între validare și notă: contul de cheltuială și cota sunt pe factură.
 - **ce NU vede măsurătoarea**: câte facturi primite au rămas necontate. R35 a măsurat pe **emise + primite** la un loc (28 din 43); despărțirea pe direcții nu s-a făcut.
+#### PROIECTARE — decizie așteptată *(BLOC AAA, 29.08.2026; niciun cod de producție scris)*
+
+*Tiparul de referință (AAA1), asimetria emisă/primită (AAA6), soarta rutelor manuale (AAA4), idempotența (AAA7) și datele istorice (AAA5) sunt scrise o singură dată, la **R87**. Aici e doar ce ține de factura primită.*
+
+**AAA3 — momentul: la `/valideaza`, NU la import. Și cele două sensuri chiar trebuie despărțite.**
+
+Întrebarea era dacă `/valideaza` înseamnă azi *„gata de contat"* sau altceva. **Citit la sursă, înseamnă altceva — și tocmai de-aia e momentul potrivit:**
+
+| ce se întâmplă azi la `/valideaza` | ce înseamnă |
+|---|---|
+| `FOUR-EYES: omul validează ciorna importată de cron` | **recunoașterea** cheltuielii de către firmă |
+| `cont = (corp.get("cont") or "").strip()` → `cont_cheltuiala` | omul **alege contul de cheltuială** |
+| `furnizor_tva_incasare`, `tert_tara` | omul **clasifică**: deducere amânată (art. 297 alin. 2) · achiziție IC vs import |
+| `_factura_din_parsat(...)` → `facturi` + `factura_id` | se **creează** obiectul factură |
+
+**Cele două sensuri, despărțite:**
+- **SOSIREA documentului** — importul din SPV, făcut de cron. Aici factura **există ca hârtie**, dar nu ca fapt al firmei: nu se știe nici contul, nici regimul. *O notă scrisă aici ar trebui să ghicească exact lucrurile pe care ruta de validare le cere omului.*
+- **RECUNOAȘTEREA cheltuielii** — `/valideaza`. Aici sunt **toate** intrările notei, și tot aici s-a consumat patru-ochi. **Ăsta e „faptul economic nou construit"** din regula R36.
+
+**Propunerea**: nota se scrie în `/valideaza`, în **aceeași tranzacție** cu `UPDATE efactura_primite … status='validata'` și cu `UPDATE facturi SET furnizor_tva_incasare, tert_tara` — adică după ce clasificarea e pusă pe factură, ca nota s-o poată citi. Ruta are deja un singur `conn.commit()` la final, deci tiparul NIR se respectă fără să se schimbe structura.
+
+**Ce rămâne de decis, și e specific primitei:**
+1. **contul de cheltuială e OPȚIONAL azi** (`cont or None`). Dacă rămâne opțional, nota n-are cont de debit. Trei ieșiri: îl faci **obligatoriu** la validare · nota folosește un **cont implicit al firmei** (simetric cu `cont_venit_implicit` de la emisă — *dar aici e o presupunere despre natura cheltuielii, nu despre venit*) · validarea **fără cont** rămâne posibilă și **nu** produce notă, ceea ce reintroduce exact golul R88.
+2. **TVA la încasare**: dacă furnizorul e cu TVA la încasare, deducerea nu e la validare, ci la **plată**. Nota de la validare ar trebui să treacă TVA-ul prin **4428** (neexigibil), iar exigibilitatea să vină din reconcilierea bancară — ceea ce leagă R88 de o rută pe care ZZ3 a declarat-o **excepție manuală**. *Asta e singura parte care nu se poate proiecta doar din R88.*
+3. **respingerea** (`/respinge`) rămâne fără notă, evident — dar merită scris, ca simetria să fie completă.
 - **condiția de deblocare**: validarea unei facturi primite produce nota în același act, sau ruta primește o declarație scrisă de ce rămâne separată. Se închide când nu mai există factură primită **validată** fără notă, cu gard — și cu măsurătoarea despărțită pe direcții.
 
 
@@ -2011,6 +2036,45 @@ scos ce nu se știa**, nu din defecte noi.
 - **efectul, deja măsurat la R35 (24.08.2026)**: din **43** de facturi declarabile pe 17 scheme, **28 nu sunt contate deloc** — **65%** —, purtând **102.260,00 lei** TVA, pe **10 firme din 17**. *„Nu e o firmă cu date incomplete: e majoritatea."*
 - **de ce NU e o excepție legitimă**: emiterea *este* faptul economic. Contul de venit și cota sunt pe factură; nu rămâne nicio alegere care să ceară un act separat. Iar dovada că nu e o alegere deliberată e chiar cifra: **nimeni nu apasă butonul în 65% din cazuri**.
 - **ce NU vede măsurătoarea**: dacă vreo factură a rămas necontată **intenționat** (storno în lucru, factură emisă greșit). Nu există un câmp care s-o spună — și asta e parte din problemă.
+#### PROIECTARE — decizie așteptată *(BLOC AAA, 29.08.2026; niciun cod de producție scris)*
+
+**AAA1 — TIPARUL DE REFERINȚĂ: NIR (`core/stocuri_api.py:44-91`). Nu se reinventează.** Citit rând cu rând, are cinci proprietăți, și fiecare rezolvă o întrebare pe care factura o pune la fel:
+1. **validarea vine ÎNAINTE de orice scriere** — `_nir_campuri_lipsa` întoarce `{eroare, erori_campuri}` fără să atingă baza, iar motorul (`stocuri.nir_gv`) e **pur** și ridică `ValueError` tot înainte. *Nimic nu se scrie pe jumătate fiindcă nimic nu începe să se scrie până nu e sigur.*
+2. **o singură tranzacție**: notele, apoi antetul NIR, apoi liniile, și **un singur `conn.commit()` la final**. Dacă antetul pică, notele cad cu el. **Nu există NIR fără notă, și nici notă fără NIR** — la întrebarea „rollback complet sau NIR fără notă?", răspunsul măsurat e **rollback complet**.
+3. **nota intră `status='ciorna'`** — automat **nu** înseamnă validat. Patru-ochi rămâne intact.
+4. **`sursa` numește actul** (`'stocuri'`), nu omul — vezi re-citirea R37.
+5. **referință inversă**: NIR-ul păstrează `inregistrari_ids`. *Pentru facturi legătura asta **există deja**: `inregistrari.factura_id`.*
+
+**AAA2 — factura EMISĂ: nota se scrie la `POST /tenants/{id}/facturi`, în aceeași tranzacție.**
+- **de ce la creare și nu mai târziu**: toate intrările notei sunt pe factură în momentul creării — cont de venit **pe linie** (`factura_linii.cont_venit`, cu `cont_venit_implicit` ca rezervă) și cota. Nu rămâne nicio alegere umană de făcut. Exigibilitatea e la emitere (art. 281 CF), deci și **luna** e știută.
+- **„dacă factura se poate edita după creare?" — MĂSURAT: NU se poate.** Nu există rută care să schimbe liniile unei facturi emise. Ce există: `PUT …/numerotare` (setări de serie, nu factura), `PUT …/{id}/notificare` (memento de încasare), `POST …/{id}/storno` și `DELETE …/{id}`. **Deci întrebarea „nota se rescrie, se stornează, rămâne?" nu se pune pentru editare** — corecția fiscală e prin **al doilea document** (P4, scris chiar în comentariul rutei de storno), iar stornarea, fiind ea însăși o emitere, își produce **propria** notă sub aceeași regulă. *Simetric, fără caz special.*
+- **DAR ȘTERGEREA E O PROBLEMĂ REALĂ, ȘI AUTOMATIZAREA O AGRAVEAZĂ.** `facturi_api.sterge_factura` face `DELETE FROM facturi` **fără să verifice dacă există notă**, iar cheia străină `inregistrari_factura_id_fkey` **n-are `ON DELETE`** (deci `NO ACTION`). Azi trece de cele mai multe ori fiindcă **65% din facturi n-au notă**; cu note automate, **fiecare** factură are una, iar ștergerea ar începe să pice cu o eroare brută de bază, nu cu un refuz explicat. **De decis odată cu automatizarea, nu după:** *(i)* ștergerea **refuză motivat** când există notă și trimite la storno — *recomandarea mea, fiindcă o factură contabilizată nu se mai șterge, se stornează*; *(ii)* șterge și nota — **o notă ștearsă e o gaură în evidență**, nu o corecție; *(iii)* șterge nota doar dacă e `ciornă` și nevalidată. *Am pus-o aici, nu într-o restanță separată, fiindcă nu e un defect independent: e o consecință directă a deciziei care se ia.*
+
+**AAA6 — emisă vs primită: NU sunt simetrice, și diferența e structurală, nu de semn.**
+
+| | **emisă** | **primită** |
+|---|---|---|
+| exigibilitate | la **emitere** (art. 281 CF) — momentul e cunoscut | deducerea poate fi **amânată**: furnizor cu TVA la încasare → la **plată** (art. 297 alin. 2) |
+| ce lipsește ca să se poată scrie nota | **nimic** — contul de venit e pe linie, cota e pe linie | **contul de cheltuială**, ales de om; plus clasificarea (TVA la încasare / țara partenerului → achiziție IC vs import) |
+| cine o poate produce | actul de emitere, singur | actul de emitere **nu** — documentul vine de la altcineva, prin SPV |
+
+**Concluzia**: aceeași **regulă** (nota în același act), **momente diferite**, fiindcă „faptul economic nou construit" cade în locuri diferite: la emisă, faptul e **emiterea**; la primită, faptul nu e sosirea documentului, ci **recunoașterea cheltuielii** — vezi R88.
+
+**AAA7 — ce previne dubla notă: `inregistrari.factura_id`, și mecanismul EXISTĂ DEJA.** `factura_contabilizeaza` refuză explicit când `SELECT COUNT(*) FROM inregistrari WHERE factura_id=%s` e nenul — *„factura are deja înregistrare (ciornă sau validată)"*. Automatizarea ar folosi **aceeași** cheie, deci a doua cale n-ar putea scrie a doua notă.
+- **GAURA lui, spusă înainte de a fi lovită**: o notă creată din **jurnalul liber** (`POST /jurnal`) **nu poartă `factura_id`** — deci o contare făcută de mână, pe calea liberă, e **invizibilă** pentru verificarea asta, iar automatizarea ar scrie a doua notă peste ea. **De măsurat înainte de construcție, nu după**: câte note validate ating conturi de factură (4111/401 + 4427/4426) **fără** `factura_id`. *Nu am măsurat-o azi — nu era în comandă, și o cifră ghicită ar fi mai rea decât una lipsă.*
+
+**AAA4 — rutele manuale existente: trei variante, NU aleg.**
+- **(i) dispar.** Cea mai curată, dar pierde singura cale de a contabiliza o factură care **n-a putut** fi contată automat (lună închisă la emitere, cotă lipsă pe linii — refuzuri care există deja în `contabilizeaza`).
+- **(ii) devin idempotente** — *„a doua chemare nu face nimic"*. **Aproape gratuită: `factura_contabilizeaza` E DEJA idempotentă** (refuză pe `factura_id` existent), iar `factura_primita_valideaza` la fel (`status='validata'` → `{"stare": "deja_validata"}`). Ce ar mai rămâne e ca refuzul să devină un **răspuns**, nu un `422` — azi refuzul arată ca o eroare, deși e comportamentul corect.
+- **(iii) rămân ca a doua cale pentru cazuri speciale**, cu declarație scrisă lângă cod (forma cerută de ZZ4). Onest: **asta descrie cel mai bine ce sunt deja** — supapa pentru facturile pe care automatul le-a refuzat.
+*Observația care contează pentru alegere: variantele (ii) și (iii) nu se exclud — (ii) e despre ce face ruta la a doua chemare, (iii) e despre dreptul ei de a exista.*
+
+**AAA5 — cele 28 de facturi deja necontate: NU se ating. Mărimea și riscurile, fără soluție.**
+- **mărimea, cu data ei**: **28 din 43** de facturi declarabile necontate (**65%**), **102.260,00 lei** TVA, pe **10 firme din 17** — **măsurat pe 24.08.2026, la R35. NU s-a re-măsurat azi**, iar între timp portofoliul a crescut la 19 firme. *Cifra e o ancoră, nu o stare curentă.*
+- **riscul 1 — perioada.** Nota moștenește **data emiterii**, nu ziua de azi (`_cere_luna_deschisa(f["data_emitere"])`). Pentru facturi vechi, **luna e probabil închisă**, iar contarea ar fi refuzată — corect. Deci o aplicare în masă ar cere fie redeschiderea lunilor (act cu urmă), fie o dată de înregistrare **diferită de cea a faptului**, ceea ce e o decizie contabilă, nu tehnică.
+- **riscul 2 — dubla contare.** `factura_id` protejează **numai** notele care o poartă. Dacă o firmă a contat manual, din jurnal, între timp, nota aia n-are `factura_id` (vezi gaura de la AAA7) și **nu ar bloca** a doua. Pe date istorice riscul e mai mare decât pe facturi noi, fiindcă a existat timp.
+- **riscul 3 — verificarea umană.** 28 de facturi pe 10 firme ≠ un lot omogen: unele pot fi necontate **intenționat** (storno în lucru, factură emisă greșit), și **nu există un câmp care s-o spună** — parte din problemă, scrisă deja la R87.
+- **ce cer**: o decizie separată, pe cele trei riscuri de mai sus, **după** o re-măsurare a cifrei. Nu propun nicio soluție automată.
 - **condiția de deblocare**: emiterea unei facturi produce nota în același act, sau ruta primește o declarație scrisă de ce rămâne separată. Se închide când proporția de facturi declarabile necontate e **0** pe firmele de test, cu gard care o măsoară — nu doar cu ruta legată.
 
 

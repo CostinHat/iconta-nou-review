@@ -1,17 +1,18 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — direcția exista în cod de mult; ce lipsea era regula, iar fără ea golurile nu se puteau numi (29.08.2026)
+# PREDARE LANȚ — proiectare pentru R87/R88, și ce a scos citirea codului înainte de a scrie o linie (29.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-29**, prima oară în ziua asta. *Rescriere COMPLETĂ, nu petic.*
-- **pe commit**: `872526c` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
+- **ultima rescriere**: **2026-08-29**, a doua oară în ziua asta. *Rescriere COMPLETĂ, nu petic.*
+- **pe commit**: `1bd9455` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
   munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e arborele care
   devine commitul următor.*
-- **rescrierea de dinainte**: `872526c`, ieri. Între ele au încăput **2 commituri**.
-- **de ce acum**: **R36 s-a închis** — decizia care ține de ea restul lanțului de contabilizare.
-  Și a produs o hartă, iar harta a produs **două restanțe noi**. *Conținutul, nu contorul* —
-  măsurat cu formula din `pre-commit`: **2** commituri în urmă, pragul e **10**.
+- **rescrierea de dinainte**: `1bd9455`, aceeași zi. Între ele au încăput **2 commituri**.
+- **de ce acum**: **proiectare, nu construcție** — R87/R88 au primit propunerea completă în
+  registru, iar citirea codului a scos **două lucruri pe care nu le știam** (vezi mai jos).
+  *Conținutul, nu contorul* — măsurat cu formula din `pre-commit`: **2** commituri în urmă,
+  pragul e **10**.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **gardat**: `scripts/githooks/pre-commit` avertizează peste 10 commituri;
   `core/test_predare_proaspata.py` nu lasă avertismentul să dispară tăcut; **de azi**,
@@ -87,67 +88,53 @@ scrisesem regula care o interzice (`METODA §10.16`). *O regulă scrisă nu țin
 
 ---
 
-## AL DOILEA: DIRECȚIA EXISTA ÎN COD DE MULT — CE LIPSEA ERA REGULA (R36)
+## AL DOILEA: CE A SCOS CITIREA CODULUI, ÎNAINTE DE A SCRIE O LINIE
 
-**Decizia lui Costin, varianta (a):** *aplicația contabilizează automat orice fapt economic nou
-construit; ruta manuală există doar acolo unde e declarată explicit, cu motivul scris.*
+**1. Factura emisă NU se poate edita după creare.** Nu există rută care să-i schimbe liniile — doar
+`storno` și `DELETE`. Deci întrebarea *„ce se întâmplă cu nota deja scrisă: se rescrie, se
+stornează, rămâne?"* **nu se pune**: corecția fiscală e prin **al doilea document** (P4), iar
+stornarea, fiind ea însăși o emitere, își produce **propria** notă sub aceeași regulă. Simetric,
+fără caz special.
 
-**Ce a scos măsurătoarea, și schimbă felul în care se citește restanța:** **nu era „ce direcție",
-era „direcția nescrisă"**. Din faptele pe care aplicația le gestionează, cele mai multe
-contabilizează automat **de mult** — NIR, descărcare de gestiune, casă, chitanță, bon, raport Z,
-ieșiri din stoc, rețete, și toate cele ~30 de operațiuni speciale. Fără regulă însă, fiecare modul
-nou putea alege altfel, la fel de legitim. *Numele restanței a fost corect de la început.*
+**2. Dar ștergerea e o problemă reală, iar automatizarea o AGRAVEAZĂ.** `sterge_factura` face
+`DELETE FROM facturi` **fără să verifice dacă există notă**, iar cheia străină
+`inregistrari_factura_id_fkey` **n-are `ON DELETE`** — deci `NO ACTION`. Azi trece de cele mai multe
+ori tocmai fiindcă **65% din facturi n-au notă**. Cu note automate, **fiecare** factură are una, iar
+ștergerea ar începe să pice cu o **eroare brută de bază**, nu cu un refuz explicat. *Nu e un defect
+independent — e o consecință directă a deciziei care se ia, deci se decide odată cu ea.*
 
-**De ce nu (c) „hibrid, cu granița scrisă"** — deși (c) descrie exact ce se întâmplă azi: o graniță
-trasată **acum** ar fi înghețat starea de fapt, **inclusiv golurile**. Cele două găsite azi ar fi
-devenit „graniță", nu restanță. *O regulă care descrie ce e nu mai poate arăta ce lipsește.*
-
----
-
-## AL TREILEA: HARTA — 48 de scriitori de note, 6 acte separate, 2 goluri
-
-Criteriul nu e „există o rută", ci: **actul care construiește faptul scrie și nota, sau nota cere un
-act separat, ulterior?**
-
-**AUTOMAT (9 clase):** NIR · descărcare de gestiune · ieșire/inventar/reclasificare stoc · rețete ·
-casă · chitanță și stingere bon · bon aprobat · raport Z și AMEF · cele ~30 de operațiuni speciale
-*(acolo faptul și nota sunt același act — omul descrie o operațiune care n-are alt obiect)*.
-
-**MANUAL (6):** factura emisă · factura primită · linia de extras bancar · statul de plată ·
-amortizarea · nota liberă.
-
-**Din cele 6: patru sunt excepții legitime, două sunt goluri.**
-
-| excepție declarată | de ce rămâne manuală |
-|---|---|
-| nota liberă (`/jurnal`) | **supapa** pentru fapte pe care aplicația nu le modelează — n-are fapt declanșator |
-| reconcilierea bancară | cere o **alegere care nu se poate deriva**: ce factură stinge o încasare |
-| salariile | decizie explicită din 25.08 (propunere + patru-ochi) |
-| amortizarea | **rulare de perioadă**, fără act al omului; are deja idempotență |
-
-**GOLURI → R87 (factura emisă) și R88 (factura primită).** Efectul lor se vedea de mult, doar că nu
-se numea așa: **R35 a măsurat 28 din 43 de facturi declarabile necontate — 65%, 102.260 lei TVA, pe
-10 firme din 17.**
-
-**Marginea pe care am refuzat s-o transform în restanță:** liniile de extras pe care potrivirea
-automată le rezolvă **fără ambiguitate** ar putea urma automat. N-am măsurat câte sunt — *o restanță
-pe o intuiție e o datorie fără cifră.*
+**3. Mecanismul contra dublei note EXISTĂ DEJA** — `inregistrari.factura_id`, verificat explicit de
+`factura_contabilizeaza`. **Dar are o gaură**: o notă scrisă din **jurnalul liber** nu poartă
+`factura_id`, deci o contare făcută de mână e **invizibilă** pentru verificare, iar automatul ar
+scrie a doua notă peste ea. *De măsurat înainte de construcție — n-am măsurat-o azi, și o cifră
+ghicită ar fi mai rea decât una lipsă.*
 
 ---
 
-## AL PATRULEA: CE A DEBLOCAT DECIZIA (ZZ5)
+## AL TREILEA: MOMENTUL, PENTRU FIECARE DIN CELE DOUĂ
 
-- **R39** — blocajul ei era literal *„se răspunde la R36"*. **S-a răspuns.** Cine scrie
-  `document_ref` nu mai e o întrebare: îl scrie actul care produce nota. Restanța **nu se închide**
-  (nu s-a construit nimic), dar **își schimbă natura: din DECIZIE în INTERN**, iar condiția se
-  rescrie pe muncă, nu pe răspuns.
-- **R37** — i se schimbă **domeniul, nu condiția**: sub (a), notele automate devin regula, iar **o
-  notă automată n-are autor-persoană prin construcție**. „Autor" se citește ca *actul care a
-  produs-o*, deci `sursa` **e** autorul — ceea ce face prima jumătate a condiției (nomenclator
-  închis, într-un loc unic) **mai grea și mai importantă**, nu mai ușoară.
-- **R34 și R35**, re-citite fiindcă chiar condiția lui R36 o cerea: **niciuna nu se redeschide.**
-  R34 e despre ce cifră intră în notă, nu despre cine o produce. R35 își păstrează gardul **cu atât
-  mai mult** — sub (a), o factură necontabilizată devine o **anomalie**, nu starea normală.
+**Emisă → la `POST /facturi`, în aceeași tranzacție.** Toate intrările notei sunt pe factură în
+momentul creării: cont de venit **pe linie**, cotă pe linie, iar exigibilitatea e la emitere.
+
+**Primită → la `/valideaza`, NU la import.** Citit la sursă, `/valideaza` **nu** înseamnă „gata de
+contat" — înseamnă **recunoașterea cheltuielii**: acolo omul alege **contul de cheltuială** și
+clasifică (TVA la încasare, țara partenerului). Adică exact intrările notei. Importul de cron e
+**sosirea documentului**, nu faptul firmei. *O notă scrisă la import ar trebui să ghicească fix
+lucrurile pe care validarea le cere omului.*
+
+**Deci: aceeași regulă, momente diferite** — fiindcă „faptul economic nou construit" cade în locuri
+diferite. Emisă și primită **nu sunt simetrice**, și diferența e structurală, nu de semn: la primită
+deducerea poate fi **amânată la plată** (TVA la încasare), ceea ce leagă R88 de reconcilierea
+bancară — o rută pe care ZZ3 a declarat-o excepție manuală.
+
+---
+
+## AL PATRULEA: TIPARUL DE LA NIR, CITIT RÂND CU RÂND
+
+Cinci proprietăți, fiecare răspunzând unei întrebări pe care factura o pune la fel: **validarea vine
+înaintea oricărei scrieri** · **o singură tranzacție** (un `commit` la final — deci *rollback
+complet*, nu „NIR fără notă") · nota intră **`ciornă`**, deci automat ≠ validat · **`sursa` numește
+actul**, nu omul · **referință inversă** — iar pentru facturi legătura aia **există deja**.
 
 ---
 
@@ -165,11 +152,9 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 
 | | |
 |---|---|
-| **R36** (închisă; registrul o numește în commitul următor) | Varianta (a). Harta ZZ2-ZZ3 e în registru. |
-| **R87** (DESCHISĂ, INTERN, prag 2) | **Nouă.** Factura EMISĂ nu produce nota; ruta de contabilizare există, dar n-o declanșează nimic. |
-| **R88** (DESCHISĂ, INTERN, prag 2) | **Nouă.** Factura PRIMITĂ validată creează cheltuiala, nu și nota. |
-| **R39** | DECIZIE → **INTERN**. Deblocată de R36; rămâne muncă, nu răspuns. |
-| **R37** | Domeniul re-citit: pentru actele automate, `sursa` **e** autorul. |
+| **R87 · R88** (DESCHISE, INTERN, prag 2) | Au primit **PROIECTAREA completă** în corpul lor (AAA1–AAA7). **Niciun cod de producție scris.** Așteaptă decizia. |
+| **R36** (REZOLVATĂ pe `1bd9455`) | Închisă azi-dimineață. Neatinsă. |
+| **R37, R39** | Re-citite la ZZ5. Neatinse azi. |
 | **prag 1** | **niciuna deschisă.** |
 | **R81, R79, R80** | Neatinse azi după închiderea lor / decizia (c). R80 rămâne deschisă pe **muncă**, nu pe răspuns. |
 | **restul** | Vezi `CONFORMITATE.md` — nu s-a atins nimic altceva. |
@@ -237,6 +222,10 @@ POARTĂ, nu se deleagă în istoric.*
   gol: **nu apare.**
 - **R87 și R88 n-au fost reparate**, cerut explicit. Ruta de contabilizare există și funcționează —
   lipsește **legătura**, nu capabilitatea.
+- **Cifra „28 din 43, 102.260 lei" e din 24.08 și NU s-a re-măsurat.** Între timp portofoliul a
+  crescut la 19 firme. *E o ancoră, nu o stare curentă.*
+- **N-am măsurat câte note validate ating conturi de factură fără `factura_id`** — gaura
+  mecanismului de idempotență. Nu era în comandă, iar o cifră ghicită ar fi mai rea decât una lipsă.
 - **Clasa „verde peste gri" e azi LATENTĂ** — n-a fost prinsă nicio instanță vie, fiindcă semnalul
   pe 4428 nu se aprinde pe datele curente. S-a reparat pe **clasă**, nu pe instanță.
 - **Sonda R35 nu întreabă dacă facturile alea CHIAR trebuiau contabilizate în luna aia.**
@@ -276,8 +265,8 @@ POARTĂ, nu se deleagă în istoric.*
 ## DACĂ CONTINUI DE AICI
 
 1. **Nu e nicio cerință comandată neîncepută. Nicio restanță de prag 1 deschisă.**
-   **Nu e propus niciun pas următor** — ordinea o dă Costin. Ce a produs tura asta și așteaptă:
-   **R87** și **R88**, amândouă INTERNE (muncă, nu decizie).
+   Ce așteaptă: **decizia pe proiectarea R87/R88** (momentul, soarta rutelor manuale, ce se
+   întâmplă cu ștergerea) și, **separat**, decizia pe cele 28 de facturi istorice.
 2. **Nu porni nicio construcție fără măsurătoare.**
 3. **`scripts/raport_b.py` derivă „Unde suntem".** Nu se scrie de mână.
 4. **Raportul se scrie din `SABLON_RAPORT.md`.**
