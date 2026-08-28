@@ -1,17 +1,17 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — cifrele despre date nu se mai scriu din memorie, iar cele patru acte tăcute vorbesc (28.08.2026)
+# PREDARE LANȚ — o deducție solidă a devenit măsurătoare, iar diagnosticul R84 nu mai stă pe citirea codului (28.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-28**, a șaptea oară în aceeași zi. *Rescriere COMPLETĂ, nu petic.*
-- **pe commit**: `1feeb8a` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
+- **ultima rescriere**: **2026-08-28**, a opta oară în aceeași zi. *Rescriere COMPLETĂ, nu petic.*
+- **pe commit**: `edcff9b` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
   munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e arborele care
   devine commitul următor.*
-- **rescrierea de dinainte**: `1feeb8a`, aceeași zi. Între ele a încăput **1 commit**.
-- **de ce acum**: **R83 e reparată și probată pe ecran** — o firmă dezactivată se poate reactiva.
-  Plus banner-ul lățit pe telefon, și un gol închis în `PLAN_ARHITECTURA.md`. *Conținutul, nu contorul* — măsurat cu formula din `pre-commit`: **1** commit în
-  urmă, pragul e **10**.
+- **rescrierea de dinainte**: `5adb1d9`, aceeași zi. Între ele au încăput **2 commituri**.
+- **de ce acum**: **R84 nu mai e o deducție.** Comandă de întărire a diagnosticului, nu de reparație —
+  cele trei rute din eșantion au fost chemate **prin HTTP**, pe o firmă chiar dezactivată.
+  *Conținutul, nu contorul* — măsurat cu formula din `pre-commit`: **2** commituri în urmă, pragul e **10**.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **gardat**: `scripts/githooks/pre-commit` avertizează peste 10 commituri;
   `core/test_predare_proaspata.py` nu lasă avertismentul să dispară tăcut; **de azi**,
@@ -87,45 +87,35 @@ scrisesem regula care o interzice (`METODA §10.16`). *O regulă scrisă nu țin
 
 ---
 
-## AL DOILEA: R83 E REPARATĂ — EXCEPȚIA DE ACCES E LOCALĂ, ȘI SE VEDE CĂ E
+## AL DOILEA: R84 E MĂSURATĂ, NU DEDUSĂ — ȘI DE CE „TRANZACȚIE ÎNTOARSĂ" N-A FOST POSIBILĂ
 
-Poarta comună `auth_api.schema_tenant` cere `activ = true` pe toate trei ramurile de rol — corect
-pentru orice rută care lucrează *în* firmă. Dar ruta de **activare** e singura al cărei act are sens
-tocmai pe o firmă **inactivă**, iar cu poarta comună răspundea 404 **întotdeauna**.
+Ieri-seara R84 spunea, cinstit, *„am dedus 404-ul din poarta comună; deducția e solidă, dar e
+deducție"*. Acum sunt trei rute chemate **prin HTTP**, de tipuri diferite, pe `ALFA MICRO SRL`
+(`tenant_013`, 6 facturi, 21 înregistrări), **dezactivată prin ruta reală**:
 
-**Decizia lui Costin — varianta (a):** verificare proprie, scrisă **local pe rută**. `(b)` — un
-parametru pe funcția comună — ar fi atins o semnătură folosită în **154** de locuri, nemăsurată;
-`(c)` — firmele inactive accesibile tuturor rutelor — ar fi dat acces la **conținut** ca efect
-secundar al unei reparații despre un buton.
+| rută | activă | dezactivată | după reactivare |
+|---|---|---|---|
+| `GET …/jurnal?an=2026&luna=8` | **200**, 18 înregistrări | **404** | **200** |
+| `GET …/facturi/1/export-saga` | **200**, XML cu `<FurnizorNume>ALFA MICRO SRL` | **404** | **200** |
+| `GET …/rapoarte-salvate` | **200**, `{"variante":[]}` | **404** | **200** |
 
-**Ce ține excepția să nu se lățească** (`core/test_activare_firma_inactiva.py`): are **un singur
-apelant** — a doua chemare ar fi varianta (b) pe furiș —, poarta **comună** trebuie să ceară în
-continuare `activ` pe toate trei ramurile, iar regula de **rol** e identică în excepție.
+Răspunsul, identic pe toate trei: `{"detail":"tenant inexistent sau fără acces"}`. **Deducția a
+ținut** — nicio surpriză, deci natura deciziei R84 rămâne neschimbată.
 
-**Idempotent, decis explicit:** a activa o firmă deja activă nu e o eroare — `{"schimbat": false}`,
-nimic scris. *Un refuz se păstrează pentru ce nu se poate face, nu pentru ce e deja făcut.*
+**Ce n-a mers cum era cerut, și motivul e structural.** Comanda cerea *„în tranzacție întoarsă"*.
+Un apel HTTP ajunge la **alt proces, cu altă conexiune**: o dezactivare nescrisă e **invizibilă**
+pentru serviciu, deci proba ar fi raportat **200** și aș fi tras concluzia inversă. Dezactivarea s-a
+**comis**, reactivarea stă în `finally`, iar starea finală **se citește din bază**, nu se presupune.
+*Singura formă care chiar se poate întoarce e cea de la JJ2 — poarta chemată pe aceeași conexiune —,
+și ea există deja.*
 
-**Probat pe ecran, nu din bază:** `FIRMA TEST UNU SRL` — firma rămasă din verificarea manuală a lui
-Costin — reactivată **din interfață**, pe drumul complet. Și fluxul întreg, pe o firmă nouă:
-dezactivare → banner → „Firme dezactivate (1)" → Reactivează → *„e din nou în portofoliu"*. **Textul
-«O aduci înapoi din «Firme dezactivate»» e adevărat de la un capăt la altul.**
+**De ce fiecare rută s-a chemat de două ori.** Un 404 luat singur nu distinge *„poarta refuză firma"*
+de *„nu există înregistrarea cerută"*. Factura de export s-a **ales** dintre cele 6 ca fiind una care
+chiar se exportă cu firma activă — altfel eșantionul ar fi fost vid și ar fi raportat favorabil pe
+nimic (interdicția 19).
 
----
-
-## AL TREILEA: GOLUL DIN PLAN, ÎNCHIS
-
-`PLAN_ARHITECTURA.md` nu spunea nimic despre ce înseamnă o firmă **inactivă** pentru drepturile de
-acces — singura secțiune „Reguli de acces" era despre registrul de valori fiscale. Acum spune:
-implicit se trece prin poarta comună; o excepție se scrie **local pe rută**, cu rolul păstrat;
-**funcția comună nu se modifică pentru o excepție**; iar excepția are un singur apelant, păzit mecanic.
-
----
-
-## AL PATRULEA: BANNER-UL PE TELEFON
-
-Un `position:fixed` fără lățime se strânge la conținut: pe 375 px banner-ul ocupa **188 px** și
-rupea textul în **15 rânduri**. Cu `width: calc(100% - 32px)`: **343 px din 375**, **8 rânduri**.
-Desktopul rămâne exact cum era — `max-width` îl ține la 520.
+**Ce rămâne slab, și se spune:** `rapoarte-salvate` întoarce `{"variante":[]}` — **200 pe zero
+rânduri**. Diferența măsurată e pe **codul de răspuns**, nu pe conținut.
 
 ---
 
@@ -143,9 +133,9 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 
 | | |
 |---|---|
-| **R82** (REZOLVATĂ) | Neschimbată. A primit confirmarea finală: fluxul întreg, probat pe ecran, cu textele devenite adevărate. |
-| **R83** (REZOLVATĂ pe `5adb1d9`) | Reparată cu varianta (a), probată mecanic și pe ecran. |
-| **R84** (DESCHISĂ, DECIZIE) | **13 rute GET de citire istorică** (export, rapoarte, jurnal, urme) răspund azi 404 pe o firmă dezactivată. Catalogare, nu reparare — decizia dacă trecutul unei firme scoase din portofoliu rămâne citibil e a lui Costin. |
+| **R83** (REZOLVATĂ pe `5adb1d9`) | Închisă ieri. Neatinsă azi. |
+| **R84** (DESCHISĂ, DECIZIE, **reluări 1**) | Diagnosticul e acum **măsurat pe eșantion (3 din 13)**, nu dedus. Cele trei variante rămân exact cum erau scrise — măsurătoarea le-a **confirmat**, nu le-a schimbat. **Așteaptă decizia lui Costin.** |
+| **R34** (DESCHISĂ, DECIZIE, **PRAG 1**) | Nota de salarii contrazice D112-ul depus pe **10 din 40** de perechi. Ridicată explicit în raport, verbatim din registru, la cererea lui Costin. **Neexecutată — așteaptă decizia.** |
 | **R81, R79, R80** | Neatinse azi după închiderea lor / decizia (c). R80 rămâne deschisă pe **muncă**, nu pe răspuns. |
 | **restul** | Vezi `CONFORMITATE.md` — nu s-a atins nimic altceva. |
 
@@ -200,8 +190,11 @@ POARTĂ, nu se deleagă în istoric.*
   **tabelul** să fie scris din memorie.
 - **Confirmările nu sunt citite de nimeni în afară de mine.** Că textul e bun pentru un contabil e o
   judecată de om, nu o măsurătoare. Ce s-a probat e că **apare** și **ce scrie**.
-- **A patra confirmare a fost exercitată în cabinetul de test**, pe `ALFA MICRO SRL`, care a fost
-  dezactivată și **reactivată** imediat. Portofoliul a rămas cu **0 firme inactive**.
+- **`ALFA MICRO SRL` a fost dezactivată și reactivată din nou azi**, de data asta **deliberat**, ca
+  probă NN1. În două probe de acum două ture o lăsasem dezactivată **din greșeală** — de-aia
+  restaurarea stă acum în `finally` și starea finală se **citește**, nu se presupune.
+- **Eșantionul e 3 din 13.** Celelalte 10 rute rămân **deduse**. Deducția e aceeași și a ținut pe
+  toate trei, dar asta nu e o măsurătoare pe ele.
 - **Cele 45 de rute GRI rămân GRI.** S-a reparat raportarea, nu orbirea.
 - **`_bannerFirma` dispare după 8 secunde.** Cine se uită în altă parte pierde confirmarea — la fel
   ca înainte, dar acum are ce pierde. Nu s-a măsurat dacă 8 secunde ajung.
@@ -228,7 +221,8 @@ POARTĂ, nu se deleagă în istoric.*
 
 ## DACĂ CONTINUI DE AICI
 
-1. **Nu e nicio cerință comandată neîncepută.** Ce așteaptă e răspunsul lui Costin la §0.
+1. **Nu e nicio cerință comandată neîncepută.** Ce așteaptă e răspunsul lui Costin la §0 —
+   **R84** (trei variante scrise) și **R34** (PRAG 1, cea mai veche decizie deschisă).
 2. **Nu porni nicio construcție fără măsurătoare.**
 3. **`scripts/raport_b.py` derivă „Unde suntem".** Nu se scrie de mână.
 4. **Raportul se scrie din `SABLON_RAPORT.md`.**

@@ -1984,14 +1984,28 @@ scos ce nu se știa**, nu din defecte noi.
 - **felul**: ARTEFACT
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · R83 (aceeași poartă) · R72 · **PRAG 2** *(nu e un om păgubit ACUM — nu există azi nicio firmă inactivă în portofoliu, deci efectul nu s-a produs. Dar se produce la prima dezactivare a unei firme cu evidență, iar textul care o însoțește promite explicit că «datele ei rămân neatinse»)*
-- **reluări**: 0
+- **reluări**: 1
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `5adb1d9`
-- **măsurat la**: 2026-08-28 · **pe commit**: `5adb1d9`
+- **măsurat la**: 2026-08-28 · **pe commit**: `edcff9b`
 - **planul**: **NEACOPERIT.** Regula scrisă azi în `PLAN_ARHITECTURA.md` spune **cum** se face o excepție de acces, nu **care** rute merită una. Ce înseamnă o firmă inactivă pentru **citirea trecutului** ei rămâne nescris — și e chiar întrebarea. (METODA §25)
 - **cum s-a găsit**: catalogare cerută explicit (BLOC JJ0), nu o probă. Comanda: *„care dintre rutele păzite de `schema_tenant` ar avea sens pe o firmă inactivă — listă, nu reparație."*
 - **cifra, măsurată pe AST în `main.py`, nu estimată** *(pe `1feeb8a`, înainte de reparația R83; pe `5adb1d9` sunt **153**, fiindcă ruta de activare a ieșit din mulțime — cele 13 de mai jos nu s-au atins)*: **154** de rute păzite de `schema_tenant`; dintre ele **13** sunt `GET`-uri care **doar citesc** date deja existente: `/tenants/{id}/casa/registru`, `/centre-cost/raport`, `/documente/balanta`, `/facturi-primite/{id}/xml`, `/facturi/{id}/export-saga`, `/jurnal`, `/jurnal-marja`, `/perioade-blocate/istoric`, `/rapoarte-comerciale`, `/rapoarte-comerciale/fisa`, `/rapoarte-salvate`, `/stocuri/articole/{id}/fisa`, `/urme-portal`.
 - **ce blochează**: aceeași poartă ca R83 — `auth_api.schema_tenant` cere `activ = true` pe toate trei ramurile de rol. Pentru o firmă dezactivată, toate 13 răspund **404**.
+- **MĂSURAT PE EȘANTION (3 din 13), prin HTTP, pe firmă real dezactivată — nu dedus din poartă** *(BLOC NN, 28.08.2026, pe `edcff9b`)*. Prima formă a restanței spunea *„am dedus 404-ul din poarta comună — deducția e solidă, dar e deducție, nu măsurătoare"*. Nu mai e:
+
+  | rută (tip diferit, deliberat) | firma ACTIVĂ | firma DEZACTIVATĂ | după reactivare |
+  |---|---|---|---|
+  | `GET /tenants/8396/jurnal?an=2026&luna=8` *(jurnal)* | **200**, 18 înregistrări | **404** | **200** |
+  | `GET /tenants/8396/facturi/1/export-saga` *(export)* | **200**, XML `<FurnizorNume>ALFA MICRO SRL` | **404** | **200** |
+  | `GET /tenants/8396/rapoarte-salvate?tip_raport=comercial` *(raport salvat)* | **200**, `{"variante":[]}` | **404** | **200** |
+
+  **Răspunsul, verbatim, identic pe toate trei:** `{"detail":"tenant inexistent sau fără acces"}`.
+  **Deducția e CONFIRMATĂ** — niciuna nu s-a comportat altfel, deci NN2 nu s-a declanșat și natura deciziei rămâne cea scrisă mai jos.
+- **cum s-a măsurat, și ce s-a schimbat față de cerere**: comanda spunea *„în tranzacție întoarsă"*. **Nu se poate**, și motivul e structural: un apel HTTP ajunge la **alt proces**, cu altă conexiune — o dezactivare nescrisă (savepoint, rollback) e **invizibilă** pentru serviciu, deci proba ar fi raportat **200** și aș fi tras concluzia inversă. Așa că dezactivarea s-a **comis**, prin ruta reală `POST /tenants/8396/activare`, iar reactivarea stă în `finally` și **starea finală se verifică în bază**, nu se presupune: `activ = true`, iar cele trei rute răspund iar **200**. *(Singura formă care chiar se poate întoarce e cea de la JJ2 — poarta chemată pe aceeași conexiune —, și ea există deja.)*
+- **de ce DIFERENȚIAL, cu firma activă mai întâi**: un **404** luat singur nu distinge *„poarta refuză firma"* de *„nu există înregistrarea cerută"*. De-aia fiecare rută s-a chemat de **două** ori, iar factura de export s-a **ales** dintre cele 6 ale firmei ca fiind una care chiar se exportă cu firma activă — altfel eșantionul ar fi fost vid și ar fi raportat favorabil pe nimic (interdicția 19).
+- **ce rămâne slab în eșantion, spus**: `rapoarte-salvate` întoarce `{"variante":[]}` — **200 pe zero rânduri**. Diferența măsurată e pe **codul de răspuns**, nu pe conținut, și acolo e reală (200 ≠ 404); dar ruta asta n-a probat că *se citește ceva*, ci doar că *se răspunde*. Celelalte două au conținut real.
+- **firma folosită**: `ALFA MICRO SRL` (`tenant_013`, id 8396, cabinet 4163) — firmă de test cu evidență (6 facturi, 21 înregistrări). Dezactivată și reactivată **deliberat** de data asta; în două probe de acum două ture o lăsasem dezactivată din greșeală, iar asta e chiar motivul pentru care restaurarea e în `finally` și se verifică.
 - **de ce contează, și de ce NU e prag 1**: confirmarea dezactivării spune azi, pe ecran, *„iese din portofoliul de lucru, iar datele ei rămân neatinse"*. **Datele chiar rămân** — nu se șterge nimic, afirmația nu e falsă. Ce nu spune nimeni e că **nu se mai pot citi**. Un contabil care dezactivează o firmă în martie și are nevoie de jurnalul ei în mai o trebuie să reactiveze întâi. Asta e o **inconveniență cu ocol existent**, nu o pierdere — de-aia prag 2.
 - **ce NU vede măsurătoarea**: dacă cineva a avut nevoie vreodată de vreunul din cele 13 pe o firmă inactivă. Nu există urmă — portofoliul n-a avut firme inactive persistente.
 - **de ce nu am reparat-o**: pentru că nu e un defect, e o **politică**. Un raport pe o firmă scoasă din portofoliul de lucru poate fi ceva ce **trebuie** să meargă (trecutul nu dispare) sau ceva ce **nu trebuie** (firma a ieșit din evidență, tocmai ca să nu mai apară nicăieri). Alegerea e a lui Costin. Și: comanda spunea explicit *„nu extinde scopul azi"*.
