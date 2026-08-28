@@ -156,10 +156,10 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 
 | | |
 |---|---|
-| **R84** (reparată; se închide în registru în commitul următor, care o poate numi) | Varianta (b), probată prin apeluri reale pe toate 13. |
-| **R34** (DESCHISĂ, **PRAG 1**, reparat parțial) | Defectul e **reparat și măsurat: 0 divergențe**. Restanța rămâne deschisă fiindcă propria ei condiție cere și legarea lui `control_coerenta` — **R33**, amânată pe cerere. |
-| **R33** (DESCHISĂ, DECIZIE) | **Pasul următor, numit.** Legarea lui `control_coerenta`. Acum se poate: sonda e curată. |
-| **R83, R82** | Închise ieri. Neatinse azi. |
+| **R33** (REZOLVATĂ pe `76ceb12`) | Ultimul element s-a **scos**, varianta (c). `PIN` nu mai are niciun modul „PRODUCTIE, nelegat". |
+| **R86** (DESCHISĂ, INTERN, **PRAG 1**) | **Cauza A închisă** — tichetele intră în notă. **Cauza B diagnosticată**, nereparată: e o contrapartidă care lipsește din declarație, nu o cifră greșită. |
+| **R85** (DESCHISĂ, INTERN, prag 3) | Neatinsă. `pull()` fără `cam` — aceeași clasă cu ce a produs cauza A. |
+| **R34, R84, R83, R82** | Închise. Neatinse azi. |
 | **R81, R79, R80** | Neatinse azi după închiderea lor / decizia (c). R80 rămâne deschisă pe **muncă**, nu pe răspuns. |
 | **restul** | Vezi `CONFORMITATE.md` — nu s-a atins nimic altceva. |
 
