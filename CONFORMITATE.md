@@ -2124,6 +2124,42 @@ scos ce nu se știa**, nu din defecte noi.
   contabil**. S-a probat că **apar** și **ce scriu**; dacă vreunul sună a limbaj de programator, se
   schimbă textul, nu mecanismul. Și: banner-ul dispare după **8 secunde** — nu s-a măsurat dacă ajung.
 
+- **[BB1 + CC1, 28.08.2026] Amândouă întrebările de mai sus au primit răspuns, și restanța rămâne
+  REZOLVATĂ** — ce urmează sunt **instanțe** ale ei, nu o redeschidere.
+  - **BB1 — textul scoaterii definitive, rescris de Costin.** Ce scrisesem eu — *„datele ei nu mai
+    există"* — era **prea tare**: schema chiar se șterge, dar rândul din `firme_scoase` rămâne.
+    Formularea lui e mai exactă și spune ce **rămâne**, nu ce a dispărut: *„Datele fiscale ale firmei
+    nu mai sunt accesibile. Rămâne doar înregistrarea scoaterii, vizibilă la «Firme scoase»."*
+  - **și o completare cerută tot de el, verificată pe ecran:** textul lui e **generic** — nu numește
+    firma. Fără nume, banner-ul ar confirma **un act**, nu **actul asupra firmei ăsteia**, ceea ce e
+    exact jumătatea pe care DS cap.27 o cere („numește entitatea"). Numele stă acum în față, în
+    `<b>`, iar proba îl citește **structural**, din nodul `<b>`, nu din text.
+  - **CC1 — banner-ul scoaterii nu mai dispare singur.** `_bannerFirma` a primit `autoDismiss`,
+    **implicit `true`**. Pe `false` primește un „✕" (clasa `nav-x`, cea a ferestrei de lucru —
+    **zero clase noi**). Numai scoaterea definitivă îl folosește; **celelalte patru rămân la 8000 ms**.
+  - **de ce nu la toate:** o confirmare care rămâne până o închizi e utilă exact cât e actul de greu
+    de întors. La o dezactivare — reversibilă dintr-un click — un banner persistent devine zgomot,
+    iar zgomotul se învață să nu mai fie citit (aceeași grijă ca la alerte, R73). La un act
+    ireversibil, opusul: cine se uită în altă parte opt secunde pierde singura confirmare.
+  - **CC2 — probă pe ecran, în AMÂNDOUĂ direcțiile**, fiindcă una singură n-ar spune nimic („rămâne
+    pe ecran" s-ar putea explica și prin „temporizatorul e rupt peste tot"):
+
+    | ce s-a verificat | rezultat |
+    |---|---|
+    | numele firmei, citit din nodul `<b>` al banner-ului | **da** |
+    | scoaterea: banner vizibil după **10 secunde** | **da** |
+    | scoaterea: dispare la click pe „✕" | **da** |
+    | dezactivarea: **nu** primește „✕" | **da** |
+    | dezactivarea: dispare **singură** după 9 secunde | **da** |
+
+    Pe două firme de probă, într-un cabinet nou, șterse după; portofoliul a rămas la 18 firme, 7
+    cabinete, 0 inactive.
+  - **capturi (regula scrisă azi în `METODA_VERIFICARE.md` §27):** `frontend_test/cc_scoatere_banner.png`
+    — captură-**probă**, nu baseline: arată banner-ul unei firme care nu mai există.
+  - **ce rămâne o judecată, nu o măsurătoare:** că textele sunt bune **pentru un contabil**. Cele
+    cinci sunt reproduse verbatim în raportul din 28.08, ca să poată fi citite fără să se deschidă
+    aplicația.
+
 
 ### R81 — Denumirea unei firme stă în două locuri, iar redenumirea atinge unul singur
 

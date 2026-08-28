@@ -5226,6 +5226,17 @@ Iar la rulare, gardul **scrie** ce acoperă: *„acoperire reală: 360 din 411 r
 
 ## 28.08.2026 — de ce registrul ăsta a stat șase zile, și ce s-a schimbat ca să nu mai stea
 
+> **DE CE lipsește, la 23–26.08.2026: NU SE RECONSTITUIE.** *Decizie 28.08.2026, cerută de două ori,
+> închisă definitiv.* Intrările de mai jos numesc **ce** a intrat în fiecare zi și **ce afirmă
+> fiecare gardă despre sine** — amândouă verificabile (`git log`, docstringul propriu). **De ce** a
+> fost construită fiecare, ce instanță a produs-o și ce anume nu face **nu se scriu retroactiv**:
+> reconstruirea din numele fișierului ar fi **repovestire, nu mărturie**. Pentru zilele 27–28.08, pe
+> care le pot atesta, narațiunea e în restanțele lor din `CONFORMITATE.md` și în mesajele de commit.
+>
+> **Nu mai e o restanță.** Dacă un gard de completitudine se plânge vreodată de absența „de ce"-ului
+> pe fereastra asta, **nota asta e răspunsul**, nu o datorie de plătit.
+
+
 **Constatarea:** ultima intrare din `GARZI.md` era din **22.08.2026**. În cele șase zile de după au
 intrat **80 de gărzi și instrumente** — niciunul scris aici. Un registru cu șase zile în urmă nu se
 citește ca incomplet: **se citește ca complet.** E chiar clasa pe care o numește `METODA §14` — *o

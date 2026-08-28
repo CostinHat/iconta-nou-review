@@ -3,6 +3,36 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 28.08.2026 — Capturile de ecran: BASELINE stă afară, PROBĂ intră
+
+**Decizia lui Costin:** distincția se scrie ca **regulă**, nu se lasă ca excepție ad-hoc — plus:
+*„nu adăuga alte capturi retroactiv — regula se aplică de-acum înainte."*
+
+**De unde vine.** Pe 26.08 s-a decis că baseline-urile vizuale ies din repo: sunt **regenerabile**,
+sunt referințe **locale**, și cresc la fiecare recapturare. Pe 28.08 am comis opt capturi de probă
+și am scris motivul în mesajul commitului — adică am făcut o **excepție** de la o decizie a lui, pe
+o distincție trasă de mine. Excepția era corectă; forma ei nu: o distincție care trăiește într-un
+mesaj de commit nu se poate aplica de altcineva, altă dată.
+
+**REGULA, în întrebarea care o decide:** *pot să o refac rulând un instrument?*
+- **DA → baseline.** Rămâne afară (`.gitignore`), ca din 26.08.
+- **NU → probă.** Intră în repo, **selectiv**, și se **numește în `CONFORMITATE.md`, la restanța pe
+  care o probează**. O captură fără proprietar în registru e un fișier binar despre care, peste o
+  lună, nimeni nu mai știe ce arată.
+
+**TEMEIUL.** Cele opt capturi de azi arată o firmă cu divergență vie la ANAF, într-un cabinet care nu
+mai există, și cinci confirmări pe acte dintre care unul e ireversibil. **Nu se pot reface** fără să
+refaci tot montajul — creare de cabinet, firmă cu CUI real, apel la ANAF, ștergere. Costul lor e
+**unic** (~570 KB), nu recurent, iar fără ele singura dovadă că R82 a fost probată pe ecran ar fi
+propria mea afirmație.
+
+**Ce NU se face:** nu se adaugă retroactiv nimic. Cele 234 de artefacte vizuale neurmărite din
+`frontend_test/` rămân unde sunt — o regulă nouă aplicată în urmă ar produce un commit de sute de
+fișiere pe care nimeni nu le-a cerut.
+
+**LIMITA, asumată:** distincția e o **judecată**, nu un criteriu mecanic. Ce o ține onestă e legarea
+de o restanță; scrisă în `METODA_VERIFICARE.md` §27.
+
 ## 28.08.2026 — Cifrele despre DATE din predare se generează, nu se citează
 
 **Decizia lui Costin:** *„da, se construiește."*

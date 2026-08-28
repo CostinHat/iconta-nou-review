@@ -2498,10 +2498,18 @@ async function ecranScoateFirma(corp, nav, t) {
         nav.acasa();
         nav.setFirmaInLucru("");
         // Cel mai puțin reversibil act al aplicației — deci cel la care confirmarea e cea mai
-        // obligatorie (DS cap.27). Spune și ce a rămas, fiindcă „nu mai există" fără nuanță ar fi
-        // fals: urma scoaterii se păstrează (R72).
-        _bannerFirma(`<b>${esc(t.nume || "Firma")}</b> a fost scoasă definitiv din portofoliu —
-           datele ei nu mai există. A rămas doar urma scoaterii, sub „Firme scoase".`);
+        // obligatorie (DS cap.27).
+        //
+        // [BB1, 28.08.2026] Textul e al lui Costin. Ce spuneam eu — *„datele ei nu mai există"* —
+        // era prea tare: schema chiar se șterge, dar rândul din `firme_scoase` rămâne, iar
+        // formularea lui e mai exactă (*nu mai sunt ACCESIBILE*) și numește ce rămâne, nu ce a
+        // dispărut. Numele firmei stă în față, fiindcă textul lui e generic: fără el, banner-ul ar
+        // confirma **un act**, nu **actul asupra firmei ăsteia** (DS cap.27 cere entitatea).
+        //
+        // [CC1] `autoDismiss=false`: singurul din cele cinci care nu dispare singur.
+        _bannerFirma(`<b>${esc(t.nume || "Firma")}</b> — scoasă definitiv din portofoliu.
+           Datele fiscale ale firmei nu mai sunt accesibile. Rămâne doar înregistrarea scoaterii,
+           vizibilă la „Firme scoase".`, false);
       } catch (e) {
         btn.disabled = false; btn.textContent = "Scoate firma definitiv";
         arataMesaj(zonaM, e.mesaj || e.message || "Nu am putut scoate firma.", "eroare");
@@ -2598,16 +2606,35 @@ function randeazaFirmeScoase(corp, scoase) {
 // Un `arataMesaj` obișnuit n-ar fi ținut: zona lui e demontată odată cu ecranul. De-aia banner-ul
 // stă pe `document.body`, în afara oricărui ecran — exact mecanismul construit pe 26.08 pentru
 // crearea firmei, acum generalizat. **Zero clase noi**: `caseta-info` / `ci-mesaj`, ca înainte.
-function _bannerFirma(html) {
+// [CC1, 28.08.2026] `autoDismiss` — implicit `true`, ca până acum. Pe `false`, banner-ul **nu
+// dispare singur** și primește un „✕".
+//
+// De ce nu la toate: o confirmare care rămâne pe ecran până o închizi e utilă exact cât e actul de
+// greu de întors. La o dezactivare — reversibilă dintr-un click — un banner care persistă ar deveni
+// zgomot, iar zgomotul se învață să nu mai fie citit (aceeași grijă ca la alerte, R73). La o
+// **scoatere definitivă**, opusul: cine se uită în altă parte opt secunde pierde singura confirmare
+// a unui act pe care nu-l mai poate întoarce.
+//
+// **Zero clase noi**: `nav-x` e butonul de închidere folosit deja de fereastra de lucru și de
+// ecranele de acces (`static/stil.css`). Poziționarea e inline, ca restul banner-ului, care oricum
+// trăiește în afara oricărui ecran.
+function _bannerFirma(html, autoDismiss = true) {
   const vechi = document.getElementById("firma-creata-bine");
   if (vechi) vechi.remove();
   const b = document.createElement("div");
   b.id = "firma-creata-bine";
   b.className = "caseta-info";
-  b.style.cssText = "position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:99999;max-width:min(520px,92vw)";
-  b.innerHTML = `<div class="ci-mesaj">${html}</div>`;
+  b.style.cssText = "position:fixed;left:50%;top:16px;transform:translateX(-50%);z-index:99999;"
+    + "max-width:min(520px,92vw)" + (autoDismiss ? "" : ";padding-right:44px");
+  b.innerHTML = `<div class="ci-mesaj">${html}</div>`
+    + (autoDismiss ? "" : `<button type="button" class="nav-x" id="firma-banner-x"
+         style="position:absolute;top:6px;right:6px" title="Închide" aria-label="Închide">✕</button>`);
   document.body.appendChild(b);
-  setTimeout(() => { if (b.parentNode) b.remove(); }, 8000);
+  if (autoDismiss) {
+    setTimeout(() => { if (b.parentNode) b.remove(); }, 8000);
+  } else {
+    b.querySelector("#firma-banner-x").addEventListener("click", () => b.remove());
+  }
   return b;
 }
 

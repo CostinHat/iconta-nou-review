@@ -603,6 +603,38 @@ date **vii**, nu din cod. Codul nu se mișcă singur în timpul porții; datele 
   comite nimic — dar merită știut că handover-ul e blocat **exact când e mai necesar**. Dacă apare, se
   scrie predarea fără bloc și se declară de ce; garda va cere blocul înapoi la prima rulare verde.
 
+
+## §27 — DOUĂ FELURI DE CAPTURI DE ECRAN, ȘI NUMAI UNUL INTRĂ ÎN REPO
+
+O captură de ecran nu e un fel de artefact, sunt **două**, iar diferența dintre ele decide dacă intră
+în istoric sau nu. Confuzia lor a produs, în două zile, și o decizie de a le scoate pe toate, și o
+excepție ad-hoc de la ea.
+
+**CAPTURA-BASELINE** — o fotografie a ecranului **așa cum arată acum**, ținută ca referință pentru
+comparații viitoare. E **regenerabilă**: `frontend_test/vizual/baseline_scan.py` o reface oricând,
+fiindcă starea pe care o descrie e starea curentă a aplicației. **NU intră în repo** (decizia lui
+Costin, 26.08.2026, scrisă în `.gitignore`): *„un baseline vizual e o referință LOCALĂ, nu un
+artefact partajat: două stații cu randări ușor diferite ar produce diferențe care nu sunt regresii.
+Iar ~2 MB de PNG care cresc la fiecare recapturare sunt cost permanent pentru ceva regenerabil."*
+
+**CAPTURA-PROBĂ** — dovada că un lucru s-a întâmplat **o dată**, pe o stare care **nu mai există**.
+Firma de test e ștearsă, cabinetul și userul la fel, divergența nu se mai poate reproduce fără să
+refaci tot montajul. Nu e regenerabilă, deci nu e cost permanent: e **singura urmă**. **Intră în
+repo, selectiv**, și se **numește în `CONFORMITATE.md`, la restanța pe care o probează** — altfel e
+un fișier binar fără proprietar, iar peste o lună nimeni nu mai știe ce arată.
+
+**TESTUL, într-o întrebare:** *pot să o refac rulând un instrument?* Dacă da, e baseline și rămâne
+afară. Dacă nu, e probă și intră, cu trimitere la restanță.
+
+**CE NU SE FACE, decis 28.08.2026:** nu se adaugă capturi retroactiv. Regula se aplică **de-acum
+înainte**; cele 234 de artefacte vizuale neurmărite din `frontend_test/` rămân unde sunt. O regulă
+nouă aplicată în urmă ar produce un commit de sute de fișiere pe care nimeni nu le-a cerut, și ar
+transforma o distincție utilă într-o campanie.
+
+**LIMITA, declarată:** distincția e o **judecată**, nu un criteriu mecanic. Nimic nu împiedică pe
+cineva să numească „probă" o captură pe care ar fi putut-o regenera. Ce o ține onestă e obligația de
+a o lega de o restanță: o captură fără proprietar în registru e, prin construcție, suspectă.
+
 ## 11. O POZIȚIE se atribuie după CE PRODUCE modulul, nu după cum se numește
 
 **Regula.** Când clasifici un artefact — *există / nu există*, *predare / construcție*, *ore / zile* —

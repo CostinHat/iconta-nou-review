@@ -4,11 +4,13 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-28**, a patra oară în aceeași zi. *Rescriere COMPLETĂ, nu petic.*
-- **pe commit**: `57882ca` — starea pe care o descrie.
-- **rescrierea de dinainte**: `4f3c195`, aceeași zi. Între ele a încăput **1 commit**.
-- **de ce acum**: trei blocuri aplicate (Y, Z, AA), iar unul din ele schimbă **cum se scrie chiar
-  fișierul ăsta**. *Conținutul, nu contorul* — măsurat cu formula din `pre-commit`: **1** commit în
+- **ultima rescriere**: **2026-08-28**, a cincea oară în aceeași zi. *Rescriere COMPLETĂ, nu petic.*
+- **pe commit**: `8c771e6` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
+  munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e arborele care
+  devine commitul următor.*
+- **rescrierea de dinainte**: `8c771e6`, aceeași zi. Între ele a încăput **1 commit**.
+- **de ce acum**: patru blocuri aplicate (BB, CC, DD, EE) — texte de confirmare, banner-ul care
+  nu dispare singur, regula capturilor, și închiderea definitivă a „de ce"-ului din `GARZI.md`. *Conținutul, nu contorul* — măsurat cu formula din `pre-commit`: **1** commit în
   urmă, pragul e **10**.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **gardat**: `scripts/githooks/pre-commit` avertizează peste 10 commituri;
@@ -67,7 +69,7 @@ scrisesem regula care o interzice (`METODA §10.16`). *O regulă scrisă nu țin
 | **3** | rânduri în `public.firme_scoase` |
 | **2** | nume de schemă distincte în ele |
 | **18** | scheme `tenant_NNN` în bază |
-| **27** | contorul `tenant_schema_seq` |
+| **29** | contorul `tenant_schema_seq` |
 | **19** | maximul istoric de nume de schemă |
 
 **Referințe moarte**
@@ -85,30 +87,32 @@ scrisesem regula care o interzice (`METODA §10.16`). *O regulă scrisă nu țin
 
 ---
 
-## AL DOILEA: R82 E REPARATĂ — CELE PATRU ACTE VORBESC
+## AL DOILEA: CONFIRMAREA UNUI ACT IREVERSIBIL NU MAI DISPARE SINGURĂ
 
-Toate patru se terminau cu `nav.acasa()`, adică ecranul dispărea. Un `arataMesaj` obișnuit n-ar fi
-ținut: zona lui se demontează odată cu ecranul. Confirmarea stă acum pe `document.body`, prin
-`_bannerFirma` — mecanismul construit pe 26.08 pentru crearea firmei, generalizat. **Zero clase noi.**
+`_bannerFirma` a primit `autoDismiss`, **implicit `true`** — ca până acum. Pe `false` primește un
+„✕" și rămâne pe ecran până îl închizi. **Numai scoaterea definitivă îl folosește**; celelalte patru
+confirmări rămân la 8000 ms.
 
-**Exercitate pe ecran real**, pe un cabinet nou și curat, cu o firmă cu divergență vie (CUI real),
-ștearsă după — plus a patra pe o firmă **cu evidență** din cabinetul de test:
+**De ce nu la toate:** o confirmare care rămâne până o închizi e utilă exact cât e actul de greu de
+întors. La o dezactivare — reversibilă dintr-un click — un banner persistent devine zgomot, iar
+zgomotul se învață să nu mai fie citit. La un act ireversibil, opusul.
 
-| act | ce spune ecranul |
-|---|---|
-| alegerea de denumire, *păstrez* | *„**Antibiotice** rămâne denumirea firmei. Alegerea a fost consemnată, cu data și autorul ei…"* |
-| alegerea de denumire, *ANAF* | *„Denumirea firmei e acum **ANTIBIOTICE SA**, cea de la ANAF. Se folosește peste tot — în listă, în bara de sus și pe declarații."* |
-| dezactivarea (fără evidență) | *„**X** a fost dezactivată — iese din portofoliul de lucru, iar datele ei rămân neatinse…"* |
-| scoaterea definitivă | *„**X** a fost scoasă definitiv din portofoliu — datele ei nu mai există. A rămas doar urma scoaterii…"* |
-| dezactivarea (cu evidență) | *„**ALFA MICRO SRL** a fost dezactivată — … documentele ei rămân neatinse…"* |
+**Textul scoaterii e al lui Costin**, și e mai exact decât al meu: al meu spunea *„datele ei nu mai
+există"*, ceea ce e prea tare — schema chiar se șterge, dar rândul din `firme_scoase` rămâne.
 
-Capturile sunt **comise**, în `frontend_test/aa_*.png` și `w_*.png`. Nu sunt baseline-uri: sunt
-**probe ale unei stări care nu mai există** (firma de test e ștearsă), deci nu se pot regenera. De
-aceea nu intră sub decizia din 26.08, care le scotea din repo pe cele **regenerabile**.
+> **PROBA BANNER SCOATERE SRL** — scoasă definitiv din portofoliu. Datele fiscale ale firmei nu mai
+> sunt accesibile. Rămâne doar înregistrarea scoaterii, vizibilă la „Firme scoase".
+
+Numele firmei stă în față fiindcă textul lui e **generic**: fără el, banner-ul ar confirma *un act*,
+nu *actul asupra firmei ăsteia* (DS cap.27 cere entitatea).
+
+**Probat pe ecran, în amândouă direcțiile** — una singură n-ar fi spus nimic, fiindcă „rămâne pe
+ecran" s-ar putea explica și prin „temporizatorul e rupt peste tot": scoaterea e vizibilă după **10
+secunde** și dispare **doar** la „✕"; dezactivarea **nu** primește „✕" și dispare **singură** după 9.
 
 ---
 
-## AL TREILEA: MESAJUL DE COMMIT NU MAI POATE PURTA OCTEȚI DE CONTROL
+## AL TREILEA: MESAJUL DE COMMIT NU MAI POATE PURTA OCTEȚI DE CONTROL *(de ieri, neatins azi)*
 
 A patra poartă din `commit-msg`. Instanța: am scris un escape de tip BACKSPACE într-un literal
 Python ne-raw; `core/test_octeti_invizibili.py` l-a prins **în cod**, iar apoi am scris exact aceeași
@@ -121,9 +125,23 @@ celelalte trei**.
 
 ---
 
+## AL PATRULEA: DOUĂ FELURI DE CAPTURI, ȘI NUMAI UNUL INTRĂ ÎN REPO
+
+Scris ca **regulă** (`METODA_VERIFICARE.md` §27 + `DECIZII.md`), nu ca excepție într-un mesaj de
+commit. Întrebarea care decide: **pot să o refac rulând un instrument?**
+- **da → baseline**, rămâne afară (decizia din 26.08);
+- **nu → probă**, intră **selectiv** și se **numește în `CONFORMITATE.md`, la restanța pe care o
+  probează**.
+
+**Nu se adaugă nimic retroactiv.** Cele 234 de artefacte neurmărite din `frontend_test/` rămân unde
+sunt. Limita, declarată: distincția e o **judecată**, nu un criteriu mecanic — ce o ține onestă e
+obligația de a lega captura de o restanță.
+
+---
+
 ## STAREA LA PREDARE
 
-Poartă verde la `57882ca`: **3462 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
+Poartă verde pe arborele care devine commitul următor: **3465 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
 rute **411 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 32** · acte de nivel firmă **0 tăcute din 7** ·
 site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 
@@ -135,7 +153,7 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 
 | | |
 |---|---|
-| **R82** (REZOLVATĂ pe `57882ca`) | Cele patru acte confirmă, exercitate pe ecran. Clichetul a coborât de la 4 la **0**, iar zero e de acum **prag**: al optulea act tăcut blochează poarta. |
+| **R82** (REZOLVATĂ pe `57882ca`) | Cele patru acte confirmă. Azi au primit **textul rescris de Costin** la scoaterea definitivă și **un banner care nu dispare singur** — instanțe, nu redeschidere. |
 | **R81, R79, R80** | Neatinse azi după închiderea lor / decizia (c). R80 rămâne deschisă pe **muncă**, nu pe răspuns. |
 | **restul** | Vezi `CONFORMITATE.md` — nu s-a atins nimic altceva. |
 
