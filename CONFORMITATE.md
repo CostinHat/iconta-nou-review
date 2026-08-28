@@ -2030,10 +2030,11 @@ scos ce nu se știa**, nu din defecte noi.
 - **felul**: ARTEFACT
 - **cine deblochează**: INTERN
 - **unde intră**: E5 · R34 (a forțat ocolul) · **PRAG 3** *(nimic fals azi: măsurat, niciunul dintre cei 3 cititori de `cam` nu-l ia de la `pull` — toți îl iau din rezultatul lui `calcul_salariu`. E o capcană pentru următorul cititor, nu un defect viu)*
-- **reluări**: 0
-- **stare**: DESCHISĂ
+- **reluări**: 1
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `dcd3e04`
 - **deschisă pe commit**: `f3576d9`
-- **măsurat la**: 2026-08-28 · **pe commit**: `f3576d9`
+- **măsurat la**: 2026-08-28 · **pe commit**: `dcd3e04`
 - **planul**: **NEACOPERIT.** Planul nu spune nimic despre ce trebuie să conțină dicționarul întors de un extractor de date. (METODA §25)
 - **cum s-a găsit**: la BLOC OO. Decizia lui Costin spunea *„citește valorile din `d112.pull`"*, iar la implementare s-a văzut că pentru CAM **nu are de unde**.
 - **ce blochează**: `pull()` scrie înapoi în fiecare salariat `cas`, `cass`, `impozit`, `facilitate`, `deducere`, `cass_tichete`, `impozit_tichete`, `tichete_nominal`, `e83_*` — dar **niciodată `cam`**. Cine sumează `s.get("cam")` peste salariații întorși de `pull` primește **0**, tăcut, fiindcă o cheie absentă e indistinctă de o valoare zero.
@@ -2042,6 +2043,19 @@ scos ce nu se știa**, nu din defecte noi.
 - **de ce e totuși restanță, deși nu minte nimic azi**: pentru că e o **asimetrie fără motiv scris**. Trei contribuții din patru sunt puse înapoi în salariat; a patra nu, și nicăieri nu scrie de ce. Următorul care citește `pull()` va presupune simetria — exact ce s-a întâmplat cu litera deciziei R34.
 - **ce NU vede măsurătoarea**: dacă vreun consum viitor l-ar cere. Prin construcție nu se poate ști.
 - **condiția de deblocare**: ori `pull()` scrie și `cam` pe salariat — CAM se datorează pe baza CAS a fiecăruia, deci valoarea per salariat există —, ori se scrie **în docstringul lui `pull`** de ce cele patru contribuții nu vin toate din același loc. Se închide când un cititor al lui `pull` nu mai poate presupune greșit că `cam` e acolo.
+- **REZOLVATĂ 28.08.2026 (BLOC VV) — cheia se scrie, nu se explică absența.** Costin: *„nu doar documentezi absența, o elimini."* `pull()` scrie acum `s["cam"] = r.get("cam", 0)`, exact lângă `cas`, `cass` și `facilitate`, cu același tipar ca reparația tichetelor de azi (R86/RR1). **Asimetria a dispărut**: cine citește dicționarul nu mai poate presupune greșit că a patra contribuție e acolo, fiindcă e.
+- **VV1 — și ce s-a măsurat ÎNAINTE de a o scrie, ca să nu iasă o capcană nouă în locul celei vechi.** O valoare care *pare* autoritară și nu e ar fi fost mai rea decât o cheie lipsă. Deci: e cifra din `calcul_salariu`, **pre-emisie**, pe brutul ÎNTREG al salariatului. Obligația **declarată** (codul 480) se calculează altfel — `_d112_genereaza` o scoate o singură dată din `sum_bazac`, **baza contributivă**, din care facilitatea de la salariul minim e scăzută, și o rotunjește la leu pe **total**, nu per salariat.
+
+  | firmă / lună | suma per salariat | declarat (cod 480) | diferența |
+  |---|---|---|---|
+  | `tenant_001`, apr–iun (12 salariați, facilitate 300) | 2.661,78 · 2.624,66 · 2.274,78 | 2.655 · 2.618 · 2.268 | **+6,78 · +6,66 · +6,78** |
+  | `tenant_001`, iul–aug (facilitate 200) | 2.595,69 · 2.678,54 | 2.591 · 2.674 | +4,69 · +4,54 |
+  | restul de 25 de perechi | — | — | sub **0,50 lei** (rotunjire) |
+
+  **6,78 = 2,25% × 300 + rotunjire**; **4,54–4,69 = 2,25% × 200 + rotunjire.** Aceeași diferență structurală ca la R86-B: *brut realizat vs bază contributivă*. Scrisă **lângă cheie**, cu concluzia operațională: **cine are nevoie de cifra declarată folosește `d112.obligatii(...)["480"]`, nu suma asta.**
+- **și o asimetrie care RĂMÂNE, spusă ca să nu fie descoperită a doua oară:** `cas` și `cass` sunt **rescrise** de `_d112_genereaza` cu valorile **emise**; `cam` nu are corespondent per salariat acolo, deci rămâne pre-emisie. Cheia există acum pentru toate patru, dar **nu toate patru înseamnă același lucru** — iar diferența e scrisă în cod, nu lăsată pe seama cititorului.
+- **VV2 — schimbarea e ADITIVĂ, verificat, nu presupus.** Cei **3** cititori reali de `cam` — `salarizare.monografie_salariu` (l.395), `stat_plata_api` (l.115) și `core/test_salarizare.py` (l.24) — iau toți valoarea din rezultatul lui `calcul_salariu`, **niciunul** din dicționarul lui `pull`. Nimic nu se rutează altfel. Rulat: `test_salarizare` + `test_coerenta_salarii` + `test_d112` + `test_fluturas_egal_stat` = **73 passed**; sonda R34 rămâne la **0 divergențe** pe cele 30 de perechi.
+- **ce NU acoperă, declarat**: nimeni nu consumă încă `s["cam"]`. Reparația scoate **capcana**, nu adaugă o capabilitate — iar dacă mâine cineva o sumează crezând că e obligația declarată, comentariul de lângă cheie e singurul lucru care îl oprește. *O cheie corectă cu un înțeles neexplicat e următoarea capcană.*
 
 
 ### R84 — Trecutul unei firme scoase din portofoliu nu se mai poate citi: 13 rute de raport răspund 404
