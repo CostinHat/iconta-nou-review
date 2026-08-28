@@ -149,7 +149,7 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 
 | | |
 |---|---|
-| **R35** (închisă; registrul o numește în commitul următor) | 6 → 0 perechi verzi peste un necunoscut. Reparat în două locuri, al doilea invizibil din primul. |
+| **R35** (REZOLVATĂ pe `872526c`) | 6 → 0 perechi verzi peste un necunoscut. Reparat în două locuri, al doilea invizibil din primul. |
 | **prag 1** | **niciuna deschisă.** R35 era ultima. |
 | **R33, R34, R84, R85, R86** | Închise. Neatinse azi. |
 | **R81, R79, R80** | Neatinse azi după închiderea lor / decizia (c). R80 rămâne deschisă pe **muncă**, nu pe răspuns. |
