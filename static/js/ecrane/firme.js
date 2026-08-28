@@ -13,7 +13,7 @@ import { declaratiiPerFirma } from "./declaratii.js?v=cc81187e9a";  // [decl_fir
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=ddd1606ae8";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=2caaba5417";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=ae22f440bf";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=9270212180";  // [date_firma_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=6284f0f195";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=cec020b9da";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
@@ -287,32 +287,38 @@ function _randDivergentaNume(corp, nav, t) {
     // face nimic» nu e o alegere. Cine nu apasă nimic nu decide — moștenește ce era acolo, și nu
     // află niciodată că a fost o divergență." Deci și „păstrez denumirea mea" e un act care scrie.
     zona.className = "caseta-atentie";
-    // [F1/F2/F3, 28.08.2026] Textul de dinainte spunea „Denumirea din aplicație e cea folosită în
-    // documente." **Era fals.** În documente pleacă `firma_profil.nume` — probat 27.08.2026 pe D100
-    // T3/2026, D205 2026 și bilanț S1005, generate în tranzacție întoarsă (R81). Caseta asta atinge
-    // NUMAI `public.tenants.nume`, adică eticheta din portofoliu, iar de azi o spune. Nu s-a
-    // schimbat NIMIC din ce scrie ramura `anaf` — aia e R81 și nu e decisă.
-    // Nodul e marcat E1 (DS cap.26): declară perechea, arată sursa pe care o are, numește care
-    // produce efectul, și declară pe cea care nu ajunge pe ecranul ăsta.
+    // [Q1/Q2, 28.08.2026 — R81 DECISĂ: simetrie de scriere] Textul a trecut azi prin două forme, și
+    // amândouă erau adevărate când s-au scris. Ieri: „alegerea schimbă numai eticheta din
+    // portofoliu" — fiindcă ramura `anaf` chiar atingea un singur loc din două. Azi: denumirea
+    // firmei e UNA, scrisă în amândouă locurile în aceeași tranzacție (`scrie_denumirea`), deci
+    // formularea simplă redevine adevărată — **structural**, nu doar azi.
+    //
+    // MARCAJUL E1 RĂMÂNE, și nu ca decor: e plasa de siguranță cerută explicit („nu te baza orb pe
+    // invariant"). Un invariant e o afirmație despre codul de azi; scrierile din afara aplicației —
+    // semănătoare, importuri, SQL de mână — nu trec prin scriitorul unic. Dacă cele două valori
+    // ajung vreodată să difere, confruntarea trebuie să REAPARĂ, nu să rămână ascunsă în spatele
+    // unui text care presupune sincronia. `data-e1-absent="fiscal"` rămâne fiindcă lista tot nu
+    // CITEȘTE `firma_profil.nume`: ecranul afirmă egalitatea prin construcție, n-o verifică. Cine o
+    // verifică la rulare e „Date firmă", care are amândouă valorile și le compară la fiecare
+    // randare.
     zona.innerHTML = `
       <div class="ca-mesaj" data-e1="denumire-firma"><strong>Două denumiri, și trebuie aleasă
-        una.</strong> Denumirea din portofoliu diferă de cea de la ANAF${
+        una.</strong> Denumirea firmei diferă de cea de la ANAF${
         d.zile !== null ? ` (citită acum ${d.zile === 0 ? "azi" : d.zile + " zile"})` : ""}:
-        <br>· în portofoliu: <strong data-e1-sursa="portofoliu">${esc(t.nume || "")}</strong>
+        <br>· în aplicație: <strong data-e1-sursa="portofoliu">${esc(t.nume || "")}</strong>
         <br>· la ANAF: <strong>${esc(d.anaf)}</strong>
-        <br><span data-e1-efect="fiscal" data-e1-absent="fiscal">Alegerea de aici schimbă
-        <strong>numai denumirea din portofoliu</strong> — cea din listă și din bara de sus. Pe
-        declarații și pe bilanț pleacă <strong>denumirea fiscală</strong>, ținută separat, în
-        „Date firmă"; caseta asta nu o schimbă.</span>
-        <br>· <strong>„Pune denumirea ANAF în portofoliu"</strong> înlocuiește eticheta din listă cu
-        cea de la ANAF.
-        <br>· <strong>„Păstrez denumirea din portofoliu"</strong> nu schimbă nicio denumire —
-        consemnează că ai ales deliberat.
+        <br><span data-e1-efect="fiscal" data-e1-absent="fiscal">Denumirea aplicată e cea de pe
+        documente: o firmă are <strong>o singură denumire</strong> — aceeași în listă, în bara de
+        sus și pe declarații.</span>
+        <br>· <strong>„Ia denumirea de la ANAF"</strong> schimbă denumirea firmei peste tot,
+        <strong>inclusiv pe declarații și pe bilanț</strong>.
+        <br>· <strong>„Păstrez denumirea mea"</strong> nu schimbă nimic — consemnează că ai ales
+        deliberat.
         <br>Alegerea se consemnează — dacă ANAF va spune altceva mai târziu, întrebarea se pune din
         nou.</div>
       <div class="ca-actiuni">
-        <button class="buton-secundar" id="dn-ia-anaf">Pune denumirea ANAF în portofoliu</button>
-        <button class="buton-secundar" id="dn-pastrez">Păstrez denumirea din portofoliu</button>
+        <button class="buton-secundar" id="dn-ia-anaf">Ia denumirea de la ANAF</button>
+        <button class="buton-secundar" id="dn-pastrez">Păstrez denumirea mea</button>
       </div>`;
   }
   corp.insertBefore(zona, corp.children[1] || null);
@@ -337,8 +343,8 @@ function _randDivergentaNume(corp, nav, t) {
       }
     });
   };
-  alege("#dn-ia-anaf", "anaf", "Se schimbă…", "Pune denumirea ANAF în portofoliu");
-  alege("#dn-pastrez", "aplicatie", "Se consemnează…", "Păstrez denumirea din portofoliu");
+  alege("#dn-ia-anaf", "anaf", "Se schimbă…", "Ia denumirea de la ANAF");
+  alege("#dn-pastrez", "aplicatie", "Se consemnează…", "Păstrez denumirea mea");
 }
 
 // deschide o firmă: setează "În lucru" + spațiul de lucru (meniu de acțiuni)

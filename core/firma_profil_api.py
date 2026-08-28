@@ -283,7 +283,7 @@ def citeste_date(conn):
             "blocaje": blocaje(conn, prof)}
 
 
-def salveaza_date(conn, date):
+def salveaza_date(conn, date, tenant_id=None):
     """Salveaza datele fiscale. Refuza daca un camp obligatoriu ramane gol:
     fara ele declaratiile nu se pot depune, iar utilizatorul ar afla abia cand
     ANAF le respinge, cu mesaj criptic (DS cap.6: validari preventive cu mesaj
@@ -308,8 +308,28 @@ def salveaza_date(conn, date):
             return {"ok": False, "camp": "cont_venit_implicit",
                     "mesaj": "Contul de venit implicit trebuie să fie un cont din clasa 70 (cifra de afaceri)."}
         curat["cont_venit_implicit"] = cv
+    # [R81/O3, 28.08.2026] DA, ecranul „Date firmă" are o cale de editare directă a denumirii
+    # fiscale: `CAMPURI[0]` din `date_firma.js` e chiar `nume`, iar el ajungea aici. Sub simetrie,
+    # denumirea nu se mai scrie de aici, ci prin scriitorul unic din `tenant_provisioning` — care
+    # atinge amândouă locurile, în aceeași tranzacție, și trece prin poarta de unicitate.
+    #
+    # `tenant_id` e obligatoriu **numai** când se schimbă denumirea: restul câmpurilor fiscale n-au
+    # nimic de-a face cu `public`, iar a cere identificatorul pentru un telefon corectat ar lega
+    # inutil două straturi.
+    nume_nou = curat.pop("nume", None)
+    if nume_nou is not None:
+        if not tenant_id:
+            return {"ok": False, "camp": "nume",
+                    "mesaj": "Denumirea firmei nu se poate salva fără identificatorul firmei."}
+        from core import tenant_provisioning as _tp
+        try:
+            _tp.scrie_denumirea(conn, tenant_id, nume_nou)
+        except ValueError as e:
+            conn.rollback()
+            return {"ok": False, "camp": "nume", "mesaj": str(e)}
     if not curat:
-        return {"ok": True, "profil": citeste_date(conn)["profil"]}
+        conn.commit()
+        return dict({"ok": True}, **citeste_date(conn))
     seturi = ", ".join("%s = %%s" % k for k in curat)
     with conn.cursor() as cur:
         cur.execute("UPDATE firma_profil SET " + seturi + " WHERE id = 1",

@@ -222,10 +222,22 @@ def precompleteaza_din_anaf(conn, schema_name, cui, seteaza_nume=False):
         with conn.cursor() as _c:
             _c.execute("UPDATE public.tenants SET nume_anaf=%s, nume_anaf_la=now() "
                        "WHERE schema_name=%s", (_den, schema_name))
+    # [R81/O4, 28.08.2026] A PATRA cale care scria denumirea într-un singur loc, găsită de garda
+    # de simetrie — nu de citire. `seteaza_nume=True` (numai la `POST /auth/register`, firma proprie
+    # a cabinetului) scria `firma_profil.nume` singur, la câteva milisecunde după ce
+    # `provision_tenant` pusese ACEEAȘI valoare în amândouă locurile. Adică divergența chiar SE
+    # putea naște la creare, pe calea aia — exact ce scria R81 că nu se poate.
+    #
+    # Trece acum prin scriitorul unic, fără poarta de unicitate: la `register` cabinetul e abia
+    # creat, iar firma e prima și singura din el, deci n-are cu ce să se ciocnească. Un refuz acolo
+    # ar opri o înregistrare din cauza unei firme care nu există.
+    if seteaza_nume and _den:
+        with conn.cursor() as _c:
+            _c.execute("SELECT id FROM public.tenants WHERE schema_name = %s", (schema_name,))
+            _r = _c.fetchone()
+        if _r:
+            scrie_denumirea(conn, _r[0], _den, verifica_unicitatea=False)
     seturi, par = [], []
-    if seteaza_nume:
-        seturi.append("nume = COALESCE(NULLIF(%s, ''), nume)")
-        par.append((d.get("denumire") or "").strip())
     seturi += [
         "caen = COALESCE(NULLIF(%s, ''), caen)",
         "adresa = COALESCE(NULLIF(%s, ''), adresa)",
@@ -268,6 +280,48 @@ def detalii_tenant(conn, tenant_id):
 
 
 ALEGERI_NUME = ("aplicatie", "anaf")
+
+
+def scrie_denumirea(conn, tenant_id, nume, verifica_unicitatea=True):
+    """[R81, DECIS 28.08.2026 — SIMETRIE DE SCRIERE] Denumirea unei firme se scrie în **amândouă**
+    locurile, în **aceeași tranzacție**, cu **aceeași valoare**.
+
+    Decizia lui Costin: *„orice act care redenumește o firmă scrie denumirea în AMBELE locuri
+    (`public.tenants.nume` și `{schema}.firma_profil.nume`), în aceeași tranzacție, cu aceeași
+    valoare. Nu se construiește alias."*
+
+    DE CE O SINGURĂ FUNCȚIE, și nu câte o pereche de `UPDATE`-uri în fiecare cale. Trei căi
+    redenumeau azi o firmă, iar fiecare atingea **un singur loc din două** — de aici R81. Trei
+    perechi scrise separat s-ar putea despărți la fel de tăcut ca cele trei scrieri singure; a opta
+    instanță a aceleiași lecții (R62: *regula era în două locuri și diferită*). Aici perechea e
+    **un singur act**, iar `core/test_simetrie_denumire.py` pică dacă apare un `UPDATE … SET nume=`
+    pe una din tabele fără perechea lui în aceeași funcție.
+
+    POARTA DE UNICITATE rămâne pe traseu: `cere_nume_unic` se cheamă **înainte** de amândouă
+    scrierile, ca o redenumire să nu poată ocoli ce refuză crearea. `verifica_unicitatea=False`
+    există pentru un singur caz declarat — precompletarea de la `POST /auth/register`, unde firma e
+    prima și singura din cabinetul abia creat, deci n-are cu ce să se ciocnească.
+
+    CE NU FACE: nu consemnează alegerea (aia e `_consemneaza_alegerea`, chemată de apelanți) și nu
+    comite — apelantul deține tranzacția, fiindcă simetria **este** proprietatea tranzacției.
+    """
+    with conn.cursor() as cur:
+        cur.execute("SELECT schema_name, accounting_firm_id FROM public.tenants WHERE id = %s",
+                    (tenant_id,))
+        r = cur.fetchone()
+    if not r:
+        raise ValueError("firmă inexistentă")
+    schema_name, cabinet = r
+    nume = (nume or "").strip()
+    if not nume:
+        raise ValueError("denumirea firmei nu poate fi goală")
+    if verifica_unicitatea:
+        cere_nume_unic(conn, nume, cabinet, exclude_id=tenant_id)
+    with conn.cursor() as cur:
+        cur.execute("UPDATE public.tenants SET nume = %s WHERE id = %s", (nume, tenant_id))
+        cur.execute('UPDATE "%s".firma_profil SET nume = %%s WHERE id = 1' % schema_name,
+                    (nume,))
+    return schema_name
 
 
 def _consemneaza_alegerea(conn, tenant_id, alege, user_id, nume, nume_anaf):
@@ -314,9 +368,11 @@ def alege_denumirea(conn, tenant_id, alege, user_id):
     if alege == "anaf":
         if not (nume_anaf or "").strip():
             raise ValueError("nu există o denumire de la ANAF pentru firma asta")
-        cere_nume_unic(conn, nume_anaf, cabinet, exclude_id=tenant_id)
-        with conn.cursor() as cur:
-            cur.execute("UPDATE public.tenants SET nume=%s WHERE id=%s", (nume_anaf, tenant_id))
+        # [R81/O2, 28.08.2026] Până azi ramura asta scria NUMAI `public.tenants.nume`, deci
+        # „alegerea consemnată nu ajungea pe hârtie": pe declarații pleca mai departe denumirea
+        # fiscală veche. Sub simetrie, butonul schimbă denumirea în amândouă locurile, într-o
+        # singură tranzacție. `cere_nume_unic` e înăuntru, deci poarta de unicitate n-a slăbit.
+        scrie_denumirea(conn, tenant_id, nume_anaf)
         nume = nume_anaf
     _consemneaza_alegerea(conn, tenant_id, alege, user_id, nume, nume_anaf)
     return {"tenant_id": tenant_id, "alege": alege, "nume": nume}
@@ -347,19 +403,21 @@ def actualizeaza_tenant(conn, tenant_id, nume=None, cui=None, user_id=None):
                         (str(cui), cabinet, tenant_id))
             if cur.fetchone():
                 raise ValueError("Firma cu acest CUI exista deja in portofoliu")
-    if nume is not None:
-        cere_nume_unic(conn, nume, cabinet, exclude_id=tenant_id)
-    seturi, valori = [], []
-    if nume is not None:
-        seturi.append("nume = %s"); valori.append(nume)
-    if cui is not None:
-        seturi.append("cui = %s"); valori.append(cui)
-    if not seturi:
+    if nume is None and cui is None:
         return {"ok": True, "neschimbat": True}
-    valori.append(tenant_id)
-    with conn.cursor() as cur:
-        cur.execute("UPDATE public.tenants SET %s WHERE id = %%s"
-                    % ", ".join(seturi), valori)
+    # [R81/O1, 28.08.2026] Denumirea trece prin scriitorul UNIC — `public.tenants.nume` și
+    # `firma_profil.nume`, aceeași tranzacție, aceeași valoare. `cere_nume_unic` e înăuntrul lui,
+    # deci poarta de unicitate rămâne pe calea de redenumire, unde a fost pusă.
+    #
+    # CUI-ul a ieșit din `SET`-ul compus la rulare și are acum instrucțiunea lui, literală. Nu e
+    # cosmetică: un `SET` asamblat din bucăți nu poate fi citit static, deci garda de simetrie
+    # n-ar fi putut spune despre el nici că scrie denumirea, nici că n-o scrie — și ar fi trebuit
+    # să-l declare drept necunoscut. Aici nu mai e nimic de declarat.
+    if nume is not None:
+        scrie_denumirea(conn, tenant_id, nume)
+    if cui is not None:
+        with conn.cursor() as cur:
+            cur.execute("UPDATE public.tenants SET cui = %s WHERE id = %s", (cui, tenant_id))
     # [R77, partea a doua] O redenumire care se depărtează de denumirea de la ANAF e ea însăși o
     # alegere — se consemnează, nu se refuză. Dacă firma n-are `nume_anaf`, nu se consemnează
     # nimic: n-are cu ce să difere, iar o alegere între o denumire și nimic n-ar fi o alegere.

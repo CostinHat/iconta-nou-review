@@ -3,6 +3,55 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 28.08.2026 — R81: denumirea unei firme se scrie SIMETRIC, în amândouă locurile
+
+**Decizia lui Costin:** *„R81 E DECISĂ: simetrie de scriere. Orice act care redenumește o firmă
+scrie denumirea în AMBELE locuri (`public.tenants.nume` și `{schema}.firma_profil.nume`), în aceeași
+tranzacție, cu aceeași valoare. **Nu se construiește alias.**"*
+
+**Întrebarea la care răspunde.** Nu *„care denumire e adevărul"* — aia era prima formulare a lui R81,
+și era greșită. Măsurătoarea din 27–28.08 a arătat că divergența **nu se poate naște la creare**
+(`provision_tenant` scrie același șir în amândouă locurile) și că apare **numai prin redenumire**,
+fiindcă fiecare din căile care redenumesc atingea **un singur loc din două**. Deci întrebarea reală
+era *„de ce redenumirea atinge unul singur"*, iar răspunsul nu e o sursă de adevăr, e o **simetrie**.
+
+**TEMEIUL, în trei puncte:**
+
+1. **Cost zero.** Varianta „una singură, cealaltă derivată" părea scumpă cât timp am crezut că o
+   listă pe denumirea fiscală ar cere o citire în fiecare schemă. **Fals** — `auth_api.tenantii_userului`
+   face deja o buclă per schemă, cu savepoint, pentru `tip_firma`. Dar simetria e și mai ieftină: nu
+   schimbă nicio citire, niciun payload, niciun ecran de listă. Se schimbă **numai scrierea**.
+2. **Elimină A8** — constatarea că *„alegerea consemnată nu ajunge pe hârtie"*: butonul „Ia denumirea
+   de la ANAF", apăsat de un om real pe 27.08 la 19:16, schimba eticheta din portofoliu și lăsa
+   neatinsă denumirea care pleacă în D100, D205 și pe bilanț. Sub simetrie, alegerea **ajunge** pe
+   hârtie.
+3. **Nu creează oul-și-găina.** O firmă creată acum zece secunde are denumirea în amândouă locurile
+   din prima, fiindcă `provision_tenant` scrie ambele. Nu există o stare intermediară în care lista
+   ar fi goală sau derivarea n-ar avea de unde citi.
+
+**ȘI CE NU SE FACE, explicit: nu se construiește alias.** A doua denumire nu devine o „etichetă
+scurtă", nu se adaugă nicio coloană, nu se păstrează nicio formă de nume paralel. Cele două coloane
+rămân, dar poartă **aceeași valoare**, iar cea care le ține egale e o singură funcție —
+`tenant_provisioning.scrie_denumirea`.
+
+**Cum se ține, mecanic:** `core/scan_simetrie_denumire.py` citește din AST fiecare `UPDATE … SET
+nume=` pe cele două tabele și pică dacă o funcție scrie într-una și nu în cealaltă — inclusiv când
+`SET`-ul se asamblează la rulare, unde niciun literal nu conține cuvântul `nume`. Gard:
+`core/test_simetrie_denumire.py`. **Scanul a găsit o a patra cale asimetrică**, pe care măsurătoarea
+de mână n-o văzuse: `precompleteaza_din_anaf(seteaza_nume=True)`, la `POST /auth/register`, scria
+`firma_profil.nume` singur — adică divergența chiar se putea naște la creare, pe calea aia.
+
+**Trecutul nu se repară singur.** Cele patru firme de la cabinetul de test 4163 aveau deja divergența,
+produsă de un semănător din afara repo-ului. Decizia lui pentru ele: *„fiscala e cea deja probată pe
+declarații (A5/A6) — ea rămâne, portofoliul se aliniază la ea."* Migrare:
+`core/migrare_r81_denumiri.py`, cu valoarea veche scrisă în `audit_log` **înainte** de suprascriere.
+După: **0 divergențe pe toată populația**, 18 firme.
+
+**Consecința pe ecran**, decisă în aceeași comandă: textul casetei de alegere revine la formularea
+simplă — *„denumirea aplicată e cea de pe documente"* —, dar marcajul `data-e1` **rămâne**, ca gardă
+de regresie: *„nu te baza orb pe invariant."* Un invariant e o afirmație despre codul de azi;
+scrierile din afara aplicației nu trec prin scriitorul unic.
+
 ## 27.08.2026 — Urma unei firme scoase: se păstrează la scoatere, NU la ștergerea GDPR
 
 **Decizia lui Costin, confirmată:** *„La GDPR nu se păstrează nimic."*

@@ -1255,7 +1255,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T05 — Nota contabilă — de la document la registrul-jurnal
 
-**Clasa:** MECANIC · **rute:** 28 (din care schimba date: 24) · **refuzuri explicite:** 162
+**Clasa:** MECANIC · **rute:** 28 (din care schimba date: 24) · **refuzuri explicite:** 164
 
 **Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 22 din 24.**
 
@@ -1473,7 +1473,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T14 — Preluarea unei firme
 
-**Clasa:** MECANIC · **rute:** 32 (din care schimba date: 21) · **refuzuri explicite:** 65
+**Clasa:** MECANIC · **rute:** 32 (din care schimba date: 21) · **refuzuri explicite:** 67
 
 **Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 10 din 21.**
 
@@ -1963,7 +1963,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T35 — Pachetul lunar către client și solicitările lui
 
-**Clasa:** MECANIC · **rute:** 38 (din care schimba date: 16) · **refuzuri explicite:** 43
+**Clasa:** MECANIC · **rute:** 38 (din care schimba date: 16) · **refuzuri explicite:** 45
 
 **Cine:** rol cerut: `admin_firma`, `angajat`, `verificat-în-corp`. **Rute care schimba date fara nicio verificare de rol: 5 din 16.**
 
@@ -2018,7 +2018,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T36 — Ciclul de viață al firmei — creare, identitate, dezactivare, scoatere
 
-**Clasa:** MECANIC · **rute:** 9 (din care schimba date: 5) · **refuzuri explicite:** 28
+**Clasa:** MECANIC · **rute:** 9 (din care schimba date: 5) · **refuzuri explicite:** 30
 
 **Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 0 din 5.**
 

@@ -2824,7 +2824,7 @@ def firma_profil_date_salveaza(tenant_id: int, date: dict = Body(...),
                                ctx=Depends(cere_cabinet)):
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
-        r = _fp.salveaza_date(conn, date)
+        r = _fp.salveaza_date(conn, date, tenant_id=tenant_id)
     if not r.get("ok"):
         raise HTTPException(422, r.get("mesaj", "date invalide"))
     return r

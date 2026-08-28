@@ -318,29 +318,37 @@ def _tabelele_scrise(nume_functie):
     return _tabelele_din(ast.parse(sursa), nume_functie)
 
 
-def test_alegerea_de_denumire_NU_atinge_denumirea_FISCALA():
-    """[F4] Ecranul spune de azi că alegerea schimbă **numai** eticheta din portofoliu, și că pe
-    declarații pleacă denumirea fiscală, pe care caseta n-o atinge. **E o afirmație despre
-    comportament**, deci se păzește pe comportament, nu pe șirul de text.
+def test_alegerea_de_denumire_ATINGE_AMANDOUA_denumirile():
+    """[F4, rescris de decizia R81 — 28.08.2026]
 
-    Dacă ramura `anaf` ajunge vreodată să scrie în `firma_profil` — ceea ce e chiar una din
-    variantele deschise ale lui R81 —, textul devine fals **invers**: ecranul ar spune că nu atinge
-    hârtia, iar el ar atinge-o. Testul trebuie să pice atunci, ca textul să se schimbe odată cu
-    codul. **Nu e o interdicție**: R81 nu e decisă, iar dacă decizia e să scrie, se scrie — se
-    schimbă atunci și textul, și testul, împreună.
-    """
-    # Operatorul de mulțime, nu `in`: `"x" in scrise` ar trece tăcut dacă `scrise` ar deveni
-    # vreodată un șir, iar `>=` crapă. (METODA §23, forma recomandată de `scan_garzi_pe_text`.)
-    for f in ("alege_denumirea", "_consemneaza_alegerea"):
-        scrise = _tabelele_din(ast.parse(io.open(
-            os.path.join(_RAD, "core", "tenant_provisioning.py"), encoding="utf-8").read()), f)
-        assert not (scrise & {"firma_profil"}), (
-            "`%s` scrie acum în `firma_profil` (%s), deci alegerea ATINGE denumirea care pleacă pe "
-            "declarații. Caseta din `static/js/ecrane/firme.js` spune exact pe dos — schimbă textul "
-            "odată cu codul, altfel ecranul minte în cealaltă direcție." % (f, sorted(scrise)))
-        assert scrise >= {"tenants"}, (
-            "[anti-vacuu] `%s` nu mai scrie nici măcar în `public.tenants` — extractorul nu vede "
-            "SQL-ul, deci absența lui `firma_profil` nu dovedește nimic" % f)
+    Testul ăsta se numea ieri `test_alegerea_de_denumire_NU_atinge_denumirea_FISCALA` și cerea
+    **exact pe dos**: că ramura `anaf` nu scrie în `firma_profil`. Era corect atunci — ecranul
+    spunea că alegerea schimbă numai eticheta din portofoliu, iar testul ținea textul lipit de
+    comportament. Docstringul lui de atunci scria, cuvânt cu cuvânt: *„nu e o interdicție: R81 nu e
+    decisă, iar dacă decizia e să scrie, se scrie — se schimbă atunci și textul, și testul,
+    împreună."* **Decizia a venit, și s-au schimbat amândouă.**
+
+    Ce cere acum: alegerea de denumire ajunge **pe hârtie**. `alege_denumirea` trece prin
+    `scrie_denumirea`, care atinge amândouă locurile în aceeași tranzacție. Dacă cineva scoate
+    apelul, butonul redevine o etichetă — iar ecranul, care de azi spune că denumirea aplicată e
+    cea de pe documente, ar minti în cealaltă direcție."""
+    from core import scan_simetrie_denumire as _s
+    arb = ast.parse(io.open(os.path.join(_RAD, "core", "tenant_provisioning.py"),
+                            encoding="utf-8").read())
+    fn = {n.name: n for n in ast.walk(arb) if isinstance(n, ast.FunctionDef)}
+    assert set(fn) >= {"alege_denumirea", "scrie_denumirea"}, sorted(fn)
+
+    def cheama(nume_fn, tinta):
+        return any(isinstance(c, ast.Call) and isinstance(c.func, ast.Name) and c.func.id == tinta
+                   for c in ast.walk(fn[nume_fn]))
+
+    assert cheama("alege_denumirea", "scrie_denumirea"), (
+        "ramura ANAF nu mai trece prin scriitorul unic — alegerea ar redeveni o etichetă, iar pe "
+        "declarații ar pleca mai departe cealaltă denumire (chiar defectul probat pe 27.08)")
+    scrise = _tabelele_din(arb, "scrie_denumirea")
+    assert scrise == {"tenants", "firma_profil"}, (
+        "scriitorul unic nu mai atinge amândouă tabelele: %s" % sorted(scrise))
+    assert not _s.asimetrii(), "au apărut scrieri asimetrice: %s" % (_s.asimetrii(),)
 
 
 def test_CALIBRARE_F4_o_scriere_in_firma_profil_chiar_s_ar_vedea():

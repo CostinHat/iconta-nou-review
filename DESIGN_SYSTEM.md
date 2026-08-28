@@ -599,7 +599,33 @@ coborî la zero arătând ca o reparație.
   frontendul **nu** sunt în clasă; a le trata la fel ar fi confundat un act asupra firmei cu unul
   asupra datelor din ea.
 
+
+### 27.4 Corolarul redenumirii: o scriere pe denumirea unei firme e SIMETRICĂ (28.08.2026)
+
+Regula de mai sus cere ca actul să se **încheie** vizibil. Corolarul ei, dat de decizia R81, cere ca
+actul să fie **întreg**: *orice act care redenumește o firmă scrie denumirea în amândouă locurile —
+`public.tenants.nume` și `{schema}.firma_profil.nume` — în aceeași tranzacție, cu aceeași valoare.*
+
+**De ce stă lângă regula confirmării, și nu numai lângă cap.26.** Cele două sunt aceeași grijă
+văzută din capete diferite: acolo, ecranul tace după ce actul a reușit; aici, actul reușește **pe
+jumătate** și ecranul n-are cum să spună care jumătate. Un act care atinge un singur loc din două
+produce o confirmare care e adevărată și înșelătoare în același timp — *„am schimbat denumirea"*,
+când pe declarație pleacă mai departe cealaltă. Instanța, probată pe viu: alegerea *„Ia denumirea de
+la ANAF"*, apăsată pe 27.08.2026 la 19:16, schimba eticheta din listă și lăsa neatinsă denumirea de
+pe D100, D205 și bilanț.
+
+**Gardul e O4** — `core/scan_simetrie_denumire.py` + `core/test_simetrie_denumire.py`: o funcție care
+scrie `nume` pe una din cele două tabele și nu pe cealaltă **pică poarta**. Se citește din AST, nu din
+text, și prinde și `SET`-urile asamblate la rulare, unde niciun literal nu conține cuvântul `nume`.
+
+**Limita, scrisă aici fiindcă e a regulii, nu a gardului:** simetria e o proprietate a **codului
+aplicației**. Un semănător, un import sau un `UPDATE` de mână nu trec prin scriitorul unic — și chiar
+așa s-au născut cele patru divergențe migrate pe 28.08. De-aia clichetul pe **date** rămâne, deși
+invariantul îl face structural imposibil: *un invariant nu se crede pe cuvânt, se măsoară.*
+
 ## Changelog
+**v2.62 (28.08.2026)** — **R81 decisă: simetrie de scriere pe denumirea unei firme** (cap.27 §27.4). Orice act care redenumește o firmă scrie `public.tenants.nume` **și** `{schema}.firma_profil.nume`, în aceeași tranzacție, cu aceeași valoare; **nu se construiește alias**. Toate cele patru căi trec printr-o singură funcție, `tenant_provisioning.scrie_denumirea`, cu poarta de unicitate înăuntru. Gard: `core/scan_simetrie_denumire.py` + `core/test_simetrie_denumire.py` — o funcție care scrie într-un singur loc din două pică poarta, iar scanul prinde și `SET`-urile compuse la rulare. **Scanul a găsit a patra cale asimetrică**, nevăzută de măsurătoarea de mână: `precompleteaza_din_anaf(seteaza_nume=True)`. **Pe ecran:** textul casetei de alegere revine la formularea simplă („denumirea aplicată e cea de pe documente"), iar marcajul `data-e1` **rămâne ca gardă de regresie**, nu ca decor — un invariant e o afirmație despre codul de azi. Cele două casete de denumire din „Date firmă" se leagă: sub simetrie, salvarea trimitea două cereri care se puteau suprascrie tăcut una pe alta.
+
 **v2.61 (28.08.2026)** — **Două reguli de ecran, scrise și gardate: E1 (cap.26) și E2 (cap.27).** **E1:** când aceeași entitate are un atribut în două locuri, ecranul nu alege tăcut — le arată pe amândouă cu etichete care spun de unde vine fiecare, iar când diferă spune **care produce efectul**; o sursă pe care ecranul n-o are se **declară lipsă**, nu se trece sub tăcere. Instanțele: R63 (două adrese ale aceleiași persoane) și R81 (denumirea din portofoliu vs. cea fiscală). **E2:** un act cu efect asupra unei entități se încheie cu o confirmare vizibilă care numește entitatea și consecința; demontarea ecranului nu e confirmare. Instanța măsurată: **4 acte de nivel firmă din 7** se termină în tăcere, iar toate patru **vorbesc pe calea de eroare**. Ambele sunt gardate pe **structură**, nu pe text: nodurile de randare se parsează din literalii de șablon (`data-e1*`), iar actele se citesc pe **blocul `try`** care le cuprinde — un `arataMesaj` din `catch` **nu** confirmă nimic, ceea ce e chiar defectul. Instrument: `core/scan_ecran_reguli.py`; gărzi: `core/test_reguli_ecran.py` (22 de teste, din care 11 de calibrare, cu mutație pe modul propriu de eșec) + bloc în `verificator_conformitate.py`. Reparat odată cu ele: **F1/F2** — caseta de alegere a denumirii spunea *„Denumirea din aplicație e cea folosită în documente"*, ceea ce e fals, iar butoanele nu spuneau ce ating.
 
 **v2.60 (20.08.2026)** — **Indicatorul de stare nu are voie să mintă: politică ≠ aplicabilitate (audit tenant_006, cabinet 1968).** Indicatorul patru-ochi din `.subbara` afișa „Validarea în doi asistenți ✓" ori de câte ori politica era pornită, inclusiv pe un cabinet cu UN singur validator — unde enforcement-ul permitea deja auto-aprobarea. Pe același ecran, subbara zicea „validare în doi ✓" iar cardul zicea „De depus": contradicție cu sine. **Regula:** un indicator de stare afișează ce se APLICĂ (`efectiv`), nu ce s-a CONFIGURAT (`activ`); cele două se calculează într-un singur loc consumat și de backend și de UI. **Trei stări, nu două** — pornit-și-în-vigoare (bifă + `var(--verde-inchis)`), pornit-dar-suspendat (`var(--ardezie)`, FĂRĂ bifă și FĂRĂ verde — verdele e afirmația „funcționează"), oprit (absent). **„Oprit" și „suspendat" nu se spun cu același cuvânt:** textul cozii („Patru-ochi e dezactivat") îl lăsa pe patron să creadă că i s-a stins setarea; acum spune golul + cauza + ieșirea (cap.6, stare goală): „pornită, dar suspendată: ești singurul validator… reintră în vigoare de îndată ce un coleg primește dreptul de validare (cardul Asistenți)". **Trecerea graniței se anunță în DOUĂ registre:** cromul persistent (subbara = starea, o vede oricine deschide spațiul de lucru) + punctul de acțiune (dialogul „Acorzi dreptul de validare lui X?" → mesaj `ok` la salvare = momentul). Gărzi: `core/test_patru_ochi_efectiv.py` (adevărul indicatorului + o singură definiție a mulțimii de validatori + fundătura), `core/test_a11y_contrast_tokens.py` extins (ambele culori ale indicatorului ≥4,5:1 pe bara #dfe4ea; starea suspendată nu poate purta un token verde). Vezi DECIZII 20.08.2026.

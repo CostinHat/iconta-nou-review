@@ -15,7 +15,7 @@ const CAMPURI = [
   // locuri, iar pe 4 din 17 ele diferă azi. Asta e cea FISCALĂ (`firma_profil.nume`): pleacă în
   // declarații și pe bilanț. Cea din portofoliu (`tenants.nume`) se editează mai sus.
   { k: "nume", e: "Denumirea fiscal\u0103 (apare \u00een declara\u021bii \u0219i pe bilan\u021b)", ob: true,
-    aj: "Se trimite \u00een D100, D101, D205, D301, D390, D394, D406 \u0219i pe bilan\u021b. Poate diferi de denumirea din portofoliu \u2014 dac\u0103 difer\u0103, ecranul o spune." },
+    aj: "Se trimite \u00een D100, D101, D205, D301, D390, D394, D406 \u0219i pe bilan\u021b. E ACEEA\u0218I cu denumirea firmei de mai sus \u2014 de c\u00e2nd o redenumire scrie \u00een amândou\u0103 locurile (R81, 28.08.2026), cele dou\u0103 nu mai pot diferi; se completeaz\u0103 una pe alta." },
   { k: "cui", e: "CUI", ob: true },
   { k: "reg_com", e: "Nr. registrul comer\u021bului", ob: true,
     aj: "Din certificatul de \u00eenregistrare (ex. J40/1234/2020). Cerut la bilan\u021b." },
@@ -145,7 +145,8 @@ function _blocDenumire(t, profil) {
     ${divergenta}
     <div class="grila-doc">
       <label class="camp">
-        <span class="camp-eticheta">Denumirea din portofoliu<span class="oblig">*</span></span>
+        <span class="camp-eticheta">Denumirea firmei<span class="oblig">*</span></span>
+        <p class="camp-ajutor">Una singur\u0103: aceea\u0219i \u00een list\u0103, \u00een bara de sus \u0219i pe declara\u021bii. C\u00e2mpul „Denumirea fiscal\u0103" de mai jos e acela\u0219i lucru \u2014 se completeaz\u0103 odat\u0103 cu \u0103sta.</p>
         ${randAnaf}
         <input type="text" class="camp-input" id="df-nume-portofoliu" value="${esc(nume)}">
       </label>
@@ -219,6 +220,19 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
   const _tvaToggle = () => { if (_tvaCamp) _tvaCamp.style.display = (_tvaSel && _tvaSel.value === "da") ? "" : "none"; };
   if (_tvaSel) _tvaSel.addEventListener("change", _tvaToggle);
   _tvaToggle();
+
+  // [R81/Q, 28.08.2026] Cele două casete de denumire de pe ecranul ăsta scriu, de azi, ACELAȘI
+  // lucru: `scrie_denumirea` atinge amândouă coloanele. Salvarea trimite întâi `PUT /tenants/{id}`
+  // și apoi `POST …/firma-profil/date` — deci, dacă cele două casete ar putea purta valori
+  // diferite, a doua cerere ar suprascrie tăcut ce a scris prima, iar omul și-ar vedea modificarea
+  // revenită fără niciun mesaj. Se leagă, în amândouă direcțiile. Nu e o comoditate: e chiar
+  // interdicția „fără suprascriere tăcută", aplicată în ecran, nu în backend.
+  const _nP = corp.querySelector("#df-nume-portofoliu"), _nF = corp.querySelector("#df-nume");
+  if (_nP && _nF) {
+    const leaga = (a, b) => a.addEventListener("input", () => { b.value = a.value; });
+    leaga(_nP, _nF);
+    leaga(_nF, _nP);
+  }
 
   corp.querySelector("#df-salveaza").addEventListener("click", async () => {
     const btn = corp.querySelector("#df-salveaza");

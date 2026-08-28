@@ -61,11 +61,23 @@ def _apeluri(fn):
 
 
 def test_AMBELE_cai_trec_prin_poarta_de_nume():
-    """Creare ȘI redenumire. O regulă care se poate ocoli cu un `PUT` nu e o regulă."""
+    """Creare ȘI redenumire. O regulă care se poate ocoli cu un `PUT` nu e o regulă.
+
+    **[R81, 28.08.2026] Gardul își urmează intenția, nu locul.** Sub simetria de scriere,
+    `actualizeaza_tenant` nu mai cheamă `cere_nume_unic` direct: redenumirea trece prin
+    `scrie_denumirea`, care are poarta înăuntru. Cerința rămâne aceeași — *pe traseul fiecărei căi
+    să existe poarta* —, deci se acceptă și apelul direct, și cel prin scriitorul unic. Ce nu se
+    acceptă e o cale fără niciunul din două. (Același tipar ca la `_consemneaza_alegerea`, R77.)"""
+    prin = ("cere_nume_unic", "scrie_denumirea")
     fara = [n for n in ("provision_tenant", "actualizeaza_tenant")
-            if "cere_nume_unic" not in _apeluri(_functia(n))]
+            if not (_apeluri(_functia(n)) & set(prin))]
     assert not fara, (
-        "căi care scriu numele unei firme fără poarta de unicitate: %s" % fara)
+        "căi care scriu numele unei firme fără poarta de unicitate, nici direct nici prin "
+        "scriitorul unic: %s" % fara)
+    # și poarta chiar e înăuntrul scriitorului — altfel „trece prin el" n-ar însemna nimic
+    assert _apeluri(_functia("scrie_denumirea")) >= {"cere_nume_unic"}, (
+        "`scrie_denumirea` nu mai trece prin `cere_nume_unic` — atunci delegarea de mai sus a golit "
+        "poarta în loc s-o mute")
 
 
 def test_redenumirea_verifica_si_CUI_ul():
@@ -173,7 +185,9 @@ _DIVERGENTE_CUNOSCUTE = 0
 
 # Ce trebuie să rămână adevărat despre partea EXCLUSĂ, altfel povestea de mai sus devine falsă fără
 # ca nimic să clipească: cele patru divergențe sunt încă acolo, la cabinetul de test.
-_DIVERGENTE_LA_CABINETELE_DE_TEST = 4
+# [P3, 28.08.2026] Migrate. Cifra a fost 4 până azi; portofoliul s-a aliniat la
+# denumirea fiscală, iar clasa e goală pe TOATĂ populația — vezi testul de mai jos.
+_DIVERGENTE_LA_CABINETELE_DE_TEST = 0
 
 
 def _perechi_de_denumiri(doar_cabinetele_de_test=False):
@@ -246,23 +260,34 @@ def test_cele_doua_denumiri_ale_unei_firme_nu_divergeaza_mai_mult():
            "\n  ".join("%s  ≠  %s" % (a, b) for _t, a, b in difera[:6])))
 
 
-def test_cele_patru_divergente_de_FIXTURA_sunt_inca_la_cabinetul_de_test():
-    """[H2, direcția a doua] La zero, aserțiunea «nu a scăzut» n-are conținut — ar fi un semafor
-    verde pe vecie. Ce are conținut e afirmația pe care se sprijină cifra: **cele patru divergențe
-    de dinainte erau ale fixturilor, și sunt încă acolo.** Dacă dispar, ori s-a curățat cabinetul
-    de test, ori semănătorul s-a schimbat — și atunci explicația scrisă lângă `_DIVERGENTE_CUNOSCUTE`
-    a devenit falsă și trebuie rescrisă, nu moștenită."""
-    de_test = _perechi_de_denumiri(doar_cabinetele_de_test=True)
-    assert de_test, ("[anti-vacuu] niciun tenant la cabinetele excluse %s — atunci excluderea nu "
-                     "scoate nimic, iar cifra n-a fost niciodată contaminată de ele"
-                     % sorted(_CABINETE_DE_TEST))
-    difera = _divergente(de_test)
-    assert len(difera) == _DIVERGENTE_LA_CABINETELE_DE_TEST, (
-        "cabinetele de test au acum %d divergențe, nu %d (%s). Explicația scrisă lângă clichet — "
-        "«cele patru erau artefact de fixtură» — nu se mai verifică; recitește-o înainte de a "
-        "schimba cifra."
-        % (len(difera), _DIVERGENTE_LA_CABINETELE_DE_TEST,
-           ", ".join("%s ≠ %s" % (a, b) for _t, a, b in difera[:6])))
+def test_ZERO_divergente_pe_TOATA_populatia_dupa_migrarea_R81():
+    """[P3, 28.08.2026] Cifra finală, pe **toată** populația — fără nicio excludere.
+
+    Textul de dinainte al testului ăstuia spunea *„cele patru divergențe de fixtură sunt încă la
+    cabinetul de test"*, și era adevărat până azi. **Nu mai e**: R81 s-a decis (simetrie de
+    scriere), iar cele patru au fost migrate — portofoliul s-a aliniat la denumirea **fiscală**,
+    cea deja probată pe D100/D205/bilanț, cu valoarea veche scrisă în `audit_log` înainte de
+    suprascriere (`core/migrare_r81_denumiri.py`).
+
+    **De ce se măsoară acum pe toată populația, nu pe cea declarată.** Excluderea cabinetelor de
+    test (H1) e o unealtă de **măsurătoare**: exista fiindcă fixturile contaminau cifra. După
+    migrare nu mai contaminează nimic — clasa e goală peste tot, deci cifra onestă e cea fără
+    filtru. Excluderea rămâne scrisă mai sus, fiindcă întrebarea *„despre cine vorbește cifra"*
+    rămâne validă pentru orice măsurătoare viitoare (METODA §26).
+
+    **Și de ce rămâne un clichet pe DATE, deși simetria îl face structural imposibil.** Fiindcă
+    invariantul e o afirmație despre codul de azi. Scrierile din afara aplicației — semănătoare,
+    SQL de mână, importuri — nu trec prin `scrie_denumirea` și n-au cum să fie gardate de el. Exact
+    așa s-au născut cele patru. *Un invariant nu se crede pe cuvânt; se măsoară.*"""
+    toate = _perechi_de_denumiri() + _perechi_de_denumiri(doar_cabinetele_de_test=True)
+    assert len(toate) >= 15, ("[anti-vacuu] doar %d firme citite — zero divergențe pe zero firme "
+                              "nu e o măsurătoare" % len(toate))
+    difera = _divergente(toate)
+    assert not difera, (
+        "au reapărut divergențe de denumire (%d din %d firme): %s\n"
+        "Sub simetria de scriere nu se pot naște din aplicație — deci verifică ce a scris în afara "
+        "ei (semănător, import, SQL de mână)."
+        % (len(difera), len(toate), ", ".join("%s ≠ %s" % (a, b) for _t, a, b in difera[:6])))
 
 
 def test_ecranul_ARATA_ca_sunt_doua_si_care_pleaca_pe_hartie():
