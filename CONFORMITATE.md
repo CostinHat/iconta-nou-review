@@ -2041,6 +2041,23 @@ scos ce nu se știa**, nu din defecte noi.
   negativă: un `arataMesaj` din `catch` **nu** confirmă nimic — un gard care s-ar uita în handler,
   nu în blocul `try`, ar fi declarat toate patru confirmate, fiindcă toate patru vorbesc pe calea de
   eroare. Adică ar fi fost verde exact pe clasa pentru care a fost construit.
+- **TEXTELE REVIZUITE 28.08.2026, sub decizia R81 (Q1/Q2)** — și e a doua oară într-o zi când textul
+  ăstuia se schimbă. Amândouă formele erau adevărate când s-au scris: dimineața *„alegerea schimbă
+  numai eticheta din portofoliu"*, fiindcă ramura `anaf` chiar atingea un singur loc din două; acum
+  *„denumirea aplicată e cea de pe documente"*, fiindcă o firmă are **o singură denumire**, scrisă în
+  amândouă locurile în aceeași tranzacție. **Ce nu se schimbă a doua oară e metoda:** textul urmează
+  comportamentul, nu invers.
+  - **Q1 — marcajul `data-e1` RĂMÂNE, și nu ca decor.** Cerința lui Costin: *„nu te baza orb pe
+    invariant — safety net rămâne. Dacă cele două valori vreodată diferă (bug viitor), confruntarea
+    trebuie să reapară automat, nu să rămână ascunsă în spatele unui text care presupune sincronia."*
+    `data-e1-absent="fiscal"` rămâne pe caseta din listă fiindcă lista tot **nu citește**
+    `firma_profil.nume`: ecranul afirmă egalitatea prin construcție, n-o verifică. Cine o verifică la
+    rulare e „Date firmă", care are amândouă valorile și le compară la fiecare randare — acolo e
+    plasa de siguranță.
+  - **Q2 — butonul își recapătă numele și spune ce face.** *„Ia denumirea de la ANAF"* schimbă
+    denumirea firmei **peste tot, inclusiv pe declarații și pe bilanț**; *„Păstrez denumirea mea"* nu
+    schimbă nimic și consemnează alegerea. Id-urile (`dn-ia-anaf`, `dn-pastrez`) n-au fost atinse
+    niciodată — proba de ecran se ancorează pe ele.
 - **Ce rămâne, și de-aia restanța NU se închide:** cele patru acte tot nu confirmă nimic. S-a scris
   regula (`DESIGN_SYSTEM.md` cap.27), s-a măsurat clasa și s-a pus clichetul; **repararea lor e
   altă tură**, iar condiția de deblocare de mai sus rămâne cea care o judecă.
@@ -2053,7 +2070,8 @@ scos ce nu se știa**, nu din defecte noi.
 - **unde intră**: E1 · R63 (aceeași clasă) · **PRAG 2** *(nimic fals pe ecran de azi înainte — ecranul le arată acum distinct. Dar denumirea fiscală pleacă în declarații depuse la ANAF, iar cea din portofoliu e singura pe care o vede contabilul în listă)*
 - **reluări**: 1
 - **contorul, explicat**: decizia se cere **a doua oară** în raportul din 28.08.2026, secțiunea 0. Prima cerere n-a primit răspuns, iar un contor pe zero ar face bucla să arate ca o cerere de-o zi.
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
+- **rezolvată pe commit**: `08743aa`
 - **deschisă pe commit**: `7c0f603`
 - **măsurat la**: 2026-08-27 · **pe commit**: `7c0f603`
 - **planul**: **ACOPERIT ca tipar**, în R63: *„aceeași persoană are două adrese în aplicație, iar nimic nu le confruntă."* Acolo erau două adrese ale clientului; aici, două denumiri ale firmei. Rezolvarea de acolo — două nume distincte, iar când coincid se spune — s-a aplicat și aici, pentru **vizibilitate**. Ce lipsește e **regula**.
@@ -2114,6 +2132,71 @@ scos ce nu se știa**, nu din defecte noi.
   Excluderea are propriul anti-vacuu — dacă `id`-ul 4163 nu mai poartă numele sub care a fost
   exclus, poarta cade —, iar cele **4** divergențe de fixtură se verifică separat, ca afirmația
   „erau ale semănătorului" să nu îmbătrânească netestată.
+- **DECISĂ ȘI APLICATĂ 28.08.2026 — SIMETRIE DE SCRIERE.** Decizia lui Costin, textual: *„orice act
+  care redenumește o firmă scrie denumirea în AMBELE locuri (`public.tenants.nume` și
+  `{schema}.firma_profil.nume`), în aceeași tranzacție, cu aceeași valoare. **Nu se construiește
+  alias.**"* Temeiul, în trei puncte: **cost zero** (nu se schimbă nicio citire, niciun payload,
+  niciun ecran de listă — se schimbă numai scrierea), **elimină A8** (*alegerea consemnată nu ajunge
+  pe hârtie*), și **nu creează oul-și-găina** (o firmă nou-creată are denumirea în amândouă locurile
+  din prima). Scrisă în `DECIZII.md`, 28.08.2026.
+- **O1–O3 — un singur scriitor, nu trei perechi de `UPDATE`-uri.** Cele trei căi trec prin
+  `tenant_provisioning.scrie_denumirea`, care are `cere_nume_unic` înăuntru și **niciun `commit`**:
+  tranzacția rămâne a apelantului, fiindcă simetria **e** o proprietate a tranzacției. Trei perechi
+  scrise separat s-ar fi putut despărți la fel de tăcut ca cele trei scrieri singure de la care a
+  pornit restanța — a opta instanță a lecției R62.
+- **O3, răspuns explicit la întrebarea din comandă: DA, ecranul „Date firmă" avea o cale de editare
+  directă a denumirii fiscale.** `CAMPURI[0]` din `date_firma.js` e chiar `nume`, iar el ajungea în
+  `firma_profil_api.salveaza_date`, care scria `firma_profil` singur. Trece acum tot prin scriitorul
+  unic; `tenant_id` se cere **numai** când se schimbă denumirea.
+- **O4 — garda, și ce a găsit.** `core/scan_simetrie_denumire.py` citește din **AST** fiecare
+  `UPDATE … SET nume=` pe cele două tabele și pică dacă o funcție scrie într-una și nu în cealaltă.
+  Trei clase, nu două: *scrie* / **COMPUS** (`SET`-ul se asamblează la rulare, deci coloanele nu se
+  citesc din instrucțiune — se rezolvă privind fragmentele literale din aceeași funcție) / *nu
+  scrie*. Fără clasa a doua, `actualizeaza_tenant` ar fi raportat **zero** și ar fi părut complet,
+  exact ca în R77. **Garda a găsit o A PATRA cale asimetrică**, pe care măsurătoarea de mână n-o
+  văzuse: `precompleteaza_din_anaf(seteaza_nume=True)`, pe `POST /auth/register`, scria
+  `firma_profil.nume` **singur**, la câteva milisecunde după ce `provision_tenant` pusese aceeași
+  valoare în amândouă locurile. **Deci divergența chiar SE putea naște la creare, pe calea aia** —
+  adică rândul scris ieri în restanța asta („creare a nu produce divergență") era adevărat despre
+  `POST /tenants` și fals despre `POST /auth/register`. Reparată în același commit.
+- **gardat**: `core/test_simetrie_denumire.py`, **13 teste, din care 5 de calibrare** — forma corectă
+  nu se raportează · scrierea pe una singură **e** prinsă · `nume_ales=` și `nume_anaf=` **nu** trec
+  drept denumire (prima formă de eșec a instrumentului: pe subșir, `_consemneaza_alegerea` ar fi
+  ieșit roșu pe nedrept) · `SET`-ul compus cu fragment `nume =` **e** prins · un `UPDATE` care nu
+  ajunge la `execute` (docstring, variabilă de ajutor) nu contează. Plus: toate cele patru căi trec
+  prin scriitor, niciun `commit` între cele două scrieri, poarta de unicitate pe traseu, iar crearea
+  scrie **aceeași variabilă** în amândouă locurile.
+- **O5 — PROBĂ pe viu**, în tranzacție întoarsă la savepoint, pe `tenant_013` (unde cele două
+  difereau):
+
+  | calea | portofoliu | fiscal |
+  |---|---|---|
+  | `PUT /tenants/{id}` | `PROBA SIMETRIE O5 SRL` | `PROBA SIMETRIE O5 SRL` |
+  | ramura `anaf` | `PROBA ANAF O5 SRL` | `PROBA ANAF O5 SRL` |
+  | „Date firmă" | `PROBA DATE FIRMA O5 SRL` | `PROBA DATE FIRMA O5 SRL` |
+
+  După `ROLLBACK`: `nume`, `nume_anaf` și numărătoarea din `audit_log` — **toate neschimbate**.
+  *(Prima formă a probei a atârnat: a doua conexiune cerea lock pe rândul pe care îl ținea deja
+  prima. Rescrisă pe o singură conexiune, cu `SET LOCAL search_path`.)*
+- **P1–P3 — cele patru divergențe de fixtură, migrate.** Decizia lui Costin: *„fiscala e cea deja
+  probată pe declarații (A5/A6) — ea rămâne, portofoliul se aliniază la ea."*
+  `core/migrare_r81_denumiri.py` scrie valoarea veche în `audit_log` **înainte** de suprascriere
+  (`user_id` **NULL** — actul n-are utilizator interactiv, iar a-l trece pe seama cuiva ar fi o
+  afirmație falsă; actorul e în `detalii`), apoi scrie **prin scriitorul unic**: o migrare cu
+  `UPDATE`-uri proprii ar fi fost a cincea cale, și prima care rupe simetria pe care o instalează.
+  `ALFA MICRO` → `ALFA MICRO SRL`, `BETA PROFIT` → `BETA PROFIT SRL`, `GAMA DEFECT-MIGRARE` → `…
+  SRL`, `DELTA DEFECT-LUNA` → `… SRL`. **Rezultat: 0 divergențe pe TOATĂ populația (18 firme), fără
+  nicio excludere.**
+- **și clichetul pe date RĂMÂNE, deși invariantul îl face structural imposibil**: simetria e o
+  afirmație despre codul **aplicației**. Un semănător, un import sau un `UPDATE` de mână nu trec prin
+  scriitorul unic — și chiar așa s-au născut cele patru. *Un invariant nu se crede pe cuvânt; se
+  măsoară.*
+- **ce NU s-a construit, explicit: niciun alias.** Nicio coloană nouă, nicio etichetă scurtă, niciun
+  nume paralel. Cele două coloane rămân, dar poartă aceeași valoare.
+- **ce rămâne, și e o întrebare de așezare, nu de corectitudine**: ecranul „Date firmă" are **două**
+  casete pentru aceeași denumire. Sub simetrie, salvarea trimitea două cereri care se puteau
+  suprascrie tăcut una pe alta — reparat prin legarea lor în amândouă direcțiile, fără să se scoată
+  nimic. **Comasarea într-o singură casetă e o schimbare de așezare și se cere.**
 
 
 ### R80 — Pentru 51 din 411 rute, gardul „rută fără apelant" nu poate afirma nimic
@@ -2266,6 +2349,17 @@ scos ce nu se știa**, nu din defecte noi.
   2. **redeschiderea întrebării nu are declanșator în producție.** `nume_anaf` și `nume_anaf_la` se scriu într-un singur loc — `precompleteaza_din_anaf` —, chemat din **trei** rute (`main.py` l. 1165 register, l. 1313 adăugare firmă, l. 1749 import în masă), **toate pe o firmă abia provizionată**; importul în masă respinge un CUI deja existent înainte să ajungă acolo. **Nicio rută nu re-citește ANAF pentru o firmă existentă.** Deci pentru CUI 1973096 caseta **nu** se re-declanșează și denumirea **nu** se suprascrie: condiția `nume_anaf_la > nume_ales_la` n-are cum să devină adevărată azi. `test_o_citire_ANAF_mai_noua_REDESCHIDE_intrebarea` păzește o ramură **corectă și nedeclanșabilă** — o gardă vie pe o cale moartă.
   3. **alegerea e a FIRMEI, nu a omului.** `nume_ales`, `nume_ales_la` și `nume_ales_de` stau pe rândul din `public.tenants` (constrângerea `tenants_nume_ales_ck`: `'aplicatie'` sau `'anaf'`, definită și în `ALEGERI_NUME`, `tenant_provisioning.py` l. 271), iar `_divergentaNume` se uită numai la ele. Pentru alt utilizator din același cabinet caseta **nu** reapare; `nume_ales_de` spune cine a decis, dar decizia e a tuturor. *Probabil corect — o firmă are o denumire, nu una per contabil — dar n-a fost scris nicăieri până acum.*
 - **și un lucru pe care închiderea îl presupunea, iar proba îl contrazice**: ramura *„Ia denumirea de la ANAF"* scrie **numai** `public.tenants.nume` (l. 319). `firma_profil.nume` — cel care pleacă în D100, D205 și pe bilanț — rămâne neatins. **Alegerea consemnată nu ajunge pe hârtie.** Vezi R81, unde e probat pe declarații generate.
+- **[28.08.2026] Ce schimbă simetria aici, și ce nu.** Rândul de mai sus — *alegerea consemnată nu
+  ajunge pe hârtie* — **nu mai e adevărat**: sub decizia R81, ramura `anaf` scrie amândouă locurile,
+  deci alegerea ajunge în D100, D205 și pe bilanț. Se păstrează ca istoric al defectului, nu ca stare.
+- **Dar starea restanței NU se schimbă, și motivul e că axa e alta.** R81 e despre
+  **portofoliu ↔ fiscal** — două locuri, aceeași sursă, aceeași firmă. R77 e despre
+  **portofoliu ↔ ANAF** — două *afirmații* despre aceeași firmă, făcute de doi actori diferiți, care
+  **au voie** să difere; de-aia acolo răspunsul e o *alegere*, nu o sincronizare. Simetria nu poate
+  închide o divergență între cabinet și registru, fiindcă aia nu e o inconsistență, e o informație.
+  Cele trei lucruri rămase deschise după închidere — confirmarea care lipsește (→ R82), redeschiderea
+  fără declanșator (→ G2, marcată ca gardă pe cale moartă), alegerea care e a **firmei** — rămân toate
+  exact unde erau.
 
 
 ### R76 — „Googlebot" într-un log nu mai e o informație: 70% din cererile care se declară așa sunt scanere
