@@ -1985,8 +1985,9 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · R83 (aceeași poartă) · R72 · **PRAG 2** *(nu e un om păgubit ACUM — nu există azi nicio firmă inactivă în portofoliu, deci efectul nu s-a produs. Dar se produce la prima dezactivare a unei firme cu evidență, iar textul care o însoțește promite explicit că «datele ei rămân neatinse»)*
 - **reluări**: 1
-- **stare**: DESCHISĂ
+- **stare**: **REZOLVATĂ**
 - **deschisă pe commit**: `5adb1d9`
+- **rezolvată pe commit**: `7e5e8ae`
 - **măsurat la**: 2026-08-28 · **pe commit**: `edcff9b`
 - **planul**: **NEACOPERIT.** Regula scrisă azi în `PLAN_ARHITECTURA.md` spune **cum** se face o excepție de acces, nu **care** rute merită una. Ce înseamnă o firmă inactivă pentru **citirea trecutului** ei rămâne nescris — și e chiar întrebarea. (METODA §25)
 - **cum s-a găsit**: catalogare cerută explicit (BLOC JJ0), nu o probă. Comanda: *„care dintre rutele păzite de `schema_tenant` ar avea sens pe o firmă inactivă — listă, nu reparație."*
@@ -2010,6 +2011,31 @@ scos ce nu se știa**, nu din defecte noi.
 - **ce NU vede măsurătoarea**: dacă cineva a avut nevoie vreodată de vreunul din cele 13 pe o firmă inactivă. Nu există urmă — portofoliul n-a avut firme inactive persistente.
 - **de ce nu am reparat-o**: pentru că nu e un defect, e o **politică**. Un raport pe o firmă scoasă din portofoliul de lucru poate fi ceva ce **trebuie** să meargă (trecutul nu dispare) sau ceva ce **nu trebuie** (firma a ieșit din evidență, tocmai ca să nu mai apară nicăieri). Alegerea e a lui Costin. Și: comanda spunea explicit *„nu extinde scopul azi"*.
 - **condiția de deblocare**: decizia lui Costin între **(a)** cele 13 rute de citire capătă, fiecare, verificarea locală de la R83 — repară clasa, dar **treisprezece** excepții locale sunt deja un tipar, nu o excepție, iar tiparul ăsta cere gard propriu; **(b)** se face **o** poartă declarată pentru citire-istorică (`schema_tenant_citire`), iar cele 13 rute o cer explicit — mai curat, dar e o funcție comună nouă, deci trebuie măsurat că nimeni n-o cheamă din greșeală; **(c)** rămâne cum e: o firmă inactivă nu se citește, iar textul de pe ecran se completează ca să **spună** asta. Se închide când citirea trecutului unei firme inactive are un răspuns scris — fie „merge", cu gard, fie „nu merge", cu textul care o spune.
+- **REZOLVATĂ 28.08.2026 (BLOC PP), decizia lui Costin: varianta (b).** *„O poartă declarată de citire-istorică, `schema_tenant_citire`, folosită explicit doar de cele 13 rute. Restul aplicației rămâne pe `schema_tenant` standard (`activ=true` implicit), neschimbat."*
+- **de ce (b), și de ce NU (a) sau (c)** — scris aici fiindcă peste o lună alegerea o să pară arbitrară:
+  - **(b) se poate NUMĂRA.** O funcție separată, cerută explicit, are apelanți care se numără mecanic. Gardul cere **exact 13**; al 14-lea nu e o scăpare, e varianta (c) pe furiș.
+  - **(a) respinsă: treisprezece excepții locale nu mai sunt o excepție, sunt un tipar.** Forma de la R83 e bună pentru **una** — acolo unde actul are sens numai pe o firmă inactivă. Copiată de 13 ori devine cod duplicat pe care nimeni nu-l mai citește, iar a paisprezecea copie n-ar avea de ce să pice.
+  - **(c) respinsă a doua oară azi:** firmele inactive accesibile **tuturor** rutelor ar fi dat acces și la **scriere**, ca efect secundar al unei cereri despre citire.
+- **PP1 — poarta, și ce NU slăbește.** `core/auth_api.py::schema_tenant_citire`. Cele trei ramuri de rol sunt copiate una câte una — `superadmin` doar pe firme **fără cabinet** (GDPR), `admin_firma` doar pe **cabinetul lui**, restul doar prin `user_tenants`. **Singura** diferență față de poarta comună e `activ`. Cine n-avea acces la o firmă activă n-are nici la una inactivă.
+- **PP2 — cele 13, și o decizie luată pe drum.** Cererea numea **căi**, nu metode. Pe două dintre ele (`/jurnal`, `/rapoarte-salvate`) există și câte un **POST**: alea **nu** au migrat. Catalogul de la R84 numărase 13 `GET`-uri *„care doar citesc"*, iar PP3 cere exact 13 apelanți. **O firmă scoasă din portofoliu se citește, nu se modifică** — iar gardul păzește și direcția asta.
+- **PP3 — gardul: `core/test_poarta_citire_istorica.py`, 5 teste.**
+  - poarta are **exact** cei 13 apelanți numiți — mulțime egală, nu „cel puțin";
+  - **niciuna** din cele 13 nu mai cheamă poarta comună (întoarcerea tăcută a uneia singure ar reface R84 pentru ea, fără ca nimic să cadă);
+  - poarta de citire e cerută **numai de `GET`-uri**, iar cele două `POST`-uri de pe aceleași căi trebuie să rămână pe `schema_tenant`;
+  - poarta scoate `activ` **și numai** `activ`: fiecare ramură a ei, citită ca **nod de SQL** dat lui `execute`, trebuie să fie ramura corespondentă a porții comune minus `activ` (METODA §23 — structură, nu text);
+  - pe **date**, în tranzacție întoarsă: firma dezactivată devine citibilă pentru cine avea dreptul, și **rămâne invizibilă** pentru un admin din alt cabinet și pentru `superadmin` (firma are cabinet).
+- **PP4/PP5 — probat prin apeluri REALE, pe toate 13, pe firmă chiar dezactivată** (`ALFA MICRO SRL`, `tenant_013`, dezactivată prin ruta reală, reactivată în `finally`, stare finală citită din bază):
+
+  | | activă | dezactivată | după reactivare |
+  |---|---|---|---|
+  | `jurnal` · `jurnal-marja` · `balanta` · `rapoarte-comerciale` (+`/fisa`) · `rapoarte-salvate` · `centre-cost/raport` · `casa/registru` · `stocuri/articole/{id}/fisa` · `perioade-blocate/istoric` · `export-saga` · `urme-portal` — **12 rute** | **200** | **200** | **200** |
+  | `facturi-primite/{id}/xml` | **404** *„factură primită inexistentă"* | **404**, **același** mesaj | **404** |
+
+  **13 din 13 trec poarta · 12 din 13 cu `200` curat.**
+- **de ce criteriul e „cine refuză", nu „200"**: pe firma de probă tabela `efactura_primite` e **goală**, deci ruta a 13-a răspunde 404 **și cu firma activă**. Un criteriu „200" ar fi raportat eșec pe o rută care funcționează. Ce se măsoară e dacă refuzul vine de la **poartă** (`detail == "tenant inexistent sau fără acces"`) sau de la **conținut** — iar 404-ul ei e identic în toate trei stările.
+- **PP6 — textul bannerului NU s-a atins.** *„Datele ei rămân neatinse"* devine **mai** adevărat: rămân și **citibile**. Un text care nu mai e incomplet nu se rescrie ca să pară nou.
+- **PP7 — regula pentru viitor, în `PLAN_ARHITECTURA.md`**: **una** → verificare locală pe rută (R83); **o clasă** → poartă declarată, cerută explicit (R84); **niciodată** un parametru pe `schema_tenant`. În toate formele: rolul rămâne identic, apelanții se numără mecanic, iar o poartă de citire nu se cere din acte de scriere.
+- **ce NU acoperă, declarat**: gardul nu trece prin HTTP (păzește **forma**; că rutele răspund s-a măsurat separat), iar proba a folosit **o singură firmă** — o rută care ar avea o a doua poartă, pe alt criteriu, n-ar fi prinsă de niciuna din cele două măsurători.
 
 
 ### R83 — O firmă dezactivată nu se poate reactiva: poarta de acces o consideră inexistentă
@@ -2967,7 +2993,8 @@ scos ce nu se știa**, nu din defecte noi.
 - **felul**: VERIFICARE
 - **cine deblochează**: DECIZIE
 - **unde intră**: E5 · P7 · interdicțiile 11–12 · **PRAG 1** *(o cifră care ar intra în evidență contrazice una depusă la ANAF)*
-- **reluări**: 0
+- **reluări**: 1
+- **de ce e încă DESCHISĂ, deși defectul e reparat**: propria ei condiție are două jumătăți. Prima — sonda întoarce 0 divergențe — e îndeplinită azi (BLOC OO). A doua — `control_coerenta` legat — e R33, amânată pe cerere. O restanță nu se închide pe jumătate din condiția ei.
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `6097d5a`
 - **măsurat la**: 2026-08-24 · **pe commit**: `6097d5a`
@@ -2978,6 +3005,25 @@ scos ce nu se știa**, nu din defecte noi.
 - **două lucruri găsite pe drum, de sondă**: `tenant_003` are pontajul neconfirmat pe **10 luni**, iar D112 e blocat corect cu mesaj explicit (garda funcționează); `tenant_016` are un salariat cu brut **1.000** lei sub salariul minim 4.050 pe normă întreagă, respins de calea a doua ca *„date corupte, nu caz fiscal legitim"* — aceeași clasă cu **R32** (date de test invalide).
 - **sonda NU a scris**: instantaneu `pg_stat_user_tables` înainte/după, zero inserări/actualizări/ștergeri pe toate tabelele. *(A treia formă a sondei; primele două au raportat „0 divergențe" pe **0 rulări** — rezultat favorabil pe vid, interdicția 19, produs de mine în chiar instrumentul cu care măsuram clasa asta.)*
 - **condiția de deblocare**: se scrie **care cale e sursa** pentru contribuțiile din nota de salarii — `d112.pull` sau `salarizare.calcul_salariu` — cu motivul; apoi cealaltă o citește, nu o recalculează. Se închide când sonda de mai sus întoarce **0 divergențe pe cele 40 de perechi**, iar `control_coerenta` e legat.
+- **REPARAT 28.08.2026 (BLOC OO) — jumătatea de sus a condiției, îndeplinită. DECIZIA lui Costin: sursa e D112.** *„Pentru pozițiile 444, 4315, 4316, 436, `salarii_contare.note_lunare` citește valorile din `d112.pull` pentru perioada corespunzătoare. Nu mai cheamă `salarizare.calcul_salariu` pentru cifrele astea — asta aliniază codul la propria lui intenție deja scrisă în comentariu («NU recalculăm»)."*
+- **de ce D112 și nu calculul propriu**: nu fiindcă generatorul ar fi „mai corect" în abstract, ci fiindcă **el e cel depus**. O notă care contrazice declarația trimisă la ANAF pune contabilul în fața a două adevăruri fără arbitru. Declarația **are** arbitru — DUKIntegrator — și o dată de depunere. Calculul intern n-are niciunul.
+- **OO1 — ce s-a schimbat, și unde s-a urmat INTENȚIA în locul literei.** Litera spunea `d112.pull`. **`pull()` nu poartă CAM** — nu setează cheia deloc; e chiar bugul nr.1 din antetul modulului, dovedit la 15.07.2026 (*„contul 436 gol, dar declarația cere CAM la plată"*). Singurul loc unde CAM există ca valoare a perioadei e obligația **480** din declarația **emisă**. Deci sursa e **D112 ca artefact** — `d112.obligatii`, secțiunea `angajatorA` —, nu dicționarul intermediar al lui `pull`. Intenția (*„cifra declarată, nu una recalculată"*) e respectată întocmai; litera ar fi lăsat una din cele patru poziții nereparată. **Se scrie aici fiindcă e o abatere de la textul comenzii, nu o interpretare de detaliu.**
+- **harta nu e inventată**: codurile D112 sunt deja despărțite pe exact distincția care contează contabil — reținut de la salariat vs suportat de unitate: `602→421=444` · `412→421=4315` · `432→421=4316` · `480→646=436` · `458→6451=4315` · `459→6453=4316`. De-aia trecerea **nu cere nicio regulă de repartizare**. `calcul_salariu` rămâne pentru ce e legitim al lui: brutul (`641/421`) și tichetele (`642/5328`).
+- **OO2 — SONDA, și de ce e acum un FIȘIER**: `scripts/sonda_r34.py`. Cifra din 24.08 („29 pe 10 perechi") fusese măsurată ad-hoc, fără instrument — *o cifră care nu se poate recalcula nu e o măsurătoare, e o amintire*. Eșantionul e scris ca **regulă**, nu ca listă: cele **8** scheme active cu cel puțin un salariat × lunile **2026-04…08** = **40 de perechi**.
+
+  | formă | divergențe | perechi | nemăsurabile |
+  |---|---|---|---|
+  | **veche** (recalculată — cum era până azi) | **24** | 7 | 10 |
+  | **nouă** (cele patru citite din D112) | **0** | 0 | 10 |
+
+  Sonda păstrează forma **veche** ca linie de bază și o măsoară pe aceleași perechi: fără ea, un „0" n-ar dovedi nimic — ar putea însemna la fel de bine că sonda nu vede nimic (**interdicția 19**).
+- **cifra 24/7 nu e cea din 24.08 (29/10), și se spune de ce**: măsurătoarea de atunci n-a lăsat instrument, deci fereastra ei de luni nu se poate reconstitui. Ce **se** reproduce exact e cazul cel mai mare, cifră cu cifră: `tenant_001` 2026-06 — CAS **24.114,54** vs **28.539**, CASS **9.645,81** vs **13.629**, impozit **5.719,89** vs **9.027**. Ancora ține; contorul nu.
+- **cele 10 perechi nemăsurabile sunt cele deja documentate mai sus**: `tenant_003` (pontaj neconfirmat — garda funcționează) și `tenant_016` (date de test invalide, clasa R32), câte 5 luni fiecare. Nu s-au ascuns și nu s-au „rezolvat" ca să iasă un total rotund.
+- **și un defect al PROPRIEI mele sonde, prins de ea însăși**: prima formă a sărit `tenant_001` pe toate 5 lunile — *„relation «salariati» does not exist"*. Cauza: o parte din lanț interoghează tabele **necalificate** (`core/pontaj.py`), iar `search_path` îl pun **rutele**, nu sonda. Efectul ar fi fost o măsurătoare **mai bună decât realitatea**: exact firma cu cea mai mare divergență e cea cu tichete de masă, deci singura care trece prin acel cod. Reparat în sondă, cu motivul scris lângă.
+- **OO3 — sonda NU a scris**: `pg_stat_user_tables` înainte/după, `ins=+0 upd=+0 del=+0`, pe toate schemele.
+- **CE NU MAI POATE SPUNE `control_coerenta`, și e un COST, nu un câștig**: comparând nota cu declarația pe cele patru poziții, compară acum declarația **cu ea însăși**. Pe pozițiile astea **nu mai poate ieși roșu niciodată** — nu fiindcă s-ar potrivi, ci fiindcă sunt aceeași cifră. **Divergența a fost eliminată la sursă, nu detectată mai bine.** Ce rămâne sub control real: `641/421` și `642/5328`. Dacă se vrea vreodată un control cu dinți pe cele patru, el nu poate fi „nota vs declarație" — trebuie să fie „declarația vs o a treia sursă". *(Consemnat și în docstringul lui `note_lunare`, ca să nu se citească gardul ca pe o garanție pe care n-o mai dă.)*
+- **OO4 — R33 e pasul următor, cerut explicit să NU se facă azi.** Costin: *„nu lega `control_coerenta` (R33) încă — rămâne pentru comanda următoare, după ce văd rezultatul lui OO2 curat."* Ordinea e chiar cea scrisă la deschiderea restanței: întâi se decide care cale are dreptate, apoi se leagă modulul.
+- **de ce restanța RĂMÂNE deschisă**: propria ei condiție are două jumătăți. Prima — *„sonda întoarce 0 divergențe"* — e **îndeplinită**. A doua — *„iar `control_coerenta` e legat"* — e **R33**, și e amânată pe cerere. O restanță nu se închide pe jumătate din condiția ei.
 
 ### R35 — Verdict VERDE pe o lună cu factură necontabilizată, cunoscută în chiar payload-ul verdictului
 

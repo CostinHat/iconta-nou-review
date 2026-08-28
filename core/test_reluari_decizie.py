@@ -44,7 +44,8 @@ _PRAG_COMMITURI = 5
 
 # FOTOGRAFIE la 27.08.2026 — nu o listă de vinovați. Fiecare intrare iese când primește contor.
 _NENUMARATE = {
-    "R9", "R18", "R26", "R34", "R36", "R38", "R39", "R45", "R47",
+    # R34 a iesit pe 28.08.2026: decizia a fost DATA (sursa e D112) si contorul a urcat la 1.
+    "R9", "R18", "R26", "R36", "R38", "R39", "R45", "R47",
     "R54", "R58", "R59", "R63", "R64", "R66", "R67", "R68", "R70", "R73",
 }
 
