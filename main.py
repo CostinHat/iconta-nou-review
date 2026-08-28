@@ -3952,7 +3952,7 @@ def portal_confirma_email(date: ConfirmaEmailIn):
 def cabinet_urme_portal(tenant_id: int, ctx=Depends(cere_cabinet)):
     """[R62 (3)] Urma se poate CITI. Lectia din R58: o urma care nu se poate citi e scrisa degeaba."""
     with db.get_conn() as conn:
-        if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
+        if not auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id):
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
             cur.execute("SELECT actiune, detaliu, autor_id, creat_la FROM public.urme_portal "
@@ -4454,7 +4454,7 @@ def perioade_istoric(tenant_id: int, an: Optional[int] = None, luna: Optional[in
                      ctx=Depends(cere_cabinet)):
     from core import migrare_inchideri as _ui
     with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         return {"istoric": _ui.istoric(conn, schema, an, luna)}
@@ -4470,7 +4470,7 @@ def tenant_jurnal(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet))
     """
     from core import jurnal_api as _j
     with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
@@ -5518,7 +5518,7 @@ def portal_documente_luni(tenant_id: Optional[int] = None, ctx=Depends(cere_clie
 def cabinet_documente_balanta(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     from fastapi.responses import Response
     with db.get_conn() as conn:  # [search_path_tenant_v1] schema + detalii pe conn public
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         d = tenant_provisioning.detalii_tenant(conn, tenant_id)
@@ -6637,7 +6637,7 @@ def rapoarte_comerciale(tenant_id: int, de: str = None, pana: str = None, ctx=De
     from core import rapoarte_comerciale_api as _rc
     de, pana = _perioada_an(de, pana)
     with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         return {"vanzari": _rc.vanzari_pe_partener(conn, schema, de, pana),
@@ -6651,7 +6651,7 @@ def rapoarte_comerciale_fisa(tenant_id: int, cui: str, de: str = None, pana: str
     from core import rapoarte_comerciale_api as _rc
     de, pana = _perioada_an(de, pana)
     with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         return _rc.fisa_partener(conn, schema, cui, de, pana)
@@ -6662,7 +6662,7 @@ def rapoarte_comerciale_fisa(tenant_id: int, cui: str, de: str = None, pana: str
 def rapoarte_salvate_lista(tenant_id: int, tip_raport: str = "comercial", ctx=Depends(cere_cabinet)):
     from core import rapoarte_comerciale_api as _rc
     with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         return {"variante": _rc.variante(conn, schema, tip_raport)}
@@ -6795,7 +6795,7 @@ def contracte_genereaza(tenant_id: int, corp: dict = Body(...),
 def export_saga_factura(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
     from core import export_saga as _xs
     with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         date_f = _xs.date_factura(conn, schema, factura_id)
@@ -6963,7 +6963,7 @@ def centre_cost_raport(tenant_id: int, de: str, pana: str, ctx=Depends(cere_cabi
     """Realizat pe centru de cost, perioada [de, pana] (note validate, clasele 6/7)."""
     from core import centre_cost_api as _cc
     with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         return _cc.raport_realizat(conn, schema, de, pana)
@@ -7110,7 +7110,7 @@ def concedii_coduri(tenant_id: int, la_data: Optional[str] = None, ctx=Depends(c
 def casa_registru(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     from core import casa_api as _c
     with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         return _c.registru(conn, schema, an, luna)
@@ -7192,7 +7192,7 @@ def cv_articole(tenant_id: int, ctx=Depends(cere_cabinet)):
 def cv_fisa(tenant_id: int, articol_id: int, ctx=Depends(cere_cabinet)):
     from core import stocuri_cv_api as _s
     with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         rez = _s.fisa(conn, schema, articol_id)
@@ -7967,7 +7967,7 @@ def jurnal_marja(tenant_id: int, tip: str, luna: str, ctx=Depends(cere_cabinet))
     if len(luna) != 7 or luna[4] != "-":
         raise HTTPException(422, "luna format YYYY-MM")
     with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
@@ -8292,7 +8292,7 @@ def facturi_primite_lista(tenant_id: int, ctx=Depends(cere_context)):
 def factura_primita_xml(tenant_id: int, primita_id: int, ctx=Depends(cere_context)):
     """XML-ul brut arhivat (la click, nu in fata)."""
     with db.get_conn() as conn:
-        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:

@@ -346,6 +346,52 @@ def schema_tenant(conn, user_id, tenant_id):
     return row[0] if row else None
 
 
+def schema_tenant_citire(conn, user_id, tenant_id):
+    """Ca `schema_tenant`, DAR fara `activ = true`. Numai pentru rutele de CITIRE ISTORICA.
+
+    [R84 — DECIZIA lui Costin, 28.08.2026, varianta (b)] O firma dezactivata iese din
+    portofoliul de LUCRU; trecutul ei nu dispare. Pana azi, `schema_tenant` cerea `activ` pe
+    toate trei ramurile, deci jurnalul, balanta, rapoartele si exporturile unei firme scoase
+    raspundeau **404** — desi confirmarea de pe ecran promite ca *„datele ei raman neatinse"*.
+    Ramaneau neatinse, dar necitibile.
+
+    CE **NU** SLABESTE, si e chiar motivul pentru care e o functie SEPARATA, nu un parametru pe
+    cea comuna: izolarea intre cabinete ramane **identica**. Cele trei ramuri de rol sunt
+    copiate una cate una:
+      * `superadmin` — doar firme **fara cabinet** (GDPR: nu vede continutul clientilor);
+      * `admin_firma` — doar firmele **cabinetului lui**;
+      * restul — doar prin `user_tenants`.
+    Singura diferenta fata de `schema_tenant` e `activ`. Cine n-avea acces la o firma activa
+    n-are nici la una inactiva.
+
+    DE CE NU UN PARAMETRU PE `schema_tenant` (varianta (a) respinsa la R84): functia comuna e
+    poarta a **153** de rute. Un `si_inactive=False` implicit e o poarta care se poate uita
+    deschisa — iar cine o deschide din greseala nu afla, fiindca nimic nu pica. Asa, apelantii
+    se pot NUMARA: `core/test_poarta_citire_istorica.py` cere exact **13**, si nici unul in
+    plus. Un apelant nou = poarta rosie, nu acces tacit.
+
+    CE NU E: nu e o poarta de SCRIERE. `POST /tenants/{id}/jurnal` si
+    `POST /tenants/{id}/rapoarte-salvate` merg pe aceleasi cai ca doua dintre cele 13, dar
+    raman pe `schema_tenant` — o firma scoasa din portofoliu se citeste, nu se modifica.
+    """
+    rol, firm = _rol_si_firma(conn, user_id)
+    with conn.cursor() as cur:
+        if rol == "superadmin":
+            cur.execute("SELECT schema_name FROM public.tenants "
+                        "WHERE id = %s AND accounting_firm_id IS NULL", (tenant_id,))
+        elif rol == "admin_firma":
+            cur.execute("SELECT schema_name FROM public.tenants "
+                        "WHERE id = %s AND accounting_firm_id = %s", (tenant_id, firm))
+        else:
+            cur.execute(
+                "SELECT t.schema_name FROM public.tenants t "
+                "JOIN public.user_tenants ut ON ut.tenant_id = t.id "
+                "WHERE ut.user_id = %s AND t.id = %s",
+                (user_id, tenant_id))
+        row = cur.fetchone()
+    return row[0] if row else None
+
+
 def tenantii_userului(conn, user_id, doar_active=True):
     """
     Lista tenanților la care userul are acces: [{id, nume, schema_name, cui, activ}].

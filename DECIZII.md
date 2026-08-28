@@ -3,6 +3,93 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 28.08.2026 — R34: sursa contribuțiilor din nota de salarii e D112, nu a doua socoteală
+
+**Decizia lui Costin:** *„pentru pozițiile 444 (impozit), 4315 (CAS), 4316 (CASS), 436 (CAM),
+`salarii_contare.note_lunare` citește valorile din `d112.pull` pentru perioada corespunzătoare. Nu
+mai cheamă `salarizare.calcul_salariu` pentru cifrele astea — asta aliniază codul la propria lui
+intenție deja scrisă în comentariu («NU recalculăm»)."*
+
+**Ce repară.** Două căi produceau aceeași cifră și nu coincideau (**P7**). `d112.pull` calcula
+salariatul; `note_lunare` îl **recalcula** — sub un comentariu care spunea, din 15.07.2026, exact
+că nu-l recalculează. Măsurat pe 40 de perechi firmă × lună: **24 de divergențe pe 7 perechi**
+măsurabile, fix pe cele patru poziții. Cea mai mare, `tenant_001` 2026-06: CAS **24.114,54** în
+notă vs **28.539** declarat; CASS **9.645,81** vs **13.629**; impozit **5.719,89** vs **9.027**.
+
+**De ce D112 și nu calculul propriu.** Nu fiindcă generatorul ar fi „mai corect" în abstract, ci
+fiindcă **el e cel depus**. O notă contabilă care contrazice declarația trimisă la ANAF pune
+contabilul în fața a două adevăruri fără arbitru. Declarația are un arbitru — DUKIntegrator — și o
+dată de depunere. Calculul intern n-are niciunul.
+
+**Ce s-a urmat: intenția, nu litera — și se scrie de ce.** Litera deciziei spunea `d112.pull`.
+`pull()` **nu poartă CAM**: nu setează cheia deloc — e chiar bugul nr.1 din antetul modulului,
+dovedit la 15.07.2026 (*„`_sum("cam") = 0` → contul 436 gol, dar declarația cere CAM la plată"*).
+Singurul loc unde CAM există ca valoare a perioadei e obligația **480** din declarația emisă. Deci
+sursa e **D112 ca artefact** (`d112.obligatii`, secțiunea `angajatorA`), nu dicționarul intermediar
+al lui `pull`. Intenția — *„cifra declarată, nu una recalculată"* — e respectată întocmai; litera ar
+fi lăsat una din cele patru poziții nereparată.
+
+**Harta nu e inventată de mine.** Codurile D112 sunt deja despărțite pe exact distincția care
+contează în contabilitate — reținut de la salariat vs suportat de unitate:
+`602→421=444` · `412→421=4315` · `432→421=4316` · `480→646=436` · `458→6451=4315` (part-time,
+unitatea) · `459→6453=4316`. De-aia trecerea **nu cere nicio regulă de repartizare**.
+
+**CE NU MAI POATE SPUNE `control_coerenta`, și se scrie tare fiindcă e un cost, nu un câștig:**
+comparând nota cu declarația pe cele patru poziții, compară acum declarația **cu ea însăși**. Pe
+pozițiile astea **nu mai poate ieși roșu niciodată** — nu fiindcă s-ar potrivi, ci fiindcă sunt
+aceeași cifră. *Divergența a fost eliminată la sursă, nu detectată mai bine.* Ce rămâne sub control
+real: `641/421` (brutul) și `642/5328` (tichetele). Dacă vreodată se vrea un control **cu dinți** pe
+cele patru, el nu poate fi „nota vs declarație" — trebuie să fie „declarația vs o a treia sursă".
+
+**Măsurat după reparație** (`scripts/sonda_r34.py`, instrument nou, nu ad-hoc): **0 divergențe**.
+Aceeași sondă păstrează forma **veche** ca linie de bază și o măsoară pe aceleași perechi — fără ea,
+un „0" n-ar dovedi nimic (interdicția 19). Zero scrieri în timpul măsurătorii.
+
+**R33 e pasul următor, nu acesta.** Legarea lui `control_coerenta` rămâne pentru comanda următoare —
+ordinea cerută: întâi se decide sursa, se vede sonda curată, abia apoi se leagă modulul.
+
+## 28.08.2026 — R84: o poartă DECLARATĂ de citire-istorică, varianta (b)
+
+**Decizia lui Costin:** *„o poartă declarată de citire-istorică, `schema_tenant_citire`, folosită
+explicit doar de cele 13 rute. Restul aplicației rămâne pe `schema_tenant` standard (`activ=true`
+implicit), neschimbat."*
+
+**Ce repară.** O firmă dezactivată iese din portofoliul de **lucru**; trecutul ei nu dispare. Dar
+jurnalul, balanța, rapoartele și exporturile ei răspundeau **404** — deși confirmarea de pe ecran
+promite că *„datele ei rămân neatinse"*. Rămâneau neatinse, și **necitibile**.
+
+**De ce (b), și de ce NU (a) sau (c):**
+- **(b) — aleasă: se poate NUMĂRA.** O funcție separată, cerută explicit, are apelanți care se
+  numără mecanic. Gardul cere **exact 13**; al 14-lea nu e o scăpare, e varianta (c) pe furiș.
+- **(a) — respinsă: 13 excepții locale nu mai sunt o excepție, sunt un tipar.** Forma de la R83 e
+  bună pentru **una** — acolo unde actul are sens numai pe o firmă inactivă. Copiată de
+  treisprezece ori devine cod duplicat pe care nimeni nu-l mai citește, iar a paisprezecea copie
+  n-ar avea de ce să pice.
+- **(c) — respinsă, a doua oară azi:** firmele inactive accesibile **tuturor** rutelor ar fi dat
+  acces și la **scriere**, ca efect secundar al unei cereri despre citire.
+
+**Ce NU slăbește, și e chiar motivul pentru care e funcție separată:** izolarea între cabinete
+rămâne **identică**. Cele trei ramuri de rol sunt copiate una câte una — `superadmin` doar pe firme
+fără cabinet (GDPR), `admin_firma` doar pe cabinetul lui, restul doar prin `user_tenants`. Singura
+diferență e `activ`. Gardul verifică asta **structural**: fiecare ramură a porții de citire trebuie
+să fie ramura corespondentă a celei comune, minus `activ` — nu „conține cuvântul rol", ci același
+SQL, citit ca nod.
+
+**O decizie luată pe drum, fiindcă cererea numea CĂI, nu metode:** pe două din cele treisprezece căi
+(`/jurnal`, `/rapoarte-salvate`) există și câte un **POST**. Alea **nu** au migrat. Catalogul de la
+R84 numărase 13 `GET`-uri *„care doar citesc"*, iar PP3 cere exact 13 apelanți — o firmă scoasă din
+portofoliu **se citește, nu se modifică**. Gardul păzește și direcția asta: dacă vreunul din cele
+două POST-uri ajunge pe poarta de citire, poarta cade.
+
+**Probat prin apeluri reale, pe firmă chiar dezactivată** (nu din citirea codului): **13 din 13**
+trec poarta, **12 din 13** cu `200` curat. A treisprezecea (`/facturi-primite/{id}/xml`) răspunde
+`404` — dar *„factură primită inexistentă"*, identic cu firma **activă**: tabela e goală pe firma de
+probă. De-aia criteriul măsurătorii e **cine refuză**, nu codul de răspuns: un „200" ar fi raportat
+eșec pe o rută care funcționează.
+
+**Textul bannerului rămâne neschimbat (PP6):** *„datele ei rămân neatinse"* devine **mai** adevărat —
+rămân și citibile. Nu contrazice nimic, deci nu se atinge.
+
 ## 28.08.2026 — R83: excepția de acces pentru activare se scrie LOCAL pe rută, varianta (a)
 
 **Decizia lui Costin:** *„`POST /tenants/{id}/activare` nu mai folosește `auth_api.schema_tenant`

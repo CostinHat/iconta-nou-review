@@ -654,6 +654,24 @@ răspundea 404 întotdeauna** (R83).
 
 *(Decizia lui Costin, varianta (a); gard: `core/test_activare_firma_inactiva.py`.)*
 
+**CÂND E O EXCEPȚIE ȘI CÂND E O POARTĂ: regula, după R83 și R84** *(28.08.2026)*
+
+Cele două restanțe s-au reparat în aceeași zi, cu forme **diferite**, iar diferența nu e de gust:
+
+| câte rute | forma | de ce |
+|---|---|---|
+| **una** | verificare **locală pe rută** (R83: activarea) | e singura al cărei act are sens pe o firmă inactivă; o funcție privată cu **un** apelant se scoate fără să atingă nimic |
+| **o clasă** | **poartă declarată** separată, cerută explicit (R84: `schema_tenant_citire`, 13 rute) | treisprezece verificări locale nu mai sunt o excepție, sunt cod duplicat pe care nimeni nu-l mai citește — iar a paisprezecea copie n-ar avea de ce să pice |
+| **oricâte** | **NU** un parametru pe `schema_tenant` | un implicit pe o funcție de acces chemată din 153 de locuri e o poartă care se poate uita deschisă |
+
+**Ce e obligatoriu în amândouă formele:**
+- regula de **rol** rămâne **identică** cu a porții comune — singurul lucru care diferă e `activ`;
+- apelanții se **numără mecanic**, iar numărul e pinat: un apelant în plus **cade poarta**, nu
+  capătă acces tăcut (`core/test_activare_firma_inactiva.py`, `core/test_poarta_citire_istorica.py`);
+- o poartă de **citire** nu se cere din acte de **scriere**. Pe două dintre cele 13 căi există și
+  câte un `POST` — au rămas pe poarta comună. *O firmă scoasă din portofoliu se citește, nu se
+  modifică*, iar asta e păzit, nu doar scris aici.
+
 ### Ce e în afara registrului
 
 **Cursul valutar** — valoare pe dată, dar fapt de piață, nu normă. Regula de alegere a lui e însă convenție de calcul și intră.

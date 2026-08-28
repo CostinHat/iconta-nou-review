@@ -793,6 +793,23 @@ def pull(conn, schema, an, luna):
     return prof, salariati
 
 
+def obligatii(conn, schema, an, luna, xml=None):
+    """Cele sase obligatii ale angajatorului (sectiunea `angajatorA`), pe cod de obligatie.
+
+    `{"602": impozit, "412": CAS retinut, "432": CASS retinut, "480": CAM,
+      "458": CAS angajator part-time, "459": CASS angajator part-time}` — in LEI INTREGI,
+    exact valorile care pleaca la ANAF.
+
+    [R34, 28.08.2026] Exista fiindca `salarii_contare` are nevoie de valorile DECLARATE, nu de
+    o a doua socoteala a lor. Nu recalculeaza nimic: citeste artefactul emis. `xml` se poate
+    pasa cand a fost deja generat, ca sa nu se genereze de doua ori pe acelasi apel.
+    """
+    if xml is None:
+        xml, _av = genereaza(conn, schema, an, luna)
+    from core import control_incrucisat as _ci   # lazy: _ci importa d112
+    return _ci.totaluri_d112_din_xml(xml)
+
+
 def erori_generare(prof):
     """Poarta bazei nule: profil incomplet -> STOP cu mesaj clar, nu XML respins de ANAF."""
     erori = []
