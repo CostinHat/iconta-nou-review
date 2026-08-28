@@ -29,8 +29,6 @@ PIN = {
         "d394). Daca `d390.TIPURI` s-ar importa de aici, comparatia ar deveni o tautologie - exact "
         "modul de esec pazit de test_enumerarea_nu_e_copiata_din_constrangere. Consumatorul lui "
         "legitim e gardul core/test_nomenclator_pe_norma.py (aceeasi clasa cu scan_garzi_pe_text)",
-    "core/compensare.py":
-        "PRODUCTIE, nelegat — 5 functii publice, inclusiv pull(conn, schema) si propune_compensari()",
     "core/fisa_cont.py":
         "PRODUCATOR FARA LIVRARE, declarat (METODA §20) — Fisa de cont 14-6-22, care inlocuieste "
         "Cartea mare 14-1-3; zero rute si zero ecrane, spus in ISTORIC 23.08.2026 (3): «artefactul "

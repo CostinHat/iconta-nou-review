@@ -74,6 +74,20 @@ CREDITE_DIN_D112 = frozenset(c for _cod, _dt, c in CONT_D112)
 #     difera prin constructie produce zgomot, nu masuratoare.
 #   * 642 = 5328 — biletele de valoare ACORDATE. Contrapartida e sectiunea 8.3: `E3_10` (masa) +
 #     `E3_75` (vacanta), aceleasi doua tipuri pe care nota le pune pe 5328.
+#
+# [R86-B, DIAGNOSTIC 28.08.2026] ANCORA LUI 641 ARE O ABATERE CUNOSCUTA, SI NU E A NOTEI.
+# Masurat pe tenant_001, salariat cu salariat, 5 luni: din 12 salariati diverge EXACT UNUL - cel de
+# la salariul minim - si diverge EXACT cu facilitatea: 300,00 in aprilie-iunie (minim 4.050, nivel
+# de referinta 3.750), 200,00 in iulie-august (4.325 / 4.125). Restul e rotunjire sub-leu (±0,14 /
+# ±0,48 / ±0,24), din rotunjirea D112 la leu per salariat.
+# CAUZA, structural: cele doua cifre NU SUNT ACEEASI MARIME.
+#   * `calc["brut"]` = salariul brut REALIZAT, intreg - ce datoreaza angajatorul, deci ce intra pe 641;
+#   * `B_brutSalarii` (= C1_11 = suma B2_5) = BAZA CONTRIBUTIVA, din care facilitatea de la salariul
+#     minim e SCAZUTA (OUG 89/2025 art.III: nivelul de referinta se diminueaza cu 300 lei).
+# Iar D112 nu declara nicaieri „brutul realizat" ca atare: are baza contributiva (B2_5), brutul
+# CONTRACTUAL (B4_3, care pe o luna cu concediu medical difera prin constructie) si venitul brut
+# total (E1_1, care include tichetele). Deci lipsa nu e o cifra gresita in nota - e o CONTRAPARTIDA
+# care nu exista in declaratie. Ce se face cu asta e o decizie, nu o corectura: vezi R86.
 VERIFICARE_REALA = (
     ("Salarii brute realizate", "421", ("angajatorB", ("B_brutSalarii",))),
     ("Bilete de valoare acordate", "5328", ("asiguratE3", ("E3_10", "E3_75"))),
@@ -159,7 +173,18 @@ def note_lunare(conn, schema, an, luna, xml_d112=None):
             copii_scoala=(int(s.get("copii_scolarizati") or 0) if s.get("declaratie_copii") else 0),
             declaratie_copii=bool(s.get("declaratie_copii")),
             data_angajare=s.get("data_angajare"),
-            data_incetare=s.get("data_incetare"))
+            data_incetare=s.get("data_incetare"),
+            # [R86/RR1] TICHETELE. Fara ele, `tichete_nominal` iesea 0 si linia 642=5328 nu se
+            # producea deloc — o cheltuiala reala care nu intra in evidenta. Valorile vin din
+            # `pull`, care le-a calculat o data (zile din pontaj, exces peste plafonul anual);
+            # NU se recalculeaza aici, ca sa nu apara a doua socoteala — chiar clasa R34.
+            tichet_valoare=float(s.get("tichet_masa_valoare") or 0),
+            tichet_zile=int(s.get("tichet_zile") or 0),
+            tichet_vacanta=float(s.get("tichet_vacanta_net") or 0),
+            tichet_vacanta_exces=float(s.get("exces_vacanta") or 0),
+            tichet_cultural=float(s.get("tichet_cultural") or 0),
+            tichet_cresa=float(s.get("tichet_cresa") or 0),
+            cadou_taxabil=float(s.get("cadou_taxabil") or 0))
         for n in _sz.monografie_salariu(calc):
             # [R34] pozitiile fiscale se sar aici: vin din declaratie, mai jos. Filtrul e pe
             # CREDIT fiindca acolo stau cele patru conturi, indiferent din ce debit vin (421

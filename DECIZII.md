@@ -3,6 +3,43 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 28.08.2026 — R33, ultimul element: `core/compensare.py` se SCOATE, varianta (c)
+
+**Decizia lui Costin:** *„nu am nevoie de funcționalitatea de compensare. Modulul se scoate, nu se
+investighează, nu se păstrează ca bază pentru viitor."* **Motivul, în termenii lui:**
+*funcționalitate neplanificată, nu justifică investiția de timp.*
+
+**Ce era.** Un motor pur, scris pe 14.08.2026, ancorat la sursă în corpus (Cod civil art.1616-1623):
+`propune_compensari`, `necesita_sistem_electronic`, `pull`. **Cinci funcții publice, zero apelanți în
+producție** — ultimul modul rămas marcat `PRODUCTIE, nelegat` în `core/test_module_nelegate.py`.
+
+**De ce (c) și nu (a) sau (b):**
+- **(a) — i se dă un apelant.** Ar fi cerut întâi să se decidă **unde** apare compensarea pe ecran,
+  adică o cerință de produs pe care nimeni n-a cerut-o. *A lega un modul ca să iasă dintr-o listă e
+  motivul greșit pentru o funcționalitate nouă.*
+- **(b) — o declarație scrisă, ca `fisa_cont`.** Aia e forma corectă pentru un **producător fără
+  livrare**: artefact care va fi livrat, doar nu încă. Compensarea nu e în situația asta — nu e
+  amânată, e **nedorită**. O declarație ar fi păstrat în registru o promisiune pe care n-o face nimeni.
+- **(c) — se scoate.** Codul mort care trece verde e mai scump decât absența lui: nimic nu-l
+  semnalează, iar la fiecare măsurătoare de acoperire cineva îl numără.
+
+**Ce s-a verificat înainte de ștergere** (TT2, arătat înainte de a atinge ceva): **zero** importatori
+în producție; singurul consumator era propriul lui test. Restul potrivirilor pe cuvântul
+„compensare" sunt **alt lucru**: `operatiuni_ecran.js` (*achiziție de la agricultor, compensare 8%*),
+`date_test` (*Fondul de compensare a investitorilor*, art.315^1) și **ghidul publicat**
+`ghid/compensare-datorii-terti.md`, care explică regula din Codul civil unui contabil și **nu
+depinde de modul**. Ghidul rămâne.
+
+**Ce NU s-a șters, deliberat:** sursa din corpus, `anaf_surse/cod_civil_287_2009_art_1616_1623_
+compensare.txt`. E un act **ADUS**, cu amprentă, iar ghidul de mai sus se sprijină pe el. *Un corpus
+nu se subțiază fiindcă un consumator de cod a plecat.*
+
+**Ce a cerut ștergerea, mecanic:** blocul generat din `GARZI.md` cita `core/test_compensare.py`, iar
+`test_registrul_nu_citeaza_teste_moarte` a oprit commitul până la regenerare. **Gardul a cerut
+curățenia, n-a trebuit s-o țin eu minte.**
+
+**R33 se închide odată cu asta**: `PIN` nu mai conține niciun modul marcat `PRODUCTIE, nelegat`.
+
 ## 28.08.2026 — R33: cele patru poziții fiscale devin gardă de REGRESIE, nu verificare de divergență
 
 **Decizia lui Costin:** *„Cele patru poziții din D112 (444, 4315, 4316, 436) nu mai sunt verificare

@@ -761,6 +761,19 @@ def pull(conn, schema, an, luna):
         s["cas"] = r.get("cas", 0)
         s["cass"] = r.get("cass", 0)
         s["exces_vacanta"] = _exces_van   # [D3] intra in brutul declarat (B4 base)
+        # [R86/RR1, 28.08.2026] INTRARILE de tichete, puse inapoi in salariat.
+        # Pana azi pull() punea inapoi doar IESIRILE lui calcul_salariu (cas, cass, impozit,
+        # tichete_nominal, e83_*). Cine chema calcul_salariu a doua oara pe acelasi salariat -
+        # si `salarii_contare.note_lunare` chiar asta face - n-avea de unde sa ia zilele cu
+        # tichet, excesul de vacanta si cadoul taxabil: alea se CALCULEAZA aici, din pontaj si
+        # din plafonul anual. Rezultatul era ca nota contabila iesea cu `tichete_nominal = 0`,
+        # deci FARA linia 642=5328: cheltuiala cu biletele de valoare nu intra deloc in
+        # evidenta, desi declaratia o poarta (masurat: 800/800/25.140/920/840 pe tenant_001).
+        # Aceeasi clasa cu R85 (`cam` lipsa din dictionar), alta instanta: ce nu se pune inapoi
+        # nu se poate reciti, iar absenta unei chei e indistincta de valoarea zero.
+        s["tichet_zile"] = tichet_zile
+        s["tichet_vacanta_net"] = max(_vac_l - _exces_van, 0.0)
+        s["cadou_taxabil"] = float(cadou_tax.get(s["id"], 0) or 0)
         s["impozit"] = r.get("impozit", 0)          # TOTAL (salariu + tichete)
         s["deducere"] = (r.get("deducere") or {}).get("total", 0)
         s["cass_tichete"] = r.get("cass_tichete", 0)        # [F133] CASS pe tichete

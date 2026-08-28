@@ -1,18 +1,18 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — verificarea de salarii și-a recăpătat dinții, și a găsit ceva la prima rulare (28.08.2026)
+# PREDARE LANȚ — cheltuiala cu tichetele intră în contabilitate, iar ce a rămas nu e un defect al notei (28.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-28**, a zecea oară în aceeași zi. *Rescriere COMPLETĂ, nu petic.*
-- **pe commit**: `7e5e8ae` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
+- **ultima rescriere**: **2026-08-28**, a unsprezecea oară în aceeași zi. *Rescriere COMPLETĂ, nu petic.*
+- **pe commit**: `f3576d9` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
   munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e arborele care
   devine commitul următor.*
-- **rescrierea de dinainte**: `7e5e8ae`, aceeași zi. Între ele au încăput **2 commituri**.
-- **de ce acum**: **R34 s-a închis, și verificarea care o păzea a găsit altceva.** Cele patru poziții
-  fiscale devin gardă de regresie; verificarea reală se mută pe 641/421 și 642/5328 — și dă
-  **10 divergențe** la prima rulare. *Conținutul, nu contorul* — măsurat cu formula din
-  `pre-commit`: **2** commituri în urmă, pragul e **10**.
+- **rescrierea de dinainte**: `f3576d9`, aceeași zi. Între ele au încăput **2 commituri**.
+- **de ce acum**: **R33 s-a închis** (ultimul modul nelegat s-a scos), iar din cele 10 divergențe de
+  ieri au rămas **5** — toate de la un singur salariat, și **niciuna nu e un defect al notei**.
+  *Conținutul, nu contorul* — măsurat cu formula din `pre-commit`: **2** commituri în urmă,
+  pragul e **10**.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **gardat**: `scripts/githooks/pre-commit` avertizează peste 10 commituri;
   `core/test_predare_proaspata.py` nu lasă avertismentul să dispară tăcut; **de azi**,
@@ -88,60 +88,63 @@ scrisesem regula care o interzice (`METODA §10.16`). *O regulă scrisă nu țin
 
 ---
 
-## AL DOILEA: VERIFICAREA DE SALARII ȘI-A RECĂPĂTAT DINȚII
+## AL DOILEA: CHELTUIALA CU BILETELE DE VALOARE INTRĂ ÎN CONTABILITATE (R86, cauza A)
 
-Reparația de ieri (R34) golise de conținut chiar verificarea pentru care fusese construit modulul:
-comparând nota cu declarația pe cele patru poziții fiscale, `control_coerenta` compara **declarația
-cu ea însăși**. **Decizia lui Costin:** alea devin **gardă de regresie** — rămân comparate, dar un
-roșu acolo înseamnă *„cineva a reintrodus un calcul independent"*, nu *„dezacord fiscal"*.
-Verificarea reală se mută pe **641/421** și **642/5328**.
+`642 = 5328` era **0,00** pe toate cele cinci luni ale lui `tenant_001`, iar declarația purta
+**800 · 800 · 25.140 · 920 · 840**. Nu o cifră greșită — o **cheltuială reală care nu intra deloc**.
 
-Fiecare divergență poartă acum `fel` ∈ {`regresie`, `verificare`}. **Cine nu se uită la câmp
-primește exact ce primea înainte; cine se uită află dacă semnalul e despre bani sau despre cablaj.**
+**Unde era defectul, și nu unde se vedea:** `pull()` punea înapoi în salariat doar **ieșirile** lui
+`calcul_salariu` (`cas`, `cass`, `impozit`, `tichete_nominal`), niciodată **intrările** de tichete —
+zilele cu tichet, din pontaj; excesul peste plafonul anual de vacanță; cadoul taxabil. Cine chema
+`calcul_salariu` a doua oară pe același salariat n-avea de unde să le ia. Acum le pune înapoi, iar
+`note_lunare` le **pasează** — nu le recalculează: o a doua socoteală ar fi fost chiar clasa R34.
 
-**Partea fără de care „verificarea reală" ar fi fost doar un nume:** cele două poziții rămase n-aveau
-cu **ce** să fie comparate. Au primit contra-valoarea declarată — `641/421` ↔ `B_brutSalarii`
-(salariul **realizat**), `642/5328` ↔ `E3_10 + E3_75`. Ancora s-a ales **după** ce s-au măsurat
-amândouă: pe `B4_3` (brutul contractual) ar fi ieșit 7 perechi „divergente", dintre care 2 fals
-pozitive curate — luni cu concediu medical, unde nota și realizatul coincid la bănuț.
+**E a treia instanță a aceleiași clase cu R85:** ce nu se pune înapoi în dicționar nu se poate
+reciti, iar **absența unei chei e indistinctă de valoarea zero**. Amândouă au produs tăcere, nu eroare.
 
----
-
-## AL TREILEA: ȘI A GĂSIT CEVA LA PRIMA RULARE — R86
-
-**10 divergențe pe 5 perechi**, toate pe `tenant_001` — singura firmă din eșantion cu **și** tichete,
-**și** concediu medical. Două cauze distincte:
-
-- **A — cheltuiala cu biletele de valoare nu se înregistrează deloc.** `642 = 5328` e **0,00** pe
-  toate cinci lunile, iar declarația poartă **800 · 800 · 25.140 · 920 · 840**. `note_lunare` cheamă
-  `calcul_salariu` **fără** argumentele de tichete — alea se pasează doar înăuntrul lui `pull`.
-- **B — salariile brute realizate diferă**: −300 · −300 · **+5.400** · −199,04 · −200,24. Semnul
-  alternează, deci nu e rotunjire.
-
-**Nereparate azi**, cerut explicit. Cauza A e o listă de argumente lipsă; cauza B cere să se **știe**
-care cifră e corectă contabil — iar aia se măsoară, nu se alege.
+**Și a reparat, din mers, cea mai mare parte din cauza B:** pe iunie, `641/421` sărise cu **+5.400** —
+excesul de tichete de vacanță, care intră în brutul impozabil și pe care nota nu-l vedea. Acum iunie
+intră în rând cu celelalte luni. **Divergențe: 10 → 5.**
 
 ---
 
-## AL PATRULEA: DOUĂ LUCRURI CARE S-AU CORECTAT, ȘI UNUL ERA AL MEU
+## AL TREILEA: CE A RĂMAS NU E UN DEFECT AL NOTEI — E O CONTRAPARTIDĂ CARE NU EXISTĂ (R86-B)
 
-**R34 s-a închis** — ambele jumătăți ale condiției. A doua, *„`control_coerenta` e legat"*, era
-îndeplinită **de trei zile**: legarea s-a făcut pe 25.08, la R33, și e scrisă acolo. Ieri am scris
-că restanța rămâne deschisă din cauza ei. **Am citit condiția, am recunoscut numele, și am presupus
-starea în loc s-o verific** — la trei paragrafe de propria regulă despre asta. *Raționamentul care
-ține o restanță deschisă cere aceeași verificare ca cel care o închide; e mai ușor de ratat fiindcă
-rezultatul lui pare prudent.*
+Măsurat **salariat cu salariat**: din 12, diverge **exact unul** — cel de la **salariul minim** — și
+diverge **exact cu facilitatea**: 300,00 în aprilie–iunie (minim 4.050, referință 3.750), 200,00 în
+iulie–august (4.325 / 4.125). Restul e rotunjire **sub-leu**, din rotunjirea D112 la leu per
+salariat; de-aia totalul lunii iese 199,04 și 200,24, nu 200 rotund.
 
-**R85** — `pull()` întoarce salariatul cu CAS, CASS și impozit, dar **fără CAM**. Comanda spunea că
-descoperirea de ieri *„îl reconfirmă activ"*. **Măsurat: activ nu e** — toți cei 3 cititori de `cam`
-îl iau din `calcul_salariu`, nu de la `pull`. E o **capcană**, nu un defect viu: o asimetrie fără
-motiv scris, care a forțat ocolul de la R34 și pe care următorul cititor o va presupune simetrică.
+**Cauza: cele două cifre nu sunt aceeași mărime.** `calc["brut"]` e salariul brut **realizat,
+întreg** — ce datorează angajatorul, deci ce intră pe 641. `B_brutSalarii` e **baza contributivă**,
+din care facilitatea e **scăzută** (OUG 89/2025 art.III).
+
+**Și mai departe: D112 nu declară nicăieri „brutul realizat" ca atare.** Are trei mărimi apropiate și
+niciuna nu înseamnă ce înseamnă 641 — baza contributivă (fără facilitate), brutul **contractual**
+(care pe o lună cu concediu medical diferă prin construcție) și venitul brut **total** (cu tichete).
+
+**Ancora aleasă ieri are deci o abatere cunoscută — a mea, nu a notei.** Nu s-a lărgit toleranța ca
+s-o înghită. *O toleranță care ascunde exact singura clasă pe care instrumentul o mai poate găsi nu e
+o toleranță, e o oprire.* Diagnosticul e complet; alegerea e a lui Costin.
+
+---
+
+## AL PATRULEA: R33 S-A ÎNCHIS — MODULUL DE COMPENSARE S-A SCOS
+
+Varianta **(c)**, decizia lui Costin: *funcționalitate neplanificată, nu justifică investiția de
+timp.* Verificat **înainte** de ștergere: zero importatori în producție, singurul consumator era
+propriul lui test. Restul potrivirilor pe cuvântul „compensare" sunt alt lucru — inclusiv **ghidul
+publicat**, care explică regula din Codul civil și nu depinde de modul. **Ghidul rămâne, și sursa lui
+din corpus la fel:** un corpus nu se subțiază fiindcă un consumator de cod a plecat.
+
+**Curățenia a cerut-o un gard, n-am ținut-o eu minte:** blocul generat din `GARZI.md` cita testul
+șters, iar `test_registrul_nu_citeaza_teste_moarte` a oprit commitul până la regenerare.
 
 ---
 
 ## STAREA LA PREDARE
 
-Poartă verde pe arborele care devine commitul următor: **3483 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
+Poartă verde pe arborele care devine commitul următor: **3474 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
 rute **411 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 32** · acte de nivel firmă **0 tăcute din 7** ·
 site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 
@@ -153,11 +156,10 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 
 | | |
 |---|---|
-| **R34** (REZOLVATĂ pe `f3576d9`) | Ambele jumătăți ale condiției. A doua era îndeplinită din 25.08 — vezi mai sus. |
-| **R86** (DESCHISĂ, INTERN, **PRAG 1**) | Nouă. Nota nu înregistrează biletele de valoare, iar brutul diferă de cel declarat. **10 divergențe pe 5 perechi**, documentate, nereparate la cerere. |
-| **R85** (DESCHISĂ, INTERN, prag 3) | Nouă. `pull()` fără `cam` — capcană, nu defect viu. |
-| **R33** (DESCHISĂ, DECIZIE) | Scopul verificării e **corectat**. Rămâne **un singur** element: `core/compensare.py`, ultimul modul marcat „PRODUCTIE, nelegat". |
-| **R84, R83, R82** | Închise. Neatinse azi. |
+| **R84** (reparată; se închide în registru în commitul următor, care o poate numi) | Varianta (b), probată prin apeluri reale pe toate 13. |
+| **R34** (DESCHISĂ, **PRAG 1**, reparat parțial) | Defectul e **reparat și măsurat: 0 divergențe**. Restanța rămâne deschisă fiindcă propria ei condiție cere și legarea lui `control_coerenta` — **R33**, amânată pe cerere. |
+| **R33** (DESCHISĂ, DECIZIE) | **Pasul următor, numit.** Legarea lui `control_coerenta`. Acum se poate: sonda e curată. |
+| **R83, R82** | Închise ieri. Neatinse azi. |
 | **R81, R79, R80** | Neatinse azi după închiderea lor / decizia (c). R80 rămâne deschisă pe **muncă**, nu pe răspuns. |
 | **restul** | Vezi `CONFORMITATE.md` — nu s-a atins nimic altceva. |
 
@@ -214,9 +216,11 @@ POARTĂ, nu se deleagă în istoric.*
   judecată de om, nu o măsurătoare. Ce s-a probat e că **apare** și **ce scrie**.
 - **`ALFA MICRO SRL` a fost dezactivată și reactivată de două ori azi**, deliberat, ca probă. De
   fiecare dată restaurarea a stat în `finally`, iar starea finală s-a **citit** din bază.
-- **Verificarea reală nu poate arăta nimic pe 25 din cele 30 de perechi măsurabile** — firmele fără
-  tichete și fără concediu medical nu ating niciuna dintre cele două cauze. Absența divergențelor
-  acolo **nu e o probă** că restul e în regulă; e o probă că datele nu ating cazul.
+- **Cele 5 divergențe rămase vin toate de la UN salariat, de pe O firmă.** Din 30 de perechi
+  măsurabile, **25** n-au nici tichete, nici concediu medical, nici salariat la minim — deci nu pot
+  arăta **nimic** despre niciuna din cele două cauze.
+- **Gardul de la 641/421 NU e curat, și n-a fost făcut să pară.** Abaterea cunoscută (facilitatea)
+  rămâne vizibilă în sondă până se decide cu ce se compară poziția asta.
 - **Câmpul `fel` e aditiv: ecranul nu-l citește.** Azi nu ascunde nimic — cele patru nu pot diverge —
   dar în ziua în care ar apărea un roșu de regresie, omul l-ar vedea la fel cu unul real.
 - **Cifra R34 de azi (24 pe 7) nu e cea din 24.08 (29 pe 10).** Măsurătoarea de atunci n-a lăsat
@@ -250,9 +254,8 @@ POARTĂ, nu se deleagă în istoric.*
 
 ## DACĂ CONTINUI DE AICI
 
-1. **Nu e nicio cerință comandată neîncepută.** Ce așteaptă: **R33** nu s-a închis — mai are un
-   singur element, `core/compensare.py`, și el cere o decizie de produs, nu o cablare. Plus **R86**
-   (prag 1, documentat azi, nereparat la cerere).
+1. **Nu e nicio cerință comandată neîncepută.** Ce așteaptă: **R86-B** — cu ce se compară `641/421`,
+   știind că D112 n-are un element care să însemne *salariu brut realizat*. Diagnosticul e complet.
 2. **Nu porni nicio construcție fără măsurătoare.**
 3. **`scripts/raport_b.py` derivă „Unde suntem".** Nu se scrie de mână.
 4. **Raportul se scrie din `SABLON_RAPORT.md`.**
