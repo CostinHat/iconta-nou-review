@@ -6,7 +6,7 @@ Template-ul (tenant_template.sql) e generat o dată din tenant_001 (schema real�
 validată). Aici: generăm numele schemei noi, parametrizăm template-ul (înlocuim
 numele schemei sursă), și provisionăm totul într-o singură tranzacție.
 
-Pur (testabil fără DB): urmator_schema_name, parametrizeaza_template.
+Pur (testabil fără DB): formeaza_schema_name, parametrizeaza_template.
 DB (se dovedește pe server): creeaza_schema, provision_tenant.
 """
 from __future__ import annotations
@@ -24,17 +24,47 @@ _RE_TENANT_NR = re.compile(r"^tenant_(\d+)$")
 # ============================================================
 #  GENERARE schema_name — PURĂ
 # ============================================================
-def urmator_schema_name(existente, lat=3):
+SECVENTA_SCHEMA = "public.tenant_schema_seq"
+
+
+def formeaza_schema_name(n, lat=3):
+    """Numărul → numele. PURĂ, testabilă fără DB."""
+    return "tenant_%0*d" % (lat, int(n))
+
+
+def urmator_schema_name(conn, lat=3):
+    """[R79/T1, 28.08.2026] Următorul nume de schemă, dintr-un **contor care nu coboară**.
+
+    CE ERA ÎNAINTE, și de ce s-a schimbat. Funcția lua `max(NNN)+1` peste `SELECT schema_name FROM
+    public.tenants` — adică peste firmele **vii**. Când cea mai mare era ștearsă, maximul cobora și
+    numărul **se refolosea**. Măsurat pe date, 27.08.2026: două rânduri din `public.firme_scoase`
+    poartă `schema_name = 'tenant_019'`, pentru **două firme diferite**; `tenant_018` era, în
+    aceeași zi, și schema unei firme scoase, și a uneia vii.
+
+    Urma nu se pierdea — rândul rămâne dezambiguizat de `tenant_id`, care vine dintr-o secvență și
+    nu se reciclează niciodată. Dar orice citire cheiată pe numele schemei minte, iar `firme_scoase`
+    e singurul loc din `public` care referă un tenant așa. Decizia lui Costin, 28.08: **oprim
+    reciclarea.**
+
+    DE CE O SECVENȚĂ POSTGRES, și nu „prima gaură liberă" sau un rând cu maximul istoric:
+    `nextval` **nu se întoarce la rollback**. Un provisioning care eșuează la jumătate arde un
+    număr și merge mai departe — exact ce vrem. Un contor ținut într-un rând ar fi întors odată cu
+    tranzacția, deci ar putea da același nume de două ori după un eșec, adică fix reciclarea pe
+    care o repară.
+
+    Plasa de siguranță: dacă numele generat există deja ca schemă, se ridică. Nu se caută altul —
+    un contor monoton care produce o coliziune e un defect, nu o situație de tratat.
     """
-    Dat lista numelor de scheme existente, întoarce următorul 'tenant_NNN' liber.
-    Ia max(NNN)+1; dacă nu există niciuna, începe de la 1.
-    """
-    maxn = 0
-    for s in existente or []:
-        m = _RE_TENANT_NR.match(s or "")
-        if m:
-            maxn = max(maxn, int(m.group(1)))
-    return "tenant_%0*d" % (lat, maxn + 1)
+    with conn.cursor() as cur:
+        cur.execute("SELECT nextval(%s)", (SECVENTA_SCHEMA,))
+        n = cur.fetchone()[0]
+        nume = formeaza_schema_name(n, lat)
+        cur.execute("SELECT 1 FROM information_schema.schemata WHERE schema_name = %s", (nume,))
+        if cur.fetchone():
+            raise ValueError(
+                "contorul de scheme a produs %r, care există deja — secvența %s a rămas în urma "
+                "bazei. Rulează `python3 -m core.migrare_schema_seq`." % (nume, SECVENTA_SCHEMA))
+    return nume
 
 
 # ============================================================
@@ -157,11 +187,9 @@ def provision_tenant(conn, nume, cui, accounting_firm_id, user_id, sql_template,
     Întoarce {ok, tenant_id, schema_name} sau ridică excepție (apelantul face rollback).
     """
     import psycopg2.extras as _E
-    with conn.cursor(cursor_factory=_E.RealDictCursor) as cur:
-        # nume scheme existente -> următorul liber
-        cur.execute("SELECT schema_name FROM public.tenants")
-        existente = [r["schema_name"] for r in cur.fetchall()]
-    schema_noua = urmator_schema_name(existente)
+    # [R79/T1] Numele vine dintr-un contor care NU coboară. Nu se mai citesc firmele vii: exact
+    # citirea aia făcea numărul să se refolosească după o ștergere.
+    schema_noua = urmator_schema_name(conn)
 
     # 2) schema + tabele
     creeaza_schema(conn, schema_noua, sql_template)

@@ -529,6 +529,34 @@ REGULA SURSEI UNICE peste toate: informatia sta intr-un singur loc CANONIC (dato
 bifa/gardul in TESTE, naratiunea in ISTORIC, functionalitatea in FUNCTIONALITATI.csv), celelalte TRIMIT acolo, nu
 duplica textul.
 
+## 2.2.1b CUM SE CITESTE SECTIUNEA `REGISTRE` A UNEI COMENZI (28.08.2026, ceruta de Costin)
+
+Regula, verbatim, asa cum a dat-o:
+
+> **REGISTRE listeaza minimul obligatoriu; o scriere comandata explicit intr-un bloc cu litera e
+> autorizata prin faptul ca e comandata. Daca o scriere dintr-un bloc NU e dorita, REGISTRE o
+> interzice pe nume.**
+
+**De unde vine.** Pe 27.08.2026 am ridicat o contradictie: un bloc cu litera cerea o scriere pe care
+sectiunea `REGISTRE` a aceleiasi comenzi n-o listase. Raspunsul lui a fost regula de mai sus, plus
+partea a doua, la fel de importanta: *„Ai ridicat-o corect — **continua sa ridici**, dar cazul
+general e rezolvat."* Deci **ridicarea contradictiei ramane obligatorie**; ce se schimba e
+**rezolutia implicita**: blocul cu litera castiga, nu `REGISTRE`.
+
+**Consecinta practica.** O scriere ceruta intr-un bloc si nelistata in `REGISTRE` **se face**, si se
+declara in raport la §2 („in plus"). O scriere pe care `REGISTRE` o interzice pe nume — tipic
+`DECIZII.md: NIMIC` — **nu se face**, oricat ar parea de fireasca.
+
+**Conventia a stat doua zile numai in `PREDARE_LANT.md`.** O conventie care traieste doar in predare
+moare cu ea; de-aia locul ei e aici, unde `CLAUDE.md` e canonic pentru PROCES.
+
+**Si o completare la lista de registre din §2.2.1 (28.08.2026):** `GARZI.md` e **linie obligatorie**
+in orice sectiune `REGISTRE` si in §3 al raportului — atins sau nu, cu motivul scris cand nu e atins.
+Motivul e masurat: registrul a stat **sase zile** fara nicio intrare, timp in care au intrat 80 de
+garzi, iar un registru cu sase zile in urma se citeste ca **complet**. Partea derivabila e acum
+generata si pazita (`scripts/scan_garzi_inventar.py` + `core/test_garzi_inventar.py`); partea
+narativa ramane disciplina, si de-aia intra in lista obligatorie.
+
 ## 2.2.2 FORMA COMENZII PRIMITE - oglinda ARHITECT.md (08.08.2026, ceruta de Costin)
 
 Comenzile compuse de arhitect vin in forma cu 7 puncte definita in ARHITECT.md ("FORMA COMENZII"). Textul canonic

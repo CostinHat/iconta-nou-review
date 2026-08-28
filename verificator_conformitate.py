@@ -1199,6 +1199,47 @@ try:
 except Exception as _e_ser:
     rap["e1_pereche_incompleta"].append(("verificator", 0, "EROARE", "gard E1/E2: " + str(_e_ser)))
 
+# --- GARD VERDICT RUTE (S1, 28.08.2026 — decizia (c) la R80): GRI NU SE FALSIFICA IN VERDE.
+#
+# Detectorul de apelanti (R70) avea doua raspunsuri — „are apelant" si „n-are". Cele 45 de rute pe
+# care ancora literala nu le identifica (R80) cadeau, PRIN CONSTRUCTIE, in primul: ancora lor apare
+# peste tot, deci verificarea „toate bucatile sunt in JS" e mereu adevarata. Orbirea se citea VERDE.
+#
+# Principiul, din DECIZII 15.07.2026 (filozofia control_incrucisat): *gri nu se falsifica in verde*.
+# De azi fiecare ruta primeste unul din patru verdicte, si GRI se numara SEPARAT, aici, in raportul
+# portii — nu se topeste in ACCEPTAT.
+#
+# CLICHET, nu prag: 45 e orbirea de azi, iar (a) si (b) din R80 sunt DEFERATE. Blocheaza numai
+# cresterea, si orice ROSU.
+RUTE_GRI_CLICHET = 45
+rap["rute_verdict"] = []
+try:
+    import sys as _sys_rv
+    if os.path.join(BAZA_PY, "scripts") not in _sys_rv.path:
+        _sys_rv.path.insert(0, os.path.join(BAZA_PY, "scripts"))
+    if BAZA_PY not in _sys_rv.path:
+        _sys_rv.path.insert(0, BAZA_PY)
+    from scan_ancore_rute import rezumat as _rezumat_rute
+    _rv_total, _rv = _rezumat_rute()
+    print("")
+    print("### GARD VERDICT RUTE (R70/R80 — gri nu se falsifica in verde):")
+    print("  TOTAL rute %d = ACCEPTAT %d + GRI %d + ROSU %d + EXCLUS %d  (clichet GRI %d)%s" % (
+        _rv_total, _rv["ACCEPTAT"], _rv["GRI"], _rv["ROSU"], _rv["EXCLUS"], RUTE_GRI_CLICHET,
+        "  <== BLOCHEAZA" if (_rv["ROSU"] or _rv["GRI"] > RUTE_GRI_CLICHET) else ""))
+    print("  GRI = detectorul nu poate afirma nimic despre ele. NU sunt verzi.")
+    if _rv["ROSU"]:
+        rap["rute_verdict"].append(("rute", 0, "ROSU",
+                                    "%d rute fara apelant si nedeclarate" % _rv["ROSU"]))
+    if _rv["GRI"] > RUTE_GRI_CLICHET:
+        rap["rute_verdict"].append(("rute", 0, "GRI",
+                                    "orbirea a crescut de la %d la %d"
+                                    % (RUTE_GRI_CLICHET, _rv["GRI"])))
+    if _rv["GRI"] < RUTE_GRI_CLICHET:
+        print("  -> orbirea a scazut la %d: coboara RUTE_GRI_CLICHET (si cifra din R80)."
+              % _rv["GRI"])
+except Exception as _e_rv:
+    rap["rute_verdict"].append(("verificator", 0, "EROARE", "gard verdict rute: " + str(_e_rv)))
+
 print("=" * 92)
 print("RAPORT DE CONFORMITATE v2 — Design System")
 print("=" * 92)

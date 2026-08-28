@@ -30,6 +30,7 @@ CE NU FACE, declarat:
 import ast
 import io
 import os
+import re
 
 import pytest
 
@@ -169,12 +170,43 @@ def test_cate_duplicate_mai_sunt_in_baza(conn):
 # 9775 și 9776 (*Proba Test SRL*), 9777 (*Proba Valid SRL*) —, dar au **0 firme** azi, deci nu ating
 # cifra. Nu se exclud, fiindcă pentru ele n-am o decizie de citat; în ziua în care primesc firme,
 # cifra crește și întrebarea se pune atunci, cu date.
-_CABINETE_DE_TEST = {
-    4163: ("CABINET TEST FIR INTRARE SRL",
-           "mediu de test izolat, creat deliberat pe 09.08.2026 (DECIZII.md): datele de test "
-           "importate în cabinetul real ar fi făcut verdictele Controlului fiscal neatribuibile. "
-           "Firmele lui au CUI-uri false și s-au adăugat manual, ocolind fluxul ANAF."),
+_RE_CABINET_DE_TEST = re.compile(r"\b(test|proba|prob\u0103)\b", re.I | re.U)
+
+# Motivul pentru care 4163 e primul din clasă, păstrat pe nume: mediu de test izolat, creat
+# deliberat pe 09.08.2026 (`DECIZII.md`) — datele de test importate în cabinetul real ar fi făcut
+# verdictele Controlului fiscal neatribuibile. Firmele lui au CUI-uri false și s-au adăugat manual,
+# ocolind fluxul ANAF.
+#
+# **[X1, 28.08.2026] De ce TIPAR, și nu listă de id-uri.** Costin: *„clichetul dă 0 azi cu sau fără
+# excludere, dar excluderea actuală e listă de id-uri. Dacă cineva adaugă o firmă în 9775/9776/9777
+# mâine, cifra se strică tăcut."* Cele trei aveau **0 firme**, deci nu atingeau cifra — dar aia e o
+# proprietate a datelor de azi, nu a regulii. Tiparul le prinde pe toate patru, și pe oricare cabinet
+# de test viitor, **fără să mai ceară o decizie de fiecare dată**.
+#
+# **REGULA, scrisă pentru orice cabinet de test viitor:** un cabinet al cărui nume conține cuvântul
+# `TEST` sau `PROBA` (oricum ar fi scris) e mediu de test și **nu intră în măsurătorile despre firme
+# reale**. Cine creează un cabinet de test îi pune cuvântul în nume; cine nu vrea să fie exclus, nu
+# i-l pune. Regula e ieftină fiindcă e chiar convenția pe care o folosim deja de la 09.08.
+#
+# **ȘI DE CE TIPARUL NU E DE AJUNS SINGUR.** Un cabinet real numit „Proba SRL" ar fi exclus tăcut,
+# iar cifra ar arăta mai curată decât e. De-aia mulțimea găsită de tipar e ea însăși **clichetată**
+# (`test_cabinetele_excluse_sunt_cele_declarate`): tiparul **descoperă**, clichetul **cere să te
+# uiți**. Un cabinet nou care intră în clasă pică poarta și cere o privire, o dată.
+_CABINETE_DE_TEST_CUNOSCUTE = {
+    4163: "CABINET TEST FIR INTRARE SRL",
+    9775: "Proba Test SRL",
+    9776: "Proba Test SRL",
+    9777: "Proba Valid SRL",
 }
+
+
+def _cabinete_de_test(conn):
+    """{id: nume} — cabinetele pe care tiparul le declară medii de test."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT id, nume FROM public.accounting_firms ORDER BY id")
+        toate = cur.fetchall()
+    assert len(toate) >= 3, "[anti-vacuu] doar %d cabinete citite" % len(toate)
+    return {i: n for i, n in toate if _RE_CABINET_DE_TEST.search(n or "")}
 
 # **[H2, 28.08.2026] Recalculat pe populația declarată: ZERO.** Valoarea de dinainte, **4**, era un
 # clichet pe fixturi — măsura semănătorul din `~/date_test_cabinet`, nu aplicația, și l-ar fi ținut
@@ -196,11 +228,11 @@ def _perechi_de_denumiri(doar_cabinetele_de_test=False):
     db.init_pool()
     perechi = []
     with db.get_conn() as conn, conn.cursor() as cur:
+        de_test = set(_cabinete_de_test(conn))
         cur.execute("SELECT id, nume, schema_name, accounting_firm_id FROM public.tenants "
                     "ORDER BY id")
         for tid, nume, schema, cabinet in cur.fetchall():
-            e_de_test = cabinet in _CABINETE_DE_TEST
-            if e_de_test != doar_cabinetele_de_test:
+            if (cabinet in de_test) != doar_cabinetele_de_test:
                 continue
             try:
                 cur.execute('SELECT nume FROM "%s".firma_profil WHERE id = 1' % schema)
@@ -220,23 +252,32 @@ def _divergente(perechi):
     return [(t, a, b) for t, a, b in perechi if b and _nrm(a) != _nrm(b)]
 
 
-def test_cabinetul_exclus_e_INCA_cel_declarat():
-    """[H1] Anti-vacuu pe **excludere**, nu pe măsurătoare. Excluderea se face pe `id`, iar un `id`
-    poate ajunge să însemne altceva. Dacă 4163 nu mai e cabinetul de test, măsurătoarea de mai jos
-    ar scoate din calcul un cabinet **real** — și ar face-o tăcut, arătând mai curată."""
+def test_cabinetele_excluse_sunt_cele_declarate():
+    """[X1] **Tiparul descoperă, clichetul cere să te uiți.**
+
+    Un tipar pe nume rezolvă problema listei de id-uri — un cabinet de test nou e exclus din prima,
+    fără să mai ceară o decizie. Dar deschide alta, în direcția opusă: un cabinet **real** numit
+    „Proba SRL" ar fi exclus **tăcut**, iar cifra ar arăta mai curată decât e. Un filtru care se
+    lărgește singur e la fel de periculos ca o listă care îmbătrânește.
+
+    De-aia mulțimea găsită de tipar e ea însăși clichetată: un cabinet nou care intră în clasă
+    **pică poarta o dată** și cere o privire. Dacă e chiar de test, se adaugă aici; dacă nu, se
+    redenumește el, sau se schimbă regula."""
     db.init_pool()
-    with db.get_conn() as conn, conn.cursor() as cur:
-        cur.execute("SELECT id, nume FROM public.accounting_firms WHERE id = ANY(%s)",
-                    (sorted(_CABINETE_DE_TEST),))
-        gasite = dict(cur.fetchall())
-    for cid, (nume, motiv) in sorted(_CABINETE_DE_TEST.items()):
-        assert cid in gasite, (
-            "cabinetul %d, exclus din măsurătoare pe motivul «%s», nu mai există. Scoate-l din "
-            "listă sau spune de ce rămâne." % (cid, motiv))
-        assert _nrm(gasite[cid]) == _nrm(nume), (
-            "cabinetul %d se numește acum «%s», nu «%s» — identificatorul a fost refolosit, iar "
-            "excluderea scoate din măsurătoare alt cabinet decât cel declarat."
-            % (cid, gasite[cid], nume))
+    with db.get_conn() as conn:
+        gasite = _cabinete_de_test(conn)
+    assert set(gasite) == set(_CABINETE_DE_TEST_CUNOSCUTE), (
+        "mulțimea cabinetelor pe care tiparul le declară «de test» s-a schimbat.\n"
+        "  acum:      %s\n  declarate: %s\n"
+        "Un cabinet NOU în clasă e exclus din măsurătorile despre firme reale — uită-te o dată "
+        "dacă e chiar de test, apoi adaugă-l în `_CABINETE_DE_TEST_CUNOSCUTE`. Un cabinet care a "
+        "IEȘIT din clasă a fost redenumit: firmele lui intră de-acum în cifră."
+        % (sorted(gasite.items()), sorted(_CABINETE_DE_TEST_CUNOSCUTE.items())))
+    difera = {i: (gasite[i], _CABINETE_DE_TEST_CUNOSCUTE[i]) for i in gasite
+              if _nrm(gasite[i]) != _nrm(_CABINETE_DE_TEST_CUNOSCUTE[i])}
+    assert not difera, (
+        "cabinete excluse care se numesc altfel decât la declarare: %s — un identificator "
+        "refolosit ar scoate din măsurătoare alt cabinet decât cel declarat" % difera)
 
 
 def test_populatia_declarata_nu_e_goala():
@@ -245,7 +286,30 @@ def test_populatia_declarata_nu_e_goala():
     reale = _perechi_de_denumiri()
     assert len(reale) >= 10, (
         "[anti-vacuu] populația declarată are %d firme — cifra de mai jos n-ar mai fi despre "
-        "aplicație. Firmele excluse: %s" % (len(reale), sorted(_CABINETE_DE_TEST)))
+        "aplicație. Cabinetele excluse de tipar: %s"
+        % (len(reale), sorted(_CABINETE_DE_TEST_CUNOSCUTE)))
+
+
+def test_CALIBRARE_tiparul_prinde_testele_si_lasa_cabinetele_reale():
+    """Ambele direcții, pe nume reale din bază. Direcția care doare e a doua: un tipar prea lacom
+    ar goli populația și ar face cifra să arate perfect."""
+    for nume in ("CABINET TEST FIR INTRARE SRL", "Proba Test SRL", "Proba Valid SRL",
+                 "cabinet de probă", "cabinet de proba"):
+        assert _RE_CABINET_DE_TEST.search(nume), "tiparul nu prinde %r" % nume
+    for nume in ("Cabinet Contabil Prisma SRL", "Cabinet Contabil Ionescu SRL",
+                 "Cabinet Contabil Popescu SRL", "Protest Consulting SRL", "Atestat Expert SRL"):
+        assert not _RE_CABINET_DE_TEST.search(nume), (
+            "tiparul exclude pe nedrept %r — un cabinet real scos tăcut din măsurătoare" % nume)
+    # A TREIA grupă, și e cea care spune ce fel de instrument e ăsta: forme care NU se prind,
+    # deliberat. `\b` cere cuvântul întreg, deci „TESTARE SRL" trece drept cabinet REAL. E direcția
+    # sigură a greșelii: un cabinet de test nedeclarat intră în cifră și o strică VIZIBIL (clichetul
+    # de divergențe crește), pe când un cabinet real exclus tăcut ar face cifra să arate mai curată
+    # decât e. Prima greșeală se vede, a doua nu. Calibrarea o pinează, ca nimeni să nu „îmbunătățească"
+    # tiparul la subșir fără să știe ce direcție deschide.
+    for nume in ("TESTARE SRL", "Probatoriu Expert SRL"):
+        assert not _RE_CABINET_DE_TEST.search(nume), (
+            "tiparul a devenit potrivire pe SUBȘIR (%r) — atunci poate exclude tăcut un cabinet "
+            "real, iar cifra ar arăta mai curată decât e" % nume)
 
 
 def test_cele_doua_denumiri_ale_unei_firme_nu_divergeaza_mai_mult():
@@ -256,7 +320,7 @@ def test_cele_doua_denumiri_ale_unei_firme_nu_divergeaza_mai_mult():
         "firme la care denumirea din portofoliu diferă de cea fiscală: %d din %d (populația "
         "declarată, fără cabinetele %s), clichetul e %d.\n  %s\n"
         "Cea fiscală e cea care pleacă pe hârtie. O firmă nouă n-are voie să intre în clasa asta."
-        % (len(difera), len(perechi), sorted(_CABINETE_DE_TEST), _DIVERGENTE_CUNOSCUTE,
+        % (len(difera), len(perechi), sorted(_CABINETE_DE_TEST_CUNOSCUTE), _DIVERGENTE_CUNOSCUTE,
            "\n  ".join("%s  ≠  %s" % (a, b) for _t, a, b in difera[:6])))
 
 

@@ -55,6 +55,56 @@ def masoara(prag=PRAG_IMPLICIT):
     return rute, js, orbi, vazute
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# [S1, 28.08.2026 — decizia (c) la R80] VERDICTUL, in patru stari, si de ce nu in doua.
+#
+# Pana azi masuratoarea spunea cate rute sunt oarbe, dar gardul care o consuma avea doua raspunsuri:
+# „are apelant" si „n-are". Cele 51 de rute mute cadeau, prin constructie, in PRIMUL — fiindca
+# ancora lor apare peste tot, deci `all(b in js ...)` e mereu adevarat. Adica orbirea se citea ca
+# VERDE, tacut.
+#
+# Principiul, scris in DECIZII pe 15.07.2026: **gri nu se falsifica in verde.** Un „nu stiu" pus in
+# aceeasi galeata cu un „da" nu e o simplificare, e o afirmatie falsa despre acoperire.
+#
+# CELE PATRU STARI, cu acelasi vocabular ca verificatorul (`ACCEPTAT / GRI / ROSU / EXCLUS`):
+#   ACCEPTAT — ancora discrimineaza SI se gaseste in `static/`  -> ruta e chemata
+#   ROSU     — ancora discrimineaza SI nu se gaseste            -> ruta nu e chemata de nimic
+#   GRI      — ancora NU discrimineaza                          -> detectorul nu poate afirma nimic
+#   EXCLUS   — ruta isi declara in cod lipsa ecranului, sau e un artefact cunoscut al detectorului
+#
+# ORDINEA CONTEAZA: EXCLUS se decide inaintea lui GRI, fiindca o ruta declarata ramane declarata
+# indiferent daca detectorul ar fi putut-o vedea. GRI se decide inaintea lui ACCEPTAT — asta e chiar
+# reparatia: o ruta despre care nu se poate afirma nimic nu are voie sa cada in verde.
+STARI = ("ACCEPTAT", "GRI", "ROSU", "EXCLUS")
+
+
+def verdicte(prag=PRAG_IMPLICIT):
+    """{(metoda, cale): stare} — cate un verdict pentru FIECARE ruta, fara rest."""
+    import core.test_ruta_fara_apelant as r70
+    rute, js, orbi, _vazute = masoara(prag)
+    oarbe = {(m, c) for m, c, _f, _a in orbi}
+    acceptate = r70.acceptate()
+    out = {}
+    for r in rute:
+        cheie = (r["metoda"], r["cale"])
+        bs = r70.bucati(r["cale"])
+        if cheie in acceptate:
+            out[cheie] = "EXCLUS"
+        elif cheie in oarbe or not bs:
+            out[cheie] = "GRI"
+        elif all(b in js for b in bs):
+            out[cheie] = "ACCEPTAT"
+        else:
+            out[cheie] = "ROSU"
+    return out
+
+
+def rezumat(prag=PRAG_IMPLICIT):
+    """(total, {stare: n}) — forma in care il citesc verificatorul si raportul portii."""
+    v = verdicte(prag)
+    return len(v), {s: sum(1 for x in v.values() if x == s) for s in STARI}
+
+
 def main():
     prag = PRAG_IMPLICIT
     if "--prag" in sys.argv:
@@ -66,6 +116,11 @@ def main():
     print("ORBI PRIN CONSTRUCTIE: %d din %d" % (len(orbi), len(rute)))
     for metoda, cale, f, rara in sorted(orbi, key=lambda x: (x[1], x[0])):
         print("   %-7s %-46s ancora %r x%d" % (metoda, cale, rara, f))
+    print()
+    total, r = rezumat(prag)
+    print("VERDICT: %d rute = ACCEPTAT %d + GRI %d + ROSU %d + EXCLUS %d"
+          % (total, r["ACCEPTAT"], r["GRI"], r["ROSU"], r["EXCLUS"]))
+    print("         GRI = detectorul nu poate afirma nimic. NU e verde.")
     print()
     print("[anti-vacuu] rute cu ancora discriminanta: %d" % len(vazute))
     print("[anti-vacuu] `tenants` in JS: %d aparitii" % js.count("tenants"))

@@ -550,6 +550,36 @@ spune când apasă. O măsurătoare pe cod poate îmbătrâni numai dacă schimb
 *a fost*, întreabă când a fost citită. Dacă răspunsul nu e „acum", ori se recitește, ori se scrie ora
 și devine o afirmație despre trecut. Ora e mai ieftină decât recitirea și e întotdeauna disponibilă.
 
+
+### 10.16b — A doua instanță, la douăzeci de minute după ce regula fusese scrisă (28.08.2026)
+
+Regula de mai sus s-a scris pe 28.08.2026, dimineața. **În aceeași zi, la douăzeci de minute după ce
+am comis-o**, am scris în `PREDARE_LANT.md`: *„**0 din 18** firme au `nume_anaf`, deci caseta de
+alegere nu se poate declanșa azi."* Recitit pe date la 04:40:45: **1 din 18** — `Antibiotice Iasi`,
+iar denumirea chiar diferea de cea de la ANAF. Concluzia rămânea adevărată (caseta nu apare), dar din
+alt motiv: **alegerea fusese deja făcută**. Adică o stare complet diferită — calea *există* și e la o
+resetare de alegere distanță.
+
+**Ce face instanța asta mai utilă decât reparația ei:** cifra fusese **deja invalidată o dată**.
+Tabelul „cifre invalidate" din **aceeași predare** scria, negru pe alb, că *„0 din 17"* fusese
+invalidată pe 27.08 în favoarea lui *„1 din 18"*. Am purtat-o mai departe **din memorie**, peste
+propriul meu tabel, la douăzeci de minute după ce scrisesem regula care o interzice.
+
+**Concluzia, și e despre metodă, nu despre atenție:** *o regulă scrisă nu ține fără control mecanic.*
+E chiar §14, aplicată unei reguli din §10. Recitirea nu e „mai multă grijă" — e **o comandă rulată**.
+
+**UNDE AR INTRA CONTROLUL — propunere, nu regulă** *(Costin a cerut-o ca notă, iar construcția e a
+altei ture)*: orice cifră de forma **„X din Y"** scrisă în `PREDARE_LANT.md` se **recalculează**
+înainte de commit, nu se citează din raportul precedent. Forma concretă: cifrele despre date stau
+într-un bloc **generat** (același tipar ca Partea XII din `TRASEE.md` sau ca inventarul din
+`GARZI.md`), produs de un instrument care interoghează baza, iar o gardă compară blocul din document
+cu ce iese din instrument. Ce nu se poate genera nu se scrie ca cifră, ci ca afirmație datată, cu ora
+citirii.
+
+**Ce ar costa, declarat:** predarea ar căpăta o dependență de bază — nu s-ar mai putea scrie fără
+`db.env`. Și ar acoperi numai cifrele despre **date**; cele despre **cod** (câte fișiere, câte rute)
+au deja instrumentele lor, iar cele despre **proces** (a câta tură) n-au cum. Deci nu e o plasă
+completă; e o plasă pe clasa care a greșit de două ori în două zile.
 ## 11. O POZIȚIE se atribuie după CE PRODUCE modulul, nu după cum se numește
 
 **Regula.** Când clasifici un artefact — *există / nu există*, *predare / construcție*, *ore / zile* —

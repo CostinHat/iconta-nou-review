@@ -2198,14 +2198,27 @@ scos ce nu se știa**, nu din defecte noi.
   suprascrie tăcut una pe alta — reparat prin legarea lor în amândouă direcțiile, fără să se scoată
   nimic. **Comasarea într-o singură casetă e o schimbare de așezare și se cere.**
 
+- **[BLOC R, 28.08.2026] Cerința 1 s-a închis — prin ELIMINAREA duplicatului, nu prin legare.**
+  Decizia lui Costin: *„da. Scoate câmpul `nume` din ecranul CAMPURI (cel care trimite
+  `POST …/firma-profil/date`). Caseta `df-nume-portofoliu` (`PUT /tenants/{id}`) rămâne singura
+  sursă din «Date firmă»."* Legarea bidirecțională introdusă cu câteva ore înainte **a fost
+  scoasă**: era reparația corectă cât timp duplicatul exista, dar un plasture pe un duplicat rămâne
+  un plasture. Ecranul are de azi **o singură casetă** pentru denumire.
+- **ce NU s-a scos:** `firma_profil.nume` rămâne coloana care pleacă pe declarații, și rămâne în
+  payload-ul de **citire**. Ce a dispărut e a **doua cale de scriere** din ecranul ăsta — iar
+  `firma_profil_api.salveaza_date` păstrează tratamentul simetric al denumirii, ca plasă: dacă
+  vreodată ajunge iar un `nume` pe calea aia, el trece tot prin scriitorul unic, nu pe lângă el.
+
 
 ### R80 — Pentru 51 din 411 rute, gardul „rută fără apelant" nu poate afirma nimic
 
 - **felul**: VERIFICARE
-- **cine deblochează**: DECIZIE
+- **cine deblochează**: INTERN
+- **cine o debloca înainte**: DECIZIE. Decizia s-a dat pe 28.08.2026 — varianta (c). Ce rămâne e muncă, nu răspuns, deci blocajul și-a schimbat felul.
 - **unde intră**: E1 · METODA §22 · **PRAG 3** *(nimic fals pe ecran. Ce se strică e o SURSĂ DE VERIFICARE: un gard construit anume pentru o clasă e mut pe 12% din suprafață, și tace la fel de convingător ca atunci când chiar nu e nimic)*
-- **reluări**: 1
-- **contorul, explicat**: decizia se cere **a doua oară** în raportul din 28.08.2026, secțiunea 0. Prima cerere n-a primit răspuns, iar un contor pe zero ar face bucla să arate ca o cerere de-o zi.
+- **reluări**: 2
+- **contorul, explicat**: cerută de **trei ori** înainte de decizie — 27.08 la deschidere, apoi în rapoartele din 28.08 (secțiunea 0, de două ori). Contorul urcă **o singură dată**, acum, la decizie: nu ține evidența cererilor, ci a **buclelor** — iar bucla s-a închis.
+- **gri**: 45
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `04e6f38`
 - **măsurat la**: 2026-08-27 · **pe commit**: `04e6f38`
@@ -2217,6 +2230,38 @@ scos ce nu se știa**, nu din defecte noi.
 - **gardat cât se poate azi**: `scripts/scan_ancore_rute.py` + `core/test_ancore_rute.py` — clichet **51** în ambele direcții, anti-vacuu pe textul JS, și o calibrare pe instanța cunoscută. Nu repară orbirea; o **numără**, ca să nu crească tăcut.
 - **o greșeală a măsurătorii, prinsă de cazul cunoscut**: prima versiune raporta **1 din 411**. `_static()` întoarce un **șir**, iar `"\n".join(șir)` îl sparge în caractere — toate frecvențele ieșeau 0. Cifra falsă era în direcția comodă („aproape nicio orbire"). A prins-o faptul că se contrazicea cu cazul concret, nu recitirea.
 - **condiția de deblocare**: decizia lui Costin între **(a)** a cincea regulă de detecție — se urmărește cum compune fiecare ecran calea la rulare, scump și incert; **(b)** rutele de nivel înalt primesc căi mai specifice (`/tenants/{id}/date` în loc de `/tenants/{id}`), ceea ce e o schimbare de API; **(c)** rămâne măsurat și clichetat, iar rutele din clasă se verifică cu mâna când sunt atinse. Se închide când, pentru fiecare rută din cele 51, se poate spune dacă are apelant — sau când clasa e goală.
+
+- **DECIS 28.08.2026 — varianta (c), cu un fix obligatoriu.** Costin: *„(c) — gardul rămâne
+  măsurat/clichetat. (a) și (b) deferate."* **Temeiul:** investiție disproporționată pentru (a) și
+  (b) în mijlocul lui E1 — (a) e scumpă și incertă (patru reguli succesive au greșit deja
+  alternativ), (b) e o **schimbare de API**, adică o campanie proprie.
+- **DAR TĂCEREA NU ERA (c), ERA ZERO — și asta s-a reparat.** Costin: *„cele 51 de rute unde gardul
+  e mut trebuie să raporteze explicit GRI, nu tăcere — principiul din 15.07: grey nu se falsifică în
+  verde."* Până azi detectorul avea **două** răspunsuri, iar rutele mute cădeau **prin construcție**
+  în primul: ancora lor apare peste tot, deci „toate bucățile sunt în JS" e mereu adevărat. Orbirea
+  se citea **VERDE**. Asta nu e „măsurat și clichetat", e o afirmație falsă despre acoperire.
+- **CE S-A CONSTRUIT (S1):** patru verdicte, cu vocabularul verificatorului — `ACCEPTAT` / `GRI` /
+  `ROSU` / `EXCLUS` —, în `scripts/scan_ancore_rute.py::verdicte()`. **Ordinea contează:** `EXCLUS`
+  se decide înaintea lui `GRI` (o rută care își declară în cod lipsa ecranului rămâne declarată),
+  iar `GRI` înaintea lui `ACCEPTAT` — asta e chiar reparația. Măsurat azi:
+  **411 rute = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 32.**
+- **cifra se descompune, și nu se contrazice:** din cele **51** de rute oarbe, **6** erau deja
+  `EXCLUS`; rămân **45** cu adevărat GRI. `_CLICHET = 51` măsoară **orbirea instrumentului**,
+  `_GRI = 45` măsoară câte rute rămân, după declarații, în starea „nu se poate afirma nimic". Două
+  întrebări, două cifre — nu două măsurători ale aceluiași lucru.
+- **S2 — GRI se citește în TREI locuri, și nu pot diverge:** garda (`core/test_ancore_rute.py`),
+  `verificator_conformitate.py` (`RUTE_GRI_CLICHET`, deci **raportul porții**) și câmpul
+  `- **gri**` de mai sus. `test_cei_trei_cititori_ai_GRI_ului_nu_pot_diverge` le compară pe toate
+  trei cu măsurătoarea, citind constanta din **AST** și câmpul din registru. Trei cifre scrise
+  separat se despart în tăcere — instanța e R62.
+- **calibrarea care contează**, și e pe chiar mecanismul defectului:
+  `test_nicio_ruta_GRI_nu_mai_cade_in_VERDE` verifică faptul că **fiecare** rută GRI *ar fi trecut*
+  drept verde pe regula veche. Dacă vreodată n-ar mai fi așa, sensul lui GRI s-a mutat și se
+  recitește.
+- **condiția de deblocare, rescrisă după decizie**: nu mai e „se poate spune despre fiecare din cele
+  51". Sub (c), R80 se închide când **clasa GRI e goală** — adică atunci când (a) sau (b) se
+  construiește, în altă tură. Până atunci restanța rămâne **DESCHISĂ cu decizia luată**: ce o ține
+  deschisă e munca, nu răspunsul.
 
 
 ### R79 — Ștergerea unei firme își produce propriul orfan, la 78 de milisecunde după ce a terminat

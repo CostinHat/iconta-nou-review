@@ -3,6 +3,71 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 28.08.2026 — R80: gardul rămâne măsurat și clichetat, dar GRI nu se mai falsifică în verde
+
+**Decizia lui Costin:** varianta **(c)** — *gardul rămâne măsurat/clichetat. (a) și (b) deferate.*
+Plus un fix obligatoriu: *„cele 51 de rute unde gardul «rută fără apelant» e mut trebuie să raporteze
+explicit GRI, nu tăcere — principiul din 15.07 (grey nu se falsifică în verde)."*
+
+**TEMEIUL variantei (c):** investiție disproporționată pentru (a) și (b) în mijlocul lui E1. **(a)**
+— a cincea regulă de detecție, care ar urmări cum compune fiecare ecran calea la rulare — e scumpă și
+incertă, iar patru reguli succesive au greșit deja alternativ. **(b)** — rute de nivel înalt cu căi
+mai specifice (`/tenants/{id}/date`) — e o **schimbare de API**, adică o campanie proprie. Niciuna nu
+e greșită; amândouă sunt în altă tură.
+
+**DAR TĂCEREA NU ERA (c), ERA ZERO.** Până azi detectorul avea două răspunsuri — „are apelant" și
+„n-are". Cele 45 de rute pe care ancora literală nu le identifică cădeau, **prin construcție**, în
+primul: ancora lor apare peste tot, deci verificarea „toate bucățile sunt în JS" e mereu adevărată.
+Orbirea se citea **VERDE**. Asta nu e „măsurat și clichetat", e o afirmație falsă despre acoperire.
+
+**Principiul citat**, scris în registrul ăsta pe 15.07.2026 (filozofia `control_incrucisat`): *gri nu
+se falsifică în verde.* Un „nu știu" pus în aceeași găleată cu un „da" nu e o simplificare.
+
+**CE S-A CONSTRUIT:** patru verdicte, cu vocabularul verificatorului — `ACCEPTAT` / `GRI` / `ROSU` /
+`EXCLUS` —, în `scripts/scan_ancore_rute.py::verdicte()`. **Ordinea contează:** `EXCLUS` se decide
+înaintea lui `GRI` (o rută care își declară în cod lipsa ecranului rămâne declarată), iar `GRI`
+înaintea lui `ACCEPTAT` — asta e chiar reparația.
+
+**O CIFRĂ NOUĂ, care nu o contrazice pe cea veche:** din cele **51** de rute oarbe, **6** erau deja
+`EXCLUS`. Rămân **45** cu adevărat GRI. `_CLICHET = 51` măsoară **orbirea instrumentului**; `_GRI =
+45` măsoară câte rute rămân, după declarații, în starea „nu se poate afirma nimic". Două întrebări
+diferite, două cifre.
+
+**GRI se citește în TREI locuri** — garda, `verificator_conformitate.py` (adică raportul porții) și
+`CONFORMITATE.md` la R80 —, iar `test_cei_trei_cititori_ai_GRI_ului_nu_pot_diverge` le compară pe
+toate trei cu măsurătoarea. Trei cifre scrise separat se despart în tăcere; instanța din care s-a
+învățat e R62.
+
+## 28.08.2026 — R79: numele de schemă nu se mai reciclează
+
+**Decizia lui Costin:** *„oprim reciclarea numelui de schemă."*
+
+**Ce era.** `urmator_schema_name` lua `max(NNN)+1` peste `SELECT schema_name FROM public.tenants` —
+adică peste firmele **vii**. Când cea mai mare era ștearsă, maximul cobora și numărul **se
+refolosea**. Măsurat pe date, 27.08.2026: două rânduri din `public.firme_scoase` poartă
+`schema_name = 'tenant_019'`, pentru **două firme diferite**; `tenant_018` era, în aceeași zi, și
+schema unei firme scoase, și a uneia vii.
+
+**De ce contează, deși urma nu se pierdea.** Rândul rămâne dezambiguizat de `tenant_id`, care vine
+dintr-o secvență și nu se reciclează niciodată. Dar `firme_scoase.schema_name` e **singurul** loc din
+`public` care referă un tenant prin nume de schemă, iar acolo `tenant_019` trimite la două firme.
+Un fapt scris care, citit singur, minte.
+
+**DE CE O SECVENȚĂ POSTGRES**, și nu „prima gaură liberă" sau un rând cu maximul istoric: `nextval`
+**nu se întoarce la rollback**. Un provisioning care eșuează la jumătate **arde** un număr și merge
+mai departe — exact ce vrem. Un contor ținut într-un rând ar fi întors odată cu tranzacția, deci ar
+putea da același nume de două ori după un eșec: fix reciclarea pe care o repară.
+
+**De unde pornește:** de la **maximul istoric** — firme vii ∪ `firme_scoase` ∪ schemele din bază —,
+nu de la cel viu. Dacă ar porni de la cel viu, primul nume generat ar fi chiar unul deja folosit de o
+firmă scoasă. Migrare idempotentă: `core/migrare_schema_seq.py`; oglindă DDL în
+`infra/bootstrap_public.sql`.
+
+**Probat pe viu**, în tranzacție întoarsă la savepoint: firmă A → `tenant_020`; ștearsă (rând 0,
+schemă 0 în bază); firmă B → **`tenant_021`**. După `ROLLBACK`: 18 firme, 3 rânduri în
+`firme_scoase`, 18 scheme — nimic rămas. Contorul a rămas la 21, **deliberat**: numerele arse nu se
+recuperează, și chiar aia e proprietatea.
+
 ## 28.08.2026 — R81: denumirea unei firme se scrie SIMETRIC, în amândouă locurile
 
 **Decizia lui Costin:** *„R81 E DECISĂ: simetrie de scriere. Orice act care redenumește o firmă

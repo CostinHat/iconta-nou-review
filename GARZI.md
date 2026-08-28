@@ -5218,3 +5218,630 @@ Iar la rulare, gardul **scrie** ce acoperă: *„acoperire reală: 360 din 411 r
 **Ce NU face, declarat:** **nu spune care rute chiar n-au apelant** — spune despre care dintre ele detectorul e mut. O rută din listă poate fi chemată de zece ecrane; ce lipsește e capacitatea de a afla. Și nu repară detectorul: a patra regulă e deja *„cea mai puțin greșită, nu cea corectă"*, iar a cincea cere decizia lui Costin (R80).
 
 **Ce NU face, declarat:** nu poate vedea divergența pe date reale — **0 din 17** firme au `nume_anaf`, fiindcă instantaneul se captează doar de la o precompletare ANAF încolo. Partea de ecran e probată pe un răspuns **fabricat** prin interceptare (`frontend_test/vizual_nume.py`): dovedește ce randează ecranul și ce trimite la apăsare, nu ce răspunde serverul pentru o divergență adevărată. Partea de server e probată separat, pe date reale, într-o tranzacție întoarsă la savepoint (`proba_r77.py`).
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# BACKFILL 23–28.08.2026 (scris pe 28.08.2026, la cererea lui Costin: „rămâne viu, nu se îngheață")
+# ─────────────────────────────────────────────────────────────────────────────
+
+## 28.08.2026 — de ce registrul ăsta a stat șase zile, și ce s-a schimbat ca să nu mai stea
+
+**Constatarea:** ultima intrare din `GARZI.md` era din **22.08.2026**. În cele șase zile de după au
+intrat **80 de gărzi și instrumente** — niciunul scris aici. Un registru cu șase zile în urmă nu se
+citește ca incomplet: **se citește ca complet.** E chiar clasa pe care o numește `METODA §14` — *o
+regulă scrisă și nepăzită se citește ca respectată* —, aplicată registrului care ține evidența
+regulilor păzite.
+
+**Decizia lui Costin, 28.08.2026:** *„rămâne viu, nu se îngheață."* Plus: `GARZI.md` intră în
+`REGISTRE` ca **linie obligatorie** de-acum înainte (scris în `CLAUDE.md` §2.2.1).
+
+**CE SE POATE SCRIE RETROACTIV, ȘI CE NU.** Intrările de mai jos numesc **ce a intrat** în fiecare
+zi și **ce spune fiecare gardă despre ea însăși** — amândouă verificabile: prima din `git log`, a
+doua din docstringul propriu. Ce **nu** se scrie retroactiv e *de ce* a fost construită fiecare,
+instanța care a produs-o și ce anume nu face. Alea au fost adevărate într-o sesiune pe care n-o mai
+pot citi, iar reconstruirea lor din numele fișierului ar fi exact greșeala pe care `METODA` o
+numește: *un motiv scris din analogie transformă „n-am făcut" în „nu se poate".* Pentru zilele
+27–28.08, pe care le pot atesta, narațiunea e scrisă în restanțele lor din `CONFORMITATE.md` și în
+mesajele commiturilor.
+
+**ȘI CE S-A CONSTRUIT CA SĂ NU SE MAI REPETE:** `scripts/scan_garzi_inventar.py` +
+`core/test_garzi_inventar.py`. Inventarul de la coada fișierului e **generat**, iar garda îl compară
+caracter cu caracter cu ce produce instrumentul — același tipar ca Partea XII din `TRASEE.md`. O
+gardă nouă care intră fără să apară în inventar **pică poarta**. Partea narativă rămâne a omului;
+partea care se poate deriva nu mai are voie să îmbătrânească.
+
+## 2026-08-28 — 4 gărzi și instrumente
+
+**Ziua celor două reguli de ecran și a simetriei de scriere.** `scan_ecran_reguli` sparge sursa în **noduri de randare** și în **blocuri de execuție** înainte de a aserta pe ea (E1/E2, DS cap.26–27); `scan_simetrie_denumire` citește din AST fiecare `UPDATE … SET nume=` și pică dacă o funcție scrie într-un singur loc din două (R81). A doua a găsit, la prima rulare, **o a patra cale asimetrică** pe care măsurătoarea de mână n-o văzuse.
+
+- `core/scan_ecran_reguli.py` — Instrumentul celor două reguli de ecran scrise pe 28.08.2026 — E1 (două nume distincte) și
+- `core/scan_simetrie_denumire.py` — Instrumentul simetriei de scriere a denumirii unei firme (R81, decis 28.08.2026).
+- `core/test_reguli_ecran.py` — GARD [28.08.2026]: cele două reguli de ecran scrise azi — E1 și E2 (`DESIGN_SYSTEM.md` cap.26/27).
+- `core/test_simetrie_denumire.py` — GARD [R81, DECIS 28.08.2026]: denumirea unei firme se scrie în AMÂNDOUĂ locurile sau în niciunul.
+
+## 2026-08-27 — 11 gărzi și instrumente
+
+**Ziua în care s-au deschis nouă restanțe într-una.** Ștergerea unei firme (R72), eșecul tăcut de email (R73), deadman-ul comparat cu SISTEMUL (R74), sonda web (R75), refuzul care nu ajunge la om, denumirea de la ANAF, unicitatea numelui, contorul de reluări al deciziilor — și `scan_ancore_rute`, care a măsurat **orbirea gardului de ieri** (R80). Un instrument construit ca să măsoare limitele altui instrument, în ziua următoare.
+
+- `core/scan_refuz_tacut.py` — core/scan_refuz_tacut.py — cate refuzuri ale serverului nu ajung la om.
+- `core/test_ancore_rute.py` — GARD [R80, 27.08.2026]: clasa de rute despre care detectorul din R70 nu poate afirma nimic
+- `core/test_esec_trimitere_email.py` — GARD [R73, 27.08.2026]: un eșec de trimitere a emailului nu se mai poate stinge tăcut.
+- `core/test_joburi_supravegheate.py` — GARD [R74, 27.08.2026]: lista deadman-ului se compară cu SISTEMUL, nu cu o copie a ei.
+- `core/test_nume_anaf.py` — GARD [27.08.2026]: denumirea de la ANAF se păstrează lângă cea editabilă, cu data ei.
+- `core/test_nume_firma_unic.py` — GARD [27.08.2026]: două firme cu același nume, în același cabinet, sunt un fapt imposibil.
+- `core/test_refuz_tacut.py` — GARD [27.08.2026]: un refuz al serverului la o SCRIERE nu poate rămâne nevăzut.
+- `core/test_reluari_decizie.py` — GARD [27.08.2026]: o decizie cerută de mai multe ori nu mai poate arăta ca cerută o dată.
+- `core/test_sonda_web.py` — GARD [R75 (b), 27.08.2026]: procesul care servește ecranele e supravegheat, și se știe cum.
+- `core/test_tenant_stergere.py` — GARD [R72, 27.08.2026]: calea de scoatere a unei firme nu poate rămâne în urma bazei.
+- `scripts/scan_ancore_rute.py` — Pentru cate rute e ORB PRIN CONSTRUCTIE detectorul de apelanti din R70.
+
+## 2026-08-26 — 9 gărzi și instrumente
+
+**Ziua rolurilor și a rutei fără apelant.** `scan_rol_pe_efect` a mutat întrebarea *cine are voie* de la numele rutei la **ce face** ruta. Iar `test_ruta_fara_apelant` (R70) s-a născut dintr-o rută scrisă, gardată și verde pe care **nu o chema nimic** — gărzile verificau ce face ruta *dacă* e chemată, niciuna nu întreba *dacă* e chemată.
+
+- `core/scan_rol_pe_efect.py` — core/scan_rol_pe_efect.py — INSTRUMENT: ce face fiecare rută, ca să se poată cere rolul după
+- `core/test_cont_din_corp_normalizat.py` — core/test_cont_din_corp_normalizat.py — un cont luat din CORPUL CERERII trece prin strip().
+- `core/test_document_fara_administrator.py` — GARD [R66 (c), 26.08.2026]: un document care tipărește numele administratorului nu se produce
+- `core/test_echilibru_legat.py` — core/test_echilibru_legat.py — GARDA R33 varianta b'' (26.08.2026).
+- `core/test_portal_acces.py` — GARD [R62, 26.08.2026]: portalul nu mută identitatea fără confirmare, nu trece un cont dintr-un
+- `core/test_raport_z_unic.py` — GARD [R61, 26.08.2026]: raportul Z nu se poate înregistra de două ori, iar niciuna din cele
+- `core/test_regim_peste_perioada_inchisa.py` — GARD [R46, 26.08.2026]: un câmp care decide CE SE DATOREAZĂ nu se schimbă peste o perioadă închisă.
+- `core/test_rol_pe_efect.py` — core/test_rol_pe_efect.py — GARD: rolul se cere după CE FACE ruta, nu după cum se numește.
+- `core/test_ruta_fara_apelant.py` — GARD [R70, 26.08.2026]: o rută NOUĂ fără apelant nu trece poarta.
+
+## 2026-08-25 — 12 gărzi și instrumente
+
+**Ziua traseelor și a celor patru decizii ale lui Costin (R41–R49).** `scan_trasee` + `test_trasee` au făcut inventarul celor 35 de trasee **generat**, iar garda îl compară caracter cu caracter cu documentul. Restul sunt gărzile deciziilor din ziua aia: coada, artefactele păstrate, prăpastia salariului minim, nomenclatorul luat din NORMĂ.
+
+- `core/test_artefacte_pastrate.py` — GARD [R45]: un artefact produs se păstrează, cu cele cinci câmpuri — și producerea lui e
+- `core/test_coada_firma_exista.py` — GARD [R44]: o declarație nu poate intra în coadă legată de o firmă care nu există.
+- `core/test_coada_gata_de_depus.py` — GARD [R41 partea II]: «gata de depus» are O SINGURĂ definiție, iar lista o poartă.
+- `core/test_coerenta_salarii.py` — GARD [R33, decizia lui Costin 25.08.2026]: semnalul de coerență notă-vs-D112 apare LA PROPUNERE,
+- `core/test_contract_ecran_ruta.py` — GARD: contractul ECRAN ↔ RUTĂ nu se rupe tăcut.
+- `core/test_nomenclator_pe_norma.py` — GARD [C6, 25.08.2026]: un nomenclator se ia din NORMĂ; validatorul e constrângere, nu sursă.
+- `core/test_prapastie_salariu.py` — GARD [R49, varianta (c)]: prăpastia salariului minim se spune CU CIFRE, și cifrele sunt ale
+- `core/test_r42_criteriu.py` — GARD [R42, cele patru decizii ale lui Costin, 25.08.2026].
+- `core/test_trasee.py` — GARD: inventarul traseelor nu îmbătrânește tăcut, iar instrumentul lui nu minte.
+- `core/test_verdict_persistat.py` — GARD — verdictul de validare se păstrează, și un verdict stătut nu ține locul unuia proaspăt.
+- `scripts/scan_contract_ecran.py` — scripts/scan_contract_ecran.py — contractul ECRAN ↔ RUTĂ, măsurat.
+- `scripts/scan_trasee.py` — scripts/scan_trasee.py — INVENTARUL TRASEELOR, calculat, nu ținut minte.
+
+## 2026-08-24 — 15 gărzi și instrumente
+
+**Ziua clichetului 50 și a verdelui derivat.** `scan_garzi_pe_text` + `test_garzi_pe_text` au măsurat pentru prima oară câte gărzi asertează pe TEXT în loc de STRUCTURĂ — clichet **pe fișier**, nu global, ca un fișier nou să pornească de la zero. Tot azi: `test_verde_derivat` (verdele se derivă; unde nu se poate deriva, semaforul LIPSEȘTE) și `test_predare_proaspata`, care ține predarea de a îmbătrâni tăcut.
+
+- `core/scan_garzi_pe_text.py` — Care gărzi asertează pe TEXT în loc de STRUCTURĂ — pe ASERȚIUNE, nu pe fișier.
+- `core/scan_module_nelegate.py` — INSTRUMENT — module cu funcții publice și ZERO importatori în afara testelor.
+- `core/scan_valori_afisate.py` — Valori FISCALE scrise literal in TEXTUL AFISAT de ecrane.
+- `core/test_an_hardcodat.py` — Un AN scris literal intr-o cerere catre server ingheata ecranul in trecut.
+- `core/test_cota_fara_default_fallback.py` — GARD (R29): o cotă de TVA absentă nu se completează singură, în niciun limbaj și în nicio formă.
+- `core/test_d212_an_verificat.py` — Fișa D212 se produce pe anul CERUT, pe plafoanele verificate ale anului — nu pe unul înghețat.
+- `core/test_document_ref_necunoscut.py` — GARD — un `0` care nu poate fi altceva decât `0` nu susține nicio cauză afirmată.
+- `core/test_eticheta_conturi_ecran.py` — Eticheta din ECRAN și conturile din BACKEND nu pot diverge tăcut.
+- `core/test_garzi_pe_text.py` — GARD PESTE GĂRZI — o gardă asertează pe STRUCTURĂ, nu pe text.
+- `core/test_identitate_acte.py` — GARD — un act din corpus e ACTUL pe care îl spune numele lui, și e adus o singură dată.
+- `core/test_module_nelegate.py` — CLICHET — module de producție din `core/` pe care nu le cheamă nimeni în afara testelor.
+- `core/test_predare_proaspata.py` — PREDARE_LANT.md isi arata vechimea, iar avertismentul din poarta nu poate disparea tacit.
+- `core/test_registru_jurnal_14_1_1.py` — GARD — Registrul-jurnal păstrează cele trei coloane cerute de norma 14-1-1.
+- `core/test_valori_fiscale_js.py` — Valorile fiscale scrise in ECRANE se confrunta cu REGISTRUL, nu cu memoria mea.
+- `core/test_verde_derivat.py` — Verdele de semafor se DERIVĂ; unde nu se poate deriva, semaforul LIPSEȘTE.
+
+## 2026-08-23 — 29 gărzi și instrumente
+
+**Ziua instrumentelor de MĂSURĂ**, nu a reparațiilor. Aici au intrat scanerele care au făcut posibile campaniile de după: proveniența corpusului, conflictele între surse, valoarea din citat, norma↔implementare, și — cel mai important — cele trei instrumente de FAZA 4 care măsoară **gărzile însele** (`scan_instrumente`, `scan_axa_garzi`, `scan_mutatie_garzi`). De aici vine §10.15 din METODA: *un instrument se calibrează pe modul în care POATE greși.*
+
+- `core/scan_conflicte_sursa.py` — core/scan_conflicte_sursa.py — INTERDICȚIA 58, partea nemăsurată: conflictele NEÎNREGISTRATE.
+- `core/scan_js_texte.py` — SCANNER de FRAZE DE INTERFATA din JavaScript (23.08.2026) — instrumentul pentru interdictiile
+- `core/scan_norma_implementare.py` — core/scan_norma_implementare.py — INTERDICȚIA 60: elementul care implementează o normă îi poartă
+- `core/scan_provenienta.py` — core/scan_provenienta.py — de unde vine fiecare fisier din corpus. (23.08.2026)
+- `core/scan_valoare_in_citat.py` — core/scan_valoare_in_citat.py — INTERDICȚIA 53: citatul conține VALOAREA pe care o justifică?
+- `core/test_aritmetica_in_prezentare.py` — GARD (interdicția 4): aritmetica fiscală din ecran nu diverge de cea din server.
+- `core/test_cod_partener.py` — GARD (prag 2, 23.08.2026): codul fiscal al partenerului se CERE la introducere.
+- `core/test_conflicte_sursa.py` — GARDĂ pentru partea deschisă a interdicției 58 — conflictele NEÎNREGISTRATE între surse.
+- `core/test_cota_efect.py` — GOLDEN pe EFECT: ce cifră iese pe căile reparate la R26, nu ce cotă a intrat.
+- `core/test_cota_fara_default.py` — GARD (R26): nicio funcție fiscală nu are cotă implicită, iar REFUZUL chiar se produce.
+- `core/test_d406_jurnal_origine.py` — GARD (R22, prag 1): `JournalID` din D406 poartă jurnalul de ORIGINE, nu o constantă.
+- `core/test_dependenti_act.py` — GARDĂ pentru interdicția 61 — lista dependenților unui articol, generabilă la cerere.
+- `core/test_fisa_cont.py` — GARD: Fișa de cont pentru operațiuni diverse produce ce cere norma, nu o balanță deghizată.
+- `core/test_graf_clustere_proprietar.py` — GARD (R19): o funcție partajată între clustere NU e proprietatea niciunuia.
+- `core/test_importuri_nefolosite.py` — CLICHET pe importurile nefolosite (F401). Nu blochează codul existent; oprește creșterea.
+- `core/test_norma_implementare.py` — GARDĂ pentru interdicția 60 — elementul care implementează o normă îi poartă articolul?
+- `core/test_portal_ids.py` — GARDĂ: fiecare act citat de un Temei din registru are id-ul lui de portal, scris.
+- `core/test_portal_nu_scrie_gol.py` — Unealta care aduce acte din portal NU are voie să scrie un `.txt` gol.
+- `core/test_provenienta.py` — GARDA: fiecare fisier din corpus isi stie provenienta. (23.08.2026)
+- `core/test_reaprindere.py` — GARD: o restanță al cărei DECLANȘATOR s-a produs nu poate rămâne nereluată.
+- `core/test_scan_instrumente.py` — Garda instrumentului de FAZA 4 (`scripts/scan_instrumente.py`).
+- `core/test_scan_js_texte.py` — CALIBRAREA instrumentului JS — scrisă ÎNAINTE de prima măsurătoare, nu după.
+- `core/test_valoare_in_citat.py` — GARDĂ pentru interdicția 53: citatul conține VALOAREA pe care o justifică.
+- `core/test_verificator_izolare.py` — GARDĂ PESTE VERIFICATOR: analizorul lui de izolare clasifică corect rute known-good / known-bad.
+- `core/test_vigoare_articole_registru.py` — GARDĂ pentru interdicția 50 — confirmarea unei valori e ULTERIOARĂ ultimei modificări a articolului.
+- `core/test_vigoare_punct.py` — Garda instrumentului de vigoare PE PUNCT (`scripts/vigoare_punct.py`, R2).
+- `scripts/scan_axa_garzi.py` — FAZA 4, axa D despicata: „odata cu fixul" ascunde DOUA lucruri, iar „singura" ascunde alte doua.
+- `scripts/scan_instrumente.py` — scripts/scan_instrumente.py - FAZA 4: pe ce instrument sta fiecare garda, si a fost calibrat.
+- `scripts/scan_mutatie_garzi.py` — FAZA 4, pasul 5: mutatia care probeaza garda e REPRODUCTIBILA azi?
+
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# INVENTARUL GĂRZILOR — GENERAT. Nu se editează cu mâna.
+# ─────────────────────────────────────────────────────────────────────────────
+
+## Inventar (generat, 28.08.2026)
+
+Blocul de mai jos e produs de `scripts/scan_garzi_inventar.py --md` și păzit de
+`core/test_garzi_inventar.py`: dacă documentul și instrumentul diverg, poarta cade. Regenerare:
+`./venv/bin/python scripts/scan_garzi_inventar.py --md`, rescris între marcaje.
+
+**Ce e și ce nu e.** E răspunsul la *„ce gărzi există și ce afirmă fiecare"*. **Nu** e răspunsul la
+*„sunt bune?"* — nu numără aserțiuni, nu spune dacă păzesc ceva viu, nu deosebește o gardă calibrată
+de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instrumente`,
+`scan_axa_garzi`, `scan_mutatie_garzi`) și `scan_garzi_pe_text`.
+
+<!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
+
+**457 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+
+### `core/` — 450
+
+- `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
+- `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
+- `core/scan_citate.py` — SCANNER de CITĂRI VERIFICABILE: `text_citat` chiar există în documentul citat? (21.08.2026)
+- `core/scan_conflicte_sursa.py` — core/scan_conflicte_sursa.py — INTERDICȚIA 58, partea nemăsurată: conflictele NEÎNREGISTRATE.
+- `core/scan_constante.py` — SCANNER de constante fiscale NESURSATE din codul de PRODUCTIE (20.08.2026).
+- `core/scan_ecran_reguli.py` — Instrumentul celor două reguli de ecran scrise pe 28.08.2026 — E1 (două nume distincte) și
+- `core/scan_garzi.py` — I1 — instrumentul pentru interdictiile 18 (garda isi ia dovada din proza) si 19 (garda raporteaza
+- `core/scan_garzi_culegere.py` — Rafinarea sub-instrumentului B.
+- `core/scan_garzi_pe_text.py` — Care gărzi asertează pe TEXT în loc de STRUCTURĂ — pe ASERȚIUNE, nu pe fișier.
+- `core/scan_garzi_subiect.py` — Rafinarea sub-instrumentului A: se separa tiparele dupa CE CAUTA, nu dupa cum arata.
+- `core/scan_js_texte.py` — SCANNER de FRAZE DE INTERFATA din JavaScript (23.08.2026) — instrumentul pentru interdictiile
+- `core/scan_module_nelegate.py` — INSTRUMENT — module cu funcții publice și ZERO importatori în afara testelor.
+- `core/scan_norma_implementare.py` — core/scan_norma_implementare.py — INTERDICȚIA 60: elementul care implementează o normă îi poartă
+- `core/scan_provenienta.py` — core/scan_provenienta.py — de unde vine fiecare fisier din corpus. (23.08.2026)
+- `core/scan_refuz_tacut.py` — core/scan_refuz_tacut.py — cate refuzuri ale serverului nu ajung la om.
+- `core/scan_respingeri.py` — core/scan_respingeri.py — ce coduri de respingere sunt CHIAR FOLOSITE in module?
+- `core/scan_rol_pe_efect.py` — core/scan_rol_pe_efect.py — INSTRUMENT: ce face fiecare rută, ca să se poată cere rolul după
+- `core/scan_simetrie_denumire.py` — Instrumentul simetriei de scriere a denumirii unei firme (R81, decis 28.08.2026).
+- `core/scan_valoare_in_citat.py` — core/scan_valoare_in_citat.py — INTERDICȚIA 53: citatul conține VALOAREA pe care o justifică?
+- `core/scan_valori_afisate.py` — Valori FISCALE scrise literal in TEXTUL AFISAT de ecrane.
+- `core/test_11_deducere_copii_gard.py` — GARD #11: deducerea de 100 lei/copil (CF art.77 alin.(10) lit.b) NU se acorda tacit — art.77 alin.(12)-(13)
+- `core/test_12_salariu_minim_luna.py` — GARD #12: CF art.77 alin.(3) teza finala — cand in aceeasi luna se aplica mai multe valori ale
+- `core/test_a11y_contrast_tokens.py` — core/test_a11y_contrast_tokens.py — GARD: token-urile de culoare trec contrastul WCAG AA (4.5:1).
+- `core/test_a11y_landmarks.py` — [Regula 6 + Regula 13] GARD LANDMARKS app-wide (18.08.2026).
+- `core/test_a11y_touch_target.py` — [Regula 6] GARD touch-target (AA 2.5.8, 18.08.2026) - ratchet pe stil.css (fara browser, ruleaza in poarta).
+- `core/test_absenta_nu_e_neaplicabil.py` — GARD DE CLASĂ (21.08.2026): „niciun X înregistrat" nu poate deveni „nu se datorează".
+- `core/test_achizitii_factura.py` — NECONFORMITATE ACTIVA reparata (04.08): operatiunile de achizitie (achizitie_ic, achizitie_taxare_inversa)
+- `core/test_acoperire_vizuala.py` — [Regula 14 + metoda-ca-poarta, cerut de Costin 19.08.2026] GARD: o schimbare de UI cere un scan
+- `core/test_afirmatii.py` — GARD (P3, 21.08.2026): o afirmație despre datele firmei își declară FELUL și poartă câmpurile
+- `core/test_afirmatii_tipate.py` — CLICHET: afirmațiile despre datele firmei nu mai pot fi proză. (P8, 21.08.2026)
+- `core/test_agenda.py` — Garda anti-stale a agendei: pica daca TESTE.md a ramas in urma codului. Diferenta fata de DE_FACUT.md
+- `core/test_ai_incredere.py` — —
+- `core/test_ajutor_prelogin_fallback.py` — GARD ajutor_prelogin: handlerul global al semnului "?" nu depinde DOAR de _navGlobal (shell
+- `core/test_alerte_control_fiscal.py` — Teste gardian pentru alerte_control_fiscal — stratul pull->push al controlului fiscal.
+- `core/test_amortizare_ecran_metoda.py` — GARD amortizare pe METODA (Q6+Q15, tura import 16.08.2026).
+- `core/test_amprenta_declaratie.py` — core/test_amprenta_declaratie.py — GARD C3 (snapshot+hash): regenerare-diff prinde editarea retroactiva.
+- `core/test_an_hardcodat.py` — Un AN scris literal intr-o cerere catre server ingheata ecranul in trecut.
+- `core/test_ancore_in_cod.py` — GARD PESTE GĂRZI (21.08.2026): ancora unui gard trăiește în COD, nu în PROZĂ.
+- `core/test_ancore_rute.py` — GARD [R80, 27.08.2026]: clasa de rute despre care detectorul din R70 nu poate afirma nimic
+- `core/test_api_public.py` — —
+- `core/test_aritmetica_in_prezentare.py` — GARD (interdicția 4): aritmetica fiscală din ecran nu diverge de cea din server.
+- `core/test_artefacte_pastrate.py` — GARD [R45]: un artefact produs se păstrează, cu cele cinci câmpuri — și producerea lui e
+- `core/test_audit_campuri_oficiale.py` — GARD AUDIT SEMANTIC — numele campurilor emise = campuri OFICIALE (01.08.2026, Conditia 2 Costin).
+- `core/test_audit_preluare.py` — Teste gardian F183 — audit_preluare (nucleele PURE, date minime construite manual).
+- `core/test_audit_schema.py` — Teste F165 — auditor conformitate schema tenant vs tenant_template.sql.
+- `core/test_b3_owner_drepturi.py` — GARD B3: proprietarul cabinetului (admin_firma creat la înregistrare) primește drepturile
+- `core/test_banca_parser.py` — Test parser extras bancar CSV: delimitator robust (fara csv.Sniffer),
+- `core/test_banca_parser_mt940.py` — Test gardian parser MT940 (SWIFT Statement Message).
+- `core/test_base_nula_generatoare.py` — Poarta bazei nule (A, 31.07.2026): FIECARE generator de declaratie are erori_generare() si un
+- `core/test_baza_cm.py` — GARDĂ: baza de calcul a indemnizației CM vine din statele EMISE, nu din recalcul. (22.08.2026)
+- `core/test_bilant_regcom_poarta.py` — core/test_bilant_regcom_poarta.py - GARD: bilant_api.erori_generare blocheaza generarea cand
+- `core/test_c1_pontaj_neconfirmat_gri.py` — C1 (audit tenant_003): starea 'pontaj neconfirmat' pe Stat de plata e o stare de PERIOADA
+- `core/test_c2_migrare_revenire_firma.py` — C2 (audit tenant_003): dupa salvarea unui strat de import (salariati, solduri, parteneri, asociati,
+- `core/test_c4_model_csv.py` — C4 (audit tenant_003): fiecare strat de import cu fisier ofera 'Descarca model (CSV)' cu formatul REAL
+- `core/test_c6_c5_motiv_acord.py` — GARD C6 + C5 (audit vizual tenant_003, 16.08.2026).
+- `core/test_c7_periodicitate_trimestriala.py` — GARD C7 — generarea TVA-decont (d300/d394/d406) urmeaza periodicitatea EFECTIVA a firmei (tip_decont),
+- `core/test_cai_fisiere_date.py` — GARD CLASA "cale de fisier construita relativ la radacina" (01.08.2026).
+- `core/test_cale_a_doua.py` — GARD (20.08.2026): a doua cale nu poate fi mutată peste prima în tăcere.
+- `core/test_cashflow.py` — —
+- `core/test_catch_vizibil.py` — GARD DEFECT-3 (08.08.2026): (A) frontend - un catch{} GOL care inghite un api.* transforma un 500 intr-o
+- `core/test_cauza_precisa_business.py` — GARD cauza_precisa: cand un verificator din control_incrucisat prinde o eroare de BUSINESS
+- `core/test_chei_duplicate.py` — GARDĂ: o cheie care apare de două ori în același dicționar e o intrare MOARTĂ. (21.08.2026)
+- `core/test_citate_verbatim.py` — CLICHET CARE CREȘTE (21.08.2026): numărul de citări verificabile mecanic nu mai scade.
+- `core/test_cm_episod.py` — GARD CM-episod: indemnizatia CM se calculeaza pe EPISOD, nu pe certificat izolat (OUG 158/2005
+- `core/test_cnp_control.py` — GARD DEFECT-2 (07.08.2026): CNP la orice cale de intrare DIRECTA valideaza cifra de control,
+- `core/test_coada_firma_exista.py` — GARD [R44]: o declarație nu poate intra în coadă legată de o firmă care nu există.
+- `core/test_coada_gata_de_depus.py` — GARD [R41 partea II]: «gata de depus» are O SINGURĂ definiție, iar lista o poartă.
+- `core/test_coada_vizualizare.py` — GARD (audit patru-ochi): coada de validare are TRASEU de VIZUALIZARE a conținutului. Fără el,
+- `core/test_cod_boala_nomenclator.py` — GARDĂ: codul de indemnizație se ia din NOMENCLATORUL 9, nu din enumerarea XSD. (22.08.2026)
+- `core/test_cod_partener.py` — GARD (prag 2, 23.08.2026): codul fiscal al partenerului se CERE la introducere.
+- `core/test_coduri_cm_din_registru.py` — GARDĂ: codurile de concediu medical vin din registru, nu dintr-o listă scrisă în JS. (22.08.2026)
+- `core/test_coerenta_salarii.py` — GARD [R33, decizia lui Costin 25.08.2026]: semnalul de coerență notă-vs-D112 apare LA PROPUNERE,
+- `core/test_compara_ce_s_a_depus.py` — GARD — D112 ȘI D300 se confruntă cu ce s-a DEPUS, când s-a păstrat; altfel o spun.
+- `core/test_comparatii_clasificate.py` — GARDA PE DIRECTIA INVERSA: o comparatie pe o valoare de registru e CLASIFICATA. (P11, 22.08.2026)
+- `core/test_compensare.py` — Compensari cu tertii (core/compensare.py) - motor pur, ancorat la sursa in corpus.
+- `core/test_conflicte_sursa.py` — GARDĂ pentru partea deschisă a interdicției 58 — conflictele NEÎNREGISTRATE între surse.
+- `core/test_conformitate.py` — GARDĂ: fiecare interdicție din plan are secțiune în CONFORMITATE.md, completă. (22.08.2026)
+- `core/test_constante_nesursate.py` — CLICHET (20.08.2026): clasa constantelor fiscale nesursate din PRODUCȚIE nu mai crește.
+- `core/test_cont_din_corp_normalizat.py` — core/test_cont_din_corp_normalizat.py — un cont luat din CORPUL CERERII trece prin strip().
+- `core/test_cont_venit_linie.py` — core/test_cont_venit_linie.py — #11: contul de venit stabilit PE LINIE de factura.
+- `core/test_contract_ecran_ruta.py` — GARD: contractul ECRAN ↔ RUTĂ nu se rupe tăcut.
+- `core/test_control_fiscal.py` — Teste pentru semaforul de conformare fiscala (control_fiscal_api v2).
+- `core/test_control_fiscal_diacritice.py` — core/test_control_fiscal_diacritice.py — GARD: mesajele de VERDICT ale controlului fiscal
+- `core/test_control_incrucisat.py` — Teste gardian pentru control_incrucisat.compara_tva (functia PURA).
+- `core/test_control_incrucisat_wiring.py` — core/test_control_incrucisat_wiring.py — GARD end-to-end pentru verifica_tva (cablaj, nu logica pura).
+- `core/test_control_reconciliere_vizibila.py` — core/test_control_reconciliere_vizibila.py — GARD pentru SUPRAFATA UNIFICATA de reconciliere
+- `core/test_cor.py` — Teste gardian pentru F137 (nomenclator COR).
+- `core/test_corpus_amprenta.py` — GARDĂ: amprentele corpusului se verifică, nu doar se scriu. (22.08.2026)
+- `core/test_corpus_surse.py` — Corpus (2): cele TREI garzi peste registrul de temeiuri COTE + manifestul anaf_surse/INDEX.json.
+- `core/test_cota_efect.py` — GOLDEN pe EFECT: ce cifră iese pe căile reparate la R26, nu ce cotă a intrat.
+- `core/test_cota_fara_default.py` — GARD (R26): nicio funcție fiscală nu are cotă implicită, iar REFUZUL chiar se produce.
+- `core/test_cota_fara_default_fallback.py` — GARD (R29): o cotă de TVA absentă nu se completează singură, în niciun limbaj și în nicio formă.
+- `core/test_cron.py` — Teste core/cron.py — ambalajul joburilor de fundal.
+- `core/test_cui_cnp_test_valid.py` — [Date de test — CUI/CNP verificate] GARD: un CUI/CNP folosit ca date de test VALIDE (`cui=`/`cnp="..."`)
+- `core/test_d100.py` — Teste gardian pentru D100 - modulul a fost REFACUT complet 16.07.2026.
+- `core/test_d100_cota.py` — d100: rata default micro(1%)/profit(16%) vine din cota (impozit_micro/impozit_profit), NU din literalul
+- `core/test_d100_cui_checksum.py` — Gard T1 (CATALOG_INVALIDITATE.md, D100 #7/#11/#19): CUI-ul firmei trebuie validat de app
+- `core/test_d100_fapt.py` — [Regula 13 + Regula 6] GARDA: D100 micro pe FAPT (baza de venituri), simetric cu d390_fapt/d112_fapt.
+- `core/test_d100_profit_baza.py` — GARD D100 (16.08.2026, campanie rețeta D300, pas 5/8) — baza impozitului pe PROFIT reparata.
+- `core/test_d100_reconciliere.py` — core/test_d100_reconciliere.py — gardul A DOUA CALE D100 (pas 4/4 lant reconciliere).
+- `core/test_d100_scadenta_trimiv.py` — Gard scadenta trim IV D100 (sursa: anaf_surse/d100_struct_anaf.txt + validator DUK R15.1).
+- `core/test_d100_trunchiere.py` — Gard T6 (CATALOG_INVALIDITATE.md, D100 #12): denumirea/adresa firmei care depaseste limita
+- `core/test_d101.py` — Teste gardian D101 - RECONSTRUIT 01.08.2026 pe formularul OFICIAL (OPANAF 206/2025, D101_A600 v10,
+- `core/test_d101_cod_obligatie_caen.py` — GARD (TURA 3, 10.08.2026): D101 respinge PRE-DUK cod_obligatie in afara nomenclatorului
+- `core/test_d101_cui_checksum.py` — GARD T1 (LANT legislatie TURA 3, 10.08.2026): D101 valideaza cifra de control a CUI-ului
+- `core/test_d101_imca_ca_precedent.py` — core/test_d101_imca_ca_precedent.py — gard D101 IMCA eligibilitate (C-4 transa 3).
+- `core/test_d101_nr_evid_poz12.py` — core/test_d101_nr_evid_poz12.py — gard: nr_evid poz.1-2 = '11' (OPANAF 206/2025).
+- `core/test_d101_reconciliere.py` — core/test_d101_reconciliere.py — gardul A DOUA CALE D101 (05.08.2026, pas 5/6).
+- `core/test_d101_sponsorizare_075.py` — GARD D101 (16.08.2026, campanie rețeta D300, pas 6/8) — sponsorizare: limita 0.75% cifra de afaceri.
+- `core/test_d101_valori_pre_duk.py` — GARD (TURA 3, 10.08.2026): D101 surfaceaza PRE-DUK, cu motiv EXACT, valorile fiscale invalide
+- `core/test_d104.py` — Teste D104 (distribuire intre asociati a veniturilor/cheltuielilor - asocieri fara personalitate juridica).
+- `core/test_d107.py` — Teste D107 (informativa beneficiari sponsorizari / mecenat / burse private).
+- `core/test_d107_formular.py` — [Regula 4 + Regula 6] GARDA: formularul D107 gol NU produce declaratie.
+- `core/test_d110.py` — Teste D110 (regularizare/restituire impozit pe venit retinut la sursa).
+- `core/test_d112.py` — Teste gardian pentru D112 - reparat 16.07.2026 dupa testul agregat pe toate 9
+- `core/test_d112_asiguratd_zerobase.py` — [d112 asiguratD zero-base] Un certificat de concediu medical caruia ii lipseste un camp
+- `core/test_d112_avantaje.py` — Sectiunea 8.3 avantaje D112 (C4): bilete de valoare defalcate pe tip (E3_10/72/74/75 + E3_60).
+- `core/test_d112_cadou.py` — GARD D112 (16.08.2026, campanie rețeta D300, pas 4/8) — CADOU TAXABIL -> D112 (pierdere tacuta reparata).
+- `core/test_d112_caen_codboala.py` — [catalog D112 2.1/2.3] caen out-of-enum + cod boala out-of-enum refuzate PRE-DUK.
+- `core/test_d112_carantina_c2.py` — Gard: carantina (cod 07) emite TOATE cele 6 coloane ale randului C2 Rd2.2 (C2_211-216),
+- `core/test_d112_cert_overflow.py` — [T6, catalog D112 4.1-4.3] serie/numar/diagnostic (D_1/D_2/D_23) NETRUNCHIATE -> hard-block la overflow.
+- `core/test_d112_cnp_angajat.py` — [T1] CNP salariat + CUI firma pre-validate PRE-DUK (checksum offline, core.identitate).
+- `core/test_d112_deducere_suplimentara.py` — GARD D112 (16.08.2026, Task 2 exhaustiv) — DEDUCEREA PERSONALA SUPLIMENTARA cablata.
+- `core/test_d112_mesaje_afisate.py` — GARD d112_mesaje_afisate: mesajele de business ridicate cu `raise ValueError(...)` din d112.py
+- `core/test_d112_nume_dataang.py` — [catalog D112 1.8/1.9] numeAsig gol + data_angajare NULL refuzate PRE-DUK.
+- `core/test_d112_reconciliere.py` — core/test_d112_reconciliere.py — gardul A DOUA CALE D112 (05.08.2026, campanie pas 3/6).
+- `core/test_d177.py` — Teste D177 (redirectionare impozit pe profit catre entitati nonprofit).
+- `core/test_d177_formular.py` — [Regula 4 + Regula 6] GARDA: formularul D177 gol NU produce declaratie.
+- `core/test_d1_import_integritate.py` — core/test_d1_import_integritate.py — GARD: importul de salariati BLOCHEAZA CNP invalid, NU sare tacut.
+- `core/test_d205.py` — Teste gardian pentru D205 - REFACUT A DOUA OARA 16.07.2026.
+- `core/test_d205_cifr_obligatoriu.py` — Gard D205: campurile OBLIGATORII pe beneficiar (cifR, den1) nu pot fi emise vide.
+- `core/test_d205_cnp_checksum.py` — Gard D205 c1 (TEMA T1, CATALOG_INVALIDITATE.md): CNP beneficiar pre-validat pe CIFRA DE
+- `core/test_d205_cnp_duplicat.py` — Gard D205 c3 (TEMA T1, CATALOG_INVALIDITATE.md): (tip_venit1+cifR) UNIC per declaratie.
+- `core/test_d205_cota_2025.py` — GARD D205 (16.08.2026, campanie rețeta D300, pas 7/8) — cota impozitului pe dividende 2025 = 10%.
+- `core/test_d205_cui_checksum.py` — Gard D205 c2 (TEMA T1, CATALOG_INVALIDITATE.md): CUI platitor pre-validat pe CIFRA DE CONTROL
+- `core/test_d205_divid_platit.py` — Gard D205: divid_D (dividend DISTRIBUIT) vs. divid_P (dividend PLATIT) - model corect.
+- `core/test_d205_imp_manual.py` — core/test_d205_imp_manual.py — GARD d1 (CATALOG_INVALIDITATE): consistenta interna imp1 pt.
+- `core/test_d205_reconciliere.py` — core/test_d205_reconciliere.py — gardul A DOUA CALE D205 (05.08.2026, pas 6/6).
+- `core/test_d205_rezid_derivat.py` — Gard D205: Rezid (2.Rezident/Nerezident) DERIVAT din identitate, nu hardcodat "1".
+- `core/test_d207.py` — Teste D207 (informativa impozit retinut la sursa - beneficiari nerezidenti).
+- `core/test_d207_formular.py` — [Regula 4 + Regula 6] GARDA: formularul D207 gol NU produce declaratie.
+- `core/test_d212_an_verificat.py` — Fișa D212 se produce pe anul CERUT, pe plafoanele verificate ale anului — nu pe unul înghețat.
+- `core/test_d212_reper.py` — D212: salariul minim REPER vine din cota() (nu literal 4050) -> dependenta D212->salariu_minim VIZIBILA
+- `core/test_d220.py` — Teste D220 (venit estimat / norma de venit - persoane fizice).
+- `core/test_d221.py` — Teste D221 (venituri din activitati agricole impuse pe norme de venit - persoane fizice/asocieri).
+- `core/test_d223.py` — Teste D223 (venituri estimate pentru asocieri fara personalitate juridica / transparenta fiscala).
+- `core/test_d230.py` — Teste D230 (redirectionare pana la 3,5% din impozit catre ONG).
+- `core/test_d300.py` — Teste gardian pentru D300 — lantul de calcul R27->R42 lipsea complet.
+- `core/test_d300_b1_rutare.py` — Gard B1-B4 (15.08.2026): comportamentele NOI ale remedierii D300 nu aveau test de
+- `core/test_d300_d394_paritate.py` — Gard de PARITATE d300 <-> d394 pe TVA pe cota. Ambele se depun la ANAF pe aceeasi luna.
+- `core/test_d300_d394_trimestrial.py` — core/test_d300_d394_trimestrial.py — gard PERIOADA FISCALA TVA (06.08.2026, C-4 transa 2).
+- `core/test_d300_drop_taxabil.py` — Gard: liniile TAXABILE cu cotă fără rând D300 valid pentru perioadă (ex. 19/5%) NU
+- `core/test_d300_forfait_agricol.py` — core/test_d300_forfait_agricol.py — gard TVA ORFAN din antet la achizitii primite
+- `core/test_d300_profil_identitate.py` — TURA 3 / T1: erori_generare verifica pana acum doar NON-GOL pentru cui/caen/pro_rata.
+- `core/test_d300_r25_r12.py` — TURA 4 (CR-5/T8): oglinda rd.12 <-> rd.25 la taxare inversa PRIMITA (masuri de simplificare).
+- `core/test_d300_reconciliere.py` — core/test_d300_reconciliere.py — gardul A DOUA CALE D300 (05.08.2026).
+- `core/test_d300_taxare_inversa_beneficiar.py` — Gard Task2 (10.08.2026): achizitiile cu taxare inversa PRIMITA nu mai dispar tacit din D300.
+- `core/test_d300_valideaza_wired.py` — TURA 3 / T2: valideaza(res) era COD MORT. genereaza() chema doar erori_generare(prof),
+- `core/test_d300_zero_rate.py` — Gard Task1 (10.08.2026): liniile cu cotă 0% NU mai dispar tacit din D300.
+- `core/test_d301.py` — Teste D301 — ancorarea nomenclatoarelor pe VALIDATORUL instalat (nu pe pdf-ul de structura 2013).
+- `core/test_d301_an_guard.py` — TURA 3: genereaza() gardeaza doar LUNA (1..12), nu ANUL. D301 (formularul 301) se depune din
+- `core/test_d301_cif_checksum.py` — TURA 3 / T1: CIF checksum + lungime NICIODATA pre-validat de app. erori_generare verifica doar
+- `core/test_d301_coercitie_tacita.py` — TURA 3 / T3: coercitie TACITA enum-necunoscut -> default. calcul_d301 face `int(tip or 1)`
+- `core/test_d301_cota.py` — Gard period-aware pe cota de TVA oferita la introducerea operatiunilor D301.
+- `core/test_d301_curs.py` — Gard anti-fabricare a cursului de schimb in D301 (cluster "baza = val x curs").
+- `core/test_d301_data_doc.py` — GARD: D301 data_doc emis in formatul OFICIAL ANAF ZZ.LL.AAAA (anaf_surse/d301_struct_anaf.txt poz.35, C(10)).
+- `core/test_d301_nr_doc_c20.py` — TURA 3 / T6: nr_doc > C(20) passthrough NETRUNCHIAT nicaieri (leak pur). DUK NU impune lungimea,
+- `core/test_d301_op_cere_neplatitor.py` — GARD (audit tenant_006): ecranul D301 (adauga operatiune -> d301_operatiuni) NU accepta operatiuni
+- `core/test_d301_pers_inreg.py` — Gard pers_inreg (D301) — neconformitate: pers_inreg era hardcodat literal "1".
+- `core/test_d301_reconciliere.py` — core/test_d301_reconciliere.py — gardul A DOUA CALE D301 (10.08.2026).
+- `core/test_d301_rollup.py` — Regresie D301: serviciile intracomunitare (tip 5 = sectiunea 4.1) se preiau DIN sectiunea 4.
+- `core/test_d301_temei_307_intrare.py` — GARD (audit tenant_006, temei_307): introducerea unei operatiuni D301 tip 4 (art. 307 alin. 3/5/6)
+- `core/test_d301_valideaza_wired.py` — TURA 3 / T2: valideaza(res) era COD MORT. genereaza() chema doar erori_generare(prof), deci
+- `core/test_d301_vies_la_introducere.py` — GARD (audit 006/R24.1, clasa preview↔salvare): la introducerea unei operațiuni D301 cu furnizor UE,
+- `core/test_d301_zero_ruptura.py` — GARD D301 (16.08.2026, campanie rețeta D300, pas 3/8) — trei remedieri, verificate la sursă
+- `core/test_d307.py` — Teste D307 (ajustare/corectie/regularizare TVA).
+- `core/test_d307_formular.py` — [Regula 4 + Regula 6] GARDA: formularul D307 gol NU produce declaratie.
+- `core/test_d311.py` — Teste D311 (TVA in situatii speciale dupa anularea codului de TVA).
+- `core/test_d311_formular.py` — [Regula 4 + Regula 6] GARDA: formularul D311 gol NU produce declaratie.
+- `core/test_d390.py` — Teste gardian pentru D390 — modulul n-avea niciunul.
+- `core/test_d390_art317.py` — #4 (plimbare vizuala 14.08.2026): verdictul D390 la neplatitorul cu operatiuni IC era permanent-fals
+- `core/test_d390_autoderivare.py` — [Regula 5 + Regula 10 + Regula 6] GARDA: auto-derivarea d301_operatiuni -> D390 (cod A/S).
+- `core/test_d390_checksum_manual.py` — core/test_d390_checksum_manual.py — GARD: checksum-ul VIES se aplica pe TOATE liniile D390,
+- `core/test_d390_d301_acoperire.py` — core/test_d390_d301_acoperire.py — ACOPERIRE C-4 transa 2, items (b) si (c).
+- `core/test_d390_d301_semnal.py` — [Regula 4 + Regula 13] GARDA: D390 pe zero SEMNALEAZA achizitiile din d301_operatiuni.
+- `core/test_d390_diagnostic_partener.py` — [TURA 3] D390 - diagnoza EU-VAT PER-PARTENER, pre-DUK (T1/T3/T2/T6).
+- `core/test_d390_dubla_si_primita_fara_cui.py` — GARD (audit tenant_006): avertismente D390 pe două goluri reale de raportare.
+- `core/test_d390_nota1.py` — GARD D390 (16.08.2026, campanie rețeta D300, pas 2/8) — trei remedieri:
+- `core/test_d390_reconciliere.py` — core/test_d390_reconciliere.py — gardul A DOUA CALE D390 (10.08.2026).
+- `core/test_d390_rotunjire_coerenta.py` — Gard D390 (10.08.2026): rezumatul (bazaL..bazaR, total_baza) trebuie sa fie suma bazelor
+- `core/test_d390_ziua15.py` — D390 art.284 "ziua 15" (A2): incadrarea in perioada pe EXIGIBILITATE = MIN(data_emitere, ziua 15 a lunii
+- `core/test_d394.py` — Teste gardian pentru d394 (functiile PURE).
+- `core/test_d394_codpr_cereale.py` — GARD D394 codPR cereale (10.08.2026) - SPEC OFICIAL anaf_surse/d394_struct_anaf.txt poz.68-70:
+- `core/test_d394_cuip_checksum.py` — GARD neconformitate T1/G-c1 (CATALOG_INVALIDITATE.md): checksum-ul CUI/CIF al partenerului NU
+- `core/test_d394_manual_codpr.py` — GARD neconformitate: operatiune MANUALA C/V (art.331) trebuie sa emita op11(codPR).
+- `core/test_d394_nrfact_multicota.py` — GARD D394 (16.08.2026, campanie rețeta D300) — doua neconformitati reparate:
+- `core/test_d394_op1_fara_op11.py` — GARD neconformitate T4/G-bc1 + G-bc2 (CATALOG_INVALIDITATE.md): "avertizeaza-dar-emite-invalid".
+- `core/test_d394_partener_cui_litere.py` — GARD neconformitate T3/G-d1 (CATALOG_INVALIDITATE.md - cea mai grava D394): un CUI de partener
+- `core/test_d394_prsafiliat.py` — GARD: prsAfiliat (poz.6.a) trebuie sa fie SURSAT din profil, nu hardcodat "0".
+- `core/test_d394_pull_ti_fara_linii.py` — GARD D394 - pull() nu mai da NameError la achizitie cu taxare inversa fara linii (10.08.2026).
+- `core/test_d394_reconciliere.py` — core/test_d394_reconciliere.py — gardul A DOUA CALE D394 (05.08.2026, campanie pas 2/6).
+- `core/test_d394_trimestrial_perioada.py` — GARD (audit tenant_003, misdiagnostic 'D394 perioada septembrie + cifre necorespunzatoare'):
+- `core/test_d394_v_taxare_inversa_cota0.py` — GARD D394 - V (livrare cu taxare inversa) trebuie emis cu cota 0 (10.08.2026).
+- `core/test_d402.py` — Teste D402 (declaratie informativa DAC1 - venituri salariale/asimilate platite in Romania
+- `core/test_d406.py` — —
+- `core/test_d406_accounttype_wired.py` — GARD D406 AccountType cablat in genereaza (T2, CATALOG_INVALIDITATE.md; 10.08.2026).
+- `core/test_d406_active_duk.py` — Proba DUK pe tenant_013 pentru amortizarea D406/SAF-T pe metoda.
+- `core/test_d406_amortizare.py` — Golden pe motorul de amortizare D406/SAF-T (core/d406_active.py), pe metoda.
+- `core/test_d406_cnp_tert.py` — GARD D406 CNP in tert_cui -> tipul 03 (E3/E4, CATALOG_INVALIDITATE.md; 10.08.2026).
+- `core/test_d406_coercitie_t3.py` — GARD D406 coercitie TACITA enum-necunoscut (T3, CATALOG_INVALIDITATE.md; 10.08.2026).
+- `core/test_d406_cui_checksum.py` — GARD D406 checksum CUI/CNP partener + firma proprie (T1, CATALOG_INVALIDITATE.md; 10.08.2026).
+- `core/test_d406_jurnal_origine.py` — GARD (R22, prag 1): `JournalID` din D406 poartă jurnalul de ORIGINE, nu o constantă.
+- `core/test_d406_master_pf.py` — GARD D406 partener PF fara cod fiscal in MASTER (10.08.2026): un partener persoana
+- `core/test_d406_partener_id_neconform.py` — Gard: D406 nu emite ID BRUT de nomenclator ca identitate de partener SAF-T.
+- `core/test_d406_payment_method.py` — Gard: PaymentMethod (SD Payment) trebuie sa fie un cod de DOUA CIFRE din nomenclatorul
+- `core/test_d406_reconciliere.py` — core/test_d406_reconciliere.py — gardul A DOUA CALE D406/SAF-T (05.08.2026, campanie pas 4/6).
+- `core/test_d406_reg_number_header.py` — GARD D406 (16.08.2026, campanie rețeta D300, pas 8/8) — RegistrationNumber firma proprie (header) cu
+- `core/test_d406_restrictii_metode.py` — Restrictii pe categorii de active la alegerea metodei de amortizare (CF art.28 alin.5 + alin.8^1).
+- `core/test_d406_supplierid.py` — GARD D406 SupplierID (10.08.2026): SupplierID/CustomerID pe factura NU poate fi "0".
+- `core/test_d406_taxcode_nota.py` — GARD D406 TaxCode nota contabila (10.08.2026): pe liniile din GeneralLedgerEntries
+- `core/test_d710.py` — Teste gardian pentru D710 (Declaratie rectificativa - corectie D100).
+- `core/test_d710_cod131_132.py` — GARD TURA 3 — D710 C5: cod_oblig 131/132 cer Data_I (data incheierii exercitiului financiar) pe care
+- `core/test_d710_formular.py` — [Regula 4 + Regula 6] GARDA: formularul D710 gol NU produce declaratie.
+- `core/test_d710_nomenclator_manual.py` — GARD TURA 3 — D710: valorile MANUALE cod_oblig / cod_bugetar / cota / scadenta erau acceptate raw si
+- `core/test_d710_suma_ded.py` — Gardian J1/T7 (TURA 4): DEDUCEREA (suma_ded) in D710 - inchidere gol RECONCILIERE.
+- `core/test_d710_sume_negative.py` — GARD TURA 3 — D710 B4: sume negative in obligatia manuala. PE HEAD (8b74ccb) o suma negativa era emisa
+- `core/test_d710_t1_cui.py` — GARD TURA 3 — D710 T1: checksum CUI al firmei validat PRE-DUK in erori_generare (sursa canonica
+- `core/test_d710_t9_parsare.py` — GARD TURA 3 — D710 T9: parsarea obligatiei MANUALE (contabil) ridica ValueError CLAR (camp + valoare)
+- `core/test_date_firma_alege_placeholder.py` — core/test_date_firma_alege_placeholder.py — GARD (jumatatea frontend a defectului „default fabricat"
+- `core/test_datorie.py` — REGISTRUL DE DATORIE — ce e amanat, ca test care ruleaza.
+- `core/test_declarant_oblig.py` — core/test_declarant_oblig.py — GARD: declarantul (nume + functie) e OBLIGATORIU in profil - se cere
+- `core/test_declarant_warn.py` — core/test_declarant_warn.py — GARD: cand declarantul lipseste din profil, generatoarele AVERTIZEAZA
+- `core/test_declaratii_depuse_randuri.py` — Teste F163v2 — persistarea declaratiei depuse (xml + randuri) in public.declaratii_depuse.
+- `core/test_declaratii_lot2_duk.py` — Lot 2 de declaratii noi (10): proba DUK pe fiecare, cu validatorul OFICIAL ANAF.
+- `core/test_declaratii_lot3_duk.py` — Lot 3 de declaratii noi (6): proba DUK pe fiecare, cu validatorul OFICIAL ANAF.
+- `core/test_declaratii_lot4_duk.py` — Lot 4 de declaratii noi (6): proba DUK pe fiecare, cu validatorul OFICIAL ANAF.
+- `core/test_declaratii_lot5_duk.py` — Lot 5 de declaratii noi (6): proba DUK pe fiecare (validator OFICIAL ANAF).
+- `core/test_declaratii_lot6_duk.py` — Lot 6 (final): Declaratia Unica D212, proba DUK cu validatorul OFICIAL ANAF.
+- `core/test_deconturi.py` — Gard pe plafonul neimpozabil al diurnei (motor pur core/deconturi.py).
+- `core/test_deducere_generalizare.py` — GARD Fix 3 (Task 2 D112): GENERALIZAREA clasei fix 1 (deducere necablata) la CEILALTI apelanti de productie
+- `core/test_dependenti_act.py` — GARDĂ pentru interdicția 61 — lista dependenților unui articol, generabilă la cerere.
+- `core/test_depunere_contrazice.py` — GARD R6 (21.08.2026): o depunere care contrazice un „nu se datorează" nu mai e invizibilă.
+- `core/test_diacritice_afisate.py` — core/test_diacritice_afisate.py — GARD DE DIACRITICE PE TEXTUL AFIȘAT (#4, criteriul lui Costin).
+- `core/test_dialog_nativ_frontend.py` — GARD (09.08.2026): dialoguri native alert()/prompt()/confirm() INTERZISE in TOT frontendul (DS cap.5:
+- `core/test_document_fara_administrator.py` — GARD [R66 (c), 26.08.2026]: un document care tipărește numele administratorului nu se produce
+- `core/test_document_ref_necunoscut.py` — GARD — un `0` care nu poate fi altceva decât `0` nu susține nicio cauză afirmată.
+- `core/test_duk.py` — Teste gardian pentru duk (partea pura, fara java).
+- `core/test_duk_severitate.py` — GARD A2: DUK distinge atentionare (A:, NU blocheaza depunerea) de eroare (E:, blocheaza). Fixturi REALE
+- `core/test_echilibru_legat.py` — core/test_echilibru_legat.py — GARDA R33 varianta b'' (26.08.2026).
+- `core/test_echilibru_perioada.py` — core/test_echilibru_perioada.py — GARD C3 (integritate in timp): partida dubla pe perioada + orfani.
+- `core/test_edge_canonic_head.py` — GARD edge SEO/crawler (_edge_canonic_head din main.py):
+- `core/test_efactura_send.py` — Teste generator e-Factura SEND (core/efactura_send.py) — pe date minime construite
+- `core/test_emitere_randuri_dinamice.py` — GARD cap.24 batch 3b — randuri dinamice emitere factura, re-rulate IN POARTA prin chromium headless.
+- `core/test_esec_trimitere_email.py` — GARD [R73, 27.08.2026]: un eșec de trimitere a emailului nu se mai poate stinge tăcut.
+- `core/test_eticheta_conturi_ecran.py` — Eticheta din ECRAN și conturile din BACKEND nu pot diverge tăcut.
+- `core/test_etransport_randuri_dinamice.py` — GARD cap.24 batch 3a — randuri dinamice e-Transport, re-rulate in POARTA prin chromium headless.
+- `core/test_etransport_send.py` — Teste core/etransport_send.py (F121) — pe MOCK, niciodata pe ANAF real.
+- `core/test_eveniment_public.py` — Garda de CONFIDENTIALITATE pentru analytics public (public.eveniment_public).
+- `core/test_exces_vacanta_d112.py` — D3 (02.08.2026): excesul de tichete de vacanta peste plafonul anual (6 sm) = venit salarial in BRUTUL
+- `core/test_existenta_activitate.py` — [Regula 13 + Regula 6] GARDA: existenta_firma_an numara TOATA activitatea reala datata.
+- `core/test_expirare_cote.py` — Teste RAPORT INTERN de vechime a confirmarii (core/expirare_cote.py, Modelul de temei 01.08 pct.2).
+- `core/test_expirare_cote_de_baza.py` — Gard: modelul de temei pe data_out (Modelul de temei 01.08, pct.1+2).
+- `core/test_export_cota.py` — Export/PDF: linie fara cota TVA = intrare INCOMPLETA -> eroare, NU cota 0 (scutit) ghicita.
+- `core/test_export_winmentor.py` — Teste F187 — export WinMENTOR. Verificare contra spec-ului OFICIAL (Facturi clienti.pdf Rev.1.2 +
+- `core/test_facturi_recurente_randuri_dinamice.py` — GARD cap.24 — randuri dinamice facturi RECURENTE (sablon), re-rulate IN POARTA prin chromium headless.
+- `core/test_faptul_bate_vectorul.py` — GARD (21.08.2026): FAPTUL BATE VECTORUL în selectorul de declarații, iar „lună închisă" nu mai
+- `core/test_fereastra_focusabila.py` — [a11y WCAG 2.1.1 / Regula 14] GARD: corpul modal .fereastra-corp e focusabil din tastatura.
+- `core/test_fieldmark.py` — [Regula 13 + Regula 6] GARDA: marcajul vizual al campului cu eroare de validare (Regula 14 pct.4).
+- `core/test_firma_profil_api.py` — Teste pure pentru helper-ele F180 (regim TVA vs ANAF) din firma_profil_api.
+- `core/test_fisa_cont.py` — GARD: Fișa de cont pentru operațiuni diverse produce ce cere norma, nu o balanță deghizată.
+- `core/test_fixturi_shared_period.py` — [Verificare funcțională reală] GARD: o fixtură de test care scrie într-un tabel PARTAJAT period-keyed
+- `core/test_flag_constatare.py` — GARDĂ: constatarea din semaforul de portofoliu e o afirmație VALIDĂ, pe toate cele trei stări.
+- `core/test_fluturas_egal_stat.py` — GARDĂ: fluturașul TIPĂREȘTE statul, nu îl recalculează. (21.08.2026)
+- `core/test_fluturas_eticheta.py` — O eticheta de pe fluturas nu are voie sa numeasca un lucru si sa arate altul.
+- `core/test_front_e_editare_identitate.py` — core/test_front_e_editare_identitate.py — GARD Front E: identitatea/contractul salariatului
+- `core/test_g10_eroare_langa_camp.py` — GARD G10 (DESIGN_SYSTEM cap.6 v2.30) — rollout mecanism A (eroare LANGA campul care a cauzat-o, via
+- `core/test_g1_cod_mesaj.py` — core/test_g1_cod_mesaj.py — G1: codul-mașină de business nu mai ajunge brut la utilizator.
+- `core/test_g9_oblig_backend.py` — core/test_g9_oblig_backend.py — GARD care ÎNCHIDE CLASA (nu doar instanțele): un câmp marcat
+- `core/test_gard_masca_zero.py` — core/test_gard_masca_zero.py — GARD C5 (clasa oarba "mascarea erorii / zero tacut", GARZI cat.0).
+- `core/test_garzi_inventar.py` — GARD [28.08.2026]: inventarul gărzilor din `GARZI.md` nu poate rămâne în urma codului.
+- `core/test_garzi_mesaje_afisabile.py` — core/test_garzi_mesaje_afisabile.py — GARD STRUCTURAL (C-5, pct.5 Costin): niciun test nu asertează
+- `core/test_garzi_pe_text.py` — GARD PESTE GĂRZI — o gardă asertează pe STRUCTURĂ, nu pe text.
+- `core/test_garzi_tacere_ui.py` — core/test_garzi_tacere_ui.py — GARDURI STATICE anti tacere-la-esec + info-leak in UI (JS).
+- `core/test_get_fara_scriere.py` — GARD (20.08.2026): o rută GET nu scrie în starea de business. GET trebuie să fie SAFE (RFC 9110 §9.2.1).
+- `core/test_ghiduri_servite.py` — Gard: ghid/ e SURSA UNICA a paginilor publice de ghid.
+- `core/test_golden_xsd.py` — GARD completitudine golden-XSD: fiecare XSD de declaratie din corpus (anaf_surse/*.xsd +
+- `core/test_graf_clustere_proprietar.py` — GARD (R19): o funcție partajată între clustere NU e proprietatea niciunuia.
+- `core/test_graf_temei.py` — Graful de dependente fiscale extras din cod (core/graf_temei.py, Modelul de temei 01.08 pct.3).
+- `core/test_granite_cota.py` — Granite API — cota TVA lipsa = intrare INCOMPLETA -> eroare, nu default 21 ghicit.
+- `core/test_harta_casete.py` — GARD — COMPARATORUL. Confruntă ce s-a randat cu ce spune harta că trebuie randat.
+- `core/test_harta_ecrane.py` — [Regula 13 PERIMETRU + #3 din roadmap] GARD: harta ecranelor nu crește TĂCUT. Fiecare ecran de firmă
+- `core/test_harta_temei.py` — GARD (R5, 20.08.2026): în harta casetelor, temeiul legal nu se amestecă cu regula de produs.
+- `core/test_heartbeat.py` — Gard: heartbeat pentru joburile de fundal — jobul care NU porneste deloc.
+- `core/test_identitate.py` — Gard pe validatorul de identitate PARTAJAT (core/identitate.py, LANT legislatie TURA 3, 10.08.2026).
+- `core/test_identitate_acte.py` — GARD — un act din corpus e ACTUL pe care îl spune numele lui, și e adus o singură dată.
+- `core/test_import_backend_corect.py` — GARD lot1 corectitudine import: preview↔salvare aliniate pe validarea reala + fara default tacit.
+- `core/test_import_mesaje_afisate.py` — GARD import_mesaje_afisate: mesajele ridicate cu `raise ValueError/TypeError` din parserele de
+- `core/test_import_migrare.py` — Teste gardian pentru importurile de migrare care nu aveau NICIUNA.
+- `core/test_import_migrare_valideaza.py` — Gard COMPORTAMENTAL (unit) pentru clasa 'importul accepta orice fisier si declara succes'
+- `core/test_import_motiv_vizibil.py` — [Regula 6 + Regula 14] GARD: motivul de refuz din preview-ul de IMPORT e VIZIBIL, nu doar in `title`.
+- `core/test_importuri_nefolosite.py` — CLICHET pe importurile nefolosite (F401). Nu blochează codul existent; oprește creșterea.
+- `core/test_impozit_dividend.py` — PAS 0 versionare formule: impozitul pe dividende (regim dividende + lichidare) = COTE period-aware,
+- `core/test_inchidere_luna.py` — ACTUL DE ÎNCHIDERE a lunii pe domeniul `facturi` (21.08.2026) — DESIGN_SYSTEM cap.23.
+- `core/test_infra_vizuala.py` — GARDĂ: infrastructura de testare vizuală (frontend_test/vizual) nu poate dispărea tăcut.
+- `core/test_instrumente_roadmap.py` — [metoda-ca-poarta] GARD: INSTRUMENTE_ROADMAP.md nu minte — un instrument marcat CONSTRUIT trebuie sa
+- `core/test_interpretare.py` — GARDĂ: o interpretare e un OBIECT declarabil, cu variantele obligatorii. (P11, 22.08.2026)
+- `core/test_inventar_a.py` — Inventar A generat PARTIAL din common.COTE + overlay separat pentru judecatile umane.
+- `core/test_inventar_randuri_dinamice.py` — GARD cap.24 regula 2 — inventar (sectiuneaCV), re-rulat IN POARTA prin chromium headless.
+- `core/test_izolare_api_key.py` — core/test_izolare_api_key.py — GARD de izolare pe CHEIE API (namespace /api/v1/firme/{tenant_id}).
+- `core/test_izolare_incrucisata.py` — Proba DINAMICA de izolare tenanti: acces incrucisat real prin HTTP.
+- `core/test_izolare_raportari.py` — core/test_izolare_raportari.py — GARD structural de izolare pe /raportari (apararea de DATE, nu doar ruta).
+- `core/test_izolare_structurala.py` — core/test_izolare_structurala.py — GARD STRUCTURAL de izolare (C-5 P1, clasele 5+6).
+- `core/test_joburi_supravegheate.py` — GARD [R74, 27.08.2026]: lista deadman-ului se compară cu SISTEMUL, nu cu o copie a ei.
+- `core/test_kpi_client.py` — —
+- `core/test_limita_text_anaf.py` — Gard: niciun atribut de text din declaratii nu depaseste limita ANAF (75 caractere).
+- `core/test_limite_verificarii.py` — GARD (P4, 21.08.2026): „Ce nu poate spune verificarea asta" e PERMANENTĂ și se COMPUNE.
+- `core/test_live_accesibil.py` — [#6 plimbare 14.08.2026 / regula 9] Garda: o declaratie e LIVE DOAR daca e accesibila in selectorul UI
+- `core/test_login_proba_metoda.py` — GARD "gaura de metoda" (09.08.2026, cerut de Costin): a PROBA un cont = prin calea de autentificare
+- `core/test_manual_decl_cere_eligibil.py` — GARD (sweep audit tenant_006): rutele de intrare MANUALĂ de declarație verifică eligibilitatea față
+- `core/test_masti.py` — Garda: nicio masca TACUTA peste un query.
+- `core/test_matrice_control_fiscal.py` — Matrice de stari pe control fiscal - PURA, aserții pe FORMĂ (nu valori). NU testeaza UI, NU repara.
+- `core/test_mesaje_fara_camp_intern.py` — core/test_mesaje_fara_camp_intern.py — GARD: mesaj user-facing FĂRĂ nume intern de câmp.
+- `core/test_mesaje_generare_fara_camp_intern.py` — GARD (F5/Regula 14.4): mesajele de VALIDARE ale generatoarelor de declaratii (functiile
+- `core/test_mesaje_valueerror_publicat.py` — GARD (D7/D8/D9, 20.08.2026): mesajele `ValueError` PUBLICATE contabilului sunt în limba lui.
+- `core/test_metoda_vie.py` — GARD (20.08.2026): METODA_VERIFICARE.md nu descrie o lume care nu mai există.
+- `core/test_migrare_cnp_ingrijit.py` — core/test_migrare_cnp_ingrijit.py — gard: fiecare schema de TENANT are coloana cnp_ingrijit (D_8/D_8a).
+- `core/test_migrare_ignorate_vizibil.py` — [Regula 6 + Regula 14.4] GARD: intrarile ignorate la validarea CUI (strat firme) ajung VIZIBIL pe ecran.
+- `core/test_migrare_program_national_cm.py` — core/test_migrare_program_national_cm.py — gard: fiecare schema de tenant are concedii_medicale.program_national (D_9a).
+- `core/test_mijloace_fixe_import_categorie.py` — Import mijloace fixe: cont de imobilizare lipsă NU se mai completează tacit cu 2131.
+- `core/test_module_nelegate.py` — CLICHET — module de producție din `core/` pe care nu le cheamă nimeni în afara testelor.
+- `core/test_monitor_fiscal.py` — —
+- `core/test_mutant_zero.py` — core/test_mutant_zero.py — GARD C5 (rest): mutant-zero pe generatoare.
+- `core/test_nir_randuri_dinamice.py` — GARD cap.24 — randuri dinamice NIR (ecranStocuri), re-rulate IN POARTA prin chromium headless.
+- `core/test_nomenclatoare_ancorate.py` — GARD DE CLASA (04.08.2026): fiecare nomenclator care ajunge la ANAF e PROBAT pe validatorul INSTALAT.
+- `core/test_nomenclator_pe_norma.py` — GARD [C6, 25.08.2026]: un nomenclator se ia din NORMĂ; validatorul e constrângere, nu sursă.
+- `core/test_norma_implementare.py` — GARDĂ pentru interdicția 60 — elementul care implementează o normă îi poartă articolul?
+- `core/test_numar_fiscal.py` — Teste core.common.numar_fiscal + garda pe generatoarele de declaratii.
+- `core/test_nume_anaf.py` — GARD [27.08.2026]: denumirea de la ANAF se păstrează lângă cea editabilă, cu data ei.
+- `core/test_nume_firma_unic.py` — GARD [27.08.2026]: două firme cu același nume, în același cabinet, sunt un fapt imposibil.
+- `core/test_numere.py` — Teste gardian pentru core/numere.py — sursa UNICA de parsare a numerelor.
+- `core/test_octeti_invizibili.py` — GARD (21.08.2026): niciun octet de CONTROL invizibil în codul sursă.
+- `core/test_onboarding_ux.py` — GARD onboarding_ux: fereastra de bun venit (salut inaintea Suportului, firul spune unde se face
+- `core/test_operatiuni_speciale.py` — Teste gardian pentru operatiuni speciale P2.7 (leasing, avansuri,
+- `core/test_pas2_panou_editabil_pe_eroare.py` — GARD anti-regresie CHICKEN-AND-EGG (16.08.2026) — pas2 (declaratii.js).
+- `core/test_pastila_gri.py` — GARD (20.08.2026): griul nu se falsifică niciodată în verde.
+- `core/test_patru_ochi_efectiv.py` — core/test_patru_ochi_efectiv.py — GARD: patru-ochi = politica x aplicabilitate, aceeasi in UI si in enforcement.
+- `core/test_perimetru_calculat.py` — #11 — §5 CALCULAT (meta-gardul). Din registrul de fatete (MODEL_AUDIT_TENANT.md, F1..F9)
+- `core/test_perimetru_firma_declarat.py` — core/test_perimetru_firma_declarat.py — GARD: perimetrul declarat al unei firme nu poate ramane
+- `core/test_perioada.py` — Perioada confirmata (DESIGN_SYSTEM cap.23): ciclul CONFIRMAT/NECONFIRMAT + blocajul motivat.
+- `core/test_perioada_indisponibila.py` — Blocaj MOTIVAT pentru cote de regula cu data_in tarzie (01.08.2026). O cota ceruta de un calcul pentru
+- `core/test_plan_conturi_no_upsert.py` — [Regula 4 + Regula 14.4] GARD: adaugarea MANUALA de cont in plan NU suprascrie tacut un simbol existent.
+- `core/test_plan_form_fieldmark.py` — [Regula 14.4 pct.4] GARD: formularul 'Adauga cont' (plan_conturi) semnaleaza obligativitatea INAINTE de
+- `core/test_plata_salarii.py` — Teste gardian pentru F134 (plata salariilor pe card, SEPA pain.001).
+- `core/test_plati.py` — —
+- `core/test_plus_mf_registru.py` — #5 (ruptura mijloc-fix post-migrare, plimbare vizuala 14.08.2026): un mijloc fix corporal adaugat prin
+- `core/test_poarta_gol.py` — Teste numar_operatiuni — puntea catre poarta de declaratie goala.
+- `core/test_poarta_profil.py` — Garda: verificarea de profil nu e decorativa — daca exista, blocheaza generarea.
+- `core/test_portal_acces.py` — GARD [R62, 26.08.2026]: portalul nu mută identitatea fără confirmare, nu trece un cont dintr-un
+- `core/test_portal_ids.py` — GARDĂ: fiecare act citat de un Temei din registru are id-ul lui de portal, scris.
+- `core/test_portal_nu_scrie_gol.py` — Unealta care aduce acte din portal NU are voie să scrie un `.txt` gol.
+- `core/test_prapastie_salariu.py` — GARD [R49, varianta (c)]: prăpastia salariului minim se spune CU CIFRE, și cifrele sunt ale
+- `core/test_precizie_import.py` — Gard: float-ul din `numere.numar()` nu compromite verificarile de echilibru.
+- `core/test_precompletare_anaf_unificata.py` — GARD precompletare_anaf_unificata: cele trei cai de creare a unei firme (register, add-firm,
+- `core/test_predare_proaspata.py` — PREDARE_LANT.md isi arata vechimea, iar avertismentul din poarta nu poate disparea tacit.
+- `core/test_premisa_restanta.py` — [Regula 4 + Regula 6] TEST-GARDA: NICIO restanta fara premisa demonstrabila.
+- `core/test_preview_salvare_poarta.py` — GARD Q5 — preview = salvare, O SINGURA POARTA (tura import CUBUS, 16.08.2026).
+- `core/test_profil_blocaje.py` — GARD profil_blocaje: ecranul Date firma NU pretinde 'toate declaratiile se pot genera' cand un
+- `core/test_proprietate_coaja.py` — GARD DE PROPRIETATE (P2, 21.08.2026): un ECRAN nu scrie în COAJĂ. DESIGN_SYSTEM cap.25.
+- `core/test_provenienta.py` — GARDA: fiecare fisier din corpus isi stie provenienta. (23.08.2026)
+- `core/test_publicare_restart_neconditionat.py` — Gard: pasul de restart din ritualul de publicare (scripts/githooks/post-commit) e NECONDITIONAT de continut.
+- `core/test_pull_declaratii.py` — Teste pe pull() — granita COD <-> BAZA DE DATE pentru generatoarele de declaratii.
+- `core/test_q16_cor.py` — GARD Q16 — preview salariati imbogateste COR cu denumirea ocupatiei (nu doar codul).
+- `core/test_r42_criteriu.py` — GARD [R42, cele patru decizii ale lui Costin, 25.08.2026].
+- `core/test_raport_z_unic.py` — GARD [R61, 26.08.2026]: raportul Z nu se poate înregistra de două ori, iar niciuna din cele
+- `core/test_reaprindere.py` — GARD: o restanță al cărei DECLANȘATOR s-a produs nu poate rămâne nereluată.
+- `core/test_reconciliere.py` — —
+- `core/test_reconciliere_d100_wiring.py` — core/test_reconciliere_d100_wiring.py - GARD end-to-end pentru reconcilierea D100 pe semafor
+- `core/test_reconciliere_vie.py` — META-GARD (LANT legislatie TURA 4, 10.08.2026): NICIO reconciliere sursa-vs-declaratie nu moare tacit.
+- `core/test_refuz_generator_422.py` — GARD (D6, 20.08.2026): un generator care REFUZĂ motivat nu are voie să ajungă la contabil ca 500 gol.
+- `core/test_refuz_tacut.py` — GARD [27.08.2026]: un refuz al serverului la o SCRIERE nu poate rămâne nevăzut.
+- `core/test_regim_peste_perioada_inchisa.py` — GARD [R46, 26.08.2026]: un câmp care decide CE SE DATOREAZĂ nu se schimbă peste o perioadă închisă.
+- `core/test_register_cabinet_cui.py` — GARD register_cabinet_cui: la inregistrarea self-service, CUI-ul validat (cel care a trecut
+- `core/test_registru_exceptii.py` — GARDĂ peste REGISTRUL DE EXCEPȚII al clichetului de afirmații. (P8, 22.08.2026)
+- `core/test_registru_functionalitati.py` — Garda de integritate a FUNCTIONALITATI.csv (registrul canonic al functionalitatilor).
+- `core/test_registru_jurnal_14_1_1.py` — GARD — Registrul-jurnal păstrează cele trei coloane cerute de norma 14-1-1.
+- `core/test_reguli_ecran.py` — GARD [28.08.2026]: cele două reguli de ecran scrise azi — E1 și E2 (`DESIGN_SYSTEM.md` cap.26/27).
+- `core/test_reluari_decizie.py` — GARD [27.08.2026]: o decizie cerută de mai multe ori nu mai poate arăta ca cerută o dată.
+- `core/test_respingeri_import.py` — GARDĂ: o respingere de rând la import e o AFIRMAȚIE, cu regulă numită. (P8/C, 21.08.2026)
+- `core/test_retete_randuri_dinamice.py` — GARD cap.24 — randuri dinamice RETETE (ingrediente HoReCa), re-rulate IN POARTA prin chromium headless.
+- `core/test_rol_pe_efect.py` — core/test_rol_pe_efect.py — GARD: rolul se cere după CE FACE ruta, nu după cum se numește.
+- `core/test_rotunjire_fiscala.py` — [Rotunjire fiscală] GARD: în modulele de declarații (`core/d*.py`, `*engine*.py`) o sumă fiscală NU se
+- `core/test_running_head.py` — GARD detector "running == HEAD" (DECIZII/GARZI iulie: detector vizibil, NU auto-restart).
+- `core/test_ruptura_seed_control.py` — Garda anti-ruptura seed<->control (plimbare vizuala 14.08.2026).
+- `core/test_ruta_fara_apelant.py` — GARD [R70, 26.08.2026]: o rută NOUĂ fără apelant nu trece poarta.
+- `core/test_rute_autentificate.py` — Garda: fiecare ruta HTTP declara o dependenta de autentificare.
+- `core/test_rute_model_body.py` — core/test_rute_model_body.py — GARD: un model Pydantic pe un handler e BODY, nu query.
+- `core/test_salariati_blocaj_vizibil.py` — core/test_salariati_blocaj_vizibil.py — GARD: pe Stat de plata, butoanele dezactivate SEPA
+- `core/test_salariati_import_iban.py` — core/test_salariati_import_iban.py — GARD: importul de salariati (stratul 4 migrare) aduce IBAN
+- `core/test_salarii_contare.py` — Teste gardian pentru salarii_contare (partea pura).
+- `core/test_salariu_scrieri.py` — Teste PASUL 2b: scrierile salariului trec pe salariu_istoric (SURSA UNICA); citirile pe curent.
+- `core/test_salarizare.py` — Teste gardian pentru core/salarizare.py.
+- `core/test_scadente.py` — Teste pentru scadentarul per declaratie (core/scadente.py), sursa unica de termene.
+- `core/test_scan_instrumente.py` — Garda instrumentului de FAZA 4 (`scripts/scan_instrumente.py`).
+- `core/test_scan_js_texte.py` — CALIBRAREA instrumentului JS — scrisă ÎNAINTE de prima măsurătoare, nu după.
+- `core/test_schema_coloane.py` — Garda: coloanele referite in SQL EXISTA in schema reala a tabelelor tenant.
+- `core/test_secrete_jwt.py` — Teste securitate JWT — default gol pe cheie HMAC = bypass complet de auth (tokenuri forjabile).
+- `core/test_selector_vector.py` — S1 + #2 (plimbare 14.08.2026): selectorul de declaratii respecta vectorul TVA si periodicitatea firmei.
+- `core/test_separa_cui.py` — [Regula 4 + Regula 14.4] GARD: intrarile care nu-s CUI NU dispar in tacere la validarea la ANAF.
+- `core/test_simetrie_denumire.py` — GARD [R81, DECIS 28.08.2026]: denumirea unei firme se scrie în AMÂNDOUĂ locurile sau în niciunul.
+- `core/test_smoke_duk.py` — SMOKE-SWEEP DUK (01.08.2026) — gardul care lipsea: fiecare declaratie generata cu date
+- `core/test_solduri_api.py` — Teste gardian pentru solduri_api (partea PURA).
+- `core/test_solduri_parteneri_api.py` — Teste gardian pentru solduri_parteneri_api (partea PURA).
+- `core/test_sonda_web.py` — GARD [R75 (b), 27.08.2026]: procesul care servește ecranele e supravegheat, și se știe cum.
+- `core/test_spv_conector.py` — Teste core/spv_conector.py — pe MOCK, niciodata pe ANAF real (brief BRIEF_CODE_CONECTOR_SPV.md).
+- `core/test_spv_poll.py` — Teste core/spv_poll.py (F178) — pe MOCK, niciodata pe ANAF real.
+- `core/test_spv_receive.py` — Teste core/spv_receive.py (F179) — pe MOCK (retea + parser), niciodata pe ANAF real.
+- `core/test_stat_plata_emis.py` — GARDĂ: statul de plată e un DOCUMENT EMIS, nu o vedere recalculată. (21.08.2026)
+- `core/test_status_factura_un_loc.py` — GARDĂ: stările unei FACTURI trăiesc într-un singur loc. (22.08.2026, după reparația de prag 1)
+- `core/test_stergere_salariat_completa.py` — GARD (D5, 20.08.2026): stergerea unui salariat nu lasa jumatate din inregistrare in urma.
+- `core/test_stocuri.py` — —
+- `core/test_stocuri_cv.py` — —
+- `core/test_temei_structurat.py` — Temei fiscal STRUCTURAT (act/nr/an/art/alin/lit/data_in/data_out/url) + garda de EXPIRARE.
+- `core/test_temei_termene.py` — GARD (R4, 20.08.2026 — refăcut 21.08): fiecare termen de depunere își poartă actul, ca DATE.
+- `core/test_temeiuri.py` — Gardul temeiurilor (PASUL 4): impune forma canonica de citare a REGULILOR de validator din
+- `core/test_tenant_stergere.py` — GARD [R72, 27.08.2026]: calea de scoatere a unei firme nu poate rămâne în urma bazei.
+- `core/test_termene.py` — core/test_termene.py — plasa de regresie pentru scadentele viitoare (termene_api).
+- `core/test_teste_decuplate.py` — Garda PERMANENTA (29.07.2026): niciun test nu depinde de o firma PERSISTENTA din baza.
+- `core/test_tichet_2025.py` — GARD B1/tichet 2025: valorile nominale ale tichetului de masa in 2025, verificate VERBATIM la sursa.
+- `core/test_tichet_cresa.py` — Tichete de cresa (Legea 165/2018 art.19). Tratament fiscal IDENTIC cu tichetul cultural: impozit 10% pe
+- `core/test_tichet_cultural.py` — Tichete culturale (Legea 165/2018 cap.V). Temeiuri VERDE: anaf_surse/RAPORT_verificare_temeiuri.md.
+- `core/test_tichete_pontaj.py` — D2 (02.08.2026): tichetele de masa pe zile EFECTIV lucrate (HG 1045/2018 art.10 alin.3). Zilele de
+- `core/test_tip_decont_lung.py` — core/test_tip_decont_lung.py — GARD: periodicitatea decont TVA ajunge la UI in forma LUNGA.
+- `core/test_trasee.py` — GARD: inventarul traseelor nu îmbătrânește tăcut, iar instrumentul lui nu minte.
+- `core/test_tva_incasare.py` — Teste gardian pentru core/tva_incasare.py (art. 282 CF, OUG 8/2026).
+- `core/test_unde.py` — GARDĂ: `unde` e o REFERINȚĂ citabilă mecanic, nu proză. (P8, 22.08.2026)
+- `core/test_upsert_motivat.py` — [Regula 4 — fara mutatie tacuta] GARD: orice INSERT ... ON CONFLICT DO UPDATE din codul de PRODUCTIE
+- `core/test_valoare_in_citat.py` — GARDĂ pentru interdicția 53: citatul conține VALOAREA pe care o justifică.
+- `core/test_valori_fiscale_js.py` — Valorile fiscale scrise in ECRANE se confrunta cu REGISTRUL, nu cu memoria mea.
+- `core/test_vector_camp_marcat.py` — [Regula 14.4 pct.4] GARD: eroarea de camp obligatoriu la vectorul fiscal NUMESTE campul vinovat ('camp'),
+- `core/test_vector_platitor_tva_oblig.py` — core/test_vector_platitor_tva_oblig.py — GARD: `platitor_tva` necompletat (None) la salvarea
+- `core/test_verde_derivat.py` — Verdele de semafor se DERIVĂ; unde nu se poate deriva, semaforul LIPSEȘTE.
+- `core/test_verdict_persistat.py` — GARD — verdictul de validare se păstrează, și un verdict stătut nu ține locul unuia proaspăt.
+- `core/test_verdict_stare.py` — —
+- `core/test_verificator_izolare.py` — GARDĂ PESTE VERIFICATOR: analizorul lui de izolare clasifică corect rute known-good / known-bad.
+- `core/test_versionare_assets.py` — core/test_versionare_assets.py -- GARD pentru disciplina ?v= (versionare asseturi front-end).
+- `core/test_versionare_formule.py` — Versionarea formulelor pe la_data (PAS 1 tipar). Cotele sunt period-aware (cota); formulele devin
+- `core/test_vigoare_articole_registru.py` — GARDĂ pentru interdicția 50 — confirmarea unei valori e ULTERIOARĂ ultimei modificări a articolului.
+- `core/test_vigoare_punct.py` — Garda instrumentului de vigoare PE PUNCT (`scripts/vigoare_punct.py`, R2).
+- `core/test_woocommerce.py` — —
+- `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
+
+### `scripts/` — 7
+
+- `scripts/scan_ancore_rute.py` — Pentru cate rute e ORB PRIN CONSTRUCTIE detectorul de apelanti din R70.
+- `scripts/scan_axa_garzi.py` — FAZA 4, axa D despicata: „odata cu fixul" ascunde DOUA lucruri, iar „singura" ascunde alte doua.
+- `scripts/scan_contract_ecran.py` — scripts/scan_contract_ecran.py — contractul ECRAN ↔ RUTĂ, măsurat.
+- `scripts/scan_garzi_inventar.py` — Inventarul gărzilor, DERIVAT din cod — blocul generat din `GARZI.md`.
+- `scripts/scan_instrumente.py` — scripts/scan_instrumente.py - FAZA 4: pe ce instrument sta fiecare garda, si a fost calibrat.
+- `scripts/scan_mutatie_garzi.py` — FAZA 4, pasul 5: mutatia care probeaza garda e REPRODUCTIBILA azi?
+- `scripts/scan_trasee.py` — scripts/scan_trasee.py — INVENTARUL TRASEELOR, calculat, nu ținut minte.
+
+<!-- INVENTAR-GARZI:STOP -->

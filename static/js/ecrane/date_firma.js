@@ -11,11 +11,18 @@ import { api, arataMesaj, esc, eroareCamp, curataEroriCamp } from "../api.js?v=c
 // camp -> {eticheta, obligatoriu, ajutor}. Obligatoriile vin din validatoarele
 // declaratiilor (core/firma_profil_api.OBLIGATORII) - o singura sursa de adevar.
 const CAMPURI = [
-  // [R81, 27.08.2026] Eticheta era „Denumirea firmei" — dar firma are DOUĂ denumiri, în două
-  // locuri, iar pe 4 din 17 ele diferă azi. Asta e cea FISCALĂ (`firma_profil.nume`): pleacă în
-  // declarații și pe bilanț. Cea din portofoliu (`tenants.nume`) se editează mai sus.
-  { k: "nume", e: "Denumirea fiscal\u0103 (apare \u00een declara\u021bii \u0219i pe bilan\u021b)", ob: true,
-    aj: "Se trimite \u00een D100, D101, D205, D301, D390, D394, D406 \u0219i pe bilan\u021b. E ACEEA\u0218I cu denumirea firmei de mai sus \u2014 de c\u00e2nd o redenumire scrie \u00een amândou\u0103 locurile (R81, 28.08.2026), cele dou\u0103 nu mai pot diferi; se completeaz\u0103 una pe alta." },
+  // [R81 → BLOC R, 28.08.2026] Câmpul `nume` A IEȘIT de aici. Istoricul lui, în trei pași, fiindcă
+  // fiecare pas a fost adevărat la momentul lui:
+  //   27.08 — eticheta „Denumirea firmei" s-a despărțit în două, fiindcă firma avea DOUĂ denumiri
+  //           în două locuri, iar pe 4 din 17 chiar difereau;
+  //   28.08 — R81 s-a decis (simetrie de scriere): cele două nu mai pot diferi, deci ecranul avea
+  //           două casete pentru o singură valoare, iar salvarea trimitea două cereri care se
+  //           puteau suprascrie tăcut una pe alta. Le-am legat, ca reparație imediată;
+  //   28.08 — decizia lui Costin: **se comasează.** Legarea era un plasture pe un duplicat;
+  //           duplicatul iese. Denumirea se editează într-un singur loc, sus, prin
+  //           `PUT /tenants/{id}` — care scrie amândouă coloanele.
+  // `firma_profil.nume` NU dispare din bază și nu iese din payload-ul de CITIRE: rămâne coloana
+  // care pleacă pe declarații. Ce dispare e a doua CALE de scriere din ecranul ăsta.
   { k: "cui", e: "CUI", ob: true },
   { k: "reg_com", e: "Nr. registrul comer\u021bului", ob: true,
     aj: "Din certificatul de \u00eenregistrare (ex. J40/1234/2020). Cerut la bilan\u021b." },
@@ -146,7 +153,7 @@ function _blocDenumire(t, profil) {
     <div class="grila-doc">
       <label class="camp">
         <span class="camp-eticheta">Denumirea firmei<span class="oblig">*</span></span>
-        <p class="camp-ajutor">Una singur\u0103: aceea\u0219i \u00een list\u0103, \u00een bara de sus \u0219i pe declara\u021bii. C\u00e2mpul „Denumirea fiscal\u0103" de mai jos e acela\u0219i lucru \u2014 se completeaz\u0103 odat\u0103 cu \u0103sta.</p>
+        <p class="camp-ajutor">Una singur\u0103, \u0219i se scrie \u00eentr-un singur loc: aceea\u0219i \u00een list\u0103, \u00een bara de sus \u0219i pe declara\u021bii (D100, D101, D205, D301, D390, D394, D406, bilan\u021b).</p>
         ${randAnaf}
         <input type="text" class="camp-input" id="df-nume-portofoliu" value="${esc(nume)}">
       </label>
@@ -221,18 +228,8 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
   if (_tvaSel) _tvaSel.addEventListener("change", _tvaToggle);
   _tvaToggle();
 
-  // [R81/Q, 28.08.2026] Cele două casete de denumire de pe ecranul ăsta scriu, de azi, ACELAȘI
-  // lucru: `scrie_denumirea` atinge amândouă coloanele. Salvarea trimite întâi `PUT /tenants/{id}`
-  // și apoi `POST …/firma-profil/date` — deci, dacă cele două casete ar putea purta valori
-  // diferite, a doua cerere ar suprascrie tăcut ce a scris prima, iar omul și-ar vedea modificarea
-  // revenită fără niciun mesaj. Se leagă, în amândouă direcțiile. Nu e o comoditate: e chiar
-  // interdicția „fără suprascriere tăcută", aplicată în ecran, nu în backend.
-  const _nP = corp.querySelector("#df-nume-portofoliu"), _nF = corp.querySelector("#df-nume");
-  if (_nP && _nF) {
-    const leaga = (a, b) => a.addEventListener("input", () => { b.value = a.value; });
-    leaga(_nP, _nF);
-    leaga(_nF, _nP);
-  }
+  // [BLOC R, 28.08.2026] Legarea celor două casete de denumire a fost scoasă odată cu a doua
+  // casetă. Era reparația corectă cât timp duplicatul exista; nu mai are ce lega.
 
   corp.querySelector("#df-salveaza").addEventListener("click", async () => {
     const btn = corp.querySelector("#df-salveaza");

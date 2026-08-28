@@ -848,6 +848,14 @@ CREATE INDEX IF NOT EXISTS urme_portal_tenant_idx
     ON public.urme_portal (tenant_id, creat_la DESC);
 
 
+-- [R79/T1, 28.08.2026] Contorul numelor de schema, care NU coboara. Oglinda DDL-ului din
+-- core/migrare_schema_seq.py (sursa UNICA e acolo, impreuna cu setval-ul la maximul istoric).
+-- Inainte, `urmator_schema_name` lua max(NNN)+1 peste firmele VII: cand cea mai mare era stearsa,
+-- numarul se refolosea. Masurat: 'tenant_019' a fost numele a doua firme diferite in aceeasi zi.
+-- O secventa, nu un rand cu maximul: `nextval` NU se intoarce la rollback, deci un provisioning
+-- esuat arde un numar in loc sa-l dea de doua ori.
+CREATE SEQUENCE IF NOT EXISTS public.tenant_schema_seq AS bigint MINVALUE 1;
+
 -- [R72, 27.08.2026] Oglinda DDL-ului din core/migrare_firme_scoase.py (sursa UNICA e acolo).
 -- Urma unei firme scoase din portofoliu. NU are chei straine: tinta (tenant, user) nu mai
 -- exista in momentul in care randul devine util. Poarta `tenant_id`, dar NU se sterge odata cu

@@ -21,6 +21,21 @@ def test_date_firma_oblig_egal_backend_obligatorii():
     ui_ob = set(re.findall(r'k:\s*"(\w+)"[^\n]*\bob:\s*true', src))
     # regim_fiscal/platitor_tva = camp de VECTOR (vector_fiscal_api), nu firma_profil -> excluse din comparatie
     firma_profil_ui = ui_ob - {"regim_fiscal", "platitor_tva"}
+    # [BLOC R, 28.08.2026] DENUMIREA a iesit din `CAMPURI`: ecranul avea DOUA casete pentru aceeasi
+    # valoare (dupa R81 — simetrie de scriere), iar duplicatul s-a scos. Se editeaza acum intr-una
+    # singura, `df-nume-portofoliu`, prin `PUT /tenants/{id}`.
+    #
+    # OBLIGATIA NU A DISPARUT, S-A MUTAT: `firma_profil_api.OBLIGATORII` o pastreaza, „Profil
+    # incomplet" o raporteaza prin `lipsuri()`, iar `scrie_denumirea` refuza un nume gol. Deci
+    # extragerea din UI trebuie sa vada si caseta de DEASUPRA grilei — altfel gardul ar cere
+    # scoaterea unei obligatii REALE din backend, adica ar repara documentul stricand codul.
+    #
+    # Se citeste pe eticheta casetei, nu pe prezenta id-ului: un `<input>` fara steluta nu declara
+    # nicio obligatie, iar gardul trebuie sa vada exact ce vede omul.
+    _et = re.search(r'<span class="camp-eticheta">[^<]*<span class="oblig">\*</span></span>'
+                    r'(?:(?!</label>).)*?id="df-nume-portofoliu"', src, re.S)
+    if _et:
+        firma_profil_ui = firma_profil_ui | {"nume"}
     assert firma_profil_ui == set(OBLIGATORII), (
         "Drift .oblig<->backend pe date_firma: UI(firma_profil)=%s vs OBLIGATORII=%s"
         % (sorted(firma_profil_ui), sorted(OBLIGATORII)))

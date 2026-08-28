@@ -536,3 +536,72 @@ def test_CALIBRARE_gardul_deosebeste_o_COLOANA_de_o_CHEIE():
                "(SELECT schema_name FROM x)")
     for s in coloana:
         assert not _pozitia_lui(s, "schema_name"), "a raportat pe nedrept: %s" % s
+
+
+# ── [R79/T1, 28.08.2026] Numele de schemă nu se mai reciclează ───────────────
+#
+# DECIZIA lui Costin: *„oprim reciclarea numelui de schemă."* Contorul e o secvență Postgres,
+# pornită de la **maximul istoric** (firme vii ∪ `firme_scoase` ∪ schemele din bază), nu de la cel
+# viu — altfel primul nume generat ar fi fost chiar unul deja folosit de o firmă scoasă.
+#
+# CE FACE IMPOSIBIL: întoarcerea la `max(existente)+1`, dispariția secvenței, și o secvență rămasă
+# în urma bazei (care ar produce o coliziune tăcută la următoarea firmă).
+_SECVENTA = "public.tenant_schema_seq"
+
+
+def test_contorul_NU_se_mai_calculeaza_din_firmele_vii():
+    """Structural, pe AST: `urmator_schema_name` cheamă `nextval` și **nu** mai citește lista de
+    scheme existente. Un `max(…)+1` reintrodus ar aduce înapoi reciclarea, iar suita ar fi verde:
+    ea testează ce se întâmplă la ștergere, nu cum se alege numele următor."""
+    from core import tenant_provisioning as tp
+    sursa = io.open(os.path.join(_RAD, "core", "tenant_provisioning.py"), encoding="utf-8").read()
+    arb = ast.parse(sursa)
+    fn = next(n for n in ast.walk(arb)
+              if isinstance(n, ast.FunctionDef) and n.name == "urmator_schema_name")
+    sql = " | ".join(_sql_executat(fn))
+    assert re.search(r"\bnextval\b", sql), (
+        "`urmator_schema_name` nu mai cheamă `nextval`: %s" % sql)
+    assert not re.search(r"SELECT\s+schema_name\s+FROM\s+public\.tenants", sql, re.I), (
+        "contorul citește iar firmele vii — de acolo venea reciclarea")
+    assert not [n for n in ast.walk(fn)
+                if isinstance(n, ast.Call) and getattr(n.func, "id", None) == "max"], (
+        "a reapărut un `max(…)` în calculul numelui de schemă")
+    assert tp.SECVENTA_SCHEMA == _SECVENTA
+
+
+def test_provizionarea_ia_numele_din_contor():
+    fn = next(n for n in ast.walk(ast.parse(io.open(
+        os.path.join(_RAD, "core", "tenant_provisioning.py"), encoding="utf-8").read()))
+        if isinstance(n, ast.FunctionDef) and n.name == "provision_tenant")
+    apeluri = {c.func.id for c in ast.walk(fn)
+               if isinstance(c, ast.Call) and isinstance(c.func, ast.Name)}
+    assert apeluri >= {"urmator_schema_name"}, (
+        "`provision_tenant` nu mai ia numele din contor: %s" % sorted(apeluri))
+
+
+def test_CALIBRARE_formatorul_e_pur_si_nu_mai_stie_de_lista():
+    """Ce a rămas pur, a rămas pur — și nu mai poate primi o listă din greșeală."""
+    from core import tenant_provisioning as tp
+    assert tp.formeaza_schema_name(7) == "tenant_007"
+    assert tp.formeaza_schema_name(20) == "tenant_020"
+    assert tp.formeaza_schema_name(1234) == "tenant_1234"
+
+
+def test_contorul_exista_si_nu_a_ramas_in_urma_bazei():
+    """Pe date. O secvență în urma maximului istoric ar produce, la următoarea firmă, un nume care
+    există deja — adică reciclarea, prin altă ușă."""
+    from core.migrare_schema_seq import maxim_istoric
+    db.init_pool()
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT count(*) FROM information_schema.sequences "
+                        "WHERE sequence_schema='public' AND sequence_name='tenant_schema_seq'")
+            assert cur.fetchone()[0] == 1, (
+                "secvența %s lipsește — rulează `python3 -m core.migrare_schema_seq`" % _SECVENTA)
+            cur.execute("SELECT last_value, is_called FROM %s" % _SECVENTA)
+            last, chemat = cur.fetchone()
+        curent = last if chemat else last - 1
+        istoric = maxim_istoric(conn)
+    assert curent >= istoric, (
+        "contorul e la %d, iar maximul istoric e %d — următoarea firmă ar primi un nume deja "
+        "folosit. Rulează `python3 -m core.migrare_schema_seq`." % (curent, istoric))

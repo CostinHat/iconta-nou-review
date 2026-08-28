@@ -13,7 +13,7 @@ import { declaratiiPerFirma } from "./declaratii.js?v=cc81187e9a";  // [decl_fir
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=ddd1606ae8";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=2caaba5417";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=ae22f440bf";  // [wc_extras_v1]
-import { randeazaDateFirma } from "./date_firma.js?v=6284f0f195";  // [date_firma_v1]
+import { randeazaDateFirma } from "./date_firma.js?v=cab8ce1860";  // [date_firma_v1]
 import { ecranMijloace } from "./mijloace_ecran.js?v=cec020b9da";  // [ecran_mf_v1]
 
 // randează lista în containerul dat; `inapoi()` revine la panoul cu carduri
@@ -304,7 +304,7 @@ function _randDivergentaNume(corp, nav, t) {
     zona.innerHTML = `
       <div class="ca-mesaj" data-e1="denumire-firma"><strong>Două denumiri, și trebuie aleasă
         una.</strong> Denumirea firmei diferă de cea de la ANAF${
-        d.zile !== null ? ` (citită acum ${d.zile === 0 ? "azi" : d.zile + " zile"})` : ""}:
+        d.zile !== null ? ` (${d.zile === 0 ? "citită azi" : "citită acum " + d.zile + " zile"})` : ""}:
         <br>· în aplicație: <strong data-e1-sursa="portofoliu">${esc(t.nume || "")}</strong>
         <br>· la ANAF: <strong>${esc(d.anaf)}</strong>
         <br><span data-e1-efect="fiscal" data-e1-absent="fiscal">Denumirea aplicată e cea de pe
