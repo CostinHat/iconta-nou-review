@@ -3,6 +3,46 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 28.08.2026 — R33: cele patru poziții fiscale devin gardă de REGRESIE, nu verificare de divergență
+
+**Decizia lui Costin:** *„Cele patru poziții din D112 (444, 4315, 4316, 436) nu mai sunt verificare
+de divergență — nu mai pot diverge, prin construcție (R34). Devin gardă de regresie: rămân comparate
+mecanic, dar un roșu acolo înseamnă «cineva a reintrodus un calcul independent», nu «dezacord fiscal
+real». Verificarea reală rămâne pe 641/421 și 642/5328."*
+
+**Ce repară.** Reparația de la R34 a golit de conținut chiar verificarea pentru care fusese construit
+modulul: comparând nota cu declarația pe cele patru poziții, `control_coerenta` compară acum
+declarația **cu ea însăși**. Costul fusese scris în aceeași zi, la R34; ce lipsea era **ce facem cu
+comparația rămasă**.
+
+**De ce reclasificare și nu ștergere — cele trei drumuri, și de ce al treilea:**
+- **a le scoate** ar fi lăsat reintroducerea unui calcul independent să treacă neobservată. Exact
+  regresia pe care R34 tocmai a reparat-o ar fi devenit invizibilă a doua oară.
+- **a le lăsa nemarcate** ar fi păstrat un semnal care **minte despre sine**: un roșu ar fi trimis
+  omul să caute în datele firmei, când singurul lucru care îl poate produce e o schimbare de cod.
+- **a le marca** păstrează detecția și îi spune înțelesul. *Aceeași comparație, alt înțeles — deci se
+  scrie înțelesul, nu se șterge comparația.*
+
+**Cum se vede:** fiecare divergență poartă `fel` ∈ {`regresie`, `verificare`}. Cine citește
+rezultatul și nu se uită la `fel` primește exact ce primea înainte; cine se uită află dacă semnalul e
+despre **bani** sau despre **cablaj**.
+
+**Partea care nu era în decizie, dar fără de care „verificarea reală" ar fi fost un nume:** cele două
+poziții rămase n-aveau cu **ce** să fie comparate. Au primit contra-valoarea lor declarată —
+`641/421` ↔ `B_brutSalarii` (salariul **realizat**, nu `B4_3` cel contractual, care pe o lună cu
+concediu medical diferă prin construcție), `642/5328` ↔ `E3_10 + E3_75` din secțiunea 8.3. Alegerea
+s-a făcut **după** ce s-au măsurat amândouă ancorele, nu înainte.
+
+**Ce a găsit la prima rulare: 10 divergențe pe 5 perechi** — nota nu înregistrează **deloc**
+biletele de valoare, iar salariile brute intră cu altă cifră decât cea declarată. Documentate ca
+**R86**, nereparate (cerut explicit). *Exact ce prezisese Costin la deschiderea lui R33: „dacă una
+raportează diferențe pe o firmă de test, aia nu e o gardă nouă care merge — e un defect care aștepta
+să fie văzut."*
+
+**Limita, scrisă:** câmpul `fel` e **aditiv** — ecranul nu-l citește. Azi asta nu ascunde nimic
+(cele patru nu pot diverge), dar în ziua în care ar apărea un roșu de `regresie`, omul l-ar vedea la
+fel cu unul real. A schimba tabelul ar fi o rearanjare de ecran, deci se cere separat.
+
 ## 28.08.2026 — R34: sursa contribuțiilor din nota de salarii e D112, nu a doua socoteală
 
 **Decizia lui Costin:** *„pentru pozițiile 444 (impozit), 4315 (CAS), 4316 (CASS), 436 (CAM),

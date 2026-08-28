@@ -63,6 +63,35 @@ CONT_D112 = (
 #: creditele care NU se mai calculeaza per salariat — vin din declaratie
 CREDITE_DIN_D112 = frozenset(c for _cod, _dt, c in CONT_D112)
 
+# [R33/QQ, 28.08.2026] CELE DOUA POZITII PE CARE CONTROLUL CHIAR POATE GASI CEVA.
+# Dupa R34, cele patru pozitii fiscale sunt copiate din declaratie, deci comparatia lor cu
+# declaratia e o tautologie (vezi `control_coerenta`). Ce ramane calculat INDEPENDENT de D112 in
+# nota propusa sunt exact doua conturi, si alea capata acum contra-valoarea lor DECLARATA:
+#   * 641 = 421 — salariile brute REALIZATE. Contrapartida in declaratie e `B_brutSalarii`
+#     (= C1_11 = suma B2_5), despre care generatorul spune explicit ca e „DOAR salariul REALIZAT
+#     (bazac), EXCLUDE indemnizatia" — adica exact ce intra pe 641. NU `B4_3` (brutul
+#     CONTRACTUAL): pe o luna cu concediu medical alea difera prin constructie, iar o ancora care
+#     difera prin constructie produce zgomot, nu masuratoare.
+#   * 642 = 5328 — biletele de valoare ACORDATE. Contrapartida e sectiunea 8.3: `E3_10` (masa) +
+#     `E3_75` (vacanta), aceleasi doua tipuri pe care nota le pune pe 5328.
+VERIFICARE_REALA = (
+    ("Salarii brute realizate", "421", ("angajatorB", ("B_brutSalarii",))),
+    ("Bilete de valoare acordate", "5328", ("asiguratE3", ("E3_10", "E3_75"))),
+)
+
+
+def _suma_din_xml(xml, tag, atribute):
+    """Suma unui atribut peste toate elementele cu tagul dat. Citeste ARTEFACTUL emis."""
+    import re
+    total = 0
+    for m in re.finditer(r"<%s ([^>]*)/>" % tag, xml):
+        corp = m.group(1)
+        for a in atribute:
+            g = re.search(r'%s="(-?\d+)"' % a, corp)
+            if g:
+                total += int(g.group(1))
+    return total
+
 
 def _d(v):
     return Decimal(str(v or 0))
@@ -167,6 +196,20 @@ def control_coerenta(note, conn, schema, an, luna, xml_d112=None):
     care e diferenta. Nu «exista o divergenta» - cifrele amandoua."* Textul il compune ecranul
     (DS cap.13: textul nu e purtator de decizie), iar cifrele nu se pot compune din proza inapoi.
 
+    [R33/QQ, 28.08.2026] DOUA FELURI DE DIVERGENTA, si diferenta NU e cosmetica — `fel`:
+
+      * **`"regresie"`** — cele patru pozitii fiscale (444, 4315, 4316, 436). Dupa R34 ele se
+        CITESC din declaratie, deci comparatia lor cu declaratia compara declaratia cu ea insasi.
+        **Nu pot diverge azi.** Raman comparate mecanic fiindca un rosu acolo ar insemna ca cineva
+        a reintrodus un calcul independent — adica **cablaj stricat, nu dezacord fiscal**. Cel care
+        vede un asemenea rosu sa nu caute in date: sa caute in `note_lunare`.
+      * **`"verificare"`** — 641/421 si 642/5328, singurele doua pozitii pe care nota le calculeaza
+        INDEPENDENT de D112. Aici un rosu inseamna ce insemna inainte: cele doua cai spun lucruri
+        diferite despre aceeasi luna, si nu se stie care greseste.
+
+    *Cine citeste rezultatul si nu se uita la `fel` primeste acelasi lucru ca inainte; cine se uita
+    afla daca semnalul e despre bani sau despre cablaj.*
+
     NU ridica si nu refuza nimic: semnalul e informatie pentru om, nu o poarta."""
     from core import d112 as _d112
     from core import control_incrucisat as _ci
@@ -177,13 +220,20 @@ def control_coerenta(note, conn, schema, an, luna, xml_d112=None):
         rulaj.setdefault(c, {"credit": Decimal("0"), "debit": Decimal("0")})["credit"] += s
     tol = _ci.toleranta_d112(_nr_salariati_xml(xml))
     div = []
-    for eticheta, coduri, cont in _ci.COD_CONT_D112:
-        decl = sum(_d(totaluri.get(k, 0)) for k in coduri)
+
+    def _confrunta(eticheta, cont, decl, fel):
         prop = rulaj.get(cont, {}).get("credit", Decimal("0"))
         if abs(decl - prop) > tol:
-            div.append({"eticheta": eticheta, "cont": cont,
+            div.append({"eticheta": eticheta, "cont": cont, "fel": fel,
                         "nota": _bani(prop), "declaratie": _bani(decl),
                         "diferenta": _bani(decl - prop), "toleranta": _bani(tol)})
+
+    # [R34] cele patru pozitii fiscale — garda de REGRESIE: nu pot diverge azi
+    for eticheta, coduri, cont in _ci.COD_CONT_D112:
+        _confrunta(eticheta, cont, sum(_d(totaluri.get(k, 0)) for k in coduri), "regresie")
+    # [QQ2] cele doua pozitii calculate independent — verificarea REALA
+    for eticheta, cont, (tag, atribute) in VERIFICARE_REALA:
+        _confrunta(eticheta, cont, _d(_suma_din_xml(xml, tag, atribute)), "verificare")
     return div
 
 

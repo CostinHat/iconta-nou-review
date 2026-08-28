@@ -17,6 +17,14 @@ DOUA FORME, masurate pe aceleasi perechi:
     putea insemna la fel de bine ca sonda nu vede nimic (interdictia 19).
   * NOUA — `salarii_contare.note_lunare`, care citeste cele patru pozitii din D112.
 
+DOUA FELURI DE DIVERGENTA, de la 28.08.2026 (R33/QQ), si se raporteaza SEPARAT:
+  * REGRESIE — cele patru pozitii fiscale. Nu pot diverge azi, prin constructie (R34). Un rosu
+    aici inseamna ca cineva a reintrodus un calcul independent: cablaj stricat, nu dezacord fiscal.
+  * VERIFICARE — 641/421 (salarii brute realizate) si 642/5328 (bilete de valoare), singurele doua
+    pozitii pe care nota le calculeaza INDEPENDENT de D112. Aici un rosu inseamna ce insemna
+    inainte: doua cai spun lucruri diferite despre aceeasi luna.
+Un total pe amandoua la un loc ar amesteca „cifrele nu se potrivesc" cu „codul s-a stricat".
+
 NU SCRIE NIMIC: `pg_stat_user_tables` se citeste inainte si dupa, iar diferenta se tipareste.
 """
 import os
@@ -126,14 +134,21 @@ def ruleaza():
                 if div:
                     div_total += len(div)
                     perechi_cu_div.append((schema, an, luna, div))
-            rezultat[forma] = (div_total, perechi_cu_div, sarite)
-            print("FORMA %-6s: %d divergente pe %d perechi · %d perechi n-au putut fi masurate"
-                  % (forma.upper(), div_total, len(perechi_cu_div), len(sarite)))
+            pe_fel = {"regresie": 0, "verificare": 0}
+            for _s, _a, _l, div in perechi_cu_div:
+                for d in div:
+                    pe_fel[d.get("fel", "verificare")] += 1
+            rezultat[forma] = (div_total, perechi_cu_div, sarite, pe_fel)
+            print("FORMA %-6s: %d divergente (REGRESIE %d · VERIFICARE %d) pe %d perechi · "
+                  "%d perechi n-au putut fi masurate"
+                  % (forma.upper(), div_total, pe_fel["regresie"], pe_fel["verificare"],
+                     len(perechi_cu_div), len(sarite)))
             for schema, an, luna, div in perechi_cu_div:
                 for d in div:
-                    print("    %s %d-%02d  %-16s cont %-5s nota %12.2f  declarat %12.2f  dif %10.2f (tol %.2f)"
-                          % (schema, an, luna, d["eticheta"], d["cont"], d["nota"],
-                             d["declaratie"], d["diferenta"], d["toleranta"]))
+                    print("    %-10s %s %d-%02d  %-26s cont %-5s nota %12.2f  declarat %12.2f  "
+                          "dif %10.2f (tol %.2f)"
+                          % (d.get("fel", "?").upper(), schema, an, luna, d["eticheta"], d["cont"],
+                             d["nota"], d["declaratie"], d["diferenta"], d["toleranta"]))
             for schema, an, luna, motiv in sarite:
                 print("    SARIT %s %d-%02d — %s" % (schema, an, luna, motiv))
             print()
@@ -149,9 +164,17 @@ def ruleaza():
 if __name__ == "__main__":
     rez, delta = ruleaza()
     v, n = rez["veche"][0], rez["noua"][0]
-    print("\nVERDICT R34")
-    print("  forma VECHE (dinainte de reparatie): %d divergente pe %d perechi" % (v, len(rez["veche"][1])))
-    print("  forma NOUA  (cele patru din D112):   %d divergente pe %d perechi" % (n, len(rez["noua"][1])))
+    fv, fn = rez["veche"][3], rez["noua"][3]
+    print("\nVERDICT")
+    print("  forma VECHE: %d divergente (regresie %d · verificare %d) pe %d perechi"
+          % (v, fv["regresie"], fv["verificare"], len(rez["veche"][1])))
+    print("  forma NOUA:  %d divergente (regresie %d · verificare %d) pe %d perechi"
+          % (n, fn["regresie"], fn["verificare"], len(rez["noua"][1])))
     if v == 0:
         print("  *** SONDA NU DISCRIMINEAZA: nici forma veche nu diverge. Masuratoarea nu spune nimic.")
+    if fn["regresie"]:
+        print("  *** REGRESIE pe forma NOUA: cele patru pozitii se citesc din declaratie, deci NU pot")
+        print("      diverge. Un rosu aici e cablaj stricat in note_lunare, nu dezacord fiscal.")
+    print("  R34 (cele patru pozitii): %s" % ("CURAT" if fn["regresie"] == 0 else "ROSU"))
+    print("  QQ2 (641/421 si 642/5328): %d divergente reale" % fn["verificare"])
     print("  scrieri in timpul masuratorii: %s" % ("ZERO" if delta == (0, 0, 0) else str(delta)))

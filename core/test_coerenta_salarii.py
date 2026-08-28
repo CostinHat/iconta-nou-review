@@ -23,10 +23,14 @@ import pathlib
 
 import pytest
 
+from core import salarii_contare as _sc   # [R33/QQ] harta felurilor se citeste de pe modul
+
 RAD = pathlib.Path(__file__).resolve().parent.parent
 _MAIN = ast.parse(io.open(RAD / "main.py", encoding="utf-8").read())
 
-_CAMPURI = {"eticheta", "cont", "nota", "declaratie", "diferenta", "toleranta"}
+_CAMPURI = {"eticheta", "cont", "fel", "nota", "declaratie", "diferenta", "toleranta"}
+#: [R33/QQ] `fel` nu e decor: separa un dezacord fiscal real de un cablaj stricat
+_FELURI = {"regresie", "verificare"}
 
 
 def _ruta(nume):
@@ -68,6 +72,52 @@ def test_o_divergenta_e_OBIECT_cu_ambele_cifre(monkeypatch):
     assert d["declaratie"] == 204.00, "cifra DECLARATIEI nu e cea din XML"
     assert d["diferenta"] == round(d["declaratie"] - d["nota"], 2), (
         "diferenta nu e declaratie - nota; semnul ei spune in ce parte e lipsa")
+
+
+def test_FIECARE_divergenta_isi_spune_FELUL(monkeypatch):
+    """[R33/QQ, 28.08.2026] Un rosu pe cele patru pozitii fiscale si un rosu pe 641/421 cer
+    lucruri DIFERITE de la cine il citeste: primul e cablaj stricat (cineva a reintrodus un
+    calcul independent - vezi R34), al doilea e un dezacord real intre doua cai.
+
+    Fara `fel`, cele doua arata identic, iar omul cauta in date acolo unde ar trebui sa caute
+    in cod. De-aia campul e obligatoriu si inchis la doua valori."""
+    div = _cu_d112(monkeypatch, 204.00, 161.12)
+    assert div, "cazul construit TREBUIE sa divearga"
+    for d in div:
+        assert d.get("fel") in _FELURI, (
+            "divergenta pe %s n-are fel valid: %r" % (d.get("cont"), d.get("fel")))
+
+
+def test_HARTA_felurilor_e_completa_si_disjuncta():
+    """A doua directie: nu ajunge ca `fel` sa existe - trebuie sa fie PE CONTUL POTRIVIT.
+
+    Cele patru pozitii citite din declaratie (R34) sunt REGRESIE; cele doua calculate independent
+    sunt VERIFICARE. Daca vreun cont trece dintr-o clasa in alta fara sa se schimbe si sursa lui,
+    semnalul incepe sa mintă despre ce inseamna."""
+    from core import control_incrucisat as _ci
+    regresie = {cont for _e, _coduri, cont in _ci.COD_CONT_D112}
+    verificare = {cont for _e, cont, _sursa in _sc.VERIFICARE_REALA}
+    assert regresie == set(_sc.CREDITE_DIN_D112), (
+        "conturile comparate ca REGRESIE nu mai sunt exact cele citite din D112: %s vs %s"
+        % (sorted(regresie), sorted(_sc.CREDITE_DIN_D112)))
+    assert not (regresie & verificare), (
+        "acelasi cont e si regresie, si verificare: %s" % sorted(regresie & verificare))
+    assert verificare == {"421", "5328"}, (
+        "verificarea reala nu mai e pe cele doua pozitii calculate independent: %s"
+        % sorted(verificare))
+
+
+def test_ANTI_VACUU_cititorul_de_XML_chiar_gaseste_valorile():
+    """`_suma_din_xml` e ancora verificarii reale. Daca n-ar gasi nimic, ar intoarce 0, iar
+    divergenta ar aparea pe TOATA lumea - sau, mai rau, ar disparea daca si nota e 0."""
+    xml = ('<x>\n  <angajatorB B_cnp="2" B_brutSalarii="118001" B_sal="2"/>\n'
+           '  <asiguratE3 E3_8="1" E3_10="400" E3_75="100"/>\n'
+           '  <asiguratE3 E3_8="1" E3_10="300"/>\n</x>')
+    assert _sc._suma_din_xml(xml, "angajatorB", ("B_brutSalarii",)) == 118001
+    assert _sc._suma_din_xml(xml, "asiguratE3", ("E3_10", "E3_75")) == 800
+    assert _sc._suma_din_xml(xml, "asiguratE3", ("E3_99",)) == 0, (
+        "un atribut inexistent trebuie sa dea 0, nu sa ridice")
+    assert _sc._suma_din_xml("<x></x>", "angajatorB", ("B_brutSalarii",)) == 0
 
 
 def test_CALIBRARE_cand_cifrele_COINCID_nu_se_afirma_nimic(monkeypatch):
