@@ -153,10 +153,11 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 
 | | |
 |---|---|
-| **R84** (reparată; se închide în registru în commitul următor, care o poate numi) | Varianta (b), probată prin apeluri reale pe toate 13. |
-| **R34** (DESCHISĂ, **PRAG 1**, reparat parțial) | Defectul e **reparat și măsurat: 0 divergențe**. Restanța rămâne deschisă fiindcă propria ei condiție cere și legarea lui `control_coerenta` — **R33**, amânată pe cerere. |
-| **R33** (DESCHISĂ, DECIZIE) | **Pasul următor, numit.** Legarea lui `control_coerenta`. Acum se poate: sonda e curată. |
-| **R83, R82** | Închise ieri. Neatinse azi. |
+| **R34** (REZOLVATĂ pe `f3576d9`) | Ambele jumătăți ale condiției. A doua era îndeplinită din 25.08 — vezi mai sus. |
+| **R86** (DESCHISĂ, INTERN, **PRAG 1**) | Nouă. Nota nu înregistrează biletele de valoare, iar brutul diferă de cel declarat. **10 divergențe pe 5 perechi**, documentate, nereparate la cerere. |
+| **R85** (DESCHISĂ, INTERN, prag 3) | Nouă. `pull()` fără `cam` — capcană, nu defect viu. |
+| **R33** (DESCHISĂ, DECIZIE) | Scopul verificării e **corectat**. Rămâne **un singur** element: `core/compensare.py`, ultimul modul marcat „PRODUCTIE, nelegat". |
+| **R84, R83, R82** | Închise. Neatinse azi. |
 | **R81, R79, R80** | Neatinse azi după închiderea lor / decizia (c). R80 rămâne deschisă pe **muncă**, nu pe răspuns. |
 | **restul** | Vezi `CONFORMITATE.md` — nu s-a atins nimic altceva. |
 
