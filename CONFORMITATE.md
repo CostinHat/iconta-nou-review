@@ -2028,6 +2028,21 @@ scos ce nu se știa**, nu din defecte noi.
     inversă, pe forma exactă a schimbării (un `UPDATE "%s".firma_profil` compus la rulare, unde
     schema e interpolată și numele tabelei n-ar apărea într-un literal întreg).
   - **Ce NU s-a atins, deliberat:** nimic din ce **scrie** ramura `anaf`. Aia e R81 și nu e decisă.
+  - **W (28.08.2026) — VĂZUT CU OCHII, pe o divergență VIE.** Costin: *„ecran real (screenshot sau
+    echivalent), nu scan: caseta apare, textul F1/F2 se vede corect pentru un om, nu doar pentru un
+    test axe."* Cabinet **nou și curat** (nu 1968, nu 4163), firmă cu **CUI real** (1973096,
+    `ANTIBIOTICE SA`), tastat `Antibiotice` → divergență adevărată la ANAF, **fără nicio alegere
+    făcută**. Caseta **apare**; butoanele citesc *„Ia denumirea de la ANAF"* și *„Păstrez denumirea
+    mea"*; marcajele E1 sunt pe ecran (`data-e1-sursa="portofoliu"`, `data-e1-efect="fiscal"`).
+    Firma, cabinetul, userul și schema — **șterse după**; portofoliul a rămas la 18 firme.
+  - **și proba a găsit două lucruri pe care niciun scan nu le prinsese:**
+    1. **caseta NU e în lista de firme.** `_randDivergentaNume` se cheamă în `meniuFirma` — adică pe
+       ecranul **firmei**, după deschiderea ei. Prima formă a probei a căutat-o în listă și a
+       raportat *„nu apare"*: **măsurătoarea greșea, nu ecranul.** Descrierea din R81 — *„caseta de
+       divergență din lista de firme"* — era și ea imprecisă, și se corectează acolo.
+    2. **textul spunea *„(citită acum azi)"*.** Nu e o greșeală de conținut, e una de limbă, iar un
+       scan `axe` n-are ce să reclame la ea. **Se vede numai cu ochii** — care e chiar motivul
+       pentru care W a fost cerut. Reparat: *„(citită azi)"*.
 - **CIFRA, RE-MĂSURATĂ CU INSTRUMENT — 28.08.2026, pe commit `4ffbcd1`: 4 din 7, nu 4 din 6.**
   `core/scan_ecran_reguli.py` citește actele pe **calea pe care o lovesc**, nu pe fișierul în care
   stau. Cele **patru** tăcute sunt **aceleași** — alegerea de denumire, scoaterea definitivă, cele
@@ -2098,7 +2113,7 @@ scos ce nu se știa**, nu din defecte noi.
   | bara de sus a ferestrei | `ALFA MICRO` |
 
   Sursa e aceeași în toate cele trei acte fiscale: `SELECT nume … FROM firma_profil WHERE id = 1` (`core/d100.py` l. 283, `core/d205.py` l. 318, `core/bilant_api.py` l. 77 → `core/bilant.py` l. 130). Bara ia cealaltă denumire: `deschideFirma` (`static/js/ecrane/firme.js` l. 331-332) cheamă `nav.setFirmaInLucru(t.nume)` și `nav.deschide(t.nume + " · CUI …")`, iar `t` vine din `GET /tenants` — adică `public.tenants.nume`. **ENTITATEA din bară și denumirea de pe declarație sunt două șiruri diferite, prin construcție.**
-- **și un lucru FALS pe un ecran de azi, găsit de probă**: caseta de divergență din listă (`firme.js` l. 297) scrie *„Denumirea din aplicație e cea folosită în documente."* **Nu e.** În documente pleacă `firma_profil.nume`. Ecranul „Date firmă" spune corect — *„în declarații: … asta pleacă pe hârtie"* — iar lista spune invers. **Două ecrane, două afirmații, una falsă.** *(Textul de dinainte spunea „e prag 1, și nu depinde de decizia R81". Prima jumătate a fost **reclasificată de Costin, 28.08.2026**: **nu e prag 1** — e o afirmație falsă despre **ce pleacă pe declarația fiscală**, afișată chiar în momentul în care omul alege, pe un ecran unde alegerea s-a și făcut o dată, pe o firmă reală. A doua jumătate rămâne adevărată: **nu depinde de decizia R81**, și de-aia s-a reparat fără ea. Instanța, cu tot ce s-a construit pentru ea, e scrisă la **R82**.)*
+- **și un lucru FALS pe un ecran de azi, găsit de probă**: caseta de divergență din listă (`firme.js` l. 297) scrie *„Denumirea din aplicație e cea folosită în documente."* *(**Corecție, 28.08.2026, din proba W:** caseta **nu** e în listă, ci pe ecranul **firmei** — `_randDivergentaNume` se cheamă din `meniuFirma`. Textul citat rămâne exact cel care era acolo; ce era greșit e **locul**. L-am scris din memoria structurii, nu din citire, iar prima formă a probei W a căutat caseta în listă și a raportat că nu apare — greșeala mea a produs o măsurătoare falsă înainte de a fi prinsă.)* **Nu e.** În documente pleacă `firma_profil.nume`. Ecranul „Date firmă" spune corect — *„în declarații: … asta pleacă pe hârtie"* — iar lista spune invers. **Două ecrane, două afirmații, una falsă.** *(Textul de dinainte spunea „e prag 1, și nu depinde de decizia R81". Prima jumătate a fost **reclasificată de Costin, 28.08.2026**: **nu e prag 1** — e o afirmație falsă despre **ce pleacă pe declarația fiscală**, afișată chiar în momentul în care omul alege, pe un ecran unde alegerea s-a și făcut o dată, pe o firmă reală. A doua jumătate rămâne adevărată: **nu depinde de decizia R81**, și de-aia s-a reparat fără ea. Instanța, cu tot ce s-a construit pentru ea, e scrisă la **R82**.)*
 - **cine scrie în `public.tenants.nume` — toate locurile**: **trei**, toate în `core/tenant_provisioning.py`. (1) l. 172, `INSERT`-ul de la creare (`provision_tenant`). (2) l. 319, `alege_denumirea`, ramura `anaf`. (3) l. 361, `actualizeaza_tenant`, adică `PUT /tenants/{id}`. **În afară de `PUT`: două.** `grep` pe `UPDATE public.tenants` nu dă nimic altceva decât `activ`, `nume_anaf`, `nume_ales`. *(Un al patrulea candidat — l. 227, `nume = COALESCE(NULLIF(%s,''), nume)` sub `seteaza_nume=True`, pe calea `POST /auth/register` (`main.py` l. 1165) — **nu intră**: setul acela se aplică la `UPDATE "<schema>".firma_profil` (l. 249), nu la `tenants`. **Prima formă a acestui rând îl număra, greșit — e greșeala mea**, corectată aici la a doua citire.)*
 - **și consecința care atinge R77**: ramura *„Ia denumirea de la ANAF"* face `UPDATE public.tenants SET nume=%s` (l. 319) — **și atât**. `firma_profil.nume` rămâne neatins. Deci alegerea consemnată ieri **nu ajunge pe hârtie**: butonul schimbă eticheta din listă, nu faptul fiscal.
 - **dacă adevărul ar deveni cel fiscal, caseta R77 s-ar muta**: azi se ancorează pe `t.nume` vs `t.nume_anaf` (`_divergentaNume`, `firme.js` l. 259-260), iar `detalii_tenant` (`tenant_provisioning.py` l. 261-265) selectează **numai** coloane din `public.tenants` — `firma_profil.nume` nu ajunge nici în listă, nici în `GET /tenants/{id}`. Ar muta: sursa casetei, sarcina utilă a listei, ramura `anaf` a lui `alege_denumirea` (ar trebui să scrie în schemă), și consemnarea din `actualizeaza_tenant`. **Ecranul „Date firmă" construit ieri NU s-ar muta** — el citește deja `profil.nume` din `GET /tenants/{id}/firma-profil/date` și numește corect care pleacă pe hârtie.
@@ -2270,8 +2285,9 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · P17 · interdicția 39 · **PRAG 3** *(un rând de audit, nu o cifră falsă. Dar e exact clasa pe care R44 și R50 au numit-o, produsă de calea construită ca s-o prevină)*
 - **reluări**: 1
-- **stare**: DESCHISĂ
-- **rezolvată pe commit**: `0963d7f`
+- **stare**: REZOLVATĂ
+- **rezolvată pe commit**: `184add3`
+- **prima închidere, pe jumătatea întâi**: `0963d7f` (27.08.2026). Restanța s-a **redeschis** în aceeași zi, pe motivul lui Costin — *„a fost închisă pe un criteriu mai îngust decât eticheta"* —, iar a doua jumătate s-a închis pe commitul de mai sus.
 - **deschisă pe commit**: `c9bf964`
 - **măsurat la**: 2026-08-27 · **pe commit**: `c9bf964`
 - **planul**: **ACOPERIT** — `PLAN_ARHITECTURA.md`, **P17**: *„ce categorie de dată se păstrează, cât, pe ce temei"*. Un rând de audit care trimite la o firmă inexistentă nu se poate citi de nimeni: nu se poate spune nici ce firmă era, nici de ce a rămas. (METODA §25)
@@ -2323,6 +2339,42 @@ scos ce nu se știa**, nu din defecte noi.
 - **cele două cifre, 67 și 69, dezambiguizate** *(au fost citite ca o contradicție între raport și `ISTORIC.md`)*: **niciun registru nu greșește — sunt două mulțimi diferite.** Recalculat azi: `audit_log` **67** + `alerte_control_emise` **2** = **69**, totalul de acum. Dintre cei 67 din `audit_log`, **2** sunt chiar cei produși de ștergerile de la 13:42 și 13:44 (tenanții 32205 și 32234, câte unul); ceilalți **65** sunt de dinainte. Deci **67 = orfanii de dinainte de azi** (65 în audit + 2 în alerte, `ISTORIC.md`) și **67 = orfanii din `audit_log` de azi** (tabelul din secțiunea asta) — **același număr, două mulțimi**, iar coincidența e chiar capcana. Nu se corectează nimic; se dezambiguizează aici, ca să nu se mai citească una în locul celeilalte.
 - **ce s-a probat pe viu și rămâne probat**: `id 1272066` — `user_id 1968`, `tenant_id NULL`, `'DELETE /tenants/33395'`, `{'status': 200}`, `2026-08-27 19:25:04.892789`. **Recitit azi, la scrierea acestei secțiuni: `tenant_id` e tot `NULL`.**
 - **ce rescrie condiția de deblocare**: se închide când (1) niciun act distructiv nu mai lasă o referință care moare înaintea lui — **făcut și probat pe viu** — **ȘI** (2) se decide ce se face cu singura referință prin **nume de schemă**, `firme_scoase.schema_name`: fie devine informativă și orice citire se cheiază pe `tenant_id`, fie numele de schemă nu se mai reciclează (contor care nu coboară). Azi cele două rânduri `tenant_019` sunt un fapt scris care, citit singur, minte.
+
+- **ÎNCHISĂ 28.08.2026 — A DOUA JUMĂTATE: contor care nu coboară (BLOC T).** Decizia lui Costin:
+  *„oprim reciclarea numelui de schemă."* Condiția de deblocare cerea **două** lucruri, iar acum
+  amândouă sunt probate:
+  1. **niciun act distructiv nu mai lasă o referință care moare înaintea lui** — făcut pe
+     `0963d7f`, probat pe viu atunci (`id 1272066`, `tenant_id NULL`);
+  2. **numele de schemă nu se mai reciclează** — făcut acum.
+- **CE ERA:** `urmator_schema_name` lua `max(NNN)+1` peste `SELECT schema_name FROM public.tenants`,
+  adică peste firmele **vii**. Când cea mai mare era ștearsă, maximul cobora și numărul se refolosea.
+- **CE E:** o **secvență Postgres**, `public.tenant_schema_seq`, pornită de la **maximul istoric** —
+  firme vii ∪ `firme_scoase` ∪ schemele din bază. **Nu** de la cel viu: primul nume generat ar fi fost
+  chiar unul deja folosit de o firmă scoasă, adică fix reciclarea pe care o repară.
+- **de ce o secvență, și nu un rând cu maximul:** `nextval` **nu se întoarce la rollback**. Un
+  provisioning care eșuează la jumătate **arde** un număr și merge mai departe — exact ce vrem. Un
+  contor ținut într-un rând ar fi întors odată cu tranzacția, deci ar putea da același nume de două
+  ori după un eșec.
+- **T2 — PROBĂ pe viu**, în tranzacție întoarsă la savepoint, pe cabinetul de test:
+
+  | pas | rezultat |
+  |---|---|
+  | firmă A creată | `tenant_020` |
+  | A ștearsă | rând în `tenants`: **0** · schemă în bază: **0** |
+  | firmă B creată | **`tenant_021`** |
+
+  După `ROLLBACK`: **18 firme, 3 rânduri în `firme_scoase`, 18 scheme** — nimic rămas. Contorul a
+  rămas la **21**, deliberat: numerele arse nu se recuperează, și chiar aia e proprietatea.
+- **gardat**: `core/test_tenant_stergere.py` — patru teste noi. Structural, pe AST: `urmator_schema_name`
+  cheamă `nextval`, **nu** mai citește firmele vii, și n-are niciun `max(…)`; `provision_tenant` ia
+  numele din contor. Pe date: secvența există și **nu a rămas în urma maximului istoric** — o secvență
+  în urmă ar produce, la următoarea firmă, un nume care există deja, adică reciclarea prin altă ușă.
+  Plasa de siguranță e în cod: dacă numele generat există ca schemă, se **ridică**; nu se caută altul.
+- **ce NU s-a schimbat, și rămâne adevărat:** `firme_scoase.schema_name` **rămâne informativ**, cu nota
+  de lângă coloană (G3) și cu garda care prinde o citire cheiată pe el. Contorul oprește reciclarea
+  **de-acum înainte**; **cele două rânduri `tenant_019` de azi rămân** — sunt istorie, dezambiguizată
+  de `tenant_id`. Restanța se închide fiindcă *nu se mai poate produce*, nu fiindcă trecutul s-ar fi
+  curățat.
 
 
 ### R78 — Actul cel mai distructiv al aplicației stă sub 26 de carduri, iar cine îl caută nu-l găsește

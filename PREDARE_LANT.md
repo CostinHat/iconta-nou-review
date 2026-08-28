@@ -1,99 +1,89 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — R81 e decisă și aplicată, iar garda ei a găsit o cale pe care măsurătoarea n-o văzuse (28.08.2026)
+# PREDARE LANȚ — cele patru restanțe de denumire sunt închise, iar o orbire care se citea VERDE de două zile s-a făcut vizibilă (28.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-28**, a doua oară în aceeași zi. *Rescriere COMPLETĂ, nu petic.*
-- **pe commit**: `08743aa` — starea pe care o descrie.
-- **rescrierea de dinainte**: `be25471`, aceeași zi. Între ele a încăput **1 commit**.
-- **de ce acum**: predarea de dimineață spunea *„ce rămâne deschis e o singură decizie"*. Decizia a
-  venit în tura următoare, s-a aplicat, iar R81 e închisă. Un registru care descrie o restanță
-  deschisă după ce ea s-a închis nu e vechi, e fals. *Conținutul, nu contorul* — măsurat cu formula
-  din `pre-commit`: **1** commit în urmă, pragul e **10**, avertismentul n-a apărut.
+- **ultima rescriere**: **2026-08-28**, a treia oară în aceeași zi. *Rescriere COMPLETĂ, nu petic.*
+- **pe commit**: `184add3` — starea pe care o descrie.
+- **rescrierea de dinainte**: `3362fbb`, aceeași zi. Între ele a încăput **1 commit**.
+- **de ce acum**: șase blocuri de decizii aplicate într-o tură (R, S, T, U, V, X + proba W). Predarea
+  de dimineață descria trei restanțe deschise care s-au închis între timp. *Conținutul, nu contorul*
+  — măsurat cu formula din `pre-commit`: **1** commit în urmă, pragul e **10**.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **gardat**: `scripts/githooks/pre-commit` avertizează peste 10 commituri;
   `core/test_predare_proaspata.py` nu lasă avertismentul să dispară tăcut.
 
 ---
 
-## PRIMUL LUCRU DE ȘTIUT: R81 E DECISĂ, APLICATĂ ȘI ÎNCHISĂ
+## PRIMUL LUCRU DE ȘTIUT: NU E NICIO CERINȚĂ COMANDATĂ NEÎNCEPUTĂ
 
-**Decizia lui Costin, textual:** *„simetrie de scriere. Orice act care redenumește o firmă scrie
-denumirea în AMBELE locuri (`public.tenants.nume` și `{schema}.firma_profil.nume`), în aceeași
-tranzacție, cu aceeași valoare. **Nu se construiește alias.**"*
-
-Blocurile **O** (implementare), **P** (migrare) și **Q** (texte) sunt făcute, toate în `08743aa`.
-`DECIZII.md` poartă decizia cu temeiul ei; `CONFORMITATE.md` o închide.
+Toate cele șase blocuri sunt aplicate, plus proba W. **R79, R80 și R81 nu mai blochează.**
 
 | bloc | ce s-a făcut |
 |---|---|
-| **O1–O3** | cele trei căi de redenumire trec prin **un singur scriitor**, `tenant_provisioning.scrie_denumirea` |
-| **O3, răspunsul explicit** | **DA**, „Date firmă" avea o cale de editare directă a denumirii fiscale (`CAMPURI[0]`); trece și ea prin scriitor |
-| **O4** | `core/scan_simetrie_denumire.py` + `core/test_simetrie_denumire.py` — **13 teste, 5 de calibrare** |
-| **O5** | probă pe viu, savepoint, toate trei căile: amândouă coloanele, aceeași valoare; după rollback nimic atins |
-| **P1–P3** | cele patru fixturi migrate, cu valoarea veche în `audit_log`; **0 divergențe pe toată populația** |
-| **Q1–Q2** | textul revine la forma simplă, marcajul `data-e1` rămâne ca gardă de regresie |
+| **R** | cele două casete de denumire s-au **comasat** — duplicatul iese, legarea de acum câteva ore se scoate |
+| **S** | **GRI nu se mai falsifică în verde**: patru verdicte pe rute, GRI numărat separat în raportul porții |
+| **T** | numele de schemă **nu se mai reciclează** — secvență Postgres pornită de la maximul istoric |
+| **U** | `GARZI.md` rămâne **viu**: backfill 23–28.08 + inventar **generat** și păzit |
+| **V** | convenția `REGISTRE` vs. blocurile cu literă, scrisă verbatim în `CLAUDE.md` §2.2.1b |
+| **X** | excluderea cabinetelor de test trece de la **listă de id-uri** la **tipar de nume**, cu clichet |
+| **W** | divergență **vie**, văzută pe ecran real, apoi ștearsă |
 
 ---
 
-## CE A GĂSIT GARDA, ȘI DE CE CONTEAZĂ MAI MULT DECÂT CE A REPARAT
+## CE A GĂSIT FIECARE, DINCOLO DE CE A REPARAT
 
-**A patra cale asimetrică**: `precompleteaza_din_anaf(seteaza_nume=True)`, pe `POST /auth/register`,
-scria `firma_profil.nume` **singur** — la câteva milisecunde după ce `provision_tenant` pusese
-aceeași valoare în amândouă locurile.
+**S — o orbire care se citea VERDE de două zile.** Detectorul de apelanți avea **două** răspunsuri;
+rutele pe care ancora literală nu le identifică cădeau **prin construcție** în primul, fiindcă ancora
+lor apare peste tot. Deci „nicio rută fără apelant" era adevărat despre 334 de rute și **mut** despre
+45, iar mutul se citea ca verde. Acum: **411 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 32**, tipărit
+în raportul porții la fiecare commit.
 
-**Deci propoziția scrisă de mine ieri în R81 — *„divergența nu se poate naște la creare"* — era
-adevărată despre `POST /tenants` și falsă despre `POST /auth/register`.** N-a prins-o nicio citire,
-nicio recitire și niciun raport: a prins-o un scan construit pentru altceva, la prima rulare.
+**W — două lucruri pe care niciun scan nu le prinsese.** (1) Caseta de divergență **nu e în lista de
+firme**, cum scrisesem în R81, ci pe ecranul **firmei**; prima formă a probei a căutat-o în listă și
+a raportat *„nu apare"* — **măsurătoarea greșea, nu ecranul**. (2) Textul spunea *„(citită acum
+azi)"*. Un `axe` n-are ce să reclame la asta; **se vede numai cu ochii**, care e chiar motivul pentru
+care W a fost cerut.
 
-**Lecția, și e a treia instanță în două zile:** o măsurătoare făcută **cu mâna** pe o clasă declarată
-(„cele trei căi care redenumesc") găsește exact membrii la care te-ai uitat. Celelalte două instanțe
-din 28.08: *„4 din 6 acte tăcute"* a devenit **4 din 7** când s-a măsurat pe rută în loc de fișier;
-clichetul de **4** divergențe a devenit **0** când populația a fost declarată.
+**U — un registru care s-ar fi stricat prin propria actualizare.** Prima formă a inventarului generat
+grupa gărzile pe ziua primului commit — dar fișierele din commitul **curent** n-au încă una. Blocul
+ar fi intrat cu `—` și s-ar fi schimbat singur imediat după commit, făcând garda doc↔cod roșie la
+următoarea rulare. Inventarul e acum **fără date**; datele trăiesc în intrările narative.
 
----
-
-## O REGRESIE PE CARE SIMETRIA AR FI INTRODUS-O, dacă ecranul rămânea neatins
-
-Ecranul „Date firmă" are **două** casete de denumire — `df-nume-portofoliu` (trimite
-`PUT /tenants/{id}`) și `df-nume` din `CAMPURI` (trimite `POST …/firma-profil/date`). Salvarea
-trimite **ambele cereri, în ordine**. Sub simetrie amândouă scriu amândouă coloanele, deci cine ar fi
-editat numai caseta de sus **și-ar fi văzut modificarea revenită în tăcere** de a doua cerere, care
-duce mai departe valoarea veche.
-
-Reparat prin **legarea** celor două casete, în amândouă direcțiile, cu etichetele care spun că e
-aceeași denumire. **Nicio casetă scoasă, nimic mutat** — comasarea lor într-una singură e o schimbare
-de așezare și **se cere**.
+**Poarta, de două ori.** Un octet `BACKSPACE` strecurat într-un comentariu (scrisesem un `\b` într-un
+literal ne-raw, în scriptul de patch) — și apoi **din nou în mesajul de commit care descria
+greșeala**. Iar `test_g9_oblig_backend` a picat pe scoaterea câmpului `nume` din `CAMPURI`:
+reparația **nu** a fost să scot obligația din backend, ci să învăț **garda** să vadă caseta de
+deasupra grilei. Obligația nu dispăruse, se mutase.
 
 ---
 
 ## STAREA LA PREDARE
 
-Poartă verde la `08743aa`: **3437 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
-site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
-*(Se reverifică rulând poarta, nu se crede pe cuvânt.)*
+Poartă verde la `184add3`: **3450 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
+rute **411 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 32** · site **200** · four-way
+`HEAD = origin/main = origin/backup/lant-2026-08-28`. *(Se reverifică rulând poarta.)*
 
-**Cifrele nu se scriu aici** — `scripts/raport_b.py`. **Poarta durează ~12 minute.** Comite prin
-`nohup … &` și așteaptă separat.
+**Cifrele nu se scriu aici** — `scripts/raport_b.py`. **Poarta durează ~12,5 minute.**
 
 ---
 
-## CE E ADEVĂRAT ACUM DESPRE CELE PATRU RESTANȚE DE DENUMIRE
+## CE E ADEVĂRAT ACUM DESPRE RESTANȚELE DE DENUMIRE ȘI DE RUTE
 
 | | |
 |---|---|
-| **R81** (REZOLVATĂ) | Simetrie de scriere, aplicată pe toate cele **patru** căi, cu gardă pe AST și probă pe viu. Cele patru divergențe de fixtură — migrate. **Nu s-a construit niciun alias.** |
-| **R82** (DESCHISĂ, INTERN) | Cele **patru** acte de nivel firmă tot se termină în tăcere. Regula e scrisă (DS cap.27), clasa e măsurată (**4 din 7**) și clichetată. **Repararea lor e altă tură.** |
-| **R79** (REDESCHISĂ) | Neatinsă azi. Ce rămâne e decizia despre `firme_scoase.schema_name`: informativ, sau nume de schemă care nu se mai reciclează. |
-| **R77** (REZOLVATĂ) | Simetria **nu-i schimbă starea**, și motivul e scris acolo: axa e alta — portofoliu ↔ **ANAF**, nu portofoliu ↔ fiscal. Două afirmații ale unor actori diferiți **au voie** să difere; de-aia acolo răspunsul e o *alegere*, nu o sincronizare. |
+| **R81** (REZOLVATĂ) | Simetrie de scriere pe toate cele **patru** căi + cele două casete comasate. Nu s-a construit niciun alias. |
+| **R82** (DESCHISĂ, INTERN) | Cele **patru** acte de nivel firmă tot se termină în tăcere (**4 din 7**). Regula e scrisă, clasa e clichetată. **Repararea lor e altă tură** — și e singura restanță de ecran rămasă. |
+| **R79** (REZOLVATĂ) | Amândouă jumătățile probate: auditul nu mai lasă orfani (27.08) **și** numele de schemă nu se mai reciclează (azi, probat A→`tenant_020`, ștearsă, B→`tenant_021`). |
+| **R80** (DESCHISĂ, **INTERN**) | Decizia (c) e luată, deci nu mai așteaptă răspuns: `cine deblochează` a trecut din DECIZIE în INTERN. Ce o ține deschisă e **munca** — clasa GRI se golește când se construiește (a) sau (b). |
 
 ---
 
 ## CIFRE INVALIDATE — se păstrează, nu se șterg
 
-*O cifră ai cărei termeni nu se mai pot reconstitui se **INVALIDEAZĂ**, nu se corectează.*
-*Tabelul se POARTĂ, nu se deleagă în istoric — `core/test_predare_proaspata.py` o cere, și are dreptate.*
+*O cifră ai cărei termeni nu se mai pot reconstitui se **INVALIDEAZĂ**, nu se corectează. Tabelul se
+POARTĂ, nu se deleagă în istoric.*
 
 | cifra | unde apărea | de ce e INVALIDATĂ |
 |---|---|---|
@@ -119,66 +109,58 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 | **„4 divergențe de denumire"** (clichet pe date) | `test_nume_firma_unic.py`, 27.08 | **0** pe populația declarată. Vechea valoare era clichet pe **fixturi** — instrumentul citea toate firmele, fără filtru de cabinet |
 | **„0 din 18 firme au `nume_anaf`"** | prima formă a predării de la 04:2x | **1 din 18** — `Antibiotice Iasi`, cu divergență reală față de ANAF, cu alegerea deja consemnată. Cifra fusese invalidată o dată pe 27.08 și a reapărut din memorie |
 | **„divergența nu se poate naște la creare"** | R81, 28.08 dimineața | adevărat despre `POST /tenants`, **fals** despre `POST /auth/register`, unde `precompleteaza_din_anaf(seteaza_nume=True)` scria un singur loc. Găsit de garda de simetrie, la prima rulare |
+| **„51 de rute oarbe" citit ca „51 GRI"** | R80, 27.08 | **45**. Din cele 51, șase erau deja `EXCLUS`. Orbirea instrumentului (51) și clasa GRI (45) sunt două întrebări, nu două măsurători ale aceleiași |
+| **„caseta de divergență din LISTA de firme"** | R81, 27–28.08 | caseta e pe ecranul **firmei** (`meniuFirma`), nu în listă. Scris din memoria structurii; a produs o măsurătoare falsă în proba W înainte de a fi prinsă |
 
 ---
 
 ## CE NU E ADEVĂRAT DESPRE STAREA ASTA, ȘI SE SPUNE
 
-- **Simetria e o afirmație despre codul APLICAȚIEI.** Un semănător, un import sau un `UPDATE` de mână
-  nu trec prin scriitorul unic — și **chiar așa s-au născut cele patru divergențe migrate azi**.
-  De-aia clichetul pe **date** rămâne, deși invariantul îl face structural imposibil.
-- **Textul nou de pe ecran n-a fost văzut de un om pe o firmă cu divergență reală** — dar motivul
-  nu e cel pe care îl scrisesem. *(Prima formă a rândului ăstuia spunea „**0 din 18** firme au
-  `nume_anaf`". **Fals**, și e o cifră pe care propriul meu tabel de cifre invalidate o corectase deja
-  o dată: „0 din 17" fusese invalidată pe 27.08 în favoarea lui „1 din 18". Am purtat-o mai departe
-  din memorie, la douăzeci de minute după ce scrisesem §10.16 despre exact asta.)*
-  **Recitit la 04:40:45, pe date:** **1 din 18** firme are `nume_anaf` — `Antibiotice Iasi` (33394),
-  iar denumirea **chiar diferă** de cea de la ANAF (`ANTIBIOTICE SA`). Caseta tot nu apare, dar
-  fiindcă **alegerea a fost deja făcută** (`nume_ales='aplicatie'`), nu fiindcă n-ar exista
-  divergență. Deci calea **există** și e la o resetare de alegere distanță. S-a probat ce
-  **randează** ecranul (scan de interacțiune + axe pe 14 ecrane, **0 violări**), nu ce vede cineva
-  care are divergența în față.
-- **Cele patru acte tăcute tot tac.** R82 e deschisă.
-- **Gardul de simetrie nu urmărește apeluri în adâncime.** O funcție-intermediar care ar chema doar
-  jumătate din scriitor n-ar fi văzută — dar nici n-are ce, cât timp scriitorul e o singură funcție
-  care le face pe amândouă.
-- **E1 nu cere «când coincid, se spune și asta».** Ramura e condiționată la rulare; un scan static
-  nu poate deosebi ce se randează de ce nu. Regulă scrisă, nepăzită.
-- **`GARZI.md` e cu șase zile în urmă** (ultima intrare: 22.08). Nici gărzile de azi nu sunt în el.
-- **Convenția `REGISTRE` vs. blocurile cu literă tot nu e în `CLAUDE.md`.**
-- **Ce n-a fost măsurat, și se știe:** dacă vreo declarație **deja depusă** poartă o denumire diferită
-  de cea de azi. E o măsurătoare separată, pe `declaratii_depuse` — iar migrarea de azi a schimbat
-  denumirea a patru firme, deci întrebarea e acum mai concretă decât era ieri.
+- **GRI nu e „aproape verde".** Cele 45 de rute rămân rute despre care **nu se poate afirma nimic**.
+  Ce s-a reparat e că nu mai *arată* ca verzi; orbirea e aceeași.
+- **Contorul de scheme oprește reciclarea DE-ACUM ÎNAINTE.** Cele două rânduri `tenant_019` din
+  `firme_scoase` **rămân** — sunt istorie, dezambiguizată de `tenant_id`. R79 se închide fiindcă *nu
+  se mai poate produce*, nu fiindcă trecutul s-ar fi curățat.
+- **Backfill-ul din `GARZI.md` NU spune de ce a fost construită fiecare gardă.** Spune **ce** a intrat
+  și **ce afirmă fiecare despre sine** — amândouă verificabile. *De ce*-ul zilelor 23–26.08 ar fi fost
+  reconstruit din numele fișierelor, adică exact ce METODA interzice.
+- **Inventarul generat nu judecă dacă o gardă e bună.** Nu numără aserțiuni, nu spune dacă păzește
+  ceva viu. Pentru aia sunt instrumentele de FAZA 4.
+- **Tiparul de cabinet de test nu prinde „TESTARE SRL"** — `\b` cere cuvântul întreg. **Deliberat**:
+  un cabinet de test nedeclarat intră în cifră și o strică **vizibil**; unul real exclus tăcut ar face
+  cifra să arate mai curată. Prima greșeală se vede, a doua nu.
+- **Textul nou de pe ecran a fost văzut o dată, pe o firmă fabricată de mine.** Nu de un contabil, pe
+  firma lui.
+- **`Antibiotice Iasi` (33394) rămâne cu alegerea consemnată** — nu s-a atins, cum s-a cerut.
+- **Propunerea din `METODA §10.16b` e NECONSTRUITĂ:** cifrele „X din Y" din predare se scriu tot de
+  mână. Ce s-a scris e unde ar intra controlul, nu controlul.
 
 ---
 
 ## OPERAȚIONAL — ce se rupe repetat
 
-- Serverul e `ssh iconta`. `psql` direct e **blocat**: pentru DB se trimite un script prin stdin —
-  `cat script.py | ssh iconta '… ./venv/bin/python -'` — cu `sys.path.insert(0, …)`, `from core
-  import db`, **`db.init_pool()`**.
+- Serverul e `ssh iconta`. `psql` direct e **blocat**: script prin stdin,
+  `cat x.py | ssh iconta '… ./venv/bin/python -'`, cu `db.init_pool()`.
 - **Env obligatoriu**: `set -a && . ~/.iconta/db.env && . ~/.iconta/api_keys.env && set +a`.
-- **O probă care ține o tranzacție deschisă nu poate deschide o A DOUA conexiune pe același rând** —
-  se blochează pe lock, tăcut, până la timeout. Instanța de azi: proba O5, rescrisă pe o singură
-  conexiune cu `SET LOCAL search_path`.
-- **Un script de patch rulează PE SERVER**, nu pe stație (CRLF tăcut). După orice patch:
-  `b.count(b"\r\n") == 0`.
-- **Mesajul de commit se trimite prin FIȘIER.**
-- **Ghilimelele românești rup șirul Python** — `„text"` într-un literal cu ghilimele duble e eroare
-  de sintaxă la linia următoare. Remediul: literal triplu.
-- **O schimbare de JS cere, înainte de poartă**: `versioneaza_assets.py --scrie` **și**
-  `frontend_test/vizual/interactiune_scan.py` (~8 minute, artefactul se comite).
-- **O schimbare de cod care adaugă refuzuri explicite cere regenerarea blocului din `TRASEE.md`**
-  (`scripts/scan_trasee.py --md`, rescris între marcaje). Azi: 162 → 164.
+- **`\b` într-un literal Python ne-raw devine un octet BACKSPACE.** S-a întâmplat de **două** ori
+  azi, a doua oară chiar în mesajul care descria prima. `core/test_octeti_invizibili.py` îl prinde în
+  cod; în **mesajul de commit** nu-l prinde nimic — se verifică de mână.
+- **Ghilimelele românești rup șirul Python** — remediul e literalul triplu.
+- **O probă care ține o tranzacție deschisă nu poate deschide o a doua conexiune pe același rând.**
+- **Un patch rulează PE SERVER** (CRLF tăcut pe Windows). După: `b.count(b"\r\n") == 0`.
+- **O schimbare de JS cere**: `versioneaza_assets.py --scrie` **și**
+  `frontend_test/vizual/interactiune_scan.py` (~8 min, artefactul se comite).
+- **O schimbare de cod care adaugă refuzuri explicite cere regenerarea blocului din `TRASEE.md`**;
+  **o gardă nouă cere regenerarea inventarului din `GARZI.md`**
+  (`scripts/scan_garzi_inventar.py --md`).
+- **Mesajul de commit se trimite prin FIȘIER**, și se verifică după commit.
 
 ---
 
 ## DACĂ CONTINUI DE AICI
 
 1. **Nu e nicio cerință comandată neîncepută.** Ce așteaptă e răspunsul lui Costin la §0.
-2. **Nu porni nicio construcție fără măsurătoare** — azi, de trei ori din trei, măsurătoarea a
-   schimbat cifra sau clasa.
-3. **`scripts/raport_b.py` derivă secțiunea „Unde suntem".** Nu se scrie de mână.
-4. **Raportul se scrie din `SABLON_RAPORT.md`.** Ordinea: 0 CERINTE · 1 CE AM PRESUPUS · 2 ÎN
-   PLUS/MAI PUȚIN · 3 CE AM ACTUALIZAT · 4 ÎNȚELEGEREA · 5 RĂSPUNS LA COMANDĂ · 6 UNDE SUNTEM ·
-   7 POARTA.
+2. **R82 e singura restanță de ecran deschisă**: cele patru acte tăcute.
+3. **Nu porni nicio construcție fără măsurătoare.**
+4. **`scripts/raport_b.py` derivă „Unde suntem".** Nu se scrie de mână.
+5. **Raportul se scrie din `SABLON_RAPORT.md`.**
