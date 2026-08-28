@@ -46,7 +46,7 @@ după a doua oară: „e gardul care nu citește proză și totuși o discipline
 - **decizii care blochează**: **niciuna.** Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
-- **ultima actualizare**: 2026-08-28
+- **ultima actualizare**: 2026-08-29
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
 
 ---
@@ -1980,6 +1980,40 @@ scos ce nu se știa**, nu din defecte noi.
 - **ce NU face, declarat**: **niciun clichet pe cele 28 de `except …: pass` rămase.** Costin, explicit: *„pe alea nu le-am măsurat și nu știm care sunt legitime."* Și nu verifică dacă emailul chiar pleacă — doar că, dacă nu pleacă, rămâne urmă.
 - **condiția de deblocare**: decizia lui Costin între **(a)** toate patru trec pe `esec_secundar`, cu `alerta=True` pe cele trei căi de intrare — tăcerea acolo are cost de acces, ceea ce docstringul lui numește drept criteriu; **(b)** doar log, fără alertă, pe toate patru; **(c)** mesajul de pe ecran se schimbă și el, ca să nu mai afirme trimiterea. Se închide când un eșec de trimitere lasă urmă, cu gard.
 
+### R88 — O factură PRIMITĂ validată creează cheltuiala, dar nu și nota contabilă
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · **R36** (regula pe care o încalcă) · R35 (efectul măsurat) · **PRAG 2** *(nu o cifră greșită — o evidență care lipsește. Devine prag 1 în ziua în care un decont se depune pe o lună cu facturi primite necontate: TVA-ul deductibil declarat n-ar avea acoperire în conturi)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `1bd9455`
+- **măsurat la**: 2026-08-29 · **pe commit**: `1bd9455`
+- **planul**: **ACOPERIT de azi.** `PLAN_ARHITECTURA.md` spune, de la ZZ4: *orice fapt economic nou construit produce nota contabilă automat; o rută manuală se acceptă numai cu declarație explicită.* Aici nu există declarație — deci e lipsă, nu excepție. (METODA §25)
+- **ce blochează**: `POST /tenants/{id}/facturi-primite/{primita_id}/valideaza` creează factura (cheltuiala) din e-factura importată de cron, cu patru-ochi. **Nu scrie nicio notă.** Nota cere un al doilea act, `POST /tenants/{id}/facturi/{factura_id}/contabilizeaza`, pe care omul trebuie să și-l amintească.
+- **cum s-a găsit**: cartografierea cerută la ZZ2, nu o probă. Ruta nu apare printre cele 48 de funcții care scriu în `inregistrari`.
+- **de ce NU e o excepție legitimă**: validarea *este* actul prin care firma recunoaște cheltuiala — patru-ochi s-a consumat deja acolo. Nu mai rămâne nicio **alegere** de făcut între validare și notă: contul de cheltuială și cota sunt pe factură.
+- **ce NU vede măsurătoarea**: câte facturi primite au rămas necontate. R35 a măsurat pe **emise + primite** la un loc (28 din 43); despărțirea pe direcții nu s-a făcut.
+- **condiția de deblocare**: validarea unei facturi primite produce nota în același act, sau ruta primește o declarație scrisă de ce rămâne separată. Se închide când nu mai există factură primită **validată** fără notă, cu gard — și cu măsurătoarea despărțită pe direcții.
+
+
+### R87 — O factură EMISĂ nu produce nota contabilă; contabilizarea e un act separat, care se poate uita
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · **R36** (regula pe care o încalcă) · R35 (efectul măsurat) · R61 · **PRAG 2** *(devine prag 1 pe orice lună în care D300 se depune peste facturi necontate — colectata declarată nu are acoperire în contul 4427)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `1bd9455`
+- **măsurat la**: 2026-08-29 · **pe commit**: `1bd9455`
+- **planul**: **ACOPERIT de azi**, prin ZZ4 — vezi R88, aceeași regulă.
+- **ce blochează**: `POST /tenants/{id}/facturi` creează factura și **nu scrie nicio notă**. Contabilizarea e `POST /tenants/{id}/facturi/{factura_id}/contabilizeaza` — o rută care **există și funcționează**, dar pe care nimic n-o declanșează. Deci nu lipsește capabilitatea, lipsește **legătura**.
+- **efectul, deja măsurat la R35 (24.08.2026)**: din **43** de facturi declarabile pe 17 scheme, **28 nu sunt contate deloc** — **65%** —, purtând **102.260,00 lei** TVA, pe **10 firme din 17**. *„Nu e o firmă cu date incomplete: e majoritatea."*
+- **de ce NU e o excepție legitimă**: emiterea *este* faptul economic. Contul de venit și cota sunt pe factură; nu rămâne nicio alegere care să ceară un act separat. Iar dovada că nu e o alegere deliberată e chiar cifra: **nimeni nu apasă butonul în 65% din cazuri**.
+- **ce NU vede măsurătoarea**: dacă vreo factură a rămas necontată **intenționat** (storno în lucru, factură emisă greșit). Nu există un câmp care s-o spună — și asta e parte din problemă.
+- **condiția de deblocare**: emiterea unei facturi produce nota în același act, sau ruta primește o declarație scrisă de ce rămâne separată. Se închide când proporția de facturi declarabile necontate e **0** pe firmele de test, cu gard care o măsoară — nu doar cu ruta legată.
+
+
 ### R86 — Nota de salarii nu înregistrează deloc biletele de valoare, iar salariile brute intră cu altă cifră decât cea declarată
 
 - **felul**: VERIFICARE
@@ -2920,14 +2954,15 @@ scos ce nu se știa**, nu din defecte noi.
 ### R39 — Coloana pe care se sprijină verificarea D112 nu se scrie de nicăieri
 
 - **felul**: ORDINE
-- **cine deblochează**: DECIZIE
+- **cine deblochează**: INTERN
 - **unde intră**: E1 · interdicția 32 · interdicția 10 · **PRAG 3** *(azi mesajul nimerește adevărul; devine fals în ziua în care R33 se leagă)*
 - **reluări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `0a96ebf`
 - **ce blochează**: `inregistrari.document_ref` e scrisă de **0 din 48** de căi de INSERT, dar citită de `note_salarii_ciorna()`, care de aceea întoarce **0 prin construcție**. Ramura „note în ciornă, așteaptă validare" din `compara_d112` e **cod mort**. Ca să încete să fie, cineva trebuie să **scrie** coloana la crearea notei statului de plată — iar calea aia nu există încă (`salarii_contare` nelegat, R33), și **cine o creează** e chiar întrebarea din **R36**.
 - **ce s-a făcut totuși, ca minciuna să nu aștepte deblocarea**: `note_salarii_ciorna` întoarce de azi **`None` = necunoscut** când coloana e goală pe toată schema, iar `compara_d112` nu mai **afirmă cauza** pe un necunoscut — spune ce vede și numește **amândouă** acțiunile posibile. Gardat de `core/test_document_ref_necunoscut.py`.
-- **condiția de deblocare**: se răspunde la **R36** (cine și când contabilizează), fiindcă abia atunci se știe **cine scrie** `document_ref` pe nota statului de plată. Când calea aia se leagă, filtrul redevine o măsurătoare și ramura „ciornă" redevine vie — **în aceeași tură**, nu după.
+- **[ZZ5, 29.08.2026] DEBLOCATĂ de decizia R36 — condiția se rescrie.** Blocajul ei era literal *„se răspunde la R36"*. **S-a răspuns**: varianta (a), aplicația contabilizează automat. Deci **cine scrie `document_ref` nu mai e o întrebare deschisă** — îl scrie actul care produce nota, iar pentru statul de plată actul e `POST /tenants/{id}/salarii-contare`, care există și e legat din 25.08 (R33). Ce rămâne e **muncă**, nu decizie: coloana să fie scrisă acolo. *Restanța nu se închide azi — nu s-a construit nimic pentru ea —, dar **își schimbă natura**: din DECIZIE în INTERN.*
+- **condiția de deblocare**: *(rescrisă 29.08.2026, după R36)* `document_ref` se scrie la crearea notei statului de plată, de către actul care o produce. Se închide când `note_salarii_ciorna()` întoarce o cifră, nu `None`, pe o firmă cu notă de salarii în ciornă — iar ramura „note în ciornă, așteaptă validare" din `compara_d112` încetează să fie cod mort, cu gard. *(Condiția de dinainte, păstrată ca istoric: „se răspunde la R36 … Când calea aia se leagă, filtrul redevine o măsurătoare".)*
 
 ### R38 — Lista de cote din ecranul de NIR e scrisă de mână, fiindcă serverul n-o poate da
 
@@ -3165,10 +3200,11 @@ scos ce nu se știa**, nu din defecte noi.
 - **felul**: ARTEFACT
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · E3 · **P11** · interdicția **21** · **PRAG 2** *(nu o cifră greșită — o alegere de arhitectură luată prin scriere de cod, fără să fi fost cerută)*
-- **reluări**: 0
-- **stare**: DESCHISĂ
+- **reluări**: 1
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `1bd9455`
 - **deschisă pe commit**: `37c5fa6`
-- **măsurat la**: 2026-08-24 · **pe commit**: `37c5fa6`
+- **măsurat la**: 2026-08-29 · **pe commit**: `1bd9455`
 - **ce blochează**: Întrebarea lui Costin, și e cea care mută tot restul: *„aplicația a fost proiectată să contabilizeze automat facturile, sau să primească notele din altă parte?"* **Căutat în `DECIZII.md`, `PLAN_ARHITECTURA.md`, `DESIGN_SYSTEM.md` și `CONFORMITATE.md`: nicio decizie, niciun principiu, nicio regulă de produs care să spună care dintre cele două e modelul.** Alegerea nu e luată — e **nimerită**, prin ce s-a scris. Exact P11: *„unde textul nu determină rezultatul, nu se alege — se cere decizia"*, iar aici nici măcar nu era vorba de un text de lege, ci de forma produsului.
 - **CE EXISTĂ, măsurat pe toate cele 17 scheme** — 41 de facturi, **34 de note**:
 
@@ -3191,7 +3227,55 @@ scos ce nu se știa**, nu din defecte noi.
 
 - **CRITERIU DE ACCEPTARE al propunerii automate (Costin, 24.08.2026)** — de aplicat când se decide declanșarea, nu după: *„propunerea automată trebuie să fie cel puțin la nivelul celui care o folosește; altfel adaugă muncă de verificare, nu economisește."* E același test ca P22 și Anexa D — *un contabil care nu poate avea încredere într-o cifră ori o crede orbește, ori o reface în altă parte, și amândouă sunt eșecuri ale produsului* — dar mutat pe **propunere**: o notă propusă pe care contabilul o verifică oricum cont cu cont nu i-a economisit nimic, i-a adăugat un pas.
 - **Observația care l-a produs, și e măsurată**: notele existente au conturi **corecte** — cele 8 conturi literale din ecrane sunt toate în planul tuturor celor 17 firme, iar cele 34 de note reale n-au produs nicio constatare de cont inexistent. Cine a ținut evidența știa planul de conturi. **Deci ștacheta propunerii automate nu e „să nimerească ceva plauzibil", e „să nu fie sub omul care o citește".** Consecință practică pentru decizia de declanșare: dacă propunerea se face la **emitere**, ea trebuie să fie corectă fără context uman; dacă se face la **validare** sau la **închidere**, poate cere context, fiindcă omul e deja acolo. *Momentul și ștacheta nu sunt independente.*
-- **condiția de deblocare**: se scrie, ca **decizie de produs** în `DECIZII.md`, care e modelul — *(a)* aplicația contabilizează documentele automat, și atunci ruta manuală devine excepția declarată; *(b)* contabilul introduce notele, și atunci contarea automată nu se construiește, iar D300 nu mai poate declara ce evidența n-are fără să semnaleze; *(c)* hibrid, cu granița scrisă. Se închide când alegerea, varianta respinsă și motivul sunt scrise, iar `R35` și `R34` se re-citesc pe ea — amândouă atârnă de răspuns.
+- **condiția de deblocare**: se scrie, ca **decizie de produs** în `DECIZII.md`, care e modelul
+- **REZOLVATĂ 29.08.2026 (BLOC ZZ), decizia lui Costin: varianta (a).** *„Aplicația contabilizează automat orice fapt economic nou construit. Ruta manuală există doar acolo unde e declarată explicit ca excepție, cu motivul scris — nu implicit, prin absența contabilizării automate."*
+- **ce a scos măsurătoarea, și schimbă felul în care se citește restanța**: **direcția exista deja în fapt.** Din faptele pe care aplicația le gestionează, **cele mai multe contabilizează automat de mult** — NIR-ul, descărcarea de gestiune, casa, chitanța, bonul, raportul Z, ieșirile din stoc, rețetele, și toate cele ~30 de operațiuni speciale. **Nu era „ce direcție", era „direcția nescrisă"** — iar fără regulă, fiecare modul nou putea alege altfel, la fel de legitim. *Numele restanței a fost corect de la început: alegerea nu era DECLARATĂ.*
+- **de ce (a) și nu (b)/(c)**: **(b)** ar fi cerut **desfacerea** a tot ce contabilizează deja automat — a alege direcția pe care aplicația n-o are ar fi însemnat să numesc „decizie" o rescriere a jumătate din produs. **(c)** e, formal, ce se întâmplă azi; dar o graniță trasată **acum** ar fi înghețat exact starea de fapt, **inclusiv golurile** — cele două găsite azi ar fi devenit „graniță", nu restanță. *O regulă care descrie ce e nu mai poate arăta ce lipsește.* **(a)** inversează sarcina probei: absența contabilizării automate nu mai e o stare neutră.
+- **ce NU decide**: nu spune că nota se scrie **validată**. Patru-ochi rămâne unde e (R47), iar propunerea de la salarii — decizia din 25.08 — rămâne cum a fost decisă. *„Automat" e despre CINE produce nota, nu despre în ce stare intră.*
+
+#### ZZ2 — HARTA: cine contabilizează, și cum. Măsurat pe AST (29.08.2026)
+
+**48 de funcții de producție** scriu în `inregistrari`. Criteriul de clasificare **nu** e „există o rută", ci: **actul care construiește faptul scrie și nota, sau nota cere un act separat, ulterior?**
+
+**A. AUTOMAT — nota se scrie în ACELAȘI act (9 clase):**
+
+| faptul economic | unde |
+|---|---|
+| **NIR** (recepție marfă) | `POST /tenants/{id}/stocuri/nir` → `core/stocuri_api.py:68` |
+| **Descărcare de gestiune** (lunară) | `core/stocuri_api.py:164` |
+| **Ieșire / inventar / reclasificare stoc** | `POST /stocuri/{iesire,inventar,reclasificare}` → `core/stocuri_cv_api.py` |
+| **Rețetă / descărcare producție** | `POST /retete/descarca` → `core/retete_api.py` |
+| **Operațiune de casă** | `POST /casa/operatiuni` → `core/casa_api.py` |
+| **Chitanță emisă · stingere bon** | `POST /chitante`, `POST /bonuri/{id}/stinge` → `casa_api.adauga` |
+| **Bon aprobat** | `POST /bonuri/{id}/aproba` → `main.py` |
+| **Raport Z · import AMEF** (horeca) | `POST /horeca/raport-z`, `POST /horeca/import-amef` |
+| **~30 de operațiuni speciale** (`nota-*`, `achizitie-*`, `vanzare-*`, `export-*`, `import-*`, `reevaluare-*`, `decontare-valuta`) | `main.py` — **faptul și nota sunt același act**: omul descrie o operațiune care n-are alt obiect în aplicație |
+
+**B. MANUAL — obiectul există deja, nota cere un act SEPARAT (6 cazuri):**
+
+| faptul economic | obiectul se creează la | nota cere |
+|---|---|---|
+| **Factura emisă** | `POST /tenants/{id}/facturi` | `POST /facturi/{id}/contabilizeaza` |
+| **Factura primită** (e-factură) | `POST /facturi-primite/{id}/valideaza` | `POST /facturi/{id}/contabilizeaza` |
+| **Linie de extras bancar** | importul extrasului | `POST /banca/reconciliere/{linie}/conteaza` |
+| **Stat de plată** | `POST /stat-plata/emite` | `POST /salarii-contare` |
+| **Mijloc fix** (amortizare lunară) | `POST /mijloace-fixe` | `POST /amortizare` |
+| **Notă liberă** | — | `POST /jurnal` |
+
+#### ZZ3 — CLASIFICAREA celor 6: **4 excepții declarate · 2 GOLURI**
+
+**EXCEPȚII INTENȚIONATE** *(rămân manuale; motivul se scrie lângă cod, conform ZZ4)*:
+- **Nota liberă (`POST /jurnal`)** — e **supapa** pentru faptele pe care aplicația nu le modelează. A o automatiza n-are înțeles: n-are fapt declanșator.
+- **Reconcilierea bancară** — cere o **alegere care nu se poate deriva**: ce factură stinge o încasare. *Marginea, spusă: liniile pe care `_potriveste_linii` le potrivește **fără ambiguitate** ar putea urma automat. N-am deschis restanță pentru ea — n-am măsurat câte sunt, iar o restanță pe o intuiție e o datorie fără cifră.*
+- **Salariile** — decizie explicită din 25.08.2026 (propunere + patru-ochi, semnalează, nu blochează). Nu se re-decide azi.
+- **Amortizarea** — **rulare de perioadă**, fără act declanșator al omului; are deja idempotență pe `AMORT-{an}-{luna}`.
+
+**GOLURI** *(ar trebui automatizate conform regulii noi — devin restanțe, NU se repară azi)*:
+- **factura EMISĂ → R87**
+- **factura PRIMITĂ → R88**
+
+*Efectul lor se vedea de mult, doar că nu se numea așa: **R35** a măsurat că **28 din 43** de facturi declarabile (**65%**, **102.260 lei** TVA) nu sunt contate deloc, pe **10 firme din 17**.*
+- **cum se citesc R34 și R35 pe decizia asta** *(condiția cerea explicit re-citirea lor)*: **R34** — sursa celor patru poziții fiscale e D112 — **rămâne neatinsă**: e despre ce cifră intră în notă, nu despre cine o produce. **R35** — verdele peste facturi necontabilizate — **își păstrează gardul, și cu atât mai mult**: sub (a), o factură necontabilizată devine o **anomalie**, nu starea normală, iar verdictul trebuie să continue s-o vadă. *Niciuna nu se redeschide.* — *(a)* aplicația contabilizează documentele automat, și atunci ruta manuală devine excepția declarată; *(b)* contabilul introduce notele, și atunci contarea automată nu se construiește, iar D300 nu mai poate declara ce evidența n-are fără să semnaleze; *(c)* hibrid, cu granița scrisă. Se închide când alegerea, varianta respinsă și motivul sunt scrise, iar `R35` și `R34` se re-citesc pe ea — amândouă atârnă de răspuns.
 - **ce NU e**: nu e o reformulare a lui R35. R35 e un **verdict fals pe ecran** (verde peste o factură necontabilizată cunoscută), prag 1, măsurat pe 9 perechi — rămâne cum e. R36 e cauza din spatele lui, și e o **absență**, nu un defect: de aceea prag 2, nu 1.
 
 ### R37 — Nota contabilă n-are autor, iar `sursa` ei e un nomenclator de fapt, scris în 48 de locuri
@@ -3207,7 +3291,8 @@ scos ce nu se știa**, nu din defecte noi.
 - **(2) `sursa` e un nomenclator care nu există ca registru**: șir liber, scris **literal în 48 de locuri**, cu **9 valori distincte** — `facturi` (28×), `banca` (6), `stocuri` (5), `casa` (4), plus câte una pentru `manual`, `horeca_z`, `bon`, `amortizare`, `amef`. Nicio listă închisă, nicio validare, niciun loc unic. **Interdicțiile 17 și 28.** O valoare scrisă greșit într-o rută nouă nu e prinsă de nimic, iar orice raport care grupează pe `sursa` ar tăcea despre ea.
 - **ce NU e**: nu e un nomenclator de TIPURI DE NOTĂ. Așa ceva **nu există** — `NOTE_TIP` a fost căutat, zero potriviri. Iar absența lui **nu blochează** propunerea automată: maparea document→conturi există deja **per tip de operațiune**, în ~50 de rute, fiecare știindu-și conturile. Nu e nevoie de un strat tip-factură → tip-notă. *Vezi R36: singurul gol e declanșarea.*
 - **și un rezultat NEGATIV, care merită scris fiindcă infirmă o predicție**: conturile scrise literal în ecrane au fost confruntate cu planul de conturi al fiecărei firme — **8 conturi** (`2131`, `2133`, `2813`, `301`, `371`, `401`, `4111`, `446`), **toate prezente în planul tuturor celor 17 firme. Zero greșite.** Deci **nu** e a cincea instanță de valoare expirată în ecran. *Calibrare, ca numărătoarea să nu fie reluată greșit:* o căutare fără filtru de context ar fi dat și `121`/`103` din `declaratii.js` — care sunt **coduri de obligație ANAF**, nu conturi — și `101` din `etransport_ecran.js`, care e cod de tip de document. Trei fals-pozitive din unsprezece.
-- **condiția de deblocare**: `sursa` devine nomenclator închis, într-un loc unic, cu validare la scriere (după modelul `nomenclator_status_factura`); și `inregistrari` primește autor, pe regulile lui `state_plata`. Se închide când un scan pe `INSERT INTO ... inregistrari` găsește **zero** literale de `sursa` în afara nomenclatorului, iar coloana de autor e nenulă pe orice notă nouă.
+- **[ZZ5, 29.08.2026] RE-CITITĂ pe decizia R36 — DOMENIUL i se schimbă, condiția nu.** Sub varianta (a), notele produse **automat** devin regula, nu excepția: azi **48** de funcții de producție scriu în `inregistrari`, iar cele mai multe sunt acte automate. Consecința pe „autor": **o notă automată n-are autor-persoană prin construcție** — actul o produce, nu cineva. Deci partea a doua a condiției se citește ca *„nota își numește actul care a produs-o"*, nu *„nota poartă un utilizator"*: pentru actele automate, `sursa` **e** autorul, ceea ce face prima jumătate a condiției (nomenclator închis, într-un loc unic) **mai grea și mai importantă**, nu mai ușoară. Ce nu se schimbă: cifra 48 și cerința de validare la scriere. *(Se scrie aici fiindcă altfel următorul cititor ar căuta o coloană `user_id` pe o notă pe care n-a scris-o niciun om.)*
+- **condiția de deblocare**: `sursa` devine nomenclator închis, într-un loc unic, cu validare la scriere (după modelul `nomenclator_status_factura`); și `inregistrari` primește autor, pe regulile lui `state_plata` — **pentru actele automate, „autor" înseamnă actul, iar `sursa` îl poartă** (vezi re-citirea ZZ5). Se închide când un scan pe `INSERT INTO ... inregistrari` găsește **zero** literale de `sursa` în afara nomenclatorului, iar coloana de autor e nenulă pe orice notă nouă.
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
