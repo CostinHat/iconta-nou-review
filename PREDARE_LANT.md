@@ -117,6 +117,7 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 | **„PREDARE_LANT.md e cu 12 commituri în urmă"** | comenzile din 27.08 seara și târziu | **2**, măsurat cu formula din `pre-commit`. Pragul e 10, avertismentul n-a apărut. **A treia apariție a aceleiași cifre.** |
 | **„4 din 6 acte de nivel firmă"** | R82, 27.08 | **4 din 7**, măsurat pe calea rutei, nu pe fișier. Cele patru tăcute sunt aceleași |
 | **„4 divergențe de denumire"** (clichet pe date) | `test_nume_firma_unic.py`, 27.08 | **0** pe populația declarată. Vechea valoare era clichet pe **fixturi** — instrumentul citea toate firmele, fără filtru de cabinet |
+| **„0 din 18 firme au `nume_anaf`"** | prima formă a predării de la 04:2x | **1 din 18** — `Antibiotice Iasi`, cu divergență reală față de ANAF, cu alegerea deja consemnată. Cifra fusese invalidată o dată pe 27.08 și a reapărut din memorie |
 | **„divergența nu se poate naște la creare"** | R81, 28.08 dimineața | adevărat despre `POST /tenants`, **fals** despre `POST /auth/register`, unde `precompleteaza_din_anaf(seteaza_nume=True)` scria un singur loc. Găsit de garda de simetrie, la prima rulare |
 
 ---
@@ -126,10 +127,17 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 - **Simetria e o afirmație despre codul APLICAȚIEI.** Un semănător, un import sau un `UPDATE` de mână
   nu trec prin scriitorul unic — și **chiar așa s-au născut cele patru divergențe migrate azi**.
   De-aia clichetul pe **date** rămâne, deși invariantul îl face structural imposibil.
-- **Textul nou de pe ecran n-a fost văzut de un om pe o firmă cu divergență reală.** **0 din 18**
-  firme au `nume_anaf`, deci caseta de alegere nu se poate declanșa azi. S-a probat ce **randează**
-  ecranul (scan de interacțiune + axe pe 14 ecrane, **0 violări**), nu ce vede cineva care are
-  divergența.
+- **Textul nou de pe ecran n-a fost văzut de un om pe o firmă cu divergență reală** — dar motivul
+  nu e cel pe care îl scrisesem. *(Prima formă a rândului ăstuia spunea „**0 din 18** firme au
+  `nume_anaf`". **Fals**, și e o cifră pe care propriul meu tabel de cifre invalidate o corectase deja
+  o dată: „0 din 17" fusese invalidată pe 27.08 în favoarea lui „1 din 18". Am purtat-o mai departe
+  din memorie, la douăzeci de minute după ce scrisesem §10.16 despre exact asta.)*
+  **Recitit la 04:40:45, pe date:** **1 din 18** firme are `nume_anaf` — `Antibiotice Iasi` (33394),
+  iar denumirea **chiar diferă** de cea de la ANAF (`ANTIBIOTICE SA`). Caseta tot nu apare, dar
+  fiindcă **alegerea a fost deja făcută** (`nume_ales='aplicatie'`), nu fiindcă n-ar exista
+  divergență. Deci calea **există** și e la o resetare de alegere distanță. S-a probat ce
+  **randează** ecranul (scan de interacțiune + axe pe 14 ecrane, **0 violări**), nu ce vede cineva
+  care are divergența în față.
 - **Cele patru acte tăcute tot tac.** R82 e deschisă.
 - **Gardul de simetrie nu urmărește apeluri în adâncime.** O funcție-intermediar care ar chema doar
   jumătate din scriitor n-ar fi văzută — dar nici n-are ce, cât timp scriitorul e o singură funcție
