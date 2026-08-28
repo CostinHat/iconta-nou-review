@@ -91,9 +91,13 @@ def test_FIECARE_divergenta_isi_spune_FELUL(monkeypatch):
 def test_HARTA_felurilor_e_completa_si_disjuncta():
     """A doua directie: nu ajunge ca `fel` sa existe - trebuie sa fie PE CONTUL POTRIVIT.
 
-    Cele patru pozitii citite din declaratie (R34) sunt REGRESIE; cele doua calculate independent
-    sunt VERIFICARE. Daca vreun cont trece dintr-o clasa in alta fara sa se schimbe si sursa lui,
-    semnalul incepe sa mintă despre ce inseamna."""
+    Cele patru pozitii citite din declaratie (R34) sunt REGRESIE; ce se calculeaza independent SI
+    are contrapartida in declaratie e VERIFICARE. Daca vreun cont trece dintr-o clasa in alta fara
+    sa se schimbe si sursa lui, semnalul incepe sa mintă despre ce inseamna.
+
+    [R86, 28.08.2026] A doua directie, la fel de importanta: 641/421 NU are voie sa se intoarca.
+    Nu fiindca nota ar gresi, ci fiindca declaratia n-are cu ce sa-l confrunte - iar o comparatie
+    fara contrapartida raporteaza rosu pe date corecte."""
     from core import control_incrucisat as _ci
     regresie = {cont for _e, _coduri, cont in _ci.COD_CONT_D112}
     verificare = {cont for _e, cont, _sursa in _sc.VERIFICARE_REALA}
@@ -102,9 +106,14 @@ def test_HARTA_felurilor_e_completa_si_disjuncta():
         % (sorted(regresie), sorted(_sc.CREDITE_DIN_D112)))
     assert not (regresie & verificare), (
         "acelasi cont e si regresie, si verificare: %s" % sorted(regresie & verificare))
-    assert verificare == {"421", "5328"}, (
-        "verificarea reala nu mai e pe cele doua pozitii calculate independent: %s"
+    assert verificare == {"5328"}, (
+        "verificarea reala nu mai e pe singura pozitie care are contrapartida in D112: %s"
         % sorted(verificare))
+    assert "421" not in verificare, (
+        "641/421 a revenit in verificarea reala. D112 n-are un camp care sa insemne «brut realizat» "
+        "— baza contributiva, brutul contractual si venitul brut total sunt, fiecare, alta marime. "
+        "A-l compara fortat produce o divergenta egala cu facilitatea de la salariul minim, pe o "
+        "nota CORECTA (R86, decizia (b), 28.08.2026).")
 
 
 def test_ANTI_VACUU_cititorul_de_XML_chiar_gaseste_valorile():

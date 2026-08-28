@@ -3,6 +3,46 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 28.08.2026 — R86: `641/421` iese din comparația cu D112, varianta (b)
+
+**Decizia lui Costin:** *„`641/421` iese din `VERIFICARE_REALA`. Rămâne doar `642/5328`. Motivul:
+D112 n-are un câmp care să reprezinte brutul realizat — baza contributivă, brutul contractual
+(`B4_3`) și venitul brut total (`E1_1`) sunt, fiecare, altă mărime, din motive structurale, nu
+lipsă de acuratețe. A compara forțat ar fi precizie falsă, nu verificare."*
+
+**Ce repară.** Ancora aleasă cu o zi înainte (BLOC QQ2) raporta **roșu pe o notă corectă**. Măsurat
+salariat cu salariat: din 12, diverge exact unul — cel de la salariul minim — și exact cu
+**facilitatea** (300,00 în aprilie–iunie, 200,00 în iulie–august), restul fiind rotunjire sub-leu.
+`calc["brut"]` e salariul brut **realizat, întreg**; `B_brutSalarii` e **baza contributivă**, din
+care facilitatea e scăzută (OUG 89/2025 art.III). *Nu e o nepotrivire de cifre, e o nepotrivire de
+mărimi.*
+
+**De ce (b) și nu celelalte două:**
+- **(a) — se compară cu alt element din declarație.** Nu există. Cele trei candidate sunt fiecare
+  altceva, **prin construcție**: `B2_5` exclude facilitatea, `B4_3` e contractual (pe o lună cu
+  concediu medical diferă oricum), `E1_1` include tichetele. Alegerea „cel mai apropiat" ar fi
+  produs zgomot pe altă clasă de firme, nu mai puțin zgomot.
+- **(c) — toleranța devine „facilitatea lunii".** Ar cere ca instrumentul de măsură să **știe o
+  regulă fiscală** și s-o țină la zi: salariul minim, nivelul de referință diminuat, prorata pe
+  zile lucrate. Un instrument care replică regula pe care ar trebui s-o verifice nu mai verifică
+  nimic — plus că toleranța ar fi trebuit recalculată la fiecare schimbare de salariu minim.
+- **(b) — se scoate, cu motivul scris.** Cea mai puțin spectaculoasă, și singura care nu adaugă o a
+  doua sursă de eroare.
+
+**CE NU MAI E VERIFICAT, și se scrie ca pierdere, nu ca simplificare:** brutul din nota de salarii
+**nu mai e confruntat cu nimic**. Dacă mâine `note_lunare` ar calcula greșit salariile brute,
+`control_coerenta` n-ar spune nimic. *Dar nici azi n-ar fi spus ceva util* — semnala și când nota
+era corectă, iar un semnal care nu distinge corectul de greșit nu e o pierdere când dispare.
+**O verificare care nu poate distinge nu devine mai bună dacă o păstrezi; devine doar mai greu de scos.**
+
+**Ce rămâne sub control real:** o singură poziție, `642/5328` — biletele de valoare, cu contrapartida
+lor exactă în secțiunea 8.3 (`E3_10 + E3_75`). Plus cele patru poziții fiscale, ca **gardă de
+regresie** (R33/QQ).
+
+**Măsurat după decizie** (`scripts/sonda_r34.py`, 30 de perechi măsurabile): **0 divergențe**, iar
+forma veche păstrată ca linie de bază dă în continuare **29** — deci sonda n-a devenit oarbă, a
+devenit exactă.
+
 ## 28.08.2026 — R33, ultimul element: `core/compensare.py` se SCOATE, varianta (c)
 
 **Decizia lui Costin:** *„nu am nevoie de funcționalitatea de compensare. Modulul se scoate, nu se

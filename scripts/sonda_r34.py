@@ -20,9 +20,14 @@ DOUA FORME, masurate pe aceleasi perechi:
 DOUA FELURI DE DIVERGENTA, de la 28.08.2026 (R33/QQ), si se raporteaza SEPARAT:
   * REGRESIE — cele patru pozitii fiscale. Nu pot diverge azi, prin constructie (R34). Un rosu
     aici inseamna ca cineva a reintrodus un calcul independent: cablaj stricat, nu dezacord fiscal.
-  * VERIFICARE — 641/421 (salarii brute realizate) si 642/5328 (bilete de valoare), singurele doua
-    pozitii pe care nota le calculeaza INDEPENDENT de D112. Aici un rosu inseamna ce insemna
+  * VERIFICARE — 642/5328 (bilete de valoare), singura pozitie pe care nota o calculeaza
+    INDEPENDENT de D112 SI care are contrapartida in declaratie. Aici un rosu inseamna ce insemna
     inainte: doua cai spun lucruri diferite despre aceeasi luna.
+    [R86, 28.08.2026] 641/421 a fost aici o zi si a IESIT, decizia (b): D112 n-are niciun camp care
+    sa insemne „brutul realizat" - baza contributiva, brutul contractual si venitul brut total sunt,
+    fiecare, alta marime, din motive structurale. A-l compara fortat raporta rosu pe o nota corecta,
+    cu o diferenta egala cu facilitatea de la salariul minim. Consecinta, declarata: brutul din nota
+    NU mai e confruntat cu nimic.
 Un total pe amandoua la un loc ar amesteca „cifrele nu se potrivesc" cu „codul s-a stricat".
 
 NU SCRIE NIMIC: `pg_stat_user_tables` se citeste inainte si dupa, iar diferenta se tipareste.
@@ -176,5 +181,5 @@ if __name__ == "__main__":
         print("  *** REGRESIE pe forma NOUA: cele patru pozitii se citesc din declaratie, deci NU pot")
         print("      diverge. Un rosu aici e cablaj stricat in note_lunare, nu dezacord fiscal.")
     print("  R34 (cele patru pozitii): %s" % ("CURAT" if fn["regresie"] == 0 else "ROSU"))
-    print("  QQ2 (641/421 si 642/5328): %d divergente reale" % fn["verificare"])
+    print("  Verificarea reala (642/5328): %d divergente" % fn["verificare"])
     print("  scrieri in timpul masuratorii: %s" % ("ZERO" if delta == (0, 0, 0) else str(delta)))

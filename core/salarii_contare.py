@@ -63,33 +63,34 @@ CONT_D112 = (
 #: creditele care NU se mai calculeaza per salariat — vin din declaratie
 CREDITE_DIN_D112 = frozenset(c for _cod, _dt, c in CONT_D112)
 
-# [R33/QQ, 28.08.2026] CELE DOUA POZITII PE CARE CONTROLUL CHIAR POATE GASI CEVA.
+# [R33/QQ, 28.08.2026] POZITIA PE CARE CONTROLUL CHIAR POATE GASI CEVA.
 # Dupa R34, cele patru pozitii fiscale sunt copiate din declaratie, deci comparatia lor cu
 # declaratia e o tautologie (vezi `control_coerenta`). Ce ramane calculat INDEPENDENT de D112 in
-# nota propusa sunt exact doua conturi, si alea capata acum contra-valoarea lor DECLARATA:
-#   * 641 = 421 — salariile brute REALIZATE. Contrapartida in declaratie e `B_brutSalarii`
-#     (= C1_11 = suma B2_5), despre care generatorul spune explicit ca e „DOAR salariul REALIZAT
-#     (bazac), EXCLUDE indemnizatia" — adica exact ce intra pe 641. NU `B4_3` (brutul
-#     CONTRACTUAL): pe o luna cu concediu medical alea difera prin constructie, iar o ancora care
-#     difera prin constructie produce zgomot, nu masuratoare.
+# nota propusa capata contra-valoarea lui DECLARATA:
 #   * 642 = 5328 — biletele de valoare ACORDATE. Contrapartida e sectiunea 8.3: `E3_10` (masa) +
 #     `E3_75` (vacanta), aceleasi doua tipuri pe care nota le pune pe 5328.
 #
-# [R86-B, DIAGNOSTIC 28.08.2026] ANCORA LUI 641 ARE O ABATERE CUNOSCUTA, SI NU E A NOTEI.
-# Masurat pe tenant_001, salariat cu salariat, 5 luni: din 12 salariati diverge EXACT UNUL - cel de
-# la salariul minim - si diverge EXACT cu facilitatea: 300,00 in aprilie-iunie (minim 4.050, nivel
-# de referinta 3.750), 200,00 in iulie-august (4.325 / 4.125). Restul e rotunjire sub-leu (±0,14 /
-# ±0,48 / ±0,24), din rotunjirea D112 la leu per salariat.
-# CAUZA, structural: cele doua cifre NU SUNT ACEEASI MARIME.
-#   * `calc["brut"]` = salariul brut REALIZAT, intreg - ce datoreaza angajatorul, deci ce intra pe 641;
-#   * `B_brutSalarii` (= C1_11 = suma B2_5) = BAZA CONTRIBUTIVA, din care facilitatea de la salariul
-#     minim e SCAZUTA (OUG 89/2025 art.III: nivelul de referinta se diminueaza cu 300 lei).
-# Iar D112 nu declara nicaieri „brutul realizat" ca atare: are baza contributiva (B2_5), brutul
-# CONTRACTUAL (B4_3, care pe o luna cu concediu medical difera prin constructie) si venitul brut
-# total (E1_1, care include tichetele). Deci lipsa nu e o cifra gresita in nota - e o CONTRAPARTIDA
-# care nu exista in declaratie. Ce se face cu asta e o decizie, nu o corectura: vezi R86.
+# [R86, DECIZIA lui Costin, 28.08.2026 — varianta (b)] 641/421 A IESIT DE AICI, SI DE CE.
+# A fost in lista o zi. Masurat pe tenant_001, salariat cu salariat, 5 luni: din 12 salariati
+# divergea EXACT UNUL - cel de la salariul minim - si exact cu facilitatea (300,00 in aprilie-iunie,
+# 200,00 in iulie-august), restul fiind rotunjire sub-leu din rotunjirea D112 la leu per salariat.
+# CAUZA nu era in nota: `calc["brut"]` e salariul brut REALIZAT, intreg - ce datoreaza angajatorul,
+# deci ce intra pe 641 -, pe cand `B_brutSalarii` e BAZA CONTRIBUTIVA, din care facilitatea de la
+# salariul minim e SCAZUTA (OUG 89/2025 art.III).
+# Iar D112 **nu are niciun camp care sa insemne „brutul realizat"**. Cele trei marimi apropiate sunt,
+# fiecare, altceva, din motive STRUCTURALE, nu din lipsa de acuratete:
+#   * `B2_5` / `B_brutSalarii` — baza contributiva, FARA facilitate;
+#   * `B4_3` — brutul CONTRACTUAL: pe o luna cu concediu medical difera prin constructie;
+#   * `E1_1` — venitul brut TOTAL, care include tichetele.
+# Costin: *„a compara fortat ar fi precizie falsa, nu verificare."* Deci 641/421 nu se compara cu
+# D112 deloc, iar motivul se scrie - nu se ascunde intr-o toleranta largita.
+#
+# CE NU MAI E VERIFICAT, declarat: **brutul din nota nu mai e confruntat cu nimic.** Daca maine
+# `note_lunare` ar calcula gresit salariile brute, `control_coerenta` NU ar spune nimic - nici azi
+# n-ar fi spus ceva util, fiindca semnala si cand nota era corecta. Ce ramane sub control real e o
+# singura pozitie, 642/5328. *O verificare care nu poate distinge corectul de gresit nu devine mai
+# buna daca o pastrezi; devine doar mai greu de scos.*
 VERIFICARE_REALA = (
-    ("Salarii brute realizate", "421", ("angajatorB", ("B_brutSalarii",))),
     ("Bilete de valoare acordate", "5328", ("asiguratE3", ("E3_10", "E3_75"))),
 )
 
