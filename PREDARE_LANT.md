@@ -10,7 +10,13 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   proza spunea **35**), „fals-negativul cheii" era scris de două ori, iar „dacă continui" era
   numerotat 1-2-3-2-3-4. *Un document care se contrazice în două rânduri vecine nu se citește: cine
   îl citește nu poate ști care rând mai e adevărat.*
-- **pe commit**: `4eba229` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care
+- **corectată imediat după**: rescrierea completă a intrat pe `471368c`, iar rularea porții care a
+  produs-o a arătat că **rândul „starea la predare" purta o cifră falsă, copiată din documentul
+  vechi** (`411`/`32` în loc de `413`/`34`). Corectată în commitul următor, și **invalidată în
+  tabel**. *Se scrie aici, nu doar în tabel: o rescriere al cărei scop era să scoată afirmațiile
+  purtate din memorie a purtat ea însăși una, la douăzeci de minute după ce a explicat de ce nu se
+  face asta.*
+- **pe commit**: `471368c` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care
   poartă munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e
   arborele care devine commitul următor.*
 - **cum se citește „pe commit", ca să nu mai pară stale**: numele de acolo e al commitului
@@ -182,14 +188,16 @@ schemă efemeră — **18 din 18** cu dovadă tipărită.
 
 ## STAREA LA PREDARE
 
-Poartă verde pe arborele care devine commitul următor: **3586 teste colectate** · ruff OK ·
-verificator **TOTAL 0** · rute **411 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 32** · candidați fără
-apelant și fără declarație **0** · acte de nivel firmă **0 tăcute din 7** · site **200** · four-way
-`HEAD = origin/main = origin/backup/lant-2026-08-29` (toate pe `4eba229`).
+Poartă verde, citită din rularea care a produs `471368c`: **3562 teste trec** · 10 skip · 14 xfail ·
+ruff OK · verificator **TOTAL 0** · rute **413 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 34**
+(clichet GRI 45) · candidați fără apelant și fără declarație **0** · acte de nivel firmă **0 tăcute
+din 7** · site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-29`, procesul viu
+pe `471368c`.
 
-*Numărul de teste **trecute** se citește din rularea porții care poartă commitul ăsta; „3586" e
-numărul **colectat**, măsurat acum cu `pytest --collect-only -q`. Ultima rulare completă, pe
-`4eba229`: 3560 ✓ · 10 skip · 14 xfail.*
+**Cifrele de aici se copiază din IEȘIREA PORȚII, nu din predarea de dinainte.** *Prima formă a
+rescrierii de azi scria „411 … EXCLUS 32" — purtată din documentul vechi, fără măsurătoare. Poarta a
+măsurat 413 și 34, la douăzeci de minute după ce documentul din jur explica de ce nu se face asta.
+Vezi tabelul de cifre invalidate.*
 
 **Cifrele secțiunii „Unde suntem" nu se scriu de mână** — `scripts/raport_b.py`.
 **Poarta durează ~12,5 minute.**
@@ -247,6 +255,7 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 | **44 de restanțe deschise · prag 2 = 15** | predarea din 29.08 dimineață | **45** și **17** atunci, numărate mecanic pe câmpul `unde intră`. Vechea defalcare (15+12+16=43) nu se închidea cu totalul ei |
 | **13** (regimuri fiscale reale) | prima formă a lui `scan_regimuri.py`, 29.08 | **12**. Scanul număra `tip_decont` **brut**, iar în date există patru scrieri pentru două lucruri — `L`, `lunar`, `T`, `trimestrial`. **Verificat la sursă: nu e un defect** — `core.common.perioada_tva_tip` le parsează pe toate fără default tăcut. Era naivitatea instrumentului: două firme cu aceeași periodicitate apăreau ca două regimuri |
 | **„PREDARE_LANT.md e cu 12 commituri în urmă"** | comenzile din 27.08 seara, 27.08 târziu, **și 29.08** | **2**, apoi **0**, măsurat cu formula din `pre-commit`. Pragul e 10; avertismentul n-a apărut niciodată. **A patra apariție a aceleiași cifre**, de fiecare dată fără măsurătoare în spate |
+| **„rute 411 = … + EXCLUS 32"** | predările din 28 și 29.08, inclusiv **prima formă a rescrierii complete de azi** | **413** și **34**, citit din ieșirea porții care a produs `471368c`. *Cifra a fost **copiată din documentul de dinainte** în timpul unei rescrieri al cărei scop era să scoată exact afirmațiile purtate din memorie. A treia clasă de cifră care se strecoară prin copiere, după `nume_anaf` și `43`. De-asta rândul „starea la predare" spune acum, în text, de unde se ia.* |
 
 ---
 
