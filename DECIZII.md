@@ -3,6 +3,29 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 29.08.2026 (7) — Două confirmări de arhitect, ca să nu rămână presupuneri validate tăcut
+
+*Amândouă erau, până azi, alegeri de-ale mele scrise ca presupuneri. Costin le-a confirmat, fără
+schimbare de cod. Se scriu aici ca **decizii**, nu ca ipoteze care au trecut fiindcă nimic n-a picat:
+o presupunere care nu e ridicată la decizie se citește peste șase luni ca o scăpare norocoasă.*
+
+**1. „Ciornă de recunoaștere" e despre NOTA CONTABILĂ, nu despre caracterul fiscal al documentului.**
+Starea `de_recunoscut` **rămâne declarabilă**. Motivul, confirmat: exigibilitatea TVA nu așteaptă
+recunoașterea internă — pe o factură emisă, taxa e datorată la emitere (art. 281 CF). O stare
+nedeclarabilă ar fi scos factura **tăcut** din D300, adică ar fi reprodus defectul **1.1** din
+22.08.2026 (4 facturi, 3.052,00 lei), cel care a produs `nomenclator_status_factura.py`.
+*Probat pe rulare, nu pe citire: pasul K2 din `scripts/proba_verificari_trasee.py` generează decontul
+înainte și după și arată contribuția facturii — bază +1.000, TVA +210.*
+
+**2. Când și luna emiterii, și luna descoperirii sunt închise, actul REFUZĂ.** Nu se inventează o a
+treia dată. Ieșirea e **redeschiderea unei luni**, care e un act cu urmă și cu rol — nu o alegere
+tăcută a aplicației. *Regula de datare de la R89 acoperă restul cazurilor; ăsta rămâne un refuz, și e
+răspunsul corect: o notă are nevoie de o lună în care are voie să intre, iar dacă nu există, cineva
+trebuie să deschidă una și să se știe cine.*
+
+**Ce NU schimbă niciuna dintre ele:** nicio linie de cod. Comportamentul era deja ăsta; ce lipsea era
+statutul afirmației.
+
 ## 29.08.2026 (6) — R91: varianta (iii). O factură emisă venită prin import e o CIORNĂ DE RECUNOAȘTERE
 
 **Decizia lui Costin:** *„O factură emisă intrată prin `_factura_din_parsat` (import SPV) devine

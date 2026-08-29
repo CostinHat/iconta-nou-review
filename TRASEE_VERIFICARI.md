@@ -212,16 +212,16 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: RECUNOAȘTEREA unei facturi EMISE venite prin import — actul care îi scrie nota — scrie facturi (UPDATE)*
 
-- [ ] înainte de act, factura adusă prin import stă în starea `de_recunoscut` și **n-are nicio notă** — sosirea documentului nu e faptul economic
-- [ ] **și totuși e DECLARABILĂ**: apare în D300 pe luna emiterii chiar nerecunoscută, fiindcă TVA-ul e datorat la emitere (art. 281 CF). *Verificarea asta e cea care apără defectul 1.1 din 22.08.2026*
-- [ ] după act, factura are **exact o notă**, în stare `ciorna`, cu `sursa='facturi'` și cu `factura_id` care trimite la ea — patru-ochi rămâne neatins (R47)
-- [ ] documentul justificativ derivat din notă numește factura originală, cu numărul și data ei
-- [ ] factura trece pe `emisa`: după recunoaștere e o factură ca oricare alta
-- [ ] a doua chemare a actului e **no-op** (`deja_recunoscuta`), nu eroare, și nu adaugă a doua notă
-- [ ] pe o factură care **n-a venit prin import** actul refuză cu `422` — nu e o ciornă de recunoaștere
-- [ ] contabilizarea manuală, chemată după recunoaștere, întoarce `deja_contata`: în jurnal rămâne o singură notă
-- [ ] pe o lună închisă actul refuză cu `423`, iar factura rămâne `de_recunoscut`
-- **NEBIFATE DELIBERAT.** Draft propus (29.08.2026), nu verificare făcută — același tipar ca la pasul de dezlegare. Bifarea e un pas separat.
+- [x] înainte de act, factura adusă prin import stă în starea `de_recunoscut` și **n-are nicio notă** — sosirea documentului nu e faptul economic
+- [x] **și totuși e DECLARABILĂ**: apare în D300 pe luna emiterii chiar nerecunoscută, fiindcă TVA-ul e datorat la emitere (art. 281 CF). *Verificarea asta e cea care apără defectul 1.1 din 22.08.2026*
+- [x] după act, factura are **exact o notă**, în stare `ciorna`, cu `sursa='facturi'` și cu `factura_id` care trimite la ea — patru-ochi rămâne neatins (R47)
+- [x] documentul justificativ derivat din notă numește factura originală, cu numărul și data ei
+- [x] factura trece pe `emisa`: după recunoaștere e o factură ca oricare alta
+- [x] a doua chemare a actului e **no-op** (`deja_recunoscuta`), nu eroare, și nu adaugă a doua notă
+- [x] pe o factură care **n-a venit prin import** actul refuză cu `422` — nu e o ciornă de recunoaștere
+- [x] contabilizarea manuală, chemată după recunoaștere, întoarce `deja_contata`: în jurnal rămâne o singură notă
+- [x] pe o lună închisă actul refuză cu `423`, iar factura rămâne `de_recunoscut`
+- **BIFATE PE RULARE, 29.08.2026 — nu pe citirea codului.** Executate de `scripts/proba_verificari_trasee.py`, ca la pasul de dezlegare. **9 din 9 confirmate.** *Rândul despre declarabilitate se măsoară ca DIFERENȚĂ în D300 (bază +1.000, TVA +210), nu ca total: decontul cumulează și celelalte facturi ale lunii, iar o egalitate pe total ar fi presupus o fixtură izolată.*
 - ce NU acoperă lista: actul n-are ecran, deci rândurile se exercită prin API — la fel ca `POST /import-efactura`, calea care aduce documentul (R70).
 
 ### `POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza`
@@ -424,16 +424,16 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: RUPE legătura notă↔factură, cu URMĂ*
 
-- [ ] nota nu mai poartă `factura_id`, dar **rămâne în evidență** cu aceleași linii și aceeași sumă — actul rupe legătura, nu șterge nota
-- [ ] factura reapare ca **neîncasată, cu soldul întreg**: `reconciliere_api.facturi_deschise` o listează din nou, cu exact suma care fusese stinsă de nota dezlegată
-- [ ] actul a lăsat o **urmă proprie** în `public.audit_log` (`DEZLEGARE nota-factura`), cu nota, factura, motivul scris de om, autorul și momentul — și e o afirmație tipată, nu proză într-un dicționar
-- [ ] fără motiv actul **nu se produce**: răspuns `422` cu `cod=MOTIV_OBLIGATORIU`, iar nota rămâne legată — se citește în bază, nu doar pe ecran
-- [ ] pe o notă de **CONTARE** actul refuză (`E_NOTA_DE_CONTARE`), trimite la **storno**, iar nota rămâne legată: evidența unei facturi nu se poate desface
-- [ ] pe o **lună închisă** actul refuză cu `423`, nota rămâne legată, iar în `audit_log` **nu** apare niciun rând `DEZLEGARE nota-factura` — refuzul se produce înaintea urmei. *(Rândul de acces `POST <cale>` apare oricum: middleware-ul îl scrie pentru orice mutație, reușită sau nu.)*
-- [ ] fără rol de `admin_firma` actul nu se poate exercita
-- [ ] **după** dezlegare, ștergerea facturii — care înainte refuza cu `ARE_NOTA_LEGATA` — reușește; iar pe o factură cu notă de contare ștergerea refuză și numește storno
-- [ ] o **a doua** dezlegare pe aceeași notă refuză cu `NOTA_NELEGATA` și nu adaugă un al doilea rând `DEZLEGARE nota-factura`
-- **NEBIFATE DELIBERAT.** Lista e un DRAFT propus (29.08.2026), nu o verificare făcută. Bifarea e un pas separat, deliberat — nu se face în aceeași tură cu construcția.
+- [x] nota nu mai poartă `factura_id`, dar **rămâne în evidență** cu aceleași linii și aceeași sumă — actul rupe legătura, nu șterge nota
+- [x] factura reapare ca **neîncasată, cu soldul întreg**: `reconciliere_api.facturi_deschise` o listează din nou, cu exact suma care fusese stinsă de nota dezlegată
+- [x] actul a lăsat o **urmă proprie** în `public.audit_log` (`DEZLEGARE nota-factura`), cu nota, factura, motivul scris de om, autorul și momentul — și e o afirmație tipată, nu proză într-un dicționar
+- [x] fără motiv actul **nu se produce**: răspuns `422` cu `cod=MOTIV_OBLIGATORIU`, iar nota rămâne legată — se citește în bază, nu doar pe ecran
+- [x] pe o notă de **CONTARE** actul refuză (`E_NOTA_DE_CONTARE`), trimite la **storno**, iar nota rămâne legată: evidența unei facturi nu se poate desface
+- [x] pe o **lună închisă** actul refuză cu `423`, nota rămâne legată, iar în `audit_log` **nu** apare niciun rând `DEZLEGARE nota-factura` — refuzul se produce înaintea urmei. *(Rândul de acces `POST <cale>` apare oricum: middleware-ul îl scrie pentru orice mutație, reușită sau nu.)*
+- [x] fără rol de `admin_firma` actul nu se poate exercita
+- [x] **după** dezlegare, ștergerea facturii — care înainte refuza cu `ARE_NOTA_LEGATA` — reușește; iar pe o factură cu notă de contare ștergerea refuză și numește storno
+- [x] o **a doua** dezlegare pe aceeași notă refuză cu `NOTA_NELEGATA` și nu adaugă un al doilea rând `DEZLEGARE nota-factura`
+- **BIFATE PE RULARE, 29.08.2026 — nu pe citirea codului.** Fiecare rând a fost executat ca pas distinct de `scripts/proba_verificari_trasee.py`: schemă efemeră din `tenant_template.sql`, chemarea **funcțiilor de rută** din `main.py` (deci prin verificarea de rol, poarta de perioadă, tranzacție și urmă), cu dovada tipărită. **9 din 9 confirmate.** *A bifa citind codul care le-a produs ar fi fost o tautologie: gardul și afirmația ar fi venit din același loc.*
 - ce NU acoperă lista: actul **n-are ecran**, deci toate rândurile se exercită prin API — la fel ca `DELETE /facturi/{id}`, care n-are nici el (R70). O verificare „cu ochii, pe ecran" nu e posibilă azi pentru pasul ăsta.
 
 ### `POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza`
