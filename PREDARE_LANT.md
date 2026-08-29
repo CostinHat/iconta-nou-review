@@ -1,16 +1,16 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — lanțul facturii e închis de la emitere până la evidență, iar istoricul a intrat prin ACELAȘI act; a rămas o singură decizie (29.08.2026)
+# PREDARE LANȚ — lanțul facturii e închis pe toate cele trei intrări, iar din el nu mai e nimic deschis (29.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-29**, a șaptea oară în ziua asta. *Rescriere PE SECȚIUNI, nu completă
+- **ultima rescriere**: **2026-08-29**, a opta oară în ziua asta. *Rescriere PE SECȚIUNI, nu completă
   — se spune, ca să nu pară ce nu e. S-au atins: antetul, „de unde se pornește", starea codului,
   tabelul de restanțe și lista „ce nu e adevărat". Restul e neatins fiindcă nu s-a mișcat.*
-- **pe commit**: `d582563` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
+- **pe commit**: `6ca0aba` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
   munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e arborele care
   devine commitul următor.*
-- **rescrierea de dinainte**: `a0cc6a5`, aceeași zi. Între ea și acum au intrat **opt** commituri, ultimele două fiind `735617d` și `d582563`.
+- **rescrierea de dinainte**: `a0cc6a5`, aceeași zi. Între ea și acum au intrat **zece** commituri, ultimele două fiind `bc6fb35` și `6ca0aba`.
 - **de ce acum**: se rescrie înaintea opririi, ca de fiecare dată. *Conținutul, nu contorul* — măsurat
   cu formula din `pre-commit`: **1** commit în urmă, pragul e **10**, deci nu era stale. Se rescrie
   fiindcă s-a schimbat ce spune, nu fiindcă a îmbătrânit.
@@ -99,16 +99,22 @@ scrisesem regula care o interzice (`METODA §10.16`). *O regulă scrisă nu țin
 facturii.** R87, R88 și R90 sunt construite, probate pe date reale și închise. Ce a rămas sunt **două
 decizii**, amândouă amânate deliberat:
 
-1. **factura EMISĂ care intră prin import** — **R91**, singura decizie rămasă. Măsurat mecanic: în
-   producție sunt **exact două** locuri care inserează în `facturi`, iar `_factura_din_parsat` e
-   **singurul** care ocolește actul de emitere. Trei variante scrise, **recomandarea arhitectului
-   consemnată ca recomandare** — (iii), ciornă de recunoaștere cu act de validare simetric primitei.
-   Costin, 29.08: *„decizia se ia cu minte odihnită, măsurătoarea e zero azi."*
+**Nu mai e nimic deschis din lanțul facturii — nici muncă, nici decizie.** R87, R88, R89, R90 și R91
+sunt toate închise, fiecare cu proba ei pe date reale. *Ce a rămas de făcut e o singură treabă mică,
+și e a lui Costin: două liste de verificare propuse, nebifate, în `TRASEE_VERIFICARI.md` — pașii de
+**dezlegare** și de **recunoaștere**. Bifarea e un act deliberat, nu se face în aceeași tură cu
+construcția.*
 
-*(**R89 s-a închis** în aceeași zi, dar nu prin alegerea unei variante: premisa s-a schimbat — Costin
-a spus că nu există clienți reali —, iar stocul s-a contabilizat ca **probă end-to-end** a traseului
-R87/R88 pe date istorice. **31 de facturi, 103.163,00 lei TVA, 11 firme**, prin actul obișnuit, nu
-printr-o migrare.)*
+**Cele trei intrări ale unei facturi în evidență, toate acoperite acum:**
+1. **emiterea prin aplicație** → nota se scrie în `creeaza_factura`, punctul unic al tuturor celor
+   patru drumuri de emitere (R87);
+2. **factura primită, din SPV** → nota la `/facturi-primite/{id}/valideaza`, unde omul alege contul
+   și clasifică regimul (R88);
+3. **factura emisă întoarsă prin import** → **ciornă de recunoaștere**, apoi
+   `/facturi/{id}/recunoaste` (R91, decis azi, varianta (iii)).
+
+*Iar istoricul a intrat prin aceleași acte: **31 de facturi, 103.163,00 lei TVA, 11 firme** (R89), nu
+printr-o migrare.*
 
 **Ce s-a construit, pe scurt, ca să nu se recitească registrul:** contarea are un singur loc
 (`core/contare_facturi.py`); nota se scrie în același act cu faptul — la emitere prin
@@ -124,12 +130,12 @@ plasa caută note fără cheie înainte de fiecare notă automată; nota din jur
 ## AL TREILEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
 - **nicio restanță de PRAG 1 deschisă.** R35 era ultima, închisă pe 28.08.
-- **43 de restanțe deschise**, numărate mecanic pe registru azi: prag 2 — **14**, prag 3 — **13**,
+- **42 de restanțe deschise**, numărate mecanic pe registru azi: prag 2 — **14**, prag 3 — **12**,
   fără prag declarat — **16** (cele vechi, R1–R27). Pe cine deblochează: INTERN **23** · DECIZIE
-  **18** · EXTERN **2**. *Din lanțul facturii a mai rămas una singură, R91, și e o decizie.*
-- **locuri de verificare**: **203 scrise / 9 goale din 212 (96%)**, derivat cu `scripts/raport_b.py`.
-  Cele 9 sunt draftul propus pentru pasul de dezlegare — scrise, **nebifate**, fiindcă bifarea e un
-  pas separat. *Contorul a fost lărgit odată cu ele: o căsuță nebifată e un loc nefăcut și cu text,
+  **17** · EXTERN **2**. *Din lanțul facturii nu mai e niciuna.*
+- **locuri de verificare**: **203 scrise / 18 goale din 221 (92%)**, derivat cu `scripts/raport_b.py`.
+  Cele 18 sunt draftul propus pentru **doi** pași — dezlegarea și recunoașterea —, scrise,
+  **nebifate**, fiindcă bifarea e un pas separat. *Contorul a fost lărgit odată cu ele: o căsuță nebifată e un loc nefăcut și cu text,
   și fără. Înainte, un rând `- [ ] <propoziție>` nu intra nici la scrise, nici la goale — dispărea
   din numitor, iar procentul sărea înapoi la „100%".*
 - **clusterele topologice**: `core.agenda.urmator_cluster()` → **`(None, 0, 0)`**. Inventarul are
@@ -158,7 +164,7 @@ plasa caută note fără cheie înainte de fiecare notă automată; nota din jur
 
 ## STAREA LA PREDARE
 
-Poartă verde pe arborele care devine commitul următor: **3541 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
+Poartă verde pe arborele care devine commitul următor: **3549 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
 rute **411 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 32** · acte de nivel firmă **0 tăcute din 7** ·
 site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-29`.
 
@@ -173,7 +179,7 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-29`.
 | **R87 · R88** (**REZOLVATE** pe `55a57f6`) | Construite și probate pe date reale (blocurile DDD/EEE/FFF). **Condiția lor s-a DESPĂRȚIT, nu s-a considerat satisfăcută**: jumătatea „proporția de necontate = 0" nu e îndeplinită și s-a mutat, cu numele ei, la R89. |
 | **R89** (**REZOLVATĂ** pe `d582563`) | Stocul istoric a intrat în evidență: **31 de facturi, 103.163,00 lei TVA, 11 firme**, prin actul obișnuit. Sonda întoarce **0 din 41** pe amândouă citirile. *Nu s-a închis prin alegerea unei variante — premisa s-a schimbat.* |
 | **R90** (**REZOLVATĂ** pe `95f5d0e`) | Dezlegarea e un act, cu motiv obligatoriu, rol declarat și urmă proprie. Probat pe cele 3 facturi. *Ce rămâne în afară, declarat: actul n-are ecran — dar nici ștergerea facturii n-are, deci e starea drumului întreg (R70).* |
-| **R91** (DESCHISĂ, DECIZIE, prag 3) | **NOUĂ azi.** Factura EMISĂ care intră prin import nu produce nota, iar absența e declarată de mine, nu decisă de Costin. Zero instanțe pe datele de azi. |
+| **R91** (**REZOLVATĂ** pe `6ca0aba`) | Factura EMISĂ din import intră ca **ciornă de recunoaștere** — stare nouă, **declarabilă** — și capătă nota printr-un act simetric cu validarea primitei. |
 | **R36** (REZOLVATĂ pe `1bd9455`) | Închisă în ziua asta. |
 | **R37, R39** | Re-citite la ZZ5: R39 a trecut DECIZIE → INTERN, R37 și-a schimbat domeniul. |
 | **prag 1** | **niciuna deschisă.** |
@@ -272,6 +278,14 @@ POARTĂ, nu se deleagă în istoric.*
 - **Regula de datare are un caz pe care NU-l acoperă**: dacă și luna emiterii, și luna descoperirii
   sunt închise, nu există nicio dată validă și actul refuză. `tenant_001` e instanța. Ieșirea e
   redeschiderea unei luni — act cu urmă.
+- **Starea `de_recunoscut` e DECLARABILĂ, și asta e deliberat.** „Ciornă" se referă la nota
+  contabilă, nu la caracterul fiscal: TVA-ul e datorat la emitere. O stare nedeclarabilă ar fi scos
+  factura tăcut din D300 — defectul 1.1 din 22.08. *Cuvântul din comandă putea fi citit și altfel.*
+- **Perimetrul lui R91 e mai îngust decât scria la deschidere**: `spv_receive` scrie doar în
+  `efactura_primite`, și doar primite. Singura cale prin care o factură emisă intră prin import e
+  încărcarea manuală de XML. *Comentariul din `main.py` care spunea altceva era fals; e corectat.*
+- **Cele două acte noi n-au ecran** — nici dezlegarea, nici recunoașterea. Amândouă poartă declarația
+  în cod, iar calea care aduce documentul (`POST /import-efactura`) n-are nici ea. Clasa e **R70**.
 - **Proba pe date reale nu mai depinde de instanțele istorice.** A fost nevoie s-o rescriu: se
   sprijinea pe cele 3 facturi cu cheia ocupată și pe cele 2 din clasa ambiguă, iar R89 le-a
   contabilizat pe toate. *O probă care depinde de o stare pe care munca ta o va desființa e o probă
@@ -328,9 +342,10 @@ POARTĂ, nu se deleagă în istoric.*
 
 ## DACĂ CONTINUI DE AICI
 
-1. **Nu e nicio cerință comandată neîncepută. Nicio restanță de prag 1 deschisă. Nimic de MUNCĂ
-   rămas în lanțul facturii.** Ce așteaptă sunt două **decizii**: **R89** (stocul istoric, cu lista
-   deja scrisă) și **R91** (factura emisă din import, cu trei variante și o recomandare).
+1. **Nu e nicio cerință comandată neîncepută. Nicio restanță de prag 1 deschisă. Din lanțul
+   facturii nu mai e nimic deschis — nici muncă, nici decizie.** Singurul lucru care așteaptă e
+   **bifarea celor două liste de verificare** propuse în `TRASEE_VERIFICARI.md` (dezlegarea și
+   recunoașterea), și e un act deliberat al lui Costin, nu al meu.
 2. **Nu porni nicio construcție fără măsurătoare.**
 3. **`scripts/raport_b.py` derivă „Unde suntem".** Nu se scrie de mână.
 4. **Raportul se scrie din `SABLON_RAPORT.md`.**

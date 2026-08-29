@@ -3,6 +3,46 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 29.08.2026 (6) — R91: varianta (iii). O factură emisă venită prin import e o CIORNĂ DE RECUNOAȘTERE
+
+**Decizia lui Costin:** *„O factură emisă intrată prin `_factura_din_parsat` (import SPV) devine
+ciornă de recunoaștere, nu notă automată directă. Un act de validare, simetric cu
+`/facturi-primite/{id}/valideaza`, o duce la notă — pe tiparul deja construit la R87/R88."*
+
+**De ce (iii) și nu celelalte două, cu argumentul deciziei:** *sosirea documentului nu e faptul
+economic.* E aceeași propoziție care a decis momentul la R88 — acolo, pentru o factură primită,
+faptul nu e sosirea din SPV, ci **recunoașterea cheltuielii**. Aici, pentru o factură emisă care se
+întoarce, faptul nu e sosirea, ci **recunoașterea unei emiteri făcute în altă parte**. Aplicația
+n-a produs documentul; l-a **primit înapoi**.
+- **(i) — rămâne excepție declarată**: e ce era. Lăsa o clasă întreagă în afara regulii R36, iar
+  declarația era a mea, nu o decizie de produs.
+- **(ii) — importul contabilizează**: ar fi tratat sosirea drept fapt. Simetric cu emiterea în
+  formă, dar nu în înțeles: aplicația ar fi scris evidența unui act pe care nimeni din firmă nu l-a
+  recunoscut.
+
+**CE AM DECIS EU, ÎN CONSTRUCȚIE, ȘI E CEL MAI IMPORTANT LUCRU DIN BLOC: starea nouă e
+DECLARABILĂ.** *„Ciornă de recunoaștere"* se referă la **nota contabilă**, nu la caracterul fiscal al
+documentului. Pe o factură emisă, **TVA-ul e datorat la emitere** (art. 281 CF), oricât de
+nerecunoscută ar fi ea în evidența internă. O stare nedeclarabilă ar fi scos-o **tăcut** din D300 —
+exact defectul **1.1** din 22.08.2026, care a omis 4 facturi și 3.052,00 lei, și care a produs
+`nomenclator_status_factura.py`. *Cuvântul „ciornă" din comandă putea fi citit și așa; l-am citit
+altfel, și scriu de ce.*
+
+**PERIMETRUL, măsurat și mai îngust decât părea.** `core/spv_receive.importa_mesaj` scrie **numai** în
+`efactura_primite`, și numai mesaje al căror `cif_beneficiar` e chiar tenantul (gard anti-scurgere) —
+adică **numai primite**. Deci singura cale prin care o factură **emisă** intră prin import e
+`POST /import-efactura`, încărcarea manuală de XML. *Comentariul din `main.py` care spunea că
+`spv_receive` cheamă direct `_factura_din_parsat` era **fals**; l-am corectat.*
+
+**Alte două decizii mici:**
+- **recunoașterea trece factura pe `emisa`.** După ea, e o factură ca oricare alta. E și prima
+  tranziție reală către starea aia: `nomenclator_status_factura` scria, din 22.08, că *nimic* nu
+  setează `emisa` — de azi, un act o face.
+- **idempotența e îngustă**, nu largă: a doua chemare răspunde „deja recunoscută" **numai** pentru o
+  factură venită prin import (discriminatorul e `xml`, pe care doar `_factura_din_parsat` îl scrie).
+  Prima formă răspundea așa și despre o factură emisă normal prin aplicație — o afirmație mică și
+  falsă. *Prinsă de gardă la prima rulare.*
+
 ## 29.08.2026 (5) — R89 se EXECUTĂ, fiindcă premisa s-a schimbat: nu există clienți reali
 
 **Decizia lui Costin:** *„nu există clienți reali în aplicație — tot portofoliul e de test. R89 nu

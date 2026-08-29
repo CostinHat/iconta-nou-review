@@ -43,7 +43,7 @@ după a doua oară: „e gardul care nu citește proză și totuși o discipline
 - **pasul curent**: **`TRASEE_VERIFICARI.md`** — ce trebuie să fie adevărat după fiecare pas. Le scrie Costin, în loturi de câte 30 (`scan_trasee.py --loturi N`). Până se scriu toate, inventarul de trasee e o hartă a codului, nu o listă de verificare. *(Cifrele se derivă.)*
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
-- **decizii care blochează**: **R91 — DESCHISĂ**, una singură. *(Stocul istoric nu mai blochează: s-a executat pe 29.08, după ce Costin a spus că nu există clienți reali — starea restanței se citește din registru, nu de aici.)* Întrebarea ei: ce face aplicația cu o factură EMISĂ care intră prin import, singurul drum care ocolește actul de emitere — trei variante scrise, recomandarea arhitectului consemnată, decizia amânată deliberat (măsurătoarea e zero azi). *(A doua decizie care bloca — TVA la încasare pe factura primită — a primit răspuns pe 29.08.2026, varianta (ii), și e construită; restanța ei e închisă, iar starea se citește din registru, nu de aici.)* *(Istoric)* Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
+- **decizii care blochează**: **niciuna.** *(Stocul istoric nu mai blochează: s-a executat pe 29.08, după ce Costin a spus că nu există clienți reali — starea restanței se citește din registru, nu de aici.)* *(Ultima — ce face aplicația cu o factură EMISĂ care intră prin import — a primit răspuns pe 29.08.2026, varianta (iii), și e construită; starea restanței se citește din registru, nu de aici.)* *(A doua decizie care bloca — TVA la încasare pe factura primită — a primit răspuns pe 29.08.2026, varianta (ii), și e construită; restanța ei e închisă, iar starea se citește din registru, nu de aici.)* *(Istoric)* Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
 - **ultima actualizare**: 2026-08-29
@@ -1986,18 +1986,71 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E3 · **R36** (regula) · R87 (unde s-a construit automatul) · **PRAG 3** *(măsurat: **zero** instanțe azi — nicio factură emisă n-a intrat prin import pe portofoliul curent. Devine prag 2 la prima, fiindcă atunci o factură emisă ar sta în afara evidenței fără ca nimic s-o numească)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `6ca0aba`
 - **deschisă pe commit**: `95f5d0e`
-- **măsurat la**: 2026-08-29 · **pe commit**: `95f5d0e`
+- **măsurat la**: 2026-08-29 · **pe commit**: `6ca0aba`
 - **planul**: **ACOPERIT PE JUMĂTATE, și jumătatea care lipsește e chiar întrebarea.** `PLAN_ARHITECTURA.md`, regula ZZ4, cere ca absența contabilizării automate să fie **declarată lângă cod, cu motivul** — și **este**: `core/facturi_api._conteaza_la_creare` scrie de ce importul nu trece pe acolo. Ce planul **nu** spune e dacă declarația aia e **cea corectă**: regula lui e despre *faptul economic nou construit*, iar aici se ceartă două citiri ale aceluiași document — *emiterea s-a petrecut în altă parte* vs *documentul e final și complet*. Aceeași întrebare de MOMENT pe care Costin a decis-o la R87/R88, pe un caz pe care blocul AAA nu l-a văzut. (METODA §25)
 - **ce blochează**: **MĂSURAT MECANIC (HHH1), nu prin grep de ochi**: în producție există **exact două** locuri care inserează în `facturi` — `core/facturi_api.creeaza_factura` (actul de emitere, care produce nota automat de la R87) și `main._factura_din_parsat` (importul din SPV și încărcarea manuală de XML). **A doua e singura care ocolește actul de emitere.** O factură **emisă** care se întoarce din SPV intră pe acolo, cu `status='importata'`, și **nu primește notă**. Pe primită nu e o problemă — nota vine la `/valideaza` (R88); pe emisă nu există niciun act ulterior care s-o producă.
 - **cum s-a măsurat, și de ce nu îmbătrânește**: `core/scan_cai_factura.py` + `core/test_cai_creare_factura.py` — inventarul e **pinat**: a treia cale de creare în producție **pică poarta**, în loc să apară tăcut. Calibrare în ambele direcții (recunoaște `facturi` sub trei forme de calificare; **nu** confundă `factura_linii`, `facturi_recurente`, `efactura_primite`). Seedurile se numără separat, cu clichet **5**.
 - **ce NU vede măsurătoarea**: dacă vreo factură emisă a intrat vreodată prin import. Pe portofoliul de azi, **niciuna** — dar asta e o stare a datelor, nu o proprietate a codului. Calea există și e deschisă.
-- **Decizie cerută.** Ce face aplicația cu o factură **emisă** care intră prin import — trei variante, **niciuna aleasă**:
+- **Decizie cerută [atunci].** **A PRIMIT RĂSPUNS pe 29.08.2026: varianta (iii)**, și e construită — vezi BLOC KKK. Textul se păstrează fiindcă e ce se cerea, cu cele trei variante așa cum arătau înainte de alegere. Ce face aplicația cu o factură **emisă** care intră prin import — trei variante:
   - **(i)** rămâne declarată ca excepție, adică exact ce e acum. *Cel mai mic pas; lasă o clasă întreagă în afara regulii R36, iar declarația e a mea, nu o decizie de produs.*
   - **(ii)** importul contabilizează și el, fiindcă documentul e **final** și toate intrările notei sunt în XML. *Simetric cu emiterea; dar contabilizează un fapt care s-a petrecut în afara aplicației, fără ca nimeni să-l fi recunoscut.*
   - **(iii)** importul creează factura ca **ciornă de recunoaștere**, cu un act de validare **simetric celui de la primite**. *Recomandarea arhitectului, consemnată de Costin pe 29.08.2026 — și e recomandare, nu alegere: „decizia se ia cu minte odihnită, măsurătoarea e zero azi".*
 - **condiția de deblocare**: se scrie în `DECIZII.md` care dintre cele trei e modelul, cu varianta respinsă și motivul. Se închide când calea de import face ce spune decizia, cu gard — sau când declarația de excepție e a lui Costin, nu a mea.
+
+#### BLOC KKK — varianta (iii), construită și probată (29.08.2026)
+
+**Decizia, cu argumentul ei:** *sosirea documentului nu e faptul economic.* Aceeași propoziție care a
+decis momentul la R88. Motivele respingerii lui (i) și (ii) sunt în `DECIZII.md`.
+
+**PERIMETRUL, măsurat mai îngust decât se scrisese la deschidere.** `core/spv_receive.importa_mesaj`
+scrie **numai** în `efactura_primite`, și numai mesaje al căror `cif_beneficiar` e chiar tenantul —
+deci **numai primite**. Singura cale prin care o factură **emisă** intră prin import e
+`POST /import-efactura`, încărcarea manuală de XML. *Comentariul din `main.py` care spunea că
+`spv_receive` cheamă direct `_factura_din_parsat` era **fals** — corectat în aceeași tură.*
+
+**KKK1 — ciorna de recunoaștere.** `_factura_din_parsat` scrie de azi starea în funcție de direcție:
+**emisă → `de_recunoscut`** (stare nouă în nomenclator), **primită → `importata`**, ca înainte —
+recunoașterea ei există deja și e alt act, validarea de la R88. **Niciuna nu primește notă la import**,
+ca și până acum; ce se schimbă e că absența nu mai e o scăpare declarată, ci o **etapă cu act propriu**.
+
+**Starea nouă e DECLARABILĂ, și e partea cea mai importantă a blocului.** „Ciornă" se referă la nota
+contabilă, nu la caracterul fiscal al documentului: pe o factură emisă, TVA-ul e datorat la emitere
+(art. 281 CF). O stare nedeclarabilă ar fi scos-o **tăcut** din D300 — chiar defectul **1.1** din
+22.08.2026 (4 facturi, 3.052,00 lei), cel care a produs `nomenclator_status_factura.py`. Gardat
+explicit: `test_starea_de_recunoscut_e_DECLARABILA`.
+
+**KKK2 — actul.** `POST /tenants/{id}/facturi/{factura_id}/recunoaste`, **structural simetric** cu
+`/facturi-primite/{id}/valideaza`: același rol (`admin_firma`, patru-ochi) · o singură tranzacție ·
+nota se scrie **în același act** cu recunoașterea · nota intră **`ciorna`** (R47 neatins) ·
+**idempotent** — a doua chemare e no-op, nu eroare. După recunoaștere, factura trece pe `emisa`:
+**prima tranziție reală către starea aia**, despre care nomenclatorul scria din 22.08 că *nimic* n-o
+setează.
+
+**KKK3 — inventarul HHH1 se citește altfel.** Când s-a construit, `_factura_din_parsat` era o
+**scăpare declarată**; de azi e o cale **acoperită**, cu act propriu. Gardul rămâne pinat pentru orice
+a **patra** cale — aia ar fi iar o scăpare. Verificat pe AST, nu pe proză: actul există, cheamă
+generatorul de notă, iar calea de import scrie amândouă stările
+(`test_calea_de_import_are_ACUM_actul_ei_de_recunoastere`).
+
+**KKK4 — anti-dublarea se aplică și aici**, din același loc: după recunoaștere, ruta manuală întoarce
+`deja_contata` și nu scrie a doua notă. Gardat, și probat pe date reale.
+
+**KKK5 — PROBĂ PE DATE REALE** (`scripts/proba_contare_reala.py`, firmă din portofoliu, tranzacție
+întoarsă, numărări de rânduri identice înainte și după):
+
+| pas | rezultat |
+|---|---|
+| la import | factura intră `de_recunoscut`, **0 note**, **declarabilă = True** |
+| după recunoaștere | **1 notă**, `status=ciorna`, `sursa=facturi`, linii `4111=707` 1.000,00 · `4111=4427` 210,00 |
+| document justificativ derivat | *„Factură PROBA-KKK din 2026-07-10"* — legătura se citește, nu se presupune |
+| a doua contabilizare, manuală | `deja_contata` — o singură notă în jurnal |
+
+- **REZOLVATĂ 29.08.2026 (BLOC KKK).** *Ce NU s-a făcut, declarat: actul n-are ecran — dar nici
+  `POST /import-efactura`, calea care aduce documentul, n-are (R70). Un act de recunoaștere fără
+  calea care aduce ce recunoști n-ar avea obiect. Amândouă poartă declarația în cod.*
 
 ### R90 — O notă legată de o factură nu se poate dezlega, iar refuzul ștergerii numește o ieșire care nu există
 
