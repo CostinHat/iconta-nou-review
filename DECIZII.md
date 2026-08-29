@@ -3,6 +3,79 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 29.08.2026 (2) — R87/R88: proiectarea, decisă în cinci puncte
+
+**Deciziile lui Costin**, pe blocul AAA scris în aceeași zi în `CONFORMITATE.md`. Se scriu **înainte
+de orice construcție** — asta era condiția, și e respectată: la ora scrierii, niciun cod de producție
+nu s-a atins.
+
+**1. MOMENTUL: nota se scrie la `POST /facturi` pentru emisă, la `/valideaza` pentru primită.**
+Confirmă propunerea din AAA2 și AAA3. Motivul care le ține pe amândouă cu aceeași regulă: *faptul
+economic nou construit* cade în locuri diferite. La **emisă**, faptul e emiterea, iar toate intrările
+notei sunt deja pe factură — contul de venit pe linie, cota pe linie, exigibilitatea la emitere
+(art. 281 CF), deci și luna. La **primită**, faptul nu e sosirea documentului din SPV, ci
+**recunoașterea cheltuielii**: la `/valideaza` omul alege contul, clasifică regimul și acolo s-a
+consumat patru-ochi. *O notă scrisă la import ar trebui să ghicească exact lucrurile pe care ruta de
+validare i le cere omului.*
+
+**2. RUTELE MANUALE: idempotente ȘI păstrate ca a doua cale declarată.** Din cele trei variante ale
+lui AAA4 se aleg **(ii) și (iii) împreună**; **(i) — dispar** se respinge. Cele două alese nu se
+exclud, fiindcă răspund la întrebări diferite: (ii) e despre **ce face ruta la a doua chemare**,
+(iii) e despre **dreptul ei de a exista**. Forma cerută, cu vorbele deciziei: *a doua chemare pe o
+factură deja contată e **no-op**, nu a doua notă*. Deci refuzul de azi — `422`, „factura are deja
+înregistrare (ciornă sau validată)" — devine un **răspuns**, nu o eroare: comportamentul e corect,
+prezentarea lui nu. **De ce nu (i)**: ruta manuală e singura cale de a contabiliza o factură pe care
+automatul a **refuzat-o** — lună închisă la data emiterii, cotă lipsă pe linii; refuzuri care există
+deja în `factura_contabilizeaza`. Ștergând-o, refuzul automatului ar deveni un blocaj fără ieșire.
+
+**3. CONTUL DE CHELTUIALĂ LA VALIDARE: OBLIGATORIU.** Din cele trei ieșiri numite la R88 se alege
+prima. **Nu cont implicit** și **nu validare fără notă.** Motivul fiecărei respingeri:
+- **contul implicit al firmei** ar fi simetric cu `cont_venit_implicit` de la emisă doar în formă. La
+  venit, implicitul e o presupunere despre **ce vinde firma** — stabilă, verificabilă din obiectul de
+  activitate. La cheltuială, ar fi o presupunere despre **natura cheltuielii**, adică exact lucrul pe
+  care omul îl are în față și pe care ruta i-l cere oricum;
+- **validarea fără notă** reintroduce golul R88 pe ușa din spate: ar rămâne o cale prin care o
+  cheltuială e recunoscută fără evidență, iar restanța n-ar mai avea condiție de închidere.
+
+*Consecința practică, scrisă ca să nu surprindă la construcție:* azi câmpul e `cont or None`, deci
+optional. Devine obligatoriu, iar validările existente care trec fără cont vor începe să refuze —
+un refuz nou pe o rută care azi acceptă. E o schimbare de comportament, nu doar o completare.
+
+**4. `sterge_factura`: REFUZ EXPLICIT dacă există notă**, cu mesaj clar și trimitere la storno. Din
+cele trei variante din AAA2 se alege **(i)**. Se resping: **(ii) șterge și nota** — *o notă ștearsă e
+o gaură în evidență, nu o corecție* —, și **(iii) șterge nota doar dacă e ciornă**, fiindcă face
+comportamentul să depindă de un pas de validare pe care omul nu-l are în minte când apasă „șterge".
+**Intră în R87, nu într-o restanță separată**, și motivul e că nu e un defect independent: cheia
+străină `inregistrari_factura_id_fkey` n-are `ON DELETE`, iar azi ștergerea trece de cele mai multe
+ori doar fiindcă **majoritatea facturilor n-au notă**. Cu note automate, fiecare factură are una, iar
+ștergerea ar începe să pice cu o eroare brută de bază în loc de un refuz explicat. *Automatizarea nu
+creează problema — o face vizibilă la fiecare ștergere.*
+
+**5. FACTURILE ISTORICE: NU se contabilizează în masă.** Se **re-măsoară** și se **listează pentru
+revizuire**; decizia vine separat, după listă. Confirmă ce cerea AAA5 și respinge orice aplicare în
+lot. Cele trei riscuri rămân cele scrise acolo — perioada, dubla contare, verificarea umană. Lista e
+scrisă acum în **R89**, restanță nouă, separată de R87 și R88.
+
+**CE NU DECID PUNCTELE ASTEA — se scrie, ca să nu se presupună la construcție:**
+
+- **starea în care intră nota.** „Automat" e despre **cine** produce nota, nu despre în ce stare
+  intră. Tiparul NIR — `status='ciorna'` — rămâne, iar patru-ochi rămâne unde e (R47). Nicio decizie
+  de aici nu-l atinge.
+- **TVA la încasare pe factura primită.** Punctul 2 al lui R88 n-a primit răspuns, iar citirea codului
+  arată că nu e o subtilitate de aliniat la construcție: `factura_contabilizeaza` citește
+  `firma_profil.tva_la_incasare` — regimul **propriu al firmei** — și îl folosește pe **amândouă**
+  direcțiile; **nu** citește niciodată `facturi.furnizor_tva_incasare`, deși coloana există, ecranul o
+  scrie la `/valideaza` (`main.py`, ramura de clasificare) și D300 o folosește la rutare. **Măsurat
+  azi: 2 facturi primite** — `tenant_004` #9 și `tenant_017` #8, amândouă 420,00 lei TVA — au furnizor
+  la încasare cu firma proprie în regim normal. Automatul le-ar pune TVA-ul pe **4426** (dedus
+  imediat), în timp ce D300 îl amână. *Partea asta a lui R88 nu poate porni fără decizie.*
+- **respingerea** (`/respinge`). Rămâne fără notă prin evidență, dar simetria nu e scrisă nicăieri,
+  iar ZZ4 cere ca absența contabilizării să fie **declarată**, nu dedusă.
+
+**Ce a scos măsurătoarea cerută odată cu deciziile, și schimbă ordinea construcției:** mecanismul
+anti-dublare (`factura_id`) greșește în **amândouă** direcțiile, nu doar în cea numită la AAA7. Vezi
+`CONFORMITATE.md`, blocul **BBB** de la R87.
+
 ## 29.08.2026 — R36: aplicația contabilizează AUTOMAT, varianta (a)
 
 **Decizia lui Costin:** *„Aplicația contabilizează automat orice fapt economic nou construit. Ruta
