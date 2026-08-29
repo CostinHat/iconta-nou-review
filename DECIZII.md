@@ -3,6 +3,73 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 29.08.2026 (3) — Idempotența se construiește peste un zero care nu absolvă; TVA la încasare, varianta (ii); R89 nu se atinge
+
+**1. IDEMPOTENȚA: verificarea se construiește ÎNAINTE de prima notă automată, chiar dacă BBB2 = 0.**
+Costin: *„zeroul măsoară absența traficului, nu siguranța."*
+
+**Decizia trece peste propriul ei criteriu, și asta e partea care contează.** Condiția scrisă în BBB3
+era *„dacă BBB2 > 0"* — și **nu s-a aprins**: zero coliziuni reale, măsurate. Motivul pentru care
+zeroul nu absolvă e tot măsurat: pe toate cele 19 scheme, `sursa='manual'` apare de **zero** ori.
+Calea liberă (`POST /jurnal`) — chiar calea pe care AAA7 o numea periculoasă — n-a fost folosită
+niciodată, deci populația care ar putea produce coliziuni e **goală prin construcție**. *O poartă
+care se deschide fiindcă nimeni n-a trecut încă pe ea nu e o poartă.*
+
+Ce a produs decizia: **DDD1** (cheia întreabă dacă există o notă *de contare*, nu dacă există o
+notă), **DDD2** (plasa, pe criteriul strict), **DDD3** (legarea la sursă, în `POST /jurnal`).
+*Ordinea contează: DDD3 e reparația, DDD2 e plasa. Dacă plasa ar fi fost mecanismul principal,
+fiecare notă nouă din jurnal ar fi rămas invizibilă și am fi trăit din prinderea ei.*
+
+**2. TVA LA ÎNCASARE PE PRIMITĂ: varianta (ii).** Automatul **refuză** clasa furnizor-la-încasare +
+firmă-în-regim-normal și o lasă rutei manuale, cu motivul afișat. Respinse: **(i)** — automatul scrie
+pe 4428 —, și **(iii)** — automatul scrie pe 4426, iar divergența cu D300 se semnalează la control
+încrucișat.
+
+**Ce a cerut construcția și nu era în decizie — se scrie, ca să nu pară dedus:** *ce cont folosește
+omul când preia clasa.* Dacă ruta manuală ar fi scris tot pe **4426**, decizia n-ar fi schimbat nimic
+— ar fi fost (iii) pe altă ușă. Nota scrisă de om intră pe **4428** (neexigibil), care e tratamentul
+corect (Cod fiscal art. 297 alin. 2) și e chiar ce rutează D300 pe același câmp. **Deci diferența
+dintre (i) și ce s-a construit nu e contul, e MOMENTUL și CINE:** sub (i), automatul ar începe un lanț
+a cărui a doua jumătate — exigibilitatea la plată — vine din reconcilierea bancară, declarată
+**excepție manuală** la ZZ4; un lanț pe care automatul nu-l poate termina. Omul care apasă butonul
+știe că urmează plata.
+
+*Efect colateral, și e o reparație, nu o schimbare de decizie:* până azi `factura_contabilizeaza`
+citea `firma_profil.tva_la_incasare` — regimul **propriu al firmei** — și îl aplica pe **amândouă**
+direcțiile, fără să citească vreodată `facturi.furnizor_tva_incasare`, deși coloana există și D300
+rutează pe ea. Măsurat înainte: **2 facturi** (`tenant_004` #9, `tenant_017` #8) ar fi primit TVA pe
+4426 în timp ce decontul îl amâna. Probat după: automatul le refuză, ruta manuală le contează pe 4428.
+
+**3. R89 NU SE ATINGE ÎN TURA ASTA.** Rămâne DESCHISĂ, pentru o sesiune dedicată.
+
+**Consecința asupra lui R87 și R88, scrisă fiindcă altfel ar arăta ca o închidere prea largă:**
+condiția lor de deblocare avea **două jumătăți** — *(a)* actul produce nota în același act, *(b)*
+proporția de facturi necontate ajunge la zero. Se închid pe **(a)**, care e chiar ce s-a construit și
+s-a probat. **(b) nu e îndeplinită** și nici nu putea fi: cele 28 de facturi istorice sunt exact
+obiectul lui R89, iar decizia din tura asta e că nu se ating. *Condiția se DESPARTE, nu se
+consideră satisfăcută.*
+
+**PATRU DECIZII MICI, luate în construcție fiindcă nu se putea altfel. Se scriu ca să nu treacă drept
+deduse din cele trei de mai sus:**
+
+- **refuzul clasei ambigue trăiește în generator, cu un steag `automat`, nu în rută.** Altfel calea
+  automată și cea manuală ar fi avut două definiții ale aceleiași clase, iar prima divergență ar fi
+  dat două răspunsuri (P1).
+- **ștergerea refuză și pentru o notă care NU e de contare**, cu **alt cod** și **altă ieșire**.
+  Găsit de gardă la prima rulare: cheia străină `inregistrari_factura_id_fkey` n-are `ON DELETE`,
+  deci blochează ștergerea pentru **orice** notă legată — inclusiv o plată — cu o eroare brută de
+  bază. Exact ce EEE2 interzice.
+- **`core/facturi.taxare_inversa` s-a legat.** Funcția exista de la început și n-o chema nimeni. Cât
+  timp contarea era un act rar, nu se vedea; de când e automată, se vede la fiecare factură (art. 331).
+- **`tip` intră la INSERT, nu printr-un UPDATE de după.** Nu e stil: nota automată se scrie în aceeași
+  tranzacție, deci trebuie să știe **înainte** dacă documentul e factură sau proformă. Cât timp tipul
+  se punea după, o proformă ar fi primit nota și abia apoi ar fi devenit proformă.
+
+**Ce NU decide nimic din tura asta:** starea notei rămâne `ciorna` (patru-ochi la R47) · facturile
+intrate prin `_factura_din_parsat` (import SPV / XML manual) **nu** se contează automat, iar absența
+e declarată lângă cod, nu dedusă · dezlegarea unei note de o factură **nu există** ca act, iar
+consecința ei e restanța **R90**.
+
 ## 29.08.2026 (2) — R87/R88: proiectarea, decisă în cinci puncte
 
 **Deciziile lui Costin**, pe blocul AAA scris în aceeași zi în `CONFORMITATE.md`. Se scriu **înainte

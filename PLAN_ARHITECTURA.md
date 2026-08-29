@@ -695,6 +695,29 @@ fapt îngheață și golurile. *O regulă care descrie ce e nu mai poate arăta 
 mai sus, harta din 29.08.2026 a produs două restanțe (R87, R88) exact acolo unde altfel s-ar fi citit
 „așa e proiectat".
 
+**O NOTĂ DE PE CALEA LIBERĂ CARE CONTEAZĂ EVIDENT O FACTURĂ POARTĂ CHEIA EI** *(29.08.2026, DDD3)*
+
+Regula de mai sus spune că faptul își produce nota. Aici e cealaltă direcție: **ce se întâmplă cu o
+notă care vine din supapă.** `POST /tenants/{id}/jurnal` rămâne excepția declarată — nota liberă e
+pentru fapte pe care aplicația nu le modelează —, dar **contractul ei se schimbă**:
+
+- dacă nota are **semnătura unei contări de factură** (un cont de terț — 4111 · 401 · 404 — și un
+  cont de fond sau de TVA) **și** exact **una** dintre facturile declarabile ale lunii se potrivește
+  pe total, **la ban**, **și** factura aia n-are deja o notă de contare — atunci nota primește
+  `factura_id` **la scriere**, iar răspunsul rutei îl conține.
+- dacă se potrivesc **două** facturi, **nu se leagă niciuna**. *O legătură greșită e mai rea decât
+  lipsa ei: ar face o factură să pară contată de altcineva.*
+
+**De ce e un contract, nu un detaliu:** până azi, o notă din jurnalul liber nu putea purta niciodată
+`factura_id`, iar mecanismul anti-dublare — care se uită exact la cheia aia — era orb la ea. Legarea
+la sursă e **reparația**; căutarea de note fără cheie, făcută înainte de fiecare notă automată, rămâne
+**plasă**, nu mecanism principal. *Un sistem care trăiește din prinderea greșelii, în loc s-o evite,
+are un singur punct de eșec.*
+
+**Ce nu acoperă, declarat:** o factură contată manual pe `461`/`462` nu se leagă — conturile alea nu
+sunt scrise de niciun drum factură→notă din cod. Și nu se leagă retroactiv nimic: regula e despre
+notele scrise **de acum**.
+
 ### Ce e în afara registrului
 
 **Cursul valutar** — valoare pe dată, dar fapt de piață, nu normă. Regula de alegere a lui e însă convenție de calcul și intră.

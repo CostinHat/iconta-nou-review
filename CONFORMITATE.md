@@ -43,7 +43,7 @@ după a doua oară: „e gardul care nu citește proză și totuși o discipline
 - **pasul curent**: **`TRASEE_VERIFICARI.md`** — ce trebuie să fie adevărat după fiecare pas. Le scrie Costin, în loturi de câte 30 (`scan_trasee.py --loturi N`). Până se scriu toate, inventarul de trasee e o hartă a codului, nu o listă de verificare. *(Cifrele se derivă.)*
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
-- **decizii care blochează**: **R89 — DESCHISĂ**: ce se face cu stocul de facturi rămase în afara evidenței (28 pe cheie, 31 fără notă de contare) — lista e măsurată și scrisă, decizia pe ea nu. Și **R88 — DESCHISĂ** pe o parte a ei: TVA la încasare pe factura primită, singurul punct al proiectării rămas fără răspuns. *(Istoric)* Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
+- **decizii care blochează**: **R89 — DESCHISĂ**: ce se face cu stocul de facturi rămase în afara evidenței (28 pe cheie, 31 fără notă de contare) — lista e măsurată și scrisă, decizia pe ea nu. *(A doua decizie care bloca — TVA la încasare pe factura primită — a primit răspuns pe 29.08.2026, varianta (ii), și e construită; restanța ei e închisă, iar starea se citește din registru, nu de aici.)* *(Istoric)* Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
 - **ultima actualizare**: 2026-08-29
@@ -1980,6 +1980,22 @@ scos ce nu se știa**, nu din defecte noi.
 - **ce NU face, declarat**: **niciun clichet pe cele 28 de `except …: pass` rămase.** Costin, explicit: *„pe alea nu le-am măsurat și nu știm care sunt legitime."* Și nu verifică dacă emailul chiar pleacă — doar că, dacă nu pleacă, rămâne urmă.
 - **condiția de deblocare**: decizia lui Costin între **(a)** toate patru trec pe `esec_secundar`, cu `alerta=True` pe cele trei căi de intrare — tăcerea acolo are cost de acces, ceea ce docstringul lui numește drept criteriu; **(b)** doar log, fără alertă, pe toate patru; **(c)** mesajul de pe ecran se schimbă și el, ca să nu mai afirme trimiterea. Se închide când un eșec de trimitere lasă urmă, cu gard.
 
+### R90 — O notă legată de o factură nu se poate dezlega, iar refuzul ștergerii numește o ieșire care nu există
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · R87 (unde s-a construit refuzul) · **PRAG 3** *(nu o cifră greșită și nu o evidență lipsă — un act pe care aplicația îl cere și nu-l oferă. Devine prag 2 în ziua în care cineva chiar trebuie să șteargă o factură din clasa asta)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `55a57f6`
+- **măsurat la**: 2026-08-29 · **pe commit**: `55a57f6`
+- **planul**: **NEACOPERIT.** Citit `PLAN_ARHITECTURA.md` — P15 (*„după închiderea unei perioade nu se modifică, se stornează"*) și regula ZZ4 a contabilizării automate: amândouă spun ce se întâmplă cu **evidența**, niciuna nu spune ce se întâmplă cu **legătura** dintre o notă și un document. `P14` cere ca orice cifră să se desfacă până la documentul care o justifică — deci legătura e normativă —, dar actul invers, dezlegarea, nu e nicăieri.
+- **ce blochează**: cheia străină `inregistrari_factura_id_fkey` **n-are `ON DELETE`**, deci orice notă care poartă `factura_id` blochează ștergerea facturii — inclusiv o notă de **plată**, care nu e evidența facturii. De azi refuzul e explicat (EEE2) în loc să pice cu o eroare brută de bază, dar **ieșirea pe care o numea nu exista**: `jurnal_api.sterge` refuză orice notă care nu e `ciorna`, iar rută de dezlegare nu există. **Măsurat: cele 3 facturi din clasă au nota VALIDATĂ** — `tenant_004` #9 (`banca`), `tenant_013` #14 (`casa`), `tenant_017` #8 (`banca`) —, deci **nu se pot șterge deloc**.
+- **cum s-a găsit**: de propria gardă, la prima rulare. Testul „ștergerea trece când există doar o notă de plată" a picat cu `ForeignKeyViolation` — premisa mea era greșită, nu testul. *A doua oară în aceeași zi când o gardă nouă a corectat ipoteza care a produs-o.*
+- **ce s-a făcut până la decizie**: mesajul **nu mai promite**. Refuzul numește starea notei și spune, când nota e validată, că *„factura asta nu se poate șterge azi"*. Un refuz onest nu e o reparație, dar e mai bun decât unul care trimite într-un zid.
+- **ce NU vede măsurătoarea**: dacă vreuna dintre cele 3 chiar **trebuie** ștearsă. Clasa e mică azi fiindcă notele de plată sunt puține; crește cu fiecare reconciliere bancară.
+- **condiția de deblocare**: există un act prin care o notă se **dezleagă** de o factură (sau ștergerea facturii dezleagă notele care nu sunt contări), cu urmă și cu rol declarat — sau se scrie de ce ștergerea unei facturi cu notă de plată **trebuie** să fie imposibilă, iar mesajul o spune ca regulă, nu ca lipsă. Se închide când nicio factură nu mai are un refuz fără ieșire, cu gard care numără clasa.
+
 ### R89 — Stocul de facturi rămase în afara evidenței n-are nici listă revizuită, nici decizie: reconcilierea istorică
 
 - **felul**: ARTEFACT
@@ -2137,9 +2153,10 @@ azi înainte. **Nu propun niciuna** — asta e chiar ce cerea decizia din 29.08.
 - **cine deblochează**: INTERN
 - **unde intră**: E3 · **R36** (regula pe care o încalcă) · R35 (efectul măsurat) · **PRAG 2** *(nu o cifră greșită — o evidență care lipsește. Devine prag 1 în ziua în care un decont se depune pe o lună cu facturi primite necontate: TVA-ul deductibil declarat n-ar avea acoperire în conturi)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `55a57f6`
 - **deschisă pe commit**: `1bd9455`
-- **măsurat la**: 2026-08-29 · **pe commit**: `1bd9455`
+- **măsurat la**: 2026-08-29 · **pe commit**: `55a57f6`
 - **planul**: **ACOPERIT de azi.** `PLAN_ARHITECTURA.md` spune, de la ZZ4: *orice fapt economic nou construit produce nota contabilă automat; o rută manuală se acceptă numai cu declarație explicită.* Aici nu există declarație — deci e lipsă, nu excepție. (METODA §25)
 - **ce blochează**: `POST /tenants/{id}/facturi-primite/{primita_id}/valideaza` creează factura (cheltuiala) din e-factura importată de cron, cu patru-ochi. **Nu scrie nicio notă.** Nota cere un al doilea act, `POST /tenants/{id}/facturi/{factura_id}/contabilizeaza`, pe care omul trebuie să și-l amintească.
 - **cum s-a găsit**: cartografierea cerută la ZZ2, nu o probă. Ruta nu apare printre cele 48 de funcții care scriu în `inregistrari`.
@@ -2191,7 +2208,7 @@ nu se mai făcuse; acum se reface la fiecare rulare.*
 
 #### CE RĂMÂNE NEDECIS LA R88, ȘI DE CE BLOCHEAZĂ CONSTRUCȚIA
 
-**Decizie cerută.** **TVA la încasare pe factura primită** — punctul 2 din blocul AAA, fără răspuns.
+**Decizie cerută [atunci].** **TVA la încasare pe factura primită** — punctul 2 din blocul AAA. **A PRIMIT RĂSPUNS pe 29.08.2026: varianta (ii)**, și e construită — vezi BLOC FFF mai jos. Textul de mai jos se păstrează fiindcă e măsurătoarea pe care s-a luat decizia.
 Citirea codului de azi arată că nu e o rafinare de aliniat pe parcurs:
 `factura_contabilizeaza` citește `firma_profil.tva_la_incasare` — regimul **propriu al firmei** — și
 îl trimite ca `tva_incasare` pe **amândouă** direcțiile. **Nu citește niciodată
@@ -2217,6 +2234,47 @@ că e greșită.
 - **condiție rescrisă?** nu. Condiția de deblocare de mai sus rămâne cea scrisă la deschidere;
   întrebarea de TVA la încasare e o **parte** a ei, nu o rescriere.
 
+#### BLOC FFF — factura PRIMITĂ, construită (29.08.2026, PROBĂ)
+
+**FFF1 — nota se scrie la `/valideaza`, în același act**, după ce clasificarea e pusă pe factură, ca
+nota s-o poată citi. **Contul de cheltuială e OBLIGATORIU.** *Schimbare de comportament, declarată:*
+până azi câmpul era `cont or None`, deci validarea trecea fără el; de azi **refuză**, cu `422` și cu
+motivul ca **afirmație tipată** (`cod=CONT_CHELTUIALA_OBLIGATORIU`), nu ca propoziție. Un refuz al
+notei **nu anulează** validarea: recunoașterea cheltuielii e actul omului, iar contarea e consecința ei.
+
+**FFF2 — clasa ambiguă e refuzată automat, și numai ea.** Furnizor la încasare **și** firmă în regim
+normal → automatul refuză, cu `cont_tva=4428`, `temei=Cod fiscal art. 297 alin. 2` și
+`iesire=contabilizare_manuala`, toate **ca date**. Restul claselor se contează automat — calibrat în
+direcția cealaltă: o primită normală rămâne pe **4426**.
+
+**Reparația care vine odată cu ea, și e o cifră greșită închisă:** generatorul citea
+`firma_profil.tva_la_incasare` — regimul **propriu** — și îl aplica pe amândouă direcțiile, fără să
+citească vreodată `facturi.furnizor_tva_incasare`, deși coloana există, ecranul o scrie la
+`/valideaza` și **D300 rutează pe ea**. De azi, pe primită contează **și** regimul furnizorului.
+
+**FFF3 — aceeași idempotență și a-doua-cale ca la EEE3**, din același loc.
+
+**FFF4 — probă pe date reale**, pe chiar cele **2** facturi ale clasei (`scripts/proba_contare_reala.py`,
+în tranzacție cu ROLLBACK):
+
+| factura | furnizor la încasare | firmă la încasare | automat | manual |
+|---|---|---|---|---|
+| `tenant_004` #9 | DA | NU | **refuzat** `TVA_LA_INCASARE_MANUAL` | **contată**, conturi `371 · 401 · 4428` |
+| `tenant_017` #8 | DA | NU | **refuzat** `TVA_LA_INCASARE_MANUAL` | **contată**, conturi `371 · 401 · 4428` |
+
+*Exact ce cerea varianta (ii): automatul nu începe un lanț pe care nu-l poate termina, omul îl poate
+duce — iar când îl duce, cifra coincide cu ce declară D300.*
+
+**MĂSURĂTOAREA PE DIRECȚII, care era câmpul „ce NU vede măsurătoarea"**: din 28 de facturi
+declarabile fără notă, **10 primite** (48.200,00 lei TVA) și **18 emise** (54.060,00 lei). Se reface
+la fiecare rulare a sondei.
+
+- **CONDIȚIA, DESPĂRȚITĂ — se scrie, fiindcă altfel închiderea ar arăta mai largă decât e.** Condiția
+  avea două jumătăți: *(a)* validarea produce nota în același act — **ÎNDEPLINITĂ**, construită și
+  probată; *(b)* nu mai există factură primită validată fără notă — **NEÎNDEPLINITĂ**, și nici nu
+  putea fi în tura asta: stocul istoric e obiectul lui **R89**, iar decizia din 29.08 e că **nu se
+  atinge**. Restanța se închide pe (a); (b) se poartă mai departe, la R89, cu numele ei.
+
 
 
 ### R87 — O factură EMISĂ nu produce nota contabilă; contabilizarea e un act separat, care se poate uita
@@ -2225,9 +2283,10 @@ că e greșită.
 - **cine deblochează**: INTERN
 - **unde intră**: E3 · **R36** (regula pe care o încalcă) · R35 (efectul măsurat) · R61 · **PRAG 2** *(devine prag 1 pe orice lună în care D300 se depune peste facturi necontate — colectata declarată nu are acoperire în contul 4427)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `55a57f6`
 - **deschisă pe commit**: `1bd9455`
-- **măsurat la**: 2026-08-29 · **pe commit**: `1bd9455`
+- **măsurat la**: 2026-08-29 · **pe commit**: `55a57f6`
 - **planul**: **ACOPERIT de azi**, prin ZZ4 — vezi R88, aceeași regulă.
 - **ce blochează**: `POST /tenants/{id}/facturi` creează factura și **nu scrie nicio notă**. Contabilizarea e `POST /tenants/{id}/facturi/{factura_id}/contabilizeaza` — o rută care **există și funcționează**, dar pe care nimic n-o declanșează. Deci nu lipsește capabilitatea, lipsește **legătura**.
 - **efectul, deja măsurat la R35 (24.08.2026)**: din **43** de facturi declarabile pe 17 scheme, **28 nu sunt contate deloc** — **65%** —, purtând **102.260,00 lei** TVA, pe **10 firme din 17**. *„Nu e o firmă cu date incomplete: e majoritatea."*
@@ -2364,6 +2423,84 @@ trebuie să întrebe **dacă există o notă de CONTARE**, nu **dacă există o 
 zero, iar un zero e și ce ar raporta un instrument orb): 3 pozitive (emisă · primită · imobilizare pe
 404) · 3 negative (casă · amortizare · trezorerie) · 3 pe valoarea de terț · 3 pe coliziune. Dacă
 oricare pică, sonda se oprește; nu raportează. **Anti-vacuu**: domeniul gol e eroare, nu răspuns.
+
+#### BLOC DDD — cheia nu mai numără orb (29.08.2026, PROBĂ)
+
+**Ce s-a construit, și unde stă.** Contarea unei facturi are de azi **un singur loc**:
+`core/contare_facturi.py`. Ruta manuală nu mai are SQL propriu — gardul o verifică pe **AST**: zero
+apeluri `execute` în corpul ei. Cele trei acte care produc note (emiterea, validarea unei primite,
+ruta manuală) cheamă **aceeași** funcție, cu un singur steag de diferență: `automat`.
+
+**DDD1 — `contare_existenta` în locul lui `COUNT(*)`.** Întrebarea nu mai e *„există o notă?"*, ci
+*„există o notă **de contare**?"*. Semnătura, ca definiție mecanică: un cont de **terț**
+(4111 · 401 · 404) **și** un cont de **fond** sau de **TVA**. O notă de plată (`401 = 5121`) sau de
+încasare (`5311 = 4111`) atinge terțul și trezoreria — deci nu e contare. O notă de casă
+(`5311 = 707`) atinge fondul, dar nu terțul.
+
+**PROBAT PE DATELE REALE, pe chiar cele 3 facturi măsurate la BBB** (`scripts/proba_contare_reala.py`,
+rulează pe portofoliul viu și face **ROLLBACK**; numărările de rânduri se întorc identice și se
+tipăresc):
+
+| factura | nota care ocupa cheia | `contare_existenta` | contabilizarea |
+|---|---|---|---|
+| `tenant_004` #9 | #1 `banca` — `401=5121` | **None** | **trece** → `371=401` 2.000,00 · `4428=401` 420,00 |
+| `tenant_013` #14 | #29 `casa` — `5311=4111` | **None** | **trece** → `4111=707` 300,00 · `4111=4427` 63,00 |
+| `tenant_017` #8 | #1 `banca` — `401=5121` | **None** | **trece** → `371=401` 2.000,00 · `4428=401` 420,00 |
+
+*Toate trei erau refuzate cu „factura are deja înregistrare" — un mesaj fals. Fals-pozitivul e închis.*
+
+**DDD2 — plasa, pe criteriul STRICT.** Înainte de a scrie o notă **automată**, se caută și note
+**fără** `factura_id`, în luna facturii, cu valoarea pe terț egală cu totalul, la ban. Găsită →
+automatul **nu scrie**, semnalează. **De ce strict și nu larg**: criteriul larg (baza, sau suma
+tuturor liniilor) a produs **3 fals-pozitive** pe datele de ieri — două note de încasare care se
+potrivesc cu factura pe care chiar o încasează, și o amortizare care nimerește un total. *Un automat
+oprit pe încasări n-ar mai fi o plasă, ar fi un obstacol.* Pe ruta manuală, plasa **avertizează** în
+loc să oprească: omul are ce n-are automatul — contextul.
+
+**DDD3 — reparația la SURSĂ, și e mai importantă decât plasa.** O notă scrisă din `POST /jurnal` care
+contează **evident** o factură primește `factura_id` **la scriere**. „Evident" e îngust deliberat:
+semnătură de contare · exact **una** dintre facturile declarabile ale lunii se potrivește pe total ·
+factura aia n-are deja contare. **Două potriviri → nu se leagă niciuna** — *o legătură greșită e mai
+rea decât lipsa ei: ar face o factură să pară contată de altcineva.* Contractul e scris în
+`PLAN_ARHITECTURA.md`, fiindcă schimbă ce întoarce ruta.
+
+**DDD4 — ce ÎNCHIDE și ce NU.** *Se spune, fiindcă întrebarea a fost pusă explicit.*
+- **Fals-pozitivul e închis complet.** O notă care nu e contare nu mai blochează contarea, pe nicio
+  cale. Probat pe cele 3 instanțe reale, cu calibrare în ambele direcții și RED-proof.
+- **Fals-negativul e MICȘORAT, nu închis.** Rămân: notele scrise **înainte** de azi, care n-au cheie
+  și nu se leagă retroactiv · cazul cu două potriviri, unde legarea refuză deliberat · o contare
+  făcută pe `461`/`462`, pe care semnătura n-o vede.
+- **Și a apărut o consecință care n-a existat înainte**: refuzul ștergerii numește o ieșire —
+  „dezleagă nota" — pe care aplicația **n-o are**. → **R90**, deschisă.
+
+#### BLOC EEE — factura EMISĂ (29.08.2026, PROBĂ)
+
+**EEE1 — nota se scrie în `creeaza_factura`, nu în rută.** Citit înainte de scris, nu presupus:
+`emite_factura` și `storneaza` cheamă chiar funcția asta, deci punctul unic acoperă **toate cele
+patru** drumuri de emitere — `POST /facturi`, `POST /facturi/emite`, stornarea, transformarea
+proformei. *Legat de o singură rută, regula R36 ar fi fost adevărată pe un drum din patru.*
+
+Tiparul NIR, punct cu punct, probat: validarea se termină **înainte** de prima scriere · **o
+tranzacție**, fără commit propriu · nota intră **`ciorna`** (patru-ochi neatins, R47) · `sursa` numește
+**actul** (`facturi`) · referință inversă prin `factura_id`. **Rollback complet**: o eroare
+nedeclarată în generarea notei anulează și factura — gardat cu o mutație. **Iar un refuz DECLARAT
+oprește nota, nu emiterea**: factura se creează, motivul pleacă în răspuns ca afirmație tipată.
+*Altfel o factură validă n-ar mai putea fi emisă dintr-un motiv de contabilitate.*
+
+**EEE2 — ștergerea refuză motivat**, cu ieșirea numită **ca dată** (`iesire: storno`), nu doar în
+propoziție. **EEE3 — a doua chemare a rutei manuale e NO-OP**: `200` cu `stare='deja_contata'`, nu
+`422`. *Refuzul era corect, prezentarea lui nu — un comportament corect care arată ca o eroare învață
+pe cineva să se ferească de el.*
+
+**EEE4 — probă pe date reale** (`tenant_017`, în tranzacție cu ROLLBACK): factura emisă nouă produce
+nota **automat**, `status=ciorna`, `sursa=facturi`, `factura_id` legat, liniile `4111=704` 1.000,00 și
+`4111=4427` 210,00 · a doua contare → `deja_contata` · ștergerea → refuzată, cu ieșirea `storno`.
+
+**CE NU ACOPERĂ, DECLARAT** (ZZ4 cere ca absența să fie **scrisă**, nu dedusă): facturile intrate prin
+`main._factura_din_parsat` — importul din SPV și încărcarea manuală de XML — **nu** trec pe aici, ci
+printr-un `INSERT` propriu. O factură **emisă** care se întoarce din SPV a fost emisă în altă parte;
+pentru ea, sosirea documentului nu e faptul economic. Rămâne necontată și **vizibilă ca atare** în
+verdictul de TVA (R35).
 
 **Un punct orb al sondei, găsit de propria ei listă și închis** — se scrie fiindcă e clasa, nu
 instanța: prima formă avea terț = {4111, 401} și a raportat **G2 = 0**. În lista lui G1 se vedeau

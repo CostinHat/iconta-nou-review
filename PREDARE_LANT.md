@@ -1,16 +1,16 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — proiectarea R87/R88 e DECISĂ, gaura de idempotență e MĂSURATĂ, iar stocul istoric are listă (29.08.2026)
+# PREDARE LANȚ — R87 și R88 sunt CONSTRUITE și închise; cheia nu mai numără orb; a rămas o restanță pe care refuzul o numește (29.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-29**, a patra oară în ziua asta. *Rescriere PE SECȚIUNI, nu completă
-  — se spune, ca să nu pară ce nu e. S-au atins: antetul, „de unde se pornește", tabelul de restanțe,
-  cifrele invalidate și lista „ce nu e adevărat". Restul e neatins fiindcă nu s-a mișcat.*
-- **pe commit**: `427e254` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
+- **ultima rescriere**: **2026-08-29**, a cincea oară în ziua asta. *Rescriere PE SECȚIUNI, nu completă
+  — se spune, ca să nu pară ce nu e. S-au atins: antetul, „de unde se pornește", starea codului,
+  tabelul de restanțe și lista „ce nu e adevărat". Restul e neatins fiindcă nu s-a mișcat.*
+- **pe commit**: `55a57f6` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
   munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e arborele care
   devine commitul următor.*
-- **rescrierea de dinainte**: `a0cc6a5`, aceeași zi. Între ea și acum au intrat **două** commituri: `2c43571` și `427e254`.
+- **rescrierea de dinainte**: `a0cc6a5`, aceeași zi. Între ea și acum au intrat **patru** commituri: `2c43571`, `427e254`, `1ea8a9a` și `55a57f6`.
 - **de ce acum**: se rescrie înaintea opririi, ca de fiecare dată. *Conținutul, nu contorul* — măsurat
   cu formula din `pre-commit`: **1** commit în urmă, pragul e **10**, deci nu era stale. Se rescrie
   fiindcă s-a schimbat ce spune, nu fiindcă a îmbătrânit.
@@ -95,21 +95,22 @@ scrisesem regula care o interzice (`METODA §10.16`). *O regulă scrisă nu țin
 
 ## AL DOILEA: DE UNDE SE PORNEȘTE, DACĂ EȘTI O SESIUNE NOUĂ
 
-**Nu e nicio cerință comandată neîncepută.** Cele două întrebări de ieri **au primit răspuns** și sunt
-scrise în `DECIZII.md` (intrarea „29.08.2026 (2)"). Ce așteaptă acum e altceva, și e mai puțin:
+**Nu e nicio cerință comandată neîncepută.** **R87 și R88 sunt CONSTRUITE, probate pe date reale și
+închise** pe `55a57f6`. Ce așteaptă:
 
-1. **TVA la încasare pe factura primită** — singurul punct al proiectării rămas fără răspuns, la
-   **R88**. Nu e o rafinare de aliniat pe parcurs: `factura_contabilizeaza` citește regimul **propriu**
-   al firmei și nu citește niciodată `facturi.furnizor_tva_incasare`, deși D300 o folosește. **2
-   facturi** pe date curente ar primi TVA pe 4426 în timp ce decontul îl amână. Trei ieșiri scrise,
-   **niciuna aleasă**.
-2. **stocul istoric** — **R89**, restanță nouă. Lista e măsurată și scrisă, firmă cu firmă. Decizia pe
-   ea, nu. Patru variante scrise, **niciuna propusă** — asta era chiar decizia din 29.08.
+1. **stocul istoric** — **R89**, singura decizie care blochează. Lista e măsurată și scrisă, firmă cu
+   firmă, factură cu factură. Patru variante scrise, **niciuna propusă**. *Decizia din 29.08 a fost
+   explicit că nu se atinge în tura aia — deci nu e o restanță uitată, e una amânată cu condiție.*
+2. **R90** — deschisă azi, **INTERN**, prag 3. Nu așteaptă un răspuns, așteaptă muncă: o notă legată
+   de o factură **nu se poate dezlega**, iar cheia străină blochează ștergerea și pentru o notă de
+   plată. Refuzul o **spune** acum, în loc să promită o ieșire inexistentă. **3 facturi** sunt în
+   clasă azi, toate cu nota validată, deci nu se pot șterge deloc.
 
-**Construcția R87/R88 nu e începută, și nu se poate începe de oriunde.** Ordinea pe care o impune
-măsurătoarea: verificarea de idempotență trebuie întâi corectată să întrebe *„există o notă de
-CONTARE?"*, nu *„există o notă?"* — altfel automatul refuză 3 facturi cu un mesaj fals. Vezi R87,
-blocul BBB.
+**Ce s-a construit, pe scurt, ca să nu se recitească registrul:** contarea are un singur loc
+(`core/contare_facturi.py`); nota se scrie în același act cu faptul — la emitere prin
+`creeaza_factura`, care e punctul unic al **tuturor** celor patru drumuri de emitere, și la
+`/valideaza` pentru primită; cheia distinge contarea de plată; plasa caută note fără cheie înainte de
+fiecare notă automată; iar nota din jurnalul liber primește cheia **la scriere**.
 
 **Nu e propus niciun pas următor în afara astora** — ordinea o dă Costin.
 
@@ -118,10 +119,10 @@ blocul BBB.
 ## AL TREILEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
 - **nicio restanță de PRAG 1 deschisă.** R35 era ultima, închisă pe 28.08.
-- **45 de restanțe deschise**, numărate mecanic pe registru azi: prag 2 — **17**, prag 3 — **12**,
-  fără prag declarat — **16** (cele vechi, R1–R27). *Cifrele de dinainte (44 · 15) nu se reconstituie
-  din registru cu aceeași numărătoare, deci nu se poartă mai departe — se refac. `scripts/raport_b.py`
-  derivă totalul; defalcarea pe praguri se numără din câmpul `unde intră`.*
+- **44 de restanțe deschise**, numărate mecanic pe registru azi: prag 2 — **15**, prag 3 — **13**,
+  fără prag declarat — **16** (cele vechi, R1–R27). Pe cine deblochează: INTERN **24** · DECIZIE
+  **18** · EXTERN **2**. *Au ieșit R87 și R88 (închise), a intrat R90. `scripts/raport_b.py` derivă
+  totalul; defalcarea se numără din câmpurile `unde intră` și `cine deblochează`.*
 - **clusterele topologice**: `core.agenda.urmator_cluster()` → **`(None, 0, 0)`**. Inventarul are
   **79 de rânduri, 79 bifate, 0 blocate**. Secvența e epuizată din 04.08.2026 — **nu există
   „următorul programat"**.
@@ -146,9 +147,9 @@ blocul BBB.
 
 ## STAREA LA PREDARE
 
-Poartă verde pe arborele care devine commitul următor: **3490 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
+Poartă verde pe arborele care devine commitul următor: **3522 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
 rute **411 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 32** · acte de nivel firmă **0 tăcute din 7** ·
-site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
+site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-29`.
 
 **Cifrele nu se scriu aici** — `scripts/raport_b.py`. **Poarta durează ~12,5 minute.**
 
@@ -158,8 +159,9 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 
 | | |
 |---|---|
-| **R87 · R88** (DESCHISE, INTERN, prag 2) | **PROIECTAREA E DECISĂ** (5 puncte, `DECIZII.md`). Niciun cod de producție scris. R87 poartă acum și **blocul BBB** — gaura de idempotență, măsurată. R88 rămâne blocată pe **un singur punct**: TVA la încasare. |
-| **R89** (DESCHISĂ, DECIZIE, prag 2) | **NOUĂ azi.** Stocul istoric: 28 pe cheie / 31 fără notă de contare, 102.260,00 lei TVA, 10 firme. Lista e scrisă; decizia, nu. |
+| **R87 · R88** (**REZOLVATE** pe `55a57f6`) | Construite și probate pe date reale (blocurile DDD/EEE/FFF). **Condiția lor s-a DESPĂRȚIT, nu s-a considerat satisfăcută**: jumătatea „proporția de necontate = 0" nu e îndeplinită și s-a mutat, cu numele ei, la R89. |
+| **R89** (DESCHISĂ, DECIZIE, prag 2) | Stocul istoric: 28 pe cheie / 31 fără notă de contare, 102.260,00 lei TVA, 10 firme. Lista e scrisă; decizia, nu. **Neatinsă azi, cerut explicit.** |
+| **R90** (DESCHISĂ, INTERN, prag 3) | **NOUĂ azi**, și e o consecință a reparației, nu un defect independent: refuzul ștergerii numea o ieșire care nu există. 3 facturi în clasă. |
 | **R36** (REZOLVATĂ pe `1bd9455`) | Închisă în ziua asta. |
 | **R37, R39** | Re-citite la ZZ5: R39 a trecut DECIZIE → INTERN, R37 și-a schimbat domeniul. |
 | **prag 1** | **niciuna deschisă.** |
@@ -230,8 +232,19 @@ POARTĂ, nu se deleagă în istoric.*
 - **Harta ZZ2 e pe AST, deci vede ce SCRIE în `inregistrari`** — nu vede un fapt economic pe care
   aplicația nu-l modelează deloc. Un fapt fără obiect și fără rută nu apare nici ca automat, nici ca
   gol: **nu apare.**
-- **R87 și R88 n-au fost reparate**, cerut explicit. Ruta de contabilizare există și funcționează —
-  lipsește **legătura**, nu capabilitatea.
+- **R87 și R88 sunt reparate și închise.** Ce lipsea era **legătura**, nu capabilitatea — iar legătura
+  s-a făcut în `creeaza_factura` și în `/valideaza`, nu în rute.
+- **Automatul nu acoperă facturile intrate prin `_factura_din_parsat`** (import SPV / XML manual).
+  Absența e **declarată lângă cod**, cum cere ZZ4, nu dedusă: o factură emisă care se întoarce din SPV
+  a fost emisă în altă parte, deci sosirea documentului nu e faptul economic. Rămâne necontată și
+  vizibilă ca atare în verdictul de TVA.
+- **Fals-negativul cheii e MICȘORAT, nu închis.** Rămân notele scrise înainte de azi (nu se leagă
+  retroactiv), cazul cu două potriviri (unde legarea refuză deliberat), și o contare făcută pe
+  `461`/`462`, pe care semnătura n-o vede.
+- **Cele 3 facturi din clasa R90 nu se pot șterge deloc**, fiindcă nota lor de plată e validată.
+  Mesajul o spune; asta nu e o reparație, e un refuz onest.
+- **Nu s-a măsurat dacă vreuna dintre ele chiar trebuie ștearsă.** Clasa e mică azi fiindcă notele de
+  plată sunt puține; crește cu fiecare reconciliere bancară.
 - **Cifra e re-măsurată azi, cu instrument: 28 din 41, 102.260,00 lei, 10 firme.** Numitorul „43"
   e **INVALIDAT** — vezi tabelul. Iar pe a doua citire, „fără notă de **contare**", sunt **31 din 41**
   și **103.163,00 lei**: trei facturi au cheia ocupată de o notă de **plată**.
@@ -285,8 +298,8 @@ POARTĂ, nu se deleagă în istoric.*
 ## DACĂ CONTINUI DE AICI
 
 1. **Nu e nicio cerință comandată neîncepută. Nicio restanță de prag 1 deschisă.**
-   Ce așteaptă: **TVA la încasare** (R88, un singur punct) și **decizia pe stocul istoric** (R89, cu
-   lista deja scrisă). Proiectarea R87/R88 **nu mai e o întrebare deschisă** — e în `DECIZII.md`.
+   Ce așteaptă: **decizia pe stocul istoric** (R89, cu lista deja scrisă) — singura decizie care
+   blochează. **R90** e muncă, nu răspuns.
 2. **Nu porni nicio construcție fără măsurătoare.**
 3. **`scripts/raport_b.py` derivă „Unde suntem".** Nu se scrie de mână.
 4. **Raportul se scrie din `SABLON_RAPORT.md`.**
