@@ -6918,12 +6918,15 @@ def jurnal_sterge(tenant_id: int, nota_id: int, ctx=Depends(cere_cabinet)):
         _cere_perioada_deschisa(conn, schema, nota_id)
         return _jurnal_rez(_j.sterge(conn, schema, nota_id))
 
-@app.post("/tenants/{tenant_id}/jurnal/{nota_id}/dezleaga")  # [api_intern_v1] fara buton in UI, pastrat deliberat: MASURAT 29.08.2026 — nicio cale din `static/` nu sterge o factura (`api.del` pe facturi nu exista; cel de la 1015 e pe `facturi-recurente`), deci si `DELETE /facturi/{id}` e act de API. Dezlegarea e perechea lui: ar fi singurul buton dintr-un drum care n-are ecran. Ecranul celor doua acte e restanta R92.
+@app.post("/tenants/{tenant_id}/jurnal/{nota_id}/dezleaga")  # [api_intern_v1] fara buton in UI, pastrat deliberat: MASURAT 29.08.2026 — nicio cale din `static/` nu sterge o factura (`api.del` pe facturi nu exista; cel de la 1015 e pe `facturi-recurente`), deci si `DELETE /facturi/{id}` e act de API. Dezlegarea e perechea lui: ar fi singurul buton dintr-un drum care n-are ecran. Clasa e R70 (rute fara apelant), iar orbirea detectorului pe cai compuse e R80 — amandoua deja deschise. R92 NU exista: comentariul asta a numit-o dintr-o forma intermediara a deciziei, iar o trimitere la ceva inexistent se semnaleaza, nu se lasa.
 # [R90, 29.08.2026 — varianta (a), decizia lui Costin] Rolul e `admin_firma`, nu `cere_cabinet`, și
-# criteriul e cel din R42: actul **schimbă ce datorează sau ce are de încasat firma**. Dezlegarea unei
-# plăți face factura să reapară ca neîncasată în `reconciliere_api.facturi_deschise` — deci nu e o
-# corecție de fișă, e o schimbare de sold. *Ruta de reactivare a unei linii de extras a rămas pe
-# `cere_cabinet` fiindcă ea nu atinge nicio notă legată; asta atinge.*
+# criteriul e cel din **R55**, nu din R42 — corectat: prima formă a comentariului scria „R42", iar
+# registrul și excepția din `core/test_r42_criteriu.py` spun R55. R42 e despre *ce se predă*; nota nu
+# se predă. R55 e despre *ce schimbă ce datorează firma*, iar actul ăsta schimbă: dezlegarea unei
+# plăți face factura să reapară ca neîncasată în `reconciliere_api.facturi_deschise`, care calculează
+# soldul chiar din notele legate prin `factura_id`. Deci nu e o corecție de fișă, e o schimbare de
+# sold. *Ruta de reactivare a unei linii de extras a rămas pe `cere_cabinet` fiindcă ea nu atinge
+# nicio notă legată; asta atinge.*
 def jurnal_dezleaga(tenant_id: int, nota_id: int, corp: dict = Body(default={}),
                     ctx=Depends(cere_rol("admin_firma"))):
     """RUPE legătura notă↔factură, cu URMĂ. Cerut de R90: până azi cheia străină

@@ -71,7 +71,12 @@ def _locuri():
         return "TRASEE_VERIFICARI.md lipseste — nu se poate număra"
     d = open(cale, encoding="utf-8").read()
     scrise = sum(1 for l in d.splitlines() if l.startswith("- [x] "))
-    goale = sum(1 for l in d.splitlines() if l.rstrip() == "- [ ]")
+    # [29.08.2026] O casuta NEBIFATA e un loc nefacut — si cu text, si fara. Prima forma numara
+    # gol numai randul `- [ ]` PUR, deci un rand `- [ ] <propozitie>` (o verificare scrisa, dar
+    # neexercitata) nu intra nici la scrise, nici la goale: DISPAREA din numitor, iar procentul
+    # sarea inapoi la „100%" peste locuri nefacute. Exact clasa pentru care exista functia asta.
+    goale = sum(1 for l in d.splitlines()
+                if l.rstrip() == "- [ ]" or l.startswith("- [ ] "))
     tot = scrise + goale
     if not tot:
         return "0 locuri — fisierul s-a golit?"

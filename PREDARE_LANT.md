@@ -127,13 +127,17 @@ plasa caută note fără cheie înainte de fiecare notă automată; nota din jur
   **19** · EXTERN **2**. *Totalul e neschimbat față de dimineață, dar compoziția nu: au ieșit R87,
   R88 și R90 (închise), au intrat R89 (deschisă la prânz) și R91. Balanța INTERN→DECIZIE s-a mutat cu
   unu — ce a mai rămas din lanțul facturii sunt răspunsuri, nu muncă.*
-- **locuri de verificare**: **203 scrise / 1 gol din 204**. Golul e nou și e al pasului de dezlegare:
-  conținutul lui `TRASEE_VERIFICARI.md` îl scrie Costin, iar marcajul `- [ ]` e pus tocmai ca
-  progresul să nu mai arate „100%" peste un loc nescris.
+- **locuri de verificare**: **203 scrise / 9 goale din 212 (96%)**, derivat cu `scripts/raport_b.py`.
+  Cele 9 sunt draftul propus pentru pasul de dezlegare — scrise, **nebifate**, fiindcă bifarea e un
+  pas separat. *Contorul a fost lărgit odată cu ele: o căsuță nebifată e un loc nefăcut și cu text,
+  și fără. Înainte, un rând `- [ ] <propoziție>` nu intra nici la scrise, nici la goale — dispărea
+  din numitor, iar procentul sărea înapoi la „100%".*
 - **clusterele topologice**: `core.agenda.urmator_cluster()` → **`(None, 0, 0)`**. Inventarul are
   **79 de rânduri, 79 bifate, 0 blocate**. Secvența e epuizată din 04.08.2026 — **nu există
   „următorul programat"**.
-- **progres E1**: **203 locuri de verificare scrise / 0 goale, din 203 (100%)**.
+- **progres E1**: cifra e cea de mai sus, la „locuri de verificare" — **un singur loc**. *Rândul ăsta
+  o repeta, și rămăsese în urmă: spunea „203 / 0 goale, din 203 (100%)" în aceeași secțiune în care
+  celălalt spunea altceva. Aceeași măsură scrisă de două ori dă două răspunsuri la prima divergență.*
 - **familia salariilor**: nimic deschis (R33, R34, R85, R86 — toate închise).
 
 ---

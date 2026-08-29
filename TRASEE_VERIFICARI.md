@@ -406,7 +406,17 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *ce face: RUPE legătura notă↔factură, cu URMĂ*
 
-- [ ]
+- [ ] nota nu mai poartă `factura_id`, dar **rămâne în evidență** cu aceleași linii și aceeași sumă — actul rupe legătura, nu șterge nota
+- [ ] factura reapare ca **neîncasată, cu soldul întreg**: `reconciliere_api.facturi_deschise` o listează din nou, cu exact suma care fusese stinsă de nota dezlegată
+- [ ] actul a lăsat o **urmă proprie** în `public.audit_log` (`DEZLEGARE nota-factura`), cu nota, factura, motivul scris de om, autorul și momentul — și e o afirmație tipată, nu proză într-un dicționar
+- [ ] fără motiv actul **nu se produce**: răspuns `422` cu `cod=MOTIV_OBLIGATORIU`, iar nota rămâne legată — se citește în bază, nu doar pe ecran
+- [ ] pe o notă de **CONTARE** actul refuză (`E_NOTA_DE_CONTARE`), trimite la **storno**, iar nota rămâne legată: evidența unei facturi nu se poate desface
+- [ ] pe o **lună închisă** actul refuză cu `423`, nota rămâne legată, iar în `audit_log` **nu** apare niciun rând `DEZLEGARE nota-factura` — refuzul se produce înaintea urmei. *(Rândul de acces `POST <cale>` apare oricum: middleware-ul îl scrie pentru orice mutație, reușită sau nu.)*
+- [ ] fără rol de `admin_firma` actul nu se poate exercita
+- [ ] **după** dezlegare, ștergerea facturii — care înainte refuza cu `ARE_NOTA_LEGATA` — reușește; iar pe o factură cu notă de contare ștergerea refuză și numește storno
+- [ ] o **a doua** dezlegare pe aceeași notă refuză cu `NOTA_NELEGATA` și nu adaugă un al doilea rând `DEZLEGARE nota-factura`
+- **NEBIFATE DELIBERAT.** Lista e un DRAFT propus (29.08.2026), nu o verificare făcută. Bifarea e un pas separat, deliberat — nu se face în aceeași tură cu construcția.
+- ce NU acoperă lista: actul **n-are ecran**, deci toate rândurile se exercită prin API — la fel ca `DELETE /facturi/{id}`, care n-are nici el (R70). O verificare „cu ochii, pe ecran" nu e posibilă azi pentru pasul ăsta.
 
 ### `POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza`
 
