@@ -5899,3 +5899,74 @@ pe text**, iar clichetul 50 le-a prins la **1223 > 1222**. Rescrise pe structur�
 acum ce a creat fixtura cu ce a raportat sonda, fără niciun șir scris de mână. **RED-proof rulat pe
 gărzile noi:** cu mutația care scoate excluderea, cade exact una din cele două, iar cealaltă rămâne
 verde. *Niciuna dintre cele două gărzi n-a fost ocolită; amândouă aveau dreptate.*
+
+## 29.08.2026 (partea a patra) — Faza 1 s-a terminat. Iar ultimul pas a scos exact lucrul pe care propria lui limită îl ascundea
+
+*A patra intrare a zilei, și cea care închide etapa. Verdictul de producție, pe
+`git log 6e0050b..HEAD --name-only`: **zero fișiere de producție atinse** — un instrument nou
+(`scripts/scan_1c_verificabil.py`), registrele, și atât. **Niciun ecran, nicio rută, nicio regulă de
+calcul.** Pentru un contabil, ziua asta n-a schimbat nimic; a schimbat ce ȘTIM despre ce vede el.*
+
+### 1c: cele patru întrebări ale planului, puse pe răspunsul VIU al rutei
+
+Pe 22.08, 1c s-a măsurat pe **trei cifre** și pe **cod**. Acum: pe **artefactele care chiar ies** —
+lista o dă 1b — și pe ce **trimite efectiv ruta**. **168 de ieșiri**, 19 firme.
+
+**Rezultatul principal, și e o despărțire, nu un număr:** **0 din 92** de ieșiri de declarație își
+arată componentele — ruta întoarce un **contor** de operațiuni, nu operațiunile —, în timp ce
+**registrele desfac**: jurnalul întoarce liniile, casa întoarce operațiunile cu soldul curent, statul
+întoarce rândul per salariat. Deci nu e adevărat că „aplicația nu știe să desfacă o cifră".
+**Declarațiile nu desfac; registrele desfac.**
+
+Iar cele **92 de „are temei"** sunt **false**, și se scrie de ce: cheia `temei` din răspunsul lui
+`valideaza` poartă *„DUKIntegrator -v D300 (pachet oficial ANAF)"* — e temeiul **validatorului**, nu
+al cifrei. Nicio poziție de declarație nu-și poartă temeiul.
+
+### Lucrul pe care limita lui 1c îl ascundea
+
+1c își declară limita în capul instrumentului: *măsoară ce trimite ruta, nu ce randează ecranul*.
+Sub limita aia stăteau **două defecte reale**, găsite tocmai fiindcă am citit și JS-ul:
+
+- **registrul-jurnal** — ruta derivă cele trei elemente cerute de OMFP 2634 Anexa 1 pct. 45
+  (`nr_curent`, `document`, `total_debit`/`total_credit`), iar în `firme.js` primele două au **0
+  apariții** și documentul nu e randat. Artefactul e **complet în răspuns și incomplet pe ecran**;
+- **netul de pe fluturaș** — **toate cele 7** componente sosesc în răspuns, **niciuna** nu e afișată.
+
+**Decizia lui Costin: nu sunt două poziții de listă, sunt o CLASĂ** — *„ruta livrează, ecranul tace"*
+—, deschisă ca **R97**, cu motivul scris: *un instrument care își declară limita nu poate fi folosit
+ca dovadă că sub limită nu e nimic; registrul-jurnal dovedește că e.* Deci **nu e caz izolat până nu
+se demonstrează că e**, iar condiția de deblocare cere **întâi măsurarea clasei** — instrumentul care
+confruntă câmpurile trimise cu cele randate, pentru fiecare pereche rută↔ecran.
+
+**Consecința pentru verdict, scrisă ca atare:** cele 10 poziții ale listei 5 sunt un **plafon
+inferior**, nu un total.
+
+### Verdictul 1d, rescris: șase poziții s-au mutat
+
+| | 22.08 | 29.08 |
+|---|---|---|
+| **lista 1** | 1 artefact | **1** — registrul de casă, neschimbat |
+| **lista 3** (vina aplicației) | 9 artefacte | **8** — a ieșit registrul-jurnal; Cartea mare a rămas, dar cu **altă cauză** |
+| **lista 4** (ies, nu se validează) | **goală** | **2 poziții** — D394 pe două firme, de pe **două regimuri diferite** |
+| **lista 5** (nu se pot verifica) | 11 poziții | **10 + clasa R97, nemăsurată** |
+
+**Și un rezultat despre formă, nu despre conținut:** listele 3 și 5 sunt **identice pe toate cele 12
+regimuri** — ecranele și producătorii nu depind de regim. Înseamnă că munca rămasă **nu se împarte pe
+regimuri, ci pe artefacte**: un ecran reparat o dată curăță aceeași poziție pe toate douăsprezece.
+
+### A doua decizie a zilei: o interdicție nu are voie să-și poarte inventarul
+
+La remăsurarea lui 63–66, două cifre se mișcaseră sub un verdict care rămăsese corect: `Temei(` în
+producție **57 → 64**, mențiuni `temei` în JS **43 → 68**. Verdictul — *0 ajung pe ecran ca temeiul
+unei cifre* — n-a fost niciodată greșit; cifrele pe care se sprijinea erau vechi de o săptămână, și
+nimic nu se aprindea.
+
+**Regula, cerută de Costin:** *o interdicție trebuie să citeze **regula** și **pragul**; inventarul
+stă ca **anexă datată**.* Deschisă ca **R98**, explicit **doar ca gardă, nu ca rescriere acum** —
+altfel rescrierea celor patru secțiuni ar fi o promisiune, nu o reparație.
+
+### Ce rămâne adevărat despre ziua asta
+
+**Patru intrări, douăzeci și ceva de commituri, și niciun contabil.** Faza 1 spune acum, cu cifră, ce
+iese și ce se poate verifica — dar **R40 rămâne deschisă**: nicio declarație depusă prin aplicație.
+Setul se măsoară; nu s-a exercitat încă pe nimeni.

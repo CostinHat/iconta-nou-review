@@ -40,9 +40,9 @@ face doar imposibilă acumularea unei narațiuni care să îmbătrânească. *(D
 după a doua oară: „e gardul care nu citește proză și totuși o disciplinează".)*
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **1b — ce produce aplicația pe cele 12 regimuri reale**, măsurat pe 19 firme × 15 declarații, prin arbitrul oficial. Urmează **1c**. Verdictul 1d se rescrie: lista 4 nu mai e goală. *(Cifrele se derivă.)*
+- **pasul curent**: **faza 1 e TERMINATĂ** — 1a, 1b și 1c măsurate, verdictul 1d rescris. Criteriul de gata NU e îndeplinit: lista 3 are 8 artefacte, lista 4 două poziții, lista 5 zece plus clasa **R97**, nemăsurată. *(Cifrele se derivă.)*
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
-- **ce lipsește**: din faza 1 a rămas **1c** (se poate verifica pe ecran ce iese), iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
+- **ce lipsește**: faza 1 nu mai are **pași** — 1a, 1b, 1c și 1d sunt făcute —, dar **criteriul ei de terminare NU e îndeplinit**: listele 3, 4 și 5 nu sunt goale, iar mărimea listei 5 nu se poate ști până nu se măsoară clasa **R97**. Iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna.** *(Stocul istoric nu mai blochează: s-a executat pe 29.08, după ce Costin a spus că nu există clienți reali — starea restanței se citește din registru, nu de aici.)* *(Ultima — ce face aplicația cu o factură EMISĂ care intră prin import — a primit răspuns pe 29.08.2026, varianta (iii), și e construită; starea restanței se citește din registru, nu de aici.)* *(A doua decizie care bloca — TVA la încasare pe factura primită — a primit răspuns pe 29.08.2026, varianta (ii), și e construită; restanța ei e închisă, iar starea se citește din registru, nu de aici.)*
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 29.08.2026: garda cere ca fiecare restanță NUMITĂ acolo să fie DESCHISĂ, iar textul le numea pe R54, R53, R58 — dintre care două s-au închis azi. A doua oară când istoricul iese din câmp din același motiv; prima a fost R33, pe 28.08)*: Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
@@ -2117,6 +2117,30 @@ citirea corectează.*
 - **măsurat la**: 2026-08-29 · **pe commit**: `81b89e7`
 - **ce blochează**: `core/fisa_cont.py` — Fișa de cont 14-6-22, care ține locul Cărții mari — filtrează `i.status = 'validata'`, iar docstringul lui își numește motivul: *„o ciornă nu e evidență (**aceeași regulă ca la restul motorului**)"*. Citit la sursă, propoziția e **falsă despre restul motorului**: `documente_api.balanta` (`WHERE i.data < %s`) și ruta `/tenants/{tenant_id}/jurnal` **nu filtrează pe status deloc** — a doua chiar duce `status` mai departe, pe fiecare rând. Măsurat pe 08/2026, pe toate cele 19 firme: **21 din cele 41 de note ale lunii sunt ciorne**, deci intră în balanță și în registrul-jurnal și **nu** intră în fișa de cont. Pe `tenant_017` **toate cele 5**; la fel, integral, pe `tenant_002`, `tenant_004`, `tenant_005` și `tenant_007`. Trei registre obligatorii, aceeași lună, trei răspunsuri la întrebarea *„ce s-a înregistrat"*.
 - **condiția de deblocare**: se răspunde la **R36** — dacă evidența e „ce a validat un om" sau „ce a înregistrat aplicația" — apoi **toate trei** registrele citesc aceeași mulțime, iar dacă vreunul citește deliberat altceva, motivul se scrie lângă el, ca declarație de perimetru. Se închide când o gardă confruntă populațiile celor trei pe aceeași perioadă și cere **fie** egalitate, **fie** o abatere declarată; probată prin mutație (o ciornă adăugată trebuie să miște exact registrele care o declară). *Se ridică și propoziția din docstringul lui `fisa_cont`, care azi afirmă despre restul motorului ceva ce nu e adevărat.*
+
+### R97 — „Ruta livrează, ecranul tace": serverul trimite compoziția unei cifre, iar randarea o pierde
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · faza 1, pasul **1c** · verdictul 1d, **lista 5** (ca CLASĂ, nu ca poziții) · interdicțiile **63** și **66** · **PRAG 2**
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `89f11f0`
+- **măsurat la**: 2026-08-29 · **pe commit**: `89f11f0`
+- **ce blochează**: **două instanțe probate azi, pe date reale.** (1) **Registrul-jurnal** (14-1-1): ruta `/tenants/{id}/jurnal` derivă la citire exact cele trei elemente cerute de OMFP 2634 Anexa 1 pct. 45 — `nr_curent` (numărul curent de la 1 ianuarie), `document` (documentul justificativ derivat) și `total_debit`/`total_credit` (totalizarea lunară) — iar în `static/js/ecrane/firme.js` `nr_curent` are **0 apariții**, `total_debit` **0**, și documentul nu e randat în ecranul jurnalului (cele 11 apariții de `.document` sunt pe alte ecrane). Ecranul arată dată · descriere · stare · linii. (2) **Netul de pe fluturaș**: pe cele 8 firme cu salariați, răspunsul statului poartă **toate cele 7** componente (`deducere`, `deducere_baza`, `deducere_tineri`, `deducere_copii`, `facilitate`, `cas_suprataxa`, `cass_suprataxa`), iar ecranul **nu randează niciuna** — cuvintele apar în JS doar ca etichete pe formulare de introducere. **Clasa e mai gravă decât suma instanțelor:** un artefact complet în răspuns și incomplet pe ecran arată, pentru cine se uită la ecran, exact ca unul care nu se poate produce — deci absența nu se poate deosebi de imposibilitate. *Nu se numără ca poziții în lista 5 (decizia lui Costin, 29.08): nu sunt două defecte, sunt două instanțe.*
+- **condiția de deblocare**: **întâi se măsoară clasa, apoi se repară.** Se construiește instrumentul care confruntă, pentru fiecare pereche rută↔ecran, **câmpurile trimise** cu **câmpurile randate**, și raportează diferența — adică exact jumătatea pe care `scripts/scan_1c_verificabil.py` și-o declară ca limită („măsoară ce trimite ruta, nu ce randează ecranul"). Se închide când clasa are **cifră pe domeniu declarat** și când fiecare instanță e ori reparată, ori declarată cu motiv scris. *Până atunci, cele 10 poziții ale listei 5 sunt un **plafon inferior**, iar afirmația „registrul-jurnal e un caz izolat" **nu are voie să fie făcută**: 1c dovedește că sub limita lui stau defecte reale, deci sarcina probei e pe cel care susține că e izolat.*
+
+### R98 — O interdicție care citează un inventar îmbătrânește singură la fiecare măsurătoare
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · registrul însuși (`CONFORMITATE.md`) · METODA §14 (doc-stătut) · **PRAG 2**
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `89f11f0`
+- **măsurat la**: 2026-08-29 · **pe commit**: `89f11f0`
+- **ce blochează**: **cerută de Costin pe 29.08, după a treia instanță din aceeași zi.** O secțiune de interdicție care își scrie în corp un **inventar** — o listă de module, un număr de fișiere, un contor de ocurențe — devine falsă la următoarea măsurătoare, fără ca nimic să se aprindă. Instanțele de azi, toate la **66**: *„57 de obiecte `Temei(` în `core/`"* → azi sunt **64 în 11 module de producție**; *„43 de mențiuni `temei` în JS, pe 5 ecrane"* → azi sunt **68 în 5 fișiere**. Verdictul interdicției **n-a fost niciodată greșit** — 0 ajung pe ecran ca temei al unei cifre —, dar cifrele pe care se sprijinea erau vechi de o săptămână, iar cine le citea nu avea cum să știe. Aceeași formă la **63** (lista de câmpuri neafișate) și la **65** (lista de tipare căutate). *Regula pe care o încalcă, scrisă de Costin: **o interdicție trebuie să citeze REGULA și PRAGUL; inventarul stă ca ANEXĂ DATATĂ.***
+- **condiția de deblocare**: **doar gardă, nu rescriere acum** (cuvintele deciziei). Se construiește o gardă care deosebește, în corpul unei secțiuni de interdicție, **regula și pragul** de **inventar**, și cere ca inventarul să poarte o dată proprie — nu data secțiunii. Se închide când garda pică pe o secțiune în care un inventar nedatat a rămas în urma instrumentului care îl produce, probat prin mutație în amândouă direcțiile: un inventar datat și proaspăt trece, unul nedatat sau mai vechi decât ultima măsurătoare a instrumentului lui, nu. *Nicio secțiune nu se rescrie până nu există garda — altfel rescrierea e o promisiune, nu o reparație.*
 
 ### R91 — O factură EMISĂ care intră prin import nu produce nota, iar absența e DECLARATĂ, nu decisă
 
@@ -4743,6 +4767,183 @@ include și deducerile **suplimentare** (CF art.77 alin.(4^1) tineri sub 26; ali
 0,00 fiindcă îi lipsește declarația, și hârtia tace — **nu e prag 1**: cifra e corectă și nicio
 afirmație nu e falsă. Intră la triaj cu celelalte.
 
+### Pasul 1c, RELUAT PE ARTEFACTELE CARE IES (29.08.2026)
+
+*Blocul din 22.08 rămâne unde e: a măsurat **trei cifre**, pe **cod**. Ăsta măsoară pe **artefactele
+care chiar ies** — lista o dă 1b, pe regimurile reale — și pe **răspunsul VIU al rutei**. Diferența
+nu e de mărime, e de natură: un artefact poate avea componentele în cod și **să nu le trimită**, iar
+un grep nu deosebește cele două.*
+
+**Instrument:** `scripts/scan_1c_verificabil.py`, pe commit `89f11f0`. Cele patru întrebări ale
+planului, puse pe **structura JSON**, nu pe șiruri (METODA §23): **Q1** — există o *listă de obiecte
+cu cel puțin un câmp numeric*, adică elementele din care e făcută cifra (`{"operatiuni": 18}` e un
+**contor**, nu o componentă, și nu trece) · **Q2** — există un canal de absență motivată **nevid** ·
+**Q3** — există o cheie care numește perioada anterioară · **Q4** — există cheia `temei`.
+
+#### Rezultatul, pe cele 168 de ieșiri măsurate
+
+| artefact | iese | Q1 componente | Q2 absență motivată | Q3 perioada anterioară | Q4 temei |
+|---|---|---|---|---|---|
+| **cele 9 declarații** (D100·D101·D112·D205·D300·D301·D390·D394·D406) | **92** | **0** | 61 | **0** | 92 |
+| **registrul-jurnal** (14-1-1) | 19 | **9** (toate firmele cu note) | 0 | 0 | 0 |
+| **registrul de casă** (14-4-7A) | 19 | 2 (toate firmele cu operațiuni) | 1 | 0 | 1 |
+| **statul de plată** (netul) | 19 | 8 (toate firmele cu salariați) | 0 | 0 | 0 |
+| **control fiscal** (semaforul) | 19 | **19** | **19** | 0 | **19** |
+
+**1. NICIO DECLARAȚIE NU-ȘI ARATĂ COMPONENTELE. Zero din 92.** Ruta care produce și validează
+întoarce `stare`, `xml_b64` și **`operatiuni` — un NUMĂR**. Contabilul vede *„valid, 18 operațiuni"*
+și **nu poate vedea care 18**. Pe 22.08 asta s-a măsurat pe D300 și D112, prin numărarea câmpurilor
+de detaliu în cod; acum e măsurat pe **toate nouă**, pe răspunsul viu, pe tot portofoliul.
+
+**2. REGISTRELE SUNT CEALALTĂ LUME — și asta e partea utilă.** Ruta registrului-jurnal întoarce
+`note[].linii` (cont debit = cont credit · sumă), casa întoarce operațiunile cu soldul curent, statul
+întoarce un rând per salariat. **Compoziția există și pleacă pe fir.** Deci despărțirea reală nu e
+„aplicația nu știe să desfacă o cifră" — e că **declarațiile nu desfac, iar registrele desfac**.
+
+**3. COMPONENTELE NETULUI AJUNG ÎN RĂSPUNS — TOATE ȘAPTE.** Pe cele 8 firme cu salariați, răspunsul
+statului poartă `deducere`, `deducere_baza`, `deducere_tineri`, `deducere_copii`, `facilitate`,
+`cas_suprataxa`, `cass_suprataxa`. **Iar ecranul nu randează niciuna**: în `static/js/ecrane/firme.js`
+cuvintele apar **doar ca etichete pe formulare de introducere** (data nașterii, copii școlarizați,
+declarația părintelui) și într-un avertisment. *Măsurătoarea din 22.08 spunea „nu ajung pe ecran";
+acum se știe și cealaltă jumătate — **pleacă de la server și se pierd la randare**. Nu e o lipsă de
+calcul, nici de transport. E o lipsă de afișare, adică cea mai ieftină dintre toate.*
+
+**4. REGISTRUL-JURNAL: ruta derivă cele trei coloane, ecranul nu le arată pe niciuna.** `nr_curent`
+(numărul curent de la 1 ianuarie), `document` (documentul justificativ derivat) și
+`total_debit`/`total_credit` (totalizarea lunară) — cele trei elemente cerute de OMFP 2634 Anexa 1
+pct. 45 — sunt **în răspuns**. În `firme.js`: `nr_curent` **0 apariții**, `total_debit` **0**, iar
+documentul nu e randat în ecranul jurnalului (cele 11 apariții de `.document` sunt pe alte ecrane —
+stocuri, casă). Ecranul arată **dată · descriere · stare · linii**. *Artefactul e complet în răspuns
+și incomplet pe ecran — exact forma listei 5, pe un registru obligatoriu.*
+
+**5. Q3 — COMPARAȚIA CU PERIOADA ANTERIOARĂ: ZERO, pe amândouă drumurile.** Nicio cheie în niciunul
+din cele 168 de răspunsuri, și niciun mecanism în cod (căutat pe `luna_anterioara`,
+`luna_precedenta`, `perioada_anterioara`, `fata de luna`, `diferenta_luna`, `fata_de_anterior`).
+Confirmă măsurătoarea din 22.08, pe un domeniu mai larg.
+
+**6. Q4 — TEMEIUL: cele 92 de „DA" sunt FALSE, și se scrie de ce.** Cheia `temei` din răspunsul lui
+`valideaza` poartă *„DUKIntegrator -v D300 (pachet oficial ANAF)"* — e temeiul **VALIDATORULUI**, nu
+al cifrei. **Nicio poziție de declarație nu-și poartă temeiul.** Cifrele de cod, remăsurate azi:
+**64 de `Temei(` în 11 module de producție** (pe 22.08: „57"), 18 în teste, și **68 de mențiuni
+`temei` în 5 fișiere JS** (pe 22.08: „43"). *Amândouă s-au mișcat de sub verdictul din 22.08 — de
+aceea se remăsoară, nu se copiază. Verdictul însuși nu se schimbă: mențiunile din JS sunt temeiuri de
+**blocaj**, nu ale unei cifre produse.*
+
+**7. SINGURUL ARTEFACT CARE RĂSPUNDE DA LA TREI DIN PATRU, PE TOATE 19: semaforul.** Componente
+(`lipsa`, `urmarit`, `confirmate`, `cu_intarziere`, `neaplicabile`), absențe motivate (`limite`,
+`motiv`) și temei. *Lucrul care îți spune ce datorezi e bine explicat; lucrurile pe care le depui, nu.*
+
+#### O greșeală a instrumentului, prinsă înainte de a intra în cifră
+
+Prima formă a lui **Q3** căuta cuvântul `diferenta` gol și raporta **DA** pe semafor. Citit la sursă
+(`main.py:7658`): acolo `diferenta` e diferența dintre **soldul contabil și fișele CV** — o
+**reconciliere**, nu o comparație în timp. Tiparul cere acum noțiunea de perioadă. *A patra oară în
+două zile când un scan pe formă brută supra-numără, iar citirea la sursă corectează.*
+
+#### CE NU VEDE MĂSURĂTOAREA — declarat
+
+- **Ecranul, în general.** Se măsoară ce **trimite ruta**. Un câmp trimis și neafișat trece la Q1 ca
+  DA, deci cifrele sunt **plafon superior** pentru „se poate verifica". Cele două locuri unde s-a
+  măsurat și randarea — statul de plată și registrul-jurnal — s-au citit **în JS**, nu cu browserul;
+  pentru celelalte ecrane, jumătatea de randare rămâne nemăsurată.
+- **PDF-urile.** Fluturașul își arată componentele **pe hârtie**, iar asta rămâne singurul loc unde o
+  cifră se desface fără să descarci altceva. Nu intră în tabelul de mai sus, fiindcă nu e JSON.
+- **O singură perioadă** (08/2026), aceeași ca la 1b.
+- **Dacă explicația e BUNĂ.** Că un text e citibil de un contabil e o judecată de om, nu o măsurătoare.
+
+### Pasul 1d — VERDICTUL RESCRIS (29.08.2026)
+
+*Blocul din 22.08 rămâne dedesubt, ca măsurătoare datată. Ăsta îl înlocuiește ca stare curentă,
+fiindcă 1b și 1c au mutat șase poziții. **Nimic nou nu se măsoară aici** — 1d clasifică.*
+
+#### Lista 1 — ies, se validează ȘI se pot verifica pe ecran
+
+| artefact | de ce trece toate trei |
+|---|---|
+| **Registrul de casă** (14-4-7A) | lanț complet motor → API → ecran; operațiunile se văd întregi, cu **soldul curent după fiecare**, partener, document și categorie; avertismentele poartă **temei pe ecran**. Măsurat din nou azi: ruta întoarce componentele pe **toate** firmele cu operațiuni, iar ecranul le randează, inclusiv documentul |
+
+**Tot un singur artefact din 23.** Neschimbat față de 22.08 — și rămâne dovada că lista 1 e atinsă
+când cifra își arată operațiunile și avertismentul își poartă temeiul.
+
+#### Lista 2 — nu ies, fiindcă lipsesc date CERUTE LA TIMP (a omului)
+
+| artefact | unde, și dovada că datele au fost cerute la timp |
+|---|---|
+| **Bilanț (S1005) · CPP** | **13 din 19 firme**: `reg_com` lipsește. Câmpul e **obligatoriu, cu asterisc**, pe ecranul *Date firmă*, cu ajutorul scris lângă el — *„Cerut la bilanț"* — iar `firma_profil_api.OBLIGATORII` îl leagă explicit de „Bilant S1005" |
+| **D112** | `tenant_003`: pontajul lunii neconfirmat, cerut pe ecranul unde omul lucrează, nu la generare. `tenant_045`: cod CAEN în afara nomenclatorului acceptat de D112 |
+| **D100 · D205 · D301 · D390** | refuzuri **pe zero**, cu temeiul citat sau cu contradicția numită. Interdicția 67 funcționând |
+| **D300 · D394** | `tenant_018`, `tenant_045`: *„Perioada fiscală TVA nu e completată în Vectorul fiscal"* — profilurile incomplete găsite la 1a |
+
+#### Lista 3 — nu ies, DIN VINA APLICAȚIEI — **8 artefacte** (erau 9)
+
+| artefact | cauza |
+|---|---|
+| **Registrul-inventar** (14-1-2) | nu există producător pentru partidă dublă (singura potrivire e varianta 14-1-2/b, de partidă simplă) |
+| **Cartea mare** (14-1-3) | **cauza SCHIMBATĂ azi**: producătorul **există** — `core/fisa_cont.py`, Fișa de cont 14-6-22, înlocuitorul legal, probat pe date reale — dar are **zero rute și zero ecrane**. Nu mai e „nu există producător", e „nu ajunge la om" |
+| **Note explicative** | nu există producător |
+| **Bilanț (S1005) · CPP** | producătorul produce pe date reale (6 din 19 firme, 622–1065 octeți), **zero rute** |
+| **categoria de mărime** (precondiție, pct. 9) | nu se calculează — datele există, derivarea s-a probat, nimeni n-o face (R3) |
+| **Jurnal regim marjă** (art. 312) | producătorul există, ecranul nu; **0 firme îl exercită**, confirmat din date la 1a și din rută la 1b |
+| **Evidența operațiunilor de TVA** (art. 321) | nu există producător ca artefact — substanța e derivabilă pe fiecare linie, lipsește documentul |
+| **Registrul de evidență fiscală** (art. 19 · art. 68) | nu există producător |
+
+**Ce a IEȘIT din lista 3:** **Registrul-jurnal** (14-1-1). Pe 22.08 era aici cu cauza *„elementele din
+pct. 45 lipsesc din date"*. Munca din 24.08 le derivă la citire, iar 1b a probat că ies pe toate cele
+9 firme cu note. **Nu trece într-o altă listă ca poziție** — devine prima instanță probată a clasei
+**R97**, „ruta livrează, ecranul tace".
+
+#### Lista 4 — ies, dar NU se validează — **2 poziții** (era GOALĂ)
+
+| artefact | firma | ce spune arbitrul |
+|---|---|---|
+| **D394** | `tenant_001` | *„eroare atribut: adresa: atribut prezent dar vid nepermis"*, plus `telefon` și `adresaR`. Cauza e în cod, nu în date: `d394.valideaza(res)` **conține** verificarea, dar `core/d394.py:1086` o împinge în avertismente (**R93**) |
+| **D394** | `tenant_017` | regula DUK **R112.1** — operațiuni de tip L/LS/V fără `nrFacturi`. Defect de conținut, cauză proprie |
+
+**Cele două firme sunt pe regimuri DIFERITE** (`tenant_001` profit·plătitor·lunar·cu salariați;
+`tenant_017` micro·plătitor·lunar·cu salariați·cu IC), deci lista 4 nu e o particularitate a unui
+regim. *Ce nu spune cifra 2: s-a măsurat o singură perioadă.*
+
+#### Lista 5 — ies și se validează, dar NU se pot verifica pe ecran — **10 poziții + o clasă nemăsurată**
+
+| artefact | ce lipsește, măsurat |
+|---|---|
+| **cele 9 declarații** | **0 din 92 de ieșiri își arată componentele.** Ruta întoarce un CONTOR de operațiuni, nu operațiunile. Iar cele 92 de `temei` sunt ale **validatorului**, nu ale cifrei. *Aici nici ruta nu trimite — deci nu e aceeași clasă cu rândul de mai jos.* |
+| **Balanța de verificare** | se închide pe toate cele 13 firme cu date (SI D=C, rulaje D=C, SF D=C), dar ecranul are titlu, navigare pe lună și **un buton „Descarcă PDF"** — atât. Ruta de cabinet întoarce **PDF**, nu date |
+
+**Și o CLASĂ, care nu se numără ca poziții: „ruta livrează, ecranul tace" — R97.** Instanțele probate
+azi sunt **registrul-jurnal** (14-1-1) și **netul de pe fluturaș**: la jurnal, ruta derivă `nr_curent`,
+`document` și `total_debit`/`total_credit`, iar în `firme.js` primele două au **0 apariții**; la net,
+**toate cele 7** componente sosesc în răspuns și **niciuna** nu e afișată. *Decizia lui Costin,
+29.08: nu se scriu ca două rânduri de listă, fiindcă nu sunt două defecte — sunt două instanțe ale
+aceleiași clase, iar **mărimea clasei nu e măsurată**. Motivul e chiar limita declarată a lui 1c: el
+măsoară ce trimite ruta, nu ce randează ecranul, iar registrul-jurnal dovedește că sub limita aia stau
+defecte reale. Deci: **nu e caz izolat până nu se demonstrează că e**.*
+
+**Consecința pentru numărătoare, scrisă ca atare:** cele **10 poziții** de mai sus sunt un **plafon
+inferior** al listei 5. Câte mai sunt, se știe abia după ce clasa R97 e măsurată pe toate ecranele.
+
+#### Ce spune verdictul, citit ca răspuns la întrebarea fazei 1
+
+**Criteriul de gata — listele 3, 4 și 5 goale pe fiecare regim — NU e îndeplinit**, iar acum se știe
+și **cum se distribuie pe regimuri**: listele **3** și **5** sunt identice pe toate cele **12**
+(ecranele și producătorii nu depind de regim), iar lista **4** apare pe **2 firme din 2 regimuri**.
+*Asta e un rezultat, nu o formalitate: înseamnă că munca rămasă nu se împarte pe regimuri, ci pe
+artefacte — un ecran reparat o dată curăță aceeași poziție pe toate douăsprezece.*
+
+**Cele trei datorii, acum despărțite curat:**
+
+- **lista 3 (8 artefacte)** — muncă de **construit**: producători care nu există, rute care lipsesc;
+- **lista 4 (2 poziții)** — muncă de **reparat**, cea mai mică și cea mai ascuțită: o verificare
+  scrisă care nu blochează (R93);
+- **lista 5 (10 poziții, plafon inferior) + clasa R97** — muncă de **predat**, și 1c a arătat că se
+  desparte în două prețuri: pentru cele 9 declarații e scump, fiindcă **nici ruta nu trimite**;
+  pentru instanțele lui R97 e ieftin, fiindcă serverul **trimite deja** tot ce trebuie și se pierde
+  la randare. *Cât de ieftină e a doua jumătate nu se poate spune încă: clasa nu e măsurată.*
+
+**Ce nu vede verdictul:** moștenește limitele lui 1b și 1c — o singură perioadă, corectitudinea
+cifrelor nemăsurată („valid la DUKIntegrator" e o afirmație despre **formă**), iar pentru Q1 cifrele
+sunt plafon superior, fiindcă se măsoară ce trimite ruta, nu ce randează ecranul.
+
 ### Pasul 1d — VERDICTUL: cele cinci liste
 
 **Măsurat pe 2026-08-22, pe commit `4033a14`.** Nimic nou măsurat aici: 1d **clasifică** ce au scos 1a
@@ -6279,9 +6480,10 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 63 — O cifră afișată fără posibilitatea de a-i vedea, la cerere, componentele
 
 - **stare**: MĂSURATĂ
-- **măsurat la**: 2026-08-22
-- **pe commit**: `4033a14`
-- **cifra**: pe eșantionul cerut de plan — netul de pe fluturaș, o poziție din decont, un rând din D112 — **1 din 3 are componentele la cerere, și doar parțial; 2 din 3 n-au niciuna**
+- **măsurat la**: 2026-08-29
+- **pe commit**: `89f11f0`
+- **cifra**: **0 din 92** de ieșiri de declarație își arată componentele, măsurat pe răspunsul VIU al rutei (`scripts/scan_1c_verificabil.py`; 168 de ieșiri, 19 firme). Pe celelalte două cifre ale eșantionului din plan măsurătoarea s-a **despicat**: la **net**, ruta trimite **toate cele 7** componente și ecranul **niciuna**; la **registre**, ruta trimite compoziția pe toate firmele cu date
+- **remăsurat 29.08.2026**: pe 22.08 cifra era *„1 din 3 …, 2 din 3 n-au niciuna”*, pe un eșantion de trei cifre și pe **cod**. **Nu se invalidează — se rafinează**: instrumentul o reface oricând, iar despicarea *ruta trimite ↔ ecranul randează* e chiar clasa deschisă ca **R97**. Verdictul nu se schimbă.
 - **instanțe**: **netul**: componentele se pot vedea DOAR descărcând PDF-ul fluturașului; pe ecranul statului de plată nu. Ecranul randează **27 din 37** de câmpuri ale răspunsului API — `deducere`, `facilitate`, `cas_suprataxa`, `cass_suprataxa` nu sunt printre ele. Cuvintele „deducere" și „facilitate" apar în TOT `static/js` doar ca **etichete pe formulare de introducere** (4 locuri: data nașterii, copii școlarizați, declarația părintelui), niciodată ca valoare afișată — verificat pe tot arborele, nu pe fereastra de randare. · **compoziția se pierde strat cu strat**: calculul întoarce 20 de câmpuri și are `deducere` desfăcută în `baza`/`tineri`/`copii`/`total`; API-ul o colapsează la `total`; hârtia o tipărea sub un singur nume — de aici a ieșit reparația de prag 1 de mai jos. · **D300** (1113 linii) și **D112** (820 linii): **0 câmpuri de detaliu/componente**, **nicio rută**. O poziție din decont n-are nicio cale spre facturile din spatele ei
 - **calibrare**: cazul cunoscut: fluturașul PDF **chiar** arată componente (facilitate, deducere personală, suprataxa în nota de cost). Instrumentul l-a găsit — deci nu e orb la mecanismul „la cerere"; l-a găsit prezent pe hârtie și absent pe ecran
 - **ce nu vede**: măsoară un singur ecran (statul de plată) pentru fluturaș, și caută câmpurile după `s.<nume>` — un câmp folosit sub alt nume ar fi numărat greșit ca absent. De aceea cele două care contează (`deducere`, `facilitate`) au fost confirmate prin căutare pe tot `static/js`, nu prin fereastra de randare. Celelalte ~30 de ecrane nu sunt măsurate: cifra e plafon inferior
@@ -6290,9 +6492,10 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 64 — Un element care putea interveni și n-a intervenit, fără motiv și temei afișabile
 
 - **stare**: MĂSURATĂ
-- **măsurat la**: 2026-08-22
-- **pe commit**: `4033a14`
+- **măsurat la**: 2026-08-29
+- **pe commit**: `89f11f0`
 - **cifra**: numitorul cerut de plan — elemente care PUTEAU interveni pe un fluturaș obișnuit — e **5**. Dintre ele, **5/5 fără motiv afișabil** când nu intervin
+- **remăsurat 29.08.2026**: confirmat pe răspunsul viu — statul de plată n-are **niciun** canal de absență motivată, pe toate cele 19 firme (Q2 = 0 în `scripts/scan_1c_verificabil.py`). Numitorul (**5**) și verdictul (**5/5** fără motiv afișabil) rămân.
 - **instanțe**: **2 din 5 nu aveau nici măcar valoare distinctă nicăieri** — deducerea suplimentară pentru tineri sub 26 și cea pentru copii școlarizați erau topite într-un total (reparat azi, prag 1). · **1 din 5 are absența tăcută prin construcție**: nota despre suprataxă se tipărește doar `if _supra > 0`, deci când nu s-a aplicat nu scrie nimic. · `facilitate` și `deducere` apar pe PDF cu valoare, dar fără motiv când sunt 0. · **Instanță pe date reale**: `tenant_017` / **PARINTE SCOALA** vs **PARINTE NEDECL** — al doilea are copii școlarizați dar îi lipsește declarația de la art.77, deducerea pentru copii iese **0,00**, iar fluturașul nu spune de ce. Aplicația **știe** motivul (`declaratie_copii` e chiar câmpul care a decis), și nu-l scrie
 - **calibrare**: tiparul „de ce nu" **există** pe același ecran, în **10 locuri**: tichete blocate pe pontaj neconfirmat, SEPA indisponibil fără IBAN, REGES fără chei, salariu de bază lipsă — ultimul chiar cu temei (art.146(5^6)/168(6^1)). Deci instrumentul nu e orb la tipar: l-a găsit prezent altundeva și absent exact pe deduceri
 - **ce nu vede**: numitorul e cel scris în plan (5 elemente), nu toate elementele posibile din Codul fiscal. Scutirile sectoriale (construcții, IT, agricultură) n-au fost numărate fiindcă niciun salariat real nu le are — deci nu se putea observa dacă absența lor se explică. Cifra e plafon inferior
@@ -6301,9 +6504,10 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 65 — O valoare diferită de perioada anterioară, fără explicația diferenței
 
 - **stare**: MĂSURATĂ
-- **măsurat la**: 2026-08-22
-- **pe commit**: `4033a14`
+- **măsurat la**: 2026-08-29
+- **pe commit**: `89f11f0`
 - **cifra**: **0 mecanisme de comparație între perioade** — 0 potriviri în `core/` + `main.py`, 0 în `static/js`. Navigarea „← luna / luna →" există; comparația nu
+- **remăsurat 29.08.2026**: zeroul ține și pe **răspunsuri**, nu doar în cod — nicio cheie care să numească perioada anterioară în niciunul din cele **168** de răspunsuri măsurate la 1c. *Prima formă a instrumentului prindea cuvântul `diferenta` gol și raporta un DA fals pe semafor, unde el e o RECONCILIERE (`main.py:7658`); tiparul cere acum noțiunea de perioadă.*
 - **instanțe**: **calibrarea din plan, rulată exact așa cum e scrisă**: salariat la salariul minim, iunie vs iulie 2026, traversând 1 iulie. Net **2.574,75 → 2.699,63**, diferență **+124,88 lei**. Diferă **simultan 9 câmpuri** — brut, bază impozabilă, CAS, CASS, CAM, cost angajator, facilitate, impozit, net — plus deducerea, **810,00 → 865,00**. Cele **trei** surse pe care planul le prezicea sunt toate confirmate: salariul minim (4.050 → 4.325), facilitatea, deducerea. Contabilul vede doar netul schimbat
 - **calibrare**: cazul prezis de plan a fost găsit, cu toate cele trei surse simultan — planul a numit cazul înainte de măsurătoare, măsurătoarea l-a confirmat cifră cu cifră
 - **ce nu vede**: caută mecanisme **după nume** (`luna_anterioara`, `luna_precedenta`, `fata de luna`, `diferenta_luna`). O comparație scrisă cu alte cuvinte ar fi ratată — deci cifra 0 înseamnă „niciun mecanism numit așa", nu „niciun mecanism". Cazul de calibrare acoperă doar salariile, nu și decontul sau D112
@@ -6312,9 +6516,10 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 ## 66 — O legătură normă↔implementare care există în cod, dar nu ajunge pe ecran
 
 - **stare**: MĂSURATĂ
-- **măsurat la**: 2026-08-22
-- **pe commit**: `4033a14`
-- **cifra**: **57 de obiecte `Temei(...)` în `core/`. 0 ajung pe ecran ca obiect.**
+- **măsurat la**: 2026-08-29
+- **pe commit**: `89f11f0`
+- **cifra**: **64 de obiecte `Temei(` în 11 module de producție din `core/`** (plus 18 în teste). **0 ajung pe ecran ca temeiul unei CIFRE.**
+- **remăsurat 29.08.2026**: pe 22.08 scria *„57 … 0 ajung pe ecran”*, iar mențiunile `temei` din JS erau *„43, pe 5 ecrane”*; azi sunt **68, în 5 fișiere**. **Verdictul e neschimbat** — toate sunt temeiuri de **blocaj**, nu ale unei cifre produse, iar cele 92 de `temei` din răspunsurile lui `valideaza` sunt ale **validatorului**. *Că niște cifre au îmbătrânit sub un verdict corect e chiar clasa deschisă ca **R98**.*
 - **instanțe**: **`core/registru_interpretari.py`** — alegerile pe care legea le-a lăsat deschise, fiecare cu motivul (`de_ce_lasa_loc`) și cu **varianta respinsă**: **0 potriviri în tot `static/js`**. Exact lucrul de care are nevoie cine verifică o cifră, și nu ajunge la el niciodată. · **`d300.py`** (1113 linii): **0 `Temei(`**; **`d112.py`** (820 linii): **0 `Temei(`** — cele două declarații cele mai folosite nu poartă niciun temei structurat. · Singurul temei de pe ecranul statului e **text liber** (`art.146(5^6)/168(6^1)`), nu obiect: nu i se poate verifica vigoarea și nu se leagă de corpus. · Reconcilierile D300/D205 rulează ca gardă internă cu hard-block, dar **nu produc nimic pentru om** — a doua cale există și se oprește înainte de ecran
 - **calibrare**: cazul cunoscut, **găsit**: **43 de mențiuni `temei` în JS, pe 5 ecrane** (`termene`, `declaratii`, `firme`, `control_verdict`, `validat`) — deci instrumentul nu e orb la prezență. Citite pe cod, toate sunt temeiuri de **blocaj** (declarație dezactivată cu temeiul scurt, constatare de control, eșec de validare DUK), niciunul temeiul unei **cifre produse**. Distincția a fost citită, nu presupusă
 - **ce nu vede**: numără obiecte `Temei(` și cuvântul `temei`; un temei ajuns pe ecran ca proză, fără cuvântul „temei", e prins doar dacă poartă forma `art.`. Deci **„0 ca obiect" e sigur**, iar „câte ajung ca proză" e sub-numărat

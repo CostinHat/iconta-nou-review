@@ -3,6 +3,47 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 29.08.2026 (11) — O constatare care stă sub limita declarată a unui instrument e o CLASĂ, nu un rând de listă
+
+*Două decizii date de Costin peste raportul lui 1c, amândouă despre **cum se consemnează** o
+măsurătoare, nu despre ce s-a măsurat. Se scriu aici fiindcă schimbă reguli, nu stări.*
+
+**1. Registrul-jurnal NU e o poziție în lista 5. Primește număr propriu și se tratează ca CLASĂ** —
+*„ruta livrează, ecranul tace"*, deschisă ca **R97**.
+
+Motivul, cu cuvintele deciziei: *„1c își declară limita — măsoară ce trimite ruta, nu ce randează
+ecranul. Registrul-jurnal dovedește că sub acea limită stau defecte reale, deci nu e caz izolat până
+nu demonstrezi că e."*
+
+**Ce schimbă asta, concret.** Raportul propusese registrul-jurnal ca al treilea rând al listei 5,
+lângă balanță și net. Ca rând, ar fi fost o poziție de bifat. Ca **clasă**, e o afirmație despre
+**mărimea necunoscută a unei mulțimi** — iar consecința intră în verdict: cele **10 poziții** ale
+listei 5 devin **plafon inferior**, nu total. Condiția de deblocare a lui R97 cere, în ordinea asta,
+**întâi măsurarea clasei** — instrumentul care confruntă, pentru fiecare pereche rută↔ecran, câmpurile
+**trimise** cu cele **randate** — și abia apoi reparațiile.
+
+*Partea generală, scrisă o dată: **sarcina probei stă pe cine susține că e izolat.** Un instrument
+care își declară onest limita nu poate fi folosit ca dovadă că sub limită nu e nimic; iar când prima
+privire sub limită scoate două instanțe, presupunerea implicită se inversează.*
+
+**2. La 63–66 se actualizează CIFRELE, verdictul rămâne. Separat: o interdicție nu are voie să-și
+poarte inventarul** — deschisă ca **R98**, explicit **doar ca gardă, nu ca rescriere acum**.
+
+Regula, cu cuvintele deciziei: *„interdicțiile care citează inventare îmbătrânesc singure la fiecare
+măsurătoare. O interdicție trebuie să citeze **regula** și **pragul**, inventarul stă ca **anexă
+datată**."*
+
+Instanțele care au cerut-o, toate la **66**, toate din aceeași zi: *„57 de obiecte `Temei(`"* → **64
+în 11 module de producție**; *„43 de mențiuni `temei` în JS, pe 5 ecrane"* → **68, în 5 fișiere**.
+**Verdictul n-a fost niciodată greșit** — zero ajung pe ecran ca temeiul unei cifre —, dar cifrele pe
+care se sprijinea erau vechi de o săptămână și nimic nu se aprindea. Aceeași formă la **63** (lista de
+câmpuri neafișate) și la **65** (lista de tipare căutate).
+
+**De ce „doar gardă, nu acum".** O rescriere a celor patru secțiuni făcută înaintea gărzii ar fi
+exact greșeala pe care o repară: o promisiune că de-acum înainte se scrie altfel, fără nimic care s-o
+țină. *Se construiește mecanismul care deosebește regula de inventar și cere ca inventarul să poarte
+dată proprie; apoi se rescriu secțiunile, sub gardă.*
+
 ## 29.08.2026 (10) — Un instrument de măsură nu „leagă" modulul pe care îl măsoară
 
 *Cerută la §0 al raportului lui 1b, răspunsă în aceeași tură. Se scrie aici fiindcă e o regulă despre
