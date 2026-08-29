@@ -394,13 +394,26 @@ def genereaza_note(cur, schema, f, tva_incasare_firma, cont_venit_implicit, cont
                                cont=cont_cheltuiala or None)
 
 
-def _descriere(f):
+def _descriere(f, data_nota=None, motiv_data=None):
+    """Descrierea notei. Cand nota NU poarta data emiterii, descrierea o SPUNE, cu motivul.
+
+    [JJJ2] *„nu doar o dată arbitrară"*: o notă datată altfel decât faptul pe care îl înregistrează
+    trebuie să poarte legătura, altfel peste șase luni nimeni nu mai poate spune de ce e acolo.
+    Legătura structurală există deja — `factura_id`, iar `jurnal_api.document_justificativ` derivă
+    din ea *„Factură <serie><număr> din <data>"*. Mențiunea de aici e pentru omul care citește nota,
+    nu pentru mașină."""
     serie, numar = f.get("serie"), f.get("numar") or f["id"]
     nr = numar if (serie and str(numar).startswith(str(serie))) else "%s%s" % (serie or "", numar)
-    return ("Contare factura %s" % nr)[:200]
+    baza = "Contare factura %s" % nr
+    if data_nota is not None and str(data_nota)[:10] != str(f["data_emitere"])[:10]:
+        baza += " din %s — inregistrata la %s" % (str(f["data_emitere"])[:10], str(data_nota)[:10])
+        if motiv_data:
+            baza += ": %s" % motiv_data
+    return baza[:200]
 
 
-def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None):
+def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None,
+                   data_nota=None, motiv_data=None):
     """Scrie nota de contare a facturii. Tiparul NIR, punct cu punct:
 
     1. **validarea se termină înainte de orice scriere** — tot ce poate refuza refuză mai sus de
@@ -414,6 +427,17 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None):
     `automat=True` e calea care pornește singură (emitere, validare). `automat=False` e actul explicit
     al omului (ruta de contabilizare). Diferența nu e de politețe: automatul **refuză** clasele pe
     care nu le poate decide singur, omul le poate duce mai departe.
+
+    **`data_nota` — [JJJ, 29.08.2026].** Implicit, nota poartă **data emiterii**: faptul și evidența
+    lui au aceeași dată, și așa rămâne pentru orice factură nouă. Un `data_nota` explicit e pentru
+    **istoric**: o factură veche pe care abia acum o descoperi necontată. Atunci:
+      * poarta de perioadă se mută pe **data notei**, fiindcă luna care se modifică e a notei, nu a
+        facturii. *Asta e chiar ramura pe care se sprijină decizia din JJJ2: dacă luna emiterii e
+        închisă, nota se scrie la data descoperirii — altfel n-ar exista nicio dată validă;*
+      * **descrierea o spune**, cu motivul (`motiv_data`). O notă datată altfel decât faptul, fără
+        mențiune, e o dată arbitrară.
+    *Ce NU se schimbă: `factura_id` rămâne, deci documentul justificativ derivat din el arată tot
+    factura originală, cu data ei. Legătura nu se pierde, doar se adaugă mențiunea.*
     """
     cur.execute("SELECT * FROM %sfacturi WHERE id=%%s" % _p(schema), (factura_id,))
     f = cur.fetchone()
@@ -437,9 +461,14 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None):
                     % ex["id"],
                     unde="factura #%s" % factura_id, regula="o factură are o singură contare")}
 
-    if luna_blocata(cur, schema, f.get("data_emitere")):
-        raise RefuzContare("LUNA_INCHISA",
-                           "luna facturii e închisă; redeschide-o ca să se poată conta")
+    data_nota = data_nota or f.get("data_emitere")
+    if luna_blocata(cur, schema, data_nota):
+        raise RefuzContare(
+            "LUNA_INCHISA",
+            "luna în care ar intra nota (%s) e închisă; redeschide-o, sau contează la o dată "
+            "deschisă, cu mențiunea care leagă nota de factură" % str(data_nota)[:10],
+            detalii={"data_nota": str(data_nota)[:10],
+                     "data_emitere": str(f.get("data_emitere"))[:10]})
 
     cur.execute("SELECT COALESCE(tva_la_incasare,false) AS tvai, cont_venit_implicit "
                 "FROM %sfirma_profil WHERE id=1" % _p(schema))
@@ -474,7 +503,7 @@ def contabilizeaza(cur, schema, factura_id, automat, cont_cheltuiala=None):
 
     cur.execute("INSERT INTO %sinregistrari (data, factura_id, descriere, sursa, status) "
                 "VALUES (%%s,%%s,%%s,'facturi','ciorna') RETURNING id" % _p(schema),
-                (f["data_emitere"], factura_id, _descriere(f)))
+                (data_nota, factura_id, _descriere(f, data_nota, motiv_data)))
     r = cur.fetchone()
     iid = r["id"] if isinstance(r, dict) else r[0]
     for n in note:

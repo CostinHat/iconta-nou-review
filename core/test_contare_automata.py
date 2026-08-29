@@ -624,6 +624,69 @@ def test_ruta_de_dezlegare_chiar_cheama_actul_si_urma():
     assert _apeluri("main.py", "jurnal_dezleaga") >= {"dezleaga_nota", "_urma_dezlegare"}
 
 
+# ═══════════════════════════════════════════════ JJJ — nota la ALTA data decat emiterea
+def test_implicit_nota_poarta_data_EMITERII(conn):
+    """Calibrarea de bază, în direcția care contează cel mai mult: pentru orice factură nouă, faptul
+    și evidența lui au aceeași dată. `data_nota` e o excepție pentru istoric, nu noul normal."""
+    r = _factura(conn, "G-DN1", "2026-06-10")
+    with conn.cursor() as cur:
+        cur.execute("SELECT data FROM inregistrari WHERE factura_id=%s", (r["factura_id"],))
+        assert str(cur.fetchone()[0]) == "2026-06-10"
+
+
+def test_data_nota_explicita_muta_nota_si_o_SPUNE(conn):
+    """[JJJ2] O notă datată altfel decât faptul poartă mențiunea care o leagă de factură —
+    *„nu doar o dată arbitrară"*. Legătura structurală (`factura_id`) rămâne oricum; mențiunea e
+    pentru omul care citește nota."""
+    r = _factura(conn, "G-DN2", "2026-06-10", directie="primita")
+    fid = r["factura_id"]
+    with _cf.cursor_dict(conn) as cur:
+        rez = _cf.contabilizeaza(cur, "", fid, automat=False, cont_cheltuiala="371",
+                                 data_nota="2026-08-29", motiv_data="motivul probei")
+        cur.execute("SELECT data, descriere, factura_id FROM inregistrari WHERE id=%s",
+                    (rez["inregistrare_id"],))
+        n = dict(cur.fetchone())
+    assert str(n["data"]) == "2026-08-29"
+    assert n["factura_id"] == fid, "legătura cu factura nu se pierde când data se mută"
+    # STRUCTURA descrierii, nu formularea: poartă amândouă datele și motivul primit
+    assert n["descriere"].count("2026-06-10") == 1
+    assert n["descriere"].count("2026-08-29") == 1
+    assert n["descriere"].endswith("motivul probei")
+
+
+def test_poarta_de_perioada_se_muta_pe_DATA_NOTEI(conn):
+    """Luna care se modifică e a NOTEI, nu a facturii. Fără mutarea porții, ramura din JJJ2 n-ar
+    exista: o factură cu luna emiterii închisă n-ar avea nicio dată validă."""
+    r = _factura(conn, "G-DN3", "2026-06-10", directie="primita")
+    fid = r["factura_id"]
+    with conn.cursor() as cur:
+        cur.execute("INSERT INTO perioade_blocate (an, luna) VALUES (2026, 6)")
+    with _cf.cursor_dict(conn) as cur:
+        with pytest.raises(_cf.RefuzContare) as e:
+            _cf.contabilizeaza(cur, "", fid, automat=False, cont_cheltuiala="371")
+        assert e.value.cod == "LUNA_INCHISA"
+        assert e.value.detalii["data_nota"] == "2026-06-10"
+        # ... iar cu o dată dintr-o lună deschisă, același act trece
+        rez = _cf.contabilizeaza(cur, "", fid, automat=False, cont_cheltuiala="371",
+                                 data_nota="2026-08-29", motiv_data="luna emiterii inchisa")
+    assert rez["stare"] == "contata"
+
+
+def test_data_notei_intr_o_luna_inchisa_refuza_si_ea(conn):
+    """Direcția inversă, ca poarta să nu devină o portiță: dacă LUNA NOTEI e închisă, actul refuză —
+    oricât de deschisă ar fi luna emiterii. *Cazul în care amândouă sunt închise nu are nicio dată
+    validă; ieșirea e redeschiderea unei luni, care e un act cu urmă.*"""
+    r = _factura(conn, "G-DN4", "2026-06-10", directie="primita")
+    with conn.cursor() as cur:
+        cur.execute("INSERT INTO perioade_blocate (an, luna) VALUES (2026, 8)")
+    with _cf.cursor_dict(conn) as cur:
+        with pytest.raises(_cf.RefuzContare) as e:
+            _cf.contabilizeaza(cur, "", r["factura_id"], automat=False, cont_cheltuiala="371",
+                               data_nota="2026-08-29")
+    assert e.value.cod == "LUNA_INCHISA"
+    assert e.value.detalii["data_nota"] == "2026-08-29"
+
+
 # ═══════════════════════════════════════════════ ANTI-VACUU pe clasificator
 def test_clasificatorul_nu_spune_da_la_tot():
     assert _cf.e_nota_de_contare([("4111", "707", 1), ("4111", "4427", 1)])

@@ -1,17 +1,23 @@
 # -*- coding: utf-8 -*-
-"""PROBA PE DATE REALE a contării automate — DDD1, EEE4, FFF4.
+"""PROBA PE DATE REALE a lanțului facturii — DDD, EEE, FFF, GGG.
 
 DE CE EXISTĂ SEPARAT DE GARDĂ. `core/test_contare_automata.py` rulează pe o schemă efemeră din
-`tenant_template.sql`: acolo se pot construi toate cazurile, dar niciunul nu e cel MĂSURAT. Cele trei
-facturi care ar fi fost refuzate fals și cele două din clasa ambiguă de TVA la încasare trăiesc în
-portofoliul real, iar întrebarea *„după reparație, chiar trec?"* se poate pune numai despre ele.
+`tenant_template.sql`. Aici totul se petrece pe o **firmă reală din portofoliu**, cu planul ei de
+conturi, profilul ei fiscal și perioadele ei — adică pe lumea în care actele chiar rulează.
 
-NU SCRIE NIMIC. Fiecare probă rulează într-o tranzacție care se încheie cu `ROLLBACK`, iar
-`pg_stat_user_tables` se citește înainte și după: delta se tipărește. *Un ROLLBACK lasă totuși urmă
-în contoarele lui `pg_stat` — inserările se numără chiar dacă se anulează —, deci delta NU e zero aici
-și n-are cum să fie. Ce se dovedește cu ea e altceva: se compară numărul de rânduri din `inregistrari`
-și `facturi` înainte și după, care trebuie să fie IDENTIC. Contorul spune că s-a lucrat; numărătoarea
-de rânduri spune că nu s-a rămas cu nimic.*
+DE CE ÎȘI CONSTRUIEȘTE SINGURĂ FIXTURILE — și e o lecție, nu un detaliu de implementare.
+**Prima formă a probei se sprijinea pe INSTANȚE ISTORICE**: cele 3 facturi a căror cheie era ocupată
+de o notă de plată (`tenant_004` #9, `tenant_013` #14, `tenant_017` #8) și cele 2 din clasa ambiguă
+de TVA la încasare. Erau chiar cazurile măsurate, deci proba era foarte convingătoare — **până când
+R89 le-a contabilizat pe toate**. A doua zi, aceeași probă nu mai putea demonstra nimic: nu fiindcă
+reparația s-ar fi stricat, ci fiindcă *lumea pe care o citea dispăruse*. **O probă care depinde de o
+stare pe care munca ta o va desființa e o probă cu termen de expirare.** Acum fiecare bloc își
+construiește cazul, îl exercită și îl întoarce.
+
+NU SCRIE NIMIC. Fiecare probă rulează într-o tranzacție încheiată cu `ROLLBACK`, iar numărările de
+rânduri din `facturi`, `inregistrari` și `inregistrari_linii` se citesc înainte și după: trebuie să
+fie **identice**. *Contoarele din `pg_stat_user_tables` NU se întorc — o inserare anulată tot se
+numără acolo —, deci ele n-ar dovedi nimic aici; numărătoarea de rânduri dovedește.*
 
     ./venv/bin/python scripts/proba_contare_reala.py
 """
@@ -22,235 +28,217 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from core import db, contare_facturi as _cf, facturi_api as _fa  # noqa: E402
 
-# Cele trei măsurate la BLOC BBB: cheia le e ocupată de o notă de plată sau de încasare.
-FALS_REFUZATE = [("tenant_004", 9), ("tenant_013", 14), ("tenant_017", 8)]
-# Cele două din clasa ambiguă (furnizor la încasare + firmă în regim normal), FFF2.
-AMBIGUE = [("tenant_004", 9), ("tenant_017", 8)]
+FIRMA = "tenant_017"          # firmă reală din portofoliu, cu plan de conturi și profil fiscal
+CUI_PROBA = "RO14399840"      # trece cifra de control (regula datelor de test)
+
+# Instanțele care au PRODUS clasele, păstrate ca istorie. NU se mai citesc: R89 le-a contabilizat pe
+# 29.08.2026, iar o probă care le-ar cere ar cădea pe absența lor, nu pe un defect.
+ISTORIC = {
+    "cheie ocupată de o notă care nu e contare": ["tenant_004 #9", "tenant_013 #14", "tenant_017 #8"],
+    "furnizor la încasare + firmă în regim normal": ["tenant_004 #9", "tenant_017 #8"],
+}
 
 
-def numaratori(conn, schema):
+def numaratori(conn):
     with conn.cursor() as cur:
-        cur.execute("SELECT (SELECT COUNT(*) FROM %s.facturi), "
-                    "       (SELECT COUNT(*) FROM %s.inregistrari), "
-                    "       (SELECT COUNT(*) FROM %s.inregistrari_linii)" % (schema, schema, schema))
+        cur.execute("SELECT (SELECT COUNT(*) FROM facturi), (SELECT COUNT(*) FROM inregistrari), "
+                    "       (SELECT COUNT(*) FROM inregistrari_linii)")
         return cur.fetchone()
+
+
+def numaratori_noua():
+    """Aceleași numărători, pe o conexiune NOUĂ. Se folosește DUPĂ `rollback`: un `SET search_path`
+    e tranzacțional în PostgreSQL, deci rollback-ul îl dă înapoi odată cu datele — iar o numărătoare
+    pe conexiunea veche ar cădea pe „relation does not exist" în loc să spună ceva despre rânduri."""
+    with db.get_conn(FIRMA) as c:
+        return numaratori(c)
+
+
+def _factura(conn, numar, data, directie="emisa", **kw):
+    linii = [{"descriere": "servicii de probă", "cantitate": 1, "pret_unitar": 1000,
+              "cota_tva": 21, "cont_venit": "704"}]
+    return _fa.creeaza_factura(conn, numar, data, directie, linii,
+                               tert_nume="PARTENER PROBA SRL", tert_cui=CUI_PROBA, **kw)
+
+
+def _nota_de_plata(conn, factura_id, data, linii):
+    with conn.cursor() as cur:
+        cur.execute("INSERT INTO inregistrari (data, factura_id, descriere, sursa, status) "
+                    "VALUES (%s,%s,'plata de probă','banca','validata') RETURNING id",
+                    (data, factura_id))
+        nid = cur.fetchone()[0]
+        for d, c, s in linii:
+            cur.execute("INSERT INTO inregistrari_linii (inregistrare_id, cont_debit, cont_credit, "
+                        "suma) VALUES (%s,%s,%s,%s)", (nid, d, c, s))
+    return nid
 
 
 def ruleaza():
     db.init_pool()
-    rezultat = {"ddd1": [], "fff4": [], "eee4": None, "urme": []}
+    rez = {}
 
-    print("═══ DDD1 — cele 3 facturi pe care COUNT(*) le refuza FALS")
-    for schema, fid in FALS_REFUZATE:
-        with db.get_conn() as conn:
-            inainte = numaratori(conn, schema)
-            with _cf.cursor_dict(conn) as cur:
-                legate = _cf.note_cu_cheia(cur, schema, fid)
-                contare = _cf.contare_existenta(cur, schema, fid)
-                try:
-                    rez = _cf.contabilizeaza(cur, schema, fid, automat=False, cont_cheltuiala="371")
-                    stare, cod = rez["stare"], None
-                    linii = rez["linii"]
-                except _cf.RefuzContare as e:
-                    stare, cod, linii = "refuzata", e.cod, []
-            dupa = numaratori(conn, schema)
-            conn.rollback()
-            dupa_rollback = numaratori(conn, schema)
-        print("  %s #%d — note cu cheia: %s"
-              % (schema, fid, ", ".join("#%d %s(%s)"
-                                        % (n["id"], n["sursa"],
-                                           "contare" if n["e_contare"] else "NU e contare")
-                                        for n in legate) or "niciuna"))
-        print("      contare_existenta -> %s   |   contabilizeaza -> %s%s"
-              % ("#%d" % contare["id"] if contare else "None", stare,
-                 " (%s)" % cod if cod else ""))
-        if linii:
-            print("      nota care S-AR fi scris: %s"
-                  % " · ".join("%s=%s %s" % (l["debit"], l["credit"], l["suma"]) for l in linii))
-        print("      randuri facturi/inregistrari/linii: %s -> %s -> dupa ROLLBACK %s"
-              % (inainte, dupa, dupa_rollback))
-        assert inainte == dupa_rollback, "PROBA A LASAT URMA in %s" % schema
-        rezultat["ddd1"].append((schema, fid, contare is None, stare))
+    print("FIRMA: %s (reală, din portofoliu) · toate probele se încheie cu ROLLBACK\n" % FIRMA)
+    print("Instanțele care au produs clasele, contabilizate de R89 pe 29.08.2026 — păstrate ca")
+    print("istorie, nu ca dependență:")
+    for clasa, lista in ISTORIC.items():
+        print("    %-46s %s" % (clasa, ", ".join(lista)))
 
-    print()
-    print("═══ FFF4 — clasa ambigua: automatul REFUZA, ruta manuala TRECE (pe 4428)")
-    for schema, fid in AMBIGUE:
-        with db.get_conn() as conn:
-            inainte = numaratori(conn, schema)
-            with _cf.cursor_dict(conn) as cur:
-                cur.execute("SELECT COALESCE(tva_la_incasare,false) AS t FROM %s.firma_profil "
-                            "WHERE id=1" % schema)
-                proprie = bool(cur.fetchone()["t"])
-                cur.execute("SELECT COALESCE(furnizor_tva_incasare,false) AS f FROM %s.facturi "
-                            "WHERE id=%%s" % schema, (fid,))
-                furnizor = bool(cur.fetchone()["f"])
-                try:
-                    _cf.contabilizeaza(cur, schema, fid, automat=True, cont_cheltuiala="371")
-                    auto = "A SCRIS — GRESIT"
-                except _cf.RefuzContare as e:
-                    auto = "refuzat: %s" % e.cod
-                try:
-                    rez = _cf.contabilizeaza(cur, schema, fid, automat=False, cont_cheltuiala="371")
-                    man, linii = rez["stare"], rez["linii"]
-                except _cf.RefuzContare as e:
-                    man, linii = "refuzat: %s" % e.cod, []
-            conn.rollback()
-            dupa_rollback = numaratori(conn, schema)
-        conturi = sorted({l["debit"] for l in linii} | {l["credit"] for l in linii})
-        print("  %s #%d — furnizor la incasare=%s, firma proprie la incasare=%s"
-              % (schema, fid, furnizor, proprie))
-        print("      automat -> %s" % auto)
-        print("      manual  -> %s   conturi: %s" % (man, ", ".join(conturi)))
-        assert inainte == dupa_rollback, "PROBA A LASAT URMA in %s" % schema
-        rezultat["fff4"].append((schema, fid, auto, man, conturi))
+    # ══════════════════════════════════════════════════ DDD1
+    print("\n═══ DDD1 — o notă care NU e contare nu blochează contarea")
+    with db.get_conn(FIRMA) as conn:
+        inainte = numaratori(conn)
+        f = _factura(conn, "PROBA-DDD1", "2026-08-29", directie="primita")
+        fid = f["factura_id"]
+        nid = _nota_de_plata(conn, fid, "2026-08-29", [("401", "5121", 1210)])
+        with _cf.cursor_dict(conn) as cur:
+            existenta = _cf.contare_existenta(cur, "", fid)
+            r = _cf.contabilizeaza(cur, "", fid, automat=False, cont_cheltuiala="371")
+        print("  factura #%d, cu nota de PLATĂ #%d (`401=5121`) care îi poartă cheia" % (fid, nid))
+        print("    contare_existenta -> %s   (COUNT(*) ar fi spus «există»)"
+              % ("#%d" % existenta["id"] if existenta else "None"))
+        print("    contabilizarea    -> %s : %s"
+              % (r["stare"], " · ".join("%s=%s %s" % (x["debit"], x["credit"], x["suma"])
+                                        for x in r["linii"])))
+        # și direcția inversă: nota de contare BLOCHEAZĂ
+        with _cf.cursor_dict(conn) as cur:
+            a_doua = _cf.contabilizeaza(cur, "", fid, automat=False, cont_cheltuiala="371")
+        print("    a doua contare    -> %s   (idempotență, nu eroare)" % a_doua["stare"])
+        rez["ddd1"] = (existenta is None and r["stare"] == "contata"
+                       and a_doua["stare"] == "deja_contata")
+        conn.rollback()
+        dupa = numaratori_noua()
+    print("    rânduri facturi/înregistrări/linii: %s -> după ROLLBACK %s" % (inainte, dupa))
+    assert inainte == dupa, "PROBA A LĂSAT URMĂ"
 
-    print()
-    print("═══ EEE4 — o factura EMISA noua produce nota AUTOMAT, in ciorna (pe o firma reala)")
-    schema = "tenant_017"
-    with db.get_conn(schema) as conn:
-        inainte = numaratori(conn, schema)
-        linii = [{"descriere": "servicii de probă", "cantitate": 1, "pret_unitar": 1000,
-                  "cota_tva": 21, "cont_venit": "704"}]
-        r = _fa.creeaza_factura(conn, "PROBA-EEE4", "2026-08-29", "emisa", linii,
-                                tert_nume="PARTENER PROBA SRL", tert_cui="RO14399840")
-        fid = r["factura_id"]
-        print("  factura #%d creata — contare: %s" % (fid, r["contare"]["stare"]))
+    # ══════════════════════════════════════════════════ FFF2/FFF4
+    print("\n═══ FFF4 — clasa ambiguă de TVA la încasare: automatul refuză, omul contează pe 4428")
+    with db.get_conn(FIRMA) as conn:
+        inainte = numaratori(conn)
+        f = _factura(conn, "PROBA-FFF4", "2026-08-29", directie="primita",
+                     furnizor_tva_incasare=True)
+        fid = f["factura_id"]
+        with _cf.cursor_dict(conn) as cur:
+            try:
+                _cf.contabilizeaza(cur, "", fid, automat=True, cont_cheltuiala="371")
+                auto = "A SCRIS — GREȘIT"
+            except _cf.RefuzContare as e:
+                auto = "refuzat: %s (cont %s, temei %s)" % (e.cod, e.detalii.get("cont_tva"),
+                                                            e.detalii.get("temei"))
+            r = _cf.contabilizeaza(cur, "", fid, automat=False, cont_cheltuiala="371")
+        conturi = sorted({x["debit"] for x in r["linii"]} | {x["credit"] for x in r["linii"]})
+        print("  factura #%d, furnizor la încasare, firma proprie în regim normal" % fid)
+        print("    automat -> %s" % auto)
+        print("    manual  -> %s, conturi: %s" % (r["stare"], ", ".join(conturi)))
+        rez["fff4"] = auto.startswith("refuzat") and r["stare"] == "contata" and "4428" in conturi
+        conn.rollback()
+        dupa = numaratori_noua()
+    print("    rânduri: %s -> după ROLLBACK %s" % (inainte, dupa))
+    assert inainte == dupa, "PROBA A LĂSAT URMĂ"
+
+    # ══════════════════════════════════════════════════ EEE
+    print("\n═══ EEE4 — emiterea produce nota AUTOMAT, în ciornă; ștergerea refuză motivat")
+    with db.get_conn(FIRMA) as conn:
+        inainte = numaratori(conn)
+        f = _factura(conn, "PROBA-EEE4", "2026-08-29")
+        fid = f["factura_id"]
         with conn.cursor() as cur:
-            cur.execute("SELECT id, status, sursa, factura_id FROM inregistrari WHERE factura_id=%s",
-                        (fid,))
+            cur.execute("SELECT id, status, sursa, factura_id, data FROM inregistrari "
+                        "WHERE factura_id=%s", (fid,))
             nota = cur.fetchone()
-        print("  nota: id=%s status=%s sursa=%s factura_id=%s" % nota)
-        print("  linii: %s" % " · ".join("%s=%s %s" % (l["debit"], l["credit"], l["suma"])
-                                         for l in r["contare"]["linii"]))
-        # plasa o protejeaza de dublare: a doua chemare e no-op
-        with _cf.cursor_dict(conn) as cur:
-            # prefix gol: conexiunea e deschisă cu `db.get_conn(schema)`, deci search_path e fixat.
-            a_doua = _cf.contabilizeaza(cur, "", fid, automat=False)
-        print("  a doua contare (idempotenta): %s" % a_doua["stare"])
-        # si stergerea o refuza motivat
+        print("  factura #%d — contare: %s" % (fid, f["contare"]["stare"]))
+        print("    nota: id=%s status=%s sursa=%s factura_id=%s data=%s" % nota)
+        print("    linii: %s" % " · ".join("%s=%s %s" % (x["debit"], x["credit"], x["suma"])
+                                           for x in f["contare"]["linii"]))
         try:
             _fa.sterge_factura(conn, fid)
-            sterge = "A STERS — GRESIT"
+            st = "A ȘTERS — GREȘIT"
         except _cf.RefuzContare as e:
-            sterge = "refuzata: %s -> iesire %s" % (e.cod, e.detalii.get("iesire"))
-        print("  stergerea: %s" % sterge)
-        rezultat["eee4"] = {"stare": r["contare"]["stare"], "status_nota": nota[1],
-                            "sursa": nota[2], "a_doua": a_doua["stare"], "stergere": sterge}
+            st = "refuz %s -> ieșire %s" % (e.cod, e.detalii.get("iesire"))
+        print("    ștergerea: %s" % st)
+        rez["eee4"] = (f["contare"]["stare"] == "contata" and nota[1] == "ciorna"
+                       and nota[2] == "facturi" and st.startswith("refuz ARE_NOTA_DE_CONTARE"))
         conn.rollback()
-    with db.get_conn() as conn:
-        dupa_rollback = numaratori(conn, schema)
-    print("  randuri facturi/inregistrari/linii: %s -> dupa ROLLBACK %s" % (inainte, dupa_rollback))
-    assert inainte == dupa_rollback, "PROBA A LASAT URMA in %s" % schema
+        dupa = numaratori_noua()
+    print("    rânduri: %s -> după ROLLBACK %s" % (inainte, dupa))
+    assert inainte == dupa, "PROBA A LĂSAT URMĂ"
 
-    print()
-    print("═══ GGG4 — CE SUNT cele 3, inainte de a le atinge")
-    ggg4 = []
-    for schema, fid in FALS_REFUZATE:
-        with db.get_conn() as conn:
-            with _cf.cursor_dict(conn) as cur:
-                cur.execute("SELECT id, numar, serie, data_emitere, directie, status, tip, "
-                            "       COALESCE(total_lei,total,0) AS total, sursa_externa, "
-                            "       (xml IS NOT NULL) AS are_xml, storno_din_id, transformat_in_id "
-                            "FROM %s.facturi WHERE id=%%s" % schema, (fid,))
-                f = dict(cur.fetchone())
-                cur.execute("SELECT COUNT(*) AS n FROM %s.efactura_primite WHERE factura_id=%%s"
-                            % schema, (fid,))
-                spv = cur.fetchone()["n"]
-                cur.execute("SELECT id, status, alocari FROM %s.extras_linii "
-                            "WHERE alocari::text LIKE %%s" % schema, ("%%\"factura_id\": %d%%" % fid,))
-                extras = cur.fetchall()
-        print("  %s #%d  %s%s  %s  %s  %s  total=%s"
-              % (schema, fid, f["serie"] or "", f["numar"], f["data_emitere"], f["directie"],
-                 f["status"], f["total"]))
-        print("      tip=%s · sursa_externa=%s · are XML=%s · storno_din=%s · transformat_in=%s · "
-              "randuri e-Factura=%d · linii de extras care o aloca=%d"
-              % (f["tip"], f["sursa_externa"], f["are_xml"], f["storno_din_id"],
-                 f["transformat_in_id"], spv, len(extras)))
-        ggg4.append((schema, fid, f, spv, len(extras)))
-    print("  *Niciuna nu e ceruta la stergere de cineva: sunt INSTANTELE CLASEI, gasite prin sonda.")
-    print("   Proba de mai jos NU sterge nimic real — tranzactie intoarsa.*")
-
-    print()
-    print("═══ GGG3 — inainte nu se puteau sterge deloc; dupa dezlegare, stergerea reuseste")
-    rezultat["ggg3"] = []
-    for schema, fid in FALS_REFUZATE:
-        with db.get_conn(schema) as conn:
-            inainte = numaratori(conn, schema)
-            try:
-                _fa.sterge_factura(conn, fid)
-                pas1 = "A STERS — GRESIT"
-            except _cf.RefuzContare as e:
-                pas1 = "refuz %s -> iesire %s" % (e.cod, e.detalii.get("iesire"))
-                nota_id = e.detalii.get("inregistrare_id")
-            with _cf.cursor_dict(conn) as cur:
-                dezlegata = _cf.dezleaga_nota(cur, "", nota_id)
-            try:
-                pas3 = "sters: %s" % _fa.sterge_factura(conn, fid)["ok"]
-            except _cf.RefuzContare as e:
-                pas3 = "REFUZ dupa dezlegare — GRESIT: %s" % e.cod
-            conn.rollback()
-            dupa = numaratori(conn, schema)
-        print("  %s #%d" % (schema, fid))
-        print("      1. stergere INAINTE  -> %s" % pas1)
-        print("      2. dezlegare nota #%s -> factura %s" % (nota_id, dezlegata))
-        print("      3. stergere DUPA     -> %s" % pas3)
-        print("      randuri: %s -> dupa ROLLBACK %s" % (inainte, dupa))
-        assert inainte == dupa, "PROBA A LASAT URMA in %s" % schema
-        rezultat["ggg3"].append((schema, fid, pas1, pas3))
-
-    print()
-    print("═══ GGG2 — o nota de CONTARE tot blocheaza, si nu se dezleaga")
-    schema = "tenant_017"
-    with db.get_conn(schema) as conn:
-        inainte = numaratori(conn, schema)
-        linii = [{"descriere": "servicii de probă", "cantitate": 1, "pret_unitar": 500,
-                  "cota_tva": 21, "cont_venit": "704"}]
-        r = _fa.creeaza_factura(conn, "PROBA-GGG2", "2026-08-29", "emisa", linii,
-                                tert_nume="PARTENER PROBA SRL", tert_cui="RO14399840")
-        fid = r["factura_id"]
-        with _cf.cursor_dict(conn) as cur:
-            nota = _cf.contare_existenta(cur, "", fid)
-            try:
-                _cf.dezleaga_nota(cur, "", nota["id"])
-                dez = "A DEZLEGAT — GRESIT"
-            except _cf.RefuzContare as e:
-                dez = "refuz %s -> iesire %s" % (e.cod, e.detalii.get("iesire"))
+    # ══════════════════════════════════════════════════ GGG
+    print("\n═══ GGG — dezlegarea: refuz → dezlegare → ștergere; iar contarea NU se dezleagă")
+    with db.get_conn(FIRMA) as conn:
+        inainte = numaratori(conn)
+        f = _factura(conn, "PROBA-GGG", "2026-08-29", directie="primita")
+        fid = f["factura_id"]
+        nid = _nota_de_plata(conn, fid, "2026-08-29", [("401", "5121", 1210)])
         try:
             _fa.sterge_factura(conn, fid)
-            st = "A STERS — GRESIT"
+            pas1 = "A ȘTERS — GREȘIT"
         except _cf.RefuzContare as e:
-            st = "refuz %s -> iesire %s" % (e.cod, e.detalii.get("iesire"))
+            pas1 = "refuz %s -> ieșire %s" % (e.cod, e.detalii.get("iesire"))
+        with _cf.cursor_dict(conn) as cur:
+            dezlegata = _cf.dezleaga_nota(cur, "", nid)
+        pas3 = "ștearsă: %s" % _fa.sterge_factura(conn, fid)["ok"]
+        print("  factura #%d cu nota de plată #%d" % (fid, nid))
+        print("    1. ștergere ÎNAINTE  -> %s" % pas1)
+        print("    2. dezlegare         -> nota #%d ← factura %s" % (nid, dezlegata))
+        print("    3. ștergere DUPĂ     -> %s" % pas3)
+        # direcția inversă: o notă de CONTARE nu se dezleagă
+        g = _factura(conn, "PROBA-GGG2", "2026-08-29")
+        with _cf.cursor_dict(conn) as cur:
+            nota_c = _cf.contare_existenta(cur, "", g["factura_id"])
+            try:
+                _cf.dezleaga_nota(cur, "", nota_c["id"])
+                dez = "A DEZLEGAT — GREȘIT"
+            except _cf.RefuzContare as e:
+                dez = "refuz %s -> ieșire %s" % (e.cod, e.detalii.get("iesire"))
+        print("    nota de CONTARE (#%s): %s" % (nota_c["id"], dez))
+        rez["ggg"] = (pas1.startswith("refuz ARE_NOTA_LEGATA") and dezlegata == fid
+                      and pas3 == "ștearsă: True" and dez.startswith("refuz E_NOTA_DE_CONTARE"))
         conn.rollback()
-        dupa = numaratori(conn, schema)
-    print("  factura noua #%d, cu nota de contare #%s" % (fid, nota["id"]))
-    print("      dezlegarea notei de contare -> %s" % dez)
-    print("      stergerea facturii          -> %s" % st)
-    print("      randuri: %s -> dupa ROLLBACK %s" % (inainte, dupa))
-    assert inainte == dupa, "PROBA A LASAT URMA in %s" % schema
-    rezultat["ggg2"] = (dez, st)
+        dupa = numaratori_noua()
+    print("    rânduri: %s -> după ROLLBACK %s" % (inainte, dupa))
+    assert inainte == dupa, "PROBA A LĂSAT URMĂ"
 
-    print()
-    print("═══ VERDICT")
-    ok_ddd1 = all(fara_contare and stare == "contata" for _s, _f, fara_contare, stare
-                  in rezultat["ddd1"])
-    print("  DDD1 — cele 3 nu mai sunt refuzate fals: %s" % ("DA" if ok_ddd1 else "NU"))
-    ok_fff4 = all(a.startswith("refuzat") and m == "contata" and "4428" in c
-                  for _s, _f, a, m, c in rezultat["fff4"])
-    print("  FFF4 — clasa ambigua: automat refuza, manual scrie pe 4428: %s"
-          % ("DA" if ok_fff4 else "NU"))
-    e = rezultat["eee4"]
-    ok_eee4 = (e["stare"] == "contata" and e["status_nota"] == "ciorna" and e["sursa"] == "facturi"
-               and e["a_doua"] == "deja_contata")
-    print("  EEE4 — emiterea produce nota in ciorna, idempotent, stergerea refuza: %s"
-          % ("DA" if ok_eee4 else "NU"))
-    ok_ggg3 = all(p1.startswith("refuz") and p3 == "sters: True"
-                  for _s, _f, p1, p3 in rezultat["ggg3"])
-    print("  GGG3 — cele 3 se sterg dupa dezlegare, si nu inainte: %s" % ("DA" if ok_ggg3 else "NU"))
-    dez, st = rezultat["ggg2"]
-    ok_ggg2 = dez.startswith("refuz E_NOTA_DE_CONTARE") and st.startswith("refuz ARE_NOTA_DE_CONTARE")
-    print("  GGG2 — nota de CONTARE nu se dezleaga si tot blocheaza: %s" % ("DA" if ok_ggg2 else "NU"))
-    print("  toate probele au facut ROLLBACK; numararile de randuri s-au intors identice")
-    return ok_ddd1 and ok_fff4 and ok_eee4 and ok_ggg3 and ok_ggg2
+    # ══════════════════════════════════════════════════ JJJ
+    print("\n═══ JJJ2 — nota la ALTĂ dată decât emiterea, când luna emiterii e închisă")
+    with db.get_conn(FIRMA) as conn:
+        inainte = numaratori(conn)
+        f = _factura(conn, "PROBA-JJJ", "2026-04-15")
+        fid = f["factura_id"]
+        with conn.cursor() as cur:                      # nota automată de la emitere iese din drum
+            cur.execute("DELETE FROM inregistrari WHERE factura_id=%s", (fid,))
+            cur.execute("INSERT INTO perioade_blocate (an, luna) VALUES (2026, 4) "
+                        "ON CONFLICT DO NOTHING")
+        with _cf.cursor_dict(conn) as cur:
+            try:
+                _cf.contabilizeaza(cur, "", fid, automat=False)
+                fara = "A SCRIS — GREȘIT"
+            except _cf.RefuzContare as e:
+                fara = "refuz %s (data notei ar fi fost %s)" % (e.cod, e.detalii.get("data_nota"))
+            r = _cf.contabilizeaza(cur, "", fid, automat=False, data_nota="2026-08-29",
+                                   motiv_data="luna emiterii era inchisa la data descoperirii (R89)")
+            cur.execute("SELECT data, descriere, factura_id FROM inregistrari WHERE id=%s",
+                        (r["inregistrare_id"],))
+            nota = dict(cur.fetchone())
+        print("  factura #%d emisă 2026-04-15, luna 2026-04 BLOCATĂ" % fid)
+        print("    fără `data_nota` -> %s" % fara)
+        print("    cu `data_nota`   -> nota la %s, factura_id=%s" % (nota["data"], nota["factura_id"]))
+        print("    descriere: %s" % nota["descriere"])
+        rez["jjj"] = (fara.startswith("refuz LUNA_INCHISA") and str(nota["data"]) == "2026-08-29"
+                      and nota["factura_id"] == fid and "2026-04-15" in nota["descriere"])
+        conn.rollback()
+        dupa = numaratori_noua()
+    print("    rânduri: %s -> după ROLLBACK %s" % (inainte, dupa))
+    assert inainte == dupa, "PROBA A LĂSAT URMĂ"
+
+    print("\n═══ VERDICT")
+    for k, et in (("ddd1", "DDD1 — nota care nu e contare nu blochează; a doua contare e no-op"),
+                  ("fff4", "FFF4 — clasa ambiguă: automat refuză, manual scrie pe 4428"),
+                  ("eee4", "EEE4 — emiterea produce nota în ciornă; ștergerea refuză"),
+                  ("ggg",  "GGG  — refuz → dezlegare → ștergere; contarea nu se dezleagă"),
+                  ("jjj",  "JJJ2 — nota la data descoperirii, cu mențiunea care o leagă")):
+        print("  %s: %s" % ("DA " if rez[k] else "NU ", et))
+    print("  toate probele au făcut ROLLBACK; numărările de rânduri s-au întors identice")
+    return all(rez.values())
 
 
 if __name__ == "__main__":
