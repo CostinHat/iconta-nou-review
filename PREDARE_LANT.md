@@ -4,15 +4,20 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-29**, a doua oară în ziua asta. *Rescriere COMPLETĂ, nu petic.*
-- **pe commit**: `1bd9455` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
+- **ultima rescriere**: **2026-08-29**, a treia oară în ziua asta. *Rescriere COMPLETĂ, nu petic.*
+- **pe commit**: `a0cc6a5` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
   munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e arborele care
   devine commitul următor.*
-- **rescrierea de dinainte**: `1bd9455`, aceeași zi. Între ele au încăput **2 commituri**.
-- **de ce acum**: **proiectare, nu construcție** — R87/R88 au primit propunerea completă în
-  registru, iar citirea codului a scos **două lucruri pe care nu le știam** (vezi mai jos).
-  *Conținutul, nu contorul* — măsurat cu formula din `pre-commit`: **2** commituri în urmă,
-  pragul e **10**.
+- **rescrierea de dinainte**: `a0cc6a5`, aceeași zi. Între ele n-a încăput **niciun commit** — predarea a fost rescrisă la fiecare tură.
+- **de ce acum**: cerut explicit. *Conținutul, nu contorul* — măsurat cu formula din `pre-commit`:
+  **0** commituri în urmă, pragul e **10**. **Predarea nu era stale**: fișierul a fost atins ultima
+  oară chiar în `a0cc6a5`, adică în HEAD. Ce era într-adevăr vechi cu o generație e **antetul** —
+  scrie „pe commit" numele arborelui pe care s-a scris, nu al celui în care a intrat. Vezi nota de
+  mai jos.
+- **cum se citește „pe commit" din antet, ca să nu mai pară stale**: predarea se scrie **înainte**
+  de commitul care o poartă, deci numele de acolo e al commitului **precedent**. După ce commitul
+  intră, antetul arată cu unul în urmă **prin construcție**, nu din uitare. Cifra care spune
+  adevărul despre vechime e cea de mai sus, măsurată cu formula din `pre-commit`.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **gardat**: `scripts/githooks/pre-commit` avertizează peste 10 commituri;
   `core/test_predare_proaspata.py` nu lasă avertismentul să dispară tăcut; **de azi**,
@@ -88,53 +93,46 @@ scrisesem regula care o interzice (`METODA §10.16`). *O regulă scrisă nu țin
 
 ---
 
-## AL DOILEA: CE A SCOS CITIREA CODULUI, ÎNAINTE DE A SCRIE O LINIE
+## AL DOILEA: DE UNDE SE PORNEȘTE, DACĂ EȘTI O SESIUNE NOUĂ
 
-**1. Factura emisă NU se poate edita după creare.** Nu există rută care să-i schimbe liniile — doar
-`storno` și `DELETE`. Deci întrebarea *„ce se întâmplă cu nota deja scrisă: se rescrie, se
-stornează, rămâne?"* **nu se pune**: corecția fiscală e prin **al doilea document** (P4), iar
-stornarea, fiind ea însăși o emitere, își produce **propria** notă sub aceeași regulă. Simetric,
-fără caz special.
+**Nu e nicio cerință comandată neîncepută.** Ce așteaptă e **răspunsul lui Costin**, pe două
+întrebări separate:
 
-**2. Dar ștergerea e o problemă reală, iar automatizarea o AGRAVEAZĂ.** `sterge_factura` face
-`DELETE FROM facturi` **fără să verifice dacă există notă**, iar cheia străină
-`inregistrari_factura_id_fkey` **n-are `ON DELETE`** — deci `NO ACTION`. Azi trece de cele mai multe
-ori tocmai fiindcă **65% din facturi n-au notă**. Cu note automate, **fiecare** factură are una, iar
-ștergerea ar începe să pice cu o **eroare brută de bază**, nu cu un refuz explicat. *Nu e un defect
-independent — e o consecință directă a deciziei care se ia, deci se decide odată cu ea.*
+1. **proiectarea R87/R88** — scrisă integral în `CONFORMITATE.md`, în corpul fiecăreia, ca secțiune
+   *„PROIECTARE — decizie așteptată"*. Momentul e propus (emisă la creare, primită la validare);
+   **nealese** rămân: soarta rutelor manuale, ce se întâmplă cu ștergerea facturii, și dacă contul
+   de cheltuială devine obligatoriu la validare.
+2. **cele 28 de facturi istorice** — decizie **separată**, cerută de mine, cu trei riscuri numite.
+   Cifra e din 24.08 și **nu s-a re-măsurat**.
 
-**3. Mecanismul contra dublei note EXISTĂ DEJA** — `inregistrari.factura_id`, verificat explicit de
-`factura_contabilizeaza`. **Dar are o gaură**: o notă scrisă din **jurnalul liber** nu poartă
-`factura_id`, deci o contare făcută de mână e **invizibilă** pentru verificare, iar automatul ar
-scrie a doua notă peste ea. *De măsurat înainte de construcție — n-am măsurat-o azi, și o cifră
-ghicită ar fi mai rea decât una lipsă.*
+**Nu e propus niciun pas următor în afara astora** — ordinea o dă Costin.
 
 ---
 
-## AL TREILEA: MOMENTUL, PENTRU FIECARE DIN CELE DOUĂ
+## AL TREILEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
-**Emisă → la `POST /facturi`, în aceeași tranzacție.** Toate intrările notei sunt pe factură în
-momentul creării: cont de venit **pe linie**, cotă pe linie, iar exigibilitatea e la emitere.
-
-**Primită → la `/valideaza`, NU la import.** Citit la sursă, `/valideaza` **nu** înseamnă „gata de
-contat" — înseamnă **recunoașterea cheltuielii**: acolo omul alege **contul de cheltuială** și
-clasifică (TVA la încasare, țara partenerului). Adică exact intrările notei. Importul de cron e
-**sosirea documentului**, nu faptul firmei. *O notă scrisă la import ar trebui să ghicească fix
-lucrurile pe care validarea le cere omului.*
-
-**Deci: aceeași regulă, momente diferite** — fiindcă „faptul economic nou construit" cade în locuri
-diferite. Emisă și primită **nu sunt simetrice**, și diferența e structurală, nu de semn: la primită
-deducerea poate fi **amânată la plată** (TVA la încasare), ceea ce leagă R88 de reconcilierea
-bancară — o rută pe care ZZ3 a declarat-o excepție manuală.
+- **nicio restanță de PRAG 1 deschisă.** R35 era ultima, închisă pe 28.08.
+- **44 de restanțe deschise**: prag 2 — **15**, prag 3 — **12**, fără prag declarat — **16** (cele
+  vechi, R1–R27), plus cele două de azi. Pe cine deblochează: INTERN ~25 · DECIZIE ~19 · EXTERN 2.
+- **clusterele topologice**: `core.agenda.urmator_cluster()` → **`(None, 0, 0)`**. Inventarul are
+  **79 de rânduri, 79 bifate, 0 blocate**. Secvența e epuizată din 04.08.2026 — **nu există
+  „următorul programat"**.
+- **progres E1**: **203 locuri de verificare scrise / 0 goale, din 203 (100%)**.
+- **familia salariilor**: nimic deschis (R33, R34, R85, R86 — toate închise).
 
 ---
 
-## AL PATRULEA: TIPARUL DE LA NIR, CITIT RÂND CU RÂND
+## AL PATRULEA: TREI CAPCANE DE PROCEDURĂ, ÎNVĂȚATE PE PIELEA MEA ÎN ULTIMELE DOUĂ ZILE
 
-Cinci proprietăți, fiecare răspunzând unei întrebări pe care factura o pune la fel: **validarea vine
-înaintea oricărei scrieri** · **o singură tranzacție** (un `commit` la final — deci *rollback
-complet*, nu „NIR fără notă") · nota intră **`ciornă`**, deci automat ≠ validat · **`sursa` numește
-actul**, nu omul · **referință inversă** — iar pentru facturi legătura aia **există deja**.
+1. **Un `str.replace` fără aserțiune nu e o modificare, e o speranță.** A lovit de **trei ori** pe
+   tabelul de restanțe din predarea asta. Unealta: `scripts/inlocuieste.py`. Regula:
+   `METODA_VERIFICARE.md` **§28**.
+2. **Poarta testează ARBORELE DE LUCRU, nu indexul.** Un `@COMMIT@` lăsat în `CONFORMITATE.md`
+   pică poarta chiar dacă fișierul nu e în commitul curent. Ordinea celor două commituri — lucrul
+   întâi, registrul după, cu hash-ul real — **nu e stil, e o constrângere**.
+3. **Raționamentul care ține o restanță DESCHISĂ cere aceeași verificare ca cel care o închide.**
+   Pe 28.08 am ținut R34 deschisă pe o condiție îndeplinită de trei zile. *E mai ușor de ratat
+   fiindcă rezultatul lui pare prudent.*
 
 ---
 
@@ -152,10 +150,11 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-28`.
 
 | | |
 |---|---|
-| **R87 · R88** (DESCHISE, INTERN, prag 2) | Au primit **PROIECTAREA completă** în corpul lor (AAA1–AAA7). **Niciun cod de producție scris.** Așteaptă decizia. |
-| **R36** (REZOLVATĂ pe `1bd9455`) | Închisă azi-dimineață. Neatinsă. |
-| **R37, R39** | Re-citite la ZZ5. Neatinse azi. |
+| **R87 · R88** (DESCHISE, INTERN, prag 2) | **PROIECTARE completă** în corpul lor (AAA1–AAA7), niciun cod scris. **Așteaptă decizia.** |
+| **R36** (REZOLVATĂ pe `1bd9455`) | Închisă în ziua asta. |
+| **R37, R39** | Re-citite la ZZ5: R39 a trecut DECIZIE → INTERN, R37 și-a schimbat domeniul. |
 | **prag 1** | **niciuna deschisă.** |
+| **restul (44)** | Vezi `CONFORMITATE.md`. Harta pe praguri e mai sus. |
 | **R81, R79, R80** | Neatinse azi după închiderea lor / decizia (c). R80 rămâne deschisă pe **muncă**, nu pe răspuns. |
 | **restul** | Vezi `CONFORMITATE.md` — nu s-a atins nimic altceva. |
 

@@ -5398,6 +5398,116 @@ doar lista de rute."* Avea dreptate de doua ori.
   registrul spun doua lucruri diferite despre acelasi activ — limita e declarata in docstring.
 - **METODA:** o mutatie care probeaza o CALIBRARE trebuie sa loveasca linia care face distinctia.
 
+## 29.08.2026 — ZIUA: pentru un contabil nu s-a schimbat NIMIC, și de data asta era și scopul
+
+*Cerut de Costin: „dă ISTORIC pe ziua curentă; dacă ziua n-a schimbat nimic pentru un contabil,
+scrie-o ca atare."*
+
+**Verdictul întâi: ZERO.** Cele **trei** commituri ale zilei (`1bd9455`, `1628e94`, `a0cc6a5`) au
+atins, măsurat pe `git log --name-only`: `CONFORMITATE.md`, `DECIZII.md`, `PLAN_ARHITECTURA.md`,
+`PREDARE_LANT.md` și două fișiere de gardă. **Niciun ecran, nicio rută, niciun generator de
+declarație, nicio regulă de calcul.** Un contabil care înregistrează facturi, face salarii și depune
+declarații n-ar observa absolut nimic.
+
+**Și, spre deosebire de alte zile în care asta a fost o constatare, azi a fost și cererea:** ultimul
+bloc spunea, literal, *„nu scrie cod de producție în tura asta"*.
+
+### CE A FĂCUT ZIUA
+
+**1. A închis R36 — decizia care ținea restul lanțului de contabilizare.** *„Aplicația
+contabilizează automat orice fapt economic nou construit; ruta manuală există doar acolo unde e
+declarată explicit, cu motivul scris."* Varianta (a).
+
+**Partea care merită reținută nu e alegerea, e ce a arătat măsurătoarea despre restanță:
+direcția exista deja în cod.** NIR-ul, descărcarea de gestiune, casa, chitanța, bonul, raportul Z,
+ieșirile din stoc, rețetele și cele ~30 de operațiuni speciale contabilizează automat **de mult**.
+**Nu era „ce direcție", era „direcția nescrisă"** — iar fără regulă, fiecare modul nou putea alege
+altfel, la fel de legitim. *Numele restanței fusese corect de la început: alegerea nu era DECLARATĂ.*
+
+**De ce nu (c) „hibrid, cu granița scrisă", deși (c) descrie exact ce se întâmplă azi:** o graniță
+trasată **acum** ar fi înghețat starea de fapt, **inclusiv golurile**. Cele două găsite în aceeași zi
+ar fi devenit „graniță", nu restanță. *O regulă care descrie ce e nu mai poate arăta ce lipsește.*
+
+**2. Harta a produs două restanțe care până atunci n-aveau nume.** Din 6 fapte care au deja un obiect
+în aplicație și cer un act separat pentru notă, **4 sunt excepții legitime** (nota liberă,
+reconcilierea bancară, salariile, amortizarea) și **2 sunt goluri**: factura **emisă** (**R87**) și
+factura **primită** (**R88**). *Efectul lor se vedea de mult, doar că nu se numea așa: R35 măsurase
+că 28 din 43 de facturi declarabile — 65%, 102.260 lei TVA, pe 10 firme din 17 — nu sunt contate
+deloc.*
+
+**3. A proiectat reparația fără s-o scrie** — iar citirea codului a scos trei lucruri care nu se
+știau:
+- **factura emisă nu se poate edita după creare** (nu există rută care să-i schimbe liniile), deci
+  întrebarea *„ce se întâmplă cu nota deja scrisă"* nu se pune: corecția e prin **al doilea
+  document**, iar stornarea își produce propria notă sub aceeași regulă;
+- **ștergerea facturii e o problemă reală, iar automatizarea o agravează**: `sterge_factura` nu
+  verifică nota, iar cheia străină n-are `ON DELETE`. Azi trece tocmai fiindcă **65% din facturi
+  n-au notă**; cu note automate, ștergerea ar începe să pice cu o eroare brută de bază;
+- **mecanismul contra dublei note există deja** (`inregistrari.factura_id`), **dar are o gaură**: o
+  notă scrisă din jurnalul liber nu-l poartă, deci o contare manuală e invizibilă pentru verificare.
+
+### CE N-A FĂCUT, ȘI E DECLARAT
+
+Nu s-a re-măsurat cifra celor 28 de facturi (e din 24.08, iar portofoliul a crescut între timp la 19
+firme) și **nu s-a măsurat** câte note validate ating conturi de factură fără `factura_id`. Amândouă
+scrise ca *de măsurat înainte de construcție*. *O cifră ghicită ar fi mai rea decât una lipsă.*
+
+---
+
+## 28.08.2026 — ZIUA: opt restanțe închise, dintre care patru se văd pe ecran
+
+*Scrisă pe 29.08, la rescrierea ISTORICULUI. **Ziua asta lipsea din registru** — între 27.08 și
+29.08 era un gol, iar o zi cu 26 de commituri și patru schimbări vizibile nu se poate citi din
+absență. Se scrie acum, cu data ei.*
+
+**26 de commituri.** Spre deosebire de azi, **s-au atins ecrane și rute**: `main.py`,
+`core/auth_api.py`, `core/d112.py`, `core/salarii_contare.py`, `core/control_incrucisat.py`,
+`core/tenant_provisioning.py` și cinci fișiere din `static/js/ecrane/`.
+
+### CE AR OBSERVA UN CONTABIL
+
+1. **Cele patru acte cu cel mai mare efect asupra unei firme nu se mai termină în tăcere** (R82).
+   Alegerea denumirii, dezactivarea pe ambele ramuri și scoaterea definitivă confirmă acum printr-un
+   banner care **numește firma și consecința**. Până atunci ecranul vorbea **numai când eșua**.
+   Confirmarea scoaterii — actul ireversibil — **nu mai dispare singură**: are „✕", vizibil în repaus.
+2. **O firmă dezactivată se poate, în sfârșit, reactiva** (R83). Până atunci butonul „Reactivează"
+   **eșua întotdeauna** — poarta de acces considera firma inexistentă —, iar două confirmări de pe
+   alt ecran îi spuneau omului exact să încerce. *Găsit de o probă cerută pentru altceva.*
+3. **Trecutul unei firme scoase din portofoliu se poate citi** (R84). Treisprezece rapoarte —
+   jurnal, balanță, rapoarte comerciale, exporturi, urme — răspundeau **404** pe o firmă
+   dezactivată, deși textul de pe ecran promite că *„datele ei rămân neatinse"*. Rămâneau, dar
+   necitibile.
+4. **Pe telefon, banner-ul de confirmare nu mai e o coloană îngustă**: 343 px din 375, în loc de 188,
+   și 8 rânduri în loc de 15.
+
+### CE S-A SCHIMBAT SUB CAPOTĂ, ȘI CONTEAZĂ PENTRU CIFRE
+
+- **Nota de salarii nu mai are a doua socoteală** (R34). Două căi produceau aceleași contribuții și
+  nu coincideau: **24 de divergențe pe 7 perechi**, cea mai mare `tenant_001` 2026-06 — CAS
+  **24.114,54** în notă vs **28.539** declarat. Sursa e acum **D112**, iar sonda dă **0**.
+- **Cheltuiala cu biletele de valoare intra deloc în contabilitate** (R86): `642 = 5328` era
+  **0,00** pe toate lunile, deși declarația purta până la **25.140** lei. Reparat.
+- **Un verdict de TVA nu mai poate ieși VERDE peste o factură necontabilizată pe care o are în
+  propriul payload** (R35): **6 perechi → 0**. Devine **gri**, cu numărul facturilor numit — *nu se
+  știe că cifrele sunt greșite, se știe că nu se poate afirma că sunt bune.*
+- **Denumirea unei firme se scrie simetric** în amândouă locurile, în aceeași tranzacție (R81), iar
+  **reciclarea numelor de schemă s-a oprit** (R79).
+
+### CE A ÎNVĂȚAT ZIUA DESPRE PROPRIA METODĂ
+
+Trei afirmații de-ale mele au fost **falsificate de propriile probe** în aceeași zi — o cifră despre
+date scrisă din memorie peste propriul tabel de cifre invalidate, un docstring care descria o ramură
+pe care n-o citisem, și o restanță ținută deschisă pe o condiție **deja îndeplinită de trei zile**.
+Din primele două au ieșit gărzi mecanice; din a treia, o propoziție: *raționamentul care ține o
+restanță deschisă cere aceeași verificare ca cel care o închide — e mai ușor de ratat fiindcă
+rezultatul lui pare prudent.*
+
+Și o clasă care a lovit de trei ori: un `str.replace` care nu potrivește nimic **și tace**, lăsând
+documentul în forma veche, care de acum arată curentă. A treia oară a primit unealtă
+(`scripts/inlocuieste.py`) și regulă (`METODA_VERIFICARE.md` §28).
+
+---
+
 ## 27.08.2026 — o firmă adăugată din greșeală se poate, în sfârșit, scoate
 
 **Ce se schimbă pentru omul care ține contabilitatea:**
