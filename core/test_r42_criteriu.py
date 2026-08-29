@@ -211,6 +211,12 @@ _ROL_PE_ALT_CRITERIU = {
         "R55, aceeași decizie: «cine adaugă un cont poate anula orice refuz» — ruta extinde "
         "nomenclatorul pe care stă refuzul din R54, deci schimbă ce poate înregistra firma. "
         "Nu e nota însăși; e nomenclatorul din care se scrie nota",
+    "/tenants/{tenant_id}/jurnal/{nota_id}/dezleaga":
+        "R90, 29.08.2026: dezlegarea unei note de plată de factura ei face factura să REAPARĂ ca "
+        "neîncasată — `reconciliere_api.facturi_deschise` calculează soldul chiar din notele legate "
+        "prin `factura_id`. Deci actul schimbă ce are firma de încasat sau de plătit, adică e pe "
+        "axa R55, nu pe cea a lui R42: nota tot nu e artefact predat. Iar actul deschide drumul "
+        "către ștergerea facturii, care e `admin_firma` prin R42",
 }
 
 

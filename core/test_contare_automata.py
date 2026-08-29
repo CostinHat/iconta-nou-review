@@ -2,6 +2,11 @@
 """GARDA contării automate a facturii — blocurile DDD (cheia), EEE (emisă), FFF (primită).
 
 CE FACE IMPOSIBIL:
+  * ca o notă de PLATĂ a unei firme cu **TVA la încasare** să treacă drept contare — `reconciliere_api`
+    îi adaugă linia de exigibilitate (`4428 = 4427`), iar nota devine terț + TVA. *Clasă LATENTĂ:
+    nicio firmă din portofoliu nu e în regimul ăla azi, deci se apără pe clasă, nu pe instanță;*
+  * ca o notă de CONTARE să se poată **dezlega** de factura ei, sau ca dezlegarea să se facă fără
+    motiv, pe o lună închisă, sau fără urmă;
   * ca o notă de **PLATĂ** să treacă drept contare și să blocheze contabilizarea (fals-pozitivul
     măsurat pe 3 facturi la BLOC BBB) — și, în direcția cealaltă, ca o notă de contare **să nu**
     blocheze;
@@ -229,11 +234,12 @@ def test_stergerea_refuza_ALTFEL_cand_nota_legata_nu_e_contare(conn):
     with pytest.raises(_cf.RefuzContare) as e:
         _fa.sterge_factura(conn, r["factura_id"])
     assert e.value.cod == "ARE_NOTA_LEGATA"
-    # Nota de plată din probă e VALIDATă, iar pentru ea aplicația n-are azi nicio ieșire:
-    # `jurnal_api.sterge` refuză o notă nevalidată, iar rută de dezlegare nu există (R90).
-    # Refuzul o SPUNE, în loc să promită o ieșire inexistentă.
+    # [R90, aceeași zi] IEȘIREA EXISTĂ ACUM. Când testul s-a scris, nu exista: nota de plată e
+    # validată, `jurnal_api.sterge` refuză orice notă care nu e ciornă, iar dezlegare nu era — deci
+    # refuzul numea un zid, iar aserțiunea de atunci era `iesire == "fara_iesire"`. Se schimbă
+    # fiindcă s-a schimbat APLICAȚIA, nu ca să treacă testul.
     assert e.value.detalii["status_nota"] == "validata"
-    assert e.value.detalii["iesire"] == "fara_iesire"
+    assert e.value.detalii["iesire"] == "dezleaga_nota"
 
 
 def test_stergerea_TRECE_cand_factura_n_are_nicio_nota(conn):
@@ -471,6 +477,153 @@ def test_red_proof_nimic_nu_e_contare_deschide_dubla_contare(conn, monkeypatch):
     assert len(_note_ale(conn, fid)) == 2, "mutația trebuie să producă DOUĂ note"
 
 
+# ═══════════════════════════════════════════════ GGG — trezoreria taie contarea
+def test_nota_de_plata_cu_TVA_la_incasare_NU_e_contare():
+    """Clasa LATENTĂ, găsită prin citirea codului înainte de a construi: la o firmă cu TVA la
+    încasare, `reconciliere_api` adaugă pe nota de plată linia de exigibilitate — `4428 = 4427` pe
+    emisă, `4426 = 4428` pe primită (art. 282 alin. 3 și 8). Nota devine **terț + TVA**, adică exact
+    semnătura de contare. Fără regula «fără trezorerie», fals-pozitivul închis la DDD1 s-ar fi întors
+    pe altă ușă: o factură plătită ar fi părut deja contată.
+
+    **Nicio instanță vie azi** — nicio firmă din portofoliu nu e în regimul ăla. Se apără pe CLASĂ."""
+    incasare = [("5121", "4111", 1210), ("4428", "4427", 210)]
+    plata = [("401", "5121", 1210), ("4426", "4428", 210)]
+    assert not _cf.e_nota_de_contare(incasare)
+    assert not _cf.e_nota_de_contare(plata)
+
+
+def test_o_linie_de_trezorerie_scoate_nota_din_clasa_de_contare():
+    """Direcția inversă a aceleiași reguli, ca mutație: aceeași contare, plus o linie de trezorerie,
+    **nu mai e** contare. Fără testul ăsta, `e_cont_trezorerie` ar putea întoarce mereu False și
+    testul de mai sus ar trece la fel."""
+    contare = [("4111", "707", 1000), ("4111", "4427", 210)]
+    assert _cf.e_nota_de_contare(contare)
+    assert not _cf.e_nota_de_contare(contare + [("5121", "4111", 1210)])
+
+
+def test_red_proof_fara_regula_trezoreriei_plata_redevine_contare(monkeypatch):
+    """RED-PROOF pe funcția reală: cu `e_cont_trezorerie` întors mereu la False — adică regula
+    scoasă — nota de plată cu TVA la încasare **redevine** contare. Mutația trebuie să producă
+    efectul, altfel testele de mai sus nu dovedesc nimic."""
+    monkeypatch.setattr(_cf, "e_cont_trezorerie", lambda c: False)
+    assert _cf.e_nota_de_contare([("5121", "4111", 1210), ("4428", "4427", 210)])
+
+
+# ═══════════════════════════════════════════════ GGG — actul de dezlegare
+def test_dezlegarea_rupe_legatura_unei_note_de_plata(conn):
+    r = _factura(conn, "G-DZ1", "2026-08-10", directie="primita")
+    fid = r["factura_id"]
+    nid = _nota_bruta(conn, "2026-08-20", [("401", "5121", "1210.00")], factura_id=fid)
+    with _cf.cursor_dict(conn) as cur:
+        assert _cf.dezleaga_nota(cur, "", nid) == fid
+    with conn.cursor() as cur:
+        cur.execute("SELECT factura_id FROM inregistrari WHERE id=%s", (nid,))
+        assert cur.fetchone()[0] is None
+
+
+def test_dezlegarea_REFUZA_o_nota_de_contare(conn):
+    """*O cifră fără documentul care o justifică nu se mai poate desface* (P14). Nota de contare
+    **este** evidența facturii — ruptă, factura ar redeveni «necontată» fără să se fi întâmplat
+    nimic în realitate."""
+    r = _factura(conn, "G-DZ2", "2026-08-10")
+    with _cf.cursor_dict(conn) as cur:
+        nota = _cf.contare_existenta(cur, "", r["factura_id"])
+        with pytest.raises(_cf.RefuzContare) as e:
+            _cf.dezleaga_nota(cur, "", nota["id"])
+    assert e.value.cod == "E_NOTA_DE_CONTARE"
+    assert e.value.detalii["iesire"] == "storno"
+
+
+def test_dezlegarea_refuza_o_nota_care_nu_e_legata(conn):
+    nid = _nota_bruta(conn, "2026-08-20", [("401", "5121", "1210.00")], factura_id=None)
+    with _cf.cursor_dict(conn) as cur:
+        with pytest.raises(_cf.RefuzContare) as e:
+            _cf.dezleaga_nota(cur, "", nid)
+    assert e.value.cod == "NOTA_NELEGATA"
+
+
+def test_dezlegarea_refuza_pe_luna_inchisa(conn, monkeypatch):
+    """Dezlegarea schimbă soldul unei facturi, deci e o modificare a evidenței lunii (P15).
+
+    Se probează pe RUTĂ, nu pe modul, fiindcă acolo stă poarta — la `_cere_perioada_deschisa`,
+    același helper pe care îl cheamă editarea, ștergerea și validarea unei note. *Prima formă a
+    testului chema modulul; acolo nu mai e nicio poartă, iar `UPDATE`-ul ajungea la declanșatorul din
+    bază, care ridică o eroare BRUTĂ. Un `423` cu mesaj și o excepție de PL/pgSQL nu sunt același
+    lucru pentru omul din fața ecranului.*"""
+    import main
+    from fastapi import HTTPException
+    r = _factura(conn, "G-DZ3", "2026-08-10", directie="primita")
+    nid = _nota_bruta(conn, "2026-08-20", [("401", "5121", "1210.00")],
+                      factura_id=r["factura_id"])
+    with conn.cursor() as cur:
+        cur.execute("INSERT INTO perioade_blocate (an, luna) VALUES (2026, 8)")
+    conn.commit()
+    monkeypatch.setattr(main.auth_api, "schema_tenant", lambda c, uid, tid: _SCH)
+    with pytest.raises(HTTPException) as e:
+        main.jurnal_dezleaga(1, nid, {"motiv": "probă"}, {"uid": 1})
+    assert e.value.status_code == 423
+
+
+def test_dupa_dezlegare_stergerea_facturii_TRECE(conn):
+    """Drumul întreg al lui R90: refuz → dezlegare → ștergere. Înainte de azi, pasul 3 era
+    imposibil pentru o notă validată."""
+    r = _factura(conn, "G-DZ4", "2026-08-10", directie="primita")
+    fid = r["factura_id"]
+    nid = _nota_bruta(conn, "2026-08-20", [("401", "5121", "1210.00")], factura_id=fid)
+    with pytest.raises(_cf.RefuzContare) as e:
+        _fa.sterge_factura(conn, fid)
+    assert e.value.detalii["iesire"] == "dezleaga_nota"
+    with _cf.cursor_dict(conn) as cur:
+        _cf.dezleaga_nota(cur, "", nid)
+    assert _fa.sterge_factura(conn, fid)["ok"] is True
+
+
+# ═══════════════════════════════════════════════ GGG — ruta: motiv, urmă, cablaj
+def test_ruta_de_dezlegare_cere_MOTIV(conn, monkeypatch):
+    import main
+    from fastapi import HTTPException
+    r = _factura(conn, "G-RT1", "2026-08-10", directie="primita")
+    nid = _nota_bruta(conn, "2026-08-20", [("401", "5121", "1210.00")],
+                      factura_id=r["factura_id"])
+    conn.commit()
+    monkeypatch.setattr(main.auth_api, "schema_tenant", lambda c, uid, tid: _SCH)
+    with pytest.raises(HTTPException) as e:
+        main.jurnal_dezleaga(1, nid, {}, {"uid": 1})
+    assert e.value.status_code == 422
+    assert e.value.detail["cod"] == "MOTIV_OBLIGATORIU"
+
+
+def test_ruta_de_dezlegare_scrie_URMA_cu_ce_s_a_dezlegat(conn, monkeypatch):
+    """Middleware-ul de audit scrie `POST <cale>` și statusul — adică *că* s-a cerut ceva. Urma
+    cerută de R90 e alta: **ce** s-a dezlegat, de pe ce factură, cu ce motiv."""
+    import main
+    import json as _json
+    r = _factura(conn, "G-RT2", "2026-08-10", directie="primita")
+    fid = r["factura_id"]
+    nid = _nota_bruta(conn, "2026-08-20", [("401", "5121", "1210.00")], factura_id=fid)
+    conn.commit()
+    monkeypatch.setattr(main.auth_api, "schema_tenant", lambda c, uid, tid: _SCH)
+    rez = main.jurnal_dezleaga(1, nid, {"motiv": "potrivire greșită la reconciliere"}, {"uid": 1})
+    assert rez["factura_id_dezlegata"] == fid
+    with _db.get_conn() as c2:
+        with c2.cursor() as cur:
+            cur.execute("SELECT id, detalii FROM public.audit_log "
+                        "WHERE actiune = 'DEZLEGARE nota-factura' ORDER BY id DESC LIMIT 1")
+            rand = cur.fetchone()
+            assert rand, "actul n-a lăsat nicio urmă proprie"
+            d = rand[1] if isinstance(rand[1], dict) else _json.loads(rand[1])
+            assert d["nota_id"] == nid
+            assert d["factura_id"] == fid
+            assert d["motiv"], "urma fără motiv nu spune peste șase luni dacă a fost eroare"
+            # curățenie: proba nu lasă rânduri în registrul de audit al instalării
+            cur.execute("DELETE FROM public.audit_log WHERE id=%s", (rand[0],))
+        c2.commit()
+
+
+def test_ruta_de_dezlegare_chiar_cheama_actul_si_urma():
+    assert _apeluri("main.py", "jurnal_dezleaga") >= {"dezleaga_nota", "_urma_dezlegare"}
+
+
 # ═══════════════════════════════════════════════ ANTI-VACUU pe clasificator
 def test_clasificatorul_nu_spune_da_la_tot():
     assert _cf.e_nota_de_contare([("4111", "707", 1), ("4111", "4427", 1)])
@@ -479,5 +632,6 @@ def test_clasificatorul_nu_spune_da_la_tot():
     assert not _cf.e_nota_de_contare([("5311", "4111", 1)])
     assert not _cf.e_nota_de_contare([("5311", "707", 1), ("5311", "4427", 1)])
     assert not _cf.e_nota_de_contare([("6811", "2813", 1)])
+    assert not _cf.e_nota_de_contare([("5121", "4111", 1), ("4428", "4427", 1)])
     assert _cf.valoare_pe_tert([("4111", "707", 1000), ("4111", "4427", 210)]) == Decimal(1210)
     assert _cf.valoare_pe_tert([("371", "401", 1000), ("4426", "401", 210)]) == Decimal(1210)

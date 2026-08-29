@@ -44,6 +44,15 @@ CONTURI_TERT = ("4111", "401", "404")
 CONTURI_TVA = ("4426", "4427", "4428")
 CONTURI_FOND_PREFIX = ("70", "6")
 CONTURI_FOND_EXACT = ("371", "301", "302", "303", "213")
+# [29.08.2026, BLOC GGG] Trezoreria TAIE semnătura de contare, și motivul e măsurat prin citirea
+# codului, nu presupus: `reconciliere_api` adaugă pe nota de PLATĂ, la o firmă cu TVA la încasare, o
+# linie `4428 = 4427` (emisă) sau `4426 = 4428` (primită) — art. 282 alin. 3 și 8. Nota devine atunci
+# **terț + TVA**, adică exact semnătura de contare. Fără regula asta, fals-pozitivul închis la DDD1
+# s-ar fi întors pe altă ușă: o factură plătită de o firmă la încasare ar fi părut deja contată.
+# **Clasa e LATENTĂ azi** — nicio firmă din portofoliu nu e în regim de TVA la încasare, deci n-are
+# nicio instanță vie. Se repară pe CLASĂ, nu pe instanță; calibrarea o construiește sintetic.
+# O contare de factură nu atinge NICIODATĂ trezoreria: 4111 = venit, 4111 = 4427.
+CONTURI_TREZORERIE = ("51", "53")
 
 
 def egale(a, b):
@@ -89,12 +98,21 @@ def e_cont_fond(c):
             or any(s.startswith(p) for p in CONTURI_FOND_EXACT))
 
 
+def e_cont_trezorerie(c):
+    return any(str(c or "").startswith(p) for p in CONTURI_TREZORERIE)
+
+
 def e_nota_de_contare(linii):
-    """`linii` = [(cont_debit, cont_credit, suma), ...]. Terț ȘI (fond SAU TVA).
+    """`linii` = [(cont_debit, cont_credit, suma), ...]. Terț ȘI (fond SAU TVA) ȘI **fără trezorerie**.
 
     Direcția inversă contează la fel de mult: o notă de PLATĂ (`401 = 5121`) atinge terțul și
-    trezoreria, deci **nu** e contare — și tocmai de-aia `COUNT(*)` greșea."""
-    tert = tva = fond = False
+    trezoreria, deci **nu** e contare — și tocmai de-aia `COUNT(*)` greșea.
+
+    A treia condiție — **fără trezorerie** — nu e prudență, e o clasă măsurată prin citirea codului:
+    la o firmă cu TVA la încasare, `reconciliere_api` adaugă pe nota de plată linia de exigibilitate
+    (`4428 = 4427` / `4426 = 4428`), iar nota devine terț + TVA. Fără ea, o factură plătită ar fi
+    părut contată. *Latentă azi; reparată pe clasă.*"""
+    tert = tva = fond = trez = False
     for cd, cc, _s in linii:
         for c in (cd, cc):
             if e_cont_tert(c):
@@ -103,7 +121,9 @@ def e_nota_de_contare(linii):
                 tva = True
             if e_cont_fond(c):
                 fond = True
-    return tert and (tva or fond)
+            if e_cont_trezorerie(c):
+                trez = True
+    return tert and (tva or fond) and not trez
 
 
 def valoare_pe_tert(linii):
@@ -242,6 +262,54 @@ def leaga_nota_de_factura(cur, schema, nota_id, linii, data):
     cur.execute("UPDATE %sinregistrari SET factura_id=%%s WHERE id=%%s" % _p(schema),
                 (potrivite[0], nota_id))
     return potrivite[0]
+
+
+def dezleaga_nota(cur, schema, nota_id):
+    """[GGG2 / R90] Rupe legătura dintre o notă și factura ei. Întoarce id-ul facturii dezlegate.
+
+    **O notă de CONTARE nu se dezleagă.** Ea *este* evidența facturii; ruptă, cifra n-ar mai avea
+    documentul care o justifică (P14), iar factura ar redeveni „necontată" fără ca nimic să se fi
+    întâmplat în realitate. Se dezleagă numai ce nu e contare: plăți, încasări, orice altceva a
+    ajuns să poarte cheia.
+
+    **CE SE SCHIMBĂ, dincolo de ștergere** — se scrie aici fiindcă nu e evident și nu era în
+    întrebare: `reconciliere_api.facturi_deschise` calculează soldul unei facturi din notele legate
+    prin `factura_id` (credit 4111 la emise, debit 401 la primite). Dezlegarea unei plăți **face
+    factura să reapară ca neîncasată**. E chiar efectul dorit când potrivirea a fost greșită, dar e
+    un efect asupra unei cifre pe care o vede omul, nu o operație tehnică.
+
+    **Poarta de perioadă NU e aici, și e deliberat.** Dezlegarea modifică evidența lunii notei, deci
+    cade sub P15 — dar verificarea stă în rută, la `_cere_perioada_deschisa`, exact ca la editarea,
+    ștergerea și validarea unei note care există. *Două locuri care întreabă „e luna închisă?" ar fi
+    două definiții ale aceleiași porți; garda `test_r42_criteriu` o citește pe cea din rută.*
+
+    **Ce NU se pierde:** `extras_linii.alocari` păstrează potrivirea originală (`factura_id` + sumă)
+    ca fapt al liniei de extras, independent de notă. Deci urma potrivirii rămâne chiar după
+    dezlegare — de-aia actul e reversibil în înțeles, nu doar în date."""
+    cur.execute("SELECT i.id, i.data, i.factura_id, i.status, i.sursa, "
+                "       l.cont_debit, l.cont_credit, l.suma "
+                "FROM %sinregistrari i "
+                "LEFT JOIN %sinregistrari_linii l ON l.inregistrare_id = i.id "
+                "WHERE i.id = %%s" % (_p(schema), _p(schema)), (nota_id,))
+    randuri = cur.fetchall()
+    if not randuri:
+        raise RefuzContare("NOTA_INEXISTENTA", "nota nu există")
+    cap = dict(randuri[0])
+    linii = [(r["cont_debit"], r["cont_credit"], Decimal(str(r["suma"] or 0)))
+             for r in randuri if r["cont_debit"] is not None]
+    if cap.get("factura_id") is None:
+        raise RefuzContare("NOTA_NELEGATA", "nota nu e legată de nicio factură",
+                           detalii={"nota_id": nota_id})
+    if e_nota_de_contare(linii):
+        raise RefuzContare(
+            "E_NOTA_DE_CONTARE",
+            "Nota #%d E chiar evidența contabilă a facturii, nu o plată. Nu se dezleagă: o cifră "
+            "fără documentul care o justifică nu se mai poate desface. Dacă factura trebuie "
+            "corectată, se stornează." % nota_id,
+            detalii={"nota_id": nota_id, "factura_id": cap["factura_id"], "iesire": "storno"})
+    cur.execute("UPDATE %sinregistrari SET factura_id = NULL WHERE id = %%s" % _p(schema),
+                (nota_id,))
+    return cap["factura_id"]
 
 
 # ══════════════════════════════════════════════════════════ GENERAREA NOTEI

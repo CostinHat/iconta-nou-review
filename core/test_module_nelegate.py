@@ -40,6 +40,14 @@ PIN = {
         "date de firma, masoara RUTELE aplicatiei (cine scrie evidenta, cine atinge credentiale). "
         "Traieste separat de garda tocmai fiindca citeste SQL, adica TEXT, iar clichetul 50 nu lasa "
         "o aserttiune pe text intr-un fisier de garda -- si pe drept",
+    "core/scan_cai_factura.py":
+        "INSTRUMENT DE MASURA, nu cale de productie (aceeasi clasa cu scan_garzi_pe_text si "
+        "scan_rol_pe_efect): singurul lui consumator legitim e gardul core/test_cai_creare_factura.py, "
+        "care raspunde la HHH1 — cate cai pot naste o factura. Un apel din productie ar fi gresit: "
+        "nu masoara date de firma, masoara CODUL. Traieste separat de garda din exact acelasi motiv "
+        "ca celelalte doua: calibrarea lui are nevoie de MOSTRE DE SQL, iar mostrele intr-un fisier "
+        "`test_*` se aprind in test_schema_coloane (o coloana inventata) si in test_garzi_pe_text "
+        "(cautare de siruri) — masurat, nu presupus: prima forma le-a aprins pe amandoua",
     "core/scan_garzi_pe_text.py":
         "INSTRUMENT DE MASURA, nu cale de productie (aceeasi clasa cu scan_ancore): singurul lui "
         "consumator legitim e gardul core/test_garzi_pe_text.py, iar sonda exclude importatorii de "

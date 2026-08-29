@@ -335,18 +335,18 @@ def sterge_factura(conn, factura_id):
         # refuză orice notă care nu e ciornă, iar rută de dezlegare nu există. Pe portofoliul de
         # azi, toate cele 3 facturi din clasa asta au nota VALIDATĂ, deci nu se pot șterge deloc.
         # Restanța e deschisă (R90); mesajul nu are voie s-o ascundă promițând o ieșire inexistentă.
+        # [R90, varianta (a)] Ieșirea EXISTĂ de azi și se numește: nota se dezleagă, explicit, prin
+        # actul ei. Până azi mesajul trimitea într-un zid pentru o notă validată — `jurnal_api.sterge`
+        # refuză orice notă care nu e ciornă, iar dezlegare nu era. *Un refuz care numește o ieșire
+        # inexistentă e mai rău decât unul care spune «nu se poate».*
         _n0 = legate[0]
-        _ciorna = (_n0.get("status") == "ciorna")
         raise _cf.RefuzContare(
             "ARE_NOTA_LEGATA",
-            ("Factura are o notă legată care nu e de contare (#%d, %s, %s). "
-             % (_n0["id"], _n0.get("sursa") or "fără sursă", _n0.get("status") or "?"))
-            + ("Șterge întâi nota — e ciornă, deci se poate șterge."
-               if _ciorna else
-               "Nota e VALIDATĂ, deci nu se poate șterge, iar o cale de dezlegare nu există încă: "
-               "factura asta nu se poate șterge azi."),
+            "Factura are o notă legată care nu e de contare (#%d, %s, %s) — o plată sau o încasare. "
+            "Dezleag-o întâi: potrivirea rămâne consemnată pe linia de extras, iar factura redevine "
+            "neîncasată." % (_n0["id"], _n0.get("sursa") or "fără sursă", _n0.get("status") or "?"),
             detalii={"inregistrare_id": _n0["id"], "status_nota": _n0.get("status"),
-                     "iesire": "sterge_nota_ciorna" if _ciorna else "fara_iesire"})
+                     "iesire": "dezleaga_nota"})
     if n:
         raise _cf.RefuzContare(
             "ARE_NOTA_DE_CONTARE",

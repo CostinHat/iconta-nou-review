@@ -5414,12 +5414,13 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**465 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**467 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 457
+### `core/` — 459
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
+- `core/scan_cai_factura.py` — CÂTE CĂI POT NAȘTE O FACTURĂ — instrumentul (HHH1, 29.08.2026).
 - `core/scan_citate.py` — SCANNER de CITĂRI VERIFICABILE: `text_citat` chiar există în documentul citat? (21.08.2026)
 - `core/scan_conflicte_sursa.py` — core/scan_conflicte_sursa.py — INTERDICȚIA 58, partea nemăsurată: conflictele NEÎNREGISTRATE.
 - `core/scan_constante.py` — SCANNER de constante fiscale NESURSATE din codul de PRODUCTIE (20.08.2026).
@@ -5475,6 +5476,7 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 - `core/test_c4_model_csv.py` — C4 (audit tenant_003): fiecare strat de import cu fisier ofera 'Descarca model (CSV)' cu formatul REAL
 - `core/test_c6_c5_motiv_acord.py` — GARD C6 + C5 (audit vizual tenant_003, 16.08.2026).
 - `core/test_c7_periodicitate_trimestriala.py` — GARD C7 — generarea TVA-decont (d300/d394/d406) urmeaza periodicitatea EFECTIVA a firmei (tip_decont),
+- `core/test_cai_creare_factura.py` — GARDA inventarului de căi prin care se naște o factură (HHH1). Instrumentul:
 - `core/test_cai_fisiere_date.py` — GARD CLASA "cale de fisier construita relativ la radacina" (01.08.2026).
 - `core/test_cale_a_doua.py` — GARD (20.08.2026): a doua cale nu poate fi mutată peste prima în tăcere.
 - `core/test_capturi_numite.py` — GARD [HH, 28.08.2026]: o captură comisă fără proprietar în registru pică poarta.

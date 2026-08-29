@@ -400,6 +400,14 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - editarea nu poate muta nota într-o perioadă închisă
 - **fără rol** — R55
 
+### `POST /tenants/{tenant_id}/jurnal/{nota_id}/dezleaga`
+
+*garda `cere_rol` · rol:admin_firma*
+
+*ce face: RUPE legătura notă↔factură, cu URMĂ*
+
+- [ ]
+
 ### `POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza`
 
 *garda `cere_cabinet` · **fara rol***

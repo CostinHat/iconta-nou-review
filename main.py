@@ -6918,6 +6918,84 @@ def jurnal_sterge(tenant_id: int, nota_id: int, ctx=Depends(cere_cabinet)):
         _cere_perioada_deschisa(conn, schema, nota_id)
         return _jurnal_rez(_j.sterge(conn, schema, nota_id))
 
+@app.post("/tenants/{tenant_id}/jurnal/{nota_id}/dezleaga")  # [api_intern_v1] fara buton in UI, pastrat deliberat: MASURAT 29.08.2026 — nicio cale din `static/` nu sterge o factura (`api.del` pe facturi nu exista; cel de la 1015 e pe `facturi-recurente`), deci si `DELETE /facturi/{id}` e act de API. Dezlegarea e perechea lui: ar fi singurul buton dintr-un drum care n-are ecran. Ecranul celor doua acte e restanta R92.
+# [R90, 29.08.2026 — varianta (a), decizia lui Costin] Rolul e `admin_firma`, nu `cere_cabinet`, și
+# criteriul e cel din R42: actul **schimbă ce datorează sau ce are de încasat firma**. Dezlegarea unei
+# plăți face factura să reapară ca neîncasată în `reconciliere_api.facturi_deschise` — deci nu e o
+# corecție de fișă, e o schimbare de sold. *Ruta de reactivare a unei linii de extras a rămas pe
+# `cere_cabinet` fiindcă ea nu atinge nicio notă legată; asta atinge.*
+def jurnal_dezleaga(tenant_id: int, nota_id: int, corp: dict = Body(default={}),
+                    ctx=Depends(cere_rol("admin_firma"))):
+    """RUPE legătura notă↔factură, cu URMĂ. Cerut de R90: până azi cheia străină
+    `inregistrari_factura_id_fkey` (fără `ON DELETE`) bloca ștergerea facturii pentru ORICE notă
+    legată, inclusiv o plată — iar dezlegarea nu exista ca act.
+
+    **De ce un act explicit și nu o dezlegare automată la ștergere** (cele două forme ale variantei
+    (a), vezi `DECIZII.md`): urma. O dezlegare făcută pe furiș, ca efect secundar al unei ștergeri,
+    n-ar avea nici autor, nici motiv, nici moment propriu — iar după ștergere nici n-ai mai putea
+    spune ce s-a dezlegat. Aici fiecare dezlegare e o faptă cu numele ei.
+
+    **Motivul e OBLIGATORIU.** Actul repară o eroare de reconciliere; fără motiv, peste șase luni
+    nimeni nu mai poate spune dacă potrivirea a fost greșită sau dacă cineva a vrut doar să scape de
+    o factură."""
+    from core import contare_facturi as _cf
+    motiv = (corp.get("motiv") or "").strip()
+    if not motiv:
+        from core import afirmatii as _af
+        raise HTTPException(422, dict(_af.afirmatie(
+            "neconformitate", "MOTIV_OBLIGATORIU",
+            "Scrie motivul dezlegării: actul repară o potrivire greșită, iar peste șase luni "
+            "urma fără motiv nu mai spune dacă a fost o eroare sau o scăpare.",
+            unde="nota #%s" % nota_id, regula="dezlegarea unei note poartă motivul"),
+            cod="MOTIV_OBLIGATORIU"))
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+        # P15, prin helperul canonic — același pe care îl cheamă editarea, ștergerea și validarea
+        # unei note care există. Dezlegarea schimbă soldul facturii, deci e o modificare a lunii.
+        _cere_perioada_deschisa(conn, schema, nota_id)
+        try:
+            with _cf.cursor_dict(conn) as cur:
+                fid = _cf.dezleaga_nota(cur, schema, nota_id)
+        except _cf.RefuzContare as e:
+            conn.rollback()
+            if e.cod == "NOTA_INEXISTENTA":
+                raise HTTPException(404, e.mesaj)
+            raise HTTPException(422, e.mesaj)
+        _urma_dezlegare(conn, ctx.get("uid"), tenant_id, nota_id, fid, motiv)
+        conn.commit()
+    # Fără cheie de revendicare în răspuns (`motiv` e una): afirmațiile despre datele firmei sunt
+    # obiecte tipate, iar aici motivul e ecoul intrării, nu o afirmație a aplicației. Urma îl poartă.
+    return {"ok": True, "nota_id": nota_id, "factura_id_dezlegata": fid}
+
+
+def _urma_dezlegare(conn, uid, tenant_id, nota_id, factura_id, motiv):
+    """URMA actului, ca FAPTĂ, nu doar ca linie de acces.
+
+    Middleware-ul de audit scrie deja `POST <cale>` cu statusul, pentru orice mutație — dar atât:
+    *că* s-a cerut ceva, nu *ce* s-a dezlegat. Aici se scrie fapta: care notă, de pe care factură,
+    cu ce motiv. Se folosește ACELAȘI tabel (`public.audit_log`), cu aceeași sub-interogare pe
+    `tenant_id` ca middleware-ul — R79: un rând de audit scris după o ștergere ar trimite la o firmă
+    care nu mai există."""
+    from core import afirmatii as _af
+    # Urma e o AFIRMAȚIE TIPATĂ, nu proză într-un dicționar (P3, decizia din 21.08): `fel='fapt'`,
+    # fiindcă exact asta e — un fapt petrecut, cu domeniul lui (nota și factura) și cu temeiul care
+    # spune de ce e completă. Prima formă scria `{"motiv": ...}` și a fost prinsă de
+    # `test_afirmatii_tipate`: o cheie de revendicare fără `fel` e chiar clasa vânată acolo.
+    fapt = _af.afirmatie(
+        "fapt", "DEZLEGARE_NOTA_FACTURA", motiv[:500],
+        unde="nota #%s, factura #%s" % (nota_id, factura_id),
+        temei_completitudine="urma se scrie în ACEEAȘI tranzacție cu dezlegarea, deci nu poate "
+                             "exista dezlegare fără ea",
+        nota_id=nota_id, factura_id=factura_id)
+    with conn.cursor() as cur:
+        cur.execute(
+            "INSERT INTO public.audit_log (user_id, tenant_id, actiune, detalii) "
+            "VALUES (%s, (SELECT id FROM public.tenants WHERE id = %s), %s, %s)",
+            (uid, tenant_id, "DEZLEGARE nota-factura", _json_audit.dumps(fapt)))
+
+
 @app.post("/tenants/{tenant_id}/jurnal/{nota_id}/valideaza")
 # [R55, 26.08.2026] Validarea e pasul care transforma o CIORNA in EVIDENTA — deci intra sub
 # criteriul „ce schimba ce datoreaza firma" (R42, extins). Crearea, editarea si stergerea raman
