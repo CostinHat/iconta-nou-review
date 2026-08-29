@@ -3,6 +3,49 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 29.08.2026 (5) — R89 se EXECUTĂ, fiindcă premisa s-a schimbat: nu există clienți reali
+
+**Decizia lui Costin:** *„nu există clienți reali în aplicație — tot portofoliul e de test. R89 nu
+mai e o migrare cu risc fiscal real, e proba end-to-end a automatizării R87/R88 pe date istorice."*
+
+**Ce schimbă asta, și de ce nu e o răzgândire.** Cele trei riscuri care ținuseră R89 deschisă —
+perioada, dubla contare, verificarea umană — erau riscuri **față de o firmă reală**. Fără firme
+reale, primele două rămân întrebări **tehnice** (se măsoară, și s-au măsurat), iar a treia dispare:
+nu există contabil căruia să-i strici evidența. *Restanța nu s-a închis fiindcă riscurile au fost
+rezolvate, ci fiindcă s-a aflat că nu erau riscurile care păreau.* Se scrie așa, fiindcă altfel
+peste șase luni ar arăta ca o închidere pe curaj.
+
+**CE AM VERIFICAT ÎNAINTE SĂ SCRIU 31 DE NOTE**, fiindcă ce afirmă comanda se verifică:
+- `public.declaratii_depuse` are **55** de rânduri — nu zero. **Dar R40 explică**: toate vin din
+  **importul istoric**, nu din coada aplicației; R40 e deschisă chiar pe faptul că **nicio**
+  declarație n-a fost depusă *prin aplicație*. Deci niciun act fiscal n-a ieșit din aplicație.
+- denumirile celor 19 firme sunt scenarii (`Comert Micro TVA`, `DELTA DEFECT-LUNA`,
+  `Firma Grea Audit`). Una singură poartă numele unei firme reale — `Antibiotice Iasi`, folosită
+  pentru instantaneul ANAF de la R81 — și **n-are nicio factură** în lot.
+- *contradicția aparentă cu registrul, spusă:* blocul generat din predare scrie „15 firme la
+  **cabinete reale**". Acolo „real" înseamnă doar că numele cabinetului nu conține TEST/PROBA — e un
+  **tipar pe nume**, nu o dovadă că are clienți. Nu contrazice afirmația lui Costin; măsoară altceva.
+
+**DOUĂ DECIZII LUATE ÎN EXECUȚIE. Se scriu, fiindcă schimbă regula pe care mi-a dat-o:**
+
+- **o notă nu se datează ÎNAINTEA faptului pe care îl înregistrează.** Regula literală („TVA = 0 →
+  data descoperirii") ar fi dat notei facturii `tenant_017` #5 — emisă **2026-09-10**, deci în
+  viitor — data de **2026-08-29**. O înregistrare nu poate precede documentul. Am pus o podea:
+  pentru ramura de „dată a descoperirii", data notei e `max(azi, data emiterii)`. **Un caz din 31**,
+  dar taie o imposibilitate, nu un caz particular. *Ieșit din rulare, nu presupus.*
+- **`data_nota` e o excepție pentru ISTORIC, nu noul normal.** Implicit, nota poartă data emiterii,
+  și așa rămâne pentru orice factură nouă. Poarta de perioadă se mută pe data **notei**, fiindcă luna
+  care se modifică e a ei — fără asta, ramura din JJJ2 n-ar exista deloc.
+
+**UN CAZ PE CARE REGULA NU-L ACOPERĂ, găsit prin probă și lăsat vizibil:** dacă **și** luna emiterii
+**și** luna descoperirii sunt închise, **nu există nicio dată validă**, iar actul refuză — corect.
+`tenant_001` e chiar instanța (are 2026-08 blocată). Ieșirea e redeschiderea unei luni, care e un act
+cu urmă. *Nu am inventat o a treia dată ca să scap de refuz.*
+
+**CE NU DECIDE ASTA:** nu spune că notele scrise acum sunt validate — toate au intrat `ciorna`, ca
+oricare alta. Patru-ochi rămâne unde e (R47). Și nu spune nimic despre R91: factura emisă care intră
+prin import rămâne nedecisă.
+
 ## 29.08.2026 (4) — R90 pe varianta (a), forma cu ACT EXPLICIT; facturile emise din SPV rămân nedecise; R89 neatinsă a treia oară
 
 **1. R90 — varianta (a), iar dintre cele două forme ale ei: ACTUL EXPLICIT DE DEZLEGARE.**

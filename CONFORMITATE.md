@@ -43,7 +43,7 @@ după a doua oară: „e gardul care nu citește proză și totuși o discipline
 - **pasul curent**: **`TRASEE_VERIFICARI.md`** — ce trebuie să fie adevărat după fiecare pas. Le scrie Costin, în loturi de câte 30 (`scan_trasee.py --loturi N`). Până se scriu toate, inventarul de trasee e o hartă a codului, nu o listă de verificare. *(Cifrele se derivă.)*
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
-- **decizii care blochează**: **R89 — DESCHISĂ**: ce se face cu stocul de facturi rămase în afara evidenței (28 pe cheie, 31 fără notă de contare) — lista e măsurată și scrisă, decizia pe ea nu. Și **R91 — DESCHISĂ**: ce face aplicația cu o factură EMISĂ care intră prin import, singurul drum care ocolește actul de emitere — trei variante scrise, recomandarea arhitectului consemnată, decizia amânată deliberat (măsurătoarea e zero azi). *(A doua decizie care bloca — TVA la încasare pe factura primită — a primit răspuns pe 29.08.2026, varianta (ii), și e construită; restanța ei e închisă, iar starea se citește din registru, nu de aici.)* *(Istoric)* Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
+- **decizii care blochează**: **R91 — DESCHISĂ**, una singură. *(Stocul istoric nu mai blochează: s-a executat pe 29.08, după ce Costin a spus că nu există clienți reali — starea restanței se citește din registru, nu de aici.)* Întrebarea ei: ce face aplicația cu o factură EMISĂ care intră prin import, singurul drum care ocolește actul de emitere — trei variante scrise, recomandarea arhitectului consemnată, decizia amânată deliberat (măsurătoarea e zero azi). *(A doua decizie care bloca — TVA la încasare pe factura primită — a primit răspuns pe 29.08.2026, varianta (ii), și e construită; restanța ei e închisă, iar starea se citește din registru, nu de aici.)* *(Istoric)* Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
 - **ultima actualizare**: 2026-08-29
@@ -2069,6 +2069,7 @@ instanțele clasei, găsite de sondă.* **Nu s-a șters nimic real**: proba rule
   fluxul de alocare n-a fost exercitat pe date. Clasa e **latentă**; se scrie, nu se presupune.
 - **clasificatorul a primit o a treia condiție — fără trezorerie.** Vezi `DECIZII.md`; latentă și ea.
 
+- **[29.08.2026, după R89] A DOUA JUMĂTATE A CONDIȚIEI LUI R87/R88 E ACUM ÎNDEPLINITĂ.** Se scrie aici fiindcă acolo s-a scris că pleacă mai departe: R87 și R88 s-au închis pe *(a)* — actul produce nota —, iar *(b)* — proporția de facturi necontate ajunge la **0** — a plecat la R89. R89 a executat-o azi: **0 din 41**, pe amândouă citirile. *Condiția s-a despărțit, și amândouă jumătățile s-au închis; niciuna n-a fost considerată satisfăcută fără măsurătoare.*
 - **REZOLVATĂ 29.08.2026 (BLOC GGG).** Condiția e îndeplinită pe forma ei întâi: **există actul**, cu
   urmă și cu rol declarat, iar refuzul ștergerii numește o ieșire **care există**. *Ce rămâne în afara
   ei, declarat: actul n-are ecran — dar nici ștergerea facturii n-are, deci nu e o lipsă a lui R90, e
@@ -2080,9 +2081,10 @@ instanțele clasei, găsite de sondă.* **Nu s-a șters nimic real**: proba rule
 - **cine deblochează**: DECIZIE
 - **unde intră**: E3 · R87 și R88 (cauza) · R35 (unde s-a măsurat prima oară) · R36 (regula care le face anomalie) · **PRAG 2** *(nu o cifră greșită într-o declarație depusă — un stoc de documente emise care stau în afara evidenței. Devine prag 1 pe prima lună în care un D300 se depune peste ele)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `d582563`
 - **deschisă pe commit**: `2c43571`
-- **măsurat la**: 2026-08-29 · **pe commit**: `2c43571`
+- **măsurat la**: 2026-08-29 · **pe commit**: `d582563`
 - **planul**: **NEACOPERIT.** Citit `PLAN_ARHITECTURA.md` (partea ZZ4, regula contabilizării automate) și `PLAN_LUCRU.md` (E3): amândouă spun ce se întâmplă cu un fapt economic **nou construit**. Niciunul nu spune ce se face cu **stocul deja existent** — documentele rămase în afara evidenței înainte ca regula să existe. Regula nu e retroactivă prin ea însăși, iar a o aplica în masă ar fi o decizie contabilă luată prin scriere de cod — chiar clasa care a produs R36.
 - **ce blochează**: cifra care circula de la R35 încoace — *„28 din 43, 102.260,00 lei, pe 10 firme din 17"* — era **din 24.08.2026 și nu se putea recalcula**: măsurătoarea de atunci n-a lăsat instrument. Re-măsurată azi, cu instrument, pe portofoliul curent. Ce blochează acum nu mai e cifra, e **revizuirea**: lista există, decizia pe ea nu. Costin, 29.08: *„NU se contabilizează în masă. Se re-măsoară și se listează pentru revizuire, decizie separată după."*
 - **cum s-a măsurat**: `scripts/sonda_facturi_necontate.py` (instrument nou), toate cele **19** scheme active, fără excludere. Declarabilitatea se citește din `core/nomenclator_status_factura.clauza_sql()` — **sursa unică**, nu o listă copiată — plus `tip='factura'`, fiindcă ruta de contabilizare refuză explicit proforma și avizul. **Sonda n-a scris nimic**: `pg_stat_user_tables` înainte și după, delta `ins=+0 upd=+0 del=+0`. **Anti-vacuu**: domeniu gol = eroare, nu răspuns. Clasificatorul de „notă de contare" e **importat** din sonda BBB (P1) și **calibrat la fiecare pornire**, în ambele direcții.
@@ -2216,7 +2218,10 @@ care să spună dacă una a rămas necontată intenționat** (storno în lucru, 
 patrulea, care nu era în AAA5: **3 facturi au cheia ocupată de o notă de plată**, deci ar fi refuzate
 cu un mesaj fals.
 
-**Decizie cerută.** Ce se face cu cele 28 (sau 31, pe a doua citire): **(a)** se contabilizează una
+**Decizie cerută [atunci].** **A PRIMIT RĂSPUNS pe 29.08.2026** — dar nu prin alegerea uneia dintre
+variantele de mai jos: **premisa s-a schimbat** (nu există clienți reali), iar stocul s-a
+contabilizat ca **probă end-to-end**. Vezi BLOC JJJ. Textul se păstrează fiindcă e ce se cerea cât
+timp riscurile păreau reale. Ce se cerea atunci: **(a)** se contabilizează una
 câte una, după revizuire, pe data emiterii, cu redeschidere de lună acolo unde e cazul; **(b)** se
 contabilizează la o **dată de înregistrare diferită de cea a faptului** — decizie contabilă, nu
 tehnică; **(c)** se lasă necontate, iar stocul se marchează explicit ca „necontat asumat", ceea ce cere
@@ -2224,6 +2229,63 @@ un câmp care azi nu există; **(d)** se împart: firmele de test se curăță, 
 azi înainte. **Nu propun niciuna** — asta e chiar ce cerea decizia din 29.08.
 
 - **condiția de deblocare**: se scrie, ca decizie de produs în `DECIZII.md`, ce se face cu stocul istoric — cu varianta aleasă, varianta respinsă și motivul. Se închide când fiecare factură din listă are fie o notă, fie un marcaj explicit de „necontată asumat" cu motivul, iar sonda de mai sus o poate confirma.
+
+#### BLOC JJJ — EXECUȚIA (29.08.2026), și de ce a fost posibilă
+
+**PREMISA S-A SCHIMBAT, nu riscurile.** Costin: *„nu există clienți reali în aplicație — tot
+portofoliul e de test."* Cele trei riscuri din AAA5 erau riscuri **față de o firmă reală**; fără ele,
+primele două rămân întrebări tehnice (măsurate mai jos), iar a treia — verificarea umană — dispare.
+**Verificat înainte de a scrie**, fiindcă ce afirmă comanda se verifică: cele 55 de rânduri din
+`public.declaratii_depuse` vin din **importul istoric**, nu din coada aplicației (R40 e deschisă
+chiar pe faptul că nicio declarație n-a fost depusă *prin* aplicație). Detaliile, în `DECIZII.md`.
+
+**JJJ3 — PRIN ACTUL OBIȘNUIT, nu printr-un script de migrare.** `scripts/contare_istorica.py` nu
+scrie niciun `INSERT` propriu: pentru fiecare factură cheamă `contare_facturi.contabilizeaza`,
+același act pe care îl folosesc emiterea, validarea unei primite și ruta manuală. *Asta e chiar
+proba: traseul construit la R87/R88 ține și pe cazuri vechi, nu doar pe facturi noi.* Rulare în două
+moduri — implicit **ROLLBACK**, cu `--scrie` comite.
+
+**JJJ1/JJJ2 — regula de datare, aplicată pe 31 de facturi** (lotul e citit pe „fără notă de
+**contare**", nu pe cheie: o factură a cărei cheie e ocupată de o notă de plată lipsește din evidență
+la fel de tare):
+
+| ramura | facturi | data notei |
+|---|---|---|
+| TVA = 0 → data descoperirii | **11** | 2026-08-29 |
+| TVA = 0, dar factura e emisă în **viitor** → data emiterii | **1** | data facturii |
+| TVA > 0, luna emiterii deschisă → data emiterii | **19** | data facturii |
+| TVA > 0, luna emiterii închisă → data descoperirii | **0** *(niciuna pe datele reale)* | — |
+
+**Ramura a patra n-a avut niciun membru real, deci s-a probat SIMULAT**, cum cerea comanda: pe o
+factură construită anume, cu luna emiterii blocată, în tranzacție întoarsă. Rezultatul, cu descrierea
+întreagă: *„Contare factura PROBA-JJJ din 2026-04-15 — inregistrata la 2026-08-29: luna emiterii era
+inchisa la data descoperirii (R89)"*, cu `factura_id` păstrat. Iar fără `data_nota`, același act
+**refuză** cu `LUNA_INCHISA`. *Proba stă în `scripts/proba_contare_reala.py`, blocul JJJ2, fiindcă
+acolo își construiește singură cazul — în driver ar fi rămas o probă care nu se mai poate aprinde.*
+
+**Cazul pe care regula NU-l acoperă, lăsat vizibil:** dacă **și** luna emiterii **și** luna
+descoperirii sunt închise, nu există nicio dată validă și actul refuză. `tenant_001` e instanța (are
+2026-08 blocată). Ieșirea e redeschiderea unei luni — act cu urmă.
+
+**JJJ4 — anti-dublarea n-a blocat fals nimic**: plasa (`candidate_fara_cheie`) s-a aprins pe **0**
+din 31, iar **0** contări au ieșit cu avertisment. *Era așteptat — sunt facturi vechi fără notă —,
+dar se confirmă, nu se presupune.*
+
+**JJJ5 — nimic din baseline-urile de azi nu s-a mișcat**, măsurat înainte și după:
+
+| sondă | înainte | după |
+|---|---|---|
+| R34 (`scripts/sonda_r34.py`) | forma veche **29** divergențe pe 7 perechi · forma nouă **0** pe 0 · verificarea reală (642/5328) **0** | **identic** |
+| R35 (`scripts/sonda_r35.py`) | verzi peste necunoscut **0** · verzi peste gri **0** · perechi nemăsurabile **0** | **identic** |
+
+**JJJ6 — proporția, măsurată după:** `scripts/sonda_facturi_necontate.py` întoarce **0 din 41 (0%)**
+pe **amândouă** citirile — pe cheie **și** fără notă de contare —, **0,00 lei** TVA, **0 firme**.
+*Cifra care a circulat cinci zile ca „28 din 43, 102.260 lei" e acum zero, iar TVA-ul contabilizat e
+**103.163,00 lei** — totalul celor 31, adică al citirii stricte.*
+
+- **REZOLVATĂ 29.08.2026 (BLOC JJJ).** Condiția e îndeplinită pe forma ei: fiecare factură din listă
+  are notă, iar sonda o confirmă. *Ce NU s-a făcut, declarat: notele au intrat toate `ciorna`, ca
+  oricare alta — patru-ochi rămâne unde e (R47). Și nu s-a atins nicio factură din afara lotului.*
 
 ### R88 — O factură PRIMITĂ validată creează cheltuiala, dar nu și nota contabilă
 

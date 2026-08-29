@@ -1,16 +1,16 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — R87, R88 și R90 închise; dezlegarea e un act cu urmă; ce a mai rămas sunt două DECIZII, nu muncă (29.08.2026)
+# PREDARE LANȚ — lanțul facturii e închis de la emitere până la evidență, iar istoricul a intrat prin ACELAȘI act; a rămas o singură decizie (29.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-29**, a șasea oară în ziua asta. *Rescriere PE SECȚIUNI, nu completă
+- **ultima rescriere**: **2026-08-29**, a șaptea oară în ziua asta. *Rescriere PE SECȚIUNI, nu completă
   — se spune, ca să nu pară ce nu e. S-au atins: antetul, „de unde se pornește", starea codului,
   tabelul de restanțe și lista „ce nu e adevărat". Restul e neatins fiindcă nu s-a mișcat.*
-- **pe commit**: `95f5d0e` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
+- **pe commit**: `d582563` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
   munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e arborele care
   devine commitul următor.*
-- **rescrierea de dinainte**: `a0cc6a5`, aceeași zi. Între ea și acum au intrat **șase** commituri: `2c43571`, `427e254`, `1ea8a9a`, `55a57f6`, `e07b85e` și `95f5d0e`.
+- **rescrierea de dinainte**: `a0cc6a5`, aceeași zi. Între ea și acum au intrat **opt** commituri, ultimele două fiind `735617d` și `d582563`.
 - **de ce acum**: se rescrie înaintea opririi, ca de fiecare dată. *Conținutul, nu contorul* — măsurat
   cu formula din `pre-commit`: **1** commit în urmă, pragul e **10**, deci nu era stale. Se rescrie
   fiindcă s-a schimbat ce spune, nu fiindcă a îmbătrânit.
@@ -99,14 +99,16 @@ scrisesem regula care o interzice (`METODA §10.16`). *O regulă scrisă nu țin
 facturii.** R87, R88 și R90 sunt construite, probate pe date reale și închise. Ce a rămas sunt **două
 decizii**, amândouă amânate deliberat:
 
-1. **stocul istoric** — **R89**. Lista e măsurată și scrisă, firmă cu firmă, factură cu factură.
-   Patru variante, **niciuna propusă**. *Neatinsă a treia oară, cerut explicit de fiecare dată — deci
-   nu e o restanță uitată, e una amânată cu condiție.*
-2. **factura EMISĂ care intră prin import** — **R91**, deschisă azi. Măsurat mecanic: în producție
-   sunt **exact două** locuri care inserează în `facturi`, iar `_factura_din_parsat` e **singurul**
-   care ocolește actul de emitere. Trei variante scrise, **recomandarea arhitectului consemnată ca
-   recomandare** — (iii), ciornă de recunoaștere cu act de validare simetric primitei. Costin, 29.08:
-   *„decizia se ia cu minte odihnită, măsurătoarea e zero azi."*
+1. **factura EMISĂ care intră prin import** — **R91**, singura decizie rămasă. Măsurat mecanic: în
+   producție sunt **exact două** locuri care inserează în `facturi`, iar `_factura_din_parsat` e
+   **singurul** care ocolește actul de emitere. Trei variante scrise, **recomandarea arhitectului
+   consemnată ca recomandare** — (iii), ciornă de recunoaștere cu act de validare simetric primitei.
+   Costin, 29.08: *„decizia se ia cu minte odihnită, măsurătoarea e zero azi."*
+
+*(**R89 s-a închis** în aceeași zi, dar nu prin alegerea unei variante: premisa s-a schimbat — Costin
+a spus că nu există clienți reali —, iar stocul s-a contabilizat ca **probă end-to-end** a traseului
+R87/R88 pe date istorice. **31 de facturi, 103.163,00 lei TVA, 11 firme**, prin actul obișnuit, nu
+printr-o migrare.)*
 
 **Ce s-a construit, pe scurt, ca să nu se recitească registrul:** contarea are un singur loc
 (`core/contare_facturi.py`); nota se scrie în același act cu faptul — la emitere prin
@@ -122,11 +124,9 @@ plasa caută note fără cheie înainte de fiecare notă automată; nota din jur
 ## AL TREILEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
 - **nicio restanță de PRAG 1 deschisă.** R35 era ultima, închisă pe 28.08.
-- **44 de restanțe deschise**, numărate mecanic pe registru azi: prag 2 — **15**, prag 3 — **13**,
+- **43 de restanțe deschise**, numărate mecanic pe registru azi: prag 2 — **14**, prag 3 — **13**,
   fără prag declarat — **16** (cele vechi, R1–R27). Pe cine deblochează: INTERN **23** · DECIZIE
-  **19** · EXTERN **2**. *Totalul e neschimbat față de dimineață, dar compoziția nu: au ieșit R87,
-  R88 și R90 (închise), au intrat R89 (deschisă la prânz) și R91. Balanța INTERN→DECIZIE s-a mutat cu
-  unu — ce a mai rămas din lanțul facturii sunt răspunsuri, nu muncă.*
+  **18** · EXTERN **2**. *Din lanțul facturii a mai rămas una singură, R91, și e o decizie.*
 - **locuri de verificare**: **203 scrise / 9 goale din 212 (96%)**, derivat cu `scripts/raport_b.py`.
   Cele 9 sunt draftul propus pentru pasul de dezlegare — scrise, **nebifate**, fiindcă bifarea e un
   pas separat. *Contorul a fost lărgit odată cu ele: o căsuță nebifată e un loc nefăcut și cu text,
@@ -158,7 +158,7 @@ plasa caută note fără cheie înainte de fiecare notă automată; nota din jur
 
 ## STAREA LA PREDARE
 
-Poartă verde pe arborele care devine commitul următor: **3537 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
+Poartă verde pe arborele care devine commitul următor: **3541 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
 rute **411 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 32** · acte de nivel firmă **0 tăcute din 7** ·
 site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-29`.
 
@@ -171,7 +171,7 @@ site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-29`.
 | | |
 |---|---|
 | **R87 · R88** (**REZOLVATE** pe `55a57f6`) | Construite și probate pe date reale (blocurile DDD/EEE/FFF). **Condiția lor s-a DESPĂRȚIT, nu s-a considerat satisfăcută**: jumătatea „proporția de necontate = 0" nu e îndeplinită și s-a mutat, cu numele ei, la R89. |
-| **R89** (DESCHISĂ, DECIZIE, prag 2) | Stocul istoric: 28 pe cheie / 31 fără notă de contare, 102.260,00 lei TVA, 10 firme. Lista e scrisă; decizia, nu. **Neatinsă a treia oară, cerut explicit de fiecare dată.** |
+| **R89** (**REZOLVATĂ** pe `d582563`) | Stocul istoric a intrat în evidență: **31 de facturi, 103.163,00 lei TVA, 11 firme**, prin actul obișnuit. Sonda întoarce **0 din 41** pe amândouă citirile. *Nu s-a închis prin alegerea unei variante — premisa s-a schimbat.* |
 | **R90** (**REZOLVATĂ** pe `95f5d0e`) | Dezlegarea e un act, cu motiv obligatoriu, rol declarat și urmă proprie. Probat pe cele 3 facturi. *Ce rămâne în afară, declarat: actul n-are ecran — dar nici ștergerea facturii n-are, deci e starea drumului întreg (R70).* |
 | **R91** (DESCHISĂ, DECIZIE, prag 3) | **NOUĂ azi.** Factura EMISĂ care intră prin import nu produce nota, iar absența e declarată de mine, nu decisă de Costin. Zero instanțe pe datele de azi. |
 | **R36** (REZOLVATĂ pe `1bd9455`) | Închisă în ziua asta. |
@@ -265,6 +265,17 @@ POARTĂ, nu se deleagă în istoric.*
   fiindcă „reparat pe clasă" și „probat pe instanță" nu sunt același lucru.
 - **Fals-negativul cheii rămâne micșorat, nu închis** — vezi mai sus. Iar `461`/`462` continuă să nu
   fie văzute de semnătura de contare.
+- **Cele 31 de note ale istoricului au intrat `ciorna`**, ca oricare alta. Patru-ochi rămâne unde e
+  (R47): evidența are notele, dar nu le-a validat nimeni.
+- **11 dintre ele poartă data descoperirii, nu data faptului** — cu mențiunea care le leagă de
+  factură. Nu e o dată arbitrară, dar nici data faptului nu e.
+- **Regula de datare are un caz pe care NU-l acoperă**: dacă și luna emiterii, și luna descoperirii
+  sunt închise, nu există nicio dată validă și actul refuză. `tenant_001` e instanța. Ieșirea e
+  redeschiderea unei luni — act cu urmă.
+- **Proba pe date reale nu mai depinde de instanțele istorice.** A fost nevoie s-o rescriu: se
+  sprijinea pe cele 3 facturi cu cheia ocupată și pe cele 2 din clasa ambiguă, iar R89 le-a
+  contabilizat pe toate. *O probă care depinde de o stare pe care munca ta o va desființa e o probă
+  cu termen de expirare.*
 - **Cifra e re-măsurată azi, cu instrument: 28 din 41, 102.260,00 lei, 10 firme.** Numitorul „43"
   e **INVALIDAT** — vezi tabelul. Iar pe a doua citire, „fără notă de **contare**", sunt **31 din 41**
   și **103.163,00 lei**: trei facturi au cheia ocupată de o notă de **plată**.
