@@ -47,8 +47,10 @@ _NENUMARATE = {
     # R34 a iesit pe 28.08.2026: decizia a fost DATA (sursa e D112) si contorul a urcat la 1.
     # 29.08.2026: R36 s-a INCHIS (decizia (a)), iar R39 a trecut pe INTERN - amandoua
     # ies din fotografie, cerut de test_fotografia_nu_pastreaza_morti.
-    "R9", "R18", "R26", "R38", "R45", "R47",
-    "R54", "R58", "R59", "R63", "R64", "R66", "R67", "R68", "R70", "R73",
+    # 29.08.2026, a doua oara: SAPTE au iesit dintr-o data - R45, R54, R58, R63, R66, R70, R73 -
+    # toate INCHISE in aceeasi tura. Sase dintre ele erau deja construite si asteptau doar decizia
+    # scrisa; fotografia asta le tinea de „bucla tacuta" tocmai fiindca nimeni nu scrisese decizia.
+    "R9", "R18", "R26", "R38", "R47", "R59", "R64", "R67", "R68",
 }
 
 

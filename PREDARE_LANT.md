@@ -1,16 +1,16 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — lanțul facturii e închis pe toate cele trei intrări, iar din el nu mai e nimic deschis (29.08.2026)
+# PREDARE LANȚ — șapte restanțe închise într-o tură, dintre care șase erau deja construite; ce a costat a fost verificarea premisei (29.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-29**, a noua oară în ziua asta. *Rescriere PE SECȚIUNI, nu completă
+- **ultima rescriere**: **2026-08-29**, a zecea oară în ziua asta. *Rescriere PE SECȚIUNI, nu completă
   — se spune, ca să nu pară ce nu e. S-au atins: antetul, „de unde se pornește", starea codului,
   tabelul de restanțe și lista „ce nu e adevărat". Restul e neatins fiindcă nu s-a mișcat.*
-- **pe commit**: `3ce1078` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
+- **pe commit**: `e9998ee` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
   munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e arborele care
   devine commitul următor.*
-- **rescrierea de dinainte**: `a0cc6a5`, aceeași zi. Între ea și acum au intrat **unsprezece** commituri, ultimul fiind `3ce1078`.
+- **rescrierea de dinainte**: `a0cc6a5`, aceeași zi. Între ea și acum au intrat **treisprezece** commituri, ultimul fiind `e9998ee`.
 - **de ce acum**: se rescrie înaintea opririi, ca de fiecare dată. *Conținutul, nu contorul* — măsurat
   cu formula din `pre-commit`: **1** commit în urmă, pragul e **10**, deci nu era stale. Se rescrie
   fiindcă s-a schimbat ce spune, nu fiindcă a îmbătrânit.
@@ -103,6 +103,12 @@ decizii**, amândouă amânate deliberat:
 R89, R90 și R91 sunt toate închise, fiecare cu proba ei pe date reale, iar cele 18 rânduri de
 verificare ale celor două acte noi sunt **executate și bifate pe rulare** (29.08.2026).
 
+**Și, tot azi, încă șapte: R45, R54, R58, R63, R66, R70, R73.** Șase dintre ele erau **deja
+construite** — ce lipsea era decizia scrisă, sau proba. *Lecția, fiindcă e a doua oară în aceeași zi:
+o comandă scrisă pe o citire mai veche a registrului cere lucruri făcute. Verificarea premisei nu e
+birocrație — la R54 ar fi însemnat să SCOT o poartă care funcționează, iar la R63 să suprascriu o
+decizie de acum trei zile.*
+
 **Cele trei intrări ale unei facturi în evidență, toate acoperite acum:**
 1. **emiterea prin aplicație** → nota se scrie în `creeaza_factura`, punctul unic al tuturor celor
    patru drumuri de emitere (R87);
@@ -128,9 +134,10 @@ plasa caută note fără cheie înainte de fiecare notă automată; nota din jur
 ## AL TREILEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
 - **nicio restanță de PRAG 1 deschisă.** R35 era ultima, închisă pe 28.08.
-- **42 de restanțe deschise**, numărate mecanic pe registru azi: prag 2 — **14**, prag 3 — **12**,
+- **35 de restanțe deschise**, numărate mecanic pe registru azi: prag 2 — **7**, prag 3 — **12**,
   fără prag declarat — **16** (cele vechi, R1–R27). Pe cine deblochează: INTERN **23** · DECIZIE
-  **17** · EXTERN **2**. *Din lanțul facturii nu mai e niciuna.*
+  **10** · EXTERN **2**. *Pragul 2 a scăzut de la 14 la 7 într-o singură tură — jumătate din el era
+  deja construit și aștepta o decizie scrisă.*
 - **locuri de verificare**: **221 scrise / 0 goale din 221 (100%)**, derivat cu `scripts/raport_b.py`.
   Cele 18 rânduri propuse ieri au fost **executate**, nu citite: `scripts/proba_verificari_trasee.py`
   cheamă funcțiile de rută din `main.py` pe o schemă efemeră, **18 din 18** confirmate cu dovadă
@@ -163,7 +170,7 @@ plasa caută note fără cheie înainte de fiecare notă automată; nota din jur
 
 ## STAREA LA PREDARE
 
-Poartă verde pe arborele care devine commitul următor: **3549 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
+Poartă verde pe arborele care devine commitul următor: **3560 teste** ✓ · 10 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
 rute **411 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 32** · acte de nivel firmă **0 tăcute din 7** ·
 site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-29`.
 
@@ -341,9 +348,12 @@ POARTĂ, nu se deleagă în istoric.*
 
 ## DACĂ CONTINUI DE AICI
 
-1. **Nu e nicio cerință comandată neîncepută. Nicio restanță de prag 1 deschisă. Din lanțul
-   facturii nu mai e nimic deschis — nici muncă, nici decizie, nici verificare.** `TRASEE_VERIFICARI.md`
-   e la **221 / 221**, iar ultimele 18 rânduri au fost bifate **pe rulare**, nu pe citirea codului.
+1. **Nu e nicio cerință comandată neîncepută. Nicio restanță de prag 1 deschisă.** Din lanțul
+   facturii nu mai e nimic deschis, iar `TRASEE_VERIFICARI.md` e la **221 / 221**. Pragul 2 a scăzut
+   azi de la 14 la **7**.
+2. **ÎNAINTE DE A EXECUTA O COMANDĂ, citește restanța pe care o numește.** De două ori azi o comandă
+   a cerut ceva deja construit, iar o dată a cerut ceva care ar fi însemnat să scot o poartă care
+   merge. Verificarea premisei a costat o oră și a scos două lucruri reale.
 2. **Nu porni nicio construcție fără măsurătoare.**
 3. **`scripts/raport_b.py` derivă „Unde suntem".** Nu se scrie de mână.
 4. **Raportul se scrie din `SABLON_RAPORT.md`.**

@@ -43,7 +43,8 @@ după a doua oară: „e gardul care nu citește proză și totuși o discipline
 - **pasul curent**: **`TRASEE_VERIFICARI.md`** — ce trebuie să fie adevărat după fiecare pas. Le scrie Costin, în loturi de câte 30 (`scan_trasee.py --loturi N`). Până se scriu toate, inventarul de trasee e o hartă a codului, nu o listă de verificare. *(Cifrele se derivă.)*
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
-- **decizii care blochează**: **niciuna.** *(Stocul istoric nu mai blochează: s-a executat pe 29.08, după ce Costin a spus că nu există clienți reali — starea restanței se citește din registru, nu de aici.)* *(Ultima — ce face aplicația cu o factură EMISĂ care intră prin import — a primit răspuns pe 29.08.2026, varianta (iii), și e construită; starea restanței se citește din registru, nu de aici.)* *(A doua decizie care bloca — TVA la încasare pe factura primită — a primit răspuns pe 29.08.2026, varianta (ii), și e construită; restanța ei e închisă, iar starea se citește din registru, nu de aici.)* *(Istoric)* Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
+- **decizii care blochează**: **niciuna.** *(Stocul istoric nu mai blochează: s-a executat pe 29.08, după ce Costin a spus că nu există clienți reali — starea restanței se citește din registru, nu de aici.)* *(Ultima — ce face aplicația cu o factură EMISĂ care intră prin import — a primit răspuns pe 29.08.2026, varianta (iii), și e construită; starea restanței se citește din registru, nu de aici.)* *(A doua decizie care bloca — TVA la încasare pe factura primită — a primit răspuns pe 29.08.2026, varianta (ii), și e construită; restanța ei e închisă, iar starea se citește din registru, nu de aici.)*
+- **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 29.08.2026: garda cere ca fiecare restanță NUMITĂ acolo să fie DESCHISĂ, iar textul le numea pe R54, R53, R58 — dintre care două s-au închis azi. A doua oară când istoricul iese din câmp din același motiv; prima a fost R33, pe 28.08)*: Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
 - **ultima actualizare**: 2026-08-29
@@ -1272,7 +1273,8 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · TRASEE XI.7 · interdicția 32 · **PRAG 2** *(sunt absențe: n-au instanțe de ordonat)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `e9998ee`
 - **deschisă pe commit**: `3cb6c44`
 - **măsurat la**: 2026-08-25 · **pe commit**: `3cb6c44`
 - **ce blochează**: e **aceeași clasă cu R41**, în patru locuri diferite — artefactul se produce, se afișează sau se descarcă, și nu se păstrează:
@@ -1302,6 +1304,7 @@ scos ce nu se știa**, nu din defecte noi.
 - *A treia oară în două zile când am afirmat o absență citind un singur loc, nu contextul lui* — după „ruta fără gardă" și „modulul care nu scrie nimic". Toate trei în aceeași direcție: **lipsește**.
 - **ce a prins gardul propriu, în chiar commitul lui**: `export-winmentor` trecuse pe POST și **nu păstra nimic**. *O rută care și-a schimbat metoda fără să capete fapta e mai rea decât una nemodificată — arată reparată.*
 - **condiția de deblocare**: se decide cum se păstrează auditul de preluare (act propriu în ecran). Se închide când `scripts/scan_trasee.py` nu mai raportează niciun traseu **PARȚIAL** din cauza asta.
+- **REZOLVATĂ 29.08.2026 (BLOC NNN), prin DECIZIE: nu se construiește stocarea.** Costin: *„descărcarea e suficientă, nu justifică investiția."* Restanța cerea o decizie (`cine deblochează: DECIZIE`), iar decizia e „nu". *Ce rămâne adevărat și se scrie o dată, ca să nu fie redescoperit ca defect: la o preluare inversă, «ce s-a exportat și când» n-are răspuns în aplicație. E o limită aleasă, nu o scăpare.*
 
 ### R46 — Trecerea de regim fiscal are cea mai mare consecință și cele mai puține verificări
 
@@ -1480,7 +1483,8 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · P8 · **PRAG 2** *(azi nicio firmă n-are un cont rupt; dar ecranul de operațiuni are 12 câmpuri de cont în text liber, deci e atingibil de primul contabil)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `e9998ee`
 - **deschisă pe commit**: `d0bd859`
 - **planul**: PARȚIAL ACOPERIT. Căutat în `PLAN_ARHITECTURA`: **Partea III, „Categoriile de conținut"** listează explicit **planul de conturi** printre **Nomenclatoare**, iar „Reguli de acces" spune *„Nimeni nu scrie o valoare din aceste categorii în afara registrului"* — deci planul TRANȘEAZĂ că planul de conturi e un nomenclator de registru. Ce **nu** spune e ce se întâmplă când un om introduce un cont din afara lui: **interdicția 16** („nomenclator derivat dintr-o sursă secundară") și **28** („denumire de nomenclator scrisă ca literal în cod") privesc cum se CONSTRUIEȘTE nomenclatorul, nu cum se VALIDEAZĂ o intrare contra lui; **interdicția 45** (P20 — „o valoare intrată din afară, fără sursă și grad de certitudine") e cea mai apropiată și tot nu răspunde: cere proveniență, nu apartenență. Alegerea refuz-vs-semnal rămâne decizie (P11). (METODA §25)
 - **măsurat la**: 2026-08-26 · **pe commit**: `d0bd859`
@@ -1495,6 +1499,7 @@ scos ce nu se știa**, nu din defecte noi.
 - **gardat**: `core/test_cont_din_corp_normalizat.py` — 8 teste. Clichetul e ancorat pe **fișier + FUNCȚIE + expresie**, nu pe linie (liniile se mută la orice editare, deci un clichet pe ele ar pica din alt motiv decât cel păzit) și e **bidirecțional**: pică și când apare o citire neconfruntată, și când una din clichet s-a legat între timp. Plus: refuzul e verificat că **numește contul, câmpul și unde se creează**.
 - **regula intră și în plan**, cum ai cerut: `PLAN_ARHITECTURA.md` Partea III, „Reguli de acces" — *„o intrare din AFARA unui nomenclator de registru se REFUZĂ, nu se semnalează"*, cu motivul și cu cerința ca refuzul să numească intrarea și locul unde se creează.
 - **condiția de deblocare**: cele **8** rămase se leagă, sau primesc o declarație scrisă de ce rămân. Se închide când `NELEGATE` din `core/test_cont_din_corp_normalizat.py` e gol sau conține doar intrări cu decizie scrisă.
+- **REZOLVATĂ 29.08.2026 (BLOC OOO) — dar NU pe motivul din comandă, și diferența contează.** Comanda spunea *„nu se adaugă validare pe contul din cerere; rămâne liber"*. **Validarea există și e aplicată din 26.08.2026**, pe decizia opusă a lui Costin de atunci, în `core/cont_valid.py`, legată în `main.py` și probată pe `tenant_013`. „Nu se adaugă" ar fi însemnat, în cod, **a scoate** o poartă care funcționează. **N-am scos-o.** Restanța se închide fiindcă a fost decisă și rezolvată, nu fiindcă a rămas liberă. *Dacă poarta chiar trebuie scoasă, e o schimbare de comportament și o cerință separată.*
 
 ### R55 — Aceeași clasă de operațiune contabilă, roluri diferite, fără motiv scris
 
@@ -1600,7 +1605,8 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · TRASEE T11 · P15 · **interdicția 36** · **PRAG 2** *(o singură perioadă e blocată azi pe toate cele 17 firme, deci efectul n-a fost produs — dar e cauză unică, dovedită)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `e9998ee`
 - **deschisă pe commit**: `3c774dc`
 - **măsurat la**: 2026-08-26 · **pe commit**: `3c774dc`
 - **planul**: **ACOPERIT, și explicit** — spre deosebire de R55/R56. **P15**: *„închiderea e act deliberat, cu autor · editarea devine imposibilă · redeschiderea e act consemnat, cu motiv"*. **Interdicția 36**: *„o redeschidere de perioadă fără motiv consemnat"*. Deci aici nu se cere o decizie despre CE trebuie — planul o spune. Decizia cerută e doar despre **ce anume blochează închiderea**.
@@ -1620,6 +1626,7 @@ scos ce nu se știa**, nu din defecte noi.
 - **PROBAT pe schemă efemeră** (nu doar pe AST): o ciornă în perioadă → `_ciorne_in_perioada` întoarce 1 · o redeschidere fără motiv → **refuzată de bază**, nu doar de rută · după ștergerea rândului din `perioade_blocate`, urma păstrează **două acte** (închisă de #7, redeschisă de #9 cu motivul). Schema ștearsă la final.
 
 - **condiția de deblocare**: partea (1) — urma — e **ÎNDEPLINITĂ**. Rămâne deschisă pentru ce a amânat Costin: echilibrul și orfanii ca posibile condiții de blocare, după o măsurătoare pe ce s-ar bloca pe firme reale. **Ce NU e păzit încă, și se spune:** nu există un test care să asertea că poarta refuză — azi e o probă funcțională, nu un clichet. Ciorne rămase? Dezechilibru pe `echilibru_perioada`? Orfani? Sau blocajul deja existent din `inchidere_luna`, mutat pe poartă? Se închide când poarta refuză motivat cel puțin pe condiția aleasă, cu gard.
+- **REZOLVATĂ 29.08.2026 (BLOC PPP).** Partea de urmă era îndeplinită din 26.08. Ce lipsea, și restanța o numea singură — *„nu există un test care să asertez că poarta refuză"* — s-a construit: `core/test_poarta_inchidere.py`, **10 teste**, cu calibrare în ambele direcții (o lună **curată** se închide · o notă din **altă lună** nu blochează) și cu urma verificată pe **trei acte succesive** (închisă → redeschisă → închisă). **Și poarta s-a lărgit**: vede acum și **facturile neîncheiate** — `ciorna` și `de_recunoscut`, a doua fiind starea născută azi la R91. *Motivul e același cu al ciornelor: după închidere, `contabilizeaza` și `recunoaste` refuză amândouă pe lună închisă, deci documentul ar rămâne pe veci fără evidență.* Refuzul rămâne o afirmație tipată care **numește fiecare cauză pe rândul ei**. *Ce a amânat Costin pe 26.08 — echilibrul și orfanii — rămâne amânat; nu s-a strecurat în închiderea asta.*
 
 ### R59 — Reevaluarea schimbă valoarea contabilă, dar registrul care conduce amortizarea rămâne pe cea veche
 
@@ -1717,7 +1724,8 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · TRASEE T35 · **PRAG 2** *(nicio cifră falsă; ce se poate pierde e un pachet lunar trimis la o adresă pe care n-o mai citește nimeni)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `e9998ee`
 - **deschisă pe commit**: `203fd31`
 - **măsurat la**: 2026-08-26 · **pe commit**: `203fd31`
 - **planul**: **NEACOPERIT.** Citit `PLAN_ARHITECTURA.md` după *identitate*, *autentificare*, *portal*, *patron_email* — niciun rezultat pe niciunul. Planul definește ciclul unui **document** și regulile registrului, dar nu spune nicăieri câte adrese are un om și care dintre ele e cea care contează. Aceeași lipsă ca la R62, alt capăt al ei. (METODA §25)
@@ -1728,6 +1736,8 @@ scos ce nu se știa**, nu din defecte noi.
 - **CIFRA, cerută de el, și e mai ciudată decât întrebarea**: pe **0** din 17 firme cele două adrese diferă — dar nu fiindcă ar fi egale. **Pe niciuna nu există amândouă**: 12 firme au adresa de pachet și niciun cont de portal · 2 au cont de portal și nicio adresă de pachet · 3 n-au niciuna. Deci divergența nu e nici teoretică, nici curentă: e **nemăsurabilă azi**, iar prima firmă care le va avea pe amândouă e și prima care o poate produce.
 - **și o a doua coloană fără cale de scriere, găsită pe drum**: `patron_email` are **precedență** în `pachete_api` (`coalesce(patron_email, email)`), dar **niciun ecran nu o scrie** — `grep` pe tot `static/`: zero. E aceeași formă cu `principal_client_id` de la R62, a doua în aceeași tură. Azi nu se vede, fiindcă `coalesce` cade pe `email`; se va vedea în ziua în care cineva o completează din afara aplicației.
 - **condiția de deblocare**: decizia lui Costin între **(a)** o singură adresă, iar cealaltă devine derivată; **(b)** rămân două, dar se confruntă și divergența se **arată** — la cabinet și la client; **(c)** rămân două fiindcă înseamnă lucruri diferite (cine intră vs. cine primește), și atunci se **numesc** diferit în interfață, ca nimeni să nu creadă că sunt aceeași. Se închide când nu mai există o pereche care poate diverge tăcut — cu gard.
+- **REZOLVATĂ 29.08.2026 (BLOC QQQ), și rezultatul e o absență, nu o fuziune.** Costin a cerut fuziunea directă: păstrează adresa cea mai recent actualizată, scrie cealaltă în `audit_log`, șterge dubla. **Executată pe tot portofoliul: 0 cazuri.** Pe nicio firmă nu există **amândouă** adresele — 1 firmă are cont de portal și nicio adresă de pachet, restul n-au cont de portal. Aceeași cifră ca la măsurătoarea din 26.08. Instrument: `scripts/fuziune_adrese.py`.
+- **DOUĂ LUCRURI CARE SE SCRIU, fiindcă altfel închiderea ar părea mai simplă decât e.** *(1)* Decizia din 26.08 — varianta (c), *„rămân două, fiindcă înseamnă lucruri diferite"* — și cea de azi **merg în direcții opuse**. Nimic nu s-a suprascris, fiindcă populația e goală; dar contradicția rămâne deschisă pentru prima firmă care va avea amândouă adresele. *(2)* **„Cea mai recent actualizată" n-are semnal mecanic**: `users.creat_la` e crearea contului, nu ultima schimbare a adresei, iar `firma_profil` n-are marcă de timp per câmp. Scriptul **nu ghicește** — unde nu se poate ști, raportează cazul ca nedecidabil și nu atinge nimic.
 
 ### R64 — Contabilitatea și stocul sunt două evidențe disjuncte, iar niciun document nu le leagă
 
@@ -1776,7 +1786,8 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · TRASEE T15 · interdicția 20 · **PRAG 2** *(nu produce o cifră falsă, dar produce un **document cu un gol** — adeverința și contractul îl tipăresc)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `e9998ee`
 - **deschisă pe commit**: `56275cb`
 - **măsurat la**: 2026-08-26 · **pe commit**: `56275cb`
 - **planul**: **NEACOPERIT**, a patra oară în aceeași zi pe aceeași lipsă: `PLAN_ARHITECTURA.md` nu spune cine scrie datele de identificare ale firmei, doar ce se face cu ele. Cel mai aproape e **interdicția 20** (*artefacte de un octet cu nume de declarație*) — un document care se produce cu un câmp gol e aceeași clasă, dar planul o scrie despre corpus, nu despre firmă. (METODA §25)
@@ -1789,6 +1800,7 @@ scos ce nu se știa**, nu din defecte noi.
 - **ordinea a fost și argumentul**: *„un refuz e onest doar dacă omul poate completa. Deci (a) e precondiția, iar (c) devine consecință firească.”* Amândouă în aceeași tură — **coloana și calea ei intră împreună**.
 - **ce a prins reparația, imediat**: `core/test_perioada_indisponibila.py` emitea o adeverință pe o schemă efemeră fără `patron_nume`. Fixtura o pune acum — și era important s-o pună, fiindcă testul ăla are un `pytest.raises(ValueError)` pe altceva (golul de tichet din 2025): fără fixtură, ar fi trecut pe refuzul greșit, adică **verde pe motivul nepotrivit**.
 - **condiția de deblocare**: decizia lui Costin între **(a)** primește câmp în ecranul de date ale firmei, lângă celelalte date de identificare; **(b)** se derivă din altceva care se scrie (titularul contului? un asociat?); **(c)** documentele care-l tipăresc **refuză** să se producă fără el, în loc să lase un gol — care e chiar forma din interdicția 20. Se închide când niciun document care ajunge la un om nu se mai poate produce cu câmpul ăsta gol, **fără ca cineva să fi putut să-l completeze**.
+- **REZOLVATĂ 29.08.2026 (BLOC RRR).** Cele două cerințe erau **deja construite pe 26.08**: `patron_nume` e câmp scriibil (`firma_profil_api`), iar `adeverinta` și `contracte_api` cheamă `firma_profil_api.cere_administrator`, care refuză și **numește documentul**. Ce lipsea era proba: gardul era **pur structural** — arăta pe AST că apelul *există*, nu că *refuză*. S-a adăugat proba funcțională, în **ambele direcții**: fără administrator (`None` și `"   "`) refuză cu mesajul care numește documentul; cu administrator, trece. *Un apel scris și o poartă care refuză nu sunt același lucru.*
 
 ### R67 — Suita de teste rulează pe baza de PRODUCȚIE, iar izolarea e o convenție, nu o barieră
 
@@ -1850,7 +1862,8 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · TRASEE · METODA §22 · **PRAG 2** *(măsurat: **5 din 193** de pași n-au apelant în `static/`; unul e declarat în cod ca intenționat, patru nu)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `e9998ee`
 - **deschisă pe commit**: `0851725`
 - **măsurat la**: 2026-08-26 · **pe commit**: `0851725`
 - **planul**: **NEACOPERIT.** `PLAN_ARHITECTURA.md` descrie ciclul unui **document** și regulile registrului; nu spune nicăieri că o cale de cod trebuie să fie **ajunsă**. Cel mai aproape ca formă e **P13** (*ecranul spune una, serverul face alta*), dar acolo cele două există și se contrazic; aici a doua nu e chemată deloc. (METODA §25)
@@ -1877,6 +1890,8 @@ scos ce nu se știa**, nu din defecte noi.
   - **regula care se poate citi de la distanță**, scrisă în antet: *o intrare nouă în `_ARTEFACTE` e o mărturisire despre detector; un marcaj nou în `main.py` e o decizie despre produs.* Nu se mai pot confunda.
   - **RED-proof**: cu marcajul scos de pe `calcul-cm` (în memorie, fișierul neatins), ruta **iese** din mulțimea derivată — deci ar fi raportată. Plus anti-vacuu: dacă `declarate()` s-ar goli, gardul pică.
 - **condiția de deblocare**: decizia lui Costin între **(a)** gard cu clichet pe 5 și cale de declarare pentru cele intenționate — cele patru nedeclarate se declară sau se scot; **(b)** doar cele patru se lămuresc acum, iar gardul se face după; **(c)** altceva. Se închide când *o rută nouă fără apelant* nu mai poate trece poarta tăcut.
+- **REZOLVATĂ 29.08.2026 (BLOC SSS).** Condiția era *„se închide când o rută nouă fără apelant nu mai poate trece poarta tăcut"* — și e îndeplinită de gardă (`core/test_ruta_fara_apelant.py`), care refuză o rută nouă nedeclarată. Ce lipsea era **clasificarea**, iar ea s-a făcut: `scripts/scan_rute_clasificate.py`. **33** de rute fără apelant în `static/`, din care **8 API declarată** în cod cu `[api_intern_v1]` — între ele cele două acte construite azi, dezlegarea (R90) și recunoașterea (R91) —, **25 artefacte cunoscute** ale detectorului, și **0 CANDIDAȚI**.
+- **Nu s-a șters nimic, și nici nu s-a propus.** Cerut explicit. *Limita moștenită, declarată: detectorul caută ultimul segment al căii în textul din `static/`, deci o rută chemată printr-o cale compusă la rulare nu e găsită — lista e un plafon superior. Aia e chiar orbirea măsurată la **R80**, care rămâne deschisă.*
 
 ### R71 — Ce a scos prima exercitare pe date: șapte lucruri pe care nicio gardă nu le vede
 
@@ -1963,7 +1978,8 @@ scos ce nu se știa**, nu din defecte noi.
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · P13 · **PRAG 2** *(nu se poate demonstra că un eșec s-a produs — chiar asta e problema. Efectul e producibil oricând serverul de mail pică, iar atunci ecranul afirmă fals la fiecare cerere)*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `e9998ee`
 - **deschisă pe commit**: `9ece318`
 - **măsurat la**: 2026-08-26 · **pe commit**: `9ece318`
 - **planul**: **ACOPERIT.** `PLAN_ARHITECTURA.md`, secțiunea despre **text care afirmă fals**, dă chiar tiparul: *„«Vector necompletat» pe firme cu vectorul complet. «Patru-ochi e dezactivat» pe o politică doar suspendată.”* La fel: *„ai primit linkul de logare”* pe o trimitere care a eșuat. Planul nu cere o decizie nouă — cere ca afirmația să nu fie falsă. (METODA §25)
@@ -1979,6 +1995,9 @@ scos ce nu se știa**, nu din defecte noi.
   - **ANTI-VACUU**: domeniul e ancorat pe **subiectul emailului** — un argument al apelului protejat, nu un număr de linie. Dacă subiectul se schimbă, gardul **pică** în loc să se uite în gol.
 - **ce NU face, declarat**: **niciun clichet pe cele 28 de `except …: pass` rămase.** Costin, explicit: *„pe alea nu le-am măsurat și nu știm care sunt legitime."* Și nu verifică dacă emailul chiar pleacă — doar că, dacă nu pleacă, rămâne urmă.
 - **condiția de deblocare**: decizia lui Costin între **(a)** toate patru trec pe `esec_secundar`, cu `alerta=True` pe cele trei căi de intrare — tăcerea acolo are cost de acces, ceea ce docstringul lui numește drept criteriu; **(b)** doar log, fără alertă, pe toate patru; **(c)** mesajul de pe ecran se schimbă și el, ca să nu mai afirme trimiterea. Se închide când un eșec de trimitere lasă urmă, cu gard.
+- **REZOLVATĂ 29.08.2026 (BLOC TTT), pe varianta (a) din propria condiție.** Costin: *vizibilitate obligatorie la eșec.* Reparația era **deja aplicată din 27.08**: toate patru trimiterile pe `esec_secundar`, cu `alerta=True` pe cele **trei căi de intrare** și fără alertă pe bun-venit, cu gardă structurală de 12 teste și RED-proof pe sursa reală.
+- **CE S-A ADĂUGAT AZI e proba că urma APARE când eșecul se produce**, nu doar că apelul e scris: `scripts/proba_esec_email.py` strică trimiterea și citește ieșirea. **3 din 3 căi de intrare**: resetarea parolei, linkul de logare și invitația de asistent răspund normal *și* lasă urmă *și* alertă. *A patra — bun-venitul la înregistrarea unui cabinet — **nu s-a exercitat**: ruta creează un cabinet întreg, cu schemă de tenant, iar curățarea ar cere `tenant_stergere`, care la R79 își produce propriul orfan. Rămâne acoperită structural. Se spune, nu se ascunde într-un «3 din 3».*
+- **Reîncercarea automată NU s-a construit** (TTT2, a doua jumătate): nu e ieftin de adăugat acum — cere o coadă cu stare și o politică de expirare, adică un obiect nou, nu o schimbare de apel. *Nu se deschide restanță separată pentru ea în tura asta: e o capabilitate nouă, nu o lipsă a celei reparate. Dacă o vrei, e o cerință, nu o restanță.*
 
 ### R91 — O factură EMISĂ care intră prin import nu produce nota, iar absența e DECLARATĂ, nu decisă
 

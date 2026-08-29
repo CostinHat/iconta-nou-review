@@ -3,6 +3,66 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 29.08.2026 (8) — Șapte decizii de arhitect, iar șase dintre ele întâlnesc un cod deja construit
+
+**Deciziile lui Costin**, scrise înainte de construcție. *Ce s-a aflat citindu-le contra registrului
+schimbă înțelesul a patru dintre ele, și se scrie aici, nu doar în raport: o decizie care crede că
+deschide un drum, dar drumul e deja făcut, nu e aceeași decizie.*
+
+**1. R45 — nu se construiește stocarea artefactelor.** *„Descărcarea e suficientă, nu justifică
+investiția."* Cele patru artefacte — situațiile financiare, fișierul de plată a salariilor,
+exporturile contabile, auditul de preluare — se produc, se descarcă și **nu se păstrează**, iar asta
+rămâne starea aleasă, nu una nimerită. *Ce se pierde, spus o dată ca să nu se redescopere: la o
+preluare inversă, „ce s-a exportat și când" rămâne o întrebare fără răspuns în aplicație.*
+
+**2. R54 — contul din corpul cererii rămâne liber.** **DAR PREMISA NU SE POTRIVEȘTE CU CODUL, și n-am
+schimbat nimic pe ea.** Validarea **există și e aplicată din 26.08.2026**, pe decizia opusă a lui
+Costin de atunci — *„o notă cu cont inexistent nu e evidență, e un rând care arată ca evidență"* —,
+construită în `core/cont_valid.py`, legată în `main.py` și probată pe `tenant_013`. „Nu se adaugă
+validare" ar fi însemnat nu *a nu adăuga*, ci **a scoate** o poartă care funcționează. N-am scos-o:
+o ștergere de gardă pe o premisă care nu se verifică e chiar clasa pe care metoda o interzice.
+*Restanța se închide — nu fiindcă rămâne liber, ci fiindcă a fost decisă și rezolvată acum trei zile.*
+
+**3. R58 — verificare la închidere + urmă la redeschidere.** Confirmă și extinde decizia din 26.08.
+Ce **exista**: poarta refuză pe note în ciornă și pe blocajul din `inchidere_luna`; redeschiderea cere
+motiv și lasă urmă în `perioade_inchideri`, cu constrângere **în bază**. Ce **s-a adăugat azi**:
+poarta vede și **facturile neîncheiate** — `ciorna` și `de_recunoscut`. A doua e chiar starea născută
+azi la R91, deci clasa n-avea cum să fie acoperită de verificarea de acum trei zile. *Motivul e
+același cu al ciornelor: după închidere, `contabilizeaza` și `recunoaste` refuză amândouă pe lună
+închisă — documentul ar rămâne pe veci fără evidență.*
+
+**4. R63 — fuziune pe cea mai recentă.** **Merge împotriva deciziei din 26.08 (varianta (c))**, unde
+Costin scrisese: *„rămân două, fiindcă înseamnă lucruri diferite… cine intră în portal și cine
+primește pachetul lunar chiar pot fi persoane diferite."* Am executat fuziunea, cum s-a cerut, și
+**n-a găsit nimic**: pe nicio firmă nu există **amândouă** adresele — aceeași cifră ca la
+măsurătoarea din 26.08. Deci decizia nouă n-a suprascris nimic, iar contradicția rămâne o întrebare
+deschisă pentru ziua în care prima firmă le va avea pe amândouă. *Și încă ceva, măsurat: „cea mai
+recent actualizată" **n-are semnal mecanic** — `users.creat_la` e crearea contului, nu ultima
+schimbare a adresei, iar `firma_profil` n-are marcă de timp per câmp. Scriptul nu ghicește: unde nu
+se poate ști, raportează și nu atinge.*
+
+**5. R66 — câmp explicit + refuz la lipsă.** **Deja construit pe 26.08**, tot pe decizia lui:
+`patron_nume` e câmp scriibil, iar `adeverinta` și `contracte_api` cheamă `cere_administrator`, care
+refuză și **numește documentul**. Ce s-a adăugat azi e proba **funcțională**: gardul era pur
+structural — arăta că apelul *există*, nu că *refuză*. Acum arată amândouă direcțiile.
+
+**6. R70 — clasificare obligatorie, nu ștergere oarbă.** Clasificate toate cele **33** de rute fără
+apelant: **8** API declarată în cod (`[api_intern_v1]`), **25** artefacte cunoscute ale detectorului,
+**0 candidați**. Nu s-a șters nimic, și nici nu s-a propus. *Condiția restanței — „o rută nouă fără
+apelant nu mai poate trece poarta tăcut" — era deja îndeplinită de gardă; ce lipsea era lista, iar
+lista nu mai are pe cine acuza.*
+
+**7. R73 — vizibilitate obligatorie la eșec.** E **varianta (a)** din condiția restanței, și e
+**deja aplicată din 27.08**: toate patru pe `esec_secundar`, trei cu `alerta=True`, cu gardă
+structurală și RED-proof. Ce lipsea era proba că urma **apare** când eșecul se produce — provocată
+azi pe cele trei căi de intrare. *A patra, bun-venitul, rămâne neexercitată: ruta creează un cabinet
+întreg. Se spune.*
+
+**CE ÎNSEAMNĂ TIPARUL ĂSTA, fiindcă e a doua oară azi:** o comandă scrisă pe o citire mai veche a
+registrului cere lucruri deja făcute. Nu e o pierdere — verificarea premisei a costat o oră și a
+scos două lucruri reale (poarta care nu vedea facturile, gardul care lipsea la R58). Dar arată de ce
+`CONFORMITATE.md` trebuie citit **înainte** de a scrie comanda, nu doar înainte de a o executa.
+
 ## 29.08.2026 (7) — Două confirmări de arhitect, ca să nu rămână presupuneri validate tăcut
 
 *Amândouă erau, până azi, alegeri de-ale mele scrise ca presupuneri. Costin le-a confirmat, fără
