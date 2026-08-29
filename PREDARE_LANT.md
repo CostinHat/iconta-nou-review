@@ -1,19 +1,22 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **faza 1 din E1 e TERMINATĂ**: 1a, 1b, 1c măsurate, 1d rescris (29.08.2026)
+# PREDARE LANȚ — faza 1 terminată, **clasa R97 măsurată**: 66 de câmpuri tăcute, dar lista 5 nu crește (30.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-29** — **actualizare de secțiuni**, nu rescriere completă (a
-  treisprezecea atingere a zilei). S-au schimbat
+- **ultima rescriere**: **2026-08-30** — **actualizare de secțiuni**, nu rescriere completă. S-au
+  schimbat
   **antetul**, **unde suntem în plan**, **de unde se pornește**, **starea codului**, **starea la
   predare**, **tabelul de restanțe** și **dacă continui**. Restul rămâne cum era, fiindcă nu s-a
   schimbat. *Rescrierea completă de acum câteva ore a fost necesară fiindcă documentul se
   stratificase; o a doua rescriere completă la trei ore după prima ar fi fost ritual, nu nevoie.*
-- **ce s-a schimbat de fapt**: **faza 1 s-a terminat.** 1b măsurat pe regimurile reale (12 din 12,
-  19 firme, 285 de generări prin DUKIntegrator) · 1c măsurat pe artefactele care ies (168 de ieșiri)
-  · **verdictul 1d rescris**, cu șase poziții mutate · s-au deschis **R93–R98** · `scripts/` nu mai
-  contează ca apelant de producție (decizia lui Costin, `DECIZII.md` 29.08 (10)).
+- **ce s-a schimbat de fapt, azi**: **clasa R97 e MĂSURATĂ** — 66 de câmpuri livrate și tăcute, pe 17
+  rute (plafon inferior), din care **doar 2 poartă artefacte cerute de lege**. **Lista 5 rămâne la 10
+  poziții**: marginea despre care se spunea „nu se poate ști" era **zero**.
+- **ce s-a schimbat ieri (29.08), și rămâne adevărat**: faza 1 s-a terminat — 1b pe regimurile reale
+  (12 din 12, 19 firme, 285 de generări prin DUKIntegrator) · 1c pe artefactele care ies (168 de
+  ieșiri) · **verdictul 1d rescris**, cu șase poziții mutate · s-au deschis **R93–R98** · `scripts/`
+  nu mai contează ca apelant de producție (`DECIZII.md` 29.08 (10)).
 - **ultima rescriere COMPLETĂ**: tot azi, a douăsprezecea atingere —
   primele unsprezece au fost **pe secțiuni**, iar documentul se stratificase: un paragraf „de unde se
   pornește" apărea de două ori, tabelul de restanțe avea două rânduri „restul" (unul spunea **44**,
@@ -26,7 +29,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   tabel**. *Se scrie aici, nu doar în tabel: o rescriere al cărei scop era să scoată afirmațiile
   purtate din memorie a purtat ea însăși una, la douăzeci de minute după ce a explicat de ce nu se
   face asta.*
-- **pe commit**: `89f11f0` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care
+- **pe commit**: `d54d58a` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care
   poartă munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e
   arborele care devine commitul următor.*
 - **cum se citește „pe commit", ca să nu mai pară stale**: numele de acolo e al commitului
@@ -34,7 +37,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   mai jos, măsurată cu formula din `pre-commit`.
 - **vechime măsurată, nu estimată**: **1 commit** de la ultima atingere a fișierului, citit acum cu
   formula din hook (`git rev-list --count $(git log -1 --format=%H -- PREDARE_LANT.md)..HEAD`) —
-  commitul instrumentului lui 1c, `89f11f0`. **Devine 0 odată cu commitul care poartă rândurile
+  commitul instrumentului lui R97, `d54d58a`. **Devine 0 odată cu commitul care poartă rândurile
   astea.**
   Pragul din hook e **10**; avertismentul `[pre-commit] ATENTIE` **nu a apărut** în niciuna din
   porțile de azi. *Se scrie cifra de la momentul scrierii, nu cea de după — altfel documentul ar
@@ -218,11 +221,17 @@ din listele verdictului — e o decizie de ordine, deci a lui Costin.
   (R95), una cere întâi răspunsul la R36 (R96). *R93 e singura cu instanță vie: contabilul de pe
   `tenant_001` primește eroarea brută a validatorului ANAF în loc de propoziția pe care aplicația o
   avea deja scrisă.*
-- **R97 e cea care schimbă felul în care se citesc cifrele lui 1c**, nu doar o restanță în plus:
-  clasa *„ruta livrează, ecranul tace"* spune că sub limita declarată a lui 1c — el măsoară ce trimite
-  ruta, nu ce randează ecranul — **stau defecte reale**, două dovedite. Cât de mare e clasa **nu se
-  știe**, deci cele 10 poziții ale listei 5 sunt un **plafon inferior**, iar afirmația „e un caz
-  izolat" n-are voie să fie făcută până nu e demonstrată.
+- **R97 — MĂSURATĂ pe 30.08, și rezultatul are două jumătăți care trag în direcții opuse.** Clasa
+  *„ruta livrează, ecranul tace"* e **mare și reală**: **66 de câmpuri tăcute sigur, pe 17 rute**
+  (plafon inferior, fiindcă „randat" e supra-numărat prin construcție), plus 268 de candidați pe 41 de
+  rute. **89 din cele 106 rute măsurate n-au niciun câmp tăcut** — deci e concentrată, nu difuză.
+  **DAR:** din cele 17 rute, doar **două** poartă artefacte din lista lui 1a, și amândouă erau deja în
+  lista 5. **Lista 5 rămâne la 10 poziții — marginea era zero.** Restul de 14 sunt **ecrane interne**.
+  *Cifra asta e chiar cea care lipsea ca să se poată alege ordinea listelor.*
+- **Ce a crescut totuși: adâncimea.** Statul de plată avea 7 câmpuri tăcute cunoscute; are **12** —
+  printre cele noi, `cm_brut`/`cm_net`/`cm_zile`, adică **concediul medical**, și tichetele. Iar
+  `/tenants/{id}/scoatere` tace pe **11 din 31** de câmpuri: previzualizarea celui mai distructiv act
+  al aplicației nu arată nici ce s-a decis, nici ce anume s-ar șterge.
 - **cele 16 „fără prag declarat" sunt cele vechi (R1–R27)** — nu înseamnă că sunt ușoare, înseamnă că
   n-au fost încadrate când s-a introdus scara de praguri.
 - **decizii care blochează: niciuna.** Toate trei care blocau punctul de decizie 1 au primit răspuns
@@ -244,11 +253,12 @@ din listele verdictului — e o decizie de ordine, deci a lui Costin.
 
 ## STAREA LA PREDARE
 
-Poartă verde, citită din rularea care a produs `89f11f0`: **3564 teste trec** · 10 skip · 14 xfail ·
+Poartă verde, citită din rularea care a produs `d54d58a`: **3564 teste trec** · 10 skip · 14 xfail ·
 ruff OK · verificator **TOTAL 0** (182 scanate = 181 acceptate + 1 exclus) · rute
 **413 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 34** (clichet GRI 45) · site **200** · four-way
-`HEAD = origin/main = origin/backup/lant-2026-08-29 = 89f11f0`, procesul viu restartat de post-commit
-la **23:02:50**, după commitul de la **22:49:57**.
+`HEAD = origin/main = origin/backup/lant-2026-08-30 = d54d58a`, procesul viu restartat de post-commit.
+*Ramura de backup e a zilei noi — `lant-2026-08-30`, creată de hook la primul commit de după miezul
+nopții.*
 
 **Poarta a respins de TREI ORI în ziua asta, și toate trei respingerile au fost ale mele, nu
 regresii.** A treia a fost `commit-msg`: în commit erau fișiere **normative** (`CONFORMITATE.md`),
@@ -468,10 +478,11 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
    **Costin a retras el însuși amândouă comenzile**, în tura următoare. Verificarea premisei a costat
    o oră și a scos două lucruri reale.
 3. **Nu propune un pas următor — cere-l.** Faza 1 nu mai are pași; ce urmează e ordine, adică
-   decizie. Ce e pe masă, ca material pentru decizia aia: **lista 4** (2 poziții, cea mai mică și cea
-   mai ascuțită — R93), **clasa R97** (nemăsurată, și face lista 5 să fie doar un plafon inferior),
-   **lista 3** (8 artefacte, muncă de construit), și **faza 2 — temeiurile**, care e pasul următor
-   din plan.
+   decizie. **Materialul pentru ea e acum complet**, fiindcă R97 a fost măsurată exact ca să nu se
+   aleagă pe presupuneri: **lista 4** — 2 poziții, cea mai mică și cea mai ascuțită (R93) · **lista
+   3** — 8 artefacte, muncă de construit · **lista 5** — 10 poziții, **și cifra e finală**, nu plafon
+   · **clasa R97** — 66 de câmpuri pe 17 rute, din care 14 rute sunt ecrane interne, **în afara**
+   setului măsurat de faza 1 · **faza 2 — temeiurile**, pasul următor din plan.
 4. **Nu porni nicio construcție fără măsurătoare.**
 5. **`scripts/raport_b.py` derivă „Unde suntem".** Nu se scrie de mână.
 6. **Raportul se scrie din `SABLON_RAPORT.md`**, în ordinea:

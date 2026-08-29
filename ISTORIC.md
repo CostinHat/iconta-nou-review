@@ -5970,3 +5970,68 @@ altfel rescrierea celor patru secțiuni ar fi o promisiune, nu o reparație.
 **Patru intrări, douăzeci și ceva de commituri, și niciun contabil.** Faza 1 spune acum, cu cifră, ce
 iese și ce se poate verifica — dar **R40 rămâne deschisă**: nicio declarație depusă prin aplicație.
 Setul se măsoară; nu s-a exercitat încă pe nimeni.
+
+## 30.08.2026 — Clasa R97 are cifră: 66 de câmpuri livrate și tăcute, pe 17 rute. Iar cifra spune și ce NU crește
+
+*Verdictul de producție, pe `git log 3859bb6..HEAD --name-only`: **zero fișiere de producție
+atinse** — un instrument nou și registrele. Niciun ecran, nicio rută, nicio regulă de calcul.*
+
+### Ordinea a fost ținută, și era scrisă în chiar condiția restanței
+
+Costin: *„Nu lista 4, nu faza 2. […] Ordinea o dă chiar condiția pe care ai scris-o în R97: întâi
+instrumentul care confruntă trimis↔randat, pe fiecare pereche, apoi reparațiile."* Motivul lui, care
+e argumentul întreg: *până nu știm cât de mare e clasa, orice reparație e reparație pe instanță, iar
+lista 5 e declarată plafon inferior — deci nu știm ce reparăm din ce.*
+
+### Instrumentul: `scripts/scan_r97_livrat_tacut.py`
+
+**Perechea o declară ecranul, nu o ghicesc eu.** Fiecare `api.get(...)` din `static/js/` numește ruta
+pe care o consumă; se ia URL-ul așa cum e scris, i se înlocuiesc interpolările cu valori reale, se
+cheamă **viu**, și se citesc cheile răspunsului **la toate adâncimile** — fiindcă amândouă instanțele
+cunoscute erau chei imbricate.
+
+**Direcția de eroare, aleasă deliberat:** „randat" se caută pe **nume**, deci e supra-numărat, deci
+**clasa iese plafon inferior**. Aia e direcția care contează: o cifră care spune *„cel puțin atâtea"*
+poate dovedi că nu e caz izolat; una care supra-numără n-ar dovedi nimic.
+
+### Rezultatul
+
+**Domeniu:** 175 de apeluri, 129 de perechi distincte, **106 măsurate**. Neatins și numărat: 36 cu
+interpolare nesubstituibilă, 23 refuzate (19 rute de administrator, 2×404, 1×422, 1×405).
+
+| prag | cifră |
+|---|---|
+| **TĂCUT SIGUR** — numele nu apare **nicăieri** în `static/js` | **66 de câmpuri, pe 17 rute** |
+| **TĂCUT în ecranul care-l cere** — apare altundeva | 268 de câmpuri, pe 41 de rute |
+| rute măsurate **fără niciun** câmp tăcut sigur | **89 din 106** |
+
+**Deci nu e caz izolat — și e concentrat, nu difuz.** Cele mai mari instanțe: **statul de plată 12**
+(mai mult decât se știa: pe lângă cele 7 componente ale netului tac și `cm_brut`/`cm_net`/`cm_zile`,
+adică **concediul medical**, plus tichetele) · **`/tenants/{id}/scoatere` 11 din 31** —
+previzualizarea celui mai distructiv act al aplicației nu arată nici ce s-a decis, nici ce anume s-ar
+șterge · `control-fiscal/{id}` 10 din 216 · `contracte/marcaje` 9 din 11.
+
+### Partea care schimbă ordinea, și e inversul a ce părea
+
+Lista 5 spunea *„10 poziții, plafon inferior — câte mai sunt se știe după ce se măsoară clasa"*.
+S-a măsurat: **din cele 17 rute, doar DOUĂ poartă artefacte din lista lui 1a** — statul de plată și
+registrul-jurnal —, **și amândouă erau deja înăuntru**. Celelalte 14 sunt **ecrane interne**, nu
+artefacte cerute de lege; a 17-a e Registrul-inventar de partidă simplă, neexercitat.
+
+**Lista 5 rămâne la 10 poziții. Marginea necunoscută era zero.** Ce a crescut e **adâncimea** unei
+poziții, nu numărul lor.
+
+*Asta e chiar cifra care lipsea ca să se poată alege ordinea: clasa e mare, dar cade aproape întreagă
+în afara setului de artefacte pe care faza 1 îl măsoară.*
+
+### Ce s-a mai dovedit, fiindcă nu se presupune
+
+Un GET **nu are voie** să scrie (interdicția 6, măsurată: 0 din 172) — dar „nu are voie" nu e „nu
+scrie", iar printre rutele chemate e chiar `/tenants/{id}/scoatere`. Sonda face snapshot
+înainte/după pe nouă martori. **S-a mișcat doar `audit_log`, +128.** Restul — `tenants`, `users`,
+`inregistrari`, `inregistrari_linii`, `facturi`, `salariati`, `declaratii_coada`,
+`declaratii_depuse` — neatinse.
+
+Iar calibrarea e **aserțiune**, nu observație: instrumentul **pică** dacă nu găsește cele șase
+câmpuri ale instanțelor cunoscute, sau dacă raportează ca tăcut vreunul din cele trei care chiar se
+randează.
