@@ -3,6 +3,62 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 29.08.2026 (4) — R90 pe varianta (a), forma cu ACT EXPLICIT; facturile emise din SPV rămân nedecise; R89 neatinsă a treia oară
+
+**1. R90 — varianta (a), iar dintre cele două forme ale ei: ACTUL EXPLICIT DE DEZLEGARE.**
+Costin: *„O plată greșit potrivită e eroare de reconciliere, nu fapt care blochează documentul pe
+veci."* Respins **(b)** — *ar pedepsi utilizatorul pentru un bug de sistem*.
+
+**Alegerea dintre cele două forme e a mea, pe criteriul cerut — care lasă urmă mai clară.** Formele
+erau: *act de dezlegare explicit (rută + urmă + rol)* vs *ștergerea facturii dezleagă singură notele
+care nu sunt contări*. **Actul explicit**, din patru motive, în ordinea greutății:
+
+- **urma.** Sub forma automată, dezlegarea ar fi un efect secundar al unei ștergeri: fără autor
+  propriu, fără motiv, fără moment al ei. Iar **după** ștergere n-ai mai putea spune *ce* s-a
+  dezlegat — factura la care trimiteau notele nu mai există. Sub actul explicit, fiecare dezlegare e
+  o faptă cu numele ei, în `public.audit_log`, cu nota, factura și motivul.
+- **efectul depășește ștergerea, și nu era evident.** `reconciliere_api.facturi_deschise` calculează
+  soldul unei facturi **chiar din notele legate prin `factura_id`** (credit 4111 la emise, debit 401
+  la primite). Dezlegarea unei plăți **face factura să reapară ca neîncasată** — o cifră pe care o
+  vede omul. Sub forma automată, asta s-ar întâmpla ca efect colateral al unei ștergeri; sub cea
+  explicită, e rezultatul unui act ales.
+- **eroarea reală se repară fără să distrugi documentul.** O potrivire greșită la reconciliere se
+  corectează **dezlegând**, nu ștergând factura. Forma automată poate repara numai prin distrugere.
+- **motivul e obligatoriu, și numai un act îl poate cere.** O dezlegare făcută pe furiș n-are unde
+  să-l poarte.
+
+*Ce se păstrează oricum, și de-aia actul e reversibil în înțeles:* `extras_linii.alocari` ține
+potrivirea originală (`factura_id` + sumă) ca fapt al liniei de extras, independent de notă.
+
+**2. FACTURILE EMISE CARE INTRĂ PRIN IMPORT — rămâne DESCHISĂ, nedecisă.** Costin: *„Nu o fixa.
+Recomandarea arhitectului înclină spre (iii) — ciornă de recunoaștere cu act de validare simetric
+primitei — dar decizia se ia cu minte odihnită, măsurătoarea e zero azi."* Restanța e **R91**, cu
+cele trei variante scrise și cu recomandarea consemnată **ca recomandare**, nu ca alegere.
+
+**3. R89 — NU se atinge, a treia oară.** Rămâne DESCHISĂ, pentru o sesiune dedicată.
+
+**DECIZII MICI, luate în construcție. Se scriu ca să nu treacă drept deduse:**
+
+- **rolul rutei de dezlegare e `admin_firma`**, cu excepția numită în `core/test_r42_criteriu.py`
+  lângă cea a validării. Criteriul e cel din **R55**, nu cel din R42: actul schimbă **ce are firma de
+  încasat**, nu predă un artefact. Garda a cerut declarația, și pe drept — altfel un rol pus pe o
+  rută de notă ar fi contrazis tăcut decizia din 26.08.
+- **poarta de perioadă stă în RUTĂ, la `_cere_perioada_deschisa`**, nu în modul. Prima formă o avea în
+  amândouă; două locuri care întreabă *„e luna închisă?"* sunt două definiții ale aceleiași porți.
+  *Măsurat pe drum: fără poarta din rută, `UPDATE`-ul ajunge la declanșatorul din bază, care ridică o
+  eroare de PL/pgSQL — un `423` cu mesaj și o excepție brută nu sunt același lucru pentru om.*
+- **ruta n-are buton, și e DECLARAT în cod** (`[api_intern_v1]`). Motivul e măsurat, nu comod:
+  **nicio cale din `static/` nu șterge o factură** — `api.del` pe facturi nu există (cel de la
+  `facturi_ecran.js:1015` e pe `facturi-recurente`). Deci și `DELETE /facturi/{id}` e act de API, iar
+  dezlegarea ar fi fost singurul buton dintr-un drum fără ecran. *Nu deschid restanță nouă pentru
+  asta: clasa e chiar **R70** (rute fără apelant), iar orbirea detectorului pe căile compuse e **R80**.*
+- **clasificatorul a primit o a treia condiție: fără trezorerie.** Găsită prin citirea codului
+  înainte de a construi: la o firmă cu TVA la încasare, `reconciliere_api` adaugă pe nota de plată
+  linia de exigibilitate (`4428 = 4427` / `4426 = 4428`), iar nota devine **terț + TVA** — exact
+  semnătura de contare. Fără regulă, fals-pozitivul închis ieri s-ar fi întors pe altă ușă: o factură
+  plătită ar fi părut deja contată. **Clasă LATENTĂ** — nicio firmă din portofoliu nu e în regimul
+  ăla —, deci reparată pe clasă, nu pe instanță.
+
 ## 29.08.2026 (3) — Idempotența se construiește peste un zero care nu absolvă; TVA la încasare, varianta (ii); R89 nu se atinge
 
 **1. IDEMPOTENȚA: verificarea se construiește ÎNAINTE de prima notă automată, chiar dacă BBB2 = 0.**
