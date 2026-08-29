@@ -184,6 +184,36 @@ def apare_undeva(nume, tot):
     return re.search(r"\b%s\b" % re.escape(nume), tot) is not None
 
 
+RE_GENERIC = r"Object\.(?:keys|entries|values)\(\s*%s\b"
+RE_FORIN = r"for\s*\(\s*(?:const|let|var)?\s*\w+\s+in\s+(?:\w+\.)*%s\b"
+
+
+def randat_generic(parinte, src):
+    """Containerul `parinte` e parcurs GENERIC în `src`? Atunci copiii lui ajung pe ecran fără să
+    fie numiți, iar o căutare pe NUME nu-i vede.
+
+    DE CE EXISTĂ, și e o reparație a instrumentului, nu o rafinare: prima formă a raportat 66 de
+    câmpuri tăcute, printre care `randuri_de_sters.audit_log` (ecranul de scoatere) și cele 9
+    `marcaje.*` (ecranul de contracte). **Citite la sursă, amândouă SE AFIȘEAZĂ** — prin
+    `Object.keys(rd)` și `Object.entries(marcaje)`. Deci greșeala nu era o nuanță: instrumentul
+    supra-număra clasa, adică **exact invers decât direcția pe care o declarasem** („randat e
+    supra-numărat, deci clasa e plafon inferior").
+
+    Se rezolvă și un nivel de alias — `const rd = p.randuri_de_sters` urmat de `Object.keys(rd)` —
+    fiindcă ăla e chiar cazul real. **Ce nu rezolvă:** alias pe două niveluri, parcurgere printr-o
+    funcție ajutătoare, sau parcurgere într-un ALT fișier. Acolo rămâne supra-numărare, declarată.
+    """
+    import re as _re
+    p = _re.escape(parinte)
+    if _re.search(RE_GENERIC % p, src) or _re.search(RE_FORIN % p, src):
+        return True
+    for m in _re.finditer(r"(?:const|let|var)\s+(\w+)\s*=\s*[^;\n]*\b%s\b" % p, src):
+        alias = _re.escape(m.group(1))
+        if _re.search(RE_GENERIC % alias, src) or _re.search(RE_FORIN % alias, src):
+            return True
+    return False
+
+
 def apare_in_ecran(nume, src):
     """Acces de proprietate sau literal de cheie, în fișierul care face apelul."""
     n = re.escape(nume)
@@ -229,10 +259,15 @@ def ruleaza():
             continue
         chei = chei_recursiv(corp)
         src = pe_fisier.get(fisier, "")
-        sigur, candidat, generice = [], [], []
+        sigur, candidat, generice, prin_container = [], [], [], []
         for cale, nume in sorted(chei.items()):
             if nume in PREA_GENERICE:
                 generice.append(cale)
+                continue
+            # Containerul e parcurs generic? Atunci copilul ajunge pe ecran fără să fie numit.
+            parinti = [p.replace("[]", "") for p in cale.split(".")[:-1] if p.replace("[]", "")]
+            if any(randat_generic(p, src) for p in parinti):
+                prin_container.append(cale)
                 continue
             if not apare_undeva(nume, tot_js):
                 sigur.append(cale)
@@ -240,7 +275,7 @@ def ruleaza():
                 candidat.append(cale)
         rez.append({"fisier": fisier, "url": concret, "chei": len(chei),
                     "tacut_sigur": sigur, "tacut_in_ecran": candidat,
-                    "generice": len(generice)})
+                    "randat_prin_container": prin_container, "generice": len(generice)})
     dupa = _snapshot(SCHEMA_TINTA)
     miscat = {k: (inainte.get(k), dupa.get(k)) for k in sorted(set(inainte) | set(dupa))
               if inainte.get(k) != dupa.get(k)}
@@ -279,6 +314,9 @@ def tipar(d):
           % (n_sigur, len(cu_sigur)))
     print("  TĂCUT ÎN ECRANUL CARE-L CERE (apare altundeva):      %d câmpuri, pe %d rute"
           % (n_cand, len([r for r in d["rezultate"] if r["tacut_in_ecran"]])))
+    n_cont = sum(len(r.get("randat_prin_container") or []) for r in d["rezultate"])
+    print("  RANDAT PRIN CONTAINER (Object.keys/entries pe părinte): %d câmpuri — SCOASE din clasă"
+          % n_cont)
     print("  *Primul e PLAFON INFERIOR: randatul e supra-numarat prin constructie.*")
 
     print("\n═══ RUTELE CU CÂMPURI TĂCUTE SIGUR")
