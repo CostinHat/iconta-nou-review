@@ -206,6 +206,24 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - o factură cu notă contabilă nu se șterge — se rupe lanțul P14
 - dacă ștergerea e permisă pe ciorne, verifică ce o deosebește de o factură emisă; iar dacă nu există distincția, aia e constatarea
 
+### `POST /tenants/{tenant_id}/facturi/{factura_id}/recunoaste`
+
+*garda `cere_rol` · rol:admin_firma*
+
+*ce face: RECUNOAȘTEREA unei facturi EMISE venite prin import — actul care îi scrie nota — scrie facturi (UPDATE)*
+
+- [ ] înainte de act, factura adusă prin import stă în starea `de_recunoscut` și **n-are nicio notă** — sosirea documentului nu e faptul economic
+- [ ] **și totuși e DECLARABILĂ**: apare în D300 pe luna emiterii chiar nerecunoscută, fiindcă TVA-ul e datorat la emitere (art. 281 CF). *Verificarea asta e cea care apără defectul 1.1 din 22.08.2026*
+- [ ] după act, factura are **exact o notă**, în stare `ciorna`, cu `sursa='facturi'` și cu `factura_id` care trimite la ea — patru-ochi rămâne neatins (R47)
+- [ ] documentul justificativ derivat din notă numește factura originală, cu numărul și data ei
+- [ ] factura trece pe `emisa`: după recunoaștere e o factură ca oricare alta
+- [ ] a doua chemare a actului e **no-op** (`deja_recunoscuta`), nu eroare, și nu adaugă a doua notă
+- [ ] pe o factură care **n-a venit prin import** actul refuză cu `422` — nu e o ciornă de recunoaștere
+- [ ] contabilizarea manuală, chemată după recunoaștere, întoarce `deja_contata`: în jurnal rămâne o singură notă
+- [ ] pe o lună închisă actul refuză cu `423`, iar factura rămâne `de_recunoscut`
+- **NEBIFATE DELIBERAT.** Draft propus (29.08.2026), nu verificare făcută — același tipar ca la pasul de dezlegare. Bifarea e un pas separat.
+- ce NU acoperă lista: actul n-are ecran, deci rândurile se exercită prin API — la fel ca `POST /import-efactura`, calea care aduce documentul (R70).
+
 ### `POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza`
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*

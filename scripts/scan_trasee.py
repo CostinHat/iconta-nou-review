@@ -55,7 +55,7 @@ TRASEE = [
     ("T02", "Factura emisă — creare, contabilizare, ieșiri",
      [r"^/tenants/\{\}/facturi$", r"^/tenants/\{\}/facturi/emite",
       r"^/tenants/\{\}/facturi/numerotare", r"^/tenants/\{\}/facturi/\{\}$",
-      r"^/tenants/\{\}/facturi/\{\}/(pdf|email|storno|transforma|contabilizeaza|notificare)",
+      r"^/tenants/\{\}/facturi/\{\}/(pdf|email|storno|transforma|contabilizeaza|notificare|recunoaste)",
       r"^/tenants/\{\}/facturi-recurente", r"^/api/v1/firme/\{\}/facturi"],
      ["facturi", "factura_linii", "facturi_recurente"]),
     ("T03", "Statul de plată și fluturașul",

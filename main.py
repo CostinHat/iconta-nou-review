@@ -7743,6 +7743,65 @@ def banca_rec_reactiveaza(tenant_id: int, linie_id: int, ctx=Depends(cere_cabine
     return {"ok": True}
 
 
+@app.post("/tenants/{tenant_id}/facturi/{factura_id}/recunoaste")  # [api_intern_v1] fara buton in UI, pastrat deliberat: perechea lui `POST /import-efactura`, care n-are nici el ecran (R70). Un act de recunoastere fara calea care aduce documentul n-ar avea ce recunoaste.
+# [R91, 29.08.2026 — decizia lui Costin, varianta (iii)] Rolul e `admin_firma`, ca la validarea unei
+# facturi primite: actul recunoaste un fapt economic si ii scrie evidenta. Simetria nu e estetica —
+# e chiar argumentul deciziei: la primita, faptul nu e sosirea documentului, ci recunoasterea
+# cheltuielii; la emisa venita din import, faptul nu e sosirea, ci recunoasterea emiterii facute in
+# alta parte.
+def factura_recunoaste(tenant_id: int, factura_id: int, ctx=Depends(cere_rol("admin_firma"))):
+    """RECUNOAȘTEREA unei facturi EMISE venite prin import — actul care îi scrie nota.
+
+    STRUCTURAL SIMETRIC cu `POST /facturi-primite/{id}/valideaza`, punct cu punct: patru-ochi (rolul
+    e același) · o singură tranzacție · nota se scrie **în același act** cu recunoașterea · nota intră
+    **ciornă**, deci automat nu înseamnă validat (R47) · idempotent, a doua chemare e **no-op**, nu
+    eroare.
+
+    CE CONFIRMĂ OMUL, și de ce actul are sens: documentul a fost emis în **altă parte** — aplicația
+    nu l-a produs, l-a **primit înapoi**. Cine apasă spune „da, factura asta e a firmei și e completă
+    așa cum a venit". Abia atunci devine fapt al firmei, cu evidență.
+
+    CE NU FACE, declarat: nu editează factura. Dacă documentul importat e greșit, corecția fiscală e
+    prin al doilea document (storno, P4), nu prin retușarea celui adus.
+    """
+    from core import contare_facturi as _cf
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+        with conn.cursor() as cur:
+            cur.execute(f"SELECT status, directie, (xml IS NOT NULL) FROM {schema}.facturi "
+                        f"WHERE id=%s FOR UPDATE", (factura_id,))
+            r = cur.fetchone()
+        if not r:
+            raise HTTPException(404, "factură inexistentă")
+        stare, directie, din_import = r
+        if stare != "de_recunoscut":
+            # Idempotență ca RĂSPUNS — dar NUMAI pentru o factură care chiar a venit prin import.
+            # Discriminatorul e `xml`: `_factura_din_parsat` îl scrie, `creeaza_factura` nu. Fără el,
+            # actul răspundea „deja recunoscută" și despre o factură emisă normal prin aplicație,
+            # care n-a fost niciodată ciornă de recunoaștere — o afirmație mică și falsă. Prins de
+            # gardă la prima rulare.
+            with _cf.cursor_dict(conn) as cur:
+                deja = _cf.contare_existenta(cur, schema, factura_id)
+            if deja and din_import:
+                return {"stare": "deja_recunoscuta", "factura_id": factura_id,
+                        "inregistrare_id": deja["id"]}
+            raise HTTPException(422, "factura nu e o ciornă de recunoaștere (stare `%s`): actul e "
+                                     "pentru facturile EMISE aduse prin import" % stare)
+        try:
+            with _cf.cursor_dict(conn) as cur:
+                rez = _cf.contabilizeaza(cur, schema, factura_id, automat=True)
+                cur.execute(f"UPDATE {schema}.facturi SET status='emisa' WHERE id=%s", (factura_id,))
+        except _cf.RefuzContare as e:
+            conn.rollback()
+            if e.cod == "LUNA_INCHISA":
+                raise HTTPException(423, PERIOADA_INCHISA)
+            raise HTTPException(422, e.mesaj)
+        conn.commit()
+    return {"stare": "recunoscuta", "factura_id": factura_id, "contare": rez}
+
+
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza")
 def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_cabinet)):
     """RUTA MANUALĂ de contare — **a doua cale, declarată** (R87, decizia lui Costin 29.08.2026,
@@ -8244,12 +8303,21 @@ def _factura_din_parsat(cur, schema, f):
     ex = cur.fetchone()
     if ex:
         return ex[0], False
+    # [R91/KKK1] Starea depinde de DIRECȚIE, și nu e o subtilitate:
+    #   * **primită** -> `importata`, ca până acum. Recunoașterea ei există deja și e alt act:
+    #     `/facturi-primite/{id}/valideaza`, unde omul alege contul și clasifică regimul (R88).
+    #   * **emisă** -> `de_recunoscut`. Documentul a fost emis în altă parte, deci sosirea lui nu e
+    #     faptul economic al firmei. Nota vine din `/facturi/{id}/recunoaste`.
+    # **NICIUNA nu primește notă aici** — la fel ca înainte. Ce se schimbă e că absența nu mai e o
+    # scăpare declarată, ci o etapă cu act propriu.
+    _stare = "de_recunoscut" if f["directie"] == "emisa" else "importata"
     cur.execute(f"""INSERT INTO {schema}.facturi
                     (numar, data_emitere, data_scadenta, total, tva, moneda, directie, status,
                      xml, tert_nume, tert_cui)
-                    VALUES (%s,%s,%s,%s,%s,%s,%s,'importata',%s,%s,%s) RETURNING id""",
+                    VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id""",
                 (f["numar"], f["data_emitere"], f["data_scadenta"], f["total"], f["tva"],
-                 f["moneda"], f["directie"], f["xml"], (f["tert_nume"] or "")[:255], (f["tert_cui"] or "")[:30]))
+                 f["moneda"], f["directie"], _stare, f["xml"], (f["tert_nume"] or "")[:255],
+                 (f["tert_cui"] or "")[:30]))
     fid = cur.fetchone()[0]
     for ln in f["linii"]:
         cur.execute(f"""INSERT INTO {schema}.factura_linii
@@ -8259,7 +8327,7 @@ def _factura_din_parsat(cur, schema, f):
     return fid, True
 
 
-@app.post("/tenants/{tenant_id}/import-efactura")  # [api_intern_v1] upload manual XML/ZIP - fara buton in UI, pastrat deliberat. Calea AUTOMATA nu trece pe aici: core/spv_receive cheama direct _factura_din_parsat. Verificat 27.08.2026 - niciun apelant in static/, in crontab sau in timerele systemd. (R70)
+@app.post("/tenants/{tenant_id}/import-efactura")  # [api_intern_v1] upload manual XML/ZIP - fara buton in UI, pastrat deliberat. Verificat 27.08.2026 - niciun apelant in static/, in crontab sau in timerele systemd. (R70). CORECTAT 29.08.2026: forma veche scria ca `core/spv_receive` cheama direct `_factura_din_parsat` - E FALS. `spv_receive.importa_mesaj` scrie DOAR in `efactura_primite`, si numai mesaje al caror `cif_beneficiar` e chiar tenantul (gard anti-scurgere), deci numai PRIMITE. Consecinta, si e chiar perimetrul lui R91: singura cale prin care o factura EMISA intra prin import e ruta asta, incarcarea manuala de XML.
 async def import_efactura(tenant_id: int, fisiere: list[UploadFile] = File(...),
                           ctx=Depends(cere_cabinet)):
     """Upload XML/ZIP e-Factura. Parseaza UBL, directie auto (CUI firma vs furnizor),

@@ -1178,9 +1178,9 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T02 — Factura emisă — creare, contabilizare, ieșiri
 
-**Clasa:** MECANIC · **rute:** 19 (din care schimba date: 13) · **refuzuri explicite:** 45
+**Clasa:** MECANIC · **rute:** 20 (din care schimba date: 14) · **refuzuri explicite:** 50
 
-**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 5 din 13.**
+**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 5 din 14.**
 
 **Pasii, din cod:**
 
@@ -1201,6 +1201,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/facturi/{factura_id}/email` — garda `cere_rol` rol:admin_firma
 - `PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare` — garda `cere_rol` rol:admin_firma
 - `GET /tenants/{tenant_id}/facturi/{factura_id}/pdf` — garda `cere_context`
+- `POST /tenants/{tenant_id}/facturi/{factura_id}/recunoaste` — garda `cere_rol` rol:admin_firma
 - `POST /tenants/{tenant_id}/facturi/{factura_id}/storno` — garda `cere_rol` rol:admin_firma
 - `POST /tenants/{tenant_id}/facturi/{factura_id}/transforma` — garda `cere_rol` rol:admin_firma
 

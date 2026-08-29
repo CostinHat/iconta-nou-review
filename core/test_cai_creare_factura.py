@@ -69,6 +69,33 @@ def test_calea_de_import_e_singura_care_ocoleste_actul_de_emitere(productie):
     assert ocolesc == {("main.py", "_factura_din_parsat")}, ocolesc
 
 
+def test_calea_de_import_are_ACUM_actul_ei_de_recunoastere():
+    """[KKK3] Inventarul nu se mai citește la fel. Când s-a construit, `_factura_din_parsat` era o
+    **scăpare declarată**: o cale prin care o factură emisă intra fără notă, iar absența era scrisă
+    lângă cod. De la R91 e o cale **acoperită**, cu act propriu — `POST /facturi/{id}/recunoaste`.
+
+    Gardul rămâne pinat pentru orice a PATRA cale: aia ar fi iar o scăpare, nu o cale.
+
+    Se verifică pe AST, nu pe proză: actul există, cheamă generatorul de notă, iar calea de import
+    scrie o stare care îl așteaptă."""
+    import ast
+    import io as _io
+    sursa = _io.open(os.path.join(_RAD, "main.py"), encoding="utf-8").read()
+    arb = ast.parse(sursa)
+    functii = {n.name: n for n in ast.walk(arb)
+               if isinstance(n, (ast.FunctionDef, ast.AsyncFunctionDef))}
+    # Forma de mulțime, nu `in`: `>=` crapă dacă `functii` încetează să fie un dicționar, iar `in`
+    # ar trece ca sub-șir (clichetul 50 / `scan_garzi_pe_text`).
+    assert functii.keys() >= {"factura_recunoaste"}, "actul de recunoaștere nu mai există"
+    apeluri = {c.func.attr for c in ast.walk(functii["factura_recunoaste"])
+               if isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute)}
+    assert apeluri >= {"contabilizeaza"}, "actul nu mai scrie nota"
+    stari = {c.value for c in ast.walk(functii["_factura_din_parsat"])
+             if isinstance(c, ast.Constant) and isinstance(c.value, str)}
+    assert stari >= {"de_recunoscut", "importata"}, (
+        "calea de import nu mai distinge ciorna de recunoaștere de o factură primită importată")
+
+
 def test_seedurile_nu_cresc():
     """Fixturile scriu direct în tabele — ele sunt chiar motivul pentru care 19 note din 34 n-au
     `sursa` (măsurat la R36). Nu e un defect, dar nici nu poate crește tăcut: un seed nou care

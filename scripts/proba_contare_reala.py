@@ -26,7 +26,9 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
+import main  # noqa: E402
 from core import db, contare_facturi as _cf, facturi_api as _fa  # noqa: E402
+from core import jurnal_api as _ja, nomenclator_status_factura as _nsf  # noqa: E402
 
 FIRMA = "tenant_017"          # firmă reală din portofoliu, cu plan de conturi și profil fiscal
 CUI_PROBA = "RO14399840"      # trece cifra de control (regula datelor de test)
@@ -230,12 +232,58 @@ def ruleaza():
     print("    rânduri: %s -> după ROLLBACK %s" % (inainte, dupa))
     assert inainte == dupa, "PROBA A LĂSAT URMĂ"
 
+    # ══════════════════════════════════════════════════ KKK
+    print("\n═══ KKK5 — factură EMISĂ întoarsă din import: recunoaștere → notă, o singură dată")
+    with db.get_conn(FIRMA) as conn:
+        inainte = numaratori_noua()
+        f = {"numar": "PROBA-KKK", "data_emitere": "2026-07-10", "data_scadenta": None,
+             "total": 1210, "tva": 210, "moneda": "RON", "directie": "emisa", "xml": "<x/>",
+             "tert_nume": "PARTENER PROBA SRL", "tert_cui": CUI_PROBA,
+             "linii": [{"descriere": "servicii", "cantitate": 1, "pret_unitar": 1000,
+                        "cota_tva": 21}]}
+        with conn.cursor() as cur:
+            fid, _nou = main._factura_din_parsat(cur, FIRMA, f)
+            cur.execute("SELECT status FROM %s.facturi WHERE id=%%s" % FIRMA, (fid,))
+            stare_import = cur.fetchone()[0]
+            cur.execute("SELECT COUNT(*) FROM %s.inregistrari WHERE factura_id=%%s" % FIRMA, (fid,))
+            note_la_import = cur.fetchone()[0]
+        print("  la IMPORT: factura #%d, stare=%s, note=%d" % (fid, stare_import, note_la_import))
+        print("    declarabilă? %s — *exigibilitatea TVA nu așteaptă recunoașterea noastră*"
+              % _nsf.e_declarabila(stare_import))
+        # RECUNOAȘTEREA — aceiași pași, în aceeași ordine, ca în `main.factura_recunoaste`. Ruta
+        # însăși își comite propria tranzacție, deci n-ar putea rula într-o probă care nu lasă urmă;
+        # cablajul ei e păzit pe AST (`test_calea_de_import_are_ACUM_actul_ei_de_recunoastere`) și
+        # exercitat cap-coadă pe schema efemeră, în `core/test_contare_automata.py`.
+        with _cf.cursor_dict(conn) as cur:
+            r_kkk = _cf.contabilizeaza(cur, FIRMA, fid, automat=True)
+            cur.execute("UPDATE %s.facturi SET status='emisa' WHERE id=%%s" % FIRMA, (fid,))
+            cur.execute("SELECT id, status, sursa, data FROM %s.inregistrari "
+                        "WHERE factura_id=%%s" % FIRMA, (fid,))
+            note = [dict(x) for x in cur.fetchall()]
+            a_doua = _cf.contabilizeaza(cur, FIRMA, fid, automat=False)
+        print("  după RECUNOAȘTERE: %d notă în jurnal" % len(note))
+        for n in note:
+            print("    #%s status=%s sursa=%s data=%s" % (n["id"], n["status"], n["sursa"], n["data"]))
+        print("    document justificativ derivat: %s"
+              % _ja.document_justificativ(None, "factura", None, f["numar"], f["data_emitere"]))
+        print("    linii: %s" % " · ".join("%s=%s %s" % (x["debit"], x["credit"], x["suma"])
+                                           for x in r_kkk["linii"]))
+        print("    a doua contabilizare (manuală): %s" % a_doua["stare"])
+        rez["kkk"] = (stare_import == "de_recunoscut" and note_la_import == 0
+                      and _nsf.e_declarabila(stare_import) and len(note) == 1
+                      and note[0]["status"] == "ciorna" and a_doua["stare"] == "deja_contata")
+        conn.rollback()
+        dupa = numaratori_noua()
+    print("    rânduri: %s -> după ROLLBACK %s" % (inainte, dupa))
+    assert inainte == dupa, "PROBA A LĂSAT URMĂ"
+
     print("\n═══ VERDICT")
     for k, et in (("ddd1", "DDD1 — nota care nu e contare nu blochează; a doua contare e no-op"),
                   ("fff4", "FFF4 — clasa ambiguă: automat refuză, manual scrie pe 4428"),
                   ("eee4", "EEE4 — emiterea produce nota în ciornă; ștergerea refuză"),
                   ("ggg",  "GGG  — refuz → dezlegare → ștergere; contarea nu se dezleagă"),
-                  ("jjj",  "JJJ2 — nota la data descoperirii, cu mențiunea care o leagă")):
+                  ("jjj",  "JJJ2 — nota la data descoperirii, cu mențiunea care o leagă"),
+                  ("kkk",  "KKK5 — emisă din import: ciornă de recunoaștere, apoi notă, o dată")):
         print("  %s: %s" % ("DA " if rez[k] else "NU ", et))
     print("  toate probele au făcut ROLLBACK; numărările de rânduri s-au întors identice")
     return all(rez.values())

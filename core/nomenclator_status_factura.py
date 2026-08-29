@@ -52,6 +52,18 @@ reparația să nu schimbe tăcut altceva decât ce a fost măsurat.
 STARI = {
     "emisa":       (True,  "factură emisă, formă finală"),
     "importata":   (True,  "adusă din e-Factura/import, formă finală"),
+    # [R91, 29.08.2026 — decizia lui Costin, varianta (iii)] O factură EMISĂ care se întoarce prin
+    # import a fost emisă în ALTĂ parte: sosirea documentului nu e faptul economic al firmei. Ea intră
+    # ca **ciornă de recunoaștere** și capătă nota abia prin actul de recunoaștere
+    # (`POST /facturi/{id}/recunoaste`), simetric cu validarea unei primite.
+    #
+    # DECLARABILĂ, și motivul e cel mai important lucru din intrarea asta: **exigibilitatea TVA nu
+    # așteaptă recunoașterea noastră.** Pe o factură emisă, TVA-ul e datorat la emitere (art. 281 CF),
+    # oricât de nerecunoscută ar fi ea în evidența internă. O stare nedeclarabilă ar scoate-o TĂCUT
+    # din D300 — exact defectul 1.1 din 22.08.2026, care a omis 4 facturi și 3.052,00 lei. *„Ciornă"
+    # se referă la NOTA CONTABILĂ, nu la caracterul fiscal al documentului.*
+    "de_recunoscut": (True, "factură EMISĂ adusă prin import, recunoscută ca DOCUMENT dar nu încă "
+                            "drept fapt al firmei; nota vine din actul de recunoaștere (R91)"),
     "de_preluat":  (True,  "starea în care `facturi_api.emite_factura` produce o factură emisă; "
                            "de preluat ÎN CONTABILITATE, nu «neemisă». Vezi decizia din antet"),
     "ciorna":      (False, "nefinalizată — nu s-a emis nimic"),

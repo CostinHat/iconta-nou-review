@@ -687,6 +687,105 @@ def test_data_notei_intr_o_luna_inchisa_refuza_si_ea(conn):
     assert e.value.detalii["data_nota"] == "2026-08-29"
 
 
+# ═══════════════════════════════════════════════ KKK — factura EMISA venita prin import
+def _din_import(conn, numar, directie, data="2026-07-10"):
+    """Simulează un document venit prin import: exact calea `main._factura_din_parsat`, nu un
+    `INSERT` propriu — altfel proba ar fi despre fixtura, nu despre cod."""
+    import main
+    f = {"numar": numar, "data_emitere": data, "data_scadenta": None, "total": 1210, "tva": 210,
+         "moneda": "RON", "directie": directie, "xml": "<x/>", "tert_nume": "PARTENER SRL",
+         "tert_cui": "RO14399840",
+         "linii": [{"descriere": "servicii", "cantitate": 1, "pret_unitar": 1000, "cota_tva": 21}]}
+    with conn.cursor() as cur:
+        fid, nou = main._factura_din_parsat(cur, _SCH, f)
+    return fid
+
+
+def _stare(conn, fid):
+    with conn.cursor() as cur:
+        cur.execute("SELECT status FROM facturi WHERE id=%s", (fid,))
+        return cur.fetchone()[0]
+
+
+def test_o_factura_EMISA_din_import_intra_ca_CIORNA_DE_RECUNOASTERE(conn):
+    """[KKK1] Documentul a fost emis în ALTĂ parte, deci sosirea lui nu e faptul economic al firmei.
+    Intră cu stare proprie și **fără notă** — nota vine din actul de recunoaștere."""
+    fid = _din_import(conn, "IMP-E1", "emisa")
+    assert _stare(conn, fid) == "de_recunoscut"
+    assert not _note_ale(conn, fid), "importul nu scrie notă"
+
+
+def test_o_factura_PRIMITA_din_import_ramane_importata(conn):
+    """Calibrarea negativă: pe primită, recunoașterea există deja și e alt act — validarea de la
+    `/facturi-primite/{id}/valideaza` (R88). Fără testul ăsta, o stare nouă aplicată la ambele
+    direcții ar fi rupt fluxul primitei fără să se vadă."""
+    fid = _din_import(conn, "IMP-P1", "primita")
+    assert _stare(conn, fid) == "importata"
+    assert not _note_ale(conn, fid)
+
+
+def test_starea_de_recunoscut_e_DECLARABILA():
+    """**Cel mai important test din bloc.** Exigibilitatea TVA nu așteaptă recunoașterea noastră: pe
+    o factură emisă, TVA-ul e datorat la emitere (art. 281 CF). O stare nedeclarabilă ar scoate-o
+    TĂCUT din D300 — exact defectul 1.1 din 22.08.2026, care a omis 4 facturi și 3.052,00 lei.
+    *„Ciornă" se referă la nota contabilă, nu la caracterul fiscal al documentului.*"""
+    from core import nomenclator_status_factura as _nsf
+    assert _nsf.e_declarabila("de_recunoscut") is True
+    assert set(_nsf.declarabile()) >= {"de_recunoscut"}
+
+
+def test_recunoasterea_scrie_nota_in_ciorna_si_trece_factura_pe_emisa(conn, monkeypatch):
+    """[KKK2] Simetric cu validarea unei primite: patru-ochi, o tranzacție, nota în **ciornă**."""
+    import main
+    fid = _din_import(conn, "IMP-E2", "emisa")
+    conn.commit()
+    monkeypatch.setattr(main.auth_api, "schema_tenant", lambda c, uid, tid: _SCH)
+    rez = main.factura_recunoaste(1, fid, {"uid": 1})
+    assert rez["stare"] == "recunoscuta"
+    assert rez["contare"]["stare"] == "contata"
+    note = _note_ale(conn, fid)
+    assert len(note) == 1, note
+    assert note[0][1] == "ciorna", "automat NU înseamnă validat (R47)"
+    assert note[0][2] == "facturi"
+    assert _stare(conn, fid) == "emisa", "după recunoaștere e o factură emisă ca oricare alta"
+
+
+def test_a_doua_recunoastere_e_NO_OP(conn, monkeypatch):
+    """Idempotență ca răspuns, ca peste tot pe lanțul ăsta."""
+    import main
+    fid = _din_import(conn, "IMP-E3", "emisa")
+    conn.commit()
+    monkeypatch.setattr(main.auth_api, "schema_tenant", lambda c, uid, tid: _SCH)
+    main.factura_recunoaste(1, fid, {"uid": 1})
+    a_doua = main.factura_recunoaste(1, fid, {"uid": 1})
+    assert a_doua["stare"] == "deja_recunoscuta"
+    assert len(_note_ale(conn, fid)) == 1, "a doua chemare nu scrie a doua notă"
+
+
+def test_recunoasterea_refuza_o_factura_care_n_a_venit_prin_import(conn, monkeypatch):
+    """Direcția cealaltă: actul e pentru ciornele de recunoaștere, nu pentru orice factură."""
+    import main
+    from fastapi import HTTPException
+    r = _factura(conn, "K-1", "2026-07-10")
+    conn.commit()
+    monkeypatch.setattr(main.auth_api, "schema_tenant", lambda c, uid, tid: _SCH)
+    with pytest.raises(HTTPException) as e:
+        main.factura_recunoaste(1, r["factura_id"], {"uid": 1})
+    assert e.value.status_code == 422
+
+
+def test_anti_dublarea_se_aplica_si_dupa_recunoastere(conn, monkeypatch):
+    """[KKK4] O factură recunoscută nu mai poate primi o a doua notă nici pe ruta manuală."""
+    import main
+    fid = _din_import(conn, "IMP-E4", "emisa")
+    conn.commit()
+    monkeypatch.setattr(main.auth_api, "schema_tenant", lambda c, uid, tid: _SCH)
+    main.factura_recunoaste(1, fid, {"uid": 1})
+    with _cf.cursor_dict(conn) as cur:
+        assert _cf.contabilizeaza(cur, "", fid, automat=False)["stare"] == "deja_contata"
+    assert len(_note_ale(conn, fid)) == 1
+
+
 # ═══════════════════════════════════════════════ ANTI-VACUU pe clasificator
 def test_clasificatorul_nu_spune_da_la_tot():
     assert _cf.e_nota_de_contare([("4111", "707", 1), ("4111", "4427", 1)])
