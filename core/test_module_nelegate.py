@@ -32,7 +32,11 @@ PIN = {
     "core/fisa_cont.py":
         "PRODUCATOR FARA LIVRARE, declarat (METODA §20) — Fisa de cont 14-6-22, care inlocuieste "
         "Cartea mare 14-1-3; zero rute si zero ecrane, spus in ISTORIC 23.08.2026 (3): «artefactul "
-        "are producator, nu livrare». NU e omisiune - conditia lui de deblocare e LIVRAREA, nu un apel",
+        "are producator, nu livrare». NU e omisiune - conditia lui de deblocare e LIVRAREA, nu un apel. "
+        "[29.08.2026] A ramas aici printr-o DECIZIE, nu din inertie: scripts/scan_1b_regimuri.py il "
+        "importa ca sa probeze la 1b ca producatorul merge pe date reale, iar sonda l-ar fi declarat "
+        "legat. Costin a ales varianta (a) — scripts/ nu conteaza ca apelant de productie — tocmai ca "
+        "masurarea unei absente sa nu o stinga",
     "core/scan_rol_pe_efect.py":
         "INSTRUMENT DE MASURA, nu cale de productie (aceeasi clasa cu scan_garzi_pe_text si "
         "scan_module_nelegate): singurul lui consumator legitim e gardul core/test_rol_pe_efect.py, "
@@ -181,6 +185,59 @@ def test_cat_din_domeniu_vede_sonda(rez):
         "module nelegate nu se mai pot folosi la triaj fara re-declararea numitorului"
         % (acoperire * 100, vizibile, total))
     del rez
+
+
+_MODUL_PROBAT = "modul_probat"
+
+
+def _depozit_de_proba(tmp_path, unde_e_apelantul):
+    """Un depozit MINIM, construit: un modul din `core/` cu o funcție publică, importat dintr-un
+    singur loc — pus fie în producție, fie într-un instrument din `scripts/`.
+
+    Întoarce **(calea modulului creat, mulțimea celor raportate nelegate)**. Amândouă ies din
+    aceeași sursă, deci aserțiunea de mai jos nu are niciun șir scris de mână: compară ce a creat
+    fixtura cu ce a raportat sonda. *Prima formă compara cu un literal, iar clichetul 50 a prins-o —
+    pe drept: `"…" in ceva` întreabă „există șirul", nu „a raportat sonda modulul".*
+    """
+    (tmp_path / "core").mkdir()
+    (tmp_path / "scripts").mkdir()
+    creat = tmp_path / "core" / (_MODUL_PROBAT + ".py")
+    creat.write_text('"""Modul cu suprafata publica."""\ndef produce(x):\n    return x\n',
+                     encoding="utf-8")
+    apelant = ("from core import %s\ndef foloseste():\n    return %s.produce(1)\n"
+               % (_MODUL_PROBAT, _MODUL_PROBAT))
+    (tmp_path / unde_e_apelantul).write_text(apelant, encoding="utf-8")
+    r = scan.masoara(rad=str(tmp_path))
+    assert r["fisiere"] >= 2, ("ANTI-VACUU: sonda n-a parcurs depozitul de probă (%d fișiere)"
+                               % r["fisiere"])
+    rel = os.path.relpath(str(creat), str(tmp_path)).replace(os.sep, "/")
+    return rel, {x[0] for x in scan.doar_core(r)}
+
+
+def test_un_apelant_de_productie_CHIAR_leaga_modulul(tmp_path):
+    """CALIBRARE ÎN DIRECȚIA DE EȘEC pentru excluderea lui `scripts/` (29.08.2026).
+
+    Excluderea instrumentelor are un mod de eșec propriu, și e cel grav: dacă ar exclude prea mult,
+    sonda ar raporta „nelegat" un modul care ARE apelant de producție — adică ar fabrica muncă și,
+    mai rău, ar face clichetul de nedeosebit de zgomot. Se probează pe un depozit CONSTRUIT, nu pe
+    depozitul real: altfel proba s-ar învechi odată cu el.
+    """
+    modul, gasit = _depozit_de_proba(tmp_path, "main.py")
+    assert modul not in gasit, (
+        "EXCLUDEREA A ORBIT SONDA: modulul %s, importat din `main.py` — cale de PRODUCȚIE — e "
+        "raportat ca nelegat. Domeniul apelantului s-a lărgit peste ce a fost decis." % modul)
+
+
+def test_un_apelant_din_scripts_NU_leaga_modulul(tmp_path):
+    """Cealaltă direcție, fără de care prima n-ar dovedi nimic: dacă sonda n-ar raporta niciodată
+    nimic ca nelegat, testul de mai sus ar trece degeaba. Aici e chiar regula deciziei: un
+    instrument care importă un modul ca să-l MĂSOARE nu-l livrează."""
+    modul, gasit = _depozit_de_proba(tmp_path, "scripts/scan_ceva.py")
+    assert modul in gasit, (
+        "modulul %s, importat DOAR dintr-un instrument din `scripts/`, e raportat ca legat — atunci "
+        % modul +
+        "clichetul se stinge în clipa în care cineva se apucă să măsoare absența livrării "
+        "(instanța: `scan_1b_regimuri.py` peste `core/fisa_cont.py`, 29.08.2026)")
 
 
 def test_perimetrul_dinamic_e_raportat_nu_inghitit(rez):

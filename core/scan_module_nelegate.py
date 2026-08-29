@@ -24,6 +24,25 @@ eșec, nu pe cazul fericit):
   E4. **modul importat, dar cu funcții publice pe care nu le cheamă nimeni** — NEACOPERIT. Sonda e la
       nivel de MODUL, nu de funcție. Un modul importat pentru o funcție, cu alte trei moarte, trece.
   E5. module fără funcții publice, și `__init__.py` — n-au ce lega, se sar.
+
+DOMENIUL APELANTULUI (29.08.2026, decis de Costin — varianta (a) din raportul lui 1b).
+**Un fișier din `scripts/` NU contează ca apelant de producție**, exact ca un test. Motivul e chiar
+întrebarea la care răspunde sonda: „cine cheamă modulul ăsta în PRODUCȚIE". Un instrument de măsură
+îl importă ca să-l MĂSOARE — iar dacă asta ar conta ca legătură, sonda ar declara „legat" un modul
+în chiar clipa în care cineva se apucă să-i măsoare absența livrării.
+
+Instanța care a scos-o la iveală: `scripts/scan_1b_regimuri.py` importă `core/fisa_cont.py` (Fișa de
+cont 14-6-22) ca să probeze că producătorul Cărții mari merge pe date reale. `fisa_cont` e în
+clichetul din `core/test_module_nelegate.py` cu motivul scris — *„PRODUCATOR FARA LIVRARE … condiția
+lui de deblocare e LIVRAREA, nu un apel"* — iar fără regula asta, importul din instrument l-ar fi
+scos din clichet, adică ar fi stins semnalul fără să livreze nimic.
+
+**Efectul, măsurat înainte de a fi ales, în amândouă formele** (doar `scan_`/`sonda_`/`proba_`, și
+tot `scripts/`): identic, și **exact un modul** — `core/fisa_cont.py` se întoarce în mulțime, nimic
+altceva nu apare și nimic nu dispare. S-a ales forma largă, fiindcă e regula deciziei și fiindcă un
+tipar pe prefix ar fi tăcut la primul instrument botezat altfel. **Calibrarea în direcția de eșec** —
+că excluderea NU orbește sonda la un apelant de producție — e în gardă,
+`test_un_apelant_de_productie_CHIAR_leaga_modulul`.
 """
 import ast
 import io
@@ -53,6 +72,20 @@ def _fisiere(rad):
 def e_test(cale):
     b = os.path.basename(cale)
     return b.startswith("test_") or b.endswith("_test.py") or "conftest" in b
+
+
+def e_instrument(cale):
+    """Fișier din `scripts/` — instrument de măsură, NU cale de producție. Vezi antetul.
+
+    Se uită la DIRECTOR, nu la numele fișierului: un instrument botezat altfel decât `scan_*` ar
+    scăpa printr-un tipar pe prefix, iar sonda ar redeveni oarbă exact acolo unde e greu de observat.
+    """
+    return "/scripts/" in cale.replace("\\", "/")
+
+
+def leaga_in_productie(cale):
+    """Importurile din fișierul ăsta contează ca legătură de producție?"""
+    return not e_test(cale) and not e_instrument(cale)
 
 
 def _publice(arb):
@@ -106,7 +139,10 @@ def masoara(rad=None):
         if _dinamic(arb):
             dinamice.append(os.path.relpath(cale, rad))
         for nume in _importate(arb):
-            tinta = imp_test if e_test(cale) else imp_ne_test
+            # `imp_test` e mulțimea importatorilor care NU leagă în producție: testele și —
+            # din 29.08.2026 — instrumentele din `scripts/`. Numele câmpului a rămas cel vechi
+            # ca să nu se schimbe forma întoarsă sub consumatori; ce e ÎN el spune funcția.
+            tinta = imp_ne_test if leaga_in_productie(cale) else imp_test
             tinta.setdefault(nume.split(".")[-1], set()).add(os.path.relpath(cale, rad))
 
     nelegate, doar_test, intrari = [], [], []
@@ -142,7 +178,7 @@ if __name__ == "__main__":
     for cheie in ("doar_test", "nelegate", "intrari"):
         print("\n== %s (%d) ==" % (cheie, len(r[cheie])))
         for rel, np, nt in r[cheie]:
-            print("   %-46s publice=%-3d teste=%d" % (rel, np, nt))
+            print("   %-46s publice=%-3d ne-productie=%d" % (rel, np, nt))
     print("\n== CORE, clasa R33 (%d) ==" % len(doar_core(r)))
     for rel, np, nt in doar_core(r):
         print("   %-46s publice=%-3d teste=%d" % (rel, np, nt))
