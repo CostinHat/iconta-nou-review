@@ -931,6 +931,22 @@ def valideaza(res):
         erori.append("LIPSĂ adresă domiciliu fiscal (obligatorie).")
     if not prof.get("telefon"):
         erori.append("LIPSĂ telefon (obligatoriu în D394).")
+    # [R102, 30.08.2026] R112.1 a validatorului, prinsa INAINTE de el: daca declaratia are
+    # operatiuni de LIVRARE (L / LS / V), atunci cel putin unul din contoarele de facturi emise
+    # trebuie sa fie strict pozitiv. Altfel XML-ul spune, in acelasi document, „am livrat" si
+    # „n-am emis nicio factura" — iar DUKIntegrator il respinge cu textul lui brut.
+    # DE CE SE INTAMPLA, masurat pe `tenant_017` (08/2026): singura factura emisa in perioada e
+    # numerotata `FG-ICL`, FARA NICIO CIFRA, iar `nr_facturi_emise` numara doar facturile al caror
+    # numar contine cifre (si pe drept: un numar fara cifre nu e o numerotare). Deci contorul iese
+    # 0 peste o livrare reala. Aplicatia STIE asta si poate s-o spuna in cuvintele contabilului.
+    _TIP_LIVRARE = ("L", "LS", "V")
+    _inf = getattr(res, "informatii", None) or {}
+    _are_livrari = any(str(k[0]) in _TIP_LIVRARE for k in (getattr(res, "op1", None) or {}) if k)
+    if _are_livrari and not (_inf.get("nrFacturi") or _inf.get("nrFacturi_benef")
+                             or _inf.get("nrFacturi_terti")):
+        erori.append("D394 declară livrări, dar numărul facturilor emise în perioadă e 0 — "
+                     "validatorul ANAF respinge (DUK regula R112.1). Se numără doar facturile al căror "
+                     "NUMĂR conține cifre: verifică numerotarea facturilor emise din perioadă.")
     return erori
 
 
@@ -1083,8 +1099,18 @@ def genereaza(conn, schema, perioada, manual=None):
     # numeste ambele valori; NU repara tacit (tipar DECIZII 05.08). Vezi core/d394_reconciliere.py.
     from core.d394_reconciliere import verifica_reconciliere
     verifica_reconciliere(conn, perioada, res, manual)
-    for e in valideaza(res):
-        res.avertismente.insert(0, e)
+    # [R93, 30.08.2026] BLOCANT, nu avertisment — si asta e chiar reparatia.
+    # `valideaza(res)` contine exact aceleasi cerinte pe care D100/D101/D205 le opresc CURAT, cu
+    # mesaj in clar (adresa domiciliului fiscal, telefon, CAEN, CUI valid). Aici erau impinse in
+    # `avertismente`, deci generarea continua si XML-ul pleca incomplet. Masurat pe `tenant_001`,
+    # 29.08.2026, prin arbitrul oficial: DUKIntegrator il respinge cu „eroare atribut: adresa:
+    # atribut prezent dar vid nepermis" (plus `telefon` si `adresaR`). Contabilul primea eroarea
+    # BRUTA a validatorului ANAF in locul propozitiei pe care aplicatia o avea deja scrisa.
+    # O obligatie declarata intr-un singur loc (`firma_profil_api.OBLIGATORII`) nu are voie sa fie
+    # poarta in trei module si avertisment in al patrulea.
+    _er_camp = valideaza(res)
+    if _er_camp:
+        raise ValueError("D394 nu se poate genera: " + " ".join(_er_camp))
     res.modul, res.reguli = MODUL, REGULI
     _xml = build_xml(res)
     from core.reconciliere_emis import verifica_total_plata_a as _vte
