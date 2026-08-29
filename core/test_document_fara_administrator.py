@@ -67,6 +67,68 @@ def test_ANTI_VACUU_producatorii_si_rutele_se_gasesc():
     assert not lipsa, "rute negăsite în main.py: %s" % sorted(lipsa)
 
 
+import pytest  # noqa: E402  — garda era pur structurala; proba functionala de la RRR3 il cere
+
+
+def _schema_efemera(nume, patron):
+    """Schemă din `tenant_template.sql`, cu sau fără administrator. Ștearsă de apelant."""
+    import io as _io
+    from core import db as _db, tenant_provisioning as _tp
+    _db.init_pool()
+    with _db.get_conn() as c:
+        with c.cursor() as cur:
+            cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % nume)
+            cur.execute(_tp.parametrizeaza_template(
+                _io.open("tenant_template.sql", encoding="utf-8").read(), nume))
+            cur.execute("SET search_path TO %s, public" % nume)
+            cur.execute("INSERT INTO firma_profil (id, nume, cui, adresa, patron_nume) "
+                        "VALUES (1,'DOC SRL','RO14399840','Str 1',%s)", (patron,))
+        c.commit()
+
+
+def _sterge_schema(nume):
+    from core import db as _db
+    with _db.get_conn() as c:
+        with c.cursor() as cur:
+            cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % nume)
+        c.commit()
+
+
+def _db_ok_doc():
+    try:
+        from core import db as _db
+        _db.init_pool()
+        with _db.get_conn():
+            return True
+    except Exception:
+        return False
+
+
+@pytest.mark.skipif(not _db_ok_doc(), reason="DB indisponibil")
+@pytest.mark.parametrize("patron,refuza", [(None, True), ("   ", True), ("Ion Popescu", False)])
+def test_refuzul_chiar_se_produce_pe_o_firma_fara_administrator(patron, refuza):
+    """[RRR3] Poarta rulată, nu doar citită pe AST — în AMÂNDOUĂ direcțiile.
+
+    Gardul de mai jos arată că apelul **există**. Ăsta arată că **refuză** când trebuie și că
+    **nu refuză** când nu trebuie. Fără a doua direcție, un `cere_administrator` care ar ridica
+    întotdeauna ar trece toate testele structurale și ar bloca orice adeverință."""
+    from core import db as _db, firma_profil_api as _fpa
+    sch = "efemer_doc_administrator"
+    _schema_efemera(sch, patron)
+    try:
+        with _db.get_conn(sch) as conn:
+            if refuza:
+                with pytest.raises(ValueError) as e:
+                    _fpa.cere_administrator(conn, "Adeverința")
+                # Comparație cu ȘABLONUL, nu căutare de șir: ține și dacă formularea se rescrie,
+                # și crapă dacă documentul nu mai e numit (clichetul 50 / METODA §23).
+                assert str(e.value) == _fpa.MESAJ_FARA_ADMINISTRATOR % "Adeverința"
+            else:
+                _fpa.cere_administrator(conn, "Adeverința")   # nu ridică
+    finally:
+        _sterge_schema(sch)
+
+
 def test_fiecare_document_cere_administratorul():
     rele = [c for c in _PRODUCATORI if not _apeluri_cere_administrator(_arbore(c))]
     assert not rele, (

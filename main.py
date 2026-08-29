@@ -4369,6 +4369,26 @@ def perioade_blocate_lista(tenant_id: int, ctx=Depends(cere_cabinet)):
             cur.execute(f"SELECT an, luna FROM {schema}.perioade_blocate ORDER BY an, luna")
             return {"blocate": [{"an": r[0], "luna": r[1]} for r in cur.fetchall()]}
 
+def _facturi_neincheiate_in_perioada(cur, schema, an, luna):
+    """[PPP1, 29.08.2026] Câte FACTURI ale perioadei sunt încă într-o stare neîncheiată.
+
+    Poarta vedea, din 26.08, doar notele. O factură lăsată în `ciorna` sau în `de_recunoscut` e
+    aceeași pierdere, pe alt obiect: documentul e acolo, dar actul care-l duce în evidență n-a fost
+    făcut, iar după închidere nu se mai poate face — `contabilizeaza` și `recunoaste` cer amândouă o
+    lună deschisă. **`de_recunoscut` e chiar starea introdusă azi la R91**, deci clasa n-avea cum să
+    fie acoperită de verificarea scrisă acum trei zile.
+
+    Se numără pe `data_emitere`, ca și restul porții: luna documentului, nu ziua în care cineva se
+    uită la el."""
+    from datetime import date as _d
+    sfarsit = _d(an + (luna == 12), (luna % 12) + 1, 1)
+    cur.execute(f"""SELECT count(*) FROM {schema}.facturi
+                    WHERE status IN ('ciorna','de_recunoscut')
+                      AND data_emitere >= %s AND data_emitere < %s""",
+                (_d(an, luna, 1), sfarsit))
+    return cur.fetchone()[0]
+
+
 def _ciorne_in_perioada(cur, schema, an, luna):
     """Câte note NEVALIDATE are perioada. [R58] O ciornă închisă înăuntru nu se mai poate valida,
     nu se mai poate șterge, și nu apare nicăieri — Costin: *„e o cheltuială sau un venit care
@@ -4402,14 +4422,20 @@ def perioada_blocheaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol(
             raise HTTPException(404, "tenant inexistent sau fără acces")
         with conn.cursor() as cur:
             ciorne = _ciorne_in_perioada(cur, schema, an, luna)
+            facturi_desch = _facturi_neincheiate_in_perioada(cur, schema, an, luna)
         bl = _il.blocaj(conn, schema, an, luna)
-        if ciorne or bl:
+        if ciorne or facturi_desch or bl:
             # Refuzul spune CE oprește și UNDE se rezolvă — nu doar că nu se poate.
             motive = []
             if ciorne:
                 motive.append("%d notă(e) rămân în ciornă în perioadă; validează-le sau șterge-le "
                               "din Jurnal, altfel rămân închise înăuntru și nu mai apar nicăieri"
                               % ciorne)
+            if facturi_desch:
+                motive.append("%d factură(i) din perioadă sunt încă neîncheiate (ciornă sau "
+                              "ciornă de recunoaștere); contabilizează-le sau recunoaște-le, "
+                              "altfel după închidere nu se mai poate — amândouă actele cer o lună "
+                              "deschisă" % facturi_desch)
             if bl:
                 motive.append(str(bl) + " Înregistrează-le (sau respinge-le) în e-Factura.")
             # Refuzul e o AFIRMAȚIE DESPRE DATELE FIRMEI, deci poartă `fel` din nomenclator (P8):
@@ -4423,7 +4449,7 @@ def perioada_blocheaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_rol(
                     regula="o perioadă se închide doar după ce tot ce s-a întâmplat în ea e "
                            "înregistrat și validat"),
                 cod="PERIOADA_NU_SE_POATE_INCHIDE",
-                motive=motive, ciorne=ciorne, blocaj=bl))
+                motive=motive, ciorne=ciorne, facturi=facturi_desch, blocaj=bl))
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.perioade_blocate (an, luna, blocat_de)
                             VALUES (%s,%s,%s) ON CONFLICT DO NOTHING""", (an, luna, ctx["uid"]))
