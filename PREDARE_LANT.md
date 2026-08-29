@@ -7,10 +7,10 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 - **ultima rescriere**: **2026-08-29**, a patra oară în ziua asta. *Rescriere PE SECȚIUNI, nu completă
   — se spune, ca să nu pară ce nu e. S-au atins: antetul, „de unde se pornește", tabelul de restanțe,
   cifrele invalidate și lista „ce nu e adevărat". Restul e neatins fiindcă nu s-a mișcat.*
-- **pe commit**: `2c43571` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
+- **pe commit**: `427e254` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
   munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e arborele care
   devine commitul următor.*
-- **rescrierea de dinainte**: `a0cc6a5`, aceeași zi. Între ea și acum a intrat **un** commit: `2c43571`.
+- **rescrierea de dinainte**: `a0cc6a5`, aceeași zi. Între ea și acum au intrat **două** commituri: `2c43571` și `427e254`.
 - **de ce acum**: se rescrie înaintea opririi, ca de fiecare dată. *Conținutul, nu contorul* — măsurat
   cu formula din `pre-commit`: **1** commit în urmă, pragul e **10**, deci nu era stale. Se rescrie
   fiindcă s-a schimbat ce spune, nu fiindcă a îmbătrânit.

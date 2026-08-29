@@ -2053,9 +2053,61 @@ blocul BBB.*
 de test, nu o proprietate a stocului: pe date reale, unde lunile se închid pe măsură ce se depun
 declarațiile, proporția s-ar inversa.* Riscul 1 din AAA5 rămâne scris, nu se stinge pe cifra asta.
 
-**Lista completă, factură cu factură** — cu numărul, data, direcția, totalul, TVA-ul și starea lunii —
-o tipărește sonda. **Nu se copiază aici**: ar fi o a doua copie care îmbătrânește tăcut, exact ce a
-făcut „43" să circule cinci zile.
+#### BLOC CCC2b — LISTA COMPLETĂ, factură cu factură (pentru revizuire)
+
+*Cerută explicit: „doar lista, ca s-o revizuiesc". **E un instantaneu**, măsurat la 2026-08-29 pe
+`2c43571` — nu se întreține cu mâna. Autoritatea rămâne `scripts/sonda_facturi_necontate.py`; dacă
+lista de mai jos și sonda diverg, **sonda are dreptate**. Am scris-o cu îngrijorarea declarată că o a
+doua copie îmbătrânește tăcut — exact ce a făcut „43" să circule cinci zile —, dar îngrijorarea nu e
+un motiv să nu existe ce s-a cerut.*
+
+| firmă | # | data | direcție | stare | total (lei) | TVA (lei) | luna |
+|---|---|---|---|---|---|---|---|
+| `tenant_001` Panificatie Salarii Speciale | 1 | 2026-03-20 | primită | emisa | 72.600,00 | **12.600,00** | sub ultima blocată *(2026-08)* |
+| `tenant_002` Coafor Micro Neplatitor | 1 | 2026-02-20 | emisă | emisa | 8.000,00 | 0,00 | deschisă |
+| `tenant_003` Comert Micro TVA | 1 | 2026-03-15 | primită | emisa | 60.500,00 | **10.500,00** | deschisă |
+| `tenant_004` Distributie Profit IC | 3 | 2026-02-20 | primită | emisa | 8.000,00 | 0,00 | deschisă |
+| `tenant_004` | 1 | 2026-03-15 | emisă | emisa | 60.500,00 | **10.500,00** | deschisă |
+| `tenant_004` | 6 | 2026-03-20 | emisă | emisa | 72.600,00 | **12.600,00** | deschisă |
+| `tenant_004` | 2 | 2026-04-10 | emisă | emisa | 96.800,00 | **16.800,00** | deschisă |
+| `tenant_004` | 4 | 2026-05-05 | primită | emisa | 36.300,00 | 6.300,00 | deschisă |
+| `tenant_004` | 7 | 2026-05-08 | primită | emisa | 15.000,00 | 0,00 | deschisă |
+| `tenant_004` | 5 | 2026-06-12 | primită | emisa | 27.000,00 | 2.000,00 | deschisă |
+| `tenant_004` | 8 | 2026-07-05 | emisă | emisa | 1.210,00 | 210,00 | deschisă |
+| `tenant_005` Constructii Profit Trim | 1 | 2026-04-10 | primită | emisa | 96.800,00 | **16.800,00** | deschisă |
+| `tenant_005` | 4 | 2026-07-08 | emisă | emisa | 40.000,00 | 0,00 | deschisă |
+| `tenant_007` Agentie Turism Marja | 3 | 2026-07-08 | primită | emisa | 40.000,00 | 0,00 | deschisă |
+| `tenant_009` Ferma Agricultor Forfetar | 1 | 2026-06-12 | emisă | emisa | 27.000,00 | 2.000,00 | deschisă |
+| `tenant_010` IT Servicii Nerezidenti | 1 | 2026-05-05 | emisă | emisa | 36.300,00 | 6.300,00 | deschisă |
+| `tenant_016` DELTA DEFECT-LUNA | 1 | 2026-08-10 | emisă | importata | 1.210,00 | 210,00 | deschisă |
+| `tenant_016` | 2 | 2026-08-10 | emisă | importata | 1.190,00 | 190,00 | deschisă |
+| `tenant_016` | 3 | 2026-08-10 | emisă | importata | 2.000,00 | 0,00 | deschisă |
+| `tenant_017` Firma Grea Audit | 1 | 2026-03-10 | emisă | emisa | 12.000,00 | 0,00 | deschisă |
+| `tenant_017` | 2 | 2026-05-12 | emisă | emisa | 24.200,00 | 4.200,00 | deschisă |
+| `tenant_017` | 3 | 2026-06-08 | primită | emisa | 15.000,00 | 0,00 | deschisă |
+| `tenant_017` | 6 | 2026-07-05 | emisă | emisa | 1.210,00 | 210,00 | deschisă |
+| `tenant_017` | 9 | 2026-07-15 | emisă | emisa | 5.000,00 | 0,00 | deschisă |
+| `tenant_017` | 10 | 2026-07-18 | primită | emisa | 7.000,00 | 0,00 | deschisă |
+| `tenant_017` | 4 | 2026-08-12 | emisă | emisa | 8.000,00 | 0,00 | deschisă |
+| `tenant_017` | 5 | 2026-09-10 | emisă | emisa | 6.000,00 | 0,00 | deschisă |
+| `tenant_017` | 7 | 2026-10-20 | emisă | emisa | 4.840,00 | 840,00 | deschisă |
+
+**28 de rânduri · 102.260,00 lei TVA** (suma coloanei se închide exact pe totalul din CCC1).
+**Șase documente din 28** duc **79.800,00 lei** — **78%** din TVA-ul necontat; **12 facturi din 28 au
+TVA zero.** *Revizuirea nu e un lot omogen nici ca mărime: dacă se revizuiește ceva parțial, cele șase
+sunt lista scurtă.*
+
+**Cele 3 în plus, pe a doua citire** (au notă cu `factura_id`, dar e o **plată**, nu o contare — deci
+în evidență lipsesc la fel, iar contarea automată le-ar fi refuzată azi cu un mesaj fals):
+
+| firmă | # | data | direcție | total | TVA | nota care ocupă cheia |
+|---|---|---|---|---|---|---|
+| `tenant_004` | 9 | 2026-07-10 | primită | 2.420,00 | 420,00 | `401=5121` 2.420,00 (`banca`, validată) |
+| `tenant_013` | 14 | 2026-08-20 | emisă | 363,00 | 63,00 | `5311=4111` 363,00 (`casa`, validată) |
+| `tenant_017` | 8 | 2026-11-08 | primită | 2.420,00 | 420,00 | `401=5121` 2.420,00 (`banca`, validată) |
+
+*`tenant_004` #9 și `tenant_017` #8 sunt chiar cele două cu **furnizor la TVA la încasare** de la R88.
+Aceleași documente cad în trei probleme deodată: cheia ocupată, TVA-ul amânat, evidența lipsă.*
 
 #### CCC3 — CE S-A FĂCUT ȘI CE NU
 
