@@ -6035,3 +6035,67 @@ scrie", iar printre rutele chemate e chiar `/tenants/{id}/scoatere`. Sonda face 
 Iar calibrarea e **aserțiune**, nu observație: instrumentul **pică** dacă nu găsește cele șase
 câmpuri ale instanțelor cunoscute, sau dacă raportează ca tăcut vreunul din cele trei care chiar se
 randează.
+
+## 30.08.2026 (partea a doua) — Cifra de dimineață era greșită în direcția pe care instrumentul o declarase imposibilă
+
+*Verdictul de producție, pe `git log c94e08f..HEAD --name-only`: **zero fișiere de producție
+atinse** — reparația unui instrument și registrele.*
+
+### Ce s-a întâmplat
+
+Costin a dat ordinea listelor — **4 → 5 → 3**, faza 2 după — și, separat, a cerut ca previzualizarea
+scoaterii unei firme să iasă din inventarul lui R97 și să primească număr propriu: *„nu e artefact și
+n-are loc într-o listă de artefacte, dar e previzualizarea celui mai distructiv act din aplicație și
+tace pe ce s-ar șterge. Îngropată printre 66 de câmpuri se pierde."*
+
+**Punând numărul, am citit ecranul** — în loc să mă iau după ieșirea instrumentului. Și acolo s-a
+rupt cifra.
+
+### Instrumentul greșea în direcția opusă celei pe care o declarase
+
+`scan_r97_livrat_tacut.py` își scrie în cap direcția de eroare: *„«randat» se caută pe NUME, deci e
+supra-numărat, deci clasa iese PLAFON INFERIOR."* Un tipar o **întoarce**: un ecran care parcurge un
+container **generic** — `Object.keys(rd)`, `Object.entries(marcaje)` — afișează cheile **fără să le
+numească niciodată**, deci căutarea pe nume le dădea drept tăcute.
+
+Verificate în cod, nu deduse: `randuri_de_sters.*` de pe ecranul de scoatere **se afișează**, „N ×
+`<tabel>`" pentru fiecare tabel negol; cele **9** `marcaje.*` de pe ecranul de contracte, la fel.
+
+*O cifră care greșește în direcția opusă celei declarate e mai rea decât una imprecisă: cine o
+citește o corectează mental în partea greșită.*
+
+**Cifra: 66 → 54 de câmpuri, 17 → 16 rute.** 37 de câmpuri au ieșit din clasă, într-un bucket propriu.
+Ce nu s-a schimbat: calibrarea trece în continuare în amândouă direcțiile, iar concluzia rămâne —
+clasa e reală, concentrată (**90 din 106** rute n-au niciun câmp tăcut), și doar două din rutele ei
+poartă artefacte cerute de lege.
+
+### Trei afirmații de-ale mele, corectate în același loc
+
+Raportul de dimineață spunea că previzualizarea scoaterii *„nu arată nici ce s-a decis, nici ce anume
+s-ar șterge"*. **Fals, pe amândouă.** Ce s-ar șterge **se arată** (generic). Motivele **se arată**,
+inclusiv cazul *„nu pot decide"* — deci necunoscutul **nu** e rotunjit la „știu că nu". Confirmarea
+prin CUI **se cere**, doar din alt câmp decât credeam.
+
+**R99 s-a deschis pe conținutul corectat**, care e mai mic și mai precis: previzualizarea arată **ce
+s-a găsit**, nu **ce s-a verificat** — numărătoarea per evidență, **cu zerouri cu tot**, nu ajunge pe
+ecran. Un om care citește „firma nu a produs niciun document" nu poate ști dacă s-au verificat cinci
+evidențe sau una. *Decizia de a-i da număr propriu rămâne bună: motivul era că se pierde printre
+zeci de câmpuri, iar asta e adevărat indiferent cât de mare e constatarea.*
+
+### Descompunerea, după decizia de ordine
+
+Cele **54 de câmpuri pe 16 rute** nu mai stau într-o grămadă: **8 câmpuri / 1 rută → R99** ·
+**14 câmpuri / 2 rute → adâncimea listei 5** (statul de plată 12, registrul-jurnal 2), fiindcă alea
+sunt singurele care poartă artefacte · **32 de câmpuri / 13 rute rămân clasa R97**, toate pe **ecrane
+interne**, în afara oricărui criteriu al fazei 1.
+
+*Costin: „R97 pe artefacte nu e o listă separată, e adâncimea listei 5 — 12 câmpuri la statul de
+plată, nu 7."* Lista 5 se citește de acum ca **12 poziții**, două dintre ele cu adâncime măsurată.
+
+### Criteriul de ordonare, scris ca să poată fi refolosit
+
+*„Lista 4 prima fiindcă e cea despre care credeam că e goală. O listă care iese din gol e semnul că
+măsurătoarea dinaintea ei se uita în altă parte — două poziții acolo cântăresc mai mult decât opt
+într-o listă care s-a comportat cum trebuia."*
+
+**Greutatea unei constatări nu e numărul ei, ci cât de mult contrazice așteptarea.**

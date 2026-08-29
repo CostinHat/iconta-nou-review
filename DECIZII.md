@@ -3,6 +3,47 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 30.08.2026 (12) — Ordinea listelor: 4, apoi 5, apoi 3. Iar o listă care iese din gol cântărește mai mult decât una care s-a purtat cum trebuia
+
+*Decizia de ordine, dată de Costin după ce clasa R97 a primit cifră. Se scrie aici fiindcă ordinea e
+o decizie de produs, iar motivul ei e un criteriu care se va aplica și altă dată.*
+
+**Ordinea: lista 4 → lista 5 → lista 3. Faza 2 după ele.**
+
+**1. Lista 4 prima, și motivul nu e mărimea.** Cuvintele deciziei: *„Lista 4 prima fiindcă e cea
+despre care credeam că e goală. O listă care iese din gol e semnul că măsurătoarea dinaintea ei se
+uita în altă parte — două poziții acolo cântăresc mai mult decât opt într-o listă care s-a comportat
+cum trebuia. Și se închide repede."*
+
+*Criteriul general, scris ca să poată fi refolosit: **greutatea unei constatări nu e numărul ei, ci
+cât de mult contrazice așteptarea.** Opt artefacte într-o listă care a fost dintotdeauna plină spun
+ce se știa; două într-una declarată goală spun că instrumentul de dinainte se uita în altă parte.*
+
+**2. Lista 5 a doua, cu adâncimea R97 pliată în ea.** *„Măsurătoarea ta arată că nu sunt două
+șantiere: din cele 17 rute, doar statul de plată și registrul-jurnal poartă artefacte, și amândouă
+erau deja acolo. Deci R97 pe artefacte nu e o listă separată, e adâncimea listei 5 — 12 câmpuri la
+statul de plată, nu 7."*
+
+Consecința pentru registru: **R97 nu mai e un al doilea front pe artefacte.** Partea ei care atinge
+artefactele se citește ca **adâncime** a celor două poziții din lista 5; partea care atinge ecranele
+interne rămâne clasa, cu numărul ei.
+
+**3. Lista 3 a treia:** *„e muncă de construit, nu de reparat, și nu depinde de nimic din ce
+urmează."*
+
+**Separat de ordine: scoaterea firmei iese din inventarul R97 și primește număr propriu — R99.**
+*„Nu e artefact și n-are loc într-o listă de artefacte, dar e previzualizarea celui mai distructiv act
+din aplicație și tace pe ce s-ar șterge. Îngropată printre 66 de câmpuri se pierde. Nu o repara acum
+— doar scoate-o la suprafață cu numărul ei."*
+
+**Executat — dar premisa s-a corectat la scriere, și se spune.** Punând numărul, am citit ecranul în
+loc să mă iau după ieșirea instrumentului. **Previzualizarea CHIAR arată ce s-ar șterge** („N ×
+tabel", prin parcurgere generică — de-aia n-o vedea instrumentul), **și chiar arată** motivele,
+inclusiv *„nu pot decide"*. Ce tace e altceva, mai mic și mai precis: **ce s-a verificat și a ieșit
+gol**, plus lista tabelelor curățate. **R99 s-a deschis pe conținutul corectat**, nu pe cel din
+raport. *Decizia de a-i da număr propriu rămâne bună — motivul ei era că se pierde printre 66 de
+câmpuri, iar asta e adevărat indiferent de mărimea constatării.*
+
 ## 29.08.2026 (11) — O constatare care stă sub limita declarată a unui instrument e o CLASĂ, nu un rând de listă
 
 *Două decizii date de Costin peste raportul lui 1c, amândouă despre **cum se consemnează** o
