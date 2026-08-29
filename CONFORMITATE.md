@@ -2053,6 +2053,23 @@ citirea corectează.*
 - **CE S-A ADĂUGAT AZI e proba că urma APARE când eșecul se produce**, nu doar că apelul e scris: `scripts/proba_esec_email.py` strică trimiterea și citește ieșirea. **3 din 3 căi de intrare**: resetarea parolei, linkul de logare și invitația de asistent răspund normal *și* lasă urmă *și* alertă. *A patra — bun-venitul la înregistrarea unui cabinet — **nu s-a exercitat**: ruta creează un cabinet întreg, cu schemă de tenant, iar curățarea ar cere `tenant_stergere`, care la R79 își produce propriul orfan. Rămâne acoperită structural. Se spune, nu se ascunde într-un «3 din 3».*
 - **Reîncercarea automată NU s-a construit** (TTT2, a doua jumătate): nu e ieftin de adăugat acum — cere o coadă cu stare și o politică de expirare, adică un obiect nou, nu o schimbare de apel. *Nu se deschide restanță separată pentru ea în tura asta: e o capabilitate nouă, nu o lipsă a celei reparate. Dacă o vrei, e o cerință, nu o restanță.*
 
+### R92 — Ecranul nu poate numi cinci din cele opt stări ale unei facturi, iar 10 din 41 afișează azi șirul brut
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E3 · R91 (unde clasa s-a lărgit cu una) · **PRAG 2** *(nu prag 3: nu e latentă — **10 facturi din 41**, pe portofoliul de azi, afișează contabilului un șir brut. Nu produce cifre greșite, dar produce un ecran care nu se poate citi)*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `4eba229`
+- **măsurat la**: 2026-08-29 · **pe commit**: `4eba229`
+- **planul**: **NEACOPERIT.** `DESIGN_SYSTEM cap.25` cere ca afirmațiile despre datele firmei să fie **obiecte cu atribute, nu șiruri** — iar aici se întâmplă exact invers: o stare care are, în Python, un nomenclator cu înțeles și cu răspunsul la *„e declarabilă?"*, ajunge pe ecran ca simbolul ei brut. Nicio regulă de plan nu cere însă ca cele două liste — nomenclatorul și etichetele — **să fie confruntate**. (METODA §25)
+- **ce blochează**: `static/js/ecrane/facturi_ecran.js:476` ține `STATUS_ETICHETA` cu **patru** intrări, iar linia următoare cade pe `STATUS_ETICHETA[f.status] || f.status`. `core/nomenclator_status_factura.STARI` are **opt** stări. **Cinci n-au etichetă** — `ciorna`, `de_recunoscut`, `descarcata`, `importata`, `stornata` — și **una** dintre etichete, `platita`, numește o stare **care nu există în nomenclator**. *Clasa greșește în AMÂNDOUĂ direcțiile (`METODA §22`): și ratează stări reale, și afirmă una inexistentă.*
+- **cum s-a măsurat**: interogare pe toate cele **19** scheme active, `SELECT status, COUNT(*) FROM <schema>.facturi GROUP BY status`, cu aserțiune anti-vacuu pe domeniu. Rezultat: `emisa` **27** · `importata` **10** · `de_preluat` **4**, total **41**. **10 din 41 cad azi pe ramura brută.** Diferența dintre liste se calculează din nomenclator, nu se scrie de mână.
+- **de unde vine, și partea care nu e a zilei de azi**: starea `de_recunoscut` s-a adăugat pe 29.08 (R91) și **n-a primit etichetă** — dar `importata`, cea care produce toate cele 10 instanțe vii, e mai veche. *Am lărgit o clasă existentă cu una, iar măsurătoarea a arătat că clasa era deja deschisă și populată. Găsită la scrierea ISTORICULUI, nu de o gardă.*
+- **ce NU vede măsurătoarea**: dacă un contabil a **observat** vreodată șirul brut, și dacă alte ecrane randează stări din alte nomenclatoare cu același tipar. Sonda a privit **o singură pereche** listă↔listă; nu s-a căutat clasa în restul frontendului.
+- **condiția de deblocare**: **nu se închide prin adăugarea a cinci șiruri.** Reparația cerută e ca etichetele să se **derive din nomenclator** — o singură sursă —, plus o **gardă care confruntă cele două liste în amândouă direcțiile** și pică atât la o stare fără etichetă, cât și la o etichetă fără stare. Se închide când garda există, cu calibrare pe propriul ei mod de eșec, și când sonda de mai sus întoarce **0 din 41**.
+- **de ce nu s-a reparat în tura în care a fost găsită, cu condiția numită** (nu se amână fără condiție): orice atingere de JS cere `versioneaza_assets.py --scrie` **și** lanțul vizual `frontend_test/vizual/interactiune_scan.py` (~7 min, artefactul se comite), iar tura în care a fost găsită era o tură de **registre**, fără nicio schimbare de producție. *Se face în prima tură care atinge JS-ul; dacă nu vine una până la pasul 1b, se face separat.*
+
 ### R91 — O factură EMISĂ care intră prin import nu produce nota, iar absența e DECLARATĂ, nu decisă
 
 - **felul**: ARTEFACT

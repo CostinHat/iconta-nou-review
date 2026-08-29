@@ -5454,6 +5454,116 @@ scrise ca *de măsurat înainte de construcție*. *O cifră ghicită ar fi mai r
 
 ---
 
+## 29.08.2026 (partea a doua) — ZIUA A SCHIMBAT ceva pentru un contabil, prima oară în patru zile. Doar că niciun contabil n-a văzut-o, fiindcă nu există niciunul
+
+*Cerut de Costin: „dă ISTORIC pe ziua curentă; dacă ziua n-a schimbat nimic pentru un contabil,
+scrie-o ca atare." **Condiția nu se îndeplinește azi, și de-asta se scrie invers.** Intrarea de mai
+sus, scrisă la 03:55, acoperă doar primele patru commituri ale zilei. Ziua a mers mai departe cu
+încă șaisprezece.*
+
+**VERDICTUL, măsurat pe `git log a0cc6a5..HEAD --name-only`:** șase fișiere de **producție** atinse —
+`main.py`, `core/facturi_api.py`, `core/jurnal_api.py`, `core/contare_facturi.py` (nou),
+`core/nomenclator_status_factura.py`, `core/scan_cai_factura.py`. *Trei zile la rând verdictul a fost
+„niciun ecran, nicio rută, nicio regulă de calcul". Azi nu mai e adevărat.*
+
+### CE AR VEDEA UN CONTABIL, concret
+
+1. **Nu mai apasă „contabilizează".** O factură **emisă** își capătă nota contabilă **în același act
+   cu emiterea**, pe toate cele **patru** drumuri de emitere, fiindcă legătura s-a făcut în
+   `creeaza_factura` — punctul lor unic — nu în rute. (R87)
+2. **La validarea unei facturi primite i se cere contul de cheltuială**, și fără el ruta **refuză**
+   (422 `CONT_CHELTUIALA_OBLIGATORIU`). Nota se scrie tot acolo, în același act. *Un refuz nou pe un
+   drum care înainte trecea — asta se vede.* (R88)
+3. **Închiderea lunii refuză** dacă au rămas note în ciornă sau facturi neîncheiate
+   (`ciorna`, `de_recunoscut`). Înainte nu verifica nimic. (R58)
+4. **Ștergerea unei facturi care are notă refuză cu motiv**, nu cu o eroare brută de bază de date, și
+   numește ieșirea reală: storno, sau dezlegarea notei. *Ieșirea de dinainte era numită și nu exista.*
+   (R90)
+
+### CE N-AR VEDEA, ȘI E PARTEA CARE CONTEAZĂ
+
+**Niciun contabil real n-a văzut nimic din toate astea.** Contextul dat de Costin azi-dimineață: *nu
+există clienți reali în aplicație — tot portofoliul de 19 firme e de test*. Cele **31 de facturi,
+103.163,00 lei TVA, 11 firme** contabilizate azi (R89) sunt istoricul unor firme de probă. Iar **R40
+rămâne deschisă de 91 de commituri**: *nicio declarație depusă prin aplicație*. **Lanțul se
+construiește; nu s-a exercitat încă pe nimeni.**
+
+### UN DEFECT AL ZILEI, GĂSIT ÎN TIMP CE SE SCRIA INTRAREA ASTA
+
+Am adăugat azi starea `de_recunoscut` în `core/nomenclator_status_factura.py`. **Ecranul nu știe s-o
+numească.** `static/js/ecrane/facturi_ecran.js:476` are `STATUS_ETICHETA` cu **patru** intrări, iar
+linia următoare cade pe `|| f.status` — deci o factură în starea nouă afișează contabilului șirul
+brut **`de_recunoscut`**, cu underscore și fără diacritice.
+
+**Și e o clasă, nu o instanță — care greșește în AMÂNDOUĂ direcțiile** (`METODA §22`): nomenclatorul
+are **8** stări, eticheta le acoperă pe **4**; **cinci** stări n-au etichetă (`importata`,
+`de_recunoscut`, `ciorna`, `descarcata`, `stornata`), iar **una** din etichete — `platita` — numește o
+stare care **nu există în nomenclator**.
+
+**Și nu e latentă, măsurat.** Sondă pe toate cele **19** scheme active: `emisa` 27 · **`importata`
+10** · `de_preluat` 4, total **41**. **Zece facturi din patruzeci și una afișează AZI un șir brut** —
+și nu din cauza stării adăugate azi, ci a uneia mai vechi. *Am lărgit cu unu o clasă care era deja
+deschisă și populată. Ce mi se părea o scăpare cosmetică de-a mea era un defect viu, de dinainte.*
+
+**Deschisă ca restanță R92, prag 2.** *Un defect consemnat doar în proză ar fi repetat exact tiparul
+lui **R11** — „datoria veche consemnată doar în proză" —, care e restanță deschisă de 167 de
+commituri.*
+
+**NU s-a reparat în tura asta, și condiția e scrisă în R92** (nu se amână fără condiție): orice
+atingere de JS cere `versioneaza_assets.py --scrie` plus lanțul vizual `interactiune_scan.py`
+(~7 min), iar tura asta era una de **registre**, fără nicio schimbare de producție. Reparația corectă
+nu e adăugarea a cinci șiruri — e **derivarea etichetelor din nomenclator**, cu o gardă care le
+confruntă în amândouă direcțiile, ca lista să nu mai poată rămâne în urmă a treia oară. Se face în
+prima tură care atinge JS-ul; dacă nu vine una până la pasul 1b, se face separat.
+
+### CE A ÎNCHIS ZIUA: DOUĂSPREZECE RESTANȚE, ȘI A DESCHIS UNA
+
+**Lanțul facturii, întreg** — R87, R88 (`55a57f6`), R89 (`d582563`), R90 (`95f5d0e`), R91
+(`6ca0aba`). Cele trei intrări ale unei facturi în evidență sunt acum toate acoperite: emiterea prin
+aplicație, primita validată din SPV, și emisa întoarsă prin import — ultima ca **ciornă de
+recunoaștere**, stare **declarabilă**, fiindcă TVA-ul e datorat la emitere (art. 281 CF) oricât de
+nerecunoscută ar fi factura în evidența internă.
+
+**Și încă șapte** — R45, R54, R58, R63, R66, R70, R73 (`e9998ee`, `e13fb41`). **Șase din cele șapte
+erau deja construite sau decise INVERS.** Ce lipsea era decizia scrisă, sau proba.
+
+### CE A ÎNVĂȚAT ZIUA DESPRE PROCES, și e mai important decât oricare restanță
+
+**O comandă scrisă pe o citire mai veche a registrului cere lucruri deja făcute.** S-a întâmplat de
+două ori azi, iar consecințele ar fi fost reale, nu birocratice:
+
+- la **R54**, comanda spunea *„nu se adaugă validare; rămâne liber"*. Validarea **exista** din 26.08,
+  pe decizia opusă a lui Costin. În cod, „nu se adaugă" ar fi însemnat **a SCOATE** o poartă care
+  funcționează. N-am scos-o.
+- la **R63**, comanda cerea fuziunea adreselor; decizia din 26.08 (varianta c) spune exact invers. Am
+  executat-o literal: **0 cazuri**, fiindcă pe nicio firmă nu există amândouă adresele. Nimic
+  suprascris.
+
+**Costin a retras el însuși amândouă comenzile**, în tura următoare, și a scos definitiv din discuție
+a treia cerință (reîncercarea automată la eșec de email). *Consecința ei, scrisă o dată ca să nu fie
+redescoperită ca lipsă: un email pierdut rămâne pierdut — aplicația spune că s-a întâmplat și
+alertează, dar nu încearcă din nou.*
+
+### ȘI, LA SFÂRȘITUL ZILEI, PRIMUL PAS AL PLANULUI
+
+**1a — regimurile reale: 12**, pe 19 firme (`scripts/scan_regimuri.py`, `4eba229`). `PLAN_INVESTIGATII.md`
+o cerea ca **prima operațiune din E1**. Nu fusese făcută niciodată: criteriul care termină etapa —
+*„lista artefactelor pe regimurile REALE"* — a stat opt luni pe o cifră pe care n-o avea nimeni, timp
+în care s-au deschis și închis 91 de restanțe.
+
+Ce a scos măsurătoarea: **3 profile incomplete** (rânduri vechi de seed — `vector_fiscal_api` refuză
+deja să salveze fără ele) · **marjă turism (art. 311) = 0 firme** și **marjă second-hand (art. 312) =
+0 firme**, adică module cu rută și motor pe care **nicio firmă nu le exercită** — chiar semnalul cerut
+de plan · **agricultor forfetar** și **construcții** NU SE POT NUMĂRA, n-au nici câmp, nici marcaj.
+
+**Și o cifră corectată de propriul instrument, în aceeași tură:** prima formă a scanului raporta
+**13**, numărând `tip_decont` brut. În date sunt patru scrieri pentru două lucruri — `L`, `lunar`,
+`T`, `trimestrial`. Verificat la sursă: **nu e un defect al aplicației** —
+`core.common.perioada_tva_tip` le parsează pe toate, fără default tăcut. Era naivitatea scanului.
+*A treia oară în două zile când un scan pe forma brută supra-numără și citirea corectează.*
+
+---
+
 ## 28.08.2026 — ZIUA: opt restanțe închise, dintre care patru se văd pe ecran
 
 *Scrisă pe 29.08, la rescrierea ISTORICULUI. **Ziua asta lipsea din registru** — între 27.08 și
