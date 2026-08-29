@@ -108,7 +108,7 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
                     data_scadenta=None, moneda="RON", status="emisa",
                     categorie_331=None, data_faptului_generator=None, taxare_inversa=False,
                     tert_platitor_tva=None, tert_tara="RO", tip_operatiune="normal",
-                    furnizor_tva_incasare=False, tert_pf=False):
+                    furnizor_tva_incasare=False, tert_pf=False, tip="factura"):
     """
     Inserează factura + liniile, într-o tranzacție. total/tva calculate din linii.
     Întoarce {ok, factura_id, total, tva}.
@@ -131,6 +131,14 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
     if tip_op_v not in ("normal", "avans", "regularizare_avans"):
         raise ValueError("Tipul operațiunii %r nu e recunoscut. Alege: normal, avans sau "
                          "regularizare de avans." % tip_operatiune)
+    # [EEE1] `tip` intra la INSERT, nu printr-un UPDATE de dupa. Motivul nu e stilistic: nota
+    # automata se scrie in ACEEASI tranzactie, iar ea trebuie sa stie daca documentul e factura sau
+    # proforma. Cat timp tipul se punea dupa, o proforma ar fi primit nota si abia apoi ar fi devenit
+    # proforma.
+    tip_v = (tip or "factura").strip().lower() or "factura"
+    if tip_v not in ("factura", "proforma", "aviz"):
+        raise ValueError("Tipul documentului %r nu e recunoscut. Alege: factură, proformă sau aviz."
+                         % tip)
     furnizor_incasare_v = bool(furnizor_tva_incasare)
     if furnizor_incasare_v and directie != "primita":
         raise ValueError("TVA la încasare la furnizor se poate bifa doar pe facturile primite "
@@ -141,12 +149,12 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
             "INSERT INTO facturi (client_id, numar, data_emitere, data_scadenta, "
             "total, tva, status, moneda, directie, tert_nume, tert_cui, tert_adresa, "
             "categorie_331, data_faptului_generator, taxare_inversa, tert_platitor_tva, "
-            "tert_tara, tip_operatiune, furnizor_tva_incasare) "
-            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
+            "tert_tara, tip_operatiune, furnizor_tva_incasare, tip) "
+            "VALUES (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s) RETURNING id",
             (client_id, numar, data_emitere, data_scadenta, t["total"], t["tva"],
              status, moneda, directie, tert_nume, tert_cui, tert_adresa,
              categorie_331 or None, data_faptului_generator or None, bool(taxare_inversa),
-             tert_platitor_tva, tert_tara_v, tip_op_v, furnizor_incasare_v))
+             tert_platitor_tva, tert_tara_v, tip_op_v, furnizor_incasare_v, tip_v))
         factura_id = cur.fetchone()[0]
         for l in linii:
             cur.execute(
@@ -156,8 +164,55 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
                  l["cantitate"], l["pret_unitar"], l["cota_tva"], l.get("articol_id"),
                  (l.get("cont_venit") or None)))  # #11 cont venit pe linie (auto din denumire, editabil)
     _redeschide_luna(conn, data_emitere)   # [cap.23] evidenta lunii s-a schimbat -> luna se redeschide
-    return {"ok": True, "factura_id": factura_id,
-            "total": float(t["total"]), "tva": float(t["tva"])}
+    out = {"ok": True, "factura_id": factura_id,
+           "total": float(t["total"]), "tva": float(t["tva"])}
+    out["contare"] = _conteaza_la_creare(conn, factura_id, directie, tip_v)
+    return out
+
+
+def _conteaza_la_creare(conn, factura_id, directie, tip):
+    """[EEE1 / R87] Nota contabila a facturii EMISE se scrie in ACELASI act cu emiterea.
+
+    DE CE AICI, si nu in ruta: `creeaza_factura` e punctul UNIC prin care trec toate emiterile
+    aplicatiei — `POST /facturi`, `POST /facturi/emite`, stornarea si transformarea proformei o
+    cheama pe toate. Legat de o singura ruta, decizia R36 ar fi fost adevarata doar pe un drum din
+    patru. *Masurat prin citire, nu presupus: `emite_factura` si `storneaza` cheama chiar functia
+    asta.*
+
+    DE CE NUMAI `emisa`: la primita, faptul economic nu e sosirea documentului, ci recunoasterea
+    cheltuielii — nota se scrie la `/valideaza` (R88, decizia din 29.08.2026).
+
+    ROLLBACK COMPLET, ca la NIR: nu se comite nimic aici. Daca emiterea cade mai tarziu — curs BNR
+    indisponibil, de pilda —, nota cade cu ea. **Nu exista factura fara nota, si nici nota fara
+    factura.**
+
+    UN REFUZ NU E O EROARE. `RefuzContare` opreste NOTA, nu emiterea: factura se creeaza oricum, iar
+    motivul pleaca in raspuns. Altfel o factura perfect valida n-ar mai putea fi emisa dintr-un motiv
+    de contabilitate — iar semnalul ca lipseste nota exista deja, in verdictul de TVA (R35).
+
+    CE NU ACOPERA, DECLARAT (ZZ4 cere ca absenta sa fie scrisa, nu deduse): facturile intrate prin
+    `main._factura_din_parsat` — importul din SPV si incarcarea manuala de XML — NU trec pe aici, ci
+    printr-un INSERT propriu. O factura EMISA care se intoarce din SPV a fost emisa in alta parte;
+    pentru ea, sosirea documentului nu e faptul economic. Ramane necontata si vizibila ca atare in
+    verdictul de TVA.
+    """
+    from core import contare_facturi as _cf
+    from core import afirmatii as _af
+    if directie != "emisa" or tip != "factura":
+        return {"stare": "neaplicabil", "afirmatie": _af.afirmatie(
+            "absenta_observatie", "CONTARE_NEAPLICABILA",
+            "nota automată se scrie doar pentru facturi EMISE de tip factură; documentul ăsta e "
+            "%s / %s" % (directie, tip),
+            surse_consultate=["facturi.directie", "facturi.tip"])}
+    try:
+        with _cf.cursor_dict(conn) as cur:
+            return _cf.contabilizeaza(cur, "", factura_id, automat=True)
+    except _cf.RefuzContare as e:
+        return {"stare": "refuzata", "cod": e.cod, "detalii": e.detalii,
+                "afirmatie": _af.afirmatie(
+                    "neconformitate", e.cod, e.mesaj,
+                    unde="factura #%s" % factura_id,
+                    regula="nota automată se scrie doar când toate intrările ei sunt cunoscute")}
 
 
 # ============================================================
@@ -248,7 +303,57 @@ def _luna_facturii(conn, factura_id):
 
 
 def sterge_factura(conn, factura_id):
-    """Șterge factura (liniile cad automat prin ON DELETE CASCADE)."""
+    """Șterge factura (liniile cad automat prin ON DELETE CASCADE).
+
+    [EEE2] **REFUZĂ MOTIVAT dacă factura are notă de contare.** Până azi ștergerea nu verifica nimic,
+    iar cheia străină `inregistrari_factura_id_fkey` n-are `ON DELETE` — deci trecea *de cele mai
+    multe ori* doar fiindcă majoritatea facturilor n-aveau notă (28 din 41, măsurat). Cu note
+    automate, fiecare factură are una, iar ștergerea ar fi început să pice cu o eroare brută de bază
+    în loc de un refuz explicat. **Automatizarea nu creează problema — o face vizibilă la fiecare
+    ștergere.**
+
+    O notă de **plată** nu blochează ștergerea: nu e evidența facturii, e a încasării. Aceeași
+    distincție ca la idempotență, din același loc (`contare_facturi.contare_existenta`).
+
+    Varianta aleasă de Costin (29.08.2026) e (i) — refuz + trimitere la storno. Respinse: (ii)
+    ștergerea notei odată cu factura — *o notă ștearsă e o gaură în evidență, nu o corecție* —, și
+    (iii) ștergerea condiționată de starea ciornă, care ar face comportamentul să depindă de un pas
+    de validare pe care omul nu-l are în minte când apasă „șterge"."""
+    from core import contare_facturi as _cf
+    with _cf.cursor_dict(conn) as cur:
+        n = _cf.contare_existenta(cur, "", factura_id)
+        legate = _cf.note_cu_cheia(cur, "", factura_id)
+    if not n and legate:
+        # GĂSIT DE PROPRIA GARDĂ, la prima rulare, și nu era în comandă: cheia străină blochează
+        # ștergerea pentru ORICE notă legată, nu doar pentru o contare. O notă de PLATĂ n-ar trebui
+        # să apere factura de ștergere — dar `inregistrari_factura_id_fkey` n-are `ON DELETE`, deci
+        # o blochează oricum, cu o eroare brută de bază. EEE2 cere ca ștergerea să nu mai pice așa;
+        # refuzul acoperă și clasa asta, cu ALT cod și ALT motiv, fiindcă **ieșirea e alta**:
+        # aici dezlegi nota, nu stornezi factura.
+        # Mesajul NUMEȘTE starea notei, fiindcă de ea depinde dacă ieșirea există. O ciornă se
+        # poate șterge (patru-ochi n-a fost consumat); o notă VALIDATĂ nu — `jurnal_api.sterge`
+        # refuză orice notă care nu e ciornă, iar rută de dezlegare nu există. Pe portofoliul de
+        # azi, toate cele 3 facturi din clasa asta au nota VALIDATĂ, deci nu se pot șterge deloc.
+        # Restanța e deschisă (R90); mesajul nu are voie s-o ascundă promițând o ieșire inexistentă.
+        _n0 = legate[0]
+        _ciorna = (_n0.get("status") == "ciorna")
+        raise _cf.RefuzContare(
+            "ARE_NOTA_LEGATA",
+            ("Factura are o notă legată care nu e de contare (#%d, %s, %s). "
+             % (_n0["id"], _n0.get("sursa") or "fără sursă", _n0.get("status") or "?"))
+            + ("Șterge întâi nota — e ciornă, deci se poate șterge."
+               if _ciorna else
+               "Nota e VALIDATĂ, deci nu se poate șterge, iar o cale de dezlegare nu există încă: "
+               "factura asta nu se poate șterge azi."),
+            detalii={"inregistrare_id": _n0["id"], "status_nota": _n0.get("status"),
+                     "iesire": "sterge_nota_ciorna" if _ciorna else "fara_iesire"})
+    if n:
+        raise _cf.RefuzContare(
+            "ARE_NOTA_DE_CONTARE",
+            "Factura are notă contabilă (#%d) și nu se mai șterge: o notă ștearsă lasă o gaură în "
+            "evidență. Corecția unei facturi contabilizate se face prin STORNO — un al doilea "
+            "document, care își produce propria notă." % n["id"],
+            detalii={"inregistrare_id": n["id"], "iesire": "storno"})
     _d = _luna_facturii(conn, factura_id)
     with conn.cursor() as cur:
         cur.execute("DELETE FROM facturi WHERE id = %s", (factura_id,))
@@ -374,7 +479,7 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
     r = creeaza_factura(conn, numar, data_emitere, "emisa", linii,
                         client_id=client_id, tert_nume=tert_nume, tert_cui=tert_cui, tert_adresa=tert_adresa,
                         data_scadenta=data_scadenta, moneda=moneda, status=status,
-                        tert_tara=tert_tara, tip_operatiune=tip_operatiune)
+                        tert_tara=tert_tara, tip_operatiune=tip_operatiune, tip=tip)
     # setez seria pe factura + incrementez contorul
     with conn.cursor() as cur:
         cur.execute("UPDATE facturi SET serie = %s WHERE id = %s", (serie, r["factura_id"]))
@@ -383,7 +488,6 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
         else:
             col = "urmator_numar_proforma" if tip == "proforma" else "urmator_numar_aviz"
             cur.execute(f"UPDATE firma_profil SET {col} = %s", (numar_int + 1,))
-        cur.execute("UPDATE facturi SET tip = %s WHERE id = %s", (tip, r["factura_id"]))
     # ---- CURS VALUTAR (art. 290/319 Cod fiscal): TVA obligatoriu si in lei ----
     import datetime as _dt
     _fid = r["factura_id"]

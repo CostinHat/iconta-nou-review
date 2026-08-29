@@ -5414,9 +5414,9 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**464 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**465 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 456
+### `core/` — 457
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -5499,6 +5499,7 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 - `core/test_constante_nesursate.py` — CLICHET (20.08.2026): clasa constantelor fiscale nesursate din PRODUCȚIE nu mai crește.
 - `core/test_cont_din_corp_normalizat.py` — core/test_cont_din_corp_normalizat.py — un cont luat din CORPUL CERERII trece prin strip().
 - `core/test_cont_venit_linie.py` — core/test_cont_venit_linie.py — #11: contul de venit stabilit PE LINIE de factura.
+- `core/test_contare_automata.py` — GARDA contării automate a facturii — blocurile DDD (cheia), EEE (emisă), FFF (primită).
 - `core/test_contract_ecran_ruta.py` — GARD: contractul ECRAN ↔ RUTĂ nu se rupe tăcut.
 - `core/test_control_fiscal.py` — Teste pentru semaforul de conformare fiscala (control_fiscal_api v2).
 - `core/test_control_fiscal_diacritice.py` — core/test_control_fiscal_diacritice.py — GARD: mesajele de VERDICT ale controlului fiscal

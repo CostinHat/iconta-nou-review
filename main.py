@@ -3171,9 +3171,16 @@ def factura_detalii(tenant_id: int, factura_id: int, ctx=Depends(cere_context)):
 # [R42] „ștergerea a ceva emis" — o factură ștearsă lasă un gol în serie (interdicția 35).
 def factura_sterge(tenant_id: int, factura_id: int,
                    ctx=Depends(cere_rol("admin_firma"))):
+    """[EEE2] Refuzul e EXPLICAT, nu o eroare de bază: `409`, cu numărul notei și cu ieșirea numită
+    (storno). Fără el, cu note automate, ștergerea ar fi început să pice pe cheia străină
+    `inregistrari_factura_id_fkey`, care n-are `ON DELETE`."""
+    from core import contare_facturi as _cf
     schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return facturi_api.sterge_factura(conn, factura_id)
+    try:
+        with db.get_conn(schema) as conn:
+            return facturi_api.sterge_factura(conn, factura_id)
+    except _cf.RefuzContare as e:
+        raise HTTPException(409, e.mesaj)
 
 
 # ============================================================
@@ -4289,12 +4296,14 @@ def tenant_amortizare(tenant_id: int, an: int, luna: int,
                 """, (iid, cont_am, rata))
     return {"ok": True, "nota_id": iid, "linii": len(linii), "total": round(sum(r for _, r, _ in linii), 2)}
 def _perioada_blocata(conn, schema, data_nota):
-    """True daca luna notei e blocata. data_nota: date sau str ISO."""
-    d = str(data_nota)[:10]
+    """True daca luna notei e blocata. data_nota: date sau str ISO.
+
+    [29.08.2026] Interogarea s-a mutat in `core/contare_facturi.luna_blocata`, fiindca de azi o
+    cere si contarea automata. Doua definitii ale lui „luna e blocata" ar fi dat doua raspunsuri la
+    prima divergenta (P1); aici a ramas doar apelul."""
+    from core import contare_facturi as _cf
     with conn.cursor() as cur:
-        cur.execute(f"SELECT 1 FROM {schema}.perioade_blocate WHERE an=%s AND luna=%s",
-                    (int(d[:4]), int(d[5:7])))
-        return cur.fetchone() is not None
+        return _cf.luna_blocata(cur, schema, data_nota)
 
 def _cere_luna_deschisa(conn, schema, data):
     """[R42 (a), 25.08.2026] P15 pe o notă NOUĂ, nu doar pe una existentă.
@@ -7655,87 +7664,41 @@ def banca_rec_reactiveaza(tenant_id: int, linie_id: int, ctx=Depends(cere_cabine
 
 @app.post("/tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza")
 def factura_contabilizeaza(tenant_id: int, factura_id: int, ctx=Depends(cere_cabinet)):
-    """Nota ciorna din factura (AI propune, contabilul valideaza). Idempotent:
-    refuza daca exista deja inregistrare (ciorna sau validata) pe factura."""
-    from decimal import Decimal
-    from psycopg2.extras import RealDictCursor
-    from core import facturi as _fc
+    """RUTA MANUALĂ de contare — **a doua cale, declarată** (R87, decizia lui Costin 29.08.2026,
+    varianta (ii)+(iii) din AAA4).
+
+    De ce există, deși contarea e automată de azi: e singura cale de a contabiliza o factură pe care
+    automatul a **refuzat-o** — lună închisă la emitere, cotă lipsă pe linii, sau clasa
+    furnizor-la-încasare. Ștergând-o, refuzul automatului ar deveni un blocaj fără ieșire.
+
+    [EEE3 / FFF3] **IDEMPOTENTĂ**: a doua chemare pe o factură deja contată e **no-op** — răspuns
+    `200` cu `stare='deja_contata'`, nu `422`. Refuzul de dinainte era corect, prezentarea lui nu:
+    un comportament corect care arată ca o eroare învață pe cineva să se ferească de el.
+
+    Diferența față de calea automată e una singură, și e declarată: aici `automat=False`, deci clasa
+    ambiguă de TVA la încasare **trece** (omul are contextul pe care automatul nu-l are), iar plasa
+    anti-dublare **avertizează** în loc să oprească."""
+    from core import contare_facturi as _cf
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
-        with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
-            cur.execute(f"SELECT * FROM {schema}.facturi WHERE id=%s", (factura_id,))
-            f = cur.fetchone()
-            if not f:
-                raise HTTPException(404, "factură inexistentă")
-            # [R42 (a)] Luna se știe abia acum: nota moștenește data emiterii facturii, nu ziua de azi.
-            _cere_luna_deschisa(conn, schema, f.get("data_emitere"))
-            if (f.get("tip") or "factura") != "factura":  # proforma_fara_nota_v1
-                raise HTTPException(422, "proforma/avizul nu se contabilizeaza (nu e document fiscal)")
-            cur.execute(f"SELECT COUNT(*) AS n FROM {schema}.inregistrari WHERE factura_id=%s", (factura_id,))
-            if cur.fetchone()["n"]:
-                raise HTTPException(422, "factura are deja înregistrare (ciornă sau validată)")
-            cur.execute(f"SELECT COALESCE(tva_la_incasare,false) AS b FROM {schema}.firma_profil WHERE id=1")
-            tvai = cur.fetchone()["b"]
-            _MSG_FARA_COTA = ("factura fara cota TVA pe linii - nu se poate genera "
-                              "nota (declara cota pe factura)")
-            if f["directie"] == "emisa":
-                # [#11 cont venit pe linie] nota se grupeaza pe (cont_venit, cota): o factura de
-                # servicii crediteaza 704, una de marfa 707, una mixta -> ambele. Parametrul de
-                # grupare = cont_venit_implicit al firmei; daca ACELA e NULL -> '707' ultim fallback
-                # legacy DOAR pentru linii vechi fara cont (OMFP 1802/2014).
-                cur.execute(f"SELECT cont_venit_implicit FROM {schema}.firma_profil WHERE id=1")
-                _cvi = ((cur.fetchone() or {}).get("cont_venit_implicit")) or '707'
-                cur.execute(f"""SELECT COALESCE(NULLIF(cont_venit,''), %s) AS cv, cota_tva,
-                                       COALESCE(SUM(cantitate*pret_unitar),0) AS baza
-                                FROM {schema}.factura_linii WHERE factura_id=%s
-                                GROUP BY cv, cota_tva ORDER BY cv, cota_tva""", (_cvi, factura_id))
-                grupuri = [dict(r) for r in cur.fetchall()]
-                total_baza = sum((Decimal(str(g["baza"] or 0)) for g in grupuri), Decimal(0))
-                if total_baza <= 0:
-                    # factura fara linii (legacy): cade pe antet, un singur cont (cont_venit_implicit)
-                    baza = Decimal(str(f.get("total_lei") or f.get("total") or 0)) - Decimal(str(f.get("tva") or 0))
-                    cur.execute(f"SELECT MAX(cota_tva) AS cota FROM {schema}.factura_linii WHERE factura_id=%s", (factura_id,))
-                    _cota_h = cur.fetchone()["cota"]
-                    if _cota_h is None:
-                        raise HTTPException(422, _MSG_FARA_COTA)
-                    note = _fc.factura_emisa(baza, cota=Decimal(str(_cota_h)) / 100,
-                                             la_data=str(f["data_emitere"]), tva_incasare=tvai, cont_venit=_cvi)
-                else:
-                    if any(g["cota_tva"] is None for g in grupuri):
-                        raise HTTPException(422, _MSG_FARA_COTA)
-                    note = []
-                    for g in grupuri:
-                        note += _fc.factura_emisa(Decimal(str(g["baza"] or 0)),
-                                                  cota=Decimal(str(g["cota_tva"])) / 100,
-                                                  la_data=str(f["data_emitere"]),
-                                                  tva_incasare=tvai, cont_venit=g["cv"])
-            else:
-                cur.execute(f"""SELECT COALESCE(SUM(cantitate*pret_unitar),0) AS baza,
-                                       MAX(cota_tva) AS cota FROM {schema}.factura_linii
-                                WHERE factura_id=%s""", (factura_id,))
-                fl = cur.fetchone()
-                baza = Decimal(str(fl["baza"] or 0))
-                if baza <= 0:
-                    baza = Decimal(str(f.get("total_lei") or f.get("total") or 0)) - Decimal(str(f.get("tva") or 0))
-                if fl["cota"] is None:
-                    raise HTTPException(422, _MSG_FARA_COTA)
-                cota = Decimal(str(fl["cota"])) / 100
-                note = _fc.factura_primita(baza, cota=cota, la_data=str(f["data_emitere"]), tva_incasare=tvai)
-            cur.execute(f"""INSERT INTO {schema}.inregistrari (data, factura_id, descriere, sursa, status)
-                            VALUES (%s,%s,%s,'facturi','ciorna') RETURNING id""",
-                        (f["data_emitere"], factura_id,
-                         f"Contare factura {(lambda s, n: n if (s and str(n).startswith(str(s))) else (str(s or '') + str(n)))(f.get('serie'), f.get('numar') or factura_id)}"[:200]))  # fix_serie_contare_v1
-            iid = cur.fetchone()["id"]
-            for n in note:
-                cur.execute(f"""INSERT INTO {schema}.inregistrari_linii
-                                (inregistrare_id, cont_debit, cont_credit, suma)
-                                VALUES (%s,%s,%s,%s)""",
-                            (iid, n["debit"], n["credit"], Decimal(str(n["suma"]))))
+        try:
+            with _cf.cursor_dict(conn) as cur:
+                rez = _cf.contabilizeaza(cur, schema, factura_id, automat=False)
+        except _cf.RefuzContare as e:
+            conn.rollback()
+            if e.cod == "INEXISTENTA":
+                raise HTTPException(404, e.mesaj)
+            # Codul de stare se pastreaza pe fiecare clasa de refuz: luna inchisa raspundea `423`
+            # inainte de rescriere si raspunde `423` si acum. O rescriere care schimba tacit codul
+            # de raspuns ar rupe apelanti fara sa spuna.
+            if e.cod == "LUNA_INCHISA":
+                raise HTTPException(423, PERIOADA_INCHISA)
+            raise HTTPException(422, e.mesaj)
         conn.commit()
-    return {"inregistrare_id": iid, "tva_la_incasare": bool(tvai),
-            "linii": [{"debit": n["debit"], "credit": n["credit"], "suma": str(n["suma"])} for n in note]}
+    return rez
+
 
 
 @app.post("/tenants/{tenant_id}/vanzare-marja")
@@ -8310,6 +8273,7 @@ def factura_primita_valideaza(tenant_id: int, primita_id: int, corp: dict = Body
     leaga factura_id + status=validata. Idempotent (FOR UPDATE + verifica status). cont sugerat,
     confirmat de om. Gard = acces la tenant + actiune umana explicita; NU identitate != importator."""
     from core import efactura_import as _ef
+    from core import contare_facturi as _cf
     cont = (corp.get("cont") or "").strip()
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -8326,6 +8290,24 @@ def factura_primita_valideaza(tenant_id: int, primita_id: int, corp: dict = Body
                 return {"stare": "deja_validata", "factura_id": fid_ex}
             if status == "respinsa":
                 raise HTTPException(409, "factura a fost respinsa; nu se poate valida")
+            # [FFF1] CONTUL DE CHELTUIALĂ E OBLIGATORIU. Decizia lui Costin (29.08.2026): nu cont
+            # implicit — la venit, implicitul e o presupunere despre ce vinde firma; la cheltuială ar
+            # fi una despre natura cheltuielii, adică exact lucrul pe care omul îl are în față —, și
+            # nu validare fără notă, fiindcă asta ar reintroduce golul R88 pe ușa din spate.
+            # SCHIMBARE DE COMPORTAMENT, declarată: până azi câmpul era `cont or None`, deci
+            # validarea trecea fără el. De azi refuză.
+            if not cont:
+                # Detaliul e o STRUCTURĂ, ca la `LINII_INCOMPLETE`: frontendul (și garda) citesc
+                # `cod`, nu propoziția. Un refuz recunoscut după text s-ar rupe la prima rescriere.
+                from core import afirmatii as _af
+                raise HTTPException(422, dict(_af.afirmatie(
+                    "neconformitate", "CONT_CHELTUIALA_OBLIGATORIU",
+                    "Alege contul de cheltuială înainte de a valida: validarea recunoaște "
+                    "cheltuiala și îi scrie nota contabilă în același act, iar nota nu poate "
+                    "ghici contul.",
+                    unde="factura primită #%s" % primita_id,
+                    regula="validarea unei facturi primite cere contul de cheltuială"),
+                    cod="CONT_CHELTUIALA_OBLIGATORIU"))
             try:
                 f = _ef.parseaza_xml((xmlb or "").encode("utf-8"), cifb)
             except Exception as e:
@@ -8349,8 +8331,32 @@ def factura_primita_valideaza(tenant_id: int, primita_id: int, corp: dict = Body
                     _sets.append("tert_tara=%s"); _vals.append(_ttara)
                 _vals.append(fid_final)
                 cur.execute(f"UPDATE {schema}.facturi SET " + ", ".join(_sets) + " WHERE id=%s", _vals)
+        # [FFF1] NOTA SE SCRIE AICI, în același act cu validarea — după ce clasificarea e pusă pe
+        # factură, ca nota s-o poată citi. Validarea *este* actul prin care firma recunoaște
+        # cheltuiala: patru-ochi s-a consumat deja, contul tocmai a fost ales, regimul tocmai a fost
+        # clasificat. La import n-ar fi existat niciuna dintre ele.
+        # [FFF2] Clasa ambiguă — furnizor la încasare + firmă în regim normal — e REFUZATĂ automat
+        # (varianta (ii)), cu motivul întors pe ecran. Factura se validează oricum; nota o scrie omul
+        # din butonul de contabilizare. Un refuz al notei nu poate anula recunoașterea cheltuielii.
+        from core import afirmatii as _af
+        contare = {"stare": "neaplicabil", "afirmatie": _af.afirmatie(
+            "absenta_observatie", "CONTARE_NEAPLICABILA",
+            "validarea n-a legat nicio factură, deci n-are ce conta",
+            surse_consultate=["efactura_primite.factura_id"])}
+        if fid_final:
+            try:
+                with _cf.cursor_dict(conn) as cur2:
+                    contare = _cf.contabilizeaza(cur2, schema, fid_final, automat=True,
+                                                 cont_cheltuiala=cont or None)
+            except _cf.RefuzContare as e:
+                contare = {"stare": "refuzata", "cod": e.cod, "detalii": e.detalii,
+                           "afirmatie": _af.afirmatie(
+                               "neconformitate", e.cod, e.mesaj,
+                               unde="factura #%s" % fid_final,
+                               regula="nota automată se scrie doar când toate intrările ei sunt "
+                                      "cunoscute")}
         conn.commit()
-    return {"stare": "validata", "factura_id": fid_final}
+    return {"stare": "validata", "factura_id": fid_final, "contare": contare}
 
 
 @app.post("/tenants/{tenant_id}/facturi-primite/{primita_id}/respinge")

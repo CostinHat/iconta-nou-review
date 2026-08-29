@@ -200,7 +200,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
+*ce face: [EEE2] Refuzul e EXPLICAT, nu o eroare de bază: `409`, cu numărul notei și cu ieșirea numită (storno) — poate atinge, prin modul (PLAFON, nemasurat pe ruta): factura_linii (INSERT) · facturi (DELETE/INSERT/UPDATE) · firma_profil (UPDATE) — prin `facturi_api`*
 
 - [x] **o factură emisă nu se șterge.** Se stornează. Ștergerea ar produce un gol în serie
 - o factură cu notă contabilă nu se șterge — se rupe lanțul P14
@@ -210,7 +210,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_cabinet` · **fara rol** · scrie in inregistrari, inregistrari_linii*
 
-*ce face: Nota ciorna din factura (AI propune, contabilul valideaza) — scrie inregistrari (INSERT) · inregistrari_linii (INSERT)*
+*ce face: RUTA MANUALĂ de contare — **a doua cale, declarată** (R87, decizia lui Costin 29.08.2026, varianta (ii)+(iii) din AAA4)*
 
 - [x] nota produsă e **ciornă**, nu evidență validată — descrierea o spune, verifică structural
 - propunerea de conturi vine din maparea corectată; nu se ghicește din denumire

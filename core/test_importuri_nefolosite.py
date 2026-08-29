@@ -53,7 +53,7 @@ BASELINE = {
     "core/test_preview_salvare_poarta.py": 1, "core/test_provenienta.py": 1, "core/test_q16_cor.py": 1,
     "core/test_rotunjire_fiscala.py": 2, "core/test_spv_poll.py": 1, "core/test_upsert_motivat.py": 1,
     "core/test_versionare_assets.py": 1, "core/test_vigoare_articole_registru.py": 1,
-    "core/woocommerce.py": 1, "main.py": 9, "scripts/scan_axa_garzi.py": 1,
+    "core/woocommerce.py": 1, "main.py": 8, "scripts/scan_axa_garzi.py": 1,
 }
 
 

@@ -116,9 +116,27 @@ def test_o_factura_noua_redeschide_luna(conn):
 
 
 def test_stergerea_unei_facturi_redeschide_luna(conn):
+    """[29.08.2026] Proprietatea testată e neatinsă — *o modificare a evidenței de-confirmă luna* —,
+    dar PREMISA s-a schimbat sub ea: de când emiterea produce nota automat (R87), factura are notă,
+    iar ștergerea unei facturi cu notă **refuză**, motivat.
+
+    Testul nu se slăbește și nu se șterge: se scrie drumul întreg. Întâi se arată refuzul (partea
+    nouă), apoi se șterge nota ciornă — ceea ce e permis, patru-ochi n-a fost consumat — și abia
+    apoi factura. *Un test care ar fi ocolit refuzul ștergând nota din SQL ar fi testat altceva
+    decât face aplicația.*"""
+    from core import contare_facturi as _cf
+    from core import jurnal_api as _ja
+    import pytest as _pt
     r = _fa.emite_factura(conn, [{"descriere": "x", "cantitate": 1, "pret_unitar": 50, "cota_tva": 21}],
                           tert_nume="CLIENT SRL", tert_cui="14399840",
                           data_emitere="2026-06-20", moneda="RON", platitor_tva=True)
+    _il.confirma(conn, SCHEMA, 2026, 6, user_id=7)
+    with _pt.raises(_cf.RefuzContare) as e:
+        _fa.sterge_factura(conn, r["factura_id"])
+    assert e.value.detalii["iesire"] == "storno"
+    with _cf.cursor_dict(conn) as cur:
+        nota = _cf.contare_existenta(cur, "", r["factura_id"])
+    assert _ja.sterge(conn, SCHEMA, nota["id"])["ok"] is True
     _il.confirma(conn, SCHEMA, 2026, 6, user_id=7)
     _fa.sterge_factura(conn, r["factura_id"])
     assert _per.e_confirmat(conn, SCHEMA, 2026, 6, "facturi")["confirmat"] is False

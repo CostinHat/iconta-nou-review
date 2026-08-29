@@ -4,6 +4,8 @@ AI propune (ciorna), contabilul validează."""
 from decimal import Decimal
 from psycopg2.extras import RealDictCursor
 
+from core import contare_facturi as _cf
+
 
 def _nota(cur, schema, nota_id):
     cur.execute(f"SELECT * FROM {schema}.inregistrari WHERE id=%s", (nota_id,))
@@ -41,8 +43,21 @@ def creeaza(conn, schema, descriere, data, linii):
                 VALUES (%s,%s,%s,%s,%s)""",
                 (nota_id, str(l["debit"]).strip(), str(l["credit"]).strip(),
                  Decimal(str(l["suma"])), _centru(l)))
+        # [DDD3] LA SURSĂ: dacă nota contează evident o factură, primește `factura_id` ACUM.
+        # Gaura măsurată la BBB era că o notă din calea liberă nu poartă cheia, deci e invizibilă
+        # pentru anti-dublare. Plasa (`candidate_fara_cheie`) rămâne plasă tocmai fiindcă legătura
+        # se face aici, la scriere — nu invers.
+        legata = _cf.leaga_nota_de_factura(
+            cur, schema, nota_id,
+            [(str(l["debit"]).strip(), str(l["credit"]).strip(), Decimal(str(l["suma"])))
+             for l in linii], data)
     conn.commit()
-    return {"ok": True, "id": nota_id}
+    out = {"ok": True, "id": nota_id}
+    if legata:
+        out["factura_id"] = legata
+        out["mesaj"] = ("nota a fost legată de factura #%d — o singură factură a lunii se "
+                        "potrivește pe sumă" % legata)
+    return out
 def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None):
     """Editează o notă ciornă. linii = [{debit, credit, suma}] înlocuiește complet liniile."""
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
