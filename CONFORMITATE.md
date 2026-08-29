@@ -40,7 +40,7 @@ face doar imposibilă acumularea unei narațiuni care să îmbătrânească. *(D
 după a doua oară: „e gardul care nu citește proză și totuși o disciplinează".)*
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **`TRASEE_VERIFICARI.md`** — ce trebuie să fie adevărat după fiecare pas. Le scrie Costin, în loturi de câte 30 (`scan_trasee.py --loturi N`). Până se scriu toate, inventarul de trasee e o hartă a codului, nu o listă de verificare. *(Cifrele se derivă.)*
+- **pasul curent**: **1a — regimurile reale**, prima operațiune cerută de faza 1 și niciodată făcută: *„prima operațiune din E1 e să afli câte sunt."* Urmează lista artefactelor pe fiecare regim, apoi verdictul 1d. *(Cifrele se derivă; pasul de dinainte e terminat.)*
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna.** *(Stocul istoric nu mai blochează: s-a executat pe 29.08, după ce Costin a spus că nu există clienți reali — starea restanței se citește din registru, nu de aici.)* *(Ultima — ce face aplicația cu o factură EMISĂ care intră prin import — a primit răspuns pe 29.08.2026, varianta (iii), și e construită; starea restanței se citește din registru, nu de aici.)* *(A doua decizie care bloca — TVA la încasare pe factura primită — a primit răspuns pe 29.08.2026, varianta (ii), și e construită; restanța ei e închisă, iar starea se citește din registru, nu de aici.)*
@@ -1266,6 +1266,60 @@ scos ce nu se știa**, nu din defecte noi.
 - **ce blochează**: `public.declaratii_coada.id = 2020` are `tenant_id = 13245`. În `public.tenants` **nu există** rândul, iar schema `tenant_13245` **nu există** în bază. Conținutul lui e un D300 pe august 2026 al firmei *„Firma Grea Audit SRL"*, care e `tenant_017`, id **14769**. Deci o declarație stă în coadă, în starea `la_senior`, legată de o firmă ștearsă sau niciodată creată — și **nimic n-o semnalează**: nici ecranul cozii, nici vreo verificare. Coada are 3 elemente; **unul din trei e orfan**.
 - **ce NU se știe încă, și nu se scrie ca fapt**: dacă firma a existat și a fost ștearsă (caz în care ștergerea nu curăță coada), sau dacă `tenant_id` a fost scris greșit de la început. `public.audit_log` nu conține nicio urmă a lui 13245 — deci nu se poate reconstitui, doar constata.
 - **condiția de deblocare**: la primul commit care atinge `core/coada_api.py`, `adauga_in_coada` refuză un `tenant_id` care nu există în `public.tenants`, iar o gardă numără elementele orfane și cere zero. Se închide când numărătoarea e zero **și** inserarea unui orfan e imposibilă, probat prin mutație.
+
+### 1a — REGIMURILE REALE, măsurate (29.08.2026)
+
+*Nu e o restanță — e pasul de plan care lipsea. Se scrie aici fiindcă `CONFORMITATE.md` e „un singur
+loc" pentru unde suntem, iar criteriul de terminare al lui E1 se sprijină pe cifra asta.*
+
+**DE CE ACUM.** `PLAN_INVESTIGATII.md`, faza 1a: *„Prima operațiune din E1 e să afli câte sunt."*
+Lucrul a mers mai departe fără ea — 91 de restanțe deschise și închise, opt luni de măsurători — iar
+criteriul de terminare al etapei (*„lista artefactelor… pe regimurile reale"*) a stat tot timpul pe o
+cifră pe care nimeni n-o avea. **Instrument:** `scripts/scan_regimuri.py`.
+
+**CE E UN REGIM, mecanic:** semnătura care schimbă **ce datorează** firma — `regim_fiscal` ·
+`platitor_tva` · `tip_decont` · are salariați · `operatiuni_ic`. Cele care schimbă **cum se
+calculează**, nu ce se datorează (`tva_la_incasare`, `pro_rata`, `baza_contabila`), se numără separat.
+
+**REZULTATUL: 12 regimuri reale pe 19 firme.** Zece sunt complete; două firme (`tenant_018`,
+`tenant_045`) formează o a douăsprezecea „semnătură" care e de fapt **absența** unui regim.
+
+| firme | regim |
+|---|---|
+| 3 | micro · neplătitor · trimestrial · fără salariați · fără IC |
+| 3 | micro · plătitor · lunar · cu salariați · cu IC |
+| 3 | profit · plătitor · lunar · fără salariați · fără IC |
+| 1 | micro · neplătitor · trimestrial · fără salariați · **cu IC** |
+| 1 | micro · plătitor · lunar · cu salariați · fără IC |
+| 1 | micro · plătitor · trimestrial · fără salariați · fără IC |
+| 1 | micro · plătitor · trimestrial · cu salariați · fără IC |
+| 1 | profit · plătitor · lunar · fără salariați · cu IC |
+| 1 | profit · plătitor · lunar · cu salariați · fără IC |
+| 1 | profit · plătitor · trimestrial · cu salariați · fără IC |
+| 1 | profit · **neplătitor** · periodicitate **nedeclarată** · cu salariați |
+| 2 | **nimic declarat** — doar `platitor_tva` |
+
+**TREI PROFILE INCOMPLETE, și înseamnă exact ce spune planul:** o dimensiune nedeclarată e o firmă
+despre care **aplicația nu poate ști ce datorează**. `tenant_014` n-are periodicitate; `tenant_018` și
+`tenant_045` n-au nici regim, nici periodicitate, nici IC. *Nu se deschide restanță: `vector_fiscal_api`
+**refuză** deja să salveze fără ele — sunt rânduri vechi, de seed, nu o gaură în cod. Dar intră în
+lista 2 a verdictului 1d („lipsesc date cerute la timp"), nu în 3.*
+
+**REGIMURILE SPECIALE, citite din DATE, nu din numele firmei:** taxare inversă (art. 331) — **2
+firme** · **marjă turism (art. 311) — 0** · **marjă second-hand (art. 312) — 0**. Ultimele două sunt
+chiar semnalul cerut de plan: *„un regim pentru care aplicația are module dar nicio firmă exercitată
+e semnal — «există modulul» nu e «produce artefactul»."* Ruta `jurnal-marja` există, motorul
+`core/tva_marja.py` există, **și nicio firmă nu le exercită**.
+**Iar `agricultor forfetar` și `construcții` NU SE POT NUMĂRA** — n-au nici câmp pe profil, nici
+marcaj în note. *Un „0" acolo n-ar deosebi „nicio firmă" de „nu știu să caut", deci nu se scrie.*
+
+**O CIFRĂ CORECTATĂ DE PROPRIUL INSTRUMENT, în aceeași tură.** Prima formă a scanului număra
+`tip_decont` **brut** și raporta **13** regimuri. În date există patru scrieri pentru două lucruri —
+`L`, `lunar`, `T`, `trimestrial` —, moștenite din seeduri. **Verificat la sursă: nu e un defect** —
+`core.common.perioada_tva_tip` le parsează pe toate, fără default tăcut, iar motoarele fiscale trec
+prin ea. Era o naivitate a instrumentului: două firme cu aceeași periodicitate apăreau ca două
+regimuri. *Se scrie fiindcă e a treia oară în două zile când un scan pe formă brută supra-numără, iar
+citirea corectează.*
 
 ### R45 — Patru artefacte se produc, se descarcă, și nu rămân nicăieri
 

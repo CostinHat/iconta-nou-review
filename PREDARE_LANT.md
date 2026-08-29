@@ -1,16 +1,16 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — șapte restanțe închise într-o tură, dintre care șase erau deja construite; ce a costat a fost verificarea premisei (29.08.2026)
+# PREDARE LANȚ — planul are 5 etape și 8 faze, iar noi suntem la PRIMA operațiune a primei faze, care nu fusese făcută niciodată (29.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-29**, a zecea oară în ziua asta. *Rescriere PE SECȚIUNI, nu completă
+- **ultima rescriere**: **2026-08-29**, a unsprezecea oară în ziua asta. *Rescriere PE SECȚIUNI, nu completă
   — se spune, ca să nu pară ce nu e. S-au atins: antetul, „de unde se pornește", starea codului,
   tabelul de restanțe și lista „ce nu e adevărat". Restul e neatins fiindcă nu s-a mișcat.*
-- **pe commit**: `e9998ee` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
+- **pe commit**: `e13fb41` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care poartă
   munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e arborele care
   devine commitul următor.*
-- **rescrierea de dinainte**: `a0cc6a5`, aceeași zi. Între ea și acum au intrat **treisprezece** commituri, ultimul fiind `e9998ee`.
+- **rescrierea de dinainte**: `a0cc6a5`, aceeași zi. Între ea și acum au intrat **paisprezece** commituri, ultimul fiind `e13fb41`.
 - **de ce acum**: se rescrie înaintea opririi, ca de fiecare dată. *Conținutul, nu contorul* — măsurat
   cu formula din `pre-commit`: **1** commit în urmă, pragul e **10**, deci nu era stale. Se rescrie
   fiindcă s-a schimbat ce spune, nu fiindcă a îmbătrânit.
@@ -133,6 +133,14 @@ plasa caută note fără cheie înainte de fiecare notă automată; nota din jur
 
 ## AL TREILEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
+- **UNDE SUNTEM ÎN PLAN, cu cifrele lui:** `PLAN_LUCRU.md` are **5 etape** (E1–E5) și **3 puncte
+  de decizie**; `PLAN_INVESTIGATII.md` are **8 faze**, mapate pe ele (E1=faza 1 · E2=faza 2 ·
+  E3=fazele 3–6 · E4=faza 7 · E5=reparațiile). Suntem la **E1, faza 1**, adică **etapa 1 din 5**.
+  Înăuntrul ei, faza 1 are patru pași — 1a, 1b, 1c, 1d — iar noi suntem la **1a**, primul.
+  *Criteriul care termină E1: lista artefactelor pe regimurile reale, fiecare clasificat în una din
+  cele cinci liste ale verdictului 1d, cu listele 3, 4 și 5 goale pe fiecare regim.*
+- **1a — MĂSURAT AZI, prima oară: 12 regimuri reale** pe 19 firme, din care 3 profile incomplete.
+  Planul cerea cifra asta ca **primă operațiune a etapei**, iar lucrul a mers opt luni fără ea.
 - **nicio restanță de PRAG 1 deschisă.** R35 era ultima, închisă pe 28.08.
 - **35 de restanțe deschise**, numărate mecanic pe registru azi: prag 2 — **7**, prag 3 — **12**,
   fără prag declarat — **16** (cele vechi, R1–R27). Pe cine deblochează: INTERN **23** · DECIZIE
@@ -353,7 +361,11 @@ POARTĂ, nu se deleagă în istoric.*
    azi de la 14 la **7**.
 2. **ÎNAINTE DE A EXECUTA O COMANDĂ, citește restanța pe care o numește.** De două ori azi o comandă
    a cerut ceva deja construit, iar o dată a cerut ceva care ar fi însemnat să scot o poartă care
-   merge. Verificarea premisei a costat o oră și a scos două lucruri reale.
+   merge. **Costin a retras el însuși amândouă comenzile**, în tura următoare. Verificarea premisei
+   a costat o oră și a scos două lucruri reale.
+3. **Pasul următor e 1b**: ce produce aplicația, pe fiecare din cele 12 regimuri. Apoi 1c și 1d.
+   *E prima oară de la începutul lui E1 când «pasul curent» e chiar un pas din plan, nu un artefact
+   de construit.*
 2. **Nu porni nicio construcție fără măsurătoare.**
 3. **`scripts/raport_b.py` derivă „Unde suntem".** Nu se scrie de mână.
 4. **Raportul se scrie din `SABLON_RAPORT.md`.**

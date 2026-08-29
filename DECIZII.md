@@ -3,6 +3,35 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 29.08.2026 (9) — Două comenzi retrase de autorul lor, și o cerință scoasă definitiv din discuție
+
+*Costin, despre propriile comenzi de acum o tură. Se scriu aici fiindcă o comandă retrasă lasă altfel
+urmă doar în raport, iar rapoartele se citesc o dată.*
+
+**1. R54 — poarta NU se atinge.** *„Decizia din 26.08 stă, comanda mea anterioară a fost greșită."*
+Contul din corpul cererii se confruntă în continuare cu planul de conturi, iar `core/cont_valid.py`
+rămâne unde e. *Cerința pe care o pusesem la §0 — «o scot sau rămâne?» — e răspunsă: rămâne.*
+
+**2. R63 — varianta (c) stă, adresele NU se fuzionează.** *„Decizia din 26.08 stă, comanda mea
+anterioară a fost greșită a doua oară."* Cele două adrese rămân două, cu numele lor distincte pe
+ecran. `scripts/fuziune_adrese.py` rămâne ca **instrument de măsură**, nu ca act: a rulat o dată, a
+găsit 0 cazuri, și poate fi rulat oricând ca să arate dacă vreo firmă a ajuns să aibă amândouă.
+*Contradicția pe care o semnalasem la §0 se stinge: n-a existat niciodată o firmă pe care s-o
+producă, iar acum nici regula care ar fi produs-o.*
+
+**3. Reîncercarea automată la eșec de email — SCOASĂ DEFINITIV.** *„Nu acum, nu ca restanță
+viitoare — se scoate definitiv din discuție."* Ce rămâne e ce s-a construit: eșecul **lasă urmă** și
+**alertează** pe cele trei căi de intrare. *Consecința, scrisă o dată ca să nu fie redescoperită ca
+lipsă: un email pierdut rămâne pierdut — aplicația spune că s-a întâmplat, nu încearcă din nou. Omul
+cere linkul a doua oară.*
+
+**CE ÎNSEAMNĂ CELE DOUĂ RETRAGERI, dincolo de ele.** Amândouă comenzile fuseseră scrise pe o citire
+mai veche a registrului, iar amândouă ar fi desfăcut o decizie luată cu argument. Ce le-a oprit n-a
+fost prudența, ci **verificarea premisei înainte de execuție** — la R54, refuzul de a șterge o poartă
+pe o premisă care nu se verifica; la R63, executarea literală a comenzii, care a găsit zero cazuri și
+n-a suprascris nimic. *Regula care a funcționat se scrie ca regulă: o comandă care contrazice o
+decizie din registru se execută numai după ce contradicția e spusă.*
+
 ## 29.08.2026 (8) — Șapte decizii de arhitect, iar șase dintre ele întâlnesc un cod deja construit
 
 **Deciziile lui Costin**, scrise înainte de construcție. *Ce s-a aflat citindu-le contra registrului
