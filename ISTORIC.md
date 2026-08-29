@@ -5830,3 +5830,72 @@ precondițiile lor nu există pe nicio firmă — și se scrie așa, nu ca reali
 **Da, schimbă ceva — iar cel mai mare lucru e o oprire, nu o adăugare.** Opt firme nu vor mai putea emite adeverințe până când cineva completează un câmp care până ieri nu exista. Restul reparațiilor ating suprafețe pe care azi nu le folosește nimeni.
 
 **Iar ce a scos ziua nu e cod, e o măsurătoare:** din cele 193 de verificări scrise, **una singură a fost exercitată pe date** — proba portalului — și a produs mai multe restanțe decât o zi întreagă de gărzi. Verde nu înseamnă exercitat.
+
+## 29.08.2026 (partea a treia) — Pentru un contabil, ziua asta n-a schimbat nimic. A schimbat ce ȘTIM despre ce vede el
+
+*A treia intrare a zilei. Primele două au măsurat ce s-a construit; asta măsoară ce iese. Verdictul
+de producție, pe `git log 471368c..HEAD --name-only`: **zero fișiere de producție atinse** — un
+instrument nou (`scripts/scan_1b_regimuri.py`), o sondă reparată (`core/scan_module_nelegate.py`), o
+gardă lărgită și registrele. **Niciun ecran, nicio rută, nicio regulă de calcul.** Se scrie ca atare,
+fiindcă exact asta cere regula.*
+
+### CE S-A FĂCUT: pasul 1b, pe regimurile reale
+
+Comanda: *„treci la 1b, pe cont propriu"*. Măsurătoarea 1b de pe 22.08 acoperea **trei firme** —
+adică **două** din cele 12 semnături scoase ieri la 1a. Acum: **12 din 12 regimuri · 19 din 19 firme ·
+15 tipuri de declarație · 285 de generări**, fiecare trecută prin **DUKIntegrator**.
+
+Instrumentul își declară singur ce nu vede (o singură perioadă; corectitudinea cifrelor — deloc), își
+numără scrisul (`audit_log` +399, restul martorilor neatinși) și **pică dacă nicio declarație nu iese
+validă pe tot portofoliul** — altfel un token greșit ar raporta „nimic nu se produce" cu aceeași
+încredere ca un adevăr.
+
+### PATRU LUCRURI CARE NU SE ȘTIAU, TOATE DESCHISE CA RESTANȚE
+
+1. **Lista 4 a verdictului 1d nu mai e goală** (R93). Pe 22.08 scria „goală… pe ce s-a măsurat". D394
+   **iese și e respins de arbitrul oficial** pe două firme. Cauza, citită în cod: `d394.valideaza(res)`
+   **conține** verificarea „LIPSĂ adresă domiciliu fiscal", dar `core/d394.py:1086` o împinge în
+   `avertismente` în loc s-o ridice — în timp ce **aceeași lipsă oprește curat D100, D101 și D205**.
+   Contabilul primește eroarea brută a validatorului ANAF în locul propoziției pe care aplicația o
+   avea deja scrisă.
+2. **Cele trei registre obligatorii citesc trei populații diferite** (R96). `fisa_cont` cere
+   `status='validata'`, cu motivul scris în docstringul lui: *„o ciornă nu e evidență (aceeași regulă
+   ca la restul motorului)"*. Citit la sursă, **propoziția e falsă despre restul motorului**: balanța
+   și ruta `/jurnal` nu filtrează pe status deloc. **21 din 41 de note** ale lunii sunt ciorne.
+3. **Semaforul n-are nicio cale prin care să ceară D100 unei firme pe profit** (R95), deși **CF art.
+   41 alin. (1)** cere declarare **trimestrială**. Singura cale care adaugă D100 e `_adauga_d100_micro`,
+   sub `if regim == "micro"`. Generatorul **știe** regimul profit; lipsește cine să-l ceară. *Zeroul de
+   azi nu absolvă: pe 6 din 7 firme n-ar avea ce declara, iar pe a șaptea nu se poate ști, fiindcă
+   generarea se oprește mai devreme.*
+4. **Două mecanisme răspund diferit la „ce datorează firma", și generatorul nu ascultă de niciunul**
+   (R94). D101 iese valid pe cele **10 firme micro**; D300 și D394 se produc pe **4 neplătitoare de
+   TVA**, iar nulul D300 poartă nota **„Un plătitor depune nul"** — afirmație falsă despre firma pe
+   care o descrie. *Nu ajunge azi la un om: ecranul le randează `disabled`, cu temeiul în text.*
+
+### DOUĂ VERDICTE DIN 22.08 CARE NU MAI SUNT ADEVĂRATE — și amândouă în bine
+
+**Cartea mare** avea verdictul „nu există producător". Există: `core/fisa_cont.py`, Fișa de cont
+14-6-22, construită pe o propoziție a normei citată verbatim — *„Registrul Cartea mare poate fi
+înlocuit cu Fișa de cont pentru operațiuni diverse"* — și **probată azi pe date reale**. Ce lipsește e
+livrarea: zero rute, zero ecrane. **Registrul-jurnal** avea verdictul „elementele din pct. 45 lipsesc
+din date". Munca din 24.08 le derivă la citire; ce rămâne e că **14 din 41 de note** n-au document
+derivabil. *Regula planului — «o propoziție care spune „nu există" se verifică înainte de a fi
+transcrisă» — a plătit de două ori într-o singură tură.*
+
+### O REGULĂ DE MĂSURARE, CERUTĂ DE UN ACCIDENT
+
+Instrumentul lui 1b importă `core/fisa_cont.py` ca să-l măsoare. Clichetul modulelor nelegate l-a
+văzut **legat** și a cerut, corect după propria lui regulă, să iasă din pin — adică exact stingerea
+semnalului pe care pinul îl păzea: *„condiția lui de deblocare e LIVRAREA, nu un apel"*. Decizia lui
+Costin (`DECIZII.md` 29.08 (10)): **`scripts/` nu contează ca apelant de producție.** Efectul a fost
+măsurat **înainte** de a fi ales, în amândouă formele posibile: identic, și exact un modul.
+
+**Regula, scrisă o dată:** *măsurarea unei absențe nu are voie s-o stingă.*
+
+### POARTA A RESPINS DE DOUĂ ORI, ȘI AMÂNDOUĂ RESPINGERILE AU FOST ALE MELE
+
+Prima: clichetul modulelor nelegate, mai sus. A doua: cele două gărzi noi de calibrare erau **ancorate
+pe text**, iar clichetul 50 le-a prins la **1223 > 1222**. Rescrise pe structură — aserțiunea compară
+acum ce a creat fixtura cu ce a raportat sonda, fără niciun șir scris de mână. **RED-proof rulat pe
+gărzile noi:** cu mutația care scoate excluderea, cade exact una din cele două, iar cealaltă rămâne
+verde. *Niciuna dintre cele două gărzi n-a fost ocolită; amândouă aveau dreptate.*

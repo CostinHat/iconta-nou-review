@@ -40,9 +40,9 @@ face doar imposibilă acumularea unei narațiuni care să îmbătrânească. *(D
 după a doua oară: „e gardul care nu citește proză și totuși o disciplinează".)*
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **1a — regimurile reale**, prima operațiune cerută de faza 1 și niciodată făcută: *„prima operațiune din E1 e să afli câte sunt."* Urmează lista artefactelor pe fiecare regim, apoi verdictul 1d. *(Cifrele se derivă; pasul de dinainte e terminat.)*
+- **pasul curent**: **1b — ce produce aplicația pe cele 12 regimuri reale**, măsurat pe 19 firme × 15 declarații, prin arbitrul oficial. Urmează **1c**. Verdictul 1d se rescrie: lista 4 nu mai e goală. *(Cifrele se derivă.)*
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
-- **ce lipsește**: faza 1 nu mai are pași, iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
+- **ce lipsește**: din faza 1 a rămas **1c** (se poate verifica pe ecran ce iese), iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna.** *(Stocul istoric nu mai blochează: s-a executat pe 29.08, după ce Costin a spus că nu există clienți reali — starea restanței se citește din registru, nu de aici.)* *(Ultima — ce face aplicația cu o factură EMISĂ care intră prin import — a primit răspuns pe 29.08.2026, varianta (iii), și e construită; starea restanței se citește din registru, nu de aici.)* *(A doua decizie care bloca — TVA la încasare pe factura primită — a primit răspuns pe 29.08.2026, varianta (ii), și e construită; restanța ei e închisă, iar starea se citește din registru, nu de aici.)*
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 29.08.2026: garda cere ca fiecare restanță NUMITĂ acolo să fie DESCHISĂ, iar textul le numea pe R54, R53, R58 — dintre care două s-au închis azi. A doua oară când istoricul iese din câmp din același motiv; prima a fost R33, pe 28.08)*: Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
@@ -2069,6 +2069,54 @@ citirea corectează.*
 - **ce NU vede măsurătoarea**: dacă un contabil a **observat** vreodată șirul brut, și dacă alte ecrane randează stări din alte nomenclatoare cu același tipar. Sonda a privit **o singură pereche** listă↔listă; nu s-a căutat clasa în restul frontendului.
 - **condiția de deblocare**: **nu se închide prin adăugarea a cinci șiruri.** Reparația cerută e ca etichetele să se **derive din nomenclator** — o singură sursă —, plus o **gardă care confruntă cele două liste în amândouă direcțiile** și pică atât la o stare fără etichetă, cât și la o etichetă fără stare. Se închide când garda există, cu calibrare pe propriul ei mod de eșec, și când sonda de mai sus întoarce **0 din 41**.
 - **de ce nu s-a reparat în tura în care a fost găsită, cu condiția numită** (nu se amână fără condiție): orice atingere de JS cere `versioneaza_assets.py --scrie` **și** lanțul vizual `frontend_test/vizual/interactiune_scan.py` (~7 min, artefactul se comite), iar tura în care a fost găsită era o tură de **registre**, fără nicio schimbare de producție. *Se face în prima tură care atinge JS-ul; dacă nu vine una până la pasul 1b, se face separat.*
+
+### R93 — Aceeași lipsă e poartă în trei module de declarație și simplu avertisment în al patrulea, iar ANAF respinge XML-ul
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · faza 1, pasul **1b** · verdictul 1d, **lista 4** · **PRAG 2**
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `81b89e7`
+- **măsurat la**: 2026-08-29 · **pe commit**: `81b89e7`
+- **ce blochează**: `firma_profil_api.OBLIGATORII` leagă `adresa` de **D100, D205 și D394**. Pe `tenant_001`, unde adresa lipsește, D100 și D205 (și D101) se opresc curat, cu mesaj în clar: *„LIPSĂ adresă domiciliu fiscal (obligatorie)"* — `raise ValueError` → 422. **D394 nu se oprește**: `core/d394.py:1086` ia rezultatul lui `valideaza(res)` — care conține **exact aceeași propoziție** — și îl împinge în `res.avertismente`, deci generarea continuă. Rezultatul, măsurat prin arbitrul oficial: **DUKIntegrator respinge XML-ul** cu *„eroare atribut: adresa: atribut prezent dar vid nepermis"*, plus `telefon` și `adresaR`. Contabilul primește eroarea brută a validatorului ANAF în locul propoziției pe care aplicația o avea deja scrisă. **A doua instanță din lista 4, cu altă cauză:** pe `tenant_017`, D394 pică pe regula DUK **R112.1** (operațiuni de tip L/LS/V fără `nrFacturi`) — defect de conținut, nu de câmp lipsă; se închide separat, nu odată cu prima.
+- **condiția de deblocare**: `d394.genereaza` tratează erorile lui `valideaza(res)` ca **blocante**, la fel ca D100/D101/D205 — nu ca avertismente; iar o gardă confruntă, **în amândouă direcțiile**, mulțimea câmpurilor din `OBLIGATORII` cu ce oprește efectiv fiecare generator, ca despărțirea să nu se poată naște din nou tăcut. Se închide când `scripts/scan_1b_regimuri.py` întoarce **0** poziții în lista 4 pentru cauza „câmp obligatoriu lipsă", pe toate cele 19 firme. *R112.1 pe `tenant_017` rămâne deschisă în restanța asta, numită separat, până i se măsoară cauza.*
+
+### R94 — Două mecanisme răspund diferit la „ce datorează firma asta", iar generatorul nu ascultă de niciunul
+
+- **felul**: ORDINE
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · faza 1, pasul **1b** · legată de **R70** și **R80** · **PRAG 2**
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `81b89e7`
+- **măsurat la**: 2026-08-29 · **pe commit**: `81b89e7`
+- **ce blochează**: aplicația are **două** mecanisme care răspund la aceeași întrebare, și nu-și vorbesc. `control_fiscal_api.obligatii_datorate` (semaforul) știe regimul fiscal: *micro → D100, profit → D101*. `control_fiscal_api.neaplicabile_selector` (selectorul de declarații) știe **doar** forma (partidă simplă) și vectorul TVA. Consecința, măsurată pe cele 19 firme: pe **cele 10 firme micro**, D101 rămâne selectabil pe ecran și **iese `valid`** din generator. Iar a treia divergență e a generatorului însuși: pe cele **4 firme neplătitoare de TVA** (`tenant_002`, `tenant_006`, `tenant_009`, `tenant_011`), selectorul declară D300 și D394 neaplicabile **cu temei** — *„firma nu e înregistrată în scopuri de TVA (art. 316)"* — iar `POST /declaratii/{tip}/valideaza` le produce oricum, `valid`, **8 divergențe**. D300-ul nul poartă nota **„Un plătitor depune nul pe luna fără activitate"**, afirmație falsă despre firma pe care o descrie.
+- **condiția de deblocare**: aplicabilitatea se decide **într-un singur loc**, iar generatorul o consultă la intrare — nu doar ecranul. Se închide când `scripts/scan_1b_regimuri.py` întoarce **0 divergențe** «selectorul o declară neaplicabilă, generatorul o produce», **și** când selectorul răspunde pe regim (D101 nu mai apare selectabil pe o firmă micro), probat prin mutație în amândouă direcțiile. *Nu e prag 1: ecranul randează tipurile neaplicabile ca `<option disabled>` cu temeiul în text (`static/js/ecrane/declaratii.js:101-105`), deci divergența trăiește azi doar pe calea de API — clasa R70, cu orbirea detectorului la R80.*
+
+### R95 — Semaforul nu are nicio cale prin care să ceară D100 unei firme pe regim de profit
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · faza 1, pasul **1b** · prioritatea 1 din plan (ajunge într-o depunere la o autoritate) · **PRAG 2**
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `81b89e7`
+- **măsurat la**: 2026-08-29 · **pe commit**: `81b89e7`
+- **ce blochează**: **Codul fiscal, art. 41 alin. (1)**, citat verbatim din `anaf_surse/cod_fiscal_227_2015_consolidat.txt`: *„Calculul, declararea și plata impozitului pe profit, cu excepțiile prevăzute de prezentul articol, se efectuează **trimestrial**, până la data de 25 inclusiv a primei luni următoare încheierii trimestrelor I-III."* Articolul e **în vigoare** — alin. (5) lit. a) și b) modificate 25-02-2026 de OUG 8/2026, alin. (1) fără marcaj de abrogare pe forma consolidată. În `core/control_fiscal_api.py`, **singura** cale care adaugă D100 la obligații e `_adauga_d100_micro`, chemată **doar** sub `if regim == "micro"`; pe `regim == "profit"` se adaugă **numai** D101. Probat pe cele **7 firme pe profit**: D100 nu apare **niciodată** — nici în `lipsa`, nici în `urmarit`, nici în `neclar`. Iar generatorul **știe** regimul: refuzul de pe `tenant_014` spune *„regim profit cu PIERDERE în trimestru (venituri 3000 − cheltuieli…)"*, deci `core/d100.py` are ramura de profit implementată. Lipsește doar cine să o ceară.
+- **condiția de deblocare**: `obligatii_datorate` evaluează obligația trimestrială de impozit pe profit pe firmele cu `regim_fiscal = profit`, cu aceeași poartă de FAPT pe care o are deja pentru micro (`d100_fapt`) — un trimestru fără bază impozabilă **nu** e restanță. Se închide când, pe o firmă pe profit cu bază în trimestru, D100 apare în semafor, iar pe una fără bază **nu** apare, amândouă probate pe date. *Zeroul de azi nu absolvă, și se scrie: pe 6 din cele 7 firme generatorul spune singur că n-ar avea ce declara (venituri 70x = 0, sau pierdere); pe `tenant_001` **nu se poate ști**, fiindcă generarea se oprește mai devreme, pe adresa lipsă (R93). Absența e **prin construcție**, nu evaluată — punctul orb e FIRMA, nu ecranul.*
+
+### R96 — Cele trei registre obligatorii citesc trei populații diferite de note, în aceeași lună și pe aceeași firmă
+
+- **felul**: ORDINE
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · faza 1, pasul **1b** · legată de **R36** (modelul de evidență) și **R47** (excepția NIR-ului) · **PRAG 2**
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `81b89e7`
+- **măsurat la**: 2026-08-29 · **pe commit**: `81b89e7`
+- **ce blochează**: `core/fisa_cont.py` — Fișa de cont 14-6-22, care ține locul Cărții mari — filtrează `i.status = 'validata'`, iar docstringul lui își numește motivul: *„o ciornă nu e evidență (**aceeași regulă ca la restul motorului**)"*. Citit la sursă, propoziția e **falsă despre restul motorului**: `documente_api.balanta` (`WHERE i.data < %s`) și ruta `/tenants/{tenant_id}/jurnal` **nu filtrează pe status deloc** — a doua chiar duce `status` mai departe, pe fiecare rând. Măsurat pe 08/2026, pe toate cele 19 firme: **21 din cele 41 de note ale lunii sunt ciorne**, deci intră în balanță și în registrul-jurnal și **nu** intră în fișa de cont. Pe `tenant_017` **toate cele 5**; la fel, integral, pe `tenant_002`, `tenant_004`, `tenant_005` și `tenant_007`. Trei registre obligatorii, aceeași lună, trei răspunsuri la întrebarea *„ce s-a înregistrat"*.
+- **condiția de deblocare**: se răspunde la **R36** — dacă evidența e „ce a validat un om" sau „ce a înregistrat aplicația" — apoi **toate trei** registrele citesc aceeași mulțime, iar dacă vreunul citește deliberat altceva, motivul se scrie lângă el, ca declarație de perimetru. Se închide când o gardă confruntă populațiile celor trei pe aceeași perioadă și cere **fie** egalitate, **fie** o abatere declarată; probată prin mutație (o ciornă adăugată trebuie să miște exact registrele care o declară). *Se ridică și propoziția din docstringul lui `fisa_cont`, care azi afirmă despre restul motorului ceva ce nu e adevărat.*
 
 ### R91 — O factură EMISĂ care intră prin import nu produce nota, iar absența e DECLARATĂ, nu decisă
 
@@ -4461,6 +4509,195 @@ lângă artefact**, ca să nu se piardă distincția în interiorul listei.
 | **Cartea mare** (14-1-3) | **nu există producător**: motorul `core/motor.py:32` există, cu zero consumatori |
 | **Registrul-jurnal** (14-1-1) | **iese ca listă, dar nu ca artefactul cerut de normă** — vezi Q2 mai jos: elementele din pct. 45 lipsesc **din date**, nu din randare |
 
+
+### Pasul 1b, RELUAT PE REGIMURILE REALE — ce produce aplicația (29.08.2026)
+
+*Blocurile de mai sus (FAMILIILE A–D, 22.08) rămân unde sunt: sunt o măsurătoare datată, pe trei
+firme. Ăsta nu le rescrie — le lărgește la tot portofoliul și spune, la sfârșit, care dintre
+verdictele lor nu mai sunt adevărate.*
+
+**DE CE ACUM, și ce era greșit înainte.** Măsurătoarea 1b de pe **22.08** a acoperit **trei firme** —
+adică **două** din cele 12 semnături măsurate ieri la 1a. Planul cere *„pe regimurile REALE, nu pe
+trei alese arbitrar"*, iar criteriul de terminare al lui E1 cere clasificarea **pe fiecare regim**.
+**Instrument:** `scripts/scan_1b_regimuri.py`, pe commit `81b89e7`.
+
+**ACOPERIRE:** **12 din 12 regimuri · 19 din 19 firme active · 15 tipuri de declarație · 285 de
+generări**, fiecare trecută prin **DUKIntegrator**. O singură perioadă: lunar **08/2026**,
+trimestrial **T3/2026**, anual **2026**.
+
+**CE A SCRIS SONDA:** `public.audit_log` **+399** (o citire de date personale lasă urmă — excepția
+din Partea II). `declaratii_coada`, `declaratii_depuse`, `inregistrari`, `inregistrari_linii`,
+`facturi`: **neatinse**, prin snapshot înainte/după, pe toate cele 19 scheme.
+
+#### FAMILIA C — cele 285 de generări, pe stări
+
+| stare | câte |
+|---|---|
+| **valid** la DUKIntegrator | **89** |
+| **atenționare** (nu blochează depunerea) | **1** |
+| **erori** (arbitrul o respinge) | **2** |
+| **gri** (nevalidat) | **0** |
+| **REFUZ** înainte de XML, cu motivul scris | **193** |
+
+**1. LISTA 4 A VERDICTULUI 1d NU MAI E GOALĂ — și asta e rezultatul principal.** Pe 22.08 scria
+*„Goală… pe ce s-a măsurat"*. Pe regimurile reale, **D394 iese și NU trece arbitrul, pe 2 din cele 14
+firme pe care iese**:
+
+- **`tenant_001`** — DUK: *„eroare atribut: adresa: atribut prezent dar vid nepermis"*, la fel
+  `telefon` și `adresaR`. **Cauza, citită în cod, nu presupusă:** `d394.valideaza(res)` conține exact
+  verificarea *„LIPSĂ adresă domiciliu fiscal (obligatorie)"* — dar rezultatul ei e împins în
+  `res.avertismente` (`core/d394.py:1086`), **nu ridicat ca refuz**. Aceeași lipsă, pe aceeași firmă,
+  **oprește curat** D100, D101 și D205 (`raise ValueError` → 422, cu mesajul în clar). Deci: o
+  obligație scrisă într-un singur loc (`firma_profil_api.OBLIGATORII`: `adresa` → D100, D205, **D394**)
+  e poartă în trei module și avertisment în al patrulea, iar prețul e un XML respins de ANAF în loc de
+  un refuz explicat. **Deschisă ca R93.**
+- **`tenant_017`** — DUK regula **R112.1** (operațiuni de tip L/LS/V fără `nrFacturi`). Defect de
+  **conținut**, nu de câmp lipsă; intră tot în lista 4, cu cauză proprie.
+
+**2. SELECTORUL ȘI GENERATORUL NU RĂSPUND LA FEL — 8 divergențe, pe 4 firme.** Pe `tenant_002`,
+`tenant_006`, `tenant_009` și `tenant_011` (toate **neplătitoare de TVA**), selectorul le declară
+neaplicabile, cu temei: *„D300 nu se datorează — firma nu e înregistrată în scopuri de TVA (art.
+316)"*. Generatorul, chemat pe rută, **le produce `valid`** — iar D300-ul nul poartă nota
+**„Un plătitor depune nul pe luna fără activitate"**, care e o afirmație **falsă** despre o firmă
+neplătitoare.
+
+**NU e prag 1, și motivul e măsurat:** ecranul randează tipurile neaplicabile ca `<option disabled>`
+cu temeiul în text (`static/js/ecrane/declaratii.js:101-105`), deci un contabil **nu poate ajunge**
+azi acolo. E cale de **API fără ecran** — clasa **R70**, iar orbirea detectorului pe căi compuse e
+**R80**; amândouă deschise. **Deschisă ca R94**, împreună cu punctul 3.
+
+**3. SELECTORUL NU ȘTIE DE REGIMUL FISCAL DELOC.** `control_fiscal_api.neaplicabile_selector`
+acoperă **forma** (partidă simplă) și **vectorul TVA** — atât. Obligația pe regim o știe **alt
+mecanism**, `obligatii_datorate` (semaforul), care spune corect *micro → D100, profit → D101*.
+Consecința, măsurată: pe **cele 10 firme micro**, D101 e selectabil și **iese `valid`**. Două
+mecanisme, două răspunsuri la aceeași întrebare — *„ce datorează firma asta"*.
+
+**4. O OBLIGAȚIE PE CARE SEMAFORUL NU O POATE CERE NICIODATĂ.** Codul fiscal, **art. 41 alin. (1)**,
+citat verbatim din `anaf_surse/cod_fiscal_227_2015_consolidat.txt`:
+
+> „Calculul, declararea și plata impozitului pe profit, cu excepțiile prevăzute de prezentul articol,
+> se efectuează **trimestrial**, până la data de 25 inclusiv a primei luni următoare încheierii
+> trimestrelor I-III."
+
+Articolul e **în vigoare** (alin. (5) lit. a) și b) modificate 25-02-2026 de OUG 8/2026; alin. (1)
+n-are marcaj de abrogare pe forma consolidată). În `core/control_fiscal_api.py`, **singura** cale
+care adaugă D100 e `_adauga_d100_micro`, chemată **doar** sub `if regim == "micro"`. Probat pe cele
+**7 firme pe profit**: D100 **nu apare niciodată** — nici în `lipsa`, nici în `urmarit`, nici măcar
+în `neclar`. Iar generatorul **știe** regimul profit: refuzul de pe `tenant_014` spune *„regim profit
+cu PIERDERE în trimestru"*.
+
+**Zeroul nu absolvă, și se scrie de ce:** pe 6 din cele 7 firme generatorul spune singur că n-ar avea
+ce declara (venituri 70x = 0, sau pierdere); pe `tenant_001` **nu se poate ști**, fiindcă generarea
+se oprește mai devreme, pe adresa lipsă. Deci azi absența nu produce o restanță ratată — dar e o
+absență **prin construcție**, nu una **evaluată**. *Punctul orb e FIRMA, nu ecranul.* **Deschisă ca
+R95.**
+
+**5. D406 IESE `valid` PE 19 DIN 19.** Inclusiv pe cele 6 firme cu balanța de **0 rânduri**, și pe
+`tenant_018`/`tenant_045`, unde D300 și D394 refuză tocmai fiindcă *„Perioada fiscală TVA nu e
+completată în Vectorul fiscal"*. **Singura declarație care iese pe orice.** Nu spun că e greșit —
+spun că un SAF-T valid pe o firmă fără nicio dată și fără vector declarat e o afirmație care merită
+privită, nu bifată. *Semnal, nu defect; de privit la 1c.*
+
+**6. REFUZURILE, pe feluri** (193). Trei clase, aceleași ca la 22.08, acum numărate pe tot
+portofoliul: **declarații manuale fără conținut** (d107, d177, d207, d307, d311, d710 — 19 × 6 =
+**114**, adică toate; niciuna n-are date pe nicio firmă) · **refuz pe zero cu temeiul citat**
+(D301 „OPANAF 592/2016", D390 „luna n-are nicio operațiune IC", D100 „venituri 70x = 0") · **refuz cu
+contradicția numită** (D301 pe t013: *„pe zero, DAR există 1 achiziție intracomunitară înregistrată
+ca FACTURI"*; D390 pe t014: *„pe zero, DAR există 1 operațiune IC în D301"*). Ultima clasă e
+interdicția **67** funcționând, nu un defect.
+
+#### FAMILIA A — registrele
+
+**Balanța: iese pe 13 din 19 firme și SE ÎNCHIDE pe toate 13** (SI D=C, rulaje D=C, SF D=C). Celelalte
+6 au 0 rânduri, fiindcă n-au date. *Ce nu spune proba: că soldurile sunt CORECTE — o balanță greșită
+se închide perfect.*
+
+**Registrul-jurnal (14-1-1): verdictul din 22.08 e DEPĂȘIT, și se spune.** Atunci scria că
+*„elementele din pct. 45 lipsesc din date"* și l-a trimis în lista 3. Munca din **24.08** le derivă la
+citire, iar ruta întoarce azi `note`, `note_fara_document`, `total_debit`, `total_credit` — deci
+**numărul curent de la 1 ianuarie, documentul justificativ derivat și totalizarea lunară EXISTĂ**,
+pe toate cele 9 firme cu note. *(Prima formă a instrumentului de azi căuta cheia `total_lunar`, care
+nu există, și raporta „nu are" despre un artefact care o are. Cheile se citesc din răspuns.)*
+
+**Ce rămâne, măsurat: 14 din cele 41 de note ale lunii n-au document derivabil** — `tenant_013` 10
+din 19, `tenant_014` 2 din 4, `tenant_003` 1 din 3, `tenant_016` 1 din 4. Nu mai e „artefactul nu
+iese"; e „iese, cu 14 poziții care nu se pot desface până la document". P14 rămâne atins, cu cifră
+mai mică și cu altă natură.
+
+**Cartea mare (14-1-3): verdictul din 22.08 e DEPĂȘIT.** Atunci: *„nu există producător: motorul
+`core/motor.py:32 carte_mare` există, cu zero consumatori"*. Între timp a apărut **`core/fisa_cont.py`**
+(Fișa de cont pentru operațiuni diverse, cod **14-6-22**), construită pe o propoziție din normă,
+citată acolo verbatim din `anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt`, poz. 165–166:
+*„Registrul Cartea mare poate fi înlocuit cu Fișa de cont pentru operațiuni diverse."* **Producătorul
+merge pe date reale** — probat: `tenant_013` cont 401 → 5 rânduri, `tenant_003` cont 4111 → 4,
+`tenant_014` cont 421 → 4. **Consumatori: ZERO** — nicio rută în `main.py`, nicio potrivire în
+`static/js/`, doar `core/test_fisa_cont.py`. Deci cauza se schimbă din *„nu există producător"* în
+***„producătorul există, nu ajunge la om"*** — aceeași formă ca bilanțul.
+
+**Registrul-inventar (14-1-2): neschimbat.** Recăutat azi: singura potrivire rămâne
+`rip_api.registru_inventar`, varianta **14-1-2/b**, de partidă simplă. Pentru partidă dublă nu există
+producător.
+
+**CELE TREI REGISTRE NU CITESC ACEEAȘI MULȚIME.** Citit în cod, nu presupus: `fisa_cont` filtrează
+`i.status = 'validata'` — cu motivul scris în propriul docstring, *„o ciornă nu e evidență (aceeași
+regulă ca la restul motorului)"* — în timp ce `documente_api.balanta` și ruta `/tenants/{id}/jurnal`
+**nu filtrează pe status deloc**. Deci propoziția „aceeași regulă ca la restul motorului" e **falsă
+despre restul motorului**. Măsurat pe 08/2026: **21 din cele 41 de note sunt ciorne** — și intră în
+balanță și în registrul-jurnal, dar nu în fișa de cont. Pe `tenant_017` **toate cele 5**; pe
+`tenant_004`, `tenant_005`, `tenant_007`, `tenant_002` la fel, toate. **Deschisă ca R96**, legată de
+R36 (ce model de evidență s-a ales) și R47 (excepția NIR-ului).
+
+#### FAMILIA B — situațiile financiare
+
+**Bilanțul (S1005) și CPP: producătorul refuză pe 13 din 19 firme**, cu mesaj propriu:
+*„Nr. registrul comerțului lipsește — obligatoriu în bilanț; fără el declarația e respinsă de
+validatorul ANAF."* Pe celelalte 6 produce XML pe date reale: `tenant_013` 1065 octeți, `tenant_014`
+1020, `tenant_015` 915, `tenant_016` 912, `tenant_045` 650, `tenant_018` 622.
+
+**Răspunderea, după P23 — și e a omului, nu a aplicației.** `reg_com` e câmp **obligatoriu, cu
+asterisc**, pe ecranul *Date firmă* (`static/js/ecrane/date_firma.js:27`), cu ajutorul scris lângă el
+— *„Din certificatul de înregistrare (ex. J40/1234/2020). **Cerut la bilanț**"* — iar
+`firma_profil_api.OBLIGATORII` îl leagă explicit de „Bilant S1005". Deci: **date lipsă, cerute la
+timp** → **lista 2**, nu lista 3. Cele 13 sunt rânduri vechi de seed, aceeași clasă cu cele trei
+profile incomplete de la 1a. **Ce rămâne în lista 3 pentru bilanț e altceva, neschimbat: zero rute.**
+
+#### FAMILIA D — evidențele speciale
+
+**Registrul de casă:** lanț complet, dar exercitat pe **2 firme** — `tenant_013` (3 operațiuni),
+`tenant_003` (1). Rămâne singurul artefact din lista 1.
+
+**Jurnalul de regim marjă: 0 rânduri pe toate cele 19 firme, pe amândouă felurile** (second-hand și
+turism) — inclusiv pe `tenant_007` („Agentie Turism Marja") și `tenant_008` („Second Hand Marja"),
+care poartă regimul chiar în nume. Confirmă 1a, pe alt drum: ruta există, motorul există, **nicio
+firmă nu-l exercită**.
+
+**RIP: 0 pe toate 19** — niciun PFA în portofoliu. Neschimbat.
+
+#### CE NU VEDE MĂSURĂTOAREA — declarat
+
+- **O singură perioadă.** Un artefact care ar ieși pe altă lună și nu pe 08/2026 apare aici ca „nu
+  iese". Pentru declarațiile anuale, anul 2026 nu e încheiat.
+- **Corectitudinea cifrelor: nicio măsurătoare.** „Valid la DUKIntegrator" e o afirmație despre
+  **formă**. Nici „balanța se închide" nu spune că soldurile sunt corecte.
+- **Un producător sub alt nume** decât cele căutate. Termenii sunt scriși mai sus tocmai ca să poată
+  fi contraziși.
+- **Artefactele fără rută se măsoară pe PRODUCĂTOR** (bilanț, fișă de cont) — iar „producător DA, la
+  om NU" nu e același lucru cu „iese".
+- **Fișa de cont s-a probat pe UN cont per firmă** (cel cu cele mai multe linii în lună), nu pe toate.
+- **Nu s-a măsurat dacă un contabil poate CITI ce iese** — aia e 1c, și nu s-a atins azi.
+
+#### RECLASIFICĂRILE cerute în verdictul 1d (blocul din 22.08 rămâne, dar nu mai e ultimul cuvânt)
+
+| artefact | ce scria pe 22.08 | ce e adevărat pe 29.08 |
+|---|---|---|
+| **Lista 4** | **goală** | **2 poziții**: D394 pe `tenant_001` (câmp obligatoriu tratat ca avertisment) și pe `tenant_017` (regula R112.1) |
+| **Registrul-jurnal** (14-1-1) | lista 3 — „elementele din pct. 45 lipsesc din date" | **iese cu cele trei coloane**; rămân **14 note din 41** fără document derivabil |
+| **Cartea mare** (14-1-3) | lista 3 — „nu există producător" | lista 3, altă cauză: **producătorul există** (`fisa_cont`, 14-6-22, probat pe date reale), **fără rută** |
+| **Bilanț · CPP** | lista 3 — „producătorul există, zero rute" | **rămâne** în lista 3 pentru rute; **dar** pe 13 din 19 firme nu iese din **date cerute la timp** → acele firme sunt **lista 2** |
+| **Registrul-inventar** · **Note explicative** · **Evidența TVA** · **Registrul de evidență fiscală** · **Jurnal marjă** | lista 3 | **neschimbate**, reverificate azi |
+
+**Criteriul de gata al lui E1 rămâne NEÎNDEPLINIT**, iar acum se știe și pe câte regimuri: listele 3
+și 5 nu sunt goale pe niciunul din cele 12, iar lista 4 nu mai e goală pe două firme.
 
 ### Pasul 1c — se poate verifica pe ecran (interdicțiile 63–66)
 

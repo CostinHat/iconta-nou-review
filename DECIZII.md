@@ -3,6 +3,44 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 29.08.2026 (10) — Un instrument de măsură nu „leagă" modulul pe care îl măsoară
+
+*Cerută la §0 al raportului lui 1b, răspunsă în aceeași tură. Se scrie aici fiindcă e o regulă despre
+CUM măsurăm, nu despre ce am reparat — iar regulile de măsurare care rămân doar în rapoarte se pierd.*
+
+**Decizia lui Costin: varianta (a) — `scripts/` NU contează ca apelant de producție** pentru clichetul
+modulelor nelegate (`core/scan_module_nelegate.py`), exact cum nu contează un test.
+
+**De unde a venit întrebarea.** `scripts/scan_1b_regimuri.py`, instrumentul lui 1b, importă
+`core/fisa_cont.py` ca să probeze că producătorul Cărții mari (Fișa de cont 14-6-22) chiar produce
+rânduri pe date reale. Sonda excludea importatorii de **test**, dar nu și instrumentele din
+`scripts/` — deci `fisa_cont` a apărut brusc „legată", iar `test_setul_nu_creste` a cerut, corect
+după propria lui regulă, să fie **scoasă din clichet**.
+
+**De ce răspunsul e (a), și nu „scoate-l din PIN".** Motivul scris în clichet, cu luni în urmă, spune
+exact ce se pierdea: *„PRODUCATOR FARA LIVRARE … **condiția lui de deblocare e LIVRAREA, nu un
+apel**"*. Un modul construit deliberat fără rută și fără ecran ar fi ieșit din evidență **în chiar
+clipa în care cineva s-a apucat să-i măsoare absența livrării**. Sonda ar fi raportat verde despre
+o lume pe care tocmai încetase s-o vadă.
+
+**Ce s-a măsurat înainte de a alege**, fiindcă o schimbare de domeniu al unei gărzi se măsoară, nu se
+presupune: **amândouă** formele posibile — doar instrumentele (`scan_`/`sonda_`/`proba_`) și **tot**
+`scripts/` — dau **exact același** rezultat, și e **un singur modul**: `core/fisa_cont.py` se întoarce
+în mulțime (5 → 6), nimic altceva nu apare și **nimic nu dispare**. S-a ales forma largă, fiindcă e
+regula deciziei și fiindcă un tipar pe prefix ar fi tăcut la primul instrument botezat altfel.
+
+**Ce s-a cerut odată cu decizia: calibrarea în direcția de eșec.** Excluderea are un mod de eșec
+propriu, și e cel grav — dacă exclude prea mult, sonda raportează „nelegat" un modul care **are**
+apelant de producție, adică fabrică muncă. Gardate acum amândouă direcțiile, pe un depozit
+**construit** (nu pe cel real, care s-ar învechi): un modul importat din `main.py` **nu** are voie să
+apară nelegat; unul importat **doar** dintr-un instrument **trebuie** să apară. **RED-proof rulat:** cu
+mutația care scoate excluderea, a doua aserțiune cade (`nelegat=False` în loc de `True`), iar prima
+rămâne verde — deci cele două chiar măsoară lucruri diferite, nu aceeași propoziție de două ori.
+
+**Regula, scrisă o dată ca să nu fie redescoperită:** *măsurarea unei absențe nu are voie s-o stingă.*
+Un instrument care atinge un obiect ca să-l numere nu-l face folosit; dacă o gardă nu poate deosebi
+cele două, garda are domeniul greșit, nu obiectul.
+
 ## 29.08.2026 (9) — Două comenzi retrase de autorul lor, și o cerință scoasă definitiv din discuție
 
 *Costin, despre propriile comenzi de acum o tură. Se scriu aici fiindcă o comandă retrasă lasă altfel
