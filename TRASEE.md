@@ -1255,9 +1255,9 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T05 — Nota contabilă — de la document la registrul-jurnal
 
-**Clasa:** MECANIC · **rute:** 31 (din care schimba date: 25) · **refuzuri explicite:** 174
+**Clasa:** MECANIC · **rute:** 34 (din care schimba date: 26) · **refuzuri explicite:** 181
 
-**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 22 din 25.**
+**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 23 din 26.**
 
 **Pasii, din cod:**
 
@@ -1292,10 +1292,13 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/nota-tva-incasare` — garda `cere_cabinet`
 - `GET /tenants/{tenant_id}/plan-conturi` — garda `cere_context`
 - `POST /tenants/{tenant_id}/plan-conturi` — garda `cere_rol` rol:admin_firma
+- `GET /tenants/{tenant_id}/registru-inventar` — garda `cere_cabinet`
+- `POST /tenants/{tenant_id}/registru-inventar` — garda `cere_cabinet`
+- `GET /tenants/{tenant_id}/registru-inventar/propunere` — garda `cere_cabinet`
 
-**Module:** `afirmatii`, `avansuri`, `bacsis`, `comodat_chirii`, `cont_valid`, `contare_facturi`, `contracte_speciale`, `credite`, `d406_active`, `decontari_asociati`, `deconturi`, `documente_api`, `fisa_cont`, `inventariere`, `jurnal_api`, `leasing`, `lichidare`, `obiecte_inventar`, `ong`, `perisabilitati`, `productie`, `provizioane`, `sgr`, `sponsorizari`, `subventii`, `tenant_provisioning`, `tva_incasare`
+**Module:** `afirmatii`, `avansuri`, `bacsis`, `comodat_chirii`, `cont_valid`, `contare_facturi`, `contracte_speciale`, `credite`, `d406_active`, `decontari_asociati`, `deconturi`, `documente_api`, `fisa_cont`, `inventariere`, `jurnal_api`, `leasing`, `lichidare`, `obiecte_inventar`, `ong`, `perisabilitati`, `productie`, `provizioane`, `registru_inventar`, `sgr`, `sponsorizari`, `subventii`, `tenant_provisioning`, `tva_incasare`
 
-**Scrie in:** `ai_corectii` (INSERT) · `audit_log` (INSERT) · `casa_operatiuni` (DELETE) · `extras_linii` (UPDATE) · `firma_profil` (INSERT/UPDATE) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `mijloace_fixe` (INSERT/UPDATE) · `plan_conturi` (INSERT) · `tenants` (INSERT/UPDATE) · `user_tenants` (INSERT)
+**Scrie in:** `ai_corectii` (INSERT) · `audit_log` (INSERT) · `casa_operatiuni` (DELETE) · `extras_linii` (UPDATE) · `firma_profil` (INSERT/UPDATE) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `mijloace_fixe` (INSERT/UPDATE) · `plan_conturi` (INSERT) · `registru_inventar` (INSERT) · `tenants` (INSERT/UPDATE) · `user_tenants` (INSERT)
 
 **Stari puse:** `contat`, `potrivit`, `validata`
 
@@ -1805,9 +1808,9 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T28 — Operațiunile intracomunitare, VIES și Intrastat
 
-**Clasa:** MECANIC · **rute:** 10 (din care schimba date: 5) · **refuzuri explicite:** 35
+**Clasa:** MECANIC · **rute:** 12 (din care schimba date: 6) · **refuzuri explicite:** 41
 
-**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 4 din 5.**
+**Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 5 din 6.**
 
 **Pasii, din cod:**
 
@@ -1818,13 +1821,15 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `DELETE /tenants/{tenant_id}/d390-clasificare/manual/{mid}` — garda `cere_cabinet`
 - `PUT /tenants/{tenant_id}/d390-clasificare/reclasificare` — garda `cere_cabinet`
 - `GET /tenants/{tenant_id}/intrastat-praguri` — garda `cere_cabinet`
+- `GET /tenants/{tenant_id}/registre-art321/{fel}` — garda `cere_cabinet`
+- `POST /tenants/{tenant_id}/registre-art321/{fel}` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/vanzare-ic` — garda `cere_cabinet`
 - `GET /tenants/{tenant_id}/verifica-cui/{cui}` — garda `cere_context`
 - `GET /tenants/{tenant_id}/verifica-vies` — garda `cere_context`
 
-**Module:** `anaf_api`, `cont_valid`, `d390_clasificare_api`, `facturi_api`, `intracomunitar`, `intrastat`
+**Module:** `anaf_api`, `cont_valid`, `d390_clasificare_api`, `facturi_api`, `intracomunitar`, `intrastat`, `registre_art321`
 
-**Scrie in:** `d390_manual` (DELETE/INSERT) · `d390_reclasificare` (DELETE/INSERT) · `factura_linii` (INSERT) · `facturi` (DELETE/INSERT/UPDATE) · `firma_profil` (UPDATE) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT)
+**Scrie in:** `d390_manual` (DELETE/INSERT) · `d390_reclasificare` (DELETE/INSERT) · `factura_linii` (INSERT) · `facturi` (DELETE/INSERT/UPDATE) · `firma_profil` (UPDATE) · `inregistrari` (INSERT) · `inregistrari_linii` (INSERT) · `registre_art321` (INSERT)
 
 **Firme care il pot exercita azi: 2** — `tenant_013`, `tenant_017`
 

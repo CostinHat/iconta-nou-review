@@ -5672,9 +5672,9 @@ referința veche, apoi s-a rescris.*
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**483 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**485 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 469
+### `core/` — 471
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -6076,8 +6076,10 @@ referința veche, apoi s-a rescris.*
 - `core/test_refuz_tacut.py` — GARD [27.08.2026]: un refuz al serverului la o SCRIERE nu poate rămâne nevăzut.
 - `core/test_regim_peste_perioada_inchisa.py` — GARD [R46, 26.08.2026]: un câmp care decide CE SE DATOREAZĂ nu se schimbă peste o perioadă închisă.
 - `core/test_register_cabinet_cui.py` — GARD register_cabinet_cui: la inregistrarea self-service, CUI-ul validat (cel care a trecut
+- `core/test_registre_art321.py` — GARD: cele doua registre ale art. 321 alin. (4) CF — ce le tine sa nu se strice tacut.
 - `core/test_registru_exceptii.py` — GARDĂ peste REGISTRUL DE EXCEPȚII al clichetului de afirmații. (P8, 22.08.2026)
 - `core/test_registru_functionalitati.py` — Garda de integritate a FUNCTIONALITATI.csv (registrul canonic al functionalitatilor).
+- `core/test_registru_inventar.py` — GARD: registrul-inventar (14-1-2) — si mai ales defectul care l-ar face sa arate perfect.
 - `core/test_registru_jurnal_14_1_1.py` — GARD — Registrul-jurnal păstrează cele trei coloane cerute de norma 14-1-1.
 - `core/test_reguli_ecran.py` — GARD [28.08.2026]: cele două reguli de ecran scrise azi — E1 și E2 (`DESIGN_SYSTEM.md` cap.26/27).
 - `core/test_reluari_decizie.py` — GARD [27.08.2026]: o decizie cerută de mai multe ori nu mai poate arăta ca cerută o dată.

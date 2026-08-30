@@ -380,9 +380,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T05 — Nota contabilă — de la document la registrul-jurnal
 
-*clasa MECANIC · 28 rute · 24 schimba date · 17 firme il pot exercita azi*
+*clasa MECANIC · 34 rute · 26 schimba date · 19 firme il pot exercita azi*
 
-*citiri (nu schimba nimic): `/api/v1/firme/{tenant_id}/balanta`, `/tenants/{tenant_id}/documente/balanta`, `/tenants/{tenant_id}/jurnal`, `/tenants/{tenant_id}/plan-conturi`*
+*citiri (nu schimba nimic): `/api/v1/firme/{tenant_id}/balanta`, `/tenants/{tenant_id}/balanta`, `/tenants/{tenant_id}/documente/balanta`, `/tenants/{tenant_id}/fisa-cont`, `/tenants/{tenant_id}/jurnal`, `/tenants/{tenant_id}/plan-conturi`, `/tenants/{tenant_id}/registru-inventar`, `/tenants/{tenant_id}/registru-inventar/propunere`*
 
 ### `POST /tenants/{tenant_id}/jurnal`
 
@@ -566,6 +566,32 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - verifică dacă ruta permite lichidarea unei firme cu datorii nestinse
 - **Masurat 26.08.2026, raspuns la intrebarea ta:** ruta CALCULEAZA. Toate cele 19 rute `nota-*` cheama un motor pur din `core/`, iar unde intervine cota o cer din REGISTRU (`cota_ceruta`/`common.cota`), nu din corpul cererii. Zero rute care doar scriu ce li se da. Deci verificarile scrise aici au ce sa verifice.
 - **ADNOTARE SCHIMBATĂ 26.08.2026 — R60.** Din rândul `ce face` s-a ȘTERS *«poate atinge, prin modul: `articole`, `miscari_stoc` — prin `stocuri_cv_api`»*. Nu ruta s-a schimbat, ci instrumentul: `scan_trasee.py` rezolva aliasul `_cv` prin harta altcuiva, iar aici `_cv` e `cont_valid` — care doar confruntă contul cu planul firmei și nu scrie nimic. Verificările de mai sus rămân valabile **ca intenție**; ce nu se mai poate afirma e unde ajunge efectul.
+
+### `POST /tenants/{tenant_id}/registru-inventar`
+
+*garda `cere_cabinet` · **fara rol***
+
+*ce face: Inscrie un rand — poate atinge, prin modul (PLAFON, nemasurat pe ruta): registru_inventar (INSERT) — prin `registru_inventar`*
+
+Al treilea dintre registrele obligatorii ale art. 20 din Legea 82/1991. Spre deosebire de jurnal si
+de Cartea mare, NU se deriva din `inregistrari`: coloana 4 (valoarea de inventar) vine din numararea
+faptica, pe baza listelor de inventariere.
+
+- **coloana 4 nu se completeaza singura din coloana 3**: apasa „Adu soldurile din balanta", du un
+  cont in formular si verifica faptul ca valoarea de inventar ramane GOALA. Daca s-ar completa,
+  registrul ar iesi cu zero diferente pe toate conturile — o inventariere perfecta care nu s-a facut
+- **o diferenta fara cauza e refuzata**: pune valori diferite pe coloanele 3 si 4, lasa cauza goala,
+  si citeste refuzul — trebuie sa spuna ca EXISTA o diferenta, nu doar ca lipseste un camp
+- **un rand fara diferenta NU cere cauza**: perechea de mai sus; altfel registrul ar fi imposibil de
+  completat pe conturile care se potrivesc
+- **diferenta se calculeaza, nu se tasteaza**: coloana 5 e, prin norma, coloana 3 minus coloana 4.
+  Verifica semnul: contabil 100 / inventar 80 e un MINUS de 20
+- **numarul curent curge pe moment**, nu global: doua randuri la sfarsit de exercitiu primesc 1 si 2,
+  iar primul rand la incetarea activitatii primeste tot 1
+- **registrul gol nu inseamna «totul se potriveste»**: citeste ce scrie pe ecranul gol — trebuie sa
+  spuna ca nu s-a inscris nicio inventariere
+- **fara rol, desi scrie intr-un registru obligatoriu** — aceeasi absenta ca la celelalte doua
+  registre adaugate azi, consemnata ca sa nu treaca drept intentie
 
 ### `POST /tenants/{tenant_id}/nota-obiect-inventar`
 
@@ -1784,9 +1810,9 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T28 — Operațiunile intracomunitare, VIES și Intrastat
 
-*clasa MECANIC · 10 rute · 5 schimba date · 2 firme il pot exercita azi*
+*clasa MECANIC · 12 rute · 6 schimba date · 2 firme il pot exercita azi*
 
-*citiri (nu schimba nimic): `/public/verifica-cui/{cui}`, `/tenants/{tenant_id}/d390-clasificare`, `/tenants/{tenant_id}/intrastat-praguri`, `/tenants/{tenant_id}/verifica-cui/{cui}`, `/tenants/{tenant_id}/verifica-vies`*
+*citiri (nu schimba nimic): `/public/verifica-cui/{cui}`, `/tenants/{tenant_id}/d390-clasificare`, `/tenants/{tenant_id}/registre-art321/{fel}`, `/tenants/{tenant_id}/intrastat-praguri`, `/tenants/{tenant_id}/verifica-cui/{cui}`, `/tenants/{tenant_id}/verifica-vies`*
 
 ### `POST /tenants/{tenant_id}/achizitie-ic`
 
@@ -1800,6 +1826,29 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 - operațiunea intră în D390 cu codul corect, și în D300 la rândurile de achiziții intracomunitare
 - **`firma_profil` se atinge, și se știe de ce**: `facturi_api` face `UPDATE firma_profil SET urmator_numar_factura` — contorul de numerotare a facturii. Verifică-l pe efect: două achiziții consecutive primesc numere consecutive, iar un refuz nu consumă un număr
 - **stocul nu se mișcă de aici** — ruta cheamă `facturi_api` și `intracomunitar`, niciun modul de stoc. Pentru o achiziție intracomunitară de bunuri asta e o absență, consemnată la R64
+
+### `POST /tenants/{tenant_id}/registre-art321/{fel}`
+
+*garda `cere_cabinet` · **fara rol***
+
+*ce face: Inscrie un rand — poate atinge, prin modul (PLAFON, nemasurat pe ruta): registre_art321 (INSERT) — prin `registre_art321`*
+
+Singurul pas de scriere al traseului care NU deriva din alta evidenta: un nontransfer e o miscare
+de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 321 alin. (4) CF
+(HG 1/2016): lit. e) nontransferuri, lit. f) bunuri primite pentru lucrari.
+
+- **numarul de ordine se DERIVA, nu se primeste**: doua inscrieri consecutive pe acelasi registru
+  primesc numere consecutive, iar cele doua registre isi numara separat
+- **un camp cerut de norma nu poate lipsi, iar refuzul NUMESTE campul**: incearca fara adresa
+  partenerului si citeste ce scrie pe ecran — trebuie sa spuna care camp, si sa marcheze inputul
+- **`valoare` e ceruta la lit. e) si NU la lit. f)**: comuta registrul si vezi ca formularul se
+  schimba. Daca ar cere valoare si la bunuri primite, ar refuza o inscriere pe care legea o accepta
+- **cele cinci exceptii se ARATA, nu se aplica**: scrie in descriere „computer portabil" si verifica
+  faptul ca aplicatia inscrie randul oricum. Decizia ca o scutire se aplica e a contabilului
+- **un camp doar cu spatii nu trece drept completat** — altfel evidenta e completa la vedere si
+  goala in fapt
+- **fara rol, desi scrie intr-un registru fiscal** — aceeasi absenta ca la `d390-clasificare/manual`,
+  consemnata aici ca sa nu treaca drept intentie
 
 ### `POST /tenants/{tenant_id}/d390-clasificare/manual`
 

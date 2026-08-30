@@ -75,8 +75,14 @@ TRASEE = [
       # [lista 3, 30.08.2026] Cartea mare (14-1-3) prin fisa de cont 14-6-22: derivata din
       # `inregistrari`, ca jurnalul si balanta — deci acelasi traseu, nu unul propriu.
       r"^/tenants/\{\}/fisa-cont$",
+      # [lista 3, 30.08.2026] Registrul-inventar (14-1-2). Legea 82/1991 art. 20 numeste TREI
+      # registre obligatorii: jurnalul, inventarul si Cartea mare. Doua sunt deja aici, iar
+      # contabilul le cauta in acelasi loc — de-aia al treilea nu primeste traseu propriu, desi,
+      # spre deosebire de celelalte doua, NU se deriva din `inregistrari`: coloana lui de valoare
+      # de inventar vine din numararea faptica. Tabelul propriu e declarat mai jos.
+      r"^/tenants/\{\}/registru-inventar",
       r"^/tenants/\{\}/documente/balanta", r"^/api/v1/firme/\{\}/balanta"],
-     ["inregistrari", "inregistrari_linii", "plan_conturi"]),
+     ["inregistrari", "inregistrari_linii", "plan_conturi", "registru_inventar"]),
     # --- deja scrise în TRASEE.md, partea X ---
     ("T06", "Importul de e-Factura și transmiterea prin SPV",
      [r"^/tenants/\{\}/import-efactura", r"^/tenants/\{\}/facturi-primite",
@@ -150,8 +156,13 @@ TRASEE = [
     ("T28", "Operațiunile intracomunitare, VIES și Intrastat",
      [r"^/tenants/\{\}/(achizitie-ic|vanzare-ic|verifica-vies|intrastat-praguri)",
       r"^/tenants/\{\}/d390-clasificare", r"^/tenants/\{\}/verifica-cui",
-      r"^/public/verifica-cui"],
-     ["d390_manual", "d390_reclasificare"]),
+      r"^/public/verifica-cui",
+      # [30.08.2026] Cele doua registre din normele art. 321: nontransferul e o miscare de bunuri
+      # in interiorul Comunitatii fara transfer de proprietate (art. 270 alin. (12) lit. f)-h)),
+      # iar bunurile primite pentru lucrari vin din alt stat membru. Ambele sunt operatiuni
+      # intracomunitare care NU trec prin D390 — de-aia au registru propriu si stau aici.
+      r"^/tenants/\{\}/registre-art321"],
+     ["d390_manual", "d390_reclasificare", "registre_art321"]),
     ("T29", "Regimurile speciale de TVA — marjă, aur, agricultori, taxare inversă",
      [r"^/tenants/\{\}/(vanzare-marja|vanzare-marja-turism|vanzare-aur-investitii)",
       r"^/tenants/\{\}/(achizitie-agricultor|vanzare-agricultor|achizitie-taxare-inversa)",

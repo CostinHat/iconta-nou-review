@@ -46,6 +46,13 @@ FELURI_REFERENT = {
                      "inseamna": "o nota contabila din registrul jurnal"},
     "fisier": {"eticheta": "fisierul „%s”",
                "inseamna": "un fisier incarcat de contabil (balanta, extras, import)"},
+    # [30.08.2026] Al patrulea adaugat dupa ce constructia s-a lovit de el: registrele art. 321 nu
+    # sunt tinute pe an (norma nu prevede reluarea numerotarii la 1 ianuarie, spre deosebire de
+    # registrul-jurnal 14-1-1), deci un fapt despre continutul lor NU are `an`. Trece criteriul
+    # scris aici: e un obiect pe care contabilul il poate deschide, are ecran propriu, iar `id`
+    # spune CARE dintre cele doua — nu e o categorie.
+    "registru": {"eticheta": "registrul „%s”",
+                 "inseamna": "un registru tinut de firma, identificat prin felul lui"},
 }
 
 

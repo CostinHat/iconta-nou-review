@@ -5583,6 +5583,124 @@ def cabinet_balanta_date(tenant_id: int, an: int, luna: int, ctx=Depends(cere_ca
             "inchidere": documente_api.inchidere_balanta(randuri)}
 
 
+@app.get("/tenants/{tenant_id}/registru-inventar")
+def registru_inventar_citeste(tenant_id: int, exercitiu: int,
+                              momentul: str = "sfarsit_exercitiu",
+                              ctx=Depends(cere_cabinet)):
+    """[lista 3, 30.08.2026] Registrul-inventar (cod 14-1-2), al doilea registru obligatoriu.
+
+    Legea 82/1991 art. 20 il cere; OMFP 2634/2015 Anexa 2 ii spune continutul. Poarta COMUNA, ca la
+    registrele art. 321 si din acelasi motiv.
+    """
+    from core import registru_inventar as _ri
+    if momentul not in _ri.MOMENTE:
+        raise HTTPException(404, "moment necunoscut: %r" % momentul)
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+        return _ri.registru(conn, schema, exercitiu, momentul)
+
+
+@app.get("/tenants/{tenant_id}/registru-inventar/propunere")
+def registru_inventar_propunere(tenant_id: int, an: int, luna: int = 12,
+                                ctx=Depends(cere_cabinet)):
+    """Coloana 3 PROPUSA din balanta — soldurile pe cont, ca sa nu fie retastate.
+
+    Nu creeaza niciun rand si NU atinge coloana 4: valoarea de inventar vine din numararea faptica.
+    Un ajutor care ar completa si coloana 4 ar produce un registru fara nicio diferenta, adica o
+    inventariere perfecta care nu s-a facut.
+    """
+    from core import registru_inventar as _ri
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+    with db.get_conn(schema) as conn:  # balanta foloseste nume necalificate -> search_path pe tenant
+        return {"an": an, "luna": luna, "randuri": _ri.solduri_de_pornire(conn, schema, an, luna)}
+
+
+@app.post("/tenants/{tenant_id}/registru-inventar")
+def registru_inventar_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """Inscrie un rand. Refuzul iese pe contractul comun `detail.erori_campuri`."""
+    from core import registru_inventar as _ri
+    exercitiu = corp.get("exercitiu")
+    if not exercitiu:
+        raise HTTPException(400, {
+            "mesaj": "Nu am înscris rândul: lipsește exercițiul financiar.",
+            "erori_campuri": [{"camp": "exercitiu", "mesaj": "cerut, nu poate lipsi"}]})
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+        try:
+            return _ri.adauga(conn, schema, int(exercitiu), corp)
+        except _ri.InregistrareIncompleta as e:
+            raise HTTPException(400, {
+                "mesaj": "Nu am înscris rândul: registrul cere un câmp pe care nu l-am primit.",
+                "erori_campuri": [{"camp": e.camp, "mesaj": _mesaj_scurt_inventar(e)}],
+                "temei": e.temei})
+
+
+def _mesaj_scurt_inventar(e):
+    """Pe camp incape o propozitie, nu o norma. Cauza e singura care are nevoie de mai mult de
+    „cerut de norma": omul trebuie sa stie CA exista o diferenta, nu doar ca lipseste un camp."""
+    if e.camp == "cauza":
+        return "există o diferență între valoarea contabilă și cea de inventar — scrie cauza ei"
+    if e.camp == "valoare_inventar":
+        return "valoarea numărată; nu se completează singură din valoarea contabilă"
+    return "cerut de normă, nu poate lipsi"
+
+
+@app.get("/tenants/{tenant_id}/registre-art321/{fel}")
+def registre_art321_citeste(tenant_id: int, fel: str, an: Optional[int] = None,
+                            ctx=Depends(cere_cabinet)):
+    """[lista 3, 30.08.2026] Cele doua registre cerute de art. 321 alin. (4) CF, prin normele lui.
+
+    POARTA COMUNA, nu cea de citire-istorica. Registrul e o clasa NOUA de acces, nu a doua iesire a
+    unui artefact vechi — iar zavorul din `test_poarta_citire_istorica` cere exact ca o intrare care
+    nu e nici din cele 13 de la deschidere, nici pereche declarata a uneia, sa nu treaca. Daca
+    vreodata se va cere citirea registrului pe o firma scoasa din portofoliu, se declara acolo, cu
+    propozitie scrisa.
+    """
+    from core import registre_art321 as _r
+    if fel not in _r.FELURI:
+        raise HTTPException(404, "registru necunoscut: %r" % fel)
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+        return _r.registru(conn, schema, fel, an)
+
+
+@app.post("/tenants/{tenant_id}/registre-art321/{fel}")
+def registre_art321_adauga(tenant_id: int, fel: str, corp: dict = Body(...),
+                           ctx=Depends(cere_cabinet)):
+    """Inscrie un rand. Refuzul de completitudine iese ca 400 CU campul si temeiul, nu ca proza.
+
+    Pe contractul care EXISTA deja — `detail.erori_campuri = [{camp, mesaj}]`, normalizat de
+    `static/js/api.js` si randat de trei ecrane. Un contract paralel, oricat de bine gandit, ar fi
+    insemnat ca acelasi fel de refuz se citeste in doua feluri; `temei` se adauga ALATURI de el,
+    fiindca niciun refuz de-al nostru nu se rosteste fara norma pe care se sprijina.
+    """
+    from core import registre_art321 as _r
+    if fel not in _r.FELURI:
+        raise HTTPException(404, "registru necunoscut: %r" % fel)
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+        try:
+            return _r.adauga(conn, schema, fel, corp)
+        except _r.InregistrareIncompleta as e:
+            # Mesajul de pe CAMP e scurt — el se randeaza langa un input, iar acolo un paragraf de
+            # normа nu se citeste. Norma intreaga sta la nivelul refuzului, unde are loc.
+            raise HTTPException(400, {
+                "mesaj": "Nu am înscris rândul: registrul cere un câmp pe care nu l-am primit.",
+                "erori_campuri": [{"camp": e.camp, "mesaj": "cerut de normă, nu poate lipsi"}],
+                "temei": e.temei})
+
+
 @app.get("/tenants/{tenant_id}/documente/balanta")
 def cabinet_documente_balanta(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     from fastapi.responses import Response

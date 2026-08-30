@@ -38,7 +38,7 @@ unor REGIMURI pe care 006 nu le poartă** — salarizare, facturare, trezorerie,
 Golul lor e o proprietate a regimului, deci se gardează să rămână gol. Restul tabelelor goale din schemă NU
 intră în listă, fiindcă pot primi date **fără ca 006 să-și schimbe regimul**:
 
-**În perimetru, tabele care pot primi date:** `ai_corectii`, `artefacte_produse`, `contracte_sabloane`, `d300_manual`, `d390_manual`, `d390_reclasificare`, `notificari_scadenta`, `perioada_confirmata`, `perioade_blocate`, `perioade_inchideri`, `rapoarte_salvate`.
+**În perimetru, tabele care pot primi date:** `ai_corectii`, `artefacte_produse`, `contracte_sabloane`, `d300_manual`, `d390_manual`, `d390_reclasificare`, `notificari_scadenta`, `perioada_confirmata`, `perioade_blocate`, `perioade_inchideri`, `rapoarte_salvate`, `registre_art321`, `registru_inventar`.
 
 Primele trei sunt căile MANUALE ale unor declarații care sunt chiar în perimetru (D390 pe 006 e auto-derivat
 din D301, dar o linie manuală rămâne legitimă) — a le garda „să rămână goale" ar fi fost o greșeală, nu o
@@ -95,7 +95,7 @@ vector fiscal · e-Factura.
 Criteriul: firma are `operatiuni_ic=False`, deci NU datorează D301 (art.317) și nici
 D390 (recapitulativa IC) — nici pe cale automată, nici manuală. Regimul IC e purtat de t004 și t006.
 
-**În perimetru, tabele care pot primi date:** `ai_corectii`, `artefacte_produse`, `articole`, `asociati`, `bugete`, `casa_operatiuni`, `centre_cost`, `chitante`, `clienti`, `contracte_sabloane`, `d300_manual`, `efactura_primite`, `efactura_trimiteri`, `etransport_trimiteri`, `extras_linii`, `facturi_recurente`, `furnizori`, `inregistrari`, `inregistrari_linii`, `mijloace_fixe`, `miscari_stoc`, `nir`, `nir_linii`, `notificari_scadenta`, `perioade_inchideri`, `pontaj`, `produse`, `rapoarte_salvate`, `registratura`, `retete`, `retete_linii`, `rip_operatiuni`, `solduri_initiale`, `solduri_parteneri`, `state_plata`.
+**În perimetru, tabele care pot primi date:** `ai_corectii`, `artefacte_produse`, `articole`, `asociati`, `bugete`, `casa_operatiuni`, `centre_cost`, `chitante`, `clienti`, `contracte_sabloane`, `d300_manual`, `efactura_primite`, `efactura_trimiteri`, `etransport_trimiteri`, `extras_linii`, `facturi_recurente`, `furnizori`, `inregistrari`, `inregistrari_linii`, `mijloace_fixe`, `miscari_stoc`, `nir`, `nir_linii`, `notificari_scadenta`, `perioade_inchideri`, `pontaj`, `produse`, `rapoarte_salvate`, `registratura`, `registre_art321`, `registru_inventar`, `retete`, `retete_linii`, `rip_operatiuni`, `solduri_initiale`, `solduri_parteneri`, `state_plata`.
 
 **De ce lista de mai sus e scurtă, spre deosebire de 006.** t001 nu e *scopată*, e **SUB-EXERCITATĂ**: o
 brutărie cu 12 salariați, profit și TVA lunar poate avea în mod legitim clienți, furnizori, facturi, casă,

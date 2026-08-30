@@ -145,9 +145,26 @@ def _cai_traseu_nota():
     return _CAI_T05
 
 
-# Singura excepție, cu motivul scris: un cont din planul de conturi n-are dată, deci n-are
-# perioadă. E în traseul T05 fiindcă nota se sprijină pe el, nu fiindcă ar fi o notă.
-_FARA_PERIOADA = {"/tenants/{tenant_id}/plan-conturi"}
+# Excepțiile, fiecare cu motivul scris — aceeași formă ca `_ROL_PE_ALT_CRITERIU` de mai jos, și din
+# același motiv: o listă care poate crește tăcut e o gardă care se stinge singură, dar una în care
+# fiecare intrare poartă propoziția care o justifică nu poate crește din neatenție.
+#
+# (Până la 30.08.2026 era un `set` cu o singură intrare, iar gardul cerea `len == 1`. A doua intrare
+# a arătat că «exact una» era un proxy pentru «nicio creștere tăcută» — pe care forma cu motiv îl
+# păzește mai bine, fiindcă spune și DE CE, nu doar CÂTE.)
+_FARA_PERIOADA = {
+    "/tenants/{tenant_id}/plan-conturi":
+        "un cont din planul de conturi n-are dată, deci n-are perioadă. E în traseul T05 fiindcă "
+        "nota se sprijină pe el, nu fiindcă ar fi o notă",
+    "/tenants/{tenant_id}/registru-inventar":
+        "[30.08.2026] rândul de registru-inventar n-are `data`: e adresat prin `exercitiu` + "
+        "`momentul`. E în T05 fiindcă acolo stau cele trei registre obligatorii ale art. 20 din "
+        "Legea 82/1991, nu fiindcă ar fi o notă contabilă. Iar normativ NU poate cere lună "
+        "deschisă: OMFP 2634/2015 cere registrul *la sfârșitul exercițiului financiar*, întocmit "
+        "pe baza listelor de inventariere — adică, în practică, după ce lunile exercițiului s-au "
+        "închis. O gardă de lună deschisă l-ar face imposibil de completat exact la momentul în "
+        "care norma îl cere",
+}
 
 
 def _rute_care_creeaza_note():
@@ -189,13 +206,19 @@ def test_o_nota_noua_nu_se_scrie_intr_o_luna_inchisa():
         % (len(nepazite), "\n  ".join(nepazite)))
 
 
-def test_exceptia_de_la_perioada_e_UNA_si_are_motiv():
-    """O listă de excepții care poate crește e o gardă care se stinge singură. Aici e una, numită,
-    iar dacă apare a doua trebuie scrisă — nu adăugată în tăcere."""
-    assert len(_FARA_PERIOADA) == 1
+def test_fiecare_exceptie_de_la_perioada_ARE_motiv_si_exista():
+    """O listă de excepții care poate crește e o gardă care se stinge singură — dar plafonul pe
+    NUMĂR nu era protecția reală: era un proxy. Protecția e ca fiecare intrare să poarte propoziția
+    care o justifică, iar propoziția să nu poată fi un cuvânt.
+
+    (Redenumit 30.08.2026, când a apărut a doua excepție. `len == 1` ar fi cerut fie o minciună —
+    să nu declar excepția — fie o gardă ștearsă. A treia cale: aceeași formă cu motiv scris pe care
+    fișierul ăsta o folosea deja pentru `_ROL_PE_ALT_CRITERIU`.)"""
     cai = {c for _n, (_m, c, _x) in _rute().items()}
-    for c in _FARA_PERIOADA:
+    for c, motiv in _FARA_PERIOADA.items():
         assert c in cai, "excepția %s nu mai există ca rută — scoate-o" % c
+        assert len(motiv) > 60, (
+            "excepția %s are un motiv prea scurt ca să fie o justificare: %r" % (c, motiv))
 
 
 # Rutele din traseul notei care au totuși `admin_firma` — și NU pe criteriul lui R42, ci pe altul,

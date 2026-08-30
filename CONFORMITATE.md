@@ -83,10 +83,10 @@ prins o a doua instanță, mai mică, a aceleiași clase: textul de ajutor scria
 | # | ce e | de ce prag 2 |
 |---|---|---|
 | **2.1** | **Interdicția 2** — 3 apeluri fără dată, **o cauză unică**: defaultul `la_data=None` din `common.cota` | cauza e o linie; scos defaultul, interdicția devine imposibilă prin construcție. Nu concurează cu nimic |
-| **2.2** | **Registrul-inventar** (14-1-2) — nu există producător pentru partidă dublă | absență: n-are instanțe de ordonat |
+| **2.2** | **Registrul-inventar** (14-1-2) — ~~nu există producător pentru partidă dublă~~ **REPARAT 30.08.2026** | absență: n-are instanțe de ordonat |
 | **2.3** | **Cartea mare** (14-1-3) — motorul există (`core/motor.py:32`), zero consumatori | absență, cu motorul deja scris |
 | **2.4** | **Registrul de evidență fiscală** (CF art. 19 / 68) — nu există | absență |
-| **2.5** | **Evidența TVA ca artefact** (jurnale de vânzări/cumpărări, CF art. 321) | absență **simplă** — vezi Q2: datele există la nivelul cerut de articol, lipsește doar documentul |
+| **2.5** | **Evidența TVA ca artefact** (CF art. 321) | ~~absență **simplă**: datele există, lipsește doar documentul~~ — **AFIRMAȚIE DOVEDITĂ FALSĂ, 30.08.2026.** Alin. (4) trimite la norme, iar normele cer **două registre nominalizate** (HG 1/2016, lit. e și f). Pentru **nontransferuri** substanța NU există în date: e o mișcare de bunuri **fără vânzare**, deci nu se derivă din facturi, iar `etransport_trimiteri` ține trimiterea (UIT, XML), nu bunurile și partenerul. Nu lipsea documentul peste o substanță existentă — **lipsea substanța**. Construite cu tabel propriu. |
 | **2.6** | **Jurnalul regim marjă** — producător DA, ecran NU | absență de randare, cu producătorul scris; vezi Q1 pentru de ce nu e o absență *declarată* |
 
 ### PRAGUL 3 — după tabelul final
@@ -5144,7 +5144,7 @@ Răspunsurile s-au luat mecanic: producătorul chemat **pe date reale**, ruta ci
 
 | artefact | A producător | B rută | C ecran | stare |
 |---|---|---|---|---|
-| **Registrul-inventar** (14-1-2) | **NU** — pentru partidă dublă. Singura potrivire e varianta 14-1-2/b, de partidă simplă | — | — | **DESCHIS** |
+| **Registrul-inventar** (14-1-2) | **DA, din 30.08** — `core/registru_inventar.py`, cu obligația și conținutul sursate SEPARAT (Legea 82/1991 art. 20 · OMFP 2634/2015 Anexa 2); tabel propriu `registru_inventar` (migrare aplicată 19/19) | **DA, din 30.08** — `GET`, **`POST`** și `GET .../propunere`, în T05, lângă jurnal și Cartea mare | **DA, din 30.08** — `#fa-reginventar`, cu formular pe cele șase coloane | **REPARAT.** *Coloana 4 (valoarea de inventar) **nu** se derivă: vine din numărarea faptică. Completată implicit din coloana 3, ar fi produs zero diferențe pe toate conturile — o inventariere perfectă care nu s-a făcut. Păzit din trei direcții.* |
 | **Cartea mare** (14-1-3) | **DA** — `core/fisa_cont.py`, Fișa de cont 14-6-22, înlocuitorul legal. Măsurat azi: **6 firme cu mișcare, 43 de conturi** în 2026 | **DA, din 30.08** — `GET /tenants/{id}/fisa-cont` | **DA, din 30.08** | **REPARAT** |
 | **Note explicative** | **NU** — zero potriviri în cod de producție | — | — | **DESCHIS** |
 | **Jurnal regim marjă** (art. 312 · art. 311) | **DA** — `core/tva_marja.py`, `tva_marja_turism.py` | **DA, exista deja** — `GET /tenants/{id}/jurnal-marja`, cu comentariul *„fără UI încă, păstrat deliberat"* | **DA, din 30.08** | **REPARAT** |
@@ -5174,7 +5174,7 @@ tabelul de sus, unde e acum REPARAT):
 | artefact | A producător | B rută | C ecran | stare |
 |---|---|---|---|---|
 | **categoria de mărime** (precondiție, pct. 9) | **DA, din 30.08** — `core/categorie_marime.py`, cu pragurile purtând `Temei` (OMFP 1802/2014 pct.9, literele a) și b) modificate de OMFP 4.164/2024) | **DA, din 30.08** — `GET /tenants/{id}/categorie-marime`, în T12 | **DA, din 30.08** — caseta de pe ecranul de bilanț, lângă selectorul care până azi ghicea | **REPARAT ca DERIVARE · R3 rămâne deschisă pentru PROBĂ** — vezi mai jos |
-| **Evidența operațiunilor de TVA** (art. 321) | **NU** ca artefact — substanța e derivabilă pe fiecare linie, lipsește documentul | — | — | **DESCHIS** |
+| **Evidența operațiunilor de TVA** (art. 321) — **cele două registre din normele alin. (4)** | **DA, din 30.08** — `core/registre_art321.py`, cu `Temei` per registru pe HG 1/2016 lit. e) și f); tabel propriu `registre_art321` (migrare aplicată 19/19 firme) | **DA, din 30.08** — `GET` și **`POST`** `/tenants/{id}/registre-art321/{fel}`, în T28 | **DA, din 30.08** — `#fa-registre321`, singurul dintre cele trei cu **înscriere** | **REPARAT.** *Rândul vechi («substanța e derivabilă, lipsește documentul») era **fals**: un nontransfer nu se derivă din nimic. De-aia ecranul are formular, nu doar tabel.* |
 | **Registrul de evidență fiscală** (art. 19 · art. 68) | **NU** — potrivirile găsite sunt false pozitive pe `REF` | — | — | **DESCHIS** |
 
 **CATEGORIA DE MĂRIME — ce s-a construit, și ce NU s-a putut proba (30.08.2026).**
@@ -5405,13 +5405,13 @@ sus refuză **spunând de ce**, ceea ce e chiar comportamentul cerut.
 
 | artefact | cauza |
 |---|---|
-| **Registrul-inventar** (14-1-2) | **nu există producător** pentru partidă dublă (singura potrivire e varianta 14-1-2/b, de partidă simplă) |
+| **Registrul-inventar** (14-1-2) | **nu există producător** pentru partidă dublă (singura potrivire e varianta 14-1-2/b, de partidă simplă) — *cauza măsurată era corectă; starea e REPARAT din 30.08, vezi tabelul de sus. Ce a lipsit n-a fost documentul, ci **coloana pe care evidența n-o poate ști**: valoarea de inventar* |
 | **Cartea mare** (14-1-3) | **nu există producător**: motorul `core/motor.py:32 carte_mare` există, cu **zero consumatori** în tot repo-ul |
 | **Registrul-jurnal** (14-1-1) | **iese ca listă, dar nu ca artefactul cerut de normă** — elementele din OMFP 2634 Anexa 1 pct. 45 lipsesc **din date**: `document_ref` 0/33, `numar` 1/33, și **nimic în cod nu scrie `document_ref`** |
 | **Note explicative** | **nu există producător** — zero potriviri în `core/` și `main.py` |
 | **Bilanț (S1005)** și **CPP (F20/S1003)** | **producătorul există și produce pe date reale** (1065 octeți pe t013), dar are **zero rute** — nu ajunge la om |
 | **Jurnal regim marjă** (art. 312) | **producătorul există, ecranul nu** — absență declarată doar într-un comentariu de cod (`main.py:7061`), care nu e declarație de perimetru |
-| **Evidența operațiunilor de TVA** (art. 321) | **nu există producător ca artefact** — substanța e derivabilă pe fiecare linie (bază și TVA pe cotă, cu partener și cod), lipsește documentul |
+| **Evidența operațiunilor de TVA** (art. 321) | **nu există producător ca artefact** — *cauza scrisă la măsurătoare; s-a dovedit greșită pe 30.08: pentru cele două registre din normele alin. (4) lipsea **substanța**, nu documentul. Rămâne aici ca istoric al măsurătorii, nu ca stare — starea e REPARAT în tabelul de mai sus.* |
 | **Registrul de evidență fiscală** (art. 19 · art. 68) | **nu există producător** — zero potriviri |
 | **categoria de mărime** (precondiție, pct. 9) | **nu se calculează** — datele există, derivarea s-a probat pe toate 17 firmele, dar nimeni n-o face și nimic n-o stochează (R3, îngustată) |
 

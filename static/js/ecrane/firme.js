@@ -408,6 +408,12 @@ function meniuFirma(corp, nav, t) {
     { cheie: "marja", regim: "dubla", titlu: "Jurnal regim marj\u0103", desc: "Art. 312 second-hand \u00b7 art. 311 turism",
       ...CULORI_CARD.piersica,
       icon: '<path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/>', activ: true },
+    { cheie: "reginventar", regim: "dubla", titlu: "Registrul-inventar", desc: "Cod 14-1-2 \u00b7 rezultatele inventarierii",
+      ...CULORI_CARD.ardezie,
+      icon: '<path d="M9 2h6v4H9z"/><rect x="4" y="6" width="16" height="16" rx="2"/><path d="M8 12h8M8 16h5"/>', activ: true },
+    { cheie: "registre321", regim: "ambele", titlu: "Registre art. 321", desc: "Nontransferuri \u00b7 bunuri primite pentru lucr\u0103ri",
+      ...CULORI_CARD.piersica,
+      icon: '<path d="M3 7h18v13H3z"/><path d="M3 7l3-4h12l3 4"/><path d="M9 12h6"/>', activ: true },
     { cheie: "balanta", regim: "dubla", titlu: "Balan\u021b\u0103 de verificare", desc: "Solduri \u0219i rulaje pe ecran, cu \u00eenchiderea lunii",
       ...CULORI_CARD.albastru,
       icon: '<path d="M12 3v18M3 7h18M6 7l-3 5h6l-3-5zM18 7l-3 5h6l-3-5z"/>', activ: true },
@@ -599,6 +605,10 @@ function meniuFirma(corp, nav, t) {
   if (bFisa) bFisa.addEventListener("click", () => { nav.deschide("Cartea mare", (c2) => ecranFisaCont(c2, nav, t)); });
   const bMarja = corp.querySelector("#fa-marja");     // [lista 3] jurnalul special de regim marja
   if (bMarja) bMarja.addEventListener("click", () => { nav.deschide("Jurnal regim marjă", (c2) => ecranJurnalMarja(c2, nav, t)); });
+  const bRegInv = corp.querySelector("#fa-reginventar");  // [lista 3] registrul-inventar 14-1-2
+  if (bRegInv) bRegInv.addEventListener("click", () => { nav.deschide("Registrul-inventar", (c2) => ecranRegistruInventar(c2, nav, t), { lat: "larg" }); });
+  const bReg321 = corp.querySelector("#fa-registre321");  // [lista 3] cele doua registre din normele art. 321
+  if (bReg321) bReg321.addEventListener("click", () => { nav.deschide("Registre art. 321", (c2) => ecranRegistre321(c2, nav, t), { lat: "larg" }); });
   const bRapoarte = corp.querySelector("#fa-rapoarte");  // rap_com_v1
   if (bRapoarte) bRapoarte.addEventListener("click", () => { nav.deschide("Rapoarte comerciale", (c2) => ecranRapoarte(c2, nav, t), { lat: "larg" }); });
   const bRegistratura = corp.querySelector("#fa-registratura");  // registratura_v1
@@ -2107,6 +2117,279 @@ async function ecranJurnalMarja(corp, nav, t) {
       ${tabel}`;
     corp.querySelector("#jm-tip").addEventListener("change", (e) => { tip = e.target.value; deseneaza(); });
     corp.querySelector("#jm-luna").addEventListener("change", (e) => { luna = e.target.value || luna; deseneaza(); });
+  };
+  deseneaza();
+}
+
+
+// [lista 3, 30.08.2026] REGISTRUL-INVENTAR (cod 14-1-2), al doilea registru obligatoriu din
+// Legea 82/1991 art. 20. Continutul: OMFP 2634/2015, Anexa 2 — sase coloane.
+//
+// ECRANUL NU COMPLETEAZA COLOANA 4. Butonul „Adu soldurile din balanta" umple coloana 3 (valoarea
+// contabila) si LASA GOALA coloana 4 (valoarea de inventar), fiindca aceea vine din numarare, nu
+// din evidenta. Daca s-ar completa singura, registrul ar iesi cu zero diferente pe toate conturile
+// — ar arata ca o inventariere facuta bine si ar fi una care nu s-a facut deloc.
+//
+// Diferenta si totalurile se ARATA calculate, nu se tasteaza: coloana 5 e, prin norma, diferenta
+// dintre 3 si 4, iar un camp tastat le-ar putea contrazice pe amandoua.
+async function ecranRegistruInventar(corp, nav, t) {
+  const azi = new Date();
+  let exercitiu = azi.getFullYear();
+  let momentul = "sfarsit_exercitiu";
+  let propunere = [];
+
+  const MOMENTE = {
+    inceput_activitate: "La \u00eenceputul activit\u0103\u021bii",
+    sfarsit_exercitiu: "La sf\u00e2r\u0219itul exerci\u021biului financiar",
+    incetare_activitate: "La \u00eencetarea activit\u0103\u021bii",
+  };
+  const ETICHETE = {
+    cont: "Contul", element: "Elementul inventariat", gestiune: "Gestiunea",
+    valoare_contabila: "Valoarea contabil\u0103", valoare_inventar: "Valoarea de inventar",
+    cauza: "Cauza diferen\u021bei", data_inventariere: "Data inventarierii",
+    document: "Lista / procesul-verbal",
+  };
+
+  const deseneaza = async () => {
+    corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103...</p>`;
+    let d = null;
+    try {
+      d = await api.get(`/tenants/${t.id}/registru-inventar?exercitiu=${exercitiu}&momentul=${momentul}`);
+    } catch (e) {
+      corp.innerHTML = `<p class="ecran-nota">Nu am putut \u00eenc\u0103rca registrul. ${esc((e && (e.mesaj || e.message)) || "")}</p>`;
+      return;
+    }
+    const randuri = (d && d.randuri) || [];
+
+    const tabel = !randuri.length
+      ? `<div class="stare-goala"><b>Niciun r\u00e2nd \u00eenscris.</b> Registrul gol \u00eenseamn\u0103 <i>nicio inventariere \u00eenscris\u0103</i> \u2014 <b>nu</b> \u201etotul se potrive\u0219te\u201d. Valoarea de inventar vine din num\u0103rarea faptic\u0103, pe baza listelor de inventariere, deci nu se poate deduce din eviden\u021b\u0103.</div>`
+      : `<div style="overflow-x:auto"><table class="fd-tabel">
+          <thead><tr><th>Nr. crt.</th><th>Contul</th><th>Elementul inventariat</th>
+            <th class="fd-td-num">Valoarea contabil\u0103</th><th class="fd-td-num">Valoarea de inventar</th>
+            <th class="fd-td-num">Diferen\u021be din evaluare</th><th>Cauzele diferen\u021belor</th></tr></thead>
+          <tbody>${randuri.map((r) => `<tr>
+              <td>${esc(String(r.nr_curent))}</td><td>${esc(r.cont || "")}</td>
+              <td>${esc(r.element || "")}${r.gestiune ? ` <small>(${esc(r.gestiune)})</small>` : ""}</td>
+              <td class="fd-td-num">${bani(r.valoare_contabila)} lei</td>
+              <td class="fd-td-num">${bani(r.valoare_inventar)} lei</td>
+              <td class="fd-td-num">${r.diferenta ? bani(r.diferenta) + " lei" : "\u2014"}</td>
+              <td>${esc(r.cauza || "\u2014")}</td></tr>`).join("")}</tbody>
+        </table></div>
+        <div style="max-width:640px"><div class="fd-totaluri" style="margin-top:12px">
+          <div class="fd-tot-rand"><span>Total valoare contabil\u0103</span><span>${bani(d.total_valoare_contabila)} lei</span></div>
+          <div class="fd-tot-rand"><span>Total valoare de inventar</span><span>${bani(d.total_valoare_inventar)} lei</span></div>
+          <div class="fd-tot-rand fd-tot-final"><span>R\u00e2nduri cu diferen\u021b\u0103</span><span>${esc(String(d.randuri_cu_diferenta))} din ${esc(String(randuri.length))}</span></div>
+        </div></div>`;
+
+    const propuse = !propunere.length ? "" : `
+      <h3 style="margin-top:22px">Solduri din balan\u021b\u0103 (${esc(String(propunere.length))} conturi)</h3>
+      <p class="pf-intro">Astea sunt <b>coloana 3</b>. <b>Coloana 4 r\u0103m\u00e2ne goal\u0103</b> \u2014 valoarea de inventar o \u0219tie doar cine a num\u0103rat. Alege un cont ca s\u0103-l duci \u00een formular.</p>
+      <div style="overflow-x:auto;max-height:260px"><table class="fd-tabel">
+        <tbody>${propunere.map((p, i) => `<tr>
+          <td>${esc(p.cont)}</td><td>${esc(p.element)}</td>
+          <td class="fd-td-num">${bani(p.valoare_contabila)} lei ${esc(p.sens)}</td>
+          <td><button class="buton-secundar ri-ia" data-i="${i}">Duc \u00een formular</button></td></tr>`).join("")}</tbody>
+      </table></div>`;
+
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Registrul-inventar</h2>
+      <p class="pf-intro">Registru obligatoriu (Legea 82/1991, art. 20), cod 14-1-2. Se \u00eentocme\u0219te <b>f\u0103r\u0103 \u0219ters\u0103turi \u0219i f\u0103r\u0103 spa\u021bii libere</b>, pe baza listelor de inventariere \u0219i a proceselor-verbale.<br><small>${esc(d.temei_obligatie || "")}</small><br><small>${esc(d.temei || "")}</small></p>
+      <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px">
+        <label class="camp"><span class="camp-eticheta">Exerci\u021biul</span><input type="number" id="ri-an" class="camp-input" value="${exercitiu}" style="max-width:120px"></label>
+        <label class="camp"><span class="camp-eticheta">Momentul</span><select id="ri-moment" class="camp-input">
+          ${Object.keys(MOMENTE).map((k) => `<option value="${k}"${momentul === k ? " selected" : ""}>${esc(MOMENTE[k])}</option>`).join("")}
+        </select></label>
+        <button class="buton-secundar" id="ri-propune">Adu soldurile din balan\u021b\u0103</button>
+      </div>
+      <p class="pf-intro">${esc(d.temei_completitudine || "")}</p>
+      ${tabel}
+      ${propuse}
+      <h3 style="margin-top:22px">\u00censcrie un r\u00e2nd</h3>
+      <div id="ri-eroare"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;max-width:960px">
+        ${["cont", "element", "gestiune"].map((c) => `<label class="camp"><span class="camp-eticheta">${esc(ETICHETE[c])}</span><input type="text" id="ri-${c}" class="camp-input"></label>`).join("")}
+        ${["valoare_contabila", "valoare_inventar"].map((c) => `<label class="camp"><span class="camp-eticheta">${esc(ETICHETE[c])}</span><input type="number" step="0.01" id="ri-${c}" class="camp-input"></label>`).join("")}
+        <label class="camp"><span class="camp-eticheta">${esc(ETICHETE.cauza)}</span><input type="text" id="ri-cauza" class="camp-input"></label>
+        <label class="camp"><span class="camp-eticheta">${esc(ETICHETE.data_inventariere)}</span><input type="date" id="ri-data_inventariere" class="camp-input"></label>
+        <label class="camp"><span class="camp-eticheta">${esc(ETICHETE.document)}</span><input type="text" id="ri-document" class="camp-input"></label>
+      </div>
+      <p class="pf-intro" id="ri-dif">Diferen\u021ba se calculeaz\u0103 singur\u0103, dup\u0103 norm\u0103: valoarea contabil\u0103 minus valoarea de inventar.</p>
+      <div style="margin-top:12px"><button class="buton-primar" id="ri-adauga">\u00censcrie \u00een registru</button></div>`;
+
+    corp.querySelector("#ri-an").addEventListener("change", (e) => { exercitiu = Number(e.target.value) || exercitiu; propunere = []; deseneaza(); });
+    corp.querySelector("#ri-moment").addEventListener("change", (e) => { momentul = e.target.value; deseneaza(); });
+    corp.querySelector("#ri-propune").addEventListener("click", async () => {
+      try {
+        const p = await api.get(`/tenants/${t.id}/registru-inventar/propunere?an=${exercitiu}&luna=12`);
+        propunere = (p && p.randuri) || [];
+        deseneaza();
+      } catch (e) { arataMesaj((e && (e.mesaj || e.message)) || "nu am putut aduce soldurile", "rau"); }
+    });
+    corp.querySelectorAll(".ri-ia").forEach((b) => b.addEventListener("click", () => {
+      const p = propunere[Number(b.dataset.i)];
+      if (!p) return;
+      corp.querySelector("#ri-cont").value = p.cont;
+      corp.querySelector("#ri-element").value = p.element;
+      corp.querySelector("#ri-valoare_contabila").value = p.valoare_contabila;
+      // coloana 4 se lasa goala INTENTIONAT — vezi comentariul de deasupra ecranului
+      corp.querySelector("#ri-valoare_inventar").focus();
+    }));
+
+    const arataDif = () => {
+      const vc = Number(corp.querySelector("#ri-valoare_contabila").value);
+      const vi = corp.querySelector("#ri-valoare_inventar").value;
+      const z = corp.querySelector("#ri-dif");
+      if (vi === "" || isNaN(vc)) {
+        z.textContent = "Diferen\u021ba se calculeaz\u0103 singur\u0103, dup\u0103 norm\u0103: valoarea contabil\u0103 minus valoarea de inventar.";
+        return;
+      }
+      const dif = vc - Number(vi);
+      z.innerHTML = dif === 0
+        ? "Diferen\u021b\u0103 <b>0</b> \u2014 cauza nu se cere."
+        : `Diferen\u021b\u0103 <b>${bani(dif)} lei</b> \u2014 <b>cauza e obligatorie</b> (coloana 6).`;
+    };
+    ["#ri-valoare_contabila", "#ri-valoare_inventar"].forEach((s) =>
+      corp.querySelector(s).addEventListener("input", arataDif));
+
+    corp.querySelector("#ri-adauga").addEventListener("click", async () => {
+      const corpJson = { exercitiu: exercitiu, momentul: momentul };
+      ["cont", "element", "gestiune", "valoare_contabila", "valoare_inventar", "cauza",
+       "data_inventariere", "document"].forEach((c) => {
+        const el = corp.querySelector(`#ri-${c}`);
+        if (el && el.value !== "") corpJson[c] = el.value;
+      });
+      const zonaEroare = corp.querySelector("#ri-eroare");
+      zonaEroare.innerHTML = "";
+      curataEroriCamp(corp);
+      try {
+        await api.post(`/tenants/${t.id}/registru-inventar`, corpJson);
+        propunere = [];
+        deseneaza();
+      } catch (e) {
+        const eris = (e && e.erori_campuri) || [];
+        eris.forEach((x) => { if (x.camp) eroareCamp(corp, `ri-${x.camp}`, x.mesaj || ""); });
+        zonaEroare.innerHTML = `<div class="dec-avert" role="alert">
+          <div class="dec-avert-cap">${esc((e && e.mesaj) || "Nu am \u00eenscris r\u00e2ndul.")}</div>
+          <ul>${eris.map((x) => `<li><b>${esc(ETICHETE[x.camp] || x.camp || "")}</b> \u2014 ${esc(x.mesaj || "")}</li>`).join("")}</ul>
+        </div>`;
+      }
+    });
+  };
+  deseneaza();
+}
+
+
+// [lista 3, 30.08.2026] CELE DOUA REGISTRE cerute de art. 321 alin. (4) CF, prin normele lui.
+//
+// Ecranul e locul unde se INSCRIE, nu doar unde se citeste: substanta lor nu se deriva din facturi
+// (un nontransfer e o miscare de bunuri FARA vanzare), deci fara formular registrul ar ramane gol
+// pentru totdeauna. De-aia are si POST, spre deosebire de Cartea mare sau jurnalul de marja.
+//
+// EXCEPTIILE se ARATA, nu se aplica: aplicatia nu hotaraste ca un bun intra intr-una din cele cinci
+// scutiri. O scutire decisa de masina pe descrierea unui bun ar produce exact evidenta care nu se
+// poate apara la control — completa la vedere, incompleta in fapt.
+async function ecranRegistre321(corp, nav, t) {
+  let fel = "nontransfer";
+
+  const ETICHETE = {
+    partener_denumire: "Denumirea partenerului", partener_adresa: "Adresa partenerului",
+    data_transport: "Data transportului", descriere: "Descrierea bunurilor",
+    cantitate: "Cantitatea", valoare: "Valoarea (lei)",
+    data_retur: "Data returului", descriere_returnate: "Descrierea bunurilor returnate",
+    cantitate_returnate: "Cantitatea returnat\u0103", descriere_nereturnate: "Descrierea bunurilor nereturnate",
+    cantitate_nereturnate: "Cantitatea nereturnat\u0103",
+    documente: "Documentele emise", data_documente: "Data documentelor",
+  };
+  const RETUR = ["data_retur", "descriere_returnate", "cantitate_returnate",
+                 "descriere_nereturnate", "cantitate_nereturnate"];
+
+  const camp = (c, tip) => `<label class="camp"><span class="camp-eticheta">${esc(ETICHETE[c] || c)}</span>` +
+    `<input type="${tip || "text"}" id="r3-${c}" class="camp-input"${tip === "number" ? ' step="0.001"' : ""}></label>`;
+
+  const tipul = (c) => (c === "data_transport" || c === "data_retur" || c === "data_documente") ? "date"
+    : (c.indexOf("cantitate") === 0 || c === "valoare") ? "number" : "text";
+
+  const deseneaza = async () => {
+    corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103...</p>`;
+    let d = null;
+    try {
+      d = await api.get(`/tenants/${t.id}/registre-art321/${fel}`);
+    } catch (e) {
+      corp.innerHTML = `<p class="ecran-nota">Nu am putut \u00eenc\u0103rca registrul. ${esc((e && (e.mesaj || e.message)) || "")}</p>`;
+      return;
+    }
+    const randuri = (d && d.randuri) || [];
+    const cerute = (d && d.campuri_cerute) || [];
+    const coloane = cerute.concat(RETUR, ["documente", "data_documente"]);
+
+    const tabel = !randuri.length
+      ? `<div class="stare-goala">Niciun r\u00e2nd \u00eenscris \u00een registrul acesta. <b>Nu se completeaz\u0103 singur</b> \u2014 opera\u021biunile pe care le consemneaz\u0103 sunt mi\u0219c\u0103ri de bunuri f\u0103r\u0103 v\u00e2nzare, deci nu se pot deduce din facturi.</div>`
+      : `<div style="overflow-x:auto"><table class="fd-tabel">
+          <thead><tr><th>Nr. ord.</th>${coloane.map((c) => `<th>${esc(ETICHETE[c] || c)}</th>`).join("")}</tr></thead>
+          <tbody>${randuri.map((r) => `<tr><td>${esc(String(r.nr_ordine))}</td>` +
+            coloane.map((c) => {
+              const v = r[c];
+              if (v == null || v === "") return `<td>\u2014</td>`;
+              if (tipul(c) === "date") return `<td>${dataRo(v)}</td>`;
+              if (tipul(c) === "number") return `<td class="fd-td-num">${bani(v)}</td>`;
+              return `<td>${esc(String(v))}</td>`;
+            }).join("") + `</tr>`).join("")}</tbody>
+        </table></div>`;
+
+    const exceptii = (d.exceptii && d.exceptii.length)
+      ? `<details style="margin-top:14px;max-width:760px"><summary><b>Cinci cazuri pentru care norma spune c\u0103 registrul <i>nu</i> se completeaz\u0103</b></summary>
+         <p class="pf-intro" style="margin-top:6px">Sunt aici ca s\u0103 le cite\u0219ti tu. <b>Aplica\u021bia nu hot\u0103r\u0103\u0219te c\u0103 un bun intr\u0103 \u00eentr-unul din ele</b> \u2014 o scutire aplicat\u0103 automat pe descrierea unui bun ar l\u0103sa o eviden\u021b\u0103 incomplet\u0103 la control.</p>
+         <ul>${d.exceptii.map((x) => `<li>${esc(x)}</li>`).join("")}</ul></details>`
+      : "";
+
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Registre art. 321</h2>
+      <p class="pf-intro">Cele dou\u0103 registre pe care normele metodologice ale art. 321 alin. (4) din Codul fiscal le cer expres. <br><small>${esc(d.temei || "")}</small></p>
+      <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px">
+        <label class="camp"><span class="camp-eticheta">Registrul</span><select id="r3-fel" class="camp-input">
+          <option value="nontransfer"${fel === "nontransfer" ? " selected" : ""}>Nontransferuri \u00b7 lit. e)</option>
+          <option value="bunuri_primite"${fel === "bunuri_primite" ? " selected" : ""}>Bunuri primite pentru lucr\u0103ri \u00b7 lit. f)</option>
+        </select></label>
+      </div>
+      <p class="pf-intro">${esc(d.temei_completitudine || "")}</p>
+      ${tabel}
+      ${exceptii}
+      <h3 style="margin-top:22px">\u00censcrie un r\u00e2nd</h3>
+      <p class="pf-intro">Num\u0103rul de ordine se d\u0103 singur. C\u00e2mpurile cerute de norm\u0103 nu se pot l\u0103sa goale \u2014 iar dac\u0103 lipse\u0219te unul, \u00ee\u021bi spunem <b>care</b> \u0219i <b>sub ce norm\u0103</b>.</p>
+      <div id="r3-eroare"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;max-width:960px">
+        ${cerute.map((c) => camp(c, tipul(c))).join("")}
+      </div>
+      <details style="margin-top:10px;max-width:960px"><summary>Retur dup\u0103 lucr\u0103ri \u0219i documente (se completeaz\u0103 c\u00e2nd bunurile se \u00eentorc)</summary>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:8px">
+          ${RETUR.concat(["documente", "data_documente"]).map((c) => camp(c, tipul(c))).join("")}
+        </div></details>
+      <div style="margin-top:12px"><button class="buton-primar" id="r3-adauga">\u00censcrie \u00een registru</button></div>`;
+
+    corp.querySelector("#r3-fel").addEventListener("change", (e) => { fel = e.target.value; deseneaza(); });
+    corp.querySelector("#r3-adauga").addEventListener("click", async () => {
+      const corpJson = {};
+      coloane.forEach((c) => {
+        const el = corp.querySelector(`#r3-${c}`);
+        if (el && el.value !== "") corpJson[c] = el.value;
+      });
+      const zonaEroare = corp.querySelector("#r3-eroare");
+      zonaEroare.innerHTML = "";
+      curataEroriCamp(corp);
+      try {
+        await api.post(`/tenants/${t.id}/registre-art321/${fel}`, corpJson);
+        deseneaza();
+      } catch (e) {
+        // Marcajul pe INPUT, prin helperul comun: la un formular de 13 campuri o lista de erori
+        // iti spune CE lipseste, dar nu UNDE. `eroareCamp` pune conturul rosu si `aria-invalid`.
+        const eris = (e && e.erori_campuri) || [];
+        eris.forEach((x) => { if (x.camp) eroareCamp(corp, `r3-${x.camp}`, x.mesaj || ""); });
+        zonaEroare.innerHTML = `<div class="dec-avert" role="alert">
+          <div class="dec-avert-cap">${esc((e && e.mesaj) || "Nu am înscris rândul.")}</div>
+          <ul>${eris.map((x) => `<li><b>${esc(ETICHETE[x.camp] || x.camp || "")}</b> — ${esc(x.mesaj || "")}</li>`).join("")}</ul>
+        </div>`;
+      }
+    });
   };
   deseneaza();
 }

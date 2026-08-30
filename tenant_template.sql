@@ -2462,3 +2462,54 @@ ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS inreg_art31
 -- OMFP 1802/2014), editabil de contabil; contabilizarea grupeaza nota pe (cont_venit, cota).
 -- Nullable: linie fara cont -> contabilizarea decide (cont_venit_implicit / legacy 707). Mirror in core/migrare_cont_venit_linie.py.
 ALTER TABLE TENANT_PLACEHOLDER.factura_linii ADD COLUMN IF NOT EXISTS cont_venit text;
+
+-- [14-1-2] Registrul-inventar, al doilea registru obligatoriu (Legea 82/1991 art. 20).
+-- Continutul: OMFP 2634/2015 Anexa 2 — sase coloane. `valoare_inventar` e NOT NULL si nu are
+-- default: completata implicit din `valoare_contabila`, ar produce un registru fara nicio
+-- diferenta, adica o inventariere perfecta care nu s-a facut. `cauza` e nullable fiindca norma o
+-- cere CONDITIONAT (numai cand exista diferenta) — regula sta in core/registru_inventar.py.
+-- Mirror in core/migrare_registru_inventar.py, care e sursa de adevar.
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.registru_inventar (
+    id                 BIGSERIAL PRIMARY KEY,
+    exercitiu          integer     NOT NULL,
+    momentul           text        NOT NULL
+                       CHECK (momentul IN ('inceput_activitate', 'sfarsit_exercitiu',
+                                           'incetare_activitate')),
+    nr_curent          integer     NOT NULL,
+    cont               text        NOT NULL,
+    element            text        NOT NULL,
+    gestiune           text,
+    valoare_contabila  numeric(18,2) NOT NULL,
+    valoare_inventar   numeric(18,2) NOT NULL,
+    cauza              text,
+    data_inventariere  date,
+    document           text,
+    creat_la           timestamptz NOT NULL DEFAULT now(),
+    CONSTRAINT registru_inventar_ordine_unica UNIQUE (exercitiu, momentul, nr_curent)
+);
+
+-- [art.321] Cele DOUA registre cerute de art. 321 alin. (4) CF prin normele lui
+-- (HG 1/2016, lit. e) registrul nontransferurilor si lit. f) registrul bunurilor primite).
+-- Un singur tabel cu discriminator: cele doua liste de campuri din norma sunt OGLINZI.
+-- Mirror in core/migrare_registre_art321.py, care e sursa de adevar.
+CREATE TABLE IF NOT EXISTS TENANT_PLACEHOLDER.registre_art321 (
+    id                     BIGSERIAL PRIMARY KEY,
+    fel                    text        NOT NULL
+                           CHECK (fel IN ('nontransfer', 'bunuri_primite')),
+    nr_ordine              integer     NOT NULL,
+    partener_denumire      text        NOT NULL,
+    partener_adresa        text        NOT NULL,
+    data_transport         date        NOT NULL,
+    descriere              text        NOT NULL,
+    cantitate              numeric(18,3) NOT NULL,
+    valoare                numeric(18,2),
+    data_retur             date,
+    descriere_returnate    text,
+    cantitate_returnate    numeric(18,3),
+    descriere_nereturnate  text,
+    cantitate_nereturnate  numeric(18,3),
+    documente              text,
+    data_documente         date,
+    creat_la               timestamptz NOT NULL DEFAULT now(),
+    CONSTRAINT registre_art321_ordine_unica UNIQUE (fel, nr_ordine)
+);
