@@ -26,6 +26,9 @@ _BASELINE = {
     "fa-registre321",
     # [lista 3, 30.08.2026] registrul-inventar (14-1-2), al treilea registru obligatoriu.
     "fa-reginventar",
+    # [lista 3, 30.08.2026] registrul de evidenta fiscala — DOUA registre sub un ecran: art. 19
+    # (profit, derivat din D101) si art. 68 (persoane fizice, inscris).
+    "fa-regfiscal",
     "fa-import", "fa-jurnal",
     "fa-magazin", "fa-mijloace", "fa-operatiuni", "fa-produse", "fa-rapoarte", "fa-raportz", "fa-registratura",
     "fa-rip", "fa-salariati", "fa-solicitari", "fa-stocuri", "fa-verificari",

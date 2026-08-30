@@ -5583,6 +5583,60 @@ def cabinet_balanta_date(tenant_id: int, an: int, luna: int, ctx=Depends(cere_ca
             "inchidere": documente_api.inchidere_balanta(randuri)}
 
 
+@app.get("/tenants/{tenant_id}/registru-evidenta-fiscala")
+def registru_fiscal_citeste(tenant_id: int, an: int, varianta: str = "profit",
+                            totalizare: str = "an", ctx=Depends(cere_cabinet)):
+    """[lista 3, 30.08.2026] Registrul de evidență fiscală. Sunt DOUĂ, nu unul.
+
+    `profit` — CF art. 19 alin. (7) + HG 1/2016 pct. 8, derivat din aceleași câmpuri din care iese
+    D101. `venituri_pf` — CF art. 68 alin. (8)-(9) + OMFP 3254/2017, ținut pe fiecare sursă din
+    fiecare categorie de venit.
+    """
+    from core import registru_evidenta_fiscala as _ref
+    if varianta not in _ref.VARIANTE:
+        raise HTTPException(404, "variantă necunoscută: %r" % varianta)
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+        if varianta == "venituri_pf":
+            return _ref.registru_pf(conn, schema, an)
+        try:
+            return _ref.registru_profit(conn, schema, an, totalizare)
+        except _ref.RegistruNeconstruibil:
+            # 409, nu 400: cererea e legitimă, iar refuzul nu e al ei — e al nostru, și poartă de ce.
+            # Corpul e o AFIRMAȚIE tipată, nu un dicționar de proză (decizia din 21.08): e o
+            # afirmație despre datele firmei, iar `verificare_rupta` o ține să nu fie citită ca un
+            # verdict gri permanent — „nu se poate pe trimestru", nu „nu există pe trimestru".
+            raise HTTPException(409, _ref.refuz_totalizare(an, totalizare))
+
+
+@app.post("/tenants/{tenant_id}/registru-evidenta-fiscala")
+def registru_fiscal_adauga(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
+    """Înscrie un rând în varianta PERSOANE FIZICE — singura care se completează.
+
+    Varianta pe profit se derivă din D101 și n-are ce primi: un `POST` pe ea ar însemna o a doua
+    sursă de adevăr despre același an.
+    """
+    from core import registru_evidenta_fiscala as _ref
+    an = corp.get("an")
+    if not an:
+        raise HTTPException(400, {
+            "mesaj": "Nu am înscris rândul: lipsește anul.",
+            "erori_campuri": [{"camp": "an", "mesaj": "cerut, nu poate lipsi"}]})
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+        try:
+            return _ref.adauga_pf(conn, schema, int(an), corp)
+        except _ref.InregistrareIncompletaPF as e:
+            raise HTTPException(400, {
+                "mesaj": "Nu am înscris rândul: registrul cere un câmp pe care nu l-am primit.",
+                "erori_campuri": [{"camp": e.camp, "mesaj": str(e)}],
+                "temei": e.temei})
+
+
 @app.get("/tenants/{tenant_id}/registru-inventar")
 def registru_inventar_citeste(tenant_id: int, exercitiu: int,
                               momentul: str = "sfarsit_exercitiu",

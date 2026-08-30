@@ -785,6 +785,106 @@ def test_decizie_ceruta_nu_ramane_intr_o_restanta_inchisa():
         "`**Decizie cerută [atunci].**`): %s" % rele)
 
 
+# [30.08.2026, regula lui Costin dupa a doua instanta] Formele in care o cifra din antet e un NUME,
+# nu o numaratoare: identificatori de lista/faza/etapa/restanta, trimiteri la act, si date. Se ALBESC
+# inainte de a cauta cifre, fiindca „lista 3" nu spune CATE, spune CARE.
+_NUMERE_CARE_SUNT_NUME = (
+    r"lista\s+\d+", r"listele\s+\d+(\s*,\s*\d+)*(\s+(si|și)\s+\d+)?", r"faza\s+\d+",
+    r"\bE\d+\b", r"\bR\d+\b", r"\bD\d+\b", r"\bS\d+\b", r"\b\d+[a-d]\b",
+    r"\bart\.\s*\d+", r"\bpct\.\s*\d+", r"\balin\.\s*\(?\d+\)?", r"\bnr\.\s*\d+",
+    r"\b\d{2}\.\d{2}(\.\d{4})?\b", r"\b\d{4}-\d{2}-\d{2}\b", r"\b(19|20)\d{2}\b",
+    r"verdictul\s+\d+[a-z]?", r"§\s*\d+",
+    r"`[0-9a-f]{7,40}`",                                    # amprenta de commit
+    r"interdic(t|ț)iile?\s+\d+(\s*,\s*\d+)*(\s+(si|și)\s+\d+)?",   # interdictiile numite, nu numarate
+    r"\*\*\d+(\s*,\s*\d+)*(\s+(si|și)\s+\d+)?\*\*(?=\s*—)",        # aceeasi enumerare, ingrosata
+)
+
+# Campurile la care se aplica: EXACT cele pe care le citeste `scripts/raport_b.py`. Ingustarea nu e
+# o slabire, e regula citita cu atentie — ea vorbeste despre proza care reafirma un numar DERIVAT.
+# Un camp de istoric, datat si etichetat ca atare („istoricul intrebarii, pastrat"), nu reafirma
+# nimic despre azi: citeaza ce era adevarat atunci. Iar un prag decis o data (`prag 2`) nu se
+# deriva din nimic, deci n-are cum sa ramana in urma.
+_CAMPURI_CU_CIFRE_INTERZISE = tuple(c for c in ANTET_CAMPURI if c != "ultima actualizare")
+
+
+def test_antetul_nu_scrie_nicio_cifra_de_NUMARARE():
+    """[30.08.2026] *Orice proza care reafirma un numar derivat ori se genereaza, ori se sterge.*
+    In antet raspunsul e **se sterge**: `scripts/raport_b.py` recalculeaza fiecare numar la fiecare
+    raport, deci o cifra scrisa aici nu poate decat sa ramana in urma.
+
+    **A doua instanta in aceeasi zi.** Prima: antetele de traseu din `TRASEE_VERIFICARI.md` —
+    **5 din 21 gresite**, gardate acum prin generare (`test_trasee.test_antetul_fiecarui_traseu...`).
+    A doua: chiar campul `ce lipsește` de aici, care spunea ca lista 5 **mai are o pozitie** dupa ce
+    se golise, si numea lista 3 cu un numar de acum o saptamana. Plafonul de 300 de caractere pe
+    `pasul curent` disciplina ACUMULAREA, dar nu si CIFRA — un numar gresit incape in 300 de
+    caractere.
+
+    CE FACE: albeste formele in care o cifra e un NUME (`lista 3`, `faza 1`, `R105`, `art. 19`,
+    `1a`, date, ani), apoi cere ca ce ramane sa n-aiba nicio cifra.
+
+    CE NU FACE, declarat: nu confrunta cifra cu derivatorul, deci nu spune daca era **adevarata** —
+    spune ca **n-are ce cauta aici**. E mai tare decat confruntarea: o cifra corecta azi devine
+    gresita maine fara ca nimeni s-o atinga, iar gardul care doar confrunta ar trece-o pana atunci.
+
+    Modul de esec propriu: lista de forme-nume **supraevalueaza deliberat** (albeste si `nr. 12`,
+    care ar putea fi o numaratoare), deci raspunsul e un plafon INFERIOR — pot ramane cifre pe care
+    nu le vede. Directia se scrie, nu se presupune.
+    """
+    text = io.open(CONF, encoding="utf-8").read()
+    m = re.search(r"^%s[ \t]*$(.*?)^---[ \t]*$" % re.escape(CAP_ANTET), text, re.M | re.S)
+    assert m, "antetul de etapa nu se poate izola"
+    campuri = [l for l in m.group(1).splitlines() if l.startswith("- **")]
+    assert len(campuri) >= 5, "anti-vacuu: doar %d campuri de antet gasite" % len(campuri)
+    # anti-vacuu al doilea: daca niciunul dintre campurile pazite nu se gaseste, proba trece degeaba
+    pazite = [l for l in campuri
+              if (re.match(r"- \*\*(.+?)\*\*:", l) or [None, ""])[1] in _CAMPURI_CU_CIFRE_INTERZISE]
+    assert len(pazite) >= 4, (
+        "anti-vacuu: doar %d din campurile pazite s-au gasit in antet — s-au redenumit?" % len(pazite))
+
+    rele = []
+    for linie in campuri:
+        nume = re.match(r"- \*\*(.+?)\*\*:", linie)
+        nume = nume.group(1) if nume else "?"
+        if nume not in _CAMPURI_CU_CIFRE_INTERZISE:
+            continue          # vezi `_CAMPURI_CU_CIFRE_INTERZISE`: regula e despre numere DERIVATE
+        corp = linie
+        for forma in _NUMERE_CARE_SUNT_NUME:
+            corp = re.sub(forma, " ", corp, flags=re.I)
+        cifre = re.findall(r"\d+", corp)
+        if cifre:
+            rele.append("  `%s`: %s  ->  %s" % (nume, ", ".join(cifre), corp.strip()[:110]))
+    assert not rele, (
+        "cifre scrise de mana in antetul de etapa:\n" + "\n".join(rele)
+        + "\n\nO cifra din antet nu poate decat sa ramana in urma: derivatorul o recalculeaza la "
+        "fiecare raport, iar aici nimeni n-o reciteste. Scoate-o si las-o derivata. Daca e un NUME "
+        "(o lista, o faza, o restanta, un articol), adauga forma in `_NUMERE_CARE_SUNT_NUME`.")
+
+
+def test_calibrare_gardul_de_cifre_VEDE_o_numaratoare():
+    """CALIBRARE in ambele directii (METODA §22), pe text SINTETIC — nu pe antetul real, a carui
+    curatenie de azi n-ar dovedi ca detectorul vede ceva, si care oricum se schimba maine."""
+    def _cifre(linie):
+        corp = linie
+        for forma in _NUMERE_CARE_SUNT_NUME:
+            corp = re.sub(forma, " ", corp, flags=re.I)
+        return re.findall(r"\d+", corp)
+
+    assert _cifre("- **ce lipsește**: lista 3 e plină (8 artefacte)") == ["8"], \
+        "nu vede numaratoarea de langa un nume de lista"
+    assert _cifre("- **pasul curent**: au rămas 12 restanțe deschise") == ["12"], \
+        "nu vede o numaratoare simpla"
+    assert not _cifre("- **ce lipsește**: faza 1 are pașii 1a, 1b, 1c, 1d; blochează R5 și R6"), \
+        "da fals-pozitiv pe identificatori — atunci antetul n-ar mai putea numi nimic"
+    assert not _cifre("- **etapa**: E1 — setul complet, art. 19 alin. (7), pct. 8, la 30.08.2026"), \
+        "da fals-pozitiv pe trimiteri la act si pe date"
+    assert not _cifre("- **avertisment la cifre**: rămân **7, 8, 12** — prin regulă, nu din uitare"), \
+        "da fals-pozitiv pe interdictiile NUMITE intr-o enumerare"
+    assert not _cifre("- **cel mai vechi commit**: `ffbcb74` descrie un cod care s-a mișcat"), \
+        "da fals-pozitiv pe o amprenta de commit"
+    assert _cifre("- **ce lipsește**: au rămas 3 artefacte și 12 restanțe"), \
+        "nu mai vede numaratoarea — albirea a devenit prea lata"
+
+
 def test_pasul_curent_nu_devine_naratiune():
     """Plafon MECANIC pe `pasul curent`. Nu citește proza: numără caractere.
 

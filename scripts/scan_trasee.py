@@ -173,8 +173,13 @@ TRASEE = [
     ("T30", "Operațiunile în valută",
      [r"^/tenants/\{\}/(decontare-valuta|reevaluare-valuta)"], []),
     ("T31", "Completările manuale la o declarație (D300, D301)",
-     [r"^/tenants/\{\}/d300-manual", r"^/tenants/\{\}/d301-operatiuni"],
-     ["d300_manual", "d301_operatiuni"]),
+     [r"^/tenants/\{\}/d300-manual", r"^/tenants/\{\}/d301-operatiuni",
+      # [lista 3, 30.08.2026] Registrul de evidenta fiscala. NU e la T05 cu cele trei registre
+      # obligatorii ale art. 20: acelea sunt CONTABILE (Legea 82/1991), asta e FISCAL — exista ca
+      # sa justifice o declaratie, iar varianta pe profit iese chiar din campurile D101. Casa lui
+      # e langa completarile manuale ale declaratiilor, nu langa jurnal si Cartea mare.
+      r"^/tenants/\{\}/registru-evidenta-fiscala"],
+     ["d300_manual", "d301_operatiuni", "registru_fiscal_pf"]),
     ("T32", "Registrul de încasări și plăți (partida simplă)",
      [r"^/tenants/\{\}/rip/(?!inventar)"], ["rip_operatiuni"]),
     ("T33", "Exportul contabil (SAGA, WinMentor)",
@@ -867,6 +872,30 @@ def scrie_firme():
     json.dump({"firme": f}, open(CALE_FIRME, "w", encoding="utf-8"),
               ensure_ascii=False, indent=1, sort_keys=True)
     print("scris %s: %d firme" % (CALE_FIRME, len(f)))
+
+
+def antet_traseu(tid, d=None, per=None):
+    """Randul de antet al unui traseu din `TRASEE_VERIFICARI.md`, GENERAT.
+
+    A existat ca proza scrisa de mana, si a imbatranit: masurat pe 30.08.2026, **5 din 21** de
+    antete scrise dadeau alte cifre decat instrumentul, iar al saselea (T05) fusese prins cu o zi
+    inainte. Niciuna dintre ele n-a tipat — nimic nu le compara cu nimic.
+
+    Regula, data de Costin dupa a doua instanta: *orice proza care reafirma un numar derivat ori se
+    genereaza, ori se sterge.* Aici se genereaza, fiindca randul e util: spune dintr-o privire cat
+    de mare e traseul si pe cate firme se poate exercita. `?` la firme nu e zero — inseamna ca
+    traseul n-are tabela proprie, deci numarul nu se poate sti.
+    """
+    if d is None:
+        d = construieste(True)
+    if per is None:
+        per, _o, _dub, _n = acoperire(citeste_rute())
+    t = next(x for x in d["trasee"] if x["id"] == tid)
+    p = per[tid]
+    firme = t.get("firme_nr")
+    return "*clasa %s · %d rute · %d schimba date · %s firme il pot exercita azi*" % (
+        t["clasa"], len(p), sum(1 for x in p if x["metoda"] != "GET"),
+        "?" if firme is None else firme)
 
 
 def main():

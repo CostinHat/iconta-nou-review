@@ -408,6 +408,9 @@ function meniuFirma(corp, nav, t) {
     { cheie: "marja", regim: "dubla", titlu: "Jurnal regim marj\u0103", desc: "Art. 312 second-hand \u00b7 art. 311 turism",
       ...CULORI_CARD.piersica,
       icon: '<path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/>', activ: true },
+    { cheie: "regfiscal", regim: "ambele", titlu: "Registrul de eviden\u021b\u0103 fiscal\u0103", desc: "Profit \u00b7 art. 19 \u00b7 persoane fizice \u00b7 art. 68",
+      ...CULORI_CARD.albastru,
+      icon: '<path d="M4 3h16v18H4z"/><path d="M8 8h8M8 12h8M8 16h4"/>', activ: true },
     { cheie: "reginventar", regim: "dubla", titlu: "Registrul-inventar", desc: "Cod 14-1-2 \u00b7 rezultatele inventarierii",
       ...CULORI_CARD.ardezie,
       icon: '<path d="M9 2h6v4H9z"/><rect x="4" y="6" width="16" height="16" rx="2"/><path d="M8 12h8M8 16h5"/>', activ: true },
@@ -605,6 +608,8 @@ function meniuFirma(corp, nav, t) {
   if (bFisa) bFisa.addEventListener("click", () => { nav.deschide("Cartea mare", (c2) => ecranFisaCont(c2, nav, t)); });
   const bMarja = corp.querySelector("#fa-marja");     // [lista 3] jurnalul special de regim marja
   if (bMarja) bMarja.addEventListener("click", () => { nav.deschide("Jurnal regim marjă", (c2) => ecranJurnalMarja(c2, nav, t)); });
+  const bRegFisc = corp.querySelector("#fa-regfiscal");  // [lista 3] registrul de evidenta fiscala
+  if (bRegFisc) bRegFisc.addEventListener("click", () => { nav.deschide("Registrul de evidență fiscală", (c2) => ecranRegistruFiscal(c2, nav, t), { lat: "larg" }); });
   const bRegInv = corp.querySelector("#fa-reginventar");  // [lista 3] registrul-inventar 14-1-2
   if (bRegInv) bRegInv.addEventListener("click", () => { nav.deschide("Registrul-inventar", (c2) => ecranRegistruInventar(c2, nav, t), { lat: "larg" }); });
   const bReg321 = corp.querySelector("#fa-registre321");  // [lista 3] cele doua registre din normele art. 321
@@ -2118,6 +2123,156 @@ async function ecranJurnalMarja(corp, nav, t) {
     corp.querySelector("#jm-tip").addEventListener("change", (e) => { tip = e.target.value; deseneaza(); });
     corp.querySelector("#jm-luna").addEventListener("change", (e) => { luna = e.target.value || luna; deseneaza(); });
   };
+  deseneaza();
+}
+
+
+// [lista 3, 30.08.2026] REGISTRUL DE EVIDENTA FISCALA. Sunt DOUA, nu unul — chiar greseala de la
+// care a pornit constructia: „nu se poate face" a fost scris dupa ce se citise doar articolul.
+//
+// PROFIT (art. 19 alin. (7) + HG 1/2016 pct. 8): se DERIVA, din aceleasi campuri din care iese D101.
+// Nu se completeaza de mana, si nu se poate: un al doilea calcul al aceluiasi an ar putea sa nu
+// coincida cu declaratia pe care registrul exista tocmai ca s-o justifice.
+//
+// PERSOANE FIZICE (art. 68 + OMFP 3254/2017): se COMPLETEAZA, pe fiecare sursa din fiecare
+// categorie. Cheltuielile se inscriu doar cand venitul net se stabileste in sistem real — la norma
+// de venit norma spune expres ca nu, iar ecranul ascunde campul in loc sa-l lase sa induca in eroare.
+async function ecranRegistruFiscal(corp, nav, t) {
+  const azi = new Date();
+  let an = azi.getFullYear() - 1;
+  let varianta = "profit";
+
+  const deseneaza = async () => {
+    corp.innerHTML = `<p class="ecran-nota">Se \u00eencarc\u0103...</p>`;
+    let d = null, eroare = null;
+    try {
+      d = await api.get(`/tenants/${t.id}/registru-evidenta-fiscala?an=${an}&varianta=${varianta}`);
+    } catch (e) { eroare = e; }
+
+    const selector = `
+      <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px">
+        <label class="camp"><span class="camp-eticheta">Varianta</span><select id="rf-var" class="camp-input">
+          <option value="profit"${varianta === "profit" ? " selected" : ""}>Impozit pe profit \u00b7 art. 19 alin. (7)</option>
+          <option value="venituri_pf"${varianta === "venituri_pf" ? " selected" : ""}>Persoane fizice \u00b7 art. 68 alin. (8)-(9)</option>
+        </select></label>
+        <label class="camp"><span class="camp-eticheta">Anul</span><input type="number" id="rf-an" class="camp-input" value="${an}" style="max-width:120px"></label>
+      </div>`;
+
+    if (eroare) {
+      corp.innerHTML = `<h2 class="pf-titlu">Registrul de eviden\u021b\u0103 fiscal\u0103</h2>${selector}
+        <div class="dec-avert" role="alert"><div class="dec-avert-cap">Nu am putut \u00eentocmi registrul pe ${esc(String(an))}.</div>
+        <p>${esc((eroare && (eroare.mesaj || eroare.message)) || "")}</p></div>`;
+      legaSelector();
+      return;
+    }
+
+    let corpHtml = "";
+    if (varianta === "profit") {
+      const s = (d.corp && d.corp.sectiuni) || [];
+      corpHtml = `<div style="overflow-x:auto"><table class="fd-tabel">
+        <thead><tr><th>Categoria cerut\u0103 de norm\u0103</th><th>Temei</th><th>R\u00e2nduri D101</th><th class="fd-td-num">Total</th></tr></thead>
+        <tbody>${s.map((x) => `<tr>
+          <td>${esc(x.eticheta)}</td><td><small>${esc(x.temei)}</small></td>
+          <td><small>${x.randuri.map((r) => `${esc(r.camp)} ${bani(r.valoare)}`).join(" \u00b7 ")}</small></td>
+          <td class="fd-td-num">${bani(x.total)} lei</td></tr>`).join("")}</tbody></table></div>
+        <p class="pf-intro" style="margin-top:10px">Cifrele sunt <b>cele din D101</b> pe acela\u0219i an, nu un al doilea calcul. Registrul exist\u0103 ca s\u0103 justifice declara\u021bia, deci nu are voie s-o contrazic\u0103.</p>`;
+    } else {
+      const s = d.sectiuni || [];
+      corpHtml = !s.length
+        ? `<div class="stare-goala"><b>Niciun r\u00e2nd \u00eenscris.</b> Registrul se \u021bine pe fiecare surs\u0103 din fiecare categorie de venit. Pe persoan\u0103 fizic\u0103 nu exist\u0103 contabilitate din care s\u0103 ias\u0103 cifrele \u2014 de aceea se \u00eenscriu aici.</div>`
+        : s.map((x) => `<h3 style="margin-top:18px">${esc(x.categorie_eticheta || ("categorie " + x.categorie))} \u2014 ${esc(x.sursa)}</h3>
+            <div style="overflow-x:auto"><table class="fd-tabel">
+              <thead><tr><th>Nr. crt.</th><th class="fd-td-num">Venit brut</th><th class="fd-td-num">Cheltuieli deductibile</th><th class="fd-td-num">Venit net</th><th>Rectificare</th></tr></thead>
+              <tbody>${x.randuri.map((r) => `<tr><td>${esc(String(r.nr_crt))}</td>
+                <td class="fd-td-num">${bani(r.venit_brut)} lei</td>
+                <td class="fd-td-num">${bani(r.cheltuieli_deductibile)} lei</td>
+                <td class="fd-td-num">${bani(r.venit_net)} lei</td>
+                <td>${r.rectificare ? esc(r.motiv_rectificare || "da") : "\u2014"}</td></tr>`).join("")}</tbody>
+            </table></div>
+            <div style="max-width:560px"><div class="fd-totaluri" style="margin-top:8px">
+              <div class="fd-tot-rand"><span>Total venit brut</span><span>${bani(x.total_venit_brut)} lei</span></div>
+              <div class="fd-tot-rand"><span>Total cheltuieli deductibile</span><span>${bani(x.total_cheltuieli)} lei</span></div>
+              <div class="fd-tot-rand fd-tot-final"><span>${x.venit_net < 0 ? "Pierdere net\u0103 anual\u0103" : "Venit net anual"}</span><span>${bani(Math.abs(x.venit_net))} lei</span></div>
+            </div></div>`).join("");
+      corpHtml += formularPf(d);
+    }
+
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Registrul de eviden\u021b\u0103 fiscal\u0103</h2>
+      <p class="pf-intro">Sunt <b>dou\u0103</b> registre distincte, pentru doi contribuabili diferi\u021bi.<br><small>${esc(d.temei || "")}</small></p>
+      ${selector}
+      <p class="pf-intro">${esc(d.temei_completitudine || "")}</p>
+      ${d.model_elidat ? (() => { const c = d.model_elidat; return `<p class="pf-intro"><small><b>Ce nu s-a putut cita:</b> din <b>${esc(c.act)}</b>, ${esc(c.unde)} — ${esc(c.ce_lipseste)} (${esc(c.cum_apare)}), căutată în ${esc(String((c.fisiere_verificate || []).length))} fișiere, ${esc(String(c.aparitii_in_fisier))} apariție. Conținutul de mai jos vine din ${esc(c.de_unde_vine_continutul)}.</small></p>`; })() : ""}
+      ${corpHtml}`;
+    legaSelector();
+    if (varianta === "venituri_pf") legaFormular(d);
+  };
+
+  const formularPf = (d) => `
+      <h3 style="margin-top:22px">\u00censcrie un r\u00e2nd</h3>
+      <div id="rf-eroare"></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;max-width:960px">
+        <label class="camp"><span class="camp-eticheta">Categoria de venit</span><select id="rf-categorie" class="camp-input">
+          ${Object.keys(d.categorii || {}).map((k) => `<option value="${esc(k)}">${esc(d.categorii[k])}</option>`).join("")}
+        </select></label>
+        <label class="camp"><span class="camp-eticheta">Sursa de venit</span><input type="text" id="rf-sursa_venit" class="camp-input"></label>
+        <label class="camp"><span class="camp-eticheta">Venitul net se stabile\u0219te</span><select id="rf-mod_venit_net" class="camp-input">
+          ${Object.keys(d.moduri_venit_net || {}).map((k) => `<option value="${esc(k)}">${esc(d.moduri_venit_net[k])}</option>`).join("")}
+        </select></label>
+        <label class="camp"><span class="camp-eticheta">Venit brut</span><input type="number" step="0.01" id="rf-venit_brut" class="camp-input"></label>
+        <label class="camp" id="rf-ch-camp"><span class="camp-eticheta">Cheltuieli deductibile</span><input type="number" step="0.01" id="rf-cheltuieli_deductibile" class="camp-input"></label>
+      </div>
+      <p class="pf-intro" id="rf-nota-ch"></p>
+      <div style="margin-top:12px"><button class="buton-primar" id="rf-adauga">\u00censcrie \u00een registru</button></div>`;
+
+  const legaSelector = () => {
+    const v = corp.querySelector("#rf-var"), a = corp.querySelector("#rf-an");
+    if (v) v.addEventListener("change", (e) => { varianta = e.target.value; deseneaza(); });
+    if (a) a.addEventListener("change", (e) => { an = Number(e.target.value) || an; deseneaza(); });
+  };
+
+  const legaFormular = () => {
+    const mod = corp.querySelector("#rf-mod_venit_net");
+    const cat = corp.querySelector("#rf-categorie");
+    if (!mod) return;
+    // Regula din art. 1: la NORMA DE VENIT nu se inscriu cheltuieli. Campul se ASCUNDE, nu se lasa
+    // gol si refuzat dupa apasare — un camp care se poate completa si apoi e respins invata omul ca
+    // aplicatia e capricioasa, cand de fapt norma e clara.
+    const potriveste = () => {
+      const norma = mod.value === "3";
+      const pi = cat.value === "3";
+      corp.querySelector("#rf-ch-camp").style.display = norma ? "none" : "";
+      corp.querySelector("#rf-nota-ch").innerHTML = norma
+        ? "La <b>norma de venit</b> nu se \u00eenscriu cheltuieli \u00een registru (art. 1 alin. (2))."
+        : (pi ? "La drepturi de proprietate intelectual\u0103, cheltuielile sunt <b>op\u021bionale</b> (art. 1 alin. (3))."
+              : "\u00cen sistem real, cheltuielile se \u00eenscriu. <b>Zero e un r\u0103spuns valid</b> \u2014 gol nu e.");
+    };
+    mod.addEventListener("change", potriveste);
+    cat.addEventListener("change", potriveste);
+    potriveste();
+
+    corp.querySelector("#rf-adauga").addEventListener("click", async () => {
+      const corpJson = { an: an, categorie: Number(cat.value), mod_venit_net: Number(mod.value),
+                         sursa_venit: corp.querySelector("#rf-sursa_venit").value,
+                         venit_brut: corp.querySelector("#rf-venit_brut").value };
+      const ch = corp.querySelector("#rf-cheltuieli_deductibile");
+      if (mod.value !== "3" && ch.value !== "") corpJson.cheltuieli_deductibile = ch.value;
+      const zona = corp.querySelector("#rf-eroare");
+      zona.innerHTML = "";
+      curataEroriCamp(corp);
+      try {
+        await api.post(`/tenants/${t.id}/registru-evidenta-fiscala`, corpJson);
+        deseneaza();
+      } catch (e) {
+        const eris = (e && e.erori_campuri) || [];
+        eris.forEach((x) => { if (x.camp) eroareCamp(corp, `rf-${x.camp}`, x.mesaj || ""); });
+        zona.innerHTML = `<div class="dec-avert" role="alert">
+          <div class="dec-avert-cap">${esc((e && e.mesaj) || "Nu am \u00eenscris r\u00e2ndul.")}</div>
+          <ul>${eris.map((x) => `<li>${esc(x.mesaj || "")}</li>`).join("")}</ul></div>`;
+      }
+    });
+  };
+
   deseneaza();
 }
 

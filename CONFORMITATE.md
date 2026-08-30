@@ -40,9 +40,9 @@ face doar imposibilă acumularea unei narațiuni care să îmbătrânească. *(D
 după a doua oară: „e gardul care nu citește proză și totuși o disciplinează".)*
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **lista 5 COMPLETĂ** · **lista 3: 3 deschise** — trei reparate, una falsă, notele explicative ieșite ca imposibilitate temporară gardată (30.08.2026). *(Cifrele se derivă.)*
+- **pasul curent**: **lista 5 COMPLETĂ**. Pe lista 3, premisa ei a căzut: «datele există, lipsește documentul» s-a dovedit falsă. Rândurile rămase nu sunt transport până nu se dovedesc. *(Cifrele se derivă — vezi `scripts/raport_b.py`.)*
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
-- **ce lipsește**: faza 1 nu mai are **pași** — 1a, 1b, 1c și 1d sunt făcute —, dar **criteriul ei de terminare NU e îndeplinit**: **lista 3** e plină (8 artefacte), iar **lista 5** mai are o poziție, D112 (**R105**). Lista 4 e goală din 30.08. Mărimea listei 5 **se știe** din 30.08 — clasa R97 e măsurată, iar reparația a golit-o pe toată în afară de D112; propoziția de dinainte, *„nu se poate ști până nu se măsoară R97"*, era adevărată azi-dimineață și e falsă de la prânz. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
+- **ce lipsește**: faza 1 nu mai are **pași** — 1a, 1b, 1c și 1d sunt făcute —, dar **criteriul ei de terminare nu e îndeplinit**: lista 3 nu e goală. *(Câte, și care, se derivă din corpul registrului — nu se scriu aici. Câmpul ăsta a purtat cifre scrise de mână și au îmbătrânit: spunea că lista 5 mai are o poziție după ce se golise, și numea lista 3 cu un număr de acum o săptămână.)* Ce blochează cel mai mult rămâne **încrederea în corpusul pe care stă tot 1a** — vezi restanțele de sursă din corpul registrului.
 - **decizii care blochează**: **niciuna.** *(Stocul istoric nu mai blochează: s-a executat pe 29.08, după ce Costin a spus că nu există clienți reali — starea restanței se citește din registru, nu de aici.)* *(Ultima — ce face aplicația cu o factură EMISĂ care intră prin import — a primit răspuns pe 29.08.2026, varianta (iii), și e construită; starea restanței se citește din registru, nu de aici.)* *(A doua decizie care bloca — TVA la încasare pe factura primită — a primit răspuns pe 29.08.2026, varianta (ii), și e construită; restanța ei e închisă, iar starea se citește din registru, nu de aici.)*
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 29.08.2026: garda cere ca fiecare restanță NUMITĂ acolo să fie DESCHISĂ, iar textul le numea pe R54, R53, R58 — dintre care două s-au închis azi. A doua oară când istoricul iese din câmp din același motiv; prima a fost R33, pe 28.08)*: Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
@@ -85,7 +85,7 @@ prins o a doua instanță, mai mică, a aceleiași clase: textul de ajutor scria
 | **2.1** | **Interdicția 2** — 3 apeluri fără dată, **o cauză unică**: defaultul `la_data=None` din `common.cota` | cauza e o linie; scos defaultul, interdicția devine imposibilă prin construcție. Nu concurează cu nimic |
 | **2.2** | **Registrul-inventar** (14-1-2) — ~~nu există producător pentru partidă dublă~~ **REPARAT 30.08.2026** | absență: n-are instanțe de ordonat |
 | **2.3** | **Cartea mare** (14-1-3) — motorul există (`core/motor.py:32`), zero consumatori | absență, cu motorul deja scris |
-| **2.4** | **Registrul de evidență fiscală** (CF art. 19 / 68) — nu există | absență |
+| **2.4** | **Registrul de evidență fiscală** (CF art. 19 / 68) — ~~nu există~~ **REPARAT 30.08.2026, ca DOUĂ registre** | absență |
 | **2.5** | **Evidența TVA ca artefact** (CF art. 321) | ~~absență **simplă**: datele există, lipsește doar documentul~~ — **AFIRMAȚIE DOVEDITĂ FALSĂ, 30.08.2026.** Alin. (4) trimite la norme, iar normele cer **două registre nominalizate** (HG 1/2016, lit. e și f). Pentru **nontransferuri** substanța NU există în date: e o mișcare de bunuri **fără vânzare**, deci nu se derivă din facturi, iar `etransport_trimiteri` ține trimiterea (UIT, XML), nu bunurile și partenerul. Nu lipsea documentul peste o substanță existentă — **lipsea substanța**. Construite cu tabel propriu. |
 | **2.6** | **Jurnalul regim marjă** — producător DA, ecran NU | absență de randare, cu producătorul scris; vezi Q1 pentru de ce nu e o absență *declarată* |
 
@@ -5171,11 +5171,43 @@ rute `s1005-valideaza`/`s1003-valideaza` — deci registrul afirma la un capăt 
 **Restul listei, în același format** (rândul de jurnal-marjă din tabelul vechi a fost absorbit în
 tabelul de sus, unde e acum REPARAT):
 
+### PREMISA LISTEI 3 A CĂZUT — și asta e mai mare decât oricare rând al ei
+
+*(30.08.2026, scris la cererea lui Costin: **„scrie explicit că premisa listei 3, nu doar un rând al
+ei, a fost falsă"**.)*
+
+Lista 3 s-a construit pe o propoziție care nu a fost niciodată verificată, fiindcă părea evidentă:
+**«datele există, lipsește documentul»**. Cu alte cuvinte: substanța e deja în aplicație, iar ce
+rămâne de făcut e **transport** — o rută și un ecran care să ducă la om ceva ce se poate deriva.
+
+**A căzut de două ori în aceeași zi, pe două artefacte fără legătură între ele:**
+
+| artefactul | ce spunea premisa | ce s-a găsit citind norma |
+|---|---|---|
+| **Evidența operațiunilor de TVA** (art. 321) | *„substanța e derivabilă pe fiecare linie, lipsește documentul"* | Un **nontransfer** e o mișcare de bunuri **fără vânzare** — nu există factură din care să iasă. Verificat și în e-Transport: `etransport_trimiteri` ține *trimiterea* (UIT, XML), nu bunurile și partenerul. **Lipsea substanța**, și de-aia registrul are tabel propriu și formular |
+| **Registrul-inventar** (14-1-2) | *„nu există producător"* — adică tot o problemă de construcție peste date existente | Coloana 3 se derivă din balanță; **coloana 4, valoarea de inventar, nu se derivă din nimic** — vine din numărarea faptică, pe baza listelor de inventariere. Un producător care ar fi „derivat" registrul ar fi produs zero diferențe pe toate conturile: o inventariere perfectă care nu s-a făcut |
+
+**De ce contează mai mult decât două rânduri reparate.** O listă de artefacte lipsă e o listă de
+*muncă de făcut*. Dacă premisa ei spune „transport", munca se estimează ca transport — și fiecare
+rând se apucă presupunând că datele sunt acolo. Amândouă instanțele de azi au arătat contrariul, iar
+în amândouă răspunsul a venit **din normă, nu din cod**: normele metodologice cereau o evidență pe
+care aplicația nu o ținea deloc.
+
+**Ce urmează din asta, ca regulă de lucru:** *rândurile rămase nu sunt transport până nu se
+dovedește.* Fiecare pornește de la temeiul legal, se citește articolul **și normele lui**, și abia
+apoi se spune dacă substanța există. „Nu există producător" nu mai înseamnă *un motor de scris peste
+date gata*: poate însemna **o obligație construită de la zero**, cu tabel, cu formular și cu o
+coloană pe care evidența nu o poate ști.
+
+*(Este a doua lecție din aceeași familie într-o zi: METODA §30 spune că un blocaj declarat pe un
+singur articol nu e blocaj până nu i-au fost citite normele. Aceasta îi e perechea în cealaltă
+direcție — o **absență declarată ușoară** nu e ușoară până nu i-au fost citite normele.)*
+
 | artefact | A producător | B rută | C ecran | stare |
 |---|---|---|---|---|
 | **categoria de mărime** (precondiție, pct. 9) | **DA, din 30.08** — `core/categorie_marime.py`, cu pragurile purtând `Temei` (OMFP 1802/2014 pct.9, literele a) și b) modificate de OMFP 4.164/2024) | **DA, din 30.08** — `GET /tenants/{id}/categorie-marime`, în T12 | **DA, din 30.08** — caseta de pe ecranul de bilanț, lângă selectorul care până azi ghicea | **REPARAT ca DERIVARE · R3 rămâne deschisă pentru PROBĂ** — vezi mai jos |
 | **Evidența operațiunilor de TVA** (art. 321) — **cele două registre din normele alin. (4)** | **DA, din 30.08** — `core/registre_art321.py`, cu `Temei` per registru pe HG 1/2016 lit. e) și f); tabel propriu `registre_art321` (migrare aplicată 19/19 firme) | **DA, din 30.08** — `GET` și **`POST`** `/tenants/{id}/registre-art321/{fel}`, în T28 | **DA, din 30.08** — `#fa-registre321`, singurul dintre cele trei cu **înscriere** | **REPARAT.** *Rândul vechi («substanța e derivabilă, lipsește documentul») era **fals**: un nontransfer nu se derivă din nimic. De-aia ecranul are formular, nu doar tabel.* |
-| **Registrul de evidență fiscală** (art. 19 · art. 68) | **NU** — potrivirile găsite sunt false pozitive pe `REF` | — | — | **DESCHIS** |
+| **Registrul de evidență fiscală** — **DOUĂ registre**: art. 19 alin. (7) (profit) și art. 68 alin. (8)-(9) (persoane fizice) | **DA, din 30.08** — `core/registru_evidenta_fiscala.py`, cu temei separat pe fiecare: HG 1/2016 pct. 8 și OMFP 3254/2017. Varianta pe profit se **derivă** din câmpurile D101; cea PF are tabel propriu `registru_fiscal_pf` (migrare 19/19) | **DA, din 30.08** — `GET` și **`POST`** `/tenants/{id}/registru-evidenta-fiscala`, în T31 | **DA, din 30.08** — `#fa-regfiscal`, cu selector între cele două variante | **REPARAT.** *Constatarea care l-a făcut necesar e scrisă în cod, în `core/d212.py:pull()`: «D212 e MANUALĂ pe persoana fizică; firma nu are registru PF». Venitul brut și cheltuielile deductibile se introduceau direct în declarație și nu se păstrau nicăieri.* |
 
 **CATEGORIA DE MĂRIME — ce s-a construit, și ce NU s-a putut proba (30.08.2026).**
 
@@ -5412,7 +5444,7 @@ sus refuză **spunând de ce**, ceea ce e chiar comportamentul cerut.
 | **Bilanț (S1005)** și **CPP (F20/S1003)** | **producătorul există și produce pe date reale** (1065 octeți pe t013), dar are **zero rute** — nu ajunge la om |
 | **Jurnal regim marjă** (art. 312) | **producătorul există, ecranul nu** — absență declarată doar într-un comentariu de cod (`main.py:7061`), care nu e declarație de perimetru |
 | **Evidența operațiunilor de TVA** (art. 321) | **nu există producător ca artefact** — *cauza scrisă la măsurătoare; s-a dovedit greșită pe 30.08: pentru cele două registre din normele alin. (4) lipsea **substanța**, nu documentul. Rămâne aici ca istoric al măsurătorii, nu ca stare — starea e REPARAT în tabelul de mai sus.* |
-| **Registrul de evidență fiscală** (art. 19 · art. 68) | **nu există producător** — zero potriviri |
+| **Registrul de evidență fiscală** (art. 19 · art. 68) | **nu există producător** — zero potriviri. *Cauza măsurată era corectă; starea e REPARAT din 30.08 — dar erau **două** registre, nu unul, iar declararea lui ca blocaj s-a făcut citind articolele fără normele lor. Vezi METODA §30.* |
 | **categoria de mărime** (precondiție, pct. 9) | **nu se calculează** — datele există, derivarea s-a probat pe toate 17 firmele, dar nimeni n-o face și nimic n-o stochează (R3, îngustată) |
 
 #### Lista 4 — ies, dar NU se validează

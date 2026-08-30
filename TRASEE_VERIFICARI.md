@@ -107,7 +107,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T02 — Factura emisă — creare, contabilizare, ieșiri
 
-*clasa MECANIC · 19 rute · 13 schimba date · 12 firme il pot exercita azi*
+*clasa MECANIC · 20 rute · 14 schimba date · 12 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/api/v1/firme/{tenant_id}/facturi`, `/tenants/{tenant_id}/facturi`, `/tenants/{tenant_id}/facturi-recurente`, `/tenants/{tenant_id}/facturi/numerotare`, `/tenants/{tenant_id}/facturi/{factura_id:int}`, `/tenants/{tenant_id}/facturi/{factura_id}/pdf`*
 
@@ -280,7 +280,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T03 — Statul de plată și fluturașul
 
-*clasa MECANIC · 6 rute · 3 schimba date · 2 firme il pot exercita azi*
+*clasa MECANIC · 8 rute · 5 schimba date · 2 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/fluturas/{salariat_id}`, `/tenants/{tenant_id}/stat-plata`, `/tenants/{tenant_id}/stat-plata/emis`*
 
@@ -710,6 +710,8 @@ faptica, pe baza listelor de inventariere.
 
 ## T06 — Importul de e-Factura și transmiterea prin SPV
 
+*clasa MANUAL · 7 rute · 4 schimba date · 0 firme il pot exercita azi*
+
 *clasa MANUAL · 7 rute · 4 schimba date · nicio firma nu-l poate exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/facturi-primite`, `/tenants/{tenant_id}/facturi-primite/{primita_id}/xml`, `/tenants/{tenant_id}/trimiteri-spv`*
@@ -820,6 +822,8 @@ faptica, pe baza listelor de inventariere.
 
 ## T08 — NIR și recepția
 
+*clasa MECANIC · 2 rute · 1 schimba date · 0 firme il pot exercita azi*
+
 *clasa MECANIC · 2 rute · 1 schimba date · nicio firma nu-l poate exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/stocuri/nir`*
@@ -872,6 +876,8 @@ faptica, pe baza listelor de inventariere.
 
 ## T10 — Inventarierea
 
+*clasa MECANIC · 5 rute · 1 schimba date · ? firme il pot exercita azi*
+
 *clasa MECANIC · 5 rute · 1 schimba date · nu se poate sti din date*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/d406-active`, `/tenants/{tenant_id}/d406-stocuri`, `/tenants/{tenant_id}/rip/inventar/{an}`, `/tenants/{tenant_id}/verificare-stocuri`*
@@ -890,7 +896,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T11 — Închiderea lunii
 
-*clasa MECANIC · 6 rute · 4 schimba date · 1 firme il pot exercita azi*
+*clasa MECANIC · 7 rute · 4 schimba date · 1 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/facturi/perioada`, `/tenants/{tenant_id}/perioade-blocate`*
 
@@ -947,6 +953,8 @@ faptica, pe baza listelor de inventariere.
 
 ## T12 — Închiderea anului și situațiile financiare
 
+*clasa MECANIC · 5 rute · 2 schimba date · ? firme il pot exercita azi*
+
 *clasa PARTIAL · 4 rute · 2 schimba date · nu se poate sti din date*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/s1003-xml`, `/tenants/{tenant_id}/s1005-xml`*
@@ -972,7 +980,7 @@ faptica, pe baza listelor de inventariere.
 
 ## T13 — Trecerea de regim fiscal
 
-*clasa MECANIC · 8 rute · 4 schimba date · 17 firme il pot exercita azi*
+*clasa MECANIC · 8 rute · 4 schimba date · 19 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/migrare/vector`, `/tenants/{tenant_id}/firma-profil`, `/tenants/{tenant_id}/firma-profil/date`, `/tenants/{tenant_id}/vector`*
 
@@ -1364,6 +1372,8 @@ faptica, pe baza listelor de inventariere.
 
 ## T16 — Pontajul
 
+*clasa MECANIC · 4 rute · 2 schimba date · 0 firme il pot exercita azi*
+
 *clasa MECANIC · 4 rute · 2 schimba date · nicio firma nu-l poate exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/salariati/{salariat_id}/pontaj`, `/util/zile-lucratoare`*
@@ -1391,6 +1401,8 @@ faptica, pe baza listelor de inventariere.
 - pontajul unei luni închise se refuză
 
 ## T17 — Plata salariilor — fișierul către bancă
+
+*clasa MECANIC · 2 rute · 1 schimba date · ? firme il pot exercita azi*
 
 *clasa PARTIAL · 2 rute · 1 schimba date · nu se poate sti din date*
 
@@ -1453,6 +1465,8 @@ faptica, pe baza listelor de inventariere.
 - un al doilea link pe aceeași factură invalidează primul, sau se refuză — nu coexistă două
 
 ## T19 — Scadențarul și notificările de scadență
+
+*clasa MECANIC · 2 rute · 1 schimba date · 0 firme il pot exercita azi*
 
 *clasa MECANIC · 2 rute · 1 schimba date · nicio firma nu-l poate exercita azi*
 
@@ -1709,6 +1723,8 @@ faptica, pe baza listelor de inventariere.
 
 ## T24 — Bonul fiscal și raportul Z (AMEF, horeca)
 
+*clasa MECANIC · 2 rute · 2 schimba date · ? firme il pot exercita azi*
+
 *clasa MECANIC · 2 rute · 2 schimba date · nu se poate sti din date*
 
 ### `POST /tenants/{tenant_id}/horeca/import-amef`
@@ -1736,6 +1752,8 @@ faptica, pe baza listelor de inventariere.
 ---
 
 ## T25 — Comanda din magazinul online (WooCommerce)
+
+*clasa MANUAL · 3 rute · 2 schimba date · ? firme il pot exercita azi*
 
 *clasa MANUAL · 3 rute · 2 schimba date · nu se poate sti din date*
 
@@ -1782,6 +1800,8 @@ faptica, pe baza listelor de inventariere.
 ---
 
 ## T27 — e-Transport
+
+*clasa MANUAL · 3 rute · 2 schimba date · 0 firme il pot exercita azi*
 
 *clasa MANUAL · 3 rute · 2 schimba date · nicio firma nu-l poate exercita azi*
 
@@ -1901,6 +1921,8 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 ## T29 — Regimurile speciale de TVA — marjă, aur, agricultori, taxare inversă
 
+*clasa MECANIC · 11 rute · 10 schimba date · ? firme il pot exercita azi*
+
 *clasa MECANIC · 11 rute · 10 schimba date · nu se poate sti din date*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/jurnal-marja`*
@@ -2019,6 +2041,8 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 ## T30 — Operațiunile în valută
 
+*clasa MECANIC · 2 rute · 2 schimba date · ? firme il pot exercita azi*
+
 *clasa MECANIC · 2 rute · 2 schimba date · nu se poate sti din date*
 
 ### `POST /tenants/{tenant_id}/decontare-valuta`
@@ -2048,7 +2072,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 ## T31 — Completările manuale la o declarație (D300, D301)
 
-*clasa MECANIC · 6 rute · 4 schimba date · 3 firme il pot exercita azi*
+*clasa MECANIC · 8 rute · 5 schimba date · 3 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/tenants/{tenant_id}/d300-manual`, `/tenants/{tenant_id}/d301-operatiuni`*
 
@@ -2076,6 +2100,38 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 ---
 
+### `POST /tenants/{tenant_id}/registru-evidenta-fiscala`
+
+*garda `cere_cabinet` · **fara rol***
+
+*ce face: Înscrie un rând în varianta PERSOANE FIZICE — singura care se completează — poate atinge, prin modul (PLAFON, nemasurat pe ruta): registru_fiscal_pf (INSERT) — prin `registru_evidenta_fiscala`*
+
+Constatarea de la care a pornit e scrisa in cod, in `core/d212.py`, in `pull()`: *«D212 e MANUALA pe
+persoana fizica; firma nu are registru PF»*. Venitul brut si cheltuielile deductibile se introduc
+direct in declaratie si nu se pastreaza nicaieri — ori tocmai asta cere art. 2 din OMFP 3254/2017:
+registrul tine informatiile CARE STAU LA BAZA declaratiei.
+
+- **la norma de venit, campul de cheltuieli nu se poate completa**: alege «norma de venit» la modul
+  de stabilire si verifica faptul ca ecranul ASCUNDE campul. Un camp care se poate completa si apoi
+  e respins invata omul ca aplicatia e capricioasa, cand de fapt norma e clara (art. 1 alin. (2))
+- **la drepturi de proprietate intelectuala, cheltuielile sunt OPTIONALE** (art. 1 alin. (3)) — un
+  rand fara ele trebuie sa treaca
+- **in sistem real, ZERO e un raspuns valid si GOL nu e**: incearca amandoua. Zero inseamna «nu s-au
+  avut cheltuieli»; gol inseamna «nu s-a stabilit inca», iar intr-un registru din care iese venitul
+  net cele doua duc la aceeasi cifra si la doua adevaruri diferite
+- **numerotarea curge pe SURSA din cadrul categoriei**, nu global: doua randuri pe aceeasi sursa
+  primesc 1 si 2, iar primul rand pe alta sursa primeste tot 1
+- **pierderea neta se arata ca pierdere, nu ca zero**: pune cheltuieli mai mari decat venitul brut.
+  «Pierdere neta anuala» e chiar termenul ordinului, deci taierea la zero ar sterge o informatie pe
+  care declaratia o cere
+- **varianta pe profit NU are formular**, si asta se vede pe ecran: comuta pe «impozit pe profit» si
+  verifica faptul ca nu apare niciun camp de completat. Cifrele ei sunt cele din D101 pe acelasi an
+  — un al doilea calcul ar putea contrazice declaratia pe care registrul exista ca s-o justifice
+- **totalizarea pe trimestru se REFUZA cu motiv**, nu se calculeaza cu formule anuale: cere-o si
+  citeste ce scrie. Un registru lipsa se vede; unul gresit nu
+- **fara rol, desi scrie intr-un registru fiscal** — a treia oara azi, consemnata ca sa nu treaca
+  drept intentie
+
 ### `POST /tenants/{tenant_id}/d301-operatiuni`
 
 *garda `cere_cabinet` · **fara rol***
@@ -2101,6 +2157,8 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 - **fără rol** — o operațiune ștearsă din declarație dispare fără urmă
 
 ## T32 — Registrul de încasări și plăți (partida simplă)
+
+*clasa MECANIC · 7 rute · 5 schimba date · 0 firme il pot exercita azi*
 
 *clasa MECANIC · 7 rute · 5 schimba date · nicio firma nu-l poate exercita azi*
 
@@ -2163,6 +2221,8 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 - **fără rol, iar aceasta e ruta care produce evidența în partidă simplă** — echivalentul lui `jurnal/{id}/valideaza`
 
 ## T33 — Exportul contabil (SAGA, WinMentor)
+
+*clasa MECANIC · 3 rute · 2 schimba date · ? firme il pot exercita azi*
 
 *clasa PARTIAL · 3 rute · 2 schimba date · nu se poate sti din date*
 
@@ -2248,7 +2308,7 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 
 ## T35 — Pachetul lunar către client și solicitările lui
 
-*clasa MECANIC · 36 rute · 15 schimba date · 1 firme il pot exercita azi*
+*clasa MECANIC · 38 rute · 16 schimba date · 1 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/pachete/{tenant_id}/poveste`, `/pachete/{tenant_id}/preview`, `/pachete/{tenant_id}/rezumat`, `/portal/acasa`, `/portal/acces-cont`, `/portal/cashflow`, `/portal/declaratii`, `/portal/documente/balanta`, `/portal/documente/luni`, `/portal/facturi`, `/portal/firma`, `/portal/firme`, `/portal/kpi`, `/portal/povesti`, `/portal/recomanda/preview`, `/portal/solicitari`, `/portal/solicitari/contor`, `/tenants/{tenant_id}/client-acces`, `/tenants/{tenant_id}/clienti`, `/tenants/{tenant_id}/clienti/{client_id}`, `/tenants/{tenant_id}/solicitari`*
 
@@ -2443,6 +2503,8 @@ de bunuri fara vanzare, deci nu exista factura din care sa iasa. Normele art. 32
 ---
 
 ## T36 — Ciclul de viață al firmei — creare, identitate, dezactivare, scoatere
+
+*clasa MECANIC · 9 rute · 5 schimba date · ? firme il pot exercita azi*
 
 *clasa MECANIC · 8 rute · 4 schimba date · nu se poate sti din date*
 

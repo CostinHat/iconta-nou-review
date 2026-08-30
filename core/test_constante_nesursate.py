@@ -365,6 +365,13 @@ BOTEZ_BASELINE = {
     ("d402.py", "_TIP_VENIT"): "cod de tip de venit (nomenclator D402)",
     ("d402.py", "_PER_VENIT"): "cod de periodicitate",
     ("d403.py", "_R_TIP_BAZA"): "cod de tip de bază (nomenclator D403)",
+    # [30.08.2026] Registrul de evidență fiscală. Amândouă sunt NOMENCLATOARE, nu valori fiscale:
+    ("registru_evidenta_fiscala.py", "CATEGORII_PROFIT"):
+        "categoriile pe care le enumeră HG 1/2016 pct. 8 pentru registrul pe profit, cu câmpurile "
+        "D101 din care se compune fiecare — cifrele din ele sunt NUME de rânduri (`P17`), nu sume",
+    ("registru_evidenta_fiscala.py", "CATEGORII_VENIT_PF"):
+        "codurile de categorie de venit din structura D220 (`categ_venit` 1-7) — aceleași ca în "
+        "declarație, ca registrul să nu clasifice altfel decât documentul pe care îl justifică",
 }
 
 

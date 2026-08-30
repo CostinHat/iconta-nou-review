@@ -21,6 +21,7 @@ harta acoperă codul, nu că drumul e bun.
 import importlib.util
 import io
 import os
+import re
 
 import pytest
 
@@ -584,6 +585,48 @@ def test_traseele_fara_tabela_proprie_nu_raporteaza_ZERO_firme(st):
             if not t["tabele_declarate"] and t.get("firme_nr") is not None]
     assert not rele, ("trasee fără tabelă proprie care raportează totuși un număr de "
                       "firme: %s — necunoscutul s-a rotunjit" % rele)
+
+def test_antetul_fiecarui_traseu_e_GENERAT_nu_scris(st):
+    """[30.08.2026, regula lui Costin dupa a doua instanta] *Orice proza care reafirma un numar
+    derivat ori se genereaza, ori se sterge.*
+
+    **Instanta, masurata inainte de reparatie: 5 din 21 de antete scrise dadeau alte cifre decat
+    instrumentul**, iar al saselea (T05) fusese prins cu o zi inainte — deci sase din douazeci si
+    doua. Niciunul n-a tipat: nimic nu le compara cu nimic. Un antet care spune „19 rute" pe un
+    traseu de 20 nu e o greseala de tipar; e o masuratoare care contrazice instrumentul si pe care
+    cineva o poate cita intr-un raport.
+
+    Aici s-a ales GENERAREA, nu stergerea, fiindca randul e util — spune dintr-o privire cat de
+    mare e traseul si pe cate firme se poate exercita. Ce s-a schimbat e cine il scrie.
+
+    Cele 15 trasee care n-aveau antet deloc l-au primit: absenta nu e mai buna decat o cifra
+    gresita, doar mai putin vizibila.
+    """
+    doc = io.open(os.path.join(_RAD, "TRASEE_VERIFICARI.md"), encoding="utf-8").read()
+    d = st.construieste(True)
+    per, _o, _dub, _n = st.acoperire(st.citeste_rute())
+    linii = doc.split(chr(10))
+    poz = {}
+    for i, ln in enumerate(linii):
+        m = re.match(r"^## (T\d\d) ", ln)
+        if m:
+            poz[m.group(1)] = i
+    assert len(poz) >= 30, "anti-vacuu: doar %d sectiuni de traseu gasite in document" % len(poz)
+    rele = []
+    for tid, _nume, _tip, _tab in st.TRASEE:
+        assert tid in poz, "traseul %s n-are sectiune in TRASEE_VERIFICARI.md" % tid
+        nou = st.antet_traseu(tid, d, per)
+        vecine = [x for x in linii[poz[tid]:poz[tid] + 6] if x.startswith("*clasa ")]
+        if not vecine:
+            rele.append("  %s: fara antet" % tid)
+        elif vecine[0] != nou:
+            rele.append("  %s:%s    scris:   %s%s    generat: %s"
+                        % (tid, chr(10), vecine[0], chr(10), nou))
+    assert not rele, (
+        "antete de traseu care difera de ce genereaza instrumentul:" + chr(10)
+        + chr(10).join(rele) + chr(10) + chr(10)
+        + "Nu se repara cu mana. Regenereaza-le din `scan_trasee.antet_traseu`.")
+
 
 def test_fiecare_pas_care_schimba_ceva_are_LOC_de_verificare(st):
     """`TRASEE_VERIFICARI.md` e singurul document care NU se generează: conținutul lui e scris

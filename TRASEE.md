@@ -1878,9 +1878,9 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T31 — Completările manuale la o declarație (D300, D301)
 
-**Clasa:** MECANIC · **rute:** 6 (din care schimba date: 4) · **refuzuri explicite:** 2
+**Clasa:** MECANIC · **rute:** 8 (din care schimba date: 5) · **refuzuri explicite:** 10
 
-**Cine:** nicio verificare de rol pe tot traseul — orice utilizator autentificat al cabinetului. **4 din 4 rute care schimba date.**
+**Cine:** nicio verificare de rol pe tot traseul — orice utilizator autentificat al cabinetului. **5 din 5 rute care schimba date.**
 
 **Pasii, din cod:**
 
@@ -1890,10 +1890,12 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `GET /tenants/{tenant_id}/d301-operatiuni` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/d301-operatiuni` — garda `cere_cabinet`
 - `DELETE /tenants/{tenant_id}/d301-operatiuni/{op_id}` — garda `cere_cabinet`
+- `GET /tenants/{tenant_id}/registru-evidenta-fiscala` — garda `cere_cabinet`
+- `POST /tenants/{tenant_id}/registru-evidenta-fiscala` — garda `cere_cabinet`
 
-**Module:** `d300_manual_api`, `d301_operatiuni_api`
+**Module:** `d300_manual_api`, `d301_operatiuni_api`, `registru_evidenta_fiscala`
 
-**Scrie in:** `d300_manual` (DELETE/INSERT) · `d301_operatiuni` (DELETE/INSERT)
+**Scrie in:** `d300_manual` (DELETE/INSERT) · `d301_operatiuni` (DELETE/INSERT) · `registru_fiscal_pf` (INSERT)
 
 **Firme care il pot exercita azi: 3** — `tenant_006`, `tenant_014`, `tenant_017`
 
