@@ -23,7 +23,7 @@ CELE TREI STĂRI CERUTE, plus a patra:
   - **NEACOPERITĂ** — nicio ancoră a regulii nu apare în verificator;
   - **ATINSĂ** — cel puțin o ancoră apare; instrumentul **nu decide singur** dacă e acoperire reală
     sau doar de suprafață, fiindcă asta cere citirea gărzii. Le enumeră, ca să fie citite;
-  - **NEMĂSURABILĂ MECANIC** — regula n-are nicio ancoră (e proză despre culoare, ton, așezare).
+  - **FĂRĂ ANCORĂ** — regula n-are nicio ancoră (e proză despre culoare, ton, așezare).
 
 CE NU VEDE, declarat:
   - o regulă acoperită de o gardă din `core/test_*.py` **în afara** verificatorului trece aici drept
@@ -186,7 +186,7 @@ def _randuri_cod(sursa):
 def acoperire(reg, sursa_verif, doar_cod):
     """(stare, ancore_in_cod, ancore_doar_in_proza) pentru o regulă."""
     if not reg["ancore"]:
-        return "NEMĂSURABILĂ MECANIC", [], []
+        return "FĂRĂ ANCORĂ", [], []
     import re as _re
 
     def _variante(a):
@@ -236,7 +236,7 @@ def ruleaza():
     print("RAZA VERIFICATORULUI — fiecare regulă din DESIGN_SYSTEM.md, față în față cu el")
     print("=" * 100)
     print("reguli extrase: %d, din %d capitole\n" % (len(regs), len({r["cap"] for r in regs})))
-    for stare in ("NEACOPERITĂ", "DOAR LA SUPRAFAȚĂ", "ACOPERITĂ", "NEMĂSURABILĂ MECANIC"):
+    for stare in ("NEACOPERITĂ", "DOAR LA SUPRAFAȚĂ", "ACOPERITĂ", "FĂRĂ ANCORĂ"):
         lot = pe_stare.get(stare, [])
         print("  %-24s %3d  (%4.1f%%)" % (stare, len(lot), 100.0 * len(lot) / len(regs)))
 
@@ -258,7 +258,7 @@ def ruleaza():
         lot = [r for r in regs if r["cap"] == cap]
         n = sum(1 for r in lot if r["stare"] == "NEACOPERITĂ")
         a = sum(1 for r in lot if r["stare"] == "DOAR LA SUPRAFAȚĂ")
-        m = sum(1 for r in lot if r["stare"] == "NEMĂSURABILĂ MECANIC")
+        m = sum(1 for r in lot if r["stare"] == "FĂRĂ ANCORĂ")
         c = sum(1 for r in lot if r["stare"] == "ACOPERITĂ")
         print("  %-4s %-42s %6d %6d %6d %6d" % (cap, lot[0]["titlu"][:42], n, a, c, m))
     return regs
