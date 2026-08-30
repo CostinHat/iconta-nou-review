@@ -40,7 +40,7 @@ face doar imposibilă acumularea unei narațiuni care să îmbătrânească. *(D
 după a doua oară: „e gardul care nu citește proză și totuși o disciplinează".)*
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **lista 4 e GOALĂ** — R93 și R102 rezolvate, golul re-măsurat pe 19 firme. Urmează **lista 5** (12 poziții, cu adâncimea R97 pliată în ea), apoi lista 3, apoi faza 2. *(Cifrele se derivă.)*
+- **pasul curent**: **raza verificatorului, măsurată** — din 62 de reguli ale DS, **5** sunt acoperite, 24 neacoperite, 15 doar la suprafață. „TOTAL 0" înseamnă zero din ce știe el să întrebe. Lista 5 **așteaptă**. *(Cifrele se derivă.)*
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are **pași** — 1a, 1b, 1c și 1d sunt făcute —, dar **criteriul ei de terminare NU e îndeplinit**: listele 3, 4 și 5 nu sunt goale, iar mărimea listei 5 nu se poate ști până nu se măsoară clasa **R97**. Iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna.** *(Stocul istoric nu mai blochează: s-a executat pe 29.08, după ce Costin a spus că nu există clienți reali — starea restanței se citește din registru, nu de aici.)* *(Ultima — ce face aplicația cu o factură EMISĂ care intră prin import — a primit răspuns pe 29.08.2026, varianta (iii), și e construită; starea restanței se citește din registru, nu de aici.)* *(A doua decizie care bloca — TVA la încasare pe factura primită — a primit răspuns pe 29.08.2026, varianta (ii), și e construită; restanța ei e închisă, iar starea se citește din registru, nu de aici.)*
@@ -2163,6 +2163,87 @@ citirea corectează.*
 - **ce blochează**: ruta `GET /tenants/{id}/scoatere` există **anume** ca să nu existe surprize — docstringul ei o spune: *„Ce se întâmplă dacă firma se scoate […] Se citește ÎNAINTE de apăsare — un refuz care apare abia după apăsare e o surpriză."* Măsurat cu `scripts/scan_r97_livrat_tacut.py`: **8 din cele 31 de câmpuri** ale răspunsului nu ajung niciodată în `static/js`. Ce tace, și **de ce contează**: `evidenta.detalii.*` — numărătoarea **per tabel** a evidenței (`artefacte_produse`, `declaratii_coada`, `efactura_trimiteri`, `etransport_trimiteri`, `state_plata`), **inclusiv zerourile** — și `tabele_curatate`, lista celor 13 tabele comune care s-ar curăța. Ecranul randează `evidenta.motive`, care conține **doar ce s-a găsit** (`"3 declarații în coadă"`); ce s-a **căutat și a ieșit gol** nu apare nicăieri. **Un om care vede „firma nu a produs niciun document" nu poate ști dacă asta înseamnă „am verificat cinci evidențe și toate sunt goale" sau „am verificat una".** Pe actul care nu se poate întoarce, diferența dintre cele două e chiar întrebarea.
 - **CE NU E ADEVĂRAT, și e corectarea unei afirmații de-a mea**: în raportul din 30.08 scrisesem că previzualizarea *„nu arată nici ce s-a decis, nici ce anume s-ar șterge"*. **Fals, pe amândouă.** Citit în `static/js/ecrane/firme.js`: `randuri_de_sters` **se afișează**, „N × `<tabel>`" pentru fiecare tabel negol, prin `Object.keys(rd)` — instrumentul nu-l vedea fiindcă parcurgerea e **generică**, iar el căuta pe nume (reparat, vezi R97). `evidenta.motive` **se afișează**, inclusiv cazul *„nu pot decide: lipsesc din schema tabelele …"*, deci necunoscutul **nu** e rotunjit la „știu că nu". Iar confirmarea prin CUI **se cere**, doar că din `p.cui`, nu din `confirmare_ceruta` — câmpul din răspuns e un duplicat ignorat, nu o poartă lipsă. *Afirmația mea a fost făcută pe ieșirea instrumentului, fără citirea codului. Restanța rămâne deschisă pentru ce a mai rămas după corectare — care e mai mic, și e scris mai sus.*
 - **condiția de deblocare**: previzualizarea arată **și ce s-a verificat**, nu doar ce s-a găsit: fiecare evidență privită apare cu numărul ei, zero inclus, iar lista tabelelor care s-ar curăța e vizibilă înainte de apăsare. Se închide când `scripts/scan_r97_livrat_tacut.py` raportează **0 câmpuri tăcute sigur** pe ruta asta, **și** când o probă pe ecran arată o firmă cu evidență goală afișând explicit cele cinci verificări cu 0 — probat pe instanță, nu doar pe absența câmpului din JSON.
+
+### RAZA VERIFICATORULUI — cât din Design System verifică el, măsurat (30.08.2026)
+
+*Nu e o restanță; e cifra care spune ce înseamnă „TOTAL 0". Se scrie aici fiindcă toate porțile verzi
+de până acum stau pe ea.*
+
+**DE CE.** `verificator_conformitate.py` întoarce **TOTAL 0** pe 182 de locuri, la fiecare poartă.
+Regula de proces cere ca **orice regulă din `DESIGN_SYSTEM.md` să intre SIMULTAN în verificator** —
+dar regula stelutelor (cap.6, *„Câmp obligatoriu (v2.0)"*) a fost încălcată **de trei ori**, de două
+ori în iulie și o dată azi. Dacă ar fi intrat, cele trei ar fi fost imposibile. **Instrument:**
+`scripts/scan_ds_verificator.py`, pe commit `80cebd5`.
+
+**RĂSPUNSUL LA ÎNTREBAREA DIRECTĂ, și e mai simplu decât „acoperire la suprafață": regula stelelor nu
+e în verificator DELOC.** Ancora ei — clasa `oblig` — apare de **3 ori** în fișier, **toate în
+comentarii despre altceva** (*„obligația D390"*, *„text_citat obligatoriu"*). **Zero în cod.**
+
+#### Cifra, pe tot DS-ul: 62 de reguli, 23 de capitole
+
+| stare | câte | ce înseamnă |
+|---|---|---|
+| **NEACOPERITĂ** | **24 (38,7%)** | verificatorul nu cunoaște niciuna din ancorele regulii |
+| **DOAR LA SUPRAFAȚĂ** | **15 (24,2%)** | marcajul e verificat, **efectul din spatele lui nu poate fi** |
+| **ACOPERITĂ** | **5 (8,1%)** | |
+| **NEMĂSURABILĂ MECANIC** | **18 (29,0%)** | regula n-are nicio ancoră — proză despre ton, culoare, așezare |
+
+**Cinci din șaizeci și două.** Restul de **39** sunt ori necunoscute verificatorului, ori cunoscute
+doar la nivel de marcaj. *Deci „TOTAL 0" înseamnă **zero din ce știe el să întrebe**, nu zero
+abateri de la Design System.*
+
+#### De ce „doar la suprafață" nu e vina vreunei gărzi
+
+`verificator_conformitate.py` e un **scaner STATIC** peste sursă: citește fișiere, potrivește tipare,
+construiește AST. **Nu cheamă nicio rută și nu observă nicio refuzare.** Deci o regulă care are o
+**jumătate de comportament** — *„câmp obligatoriu → asterisc **și** salvarea refuză fără el"* — nu
+poate fi acoperită de el decât la nivelul marcajului, oricât de bine ar fi scrisă garda. **Nu e o
+scăpare individuală, e o proprietate a instrumentului**, și de-aceea se numără separat.
+
+#### Unde e ruptă veriga, exact
+
+**Nimic nu păzește regula de proces.** Nu există nicio gardă care să ceară ca o regulă din DS să aibă
+corespondent în verificator. Regula există **scrisă**; nimic nu se aprinde când e încălcată. E clasa
+*„gardul care nu se verifică pe sine"*, aplicată chiar legăturii dintre cele două documente.
+**Deschisă ca R103.**
+
+#### Ce e o „regulă", și de ce se scrie alegerea
+
+Un **punct de listă** din DS care poartă un marcaj normativ (`trebuie`, `NICIODATĂ`, `MEREU`,
+`INTERZIS`, `obligatoriu`, `unic`, `singura cale`, …) sau un **nume îngroșat cu versiune**
+(`**Câmp obligatoriu (v2.0)**`). **Sub-punctele numerotate se numără separat**: la cap.6, „plasarea
+erorii per-câmp" are șase, iar una acoperită n-ar acoperi celelalte cinci. Legătura se face prin
+**ancore** — identificatorii pe care regula îi numește în backtick-uri.
+
+#### Instrumentul a greșit de două ori înainte de cifra asta, și amândouă se scriu
+
+1. **Ancore generice.** Prima formă accepta `in`, `camp`, `return`, `lei` — cuvinte care se potrivesc
+   în orice fișier Python. Raporta **37 de reguli „atinse"**, adică acoperire **fabricată**.
+2. **Segmentarea ancorei.** A doua formă căuta și bucățile ancorei. A reparat un fals negativ real —
+   marca: DS cere `iConta.eu`, verificatorul o păzește ca `re.compile(r"iConta(?!\.eu)")`, deci forma
+   întreagă nu apare în cod — **dar a fabricat mai multe false POZITIVE**: `msg-eroare` apărea
+   acoperit fiindcă în verificator există cuvântul `eroare`; `camp-ajutor`, fiindcă există `ajutor`.
+   **Instrumentul greșea în amândouă direcțiile deodată** — starea în care o cifră nu mai poate fi
+   folosită la nimic (`METODA §22`). **Reparat prin renunțare la euristică**: potrivire pe forma
+   întreagă, iar excepțiile se **declară** una câte una, după verificare în cod. Lista are azi **o
+   singură intrare**, marca. *O listă scurtă care se poate contrazice bate o euristică ce nu se poate.*
+
+**Ce nu vede măsurătoarea:** o regulă păzită de o gardă din `core/test_*.py` **din afara**
+verificatorului apare aici drept neacoperită **de verificator** — și e corect, fiindcă întrebarea e
+despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu contează ca acoperire
+(despărțit prin tokenizare, nu prin regex pe rânduri).
+
+### R103 — Regula „orice regulă din DS intră simultan în verificator" n-are nicio gardă
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · `DESIGN_SYSTEM.md` ↔ `verificator_conformitate.py` · clasa „gardul care nu se verifică pe sine" · **PRAG 2**
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `80cebd5`
+- **măsurat la**: 2026-08-30 · **pe commit**: `80cebd5`
+- **ce blochează**: regula de proces există **scrisă**, și a fost încălcată **de trei ori** pe aceeași regulă a DS-ului (steluțele pe câmpurile obligatorii — de două ori în iulie, o dată pe 30.08). Nimic nu se aprinde: **nu există nicio gardă care să confrunte cele două documente.** Măsurat cu `scripts/scan_ds_verificator.py`: din **62** de reguli, **24 neacoperite**, **15 doar la suprafață**, **5 acoperite**, 18 nemăsurabile mecanic. **Consecința asupra a tot ce s-a raportat până acum:** „verificator TOTAL 0" — rândul care apare în fiecare poartă verde — înseamnă **zero din ce știe el să întrebe**, nu zero abateri de la Design System. *Nu invalidează porțile; le încadrează.*
+- **condiția de deblocare**: o gardă care cere ca fiecare regulă din DS cu **ancoră** să aibă corespondent în verificator, **sau** o declarație scrisă lângă ea („nu se poate verifica static, fiindcă…"). Clichet pe numărul de neacoperite, ca să nu crească tăcut. Se închide când cifra e ținută de un clichet **și** când fiecare regulă din cele 24 e ori acoperită, ori declarată. *Partea „doar la suprafață" (15) NU se închide cu asta: ea cere un instrument care observă comportamentul, nu textul — deci altă natură, și altă restanță când se ajunge la ea.*
 
 ### R100 — O calibrare care testează doar ce știe instrumentul să caute confirmă presupunerea, nu o verifică
 

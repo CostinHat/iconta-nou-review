@@ -1,6 +1,6 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **lista 4 e GOALĂ**, prin reparație; urmează lista 5 (30.08.2026)
+# PREDARE LANȚ — **raza verificatorului măsurată: 5 reguli din 62**. Lista 5 așteaptă (30.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
@@ -10,7 +10,16 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   predare**, **tabelul de restanțe** și **dacă continui**. Restul rămâne cum era, fiindcă nu s-a
   schimbat. *Rescrierea completă de acum câteva ore a fost necesară fiindcă documentul se
   stratificase; o a doua rescriere completă la trei ore după prima ar fi fost ritual, nu nevoie.*
-- **ce s-a schimbat de fapt, ultima tură**: **lista 4 e GOALĂ** — **R93** rezolvată (câmpul
+- **ce s-a schimbat de fapt, ultima tură**: **s-a măsurat RAZA VERIFICATORULUI**, la cererea
+  lui Costin, înaintea oricărei reparații. Din **62** de reguli ale `DESIGN_SYSTEM.md`: **5
+  acoperite**, **24 neacoperite**, **15 doar la suprafață**, 18 nemăsurabile mecanic. **„verificator
+  TOTAL 0", rândul din fiecare poartă verde, înseamnă zero din ce știe EL să întrebe** — nu zero
+  abateri de la DS. Deschisă **R103**: nimic nu păzește regula de proces „orice regulă din DS intră
+  simultan în verificator".
+- **REGULA STELUȚELOR, răspunsul la întrebarea directă**: nu e „acoperire la suprafață" — **nu e în
+  verificator deloc**. Ancora ei (`oblig`) apare de 3 ori, toate în comentarii despre altceva.
+- **R101 E PARCATĂ, NU ABANDONATĂ** — vezi mai jos, la restanțe.
+- **ce s-a schimbat înainte, în aceeași zi**: **lista 4 e GOALĂ** — **R93** rezolvată (câmpul
   obligatoriu tratat ca avertisment) și **R102** rezolvată (livrări declarate peste zero facturi
   emise), amândouă cu **gardă** și cu golul **re-măsurat pe 19 firme**. S-au deschis **R100** (regula
   de calibrare) și **R101** (declarantul, găsit de garda nouă la prima ei rulare).
@@ -303,6 +312,8 @@ Vezi tabelul de cifre invalidate.*
 | **R93–R96, DESCHISE azi de 1b** | **R93** — aceeași lipsă (`adresa`) e poartă în D100/D101/D205 și simplu **avertisment** în D394 (`core/d394.py:1086`), iar DUKIntegrator respinge XML-ul: **lista 4 a verdictului 1d nu mai e goală**. · **R94** — selectorul știe forma și vectorul TVA, semaforul știe regimul, generatorul nu ascultă de niciunul: D101 iese valid pe cele 10 firme micro, iar D300/D394 se produc pe 4 neplătitoare, cu nota falsă „un plătitor depune nul". · **R95** — semaforul n-are nicio cale să ceară D100 pe profit, deși CF art. 41 alin. (1) cere declarare trimestrială; `d100.py` are ramura de profit, lipsește cine s-o ceară. · **R96** — balanța și registrul-jurnal citesc ciornele, fișa de cont nu: **21 din 41 de note**. Toate patru sunt **prag 2**. |
 | **R97–R98, DESCHISE de 1c și de deciziile de după** | **R97** — clasa *„ruta livrează, ecranul tace"*: registrul-jurnal (ruta derivă `nr_curent`, `document`, `total_debit`/`total_credit`; ecranul afișează **zero** din ele) și netul de pe fluturaș (toate cele 7 componente sosesc, **niciuna** nu se afișează). **Se tratează ca CLASĂ, nu ca două poziții de listă** — decizia lui Costin —, iar condiția cere **întâi măsurarea clasei**, cu instrumentul care confruntă câmpurile trimise cu cele randate. · **R98** — o interdicție care își poartă inventarul îmbătrânește singură: la 66, `Temei(` a trecut 57 → **64**, mențiunile din JS 43 → **68**, sub un verdict care a rămas corect. Regula: interdicția citează **regula și pragul**, inventarul stă ca **anexă datată**. **Doar gardă, nu rescriere acum.** |
 | **R99, scoasă la suprafață prin decizie** | Previzualizarea scoaterii unei firme arată **ce s-a găsit**, nu **ce s-a verificat**: numărătoarea per evidență — cu zerourile ei — și lista tabelelor curățate nu ajung pe ecran, **8 din 31 de câmpuri**. Un om care citește „firma nu a produs niciun document” nu poate ști dacă s-au verificat cinci evidențe sau una. **Prag 3**, și **nu se repară acum** — Costin a cerut doar să iasă la suprafață cu numărul ei, fiindcă îngropată într-un inventar de zeci de câmpuri se pierde. *Premisa cu care a fost cerută s-a corectat la scriere: ce s-ar șterge **se arată**; vezi tabelul de cifre invalidate.* |
+| **R101 — PARCATĂ pe `wip/2026-08-30-r101`** | Decizia a fost **blocant**, iar sursa ANAF a decis-o pe fiecare din cele opt: **toate** cer declarantul, cu marcaj `DA` și mesaj propriu de eroare — deci **harta avea dreptate, codul greșea**, la fel ca la R93. Reparația e **scrisă și probată pe instanțe vii** (cele 7 firme fără declarant refuză acum cu motivul; cele cu declarant complet, neschimbate), **dar n-a intrat**: fixturile a **30 de fișiere de test** construiesc firme fără declarant, deci suita iese roșie cu **86** de picături. Aia e munca rămasă, și e reală: o fixtură care nu poate depune nu reprezintă o firmă. Munca e la adăpost pe ramura `wip/2026-08-30-r101` (`4cc9374`), iar arborele a fost **restaurat curat** ca să se poată măsura raza. |
+| **`declarant_prenume` — CONTRADICȚIE, nu reparație** | Sursa ANAF îl cere pe toate opt (`prenume_declar … DA … ERR - prenume declarant necompletat`), dar o **decizie scrisă pe 17.08.2026** spune invers, cu motiv — `core/test_declarant_oblig.py::test_prenume_nu_e_obligatoriu`: *„nu orice declarant are prenume în forma ANAF"*, iar `-` e înlocuitor legitim. **Nu se rezolvă de mine**: e o contradicție între o citire de sursă și o decizie scrisă. L-am scos din reparație și îl raportez. |
 | **restul (44)** | Vezi `CONFORMITATE.md`. Numărul e derivat, nu scris; nu s-a atins nimic altceva. |
 
 ---
@@ -489,7 +500,11 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
    comandă a cerut ceva deja construit, iar o dată ar fi însemnat să **scot** o poartă care merge.
    **Costin a retras el însuși amândouă comenzile**, în tura următoare. Verificarea premisei a costat
    o oră și a scos două lucruri reale.
-3. **Pasul următor e LISTA 5** — lista 4 e închisă. **12 poziții**, cu adâncimea R97 pliată în
+3. **Lista 5 AȘTEAPTĂ** — Costin a oprit-o explicit până se știe raza verificatorului. Acum se
+   știe. Ce e pe masă: **R103** (garda pe legătura DS↔verificator, cu clichet pe cele 24 de
+   neacoperite) · **R101**, de reluat de pe ramura de wip, cu cele 30 de fișiere de fixturi · abia
+   apoi lista 5. *Textul de mai jos rămâne, fiindcă descrie lista 5 când se ajunge la ea:*
+3b. **Lista 5** — lista 4 e închisă. **12 poziții**, cu adâncimea R97 pliată în
    ele, și cu o despărțire de preț deja măsurată: pentru cele **9 declarații** e scump, fiindcă
    **nici ruta nu trimite** componentele (0 din 92 de ieșiri); pentru **netul de pe fluturaș** (12
    câmpuri) și **registrul-jurnal** (2) e ieftin, fiindcă serverul **trimite deja** tot ce trebuie și
