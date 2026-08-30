@@ -284,6 +284,7 @@ async function pas2(corp, nav) {
         <div class="dec-avert-cap">Avertismente (${avert.length})</div>
         <ul>${avert.map((a)=>`<li>${esc(typeof a==="string"?a:(a.mesaj||"avertisment fără detalii"))}</li>`).join("")}</ul>
       </div>` : ""}
+    ${_blocComponente(S.rezultat.componente)}
     <details class="dec-xml">
       <summary>Vezi XML-ul generat</summary>
       <pre class="dec-xml-pre">${esc(xml)}</pre>
@@ -1235,6 +1236,47 @@ async function randeazaManualD300(corp, nav) {
 // golita de un query rupt arata IDENTIC: acelasi XML valid, aceleasi zero randuri. Validatorul
 // ANAF nu poate face diferenta. Poarta (DS cap.5 v2.14, .caseta-poarta) cere omului sa confirme
 // FAPTUL, nu regula: nu spunem noi care declaratie se depune pe zero - aia e chestiune fiscala.
+// [lista 5, 30.08.2026] DIN CE e facuta declaratia, nu doar CATE randuri are.
+//
+// Pana azi ecranul arata contorul - „valid, 18 operatiuni" - si nu exista nicio cale prin care
+// contabilul sa vada CARE 18: pasul 1c a masurat 0 din 92 de iesiri care isi arata componentele.
+// Randurile vin GATA COMPUSE din `core/declaratii_componente.py`, impreuna cu numele coloanelor si
+// cu lista coloanelor MONETARE - ecranul nu stie nimic despre nicio declaratie anume, si nici nu
+// ghiceste care numar e o suma.
+//
+// Ce NU se poate desface o spune, nu o tace: `acoperire !== "completa"` vine cu motivul scris.
+function _blocComponente(c) {
+  if (!c) return "";
+  // Propozitia o detine ECRANUL, nu raspunsul: un text trimis de server ar fi o afirmatie in proza
+  // intr-un payload (interzis din 21.08), iar aici e text de interfata - explicit in afara regulii
+  // (DS cap.25.5). Serverul trimite doar cuvantul din nomenclatorul inchis `ACOPERIRE`.
+  if (c.acoperire !== "completa") {
+    const spune = c.acoperire === "absenta"
+      ? "Declara\u021bia asta nu-\u0219i poate desface \u00eenc\u0103 cifra: motorul care o produce nu \u00eentoarce pozi\u021biile, doar XML-ul. Compozi\u021bia se vede \u00een fi\u0219ierul generat."
+      : "Nu \u0219tiu s\u0103 desfac cifra acestui tip de declara\u021bie \u2014 nu e trecut \u00een harta de componente. Ce vezi mai sus e num\u0103rul de opera\u021biuni, nu compozi\u021bia lor.";
+    return `<div class="caseta-info"><span class="ci-mesaj">${spune}</span></div>`;
+  }
+  if (!c.total) return "";
+  const tabel = (s) => {
+    const coloane = Object.keys(s.randuri[0] || {});
+    const mon = new Set(s.monetare || []);
+    const celula = (r, k) => (r[k] == null ? "" : (mon.has(k) ? bani(r[k]) : esc(String(r[k]))));
+    return `<div style="margin-top:10px">
+        <div class="camp-eticheta">${esc(s.nume)} \u2014 ${s.total} ${s.total === 1 ? "r\u00e2nd" : "r\u00e2nduri"}${s.aratate < s.total ? `, se arat\u0103 primele ${s.aratate}` : ""}</div>
+        <table class="fd-tabel">
+          <thead><tr>${coloane.map((k) => `<th${mon.has(k) ? ' class="fd-td-num"' : ""}>${esc(k)}</th>`).join("")}</tr></thead>
+          <tbody>${s.randuri.map((r) => `<tr>${coloane.map((k) => `<td${mon.has(k) ? ' class="fd-td-num"' : ""}>${celula(r, k)}</td>`).join("")}</tr>`).join("")}</tbody>
+        </table>
+      </div>`;
+  };
+  const cuRanduri = c.sectiuni.filter((s) => s.randuri.length);
+  if (!cuRanduri.length) return "";
+  return `<details class="dec-xml">
+      <summary>Din ce e f\u0103cut\u0103 declara\u021bia \u2014 ${c.total} ${c.total === 1 ? "r\u00e2nd" : "r\u00e2nduri"}</summary>
+      ${cuRanduri.map(tabel).join("")}
+    </details>`;
+}
+
 // `operatiuni === null` inseamna "nu se poate numara" (d101/d112) -> fara poarta, nu falsificam
 // necunoscutul in zero.
 function _esteGoala() {

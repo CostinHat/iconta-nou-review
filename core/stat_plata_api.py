@@ -211,6 +211,122 @@ def randuri_deducere(r):
         randuri.append(("Deducere suplimentara, copii scolarizati", _ded_lei("deducere_copii")))
     return randuri
 
+# Randurile compozitiei se disting prin FEL, nu prin eticheta. Un gard care ar intreba
+# `eticheta == "SALARIU NET"` ar pazi un sir AFISABIL - se poate rescrie fara ca nimic sa cada
+# (METODA §23). `fel` decide ingrosarea, si pe hartie, si pe ecran.
+FEL_LINIE = "linie"          # rand obisnuit, cu suma
+FEL_TOTAL = "total"          # rand ingrosat: SALARIU NET, TOTAL DISPONIBIL
+FEL_MENTIUNE = "mentiune"    # rand in tabel FARA suma (zilele de CM)
+FEL_NOTA = "nota"            # nota de sub tabel: ce plateste ANGAJATORUL, nu salariatul
+
+# Campurile statului pe care compozitia le DUCE la om - pe hartie si pe ecran. Nu e o lista de
+# bunavointa: `core/test_compozitie_fluturas.py` pune in fiecare o valoare-martor unica si cere
+# s-o REGASEASCA in iesire. Un camp scos din compozitie si uitat aici pica testul.
+CAMPURI_COMPUSE = ("brut", "facilitate", "cas", "cass", "deducere_baza", "deducere_tineri",
+                   "deducere_copii", "impozit_salariu", "net", "cm_zile", "cm_net", "cm_brut",
+                   "cass_tichete", "impozit_tichete", "tichete_nominal", "tichete_vacanta",
+                   "cadou", "tichete_cultural", "tichete_cresa", "valoare_tichete",
+                   "total_disponibil", "cost", "cam", "cas_suprataxa", "cass_suprataxa")
+
+# Ce trimite ruta si compozitia NU arata, cu motivul scris. Fara randul asta, absenta ar arata
+# identic cu o scapare - iar conditia de inchidere a lui R97 cere ori reparatie, ori motiv scris.
+CAMPURI_NEAFISATE_MOTIVATE = {
+    "retinut_tichete": ("suma exacta a doua randuri deja aratate - CASS tichete + impozit tichete. "
+                        "Un subtotal asezat langa chiar componentele lui nu adauga nimic pe un "
+                        "fluturas; ce lipsea era compozitia, nu inca o suma."),
+}
+
+
+def compozitie_fluturas(r):
+    """Compozitia netului, ca lista de randuri - O SINGURA sursa pentru hartie SI pentru ecran.
+
+    DE CE EXISTA (30.08.2026, lista 5 a verdictului 1d). Componentele netului se compuneau inauntrul
+    lui `fluturas_pdf`, deci se vedeau numai daca omul descarca PDF-ul; pe ecran statul arata cifra
+    fara compozitie - 12 campuri trimise de ruta si nerandate de nimeni (clasa R97). Reparatia se
+    putea face a doua oara in JS, si atunci ar fi existat DOUA liste ale aceluiasi lucru: exact
+    clasa pe care `rand_fluturas` o descrie in docstring - *doua calcule ale aceluiasi lucru nu
+    raman egale*.
+
+    O DIVERGENTA GASITA LA SCRIERE, si reparata aici prin constructie: `fluturas_pdf` calcula
+    `val_tichete = nominal + vacanta + cadou`, iar ruta trimitea `total_disponibil` cu inca doi
+    termeni - tichetele CULTURALE si cele de CRESA. Deci hartia si ecranul aratau totaluri
+    DIFERITE pentru acelasi salariat, ori de cate ori avea tichete culturale sau de cresa. Mai
+    mult, gardul `if are_masa or are_vac or are_cadou` sarea intreaga sectiune de tichete pentru
+    un salariat care are NUMAI tichete culturale sau de cresa. Acum totalul se ia din campul
+    statului, nu se recalculeaza.
+
+    EXEMPLARELE INGHETATE de dinaintea unui camp nu-l au. Ca la `randuri_deducere`: cand campul
+    lipseste din rand, se cade pe suma componentelor - un exemplar vechi nu are voie sa arate 0
+    acolo unde arata o suma inainte.
+
+    Intoarce [{"eticheta", "valoare", "fel"}]; `valoare` e None pe randurile fara suma.
+    """
+    def _n(k):
+        return float(r.get(k) or 0)
+
+    linii = [
+        ("Salariu brut", _n("brut"), FEL_LINIE),
+        ("Facilitate salariu minim (netaxabilă)", _n("facilitate"), FEL_LINIE),
+        ("CAS (25%)", -_n("cas"), FEL_LINIE),
+        ("CASS (10%)", -_n("cass"), FEL_LINIE),
+        *[(e, v, FEL_LINIE) for e, v in randuri_deducere(r)],
+        ("Impozit pe venit", -_n("impozit_salariu"), FEL_LINIE),
+        ("SALARIU NET", _n("net"), FEL_TOTAL),
+    ]
+    cm_zile = int(_n("cm_zile"))
+    if cm_zile:
+        linii.insert(1, ("Zile de concediu medical: %d" % cm_zile, None, FEL_MENTIUNE))
+        linii.insert(len(linii) - 1, ("Indemnizație CM (netă)", _n("cm_net"), FEL_LINIE))
+    # [F133] tichete: doar TAXA (CASS+impozit) se retine din salariul CASH -> reduce NET-ul, deci
+    # ramane INAINTE de SALARIU NET (coloana reconciliaza la net). Valoarea tichetelor se primeste
+    # PE CARD SEPARAT (nu cash) -> se arata DUPA net, plus totalul disponibil.
+    are_masa, are_vac, are_cadou = _n("tichete_nominal") > 0, _n("tichete_vacanta") > 0, _n("cadou") > 0
+    are_cult, are_cresa = _n("tichete_cultural") > 0, _n("tichete_cresa") > 0
+    if are_masa or are_vac or are_cadou or are_cult or are_cresa:
+        # retinerea (CASS+impozit) apare DOAR pt masa/vacanta (taxabile); cadoul e neimpozabil (2b1),
+        # iar culturalele si cresa poarta doar impozit, deja inclus in `impozit_tichete`.
+        if are_masa or are_vac:
+            i = len(linii) - 1  # inaintea SALARIU NET
+            linii.insert(i, ("  CASS tichete (10%) — reținut din salariu", -_n("cass_tichete"), FEL_LINIE)); i += 1
+            linii.insert(i, ("  Impozit tichete (10%) — reținut din salariu", -_n("impozit_tichete"), FEL_LINIE))
+        if are_masa:
+            linii.append(("Tichete de masă (%d zile × %g lei, pe card)"
+                          % (int(_n("tichete_zile")), _n("tichet_masa_valoare")),
+                          _n("tichete_nominal"), FEL_LINIE))
+        if are_vac:
+            linii.append(("Tichete de vacanță (pe card separat)", _n("tichete_vacanta"), FEL_LINIE))
+        if are_cadou:
+            linii.append(("Tichete cadou (neimpozabile, pe card separat)", _n("cadou"), FEL_LINIE))
+        if are_cult:
+            linii.append(("Tichete culturale (pe card separat)", _n("tichete_cultural"), FEL_LINIE))
+        if are_cresa:
+            linii.append(("Tichete de creșă (pe card separat)", _n("tichete_cresa"), FEL_LINIE))
+        # Campul statului, nu o recalculare - vezi divergenta din docstring. Exemplarele inghetate
+        # de dinaintea campului cad pe suma componentelor, ca sa nu arate 0.
+        val_tichete = (float(r["valoare_tichete"]) if r.get("valoare_tichete") is not None
+                       else _n("tichete_nominal") + _n("tichete_vacanta") + _n("cadou")
+                       + _n("tichete_cultural") + _n("tichete_cresa"))
+        total_disp = (float(r["total_disponibil"]) if r.get("total_disponibil") is not None
+                      else _n("net") + val_tichete)
+        linii.append(("Total tichete (pe card)", val_tichete, FEL_LINIE))
+        linii.append(("TOTAL DISPONIBIL (net + tichete)", total_disp, FEL_TOTAL))
+
+    # Ce plateste ANGAJATORUL. Sub tabel pe hartie, sub compozitie pe ecran - nu se scade din net,
+    # si de-aia nu sta in coloana care reconciliaza la net.
+    linii.append(("CAM — contribuția asiguratorie pentru muncă (2,25%), plătită de angajator",
+                  _n("cam"), FEL_NOTA))
+    _supra = _n("cas_suprataxa") + _n("cass_suprataxa")
+    if _supra > 0:
+        linii.append(("Suprataxă part-time (CAS + CASS pe podeaua salariului minim), plătită de angajator",
+                      _supra, FEL_NOTA))
+    if _n("cm_brut"):
+        linii.append(("Indemnizație de concediu medical, brută (suportată de angajator și de FNUASS)",
+                      _n("cm_brut"), FEL_NOTA))
+    linii.append(("Cost total angajator", _n("cost"), FEL_NOTA))
+
+    return [{"eticheta": e, "valoare": v, "fel": f} for e, v, f in linii]
+
+
 def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     """Design System cap.7: reportlab Table, nu drawString manual. Sume in format romanesc.
 
@@ -227,9 +343,6 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     if not r:
         return None
     _ex = exemplar_curent(conn, schema, salariat_id, an, luna)
-
-    def _n(k):
-        return float(r.get(k) or 0)
 
     with conn.cursor() as _cur:
         _cur.execute(f"SELECT culoare_factura, font_factura FROM {schema}.firma_profil WHERE id = 1")
@@ -274,50 +387,18 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
                            textColor=_colors.HexColor("#b91c1c"))))
     el.append(Spacer(1, 10))
 
-    # [F133] impozitul din stat e TOTAL (salariu+tichete); pe fluturas il aratam separat
-    imp_tichete = _n("impozit_tichete")
-    linii = [
-        ("Salariu brut", _n("brut")),
-        ("Facilitate salariu minim (netaxabil)", _n("facilitate")),
-        ("CAS (25%)", -_n("cas")),
-        ("CASS (10%)", -_n("cass")),
-        *randuri_deducere(r),
-        ("Impozit pe venit", -_n("impozit_salariu")),
-        ("SALARIU NET", _n("net")),
-    ]
-    cm_zile = int(_n("cm_zile"))
-    if cm_zile:
-        linii.insert(1, (f"Zile concediu medical: {cm_zile}", None))
-        linii.insert(len(linii) - 1, ("Indemnizatie CM (neta)", _n("cm_net")))
-    # [F133] tichete: doar TAXA (CASS+impozit) se retine din salariul CASH -> reduce NET-ul,
-    # deci ramane INAINTE de SALARIU NET (coloana reconciliaza la net). Valoarea tichetelor se
-    # primeste PE CARD SEPARAT (nu cash) -> se arata DUPA net, + total disponibil = net + tichete.
-    are_masa = _n("tichete_nominal") > 0
-    are_vac = _n("tichete_vacanta") > 0
-    are_cadou = _n("cadou") > 0  # [F133 Faza 2b1] cadou neimpozabil - fara retinere, primit pe card
-    if are_masa or are_vac or are_cadou:
-        # retinerea (CASS+impozit) apare DOAR pt masa/vacanta (taxabile); cadoul e neimpozabil in 2b1
-        if are_masa or are_vac:
-            i = len(linii) - 1  # inaintea SALARIU NET
-            linii.insert(i, ("  CASS tichete (10%) - retinut din salariu", -_n("cass_tichete"))); i += 1
-            linii.insert(i, ("  Impozit tichete (10%) - retinut din salariu", -imp_tichete))
-        val_tichete = _n("tichete_nominal") + _n("tichete_vacanta") + _n("cadou")
-        if are_masa:
-            _zt, _vt = int(_n("tichete_zile")), _n("tichet_masa_valoare")
-            linii.append((f"Tichete masa ({_zt} zile x {_vt:g} lei, pe card)", _n("tichete_nominal")))
-        if are_vac:
-            linii.append(("Tichete vacanta (pe card separat)", _n("tichete_vacanta")))
-        if are_cadou:
-            linii.append(("Tichete cadou (neimpozabil, pe card separat)", _n("cadou")))
-        linii.append(("TOTAL DISPONIBIL (net + tichete)", _n("net") + val_tichete))
-
+    # [lista 5, 30.08.2026] Randurile NU se mai compun aici: vin din `compozitie_fluturas`, aceeasi
+    # sursa pe care o trimite ruta catre ecran. Vezi acolo de ce.
+    comp = compozitie_fluturas(r)
     rows = []
-    for eticheta, val in linii:
-        bold = eticheta in ("SALARIU NET", "TOTAL DISPONIBIL (net + tichete)")
+    for c in comp:
+        if c["fel"] == FEL_NOTA:
+            continue  # notele angajatorului se tiparesc SUB tabel, ca pana acum
+        bold = c["fel"] == FEL_TOTAL
         lbl_st = st_lbl_b if bold else st_lbl
         val_st = st_val_b if bold else st_val
-        val_txt = _bani(val, "lei") if val is not None else ""
-        rows.append([Paragraph(eticheta, lbl_st), Paragraph(val_txt, val_st)])
+        val_txt = _bani(c["valoare"], "lei") if c["valoare"] is not None else ""
+        rows.append([Paragraph(c["eticheta"], lbl_st), Paragraph(val_txt, val_st)])
 
     tabel = Table(rows, colWidths=[100 * _mm, 40 * _mm])
     n_last = len(rows) - 1
@@ -328,14 +409,11 @@ def fluturas_pdf(conn, schema, salariat_id, an, luna, nume_firma=""):
     ]))
     el.append(tabel)
     el.append(Spacer(1, 8))
-    _supra = _n("cas_suprataxa") + _n("cass_suprataxa")
-    _nota_cost = "Cost total angajator (inclusiv CAM 2.25%"
-    if _supra > 0:
-        _nota_cost += f" + suprataxa part-time {_bani(_supra, 'lei')}"
-    _nota_cost += f"): {_bani(_n('cost'), 'lei')}"
-    el.append(Paragraph(
-        _nota_cost,
-        ParagraphStyle("cost", parent=stil["Normal"], fontName=fr, fontSize=9, textColor=_colors.HexColor("#555555")),
-    ))
+    _st_nota = ParagraphStyle("cost", parent=stil["Normal"], fontName=fr, fontSize=9,
+                              textColor=_colors.HexColor("#555555"))
+    for c in comp:
+        if c["fel"] != FEL_NOTA:
+            continue
+        el.append(Paragraph("%s: %s" % (c["eticheta"], _bani(c["valoare"], "lei")), _st_nota))
     doc.build(el)
     return buf.getvalue()

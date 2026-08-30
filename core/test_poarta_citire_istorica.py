@@ -36,12 +36,26 @@ from core import auth_api, db, tenant_stergere as ts
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _MAIN = os.path.join(_RAD, "main.py")
 
-#: cele 13 rute de citire istorica, pe NUMELE functiei (ancora stabila: calea are parametri)
+#: rutele de citire istorica, pe NUMELE functiei (ancora stabila: calea are parametri)
+#:
+#: 13 la deschidere (28.08.2026). A 14-a, `cabinet_balanta_date`, intrata pe 30.08.2026 la lista 5,
+#: si motivul se scrie aici fiindca gardul avertizeaza — pe drept — ca al 14-lea apelant ar putea fi
+#: „varianta (c) pe furis". NU E: `cabinet_documente_balanta` e deja printre cele 13, iar noua ruta
+#: serveste ACELASI artefact, aceeasi luna, aceleasi cifre — doar ca DATE in loc de PDF. Daca ar sta
+#: pe poarta comuna, balanta unei firme scoase din portofoliu s-ar putea DESCARCA dar nu s-ar putea
+#: CITI, ceea ce ar rupe pe jumatate chiar promisiunea pentru care s-a facut poarta: „datele ei raman
+#: neatinse". Nu se largeste clasa de acces; se adauga a doua iesire a unui membru existent.
 RUTE_CITIRE = frozenset({
     "cabinet_urme_portal", "perioade_istoric", "tenant_jurnal", "cabinet_documente_balanta",
+    "cabinet_balanta_date",
     "rapoarte_comerciale", "rapoarte_comerciale_fisa", "rapoarte_salvate_lista",
     "export_saga_factura", "centre_cost_raport", "casa_registru", "cv_fisa",
     "jurnal_marja", "factura_primita_xml"})
+
+#: Perechile „acelasi artefact, doua iesiri". O intrare noua in RUTE_CITIRE care nu e nici in lista
+#: de la deschidere, nici perechea uneia dintre ele, e o LARGIRE a deciziei (b) — si aia se cere, nu
+#: se face. Gardul de mai jos o verifica.
+PERECHI_ACELASI_ARTEFACT = {"cabinet_balanta_date": "cabinet_documente_balanta"}
 
 #: acte de SCRIERE pe aceleasi cai — raman pe poarta comuna, si asta se pazeste
 SCRIERI_PE_ACELEASI_CAI = frozenset({"jurnal_creeaza", "rapoarte_salvate_creeaza"})
@@ -84,6 +98,25 @@ def test_poarta_de_citire_are_exact_cei_13_apelanti_numiti():
         "poarta de citire-istorica are alti apelanti decat cei 13 declarati.\n"
         "  in plus: %s\n  lipsa:   %s" % (sorted(apelanti - RUTE_CITIRE),
                                           sorted(RUTE_CITIRE - apelanti)))
+
+
+def test_orice_intrare_noua_e_a_doua_iesire_a_uneia_vechi_nu_o_clasa_noua():
+    """ZAVORUL care tine decizia (b) sa nu devina (c) prin acumulare.
+
+    Gardul de mai sus cere ca multimea sa fie EXACT cea declarata — dar cine adauga un nume acolo
+    a trecut deja de el. Ce nu poate trece: o intrare care nu e nici din cele 13 de la deschidere,
+    nici declarata pereche a uneia dintre ele. Asa, largirea clasei de acces cere o propozitie
+    scrisa, nu doar un nume adaugat intr-un `frozenset`.
+    """
+    la_deschidere = RUTE_CITIRE - set(PERECHI_ACELASI_ARTEFACT)
+    assert len(la_deschidere) == 13, (
+        "cele de la deschidere nu mai sunt 13, ci %d — o ruta noua a intrat fara sa se declare "
+        "perechea artefactului pe care il serveste" % len(la_deschidere))
+    for noua, veche in PERECHI_ACELASI_ARTEFACT.items():
+        assert la_deschidere >= {veche}, (
+            "%s e declarata a doua iesire a lui %s, dar %s nu e printre cele de la deschidere"
+            % (noua, veche, veche))
+        assert RUTE_CITIRE >= {noua}, "%s e declarata pereche, dar nu e in RUTE_CITIRE" % noua
 
 
 def test_niciuna_din_cele_13_nu_mai_trece_prin_poarta_comuna():

@@ -26,7 +26,7 @@ from core.pdf_util import bani, data_ro
 from core.common import azi_ro, stare_din_nivel, pastila_firma  # [fus] ziua RO; [verdict] nivel->culoare + escaladare pastila
 from core import common as _common
 from core import tenant_stergere  # [R72] calea UNICA de scoatere a unei firme
-from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api
+from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api, declaratii_componente
 from core import afirmatii as _af  # [P8] afirmatiile despre datele firmei sunt obiecte, nu siruri
 from core import cont_valid as _cv  # [R54] contul din corpul cererii se confrunta cu planul firmei
 from core.unde import Unde as _Unde  # [P8] domeniul poate fi un OBIECT, nu o perioada
@@ -3759,6 +3759,11 @@ def declaratie_valideaza(tip: str, date: DeclaratieIn,
             # numara (d101/d112). Ecranul pune o poarta la 0, ca declaratia goala legitima
             # sa nu mai arate identic cu cea golita de un query rupt.
             "operatiuni": declaratii_api.numar_operatiuni(tip, res),
+            # [lista 5, 30.08.2026] DIN CE e facuta cifra, nu doar CATE. Pana azi ruta intorcea un
+            # contor - „valid, 18 operatiuni" - iar contabilul nu putea vedea CARE 18: 0 din 92 de
+            # iesiri isi aratau componentele (1c). Componentele existau pe obiectul de rezultat al
+            # motorului; lipsea transportul. Ce nu se poate desface spune de ce, nu tace.
+            "componente": declaratii_componente.componente(tip, res),
             "xml_b64": _b64.b64encode(xml.encode()).decode()}
 
 
@@ -3782,7 +3787,8 @@ def declaratie_genereaza(tip: str, date: DeclaratieIn,
     avert = getattr(res, "avertismente", None)
     constat = getattr(res, "note_rezultat", None) or []   # canal neutru; [] pt declaratiile fara canal
     return {"tip": tip, "xml": xml, "avertismente": avert, "note_rezultat": constat,
-            "operatiuni": declaratii_api.numar_operatiuni(tip, res)}  # [poarta_gol_v1]
+            "operatiuni": declaratii_api.numar_operatiuni(tip, res),  # [poarta_gol_v1]
+            "componente": declaratii_componente.componente(tip, res)}  # [lista 5]
 
 
 # ============================================================
@@ -4709,6 +4715,12 @@ def tenant_stat_plata(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabin
         # salariati_api.sterge_salariat se inchidea din vizitare. Consumatorul (POST /calcul-cm)
         # calculeaza acum media din sursa, nu din cache-ul de navigare.
         stat = _sp.stat_plata(conn, schema, an, luna)
+        # [lista 5, 30.08.2026] Compozitia netului, din ACEEASI sursa ca fluturasul. Pana azi
+        # componentele se vedeau numai in PDF-ul descarcat: ruta trimitea cele 12 campuri, ecranul
+        # nu randa niciunul (R97). Se trimite gata compusa ca ecranul sa n-o compuna a doua oara -
+        # doua liste ale aceluiasi lucru nu raman egale.
+        for _r in stat:
+            _r["compozitie"] = _sp.compozitie_fluturas(_r)
         with conn.cursor() as _rc:
             _rc.execute("SELECT 1 FROM public.reges_chei WHERE tenant_id=%s", (tenant_id,))
             _reges_ok = _rc.fetchone() is not None
@@ -5549,6 +5561,28 @@ def portal_documente_luni(tenant_id: Optional[int] = None, ctx=Depends(cere_clie
         luni = documente_api.luni_disponibile(conn, t["schema_name"])
         decl = documente_api.declaratii_depuse(conn, t["id"])
     return {"luni": luni, "declaratii": decl}
+@app.get("/tenants/{tenant_id}/balanta")
+def cabinet_balanta_date(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    """[lista 5, 30.08.2026] Balanta ca DATE, nu ca PDF.
+
+    Pana azi singura cale spre cifrele balantei era `documente/balanta`, care intoarce un fisier:
+    ecranul avea titlu, navigare pe luna si un buton de descarcare, atat. O cifra pe care n-o poti
+    citi decat descarcand-o nu se poate verifica pe ecran - chiar asta e criteriul listei 5.
+
+    Inchiderea vine ODATA cu randurile, si ca obiect, nu ca propozitie: pe o balanta goala starea e
+    `nimic_de_verificat`, nu `se_inchide`.
+    """
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+    with db.get_conn(schema) as conn:  # balanta foloseste nume necalificate -> search_path pe tenant
+        randuri = documente_api.balanta(conn, schema, an, luna)
+    return {"randuri": randuri,
+            "totaluri": documente_api.totaluri_balanta(randuri),
+            "inchidere": documente_api.inchidere_balanta(randuri)}
+
+
 @app.get("/tenants/{tenant_id}/documente/balanta")
 def cabinet_documente_balanta(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     from fastapi.responses import Response

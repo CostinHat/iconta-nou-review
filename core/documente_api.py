@@ -61,6 +61,52 @@ def balanta(conn, schema, an, luna):
                             "sf_d": round(fin_d, 2), "sf_c": round(fin_c, 2)})
         return randuri
 
+# Cele trei perechi pe care o balanta de verificare trebuie sa le inchida. Constanta, nu literale
+# imprastiate: gardul citeste MULTIMEA, nu cauta un sir intr-un text (METODA §23).
+PERECHI_BALANTA = (("sold initial", "si_d", "si_c"),
+                   ("rulaje", "rul_d", "rul_c"),
+                   ("sold final", "sf_d", "sf_c"))
+
+# Sub un ban nu e o divergenta, e zgomot de virgula mobila: sumele se aduna din float-uri.
+TOLERANTA_BALANTA = 0.01
+
+
+def totaluri_balanta(randuri):
+    """Totalurile pe cele sase coloane. O SINGURA sursa - le citesc si PDF-ul, si ruta de date.
+
+    Erau calculate inauntrul lui `balanta_pdf`, deci existau numai pe hartie. A doua adunare, scrisa
+    in JS pentru ecran, ar fi fost al doilea calcul al aceluiasi lucru - clasa pe care fluturasul a
+    platit-o deja (vezi `stat_plata_api.rand_fluturas`).
+    """
+    return {c: round(sum(float(r.get(c) or 0) for r in randuri), 2)
+            for c in ("si_d", "si_c", "rul_d", "rul_c", "sf_d", "sf_c")}
+
+
+def inchidere_balanta(randuri):
+    """„Se inchide balanta?" - ca OBIECT cu atribute, nu ca propozitie (DS cap.25.5).
+
+    TREI stari, nu doua, si a treia e cea care conteaza: pe o balanta FARA RANDURI nu se poate
+    spune ca „se inchide" - nu s-a verificat nimic. Un necunoscut nu se rotunjeste la „stiu ca da"
+    mai putin decat la „stiu ca nu" (interdictia 32).
+
+    Egalitatile sunt cele din norma: debitul si creditul se inchid pe soldul initial, pe rulaje si
+    pe soldul final. Ce intoarce e destul ca omul sa VADA de ce, nu doar verdictul: fiecare pereche
+    isi poarta cele doua sume si diferenta lor.
+    """
+    tot = totaluri_balanta(randuri)
+    perechi = [{"ce": ce, "debit": tot[d], "credit": tot[c],
+                "diferenta": round(tot[d] - tot[c], 2),
+                "inchisa": abs(tot[d] - tot[c]) < TOLERANTA_BALANTA}
+               for ce, d, c in PERECHI_BALANTA]
+    if not randuri:
+        stare = "nimic_de_verificat"
+    elif all(p["inchisa"] for p in perechi):
+        stare = "se_inchide"
+    else:
+        stare = "nu_se_inchide"
+    return {"stare": stare, "perechi": perechi, "randuri": len(randuri)}
+
+
 def balanta_pdf(conn, schema, an, luna, nume_firma=""):
     """Design System cap.7: reportlab Table cu colWidths explicite (ca factura_pdf.py),
     nu drawString manual. Sume in format romanesc via pdf_util.bani()."""
@@ -106,11 +152,10 @@ def balanta_pdf(conn, schema, an, luna, nume_firma=""):
 
     cap = ["Cont", "Denumire", "SI D", "SI C", "Rulaj D", "Rulaj C", "SF D", "SF C"]
     date_tab = [[Paragraph(c, st_cap) if i < 2 else Paragraph(c, st_cap_r) for i, c in enumerate(cap)]]
-    tot = [0.0] * 6
+    _t = totaluri_balanta(randuri)  # sursa unica: aceleasi totaluri le vede si ecranul
+    tot = [_t["si_d"], _t["si_c"], _t["rul_d"], _t["rul_c"], _t["sf_d"], _t["sf_c"]]
     for r in randuri:
         vals = [r["si_d"], r["si_c"], r["rul_d"], r["rul_c"], r["sf_d"], r["sf_c"]]
-        for i, v in enumerate(vals):
-            tot[i] += v
         date_tab.append([
             Paragraph(str(r["cont"]), st_cell),
             Paragraph((r["denumire"] or "")[:42], st_cell),

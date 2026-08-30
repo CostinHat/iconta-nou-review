@@ -222,6 +222,54 @@ def apare_in_ecran(nume, src):
             or re.search(r"\{[^{}]*\b%s\b[^{}]*\}" % n, src) is not None)
 
 
+def compuse_pe_server():
+    """{fragment_de_url: {nume_camp}} — campuri pe care ecranul NU le numeste si care ajung totusi
+    la om, fiindca ruta trimite o LISTA DEJA COMPUSA pe care ecranul o parcurge generic.
+
+    E acelasi tipar ca `randat_generic`, doar ca parcurgerea s-a mutat pe server: `.map()` peste
+    `compozitie`, unde fiecare rand isi poarta eticheta si suma. O cautare pe NUME nu poate vedea
+    asta — la fel cum nu vedea `Object.keys(rd)`.
+
+    NU E O LISTA DE BUNAVOINTA, si asta e partea care conteaza. Numele vin din chiar constanta
+    codului care compune (`stat_plata_api.CAMPURI_COMPUSE`), iar `core/test_compozitie_fluturas.py`
+    dovedeste prin MUTATIE, camp cu camp, ca fiecare schimba ce vede omul — plus proba inversa, pe
+    campuri care n-au voie sa schimbe nimic. Daca un camp iese din compozitie si ramane declarat,
+    testul pica; nu poate ramane aici tacut.
+    """
+    from core import stat_plata_api as _sp
+    return {"/stat-plata": set(_sp.CAMPURI_COMPUSE)}
+
+
+def clasifica(chei, src, tot_js, compuse=frozenset()):
+    """{cale: nume} -> (tacut_sigur, candidat, generice, randat_prin_container). PURA: nu atinge
+    nici reteaua, nici baza.
+
+    E SCOASA din `ruleaza()` ca sa poata fi calibrata pe un caz CONSTRUIT. Cat timp clasificarea
+    statea inauntrul buclei vii, singura calibrare posibila era pe starea aplicatiei - iar aia se
+    schimba tocmai fiindca instrumentul cere sa se schimbe. Vezi `calibrare_sintetica`.
+    """
+    sigur, candidat, generice, prin_container, prin_compozitie = [], [], [], [], []
+    for cale, nume in sorted(chei.items()):
+        if nume in PREA_GENERICE:
+            generice.append(cale)
+            continue
+        # Containerul e parcurs generic? Atunci copilul ajunge pe ecran fara sa fie numit.
+        parinti = [p.replace("[]", "") for p in cale.split(".")[:-1] if p.replace("[]", "")]
+        if any(randat_generic(p, src) for p in parinti):
+            prin_container.append(cale)
+            continue
+        # Ruta trimite o compozitie deja randata? Atunci campul ajunge la om fara ca ecranul sa-l
+        # numeasca. Vezi `compuse_pe_server` pentru de ce nu e o scutire pe cuvant.
+        if nume in compuse:
+            prin_compozitie.append(cale)
+            continue
+        if not apare_undeva(nume, tot_js):
+            sigur.append(cale)
+        elif not apare_in_ecran(nume, src):
+            candidat.append(cale)
+    return sigur, candidat, generice, prin_container, prin_compozitie
+
+
 def ruleaza():
     db.init_pool()
     with db.get_conn() as conn:
@@ -240,6 +288,7 @@ def ruleaza():
     assert len(apeluri) > 100, "ANTI-VACUU: doar %d apeluri `api.get` găsite" % len(apeluri)
     assert len(pe_fisier) > 20, "ANTI-VACUU: doar %d fișiere JS citite" % len(pe_fisier)
 
+    compozitii = compuse_pe_server()
     inainte = _snapshot(SCHEMA_TINTA)
     rez, nemasurate, ne_json, esuate = [], [], [], []
     vazute = set()
@@ -259,23 +308,16 @@ def ruleaza():
             continue
         chei = chei_recursiv(corp)
         src = pe_fisier.get(fisier, "")
-        sigur, candidat, generice, prin_container = [], [], [], []
-        for cale, nume in sorted(chei.items()):
-            if nume in PREA_GENERICE:
-                generice.append(cale)
-                continue
-            # Containerul e parcurs generic? Atunci copilul ajunge pe ecran fără să fie numit.
-            parinti = [p.replace("[]", "") for p in cale.split(".")[:-1] if p.replace("[]", "")]
-            if any(randat_generic(p, src) for p in parinti):
-                prin_container.append(cale)
-                continue
-            if not apare_undeva(nume, tot_js):
-                sigur.append(cale)
-            elif not apare_in_ecran(nume, src):
-                candidat.append(cale)
+        comp_rutei = set()
+        for fragment, campuri in compozitii.items():
+            if fragment in concret:
+                comp_rutei |= campuri
+        sigur, candidat, generice, prin_container, prin_comp = clasifica(
+            chei, src, tot_js, compuse=comp_rutei)
         rez.append({"fisier": fisier, "url": concret, "chei": len(chei),
                     "tacut_sigur": sigur, "tacut_in_ecran": candidat,
-                    "randat_prin_container": prin_container, "generice": len(generice)})
+                    "randat_prin_container": prin_container,
+                    "randat_prin_compozitie": prin_comp, "generice": len(generice)})
     dupa = _snapshot(SCHEMA_TINTA)
     miscat = {k: (inainte.get(k), dupa.get(k)) for k in sorted(set(inainte) | set(dupa))
               if inainte.get(k) != dupa.get(k)}
@@ -284,18 +326,66 @@ def ruleaza():
             "martori_miscati": {k: list(v) for k, v in miscat.items()}}
 
 
-def calibrare(d):
-    """Cazurile cunoscute TREBUIE găsite; cele randate NU au voie să apară. Fără asta, cifra nu e rezultat."""
+# Cele sase instante FONDATOARE ale clasei - cele pe care s-a deschis R97, doua din registrul-jurnal
+# si patru din statul de plata. NU mai sunt aserttiune; sunt RAPORT. Asa reparatia se VEDE, in loc sa
+# dispara odata cu aserttiunea care o interzicea.
+INSTANTE_FONDATOARE = ("nr_curent", "total_debit", "total_credit",
+                       "deducere_tineri", "deducere_copii", "cas_suprataxa")
+
+
+def calibrare_sintetica():
+    """Calibrarea instrumentului, in AMANDOUA directiile, pe un caz CONSTRUIT - nu pe starea vie.
+
+    DE CE S-A SCHIMBAT (30.08.2026, la prima reparatie din lista 5). Forma dinainte cerea ca cele
+    sase INSTANTE FONDATOARE sa fie GASITE ca tacute. Alea sunt chiar defectele pe care instrumentul
+    le-a scos la iveala ca sa fie reparate - deci prima reparatie il facea sa pice, si nu pe un
+    defect al lui. S-a intamplat exact asa: la randarea coloanelor registrului-jurnal, `assert`-ul a
+    cazut, iar instrumentul a devenit inutilizabil fix cand incepea munca pe care el o ordonase.
+
+    *O calibrare pozitiva ancorata pe instantele care urmeaza sa fie reparate se autodistruge la
+    prima reparatie.* Ce trebuie sa ramana adevarat nu e ca aplicatia ARE defectul, ci ca
+    DETECTORUL il vede. Deci calibrarea se muta pe un caz sintetic, care nu se schimba cand se
+    schimba aplicatia (METODA §22 - ambele directii de esec).
+
+    Cazul: cinci chei si o sursa JS care le trateaza pe fiecare altfel.
+    """
+    src = ("const r = await api.get(`/x`);\n"
+           "corp.innerHTML = `${r.afisat_aici}`;\n"
+           "const c = r.container;\n"
+           "Object.keys(c).forEach((k) => rand(k));\n")
+    alt_fisier = "corp.innerHTML = `${q.afisat_in_alt_fisier}`;\n"
+    chei = {"afisat_aici": "afisat_aici",
+            "afisat_in_alt_fisier": "afisat_in_alt_fisier",
+            "nicaieri_xyz": "nicaieri_xyz",
+            "container": "container",
+            "container.copil_nenumit": "copil_nenumit"}
+    chei["dus_de_compozitie"] = "dus_de_compozitie"
+    sigur, candidat, _gen, container, compozitie = clasifica(
+        chei, src, src + alt_fisier, compuse={"dus_de_compozitie"})
+    return [
+        # POZITIV - ce TREBUIE gasit, altfel instrumentul nu vede clasa deloc.
+        ("POZITIV  camp pe care nu-l numeste nimeni -> tacut sigur", "nicaieri_xyz" in sigur),
+        ("POZITIV  numit doar in ALT fisier -> candidat", "afisat_in_alt_fisier" in candidat),
+        # NEGATIV - ce NU are voie sa apara, altfel instrumentul inventeaza instante.
+        ("NEGATIV  randat in chiar ecranul care-l cere -> nu e tacut",
+         "afisat_aici" not in sigur and "afisat_aici" not in candidat),
+        ("NEGATIV  copil de container parcurs generic -> scos din clasa",
+         "container.copil_nenumit" in container),
+        ("NEGATIV  copil de container -> nu se numara tacut",
+         "container.copil_nenumit" not in sigur and "container.copil_nenumit" not in candidat),
+        # Cosul compozitiei, in amandoua directiile: nici scutire pe degeaba, nici numarat tacut.
+        ("POZITIV  camp dus de o compozitie server -> cos propriu",
+         "dus_de_compozitie" in compozitie),
+        ("NEGATIV  camp dus de compozitie -> nu se numara tacut",
+         "dus_de_compozitie" not in sigur and "dus_de_compozitie" not in candidat),
+    ]
+
+
+def instante_fondatoare(d):
+    """[(nume, mai_e_tacut)] - raport, nu aserttiune. Vezi `calibrare_sintetica` pentru de ce."""
     tacut = {c for r in d["rezultate"] for c in r["tacut_sigur"] + r["tacut_in_ecran"]}
     nume_tacute = {c.split(".")[-1].replace("[]", "") for c in tacut}
-    pozitive, negative = [], []
-    for asteptat in ("nr_curent", "total_debit", "total_credit"):
-        pozitive.append((asteptat, asteptat in nume_tacute))
-    for asteptat in ("deducere_tineri", "deducere_copii", "cas_suprataxa"):
-        pozitive.append((asteptat, asteptat in nume_tacute))
-    for nerandat in ("descriere", "sold_final", "operatiuni"):
-        negative.append((nerandat, nerandat not in nume_tacute))
-    return pozitive, negative
+    return [(n, n in nume_tacute) for n in INSTANTE_FONDATOARE]
 
 
 def tipar(d):
@@ -317,6 +407,9 @@ def tipar(d):
     n_cont = sum(len(r.get("randat_prin_container") or []) for r in d["rezultate"])
     print("  RANDAT PRIN CONTAINER (Object.keys/entries pe părinte): %d câmpuri — SCOASE din clasă"
           % n_cont)
+    n_comp = sum(len(r.get("randat_prin_compozitie") or []) for r in d["rezultate"])
+    print("  RANDAT PRIN COMPOZIȚIE PE SERVER (ruta trimite rândurile gata compuse): %d câmpuri"
+          % n_comp)
     print("  *Primul e PLAFON INFERIOR: randatul e supra-numarat prin constructie.*")
 
     print("\n═══ RUTELE CU CÂMPURI TĂCUTE SIGUR")
@@ -325,14 +418,15 @@ def tipar(d):
         print("      %d din %d chei: %s" % (len(r["tacut_sigur"]), r["chei"],
                                             ", ".join(r["tacut_sigur"][:14])))
 
-    poz, neg = calibrare(d)
-    print("\n═══ CALIBRARE")
-    for nume, ok in poz:
-        print("  POZITIV  %-18s %s" % (nume, "GĂSIT" if ok else "*** RATAT ***"))
-    for nume, ok in neg:
-        print("  NEGATIV  %-18s %s" % (nume, "corect absent" if ok else "*** FALS POZITIV ***"))
-    assert all(ok for _n, ok in poz), "calibrare pozitivă picată — instrumentul nu vede clasa"
-    assert all(ok for _n, ok in neg), "calibrare negativă picată — instrumentul inventează instanțe"
+    cal = calibrare_sintetica()
+    print("\n═══ CALIBRARE (caz SINTETIC — nu starea aplicației; vezi calibrare_sintetica)")
+    for eticheta, ok in cal:
+        print("  %-58s %s" % (eticheta, "OK" if ok else "*** PICAT ***"))
+    assert all(ok for _e, ok in cal), "calibrare picată — detectorul nu se comportă cum se afirmă"
+
+    print("\n═══ INSTANȚELE FONDATOARE (raport, nu aserțiune — aici se vede reparația)")
+    for nume, mai_e in instante_fondatoare(d):
+        print("  %-18s %s" % (nume, "încă TĂCUT" if mai_e else "randat — REPARAT"))
 
     print("\n═══ CE A SCRIS SONDA (martori, înainte/după)")
     m = d.get("martori_miscati") or {}

@@ -8,11 +8,11 @@ import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { randeazaControl } from "./control.js?v=d09ca9ab5a";
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
 import { randeazaValidat } from "./validat.js?v=e771e38cc0";
-import { randeazaListaFirme } from "./firme.js?v=b4fe437328";
+import { randeazaListaFirme } from "./firme.js?v=959546c79d";
 import { randeazaRecomanda } from "./recomanda.js?v=4dcc56e1ec"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=f800de9e77"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js?v=8c32cbb767"; // [p63_pachete]
-import { randeazaDeclaratii } from "./declaratii.js?v=cc81187e9a"; // [p44_declaratii]
+import { randeazaDeclaratii } from "./declaratii.js?v=bd6aabd15a"; // [p44_declaratii]
 import { randeazaSetari } from "./setari.js?v=d3e3cec16d"; // [p28_setari] acces asistent: Date profil + Schimba parola (gating existent setari.js:8-19)
 
 function svg(nume, culoare) {

@@ -9,7 +9,7 @@ import { ecranRip } from "./rip_ecran.js?v=e1b8bf534a";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=7019abe613";
 import { ecranEtransport } from "./etransport_ecran.js?v=0dca1ea392";
 import { meniuMigrarePerFirma, randeazaMigrare } from "./migrare.js?v=05a5b55996";  // [p96_import_firma] + [Q4] import in masa
-import { declaratiiPerFirma } from "./declaratii.js?v=cc81187e9a";  // [decl_firma_v1]
+import { declaratiiPerFirma } from "./declaratii.js?v=bd6aabd15a";  // [decl_firma_v1]
 import { CULORI as CULORI_VERDICT, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=ddd1606ae8";  // renderer unic verdict control fiscal (DS cap.20)
 import { randeazaProduse } from "./produse_ecran.js?v=2caaba5417";  // [produse_firma_v1]
 import { ecranMagazin } from "./woo_ecran.js?v=ae22f440bf";  // [wc_extras_v1]
@@ -1072,6 +1072,29 @@ function formularAdeverinta(corp, nav, t, sid, nume, an, luna) {
   });
 }
 
+// [lista 5, 30.08.2026] Compozitia netului, pe ecran. Randurile vin GATA COMPUSE de la server
+// (`stat_plata_api.compozitie_fluturas`), aceeasi sursa din care se tipareste fluturasul - ecranul
+// nu recompune nimic. Deosebirea dintre randuri se face pe `fel`, camp de JSON, nu pe eticheta:
+// un gard care ar cauta „SALARIU NET" ar pazi un sir afisabil (METODA §23).
+function compozitieNet(s) {
+  const c = (s && s.compozitie) || [];
+  if (!c.length) return "";
+  const suma = (x) => (x.valoare == null ? "" : `${bani(x.valoare)} lei`);
+  const rand = (x) => x.fel === "total"
+    ? `<tr><td><b>${esc(x.eticheta)}</b></td><td class="fd-td-num"><b>${suma(x)}</b></td></tr>`
+    : `<tr><td>${esc(x.eticheta)}</td><td class="fd-td-num">${suma(x)}</td></tr>`;
+  const inTabel = c.filter((x) => x.fel !== "nota");
+  const note = c.filter((x) => x.fel === "nota");
+  return `<details class="dec-xml" style="flex:1 1 100%">
+      <summary>Compozi\u021bia netului \u2014 din ce se face ${bani(s.net)} lei</summary>
+      <table class="fd-tabel" style="max-width:560px">
+        <tbody>${inTabel.map(rand).join("")}${note.length ? `
+          <tr><td colspan="2" style="padding-top:12px"><b>Pl\u0103tit de angajator</b> \u2014 nu se scade din net</td></tr>
+          ${note.map(rand).join("")}` : ""}</tbody>
+      </table>
+    </details>`;
+}
+
 async function ecranSalariati(corp, nav, t) {
   const azi = new Date();
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
@@ -1096,6 +1119,7 @@ async function ecranSalariati(corp, nav, t) {
             ${s.pontaj_neconfirmat ? `<div class="pf-frand-sub" style="color:var(--gri)">Tichetele de masă sunt blocate până la confirmarea pontajului lunii (buton „Pontaj").</div>` : ""}
             <div class="pf-frand-sub">brut ${bani(s.brut)} \u00b7 CAS ${bani(s.cas)} \u00b7 CASS ${bani(s.cass)} \u00b7 impozit ${bani(s.impozit_salariu)} \u00b7 <b>net ${bani(s.net)}</b> \u00b7 cost ${bani(s.cost)}${s.tichete_nominal ? ` \u00b7 <span style="color:var(--teal)">tichete ${bani(s.tichete_nominal)} (${s.tichete_zile} zile)</span>` : ""}${s.tichete_vacanta ? ` · <span style="color:var(--teal)">vacanță ${bani(s.tichete_vacanta)}</span>${s.vacanta_peste_plafon ? ' <span style="color:var(--rosu)">⚠ peste plafon anual</span>' : ""}` : ""}${s.cadou ? ` · <span style="color:var(--teal)">cadou ${bani(s.cadou)}</span>${s.cadou_taxabil ? ' <span style="color:var(--rosu)">⚠ taxabil (>300 lei/eveniment sau eveniment nelegal)</span>' : ""}` : ""}${s.tichete_cultural ? ` · <span style="color:var(--teal)">cultural ${bani(s.tichete_cultural)}</span>` : ""}${s.tichete_cresa ? ` · <span style="color:var(--teal)">creșă ${bani(s.tichete_cresa)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta) ? ` · <span style="color:var(--gri)">reținut pe tichete: CASS ${bani(s.cass_tichete)} + impozit ${bani(s.impozit_tichete)}</span>` : ""}${(s.tichete_nominal || s.tichete_vacanta || s.cadou) ? ` · <b>total disponibil ${bani(s.total_disponibil)}</b>` : ""}</div>
           </div>
+          ${compozitieNet(s)}
           <div style="display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-start;width:100%">
           <button class="buton-primar" data-flut="${s.id}">Flutura\u0219</button>
           <button class="buton-secundar" data-reges="${s.id}">REGES</button>
@@ -1154,7 +1178,7 @@ async function ecranSalariati(corp, nav, t) {
       : `<div class="caseta-atentie">
           <b>Nota propusă nu coincide cu D112 pe ${p.divergente.length} ${p.divergente.length === 1 ? "cont" : "conturi"}.</b>
           <div class="tip-micut">Nu se blochează nimic: nu se poate ști din afară care dintre cele două greșește — poate declarația e veche, poate nota e corectă.</div>
-          <table class="tabel-simplu" style="margin-top:8px">
+          <table class="fd-tabel" style="margin-top:8px">
             <thead><tr><th>Ce</th><th>Cont</th><th>Nota ar scrie</th><th>D112 declară</th><th>Diferență</th></tr></thead>
             <tbody>${p.divergente.map((d) => `<tr>
               <td>${esc(d.eticheta)}</td>
@@ -1170,7 +1194,7 @@ async function ecranSalariati(corp, nav, t) {
       zonaContare.innerHTML = `<div class="pf-frand" style="display:block;margin:10px 0">
         <div class="pf-frand-nume">${esc(p.document_ref)} — ${p.note.length} ${p.note.length === 1 ? "linie" : "linii"}, total ${bani(p.total)} lei</div>
         ${randDivergente(p)}
-        <table class="tabel-simplu" style="margin-top:8px">
+        <table class="fd-tabel" style="margin-top:8px">
           <thead><tr><th>Debit</th><th>Credit</th><th>Sumă</th></tr></thead>
           <tbody>${p.note.map((n) => `<tr><td>${esc(n.debit)}</td><td>${esc(n.credit)}</td><td>${bani(n.suma)}</td></tr>`).join("")}</tbody>
         </table>
@@ -2744,13 +2768,23 @@ async function ecranJurnal(corp, nav, t) {
     ? `<span style="color:var(--galben);font-weight:600">\u25cf Ciorn\u0103</span>`
     : `<span style="color:var(--verde);font-weight:600">\u25cf Validat\u0103</span>`;
 
+  // [14-1-1 col.3, lista 5, 30.08.2026] „Felul, numarul si data documentului justificativ care sta
+  // la baza operatiunilor" (OMFP 2634/2015, Anexa 1, pct. 45). Ruta il DERIVA
+  // (`jurnal_api.document_justificativ`) si intoarce `null` cand nu are din ce - ecranul spune
+  // atunci ca nu S-A PUTUT DERIVA, nu ca nota n-are document: un necunoscut nu se rotunjeste la
+  // „stiu ca nu" (interdictia 32).
+  const docJustificativ = (n) => `Document justificativ: ${n.document
+    ? esc(n.document)
+    : "nederivat \u2014 nota n-are referin\u021b\u0103 scris\u0103 \u0219i nu e legat\u0103 de o factur\u0103"}`;
+
   let centre = [];  // [F143] centre active, pentru selectorul de pe linia de nota manuala
   const deseneaza = async () => {
     corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
-    let note = [];
+    let note = [], jur = {};
     try {
       const r = await api.get(`/tenants/${t.id}/jurnal?an=${an}&luna=${luna}`);
       note = (r && r.note) || [];
+      jur = r || {};
     } catch { corp.innerHTML = `<p class="ecran-nota">Nu am putut încărca jurnalul.</p>`; return; }
     try {
       const rc = await api.get(`/tenants/${t.id}/centre-cost?doar_active=true`);
@@ -2767,8 +2801,8 @@ async function ecranJurnal(corp, nav, t) {
       return `
         <div class="pf-frand">
           <div class="pf-frand-text">
-            <div class="pf-frand-nume">${dataRo(n.data)} \u00b7 ${esc(n.descriere || n.numar || "#" + n.id)} \u00b7 ${badge(n)}</div>
-            <div class="pf-frand-sub">${n.linii.map((l) => `${esc(l.debit)} = ${esc(l.credit)} \u00b7 ${bani(l.suma)}${l.centru_nume ? ` \u00b7 <span style="color:var(--teal)">${esc(l.centru_nume)}</span>` : ""}`).join("<br>")}${n.sursa ? " \u00b7 sursa: " + esc(n.sursa) : ""}</div>
+            <div class="pf-frand-nume">${n.nr_curent != null ? `Nr. crt. ${n.nr_curent} \u00b7 ` : ""}${dataRo(n.data)} \u00b7 ${esc(n.descriere || n.numar || "#" + n.id)} \u00b7 ${badge(n)}</div>
+            <div class="pf-frand-sub">${n.linii.map((l) => `${esc(l.debit)} = ${esc(l.credit)} \u00b7 ${bani(l.suma)}${l.centru_nume ? ` \u00b7 <span style="color:var(--teal)">${esc(l.centru_nume)}</span>` : ""}`).join("<br>")}${n.sursa ? " \u00b7 sursa: " + esc(n.sursa) : ""}<br>${docJustificativ(n)}</div>
           </div>
           <div style="display:flex;flex-direction:column;gap:6px;align-items:stretch">${butoane}</div>
         </div>`;
@@ -2799,6 +2833,16 @@ async function ecranJurnal(corp, nav, t) {
         ? (inEditare === "nou" ? "" : `<div class="stare-goala">Nicio not\u0103 \u00een luna asta.</div>`)
         : note.map(rand).join(""));
     const ciorne = note.filter((n) => n.status === "ciorna").length;
+    // [14-1-1, pct. 45] „Sumele debitoare si sumele creditoare se totalizeaza lunar." Ruta le
+    // trimite din 24.08; randarea le pierdea. `note_fara_document` se arata fiindca absenta se
+    // numara, nu se ascunde - e chiar motivul pentru care ruta o trimite.
+    const totalizare = !note.length ? "" : `
+      <div style="max-width:640px"><div class="fd-totaluri" style="margin-top:12px">
+        <div class="fd-tot-rand"><span>Note \u00een lun\u0103</span><span>${note.length}</span></div>
+        ${jur.note_fara_document ? `<div class="fd-tot-rand"><span>F\u0103r\u0103 document justificativ derivabil</span><span>${jur.note_fara_document}</span></div>` : ""}
+        <div class="fd-tot-rand fd-tot-final"><span>Total sume debitoare</span><span>${bani(jur.total_debit)} lei</span></div>
+        <div class="fd-tot-rand"><span>Total sume creditoare</span><span>${bani(jur.total_credit)} lei</span></div>
+      </div></div>`;
     corp.innerHTML = `
       <h2 class="pf-titlu">Registru jurnal ${semnAjutor("F061")}</h2>
       <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} \u00b7 ${note.length} note${ciorne ? ` \u00b7 <span style="color:var(--galben);font-weight:600">${ciorne} de validat</span>` : ""}
@@ -2808,7 +2852,7 @@ async function ecranJurnal(corp, nav, t) {
         <button class="buton-secundar" id="j-nota-noua" style="margin-left:6px">+ Not\u0103 nou\u0103</button>
         <button class="buton-secundar" id="j-lock" style="margin-left:6px"></button>${semnAjutor("F118")}</p>
       <div id="j-mesaj"></div>
-      <div class="pf-lista">${randuri}</div>`;
+      <div class="pf-lista">${randuri}</div>${totalizare}`;
     const zonaMesaj = corp.querySelector("#j-mesaj");
     const bLock = corp.querySelector("#j-lock");
     let lunaBlocata = false;
@@ -3272,16 +3316,79 @@ async function ecranBonuri(corp, nav, t) {
   randeazaLista();
 }
 
-// [balanta] Balanta de verificare - descarcare PDF lunar
+// [balanta] Balanta de verificare - tabelul pe ecran + descarcare PDF lunar
+//
+// [lista 5, 30.08.2026] Pana azi ecranul avea titlu, navigare pe luna si un buton „Descarca PDF",
+// atat: singura ruta era cea care intoarce un FISIER. O cifra pe care n-o poti citi decat
+// descarcand-o nu se poate verifica pe ecran - chiar criteriul listei 5. Acum cifrele vin pe
+// `/tenants/{id}/balanta`, iar totalurile si inchiderea sunt calculate pe SERVER, in aceeasi sursa
+// din care se tipareste PDF-ul (`documente_api.totaluri_balanta`): ecranul nu aduna nimic.
 async function ecranBalanta(corp, nav, t) {
   const azi = new Date();
   let an = azi.getFullYear(), luna = azi.getMonth() + 1;
-  const deseneaza = () => {
+
+  const randCont = (r) => `<tr>
+      <td>${esc(r.cont)}</td><td>${esc(r.denumire || "")}</td>
+      <td class="fd-td-num">${bani(r.si_d)}</td><td class="fd-td-num">${bani(r.si_c)}</td>
+      <td class="fd-td-num">${bani(r.rul_d)}</td><td class="fd-td-num">${bani(r.rul_c)}</td>
+      <td class="fd-td-num">${bani(r.sf_d)}</td><td class="fd-td-num">${bani(r.sf_c)}</td>
+    </tr>`;
+
+  // Inchiderea e un OBIECT cu stare, nu o propozitie (DS cap.25.5), si are TREI stari: pe o luna
+  // fara inregistrari nu s-a verificat nimic - nu se afirma ca „se inchide".
+  const casetaInchidere = (inc) => {
+    if (!inc) return "";
+    const perechi = `<table class="fd-tabel" style="max-width:640px">
+        <thead><tr><th>Ce se \u00eenchide</th><th class="fd-td-num">Debit</th>
+          <th class="fd-td-num">Credit</th><th class="fd-td-num">Diferen\u021b\u0103</th>
+          <th>Verdict</th></tr></thead>
+        <tbody>${inc.perechi.map((p) => `<tr><td>${esc(p.ce)}</td>
+          <td class="fd-td-num">${bani(p.debit)}</td><td class="fd-td-num">${bani(p.credit)}</td>
+          <td class="fd-td-num">${bani(p.diferenta)}</td>
+          <td>${p.inchisa
+            ? `<span style="color:var(--verde);font-weight:600">\u25cf se \u00eenchide</span>`
+            : `<span style="color:var(--rosu);font-weight:600">\u25cf nu se \u00eenchide</span>`}</td></tr>`).join("")}</tbody>
+      </table>`;
+    if (inc.stare === "nimic_de_verificat") {
+      return `<div class="caseta-info"><span class="ci-mesaj">Luna n-are nicio \u00eenregistrare contabil\u0103, deci nu s-a verificat nimic \u2014 ceea ce nu e acela\u0219i lucru cu „balan\u021ba se \u00eenchide". Treci pe o lun\u0103 cu opera\u021biuni, sau \u00eenregistreaz\u0103-le pe ale lunii \u0103steia din Registrul jurnal.</span></div>`;
+    }
+    if (inc.stare === "se_inchide") {
+      return `<div class="caseta-info"><span class="ci-mesaj">Balan\u021ba se \u00eenchide pe toate trei: sold ini\u021bial, rulaje \u0219i sold final \u2014 verificat pe ${inc.randuri} ${inc.randuri === 1 ? "cont" : "conturi"}. Cifrele din care rezult\u0103 sunt chiar mai jos.</span></div>${perechi}`;
+    }
+    return `<div class="caseta-atentie"><div class="ca-mesaj">Balan\u021ba NU se \u00eenchide. Diferen\u021bele sunt mai jos, pe fiecare pereche \u2014 c\u00e2t timp nu sunt zero, nici bilan\u021bul, nici declara\u021biile care citesc solduri nu se pot sprijini pe ea.</div></div>${perechi}`;
+  };
+
+  const deseneaza = async () => {
+    corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+    let b = null;
+    try {
+      b = await api.get(`/tenants/${t.id}/balanta?an=${an}&luna=${luna}`);
+    } catch (e) {
+      corp.innerHTML = `<p class="ecran-nota">Nu am putut \u00eenc\u0103rca balan\u021ba. ${esc((e && (e.mesaj || e.message)) || "")}</p>`;
+      return;
+    }
+    const randuri = (b && b.randuri) || [];
+    const tot = (b && b.totaluri) || {};
+    const tabel = !randuri.length
+      ? `<div class="stare-goala">Nicio \u00eenregistrare \u00een luna asta, deci balan\u021ba n-are ce ar\u0103ta. Balan\u021ba se face din notele contabile ale lunii \u2014 trece pe o lun\u0103 cu opera\u021biuni, sau scrie-le din Registrul jurnal.</div>`
+      : `<table class="fd-tabel">
+          <thead><tr><th>Cont</th><th>Denumire</th>
+            <th class="fd-td-num">SI D</th><th class="fd-td-num">SI C</th>
+            <th class="fd-td-num">Rulaj D</th><th class="fd-td-num">Rulaj C</th>
+            <th class="fd-td-num">SF D</th><th class="fd-td-num">SF C</th></tr></thead>
+          <tbody>${randuri.map(randCont).join("")}
+            <tr><td></td><td><b>TOTAL</b></td>
+              <td class="fd-td-num"><b>${bani(tot.si_d)}</b></td><td class="fd-td-num"><b>${bani(tot.si_c)}</b></td>
+              <td class="fd-td-num"><b>${bani(tot.rul_d)}</b></td><td class="fd-td-num"><b>${bani(tot.rul_c)}</b></td>
+              <td class="fd-td-num"><b>${bani(tot.sf_d)}</b></td><td class="fd-td-num"><b>${bani(tot.sf_c)}</b></td></tr>
+          </tbody></table>`;
     corp.innerHTML = `
       <h2 class="pf-titlu">Balan\u021b\u0103 de verificare</h2>
-      <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")}
+      <p class="pf-intro">Luna ${dataRo(`${an}-${String(luna).padStart(2, "0")}-01`, "luna_an_numeric")} \u00b7 ${randuri.length} conturi
         <button class="buton-secundar" id="b-prev" style="margin-left:12px">\u2190 luna</button>
         <button class="buton-secundar" id="b-next">luna \u2192</button></p>
+      ${casetaInchidere(b && b.inchidere)}
+      ${tabel}
       <p><button class="buton-primar" id="b-pdf">Descarc\u0103 PDF</button></p>
       <div id="b-mesaj"></div>`;
     corp.querySelector("#b-prev").addEventListener("click", () => { luna--; if (luna < 1) { luna = 12; an--; } deseneaza(); });

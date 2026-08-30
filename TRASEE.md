@@ -1137,7 +1137,6 @@ completat din presupunere e mai rău decât unul lipsă.
 **Numerele de firme vin din `scripts/trasee_firme.json`**, regenerat din bază cu
 `scripts/scan_trasee.py --firme`. Trăiesc ca fișier tocmai ca redarea să fie
 recalculabilă fără bază de date — altfel testul care compară n-ar putea rula la poartă.
-
 <!-- trasee:auto:start -->
 
 *Blocul de mai jos e **generat** cu `scripts/scan_trasee.py --md`, iar
@@ -1168,7 +1167,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /tenants/{tenant_id}/istoric-declaratii-import/incarca` — garda `cere_cabinet`
 - `GET /termene` — garda `cere_cabinet`
 
-**Module:** `afirmatii`, `coada_api`, `control_fiscal_api`, `d390`, `declaratii_api`, `duk`, `istoric_declaratii_import_api`, `migrare_api`, `termene_api`
+**Module:** `afirmatii`, `coada_api`, `control_fiscal_api`, `d390`, `declaratii_api`, `declaratii_componente`, `duk`, `istoric_declaratii_import_api`, `migrare_api`, `termene_api`
 
 **Scrie in:** `declaratii_coada` (INSERT/UPDATE) · `declaratii_depuse` (DELETE/INSERT) · `migrare_status` (INSERT)
 
@@ -1256,13 +1255,14 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T05 — Nota contabilă — de la document la registrul-jurnal
 
-**Clasa:** MECANIC · **rute:** 29 (din care schimba date: 25) · **refuzuri explicite:** 169
+**Clasa:** MECANIC · **rute:** 30 (din care schimba date: 25) · **refuzuri explicite:** 170
 
 **Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 22 din 25.**
 
 **Pasii, din cod:**
 
 - `GET /api/v1/firme/{tenant_id}/balanta` — garda `cere_api_key`
+- `GET /tenants/{tenant_id}/balanta` — garda `cere_cabinet`
 - `GET /tenants/{tenant_id}/documente/balanta` — garda `cere_cabinet`
 - `GET /tenants/{tenant_id}/jurnal` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/jurnal` — garda `cere_cabinet`

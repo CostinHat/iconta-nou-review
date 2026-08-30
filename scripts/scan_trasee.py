@@ -70,6 +70,8 @@ TRASEE = [
      ["concedii_medicale"]),
     ("T05", "Nota contabilă — de la document la registrul-jurnal",
      [r"^/tenants/\{\}/jurnal(/|$)", r"^/tenants/\{\}/nota-", r"^/tenants/\{\}/plan-conturi",
+      # [lista 5, 30.08.2026] balanta ca DATE, langa cea ca PDF: acelasi artefact, alta iesire.
+      r"^/tenants/\{\}/balanta$",
       r"^/tenants/\{\}/documente/balanta", r"^/api/v1/firme/\{\}/balanta"],
      ["inregistrari", "inregistrari_linii", "plan_conturi"]),
     # --- deja scrise în TRASEE.md, partea X ---

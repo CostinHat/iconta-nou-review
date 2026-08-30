@@ -6233,3 +6233,106 @@ scrise cu zile sau săptămâni înainte.**
 
 Iar reparația lui R101 a cerut **30 de fișiere de fixturi** completate — nu ca să treacă testele, ci
 fiindcă o fixtură care construiește o firmă fără declarant nu reprezintă o firmă care poate depune.
+
+
+## 30.08.2026 (partea a cincea) — Lista 5 e reparată, 11 din 12. Iar cifra care s-a dovedit greșită e ESTIMAREA de preț, nu măsurătoarea
+
+*Verdictul de producție: **s-au atins ecrane, rute și un motor de PDF** — spre deosebire de
+dimineață, când n-a fost atins niciun fișier de producție. Trei ecrane (`firme.js`, `declaratii.js`),
+trei rute (una nouă), două compoziții mutate în sursă unică, un modul nou, trei gărzi noi.*
+
+### Ordinea a fost ținută: lista 4 → lista 5 → lista 3
+
+Lista 5 era a treia poziție. Cele 12 poziții s-au reparat în ordinea de preț măsurată la 1c —
+ieftinele întâi — și **exact acolo s-a rupt estimarea**.
+
+### Ce spunea estimarea, și ce s-a dovedit
+
+1c măsurase: *„cele 9 declarații sunt scumpe, fiindcă **nici ruta nu trimite**; netul și
+registrul-jurnal sunt ieftine, fiindcă serverul trimite deja și se pierde la randare."* Registrele au
+fost într-adevăr ieftine. **Declarațiile n-au fost scumpe** — fiindcă „ruta nu trimite" nu înseamnă
+„motorul n-are ce trimite". Componentele **existau deja** pe obiectele de rezultat:
+`d100.obligatii` · `d205.beneficiari` · `d300.R` · `d101.P` · `d301.operatiuni` · `d390.ops` ·
+`d394.op1` · cele trei liste ale lui `d406`. Lipsea **transportul**.
+
+*Cifra care s-a dovedit greșită nu e o măsurătoare, e o deducție dintr-o măsurătoare — „scump" a fost
+dedus din „ruta nu trimite", fără să se fi întrebat dacă motorul are ce trimite. E în tabelul de
+cifre invalidate din predare, cu termenii ei.*
+
+### Ce s-a construit, și de ce în forma asta
+
+**O singură compoziție per artefact, nu două.** Componentele netului trăiau în `fluturas_pdf`;
+totalurile balanței, în `balanta_pdf`. A doua scriere — în JS, pentru ecran — ar fi produs două liste
+ale aceluiași lucru, adică exact clasa pe care `rand_fluturas` o descrie în docstringul lui: *două
+calcule ale aceluiași lucru nu rămân egale*. Amândouă s-au mutat în funcții pure pe care le citesc și
+hârtia, și ecranul.
+
+**O singură hartă pentru nouă declarații, nu nouă serializatoare** (`core/declaratii_componente.py`).
+Fiecare tip spune, într-un singur loc, în ce atribut stau componentele și cum se numesc coloanele —
+inclusiv **care coloane sunt monetare**, fiindcă serverul știe și ecranul nu: un rând generic e un
+dicționar, iar `1234` poate fi la fel de bine un cod bugetar.
+
+**Fără plafon tăcut.** O secțiune mai lungă de 500 de rânduri se taie, dar răspunsul spune `total`
+și `aratate`. D406 poartă tot registrul-jurnal al lunii.
+
+### Ce a găsit reparația, pe drum
+
+- **O divergență reală între hârtie și ecran.** `fluturas_pdf` calcula `val_tichete = nominal +
+  vacanță + cadou`; ruta trimitea `total_disponibil` cu **încă doi termeni** — culturale și creșă.
+  Deci cele două arătau **totaluri diferite** pentru același salariat, iar un salariat cu NUMAI
+  tichete culturale nu-și vedea deloc secțiunea de tichete. *Nu era o ipoteză: era acolo, și n-o
+  vedea nimeni fiindcă cele două cifre nu se întâlneau niciodată pe același ecran.*
+- **`tabel-simplu` nu are nicio regulă în `stil.css`** — două tabele erau nestilizate de cine știe
+  când.
+- **Garda proprie a prins o eroare a mea la prima rulare:** copiasem coloanele monetare de la D100
+  pentru D710. `ObligatieRect` are `suma_dat_i`/`suma_dat_c` plus deducerile, iar suma care ajunge pe
+  declarație e o `@property` — pe care `dataclasses.asdict` **nu o vede deloc**. Compoziția ar fi
+  arătat tot afară de cifra care contează.
+
+### Instrumentul care măsura clasa a picat la prima reparație — și e o clasă, nu un accident
+
+Calibrarea pozitivă a lui `scan_r97_livrat_tacut.py` cerea, cu `assert`, ca cele **șase instanțe
+fondatoare** să fie **găsite ca tăcute**. Adică ancora care dovedea că instrumentul vede clasa erau
+**chiar defectele pe care le scosese ca să fie reparate**. La randarea coloanelor registrului-jurnal a
+căzut: instrumentul a devenit inutilizabil **fix în tura în care începea munca pe care el o
+ordonase**, și nu pe un defect al lui, ci pe un succes.
+
+*O calibrare pozitivă ancorată pe instanțele care urmează să fie reparate se autodistruge la prima
+reparație.* Scris ca **METODA §29**. Reparat: clasificarea s-a scos într-o funcție pură, calibrarea
+s-a mutat pe un **caz sintetic** care acoperă toate coșurile în amândouă direcțiile, iar cele șase
+instanțe au rămas ca **raport** — azi toate scriu `randat — REPARAT`. Fără raportul ăla, mutarea pe
+sintetic ar fi șters singura urmă că au existat.
+
+**Al patrulea coș, adăugat tot azi:** *„randat prin compoziție pe server"*. Când ruta trimite rânduri
+gata compuse iar ecranul le parcurge generic, câmpul ajunge la om fără ca ecranul să-l numească —
+același tipar cu `randat_generic`, doar că parcurgerea s-a mutat pe server. Fără coșul ăsta,
+instrumentul ar fi raportat drept tăcute exact câmpurile pe care reparația le dusese pe ecran, adică
+ar fi greșit **în direcția opusă celei declarate**, a doua oară.
+
+### Ce NU s-a reparat, și cu ce condiție
+
+**D112** — `R105`. Nu pentru că i-ar lipsi datele, ci pentru că `_d112_genereaza` întoarce
+`(xml, avertismente)`: pozițiile se scriu în XML și nu mai există nicăieri după aceea. Celelalte opt
+motoare întorc un obiect de rezultat. E o schimbare de **motor**, nu de rută — la funcția cea mai
+încărcată din aplicație, cu trei porți în jurul ei. *O schimbare de motor strecurată într-o tură de
+transport ar fi exact felul de lucru pe care registrul îl interzice.*
+
+**`retinut_tichete`**, singurul câmp rămas tăcut pe statul de plată: e suma exactă a două rânduri deja
+arătate. Declarat cu motiv scris — iar motivul e **verificat prin mutație**, nu crezut pe cuvânt.
+
+### Ce a costat, și de unde
+
+Suita a arătat **8 roșii** la prima rulare completă. Cinci erau registre de regenerat. Trei erau
+constatări reale, toate prinse de gărzi scrise de altcineva-de-ieri:
+
+- **proză într-un payload** — răspunsul rutei purta explicația în text, ceea ce încalcă decizia din
+  21.08 („o afirmație e un obiect, nu un șir"). Reparația n-a fost să tipez afirmația, ci **să n-o
+  trimit**: nomenclator închis pe fir, propoziția la ecran, motivul tehnic în cod;
+- **al 14-lea apelant al porții de citire-istorică** — garda spune, pe drept, că al 14-lea ar fi
+  „varianta (c) pe furiș". Nu era o clasă nouă: e a doua ieșire a unui artefact deja înăuntru. S-a
+  scris motivul **și s-a construit un zăvor nou**, care cere ca orice intrare viitoare să fie
+  declarată pereche a uneia vechi;
+- **nume interne de câmp în text către utilizator** — a căzut odată cu prima.
+
+Plus patru aserțiuni noi ancorate pe text, prinse de clichetul 50, rescrise pe operator de mulțime și
+pe structură.

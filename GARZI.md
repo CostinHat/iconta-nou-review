@@ -5414,9 +5414,9 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**477 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**480 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 463
+### `core/` — 466
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -5467,6 +5467,7 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 - `core/test_audit_preluare.py` — Teste gardian F183 — audit_preluare (nucleele PURE, date minime construite manual).
 - `core/test_audit_schema.py` — Teste F165 — auditor conformitate schema tenant vs tenant_template.sql.
 - `core/test_b3_owner_drepturi.py` — GARD B3: proprietarul cabinetului (admin_firma creat la înregistrare) primește drepturile
+- `core/test_balanta_pe_ecran.py` — GARD — balanța se poate CITI, nu doar descărca; iar „se închide" nu se afirmă pe gol.
 - `core/test_banca_parser.py` — Test parser extras bancar CSV: delimitator robust (fara csv.Sniffer),
 - `core/test_banca_parser_mt940.py` — Test gardian parser MT940 (SWIFT Statement Message).
 - `core/test_base_nula_generatoare.py` — Poarta bazei nule (A, 31.07.2026): FIECARE generator de declaratie are erori_generare() si un
@@ -5498,6 +5499,7 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 - `core/test_coerenta_salarii.py` — GARD [R33, decizia lui Costin 25.08.2026]: semnalul de coerență notă-vs-D112 apare LA PROPUNERE,
 - `core/test_compara_ce_s_a_depus.py` — GARD — D112 ȘI D300 se confruntă cu ce s-a DEPUS, când s-a păstrat; altfel o spun.
 - `core/test_comparatii_clasificate.py` — GARDA PE DIRECTIA INVERSA: o comparatie pe o valoare de registru e CLASIFICATA. (P11, 22.08.2026)
+- `core/test_compozitie_fluturas.py` — GARD — compoziția netului ajunge CHIAR la om, și e o singură sursă pentru hârtie și pentru ecran.
 - `core/test_conflicte_sursa.py` — GARDĂ pentru partea deschisă a interdicției 58 — conflictele NEÎNREGISTRATE între surse.
 - `core/test_conformitate.py` — GARDĂ: fiecare interdicție din plan are secțiune în CONFORMITATE.md, completă. (22.08.2026)
 - `core/test_constante_nesursate.py` — CLICHET (20.08.2026): clasa constantelor fiscale nesursate din PRODUCȚIE nu mai crește.
@@ -5656,6 +5658,7 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 - `core/test_datorie.py` — REGISTRUL DE DATORIE — ce e amanat, ca test care ruleaza.
 - `core/test_declarant_oblig.py` — core/test_declarant_oblig.py — GARD: declarantul (nume + functie) e OBLIGATORIU in profil - se cere
 - `core/test_declarant_warn.py` — core/test_declarant_warn.py — GARD: cand declarantul lipseste din profil, generatoarele AVERTIZEAZA
+- `core/test_declaratii_componente.py` — GARD — fiecare dintre cele nouă declarații ori își arată componentele, ori spune de ce nu poate.
 - `core/test_declaratii_depuse_randuri.py` — Teste F163v2 — persistarea declaratiei depuse (xml + randuri) in public.declaratii_depuse.
 - `core/test_declaratii_lot2_duk.py` — Lot 2 de declaratii noi (10): proba DUK pe fiecare, cu validatorul OFICIAL ANAF.
 - `core/test_declaratii_lot3_duk.py` — Lot 3 de declaratii noi (6): proba DUK pe fiecare, cu validatorul OFICIAL ANAF.

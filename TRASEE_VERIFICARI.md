@@ -68,7 +68,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma,angajat*
 
-*ce face: intoarce {avertismente, note_rezultat, operatiuni, tip, xml}*
+*ce face: intoarce {avertismente, componente, note_rezultat, operatiuni, tip, xml}*
 
 - [x] fiecare operațiune din evidență care ar trebui să apară în declarație, apare — absența nu e vizibilă în structură
 - `operatiuni` conține și cele excluse, cu motivul și temeiul excluderii, nu doar cele incluse

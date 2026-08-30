@@ -604,6 +604,56 @@ date **vii**, nu din cod. Codul nu se mișcă singur în timpul porții; datele 
   scrie predarea fără bloc și se declară de ce; garda va cere blocul înapoi la prima rulare verde.
 
 
+## §29 — O CALIBRARE POZITIVĂ ANCORATĂ PE INSTANȚELE CARE URMEAZĂ SĂ FIE REPARATE SE AUTODISTRUGE
+
+*(30.08.2026, măsurat la prima reparație din lista 5. Nu e o ipoteză: instrumentul a picat efectiv,
+la prima atingere a codului pe care el însuși o ceruse.)*
+
+`scripts/scan_r97_livrat_tacut.py` măsoară clasa *„ruta livrează, ecranul tace"*. Calibrarea lui
+pozitivă cerea ca **cele șase instanțe fondatoare** — `nr_curent`, `total_debit`, `total_credit`,
+`deducere_tineri`, `deducere_copii`, `cas_suprataxa` — **să fie GĂSITE ca tăcute**, cu `assert`. Adică
+ancora care dovedea că instrumentul vede clasa erau **chiar defectele pe care le scosese ca să fie
+reparate**.
+
+**Ce s-a întâmplat:** prima reparație — randarea celor trei coloane ale registrului-jurnal — a făcut
+`assert`-ul să cadă. Instrumentul a devenit inutilizabil **exact în tura în care începea munca pe
+care el o ordonase**, și nu pe un defect al lui: pe un succes.
+
+### De ce e o clasă, nu un accident
+
+Tiparul se naște de fiecare dată la fel, și pare corect când îl scrii: *„instrumentul trebuie să
+dovedească că vede clasa; am două instanțe cunoscute; le pun în calibrare."* Instanțele cunoscute
+sunt însă, prin construcție, **exact cele care vor dispărea** — un instrument de măsurat o datorie e
+făcut ca datoria să scadă. Cu cât e mai bun, cu atât mai repede își taie propria ancoră.
+
+Are aceeași formă cu **§14 (doc↔cod)** și cu **§25**: o afirmație scrisă o dată, adevărată atunci,
+care nu are niciun mecanism prin care să afle că s-a schimbat lumea de sub ea. Diferența e că aici
+mecanismul **există și e un `assert`** — deci nu îmbătrânește tăcut, cade zgomotos. Asta e partea
+bună; partea rea e că cade **peste reparație**, iar cine îl vede roșu are toate motivele să creadă
+că a stricat ceva.
+
+### Regula
+
+**Ce trebuie să rămână adevărat nu e că aplicația ARE defectul, ci că DETECTORUL îl vede.** Deci
+calibrarea se ancorează pe un **caz construit**, care nu se schimbă când se schimbă aplicația:
+
+1. clasificarea se scoate din bucla vie într-o funcție **pură**, ca să poată fi chemată pe date
+   inventate — cât timp stă înăuntrul buclei, singura calibrare posibilă e pe starea aplicației;
+2. cazul sintetic acoperă **fiecare coș** al clasificării, în amândouă direcțiile (§22): ce trebuie
+   găsit **și** ce n-are voie să apară;
+3. **instanțele fondatoare rămân, dar ca RAPORT, nu ca aserțiune** — instrumentul tipărește, pentru
+   fiecare, dacă mai e tăcută sau a fost reparată. Așa reparația **se vede** în ieșirea
+   instrumentului, în loc să dispară odată cu aserțiunea care o interzicea.
+
+Punctul 3 nu e cosmetic: fără el, mutarea calibrării pe sintetic ar șterge singura urmă că cele șase
+au existat vreodată.
+
+### Corolarul, mai larg decât un instrument
+
+Orice clichet, prag sau aserțiune care numește **instanțe** în loc de **proprietăți** are aceeași
+soartă. Un clichet pe un NUMĂR e sănătos — scade, și e bine. O aserțiune pe o LISTĂ DE NUME e o
+promisiune că numele alea vor rămâne defecte.
+
 ## §28 — O ÎNLOCUIRE DE TEXT ÎNTR-UN INSTRUMENT DE GENERARE AFIRMĂ CĂ A GĂSIT POTRIVIREA
 
 *(28.08.2026, a treia recurență — regula se scrie abia acum, și asta e chiar partea de reținut.)*
