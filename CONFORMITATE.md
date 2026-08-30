@@ -40,7 +40,7 @@ face doar imposibilă acumularea unei narațiuni care să îmbătrânească. *(D
 după a doua oară: „e gardul care nu citește proză și totuși o disciplinează".)*
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **ordinea e dată: lista 4 → lista 5 → lista 3**, faza 2 după ele (`DECIZII.md` 12). Clasa R97 măsurată și descompusă: 8 câmpuri → **R99**, 14 → adâncimea listei 5, 32 rămân clasă pe ecrane interne. *(Cifrele se derivă.)*
+- **pasul curent**: **lista 4 e GOALĂ** — R93 și R102 rezolvate, golul re-măsurat pe 19 firme. Urmează **lista 5** (12 poziții, cu adâncimea R97 pliată în ea), apoi lista 3, apoi faza 2. *(Cifrele se derivă.)*
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are **pași** — 1a, 1b, 1c și 1d sunt făcute —, dar **criteriul ei de terminare NU e îndeplinit**: listele 3, 4 și 5 nu sunt goale, iar mărimea listei 5 nu se poate ști până nu se măsoară clasa **R97**. Iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna.** *(Stocul istoric nu mai blochează: s-a executat pe 29.08, după ce Costin a spus că nu există clienți reali — starea restanței se citește din registru, nu de aici.)* *(Ultima — ce face aplicația cu o factură EMISĂ care intră prin import — a primit răspuns pe 29.08.2026, varianta (iii), și e construită; starea restanței se citește din registru, nu de aici.)* *(A doua decizie care bloca — TVA la încasare pe factura primită — a primit răspuns pe 29.08.2026, varianta (ii), și e construită; restanța ei e închisă, iar starea se citește din registru, nu de aici.)*
@@ -2076,10 +2076,12 @@ citirea corectează.*
 - **cine deblochează**: INTERN
 - **unde intră**: E1 · faza 1, pasul **1b** · verdictul 1d, **lista 4** · **PRAG 2**
 - **reluări**: 0
-- **stare**: **DESCHISĂ**
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `ae1845e`
 - **deschisă pe commit**: `81b89e7`
 - **măsurat la**: 2026-08-29 · **pe commit**: `81b89e7`
 - **ce blochează**: `firma_profil_api.OBLIGATORII` leagă `adresa` de **D100, D205 și D394**. Pe `tenant_001`, unde adresa lipsește, D100 și D205 (și D101) se opresc curat, cu mesaj în clar: *„LIPSĂ adresă domiciliu fiscal (obligatorie)"* — `raise ValueError` → 422. **D394 nu se oprește**: `core/d394.py:1086` ia rezultatul lui `valideaza(res)` — care conține **exact aceeași propoziție** — și îl împinge în `res.avertismente`, deci generarea continuă. Rezultatul, măsurat prin arbitrul oficial: **DUKIntegrator respinge XML-ul** cu *„eroare atribut: adresa: atribut prezent dar vid nepermis"*, plus `telefon` și `adresaR`. Contabilul primește eroarea brută a validatorului ANAF în locul propoziției pe care aplicația o avea deja scrisă. **A doua instanță din lista 4, cu altă cauză:** pe `tenant_017`, D394 pică pe regula DUK **R112.1** (operațiuni de tip L/LS/V fără `nrFacturi`) — defect de conținut, nu de câmp lipsă; se închide separat, nu odată cu prima.
+- **cum s-a rezolvat**: `core/d394.py` ridică acum erorile lui `valideaza(res)` în loc să le împingă în `avertismente` — aceeași formă pe care o au D100/D101/D205. **Probat pe instanța vie**, prin rută: `tenant_001` → **422**, *„D394 nu se poate genera: LIPSĂ adresă domiciliu fiscal (obligatorie). LIPSĂ telefon (obligatoriu în D394).”*, în locul erorii brute a validatorului ANAF. **Neregresie probată**: cele patru firme pe care D394 ieșea `valid` ies tot `valid`, cu același număr de operațiuni. **Gardat** de `core/scan_camp_blocant.py` + `core/test_camp_blocant.py`, care confruntă pe AST harta `OBLIGATORII` cu ce oprește efectiv fiecare generator, **în amândouă direcțiile**; RED-proof rulat: cu mutația care întoarce d394 la avertisment, garda cade numind exact `adresa`, `caen`, `telefon`. **A doua instanță** (regula R112.1 pe `tenant_017`) s-a desprins ca **R102** și e și ea rezolvată, deci `scripts/scan_1b_regimuri.py` întoarce **lista 4 = 0** pe toate cele 19 firme.
 - **condiția de deblocare**: `d394.genereaza` tratează erorile lui `valideaza(res)` ca **blocante**, la fel ca D100/D101/D205 — nu ca avertismente; iar o gardă confruntă, **în amândouă direcțiile**, mulțimea câmpurilor din `OBLIGATORII` cu ce oprește efectiv fiecare generator, ca despărțirea să nu se poată naște din nou tăcut. Se închide când `scripts/scan_1b_regimuri.py` întoarce **0** poziții în lista 4 pentru cauza „câmp obligatoriu lipsă", pe toate cele 19 firme. *R112.1 pe `tenant_017` rămâne deschisă în restanța asta, numită separat, până i se măsoară cauza.*
 
 ### R94 — Două mecanisme răspund diferit la „ce datorează firma asta", iar generatorul nu ascultă de niciunul
@@ -2161,6 +2163,46 @@ citirea corectează.*
 - **ce blochează**: ruta `GET /tenants/{id}/scoatere` există **anume** ca să nu existe surprize — docstringul ei o spune: *„Ce se întâmplă dacă firma se scoate […] Se citește ÎNAINTE de apăsare — un refuz care apare abia după apăsare e o surpriză."* Măsurat cu `scripts/scan_r97_livrat_tacut.py`: **8 din cele 31 de câmpuri** ale răspunsului nu ajung niciodată în `static/js`. Ce tace, și **de ce contează**: `evidenta.detalii.*` — numărătoarea **per tabel** a evidenței (`artefacte_produse`, `declaratii_coada`, `efactura_trimiteri`, `etransport_trimiteri`, `state_plata`), **inclusiv zerourile** — și `tabele_curatate`, lista celor 13 tabele comune care s-ar curăța. Ecranul randează `evidenta.motive`, care conține **doar ce s-a găsit** (`"3 declarații în coadă"`); ce s-a **căutat și a ieșit gol** nu apare nicăieri. **Un om care vede „firma nu a produs niciun document" nu poate ști dacă asta înseamnă „am verificat cinci evidențe și toate sunt goale" sau „am verificat una".** Pe actul care nu se poate întoarce, diferența dintre cele două e chiar întrebarea.
 - **CE NU E ADEVĂRAT, și e corectarea unei afirmații de-a mea**: în raportul din 30.08 scrisesem că previzualizarea *„nu arată nici ce s-a decis, nici ce anume s-ar șterge"*. **Fals, pe amândouă.** Citit în `static/js/ecrane/firme.js`: `randuri_de_sters` **se afișează**, „N × `<tabel>`" pentru fiecare tabel negol, prin `Object.keys(rd)` — instrumentul nu-l vedea fiindcă parcurgerea e **generică**, iar el căuta pe nume (reparat, vezi R97). `evidenta.motive` **se afișează**, inclusiv cazul *„nu pot decide: lipsesc din schema tabelele …"*, deci necunoscutul **nu** e rotunjit la „știu că nu". Iar confirmarea prin CUI **se cere**, doar că din `p.cui`, nu din `confirmare_ceruta` — câmpul din răspuns e un duplicat ignorat, nu o poartă lipsă. *Afirmația mea a fost făcută pe ieșirea instrumentului, fără citirea codului. Restanța rămâne deschisă pentru ce a mai rămas după corectare — care e mai mic, și e scris mai sus.*
 - **condiția de deblocare**: previzualizarea arată **și ce s-a verificat**, nu doar ce s-a găsit: fiecare evidență privită apare cu numărul ei, zero inclus, iar lista tabelelor care s-ar curăța e vizibilă înainte de apăsare. Se închide când `scripts/scan_r97_livrat_tacut.py` raportează **0 câmpuri tăcute sigur** pe ruta asta, **și** când o probă pe ecran arată o firmă cu evidență goală afișând explicit cele cinci verificări cu 0 — probat pe instanță, nu doar pe absența câmpului din JSON.
+
+### R100 — O calibrare care testează doar ce știe instrumentul să caute confirmă presupunerea, nu o verifică
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · `METODA_VERIFICARE.md` §22 (ambele direcții de eșec) · interdicția **76** · **PRAG 2**
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `ae1845e`
+- **măsurat la**: 2026-08-30 · **pe commit**: `ae1845e`
+- **ce blochează**: **cerută de Costin pe 30.08.2026, după instanța din aceeași zi.** `scripts/scan_r97_livrat_tacut.py` își declara direcția de eroare — *„«randat» se caută pe nume, deci e supra-numărat, deci clasa iese plafon inferior"* — și greșea **exact invers**: un ecran care parcurge un container generic (`Object.keys`) afișează cheile fără să le numească, deci instrumentul le dădea drept tăcute și **supra-număra** clasa. **Iar calibrarea trecea, în amândouă direcțiile.** Cuvintele deciziei, care sunt chiar diagnosticul: *„Trecea fiindcă testa câmpuri numite — exact ce știa instrumentul să caute. Parcurgerea generică nu era în calibrare, deci calibrarea nu putea s-o rateze, n-avea cum s-o vadă."* **Regula, scrisă o dată:** *un instrument care își declară o direcție de eroare trebuie să aibă în calibrare un caz care ar CĂDEA dacă direcția e inversă; altfel calibrarea confirmă presupunerea, nu o testează.* **Distincția față de ce aveam deja:** „calibrare în amândouă direcțiile" (§22) cere un caz pozitiv **și** unul negativ — dar amândouă pot sta pe aceeași presupunere. Regula asta cere un caz care atacă **presupunerea însăși**.
+- **prima aplicare, deja în repo**: `core/test_camp_blocant.py::test_calibrare_un_avertisment_NU_e_luat_drept_poarta` — instrumentul lui R93 poate greși numărând drept „poartă" o funcție care doar avertizează (adică declarând curat exact tiparul pe care îl caută), iar cazul construit **cade** dacă asta se întâmplă. *Se numește aici ca dovadă că regula e aplicabilă, nu doar enunțabilă.*
+- **condiția de deblocare**: **doar gardă, nu rescrierea instrumentelor acum** (cuvintele deciziei: *„Deschide gardă, nu o construi acum."*). Se construiește o gardă care, pentru fiecare instrument care își **declară** o direcție de eroare în antet (*„plafon inferior"*, *„plafon superior"*, *„supra-numărat"*, *„subestimează"*), cere existența unui caz de calibrare **marcat ca inversor de direcție**. Se închide când garda pică pe un instrument care declară o direcție fără să aibă cazul, probat prin mutație: se scoate cazul dintr-un instrument care îl are, și garda trebuie să cadă.
+
+### R101 — Declarantul e obligatoriu în hartă și nu oprește nicio declarație, iar XML-ul pleacă în numele lui „ADMINISTRATOR"
+
+- **felul**: ARTEFACT
+- **cine deblochează**: DECIZIE
+- **unde intră**: E1 · verdictul 1d · aceeași clasă cu **R93** · **PRAG 2**
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `ae1845e`
+- **măsurat la**: 2026-08-30 · **pe commit**: `ae1845e`
+- **ce blochează**: **găsită de garda lui R93, la prima ei rulare** — adică de instrumentul construit pentru clasa asta, nu de un om care s-a uitat. `firma_profil_api.OBLIGATORII` declară `declarant_nume` și `declarant_functie` obligatorii pentru **opt** declarații (D100, D101, D112, D205, D300, D301, D390, D394) plus bilanț. Măsurat pe AST cu `core/scan_camp_blocant.py`: **nu blochează niciuna**. Ce se întâmplă în schimb, citit în `core/d100.py:build_xml`: dacă declarantul lipsește, se emite implicit **„ADMINISTRATOR"**, cu un avertisment. **Măsurat pe date, 30.08.2026: 7 din 19 firme au declarantul necompletat** — `tenant_001`, `tenant_006` (are nume, n-are funcție), `tenant_014`, `tenant_015`, `tenant_016`, `tenant_018`, `tenant_045` —, iar printre ele sunt firme care produc **azi** declarații `valid`. Deci **declarația pleacă la ANAF în numele cuiva care n-a declarat.** *Comentariul din `OBLIGATORII`, scris pe 17.08.2026, cerea exact invers: „se cer EXPLICIT (ca regim_fiscal), nu se fabrica «ADMINISTRATOR» tacit." Fabricarea nu e tăcută — poartă avertisment —, dar nici cerută explicit nu e.*
+- **de ce cere DECIZIE, nu doar reparație**: dacă declarantul devine blocant, **7 din 19 firme nu mai pot depune** până îl completează. Alternativa e ca harta să nu mai spună „obligatoriu". Amândouă schimbă ce ajunge la contabil, deci alegerea nu e a mea. *Până atunci, perechea stă ca **excepție declarată cu motiv** în `core/test_camp_blocant.py`, ca garda să nu fie roșie pe o datorie cunoscută.*
+- **condiția de deblocare**: se alege una din două — (a) `declarant_nume`/`declarant_functie` devin **blocante** în toate cele opt module, iar cele 7 firme se completează; sau (b) ies din `OBLIGATORII` și fabricarea rămâne, **declarată** ca alegere, nu ca implicit. Se închide când excepția din gardă dispare, iar `core/scan_camp_blocant.py` arată harta și codul de acord.
+
+### R102 — D394 declara livrări și zero facturi emise, în același document, iar contradicția o prindea ANAF
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · verdictul 1d, **lista 4** (a doua poziție) · desprinsă din **R93** · **PRAG 2**
+- **reluări**: 0
+- **stare**: **REZOLVATĂ**
+- **deschisă pe commit**: `ae1845e`
+- **rezolvată pe commit**: `ae1845e`
+- **măsurat la**: 2026-08-30 · **pe commit**: `ae1845e`
+- **ce blochează**: a doua poziție a listei 4, numită separat încă de la deschiderea lui R93 (*„se închide separat, nu odată cu prima"*). Pe `tenant_017`, D394 ieșea cu `erori`, iar arbitrul spunea: *„daca exista operatii de tip L, LS sau V […] atunci cel putin unul din atributele nrFacturi (0) sau nrFacturi_benef (0) sau nrFacturi_terti (0) trebuie sa fie strict pozitive"* (regula **R112.1**). **Cauza, măsurată la sursă:** singura factură emisă în 08/2026 e numerotată **`FG-ICL`, fără nicio cifră**, iar `nr_facturi_emise` numără doar facturile al căror număr **conține cifre** — și pe drept: un număr fără cifre nu e o numerotare. Rezultatul: XML-ul afirma, în același document, *„am livrat"* și *„n-am emis nicio factură"*. **Contradicția e verificabilă de aplicație, cu datele pe care le are în mână** — și totuși o prindea validatorul ANAF, cu textul lui brut.
+- **cum s-a rezolvat**: poartă **pre-DUK** în `d394.valideaza(res)` — care, prin R93, e acum blocantă: dacă există operațiuni de livrare (L/LS/V) și toate cele trei contoare de facturi sunt 0, generarea se oprește cu un mesaj care numește **și cauza, și remediul**: *„Se numără doar facturile al căror NUMĂR conține cifre: verifică numerotarea facturilor emise din perioadă."* **Probat pe instanța vie**, prin rută: `tenant_017` → 422 cu mesajul propriu, în loc de `erori` de la DUKIntegrator. **Neregresie probată**: cele patru firme pe care D394 ieșea `valid` ies tot `valid`, cu același număr de operațiuni.
+- **condiția de deblocare**: îndeplinită — `scripts/scan_1b_regimuri.py` întoarce **lista 4 = 0** pe toate cele 19 firme. *Ce NU s-a reparat, și se scrie: numerotarea fără cifre a facturii `FG-ICL` rămâne în datele de test. Poarta o numește; n-o corectează.*
 
 ### R91 — O factură EMISĂ care intră prin import nu produce nota, iar absența e DECLARATĂ, nu decisă
 
@@ -4912,16 +4954,21 @@ pct. 45 lipsesc din date"*. Munca din 24.08 le derivă la citire, iar 1b a proba
 9 firme cu note. **Nu trece într-o altă listă ca poziție** — devine prima instanță probată a clasei
 **R97**, „ruta livrează, ecranul tace".
 
-#### Lista 4 — ies, dar NU se validează — **2 poziții** (era GOALĂ)
+#### Lista 4 — ies, dar NU se validează — **GOALĂ** (30.08.2026), și de data asta prin REPARAȚIE
 
-| artefact | firma | ce spune arbitrul |
+| poziția | ce era | ce s-a făcut |
 |---|---|---|
-| **D394** | `tenant_001` | *„eroare atribut: adresa: atribut prezent dar vid nepermis"*, plus `telefon` și `adresaR`. Cauza e în cod, nu în date: `d394.valideaza(res)` **conține** verificarea, dar `core/d394.py:1086` o împinge în avertismente (**R93**) |
-| **D394** | `tenant_017` | regula DUK **R112.1** — operațiuni de tip L/LS/V fără `nrFacturi`. Defect de conținut, cauză proprie |
+| **D394** pe `tenant_001` | câmp obligatoriu (`adresa`, `telefon`) tratat ca **avertisment** în loc de poartă; DUKIntegrator respingea XML-ul | **R93 REZOLVATĂ** — `valideaza(res)` e blocantă; ruta întoarce acum *„D394 nu se poate genera: LIPSĂ adresă domiciliu fiscal (obligatorie). LIPSĂ telefon (obligatoriu în D394)."* |
+| **D394** pe `tenant_017` | declarație cu operațiuni de livrare și **zero** facturi emise — contradicție internă prinsă de arbitru (DUK regula R112.1) | **R102 REZOLVATĂ** — poartă pre-DUK; mesajul numește cauza (numărul facturii n-are cifre) și remediul |
 
-**Cele două firme sunt pe regimuri DIFERITE** (`tenant_001` profit·plătitor·lunar·cu salariați;
-`tenant_017` micro·plătitor·lunar·cu salariați·cu IC), deci lista 4 nu e o particularitate a unui
-regim. *Ce nu spune cifra 2: s-a măsurat o singură perioadă.*
+**Diferența față de „goală" din 22.08 e chiar criteriul de ordonare al lui Costin.** Atunci lista era
+goală fiindcă măsurătoarea acoperea **trei firme**; acum e goală fiindcă amândouă pozițiile au fost
+**reparate**, iar golul e **re-măsurat pe 19 firme** cu instrumentul care le găsise:
+`scripts/scan_1b_regimuri.py` → **lista 4 = 0**.
+
+**Ce nu spune golul ăsta:** s-a măsurat **o singură perioadă** (08/2026), iar arbitrul verifică
+**forma**, nu dacă cifrele sunt corecte. *Un gol măsurat pe o fereastră îngustă rămâne un gol pe acea
+fereastră — exact lecția care a pus lista 4 prima.*
 
 #### Lista 5 — ies și se validează, dar NU se pot verifica pe ecran — **12 poziții**
 
@@ -4955,7 +5002,7 @@ artefacte — un ecran reparat o dată curăță aceeași poziție pe toate dou�
 **Cele trei datorii, acum despărțite curat:**
 
 - **lista 3 (8 artefacte)** — muncă de **construit**: producători care nu există, rute care lipsesc;
-- **lista 4 (2 poziții)** — muncă de **reparat**, cea mai mică și cea mai ascuțită: o verificare
+- **lista 4 — GOALĂ din 30.08.2026**, prin reparație, nu prin neuitare: R93 (câmp obligatoriu tratat ca avertisment) și R102 (livrări declarate peste zero facturi emise). *Golul e re-măsurat pe 19 firme, cu instrumentul care le găsise.*
   scrisă care nu blochează (R93);
 - **lista 5 (12 poziții)** — muncă de **predat**, iar 1c a arătat că se desparte în două prețuri: pentru cele 9 declarații e scump, fiindcă **nici ruta nu trimite**; pentru netul de pe fluturaș și pentru registrul-jurnal e ieftin, fiindcă serverul **trimite deja** tot ce trebuie și se pierde la randare. **Adâncimea celor două e măsurată** (R97): 12 câmpuri, respectiv 2.
   desparte în două prețuri: pentru cele 9 declarații e scump, fiindcă **nici ruta nu trimite**;

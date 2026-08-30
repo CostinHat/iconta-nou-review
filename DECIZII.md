@@ -3,6 +3,40 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 30.08.2026 (13) — O calibrare care testează doar ce știe instrumentul să caute confirmă presupunerea, nu o verifică
+
+*Regulă cerută de Costin după ce instrumentul lui R97 a greșit în direcția opusă celei pe care și-o
+declarase — și a trecut calibrarea în amândouă direcțiile în timp ce greșea. Se scrie aici fiindcă e
+o regulă de metodă, nu o reparație.*
+
+**Diagnosticul, în cuvintele lui:** *„Instrumentul greșise în direcția opusă celei pe care și-o
+declarase, iar calibrarea trecea în amândouă direcțiile. **Trecea fiindcă testa câmpuri numite —
+exact ce știa instrumentul să caute.** Parcurgerea generică nu era în calibrare, deci calibrarea nu
+putea s-o rateze, n-avea cum s-o vadă."*
+
+**Regula:** *un instrument care își declară o direcție de eroare trebuie să aibă în calibrare un caz
+care ar **CĂDEA** dacă direcția e inversă; altfel calibrarea confirmă presupunerea, nu o testează.*
+
+**Ce adaugă peste ce aveam.** `METODA §22` cere deja calibrare în **amândouă direcțiile** — un caz
+pozitiv și unul negativ. Instanța de azi arată că nu e destul: **amândouă cazurile pot sta pe aceeași
+presupunere**. Pozitivul căuta un câmp numit și îl găsea; negativul căuta un câmp numit și nu-l
+găsea; **niciunul nu punea la îndoială ideea că un câmp ajunge pe ecran doar dacă e numit**. Regula
+nouă cere un caz care atacă **presupunerea însăși**, nu una din cele două ieșiri ale ei.
+
+**Deschisă ca gardă — `R100` —, nu construită acum**, la cererea explicită: *„Deschide gardă, nu o
+construi acum."*
+
+**Prima aplicare există deja, și n-a fost cerută:** garda lui R93 (`core/test_camp_blocant.py`) are
+`test_calibrare_un_avertisment_NU_e_luat_drept_poarta` — instrumentul ei poate greși numărând drept
+„poartă" o funcție care doar avertizează, adică **declarând curat exact tiparul pe care îl caută**,
+iar cazul construit cade dacă asta se întâmplă. *Se numește ca dovadă că regula e aplicabilă, nu doar
+enunțabilă.*
+
+**Și o consecință asupra a ce s-a scris deja:** cifra invalidată (66 → 54) rămâne în tabelul din
+`PREDARE_LANT.md` **cu direcția ei greșită scrisă explicit** — decizia lui Costin: *„cine citește
+vechea cifră trebuie să afle că a corectat-o mental invers."* O cifră greșită în direcția declarată
+se corectează singură în capul cititorului; una greșită invers îl duce mai departe de adevăr.
+
 ## 30.08.2026 (12) — Ordinea listelor: 4, apoi 5, apoi 3. Iar o listă care iese din gol cântărește mai mult decât una care s-a purtat cum trebuia
 
 *Decizia de ordine, dată de Costin după ce clasa R97 a primit cifră. Se scrie aici fiindcă ordinea e

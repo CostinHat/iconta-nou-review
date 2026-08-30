@@ -1,6 +1,6 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **ordinea e dată** (lista 4 → 5 → 3), clasa R97 măsurată și descompusă (30.08.2026)
+# PREDARE LANȚ — **lista 4 e GOALĂ**, prin reparație; urmează lista 5 (30.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
@@ -10,7 +10,11 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   predare**, **tabelul de restanțe** și **dacă continui**. Restul rămâne cum era, fiindcă nu s-a
   schimbat. *Rescrierea completă de acum câteva ore a fost necesară fiindcă documentul se
   stratificase; o a doua rescriere completă la trei ore după prima ar fi fost ritual, nu nevoie.*
-- **ce s-a schimbat de fapt, azi**: **ordinea e dată — lista 4 → lista 5 → lista 3, faza 2 după ele**
+- **ce s-a schimbat de fapt, ultima tură**: **lista 4 e GOALĂ** — **R93** rezolvată (câmpul
+  obligatoriu tratat ca avertisment) și **R102** rezolvată (livrări declarate peste zero facturi
+  emise), amândouă cu **gardă** și cu golul **re-măsurat pe 19 firme**. S-au deschis **R100** (regula
+  de calibrare) și **R101** (declarantul, găsit de garda nouă la prima ei rulare).
+- **ce s-a schimbat înainte, în aceeași zi**: **ordinea — lista 4 → lista 5 → lista 3, faza 2 după ele**
   (`DECIZII.md` 12) · **clasa R97 e MĂSURATĂ și descompusă** · s-a deschis **R99** (previzualizarea
   scoaterii) · iar cifra de dimineață s-a **corectat în jos**, 66 → **54**, fiindcă instrumentul
   greșea în direcția opusă celei pe care o declarase.
@@ -35,7 +39,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   tabel**. *Se scrie aici, nu doar în tabel: o rescriere al cărei scop era să scoată afirmațiile
   purtate din memorie a purtat ea însăși una, la douăzeci de minute după ce a explicat de ce nu se
   face asta.*
-- **pe commit**: `7dbda7c` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care
+- **pe commit**: `ae1845e` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care
   poartă munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e
   arborele care devine commitul următor.*
 - **cum se citește „pe commit", ca să nu mai pară stale**: numele de acolo e al commitului
@@ -43,7 +47,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   mai jos, măsurată cu formula din `pre-commit`.
 - **vechime măsurată, nu estimată**: **1 commit** de la ultima atingere a fișierului, citit acum cu
   formula din hook (`git rev-list --count $(git log -1 --format=%H -- PREDARE_LANT.md)..HEAD`) —
-  commitul reparatiei instrumentului R97, `7dbda7c`. **Devine 0 odată cu commitul care poartă rândurile
+  commitul reparatiei instrumentului R97, `ae1845e`. **Devine 0 odată cu commitul care poartă rândurile
   astea.**
   Pragul din hook e **10**; avertismentul `[pre-commit] ATENTIE` **nu a apărut** în niciuna din
   porțile de azi. *Se scrie cifra de la momentul scrierii, nu cea de după — altfel documentul ar
@@ -217,9 +221,9 @@ din listele verdictului — e o decizie de ordine, deci a lui Costin.
 
 ## AL PATRULEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
-- **restanțe deschise: 43**, derivat cu `scripts/raport_b.py`. *Ziua a închis douăsprezece și a
-  deschis opt — **R92**, găsită la scrierea ISTORICULUI · **R93–R96**, scoase de măsurătoarea 1b ·
-  **R97–R99**, din 1c, din deciziile care au urmat, și din măsurarea clasei. **Niciuna n-a fost găsită de o gardă.*** Restul
+- **restanțe deschise: 44**, derivat cu `scripts/raport_b.py`. *Ziua a închis douăsprezece și a
+  deschis unsprezece — **R92**, găsită la scrierea ISTORICULUI · **R93–R96**, scoase de măsurătoarea 1b ·
+  **R97–R102**, din 1c, din deciziile care au urmat, din măsurarea clasei și din garda lui R93 — *iar **R93** și **R102** s-au și închis*. **Niciuna n-a fost găsită de o gardă.*** Restul
   defalcării (praguri, cine deblochează) se derivă; **nu se scrie aici**, fiindcă exact rândul ăsta a
   fost invalidat o dată azi.
 - **toate șapte sunt de PRAG 2**, și niciuna nu produce azi o cifră greșită pe un ecran: două trăiesc
@@ -258,10 +262,10 @@ din listele verdictului — e o decizie de ordine, deci a lui Costin.
 
 ## STAREA LA PREDARE
 
-Poartă verde, citită din rularea care a produs `7dbda7c`: **3564 teste trec** · 10 skip · 14 xfail ·
+Poartă verde, citită din rularea care a produs `ae1845e`: **3564 teste trec** · 10 skip · 14 xfail ·
 ruff OK · verificator **TOTAL 0** (182 scanate = 181 acceptate + 1 exclus) · rute
 **413 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 34** (clichet GRI 45) · site **200** · four-way
-`HEAD = origin/main = origin/backup/lant-2026-08-30 = 7dbda7c`, procesul viu restartat de post-commit.
+`HEAD = origin/main = origin/backup/lant-2026-08-30 = ae1845e`, procesul viu restartat de post-commit.
 *Ramura de backup e a zilei noi — `lant-2026-08-30`, creată de hook la primul commit de după miezul
 nopții.*
 
@@ -299,7 +303,7 @@ Vezi tabelul de cifre invalidate.*
 | **R93–R96, DESCHISE azi de 1b** | **R93** — aceeași lipsă (`adresa`) e poartă în D100/D101/D205 și simplu **avertisment** în D394 (`core/d394.py:1086`), iar DUKIntegrator respinge XML-ul: **lista 4 a verdictului 1d nu mai e goală**. · **R94** — selectorul știe forma și vectorul TVA, semaforul știe regimul, generatorul nu ascultă de niciunul: D101 iese valid pe cele 10 firme micro, iar D300/D394 se produc pe 4 neplătitoare, cu nota falsă „un plătitor depune nul". · **R95** — semaforul n-are nicio cale să ceară D100 pe profit, deși CF art. 41 alin. (1) cere declarare trimestrială; `d100.py` are ramura de profit, lipsește cine s-o ceară. · **R96** — balanța și registrul-jurnal citesc ciornele, fișa de cont nu: **21 din 41 de note**. Toate patru sunt **prag 2**. |
 | **R97–R98, DESCHISE de 1c și de deciziile de după** | **R97** — clasa *„ruta livrează, ecranul tace"*: registrul-jurnal (ruta derivă `nr_curent`, `document`, `total_debit`/`total_credit`; ecranul afișează **zero** din ele) și netul de pe fluturaș (toate cele 7 componente sosesc, **niciuna** nu se afișează). **Se tratează ca CLASĂ, nu ca două poziții de listă** — decizia lui Costin —, iar condiția cere **întâi măsurarea clasei**, cu instrumentul care confruntă câmpurile trimise cu cele randate. · **R98** — o interdicție care își poartă inventarul îmbătrânește singură: la 66, `Temei(` a trecut 57 → **64**, mențiunile din JS 43 → **68**, sub un verdict care a rămas corect. Regula: interdicția citează **regula și pragul**, inventarul stă ca **anexă datată**. **Doar gardă, nu rescriere acum.** |
 | **R99, scoasă la suprafață prin decizie** | Previzualizarea scoaterii unei firme arată **ce s-a găsit**, nu **ce s-a verificat**: numărătoarea per evidență — cu zerourile ei — și lista tabelelor curățate nu ajung pe ecran, **8 din 31 de câmpuri**. Un om care citește „firma nu a produs niciun document” nu poate ști dacă s-au verificat cinci evidențe sau una. **Prag 3**, și **nu se repară acum** — Costin a cerut doar să iasă la suprafață cu numărul ei, fiindcă îngropată într-un inventar de zeci de câmpuri se pierde. *Premisa cu care a fost cerută s-a corectat la scriere: ce s-ar șterge **se arată**; vezi tabelul de cifre invalidate.* |
-| **restul (43)** | Vezi `CONFORMITATE.md`. Numărul e derivat, nu scris; nu s-a atins nimic altceva. |
+| **restul (44)** | Vezi `CONFORMITATE.md`. Numărul e derivat, nu scris; nu s-a atins nimic altceva. |
 
 ---
 
@@ -485,12 +489,11 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
    comandă a cerut ceva deja construit, iar o dată ar fi însemnat să **scot** o poartă care merge.
    **Costin a retras el însuși amândouă comenzile**, în tura următoare. Verificarea premisei a costat
    o oră și a scos două lucruri reale.
-3. **Pasul următor e LISTA 4**, prin decizia din 30.08 (`DECIZII.md` 12): **lista 4 → lista 5 →
-   lista 3**, faza 2 după ele. Lista 4 are **2 poziții**, amândouă D394, iar prima e **R93** —
-   aceeași lipsă e poartă în trei module de declarație și simplu avertisment în al patrulea. *Motivul
-   ordinii nu e mărimea: „o listă care iese din gol e semnul că măsurătoarea dinaintea ei se uita în
-   altă parte."* Apoi lista 5 (**12 poziții**, cu adâncimea R97 pliată în ea), apoi lista 3 (8
-   artefacte, muncă de construit).
+3. **Pasul următor e LISTA 5** — lista 4 e închisă. **12 poziții**, cu adâncimea R97 pliată în
+   ele, și cu o despărțire de preț deja măsurată: pentru cele **9 declarații** e scump, fiindcă
+   **nici ruta nu trimite** componentele (0 din 92 de ieșiri); pentru **netul de pe fluturaș** (12
+   câmpuri) și **registrul-jurnal** (2) e ieftin, fiindcă serverul **trimite deja** tot ce trebuie și
+   se pierde la randare. Apoi lista 3 (8 artefacte, muncă de construit), apoi faza 2.
 4. **Nu porni nicio construcție fără măsurătoare.**
 5. **`scripts/raport_b.py` derivă „Unde suntem".** Nu se scrie de mână.
 6. **Raportul se scrie din `SABLON_RAPORT.md`**, în ordinea:

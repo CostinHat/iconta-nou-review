@@ -6099,3 +6099,68 @@ măsurătoarea dinaintea ei se uita în altă parte — două poziții acolo câ
 într-o listă care s-a comportat cum trebuia."*
 
 **Greutatea unei constatări nu e numărul ei, ci cât de mult contrazice așteptarea.**
+
+## 30.08.2026 (partea a treia) — Lista 4 e goală, și de data asta fiindcă s-a reparat, nu fiindcă nu s-a uitat nimeni
+
+*Verdictul de producție, pe `git log de04143..HEAD --name-only`: **`core/d394.py` atins** — prima
+schimbare de producție din trei zile. Plus o gardă nouă și registrele.*
+
+### Ce vede un contabil, concret
+
+Două refuzuri care înainte nu existau, și amândouă îi spun ce are de făcut:
+
+1. **`tenant_001`, D394** — înainte: aplicația genera XML-ul, iar DUKIntegrator îl respingea cu
+   *„eroare atribut: adresa: atribut prezent dar vid nepermis"*. Acum: **422**, *„D394 nu se poate
+   genera: LIPSĂ adresă domiciliu fiscal (obligatorie). LIPSĂ telefon (obligatoriu în D394)."*
+   Propoziția asta **exista deja în cod** — era doar împinsă într-o listă de avertismente.
+2. **`tenant_017`, D394** — înainte: `erori` de la arbitru, cu textul regulii R112.1. Acum: **422**,
+   *„D394 declară livrări, dar numărul facturilor emise în perioadă e 0 — validatorul ANAF respinge
+   (DUK regula R112.1). Se numără doar facturile al căror NUMĂR conține cifre: verifică numerotarea
+   facturilor emise din perioadă."*
+
+*Cauza celei de-a doua, măsurată la sursă: singura factură emisă în lună e numerotată `FG-ICL`,
+**fără nicio cifră**. Contorul o sare — și pe drept, un număr fără cifre nu e o numerotare — iar
+XML-ul ajungea să spună, în același document, „am livrat" și „n-am emis nicio factură".*
+
+### Garda, și ce a găsit la prima ei rulare
+
+`core/scan_camp_blocant.py` + `core/test_camp_blocant.py` confruntă, **pe AST**, harta
+`firma_profil_api.OBLIGATORII` cu **ce oprește efectiv** fiecare generator — în amândouă direcțiile.
+Face imposibil ca o obligație scrisă într-un singur loc să fie poartă într-un modul și avertisment în
+altul.
+
+**Și a găsit imediat încă o instanță a aceleiași clase**, pe care n-am căutat-o: `declarant_nume` și
+`declarant_functie` sunt obligatorii în hartă pentru **opt** declarații și **nu blochează niciuna** —
+`build_xml` fabrică „ADMINISTRATOR" cu avertisment. **Măsurat: 7 din 19 firme** au declarantul
+necompletat, iar printre ele sunt firme care produc **azi** declarații valide. Deci declarația pleacă
+la ANAF **în numele cuiva care n-a declarat**. Deschisă ca **R101**, cu excepție declarată în gardă —
+și cere **decizie**, nu reparație: dacă devine blocant, 7 firme nu mai pot depune până completează.
+
+### Trei picături ale porții, toate ale mele
+
+Poarta a respins commitul: citarea *„(regula R112.1)"* fără prefixul canonic **DUK regula** (CLAUDE.md
+§3.1) · o aserțiune **ancorată pe text** în garda nouă, prinsă de clichetul 50 la 1223 > 1222 · și
+blocul generat din `TRASEE.md`, care cere regenerare la orice **refuz nou**. *Trei gărzi scrise cu
+zile sau săptămâni înainte, care au prins exact ce trebuia. Niciuna n-a fost ocolită.*
+
+### Măsurătoarea de închidere, și de ce contează felul ei
+
+`scripts/scan_1b_regimuri.py`, pe tot portofoliul: **lista 4 = 0** (era 2). **Diferența față de
+„goală" din 22.08 e chiar criteriul care a pus lista 4 prima:** atunci era goală fiindcă măsurătoarea
+acoperea **trei firme**; acum e goală fiindcă amândouă pozițiile au fost **reparate**, iar golul e
+**re-măsurat pe 19**, cu instrumentul care le găsise.
+
+*Ce nu spune golul: s-a măsurat o singură perioadă, iar arbitrul verifică forma, nu cifrele.*
+
+### Regula de metodă a zilei
+
+Costin, după ce instrumentul lui R97 greșise în direcția opusă celei declarate **trecând calibrarea**:
+*„un instrument care își declară o direcție de eroare trebuie să aibă în calibrare un caz care ar
+cădea dacă direcția e inversă; altfel calibrarea confirmă presupunerea, nu o testează."* Deschisă ca
+**R100**, doar ca gardă. **Prima aplicare exista deja**, fără să fie cerută: garda lui R93 are un caz
+construit care cade dacă instrumentul numără drept „poartă" o funcție care doar avertizează.
+
+### Abatere de proces, declarată
+
+Am repornit serviciul de **două ori** ca să probez cod **necomis**, deci procesul viu a rulat scurt
+cod care nu era în istorie. Portofoliul e integral de test, dar abaterea se scrie.
