@@ -604,6 +604,58 @@ date **vii**, nu din cod. Codul nu se mișcă singur în timpul porții; datele 
   scrie predarea fără bloc și se declară de ce; garda va cere blocul înapoi la prima rulare verde.
 
 
+## §30 — UN BLOCAJ DECLARAT PE UN SINGUR ARTICOL NU E BLOCAJ PÂNĂ NU I-AU FOST CITITE NORMELE DE APLICARE
+
+*(30.08.2026, urcat de Costin ca **a doua instanță în două zile**. Nu e o observație despre neatenție:
+amândouă citirile au fost corecte pe textul citit. Ce lipsea era **al doilea nivel al actului**.)*
+
+### Cele două instanțe, cu ce a fost citit și ce nu
+
+**1. „Corpusul nu poate sursa pragurile de mărime."** Citit: pct. 9 din OMFP 1802/2014, găsit
+**trunchiat** exact la criteriile numerice (*„…se grupează în trei categorii, astfel: microentități;
+entități mici; entități mijlocii și mari. **…**"*). Concluzia: actul e parțial, R3 nu se poate
+construi. **Necitit:** același fișier conține actul **de două ori** — un cuprins cu elidări și corpul
+complet, cu toate cele trei criterii, per literă, și cu actul modificator.
+
+**2. „Registrul de evidență fiscală nu se poate construi, s-ar inventa un model."** Citit: art. 19 și
+art. 68 din Codul fiscal; art. 68 alin. (9) trimite modelul la un ordin care nu era în corpus.
+Concluzia: blocaj. **Necitit:** **normele** art. 19 — HG 1/2016, pct. 8 — care specifică **integral**
+conținutul registrului pentru impozitul pe profit. Erau **două** registre, nu unul, iar numai al
+doilea avea nevoie de ordin.
+
+### De ce e o clasă, și nu de două ori aceeași greșeală
+
+Un act fiscal românesc trăiește pe **cel puțin două niveluri**: legea/ordinul spune **că** se
+datorează ceva, iar normele de aplicare spun **ce anume conține**. Ambele instanțe de mai sus au
+declarat imposibilitatea de la primul nivel — și în amândouă răspunsul stătea la al doilea.
+
+*Forma e înșelătoare tocmai fiindcă citirea de la primul nivel e corectă.* Un blocaj declarat astfel
+nu arată ca o eroare: arată ca prudență. Iar consecința e mai rea decât o cifră greșită — o cifră
+greșită se corectează la următoarea măsurătoare, dar **un blocaj declarat oprește munca**, și nimeni
+nu remăsoară un lucru despre care s-a scris că nu se poate face.
+
+### Ce cere, practic
+
+**Înainte de a scrie că ceva nu se poate construi din lipsă de temei**, se citesc, în ordine:
+
+1. **articolul** — spune că se datorează, și cine datorează;
+2. **normele lui de aplicare** — HG-ul pentru Codul fiscal, ordinul pentru reglementările contabile.
+   *Aici stă, de regulă, conținutul;*
+3. **actele la care trimit ele** — dacă norma zice „prin ordin al ministrului", ordinul se caută. Iar
+   dacă e numit printr-o **trimitere**, nu printr-un număr, se caută **după titlu**
+   (`scripts/portal_legislativ.py cauta-titlu`) — nu se ghicește numărul. *Un act adus pe baza unui
+   număr ghicit e mai rău decât unul lipsă.*
+
+**Și încă una, din prima instanță:** când un act din corpus apare **trunchiat**, se caută a doua
+apariție în același fișier înainte de a-l declara parțial. Portalul livrează adesea un cuprins cu
+elidări **și** corpul complet, în aceeași pagină.
+
+### Ce NU cere
+
+Nu cere citirea întregului act înainte de orice afirmație — ar fi un impozit pe fiecare pas. Cere
+**cele trei niveluri, și numai atunci când concluzia e „nu se poate"**. O afirmație despre ce *există*
+se poate face de la primul nivel; una despre ce *lipsește* nu.
+
 ## §29 — O CALIBRARE POZITIVĂ ANCORATĂ PE INSTANȚELE CARE URMEAZĂ SĂ FIE REPARATE SE AUTODISTRUGE
 
 *(30.08.2026, măsurat la prima reparație din lista 5. Nu e o ipoteză: instrumentul a picat efectiv,

@@ -5498,9 +5498,29 @@ Nu mai e „citește logurile" — s-au citit. E: **fă calea fără `sudo` să 
 `org.freedesktop.systemd1.manage-units` și întoarce `undefined` (nu decide nimic) ar face întrebarea
 decidabilă de aici încolo.
 
-**NU s-a instalat**, și motivul e chiar principiul pe care Costin l-a scris azi despre `usermod`: o
-regulă polkit e cod executabil într-o componentă de autorizare. Se cere, nu se face. *Ce se închide
-azi e trecutul; ce rămâne deschis e capacitatea de a răspunde data viitoare.*
+**INSTALATĂ de Costin (30.08.2026, seara)** — `install` a rămas afară din setul îngust, cu același
+motiv ca `usermod`: *„scrie oriunde ca root, deci în set setul și-ar putea rescrie propriile reguli."*
+
+**ȘI NU FUNCȚIONEAZĂ ÎNCĂ — măsurat, nu presupus.** `polkitd` a repornit la 19:20:29 și a încărcat
+**5 reguli**, deci fișierul e citit. Verificările **chiar au loc**: `pkcheck --action-id
+org.freedesktop.systemd1.manage-units` întoarce *„Authorization requires authentication"*, iar
+`systemctl restart iconta-nou` fără `sudo` dă același *„Interactive authentication required"*.
+**Dar `journalctl -t polkitd` n-are, după niciuna, altceva decât liniile de pornire.**
+
+**Ce se poate deduce, și ce nu.** `pkcheck` a primit rezultatul implicit al politicii, nu unul dat de
+o regulă — deci, cel mai probabil, **nicio regulă n-a decis**, iar a mea *a rulat* și n-a lăsat urmă.
+Asta arată spre `polkit.log()` care nu ajunge în jurnal la nivelul implicit de log al lui `polkitd`
+(versiunea 124), **nu** spre limita pe care o declarasem în comentariul regulii (o regulă anterioară
+care decide prima). *Amândouă rămân posibile: `/etc/polkit-1/rules.d/` nu se poate citi fără root, deci
+nu pot vedea ce mai e acolo și în ce ordine.*
+
+**Următorul pas, mic și numit:** `polkitd` pornit cu log de debug — un drop-in cu
+`Environment=SYSTEMD_LOG_LEVEL=debug` (sau `G_MESSAGES_DEBUG=all`) pe `polkit.service` —, apoi se
+reface proba de mai sus. Dacă linia apare, cauza era nivelul de log; dacă nu, era ordinea regulilor,
+și atunci discuția despre numerotare se redeschide **cu o măsurătoare în spate**, nu cu o preferință.
+
+*Ce se închide până aici: trecutul (calea `sudo` e eliminată prin dovadă). Ce rămâne deschis: exact
+capacitatea de a răspunde data viitoare — și acum se știe și de ce nu funcționează încă.*
 
 ### LIMITA DECLARATĂ a reparației care s-a făcut totuși
 

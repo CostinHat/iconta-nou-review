@@ -6434,3 +6434,112 @@ contra **aceluiași** baseline neatins: **identic, 0,0056%**. Deci nu e regresie
 **nedeterminism**, clasa pe care roadmap-ul o are deschisă ca **#8**. *Ce anume varia nu se poate
 spune*: trei ipoteze se potrivesc la fel de bine, iar modul care ar răspunde (self-diff) **rescrie
 baseline-ul**, adică ar distruge proba ca s-o explice. GRI, cu condiția de închidere scrisă.
+
+
+## 30.08.2026 (partea a șaptea) — Ziua în care două concluzii de-ale mele s-au inversat, și trei clichete au coborât în loc să urce
+
+*Scrisă cu întârziere de trei ture, la cererea lui Costin: **„trei ture nescrise înseamnă că ziua asta
+se pierde — și a avut în ea două inversări de concluzie."** Are dreptate, și e chiar felul de zi care
+merită scrisă: nu una în care s-a construit mult, ci una în care s-au aflat lucruri care contrazic ce
+scriseserăm cu câteva ore înainte.*
+
+### CELE DOUĂ INVERSĂRI, amândouă ale mele, amândouă găsite citind mai departe
+
+**1. „Corpusul nu poate sursa pragurile de mărime" — fals.** Am citit pct. 9 din OMFP 1802/2014 și
+l-am găsit **trunchiat**: *„se grupează în trei categorii, astfel: microentități; entități mici;
+entități mijlocii și mari. **…**"* — exact la criteriile numerice. Am scris că actul e parțial și că
+R3 nu se poate construi. **Fișierul conține actul de DOUĂ ori**: un cuprins cu elidări (linia 101) și
+**corpul complet** (linia 363), cu toate cele trei criterii, per literă, și cu actul care le-a
+modificat. *Concluzia n-a fost greșită pentru că am citit prost, ci pentru că m-am oprit la prima
+potrivire.*
+
+**2. „Registrul de evidență fiscală nu se poate construi, s-ar inventa un model" — fals pentru
+varianta pe profit.** Am citit art. 19 și art. 68, am văzut că alin. (9) trimite modelul la un ordin,
+și am declarat blocaj. **Art. 19 alin. (7) e specificat integral în normele lui** — HG 1/2016, pct. 8:
+ce trebuie înscris (venituri și cheltuieli contabile · venituri neimpozabile art. 23 · deduceri
+fiscale · elemente similare · cheltuieli nedeductibile art. 25 · orice informație din declarația
+fiscală) și regula de agregare (*pe natură economică, totalizat pe trimestru și/sau an fiscal*).
+**Sunt două registre distincte, nu unul**, și numai al doilea avea nevoie de ordin — adus în aceeași
+zi.
+
+**Costin a urcat lecția la METODA, ca a doua instanță în două zile:** *un blocaj declarat pe un
+singur articol nu e blocaj până nu i-au fost citite normele de aplicare.* Ieri pct. 9 trunchiat, azi
+art. 19 fără normele lui.
+
+### TREI CLICHETE CARE AU COBORÂT — și unul care aproape a urcat de două ori
+
+`R80` măsoară **orbirea** detectorului de apelanți: pentru câte rute ancora literală nu discriminează.
+În aceeași zi, cifra a crescut de **trei** ori — și de fiecare dată **fără nicio schimbare a
+aplicației**:
+
+- ecran nou al **jurnalului de regim marjă** → cuvântul `jurnal` trece de 40 de apariții în
+  `static/js` → orbesc cele patru rute `/tenants/{id}/jurnal`, **care au apelanți**;
+- casetă nouă cu **„numărul mediu de salariați"** → cuvântul `salariati` trece pragul → orbesc încă
+  șase.
+
+Prima dată **am ridicat clichetul**, cu cauza măsurată prin comparație directă cu `HEAD`. Costin a
+urcat R80 în coadă: *„cifra crește din vocabular, iar tu o citești în trei locuri — instrument care
+minte tăcut."* A doua oară n-am mai ridicat: **am reparat ancora.** Se numără acum `/jurnal` și
+`"jurnal"` (dispecerizare prin tabel), nu *„Registru jurnal"* dintr-un titlu.
+
+**Orbirea 55 → 6. GRI 55 → 7. ACCEPTAT 327 → 375. ROSU rămâne 0** — deci nicio rută n-a pierdut
+dovada că e chemată. Iar ce a rămas orb sunt **exact** rutele al căror singur segment literal e
+`tenants` (238 apariții), plus `GET /`. **Adică instanța fondatoare a lui R80, `PUT /tenants/{id}`,
+rămâne oarbă.** *Reparația n-a acoperit-o; a curățat în jurul ei — aia e diferența dintre a repara un
+instrument și a-i muta pragul.*
+
+### O LECȚIE CARE S-A REPETAT DE CINCI ORI ÎNTR-O ZI
+
+**METODA §29**, scrisă dimineață: *o calibrare pozitivă ancorată pe instanțele care urmează să fie
+reparate se autodistruge la prima reparație.* În aceeași zi a mai lovit de patru ori:
+
+1. instrumentul R97 a picat la randarea coloanelor registrului-jurnal — ancora lui erau chiar cele
+   șase defecte pe care le scosese la iveală;
+2. proba *„absența motivată nu arată ca o declarație goală"* se făcea pe `d112`, singura intrare
+   reală; când D112 a căpătat componente, proba a rămas fără obiect;
+3. calibrarea care proba ordinea `EXCLUS`-înaintea-lui-`GRI` cerea o rută **și oarbă, și declarată** —
+   după reparația R80 nu mai există niciuna, deci **a picat pe un succes**;
+4. garda de așteptare pentru notele explicative a fost scrisă, din prima, cu un `skipif` pe variabile
+   care nu există — deci **verde pe zero**, prinsă la rulare.
+
+*Toate patru s-au mutat pe cazuri sintetice. Tiparul e stabil: ce trebuie să rămână adevărat nu e că
+aplicația are defectul, ci că detectorul îl vede.*
+
+### CE S-A ÎNCHIS, CE S-A DESCHIS, CE S-A DOVEDIT IMPOSIBIL
+
+- **Lista 5: COMPLETĂ**, 12 din 12. **R105** (D112 își desface cifra) s-a deschis și s-a închis în
+  aceeași zi, fiindcă decizia a venit în aceeași zi. Confruntarea care o face verificabilă e gardată:
+  suma impozitului asiguraților = obligația `602`, CAS = `412`, CASS = `432`.
+- **Lista 3: de la 8 la 3.** Trei reparate (Cartea mare · jurnalul de regim marjă · categoria de
+  mărime, ca derivare), **una scoasă ca FALSĂ** (bilanțul avea patru rute și un ecran din 04.07,
+  adică rândul era fals de la naștere), **una scoasă ca imposibilitate temporară gardată** (notele
+  explicative).
+- **R3 rămâne deschisă pe altă condiție**: derivarea există și e sursată, dar **19 din 19 firme dau
+  `nedeterminata`** — niciuna n-are două exerciții consecutive. *Se închide pe o firmă, nu pe cod.*
+- **Două constatări GRI**, amândouă mai mici decât la deschidere, niciuna închisă prin raționament.
+
+### PERMISIUNILE: o regulă care nu se potrivea a produs `NOPASSWD: ALL`
+
+Regula îngustă din 13.07 era scrisă pe `iconta.service` — **unitate care nu există**. *O regulă de
+autorizare care nu se potrivește nu țipă: pur și simplu nu se aplică, iar absența ei arată identic cu
+absența cererii.* Gaura a fost astupată cu permisiunea cea mai largă cu putință. Aceeași greșeală
+s-a repetat **în aceeași zi**, la mine: prima formă a regulii noi acoperea `restart iconta-nou.service`,
+dar hook-ul cheamă `restart iconta-nou`, fără sufix.
+
+Setul îngust complet e instalat, blanket-ul scos, verificat **în amândouă direcțiile**. Iar granița
+lui s-a definit prin ce a fost **ținut afară**: `usermod` și `install`. Costin: *„apartenența la
+grupuri e schimbare de identitate, nu operațiune de deploy; în set, setul s-ar putea lărgi singur"* și
+*„`install` scrie oriunde ca root, deci în set setul și-ar putea rescrie propriile reguli."*
+**Refuzurile lor au fost dovada că îngustarea e reală.**
+
+### CE A COSTAT ZIUA
+
+**Poarta a respins de nouă ori.** Niciuna regresie de comportament; toate nouă, gărzi scrise înainte
+care au prins forme reale: un modul care nu mai era nelegat · un clichet care creștea din vocabular ·
+un formator monetar ascuns într-un helper · praguri fiscale cu `Temei`-ul ca cheie-soră în loc de
+lipit de valoare · șase aserțiuni care căutau cuvinte în proza unui motiv · 14 capturi versionate
+fără proprietar scris în registru.
+
+*Ultima merită numită separat: gardul care le-a prins își povestește în docstring că **prima lui
+rulare a găsit 16 din 17 capturi nenumite** — adică regula era încălcată de propriul ei autor în ziua
+în care a scris-o. Patru zile mai târziu a prins același lucru la altcineva.*
