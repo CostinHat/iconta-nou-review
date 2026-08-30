@@ -5444,18 +5444,63 @@ sau în jurnalul de sistem. Identitatea de deploy e în grupurile `costin sudo u
 seeing messages from other users and the system."* Deci exact identitatea care a executat actul e cea
 care nu-i poate citi urma.
 
-### CONDIȚIA DE ÎNCHIDERE
+### CE S-A CITIT, DUPĂ CE IDENTITATEA DE DEPLOY A PRIMIT DREPTUL (30.08.2026, seara)
 
-Una din două, iar prima e de preferat fiindcă e despre instanță, nu despre clasă:
+Costin a pus `costin` în grupul `adm` — **și a ținut `usermod` în afara setului îngust**, cu motivul:
+*„apartenența la grupuri e schimbare de identitate, nu operațiune de deploy; în set, setul s-ar putea
+lărgi singur."* Refuzul lui a fost, spune el, chiar dovada că îngustarea e reală.
 
-1. se citește fereastra **08:30–10:45, 30.08.2026** din `auth.log` sau din jurnalul de sistem, de o
-   identitate care are dreptul, și se vede dacă a existat o cerere polkit refuzată pentru
-   `org.freedesktop.systemd1.manage-units`; **sau**
-2. se reproduce comanda **exact** cum a fost dată, și se compară mesajul.
+Cu `auth.log` citibil, fereastra **08:30–10:50** conține **exact două** invocări `sudo`, amândouă
+reușite, niciuna în jurul orei 09:00:
 
-Până atunci, **starea rămâne GRI**. *O ipoteză care explică perfect faptele nu e o măsurătoare — e
-chiar forma pe care registrul o refuză în altă parte („un raționament care ține o restanță deschisă
-cere aceeași verificare ca cel care o închide").*
+| ora | ce | de unde se vede cine |
+|---|---|---|
+| **08:47:02** | `costin : PWD=/home/costin/iconta_nou ; USER=root ; COMMAND=/usr/bin/systemctl restart iconta-nou` | `PWD` e **repo-ul** → `post-commit`, după commitul `4b6d664` |
+| **10:45:05** | același, `PWD=/home/costin` | repornirea cerută de mine, prin `ssh` |
+
+**Zero** intrări polkit. **Zero** `sudo` eșuat. **Zero** alt `systemctl`.
+
+### CALIBRAREA CARE FACE ABSENȚA CITIBILĂ — și fără ea n-ar fi însemnat nimic
+
+O absență din log nu spune nimic până nu se știe **ce anume s-ar fi văzut dacă s-ar fi întâmplat**.
+Amândouă capetele s-au probat pe instanțe de azi, produse de mine:
+
+- **un `sudo` REFUZAT SE LOGHEAZĂ**: `12:28:43 … costin : a password is required ; COMMAND=/usr/bin/journalctl -u iconta-nou --since …` — chiar `journalctl`-ul pe care regula îngustă mi l-a refuzat;
+- **un refuz POLKIT NU se loghează**: refuzul pe care l-am provocat deliberat (`systemctl restart iconta-nou` fără `sudo`, care a răspuns *„Interactive authentication required"*) **n-a lăsat nicio urmă**. `polkit` are **0** apariții în `auth.log` și **0** în jurnalul întregii zile, deși `polkit.service` e `active`.
+
+### CE SE ȘTIE ACUM — și e mai mult decât ieri
+
+**Calea `sudo` e ELIMINATĂ PRIN DOVADĂ.** Orice încercare pe ea, reușită sau refuzată, ar fi fost
+scrisă; în fereastră sunt doar cele două de mai sus. Deci repornirea despre care s-a spus *„repornit"*
+**nu a trecut prin identitatea de deploy**.
+
+**Ipoteza de ieri NU s-a confirmat ca instanță — și bine că n-a fost acceptată.** Mecanismul
+sudoers-vs-polkit e real și dovedit, dar el explică *cum ar putea eșua*, nu *ce s-a întâmplat*. Ieri
+se potrivea perfect cu faptele; azi se vede că potrivirea nu era o măsurătoare. *Exact de-aia
+constatarea a fost ținută GRI.*
+
+### CE A RĂMAS, și de ce nu se poate închide de tot
+
+**Dacă a existat totuși o încercare pe calea fără `sudo`, ea nu poate fi nici confirmată, nici
+exclusă** — fiindcă polkit nu scrie nimic pe mașina asta, dovedit mai sus. Cele două rămase sunt
+indistingibile din urme:
+
+1. nu s-a făcut nicio încercare pe server;
+2. s-a făcut una pe calea fără `sudo`, și polkit a refuzat-o tăcut.
+
+Nici sursa conexiunii nu desparte: **toate cele 223 de sesiuni** din fereastră vin de la **aceeași
+adresă**, deci comenzile mele și cele tastate cu `!` arată identic.
+
+### CONDIȚIA DE ÎNCHIDERE, acum mult mai mică
+
+Nu mai e „citește logurile" — s-au citit. E: **fă calea fără `sudo` să lase urmă.** O regulă în
+`/etc/polkit-1/rules.d/` care doar *loghează* verificarea de autorizare pentru
+`org.freedesktop.systemd1.manage-units` și întoarce `undefined` (nu decide nimic) ar face întrebarea
+decidabilă de aici încolo.
+
+**NU s-a instalat**, și motivul e chiar principiul pe care Costin l-a scris azi despre `usermod`: o
+regulă polkit e cod executabil într-o componentă de autorizare. Se cere, nu se face. *Ce se închide
+azi e trecutul; ce rămâne deschis e capacitatea de a răspunde data viitoare.*
 
 ### LIMITA DECLARATĂ a reparației care s-a făcut totuși
 
@@ -5523,17 +5568,67 @@ exact greșeala pe care registrul o refuză în altă parte:
 
 *Ipoteza 1 e cea mai economică, dar „se potrivește" nu e „s-a măsurat".*
 
-### CONDIȚIA DE ÎNCHIDERE
+### CE S-A MĂSURAT DUPĂ, când Costin a cerut regenerarea (30.08.2026, seara)
 
-Se rulează **modul implicit** (self-diff: două capturi în aceeași rulare) **pe `banca`**, și se
-citește `flakiness`: `STABIL` / `UȘOR` / `ZGOMOTOS`. Aia răspunde exact la întrebarea rămasă — *e
-ecranul stabil de la o captură la alta?* —, spre deosebire de `--compare`, care răspunde la *s-a
-schimbat față de referință?*. Cele două se confundă ușor, iar unealta o spune singură în cap.
+Modul implicit (self-diff: **două capturi în aceeași rulare**) a rulat pe toate cele 14 ecrane.
+Rezultatul, uniform:
 
-**DE CE NU S-A RULAT AZI, cu motivul, nu cu tăcere:** modul implicit **rescrie baseline-ul**
-(`Image.open(c1).save(base)`). Rulat acum, ar fi șters chiar referința din 26.08 pe care stă
-măsurătoarea de mai sus — adică ar fi distrus proba ca s-o explice. Se face după ce unealta capătă
-ori un `--doar <ecran>`, ori un mod care nu scrie referința.
+**`banca`: `STABIL` — 0 pixeli, 0,0000%.** La fel toate celelalte 13, inclusiv `stat_plata`.
+
+### CE ELIMINĂ ASTA, și ce NU
+
+**Eliminată: ipoteza 1 (randare pe jumătate din cauza celor 400 ms).** Dacă panoul s-ar încărca
+uneori mai lent decât fereastra de așteptare, două capturi la câteva secunde una de alta ar diferi
+măcar câteodată. Diferă cu **zero pixeli**. Deci pe rularea asta nu există nici intermitență, nici
+zgomot de randare.
+
+*Precizarea care contează, ca să nu se citească mai mult decât spune:* un panou care ar fi **mereu**
+gol la 400 ms ar da tot self-diff 0 — și ar fi identic și cu referința, fiindcă și ea s-a capturat la
+400 ms. Deci self-diff-ul nu exclude o lentoare **constantă**; exclude una **intermitentă**. Iar
+diferența de la 07:09 a fost, prin definiție, intermitentă: a apărut o dată și n-a mai apărut.
+
+**Rămân ipotezele 2 și 3** — date schimbate între rulări (sunt joburi la fiecare 15 minute în
+`crontab`) sau conținut dependent de timp. Nu se pot despărți una de alta din ce avem.
+
+### CE S-A SCHIMBAT ÎN PROBE, și e ireversibil
+
+Modul implicit **rescrie referințele**. Toate cele 14 baseline-uri din **26.08 00:30** au fost
+înlocuite cu capturi de acum. Deci:
+
+- **`stat_plata` nu mai e vechi cu 8,84%** — asta a fost cererea lui Costin, și e făcută;
+- **referința din 26.08, pe care stătea măsurătoarea de 0,2463%, nu mai există.** Cifrele acelei
+  măsurători trăiesc **numai în tabelul de mai sus** — nici raportul nu e în git (`raport_*.json` e
+  ignorat). *Se scrie aici pentru că altfel cineva care ar vrea s-o refacă ar găsi o lume în care
+  întrebarea nu se mai pune, și ar crede că tabelul minte.*
+
+### CONDIȚIA DE ÎNCHIDERE, ce a mai rămas din ea
+
+Întrebarea „ce anume varia" **nu se mai poate pune despre 30.08**: referința a dispărut, iar starea
+care a produs diferența nu se poate reconstitui. Ce rămâne e clasa, nu instanța — **#8 din roadmap,
+„baseline determinist"**. Constatarea se închide când unealta capătă un mod care **măsoară fără să
+rescrie** (ori `--doar <ecran>`, ori o referință secundară), fiindcă abia atunci o diferență
+între rulări se poate investiga fără să fie ștearsă de investigație.
+
+*Lecția, mai largă decât ecranul ăsta: o unealtă care rescrie referința ca să măsoare nu poate fi
+folosită de două ori pe aceeași întrebare.*
+
+### O CONTRADICȚIE GĂSITĂ PE DRUM, nereparată fiindcă e o decizie, nu o scăpare
+
+Două documente spun invers despre același fișier:
+
+- `frontend_test/vizual/.gitignore`, în clar: *„SE versionează (referință pentru comparație):
+  `baseline/*.png` …"*, cu `!baseline/` care le scoate din ignorare;
+- `frontend_test/vizual/baseline_scan.py`, în docstring: *„Baseline-urile NU sunt urmărite în git
+  (decizia lui Costin, 26.08.2026): sunt referințe locale, regenerabile."*
+
+**Starea reală e a doua**: `git ls-files frontend_test/vizual/baseline/` întoarce gol — deci
+`!baseline/` a fost scris, dar fișierele n-au fost adăugate niciodată. *Regula scrisă nu e regula
+păzită: `.gitignore` doar permite, nu adaugă.*
+
+**Nereparată deliberat**: alinierea cere o decizie — ori se versionează (și atunci referința devine
+reproductibilă pentru oricine, cu costul a ~5 MB de PNG-uri care se rescriu la fiecare rulare), ori
+se scoate `!baseline/` și comentariul, ca documentul să spună ce se întâmplă. **Prima variantă ar fi
+închis chiar constatarea de mai sus**, fiindcă referința de la 26.08 ar fi existat în istorie.
 
 ### DOUĂ OBSERVAȚII DE CITIRE, care nu sunt defecte dar induc în eroare
 
@@ -5548,11 +5643,11 @@ ori un `--doar <ecran>`, ori un mod care nu scrie referința.
   de mai sus**. Se scrie fiindcă altfel constatarea asta ar trimite la o probă care nu se mai poate
   deschide, iar cine ar căuta-o ar găsi rularea de la 12:39 și ar crede că tabelul minte.
 
-### CE RĂMÂNE DE FĂCUT ȘI NU S-A FĂCUT
+### BASELINE-UL LUI `stat_plata` — FĂCUT
 
-**Baseline-ul lui `stat_plata` e acum vechi cu 8,84%**, fiindcă ecranul chiar s-a schimbat azi
-(compoziția netului). **Nu s-a regenerat**, deliberat: regenerarea rescrie *toate* referințele,
-inclusiv `banca`. Se face după închiderea constatării de mai sus.
+Era vechi cu **8,84%**, fiindcă ecranul chiar s-a schimbat (compoziția netului). Regenerat odată cu
+celelalte 13, la cererea lui Costin. *Ordinea a contat: întâi s-a citit ce se putea citi din
+referința veche, apoi s-a rescris.*
 
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->

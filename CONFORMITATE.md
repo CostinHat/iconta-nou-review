@@ -5181,6 +5181,60 @@ salariaților cu contract activ**, nu numărul mediu din metodologia oficială (
 Răspunsul marchează separat cazurile în care **acel criteriu decide** încadrarea — când cele două
 criterii monetare ajung singure la „două din trei", aproximarea nu contează.
 
+#### Cele patru rânduri rămase, citite LA TEMEI (30.08.2026)
+
+*Condiția lui Costin: „fiecare pornește de la temeiul legal, nu de la ecran — «nu există producător»
+înseamnă obligație construită de la zero, nu transport reparat."* Deci nu s-a deschis niciun fișier
+de cod înainte de a se citi actul. **Două din patru au ieșit cu conținut enumerat; a treia are
+obligația sursată dar modelul în afara corpusului; a patra abia are locul găsit.*
+
+**1. EVIDENȚA OPERAȚIUNILOR (art. 321 CF) — SURSATĂ ȘI ENUMERATĂ. Nu e un artefact, sunt DOUĂ.**
+
+Art. 321 alin. (1)-(3) cere „evidențe corecte și complete", iar **alin. (4) trimite conținutul la
+normele metodologice** și numește acolo, expres, **două registre**. În HG 1/2016 (normele la art.
+321) ele apar la literele e) și f):
+
+| registru | temei | conținut cerut, enumerat în normă |
+|---|---|---|
+| **Registrul nontransferurilor** | HG 1/2016, norme la art. 321, **lit. e)** | denumirea și adresa primitorului · număr de ordine · data transportului · descrierea bunurilor · cantitatea · valoarea · data transportului bunurilor care se **întorc** după lucrări · descrierea și cantitatea celor **returnate** · descrierea și cantitatea celor **nereturnate** · mențiune despre documentele emise + data lor. **Plus cinci excepții** pentru care NU se completează (mijloace de transport înmatriculate în RO · paleți/containere fără facturare · bunuri de presă/radio/TV · bunuri de profesie sub **1.250 EUR/7 zile** sau **250 EUR/24 luni** · computere portabile în deplasări de afaceri) |
+| **Registrul bunurilor primite** | HG 1/2016, norme la art. 321, **lit. f)** | pentru bunuri mobile corporale primite din alt SM (sau importate/achiziționate în RO de o persoană nestabilită) **spre evaluare sau lucrări**: denumirea și adresa expeditorului · număr de ordine · … **Nu** se ține pentru bunurile în regim vamal de perfecționare activă |
+
+**Măsurat în cod: `nontransfer`, `bunuri_primite`, „bunurilor primite" — ZERO potriviri** în `core/`,
+`main.py` și `static/js/`. Deci nu e „documentul lipsește peste o substanță derivabilă": **lipsesc
+amândouă**, iar unul dintre ele (nontransferurile) nu e nici măcar derivabil din facturi — un
+nontransfer e o **mișcare fără vânzare**. *Rândul vechi al listei spunea „substanța e derivabilă pe
+fiecare linie, lipsește documentul". Pe registrul nontransferurilor, asta e fals.*
+
+**2. REGISTRUL DE EVIDENȚĂ FISCALĂ — obligația e sursată, MODELUL e în afara corpusului.**
+
+Sunt **două** obligații distincte, nu una:
+- **art. 68 alin. (8)** — contribuabilii cu venit anual determinat **în sistem real** completează
+  Registrul de evidență fiscală, *„în vederea stabilirii venitului net anual"*;
+- **art. 19** — pentru impozitul pe profit, `registrul de evidență fiscală al contribuabilului`
+  (acolo se înregistrează, de pildă, creditul fiscal de cercetare-dezvoltare scăzut anual).
+
+**Art. 68 alin. (9): *„Modelul și conținutul Registrului de evidență fiscală se aprobă prin ordin al
+ministrului finanțelor publice."*** — iar **ordinul acela nu e în corpus**. `omfp_170_2015` există,
+dar e *Reglementările contabile privind contabilitatea în partidă simplă*, altceva. **Deci rândul nu
+se poate construi corect azi**: s-ar inventa un model. *E aceeași familie cu R1/R4/R5 — încrederea în
+corpus —, dar aici lipsa e NUMITĂ și localizată, nu doar numărată.*
+
+**3. REGISTRUL-INVENTAR (14-1-2) — localizat, necitit încă.** Apare în nomenclatorul din
+`omfp_2634_2015_anexa2_norme_specifice.txt` (poziția 2 din registrele contabile), lângă Cartea mare
+14-1-3 și varianta șah 14-1-3/a. **Conținutul per-formular din normele specifice nu s-a citit încă** —
+se citește la începutul turei următoare, înainte de orice cod.
+
+**4. NOTELE EXPLICATIVE — localizate, necitite încă.** `omfp_1802_2014_reglementari_consolidat.txt`
+le numește la **pct. 21** printre componentele situațiilor financiare ale entităților de la pct. 9
+alin. (4) și ale celor de interes public. **Dependență descoperită azi:** conținutul notelor depinde
+de **categoria de mărime** — iar aia e `nedeterminata` pe toate cele 19 firme (`R3`). *Deci rândul
+ăsta nu se poate nici măcar delimita până nu există o firmă cu două exerciții consecutive.*
+
+**ORDINEA PE CARE O PROPUN pentru tura următoare**, din ce s-a citit: **(1)** cele două registre de la
+art. 321 — singurele cu conținut enumerat integral și cu temei în corpus; **(2)** registrul-inventar,
+după citirea normelor specifice; **(3)** registrul de evidență fiscală, **blocat** pe aducerea
+ordinului în corpus; **(4)** notele explicative, **blocate** pe `R3`.
+
 **CE A SCOS REMĂSURAREA, ca observație generală:** din cele 8 rânduri, **două** aveau producător care
 producea și nu ajungea la om (aceeași formă ca lista 5), **una** era falsă, iar **cinci** sunt
 construcție reală. *Deci „nu iese din vina aplicației" acoperea trei lucruri diferite — nu există
