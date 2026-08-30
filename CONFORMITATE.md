@@ -608,10 +608,16 @@ scos ce nu se știa**, nu din defecte noi.
 
 - **felul**: ARTEFACT
 - **cine deblochează**: INTERN
-- **unde intră**: E1 · faza 1, familia B
+- **unde intră**: E1 · faza 1, familia B · lista 3 din verdictul 1d
 - **reluări**: 0
 - **stare**: DESCHISĂ
+- **condiția s-a SCHIMBAT pe 30.08.2026**, și e o schimbare de fel, nu de grad: nu mai e «nu se calculează», e «nu s-a putut proba pe nicio firmă»
 - **deschisă pe commit**: `45f15ab`
+- **măsurat la**: 2026-08-30 · **pe commit**: `2421fd9`
+- **CE S-A CONSTRUIT**: `core/categorie_marime.py` — cele trei criterii derivate din date, pragurile purtând `Temei` (OMFP 1802/2014 pct.9; literele a) și b) modificate de **OMFP 4.164/2024**, MO 843/23.08.2024; litera c) din OMFP 773/2015), regula celor **două exerciții consecutive** (pct.13 alin.(2)-(3)) și „două criterii din trei" (pct.9). Rută (`GET /tenants/{id}/categorie-marime`, în T12) și casetă pe ecranul de bilanț, lângă selectorul care până azi ghicea. **`core/test_categorie_marime.py`**, 12 teste, RED-proof 6/6.
+- **DE CE RĂMÂNE DESCHISĂ, cu condiția nouă**: **măsurat pe portofoliu, 19 din 19 firme dau `nedeterminata`** — niciuna n-are două exerciții financiare consecutive cu rulaje (singura cu rulaje în 2026 e `tenant_013`, 5 conturi; 2025 și 2024 sunt goale pe toate). Deci derivarea **nu s-a putut exercita pe nicio firmă**. *Asta e un fapt despre PORTOFOLIU, nu despre derivare — punctul orb e firma, nu ecranul.* Se închide când există cel puțin o firmă cu două exerciții consecutive, încadrarea ei iese, și se confruntă cu ce ar spune un contabil. **Un verde obținut pe zero instanțe nu e verde.**
+- **CE NU FACE, deliberat**: **nu alege formularul.** `s1005-valideaza` și `s1003-valideaza` sunt neatinse; ecranul arată încadrarea fără s-o aplice. Aplicația spune ce știe; nu decide în locul omului pe o derivare care azi n-are datele.
+- **CE NU E, declarat**: `nr_mediu_salariati` e **media lunară a salariaților cu contract activ**, nu numărul mediu din metodologia oficială (efectiv zilnic). Răspunsul marchează separat cazurile în care **acel criteriu decide** încadrarea.
 - **ce blochează**: componența situațiilor financiare depinde de categoria de mărime (micro / mică / mijlocie-mare). Nu e câmp în `firma_profil`, nu apare în vectorul fiscal.
 
   **ÎNGUSTATĂ 22.08.2026, după măsurătoare.** Formularea inițială — *„nu se poate spune, din date, ce set datorează, deci toată familia B nu poate intra în 1b"* — **era prea largă, și a costat o amânare**: familia B s-a măsurat totuși, iar R3 n-o bloca decât pe jumătate. **Datele există**: categoria s-a derivat de probă pe **toate cele 17 firme**, din `inregistrari_linii` și `salariati`, cu regula celor două criterii din trei. Ce lipsește nu e informația, ci **calculul** — nimeni nu-l face și nimic nu-l stochează. Deci restanța nu e „nu se poate ști", ci „nu se calculează".
@@ -3685,7 +3691,7 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **unde intră**: E1 · METODA §22 · **PRAG 3** *(nimic fals pe ecran. Ce se strică e o SURSĂ DE VERIFICARE: un gard construit anume pentru o clasă e mut pe 12% din suprafață, și tace la fel de convingător ca atunci când chiar nu e nimic)*
 - **reluări**: 2
 - **contorul, explicat**: cerută de **trei ori** înainte de decizie — 27.08 la deschidere, apoi în rapoartele din 28.08 (secțiunea 0, de două ori). Contorul urcă **o singură dată**, acum, la decizie: nu ține evidența cererilor, ci a **buclelor** — iar bucla s-a închis.
-- **gri**: 49
+- **gri**: 7
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `04e6f38`
 - **măsurat la**: 2026-08-27 · **pe commit**: `04e6f38`
@@ -3693,7 +3699,12 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **ce blochează**: azi am mutat butonul de divergență de pe `PUT /tenants/{tenant_id}` pe `POST /tenants/{tenant_id}/nume-ales`. Ruta veche a rămas cu **zero apelanți** în `static/` — măsurat direct, cu anti-vacuu (același tipar, cu un segment în plus, găsește 20 de apeluri). **Gardul R70 nu a raportat-o.** Nu din neatenție: regula lui caută bucățile literale ale căii, iar singura bucată literală a rutei e `tenants`, care apare de **235** de ori în JS. Pentru ruta asta, detectorul răspunde **întotdeauna** „are apelant".
 - **cifra**: **51 din 411** rute au și cea mai rară ancoră literală apărând de peste 40 de ori în `static/`. Printre ele: toate cele cinci `/tenants` de nivel înalt, toate cele cinci `/coada`, `/portal/*`, `/api/v1/firme`.
 - **REMĂSURAT 30.08.2026: 55 din 415 · GRI 49** (era 51 din 411 · GRI 45). **Creșterea are cauză măsurată, nu presupusă**, iar felul ei e chiar miezul restanței. Cele patru rute care au orbit sunt `GET`/`POST /tenants/{id}/jurnal` și `PUT`/`DELETE /tenants/{id}/jurnal/{nota_id}`. **Ele AU apelanți** — `firme.js` cheamă `/tenants/${t.id}/jurnal?an=`. Ce a crescut **nu e numărul de rute orfane**, ci **incapacitatea detectorului de a dovedi contrariul**: ancora lor e cuvântul `jurnal`, iar el a trecut de la sub 40 la **45** de apariții în `static/js` odată cu ecranul nou al **jurnalului de regim marjă** (lista 3). *Adică o cifră a acestei restanțe crește când aplicația capătă un ecran nou al cărui NUME conține un cuvânt vechi — ceea ce e exact definiția unui detector care măsoară vocabularul, nu chemările.*
-- **DE CE NU S-A REPARAT ACUM, cu condiția**: ancora e `bucati()`, adică **regula 4 a detectorului din R70** — măsurătoarea folosește deliberat aceeași regulă ca instrumentul pe care îl măsoară. A o întări (ancoră ca **segment de cale**, `/jurnal`, nu ca simplu cuvânt) ar schimba toate cifrele lui R80 dintr-o dată și cere calibrare proprie, în amândouă direcțiile. **Aia e chiar munca acestei restanțe.** Se închide când ancora discriminează pe segment, iar cifra rezultată e remăsurată și scrisă în toate cele trei locuri.
+- **REPARATĂ ÎN ACEEAȘI ZI, după a treia creștere.** Textul de mai sus spunea *„nu s-a reparat acum, cere calibrare proprie"* — adevărat când a fost scris, dimineața. **Costin a urcat R80 în coadă**, cu motivul: *„cifra crește din vocabular, iar tu o citești în trei locuri — instrument care minte tăcut."* Peste câteva ore a venit **a treia** creștere din aceeași zi, tot fără nicio schimbare a aplicației: cuvântul `salariati` a trecut pragul odată cu caseta „numărul mediu de salariați" de pe ecranul de bilanț. *A ridica clichetul a doua oară în aceeași zi, pentru aceeași cauză, ar fi fost chiar minciuna tăcută pe care restanța o descrie.*
+- **CE S-A SCHIMBAT, exact**: frecvența nu se mai numără pe cuvântul gol (`js.count("jurnal")` prindea și *„Registru jurnal"* dintr-un titlu), ci pe formele în care un cuvânt poate fi o **referință de rută**: precedat de `/` (calea scrisă în `api.get`) **sau** între ghilimele (dispecerizarea prin tabel, `ruta: "nota-sgr"`). A doua formă **nu s-a scos**: chiar de-aia `bucati()` nu punea `/` în față, și păstrarea ei e condiția ca schimbarea să nu strice recunoașterea rutelor dispecerizate. **Predicatul e unul singur**, folosit și de măsurătoarea orbirii, și de detectorul R70 — dacă ar fi două, măsurătoarea ar spune „ancora discriminează" în timp ce detectorul declară ACCEPTAT pe o potrivire din proză.
+- **REZULTATUL, măsurat imediat după**: orbirea **55 → 6**, GRI **55 → 7**, ACCEPTAT **327 → 375**, iar **ROSU rămâne 0** — deci **nicio rută n-a pierdut dovada că e chemată**. `jurnal` a trecut de la **45** de apariții ca simplu cuvânt la **8** ca segment; `salariati` de la **41** la **24**.
+- **CE A RĂMAS ORB, și de ce e răspunsul corect**: cele **6** sunt exact rutele al căror singur segment literal e `tenants` — **238** de apariții, e în fiecare cale — plus `GET /`, care n-are niciun segment literal. **Adică instanța fondatoare a restanței, `PUT /tenants/{id}`, rămâne oarbă.** *Reparația n-a acoperit-o; a curățat în jurul ei.* Aia e diferența dintre a repara un instrument și a-i muta pragul.
+- **CE NU REZOLVĂ, declarat**: o rută chemată prin concatenare în bucăți (`"/tenants/" + id + sufix`) rămâne invizibilă, ca înainte; iar o cale care apare într-un **comentariu** tot se numără, fiindcă scanul citește JS ca text, nu ca AST.
+- **O A PATRA INSTANȚĂ A ACELEIAȘI LECȚII, apărută din chiar reparația asta**: calibrarea care proba că `EXCLUS` se decide înaintea lui `GRI` cerea, anti-vacuu, să existe o rută **și oarbă, și declarată**. După reparație nu mai există niciuna — deci proba a rămas fără obiect și a **picat pe un succes**. Mutată pe caz sintetic. *A patra oară azi când o calibrare ancorată pe instanțe vii se autodistruge la reparație — METODA §29.*
 - **DE CE NU S-A REDENUMIT ECRANUL ca să intre sub prag**: artefactul se numește în normă *„jurnal special"* (normele CF, pct. 86). A-i schimba numele pentru un prag de scaner ar face ca următorul cititor să creadă că ancora discriminează, când nu discriminează. *Un număr sub prag obținut prin tăcere e mai rău decât unul peste prag cu motivul scris.*
 - **cine a produs-o**: nu detectorul — **forma căilor**. O cale de forma `/substantiv/{id}` n-are cum să fie identificată printr-un cuvânt care e și numele conceptului folosit peste tot în UI.
 - **ce NU vede măsurătoarea**: **nu spune care rute chiar n-au apelant** — spune despre care dintre ele detectorul e mut. O rută din listă poate fi chemată de zece ecrane; ce lipsește e capacitatea de a afla. Și nu acoperă căile compuse pe grup, care erau deja declarate ca artefacte în R70.
@@ -5133,9 +5144,41 @@ tabelul de sus, unde e acum REPARAT):
 
 | artefact | A producător | B rută | C ecran | stare |
 |---|---|---|---|---|
-| **categoria de mărime** (precondiție, pct. 9) | **NU** — zero potriviri în cod de producție (`categorie_marime`, `micro_entitate`, `CATEGORII_MARIME`). Datele există, derivarea s-a probat, nimeni n-o face | — | — | **DESCHIS · R3.** *Precondiție, nu artefact: fără ea, bilanțul se produce fără să poată ști dacă e cel datorat* |
+| **categoria de mărime** (precondiție, pct. 9) | **DA, din 30.08** — `core/categorie_marime.py`, cu pragurile purtând `Temei` (OMFP 1802/2014 pct.9, literele a) și b) modificate de OMFP 4.164/2024) | **DA, din 30.08** — `GET /tenants/{id}/categorie-marime`, în T12 | **DA, din 30.08** — caseta de pe ecranul de bilanț, lângă selectorul care până azi ghicea | **REPARAT ca DERIVARE · R3 rămâne deschisă pentru PROBĂ** — vezi mai jos |
 | **Evidența operațiunilor de TVA** (art. 321) | **NU** ca artefact — substanța e derivabilă pe fiecare linie, lipsește documentul | — | — | **DESCHIS** |
 | **Registrul de evidență fiscală** (art. 19 · art. 68) | **NU** — potrivirile găsite sunt false pozitive pe `REF` | — | — | **DESCHIS** |
+
+**CATEGORIA DE MĂRIME — ce s-a construit, și ce NU s-a putut proba (30.08.2026).**
+
+Derivarea există și e sursată la actul care o definește. **Două lucruri pe care o implementare naivă
+le-ar fi ratat, amândouă în normă, amândouă gardate:**
+
+1. **Încadrarea cere DOUĂ exerciții consecutive** (pct. 13 alin. (2)-(3)). O derivare pe anul curent
+   nu e încadrarea cerută de normă — e indicatorul anului ăluia.
+2. **Pragul se trece pe DOUĂ criterii din trei** (pct. 9), nu pe unul.
+
+**Consecința, și e chiar punctul:** când exercițiul precedent nu se poate calcula, categoria e
+`nedeterminata`, **nu «micro»**. *Micro e cea mai mică — deci exact valoarea spre care alunecă o
+implementare care tratează necunoscutul ca zero.*
+
+**MĂSURAT PE PORTOFOLIU, 30.08.2026: 19 din 19 firme → `nedeterminata`.** Niciuna n-are două
+exerciții financiare consecutive cu rulaje: singura cu rulaje în 2026 e `tenant_013` (5 conturi), iar
+2025 și 2024 sunt goale pe toate. *Deci derivarea nu se poate exercita pe datele de azi — și asta e
+un fapt despre PORTOFOLIU, nu despre derivare. Punctul orb e firma, nu ecranul.*
+
+**DE-AIA R3 RĂMÂNE DESCHISĂ**, cu condiția schimbată: nu mai e „nu se calculează", e **„nu s-a putut
+proba pe nicio firmă"**. Se închide când există cel puțin o firmă cu două exerciții consecutive, iar
+încadrarea ei iese și se confruntă cu ce ar spune un contabil. *Un verde obținut pe zero instanțe e
+chiar clasa pe care registrul o refuză în altă parte.*
+
+**CE NU S-A FĂCUT, DELIBERAT:** ruta de categorie **nu alege formularul**. `s1005-valideaza` și
+`s1003-valideaza` sunt neatinse, iar ecranul arată încadrarea lângă selector fără s-o aplice.
+*Aplicația spune ce știe; nu decide în locul omului pe baza unei derivări care azi n-are datele.*
+
+**CE NU E NUMĂRUL MEDIU DE SALARIAȚI, declarat:** `nr_mediu_salariati` e **media lunară a
+salariaților cu contract activ**, nu numărul mediu din metodologia oficială (efectiv zilnic).
+Răspunsul marchează separat cazurile în care **acel criteriu decide** încadrarea — când cele două
+criterii monetare ajung singure la „două din trei", aproximarea nu contează.
 
 **CE A SCOS REMĂSURAREA, ca observație generală:** din cele 8 rânduri, **două** aveau producător care
 producea și nu ajungea la om (aceeași formă ca lista 5), **una** era falsă, iar **cinci** sunt

@@ -1432,18 +1432,19 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T12 — Închiderea anului și situațiile financiare
 
-**Clasa:** MECANIC · **rute:** 4 (din care schimba date: 2) · **refuzuri explicite:** 12
+**Clasa:** MECANIC · **rute:** 5 (din care schimba date: 2) · **refuzuri explicite:** 13
 
 **Cine:** nicio verificare de rol pe tot traseul — orice utilizator autentificat al cabinetului. **2 din 2 rute care schimba date.**
 
 **Pasii, din cod:**
 
+- `GET /tenants/{tenant_id}/categorie-marime` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/s1003-valideaza` — garda `cere_cabinet`
 - `GET /tenants/{tenant_id}/s1003-xml` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/s1005-valideaza` — garda `cere_cabinet`
 - `GET /tenants/{tenant_id}/s1005-xml` — garda `cere_cabinet`
 
-**Module:** `artefacte`, `bilant_api`, `duk`
+**Module:** `artefacte`, `bilant_api`, `categorie_marime`, `duk`
 
 **Scrie in:** `artefacte_produse` (INSERT)
 

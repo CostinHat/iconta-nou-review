@@ -96,7 +96,9 @@ TRASEE = [
      [r"^/tenants/\{\}/facturi/perioada", r"^/tenants/\{\}/perioade-blocate"],
      ["perioade_blocate", "perioada_confirmata"]),
     ("T12", "Închiderea anului și situațiile financiare",
-     [r"^/tenants/\{\}/s100[35]"], []),
+     # [R3, 30.08.2026] categoria de marime e PRECONDITIA celor doua: ea decide care situatie e
+     # datorata, deci apartine aceluiasi traseu, nu unuia propriu.
+     [r"^/tenants/\{\}/s100[35]", r"^/tenants/\{\}/categorie-marime$"], []),
     ("T13", "Trecerea de regim fiscal",
      [r"^/tenants/\{\}/firma-profil", r"^/tenants/\{\}/vector$", r"^/migrare/vector"],
      ["firma_profil"]),

@@ -5557,9 +5557,9 @@ inclusiv `banca`. Se face după închiderea constatării de mai sus.
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**481 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**482 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 467
+### `core/` — 468
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -5629,6 +5629,7 @@ inclusiv `banca`. Se face după închiderea constatării de mai sus.
 - `core/test_cartea_mare.py` — GARD — Cartea mare ajunge la om, și fișa își poartă temeiul de completitudine.
 - `core/test_cashflow.py` — —
 - `core/test_catch_vizibil.py` — GARD DEFECT-3 (08.08.2026): (A) frontend - un catch{} GOL care inghite un api.* transforma un 500 intr-o
+- `core/test_categorie_marime.py` — GARD — categoria de mărime nu se rotunjește la „micro", și pragurile citează actul.
 - `core/test_cauza_precisa_business.py` — GARD cauza_precisa: cand un verificator din control_incrucisat prinde o eroare de BUSINESS
 - `core/test_chei_duplicate.py` — GARDĂ: o cheie care apare de două ori în același dicționar e o intrare MOARTĂ. (21.08.2026)
 - `core/test_citate_verbatim.py` — CLICHET CARE CREȘTE (21.08.2026): numărul de citări verificabile mecanic nu mai scade.

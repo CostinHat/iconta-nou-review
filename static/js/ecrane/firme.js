@@ -2112,6 +2112,45 @@ async function ecranJurnalMarja(corp, nav, t) {
 }
 
 
+// [R3, lista 3, 30.08.2026] CATEGORIA DE MARIME, aratata langa selectorul care pana azi o GHICEA.
+//
+// Ecranul NU o alege. Situatiile financiare datorate depind de categorie (OMFP 1802/2014 pct.9), dar
+// derivarea are nevoie de DOUA exercitii consecutive (pct.13) — iar cand nu le are, raspunsul corect
+// e „nu se poate determina", nu „micro". Deci se ARATA ce iese din date, cu motivul, si alegerea
+// ramane a contabilului: aplicatia spune ce stie, nu decide in locul lui pe o derivare fara date.
+function _casetaCategorie(c) {
+  if (!c) return "";
+  const cat = c.categorie;
+  const ind = (x, cheie) => (x && x[cheie] != null ? bani(x[cheie]) : "\u2014");
+  const tabel = (c.indicatori_curent || c.indicatori_precedent) ? `
+    <table class="fd-tabel" style="max-width:620px;margin-top:8px">
+      <thead><tr><th>Criteriu</th><th class="fd-td-num">Exerci\u021biul precedent</th>
+        <th class="fd-td-num">Exerci\u021biul curent</th><th class="fd-td-num">Prag microentit\u0103\u021bi</th></tr></thead>
+      <tbody>
+        <tr><td>Totalul activelor</td><td class="fd-td-num">${ind(c.indicatori_precedent, "total_active")}</td>
+            <td class="fd-td-num">${ind(c.indicatori_curent, "total_active")}</td>
+            <td class="fd-td-num">${bani(c.praguri.micro.total_active)}</td></tr>
+        <tr><td>Cifra de afaceri net\u0103</td><td class="fd-td-num">${ind(c.indicatori_precedent, "cifra_afaceri_neta")}</td>
+            <td class="fd-td-num">${ind(c.indicatori_curent, "cifra_afaceri_neta")}</td>
+            <td class="fd-td-num">${bani(c.praguri.micro.cifra_afaceri_neta)}</td></tr>
+        <tr><td>Num\u0103rul mediu de salaria\u021bi</td>
+            <td class="fd-td-num">${c.indicatori_precedent ? (c.indicatori_precedent.nr_mediu_salariati ?? "\u2014") : "\u2014"}</td>
+            <td class="fd-td-num">${c.indicatori_curent ? (c.indicatori_curent.nr_mediu_salariati ?? "\u2014") : "\u2014"}</td>
+            <td class="fd-td-num">${c.praguri.micro.nr_mediu_salariati}</td></tr>
+      </tbody></table>` : "";
+  const numit = { micro: "microentitate", mici: "entitate mic\u0103", mijlocii_mari: "entitate mijlocie sau mare" };
+  if (cat === "nedeterminata") {
+    return `<div class="caseta-atentie" style="margin-top:10px">
+        <div class="ca-mesaj"><b>Categoria de m\u0103rime nu se poate determina, deci aplica\u021bia nu poate \u0219ti care situa\u021bie financiar\u0103 e datorat\u0103.</b>
+          ${esc(c.motiv || "")}. Alege tipul mai jos pe r\u0103spunderea ta, sau completeaz\u0103 eviden\u021ba exerci\u021biului precedent.</div>
+      </div>${tabel}`;
+  }
+  return `<div class="caseta-info" style="margin-top:10px"><span class="ci-mesaj">
+      Din date, firma e <b>${esc(numit[cat] || cat)}</b> \u2014 ${esc(c.motiv || "")}.
+      ${c.decis_de_numarul_de_salariati ? "<b>Aten\u021bie:</b> \u00eencadrarea depinde de num\u0103rul mediu de salaria\u021bi, care e o aproximare lunar\u0103, nu num\u0103rul mediu din metodologia oficial\u0103." : ""}
+      Alegerea tipului r\u0103m\u00e2ne a ta.</span></div>${tabel}`;
+}
+
 async function ecranBilant(corp, nav, t) {
   {
     corp.innerHTML = `
@@ -2126,8 +2165,22 @@ async function ecranBilant(corp, nav, t) {
         <button class="buton-primar" id="bl-val">Valideaz\u0103 (ANAF)</button>
         <button class="buton-secundar" id="bl-xml">Descarc\u0103 XML</button>
       </div>
+      <div id="bl-categorie"></div>
       <div id="bl-rez" style="margin-top:10px"></div>`;
     const rez = corp.querySelector("#bl-rez");
+    const zonaCat = corp.querySelector("#bl-categorie");
+    const cereCategoria = async () => {
+      zonaCat.innerHTML = `<p class="ecran-nota">Se calculeaz\u0103 categoria de m\u0103rime...</p>`;
+      try {
+        const an = corp.querySelector("#bl-an").value;
+        zonaCat.innerHTML = _casetaCategorie(await api.get(`/tenants/${t.id}/categorie-marime?an=${an}`));
+      } catch (e) {
+        zonaCat.innerHTML = "";
+        arataMesaj(zonaCat, (e && e.mesaj) || "Nu am putut calcula categoria de m\u0103rime.", "eroare");
+      }
+    };
+    corp.querySelector("#bl-an").addEventListener("change", cereCategoria);
+    cereCategoria();
     const par = () => `an=${corp.querySelector("#bl-an").value}`;
     const tip = () => corp.querySelector("#bl-tip").value;
     corp.querySelector("#bl-val").addEventListener("click", async () => {

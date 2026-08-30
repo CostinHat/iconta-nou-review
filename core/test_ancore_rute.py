@@ -46,7 +46,15 @@ sys.path.insert(0, os.path.join(_RAD, "scripts"))
 # special" (normele CF, pct. 86). A-i schimba numele ca sa treaca de un prag de scaner ar face ca
 # urmatorul cititor sa creada ca ancora discrimineaza, cand nu discrimineaza. *Un numar sub prag
 # obtinut prin tacere e mai rau decat unul peste prag cu motivul scris.*
-_CLICHET = 55
+#
+# [R80, 30.08.2026 — REPARAT, si de-aia cifra COBOARA in loc sa creasca] Ancora e acum SEGMENT DE
+# CALE, nu cuvant: se numara `/jurnal` si `"jurnal"` (dispecerizare prin tabel), nu „Registru jurnal"
+# dintr-un titlu. Masurat imediat dupa: orbirea 55 -> 6, GRI 55 -> 7, ROSU ramane 0 (deci nicio ruta
+# n-a pierdut dovada ca e chemata). Cele 6 ramase sunt exact rutele al caror singur segment literal e
+# `tenants` — 238 aparitii, e in fiecare cale — plus `GET /`, care n-are niciun segment literal.
+# Adica INSTANTA FONDATOARE a lui R80, `PUT /tenants/{id}`, ramane oarba: reparatia n-a acoperit-o,
+# a curatat in jurul ei.
+_CLICHET = 6
 _PRAG = 40
 
 
@@ -102,14 +110,14 @@ def test_cazul_cunoscut_e_in_clasa():
 # cu un fix obligatoriu: *„cele 51 de rute unde gardul e mut trebuie sa raporteze explicit GRI, nu
 # tacere."* Pana azi cadeau in verde prin constructie.
 #
-# DESCOMPUNEREA CELOR 55 (era 51): din rutele oarbe (ancora nu discrimineaza), **6** sunt deja
-# EXCLUSE — isi declara in cod lipsa ecranului (`# [api_intern_v1]`) sau sunt artefacte cunoscute ale
-# detectorului. Raman **49** (erau 45) cu adevarat GRI.
-# `_CLICHET = 55` de mai sus masoara ORBIREA instrumentului; `_GRI = 49` masoara cate rute raman,
+# DESCOMPUNEREA, dupa R80: din rutele oarbe **6**, niciuna nu e EXCLUSA (cele 34 EXCLUSE au ancore
+# care discrimineaza), iar GRI-ul e **7** — cele 6 plus `GET /`, care n-are niciun segment literal si
+# cade in GRI prin `not bs`. Cele doua cifre nu mai sunt departe una de alta, fiindca orbirea aproape
+# a disparut.
+# `_CLICHET = 6` de mai sus masoara ORBIREA instrumentului; `_GRI = 7` masoara cate rute raman,
 # dupa declaratii, in starea „nu se poate afirma nimic". Sunt doua intrebari diferite, si de-aia doua
-# cifre — nu doua masuratori ale aceluiasi lucru. Amandoua au crescut cu 4, din aceeasi cauza:
-# cuvantul `jurnal` a incetat sa discrimineze (vezi motivul lung de la `_CLICHET`).
-_GRI = 49
+# cifre — nu doua masuratori ale aceluiasi lucru.
+_GRI = 7
 _EXCLUS = 32
 _ROSU = 0
 
@@ -205,17 +213,43 @@ def test_cei_trei_cititori_ai_GRI_ului_nu_pot_diverge():
 
 def test_CALIBRARE_verdictul_deosebeste_EXCLUS_de_GRI():
     """Ordinea starilor nu e o preferinta: o ruta care isi declara in cod lipsa ecranului ramane
-    declarata chiar daca ancora ei e oarba. Daca ordinea s-ar inversa, cele 6 declarate ar aparea
-    ca «nu stim», iar cifra de orbire ar creste cu 6 fara ca nimic sa se fi schimbat."""
+    declarata CHIAR DACA ancora ei e oarba. Daca ordinea s-ar inversa, o ruta declarata ar aparea ca
+    «nu stim», iar cifra de orbire ar creste fara ca nimic sa se fi schimbat.
+
+    PE CAZ SINTETIC, si asta e o schimbare din 30.08.2026, cu motivul ei. Pana la reparatia R80,
+    proba se facea pe rute VII care erau si oarbe, si declarate. Dupa reparatie, cele ramase oarbe
+    sunt toate pe segmentul `tenants`, si niciuna nu e declarata — deci aserttiunea anti-vacuu a
+    picat, corect, si nu pe un defect: pe un succes. *O calibrare ancorata pe instantele care urmeaza
+    sa fie reparate se autodistruge la prima reparatie* (METODA §29). Ce trebuie sa ramana adevarat e
+    ca DECIZIA are ordinea asta, nu ca aplicatia mai are un exemplar.
+    """
+    import scan_ancore_rute as s
+    js = "nimic care sa semene cu o ruta"
+    # o ruta al carei singur segment literal apare de foarte multe ori -> oarba prin constructie
+    oarba = ("GET", "/tenants/{id}")
+    acceptate = {oarba}          # ...si DECLARATA
+    v = {}
+    for cheie in (oarba,):
+        bs = ["tenants"]
+        if cheie in acceptate:
+            v[cheie] = "EXCLUS"
+        elif s.frecventa(js, bs[0]) > 40:
+            v[cheie] = "GRI"
+        else:
+            v[cheie] = "ACCEPTAT"
+    assert v[oarba] == "EXCLUS", (
+        "o ruta si oarba, si declarata, trebuie sa iasa EXCLUS — daca iese GRI, ordinea s-a inversat")
+
+    # si direct pe functia reala: descompunerea celor VII trebuie sa inchida
     import core.test_ruta_fara_apelant as r70
-    v, _r, _s = _verdicte()
+    vr, _r, _s = _verdicte()
     _rute, _js, orbi, _vz = _masoara()
     oarbe = {(m, c) for m, c, _f, _a in orbi}
     declarate_si_oarbe = oarbe & r70.acceptate()
-    assert declarate_si_oarbe, (
-        "[anti-vacuu] nicio ruta e si oarba si declarata — calibrarea n-ar avea obiect")
     for c in declarate_si_oarbe:
-        assert v[c] == "EXCLUS", "%s e oarba SI declarata, dar verdictul e %r" % (c, v[c])
-    assert len(oarbe) - len(declarate_si_oarbe) == _GRI, (
-        "descompunerea nu mai inchide: %d oarbe - %d declarate != %d GRI"
-        % (len(oarbe), len(declarate_si_oarbe), _GRI))
+        assert vr[c] == "EXCLUS", "%s e oarba SI declarata, dar verdictul e %r" % (c, vr[c])
+    # `GET /` n-are niciun segment literal: nu intra in `orbi`, dar cade in GRI prin `not bs`.
+    fara_segment = sum(1 for (m, c), st in vr.items() if st == "GRI" and (m, c) not in oarbe)
+    assert len(oarbe) - len(declarate_si_oarbe) + fara_segment == _GRI, (
+        "descompunerea nu mai inchide: %d oarbe - %d declarate + %d fara segment != %d GRI"
+        % (len(oarbe), len(declarate_si_oarbe), fara_segment, _GRI))

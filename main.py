@@ -7482,6 +7482,28 @@ def cv_barcode_set(tenant_id: int, articol_id: int, corp: dict = Body(...), ctx=
 
 # --- D112 ---
 
+@app.get("/tenants/{tenant_id}/categorie-marime")
+def cabinet_categorie_marime(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
+    """[R3, lista 3, 30.08.2026] CATEGORIA DE MARIME — precondiția situațiilor financiare.
+
+    Cerința lui Costin, 26.08.2026: *„situațiile financiare cerute depind de categoria de mărime.
+    Dacă aceasta nu există ca dimensiune, ruta nu poate ști ce datorează firma — se declară, nu se
+    presupune."* Până azi nu exista: nici câmp, nici derivare, nici măcar numele.
+
+    NU ALEGE FORMULARUL. Întoarce o **afirmație** — categoria, indicatorii din care iese, pragurile
+    cu temeiul lor, și motivul. Ce face contabilul cu ea rămâne decizia lui: `s1005-valideaza` și
+    `s1003-valideaza` nu se ating. *Aplicația spune ce știe; nu decide în locul omului pe baza unei
+    derivări care poate să nu aibă datele.*
+    """
+    from core import categorie_marime as _cm
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+    with db.get_conn(schema) as conn:
+        return _cm.categorie(conn, schema, an)
+
+
 @app.get("/tenants/{tenant_id}/s1005-xml")
 def s1005_xml(tenant_id: int, an: int, ctx=Depends(cere_cabinet)):
     from core import bilant_api as _ba

@@ -31,6 +31,49 @@ def bucati(cale):
     return [b for b in re.split(r"/", cale) if b and not b.startswith("{")]
 
 
+# ─────────────────────────────────────────────────────────────────────────────
+# [R80, 30.08.2026] ANCORA E UN SEGMENT DE CALE, NU UN CUVANT.
+#
+# DE UNDE VINE. Pe 30.08, in aceeasi zi, TREI seturi de rute au orbit fara ca aplicatia sa se
+# schimbe: cele patru `/tenants/{id}/jurnal` (cuvantul `jurnal` a trecut de 40 de aparitii odata cu
+# ecranul jurnalului de regim marja) si cele sase `/salariati` (cuvantul a trecut pragul odata cu
+# caseta „numarul mediu de salariati" de pe ecranul de bilant). RUTELE AU APELANTI in toate cazurile.
+# Ce crestea era numai incapacitatea detectorului de a o dovedi.
+#
+# Costin, la a doua crestere: *„cifra creste din vocabular, iar tu o citesti in trei locuri —
+# instrument care minte tacit."*
+#
+# CE SE SCHIMBA. Frecventa nu se mai numara pe cuvantul gol (`js.count("jurnal")` prinde si
+# „Registru jurnal" dintr-un titlu), ci pe formele in care un cuvant poate fi o REFERINTA DE RUTA:
+#   - precedat de `/`  -> `/tenants/${t.id}/jurnal?an=`  (calea scrisa in `api.get`)
+#   - intre ghilimele  -> `ruta: "nota-sgr"`            (dispecerizarea prin tabel)
+# A doua forma NU se scoate: chiar de-aia `bucati()` nu punea `/` in fata — vezi docstringul lui
+# `core/test_ruta_fara_apelant.bucati`. Pastrarea ei e conditia ca schimbarea asta sa nu strice
+# recunoasterea rutelor dispecerizate.
+#
+# CE NU REZOLVA, declarat: o ruta chemata prin concatenare in bucati (`"/tenants/" + id + sufix`)
+# ramane invizibila la fel ca inainte; si o cale care apare intr-un COMENTARIU tot se numara, fiindca
+# scanul citeste JS ca text, nu ca AST.
+_RE_ANCORA = {}
+
+
+def _re_ancora(ancora):
+    r = _RE_ANCORA.get(ancora)
+    if r is None:
+        r = _RE_ANCORA[ancora] = re.compile(r"""(?:/|["'`])%s(?![\w-])""" % re.escape(ancora))
+    return r
+
+
+def frecventa(js, ancora):
+    """De cate ori apare `ancora` in forma in care ar putea fi o referinta de ruta."""
+    return len(_re_ancora(ancora).findall(js))
+
+
+def apare(js, ancora):
+    """`ancora` apare macar o data ca referinta de ruta? Inlocuieste `ancora in js`."""
+    return _re_ancora(ancora).search(js) is not None
+
+
 def masoara(prag=PRAG_IMPLICIT):
     import core.test_ruta_fara_apelant as r70
     rute = r70._scan().citeste_rute()
@@ -46,8 +89,8 @@ def masoara(prag=PRAG_IMPLICIT):
         if not bs:
             orbi.append((r["metoda"], r["cale"], 0, "nicio bucata literala"))
             continue
-        rara = min(bs, key=js.count)
-        f = js.count(rara)
+        rara = min(bs, key=lambda b: frecventa(js, b))
+        f = frecventa(js, rara)
         if f > prag:
             orbi.append((r["metoda"], r["cale"], f, rara))
         else:
@@ -92,7 +135,7 @@ def verdicte(prag=PRAG_IMPLICIT):
             out[cheie] = "EXCLUS"
         elif cheie in oarbe or not bs:
             out[cheie] = "GRI"
-        elif all(b in js for b in bs):
+        elif all(apare(js, b) for b in bs):
             out[cheie] = "ACCEPTAT"
         else:
             out[cheie] = "ROSU"

@@ -125,9 +125,28 @@ def _static():
     return "\n".join(t)
 
 
+def _apare(js, ancora):
+    """[R80, 30.08.2026] Ancora apare ca REFERINȚĂ DE RUTĂ, nu ca simplu cuvânt.
+
+    Până azi testul era `ancora in js` — adică „Registru jurnal" dintr-un titlu conta drept apelare a
+    lui `/tenants/{id}/jurnal`. Predicatul e acum unul singur, în `scripts/scan_ancore_rute`, folosit
+    **și** de măsurătoarea orbirii (R80) **și** de detectorul ăsta. Dacă ar fi două, măsurătoarea ar
+    spune „ancora discriminează" în timp ce detectorul declară ACCEPTAT pe o potrivire din proză —
+    exact divergența pe care gardul celor trei cititori o interzice.
+    """
+    import os
+    import sys as _sys
+    _sys.path.insert(0, os.path.join(_RAD, "scripts"))
+    from scan_ancore_rute import apare as _a
+    return _a(js, ancora)
+
+
 def bucati(cale):
     """Bucățile LITERALE ale căii, fără `/` în față — ca dispecerizarea prin tabel
-    (`ruta: "nota-sgr"`) să fie recunoscută drept apelare."""
+    (`ruta: "nota-sgr"`) să fie recunoscută drept apelare.
+
+    [R80] `/` NU se adaugă aici, deliberat: forma dispecerizată n-are slash. Discriminarea se face
+    în `_apare`, care acceptă și `/ancora`, și `"ancora"`."""
     out, cur = [], []
     for seg in cale.split("/"):
         if seg.startswith("{"):
@@ -143,7 +162,7 @@ def bucati(cale):
 
 def _fara_apelant(rute, js):
     return {(r["metoda"], r["cale"]) for r in rute
-            if bucati(r["cale"]) and not all(b in js for b in bucati(r["cale"]))}
+            if bucati(r["cale"]) and not all(_apare(js, b) for b in bucati(r["cale"]))}
 
 
 # [R80, 27.08.2026] Numitorul, scris o dată și verificat mecanic.
@@ -151,7 +170,11 @@ def _fara_apelant(rute, js):
 # Costin: *„un gard care spune «nicio rută fără apelant» trebuie să spună și «despre 88% din
 # suprafață»."* Verdele unui test e **numele** lui — de aceea numele de mai jos poartă
 # `DINTRE_CELE_VIZIBILE`, nu o cifră care ar îmbătrâni în el. Cifra stă aici și se recalculează.
-_OARBE = 55          # rute pentru care ancora literală nu discriminează (27.08.2026: 51; 30.08.2026: 55)
+_OARBE = 6           # 27.08.2026: 51 · 30.08.2026 dimineața: 55 · **30.08.2026, după R80: 6**.
+                     # Ancora e acum SEGMENT DE CALE, nu cuvânt. Cele 6 rămase sunt exact rutele al
+                     # căror singur segment literal e `tenants` (238 apariții — e în fiecare cale),
+                     # plus `GET /`, care n-are niciun segment literal. Adică EXACT instanța
+                     # fondatoare a lui R80 — `PUT /tenants/{id}` — rămâne oarbă, onest.
 _TOTAL_LA_MASURARE = 411
 
 
