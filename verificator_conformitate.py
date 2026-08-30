@@ -1213,7 +1213,7 @@ except Exception as _e_ser:
 #
 # CLICHET, nu prag: 45 e orbirea de azi, iar (a) si (b) din R80 sunt DEFERATE. Blocheaza numai
 # cresterea, si orice ROSU.
-RUTE_GRI_CLICHET = 45
+RUTE_GRI_CLICHET = 49   # 45 -> 49 pe 30.08.2026; cauza masurata la `_CLICHET` in core/test_ancore_rute.py
 rap["rute_verdict"] = []
 try:
     import sys as _sys_rv

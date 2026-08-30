@@ -48,10 +48,21 @@ def test_randuri_din_res_dataclass_serializeaza_decimal():
     assert "Rezultat TVA 445 lei." not in r["avertismente"]
 
 
-def test_randuri_din_res_d112_lista_da_None():
-    # d112.genereaza intoarce (xml, avertismente) - al 2-lea e o LISTA, nu dataclass -> None
+def test_randuri_din_res_pe_ce_nu_e_dataclass_da_None():
+    # Regula generala a functiei, nu un caz al lui d112: pana la 30.08.2026 d112 era chiar instanta
+    # ei (intorcea o LISTA de avertismente), iar numele testului spunea asta. R105 i-a dat obiect de
+    # rezultat, deci exemplul a ramas fara stapan - se pastreaza ca REGULA, cu numele corect.
     assert coada_api.randuri_din_res(["avertisment 1", "avertisment 2"]) is None
     assert coada_api.randuri_din_res(None) is None
+
+
+def test_randuri_din_res_serializeaza_acum_si_d112():
+    """[R105] Consecinta care se vede in BAZA, nu doar pe ecran: D112 isi persista randurile."""
+    from core.d112 import RezultatD112, ObligatieD112
+    r = RezultatD112(an=2026, luna=8, obligatii=[ObligatieD112("602", "5503XXXXXX", 1234)],
+                     total_plata_a=1234)
+    d = coada_api.randuri_din_res(r)
+    assert d is not None and d["obligatii"][0]["datorat"] == 1234, d
 
 
 # ============================================================

@@ -29,14 +29,20 @@ PIN = {
         "d394). Daca `d390.TIPURI` s-ar importa de aici, comparatia ar deveni o tautologie - exact "
         "modul de esec pazit de test_enumerarea_nu_e_copiata_din_constrangere. Consumatorul lui "
         "legitim e gardul core/test_nomenclator_pe_norma.py (aceeasi clasa cu scan_garzi_pe_text)",
-    "core/fisa_cont.py":
-        "PRODUCATOR FARA LIVRARE, declarat (METODA §20) — Fisa de cont 14-6-22, care inlocuieste "
-        "Cartea mare 14-1-3; zero rute si zero ecrane, spus in ISTORIC 23.08.2026 (3): «artefactul "
-        "are producator, nu livrare». NU e omisiune - conditia lui de deblocare e LIVRAREA, nu un apel. "
-        "[29.08.2026] A ramas aici printr-o DECIZIE, nu din inertie: scripts/scan_1b_regimuri.py il "
-        "importa ca sa probeze la 1b ca producatorul merge pe date reale, iar sonda l-ar fi declarat "
-        "legat. Costin a ales varianta (a) — scripts/ nu conteaza ca apelant de productie — tocmai ca "
-        "masurarea unei absente sa nu o stinga",
+    # [30.08.2026] `core/fisa_cont.py` A IESIT DE AICI, si merita citit de ce.
+    #
+    # A stat in PIN ca „PRODUCATOR FARA LIVRARE, declarat (METODA §20)": Fisa de cont 14-6-22, care
+    # inlocuieste Cartea mare 14-1-3, avea producator si **zero rute, zero ecrane** — spus in ISTORIC
+    # 23.08.2026 (3): «artefactul are producator, nu livrare». Conditia lui de deblocare era LIVRAREA,
+    # nu un apel. Pe 30.08 a primit ruta (`GET /tenants/{id}/fisa-cont`) si ecran, deci conditia s-a
+    # indeplinit, iar gardul a cerut singur scoaterea: *„nu mai e nelegat (bine!) — scoate-l din PIN,
+    # altfel clichetul ramane peste realitate si nu mai masoara nimic."*
+    #
+    # CE RAMANE ADEVARAT din intrarea veche, si de-aia nu se sterge fara urma: pe 29.08 Costin a ales
+    # varianta (a) — `scripts/` NU conteaza ca apelant de productie —, tocmai ca **masurarea unei
+    # absente sa nu o stinga**. `scripts/scan_1b_regimuri.py` importa modulul ca sa probeze ca
+    # producatorul merge pe date reale; daca sonda l-ar fi socotit apelant, absenta livrarii s-ar fi
+    # stins prin chiar masurarea ei. Regula aia e despre INSTRUMENT, nu despre fisier — si ramane.
     "core/scan_rol_pe_efect.py":
         "INSTRUMENT DE MASURA, nu cale de productie (aceeasi clasa cu scan_garzi_pe_text si "
         "scan_module_nelegate): singurul lui consumator legitim e gardul core/test_rol_pe_efect.py, "

@@ -90,6 +90,12 @@ COMPONENTE = {
              Sectiune("Serii de facturi declarate", "serii"),),
     # D406 poarta structuri de SAF-T pe care nu le-am confruntat camp cu camp; coloanele monetare
     # nu se declara din presupunere - se lasa nemarcate, si se spune aici de ce.
+    # [R105, 30.08.2026] D112 a intrat aici in ziua in care motorul ei a capatat obiect de rezultat.
+    # Doua sectiuni, fiindca declaratia are doua feluri de pozitii: ce datoreaza ANGAJATORUL la buget
+    # (randurile `angajatorA`) si contributiile FIECARUI asigurat.
+    "d112": (Sectiune("Obligații de plată la buget", "obligatii", monetare=("datorat",)),
+             Sectiune("Contribuțiile asiguraților", "asigurati",
+                      monetare=("brut", "baza_cas", "cas", "cass", "impozit"))),
     "d406": (Sectiune("Note contabile", "note"),
              Sectiune("Facturi de vânzare", "facturi_vanzare"),
              Sectiune("Facturi de cumpărare", "facturi_cumparare"),),
@@ -97,13 +103,12 @@ COMPONENTE = {
 
 # Tipurile care NU-și pot desface cifra, fiecare cu motivul ȘI cu ce ar trebui făcut. Absența cu
 # motiv nu e același lucru cu absența — interdicția 64, și cap.25.4 din Design System.
-FARA_COMPONENTE = {
-    "d112": ("generatorul (`core.d112._d112_genereaza`) întoarce `(xml, avertismente)` — nu există "
-             "obiect de rezultat din care să se citească pozițiile. Componentele D112 sunt "
-             "contribuțiile fiecărui salariat, iar ca să ajungă până aici generatorul trebuie să "
-             "le ÎNTOARCĂ, nu doar să le scrie în XML. E o schimbare de motor, nu de rută, și nu "
-             "se face pe furiș într-o tură de transport."),
-}
+#
+# GOALĂ din 30.08.2026. Singura intrare a fost **d112**, scoasă în ziua în care motorul ei a căpătat
+# obiect de rezultat (R105, decizia lui Costin: *„motorul se schimbă"*). **Dicționarul rămâne** —
+# mecanismul nu se șterge odată cu ultima intrare, altfel următorul tip care nu-și poate desface
+# cifra n-ar avea unde să spună de ce, iar absența ar redeveni tăcere.
+FARA_COMPONENTE = {}
 
 
 def _simplu(v):

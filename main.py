@@ -8119,6 +8119,44 @@ def vanzare_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
             "compensatie": str(r["compensatie"]), "total": str(r["total"])}
 
 
+@app.get("/tenants/{tenant_id}/fisa-cont")
+def cabinet_fisa_cont(tenant_id: int, an: int, cont: Optional[str] = None,
+                      luna: Optional[int] = None, ctx=Depends(cere_cabinet)):
+    """[lista 3, 30.08.2026] CARTEA MARE (14-1-3), prin inlocuitorul ei legal.
+
+    Norma: *„Registrul Cartea mare poate fi inlocuit cu Fisa de cont pentru operatiuni diverse"*
+    (OMFP 2634/2015, Anexa 2, cod 14-1-3 si 14-1-3/a; fisa insasi e cod 14-6-22).
+
+    Producatorul (`core/fisa_cont.py`) exista din iulie si producea pe date reale — 6 firme cu
+    miscare, 43 de conturi in 2026 — dar n-avea NICI ruta, NICI ecran. Deci artefactul se calcula si
+    nu ajungea la nimeni: lista 3, cauza „nu ajunge la om", nu „nu exista producator".
+
+    Fara `cont`: intoarce doar conturile cu miscare — domeniul pe care fisa se poate cere. Asa
+    ecranul nu ofera un cont pe care fisa ar iesi goala, ceea ce norma nu cere si controlul nu
+    accepta.
+
+    POARTA COMUNA, deliberat (`schema_tenant`, nu `schema_tenant_citire`): decizia (b) din 28.08 a
+    numit EXPLICIT 13 rute de citire-istorica, iar a 14-a a intrat azi doar fiindca e a doua iesire
+    a uneia dintre ele. Asta e o ruta NOUA, deci ar fi o largire a deciziei — se cere, nu se face.
+    LIMITA DECLARATA: Cartea mare a unei firme DEZACTIVATE nu se poate citi pe ruta asta.
+    """
+    from core import fisa_cont as _fc
+    with db.get_conn() as conn:
+        schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        if not schema:
+            raise HTTPException(404, "tenant inexistent sau fără acces")
+    with db.get_conn(schema) as conn:
+        conturi = _fc.conturi_cu_miscare(conn, schema, an, luna)
+        fisa = None
+        if cont:
+            try:
+                fisa = _fc.pentru_json(_fc.fisa_cont(conn, schema, cont, an, luna))
+            except ValueError as e:
+                raise HTTPException(422, str(e))
+    return {"an": an, "luna": luna, "formular": _fc.COD_FORMULAR,
+            "conturi": conturi, "fisa": fisa}
+
+
 @app.get("/tenants/{tenant_id}/jurnal-marja")  # [api_intern_v1] raport regim marja - fara UI inca, pastrat deliberat
 def jurnal_marja(tenant_id: int, tip: str, luna: str, ctx=Depends(cere_cabinet)):
     """tip: secondhand|turism; luna: YYYY-MM. Jurnal special vanzari regim marja:

@@ -151,7 +151,7 @@ def _fara_apelant(rute, js):
 # Costin: *„un gard care spune «nicio rută fără apelant» trebuie să spună și «despre 88% din
 # suprafață»."* Verdele unui test e **numele** lui — de aceea numele de mai jos poartă
 # `DINTRE_CELE_VIZIBILE`, nu o cifră care ar îmbătrâni în el. Cifra stă aici și se recalculează.
-_OARBE = 51          # rute pentru care ancora literală nu discriminează (măsurat 27.08.2026)
+_OARBE = 55          # rute pentru care ancora literală nu discriminează (27.08.2026: 51; 30.08.2026: 55)
 _TOTAL_LA_MASURARE = 411
 
 

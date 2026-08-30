@@ -17,7 +17,11 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # Inventarul ecranelor de firmă la 19.08.2026. Un ecran nou => se adaugă AICI (conștient) + de preferat în ECRANE.
 _BASELINE = {
     "fa-acces", "fa-balanta", "fa-banca", "fa-bilant", "fa-bonuri", "fa-casa", "fa-centrecost", "fa-contracte",
-    "fa-control", "fa-datefirma", "fa-declaratii", "fa-etransport", "fa-facturi", "fa-import", "fa-jurnal",
+    "fa-control", "fa-datefirma", "fa-declaratii", "fa-etransport", "fa-facturi",
+    # [lista 3, 30.08.2026] doua artefacte care aveau producator si nu ajungeau la om:
+    # Cartea mare (fisa de cont 14-6-22) si jurnalul special de regim marja (normele CF, pct. 86).
+    "fa-fisacont", "fa-marja",
+    "fa-import", "fa-jurnal",
     "fa-magazin", "fa-mijloace", "fa-operatiuni", "fa-produse", "fa-rapoarte", "fa-raportz", "fa-registratura",
     "fa-rip", "fa-salariati", "fa-solicitari", "fa-stocuri", "fa-verificari",
 }

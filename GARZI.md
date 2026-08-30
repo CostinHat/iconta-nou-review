@@ -5412,11 +5412,154 @@ Blocul de mai jos e produs de `scripts/scan_garzi_inventar.py --md` și păzit d
 de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instrumente`,
 `scan_axa_garzi`, `scan_mutatie_garzi`) și `scan_garzi_pe_text`.
 
+## 30.08.2026 — CONSTATARE **GRI**: „Interactive authentication required" lângă `NOPASSWD: ALL` nu e un mister, e o contradicție de identitate
+
+*Formulată de Costin, cu cuvintele lui: „cele două căi rulează sub identități diferite". Se scrie
+aici ca **GRI**, nu ca fapt: mecanismul e dovedit, instanța nu. **Se închide când se știe identitatea,
+nu înainte.***
+
+### CE SE ȘTIE — dovedit azi, pe mașină, nu dedus
+
+| ce | proba |
+|---|---|
+| `costin` avea `(ALL) NOPASSWD: ALL` | `sudo -n -l`, din `/etc/sudoers.d/costin-nopasswd` (14.06.2026) |
+| **cu** `sudo`, repornirea merge fără parolă | `sudo -n systemctl restart iconta-nou` → exit 0; `ActiveEnterTimestamp` a sărit la 10:45:05 |
+| **fără** `sudo`, aceeași comandă, același utilizator, aceeași mașină, **eșuează** | `systemctl restart iconta-nou` → `Failed to restart iconta-nou.service: Interactive authentication required.` |
+
+**De aici, temeiul.** Sunt **două sisteme de autorizare, nu unul**: `sudo` întreabă **sudoers**;
+`systemctl` chemat direct de un utilizator neprivilegiat întreabă **polkit**. *Polkit nu citește
+sudoers.* Deci `NOPASSWD: ALL` nu spune absolut nimic despre calea fără `sudo` — iar mesajul
+„Interactive authentication required" e răspunsul lui polkit, nu al lui sudo. Cele două afirmații nu
+se contrazic: vorbesc despre identități diferite ale aceleiași persoane.
+
+### CE NU SE ȘTIE, și de-aia rămâne GRI
+
+**Sub ce identitate a rulat repornirea care a eșuat pe 30.08, în jur de 09:00.** Mecanismul de mai sus
+o explică *dacă* a fost calea fără `sudo` — dar asta e o ipoteză care se potrivește, nu o măsurătoare.
+Nu se poate afirma din urme.
+
+**De ce nu se poate citi, măsurat:** dovada ar sta în `/var/log/auth.log` (`syslog:adm`, mod `0640`)
+sau în jurnalul de sistem. Identitatea de deploy e în grupurile `costin sudo users` — **nu** în `adm`
+și **nu** în `systemd-journal`. `journalctl` fără privilegii spune singur: *„You are currently not
+seeing messages from other users and the system."* Deci exact identitatea care a executat actul e cea
+care nu-i poate citi urma.
+
+### CONDIȚIA DE ÎNCHIDERE
+
+Una din două, iar prima e de preferat fiindcă e despre instanță, nu despre clasă:
+
+1. se citește fereastra **08:30–10:45, 30.08.2026** din `auth.log` sau din jurnalul de sistem, de o
+   identitate care are dreptul, și se vede dacă a existat o cerere polkit refuzată pentru
+   `org.freedesktop.systemd1.manage-units`; **sau**
+2. se reproduce comanda **exact** cum a fost dată, și se compară mesajul.
+
+Până atunci, **starea rămâne GRI**. *O ipoteză care explică perfect faptele nu e o măsurătoare — e
+chiar forma pe care registrul o refuză în altă parte („un raționament care ține o restanță deschisă
+cere aceeași verificare ca cel care o închide").*
+
+### LIMITA DECLARATĂ a reparației care s-a făcut totuși
+
+Regula îngustă (`/etc/sudoers.d/iconta-nou`) rezolvă **calea cu `sudo`** — singura pe care o folosește
+`scripts/githooks/post-commit`. **Nu atinge polkit.** Dacă cineva reporneste serviciul **fără** `sudo`,
+va primi același mesaj, iar regula nouă nu-l va ajuta cu nimic. *Un gard care rezolvă o cale și tace
+despre cealaltă e citit ca acoperire totală — de-aia limita se scrie.*
+
+### O A TREIA INSTANȚĂ, DIN ACEEAȘI ZI, A ACELUIAȘI TIPAR
+
+Argumentele se potrivesc **literal** în sudoers, iar asta a lovit de trei ori pe 30.08:
+
+1. `/etc/sudoers.d/iconta` era scrisă pe `iconta.service` — **unitate care nu există**. N-a acoperit
+   niciodată nimic, și tăcerea ei a fost „rezolvată" cu `NOPASSWD: ALL`.
+2. Prima formă a regulii noi acoperea `restart iconta-nou.service`, dar hook-ul cheamă
+   `restart iconta-nou` — **fără sufix**. Prinsă înainte de a scoate blanket-ul; acum se acoperă
+   amândouă formele.
+3. `sudo -n journalctl -u iconta-nou --since ... --no-pager` e **refuzat**: regula fixează argumentele
+   exact, iar orice argument în plus nu se mai potrivește. **Consecință: diagnosticul pentru care
+   `journalctl` a fost pus în set nu se poate face cu el.** Nereparat deliberat — o extindere cu
+   `*` ar lărgi ce tocmai s-a îngustat, în aceeași tură, fără să fie cerută.
+
+*Partea generală: o regulă de autorizare care nu se potrivește **nu țipă** — pur și simplu nu se
+aplică. Absența ei arată identic cu absența cererii, iar la capătul lanțului cineva astupă gaura cu
+cea mai largă permisiune posibilă.*
+
+
+## 30.08.2026 — CONSTATARE **GRI**: cei 0,2463% de pe ecranul `banca` NU erau o regresie vizuală, dar nu se știe ce erau
+
+*Cerut de Costin: „se explică sau rămâne constatare cu temei". **Se explică pe jumătate**, iar
+jumătatea care lipsește se scrie ca atare.*
+
+### CE S-A MĂSURAT
+
+`frontend_test/vizual/raport_baseline.json`, scris la **07:09**, dădea `banca` drept **SCHIMBAT**:
+**5675 pixeli, 0,2463%** — de aproape cinci ori pragul de `0,05%`, și cu un ordin de mărime peste
+restul ecranelor (toate între **0,0033%** și **0,0144%**, adică zgomot de antialiasing).
+
+**Rulat din nou la 12:39, contra ACELUIAȘI baseline, neatins** (`baseline/banca.png`, 26.08 00:30):
+
+| ecran | 07:09 | 12:39 |
+|---|---|---|
+| **banca** | **SCHIMBAT · 5675 px · 0,2463%** | **identic · 130 px · 0,0056%** |
+| casa · rapoarte · declaratii | identic · 0,0056% | identic · 0,0056% |
+| stat_plata | identic | **SCHIMBAT · 8,8397%** — asta e munca de azi (compoziția netului), deci unealta chiar vede o schimbare reală |
+
+### CE SE POATE AFIRMA
+
+**Nu era o regresie vizuală.** Referința n-a fost atinsă între cele două rulări, iar a doua o dă
+identică. Ceva a fost altfel **la 07:09**, și nu mai e.
+
+**Deci ecranul `banca` nu e determinist între rulări** — exact clasa pe care roadmap-ul o are deschisă
+ca **#8, „baseline determinist (freezegun)"**, și pe care unealta însăși o numește în docstring:
+*„dacă self-diff e mare, baseline-ul ar fi zgomotos → se propune prag / mascare, nu se impune tacit"*.
+
+### CE NU SE POATE AFIRMA, și de-aia e GRI
+
+**Ce anume varia.** Trei ipoteze se potrivesc la fel de bine cu ce s-a măsurat, iar a alege una ar fi
+exact greșeala pe care registrul o refuză în altă parte:
+
+1. **randare pe jumătate** — `capteaza()` așteaptă `400 ms` ficși, apoi fotografiază. Un panou care
+   își încarcă datele mai lent apare gol. 5675 de pixeli e cam un bloc de conținut;
+2. **date care s-au schimbat și au revenit** — sunt joburi la fiecare 15 minute în `crontab`;
+3. **conținut dependent de timp** — o fereastră „ultimele N zile" care la 07:09 cădea altfel.
+
+*Ipoteza 1 e cea mai economică, dar „se potrivește" nu e „s-a măsurat".*
+
+### CONDIȚIA DE ÎNCHIDERE
+
+Se rulează **modul implicit** (self-diff: două capturi în aceeași rulare) **pe `banca`**, și se
+citește `flakiness`: `STABIL` / `UȘOR` / `ZGOMOTOS`. Aia răspunde exact la întrebarea rămasă — *e
+ecranul stabil de la o captură la alta?* —, spre deosebire de `--compare`, care răspunde la *s-a
+schimbat față de referință?*. Cele două se confundă ușor, iar unealta o spune singură în cap.
+
+**DE CE NU S-A RULAT AZI, cu motivul, nu cu tăcere:** modul implicit **rescrie baseline-ul**
+(`Image.open(c1).save(base)`). Rulat acum, ar fi șters chiar referința din 26.08 pe care stă
+măsurătoarea de mai sus — adică ar fi distrus proba ca s-o explice. Se face după ce unealta capătă
+ori un `--doar <ecran>`, ori un mod care nu scrie referința.
+
+### DOUĂ OBSERVAȚII DE CITIRE, care nu sunt defecte dar induc în eroare
+
+- **`"ok": true` lângă `"stare": "SCHIMBAT"` nu e o contradicție**: `ok` spune că scanul **a rulat
+  fără excepție**, nu că ecranul e neschimbat. Verdictul e în `stare`. Citit repede, rândul pare să
+  se contrazică singur.
+- **Baseline-urile nu sunt în git** (decizia lui Costin, 26.08.2026): sunt referințe locale,
+  regenerabile. Deci o comparație e reproductibilă doar cât timp nimeni nu rulează modul implicit —
+  și nimic nu împiedică asta.
+- **Nici raportul nu e în git**: `frontend_test/vizual/.gitignore` are `raport_*.json`. A doua rulare
+  l-a suprascris, deci **cifrele de la 07:09 nu mai există în niciun fișier — trăiesc doar în tabelul
+  de mai sus**. Se scrie fiindcă altfel constatarea asta ar trimite la o probă care nu se mai poate
+  deschide, iar cine ar căuta-o ar găsi rularea de la 12:39 și ar crede că tabelul minte.
+
+### CE RĂMÂNE DE FĂCUT ȘI NU S-A FĂCUT
+
+**Baseline-ul lui `stat_plata` e acum vechi cu 8,84%**, fiindcă ecranul chiar s-a schimbat azi
+(compoziția netului). **Nu s-a regenerat**, deliberat: regenerarea rescrie *toate* referințele,
+inclusiv `banca`. Se face după închiderea constatării de mai sus.
+
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**480 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**481 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 466
+### `core/` — 467
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -5483,6 +5626,7 @@ de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instru
 - `core/test_cale_a_doua.py` — GARD (20.08.2026): a doua cale nu poate fi mutată peste prima în tăcere.
 - `core/test_camp_blocant.py` — GARDĂ [R93, 30.08.2026]: un câmp declarat OBLIGATORIU trebuie să OPREASCĂ generatorul, nu să
 - `core/test_capturi_numite.py` — GARD [HH, 28.08.2026]: o captură comisă fără proprietar în registru pică poarta.
+- `core/test_cartea_mare.py` — GARD — Cartea mare ajunge la om, și fișa își poartă temeiul de completitudine.
 - `core/test_cashflow.py` — —
 - `core/test_catch_vizibil.py` — GARD DEFECT-3 (08.08.2026): (A) frontend - un catch{} GOL care inghite un api.* transforma un 500 intr-o
 - `core/test_cauza_precisa_business.py` — GARD cauza_precisa: cand un verificator din control_incrucisat prinde o eroare de BUSINESS

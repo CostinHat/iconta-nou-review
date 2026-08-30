@@ -1255,7 +1255,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T05 — Nota contabilă — de la document la registrul-jurnal
 
-**Clasa:** MECANIC · **rute:** 30 (din care schimba date: 25) · **refuzuri explicite:** 170
+**Clasa:** MECANIC · **rute:** 31 (din care schimba date: 25) · **refuzuri explicite:** 174
 
 **Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 22 din 25.**
 
@@ -1264,6 +1264,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `GET /api/v1/firme/{tenant_id}/balanta` — garda `cere_api_key`
 - `GET /tenants/{tenant_id}/balanta` — garda `cere_cabinet`
 - `GET /tenants/{tenant_id}/documente/balanta` — garda `cere_cabinet`
+- `GET /tenants/{tenant_id}/fisa-cont` — garda `cere_cabinet`
 - `GET /tenants/{tenant_id}/jurnal` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/jurnal` — garda `cere_cabinet`
 - `DELETE /tenants/{tenant_id}/jurnal/{nota_id}` — garda `cere_cabinet`
@@ -1292,7 +1293,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `GET /tenants/{tenant_id}/plan-conturi` — garda `cere_context`
 - `POST /tenants/{tenant_id}/plan-conturi` — garda `cere_rol` rol:admin_firma
 
-**Module:** `afirmatii`, `avansuri`, `bacsis`, `comodat_chirii`, `cont_valid`, `contare_facturi`, `contracte_speciale`, `credite`, `d406_active`, `decontari_asociati`, `deconturi`, `documente_api`, `inventariere`, `jurnal_api`, `leasing`, `lichidare`, `obiecte_inventar`, `ong`, `perisabilitati`, `productie`, `provizioane`, `sgr`, `sponsorizari`, `subventii`, `tenant_provisioning`, `tva_incasare`
+**Module:** `afirmatii`, `avansuri`, `bacsis`, `comodat_chirii`, `cont_valid`, `contare_facturi`, `contracte_speciale`, `credite`, `d406_active`, `decontari_asociati`, `deconturi`, `documente_api`, `fisa_cont`, `inventariere`, `jurnal_api`, `leasing`, `lichidare`, `obiecte_inventar`, `ong`, `perisabilitati`, `productie`, `provizioane`, `sgr`, `sponsorizari`, `subventii`, `tenant_provisioning`, `tva_incasare`
 
 **Scrie in:** `ai_corectii` (INSERT) · `audit_log` (INSERT) · `casa_operatiuni` (DELETE) · `extras_linii` (UPDATE) · `firma_profil` (INSERT/UPDATE) · `inregistrari` (DELETE/INSERT/UPDATE) · `inregistrari_linii` (DELETE/INSERT) · `mijloace_fixe` (INSERT/UPDATE) · `plan_conturi` (INSERT) · `tenants` (INSERT/UPDATE) · `user_tenants` (INSERT)
 

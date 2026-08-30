@@ -55,11 +55,19 @@ def randuri_din_res(res):
     """[F163v2] Serializează `res` (dataclass) -> dict JSON-safe (Decimal->str via default=str)
     pentru payload/jsonb (persistare în public.declaratii_depuse.randuri). PURĂ.
 
-    d112 e EXCEPȚIA: d112.genereaza întoarce (xml, avertismente) unde al 2-lea element e o
-    LISTĂ de avertismente, NU un dataclass cu totaluri structurate. Aici -> None (randuri NULL).
-    Temeiul: d112 își ține agregatele în variabile de structură XML, nu le expune ca res;
-    a-l refactoriza ca să le întoarcă e o decizie de arhitectură pe modulul validat DUK (F181),
-    NU se face aici. Vezi DECIZII 22.07 F163v2."""
+    **d112 NU mai e excepția, din 30.08.2026 (R105).** Textul de aici spunea, din 22.07.2026, că
+    `d112.genereaza` întoarce `(xml, avertismente)` cu o LISTĂ pe poziția a doua, deci `randuri`
+    rămâne NULL — și că refactorizarea *„e o decizie de arhitectură pe modulul validat DUK (F181),
+    NU se face aici"*. **Amânarea era corectă și avea condiție scrisă; condiția s-a îndeplinit:**
+    Costin a dat decizia pe 30.08.2026 — *„R105: motorul se schimbă"* — iar `_d112_genereaza`
+    întoarce acum `RezultatD112`.
+
+    **Efectul, scris fiindcă nu e evident:** de la commitul acela, D112 își persistă rândurile în
+    `public.declaratii_depuse.randuri`, ca celelalte declarații. Depunerile de DINAINTE rămân cu
+    `randuri` NULL — nu se completează retroactiv, fiindcă n-ar fi ce s-a depus, ci ce s-ar depune
+    azi.
+
+    Ce rămâne adevărat din textul vechi: funcția e PURĂ, iar ce nu e dataclass -> None."""
     import dataclasses
     if not dataclasses.is_dataclass(res):
         return None

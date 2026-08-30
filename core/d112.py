@@ -4,6 +4,7 @@ Include CM: asiguratB3 + asiguratD + angajatorC2 (OUG 158/2005).
 pull() citeste salariati + concedii_medicale din schema tenantului."""
 
 from core.common import text_anaf as _t, cere_coloane_cursor, LIMITE_TEXT_ANAF as _LIM  # limite text per-camp (03.08.2026)
+from dataclasses import dataclass, field
 import re
 from core import scadente as _scad
 from core import pontaj as _pontaj
@@ -16,6 +17,61 @@ from core.identitate import valideaza_cnp as _vcnp_id, valideaza_cui as _vcui_id
 _D112_XSD = _os.path.join(_os.path.dirname(__file__), "..", "anaf_surse", "d112_06082026.xsd")
 _ENUM_XSD_CACHE = {}
 from core import nomenclator_cm as _ncm
+
+
+@dataclass
+class ObligatieD112:
+    """Un rand `angajatorA` — creanta care pleaca la buget. Aceeasi forma ca la D100."""
+    cod_oblig: str
+    cod_bugetar: str
+    datorat: int
+
+
+@dataclass
+class AsiguratD112:
+    """Contributiile UNUI asigurat, exact cifrele care intra in XML pentru el.
+
+    CNP-ul NU e aici, si e o alegere: componentele cerute de lista 5 raspund la „din ce e facuta
+    cifra", iar CNP-ul nu compune nicio suma. Iar `coada_api.randuri_din_res` serializeaza obiectul
+    asta in `public.declaratii_depuse.randuri` — deci ce se pune aici se si PASTREAZA. LIMITA
+    DECLARATA: cine cauta asiguratul dupa CNP nu-l gaseste din componente; il gaseste in statul de
+    plata, unde ii e locul.
+    """
+    nume: str
+    brut: int
+    baza_cas: int
+    cas: int
+    cass: int
+    impozit: int
+
+
+@dataclass
+class RezultatD112:
+    """[R105, 30.08.2026] Obiectul de rezultat pe care D112 nu l-a avut niciodata.
+
+    DE CE ACUM. Pana azi `_d112_genereaza` intorcea `(xml, avertismente)` — un sir si o lista de
+    texte. Consecinta masurata la 1c: din cele noua declaratii, D112 era SINGURA care nu-si putea
+    desface cifra, fiindca nu exista nimic structurat de citit; pozitiile se scriau in XML si nu mai
+    existau nicaieri dupa aceea.
+
+    DECIZIA CARE SE ANULEAZA, cu locul ei: `coada_api.randuri_din_res` scria, din 22.07.2026, ca
+    refactorizarea „e o decizie de arhitectura pe modulul validat DUK (F181), NU se face aici".
+    Amanarea era corecta atunci — avea si conditie, si loc. Costin a dat decizia pe 30.08.2026:
+    *„R105: motorul se schimba."* Deci nu se ocoleste, se schimba.
+
+    DOUA EFECTE care nu sunt evidente si se scriu:
+      1. `main.py` citea `getattr(res, "avertismente", None)` — pe o LISTA, asta da `None`. Deci
+         avertismentele D112 se calculau si **se aruncau**. De acum ajung la contabil.
+      2. `randuri_din_res` intoarce `None` pe ce nu e dataclass. De acum D112 isi persista randurile
+         in `public.declaratii_depuse.randuri`, ca celelalte.
+    """
+    an: int
+    luna: int
+    prof: dict = field(default_factory=dict)
+    obligatii: list = field(default_factory=list)
+    asigurati: list = field(default_factory=list)
+    total_plata_a: int = 0
+    avertismente: list = field(default_factory=list)
 
 
 def _cod_boala_acceptat(cod):
@@ -204,6 +260,7 @@ def _d112_genereaza(prof, salariati, an, luna):
     _c2_cazuri = []  # [D112 C2 pe rand] (cod, d16, d14=za, d15=zf, d20, d21) per certificat
     c1_12 = 0
     AS = []
+    asigurati = []   # [R105] componentele, stranse in acelasi loc in care se scrie XML-ul
     idx = 0
     for s in salariati:
         idx += 1
@@ -515,6 +572,13 @@ def _d112_genereaza(prof, salariati, an, luna):
         a.append('    <asiguratE3 E3_1="B" E3_2="1" E3_3="1" E3_4="A" E3_5="%s" E3_6="%s" E3_8="%d" '
                  'E3_9="%d" E3_14="%d" E3_15="%d" E3_16="0" E3_19="0" E3_21="0"%s/>'
                  % (perioada, perioada, brute, b4base, imp, imp, _e83))
+        # [R105] Se strange AICI, nu se recalculeaza altundeva: `brute`, `b4base`, `imp`, `cas` si
+        # `cass` sunt chiar valorile pe care le-a scris E3/B4 mai sus. `int()` face ce face si `%d`
+        # din formatul XML, deci componenta nu poate diverge de declaratie printr-o rotunjire.
+        asigurati.append(AsiguratD112(
+            nume=("%s %s" % (s.get("nume") or "", s.get("prenume") or "")).strip(),
+            brut=int(brute), baza_cas=int(b4base),
+            cas=int(cas), cass=int(cass), impozit=int(imp)))
         a.append('  </asigurat>')
         AS.append("\n".join(a))
     n = len(salariati)
@@ -526,6 +590,7 @@ def _d112_genereaza(prof, salariati, an, luna):
     # contributiei asiguratorii pentru munca), NU art.220^3 (=cota 2.25%). Valoarea nu se schimba, doar temeiul.
     cam_total = _d112int(sum_bazac * _cota_cam)
     A = []
+    obligatii = []   # [R105] aceleasi randuri, in forma citibila de om
     def add_oblig(cod, cb, val):
         # [d112 v1.03-072026] sectiunea angajatorA ("Creante") e OBLIGATORIE minim 1 (XSD d112_06082026.xsd:
         # angajatorA minOccurs implicit=1, maxOccurs=29; structura_D112_0726_030826.pdf: "1-41 aparitii"). Se
@@ -534,6 +599,7 @@ def _d112_genereaza(prof, salariati, an, luna):
         # pe validatorul J27.0.1 (autoritatea).
         A.append('    <angajatorA A_codOblig="%s" A_codBugetar="%s" A_datorat="%d" '
                  'A_deductibil="0" A_scutit="0" A_plata="%d"/>' % (cod, cb, val, val))
+        obligatii.append(ObligatieD112(cod_oblig=cod, cod_bugetar=cb, datorat=int(val)))
     add_oblig("602", "5503XXXXXX", sum_imp)
     add_oblig("412", "5503XXXXXX", sum_cas)
     add_oblig("432", "5503XXXXXX", sum_cass)
@@ -595,7 +661,11 @@ def _d112_genereaza(prof, salariati, an, luna):
     H.append('</declaratieUnica>')
     av.append("D112: %d salariati - impozit %s, CAS %s, CASS %s, CAM %s lei (luna %d/%d)."
               % (n, bani(sum_imp), bani(sum_cas), bani(sum_cass), bani(cam_total), luna, an))
-    return ("\n".join(H), av)
+    # [R105] Tuplul ramane tuplu — `d112.genereaza` foloseste `rezultat[0]`, si o schimbare de forma
+    # acolo ar atinge portile de reconciliere fara motiv. Se schimba doar AL DOILEA element.
+    return ("\n".join(H), RezultatD112(
+        an=an, luna=luna, prof=prof, obligatii=obligatii, asigurati=asigurati,
+        total_plata_a=int(total_plata), avertismente=av))
 
 
 # Coloanele din `salariati` pe care D112 le CITESTE efectiv (vezi maparea de la finalul

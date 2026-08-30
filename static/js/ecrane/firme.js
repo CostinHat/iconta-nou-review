@@ -402,7 +402,13 @@ function meniuFirma(corp, nav, t) {
     { cheie: "stocuri", regim: "dubla", titlu: "Stocuri", desc: "NIR, adaos, desc\u0103rcare gestiune",
       ...CULORI_CARD.chihlimbar,
       icon: '<path d="M21 8l-9-5-9 5v8l9 5 9-5V8z"/><path d="M3 8l9 5 9-5M12 13v8"/>', activ: true },
-    { cheie: "balanta", regim: "dubla", titlu: "Balan\u021b\u0103 de verificare", desc: "PDF lunar, solduri și rulaje",
+    { cheie: "fisacont", regim: "dubla", titlu: "Cartea mare", desc: "Fi\u0219\u0103 de cont 14-6-22, pe cont \u0219i perioad\u0103",
+      ...CULORI_CARD.ardezie,
+      icon: '<path d="M4 4h16v16H4z"/><path d="M4 9h16"/><path d="M9 4v16"/>', activ: true },
+    { cheie: "marja", regim: "dubla", titlu: "Jurnal regim marj\u0103", desc: "Art. 312 second-hand \u00b7 art. 311 turism",
+      ...CULORI_CARD.piersica,
+      icon: '<path d="M3 6h18"/><path d="M7 12h10"/><path d="M10 18h4"/>', activ: true },
+    { cheie: "balanta", regim: "dubla", titlu: "Balan\u021b\u0103 de verificare", desc: "Solduri \u0219i rulaje pe ecran, cu \u00eenchiderea lunii",
       ...CULORI_CARD.albastru,
       icon: '<path d="M12 3v18M3 7h18M6 7l-3 5h6l-3-5zM18 7l-3 5h6l-3-5z"/>', activ: true },
     { cheie: "bilant", regim: "dubla", titlu: "Bilan\u021b anual", desc: "S1005 micro / S1003 mici, validare ANAF",
@@ -589,6 +595,10 @@ function meniuFirma(corp, nav, t) {
   if (bEtransport) bEtransport.addEventListener("click", () => { nav.deschide("e-Transport", (c2) => ecranEtransport(c2, nav, t)); });
   const bBalanta = corp.querySelector("#fa-balanta");
   if (bBalanta) bBalanta.addEventListener("click", () => { nav.deschide("Balanță de verificare", (c2) => ecranBalanta(c2, nav, t)); });
+  const bFisa = corp.querySelector("#fa-fisacont");   // [lista 3] Cartea mare, prin fisa de cont 14-6-22
+  if (bFisa) bFisa.addEventListener("click", () => { nav.deschide("Cartea mare", (c2) => ecranFisaCont(c2, nav, t)); });
+  const bMarja = corp.querySelector("#fa-marja");     // [lista 3] jurnalul special de regim marja
+  if (bMarja) bMarja.addEventListener("click", () => { nav.deschide("Jurnal regim marjă", (c2) => ecranJurnalMarja(c2, nav, t)); });
   const bRapoarte = corp.querySelector("#fa-rapoarte");  // rap_com_v1
   if (bRapoarte) bRapoarte.addEventListener("click", () => { nav.deschide("Rapoarte comerciale", (c2) => ecranRapoarte(c2, nav, t), { lat: "larg" }); });
   const bRegistratura = corp.querySelector("#fa-registratura");  // registratura_v1
@@ -1969,6 +1979,138 @@ export async function sectiuneaCV(corp, t, zonaM) {
 }
 
 // [stocuri] NIR + descarcare gestiune (global-valorica)
+
+// [lista 3, 30.08.2026] CARTEA MARE (14-1-3), prin inlocuitorul ei legal: Fisa de cont 14-6-22
+// (OMFP 2634/2015, Anexa 2). Producatorul exista din iulie si producea pe date reale — 6 firme, 43
+// de conturi — dar n-avea nici ruta, nici ecran, deci artefactul nu ajungea la nimeni.
+//
+// Ecranul NU calculeaza nimic: soldul curent dupa fiecare operatiune, totalurile si sensul soldului
+// vin de la server. Iar `temei_completitudine` — DE CE credem ca s-a vazut tot — se ARATA, fiindca
+// exact el face fisa aparabila la un control: fara el, o fisa care omite o nota arata identic cu una
+// completa.
+async function ecranFisaCont(corp, nav, t) {
+  const azi = new Date();
+  let an = azi.getFullYear(), luna = 0, cont = "";
+
+  const deseneaza = async () => {
+    corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+    let d = null;
+    try {
+      const q = `an=${an}${luna ? `&luna=${luna}` : ""}${cont ? `&cont=${encodeURIComponent(cont)}` : ""}`;
+      d = await api.get(`/tenants/${t.id}/fisa-cont?${q}`);
+    } catch (e) {
+      corp.innerHTML = `<p class="ecran-nota">Nu am putut \u00eenc\u0103rca fi\u0219a de cont. ${esc((e && (e.mesaj || e.message)) || "")}</p>`;
+      return;
+    }
+    const conturi = (d && d.conturi) || [];
+    const f = d && d.fisa;
+    const optCont = `<option value="">\u2014 alege contul \u2014</option>` +
+      conturi.map((c) => `<option value="${esc(c)}"${c === cont ? " selected" : ""}>${esc(c)}</option>`).join("");
+    const optLuna = `<option value="0"${luna === 0 ? " selected" : ""}>tot anul</option>` +
+      Array.from({ length: 12 }, (_, i) => `<option value="${i + 1}"${luna === i + 1 ? " selected" : ""}>${dataRo(`${an}-${String(i + 1).padStart(2, "0")}-01`, "luna_an_numeric")}</option>`).join("");
+
+    let corpFisa;
+    if (!conturi.length) {
+      corpFisa = `<div class="stare-goala">Niciun cont cu mi\u0219care \u00een perioada asta, deci fi\u0219a n-are ce ar\u0103ta. Fi\u0219a se face din notele VALIDATE — o ciorn\u0103 nu e eviden\u021b\u0103. Treci pe alt\u0103 perioad\u0103, sau valideaz\u0103 notele lunii din Registrul jurnal.</div>`;
+    } else if (!f) {
+      corpFisa = `<div class="stare-goala stare-goala--inline">Alege un cont din list\u0103 — sunt ${conturi.length} cu mi\u0219care \u00een perioada asta.</div>`;
+    } else {
+      corpFisa = `
+        <table class="fd-tabel">
+          <thead><tr><th>Data</th><th>Document</th><th>Explica\u021bie</th><th>Cont coresp.</th>
+            <th class="fd-td-num">Debit</th><th class="fd-td-num">Credit</th>
+            <th class="fd-td-num">Sold</th><th>Jurnal</th></tr></thead>
+          <tbody>${f.randuri.map((r) => `<tr>
+              <td>${dataRo(r.data)}</td><td>${esc(r.document || "")}</td>
+              <td>${esc(r.explicatie || "")}</td><td>${esc(r.cont_corespondent)}</td>
+              <td class="fd-td-num">${r.debit ? bani(r.debit) : ""}</td>
+              <td class="fd-td-num">${r.credit ? bani(r.credit) : ""}</td>
+              <td class="fd-td-num">${bani(r.sold)}${r.sens_sold === "0" ? "" : " " + r.sens_sold}</td>
+              <td>${esc(r.jurnal || "")}</td></tr>`).join("")}</tbody>
+        </table>
+        <div style="max-width:640px"><div class="fd-totaluri" style="margin-top:12px">
+          <div class="fd-tot-rand"><span>Sold ini\u021bial</span><span>${f.sold_initial_declarat ? bani(f.sold_initial) + " lei" : "nedeclarat \u2014 fi\u0219a porne\u0219te de la 0"}</span></div>
+          <div class="fd-tot-rand"><span>Total debit</span><span>${bani(f.total_debit)} lei</span></div>
+          <div class="fd-tot-rand"><span>Total credit</span><span>${bani(f.total_credit)} lei</span></div>
+          <div class="fd-tot-rand fd-tot-final"><span>Sold final</span><span>${bani(f.sold_final)} lei${f.sens_sold_final === "0" ? "" : " " + f.sens_sold_final}</span></div>
+        </div></div>
+        <details class="dec-xml" style="margin-top:12px">
+          <summary>Ce acoper\u0103 fi\u0219a asta \u2014 temeiul de completitudine</summary>
+          <p class="ecran-nota">${esc(f.temei_completitudine || "")}</p>
+        </details>`;
+    }
+
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Cartea mare</h2>
+      <p class="pf-intro">Fi\u0219\u0103 de cont pentru opera\u021biuni diverse, cod <b>${esc((d && d.formular) || "")}</b> \u2014 \u00eenlocuitorul legal al Registrului Cartea mare (OMFP 2634/2015, Anexa 2, cod 14-1-3).</p>
+      <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px">
+        <label class="camp"><span class="camp-eticheta">An</span><input type="number" id="fc-an" class="camp-input" value="${an}" style="width:90px"></label>
+        <label class="camp"><span class="camp-eticheta">Perioada</span><select id="fc-luna" class="camp-input">${optLuna}</select></label>
+        <label class="camp"><span class="camp-eticheta">Cont</span><select id="fc-cont" class="camp-input" style="min-width:160px">${optCont}</select></label>
+      </div>
+      ${corpFisa}`;
+    corp.querySelector("#fc-an").addEventListener("change", (e) => { an = parseInt(e.target.value) || an; cont = ""; deseneaza(); });
+    corp.querySelector("#fc-luna").addEventListener("change", (e) => { luna = parseInt(e.target.value) || 0; cont = ""; deseneaza(); });
+    corp.querySelector("#fc-cont").addEventListener("change", (e) => { cont = e.target.value; deseneaza(); });
+  };
+  deseneaza();
+}
+
+
+// [lista 3, 30.08.2026] JURNALUL SPECIAL DE REGIM MARJA (normele CF, pct. 86). Ruta exista din
+// campania de API intern, cu comentariul „fara UI inca, pastrat deliberat" — deci artefactul se
+// producea si nu ajungea la om. Ecranul nu aduna nimic: totalurile perioadei vin de la server.
+async function ecranJurnalMarja(corp, nav, t) {
+  const azi = new Date();
+  let tip = "secondhand";
+  let luna = `${azi.getFullYear()}-${String(azi.getMonth() + 1).padStart(2, "0")}`;
+
+  const deseneaza = async () => {
+    corp.innerHTML = `<p class="ecran-nota">Se încarcă...</p>`;
+    let d = null;
+    try {
+      d = await api.get(`/tenants/${t.id}/jurnal-marja?tip=${tip}&luna=${luna}`);
+    } catch (e) {
+      corp.innerHTML = `<p class="ecran-nota">Nu am putut \u00eenc\u0103rca jurnalul. ${esc((e && (e.mesaj || e.message)) || "")}</p>`;
+      return;
+    }
+    const note = (d && d.note) || [];
+    const tabel = !note.length
+      ? `<div class="stare-goala">Nicio v\u00e2nzare \u00een regim marj\u0103 \u00een luna asta. Jurnalul se umple din notele emise cu <b>V\u00e2nzare regim marj\u0103</b> — dac\u0103 firma a avut astfel de v\u00e2nz\u0103ri, \u00eenregistreaz\u0103-le de pe ecranul de opera\u021biuni.</div>`
+      : `<table class="fd-tabel">
+          <thead><tr><th>Data</th><th>Nota</th><th>Explica\u021bie</th><th>Stare</th>
+            <th class="fd-td-num">Cost</th><th class="fd-td-num">Marj\u0103 net\u0103</th>
+            <th class="fd-td-num">TVA colectat\u0103</th></tr></thead>
+          <tbody>${note.map((n) => `<tr>
+              <td>${dataRo(n.data)}</td><td>#${esc(String(n.id))}</td>
+              <td>${esc(n.descriere || "")}</td><td>${esc(n.status || "")}</td>
+              <td class="fd-td-num">${bani(n.cost)}</td>
+              <td class="fd-td-num">${bani(n.marja_neta)}</td>
+              <td class="fd-td-num">${bani(n.tva)}</td></tr>`).join("")}</tbody>
+        </table>
+        <div style="max-width:640px"><div class="fd-totaluri" style="margin-top:12px">
+          <div class="fd-tot-rand"><span>Note \u00een lun\u0103</span><span>${d.numar_note}</span></div>
+          <div class="fd-tot-rand"><span>Total cost</span><span>${bani(d.total_cost)} lei</span></div>
+          <div class="fd-tot-rand"><span>Total baz\u0103 (marj\u0103 net\u0103)</span><span>${bani(d.total_baza_marja_neta)} lei</span></div>
+          <div class="fd-tot-rand fd-tot-final"><span>Total TVA colectat\u0103</span><span>${bani(d.total_tva_colectata)} lei</span></div>
+        </div></div>`;
+    corp.innerHTML = `
+      <h2 class="pf-titlu">Jurnal regim marj\u0103</h2>
+      <p class="pf-intro">Jurnalul special cerut de normele Codului fiscal, pct. 86, pentru v\u00e2nz\u0103rile \u00een regim de marj\u0103.</p>
+      <div style="display:flex;gap:8px;align-items:flex-end;flex-wrap:wrap;margin-bottom:10px">
+        <label class="camp"><span class="camp-eticheta">Regim</span><select id="jm-tip" class="camp-input">
+          <option value="secondhand"${tip === "secondhand" ? " selected" : ""}>Bunuri second-hand \u00b7 art. 312</option>
+          <option value="turism"${tip === "turism" ? " selected" : ""}>Agen\u021bii de turism \u00b7 art. 311</option>
+        </select></label>
+        <label class="camp"><span class="camp-eticheta">Luna</span><input type="month" id="jm-luna" class="camp-input" value="${luna}"></label>
+      </div>
+      ${tabel}`;
+    corp.querySelector("#jm-tip").addEventListener("change", (e) => { tip = e.target.value; deseneaza(); });
+    corp.querySelector("#jm-luna").addEventListener("change", (e) => { luna = e.target.value || luna; deseneaza(); });
+  };
+  deseneaza();
+}
+
 
 async function ecranBilant(corp, nav, t) {
   {

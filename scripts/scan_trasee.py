@@ -72,6 +72,9 @@ TRASEE = [
      [r"^/tenants/\{\}/jurnal(/|$)", r"^/tenants/\{\}/nota-", r"^/tenants/\{\}/plan-conturi",
       # [lista 5, 30.08.2026] balanta ca DATE, langa cea ca PDF: acelasi artefact, alta iesire.
       r"^/tenants/\{\}/balanta$",
+      # [lista 3, 30.08.2026] Cartea mare (14-1-3) prin fisa de cont 14-6-22: derivata din
+      # `inregistrari`, ca jurnalul si balanta — deci acelasi traseu, nu unul propriu.
+      r"^/tenants/\{\}/fisa-cont$",
       r"^/tenants/\{\}/documente/balanta", r"^/api/v1/firme/\{\}/balanta"],
      ["inregistrari", "inregistrari_linii", "plan_conturi"]),
     # --- deja scrise în TRASEE.md, partea X ---

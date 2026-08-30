@@ -60,18 +60,94 @@ def test_toate_cele_noua_sunt_acoperite_ori_motivate():
 
 
 def test_motivele_absentei_sunt_scrise_nu_goale():
-    """Un motiv gol e tăcere cu altă formă."""
-    assert dc.FARA_COMPONENTE, "ANTI-VACUU: lista motivată e goală — atunci ce apără punctul ăsta?"
+    """Un motiv gol e tăcere cu altă formă.
+
+    Registrul poate fi GOL — e chiar starea de după R105 —, dar mecanismul rămâne păzit: ce e
+    înăuntru trebuie să spună ceva. Anti-vacuul s-a mutat pe hartă, care nu are voie să se golească.
+    """
+    assert len(dc.COMPONENTE) >= 9, (
+        "ANTI-VACUU: harta de componente s-a golit (%d tipuri) — atunci toate probele de mai jos "
+        "trec pe nimic" % len(dc.COMPONENTE))
     for tip, motiv in dc.FARA_COMPONENTE.items():
         assert len(motiv.strip()) > 60, "motivul lui %s e prea scurt ca să spună ceva: %r" % (tip, motiv)
 
 
-def test_d112_e_declarat_imposibil_si_motivul_e_verificabil():
-    """Motivul spune că motorul n-are obiect de rezultat. Se verifică, nu se crede pe cuvânt."""
-    assert dc.FARA_COMPONENTE.keys() >= {"d112"}
-    assert _clasa_rezultat("d112") is None, (
-        "`core.d112` are acum o clasă de rezultat — motivul scris pentru D112 nu mai e adevărat, "
-        "iar D112 poate intra în hartă")
+def test_d112_isi_desface_acum_cifra():
+    """[R105, 30.08.2026] Inversul testului care a stat aici până azi.
+
+    Până la R105, D112 era singura din cele nouă fără componente, iar gardul cerea ca motivul să fie
+    ADEVĂRAT: `core.d112` să NU aibă clasă de rezultat. Decizia lui Costin — *„motorul se schimbă"* —
+    a făcut motivul fals, iar gardul a căzut, corect. Acum păzește starea nouă: motorul întoarce un
+    rezultat, iar declarația e în hartă cu amândouă felurile ei de poziții.
+    """
+    assert dc.COMPONENTE.keys() >= {"d112"}, "D112 a ieșit din hartă"
+    assert _clasa_rezultat("d112") is not None, (
+        "`core.d112` n-are clasă de rezultat — R105 s-a întors, iar componentele D112 nu se mai pot citi")
+    sectiuni = {s.atribut for s in dc.COMPONENTE["d112"]}
+    assert sectiuni == {"obligatii", "asigurati"}, (
+        "D112 are DOUĂ feluri de poziții — ce datorează angajatorul, și contribuțiile fiecărui "
+        "asigurat; găsite: %s" % sorted(sectiuni))
+
+
+def _prof_d112(**kw):
+    p = {"cui": "14399840", "nume": "TEST SRL", "caen": "6202", "judet": "B",
+         "declarant_nume": "POP", "declarant_prenume": "ION", "declarant_functie": "ADMIN"}
+    p.update(kw)
+    return p
+
+
+def _sal_d112(**kw):
+    b = {"brut": 3000, "cas": 750, "cass": 300, "impozit": 195, "cass_tichete": 0,
+         "impozit_tichete": 0, "tichete_nominal": 0, "e83_masa": 0, "e83_vacanta": 0,
+         "e83_cultural": 0, "e83_cresa": 0, "ore_zi": 8, "cm": [], "zile_cm": 0,
+         "cnp": "1900101410011", "nume": "POPESCU", "prenume": "ION",
+         "data_angajare": "2020-01-15"}
+    b.update(kw)
+    return b
+
+
+def test_componentele_D112_se_CONFRUNTA_cu_cifra_declarata():
+    """[R105] Proba că ce arată ecranul e chiar COMPOZIȚIA cifrei, nu un al doilea calcul.
+
+    Asta e diferența dintre „ruta trimite niște rânduri" și „cifra își arată componentele": suma
+    impozitului asiguraților trebuie să fie EXACT obligația 602 a angajatorului, iar suma CAS-ului
+    exact obligația 412. Dacă cele două ar putea diverge, componentele n-ar explica nimic — ar fi o
+    a doua părere despre aceeași lună.
+
+    Verificat și pe date reale la scriere (30.08.2026): `tenant_005` 267 = 267, `tenant_013`
+    204 = 204. Aici se ține închis pe intrări construite, ca să nu depindă de portofoliu.
+    """
+    from core import d112 as _d112
+    _xml, res = _d112._d112_genereaza(
+        _prof_d112(), [_sal_d112(), _sal_d112(brut=5000, cas=1250, cass=500, impozit=325,
+                                             cnp="2900101410011", nume="IONESCU", prenume="ANA")],
+        2026, 8)
+    assert len(res.asigurati) == 2, res.asigurati
+    obl = {o.cod_oblig: o.datorat for o in res.obligatii}
+    assert sum(a.impozit for a in res.asigurati) == obl["602"], (res.asigurati, obl)
+    assert sum(a.cas for a in res.asigurati) == obl["412"], (res.asigurati, obl)
+    assert sum(a.cass for a in res.asigurati) == obl["432"], (res.asigurati, obl)
+
+
+def test_confruntarea_ar_PICA_daca_ar_diverge():
+    """Calibrarea probei de mai sus: dacă aserția ar fi adevărată orice s-ar întâmpla, n-ar dovedi
+    nimic. Un asigurat în plus, nedeclarat în obligații, trebuie să rupă egalitatea."""
+    from core import d112 as _d112
+    _xml, res = _d112._d112_genereaza(_prof_d112(), [_sal_d112()], 2026, 8)
+    obl = {o.cod_oblig: o.datorat for o in res.obligatii}
+    fals = list(res.asigurati) + [_d112.AsiguratD112("FANTOMA", 1000, 1000, 250, 100, 65)]
+    assert sum(a.impozit for a in fals) != obl["602"], (
+        "egalitatea ține și cu un asigurat inventat — deci nu confruntă nimic")
+
+
+def test_CNP_ul_nu_pleaca_in_componente():
+    """Alegere scrisă, nu scăpare: componentele răspund la «din ce e făcută cifra», iar CNP-ul nu
+    compune nicio sumă. Contează fiindcă `coada_api.randuri_din_res` PERSISTĂ obiectul ăsta în
+    `public.declaratii_depuse.randuri` — deci ce intră aici se și păstrează."""
+    import dataclasses as _dc
+    from core import d112 as _d112
+    campuri = {f.name for f in _dc.fields(_d112.AsiguratD112)}
+    assert not (campuri & {"cnp", "CNP", "cod_numeric_personal"}), campuri
 
 
 @pytest.mark.parametrize("tip", sorted(dc.COMPONENTE))
@@ -201,10 +277,22 @@ def test_tip_nemapat_spune_ca_nu_stie_nu_intoarce_lista_goala():
 
 
 def test_absenta_motivata_nu_arata_ca_o_declaratie_goala():
-    c = dc.componente("d112", _ResFals())
+    """Mecanismul se probează pe o intrare SINTETICĂ, nu pe una vie.
+
+    Până la R105 se proba pe `d112`, singura intrare reală — iar când ea a ieșit, proba a rămas fără
+    obiect. E aceeași lecție ca METODA §29, pe alt gard: *o probă ancorată pe instanța care urmează
+    să fie reparată dispare odată cu reparația.* Registrul e gol azi, dar mecanismul trebuie să
+    rămână păzit pentru următorul tip care nu-și poate desface cifra.
+    """
+    dc.FARA_COMPONENTE["_test"] = ("motiv sintetic, destul de lung ca să treacă pragul de mai sus "
+                                   "și să arate că un motiv scurt n-ar trece")
+    try:
+        c = dc.componente("_test", _ResFals())
+    finally:
+        del dc.FARA_COMPONENTE["_test"]
     assert c["acoperire"] == "absenta"
     assert c["sectiuni"] == [] and c["total"] == 0
-    # Motivul NU pleacă în payload — dar există, și e verificat de `test_motivele_absentei_...`.
+    # Motivul NU pleacă în payload — dar există în cod, și e verificat de `test_motivele_absentei_...`.
     assert "motiv" not in c, "proza n-are ce căuta în răspunsul rutei (decizia din 21.08)"
 
 

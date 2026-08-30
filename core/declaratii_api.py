@@ -555,6 +555,12 @@ def numar_operatiuni(tip, res):
         return (len(getattr(res, "note", None) or []) +
                 len(getattr(res, "facturi_vanzare", None) or []) +
                 len(getattr(res, "facturi_cumparare", None) or []))
+    # [R105, 30.08.2026] d112 CONTINUA sa intoarca None, si acum e o ALEGERE, nu o consecinta a
+    # motorului: de la R105 declaratia are si obligatii, si asigurati, deci s-ar putea numara. Nu se
+    # numara fiindca ecranul pune o POARTA la `operatiuni === 0` („declaratia nu contine nicio
+    # operatiune"), iar la D112 zero asigurati NU inseamna declaratie goala: angajatorul poate datora
+    # la buget si fara niciun salariat in luna. Un contor aici ar aprinde poarta pe o declaratie
+    # legitima. LIMITA DECLARATA: pentru D112, ecranul arata componentele fara contor.
     if t == "d300":
         R = getattr(res, "R", None)
         if not isinstance(R, dict):

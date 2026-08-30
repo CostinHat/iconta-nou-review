@@ -6336,3 +6336,101 @@ constatări reale, toate prinse de gărzi scrise de altcineva-de-ieri:
 
 Plus patru aserțiuni noi ancorate pe text, prinse de clichetul 50, rescrise pe operator de mulțime și
 pe structură.
+
+
+## 30.08.2026 (partea a șasea) — O regulă scrisă pe o unitate inexistentă a produs `NOPASSWD: ALL`. Plus lista 3, remăsurată înainte de construcție
+
+### LANȚUL CAUZAL AL PERMISIUNILOR, scris fiindcă fiecare verigă pare rezonabilă singură
+
+1. **13.07.2026** — se scrie o regulă sudoers **îngustă**: `/etc/sudoers.d/iconta`, cu
+   `systemctl restart iconta.service`. Intenția e exact cea bună: doar utilizatorul de deploy, doar
+   comanda de care e nevoie.
+2. **Unitatea se numește însă `iconta-nou.service`.** `iconta.service` nu există pe mașină —
+   `systemctl list-unit-files 'iconta*'` dă `iconta-nou`, `iconta-backup`, `iconta-heartbeat`.
+   **Regula nu se potrivește niciodată.** Și aici e miezul: *o regulă de autorizare care nu se
+   potrivește nu țipă — pur și simplu nu se aplică.* Absența ei arată identic cu absența cererii.
+3. **14.06/ulterior** — repornirea cere parolă, iar asta blochează un lanț automat. Se rezolvă cu
+   `/etc/sudoers.d/costin-nopasswd`: **`costin ALL=(ALL) NOPASSWD: ALL`**. Problema îngustă a primit
+   răspunsul cel mai larg cu putință.
+4. **30.08.2026** — se cere o regulă îngustă. Prima formă pe care am scris-o acoperea
+   `restart iconta-nou.service`, dar `post-commit` cheamă `restart iconta-nou` — **fără sufix**.
+   **Aceeași greșeală, a doua oară, în aceeași familie.** Prinsă înainte de a scoate blanket-ul,
+   fiindcă argumentele s-au citit din hook, nu din memorie.
+
+**Ce s-a făcut:** setul îngust complet (`restart` în amândouă formele · `status` · `journalctl` ·
+scriptul de backup din `crontab`, 03:15 · `psql` ca `postgres`, pentru migrările care creează tabele
+`public`), validat cu `visudo -c -f` **înainte** de instalare; apoi `costin-nopasswd` **scos**, cu
+copie în `/root`. Verificat **după**, în amândouă direcțiile: cele patru comenzi din set merg fără
+parolă, iar `sudo -n true` — orice altceva — e **refuzat**.
+
+**A treia instanță a aceluiași tipar, din aceeași oră:** `sudo -n journalctl -u iconta-nou --since ...`
+e refuzat, fiindcă regula fixează argumentele exact. Deci diagnosticul pentru care `journalctl` a
+fost pus în set nu se poate face cu el. **Nereparat deliberat** — o extindere cu `*` ar lărgi ce
+tocmai s-a îngustat, în aceeași tură, fără să fie cerută. Scris în `GARZI.md`.
+
+### CONTRADICȚIA DE IDENTITATE, deschisă ca GRI
+
+Costin: *„«Interactive authentication required» vs `NOPASSWD: ALL` e contradicție, nu mister — cele
+două căi rulează sub identități diferite."* **Mecanismul e dovedit pe mașină:** `sudo systemctl
+restart iconta-nou` merge; `systemctl restart iconta-nou`, **fără** `sudo`, același utilizator,
+răspunde exact *„Failed to restart iconta-nou.service: Interactive authentication required."* Două
+sisteme de autorizare — **sudoers** pentru `sudo`, **polkit** pentru apelul direct — iar polkit nu
+citește sudoers.
+
+**Ce rămâne GRI:** sub ce identitate a rulat repornirea care a eșuat. Dovada ar fi în `auth.log`
+(`syslog:adm`, `0640`) sau în jurnalul de sistem; identitatea de deploy e în `costin sudo users`,
+**nu** în `adm` și **nu** în `systemd-journal`. *Exact identitatea care a executat actul e cea care
+nu-i poate citi urma.* Se închide când se știe, nu înainte.
+
+### LISTA 3 — remăsurată ÎNAINTE de construcție, și bine că da
+
+Lecția listei 5 („scump" fusese dedus, nu măsurat) s-a aplicat ca procedură: pe fiecare din cele 8
+artefacte, **trei întrebări separate** — A producător? B rută? C ecran? — cu răspunsuri mecanice
+(producătorul chemat pe date reale, ruta citită din AST, ecranul căutat în `static/js`).
+
+**Ce a ieșit:**
+
+- **un rând FALS.** *„Bilanț (S1005) · CPP — zero rute"*. Măsurat: **patru rute și un ecran**, intrate
+  pe **04.07.2026** (`671a09f`, `8e450fa`) — cu aproape două luni **înainte** ca rândul să fie scris,
+  și supraviețuind la două revizuiri ale tabelului. Ce rămâne nerezolvat la bilanț nu e transportul,
+  ci **care situație e datorată** — iar aia e deja alt rând al aceleiași liste (`R3`, categoria de
+  mărime). Rândul **s-a scos**: număra a doua oară același defect, sub o cauză falsă. *Contradicția
+  era vizibilă în chiar acest registru: o secțiune din 26.08 discută pe larg cele două rute pe care
+  tabelul le declara inexistente.*
+- **două artefacte cu producător care nu ajungea la om** — aceeași formă ca lista 5:
+  **Cartea mare** (14-1-3), prin `core/fisa_cont.py` (Fișa de cont 14-6-22, înlocuitorul legal),
+  care producea pe **6 firme, 43 de conturi** și n-avea nici rută, nici ecran; și **jurnalul de regim
+  marjă**, a cărui rută exista **cu comentariul „fără UI încă, păstrat deliberat"**. Amândouă au
+  primit ecran azi.
+- **cinci care sunt construcție reală** — registrul-inventar, notele explicative, categoria de
+  mărime, evidența operațiunilor de TVA (art. 321), registrul de evidență fiscală.
+
+*Partea generală: „nu iese din vina aplicației" acoperea **trei** lucruri care nu seamănă între ele —
+nu există producător · există și n-are ieșire · rândul minte. De-aia tabelul are acum coloane
+`A/B/C`, nu o „cauză".*
+
+### R105 — D112 își desface cifra, în aceeași zi în care a fost deschisă
+
+Costin: *„motorul se schimbă"*. `_d112_genereaza` întoarce acum `RezultatD112` în loc de o listă de
+avertismente. **O decizie de-a noastră s-a anulat cu motivul scris:** `coada_api.randuri_din_res`
+spunea, din 22.07, că refactorizarea *„NU se face aici"* — amânare corectă, cu condiție și cu loc;
+condiția s-a îndeplinit.
+
+**Ce face componentele verificabile, și e gardat:** suma impozitului asiguraților = obligația `602`,
+CAS = `412`, CASS = `432`. Probat pe date reale (`tenant_005` 267 = 267, `tenant_013` 204 = 204), cu
+calibrare inversă — un asigurat inventat trebuie să rupă egalitatea.
+
+**Două efecte care n-au fost căutate, au ieșit din schimbarea de tip:** avertismentele D112 se
+calculau și **se aruncau** (`getattr(res, "avertismente")` pe o listă dă `None`) — de acum ajung la
+contabil; și D112 își **persistă** rândurile în `declaratii_depuse.randuri`, ca celelalte.
+
+**CNP-ul nu intră în componente**, ca alegere scrisă: nu compune nicio sumă, iar obiectul se
+păstrează în bază.
+
+### BASELINE-UL VIZUAL: 0,2463% pe `banca` — nu era regresie, dar nu se știe ce era
+
+Raportul de la **07:09** dădea `banca` SCHIMBAT, de cinci ori peste prag. Rulat din nou la **12:39**,
+contra **aceluiași** baseline neatins: **identic, 0,0056%**. Deci nu e regresie vizuală — e
+**nedeterminism**, clasa pe care roadmap-ul o are deschisă ca **#8**. *Ce anume varia nu se poate
+spune*: trei ipoteze se potrivesc la fel de bine, iar modul care ar răspunde (self-diff) **rescrie
+baseline-ul**, adică ar distruge proba ca s-o explice. GRI, cu condiția de închidere scrisă.

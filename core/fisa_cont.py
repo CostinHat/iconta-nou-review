@@ -149,6 +149,29 @@ def fisa_cont(conn, schema, cont, an, luna=None, sold_initial=None):
         })
 
 
+def pentru_json(f):
+    """Fisa, cu valorile pe care le poate purta un JSON. Conversia se face la MARGINE, aici — nu in
+    interiorul motorului, si nici in ruta.
+
+    `Decimal` si `date` nu pleaca asa cum sunt, iar randurile sunt dataclass-uri. Traieste aici
+    fiindca modulul asta e singurul care STIE ce tipuri produce: o conversie scrisa in ruta ar
+    ramane in urma la primul camp nou.
+    """
+    def _v(x):
+        if isinstance(x, Decimal):
+            return float(x)
+        if isinstance(x, _date):
+            return x.isoformat()
+        if isinstance(x, RandFisa):
+            return {k: _v(v) for k, v in x.ca_dict().items()}
+        if isinstance(x, dict):
+            return {k: _v(v) for k, v in x.items()}
+        if isinstance(x, (list, tuple)):
+            return [_v(v) for v in x]
+        return x
+    return {k: _v(v) for k, v in f.items()}
+
+
 def conturi_cu_miscare(conn, schema, an, luna=None):
     """Conturile care au cel putin o linie in perioada - domeniul pe care fisa se poate emite.
 

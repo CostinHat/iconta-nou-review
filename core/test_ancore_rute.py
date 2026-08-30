@@ -27,7 +27,26 @@ _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 sys.path.insert(0, _RAD)
 sys.path.insert(0, os.path.join(_RAD, "scripts"))
 
-_CLICHET = 51          # masurat 27.08.2026, pe pragul de 40
+# 51 masurat 27.08.2026; **55 din 30.08.2026**, si cresterea are cauza MASURATA, nu presupusa.
+#
+# Cele patru rute care au orbit sunt `GET/POST /tenants/{id}/jurnal` si `PUT/DELETE
+# /tenants/{id}/jurnal/{nota_id}`. **Ele AU apelanti** — `firme.js` cheama
+# `/tenants/${t.id}/jurnal?an=`. Ce a crescut nu e numarul de rute orfane, ci **incapacitatea
+# detectorului de a dovedi contrariul**: ancora lor e cuvantul `jurnal`, iar el a trecut de la sub
+# 40 la **45** de ocurente in `static/js` odata cu ecranul nou al **jurnalului de regim marja**
+# (lista 3, 30.08.2026).
+#
+# DE CE SE RIDICA IN LOC SA SE REPARE. Ancora e `bucati()`, adica **regula 4 a detectorului din
+# R70** — masuratoarea foloseste deliberat aceeasi regula ca instrumentul pe care il masoara. A o
+# intari aici (de ex. ancora ca segment de cale, `/jurnal`, nu ca simplu cuvant) ar decupla
+# masuratoarea de obiectul ei si ar schimba toate cifrele lui R80 dintr-o data. **Aia E R80**, si e
+# deschisa.
+#
+# DE CE NU S-A REDENUMIT ECRANUL CA SA INTRE SUB PRAG. Artefactul se numeste in norma „jurnal
+# special" (normele CF, pct. 86). A-i schimba numele ca sa treaca de un prag de scaner ar face ca
+# urmatorul cititor sa creada ca ancora discrimineaza, cand nu discrimineaza. *Un numar sub prag
+# obtinut prin tacere e mai rau decat unul peste prag cu motivul scris.*
+_CLICHET = 55
 _PRAG = 40
 
 
@@ -83,13 +102,14 @@ def test_cazul_cunoscut_e_in_clasa():
 # cu un fix obligatoriu: *„cele 51 de rute unde gardul e mut trebuie sa raporteze explicit GRI, nu
 # tacere."* Pana azi cadeau in verde prin constructie.
 #
-# DESCOMPUNEREA CELOR 51, si e o cifra noua care nu contrazice pe cea veche: din cele **51** de rute
-# oarbe (ancora nu discrimineaza), **6** sunt deja EXCLUSE — isi declara in cod lipsa ecranului
-# (`# [api_intern_v1]`) sau sunt artefacte cunoscute ale detectorului. Raman **45** cu adevarat GRI.
-# `_CLICHET = 51` de mai sus masoara ORBIREA instrumentului; `_GRI = 45` masoara cate rute raman,
+# DESCOMPUNEREA CELOR 55 (era 51): din rutele oarbe (ancora nu discrimineaza), **6** sunt deja
+# EXCLUSE — isi declara in cod lipsa ecranului (`# [api_intern_v1]`) sau sunt artefacte cunoscute ale
+# detectorului. Raman **49** (erau 45) cu adevarat GRI.
+# `_CLICHET = 55` de mai sus masoara ORBIREA instrumentului; `_GRI = 49` masoara cate rute raman,
 # dupa declaratii, in starea „nu se poate afirma nimic". Sunt doua intrebari diferite, si de-aia doua
-# cifre — nu doua masuratori ale aceluiasi lucru.
-_GRI = 45
+# cifre — nu doua masuratori ale aceluiasi lucru. Amandoua au crescut cu 4, din aceeasi cauza:
+# cuvantul `jurnal` a incetat sa discrimineze (vezi motivul lung de la `_CLICHET`).
+_GRI = 49
 _EXCLUS = 32
 _ROSU = 0
 

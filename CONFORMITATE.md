@@ -3647,13 +3647,16 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **unde intră**: E1 · METODA §22 · **PRAG 3** *(nimic fals pe ecran. Ce se strică e o SURSĂ DE VERIFICARE: un gard construit anume pentru o clasă e mut pe 12% din suprafață, și tace la fel de convingător ca atunci când chiar nu e nimic)*
 - **reluări**: 2
 - **contorul, explicat**: cerută de **trei ori** înainte de decizie — 27.08 la deschidere, apoi în rapoartele din 28.08 (secțiunea 0, de două ori). Contorul urcă **o singură dată**, acum, la decizie: nu ține evidența cererilor, ci a **buclelor** — iar bucla s-a închis.
-- **gri**: 45
+- **gri**: 49
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `04e6f38`
 - **măsurat la**: 2026-08-27 · **pe commit**: `04e6f38`
 - **planul**: **ACOPERIT** — e chiar clasa pe care o numește R70, măsurată acum pe propriul ei instrument. (METODA §22: un instrument se măsoară pe modul lui de eșec, nu pe reușitele lui.)
 - **ce blochează**: azi am mutat butonul de divergență de pe `PUT /tenants/{tenant_id}` pe `POST /tenants/{tenant_id}/nume-ales`. Ruta veche a rămas cu **zero apelanți** în `static/` — măsurat direct, cu anti-vacuu (același tipar, cu un segment în plus, găsește 20 de apeluri). **Gardul R70 nu a raportat-o.** Nu din neatenție: regula lui caută bucățile literale ale căii, iar singura bucată literală a rutei e `tenants`, care apare de **235** de ori în JS. Pentru ruta asta, detectorul răspunde **întotdeauna** „are apelant".
 - **cifra**: **51 din 411** rute au și cea mai rară ancoră literală apărând de peste 40 de ori în `static/`. Printre ele: toate cele cinci `/tenants` de nivel înalt, toate cele cinci `/coada`, `/portal/*`, `/api/v1/firme`.
+- **REMĂSURAT 30.08.2026: 55 din 415 · GRI 49** (era 51 din 411 · GRI 45). **Creșterea are cauză măsurată, nu presupusă**, iar felul ei e chiar miezul restanței. Cele patru rute care au orbit sunt `GET`/`POST /tenants/{id}/jurnal` și `PUT`/`DELETE /tenants/{id}/jurnal/{nota_id}`. **Ele AU apelanți** — `firme.js` cheamă `/tenants/${t.id}/jurnal?an=`. Ce a crescut **nu e numărul de rute orfane**, ci **incapacitatea detectorului de a dovedi contrariul**: ancora lor e cuvântul `jurnal`, iar el a trecut de la sub 40 la **45** de apariții în `static/js` odată cu ecranul nou al **jurnalului de regim marjă** (lista 3). *Adică o cifră a acestei restanțe crește când aplicația capătă un ecran nou al cărui NUME conține un cuvânt vechi — ceea ce e exact definiția unui detector care măsoară vocabularul, nu chemările.*
+- **DE CE NU S-A REPARAT ACUM, cu condiția**: ancora e `bucati()`, adică **regula 4 a detectorului din R70** — măsurătoarea folosește deliberat aceeași regulă ca instrumentul pe care îl măsoară. A o întări (ancoră ca **segment de cale**, `/jurnal`, nu ca simplu cuvânt) ar schimba toate cifrele lui R80 dintr-o dată și cere calibrare proprie, în amândouă direcțiile. **Aia e chiar munca acestei restanțe.** Se închide când ancora discriminează pe segment, iar cifra rezultată e remăsurată și scrisă în toate cele trei locuri.
+- **DE CE NU S-A REDENUMIT ECRANUL ca să intre sub prag**: artefactul se numește în normă *„jurnal special"* (normele CF, pct. 86). A-i schimba numele pentru un prag de scaner ar face ca următorul cititor să creadă că ancora discriminează, când nu discriminează. *Un număr sub prag obținut prin tăcere e mai rău decât unul peste prag cu motivul scris.*
 - **cine a produs-o**: nu detectorul — **forma căilor**. O cale de forma `/substantiv/{id}` n-are cum să fie identificată printr-un cuvânt care e și numele conceptului folosit peste tot în UI.
 - **ce NU vede măsurătoarea**: **nu spune care rute chiar n-au apelant** — spune despre care dintre ele detectorul e mut. O rută din listă poate fi chemată de zece ecrane; ce lipsește e capacitatea de a afla. Și nu acoperă căile compuse pe grup, care erau deja declarate ca artefacte în R70.
 - **gardat cât se poate azi**: `scripts/scan_ancore_rute.py` + `core/test_ancore_rute.py` — clichet **51** în ambele direcții, anti-vacuu pe textul JS, și o calibrare pe instanța cunoscută. Nu repară orbirea; o **numără**, ca să nu crească tăcut.
@@ -5050,18 +5053,57 @@ când cifra își arată operațiunile și avertismentul își poartă temeiul.
 | **D100 · D205 · D301 · D390** | refuzuri **pe zero**, cu temeiul citat sau cu contradicția numită. Interdicția 67 funcționând |
 | **D300 · D394** | `tenant_018`, `tenant_045`: *„Perioada fiscală TVA nu e completată în Vectorul fiscal"* — profilurile incomplete găsite la 1a |
 
-#### Lista 3 — nu ies, DIN VINA APLICAȚIEI — **8 artefacte** (erau 9)
+#### Lista 3 — nu ies, DIN VINA APLICAȚIEI — **5 artefacte deschise** (erau 8; una eliminată ca FALSĂ, două reparate)
 
-| artefact | cauza |
-|---|---|
-| **Registrul-inventar** (14-1-2) | nu există producător pentru partidă dublă (singura potrivire e varianta 14-1-2/b, de partidă simplă) |
-| **Cartea mare** (14-1-3) | **cauza SCHIMBATĂ azi**: producătorul **există** — `core/fisa_cont.py`, Fișa de cont 14-6-22, înlocuitorul legal, probat pe date reale — dar are **zero rute și zero ecrane**. Nu mai e „nu există producător", e „nu ajunge la om" |
-| **Note explicative** | nu există producător |
-| **Bilanț (S1005) · CPP** | producătorul produce pe date reale (6 din 19 firme, 622–1065 octeți), **zero rute** |
-| **categoria de mărime** (precondiție, pct. 9) | nu se calculează — datele există, derivarea s-a probat, nimeni n-o face (R3) |
-| **Jurnal regim marjă** (art. 312) | producătorul există, ecranul nu; **0 firme îl exercită**, confirmat din date la 1a și din rută la 1b |
-| **Evidența operațiunilor de TVA** (art. 321) | nu există producător ca artefact — substanța e derivabilă pe fiecare linie, lipsește documentul |
-| **Registrul de evidență fiscală** (art. 19 · art. 68) | nu există producător |
+**REMĂSURATĂ ÎNAINTE DE CONSTRUCȚIE, 30.08.2026** — și asta e chiar lecția listei 5, aplicată: acolo
+estimarea *„nici ruta nu trimite"* s-a dovedit adevărată despre răspuns și falsă despre ce are
+motorul în mână. Deci aici s-au pus **trei întrebări separate** pe fiecare artefact, fiindcă
+răspunsurile lor pot să difere: **A** — există producător? **B** — există rută? **C** — există ecran?
+Răspunsurile s-au luat mecanic: producătorul chemat **pe date reale**, ruta citită din **AST**-ul lui
+`main.py` (decorator, nu sub-șir), ecranul căutat în `static/js/`.
+
+*Măsurat la: 2026-08-30 · pe commit: `d67ae83`.*
+
+| artefact | A producător | B rută | C ecran | stare |
+|---|---|---|---|---|
+| **Registrul-inventar** (14-1-2) | **NU** — pentru partidă dublă. Singura potrivire e varianta 14-1-2/b, de partidă simplă | — | — | **DESCHIS** |
+| **Cartea mare** (14-1-3) | **DA** — `core/fisa_cont.py`, Fișa de cont 14-6-22, înlocuitorul legal. Măsurat azi: **6 firme cu mișcare, 43 de conturi** în 2026 | **DA, din 30.08** — `GET /tenants/{id}/fisa-cont` | **DA, din 30.08** | **REPARAT** |
+| **Note explicative** | **NU** — zero potriviri în cod de producție | — | — | **DESCHIS** |
+| **Jurnal regim marjă** (art. 312 · art. 311) | **DA** — `core/tva_marja.py`, `tva_marja_turism.py` | **DA, exista deja** — `GET /tenants/{id}/jurnal-marja`, cu comentariul *„fără UI încă, păstrat deliberat"* | **DA, din 30.08** | **REPARAT** |
+
+**RÂNDUL CARE A IEȘIT, fiindcă era FALS: „Bilanț (S1005) · CPP — zero rute".**
+
+Măsurat azi: **patru rute** (`GET /s1005-xml`, `POST /s1005-valideaza`, și perechea lor `s1003`)
+**și un ecran** (`ecranBilant`, cu validare la ANAF și descărcare XML). Datat cu `git log -S`:
+rutele au intrat pe **04.07.2026** (`671a09f`), ecranul în aceeași zi (`8e450fa`) — adică **cu
+aproape două luni înainte** ca rândul să fie scris. *Nu s-a stricat între timp: a fost fals de la
+naștere, și a supraviețuit la două revizuiri ale tabelului.*
+
+**Ce rămâne cu adevărat nerezolvat la bilanț nu e transportul, ci care situație e DATORATĂ** — S1005
+sau S1003 se aleg dintr-un `<select>` de pe ecran, fiindcă **categoria de mărime nu există nicăieri
+în aplicație**. Dar aia e deja un rând al acestei liste (mai jos), și e `R3`. Deci rândul de bilanț
+nu se corectează, **se scoate**: număra a doua oară același defect, sub o cauză falsă.
+
+**Cele 13 firme care refuză bilanțul o fac MOTIVAT** — *„Nr. registrul comerțului lipsește"* —, iar
+asta e **lista 2**, unde bilanțul e deja trecut, cu dovada că `reg_com` e cerut la timp, cu asterisc,
+pe ecranul *Date firmă*. Al treilea loc în care același artefact era numărat.
+
+*Contradicția era vizibilă în chiar acest document: secțiunea din 26.08 discută pe larg cele două
+rute `s1005-valideaza`/`s1003-valideaza` — deci registrul afirma la un capăt ce nega la celălalt.*
+**Restul listei, în același format** (rândul de jurnal-marjă din tabelul vechi a fost absorbit în
+tabelul de sus, unde e acum REPARAT):
+
+| artefact | A producător | B rută | C ecran | stare |
+|---|---|---|---|---|
+| **categoria de mărime** (precondiție, pct. 9) | **NU** — zero potriviri în cod de producție (`categorie_marime`, `micro_entitate`, `CATEGORII_MARIME`). Datele există, derivarea s-a probat, nimeni n-o face | — | — | **DESCHIS · R3.** *Precondiție, nu artefact: fără ea, bilanțul se produce fără să poată ști dacă e cel datorat* |
+| **Evidența operațiunilor de TVA** (art. 321) | **NU** ca artefact — substanța e derivabilă pe fiecare linie, lipsește documentul | — | — | **DESCHIS** |
+| **Registrul de evidență fiscală** (art. 19 · art. 68) | **NU** — potrivirile găsite sunt false pozitive pe `REF` | — | — | **DESCHIS** |
+
+**CE A SCOS REMĂSURAREA, ca observație generală:** din cele 8 rânduri, **două** aveau producător care
+producea și nu ajungea la om (aceeași formă ca lista 5), **una** era falsă, iar **cinci** sunt
+construcție reală. *Deci „nu iese din vina aplicației" acoperea trei lucruri diferite — nu există
+producător · există și nu are ieșire · are ieșire și rândul minte — iar ele cer munci care nu seamănă
+între ele. Coloanele A/B/C le despart, și de-aia tabelul are acum coloane, nu o „cauză".*
 
 **Ce a IEȘIT din lista 3:** **Registrul-jurnal** (14-1-1). Pe 22.08 era aici cu cauza *„elementele din
 pct. 45 lipsesc din date"*. Munca din 24.08 le derivă la citire, iar 1b a probat că ies pe toate cele
