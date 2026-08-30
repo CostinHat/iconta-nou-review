@@ -1,80 +1,34 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **R101 și R103-static REZOLVATE**; urmează lista 5 (30.08.2026)
+# PREDARE LANȚ — E1, faza 1 terminată; ordinea e dată, iar **lista 5** e pasul următor (30.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-30** — **actualizare de secțiuni**, nu rescriere completă. S-au
-  schimbat
-  **antetul**, **unde suntem în plan**, **de unde se pornește**, **starea codului**, **starea la
-  predare**, **tabelul de restanțe** și **dacă continui**. Restul rămâne cum era, fiindcă nu s-a
-  schimbat. *Rescrierea completă de acum câteva ore a fost necesară fiindcă documentul se
-  stratificase; o a doua rescriere completă la trei ore după prima ar fi fost ritual, nu nevoie.*
-- **ce s-a schimbat de fapt, ultima tură**: **R101 REZOLVATĂ** — declarantul e **blocant** pe
-  toate cele opt declarații, după ce **sursa ANAF a decis pe fiecare** (toate cer `nume`, `prenume`,
-  `funcție`, cu marcaj `DA`). Harta avea dreptate, codul greșea — ca la R93. 30 de fișiere de fixturi
-  completate; ecranul a căpătat asterisc pe prenume, cerut de garda `test_g9_oblig_backend`. · **R103,
-  partea statică, REZOLVATĂ** — legătura DS↔verificator are gardă cu **trei clichete** (24 / 5 / 18)
-  și RED-proof. · **O decizie de-a noastră s-a ANULAT**: `declarant_prenume` era ținut afară din hartă
-  din 17.08; sursa bate decizia (`DECIZII.md` 14). · S-a deschis **R104** (cele 18 reguli fără ancoră).
-- **ce s-a schimbat înainte, în aceeași zi**: **s-a măsurat RAZA VERIFICATORULUI**, la cererea
-  lui Costin, înaintea oricărei reparații. Din **62** de reguli ale `DESIGN_SYSTEM.md`: **5
-  acoperite**, **24 neacoperite**, **15 doar la suprafață**, 18 nemăsurabile mecanic. **„verificator
-  TOTAL 0", rândul din fiecare poartă verde, înseamnă zero din ce știe EL să întrebe** — nu zero
-  abateri de la DS. Deschisă **R103**: nimic nu păzește regula de proces „orice regulă din DS intră
-  simultan în verificator".
-- **REGULA STELUȚELOR, răspunsul la întrebarea directă**: nu e „acoperire la suprafață" — **nu e în
-  verificator deloc**. Ancora ei (`oblig`) apare de 3 ori, toate în comentarii despre altceva.
-- **R101 E PARCATĂ, NU ABANDONATĂ** — vezi mai jos, la restanțe.
-- **ce s-a schimbat înainte, în aceeași zi**: **lista 4 e GOALĂ** — **R93** rezolvată (câmpul
-  obligatoriu tratat ca avertisment) și **R102** rezolvată (livrări declarate peste zero facturi
-  emise), amândouă cu **gardă** și cu golul **re-măsurat pe 19 firme**. S-au deschis **R100** (regula
-  de calibrare) și **R101** (declarantul, găsit de garda nouă la prima ei rulare).
-- **ce s-a schimbat înainte, în aceeași zi**: **ordinea — lista 4 → lista 5 → lista 3, faza 2 după ele**
-  (`DECIZII.md` 12) · **clasa R97 e MĂSURATĂ și descompusă** · s-a deschis **R99** (previzualizarea
-  scoaterii) · iar cifra de dimineață s-a **corectat în jos**, 66 → **54**, fiindcă instrumentul
-  greșea în direcția opusă celei pe care o declarase.
-- **descompunerea, care e partea utilă**: din cele **54 de câmpuri pe 16 rute** — **8 / 1 rută** →
-  **R99** · **14 / 2 rute** → **adâncimea listei 5** (statul de plată **12**, registrul-jurnal **2**),
-  fiindcă alea sunt singurele care poartă artefacte · **32 / 13 rute rămân clasa R97**, toate pe
-  **ecrane interne**, în afara oricărui criteriu al fazei 1. **Lista 5 se citește de acum ca 12
-  poziții**, două cu adâncime măsurată.
-- **ce s-a schimbat ieri (29.08), și rămâne adevărat**: faza 1 s-a terminat — 1b pe regimurile reale
-  (12 din 12, 19 firme, 285 de generări prin DUKIntegrator) · 1c pe artefactele care ies (168 de
-  ieșiri) · **verdictul 1d rescris**, cu șase poziții mutate · s-au deschis **R93–R98** · `scripts/`
-  nu mai contează ca apelant de producție (`DECIZII.md` 29.08 (10)).
-- **ultima rescriere COMPLETĂ**: tot azi, a douăsprezecea atingere —
-  primele unsprezece au fost **pe secțiuni**, iar documentul se stratificase: un paragraf „de unde se
-  pornește" apărea de două ori, tabelul de restanțe avea două rânduri „restul" (unul spunea **44**,
-  proza spunea **35**), „fals-negativul cheii" era scris de două ori, iar „dacă continui" era
-  numerotat 1-2-3-2-3-4. *Un document care se contrazice în două rânduri vecine nu se citește: cine
-  îl citește nu poate ști care rând mai e adevărat.*
-- **corectată imediat după**: rescrierea completă a intrat pe `471368c`, iar rularea porții care a
-  produs-o a arătat că **rândul „starea la predare" purta o cifră falsă, copiată din documentul
-  vechi** (`411`/`32` în loc de `413`/`34`). Corectată în commitul următor, și **invalidată în
-  tabel**. *Se scrie aici, nu doar în tabel: o rescriere al cărei scop era să scoată afirmațiile
-  purtate din memorie a purtat ea însăși una, la douăzeci de minute după ce a explicat de ce nu se
-  face asta.*
-- **pe commit**: `ae1845e` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care
+- **ultima rescriere**: **2026-08-30**. **Rescriere COMPLETĂ.**
+- **de ce COMPLETĂ, cu motivul măsurat**: documentul **se contrăzicea**. Antetul spunea *„R101
+  REZOLVATĂ"*, iar cu cincisprezece rânduri mai jos că aceeași restanță e **parcată pe o ramură de
+  wip** — și a treia oară același lucru, în tabelul de restanțe. Peste asta, **patru** bullet-uri consecutive începeau cu *„ce s-a
+  schimbat înainte, în aceeași zi"*, adică documentul devenise un jurnal, nu o stare. *Un document
+  care se contrazice în trei locuri nu se citește: cine îl citește nu poate ști care rând mai e
+  adevărat.*
+- **CE NU A FOST motivul, fiindcă s-a măsurat**: **nu** vechimea. Comanda care a cerut rescrierea
+  spunea *„e cu 12 commituri în urmă, peste prag, semnalat de două ture"*. Măsurat cu formula din
+  hook — `git rev-list --count $(git log -1 --format=%H -- PREDARE_LANT.md)..HEAD` — vechimea era
+  **0**: fișierul fusese atins chiar de HEAD (`05f8790`). Pragul e **10**, iar avertismentul
+  `[pre-commit] ATENTIE` are **0 apariții** în `.poarta_jurnal.log`. **A cincea oară** când cifra
+  „12" e afirmată fără măsurătoare; e în tabelul de cifre invalidate, cu celelalte patru.
+- **pe commit**: `05f8790` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care
   poartă munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e
   arborele care devine commitul următor.*
-- **cum se citește „pe commit", ca să nu mai pară stale**: numele de acolo e al commitului
-  **precedent**, prin construcție, nu din uitare. Cifra care spune adevărul despre vechime e cea de
-  mai jos, măsurată cu formula din `pre-commit`.
-- **vechime măsurată, nu estimată**: **1 commit** de la ultima atingere a fișierului, citit acum cu
-  formula din hook (`git rev-list --count $(git log -1 --format=%H -- PREDARE_LANT.md)..HEAD`) —
-  commitul reparatiei instrumentului R97, `ae1845e`. **Devine 0 odată cu commitul care poartă rândurile
-  astea.**
-  Pragul din hook e **10**; avertismentul `[pre-commit] ATENTIE` **nu a apărut** în niciuna din
-  porțile de azi. *Se scrie cifra de la momentul scrierii, nu cea de după — altfel documentul ar
-  afirma despre un commit care încă nu există.*
+- **cum se citește „pe commit", ca să nu pară stale**: numele de acolo e al commitului **precedent**,
+  prin construcție, nu din uitare. Cifra care spune adevărul despre vechime e cea de mai jos.
+- **vechime măsurată, nu estimată**: **0 commituri** de la ultima atingere a fișierului.
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **gardat**: `scripts/githooks/pre-commit` avertizează peste 10 commituri;
   `core/test_predare_proaspata.py` nu lasă avertismentul să dispară tăcut;
   `core/test_predare_cifre.py` nu lasă cifrele despre date să îmbătrânească.
 
 ---
-
 ## PRIMUL LUCRU DE ȘTIUT: CIFRELE DESPRE DATE SUNT INTEROGATE, NU SCRISE
 
 Blocul următor e **generat** din bază de `scripts/scan_predare_cifre.py`, iar
@@ -148,161 +102,78 @@ scrisesem regula care o interzice (`METODA §10.16`). *O regulă scrisă nu țin
 - `PLAN_LUCRU.md` are **5 etape** (E1–E5) și **3 puncte de decizie**. `PLAN_INVESTIGATII.md` are
   **8 faze**, mapate pe ele: E1 = faza 1 · E2 = faza 2 · E3 = fazele 3–6 · E4 = faza 7 · E5 =
   reparațiile.
-- Suntem la **E1 — SETUL COMPLET**, adică **etapa 1 din 5**. Faza 1 avea patru pași — **1a, 1b, 1c,
-  1d** — și **toți patru sunt făcuți**, toți azi. **Faza 1 nu mai are pași.**
-- **DAR criteriul ei de terminare NU e îndeplinit**, și aici e diferența care contează: „gata cu
-  pașii" nu e „gata cu etapa". Listele 3, 4 și 5 ale verdictului trebuie să fie goale pe fiecare
-  regim, și nu sunt.
-- **Criteriul care termină E1**: lista artefactelor cerute de lege — din lege, cu temei — pe
-  **regimurile REALE**, fiecare artefact clasificat în una din cele cinci liste ale verdictului 1d.
-  Etapa e gata când listele **3, 4 și 5** sunt goale pe fiecare regim. Lista 2 poate avea conținut:
-  măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
-- **1a — MĂSURAT AZI, prima oară: 12 regimuri reale pe 19 firme**, cu
-  `scripts/scan_regimuri.py`. *Planul cerea cifra asta ca **primă operațiune a etapei**, iar lucrul a
-  mers opt luni fără ea — 91 de restanțe deschise și închise pe un criteriu de terminare care se
-  sprijinea pe o cifră pe care n-o avea nimeni.* Detaliul, cu tabelul pe semnături, e în
-  `CONFORMITATE.md`, secțiunea „1a".
-- **Ce a scos măsurătoarea, pe scurt:** **3 profile incomplete** (rânduri vechi de seed, nu o gaură
-  în cod — `vector_fiscal_api` refuză deja să salveze fără ele; intră în lista 2 a verdictului 1d) ·
-  **marjă turism (art. 311) = 0 firme** și **marjă second-hand (art. 312) = 0 firme**, adică module
-  fără nicio firmă care să le exercite, chiar semnalul cerut de plan · **agricultor forfetar** și
-  **construcții** NU SE POT NUMĂRA — n-au nici câmp pe profil, nici marcaj în note, iar un „0" acolo
-  n-ar deosebi „nicio firmă" de „nu știu să caut".
-- **1b — MĂSURAT AZI, pe tot portofoliul**, cu `scripts/scan_1b_regimuri.py`: **12 din 12 regimuri ·
-  19 din 19 firme · 15 tipuri de declarație · 285 de generări**, fiecare trecută prin
-  **DUKIntegrator**. Detaliul e în `CONFORMITATE.md`, „Pasul 1b, RELUAT PE REGIMURILE REALE".
-  *Măsurătoarea 1b de pe 22.08 acoperea trei firme, adică **două** din cele 12 semnături.*
-- **Ce a scos 1b, pe scurt, în ordinea gravității:** **lista 4 a verdictului 1d nu mai e goală** (D394
-  iese și e respins de arbitru pe `tenant_001` și `tenant_017` — **R93**) · **cele trei registre
-  obligatorii citesc trei populații diferite**, 21 din 41 de note sunt ciorne și intră în balanță și
-  în registrul-jurnal, dar nu în fișa de cont (**R96**) · **semaforul n-are nicio cale să ceară D100
-  pe regim de profit**, deși CF art. 41 alin. (1) cere declarare trimestrială (**R95**) · **selectorul
-  și semaforul răspund diferit la „ce datorează firma"**, iar generatorul nu ascultă de niciunul — 8
-  divergențe pe 4 firme (**R94**).
-- **Și două verdicte din 22.08 care NU mai sunt adevărate, în bine:** **Cartea mare** are producător
-  (`core/fisa_cont.py`, Fișa de cont 14-6-22, probată pe date reale) — cauza se schimbă din „nu există
-  producător" în „producătorul există, nu ajunge la om"; **registrul-jurnal** are cele trei coloane
-  cerute de pct. 45, derivate la citire din 24.08 — ce rămâne e că **14 din 41 de note** n-au document
-  derivabil.
-- **1c — MĂSURAT AZI, pe artefactele care ies**, cu `scripts/scan_1c_verificabil.py`: **168 de
-  ieșiri**, 19 firme, cele patru întrebări ale planului puse pe **structura răspunsului**, nu pe
-  șiruri. Rezultatul e o **despărțire**, nu un număr: **0 din 92** de ieșiri de declarație își arată
-  componentele (ruta întoarce un **contor**, nu operațiunile), în timp ce **registrele desfac** —
-  jurnalul întoarce liniile, casa operațiunile cu soldul curent, statul rândul per salariat. Iar cele
-  **92 de „are temei" sunt false**: e temeiul **validatorului**, nu al cifrei.
-- **VERDICTUL 1d, RESCRIS — șase poziții mutate:** lista 1 rămâne la **1 artefact** (registrul de
-  casă) · lista 3 scade la **8** (a ieșit registrul-jurnal; Cartea mare a rămas, cu altă cauză) ·
-  **lista 4 are 2 poziții** (era goală) · lista 5 are **10 poziții + clasa R97**, nemăsurată.
-- **Un rezultat despre FORMA muncii rămase:** listele 3 și 5 sunt **identice pe toate cele 12
-  regimuri** — ecranele și producătorii nu depind de regim. Deci munca rămasă **nu se împarte pe
-  regimuri, ci pe artefacte**: un ecran reparat o dată curăță aceeași poziție pe toate douăsprezece.
-- **Pasul următor NU e ales.** Faza 1 nu mai are pași; ce urmează — faza 2 (temeiurile), sau
-  reparațiile din listele 3/4/5 — **e ordinea lui Costin**.
+- Suntem la **E1 — SETUL COMPLET**. Faza 1 avea patru pași — **1a, 1b, 1c, 1d** — și **toți patru
+  sunt făcuți**, toți pe 29.08.
+- **DAR criteriul de terminare al etapei NU e îndeplinit**, și aici e diferența care contează:
+  *„gata cu pașii" nu e „gata cu etapa".* Listele 3, 4 și 5 ale verdictului trebuie să fie goale pe
+  fiecare regim.
+- **VERDICTUL 1d, starea de acum:** lista 1 — **1 artefact** (registrul de casă) · lista 3 — **8**
+  artefacte, muncă de construit · lista 4 — **GOALĂ**, prin reparație (R93 + R102), cu golul
+  re-măsurat pe 19 firme · lista 5 — **12 poziții**, cu adâncimea R97 pliată în două dintre ele.
+- **ORDINEA REPARAȚIILOR, dată de Costin pe 30.08** (`DECIZII.md` 12): **lista 4 → lista 5 →
+  lista 3**, iar **faza 2 după ele**. Primele două poziții din ordine — R101 și partea statică a lui
+  R103 — sunt **închise**. **Pasul următor e LISTA 5.**
+- **Ce NU intră în lista 5, prin decizie:** cele **15** reguli DS acoperite doar la suprafață **nu
+  sunt datorie** — sunt limita unui scaner static, corect diagnosticată, și cer un instrument care
+  cheamă rute: **faza 2**. Iar cele **18 fără ancoră** sunt **R104**: defect al regulii, nu al
+  instrumentului.
+- **Lista 5, ce conține și cât costă fiecare jumătate** (măsurat la 1c): **cele 9 declarații** — **0
+  din 92** de ieșiri își arată componentele, și acolo **nici ruta nu trimite**, deci e scump ·
+  **balanța** — se închide pe toate cele 13 firme cu date, dar ecranul are doar un buton „Descarcă
+  PDF" · **netul de pe fluturaș** (12 câmpuri tăcute) și **registrul-jurnal** (2) — acolo serverul
+  **trimite deja** tot ce trebuie și se pierde la randare, deci e ieftin.
 
 ---
 
 ## AL TREILEA: DE UNDE SE PORNEȘTE, DACĂ EȘTI O SESIUNE NOUĂ
 
-**Nu e nicio cerință comandată neîncepută.** Ultima — 1c — e terminată, iar cele două decizii date
-peste raport (clasa R97 și garda R98) sunt scrise și deschise. **Nu e nicio restanță de prag 1
-deschisă**
-(R35, ultima, s-a închis pe 28.08). **Din lanțul facturii nu mai e nimic deschis** — nici muncă, nici
-decizie, nici verificare.
+**Există o cerință comandată neîncepută: LISTA 5.** E a treia poziție din ordinea dată pe 30.08;
+primele două (R101, apoi partea statică din R103) sunt închise. **Nu e nicio restanță de prag 1
+deschisă.** Din lanțul facturii nu mai e nimic deschis.
 
-**Cele trei intrări ale unei facturi în evidență, toate acoperite:**
-1. **emiterea prin aplicație** → nota se scrie în `creeaza_factura`, punctul unic al **tuturor** celor
-   patru drumuri de emitere (R87);
-2. **factura primită, din SPV** → nota la `/facturi-primite/{id}/valideaza`, unde omul alege contul de
-   cheltuială (obligatoriu) și clasifică regimul (R88);
-3. **factura emisă întoarsă prin import** → **ciornă de recunoaștere** (stare `de_recunoscut`,
-   **declarabilă**), apoi `POST /facturi/{id}/recunoaste` (R91, varianta (iii)).
+**Ce s-a închis în ultimele două ture, ca să nu se recitească registrul:**
+- **R93** — aceeași lipsă (`adresa`) era poartă în D100/D101/D205 și **avertisment** în D394, iar
+  DUKIntegrator respingea XML-ul. Acum blochează, cu propoziția pe care aplicația o avea deja scrisă.
+- **R102** — D394 declara livrări și **zero facturi emise** în același document; poartă pre-DUK, cu
+  cauza numită (numărul facturii n-avea cifre).
+- **R101** — declarantul e **blocant pe toate cele opt**, după ce **sursa ANAF a decis pe fiecare**.
+  A cerut 30 de fișiere de fixturi și un asterisc nou pe ecran.
+- **R103, partea statică** — legătura DS↔verificator are gardă cu **trei clichete** (24 / 5 / 18) și
+  RED-proof.
 
-*Iar istoricul a intrat prin **aceleași acte**, nu printr-o migrare: **31 de facturi, 103.163,00 lei
-TVA, 11 firme** (R89).*
-
-**Ce s-a construit, ca să nu se recitească registrul:** contarea are un singur loc
-(`core/contare_facturi.py`); nota se scrie **în același act cu faptul**; cheia `factura_id` distinge
-contarea de plată, iar trezoreria (51/53) **taie** semnătura de contare; plasa caută note fără cheie
-înainte de fiecare notă automată; nota din jurnalul liber primește cheia **la scriere**; o notă de
-plată se poate **dezlega**, cu motiv obligatoriu, rol declarat și urmă proprie (R90).
-
-**Cele 18 rânduri de verificare ale celor două acte noi sunt executate și bifate pe RULARE**, nu pe
-citirea codului: `scripts/proba_verificari_trasee.py` cheamă funcțiile de rută din `main.py` pe o
-schemă efemeră — **18 din 18** cu dovadă tipărită.
-
-**Nu e propus niciun pas următor.** Faza 1 nu mai are pași, iar ce urmează — faza 2, sau reparațiile
-din listele verdictului — e o decizie de ordine, deci a lui Costin.
+**Cea mai importantă cifră de context, dacă ești sesiune nouă:** „verificator **TOTAL 0**", rândul
+care apare în fiecare poartă verde, înseamnă **zero din ce știe EL să întrebe** — din 62 de reguli
+ale Design System, **5** sunt acoperite. Nu invalidează porțile; le încadrează.
 
 ---
 
 ## AL PATRULEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
-- **restanțe deschise: 44**, derivat cu `scripts/raport_b.py`. *Ziua a închis douăsprezece și a
-  deschis unsprezece — **R92**, găsită la scrierea ISTORICULUI · **R93–R96**, scoase de măsurătoarea 1b ·
-  **R97–R102**, din 1c, din deciziile care au urmat, din măsurarea clasei și din garda lui R93 — *iar **R93** și **R102** s-au și închis*. **Niciuna n-a fost găsită de o gardă.*** Restul
-  defalcării (praguri, cine deblochează) se derivă; **nu se scrie aici**, fiindcă exact rândul ăsta a
-  fost invalidat o dată azi.
-- **toate șapte sunt de PRAG 2**, și niciuna nu produce azi o cifră greșită pe un ecran: două trăiesc
-  pe calea de API (R94), una e o absență prin construcție pe care datele de azi n-o pot aprinde
-  (R95), una cere întâi răspunsul la R36 (R96). *R93 e singura cu instanță vie: contabilul de pe
-  `tenant_001` primește eroarea brută a validatorului ANAF în loc de propoziția pe care aplicația o
-  avea deja scrisă.*
-- **R97 — MĂSURATĂ pe 30.08.** Clasa *„ruta livrează, ecranul tace"* e **reală și concentrată**:
-  **54 de câmpuri tăcute sigur, pe 16 rute**, plus 267 de candidați pe 41; **90 din cele 106 rute
-  măsurate n-au niciun câmp tăcut**. **Lista 5 nu capătă poziții noi** — cele două artefacte atinse
-  erau deja în ea. *Cifra asta e chiar cea care lipsea ca să se poată alege ordinea listelor.*
-- **Ce a crescut: adâncimea.** Statul de plată avea 7 câmpuri tăcute cunoscute; are **12** — printre
-  cele noi `cm_brut`/`cm_net`/`cm_zile`, adică **concediul medical**, și tichetele.
-- **R99, scoasă la suprafață prin decizie** (nu reparată): previzualizarea scoaterii unei firme arată
-  **ce s-a găsit**, nu **ce s-a verificat** — numărătoarea per evidență, cu zerourile ei, nu ajunge pe
-  ecran, nici lista tabelelor curățate. *Un om care citește „firma nu a produs niciun document" nu
-  poate ști dacă s-au verificat cinci evidențe sau una.*
-- **cele 16 „fără prag declarat" sunt cele vechi (R1–R27)** — nu înseamnă că sunt ușoare, înseamnă că
-  n-au fost încadrate când s-a introdus scara de praguri.
-- **decizii care blochează: niciuna.** Toate trei care blocau punctul de decizie 1 au primit răspuns
-  pe 29.08.
-- **locuri de verificare**: **221 scrise / 0 goale din 221 (100%)**, derivat cu `scripts/raport_b.py`.
-  *Contorul a fost lărgit odată cu ultimele 18: o căsuță nebifată e un loc nefăcut și cu text, și
-  fără. Înainte, un rând `- [ ] <propoziție>` nu intra nici la scrise, nici la goale — dispărea din
-  numitor, iar procentul sărea înapoi la „100%".*
+- **restanțe deschise: 44** (din care ale etapei E1: **24**), derivat cu `scripts/raport_b.py`.
+  **Nu se scrie de mână** — rândul ăsta a fost invalidat o dată.
+- **deschise în ultimele două zile**: R92 (etichete de stare) · R93–R96 (din 1b) · R97 (clasa „ruta
+  livrează, ecranul tace", **măsurată**: 54 de câmpuri pe 16 rute) · R98 (interdicția care își poartă
+  inventarul) · R99 (previzualizarea scoaterii) · R100 (calibrarea care confirmă presupunerea) ·
+  R103, R104. **Închise**: R93, R101, R102, și partea statică a lui R103.
+- **decizii care blochează: niciuna.**
+- **locuri de verificare**: **221 scrise / 0 goale din 221 (100%)**.
 - **interdicții, din 76**: MĂSURATE **21** · PARȚIAL **16** · NEMĂSURABILE **1** · NEÎNCEPUTE **38**.
-- **clusterele topologice**: `core.agenda.urmator_cluster()` → **`(None, 0, 0)`**. Inventarul are
-  **79 de rânduri, 79 bifate, 0 blocate**. Secvența e epuizată din 04.08.2026 — **nu există
-  „următorul programat"**.
-- **familia salariilor**: nimic deschis (R33, R34, R85, R86 — toate închise).
-- **cele mai vechi restanțe deschise, ca vechime pe registru**: R1, R3, R4 (**174** commituri fiecare),
-  R5, R6 (**173**), R7 (**171**). *Toate patru din familia „încrederea în corpus" — exact temelia pe
-  care stă 1a.*
+- **clusterele topologice**: `core.agenda.urmator_cluster()` → **`(None, 0, 0)`**; secvența e epuizată
+  din 04.08.2026 — **nu există „următorul programat"**.
+- **cele mai vechi restanțe deschise**: R1, R3, R4, R5, R6, R7 — familia „încrederea în corpus".
 
 ---
 
 ## STAREA LA PREDARE
 
-Poartă verde, citită din rularea care a produs `ae1845e`: **3564 teste trec** · 10 skip · 14 xfail ·
-ruff OK · verificator **TOTAL 0** (182 scanate = 181 acceptate + 1 exclus) · rute
-**413 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 34** (clichet GRI 45) · site **200** · four-way
-`HEAD = origin/main = origin/backup/lant-2026-08-30 = ae1845e`, procesul viu restartat de post-commit.
-*Ramura de backup e a zilei noi — `lant-2026-08-30`, creată de hook la primul commit de după miezul
-nopții.*
+Poartă verde, citită din rularea care a produs `05f8790`: **3580 teste trec** · 11 skip · 14 xfail ·
+ruff OK · verificator **TOTAL 0** · rute **413 = ACCEPTAT 334 + GRI 45 + ROSU 0 + EXCLUS 34**
+(clichet GRI 45) · site **200** · four-way `HEAD = origin/main = origin/backup/lant-2026-08-30 =
+05f8790`, procesul viu restartat la **08:20:22**, după commitul de la **08:07:24**.
 
-**Poarta a respins de TREI ORI în ziua asta, și toate trei respingerile au fost ale mele, nu
-regresii.** A treia a fost `commit-msg`: în commit erau fișiere **normative** (`CONFORMITATE.md`),
-iar mesajul n-avea rândul `# diff-citit:`. *Garda cere ca un fișier normativ să nu intre până nu e
-citit — inclusiv când diff-ul e scris de mine, fiindcă ce contează e ce CERINȚE conține, nu cine l-a
-scris.* Primele două: Prima: instrumentul nou importa `core/fisa_cont.py`, iar clichetul modulelor nelegate a
-cerut, corect după propria lui regulă, ca modulul să iasă din pin — adică exact stingerea semnalului
-pe care pinul îl păzea. A doua: cele două gărzi noi de calibrare erau **ancorate pe text**
-(`"core/modul_probat.py" in ceva`), iar clichetul 50 le-a prins la **1223 > 1222**. Rescrise pe
-structură — aserțiunea compară acum ce a creat fixtura cu ce a raportat sonda, fără niciun șir scris
-de mână. *Amândouă gărzile au avut dreptate; niciuna n-a fost ocolită.*
-
-**Cifrele de aici se copiază din IEȘIREA PORȚII, nu din predarea de dinainte.** *Prima formă a
-rescrierii de azi scria „411 … EXCLUS 32" — purtată din documentul vechi, fără măsurătoare. Poarta a
-măsurat 413 și 34, la douăzeci de minute după ce documentul din jur explica de ce nu se face asta.
-Vezi tabelul de cifre invalidate.*
-
+**Cifrele de aici se copiază din IEȘIREA PORȚII, nu din predarea de dinainte.**
 **Cifrele secțiunii „Unde suntem" nu se scriu de mână** — `scripts/raport_b.py`.
-**Poarta durează ~12,5 minute.**
+**Poarta durează ~12,7 minute.**
 
 ---
 
@@ -310,18 +181,13 @@ Vezi tabelul de cifre invalidate.*
 
 | | |
 |---|---|
-| **prag 1** | **niciuna deschisă.** R35, ultima, închisă pe 28.08. |
-| **lanțul facturii** | **R87 · R88** (`55a57f6`), **R89** (`d582563`), **R90** (`95f5d0e`), **R91** (`6ca0aba`) — toate REZOLVATE, fiecare cu proba ei pe date reale. Condiția lui R87/R88 s-a **DESPĂRȚIT**, nu s-a considerat satisfăcută: jumătatea „proporția de necontate = 0" s-a mutat, cu numele ei, la R89. |
-| **cele șapte de azi** | **R45, R54, R58, R63, R66, R70, R73** — REZOLVATE. **Șase erau deja construite**; ce lipsea era decizia scrisă, sau proba. Două s-au închis pe **alt motiv** decât cel din comandă, și se spune în registru: R54 (validarea EXISTĂ din 26.08 — „nu se adaugă" ar fi însemnat *a scoate* o poartă care merge) și R63 (comanda cerea fuziunea, decizia din 26.08 spune invers; fuziunea a rulat și a găsit **0 cazuri**). |
-| **retrase de autorul lor** | Costin a retras el însuși, în tura următoare, amândouă comenzile: **R54 rămâne cum e, poarta nu se atinge** · **R63 varianta (c) rămâne, adresele nu se fuzionează**. Scris în `DECIZII.md` (9). |
-| **scos definitiv din discuție** | **reîncercarea automată la eșec de email**. Nu acum, nu ca restanță viitoare. Consecința, scrisă o dată ca să nu fie redescoperită ca lipsă: **un email pierdut rămâne pierdut** — aplicația spune că s-a întâmplat și alertează, dar nu încearcă din nou. |
-| **R92, DESCHISĂ azi** | Ecranul nu poate numi **5 din cele 8** stări ale unei facturi, iar **10 din 41** afișează azi șirul brut `importata`. Prag 2 — nu e latentă. *Nu se închide prin adăugarea a cinci șiruri: etichetele se derivă din nomenclator, cu gardă în amândouă direcțiile.* |
-| **R93–R96, DESCHISE azi de 1b** | **R93** — aceeași lipsă (`adresa`) e poartă în D100/D101/D205 și simplu **avertisment** în D394 (`core/d394.py:1086`), iar DUKIntegrator respinge XML-ul: **lista 4 a verdictului 1d nu mai e goală**. · **R94** — selectorul știe forma și vectorul TVA, semaforul știe regimul, generatorul nu ascultă de niciunul: D101 iese valid pe cele 10 firme micro, iar D300/D394 se produc pe 4 neplătitoare, cu nota falsă „un plătitor depune nul". · **R95** — semaforul n-are nicio cale să ceară D100 pe profit, deși CF art. 41 alin. (1) cere declarare trimestrială; `d100.py` are ramura de profit, lipsește cine s-o ceară. · **R96** — balanța și registrul-jurnal citesc ciornele, fișa de cont nu: **21 din 41 de note**. Toate patru sunt **prag 2**. |
-| **R97–R98, DESCHISE de 1c și de deciziile de după** | **R97** — clasa *„ruta livrează, ecranul tace"*: registrul-jurnal (ruta derivă `nr_curent`, `document`, `total_debit`/`total_credit`; ecranul afișează **zero** din ele) și netul de pe fluturaș (toate cele 7 componente sosesc, **niciuna** nu se afișează). **Se tratează ca CLASĂ, nu ca două poziții de listă** — decizia lui Costin —, iar condiția cere **întâi măsurarea clasei**, cu instrumentul care confruntă câmpurile trimise cu cele randate. · **R98** — o interdicție care își poartă inventarul îmbătrânește singură: la 66, `Temei(` a trecut 57 → **64**, mențiunile din JS 43 → **68**, sub un verdict care a rămas corect. Regula: interdicția citează **regula și pragul**, inventarul stă ca **anexă datată**. **Doar gardă, nu rescriere acum.** |
-| **R99, scoasă la suprafață prin decizie** | Previzualizarea scoaterii unei firme arată **ce s-a găsit**, nu **ce s-a verificat**: numărătoarea per evidență — cu zerourile ei — și lista tabelelor curățate nu ajung pe ecran, **8 din 31 de câmpuri**. Un om care citește „firma nu a produs niciun document” nu poate ști dacă s-au verificat cinci evidențe sau una. **Prag 3**, și **nu se repară acum** — Costin a cerut doar să iasă la suprafață cu numărul ei, fiindcă îngropată într-un inventar de zeci de câmpuri se pierde. *Premisa cu care a fost cerută s-a corectat la scriere: ce s-ar șterge **se arată**; vezi tabelul de cifre invalidate.* |
-| **R101 — PARCATĂ pe `wip/2026-08-30-r101`** | Decizia a fost **blocant**, iar sursa ANAF a decis-o pe fiecare din cele opt: **toate** cer declarantul, cu marcaj `DA` și mesaj propriu de eroare — deci **harta avea dreptate, codul greșea**, la fel ca la R93. Reparația e **scrisă și probată pe instanțe vii** (cele 7 firme fără declarant refuză acum cu motivul; cele cu declarant complet, neschimbate), **dar n-a intrat**: fixturile a **30 de fișiere de test** construiesc firme fără declarant, deci suita iese roșie cu **86** de picături. Aia e munca rămasă, și e reală: o fixtură care nu poate depune nu reprezintă o firmă. Munca e la adăpost pe ramura `wip/2026-08-30-r101` (`4cc9374`), iar arborele a fost **restaurat curat** ca să se poată măsura raza. |
-| **`declarant_prenume` — CONTRADICȚIE, nu reparație** | Sursa ANAF îl cere pe toate opt (`prenume_declar … DA … ERR - prenume declarant necompletat`), dar o **decizie scrisă pe 17.08.2026** spune invers, cu motiv — `core/test_declarant_oblig.py::test_prenume_nu_e_obligatoriu`: *„nu orice declarant are prenume în forma ANAF"*, iar `-` e înlocuitor legitim. **Nu se rezolvă de mine**: e o contradicție între o citire de sursă și o decizie scrisă. L-am scos din reparație și îl raportez. |
-| **restul (44)** | Vezi `CONFORMITATE.md`. Numărul e derivat, nu scris; nu s-a atins nimic altceva. |
+| **prag 1** | **niciuna deschisă.** |
+| **lista 4** | **GOALĂ**, prin reparație: **R93** (câmp obligatoriu tratat ca avertisment) și **R102** (livrări peste zero facturi). Golul e **re-măsurat pe 19 firme** cu instrumentul care le găsise. *Diferența față de „goală" din 22.08 e chiar criteriul care a pus lista 4 prima: atunci era goală fiindcă măsurătoarea acoperea trei firme.* |
+| **R101 · R103-static** | **REZOLVATE.** Declarantul e blocant pe toate opt — **sursa ANAF a decis pe fiecare**, iar o decizie de-a noastră din 17.08 s-a **anulat** (`DECIZII.md` 14). Legătura DS↔verificator are gardă. |
+| **R97** | clasa *„ruta livrează, ecranul tace"*, **măsurată**: **54 de câmpuri pe 16 rute**, descompuse — 8 → R99, 14 → adâncimea listei 5, **32 pe 13 rute rămân clasa**, toate pe ecrane interne. |
+| **R94 · R95 · R96** | deschise, prag 2, din 1b: două mecanisme care răspund diferit la „ce datorează firma" · o obligație (D100 pe profit) pe care semaforul n-o poate cere · trei registre care citesc trei populații. |
+| **R98 · R99 · R100 · R104** | deschise, cu condiția scrisă. R100 și R104 au fost cerute **explicit** ca gărzi de construit mai târziu, nu acum. |
+| **restul (44)** | Vezi `CONFORMITATE.md`. Numărul e derivat, nu scris. |
 
 ---
 
@@ -365,6 +231,7 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 | **66 de câmpuri tăcute, pe 17 rute** (clasa R97) | raportul și registrele din 30.08 dimineața | **54 pe 16**. Instrumentul căuta „randat" pe NUME și nu vedea parcurgerea **generică** (`Object.keys`, `Object.entries`), care afișează cheile fără să le numească — deci dădea drept tăcute câmpuri care **se afișează** (`randuri_de_sters.*`, cele 9 `marcaje.*`). **Greșeala era în direcția OPUSĂ celei declarate de instrument** („randat e supra-numărat, deci clasa e plafon inferior"), ceea ce o face mai rea decât o imprecizie: cine o citea o corecta mental în partea greșită. Reparat în aceeași zi, `randat_generic()` |
 | **„nu arată ce anume s-ar șterge"** (previzualizarea scoaterii) | raportul din 30.08 dimineața | **fals** — `randuri_de_sters` **se afișează**, „N × tabel", generic; la fel motivele, inclusiv *„nu pot decide"*. Afirmația era făcută pe ieșirea instrumentului, **fără citirea codului**. Ce tace, cu adevărat, e altceva și mai mic: **ce s-a verificat și a ieșit gol** (R99) |
 | **„rute 411 = … + EXCLUS 32"** | predările din 28 și 29.08, inclusiv **prima formă a rescrierii complete de azi** | **413** și **34**, citit din ieșirea porții care a produs `471368c`. *Cifra a fost **copiată din documentul de dinainte** în timpul unei rescrieri al cărei scop era să scoată exact afirmațiile purtate din memorie. A treia clasă de cifră care se strecoară prin copiere, după `nume_anaf` și `43`. De-asta rândul „starea la predare" spune acum, în text, de unde se ia.* |
+| **„PREDARE_LANT.md e cu 12 commituri în urmă”** | comenzile din 27.08 (de două ori), 29.08, și **30.08** | **0**, măsurat cu formula din `pre-commit`: fișierul e atins de HEAD însuși (`05f8790`). Pragul e **10**, iar avertismentul `[pre-commit] ATENTIE` are **0 apariții** în `.poarta_jurnal.log`. **A cincea apariție a aceleiași cifre**, de fiecare dată fără măsurătoare în spate. *Rescrierea de azi s-a făcut oricum — dar pe motivul REAL, care e stratificarea: documentul spunea în trei locuri că R101 e „parcată”, după ce fusese rezolvată.* |
 
 ---
 
@@ -501,23 +368,15 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 
 ## DACĂ CONTINUI DE AICI
 
-1. **Nicio cerință comandată neîncepută. Nicio restanță de prag 1 deschisă.** Din lanțul facturii nu
-   mai e nimic deschis, iar `TRASEE_VERIFICARI.md` e la **221 / 221**.
-2. **ÎNAINTE DE A EXECUTA O COMANDĂ, citește restanța pe care o numește.** De două ori pe 29.08 o
-   comandă a cerut ceva deja construit, iar o dată ar fi însemnat să **scot** o poartă care merge.
-   **Costin a retras el însuși amândouă comenzile**, în tura următoare. Verificarea premisei a costat
-   o oră și a scos două lucruri reale.
-3. **Pasul următor e LISTA 5** — primele două din ordinea dată (R101, apoi partea statică din
-   R103) sunt închise. *Ce NU intră în lista 5, prin decizie:* cele **15** reguli acoperite doar la
-   suprafață — nu sunt datorie, sunt limita unui scaner static, și cer un instrument care cheamă
-   rute; **faza 2**. Iar cele **18 fără ancoră** sunt **R104**, defect al regulii, prag 3.
-3b. **Lista 5** — lista 4 e închisă. **12 poziții**, cu adâncimea R97 pliată în
-   ele, și cu o despărțire de preț deja măsurată: pentru cele **9 declarații** e scump, fiindcă
-   **nici ruta nu trimite** componentele (0 din 92 de ieșiri); pentru **netul de pe fluturaș** (12
-   câmpuri) și **registrul-jurnal** (2) e ieftin, fiindcă serverul **trimite deja** tot ce trebuie și
-   se pierde la randare. Apoi lista 3 (8 artefacte, muncă de construit), apoi faza 2.
-4. **Nu porni nicio construcție fără măsurătoare.**
-5. **`scripts/raport_b.py` derivă „Unde suntem".** Nu se scrie de mână.
-6. **Raportul se scrie din `SABLON_RAPORT.md`**, în ordinea:
+1. **Pasul următor e LISTA 5** — a treia poziție din ordinea dată pe 30.08. Primele două sunt
+   închise. **12 poziții**, cu despărțirea de preț deja măsurată: cele 9 declarații sunt scumpe
+   (nici ruta nu trimite), netul de pe fluturaș și registrul-jurnal sunt ieftine (serverul trimite,
+   randarea pierde).
+2. **ÎNAINTE DE A EXECUTA O COMANDĂ, citește restanța pe care o numește** — și **măsoară cifra pe
+   care o afirmă**. Pe 30.08, o comandă a afirmat că predarea e „cu 12 commituri în urmă"; era **0**.
+   E a cincea oară pentru aceeași cifră. Verificarea costă o comandă.
+3. **Nu porni nicio construcție fără măsurătoare.**
+4. **`scripts/raport_b.py` derivă „Unde suntem".** Nu se scrie de mână.
+5. **Raportul se scrie din `SABLON_RAPORT.md`**, în ordinea:
    0 CERINȚE · 1 CE AM PRESUPUS · 2 ÎN PLUS/MAI PUȚIN · 3 CE AM ACTUALIZAT · 4 ÎNȚELEGEREA ·
    5 RĂSPUNS LA COMANDĂ · 6 UNDE SUNTEM · 7 POARTA.

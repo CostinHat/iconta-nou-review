@@ -6164,3 +6164,72 @@ construit care cade dacă instrumentul numără drept „poartă" o funcție car
 
 Am repornit serviciul de **două ori** ca să probez cod **necomis**, deci procesul viu a rulat scurt
 cod care nu era în istorie. Portofoliul e integral de test, dar abaterea se scrie.
+
+## 30.08.2026 (partea a patra) — Ziua A schimbat ceva pentru un contabil: patru refuzuri noi, și toate patru îi spun ce are de făcut
+
+*Verdictul de producție, pe `git log 04d50b0..HEAD --name-only`: **douăsprezece fișiere de producție
+atinse** — cele opt module de declarație, `core/firma_profil_api.py`, `core/scan_camp_blocant.py`, și
+**două ecrane** (`date_firma.js`, `firme.js`). Primele trei intrări ale zilei erau măsurători; asta e
+prima cu efect.*
+
+### CE AR VEDEA UN CONTABIL, concret
+
+1. **D394 nu mai pleacă incomplet la ANAF.** Înainte: aplicația genera XML-ul, iar DUKIntegrator îl
+   respingea cu *„eroare atribut: adresa: atribut prezent dar vid nepermis"*. Acum: **422**, *„D394 nu
+   se poate genera: LIPSĂ adresă domiciliu fiscal (obligatorie). LIPSĂ telefon (obligatoriu în
+   D394)."* — **propoziția exista deja în cod**, doar că era împinsă într-o listă de avertismente.
+2. **D394 refuză când s-ar contrazice singur.** Dacă declarația are livrări dar numărul facturilor
+   emise e 0, refuză **înainte** de validator, spunând și cauza: *„Se numără doar facturile al căror
+   NUMĂR conține cifre: verifică numerotarea facturilor emise din perioadă."*
+3. **Toate cele opt declarații refuză dacă declarantul e incomplet** — nume, prenume sau funcție.
+   Înainte, lipsa era **acoperită printr-o valoare fabricată**: XML-ul pleca la ANAF în numele lui
+   „ADMINISTRATOR", iar prenumele era „-". **Măsurat: 7 din 19 firme** erau exact așa, iar unele
+   produceau declarații **valide**.
+4. **Ecranul „Date firmă" cere acum prenumele declarantului**, cu asterisc roșu. N-am pus asteriscul
+   fiindcă mi s-a părut potrivit: l-a **cerut o gardă** — `test_g9_oblig_backend`, care păzește
+   corespondența dintre câmpurile marcate pe ecran și `OBLIGATORII`. Adică regula DS cap.6
+   aplicându-se singură, chiar regula de la care pornise ziua.
+
+### CE N-AR VEDEA, ȘI SE SPUNE
+
+**Niciun contabil real n-a văzut nimic din toate astea.** Portofoliul de 19 firme e integral de test.
+Iar **R40 rămâne deschisă**: nicio declarație depusă prin aplicație. Lanțul se strânge; nu s-a
+exercitat încă pe nimeni.
+
+Și, tot onest: **din cele 7 firme fără declarant, am completat 4** — cele de care depinde suita.
+Trei rămân necompletate, **deliberat**, ca instanță vie a listei 2 (date cerute la timp).
+
+### PARTEA CARE NU SE VEDE, DAR SCHIMBĂ CE ÎNSEAMNĂ „VERDE"
+
+**„verificator TOTAL 0" înseamnă zero din ce știe EL să întrebe.** Măsurat pe tot Design System-ul:
+din **62** de reguli, **5** acoperite, **24** necunoscute verificatorului, **15** acoperite doar la
+suprafață, **18** fără nicio ancoră. Rândul ăla apare în fiecare poartă verde de luni de zile.
+
+Iar întrebarea de la care a pornit — *de ce n-a prins auditul regula steluțelor* — are un răspuns mai
+simplu decât ipoteza: **nu e în verificator deloc.** Ancora ei apare de trei ori în fișier, toate în
+comentarii despre altceva.
+
+**Cauza, găsită:** nimic nu păzea regula de proces. Acum o păzește `core/test_ds_verificator.py`, cu
+trei clichete și RED-proof.
+
+### TREI REGULI DE METODĂ, DINTR-O SINGURĂ ZI
+
+- **O calibrare care testează doar ce știe instrumentul să caute confirmă presupunerea, nu o
+  verifică** (R100). Instrumentul lui R97 a greșit **în direcția opusă celei pe care și-o declarase**,
+  și a trecut calibrarea în amândouă direcțiile în timp ce greșea.
+- **Sursa bate decizia.** O decizie scrisă de noi pe 17.08 — că prenumele declarantului nu e
+  obligatoriu — s-a **anulat**, fiindcă structura ANAF îl cere pe toate opt. Testul care o purta nu
+  s-a șters: s-a rescris, cu forma veche și cu motivul pentru care a fost greșită.
+- **O regulă din DS care nu poate fi ancorată e o preferință, nu o normă** (R104). Starea s-a renumit
+  din „nemăsurabilă mecanic" în „fără ancoră": numele vechi arunca vina pe unealtă și scuza
+  documentul.
+
+### CE A COSTAT, ȘI DE UNDE
+
+Poarta a respins de **patru ori** azi, toate ale mele, niciuna regresie: o citare de regulă fără
+prefixul canonic · o aserțiune ancorată pe text (clichetul 50) · blocul generat din `TRASEE.md` ·
+lipsa rulării `interactiune_scan` după o schimbare de JS. **Toate patru au fost prinse de gărzi
+scrise cu zile sau săptămâni înainte.**
+
+Iar reparația lui R101 a cerut **30 de fișiere de fixturi** completate — nu ca să treacă testele, ci
+fiindcă o fixtură care construiește o firmă fără declarant nu reprezintă o firmă care poate depune.
