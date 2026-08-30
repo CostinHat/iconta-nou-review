@@ -43,7 +43,10 @@ const CAMPURI = [
   { k: "patron_nume", e: "Nume administrator",
     aj: "Cine semnează pentru firmă. Apare pe adeverințe și pe contractele de muncă." },
   { k: "declarant_nume", e: "Nume declarant", ob: true },
-  { k: "declarant_prenume", e: "Prenume declarant" },
+  // [R101, 30.08.2026] OBLIGATORIU: structura ANAF a fiecareia din cele opt declaratii cere
+  // `prenume_declar` cu marcaj DA. Pana azi campul era optional aici, iar generatorul il
+  // fabrica drept "-" — o valoare inventata pe un document care pleaca la ANAF.
+  { k: "declarant_prenume", e: "Prenume declarant", ob: true },
   { k: "declarant_functie", e: "Func\u021bia declarantului", ob: true },
 ];
 

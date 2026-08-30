@@ -28,13 +28,11 @@ NU_SUNT_MODULE = ("Bilant", "Bilant S1005")
 
 # EXCEPȚII DECLARATE, fiecare cu motivul ei. O excepție fără motiv ar face garda o listă de tolerat.
 EXCEPTII = {
-    ("declarant_nume", "declarant_functie"):
-        "DECLARAT OBLIGATORIU SI BLOCANT NICAIERI — masurat 30.08.2026: 7 din 19 firme au "
-        "declarantul necompletat, iar `build_xml` fabrica „ADMINISTRATOR\" cu avertisment, deci "
-        "declaratia pleaca in numele cuiva care n-a declarat. E ACEEASI CLASA cu R93, gasita de "
-        "garda asta la prima ei rulare, si e deschisa ca R101. Ramane exceptie pana se decide daca "
-        "se blocheaza (si atunci 7 firme nu mai pot depune pana completeaza) sau daca harta se "
-        "corecteaza (si atunci `OBLIGATORII` nu mai are voie sa spuna „obligatoriu\")",
+    # GOL, si asta e o afirmatie, nu o omisiune. Prima intrare — `declarant_nume`/
+    # `declarant_functie` — a stat aici o singura tura: garda le-a gasit la prima ei rulare
+    # (obligatorii in harta, blocante in NICIUNA din cele opt), iar decizia lui Costin din
+    # 30.08.2026 a fost BLOCANT, dupa citirea sursei ANAF pe fiecare declaratie. Deci au iesit
+    # reparate, nu tolerate. Vezi R101.
 }
 _CAMPURI_EXCEPTATE = {c for grup in EXCEPTII for c in grup}
 

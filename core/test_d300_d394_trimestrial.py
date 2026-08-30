@@ -68,8 +68,8 @@ def conn_trim():
                 cur.execute("SET search_path TO %s, public" % _SCHEMA)
                 # platitor TVA TRIMESTRIAL
                 cur.execute("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,banca,iban,"
-                            "telefon,platitor_tva,tip_decont) VALUES (1,'TRIM SRL','14399840','Str 1','Buc',"
-                            "'B','4669','BCR','RO49RNCB0000000000000001','0700000000',true,'trimestrial')")
+                            "telefon,platitor_tva,tip_decont,declarant_nume,declarant_prenume,declarant_functie) VALUES (1,'TRIM SRL','14399840','Str 1','Buc',"
+                            "'B','4669','BCR','RO49RNCB0000000000000001','0700000000',true,'trimestrial','Popescu','Ion','ADMINISTRATOR')")
                 # achizitie in APRILIE (Q2, prima luna): 1000 net + 210 TVA @ 21% -> R22 deductibil
                 cur.execute("INSERT INTO facturi (numar,data_emitere,directie,tert_cui,tert_nume,tert_platitor_tva,"
                             "total,tva,taxare_inversa) VALUES ('A1','2026-04-10','primita','RO14399840','FURNIZOR',"
@@ -130,8 +130,8 @@ def conn_ti_furnizor():
                     open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA_TI))
                 cur.execute("SET search_path TO %s, public" % _SCHEMA_TI)
                 cur.execute("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,banca,iban,"
-                            "telefon,platitor_tva,tip_decont) VALUES (1,'FURNIZOR TI SRL','14399840','Str 1','Buc',"
-                            "'B','4120','BCR','RO49RNCB0000000000000001','0700000000',true,'lunar')")
+                            "telefon,platitor_tva,tip_decont,declarant_nume,declarant_prenume,declarant_functie) VALUES (1,'FURNIZOR TI SRL','14399840','Str 1','Buc',"
+                            "'B','4120','BCR','RO49RNCB0000000000000001','0700000000',true,'lunar','Popescu','Ion','ADMINISTRATOR')")
                 # livrare cu taxare inversa (art.331 lit.g cladiri): emisa, cota 0, taxare_inversa
                 cur.execute("INSERT INTO facturi (numar,data_emitere,directie,tert_cui,tert_nume,"
                             "total,tva,taxare_inversa,categorie_331) VALUES ('TI1','2026-06-10','emisa',"

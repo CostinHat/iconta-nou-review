@@ -528,8 +528,8 @@ def test_verifica_d390_dvsd_foloseste_perioada_depusa_nu_luna_curenta():
             cur.execute("DROP SCHEMA IF EXISTS ztest_ci_d390 CASCADE")
             cur.execute(_tp.parametrizeaza_template(
                 open("tenant_template.sql", encoding="utf-8").read(), "ztest_ci_d390"))
-            cur.execute("INSERT INTO ztest_ci_d390.firma_profil (id, nume, cui, platitor_tva, tip_decont) "
-                        "VALUES (1, 'PROBA CI', '14399840', true, 'L')")
+            cur.execute("INSERT INTO ztest_ci_d390.firma_profil (id, nume, cui, platitor_tva, tip_decont, declarant_nume, declarant_prenume, declarant_functie) "
+                        "VALUES (1, 'PROBA CI', '14399840', true, 'L', 'Popescu', 'Ion', 'ADMINISTRATOR')")
             tid = _tenant_fabricat(cur, "ztest_ci_d390")
             # fixtura-sintetica-ok: tenant_id sintetic (nu coliziune PK cu depunere reala)
             cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, nr_depunere) "
@@ -565,8 +565,8 @@ def test_verifica_d112_fara_salariati_e_absent_nu_verde():
             cur.execute("DROP SCHEMA IF EXISTS ztest_ci_d112 CASCADE")
             cur.execute(_tp.parametrizeaza_template(
                 open("tenant_template.sql", encoding="utf-8").read(), "ztest_ci_d112"))
-            cur.execute("INSERT INTO ztest_ci_d112.firma_profil (id, nume, cui, platitor_tva) "
-                        "VALUES (1, 'PROBA CI PFA', '14399840', false)")
+            cur.execute("INSERT INTO ztest_ci_d112.firma_profil (id, nume, cui, platitor_tva, declarant_nume, declarant_prenume, declarant_functie) "
+                        "VALUES (1, 'PROBA CI PFA', '14399840', false, 'Popescu', 'Ion', 'ADMINISTRATOR')")
             cur.execute("SET LOCAL search_path TO ztest_ci_d112, public")
             v = _verifica_d112(conn, "ztest_ci_d112", 2026, 7)   # fara salariati -> subiect inexistent
         assert v["constatari"] == []                      # absent, nu verde
@@ -583,8 +583,8 @@ def test_verifica_tva_neplatitor_e_absent_nu_verde():
             cur.execute("DROP SCHEMA IF EXISTS ztest_ci_tva CASCADE")
             cur.execute(_tp.parametrizeaza_template(
                 open("tenant_template.sql", encoding="utf-8").read(), "ztest_ci_tva"))
-            cur.execute("INSERT INTO ztest_ci_tva.firma_profil (id, nume, cui, platitor_tva) "
-                        "VALUES (1, 'PROBA CI', '14399840', false)")
+            cur.execute("INSERT INTO ztest_ci_tva.firma_profil (id, nume, cui, platitor_tva, declarant_nume, declarant_prenume, declarant_functie) "
+                        "VALUES (1, 'PROBA CI', '14399840', false, 'Popescu', 'Ion', 'ADMINISTRATOR')")
             v = _verifica_tva(conn, "ztest_ci_tva", 2026, 7)    # neplatitor TVA -> D300 fara subiect
         assert v["constatari"] == []                      # absent, NU verde "coincid" pe 0-vs-0
         assert "neplătitoare de TVA" in v["limita"]

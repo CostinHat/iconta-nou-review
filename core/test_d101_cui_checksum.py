@@ -6,7 +6,7 @@ gresit trece TACIT (lista goala) si-l prinde abia DUK la depunere. Dupa fix: mes
 from core import d101
 from core.identitate import valideaza_cui
 
-_PROF_OK = {"cui": "19", "nume": "ALFA SRL", "adresa": "Str. Test 1, Bucuresti", "caen": "6201"}
+_PROF_OK = {"declarant_nume": "Popescu", "declarant_prenume": "Ion", "declarant_functie": "ADMINISTRATOR", "cui": "19", "nume": "ALFA SRL", "adresa": "Str. Test 1, Bucuresti", "caen": "6201"}
 
 
 def test_cui_checksum_gresit_prins_pre_duk():

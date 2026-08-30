@@ -9,7 +9,7 @@ iar genereaza ridica ValueError INAINTE de orice XML."""
 from core import d100
 from core.identitate import valideaza_cui
 
-_BAZA = {"cui": "301111003", "nume": "ALFA MICRO SRL", "adresa": "Str. Test 1 Bucuresti"}
+_BAZA = {"declarant_nume": "Popescu", "declarant_prenume": "Ion", "declarant_functie": "ADMINISTRATOR", "cui": "301111003", "nume": "ALFA MICRO SRL", "adresa": "Str. Test 1 Bucuresti"}
 
 
 def _prof(cui):

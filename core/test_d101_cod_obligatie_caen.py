@@ -5,7 +5,7 @@
 import pytest
 from core import d101
 
-_PROF = {"cui": "19", "nume": "ALFA SRL", "adresa": "Str. Test 1", "caen": "6201"}
+_PROF = {"declarant_nume": "Popescu", "declarant_prenume": "Ion", "declarant_functie": "ADMINISTRATOR", "cui": "19", "nume": "ALFA SRL", "adresa": "Str. Test 1", "caen": "6201"}
 _BASE = {"P1": 200000, "P2": 100000, "P4": 0, "P5": 0}
 
 

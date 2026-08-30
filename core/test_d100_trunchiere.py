@@ -15,7 +15,7 @@ _LIM_ADR = _LIM["d100"]["adresa"]     # 1000
 def _res(nume, adresa):
     # profil COMPLET (cu declarant) ca res.avertismente sa contina DOAR eventualul avert de trunchiere,
     # nu si avertismentul de declarant lipsa (thread 3, 17.08.2026) - testul e despre trunchiere.
-    prof = {"cui": "301111003", "nume": nume, "adresa": adresa,
+    prof = {"declarant_prenume": "Ion", "cui": "301111003", "nume": nume, "adresa": adresa,
             "declarant_nume": "POPESCU", "declarant_functie": "ADMINISTRATOR"}
     # o obligatie micro simpla ca build_xml sa aiba ce emite
     return d100.calcul_d100(prof, 2026, 12, [{"cod_oblig": "121", "suma_dat": 100, "cota": "1"}])

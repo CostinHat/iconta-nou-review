@@ -8,7 +8,7 @@ import pytest
 from core import d301
 from core.common import Perioada
 
-PROF = {"nume": "PROBA SRL", "cui": "14399840", "banca": "BCR", "iban": "RO49AAAA1B31007593840000"}
+PROF = {"declarant_nume": "Popescu", "declarant_prenume": "Ion", "declarant_functie": "ADMINISTRATOR", "nume": "PROBA SRL", "cui": "14399840", "banca": "BCR", "iban": "RO49AAAA1B31007593840000"}
 
 
 def _op():

@@ -218,6 +218,8 @@ def erori_generare(prof):
         erori.append("LIPSĂ bancă (obligatorie la D301).")
     if not _clean_bc(prof.get("iban") or prof.get("cont")):
         erori.append("LIPSĂ cont (obligatoriu la D301).")
+    from core.firma_profil_api import erori_declarant as _ed   # [R101] sursa unica
+    erori += _ed(prof)
     return erori
 
 def _blocante_pre_duk(res):

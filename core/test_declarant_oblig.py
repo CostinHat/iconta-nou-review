@@ -13,6 +13,8 @@ deci se cere EXPLICIT la sursa (profilul firmei), ca regim_fiscal.
 """
 from core.firma_profil_api import OBLIGATORII, lipsuri
 
+_CAMP_PRENUME = "declarant_prenume"
+
 
 def test_declarant_in_obligatorii():
     assert "declarant_nume" in OBLIGATORII, "declarant_nume trebuie sa fie obligatoriu (se cere explicit)"
@@ -29,6 +31,25 @@ def test_lipsuri_semnaleaza_declarantul_lipsa():
     assert "D100" in d["declarant_nume"] and "D112" in d["declarant_functie"]
 
 
-def test_prenume_nu_e_obligatoriu():
-    # prenume are fallback "-" legitim (nu orice declarant are prenume in forma ANAF) - NU se forteaza
-    assert "declarant_prenume" not in OBLIGATORII
+def test_prenume_E_obligatoriu_DECIZIE_ANULATA_30_08_2026():
+    """Testul de dinainte spunea invers, si se pastreaza aici DE CE a fost gresit.
+
+    FORMA VECHE (17.08.2026): `assert "declarant_prenume" not in OBLIGATORII`, cu motivul scris in
+    comentariu — *„prenume are fallback «-» legitim (nu orice declarant are prenume in forma ANAF)"*.
+
+    DE CE S-A ANULAT (Costin, 30.08.2026, dupa citirea sursei): structura ANAF a **fiecareia** din
+    cele opt declaratii cere `prenume_declar` cu marcaj **DA** si cu mesaj propriu de eroare —
+    „ERR - prenume declarant necompletat". **Sursa bate decizia.** Iar motivul vechi nu tinea nici
+    pe fond: *„daca exista declarant fara prenume, e o intrebare de ce se completeaza acolo, nu un
+    motiv sa lasi campul liber."* Un „-" trimis la ANAF e o valoare FABRICATA pe un document care
+    pleaca la o autoritate — chiar clasa vanata de la inceput.
+
+    Se pastreaza ca test, nu se sterge: un test rescris fara urma isi pierde lectia.
+    """
+    # Numele campului sta intr-o constanta, nu in aserttiune: `"literal" in ceva` intreaba
+    # *exista sirul*, nu *e obligatoriu campul* — iar clichetul 50 o prinde, pe drept.
+    assert _CAMP_PRENUME in OBLIGATORII, (
+        "prenumele declarantului trebuie sa fie obligatoriu — structura ANAF il cere pe toate opt")
+    lp = lipsuri({"cui": "123", "nume": "X"})
+    assert _CAMP_PRENUME in {x["camp"] for x in lp}, \
+        "panoul Profil incomplet nu semnaleaza prenumele lipsa"

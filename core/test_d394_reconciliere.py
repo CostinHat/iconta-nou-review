@@ -66,8 +66,8 @@ def conn_recon():
                     open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA))
                 cur.execute("SET search_path TO %s, public" % _SCHEMA)
                 cur.execute("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,banca,iban,"
-                            "telefon,platitor_tva,tip_decont) VALUES (1,'PROBA SRL','14399840','Str 1','Buc',"
-                            "'B','6202','BCR','RO49RNCB0000000000000001','0700000000',true,'L')")
+                            "telefon,platitor_tva,tip_decont,declarant_nume,declarant_prenume,declarant_functie) VALUES (1,'PROBA SRL','14399840','Str 1','Buc',"
+                            "'B','6202','BCR','RO49RNCB0000000000000001','0700000000',true,'L','Popescu','Ion','ADMINISTRATOR')")
                 # F1 emisa 1000 @ 21% (livrare)
                 cur.execute("INSERT INTO facturi (numar,data_emitere,directie,tert_cui,tert_nume,total,tva,"
                             "taxare_inversa) VALUES ('F1','2026-06-05','emisa','RO14399840','CLIENT',1210,210,false) RETURNING id")

@@ -56,8 +56,8 @@ def conn_recon():
                 cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % _SCHEMA)
                 cur.execute(_tp.parametrizeaza_template(open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA))
                 cur.execute("SET search_path TO %s, public" % _SCHEMA)
-                cur.execute("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,platitor_tva,tip_decont,regim_fiscal) "
-                            "VALUES (1,'TEST SRL','14399840','Str 1','Buc','B','6920',true,'L','real')")
+                cur.execute("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,platitor_tva,tip_decont,regim_fiscal,declarant_nume,declarant_prenume,declarant_functie) "
+                            "VALUES (1,'TEST SRL','14399840','Str 1','Buc','B','6920',true,'L','real','Popescu','Ion','ADMINISTRATOR')")
                 _nota(cur, '2026-03-05', '4111', '707', 1000)   # ven exploatare
                 _nota(cur, '2026-04-10', '607', '401', 400)     # chelt exploatare
                 _nota(cur, '2026-05-12', '5121', '766', 50)     # ven financiar

@@ -25,7 +25,7 @@ def calcul_d394(prof, an, luna, facturi, manual=None, serii_emise=None):
                              {"operatiuni": manual} if manual is not None else None)
 
 
-PROF = {"cui": "26766053", "caen": "6920", "nume": "TEST SRL", "adresa": "Str. 1",
+PROF = {"declarant_nume": "Popescu", "declarant_prenume": "Ion", "cui": "26766053", "caen": "6920", "nume": "TEST SRL", "adresa": "Str. 1",
         "telefon": "0722000000", "judet": "B", "declarant_functie": "ADMIN",
         "tip_decont": "L"}  # [fix trim 06.08.2026] vector fiscal (perioada TVA) obligatoriu
 

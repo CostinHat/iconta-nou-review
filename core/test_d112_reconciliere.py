@@ -95,8 +95,8 @@ def conn_recon():
                 cur.execute(_tp.parametrizeaza_template(
                     open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA))
                 cur.execute("SET search_path TO %s, public" % _SCHEMA)
-                cur.execute("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,platitor_tva,tip_decont) "
-                            "VALUES (1,'PROBA SRL','14399840','Str 1','Buc','B','6202',true,'L')")
+                cur.execute("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,platitor_tva,tip_decont,declarant_nume,declarant_prenume,declarant_functie) "
+                            "VALUES (1,'PROBA SRL','14399840','Str 1','Buc','B','6202',true,'L','Popescu','Ion','ADMINISTRATOR')")
                 # 2 salariati SIMPLI (brut 6000 si 8000, peste minimul 2026 de 4050, luna intreaga)
                 cur.execute("INSERT INTO salariati (id,nume,prenume,cnp,data_angajare,salariu_brut,ore_zi,part_time) "
                             "OVERRIDING SYSTEM VALUE VALUES (1,'SIMPLU','A','1900101410011','2025-01-01',6000,8,false)")

@@ -49,7 +49,7 @@ def test_profil_incomplet_opreste_generarea(mod):
     """Fara banca/cont, generarea trebuie sa se opreasca cu mesaj CITIBIL."""
     import importlib
     m = importlib.import_module("core.%s" % mod)
-    prof = {"cui": "14399840", "nume": "PROBA SRL", "caen": "6202", "banca": "", "iban": ""}
+    prof = {"declarant_nume": "Popescu", "declarant_prenume": "Ion", "declarant_functie": "ADMINISTRATOR", "cui": "14399840", "nume": "PROBA SRL", "caen": "6202", "banca": "", "iban": ""}
     e = m.erori_generare(prof)
     assert e, "%s: profil fara banca/cont trebuie sa dea erori" % mod
     text = " ".join(e).lower()
@@ -60,7 +60,7 @@ def test_profil_incomplet_opreste_generarea(mod):
 def test_profil_complet_trece(mod):
     import importlib
     m = importlib.import_module("core.%s" % mod)
-    prof = {"cui": "14399840", "nume": "PROBA SRL", "caen": "6202",
+    prof = {"declarant_nume": "Popescu", "declarant_prenume": "Ion", "declarant_functie": "ADMINISTRATOR", "cui": "14399840", "nume": "PROBA SRL", "caen": "6202",
             "banca": "ING Bank", "iban": "RO63INGB0000999910907330"}
     assert m.erori_generare(prof) == [], "%s: profil complet nu trebuie sa dea erori" % mod
 

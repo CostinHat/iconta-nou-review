@@ -56,8 +56,8 @@ def _venit(cur, data, suma, cont_credit="707"):
 
 
 def _profil(cur, regim):
-    cur.execute("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,platitor_tva,tip_decont,regim_fiscal) "
-                "VALUES (1,'TEST SRL','14399840','Str 1','Buc','B','6920',true,'L',%s)", (regim,))
+    cur.execute("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,platitor_tva,tip_decont,regim_fiscal,declarant_nume,declarant_prenume,declarant_functie) "
+                "VALUES (1,'TEST SRL','14399840','Str 1','Buc','B','6920',true,'L',%s,'Popescu','Ion','ADMINISTRATOR')", (regim,))
 
 
 @pytest.fixture

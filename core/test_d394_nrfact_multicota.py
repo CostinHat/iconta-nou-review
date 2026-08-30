@@ -23,7 +23,7 @@ from core.d394 import calcul_d394, build_xml
 
 
 def _prof(**kw):
-    p = {"cui": "14399840", "nume": "PROBA SRL", "caen": "4711", "tip_decont": "L",
+    p = {"declarant_nume": "Popescu", "declarant_prenume": "Ion", "cui": "14399840", "nume": "PROBA SRL", "caen": "4711", "tip_decont": "L",
          "adresa": "Str 1", "judet": "B", "reprezentant_nume": "POPESCU ION",
          "reprezentant_functie": "ADMINISTRATOR", "declarant_functie": "CONTABIL"}
     p.update(kw)
@@ -117,8 +117,8 @@ def _schema(cur, facturi_sql):
         open("tenant_template.sql", encoding="utf-8").read(), _SCHEMA))
     cur.execute("SET search_path TO %s, public" % _SCHEMA)
     cur.execute("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,banca,iban,telefon,"
-                "platitor_tva,tip_decont) VALUES (1,'PROBA SRL','14399840','Str 1','Buc','B','4711','BCR',"
-                "'RO49RNCB0000000000000001','0700000000',true,'L')")
+                "platitor_tva,tip_decont,declarant_nume,declarant_prenume,declarant_functie) VALUES (1,'PROBA SRL','14399840','Str 1','Buc','B','4711','BCR',"
+                "'RO49RNCB0000000000000001','0700000000',true,'L','Popescu','Ion','ADMINISTRATOR')")
     for s in facturi_sql:
         cur.execute(s)
 

@@ -40,8 +40,8 @@ def schema():
                 cur.execute("SET search_path TO %s, public" % SCHEMA_T)
                 cur.execute(
                     "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, "
-                    "platitor_tva, tip_decont) VALUES "
-                    "(1, 'PROBA SRL', '14399840', 'Str. Test 1', 'Bucuresti', 'B', '6202', true, 'L') "
+                    "platitor_tva, tip_decont,declarant_nume,declarant_prenume,declarant_functie) VALUES "
+                    "(1, 'PROBA SRL', '14399840', 'Str. Test 1', 'Bucuresti', 'B', '6202', true, 'L','Popescu','Ion','ADMINISTRATOR') "
                     "ON CONFLICT (id) DO UPDATE SET nume=EXCLUDED.nume, cui=EXCLUDED.cui")
             yield conn
         finally:

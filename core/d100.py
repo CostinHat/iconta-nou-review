@@ -209,6 +209,8 @@ def erori_generare(prof):
         erori.append("LIPSĂ denumire firmă (obligatorie).")
     if not (prof.get("adresa") or "").strip():
         erori.append("LIPSĂ adresă domiciliu fiscal (obligatorie).")
+    from core.firma_profil_api import erori_declarant as _ed   # [R101] sursa unica
+    erori += _ed(prof)
     return erori
 
 

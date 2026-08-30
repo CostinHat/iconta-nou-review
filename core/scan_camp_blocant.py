@@ -38,6 +38,14 @@ RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 MODULE = ("d100", "d101", "d112", "d205", "d300", "d301", "d390", "d394", "d406")
 
 
+# Ajutoare de validare care traiesc in ALT modul si sunt chemate din functiile blocante. Se declara
+# aici, pe nume, nu se urmaresc toate apelurile: o sonda care intra oriunde ar deveni un interpretor.
+# [R101, 30.08.2026] `erori_declarant` a aparut fiindca cele trei campuri ale declarantului sunt
+# cerute de structura ANAF a TUTUROR celor opt declaratii — deci verificarea are un singur loc, iar
+# sonda trebuie sa stie sa ajunga la el. Fara asta ar fi raportat „nu opreste", desi opreste.
+AJUTOARE = {"erori_declarant": "firma_profil_api"}
+
+
 def _fisier(mod):
     return os.path.join(RAD, "core", "%s.py" % mod)
 
@@ -70,6 +78,16 @@ def _apeluri(nod):
     return out
 
 
+def _campuri_ajutor(nume_ajutor):
+    """Campurile de profil verificate de un ajutor declarat, citite in modulul lui."""
+    cale = os.path.join(RAD, "core", "%s.py" % AJUTOARE[nume_ajutor])
+    if not os.path.exists(cale):
+        return set()
+    arb = ast.parse(io.open(cale, encoding="utf-8").read(), filename=cale)
+    fn = next((n for n in arb.body if isinstance(n, ast.FunctionDef) and n.name == nume_ajutor), None)
+    return _campuri_profil(fn) if fn is not None else set()
+
+
 def _functii(arb):
     return {n.name: n for n in arb.body if isinstance(n, ast.FunctionDef)}
 
@@ -86,34 +104,64 @@ def analizeaza(mod):
         return None
 
     blocante, avert = set(), set()
-    # (a) `x = f(...)` apoi `if x: raise`  ·  (b) `if f(...): raise`
-    atribuiri = {}
-    for n in ast.walk(gen):
-        if isinstance(n, ast.Assign) and isinstance(n.value, ast.Call):
-            nume = getattr(n.value.func, "id", None)
-            for t in n.targets:
-                if isinstance(t, ast.Name) and nume:
-                    atribuiri[t.id] = nume
-    for n in ast.walk(gen):
-        if not isinstance(n, ast.If):
-            continue
-        are_raise = any(isinstance(x, ast.Raise) for x in ast.walk(n))
-        if not are_raise:
-            continue
-        # ce e in test
-        if isinstance(n.test, ast.Name) and n.test.id in atribuiri:
-            blocante.add(atribuiri[n.test.id])
-        blocante |= {c for c in _apeluri(n.test) if c in fn}
-    # `for e in f(...): ... avertismente...`
-    for n in ast.walk(gen):
-        if isinstance(n, ast.For) and isinstance(n.iter, ast.Call):
-            nume = getattr(n.iter.func, "id", None)
-            if nume in fn and any("avertismente" in ast.dump(x) for x in n.body):
-                avert.add(nume)
+
+    def _porti(corp):
+        """Functiile al caror rezultat e RIDICAT in `corp`: `x = f(...)` + `if x: raise`, sau
+        `if f(...): raise`."""
+        gasite, atribuiri = set(), {}
+        for n in ast.walk(corp):
+            if isinstance(n, ast.Assign) and isinstance(n.value, ast.Call):
+                nume_f = getattr(n.value.func, "id", None)
+                for tinta in n.targets:
+                    if isinstance(tinta, ast.Name) and nume_f:
+                        atribuiri[tinta.id] = nume_f
+        for n in ast.walk(corp):
+            if not isinstance(n, ast.If):
+                continue
+            if not any(isinstance(x, ast.Raise) for x in ast.walk(n)):
+                continue
+            if isinstance(n.test, ast.Name) and atribuiri.get(n.test.id) in fn:
+                gasite.add(atribuiri[n.test.id])
+            gasite |= {c for c in _apeluri(n.test) if c in fn}
+        return gasite
+
+    # RAZA: `genereaza`, plus functiile LOCALE pe care le cheama (doua niveluri). Fara asta, o
+    # poarta ridicata intr-un ajutor — `calculeaza` la D390 — ar aparea ca inexistenta, iar garda ar
+    # raporta „nu opreste" despre un cod care opreste. Masurat: exact cazul D390, 30.08.2026.
+    vazute, coada = set(), ["genereaza"]
+    for _adancime in range(3):
+        urmatoare = []
+        for nume_f in coada:
+            if nume_f in vazute or nume_f not in fn:
+                continue
+            vazute.add(nume_f)
+            blocante |= _porti(fn[nume_f])
+            urmatoare += [c for c in _apeluri(fn[nume_f]) if c in fn and c not in vazute]
+        coada = urmatoare
+
+    # `for e in f(...): ... avertismente...` — cautat pe aceeasi raza
+    for nume_f in vazute:
+        for n in ast.walk(fn[nume_f]):
+            if isinstance(n, ast.For) and isinstance(n.iter, ast.Call):
+                nume_i = getattr(n.iter.func, "id", None)
+                if nume_i in fn and any("avertismente" in ast.dump(x) for x in n.body):
+                    avert.add(nume_i)
+
+    # aliasurile sub care sunt importate ajutoarele declarate: `import erori_declarant as _ed`
+    alias = {}
+    for n in ast.walk(arb):
+        if isinstance(n, ast.ImportFrom):
+            for a in n.names:
+                if a.name in AJUTOARE:
+                    alias[a.asname or a.name] = a.name
 
     camp_bloc, camp_avert = set(), set()
     for nume in blocante:
         camp_bloc |= _campuri_profil(fn[nume])
+        # ajutorul declarat, chemat din functia blocanta: campurile LUI opresc si ele
+        for chemat in _apeluri(fn[nume]):
+            if chemat in alias:
+                camp_bloc |= _campuri_ajutor(alias[chemat])
     for nume in avert:
         camp_avert |= _campuri_profil(fn[nume])
     return {"blocante": sorted(blocante), "avertisment": sorted(avert),

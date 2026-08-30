@@ -34,8 +34,8 @@ def conn_par():
                     open("tenant_template.sql", encoding="utf-8").read(), SCHEMA_T))
                 cur.execute("SET search_path TO %s, public" % SCHEMA_T)
                 cur.execute("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,banca,iban,"
-                            "telefon,platitor_tva,tip_decont) VALUES (1,'PROBA SRL','14399840','Str 1','Buc',"
-                            "'B','6202','BCR','RO49RNCB0000000000000001','0700000000',true,'L')")
+                            "telefon,platitor_tva,tip_decont,declarant_nume,declarant_prenume,declarant_functie) VALUES (1,'PROBA SRL','14399840','Str 1','Buc',"
+                            "'B','6202','BCR','RO49RNCB0000000000000001','0700000000',true,'L','Popescu','Ion','ADMINISTRATOR')")
             yield conn
         finally:
             conn.rollback()

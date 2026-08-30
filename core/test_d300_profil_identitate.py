@@ -11,7 +11,7 @@ import pytest
 from core import d300
 from core.common import Perioada
 
-BAZA = {"cui": "14399840", "nume": "PROBA SRL", "caen": "6202",
+BAZA = {"declarant_nume": "Popescu", "declarant_prenume": "Ion", "declarant_functie": "ADMINISTRATOR", "cui": "14399840", "nume": "PROBA SRL", "caen": "6202",
         "banca": "ING Bank", "iban": "RO49AAAA1B31007593840000"}
 
 

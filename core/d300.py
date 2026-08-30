@@ -732,6 +732,8 @@ def erori_generare(prof):
         else:
             if not (0.0 <= _prv <= 100.0):
                 erori.append("pro_rata în afară intervalului [0,100]: %s (structura ANAF pro_rata N(7.2))." % _prv)
+    from core.firma_profil_api import erori_declarant as _ed   # [R101] sursa unica
+    erori += _ed(prof)
     return erori
 
 def _blocante_pre_duk(res):

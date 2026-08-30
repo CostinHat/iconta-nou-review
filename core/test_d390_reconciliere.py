@@ -75,9 +75,9 @@ def conn_recon():
                 cur.execute("SET search_path TO %s, public" % _SCHEMA)
                 cur.execute(
                     "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, "
-                    "regim_fiscal, platitor_tva, tip_decont, tva_la_incasare) "
+                    "regim_fiscal, platitor_tva, tip_decont, tva_la_incasare,declarant_nume,declarant_prenume,declarant_functie) "
                     "VALUES (1,'RECON390 SRL','14399840','Str Test 1','Bucuresti','B','4711','BCR',"
-                    "'RO49AAAA1B31007593840000','real',true,'L',false)")
+                    "'RO49AAAA1B31007593840000','real',true,'L',false,'Popescu','Ion','ADMINISTRATOR')")
                 # F1 emisa DE, IC livrare (reverse charge -> tva 0), baza 2000 -> L
                 cur.execute("INSERT INTO facturi (numar, data_emitere, total, tva, directie, tert_nume, tert_cui) "
                             "VALUES ('F1','2026-08-05',2000,0,'emisa','ALPHA GMBH','DE136695976') RETURNING id")

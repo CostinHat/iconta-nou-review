@@ -47,8 +47,8 @@ def conn_forfait():
                 cur.execute("SET search_path TO %s, public" % _SCHEMA)
                 # cumparator P1: platitor TVA, lunar
                 cur.execute("INSERT INTO firma_profil (id,nume,cui,adresa,oras,judet,caen,banca,iban,"
-                            "telefon,platitor_tva,tip_decont) VALUES (1,'P1 PROFIT SRL','95275466','Str 1','Buc',"
-                            "'B','4669','BCR','RO49RNCB0000000000000001','0700000000',true,'lunar')")
+                            "telefon,platitor_tva,tip_decont,declarant_nume,declarant_prenume,declarant_functie) VALUES (1,'P1 PROFIT SRL','95275466','Str 1','Buc',"
+                            "'B','4669','BCR','RO49RNCB0000000000000001','0700000000',true,'lunar','Popescu','Ion','ADMINISTRATOR')")
                 # achizitie de la agricultor forfetar: baza 25000, cota linie 0, ANTET tva 2000 (forfait 8%)
                 cur.execute("INSERT INTO facturi (numar,data_emitere,directie,tert_cui,tert_nume,tert_platitor_tva,"
                             "total,tva,taxare_inversa) VALUES ('AGR1','2026-06-12','primita','95873249','S3 AGRICULTOR',"

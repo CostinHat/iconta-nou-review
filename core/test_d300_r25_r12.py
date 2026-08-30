@@ -24,7 +24,7 @@ from core.d300 import calcul_d300, _oglinda_r12_r25
 
 
 def _prof():
-    return {"cui": "14399840", "nume": "PROBA SRL", "banca": "BCR",
+    return {"declarant_functie": "ADMINISTRATOR", "cui": "14399840", "nume": "PROBA SRL", "banca": "BCR",
             "iban": "RO49AAAA1B31007593840000", "cont": "RO49AAAA1B31007593840000",
             "caen": "4711", "tip_decont": "L", "pro_rata": 100,
             "declarant_nume": "POPESCU", "declarant_prenume": "ION"}

@@ -14,7 +14,7 @@ from core.d390 import calcul_d390, valideaza, build_xml, checksum_vies
 
 
 def _prof(**kw):
-    p = {"cui": "14399840", "nume": "DANTE INTERNATIONAL SA",
+    p = {"declarant_nume": "Popescu", "declarant_prenume": "Ion", "declarant_functie": "ADMINISTRATOR", "cui": "14399840", "nume": "DANTE INTERNATIONAL SA",
          "adresa": "Bd. Timisoara 26Z", "telefon": "0212345678"}
     p.update(kw)
     return p

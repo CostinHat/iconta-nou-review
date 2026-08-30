@@ -164,16 +164,65 @@ OBLIGATORII = {
     "nume": ("D100", "D101", "D205", "D301", "D390", "D394", "D406"),
     "cui": ("D100", "D101", "D205", "D300", "D301", "D390", "D394", "D406"),
     "caen": ("D101", "D300", "D394"),
-    "adresa": ("D100", "D205", "D394"),
+    "adresa": ("D100", "D101", "D205", "D394"),   # D101: structura ANAF „28. adresa Adresa C(1000) DA" — citit 30.08.2026; codul o oprea deja, harta n-o spunea
     "banca": ("D300", "D301"),
     "iban": ("D300", "D301"),
     "telefon": ("D394",),
     "reg_com": ("Bilant S1005",),
     # [declarant_oblig 17.08.2026] nume+functia declarantului: DUK respinge campul gol al declarantului
     # (nume_declar/functie_declar) -> se cer EXPLICIT (ca regim_fiscal), nu se fabrica "ADMINISTRATOR" tacit.
+    # [R101, 30.08.2026] `declarant_prenume` — structura ANAF a fiecareia din cele opt il cere
+    # explicit, cu mesaj propriu de eroare: „prenume_declar Prenume declarant C(75) DA ...
+    # ERR - prenume declarant necompletat". A stat AFARA pana azi printr-o decizie din
+    # 17.08.2026 care spunea ca „nu orice declarant are prenume in forma ANAF"; decizia s-a
+    # ANULAT pe 30.08.2026, cu motivul: daca exista un declarant fara prenume, intrebarea e ce
+    # se completeaza acolo, nu un motiv sa lasi campul liber. SURSA BATE DECIZIA.
+    "declarant_prenume": ("D100", "D101", "D112", "D205", "D300", "D301", "D390", "D394"),
     "declarant_nume": ("D100", "D101", "D112", "D205", "D300", "D301", "D390", "D394", "Bilant"),
     "declarant_functie": ("D100", "D101", "D112", "D205", "D300", "D301", "D390", "D394", "Bilant"),
 }
+
+
+def erori_declarant(prof):
+    """Cele TREI campuri ale declarantului, cerute de structura ANAF a fiecareia din cele opt.
+
+    [R101, 30.08.2026] DE CE E BLOCANT, si de ce s-a citit sursa inainte de a decide. La R93 harta
+    avea dreptate si codul gresea; aici putea fi invers, deci nu s-a presupus. Citit verbatim din
+    corpus (`anaf_surse/dXXX_struct_anaf.txt`), toate cu marcajul DA si cu mesaj propriu de eroare:
+
+        D100  „3 nume_declar Nume declarant C(75) DA  ERR - Nume declarant"
+        D101  „21. nume_declar Nume declarant C(75) DA  ERR - nume declarant necompletat"
+        D112  „3b nume_declar Nume declarant C(75) DA  ERR nume_declar necompletat"
+        D205  „5. nume_declar Nume declarant C(75) DA  ERR - nume declarant"
+        D300  „6. nume_declar Nume declarant C(75) DA  ERR - nume declarant"
+        D301  „29. nume_declarant Nume Declarant C(75) DA  ERR- camp necompletat"
+        D390  „4 nume_declar Nume declarant C(75) DA  ERR - nume declarant"
+        D394  „7. nume_declar Nume declarant C(75) DA  ERR - nume declarant necompletat"
+
+    — si la fel `prenume_declar` si `functie_declar`. Deci harta avea dreptate pe toate opt, iar
+    codul fabrica: „ADMINISTRATOR" pentru nume si functie, „-" pentru prenume.
+
+    CE INLOCUIESTE: un avertisment. Declaratia pleca la ANAF in numele cuiva care n-a declarat, iar
+    XML-ul arata identic cu unul corect. Decizia lui Costin, 30.08.2026: *„Fabricarea unei valori
+    implicite pe un document care pleaca la ANAF e defectul pe care il vanam de la inceput. Ca cele
+    7 firme nu mai pot depune e adevarul devenit vizibil, nu un cost."*
+    """
+    # Cele trei se scriu EXPLICIT, cu numele lor, nu printr-o buclă peste un tuplu: sonda care
+    # confruntă harta cu ce oprește codul (`core/scan_camp_blocant.py`) citește `prof.get("X")` cu
+    # X literal, iar o buclă i-ar ascunde exact câmpurile pe care garda trebuie să le vadă.
+    # *Măsurat: prima formă, cu buclă, făcea sonda să raporteze „nu oprește" despre un cod care
+    # oprea — adică fix clasa pe care garda o păzește, produsă de reparația ei.*
+    _MESAJ = ("LIPSĂ %s (obligatoriu la ANAF: structura declarației îl cere, cu mesaj propriu de "
+              "eroare). Completează declarantul în Date firmă.")
+    prof = prof or {}
+    erori = []
+    if not str(prof.get("declarant_nume") or "").strip():
+        erori.append(_MESAJ % "numele declarantului")
+    if not str(prof.get("declarant_prenume") or "").strip():
+        erori.append(_MESAJ % "prenumele declarantului")
+    if not str(prof.get("declarant_functie") or "").strip():
+        erori.append(_MESAJ % "funcția declarantului")
+    return erori
 
 
 def lipsuri(profil):

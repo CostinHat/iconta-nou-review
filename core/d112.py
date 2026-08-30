@@ -851,6 +851,8 @@ def erori_generare(prof):
         erori.append("LIPSĂ CUI firmă.")
     if not str(prof.get("nume") or "").strip():
         erori.append("LIPSĂ denumire firmă.")
+    from core.firma_profil_api import erori_declarant as _ed   # [R101] sursa unica
+    erori += _ed(prof)
     return erori
 
 

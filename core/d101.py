@@ -370,6 +370,8 @@ def erori_generare(prof):
         # N(4): forma. Apartenenta la nomenclatorul CAEN complet NU e verificabila offline
         # (lista de valori nu exista in codebase - vezi raport TURA 3); DUK ramane plasa finala.
         erori.append("D101: cod CAEN invalid (%s): trebuie exact 4 cifre — N(4) (DUK regula caen N(4)). Corectează în Profil firmă." % _caen)
+    from core.firma_profil_api import erori_declarant as _ed   # [R101] sursa unica
+    erori += _ed(prof)
     return erori
 
 

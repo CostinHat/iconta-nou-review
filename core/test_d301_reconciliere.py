@@ -80,9 +80,9 @@ def conn_recon():
                 cur.execute("SET search_path TO %s, public" % _SCHEMA)
                 cur.execute(
                     "INSERT INTO firma_profil (id, nume, cui, adresa, oras, judet, caen, banca, iban, "
-                    "regim_fiscal, platitor_tva, tip_decont, tva_la_incasare) "
+                    "regim_fiscal, platitor_tva, tip_decont, tva_la_incasare,declarant_nume,declarant_prenume,declarant_functie) "
                     "VALUES (1,'RECON D301 SRL','14399840','Str Test 1','Bucuresti','B','4711','BCR',"
-                    "'RO49AAAA1B31007593840000','real',false,'L',false)")
+                    "'RO49AAAA1B31007593840000','real',false,'L',false,'Popescu','Ion','ADMINISTRATOR')")
                 # luna 8 BASELINE (reconciliaza): valuta EUR, curs stocat folosit de ambele cai
                 cur.execute("INSERT INTO d301_operatiuni (an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, tva) "
                             "VALUES (2026,8,1,'AIC-1','2026-08-05',1000,'EUR',4.97,200)")   # baza=4970
