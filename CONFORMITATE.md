@@ -40,7 +40,7 @@ face doar imposibilă acumularea unei narațiuni care să îmbătrânească. *(D
 după a doua oară: „e gardul care nu citește proză și totuși o disciplinează".)*
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **lista 5 — 11 din 12 poziții REPARATE** (30.08.2026). Rămâne **D112**, cu motivul scris și verificat de gardă — **R105**. Urmează **lista 3**. *(Cifrele se derivă.)*
+- **pasul curent**: **lista 5 COMPLETĂ** (12 din 12) · **lista 3: 5 deschise din 8** — două reparate, una scoasă ca falsă (30.08.2026). *(Cifrele se derivă.)*
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are **pași** — 1a, 1b, 1c și 1d sunt făcute —, dar **criteriul ei de terminare NU e îndeplinit**: **lista 3** e plină (8 artefacte), iar **lista 5** mai are o poziție, D112 (**R105**). Lista 4 e goală din 30.08. Mărimea listei 5 **se știe** din 30.08 — clasa R97 e măsurată, iar reparația a golit-o pe toată în afară de D112; propoziția de dinainte, *„nu se poate ști până nu se măsoară R97"*, era adevărată azi-dimineață și e falsă de la prânz. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna.** *(Stocul istoric nu mai blochează: s-a executat pe 29.08, după ce Costin a spus că nu există clienți reali — starea restanței se citește din registru, nu de aici.)* *(Ultima — ce face aplicația cu o factură EMISĂ care intră prin import — a primit răspuns pe 29.08.2026, varianta (iii), și e construită; starea restanței se citește din registru, nu de aici.)* *(A doua decizie care bloca — TVA la încasare pe factura primită — a primit răspuns pe 29.08.2026, varianta (ii), și e construită; restanța ei e închisă, iar starea se citește din registru, nu de aici.)*
@@ -2254,11 +2254,49 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
 
 - **felul**: ARTEFACT
 - **cine deblochează**: INTERN
-- **unde intră**: E1 · faza 1 · verdictul 1d, **lista 5** — singura poziție rămasă din cele 12 · **PRAG 2**
+- **unde intră**: E1 · faza 1 · verdictul 1d, **lista 5** — ultima poziție din cele 12 · **PRAG 2**
 - **reluări**: 0
-- **stare**: **DESCHISĂ**
+- **stare**: **REZOLVATĂ**
 - **deschisă pe commit**: `4b6d664`
-- **măsurat la**: 2026-08-30 · **pe commit**: `4b6d664`
+- **rezolvată pe commit**: `2421fd9`
+- **cât a stat deschisă**: câteva ore — *deschisă și închisă în aceeași zi, fiindcă decizia a venit în aceeași zi.*
+- **măsurat la**: 2026-08-30 · **pe commit**: `2421fd9`
+- **CUM S-A REZOLVAT, și ce s-a anulat ca s-o poată face:** `_d112_genereaza` întoarce acum
+  `(xml, RezultatD112)` în loc de `(xml, avertismente)`. Rezultatul poartă **două feluri de poziții**,
+  fiindcă atâtea are declarația: **obligațiile angajatorului** (rândurile `angajatorA`) și
+  **contribuțiile fiecărui asigurat**. Amândouă se strâng **în chiar locul în care se scrie XML-ul**,
+  din aceleași variabile, cu aceeași rotunjire (`int()` face ce face și `%d` din format) — deci
+  componenta **nu poate diverge de declarație** printr-un al doilea calcul.
+- **DECIZIA ANULATĂ, cu locul ei:** `coada_api.randuri_din_res` scria, din **22.07.2026**, că
+  refactorizarea *„e o decizie de arhitectură pe modulul validat DUK (F181), NU se face aici"*.
+  Amânarea era **corectă** — avea condiție și avea loc. Costin a dat decizia pe 30.08: *„R105:
+  motorul se schimbă."* Textul vechi nu s-a șters: s-a rescris, cu ce rămâne adevărat din el.
+- **CONFRUNTAREA care face componentele verificabile, și e gardată:** suma impozitului asiguraților
+  trebuie să fie **exact** obligația `602`, suma CAS exact `412`, suma CASS exact `432`. *Asta e
+  diferența dintre „ruta trimite niște rânduri" și „cifra își arată componentele".* Probat pe date
+  reale la scriere — `tenant_005` **267 = 267**, `tenant_013` **204 = 204** — și ținut închis pe
+  intrări construite, cu calibrare inversă: un asigurat inventat trebuie să **rupă** egalitatea.
+- **DOUĂ EFECTE care nu erau evidente și se scriu:**
+  1. `main.py` citea `getattr(res, "avertismente", None)` — pe o **listă**, asta dă `None`. Deci
+     avertismentele D112 se calculau și **se aruncau**, de la început. De acum ajung la contabil.
+     *Nu s-a căutat: a ieșit din schimbarea de tip.*
+  2. `randuri_din_res` întoarce `None` pe ce nu e dataclass. De acum **D112 își persistă rândurile**
+     în `public.declaratii_depuse.randuri`, ca celelalte. Depunerile de dinainte rămân cu `NULL` —
+     nu se completează retroactiv, fiindcă n-ar fi ce s-a depus, ci ce s-ar depune azi.
+- **CE NU S-A PUS ÎN COMPONENTE, ca alegere scrisă:** **CNP-ul**. Componentele răspund la *„din ce e
+  făcută cifra"*, iar CNP-ul nu compune nicio sumă — și, fiindcă obiectul se **persistă**, ce intră
+  acolo se și păstrează. **Limita declarată:** cine caută asiguratul după CNP nu-l găsește în
+  componente; îl găsește în statul de plată, unde îi e locul. Gardat.
+- **CE RĂMÂNE `None` DELIBERAT, cu temei:** `numar_operatiuni("d112")`. Acum s-ar putea număra — nu se
+  numără, fiindcă ecranul pune o poartă la `operatiuni === 0` (*„declarația nu conține nicio
+  operațiune"*), iar la D112 **zero asigurați nu înseamnă declarație goală**: angajatorul poate datora
+  la buget și fără niciun salariat în lună. Măsurat azi: **14 firme din 19** generează D112, iar pe
+  primele două toate cele șase obligații sunt `0` cu zero asigurați. **Limita declarată:** pentru
+  D112, ecranul arată componentele fără contor.
+- **CE AU FĂCUT GĂRZILE:** cele trei care încuiau absența lui D112 au **picat**, corect, și s-au
+  **rescris, nu șters**. Una dintre ele proba *„absența motivată nu arată ca o declarație goală"* pe
+  `d112` — singura intrare reală; când ea a ieșit, proba a rămas fără obiect. Mutată pe caz sintetic:
+  **aceeași lecție ca METODA §29**, pe alt gard.
 - **ce blochează**: **opt din cele nouă declarații își arată acum componentele; D112 nu.** Și motivul nu e că i-ar lipsi datele — sunt chiar contribuțiile fiecărui salariat, calculate rând cu rând —, ci **forma generatorului**: `core.d112._d112_genereaza` întoarce `(xml_str, avertismente)`, adică un șir și o listă de texte. Celelalte opt motoare întorc câte un obiect de rezultat (`RezultatD100`, `Rezultat`, `RezultatD101`…) din care harta de componente citește direct atributul. D112 n-are ce citi: pozițiile se scriu **în XML** și nu mai există nicăieri după aceea. *Deci contabilul vede „valid, N operațiuni" pe declarația cu cel mai mare număr de poziții din toată aplicația, și nu poate vedea care.*
 - **de ce n-a fost reparată în tura care a reparat celelalte opt, cu condiția numită** (nu se amână fără condiție): celelalte opt au cerut **transport** — o hartă care citește ce există deja. D112 cere **schimbarea motorului**, adică a funcției care produce declarația de salarii, cea mai încărcată din aplicație și cea cu cele mai multe porți în jur (`verifica_reconciliere`, `reconciliere_emis`, poarta pe artefact). *O schimbare de motor strecurată într-o tură de transport ar fi exact felul de lucru pe care registrul îl interzice.* Se face ca temă proprie, cu poarta ei.
 - **ce e ADEVĂRAT despre absență, și de ce nu e tăcere**: tipul e trecut în `declaratii_componente.FARA_COMPONENTE`, cu motivul scris; răspunsul rutei poartă `acoperire="absenta"`, iar ecranul spune omului că declarația nu-și poate desface încă cifra. Motivul **nu se crede pe cuvânt**: `test_d112_e_declarat_imposibil_si_motivul_e_verificabil` citește modulul și cade în ziua în care `core.d112` capătă o clasă de rezultat — adică în ziua în care motivul devine fals.
