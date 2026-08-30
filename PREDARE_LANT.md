@@ -1,6 +1,6 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — E1: **lista 5 COMPLETĂ**, lista 3 remăsurată (**5 deschise din 8**) (30.08.2026)
+# PREDARE LANȚ — E1: **lista 5 COMPLETĂ**, lista 3 la **4 deschise din 8**, **R80 REZOLVATĂ** (30.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
@@ -14,7 +14,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   · „ce e adevărat despre starea codului" · „starea la predare" · tabelul de restanțe · o intrare
   nouă în „cifre invalidate" · „dacă continui de aici". Restul e neatins **și verificat că mai e
   adevărat**, nu presupus.
-- **pe commit**: `2421fd9` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care
+- **pe commit**: `1625443` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care
   poartă munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e
   arborele care devine commitul următor.*
 - **cum se citește „pe commit", ca să nu pară stale**: numele de acolo e al commitului **precedent**,
@@ -183,17 +183,18 @@ ale Design System, **5** sunt acoperite. Nu invalidează porțile; le încadreaz
 
 ## STAREA LA PREDARE
 
-Poartă verde, citită din ieșirea porții care a produs `2421fd9`: **3671 teste trec** · 11 skip ·
-14 xfail · ruff OK · verificator **TOTAL 0** · rute **415 = ACCEPTAT 332 + GRI 49 + ROSU 0 +
+Poartă verde, citită din ieșirea porții care a produs `1625443`: **3684 teste trec** · 11 skip ·
+14 xfail · ruff OK · verificator **TOTAL 0** · rute **416 = ACCEPTAT 375 + GRI 7 + ROSU 0 +
 EXCLUS 34** · site **200** · four-way se închide la `post-commit`, care publică pe `origin/main` și
 pe `backup/lant-2026-08-30` și **restartează necondiționat** procesul viu.
 
-**CLICHETUL DE GRI A CRESCUT 45 → 49, ȘI NU E O REGRESIE A APLICAȚIEI.** Cele patru rute
-`/tenants/{id}/jurnal` care au orbit **au apelanți**; ce a crescut e **incapacitatea detectorului de
-a o dovedi**, fiindcă ancora lui — cuvântul `jurnal` — a trecut de pragul de 40 de apariții în
-`static/js` odată cu ecranul nou al jurnalului de regim marjă. Măsurat prin comparație directă cu
-`HEAD`, nu dedus. *Detectorul măsoară vocabularul, nu chemările — și asta e chiar `R80`.* Cifra e
-actualizată în **toate cele trei locuri** care o citesc, fiindcă există un gard care le confruntă.
+**CLICHETUL DE GRI A FĂCUT 45 → 49 → 7 ÎN ACEEAȘI ZI**, iar a doua mutare e **reparația**, nu o
+replafonare. Prima creștere venea din vocabular: ancora era un CUVÂNT, iar un ecran nou al cărui
+titlu conține „jurnal" orbea cele patru rute `/tenants/{id}/jurnal` — care **au apelanți**. După a
+treia creștere din aceeași zi (`salariati`, de la caseta categoriei de mărime), ancora a devenit
+**segment de cale**: orbirea **55 → 6**, ACCEPTAT **327 → 375**, **ROSU rămâne 0** — deci nicio rută
+n-a pierdut dovada că e chemată. **Instanța fondatoare a lui R80, `PUT /tenants/{id}`, rămâne
+oarbă**: reparația n-a acoperit-o, a curățat în jurul ei.
 
 **Cifrele de aici se copiază din IEȘIREA PORȚII, nu din predarea de dinainte.**
 **Cifrele secțiunii „Unde suntem" nu se scriu de mână** — `scripts/raport_b.py`.
@@ -404,11 +405,12 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 
 ## DACĂ CONTINUI DE AICI
 
-1. **Pasul următor e RESTUL LISTEI 3** — cele **5** rânduri care cer construcție: registrul-inventar
-   (14-1-2), notele explicative, **categoria de mărime** (`R3`, precondiție — fără ea bilanțul se
-   produce fără să poată ști dacă e cel datorat), evidența operațiunilor de TVA (art. 321), registrul
-   de evidență fiscală. *Cele două care aveau producător — Cartea mare și jurnalul de regim marjă —
-   sunt reparate; rândul de bilanț a fost scos ca fals.*
+1. **Pasul următor e RESTUL LISTEI 3** — cele **4** rânduri rămase: registrul-inventar (14-1-2),
+   notele explicative, evidența operațiunilor de TVA (art. 321), registrul de evidență fiscală.
+   *Toate patru sunt „nu există producător" — deci construcție de la zero, nu transport.*
+   **Categoria de mărime** (`R3`) are acum derivare sursată, rută și ecran, dar **rămâne deschisă**
+   pe altă condiție: **19 din 19 firme dau `nedeterminata`**, fiindcă niciuna n-are două exerciții
+   consecutive cu rulaje. *Se închide pe o firmă, nu pe cod.*
 2. **Două constatări GRI deschise în `GARZI.md`**, amândouă cu condiția de închidere scrisă: sub ce
    **identitate** a rulat repornirea care a eșuat (mecanismul e dovedit, instanța nu — iar identitatea
    de deploy nu poate citi `auth.log`), și ce anume varia la ecranul `banca` (0,2463% la 07:09,

@@ -40,7 +40,7 @@ face doar imposibilă acumularea unei narațiuni care să îmbătrânească. *(D
 după a doua oară: „e gardul care nu citește proză și totuși o disciplinează".)*
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **lista 5 COMPLETĂ** (12 din 12) · **lista 3: 5 deschise din 8** — două reparate, una scoasă ca falsă (30.08.2026). *(Cifrele se derivă.)*
+- **pasul curent**: **lista 5 COMPLETĂ** · **lista 3: 4 deschise din 8** — trei reparate, una scoasă ca falsă · **R80 REZOLVATĂ** (30.08.2026). *(Cifrele se derivă.)*
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are **pași** — 1a, 1b, 1c și 1d sunt făcute —, dar **criteriul ei de terminare NU e îndeplinit**: **lista 3** e plină (8 artefacte), iar **lista 5** mai are o poziție, D112 (**R105**). Lista 4 e goală din 30.08. Mărimea listei 5 **se știe** din 30.08 — clasa R97 e măsurată, iar reparația a golit-o pe toată în afară de D112; propoziția de dinainte, *„nu se poate ști până nu se măsoară R97"*, era adevărată azi-dimineață și e falsă de la prânz. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna.** *(Stocul istoric nu mai blochează: s-a executat pe 29.08, după ce Costin a spus că nu există clienți reali — starea restanței se citește din registru, nu de aici.)* *(Ultima — ce face aplicația cu o factură EMISĂ care intră prin import — a primit răspuns pe 29.08.2026, varianta (iii), și e construită; starea restanței se citește din registru, nu de aici.)* *(A doua decizie care bloca — TVA la încasare pe factura primită — a primit răspuns pe 29.08.2026, varianta (ii), și e construită; restanța ei e închisă, iar starea se citește din registru, nu de aici.)*
@@ -3692,8 +3692,9 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **reluări**: 2
 - **contorul, explicat**: cerută de **trei ori** înainte de decizie — 27.08 la deschidere, apoi în rapoartele din 28.08 (secțiunea 0, de două ori). Contorul urcă **o singură dată**, acum, la decizie: nu ține evidența cererilor, ci a **buclelor** — iar bucla s-a închis.
 - **gri**: 7
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `04e6f38`
+- **rezolvată pe commit**: `1625443`
 - **măsurat la**: 2026-08-27 · **pe commit**: `04e6f38`
 - **planul**: **ACOPERIT** — e chiar clasa pe care o numește R70, măsurată acum pe propriul ei instrument. (METODA §22: un instrument se măsoară pe modul lui de eșec, nu pe reușitele lui.)
 - **ce blochează**: azi am mutat butonul de divergență de pe `PUT /tenants/{tenant_id}` pe `POST /tenants/{tenant_id}/nume-ales`. Ruta veche a rămas cu **zero apelanți** în `static/` — măsurat direct, cu anti-vacuu (același tipar, cu un segment în plus, găsește 20 de apeluri). **Gardul R70 nu a raportat-o.** Nu din neatenție: regula lui caută bucățile literale ale căii, iar singura bucată literală a rutei e `tenants`, care apare de **235** de ori în JS. Pentru ruta asta, detectorul răspunde **întotdeauna** „are apelant".
