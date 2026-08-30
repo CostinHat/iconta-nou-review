@@ -11,8 +11,20 @@ Doua moduri:
   ATENTIE, cele doua moduri raspund la INTREBARI DIFERITE si se confunda usor:
     implicit -> „e ecranul STABIL de la o captura la alta?" (zgomot de randare)
     --compare -> „s-a SCHIMBAT ecranul fata de referinta?" (regresie vizuala)
-  Un „STABIL" din modul implicit NU spune nimic despre schimbare. Baseline-urile NU sunt
-  urmarite in git (decizia lui Costin, 26.08.2026): sunt referinte locale, regenerabile.
+  Un „STABIL" din modul implicit NU spune nimic despre schimbare.
+
+  BASELINE-URILE SUNT URMARITE IN GIT din 30.08.2026, si decizia din 26.08 („referinte locale,
+  regenerabile") s-a INVERSAT, cu motivul masurat in aceeasi zi. Costin: *„un baseline neversionat
+  nu e baseline, e ultima masuratoare."* Instanta care a produs inversarea: pe 30.08, ecranul `banca`
+  a iesit SCHIMBAT cu 0,2463% fata de referinta din 26.08; cateva ore mai tarziu, contra ACELEIASI
+  referinte, iesea identic. Cand s-a cerut regenerarea, modul implicit a rescris toate referintele —
+  si odata cu ele a disparut singura proba a masuratorii. O constatare deschisa a ramas fara obiect
+  fiindca unealta care o masura si-a sters propria referinta.
+
+  Consecinta practica: fiecare rulare a modului implicit produce un diff de ~2,8 MB. Aia e pretul, si
+  e mai mic decat pretul unei referinte care nu se poate reconstitui. `.gitignore` avea deja
+  `!baseline/` scris — intentia era corecta din 26.08, doar ca fisierele n-au fost adaugate
+  niciodata. *`.gitignore` permite; nu adauga.*
 
   --compare  COMPARA: captura curenta vs baseline/<ecran>.png -> pixeli diferiti + %,
              salveaza diff_<ecran>.png la depasire. Asa iese o schimbare vizuala

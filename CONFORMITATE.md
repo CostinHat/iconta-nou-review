@@ -40,7 +40,7 @@ face doar imposibilă acumularea unei narațiuni care să îmbătrânească. *(D
 după a doua oară: „e gardul care nu citește proză și totuși o disciplinează".)*
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **lista 5 COMPLETĂ** · **lista 3: 4 deschise din 8** — trei reparate, una scoasă ca falsă · **R80 REZOLVATĂ** (30.08.2026). *(Cifrele se derivă.)*
+- **pasul curent**: **lista 5 COMPLETĂ** · **lista 3: 3 deschise** — trei reparate, una falsă, notele explicative ieșite ca imposibilitate temporară gardată (30.08.2026). *(Cifrele se derivă.)*
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are **pași** — 1a, 1b, 1c și 1d sunt făcute —, dar **criteriul ei de terminare NU e îndeplinit**: **lista 3** e plină (8 artefacte), iar **lista 5** mai are o poziție, D112 (**R105**). Lista 4 e goală din 30.08. Mărimea listei 5 **se știe** din 30.08 — clasa R97 e măsurată, iar reparația a golit-o pe toată în afară de D112; propoziția de dinainte, *„nu se poate ști până nu se măsoară R97"*, era adevărată azi-dimineață și e falsă de la prânz. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna.** *(Stocul istoric nu mai blochează: s-a executat pe 29.08, după ce Costin a spus că nu există clienți reali — starea restanței se citește din registru, nu de aici.)* *(Ultima — ce face aplicația cu o factură EMISĂ care intră prin import — a primit răspuns pe 29.08.2026, varianta (iii), și e construită; starea restanței se citește din registru, nu de aici.)* *(A doua decizie care bloca — TVA la încasare pe factura primită — a primit răspuns pe 29.08.2026, varianta (ii), și e construită; restanța ei e închisă, iar starea se citește din registru, nu de aici.)*
@@ -570,6 +570,34 @@ rămân de citit de om.
 s-au și închis în aceeași zi) · **deschise acum 18**. **Intrări − ieșiri = +2.** Etapa nu se apropie de
 închidere: se mișcă. Iar mișcarea e de un fel anume — restanțele noi vin din **măsurători care au
 scos ce nu se știa**, nu din defecte noi.
+
+### Capturile de referință vizuală — proprietar declarat (30.08.2026)
+
+*Scris fiindcă `core/test_capturi_numite.py` îl cere, iar cerința e corectă: pe 30.08 am versionat 14
+imagini fără să le numesc nicăieri. **Gardul le-a prins la prima poartă.** METODA §27: o captură fără
+proprietar în registru e, prin construcție, suspectă.*
+
+**Ce sunt:** cele 14 **baseline-uri** ale comparației vizuale între versiuni
+(`frontend_test/vizual/baseline_scan.py`). **Nu sunt probe** — nu dovedesc nicio restanță; sunt
+*referința* față de care se măsoară dacă un ecran s-a schimbat neintenționat.
+
+**De ce sunt în repo, din 30.08.2026** — decizia lui Costin, care **inversează** pe cea din 26.08
+(*„referințe locale, regenerabile"*): **„un baseline neversionat nu e baseline, e ultima
+măsurătoare."** Instanța care a produs inversarea e în `GARZI.md`, la constatarea despre ecranul
+`banca`: o constatare deschisă a rămas fără obiect fiindcă unealta care o măsura și-a **șters propria
+referință** la regenerare. `.gitignore` avea deja `!baseline/` scris din 26.08 — intenția era
+corectă, doar neexecutată; *`.gitignore` permite, nu adaugă*.
+
+**Prețul, declarat:** fiecare rulare a modului implicit rescrie toate cele 14 și produce un diff de
+~2,8 MB.
+
+**Cele 14, pe nume:** `banca.png` · `casa.png` · `centrecost.png` · `declaratii.png` ·
+`etransport.png` · `import_mijloace_fixe.png` · `plan_conturi.png` · `rapoarte.png` ·
+`registratura.png` · `solduri_parteneri.png` · `stat_plata.png` · `stocuri.png` ·
+`vector_fiscal.png` · `verificari.png`.
+
+*Ecranele sunt cele din `frontend_test/vizual/nav_ecrane.ECRANE` — deci lista de mai sus se poate
+confrunta cu inventarul de ecrane, nu e o enumerare scrisă din memorie.*
 
 ### R1 — Câte alte acte din corpus sunt PARȚIALE
 
@@ -5205,35 +5233,59 @@ amândouă**, iar unul dintre ele (nontransferurile) nu e nici măcar derivabil 
 nontransfer e o **mișcare fără vânzare**. *Rândul vechi al listei spunea „substanța e derivabilă pe
 fiecare linie, lipsește documentul". Pe registrul nontransferurilor, asta e fals.*
 
-**2. REGISTRUL DE EVIDENȚĂ FISCALĂ — obligația e sursată, MODELUL e în afara corpusului.**
+**2. REGISTRUL DE EVIDENȚĂ FISCALĂ — SUNT DOUĂ, iar unul era deja construibil.**
 
-Sunt **două** obligații distincte, nu una:
-- **art. 68 alin. (8)** — contribuabilii cu venit anual determinat **în sistem real** completează
-  Registrul de evidență fiscală, *„în vederea stabilirii venitului net anual"*;
-- **art. 19** — pentru impozitul pe profit, `registrul de evidență fiscală al contribuabilului`
-  (acolo se înregistrează, de pildă, creditul fiscal de cercetare-dezvoltare scăzut anual).
-
-**Art. 68 alin. (9): *„Modelul și conținutul Registrului de evidență fiscală se aprobă prin ordin al
-ministrului finanțelor publice."*** — iar **ordinul acela nu e în corpus**. `omfp_170_2015` există,
-dar e *Reglementările contabile privind contabilitatea în partidă simplă*, altceva. **Deci rândul nu
-se poate construi corect azi**: s-ar inventa un model. *E aceeași familie cu R1/R4/R5 — încrederea în
-corpus —, dar aici lipsa e NUMITĂ și localizată, nu doar numărată.*
+- **art. 19 alin. (7)** — pentru **impozitul pe profit**. **CORECȚIA UNEI AFIRMAȚII DE-ALE MELE:**
+  ieri am scris că rândul „nu se poate construi corect azi, s-ar inventa un model". **Fals pentru
+  varianta asta.** Conținutul e specificat **integral în corpus**, în HG 1/2016, normele la art. 19,
+  **pct. 8**: registrul se ține *„în formă scrisă sau electronică"*, iar în el *„trebuie înscrise"* —
+  veniturile și cheltuielile înregistrate contabil (art. 19 alin. (1)) · veniturile neimpozabile
+  (art. 23) · deducerile fiscale · elementele similare veniturilor · elementele similare
+  cheltuielilor · cheltuielile nedeductibile (art. 25) · orice informație din declarația fiscală
+  obținută din prelucrări ale datelor contabile. Plus regula de agregare: *„evidențierea veniturilor
+  și a cheltuielilor aferente se efectuează pe natură economică, prin totalizarea acestora pe
+  trimestru și/sau an fiscal"*. *Am declarat un blocaj citind un singur articol; blocajul a dispărut
+  citind normele lui.*
+- **art. 68 alin. (8)-(9)** — pentru **venituri din activități independente în sistem real**. Aici
+  alin. (9) chiar trimite modelul la un ordin, iar ordinul **nu era în corpus**. **Adus azi**:
+  `omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice` — *„privind Registrul de evidență
+  fiscală pentru persoanele fizice, contribuabili potrivit titlului IV din Legea nr. 227/2015"*,
+  cu amprentă pe pagină și pe text, prin `scripts/portal_legislativ.py`.
+  **Actul nu s-a putut găsi după numărul lui**, fiindcă Codul fiscal îl numește printr-o trimitere,
+  nu printr-un număr — deci unealta a căpătat un mod `cauta-titlu`. *Un act adus pe baza unui număr
+  ghicit ar fi fost mai rău decât unul lipsă; cele patru candidate s-au citit înainte de a fi aduse,
+  și s-a adus una singură.*
 
 **3. REGISTRUL-INVENTAR (14-1-2) — localizat, necitit încă.** Apare în nomenclatorul din
 `omfp_2634_2015_anexa2_norme_specifice.txt` (poziția 2 din registrele contabile), lângă Cartea mare
 14-1-3 și varianta șah 14-1-3/a. **Conținutul per-formular din normele specifice nu s-a citit încă** —
 se citește la începutul turei următoare, înainte de orice cod.
 
-**4. NOTELE EXPLICATIVE — localizate, necitite încă.** `omfp_1802_2014_reglementari_consolidat.txt`
-le numește la **pct. 21** printre componentele situațiilor financiare ale entităților de la pct. 9
-alin. (4) și ale celor de interes public. **Dependență descoperită azi:** conținutul notelor depinde
-de **categoria de mărime** — iar aia e `nedeterminata` pe toate cele 19 firme (`R3`). *Deci rândul
-ăsta nu se poate nici măcar delimita până nu există o firmă cu două exerciții consecutive.*
+**4. NOTELE EXPLICATIVE — IES DIN LISTA 3, prin decizia lui Costin (30.08.2026).**
 
-**ORDINEA PE CARE O PROPUN pentru tura următoare**, din ce s-a citit: **(1)** cele două registre de la
-art. 321 — singurele cu conținut enumerat integral și cu temei în corpus; **(2)** registrul-inventar,
-după citirea normelor specifice; **(3)** registrul de evidență fiscală, **blocat** pe aducerea
-ordinului în corpus; **(4)** notele explicative, **blocate** pe `R3`.
+*„Notele explicative ies din lista 3 și devin gardă cu condiție de deschidere scrisă. **Nu e
+restanță, e imposibilitate temporară** — se întoarce singură când există o firmă cu două
+exerciții."*
+
+Conținutul lor depinde de **categoria de mărime** (OMFP 1802/2014 pct. 21 le cere entităților de la
+pct. 9 alin. (4) și celor de interes public; microentitățile sunt scutite, pct. 20 alin. (1) și
+cap. 12), iar categoria cere **două exerciții consecutive** — `nedeterminata` pe toate cele 19 firme.
+**Un artefact pe care nu-l poți nici măcar delimita nu e o datorie, e o întrebare fără obiect.**
+
+**Motivul absenței e el însuși GARDAT**: `core/test_note_explicative_asteapta.py`. Cât timp nicio
+firmă n-are exercițiu-pereche, trece; **în ziua în care apare una, PICĂ**, și mesajul spune, în
+ordine, ce se face — rulează încadrarea, citește conținutul notelor la sursă, întoarce rândul în
+lista 3, șterge garda. *Fără ea, „nu se poate delimita" ar rămâne adevărat în registru mult după ce
+a încetat să fie adevărat în date.* Are două fețe (există date pentru două exerciții? · iese o
+categorie?), fiindcă ele pot să difere, iar cea care ridică imposibilitatea e a doua. RED-proof: la
+un exercițiu-pereche simulat, pică.
+
+**ORDINEA, după ce toate temeiurile au fost citite:** **(1)** cele două registre de la art. 321;
+**(2)** registrul-inventar (14-1-2), după citirea normelor specifice; **(3)** registrul de evidență
+fiscală — **acum nemaiblocat**: varianta pe profit e specificată în norme, iar pentru cea de la
+Titlul IV ordinul e în corpus. **Notele explicative nu mai sunt în listă.**
+
+**Lista 3 are acum 3 rânduri deschise, nu 4.**
 
 **CE A SCOS REMĂSURAREA, ca observație generală:** din cele 8 rânduri, **două** aveau producător care
 producea și nu ajungea la om (aceeași formă ca lista 5), **una** era falsă, iar **cinci** sunt

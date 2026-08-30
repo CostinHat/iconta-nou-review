@@ -5652,9 +5652,9 @@ referința veche, apoi s-a rescris.*
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**482 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**483 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 468
+### `core/` — 469
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -6006,6 +6006,7 @@ referința veche, apoi s-a rescris.*
 - `core/test_nomenclatoare_ancorate.py` — GARD DE CLASA (04.08.2026): fiecare nomenclator care ajunge la ANAF e PROBAT pe validatorul INSTALAT.
 - `core/test_nomenclator_pe_norma.py` — GARD [C6, 25.08.2026]: un nomenclator se ia din NORMĂ; validatorul e constrângere, nu sursă.
 - `core/test_norma_implementare.py` — GARDĂ pentru interdicția 60 — elementul care implementează o normă îi poartă articolul?
+- `core/test_note_explicative_asteapta.py` — GARDĂ DE AȘTEPTARE — notele explicative se întorc în lista 3 când devin delimitabile.
 - `core/test_numar_fiscal.py` — Teste core.common.numar_fiscal + garda pe generatoarele de declaratii.
 - `core/test_nume_anaf.py` — GARD [27.08.2026]: denumirea de la ANAF se păstrează lângă cea editabilă, cu data ei.
 - `core/test_nume_firma_unic.py` — GARD [27.08.2026]: două firme cu același nume, în același cabinet, sunt un fapt imposibil.

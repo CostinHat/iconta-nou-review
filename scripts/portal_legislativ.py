@@ -2,6 +2,7 @@
 """Unealta de aducere din legislatie.just.ro (Portalul Legislativ).
 
   portal.py cauta <TIP> <NUMAR> <AN>          -> lista de forme, cu id-uri
+  portal.py cauta-titlu "<text>" [an_de an_pana]  -> cand actul e numit prin trimitere, nu prin numar
   portal.py adu <ID> <nume_fisier_fara_ext>   -> salveaza .html + .html.sha256 + .txt in anaf_surse/
 
 De ce o unealta si nu un script de unica folosinta: pasul 1 din Partea 0 („nu-l am -> il aduc") se va
@@ -82,6 +83,43 @@ def cauta(tip, numar, an):
         print("   <niciun rezultat>")
 
 
+def cauta_titlu(text_titlu, an_de=None, an_pana=None):
+    """Cauta dupa TITLU, fara sa ceara tipul si numarul actului.
+
+    Portalul accepta `TitleText` in acelasi formular ca restul cautarii — campul exista de la
+    inceput, dar `cauta` il trimitea gol, fiindca a fost scris pentru cazul „stiu ce act vreau".
+    Cazul asta e celalalt: actul e numit printr-o TRIMITERE (art.68 alin.(9) CF: „modelul si
+    continutul se aproba prin ordin al ministrului finantelor publice"), deci numarul lui e chiar
+    ce cauti.
+
+    Anii sunt optionali: fara ei, portalul cauta pe tot intervalul.
+    """
+    h = get(BAZA + "/").decode("utf-8", "replace")
+    tok = re.search(r'name="__RequestVerificationToken"[^>]*value="([^"]+)"', h).group(1)
+    date = {"__RequestVerificationToken": tok, "TitleText": text_titlu,
+            "ContentText_First": "", "ContentText_Second": "", "ContentText_Third": "",
+            "ContentText_Fourth": "", "DocumentType": "", "DocumentNumber": "",
+            "DataSemnariiTextFrom": ("%s/01/01" % an_de) if an_de else "",
+            "DataSemnariiTextTo": ("%s/12/31" % an_pana) if an_pana else "",
+            "PublishedInName": "", "PublishedInNumber": "", "DataPublicariiTextFrom": "",
+            "DataPublicariiTextTo": "", "ActInForceOnDateTextFrom": "", "EmitentAct": "",
+            "actiontype": "Căutare"}
+    req = urllib.request.Request(BAZA + "/", data=urllib.parse.urlencode(date).encode(),
+                                 headers={"Content-Type": "application/x-www-form-urlencoded",
+                                          "Referer": BAZA + "/"})
+    with op.open(req, timeout=60) as r:
+        h2 = r.read().decode("utf-8", "replace")
+    vazut = set()
+    for m in re.finditer(r'<a[^>]+href="/Public/DetaliiDocument/(\d+)"[^>]*>(.*?)</a>', h2, re.S):
+        t = re.sub(r"\s+", " ", re.sub(r"<[^>]+>", " ", m.group(2))).strip()
+        if t and t.lower() != "vizualizeaza" and m.group(1) not in vazut:
+            vazut.add(m.group(1))
+            print("   id=%-8s %s" % (m.group(1), t[:150]))
+    if not vazut:
+        print("   <niciun rezultat>")
+    return sorted(vazut)
+
+
 def _scrie_text(nume, t):
     """Scrie <nume>.txt + <nume>.txt.sha256 si intoarce amprenta pe TEXT.
 
@@ -123,5 +161,7 @@ def adu(ident, nume):
 if __name__ == "__main__":
     if sys.argv[1] == "cauta":
         cauta(sys.argv[2], sys.argv[3], sys.argv[4])
+    elif sys.argv[1] == "cauta-titlu":
+        cauta_titlu(sys.argv[2], *(sys.argv[3:5]))
     elif sys.argv[1] == "adu":
         adu(sys.argv[2], sys.argv[3])
