@@ -40,7 +40,7 @@ face doar imposibilă acumularea unei narațiuni care să îmbătrânească. *(D
 după a doua oară: „e gardul care nu citește proză și totuși o disciplinează".)*
 
 - **etapa**: E1 — SETUL COMPLET (faza 1 din `PLAN_INVESTIGATII.md`)
-- **pasul curent**: **raza verificatorului, măsurată** — din 62 de reguli ale DS, **5** sunt acoperite, 24 neacoperite, 15 doar la suprafață. „TOTAL 0" înseamnă zero din ce știe el să întrebe. Lista 5 **așteaptă**. *(Cifrele se derivă.)*
+- **pasul curent**: **R101 și partea statică a lui R103 sunt REZOLVATE** — declarantul e blocant pe toate opt, iar legătura DS↔verificator are gardă cu clichet. Urmează **lista 5**. *(Cifrele se derivă.)*
 - **criteriul de terminare**: există lista artefactelor cerute de lege — din lege, cu temei — pe **regimurile reale** (nu pe trei alese arbitrar), iar fiecare artefact e clasificat în una din cele cinci liste ale verdictului 1d. Aplicația e gata pe acest criteriu când listele 3, 4 și 5 sunt goale pe fiecare regim; lista 2 poate avea conținut, fiindcă măsoară ce n-a completat contabilul, nu ce n-a făcut aplicația.
 - **ce lipsește**: faza 1 nu mai are **pași** — 1a, 1b, 1c și 1d sunt făcute —, dar **criteriul ei de terminare NU e îndeplinit**: listele 3, 4 și 5 nu sunt goale, iar mărimea listei 5 nu se poate ști până nu se măsoară clasa **R97**. Iar cele două restanțe care blocau punctul de decizie 1 (R17, R2) sunt închise. Rămân restanțele de mai jos — **numărul lor e derivat, nu scris aici**. Cele care blochează cel mai mult sunt acum **R5** și **R6** (încrederea în corpusul pe care stă tot 1a).
 - **decizii care blochează**: **niciuna.** *(Stocul istoric nu mai blochează: s-a executat pe 29.08, după ce Costin a spus că nu există clienți reali — starea restanței se citește din registru, nu de aici.)* *(Ultima — ce face aplicația cu o factură EMISĂ care intră prin import — a primit răspuns pe 29.08.2026, varianta (iii), și e construită; starea restanței se citește din registru, nu de aici.)* *(A doua decizie care bloca — TVA la încasare pe factura primită — a primit răspuns pe 29.08.2026, varianta (ii), și e construită; restanța ei e închisă, iar starea se citește din registru, nu de aici.)*
@@ -2239,11 +2239,25 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
 - **cine deblochează**: INTERN
 - **unde intră**: E1 · `DESIGN_SYSTEM.md` ↔ `verificator_conformitate.py` · clasa „gardul care nu se verifică pe sine" · **PRAG 2**
 - **reluări**: 0
-- **stare**: **DESCHISĂ**
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `108f927`
 - **deschisă pe commit**: `80cebd5`
 - **măsurat la**: 2026-08-30 · **pe commit**: `80cebd5`
 - **ce blochează**: regula de proces există **scrisă**, și a fost încălcată **de trei ori** pe aceeași regulă a DS-ului (steluțele pe câmpurile obligatorii — de două ori în iulie, o dată pe 30.08). Nimic nu se aprinde: **nu există nicio gardă care să confrunte cele două documente.** Măsurat cu `scripts/scan_ds_verificator.py`: din **62** de reguli, **24 neacoperite**, **15 doar la suprafață**, **5 acoperite**, 18 nemăsurabile mecanic. **Consecința asupra a tot ce s-a raportat până acum:** „verificator TOTAL 0" — rândul care apare în fiecare poartă verde — înseamnă **zero din ce știe el să întrebe**, nu zero abateri de la Design System. *Nu invalidează porțile; le încadrează.*
+- **cum s-a rezolvat (partea statică)**: `core/test_ds_verificator.py` — **trei clichete** (neacoperite ≤ **24**, acoperite ≥ **5**, fără ancoră ≤ **18**) și **patru calibrări**, dintre care una **în direcția de eșec** (regula lui R100: o ancoră sigur absentă trebuie să iasă NEACOPERITĂ) și una pe **ancora din comentariu** — chiar forma regulii steluțelor. **RED-proof rulat**: o regulă nouă inserată în DS, cu ancoră necunoscută, urcă 24 → 25 și garda cade. *Clichetele sunt praguri, nu zerouri: datoria cunoscută e **înghețată**, nu ștearsă.* **Ce NU închide asta, prin decizie:** cele **15** reguli acoperite doar la suprafață **nu sunt datorie** — sunt limita unui scaner static, corect diagnosticată, și cer alt instrument, care cheamă rute și observă comportamentul: **faza 2**. Iar cele **18 fără ancoră** s-au desprins ca **R104**, fiindcă sunt defect al REGULII, nu al instrumentului.
 - **condiția de deblocare**: o gardă care cere ca fiecare regulă din DS cu **ancoră** să aibă corespondent în verificator, **sau** o declarație scrisă lângă ea („nu se poate verifica static, fiindcă…"). Clichet pe numărul de neacoperite, ca să nu crească tăcut. Se închide când cifra e ținută de un clichet **și** când fiecare regulă din cele 24 e ori acoperită, ori declarată. *Partea „doar la suprafață" (15) NU se închide cu asta: ea cere un instrument care observă comportamentul, nu textul — deci altă natură, și altă restanță când se ajunge la ea.*
+
+### R104 — Optsprezece reguli din Design System nu numesc nimic: sunt preferințe, nu norme
+
+- **felul**: SURSĂ
+- **cine deblochează**: INTERN
+- **unde intră**: E1 · `DESIGN_SYSTEM.md` · desprinsă din **R103** · **PRAG 3**
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `108f927`
+- **măsurat la**: 2026-08-30 · **pe commit**: `108f927`
+- **ce blochează**: măsurătoarea razei a găsit **18 din 62** de reguli care **nu numesc niciun artefact** — nicio clasă, nicio funcție, niciun fișier — deci nu se pot verifica de niciun instrument, static sau nu. Prima formă a instrumentului le numea *„NEMĂSURABILE MECANIC"*, ceea ce arunca vina pe unealtă. **Reîncadrate de Costin, 30.08.2026:** *„nu sunt nemăsurabile mecanic. Sunt reguli scrise așa încât nu pot fi verificate — defect al REGULII, nu al instrumentului. O regulă din DS care nu poate fi ancorată e o preferință, nu o normă."* **Consecința pentru document:** DS-ul conține azi două feluri de propoziții sub același titlu — norme care obligă și preferințe care descriu —, iar cine îl citește nu le poate deosebi. *Sunt îngheațate de clichetul din `core/test_ds_verificator.py` (plafon 18): se pot repara, nu se pot înmulți.*
+- **condiția de deblocare**: fiecare din cele 18 ori **se rescrie ca să numească un artefact** (clasă, funcție, fișier, cheie) — și atunci intră în măsurătoare ca oricare —, ori **se mută** din secțiunile de reguli într-o secțiune declarată de preferințe. Se închide când clichetul ajunge la **0** sau când restul e declarat explicit ca preferințe, cu titlul lor.
 
 ### R100 — O calibrare care testează doar ce știe instrumentul să caute confirmă presupunerea, nu o verifică
 
@@ -2264,11 +2278,13 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
 - **cine deblochează**: DECIZIE
 - **unde intră**: E1 · verdictul 1d · aceeași clasă cu **R93** · **PRAG 2**
 - **reluări**: 0
-- **stare**: **DESCHISĂ**
+- **stare**: **REZOLVATĂ**
+- **rezolvată pe commit**: `afa5ec1`
 - **deschisă pe commit**: `ae1845e`
 - **măsurat la**: 2026-08-30 · **pe commit**: `ae1845e`
 - **ce blochează**: **găsită de garda lui R93, la prima ei rulare** — adică de instrumentul construit pentru clasa asta, nu de un om care s-a uitat. `firma_profil_api.OBLIGATORII` declară `declarant_nume` și `declarant_functie` obligatorii pentru **opt** declarații (D100, D101, D112, D205, D300, D301, D390, D394) plus bilanț. Măsurat pe AST cu `core/scan_camp_blocant.py`: **nu blochează niciuna**. Ce se întâmplă în schimb, citit în `core/d100.py:build_xml`: dacă declarantul lipsește, se emite implicit **„ADMINISTRATOR"**, cu un avertisment. **Măsurat pe date, 30.08.2026: 7 din 19 firme au declarantul necompletat** — `tenant_001`, `tenant_006` (are nume, n-are funcție), `tenant_014`, `tenant_015`, `tenant_016`, `tenant_018`, `tenant_045` —, iar printre ele sunt firme care produc **azi** declarații `valid`. Deci **declarația pleacă la ANAF în numele cuiva care n-a declarat.** *Comentariul din `OBLIGATORII`, scris pe 17.08.2026, cerea exact invers: „se cer EXPLICIT (ca regim_fiscal), nu se fabrica «ADMINISTRATOR» tacit." Fabricarea nu e tăcută — poartă avertisment —, dar nici cerută explicit nu e.*
 - **de ce cere DECIZIE, nu doar reparație**: dacă declarantul devine blocant, **7 din 19 firme nu mai pot depune** până îl completează. Alternativa e ca harta să nu mai spună „obligatoriu". Amândouă schimbă ce ajunge la contabil, deci alegerea nu e a mea. *Până atunci, perechea stă ca **excepție declarată cu motiv** în `core/test_camp_blocant.py`, ca garda să nu fie roșie pe o datorie cunoscută.*
+- **cum s-a rezolvat**: **sursa a decis, pe fiecare din cele opt** — structura ANAF a fiecărei declarații cere declarantul, cu marcaj `DA` și mesaj propriu de eroare, citit verbatim din `anaf_surse/dXXX_struct_anaf.txt`. Deci **harta avea dreptate, codul greșea**, la fel ca la R93. `erori_declarant(prof)` trăiește într-un singur loc (`firma_profil_api`) și e chemată din `erori_generare` la toate opt — adică pe calea care **ridică**, nu pe una care avertizează. **Probat pe instanțe vii**: firmele fără declarant refuză acum cu motivul; cele complete, neschimbate. **Gardat** de `core/test_camp_blocant.py` (excepția a ieșit: nu mai e datorie). **Ecranul a urmat**: `declarant_prenume` a căpătat asterisc, cerut de `test_g9_oblig_backend` — regula DS cap.6 aplicându-se singură. **30 de fișiere de fixturi** completate: o fixtură fără declarant nu reprezenta o firmă care poate depune. *Și o decizie de-a noastră s-a anulat: `declarant_prenume` era ținut afară din hartă din 17.08; vezi `DECIZII.md` (14).*
 - **condiția de deblocare**: se alege una din două — (a) `declarant_nume`/`declarant_functie` devin **blocante** în toate cele opt module, iar cele 7 firme se completează; sau (b) ies din `OBLIGATORII` și fabricarea rămâne, **declarată** ca alegere, nu ca implicit. Se închide când excepția din gardă dispare, iar `core/scan_camp_blocant.py` arată harta și codul de acord.
 
 ### R102 — D394 declara livrări și zero facturi emise, în același document, iar contradicția o prindea ANAF

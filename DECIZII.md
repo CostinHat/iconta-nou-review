@@ -3,6 +3,44 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 30.08.2026 (14) — Sursa bate decizia; o regulă care nu se poate ancora e o preferință; iar o reparație dovedită care nu intră se strică
+
+*Trei decizii date de Costin odată cu ordinea R101 → R103 static → lista 5. Toate trei sunt reguli,
+nu stări, și de-aceea se scriu aici.*
+
+**1. ORDINEA, cu motivul fiecărei poziții.** *„R101 prima fiindcă e muncă terminată și probată care
+stă pe o ramură. **Reparațiile dovedite care nu intră se strică — fixturile se mișcă sub ele.**"* ·
+*„R103 partea statică a doua. Nu pentru cele 24, ci pentru gardă: **lipsa ei e cauza, cele 24 sunt
+efectul.** Fără ea, măsurătoarea de azi îmbătrânește din prima regulă nouă."* · lista 5 a treia.
+
+*Criteriul general, refolosibil: **o reparație probată dar necomisă e perisabilă**, fiindcă lumea de
+sub ea se mișcă; iar când ai și cauza și efectul în față, se repară cauza.*
+
+**2. SURSA BATE DECIZIA.** `declarant_prenume` era ținut afară din `OBLIGATORII` printr-o decizie
+scrisă pe **17.08.2026**, cu motiv: *„nu orice declarant are prenume în forma ANAF"*, iar `-` era
+socotit înlocuitor legitim. Structura ANAF a **fiecăreia** din cele opt declarații îl cere însă
+explicit — `prenume_declar … DA … ERR - prenume declarant necompletat`.
+
+Decizia lui Costin: *„sursa bate decizia. Cea din 17.08 **se anulează**, cu motivul pentru care a
+fost greșită scris explicit. **Dacă există declarant fără prenume, e o întrebare de ce se completează
+acolo, nu un motiv să lași câmpul liber.**"*
+
+**Ce s-a făcut cu testul care o purta:** nu s-a șters. `test_prenume_nu_e_obligatoriu` s-a rescris în
+`test_prenume_E_obligatoriu_DECIZIE_ANULATA_30_08_2026`, iar docstringul lui poartă **forma veche,
+motivul ei, și de ce a fost greșită**. *Un test rescris fără urmă își pierde lecția.*
+
+**3. Cele 18 reguli fără ancoră nu sunt o limită a instrumentului.** *„Sunt reguli scrise așa încât
+nu pot fi verificate — defect al regulii, nu al instrumentului. O regulă din DS care nu poate fi
+ancorată e o preferință, nu o normă."*
+
+Starea s-a **renumit** în instrument, din „NEMĂSURABILĂ MECANIC" în **„FĂRĂ ANCORĂ"** — numele vechi
+arunca vina pe unealtă și scuza documentul. Deschisă ca **R104**, cu clichet.
+
+**Și una care NU e datorie, tot prin decizie:** cele **15** reguli acoperite *doar la suprafață*.
+*„Nu sunt datorie, sunt limită de instrument, corect diagnosticată. Cer alt instrument, care cheamă
+rute și observă comportamentul. **Faza 2, nu acum**."* — deci nu primesc restanță, ci intră în
+perimetrul fazei 2.
+
 ## 30.08.2026 (13) — O calibrare care testează doar ce știe instrumentul să caute confirmă presupunerea, nu o verifică
 
 *Regulă cerută de Costin după ce instrumentul lui R97 a greșit în direcția opusă celei pe care și-o

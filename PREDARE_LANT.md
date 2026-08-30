@@ -1,6 +1,6 @@
 Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba - pct.11 poarta verde vizuala) + ARHITECT.md "FORMA COMENZII" (7 puncte), apoi acest PREDARE_LANT.md, inainte de a incepe.
 
-# PREDARE LANȚ — **raza verificatorului măsurată: 5 reguli din 62**. Lista 5 așteaptă (30.08.2026)
+# PREDARE LANȚ — **R101 și R103-static REZOLVATE**; urmează lista 5 (30.08.2026)
 
 ## ANTET — cât de veche e predarea asta
 
@@ -10,7 +10,14 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   predare**, **tabelul de restanțe** și **dacă continui**. Restul rămâne cum era, fiindcă nu s-a
   schimbat. *Rescrierea completă de acum câteva ore a fost necesară fiindcă documentul se
   stratificase; o a doua rescriere completă la trei ore după prima ar fi fost ritual, nu nevoie.*
-- **ce s-a schimbat de fapt, ultima tură**: **s-a măsurat RAZA VERIFICATORULUI**, la cererea
+- **ce s-a schimbat de fapt, ultima tură**: **R101 REZOLVATĂ** — declarantul e **blocant** pe
+  toate cele opt declarații, după ce **sursa ANAF a decis pe fiecare** (toate cer `nume`, `prenume`,
+  `funcție`, cu marcaj `DA`). Harta avea dreptate, codul greșea — ca la R93. 30 de fișiere de fixturi
+  completate; ecranul a căpătat asterisc pe prenume, cerut de garda `test_g9_oblig_backend`. · **R103,
+  partea statică, REZOLVATĂ** — legătura DS↔verificator are gardă cu **trei clichete** (24 / 5 / 18)
+  și RED-proof. · **O decizie de-a noastră s-a ANULAT**: `declarant_prenume` era ținut afară din hartă
+  din 17.08; sursa bate decizia (`DECIZII.md` 14). · S-a deschis **R104** (cele 18 reguli fără ancoră).
+- **ce s-a schimbat înainte, în aceeași zi**: **s-a măsurat RAZA VERIFICATORULUI**, la cererea
   lui Costin, înaintea oricărei reparații. Din **62** de reguli ale `DESIGN_SYSTEM.md`: **5
   acoperite**, **24 neacoperite**, **15 doar la suprafață**, 18 nemăsurabile mecanic. **„verificator
   TOTAL 0", rândul din fiecare poartă verde, înseamnă zero din ce știe EL să întrebe** — nu zero
@@ -500,10 +507,10 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
    comandă a cerut ceva deja construit, iar o dată ar fi însemnat să **scot** o poartă care merge.
    **Costin a retras el însuși amândouă comenzile**, în tura următoare. Verificarea premisei a costat
    o oră și a scos două lucruri reale.
-3. **Lista 5 AȘTEAPTĂ** — Costin a oprit-o explicit până se știe raza verificatorului. Acum se
-   știe. Ce e pe masă: **R103** (garda pe legătura DS↔verificator, cu clichet pe cele 24 de
-   neacoperite) · **R101**, de reluat de pe ramura de wip, cu cele 30 de fișiere de fixturi · abia
-   apoi lista 5. *Textul de mai jos rămâne, fiindcă descrie lista 5 când se ajunge la ea:*
+3. **Pasul următor e LISTA 5** — primele două din ordinea dată (R101, apoi partea statică din
+   R103) sunt închise. *Ce NU intră în lista 5, prin decizie:* cele **15** reguli acoperite doar la
+   suprafață — nu sunt datorie, sunt limita unui scaner static, și cer un instrument care cheamă
+   rute; **faza 2**. Iar cele **18 fără ancoră** sunt **R104**, defect al regulii, prag 3.
 3b. **Lista 5** — lista 4 e închisă. **12 poziții**, cu adâncimea R97 pliată în
    ele, și cu o despărțire de preț deja măsurată: pentru cele **9 declarații** e scump, fiindcă
    **nici ruta nu trimite** componentele (0 din 92 de ieșiri); pentru **netul de pe fluturaș** (12
