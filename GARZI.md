@@ -6362,11 +6362,85 @@ moare la prima rescriere legitimă; una ancorată pe EFECT nu.* Gardul are acum 
 *„rularea NU e completă"* scris în rezumat. *Cele trei NEVERIF nu sunt neconformități; sunt absența
 unei probe — și nu se sting lărgind drepturile.*
 
+## 31.08.2026 — Faza 2, prima operațiune: documentul pe care îl citează un temei conține articolul pe care îl numește?
+
+**`core/articol_in_act.py` (NOU, extras) + `core/scan_pereche_act_articol.py` (NOU) +
+`core/test_pereche_act_articol.py` — NOU, 12 teste.** Prima operațiune a fazei 2, pornită după ce
+listele 3/4/5 s-au închis (`DECIZII.md` 12: *„faza 2 după ele"*).
+
+**Cum a ieșit la iveală.** Măsuram interdicția **55** — categoria de reverificare, al cărei proiect
+era deja decis pe 23.08 — și am vrut să verific premisa scrisă acolo: *„unealta le vede deja pe
+fiecare"*. Regula planului cere exact asta (23.08: *fiecare „se măsoară trivial" se verifică înainte
+de a fi transcris*). Unealta chiar le vede. **Ce nu se verificase e dacă DATELE îi dau documentul
+potrivit.**
+
+| | |
+|---|---|
+| temeiuri unice în registrul de cote | **34** |
+| verificabile (au și `art`, și `url`) | **26** |
+| **confirmate** — documentul citat conține articolul | **15** |
+| **NEGĂSIT** — actul citat nu conține articolul | **6** → **R106** |
+| **CIOT** — documentul citat are sub două titluri de articol | **5** |
+| fără `art`, deci neverificabile | **8** |
+
+**Cele șase au aceeași formă, confirmată la sursă:** articolul e al **Codului fiscal**, actul citat
+e cel care l-a **modificat**. OG 16/2022 spune *„articolul 97 alineatul (7) … se modifică"*; OUG
+8/2026 spune *„articolul 282, alineatul (3) se modifică"*. **`COTE.impozit_dividend` are patru
+temeiuri și niciunul nu se confruntă.**
+
+### CE A SCOS EXTRAGEREA, și e un defect VIU al uneltei
+
+Logica de localizare trăia la nivel de script, sub `sys.argv` — **neimportabilă**. Am re-scris-o de
+două ori într-o oră ca să pot măsura, și **amândouă copiile au dat cifre greșite**: prima a raportat
+*0 caractere* pentru OUG 89/2025 art. III, unde unealta găsește **3700**; a doua *„fără fișier în
+corpus"* despre Codul fiscal, care e acolo, sub `cod_fiscal_227_2015_consolidat`. *O logică
+neimportabilă nu rămâne una singură — se multiplică prost.* Mutată în `core/articol_in_act.py`;
+scriptul o importă, iar un test pe **AST** cere ca importul să existe.
+
+**A cincea reparație, găsită DE extragere.** Scriptul aplica, peste tăierea la următorul titlu, o a
+doua tăiere cu un tipar **lax** — fără excluderea `din`. Aceea potrivea forma de **citare**
+dinăuntrul unui marcaj: *„… Articolul I ORDONANȚA DE URGENȚĂ nr. 79 **din** 8 noiembrie 2017 …"*.
+
+| pereche | înainte | după |
+|---|---|---|
+| `CF art. 78` | 532 caractere · **1 an** (2021) | 16.719 caractere · **6 ani** (2018, 2020, 2021, 2023, 2024, 2026) |
+| `CF art. 51` | 120 caractere · 1 an | 3.016 caractere · 4 ani |
+| `CF art. 156` | 319 caractere | 2.693 caractere |
+| `CF art. 138` | 799 caractere | 1.020 caractere |
+| `Legea 201/2025 art. I` | 234 caractere | 289 caractere |
+
+**5 din 26** de perechi își schimbă răspunsul. *Direcția greșelii e cea liniștitoare, și de-aia
+contează: articolul părea mai **stabil** decât e — `CF art. 78` cu ultima modificare în 2021 în loc
+de 2026 — deci ar fi primit pragul de reverificare cel mai **lung** exact acolo unde trebuie cel mai
+scurt.* Probat că nu s-a înlocuit sub-raportarea cu supra-raportare: pe cele trei articole schimbate,
+fragmentul nou nu conține **niciun** titlu de alt articol.
+
+**Ce face imposibil:** o pereche neconfirmată nouă (clichet **6 NEGĂSIT / 5 CIOT**, plus identitatea
+celor șase scrisă ca date — clichetul pe număr n-ar vedea una reparată și alta stricată în aceeași
+tură) · dispariția tăcută a unei perechi confirmate (prag de JOS: **15**) · întoarcerea tăierii la
+citare · o a doua implementare a localizării.
+
+**Calibrare, ambele direcții:** cazul cunoscut **găsit** (CF art. 78/51/156/138 localizate corect,
+deci „negăsit" nu vine din neputință) · negativ pe act sintetic, cu **cele trei feluri de «nu pot
+spune» deosebite** — articol absent → `NEGASIT`, act cu un singur titlu → `CIOT`, fișier lipsă →
+`FISIER_LIPSA`. Un singur „nu" le-ar topi într-unul.
+
+**RED-PROOF: 3 mutații, 3 roșii.** Prima rulare a dat **2 din 3**: proba care cerea ca fragmentul să
+nu înghită articolul următor căuta **titluri** în fragment, iar fragmentul e normalizat pe spații —
+tiparul de titlu e ancorat pe linie, deci n-avea ce vedea. Rescrisă pe **efect**: articolul următor
+din fixtură poartă un marcaj din **2030**, an care nu apare altundeva; dacă apare în anii articolului
+verificat, s-a împrumutat. *Un gard care se uită la forma greșită nu e un gard.*
+
+**Ce NU face, declarat:** nu spune că articolul găsit e **cel potrivit** — dacă actul citat conține
+din întâmplare un articol cu același număr despre altceva, perechea trece; deci „confirmate" e
+**plafon SUPERIOR** · nu deosebește vina: un `CIOT` e o problemă de **corpus**, nu de temei · **nu
+repară** cele șase, fiindcă fiecare cere o verificare la sursă a actului care poartă azi valoarea.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**497 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**499 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 480
+### `core/` — 482
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -6383,6 +6457,7 @@ unei probe — și nu se sting lărgind drepturile.*
 - `core/scan_js_texte.py` — SCANNER de FRAZE DE INTERFATA din JavaScript (23.08.2026) — instrumentul pentru interdictiile
 - `core/scan_module_nelegate.py` — INSTRUMENT — module cu funcții publice și ZERO importatori în afara testelor.
 - `core/scan_norma_implementare.py` — core/scan_norma_implementare.py — INTERDICȚIA 60: elementul care implementează o normă îi poartă
+- `core/scan_pereche_act_articol.py` — DOCUMENTUL PE CARE ÎL CITEAZĂ UN TEMEI CONȚINE ARTICOLUL PE CARE ÎL NUMEȘTE?
 - `core/scan_provenienta.py` — core/scan_provenienta.py — de unde vine fiecare fisier din corpus. (23.08.2026)
 - `core/scan_refuz_tacut.py` — core/scan_refuz_tacut.py — cate refuzuri ale serverului nu ajung la om.
 - `core/scan_respingeri.py` — core/scan_respingeri.py — ce coduri de respingere sunt CHIAR FOLOSITE in module?
@@ -6734,6 +6809,7 @@ unei probe — și nu se sting lărgind drepturile.*
 - `core/test_pas2_panou_editabil_pe_eroare.py` — GARD anti-regresie CHICKEN-AND-EGG (16.08.2026) — pas2 (declaratii.js).
 - `core/test_pastila_gri.py` — GARD (20.08.2026): griul nu se falsifică niciodată în verde.
 - `core/test_patru_ochi_efectiv.py` — core/test_patru_ochi_efectiv.py — GARD: patru-ochi = politica x aplicabilitate, aceeasi in UI si in enforcement.
+- `core/test_pereche_act_articol.py` — GARD [31.08.2026, faza 2]: un temei nu numește un act care nu conține articolul lui.
 - `core/test_perimetru_calculat.py` — #11 — §5 CALCULAT (meta-gardul). Din registrul de fatete (MODEL_AUDIT_TENANT.md, F1..F9)
 - `core/test_perimetru_firma_declarat.py` — core/test_perimetru_firma_declarat.py — GARD: perimetrul declarat al unei firme nu poate ramane
 - `core/test_perioada.py` — Perioada confirmata (DESIGN_SYSTEM cap.23): ciclul CONFIRMAT/NECONFIRMAT + blocajul motivat.

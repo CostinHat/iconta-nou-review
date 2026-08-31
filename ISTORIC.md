@@ -6772,3 +6772,58 @@ ieșire."* Codul de ieșire e singurul lucru pe care îl citește o mașină.
 
 **Verificatorul, după retragere:** `PASS: 18 · FAIL: 0 · NEVERIF: 2 · EXIT=2`. Cele două rămase sunt
 liniile NC-07, și rămân — nu se sting lărgind drepturile.
+
+## 31.08.2026 (partea a cincea) — Faza 2 a început, iar prima ei operațiune a scos un defect viu al uneltei cu care se măsura
+
+**Pasul următor din plan, luat mecanic:** listele 3, 4 și 5 sunt închise, iar `DECIZII.md` 12 spune
+*„faza 2 după ele"*. Măsurat grupul ei de interdicții (49–62): **8 MĂSURATE · 2 PARȚIAL · 4
+NEÎNCEPUTE**. Criteriul lui E2 numește două lucruri care lipsesc: **categoria de reverificare**
+(interdicția 55, măsurată 53 din 53 lipsă fiindcă *câmpul nu există*) și cele patru NEÎNCEPUTE, pe
+care planul le declară nemăsurabile retroactiv.
+
+**Am pornit spre 55 — al cărei proiect era deja decis pe 23.08 — și am făcut ce cere regula planului
+din aceeași zi:** *fiecare „se măsoară trivial" se verifică înainte de a fi transcris.* Secțiunea 55
+scria că unealta *„le vede deja pe fiecare"*.
+
+**Unealta chiar le vede. Ce nu se verificase e dacă DATELE îi dau documentul potrivit.**
+
+Din **34** de temeiuri ale registrului de cote, **26** sunt verificabile, **15 se confruntă**, **6
+nu** — actul citat **nu conține** articolul —, iar **5** citează un document-ciot. Cele șase au
+aceeași formă, confirmată la sursă: articolul e al **Codului fiscal**, actul citat e cel care l-a
+**modificat**. `COTE.impozit_dividend` are **patru** temeiuri și **niciunul** nu se confruntă. Deschis
+ca **R106**, cu condiția de deblocare scrisă — și **nereparat deliberat**: fiecare cere o verificare
+la sursă a actului care poartă azi valoarea, adică muncă fiscală, nu mecanică.
+
+### Drumul până la cifra aia m-a corectat de trei ori, și toate trei au fost ale mele
+
+1. **Prima măsurătoare a spus „axa A se poate calcula pe 2 din 17".** Re-implementasem localizarea
+   articolului, iar copia mea dădea **0 caractere** pentru OUG 89/2025 art. III. Unealta reală
+   găsește **3700**.
+2. **A doua a spus „Codul fiscal nu e în corpus".** E acolo, sub `cod_fiscal_227_2015_consolidat`.
+   Resolverul meu cerea un prefix de nume de act (`lege_`, `oug_`…), deci nu-l vedea. *Un scan cu
+   domeniul greșit raportează despre o lume pe care n-o vede.* După reparație: **10 din 17**.
+3. **A treia — cea care contează — a fost a UNELTEI, și a ieșit doar fiindcă am extras-o.** Scriptul
+   aplica peste tăierea corectă o a doua tăiere, cu un tipar **lax**, fără excluderea `din`. Aceea
+   potrivea forma de **citare** dinăuntrul unui marcaj de consolidare — *„Articolul I ORDONANȚA DE
+   URGENȚĂ nr. 79 **din** 8 noiembrie 2017"* — și tăia articolul acolo, aruncând alineatele de după,
+   cu tot cu modificările lor.
+
+**Ce a costat defectul ăsta, măsurat:** `CF art. 78` — deducerea din salarii — apărea cu **532 de
+caractere și un singur an de modificare (2021)**; real: **16.719 caractere și șase ani**, ultimul
+**2026**. Cu ei pierduți, articolul ar fi fost clasat **STABIL** și ar fi primit pragul de
+reverificare cel mai **lung** — exact acolo unde trebuie cel mai scurt. **5 din 26** de perechi își
+schimbă răspunsul.
+
+*Cele trei sunt aceeași lecție, a treia oară azi: **direcția greșelii era cea liniștitoare**. Un
+articol mai stabil decât e. Un glob gol care raportează PASS. O cifră fără clichet care nu crește.
+Toate arată ca sănătate.*
+
+**De ce s-a scos logica din script:** era sub `sys.argv`, deci neimportabilă — iar cine avea nevoie
+de ea o re-scria. Am făcut-o de două ori într-o oră. Confruntate înainte de mutare: **zero
+dezacorduri pe 26 de perechi**. Acum e în `core/articol_in_act.py`, scriptul o importă, iar un test
+pe AST cere ca importul să existe. *`DECIZII.md` 18.*
+
+**Și gardul m-a corectat a patra oară.** Proba prin mutație a dat **2 roșii din 3**: testul
+anti-supra-captare căuta titluri de articol în fragment, dar fragmentul e normalizat pe spații, iar
+tiparul de titlu e ancorat pe linie — n-avea ce vedea. Rescris pe **efect**: articolul următor din
+fixtură poartă un marcaj din **2030**; dacă anul ăla apare, s-a împrumutat. **3 din 3** după.

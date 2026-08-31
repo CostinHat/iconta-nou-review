@@ -159,7 +159,25 @@ scrisesem regula care o interzice (`METODA §10.16`). *O regulă scrisă nu țin
 
 ## AL TREILEA: DE UNDE SE PORNEȘTE, DACĂ EȘTI O SESIUNE NOUĂ
 
-**Nu mai e niciun pas „următor" scris nicăieri, și asta e starea reală, nu o lipsă.**
+**FAZA 2 A ÎNCEPUT (31.08).** Listele 3/4/5 sunt închise, iar `DECIZII.md` 12 spune *„faza 2 după
+ele"*. Grupul ei de interdicții (49–62), măsurat: **8 MĂSURATE · 2 PARȚIAL · 4 NEÎNCEPUTE**.
+Criteriul lui **E2** numește exact două lucruri care lipsesc:
+
+1. **categoria de reverificare** (interdicția **55**) — câmpul nu există; proiectul e decis din
+   23.08 (două axe mecanice × tabelul 3×3 de praguri). **Axa A e acum calculabilă**, cu
+   `core/articol_in_act.py`, dar **pe 15 din 26** de perechi: restul cad pe **R106** sau pe un
+   document-ciot. Ce urmează: axa B (consecința, din `core/dependenti_act.py`) și tabelul, cu
+   `NECUNOSCUT` declarat pe perechile care nu se confruntă.
+2. **51, 56, 57, 62 sunt NEÎNCEPUTE în registru, deși planul le declară *nemăsurabile retroactiv*.**
+   Registrul are starea `NEMĂSURABILĂ` exact pentru asta, iar regula lui e *„un câmp gol nu e
+   permis; dacă nu se poate măsura, se scrie NEMĂSURABILĂ CU MOTIVUL"*. **E o divergență
+   plan↔registru, nu o măsurătoare lipsă** — se închide scriind motivul, nu măsurând.
+
+**R106, deschisă azi:** șase temeiuri numesc actul care a **modificat** articolul, nu actul care îl
+**conține**. `COTE.impozit_dividend` are patru temeiuri și niciunul nu se confruntă cu documentul
+lui. *Nereparată deliberat: fiecare cere o verificare la sursă a actului care poartă azi valoarea.*
+
+**Restul, neschimbat:**
 `core.agenda.urmator_cluster()` întoarce `(None, 0, 0)` din 04.08; lista 3 e **închisă ca sursă de
 construcție**; nu e nicio restanță de prag 1 deschisă; din lanțul facturii nu mai e nimic deschis.
 **Ce a rămas se citește din `scripts/scan_ramas.py`**, nu dintr-o listă purtată.
@@ -219,7 +237,7 @@ ale Design System, **5** sunt acoperite. Nu invalidează porțile; le încadreaz
 ## STAREA LA PREDARE
 
 Poartă verde, citită din ieșirea rulării complete de pe arborele care devine commitul următor:
-**3850 teste trec** · 11 skip · 14 xfail · **COLLECTED 3875** · ruff OK · verificator **TOTAL 0** ·
+**3864 teste trec** · 11 skip · 14 xfail · **COLLECTED 3889** · ruff OK · verificator **TOTAL 0** ·
 rute **423 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 34** · site **200** · four-way se închide la
 `post-commit`, care publică pe `origin/main` și pe `backup/lant-2026-08-31` și **restartează
 necondiționat** procesul viu.
@@ -264,9 +282,10 @@ pretinde că e de acum. Gardat de `core/test_clichete_generate.py`; regenerare:
 *Al cincilea rând de dinainte — rata clasificatorului de alerte — a plecat de aici în blocul de
 **date**, unde îi e locul: se derivă din confruntarea predicțiilor cu faptele, nu din cod.*
 
-**CE A RĂMAS DE FĂCUT, DERIVAT: 111 rânduri, șase surse** — `./venv/bin/python scripts/scan_ramas.py`.
-RESTANȚĂ 43 · INTERDICȚIE 55 · INSTRUMENT 6 · CLICHET 4 · ARTEFACT 1 · CONSTATARE 2. *Doar clichetele
-au dimensiune sigură; restul poartă cifra din fișier, sau `?`.*
+**CE A RĂMAS DE FĂCUT se citește rulând `./venv/bin/python scripts/scan_ramas.py`** — șase surse,
+defalcat pe fel. *Cifrele NU se scriu aici: sunt derivate și au îmbătrânit deja o dată (111→112,
+43→44, la deschiderea lui R106), în chiar ziua în care s-a gardat clasa asta pe tabelul de clichete.
+Doar clichetele au dimensiune sigură; restul poartă cifra din fișier, sau `?`.*
 
 **CLICHETUL DE GRI A FĂCUT 45 → 49 → 7 ÎN ACEEAȘI ZI**, iar a doua mutare e **reparația**, nu o
 replafonare. Prima creștere venea din vocabular: ancora era un CUVÂNT, iar un ecran nou al cărui
@@ -512,8 +531,8 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 1. **NU LUA URMĂTORUL ARTEFACT DIN LISTA 3.** E **închisă ca sursă de construcție** (Costin,
    31.08): 1 deschis din 7, iar acela — notele explicative, forma redusă — e deschis **pe
    producător**. Ce a rămas de făcut se citește din `scripts/scan_ramas.py`, nu din listă.
-   *Restanțele (43) și interdicțiile nemăsurate (55) sunt populațiile mari; instrumentele din
-   roadmap (6) sunt singurele cu contur.*
+   *Restanțele și interdicțiile nemăsurate sunt populațiile mari; instrumentele din roadmap sunt
+   singurele cu contur. Cifrele se iau din instrument, nu de aici.*
 2. **UMBRA INTERDICȚIEI 77 E ÎNCHISĂ DEFINITIV** (Costin, 31.08, `DECIZII.md` 15): populația nu
    se auditează, nu devine restanță, **nu se mai deschide ca temă**. Ce continuă e derivarea cifrei,
    nu munca pe ea. *Nu propune o campanie pe ea; nu e „nu acum", e niciodată.*

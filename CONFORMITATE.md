@@ -2284,6 +2284,65 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
 - **cum s-a rezolvat (partea statică)**: `core/test_ds_verificator.py` — **trei clichete** (neacoperite ≤ **24**, acoperite ≥ **5**, fără ancoră ≤ **18**) și **patru calibrări**, dintre care una **în direcția de eșec** (regula lui R100: o ancoră sigur absentă trebuie să iasă NEACOPERITĂ) și una pe **ancora din comentariu** — chiar forma regulii steluțelor. **RED-proof rulat**: o regulă nouă inserată în DS, cu ancoră necunoscută, urcă 24 → 25 și garda cade. *Clichetele sunt praguri, nu zerouri: datoria cunoscută e **înghețată**, nu ștearsă.* **Ce NU închide asta, prin decizie:** cele **15** reguli acoperite doar la suprafață **nu sunt datorie** — sunt limita unui scaner static, corect diagnosticată, și cer alt instrument, care cheamă rute și observă comportamentul: **faza 2**. Iar cele **18 fără ancoră** s-au desprins ca **R104**, fiindcă sunt defect al REGULII, nu al instrumentului.
 - **condiția de deblocare**: o gardă care cere ca fiecare regulă din DS cu **ancoră** să aibă corespondent în verificator, **sau** o declarație scrisă lângă ea („nu se poate verifica static, fiindcă…"). Clichet pe numărul de neacoperite, ca să nu crească tăcut. Se închide când cifra e ținută de un clichet **și** când fiecare regulă din cele 24 e ori acoperită, ori declarată. *Partea „doar la suprafață" (15) NU se închide cu asta: ea cere un instrument care observă comportamentul, nu textul — deci altă natură, și altă restanță când se ajunge la ea.*
 
+### R106 — Un temei numește actul care a MODIFICAT articolul, nu actul care îl CONȚINE
+
+- **felul**: SURSĂ
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · faza 2 · grupul temeiurilor (49–62) · **PRAG 2**
+- **ce blochează**: criteriul de terminare al lui **E2** — *„fiecare articol folosit are dată de
+  verificare, stare, succesor"* —, fiindcă pentru cele șase nu se poate stabili starea articolului:
+  verificarea de vigoare întreabă documentul greșit. Blochează și **interdicția 55**, a cărei axă A
+  se poate calcula doar pe perechile care se confruntă (15 din 26).
+- **condiția de deblocare**: pentru fiecare din cele șase, **actul și articolul care poartă azi
+  valoarea**, confirmate în corpus, cu citatul care o conține — verificat la sursă, nu dedus din
+  tipar. Se închide când `core/scan_pereche_act_articol.pe_stare()` dă `NEGASIT: 0`, iar clichetul
+  din `core/test_pereche_act_articol.py` coboară odată cu el.
+- **reluări**: 0
+- **stare**: **DESCHISĂ**
+- **deschisă pe commit**: `535af8b`
+- **măsurat la**: 2026-08-31 · **pe commit**: `535af8b`
+- **cifra**: **6 perechi (act, articol) din 26 verificabile** numesc un act care nu conține
+  articolul. Plus **5** care citează un document-**ciot**, unde nu se poate afirma nimic — altă
+  cauză, aceeași consecință. Total neconfirmate: **11 din 26**. Confirmate: **15**. Instrument:
+  `core/scan_pereche_act_articol.py`; clichet în `core/test_pereche_act_articol.py`.
+- **instanțe**, toate de aceeași formă — articolul e al **Codului fiscal**, actul citat e cel care
+  l-a modificat:
+
+  | temei scris | articolul e, de fapt, al | ce valoare justifică |
+  |---|---|---|
+  | `Legea 141/2025 art. 97` | CF art. 97 | `impozit_dividend` |
+  | `OG 16/2022 art. 97` | CF art. 97 | `impozit_dividend` |
+  | `OUG 50/2015 art. 97` | CF art. 97 | `impozit_dividend` |
+  | `OUG 8/2026 art. 28` | CF art. 28 | `plafon_mijloc_fix` |
+  | `OUG 8/2026 art. 282` | CF art. 282 | `plafon_tva_incasare` (×2) |
+
+  **Confirmat la sursă**, nu dedus din tipar: OG 16/2022 spune *„articolul 97 alineatul (7) … se
+  modifică"*, iar OUG 8/2026 *„articolul 282, alineatul (3) se modifică"*. Sunt acte
+  **modificatoare**; articolul citat nu e al lor.
+
+  **Cazul cel mai greu: `COTE.impozit_dividend` are PATRU temeiuri și NICIUNUL nu se confruntă** —
+  trei negăsite, unul ciot. Valoarea e corectă (interdicția 53 o confirmă în citat); ce nu se poate
+  reface e **drumul de la ea la lege**.
+- **calibrare**: cazul cunoscut a fost **găsit** — `CF art. 78`, `art. 51`, `art. 156`, `art. 138`
+  sunt localizate corect în `cod_fiscal_227_2015_consolidat`, deci instrumentul nu răspunde
+  „negăsit" din neputință. Negativ, pe act sintetic: articol absent → `NEGASIT`, act cu un singur
+  titlu → `CIOT`, fișier lipsă → `FISIER_LIPSA`. **Cele trei feluri de «nu pot spune» se
+  deosebesc** — un singur „nu" le-ar topi într-unul.
+- **ce nu vede**: **(1)** dacă actul citat conține din întâmplare un articol cu **același număr**
+  despre altceva, perechea trece — deci „confirmate" e **plafon SUPERIOR**; **(2)** cele **8**
+  temeiuri fără `art` nu se pot verifica deloc, și se numără separat, nu se trec la bine; **(3)** un
+  `CIOT` nu spune că temeiul e greșit, ci că documentul adus e parțial — e o problemă de **corpus**.
+- **de ce NU s-a reparat în tura măsurătorii**: fiecare din cele șase cere o **verificare la sursă**
+  a actului care poartă **azi** valoarea, plus articolul lui — muncă fiscală, nu mecanică. Iar
+  registrul de cote e locul din care pleacă cifrele în declarații: o repointare greșită ar înlocui
+  un temei verificabil-fals cu unul fals-verificabil. **Condiția de deblocare**: pentru fiecare din
+  cele șase, actul și articolul care poartă valoarea, confirmate în corpus, cu citatul care o
+  conține.
+- **unde ajunge efectul**: un contabil controlat nu poate arăta pe ce se sprijină cota de dividende.
+  Aplicația citează patru acte; niciunul nu conține articolul numit. Nu e o cifră greșită — e o
+  **cifră care nu se poate apăra**, iar la un control asta e mai rău decât o eroare pe care o poți
+  arăta și corecta.
+
 ### R105 — D112 nu-și poate desface cifra: generatorul ei nu întoarce pozițiile, doar XML-ul
 
 - **felul**: ARTEFACT
@@ -6830,8 +6889,21 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
   **Amândouă măsurile sunt mecanice** — asta e ce face categoriile calculabile, nu atribuibile:
 
   - **A. Frecvența articolului** se citește din marcajele de consolidare ale articolului în corpus,
-    cu `scripts/vigoare_articol.py`, care le vede deja pe fiecare (mod de fișier local, 1.849 de
-    titluri).
+    cu `core/articol_in_act.py` (logica scoasă din `scripts/vigoare_articol.py` pe 31.08, ca să fie
+    importabilă).
+
+    **PREMISA «le vede deja pe fiecare» A FOST MĂSURATĂ, 31.08.2026, și e mai îngustă.** Pe
+    populația reală: din **26** de perechi (act, articol) verificabile, **15 se confruntă**, **6 nu**
+    — actul citat nu conține articolul (**R106**) —, iar **5** citează un document-ciot. Deci axa A
+    se poate calcula azi pe **15**, nu pe toate; restul primesc `NECUNOSCUT`, cu motivul. *Unealta
+    chiar le vede pe fiecare; ce nu se verificase e dacă DATELE îi dau documentul potrivit.*
+
+    **Și extragerea a scos un defect viu al uneltei**: o tăiere laxă potrivea forma de CITARE
+    dinăuntrul unui marcaj de consolidare și trunchia articolul acolo. **5 din 26** de perechi își
+    schimbă răspunsul; `CF art. 78` trecea de la **16.719 la 532 de caractere** și de la **șase ani
+    de modificare la unul**. *Direcția greșelii era cea liniștitoare: articolul părea mai STABIL
+    decât e, deci ar fi primit pragul cel mai LUNG exact unde trebuie cel mai scurt.* Gardat de
+    `core/test_pereche_act_articol.py`, cu mutație.
   - **B. Consecința** se citește din **unde ajunge** valoarea: `core/dependenti_act.py` dă funcțiile
     care o ating, iar modulul lor spune categoria — `d1xx`/`d3xx`/`d4xx` = intră într-o declarație.
 

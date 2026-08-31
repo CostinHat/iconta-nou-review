@@ -3,6 +3,31 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 31.08.2026 (18) — O logică neimportabilă se multiplică prost
+
+*Nu e o decizie de produs; e o regulă de construcție, ieșită dintr-o instanță măsurată, și de-aia se
+scrie aici și nu doar în `GARZI.md`.*
+
+**Regula:** *o logică de care are nevoie și altcineva nu are voie să stea sub `sys.argv`.* Un script
+care ține logica la nivel de modul e neimportabil, iar cine are nevoie de ea **o re-scrie** — nu din
+lene, ci fiindcă nu are alternativă.
+
+**Instanța, în aceeași oră:** am re-scris de **două** ori localizarea articolului din
+`scripts/vigoare_articol.py`, ca să pot măsura interdicția 55. Prima copie a raportat *0 caractere*
+pentru OUG 89/2025 art. III, unde unealta găsește **3700**. A doua a raportat *„fără fișier în
+corpus"* despre **Codul fiscal**, care e acolo — resolverul meu cerea un prefix de nume de act, iar
+fișierul se cheamă `cod_fiscal_227_2015_consolidat`. *Un scan cu domeniul greșit raportează despre o
+lume pe care n-o vede.*
+
+**Ce s-a făcut:** logica a trecut în `core/articol_in_act.py`, cu cele patru reparații ale ei și cu
+motivele lor; scriptul o importă. Confruntate înainte de mutare: **zero dezacorduri pe 26 de
+perechi**. Gardat pe **AST**: dacă scriptul nu mai importă modulul, poarta cade.
+
+**Și extragerea a plătit imediat:** a scos o a cincea reparație, un defect **viu** care trunchia
+articolele la o citare și ascundea volatilitate — `CF art. 78` apărea modificat ultima dată în 2021,
+când real e 2026. *Nu s-a găsit citind codul; s-a găsit fiindcă mutarea a cerut confruntarea celor
+două forme pe toate perechile.*
+
 ## 31.08.2026 (17) — Ancora NC-02 se retrage; `EXIT=2` rămâne
 
 **1. ANCORA NC-02 SE RETRAGE, cu motivul scris.** Costin, verbatim: *„Retrage ancora NC-02, cu
