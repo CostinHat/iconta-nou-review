@@ -5152,8 +5152,8 @@ stare, cu ce lipsește. Măsurătoare, nu construcție.» Măsurat pe cele 19 fi
 
 | rândul | ce cere ca să se poată delimita | măsurat acum | distanța |
 |---|---|---|---|
-| **Note explicative** | categoria de mărime a entității (OMFP 1802/2014 pct. 20-21: microentitățile sunt scutite) | **0 din 19** firme se pot încadra | aceeași ca rândul de mai jos — categoria e precondiția lui |
-| **categoria de mărime / R3** | două exerciții consecutive **cu rulaje de clasă 6/7** (pct. 13 alin. (2)-(3)) | **0 din 19** firme le au. *Cu NOTE validate în două exerciții consecutive, dar fără rulaje: 3* | un exercițiu de rulaje 6/7 pe oricare dintre cele 3 firme cu note |
+| **Note explicative** (forma REDUSĂ) | categoria de mărime a entității. **Scutirea microentităților e PARȚIALĂ**, nu totală: pct. 576 alin. (2) le cere pct. 468 lit. a), d), e) și pct. 491 alin. (2) lit. c) | **2 din 19** firme se pot încadra | producătorul — categoria nu mai blochează |
+| **categoria de mărime / R3** | două exerciții consecutive **cu rulaje de clasă 6/7** (pct. 13 alin. (2)-(3)) | **2 din 19** firme le au | **zero** — se poate încadra pe 2 firme, exercițiul precedent fiind CONSTRUIT în exercițiul de intrare din 31.08 |
 
 *Tabelul de mai sus e **GENERAT** cu `scripts/scan_lista3.proba_md()`, măsurat pe firmele reale, și comparat caracter cu caracter de `core/test_lista3.py`. Scris de mână, a purtat o zi un calificativ căzut — «niciuna n-are două exerciții consecutive», adevărat doar cu **«cu rulaje»**, care lipsea. Nu numărul era greșit, ci ce anume număra.*
 
@@ -5187,7 +5187,7 @@ Răspunsurile s-au luat mecanic: producătorul chemat **pe date reale**, ruta ci
 |---|---|---|---|---|
 | **Registrul-inventar** (14-1-2) | **DA, din 30.08** — `core/registru_inventar.py`, cu obligația și conținutul sursate SEPARAT (Legea 82/1991 art. 20 · OMFP 2634/2015 Anexa 2); tabel propriu `registru_inventar` (migrare aplicată 19/19) | **DA, din 30.08** — `GET`, **`POST`** și `GET .../propunere`, în T05, lângă jurnal și Cartea mare | **DA, din 30.08** — `#fa-reginventar`, cu formular pe cele șase coloane | **REPARAT.** *Coloana 4 (valoarea de inventar) **nu** se derivă: vine din numărarea faptică. Completată implicit din coloana 3, ar fi produs zero diferențe pe toate conturile — o inventariere perfectă care nu s-a făcut. Păzit din trei direcții.* |
 | **Cartea mare** (14-1-3) | **DA** — `core/fisa_cont.py`, Fișa de cont 14-6-22, înlocuitorul legal. Măsurat azi: **6 firme cu mișcare, 43 de conturi** în 2026 | **DA, din 30.08** — `GET /tenants/{id}/fisa-cont` | **DA, din 30.08** | **REPARAT** |
-| **Note explicative** | **NU** — zero potriviri în cod de producție | — | — | **DESCHIS** |
+| **Note explicative** — **forma REDUSĂ, datorată și de microentități** | **NU** — zero potriviri în cod de producție | — | — | **DESCHIS.** *Imposibilitatea temporară s-a ridicat pe 31.08: exercițiul precedent a fost **construit** pe `tenant_013`/`tenant_014`, iar încadrarea dă `micro` pe amândouă. Ce se datorează, citit la sursă (OMFP 1802/2014 pct. 576 alin. (2), din **a doua apariție** a actului în corpus — prima o elidează): **pct. 468 lit. a)** politicile contabile · **lit. d)** angajamente și garanții neincluse în bilanț · **lit. e)** avansuri și credite către organele de administrație · **pct. 491 alin. (2) lit. c)** achiziții de acțiuni proprii. Citită doar alin. (1), concluzia ar fi fost «micro → nu se datorează» — falsă.* |
 | **Jurnal regim marjă** (art. 312 · art. 311) | **DA** — `core/tva_marja.py`, `tva_marja_turism.py` | **DA, exista deja** — `GET /tenants/{id}/jurnal-marja`, cu comentariul *„fără UI încă, păstrat deliberat"* | **DA, din 30.08** | **REPARAT** |
 
 **RÂNDUL CARE A IEȘIT, fiindcă era FALS: „Bilanț (S1005) · CPP — zero rute".**

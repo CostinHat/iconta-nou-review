@@ -20,6 +20,7 @@ să fie trece pe aici; pentru asta sunt gărzile fiecărui artefact (`test_regis
 """
 import io
 import os
+import re
 
 import pytest
 
@@ -68,14 +69,33 @@ def test_calibrare_titlul_se_SCHIMBA_cand_se_schimba_o_stare(doc):
     """CALIBRARE pe modul propriu de eșec: dacă titlul n-ar depinde de coloana `stare`, ar fi o
     constantă frumos ambalată. Se probează pe o COPIE a documentului, nu pe fișierul real."""
     inainte = sl.titlu(doc)
-    mutat = doc.replace("| **DESCHIS** |", "| **REPARAT** |", 1)
-    assert mutat != doc, "nu există niciun rând DESCHIS de mutat — calibrarea n-are pe ce lucra"
+    # Pe STRUCTURA: se ia rândul DESCHIS pe care instrumentul îl vede și se schimbă VERDICTUL din
+    # celula lui, oricare i-ar fi forma. Prima formă căuta literalul `| **DESCHIS** |` și a picat la
+    # prima folosire reală, când rândul și-a primit un titlu mai lung — ancoră pe tipografie.
+    def _muta(text, din, spre):
+        """Schimbă VERDICTUL în prima linie de tabel a cărei ultimă coloană începe cu `din`.
+
+        Se lucrează pe LINIA din document, nu pe `stare` — aceea e textul CURĂȚAT de marcajele
+        markdown, deci nu apare verbatim nicăieri. Prima formă a probei o căuta în document și n-o
+        găsea: instrumentul curăță, iar eu comparam cu ce nu fusese curățat.
+        """
+        out = []
+        facut = False
+        for l in text.split(chr(10)):
+            col = [c.strip() for c in l.strip().strip("|").split("|")]
+            if not facut and len(col) == 5 and re.sub(r"[*`]", "", col[4]).startswith(din):
+                l = l.replace(col[4], col[4].replace(din, spre, 1), 1)
+                facut = True
+            out.append(l)
+        return chr(10).join(out), facut
+
+    mutat, facut = _muta(doc, "DESCHIS", "REPARAT")
+    assert facut, "nu există niciun rând DESCHIS — calibrarea n-are pe ce lucra"
     assert sl.titlu(mutat) != inainte, (
         "titlul nu se schimbă când un rând trece din DESCHIS în REPARAT — nu se derivă din stare")
 
-    # și direcția inversă, ca să nu treacă un instrument care doar numără rânduri
-    invers = doc.replace("| **REPARAT.**", "| **DESCHIS.**", 1)
-    if invers != doc:
+    invers, facut2 = _muta(doc, "REPARAT", "DESCHIS")
+    if facut2:
         assert sl.titlu(invers) != inainte, "titlul nu se schimbă nici când un REPARAT se redeschide"
 
 
@@ -111,8 +131,16 @@ def test_fiecare_rand_DESCHIS_apare_in_proba(doc):
     deschise = [r["artefact"] for r in sl.randuri(doc) if r["verdict"] == "DESCHIS"]
     if not deschise:
         pytest.skip("niciun rând deschis — proba n-are obiect")
+    # Potrivirea pe PRIMELE DOUĂ CUVINTE, nu pe un prefix de N caractere: titlul unui rând se poate
+    # lungi (s-a și lungit, în aceeași zi), iar un prefix fix rupe potrivirea fără ca nimic să se fi
+    # stricat. Două cuvinte identifică rândul și supraviețuiesc unei precizări adăugate la coadă.
     gen = sl.proba_md()
-    lipsa = [a for a in deschise if a.split("(")[0].strip()[:18] not in gen]
+
+    def _cheie(x):
+        return " ".join(re.sub(r"[*`]", "", x).split()[:2]).lower()
+
+    chei_gen = {_cheie(l.split("|")[1]) for l in gen.split(chr(10))[2:] if l.count("|") > 3}
+    lipsa = [a for a in deschise if _cheie(a) not in chei_gen]
     assert not lipsa, (
         "artefacte DESCHISE fără rând în tabelul de probă: %s. Măsoară-le înainte de a construi "
         "din ele — sau adaugă-le în `scan_lista3.proba_md()`, ca dimensiunea lor să se genereze."

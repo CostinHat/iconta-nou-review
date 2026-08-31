@@ -131,14 +131,21 @@ def proba_md(p=None):
     return "\n".join([
         "| rândul | ce cere ca să se poată delimita | măsurat acum | distanța |",
         "|---|---|---|---|",
-        "| **Note explicative** | categoria de mărime a entității (OMFP 1802/2014 pct. 20-21: "
-        "microentitățile sunt scutite) | **%d din %d** firme se pot încadra | aceeași ca rândul de "
-        "mai jos — categoria e precondiția lui |" % (len(p["incadrate"]), n),
+        "| **Note explicative** (forma REDUSĂ) | categoria de mărime a entității. **Scutirea "
+        "microentităților e PARȚIALĂ**, nu totală: pct. 576 alin. (2) le cere pct. 468 lit. a), d), "
+        "e) și pct. 491 alin. (2) lit. c) | **%d din %d** firme se pot încadra | producătorul — "
+        "categoria nu mai blochează |" % (len(p["incadrate"]), n),
         "| **categoria de mărime / R3** | două exerciții consecutive **cu rulaje de clasă 6/7** "
-        "(pct. 13 alin. (2)-(3)) | **%d din %d** firme le au. *Cu NOTE validate în două exerciții "
-        "consecutive, dar fără rulaje: %d* | un exercițiu de rulaje 6/7 pe oricare dintre cele %d "
-        "firme cu note |" % (len(p["cu_doua_exercitii_cu_rulaje"]), n, len(p["cu_doua_exercitii_cu_note"]),
-                             len(p["cu_doua_exercitii_cu_note"])),
+        "(pct. 13 alin. (2)-(3)) | **%d din %d** firme le au%s | %s |"
+        % (len(p["cu_doua_exercitii_cu_rulaje"]), n,
+           ("" if p["cu_doua_exercitii_cu_rulaje"] else
+            "; cu NOTE validate în două exerciții consecutive, dar fără rulaje: %d"
+            % len(p["cu_doua_exercitii_cu_note"])),
+           ("**zero** — se poate încadra pe %d firme, exercițiul precedent fiind CONSTRUIT în "
+            "exercițiul de intrare din 31.08" % len(p["cu_doua_exercitii_cu_rulaje"]))
+           if p["cu_doua_exercitii_cu_rulaje"] else
+           "un exercițiu de rulaje 6/7 pe oricare dintre cele %d firme cu note"
+           % len(p["cu_doua_exercitii_cu_note"])),
     ])
 
 

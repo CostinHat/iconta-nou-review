@@ -5672,6 +5672,161 @@ una** — cu ce lipsește, ca listă, în mesaj. *Se află atunci, nu la depuner
 ghicit din poziție · proxy-ul începe să inventeze purtători.
 
 
+## 31.08.2026 — EXERCIȚIUL DE INTRARE pe `tenant_013` și `tenant_014`: patru găuri, și o închidere
+
+*Cerut de Costin: două serii, **invalidele primele**. Motivul lui, care s-a dovedit exact:
+«dacă pornești cu cele valide și trece, nu știi dacă poarta funcționează sau e deschisă».*
+
+### EXERCIȚIUL E CONSTRUIT, NU GĂSIT — se scrie, fiindcă altfel se citește ca observație
+
+Notele de 2025 de pe cele două firme **le-am scris eu**, prin rutele vii, în tura asta. Ele nu
+existau; exercițiul financiar precedent a fost **fabricat ca probă**, nu descoperit în date. Orice
+cifră derivată din el — încadrarea `micro`, închiderea R3 — **atârnă de faptul ăsta**. Cine citește
+mai târziu că „ALFA MICRO SRL e microentitate" trebuie să știe că e o firmă de test cu date puse de
+mână pentru a exercita o poartă, nu o măsurătoare despre lume.
+
+### O sondă oarbă, prinsă înainte de a produce o concluzie falsă
+
+Prima rulare a dat **16 din 16 refuzuri fără temei** — și era **greșită**. Toate cele 16 erau
+`404 tenant inexistent sau fără acces`: tokenul era al altui cabinet, iar cererile **n-au ajuns
+niciodată la gărzile pe care le testam**. Am fi scris «niciun refuz nu poartă temei» despre un cod
+care nici măcar nu s-a executat. *Un refuz de acces și unul de conținut arată identic într-un tabel
+de coduri HTTP.* De-aia seria are acum o aserțiune anti-vacuu pe utilizator.
+
+### SERIA I — INVALIDE: 16 cereri, patru clase de defect
+
+| ce s-a cerut | ce s-a întâmplat |
+|---|---|
+| notă fără linii · linie fără cont · sumă zero · sumă negativă | **refuzate corect**, 400, cu mesaj în limba contabilului |
+| **cont inexistent în planul firmei (`9999`)** | **ACCEPTAT**, 200, nota creată |
+| **notă dezechilibrată** (debit 1000, credit 700) | **ACCEPTAT**, 200, nota creată |
+| dată lipsă · dată în alt format | **500**, fără niciun mesaj |
+
+**1. `9999` trece — și R54 e marcată REZOLVATĂ.** Nu e o închidere falsă; e o **gaură în domeniul
+instrumentului**. `test_cont_din_corp_normalizat` caută citiri de cont după **numele cheii**:
+`_e_cont()` acceptă `cont` și `cont_*`. Calea jurnalului — cea mai folosită cale de scriere în
+`inregistrari_linii` — citește `l["debit"]` și `l["credit"]`. **Nu sunt în cele 27 de citiri
+măsurate, nici în cele 8 declarate NELEGATE: n-au fost niciodată în domeniu.** R54 spune «toate
+rutele care scriu în evidența contabilă cu un cont venit de la om» — afirmația e mai largă decât
+măsurătoarea care o susține.
+
+*A treia instanță din aceeași familie în trei zile: **R80** (o cifră creștea din vocabularul
+ecranelor), **clasificatorul de alerte** (cântărea vocabularul rezumatului), și acum **R54** (își
+definește domeniul după numele cheii). De fiecare dată instrumentul măsoară CUM SE NUMEȘTE ceva, nu
+CE FACE.*
+
+**2. Nota dezechilibrată intră ca ciornă și se validează.** Egalitatea debit = credit nu se
+verifică la creare. `echilibru_perioada` există (R33), dar lucrează pe perioadă, nu pe notă — deci o
+notă ruptă se vede abia agregat, dacă se vede.
+
+**3. Data lipsă → 500.** Nu e un refuz: e o excepție neprinsă, fără mesaj. Un 500 nu spune nimic
+omului și nu poate purta temei — e chiar forma pe care interdicția 77 o exclude.
+
+**4. Cele 12 refuzuri reale nu poartă niciun temei.** *Interdicția 77, pe cea mai folosită cale de
+scriere a aplicației.* Nu intră în clichetul de 61: `jurnal_api.py` **nu citează nicio normă**, deci
+refuzurile lui sunt în UMBRĂ — populația de 778 despre care norma spune că nu se poate ști mecanic
+dacă e generică sau aplică o regulă nenumită. **Aici s-a aflat, prin exercițiu, că a doua variantă e
+adevărată**: „fiecare linie are nevoie de cont debit și credit" e partida dublă, adică o normă.
+
+### SERIA II — VALIDE: ce confirmă, și ce nu
+
+Opt note scrise și opt validate, toate `200`. **Toate cele 16 răspunsuri confirmă doar `ok`.**
+Ruta nu spune ce a înregistrat, în ce perioadă, cu ce sold, nici că nota a intrat în evidență.
+*Acceptarea tăcută e constatare* — iar aici tăcerea e simetrică cu găurile de mai sus: aceeași rută
+nu spune nici când refuză de ce, nici când acceptă ce.
+
+### CE S-A ÎNCHIS, prin date
+
+`categorie_marime` pe 2026: **`nedeterminata` → `micro`**, pe amândouă firmele, cu motivul *„aceeași
+încadrare în amândouă exercițiile consecutive"*. **R3 se închide pe probă**, nu pe cod — derivarea
+era corectă din 30.08; îi lipsea exercițiul precedent.
+
+Garda de așteptare a notelor explicative **a picat, cum a fost construită să facă**, și a numit ce
+urmează. Am urmat pașii ei.
+
+### CE A SCOS CITIREA LA SURSĂ — și ar fi fost o a treia concluzie inversată
+
+Prima citire: **pct. 576 alin. (1)** — *„microentitățile nu au obligația elaborării notelor
+explicative"*. Eram gata să scriu că pe amândouă firmele notele **nu se datorează**.
+
+Punctul începe însă cu *«Cu respectarea prevederilor alin. (2)»*, iar **alin. (2) e ELIDAT în prima
+apariție** a actului din corpus. Căutată a doua apariție — regula METODA §30, prima instanță — și
+acolo e:
+
+> **576. (2)** Microentitățile prezintă informațiile prevăzute la **pct. 468 lit. a), d) și e)** și
+> **pct. 491 alin. (2) lit. c)**.
+
+**Deci microentitățile NU sunt scutite integral.** Ce datorează, citit tot de la a doua apariție
+(literele erau elidate și ele la prima):
+
+| temei | ce se prezintă |
+|---|---|
+| pct. 468 lit. a) | politicile contabile adoptate, inclusiv bazele de evaluare |
+| pct. 468 lit. d) | angajamente financiare, garanții, active și datorii contingente neincluse în bilanț |
+| pct. 468 lit. e) | avansuri și credite acordate membrilor organelor de administrație, conducere și supraveghere |
+| pct. 491 alin. (2) lit. c) | informații privind achizițiile propriilor acțiuni |
+
+*A treia oară în trei zile când o citire oprită la primul nivel ar fi produs o concluzie inversată —
+și a treia oară când a doua apariție a actului în același fișier a conținut ce lipsea.*
+
+
+## 31.08.2026 — CE A RĂMAS DE FĂCUT, derivat din fișiere: **111 rânduri, șase surse**
+
+*Cerut de Costin: «Derivă din fișiere lista a ce a rămas de făcut, cu sursă pe fiecare rând și cu
+dimensiune probată. Unde două liste numesc același lucru diferit, e constatare. Măsurătoare, nu
+construcție.» Instrument: `scripts/scan_ramas.py`.*
+
+| fel | câte | sursa din care se derivă | dimensiune |
+|---|---|---|---|
+| **RESTANȚĂ** | 43 | `CONFORMITATE.md` · `### R<n>` cu `stare` ≠ REZOLVATĂ | contorul de commituri, per rând |
+| **INTERDICȚIE** | 55 | `CONFORMITATE.md` · `## <n>` cu `stare` ≠ MĂSURATĂ | cifra, unde există |
+| **INSTRUMENT** | 6 | `INSTRUMENTE_ROADMAP.md` · lista, stare ≠ CONSTRUIT/ACOPERIT | `?` |
+| **CLICHET** | 4 | instrumentele vii, **recalculate acum** | 61 · 779 · 1222 · 7 |
+| **ARTEFACT** | 1 | lista 3, prin `scan_lista3` | 1 rând |
+| **CONSTATARE** | 2 | `GARZI.md` · titluri cu GRI sau DESCHIS | `?` |
+
+**Singurele patru rânduri cu dimensiune SIGURĂ sunt clichetele** — ele se recalculează la fiecare
+rulare. Restul poartă cifra scrisă în fișier, sau `?`. *Un rând cu `?` nu e o lipsă de raportare: e o
+sarcină despre care nu se știe cât e de mare, iar asta e o informație.*
+
+### O ORBIRE A INSTRUMENTULUI, prinsă înainte de a fi crezută
+
+Prima rulare a dat **INSTRUMENT: 0**. Ar fi însemnat că din cele 11 nu mai e nimic de construit.
+Roadmapul le ține ca **listă** (`- **#N titlu** — PROPUS: …`), iar parserul căuta un **tabel**.
+**Un zero greșit e mai rău decât o lipsă**: se citește ca terminat. Prins fiindcă cifra contrazicea
+ce știam, și am verificat **formatul** în loc să cred cifra. După reparație: **6**, dintre care
+`#2` PARȚIAL și cinci PROPUSE.
+
+### DIVERGENȚA DE NUME — găsită prin exercițiu, nu prin potrivire mecanică
+
+Potrivirea automată a găsit **zero**, și asta e **modul de eșec 3 al instrumentului**, declarat: două
+liste care numesc același lucru cu vocabular complet diferit **nu se pot potrivi mecanic** — exact
+clasa căutată. Cifra e un plafon inferior.
+
+Una reală a ieșit din exercițiul de intrare de azi:
+
+> **Calea jurnalului scrie conturi venite de la om, și e invizibilă în AMÂNDOUĂ listele care ar
+> trebui s-o vadă — din motive diferite.**
+
+| lista | ce numără | de ce nu vede calea jurnalului |
+|---|---|---|
+| **R54** — „contul din corpul cererii nu e confruntat cu planul" | citiri de cont, recunoscute după **numele cheii** (`cont`, `cont_*`) | jurnalul citește `l["debit"]` și `l["credit"]` — **nu sunt în cele 27 măsurate, nici în cele 8 declarate NELEGATE** |
+| **interdicția 77** — „blocaj fără temei" | refuzuri fără temei, împărțite după **dacă modulul citează legea** | `jurnal_api.py` nu citează nicio normă → refuzurile lui cad în **UMBRA de 779**, populația declarat nedeplafonată |
+
+**Același cod, două liste, niciuna nu-l vede.** R54 îl ratează fiindcă se uită la *cum se numește*
+cheia; 77 îl lasă afară fiindcă se uită la *ce citează* modulul. Fiecare criteriu e apărabil singur;
+împreună lasă o gaură pe care niciunul n-o raportează.
+
+Iar exercițiul a arătat că **umbra chiar conține norme**: *„fiecare linie are nevoie de cont debit și
+credit"* e partida dublă. Norma 77 spune că nu se poate ști mecanic dacă un modul din umbră aplică o
+regulă nenumită — **aici s-a aflat că da**, și s-a aflat exercitând, nu măsurând.
+
+*Nereparat, deliberat — s-a cerut măsurătoare. Ce ar cere reparația, ca să nu se redescopere: R54
+și-ar defini domeniul după **unde ajunge valoarea** (`inregistrari_linii.cont_debit`), nu după numele
+cheii din cerere. Atunci calea jurnalului ar intra în domeniu, iar refuzurile ei ar avea unde să fie
+numărate.*
+
+
 ## Inventar (generat, 28.08.2026)
 
 Blocul de mai jos e produs de `scripts/scan_garzi_inventar.py --md` și păzit de
@@ -5999,9 +6154,9 @@ referința veche, apoi s-a rescris.*
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**492 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**494 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 476
+### `core/` — 477
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -6356,7 +6511,7 @@ referința veche, apoi s-a rescris.*
 - `core/test_nomenclatoare_ancorate.py` — GARD DE CLASA (04.08.2026): fiecare nomenclator care ajunge la ANAF e PROBAT pe validatorul INSTALAT.
 - `core/test_nomenclator_pe_norma.py` — GARD [C6, 25.08.2026]: un nomenclator se ia din NORMĂ; validatorul e constrângere, nu sursă.
 - `core/test_norma_implementare.py` — GARDĂ pentru interdicția 60 — elementul care implementează o normă îi poartă articolul?
-- `core/test_note_explicative_asteapta.py` — GARDĂ DE AȘTEPTARE — notele explicative se întorc în lista 3 când devin delimitabile.
+- `core/test_note_explicative_micro.py` — GARDĂ: ce datorează o microentitate la notele explicative — și de ce NU e „nimic".
 - `core/test_numar_fiscal.py` — Teste core.common.numar_fiscal + garda pe generatoarele de declaratii.
 - `core/test_nume_anaf.py` — GARD [27.08.2026]: denumirea de la ANAF se păstrează lângă cea editabilă, cu data ei.
 - `core/test_nume_firma_unic.py` — GARD [27.08.2026]: două firme cu același nume, în același cabinet, sunt un fapt imposibil.
@@ -6397,6 +6552,7 @@ referința veche, apoi s-a rescris.*
 - `core/test_pull_declaratii.py` — Teste pe pull() — granita COD <-> BAZA DE DATE pentru generatoarele de declaratii.
 - `core/test_q16_cor.py` — GARD Q16 — preview salariati imbogateste COR cu denumirea ocupatiei (nu doar codul).
 - `core/test_r42_criteriu.py` — GARD [R42, cele patru decizii ale lui Costin, 25.08.2026].
+- `core/test_ramas.py` — GARDĂ anti-vacuu pe lista derivată a ce a rămas de făcut.
 - `core/test_raport_z_unic.py` — GARD [R61, 26.08.2026]: raportul Z nu se poate înregistra de două ori, iar niciuna din cele
 - `core/test_reaprindere.py` — GARD: o restanță al cărei DECLANȘATOR s-a produs nu poate rămâne nereluată.
 - `core/test_reconciliere.py` — —
@@ -6480,7 +6636,7 @@ referința veche, apoi s-a rescris.*
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 16
+### `scripts/` — 17
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
@@ -6494,6 +6650,7 @@ referința veche, apoi s-a rescris.*
 - `scripts/scan_mutatie_garzi.py` — FAZA 4, pasul 5: mutatia care probeaza garda e REPRODUCTIBILA azi?
 - `scripts/scan_predare_cifre.py` — Cifrele despre DATE din `PREDARE_LANT.md`, interogate din bază — blocul generat.
 - `scripts/scan_r97_livrat_tacut.py` — CÂT DE MARE E CLASA „RUTA LIVREAZĂ, ECRANUL TACE" — măsurarea lui R97, 29.08.2026.
+- `scripts/scan_ramas.py` — scripts/scan_ramas.py — CE A RAMAS DE FACUT, derivat din fisiere, cu sursa pe fiecare rand.
 - `scripts/scan_refuzuri.py` — scripts/scan_refuzuri.py — CE POARTA un refuz al aplicatiei, si ce nu poarta.
 - `scripts/scan_regimuri.py` — CÂTE REGIMURI FISCALE EXERCITĂ PORTOFOLIUL — prima operațiune din E1 (1a), 29.08.2026.
 - `scripts/scan_rute_clasificate.py` — CLASIFICAREA rutelor fără apelant — R70, blocul SSS (29.08.2026).
