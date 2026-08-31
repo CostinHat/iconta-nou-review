@@ -1,20 +1,23 @@
 # -*- coding: utf-8 -*-
 """DOCUMENTUL PE CARE ÎL CITEAZĂ UN TEMEI CONȚINE ARTICOLUL PE CARE ÎL NUMEȘTE?
 
-**Instanța care a deschis clasa** (31.08.2026, în timpul măsurării interdicției 55):
-`OG 16/2022 art. 97`. Articolul 97 **nu e al ordonanței** — OG 16/2022 spune *„articolul 97
-alineatul (7) … se modifică"*, deci art. 97 e al **Codului fiscal**. Temeiul numește actul
-**MODIFICATOR** cu articolul actului **MODIFICAT**. Confirmat la sursă și pe `OUG 8/2026`, care
-spune *„articolul 282, alineatul (3) se modifică"*.
+**CONVENȚIA DE MODELARE, care se aplică ÎNAINTE de a căuta** — declarată la interdicția **50**,
+23.08.2026, cu opt zile înaintea instrumentului ăstuia:
 
-**De ce contează, concret:** orice verificare de vigoare pe perechea asta întreabă **documentul
-greșit**. Iar `COTE.impozit_dividend` are **patru** temeiuri și **niciunul** nu se poate confrunta
-cu documentul lui — trei negăsite, unul ciot. Valoarea e corectă; ce nu se poate reface e drumul de
-la ea la lege.
+> *„`Temei` reține **actul care a schimbat regula** și **numărul articolului din actul schimbat** —
+> `Legea 141/2025 art. 97` înseamnă «CF art. 97, așa cum l-a modificat Legea 141/2025». … un
+> instrument care le-ar lua literal ar căuta art. 97 în Legea 141/2025 și n-ar găsi nimic."*
+
+**Prima formă a instrumentului ăstuia le-a luat literal, și a raportat șase perechi „negăsite" ca
+DEFECT DE DATE.** Nu erau. Erau exact eșecul pe care registrul îl scrisese înainte. *Un instrument
+care nu cunoaște convențiile de modelare ale datelor pe care le măsoară nu măsoară datele, ci
+propria lui naivitate.* De-aceea rezolvarea articolului se face aici, o dată, prin `document_tinta`.
+
+**Ce rămâne, după convenție:** perechile în care articolul e chiar al actului citat și tot nu se
+găsește, plus cele al căror document e un **ciot**. Alea sunt întrebări reale.
 
 **Nu e același lucru cu interdicția 59.** Aceea compară verificarea *pe act* cu cea *pe articol*.
-Aici perechea (act, articol) e **inconsistentă în sine**: articolul nu există în actul citat, deci
-nici măcar nu se pune problema pe ce nivel verifici.
+Aici se întreabă doar dacă documentul în care TREBUIE căutat articolul chiar îl conține.
 
 **Nu e același lucru cu interdicția 53.** Aceea întreabă dacă **citatul** conține valoarea — și
 răspunde da pe 34 din 34. Un temei poate avea citatul potrivit și actul greșit: citatul e copiat de
@@ -45,6 +48,40 @@ from core import articol_in_act as A  # noqa: E402
 #: Stările în care perechea NU se poate confirma. Nomenclator ÎNCHIS.
 NECONFIRMATE = ("NEGASIT", "CIOT", "FISIER_LIPSA", "FARA_ART")
 
+#: Numerele de articol care aparțin **Codului fiscal**, oricare ar fi actul citat alături de ele.
+#: Scrise ca date fiindcă sunt o convenție, nu o deducție — v. interdicția 50. Aceeași mulțime e
+#: folosită de `core/test_vigoare_articole_registru.py`, care o importă de aici: o convenție ținută
+#: în două locuri se desparte în tăcere.
+ART_DE_COD_FISCAL = {"97", "28", "282"}
+
+#: Forma consolidată a Codului fiscal din corpus — documentul în care se caută articolele de mai sus.
+CF_CORPUS = "anaf_surse/cod_fiscal_227_2015_consolidat.html"
+
+
+def cheie_articol(tip, nr, an, art):
+    """(act, articol) DUPĂ convenție: articolele de Cod fiscal se rezolvă la `CF`, oricine le-ar cita."""
+    tip = str(tip or "")
+    art = str(art or "")
+    if tip.upper() in ("CF", "CODUL FISCAL"):
+        return ("CF", art)
+    if art in ART_DE_COD_FISCAL or (art == "291" and "227" in str(nr)):
+        return ("CF", art)
+    return ("%s %s/%s" % (tip, nr, an), art)
+
+
+def document_tinta(t):
+    """Documentul în care TREBUIE căutat articolul, nu neapărat cel citat de temei.
+
+    Pentru o pereche care se rezolvă la `CF`, documentul e forma consolidată a Codului fiscal —
+    fiindcă acolo **este** articolul. `url`-ul temeiului rămâne ce a fost: actul care a schimbat
+    regula, adică proba pentru VALOARE. Cele două întrebări sunt diferite și au voie să aibă
+    răspunsuri în documente diferite.
+    """
+    act, _art = cheie_articol(getattr(t, "tip", None), getattr(t, "nr", None),
+                              getattr(t, "an", None), getattr(t, "art", None))
+    url = CF_CORPUS if act == "CF" else getattr(t, "url", None)
+    return _cale(url) if url else None
+
 
 def _cale(url):
     return url if os.path.isabs(str(url)) else os.path.join(RAD, str(url))
@@ -60,12 +97,15 @@ def inventar():
         rand = {"cale": cale, "temei": str(t), "art": art, "url": url,
                 "act": "%s %s/%s" % (getattr(t, "tip", "?"), getattr(t, "nr", "?"),
                                      getattr(t, "an", "?"))}
+        tinta = document_tinta(t)
+        rand["document_tinta"] = tinta
+        rand["dupa_conventie"] = bool(tinta and tinta != _cale(url or ""))
         if not art:
             rand["stare"] = "FARA_ART"
-        elif not url:
+        elif not tinta:
             rand["stare"] = "FISIER_LIPSA"
         else:
-            rand["stare"] = A.cauta(_cale(url), art)["stare"]
+            rand["stare"] = A.cauta(tinta, art)["stare"]
         out.append(rand)
     return out
 

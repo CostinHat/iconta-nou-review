@@ -41,7 +41,12 @@ MODIFICARI = {
 # Un `Temei` care citează un act MODIFICATOR plus un număr de articol al Codului fiscal se citește ca
 # «CF art. N, așa cum l-a modificat actul». Aceleași două câmpuri poartă lucruri din acte diferite —
 # observație de modelare, scrisă în CONFORMITATE la 50.
-_ART_DE_COD_FISCAL = {"97", "28", "282"}
+#
+# MULȚIMEA NU MAI E SCRISĂ AICI (31.08.2026). Trăia în două locuri — aici și, implicit, în capul
+# celui care scria următorul instrument —, iar al doilea n-a știut de ea: `scan_pereche_act_articol`
+# a luat perechile literal și a raportat șase defecte de date care nu existau. *O convenție ținută
+# în două locuri se desparte în tăcere.* Acum e una singură, importată.
+from core.scan_pereche_act_articol import ART_DE_COD_FISCAL as _ART_DE_COD_FISCAL  # noqa: E402
 
 
 def _cheie(t):

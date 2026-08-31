@@ -3,6 +3,37 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 31.08.2026 (19) — Un temei fals-verificabil e mai rău decât unul verificabil-fals; iar un instrument care nu știe convențiile datelor măsoară propria naivitate
+
+**Regulile, verbatim de la Costin**, date pentru repararea lui R106 — și rămân valabile, deși R106
+s-a retras:
+
+1. *„Repară cele șase temeiuri, dar **numai unde actul se confruntă la sursă**. Ce nu se confirmă
+   rămâne declarat neconfirmat — **un temei fals-verificabil e mai rău decât unul verificabil-fals,
+   fiindcă nu mai declanșează nimic**."* — Un temei care nu se confruntă aprinde un semnal la fiecare
+   rulare. Unul reparat *plauzibil* stinge semnalul fără să repare nimic.
+2. *„Ordinea o dă riscul: **întâi cotele care intră azi într-o declarație pe care o producem**. Acolo
+   un temei greșit poate produce o cifră validă și falsă."* — Riscul se **măsoară**
+   (`dependenti_act.dependenti()`), nu se estimează după cât de important sună numele cotei. Măsurat:
+   `impozit_dividend` → `d205.genereaza`, `d390.genereaza`; celelalte două → nicio declarație.
+3. *„Cele 5 CIOT devin restanță proprie… **altă cauză, altă reparație** — ținute în R106, ar bloca
+   închiderea ei pe muncă de corpus."* — **R107**, acum cu **2** instanțe, nu 5.
+4. *„Perechile neconfruntabile primesc **NECUNOSCUT declarat**. Orice implicit minte — STABIL tăcut,
+   VOLATIL zgomotos."* — se aplică la construcția categoriei de reverificare (interdicția 55).
+
+**A CINCEA REGULĂ, ieșită din propria mea greșeală în aceeași tură, și e cea care a costat:**
+
+> **Un instrument nou se confruntă cu câmpul „ce nu vede" al interdicțiilor pe care le atinge,
+> ÎNAINTE de a raporta o descoperire.**
+
+Interdicția **50** scrisese, pe 23.08: *„un instrument care le-ar lua literal ar căuta art. 97 în
+Legea 141/2025 și n-ar găsi nimic."* Pe 31.08 am construit acel instrument, am obținut acel rezultat,
+și l-am deschis ca restanță. **Registrul prezisese defectul cu opt zile înainte ca instrumentul să
+existe.** Ce m-a oprit n-au fost eu, ci **două gărzi vechi** care au refuzat reparația pe date.
+
+*Consecința practică, dincolo de caz: câmpul „ce nu vede" al unei interdicții nu e o notă de subsol.
+E lista modurilor de eșec pe care următorul instrument le va reproduce dacă nu le citește.*
+
 ## 31.08.2026 (18) — O logică neimportabilă se multiplică prost
 
 *Nu e o decizie de produs; e o regulă de construcție, ieșită dintr-o instanță măsurată, și de-aia se

@@ -38,22 +38,25 @@ if _RAD not in sys.path:
 from core import articol_in_act as A  # noqa: E402
 from core import scan_pereche_act_articol as S  # noqa: E402
 
-#: CLICHET, măsurat 31.08.2026 pe `535af8b`. Nu poate CREȘTE. Dacă scade — adică o pereche s-a
-#: reparat —, se coboară aici, altfel următoarea regresie se ascunde sub marja rămasă.
-CLICHET_NEGASIT = 6
-CLICHET_CIOT = 5
+#: CLICHET. Nu poate CREȘTE.
+#:
+#: **ZERO, și nu prin reparație de date.** Prima formă a instrumentului a raportat **6** perechi
+#: negăsite și le-am deschis ca restanță (R106). Erau **convenția de modelare declarată la
+#: interdicția 50**, cu opt zile înainte: *`Legea 141/2025 art. 97` înseamnă «CF art. 97, așa cum
+#: l-a modificat Legea 141/2025»*. Registrul scrisese și eșecul: *„un instrument care le-ar lua
+#: literal ar căuta art. 97 în Legea 141/2025 și n-ar găsi nimic"*. Exact asta am făcut.
+#: **R106 s-a RETRAS**, temeiurile s-au pus la loc, iar instrumentul a învățat convenția
+#: (`scan_pereche_act_articol.document_tinta`). Zero, deci orice apariție e o regresie.
+CLICHET_NEGASIT = 0
+#: Ce a rămas după convenție: **2**, amândouă `OUG 156/2024 art. LXVI` — articol care CHIAR e al
+#: ordonanței, într-un document adus ca ciot. Problemă de **corpus**, nu de temei: **R107**.
+CLICHET_CIOT = 2
 #: Pragul de JOS pe confirmate: dacă scade, ceva a dispărut din registru sau instrumentul s-a rupt.
-PRAG_CONFIRMATE = 15
+#: 15 → **24** după ce instrumentul a învățat convenția — fără ca vreun temei să se schimbe.
+PRAG_CONFIRMATE = 24
 
-#: Cele șase perechi, scrise ca DATE ca să se vadă CARE sunt, nu doar câte. Toate au aceeași formă:
-#: articolul aparține Codului fiscal, actul citat e cel care l-a modificat.
-NEGASITE_CUNOSCUTE = {
-    ("Legea 141/2025", "97"),
-    ("OG 16/2022", "97"),
-    ("OUG 50/2015", "97"),
-    ("OUG 8/2026", "28"),
-    ("OUG 8/2026", "282"),
-}
+#: Perechile negăsite **cunoscute**. Goală — iar goliciunea ei e chiar aserțiunea.
+NEGASITE_CUNOSCUTE = set()
 
 
 def _inv():
@@ -108,6 +111,46 @@ def test_negasitele_sunt_CELE_CUNOSCUTE_nu_doar_atatea():
     assert not disparute, (
         "perechi reparate: %s. Bravo — coboară `CLICHET_NEGASIT` și scoate-le din "
         "`NEGASITE_CUNOSCUTE`, altfel marja rămasă ascunde următoarea regresie" % disparute)
+
+
+# ── REGRESIE pe CONVENȚIA de modelare (interdicția 50) ─────────────────────────────────────────
+
+def test_conventia_articolelor_de_COD_FISCAL_e_aplicata():
+    """LECȚIA CARE A COSTAT O RESTANȚĂ RETRASĂ.
+
+    `Temei` reține **actul care a schimbat regula** și **numărul articolului din actul schimbat** —
+    `Legea 141/2025 art. 97` înseamnă *CF art. 97, așa cum l-a modificat Legea 141/2025*. Convenția
+    e declarată la interdicția **50** din 23.08.2026, împreună cu eșecul pe care îl provoacă: *„un
+    instrument care le-ar lua literal ar căuta art. 97 în Legea 141/2025 și n-ar găsi nimic."*
+
+    Prima formă a instrumentului ăstuia a făcut exact asta și a raportat șase perechi ca defect de
+    date. **Nu erau.** Testul de aici cere ca rezolvarea să se facă: perechile de Cod fiscal trebuie
+    să fie căutate în Codul fiscal, nu în actul care l-a modificat.
+    """
+    perechi = [(t["act"], str(t["art"]), t.get("dupa_conventie"), t["stare"])
+               for t in _inv() if str(t["art"]) in S.ART_DE_COD_FISCAL]
+    assert perechi, "[anti-vacuu] niciun temei cu articol de Cod fiscal — domeniul s-a rupt"
+    literale = [(a, r, s) for a, r, dc, s in perechi if not dc]
+    assert not literale, (
+        "perechi de Cod fiscal căutate LITERAL, în actul care doar le-a modificat: %s. Convenția e "
+        "declarată la interdicția 50; un instrument care n-o cunoaște raportează defecte de date "
+        "care nu există." % literale)
+    rele = [(a, r, s) for a, r, _dc, s in perechi if s != "GASIT"]
+    assert not rele, "perechi de Cod fiscal care nu se găsesc nici în Codul fiscal: %s" % rele
+
+
+def test_CALIBRARE_conventia_NU_se_aplica_unde_articolul_e_chiar_al_actului():
+    """Direcția inversă: convenția nu are voie să înghită tot. `OUG 89/2025 art. III` și
+    `OUG 156/2024 art. LXVI` sunt articole **proprii** ale actelor lor — se caută acolo, nu în CF.
+    Fără proba asta, `document_tinta` ar putea trimite totul la Codul fiscal și ar părea că merge."""
+    straine = [(t["act"], str(t["art"])) for t in _inv()
+               if t.get("dupa_conventie") and str(t["art"]) not in S.ART_DE_COD_FISCAL
+               and str(t["art"]) != "291"]
+    assert not straine, (
+        "articole trimise la Codul fiscal deși nu sunt ale lui: %s — convenția s-a lărgit" % straine)
+    assert S.cheie_articol("OUG", 89, 2025, "III") == ("OUG 89/2025", "III")
+    assert S.cheie_articol("Legea", 141, 2025, "97") == ("CF", "97")
+    assert S.cheie_articol("CF", None, None, "51") == ("CF", "51")
 
 
 # ── CALIBRARE POZITIVĂ: cazul cunoscut e GĂSIT ─────────────────────────────────────────────────

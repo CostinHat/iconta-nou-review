@@ -173,9 +173,22 @@ Criteriul lui **E2** numește exact două lucruri care lipsesc:
    permis; dacă nu se poate măsura, se scrie NEMĂSURABILĂ CU MOTIVUL"*. **E o divergență
    plan↔registru, nu o măsurătoare lipsă** — se închide scriind motivul, nu măsurând.
 
-**R106, deschisă azi:** șase temeiuri numesc actul care a **modificat** articolul, nu actul care îl
-**conține**. `COTE.impozit_dividend` are patru temeiuri și niciunul nu se confruntă cu documentul
-lui. *Nereparată deliberat: fiecare cere o verificare la sursă a actului care poartă azi valoarea.*
+**R106 SE RETRAGE — n-a fost un defect de date, ci al instrumentului meu.** Cele șase perechi erau
+**convenția de modelare declarată la interdicția 50**, pe 23.08: `Legea 141/2025 art. 97` înseamnă
+*CF art. 97, așa cum l-a modificat Legea 141/2025*. Registrul scrisese și modul de eșec — *„un
+instrument care le-ar lua literal … n-ar găsi nimic"* — cu opt zile înainte ca instrumentul să
+existe. Reparat **instrumentul**: `document_tinta` rezolvă convenția înainte de căutare.
+**GĂSIT 15 → 24 · NEGĂSIT 6 → 0 · CIOT 5 → 2, cu ZERO temeiuri schimbate.** *(Se închide formal în
+commitul următor — capcana 2.)*
+
+**R107, deschisă azi, cu 2 instanțe:** `OUG 156/2024 art. LXVI` ×2, articol propriu al ordonanței
+într-un document adus ca ciot. Familia „încrederea în corpus"; se închide aducând forma consolidată.
+
+**REGULA DE PURTAT MAI DEPARTE** (`DECIZII.md` 19): *un instrument nou se confruntă cu câmpul „ce nu
+vede" al interdicțiilor pe care le atinge, ÎNAINTE de a raporta o descoperire.* Câmpul acela e lista
+modurilor de eșec pe care următorul instrument le va reproduce dacă nu le citește. Plus regulile lui
+Costin: *un temei fals-verificabil e mai rău decât unul verificabil-fals* · *ordinea o dă riscul
+măsurat* · *o restanță se desparte după cauză, nu după consecință*.
 
 **Restul, neschimbat:**
 `core.agenda.urmator_cluster()` întoarce `(None, 0, 0)` din 04.08; lista 3 e **închisă ca sursă de
@@ -237,7 +250,7 @@ ale Design System, **5** sunt acoperite. Nu invalidează porțile; le încadreaz
 ## STAREA LA PREDARE
 
 Poartă verde, citită din ieșirea rulării complete de pe arborele care devine commitul următor:
-**3864 teste trec** · 11 skip · 14 xfail · **COLLECTED 3889** · ruff OK · verificator **TOTAL 0** ·
+**3866 teste trec** · 11 skip · 14 xfail · **COLLECTED 3891** · ruff OK · verificator **TOTAL 0** ·
 rute **423 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 34** · site **200** · four-way se închide la
 `post-commit`, care publică pe `origin/main` și pe `backup/lant-2026-08-31` și **restartează
 necondiționat** procesul viu.

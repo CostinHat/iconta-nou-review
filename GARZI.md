@@ -6436,6 +6436,67 @@ din întâmplare un articol cu același număr despre altceva, perechea trece; d
 **plafon SUPERIOR** · nu deosebește vina: un `CIOT` e o problemă de **corpus**, nu de temei · **nu
 repară** cele șase, fiindcă fiecare cere o verificare la sursă a actului care poartă azi valoarea.
 
+## 31.08.2026 — R106 se RETRAGE: registrul scrisese defectul instrumentului meu cu opt zile înainte să-l construiesc
+
+**Nu datele erau greșite. Instrumentul era.** Secțiunea de mai sus, din aceeași zi, declară șase
+perechi (act, articol) ca defect de date și deschide **R106**. Erau **convenția de modelare
+declarată la interdicția 50**, pe 23.08.2026 — care scrisese și convenția, și modul de eșec:
+
+> *„`Temei` reține **actul care a schimbat regula** și **numărul articolului din actul schimbat** —
+> `Legea 141/2025 art. 97` înseamnă «CF art. 97, așa cum l-a modificat Legea 141/2025». … **un
+> instrument care le-ar lua literal ar căuta art. 97 în Legea 141/2025 și n-ar găsi nimic**."*
+
+Am construit exact acel instrument și am raportat exact acel rezultat, ca descoperire. **Regula de
+aur — caută pe tot înainte de a spune „absent" — am aplicat-o corpusului, nu propriului registru.**
+
+### Ce a oprit reparația greșită: două gărzi care existau deja
+
+Reparația pe date fusese scrisă, probată și verde pe instrumentul meu. Poarta a respins-o:
+
+| garda | ce a spus |
+|---|---|
+| `test_forma_consolidata_nu_e_sursa_pentru_valoare_cu_succesor` | o formă consolidată **la zi** nu poate justifica o valoare care are **succesor** — `plafon_tva_incasare@2026-03-01` are unul la 2027 |
+| `test_fiecare_articol_din_registru_e_masurat_la_sursa` | `('OG 16/2022','I')` și `('OUG 50/2015','I')` nu erau **măsurate la sursă** |
+
+*Amândouă pe drept. Gărzile au apărat registrul de reparația mea* — și abia citind a doua, unde stă
+`_ART_DE_COD_FISCAL`, am găsit convenția. **Poarta n-a prins o regresie de comportament; a prins o
+încadrare greșită.**
+
+### Reparația reală: instrumentul învață convenția
+
+`core/scan_pereche_act_articol.document_tinta` rezolvă acum perechea **înainte** de a căuta: un
+articol de Cod fiscal se caută în Codul fiscal, oricine l-ar cita alături. `url`-ul temeiului rămâne
+ce a fost — actul care a schimbat regula, adică proba pentru **valoare**. *Două întrebări diferite au
+voie să aibă răspunsuri în documente diferite.*
+
+| | luat literal | după convenție |
+|---|---|---|
+| GĂSIT | 15 | **24** |
+| NEGĂSIT | 6 | **0** |
+| CIOT | 5 | **2** |
+
+**Zero temeiuri schimbate.** Clichete: `CLICHET_NEGASIT = 0` · `CLICHET_CIOT = 2` ·
+`PRAG_CONFIRMATE = 24`.
+
+**O SINGURĂ IMPLEMENTARE A CONVENȚIEI.** Mulțimea articolelor de Cod fiscal trăia în
+`core/test_vigoare_articole_registru.py` și — implicit — în capul celui care scria următorul
+instrument. Al doilea n-a știut de ea. Acum e în `scan_pereche_act_articol.ART_DE_COD_FISCAL`, iar
+garda veche o **importă**. *O convenție ținută în două locuri se desparte în tăcere; a doua copie a
+fost capul meu.*
+
+**Gardă nouă de regresie**, cu mutație: dacă `document_tinta` uită convenția, **4 teste cad** —
+probat, apoi restaurat, 14 verzi. Plus direcția inversă: `OUG 89/2025 art. III` și
+`OUG 156/2024 art. LXVI` sunt articole **proprii** și **nu** au voie să fie trimise la Codul fiscal;
+fără proba aia, convenția ar putea înghiți tot și ar părea că merge.
+
+**Ce rămâne adevărat din tura precedentă**, independent de încadrare: cele **2** perechi rămase
+(`OUG 156/2024 art. LXVI`, document-ciot) sunt reale → **R107**. Iar defectul din `articol_in_act` —
+tăierea la citare, care ascundea volatilitate — e real și reparat.
+
+**REGULA CARE IESE:** *un instrument nou se confruntă cu câmpul „ce nu vede" al interdicțiilor pe
+care le atinge, înainte de a raporta o descoperire.* Registrul scrie modurile de eșec **tocmai** ca
+să nu fie redescoperite ca defecte.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **499 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.

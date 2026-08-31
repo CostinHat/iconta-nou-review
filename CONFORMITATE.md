@@ -2284,6 +2284,47 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
 - **cum s-a rezolvat (partea statică)**: `core/test_ds_verificator.py` — **trei clichete** (neacoperite ≤ **24**, acoperite ≥ **5**, fără ancoră ≤ **18**) și **patru calibrări**, dintre care una **în direcția de eșec** (regula lui R100: o ancoră sigur absentă trebuie să iasă NEACOPERITĂ) și una pe **ancora din comentariu** — chiar forma regulii steluțelor. **RED-proof rulat**: o regulă nouă inserată în DS, cu ancoră necunoscută, urcă 24 → 25 și garda cade. *Clichetele sunt praguri, nu zerouri: datoria cunoscută e **înghețată**, nu ștearsă.* **Ce NU închide asta, prin decizie:** cele **15** reguli acoperite doar la suprafață **nu sunt datorie** — sunt limita unui scaner static, corect diagnosticată, și cer alt instrument, care cheamă rute și observă comportamentul: **faza 2**. Iar cele **18 fără ancoră** s-au desprins ca **R104**, fiindcă sunt defect al REGULII, nu al instrumentului.
 - **condiția de deblocare**: o gardă care cere ca fiecare regulă din DS cu **ancoră** să aibă corespondent în verificator, **sau** o declarație scrisă lângă ea („nu se poate verifica static, fiindcă…"). Clichet pe numărul de neacoperite, ca să nu crească tăcut. Se închide când cifra e ținută de un clichet **și** când fiecare regulă din cele 24 e ori acoperită, ori declarată. *Partea „doar la suprafață" (15) NU se închide cu asta: ea cere un instrument care observă comportamentul, nu textul — deci altă natură, și altă restanță când se ajunge la ea.*
 
+### R107 — Două temeiuri citează un document adus PARȚIAL, deci nu se poate confrunta nimic
+
+- **felul**: SURSĂ
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · faza 2 · familia „încrederea în corpus" (R1, R4, R5, R6) · **PRAG 2**
+- **ce blochează**: starea articolului nu se poate stabili, iar axa A a interdicției **55** nu se
+  poate calcula pe ele. Dar din **altă cauză** decât o trimitere greșită: documentul din corpus e un
+  ciot (extras de PDF), deci nici măcar întrebarea nu se poate pune.
+- **condiția de deblocare**: **forma consolidată** a OUG 156/2024, adusă în corpus și amprentată, cu
+  cel puțin două titluri de articol vizibile — pragul de la care `core/articol_in_act.py` acceptă să
+  răspundă. Se închide când `core/scan_pereche_act_articol.pe_stare()` dă `CIOT: 0`.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `3c54ed0`
+- **măsurat la**: 2026-08-31 · **pe commit**: `3c54ed0`
+- **cifra**: **2 din 26** de perechi verificabile citează un document cu sub două titluri de articol.
+  Instrument: `core/scan_pereche_act_articol.py`; clichet `CLICHET_CIOT = 2`.
+- **instanțe**, amândouă pe același act:
+
+  | temei | fișierul citat | ce justifică |
+  |---|---|---|
+  | `OUG 156/2024 art. LXVI` ×2 | `oug_156_2024.pdf` / `.txt` | `facilitate_salariu_minim`, `plafon_facilitate_salariu_minim` |
+
+  **Prima formă a măsurătorii dădea 5.** Celelalte trei — `Legea 227/2015 art. 291` ×2 și
+  `OUG 156/2024 art. 97` — au dispărut fără nicio muncă de corpus, când instrumentul a învățat
+  convenția de la interdicția 50: sunt articole de **Cod fiscal**, iar acolo se găsesc. *A rămas ce e
+  cu adevărat o problemă de corpus: `art. LXVI` e articol **propriu** al OUG 156/2024, iar documentul
+  adus e un ciot.*
+- **de ce e restanță proprie, nu parte din R106** *(Costin, 31.08)*: *„altă cauză, altă reparație —
+  ținute în R106, ar bloca închiderea ei pe muncă de corpus."* R106 s-a retras prin repararea
+  instrumentului; asta se închide prin **aducerea actului**. Ținute împreună, prima n-ar fi putut fi
+  declarată închisă.
+- **calibrare**: pragul de ciot e probat în ambele direcții pe act sintetic — un act cu **un singur**
+  titlu de articol dă `CIOT`, unul cu două dă un răspuns real. *Un „negăsit" despre un act neadus nu
+  e un răspuns, e o tăcere care arată ca un răspuns.*
+- **ce nu vede**: nu spune dacă actul adus **integral** ar confirma perechea. Deci închiderea lui
+  R107 poate scoate la iveală altceva. *Se scrie acum, ca să nu pară regresie atunci.*
+- **unde ajunge efectul**: cele două facilități de salariu minim stau pe un document pe care
+  aplicația nu-l poate citi. Nu produc cifre greșite — produc **cifre pe care nu le poate apăra
+  nimeni**, fără ca temeiul să fie de vină.
+
 ### R106 — Un temei numește actul care a MODIFICAT articolul, nu actul care îl CONȚINE
 
 - **felul**: SURSĂ
@@ -2298,13 +2339,57 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   tipar. Se închide când `core/scan_pereche_act_articol.pe_stare()` dă `NEGASIT: 0`, iar clichetul
   din `core/test_pereche_act_articol.py` coboară odată cu el.
 - **reluări**: 0
-- **stare**: **DESCHISĂ**
+- **stare**: DESCHISĂ
+- **de ce încă DESCHISĂ**: retragerea ei stă în arborele **acestui** commit; se închide în commitul
+  **următor**, cu hash-ul real. *Capcana 2 din predare — lucrul întâi, registrul după.*
 - **deschisă pe commit**: `535af8b`
-- **măsurat la**: 2026-08-31 · **pe commit**: `535af8b`
-- **cifra**: **6 perechi (act, articol) din 26 verificabile** numesc un act care nu conține
-  articolul. Plus **5** care citează un document-**ciot**, unde nu se poate afirma nimic — altă
-  cauză, aceeași consecință. Total neconfirmate: **11 din 26**. Confirmate: **15**. Instrument:
-  `core/scan_pereche_act_articol.py`; clichet în `core/test_pereche_act_articol.py`.
+- **măsurat la**: 2026-08-31 · **pe commit**: `3c54ed0`
+
+  ---
+
+  ## ⚠ RESTANȚA ASTA SE RETRAGE. N-A FOST UN DEFECT DE DATE, CI AL INSTRUMENTULUI MEU.
+
+  **Se păstrează, nu se șterge** — ca oricare cifră invalidată. Ce urmează e ce am scris la
+  deschidere, iar sub el, ce s-a dovedit.
+
+  **Ce scria la deschidere:** *6 perechi (act, articol) din 26 verificabile numesc un act care nu
+  conține articolul; plus 5 care citează un document-ciot. Neconfirmate 11 din 26; confirmate 15.*
+
+  **Ce era, de fapt:** exact **convenția de modelare declarată la interdicția 50**, pe 23.08.2026 —
+  cu opt zile înaintea instrumentului care a „descoperit-o". Verbatim de acolo:
+
+  > *„`Temei` reține **actul care a schimbat regula** și **numărul articolului din actul schimbat** —
+  > `Legea 141/2025 art. 97` înseamnă «CF art. 97, așa cum l-a modificat Legea 141/2025». Cele 10 se
+  > rezolvă la articole de Cod fiscal **deja verificate**, deci **nu sunt o lipsă de acoperire** — dar
+  > **un instrument care le-ar lua literal ar căuta art. 97 în Legea 141/2025 și n-ar găsi nimic**."*
+
+  **Registrul scrisese și defectul, și modul lui de eșec. Eu am construit exact acel mod de eșec și
+  l-am raportat ca descoperire.** Regula de aur — *caută pe tot înainte de a spune „absent"* — s-a
+  aplicat corpusului, dar nu propriului registru.
+
+  **CE S-A REPARAT, DUPĂ:** nu datele, ci **instrumentul**. `scan_pereche_act_articol.document_tinta`
+  rezolvă acum convenția înainte de a căuta, iar mulțimea articolelor de Cod fiscal e ținută
+  **într-un singur loc** — `core/test_vigoare_articole_registru.py` o importă de acolo. *O convenție
+  ținută în două locuri se desparte în tăcere; a doua copie a fost capul meu.*
+
+  | | luat literal | după convenție |
+  |---|---|---|
+  | GĂSIT | 15 | **24** |
+  | NEGĂSIT | 6 | **0** |
+  | CIOT | 5 | **2** |
+
+  **Zero temeiuri schimbate.** Reparația pe date fusese scrisă și probată — și **a fost întoarsă**,
+  fiindcă două gărzi existente au refuzat-o, amândouă pe drept:
+  `test_forma_consolidata_nu_e_sursa_pentru_valoare_cu_succesor` (o formă consolidată la zi nu poate
+  justifica o valoare care are succesor) și `test_fiecare_articol_din_registru_e_masurat_la_sursa`
+  (articolele noi nu erau măsurate la sursă). *Gărzile au apărat registrul de reparația mea.*
+
+  **Ce rămâne adevărat din tura asta**, și nu depinde de încadrarea greșită: cele **2** perechi
+  rămase — `OUG 156/2024 art. LXVI`, articol care CHIAR e al ordonanței, într-un document adus ca
+  ciot — sunt reale și au restanță proprie, **R107**. Iar defectul găsit în `articol_in_act` (tăierea
+  la citare, care ascundea volatilitate) e real și reparat, independent de asta.
+
+  ---
 - **instanțe**, toate de aceeași formă — articolul e al **Codului fiscal**, actul citat e cel care
   l-a modificat:
 
@@ -6817,7 +6902,17 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
   **Cele 13 perechi rămase nu se pot verifica astfel, și motivul e STRUCTURAL, nu de volum:** `Temei` reține **actul care a schimbat regula** și **numărul articolului din actul schimbat** — două lucruri din acte diferite, în aceleași câmpuri. Căutând art. 97 în Legea 141/2025 sau în OG 16/2022 nu se găsește nimic, fiindcă **art. 97 e al Codului fiscal**; actele acelea doar îl modifică. E interdicția **59** văzută din alt unghi, și e cauza pentru care 50 n-a putut fi închisă azi
 - **calibrare**: cazul cunoscut **găsit** în ambele direcții: instrumentul vede marcajul acolo unde este (OUG 89/2025 art. XXXVI, 16-08-2026) și **nu-l atribuie unde nu e** (art. III, care poartă valorile). Iar pe corpus, calibrarea e chiar mărimea: un act de 2,5 milioane de caractere cu 1.849 de titluri **nu poate fi confundat** cu ciotul de 4.392 pe care portalul îl dădea — și pe care instrumentul îl refuză explicit
-- **ce nu vede**: **o observație de MODELARE, scrisă fiindcă schimbă cum se citește orice cifră de aici:** pentru 10 dintre perechi, `Temei` reține **actul care a schimbat regula** și **numărul articolului din actul schimbat** — `Legea 141/2025 art. 97` înseamnă *CF art. 97, așa cum l-a modificat Legea 141/2025*. Cele 10 se rezolvă la articole de Cod fiscal **deja verificate** (97, 28, 282, 291), deci nu sunt o lipsă de acoperire — dar un instrument care le-ar lua literal ar căuta art. 97 în Legea 141/2025 și n-ar găsi nimic. **Aceleași două câmpuri poartă lucruri din acte diferite.** · Verifică dacă articolul e **modificat**, nu dacă modificarea **atinge valoarea** — confruntarea cu textul s-a făcut de om, verbatim, și e scrisă mai sus. · Rămâne ambiguitatea `Ordin 484/2025` (două forme în portal), scrisă ca atare în `PORTAL_IDS.json`
+- **ce nu vede**: **o observație de MODELARE, scrisă fiindcă schimbă cum se citește orice cifră de aici:** pentru 10 dintre perechi, `Temei` reține **actul care a schimbat regula** și **numărul articolului din actul schimbat** — `Legea 141/2025 art. 97` înseamnă *CF art. 97, așa cum l-a modificat Legea 141/2025*. Cele 10 se rezolvă la articole de Cod fiscal **deja verificate** (97, 28, 282, 291), deci nu sunt o lipsă de acoperire — dar un instrument care le-ar lua literal ar căuta art. 97 în Legea 141/2025 și n-ar găsi nimic. **Aceleași două câmpuri poartă lucruri din acte diferite.**
+
+  **PREDICȚIA ASTA S-A ÎMPLINIT PE 31.08.2026, la opt zile după ce a fost scrisă.**
+  `core/scan_pereche_act_articol.py`, construit ca să măsoare altceva, a luat perechile **literal**,
+  n-a găsit art. 97 în Legea 141/2025, și a raportat șase **defecte de date** care nu existau —
+  deschise ca **R106**, apoi retrase. *Propoziția de mai sus descria exact eșecul, cu instrument cu
+  tot, înainte ca instrumentul să existe.* Reparația: convenția se aplică acum **mecanic**
+  (`scan_pereche_act_articol.document_tinta`), iar mulțimea articolelor de Cod fiscal are **un
+  singur loc**, importat de amândoi consumatorii. **Regula care iese: un instrument nou se
+  confruntă cu «ce nu vede» al interdicțiilor pe care le atinge, înainte de a raporta o
+  descoperire.** · Verifică dacă articolul e **modificat**, nu dacă modificarea **atinge valoarea** — confruntarea cu textul s-a făcut de om, verbatim, și e scrisă mai sus. · Rămâne ambiguitatea `Ordin 484/2025` (două forme în portal), scrisă ca atare în `PORTAL_IDS.json`
 - **unde ajunge efectul**: cifra depusă stă pe un text care nu mai e în vigoare. Instanța reală: OPANAF 394/2017, citat în nouă locuri, abrogat de OPANAF 705/2020 — găsit din întâmplare
 
 ## 51 — O regulă scrisă din memorie, când actul lipsește din corpus

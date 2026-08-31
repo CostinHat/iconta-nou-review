@@ -6827,3 +6827,55 @@ pe AST cere ca importul să existe. *`DECIZII.md` 18.*
 anti-supra-captare căuta titluri de articol în fragment, dar fragmentul e normalizat pe spații, iar
 tiparul de titlu e ancorat pe linie — n-avea ce vedea. Rescris pe **efect**: articolul următor din
 fixtură poartă un marcaj din **2030**; dacă anul ăla apare, s-a împrumutat. **3 din 3** după.
+
+## 31.08.2026 (partea a șasea) — Am construit instrumentul al cărui eșec registrul îl scrisese cu opt zile înainte
+
+**Costin a cerut repararea celor șase temeiuri din R106**, cu trei reguli bune: *numai unde actul se
+confruntă la sursă* · *ordinea o dă riscul* · *o restanță se desparte după cauză*. Le-am urmat pe
+toate trei. Reparația a fost scrisă, probată, și verde pe instrumentul meu.
+
+**Poarta a respins-o.** Două gărzi vechi:
+`test_forma_consolidata_nu_e_sursa_pentru_valoare_cu_succesor` (o formă consolidată la zi nu poate
+justifica o valoare care are succesor) și `test_fiecare_articol_din_registru_e_masurat_la_sursa`
+(articolele noi nu erau măsurate la sursă).
+
+**Citind-o pe a doua, am găsit ce trebuia găsit înainte de a începe.** Acolo stă
+`_ART_DE_COD_FISCAL = {"97", "28", "282"}`, cu nota: *perechea (act modificator, articol CF) se
+citește ca „CF art. N, așa cum l-a modificat actul" — observație de modelare, scrisă în CONFORMITATE
+la 50.* Iar interdicția 50, din **23.08**, scrie și modul de eșec:
+
+> *„un instrument care le-ar lua literal ar căuta art. 97 în Legea 141/2025 și n-ar găsi nimic."*
+
+**Am construit exact acel instrument, am obținut exact acel rezultat, și l-am raportat ca
+descoperire.** R106 se retrage.
+
+**Ce s-a făcut în loc:** instrumentul a învățat convenția. `document_tinta` rezolvă perechea înainte
+de a căuta.
+
+| | luat literal | după convenție |
+|---|---|---|
+| GĂSIT | 15 | **24** |
+| NEGĂSIT | 6 | **0** |
+| CIOT | 5 | **2** |
+
+**Zero temeiuri schimbate.** Toată reparația pe date a fost întoarsă.
+
+**Cifra CIOT a scăzut singură de la 5 la 2** — trei dintre ele erau tot articole de Cod fiscal, deci
+se găsesc acolo. A rămas ce e cu adevărat problemă de corpus: `OUG 156/2024 art. LXVI`, articol
+propriu al ordonanței, într-un document adus ca ciot. **R107**, cu 2 instanțe.
+
+### Ce iese din asta, și e mai mare decât cazul
+
+**Câmpul „ce nu vede" al unei interdicții nu e o notă de subsol — e lista modurilor de eșec pe care
+următorul instrument le va reproduce dacă nu le citește.** Regula, scrisă în `DECIZII.md` 19: *un
+instrument nou se confruntă cu „ce nu vede" al interdicțiilor pe care le atinge, înainte de a raporta
+o descoperire.*
+
+**Și a doua, mai neplăcută:** azi am greșit **cinci** măsurători, toate ale mele, toate în aceeași
+direcție — re-implementarea localizării articolului (de două ori), resolverul orb la Codul fiscal,
+riscul citit din cheile unui dicționar, și asta. *De fiecare dată instrumentul meu, nu unealta
+proiectului. De patru ori m-a corectat măsurătoarea; a cincea oară m-a corectat o gardă veche.*
+
+**Ce rămâne adevărat din tura precedentă:** defectul din `articol_in_act` — tăierea la citare, care
+ascundea volatilitate (`CF art. 78`: un an de modificare în loc de șase) — e real, e reparat, și n-a
+depins de încadrarea greșită. *Extragerea a plătit; concluzia trasă din ea, nu.*
