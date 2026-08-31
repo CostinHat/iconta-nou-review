@@ -187,7 +187,7 @@ prin **retragere** — singura restanță de până acum închisă fiindcă n-a 
 `prag_mf(la_data)` e unica poartă; `PLAFON_MF_2026`, `PRAG_NOU`, `PRAG_VECHI` nu mai există. *Proba
 mecanică: graful întorcea zero consumatori, acum întoarce patru, iar `reverificare` a mutat singur
 valoarea din NECUNOSCUT în CALCULAT.* Necunoscutul de dinainte de 2015 a primit nume
-(`prag_mf_cunoscut`), în același commit cu unificarea. *(Se închide formal în commitul următor.)*
+(`prag_mf_cunoscut`), în același commit cu unificarea. Închisă pe `f710ee8`.
 
 **R107, deschisă ieri, cu 2 instanțe:** `OUG 156/2024 art. LXVI` ×2, articol propriu al ordonanței
 într-un document adus ca ciot. Familia „încrederea în corpus"; se închide aducând forma consolidată.

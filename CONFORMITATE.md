@@ -2326,11 +2326,14 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   închide când `dependenti_act.dependenti()` arată consumatori pentru `plafon_mijloc_fix`, adică
   atunci când `core/reverificare.consecinta()` nu-l mai clasează `NECUNOSCUT`.
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `3a1cf89`
-- **măsurat la**: 2026-08-31 · **pe commit**: `3a1cf89`
-- **cifra**: **3 copii** ale pragului de încadrare ca mijloc fix, **0 consumatori** ai celei
-  canonice:
+- **rezolvată pe commit**: `f710ee8`
+- **cât a stat deschisă**: o zi. *Deschisă de axa B a interdicției 55, închisă de o probă pe care n-a
+  dat-o omul: graful vede acum patru consumatori acolo unde vedea zero.*
+- **măsurat la**: 2026-09-01 · **pe commit**: `f710ee8`
+- **cifra la deschidere**: **3 copii** ale pragului de încadrare ca mijloc fix, **0 consumatori** ai
+  celei canonice. **Acum: 1 copie, 4 consumatori.**
 
   | unde | valoarea | data | folosit? |
   |---|---|---|---|
