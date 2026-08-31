@@ -5474,6 +5474,45 @@ citează legea și refuză fără temei → ROȘU · temeiul scos **cu totul** d
 scosesem doar `temei=`, dar mesajul interpola în continuare `TEMEI[fel]`. Refuzul chiar purta
 temeiul, pe alt drum. Mutația era proastă, nu gardul.*
 
+### CE A DEVENIT INVENTARUL — norma, scrisă pe cifra lui *(31.08.2026, semnal de la Costin)*
+
+Măsurătoarea a devenit **interdicția 77** din `CONFORMITATE.md`: *un blocaj fără temei — aplicația
+oprește un act și nu spune pe ce se sprijină.* Perimetrul e **datoria de 64**, nu cele 813; norma
+**își scrie singură limita** pe umbra de 778, cu motivul, ca să nu se citească drept plafon pe tot.
+
+Două lucruri s-au adăugat odată cu norma, fiindcă fără ele plafonul s-ar fi putut ocoli fără
+rea-intenție:
+
+1. **Migrarea între populații.** Un modul care **începe** să citeze legea își aduce în datorie și
+   refuzurile scrise **înainte** (păzit: fișierul nu e în baseline, deci n-are voie cu niciunul).
+   Un modul care **încetează** să citeze legea **nu-și stinge datoria** — o mută în umbră, unde n-o
+   mai numără nimeni. A doua direcție lipsea, și e cea periculoasă: cifra scade identic în amândouă
+   cazurile, iar gardul de dinainte dădea, în cazul eludării, exact sfatul greșit — *„curăță
+   baseline-ul"*. **Suprafața de migrare e măsurată: 160 de fișiere** sunt la un singur `Temei`
+   distanță. *(Costin: „altfel clichetul se elude prin locul unde stă codul, nu prin conținut — fără
+   rea-intenție, doar prin creștere".)*
+2. **Confruntarea normei cu clichetul.** Cifra din registru și cifra din cod nu pot diverge tăcut.
+   Dacă datoria scade, norma primește o linie nouă **cu data ei** — nu se lasă cifra veche să se
+   citească drept curentă. E chiar regula de ieri („o proză care reafirmă un număr derivat"), aplicată
+   pe a treia cale: aici nu se poate nici genera, nici șterge — `cifra` e un câmp **obligatoriu** al
+   unei interdicții, pinat cu `măsurat la` + `pe commit`. Deci **se confruntă**.
+
+### RĂMÂNE DESCHIS — `verificator_neconformitati.sh`, sub norma 77, ca FORMĂ
+
+*Costin, 31.08: intră sub aceeași normă «ca formă, nu ca reparație în tura asta».*
+
+**Un blocaj care afirmă absența când de fapt n-a putut verifica este un blocaj fără temei.** Linia
+`FAIL NC-07 JWT_SECRET lipsește din proces!` nu deosebește *„nu e"* de *„n-am putut vedea"* — iar
+prima e o afirmație despre lume pe care instrumentul n-are cum s-o susțină.
+
+- **ce se face**: un **al treilea rezultat, `NU S-A PUTUT VERIFICA`**, distinct de `PASS` și `FAIL`,
+  pe fiecare pas care are nevoie de privilegiu.
+- **ce NU se face, expres**: lărgirea setului îngust de `sudo`. *Un verificator care are nevoie de
+  mai multe drepturi ca să spună adevărul cere să fie crezut pe încredere* — și ar desface tocmai
+  îngustarea făcută pe 30.08.
+- **de ce nu e gardat încă**: instrumentul de refuzuri vede doar Python (`raise`), iar ăsta e un
+  script `bash` care **tipărește** un verdict. E în umbra declarată a instrumentului, modul de eșec 3.
+
 
 ## Inventar (generat, 28.08.2026)
 

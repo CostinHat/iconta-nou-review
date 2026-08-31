@@ -856,6 +856,7 @@ RECONCILIERE     document emis ↔ evidență ↔ recalcul ↔ ce confirmă auto
 | 74 | **Un export care rupe lanțul dintre declarație și documentele justificative** | P26·P14 |
 | 75 | **Date care se pot lua doar cu intervenția noastră, sau într-un format închis** | P26 |
 | 76 | **Un instrument de măsurare fără calibrare pe propriul mod de eșec** | P24 |
+| 77 | **Un blocaj fără temei: aplicația oprește un act și nu spune pe ce se sprijină** | P24·P14 |
 
 **Interdicția 76, adăugată 23.08.2026 (Costin), cu motivul ei.** Calibrarea **pozitivă** dovedește că
 instrumentul **găsește ce caută**. Nu dovedește că **nu ratează**. Patru instanțe într-o singură zi,

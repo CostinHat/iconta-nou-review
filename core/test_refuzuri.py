@@ -91,13 +91,57 @@ def test_un_fisier_NOU_porneste_de_la_zero(inv):
         "fișier(e) care citează legea și refuză fără temei, neînregistrate:\n" + "\n".join(noi))
 
 
-def test_baseline_nu_are_fisiere_disparute(inv):
-    """Un fișier din baseline care nu mai apare = baseline stătut. Se curăță, nu se lasă."""
+def test_un_fisier_care_iese_din_datorie_IESE_prin_reparatie_nu_prin_incetarea_citarii(inv):
+    """[31.08.2026, cerut de Costin] Cifra scade din două cauze care arată IDENTIC — și numai una e
+    o reparație.
+
+    (a) refuzurile modulului au primit temei → **datorie plătită**, baseline-ul se curăță;
+    (b) modulul a **încetat să citeze legea** → refuzurile lui au trecut în UMBRĂ, unde nu le
+        numără nimeni. Cifra scade fără ca vreun refuz să fi câștigat un temei.
+
+    A doua e **eludarea prin locul unde stă codul, nu prin conținut** — și nu cere rea-intenție:
+    e destul ca cineva să mute un `Temei` într-un modul vecin „ca să fie la un loc". Gardul de
+    dinainte spunea, în cazul ăsta, exact sfatul greșit: «curăță baseline-ul».
+
+    Perechea ei — un modul care ÎNCEPE să citeze legea, iar refuzurile lui vechi intră în datorie —
+    e păzită de `test_un_fisier_NOU_porneste_de_la_zero`: fișierul nu e în BASELINE, deci n-are voie
+    cu niciunul.
+    """
+    import os
     acum = s.datorie(inv)
-    disparute = sorted(f for f in BASELINE if f not in acum)
-    assert not disparute, (
-        "fișiere în BASELINE care nu mai au refuzuri fără temei (curăță-le, ca să nu ascundă o "
-        "creștere viitoare): %s" % disparute)
+    reparate, eludate = [], []
+    for f in sorted(BASELINE):
+        if f in acum:
+            continue
+        cale = os.path.join(s.RAD, f)
+        if not os.path.exists(cale):
+            eludate.append("  %-42s fișierul nu mai există" % f)
+        elif s.modul_citeaza_legea(cale):
+            reparate.append(f)
+        else:
+            eludate.append("  %-42s nu mai citează legea nicăieri" % f)
+    assert not eludate, (
+        "fișiere ieșite din datorie FĂRĂ ca vreun refuz să fi câștigat un temei:\n"
+        + "\n".join(eludate)
+        + "\n\nRefuzurile lor n-au dispărut — au trecut în UMBRĂ, unde nu le numără nimeni. "
+        "Dacă modulul chiar nu mai are de-a face cu norme, spune-o AICI, scoțând fișierul din "
+        "BASELINE cu motivul scris; dacă `Temei`-ul doar s-a mutat, datoria a rămas unde era.")
+    assert not reparate, (
+        "fișiere care și-au plătit datoria (toate refuzurile poartă acum temeiul): %s. "
+        "Scoate-le din BASELINE — altfel plafonul lor rămâne liber și ascunde o creștere viitoare."
+        % reparate)
+
+
+def test_suprafata_de_migrare_e_MASURATA_nu_presupusa(inv):
+    """Cât de mare e populația care poate intra în datorie printr-un singur `Temei` adăugat.
+
+    Nu e un plafon — e cifra care spune cât de mult contează regula de migrare. Dacă ar fi mică,
+    regula ar fi o precauție teoretică; la 160 de fișiere nu e.
+    """
+    umb = s.umbra(inv)
+    assert len(umb) > 50, (
+        "suprafața de migrare s-a prăbușit la %d fișiere — ori s-a reparat mult, ori instrumentul "
+        "a orbit. Remăsoară înainte de a scrie că e o victorie." % len(umb))
 
 
 def test_anti_vacuu_instrumentul_chiar_vede_ceva(inv):
@@ -124,6 +168,60 @@ def test_umbra_se_scrie_chiar_daca_nu_se_gardeaza(inv):
     assert sum(s.umbra(inv).values()) > 0, "umbra a dispărut — sau instrumentul a orbit"
     assert len(s.refuzuri_care_INTORC()) > 0, (
         "niciun refuz care întoarce în loc să ridice — modul de eșec 4 nu se mai vede")
+
+
+def test_cifra_din_norma_77_nu_diverge_de_CLICHET():
+    """doc↔cod. Norma din `CONFORMITATE.md` §77 își scrie cifra în proză; clichetul o ține în cod.
+
+    **Regula pe care o aplic aici e a mea, de ieri**: *orice proză care reafirmă un număr derivat ori
+    se generează, ori se șterge.* Aici nu se poate niciuna — `cifra` e un câmp **obligatoriu** al unei
+    interdicții, pinat cu `măsurat la` + `pe commit`, deci e o măsurătoare datată, nu o afirmație
+    despre azi. A treia cale: **se confruntă**.
+
+    Ce face imposibil: ca cineva să repare zece refuzuri, să coboare clichetul, și norma să rămână
+    scriind 64. Atunci n-ar mai fi o măsurătoare veche — ar fi o măsurătoare veche *care se citește
+    ca fiind curentă*, fiindcă nimic n-o contrazice. Coborârea clichetului cere o linie nouă în
+    normă, cu data ei.
+    """
+    import io
+    import os
+    import re
+    conf = io.open(os.path.join(s.RAD, "CONFORMITATE.md"), encoding="utf-8").read()
+    m = re.search(r"^## 77 — .*?$(.*?)^## ", conf, re.M | re.S)
+    assert m, "interdicția 77 nu se poate izola din CONFORMITATE.md"
+    corp = m.group(1)
+    c = re.search(r"- \*\*cifra\*\*: (.+)", corp)
+    assert c, "câmpul `cifra` al normei 77 nu se mai găsește"
+    # Se citesc NUMERELE, nu forma lor tipografică: `**64**, în **13 fișiere**` și
+    # `**64**, în **13** fișiere` spun același lucru, iar un gard care cere una din ele ar păzi
+    # punctuația. Primele două numere ale câmpului sunt, prin scriere, totalul și fișierele.
+    nr = [int(x) for x in re.findall(r"\d+", c.group(1))]
+    assert len(nr) >= 2, "câmpul `cifra` n-are cele două numere (total, fișiere): %r" % c.group(1)
+    scris_total, scris_fisiere = nr[0], nr[1]
+    assert scris_total == sum(BASELINE.values()), (
+        "norma 77 scrie %d, clichetul e la %d. Dacă datoria a scăzut, norma primește o linie nouă "
+        "cu data ei — nu se lasă cifra veche să se citească drept curentă."
+        % (scris_total, sum(BASELINE.values())))
+    assert scris_fisiere == len(BASELINE), (
+        "norma 77 scrie %d fișiere, clichetul are %d" % (scris_fisiere, len(BASELINE)))
+
+
+def test_norma_77_isi_scrie_LIMITA_pe_umbra(inv):
+    """Costin, 31.08: «norma își scrie singură această limită, cu motivul». Un plafon care nu-și
+    numește ce lasă afară se citește ca și cum ar acoperi tot."""
+    import io
+    import os
+    import re
+    conf = io.open(os.path.join(s.RAD, "CONFORMITATE.md"), encoding="utf-8").read()
+    m = re.search(r"^## 77 — .*?$(.*?)^## ", conf, re.M | re.S)
+    corp = m.group(1)
+    camp = re.search(r"- \*\*limita pe care norma și-o scrie singură\*\*: (.+)", corp)
+    assert camp, "norma 77 nu-și mai scrie limita — umbra ar părea acoperită"
+    umb = s.umbra(inv)
+    cifre = [int(x) for x in re.findall(r"\d+", camp.group(1))]
+    assert sum(umb.values()) in cifre and len(umb) in cifre, (
+        "limita scrisă în normă (%s) nu mai corespunde umbrei măsurate (%d refuzuri în %d fișiere)"
+        % (cifre, sum(umb.values()), len(umb)))
 
 
 # ── CALIBRARE pe modul propriu de eșec (METODA §22), pe cod SINTETIC ─────────────────────────
