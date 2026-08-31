@@ -6543,3 +6543,106 @@ fără proprietar scris în registru.
 *Ultima merită numită separat: gardul care le-a prins își povestește în docstring că **prima lui
 rulare a găsit 16 din 17 capturi nenumite** — adică regula era încălcată de propriul ei autor în ziua
 în care a scris-o. Patru zile mai târziu a prins același lucru la altcineva.*
+
+
+## 31.08.2026 — Ziua în care șase commituri din șapte n-au schimbat nimic pentru un contabil, iar al șaptelea a schimbat trei lucruri
+
+*Scrisă la cererea lui Costin, cu condiția lui: **„dacă ziua n-a schimbat nimic pentru un contabil,
+scrie-o ca atare."** Am măsurat, în loc să presupun.*
+
+### MĂSURĂTOAREA, PRIMA
+
+Șapte commituri. Am trecut prin fiecare și am întrebat **ce cod care rulează pentru un om s-a
+schimbat** — nu ce s-a scris, ce s-a măsurat, ce s-a gardat:
+
+| commit | ce a atins | se vede de la un contabil? |
+|---|---|---|
+| `2200432` | GARZI, un scanner nou, gărzile lui | **nu** |
+| `11514c2` | CONFORMITATE, PLAN, gărzi | **nu** |
+| `ad68ba5` | temeiuri pe refuzurile a două registre **de ieri** | doar dacă lovește exact acele refuzuri |
+| `76ae256` | două acte în corpus, registre | **nu** |
+| `2174684` | clasificatorul de alerte · un avertisment D100 pentru firme care nu există | **nu** |
+| `2efac27` | CONFORMITATE, GARZI, două instrumente noi | **nu** |
+| `edaada7` | **`jurnal_api.py` + `main.py`** | **da — trei lucruri** |
+
+**Deci: șase din șapte n-au schimbat nimic pentru un contabil.** Nu e o acuzație și nici o scuză; e
+cifra. O zi de măsurătoare arată exact așa, iar dacă n-o scriu, mâine o citește cineva ca pe o zi de
+construcție.
+
+### CE S-A SCHIMBAT TOTUȘI, ȘI E REAL
+
+Ultimul commit atinge **cea mai folosită cale de scriere a aplicației** — nota contabilă:
+
+1. **Un cont care nu e în planul firmei nu mai intră în evidență.** Până azi, `9999` producea o notă.
+   *O notă cu un cont inexistent nu e evidență, e un rând care arată ca evidență* — iar la un control
+   nu se poate apăra.
+2. **O dată scrisă „10.03.2025" nu mai produce «eroare 500».** Produce o propoziție care spune ce
+   format se așteaptă și de ce contează ordinea cronologică.
+3. **Fiecare refuz spune sub ce normă refuză.** Erau 12 refuzuri fără autor; acum sunt 0 din 14.
+
+*Astea trei sunt tot ce a câștigat un contabil azi. Merită scrise separat tocmai fiindcă restul zilei,
+oricât de mult a fost, nu i-a dat nimic.*
+
+### DE CE S-A GĂSIT ABIA AZI CEVA ATÂT DE APROAPE DE SUPRAFAȚĂ
+
+Fiindcă până azi n-am **exercitat** calea — am citit-o. Costin a cerut două serii de date, **invalidele
+primele**, cu motivul lui: *„dacă pornești cu cele valide și trece, nu știi dacă poarta funcționează
+sau e deschisă."* Cele trei găuri au ieșit în primele treizeci de secunde de exercițiu.
+
+Și mai e ceva: **niciuna nu era invizibilă pentru instrumente din întâmplare.**
+
+- Contul: `R54` declarase confruntarea cu planul făcută „pe toate rutele care scriu în evidență cu un
+  cont venit de la om". Domeniul ei recunoaște citirile după **numele cheii** (`cont`, `cont_*`), iar
+  jurnalul le numește `debit` și `credit`. **N-a fost niciodată în domeniu** — nici în cele 27
+  măsurate, nici în cele 8 declarate nelegate.
+- Refuzurile: cad în **umbra** interdicției 77, populația despre care norma spune că nu se poate ști
+  mecanic dacă aplică o regulă nenumită. **Azi s-a aflat că da** — *„fiecare linie are nevoie de cont
+  debit și credit"* e partida dublă.
+
+**Același cod, două liste care ar fi trebuit să-l vadă, niciuna nu-l vedea** — una fiindcă se uită la
+cum se numește o cheie, cealaltă la ce citează un modul. Fiecare criteriu e apărabil singur.
+
+### DE TREI ORI ASTĂZI O SONDĂ DE-A MEA A MINȚIT ÎNAINTE DE A FI VERIFICATĂ
+
+Partea zilei care merită păstrată nu e ce am găsit, ci **cât de aproape am fost să raportez fals**:
+
+1. **„16 din 16 refuzuri fără temei"** — tokenul era al altui cabinet. Toate erau `404 fără acces`;
+   cererile n-au atins gărzile testate. Aș fi scris o propoziție despre cod care nu s-a executat.
+2. **„notă dezechilibrată, acceptată"** — schema ține debit, credit și sumă **pe aceeași linie**.
+   Nota **nu poate** fi dezechilibrată. Aplicația a avut dreptate; eticheta mea era greșită. *Dacă
+   „reparam", scriam cod mort peste un invariant garantat de construcție.*
+3. **„INSTRUMENT: 0"** în lista a ce a rămas — parserul căuta un tabel, roadmapul ține o listă. *Un
+   zero greșit e mai rău decât o lipsă: se citește ca terminat.*
+
+Toate trei au fost prinse la fel: **cifra contrazicea ceva ce știam, și am verificat formatul în loc
+să cred cifra.**
+
+### A TREIA OARĂ ÎN TREI ZILE CÂND „A DOUA APARIȚIE" A SCHIMBAT CONCLUZIA
+
+Pct. 576 alin. (1) din OMFP 1802/2014: *„microentitățile nu au obligația elaborării notelor
+explicative"*. Eram gata să scriu că notele nu se datorează. Punctul începe cu *«Cu respectarea
+prevederilor alin. (2)»*, iar **alin. (2) e elidat în prima apariție a actului din corpus**. A doua
+îl are: microentitățile prezintă totuși pct. 468 lit. a), d), e) și pct. 491 alin. (2) lit. c).
+**Scutirea e parțială.**
+
+*Regula a fost urcată la METODA acum două zile. De atunci a lucrat de trei ori, și de fiecare dată a
+inversat o concluzie pe care aș fi scris-o.*
+
+### CE A COSTAT ZIUA
+
+Poarta a rulat de **șapte** ori, ~15-16 minute fiecare, și a respins de **patru**. **Niciuna dintre
+respingeri n-a fost regresie de comportament** — toate au fost gărzi scrise înainte, care au prins:
+aserțiuni pe text în gărzile mele noi (de trei ori, în trei ture diferite), afirmații netipate (de
+două ori), o constantă fiscală nesursată, tabele goale neclasificate în perimetru.
+
+**Iar de două ori am introdus eu defectul chiar reparând altceva:** o gardă care cerea ca numerele
+umbrei să fie *scrise* în normă — transformând o cifră deliberat nedeplafonată într-un clichet de
+facto — și, reparând-o, două aserțiuni pe text în locul ei.
+
+### CE RĂMÂNE ADEVĂRAT MÂINE
+
+- **Lista 3 nu mai e sursă de construcție.** 1 deschis din 7, iar cifra e derivată.
+- **Datele de pe `tenant_013` și `tenant_014` sunt scenariu declarat**, nu reziduu. Pe ele stau
+  încadrarea `micro` și închiderea R3. *Cine le găsește să nu le cureţe.*
+- **Ce a rămas de făcut se citește dintr-un instrument**, nu dintr-o listă scrisă: 111 rânduri, șase
+  surse, și doar patru dintre ele cu dimensiune sigură.
