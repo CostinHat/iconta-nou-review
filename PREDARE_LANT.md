@@ -163,15 +163,12 @@ scrisesem regula care o interzice (`METODA §10.16`). *O regulă scrisă nu țin
 ele"*. Grupul ei de interdicții (49–62), măsurat: **8 MĂSURATE · 2 PARȚIAL · 4 NEÎNCEPUTE**.
 Criteriul lui **E2** numește exact două lucruri care lipsesc:
 
-1. **categoria de reverificare** (interdicția **55**) — câmpul nu există; proiectul e decis din
-   23.08 (două axe mecanice × tabelul 3×3 de praguri). **Axa A e acum calculabilă**, cu
-   `core/articol_in_act.py`, dar **pe 15 din 26** de perechi: restul cad pe **R106** sau pe un
-   document-ciot. Ce urmează: axa B (consecința, din `core/dependenti_act.py`) și tabelul, cu
-   `NECUNOSCUT` declarat pe perechile care nu se confruntă.
-2. **51, 56, 57, 62 sunt NEÎNCEPUTE în registru, deși planul le declară *nemăsurabile retroactiv*.**
-   Registrul are starea `NEMĂSURABILĂ` exact pentru asta, iar regula lui e *„un câmp gol nu e
-   permis; dacă nu se poate măsura, se scrie NEMĂSURABILĂ CU MOTIVUL"*. **E o divergență
-   plan↔registru, nu o măsurătoare lipsă** — se închide scriind motivul, nu măsurând.
+1. **categoria de reverificare (interdicția 55) — CONSTRUITĂ, 31.08.** `core/reverificare.py`, două
+   axe mecanice × tabelul 3×3. Pe cele 34 de temeiuri: **24 clasificate, 10 NECUNOSCUT declarat**;
+   **9 mai strict, 0 mai larg** față de pragul global de 6 luni. `INFORMATIV` e declarat **vid**, cu
+   motivul. *Rămâne consumatorul: raportul lunar folosește tot pragul global — **R109**.*
+2. **51, 56, 57, 62 — CORECTATE, 31.08**, din NEÎNCEPUTE în **NEMĂSURABILE**, fiecare cu motivul ei
+   și cu *ce ar face-o măsurabilă de acum înainte*, ca starea să nu fie o scuză permanentă.
 
 **R106 SE RETRAGE — n-a fost un defect de date, ci al instrumentului meu.** Cele șase perechi erau
 **convenția de modelare declarată la interdicția 50**, pe 23.08: `Legea 141/2025 art. 97` înseamnă
@@ -250,7 +247,7 @@ ale Design System, **5** sunt acoperite. Nu invalidează porțile; le încadreaz
 ## STAREA LA PREDARE
 
 Poartă verde, citită din ieșirea rulării complete de pe arborele care devine commitul următor:
-**3866 teste trec** · 11 skip · 14 xfail · **COLLECTED 3891** · ruff OK · verificator **TOTAL 0** ·
+**3877 teste trec** · 11 skip · 14 xfail · **COLLECTED 3902** · ruff OK · verificator **TOTAL 0** ·
 rute **423 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 34** · site **200** · four-way se închide la
 `post-commit`, care publică pe `origin/main` și pe `backup/lant-2026-08-31` și **restartează
 necondiționat** procesul viu.

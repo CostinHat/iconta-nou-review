@@ -6497,11 +6497,74 @@ tăierea la citare, care ascundea volatilitate — e real și reparat.
 care le atinge, înainte de a raporta o descoperire.* Registrul scrie modurile de eșec **tocmai** ca
 să nu fie redescoperite ca defecte.
 
+## 31.08.2026 — Categoria de reverificare există și e CALCULATĂ. Iar axa „unde ajunge valoarea" a scos un prag fiscal cu trei copii
+
+**`core/reverificare.py` (NOU) + `core/test_reverificare.py` — NOU, 11 teste.** Interdicția **55**
+măsura, pe 23.08: *„53 din 53 fără categorie de reverificare — fiindcă **câmpul nu există**."* Exista
+un prag global unic, 6 luni pentru tot: o cotă de TVA care se schimbă la fiecare rectificare și o
+definiție neatinsă din 2015 se reconfirmau la fel de des.
+
+**Cele două axe sunt mecanice** — asta face categoriile calculabile, nu atribuibile. A: frecvența
+articolului, din marcajele lui de consolidare, citite în documentul pe care îl indică **convenția**
+de la interdicția 50 — nu în actul citat literal. B: consecința, din unde ajunge valoarea.
+
+| clasă | câte | prag |
+|---|---|---|
+| VOLATIL / DEPUS | **9** | 1 lună |
+| STABIL / DEPUS | **12** | 6 luni |
+| MISCATOR / CALCULAT | **2** | 6 luni |
+| MISCATOR / NECUNOSCUT | **1** | — |
+| NECUNOSCUT / NECUNOSCUT | **10** | — |
+
+Față de pragul global: **9 mai strict · 0 mai larg · 14 la fel · 11 fără prag.** *Cele 9 sunt exact
+valorile care s-au mișcat recent: cotele de TVA, dividendele, micro, impozitul pe venit. Toate intră
+în declarații.*
+
+**`NECUNOSCUT` NU E O CLASĂ DE REZERVĂ, E UN RĂSPUNS** *(Costin, 31.08: „orice implicit minte —
+STABIL tăcut, VOLATIL zgomotos")*. O pereche fără axă nu primește prag, iar fiecare NECUNOSCUT își
+scrie motivul. Amândouă gardate — plus direcția inversă: o pereche complet clasificată **trebuie** să
+aibă prag, ca `NECUNOSCUT` să nu devină o scuză confortabilă.
+
+**`INFORMATIV` e declarat VID, cu motivul:** `dependenti_act` vede funcții Python, nu ecrane. Gardul
+cere clasa vidă — *ziua în care apare o cale de a o atribui, testul cade, și e corect să cadă.*
+
+**O gaură a tabelului, astupată declarat:** trei modificări în același an nu intră în niciunul dintre
+cele trei rânduri, cum sunt scrise. Se clasează **VOLATIL** — direcția care verifică mai des. Are test
+propriu, ca alegerea să fie o decizie scrisă, nu un efect al ordinii de `if`-uri.
+
+**Gardul cere și MONOTONIA tabelului**, pe structură: mai volatil trebuie să însemne mai des, mai grav
+la fel. O rescriere care păstrează cifrele dar le încurcă ordinea trece un test de egalitate și pică
+aici.
+
+### CE A SCOS AXA B, și e o descoperire, nu o construcție
+
+`plafon_mijloc_fix` a ieșit **NECUNOSCUT** pe consecință: *nimic din cod nu atinge valoarea*.
+Verificat la sursă cu `grep` — apare doar în propria definiție și în eticheta raportului lunar.
+**Consumatorii existau; își duplicaseră cifra.**
+
+| unde | valoare | dată | folosit |
+|---|---|---|---|
+| `COTE["plafon_mijloc_fix"]` — canonic | 5.000 / 2.500 | era **01.01.2026**, greșit | **nu** |
+| `obiecte_inventar.py` | 5.000 / 2.500 | **25.02.2026**, corect | da |
+| `mijloace_fixe_import_api.py` | 5.000 | **fără dată** | da |
+
+**Data din registru s-a corectat** — fapt verificat verbatim în forma consolidată: *„(la
+**25-02-2026**, Litera b), Alineatul (2), Articolul 28 … a fost modificată de Punctul 7., Articolul 6
+din ORDONANȚA DE URGENȚĂ …)"*. Unificarea celor trei pe `cota()` **nu** s-a făcut: **R108**.
+
+**Cade între două instrumente**, și asta e partea de reținut: graful nu-l vede fiindcă nimic nu-l
+consumă, iar `scan_constante` **nu-l numără** — `mijloace_fixe_import_api.py` are **zero** intrări în
+inventarul constantelor nesursate. *O gaură de acoperire, nu doar o instanță.*
+
+**Ce NU s-a legat, deliberat:** pragul calculat nu alimentează încă raportul lunar — ar schimba ce
+raportează un job viu și cere `cote_neconfirmate` să primească prag per-articol. **R109**, cu efectul
+deja măsurat.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**499 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**500 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 482
+### `core/` — 483
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -6922,6 +6985,7 @@ să nu fie redescoperite ca defecte.
 - `core/test_reluari_decizie.py` — GARD [27.08.2026]: o decizie cerută de mai multe ori nu mai poate arăta ca cerută o dată.
 - `core/test_respingeri_import.py` — GARDĂ: o respingere de rând la import e o AFIRMAȚIE, cu regulă numită. (P8/C, 21.08.2026)
 - `core/test_retete_randuri_dinamice.py` — GARD cap.24 — randuri dinamice RETETE (ingrediente HoReCa), re-rulate IN POARTA prin chromium headless.
+- `core/test_reverificare.py` — GARD [31.08.2026]: categoria de reverificare se CALCULEAZĂ, iar necunoscutul rămâne necunoscut.
 - `core/test_rol_pe_efect.py` — core/test_rol_pe_efect.py — GARD: rolul se cere după CE FACE ruta, nu după cum se numește.
 - `core/test_rotunjire_fiscala.py` — [Rotunjire fiscală] GARD: în modulele de declarații (`core/d*.py`, `*engine*.py`) o sumă fiscală NU se
 - `core/test_running_head.py` — GARD detector "running == HEAD" (DECIZII/GARZI iulie: detector vizibil, NU auto-restart).

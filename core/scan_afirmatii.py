@@ -78,7 +78,12 @@ IGNORA_FISIER = ("test_", "scan_", "verificator_conformitate", "migrare_", "conf
 # Module de infrastructura: nu vorbesc despre datele unei firme, oricat de sugestive le-ar fi cheile.
 FARA_FIRMA = ("core/auth_api.py", "core/email_util.py", "core/notificari.py", "core/cron.py",
               "core/alerta_acces.py", "core/audit_retentie.py", "core/tenant_provisioning.py",
-              "core/db.py", "core/pdf_fonturi.py", "core/backup_api.py")
+              "core/db.py", "core/pdf_fonturi.py", "core/backup_api.py",
+              # 31.08.2026: `reverificare` afirma despre un ARTICOL DE LEGE — cat de des s-a
+              # modificat si cat de des trebuie recitit —, nu despre datele unei firme. `motiv` de
+              # acolo spune de ce nu s-a putut clasifica un articol, nu ce s-a constatat la o firma.
+              # Regula din DESIGN_SYSTEM cap.25 e despre afirmatiile privind DATELE FIRMEI.
+              "core/reverificare.py")
 
 
 def clasa(fisier, functie, chei):

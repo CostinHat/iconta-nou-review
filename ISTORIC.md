@@ -6879,3 +6879,47 @@ proiectului. De patru ori m-a corectat măsurătoarea; a cincea oară m-a corect
 **Ce rămâne adevărat din tura precedentă:** defectul din `articol_in_act` — tăierea la citare, care
 ascundea volatilitate (`CF art. 78`: un an de modificare în loc de șase) — e real, e reparat, și n-a
 depins de încadrarea greșită. *Extragerea a plătit; concluzia trasă din ea, nu.*
+
+## 31.08.2026 (partea a șaptea) — Categoria de reverificare există. Iar întrebarea „unde ajunge valoarea" a găsit un prag fiscal cu trei copii
+
+**Interdicția 55, închisă ca măsurătoare:** câmpul care nu exista există acum, **calculat** din două
+axe mecanice. Pe cele 34 de temeiuri din registru: **24 clasificate complet, 10 NECUNOSCUT declarat**.
+Nouă valori ar trece de la 6 luni la **1 lună** — exact cotele care s-au mișcat recent, toate intrând
+în declarații. **Zero** ar fi verificate mai rar; e gardat, fiindcă slăbirea supravegherii cere o
+decizie, nu un tabel.
+
+**Regula lui Costin, implementată literal:** *„orice implicit minte — STABIL tăcut, VOLATIL
+zgomotos."* Un necunoscut nu primește prag. Iar o clasă care **nu se poate atribui** mecanic —
+`INFORMATIV` — se declară **vidă**, cu motivul, în loc să pară o acoperire care există.
+
+### Ce a scos axa B, și n-a fost construcție, ci descoperire
+
+Axa B întreabă *unde ajunge valoarea*. Pentru `plafon_mijloc_fix` răspunsul a fost **nicăieri**.
+Verificat cu `grep`: apare doar în propria definiție și în eticheta raportului lunar.
+
+**Consumatorii existau. Își duplicaseră cifra** — de două ori, diferit:
+
+- `obiecte_inventar.py`: `PRAG_NOU = 5000`, `DATA_PRAG_NOU = date(2026, 2, 25)` — **corect**;
+- `mijloace_fixe_import_api.py`: `PLAFON_MF_2026 = 5000.0` — **fără dată**;
+- `COTE["plafon_mijloc_fix"]`, cel canonic: data **01.01.2026** — **greșit**, și **nefolosit**.
+
+Marcajul din forma consolidată spune limpede: *„(la **25-02-2026** … a fost modificată de Punctul 7.,
+Articolul 6 din ORDONANȚA DE URGENȚĂ …)"*. **Data din registru s-a corectat.** Unificarea celor trei
+pe `cota()` nu s-a făcut — **R108**, cu condiția scrisă.
+
+**Cade între două instrumente, și asta e partea de reținut:** graful nu-l vede fiindcă nimic nu-l
+consumă; `scan_constante` nu-l numără fiindcă `mijloace_fixe_import_api.py` are **zero** intrări în
+inventarul lui. *Un prag fiscal poate fi invizibil pentru amândouă instrumentele care ar trebui să-l
+vadă — unul fiindcă e mort, celălalt fiindcă e viu în altă parte.*
+
+### Cele patru NEÎNCEPUTE, devenite NEMĂSURABILE
+
+51, 56, 57, 62 — planul le declara nemăsurabile retroactiv **din start**; registrul le ținea
+NEÎNCEPUTE, ceea ce se citește ca *„n-am ajuns încă"*. Fiecare primește motivul ei, și fiecare
+primește **ce ar face-o măsurabilă de acum înainte** — ca starea să nu fie o scuză permanentă. *57
+primește în plus ce **e** măsurabil azi: câte valori n-au niciun `Temei`. Interdicția nu cere absența
+temeiului, ci absența declarației „am căutat".*
+
+**Ce nu s-a legat, deliberat:** pragul calculat nu alimentează încă raportul lunar. Ar schimba ce
+raportează un job viu și cere schimbarea contractului lui `cote_neconfirmate`. **R109**, cu efectul
+măsurat înainte de a fi aplicat.

@@ -3,6 +3,33 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 31.08.2026 (20) — Categoria de reverificare: NECUNOSCUT e un răspuns, iar clasa care nu se poate atribui se declară vidă
+
+**Comanda lui Costin:** *„Construiește categoria de reverificare (55) acum, cu NECUNOSCUT declarat pe
+perechile neconfruntabile. Corectează în aceeași tură cele patru NEÎNCEPUTE → NEMĂSURABILE-cu-motiv."*
+
+**1. `NECUNOSCUT` nu primește prag.** Regula lui, verbatim: *„orice implicit minte — STABIL tăcut,
+VOLATIL zgomotos."* Implementat literal: `prag_luni` e `None`, **nu** se cade pe pragul global. Gardat
+în amândouă direcțiile — un necunoscut nu primește prag, dar nici o pereche clasificată complet nu
+poate rămâne fără.
+
+**2. O clasă care nu se poate atribui mecanic se DECLARĂ VIDĂ, nu se lasă să pară posibilă.**
+`INFORMATIV` cere să deosebești „intră într-o cifră arătată omului" de „apare ca informație", iar
+`dependenti_act` vede funcții, nu ecrane. Clasa rămâne în tabel — tabelul e decizia lui Costin — dar
+gardul cere să fie **goală**, cu motivul scris. *O clasă declarată posibilă și niciodată atribuită
+arată ca acoperire; una declarată vidă arată ca o limită.*
+
+**3. O gaură a unei decizii se astupă DECLARAT, în direcția sigură.** Tabelul de frecvență, așa cum e
+scris, nu acoperă *trei sau mai multe* modificări în același an. Instrumentul alege **VOLATIL** — mai
+des verificat, nu mai rar — și are test propriu pentru alegere. *Nu se cere o decizie nouă pentru un
+caz care n-a apărut încă; se alege direcția sigură și se scrie că e o alegere.*
+
+**4. Cele patru NEÎNCEPUTE devin NEMĂSURABILE, fiecare cu motivul ei** — 51, 56, 57, 62. Planul le
+declara nemăsurabile retroactiv din start; registrul le ținea NEÎNCEPUTE, ceea ce se citește ca
+*„n-am ajuns încă"*, nu ca *„nu se poate"*. Fiecare primește și **ce ar face-o măsurabilă de acum
+înainte** — ca starea să nu fie o scuză permanentă. *57 primește în plus ce **e** măsurabil azi
+(valorile fără niciun `Temei`), ca interdicția să nu pară goală.*
+
 ## 31.08.2026 (19) — Un temei fals-verificabil e mai rău decât unul verificabil-fals; iar un instrument care nu știe convențiile datelor măsoară propria naivitate
 
 **Regulile, verbatim de la Costin**, date pentru repararea lui R106 — și rămân valabile, deși R106

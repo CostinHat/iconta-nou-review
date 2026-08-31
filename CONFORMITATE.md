@@ -2284,6 +2284,86 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
 - **cum s-a rezolvat (partea statică)**: `core/test_ds_verificator.py` — **trei clichete** (neacoperite ≤ **24**, acoperite ≥ **5**, fără ancoră ≤ **18**) și **patru calibrări**, dintre care una **în direcția de eșec** (regula lui R100: o ancoră sigur absentă trebuie să iasă NEACOPERITĂ) și una pe **ancora din comentariu** — chiar forma regulii steluțelor. **RED-proof rulat**: o regulă nouă inserată în DS, cu ancoră necunoscută, urcă 24 → 25 și garda cade. *Clichetele sunt praguri, nu zerouri: datoria cunoscută e **înghețată**, nu ștearsă.* **Ce NU închide asta, prin decizie:** cele **15** reguli acoperite doar la suprafață **nu sunt datorie** — sunt limita unui scaner static, corect diagnosticată, și cer alt instrument, care cheamă rute și observă comportamentul: **faza 2**. Iar cele **18 fără ancoră** s-au desprins ca **R104**, fiindcă sunt defect al REGULII, nu al instrumentului.
 - **condiția de deblocare**: o gardă care cere ca fiecare regulă din DS cu **ancoră** să aibă corespondent în verificator, **sau** o declarație scrisă lângă ea („nu se poate verifica static, fiindcă…"). Clichet pe numărul de neacoperite, ca să nu crească tăcut. Se închide când cifra e ținută de un clichet **și** când fiecare regulă din cele 24 e ori acoperită, ori declarată. *Partea „doar la suprafață" (15) NU se închide cu asta: ea cere un instrument care observă comportamentul, nu textul — deci altă natură, și altă restanță când se ajunge la ea.*
 
+### R109 — Pragul de reverificare se calculează, dar raportul lunar folosește tot pragul global
+
+- **felul**: ORDINE
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · faza 2 · consumatorul interdicției **55** · **PRAG 3**
+- **ce blochează**: efectul interdicției 55. Categoria există și e verificabilă, dar nimic n-o
+  folosește: `core/expirare_cote.py` cere mai departe un singur `prag_luni`, iar
+  `common.cote_neconfirmate()` primește un număr, nu o funcție de temei.
+- **condiția de deblocare**: `cote_neconfirmate` acceptă un prag **per temei**, iar `expirare_cote`
+  îl ia din `core/reverificare.categorie()`. Se închide când raportul lunar rulează pe praguri
+  per-articol, cu perechile `NECUNOSCUT` raportate ca atare — nu topite în pragul global.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `3a1cf89`
+- **măsurat la**: 2026-08-31 · **pe commit**: `3a1cf89`
+- **cifra**: **9 valori** ar trece de la 6 luni la **1 lună** (VOLATIL/DEPUS), **14** rămân la 6,
+  **11** n-ar avea prag și ar trebui raportate ca `NECUNOSCUT`. **0** ar fi verificate mai rar.
+- **instanțe**: cele 9 sunt exact valorile care s-au mișcat recent — cotele de TVA (CF art. 291),
+  impozitul pe dividende (art. 97), impozitul micro (art. 51), impozitul pe venit (art. 78).
+- **de ce nu s-a legat în tura construcției**: schimbă ce raportează un **job viu** (cron lunar), iar
+  contractul lui `cote_neconfirmate` trece de la un număr la o funcție. *Nu e o linie; e o schimbare
+  de contract pe o cale care trimite alerte.*
+- **calibrare**: efectul e măsurat înainte de a fi aplicat — `reverificare.fata_de_pragul_global()`,
+  gardat: `mai_larg` trebuie să rămână **0**, altfel trecerea ar slăbi supravegherea în tăcere.
+- **ce nu vede**: nu spune dacă alertele produse de pragurile noi ar fi **utile** — doar câte ar fi.
+- **unde ajunge efectul**: azi, cotele care se schimbă cel mai des sunt reconfirmate la fel de rar ca
+  definițiile neatinse din 2015. Nouă dintre ele intră în declarații.
+
+### R108 — Un prag fiscal are TREI copii, iar cea canonică era greșită și nefolosită
+
+- **felul**: ORDINE
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · faza 2 · ieșit din construcția interdicției **55** (axa B: *unde ajunge
+  valoarea*) · **PRAG 2**
+- **ce blochează**: sursa unică a unei valori fiscale. Cât timp pragul stă în trei locuri, o
+  modificare de lege trebuie aplicată în trei — iar registrul, care ar trebui să fie canonic, e cel
+  pe care nu-l citește nimeni.
+- **condiția de deblocare**: `core/mijloace_fixe_import_api.py` și `core/obiecte_inventar.py` citesc
+  pragul din registru (`common.cota("plafon_mijloc_fix", la_data=...)`), iar literalii lor dispar. Se
+  închide când `dependenti_act.dependenti()` arată consumatori pentru `plafon_mijloc_fix`, adică
+  atunci când `core/reverificare.consecinta()` nu-l mai clasează `NECUNOSCUT`.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `3a1cf89`
+- **măsurat la**: 2026-08-31 · **pe commit**: `3a1cf89`
+- **cifra**: **3 copii** ale pragului de încadrare ca mijloc fix, **0 consumatori** ai celei
+  canonice:
+
+  | unde | valoarea | data | folosit? |
+  |---|---|---|---|
+  | `COTE["plafon_mijloc_fix"]` (canonic) | 5.000 / 2.500 | era **01.01.2026** — **greșit** | **nu**, de nimeni |
+  | `core/obiecte_inventar.py` `PRAG_NOU`/`DATA_PRAG_NOU` | 5.000 / 2.500 | **25.02.2026**, corect | da |
+  | `core/mijloace_fixe_import_api.py` `PLAFON_MF_2026` | 5.000 | **fără dată** | da, la avertisment |
+
+- **CUM A IEȘIT LA IVEALĂ**: axa B a interdicției 55 întreabă *unde ajunge valoarea*. Pentru
+  `plafon_mijloc_fix` răspunsul a fost **nicăieri** — zero funcții în graf. Verificat la sursă cu
+  `grep`: apare doar în propria definiție și în eticheta raportului lunar. *Consumatorii existau; își
+  duplicaseră cifra.*
+- **CE S-A REPARAT ACUM** (fapt verificat verbatim, nu refactorizare): **data din registru**,
+  01.01.2026 → **25.02.2026**. Marcajul din forma consolidată a Codului fiscal spune: *„(la
+  **25-02-2026**, Litera b), Alineatul (2), Articolul 28 … a fost modificată de Punctul 7., Articolul
+  6 din ORDONANȚA DE URGENȚĂ …)"*. Antetul lui `obiecte_inventar.py` avea data corectă din start.
+- **CE NU S-A REPARAT**: unificarea celor trei pe `cota()`. E o schimbare pe o cale de import vie și
+  pe un motor pur; se face ca temă proprie, cu poarta ei.
+- **CADE ÎNTRE DOUĂ INSTRUMENTE, și asta e partea de reținut**: graful (`dependenti_act`) nu-l vede
+  fiindcă nimic nu-l consumă; iar `scan_constante` **nu-l numără** — `core/mijloace_fixe_import_api.py`
+  are **zero** intrări în inventarul constantelor nesursate. *O constantă fiscală scrisă ca
+  `PLAFON_MF_2026 = 5000.0` la nivel de modul n-a fost în populația măsurată de niciunul.* Asta e o
+  gaură în acoperire, nu doar o instanță.
+- **calibrare**: cazul cunoscut **găsit** — instrumentul a semnalat exact valoarea fără consumatori,
+  iar celelalte 33 de temeiuri n-au produs fals-pozitive pe aceeași cale (`plafon_tva_incasare`, cu
+  un singur consumator, a ieșit corect `CALCULAT`).
+- **ce nu vede**: numără consumatori **în graf**. O valoare citită prin altă cale (configurație,
+  interpolare, JS) ar apărea tot ca fără consumatori. Deci cifra e **plafon superior** al valorilor
+  cu adevărat moarte.
+- **unde ajunge efectul**: azi, **niciunul pe cifre** — calea folosită (`obiecte_inventar`) are data
+  corectă. Ce se strică e **întreținerea**: la următoarea modificare a pragului, registrul se
+  actualizează și aplicația nu se mișcă, sau invers. Iar avertismentul de la import (*„sub plafon
+  5000 (2026)"*) e dat **fără dată**, deci e greșit pentru bunuri intrate între 01.01 și 24.02.2026.
+
 ### R107 — Două temeiuri citează un document adus PARȚIAL, deci nu se poate confrunta nimic
 
 - **felul**: SURSĂ
@@ -6920,13 +7000,20 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 51 — O regulă scrisă din memorie, când actul lipsește din corpus
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: NEMĂSURABILĂ
+- **măsurat la**: 2026-08-31
+- **pe commit**: `3a1cf89`
+- **cifra**: — **NEMĂSURABILĂ RETROACTIV**, iar asta e un răspuns, nu o lipsă.
+- **MOTIVUL, și e structural:** o regulă scrisă **din memorie** nu se deosebește, privind codul, de
+  una scrisă cu actul în față. Amândouă arată la fel: o valoare, un `Temei`, un citat. Ce ar fi
+  distins-o — *actul lipsea din corpus în momentul scrierii* — nu s-a înregistrat atunci, iar corpusul
+  de azi nu spune ce conținea la data fiecărei reguli. **Nu există observabil retroactiv.**
+- **instanțe**: — (nemăsurabile retroactiv, din motivul de mai sus)
+- **calibrare**: — (nu se poate calibra un instrument care nu poate exista pe trecut)
+- **ce nu vede**: — (idem)
+- **CE AR FACE-O MĂSURABILĂ DE ACUM ÎNAINTE**, dacă se decide: o regulă nouă intră doar cu actul
+  **deja în corpus**, amprentat, la data scrierii. Atunci absența actului devine observabilă la
+  scriere, iar interdicția devine o poartă, nu o măsurătoare. *Se scrie ca posibilitate, nu ca plan.*
 - **unde ajunge efectul**: o regulă scrisă din memorie nu se poate verifica nici măcar la o reverificare, fiindcă nu există act de recitit. Eroarea e invizibilă prin construcție, nu prin neatenție
 
 ## 52 — Un act din corpus al cărui text s-a modificat după aducere
@@ -6975,7 +7062,36 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 - **stare**: MĂSURATĂ
 - **măsurat la**: 2026-08-23
 - **pe commit**: `bfd9f10`
-- **cifra**: **53 din 53 fără categorie de reverificare** — fiindcă **câmpul nu există**. Câmpurile unui `Temei` sunt: `tip`, `nr`, `an`, `art`, `alin`, `lit`, `data_in`, `data_out`, `url`, `verificat_la`, `de_cine`, `nivel_sursa`, `text_citat`, `lant_acte`. Niciunul nu e o categorie de reverificare
+- **cifra**: **CÂMPUL EXISTĂ DIN 31.08.2026, și e CALCULAT, nu atribuit** — `core/reverificare.py`,
+  gardat de `core/test_reverificare.py`. Pe domeniul instrumentului (**34 din 53** de obiecte
+  `Temei`, cele din `common.py` — aceeași acoperire ca la 53): **24 clasificate complet · 10
+  NECUNOSCUT declarat**. Distribuția: VOLATIL/DEPUS **9** · STABIL/DEPUS **12** · MISCATOR/CALCULAT
+  **2** · MISCATOR/NECUNOSCUT **1** · NECUNOSCUT/NECUNOSCUT **10**. Față de pragul global de 6 luni:
+  **9 mai strict, 0 mai larg, 14 la fel, 11 fără prag** — trecerea strânge, nu slăbește, iar asta e
+  gardat: o valoare care ar deveni verificată mai rar cere o decizie scrisă.
+
+  **`NECUNOSCUT` nu e o clasă de rezervă, e un răspuns** *(Costin, 31.08)*: *„orice implicit minte —
+  STABIL tăcut, VOLATIL zgomotos."* O pereche fără axă **nu primește prag**, iar absența pragului e
+  vizibilă. Fiecare NECUNOSCUT își scrie motivul; gardat.
+
+  **`INFORMATIV` e declarat VID, cu motivul:** `dependenti_act` vede funcții Python, nu ecrane, deci
+  nu poate deosebi *„intră într-o cifră arătată omului"* de *„apare ca informație"*. Consecința,
+  scrisă nu ascunsă: **pragurile INFORMATIV (6/12/18) nu se atribuie niciodată azi.** Rămân în tabel
+  fiindcă tabelul e decizia lui Costin, nu a instrumentului. Gardul cere clasa vidă — ziua în care
+  apare o cale de a o atribui, testul cade, și e corect să cadă.
+
+  **O GAURĂ A TABELULUI, astupată declarat:** *trei sau mai multe* modificări în **același** an nu
+  intră în niciunul dintre cele trei rânduri, cum sunt scrise. Se clasează **VOLATIL** — direcția
+  care verifică mai des. *E o alegere a instrumentului peste o decizie care n-a prevăzut cazul, nu o
+  citire a ei, și de-aia are test propriu.*
+
+  **CE NU S-A FĂCUT, și e o alegere:** pragul calculat **nu e încă legat** de raportul lunar
+  (`core/expirare_cote.py`), care folosește mai departe pragul global unic. Legarea schimbă ce
+  raportează un job viu și cere `cote_neconfirmate` să primească prag per-articol, nu unul singur —
+  **R109**. *Categoria există și e verificabilă; consumatorul ei e pasul următor, nu acesta.*
+
+  **Cifra de dinainte, păstrată:** *53 din 53 fără categorie de reverificare, fiindcă câmpul nu
+  există* (măsurat 23.08.2026, `bfd9f10`). Câmpurile unui `Temei` sunt: `tip`, `nr`, `an`, `art`, `alin`, `lit`, `data_in`, `data_out`, `url`, `verificat_la`, `de_cine`, `nivel_sursa`, `text_citat`, `lant_acte`. Niciunul nu e o categorie de reverificare
 - **instanțe**: toate. **Există în schimb un prag global unic** (6 luni, vezi 54), aplicat identic tuturor articolelor. Asta **nu e** ce cere interdicția: o cotă de TVA care se poate schimba la fiecare rectificare bugetară și o definiție din Codul fiscal care n-a fost atinsă din 2015 au azi **același prag de reverificare**. Consecința e în ambele direcții: definițiile stabile se reconfirmă inutil, iar valorile volatile se reconfirmă prea rar
 
   **CATEGORIILE DECISE (23.08.2026, Costin), pe axa acceptată.** Axa: *frecvența istorică de
@@ -7067,24 +7183,40 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 56 — O regulă scrisă când textul a fost citit dar nu înțeles, fără cerere specifică
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: NEMĂSURABILĂ
+- **măsurat la**: 2026-08-31
+- **pe commit**: `3a1cf89`
+- **cifra**: — **NEMĂSURABILĂ RETROACTIV**.
+- **MOTIVUL:** *„citit, dar neînțeles"* e o stare a celui care a scris, nu a codului. O regulă
+  plauzibilă și greșită arată identic cu una corectă — dacă s-ar putea deosebi mecanic, n-ar mai fi
+  o neînțelegere, ar fi un bug. **Ce ar fi distins-o e o întrebare nepusă**, iar întrebările nepuse
+  nu lasă urmă. *Instanța cunoscută — „încadrat cu salariul de bază minim brut" — s-a descoperit prin
+  consecință, nu prin scan.*
+- **instanțe**: una, istorică, descoperită prin efect (v. „unde ajunge efectul")
+- **calibrare**: — (nu se poate calibra pe trecut)
+- **ce nu vede**: — (idem)
+- **CE AR FACE-O MĂSURABILĂ DE ACUM ÎNAINTE**: o regulă care depinde de o formulare ambiguă intră cu
+  **întrebarea pusă și răspunsul primit** scrise lângă ea. Atunci „n-am întrebat" devine un câmp gol,
+  deci vizibil.
 - **unde ajunge efectul**: se produce ceva plauzibil și se merge mai departe; plauzibil nu e corect. Instanța: „încadrat cu salariul de bază minim brut" — citit, neînțeles complet, interpretat în loc de întrebat, iar un leu peste minim costă salariatul optzeci și doi
 
 ## 57 — O valoare fără temei, intrată fără declarația „am căutat și nu am găsit"
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: NEMĂSURABILĂ
+- **măsurat la**: 2026-08-31
+- **pe commit**: `3a1cf89`
+- **cifra**: — **NEMĂSURABILĂ RETROACTIV**, dar **parțial măsurabilă de acum înainte** — v. mai jos.
+- **MOTIVUL:** declarația *„am căutat în X, Y, Z și nu am găsit"* nu s-a cerut la scriere, deci
+  absența ei nu deosebește *„am căutat și n-am găsit"* de *„n-am căutat"*. Pe trecut, cele două stări
+  sunt indistinguibile prin construcție.
+- **CE E TOTUȘI MĂSURABIL AZI, și se spune ca să nu pară că interdicția e goală:** câte valori din
+  registru n-au **niciun** `Temei` — asta se numără. Ce nu se poate număra e câte dintre ele au fost
+  căutate. *Interdicția nu cere absența temeiului, ci absența declarației.*
+- **instanțe**: — (nemăsurabile retroactiv)
+- **calibrare**: — (nu se poate calibra pe trecut)
+- **ce nu vede**: — (idem)
+- **CE AR FACE-O MĂSURABILĂ DE ACUM ÎNAINTE**: un câmp de declarație pe `Temei` — *unde s-a căutat* —,
+  obligatoriu când valoarea intră fără act. Atunci gol înseamnă „n-a căutat nimeni".
 - **unde ajunge efectul**: o valoare fără sursă arată identic cu una sursată. Fără declarația „am căutat în X, Y, Z și nu am găsit", absența temeiului nu se distinge de prezența lui
 
 ## 58 — O sursă de nivel inferior care contrazice una superioară, fără decizie
@@ -7146,13 +7278,22 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 62 — O modificare de articol aplicată fără parcurgerea listei dependenților
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
+- **stare**: NEMĂSURABILĂ
+- **măsurat la**: 2026-08-31
+- **pe commit**: `3a1cf89`
+- **cifra**: — **NEMĂSURABILĂ RETROACTIV**, și e cea mai apropiată de măsurabil dintre cele patru.
+- **MOTIVUL:** „s-a parcurs lista dependenților la modificare" e un act, nu o stare. Codul de azi nu
+  spune dacă cineva a parcurs lista atunci; spune doar dacă rezultatul e coerent acum — altă
+  întrebare, pe care o măsoară **60** și **61**.
+- **DAR ARE O PROBĂ, scrisă în plan:** *se ia o modificare legislativă recentă și se întreabă ce ar fi
+  trebuit schimbat. Dacă răspunsul cere căutare, legătura lipsește.* Proba nu s-a rulat; **nu e o
+  măsurătoare pe domeniu, ci un exercițiu pe o instanță** — și de-aia nu schimbă starea.
+- **instanțe**: — (nemăsurabile retroactiv)
+- **calibrare**: — (nu se poate calibra pe trecut)
+- **ce nu vede**: — (idem)
+- **CE AR FACE-O MĂSURABILĂ DE ACUM ÎNAINTE**: legătura inversă există deja pentru 16 din 17 articole
+  (`core/dependenti_act.py`, v. **61**). O modificare de articol care nu lasă urma parcurgerii devine
+  observabilă în momentul în care parcurgerea e un pas cu ieșire scrisă, nu o intenție.
 - **unde ajunge efectul**: după o modificare de articol rămân implementări care aplică regula veche, nedescoperite, iar declarațiile depuse între timp sunt greșite fără ca cineva să știe care
 
 ## 63 — O cifră afișată fără posibilitatea de a-i vedea, la cerere, componentele
