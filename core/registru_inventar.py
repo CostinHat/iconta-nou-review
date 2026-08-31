@@ -73,6 +73,17 @@ LUNA_SFARSIT_EXERCITIU = (12, Temei(
     url="anaf_surse/legea_82_1991_consolidat.txt",
     text_citat="Exercitiul financiar incepe la 1 ianuarie si se incheie la 31 decembrie"))
 
+#: Temeiul care ÎNCHIDE nomenclatorul momentelor. Norma nu spune «de exemplu la sfârșitul
+#: exercițiului» — le enumeră pe toate trei. Un moment inventat („trimestrial") nu e o valoare
+#: greșită, e un registru ținut altfel decât cere norma.
+TEMEI_MOMENTE = Temei(
+    "OMFP", 2634, 2015, art="anexa 2", lit="14-1-2",
+    data_in="2016-01-01", verificat_la="2026-08-31", de_cine="Code/Costin", nivel_sursa="MO",
+    url="anaf_surse/omfp_2634_2015_anexa2_norme_specifice.txt",
+    text_citat=("Registrul-inventar se intocmeste la inceputul activitatii, la sfarsitul "
+                "exercitiului financiar sau cu ocazia incetarii activitatii, fara stersaturi si "
+                "fara spatii libere"))
+
 #: Ce se cere la INSCRIERE. `cauza` lipseste de aici fiindca e ceruta CONDITIONAT — vezi
 #: `valideaza`. `cont` nu e o coloana a formularului, dar norma cere elementele *detaliat pe fiecare
 #: cont de activ si de pasiv*, deci contul e ce face randul identificabil, nu o eticheta in plus.
@@ -121,7 +132,10 @@ def valideaza(date):
         raise InregistrareIncompleta(
             "moment necunoscut %r; norma numeste exact trei: %s"
             % (date.get("momentul"), ", ".join(MOMENTE)), camp="momentul",
-            temei=str(TEMEI_CONTINUT))
+            # `TEMEI_MOMENTE`, nu `TEMEI_CONTINUT`: aici nu se refuza un camp din CONTINUTUL
+            # registrului, ci un moment pe care norma nu-l prevede. Doua refuzuri diferite, doua
+            # temeiuri diferite — iar cel gresit ar trimite cititorul la alt paragraf.
+            temei=str(TEMEI_MOMENTE))
     d = diferenta(date["valoare_contabila"], date["valoare_inventar"])
     if d != 0 and _gol(date.get("cauza")):
         raise InregistrareIncompleta(
@@ -194,7 +208,8 @@ def solduri_de_pornire(conn, schema, an, luna=LUNA_SFARSIT_EXERCITIU[0]):
 def registru(conn, schema, exercitiu, momentul="sfarsit_exercitiu"):
     """Registrul-inventar, ca AFIRMATIE — cu temeiul lui si cu ce NU acopera."""
     if momentul not in MOMENTE:
-        raise ValueError("moment necunoscut: %r" % momentul)
+        raise ValueError("moment necunoscut: %r; norma numește exact trei: %s. %s"
+                         % (momentul, ", ".join(MOMENTE), TEMEI_MOMENTE))
     rs = []
     for r in randuri(conn, schema, exercitiu, momentul):
         r = {k: _simplu(v) for k, v in r.items()}

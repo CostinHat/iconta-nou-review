@@ -56,6 +56,19 @@ _TEMEI_F = Temei(
 
 TEMEI = {"nontransfer": _TEMEI_E, "bunuri_primite": _TEMEI_F}
 
+#: Temeiul care ÎNCHIDE nomenclatorul — altul decât cele două de mai sus, care spun ce CONȚINE
+#: fiecare registru. Ăsta spune de ce sunt EXACT DOUĂ: norma le enumeră, nu le exemplifică. Un `fel`
+#: din afara mulțimii nu e o valoare greșită, e un registru inventat — și de-aia refuzul lui poartă
+#: normă, nu doar formă.
+TEMEI_FELURI = Temei(
+    "HG", 1, 2016, art="norme art.321",
+    data_in="2016-01-01", verificat_la="2026-08-31", de_cine="Code/Costin", nivel_sursa="MO",
+    url="anaf_surse/hg_1_2016_norme_cod_fiscal.txt",
+    text_citat=("Persoana impozabila trebuie sa tina, in afara evidentelor prevazute la art. 321 "
+                "alin. (1)-(3) din Codul fiscal: [...] e) un registru al nontransferurilor [...] "
+                "f) un registru pentru bunurile mobile corporale primite [...] — normele numesc "
+                "EXACT aceste doua registre, la literele e) si f); enumerarea nu e exemplificativa"))
+
 #: Câmpurile pe care norma le cere la ÎNSCRIERE, per registru. `valoare` e cerută **numai** la lit.
 #: e) — lit. f) nu cere nicio valoare. Diferența e reală, nu o scăpare, și de-aia stă aici, lângă
 #: citarea care o justifică, nu într-un `CHECK` din DDL.
@@ -106,8 +119,10 @@ def valideaza(fel, date):
     exact felul de evidență care nu se poate apăra: completă la vedere, inventată pe dedesubt.
     """
     if fel not in FELURI:
-        raise InregistrareIncompleta("fel necunoscut %r; nomenclatorul e închis: %s"
-                                     % (fel, ", ".join(FELURI)), camp="fel")
+        raise InregistrareIncompleta(
+            "fel necunoscut %r; nomenclatorul e închis: %s. Normele numesc exact aceste două "
+            "registre, nu o listă exemplificativă: %s" % (fel, ", ".join(FELURI), TEMEI_FELURI),
+            camp="fel", temei=str(TEMEI_FELURI))
     for c in CAMPURI_CERUTE[fel]:
         if _gol(date.get(c)):
             raise InregistrareIncompleta(
@@ -163,7 +178,8 @@ def _simplu(v):
 def registru(conn, schema, fel, an=None):
     """Registrul, ca AFIRMAȚIE — cu temeiul lui și cu ce NU acoperă."""
     if fel not in FELURI:
-        raise ValueError("fel necunoscut: %r" % fel)
+        raise ValueError("fel necunoscut: %r; cele două registre sunt %s. %s"
+                         % (fel, ", ".join(FELURI), TEMEI_FELURI))
     rs = [{k: _simplu(v) for k, v in r.items()} for r in randuri(conn, schema, fel, an)]
     return afirmatie(
         "fapt", tip="registru_art321_" + fel,

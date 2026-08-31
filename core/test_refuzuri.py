@@ -44,13 +44,16 @@ from scripts import scan_refuzuri as s
 
 #: Măsurat 31.08.2026. Clichet PE FIȘIER, nu global: un fișier nou cu 40 de refuzuri fără temei ar
 #: urca un plafon global cu unu. Un fișier care nu e aici are voie cu ZERO.
+#:
+#: **64 → 61 (31.08.2026), prima coborâre.** Cele trei refuzuri de nomenclator din
+#: `registre_art321.py` (2) și `registru_inventar.py` (1) au primit temeiul care ÎNCHIDE
+#: nomenclatorul — `TEMEI_FELURI` și `TEMEI_MOMENTE`, altele decât cele care spun ce *conține*
+#: fiecare registru. Cele două fișiere au ieșit din baseline, nu au rămas cu plafon liber.
 BASELINE = {
     "core/common.py": 14,
     "core/contracte_speciale.py": 5,
     "core/d406.py": 6,
     "core/deconturi.py": 4,
-    "core/registre_art321.py": 2,
-    "core/registru_inventar.py": 1,
     "core/salarizare.py": 3,
     "core/scadente.py": 2,
     "core/sponsorizari.py": 3,

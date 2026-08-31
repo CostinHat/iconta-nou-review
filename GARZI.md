@@ -5841,9 +5841,9 @@ referința veche, apoi s-a rescris.*
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**488 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**490 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 473
+### `core/` — 474
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -6174,6 +6174,7 @@ referința veche, apoi s-a rescris.*
 - `core/test_kpi_client.py` — —
 - `core/test_limita_text_anaf.py` — Gard: niciun atribut de text din declaratii nu depaseste limita ANAF (75 caractere).
 - `core/test_limite_verificarii.py` — GARD (P4, 21.08.2026): „Ce nu poate spune verificarea asta" e PERMANENTĂ și se COMPUNE.
+- `core/test_lista3.py` — GARDĂ: titlul listei 3 e GENERAT, nu scris — a doua aplicare a regulii, pe propria listă.
 - `core/test_live_accesibil.py` — [#6 plimbare 14.08.2026 / regula 9] Garda: o declaratie e LIVE DOAR daca e accesibila in selectorul UI
 - `core/test_login_proba_metoda.py` — GARD "gaura de metoda" (09.08.2026, cerut de Costin): a PROBA un cont = prin calea de autentificare
 - `core/test_manual_decl_cere_eligibil.py` — GARD (sweep audit tenant_006): rutele de intrare MANUALĂ de declarație verifică eligibilitatea față
@@ -6319,7 +6320,7 @@ referința veche, apoi s-a rescris.*
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 15
+### `scripts/` — 16
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
@@ -6329,6 +6330,7 @@ referința veche, apoi s-a rescris.*
 - `scripts/scan_ds_verificator.py` — RAZA VERIFICATORULUI: fiecare regulă din DESIGN_SYSTEM.md, față în față cu ce verifică el — 30.08.2026.
 - `scripts/scan_garzi_inventar.py` — Inventarul gărzilor, DERIVAT din cod — blocul generat din `GARZI.md`.
 - `scripts/scan_instrumente.py` — scripts/scan_instrumente.py - FAZA 4: pe ce instrument sta fiecare garda, si a fost calibrat.
+- `scripts/scan_lista3.py` — scripts/scan_lista3.py — lista 3, DERIVATA din registru, nu numarata cu mana.
 - `scripts/scan_mutatie_garzi.py` — FAZA 4, pasul 5: mutatia care probeaza garda e REPRODUCTIBILA azi?
 - `scripts/scan_predare_cifre.py` — Cifrele despre DATE din `PREDARE_LANT.md`, interogate din bază — blocul generat.
 - `scripts/scan_r97_livrat_tacut.py` — CÂT DE MARE E CLASA „RUTA LIVREAZĂ, ECRANUL TACE" — măsurarea lui R97, 29.08.2026.

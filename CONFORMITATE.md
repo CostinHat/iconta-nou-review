@@ -5131,7 +5131,46 @@ când cifra își arată operațiunile și avertismentul își poartă temeiul.
 | **D100 · D205 · D301 · D390** | refuzuri **pe zero**, cu temeiul citat sau cu contradicția numită. Interdicția 67 funcționând |
 | **D300 · D394** | `tenant_018`, `tenant_045`: *„Perioada fiscală TVA nu e completată în Vectorul fiscal"* — profilurile incomplete găsite la 1a |
 
-#### Lista 3 — nu ies, DIN VINA APLICAȚIEI — **5 artefacte deschise** (erau 8; una eliminată ca FALSĂ, două reparate)
+#### Lista 3 — nu ies, DIN VINA APLICAȚIEI — **un artefact deschis** din 7 urmărite *(cifra e generată din coloana `stare`, cu `scripts/scan_lista3.py`)*
+
+### RECALCULATĂ ÎNAINTE DE A MAI CONSTRUI DIN EA — 31.08.2026
+
+*Costin: «Cifra "opt artefacte" vine din premisa care a căzut: e un număr derivat reafirmat în proză,
+care nu se mai regenerează din nimic — aceeași clasă ca antetul T02. Se aplică regula ei propriei
+liste.» Răspunsul aici e **se generează**: titlul de mai sus se produce din coloana `stare`, cu
+`scripts/scan_lista3.py`, și e comparat caracter cu caracter de `core/test_lista3.py`.*
+
+**Ce a arătat recalcularea:** titlul scria **5 artefacte deschise**, măsurat pe 30.08 dimineață.
+Derivat acum din chiar tabelele de dedesubt: **1 deschis din 7 urmărite**. Cifra scrisă rămăsese în
+urmă cu patru reparații făcute în aceeași zi și în ziua următoare — și, ca și antetul T02, **n-a
+țipat**, fiindcă nimic n-o compara cu nimic.
+
+### PROBA DATELOR PE FIECARE RÂND RĂMAS — dimensiune, nu cifră moștenită
+
+*Cerut expres: «pentru fiecare rând rămas, proba datelor înainte de document — există, unde, în ce
+stare, cu ce lipsește. Măsurătoare, nu construcție.» Măsurat pe cele 19 firme, la 31.08.2026.*
+
+| rândul | substanța există? | unde | în ce stare | ce lipsește, exact |
+|---|---|---|---|---|
+| **Note explicative** (DESCHIS) | **nu se poate ști încă** | conținutul depinde de **categoria de mărime** (OMFP 1802/2014 pct. 20-21: microentitățile sunt scutite) | categoria dă `nedeterminata` pe **19 din 19** firme | **un exercițiu precedent cu rulaje de clasă 6/7.** Nu „o firmă cu două exerciții" — vezi rândul următor, unde diferența e măsurată |
+| **categoria de mărime / R3** (REPARAT ca derivare, deschis ca **probă**) | **da, pe exercițiul curent** | `core/categorie_marime.indicatori()`, din `bilant_api._rulaje_67` + solduri | **2026 se calculează** pe `tenant_013` (active 28.755 · CA 3.000 · 1 salariat) și `tenant_014` (active 14.860 · CA 3.000 · 1 salariat) | **exercițiul 2025**: pe toate cele trei firme cu note în 2025, `_rulaje_67` = **0**. Notele lor de 2025 sunt de sold, nu de venit/cheltuială |
+
+**Distanța până la închiderea amândurora, măsurată:** un singur exercițiu de rulaje 6/7 pe
+`tenant_013` sau `tenant_014`. Nu e o construcție de făcut în aplicație — e o **stare de date**.
+
+**O precizare care mă corectează pe mine, nu registrul.** În raportul de pe 30.08 am scris că R3
+rămâne deschisă fiindcă *„niciuna n-are două exerciții consecutive"*. Măsurat acum: **trei firme au
+două exerciții consecutive cu note validate** (`tenant_013`, `tenant_014`, `tenant_016`, pe
+2025-2026). Ce n-au e altceva — **rulaje de clasă 6/7 în exercițiul precedent**. Registrul spunea
+corect *„două exerciții consecutive **cu rulaje**"*, iar garda de așteptare chiar asta măsoară
+(`_rulaje_67`, aceeași sursă din care iese bilanțul). **Calificativul a căzut din proza mea**, nu din
+document — a treia oară în două zile când o cifră a mea pierde ceva pe drum, și de-aia titlul de mai
+sus nu se mai scrie de mână.
+
+**Ce urmează din recalculare, ca regulă:** lista 3 **nu mai are niciun rând deschis pe cod**. Cele
+două rămase sunt deschise **pe o stare de date**, și se închid singure când starea aceea apare —
+prima prin garda de așteptare care pică, a doua prin derivarea care începe să dea altceva decât
+`nedeterminata`. *Niciun artefact nou nu se construiește din lista asta: n-a mai rămas ce.*
 
 **REMĂSURATĂ ÎNAINTE DE CONSTRUCȚIE, 30.08.2026** — și asta e chiar lecția listei 5, aplicată: acolo
 estimarea *„nici ruta nu trimite"* s-a dovedit adevărată despre răspuns și falsă despre ce are
@@ -5433,7 +5472,13 @@ complet. Restul nu e o problemă de capacitate, e una de nepredare.
 **Lista 2 poate avea conținut fără ca aplicația să fie defectă** — asta măsoară ea. Toate cele de mai
 sus refuză **spunând de ce**, ceea ce e chiar comportamentul cerut.
 
-#### Lista 3 — nu ies, DIN VINA APLICAȚIEI (lărgită prin decizia de mai sus; cauza scrisă lângă fiecare)
+#### Lista 3, CAUZELE MĂSURATE LA DESCOPERIRE — istoric, nu stare curentă
+
+*(Redenumit 31.08.2026. Tabelul de mai jos păstrează **cauza scrisă când artefactul a intrat în
+listă**, nu starea lui de azi — starea se citește din tabelele cu coloana `stare`, iar cifra se
+generează din ele. Până azi ambele secțiuni se numeau „Lista 3", iar cine ajungea aici întâi citea
+ca stare curentă o măsurătoare de acum o săptămână. `scripts/scan_lista3.py` NU numără acest tabel,
+și scrie de ce.)*
 
 | artefact | cauza |
 |---|---|
@@ -7089,8 +7134,10 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 - **stare**: MĂSURATĂ
 - **măsurat la**: 2026-08-31
-- **pe commit**: `2200432`
-- **cifra**: **64**, în **13 fișiere** — refuzuri într-un modul care **citează legea** și care totuși nu poartă temeiul. Din **1134** de `raise` care opresc un act: acces 40 (401/403), negăsit 235 (404), refuz 859, din care 16 poartă temeiul **structurat**, 30 **în proză**, 813 **nimic**. Instrument: `scripts/scan_refuzuri.py`; clichet per fișier în `core/test_refuzuri.py`.
+- **pe commit**: `11514c2`
+- **cifra**: **61**, în **11 fișiere** — refuzuri într-un modul care **citează legea** și care totuși nu poartă temeiul. Din **1134** de `raise` care opresc un act: acces 40 (401/403), negăsit 235 (404), refuz 859, din care 16 poartă temeiul **structurat**, 30 **în proză**, 813 **nimic**. Instrument: `scripts/scan_refuzuri.py`; clichet per fișier în `core/test_refuzuri.py`.
+- **coborâri**: **64 → 61** (31.08.2026, `11514c2`). Cele trei refuzuri de nomenclator ale mele, din tura precedentă, au primit temeiul care **închide** nomenclatorul — altul decât cel care spune ce *conține* fiecare registru: `TEMEI_FELURI` (normele numesc **exact două** registre, nu o listă exemplificativă) și `TEMEI_MOMENTE` (norma enumeră **toate trei** ocaziile). *Comanda cerea 64 → 62; cifra reală e 61, fiindcă proza mea din raportul precedent numea două **module**, iar instrumentul numără **refuzuri**. Un număr reafirmat în proză, care nu se regenerează din nimic — exact clasa pe care norma asta o păzește, întoarsă spre mine.*
+- **ce a arătat coborârea**: **direcția descendentă n-a fost probată niciodată pe o reparație reală** — doar prin mutație. Garda de migrare a deosebit corect: a numit cele două fișiere drept *„și-au plătit datoria"* și a cerut scoaterea lor din baseline, **nu** a raportat eludare. Cele două ramuri ale ei — reparație și eludare — dau mesaje diferite pe o cifră care scade **identic**. Fără asta, o coborâre onestă și una prin mutarea unui `Temei` ar fi arătat la fel.
 - **de ce cifra nu e 813**: eșantionul de 30, luat **înainte** de a crede totalul, a confirmat modul de eșec scris în docstringul instrumentului *înainte de prima rulare*: aproape toate cele 813 sunt refuzuri de **formă** — *„valoare invalidă"*, *„schema invalidă"*, *„suma trebuie să fie pozitivă"*. Un temei legal n-are ce căuta acolo. **813 amestecă două populații**, iar un clichet pe o populație amestecată e prea mare ca să scadă și prea vag ca să însemne ceva. *(Costin, 31.08: „un clichet pe o populație amestecată e defectul din 813 repetat".)*
 - **ce cere norma, practic**: un refuz dintr-un modul care **știe să citeze o normă** poartă temeiul **ca date** — `temei=` pe excepție, sau o cheie `temei` în corpul refuzului, sau interpolarea unui `Temei`. Dacă refuzul e de **formă**, motivul pentru care n-are temei se scrie **lângă el**. Un modul care refuză în numele unei reguli, dar nu poate numi regula, cere ca refuzul lui să fie crezut pe cuvânt.
 - **migrarea între populații, cerută expres**: când un modul **începe** să citeze legea, refuzurile lui trec în datorie — **inclusiv cele scrise înainte**. Și invers: un modul care **încetează** să citeze legea nu-și stinge datoria, ci o mută în umbră. Ambele direcții sunt gardate, fiindcă altfel clichetul s-ar eluda **prin locul unde stă codul, nu prin conținut** — și asta nu cere rea-intenție, e destul ca cineva să mute un `Temei` într-un fișier vecin „ca să fie la un loc". **Suprafața de migrare e măsurată: 160 de fișiere** sunt la un singur `Temei` distanță de a intra în datorie.
