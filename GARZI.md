@@ -5401,6 +5401,80 @@ partea care se poate deriva nu mai are voie să îmbătrânească.
 # INVENTARUL GĂRZILOR — GENERAT. Nu se editează cu mâna.
 # ─────────────────────────────────────────────────────────────────────────────
 
+## 31.08.2026 — INVENTARUL REFUZURILOR: ce poartă un refuz al aplicației, și ce nu poartă
+
+*Cerut de Costin ca inventar al locurilor unde aplicația refuză, **înaintea** normei de
+blocaj-cu-temei. Măsurat pe mașină, cu `scripts/scan_refuzuri.py`; gardat de `core/test_refuzuri.py`.*
+
+**Întrebarea, și de ce nu e cea pe care o pune deja alt instrument.** `core/scan_refuz_tacut.py`
+întreabă dacă un refuz **ajunge** la om — dacă are un `catch` care afișează ceva. Ăsta întreabă dacă
+refuzul **spune pe ce se sprijină**. Un refuz poate ajunge perfect la om și să fie, tot așa, o
+afirmație fără autor: *„nu se poate"*, fără să spună cine zice asta. Populațiile se suprapun, dar
+niciuna n-o cuprinde pe cealaltă.
+
+### MĂSURĂTOAREA — 1134 de `raise` care opresc un act
+
+| clasă | structurat | proză | fără | ce oprește |
+|---|---|---|---|---|
+| **acces** | 0 | 0 | 40 | cine ești (401/403). Un temei legal n-ar avea ce căuta: refuzul nu se sprijină pe o normă fiscală |
+| **negăsit** | 0 | 0 | 235 | 404 — **amestecat prin construcție**: și „firmă inexistentă", și „fel necunoscut" dintr-un nomenclator închis |
+| **refuz** | 16 | 30 | **813** | ce ai cerut (400/409/422 + excepțiile producătorilor) |
+
+### DE CE CIFRA NU E 813 — și cum s-a aflat asta înainte, nu după
+
+Eșantionul de 30, luat **înainte** de a crede totalul (regula din METODA), a confirmat exact modul
+de eșec pe care instrumentul îl declarase în docstringul lui, scris înainte de prima rulare:
+**aproape toate cele 813 sunt refuzuri de FORMĂ** — *„valoare invalidă"*, *„schema invalidă"*,
+*„suma trebuie să fie pozitivă"*, *„stare necunoscută"*. Un temei legal n-are ce căuta acolo.
+
+**813 nu e o datorie. E o cifră care amestecă două populații**, și dacă ar fi intrat direct într-un
+clichet ar fi produs exact felul de plafon care nu constrânge nimic: prea mare ca să scadă, prea
+amestecat ca să însemne ceva.
+
+Dimensiunea care le desparte, decisă pe **structură**, nu pe cuvintele din mesaj: *modulul în care
+stă refuzul citează legea undeva?* Un `Temei(...)` sau un nume `TEMEI*` în fișier înseamnă că
+modulul chiar are de-a face cu norme.
+
+| | cât | în câte fișiere | ce înseamnă |
+|---|---|---|---|
+| **DATORIE** | **64** | 13 | refuz într-un modul care **citează** legea, iar refuzul nu poartă temeiul. Aici temeiul e de așteptat și lipsește. **Cifra clichetului.** |
+| **UMBRĂ** | **778** | 160 | module care refuză și **nu citează legea nicăieri**. Ori sunt generice (`db.py`, `bacsis.py`) și e în regulă, ori aplică o regulă pe care n-o pot numi |
+| **ÎNTORC** | **88** | — | `return {"eroare": ...}` în loc de `raise` — umbra instrumentului însuși |
+
+Cele 13 fișiere ale datoriei: `common.py` 14 · `stocuri.py` 9 · `tva_marja_turism.py` 7 ·
+`d406.py` 6 · `contracte_speciale.py` 5 · `stocuri_cv.py` 5 · `deconturi.py` 4 · `salarizare.py` 3 ·
+`sponsorizari.py` 3 · `tva_marja.py` 3 · `registre_art321.py` 2 · `scadente.py` 2 ·
+`registru_inventar.py` 1.
+
+*Ultimele două sunt ale mele, de ieri. Rămân în baseline, nu se repară în aceeași tură în care se
+măsoară — altfel cifra de pornire ar fi una aleasă, nu una găsită.*
+
+### DE CE UMBRA NU SE GARDEAZĂ, deși e de douăsprezece ori datoria
+
+Fiindcă n-am cum să deosebesc mecanic un modul **generic** de unul care **aplică o regulă fără s-o
+poată numi**. Un clichet pe o cifră pe care n-o înțeleg ar fi un plafon inventat: ar cădea la prima
+mutare de cod și ar fi ridicat fără să se fi reparat nimic. Se scrie, se numără, **nu se plafonează**
+— iar dacă vreodată scade, asta nu e automat o victorie: poate însemna și că s-a mutat codul.
+
+### AMBELE DIRECȚII DE EȘEC, scrise (METODA §22)
+
+Un modul care citează legea **o dată** face candidate *toate* refuzurile lui, inclusiv *„suma
+trebuie să fie pozitivă"* → **DATORIE e plafon SUPERIOR**. Invers, un modul fără nicio citare scoate
+din număr și refuzurile lui normative → **e plafon INFERIOR pe altă direcție**. Instrumentul
+greșește în **amândouă** direcțiile — și de-aia UMBRA se numără **separat**, nu se adună la datorie:
+un instrument care greșește în ambele direcții n-are **niciun** plafon dacă cifrele lui se adună.
+
+**Ce NU măsoară, declarat:** dacă temeiul e **corect**. Doar dacă există și sub ce formă.
+
+**RED-proof:** un refuz nou fără temei într-un modul care citează legea → ROȘU · un fișier nou care
+citează legea și refuză fără temei → ROȘU · temeiul scos **cu totul** de pe un refuz care îl avea
+(și `temei=`, și interpolarea din mesaj) → ROȘU.
+
+*A patra mutație, încercată prima, a ieșit **verde** — și avea dreptate instrumentul, nu eu:
+scosesem doar `temei=`, dar mesajul interpola în continuare `TEMEI[fel]`. Refuzul chiar purta
+temeiul, pe alt drum. Mutația era proastă, nu gardul.*
+
+
 ## Inventar (generat, 28.08.2026)
 
 Blocul de mai jos e produs de `scripts/scan_garzi_inventar.py --md` și păzit de
@@ -5412,11 +5486,36 @@ Blocul de mai jos e produs de `scripts/scan_garzi_inventar.py --md` și păzit d
 de una care trece degeaba. Pentru aia sunt instrumentele de FAZA 4 (`scan_instrumente`,
 `scan_axa_garzi`, `scan_mutatie_garzi`) și `scan_garzi_pe_text`.
 
-## 30.08.2026 — CONSTATARE **GRI**: „Interactive authentication required" lângă `NOPASSWD: ALL` nu e un mister, e o contradicție de identitate
+## 30.08.2026 — CONSTATARE **ÎNCHISĂ 31.08.2026**: «Interactive authentication required» lângă `NOPASSWD: ALL` nu era o contradicție de identitate, era **absența oricărei identități**
 
-*Formulată de Costin, cu cuvintele lui: „cele două căi rulează sub identități diferite". Se scrie
-aici ca **GRI**, nu ca fapt: mecanismul e dovedit, instanța nu. **Se închide când se știe identitatea,
-nu înainte.***
+*Formulată de Costin ca GRI, cu cuvintele lui: «cele două căi rulează sub identități diferite».
+**Se închide cu temei, nu prin raționament**: sonda de debug a rulat pe 31.08, jurnalul n-a mai
+fost gol, iar ce s-a citit acolo a schimbat concluzia — nu a confirmat-o.*
+
+### TEMEIUL ÎNCHIDERII *(Costin, 31.08.2026, din jurnalul sondei)*
+
+Restartul prin polkit se autorizează **ONE-SHOT ca `unix-user:costin`, exclusiv interactiv, prin
+`pkttyagent`**. `pkcheck` refuză fără `-u`; **nicio regulă nu acordă acțiunea pe grup.**
+
+Restartul care a eșuat rula **fără agent de autentificare**, deci autorizarea **nu se putea forma**.
+
+**Nu era identitate greșită. Era absența oricărei identități.** Diferența nu e de nuanță: o
+identitate greșită se repară schimbând-o pe cea potrivită — o autorizare care nu se poate FORMA nu
+are ce identitate să primească, oricâte reguli s-ar scrie. Ipoteza «două căi, două identități» era
+plauzibilă, se potrivea cu toate probele de ieri, **și era greșită**. A ținut exact până la prima
+măsurătoare care putea s-o contrazică.
+
+### OBSERVAȚIE SECUNDARĂ — se consemnează, NU se repară
+
+Linia `Identity unix-group:admin is not valid, ignoring` rămâne în jurnal. **Costin, expres:** nu se
+creează grupul, nu se rescrie spre `unix-group:sudo`, nu se adaugă regulă permisivă. **Nu se atinge
+nimic din polkit** până nu se citește fișierul care declară identitatea și **până nu se stabilește
+dacă e al nostru sau implicit de distribuție.**
+
+*De ce ordinea asta și nu invers: o «reparație» pe o identitate declarată de distribuție ar fi o
+modificare locală într-un fișier care se rescrie la următorul `apt upgrade` — adică o reparație care
+dispare fără să anunțe. Iar dacă e a noastră, întrebarea nu mai e cum se repară, ci cine a scris-o
+și pentru ce.*
 
 ### CE SE ȘTIE — dovedit azi, pe mașină, nu dedus
 
@@ -5547,6 +5646,37 @@ Argumentele se potrivesc **literal** în sudoers, iar asta a lovit de trei ori p
 aplică. Absența ei arată identic cu absența cererii, iar la capătul lanțului cineva astupă gaura cu
 cea mai largă permisiune posibilă.*
 
+### MĂSURĂTOAREA CERUTĂ ODATĂ CU ÎNCHIDEREA — cine, din lanț, presupune privilegiu fără parolă
+
+*Costin, 31.08.2026: «De verificat, ca măsurătoare, nu ca reparație: dacă vreun pas din lanțul de
+publicare presupune restart fără parolă. Acela eșuează tăcut.» Măsurat pe mașină, nu dedus.*
+
+**Lanțul de publicare propriu-zis e curat.** Un singur restart în tot repo-ul —
+`scripts/githooks/post-commit:80`, `sudo -n systemctl restart iconta-nou` — și e în setul îngust.
+`-n` e prezent, deci **eșuează zgomotos**: scrie santinela `.git/RESTART_ESUAT` în loc să aștepte o
+parolă care nu vine. Calea explicită rămâne `sudo systemctl restart iconta-nou`.
+
+**Cele trei timere `iconta` rulează ca `User=costin` și nu repornesc nimic.** Singurul `sudo` din
+`crontab` e `iconta-config-backup.sh` — în set, deci merge (fără `-n`, dar cum e NOPASSWD nu se
+oprește să întrebe).
+
+**Ce NU e acoperit, găsit căutând:**
+
+| unde | ce cere | în set? | `-n`? | ce se întâmplă rulat neinteractiv |
+|---|---|---|---|---|
+| `mentenanta.sh:9,10,13` | `ln -sf` ×2 · `nginx -t` · `systemctl reload nginx` | **nu**, niciunul | nu | cere parolă → atârnă sau cade; e chemat doar de mână, dar e chiar comutatorul de intrare/ieșire din mentenanță |
+| `verificator_neconformitati.sh:28,29` | `cat /proc/PID/environ` | **nu** | nu | **cel mai rău caz: nu tace, MINTE** |
+
+**Instanța, probată pe mașină acum:** cu `sudo -n`, citirea mediului procesului e refuzată, iar
+verificatorul tipărește `FAIL NC-07 JWT_SECRET lipsește din proces!`. **Secretul e acolo.** Ce
+lipsește e dreptul de a te uita — iar linia nu deosebește «nu e» de «n-am putut vedea». E chiar
+clasa pe care registrul o refuză în altă parte: *un necunoscut nu se rotunjește la «știu că nu»*.
+
+**Nereparat, deliberat** — Costin a cerut măsurătoare, nu reparație. Ce ar însemna reparația, ca să
+nu se redescopere: un al treilea rezultat, `NU S-A PUTUT VERIFICA`, distinct de `PASS` și de `FAIL`,
+pe fiecare pas care are nevoie de privilegiu. Nu extinderea setului — un verificator care are nevoie
+de mai multe drepturi ca să spună adevărul e un verificator care cere să fie crezut pe încredere.
+
 
 ## 30.08.2026 — CONSTATARE **GRI**: cei 0,2463% de pe ecranul `banca` NU erau o regresie vizuală, dar nu se știe ce erau
 
@@ -5672,9 +5802,9 @@ referința veche, apoi s-a rescris.*
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**486 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**488 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 472
+### `core/` — 473
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -6074,6 +6204,7 @@ referința veche, apoi s-a rescris.*
 - `core/test_reconciliere_vie.py` — META-GARD (LANT legislatie TURA 4, 10.08.2026): NICIO reconciliere sursa-vs-declaratie nu moare tacit.
 - `core/test_refuz_generator_422.py` — GARD (D6, 20.08.2026): un generator care REFUZĂ motivat nu are voie să ajungă la contabil ca 500 gol.
 - `core/test_refuz_tacut.py` — GARD [27.08.2026]: un refuz al serverului la o SCRIERE nu poate rămâne nevăzut.
+- `core/test_refuzuri.py` — CLICHET: un refuz dintr-un modul care CITEAZĂ legea nu mai poate apărea fără temeiul lui.
 - `core/test_regim_peste_perioada_inchisa.py` — GARD [R46, 26.08.2026]: un câmp care decide CE SE DATOREAZĂ nu se schimbă peste o perioadă închisă.
 - `core/test_register_cabinet_cui.py` — GARD register_cabinet_cui: la inregistrarea self-service, CUI-ul validat (cel care a trecut
 - `core/test_registre_art321.py` — GARD: cele doua registre ale art. 321 alin. (4) CF — ce le tine sa nu se strice tacut.
@@ -6149,7 +6280,7 @@ referința veche, apoi s-a rescris.*
 - `core/test_woocommerce.py` — —
 - `core/test_zero_base_declaratii.py` — GARD ZERO-BASE (10.08.2026): un zero care POATE fi defect nu arata ca un nil legal.
 
-### `scripts/` — 14
+### `scripts/` — 15
 
 - `scripts/scan_1b_regimuri.py` — CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026.
 - `scripts/scan_1c_verificabil.py` — SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026.
@@ -6162,6 +6293,7 @@ referința veche, apoi s-a rescris.*
 - `scripts/scan_mutatie_garzi.py` — FAZA 4, pasul 5: mutatia care probeaza garda e REPRODUCTIBILA azi?
 - `scripts/scan_predare_cifre.py` — Cifrele despre DATE din `PREDARE_LANT.md`, interogate din bază — blocul generat.
 - `scripts/scan_r97_livrat_tacut.py` — CÂT DE MARE E CLASA „RUTA LIVREAZĂ, ECRANUL TACE" — măsurarea lui R97, 29.08.2026.
+- `scripts/scan_refuzuri.py` — scripts/scan_refuzuri.py — CE POARTA un refuz al aplicatiei, si ce nu poarta.
 - `scripts/scan_regimuri.py` — CÂTE REGIMURI FISCALE EXERCITĂ PORTOFOLIUL — prima operațiune din E1 (1a), 29.08.2026.
 - `scripts/scan_rute_clasificate.py` — CLASIFICAREA rutelor fără apelant — R70, blocul SSS (29.08.2026).
 - `scripts/scan_trasee.py` — scripts/scan_trasee.py — INVENTARUL TRASEELOR, calculat, nu ținut minte.
