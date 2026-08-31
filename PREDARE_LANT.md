@@ -4,7 +4,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-31**. **Rescriere PARȚIALĂ**, a cincea la rând.
+- **ultima rescriere**: **2026-08-31**. **Rescriere PARȚIALĂ**, a șasea la rând.
 - **de ce PARȚIALĂ, și de ce asta nu e o scuză**: structura a fost rescrisă complet pe 30.08, când
   documentul se contrăzicea în trei locuri. Nu se mai contrazice. Ce s-a schimbat în cele **șapte
   commituri de azi** e **starea**, plus **trei instrumente noi** care fac cifrele derivabile. *O
@@ -24,7 +24,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   scrie. Erau patru cifre sub propoziția «se recalculează, nu se citesc de aici»; trei erau corecte
   — **exact cele trei plafonate**. Regula, generalizată din instanța asta: *o populație declarată
   nedeplafonată nu are voie să-și poarte cifra în proză.*
-- **pe commit**: `0150a7a` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care
+- **pe commit**: `13acfe0` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care
   poartă munca de mai jos, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e
   arborele care devine commitul următor.*
 - **cum se citește „pe commit", ca să nu pară stale**: numele de acolo e al commitului **precedent**,
@@ -219,10 +219,20 @@ ale Design System, **5** sunt acoperite. Nu invalidează porțile; le încadreaz
 ## STAREA LA PREDARE
 
 Poartă verde, citită din ieșirea rulării complete de pe arborele care devine commitul următor:
-**3832 teste trec** · 11 skip · 14 xfail · **COLLECTED 3857** · ruff OK · verificator **TOTAL 0** ·
+**3850 teste trec** · 11 skip · 14 xfail · **COLLECTED 3875** · ruff OK · verificator **TOTAL 0** ·
 rute **423 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 34** · site **200** · four-way se închide la
 `post-commit`, care publică pe `origin/main` și pe `backup/lant-2026-08-31` și **restartează
 necondiționat** procesul viu.
+
+**AL PATRULEA BRAȚ AL FOUR-WAY-ULUI SE CITEȘTE ACUM DIRECT** (Costin, 31.08, `DECIZII.md` 16.3): nu
+se mai deduce din `ExecMainStartTimestamp`. Se mintează un token de superadmin cu
+`auth_api.emite_token` — tiparul propriu al sondelor, `frontend_test/w_auth.py` — și se citește
+`GET /admin/versiune`, care întoarce `running`, `head`, `divergent` și `necunoscut`. *Ora de pornire
+rămâne a doua lectură, nu singura.*
+
+**VERIFICATORUL DE NECONFORMITĂȚI ARE TREI REZULTATE**, din 31.08: `PASS` · `FAIL` ·
+**`NEVERIF [cod]`**. Codul de ieșire nu mai contrazice rezumatul — **2** înseamnă „nu s-a putut
+verifica tot". *Nu-l consumă nimic programatic; se rulează cu mâna.*
 
 **CLICHETELE VII — blocul de mai jos e GENERAT, nu scris.** Tabelul ăsta spunea, până pe 31.08,
 chiar propoziția «se recalculează, nu se citesc de aici», și avea patru cifre scrise cu mâna. Trei
@@ -513,10 +523,11 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
    `core/test_clichete_generate.py` te oprește pentru umbră.
 5. **CONSTATĂRI DESCHISE în `GARZI.md`**, fiecare cu condiția scrisă: ce anume varia la ecranul
    `banca` (rămasă GRI) · **clasificatorul de alerte**, 2 din 2 greșite, acum confruntabil ·
-   `verificator_neconformitati.sh`, care **nu tace, minte**: tipărește *„JWT_SECRET lipsește din
-   proces"* când `sudo` nu e disponibil neinteractiv. Reparația e un **al treilea rezultat** —
-   `NU S-A PUTUT VERIFICA` —, **nu** lărgirea setului îngust. **Asta e singura dintre ele care
-   așteaptă o decizie de la Costin.**
+   `verificator_neconformitati.sh` — **ÎNCHIS 31.08**, reparat la cerere: al treilea rezultat
+   (`NEVERIF`, cu cod stabil pe fiecare motiv), setul de `sudo` neatins. Generalizarea a scos
+   încă trei forme latente în același script, plus un `EXIT=0` peste propriul `FAIL: 3`.
+   **Nicio constatare nu mai așteaptă o decizie de la Costin** — rămâne doar `banca`, GRI,
+   care așteaptă o măsurătoare, nu o hotărâre.
 6. **POLKIT: ÎNCHIS, nu restanță.** *Se scrie explicit fiindcă l-am purtat o tură ca „lucru care îl
    blochează pe Costin", după ce îi scrisesem închiderea eu însumi, în aceeași zi.* Sonda a rulat pe
    31.08 la 01:02, iar temeiul e în `GARZI.md`: **restartul prin polkit se autorizează ONE-SHOT ca

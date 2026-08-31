@@ -3,6 +3,34 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 31.08.2026 (16) — Trei răspunsuri: scutirea rămâne, verificatorul se repară acum, RUNNING se citește direct
+
+*Răspunsuri la cerințele 1–3 din raportul precedent. Se scriu fiindcă toate trei sunt reguli care se
+aplică mai departe, nu stări de moment.*
+
+**1. SCUTIREA RĂMÂNE.** Tabelul „CIFRE INVALIDATE" din `PREDARE_LANT.md` e exceptat de la interdicția
+cifrei umbrei în proză. Temeiul, acum confirmat: *apartenența la tabelul de invalidate **este**
+declarația că cifra nu mai e curentă* — deci scutirea nu redeschide gaura pe care gardul o apără.
+Rămâne îngustă prin construcție: tăiere structurală, anti-vacuu pe ea însăși, și proba că o cifră din
+proza obișnuită e tot prinsă.
+
+**2. `verificator_neconformitati.sh` — REPARAT ACUM.** Al treilea rezultat, `NEVERIF`, cu **cod
+stabil** pe fiecare motiv. **Setul de `sudo` n-a fost atins** — regula rămâne: *un verificator care
+are nevoie de mai multe drepturi ca să spună adevărul cere să fie crezut pe încredere.*
+
+*Ce a scos generalizarea, și e partea de purtat mai departe:* căutând clasa în tot scriptul înainte de
+a repara instanța, am găsit **încă trei forme latente** și un cod de ieșire care întorcea `0` peste
+propriul `FAIL: 3`. Una dintre cele latente greșea în **direcția opusă** — un glob gol raporta `PASS`,
+adică orbirea se citea ca conformitate. *Ipoteza mea de pornire — că și interogările `psql` mint — a
+fost **infirmată** prin măsurare: `sudo -n -u postgres psql` chiar merge. Clasa se măsoară, nu se
+deduce din formă.*
+
+**3. RUNNING SE CITEȘTE DIRECT.** Al patrulea braț al four-way-ului nu se mai confirmă indirect din
+`ExecMainStartTimestamp`. Se mintează un token de superadmin cu `auth_api.emite_token` — tiparul pe
+care îl folosesc deja sondele proprii (`frontend_test/w_auth.py`) — și se citește
+`GET /admin/versiune`. Prima încercare fusese blocată de clasificatorul stației; autorizată explicit
+de Costin, 31.08. Citit: `running == head == 13acfe0`, `divergent: false`, `necunoscut: false`.
+
 ## 31.08.2026 (15) — Umbra rămâne nemăsurată definitiv, iar tema Supervizorului intră în plan
 
 *Două decizii date de Costin în aceeași comandă. Prima închide o populație; a doua deschide o temă.

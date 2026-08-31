@@ -5497,9 +5497,10 @@ rea-intenție:
    pe a treia cale: aici nu se poate nici genera, nici șterge — `cifra` e un câmp **obligatoriu** al
    unei interdicții, pinat cu `măsurat la` + `pe commit`. Deci **se confruntă**.
 
-### RĂMÂNE DESCHIS — `verificator_neconformitati.sh`, sub norma 77, ca FORMĂ
+### ÎNCHIS 31.08.2026 — `verificator_neconformitati.sh`, sub norma 77, ca FORMĂ
 
-*Costin, 31.08: intră sub aceeași normă «ca formă, nu ca reparație în tura asta».*
+*Costin, 31.08, prima dată: intră sub aceeași normă «ca formă, nu ca reparație în tura
+asta». A doua oară, în aceeași zi: **«repară-l acum»**. Reparat; gardul e mai jos.*
 
 **Un blocaj care afirmă absența când de fapt n-a putut verifica este un blocaj fără temei.** Linia
 `FAIL NC-07 JWT_SECRET lipsește din proces!` nu deosebește *„nu e"* de *„n-am putut vedea"* — iar
@@ -5510,8 +5511,12 @@ prima e o afirmație despre lume pe care instrumentul n-are cum s-o susțină.
 - **ce NU se face, expres**: lărgirea setului îngust de `sudo`. *Un verificator care are nevoie de
   mai multe drepturi ca să spună adevărul cere să fie crezut pe încredere* — și ar desface tocmai
   îngustarea făcută pe 30.08.
-- **de ce nu e gardat încă**: instrumentul de refuzuri vede doar Python (`raise`), iar ăsta e un
-  script `bash` care **tipărește** un verdict. E în umbra declarată a instrumentului, modul de eșec 3.
+- **de ce nu-l vedea instrumentul de refuzuri**: el vede doar Python (`raise`), iar ăsta e un
+  script `bash` care **tipărește** un verdict. Era în umbra declarată a instrumentului, modul de
+  eșec 3 — deci gardul a trebuit construit separat, pe clasificarea scriptului însuși.
+- **REPARAT 31.08**, v. secțiunea gardului de mai jos. Cele două linii NC-07 spun acum
+  `NEVERIF [sudo-indisponibil]`, cu motivul pe același rând; setul de `sudo` **n-a fost
+  atins**.
 
 
 ## 31.08.2026 — SUPRAFAȚA DE IMPACT a două acte noi, și o constatare despre CLASIFICATOR
@@ -6287,11 +6292,75 @@ ele.
 faptele, nu din cod. Blocul de clichete rămâne derivat **numai din cod**, deci nu poate pica din
 cauza unei firme create în timpul porții — limita operațională pe care blocul de date o are scrisă.
 
+## 31.08.2026 — Verificatorul care nu tăcea, ci mințea: al treilea rezultat, plus trei orbiri latente și un cod de ieșire care contrazicea propriul rezumat
+
+**`verificator_neconformitati.sh` reparat + `core/test_verificator_al_treilea_rezultat.py` — NOU,
+18 teste.** Cerut de Costin: *«repară-l acum»*.
+
+**Instanța, confirmată pe condiția reală, nu pe una sintetică:** `sudo -n true` chiar cere parolă pe
+stația asta, deci linia `FAIL NC-07 JWT_SECRET lipseste din proces!` se producea **live**. Secretul
+era acolo; lipsea dreptul de a te uita.
+
+**GENERALIZAREA A FOST MĂSURATĂ, NU PRESUPUSĂ — și m-a contrazis.** Plecasem cu ipoteza că și
+`psqlv` minte, fiindcă folosește `sudo`. Rulat: `sudo -n -u postgres psql` **merge** (setul îngust îl
+conține), deci NC-01/02 erau oneste. *Un scan pe forma brută a codului supra-numără; citirea la sursă
+a corectat clasa.* Ce a rămas, după măsurare:
+
+| formă | stare | ce făcea |
+|---|---|---|
+| `sudo` indisponibil la `/proc/<pid>/environ` | **VIE**, 2 linii | raporta absența secretului |
+| interogarea care nu rulează | LATENTĂ | șir gol ≠ `"0"` → FAIL despre date necitite |
+| fișierul care lipsește | LATENTĂ | `grep` eșuează → FAIL despre un fișier nedeschis |
+| globul care nu potrivește nimic | LATENTĂ | `wc -l` dă 0 → **PASS** pe mulțime goală |
+| ancora ștearsă de o rescriere legitimă | **VIE**, 1 linie | FAIL pe vecie despre un obiect inexistent |
+| `EXIT=0` peste `FAIL: 3` | **VIE** | rezumatul spunea roșu, codul de ieșire spunea verde |
+
+**A patra formă greșește în direcția OPUSĂ** (METODA §22) și e cea mai rea: un zero pe mulțime goală
+arată identic cu un zero real, deci orbirea se citea ca *conformitate*.
+
+**Ancora moartă e o a patra stare, nu o neconformitate.** `fix_serie_contare_v1` a fost scos de
+commitul `55a57f6` — o rescriere legitimă a contării. Verificarea și-a pierdut **obiectul**; codul
+nu și-a pierdut conformitatea. Se raportează `NEVERIF [ancora-moarta]`, nu FAIL pe vecie. *Verificarea
+comportamentală de deasupra ei — datele fără `MD-MD` — trece, deci ce voia să apere e apărat.*
+
+**Ce face imposibil:** oricare dintre cele șase forme să se întoarcă. Fiecare `NEVERIF` poartă un
+**cod stabil** (`sudo-indisponibil`, `proc-necitibil`, `ancora-moarta`, `fisier-ilizibil`,
+`interogare-neexecutata`, `glob-gol`, `proces-negasit`), iar gardul asertează pe **codul parsat**, nu
+pe proza mesajului — mesajul se poate rescrie fără să cadă nimic (METODA §23).
+
+**Codul de ieșire nu mai contrazice rezumatul:** `1` la orice FAIL · **`2`** dacă zero FAIL dar există
+NEVERIF · `0` doar când s-a verificat tot și tot e conform. *O rulare oarbă nu are voie să arate
+verde pentru cine citește doar codul.* Gardat prin confruntarea cifrelor din rezumat cu codul întors.
+
+**RED-PROOF: 8 mutații, 8 roșii** — fiecare apărare scoasă separat, pe o copie în `/tmp`, cu testul
+ei cerut roșu. **Prima rulare a dat 5 din 7**, și de-aia sunt opt: două apărări erau acoperite de
+ramuri vecine care ajungeau la același verdict din alt motiv. *Un verdict fără codul lui nu deosebește
+două ramuri — de aici au ieșit codurile, și un test propriu pentru ramura portantă a citirii lui
+`/proc`.* **Proba prin mutație a găsit un gol în GARD, nu în cod** — exact ce cere interdicția 76.
+
+**ȘI A GĂSIT UN BUG AL MEU, în chiar garda asta:** prima formă folosea
+`grep -rq -- "$m" "$RAD" --include='*.py'`. `--` oprește parsarea opțiunilor, deci `--include` devenea
+**nume de fișier**, căutarea intra în `.git` și potrivea în packfile-uri — iar scriptul raporta
+*„ancora s-a mutat"* despre un marker care nu mai există nicăieri. Prins **măsurând**, nu recitind.
+Are test de regresie propriu, pe o rădăcină sintetică cu marker îngropat în `.git`.
+
+**Ce NU face, declarat:** nu execută verificările reale (ar cere baza, procesul viu și sudo) — se
+sursează funcțiile și se exercită **clasificarea**, partea care mințea · nu judecă dacă NC-urile în
+sine sunt bine alese (judecată din 09.07) · nu apără codul de ieșire împotriva unui apelant care-l
+ignoră, fiindcă azi **nu-l consumă nimic programatic** (măsurat: zero apelanți în `.py`/`.sh`).
+
+**Seam-ul de probă (`VERIF_NC_SCRIPT`) are gardul lui:** dacă e setat în poartă, testul cade. Altfel
+ar fi o cale prin care gardul păzește o copie, iar scriptul livrat rămâne neatins.
+
+**Rulare de după reparație:** `PASS: 18   FAIL: 0   NEVERIF: 3`, `EXIT=2`, cu avertismentul
+*„rularea NU e completă"* scris în rezumat. *Cele trei NEVERIF nu sunt neconformități; sunt absența
+unei probe — și nu se sting lărgind drepturile.*
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**496 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**497 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 479
+### `core/` — 480
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -6765,6 +6834,7 @@ cauza unei firme create în timpul porții — limita operațională pe care blo
 - `core/test_verde_peste_necunoscut.py` — GARD [R35/XX3, 28.08.2026]: un verdict nu poate fi VERDE peste un necunoscut pe care il are in mana.
 - `core/test_verdict_persistat.py` — GARD — verdictul de validare se păstrează, și un verdict stătut nu ține locul unuia proaspăt.
 - `core/test_verdict_stare.py` — —
+- `core/test_verificator_al_treilea_rezultat.py` — GARD [31.08.2026, cerut de Costin]: verificatorul de neconformități nu mai afirmă absența când
 - `core/test_verificator_izolare.py` — GARDĂ PESTE VERIFICATOR: analizorul lui de izolare clasifică corect rute known-good / known-bad.
 - `core/test_versionare_assets.py` — core/test_versionare_assets.py -- GARD pentru disciplina ?v= (versionare asseturi front-end).
 - `core/test_versionare_formule.py` — Versionarea formulelor pe la_data (PAS 1 tipar). Cotele sunt period-aware (cota); formulele devin

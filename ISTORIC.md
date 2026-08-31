@@ -6705,3 +6705,51 @@ acum"*).
 nedeplafonată nu are voie să-și poarte cifra în proză. Un clichet își ține cifra adevărată fiindcă
 pică; o cifră fără clichet îmbătrânește tăcut — și cu atât mai sigur cu cât deasupra ei scrie că se
 recalculează.*
+
+## 31.08.2026 (partea a treia) — Verificatorul care nu tăcea, ci mințea. Iar proba prin mutație a găsit golul în GARD, nu în cod
+
+**Trei răspunsuri scurte de la Costin au produs o campanie și un al patrulea braț de four-way.**
+
+**RUNNING, citit direct.** Nu se mai deduce din `ExecMainStartTimestamp`. Token de superadmin mintuit
+cu `auth_api.emite_token` — tiparul propriu al sondelor —, `GET /admin/versiune`:
+`running == head == 13acfe0`, `divergent: false`, `necunoscut: false`. *Prima încercare fusese
+blocată de clasificatorul stației; n-am ocolit-o, am cerut-o.*
+
+**Verificatorul, reparat pe FORMĂ, nu pe drepturi.** `sudo -n true` chiar cere parolă aici, deci
+`FAIL NC-07 JWT_SECRET lipseste din proces!` se producea **live**, despre un secret care era acolo.
+
+**Partea care contează e generalizarea, fiindcă m-a contrazis.** Plecasem convins că și `psqlv`
+minte — folosește `sudo`, deci ar trebui. Măsurat: `sudo -n -u postgres psql` **merge**; setul îngust
+îl conține. NC-01/02 erau oneste. *A patra oară în trei zile când un scan pe forma brută
+supra-numără, și a patra oară când citirea la sursă corectează clasa în jos.*
+
+Ce a rămas, după măsurare pe scriptul real: **trei forme vii** (sudo pe `/proc`, ancora moartă, codul
+de ieșire) și **trei latente** (interogarea care nu rulează, fișierul lipsă, globul gol). A patra
+greșea în **direcția opusă**: `grep | wc -l` pe zero fișiere dă 0, iar 0 însemna *conform*. Orbirea se
+citea ca sănătate.
+
+**A patra stare, pe care n-o prevăzusem: ANCORA MOARTĂ.** `fix_serie_contare_v1` fusese scos de
+`55a57f6`, o rescriere legitimă a contării. Verificarea își pierduse **obiectul** — codul nu-și
+pierduse conformitatea. Un FAIL pe vecie despre ceva ce nu mai există e aceeași boală, în alt costum.
+
+**PROBA PRIN MUTAȚIE A GĂSIT UN GOL ÎN GARD, NU ÎN COD.** Prima rulare: **5 roșii din 7**. Două
+apărări scoase, și gardul rămânea verde — fiindcă ramurile vecine ajungeau la **același verdict din
+alt motiv**. *Un verdict fără motivul lui nu deosebește două drumuri.* De aici au ieșit **codurile
+stabile** pe fiecare `NEVERIF` și un test propriu pentru ramura portantă a citirii lui `/proc`. A
+doua rulare: **8 mutații, 8 roșii**. Exact ce cere interdicția 76 — calibrarea pozitivă nu dovedește
+că instrumentul nu ratează.
+
+**Și a găsit un bug al meu, în chiar garda care repara clasa.** Scrisesem
+`grep -rq -- "$m" "$RAD" --include='*.py'`. `--` oprește parsarea opțiunilor, deci `--include` devenea
+**nume de fișier**, căutarea intra în `.git`, potrivea în packfile-uri, și scriptul raporta *„ancora
+s-a mutat"* despre un marker care nu mai există nicăieri. **A treia oară în două zile când reparația
+unei clase mă prinde în timp ce o repar** — și a treia oară când o prinde **măsurătoarea**, nu
+recitirea.
+
+**Tot azi, un `str.replace` fără aserțiune, făcut de mine, în tura asta.** Un bloc de test n-a fost
+înlocuit, scriptul a tipărit „OK", iar proba prin mutație a arătat verdele. `METODA §28` există exact
+pentru asta, și e scrisă de trei zile. *O regulă scrisă nu ține fără control mecanic — a doua
+demonstrație a aceleiași propoziții în aceeași zi.*
+
+**După reparație:** `PASS: 18 · FAIL: 0 · NEVERIF: 3 · EXIT=2`, cu avertismentul scris în rezumat.
+Codul de ieșire nu mai contrazice cifrele de deasupra lui.
