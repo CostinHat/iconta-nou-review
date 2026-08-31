@@ -6923,3 +6923,53 @@ temeiului, ci absența declarației „am căutat".*
 **Ce nu s-a legat, deliberat:** pragul calculat nu alimentează încă raportul lunar. Ar schimba ce
 raportează un job viu și cere schimbarea contractului lui `cote_neconfirmate`. **R109**, cu efectul
 măsurat înainte de a fi aplicat.
+
+## 31.08.2026 (partea a opta) — „Instrumentul nu vedea" nu înseamnă „datoria era mai mare"
+
+**Costin a pus întrebarea exact:** *dacă e gaură, clichetul de 93 e un plafon inferior necunoscut,
+iar R108 a fost găsit din întâmplare, nu de instrument.*
+
+**Gaura există.** `in_domeniu` are o regulă — a patra, din 23.08 — care întreabă dacă fișierul poartă
+o valoare din registru. Se uită **numai la valorile implicite ale parametrilor**, fiindcă în forma
+aceea fusese găsită clasa atunci (*„cota = 21 ca default"*). O **constantă de modul** cu aceeași
+valoare îi scapă. Așa a scăpat `PLAFON_MF_2026 = 5000.0`. **248 din 412** de fișiere sunt în afara
+domeniului.
+
+**Și partea a doua a întrebării e adevărată:** R108 a fost găsit prin axa B a interdicției 55, nu de
+instrumentul care ar fi trebuit să-l vadă.
+
+**Dar prima parte are alt răspuns decât părea, și merită scris ca lecție:** lărgirea domeniului
+adaugă **zero** clasa C. Cele patru valori nou-văzute sunt clasa **E** — sursate în proză, nu
+nesursate. *Punctul orb nu ascundea datorie; ascundea valori care își citau temeiul pentru om și nu
+pentru mașină. „Instrumentul nu vedea" nu implică „datoria era mai mare" — implică doar că nu se
+știa.*
+
+**Calibrarea a decis forma regulii, nu invers.** Prima formă cerea un singur semnal — valoarea din
+registru. Aducea `nucleu.py`: `_SCRYPT_N = 16`, `_SALT_BYTES = 16`, `PAROLA_MIN = 8`, parametri de
+criptografie care se potrivesc din întâmplare cu cota de profit și cu cea de dividende istorică.
+Șase constante ar fi intrat în clichet ca datorie fiscală permanentă. *Un clichet otrăvit e mai rău
+decât unul incomplet: reparația lui n-are obiect, deci nu se mai poate coborî niciodată.* Cu două
+semnale — nume fiscal **și** valoare: trei fișiere, zero fals-pozitive.
+
+**Ce rămâne nevăzut, scris ca afirmație:** `intrastat.PRAG_2026 = 1000000`. Pragul Intrastat nu e în
+registru, deci nicio regulă ancorată pe registru nu-l poate vedea. E interdicția 57, nu asta — și are
+test propriu, care cade în ziua în care valoarea intră în `COTE`.
+
+## 01.09.2026 — Prima respingere de poartă produsă de trecerea peste miezul nopții
+
+Tura de ieri a trecut de ora 00:00. Commitul punctului 3 a fost **respins** de
+`test_antetul_nu_e_stale`: `CONFORMITATE.md` era modificat față de HEAD, iar antetul lui purta
+`ultima actualizare: 2026-08-31`. Garda cere ca un registru atins **azi** să poarte data de **azi** —
+*„un antet stătut e mai rău decât niciunul"*.
+
+**Nu e o regresie și nu e un gard prea strict.** Suita trecuse verde cu douăzeci de minute înainte,
+la 31.08; între rulare și commit s-a schimbat ziua. Garda a spus exact ce lipsește, iar mesajul ei
+conține și reparația: *„Registrul se atinge în tura asta, deci antetul se actualizează în tura asta."*
+
+*Deosebirea care contează, fiindcă e ușor de ratat: a completa ce cere o gardă NU e «a repara ca să
+continui» (`§2.3 pct.4`). Prima obeyește semnalul, a doua îl suprimă. Testul e dacă aserțiunea
+descrie un defect al muncii mele și îi numește completarea — aici, verbatim.*
+
+**Ce mai atinge schimbarea de zi, mecanic:** `post-commit` creează de acum `backup/lant-2026-09-01`.
+`backup/lant-2026-08-31` rămâne cu ultimul commit de ieri — *o ramură care nu mai primește commituri
+nu e o ramură pierdută*, dar four-way-ul de azi se confruntă cu ramura nouă, și predarea o spune.

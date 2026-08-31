@@ -3,6 +3,24 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 31.08.2026 (21) — Un clichet otrăvit e mai rău decât unul incomplet
+
+*Regula iese din calibrarea celei de-a cincea direcții oarbe, și e generală.*
+
+**Un clichet incomplet se poate mări când afli mai mult. Unul otrăvit — care numără ca datorie ceva
+ce nu e datorie — nu se mai poate coborî niciodată**, fiindcă reparația lui n-are obiect. De aceea,
+când o regulă de domeniu se lărgește, criteriul se calibrează **înainte** pe populația reală, iar
+fals-pozitivele se numără ca fals-pozitive, nu ca „zgomot acceptabil".
+
+**Instanța:** extinderea regulii de domeniu la constantele de modul, cerută pe un singur semnal
+(valoarea din registru), aducea `nucleu.py` cu șase parametri de criptografie — `_SCRYPT_N = 16` se
+potrivește cu cota de profit. Cu două semnale (nume fiscal **și** valoare): zero fals-pozitive.
+
+**Și o a doua, despre ce înseamnă un punct orb:** lărgirea a adăugat **zero** clasa C. Punctul orb nu
+ascundea datorie nesursată, ci valori **sursate în proză**. *„Instrumentul nu vedea" nu implică
+„datoria era mai mare" — implică doar că nu se știa. Cele două se confundă ușor, iar diferența e
+chiar între o măsurătoare și o presupunere.*
+
 ## 31.08.2026 (20) — Categoria de reverificare: NECUNOSCUT e un răspuns, iar clasa care nu se poate atribui se declară vidă
 
 **Comanda lui Costin:** *„Construiește categoria de reverificare (55) acum, cu NECUNOSCUT declarat pe

@@ -6560,6 +6560,55 @@ inventarul constantelor nesursate. *O gaură de acoperire, nu doar o instanță.
 raportează un job viu și cere `cote_neconfirmate` să primească prag per-articol. **R109**, cu efectul
 deja măsurat.
 
+## 31.08.2026 — A cincea direcție oarbă a domeniului: regula întreba doar despre valorile implicite ale parametrilor
+
+**Întrebarea lui Costin:** *„Investighează de ce `scan_constante` nu vede constantele de modul din
+`mijloace_fixe_import_api.py`. Dacă e gaură, clichetul de 93 e un plafon inferior necunoscut, iar
+R108 a fost găsit din întâmplare, nu de instrument."*
+
+**E gaură, și avea dreptate pe partea a doua.** `in_domeniu` are patru reguli; a patra —
+`_poarta_valoare_de_registru`, adăugată 23.08 — întreabă *„fișierul poartă o valoare din registru?"*,
+dar se uită **numai la valorile implicite ale parametrilor** (`a.defaults`, `a.kw_defaults`). Așa
+fusese găsită clasa atunci: *„cota = 21 ca default"*. **O constantă de MODUL cu aceeași valoare îi
+scapă** — și exact așa a scăpat `PLAFON_MF_2026 = 5000.0`, plafonul de mijloc fix, **chiar valoarea
+curentă din registru**. Fișierul avea **zero** intrări în inventar. *R108 a fost găsit prin axa B a
+interdicției 55, nu de instrumentul care ar fi trebuit să-l vadă.*
+
+**Mărimea punctului orb, măsurată: 248 din 412 de fișiere `.py` sunt în afara domeniului.**
+
+**DAR partea întâi a întrebării are alt răspuns decât părea, și e important:** lărgirea domeniului
+adaugă **ZERO clasa C**. Cele patru valori fiscale nou-văzute sunt **clasa E** — sursate în proză,
+nu nesursate: `bacsis.COTA_IMPOZIT`, `PLAFON_MF_2026`, `obiecte_inventar.PRAG_NOU/PRAG_VECHI`.
+*Clichetul nu era subestimat; punctul orb ascundea valori care își citau temeiul pentru om, dar nu
+pentru mașină.* C rămâne **133**; E urcă **46 → 50**, D **56 → 58**.
+
+### DE CE DOUĂ SEMNALE, și nu doar valoarea — calibrat pe populația reală, înainte de a scrie regula
+
+Prima formă a extinderii cerea doar *valoare din registru*, la orice constantă de modul. Aducea
+`nucleu.py`: `_SCRYPT_N = 16`, `_SALT_BYTES = 16`, `PAROLA_MIN = 8` — parametri de **criptografie**
+care se potrivesc din întâmplare cu cota de profit (16) și cu cea de dividende istorică (8).
+**Șase constante ar fi intrat în clichet ca datorie fiscală permanentă, nereparabilă fiindcă nu e
+fiscală.** Un clichet otrăvit e mai rău decât unul incomplet: primul nu se mai poate coborî niciodată.
+
+Regula finală cere **nume fiscal ȘI valoare din registru**. Măsurat: 3 fișiere aduse, **0
+fals-pozitive**, 0 clasa C.
+
+| formă încercată | aduce | ținta 5 | fals-pozitive |
+|---|---|---|---|
+| doar valoare de registru | 4 fișiere | 4/5 | **6 constante** (`nucleu.py`) |
+| doar nume fiscal | 6 fișiere | 5/5 | 2 (instrumente) |
+| **nume ȘI valoare** | **3 fișiere** | **4/5** | **0** |
+
+**CE NU PRINDE, scris ca afirmație:** o valoare fiscală care **nu e în registru**. Instanța rămasă:
+`intrastat.PRAG_2026 = 1000000` — pragul Intrastat nu e în `COTE`, deci nicio regulă ancorată pe
+registru nu-l poate vedea. *E altă clasă — o valoare fără temei, interdicția 57 — nu o scăpare a
+acesteia.* Are test propriu: dacă într-o zi intră în registru, testul cade și cere actualizarea.
+
+**Calibrare, ambele direcții:** cele trei fișiere trebuie să fie **în** domeniu · `nucleu.py`
+trebuie să rămână **afară** · sintetic, o valoare fără nume fiscal nu aduce fișierul, iar un nume
+fiscal cu o valoare care nu e în registru nu-l aduce nici el — *altfel regula ar deveni o euristică
+pe nume.*
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **500 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.

@@ -379,6 +379,14 @@ def in_domeniu(f, src):
             or _poarta_valoare_de_registru(src))
 
 
+#: NUME de constanta care ANUNTA o valoare fiscala. E AL DOILEA SEMNAL, si e obligatoriu — vezi
+#: `_poarta_valoare_de_registru`. Nu se foloseste singur nicaieri: un nume fiscal fara valoare de
+#: registru nu aduce fisierul in domeniu, si nici invers.
+NUME_FISCAL = re.compile(r"PLAFON|COTA|COTE|PRAG|TVA|IMPOZIT|ACCIZ|SALARIU|DEDUCER|CASS?|CAM|"
+                         r"AMORTIZ|MIJLOC|SCUTIR|FACILITAT|TICHET|DIURN|DIVIDEND|MICRO|PROFIT",
+                         re.I)
+
+
 def _valori_de_registru():
     """Valorile CURENTE din registrul de cote, ca intregi si ca procente. Citite din `common.COTE`,
     nu scrise aici - altfel ar fi chiar constanta nesursata pe care o cautam."""
@@ -422,12 +430,49 @@ def _poarta_valoare_de_registru(src):
         arb = _ast.parse(src)
     except SyntaxError:
         return False
+    def _e_valoare(nod):
+        """Un literal numeric — direct sau `Decimal("...")` — care e o valoare din registru."""
+        if isinstance(nod, _ast.Constant) and isinstance(nod.value, (int, float)) and not isinstance(nod.value, bool):
+            return float(nod.value) in valori
+        if isinstance(nod, _ast.Call) and getattr(getattr(nod, "func", None), "id", "") == "Decimal" and nod.args and isinstance(nod.args[0], _ast.Constant):
+            try:
+                return float(nod.args[0].value) in valori
+            except (TypeError, ValueError):
+                return False
+        return False
+
     for n in _ast.walk(arb):
         if not isinstance(n, (_ast.FunctionDef, _ast.AsyncFunctionDef)):
             continue
         a = n.args
         for d in list(a.defaults) + list(a.kw_defaults):
-            if isinstance(d, _ast.Constant) and isinstance(d.value, (int, float))                and not isinstance(d.value, bool) and float(d.value) in valori:
+            if d is not None and _e_valoare(d):
+                return True
+
+    # A CINCEA DIRECTIE OARBA, masurata 31.08.2026. Regula de mai sus se uita DOAR la valorile
+    # implicite ale parametrilor — forma in care clasa fusese gasita pe 23.08 („cota = 21 ca
+    # default"). O CONSTANTA DE MODUL care poarta aceeasi valoare ii scapa. Instanta:
+    # `mijloace_fixe_import_api.PLAFON_MF_2026 = 5000.0` — plafonul de incadrare ca mijloc fix, chiar
+    # valoarea curenta din registru — statea in afara domeniului, iar fisierul avea ZERO intrari in
+    # inventar. A fost gasit din INTAMPLARE, prin axa B a interdictiei 55, nu de instrumentul asta.
+    # Masurat atunci: 248 din 412 de fisiere sunt in afara domeniului.
+    #
+    # DE CE DOUA SEMNALE, si nu doar valoarea. Cu valoarea singura, extinderea aducea `nucleu.py`:
+    # `_SCRYPT_N = 16`, `_SALT_BYTES = 16`, `PAROLA_MIN = 8` — parametri de criptografie care se
+    # potrivesc din intamplare cu cota de profit (16) si cu cea de dividende istorica (8). Sase
+    # constante ar fi intrat in clichet ca datorie fiscala permanenta, nereparabila fiindca nu e
+    # fiscala. Cu nume SI valoare: trei fisiere, zero fals-pozitive, ZERO clasa C adaugata — cele
+    # patru valori nou-vazute sunt clasa E, adica sursate in proza, nu nesursate.
+    #
+    # CE NU PRINDE, si se scrie: o valoare fiscala care NU e in registru. Instanta ramasa,
+    # `intrastat.PRAG_2026 = 1000000` — pragul Intrastat nu e in `COTE`, deci nicio regula ancorata
+    # pe registru n-o poate vedea. E alta clasa (o valoare fara temei, interdictia 57).
+    for n in arb.body:
+        if not isinstance(n, _ast.Assign):
+            continue
+        for tg in n.targets:
+            nume = getattr(tg, "id", "")
+            if nume and nume.isupper() and NUME_FISCAL.search(nume) and _e_valoare(n.value):
                 return True
     return False
 

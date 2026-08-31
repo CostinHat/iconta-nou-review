@@ -47,7 +47,7 @@ după a doua oară: „e gardul care nu citește proză și totuși o discipline
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 29.08.2026: garda cere ca fiecare restanță NUMITĂ acolo să fie DESCHISĂ, iar textul le numea pe R54, R53, R58 — dintre care două s-au închis azi. A doua oară când istoricul iese din câmp din același motiv; prima a fost R33, pe 28.08)*: Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
-- **ultima actualizare**: 2026-08-31
+- **ultima actualizare**: 2026-09-01
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
 
 ---
@@ -2348,11 +2348,13 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   6 din ORDONANȚA DE URGENȚĂ …)"*. Antetul lui `obiecte_inventar.py` avea data corectă din start.
 - **CE NU S-A REPARAT**: unificarea celor trei pe `cota()`. E o schimbare pe o cale de import vie și
   pe un motor pur; se face ca temă proprie, cu poarta ei.
-- **CADE ÎNTRE DOUĂ INSTRUMENTE, și asta e partea de reținut**: graful (`dependenti_act`) nu-l vede
-  fiindcă nimic nu-l consumă; iar `scan_constante` **nu-l numără** — `core/mijloace_fixe_import_api.py`
-  are **zero** intrări în inventarul constantelor nesursate. *O constantă fiscală scrisă ca
-  `PLAFON_MF_2026 = 5000.0` la nivel de modul n-a fost în populația măsurată de niciunul.* Asta e o
-  gaură în acoperire, nu doar o instanță.
+- **CĂDEA ÎNTRE DOUĂ INSTRUMENTE — jumătate REPARAT 31.08:** graful (`dependenti_act`) tot nu-l
+  vede, fiindcă nimic nu-l consumă (asta e chiar restanța). Dar `scan_constante` **îl vede acum**:
+  regula de domeniu întreba doar despre valorile implicite ale parametrilor, nu și despre constantele
+  de **modul**. Extinsă, cu **două semnale** (nume fiscal ȘI valoare din registru), calibrată pe
+  populația reală. *Lărgirea a adăugat **zero** clasa C — cele patru valori nou-văzute sunt clasa E,
+  sursate în proză. Punctul orb nu ascundea datorie.* Măsurat atunci: **248 din 412** de fișiere erau
+  în afara domeniului.
 - **calibrare**: cazul cunoscut **găsit** — instrumentul a semnalat exact valoarea fără consumatori,
   iar celelalte 33 de temeiuri n-au produs fals-pozitive pe aceeași cale (`plafon_tva_incasare`, cu
   un singur consumator, a ieșit corect `CALCULAT`).

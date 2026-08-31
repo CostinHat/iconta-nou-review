@@ -4,7 +4,12 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-08-31**. **Rescriere PARȚIALĂ**, a șasea la rând.
+- **ultima rescriere**: **2026-09-01**. **Rescriere PARȚIALĂ**, a șaptea la rând.
+- **ZIUA S-A SCHIMBAT ÎN TIMPUL TUREI**, și se scrie fiindcă atinge două lucruri mecanice:
+  `post-commit` creează de acum `backup/lant-2026-09-01`, nu ramura de ieri — *o ramură care nu mai
+  primește commituri nu e o ramură pierdută*; iar garda anti-stale a antetului din `CONFORMITATE.md`
+  a **respins poarta**, pe drept: registrul e atins azi, deci antetul poartă data de azi. *Prima
+  respingere de poartă produsă de trecerea peste miezul nopții, nu de cod.*
 - **de ce PARȚIALĂ, și de ce asta nu e o scuză**: structura a fost rescrisă complet pe 30.08, când
   documentul se contrăzicea în trei locuri. Nu se mai contrazice. Ce s-a schimbat în cele **șapte
   commituri de azi** e **starea**, plus **trei instrumente noi** care fac cifrele derivabile. *O
@@ -247,9 +252,10 @@ ale Design System, **5** sunt acoperite. Nu invalidează porțile; le încadreaz
 ## STAREA LA PREDARE
 
 Poartă verde, citită din ieșirea rulării complete de pe arborele care devine commitul următor:
-**3877 teste trec** · 11 skip · 14 xfail · **COLLECTED 3902** · ruff OK · verificator **TOTAL 0** ·
+**3881 teste trec** · 11 skip · 14 xfail · **COLLECTED 3906** · ruff OK · verificator **TOTAL 0** ·
 rute **423 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 34** · site **200** · four-way se închide la
-`post-commit`, care publică pe `origin/main` și pe `backup/lant-2026-08-31` și **restartează
+`post-commit`, care publică pe `origin/main` și pe `backup/lant-<ziua curentă>` — de la 01.09 e
+`backup/lant-2026-09-01`, iar `backup/lant-2026-08-31` rămâne cu ultimul commit de ieri — și **restartează
 necondiționat** procesul viu.
 
 **AL PATRULEA BRAȚ AL FOUR-WAY-ULUI SE CITEȘTE ACUM DIRECT** (Costin, 31.08, `DECIZII.md` 16.3): nu

@@ -438,3 +438,79 @@ def test_ANTIVACUU_valorile_de_registru_nu_sunt_goale():
     assert len(v) >= 3, "registrul de cote pare gol pentru regula de domeniu: %r" % v
     assert 21 in v, "cota standard nu se regăsește în valorile de registru: %r" % sorted(v)[:10]
 
+# ─────────── A CINCEA DIRECTIE OARBA A DOMENIULUI (31.08.2026) ───────────
+# `in_domeniu` intreba „poarta o valoare din registru?" DOAR despre valorile implicite ale
+# parametrilor. O CONSTANTA DE MODUL cu aceeasi valoare ii scapa — iar asa a scapat
+# `mijloace_fixe_import_api.PLAFON_MF_2026 = 5000.0`, plafonul de mijloc fix, chiar valoarea curenta
+# din registru. Fisierul avea ZERO intrari in inventar, si a fost gasit din INTAMPLARE (axa B a
+# interdictiei 55), nu de instrument. Masurat atunci: 248 din 412 de fisiere in afara domeniului.
+
+
+def test_domeniul_vede_CONSTANTA_DE_MODUL_cu_valoare_de_registru():
+    """Instanta care a deschis clasa. Cele trei fisiere trebuie sa fie ACUM in domeniu."""
+    import io as _io
+    import os as _os
+    rad = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+    for f in ("mijloace_fixe_import_api.py", "obiecte_inventar.py", "bacsis.py"):
+        src = _io.open(_os.path.join(rad, "core", f), encoding="utf-8").read()
+        assert scan_constante.in_domeniu(f, src), (
+            "%s a iesit din domeniu — poarta o constanta de modul cu valoare din registru "
+            "(`PLAFON_MF_2026`, `PRAG_NOU`, `COTA_IMPOZIT`). Fara ea, un plafon fiscal e invizibil "
+            "pentru clichet." % f)
+
+
+def test_CALIBRARE_valoarea_SINGURA_nu_ajunge_doua_semnale(tmp_path):
+    """DIRECTIA INVERSA, si e cea care a decis forma regulii. Cu valoarea singura, extinderea aducea
+    `nucleu.py`: `_SCRYPT_N = 16`, `_SALT_BYTES = 16`, `PAROLA_MIN = 8` — parametri de criptografie
+    care se potrivesc din intamplare cu cota de profit si cu cea de dividende istorica. Sase
+    constante ar fi intrat in clichet ca datorie fiscala permanenta, nereparabila fiindca nu e
+    fiscala. Se cere deci NUME fiscal SI valoare de registru."""
+    import io as _io
+    import os as _os
+    rad = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+    src = _io.open(_os.path.join(rad, "core", "nucleu.py"), encoding="utf-8").read()
+    assert not scan_constante.in_domeniu("nucleu.py", src), (
+        "`nucleu.py` a intrat in domeniu — parametrii de criptografie s-ar numara ca datorie "
+        "fiscala, si n-ar putea fi reparati niciodata")
+    # sintetic, ca proba sa nu depinda de continutul lui nucleu.py
+    valoare_fara_nume = chr(10).join(("_SCRYPT_N = 16", "_SALT_BYTES = 16", ""))
+    assert not scan_constante.in_domeniu("oarecare.py", valoare_fara_nume)
+    nume_fara_valoare = "PLAFON_OARECARE = 777777" + chr(10)
+    assert not scan_constante.in_domeniu("oarecare.py", nume_fara_valoare), (
+        "un nume fiscal cu o valoare care NU e in registru a adus fisierul in domeniu — regula ar "
+        "deveni o euristica pe nume")
+
+
+def test_CALIBRARE_ambele_semnale_impreuna_aduc_fisierul(tmp_path):
+    """Pozitiv sintetic, ca proba sa nu depinda de un fisier anume: nume fiscal + valoare din
+    registru, intr-un fisier care nu spune nimic altceva fiscal."""
+    from core.common import COTE
+    val = None
+    for intrari in COTE.values():
+        for el in intrari:
+            try:
+                f = float(el[1])
+            except Exception:
+                continue
+            if f >= 1000:
+                val = int(f)
+                break
+        if val:
+            break
+    assert val, "[anti-vacuu] registrul n-are nicio valoare >= 1000 — proba n-are cu ce sa lucreze"
+    src = "PLAFON_SINTETIC = %d" % val + chr(10)
+    assert scan_constante.in_domeniu("oarecare.py", src), (
+        "nume fiscal + valoare din registru (%d) n-au adus fisierul in domeniu" % val)
+
+
+def test_ce_NU_prinde_regula_se_scrie(tmp_path):
+    """Limita, ceruta ca afirmatie: o valoare fiscala care NU e in registru ramane invizibila.
+    Instanta reala: `intrastat.PRAG_2026 = 1000000`. E alta clasa (valoare fara temei, interdictia
+    57), nu o scapare a regulii — dar daca intr-o zi intra in registru, fisierul trebuie sa apara."""
+    import io as _io
+    import os as _os
+    rad = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
+    src = _io.open(_os.path.join(rad, "core", "intrastat.py"), encoding="utf-8").read()
+    assert not scan_constante.in_domeniu("intrastat.py", src), (
+        "`intrastat.py` a intrat in domeniu — daca pragul Intrastat a fost adaugat in registru, "
+        "e o veste buna: scoate testul asta si coboara/urca BASELINE cu ce aduce")
