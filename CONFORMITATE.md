@@ -2346,8 +2346,30 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   01.01.2026 → **25.02.2026**. Marcajul din forma consolidată a Codului fiscal spune: *„(la
   **25-02-2026**, Litera b), Alineatul (2), Articolul 28 … a fost modificată de Punctul 7., Articolul
   6 din ORDONANȚA DE URGENȚĂ …)"*. Antetul lui `obiecte_inventar.py` avea data corectă din start.
-- **CE NU S-A REPARAT**: unificarea celor trei pe `cota()`. E o schimbare pe o cale de import vie și
-  pe un motor pur; se face ca temă proprie, cu poarta ei.
+- **REPARAT 01.09.2026** *(se închide formal în commitul următor, cu hash-ul real — capcana 2)*.
+  Costin: *„O lege aplicată în trei locuri produce cifra validă și falsă; canonicul necitit e
+  configurația cea mai proastă."* Sursa unică e acum **registrul**:
+  - `obiecte_inventar.prag_mf(la_data)` e **singura poartă** și citește `cota("plafon_mijloc_fix")`.
+    `PRAG_NOU`, `PRAG_VECHI` și `DATA_PRAG_NOU` **nu mai există**.
+  - `mijloace_fixe_import_api` cere pragul **la data PIF a rândului**, nu un literal fără dată.
+    `PLAFON_MF_2026` **nu mai există**. *Avertismentul lui era greșit pentru bunurile intrate înainte
+    de 25.02.2026: spunea „sub plafon 5000" când plafonul era 2.500.*
+  - **necunoscutul a devenit exprimabil**: `prag_mf_cunoscut(la_data)` spune dacă răspunsul e
+    verificat la sursă sau **moștenit**. Pentru date anterioare lui 01.01.2015 registrul n-are prag
+    (un mijloc fix intrat în 2008 avea 1.800 lei, HG 105/2007 — nu e în registru, v. **57**).
+    Comportamentul e neschimbat — se întoarce cea mai veche valoare cunoscută —, dar importul nu mai
+    scrie „sub plafon" cu aceeași încredere ca pentru un an verificat.
+- **PROBA CĂ UNIFICAREA A REUȘIT, mecanică**: `dependenti_act.dependenti(OUG 8/2026, art. 28)`
+  întoarce acum **patru** consumatori (`mijloace_fixe_import_api::extrage`,
+  `obiecte_inventar::{e_obiect_inventar, prag_mf, prag_mf_cunoscut}`) — înainte, **zero**. Iar
+  `core/reverificare.py` a mutat valoarea din `MISCATOR/NECUNOSCUT` (fără prag) în
+  `MISCATOR/CALCULAT` (prag 6): *nu s-a schimbat nici articolul, nici legea — s-a schimbat faptul că
+  valoarea canonică e citită de cineva.*
+- **gard**: `core/test_prag_mijloc_fix_unic.py` — nicio redefinire în afara registrului (pe **AST**,
+  deci `5000`, `5000.0` și `Decimal("5000")` sunt aceeași valoare) · valoarea canonică trebuie să
+  aibă consumatori · pragul se schimbă la data din lege · încadrarea unui bun de 3.000 lei se
+  schimbă odată cu el · necunoscutul se poate numi. Plus anti-vacuu: registrul trebuie să aibă cel
+  puțin două intrări, altfel probele de dată n-ar deosebi nimic.
 - **CĂDEA ÎNTRE DOUĂ INSTRUMENTE — jumătate REPARAT 31.08:** graful (`dependenti_act`) tot nu-l
   vede, fiindcă nimic nu-l consumă (asta e chiar restanța). Dar `scan_constante` **îl vede acum**:
   regula de domeniu întreba doar despre valorile implicite ale parametrilor, nu și despre constantele

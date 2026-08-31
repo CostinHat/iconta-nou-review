@@ -6973,3 +6973,56 @@ descrie un defect al muncii mele și îi numește completarea — aici, verbatim
 **Ce mai atinge schimbarea de zi, mecanic:** `post-commit` creează de acum `backup/lant-2026-09-01`.
 `backup/lant-2026-08-31` rămâne cu ultimul commit de ieri — *o ramură care nu mai primește commituri
 nu e o ramură pierdută*, dar four-way-ul de azi se confruntă cu ramura nouă, și predarea o spune.
+
+## 01.09.2026 (partea a doua) — Unificarea celor trei copii, confirmată de un instrument construit ieri pentru altceva
+
+**Punctul 2 din comanda lui Costin.** Pragul de încadrare ca mijloc fix stătea în trei locuri:
+canonicul (`COTE`) cu data **greșită** și **necitit de nimeni**, `obiecte_inventar.py` cu data
+corectă și literali proprii, `mijloace_fixe_import_api.py` cu un literal **fără dată**.
+
+`obiecte_inventar.prag_mf(la_data)` e acum singura poartă și citește registrul. Importul cere pragul
+**la data PIF a rândului** — avertismentul lui spunea până acum *„sub plafon 5000"* și pentru bunuri
+intrate înainte de 25.02.2026, când plafonul era 2.500.
+
+**Proba că unificarea a reușit n-am scris-o eu, și asta e partea bună.**
+`dependenti_act.dependenti(OUG 8/2026, art. 28)` întorcea **zero** funcții; acum întoarce **patru**.
+Iar `core/reverificare.py` — construit ieri, pentru interdicția 55 — a mutat **singur** valoarea din
+`MISCATOR/NECUNOSCUT` (fără prag) în `MISCATOR/CALCULAT` (prag 6 luni), iar pinul distribuției a
+căzut și a cerut actualizare. *Nu s-a schimbat nici articolul, nici legea: s-a schimbat faptul că
+valoarea canonică e citită de cineva.*
+
+**Necunoscutul a primit nume în același commit cu unificarea, nu după.** Registrul n-are prag înainte
+de 01.01.2015 — un mijloc fix intrat în 2008 avea 1.800 lei (HG 105/2007), care nu e acolo.
+`prag_mf` întoarce mai departe cea mai veche valoare cunoscută, comportament neschimbat; dar
+`prag_mf_cunoscut()` spune dacă răspunsul e verificat sau moștenit. *Fără asta, unificarea ar fi mutat
+minciuna dintr-un loc în altul: importul ar fi scris „sub plafon" pentru 2008 cu aceeași încredere ca
+pentru 2026.*
+
+**Două gărzi vechi au reacționat, amândouă corect:**
+
+1. Calibrarea scrisă **ieri** a picat, fiindcă `mijloace_fixe_import_api.py` a **ieșit** din domeniul
+   scanului de constante — nu mai are constanta. *O calibrare care își pierde obiectul fiindcă
+   defectul s-a reparat nu se șterge și nu se slăbește: se mută pe ce a rămas viu, restul pe caz
+   sintetic. A cincea instanță a lui METODA §29.*
+2. Prima formă a direcției inverse era `"PLAFON_MF_2026" not in sursa` — și a picat imediat: numele
+   apare în chiar comentariile care explică ștergerea lui. **Clichetul 50 în forma lui cea mai
+   simplă**, făcut de mine, într-un test scris ca să apere o unificare.
+
+### POARTA A RESPINS UNIFICAREA CU **11 ROȘII**, și toate patru cauzele erau ale mele
+
+*Se scriu fiindcă niciuna n-a fost prinsă de citirea codului, iar trei dintre ele sunt clase, nu
+scăpări.*
+
+| ce | cine a prins | ce era |
+|---|---|---|
+| `TypeError: '>=' between str and date` | `test_mijloace_fixe_import_categorie` (5 roșii) | `_data()` întoarce un **șir ISO**, nu un `date`. L-am trecut direct la `prag_mf`. *Am presupus tipul unei funcții din numele ei.* |
+| `ImportError: PLAFON_MF_2026` | `test_d101` | am șters un nume de care **depindea un test**. Mutat pe registru — și e mai bun acum: confirmă pragul **la o dată**, nu o cifră fără dată |
+| „data lipsa" fără diacritice | `test_diacritice_afisate` | mesaj **afișat** contabilului, scris fără diacritice |
+| clichetul 50: **1223 > 1222** | `test_garzi_pe_text` | `any("obiecte_inventar" in f for f in fn)` — **un `in` pe text**, scris de mine, în chiar gardul unificării |
+
+**Ultima e a treia oară azi când urc clichetul 50 în timp ce repar altceva.** Forma corectă e pe
+mulțime: `{f.split("::")[0] for f in fn} >= {"obiecte_inventar.py"}`.
+
+*Cele două `test_clichete_generate` care au picat au fost efect, nu cauză: blocul generat poartă
+cifra clichetului 50, deci s-a mișcat odată cu ea.*
+

@@ -6609,11 +6609,52 @@ trebuie să rămână **afară** · sintetic, o valoare fără nume fiscal nu ad
 fiscal cu o valoare care nu e în registru nu-l aduce nici el — *altfel regula ar deveni o euristică
 pe nume.*
 
+## 01.09.2026 — Trei copii ale unui prag fiscal, unificate pe registru. Iar graful a confirmat singur reparația
+
+**Costin:** *„Unifică cele trei copii ale pragului de mijloc fix, cu registrul ca sursă. O lege
+aplicată în trei locuri produce cifra validă și falsă; canonicul necitit e configurația cea mai
+proastă."*
+
+**`core/test_prag_mijloc_fix_unic.py` — NOU, 6 teste.** `obiecte_inventar.prag_mf(la_data)` e acum
+**singura poartă** și citește `COTE["plafon_mijloc_fix"]`; `PRAG_NOU`, `PRAG_VECHI`, `DATA_PRAG_NOU`
+și `PLAFON_MF_2026` **nu mai există**. Importul cere pragul **la data PIF a rândului**.
+
+**Ce era greșit și acum nu mai e:** avertismentul de la import spunea *„sub plafon 5000 (2026)"*
+pentru orice bun, inclusiv pentru cele intrate înainte de **25.02.2026**, când plafonul era 2.500.
+
+**PROBA MECANICĂ A UNIFICĂRII, și e frumoasă fiindcă n-am scris-o eu:**
+`dependenti_act.dependenti(OUG 8/2026, art. 28)` întorcea **zero** funcții. Acum întoarce **patru**.
+Iar `core/reverificare.py` — construit ieri, pentru altceva — a mutat singur valoarea din
+`MISCATOR/NECUNOSCUT` (fără prag) în `MISCATOR/CALCULAT` (prag 6 luni). *Nu s-a schimbat nici
+articolul, nici legea: s-a schimbat faptul că valoarea canonică e citită de cineva.* Pinul
+distribuției a căzut și a cerut actualizare — exact ce trebuia să facă.
+
+**NECUNOSCUTUL A DEVENIT EXPRIMABIL, nu a dispărut.** Registrul n-are prag înainte de 01.01.2015; un
+mijloc fix intrat în 2008 avea 1.800 lei (HG 105/2007), care nu e acolo. `prag_mf` întoarce mai
+departe cea mai veche valoare cunoscută — **comportament neschimbat, deliberat** —, dar
+`prag_mf_cunoscut()` spune dacă răspunsul e verificat la sursă sau moștenit, iar importul își scrie
+avertismentul altfel în cele două cazuri. *Fără asta, unificarea ar fi mutat o minciună dintr-un loc
+în altul.*
+
+**Gardul asertează pe AST**, nu pe text: `5000`, `5000.0` și `Decimal("5000")` sunt aceeași valoare,
+iar un test pe șiruri ar vedea trei lucruri diferite.
+
+### DOUĂ GĂRZI VECHI AU REACȚIONAT LA REPARAȚIE, amândouă corect
+
+1. **`test_domeniul_vede_CONSTANTA_DE_MODUL...`**, scrisă ieri, a picat: `mijloace_fixe_import_api.py`
+   a **ieșit** din domeniul scanului de constante — fiindcă nu mai are constanta. *O calibrare care
+   își pierde obiectul fiindcă defectul s-a reparat nu se șterge și nu se slăbește: se mută pe ce a
+   rămas viu (`bacsis.COTA_IMPOZIT`), iar restul trece pe caz sintetic — METODA §29, a cincea
+   instanță.*
+2. **Clichetul 50, în forma lui cea mai simplă.** Prima formă a direcției inverse era
+   `"PLAFON_MF_2026" not in sursa` — și a picat imediat, fiindcă numele apare în chiar comentariile
+   care explică ștergerea lui. *Un `in` pe text păzește textul, nu proprietatea.* Mutată pe AST.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**500 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**501 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 483
+### `core/` — 484
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -6999,6 +7040,7 @@ pe nume.*
 - `core/test_portal_acces.py` — GARD [R62, 26.08.2026]: portalul nu mută identitatea fără confirmare, nu trece un cont dintr-un
 - `core/test_portal_ids.py` — GARDĂ: fiecare act citat de un Temei din registru are id-ul lui de portal, scris.
 - `core/test_portal_nu_scrie_gol.py` — Unealta care aduce acte din portal NU are voie să scrie un `.txt` gol.
+- `core/test_prag_mijloc_fix_unic.py` — GARD [01.09.2026, R108]: pragul de încadrare ca mijloc fix are o SINGURĂ sursă.
 - `core/test_prapastie_salariu.py` — GARD [R49, varianta (c)]: prăpastia salariului minim se spune CU CIFRE, și cifrele sunt ale
 - `core/test_precizie_import.py` — Gard: float-ul din `numere.numar()` nu compromite verificarile de echilibru.
 - `core/test_precompletare_anaf_unificata.py` — GARD precompletare_anaf_unificata: cele trei cai de creare a unei firme (register, add-firm,

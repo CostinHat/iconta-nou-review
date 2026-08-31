@@ -447,16 +447,27 @@ def test_ANTIVACUU_valorile_de_registru_nu_sunt_goale():
 
 
 def test_domeniul_vede_CONSTANTA_DE_MODUL_cu_valoare_de_registru():
-    """Instanta care a deschis clasa. Cele trei fisiere trebuie sa fie ACUM in domeniu."""
+    """Instanta VIE ramasa. Regula a fost scrisa pentru trei fisiere; doua dintre ele au iesit din
+    domeniu A DOUA ZI, si e o veste buna: **R108 le-a scos duplicatul**. `PLAFON_MF_2026` si
+    `PRAG_NOU`/`PRAG_VECHI` nu mai exista — pragul se citeste din registru.
+
+    *O calibrare care isi pierde obiectul fiindca defectul s-a reparat NU se sterge si nu se
+    slabeste: se muta pe ce a ramas viu, iar restul trece pe caz sintetic (METODA §29).* Pozitivul
+    sintetic e `test_CALIBRARE_ambele_semnale_impreuna_aduc_fisierul`, mai jos.
+    """
     import io as _io
     import os as _os
     rad = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
-    for f in ("mijloace_fixe_import_api.py", "obiecte_inventar.py", "bacsis.py"):
-        src = _io.open(_os.path.join(rad, "core", f), encoding="utf-8").read()
-        assert scan_constante.in_domeniu(f, src), (
-            "%s a iesit din domeniu — poarta o constanta de modul cu valoare din registru "
-            "(`PLAFON_MF_2026`, `PRAG_NOU`, `COTA_IMPOZIT`). Fara ea, un plafon fiscal e invizibil "
-            "pentru clichet." % f)
+    src = _io.open(_os.path.join(rad, "core", "bacsis.py"), encoding="utf-8").read()
+    assert scan_constante.in_domeniu("bacsis.py", src), (
+        "`bacsis.py` a iesit din domeniu — poarta `COTA_IMPOZIT`, constanta de modul cu valoare din "
+        "registru. Fara regula asta, o cota fiscala e invizibila pentru clichet.")
+
+    # Direcția inversă — „cele două nu mai au voie să poarte pragul" — NU se verifică aici. E
+    # păzită structural, pe AST, de `core/test_prag_mijloc_fix_unic.py`. Prima formă a testului ăstuia
+    # o punea aici ca `"PLAFON_MF_2026" not in sursa` și a picat imediat: numele apare în chiar
+    # comentariile care explică ștergerea lui. *Un `in` pe text păzește textul, nu proprietatea —
+    # clichetul 50, în forma lui cea mai simplă.*
 
 
 def test_CALIBRARE_valoarea_SINGURA_nu_ajunge_doua_semnale(tmp_path):

@@ -11,13 +11,49 @@ from decimal import Decimal, ROUND_HALF_UP
 from datetime import date
 
 B = Decimal("0.01")
-PRAG_NOU = Decimal("5000")   # OUG 8/2026, de la 25.02.2026
-PRAG_VECHI = Decimal("2500")
-DATA_PRAG_NOU = date(2026, 2, 25)
+
+# PRAGUL NU MAI E SCRIS AICI (01.09.2026, R108). Statea in trei locuri: `COTE["plafon_mijloc_fix"]`
+# (canonic, dar cu data GRESITA si necitit de nimeni), aici (data corecta), si ca literal fara data
+# in `mijloace_fixe_import_api`. O lege aplicata in trei locuri produce, la urmatoarea modificare,
+# cifra valida si falsa: doua se actualizeaza, a treia nu, si nimic nu se aprinde.
+#
+# Sursa unica e acum REGISTRUL. Data lui a fost corectata pe 31.08 dupa marcajul din forma
+# consolidata a Codului fiscal — `(la 25-02-2026, Litera b), Alineatul (2), Articolul 28 ... a fost
+# modificata de Punctul 7., Articolul 6 din OUG 8/2026)`.
+
 
 def prag_mf(la_data=None):
+    """Pragul de incadrare ca mijloc fix, la data ceruta. CITIT din registrul de cote.
+
+    PENTRU DATE ANTERIOARE PRIMEI VALORI DIN REGISTRU (01.01.2015) se intoarce cea mai veche valoare
+    cunoscuta — exact ce facea si forma dinainte. Diferenta e ca acum necunoasterea se poate NUMI:
+    `prag_mf_cunoscut()` spune daca raspunsul e verificat la sursa pentru data aia sau doar mostenit.
+    Un mijloc fix intrat in 2008 avea alt prag (1.800 lei, HG 105/2007), care nu e in registru — v.
+    interdictia 57, o valoare fara temei nu se inventeaza aici.
+    """
+    from core.common import PerioadaIndisponibila, cota
     ref = la_data or date.today()
-    return PRAG_NOU if ref >= DATA_PRAG_NOU else PRAG_VECHI
+    try:
+        val, _t = cota("plafon_mijloc_fix", la_data=ref)
+    except PerioadaIndisponibila:
+        val = _cea_mai_veche()
+    return Decimal(str(val))
+
+
+def prag_mf_cunoscut(la_data=None):
+    """`True` daca registrul are un prag VERIFICAT LA SURSA pentru data ceruta; `False` daca
+    raspunsul lui `prag_mf` e cea mai veche valoare cunoscuta, mostenita in lipsa alteia."""
+    from core.common import PerioadaIndisponibila, cota
+    try:
+        cota("plafon_mijloc_fix", la_data=la_data or date.today())
+        return True
+    except PerioadaIndisponibila:
+        return False
+
+
+def _cea_mai_veche():
+    from core.common import COTE
+    return sorted(COTE["plafon_mijloc_fix"], key=lambda r: r[0])[0][1]
 
 def _d(x):
     return Decimal(str(x or 0)).quantize(B, rounding=ROUND_HALF_UP)

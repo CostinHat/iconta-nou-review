@@ -35,11 +35,15 @@ from core import reverificare as R  # noqa: E402
 
 #: Distribuția măsurată pe `846e118`. Pinată: o mutare tăcută a clasificării e o mutare a pragurilor
 #: de reverificare, adică a cât de des se uită cineva la o valoare fiscală.
+#: MUTAT 01.09.2026, prin R108: `plafon_mijloc_fix` a trecut din `MISCATOR/NECUNOSCUT` (fara prag)
+#: in `MISCATOR/CALCULAT` (prag 6). Nu s-a schimbat nici articolul, nici legea — s-a schimbat faptul
+#: ca valoarea canonica **e citita de cineva**. Pana atunci consumatorii isi duplicasera cifra, deci
+#: graful nu vedea niciun consumator, deci consecinta unei expirari nu se putea numi.
+#: *O mutare de clasificare produsa de o unificare de sursa, nu de o modificare fiscala.*
 DISTRIBUTIE = {
     ("VOLATIL", "DEPUS"): 9,
     ("STABIL", "DEPUS"): 12,
-    ("MISCATOR", "CALCULAT"): 2,
-    ("MISCATOR", "NECUNOSCUT"): 1,
+    ("MISCATOR", "CALCULAT"): 3,
     ("NECUNOSCUT", "NECUNOSCUT"): 10,
 }
 

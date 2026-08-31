@@ -15,7 +15,12 @@ from __future__ import annotations
 import re as _re
 import datetime
 
-PLAFON_MF_2026 = 5000.0
+from core import obiecte_inventar as _oi
+
+# PRAGUL NU MAI E SCRIS AICI (01.09.2026, R108). Era `PLAFON_MF_2026 = 5000.0` — un literal FARA
+# DATA, deci avertismentul iesea gresit pentru bunurile intrate inainte de 25.02.2026, cand pragul
+# era 2.500. Se cere acum de la singura poarta, `obiecte_inventar.prag_mf(la_data)`, care citeste
+# registrul.
 
 
 def _gaseste_col(antet, *chei):
@@ -119,8 +124,25 @@ def extrage(continut, nume_fisier=""):
         avertismente = []
         if rezidual > valoare + 0.01:
             avertismente.append("rezidual > valoare")
-        if 0 < valoare < PLAFON_MF_2026:
-            avertismente.append("sub plafon 5000 (2026)")
+        # `_data` intoarce un SIR ISO, nu un `date` — prima forma a trecut sirul direct la
+        # `prag_mf` si a produs `TypeError: '>=' not supported between str and date`. Prins de
+        # `test_mijloace_fixe_import_categorie`, pe fixturi reale.
+        _pif_iso = _data(r[i_pif]) if (0 <= i_pif < len(r)) else None
+        try:
+            _pif = datetime.date.fromisoformat(_pif_iso) if _pif_iso else None
+        except ValueError:
+            _pif = None
+        _prag = float(_oi.prag_mf(_pif))
+        _cand = _pif.isoformat() if _pif else "dată lipsă"
+        if 0 < valoare < _prag:
+            if _oi.prag_mf_cunoscut(_pif):
+                avertismente.append("sub plafonul de mijloc fix de %s lei, la data intrării %s"
+                                    % (int(_prag), _cand))
+            else:
+                # Necunoscutul nu se rotunjeste la „stiu ca nu": registrul n-are prag pentru data
+                # aia, deci se spune ca pragul e MOSTENIT, nu verificat la sursa.
+                avertismente.append("sub cel mai vechi plafon cunoscut (%s lei) — registrul n-are "
+                                    "prag verificat pentru %s" % (int(_prag), _cand))
         if durata <= 0:
             avertismente.append("durată lipsă")
         if not cel(i_cimo):

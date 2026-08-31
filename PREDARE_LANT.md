@@ -183,7 +183,13 @@ existe. Reparat **instrumentul**: `document_tinta` rezolvă convenția înainte 
 **GĂSIT 15 → 24 · NEGĂSIT 6 → 0 · CIOT 5 → 2, cu ZERO temeiuri schimbate.** Închisă pe `846e118`,
 prin **retragere** — singura restanță de până acum închisă fiindcă n-a existat.
 
-**R107, deschisă azi, cu 2 instanțe:** `OUG 156/2024 art. LXVI` ×2, articol propriu al ordonanței
+**R108 — REPARATĂ 01.09**: cele trei copii ale pragului de mijloc fix sunt una singură, registrul.
+`prag_mf(la_data)` e unica poartă; `PLAFON_MF_2026`, `PRAG_NOU`, `PRAG_VECHI` nu mai există. *Proba
+mecanică: graful întorcea zero consumatori, acum întoarce patru, iar `reverificare` a mutat singur
+valoarea din NECUNOSCUT în CALCULAT.* Necunoscutul de dinainte de 2015 a primit nume
+(`prag_mf_cunoscut`), în același commit cu unificarea. *(Se închide formal în commitul următor.)*
+
+**R107, deschisă ieri, cu 2 instanțe:** `OUG 156/2024 art. LXVI` ×2, articol propriu al ordonanței
 într-un document adus ca ciot. Familia „încrederea în corpus"; se închide aducând forma consolidată.
 
 **REGULA DE PURTAT MAI DEPARTE** (`DECIZII.md` 19): *un instrument nou se confruntă cu câmpul „ce nu
@@ -252,7 +258,7 @@ ale Design System, **5** sunt acoperite. Nu invalidează porțile; le încadreaz
 ## STAREA LA PREDARE
 
 Poartă verde, citită din ieșirea rulării complete de pe arborele care devine commitul următor:
-**3881 teste trec** · 11 skip · 14 xfail · **COLLECTED 3906** · ruff OK · verificator **TOTAL 0** ·
+**3887 teste trec** · 11 skip · 14 xfail · **COLLECTED 3912** · ruff OK · verificator **TOTAL 0** ·
 rute **423 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 34** · site **200** · four-way se închide la
 `post-commit`, care publică pe `origin/main` și pe `backup/lant-<ziua curentă>` — de la 01.09 e
 `backup/lant-2026-09-01`, iar `backup/lant-2026-08-31` rămâne cu ultimul commit de ieri — și **restartează

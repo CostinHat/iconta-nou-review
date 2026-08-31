@@ -3,6 +3,27 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 01.09.2026 (22) — Canonicul necitit e configurația cea mai proastă
+
+**Regula, verbatim de la Costin:** *„O lege aplicată în trei locuri produce cifra validă și falsă;
+canonicul necitit e configurația cea mai proastă."*
+
+**De ce «cea mai proastă», și nu doar «neplăcută»:** o copie citită se strică **vizibil** — cineva
+observă că cifra nu se potrivește. Una **necitită** se strică în tăcere, fiindcă nimeni nu se
+sprijină pe ea. Exact așa s-a întâmplat: data din `COTE["plafon_mijloc_fix"]` era **01.01.2026** în
+loc de 25.02.2026, iar defectul a supraviețuit fiindcă niciun consumator nu trecea pe acolo.
+
+**Consecința operațională, de purtat mai departe:** *o valoare canonică fără consumatori nu e o
+sursă de adevăr, e o notiță.* De aceea condiția de închidere a lui **R108** n-a fost „literalii au
+dispărut", ci **„graful vede consumatori"** — o proprietate pe care o poate verifica o mașină, nu una
+pe care o afirmă cel care a făcut reparația.
+
+**Și o observație despre unificări, ieșită din aceeași tură:** o unificare mută sursa, dar poate muta
+și o *minciună*. Pragul vechi nu avea dată; cel nou o are, dar registrul nu acoperă perioada de
+dinainte de 2015. Dacă unificarea s-ar fi oprit la „acum citim din registru", importul ar fi scris
+„sub plafon" cu aceeași încredere pentru 2008 ca pentru 2026. **Necunoscutul a primit un nume**
+(`prag_mf_cunoscut`) în același commit cu unificarea, nu după.
+
 ## 31.08.2026 (21) — Un clichet otrăvit e mai rău decât unul incomplet
 
 *Regula iese din calibrarea celei de-a cincea direcții oarbe, și e generală.*
