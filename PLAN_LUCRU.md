@@ -414,6 +414,31 @@ Deciziile care nu se rezolvă prin efort. Fiecare blochează ceva; niciuna nu se
 
 *Nu sunt restanțe: n-au contor, n-au condiție de deblocare și nu se numără la „ce blochează". Sunt lucruri de făcut cândva, scrise ca să nu se piardă.*
 
+**SUPERVIZORUL — temă de arhitectură pentru FINAL (cerută de Costin, 31.08.2026).** *Verificarea
+încrucișată devine funcționalitate distinctă a aplicației, care rulează pe cont propriu, nu la
+depunere.*
+
+**Ce schimbă, structural.** Azi confruntarea dintre două surse care ar trebui să spună același lucru
+se întâmplă — când se întâmplă — **agățată de actul depunerii**: la generarea unei declarații, la
+poarta pre-DUK, la închiderea lunii. Consecința e că verificarea moștenește **momentul**, **domeniul**
+și **populația** actului de care atârnă: se uită doar la ce se depune, doar când se depune, doar
+pentru firma și perioada aceea. Ce nu se depune nu se confruntă niciodată, iar ce se depune se
+confruntă prea târziu ca să mai fie ieftin de reparat.
+
+**Supervizorul inversează dependența.** Confruntarea capătă declanșator propriu, domeniu propriu și
+ieșire proprie: rulează pe portofoliu, nu pe un act; produce constatări, nu blocaje; iar depunerea
+**citește** ce a găsit el, în loc să-l cheme. Depunerea rămâne cu porțile ei — supervizorul nu le
+înlocuiește și nu devine o a doua poartă.
+
+**De ce e temă de arhitectură și nu o restanță.** Nu e un ecran în plus: e a treia clasă de rulare a
+aplicației, lângă „cererea unui om" și „jobul programat" — una care are voie să spună *nu știu*, și
+al cărei rezultat e o **afirmație despre datele firmei**, cu atributele ei (`DESIGN_SYSTEM` cap.25),
+nu un mesaj. Cine o construiește începe de la întrebarea *ce nu poate spune verificarea asta*.
+
+**Ce NU e decis, și rămâne al lui Costin:** ce declanșează o rulare · ce vede contabilul din ea și
+unde · dacă o constatare poate deveni vreodată blocantă. *Nu se presupune niciunul dintre cele trei;
+tema se scrie aici ca să nu se piardă, nu ca să fie începută.*
+
 **Import portofoliu, asistat de AI.** Recunoașterea structurii fișierului se face **o dată**, cu AI; rezultatul se sedimentează ca **amprentă de fișier** (set de anteturi, ordine, separator zecimal, unde începe tabelul), iar exporturile următoare cu aceeași amprentă intră **determinist, fără interpretare**. Amprenta e cheia, nu numele aplicației — același program are versiuni care exportă diferit. Potrivirea e **exactă sau inexistentă**: „aproape ca X" se tratează ca structură nouă. Proba aritmetică (balanța închide pe fiecare cont și pe total) rămâne **obligatorie și la amprentele deja cunoscute** — recunoașterea sare peste interpretare, nu peste verificare. Corecțiile contabilului la mapare se întorc în amprentă.
 
 **Blocat de:** **R79** — dacă numele de schemă se reciclează și `DROP`-ul nu e real, un import în masă poate scrie peste date reziduale ale unei firme șterse. **R81** — treapta de confruntare a CUI-ului cu ANAF multiplică divergența de denumire la scara întregului portofoliu.

@@ -3,6 +3,39 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 31.08.2026 (15) — Umbra rămâne nemăsurată definitiv, iar tema Supervizorului intră în plan
+
+*Două decizii date de Costin în aceeași comandă. Prima închide o populație; a doua deschide o temă.
+Amândouă sunt reguli, nu stări, deci se scriu aici.*
+
+**1. CELE DIN UMBRĂ RĂMÂN NEMĂSURATE, DEFINITIV.** Verbatim: *„Cele 778 din umbră rămân nemăsurate,
+definitiv."* Populația e cea a interdicției 77 — refuzuri în module care **nu** citează legea. Ce
+schimbă față de norma de pe 31.08: acolo scria că umbra rămâne *deliberat în afara plafonului*, ceea
+ce se putea citi ca *„nu acum"*. Acum e **niciodată**: nu se auditează, nu se plafonează, nu devine
+restanță și **nu se mai deschide ca temă**.
+
+**Ce NU înseamnă.** Nu înseamnă că numărul dispare. Se derivă mai departe cu
+`scripts/scan_refuzuri.umbra()` și apare în blocul generat din `PREDARE_LANT.md` — fiindcă un plafon
+absent nu e o scuză să nu știi cât e. Ce înceteaza e **munca pe populație**, nu **măsurătoarea**.
+
+**Partea care a costat, și de-aia decizia are gard.** Cifra din comandă — 778 — nu mai era cea
+curentă. Reconstituită mecanic, pe worktree-uri detașate: e valoarea de la commitul `2200432`, cel
+care a **născut** instrumentul. Predarea și `GARZI.md` purtau valoarea de la `edaada7^`, cu una mai
+mult. Codul, de la `edaada7` încoace, are cu **trei** mai mult decât comanda — reparația căii
+jurnalului adăugase două refuzuri într-un modul care nu citează legea. **Trei documente, trei valori,
+o zi.** Celelalte trei clichete ale aceluiași tabel — toate **plafonate** — erau corecte.
+
+*Regula care iese, și e generală: o populație declarată nedeplafonată nu are voie să-și poarte cifra
+în proză. Un clichet își ține cifra adevărată fiindcă pică; o cifră fără clichet îmbătrânește tăcut,
+și cu atât mai sigur cu cât deasupra ei scrie «se recalculează».* Gardat de
+`core/test_clichete_generate.py`.
+
+**2. SUPERVIZORUL — temă de arhitectură pentru final.** Verbatim: *„Supervizorul — verificarea
+încrucișată devine funcționalitate distinctă a aplicației, care rulează pe cont propriu, nu la
+depunere."* Scrisă în `PLAN_LUCRU.md`, la „Direcții de produs, nedatate". **Nu e restanță**: n-are
+contor și n-are condiție de deblocare. Cele trei alegeri pe care nu le ia executorul — declanșatorul,
+ce vede contabilul, și dacă o constatare poate deveni blocantă — sunt scrise acolo ca nedecise.
+
 ## 30.08.2026 (14) — Sursa bate decizia; o regulă care nu se poate ancora e o preferință; iar o reparație dovedită care nu intră se strică
 
 *Trei decizii date de Costin odată cu ordinea R101 → R103 static → lista 5. Toate trei sunt reguli,

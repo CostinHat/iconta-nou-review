@@ -1166,11 +1166,13 @@ De aici iese și legătura cu §22 și cu suprapunerea 18/19: aserțiunea pe tex
 **premisa** (a avut ce compara?), nici **locul** potrivirii (unde a găsit-o?), nici **discriminarea**
 (ar fi trecut și fără ca lucrul testat să se întâmple?). Trei întrebări, același gol.
 
-**Măsurat, cu direcția erorii scrisă** (`core/scan_garzi_pe_text.fel_ancorei`): din **1341** de
-aserțiuni, **119 (8,9%)** ancorează pe un semn de rău; **1222** pe ceva ce apare oricum.
-Clasificatorul **supraevaluează deliberat** semnul de rău — prinde și SQL, de pildă
-`'NOT NULL fara default'` — deci **119 e plafon SUPERIOR** și **1222 plafon INFERIOR**. Excepția e
-mai mică decât pare, nu mai mare.
+**Măsurat, cu direcția erorii scrisă** (`core/scan_garzi_pe_text.fel_ancorei`): **1222**
+aserțiuni — clichetul viu — ancorează pe ceva ce apare oricum; restul, sub o zecime, pe un semn
+de rău. Clasificatorul **supraevaluează deliberat** semnul de rău — prinde și SQL, de pildă
+`'NOT NULL fara default'` — deci **partea de semn-de-rău e plafon SUPERIOR** și **1222 plafon
+INFERIOR**. Excepția e mai mică decât pare, nu mai mare. *Celelalte două cifre nu se mai scriu
+aici: totalul și semnul-de-rău n-au clichet și au îmbătrânit deja o dată, tăcut (1341/119 →
+1342/120, măsurat 31.08). Se recalculează: `core/scan_garzi_pe_text.pe_fel()`.*
 
 ### Ce cere, practic
 

@@ -5781,7 +5781,7 @@ construcție.» Instrument: `scripts/scan_ramas.py`.*
 | **RESTANȚĂ** | 43 | `CONFORMITATE.md` · `### R<n>` cu `stare` ≠ REZOLVATĂ | contorul de commituri, per rând |
 | **INTERDICȚIE** | 55 | `CONFORMITATE.md` · `## <n>` cu `stare` ≠ MĂSURATĂ | cifra, unde există |
 | **INSTRUMENT** | 6 | `INSTRUMENTE_ROADMAP.md` · lista, stare ≠ CONSTRUIT/ACOPERIT | `?` |
-| **CLICHET** | 4 | instrumentele vii, **recalculate acum** | 61 · 779 · 1222 · 7 |
+| **CLICHET** | 4 | instrumentele vii, **recalculate acum** | blocul generat `CLICHETE-VII` din `PREDARE_LANT.md` |
 | **ARTEFACT** | 1 | lista 3, prin `scan_lista3` | 1 rând |
 | **CONSTATARE** | 2 | `GARZI.md` · titluri cu GRI sau DESCHIS | `?` |
 
@@ -5811,7 +5811,7 @@ Una reală a ieșit din exercițiul de intrare de azi:
 | lista | ce numără | de ce nu vede calea jurnalului |
 |---|---|---|
 | **R54** — „contul din corpul cererii nu e confruntat cu planul" | citiri de cont, recunoscute după **numele cheii** (`cont`, `cont_*`) | jurnalul citește `l["debit"]` și `l["credit"]` — **nu sunt în cele 27 măsurate, nici în cele 8 declarate NELEGATE** |
-| **interdicția 77** — „blocaj fără temei" | refuzuri fără temei, împărțite după **dacă modulul citează legea** | `jurnal_api.py` nu citează nicio normă → refuzurile lui cad în **UMBRA de 779**, populația declarat nedeplafonată |
+| **interdicția 77** — „blocaj fără temei" | refuzuri fără temei, împărțite după **dacă modulul citează legea** | `jurnal_api.py` nu citează nicio normă → refuzurile lui cad în **UMBRA**, populația declarat nedeplafonată |
 
 **Același cod, două liste, niciuna nu-l vede.** R54 îl ratează fiindcă se uită la *cum se numește*
 cheia; 77 îl lasă afară fiindcă se uită la *ce citează* modulul. Fiecare criteriu e apărabil singur;
@@ -6221,11 +6221,77 @@ celelalte 13, la cererea lui Costin. *Ordinea a contat: întâi s-a citit ce se 
 referința veche, apoi s-a rescris.*
 
 
+## 31.08.2026 — Tabelul care scria «se recalculează, nu se citesc de aici» avea o cifră veche de trei zile. Cele plafonate erau corecte
+
+**`core/test_clichete_generate.py` — NOU, 12 teste.** `PREDARE_LANT.md` purta un tabel de patru
+clichete, fiecare cu numele instrumentului lui pe rând, sub propoziția *«se recalculează, nu se
+citesc de aici»*. Recalculate toate patru:
+
+| clichet | scris | acum | plafonat? |
+|---|---|---|---|
+| 77 — refuzuri fără temei, module care citează legea | 61 | 61 | **da**, contra `BASELINE` |
+| 50 — aserțiuni ancorate pe text | 1222 | 1222 | **da**, clichetul 50 |
+| R80 — rute despre care detectorul nu poate afirma nimic | 7 | 7 | **da** |
+| 77u — UMBRA | 779 | **781** | **nu**, deliberat |
+
+**Cele trei plafonate erau corecte. Singura greșită era singura fără clichet** — iar ea circula în
+aceeași zi în **trei** valori, prin trei locuri: mesajul commitului `2200432` care a născut
+instrumentul, predarea plus `GARZI.md`, și codul. Reconstituit mecanic, pe worktree-uri detașate:
+valorile aparțin lui `2200432`, `edaada7^` și `edaada7`; creșterea vine din reparația căii
+jurnalului, care a adăugat două refuzuri într-un modul ce nu citează legea. *Nimic n-a văzut
+mișcarea, fiindcă ce vede o mișcare e un clichet, iar o populație fără clichet n-are ce.*
+
+**Ce face imposibil:** o cifră de clichet scrisă în predare și nepotrivită cu codul (comparație pe
+**structura** tabelului, cod cu cod — METODA §23 —, plus caracter cu caracter peste ea) · un clichet
+**măsurat și nescris**, direcția pe care egalitatea de cifre n-o vede · un rând sau un marcaj șters
+· o cifră a umbrei scrisă în **proza** predării, în afara blocului generat.
+
+**Calibrare, în ambele direcții (METODA §22), pe forma reală:** cifra umbrei mutată înapoi cu două ·
+rândul umbrei șters cu toate celelalte cifre corecte · marcajul de start șters · blocul probat că
+**nu** poartă oră sau dată, altfel s-ar schimba la fiecare rulare și cineva l-ar scoate ca să poată
+comite. **Anti-vacuu:** `scan_ramas.clichete()` înghite excepțiile de import, deci un rând lipsă e un
+instrument rupt, nu un clichet închis — testul cere cele patru coduri și o cifră pe fiecare.
+
+**RED-proof:** 5 roșii din 10 pe documentul nereparat, inclusiv cele 3 locuri cu cifră de mână. După
+reparație, 12 verzi. **Garda m-a prins pe mine**: paragraful pe care îl scrisesem ca să povestească
+derapajul purta chiar cifrele interzise. *Am rescris proza, nu garda* — istoria stă în `ISTORIC.md` și
+în antetul gărzii, fiindcă predarea e fișier de **stare curentă** și orice cifră din ea pretinde că e
+de acum.
+
+**O SINGURĂ SCUTIRE, și e structurală:** tabelul **cifrelor invalidate** din predare. E, prin
+construcție, locul unde valorile vechi trebuie să stea — *«o cifră ai cărei termeni nu se mai pot
+reconstitui se INVALIDEAZĂ, nu se corectează; tabelul se POARTĂ»* —, iar apartenența la el **este**
+declarația că cifra nu mai e curentă. Tăierea e pe structură (titlu → titlul următor), nu pe un
+marcaj pus cu mâna. Are **anti-vacuu propriu** (secțiunea trebuie să existe, să fie una, iar tăierea
+să nu înghită documentul) și **calibrare pe direcția care contează**: o cifră pusă în proza
+obișnuită, cu tabelul scutit la locul lui, e tot prinsă. *Scutirea a fost cerută de a doua respingere
+a gărzii — rândul de invalidare pe care tocmai îl scrisesem. Am îngustat-o structural, nu am scos
+garda.*
+
+**Ce NU face, declarat:** nu plafonează umbra (Costin, 31.08: *«rămân nemăsurate, definitiv»*) — un
+plafon ar transforma o cifră deliberat nedeplafonată într-un clichet de facto, cu costul unuia și
+fără protecția lui · nu acoperă naratiunea **datată** din `GARZI.md`, `ISTORIC.md`, `CONFORMITATE.md`
+și `METODA_VERIFICARE.md`, unde o cifră e o afirmație despre CÂND s-a măsurat și are voie să
+îmbătrânească · nu verifică dacă instrumentele numără **bine** — fiecare are calibrarea lui.
+
+**Reparat în afara predării, în aceeași tură:** `GARZI.md` avea două locuri care pretindeau prezentul
+(rândul „recalculate acum" din tabelul lui `scan_ramas`, și cifra umbrei de lângă divergența
+`jurnal_api`) — amândouă trimit acum la blocul generat. `METODA_VERIFICARE.md` §23 și
+`CONFORMITATE.md` 18 scriau **1341** și **119** lângă 1222: singurul plafonat rămăsese corect,
+celelalte două crescuseră la 1342 și 120 fără ca nimeni să vadă. **S-au șters, nu s-au corectat** —
+altfel ar îmbătrâni iar; argumentul (*«119 e plafon superior, 1222 plafon inferior»*) nu depindea de
+ele.
+
+**Al cincilea rând al tabelului — rata clasificatorului de alerte — a plecat în blocul de DATE**
+(`scripts/scan_predare_cifre.py`), unde îi e locul: se derivă din confruntarea predicțiilor cu
+faptele, nu din cod. Blocul de clichete rămâne derivat **numai din cod**, deci nu poate pica din
+cauza unei firme create în timpul porții — limita operațională pe care blocul de date o are scrisă.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**495 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**496 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 478
+### `core/` — 479
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -6300,6 +6366,7 @@ referința veche, apoi s-a rescris.*
 - `core/test_chei_duplicate.py` — GARDĂ: o cheie care apare de două ori în același dicționar e o intrare MOARTĂ. (21.08.2026)
 - `core/test_citate_verbatim.py` — CLICHET CARE CREȘTE (21.08.2026): numărul de citări verificabile mecanic nu mai scade.
 - `core/test_clasificator_alerte.py` — CLICHET: eticheta unei alerte e o PREDICȚIE confruntabilă, iar greșelile ei nu mai pot crește.
+- `core/test_clichete_generate.py` — GARD [31.08.2026]: tabelul clichetelor vii din predare se RECALCULEAZĂ, nu se citează.
 - `core/test_cm_episod.py` — GARD CM-episod: indemnizatia CM se calculeaza pe EPISOD, nu pe certificat izolat (OUG 158/2005
 - `core/test_cnp_control.py` — GARD DEFECT-2 (07.08.2026): CNP la orice cale de intrare DIRECTA valideaza cifra de control,
 - `core/test_coada_firma_exista.py` — GARD [R44]: o declarație nu poate intra în coadă legată de o firmă care nu există.

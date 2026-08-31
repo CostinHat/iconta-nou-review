@@ -6646,3 +6646,62 @@ facto — și, reparând-o, două aserțiuni pe text în locul ei.
   încadrarea `micro` și închiderea R3. *Cine le găsește să nu le cureţe.*
 - **Ce a rămas de făcut se citește dintr-un instrument**, nu dintr-o listă scrisă: 111 rânduri, șase
   surse, și doar patru dintre ele cu dimensiune sigură.
+
+## 31.08.2026 (partea a doua) — Trei documente, trei valori, o zi. Iar cele trei cifre plafonate erau corecte
+
+**Comanda avea patru rânduri.** Unul cerea o temă scrisă în plan; altul închidea un subiect: *„Cele
+778 din umbră rămân nemăsurate, definitiv."* Regula 4 din predare spune să măsori cifra pe care o
+afirmă comanda înainte de a o executa. Măsurată: **781**.
+
+**Reconstituirea, mecanic, pe worktree-uri detașate** (`git worktree add --detach`, instrumentul
+rulat la fiecare commit):
+
+| commit | `umbra()` | ce era |
+|---|---|---|
+| `2200432` | **778** | commitul care a **născut** instrumentul — cifra din mesajul lui, și cea din comandă |
+| `edaada7^` | **779** | ce scria predarea, și `GARZI.md` |
+| `edaada7` | **781** | reparația căii jurnalului: două refuzuri noi într-un modul care nu citează legea |
+| `0150a7a` (HEAD) | **781** | neschimbat — cele două commituri de după au atins doar documente |
+
+Deci niciuna dintre cele trei valori nu era o greșeală de transcriere. **Fiecare fusese adevărată la
+momentul ei**, și fiecare rămăsese scrisă unde fusese pusă. Ce lipsea nu era grija; era clichetul.
+
+**Partea care face din asta o măsurătoare, nu o anecdotă.** Tabelul din predare avea **patru**
+clichete, sub propoziția *«se recalculează, nu se citesc de aici»*. Recalculate toate patru: **61
+corect · 1222 corect · 7 corect · 779 greșit.** Cele trei corecte sunt **exact** cele trei plafonate.
+Cea greșită e **exact** cea declarată nedeplafonată, deliberat, cu motivul scris în normă — și
+motivul era bun: un plafon pe ea ar fi fost inventat, ar fi căzut la prima mutare de cod și ar fi
+fost ridicat fără să se repare nimic.
+
+*Deci decizia de a n-o plafona a fost corectă, și tocmai de-aia cifra a îmbătrânit. Amândouă sunt
+adevărate în același timp. Ce lipsea era a treia cale, între „plafonează-o" și „scrie-o din memorie":
+**generează-o**.*
+
+**Reparat.** Tabelul e bloc generat (`scripts/scan_ramas.py --clichete-md`), gardat de
+`core/test_clichete_generate.py` — comparație pe **structura** tabelului, cod cu cod, plus caracter cu
+caracter peste ea, plus direcția pe care egalitatea de cifre n-o vede: un clichet **măsurat și
+nescris**. Al zecelea test interzice cifra umbrei în proza predării.
+
+**Garda m-a prins pe mine, la prima rulare care ar fi trebuit să fie verde.** Paragraful pe care
+tocmai îl scrisesem în predare — cel care povestea derapajul — purta chiar cifrele interzise.
+*Am rescris proza, nu garda.* Istoria stă aici și în antetul gărzii; predarea e fișier de **stare
+curentă**, deci orice cifră din ea pretinde că e de acum. **A doua oară în două zile când reparația
+unei clase mă prinde în timp ce o repar** (prima: aserțiunea pe text introdusă chiar în garda
+împotriva aserțiunilor pe text).
+
+**Generalizarea a scos încă o pereche, în afara predării.** `METODA_VERIFICARE.md` §23 și
+`CONFORMITATE.md` 18 scriau *„119 din 1341 (8,9%)"* lângă *„1222"*. Recalculat: **1342 și 120**;
+**1222**, singurul plafonat, rămăsese corect. Din nou: plafonatul ține, neplafonatele se duc. S-au
+**șters**, nu s-au corectat — corectate, ar fi îmbătrânit iar. Argumentul pe care îl susțineau
+(*„semnul de rău e plafon superior, 1222 e plafon inferior"*) nu depindea de valorile exacte.
+
+**Ce NU s-a atins, și de ce.** `GARZI.md` are cifra veche în trei locuri **datate** (secțiunea din
+ziua în care instrumentul s-a născut), iar `ISTORIC.md` o are peste tot. **Nu se rescriu**: acolo o
+cifră e o afirmație despre CÂND s-a măsurat, și are dreptul să îmbătrânească — de-aia poartă dată.
+S-au atins doar cele **două** locuri din `GARZI.md` care pretindeau **prezentul** (*„recalculate
+acum"*).
+
+**Ce iese ca regulă**, și e mai mare decât populația care a produs-o: *o populație declarată
+nedeplafonată nu are voie să-și poarte cifra în proză. Un clichet își ține cifra adevărată fiindcă
+pică; o cifră fără clichet îmbătrânește tăcut — și cu atât mai sigur cu cât deasupra ei scrie că se
+recalculează.*

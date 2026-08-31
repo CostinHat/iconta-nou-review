@@ -122,6 +122,14 @@ def culege(conn):
                          FROM public.tenants WHERE accounting_firm_id IS NOT NULL
                          GROUP BY 1, 2 HAVING count(*) > 1) x""")
         d["duplicate_nume_in_cabinet"] = cur.fetchone()[0]
+
+    # Clichetul clasificatorului de alerte. Se citeste de aici fiindca e derivat din
+    # DATE (confruntarea predictiilor cu faptele), nu din cod — deci nu are ce cauta in
+    # blocul de clichete, care e derivat din cod.
+    from core import clasificator_alerte
+    r = clasificator_alerte.rata(conn)
+    d["alerte_masurate"] = r["masurate"]
+    d["alerte_gresite"] = r["gresite"]
     return d
 
 
@@ -150,6 +158,10 @@ RANDURI = [
         ("scheme_tenant", "scheme `tenant_NNN` în bază"),
         ("contor_schema", "contorul `tenant_schema_seq`"),
         ("maxim_istoric_schema", "maximul istoric de nume de schemă"),
+    ]),
+    ("Clasificatorul de alerte", [
+        ("alerte_masurate", "predicții de alertă confruntate cu faptul"),
+        ("alerte_gresite", "din care greșite"),
     ]),
     ("Referințe moarte", [
         ("orfani", "rânduri care trimit la o firmă inexistentă"),

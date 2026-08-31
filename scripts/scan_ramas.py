@@ -192,6 +192,43 @@ def divergente(randuri=None):
     return out
 
 
+#: Blocul generat al clichetelor vii, pentru `PREDARE_LANT.md`.
+#:
+#: DE CE EXISTĂ (31.08.2026, măsurat). Tabelul clichetelor era scris cu mâna, cu instrumentul numit
+#: pe fiecare rând și cu propoziția «se recalculează, nu se citesc de aici» deasupra. Trei din cele
+#: patru cifre erau corecte — exact cele TREI PLAFONATE. A patra, UMBRA, singura declarată
+#: **nedeplafonată deliberat**, circula în aceeași zi în trei valori: **778** în mesajul commitului
+#: care a născut-o, **779** în predare și în `GARZI.md`, **781** în cod. Nimic n-a prins diferența,
+#: fiindcă un clichet o prinde, iar o populație fără clichet n-are ce.
+#:
+#: *Ce ține o cifră adevărată nu e propoziția care spune că se recalculează, ci recalcularea.*
+MARCA_CLICHETE_START = "<!-- CLICHETE-VII:START (generat de scripts/scan_ramas.py --clichete-md) -->"
+MARCA_CLICHETE_STOP = "<!-- CLICHETE-VII:STOP -->"
+
+
+def redare_clichete_md(randuri=None):
+    """Tabelul clichetelor vii, gata de pus între marcaje. Derivat din COD, nu din date.
+
+    Diferența față de blocul de date (`scan_predare_cifre`) e operațională și se scrie: codul nu se
+    mișcă singur în timpul porții, datele da. Blocul ăsta nu poate pica din cauza unei firme create
+    între generare și sfârșitul porții.
+    """
+    r = clichete() if randuri is None else randuri
+    linii = [MARCA_CLICHETE_START, ""]
+    linii.append("*Generat din COD. **Nu se scrie cu mâna** — `core/test_clichete_generate.py` "
+                 "recalculează și compară caracter cu caracter. Regenerare: "
+                 "`./venv/bin/python scripts/scan_ramas.py --clichete-md`.*")
+    linii.append("")
+    linii.append("| cod | acum | ce se numără | instrument |")
+    linii.append("|---|---|---|---|")
+    for x in r:
+        linii.append("| **%s** | **%s** | %s | `%s` |"
+                     % (x["cod"], x["dimensiune"], x["ce"], x["sursa"]))
+    linii.append("")
+    linii.append(MARCA_CLICHETE_STOP)
+    return "\n".join(linii)
+
+
 def _main():
     r = tot()
     print("CE A RAMAS DE FACUT — derivat din fisiere, %d randuri\n" % len(r))
@@ -213,4 +250,7 @@ def _main():
 
 
 if __name__ == "__main__":
+    if "--clichete-md" in sys.argv:
+        print(redare_clichete_md())
+        raise SystemExit(0)
     raise SystemExit(_main())
