@@ -178,8 +178,8 @@ Criteriul lui **E2** numește exact două lucruri care lipsesc:
 *CF art. 97, așa cum l-a modificat Legea 141/2025*. Registrul scrisese și modul de eșec — *„un
 instrument care le-ar lua literal … n-ar găsi nimic"* — cu opt zile înainte ca instrumentul să
 existe. Reparat **instrumentul**: `document_tinta` rezolvă convenția înainte de căutare.
-**GĂSIT 15 → 24 · NEGĂSIT 6 → 0 · CIOT 5 → 2, cu ZERO temeiuri schimbate.** *(Se închide formal în
-commitul următor — capcana 2.)*
+**GĂSIT 15 → 24 · NEGĂSIT 6 → 0 · CIOT 5 → 2, cu ZERO temeiuri schimbate.** Închisă pe `846e118`,
+prin **retragere** — singura restanță de până acum închisă fiindcă n-a existat.
 
 **R107, deschisă azi, cu 2 instanțe:** `OUG 156/2024 art. LXVI` ×2, articol propriu al ordonanței
 într-un document adus ca ciot. Familia „încrederea în corpus"; se închide aducând forma consolidată.

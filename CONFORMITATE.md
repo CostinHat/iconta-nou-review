@@ -2339,11 +2339,14 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   tipar. Se închide când `core/scan_pereche_act_articol.pe_stare()` dă `NEGASIT: 0`, iar clichetul
   din `core/test_pereche_act_articol.py` coboară odată cu el.
 - **reluări**: 0
-- **stare**: DESCHISĂ
-- **de ce încă DESCHISĂ**: retragerea ei stă în arborele **acestui** commit; se închide în commitul
-  **următor**, cu hash-ul real. *Capcana 2 din predare — lucrul întâi, registrul după.*
+- **stare**: REZOLVATĂ
+- **cum s-a închis**: **prin RETRAGERE, nu prin reparație de date** — nu exista defectul pe care îl
+  descria. Vezi mai jos.
 - **deschisă pe commit**: `535af8b`
-- **măsurat la**: 2026-08-31 · **pe commit**: `3c54ed0`
+- **rezolvată pe commit**: `846e118`
+- **cât a stat deschisă**: câteva ore, în aceeași zi. *Cea mai scurtă restanță de până acum, și
+  singura închisă fiindcă n-a existat.*
+- **măsurat la**: 2026-08-31 · **pe commit**: `846e118`
 
   ---
 
