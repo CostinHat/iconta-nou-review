@@ -2,18 +2,44 @@
 """Monitor fiscal: cron saptamanal. Citeste noutatile ANAF/MF, AI filtreaza
 relevanta pentru iConta (TVA, salarii, plafoane, declaratii), salveaza + email."""
 import re
+
 import requests
+
+from core import clasificator_alerte as _ca
 
 SURSA_LISTA = "https://static.anaf.ro/static/10/Anaf/Legislatie_R/noutati_legislative.htm"
 BAZA = "https://static.anaf.ro/static/10/Anaf/Legislatie_R/"
 
+# [31.08.2026] Prompt-ul NU mai cere o judecata de ansamblu. Cere DOUA FAPTE, iar relevanta se
+# calculeaza din ele in cod (`clasificator_alerte.relevanta_din`). Motivul e masurat, nu estetic:
+# vechea forma cerea `relevanta: mare|medie` — o judecata FARA MOTIVE, care nu se poate contrazice.
+# A gresit pe 2 din 2 acte, in directii OPUSE, si a putut sa taca fiindca nimic n-avea cu ce s-o
+# compare. Doua fapte se pot confrunta cu masuratoarea; un verdict, nu.
+#
+# `mare|medie` nici nu continea raspunsul corect pentru un act care nu ne atinge deloc — nomenclatorul
+# insusi cerea o minciuna. De-aia `zero` e acum o valoare.
 PROMPT = """Esti asistent fiscal pentru un soft de contabilitate romanesc.
 Din textul de mai jos, extrage DOAR modificarile legislative fiscale noi care afecteaza:
 cote TVA, salariu minim, CAS/CASS/impozit, plafoane (micro, TVA, MF), declaratii (structura/termen), dividende.
-Raspunde DOAR JSON: [{"titlu": "...", "rezumat": "1-2 fraze", "relevanta": "mare|medie", "data_vigoare": "YYYY-MM-DD sau null daca nu apare data intrarii in vigoare"}]
+
+Pentru fiecare, raspunde la DOUA INTREBARI DE FAPT, nu la «cat de important e»:
+
+1. `directie` — incotro merge documentul pe care actul il reglementeaza:
+   "catre_contribuabil" = ANAF emite catre contribuabil (decizii, referate, notificari, proceduri
+                          interne ale organului fiscal). Softul NU produce asemenea documente.
+   "catre_anaf"         = contribuabilul depune la ANAF (declaratii, formulare de declarare).
+   "necunoscut"         = nu reiese din text. NU ghici.
+
+2. `declaratii_atinse` — lista codurilor de declaratie carora actul le schimba modelul, continutul,
+   nomenclatorul de obligatii sau termenul. Exemple de coduri: D100, D101, D112, D212, D300, D390,
+   D394, D406, D710. Lista GOALA daca actul nu schimba niciuna. Un act care doar SE REFERA la o
+   declaratie (o citeste ca intrare) NU o atinge — nu o pune in lista.
+
+Raspunde DOAR JSON, cu EXACT campurile: %s
+`data_vigoare` = "YYYY-MM-DD" sau null daca nu apare data intrarii in vigoare.
 Daca nu e nimic relevant, raspunde [].
 TEXT:
-"""
+""" % ", ".join('"%s"' % c for c in _ca.CAMPURI_CERUTE)
 
 
 def extrage_text(html):
@@ -42,11 +68,21 @@ def salveaza(conn, sursa, alerte, url):
         for a in alerte:
             dv = a.get("data_vigoare") or None
             if dv and not str(dv).count("-") == 2: dv = None  # doar YYYY-MM-DD
-            cur.execute("""INSERT INTO public.alerte_fiscale (sursa, titlu, rezumat, url, relevanta, data_vigoare)
-                           VALUES (%s,%s,%s,%s,%s,%s)
+            # Relevanta se DERIVA din cele doua fapte, nu se ia din raspuns. Daca modelul o mai
+            # trimite (prompt vechi in cache, alt apelant), e IGNORATA — altfel verdictul s-ar
+            # strecura inapoi pe usa din dos, iar confruntarea n-ar mai avea ce compara.
+            from core import clasificator_alerte as _ca
+            directie = a.get("directie") or "necunoscut"
+            if directie not in _ca.DIRECTII:
+                directie = "necunoscut"
+            decl = [str(x)[:16] for x in (a.get("declaratii_atinse") or [])]
+            rel = _ca.relevanta_din(directie, decl)
+            cur.execute("""INSERT INTO public.alerte_fiscale (sursa, titlu, rezumat, url, relevanta,
+                                                              data_vigoare, directie, declaratii_atinse)
+                           VALUES (%s,%s,%s,%s,%s,%s,%s,%s)
                            ON CONFLICT (sursa, titlu) DO NOTHING RETURNING id""",
                         (sursa, a.get("titlu", "")[:500], a.get("rezumat"), url,
-                         a.get("relevanta", "medie"), dv))
+                         rel, dv, directie, decl))
             if cur.fetchone():
                 noi.append(a)
     conn.commit()

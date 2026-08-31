@@ -220,11 +220,21 @@ def test_norma_77_isi_scrie_LIMITA_pe_umbra(inv):
     corp = m.group(1)
     camp = re.search(r"- \*\*limita pe care norma și-o scrie singură\*\*: (.+)", corp)
     assert camp, "norma 77 nu-și mai scrie limita — umbra ar părea acoperită"
-    umb = s.umbra(inv)
-    cifre = [int(x) for x in re.findall(r"\d+", camp.group(1))]
-    assert sum(umb.values()) in cifre and len(umb) in cifre, (
-        "limita scrisă în normă (%s) nu mai corespunde umbrei măsurate (%d refuzuri în %d fișiere)"
-        % (cifre, sum(umb.values()), len(umb)))
+    # Se cere ca limita să EXISTE și să trimită la instrument, **nu** ca cifra ei să fie scrisă.
+    # Prima formă cerea potrivirea cifrelor — și a căzut a doua zi, la primul modul nou. Era un
+    # defect al gărzii, nu al normei: transforma o cifră DELIBERAT nedeplafonată într-un clichet de
+    # facto, cu costul unuia și fără protecția lui.
+    # Pe MULTIME de jetoane parsate, nu pe cautare de sir: se extrag identificatorii dintre
+    # backtick-uri si se compara cu `>=`. Prima forma a acestei probe intreba `"umbra" in camp` —
+    # adica exact ce clichetul 50 interzice, introdus de mine chiar reparand altceva.
+    jetoane = set(re.findall(r"`([^`]+)`", camp.group(1)))
+    assert jetoane >= {"scripts/scan_refuzuri.umbra()"}, (
+        "limita nu mai trimite la instrumentul care derivă cifra (jetoane găsite: %s) — cine o "
+        "citește ar rămâne fără nicio cale s-o afle" % sorted(jetoane))
+    assert not re.search(r"\b\d{3}\b", camp.group(1)), (
+        "limita a primit iar o cifră scrisă de mână: %r. Umbra nu e plafonată; un număr scris aici "
+        "îmbătrânește la fiecare modul nou." % camp.group(1)[:120])
+    assert sum(s.umbra(inv).values()) > 0, "umbra a dispărut din măsurătoare"
 
 
 # ── CALIBRARE pe modul propriu de eșec (METODA §22), pe cod SINTETIC ─────────────────────────

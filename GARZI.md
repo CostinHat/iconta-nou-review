@@ -5598,6 +5598,80 @@ absorbită — `DECIZII.md` o numește act curent pentru D112, cu discrepanța D
 restanță; se scrie ca să nu fie confundată cu una.)*
 
 
+## 31.08.2026 — REPARATE: clasificatorul de alerte și tăcerea D100 despre poziția 116
+
+*Amândouă cerute de Costin după măsurătoarea de dimineață. Constatarea care le-a cerut e secțiunea
+de mai jos.*
+
+### 1. Eticheta devine PREDICȚIE CONFRUNTABILĂ, nu verdict
+
+*«A greșit pe 2 din 2 acte, în direcții opuse — asta nu e o constatare, e **rata lui de eroare pe tot
+eșantionul existent**. E pâlnia de intrare. Azi am aflat că minte doar fiindcă am măsurat de mână.»*
+
+**Ce era greșit nu e „modelul a greșit", e FORMA întrebării.** Se cerea `relevanta: mare|medie` — o
+judecată de ansamblu **fără motive**. O judecată fără motive **nu se poate contrazice**: când
+impactul iese altfel, n-ai ce compara cu ce. De-aia a putut minți fără să se aprindă nimic.
+
+**Ce s-a schimbat.** Nu se cere o judecată mai bună. Se cer **două fapte verificabile**, iar
+relevanța se **derivă** din ele, în cod (`core/clasificator_alerte.relevanta_din`):
+
+| faptul | de ce ăsta | valorile |
+|---|---|---|
+| **încotro merge documentul** | un act pe care ANAF îl emite *către* contribuabil nu ne atinge: nu-l producem noi | `catre_contribuabil` · `catre_anaf` · `necunoscut` |
+| **ce declarații atinge** | singurul lucru care face un act scump pentru noi | listă de coduri, sau goală |
+
+**Proba că nu e cosmetică:** din cele două fapte, **amândouă actele ies corect** — `603/2026` →
+`zero`, `602/2026` → `mare` — fără nicio judecată de ansamblu.
+
+**Nomenclatorul cerea el însuși minciuna.** `mare|medie` nu conținea răspunsul corect pentru un act
+care nu ne atinge deloc; `603/2026` **trebuia** botezat `medie`. S-a adăugat `zero`.
+
+**Confruntarea e acum vie și pinată**: cele două măsurători de azi sunt înregistrate în
+`alerte_fiscale` cu impact, motiv, dată și commit. **Clichet: 2 măsurate, 2 greșite.** Greșelile nu
+pot crește — *și proba nu poate fi ștearsă ca să scadă rata*, ceea ce e perechea regulii de migrare
+de la interdicția 77: acolo datoria se muta în umbră, aici proba ar dispărea. Amândouă fac o cifră să
+scadă fără ca nimic să se fi reparat.
+
+**Ce NU păzește, declarat:** că faptele extrase sunt adevărate. Un model care spune „catre_anaf"
+despre o decizie de impunere va produce în continuare o etichetă greșită — dar acum greșeala **are un
+loc unde se vede**, fiindcă e o afirmație despre lume, nu un verdict.
+
+### 2. Poziția 116 — absență DECLARATĂ, și D100 spune că nu poate
+
+*«Zero din 19 firme o datorează; cod fără nicio instanță pe care să se probeze e clasa cu valori
+implicite fabricate. Ce nu se acceptă e tăcerea de azi.»*
+
+**Nu s-a construit**, și motivul e scris: un motor pentru o obligație fără nicio firmă purtătoare
+n-ar avea niciun câmp verificat — fiecare ar fi o alegere fără probă.
+
+**Dar nu se mai tace.** `d100.genereaza` cheamă acum `d100_pozitia_116.avertisment(prof)`: o firmă
+care ar putea fi purtătoare primește o propoziție care spune **ce nu se poate, de ce, și cu ce
+temei**. Legătura e gardată pe AST — un modul perfect scris și niciodată chemat e chiar clasa R70.
+
+**Ce a scos citirea la sursă, și schimbă natura absenței.** Am adus **OUG 24/2026** în corpus ca să
+pot cita criteriul, nu să-l parafrazez. Două lucruri:
+
+- **cine datorează** (art. 2 alin. (1)): *titulari de acorduri petroliere* care extrag țiței din
+  România. **Nu e un CAEN** — e un atribut pe care aplicația nu-l are sub nicio formă. CAEN-ul e un
+  **proxy**, care poate **rata** un purtător, dar nu poate inventa unul: direcția erorii e scrisă și
+  probată.
+- **când se datorează** (art. 2 alin. (2)): **exclusiv în lunile cu Brent peste 70 USD/baril.** Deci
+  obligația nu depinde doar de cine e firma, ci de un **preț de piață** pe care aplicația nu-l are și
+  pentru care n-are sursă. *Chiar dacă mâine ar apărea un purtător, calculul ar rămâne neconstruibil
+  fără cotație* — scris acum, ca să nu fie descoperit ca surpriză la construcție.
+
+**Codul XML al poziției rămâne `None`**, deliberat: OPANAF 602/2026 numește **poziția**, iar în D100
+poziția și codul de obligație sunt lucruri diferite (poz. 5 din tabel are `cod_oblig` 121). Un număr
+pus „ca să fie" ar fi trecut de orice gardă de formă și ar fi picat **la depunere**.
+
+**Garda de așteptare** trece cât timp nicio firmă nu e purtătoare și **pică în ziua în care apare
+una** — cu ce lipsește, ca listă, în mesaj. *Se află atunci, nu la depunere.*
+
+**RED-proof, șapte mutații, șapte roșii:** prompt-ul cere iar un verdict · relevanța nu se mai derivă
+· necunoscutul rotunjit la zero · D100 tace iar · poziția 116 intră tăcut în nomenclator · codul XML
+ghicit din poziție · proxy-ul începe să inventeze purtători.
+
+
 ## Inventar (generat, 28.08.2026)
 
 Blocul de mai jos e produs de `scripts/scan_garzi_inventar.py --md` și păzit de
@@ -5925,9 +5999,9 @@ referința veche, apoi s-a rescris.*
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**490 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**492 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 474
+### `core/` — 476
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -6001,6 +6075,7 @@ referința veche, apoi s-a rescris.*
 - `core/test_cauza_precisa_business.py` — GARD cauza_precisa: cand un verificator din control_incrucisat prinde o eroare de BUSINESS
 - `core/test_chei_duplicate.py` — GARDĂ: o cheie care apare de două ori în același dicționar e o intrare MOARTĂ. (21.08.2026)
 - `core/test_citate_verbatim.py` — CLICHET CARE CREȘTE (21.08.2026): numărul de citări verificabile mecanic nu mai scade.
+- `core/test_clasificator_alerte.py` — CLICHET: eticheta unei alerte e o PREDICȚIE confruntabilă, iar greșelile ei nu mai pot crește.
 - `core/test_cm_episod.py` — GARD CM-episod: indemnizatia CM se calculeaza pe EPISOD, nu pe certificat izolat (OUG 158/2005
 - `core/test_cnp_control.py` — GARD DEFECT-2 (07.08.2026): CNP la orice cale de intrare DIRECTA valideaza cifra de control,
 - `core/test_coada_firma_exista.py` — GARD [R44]: o declarație nu poate intra în coadă legată de o firmă care nu există.
@@ -6037,6 +6112,7 @@ referința veche, apoi s-a rescris.*
 - `core/test_d100_cota.py` — d100: rata default micro(1%)/profit(16%) vine din cota (impozit_micro/impozit_profit), NU din literalul
 - `core/test_d100_cui_checksum.py` — Gard T1 (CATALOG_INVALIDITATE.md, D100 #7/#11/#19): CUI-ul firmei trebuie validat de app
 - `core/test_d100_fapt.py` — [Regula 13 + Regula 6] GARDA: D100 micro pe FAPT (baza de venituri), simetric cu d390_fapt/d112_fapt.
+- `core/test_d100_pozitia_116.py` — GARDĂ DE AȘTEPTARE: poziția 116 e o absență DECLARATĂ, și se află când încetează să fie posibilă.
 - `core/test_d100_profit_baza.py` — GARD D100 (16.08.2026, campanie rețeta D300, pas 5/8) — baza impozitului pe PROFIT reparata.
 - `core/test_d100_reconciliere.py` — core/test_d100_reconciliere.py — gardul A DOUA CALE D100 (pas 4/4 lant reconciliere).
 - `core/test_d100_scadenta_trimiv.py` — Gard scadenta trim IV D100 (sursa: anaf_surse/d100_struct_anaf.txt + validator DUK R15.1).

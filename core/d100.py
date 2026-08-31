@@ -219,6 +219,14 @@ def build_xml(res):
     if not (prof.get("declarant_nume") and prof.get("declarant_functie")):
         res.avertismente.append("D100: declarantul (nume/funcție) lipsește din profil -> emis implicit "
                                 "\"ADMINISTRATOR\". Completează declarantul în Date firma.")
+    # [31.08.2026] ABSENȚĂ DECLARATĂ, nu tăcere. OPANAF 602/2026 a adăugat poziția 116
+    # «Contribuție de solidaritate» în nomenclatorul obligațiilor D100, declarabilă LUNAR. Nu o
+    # construim (zero firme purtătoare, deci zero instanțe pe care s-o probăm) — dar nici nu tăcem:
+    # dacă apare o firmă care ar putea fi purtătoare, se află AICI, nu la depunere.
+    from core import d100_pozitia_116 as _p116
+    _av116 = _p116.avertisment(prof)
+    if _av116:
+        res.avertismente.append(_av116)
     # T6 (CATALOG_INVALIDITATE.md): text_anaf trunchiaza TACIT den/adresa la limita oficiala C(n)
     # (LIMITE_TEXT_ANAF). Pierderea de date era silentioasa; emitem un avertisment NON-blocant care
     # numeste campul cand valoarea reala depaseste limita si a fost taiata pentru XML.
