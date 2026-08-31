@@ -460,18 +460,26 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
    *Restanțele (43) și interdicțiile nemăsurate (55) sunt populațiile mari; instrumentele din
    roadmap (6) sunt singurele cu contur.*
 2. **CONSTATĂRI DESCHISE în `GARZI.md`**, fiecare cu condiția scrisă: ce anume varia la ecranul
-   `banca` (rămasă GRI) · linia `Identity unix-group:admin is not valid` — **nu se atinge nimic din
-   polkit** până nu se citește fișierul care o declară · `verificator_neconformitati.sh`, care
-   **nu tace, minte**: tipărește *„JWT_SECRET lipsește din proces"* când `sudo` nu e disponibil
-   neinteractiv. Reparația e un **al treilea rezultat** — `NU S-A PUTUT VERIFICA` —, **nu** lărgirea
-   setului îngust · **clasificatorul de alerte**, 2 din 2 greșite, acum confruntabil.
-   *(Constatarea de identitate S-A ÎNCHIS pe 31.08, cu temei: nu era identitate greșită, era
-   **absența oricărei identități** — restartul rula fără agent de autentificare.)*
-2. **ÎNAINTE DE A EXECUTA O COMANDĂ, citește restanța pe care o numește** — și **măsoară cifra pe
+   `banca` (rămasă GRI) · **clasificatorul de alerte**, 2 din 2 greșite, acum confruntabil ·
+   `verificator_neconformitati.sh`, care **nu tace, minte**: tipărește *„JWT_SECRET lipsește din
+   proces"* când `sudo` nu e disponibil neinteractiv. Reparația e un **al treilea rezultat** —
+   `NU S-A PUTUT VERIFICA` —, **nu** lărgirea setului îngust. **Asta e singura dintre ele care
+   așteaptă o decizie de la Costin.**
+3. **POLKIT: ÎNCHIS, nu restanță.** *Se scrie explicit fiindcă l-am purtat o tură ca „lucru care îl
+   blochează pe Costin", după ce îi scrisesem închiderea eu însumi, în aceeași zi.* Sonda a rulat pe
+   31.08 la 01:02, iar temeiul e în `GARZI.md`: **restartul prin polkit se autorizează ONE-SHOT ca
+   `unix-user:costin`, exclusiv interactiv, prin `pkttyagent`**. Restartul care eșuase rula **fără
+   agent de autentificare** — nu era identitate greșită, era **absența oricărei identități**.
+   **Nu se mai rulează nicio sondă polkit.** Rămâne o singură regulă, permanentă: linia
+   `Identity unix-group:admin is not valid` e **observație**, iar **nu se atinge nimic din polkit**
+   — nu se creează grupul, nu se rescrie spre `unix-group:sudo`, nu se adaugă regulă permisivă —
+   **până nu se citește fișierul care declară identitatea** și se stabilește dacă e al nostru sau
+   implicit de distribuție. *Nu e o sarcină; e o interdicție.*
+4. **ÎNAINTE DE A EXECUTA O COMANDĂ, citește restanța pe care o numește** — și **măsoară cifra pe
    care o afirmă**. Pe 30.08, o comandă a afirmat că predarea e „cu 12 commituri în urmă"; era **0**.
    E a cincea oară pentru aceeași cifră. Verificarea costă o comandă.
-3. **Nu porni nicio construcție fără măsurătoare.**
-4. **`scripts/raport_b.py` derivă „Unde suntem".** Nu se scrie de mână.
-5. **Raportul se scrie din `SABLON_RAPORT.md`**, în ordinea:
+5. **Nu porni nicio construcție fără măsurătoare.**
+6. **`scripts/raport_b.py` derivă „Unde suntem".** Nu se scrie de mână.
+7. **Raportul se scrie din `SABLON_RAPORT.md`**, în ordinea:
    0 CERINȚE · 1 CE AM PRESUPUS · 2 ÎN PLUS/MAI PUȚIN · 3 CE AM ACTUALIZAT · 4 ÎNȚELEGEREA ·
    5 RĂSPUNS LA COMANDĂ · 6 UNDE SUNTEM · 7 POARTA.
