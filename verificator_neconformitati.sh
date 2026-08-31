@@ -134,7 +134,23 @@ echo "== Verificare mecanica neconformitati (jurnal 09.07.2026) =="
 # NC-01/02: zero dublari de serie in date + fixuri prezente
 db0 "NC-01" "date chitante fara MD-MD" "SELECT count(*) FROM tenant_003.chitante WHERE reprezentand LIKE '%MD-MD%'"
 db0 "NC-02" "descrieri contare fara MD-MD" "SELECT count(*) FROM tenant_003.inregistrari WHERE descriere LIKE '%MD-MD%'"
-marker "NC-02" "fix generator contare (marker)" "fix_serie_contare_v1" "$RAD/main.py"
+# NC-02, verificarea pe MARKER — RETRASA 31.08.2026, la cererea lui Costin. Motivul, scris aici
+# fiindca o linie stearsa isi lasa motivul doar in git, iar in git nu se uita nimeni cand reciteste
+# scriptul:
+#
+#   Verificarea era ancorata pe PREZENTA unei reparatii (`fix_serie_contare_v1`), nu pe efectul ei.
+#   Commitul `55a57f6` a rescris contarea automata a facturii — cheia distinge acum contarea de
+#   plata, iar nota se scrie in acelasi act cu faptul — si a scos markerul odata cu codul pe care il
+#   marca. Rescrierea e legitima: NU codul si-a pierdut conformitatea, ci VERIFICAREA si-a pierdut
+#   obiectul. Un FAIL pe vecie despre ceva ce nu mai exista e aceeasi boala ca un FAIL despre ceva
+#   ce n-ai putut citi.
+#
+#   Se retrage, si NU se re-ancoreaza, fiindca ce voia sa apere e deja aparat de randul de deasupra:
+#   verificarea COMPORTAMENTALA `db0 "NC-02" "descrieri contare fara MD-MD"`, care se uita la DATE,
+#   nu la un sir din cod. O ancora pe efect nu poate muri la o rescriere.
+#
+#   Gardat: core/test_verificator_al_treilea_rezultat.py cere ca NC-02 sa-si pastreze verificarea
+#   comportamentala. Daca dispare si ea, retragerea asta ramane fara temei — si poarta cade.
 marker "NC-01" "fix generator chitante (marker)" "chitante_emise_v2_reprezentand" "$RAD/main.py"
 # NC-03: etichete PDF explicite
 marker "NC-03" "PDF factura / PDF chitanta" "PDF factur" "$E/facturi_ecran.js"

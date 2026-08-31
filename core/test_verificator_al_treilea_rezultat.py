@@ -280,6 +280,44 @@ def test_codul_de_iesire_e_ACELASI_lucru_cu_rezumatul():
         % (p, f, n, r.returncode, asteptat))
 
 
+def test_NC02_isi_pastreaza_verificarea_COMPORTAMENTALA():
+    """Temeiul unei RETRAGERI, gardat — altfel se erodează în tăcere.
+
+    Ancora pe marker a lui NC-02 (`fix_serie_contare_v1`) a fost **retrasă** pe 31.08, la cererea lui
+    Costin. Motivul: markerul fusese scos de commitul `55a57f6`, o rescriere legitimă a contării —
+    verificarea își pierduse obiectul, nu codul conformitatea. *Retragerea e justificată de un singur
+    fapt: ce voia să apere e deja apărat de verificarea **comportamentală** de deasupra ei, care se
+    uită la DATE (`descrieri contare fara MD-MD`), nu la un șir din cod.*
+
+    Dacă dispare și aceea, NC-02 rămâne complet neverificat, iar motivul scris în script devine fals
+    — fără ca nimic să se aprindă. De-aia se cere aici: NC-02 trebuie să producă cel puțin un rând.
+    Un `NEVERIF` e acceptat (interogarea poate să nu ruleze); **absența** nu.
+    """
+    r = subprocess.run(["bash", _SCRIPT], capture_output=True, text=True, timeout=300, cwd=_RAD)
+    randuri = [_RE_RAND.match(x.strip()) for x in r.stdout.splitlines()]
+    nc02 = [m.group(1) for m in randuri if m and m.group(2) == "NC-02"]
+    assert nc02, (
+        "NC-02 nu mai produce niciun rând. Ancora pe marker a fost retrasă tocmai fiindcă "
+        "verificarea comportamentală o acoperă — dacă a dispărut și ea, retragerea a rămas fără "
+        "temei, iar NC-02 nu mai e verificat de nimeni.")
+    assert set(nc02) <= {"PASS", "FAIL", "NEVERIF"}, "verdict necunoscut pe NC-02: %s" % nc02
+
+
+def test_ancora_RETRASA_nu_se_intoarce_pe_furis():
+    """Direcția inversă a retragerii: cineva „repară" NC-02 punând la loc o verificare pe marker.
+    Ar arăta ca o îmbunătățire și ar reintroduce exact clasa — o ancoră pe PREZENȚA unei reparații,
+    care moare la prima rescriere legitimă. Se cere ca NC-02 să nu aibă mai mult de un rând: cel
+    comportamental. Dacă chiar trebuie re-ancorat, decizia se ia explicit și testul se schimbă odată
+    cu ea — ceea ce e chiar scopul."""
+    r = subprocess.run(["bash", _SCRIPT], capture_output=True, text=True, timeout=300, cwd=_RAD)
+    randuri = [_RE_RAND.match(x.strip()) for x in r.stdout.splitlines()]
+    nc02 = [m.group(3) for m in randuri if m and m.group(2) == "NC-02"]
+    assert len(nc02) == 1, (
+        "NC-02 are %d rânduri, nu unul: %s — ancora pe marker a fost retrasă prin decizie "
+        "(31.08.2026, motivul e scris în script). O verificare nouă pe NC-02 se adaugă prin decizie, "
+        "nu pe furiș." % (len(nc02), nc02))
+
+
 def test_rezumatul_SPUNE_cand_rularea_nu_e_completa():
     """Un NEVERIF care nu se vede în rezumat e la fel de bun ca unul care nu există: cine citește
     doar ultimele rânduri ar pleca crezând că s-a verificat tot."""

@@ -6753,3 +6753,22 @@ demonstrație a aceleiași propoziții în aceeași zi.*
 
 **După reparație:** `PASS: 18 · FAIL: 0 · NEVERIF: 3 · EXIT=2`, cu avertismentul scris în rezumat.
 Codul de ieșire nu mai contrazice cifrele de deasupra lui.
+
+## 31.08.2026 (partea a patra) — O verificare ancorată pe PREZENȚA unei reparații moare la prima rescriere legitimă
+
+**Retrasă ancora NC-02**, la cererea lui Costin, cu motivul scris în script — nu doar în git. Regula
+care iese e mai mare decât rândul: *o verificare ancorată pe **prezența** unei reparații moare când
+codul reparat e rescris; una ancorată pe **efect** nu.* `fix_serie_contare_v1` a fost scos de
+`55a57f6`; rândul comportamental de deasupra, care se uită la **date**, n-a clipit.
+
+**Nu s-a re-ancorat** — ar fi reintrodus clasa. Iar temeiul retragerii e acum **gardat**: NC-02
+trebuie să producă exact un rând. Zero înseamnă că a dispărut și verificarea comportamentală, deci
+retragerea a rămas fără temei; două înseamnă că ancora pe marker s-a întors sub formă de
+„îmbunătățire". *Un temei de retragere negardat se erodează tăcut — și tocmai am petrecut ziua asta
+demonstrând asta pe cifre.*
+
+**`EXIT=2` confirmat.** Costin: *„Cu 0, o rulare oarbă arată verde pentru cine citește doar codul de
+ieșire."* Codul de ieșire e singurul lucru pe care îl citește o mașină.
+
+**Verificatorul, după retragere:** `PASS: 18 · FAIL: 0 · NEVERIF: 2 · EXIT=2`. Cele două rămase sunt
+liniile NC-07, și rămân — nu se sting lărgind drepturile.

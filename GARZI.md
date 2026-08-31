@@ -6352,7 +6352,13 @@ ignoră, fiindcă azi **nu-l consumă nimic programatic** (măsurat: zero apelan
 **Seam-ul de probă (`VERIF_NC_SCRIPT`) are gardul lui:** dacă e setat în poartă, testul cade. Altfel
 ar fi o cale prin care gardul păzește o copie, iar scriptul livrat rămâne neatins.
 
-**Rulare de după reparație:** `PASS: 18   FAIL: 0   NEVERIF: 3`, `EXIT=2`, cu avertismentul
+**ANCORA NC-02, RETRASĂ 31.08** (Costin, `DECIZII.md` 17.1), cu motivul scris **în script**, lângă
+locul de unde s-a scos. Gardat în amândouă direcțiile: NC-02 trebuie să producă **exact un** rând —
+dacă dispare și cel comportamental, retragerea rămâne fără temei; dacă apare un al doilea, ancora
+pe marker s-a întors pe furiș. *Regula generală: o verificare ancorată pe PREZENȚA unei reparații
+moare la prima rescriere legitimă; una ancorată pe EFECT nu.* Gardul are acum **20 de teste**.
+
+**Rulare de după reparație:** `PASS: 18   FAIL: 0   NEVERIF: 2`, `EXIT=2`, cu avertismentul
 *„rularea NU e completă"* scris în rezumat. *Cele trei NEVERIF nu sunt neconformități; sunt absența
 unei probe — și nu se sting lărgind drepturile.*
 

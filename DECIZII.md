@@ -3,6 +3,28 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 31.08.2026 (17) — Ancora NC-02 se retrage; `EXIT=2` rămâne
+
+**1. ANCORA NC-02 SE RETRAGE, cu motivul scris.** Costin, verbatim: *„Retrage ancora NC-02, cu
+motivul scris: verificarea nu mai are obiect, fiindcă era ancorată pe prezența unei reparații pe care
+o rescriere legitimă a scos-o, iar verificarea comportamentală de deasupra trece."*
+
+Regula care iese, și e mai mare decât rândul: **o verificare ancorată pe PREZENȚA unei reparații moare
+la prima rescriere legitimă a codului reparat; una ancorată pe EFECT nu.** `fix_serie_contare_v1` a
+fost scos de `55a57f6`, care a rescris contarea automată a facturii. Rândul comportamental de deasupra
+— `descrieri contare fara MD-MD`, care se uită la **date** — n-a clipit.
+
+**Nu se re-ancorează**, fiindcă asta ar reintroduce clasa. Motivul e scris **în script**, lângă locul
+de unde s-a scos — o linie ștearsă își lasă motivul doar în git, iar în git nu se uită nimeni când
+recitește scriptul. Gardat în amândouă direcțiile: NC-02 trebuie să producă **exact un** rând (dacă
+dispare și cel comportamental, retragerea rămâne fără temei; dacă apare un al doilea, ancora s-a
+întors pe furiș).
+
+**2. `EXIT=2` RĂMÂNE.** Costin, verbatim: *„Cu 0, o rulare oarbă arată verde pentru cine citește doar
+codul de ieșire."* Deci: `1` la orice FAIL · **`2`** dacă zero FAIL dar există NEVERIF · `0` doar când
+s-a verificat tot și tot e conform. *Un `NEVERIF` nu e o neconformitate, dar nici o rulare completă —
+iar codul de ieșire e singurul lucru pe care îl citește o mașină.*
+
 ## 31.08.2026 (16) — Trei răspunsuri: scutirea rămâne, verificatorul se repară acum, RUNNING se citește direct
 
 *Răspunsuri la cerințele 1–3 din raportul precedent. Se scriu fiindcă toate trei sunt reguli care se

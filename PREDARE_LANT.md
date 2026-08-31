@@ -232,7 +232,12 @@ rămâne a doua lectură, nu singura.*
 
 **VERIFICATORUL DE NECONFORMITĂȚI ARE TREI REZULTATE**, din 31.08: `PASS` · `FAIL` ·
 **`NEVERIF [cod]`**. Codul de ieșire nu mai contrazice rezumatul — **2** înseamnă „nu s-a putut
-verifica tot". *Nu-l consumă nimic programatic; se rulează cu mâna.*
+verifica tot", confirmat de Costin (`DECIZII.md` 17.2). *Nu-l consumă nimic programatic azi; se
+rulează cu mâna.* Stare: `PASS 18 · FAIL 0 · NEVERIF 2`, cele două fiind liniile NC-07.
+
+**ANCORA NC-02 E RETRASĂ** (`DECIZII.md` 17.1), cu motivul în script. *Regula de purtat mai
+departe: o verificare ancorată pe PREZENȚA unei reparații moare la prima rescriere legitimă a
+codului reparat; una ancorată pe EFECT nu.*
 
 **CLICHETELE VII — blocul de mai jos e GENERAT, nu scris.** Tabelul ăsta spunea, până pe 31.08,
 chiar propoziția «se recalculează, nu se citesc de aici», și avea patru cifre scrise cu mâna. Trei
