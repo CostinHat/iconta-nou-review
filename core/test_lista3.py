@@ -79,26 +79,44 @@ def test_calibrare_titlul_se_SCHIMBA_cand_se_schimba_o_stare(doc):
         assert sl.titlu(invers) != inainte, "titlul nu se schimbă nici când un REPARAT se redeschide"
 
 
-def test_randurile_deschise_au_proba_datelor_scrisa(doc):
-    """[31.08.2026] Un rând deschis fără dimensiune măsurată e o cifră moștenită.
+def test_tabelul_de_proba_e_GENERAT_nu_scris(doc):
+    """[31.08.2026] Extinderea regulii, cerută de Costin după **a treia instanță în două zile**:
 
-    Costin: «Rezultatul e o listă cu dimensiune pe rând, nu o cifră moștenită.» Se cere ca fiecare
-    artefact rămas DESCHIS să apară și în tabelul de probă a datelor — altfel lista ar putea crește
-    cu rânduri despre care nu se știe cât sunt de mari.
+    *«Regula de ieri acoperă de acum și CALIFICATIVUL derivat, nu doar numărul. O afirmație al cărei
+    adevăr depinde de un calificativ măsurat ori se regenerează din instrument, ori nu se scrie.»*
+
+    **Instanța care a cerut-o e a mea.** Tabelul ăsta, scris de mână, a purtat o zi propoziția
+    *„niciuna n-are două exerciții consecutive"* — adevărată doar cu **«cu rulaje»**, calificativ
+    care lipsea. Numărul era corect; **ce anume număra**, nu. Un clichet pe cifre n-ar fi prins-o:
+    cifra n-avea nimic.
+
+    De-aia tabelul se generează din măsurătoare, nu din memoria a ce s-a măsurat.
     """
+    gen = sl.proba_md()
+    cap = gen.split(chr(10))[0]
+    assert cap in doc, (
+        "capul tabelului de probă nu se mai găsește în registru — ori s-a rescris de mână, ori "
+        "instrumentul produce altă formă. Regenerează cu `scan_lista3.proba_md()`.")
+    i = doc.index(cap)
+    scris = doc[i:i + len(gen)]
+    assert scris == gen, (
+        "tabelul de probă diferă de ce generează instrumentul.\n  scris:   %r\n  generat: %r\n\n"
+        "Nu-l corecta cu mâna — regenerează-l. Adevărul lui depinde de calificative măsurate "
+        "(«cu rulaje», «cu note»), iar acelea se schimbă fără să anunțe."
+        % (scris[:220], gen[:220]))
+
+
+def test_fiecare_rand_DESCHIS_apare_in_proba(doc):
+    """Un rând deschis fără dimensiune măsurată e o cifră moștenită — chiar defectul recalculării."""
     deschise = [r["artefact"] for r in sl.randuri(doc) if r["verdict"] == "DESCHIS"]
     if not deschise:
         pytest.skip("niciun rând deschis — proba n-are obiect")
-    cap = "| rândul | substanța există? | unde | în ce stare | ce lipsește, exact |"
-    assert cap in doc, (
-        "lipsește tabelul de probă a datelor. Un rând deschis fără dimensiune măsurată e exact "
-        "cifra moștenită pe care recalcularea din 31.08 a scos-o.")
-    proba = doc[doc.index(cap):doc.index("\n\n", doc.index(cap))]
-    lipsa = [a for a in deschise if a.split("(")[0].strip()[:18] not in proba]
+    gen = sl.proba_md()
+    lipsa = [a for a in deschise if a.split("(")[0].strip()[:18] not in gen]
     assert not lipsa, (
-        "artefacte DESCHISE fără probă a datelor: %s. Măsoară-le înainte de a construi din ele: "
-        "există substanța, unde, în ce stare, ce lipsește exact." % lipsa)
-
+        "artefacte DESCHISE fără rând în tabelul de probă: %s. Măsoară-le înainte de a construi "
+        "din ele — sau adaugă-le în `scan_lista3.proba_md()`, ca dimensiunea lor să se genereze."
+        % lipsa)
 
 def test_instrumentul_NU_numara_tabelul_vechi_de_cauze(doc):
     """Modul de eșec 1, ținut vizibil: tabelul de cauze are DOUĂ coloane și păstrează cauza măsurată

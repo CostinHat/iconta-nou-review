@@ -9846,6 +9846,11 @@ aproba forma (doar 77/2022 + 3562/2024).
 
 ACT CURENT care aproba forma, per declaratie (adus in corpus, nivel PRIMAR static.anaf.ro daca nu se noteaza altfel):
 - D100/D710: OPANAF 57/2026 (MO 55/23.01.2026), amendeaza baza 587/2016 -> opanaf_57_2026_d100_d710.pdf.
+  ATENTIE, citare INCOMPLETA pana la 31.08.2026: baza 587/2016 mai are un amendament ULTERIOR —
+  OPANAF 602/2026 (MO 416/15.05.2026), adus in corpus ca opanaf_602_2026_modificare_opanaf_587_2016_formulare.
+  Adauga pozitia 116 «Contributie de solidaritate» in nomenclatorul obligatiilor si o declara LUNAR
+  pe D100. NEIMPLEMENTAT: d100.py cunoaste doua coduri (121, 103). Zero din cele 19 firme datoreaza
+  obligatia (niciun CAEN de titei/produse energetice) — masurat, vezi GARZI 31.08.
 - D101: OPANAF 206/2025 (MO 140/18.02.2025) -> opanaf_206_2025_d101.pdf.
 - D112: Ordin comun 605/95/928/2314/2026 (ANAF 605, MO 463+463bis/02.06.2026), din luna 07/2026 -> opanaf_605_2026_d112.pdf.
   SUPERSEDA 2066/.../2025 (ce cita struct-ul). DISCREPANTA: validatorul instalat D112_209 (Apr 2026) e ANTERIOR

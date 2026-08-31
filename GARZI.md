@@ -5514,6 +5514,90 @@ prima e o afirmație despre lume pe care instrumentul n-are cum s-o susțină.
   script `bash` care **tipărește** un verdict. E în umbra declarată a instrumentului, modul de eșec 3.
 
 
+## 31.08.2026 — SUPRAFAȚA DE IMPACT a două acte noi, și o constatare despre CLASIFICATOR
+
+*Aduse la sursa oficială (`legislatie.just.ro`, prin `scripts/portal_legislativ.py adu`), cu amprentă
+pe pagină **și** pe text, clasa ADUS. Măsurătoare, nu reparație.*
+
+| act | adus ca | amprentă text |
+|---|---|---|
+| **Ordinul ANAF 603/2026** (MO 419/18.05.2026) | `opanaf_603_2026_recalculare_oficiu_cass` | `e257836e…` |
+| **OPANAF 602/2026** (MO 416/15.05.2026) | `opanaf_602_2026_modificare_opanaf_587_2016_formulare` | `fef31fbb…` |
+
+**O verificare care a contat înainte de a scrie ceva în corpus.** Căutarea după numărul 602 a dat
+**două** acte: unul al ANAF din 12 mai, altul al Ministerului Transporturilor din 15 iunie, despre
+tarife aeronautice. Le-am citit pe amândouă **fără să scriu pe disc**, și abia apoi l-am adus pe cel
+potrivit. *Un act adus pe baza unui număr ghicit e mai rău decât unul lipsă* — METODA §30.
+
+### 603/2026 — ZERO suprafață la noi, deși e etichetat **mare**
+
+Ce face, citit la sursă: aprobă **procedura prin care ORGANUL FISCAL recalculează din oficiu CASS**,
+plus două formulare — *„Referat privind recalcularea CASS"* și *„Decizie de recalculare din oficiu"*.
+Declanșatorul e **decesul** contribuabilului. Temeiul: art. 122, art. 180 alin. (1) lit. b)-d),
+art. 182^1, art. 183 CF. Abrogă **OPANAF 493/2022**.
+
+| întrebarea | răspunsul, măsurat |
+|---|---|
+| e vreo citare a noastră superseded? | **nu**: `493/2022` — **zero** potriviri în tot repo-ul, corpus inclus |
+| citează codul nostru art. 180 / 182^1 / 183 CF? | **nu**: singurele două potriviri pe „art. 183" sunt **Legea 31/1990** (rezerva legală), alt act |
+| modifică D212? | **nu**. Actul **citește** declarația unică (capitolul II) ca *intrare* a recalculării; nu-i schimbă modelul. Zero apariții ale lui „212" în text |
+| produce aplicația vreunul din cele două formulare? | **nu** — sunt acte pe care ANAF le emite **către** contribuabil |
+| motorul nostru CASS e atins? | **nu**: `d212_engine` stă pe art. 154/170 CF + Legea 239/2025 art. XII pct. 19. Alt capitol |
+
+**Structura registrului PF, comisă în `11514c2`, stă neatinsă** — dar măsurătoarea a făcut vizibilă o
+graniță a ei, care nu e un defect introdus de act: registrul ține **veniturile** (art. 68), iar
+capitolul II al D212 poartă **CASS declarată pe alte baze** (art. 180 lit. b)-d)), pentru care
+registrul n-are și nu trebuie să aibă loc. Ordinul o arată; n-o creează.
+
+### 602/2026 — suprafață REALĂ, deși e etichetat **medie**
+
+| ce schimbă | unde ne atinge |
+|---|---|
+| adaugă **poziția 116, „Contribuție de solidaritate"** în Anexa 3, *Nomenclatorul obligațiilor de plată la bugetul de stat* (temei: OUG 24/2026) | `core/d100.py` cunoaște **două** coduri de obligație: `121` (impozit micro) și `103` (impozit profit). Poziția 116 nu există la noi |
+| o declară **lunar**, literă nouă `ț)` la termenele D100 | termenele noastre de D100 nu cunosc obligația |
+| extinde tabelul pct. II la pozițiile `…102-116` | plaja se oprea la 115 |
+| **D710: neatins** — zero apariții ale lui „710" în act | — |
+
+**Cine datorează, și dacă ne privește azi:** operatorii de la art. 2 alin. (1) din OUG 24/2026 —
+comercializare de țiței și produse energetice din țiței extras în România. **Măsurat pe cele 19
+firme: niciuna.** CAEN-urile lor sunt `0111, 1071, 2110, 4321, 4652, 4669, 4711, 4779, 4791, 6201,
+6202, 6210, 7911, 9602` — nicio potrivire în zona `0610/0620/1920/4671/4730/3520`.
+
+**O citare care a devenit incompletă.** `DECIZII.md` scrie *„D100/D710: OPANAF 57/2026 …, amendează
+baza 587/2016"*. **602/2026 amendează aceeași bază, mai târziu** (mai 2026 față de ianuarie 2026).
+Citarea nu e falsă — e **incompletă**, și asta e o stare mai greu de văzut decât o eroare: cine o
+citește află un act curent care chiar e curent, fără să afle că mai există unul peste el.
+
+### CONSTATAREA DESPRE CLASIFICATOR — etichetele s-au inversat
+
+Costin: *«Etichetele [mare]/[medie] sunt judecata clasificatorului nostru, nu o măsurătoare. Dacă
+impactul real le contrazice, e constatare despre clasificator.»* **Le contrazice, și pe amândouă:**
+
+| act | eticheta clasificatorului | impactul măsurat |
+|---|---|---|
+| 603/2026 | **mare** | **zero** citări superseded, zero câmpuri, zero formulare produse de noi |
+| 602/2026 | **medie** | o obligație nouă în nomenclatorul D100, un termen lunar nou, o citare devenită incompletă |
+
+**Ce a greșit clasificatorul, mecanic:** a citit *„CASS"* și *„formulare"* în rezumat și a ridicat
+relevanța. Amândouă cuvintele apar — dar formularele sunt ale **organului fiscal**, iar CASS-ul e din
+**alt capitol** decât cel pe care îl calculăm noi. Invers, *„modificarea formularelor de declarare"*
+sună generic și a primit **medie**, deși schimbă chiar nomenclatorul unei declarații pe care o
+producem.
+
+**Tiparul, scris ca să fie recunoscut a doua oară:** clasificatorul cântărește **vocabularul
+rezumatului**, nu **cine emite** și **ce declarație atinge**. E aceeași formă de orbire ca la R80,
+unde o cifră creștea fiindcă un cuvânt vechi apărea într-un ecran nou. *Un instrument care măsoară
+vocabularul e orb la exact lucrurile pe care vocabularul nu le distinge.*
+
+**Nereparat, deliberat** — s-a cerut măsurătoare. Ce ar cere reparația, ca să nu se redescopere:
+clasificatorul ar avea nevoie de **emitent** (ANAF către contribuabil vs. contribuabil către ANAF) și
+de **declarația atinsă**, nu de cuvintele din rezumat. Rămâne deschis aici.
+
+*(Nota de acoperire: alerta **605/2026 — noul formular 112**, relevanță **mare**, din 24.08, e deja
+absorbită — `DECIZII.md` o numește act curent pentru D112, cu discrepanța DUK consemnată. Nu e o
+restanță; se scrie ca să nu fie confundată cu una.)*
+
+
 ## Inventar (generat, 28.08.2026)
 
 Blocul de mai jos e produs de `scripts/scan_garzi_inventar.py --md` și păzit de

@@ -1811,30 +1811,22 @@
     "omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_3254_2017_registru_evidenta_fiscala_persoane_fizice.txt.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "omfp_660_2017.pdf": {
       "exista": true,
@@ -2277,6 +2269,62 @@
       "exista": true,
       "tip_forma": null,
       "acopera": []
+    },
+    "opanaf_602_2026_modificare_opanaf_587_2016_formulare.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "legislatie.just.ro",
+      "forma": "initiala"
+    },
+    "opanaf_602_2026_modificare_opanaf_587_2016_formulare.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_602_2026_modificare_opanaf_587_2016_formulare.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_602_2026_modificare_opanaf_587_2016_formulare.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_603_2026_recalculare_oficiu_cass.html": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "legislatie.just.ro",
+      "forma": "initiala"
+    },
+    "opanaf_603_2026_recalculare_oficiu_cass.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_603_2026_recalculare_oficiu_cass.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "opanaf_603_2026_recalculare_oficiu_cass.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
     },
     "opanaf_605_2026_d112.pdf": {
       "exista": true,

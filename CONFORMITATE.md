@@ -5150,10 +5150,12 @@ urmă cu patru reparații făcute în aceeași zi și în ziua următoare — ș
 *Cerut expres: «pentru fiecare rând rămas, proba datelor înainte de document — există, unde, în ce
 stare, cu ce lipsește. Măsurătoare, nu construcție.» Măsurat pe cele 19 firme, la 31.08.2026.*
 
-| rândul | substanța există? | unde | în ce stare | ce lipsește, exact |
-|---|---|---|---|---|
-| **Note explicative** (DESCHIS) | **nu se poate ști încă** | conținutul depinde de **categoria de mărime** (OMFP 1802/2014 pct. 20-21: microentitățile sunt scutite) | categoria dă `nedeterminata` pe **19 din 19** firme | **un exercițiu precedent cu rulaje de clasă 6/7.** Nu „o firmă cu două exerciții" — vezi rândul următor, unde diferența e măsurată |
-| **categoria de mărime / R3** (REPARAT ca derivare, deschis ca **probă**) | **da, pe exercițiul curent** | `core/categorie_marime.indicatori()`, din `bilant_api._rulaje_67` + solduri | **2026 se calculează** pe `tenant_013` (active 28.755 · CA 3.000 · 1 salariat) și `tenant_014` (active 14.860 · CA 3.000 · 1 salariat) | **exercițiul 2025**: pe toate cele trei firme cu note în 2025, `_rulaje_67` = **0**. Notele lor de 2025 sunt de sold, nu de venit/cheltuială |
+| rândul | ce cere ca să se poată delimita | măsurat acum | distanța |
+|---|---|---|---|
+| **Note explicative** | categoria de mărime a entității (OMFP 1802/2014 pct. 20-21: microentitățile sunt scutite) | **0 din 19** firme se pot încadra | aceeași ca rândul de mai jos — categoria e precondiția lui |
+| **categoria de mărime / R3** | două exerciții consecutive **cu rulaje de clasă 6/7** (pct. 13 alin. (2)-(3)) | **0 din 19** firme le au. *Cu NOTE validate în două exerciții consecutive, dar fără rulaje: 3* | un exercițiu de rulaje 6/7 pe oricare dintre cele 3 firme cu note |
+
+*Tabelul de mai sus e **GENERAT** cu `scripts/scan_lista3.proba_md()`, măsurat pe firmele reale, și comparat caracter cu caracter de `core/test_lista3.py`. Scris de mână, a purtat o zi un calificativ căzut — «niciuna n-are două exerciții consecutive», adevărat doar cu **«cu rulaje»**, care lipsea. Nu numărul era greșit, ci ce anume număra.*
 
 **Distanța până la închiderea amândurora, măsurată:** un singur exercițiu de rulaje 6/7 pe
 `tenant_013` sau `tenant_014`. Nu e o construcție de făcut în aplicație — e o **stare de date**.

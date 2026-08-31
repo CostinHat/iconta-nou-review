@@ -80,6 +80,68 @@ def capete_de_tabel(text=None):
     return out
 
 
+def proba_datelor():
+    """Tabelul de proba a datelor pentru randurile DESCHISE, GENERAT din masuratoare.
+
+    Costin, 31.08.2026: *«O afirmatie al carei adevar depinde de un calificativ masurat ori se
+    regenereaza din instrument, ori nu se scrie.»* Tabelul asta a fost scris de mana o data si a
+    purtat, in aceeasi zi, un calificativ cazut: «niciuna n-are doua exercitii consecutive» — adevarat
+    doar cu «CU RULAJE», care lipsea. Nu numarul era gresit, ci ce anume numara.
+
+    Se masoara pe firmele reale. Cere baza; fara ea nu se poate produce, si atunci NU SE SCRIE nimic
+    — un tabel de proba generat pe zero firme ar fi o afirmatie despre o lume goala.
+    """
+    from core import bilant_api as _ba
+    from core import categorie_marime as _cm
+    from core import db
+    from psycopg2.extras import RealDictCursor
+
+    db.init_pool()
+    with db.get_conn() as conn, conn.cursor() as cur:
+        cur.execute("SELECT schema_name FROM public.tenants WHERE activ ORDER BY id")
+        scheme = [r[0] for r in cur.fetchall()]
+    if not scheme:
+        raise ValueError("zero firme active — proba datelor n-are pe ce se masura")
+
+    cu_rulaje, cu_note, incadrate = [], [], []
+    for s in scheme:
+        with db.get_conn(s) as conn:
+            with conn.cursor(cursor_factory=RealDictCursor) as cur:
+                ani_rulaje = [a for a in range(2023, 2028) if _ba._rulaje_67(cur, s, a)]
+            with conn.cursor() as cur:
+                cur.execute("SELECT DISTINCT EXTRACT(YEAR FROM data)::int FROM {}.inregistrari "
+                            "WHERE status = 'validata'".format(s))
+                ani_note = sorted(r[0] for r in cur.fetchall())
+            cat = _cm.categorie(conn, s, max(ani_rulaje) if ani_rulaje else 2026)
+        if any(a - 1 in ani_rulaje for a in ani_rulaje):
+            cu_rulaje.append(s)
+        if any(a - 1 in ani_note for a in ani_note):
+            cu_note.append(s)
+        if (cat.get("categorie") if isinstance(cat, dict) else cat) != "nedeterminata":
+            incadrate.append(s)
+
+    return {"firme": len(scheme), "cu_doua_exercitii_cu_rulaje": cu_rulaje,
+            "cu_doua_exercitii_cu_note": cu_note, "incadrate": incadrate}
+
+
+def proba_md(p=None):
+    """Tabelul, ca markdown. Un singur loc care spune cat de departe sunt randurile deschise."""
+    p = proba_datelor() if p is None else p
+    n = p["firme"]
+    return "\n".join([
+        "| rândul | ce cere ca să se poată delimita | măsurat acum | distanța |",
+        "|---|---|---|---|",
+        "| **Note explicative** | categoria de mărime a entității (OMFP 1802/2014 pct. 20-21: "
+        "microentitățile sunt scutite) | **%d din %d** firme se pot încadra | aceeași ca rândul de "
+        "mai jos — categoria e precondiția lui |" % (len(p["incadrate"]), n),
+        "| **categoria de mărime / R3** | două exerciții consecutive **cu rulaje de clasă 6/7** "
+        "(pct. 13 alin. (2)-(3)) | **%d din %d** firme le au. *Cu NOTE validate în două exerciții "
+        "consecutive, dar fără rulaje: %d* | un exercițiu de rulaje 6/7 pe oricare dintre cele %d "
+        "firme cu note |" % (len(p["cu_doua_exercitii_cu_rulaje"]), n, len(p["cu_doua_exercitii_cu_note"]),
+                             len(p["cu_doua_exercitii_cu_note"])),
+    ])
+
+
 def numara(text=None):
     """{verdict: n} + `total`. Verdictele sunt un nomenclator INCHIS."""
     rs = randuri(text)
