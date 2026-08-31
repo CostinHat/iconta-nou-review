@@ -5,6 +5,7 @@ from decimal import Decimal
 from psycopg2.extras import RealDictCursor
 
 from core import contare_facturi as _cf
+from core.common import Temei
 
 
 def _nota(cur, schema, nota_id):
@@ -23,15 +24,111 @@ def _centru(l):
         return None
 
 
+#: Temeiurile refuzurilor din calea jurnalului. Pana la 31.08.2026, toate cele 12 refuzuri ale
+#: acestei cai erau propozitii fara autor: spuneau CE lipseste, nu SUB CE NORMA. Interdictia 77 pe
+#: cea mai folosita cale de scriere a aplicatiei.
+TEMEI_PARTIDA_DUBLA = Temei(
+    "Lege", 82, 1991, art="5", alin="1",
+    data_in="1992-01-01", verificat_la="2026-08-31", de_cine="Code/Costin", nivel_sursa="MO",
+    url="anaf_surse/legea_82_1991_consolidat.txt",
+    text_citat=("Persoanele prevazute la art. 1 alin. (1)-(4) au obligatia sa conduca contabilitatea "
+                "in partida dubla si sa intocmeasca situatii financiare anuale, potrivit "
+                "reglementarilor contabile aplicabile"))
+
+TEMEI_CONSEMNARE = Temei(
+    "Lege", 82, 1991, art="6", alin="1",
+    data_in="1992-01-01", verificat_la="2026-08-31", de_cine="Code/Costin", nivel_sursa="MO",
+    url="anaf_surse/legea_82_1991_consolidat.txt",
+    text_citat=("Orice operatiune economico-financiara efectuata se consemneaza in momentul "
+                "efectuarii ei intr-un document care sta la baza inregistrarilor in contabilitate, "
+                "dobandind astfel calitatea de document justificativ"))
+
+
+def _refuz(mesaj, temei, camp=None, linia=None):
+    """Refuzul, ca AFIRMATIE TIPATA — `neconformitate`: o VALOARE nu satisface o REGULA.
+
+    `regula` e obligatorie la felul asta, si aici e chiar temeiul: refuzul spune sub ce norma. Iar
+    `linia` calatoreste ca DATA, nu ingropata in propozitie — o garda care ar cauta «linia 2» in
+    mesaj ar intreba un sir (clichetul 50).
+    """
+    from core.afirmatii import afirmatie
+    from core.unde import Unde
+    a = afirmatie(
+        "neconformitate", tip="nota_contabila",
+        motiv=mesaj, regula=str(temei),
+        unde=Unde("inregistrare", linia if linia is not None else "nouă"),
+        **{"eroare": mesaj, "temei": str(temei), "camp": camp, "linia": linia})
+    return dict(a)
+
+
+def _data_valida(data):
+    """`(data, refuz)` — data notei, sau refuzul cu temeiul ei.
+
+    Pana azi, o data lipsa sau in alt format iesea **500**, fara niciun mesaj: exceptia din driverul
+    de baza nu era prinsa nicaieri. Un 500 nu e un refuz — nu spune nimic omului si nu poate purta
+    temei. E chiar forma pe care interdictia 77 o exclude.
+    """
+    import datetime
+    s = str(data or "").strip()
+    if not s:
+        return None, _refuz(
+            "nota are nevoie de data operatiunii: fiecare operatiune se consemneaza in momentul "
+            "efectuarii ei", TEMEI_CONSEMNARE, camp="data")
+    try:
+        return datetime.date.fromisoformat(s), None
+    except ValueError:
+        return None, _refuz(
+            "data %r nu e in formatul AAAA-LL-ZZ. Se cere o data calendaristica, fiindca "
+            "inregistrarea se face la momentul operatiunii, iar ordinea cronologica a "
+            "registrului-jurnal atarna de ea" % s, TEMEI_CONSEMNARE, camp="data")
+
+
+def _linii_valide(conn, schema, linii):
+    """`refuz sau None` — forma liniilor SI conturile, confruntate cu planul firmei.
+
+    Confruntarea cu planul lipsea de pe calea asta, iar `9999` intra in evidenta. R54 o declarase
+    facuta „pe toate rutele care scriu in evidenta cu un cont venit de la om" — dar domeniul ei
+    recunoaste citirile dupa NUMELE cheii (`cont`, `cont_*`), iar aici cheile se numesc `debit` si
+    `credit`. N-a fost niciodata in domeniu, deci nici in cele 8 declarate NELEGATE.
+    """
+    from core import cont_valid as _cv
+    if not linii:
+        return _refuz("nota trebuie sa aiba cel putin o linie: o inregistrare in partida dubla are "
+                      "cel putin un cont debitor si unul creditor", TEMEI_PARTIDA_DUBLA)
+    for i, l in enumerate(linii, 1):
+        for cheie, eticheta in (("debit", "contul debitor"), ("credit", "contul creditor")):
+            if not str(l.get(cheie, "")).strip():
+                return _refuz(
+                    "linia %d n-are %s. Partida dubla cere ambele conturi pe fiecare inregistrare"
+                    % (i, eticheta), TEMEI_PARTIDA_DUBLA, camp=cheie, linia=i)
+            try:
+                _cv.cere_cont(conn, schema, l[cheie], "%s (linia %d)" % (eticheta, i))
+            except _cv.ContNecunoscut as e:
+                d = e.detalii if hasattr(e, "detalii") else {}
+                return _refuz(
+                    "linia %d: contul %s nu exista in planul de conturi al firmei%s. Se adauga in "
+                    "%s, sau se corecteaza aici — o nota cu un cont inexistent nu e evidenta, e un "
+                    "rand care arata ca evidenta"
+                    % (i, d.get("cont", l[cheie]),
+                       (" (apropiate: %s)" % ", ".join(d.get("apropiate") or [])
+                        if d.get("apropiate") else ""),
+                       _cv.UNDE_SE_CREEAZA),
+                    TEMEI_PARTIDA_DUBLA, camp=cheie, linia=i)
+        if Decimal(str(l.get("suma", 0))) <= 0:
+            return _refuz("linia %d are suma %s: o inregistrare consemneaza o operatiune efectuata, "
+                          "deci suma ei e strict pozitiva" % (i, l.get("suma")),
+                          TEMEI_CONSEMNARE, camp="suma", linia=i)
+    return None
+
+
 def creeaza(conn, schema, descriere, data, linii):
     """Creeaza o nota manuala noua, ca ciorna. linii = [{debit, credit, suma}], min 1 linie."""
-    if not linii:
-        return {"eroare": "nota trebuie să aibă cel puțin o linie"}
-    for l in linii:
-        if not str(l.get("debit", "")).strip() or not str(l.get("credit", "")).strip():
-            return {"eroare": "fiecare linie are nevoie de cont debit și credit"}
-        if Decimal(str(l.get("suma", 0))) <= 0:
-            return {"eroare": "suma fiecărei linii trebuie să fie > 0"}
+    data, rd = _data_valida(data)
+    if rd:
+        return rd
+    rl = _linii_valide(conn, schema, linii)
+    if rl:
+        return rl
     with conn.cursor(cursor_factory=RealDictCursor) as cur:
         cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                         VALUES (%s,%s,'manual','ciorna') RETURNING id""",
@@ -66,19 +163,19 @@ def editeaza(conn, schema, nota_id, descriere=None, data=None, linii=None):
             return None
         if n["status"] != "ciorna":
             return {"eroare": "doar ciornele se pot edita"}
+        if data is not None:
+            data, rd = _data_valida(data)
+            if rd:
+                return rd
         if linii is not None:
-            if not linii:
-                return {"eroare": "nota trebuie să aibă cel puțin o linie"}
+            rl = _linii_valide(conn, schema, linii)
+            if rl:
+                return rl
             # ai_corectie_v1: memoreaza contul debit dinainte de edit (propunerea AI)
             cur.execute(f"""SELECT cont_debit FROM {schema}.inregistrari_linii
                             WHERE inregistrare_id=%s ORDER BY id LIMIT 1""", (nota_id,))
             _vechi = cur.fetchone()
             _cont_vechi = (_vechi["cont_debit"] if isinstance(_vechi, dict) else _vechi[0]) if _vechi else None
-            for l in linii:
-                if not str(l.get("debit", "")).strip() or not str(l.get("credit", "")).strip():
-                    return {"eroare": "fiecare linie are nevoie de cont debit și credit"}
-                if Decimal(str(l.get("suma", 0))) <= 0:
-                    return {"eroare": "suma fiecărei linii trebuie să fie > 0"}
             cur.execute(f"DELETE FROM {schema}.inregistrari_linii WHERE inregistrare_id=%s", (nota_id,))
             for l in linii:
                 cur.execute(f"""INSERT INTO {schema}.inregistrari_linii

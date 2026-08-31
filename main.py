@@ -4321,7 +4321,18 @@ def _cere_luna_deschisa(conn, schema, data):
     `_cere_perioada_deschisa` de mai jos păzea editarea, ștergerea și validarea unei note care
     EXISTĂ. Crearea intra pe altă ușă și nu era păzită: o notă nouă datată într-o lună închisă e
     tot o modificare a perioadei închise."""
-    if data and _perioada_blocata(conn, schema, data):
+    if not data:
+        return
+    # [31.08.2026] Data se VALIDEAZĂ înainte de a fi întrebată despre perioadă. Fără asta,
+    # `_perioada_blocata` primea „10.03.2025" brut, driverul de bază ridica, iar cererea ieșea 500 —
+    # o defecțiune în locul unui refuz, exact înainte ca producătorul (care are refuzul scris, cu
+    # temei) să apuce să fie chemat. Poarta de perioadă era corectă; ordinea nu era.
+    from core import jurnal_api as _ja
+    _d, _refuz = _ja._data_valida(data)
+    if _refuz:
+        raise HTTPException(400, {"mesaj": _refuz["eroare"], "temei": _refuz.get("temei"),
+                                  "erori_campuri": [{"camp": "data", "mesaj": _refuz["eroare"]}]})
+    if _perioada_blocata(conn, schema, _d):
         raise HTTPException(423, PERIOADA_INCHISA)
 
 
@@ -7117,6 +7128,19 @@ def _jurnal_rez(rez):
     if rez is None:
         raise HTTPException(404, "notă inexistentă")
     if rez.get("eroare"):
+        # [31.08.2026] Refuzul poartă temeiul mai departe, pe contractul comun
+        # `detail.erori_campuri`. Până azi îl turtea într-un șir: producătorul putea spune sub ce
+        # normă refuză, iar ruta arunca partea aia. Interdicția 77 pe cea mai folosită cale de
+        # scriere — măsurată în exercițiul de intrare din 31.08, 12 refuzuri fără niciun temei.
+        if rez.get("temei"):
+            # Producătorul întoarce o AFIRMAȚIE tipată (`neconformitate`); ruta o trece mai departe
+            # întreagă, nu construiește un al doilea obiect din bucăți. Prima formă o reconstruia,
+            # și era ea însăși o afirmație netipată — prinsă de gardul din 21.08.
+            det = dict(rez)
+            det["mesaj"] = rez["eroare"]
+            if rez.get("camp"):
+                det["erori_campuri"] = [{"camp": rez["camp"], "mesaj": rez["eroare"]}]
+            raise HTTPException(400, det)
         raise HTTPException(400, rez["eroare"])
     return rez
 

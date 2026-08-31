@@ -5827,6 +5827,75 @@ cheii din cerere. Atunci calea jurnalului ar intra în domeniu, iar refuzurile e
 numărate.*
 
 
+## 31.08.2026 — REPARATE cele trei găuri din calea jurnalului. **A patra era a sondei mele**
+
+*Costin: «Cele patru găuri se repară, în ordinea gravității.» Sunt trei — a patra n-a fost o gaură.*
+
+### A PATRA NU EXISTA — și se scrie primul, ca să nu fie „reparată"
+
+Am numit un caz de probă *„notă dezechilibrată"*: două linii, `4111/704/1000` și `5121/4111/700`.
+**Nu e dezechilibrată.** Schema ține `cont_debit`, `cont_credit` și `suma` **pe aceeași linie**,
+amândouă `NOT NULL` — deci fiecare linie e o pereche echilibrată **prin construcție**, iar totalul
+debitor egalează totalul creditor oricâte linii ar fi. Aplicația a avut dreptate s-o accepte;
+**sonda mea a etichetat greșit cazul.**
+
+*A doua oară azi când o sondă de-a mea a produs o concluzie falsă înainte de a fi verificată — prima
+a fost tokenul altui cabinet, care dădea `404` pe toate cele 16.* Un cod care ar „verifica
+echilibrul" aici ar fi **cod mort**, iar gardul îl împiedică: proba citește invariantul **din
+schemă**, și cade dacă vreo coloană devine nullable — atunci el chiar ar trebui verificat în cod.
+
+### 1. Contul din afara planului intra în evidență *(cea mai gravă)*
+
+`9999` era acceptat. `cont_valid.cere_cont` există din 26.08 și e legat pe 19 din 27 de citiri —
+dar **calea jurnalului nu era printre ele, și nici printre cele 8 declarate NELEGATE**: domeniul lui
+R54 recunoaște citirile de cont după **numele cheii** (`cont`, `cont_*`), iar aici cheile se numesc
+`debit` și `credit`. Legată acum, pe **amândouă** căile — `creeaza` **și** `editeaza`, care aveau
+aceeași gaură, în cod duplicat. Refuzul numește contul, spune unde se adaugă, și sugerează vecinii.
+
+### 2. O dată care nu e dată ieșea **500**, fără niciun mesaj
+
+Nu era un refuz: era o excepție neprinsă. Cauza nu era poarta, ci **ordinea** — `_cere_luna_deschisa`
+întreba *„e luna închisă?"* despre `"10.03.2025"`, iar driverul de bază ridica **înainte** ca
+producătorul (care are refuzul scris) să fie chemat. Data se validează acum **înaintea** porții de
+perioadă.
+
+### 3. Cele 12 refuzuri fără temei — acum 0 din 14
+
+Interdicția 77, pe cea mai folosită cale de scriere a aplicației. Două temeiuri **separate**, fiindcă
+sunt două întrebări:
+
+| refuzul | temeiul |
+|---|---|
+| lipsește o linie · lipsește un cont · contul nu e în plan | **Legea 82/1991 art. 5 alin. (1)** — obligația de a conduce contabilitatea în partidă dublă |
+| lipsește data · data nu e o dată · suma nu e pozitivă | **art. 6 alin. (1)** — orice operațiune se consemnează **în momentul efectuării ei** |
+
+*Un singur temei ar fi trimis cititorul la articolul greșit — greșeala făcută ieri la
+registrul-inventar, unde un refuz de moment cita temeiul conținutului.*
+
+**Ruta trece temeiul mai departe.** Până azi îl turtea într-un șir: producătorul putea spune sub ce
+normă refuză, iar `_jurnal_rez` arunca partea aia.
+
+### CE A CONFIRMAT REEXERCITAREA
+
+Aceleași 16 cereri, după reparații: **14 refuzuri, 0 fără temei** (erau 12 din 12 fără). Singurul
+`200` e cazul pe care l-am etichetat greșit. `9999` refuzat, data în alt format refuzată cu mesaj.
+
+**RED-proof, cinci mutații, cinci roșii:** confruntarea cu planul scoasă · se verifică doar prima
+linie · temeiul scos de pe refuzuri · data în alt format trece ca validă · `suma` devine nullable în
+schemă (adică partida dublă **nu mai** e garantată de construcție).
+
+### DATELE PUSE AZI RĂMÂN — scenariu declarat
+
+*Costin: «Sunt scenariu declarat, iar ștergerea lor redeschide R3 și lasă registrele neprobate.»*
+
+Cele **8 note validate de 2025** de pe `tenant_013` și `tenant_014` **rămân**. Nu sunt reziduu de
+probă: sunt exercițiul financiar precedent, construit deliberat, iar pe el stau încadrarea `micro`,
+închiderea R3 și delimitarea notelor explicative. **Cine le găsește mai târziu să nu le curețe.**
+
+*Ce a fost reziduu s-a șters: cele 12 note ale seriei de invalide, în două runde — patru care
+intraseră prin găurile de mai sus, și două care intră acum legitim, fiindcă erau valide.*
+
+
 ## Inventar (generat, 28.08.2026)
 
 Blocul de mai jos e produs de `scripts/scan_garzi_inventar.py --md` și păzit de
@@ -6154,9 +6223,9 @@ referința veche, apoi s-a rescris.*
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**494 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**495 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 477
+### `core/` — 478
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -6486,6 +6555,7 @@ referința veche, apoi s-a rescris.*
 - `core/test_izolare_raportari.py` — core/test_izolare_raportari.py — GARD structural de izolare pe /raportari (apararea de DATE, nu doar ruta).
 - `core/test_izolare_structurala.py` — core/test_izolare_structurala.py — GARD STRUCTURAL de izolare (C-5 P1, clasele 5+6).
 - `core/test_joburi_supravegheate.py` — GARD [R74, 27.08.2026]: lista deadman-ului se compară cu SISTEMUL, nu cu o copie a ei.
+- `core/test_jurnal_refuz.py` — GARDĂ: calea jurnalului refuză cu TEMEI, și confruntă conturile cu planul firmei.
 - `core/test_kpi_client.py` — —
 - `core/test_limita_text_anaf.py` — Gard: niciun atribut de text din declaratii nu depaseste limita ANAF (75 caractere).
 - `core/test_limite_verificarii.py` — GARD (P4, 21.08.2026): „Ce nu poate spune verificarea asta" e PERMANENTĂ și se COMPUNE.
