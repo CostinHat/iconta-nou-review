@@ -2334,11 +2334,17 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   îl ia din `core/reverificare.categorie()`. Se închide când raportul lunar rulează pe praguri
   per-articol, cu perechile `NECUNOSCUT` raportate ca atare — nu topite în pragul global.
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `3a1cf89`
-- **măsurat la**: 2026-08-31 · **pe commit**: `3a1cf89`
-- **cifra**: **9 valori** ar trece de la 6 luni la **1 lună** (VOLATIL/DEPUS), **14** rămân la 6,
-  **11** n-ar avea prag și ar trebui raportate ca `NECUNOSCUT`. **0** ar fi verificate mai rar.
+- **rezolvată pe commit**: `5641426`
+- **cât a stat deschisă**: o zi. *Ținută deliberat ca tură proprie — schimba un contract pe o cale
+  care trimite alerte, nu o linie.*
+- **măsurat la**: 2026-09-01 · **pe commit**: `5641426`
+- **cifra la deschidere** (pe cele 34 de temeiuri): 9 ar trece la 1 lună, 14 rămân la 6, 11 fără prag,
+  0 mai rar. **Cifra la închidere**, pe populația reală a raportului (cele **20** de cote, intrarea
+  curentă a fiecăreia): **16 praguri per articol · 4 pe podea cu necunoscutul declarat · 3 cote
+  strâmtate la 1 lună · 0 mai largi.** *Cele două cifre nu se contrazic: prima numără temeiuri,
+  a doua cote — iar raportul se uită la intrarea curentă a fiecărei cote.*
 - **instanțe**: cele 9 sunt exact valorile care s-au mișcat recent — cotele de TVA (CF art. 291),
   impozitul pe dividende (art. 97), impozitul micro (art. 51), impozitul pe venit (art. 78).
 - **LEGAT 01.09.2026** *(se închide formal în commitul următor — capcana 2)*, ca tură proprie, cum a
