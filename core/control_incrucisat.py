@@ -1720,3 +1720,294 @@ def reconciliaza_declaratii(conn, schema, an, luna):
                        "declarațiile fără subiect în perioadă (sărite tăcut, nu verde fals). Perioade: TVA/"
                        "salarii/SAF-T pe lună; D100 pe trimestru; D101/D205 pe an."),
             "modul": MODUL, "reguli": REGULI}
+
+
+# ============================================================
+#  AXA ORIZONTALĂ, PERECHILE ANUALE ALE D101 (02.09.2026, la comanda lui Costin)
+#
+#  DE CE EXISTĂ, spus de el: *„perechea de azi nu o face, și tu ai scris de ce"*. D390 și D300 se
+#  derivă amândouă din aceleași facturi IC — deci verdele lor înseamnă „cele două motoare sunt de
+#  acord", nu „declarația se potrivește cu realitatea". Perechile de mai jos confruntă surse care
+#  NU se derivă una din alta.
+#
+#  FIECARE IDENTITATE E VERIFICATĂ LA SURSĂ, ÎN CORPUS, ÎNAINTE DE A FI SCRISĂ AICI.
+# ============================================================
+
+#: Codurile de obligație din D100 care sunt impozit pe profit / plăți anticipate în contul lui.
+#: `d100.COD_BUGETAR` emite azi doar `103`; `102`/`105` sunt tratate ca aceeași familie de
+#: `d100._scadenta` (v. `if cod in ("102", "103", "105")`), deci intră aici ca să nu se rateze
+#: tăcut o depunere veche sau una făcută în afara aplicației. **`121` (impozit micro) NU intră** —
+#: e altă taxă, iar amestecul ei ar produce divergență falsă pe firmele cu trecere micro->profit.
+COD_OBLIG_PROFIT = frozenset(("102", "103", "105"))
+
+#: Contul în care se înregistrează impozitul pe profit. **OMFP 1802/2014, verbatim:**
+#: „691. Cheltuieli cu impozitul pe profit". NU se folosește rândul 35 al F20 — acolo
+#: `core/bilant.py` pune `691 + 698`, iar 698 e, tot verbatim, „Cheltuieli cu impozitul pe venit
+#: și cu alte impozite care nu apar în elementele de mai sus": **altă taxă**. Pe o firmă cu trecere
+#: micro->profit în același an, sumarea celor două ar produce o divergență falsă. În plus, antetul
+#: lui `core/bilant.py` își declară singur sursa formulelor de rând ca „VERSIUNE NECUNOSCUTĂ" —
+#: deci numerotarea F20 n-ar fi un temei, ci o presupunere.
+CONT_IMPOZIT_PROFIT = "691"
+
+TIP_D101_VS_D100 = "D101_VS_D100_PLATI_ANTICIPATE"
+TIP_D101_VS_691 = "D101_VS_CONT_691"
+
+
+def _depuneri(conn, schema, tip, an):
+    """[(an, luna, randuri)] — TOATE depunerile de tipul dat, pe anul dat, prin aplicație.
+
+    Spre deosebire de `_d300_depus_randuri` (care ia o perioadă anume), aici se adună **anul
+    întreg**: identitatea D101↔D100 e pe an, iar D100 se depune trimestrial."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT id FROM public.tenants WHERE schema_name = %s", (schema,))
+        row = cur.fetchone()
+        if not row:
+            return []
+        cur.execute("SELECT an, luna, randuri FROM public.declaratii_depuse_curente "
+                    "WHERE tenant_id = %s AND tip = %s AND an = %s ORDER BY luna",
+                    (row[0], tip, an))
+        return [(r[0], r[1], r[2]) for r in cur.fetchall()]
+
+
+def _plati_anticipate_din_d100(depuneri):
+    """PURĂ. Suma „Suma de plată" a obligațiilor de impozit pe profit din D100-urile depuse.
+
+    Întoarce `(suma, nr_depuneri_cu_obligatie, nr_depuneri_fara_randuri)`. A treia cifră contează:
+    o depunere fără rânduri persistate **nu e** o depunere cu zero — iar dacă le-aș aduna la fel,
+    aș produce un total mai mic decât realitatea și l-aș numi divergență."""
+    total = Decimal("0")
+    cu = 0
+    fara_randuri = 0
+    for _an, _luna, randuri in depuneri:
+        if not randuri:
+            fara_randuri += 1
+            continue
+        obligatii = (randuri or {}).get("obligatii") or []
+        gasit = False
+        for o in obligatii:
+            if str((o or {}).get("cod_oblig") or "") in COD_OBLIG_PROFIT:
+                total += _d((o or {}).get("suma_plata") or 0)
+                gasit = True
+        if gasit:
+            cu += 1
+    return total, cu, fara_randuri
+
+
+def orizontal_d101(conn, schema, an):
+    """ÎNVELIȘ: o singură ieșire, și fiecare constatare își poartă tipul ei.
+
+    **De ce NU `_stampileaza` ca la perechea D390.** Acolo toate constatările au ACELAȘI tip, deci
+    un înveliș care pune un tip fix e corect. Aici sunt **două** tipuri; un înveliș cu tip fix ar
+    pune tipul greșit pe jumătate dintre ele, **tăcut** — adică exact clasa pe care învelișul o
+    apăra. Deci învelișul verifică, nu atribuie."""
+    cs = _orizontal_d101(conn, schema, an)
+    fara = [c for c in cs if not (isinstance(c, dict) and c.get("tip_constatare"))]
+    if fara:
+        raise AssertionError(
+            "%d constatări ale perechilor D101 au ieșit fără `tip_constatare` — supervizorul le-ar "
+            "sări tăcut, iar firma ar părea curată" % len(fara))
+    return cs
+
+
+def _d101_depus_recent(conn, schema):
+    """Anul CELUI MAI RECENT D101 depus prin aplicație, sau None.
+
+    **De ce nu se evaluează anul curent.** D101 se depune pentru anul ÎNCHEIAT, deci pe anul curent
+    nu există niciodată — iar o pereche ancorată pe el ar fi GRI PERMANENT prin construcție. Aceeași
+    capcană pe care perechea D390 a rezolvat-o cu `_d300_depus_recent`; se refolosește tiparul."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT id FROM public.tenants WHERE schema_name = %s", (schema,))
+        row = cur.fetchone()
+        if not row:
+            return None
+        cur.execute("SELECT max(an) FROM public.declaratii_depuse_curente "
+                    "WHERE tenant_id = %s AND tip = 'd101'", (row[0],))
+        r = cur.fetchone()
+    return r[0] if (r and r[0]) else None
+
+
+def _orizontal_d101(conn, schema, _an_curent):
+    """CORPUL. Cele două perechi anuale ale D101, pe surse independente.
+
+    `_an_curent` NU e anul evaluat — v. `_d101_depus_recent`. Se primește ca să nu se schimbe
+    semnătura culegerii, și se ignoră deliberat; numele îl spune."""
+    rez = []
+    an = _d101_depus_recent(conn, schema)
+    if an is None:
+        for tip, et in ((TIP_D101_VS_D100, "D101 vs D100 depuse (plăți anticipate)"),
+                        (TIP_D101_VS_691, "D101 vs contabilitate (cont 691)")):
+            rez += _stampileaza([_absenta_libera(
+                "d101", et,
+                ("Confruntare declarație-vs-sursă-independentă, pe an. Niciun D101 depus prin "
+                 "aplicație, pe niciun an -> comparația devine posibilă după prima depunere. GRI, "
+                 "nu roșu: absența unei depuneri nu e o divergență."),
+                "Niciun D101 depus prin aplicație — nu pot confrunta nimic.",
+                "declarațiile D101 depuse prin aplicație")], tip)
+        return rez
+    d101 = _depuneri(conn, schema, "d101", an)
+    cu_randuri = [(a, l, r) for (a, l, r) in d101 if r]
+
+    if not d101:
+        for tip, et in ((TIP_D101_VS_D100, "D101 vs D100 depuse (plăți anticipate)"),
+                        (TIP_D101_VS_691, "D101 vs contabilitate (cont 691)")):
+            rez += _stampileaza([_absenta_libera(
+                "d101", "%s — %d" % (et, an),
+                ("Confruntare declarație-vs-sursă-independentă pe anul %d. Niciun D101 depus prin "
+                 "aplicație pe anul ăsta -> nu am ce confrunta. GRI, nu roșu: absența unei depuneri "
+                 "nu e o divergență." % an),
+                "Niciun D101 depus prin aplicație pe %d — nu pot confrunta nimic." % an,
+                "declarațiile D101 depuse prin aplicație, pe anul %d" % an)], tip)
+        return rez
+    if not cu_randuri:
+        for tip, et in ((TIP_D101_VS_D100, "D101 vs D100 depuse (plăți anticipate)"),
+                        (TIP_D101_VS_691, "D101 vs contabilitate (cont 691)")):
+            rez += _stampileaza([_absenta_libera(
+                "d101", "%s — %d" % (et, an),
+                "D101 depus fără rânduri persistate (depunere anterioară persistării sau import "
+                "istoric). GRI, nu roșu — absența datelor nu e divergență.",
+                "D101 depus pe %d, dar fără rânduri persistate — nu pot confrunta." % an,
+                "rândurile persistate ale D101 depus pe %d" % an)], tip)
+        return rez
+
+    _a, _l, r101 = cu_randuri[-1]
+    P = (r101 or {}).get("P") or {}
+    d_grup = int((r101 or {}).get("d_grup") or 0)
+    p48 = _d(P.get("P48") or 0)
+    p50 = _d(P.get("P50") or 0)
+
+    rez += _stampileaza(_pereche_p50(conn, schema, an, p50, d_grup), TIP_D101_VS_D100)
+    rez += _stampileaza(_pereche_691(conn, schema, an, p48, d_grup), TIP_D101_VS_691)
+    return rez
+
+
+def _pereche_p50(conn, schema, an, p50, d_grup):
+    """D101 rd.50 vs suma „Suma de plată" din D100-urile depuse pe an.
+
+    **IDENTITATEA, VERBATIM (OPANAF 206/2025, instrucțiunile formularului 101):** *„Rândul 50 - se
+    înscriu, pentru anul de raportare, după caz, sumele reprezentând impozit pe profit, impozit pe
+    profit la nivelul impozitului minim pe cifra de afaceri sau plăți anticipate în contul
+    impozitului pe profit, declarate trimestrial prin formularul 100, la rândul «Suma de plată»."*
+
+    **SURSE INDEPENDENTE, și de-aia perechea are rost:** rândul 50 e o valoare pe care o pune
+    contabilul în D101; suma din dreapta e ce s-a **declarat efectiv** trimestrial. Niciuna nu se
+    derivă din cealaltă.
+
+    **EXCEPȚIA DE GRUP, tot verbatim:** *„În cazul membrilor unui grup fiscal în domeniul
+    impozitului pe profit, rândurile 41.2, 48, 50, 52 și 53 din formular nu se completează."* Deci
+    pe `d_grup=1` perechea **tace** — nu e verde, nu e gri: nu se aplică."""
+    eticheta = "D101 rd.50 vs D100 depuse — %d" % an
+    temei = ("OPANAF 206/2025, instrucțiunile formularului 101, rândul 50: sumele declarate "
+             "trimestrial prin formularul 100, la rândul «Suma de plată». Confruntă ce a scris "
+             "contabilul în D101 cu ce s-a declarat efectiv în D100 — două surse independente.")
+    if d_grup:
+        return []                      # membru de grup: rândul nu se completează -> fără subiect
+    dep = _depuneri(conn, schema, "d100", an)
+    if not dep:
+        if p50 == 0:
+            return []                  # nimic declarat, nimic depus: tăcut, fără subiect
+        return [_gri_liber(
+            "d101", eticheta,
+            temei + " Niciun D100 depus prin aplicație pe anul ăsta.",
+            "D101 declară %s plăți anticipate, dar niciun D100 nu e depus prin aplicație pe %d — "
+            "nu pot confrunta. Absența depunerii prin aplicație NU dovedește că n-a fost depusă."
+            % (_lei(p50), an), an, 12)]
+    suma, cu, fara = _plati_anticipate_din_d100(dep)
+    if fara:
+        return [_gri_liber(
+            "d101", eticheta,
+            temei + " %d din %d depuneri D100 n-au rânduri persistate." % (fara, len(dep)),
+            "Nu pot confrunta: %d din %d depuneri D100 pe %d n-au rânduri persistate, deci suma "
+            "lor nu se poate citi. O depunere fără rânduri nu e o depunere cu zero."
+            % (fara, len(dep), an), an, 12)]
+    dif = p50 - suma
+    baza = {"eticheta": eticheta, "declarat_d101": int(p50), "declarat_d100": int(suma),
+            "diferenta": int(dif), "nr_d100": cu}
+    if p50 == 0 and suma == 0:
+        return []
+    if abs(dif) <= TOLERANTA:
+        return [dict(baza, stare="verde", temei=temei, remediu=None,
+                     mesaj="%s: rândul 50 și suma «de plată» din cele %d D100 depuse coincid (%s)."
+                           % (eticheta, cu, _lei(p50)))]
+    return [dict(baza, stare="rosu", temei=temei,
+                 mesaj="%s: D101 rândul 50 = %s, iar D100 depuse însumează %s (diferență %s)."
+                       % (eticheta, _lei(p50), _lei(suma), _lei(dif)),
+                 remediu={"fel": "sugerat",
+                          "cauza": "Rândul 50 din D101 trebuie să fie suma «de plată» declarată "
+                                   "trimestrial prin D100 pe anul %d; cele %d depuneri D100 "
+                                   "însumează %s." % (an, cu, _lei(suma)),
+                          "actiune": "Verifică dacă rândul 50 a fost completat din alt an, dacă "
+                                     "lipsește un trimestru, sau dacă o depunere s-a făcut în afara "
+                                     "aplicației. Corecția o confirmă omul.",
+                          "facturi": []})]
+
+
+def _ciorna_pe_cont(conn, schema, an, cont):
+    """Exista note NEVALIDATE care ating contul, in anul dat? `rulaje_interval` numara doar
+    `status='validata'` — deci fara intrebarea asta, o nota in ciorna arata identic cu absenta ei."""
+    with conn.cursor() as cur:
+        cur.execute(f"""
+            SELECT count(*) FROM {schema}.inregistrari_linii l
+            JOIN {schema}.inregistrari i ON i.id = l.inregistrare_id
+            WHERE i.data >= %s AND i.data < %s AND i.status <> 'validata'
+              AND (l.cont_debit = %s OR l.cont_credit = %s)
+        """, ("%d-01-01" % an, "%d-01-01" % (an + 1), cont, cont))
+        return (cur.fetchone() or [0])[0] > 0
+
+
+def _pereche_691(conn, schema, an, p48, d_grup):
+    """D101 rd.48 vs rulajul debitor al contului 691 pe an.
+
+    **IDENTITATEA:** rd.48 e, verbatim (OPANAF 206/2025), *„impozitul pe profit anual datorat"*
+    (prin rd.48.1) sau impozitul la nivelul impozitului minim pe cifra de afaceri (rd.48.2).
+    Contabil, acesta se înregistrează în contul **691** — OMFP 1802/2014, verbatim: *„691.
+    Cheltuieli cu impozitul pe profit"*.
+
+    **SURSE INDEPENDENTE:** stânga e calculul fiscal al declarației, dreapta e ce s-a înregistrat
+    efectiv în contabilitate. Costin: *„Doar impozitul; baza diferă legitim prin cheltuieli
+    nedeductibile"* — de-aia se compară impozitul, nu profitul.
+
+    **NU se compară cu rândul 35 al F20**, care adună `691 + 698`; 698 e „Cheltuieli cu impozitul pe
+    venit și cu alte impozite" — altă taxă. Vezi `CONT_IMPOZIT_PROFIT`.
+
+    **Pe membrii de grup, rd.48 nu se completează** (verbatim, aceeași frază ca la rd.50), iar
+    impozitul din decontările de grup merge în contul 694, nu 691 — deci perechea nu se aplică."""
+    eticheta = "D101 rd.48 vs cont 691 — %d" % an
+    temei = ("OPANAF 206/2025 rd.48 («impozitul pe profit anual datorat») față de contul 691 "
+             "(«Cheltuieli cu impozitul pe profit», OMFP 1802/2014), rulaj debitor pe anul %d, "
+             "numai note VALIDATE. Declarația față de evidență — surse independente. NU se "
+             "folosește rândul 35 al F20: acolo 691 e adunat cu 698 (impozit pe VENIT), iar "
+             "numerotarea F20 stă pe o sursă declarată de modul ca versiune necunoscută." % an)
+    if d_grup:
+        return []
+    rulaje = rulaje_interval(conn, schema, "%d-01-01" % an, "%d-01-01" % (an + 1),
+                             [CONT_IMPOZIT_PROFIT])
+    contabil = _d(rulaje.get(CONT_IMPOZIT_PROFIT, {}).get("debit") or 0)
+    dif = p48 - contabil
+    # O nota de regularizare inca in CIORNA explica LEGITIM diferenta — iar o explicatie legitima
+    # strica definitia unei constatari CERTE (criteriul lui Costin). Se inchide numind-o: cat timp
+    # exista ciorna pe 691, perechea nu afirma o eroare, spune ca nu poate inca sa se pronunte.
+    if abs(dif) > TOLERANTA and _ciorna_pe_cont(conn, schema, an, CONT_IMPOZIT_PROFIT):
+        return [_gri_liber(
+            "d101", eticheta,
+            temei + " Exista note NEVALIDATE pe contul 691 in anul evaluat.",
+            "Nu ma pronunt inca: D101 declara %s, contul 691 are %s validat, dar exista note in "
+            "CIORNA pe 691 pe %d. Diferenta se poate inchide la validarea lor — deci nu e o eroare "
+            "constatata, e o verificare care asteapta." % (_lei(p48), _lei(contabil), an), an, 12)]
+    baza = {"eticheta": eticheta, "declarat_d101": int(p48), "inregistrat_691": int(contabil),
+            "diferenta": int(dif)}
+    if p48 == 0 and contabil == 0:
+        return []
+    if abs(dif) <= TOLERANTA:
+        return [dict(baza, stare="verde", temei=temei, remediu=None,
+                     mesaj="%s: impozitul declarat și cel înregistrat în 691 coincid (%s)."
+                           % (eticheta, _lei(p48)))]
+    return [dict(baza, stare="rosu", temei=temei,
+                 mesaj="%s: D101 declară %s, iar contul 691 are rulaj debitor %s (diferență %s)."
+                       % (eticheta, _lei(p48), _lei(contabil), _lei(dif)),
+                 remediu={"fel": "sugerat",
+                          "cauza": "Impozitul pe profit anual datorat (rd.48) diferă de cheltuiala "
+                                   "înregistrată în contul 691 pe %d." % an,
+                          "actiune": "Verifică nota de regularizare a impozitului la închiderea "
+                                     "anului, și dacă impozitul micro (cont 698) n-a fost "
+                                     "înregistrat din greșeală în 691. Corecția o confirmă omul.",
+                          "facturi": []})]

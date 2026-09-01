@@ -13463,3 +13463,21 @@ o spune singură.* Textul care pretindea că rândurile sunt „manual-only" era
 **(48) Declanșatorul stă pe slotul de 08:00 care există, iar ruta la cerere cheamă ACEEAȘI funcție.**
 Nu există două definiții ale confruntării. Ce diferă între cele două chemări e **domeniul**, și el se
 declară în răspuns: cronul rulează pe portofoliu (19), ruta pe firmele apelantului (14).
+
+**(49) Latura contabilă a perechii D101 e CONTUL 691, nu rândul 35 al F20.** Costin a numit „contul
+de profit și pierdere (F20)"; substanța e aceeași, ancora nu. `core/bilant.py:245` pune în rd.35
+`691 + 698`, iar OMFP 1802 spune verbatim că 698 e **impozit pe venit** — deci pe o firmă cu trecere
+micro→profit rândul ar aduna două taxe și ar produce divergență falsă. În plus, antetul modulului
+își declară singur sursa numerotării F20 ca „VERSIUNE NECUNOSCUTĂ": n-ar fi temei, ar fi presupunere.
+
+**(50) Trei dintre cele cinci perechi propuse NU s-au construit, fiecare cu motivul ei.** *„Ce nu se
+confirmă la sursă se consemnează ca respins"* — aplicat: **P300** n-are acces programatic (R121,
+EXTERNĂ) · **D394↔e-Factura** cere ca D394 să-și expună facturile, deci schimbare de generator, clasa
+R105 (R119) · **D300↔D394** are ancora confirmată (`lit. C`, nu „secțiunea C"), dar maparea rând-cu-rând
+nu e verificată (R120). *Niciuna nu s-a construit pe presupunere.*
+
+**(51) Am aplicat criteriul tăriei pe propriile mele perechi, și a scos o contradicție pe care o
+ridic.** Pe rd.50, o explicație legitimă rămâne deschisă — un D100 depus **în afara aplicației** nu
+intră în suma din dreapta. Prin criteriul lui Costin, asta ar face perechea EURISTICĂ, nu CERTĂ. **N-am
+schimbat tăria** (atribuirea e a lui), am scris-o în `motiv_tarie` și i-o ridic. *Ridicarea
+contradicției rămâne obligatorie chiar când rezoluția implicită e clară.*

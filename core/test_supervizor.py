@@ -306,9 +306,18 @@ def test_a_cincea_cale_FARA_NICIO_DEPUNERE_e_stampilata_si_supervizorul_o_VEDE()
         "axa orizontala a produs %d constatari, dar din `verifica_d390` ies %d tipate — restul "
         "sunt netipate, iar supervizorul le sare TACUT: firma apare cu zero constatari, ceea ce se "
         "citeste ca «nimic de semnalat»" % (len(etalon), len(tipate)))
-    assert len(vazute) == len(etalon), "supervizorul NU vede a cincea cale — filtrul pe tip a inghitit-o"
-    # R115 inchisa: taria e EURISTICA, si o euristica NU cere confirmare niciodata.
-    assert all(c["tarie"] == S.EURISTICA for c in vazute)
+    vazute_d390 = [c for c in vazute if c["tip_constatare"] == _ci.TIP_D390_VS_D300]
+    assert len(vazute_d390) == len(etalon), (
+        "supervizorul NU vede a cincea cale — filtrul pe tip a inghitit-o")
+    # R115 inchisa: perechea D390 e EURISTICA, si o euristica NU cere confirmare niciodata.
+    assert all(c["tarie"] == S.EURISTICA for c in vazute_d390)
+    # [02.09.2026] Firma de proba n-are D101 depus, deci perechile ANUALE ies ca ABSENTA (gri).
+    # Sunt CERTE, dar o certa cere confirmare doar pe ROSU — o absenta nu e o nepotrivire.
+    anuale = [c for c in vazute if c["tip_constatare"] != _ci.TIP_D390_VS_D300]
+    assert anuale, "[anti-vacuu] perechile anuale n-au produs nimic — proba nu le-ar acoperi"
+    assert all(c["tarie"] == S.CERTA for c in anuale)
+    assert all(c["stare"] == "gri" for c in anuale)
+    # NICIUNA nu cere confirmare: euristicele niciodata, certele doar pe rosu.
     assert all(c["cere_confirmare"] is False for c in vazute)
 
 
@@ -377,6 +386,9 @@ _PLAN = {
 def _cu_plan(monkeypatch):
     monkeypatch.setattr(_ci, "verifica_d390",
                         lambda conn, schema, an, luna: _PLAN[schema])
+    # perechile ANUALE ale D101 cer o conexiune reală; probele astea măsoară parcurgerea
+    # portofoliului, nu perechile — deci se tac explicit, nu se lasă să ridice din altă cauză
+    monkeypatch.setattr(_ci, "orizontal_d101", lambda conn, schema, an: [])
 
 
 def test_TOATE_CELE_TREI_rezultate_apar_si_SUMA_lor_e_domeniul(monkeypatch):
@@ -462,6 +474,7 @@ def test_campul_ORIZONTAL_RULAT_lipsa_RIDICA_nu_cade_pe_implicit(monkeypatch):
     implicit ar alege tăcut între «n-am verificat» și «e curat»."""
     monkeypatch.setattr(_ci, "verifica_d390",
                         lambda conn, schema, an, luna: {"constatari": []})
+    monkeypatch.setattr(_ci, "orizontal_d101", lambda conn, schema, an: [])
     with pytest.raises(ValueError):
         S._culege_firma(object(), "s", 2026, 8)
 
@@ -557,3 +570,199 @@ def test_ruta_la_cerere_NU_scapa_schema_si_isi_NUMESTE_domeniul(monkeypatch):
     assert f["rezultat"] == S.NEVERIFICAT
     assert f["neverificat"]["felul_neverificarii"] == S.EXCEPTIE
     assert f["neverificat"]["eroare"]
+
+
+# ── 9. PERECHILE ANUALE ALE D101 — pe surse INDEPENDENTE (02.09.2026) ──────────────────────────
+# Costin: *„Continuă cu perechile orizontale care confruntă surse independente — perechea de azi nu
+# o face, și tu ai scris de ce."* Identitățile sunt verificate VERBATIM în corpus, înainte de cod:
+#   · rd.50 — OPANAF 206/2099: «declarate trimestrial prin formularul 100, la rândul Suma de plată»
+#   · rd.48 — OPANAF 206/2099: «impozitul pe profit anual datorat»
+#   · contul 691 — OMFP 1802/2014: «Cheltuieli cu impozitul pe profit» (698 e impozit pe VENIT)
+#
+# CALIBRARE: portofoliul viu n-are nicio depunere D101 cu rânduri, deci fără subiect fabricat
+# perechile astea n-ar fi probate niciodată. Se fabrică, în ROLLBACK.
+import psycopg2.extras as _E   # noqa: E402
+
+
+def _schema_efemera(cur, nume):
+    cur.execute("DROP SCHEMA IF EXISTS %s CASCADE" % nume)
+    cur.execute(_tp.parametrizeaza_template(
+        open("tenant_template.sql", encoding="utf-8").read(), nume))
+    cur.execute(
+        "INSERT INTO %s.firma_profil (id, nume, cui, platitor_tva, tip_decont, declarant_nume, "
+        "declarant_prenume, declarant_functie) VALUES (1, 'PROBA D101', '14399840', true, 'L', "
+        "'Popescu', 'Ion', 'ADMINISTRATOR')" % nume)
+    cur.execute("INSERT INTO public.tenants (schema_name, nume) VALUES (%s, 'PROBA D101') "
+                "RETURNING id", (nume,))
+    return cur.fetchone()[0]
+
+
+def _pune_d101(cur, tid, an, P, d_grup=0):
+    # fixtura-sintetica-ok: anul vine ca PARAMETRU, deci scanerul nu-l poate vedea; toti apelantii
+    # dau 2099, iar tenant_id-ul e sintetic (rand nou in public.tenants, in rollback).
+    cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, "
+                "nr_depunere) VALUES (%s, %s, 12, 'd101', '<x/>', %s, 1)",
+                (tid, an, _E.Json({"an": an, "P": P, "d_grup": d_grup})))
+
+
+def _pune_d100(cur, tid, an, luna, suma, cod="103"):
+    # fixtura-sintetica-ok: idem — anul e parametru, toti apelantii dau 2099, tenant_id sintetic.
+    cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, "
+                "nr_depunere) VALUES (%s, %s, %s, 'd100', '<x/>', %s, 1)",
+                (tid, an, luna, _E.Json({"an": an, "luna": luna,
+                                         "obligatii": [{"cod_oblig": cod, "suma_dat": suma,
+                                                        "suma_plata": suma}]})))
+
+
+def _perechi(conn, schema, tip):
+    return [c for c in _ci.orizontal_d101(conn, schema, 2026) if c["tip_constatare"] == tip]
+
+
+def test_pereche_D101_vs_D100_COINCID_da_verde_si_DIVERG_da_rosu():
+    """CALIBRARE ÎN AMÂNDOUĂ DIRECȚIILE, pe subiect fabricat. Un test care ar proba doar verdele
+    n-ar dovedi că perechea poate spune vreodată nu."""
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            tid = _schema_efemera(cur, "ztest_sv_d101a")
+            # fixtura-sintetica-ok: tenant_id sintetic, in rollback
+            _pune_d101(cur, tid, 2099, {"P48": 10000, "P50": 3000})
+            _pune_d100(cur, tid, 2099, 3, 1000)
+            _pune_d100(cur, tid, 2099, 6, 2000)
+            cur.execute("SET LOCAL search_path TO ztest_sv_d101a, public")
+            coincid = _perechi(conn, "ztest_sv_d101a", _ci.TIP_D101_VS_D100)
+            # acum stricam o singura latura: mai adaugam un trimestru -> suma devine 3500
+            _pune_d100(cur, tid, 2099, 9, 500)
+            diverg = _perechi(conn, "ztest_sv_d101a", _ci.TIP_D101_VS_D100)
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+
+    assert len(coincid) == 1, "[anti-vacuu] perechea n-a produs nicio constatare pe cazul coincident"
+    assert coincid[0]["stare"] == "verde", coincid[0]["mesaj"]
+    assert coincid[0]["declarat_d101"] == 3000 and coincid[0]["declarat_d100"] == 3000
+
+    assert len(diverg) == 1
+    assert diverg[0]["stare"] == "rosu", (
+        "1.000 + 2.000 + 500 = 3.500 față de 3.000 declarat, și perechea NU spune roșu — "
+        "atunci n-ar putea spune niciodată nu")
+    assert diverg[0]["diferenta"] == -500
+    assert diverg[0]["remediu"]["fel"] == "sugerat"
+
+
+def test_pereche_D101_vs_691_COINCID_da_verde_si_DIVERG_da_rosu():
+    """Aceeași calibrare pe latura contabilă: nota de impozit se scrie în evidență, nu se fabrică
+    în declarație."""
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            tid = _schema_efemera(cur, "ztest_sv_d101b")
+            _pune_d101(cur, tid, 2099, {"P48": 4000, "P50": 0})
+            cur.execute("INSERT INTO ztest_sv_d101b.inregistrari (data, status, descriere) "
+                        "VALUES ('2099-12-31', 'validata', 'impozit profit') RETURNING id")
+            nid = cur.fetchone()[0]
+            cur.execute("INSERT INTO ztest_sv_d101b.inregistrari_linii "
+                        "(inregistrare_id, cont_debit, cont_credit, suma) "
+                        "VALUES (%s, '691', '441', 4000)", (nid,))
+            cur.execute("SET LOCAL search_path TO ztest_sv_d101b, public")
+            coincid = _perechi(conn, "ztest_sv_d101b", _ci.TIP_D101_VS_691)
+            # a doua nota, tot VALIDATA -> 691 urca la 4.600, declaratia ramane 4.000
+            cur.execute("INSERT INTO ztest_sv_d101b.inregistrari (data, status, descriere) "
+                        "VALUES ('2099-12-31', 'validata', 'inca una') RETURNING id")
+            nid2 = cur.fetchone()[0]
+            cur.execute("INSERT INTO ztest_sv_d101b.inregistrari_linii "
+                        "(inregistrare_id, cont_debit, cont_credit, suma) "
+                        "VALUES (%s, '691', '441', 600)", (nid2,))
+            diverg = _perechi(conn, "ztest_sv_d101b", _ci.TIP_D101_VS_691)
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+
+    assert len(coincid) == 1, "[anti-vacuu] perechea n-a produs nicio constatare pe cazul coincident"
+    assert coincid[0]["stare"] == "verde", coincid[0]["mesaj"]
+    assert coincid[0]["inregistrat_691"] == 4000
+    assert len(diverg) == 1 and diverg[0]["stare"] == "rosu"
+    assert diverg[0]["diferenta"] == -600
+
+
+def test_o_nota_in_CIORNA_pe_691_face_perechea_sa_TACA_nu_sa_acuze():
+    """**Miezul unei constatări CERTE, aplicând criteriul lui Costin:** *tăria se dă după dacă
+    diferența admite o explicație legitimă*. O notă de regularizare încă în ciornă e chiar o
+    explicație legitimă — deci, cât timp există, perechea NU are voie să afirme o eroare."""
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            tid = _schema_efemera(cur, "ztest_sv_d101c")
+            _pune_d101(cur, tid, 2099, {"P48": 4000, "P50": 0})
+            cur.execute("INSERT INTO ztest_sv_d101c.inregistrari (data, status, descriere) "
+                        "VALUES ('2099-12-31', 'ciorna', 'regularizare, inca ciorna') RETURNING id")
+            nid = cur.fetchone()[0]
+            cur.execute("INSERT INTO ztest_sv_d101c.inregistrari_linii "
+                        "(inregistrare_id, cont_debit, cont_credit, suma) "
+                        "VALUES (%s, '691', '441', 4000)", (nid,))
+            cur.execute("SET LOCAL search_path TO ztest_sv_d101c, public")
+            cs = _perechi(conn, "ztest_sv_d101c", _ci.TIP_D101_VS_691)
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+    assert len(cs) == 1, "[anti-vacuu] perechea n-a produs nimic — proba n-ar masura nimic"
+    assert cs[0]["stare"] == "gri", (
+        "nota de regularizare e in CIORNA, deci diferenta are o explicatie legitima — perechea "
+        "acuza o eroare pe care n-o poate sustine")
+
+
+def test_un_MEMBRU_DE_GRUP_fiscal_nu_e_confruntat_pe_randurile_care_nu_se_completeaza():
+    """OPANAF 206/2099, verbatim: *„În cazul membrilor unui grup fiscal în domeniul impozitului pe
+    profit, rândurile 41.2, 48, 50, 52 și 53 din formular nu se completează."* Deci pe `d_grup=1`
+    perechile TAC — nu sunt verzi (n-au verificat nimic) și nu sunt roșii (n-au ce compara)."""
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            tid = _schema_efemera(cur, "ztest_sv_d101d")
+            _pune_d101(cur, tid, 2099, {"P48": 0, "P50": 0}, d_grup=1)
+            _pune_d100(cur, tid, 2099, 3, 9999)
+            cur.execute("SET LOCAL search_path TO ztest_sv_d101d, public")
+            toate = _ci.orizontal_d101(conn, "ztest_sv_d101d", 2026)
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+    anuale = [c for c in toate if c["tip_constatare"].startswith("D101")]
+    assert anuale == [], (
+        "un membru de grup a primit constatări pe rânduri pe care ordinul spune că nu le "
+        "completează: %s" % [c.get("mesaj") for c in anuale])
+
+
+def test_o_depunere_D100_FARA_randuri_nu_se_numara_ca_ZERO():
+    """*O depunere fără rânduri persistate nu e o depunere cu zero.* Dacă s-ar aduna ca zero, suma
+    din dreapta ar fi mai mică decât realitatea, iar perechea ar numi divergență propria ei orbire."""
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            tid = _schema_efemera(cur, "ztest_sv_d101e")
+            _pune_d101(cur, tid, 2099, {"P48": 0, "P50": 3000})
+            _pune_d100(cur, tid, 2099, 3, 3000)
+            cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, "
+                        "randuri, nr_depunere) VALUES (%s, 2099, 6, 'd100', '<x/>', NULL, 1)", (tid,))
+            cur.execute("SET LOCAL search_path TO ztest_sv_d101e, public")
+            cs = _perechi(conn, "ztest_sv_d101e", _ci.TIP_D101_VS_D100)
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+    assert len(cs) == 1
+    assert cs[0]["stare"] == "gri", (
+        "o depunere D100 fără rânduri a fost socotită ZERO, iar perechea a tras o concluzie din "
+        "propria ei orbire")
+
+
+def test_perechile_anuale_NU_se_ancoreaza_pe_anul_CURENT():
+    """D101 se depune pentru anul ÎNCHEIAT. O pereche ancorată pe anul curent ar fi GRI PERMANENT
+    prin construcție — capcana pe care perechea D390 a rezolvat-o deja cu `_d300_depus_recent`."""
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            tid = _schema_efemera(cur, "ztest_sv_d101f")
+            _pune_d101(cur, tid, 2099, {"P48": 0, "P50": 3000})
+            _pune_d100(cur, tid, 2099, 3, 3000)
+            cur.execute("SET LOCAL search_path TO ztest_sv_d101f, public")
+            # se cere anul 2026 (curent), dar depunerea e pe 2099 -> trebuie evaluat 2099
+            cs = _perechi(conn, "ztest_sv_d101f", _ci.TIP_D101_VS_D100)
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+    assert len(cs) == 1 and cs[0]["stare"] == "verde", (
+        "perechea s-a ancorat pe anul cerut, nu pe anul ultimei depuneri — ar fi gri pe vecie")
+    assert "2099" in cs[0]["eticheta"]

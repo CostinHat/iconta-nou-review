@@ -96,6 +96,49 @@ TIPURI = {
             "fiscal), regularizări, rotunjire. Deci NU orice nepotrivire e eroare, deci nu e certă. "
             "*Faptul că ambele părți sunt declarate n-a contat — a fost întrebarea mea greșită.*",
     },
+    # ── perechile ANUALE ale D101 (02.09.2026) — pe SURSE INDEPENDENTE ────────────────────────
+    # Costin: *„Continuă cu perechile orizontale care confruntă surse independente — perechea de
+    # azi nu o face, și tu ai scris de ce."* Tăria: **CERTE**, dată de el, pe amândouă.
+    "D101_VS_D100_PLATI_ANTICIPATE": {
+        "axa": "ORIZONTALA",
+        "ce": "Rândul 50 din D101 (plăți anticipate declarate trimestrial) față de suma «de plată» "
+              "a obligațiilor de impozit pe profit din D100-urile EFECTIV DEPUSE pe anul de raportare.",
+        "identitate": "D101 rd.50 == Σ D100 «Suma de plată» pe obligațiile de impozit pe profit, "
+                      "pe anul de raportare (OPANAF 206/2025, instrucțiunile formularului 101)",
+        "sursa_stanga": "valoarea pusă de contabil în D101 rd.50 (declaratii_depuse_curente.randuri.P.P50)",
+        "sursa_dreapta": "public.declaratii_depuse_curente, tip d100, obligațiile cu cod de impozit pe profit",
+        "tarie": CERTA,
+        "confirmat": True,
+        "motiv_tarie":
+            "CERTA — **Costin, 02.09.2026**. Identitatea e verificată VERBATIM la sursă: rândul 50 "
+            "«se înscriu … sumele … declarate trimestrial prin formularul 100, la rândul «Suma de "
+            "plată»». E o egalitate prin definiție, deci o nepotrivire e o eroare. "
+            "**DAR, aplicând criteriul lui până la capăt, am găsit o explicație legitimă pe care NU "
+            "o pot exclude din date:** un D100 depus **în afara aplicației** nu intră în suma din "
+            "dreapta, iar diferența ar fi atunci a măsurătorii mele, nu a declarației. Am închis ce "
+            "se putea închide — o depunere fără rânduri persistate dă GRI, nu roșu —, dar absența "
+            "unei depuneri făcute pe altă cale nu se vede de aici. *Îi ridic asta ca întrebare; "
+            "până răspunde, tăria rămâne cea dată de el, fiindcă atribuirea e a lui, nu a mea.*",
+    },
+    "D101_VS_CONT_691": {
+        "axa": "ORIZONTALA",
+        "ce": "Impozitul pe profit anual datorat (D101 rd.48) față de cheltuiala efectiv "
+              "înregistrată în contabilitate, contul 691.",
+        "identitate": "D101 rd.48 == rulaj debitor cont 691 pe anul de raportare, note validate "
+                      "(OPANAF 206/2025 rd.48 · OMFP 1802/2014 pentru contul 691)",
+        "sursa_stanga": "declaratii_depuse_curente.randuri.P.P48 (ce s-a declarat)",
+        "sursa_dreapta": "rulajul debitor al contului 691 din evidența contabilă validată",
+        "tarie": CERTA,
+        "confirmat": True,
+        "motiv_tarie":
+            "CERTA — **Costin, 02.09.2026**. Cele două laturi sunt cu adevărat independente: "
+            "stânga e calculul fiscal al declarației, dreapta e ce s-a înregistrat în contabilitate. "
+            "**Explicația legitimă pe care criteriul lui o cere căutată — o notă de regularizare "
+            "încă în CIORNĂ — e ÎNCHISĂ în cod**: cât timp există note nevalidate pe 691 în anul "
+            "evaluat, perechea spune GRI și numește motivul, în loc să afirme o eroare. Ce rămâne "
+            "după asta chiar nu admite explicație legitimă. *Contul e 691, nu rândul 35 al F20: "
+            "acolo `core/bilant.py` adună 691 cu 698, iar 698 e impozit pe VENIT — altă taxă.*",
+    },
 }
 
 
@@ -163,12 +206,16 @@ def _culege_firma(conn, schema, an, luna):
     """
     from core import control_incrucisat as _ci
     rez = _ci.verifica_d390(conn, schema, an, luna) or {}
-    brute = rez.get("constatari") or []
+    brute = list(rez.get("constatari") or [])
     rulat = rez.get("orizontal_rulat")
     if rulat is None:
         raise ValueError(
             "`verifica_d390` n-a declarat `orizontal_rulat` — nu pot ști dacă axa orizontală a rulat "
             "sau doar n-a găsit nimic, iar un implicit ar transforma «n-am verificat» în «e curat»")
+    # [02.09.2026] Perechile ANUALE ale D101 — DUPĂ verificarea contractului, nu înainte: dacă
+    # `verifica_d390` a rupt contractul, nu se mai face muncă, se ridică. Se culeg separat fiindcă
+    # au altă perioadă: `verifica_d390` e pe fereastra TVA, identitatea D101 e pe AN.
+    brute = brute + _ci.orizontal_d101(conn, schema, an)
 
     out = []
     for c in brute:

@@ -7073,6 +7073,64 @@ independentă: scanul mobil a numărat **14** `.cab-card` cu fereastra deschisă
 `full_page`, iar cardul nou deplasează layoutul cu ~3%. *O cifră care nu separă contribuția ta de
 deriva dinainte nu e o măsurătoare.*
 
+### Perechi orizontale pe SURSE INDEPENDENTE (02.09.2026) — și trei verdicte de respingere
+
+**Comanda lui Costin, verbatim:** *„Continuă cu perechile orizontale care confruntă surse
+independente — perechea de azi nu o face, și tu ai scris de ce."* Plus regula de lucru: *„Verifică
+fiecare identitate la sursă înainte s-o construiești"* și *„Ce nu se confirmă la sursă se
+consemnează ca respins, cu motivul."*
+
+**AVERTISMENTUL LUI, RESPECTAT ȘI MĂSURAT:** *„D300 a pierdut rândurile de 19% și 9% în ianuarie
+2026, deci numerele de rând nu se iau din memorie."* Citit din cod: azi **R9 = 21%**, **R10 = 11%**.
+
+**CE S-A CONSTRUIT — două perechi, ambele CERTE (tăria dată de el):**
+
+| pereche | identitate | sursa, verificată VERBATIM |
+|---|---|---|
+| **D101 rd.50 ↔ Σ D100 «Suma de plată»** | ce a scris contabilul în D101 față de ce s-a declarat efectiv trimestrial | `opanaf_206_2025_d101.txt:875` |
+| **D101 rd.48 ↔ rulaj debitor cont 691** | impozitul declarat față de cel înregistrat în contabilitate | `opanaf_206_2025_d101.txt:862` + OMFP 1802 pentru 691 |
+
+**O CORECȚIE DE ANCORĂ, față de cum fusese numită.** Costin a spus *„impozitul din D101 = cel din
+contul de profit și pierdere (F20)"*. **Nu se folosește F20 rd.35**, din două motive măsurate:
+`core/bilant.py:245` pune acolo **`691 + 698`**, iar OMFP 1802 spune verbatim că **698 =
+„Cheltuieli cu impozitul pe venit și cu alte impozite"** — altă taxă, care ar produce divergență
+falsă pe o firmă cu trecere micro→profit; și antetul modulului își declară singur sursa formulelor
+de rând ca **„VERSIUNE NECUNOSCUTĂ"**. Se compară cu **contul 691**, confirmat verbatim.
+
+**GĂRZI NOI (6), toate CALIBRATE PE CAZ POZITIV FABRICAT** — portofoliul viu n-are nicio depunere
+D101 cu rânduri, deci fără subiect fabricat perechile n-ar fi probate niciodată:
+`::test_pereche_D101_vs_D100_COINCID_da_verde_si_DIVERG_da_rosu` ·
+`::test_pereche_D101_vs_691_COINCID_da_verde_si_DIVERG_da_rosu` (amândouă în **ambele direcții**) ·
+`::test_o_nota_in_CIORNA_pe_691_face_perechea_sa_TACA_nu_sa_acuze` ·
+`::test_un_MEMBRU_DE_GRUP_fiscal_nu_e_confruntat_pe_randurile_care_nu_se_completeaza` ·
+`::test_o_depunere_D100_FARA_randuri_nu_se_numara_ca_ZERO` ·
+`::test_perechile_anuale_NU_se_ancoreaza_pe_anul_CURENT`.
+**Mutații probate (RED), pe patru direcții:** ciorna ignorată · depunerea fără rânduri numărată ca
+zero · excepția de grup scoasă · ancorarea pe anul curent.
+
+**CRITERIUL LUI, APLICAT PÂNĂ LA CAPĂT — și a scos ceva.** *„Tăria se dă după dacă diferența admite
+o explicație legitimă."* Am căutat explicațiile legitime pe fiecare pereche:
+- **pe 691 am găsit una și am ÎNCHIS-O în cod:** o notă de regularizare încă în **ciornă** explică
+  legitim diferența, iar `rulaje_interval` numără doar note validate. Cât timp există ciornă pe 691,
+  perechea spune **GRI** și numește motivul, în loc să afirme o eroare.
+- **pe rd.50 am găsit una pe care NU o pot închide din date:** un **D100 depus în afara aplicației**
+  nu intră în suma din dreapta, iar diferența ar fi atunci a măsurătorii mele. Am închis ce se putea
+  (depunere fără rânduri → GRI), dar asta nu. *Scrisă în `motiv_tarie` și ridicată ca întrebare —
+  tăria rămâne cea dată de el, fiindcă atribuirea e a lui.*
+
+**TREI VERDICTE DE RESPINGERE, cerute explicit:**
+- **D300 ↔ P300 (RO e-TVA) — RESPINSĂ.** Nu există acces programatic la decontul precompletat.
+  Aplicația documentează chiar contrariul premisei uzuale, în `core/d169n.py`: *„D169n NU este
+  răspunsul la notificarea e-TVA (decont precompletat)"*, cu validatorul și actul ca temei. **R121.**
+- **D394 ↔ e-Factura — sursa există, perechea nu.** `efactura_trimiteri` are `stare='ok'` și
+  `mediu='prod'`, dar `core/d394.py` **nu expune id-urile facturilor** incluse. Nu e „compară două
+  ieșiri", e clasa R105 (motorul nu-și poate desface cifra). **R119.**
+- **D300 ↔ D394 — ancora e `lit. C`, nu „secțiunea C".** Confirmată verbatim
+  (`opanaf_2194_2025_d394.txt:813`): *„C. Rezumatul declarației privind operațiunile desfășurate cu
+  persoane impozabile înregistrate în scopuri de TVA"* — substanța numită de Costin e corectă,
+  eticheta nu. Maparea rând-cu-rand D300 ↔ lit. C **nu e încă verificată**, deci nu se construiește.
+  **R120.**
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **506 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.

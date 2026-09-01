@@ -270,7 +270,7 @@ reparat; una ancorată pe EFECT nu.*
 |---|---|---|---|
 | **77** | **61** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
 | **77u** | **785** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->
@@ -458,7 +458,22 @@ acum un nume și patru instanțe într-o zi.*
   Din 55 de depuneri, 1 are rânduri persistate, dar aceea e un **d301**; dintre cele **3** depuneri
   **d300**, **niciuna** n-are rânduri. Calea curentă le persistă (verificat la sursă:
   `coada_api.randuri_din_res` + `marcheaza_depusa`), deci populația crește de acum înainte.
-- **NU S-A CONSTRUIT NICIO PERECHE NOUĂ, și motivul e acum MĂSURAT, nu doar principial.** Pe lângă
+- **DOUĂ PERECHI NOI, PE SURSE INDEPENDENTE** *(02.09)*: **D101 rd.50 ↔ Σ D100 «Suma de plată»** și
+  **D101 rd.48 ↔ rulaj debitor cont 691**. Amândouă **CERTE** (tăria dată de Costin), amândouă cu
+  identitatea verificată **verbatim** în corpus înainte de a fi scrise. *Perechea D390 rămâne ce
+  era: aceeași realitate calculată de două motoare.*
+- **TREI DIN CINCI CANDIDAȚI AU FOST RESPINȘI, fiecare cu motivul lui** — R119 (D394 nu-și expune
+  facturile, deci perechea cu e-Factura cere schimbare de generator) · R120 (ancora D394 e `lit. C`,
+  nu „secțiunea C"; maparea rând-cu-rând neverificată) · R121 (P300/e-TVA n-are acces programatic).
+- **O CORECȚIE DE ANCORĂ care merită ținută minte:** latura contabilă a D101 e **contul 691**, NU
+  rândul 35 al F20 — acolo `core/bilant.py` adună `691 + 698`, iar 698 e impozit pe **venit**.
+- **CONTRADICȚIA RIDICATĂ, nerezolvată:** pe rd.50, o explicație legitimă rămâne deschisă (un D100
+  depus în afara aplicației), ceea ce prin criteriul lui Costin ar face perechea euristică. Tăria
+  rămâne CERTA — atribuirea e a lui.
+- **Cele două perechi noi sunt CALIBRATE PE CAZ FABRICAT**, fiindcă portofoliul viu n-are nicio
+  depunere D101 cu rânduri. *Verde și roșu, amândouă probate; fără asta ar fi fost două funcții care
+  n-au spus niciodată nu.*
+- **Perechea D390 rămâne înfometată, și motivul e MĂSURAT, nu doar principial.** Pe lângă
   temeiul lipsă al identității: axa e înfometată de **subiect**, nu de perechi. Din cele **3**
   depuneri `d300` din bază, **zero** au rânduri persistate; la fel `d394`; singura depunere cu
   rânduri din toată baza e un **d301**. O pereche nouă ar răspunde tot *„n-am ce compara"* — un al

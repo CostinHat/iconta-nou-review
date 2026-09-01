@@ -7408,3 +7408,44 @@ referințe refăcute pe HEAD, comparație. Diferența e a mea și e **benignă**
 sub fereastră (dovadă independentă: scanul mobil a numărat 14 carduri cu fereastra deschisă), iar
 capturile sunt `full_page`. *O cifră care nu separă contribuția ta de deriva dinainte nu e o
 măsurătoare.*
+
+
+---
+
+## 02.09.2026 — perechi pe surse independente, și trei respingeri
+
+**Comanda a pornit de la o propoziție a mea, întoarsă împotriva mea:** *„perechea de azi nu confruntă
+surse independente, și tu ai scris de ce"*. Corect — D390 și D300 se derivă amândouă din aceleași
+facturi. Costin a dat cinci candidați și o regulă: **verifică fiecare identitate la sursă înainte
+s-o construiești**; ce nu se confirmă, se consemnează respins.
+
+**Tura a fost, în cea mai mare parte, citire de corpus. Și asta a fost partea utilă.** Din cinci
+candidați, **doi** s-au confirmat verbatim și s-au construit, **trei** s-au respins — fiecare cu
+motivul lui, niciunul cu „mai târziu".
+
+**Ce a scos verificarea la sursă, dincolo de da/nu:**
+- **O corecție de ancoră.** Costin numise latura contabilă „F20". Rândul 35 al F20 adună `691 + 698`,
+  iar OMFP 1802 spune verbatim că 698 e **impozit pe venit** — altă taxă. Pe o firmă cu trecere
+  micro→profit, perechea ar fi acuzat o divergență care nu există. Se compară cu contul **691**.
+- **O etichetă care nu mai există.** „Secțiunea C" din D394 se cheamă, în ordinul curent, **`lit. C`**
+  — substanța numită de el e exact aceea, dar numele nu se mai potrivește. *Dacă aș fi construit pe
+  numele din comandă, aș fi căutat o secțiune inexistentă și aș fi tras concluzia că ancora e greșită.*
+- **Avertismentul lui, confirmat de cod:** D300 chiar și-a pierdut rândurile de 19% și 9%; azi are
+  **R9 = 21%** și **R10 = 11%**.
+
+**Criteriul tăriei, aplicat pe propriile mele perechi, a scos o contradicție.** Pe rd.48 am găsit o
+explicație legitimă — nota de regularizare încă în ciornă — și am **închis-o în cod**: cât timp există
+ciornă pe 691, perechea spune gri și numește motivul. Pe rd.50 am găsit una pe care **nu o pot
+închide din date**: un D100 depus în afara aplicației nu intră în suma din dreapta. Prin criteriul lui
+Costin, asta ar face perechea euristică. **N-am schimbat tăria** — atribuirea e a lui —, am scris-o
+în `motiv_tarie` și i-o ridic.
+
+**Calibrarea a trebuit fabricată, și e cinstit spus de ce.** Portofoliul viu n-are nicio depunere D101
+cu rânduri persistate, deci perechile n-ar fi fost probate niciodată pe date reale. Subiectul s-a
+construit pe schemă efemeră, în rollback: coincidență → verde, divergență → roșu, ciornă → gri, membru
+de grup → tăcut, depunere fără rânduri → gri. *Fără cazul pozitiv, cele două perechi ar fi fost două
+funcții verzi care n-au spus niciodată nu.*
+
+**Și o capcană evitată prin precedent, nu prin inspirație:** ancorarea pe anul curent ar fi făcut
+perechile gri pe vecie, fiindcă D101 se depune pentru anul încheiat. E fix capcana pe care perechea
+D390 o rezolvase deja cu `_d300_depus_recent`. Am refolosit tiparul.

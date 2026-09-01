@@ -60,7 +60,48 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   propriu, cu poarta vizuala trecuta. Iesit din `test_module_nelegate.PIN`.
 - urmator: **R118** (fisierele statice n-au poarta intre scriere si productie) ramane CONSEMNATA,
   nelucrata. NEINCEPUT
-- fir INCHIS: **SUPERVIZORUL S-A LEGAT.** Costin a dat cele doua lucruri ramase (01.09):
+- fir: **PERECHI ORIZONTALE PE SURSE INDEPENDENTE** (02.09.2026). Costin: *„perechea de azi nu o
+  face, si tu ai scris de ce"* — D390 si D300 vin din aceleasi facturi. Cinci candidati dati de el,
+  fiecare cu identitatea VERIFICATA LA SURSA inainte de constructie; ce nu se confirma se consemneaza
+  RESPINS, cu motivul. Avertisment respectat: D300 a pierdut randurile de 19% si 9% in ianuarie 2026,
+  deci numerele de rand se citesc din cod/XSD, nu din memorie (masurat: azi R9=21%, R10=11%).
+- ultim: cele doua perechi CERTE, construite si calibrate; trei verdicte de respingere
+- urmator: R119 / R120 / R121, fiecare cu conditia ei scrisa. NEINCEPUT
+- pasi:
+  1. **VERDICTELE LA SURSA — facute inainte de orice cod:**
+     · **D101 <-> D100: CONFIRMAT VERBATIM.** `anaf_surse/opanaf_206_2025_d101.txt:875` — *„Randul 50
+       — se inscriu, pentru anul de raportare, ... sumele reprezentand impozit pe profit ... sau plati
+       anticipate in contul impozitului pe profit, declarate trimestrial prin formularul 100, la
+       randul «Suma de plata»"*. Plus exceptia, tot verbatim (linia ~888): *„In cazul membrilor unui
+       grup fiscal ... randurile 41.2, 48, 50, 52 si 53 din formular nu se completeaza"* — iar
+       `core/d101.py:328` o implementeaza deja (`if d_grup: P["P50"] = P["P51"] = 0`).
+     · **D101 <-> situatii financiare: CONFIRMAT, DAR CU ALTA ANCORA DECAT F20 rd.35.** rd.48 e
+       *„impozitul pe profit anual datorat"* (`opanaf_206_2025_d101.txt:862`). Latura contabila NU se
+       ia din F20 rd.35, din doua motive masurate: (a) `core/bilant.py:245` pune acolo `691+698`, iar
+       OMFP 1802 spune verbatim ca **698 = „Cheltuieli cu impozitul pe venit si cu alte impozite"** —
+       alta taxa, care ar produce divergenta falsa pe o firma cu trecere micro->profit; (b) antetul
+       modulului declara singur *„Sursa formule randuri: ANAF structura bilant VERSIUNE NECUNOSCUTA"*.
+       Se compara cu **contul 691**, *„Cheltuieli cu impozitul pe profit"*, confirmat verbatim.
+     · **D300 <-> D394: ancora se cheama `lit. C`, nu „sectiunea C".** Confirmata verbatim
+       (`opanaf_2194_2025_d394.txt:813`): *„C. Rezumatul declaratiei privind operatiunile desfasurate
+       cu persoane impozabile inregistrate in scopuri de TVA"*. Substanta e cea numita de Costin;
+       eticheta, nu. NU se construieste azi: maparea rand-cu-rand D300 <-> lit. C nu e inca verificata.
+     · **D394 <-> e-Factura: sursa exista, perechea NU se poate face fara schimbare de generator.**
+       `efactura_trimiteri` (per tenant) are `stare='ok'` si `mediu='prod'`. Dar `core/d394.py` **nu
+       expune id-urile facturilor** incluse — join intern, rezultat fara ele. Deci nu e „compara doua
+       iesiri", e clasa R105 (D112: motorul nu-si poate desface cifra).
+     · **D300 <-> P300 (RO e-TVA): RESPINSA, cu motivul.** Nu exista acces programatic la decontul
+       precompletat. Aplicatia documenteaza chiar contrariul premisei uzuale, in `core/d169n.py`:
+       *„D169n NU este raspunsul la notificarea e-TVA (decont precompletat)"*, cu validatorul si actul
+       ca temei. Consemnata ca limita, cum a cerut Costin — nu se construieste pe presupunere.
+  2. `core/control_incrucisat.py` — `orizontal_d101(conn, schema, an)`, O SINGURA iesire, stampilata
+     o data (tiparul din `orizontal_d390_vs_d300`). Doua perechi: P50 vs suma `suma_plata` a
+     obligatiilor `cod_oblig` de impozit pe profit din D100-urile DEPUSE pe an; P48 vs rulajul
+     debitor al contului **691** pe an (`rulaje_interval`, sursa unica — nu se scrie a doua citire).
+  3. `core/supervizor.py` — cele doua tipuri noi in `TIPURI`, cu `tarie=CERTA` (data de Costin) si
+     `motiv_tarie` care aplica criteriul LUI, nu analogia cu vecinul din tabel.
+  4. `_culege_firma` culege si perechile anuale, nu doar cele lunare.
+  5. Garzi + RED-proof pe fiecare directie; registre; poarta. Costin a dat cele doua lucruri ramase (01.09):
   *declansare* = „extinde cronul de 08:00 care exista. Plus rulare la cerere. Nu construi al doilea
   mecanism" · *iesire* = „constatarile deschise pe firmele lui, cu temei, in ecran propriu.
   Clopotelul ramane rosu agregat, nu o notificare pe constatare". R40 o face EL, prin interfata —
