@@ -6970,6 +6970,40 @@ nomenclatorul închis, adăugat 21.08 pentru exact clasa asta) · `test_garzi_pe
 aserțiuni ale mele erau pe text — rescrise pe structură, METODA §23) · `test_clichete_generate`
 (umbra 77u crescuse cu 1, blocul regenerat).
 
+### R115 închisă — și răspunsul a golit un gard, tăcut (01.09.2026)
+
+**Costin a atribuit tăria:** `D390_VS_D300_IC` → **EURISTICA**, confirmat. Și a dat **criteriul**,
+care contează mai mult decât valoarea: *„Tăria se dă după dacă diferența admite o explicație
+legitimă, nu după cine sunt cele două părți. Certă = orice nepotrivire e eroare."*
+
+**GARDĂ NOUĂ: o tărie atribuită poartă motivul ei scris.**
+`core/test_supervizor.py::test_o_TARIE_ATRIBUITA_poarta_motivul_ei_scris` — câmpul `motiv_tarie` e
+obligatoriu pe orice tip cu tărie. *Fără el, un tip nou ar putea primi o tărie prin analogie cu
+vecinul din tabel — exact greșeala pe care am făcut-o eu propunând CERTA: m-am uitat la cine sunt
+părțile, nu la dacă diferența admite o explicație legitimă. Criteriul trăiește ca DATE, nu ca proză
+într-un antet.* **Mutație probată (RED):** `motiv_tarie` redenumit → gardul cade.
+
+**GARDĂ NOUĂ: perechea reală e EURISTICA, deci nu cere NICIODATĂ confirmare.**
+`::test_perechea_reala_e_EURISTICA_deci_nu_cere_NICIODATA_confirmare` — probat pe tipul **real**, nu
+pe cel sintetic. **Mutație probată (RED):** tăria întoarsă la CERTA → cad două gărzi.
+
+**ȘI PARTEA CARE CONTEAZĂ MAI MULT DECÂT AMÂNDOUĂ: RĂSPUNSUL A GOLIT UN GARD.**
+`::test_un_tip_NEATRIBUIT_nu_cere_confirmare_si_nu_tace` parcurgea `tipuri_neatribuite()`. Cât timp
+singurul tip n-avea tărie, bucla avea ce parcurge. **La atribuire, mulțimea a devenit vidă — iar un
+`for` pe o mulțime goală trece.** Gardul ar fi rămas verde despre o regulă pe care n-o mai verifica.
+
+**NU E O BĂNUIALĂ — E MĂSURAT, în amândouă direcțiile:** cu mutația care strecoară implicitul
+(`cere_confirmare` întoarce `True` pe tărie neatribuită), **forma VECHE a testului TRECE** (`1 passed`),
+iar forma nouă **cade** (`3 failed`). Reparat cu un tip **sintetic neatribuit** înregistrat în probă:
+regula se probează chiar când tabelul real e complet, iar tipul următor pe care Costin nu l-a împărțit
+încă găsește gardul viu.
+
+**Clasa se numește, și e mai largă decât instanța: R117.** *Un gard al cărui subiect e o mulțime de
+lucruri NEREZOLVATE se golește exact în ziua în care ultimul se rezolvă — adică în ziua în care
+nimeni nu se mai uită la el.* Nu e „gardul e greșit": a fost corect toată viața lui, până la o
+schimbare care nu l-a atins. **Consemnată, nu lucrată** (axa instrument/igienă e oprită), cu condiția
+scrisă în `CONFORMITATE.md`.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **506 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.

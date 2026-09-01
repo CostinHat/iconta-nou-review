@@ -17,9 +17,23 @@ blocaje; depunerea **citește** ce a găsit el, în loc să-l cheme.
   - **certe** — „nepotrivire aritmetică între ce se declară și ce e în evidență … nu blochează, dar
     cer confirmare explicită înainte de depunere, iar confirmarea rămâne scrisă".
 
-**ÎMPĂRȚIREA PE TĂRII E A LUI COSTIN, PE TIPURI. SUPERVIZORUL NU O DEDUCE.** De-aia `TIPURI` e un
-tabel de **date**, nu o regulă, iar un tip fără tărie atribuită **nu produce niciun efect** — nu cade
-pe o valoare implicită, fiindcă *orice implicit minte*. `tarie()` ridică pe un tip necunoscut; un tip
+**CRITERIUL DUPĂ CARE SE ATRIBUIE, dat de Costin la închiderea lui R115 (01.09.2026, verbatim):**
+
+  > *„Tăria se dă după dacă diferența admite o explicație legitimă, nu după cine sunt cele două
+  > părți. Certă = orice nepotrivire e eroare. Axa orizontală nu devine certă prin faptul că ambele
+  > părți sunt declarate."*
+
+**Criteriul e mai important decât valoarea, și de-aia e scris aici.** Întrebarea pe care i-o pusesem
+— *„axa orizontală intră la certe, sau certele sunt doar declarație-contra-evidență?"* — era pusă pe
+axa greșită: cine sunt părțile nu decide nimic. *Iar răspunsul la întrebarea corectă era deja scris
+în `control_incrucisat`, în chiar temeiul comparației ăsteia: „decalaj de exigibilitate (art. 284),
+regularizări sau rotunjire — legitim, nu eroare". Am propus CERTA peste o propoziție care spunea,
+la o sută de linii distanță, că diferența e legitimă.*
+
+**ÎMPĂRȚIREA PE TĂRII E A LUI COSTIN, PE TIPURI. SUPERVIZORUL NU O DEDUCE** — criteriul se aplică de
+om, la înregistrarea tipului, și **rămâne scris** în `motiv_tarie`. De-aia `TIPURI` e un tabel de
+**date**, nu o regulă, iar un tip fără tărie atribuită **nu produce niciun efect** — nu cade pe o
+valoare implicită, fiindcă *orice implicit minte*. `tarie()` ridică pe un tip necunoscut; un tip
 cunoscut dar neatribuit dă `None`, iar `cere_confirmare()` întoarce `False` pentru el.
 
 CE NU FACE, declarat:
@@ -54,8 +68,14 @@ class TipNecunoscut(KeyError):
     confirmare sau doar semnalează."""
 
 
-#: **TABELUL LUI COSTIN.** `tarie` se completează de el, pe tip. Câmpurile `propus`/`motiv_propunere`
-#: sunt ale mele și **nu au niciun efect** — există ca răspunsul lui să ia o tură, nu două.
+#: **TABELUL LUI COSTIN.** `tarie` se completează de el, pe tip, aplicând criteriul din antet.
+#: Câmpurile `propus`/`motiv_propunere` sunt ale mele, **n-au niciun efect**, și există numai pe
+#: tipurile ÎNCĂ NEATRIBUITE — ca răspunsul lui să ia o tură, nu două. La atribuire ele ies, iar
+#: locul lor îl ia **`motiv_tarie`**: criteriul, aplicat în scris, pe tipul ăsta.
+#:
+#: **`motiv_tarie` e OBLIGATORIU pentru orice tip cu tărie** (gardat). Fără el, un tip nou ar putea
+#: primi o tărie prin analogie cu vecinul lui din tabel — adică exact cum am propus eu CERTA:
+#: uitându-mă la cine sunt părțile, nu la dacă diferența admite o explicație legitimă.
 #:
 #: Un tip cu `tarie=None` produce constatări (se văd), dar **nu cere confirmare** și nu atinge
 #: depunerea. Așa, nimic nu se blochează așteptând un răspuns, și nimic nu se aplică fără el.
@@ -67,14 +87,14 @@ TIPURI = {
         "identitate": "baza D390 (L, A) == rândurile IC ale D300 depus, pe aceeași perioadă",
         "sursa_stanga": "recalcul D390 pe perioada D300 depus",
         "sursa_dreapta": "public.declaratii_depuse_curente.randuri (ce s-a depus)",
-        "tarie": None,
-        "confirmat": False,
-        "propus": CERTA,
-        "motiv_propunere":
-            "E o nepotrivire ARITMETICĂ între două cifre declarate. Definiția dată de Costin spune "
-            "«între ce se declară și ce e în evidență»; aici amândouă părțile sunt declarate, deci "
-            "nu e acoperită literal. ÎNTREBAREA CARE RĂMÂNE A LUI: axa orizontală intră la CERTE, "
-            "sau certele sunt doar declarație-contra-evidență?",
+        "tarie": EURISTICA,
+        "confirmat": True,
+        "motiv_tarie":
+            "EURISTICA — **Costin, 01.09.2026**, aplicând criteriul: *diferența admite o explicație "
+            "legitimă*, iar explicațiile sunt numite în chiar temeiul comparației "
+            "(`control_incrucisat._compara_d390_vs_d300`): decalaj de exigibilitate (art. 284 Cod "
+            "fiscal), regularizări, rotunjire. Deci NU orice nepotrivire e eroare, deci nu e certă. "
+            "*Faptul că ambele părți sunt declarate n-a contat — a fost întrebarea mea greșită.*",
     },
 }
 

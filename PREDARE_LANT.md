@@ -167,9 +167,17 @@ dintre ele.*
 - **Două tării** *(Costin)*: **euristice** — semnalează, nu opresc niciodată · **certe** —
   nepotrivire aritmetică; **nu blochează**, dar cer **confirmare explicită** înainte de depunere, iar
   confirmarea **rămâne scrisă**.
-- **Împărțirea pe tării e A LUI COSTIN, pe tipuri. Supervizorul n-o deduce.** Tabelul `TIPURI` o
+- **R115 E ÎNCHISĂ** *(01.09, tura a treia)*: `D390_VS_D300_IC` → **EURISTICA**, confirmat. **Nicio
+  cerință nu mai e deschisă către Costin.**
+- **CRITERIUL contează mai mult decât valoarea, și e acum CÂMP, nu proză** *(Costin, verbatim)*:
+  *„Tăria se dă după dacă diferența admite o explicație legitimă, nu după cine sunt cele două părți.
+  Certă = orice nepotrivire e eroare."* Fiecare tip cu tărie poartă `motiv_tarie` — criteriul,
+  aplicat în scris, pe el. **Gardat.** *Propunerea mea fusese CERTA, peste o propoziție din același
+  fișier care spunea că diferența e legitimă (art. 284). Întrebarea mea era pusă pe cine sunt
+  părțile; criteriul nu se uită la asta.*
+- **Împărțirea pe tării rămâne A LUI COSTIN, pe tipuri. Supervizorul n-o deduce.** Tabelul `TIPURI` o
   așteaptă ca **date**: tip necunoscut → **ridică**; tip cunoscut dar neatribuit → **se vede și nu
-  produce niciun efect**. **R115**, singura cerință deschisă către el.
+  produce niciun efect**.
 - **Confirmarea se dă pe CIFRE**, nu pe tip: amprenta e în cheia primară a jurnalului
   `public.supervizor_confirmari` (aplicat, gol). O reformulare nu invalidează o confirmare; o cifră
   schimbată o invalidează. *Fără asta, „confirmare explicită" devenea o bifă permanentă.*
@@ -436,8 +444,11 @@ acum un nume și patru instanțe într-o zi.*
   Din 55 de depuneri, 1 are rânduri persistate, dar aceea e un **d301**; dintre cele **3** depuneri
   **d300**, **niciuna** n-are rânduri. Calea curentă le persistă (verificat la sursă:
   `coada_api.randuri_din_res` + `marcheaza_depusa`), deci populația crește de acum înainte.
-- **NU S-A CONSTRUIT NICIO PERECHE NOUĂ, și motivul e neschimbat:** identitatea fiscală n-are temei
-  scris. *Domeniul se putea construi fără temei nou; o pereche, nu.*
+- **NU S-A CONSTRUIT NICIO PERECHE NOUĂ, și motivul e acum MĂSURAT, nu doar principial.** Pe lângă
+  temeiul lipsă al identității: axa e înfometată de **subiect**, nu de perechi. Din cele **3**
+  depuneri `d300` din bază, **zero** au rânduri persistate; la fel `d394`; singura depunere cu
+  rânduri din toată baza e un **d301**. O pereche nouă ar răspunde tot *„n-am ce compara"* — un al
+  doilea gri, nu o confruntare. **Blocajul real e R40**, EXTERNĂ prin construcție.
 - **N-am adus perechi noi (D394↔D300, D101↔D100) fiindcă n-am putut scrie identitatea fără s-o
   inventez.** Nu e un „mai târziu" vag: e refuzul de a pune o identitate fiscală nedovedită într-un
   motor care produce afirmații despre datele unei firme.

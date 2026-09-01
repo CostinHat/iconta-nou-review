@@ -7311,3 +7311,43 @@ clasa nu se aplică — enumerat explicit, ca absența să fie informație.
 probat: 13 teste, mutație pe trei direcții"*. Numărul era corect; ce acopereau, nu. **Un gard care se
 uită exact acolo unde codul e corect raportează verde despre o lume pe care n-o vede.** E a doua
 instanță a aceleiași clase, și de data asta victima a fost gardul meu de ieri, nu unul vechi.
+
+
+---
+
+## 01.09.2026, tura a treia — R115 închisă, și răspunsul a golit un gard
+
+**Costin a dat tăria:** `D390_VS_D300_IC` → **EURISTICA**, confirmat. Odată cu ea, **criteriul**, care
+valorează mai mult decât valoarea: *„Tăria se dă după dacă diferența admite o explicație legitimă, nu
+după cine sunt cele două părți. Certă = orice nepotrivire e eroare."*
+
+**PROPUNEREA MEA ERA CERTA, ȘI N-A FOST O LIPSĂ DE INFORMAȚIE — A FOST O ÎNTREBARE PUSĂ PE AXA
+GREȘITĂ.** Îl întrebasem *„axa orizontală intră la certe, sau certele sunt doar
+declarație-contra-evidență?"* — adică **cine sunt părțile**. Răspunsul la întrebarea corectă era deja
+scris, în același fișier, în chiar temeiul comparației: *„decalaj de exigibilitate (art. 284),
+regularizări sau rotunjire — legitim, nu eroare"* (`control_incrucisat.py:1002`, citit azi).
+**Am propus CERTA peste o propoziție, la o sută de linii distanță, care spunea că diferența e
+legitimă.** *Clasa nu e „n-am căutat destul" — e „am căutat răspunsul la altă întrebare".*
+
+**Ce s-a construit din asta**, ca lecția să nu rămână proză: criteriul devine **câmp obligatoriu** —
+`motiv_tarie`, gardat. Un tip nou nu mai poate primi o tărie fără să scrie cum s-a aplicat criteriul
+**pe el**. Analogia cu vecinul din tabel e chiar mecanismul greșelii mele, iar acum nu mai încape.
+
+**ȘI PARTEA CARE M-A SURPRINS: RĂSPUNSUL LUI A GOLIT UN GARD.** Testul care apăra regula *„un tip
+neatribuit nu cere confirmare"* parcurgea mulțimea tipurilor neatribuite. La atribuire, mulțimea a
+devenit **vidă** — iar un `for` pe gol trece. Gardul ar fi rămas verde despre o regulă pe care n-o
+mai verifica, **fără ca nimic să se strice**: a fost corect toată viața lui, până la o schimbare care
+nu l-a atins.
+
+**Nu l-am declarat golit din raționament — l-am măsurat, în amândouă direcțiile.** Cu mutația care
+strecoară implicitul, **forma veche trece** (`1 passed`) și forma nouă **cade** (`3 failed`). Reparat
+cu un tip sintetic neatribuit înregistrat în probă. **Clasa e mai largă decât instanța și se
+consemnează ca R117** — *un gard al cărui subiect e o mulțime de lucruri nerezolvate se golește exact
+în ziua în care ultimul se rezolvă, adică în ziua în care nimeni nu se mai uită la el.*
+
+**CE AM MĂSURAT DESPRE CE URMEAZĂ, și de ce n-am construit a doua pereche.** Axa nu e înfometată de
+lipsa perechilor, ci de lipsa **subiectului**: din cele 3 depuneri `d300`, **zero** au rânduri
+persistate; la fel `d394`; singura depunere cu rânduri din toată baza e un `d301`. O pereche nouă ar
+răspunde tot *„n-am ce compara"* — un al doilea gri, nu o confruntare. Blocajul real e **R40**, veche
+de 133 de commituri, și **EXTERNĂ prin construcție**: cere o primă depunere reală prin coadă, făcută
+de un om care folosește aplicația. *Dacă o fac eu cu o sondă, măsurarea absenței o stinge.*

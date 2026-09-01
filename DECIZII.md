@@ -13422,3 +13422,28 @@ calea care trimite alertele reale către contabili — raport rău între risc �
 **Condiția de redeschidere, scrisă ca R116:** în ziua în care întoarcerea lui `ruleaza()` capătă un
 consumator (ecran, raport, metrică), contorul se **derivă**, nu se acumulează. *Nicio amânare fără
 condiție.*
+
+**(44) R115 ÎNCHISĂ — `D390_VS_D300_IC` = EURISTICA, confirmat *(Costin, 01.09.2026)*.** Și, odată cu
+ea, **criteriul general de atribuire**, verbatim: *„Tăria se dă după dacă diferența admite o
+explicație legitimă, nu după cine sunt cele două părți. Certă = orice nepotrivire e eroare. Axa
+orizontală nu devine certă prin faptul că ambele părți sunt declarate."*
+
+**Propunerea mea era CERTA, și era greșită — dar nu din lipsă de informație.** Întrebarea pe care i-o
+pusesem era pusă pe axa greșită: *„axa orizontală intră la certe, sau certele sunt doar
+declarație-contra-evidență?"* — adică **cine sunt părțile**. Răspunsul la întrebarea corectă era deja
+scris în `control_incrucisat`, în chiar temeiul comparației ăsteia: *„decalaj de exigibilitate
+(art. 284), regularizări sau rotunjire — legitim, nu eroare"*. **Am propus CERTA peste o propoziție,
+din același fișier, care spunea că diferența e legitimă.** Verificat la sursă azi:
+`core/control_incrucisat.py:1002`.
+
+**Ce s-a construit din asta, ca să nu rămână o lecție:** criteriul nu stă în proza antetului, ci
+devine **câmp obligatoriu** — `motiv_tarie`, gardat. Un tip nou nu poate primi o tărie fără să scrie
+cum s-a aplicat criteriul pe el. *Analogia cu vecinul din tabel e chiar mecanismul greșelii mele.*
+
+**(45) O a doua pereche orizontală NU e pasul următor, și motivul e măsurat.** Axa nu e înfometată de
+lipsa perechilor, ci de lipsa **subiectului**: din cele 3 depuneri `d300` din bază, **zero** au
+rânduri persistate, la fel `d394`; singura depunere cu rânduri din toată baza e un `d301`. Orice
+pereche nouă care citește `declaratii_depuse_curente.randuri` ar răspunde tot *„n-am ce compara"* —
+un al doilea gri, nu o confruntare. **Blocajul real e R40**, deschisă de 133 de commituri, și e
+**EXTERN prin construcție**: condiția ei cere o primă depunere reală prin coadă, făcută de un om care
+folosește aplicația. *Dacă o fac eu cu o sondă, măsurarea absenței o stinge — clasa e deja numită.*

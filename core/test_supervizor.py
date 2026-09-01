@@ -51,14 +51,57 @@ def test_un_tip_NECUNOSCUT_ridica_nu_cade_pe_implicit():
 def test_un_tip_NEATRIBUIT_nu_cere_confirmare_si_nu_tace():
     """Cele două direcții ale aceleiași reguli: un tip pe care Costin nu l-a împărțit încă **se
     vede** (tăria e `None`, nu absentă), dar **nu produce niciun efect**. Propunerea mea din
-    `motiv_propunere` n-are voie să devină regulă prin trecerea timpului."""
-    neatribuite = S.tipuri_neatribuite()
-    for tip in neatribuite:
-        assert S.tarie(tip) is None
-        assert S.cere_confirmare(tip) is False, (
-            "tipul %r n-are tărie atribuită, dar cere confirmare — un implicit s-a strecurat" % tip)
-        assert S.TIPURI[tip].get("propus") in S.TARII, (
-            "tipul %r n-are nici măcar o propunere, deci Costin n-are ce confirma" % tip)
+    `motiv_propunere` n-are voie să devină regulă prin trecerea timpului.
+
+    **[01.09.2026, după R115] TESTUL ĂSTA S-A GOLIT, și era să treacă verde pe nimic.** Cât timp
+    singurul tip n-avea tărie, bucla de mai jos avea ce parcurge. La atribuire, `tipuri_neatribuite()`
+    a devenit **vidă** — iar un `for` pe o mulțime goală trece. *Aceeași clasă pe care o repar de
+    două ture: un gard care raportează verde despre o lume pe care n-o mai vede.* De-aia proba
+    înregistrează acum un tip **sintetic** neatribuit: regula se probează chiar când tabelul real e
+    complet, iar tipul următor pe care Costin nu l-a împărțit încă găsește gardul viu."""
+    tip_probă = _cu_tip_sintetic(None, False)
+    S.TIPURI[tip_probă]["propus"] = S.CERTA
+    try:
+        neatribuite = S.tipuri_neatribuite()
+        assert tip_probă in neatribuite, (
+            "[anti-vacuu] tipul sintetic neatribuit nu apare între cele neatribuite — "
+            "`tipuri_neatribuite()` nu mai măsoară ce credem")
+        for tip in neatribuite:
+            assert S.tarie(tip) is None
+            assert S.cere_confirmare(tip) is False, (
+                "tipul %r n-are tărie atribuită, dar cere confirmare — un implicit s-a strecurat"
+                % tip)
+            assert S.TIPURI[tip].get("propus") in S.TARII, (
+                "tipul %r n-are nici măcar o propunere, deci Costin n-are ce confirma" % tip)
+    finally:
+        del S.TIPURI[tip_probă]
+
+
+def test_o_TARIE_ATRIBUITA_poarta_motivul_ei_scris():
+    """**Criteriul lui Costin (R115) trăiește ca DATE, nu ca proză într-un antet.**
+
+    *„Tăria se dă după dacă diferența admite o explicație legitimă, nu după cine sunt cele două
+    părți."* Un tip care primește o tărie fără să scrie cum s-a aplicat criteriul ar putea s-o
+    primească **prin analogie cu vecinul din tabel** — adică exact greșeala pe care am făcut-o eu
+    propunând CERTA: m-am uitat la cine sunt părțile."""
+    cu_tarie = [t for t, v in S.TIPURI.items() if v.get("tarie") is not None]
+    assert cu_tarie, "[anti-vacuu] niciun tip cu tărie — regula de mai jos n-ar fi probată"
+    rele = [t for t in cu_tarie if not (S.TIPURI[t].get("motiv_tarie") or "").strip()]
+    assert not rele, (
+        "tipuri cu tărie atribuită și fără `motiv_tarie` scris: %s — criteriul s-a aplicat undeva "
+        "și nu se mai poate citi de nimeni" % rele)
+
+
+def test_perechea_reala_e_EURISTICA_deci_nu_cere_NICIODATA_confirmare():
+    """R115, răspunsul, probat pe tipul REAL — nu pe cel sintetic. *„Semnalează, nu opresc
+    niciodată"*: nici măcar confirmată, o euristică nu cere confirmare, deci nu atinge depunerea."""
+    assert S.tarie(_ci.TIP_D390_VS_D300) == S.EURISTICA
+    assert S.TIPURI[_ci.TIP_D390_VS_D300]["confirmat"] is True
+    assert S.cere_confirmare(_ci.TIP_D390_VS_D300) is False, (
+        "o EURISTICĂ cere confirmare — «semnalează, nu opresc niciodată» s-a rupt")
+    assert not S.tipuri_neatribuite(), (
+        "R115 e închisă, deci niciun tip nu mai așteaptă tăria; dacă apare unul nou, "
+        "restanța se redeschide cu el, nu tăcut")
 
 
 def test_o_tarie_NEVALIDA_nu_trece():
@@ -260,7 +303,8 @@ def test_a_cincea_cale_FARA_NICIO_DEPUNERE_e_stampilata_si_supervizorul_o_VEDE()
         "sunt netipate, iar supervizorul le sare TACUT: firma apare cu zero constatari, ceea ce se "
         "citeste ca «nimic de semnalat»" % (len(etalon), len(tipate)))
     assert len(vazute) == len(etalon), "supervizorul NU vede a cincea cale — filtrul pe tip a inghitit-o"
-    assert all(c["tarie"] is None for c in vazute)          # R115: neatribuita, deci fara efect
+    # R115 inchisa: taria e EURISTICA, si o euristica NU cere confirmare niciodata.
+    assert all(c["tarie"] == S.EURISTICA for c in vazute)
     assert all(c["cere_confirmare"] is False for c in vazute)
 
 

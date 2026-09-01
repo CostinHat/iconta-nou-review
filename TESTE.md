@@ -55,8 +55,10 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   probeaza cele patru cai ale functiei PURE `compara_d390_vs_d300`; a cincea traieste un nivel mai sus
   si n-avea gard. Efectul e chiar tacerea numita in antetul modulului: *„supervizorul ar fi sarit-o
   TACUT, adica exact felul de tacere care arata ca un raspuns"*.
-- ultim: supervizorul construit si NELEGAT (`3eb50ac9`); predarea rescrisa (`1a0c112a`)
-- urmator: pasul 1. IN LUCRU
+- ultim: **R115 INCHISA** — taria atribuita, criteriul devenit camp gardat, si gardul golit de
+  chiar raspunsul lui, reparat (`e7eb38ee` + tura curenta)
+- urmator: axa orizontala are contract complet si domeniu; ce urmeaza NU mai e constructie, ci
+  **subiect** — R40, EXTERNA. NEINCEPUT
 - pasi:
   1. `core/control_incrucisat.py` — blocul orizontal din `verifica_d390` (azi liniile 1087-1112) se
      EXTRAGE intr-o singura functie `_orizontal_d390_vs_d300`, invelita o singura data de
