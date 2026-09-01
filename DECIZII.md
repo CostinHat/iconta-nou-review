@@ -13313,3 +13313,11 @@ făcut verde. Am măsurat întâi **clasa**: un singur fișier cu antet de MO î
 Un tipar scris pe el ar fi fost calibrare pozitivă pe eșantion de unu. Clichetul urcă, dar **cu cele
 două fișiere numite în comentariu** și cu motivul mecanic — fiindcă un clichet urcat fără nume e
 exact excepția pe care o știe un singur raport.
+
+**(28) Cadența lunară pentru VOLATIL/DEPUS — confirmată, cu motivul ei.** Întrebasem dacă trei
+alerte pe lună sunt cadența dorită, fiindcă e o alegere de ritm de muncă, nu una tehnică. Costin:
+*„Confirmat… Sunt valorile care se mișcă și intră în declarații — categoria care poate produce o
+cifră validă și falsă. Tabelul 3×3 rămâne neatins."* Confirmarea e scrisă **lângă tabel**, în
+`core/reverificare.py`, nu doar aici: zgomotul recurent e exact ce se „optimizează" mai târziu de
+cineva care nu știe că a fost ales. De acum, lărgirea căsuței cere o decizie nouă, nu un argument
+despre volum.

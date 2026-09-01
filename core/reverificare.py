@@ -68,6 +68,13 @@ LIMITE_REVERIFICARE = {
     },
 }
 
+#: **CADENȚA LUNARĂ E CONFIRMATĂ, nu tolerată** *(Costin, 01.09.2026)*. Căsuța `("VOLATIL","DEPUS")`
+#: = 1 lună produce azi trei alerte pe lună — `impozit_dividend`, `impozit_micro`, `impozit_venit` —
+#: și asta e **decizia**, nu un efect secundar de reglat: *„sunt valorile care se mișcă și intră în
+#: declarații — categoria care poate produce o cifră validă și falsă."* Tabelul 3×3 **rămâne
+#: neatins**. Se scrie aici fiindcă zgomotul lunar e exact felul de lucru pe care cineva îl
+#: „optimizează" mai târziu fără să știe că a fost ales; cine vrea să-l lărgească are nevoie de o
+#: decizie nouă, nu de un argument despre volum.
 FEREASTRA_ANI = LIMITE_REVERIFICARE["fereastra_ani"]
 
 CLASE_FRECVENTA = ("VOLATIL", "MISCATOR", "STABIL", "NECUNOSCUT")

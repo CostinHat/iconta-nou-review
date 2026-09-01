@@ -2297,10 +2297,9 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   corpus și amprentată, plus articolul care fixează pragul. Se închide când
   `scan_citate.inventar()` dă `verbatim=True` pentru `plafon_intrastat`.
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `3c9fb2d`
-- **01.09.2026 — CONDIȚIA E ÎNDEPLINITĂ ÎN ARBORE; se închide formal pe commitul următor, cu
-  hash-ul real (Capcana 2: o restanță nu se marchează rezolvată pe un commit care nu există încă).**
+- **01.09.2026 — CONDIȚIA E ÎNDEPLINITĂ.**
   *„Doar portalul" era o îngustare a mea, nu o consecință a lui „neamprentat e mai rău decât lipsa"*
   (Costin, 01.09). Criteriul e **sursa emitentului, la adresă stabilă și amprentabilă**. INS își
   publică ordinul pe portalul propriu Intrastat, ca **scan al paginii din Monitorul Oficial Partea I
@@ -2317,7 +2316,7 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
     magazinul `certifi`**, nu doar cu cel de sistem. N-am ocolit verificarea cu `-k`. Documentul se
     confruntă pe conținut — cinci probe cerute înainte de scriere (antet MO, emitent, cele două
     praguri, numărul), iar scriptul refuză să scrie ceva dacă vreuna lipsește.
-- **rezolvată pe commit**: —
+- **rezolvată pe commit**: `5f2e807`
 
 ### R111 — Frecvența citește marcaje într-un document care nu le poate purta, și răspunde STABIL
 
