@@ -7208,3 +7208,40 @@ mecanismul e probat pe un tip sintetic, ca în ziua atribuirii să nu fie prima 
 O măsurătoare a schimbat designul pe parcurs: din 55 de depuneri, doar una are rânduri persistate. Am
 crezut întâi că perechea orizontală e moartă. Calea actuală le persistă; cele 54 sunt istorie. Deci
 perechea răspunde azi onest „n-am ce compara" și devine vie pe măsură ce se depune prin aplicație.
+
+
+## 01.09.2026 — ÎNCHEIEREA ZILEI: **nimic nu s-a schimbat pentru un contabil**, și se scrie ca atare
+
+**13 commituri. Nouă părți de istoric. Și zero diferență pentru omul care ține contabilitatea unei
+firme.** Regula care cere propoziția asta a fost scrisă tot azi, de Costin, tocmai fiindcă zile ca
+asta treceau fără s-o spună nimeni.
+
+**Singura schimbare de COMPORTAMENT dinspre aplicație:** `contracte_speciale.nota` primește acum data
+notei, deci varianta de formulă se alege la data faptului, nu la data rulării. **Efect numeric azi:
+zero, măsurat** — cele două variante ale calculului de zilier sunt datate 2018-01-01 și 2019-05-01,
+deci orice notă din 2026 cade pe aceeași funcție indiferent cine alege data. *Reparația e reală și e
+latentă: contează prima dată când apare o variantă nouă, și atunci contează pentru fiecare notă
+înregistrată retroactiv.*
+
+**Ce NU s-a schimbat, deși pare că da:**
+- **pragul mijlocului fix** — unificat pe registru din trei copii, dar copia canonică era cea
+  **greșită și nefolosită**; cifra pe care o vedea contabilul n-a fost niciodată alta;
+- **pragul Intrastat** — a intrat în registru cu aceeași valoare, adusă acum de la emitent;
+- **raportul lunar de reverificare** — va alerta pe 7 cote în loc de 3, dar e un raport **intern**;
+- **supervizorul** — construit, nelegat, fără ecran.
+
+**Ce s-a câștigat, și e pentru NOI, nu pentru el:** patru interdicții și restanțe închise (R108,
+R109, R110, R111), una măsurată pentru prima oară (interdicția 3), o axă întreagă oprită pe cifra ei,
+și două reguli de conducere a lucrului — dintre care una e chiar cea care obligă propoziția de mai
+sus să fie scrisă.
+
+**Ce a costat ziua, măsurat:** nouă porți verzi și **șapte respingeri**, ~21 de minute fiecare — peste
+cinci ore numai în porți. **Niciuna dintre respingeri n-a fost fals pozitiv.**
+
+**Și ce a arătat ziua despre mine, ca lecție purtabilă:** din cele patru cifre invalidate azi, **toate
+patru** au fost greșeli ale **propriilor mele sonde**, iar **trei din patru sunt aceeași greșeală** —
+*am numărat FORMA în loc de EFECT*. O paranteză cerută după un nume de funcție, care a ascuns
+callback-urile pasate ca referință. Un argument socotit absent fiindcă n-avea cuvânt-cheie, care a
+umflat o clasă de la 4 la 68. O cheie de dicționar trunchiată, care a înghițit 54 de rânduri din 500.
+*Clasa e chiar limita pe care registrul o declară de opt zile la interdicția 14 — „numără forma, nu
+efectul" — iar eu am căzut în ea de trei ori într-o zi, măsurând altceva.*
