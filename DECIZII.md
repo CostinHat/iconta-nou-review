@@ -13354,3 +13354,22 @@ cele mai bune potriviri cu criteriul (#3, #33, #67, #70) sunt NEÎNCEPUTE cu pop
 alegerea între ele **nu se putea face din registru**. Prima muncă pe oricare dintre ele nu e o
 reparație, e o cifră. Am făcut asta: interdicția 3 a trecut în **MĂSURATĂ**, cu ambele populații,
 contra-cifra, limitele și calibrarea; reparațiile vin după, ordonate de ce arată cifra.
+
+## 01.09.2026 (5) — Axa se oprește, și două reguli de conducere a lucrului
+
+**(33) Axa corpus-instrument și igienă se oprește.** *Costin:* „criteriul aplicat cinstit a scos
+populația 4 și o reparație. Axa nu mai are randament, iar restanțele cresc mai repede decât se
+închid." **R112, R113, R114 rămân deschise și nereparate; #33, #67, #70 rămân nemăsurate; restanțele
+noi din familia asta se consemnează, nu se lucrează.** Nu e o judecată despre corectitudinea muncii —
+măsurătorile au fost bune, criteriul a fost aplicat cinstit. E o judecată despre **randament**, și e
+prima oară când o axă se închide pe cifra ei.
+
+**(34) și (35) — cele două reguli, scrise în `PLAN_LUCRU.md`:** deciziile care nu mută direcția sunt
+ale mele, nu urcă la arhitect · o tură care nu schimbă nimic pentru un contabil are nevoie de
+justificare scrisă. *A doua e consecința directă a lui (33): axa care s-a închis n-a fost oprită de o
+regulă, fiindcă nu exista una care să ceară justificarea.*
+
+**(36) O măsurătoare cerută poate infirma cuvântul din comandă, și asta e rezultatul.** Comanda cerea
+*suprapunerea* listelor. Măsurătoarea a dat inversul: nu se dublează munca, se ratează — 90% din ce
+atinge checklistul de browser nu apare în backlog, 89% din backlog n-are nicio verificare de browser.
+*Am raportat ce a ieșit, nu ce s-a cerut să iasă.*

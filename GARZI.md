@@ -6812,6 +6812,82 @@ folosea pentru „luna deschisă", dar n-o trimitea mai departe. **Rămâne R114
 compară fluxurile anului cerut cu pragul de azi — reparația schimbă ce se afișează, fiindcă pentru
 2025 pragul nu se poate ști (R112), deci cere poartă vizuală.
 
+## 01.09.2026 (4) — Două măsurători cerute: suprapunerea listelor, și ce e supervizorul azi
+
+### 1. Listele nu se suprapun — sunt lumi diferite
+
+*Comanda cerea suprapunerea. Măsurătoarea a dat inversul, și asta e rezultatul.*
+
+**Trei dintre cele cinci „liste" sunt una singură.** Restanțele deschise (**39**) și interdicțiile
+neîncepute (**33**) sunt **100% conținute** în cele 114 rânduri ale lui `scan_ramas.py`. Nu sunt
+surse independente, sunt vederi. Rămân trei liste chiar distincte: **A** backlog (114 intrări, **224**
+obiecte) · **D** `PLAN_INVESTIGATII` (29 secțiuni, **9** obiecte — e un plan de faze, nu de obiecte) ·
+**E** checklistul de browser (**495** secțiuni, **252** obiecte).
+
+**Potrivire pe obiect** — ce fișier, ce declarație, ce articol, ce rută, ce ecran. Din **453** de
+obiecte distincte, **213** apar în cel puțin două liste:
+
+    A ∩ D =  8   ( 4% din A · 89% din D)
+    A ∩ E = 24   (11% din A · 10% din E)
+    D ∩ E =  1
+    în toate trei: 1   (D112)
+
+  - **90% din ce atinge checklistul de browser nu apare nicăieri în backlog** (228 din 252).
+  - **89% din ce atinge backlogul n-are nicio verificare de browser** (200 din 224).
+
+*Cifrele de mai sus sunt A DOUA formă. Prima — «374 / 209 / 5% / 95%» — era greșită din două cauze,
+amândouă tăcute: cheile dicționarului se ciocneau la trunchiere și **pierdeau 54 din 500 de
+secțiuni** din E, iar cele două sonde pe care le rulasem defineau `A` **diferit** (una pe rândurile
+lui `scan_ramas`, cealaltă pe toate restanțele și interdicțiile). Concluzia nu s-a mutat; cifrele,
+da. Scriptul din repo produce acum un singur set.*
+
+*Deci nu se dublează munca — se ratează. Backlogul și singurul lucru care chiar exercită aplicația
+pe un ecran vorbesc despre lucruri aproape disjuncte.* Suprapunerea reală, cât e, e concentrată pe
+**declarații**: D112, D300, D390, D301, D406, D394, D212, D101.
+
+**Muncă numărată de două ori, în backlog:** puțină. Din 39 de restanțe deschise, **4 perechi** au ≥3
+obiecte comune, iar **R37** e în toate patru. Obiecte numite de ≥4 restanțe: `main.py` (6), `D406`
+(5), `D300` (5), `D390` (4).
+
+**Istoric:** `main.py` **131** de commituri în 30 de zile, `static/js/ecrane/firme.js` **119** —
+amândouă numite de doar 2 liste. Din 130 de fișiere numite de liste, **10** n-au fost atinse deloc.
+
+*Recalculabil: `./venv/bin/python scripts/masoara_suprapunerea.py`. **N-are gardă și n-are clichet**,
+deliberat: e o cifră de decizie, o singură dată, nu o populație de păzit — iar axa de instrumente e
+închisă.*
+
+### 2. Supervizorul: ce există chiar rulează, dar confruntă aproape numai vertical
+
+**`verifica_diferente_d394` NU EXISTĂ**, sub niciun nume. D394 apare o singură dată în
+`control_incrucisat`, ca `_thunk_d394` — reconciliere cu propria sursă, nu confruntare cu altă
+declarație.
+
+**Ce rulează pe cont propriu, azi:** cronul de la 08:00 (`notificari_scadenta` →
+`alerte_control_fiscal.ruleaza()`) trece portofoliul prin **patru** verificări — `verifica_tva`,
+`verifica_d112`, `verifica_d390`, `verifica_cota_tva` — și împinge în clopoțel **doar roșul**,
+agregat pe firmă. *Deci jumătatea „declanșator propriu" a supervizorului există deja și funcționează.*
+
+**Ce rulează doar la cerere:** `reconciliaza_declaratii` — suprafața unificată pe **9** declarații
+(D300, D394, D390, D301, D112, D406, D100, D101, D205) — se cheamă numai din
+`control_fiscal_api.py`, adică atunci când contabilul deschide ecranul.
+
+**PERECHILE CONFRUNTATE, numărate:**
+
+    declarație ↔ evidență (VERTICAL)   D300↔rulaje · D112↔rulaje+note · D390↔facturi IC ·
+                                       cotă TVA↔registru · plus 9 × recalcul din sursă
+    declarație ↔ declarație (ORIZONTAL) UNA SINGURĂ: compara_d390_vs_d300
+
+**Aia e gaura.** `reconciliaza_declaratii` are **zero** perechi orizontale: fiecare thunk cheamă
+`dXXX_reconciliere.reconciliaza`, adică declarația față de **propria** sursă. Nimic nu confruntă
+D394 cu D300, D101 cu D100, D205 cu profitul distribuit, D406 cu restul. *Nouă declarații verificate
+fiecare pe verticala ei nu produc nicio afirmație despre coerența dintre ele.*
+
+**Corectură la propria măsurătoare:** prima sondă a raportat 11 funcții „fără apelant de producție",
+între care `verifica_d390` și `verifica_cota_tva` — care sunt chemate din `main.py`. Cerea o
+paranteză după nume, iar `main.py` le pasează ca **referință** (`_incrucisat(_ci.verifica_d390, …)`).
+Refăcută cu AST: **13 referite din afară, 9 interne** — toate cele 9 chemate din modul, niciuna
+moartă. *A patra oară azi când o sondă a mea numără forma în loc de efect.*
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **505 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.

@@ -442,3 +442,25 @@ tema se scrie aici ca să nu se piardă, nu ca să fie începută.*
 **Import portofoliu, asistat de AI.** Recunoașterea structurii fișierului se face **o dată**, cu AI; rezultatul se sedimentează ca **amprentă de fișier** (set de anteturi, ordine, separator zecimal, unde începe tabelul), iar exporturile următoare cu aceeași amprentă intră **determinist, fără interpretare**. Amprenta e cheia, nu numele aplicației — același program are versiuni care exportă diferit. Potrivirea e **exactă sau inexistentă**: „aproape ca X" se tratează ca structură nouă. Proba aritmetică (balanța închide pe fiecare cont și pe total) rămâne **obligatorie și la amprentele deja cunoscute** — recunoașterea sare peste interpretare, nu peste verificare. Corecțiile contabilului la mapare se întorc în amprentă.
 
 **Blocat de:** **R79** — dacă numele de schemă se reciclează și `DROP`-ul nu e real, un import în masă poate scrie peste date reziduale ale unei firme șterse. **R81** — treapta de confruntare a CUI-ului cu ANAF multiplică divergența de denumire la scara întregului portofoliu.
+
+---
+
+## Două reguli de conducere a lucrului *(Costin, 01.09.2026)*
+
+**1. Deciziile care nu mută direcția sunt ale mele, nu urcă la arhitect.** O alegere între două
+implementări care duc în același loc, ordinea a două reparații din aceeași familie, forma unui gard,
+numele unui câmp — se iau și se scriu, nu se întreabă. *Ce urcă:* ce schimbă direcția, ce schimbă un
+contract pe care se sprijină altcineva, ce schimbă ritmul de muncă al contabilului, și ce n-are
+răspuns care să nu fie o presupunere. **Testul:** dacă răspunsul lui Costin ar putea fi înlocuit cu
+un default rezonabil fără ca nimic din plan să se mute, întrebarea n-avea ce căuta la el.
+*Instanța care a produs regula:* pe 01.09 am urcat cadența lunară a cotelor de TVA ca cerință, când
+tabelul 3×3 era deja decizia lui, iar aplicarea lui corectă era muncă, nu alegere.
+
+**2. O tură care nu schimbă nimic pentru un contabil are nevoie de o justificare scrisă.** Nu e
+interzisă — e **nedeclarată implicit acceptabilă**, și asta se termină aici. Justificarea se scrie în
+raport, la `§2 ÎN PLUS / MAI PUȚIN`, și numește: *ce anume va putea face contabilul altfel din cauza
+turei ăsteia, sau prin ce lanț ajunge acolo, sau de ce e o datorie care blochează ceva ce el
+folosește.* Un gard nou, un clichet coborât, o interdicție măsurată — toate pot avea justificarea
+asta, dar trebuie **scrisă**, nu subînțeleasă. *Motivul, măsurat:* o axă întreagă (corpus-instrument
+și igienă) a produs zile de lucru fără nimic vizibil pentru un contabil, iar restanțele au crescut
+mai repede decât se închideau.

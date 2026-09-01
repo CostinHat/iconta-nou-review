@@ -7163,3 +7163,26 @@ s-a reparat aici: nota de contract special primește data notei, pe care ruta o 
 trimitea. Cealaltă a devenit **R114**, fiindcă repararea ei schimbă ce afișează ecranul Intrastat:
 pentru 2025 pragul nu se poate ști, iar răspunsul onest e un necunoscut declarat, nu o cifră. *Așa,
 R112 capătă un consumator — lipsa ordinului din 2024 încetează să fie teoretică.*
+
+### 01.09.2026, partea a opta — axa se închide; două măsurători
+
+Costin a oprit axa corpus-instrument și igienă, cu motivul scris: criteriul aplicat cinstit a scos o
+populație de 4 și o reparație, iar restanțele cresc mai repede decât se închid. R112, R113 și R114
+rămân deschise; #33, #67, #70 rămân nemăsurate.
+
+**Prima măsurătoare** a arătat că trei dintre cele cinci liste pe care le urmez sunt aceeași listă:
+restanțele deschise și interdicțiile neîncepute sunt integral conținute în cele 114 rânduri. Iar
+între cele trei rămase, suprapunerea pe obiect e mică și în direcția greșită: 90% din ce atinge
+checklistul de browser nu apare în backlog, 89% din backlog n-are nicio verificare de browser.
+*Comanda cerea suprapunere; măsurătoarea a dat separare.*
+
+**A doua** a măsurat supervizorul pe funcționalitate, nu pe fișiere. `verifica_diferente_d394` nu
+există sub niciun nume. Ce există rulează pe cont propriu — cronul de la 08:00 trece portofoliul prin
+patru verificări și împinge doar roșul —, dar suprafața unificată pe nouă declarații se cheamă numai
+când contabilul deschide ecranul. Iar perechile confruntate sunt aproape toate **verticale**:
+declarație față de propria sursă. Orizontal, declarație contra declarație, există **una singură**:
+`compara_d390_vs_d300`. Aia e gaura pe care o umple supervizorul.
+
+Două corecturi ale propriilor sonde, în aceeași tură: una cerea o paranteză după numele funcției și
+rata callback-urile pasate ca referință; cealaltă pierdea 54 din 500 de secțiuni prin ciocnire de
+chei. Concluzia n-a mișcat; cifrele, da.
