@@ -2530,6 +2530,38 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
 - **unde ajunge efectul**: o linie de log care spune că portofoliul are mai puține firme decât are.
   *Astăzi nu ajunge la un contabil; în ziua în care cifra urcă pe un ecran, ajunge.*
 
+### R118 — Fișierele statice se servesc DE PE DISC: nicio poartă între scriere și producție
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E4 · interdicția **19** · **PRAG 2**
+- **ce blochează**: încrederea în poarta verde ca **poartă de publicare**. Serviciul rulează din
+  `/home/costin/iconta_nou` (`WorkingDirectory`), iar `static/` se servește direct de acolo. Deci un
+  `.js` scris pe server e **live în aceeași secundă** — fără commit, fără pre-commit, fără restart.
+  *Poarta verde apără Python-ul, fiindcă procesul îl încarcă la pornire; JS-ul nu trece prin ea.*
+- **instanța, măsurată** *(01.09.2026)*: `static/js/ecrane/supervizor.js` a fost scris cu o ghilimea
+  românească de deschidere și închidere **ASCII** — care termină șirul JS. Fiindcă `cabinet.js`
+  importă modulul, un modul care nu se parsează a oprit **tot desktopul cabinetului**: toate cele
+  **15** ecrane au picat cu *„waiting for `.cab-card`"*, iar în consolă era `Invalid or unexpected
+  token`. **Pe producție, pe fișierul viu, fără ca nimic să semnaleze.**
+- **calibrare**: prinsă de **poarta verde vizuală** (`CLAUDE.md` §2.3 pct.11), nu de suită — suita
+  nu execută JS. Direcția opusă verificată: după reparație, consola e curată și `.cab-card` randează.
+- **ce nu vede măsurătoarea**: cât a durat fereastra de expunere. Costin lucra în interfață în
+  intervalul acela și depunerea lui a reușit — probabil cu pagina deja încărcată —, dar **nu se poate
+  reconstitui** momentul exact în care importul a intrat în `cabinet.js`. *Nu se raportează o durată
+  pe care n-o pot măsura.*
+- **condiția de deblocare**: fie `static/` se servește dintr-un loc care nu e arborele de lucru (deci
+  publicarea JS trece prin commit), fie există o verificare de sintaxă pe fiecare `.js` **înainte** de
+  scriere, nu doar în poartă. Se închide când o eroare de sintaxă introdusă deliberat într-un modul
+  importat de `cabinet.js` **nu mai poate ajunge** la un browser fără să treacă o poartă.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `7a66fd4`
+- **rezolvată pe commit**: —
+- **unde ajunge efectul**: ecranul contabilului, direct și complet — nu o cifră greșită, ci un desktop
+  care nu se randează deloc. *E singura clasă din registru care ajunge la om fără să treacă prin
+  nicio poartă.*
+
 ### R117 — Un gard al cărui subiect e o mulțime de lucruri NEREZOLVATE se golește când ultimul se rezolvă
 
 - **felul**: VERIFICARE
@@ -4667,10 +4699,29 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
 - **felul**: VERIFICARE
 - **cine deblochează**: EXTERN
 - **unde intră**: E1 · interdicția 32 · interdicția 19 · **PRAG 3** *(nimic fals pe ecran azi; ce lipsește e proba, nu corectitudinea)*
+- **cum s-a rezolvat** *(01.09.2026)*: **Costin a depus un D300 prin interfață**, pe `tenant_017`
+  (Firma Grea Audit SRL), perioada 08/2026 — aprobare + depunere, cu patru-ochi oprit pe cabinetul
+  1968, deci într-un singur act. Jurnalul a primit rândurile: `public.declaratii_depuse` →
+  `(14769, 2026, 8, 'd300', nr_depunere=1, randuri NENUL, 3 chei în R, xml 708 octeți)`. **Lanțul
+  *poziție depusă → cont → note → document* are de acum ce parcurge, pe date reale.**
+- **ce a scos, și n-ar fi ieșit din cod**: perechea orizontală a vorbit prima oară — **VERDE**,
+  *„D390 și D300 depus coincid (8.000,00 lei)"*. Dar Costin declarase că lasă rândurile
+  intracomunitare **goale**, iar `R1_1` avea 8.000. Citit la sursă (`core/d300.py:403-424`): rândul
+  se **derivă AUTOMAT** din facturile emise către UE, iar introducerea manuală peste el e refuzată ca
+  dublă numărare. Deci textul pe care aplicația îl **afișa contabilului** — *„rândurile intracomunitare
+  ale D300 sunt manual-only"* — era **FALS**; scos, prag 1. Și, mai important: **cele două laturi nu
+  sunt surse independente**, fiindcă vin din aceleași facturi — ce prinde comparația e **deriva**
+  dintre ce s-a depus atunci și evidența de acum. Scris în temei.
+- **două cifre ale restanței erau STĂTUTE, și le-am purtat**: *„coada are 3 elemente, toate în
+  `la_senior`"* → măsurat 01.09: **2** elemente, dintre care **unul** în `la_senior`. Iar *„calea
+  n-a fost folosită niciodată"* era falsă **din 24.08.2026**, când Costin depusese deja un d301
+  (`coada 2411`, `tenant_006`, 2026/06) — chiar singurul rând cu `randuri` din bază. *Le-am citat
+  din registru, în raportul precedent, fără să le remăsor.*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `bf16f32`
-- **ce blochează**: toate cele **54** de depuneri înregistrate vin din **importul istoric**, care nu captează valorile. Calea care le persistă (`coada_api.py:300`) e scrisă și gardată, dar **n-a fost folosită niciodată** — coada are 3 elemente, toate în `la_senior`. Deci lanțul *poziție depusă → cont → note → document* n-a fost parcurs nici măcar o dată pe date reale, iar sonda care-l parcurge întoarce **zero** dintr-un motiv care nu se poate deosebi mecanic de „totul e în regulă".
+- **rezolvată pe commit**: `7a66fd4`
+- **ce blochează**: *(scris la deschidere; restanța e REZOLVATĂ)* toate cele **54** de depuneri înregistrate veneau din **importul istoric**, care nu captează valorile. Calea care le persistă (`coada_api.py:300`) e scrisă și gardată, dar **n-a fost folosită niciodată** — coada are 3 elemente, toate în `la_senior`. Deci lanțul *poziție depusă → cont → note → document* n-a fost parcurs nici măcar o dată pe date reale, iar sonda care-l parcurge întoarce **zero** dintr-un motiv care nu se poate deosebi mecanic de „totul e în regulă".
 - **ce s-a făcut totuși, ca absența să nu treacă drept sănătate**: **toate cele trei** verificări care compară o declarație preferă acum ce s-a **depus**, și, când regenerează, **își declară limita** — în temei și în `limita` afișată. Erau **1 din 3** (doar `verifica_d390`). La `verifica_tva`, cheia depunerii **nu e luna curentă**, ci **ultima lună a ferestrei TVA**: coada scrie eticheta decontului (3/6/9/12 pentru trimestriali), deci o căutare pe `luna` ar fi ratat **sistematic și tăcut** exact firmele trimestriale, căzând liniștit înapoi pe regenerare cu un temei care pretinde că s-a căutat. Gardat structural în `core/test_compara_ce_s_a_depus.py`, cu RED-proof pe chiar mutația aia.
 - **condiția de deblocare**: **trebuie** o **primă depunere reală prin coadă** — aprobare de senior + depunere efectivă — **de la** Costin sau de la un contabil care folosește aplicația, **pentru ca** sonda de lanț să aibă ce parcurge. Fără ea, lanțul *poziție depusă → cont → note → document* **blochează** măsurarea interdicției 32 la nivelul ei, iar sonda întoarce zero dintr-un motiv care nu se poate deosebi mecanic de „totul e în regulă" (interdicția 19). O firmă de test e suficientă. Până atunci, orice afirmație despre „lanțul funcționează" e despre cod, nu despre date.
 
