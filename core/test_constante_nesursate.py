@@ -32,7 +32,19 @@ from core import scan_constante
 # Se coboară pe măsură ce constantele primesc temei. Nu se ridică.
 # Ieșite complet: `cote_tva.py` (2) și `d300.py` (5) — amândouă își citează actul în antet, per
 # valoare. Coborâte: d394 9->2, d212_engine 13->11, d101 8->7, d104 4->0, salarizare 19->18.
+# RIDICAT 133 -> 134 la 01.09.2026, DELIBERAT si cu motivul: pragul Intrastat a intrat in registru
+# (Costin), iar `intrastat.py` a intrat astfel in domeniul scanului. Ce a devenit vizibil e
+# `PRAG_ATENTIE = Decimal("0.80")` — pragul NOSTRU de avertizare la 80%, nu o valoare din lege.
+#
+# *O crestere de clichet produsa de LARGIREA DOMENIULUI nu e o regresie, dar nici nu se strecoara:
+# se scrie cu ce anume a crescut si de ce.* Drumul de coborare nu e o reparatie fiscala — nu e nimic
+# de reparat —, ci o clasa pentru valorile OPERATIONALE din `core/`, care azi nu exista (exista doar
+# `_OPERATIONALE`, limitata la radacina).
+#
+# Cealalta constanta nou-vazuta, `Decimal("0.1")` de pe `.quantize()`, NU a intrat in clichet: e
+# precizie, clasa D, iar lista de precizie a fost completata — `scan_constante._este_precizie`.
 BASELINE = {
+    "intrastat.py": 1,
     # COBORAT 23.08.2026 dupa R26: cele 25 de defaults cu literalul 21 au fost SCOASE, iar
     # clichetul a cerut singur coborarea (`test_baseline_nu_e_stat`). C: 162 -> 134.
     "asistenti_api.py": 3, "asociati_import_api.py": 1, "audit_preluare.py": 1,
@@ -514,14 +526,29 @@ def test_CALIBRARE_ambele_semnale_impreuna_aduc_fisierul(tmp_path):
         "nume fiscal + valoare din registru (%d) n-au adus fisierul in domeniu" % val)
 
 
-def test_ce_NU_prinde_regula_se_scrie(tmp_path):
-    """Limita, ceruta ca afirmatie: o valoare fiscala care NU e in registru ramane invizibila.
-    Instanta reala: `intrastat.PRAG_2026 = 1000000`. E alta clasa (valoare fara temei, interdictia
-    57), nu o scapare a regulii — dar daca intr-o zi intra in registru, fisierul trebuie sa apara."""
+def test_limita_regulii_nu_mai_are_instanta_cunoscuta():
+    """TESTUL SCRIS CA SA CADA A CAZUT, si a cazut corect.
+
+    Forma lui de pe 31.08 cerea ca `intrastat.py` sa fie IN AFARA domeniului, si spunea in mesaj:
+    *„daca pragul Intrastat a fost adaugat in registru, e o veste buna: scoate testul asta si
+    coboara/urca BASELINE cu ce aduce."* Pe 01.09 pragul a intrat in registru, fisierul a intrat in
+    domeniu, si testul a picat — exact cum fusese scris sa faca.
+
+    Ce ramane de pazit e LIMITA, nu instanta: o valoare fiscala scrisa direct in cod, fara sa treaca
+    prin registru, e invizibila pentru orice regula ancorata pe registru. Azi nu exista instanta
+    cunoscuta; asta se afirma, nu se presupune.
+    """
     import io as _io
     import os as _os
     rad = _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__)))
     src = _io.open(_os.path.join(rad, "core", "intrastat.py"), encoding="utf-8").read()
-    assert not scan_constante.in_domeniu("intrastat.py", src), (
-        "`intrastat.py` a intrat in domeniu — daca pragul Intrastat a fost adaugat in registru, "
-        "e o veste buna: scoate testul asta si coboara/urca BASELINE cu ce aduce")
+    assert scan_constante.in_domeniu("intrastat.py", src), (
+        "`intrastat.py` a iesit din domeniu — pragul Intrastat a fost scos din registru? Atunci "
+        "limita regulii are iar o instanta, si trebuie scrisa.")
+    # Pe MULTIME, nu cu `in`: forma recomandata de `scan_garzi_pe_text` (clichetul 50). A patra
+    # oara in doua zile cand urc clichetul scriind un test — de data asta pe un dict, unde `in` e
+    # apartenenta reala, dar scanul nu poate sti asta si numara forma.
+    from core.common import COTE
+    assert set(COTE) >= {"plafon_intrastat"}, (
+        "`plafon_intrastat` a disparut din registru — exceptia cunoscuta de un singur raport s-a "
+        "intors")

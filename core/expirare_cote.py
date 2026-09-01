@@ -39,6 +39,7 @@ ETICHETE = {
     "facilitate_salariu_minim": "Facilitatea la salariul minim (partea neimpozabila)",
     "plafon_facilitate_salariu_minim": "Plafonul facilitatii la salariul minim",
     "tichet_masa_plafon": "Valoarea maxima a tichetului de masa",
+    "plafon_intrastat": "Pragul Intrastat (expedieri / introduceri, separat pe flux)",
 }
 
 

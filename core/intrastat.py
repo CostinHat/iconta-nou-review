@@ -4,11 +4,25 @@ Praguri 2026: 1.000.000 lei expedieri si 1.000.000 lei introduceri (separat pe
 flux). Obligatia de declarare incepe cu LUNA in care valoarea CUMULATA de la
 inceputul anului depaseste pragul, separat pe flux. Declaratia se depune lunar
 la INS (intrastat.ro) cu coduri NC8 - aici doar monitorizam pragurile."""
+from datetime import date
 from decimal import Decimal
-from core.common import AVERTISMENT
 
-PRAG_2026 = Decimal("1000000")
-PRAG_ATENTIE = Decimal("0.80")  # avertizare la 80%
+from core.common import AVERTISMENT, cota
+
+# PRAGUL NU MAI E SCRIS AICI (01.09.2026). Statea ca literal, deci era invizibil pentru orice regula
+# de domeniu ancorata pe registru — si asa a devenit singura constanta fiscala reala ramasa in afara
+# acoperirii, cunoscuta doar dintr-un raport. Se citeste acum din `COTE["plafon_intrastat"]`.
+#
+# `PRAG_ATENTIE` RAMANE AICI, si nu e o scapare: 80%% nu e o valoare din lege, e pragul NOSTRU de
+# avertizare timpurie. O valoare de produs nu are ce cauta in registrul de cote — v. `DECIZII` 20.2,
+# unde aceeasi deosebire a decis unde stau limitele de reverificare.
+PRAG_ATENTIE = Decimal("0.80")
+
+
+def prag_intrastat(la_data=None):
+    """Pragul Intrastat la data ceruta, din registru. Acelasi pe ambele fluxuri (Ordin INS 1604/2025)."""
+    val, _t = cota("plafon_intrastat", la_data=la_data or date.today())
+    return Decimal(str(val))
 
 # status -> nivel de verdict declarat de MOTOR (severitatea nu se alege la randare). Depasirea pragului
 # naste OBLIGATIE de declarare lunara la INS = situatie determinata, legal dar riscanta -> AVERTISMENT.
@@ -25,9 +39,10 @@ def e_partener_ue(cui):
     c = (cui or "").strip().upper().replace(" ", "")
     return c[:2] in PREFIXE_UE
 
-def analiza_flux(valori_lunare, prag=PRAG_2026):
+def analiza_flux(valori_lunare, prag=None):
     """valori_lunare: {luna(int): suma}. Returneaza cumulat, status
     (sub_prag|atentie|depasit), luna_depasirii, procent, nivel (AVERTISMENT pe atentie/depasit, altfel None)."""
+    prag = prag if prag is not None else prag_intrastat()
     cumulat = Decimal("0")
     luna_dep = None
     for luna in sorted(valori_lunare):

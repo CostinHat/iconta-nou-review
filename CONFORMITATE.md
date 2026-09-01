@@ -2284,6 +2284,44 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
 - **cum s-a rezolvat (partea statică)**: `core/test_ds_verificator.py` — **trei clichete** (neacoperite ≤ **24**, acoperite ≥ **5**, fără ancoră ≤ **18**) și **patru calibrări**, dintre care una **în direcția de eșec** (regula lui R100: o ancoră sigur absentă trebuie să iasă NEACOPERITĂ) și una pe **ancora din comentariu** — chiar forma regulii steluțelor. **RED-proof rulat**: o regulă nouă inserată în DS, cu ancoră necunoscută, urcă 24 → 25 și garda cade. *Clichetele sunt praguri, nu zerouri: datoria cunoscută e **înghețată**, nu ștearsă.* **Ce NU închide asta, prin decizie:** cele **15** reguli acoperite doar la suprafață **nu sunt datorie** — sunt limita unui scaner static, corect diagnosticată, și cer alt instrument, care cheamă rute și observă comportamentul: **faza 2**. Iar cele **18 fără ancoră** s-au desprins ca **R104**, fiindcă sunt defect al REGULII, nu al instrumentului.
 - **condiția de deblocare**: o gardă care cere ca fiecare regulă din DS cu **ancoră** să aibă corespondent în verificator, **sau** o declarație scrisă lângă ea („nu se poate verifica static, fiindcă…"). Clichet pe numărul de neacoperite, ca să nu crească tăcut. Se închide când cifra e ținută de un clichet **și** când fiecare regulă din cele 24 e ori acoperită, ori declarată. *Partea „doar la suprafață" (15) NU se închide cu asta: ea cere un instrument care observă comportamentul, nu textul — deci altă natură, și altă restanță când se ajunge la ea.*
 
+### R110 — Pragul Intrastat e în registru, dar actul care îl poartă e un ciot
+
+- **felul**: SURSĂ
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · faza 2 · familia „încrederea în corpus" (R1, R4, R5, R6, R107) · **PRAG 3**
+- **ce blochează**: confruntarea valorii cu actul. Pragul e acum în registru și vizibil pentru
+  instrumente, dar `scan_citate` îl raportează `verbatim=False`, pe drept: documentul citat nu
+  conține textul. Blochează și axa A a interdicției **55** — fără articol și fără text, frecvența nu
+  se poate citi, deci temeiul stă la `NECUNOSCUT` declarat.
+- **condiția de deblocare**: o formă a Ordinului INS 1604/2025 care **poartă textul**, adusă în
+  corpus și amprentată, plus articolul care fixează pragul. Se închide când
+  `scan_citate.inventar()` dă `verbatim=True` pentru `plafon_intrastat`.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `3c9fb2d`
+- **măsurat la**: 2026-09-01 · **pe commit**: `3c9fb2d`
+- **cifra**: **1** valoare fiscală în registru cu act adus dar neconfruntabil. Pagina servită de
+  portal pentru id=303985 are **5.416 caractere** și nu conține pragul.
+- **CE S-A VERIFICAT ȘI CE NU**, scris ca să nu pară mai solid decât e:
+  - **verificat**: actul **există** — căutat pe `legislatie.just.ro` prin instrumentul propriu
+    (`portal_legislativ.py cauta ORDIN 1604 2025` → `id=303985, ORDIN 1604 27/10/2025`), adus și
+    **amprentat** (`7906620a…`). Titlul și data confirmă citarea din antetul modulului.
+  - **NEverificat**: **valoarea**. Pagina e un ciot; pragul de 1.000.000 lei rămâne cel scris la
+    implementare, în antetul `core/intrastat.py`, neconfruntat cu textul actului.
+- **de ce a intrat totuși în registru** *(Costin, 01.09)*: *„cât timp e afară, «clichetul nu crește»
+  are o excepție pe care o cunoaște un singur raport — excepția nedeclarată e clasa închisă azi de
+  patru ori."* În registru, incompletitudinea e **măsurabilă** (`verbatim=False`, `NECUNOSCUT` la
+  reverificare); în afara lui, era invizibilă pentru toate instrumentele și trăia doar în proză.
+- **calibrare**: instrumentul de aducere și-a făcut treaba în ambele direcții — a **găsit** actul
+  (deci absența nu venea din neputință) și a adus o pagină pe care `articol_in_act.e_ciot` o
+  clasifică corect drept ciot.
+- **ce nu vede**: nu spune dacă altă formă a actului (anexă, PDF INS) ar purta textul. Nu s-a căutat
+  în afara portalului.
+- **unde ajunge efectul**: obligația Intrastat e **externă** (INS, nu ANAF) și aplicația doar
+  monitorizează pragul — deci o valoare greșită n-ar produce o declarație greșită, ci un avertisment
+  greșit. *Mai puțin grav decât o cotă, și se scrie ca atare: nu tot ce e neconfruntat e la fel de
+  periculos.*
+
 ### R109 — Pragul de reverificare se calculează, dar raportul lunar folosește tot pragul global
 
 - **felul**: ORDINE

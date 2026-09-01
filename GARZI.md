@@ -6650,6 +6650,44 @@ iar un test pe șiruri ar vedea trei lucruri diferite.
    `"PLAFON_MF_2026" not in sursa` — și a picat imediat, fiindcă numele apare în chiar comentariile
    care explică ștergerea lui. *Un `in` pe text păzește textul, nu proprietatea.* Mutată pe AST.
 
+## 01.09.2026 — Pragul Intrastat intră în registru. Excepția cunoscută de un singur raport nu mai există
+
+**Costin:** *„`intrastat.PRAG_2026` intră în registru. Cât timp e afară, «clichetul nu crește» are o
+excepție pe care o cunoaște un singur raport — excepția nedeclarată e clasa închisă azi de patru
+ori."*
+
+**Ce s-a făcut, în ordinea în care contează:**
+
+1. **S-a căutat actul la sursă**, nu s-a presupus. `portal_legislativ.py cauta ORDIN 1604 2025` →
+   `id=303985, ORDIN 1604 27/10/2025`. Adus și **amprentat**.
+2. **S-a citit ce s-a adus** — și pagina e un **ciot de 5.416 caractere**, care **nu conține
+   pragul**. Deci actul **există** (verificat), dar valoarea **nu e confruntată** (nu se poate).
+   Ambele se scriu; **R110**.
+3. **Valoarea a intrat în registru** cu exact atât cât s-a verificat: `url` către actul adus,
+   `lant_acte` care spune că e ciot. `scan_citate` îl va raporta `verbatim=False`, **pe drept** —
+   incompletitudinea devine **măsurabilă** în loc să fie prozaică.
+4. **Modulul citește din registru.** `intrastat.prag_intrastat(la_data)`; `PRAG_2026` nu mai există.
+   **`PRAG_ATENTIE = 0.80` RĂMÂNE** — 80% nu e o valoare din lege, e pragul **nostru** de avertizare
+   timpurie, iar o valoare de produs n-are ce căuta în registrul de cote.
+
+**CLICHETUL A CRESCUT, 133 → 134, DECLARAT.** `intrastat.py` a intrat în domeniu, iar ce a devenit
+vizibil e chiar `PRAG_ATENTIE`. *O creștere produsă de lărgirea domeniului nu e o regresie, dar nici
+nu se strecoară: se scrie cu ce anume a crescut, și de ce coborârea ei nu e o reparație fiscală — nu
+e nimic de reparat —, ci ar cere o clasă pentru valorile operaționale din `core/`, care azi nu
+există.*
+
+**A doua constantă nou-văzută NU a intrat în clichet, și de-aia merită scrisă:** `Decimal("0.1")` de
+pe un `.quantize()`. Lista de precizie a scanului (clasa D) era **enumerată, nu derivată** —
+`("0.01", "0.001", "0.005", "0.5")` — deși criteriul din chiar condiția ei e prezența lui
+`quantize`. Completată cu `0.1`, după ce s-a măsurat că e **o singură instanță în tot repo-ul**, deci
+fără efecte laterale. *O enumerare care nu-și derivă membrii îmbătrânește la prima valoare nouă.*
+
+**TESTUL SCRIS CA SĂ CADĂ A CĂZUT.** Pe 31.08 scrisesem, ca limită declarată a regulii de domeniu, un
+test care cerea ca `intrastat.py` să fie **în afara** domeniului, cu mesajul: *„dacă pragul Intrastat
+a fost adăugat în registru, e o veste bună: scoate testul ăsta."* A picat azi, exact așa. Rescris:
+păzește acum **limita** (o valoare fiscală scrisă direct în cod e invizibilă), și afirmă că **nu mai
+există instanță cunoscută** — o afirmație, nu o presupunere.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **501 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.

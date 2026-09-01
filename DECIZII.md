@@ -3,6 +3,26 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 01.09.2026 (23) — O excepție cunoscută de un singur raport nu e o excepție, e o scăpare
+
+**Costin, verbatim:** *„`intrastat.PRAG_2026` intră în registru. Cât timp e afară, «clichetul nu
+crește» are o excepție pe care o cunoaște un singur raport — **excepția nedeclarată e clasa închisă
+azi de patru ori**."*
+
+**Regula:** o afirmație de tipul *„clichetul nu crește"* e adevărată doar în domeniul ei. Dacă
+domeniul are o gaură știută, afirmația nu e falsă — e **incompletă într-un fel invizibil**, iar
+diferența dispare la prima recitire. *O excepție trăiește în registru sau nu trăiește deloc; un
+raport se citește o dată.*
+
+**Consecința aplicată aici:** valoarea a intrat în registru **chiar dacă nu s-a putut confrunta cu
+actul**. Asta pare o slăbire, și nu e: în registru, incompletitudinea e **măsurată** de două
+instrumente (`scan_citate` → `verbatim=False`, `reverificare` → `NECUNOSCUT` cu motiv) și are
+restanță proprie, **R110**. În afara lui, era perfectă pe hârtie și invizibilă pentru toate.
+
+*Corolarul, care nu era evident: **a intra în registru nu înseamnă a fi verificat.** Registrul e
+locul unde se ține evidența a ce se știe și a ce nu — nu o listă de certitudini. O valoare cu temei
+neconfruntat, declarată ca atare, e mai bună decât aceeași valoare într-un literal.*
+
 ## 01.09.2026 (22) — Canonicul necitit e configurația cea mai proastă
 
 **Regula, verbatim de la Costin:** *„O lege aplicată în trei locuri produce cifra validă și falsă;

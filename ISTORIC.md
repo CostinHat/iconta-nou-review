@@ -7026,3 +7026,35 @@ mulțime: `{f.split("::")[0] for f in fn} >= {"obiecte_inventar.py"}`.
 *Cele două `test_clichete_generate` care au picat au fost efect, nu cauză: blocul generat poartă
 cifra clichetului 50, deci s-a mișcat odată cu ea.*
 
+## 01.09.2026 (partea a treia) — Excepția care trăia într-un singur raport
+
+**Ultima constantă fiscală rămasă în afara acoperirii a intrat în registru.** Nu fiindcă s-a putut
+verifica — nu s-a putut —, ci fiindcă, în afara registrului, incompletitudinea ei era invizibilă.
+
+**Ce s-a verificat, și în ce ordine:** s-a **căutat actul la sursă** (`portal_legislativ.py cauta
+ORDIN 1604 2025` → `id=303985, ORDIN 1604 27/10/2025`), s-a **adus și amprentat** — și abia apoi
+s-a **citit ce s-a adus**: o pagină de **5.416 caractere**, un ciot care **nu conține pragul**.
+
+Deci: actul **există** (verificat), valoarea **nu e confruntată** (nu se poate). Amândouă intră în
+registru — `url` către actul adus, `lant_acte` care spune că e ciot —, iar `scan_citate` îl
+raportează `verbatim=False`, pe drept. **R110**, cu condiția de deblocare scrisă.
+
+*Corolarul, care nu-mi era evident înainte: **a intra în registru nu înseamnă a fi verificat.**
+Registrul ține evidența a ce se știe **și a ce nu**. O valoare cu temei neconfruntat, declarată ca
+atare, e mai bună decât aceeași valoare ascunsă într-un literal — fiindcă prima e măsurată de două
+instrumente, a doua de niciunul.*
+
+**Clichetul a crescut, 133 → 134, și e prima creștere declarată de mult.** `intrastat.py` a intrat în
+domeniu, iar ce a devenit vizibil e `PRAG_ATENTIE = 0.80` — pragul **nostru** de avertizare la 80%,
+nu o valoare din lege. Coborârea lui n-ar fi o reparație fiscală; ar cere o clasă pentru valorile
+operaționale din `core/`, care azi nu există.
+
+**A doua constantă nou-văzută n-a intrat în clichet, și motivul e o lecție mică:** `Decimal("0.1")`
+stă pe un `.quantize()`, adică e precizie prin construcție — dar lista clasei D era
+`("0.01", "0.001", "0.005", "0.5")`, **enumerată, nu derivată**, deși criteriul e chiar în condiția
+ei. *O enumerare care nu-și derivă membrii îmbătrânește la prima valoare nouă.* Completată, după ce
+s-a măsurat că e o singură instanță în tot repo-ul.
+
+**Iar testul scris ieri ca să cadă a căzut azi**, cu mesajul lui cu tot: *„dacă pragul Intrastat a
+fost adăugat în registru, e o veste bună: scoate testul ăsta."* Rescris ca să păzească limita, nu
+instanța.

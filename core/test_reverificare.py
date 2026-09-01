@@ -44,7 +44,11 @@ DISTRIBUTIE = {
     ("VOLATIL", "DEPUS"): 9,
     ("STABIL", "DEPUS"): 12,
     ("MISCATOR", "CALCULAT"): 3,
-    ("NECUNOSCUT", "NECUNOSCUT"): 10,
+    # 10 -> 11 la 01.09.2026: pragul Intrastat a intrat in registru (Costin). Temeiul lui n-are
+    # ARTICOL — Ordinul INS 1604/2025 a fost adus, dar pagina servita e un ciot care nu poarta
+    # textul —, deci frecventa nu se poate citi. *NECUNOSCUT declarat, cu motivul: exact forma
+    # ceruta. O valoare intrata in registru nu devine automat clasificabila, si nu se preface ca e.*
+    ("NECUNOSCUT", "NECUNOSCUT"): 11,
 }
 
 _AZI = datetime.date(2026, 8, 31)

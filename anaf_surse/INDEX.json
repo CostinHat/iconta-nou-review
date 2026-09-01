@@ -69,7 +69,9 @@
     "PORTAL_IDS.json": {
       "exista": true,
       "tip_forma": null,
-      "acopera": []
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
     },
     "PROVENIENTA.json": {
       "exista": true,
@@ -570,7 +572,9 @@
     "gen_index.py": {
       "exista": true,
       "tip_forma": null,
-      "acopera": []
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
     },
     "hg518_1995_diurna_externa.txt": {
       "exista": true,
@@ -2273,58 +2277,42 @@
     "opanaf_602_2026_modificare_opanaf_587_2016_formulare.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_602_2026_modificare_opanaf_587_2016_formulare.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_602_2026_modificare_opanaf_587_2016_formulare.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_602_2026_modificare_opanaf_587_2016_formulare.txt.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_603_2026_recalculare_oficiu_cass.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_603_2026_recalculare_oficiu_cass.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_603_2026_recalculare_oficiu_cass.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_603_2026_recalculare_oficiu_cass.txt.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "opanaf_605_2026_d112.pdf": {
       "exista": true,
@@ -2430,6 +2418,42 @@
       "exista": true,
       "tip_forma": null,
       "acopera": []
+    },
+    "ordin_1604_2025_intrastat.html": {
+      "exista": true,
+      "tip_forma": "consolidat_la_zi",
+      "acopera": [
+        {
+          "cota": "plafon_intrastat",
+          "data_in": "2026-01-01",
+          "valoare": "1000000",
+          "nivel_sursa": "MO",
+          "temei": "Ordin 1604/2025 art."
+        }
+      ],
+      "sursa": "legislatie.just.ro",
+      "forma": "initiala"
+    },
+    "ordin_1604_2025_intrastat.html.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "ordin_1604_2025_intrastat.txt": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
+    },
+    "ordin_1604_2025_intrastat.txt.sha256": {
+      "exista": true,
+      "tip_forma": null,
+      "acopera": [],
+      "sursa": "static.anaf.ro",
+      "forma": "initiala"
     },
     "ordin_2066_2025.html": {
       "exista": true,
@@ -2625,30 +2649,22 @@
     "oug_24_2026_contributie_solidaritate.html": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "legislatie.just.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_24_2026_contributie_solidaritate.html.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_24_2026_contributie_solidaritate.txt": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_24_2026_contributie_solidaritate.txt.sha256": {
       "exista": true,
       "tip_forma": null,
-      "acopera": [],
-      "sursa": "static.anaf.ro",
-      "forma": "initiala"
+      "acopera": []
     },
     "oug_25_2018.pdf": {
       "exista": true,
@@ -2844,7 +2860,7 @@
       "acopera": [
         {
           "cota": "plafon_mijloc_fix",
-          "data_in": "2026-01-01",
+          "data_in": "2026-02-25",
           "valoare": "5000",
           "nivel_sursa": "MO",
           "temei": "OUG 8/2026 art.28"

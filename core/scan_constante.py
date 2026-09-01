@@ -303,7 +303,12 @@ def scan(f, src):
 # ── clasa D: precizie/format rezidual. Separata DUPA clasificare, ca sa ramana numarabila. ──
 def _este_precizie(h):
     t, v = h["txt"], h["v"]
-    if v in ("0.01", "0.001", "0.005", "0.5") and (
+    # LISTA ERA ENUMERATA, NU DERIVATA — completata 01.09.2026 cu „0.1". Un literal aflat pe un
+    # `.quantize(...)` E o cuantizare prin constructie; criteriul e chiar in conditia de mai jos.
+    # Lipsea doar valoarea, si de-aia `intrastat.py` isi raporta rotunjirea procentului ca datorie
+    # fiscala. Masurat inainte de a completa: O SINGURA instanta in tot repo-ul, deci fara efecte
+    # laterale. *O enumerare care nu-si deriva membrii imbatraneste la prima valoare noua.*
+    if v in ("0.01", "0.001", "0.005", "0.1", "0.5") and (
             "quantize" in t or re.search(r"^_?[A-Z0-9_]{1,6}\s*=\s*Decimal", t)):
         return True
     if "chr(" in t:
@@ -464,9 +469,12 @@ def _poarta_valoare_de_registru(src):
     # fiscala. Cu nume SI valoare: trei fisiere, zero fals-pozitive, ZERO clasa C adaugata — cele
     # patru valori nou-vazute sunt clasa E, adica sursate in proza, nu nesursate.
     #
-    # CE NU PRINDE, si se scrie: o valoare fiscala care NU e in registru. Instanta ramasa,
-    # `intrastat.PRAG_2026 = 1000000` — pragul Intrastat nu e in `COTE`, deci nicio regula ancorata
-    # pe registru n-o poate vedea. E alta clasa (o valoare fara temei, interdictia 57).
+    # CE NU PRINDE, si se scrie: o valoare fiscala care NU e in registru — nicio regula ancorata pe
+    # registru n-o poate vedea. Instanta care ilustra clasa, `intrastat.PRAG_2026 = 1000000`, a fost
+    # INCHISA pe 01.09.2026: pragul a intrat in `COTE` (Costin: *„cat timp e afara, «clichetul nu
+    # creste» are o exceptie pe care o cunoaste un singur raport"*). Clasa ramane deschisa ca
+    # posibilitate — orice valoare fiscala noua scrisa direct in cod, fara sa treaca prin registru,
+    # e din nou invizibila. Nu exista instanta cunoscuta azi.
     for n in arb.body:
         if not isinstance(n, _ast.Assign):
             continue

@@ -448,6 +448,18 @@ COTE = {
         (date(2026, 2, 25), Decimal("5000"), Temei("OUG", 8, 2026, art="28", alin="2", lit="b", data_in="2026-02-25", verificat_la="2026-08-31", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/oug_8_2026.html", text_citat="art.28 alin.(2) lit.b) CF: la data intrarii in patrimoniul contribuabilului, are o valoare fiscala egala sau mai mare decat suma de 5.000 lei; aceasta limita se actualizata anual, in functie de indicele de inflatie, prin hotarare a Guvernului", lant_acte="DATA CORECTATA 31.08.2026: registrul scria 01.01.2026; marcajul de consolidare din CF spune «(la 25-02-2026, Litera b), Alineatul (2), Articolul 28 ... a fost modificata de Punctul 7., Articolul 6 din OUG 8/2026)». Anterior 2.500 lei (HG 276/2013). Mijloacele fixe existente la 31.12.2025 cu valoare 2.500-5.000 se amortizeaza pe durata ramasa (CF art. 45 alin. 21^3) - NU se reclasifica")),
         (date(2015, 1, 1), Decimal("2500"), Temei("HG", 276, 2013, data_in="2015-01-01", verificat_la="2026-08-09", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/hg_276_2013.html", text_citat="HG 276/2013: valoarea de intrare a mijloacelor fixe (Legea 15/1994) este de 2.500 lei (MO 313/30.05.2013); CF art.28 trimite la HG. Corectie temei: era citat Legea 227/2015")),
     ],
+    # Pragul Intrastat, mutat in registru la 01.09.2026 (Costin): *„cat timp e afara, «clichetul nu
+    # creste» are o exceptie pe care o cunoaste un singur raport — exceptia nedeclarata e clasa
+    # inchisa azi de patru ori."* Statea ca literal in `core/intrastat.py`, invizibil pentru orice
+    # regula de domeniu ancorata pe registru.
+    #
+    # CE S-A VERIFICAT SI CE NU, scris ca sa nu para mai solid decat e: actul EXISTA si a fost ADUS
+    # (`scripts/portal_legislativ.py adu 303985`), cu amprenta — titlul „ORDIN 1604 27/10/2025"
+    # confirmat pe portal. Dar pagina servita e un CIOT de 5.416 caractere, care NU contine pragul;
+    # valoarea ramane cea din antetul modulului, neconfruntata la sursa. Vezi R110.
+    "plafon_intrastat": [
+        (date(2026, 1, 1), Decimal("1000000"), Temei("Ordin", 1604, 2025, data_in="2026-01-01", verificat_la="2026-09-01", de_cine="Code (R110)", nivel_sursa="MO", url="anaf_surse/ordin_1604_2025_intrastat.html", text_citat="Ordinul INS 1604/2025 (MO 1022/05.11.2025): praguri Intrastat 2026 de 1.000.000 lei pentru expedieri si 1.000.000 lei pentru introduceri, separat pe flux", lant_acte="ADUS 01.09.2026 de pe legislatie.just.ro id=303985, amprentat. Pagina e un CIOT (5.416 caractere) si NU contine pragul — `scan_citate` il va raporta verbatim=False, pe drept. Valoarea vine din antetul core/intrastat.py, unde a fost scrisa la implementare. Acelasi prag pe amandoua fluxurile.")),
+    ],
     "plafon_sold_casa": [
         (date(2015, 5, 9), Decimal("50000"), Temei("Legea", 70, 2015, data_in="2015-05-09", verificat_la="2026-08-09", de_cine="Code/Costin", nivel_sursa="MO", url="anaf_surse/legea_70_2015_consolidat.html", text_citat="Legea 70/2015 art.3: incasarile/platile in numerar ... se pot efectua in limita unui plafon zilnic de 50.000 lei/tranzactie")),
     ],
