@@ -2455,6 +2455,10 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   identități · amprenta pe **cifre** (o confirmare acoperă nepotrivirea văzută atunci, nu tipul pe
   vecie) · jurnalul `public.supervizor_confirmari`, cu `motiv` NOT NULL · mecanismul probat pe un tip
   **sintetic** cu tărie atribuită, ca în ziua atribuirii să nu fie prima oară când e verificat.
+  **[01.09.2026, a doua tură]** și **DOMENIUL** — `ruleaza_portofoliu`, cu cele trei rezultate
+  exclusive. *Răspunsul lui Costin devine mai ieftin de dat: pe portofoliul viu, tipul ăsta produce
+  azi `CONSTATARI 16 · FARA_SUBIECT 0 · NEVERIFICAT 3`, toate 16 **gri** («n-am ce compara»), zero
+  roșii. Deci atribuirea tăriei nu schimbă nimic azi și nu e urgentă — dar nici nu se poate deduce.*
 - **planul**: **NEACOPERIT**, și am citit unde ar fi trebuit să fie. `PLAN_LUCRU.md`, secțiunea
   „Supervizorul inversează dependența”, enumeră exact trei lucruri nedecise: *ce declanșează o
   rulare · ce vede contabilul din ea și unde · dacă o constatare poate deveni vreodată blocantă*.
@@ -2469,6 +2473,39 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `1fa8f88`
 - **rezolvată pe commit**: —
+
+### R116 — Cronul de alerte numără firmele DUPĂ succes, deci una care ridică nu apare nicăieri
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E4 · supervizorul (clasă generalizată) · **PRAG 3**
+- **ce blochează**: nimic azi, și de-aia e prag 3. `core/alerte_control_fiscal.ruleaza()` face
+  `tot["firme"] += 1` **în interiorul lui `try`, după succes**; o firmă care ridică se tipărește ca
+  `ESEC` la stdout și **nu apare în niciun contor** al dicționarului întors. Linia finală —
+  *„firme=N, notificate=N, total rosii=N"* — e o cifră **validă și falsă**: se citește ca „atâtea
+  firme are portofoliul".
+- **de ce NU s-a reparat în tura în care a fost găsită**: valoarea întoarsă **n-are consumator** —
+  `core/notificari_scadenta.py:150` cheamă `ruleaza()` și aruncă rezultatul. Efectul se oprește la o
+  linie de log, iar bucla e chiar calea care trimite alertele reale către contabili. *Raport rău
+  între risc și câștig azi; nu e o judecată despre corectitudine.*
+- **cum s-a găsit**: generalizarea pe clasă a reparației din `core/supervizor.ruleaza_portofoliu`
+  (01.09.2026). Căutat cu `grep -rn 'for .* in firme\|FROM public.tenants' --include=*.py core/
+  scripts/ main.py`; a doua buclă de portofoliu (`core/woocommerce.py::_main`) **n-are contor
+  agregat deloc**, deci clasa nu se aplică acolo — enumerat explicit, ca absența să fie informație.
+- **condiția de deblocare**: în ziua în care întoarcerea lui `ruleaza()` capătă un consumator
+  (ecran, raport, metrică), contorul se **derivă** din lista de rezultate, nu se acumulează pe drum —
+  ca în `supervizor.ruleaza_portofoliu`. Se închide când o firmă care ridică apare într-un rezultat
+  numit, nu doar la stdout.
+- **calibrare**: citit la sursă, nu dedus — `core/alerte_control_fiscal.py:139-150`. Direcția opusă
+  verificată: `tot["rosii"]` are aceeași problemă (se adună tot după succes).
+- **ce nu vede măsurătoarea**: dacă vreo firmă chiar ridică azi în cron. Nu s-a rulat cronul ca să nu
+  trimită notificări reale.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `eb9d3b9`
+- **rezolvată pe commit**: —
+- **unde ajunge efectul**: o linie de log care spune că portofoliul are mai puține firme decât are.
+  *Astăzi nu ajunge la un contabil; în ziua în care cifra urcă pe un ecran, ajunge.*
 
 ### R112 — Ianuarie 2026 stă pe un act care nu era în vigoare
 
