@@ -6761,11 +6761,40 @@ exemplar care l-a cerut nu dovedește nimic despre acoperire.* Clichetul a urcat
 fișiere numite în comentariu** — un clichet urcat fără nume e chiar excepția cunoscută de un singur
 raport.
 
+## 01.09.2026 (2) — R111: un instrument care nu întreabă dacă sursa lui poate răspunde
+
+**Ce era stricat.** Axa frecvenței clasa `STABIL` orice articol fără marcaje de consolidare. Dar
+„zero marcaje" înseamnă două lucruri: *nemodificat*, sau *documentul nu consemnează modificări*. A
+doua se citea ca prima, și producea `STABIL` — adică **verificat mai rar** — dintr-o sursă care nu
+putea răspunde. Instanța: cele patru cote de **TVA**, care luau `STABIL` din actul modificator, când
+același articol în Codul fiscal are **8 marcaje**.
+
+**Reparația nu e un tabel de excepții.** `inregistreaza_modificari(document)` întreabă o proprietate
+**măsurată** a sursei: consemnează documentul vreo modificare, oriunde? Cod fiscal **1.400** ·
+OUG 89/2025 **18** · Legea 201/2025 **0**. De aceea `OUG 89/2025 art. III` rămâne `STABIL` — decizia
+din antetul lui `reverificare` se păstrează, iar criteriul nu înghite citirile reale. *Un gard care
+ar fi făcut totul NECUNOSCUT ar fi trecut primul test și ar fi distrus clasificarea.*
+
+**A doua cauză era o convenție despărțită în tăcere.** `291` era singurul articol rezolvat la Codul
+fiscal **condiționat** de numărul actului care îl citează. Mulțimea fusese mutată într-un singur loc
+pe 31.08 tocmai ca asta să nu se întâmple — dar **regula** rămăsese copiată, iar despărțirea s-a
+produs pe jumătatea nemutată. Acum `_cheie` cheamă funcția, nu îi copiază corpul.
+
+**Volum**, măsurat înainte și după pe 13 puncte: **3 → 7** la o lună, **zero pierdute**. Cele patru
+în plus nu sunt volum nou — erau `VOLATIL` și înainte, mascate.
+
+**O capcană găsită căzând în ea:** `marcaje()` avea o precondiție nescrisă (spațiile trebuie
+colapsate). Pe Codul fiscal întorcea **1** marcaj din **2.020**. Am folosit-o greșit chiar eu, la
+prima măsurătoare a clasei. Își normalizează acum singură intrarea.
+
+**Cauza 2 s-a despărțit în R113**, cu cifra ei: **8** acte de corpus sunt CIOT doar fiindcă poartă
+așezarea Monitorului Oficial, și **2** ar câștiga titluri false dintr-un tipar prea larg.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**502 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**503 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 485
+### `core/` — 486
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7057,6 +7086,7 @@ raport.
 - `core/test_flag_constatare.py` — GARDĂ: constatarea din semaforul de portofoliu e o afirmație VALIDĂ, pe toate cele trei stări.
 - `core/test_fluturas_egal_stat.py` — GARDĂ: fluturașul TIPĂREȘTE statul, nu îl recalculează. (21.08.2026)
 - `core/test_fluturas_eticheta.py` — O eticheta de pe fluturas nu are voie sa numeasca un lucru si sa arate altul.
+- `core/test_frecventa_document_care_raspunde.py` — GARD [01.09.2026, R111]: frecvența nu se citește dintr-un document care nu poate răspunde.
 - `core/test_front_e_editare_identitate.py` — core/test_front_e_editare_identitate.py — GARD Front E: identitatea/contractul salariatului
 - `core/test_g10_eroare_langa_camp.py` — GARD G10 (DESIGN_SYSTEM cap.6 v2.30) — rollout mecanism A (eroare LANGA campul care a cauzat-o, via
 - `core/test_g1_cod_mesaj.py` — core/test_g1_cod_mesaj.py — G1: codul-mașină de business nu mai ajunge brut la utilizator.

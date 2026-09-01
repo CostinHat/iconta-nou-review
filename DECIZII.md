@@ -13321,3 +13321,20 @@ cifră validă și falsă. Tabelul 3×3 rămâne neatins."* Confirmarea e scris�
 `core/reverificare.py`, nu doar aici: zgomotul recurent e exact ce se „optimizează" mai târziu de
 cineva care nu știe că a fost ales. De acum, lărgirea căsuței cere o decizie nouă, nu un argument
 despre volum.
+
+## 01.09.2026 (3) — R111: două decizii despre ce are voie să afirme un instrument
+
+**(29) Un instrument întreabă întâi dacă sursa lui poate răspunde.** `STABIL` se producea din
+absența marcajelor, fără să se verifice că documentul **înregistrează** marcaje. E aceeași familie
+cu *„gardul care nu se verifică pe sine"*, dar cu o față nouă: nu domeniul de căutare era greșit, ci
+**tăcerea sursei era citită ca răspuns**. Regula, generalizată: *înainte de a interpreta o absență,
+arată că sursa ar fi putut conține prezența.* Criteriul ales e o proprietate **măsurată** a
+documentului, nu un tabel de excepții și nu un nume de fișier — altfel ar fi trebuit întreținut, iar
+un tabel neîntreținut minte exact ca implicitul pe care îl înlocuia.
+
+**(30) O convenție mutată într-un singur loc, dar aplicată în două, tot se desparte.** Pe 31.08 am
+mutat `ART_DE_COD_FISCAL` într-un fișier, cu comentariul că *„o convenție ținută în două locuri se
+desparte în tăcere"*. S-a despărțit oricum: mutasem **mulțimea**, nu **regula** care o folosea, iar
+clauza lui `291` a rămas scrisă de două ori. Lecția e mai ascuțită decât cea de acum două zile: *nu
+muta datele și lasă logica duplicată — mută apelul.* Gardul de acum compară cele două căi pe fiecare
+temei din registru, deci o a treia despărțire cade la prima nepotrivire.

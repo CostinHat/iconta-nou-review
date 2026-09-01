@@ -120,9 +120,47 @@ def abrogat(frag):
 
 
 def marcaje(frag):
-    """[(data, ce)] — marcajele de consolidare „(la ZZ-LL-AAAA, … a fost modificat de …)"."""
+    """[(data, ce)] — marcajele de consolidare „(la ZZ-LL-AAAA, … a fost modificat de …)".
+
+    **ÎȘI NORMALIZEAZĂ SINGUR INTRAREA** (01.09.2026, R111). Tiparul are `.{0,190}?`, iar `.` nu
+    trece peste linia nouă: pe text cu linii păstrate, aproape niciun marcaj nu se potrivea. Mergea
+    doar fiindcă singurul apelant era `fragment`, care colapsează spațiile la ieșire — o precondiție
+    reală, nescrisă nicăieri. **Măsurat pe Codul fiscal: 2.020 de ocurențe brute, `marcaje` întorcea
+    UNA.** Am căzut chiar eu în ea, măsurând clasa lui R111. Normalizarea aici e idempotentă pentru
+    fragmente și face funcția onestă pentru orice apelant.
+    """
+    frag = re.sub(r"\s+", " ", frag or "")
     return [(d, re.sub(r"\s+", " ", ce).strip())
             for d, ce in re.findall(r"\(la (\d{2}-\d{2}-\d{4}),(.{0,190}?)\)", frag)]
+
+
+#: Cache pe cale: `inregistreaza_modificari` normalizează corpul întreg (2,5 MB pentru Codul fiscal),
+#: iar `categorie` o poate întreba o dată per temei. Cheia e calea; corpusul nu se schimbă în timpul
+#: unei rulări, iar `test_corpus_amprenta` păzește la fiecare poartă că fișierele sunt cele aduse.
+_INREGISTREAZA = {}
+
+
+def inregistreaza_modificari(cale):
+    """Documentul consemnează VREO modificare de consolidare, oriunde în corpul lui?
+
+    **Întrebarea pe care instrumentul trebuia să și-o pună despre sine** (R111). „Zero marcaje în
+    articolul N" înseamnă două lucruri foarte diferite:
+      - documentul consemnează modificări în alte părți, dar nu pentru articolul ăsta → **nemodificat**;
+      - documentul nu consemnează nicio modificare, nicăieri → **nu se poate ști din el**.
+    Fără deosebirea asta, a doua situație se citea ca prima și producea `STABIL` — adică *verificat
+    mai rar*, direcția largă, dintr-o sursă care nu putea răspunde.
+
+    Măsurat 01.09.2026: `cod_fiscal_227_2015_consolidat.html` **1.400** · `oug_89_2025.html` **18**
+    (deci art. III cu zero marcaje e un STABIL REAL, iar decizia din antetul lui `reverificare` se
+    păstrează) · `legea_201_2025.html`, `oug_156_2024.pdf`, `ordin_1604_2025_intrastat_mo.txt` **0**.
+    """
+    if cale not in _INREGISTREAZA:
+        try:
+            t, _amp = din_fisier(cale)
+        except OSError:
+            return False
+        _INREGISTREAZA[cale] = bool(marcaje(corp_util(t)))
+    return _INREGISTREAZA[cale]
 
 
 def ani_modificare(frag):

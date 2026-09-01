@@ -34,7 +34,6 @@ MODIFICARI = {
     ("CF", "291"): datetime.date(2025, 8, 1),
     ("OUG 89/2025", "III"): None,
     ("OUG 156/2024", "LXVI"): datetime.date(2025, 1, 10),
-    ("Legea 141/2025", "291"): None,
     ("Legea 201/2025", "I"): None,
     # CITIT LA SURSĂ 01.09.2026, dar NU de instrument — de mine, actul întreg (2.899 de caractere,
     # șase articole). Art. 1 nu poartă niciun marcaj: e un ordin nou, publicat 05.11.2025, nemodificat.
@@ -54,17 +53,16 @@ MODIFICARI = {
 # celui care scria următorul instrument —, iar al doilea n-a știut de ea: `scan_pereche_act_articol`
 # a luat perechile literal și a raportat șase defecte de date care nu existau. *O convenție ținută
 # în două locuri se desparte în tăcere.* Acum e una singură, importată.
-from core.scan_pereche_act_articol import ART_DE_COD_FISCAL as _ART_DE_COD_FISCAL  # noqa: E402
+from core import scan_pereche_act_articol as S  # noqa: E402
 
 
 def _cheie(t):
-    tip = str(getattr(t, "tip", "") or "")
-    art = str(getattr(t, "art", "") or "")
-    if tip.upper() in ("CF", "CODUL FISCAL"):
-        return ("CF", art)
-    if art in _ART_DE_COD_FISCAL or (art == "291" and "227" in str(getattr(t, "nr", ""))):
-        return ("CF", art)
-    return ("%s %s/%s" % (tip, getattr(t, "nr", None), getattr(t, "an", None)), art)
+    """DELEGAT, nu reimplementat (01.09.2026, R111). Mulțimea fusese mutată într-un singur loc pe
+    31.08 tocmai ca o convenție să nu se despartă în tăcere — dar **regula** care o folosea rămăsese
+    scrisă de două ori, iar clauza lui 291 s-a despărțit exact pe jumătatea nemutată. Acum se cheamă
+    funcția, nu se copiază corpul ei."""
+    return S.cheie_articol(getattr(t, "tip", None), getattr(t, "nr", None),
+                           getattr(t, "an", None), getattr(t, "art", None))
 
 
 def _data(v):

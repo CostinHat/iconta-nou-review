@@ -175,7 +175,15 @@ def categorie(t, azi=None):
         r["motiv"] = ("articolul nu se poate confrunta cu documentul (%s) — v. R107 pentru ciot"
                       % g["stare"])
         return r
-    r["frecventa"] = frecventa(date_marcaje(g["frag"]), azi)
+    marcaje_art = date_marcaje(g["frag"])
+    if not marcaje_art and not A.inregistreaza_modificari(doc):
+        r["motiv"] = (
+            "documentul nu înregistrează NICIO modificare (zero marcaje de consolidare în tot corpul "
+            "lui), deci «niciun marcaj în articol» nu deosebește «nemodificat» de «nu se consemnează "
+            "aici» — iar a-l citi ca STABIL ar însemna verificat mai rar dintr-o sursă care nu poate "
+            "răspunde")
+        return r
+    r["frecventa"] = frecventa(marcaje_art, azi)
     r["consecinta"] = consecinta(tip, nr, an, art)
     if r["consecinta"] == "NECUNOSCUT":
         r["motiv"] = "nimic din cod nu atinge valoarea — consecința unei expirări nu se poate numi"

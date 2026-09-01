@@ -7117,3 +7117,29 @@ modificator care nu poate purta istoric de consolidare, când același articol �
 opt marcaje. Zero alerte pierdute — podeaua ține —, dar câștigul lui R109 e anulat exact unde
 consecința e cea mai mare. **R111**, cu cele două cauze numite mecanic, una dintre ele o convenție
 care s-a despărțit în tăcere pe jumătatea care nu fusese mutată într-un singur loc.
+
+### 01.09.2026, partea a șasea — R111: tăcerea sursei citită ca răspuns
+
+Costin a confirmat cifra din cerință — cele patru cote de TVA intră în cadența lunară —, deci R111 a
+devenit muncă, nu decizie.
+
+Reparația are două jumătăți. Prima: `291` a intrat în mulțimea articolelor de Cod fiscal, ca
+celelalte trei, iar regula care o folosește se **cheamă** acum dintr-un singur loc în loc să fie
+copiată. Convenția fusese mutată într-un singur loc cu două zile înainte, exact ca să nu se despartă
+— dar mutasem mulțimea, nu regula.
+
+A doua: instrumentul întreabă acum dacă documentul din care citește **consemnează** vreo modificare.
+Dacă nu consemnează niciuna, „zero marcaje în articol" nu mai înseamnă „nemodificat". Criteriul e o
+proprietate măsurată a sursei, nu un tabel de excepții — Cod fiscal 1.400, OUG 89/2025 18, Legea
+201/2025 zero. De aceea `art. III` din OUG 89/2025 rămâne `STABIL`: documentul lui vorbește, doar
+articolul tace. Fără proba aceea inversă, un criteriu care ar fi întors mereu „nu se poate ști" ar
+fi trecut testul principal pe o clasificare care nu mai clasifica nimic.
+
+Măsurând clasa, am căzut chiar în capcana pe care o repar: `marcaje()` cerea text cu spațiile
+colapsate și nimeni n-o scrisese. Pe Codul fiscal întorcea un marcaj din 2.020. Acum își
+normalizează singură intrarea.
+
+Volumul, pe 13 puncte: 3 → 7 la o lună, zero pierdute. Cele patru în plus nu sunt volum nou — erau
+volatile și înainte, mascate de un `STABIL` venit din actul modificator. Cauza a doua, forma
+Monitorului Oficial pe care instrumentele de articol n-o citesc, s-a despărțit în **R113**: 8 acte
+de corpus nevăzute, și 2 care ar câștiga titluri false dintr-un tipar scris în grabă.

@@ -17,6 +17,12 @@ despre un job lunar):
     …                   0             3   (aceleași, până în februarie)
     2027-03-01         20            20   —
 
+**CIFRA S-A MUTAT ÎN ACEEAȘI ZI, 3 → 7 (R111).** Tabelul de mai sus e măsurătoarea **de la legare**
+și rămâne scris ca atare — nu e starea de acum. Cele patru în plus sunt cotele de TVA: temeiul lor
+lua `STABIL` dintr-un act modificator care nu poartă istoric de consolidare, iar acel `STABIL` îl
+masca pe cel real din Codul fiscal. Măsurătoarea curentă și gardurile ei stau în
+`core/test_frecventa_document_care_raspunde.py`.
+
 *Cele trei sunt exact clasa `VOLATIL/DEPUS`: cotele care s-au mișcat de două ori în trei ani și
 intră în declarații.*
 
@@ -131,11 +137,16 @@ def test_ANTI_VACUU_legarea_chiar_stramteaza_ceva():
 
 
 def test_volumul_in_plus_e_CEL_MASURAT():
-    """Pinat: peste o lună, exact trei cote intră în alertă, și sunt cele din clasa VOLATIL/DEPUS.
+    """Pinat: peste o lună, exact **șapte** cote intră în alertă, toate din clasa VOLATIL/DEPUS.
     O mutare aici înseamnă că s-a schimbat clasificarea sau vechimea confirmărilor — amândouă merită
-    văzute, niciuna nu trebuie să treacă tăcut."""
+    văzute, niciuna nu trebuie să treacă tăcut.
+
+    **A FOST 3, ȘI PINUL A CĂZUT CORECT** când R111 a reparat axa în aceeași zi. Cele patru cote de
+    TVA nu sunt volum nou: erau `VOLATIL` și înainte, în Codul fiscal, dar un `STABIL` venit din
+    actul modificator le masca. Cadența lunară pentru ele e confirmată de Costin (01.09.2026)."""
     d = _plus_luni(datetime.date.today(), 1)
     plus = _alerte(d, _prag_pentru) - _alerte(d)
-    assert plus == {"impozit_dividend", "impozit_micro", "impozit_venit"}, (
+    assert plus == {"impozit_dividend", "impozit_micro", "impozit_venit",
+                    "tva_standard", "tva_redusa", "tva_redusa_9", "tva_redusa_5"}, (
         "volumul în plus s-a mutat: %s. Dacă e intenționat (o confirmare reînnoită, o clasificare "
         "schimbată), pinează noua mulțime." % sorted(plus))

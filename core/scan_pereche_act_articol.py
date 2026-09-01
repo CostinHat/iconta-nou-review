@@ -52,7 +52,7 @@ NECONFIRMATE = ("NEGASIT", "CIOT", "FISIER_LIPSA", "FARA_ART")
 #: Scrise ca date fiindcă sunt o convenție, nu o deducție — v. interdicția 50. Aceeași mulțime e
 #: folosită de `core/test_vigoare_articole_registru.py`, care o importă de aici: o convenție ținută
 #: în două locuri se desparte în tăcere.
-ART_DE_COD_FISCAL = {"97", "28", "282"}
+ART_DE_COD_FISCAL = {"97", "28", "282", "291"}
 
 #: Forma consolidată a Codului fiscal din corpus — documentul în care se caută articolele de mai sus.
 CF_CORPUS = "anaf_surse/cod_fiscal_227_2015_consolidat.html"
@@ -64,7 +64,7 @@ def cheie_articol(tip, nr, an, art):
     art = str(art or "")
     if tip.upper() in ("CF", "CODUL FISCAL"):
         return ("CF", art)
-    if art in ART_DE_COD_FISCAL or (art == "291" and "227" in str(nr)):
+    if art in ART_DE_COD_FISCAL:
         return ("CF", art)
     return ("%s %s/%s" % (tip, nr, an), art)
 

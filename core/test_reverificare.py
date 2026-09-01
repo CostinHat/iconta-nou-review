@@ -40,15 +40,25 @@ from core import reverificare as R  # noqa: E402
 #: ca valoarea canonica **e citita de cineva**. Pana atunci consumatorii isi duplicasera cifra, deci
 #: graful nu vedea niciun consumator, deci consecinta unei expirari nu se putea numi.
 #: *O mutare de clasificare produsa de o unificare de sursa, nu de o modificare fiscala.*
+#:
+#: MUTAT DIN NOU 01.09.2026, prin **R111**, si socoteala se scrie ca sa se poata confrunta:
+#:   `VOLATIL/DEPUS`   9 → 13  (+4: cele patru temeiuri pe `Legea 141/2025 art. 291`, care luau
+#:                              STABIL din actul MODIFICATOR — un act care reproduce textul nou al
+#:                              articolului, dar nu istoricul lui. Acelasi articol in forma
+#:                              consolidata a Codului fiscal are 8 marcaje.)
+#:   `STABIL/DEPUS`   12 →  7  (−4 mutate mai sus, −1 `Legea 201/2025 art. I`)
+#:   `NECUNOSCUT`     11 → 12  (+1: `Legea 201/2025 art. I`, dintr-un document care nu consemneaza
+#:                              NICIO modificare — deci „zero marcaje" nu spunea „nemodificat")
+#: *Nicio valoare fiscala nu s-a schimbat. S-a schimbat ce poate afirma instrumentul despre ele.*
 DISTRIBUTIE = {
-    ("VOLATIL", "DEPUS"): 9,
-    ("STABIL", "DEPUS"): 12,
+    ("VOLATIL", "DEPUS"): 13,
+    ("STABIL", "DEPUS"): 7,
     ("MISCATOR", "CALCULAT"): 3,
     # 10 -> 11 la 01.09.2026: pragul Intrastat a intrat in registru (Costin). Temeiul lui n-are
     # ARTICOL — Ordinul INS 1604/2025 a fost adus, dar pagina servita e un ciot care nu poarta
     # textul —, deci frecventa nu se poate citi. *NECUNOSCUT declarat, cu motivul: exact forma
     # ceruta. O valoare intrata in registru nu devine automat clasificabila, si nu se preface ca e.*
-    ("NECUNOSCUT", "NECUNOSCUT"): 11,
+    ("NECUNOSCUT", "NECUNOSCUT"): 12,
 }
 
 _AZI = datetime.date(2026, 8, 31)

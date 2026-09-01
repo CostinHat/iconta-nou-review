@@ -2357,6 +2357,60 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
 - **reluări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `0a12a31`
+- **01.09.2026 — REPARATĂ ÎN ARBORE; se închide formal pe commitul următor, cu hash-ul real.**
+  - **(b) + (c) FĂCUTE**: `291` a intrat în `ART_DE_COD_FISCAL`, iar clauza condiționată a dispărut.
+    `_cheie` din `test_vigoare_articole_registru` **cheamă** acum `S.cheie_articol` în loc să-i
+    copieze corpul — mulțimea fusese mutată într-un singur loc pe 31.08, dar **regula** rămăsese
+    scrisă de două ori, și exact pe jumătatea nemutată s-a despărțit. Intrarea orfană
+    `("Legea 141/2025", "291")` din `MODIFICARI` a fost scoasă.
+  - **(a) FĂCUTĂ, prin criteriul care se verifică pe sine**: `articol_in_act.inregistreaza_modificari`
+    întreabă dacă documentul consemnează **vreo** modificare, oriunde în corpul lui. Dacă nu, „zero
+    marcaje în articol" nu mai produce `STABIL`, ci `NECUNOSCUT` cu motivul propriu. *Nu e un tabel
+    de excepții și nu e un nume de fișier — e o proprietate măsurată a sursei.* Măsurat: Cod fiscal
+    **1.400** · OUG 89/2025 **18** · Legea 201/2025, OUG 156/2024, Ordinul 1604/2025 **0**.
+  - **direcția inversă, păzită**: `OUG 89/2025 art. III` rămâne `STABIL` — documentul lui *are*
+    marcaje, doar articolul n-are. Aia e o citire reală, și e chiar decizia scrisă în antetul lui
+    `reverificare`. Fără proba asta, criteriul ar fi putut înghiți tot și ar fi părut că merge.
+  - **o capcană găsită căzând în ea**: `marcaje()` avea o precondiție **nescrisă** — tiparul are
+    `.{0,190}?`, iar `.` nu trece peste linia nouă. Mergea doar fiindcă singurul apelant colapsa
+    spațiile la ieșire. *Măsurat pe Codul fiscal: 2.020 de ocurențe brute, funcția întorcea UNA.*
+    Acum își normalizează singură intrarea.
+  - **VOLUM, măsurat înainte și după, pe 13 puncte**: **3 → 7** la +1 lună (cele patru cote de TVA),
+    **zero alerte pierdute la niciun punct**. Cadența pentru ele e **confirmată de Costin, 01.09**.
+    Clasificarea: `VOLATIL/DEPUS` 9 → 13 · `STABIL/DEPUS` 12 → 7 · `NECUNOSCUT` 11 → 12.
+  - **CAUZA (2) SE DESPARTE ÎN R113**, cu motivul — același tipar ca R107 din R106: *altă cauză,
+    altă reparație.* Verdictul ei e în direcția sigură (refuză, nu inventează), iar reparația ei nu e
+    despre axa de reverificare, ci despre **câte acte din corpus se pot citi deloc**. Ținută aici, ar
+    fi blocat închiderea lui R111 pe muncă de corpus.
+- **rezolvată pe commit**: —
+
+### R113 — Opt acte din corpus sunt nevăzute de instrumentele de articol, fiindcă poartă așezarea Monitorului Oficial
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · faza 2 · familia „încrederea în instrument" (76, R111) · **PRAG 3**
+- **ce blochează**: confruntarea **oricărui** articol din opt fișiere de corpus. `articol_in_act`
+  numără titluri cu `_TITLURI_NUMARATE`, care cere cuvântul „Articolul"; Monitorul Oficial scrie
+  „Art. N. —". Sub `PRAG_TITLURI`, actul e declarat **CIOT** — un refuz cu motiv fals: documentul e
+  întreg, doar altfel așezat.
+- **cifra, măsurată 01.09.2026**: **8** fișiere ies din CIOT dacă tiparul învață forma MO —
+  `anaf_concedii_2025.txt` · `hg_773_2019_norme_monitorizare_datorii_nerambursate` (.html și .txt) ·
+  `legea_273_2006_fin_publice_locale.txt` (**90** de articole) · `legea_31_1990_modif_L239_2025.txt` ·
+  `ordin_1604_2025_intrastat_mo.txt` · `oug_8_2009_acordarea_tichetelor_vacanta` (.html și .txt).
+  *Azi doar unul poartă un temei din registru, deci consecința imediată e mică — dar clasa crește cu
+  fiecare act adus de la Monitorul Oficial, iar de azi știm că e calea de aducere care funcționează.*
+- **direcția periculoasă a reparației, măsurată în aceeași tură**: un tipar prea larg mută un
+  document din CIOT în **GĂSIT** — adică din refuz în **răspuns fals**. Cu forma
+  `^\s*Art\.\s*N\.`, **2** fișiere ne-ciot câștigă titluri din proză
+  (`legea_346_2002_consolidat.txt` +1, `oug_200_2008_modificarea_completarea.txt` +2). Iar numărarea
+  singură nu ajunge: `fragment()` are o ramură de rezervă pe `ART. N` **majuscul**, care nu potrivește
+  „Art. N." — deci un act ieșit din CIOT ar deveni `NEGASIT` pentru fiecare articol al lui.
+- **condiția de deblocare**: cele 8 ies din CIOT **și** articolele lor se localizează corect, iar
+  cele 2 nu câștigă niciun titlu fals — calibrare în ambele direcții, pe fișiere reale, plus caz
+  sintetic pentru proza care seamănă cu un titlu. `CLICHET_CIOT` coboară 3 → 2.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `ac2dfa0`
 - **rezolvată pe commit**: —
 
 ### R112 — Ianuarie 2026 stă pe un act care nu era în vigoare
