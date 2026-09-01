@@ -2530,6 +2530,86 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
 - **unde ajunge efectul**: o linie de log care spune că portofoliul are mai puține firme decât are.
   *Astăzi nu ajunge la un contabil; în ziua în care cifra urcă pe un ecran, ajunge.*
 
+### R119 — D394 nu-și expune facturile, deci perechea cu e-Factura nu se poate face fără schimbare de generator
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E4 · supervizorul · axa orizontală · **PRAG 3**
+- **ce blochează**: perechea **D394 ↔ e-Factura**, cerută de Costin pe 02.09.2026 — *„facturi
+  transmise prin e-Factura care nu apar în D394"*. **Sursa din stânga EXISTĂ**: `efactura_trimiteri`
+  (per tenant) ține `stare='ok'` și `mediu='prod'`, deci se poate spune exact ce s-a transmis. Ce
+  lipsește e dreapta: `core/d394.py` **nu întoarce id-urile facturilor** pe care le-a inclus — join
+  intern, rezultat fără ele. Deci nu e „compară două ieșiri", e **clasa R105** (D112: motorul nu-și
+  poate desface cifra).
+- **de ce NU s-a construit**: singura cale ar fi fost să **recalculez** eu ce facturi ar fi trebuit
+  să intre în D394 și să compar cu transmiterile — adică să scriu a doua implementare a regulilor
+  D394, lângă generator. *Două definiții ale aceleiași propoziții diverg; iar cea de-a doua ar fi
+  fost a mea, nu a legii.*
+- **condiția de deblocare**: `d394.calcul_d394` întoarce, pe obiectul de rezultat, id-urile
+  facturilor incluse (ca `d100.obligatii` sau `d300.R`). Se închide când perechea poate numi o
+  factură transmisă prin e-Factura care nu apare în D394 **fără** ca supervizorul să recalculeze
+  eligibilitatea.
+- **calibrare**: verificat că lipsa e reală, nu o citire greșită — `grep 'factura_id'` pe
+  `core/d394.py` dă o singură potrivire, într-un `LEFT JOIN` intern.
+- **ce nu vede măsurătoarea**: dacă id-urile există undeva în avertismentele generatorului. N-am
+  citit tot modulul, doar căile de rezultat.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `0746d52`
+- **rezolvată pe commit**: —
+- **unde ajunge efectul**: o factură transmisă la ANAF prin e-Factura și omisă din D394 rămâne
+  nesemnalată. *Efect fiscal real, dar azi nedetectabil de aplicație.*
+
+### R120 — Identitatea D300 ↔ D394 lit. C nu e verificată rând cu rând
+
+- **felul**: SURSĂ
+- **cine deblochează**: INTERN
+- **unde intră**: E4 · supervizorul · axa orizontală · **PRAG 3**
+- **ce blochează**: perechea **D300 ↔ D394**, cerută de Costin — *„taxare inversă și operațiuni cu
+  persoane înregistrate în scopuri de TVA, față de secțiunea C"*.
+- **ce S-A confirmat la sursă**: ancora **există**, dar se cheamă **`lit. C`**, nu „secțiunea C".
+  Verbatim, `anaf_surse/opanaf_2194_2025_d394.txt:813`: *„C. Rezumatul declarației privind
+  operațiunile desfășurate cu persoane impozabile înregistrate în scopuri de TVA"*. Ordinul e
+  împărțit în **SECȚIUNEA 1** și **SECȚIUNEA a 2-a**, cu litere A–F înăuntru; nu există „secțiunea
+  C". *Substanța numită de Costin e exact aceasta; eticheta, nu.*
+- **ce NU s-a confirmat**: corespondența **rând cu rând** dintre rândurile D300 și rezumatul lit. C.
+  Fără ea, perechea ar compara sume alese de mine, nu o identitate scrisă undeva.
+- **de ce contează aici mai mult decât de obicei**: Costin a avertizat explicit că **D300 a pierdut
+  rândurile de 19% și 9% în ianuarie 2026** — verificat în cod: azi `R9 = 21%`, `R10 = 11%`. O
+  mapare scrisă din memorie ar fi fost falsă exact pe rândurile care s-au mutat.
+- **condiția de deblocare**: se citește partea din `opanaf_2194_2025_d394.txt` care descrie ce
+  intră în lit. C, și se scrie corespondența cu rândurile D300 **numite din cod/XSD**, nu din
+  memorie. Se închide când identitatea se poate cita, ca la D101 rd.50.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `0746d52`
+- **rezolvată pe commit**: —
+- **unde ajunge efectul**: nicăieri azi. *Restanța e despre o confruntare care lipsește, nu despre o
+  afirmație greșită.*
+
+### R121 — Decontul precompletat (RO e-TVA / P300) nu e accesibil programatic
+
+- **felul**: VERIFICARE
+- **cine deblochează**: EXTERN
+- **unde intră**: E4 · supervizorul · axa orizontală · **PRAG 3**
+- **ce blochează**: perechea **D300 ↔ P300**, cerută de Costin cu condiția lui explicită: *„Dacă
+  P300 nu e accesibil programatic, consemnează ca limită, nu construi pe presupunere."*
+- **ce s-a măsurat**: nu există niciun client pentru decontul precompletat în aplicație. Iar
+  `core/d169n.py` documentează chiar contrariul premisei uzuale, în antet: *„D169n NU este răspunsul
+  la notificarea e-TVA (decont precompletat)"* — cu bytecode-ul validatorului și actul (OPANAF
+  2175/2025, Anexa nr. 6) ca temei, peste memorie și premisă.
+- **condiția de deblocare**: trebuie o cale de citire programatică a decontului precompletat P300, de la ANAF prin SPV, fiindcă lipsa ei blochează confruntarea D300 cu ce vede ANAF despre firmă.
+  Detaliat: cererea e către ANAF, cu autorizarea firmei; până la ea, orice pereche construită ar sta
+  pe o presupunere despre un format pe care aplicația nu-l poate aduce. Se închide când P300 se
+  poate citi ca dată, nu ca presupunere. *Nu e „nu acum" — e blocată în afara aplicației.*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `0746d52`
+- **rezolvată pe commit**: —
+- **unde ajunge efectul**: confruntarea cu ce vede ANAF despre firmă rămâne imposibilă. *E singura
+  pereche care ar compara declarația cu o sursă din AFARA aplicației — deci și cea mai valoroasă
+  dacă devine posibilă.*
+
 ### R118 — Fișierele statice se servesc DE PE DISC: nicio poartă între scriere și producție
 
 - **felul**: VERIFICARE
