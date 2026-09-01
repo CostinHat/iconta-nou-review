@@ -128,17 +128,27 @@ def amprenta(constatare):
 
 
 # ── CULEGEREA constatărilor orizontale ─────────────────────────────────────────────────────────
-def constatari_firma(conn, schema, an, luna):
-    """Constatările ORIZONTALE ale unei firme, cu tăria atașată.
+def _culege_firma(conn, schema, an, luna):
+    """`(constatari, orizontal_rulat, cauza)` — culegerea BRUTĂ pentru o firmă.
 
     Culege după **eticheta de tip**, nu după modul: orice funcție, de oriunde, poate emite o
     constatare orizontală dacă o ștampilează cu un tip înregistrat. Asta face perechile o mulțime de
     **date**, nu o listă de apeluri scrisă aici.
+
+    **`orizontal_rulat` NU se deduce, se citește.** `verifica_d390` are o ieșire timpurie (D390 nu se
+    poate calcula): atunci axa orizontală nu se atinge niciodată, iar firma întoarce zero constatări
+    — **exact ca o firmă pe care axa a rulat și n-a găsit nimic**. Cele două sunt afirmații diferite,
+    iar dacă se citesc la fel, tăcerea devine un răspuns. Câmpul lipsă **ridică**: un implicit aici
+    ar fi ales tăcut una dintre cele două.
     """
     from core import control_incrucisat as _ci
-    brute = []
-    rez = _ci.verifica_d390(conn, schema, an, luna)
-    brute += (rez or {}).get("constatari") or []
+    rez = _ci.verifica_d390(conn, schema, an, luna) or {}
+    brute = rez.get("constatari") or []
+    rulat = rez.get("orizontal_rulat")
+    if rulat is None:
+        raise ValueError(
+            "`verifica_d390` n-a declarat `orizontal_rulat` — nu pot ști dacă axa orizontală a rulat "
+            "sau doar n-a găsit nimic, iar un implicit ar transforma «n-am verificat» în «e curat»")
 
     out = []
     for c in brute:
@@ -150,7 +160,17 @@ def constatari_firma(conn, schema, an, luna):
         c["cere_confirmare"] = cere_confirmare(tip) and c.get("stare") == "rosu"
         c["amprenta"] = amprenta(c)
         out.append(c)
-    return out
+
+    cauza = None
+    if not rulat:
+        cauza = " ".join(str(c.get("mesaj") or c.get("motiv") or "").strip()
+                         for c in brute).strip() or "axa orizontală nu s-a atins (cauză nedeclarată)"
+    return out, bool(rulat), cauza
+
+
+def constatari_firma(conn, schema, an, luna):
+    """Constatările ORIZONTALE ale unei firme, cu tăria atașată."""
+    return _culege_firma(conn, schema, an, luna)[0]
 
 
 def ruleaza_firma(conn, schema, an, luna):
@@ -158,6 +178,119 @@ def ruleaza_firma(conn, schema, an, luna):
     cs = constatari_firma(conn, schema, an, luna)
     return {"an": an, "luna": luna, "constatari": cs,
             "de_confirmat": [c for c in cs if c["cere_confirmare"]],
+            "tipuri_neatribuite": tipuri_neatribuite()}
+
+
+# ── DOMENIUL: PORTOFOLIUL ──────────────────────────────────────────────────────────────────────
+# **DE CE aici, și de ce ACUM (01.09.2026).** Din cele trei fațete pe care `PLAN_LUCRU` le dă
+# supervizorului — *„declanșator propriu, domeniu propriu și ieșire proprie"* —, **domeniul e
+# singura deja decisă**: *„rulează pe portofoliu, nu pe un act"*. Celelalte două sunt scrise acolo
+# ca fiind ale lui Costin și nedecise, iar `core/test_module_nelegate.py` ține modulul NELEGAT
+# tocmai din motivul ăsta. Domeniul se poate construi fără să le atingă: funcția e **chemabilă**,
+# nu programată și nu rutată. *Ce declanșează o rulare și ce vede contabilul din ea rămân întrebări
+# deschise — asta e doar peste ce se uită când rulează.*
+#
+# **CE FACE IMPOSIBIL, și e singurul motiv pentru care are forma asta.** Un parcurgător de
+# portofoliu scris firesc întoarce un contor: *„19 firme, 0 constatări"*. Cifra e **validă și
+# falsă** — criteriul de prioritate dat de Costin. Falsă fiindcă strânge la un loc trei lucruri
+# care nu seamănă: firme pe care nu s-a găsit nimic, firme care n-au ce compara, și firme pe care
+# verificarea **n-a rulat deloc**. *Tiparul nu e presupus:* `core/alerte_control_fiscal.ruleaza()`
+# incrementează `tot["firme"]` **după** succes, deci o firmă care ridică nu apare în niciun contor
+# al dicționarului întors — se tipărește un `ESEC` la stdout și atât.
+#
+# Aici: trei rezultate EXCLUSIVE per firmă, iar rezumatul e **derivat** din ele, nu acumulat pe
+# drum. O firmă nu poate să dispară dintr-un contor pe care nimeni nu l-a incrementat, fiindcă
+# nimeni nu incrementează nimic.
+
+#: Rezultatul unei firme. Cele trei sunt exclusive, și **suma lor e domeniul**.
+CONSTATARI = "CONSTATARI"       #: axa a rulat și a produs constatări
+FARA_SUBIECT = "FARA_SUBIECT"   #: axa a rulat și n-a avut ce compara (nu «e curat» — n-are subiect)
+NEVERIFICAT = "NEVERIFICAT"     #: axa NU a rulat. Firma e NUMITĂ, cu cauza. Niciodată tăcut.
+REZULTATE = (CONSTATARI, FARA_SUBIECT, NEVERIFICAT)
+
+#: Criteriul domeniului, scris o dată și RAPORTAT în răspuns. Fără el, „19" s-ar citi ca „toate
+#: firmele care există". Nu filtrează pe cabinet — spre deosebire de cronul de alerte, supervizorul
+#: nu notifică pe nimeni, deci motivul aceluia de a sări firmele fără cabinet nu se aplică aici.
+DOMENIU = ("firmele ACTIVE cu schemă proprie (public.tenants: activ = true, "
+           "schema_name ~ '^tenant_[0-9]+$'). NU se filtrează pe cabinet.")
+
+
+def firme_portofoliu(conn):
+    """Domeniul, CITIT din bază. `[{tenant_id, schema, nume}]`, în ordinea id-ului."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT id, schema_name, nume FROM public.tenants "
+                    "WHERE activ = true AND schema_name ~ '^tenant_[0-9]+$' ORDER BY id")
+        return [{"tenant_id": r[0], "schema": r[1], "nume": r[2]} for r in cur.fetchall()]
+
+
+#: Cele două feluri de neverificare. Se ține ca DATE, nu se citește din textul erorii: unul se
+#: repară completând profilul firmei, celălalt e un defect al aplicației.
+AXA_NU_A_RULAT = "axa_nu_a_rulat"   #: precondiția a căzut (D390 nu se poate calcula) — axa nu s-a atins
+EXCEPTIE = "exceptie"               #: ceva a ridicat pe drum — verificarea s-a rupt
+
+
+def _neverificat(firma, eroare, felul):
+    """Afirmația TIPATĂ care spune că firma **n-a fost verificată**, și de ce.
+
+    Felul e `verificare_rupta` din nomenclatorul ÎNCHIS al lui `core/afirmatii.py` — al șaselea,
+    adăugat 21.08.2026 pentru exact clasa asta: *„verificarea ÎNSĂȘI s-a oprit. NU e necunoaștere —
+    aia ar ascunde-o ca verdict permanent gri"*. `eroare` e obligatorie acolo, și e chiar ce lipsea
+    în cronul de alerte, unde firma care ridică se tipărește la stdout și dispare din cifre.
+    """
+    from core import afirmatii as _af
+    return _af.afirmatie(
+        "verificare_rupta", "supervizor",
+        "Supervizorul NU a verificat firma «%s»: %s" % (firma.get("nume") or firma.get("schema"),
+                                                        eroare),
+        eroare=str(eroare), felul_neverificarii=felul, schema=firma.get("schema"))
+
+
+def ruleaza_portofoliu(an, luna, firme=None, deschide=None):
+    """Supervizorul peste TOT portofoliul, pe o perioadă.
+
+    `firme` / `deschide` se injectează în probe (`deschide(schema)` = context manager de conexiune);
+    implicit, domeniul se citește din bază și conexiunile vin din `core.db`. Injecția nu e stil: o
+    probă care ține o firmă sintetică într-o tranzacție întoarsă **nu o poate vedea** de pe a doua
+    conexiune, deci fără ea căile de eșec n-ar avea cum fi probate.
+
+    Întoarce `{an, luna, domeniu, firme:[...], rezumat, tipuri_neatribuite}`. **Nu blochează nimic**
+    și nu scrie nimic — ca tot restul modulului.
+    """
+    from core import db as _db
+    deschide = deschide or _db.get_conn
+    if firme is None:
+        with _db.get_conn() as cp:
+            firme = firme_portofoliu(cp)
+
+    randuri = []
+    for f in firme:
+        r = {"tenant_id": f.get("tenant_id"), "schema": f.get("schema"), "nume": f.get("nume"),
+             "constatari": [], "de_confirmat": 0, "neverificat": None}
+        try:
+            with deschide(f["schema"]) as c:
+                cs, rulat, cauza = _culege_firma(c, f["schema"], an, luna)
+        except Exception as e:
+            # NEVERIFICAT, cu numele firmei si cu felul erorii. O firma care ridica NU dispare:
+            # asta e chiar clasa masurata in cronul de alerte.
+            r["rezultat"] = NEVERIFICAT
+            r["neverificat"] = _neverificat(f, "%s: %s" % (type(e).__name__, e), EXCEPTIE)
+        else:
+            r["constatari"] = cs
+            r["de_confirmat"] = sum(1 for c in cs if c["cere_confirmare"])
+            if not rulat:
+                r["rezultat"] = NEVERIFICAT
+                r["neverificat"] = _neverificat(f, cauza, AXA_NU_A_RULAT)
+            else:
+                r["rezultat"] = CONSTATARI if cs else FARA_SUBIECT
+        randuri.append(r)
+
+    # REZUMATUL E DERIVAT din randuri, nu acumulat pe drum: un contor incrementat intr-o ramura
+    # poate rata o firma in tacere, o numaratoare peste lista nu poate.
+    rezumat = {k: sum(1 for r in randuri if r["rezultat"] == k) for k in REZULTATE}
+    rezumat["firme_in_domeniu"] = len(randuri)
+    rezumat["de_confirmat"] = sum(r["de_confirmat"] for r in randuri)
+    rezumat["constatari_total"] = sum(len(r["constatari"]) for r in randuri)
+    return {"an": an, "luna": luna, "domeniu": DOMENIU, "firme": randuri, "rezumat": rezumat,
             "tipuri_neatribuite": tipuri_neatribuite()}
 
 

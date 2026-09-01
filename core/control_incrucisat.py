@@ -1040,6 +1040,65 @@ def _d300_depus_recent(conn, schema):
     return (r[0], r[1], r[2]) if r else None
 
 
+def orizontal_d390_vs_d300(conn, schema, tip_dec, an, luna):
+    """AXA ORIZONTALA a lui F163, cu O SINGURA iesire — invelis peste corpul de mai jos.
+
+    **DE CE EXISTA ca functie, si nu ca bloc in `verifica_d390` (01.09.2026).** Comparatia
+    declaratie-contra-declaratie avea CINCI cai de iesire, nu patru. Patru sunt in functia PURA
+    `compara_d390_vs_d300` si aveau gard
+    (`core/test_supervizor.py::test_perechea_orizontala_e_stampilata_pe_TOATE_caile`). A cincea —
+    *nicio depunere D300 prin aplicatie* — traia un nivel mai sus, in corpul lui `verifica_d390`, si
+    chema `_absenta_libera` DIRECT, fara `_stampileaza`. Constatarea iesea fara `tip_constatare`,
+    iar `core/supervizor.constatari_firma` o SAREA tacut, socotind-o verticala.
+
+    **MASURAT 01.09.2026, pe cele 19 firme ale portofoliului:** supervizorul vedea **3** constatari
+    orizontale si pierdea tacut **13** — cele 13 firme fara nicio depunere D300. Tacerea arata exact
+    ca un raspuns: pe ele supervizorul raporta *zero constatari*, care se citeste „n-am ce semnala",
+    cand adevarul era „comparatia nici nu e posibila".
+
+    **DE CE INVELIS, si nu inca un `_stampileaza` pe ramura care lipsea.** Peticirea ramurii ar fi
+    lasat clasa in picioare: a sasea cale s-ar fi nascut la fel de tacut. Cu o singura iesire,
+    ORICE cale noua din corp iese stampilata prin constructie. Aceeasi alegere ca la
+    `compara_d390_vs_d300` (vezi `_stampileaza`), aplicata cu un nivel mai sus."""
+    return _stampileaza(_orizontal_d390_vs_d300(conn, schema, tip_dec, an, luna),
+                        TIP_D390_VS_D300)
+
+
+def _orizontal_d390_vs_d300(conn, schema, tip_dec, an, luna):
+    """CORPUL. Mutat VERBATIM din `verifica_d390` (01.09.2026) — comparatia nu s-a schimbat, doar
+    locul ei si invelisul. `an`/`luna` raman perioada de RAPORTARE a constatarii (luna evaluata),
+    nu perioada comparata: aia e a D300-ului depus si se afiseaza in eticheta."""
+    from core import d390 as _d390   # local, ca in `verifica_d390` de unde a fost mutat blocul
+    constatari = []
+    rec_d300 = _d300_depus_recent(conn, schema)
+    if rec_d300 is None:
+        constatari.append(_absenta_libera(
+            "d390", "D390 vs D300 depus",
+            ("Declarație-vs-declarație: D390 bază IC vs rândurile intracomunitare ale D300 EFECTIV "
+             "DEPUS (rânduri persistate). Nicio depunere D300 persistată -> comparația devine "
+             "posibilă după prima depunere prin aplicație. GRI, nu roșu — absență, nu divergență."),
+            "Nicio depunere D300 prin aplicație — nu am cu ce compara recapitulativa.",
+            "depunerile D300 persistate prin aplicație"))
+    else:
+        an_d, luna_d, randuri_d = rec_d300
+        luni_d, _de_d, _pana_d, eticheta_d = _fereastra_tva(tip_dec, an_d, luna_d)
+        try:
+            baze_d = {"L": 0, "A": 0}
+            for m in luni_d:
+                res_d = _d390.calculeaza(conn, schema, an_d, m)
+                rez_d = res_d["rezumat"] if isinstance(res_d, dict) else getattr(res_d, "rezumat", {})
+                baze_d["L"] += int(rez_d.get("L", 0))
+                baze_d["A"] += int(rez_d.get("A", 0))
+            constatari += compara_d390_vs_d300(baze_d, True, randuri_d, perioada=eticheta_d)
+        except Exception as e:
+            constatari += _stampileaza([_gri_liber(
+                "d390", "D390 vs D300 depus, perioada %s" % eticheta_d,
+                "Declarație-vs-declarație: baza D390 se recalculează pe perioada D300 depus; recalcularea a eșuat.",
+                "NU pot recalcula D390 pe perioada depusă (%s) pentru comparație (%s)." % (eticheta_d, e),
+                an, luna)], TIP_D390_VS_D300)
+    return constatari
+
+
 def verifica_d390(conn, schema, an, luna):
     """F163: D390 (bunuri IC) vs evidența contabilă validată a facturilor IC. Fereastra = periodicitatea
     TVA (tip_decont): lunar 1 lună, trimestrial 3 luni. Gri dacă D390 nu se poate genera. Vezi capul
@@ -1071,7 +1130,10 @@ def verifica_d390(conn, schema, an, luna):
         else:
             _cauza = "Date lipsă sau profil incomplet."
             _actiune = "Completează profilul firmei și facturile, apoi reîncearcă."
-        return {"an": an, "luna": luna, "fereastra": fereastra, "stare": "gri", "constatari": [_gri_liber(
+        return {"an": an, "luna": luna, "fereastra": fereastra, "stare": "gri",
+                # [01.09.2026] IESIRE TIMPURIE: comparatia ORIZONTALA nu s-a atins. Se DECLARA,
+                # ca supervizorul sa nu citeasca „n-am verificat" drept „n-am ce semnala".
+                "orizontal_rulat": False, "constatari": [_gri_liber(
                     "d390", "Intracomunitar", "D390 nu s-a putut genera.",
                     f"NU pot verifica operațiunile intracomunitare: D390 nu se poate calcula ({e}).",
                     an, luna,
@@ -1084,32 +1146,7 @@ def verifica_d390(conn, schema, an, luna):
     # Fereastra PROPRIE (nu luna curentă — D300 se depune în luna următoare, altfel permanent gri):
     # cea mai recentă perioadă cu D300 depus. Baza D390 se RECALCULEAZĂ pe acea perioadă, ca ambele
     # laturi să fie ACEEAȘI perioadă (comparație reală, nu perioade diferite). Perioada = afișată explicit.
-    rec_d300 = _d300_depus_recent(conn, schema)
-    if rec_d300 is None:
-        constatari.append(_absenta_libera(
-            "d390", "D390 vs D300 depus",
-            ("Declarație-vs-declarație: D390 bază IC vs rândurile intracomunitare ale D300 EFECTIV "
-             "DEPUS (rânduri persistate). Nicio depunere D300 persistată -> comparația devine "
-             "posibilă după prima depunere prin aplicație. GRI, nu roșu — absență, nu divergență."),
-            "Nicio depunere D300 prin aplicație — nu am cu ce compara recapitulativa.",
-            "depunerile D300 persistate prin aplicație"))
-    else:
-        an_d, luna_d, randuri_d = rec_d300
-        luni_d, _de_d, _pana_d, eticheta_d = _fereastra_tva(tip_dec, an_d, luna_d)
-        try:
-            baze_d = {"L": 0, "A": 0}
-            for m in luni_d:
-                res_d = _d390.calculeaza(conn, schema, an_d, m)
-                rez_d = res_d["rezumat"] if isinstance(res_d, dict) else getattr(res_d, "rezumat", {})
-                baze_d["L"] += int(rez_d.get("L", 0))
-                baze_d["A"] += int(rez_d.get("A", 0))
-            constatari += compara_d390_vs_d300(baze_d, True, randuri_d, perioada=eticheta_d)
-        except Exception as e:
-            constatari += _stampileaza([_gri_liber(
-                "d390", "D390 vs D300 depus, perioada %s" % eticheta_d,
-                "Declarație-vs-declarație: baza D390 se recalculează pe perioada D300 depus; recalcularea a eșuat.",
-                "NU pot recalcula D390 pe perioada depusă (%s) pentru comparație (%s)." % (eticheta_d, e),
-                an, luna)], TIP_D390_VS_D300)
+    constatari += orizontal_d390_vs_d300(conn, schema, tip_dec, an, luna)
     if any(c["stare"] == "rosu" for c in constatari):
         stare = "rosu"
     elif any(c["stare"] == "gri" for c in constatari):
@@ -1119,7 +1156,7 @@ def verifica_d390(conn, schema, an, luna):
     necontate_tot = sum(1 for d in ("emisa", "primita")
                         for f in ic_facturi.get(d, []) if not f.get("contabilizata"))
     return {"an": an, "luna": luna, "fereastra": fereastra, "stare": stare,
-            "constatari": constatari,
+            "orizontal_rulat": True, "constatari": constatari,
 
             "limita": ("Verificat: D390 bunuri IC (livrări L / achiziții A, auto din facturi) vs (1) evidența "
                        f"contabilă validată a acelorași facturi pe fereastra TVA curentă ({fereastra}) ȘI (2) D300 "

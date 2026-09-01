@@ -4,9 +4,9 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-01**. **Rescriere COMPLETĂ**, cerută de Costin. Precedenta completă
-  a fost pe 30.08; între ele, șapte parțiale.
-- **pe commit**: `3eb50ac` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care o
+- **ultima rescriere**: **2026-09-01**. Ultima **completă** a fost tot azi, cerută de Costin;
+  deasupra ei, **o parțială** (tura supervizorului, a doua). Precedenta completă: 30.08.
+- **pe commit**: `1a0c112` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care o
   poartă, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e arborele care devine
   commitul următor; numele de aici e al celui **precedent**, prin construcție, nu din uitare.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
@@ -173,9 +173,26 @@ dintre ele.*
 - **Confirmarea se dă pe CIFRE**, nu pe tip: amprenta e în cheia primară a jurnalului
   `public.supervizor_confirmari` (aplicat, gol). O reformulare nu invalidează o confirmare; o cifră
   schimbată o invalidează. *Fără asta, „confirmare explicită" devenea o bifă permanentă.*
-- **De ce e NELEGAT:** cele două lucruri care l-ar cabla — **ce declanșează o rulare** și **ce vede
-  contabilul din ea** — sunt scrise în `PLAN_LUCRU` ca fiind ale lui Costin, nedecise. A-l cabla ar
-  însemna să le decizi tu. E în `PIN` cu motivul, nu e cod mort: 13 teste, mutație pe trei direcții.
+- **DOMENIUL E CONSTRUIT** *(tura a doua, 01.09)* — `ruleaza_portofoliu`. Din cele **trei** fațete pe
+  care `PLAN_LUCRU` le dă supervizorului (*„declanșator propriu, domeniu propriu și ieșire proprie"*),
+  domeniul era **singura deja decisă**: *„rulează pe portofoliu, nu pe un act"*. Funcția e
+  **chemabilă**, nu programată și nu rutată — deci nu atinge niciuna din cele două întrebări ale lui
+  Costin. Trei rezultate EXCLUSIVE per firmă (`CONSTATARI` / `FARA_SUBIECT` / `NEVERIFICAT`), iar
+  rezumatul e **derivat** din listă, nu acumulat pe drum.
+- **PE PORTOFOLIUL VIU, AZI:** `CONSTATARI 16 · FARA_SUBIECT 0 · NEVERIFICAT 3`, suma **19** =
+  domeniul. Toate cele 16 sunt **gri** („n-am ce compara"), **zero roșii**. Cele 3 neverificate sunt
+  **numite**, cu cauza (D390 nu se poate calcula — profil incomplet). *Asta face răspunsul la R115
+  mai ieftin de dat: atribuirea tăriei nu schimbă nimic azi.*
+- **A CINCEA CALE, care era tăcută — și e lecția turei.** Comparația orizontală avea **cinci** ieșiri,
+  nu patru. Gardul de ieri proba cele patru ale funcției PURE; a cincea — *nicio depunere D300* —
+  trăia un nivel mai sus, în `verifica_d390`, și chema `_absenta_libera` **fără ștampilă**.
+  **Măsurat: supervizorul vedea 3 constatări orizontale și pierdea tăcut 13.** Reparat structural
+  (`orizontal_d390_vs_d300` — o singură ieșire): **3 → 16**, **13 → 0**. *„Modulul e complet și
+  probat" era fals ieri, și n-avea cum să se vadă: gardul se uita exact unde era codul corect.*
+- **De ce rămâne NELEGAT:** cele două lucruri care l-ar cabla — **ce declanșează o rulare** și **ce
+  vede contabilul din ea** — sunt scrise în `PLAN_LUCRU` ca fiind ale lui Costin, nedecise. A-l cabla
+  ar însemna să le decizi tu. E în `PIN` cu motivul, nu e cod mort: **21 de teste**, mutație pe
+  **cinci** direcții.
 - **Ce rulează deja pe cont propriu, și exista dinainte:** cronul de la 08:00
   (`notificari_scadenta` → `alerte_control_fiscal.ruleaza()`) trece portofoliul prin **patru**
   verificări și împinge în clopoțel **doar roșul**, agregat pe firmă.
@@ -237,7 +254,7 @@ reparat; una ancorată pe EFECT nu.*
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **61** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **783** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **784** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
@@ -249,6 +266,15 @@ reparat; una ancorată pe EFECT nu.*
 **POARTA DUREAZĂ ~21 DE MINUTE** — măsurat pe cele nouă rulări de pe 01.09: 1134s … 1281s. Suita a
 crescut de la 3862 la 3928 de teste într-o zi. *E cifra pe care o folosește cine estimează o tură:
 o tură cu două commituri costă ~45 de minute doar în porți.*
+
+**TURA SUPERVIZORULUI (a doua) A FOST RESPINSĂ DE PATRU GĂRZI CARE NU ȘTIAU CĂ VINE, ȘI TOATE
+PATRU AVEAU DREPTATE — toate patru pe greșeli ale mele, în același commit:** `ruff` **F821**
+(importul local `_d390` s-a pierdut la extragerea blocului — efectul era o degradare **tăcută** în
+gri, adică exact clasa pe care o reparam) · `test_afirmatii_tipate` („firma n-a fost verificată" era
+proză într-o cheie, nu afirmație tipată; felul potrivit — `verificare_rupta` — exista deja în
+nomenclatorul închis) · `test_garzi_pe_text` (**trei** aserțiuni ale mele erau pe text, rescrise pe
+structură) · `test_clichete_generate` (umbra 77u crescuse cu 1). *Confirmă, a doua zi la rând, că un
+modul nou e gata abia când trece gărzile care nu-l așteptau.*
 
 **PE 01.09 POARTA A RESPINS DE ȘAPTE ORI, ȘI NICIO RESPINGERE N-A FOST FALS POZITIV.** Toate au fost
 gărzi scrise înainte, care au prins forme reale: clichetul **50** (aserțiuni pe text — **de două
@@ -341,6 +367,8 @@ acum un nume și patru instanțe într-o zi.*
 | **„68 de apeluri de producție omit data"** | alegerea pasului, 01.09 | **4**, din care 2 fiscale. Sonda socotea „omis" orice apel fără **cuvânt-cheie**, deci cele **310** care dau data **pozițional** intrau în clasă. *A doua formă a aceleiași greșeli în aceeași alegere: prima căuta numai apeluri pe NUME, nu pe atribut, și dăduse „1"* |
 | **„11 funcții din supervizor fără apelant de producție"** | măsurarea supervizorului, 01.09 | **0.** Sonda cerea o paranteză după nume; `main.py` le pasează ca **referință** (`_incrucisat(_ci.verifica_d390, …)`). Refăcută cu AST: 13 referite din afară, 9 interne, niciuna moartă |
 | **„perechea orizontală e moartă: 1 din 55 de depuneri are rânduri"** | construcția supervizorului, 01.09 | **cifra e reală, concluzia era falsă.** Calea CURENTĂ persistă rândurile (F163v2, `coada_api`); cele 54 sunt istorie dinainte. *Diferența dintre „stricat" și „gol" se vede citind calea de scriere, nu numărând rândurile* |
+| **„1 din 55 de depuneri are rânduri"** ca NUMITOR al perechii orizontale | antetul lui `core/supervizor.py`, 01.09, tura întâi | **numitorul e greșit, și-l alesesem eu.** Perechea citește **numai d300**; cele 55 sunt toate tipurile. Măsurat pe tip: d300 = **3 depuneri, 0 cu rânduri**; singura depunere cu rânduri din bază e un **d301**. Deci populația utilizabilă a perechii e **0 din 3**, nu „1 din 55" — cifra suna ca și cum ar exista un caz viu, și nu există niciunul. *A patra instanță a aceleiași clase într-o zi: am numărat mulțimea largă în loc de cea pe care se uită efectiv codul* |
+| **„modulul e complet și probat: 13 teste, mutație pe trei direcții"** | `test_module_nelegate.PIN` și predarea, 01.09, tura întâi | **„complet" era fals.** Gardul proba cele patru căi ale funcției PURE; comparația avea **cinci**, iar a cincea trăia un nivel mai sus și n-avea gard — **13 constatări pierdute tăcut pe portofoliu**. Numărul de teste era corect; ce acopereau, nu. *Un gard care se uită exact unde codul e corect raportează verde despre o lume pe care n-o vede — [[gard-care-nu-se-verifica-pe-sine]], a doua instanță* |
 
 ---
 
@@ -402,9 +430,14 @@ acum un nume și patru instanțe într-o zi.*
 ### despre supervizor
 
 - **Nu confruntă nimic în plus față de ieri.** Are **o singură** pereche orizontală — cea care exista
-  deja. Ce s-a construit e **locul** unde stau perechile și **contractul** lor, nu perechi noi.
-- **Perechea lui răspunde azi, aproape întotdeauna, „n-am ce compara".** Din 55 de depuneri, **1** are
-  rânduri persistate. Calea curentă le persistă, deci populația crește — dar azi e goală.
+  deja. Ce s-a construit e **locul** unde stau perechile, **contractul** lor și **domeniul**, nu
+  perechi noi. *Tura a doua a reparat cine VEDE constatările, nu a adus constatări noi.*
+- **Perechea lui răspunde azi, întotdeauna, „n-am ce compara" — și populația ei e ZERO, nu 1.**
+  Din 55 de depuneri, 1 are rânduri persistate, dar aceea e un **d301**; dintre cele **3** depuneri
+  **d300**, **niciuna** n-are rânduri. Calea curentă le persistă (verificat la sursă:
+  `coada_api.randuri_din_res` + `marcheaza_depusa`), deci populația crește de acum înainte.
+- **NU S-A CONSTRUIT NICIO PERECHE NOUĂ, și motivul e neschimbat:** identitatea fiscală n-are temei
+  scris. *Domeniul se putea construi fără temei nou; o pereche, nu.*
 - **N-am adus perechi noi (D394↔D300, D101↔D100) fiindcă n-am putut scrie identitatea fără s-o
   inventez.** Nu e un „mai târziu" vag: e refuzul de a pune o identitate fiscală nedovedită într-un
   motor care produce afirmații despre datele unei firme.
@@ -505,5 +538,12 @@ acum un nume și patru instanțe într-o zi.*
 5. **Înainte de a alege ce faci: rulează `scripts/scan_ramas.py` și MĂSOARĂ candidații.** Pe 01.09,
    candidatul ales pe criteriu s-a dovedit de 4 instanțe, nu de 68 — iar prima cifră venea din
    propria mea sondă. *Un candidat din vecinătate nu e un candidat.*
-6. **Criteriul de prioritate, dat de Costin:** *ce poate produce o cifră validă și falsă.*
-7. **Justifică în scris orice tură care nu schimbă nimic pentru un contabil.**
+6. **Criteriul de prioritate, dat de Costin:** *ce poate produce o cifră validă și falsă.* **A
+   funcționat, și merită spus cum:** aplicat pe supervizor, a scos în două ore un defect care ascundea
+   **13 din 16** constatări, și a dat forma parcurgătorului de portofoliu (trei rezultate exclusive,
+   rezumat derivat). *Criteriul nu spune „caută bug-uri" — spune „caută unde o cifră poate arăta
+   corect și minți".*
+7. **CLASA ARE ÎNCĂ O INSTANȚĂ, CONSEMNATĂ NEREPARATĂ — R116.** `alerte_control_fiscal.ruleaza()`
+   numără firmele DUPĂ succes; una care ridică nu apare în niciun contor. Nereparată **cu condiția
+   scrisă**: valoarea n-are consumator azi, iar bucla e chiar calea care trimite alertele reale.
+8. **Justifică în scris orice tură care nu schimbă nimic pentru un contabil.**

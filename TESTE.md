@@ -45,6 +45,39 @@ Rulare: `set -a; . ~/.iconta/db.env; . ~/.iconta/api_keys.env; set +a; export PY
 Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Poartă verde vizuală: **CLAUDE.md §2.3 pct.11** (cele trei rulate pe ecranele atinse înainte de poarta verde). Detalii: `frontend_test/vizual/README.md`.
 
 ## În lucru acum
+- fir: SUPERVIZORUL — domeniul (portofoliul) si a cincea cale TACUTA (01.09.2026, comanda „continua
+  cu constructia supervizorului"). Masurat inainte de a alege (PREDARE „daca continui de aici" pct.5),
+  cu criteriul lui Costin — *ce poate produce o cifra valida si falsa*:
+  **pe cele 19 firme, supervizorul vede 3 constatari orizontale si PIERDE TACUT 13.** Cauza, citita la
+  sursa: `verifica_d390` are o a CINCEA cale de iesire a comparatiei orizontale — ramura
+  `rec_d300 is None` (`core/control_incrucisat.py:1089`) — care apeleaza `_absenta_libera` DIRECT, fara
+  `_stampileaza`. `core/test_supervizor.py::test_perechea_orizontala_e_stampilata_pe_TOATE_caile`
+  probeaza cele patru cai ale functiei PURE `compara_d390_vs_d300`; a cincea traieste un nivel mai sus
+  si n-avea gard. Efectul e chiar tacerea numita in antetul modulului: *„supervizorul ar fi sarit-o
+  TACUT, adica exact felul de tacere care arata ca un raspuns"*.
+- ultim: supervizorul construit si NELEGAT (`3eb50ac9`); predarea rescrisa (`1a0c112a`)
+- urmator: pasul 1. IN LUCRU
+- pasi:
+  1. `core/control_incrucisat.py` — blocul orizontal din `verifica_d390` (azi liniile 1087-1112) se
+     EXTRAGE intr-o singura functie `_orizontal_d390_vs_d300`, invelita o singura data de
+     `_stampileaza`. Reparatie STRUCTURALA, nu peticirea unei ramuri: cu o singura iesire, o a sasea
+     cale nestampilata nu se mai poate naste. Fara logica paralela — comparatia ramane aceeasi.
+  2. `core/test_control_incrucisat.py` — gard pe schema efemera, tiparul casei
+     (`test_verifica_d390_dvsd_foloseste_perioada_depusa_nu_luna_curenta`): firma FARA nicio depunere
+     D300 -> constatarea „D390 vs D300 depus" poarta `tip_constatare`, si `supervizor.constatari_firma`
+     o VEDE. RED-proof pe mutatia care scoate invelisul.
+  3. `core/supervizor.py` — `ruleaza_portofoliu`: DOMENIUL, singura din cele trei fatete ale
+     supervizorului (`PLAN_LUCRU`: „declansator propriu, domeniu propriu, iesire proprie") care e
+     DEJA DECISA in plan — *„ruleaza pe portofoliu, nu pe un act"*. Declansatorul si ecranul raman ale
+     lui Costin, deci functia e chemabila, nu programata si nu rutata. Trei rezultate per firma,
+     EXCLUSIVE: `CONSTATARI` / `FARA_SUBIECT` / `NEVERIFICAT`, plus domeniul DECLARAT in raspuns.
+  4. `core/test_supervizor.py` — gardul care face imposibila cifra valida si falsa: invariantul
+     `constatari + fara_subiect + neverificat == firme_in_domeniu` (o firma nu poate disparea tacut),
+     o firma care RIDICA ajunge la `NEVERIFICAT` cu numele si cauza, si „0 constatari" nu se poate
+     citi ca „totul e verde". *Tiparul de esec e masurat, nu presupus:*
+     `alerte_control_fiscal.ruleaza()` incrementeaza `tot["firme"]` DUPA succes, deci o firma care
+     ridica nu apare in niciun contor al dictionarului intors — exact clasa de aici.
+  5. registre (GARZI/DECIZII/TESTE/ISTORIC/CONFORMITATE) + poarta verde + publicare 5 pasi.
 - fir: TURA IMPORT CUBUS — cele 11 defecte ramase din PREDARE_LANT (16.08.2026). Ordine ceruta: intai
   cifre gresite pe ecran, apoi blocaje, apoi restul. LOT 1 [GATA]: amortizare pe metoda (Q6+Q15).
 - ultim: 3 loturi PUBLICATE 16.08: L1 amortizare (5a610dc), L2 preview=salvare (74a655c), L3 COR (0ae8baf).

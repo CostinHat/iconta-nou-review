@@ -13391,3 +13391,34 @@ ziua atribuirii să nu fie prima oară când e verificat.
 **(39) Confirmarea se dă pe CIFRE, nu pe tip.** Amprenta intră în cheia primară a jurnalului. Fără
 ea, „am confirmat o dată" ar fi însemnat „pentru totdeauna", iar cerința „confirmare explicită" ar fi
 devenit o bifă la prima folosire. *O cifră schimbată invalidează confirmarea; o frază rescrisă, nu.*
+
+**(40) Domeniul supervizorului se construiește, declanșatorul și ecranul nu.** `PLAN_LUCRU` dă
+supervizorului trei fațete — *„declanșator propriu, domeniu propriu și ieșire proprie"*. Două sunt
+scrise acolo ca fiind ale lui Costin și nedecise; a treia, **domeniul, e deja decisă**: *„rulează pe
+portofoliu, nu pe un act"*. Am construit-o (`ruleaza_portofoliu`) fiindcă nu atinge niciuna din cele
+două întrebări: funcția e **chemabilă**, nu programată și nu rutată. *Testul regulii 1 din 01.09: un
+default rezonabil în locul răspunsului lui Costin n-ar muta nimic din plan — fiindcă răspunsul e deja
+în plan.* Modulul rămâne pe drept în `test_module_nelegate.PIN`.
+
+**(41) Domeniul NU se filtrează pe cabinet, spre deosebire de cronul de alerte.** `alerte_control_fiscal`
+sare firmele fără cabinet fiindcă n-are pe cine notifica. Supervizorul **nu notifică pe nimeni**, deci
+motivul acela nu se aplică, iar o filtrare moștenită ar fi îngustat domeniul **tăcut**. Criteriul e
+scris în `supervizor.DOMENIU` și **raportat în răspuns**, cu gardă: fără el, „19" s-ar citi ca „toate
+firmele care există".
+
+**(42) «Firma n-a fost verificată» e o AFIRMAȚIE, nu un câmp de serviciu.** Prima formă avea o cheie
+`cauza` cu proză în ea; `core/test_afirmatii_tipate.py` a prins-o, și avea dreptate. Nomenclatorul
+ÎNCHIS avea deja felul potrivit — **`verificare_rupta`**, al șaselea, adăugat 21.08 exact pentru
+clasa asta: *„verificarea ÎNSĂȘI s-a oprit … `eroare` e obligatorie fiindcă fără ea nimeni nu poate
+începe s-o repare"*. Cele **două** feluri de neverificare (precondiția a căzut · ceva a ridicat) se
+țin ca **date** (`felul_neverificarii`), nu se citesc din textul erorii: unul se repară completând
+profilul firmei, celălalt e un defect al aplicației.
+
+**(43) Aceeași clasă găsită în cronul de alerte NU s-a reparat în tura asta, cu condiția scrisă.**
+`alerte_control_fiscal.ruleaza()` numără firmele **după** succes, deci una care ridică nu apare în
+niciun contor al dicționarului întors. **Nu s-a reparat** fiindcă valoarea aia nu e citită de nimeni
+(`notificari_scadenta.py:150` o aruncă), efectul se oprește la o linie de stdout, iar bucla e chiar
+calea care trimite alertele reale către contabili — raport rău între risc și câștig **azi**.
+**Condiția de redeschidere, scrisă ca R116:** în ziua în care întoarcerea lui `ruleaza()` capătă un
+consumator (ecran, raport, metrică), contorul se **derivă**, nu se acumulează. *Nicio amânare fără
+condiție.*

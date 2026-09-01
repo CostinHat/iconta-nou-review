@@ -6920,6 +6920,56 @@ rândurile (F163v2, `coada_api`), iar cele 54 sunt istorie dinainte. Deci perech
 *„n-am ce compara"*, și devine vie pe măsură ce se depune prin aplicație. *Diferența dintre „stricat"
 și „gol" se vede doar citind calea de scriere, nu numărând rândurile.*
 
+### Supervizorul, tura a doua (01.09.2026) — a cincea cale tăcută, și domeniul
+
+**GARDĂ: axa orizontală are O SINGURĂ ieșire, ștampilată o singură dată.**
+`core/control_incrucisat.orizontal_d390_vs_d300` (înveliș) + `_orizontal_d390_vs_d300` (corp).
+Gărzile: `core/test_supervizor.py::test_a_cincea_cale_FARA_NICIO_DEPUNERE_e_stampilata_si_supervizorul_o_VEDE`
+(schemă efemeră, firmă fără nicio depunere D300) și `::test_corpul_orizontal_nu_se_poate_chema_OCOLIND_invelisul`
+(AST — corpul nu se poate chema ocolind învelișul, iar învelișul chiar ștampilează).
+
+**CE A PRINS, măsurat pe cele 19 firme ale portofoliului:** supervizorul vedea **3** constatări
+orizontale și pierdea **tăcut 13**. Comparația declarație-contra-declarație avea **cinci** căi de
+ieșire, nu patru: a cincea — *nicio depunere D300 prin aplicație* — trăia în corpul lui
+`verifica_d390`, chema `_absenta_libera` **direct**, fără `_stampileaza`, iar
+`supervizor.constatari_firma` o socotea verticală și o sărea. *Gardul de dinainte proba cele patru
+căi ale funcției PURE; a cincea era cu un nivel mai sus, unde nimeni nu se uita.* **Efect: 3 → 16
+ștampilate, 13 → 0 pierdute.**
+
+**De ce înveliș și nu petic pe ramura care lipsea:** peticul ar fi lăsat clasa în picioare — a șasea
+cale s-ar fi născut la fel de tăcut. **Mutații probate (RED):** (1) învelișul întoarce corpul
+nestampilat → cad amândouă gărzile; (2) `verifica_d390` cheamă corpul direct, ocolind învelișul →
+cad amândouă.
+
+**GARDĂ: o firmă nu poate dispărea dintr-o cifră de portofoliu.**
+`core/supervizor.ruleaza_portofoliu` — trei rezultate EXCLUSIVE per firmă (`CONSTATARI` /
+`FARA_SUBIECT` / `NEVERIFICAT`), iar rezumatul e **derivat** din listă, nu acumulat pe drum.
+Gărzile: `::test_TOATE_CELE_TREI_rezultate_apar_si_SUMA_lor_e_domeniul` (cu anti-vacuu: proba
+exercită toate trei, altfel invariantul ar trece pe o lume incompletă) ·
+`::test_o_firma_care_RIDICA_e_NUMITA_nu_tacuta` · `::test_FARA_SUBIECT_nu_se_poate_citi_ca_VERIFICAT_SI_CURAT` ·
+`::test_campul_ORIZONTAL_RULAT_lipsa_RIDICA_nu_cade_pe_implicit` · `::test_domeniul_se_DECLARA_in_raspuns` ·
+`::test_supervizorul_pe_portofoliu_NU_SCRIE_nimic`.
+
+**Ce face imposibil, și de ce are forma asta:** criteriul de prioritate dat de Costin —
+*ce poate produce o cifră validă și falsă*. Un parcurgător scris firesc întoarce „19 firme, 0
+constatări", strângând la un loc trei lucruri care nu seamănă: nimic găsit · nimic de comparat ·
+**n-a rulat deloc**. **Tiparul e măsurat, nu presupus:** `core/alerte_control_fiscal.ruleaza()`
+incrementează `tot["firme"]` **după** succes, deci o firmă care ridică nu apare în niciun contor al
+dicționarului întors — **R116**. **Mutații probate (RED):** (3) firma care ridică e sărită cu
+`continue`, ca în cron → cad două gărzi; (4) `FARA_SUBIECT` colapsează în `CONSTATARI` → cad două.
+
+**Ce a rulat pe portofoliul viu, după reparație:** `CONSTATARI 16 · FARA_SUBIECT 0 · NEVERIFICAT 3`,
+suma **19** = domeniul. Cele trei neverificate sunt **numite**, cu cauza: D390 nu se poate calcula
+(profil incomplet). *Înainte, aceleași trei firme și celelalte treisprezece arătau identic: tăcere.*
+
+**CE AU PRINS GĂRZILE CARE NU ȘTIAU CĂ VINE MODULUL** — patru, toate ale mele, în aceeași tură:
+`ruff` (**F821** — importul local `_d390` s-a pierdut la extragerea blocului; efectul era o
+degradare **tăcută** în gri, adică exact clasa reparată) · `test_afirmatii_tipate` (NEVERIFICAT era
+proză într-o cheie `cauza`; e acum afirmație tipată `verificare_rupta`, felul al șaselea din
+nomenclatorul închis, adăugat 21.08 pentru exact clasa asta) · `test_garzi_pe_text` (**trei**
+aserțiuni ale mele erau pe text — rescrise pe structură, METODA §23) · `test_clichete_generate`
+(umbra 77u crescuse cu 1, blocul regenerat).
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **506 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.

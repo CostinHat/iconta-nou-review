@@ -7245,3 +7245,69 @@ callback-urile pasate ca referință. Un argument socotit absent fiindcă n-avea
 umflat o clasă de la 4 la 68. O cheie de dicționar trunchiată, care a înghițit 54 de rânduri din 500.
 *Clasa e chiar limita pe care registrul o declară de opt zile la interdicția 14 — „numără forma, nu
 efectul" — iar eu am căzut în ea de trei ori într-o zi, măsurând altceva.*
+
+
+---
+
+## 01.09.2026, tura a doua — supervizorul: a cincea cale tăcută, și domeniul
+
+**Comanda a fost „continuă cu construcția supervizorului".** Predarea spunea, la „dacă continui de
+aici" pct.5: *măsoară candidații înainte să alegi*. Am măsurat, cu criteriul lui Costin — *ce poate
+produce o cifră validă și falsă* — și prima măsurătoare a răsturnat ce credeam că e tura.
+
+**CE A IEȘIT LA MĂSURARE.** Am rulat supervizorul pe toate cele 19 firme. Vedea **3** constatări
+orizontale. Am întrebat de ce doar 3, și am citit calea la sursă: comparația
+declarație-contra-declarație are **cinci** ieșiri, nu patru. Patru sunt în funcția pură
+`compara_d390_vs_d300` și aveau gard, scris ieri, cu titlul *„ștampilată pe TOATE căile"*. A cincea —
+*nicio depunere D300 prin aplicație* — trăia un nivel mai sus, în corpul lui `verifica_d390`, chema
+`_absenta_libera` **direct**, fără `_stampileaza`, iar supervizorul o socotea verticală și o sărea.
+**13 constatări pierdute tăcut, pe 13 firme din 19.**
+
+**Și tăcerea arăta exact ca un răspuns** — chiar propoziția pe care o scrisesem ieri în antetul lui
+`_stampileaza`, ca motiv pentru care învelișul există. *Am scris regula, am construit învelișul, și
+l-am pus cu un nivel mai jos decât trebuia.*
+
+**REPARAȚIE STRUCTURALĂ, nu petic.** Blocul s-a extras în `orizontal_d390_vs_d300` — o singură
+ieșire, un singur înveliș —, mutat **mecanic** (felie verbatim, cu aserțiuni pe ce conține), ca
+logica de comparație să fie **provabil** neschimbată. Peticirea ramurii care lipsea ar fi lăsat clasa
+în picioare: a șasea cale s-ar fi născut la fel de tăcut. **Efect, măsurat pe portofoliul viu: 3 → 16
+ștampilate, 13 → 0 pierdute.**
+
+**AL DOILEA LUCRU: DOMENIUL.** Din cele trei fațete pe care `PLAN_LUCRU` le dă supervizorului —
+*„declanșator propriu, domeniu propriu și ieșire proprie"* —, două sunt scrise acolo ca fiind ale lui
+Costin și nedecise, iar a treia, **domeniul, era deja decisă**: *„rulează pe portofoliu, nu pe un
+act"*. Am construit-o. Funcția e **chemabilă**, nu programată și nu rutată, deci nu atinge niciuna
+din cele două întrebări — modulul rămâne pe drept în `PIN`.
+
+**Forma ei vine din criteriu, nu din gust.** Un parcurgător scris firesc întoarce *„19 firme, 0
+constatări"* — cifră validă și falsă, fiindcă strânge la un loc trei lucruri care nu seamănă: nimic
+găsit · nimic de comparat · **n-a rulat deloc**. Tiparul nu e presupus: l-am citit în
+`alerte_control_fiscal.ruleaza()`, care incrementează `tot["firme"]` **după** succes, deci o firmă
+care ridică nu apare în niciun contor al dicționarului întors. Aici: trei rezultate exclusive, iar
+rezumatul **derivat** din listă — o firmă nu poate dispărea dintr-un contor pe care nimeni nu-l
+incrementează.
+
+**PE PORTOFOLIUL VIU:** `CONSTATARI 16 · FARA_SUBIECT 0 · NEVERIFICAT 3`, suma **19** = domeniul.
+Cele trei neverificate sunt **numite**, cu cauza. *Înainte, toate șaisprezece tăceau la fel.*
+
+**PATRU GĂRZI CARE NU ȘTIAU CĂ VINE M-AU RESPINS, ȘI TOATE PATRU AVEAU DREPTATE.** `ruff` a prins un
+**F821**: importul local `_d390` s-a pierdut la extragerea blocului, iar efectul lui era o degradare
+**tăcută** în gri — adică exact clasa pe care o reparam, reintrodusă de reparație.
+`test_afirmatii_tipate` a prins că *„firma n-a fost verificată, fiindcă X"* e o **afirmație**, nu un
+câmp de serviciu — iar nomenclatorul ÎNCHIS avea deja felul potrivit, `verificare_rupta`, adăugat pe
+21.08 pentru exact clasa asta. `test_garzi_pe_text` a prins **trei** aserțiuni ale mele ancorate pe
+text. `test_clichete_generate` a prins umbra 77u crescută cu 1. *A doua zi la rând în care un modul
+nou trece testele lui și cade la gărzile care nu-l așteptau.*
+
+**CE N-AM FĂCUT, și de ce.** Nicio pereche orizontală nouă: identitatea fiscală n-are temei scris,
+iar motivul de ieri e neschimbat. *Domeniul se putea construi fără temei nou; o pereche, nu.*
+Generalizarea pe clasă a găsit **o singură** altă instanță — `alerte_control_fiscal.ruleaza()` —
+**consemnată nereparată ca R116, cu condiția scrisă**: valoarea n-are consumator azi
+(`notificari_scadenta.py:150` o aruncă), iar bucla e chiar calea care trimite alertele reale către
+contabili. A doua buclă de portofoliu (`woocommerce._main`) **n-are contor agregat deloc**, deci
+clasa nu se aplică — enumerat explicit, ca absența să fie informație.
+
+**CE A COSTAT AFIRMAȚIA „complet".** Ieri am scris, în `PIN` și în predare, *„modulul e complet și
+probat: 13 teste, mutație pe trei direcții"*. Numărul era corect; ce acopereau, nu. **Un gard care se
+uită exact acolo unde codul e corect raportează verde despre o lume pe care n-o vede.** E a doua
+instanță a aceleiași clase, și de data asta victima a fost gardul meu de ieri, nu unul vechi.

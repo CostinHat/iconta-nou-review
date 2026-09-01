@@ -192,3 +192,216 @@ def test_fiecare_tip_isi_declara_cele_doua_surse():
     rele = [t for t, v in S.TIPURI.items()
             if not (v.get("sursa_stanga") and v.get("sursa_dreapta") and v.get("identitate"))]
     assert not rele, "tipuri fără cele două surse sau fără identitatea verificată: %s" % rele
+
+
+# ── 6. A CINCEA CALE — cea care traia un nivel mai sus ─────────────────────────────────────────
+# [01.09.2026] Gardul de la pct.5 probeaza cele PATRU cai ale functiei PURE `compara_d390_vs_d300`.
+# Comparatia orizontala avea insa CINCI iesiri: a cincea — *nicio depunere D300 prin aplicatie* —
+# traia in corpul lui `verifica_d390` si chema `_absenta_libera` DIRECT, fara `_stampileaza`.
+# MASURAT pe cele 19 firme ale portofoliului: supervizorul vedea 3 constatari orizontale si pierdea
+# TACUT 13. Reparatie structurala: `orizontal_d390_vs_d300` — o singura iesire, un singur invelis.
+import ast          # noqa: E402
+import inspect      # noqa: E402
+
+from core import db as _db                     # noqa: E402
+from core import tenant_provisioning as _tp    # noqa: E402
+
+
+def _conn():
+    _db.init_pool()
+    return _db.pool().getconn()
+
+
+def test_a_cincea_cale_FARA_NICIO_DEPUNERE_e_stampilata_si_supervizorul_o_VEDE():
+    """Firma exista, D390 se poate calcula, dar nu s-a depus NICIUN D300 prin aplicatie.
+
+    Inainte de reparatie constatarea iesea fara `tip_constatare`, iar supervizorul o socotea
+    verticala si o sarea — deci raporta *zero constatari* pentru firma, ceea ce se citeste
+    „n-am ce semnala" cand adevarul e „comparatia nici nu e posibila". **Tacere care arata ca un
+    raspuns** — chiar clasa numita in antetul lui `_stampileaza`.
+
+    DECUPLAT: schema efemera din `tenant_template`, tenant sintetic, tot in ROLLBACK.
+    """
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("DROP SCHEMA IF EXISTS ztest_sv_a5 CASCADE")
+            cur.execute(_tp.parametrizeaza_template(
+                open("tenant_template.sql", encoding="utf-8").read(), "ztest_sv_a5"))
+            cur.execute(
+                "INSERT INTO ztest_sv_a5.firma_profil (id, nume, cui, platitor_tva, tip_decont, "
+                "declarant_nume, declarant_prenume, declarant_functie) "
+                "VALUES (1, 'PROBA SV', '14399840', true, 'L', 'Popescu', 'Ion', 'ADMINISTRATOR')")
+            # fixtura-sintetica-ok: tenant_id sintetic. TREBUIE fabricat — fara rand in
+            # public.tenants, `_d300_depus_recent` ar intoarce None din ALT motiv (firma
+            # nemapata), iar testul ar trece pe motivul gresit.
+            cur.execute("INSERT INTO public.tenants (schema_name, nume) "
+                        "VALUES ('ztest_sv_a5', 'PROBA SV') RETURNING id")
+            tid = cur.fetchone()[0]
+            cur.execute("SELECT count(*) FROM public.declaratii_depuse WHERE tenant_id = %s", (tid,))
+            assert cur.fetchone()[0] == 0, "[anti-vacuu] firma de proba nu trebuie sa aiba depuneri"
+            cur.execute("SET LOCAL search_path TO ztest_sv_a5, public")
+            # AXA, chemata direct — etalonul. NU se filtreaza dupa eticheta: un filtru pe text ar
+            # pazi formularea, nu faptul (METODA §23). Cate constatari produce axa, atatea trebuie
+            # sa iasa TIPATE din `verifica_d390` si sa ajunga la supervizor.
+            etalon = _ci.orizontal_d390_vs_d300(conn, "ztest_sv_a5", "L", 2026, 7)
+            brute = _ci.verifica_d390(conn, "ztest_sv_a5", 2026, 7)["constatari"]
+            vazute = S.constatari_firma(conn, "ztest_sv_a5", 2026, 7)
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+
+    assert len(etalon) == 1, (
+        "[anti-vacuu] a cincea cale n-a produs exact o constatare (%d) — testul n-ar masura nimic"
+        % len(etalon))
+    assert all(c.get("tip_constatare") == _ci.TIP_D390_VS_D300 for c in etalon)
+    tipate = [c for c in brute if c.get("tip_constatare")]
+    assert len(tipate) == len(etalon), (
+        "axa orizontala a produs %d constatari, dar din `verifica_d390` ies %d tipate — restul "
+        "sunt netipate, iar supervizorul le sare TACUT: firma apare cu zero constatari, ceea ce se "
+        "citeste ca «nimic de semnalat»" % (len(etalon), len(tipate)))
+    assert len(vazute) == len(etalon), "supervizorul NU vede a cincea cale — filtrul pe tip a inghitit-o"
+    assert all(c["tarie"] is None for c in vazute)          # R115: neatribuita, deci fara efect
+    assert all(c["cere_confirmare"] is False for c in vazute)
+
+
+def test_corpul_orizontal_nu_se_poate_chema_OCOLIND_invelisul():
+    """CEALALTA DIRECTIE, si e cea care tine reparatia in picioare. Un test care doar probeaza a
+    cincea cale ar trece si daca maine cineva adauga a sasea chemand corpul direct. Structural, pe
+    AST — nu pe text (METODA §23): singurul apel al corpului e din invelisul care stampileaza."""
+    arb = ast.parse(inspect.getsource(_ci))
+    invelis = [n for n in ast.walk(arb)
+               if isinstance(n, ast.FunctionDef) and n.name == "orizontal_d390_vs_d300"]
+    assert len(invelis) == 1, "[anti-vacuu] invelisul nu mai exista sub numele asta"
+    inauntru = {id(n) for n in ast.walk(invelis[0])}
+    apeluri = [n for n in ast.walk(arb)
+               if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)
+               and n.func.id == "_orizontal_d390_vs_d300"]
+    assert len(apeluri) == 1, "[anti-vacuu] corpul nu e chemat nicaieri — invelisul e mort"
+    assert id(apeluri[0]) in inauntru, (
+        "corpul axei orizontale e chemat OCOLIND invelisul care pune `tip_constatare` — "
+        "constatarile ies netipate, iar supervizorul le sare tacut")
+    # si invelisul chiar stampileaza: un `return` care ar uita `_stampileaza` reface defectul
+    stamp = [n for n in ast.walk(invelis[0])
+             if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)
+             and n.func.id == "_stampileaza"]
+    assert len(stamp) == 1, "invelisul nu mai stampileaza — a cincea cale redevine tacuta"
+
+
+# ── 7. DOMENIUL: o firmă nu poate dispărea dintr-o cifră ───────────────────────────────────────
+# [01.09.2026] Criteriul de prioritate dat de Costin — *ce poate produce o cifră validă și falsă*.
+# Un parcurgător de portofoliu scris firesc întoarce „19 firme, 0 constatări", strângând la un loc
+# trei lucruri care nu seamănă: nimic găsit · nimic de comparat · **n-a rulat deloc**. Tiparul nu e
+# presupus: `core/alerte_control_fiscal.ruleaza()` incrementează `tot["firme"]` DUPĂ succes, deci o
+# firmă care ridică nu apare în niciun contor al dicționarului întors.
+import contextlib   # noqa: E402
+
+
+def _rezultat_d390(constatari, rulat=True):
+    """Ce ar întoarce `verifica_d390` — inclusiv câmpul care spune dacă axa s-a atins."""
+    return {"an": 2026, "luna": 8, "fereastra": "08/2026", "stare": "gri",
+            "orizontal_rulat": rulat, "constatari": constatari}
+
+
+def _deschide_fals(ridica_pe=()):
+    @contextlib.contextmanager
+    def deschide(schema):
+        if schema in ridica_pe:
+            raise RuntimeError("conexiune imposibilă pe %s" % schema)
+        yield object()
+    return deschide
+
+
+_FIRME = [{"tenant_id": 1, "schema": "s_gasit", "nume": "CU CONSTATARE SRL"},
+          {"tenant_id": 2, "schema": "s_gol", "nume": "FARA SUBIECT SRL"},
+          {"tenant_id": 3, "schema": "s_nerulat", "nume": "AXA N-A RULAT SRL"},
+          {"tenant_id": 4, "schema": "s_rupt", "nume": "CONEXIUNE MOARTA SRL"}]
+
+_PLAN = {
+    "s_gasit": _rezultat_d390([dict(_C)]),
+    "s_gol": _rezultat_d390([]),
+    # axa n-a rulat: ce iese e o constatare VERTICALĂ (fără tip), exact ca la ieșirea timpurie reală
+    "s_nerulat": _rezultat_d390([{"stare": "gri", "eticheta": "Intracomunitar",
+                                  "mesaj": "D390 nu se poate calcula (profil incomplet)."}],
+                                rulat=False),
+}
+
+
+def _cu_plan(monkeypatch):
+    monkeypatch.setattr(_ci, "verifica_d390",
+                        lambda conn, schema, an, luna: _PLAN[schema])
+
+
+def test_TOATE_CELE_TREI_rezultate_apar_si_SUMA_lor_e_domeniul(monkeypatch):
+    """MIEZUL. Cele patru firme acoperă toate cele trei rezultate ȘI amândouă felurile de
+    neverificat (axa n-a rulat · conexiunea a murit). Invariantul e ce face imposibilă cifra validă
+    și falsă: o firmă care nu intră în niciun contor ar rupe suma."""
+    _cu_plan(monkeypatch)
+    r = S.ruleaza_portofoliu(2026, 8, firme=_FIRME, deschide=_deschide_fals(("s_rupt",)))
+    rez, pe_schema = r["rezumat"], {x["schema"]: x for x in r["firme"]}
+
+    assert pe_schema["s_gasit"]["rezultat"] == S.CONSTATARI
+    assert pe_schema["s_gol"]["rezultat"] == S.FARA_SUBIECT
+    assert pe_schema["s_nerulat"]["rezultat"] == S.NEVERIFICAT
+    assert pe_schema["s_rupt"]["rezultat"] == S.NEVERIFICAT
+    # [anti-vacuu] dacă un rezultat n-ar apărea deloc, invariantul ar trece pe o lume incompletă
+    assert set(x["rezultat"] for x in r["firme"]) == set(S.REZULTATE), (
+        "proba nu exercită toate cele trei rezultate — invariantul de mai jos n-ar dovedi nimic")
+
+    assert sum(rez[k] for k in S.REZULTATE) == rez["firme_in_domeniu"] == len(_FIRME), (
+        "o firmă a dispărut dintre cele trei rezultate — exact clasa din cronul de alerte, unde "
+        "contorul se incrementează după succes și firma care ridică nu apare nicăieri")
+
+
+def test_o_firma_care_RIDICA_e_NUMITA_nu_tacuta(monkeypatch):
+    """Cealaltă direcție a aceleiași reguli: nu e destul să fie numărată — trebuie să se poată
+    spune CARE și DE CE, altfel «3 neverificate» e tot o cifră fără adresă."""
+    _cu_plan(monkeypatch)
+    r = S.ruleaza_portofoliu(2026, 8, firme=_FIRME, deschide=_deschide_fals(("s_rupt",)))
+    rupt = [x for x in r["firme"] if x["schema"] == "s_rupt"][0]
+    assert rupt["nume"] == "CONEXIUNE MOARTA SRL"
+    # pe CÂMPURI, nu pe textul erorii: felul e dat ca date tocmai ca nimeni să nu-l citească din proză
+    assert rupt["neverificat"]["fel"] == "verificare_rupta"
+    assert rupt["neverificat"]["felul_neverificarii"] == S.EXCEPTIE
+    assert rupt["neverificat"]["eroare"], "`eroare` e obligatorie — fără ea nimeni n-o poate repara"
+    nerulat = [x for x in r["firme"] if x["schema"] == "s_nerulat"][0]
+    assert nerulat["neverificat"]["felul_neverificarii"] == S.AXA_NU_A_RULAT
+    assert nerulat["neverificat"]["eroare"], "axa n-a rulat și nimeni nu spune de ce"
+    # cele DOUĂ feluri nu se confundă: unul se repară completând profilul, celălalt e defect de cod
+    assert rupt["neverificat"]["felul_neverificarii"] != nerulat["neverificat"]["felul_neverificarii"]
+
+
+def test_FARA_SUBIECT_nu_se_poate_citi_ca_VERIFICAT_SI_CURAT(monkeypatch):
+    """«Zero constatări» pe tot portofoliul NU e «totul e verde». Dacă cele două ar cădea în același
+    contor, raportul ar afirma ceva ce nimeni n-a verificat."""
+    _cu_plan(monkeypatch)
+    doar_goale = [f for f in _FIRME if f["schema"] == "s_gol"] * 3
+    r = S.ruleaza_portofoliu(2026, 8, firme=doar_goale, deschide=_deschide_fals())
+    assert r["rezumat"]["constatari_total"] == 0
+    assert r["rezumat"][S.CONSTATARI] == 0
+    assert r["rezumat"][S.FARA_SUBIECT] == 3, (
+        "firmele fără subiect au căzut în alt contor — «0 constatări» ar deveni «am verificat 3 "
+        "firme și sunt curate», ceea ce nimeni n-a verificat")
+
+
+def test_domeniul_se_DECLARA_in_raspuns():
+    """Fără criteriul scris în răspuns, «19» se citește ca «toate firmele care există»."""
+    r = S.ruleaza_portofoliu(2026, 8, firme=[], deschide=_deschide_fals())
+    assert r["domeniu"] == S.DOMENIU and S.DOMENIU
+    assert r["rezumat"]["firme_in_domeniu"] == 0
+
+
+def test_campul_ORIZONTAL_RULAT_lipsa_RIDICA_nu_cade_pe_implicit(monkeypatch):
+    """A treia oară aceeași regulă în modulul ăsta (după tăria neatribuită și tipul necunoscut): un
+    implicit ar alege tăcut între «n-am verificat» și «e curat»."""
+    monkeypatch.setattr(_ci, "verifica_d390",
+                        lambda conn, schema, an, luna: {"constatari": []})
+    with pytest.raises(ValueError):
+        S._culege_firma(object(), "s", 2026, 8)
+
+
+def test_supervizorul_pe_portofoliu_NU_SCRIE_nimic():
+    """Contractul modulului, la nivel de portofoliu: produce constatări, nu efecte."""
+    import inspect
+    sursa = inspect.getsource(S.ruleaza_portofoliu) + inspect.getsource(S._culege_firma)
+    for cuv in ("INSERT", "UPDATE", "DELETE", "commit("):
+        assert cuv not in sursa, "parcurgerea portofoliului conține %r — a devenit scriitor" % cuv
