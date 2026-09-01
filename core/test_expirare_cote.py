@@ -27,7 +27,13 @@ def test_neconfirmate_o_singura_alerta_cu_toate_valorile():
     assert r["neconfirmate"] >= 3
     assert r["alerte_trimise"] == 1 and len(apeluri) == 1   # O SINGURA alerta pe rulare
     cheie, subiect, mesaj = apeluri[0]
-    assert "n-au mai fost confirmate" in subiect and str(r["neconfirmate"]) in subiect and "6" in subiect
+    # PRAGUL A IESIT DIN SUBIECT (01.09.2026, R109) si nu e o slabire a probei: nu mai exista UN
+    # prag: fiecare valoare are al ei, iar subiectul ar fi trebuit sa poarte o cifra care nu descrie
+    # nimic. Pragul se verifica acum PE RAND, mai jos — acolo unde chiar difera.
+    assert "n-au mai fost confirmate" in subiect and str(r["neconfirmate"]) in subiect
+    assert re.search(r"prag \d+ luni \((per articol|global)", mesaj), (
+        "randurile nu mai spun ce prag s-a aplicat si de unde vine — cine citeste raportul nu poate "
+        "deosebi o valoare stramtata de una lasata pe podeaua globala")
     assert "Salariul minim brut" in mesaj and "Cota standard TVA" in mesaj
     assert re.search(r"\d{4}-\d{2}-\d{2}", mesaj)   # verificat_la (o data ISO in alerta; nu hardcodat - se bumpeaza la re-verificare)
     assert "Monitorul Oficial" in mesaj and "actualiz" in mesaj.lower()

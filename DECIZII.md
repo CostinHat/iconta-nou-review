@@ -3,6 +3,25 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 01.09.2026 (24) — O clasă care sună prudent poate fi ușa din dos a încălcării
+
+**Instanța, din R109.** Regula lui Costin era: *„nicio cotă nu se reconfirmă mai rar decât azi."*
+Patru cote n-au prag calculabil, deci categoria le dă `NECUNOSCUT`. Tratarea evidentă — *„fără prag,
+deci nu se raportează"* — sună **prudentă**: nu inventăm un prag pe care nu-l putem justifica.
+
+**Și e chiar încălcarea regulii.** O valoare care nu se raportează nu se reconfirmă niciodată. Un
+prag infinit e tot un prag, doar că nescris.
+
+**Regula care iese:** *când o clasă nouă („necunoscut", „neaplicabil", „în afara domeniului")
+schimbă ce se ÎNTÂMPLĂ, nu doar ce se scrie, se verifică ce însemna cazul acela ÎNAINTE de clasă.*
+Aici, înainte însemna „6 luni" — deci podeaua se păstrează, iar necunoașterea se scrie pe rând, nu
+se transformă în tăcere.
+
+*Deosebirea față de `DECIZII` 20.1 („NECUNOSCUT nu primește prag"): acolo era despre **clasificare**,
+unde un implicit minte. Aici e despre **acțiune**, unde absența unui prag nu e neutralitate, ci cea
+mai largă valoare posibilă. Aceeași clasă, două consecințe opuse — și de-aia niciuna nu se deduce
+din cealaltă.*
+
 ## 01.09.2026 (23) — O excepție cunoscută de un singur raport nu e o excepție, e o scăpare
 
 **Costin, verbatim:** *„`intrastat.PRAG_2026` intră în registru. Cât timp e afară, «clichetul nu

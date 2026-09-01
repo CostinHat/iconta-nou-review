@@ -7058,3 +7058,38 @@ s-a măsurat că e o singură instanță în tot repo-ul.
 **Iar testul scris ieri ca să cadă a căzut azi**, cu mesajul lui cu tot: *„dacă pragul Intrastat a
 fost adăugat în registru, e o veste bună: scoate testul ăsta."* Rescris ca să păzească limita, nu
 instanța.
+
+## 01.09.2026 (partea a patra) — R109: absența unui prag nu e neutralitate, e cea mai largă valoare posibilă
+
+**Ultimul pas al interdicției 55: categoria alimentează raportul lunar.** Ca tură proprie, cum a
+cerut Costin — *„schimbă un contract, nu o linie"*.
+
+**Volumul, măsurat înainte și după, pe orizont de 12 luni:** azi **0 → 0**; de la o lună, **0 → 3**
+(dividende, micro, impozit pe venit — exact clasa VOLATIL/DEPUS); de la martie 2027, 20 → 20.
+**Nicio alertă nu dispare la niciun punct** — verificat pe 13 date, nu pe una.
+
+### Ce a scos măsurătoarea, și n-aș fi văzut altfel
+
+**Patru cote n-au prag calculabil.** Tratarea evidentă — *„fără prag, deci nu se raportează"* — sună
+prudentă: nu inventăm un prag pe care nu-l putem justifica. **Și e chiar încălcarea regulii lui
+Costin**: o valoare care nu se raportează nu se reconfirmă niciodată. *Un prag infinit e tot un prag,
+doar că nescris.* Rămân pe podeaua de 6 luni, iar rândul spune `global (prag necunoscut)`.
+
+Aceeași clasă, `NECUNOSCUT`, cere **lucruri opuse** în două locuri: la clasificare nu primește prag
+(orice implicit minte), la acțiune primește podeaua (absența nu e neutralitate). *De-aia niciuna nu
+se deduce din cealaltă — `DECIZII` 24.*
+
+### A cincea oară când instrumentul meu de măsură greșește, în aceeași direcție
+
+Prima formă a măsurătorii prezisese **3 alerte azi**. Realitatea: **0**. Aproximasem cu aritmetică pe
+luni (`vechime >= prag`), iar codul compară **date**: cu `verificat_la = 07.08` și prag de o lună,
+pragul cade pe 01.08, deci nu alertează.
+
+*Re-implementasem regula în loc s-o chem — exact tiparul care a produs R106, a doua zi după ce l-am
+scris ca lecție.* Măsurătoarea corectă cheamă `cote_neconfirmate` și compară cele două regimuri pe
+același orizont.
+
+**Și un test vechi a picat, corect:** cerea ca subiectul alertei să poarte pragul. Nu mai există
+**un** prag; subiectul ar fi purtat o cifră care nu descrie nimic. Proba s-a mutat pe rând — unde
+pragul chiar diferă — și cere să se vadă și **sursa** lui, ca cine citește să deosebească o valoare
+strâmtată de una lăsată pe podea.

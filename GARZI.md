@@ -6688,11 +6688,59 @@ a fost adăugat în registru, e o veste bună: scoate testul ăsta."* A picat az
 păzește acum **limita** (o valoare fiscală scrisă direct în cod e invizibilă), și afirmă că **nu mai
 există instanță cunoscută** — o afirmație, nu o presupunere.
 
+## 01.09.2026 — R109: pragul calculat alimentează raportul lunar. Podeaua rămâne, necunoscutul rămâne în pază
+
+**Costin:** *„R109 — leagă pragul calculat de raportul lunar, ca tură proprie, nu la coada alteia.
+Schimbă un contract, nu o linie. Ce trebuie să rămână adevărat: nicio cotă nu se reconfirmă mai rar
+decât azi. Riscul e volum de alerte — măsoară-l înainte și după."*
+
+**`core/test_prag_per_articol.py` — NOU, 6 teste.**
+
+**VOLUMUL, măsurat pe orizont de 12 luni** — fiindcă un job lunar nu se judecă într-o singură zi:
+
+| la data | global | per articol | în plus |
+|---|---|---|---|
+| 2026-09-01 | 0 | **0** | — |
+| 2026-10-01 … 2027-02-01 | 0 | **3** | dividende, micro, impozit pe venit |
+| de la 2027-03-01 | 20 | 20 | — |
+
+Cele trei sunt exact clasa **VOLATIL/DEPUS**: cotele care s-au mișcat de două ori în trei ani și
+intră în declarații. *Costul operațional, scris ca să nu surprindă: cu prag de o lună și un cron
+lunar, ele vor apărea în raport în fiecare lună în care nu sunt reconfirmate. Asta e proiectul, nu
+un efect secundar.*
+
+### Cele două capcane pe care le-a scos măsurătoarea
+
+1. **`NECUNOSCUT` ar fi însemnat „fără pază".** Patru cote n-au prag calculabil; azi sunt
+   monitorizate la 6 luni. Dacă „fără prag" ar fi însemnat „nu se raportează", s-ar fi reconfirmat
+   **niciodată** — adică încălcarea regulii lui Costin **pe ușa din dos**, printr-o clasă care sună
+   prudent. Rămân pe podea, iar rândul spune `global (prag necunoscut)`.
+2. **Un prag mai larg ar fi slăbit paza în tăcere.** Azi tabelul nu produce așa ceva (`INFORMATIV` e
+   clasă vidă), dar contractul îl acceptă. Se ignoră, cu motivul scris pe rând, și e probat **pe caz
+   sintetic** — o apărare pentru care nu există instanță azi se probează sintetic, nu se presupune.
+
+### Contractul nu se rupe pentru nimeni
+
+`cote_neconfirmate(luni, la_data, prag_pentru=None)` — fără al treilea argument face **exact** ce
+făcea. Gardat, ca niciun alt apelant să nu primească tăcut alt răspuns. Importul lui `reverificare`
+în `expirare_cote` e **local**, nu de modul: instrumentul citește corpusul și graful, iar un job
+lunar n-are voie să încarce asta la fiecare pornire a aplicației. Iar dacă el crapă, raportul **nu se
+oprește** — cade pe podea, și se vede în `prag_sursa`.
+
+**O CORECȚIE A MĂSURĂTORII MELE, a cincea de același fel:** prima formă prezisese **3 alerte azi**;
+realitatea e **0**. Aproximasem cu aritmetică pe luni, iar codul compară **date**. *Re-implementasem
+regula în loc s-o chem — exact tiparul care a produs R106.* Măsurătoarea corectă cheamă
+`cote_neconfirmate`.
+
+**Un test vechi a picat, corect:** cerea ca subiectul alertei să conțină pragul. Nu mai există **un**
+prag — subiectul ar fi purtat o cifră care nu descrie nimic. Proba s-a mutat **pe rând**, unde pragul
+chiar diferă, și cere să se vadă și **sursa** lui.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**501 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**502 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 484
+### `core/` — 485
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7079,6 +7127,7 @@ există instanță cunoscută** — o afirmație, nu o presupunere.
 - `core/test_portal_ids.py` — GARDĂ: fiecare act citat de un Temei din registru are id-ul lui de portal, scris.
 - `core/test_portal_nu_scrie_gol.py` — Unealta care aduce acte din portal NU are voie să scrie un `.txt` gol.
 - `core/test_prag_mijloc_fix_unic.py` — GARD [01.09.2026, R108]: pragul de încadrare ca mijloc fix are o SINGURĂ sursă.
+- `core/test_prag_per_articol.py` — GARD [01.09.2026, R109]: pragul de reverificare e per articol, dar nicio cotă nu iese din pază.
 - `core/test_prapastie_salariu.py` — GARD [R49, varianta (c)]: prăpastia salariului minim se spune CU CIFRE, și cifrele sunt ale
 - `core/test_precizie_import.py` — Gard: float-ul din `numere.numar()` nu compromite verificarile de echilibru.
 - `core/test_precompletare_anaf_unificata.py` — GARD precompletare_anaf_unificata: cele trei cai de creare a unei firme (register, add-firm,

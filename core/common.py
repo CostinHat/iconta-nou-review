@@ -752,21 +752,49 @@ def _adauga_luni(d, luni):
     return date(an, luna, 1)
 
 
-def cote_neconfirmate(luni=6, la_data=None):
+def cote_neconfirmate(luni=6, la_data=None, prag_pentru=None):
     """RAPORT INTERN (Modelul de temei 01.08, pct.2): valorile CURENTE care n-au mai fost confirmate la
-    sursa de peste `luni` luni (verificat_la vechi sau lipsa). NU e in interfata contabilului - e alerta
+    sursa de peste pragul lor (verificat_la vechi sau lipsa). NU e in interfata contabilului - e alerta
     catre dezvoltator. Inlocuieste expirarea inventata (EXPIRA_DUPA_LUNI, scoasa): legea n-a spus ca
     valoarea expira, dar confirmarea imbatraneste - dezvoltatorul verifica periodic MO. Fereastra intre
-    publicarea in MO si actualizarea in aplicatie NU se poate inchide automat (nu exista API legislativ RO)."""
+    publicarea in MO si actualizarea in aplicatie NU se poate inchide automat (nu exista API legislativ RO).
+
+    PRAG PER COTA (R109, 01.09.2026). `prag_pentru(nume, temei) -> luni | None` da pragul fiecarei
+    valori; `None` inseamna *nu se poate calcula pentru asta*. Fara argument, comportamentul e
+    IDENTIC cu cel dinainte: un singur prag pentru tot.
+
+    CELE DOUA REGULI ALE LUI COSTIN, implementate literal:
+
+      1. *„Nicio cota nu se reconfirma mai rar decat azi."* Pragul per cota se ia doar daca e **mai
+         mic sau egal** cu cel global. Unul mai mare ar slabi supravegherea, iar asta cere o decizie
+         scrisa, nu un tabel — deci se ignora si se raporteaza in `prag_sursa`.
+      2. *„Orice implicit minte."* O cota FARA prag calculabil **nu iese din monitorizare**: ramane
+         pe pragul global, dar randul ei o SPUNE (`prag_sursa="global (prag necunoscut)"`). Daca ar
+         iesi, s-ar reconfirma NICIODATA — adica exact incalcarea regulii 1, pe usa din dos.
+
+    Fiecare rand poarta `prag_luni` (cel aplicat) si `prag_sursa`, ca cine citeste raportul sa stie
+    daca cifra vine din clasificare sau din podeaua globala.
+    """
     la_data = la_data or date.today()
-    prag = _adauga_luni(la_data, -luni)
     rez = []
     for nume in COTE:
         din, valoare, temei = sorted(COTE[nume], key=lambda r: r[0], reverse=True)[0]
+        prag_luni, sursa = luni, "global"
+        if prag_pentru is not None:
+            p = prag_pentru(nume, temei)
+            if p is None:
+                sursa = "global (prag necunoscut)"
+            elif p <= luni:
+                prag_luni, sursa = p, "per articol"
+            else:
+                # Mai larg decat azi: se IGNORA, si se spune de ce. Regula 1 de mai sus.
+                sursa = "global (per articol ar fi fost %d luni, mai larg — ignorat)" % p
+        prag = _adauga_luni(la_data, -prag_luni)
         vl = getattr(temei, "verificat_la", None)
         if vl is None or vl <= prag:
             rez.append({"nume": nume, "valoare": valoare, "temei": temei,
                         "din": din, "verificat_la": vl,
+                        "prag_luni": prag_luni, "prag_sursa": sursa,
                         "luni_de_la_confirmare": None if vl is None else
                         (la_data.year - vl.year) * 12 + (la_data.month - vl.month)})
     return sorted(rez, key=lambda r: (r["verificat_la"] or date.min))

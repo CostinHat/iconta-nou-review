@@ -59,6 +59,23 @@ def acoperire_lipsa():
     return fara_eticheta, eticheta_straina
 
 
+def _prag_pentru(_nume, temei):
+    """Pragul de reverificare al unei valori, din categoria calculata a articolului ei.
+
+    `None` inseamna *nu se poate calcula* — si atunci `cote_neconfirmate` pastreaza pragul global,
+    fara ca valoarea sa iasa din monitorizare. Importul e LOCAL, nu la nivel de modul: `reverificare`
+    citeste corpusul si `dependenti_act`, iar un import de sus l-ar trage in fiecare pornire a
+    aplicatiei pentru un job care ruleaza o data pe luna.
+    """
+    try:
+        from core.reverificare import categorie
+        return categorie(temei)["prag_luni"]
+    except Exception:
+        # Un instrument de clasificare care crapa NU are voie sa opreasca raportul de vechime.
+        # Cade pe pragul global, si asta se vede in `prag_sursa`.
+        return None
+
+
 def _mesaj(x):
     et = ETICHETE.get(x["nume"], x["nume"].replace("_", " "))
     if x["verificat_la"] is None:
@@ -66,6 +83,7 @@ def _mesaj(x):
     else:
         vech = ("confirmata ultima data la %s (acum ~%d luni)"
                 % (x["verificat_la"].isoformat(), x["luni_de_la_confirmare"]))
+    vech += " · prag %d luni (%s)" % (x.get("prag_luni", 0), x.get("prag_sursa", "global"))
     return ("%s (%s, %s, in vigoare din %s) %s. Verifica in Monitorul Oficial daca a aparut un act "
             "normativ nou; daca valoarea e neschimbata, actualizeaza verificat_la in core/common.py, "
             "daca s-a schimbat, adauga valoarea noua (data_out se deriva automat)."
@@ -75,15 +93,18 @@ def _mesaj(x):
 def ruleaza(prag_luni=None, la_data=None, alerteaza=None):
     prag = prag_luni if prag_luni is not None else _prag_luni()
     _alerteaza = alerteaza or observare.alerteaza
-    care = cote_neconfirmate(prag, la_data=la_data)   # sortat crescator dupa verificat_la
+    # PRAG PER ARTICOL (R109). `prag` ramane PODEAUA: o valoare nu poate primi un prag mai LARG
+    # decat cel global — vezi `cote_neconfirmate`. Masurat inainte de a lega: 0 -> 3 alerte, toate
+    # din clasa VOLATIL/DEPUS (dividende, micro, impozit pe venit), zero mai larg.
+    care = cote_neconfirmate(prag, la_data=la_data, prag_pentru=_prag_pentru)
     if not care:
-        print("toate valorile fiscale au fost confirmate in ultimele %d luni" % prag)
+        print("toate valorile fiscale au fost confirmate in pragul lor (podea globala %d luni)" % prag)
         return {"prag_luni": prag, "neconfirmate": 0, "alerte_trimise": 0}
     # O SINGURA alerta pe rulare, toate valorile grupate (un paragraf fiecare, in ordinea vechimii).
     corp = (chr(10) + chr(10)).join(_mesaj(x) for x in care)
     n = len(care)
-    subiect = ("O valoare fiscala n-a mai fost confirmata de peste %d luni" % prag if n == 1
-               else "%d valori fiscale n-au mai fost confirmate de peste %d luni" % (n, prag))
+    subiect = ("O valoare fiscala n-a mai fost confirmata in pragul ei" if n == 1
+               else "%d valori fiscale n-au mai fost confirmate in pragul lor" % n)
     cheie = "confirmare_cote:" + ",".join(
         "%s@%s" % (x["nume"], x["verificat_la"].isoformat() if x["verificat_la"] else "nicicand") for x in care)
     print(corp)

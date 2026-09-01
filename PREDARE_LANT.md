@@ -168,6 +168,11 @@ scrisesem regula care o interzice (`METODA §10.16`). *O regulă scrisă nu țin
 ele"*. Grupul ei de interdicții (49–62), măsurat: **8 MĂSURATE · 2 PARȚIAL · 4 NEÎNCEPUTE**.
 Criteriul lui **E2** numește exact două lucruri care lipsesc:
 
+0. **R109 — LEGATĂ 01.09**: pragul calculat alimentează raportul lunar. Volumul, măsurat pe orizont
+   de 12 luni: **0 → 0 azi, 0 → 3 de la o lună** (dividende, micro, impozit pe venit), **nicio alertă
+   pierdută la niciun punct**. Podeaua globală se păstrează, iar cele 4 cote fără prag calculabil
+   **rămân în pază** cu `prag_sursa = "global (prag necunoscut)"` — dacă ar fi ieșit, s-ar fi
+   reconfirmat niciodată. **R110 deschisă**: pragul Intrastat e în registru, dar actul e ciot.
 1. **categoria de reverificare (interdicția 55) — CONSTRUITĂ, 31.08.** `core/reverificare.py`, două
    axe mecanice × tabelul 3×3. Pe cele 34 de temeiuri: **24 clasificate, 10 NECUNOSCUT declarat**;
    **9 mai strict, 0 mai larg** față de pragul global de 6 luni. `INFORMATIV` e declarat **vid**, cu
@@ -258,7 +263,7 @@ ale Design System, **5** sunt acoperite. Nu invalidează porțile; le încadreaz
 ## STAREA LA PREDARE
 
 Poartă verde, citită din ieșirea rulării complete de pe arborele care devine commitul următor:
-**3887 teste trec** · 11 skip · 14 xfail · **COLLECTED 3912** · ruff OK · verificator **TOTAL 0** ·
+**3893 teste trec** · 11 skip · 14 xfail · **COLLECTED 3918** · ruff OK · verificator **TOTAL 0** ·
 rute **423 = ACCEPTAT 382 + GRI 7 + ROSU 0 + EXCLUS 34** · site **200** · four-way se închide la
 `post-commit`, care publică pe `origin/main` și pe `backup/lant-<ziua curentă>` — de la 01.09 e
 `backup/lant-2026-09-01`, iar `backup/lant-2026-08-31` rămâne cu ultimul commit de ieri — și **restartează

@@ -2341,9 +2341,40 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   **11** n-ar avea prag și ar trebui raportate ca `NECUNOSCUT`. **0** ar fi verificate mai rar.
 - **instanțe**: cele 9 sunt exact valorile care s-au mișcat recent — cotele de TVA (CF art. 291),
   impozitul pe dividende (art. 97), impozitul micro (art. 51), impozitul pe venit (art. 78).
-- **de ce nu s-a legat în tura construcției**: schimbă ce raportează un **job viu** (cron lunar), iar
-  contractul lui `cote_neconfirmate` trece de la un număr la o funcție. *Nu e o linie; e o schimbare
-  de contract pe o cale care trimite alerte.*
+- **LEGAT 01.09.2026** *(se închide formal în commitul următor — capcana 2)*, ca tură proprie, cum a
+  cerut Costin: *„schimbă un contract, nu o linie."*
+  - `cote_neconfirmate(luni, la_data, prag_pentru=None)` — al treilea argument dă pragul fiecărei
+    valori. **Fără el, comportamentul e identic cu cel dinainte**, deci niciun alt apelant nu
+    primește tăcut alt răspuns. Gardat.
+  - `expirare_cote` îl alimentează din `reverificare.categorie()`, cu **import local**: instrumentul
+    citește corpusul și graful, iar un import de sus l-ar trage în fiecare pornire a aplicației
+    pentru un job lunar. Dacă el crapă, raportul **nu se oprește** — cade pe podea, iar asta se vede
+    în `prag_sursa`.
+  - **PODEAUA**: un prag per-articol se aplică doar dacă e **≤** cel global. Unul mai larg se
+    ignoră, cu motivul scris pe rând. *„Nicio cotă nu se reconfirmă mai rar decât azi."*
+  - **`NECUNOSCUT` nu scoate o valoare din pază**: rămâne pe podeaua globală, iar rândul o spune
+    (`prag_sursa = "global (prag necunoscut)"`). *Dacă ar ieși, s-ar reconfirma **niciodată** — adică
+    exact încălcarea regulii, pe ușa din dos.*
+- **VOLUMUL DE ALERTE, măsurat înainte și după**, pe orizont de 12 luni — *un job lunar nu se judecă
+  într-o zi*:
+
+  | la data | global | per articol | în plus |
+  |---|---|---|---|
+  | 2026-09-01 | 0 | **0** | — |
+  | 2026-10-01 … 2027-02-01 | 0 | **3** | `impozit_dividend`, `impozit_micro`, `impozit_venit` |
+  | de la 2027-03-01 | 20 | 20 | — |
+
+  **Nicio alertă nu dispare la niciun punct de pe orizont** — verificat mecanic pe 13 date, nu pe
+  una. Sursa pragului: **16 per articol · 4 pe podea, cu necunoscutul declarat**.
+- **O CORECȚIE A MĂSURĂTORII MELE, și e a cincea de același fel**: prima formă prezisese **3 alerte
+  azi**. Realitatea e **0**. Aproximasem cu aritmetică pe luni (`vechime >= prag`), iar codul compară
+  **date** (`verificat_la <= azi − prag`): cu `verificat_la = 07.08` și prag de o lună, pragul cade pe
+  01.08. *Re-implementasem regula în loc s-o chem — exact tiparul care a produs R106.*
+- **gard**: `core/test_prag_per_articol.py` — incluziunea pe 13 date · necunoscutul rămâne pe podea ·
+  un prag mai larg se ignoră **și se spune** (pe caz sintetic, fiindcă azi tabelul nu produce așa
+  ceva) · compatibilitate fără argument · anti-vacuu în două direcții (cel puțin 10 cote au prag
+  calculat, și cel puțin una e mai strictă — altfel legarea ar fi un no-op costisitor) · volumul în
+  plus e **pinat**.
 - **calibrare**: efectul e măsurat înainte de a fi aplicat — `reverificare.fata_de_pragul_global()`,
   gardat: `mai_larg` trebuie să rămână **0**, altfel trecerea ar slăbi supravegherea în tăcere.
 - **ce nu vede**: nu spune dacă alertele produse de pragurile noi ar fi **utile** — doar câte ar fi.
