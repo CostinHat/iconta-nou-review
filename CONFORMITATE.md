@@ -2355,9 +2355,9 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   (b) art. 291 se rezolvă la CF ca celelalte trei; (c) clauza trăiește într-un singur loc. Se închide
   când `Legea 141/2025 art. 291` dă **VOLATIL**, cu volumul de alerte măsurat înainte și după.
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `0a12a31`
-- **01.09.2026 — REPARATĂ ÎN ARBORE; se închide formal pe commitul următor, cu hash-ul real.**
+- **01.09.2026 — REPARATĂ.**
   - **(b) + (c) FĂCUTE**: `291` a intrat în `ART_DE_COD_FISCAL`, iar clauza condiționată a dispărut.
     `_cheie` din `test_vigoare_articole_registru` **cheamă** acum `S.cheie_articol` în loc să-i
     copieze corpul — mulțimea fusese mutată într-un singur loc pe 31.08, dar **regula** rămăsese
@@ -2382,7 +2382,7 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
     altă reparație.* Verdictul ei e în direcția sigură (refuză, nu inventează), iar reparația ei nu e
     despre axa de reverificare, ci despre **câte acte din corpus se pot citi deloc**. Ținută aici, ar
     fi blocat închiderea lui R111 pe muncă de corpus.
-- **rezolvată pe commit**: —
+- **rezolvată pe commit**: `8ec0cc4`
 
 ### R113 — Opt acte din corpus sunt nevăzute de instrumentele de articol, fiindcă poartă așezarea Monitorului Oficial
 

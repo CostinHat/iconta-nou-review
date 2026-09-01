@@ -186,7 +186,18 @@ Criteriul lui **E2** numește exact două lucruri care lipsesc:
      pierdute** (podeaua ține), dar câștigul lui R109 e anulat unde consecința e cea mai mare.
    - **R112** *(prag 4)* — art. 6 al ordinului spune că intră în vigoare **01.02.2026**, iar art. 5
      abrogă atunci Ordinul INS 2353/2024, neadus. Pentru ianuarie 2026 temeiul e al unui act care nu
-     era în vigoare. *Nu e o cifră greșită — e un temei.*
+     era în vigoare. *Nu e o cifră greșită — e un temei.* **RĂMÂNE DESCHISĂ.**
+   **R111 — ÎNCHISĂ ÎN ACEEAȘI ZI, 01.09**, după ce Costin a confirmat cifra: cotele de TVA intră în
+   cadența lunară, deci reparația a devenit muncă, nu decizie. Două jumătăți: `291` a intrat în
+   `ART_DE_COD_FISCAL` (niciun articol nu se mai rezolvă **condiționat** de actul care îl citează),
+   iar `inregistreaza_modificari(document)` întreabă acum dacă sursa **poate** răspunde — „zero
+   marcaje" într-un document care nu consemnează nicio modificare nu mai produce `STABIL`.
+   **Volum: 3 → 7 la o lună, zero pierdute pe 13 puncte.** Direcția inversă e păzită: `OUG 89/2025
+   art. III` rămâne `STABIL`, fiindcă documentul lui *are* 18 marcaje.
+   - **R113** *(prag 3)* — cauza a doua a lui R111, despărțită: **8** acte de corpus sunt CIOT doar
+     fiindcă poartă așezarea Monitorului Oficial („Art. N. —" în loc de „Articolul N"), iar un tipar
+     prea larg ar muta **2** fișiere din refuz în **răspuns fals**. *Azi doar un act poartă un temei,
+     dar clasa crește cu fiecare act adus de la MO — și de ieri știm că aia e calea care merge.*
 1. **categoria de reverificare (interdicția 55) — CONSTRUITĂ, 31.08.** `core/reverificare.py`, două
    axe mecanice × tabelul 3×3. Pe cele 34 de temeiuri: **24 clasificate, 10 NECUNOSCUT declarat**;
    **9 mai strict, 0 mai larg** față de pragul global de 6 luni. `INFORMATIV` e declarat **vid**, cu
@@ -258,7 +269,7 @@ ale Design System, **5** sunt acoperite. Nu invalidează porțile; le încadreaz
 
 ## AL PATRULEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
-- **restanțe deschise: 47** (din care ale etapei E1: **23**), derivat cu `scripts/raport_b.py`.
+- **restanțe deschise: 46** (din care ale etapei E1: **23**), derivat cu `scripts/raport_b.py`.
   **Nu se scrie de mână** — rândul ăsta a fost invalidat o dată.
 - **deschise în ultimele două zile**: R92 (etichete de stare) · R94–R96 (din 1b) · R97 (clasa „ruta
   livrează, ecranul tace", **remăsurată azi: 41 de câmpuri pe 15 rute**, de la 54 pe 16) · R98
