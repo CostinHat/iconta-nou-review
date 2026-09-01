@@ -1145,7 +1145,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T01 — Declarația — generare, validare, coadă, aprobare, depunere
 
-**Clasa:** MECANIC · **rute:** 15 (din care schimba date: 8) · **refuzuri explicite:** 36
+**Clasa:** MECANIC · **rute:** 16 (din care schimba date: 8) · **refuzuri explicite:** 40
 
 **Cine:** rol cerut: `admin_firma`, `angajat` · drept fin: `poate_depune`, `poate_valida`. **Rute care schimba date fara nicio verificare de rol: 1 din 8.**
 
@@ -1163,13 +1163,14 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 - `POST /declaratii/{tip}` — garda `cere_rol` rol:admin_firma,angajat
 - `POST /declaratii/{tip}/valideaza` — garda `cere_rol` rol:admin_firma,angajat
 - `GET /firme/{tenant_id}/verificari` — garda `cere_cabinet`
+- `GET /supervizor` — garda `cere_cabinet`
 - `POST /tenants/{tenant_id}/istoric-declaratii-import` — garda `cere_rol` rol:admin_firma
 - `POST /tenants/{tenant_id}/istoric-declaratii-import/incarca` — garda `cere_cabinet`
 - `GET /termene` — garda `cere_cabinet`
 
-**Module:** `afirmatii`, `coada_api`, `control_fiscal_api`, `d390`, `declaratii_api`, `declaratii_componente`, `duk`, `istoric_declaratii_import_api`, `migrare_api`, `termene_api`
+**Module:** `afirmatii`, `coada_api`, `control_fiscal_api`, `d390`, `declaratii_api`, `declaratii_componente`, `duk`, `istoric_declaratii_import_api`, `migrare_api`, `supervizor`, `termene_api`
 
-**Scrie in:** `declaratii_coada` (INSERT/UPDATE) · `declaratii_depuse` (DELETE/INSERT) · `migrare_status` (INSERT)
+**Scrie in:** `declaratii_coada` (INSERT/UPDATE) · `declaratii_depuse` (DELETE/INSERT) · `migrare_status` (INSERT) · `supervizor_confirmari` (INSERT)
 
 **Stari puse:** `aprobata`, `depusa`, `descarcata`, `respinsa`
 

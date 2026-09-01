@@ -48,7 +48,9 @@ export function etichetaStare(stare, n_neverificabile) {
 }
 
 // anatomie constatare (dot + mesaj + temei + remediu) — renderer unic pt «Verificari contabile» si audit.
-function randA(c) {
+// [01.09.2026] EXPORTAT: ecranul supervizorului randeaza aceeasi anatomie. A doua randare a ei ar
+// diverge, iar TEMEIUL — partea ceruta explicit de Costin — e prima care s-ar pierde.
+export function randA(c) {
   const dot = CULORI[c.stare] ? CULORI[c.stare].dot : CULORI.gri.dot;
   const r = c.remediu;
   const extra = r ? `<div class="cf-incr-remediu"><b>${esc(r.cauza || "")}</b><br>${esc(r.actiune || "")}</div>` : "";

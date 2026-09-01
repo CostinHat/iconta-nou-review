@@ -265,18 +265,45 @@ def _neverificat(firma, eroare, felul):
         eroare=str(eroare), felul_neverificarii=felul, schema=firma.get("schema"))
 
 
-def ruleaza_portofoliu(an, luna, firme=None, deschide=None):
-    """Supervizorul peste TOT portofoliul, pe o perioadă.
+def _domeniu_efectiv(firme, domeniu):
+    """PURĂ. Cine primește dreptul de a numi domeniul rulării.
 
-    `firme` / `deschide` se injectează în probe (`deschide(schema)` = context manager de conexiune);
-    implicit, domeniul se citește din bază și conexiunile vin din `core.db`. Injecția nu e stil: o
-    probă care ține o firmă sintetică într-o tranzacție întoarsă **nu o poate vedea** de pe a doua
-    conexiune, deci fără ea căile de eșec n-ar avea cum fi probate.
+    **DE CE RIDICĂ, în loc să cadă pe `DOMENIU`.** Constanta descrie **tot portofoliul** și spune, în
+    text, *„NU se filtrează pe cabinet"*. Dacă `firme` vine din afară — cum vine de pe ruta la
+    cerere, unde e mulțimea firmelor CABINETULUI apelantului — iar răspunsul ar căra mai departe
+    constanta aia, atunci ar **afirma despre o populație pe care n-a parcurs-o**. *Un domeniu
+    nedeclarat se citește ca „toate firmele care există"; un domeniu declarat GREȘIT e mai rău — se
+    citește ca o afirmație verificată.*
+    """
+    if firme is None:
+        return domeniu or DOMENIU
+    if not (domeniu or "").strip():
+        raise ValueError(
+            "`firme` injectate fără `domeniu` scris: răspunsul ar purta criteriul întregului "
+            "portofoliu («%s») despre o mulțime aleasă de altcineva. Numește ce ai dat." % DOMENIU)
+    return domeniu
+
+
+def ruleaza_portofoliu(an, luna, firme=None, deschide=None, domeniu=None):
+    """Supervizorul peste un domeniu de firme, pe o perioadă.
+
+    `firme` / `deschide` se injectează (`deschide(schema)` = context manager de conexiune); implicit,
+    domeniul se citește din bază și conexiunile vin din `core.db`. Injecția nu e stil: o probă care
+    ține o firmă sintetică într-o tranzacție întoarsă **nu o poate vedea** de pe a doua conexiune,
+    deci fără ea căile de eșec n-ar avea cum fi probate — iar ruta la cerere are nevoie de ea ca să
+    ruleze pe firmele cabinetului apelantului. **Un domeniu injectat trebuie NUMIT** (`_domeniu_efectiv`).
+
+    **Recalculează la fiecare chemare; nu persistă nimic** *(Costin, 01.09.2026: „constatări deschise
+    = ce produce rularea curentă, recalculat la cerere, ca la `/control-fiscal`. Fără tabel nou, fără
+    ciclu de viață")*. Un ciclu de viață — *apărut la · încă deschisă* — devine necesar abia când
+    există consumatorul lui: stratul asistentului și urmărirea performanței.
 
     Întoarce `{an, luna, domeniu, firme:[...], rezumat, tipuri_neatribuite}`. **Nu blochează nimic**
     și nu scrie nimic — ca tot restul modulului.
     """
     from core import db as _db
+    # ÎNAINTE de orice muncă: dacă domeniul nu se poate numi, nu se rulează deloc.
+    domeniu = _domeniu_efectiv(firme, domeniu)
     deschide = deschide or _db.get_conn
     if firme is None:
         with _db.get_conn() as cp:
@@ -310,7 +337,7 @@ def ruleaza_portofoliu(an, luna, firme=None, deschide=None):
     rezumat["firme_in_domeniu"] = len(randuri)
     rezumat["de_confirmat"] = sum(r["de_confirmat"] for r in randuri)
     rezumat["constatari_total"] = sum(len(r["constatari"]) for r in randuri)
-    return {"an": an, "luna": luna, "domeniu": DOMENIU, "firme": randuri, "rezumat": rezumat,
+    return {"an": an, "luna": luna, "domeniu": domeniu, "firme": randuri, "rezumat": rezumat,
             "tipuri_neatribuite": tipuri_neatribuite()}
 
 

@@ -19,7 +19,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 ## T01 — Declarația — generare, validare, coadă, aprobare, depunere
 
-*clasa MECANIC · 15 rute · 8 schimba date · 7 firme il pot exercita azi*
+*clasa MECANIC · 16 rute · 8 schimba date · 8 firme il pot exercita azi*
 
 *citiri (nu schimba nimic): `/coada`, `/coada/{coada_id}/continut`, `/control-fiscal`, `/control-fiscal/{tenant_id}`, `/declaratii/tipuri`, `/firme/{tenant_id}/verificari`, `/termene`*
 

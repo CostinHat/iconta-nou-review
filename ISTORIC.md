@@ -7351,3 +7351,60 @@ persistate; la fel `d394`; singura depunere cu rânduri din toată baza e un `d3
 răspunde tot *„n-am ce compara"* — un al doilea gri, nu o confruntare. Blocajul real e **R40**, veche
 de 133 de commituri, și **EXTERNĂ prin construcție**: cere o primă depunere reală prin coadă, făcută
 de un om care folosește aplicația. *Dacă o fac eu cu o sondă, măsurarea absenței o stinge.*
+
+
+---
+
+## 01.09.2026, tura a patra — supervizorul s-a legat, iar prima depunere reală a spus adevărul
+
+**Costin a dat cele două lucruri rămase**, și amândouă au scurtat lucrul, nu l-au lungit. Declanșare:
+*„extinde cronul de 08:00 care există. Plus rulare la cerere. Nu construi al doilea mecanism."*
+Ieșire: *„constatările deschise pe firmele lui, cu temei, în ecran propriu. Clopoțelul rămâne roșu
+agregat, nu o notificare pe constatare."*
+
+**Prima măsurătoare a tăiat o treime din muncă: clopoțelul era DEJA cablat.** O constatare orizontală
+roșie face `verifica_d390` roșu, iar `alerte_control_fiscal` o duce agregat pe firmă. Partea a treia
+se respecta **neatingând** nimic — iar un push din supervizor ar fi fost exact al doilea mecanism.
+
+**Supervizorul a ieșit din `PIN`.** A stat acolo trei ture, cu condiția de deblocare scrisă ca
+RĂSPUNS, nu ca muncă. Răspunsul a venit, deci a ieșit — a doua oară când gardul cere singur scoaterea
+unei intrări.
+
+**O capcană pe care ruta a creat-o și era să treacă.** Motorul rulează pe portofoliu (19 firme);
+ecranul arată firmele omului (14). Dacă răspunsul rutei ar fi cărat constanta `DOMENIU` — care spune,
+în text, *„nu se filtrează pe cabinet"* —, ar fi **afirmat despre o populație pe care n-a parcurs-o**.
+Un domeniu injectat **ridică** acum dacă nu e numit. *Un domeniu nedeclarat se citește ca „toate
+firmele"; unul declarat greșit se citește ca o afirmație verificată, ceea ce e mai rău.*
+
+### Ce a scos prima depunere reală, și n-ar fi ieșit din cod
+
+Costin a depus D300 pe `tenant_017`, 08/2026. Jurnalul a primit rândurile. **Perechea orizontală a
+vorbit prima oară: VERDE, „D390 și D300 depus coincid (8.000,00 lei)".**
+
+**Dar a spus că lasă rândurile IC goale, iar `R1_1` avea 8.000.** Citit la sursă: `R1_1` **se derivă
+automat** din facturile emise către UE, iar introducerea manuală peste el e refuzată ca dublă
+numărare. Deci textul pe care aplicația îl arăta contabilului — *„rândurile intracomunitare sunt
+manual-only"* — era **fals**. Reparat pe loc, prag 1.
+
+**Și partea care contează mai mult decât fraza:** dacă ambele laturi vin din aceleași facturi,
+comparația **nu confruntă două surse independente**. Ce prinde e deriva dintre ce s-a depus atunci și
+evidența de acum. *Am scris asta în temei, fiindcă un „verde" citit ca „am verificat la sursă" e mai
+rău decât niciun verde.* Un gard PINUIA fraza falsă, cerând cuvântul „manual-only" în text — a ținut
+minciuna în loc s-o prindă.
+
+### Poarta vizuală și-a plătit costul într-o singură tură
+
+Ecranul nou **a rupt toate cele 15 ecrane**: `„e în regulă"` cu ghilimea de închidere ASCII termină
+șirul JS, iar `cabinet.js` importă modulul — deci un modul care nu se parsează oprește tot desktopul.
+A șaptea instanță a clasei, prima în JS.
+
+**Și a scos ceva mai mare: fișierele statice se servesc de pe disc.** Între greșeala mea și
+producție **n-a existat nicio poartă** — nici commit, nici restart. Poarta verde apără Python-ul; JS-ul
+e live din secunda în care îl scriu. **R118.**
+
+**O măsurătoare era să iasă falsă și am prins-o.** `--compare` dădea SCHIMBAT pe toate cele 14 ecrane
+vechi — dar baseline-urile erau vechi de două commituri pe `static/`. Am izolat cu `git stash`,
+referințe refăcute pe HEAD, comparație. Diferența e a mea și e **benignă**: desktopul rămâne în DOM
+sub fereastră (dovadă independentă: scanul mobil a numărat 14 carduri cu fereastra deschisă), iar
+capturile sunt `full_page`. *O cifră care nu separă contribuția ta de deriva dinainte nu e o
+măsurătoare.*

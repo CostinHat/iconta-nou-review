@@ -197,10 +197,17 @@ dintre ele.*
   **Măsurat: supervizorul vedea 3 constatări orizontale și pierdea tăcut 13.** Reparat structural
   (`orizontal_d390_vs_d300` — o singură ieșire): **3 → 16**, **13 → 0**. *„Modulul e complet și
   probat" era fals ieri, și n-avea cum să se vadă: gardul se uita exact unde era codul corect.*
-- **De ce rămâne NELEGAT:** cele două lucruri care l-ar cabla — **ce declanșează o rulare** și **ce
-  vede contabilul din ea** — sunt scrise în `PLAN_LUCRU` ca fiind ale lui Costin, nedecise. A-l cabla
-  ar însemna să le decizi tu. E în `PIN` cu motivul, nu e cod mort: **21 de teste**, mutație pe
-  **cinci** direcții.
+- **E LEGAT, din 01.09 (tura a patra).** Costin a dat ultimele două: *declanșare* = slotul de **08:00
+  care există** (`notificari_scadenta`, bloc izolat) **plus** `GET /supervizor` la cerere — *„nu
+  construi al doilea mecanism"* · *ieșire* = **ecran propriu** (cardul „Supervizor" de pe desktopul
+  cabinetului), cu temeiul pe fiecare constatare. **A ieșit din `test_module_nelegate.PIN`.**
+- **Clopoțelul n-a cerut cod: era DEJA cablat.** O constatare orizontală roșie face `verifica_d390`
+  roșu, iar `alerte_control_fiscal` o duce **agregat pe firmă**. *„Rămâne roșu agregat, nu o
+  notificare pe constatare" se respectă neatingând nimic acolo.*
+- **Un domeniu injectat RIDICĂ dacă nu e numit.** Motorul rulează pe portofoliu (19), ruta pe firmele
+  apelantului (14). Fără regula asta, răspunsul rutei ar fi cărat criteriul *„nu se filtrează pe
+  cabinet"* despre o mulțime filtrată pe cabinet.
+- **28 de teste**, mutație pe **zece** direcții.
 - **Ce rulează deja pe cont propriu, și exista dinainte:** cronul de la 08:00
   (`notificari_scadenta` → `alerte_control_fiscal.ruleaza()`) trece portofoliul prin **patru**
   verificări și împinge în clopoțel **doar roșul**, agregat pe firmă.
@@ -262,8 +269,8 @@ reparat; una ancorată pe EFECT nu.*
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **61** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **784** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **785** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->
@@ -440,7 +447,14 @@ acum un nume și patru instanțe într-o zi.*
 - **Nu confruntă nimic în plus față de ieri.** Are **o singură** pereche orizontală — cea care exista
   deja. Ce s-a construit e **locul** unde stau perechile, **contractul** lor și **domeniul**, nu
   perechi noi. *Tura a doua a reparat cine VEDE constatările, nu a adus constatări noi.*
-- **Perechea lui răspunde azi, întotdeauna, „n-am ce compara" — și populația ei e ZERO, nu 1.**
+- **PERECHEA A VORBIT PRIMA OARĂ, 01.09: VERDE pe `tenant_017`** — *„D390 și D300 depus coincid
+  (8.000,00 lei)"*, după ce Costin a depus D300 pe 08/2026 prin interfață. **R40 e închisă.**
+- **DAR VERDELE E MAI SLAB DECÂT PARE, și acum o spune singur.** `R1_1` al D300 se derivă din
+  **aceleași** facturi IC ca baza D390 (`core/d300.py:403`) — deci nu sunt două surse independente.
+  Ce prinde perechea e **deriva** dintre ce s-a depus atunci și evidența de acum, nu o eroare pe care
+  ambele motoare o fac la fel. *Textul care spunea că rândurile IC sunt „manual-only" era FALS și a
+  fost scos — prag 1.*
+- **Restul portofoliului răspunde încă „n-am ce compara".**
   Din 55 de depuneri, 1 are rânduri persistate, dar aceea e un **d301**; dintre cele **3** depuneri
   **d300**, **niciuna** n-are rânduri. Calea curentă le persistă (verificat la sursă:
   `coada_api.randuri_din_res` + `marcheaza_depusa`), deci populația crește de acum înainte.

@@ -366,12 +366,18 @@ def _randuri(**R):
 
 
 def test_dvsd_rosu_d390_livrare_d300_fara_R1_1():
-    # D390 livrări 5000, D300 depus FĂRĂ R1_1 (manual-only neintrodus) -> ROȘU sugerat
+    # D390 livrări 5000, D300 depus FĂRĂ rândul R1_1 -> ROȘU sugerat
     r = compara_d390_vs_d300({"L": 5000, "A": 0}, gasit=True, randuri=_randuri())
     liv = [c for c in r if c["eticheta"].startswith("Livrări")][0]
     assert liv["stare"] == "rosu"
     assert liv["remediu"]["fel"] == "sugerat"
-    assert "R1_1 absent" in liv["temei"] and "manual-only" in liv["temei"]   # contabilul vede CAUZA
+    # [01.09.2026] Aserțiunea de aici PINUIA O AFIRMAȚIE FALSĂ: cerea cuvântul „manual-only" în
+    # temei. Verificat la sursă (`core/d300.py:403-424`), R1_1 se derivă AUTOMAT din facturile
+    # emise către UE, iar introducerea manuală peste el e refuzată ca dublă numărare. Gardul a
+    # ținut fraza greșită în loc s-o prindă — un gard ancorat pe TEXT păzește formularea, nu
+    # faptul (METODA §23). Ce se asertează acum e ce contabilul chiar trebuie să afle: CARE rând
+    # lipsește, ca să știe unde să se uite.
+    assert "R1_1 absent" in liv["temei"]
 
 
 def test_dvsd_verde_ambele_5000():

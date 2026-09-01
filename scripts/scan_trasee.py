@@ -48,7 +48,10 @@ RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TRASEE = [
     # --- deja scrise în TRASEE.md, părțile I-V ---
     ("T01", "Declarația — generare, validare, coadă, aprobare, depunere",
-     [r"^/declaratii", r"^/coada", r"^/firme/\{\}/verificari",
+     # [supervizor, 01.09.2026] `GET /supervizor` intra AICI, nu intr-un traseu propriu: confruntarea
+     # dintre declaratii apartine drumului declaratiei, iar ce citeste ea — `declaratii_depuse` — e
+     # chiar tabela proprie a traseului. Un traseu nou ar fi despartit doua capete ale aceluiasi drum.
+     [r"^/declaratii", r"^/coada", r"^/firme/\{\}/verificari", r"^/supervizor$",
       r"^/control-fiscal(/\{\}(?!/audit-preluare))?$",
       r"^/termene$", r"^/tenants/\{\}/istoric-declaratii-import"],
      ["declaratii_coada", "declaratii_depuse"]),

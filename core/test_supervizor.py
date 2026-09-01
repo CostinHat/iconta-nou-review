@@ -297,6 +297,10 @@ def test_a_cincea_cale_FARA_NICIO_DEPUNERE_e_stampilata_si_supervizorul_o_VEDE()
         "[anti-vacuu] a cincea cale n-a produs exact o constatare (%d) — testul n-ar masura nimic"
         % len(etalon))
     assert all(c.get("tip_constatare") == _ci.TIP_D390_VS_D300 for c in etalon)
+    # „cu temei" (Costin, despre ce vede contabilul): fiecare constatare isi poarta temeiul, altfel
+    # ecranul ar arata o afirmatie despre datele firmei fara sa spuna pe ce se sprijina.
+    assert all((c.get("temei") or "").strip() for c in etalon), (
+        "o constatare fara temei — ecranul ar arata o afirmatie fara sprijin")
     tipate = [c for c in brute if c.get("tip_constatare")]
     assert len(tipate) == len(etalon), (
         "axa orizontala a produs %d constatari, dar din `verifica_d390` ies %d tipate — restul "
@@ -380,7 +384,8 @@ def test_TOATE_CELE_TREI_rezultate_apar_si_SUMA_lor_e_domeniul(monkeypatch):
     neverificat (axa n-a rulat · conexiunea a murit). Invariantul e ce face imposibilă cifra validă
     și falsă: o firmă care nu intră în niciun contor ar rupe suma."""
     _cu_plan(monkeypatch)
-    r = S.ruleaza_portofoliu(2026, 8, firme=_FIRME, deschide=_deschide_fals(("s_rupt",)))
+    r = S.ruleaza_portofoliu(2026, 8, firme=_FIRME, deschide=_deschide_fals(("s_rupt",)),
+                             domeniu="domeniu de probă")
     rez, pe_schema = r["rezumat"], {x["schema"]: x for x in r["firme"]}
 
     assert pe_schema["s_gasit"]["rezultat"] == S.CONSTATARI
@@ -400,7 +405,8 @@ def test_o_firma_care_RIDICA_e_NUMITA_nu_tacuta(monkeypatch):
     """Cealaltă direcție a aceleiași reguli: nu e destul să fie numărată — trebuie să se poată
     spune CARE și DE CE, altfel «3 neverificate» e tot o cifră fără adresă."""
     _cu_plan(monkeypatch)
-    r = S.ruleaza_portofoliu(2026, 8, firme=_FIRME, deschide=_deschide_fals(("s_rupt",)))
+    r = S.ruleaza_portofoliu(2026, 8, firme=_FIRME, deschide=_deschide_fals(("s_rupt",)),
+                             domeniu="domeniu de probă")
     rupt = [x for x in r["firme"] if x["schema"] == "s_rupt"][0]
     assert rupt["nume"] == "CONEXIUNE MOARTA SRL"
     # pe CÂMPURI, nu pe textul erorii: felul e dat ca date tocmai ca nimeni să nu-l citească din proză
@@ -419,7 +425,8 @@ def test_FARA_SUBIECT_nu_se_poate_citi_ca_VERIFICAT_SI_CURAT(monkeypatch):
     contor, raportul ar afirma ceva ce nimeni n-a verificat."""
     _cu_plan(monkeypatch)
     doar_goale = [f for f in _FIRME if f["schema"] == "s_gol"] * 3
-    r = S.ruleaza_portofoliu(2026, 8, firme=doar_goale, deschide=_deschide_fals())
+    r = S.ruleaza_portofoliu(2026, 8, firme=doar_goale, deschide=_deschide_fals(),
+                             domeniu="domeniu de probă")
     assert r["rezumat"]["constatari_total"] == 0
     assert r["rezumat"][S.CONSTATARI] == 0
     assert r["rezumat"][S.FARA_SUBIECT] == 3, (
@@ -429,9 +436,25 @@ def test_FARA_SUBIECT_nu_se_poate_citi_ca_VERIFICAT_SI_CURAT(monkeypatch):
 
 def test_domeniul_se_DECLARA_in_raspuns():
     """Fără criteriul scris în răspuns, «19» se citește ca «toate firmele care există»."""
-    r = S.ruleaza_portofoliu(2026, 8, firme=[], deschide=_deschide_fals())
-    assert r["domeniu"] == S.DOMENIU and S.DOMENIU
+    r = S.ruleaza_portofoliu(2026, 8, firme=[], deschide=_deschide_fals(), domeniu="probă")
+    assert r["domeniu"] == "probă"
     assert r["rezumat"]["firme_in_domeniu"] == 0
+
+
+def test_un_domeniu_INJECTAT_fara_nume_RIDICA_nu_imprumuta_criteriul_portofoliului():
+    """**Cealaltă direcție, și e cea care apără sensul câmpului.** `DOMENIU` spune, în text, «nu se
+    filtrează pe cabinet». Ruta la cerere rulează pe firmele CABINETULUI apelantului — dacă ar căra
+    mai departe constanta, răspunsul ar afirma despre o populație pe care n-a parcurs-o. *Un domeniu
+    nedeclarat se citește ca «toate firmele»; unul declarat GREȘIT se citește ca o afirmație
+    verificată, ceea ce e mai rău.*"""
+    for gol in (None, "", "   "):
+        with pytest.raises(ValueError):
+            S.ruleaza_portofoliu(2026, 8, firme=[], deschide=_deschide_fals(), domeniu=gol)
+    # implicit (fără injecție) domeniul rămâne al portofoliului — probat pe funcția PURĂ,
+    # ca să nu ceară baza și să nu depindă de portofoliul zilei
+    assert S._domeniu_efectiv(None, None) == S.DOMENIU
+    assert S._domeniu_efectiv(None, "altul") == "altul"
+    assert S._domeniu_efectiv([], "al meu") == "al meu"
 
 
 def test_campul_ORIZONTAL_RULAT_lipsa_RIDICA_nu_cade_pe_implicit(monkeypatch):
@@ -449,3 +472,88 @@ def test_supervizorul_pe_portofoliu_NU_SCRIE_nimic():
     sursa = inspect.getsource(S.ruleaza_portofoliu) + inspect.getsource(S._culege_firma)
     for cuv in ("INSERT", "UPDATE", "DELETE", "commit("):
         assert cuv not in sursa, "parcurgerea portofoliului conține %r — a devenit scriitor" % cuv
+
+
+# ── 8. DECLANȘAREA și IEȘIREA (01.09.2026) ─────────────────────────────────────────────────────
+# Costin, verbatim: *„Declanșare: extinde cronul de 08:00 care există. Plus rulare la cerere. Nu
+# construi al doilea mecanism."* · *„Ce vede contabilul: constatările deschise pe firmele lui, cu
+# temei, în ecran propriu. Clopoțelul rămâne roșu agregat, nu o notificare pe constatare."*
+
+
+def _sursa(nume):
+    import io as _io
+    import os as _os
+    return _io.open(_os.path.join(_RAD, nume), encoding="utf-8").read()
+
+
+def test_supervizorul_NU_e_un_al_doilea_mecanism_de_cron():
+    """**Prima jumătate a lui «nu construi al doilea mecanism».** Modulul n-are voie să devină el
+    însuși punct de intrare — fără `__main__`, fără `cron.ruleaza`. Structural, pe AST: o căutare de
+    șir ar păzi formularea, nu faptul."""
+    arb = ast.parse(_sursa("core/supervizor.py"))
+    # [01.09.2026] Prima formă a acestei aserțiuni greșea în DOUĂ feluri deodată, și le-a prins
+    # `test_garzi_pe_text`: căuta șirul „__name__" în `ast.dump` — deci ancorată pe TEXT (METODA
+    # §23) — și trecea pe o mulțime goală, fiindcă un `for` fără niciun `If` nu asertează nimic.
+    # Acum: premisă anti-vacuu, apoi potrivire pe FORMA nodului.
+    functii = [n for n in ast.walk(arb) if isinstance(n, ast.FunctionDef)]
+    assert functii, "[anti-vacuu] modulul n-are nicio funcție — n-am parsat ce cred că am parsat"
+    poarta_main = [n for n in ast.walk(arb)
+                   if isinstance(n, ast.If) and isinstance(n.test, ast.Compare)
+                   and isinstance(n.test.left, ast.Name) and n.test.left.id == "__name__"]
+    assert not poarta_main, "supervizorul are poarta de `__main__` — a devenit al doilea cron"
+    apeluri = [n for n in ast.walk(arb) if isinstance(n, ast.Call)
+               and isinstance(n.func, ast.Attribute) and n.func.attr == "ruleaza"
+               and isinstance(n.func.value, ast.Name) and n.func.value.id == "cron"]
+    assert not apeluri, "supervizorul cheamă `cron.ruleaza` — și-a făcut propriul mecanism"
+
+
+def test_declansarea_sta_pe_slotul_de_08_care_EXISTA():
+    """**A doua jumătate.** Cronul de 08:00 (`notificari_scadenta`) îl cheamă — deci declanșatorul e
+    o EXTINDERE, nu o linie nouă de crontab. Dacă apelul dispare, supervizorul redevine nelegat, iar
+    `test_module_nelegate` n-ar prinde-o: acolo `main.py` îl ține legat prin rută."""
+    arb = ast.parse(_sursa("core/notificari_scadenta.py"))
+    apeluri = [n for n in ast.walk(arb) if isinstance(n, ast.Call)
+               and isinstance(n.func, ast.Attribute) and n.func.attr == "ruleaza_portofoliu"]
+    assert apeluri, ("cronul de 08:00 nu mai cheamă `ruleaza_portofoliu` — supervizorul și-a "
+                     "pierdut declanșatorul propriu")
+
+
+def test_supervizorul_NU_impinge_nimic_in_clopotel():
+    """*„Clopoțelul rămâne roșu agregat, nu o notificare pe constatare."* Se respectă **neatingând**
+    nimic: clopoțelul e cablat deja, fiindcă o constatare orizontală roșie face `verifica_d390` să
+    întoarcă `stare='rosu'`, iar `alerte_control_fiscal` îl duce agregat pe firmă. Un push de aici ar
+    fi fost exact al doilea mecanism."""
+    arb = ast.parse(_sursa("core/supervizor.py"))
+    nume = {n.id for n in ast.walk(arb) if isinstance(n, ast.Name)}
+    nume |= {n.attr for n in ast.walk(arb) if isinstance(n, ast.Attribute)}
+    for interzis in ("notificari_api", "adauga_multi", "alerteaza", "trimite"):
+        assert interzis not in nume, (
+            "supervizorul atinge %r — a început să notifice pe cont propriu" % interzis)
+
+
+def test_ruta_la_cerere_NU_scapa_schema_si_isi_NUMESTE_domeniul(monkeypatch):
+    """Ruta rulează pe firmele CABINETULUI, nu pe portofoliu — deci n-are voie să poarte criteriul
+    portofoliului. Și `schema` e detaliu intern de stocare: nu iese pe rută (nici semaforul n-o dă).
+
+    Firma sintetică trimite la o schemă inexistentă: culegerea RIDICĂ, iar proba arată că firma
+    **e numită** în răspuns, nu dispare — aceeași regulă ca la portofoliu, dar pe calea rutei."""
+    import main
+    from core import auth_api
+    _db.init_pool()
+    monkeypatch.setattr(auth_api, "tenantii_userului",
+                        lambda conn, uid: [{"id": 999001, "nume": "FIRMĂ DE PROBĂ SRL"}])
+    monkeypatch.setattr(auth_api, "schema_tenant",
+                        lambda conn, uid, tid: "ztest_schema_inexistenta_9999")
+    r = main.supervizor_la_cerere(ctx={"uid": 1, "firm": 1})
+
+    assert r["firme"], "[anti-vacuu] ruta n-a întors nicio firmă — proba n-ar măsura nimic"
+    assert all("schema" not in f for f in r["firme"]), "numele schemei a ieșit pe rută"
+    assert (r["domeniu"] or "").strip(), "ruta n-a numit domeniul"
+    assert r["domeniu"] != S.DOMENIU, (
+        "ruta a împrumutat criteriul ÎNTREGULUI portofoliu («nu se filtrează pe cabinet») pentru o "
+        "mulțime filtrată pe cabinet — răspunsul ar afirma despre firme pe care nu le-a parcurs")
+    f = r["firme"][0]
+    assert f["nume"] == "FIRMĂ DE PROBĂ SRL"
+    assert f["rezultat"] == S.NEVERIFICAT
+    assert f["neverificat"]["felul_neverificarii"] == S.EXCEPTIE
+    assert f["neverificat"]["eroare"]

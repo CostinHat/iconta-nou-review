@@ -977,8 +977,11 @@ def _compara_d390_vs_d300(baze, gasit, randuri, perioada=None):
         baza = {"eticheta": eticheta, "declarat_d390": int(decl), "declarat_d300": int(d300),
                 "diferenta": int(dif)}
         absent_txt = ("" if prezent else
-                      f" ATENȚIE: {rand} absent din D300 depus — rândurile intracomunitare ale D300 sunt "
-                      "manual-only (le introduce contabilul la generare); absența nu dovedește lipsa operațiunilor.")
+                      f" ATENȚIE: {rand} absent din D300 depus. Rândul se derivă AUTOMAT din facturile "
+                      "cu partener din UE (core/d300.py), și se scrie doar dacă existau astfel de "
+                      "facturi la generare; în lipsa lor poate fi introdus manual, dar nu peste cel "
+                      "derivat (dublă numărare, refuzată). Absența lui înseamnă că la generare nu "
+                      "erau facturi IC înregistrate — NU că n-au existat operațiuni.")
         temei = (f"Declarație-vs-declarație: D390 bază {cheie} vs D300 depus rând {rand} "
                  f"(declaratii_depuse_curente.randuri). D390 = recapitulativa VIES, sursă mai autoritară.{absent_txt}")
         if abs(dif) <= TOLERANTA:
@@ -1162,8 +1165,12 @@ def verifica_d390(conn, schema, an, luna):
                        f"contabilă validată a acelorași facturi pe fereastra TVA curentă ({fereastra}) ȘI (2) D300 "
                        "DEPUS (rânduri persistate), pe CEA MAI RECENTĂ perioadă efectiv depusă (afișată în "
                        "verdict, alta decât luna curentă — D300 se depune în luna următoare), cu baza D390 "
-                       "recalculată pe acea perioadă. D-vs-D real: R1_1/R5_1 din D300 depus sunt manual-only (gri "
-                       "dacă absente sau dacă D300 depus fără rânduri / nicio depunere). NEVERIFICAT: servicii "
+                       "recalculată pe acea perioadă. CE CONFRUNTĂ, EXACT: R1_1/R5_1 ale D300 DEPUS se derivă "
+                       "din ACELEAȘI facturi IC ca baza D390 (core/d300.py) — deci nu sunt două surse "
+                       "independente. Ce prinde comparația e DERIVA dintre ce s-a depus ATUNCI și ce arată "
+                       "evidența ACUM; NU prinde o eroare pe care ambele motoare o fac la fel. Gri dacă "
+                       "rândurile lipsesc, dacă D300 e depus fără rânduri, sau dacă nu există nicio depunere. "
+                       "NEVERIFICAT: servicii "
                        "IC (P/S — D390 le ia manual, iar d300 nu expune R3_1_1/R7_1_1); triangulație (T/R)."),
             "modul": MODUL, "reguli": REGULI}
 

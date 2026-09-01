@@ -1,6 +1,25 @@
 {
- "ui_hash": "27c3337e5202402c",
+ "ui_hash": "b9fdacc105f80a4c",
  "ecrane": {
+  "supervizor": {
+   "axe_desktop": [],
+   "apasare": {
+    "vazute": 2,
+    "apasate": 1,
+    "console_errors": [],
+    "layout_rupt_dupa_click": false
+   },
+   "completare": {
+    "overflow_x": false,
+    "peste_viewport": []
+   },
+   "axe_mobil": [],
+   "mobil": {
+    "tap_sub24": [],
+    "overflow_x": false,
+    "title_unic": 0
+   }
+  },
   "import_mijloace_fixe": {
    "axe_desktop": [],
    "apasare": {
@@ -232,7 +251,7 @@
   "casa": {
    "axe_desktop": [],
    "apasare": {
-    "vazute": 11,
+    "vazute": 10,
     "apasate": 5,
     "console_errors": [],
     "layout_rupt_dupa_click": false

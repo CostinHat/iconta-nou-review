@@ -23,18 +23,19 @@ from core import scan_module_nelegate as scan
 
 # Fiecare intrare poartă DE CE e aici. O intrare fără motiv ar face clichetul o listă de tolerat.
 PIN = {
-    "core/supervizor.py":
-        "CONSTRUIT 01.09.2026, NELEGAT INTENTIONAT. Cele doua lucruri care l-ar lega — CE DECLANSEAZA "
-        "o rulare si CE VEDE contabilul din ea — sunt scrise in PLAN_LUCRU ca fiind ale lui Costin, "
-        "nedecise. A-l cabla acum ar insemna sa le decid eu. Al treilea strat, EFECTUL (o constatare "
-        "certa cere confirmare inainte de depunere), asteapta impartirea pe tarii — R115. "
-        "[01.09.2026, a doua tura] DOMENIUL e acum construit — `ruleaza_portofoliu` —, fiindca e "
-        "singura din cele TREI fatete pe care PLAN_LUCRU le da supervizorului («declansator propriu, "
-        "domeniu propriu, iesire proprie») care era DEJA DECISA: *«ruleaza pe portofoliu, nu pe un "
-        "act»*. Functia e CHEMABILA, nu programata si nu rutata — deci nu atinge niciuna din cele "
-        "doua intrebari ale lui Costin, si de-aia modulul ramane pe drept aici. Modulul e complet si "
-        "probat: 21 de teste, mutatie pe cinci directii. *Un producator fara livrare, declarat "
-        "(METODA §20) — nu cod mort: are gard, are contract, si are trei conditii scrise de deblocare.*",
+    # [01.09.2026] `core/supervizor.py` A IESIT DE AICI, si merita citit de ce — a doua oara cand
+    # gardul asta cere singur scoaterea unei intrari (prima: `core/fisa_cont.py`, 30.08).
+    #
+    # A stat in PIN trei ture ca „CONSTRUIT, NELEGAT INTENTIONAT": cele doua lucruri care l-ar fi
+    # cablat — CE DECLANSEAZA o rulare si CE VEDE contabilul din ea — erau scrise in PLAN_LUCRU ca
+    # fiind ale lui Costin, nedecise, iar a-l cabla ar fi insemnat sa le decid eu. Conditia lui de
+    # deblocare era un RASPUNS, nu o bucata de munca.
+    #
+    # RASPUNSUL A VENIT (01.09.2026, verbatim): declansare = „extinde cronul de 08:00 care exista.
+    # Plus rulare la cerere. Nu construi al doilea mecanism" · iesire = „constatarile deschise pe
+    # firmele lui, cu temei, in ecran propriu. Clopotelul ramane rosu agregat, nu o notificare pe
+    # constatare". Deci: `core/notificari_scadenta` il cheama pe slotul de 08:00, iar `main.py` pe
+    # `GET /supervizor`. Nu mai e nelegat — si atunci nu mai are ce cauta aici.
     "core/migrare_supervizor_confirmari.py":
         "MIGRARE, ca `core/migrare_alerte_control_emise.py`: sursa de adevar a unei scheme din `public`, "
         "aplicata punctual (nu exista rulator automat de migrari in repo). Nu are apelant fiindca nu "

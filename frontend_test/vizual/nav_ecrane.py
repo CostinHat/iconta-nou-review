@@ -85,7 +85,22 @@ def ecran_verificari(pg):
     pg.wait_for_selector(".pf-lista, .pf-frand, .ecran-nota", timeout=14000)
     pg.wait_for_timeout(1200)
 
+# [supervizor, 01.09.2026] PRIMUL ecran de CABINET din inventarul vizual — toate celelalte sunt de
+# firma (deschide_firma + #fa-*). Nu se intra intr-o firma: se ramane pe desktopul cabinetului si se
+# apasa cardul. Poarta verde vizuala (CLAUDE.md 2.3 pct.11) cere uneltele pe ecranele ATINSE, iar un
+# ecran care nu e in lista nu poate fi atins de ele — regula ar trece VID, exact ca la «Verificari».
+def ecran_supervizor(pg):
+    pg.goto(BAZA + "/", wait_until="domcontentloaded")
+    pg.wait_for_selector(".cab-card", timeout=15000)
+    pg.wait_for_timeout(300)
+    pg.click("button.cab-card:has([data-cheie='supervizor'])", timeout=8000)
+    # se asteapta RANDAREA (antetul supervizorului sau starea goala), nu doar un timeout
+    pg.wait_for_selector(".sv-antet, .stare-goala", timeout=20000)
+    pg.wait_for_timeout(800)
+
+
 ECRANE = [
+    ("supervizor", ecran_supervizor),
     ("import_mijloace_fixe", ecran_import_mijloace_fixe),
     ("vector_fiscal", ecran_vector_fiscal),
     ("plan_conturi", ecran_plan_conturi),

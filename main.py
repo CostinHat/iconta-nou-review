@@ -26,7 +26,7 @@ from core.pdf_util import bani, data_ro
 from core.common import azi_ro, stare_din_nivel, pastila_firma  # [fus] ziua RO; [verdict] nivel->culoare + escaladare pastila
 from core import common as _common
 from core import tenant_stergere  # [R72] calea UNICA de scoatere a unei firme
-from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api, declaratii_componente
+from core import db, auth_api, declaratii_api, tenant_provisioning, facturi_api, clienti_api, salariati_api, coada_api, portal_api, anaf_api, migrare_api, solduri_api, solduri_parteneri_api, salariati_import_api, asociati_import_api, mijloace_fixe_import_api, istoric_declaratii_import_api, control_fiscal_api, termene_api, capacitate_api, tipare_api, produse_api, vector_fiscal_api, firma_profil_api as _fp, factura_pdf as _pdf, observare as _obs, documente_api, declaratii_componente, supervizor
 from core import afirmatii as _af  # [P8] afirmatiile despre datele firmei sunt obiecte, nu siruri
 from core import cont_valid as _cv  # [R54] contul din corpul cererii se confrunta cu planul firmei
 from core.unde import Unde as _Unde  # [P8] domeniul poate fi un OBIECT, nu o perioada
@@ -2540,6 +2540,45 @@ def control_fiscal_detaliu(tenant_id: int, ctx=Depends(cere_cabinet)):
         r["stare"] = pastila_firma(r["stare"], contabil)
     except Exception:
         pass
+    return r
+
+
+@app.get("/supervizor")
+def supervizor_la_cerere(ctx=Depends(cere_cabinet)):
+    """SUPERVIZORUL, rulat LA CERERE pe firmele utilizatorului curent.
+
+    **Al doilea declanșator**, lângă cel de la 08:00 *(Costin, 01.09.2026: „extinde cronul de 08:00
+    care există. Plus rulare la cerere. Nu construi al doilea mecanism")*. Amândouă cheamă ACEEAȘI
+    funcție — `supervizor.ruleaza_portofoliu` —, deci nu există două definiții ale aceleiași
+    propoziții. Ce diferă e **domeniul**, și el se declară.
+
+    **Recalculează la fiecare cerere; nu persistă nimic**, exact ca `/control-fiscal`. *„Constatări
+    deschise" = ce produce rularea curentă* (Costin). Un ciclu de viață — apărut la · încă deschisă —
+    își va avea contractul lui când va avea consumator (stratul asistentului, urmărirea performanței);
+    nu înainte.
+
+    **DOMENIUL DE AICI NU E CEL AL SUPERVIZORULUI, ȘI DE-AIA SE SCRIE.** Motorul rulează pe tot
+    portofoliul; un om vede **firmele lui**. Fără numele domeniului în răspuns, cifra „N firme" s-ar
+    citi ca portofoliul întreg — de-aia `ruleaza_portofoliu` RIDICĂ dacă i se dau firme fără să i se
+    spună ce sunt.
+    """
+    azi = azi_ro()   # [fus] perioada evaluată = zi RO, ca la /control-fiscal și ca în cronul de 08:00
+    with db.get_conn() as conn:
+        ale_mele = auth_api.tenantii_userului(conn, ctx["uid"])
+    firme = []
+    for f in ale_mele:
+        tid = f.get("id")
+        with db.get_conn() as c:
+            schema = auth_api.schema_tenant(c, ctx["uid"], tid)
+        if not schema:
+            continue   # fara acces la tenant — nu se afiseaza (identic cu semaforul /control-fiscal)
+        firme.append({"tenant_id": tid, "schema": schema, "nume": f.get("nume")})
+    r = supervizor.ruleaza_portofoliu(
+        azi.year, azi.month, firme=firme,
+        domeniu=("firmele la care are acces utilizatorul curent (%d), NU tot portofoliul; "
+                 "supervizorul rulează zilnic pe portofoliu, ecranul arată partea ta" % len(firme)))
+    # `schema` e detaliu intern de stocare: nu iese pe rută (nici semaforul nu-l dă).
+    r["firme"] = [{k: v for k, v in rand.items() if k != "schema"} for rand in r["firme"]]
     return r
 
 

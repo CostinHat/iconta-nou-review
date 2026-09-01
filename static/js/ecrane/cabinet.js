@@ -16,6 +16,7 @@ import { randeazaRaporteaza } from "./raporteaza.js?v=f800de9e77"; // [p34_rapor
 import { randeazaPachete } from "./pachete.js?v=8c32cbb767"; // [p63_pachete]
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
 import { randeazaValidat } from "./validat.js?v=e771e38cc0";
+import { randeazaSupervizor } from "./supervizor.js?v=3aec94aec7"; // [supervizor] rulare LA CERERE
 import { randeazaAsistenti } from "./asistenti.js?v=3749bc9e55";
 import { randeazaCapacitate } from "./capacitate.js?v=eb31833ad4"; // [p71_capacitate]
 import { randeazaTipare } from "./tipare.js?v=e88a7f5eba"; // [p72_tipare]
@@ -38,6 +39,13 @@ const DEF = [  /* cab_ordine_v2 */
     sinteza:"se încarcă…", actiune:inLucru("Firme") },
   { cheie:"validat",   titlu:"De validat",     icon:"clipboard", ...CULORI_CARD.piersica,
     sinteza:'<b class="tip-figura">4</b> declarații de validat și trimis', actiune:inLucru("De validat") },
+  // [supervizor 01.09.2026] Al doilea declansator, langa cronul de 08:00. NU dubleaza cardul de
+  // control fiscal: acela e vertical (fiecare declaratie fata de propria sursa), asta e ORIZONTAL
+  // (declaratie contra declaratie). Sinteza e statica si nu minte: cifra ar cere o rulare la
+  // randarea desktopului, iar rularea e chiar ce face ecranul cand il deschizi.
+  { cheie:"supervizor", titlu:"Supervizor",    icon:"trend",     ...CULORI_CARD.violet,
+    sinteza:"Confruntarea dintre declarații, pe firmele tale",
+    actiune:inLucru("Supervizor") },
   { cheie:"control",   titlu:"Control fiscal", icon:"shield",    ...CULORI_CARD.teal,
     sinteza:'se încarcă…',
     actiune:inLucru("Control fiscal") },
@@ -68,6 +76,7 @@ let _coadaTitlu = "De validat";
 // [p73_sinteza_azi] deschide un ecran existent dupa cheie (refoloseste ecranele, nu duplica)
 function deschideEcran(cheie, nav, continut) {
   if (cheie === "validat") return nav.deschide(_coadaTitlu, (corp) => randeazaValidat(corp, nav), { nivel: "cabinet" });
+  if (cheie === "supervizor") return nav.deschide("Supervizor", (corp) => randeazaSupervizor(corp, nav), { nivel: "cabinet" });
   if (cheie === "activitate") return nav.deschide("Activitate cabinet", (corp) => randeazaActivitateCabinet(corp, nav), { nivel: "cabinet" });
   if (cheie === "capacitate") return nav.deschide("Capacitate", (corp) => randeazaCapacitate(corp, nav), { nivel: "cabinet" });
   if (cheie === "tipare") return nav.deschide("Tipare", (corp) => randeazaTipare(corp, nav), { nivel: "cabinet" });
@@ -205,6 +214,8 @@ function randeazaPanou(continut, nav) {
       card.addEventListener("click", () => nav.deschide("Termene", (corp) => randeazaTermene(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "validat") {
       card.addEventListener("click", () => nav.deschide(_coadaTitlu, (corp) => randeazaValidat(corp, nav), { nivel: "cabinet" }));
+    } else if (c.cheie === "supervizor") {  // [supervizor] rulare la cerere
+      card.addEventListener("click", () => nav.deschide("Supervizor", (corp) => randeazaSupervizor(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "asistenti") {
       card.addEventListener("click", () => nav.deschide("Asistenți", (corp) => randeazaAsistenti(corp, nav), { nivel: "cabinet" }));
     } else if (c.cheie === "activitate") {  // [p76_comasare_font] meniu Activitate (jurnal + tipare)

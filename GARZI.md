@@ -7004,6 +7004,75 @@ nimeni nu se mai uită la el.* Nu e „gardul e greșit": a fost corect toată v
 schimbare care nu l-a atins. **Consemnată, nu lucrată** (axa instrument/igienă e oprită), cu condiția
 scrisă în `CONFORMITATE.md`.
 
+### Supervizorul S-A LEGAT (01.09.2026) — și prima depunere reală a scos o afirmație falsă
+
+**Costin a dat cele două lucruri rămase**, iar modulul a ieșit din `test_module_nelegate.PIN`:
+*declanșare* = „extinde cronul de 08:00 care există. Plus rulare la cerere. Nu construi al doilea
+mecanism" · *ieșire* = „constatările deschise pe firmele lui, cu temei, în ecran propriu. Clopoțelul
+rămâne roșu agregat, nu o notificare pe constatare".
+
+**MĂSURAT ÎNAINTE DE A CONSTRUI, și a scurtat lucrul: clopoțelul era DEJA cablat.** O constatare
+orizontală roșie face `verifica_d390` să întoarcă `stare="rosu"`, iar `alerte_control_fiscal.
+verificatori_rosii` o duce agregat pe firmă. Deci partea a treia se respectă **neatingând** nimic —
+un push din supervizor ar fi fost chiar al doilea mecanism.
+
+**GĂRZI NOI (4), cu mutație probată pe cinci direcții:**
+`::test_supervizorul_NU_e_un_al_doilea_mecanism_de_cron` (AST: fără `__main__`, fără `cron.ruleaza`) ·
+`::test_declansarea_sta_pe_slotul_de_08_care_EXISTA` (AST: cronul îl cheamă) ·
+`::test_supervizorul_NU_impinge_nimic_in_clopotel` (AST: nu atinge `notificari_api`) ·
+`::test_ruta_la_cerere_NU_scapa_schema_si_isi_NUMESTE_domeniul`.
+
+**GARDĂ NOUĂ pe o capcană pe care ruta a creat-o:** `_domeniu_efectiv` — un domeniu **injectat**
+trebuie NUMIT, altfel `ruleaza_portofoliu` **ridică**. `DOMENIU` spune, în text, *„nu se filtrează pe
+cabinet"*; ruta rulează pe firmele cabinetului (14, nu 19). *Un domeniu nedeclarat se citește ca
+„toate firmele"; unul declarat GREȘIT se citește ca o afirmație verificată — mai rău.*
+
+### Ce a scos PRIMA DEPUNERE REALĂ (R40), și n-ar fi ieșit altfel
+
+**Costin a depus D300 pe `tenant_017`, 08/2026, prin interfață.** Jurnalul: `(14769, 2026, 8, 'd300',
+nr=1, randuri NENUL, 3 chei în R, xml 708 octeți)`. Perechea orizontală a vorbit prima oară:
+**VERDE**, *„D390 și D300 depus coincid (8.000,00 lei)"*, tărie EURISTICA, `cere_confirmare=False`.
+
+**DAR a spus că lasă rândurile IC goale, iar `R1_1` avea 8.000.** Citit la sursă
+(`core/d300.py:403-424`): `R1_1` se derivă **AUTOMAT** din facturile emise către UE, `R5_1`/`R18_*`
+din cele primite, iar introducerea manuală peste ele e **refuzată** ca dublă numărare.
+
+**Deci textul afișat contabilului era FALS** — spunea că rândurile intracomunitare sunt „manual-only".
+**Prag 1, reparat pe loc.** Și, mai important, ce confruntă perechea s-a scris cum e: cele două laturi
+vin din **aceleași facturi**, deci nu sunt surse independente. Ce prinde comparația e **deriva** între
+ce s-a depus ATUNCI și evidența de ACUM — nu o eroare pe care ambele motoare o fac la fel. *Un „verde"
+citit ca „am verificat la sursă" e mai rău decât niciun verde.*
+
+**Un gard PINUIA fraza falsă.** `test_dvsd_rosu_d390_livrare_d300_fara_R1_1` cerea cuvântul
+„manual-only" în temei. A ținut minciuna în loc s-o prindă — *o aserțiune ancorată pe TEXT păzește
+formularea, nu faptul* (METODA §23). Rescrisă pe ce contabilul chiar trebuie să afle: CARE rând lipsește.
+
+### Poarta vizuală a prins ceva ce ar fi ajuns în producție
+
+**Ecranul nou a rupt TOATE ecranele.** `„e în regulă"` scris cu ghilimea românească de deschidere și
+închidere ASCII **termină șirul JS** — a șaptea instanță a aceleiași clase, prima în JS. Efectul nu
+era local: `cabinet.js` importă `supervizor.js`, iar un modul care nu se parsează oprește tot
+desktopul cabinetului. **Toate cele 15 ecrane au picat cu „waiting for `.cab-card`".**
+
+**ȘI E MAI GRAV DECÂT O GREȘEALĂ DE SINTAXĂ: fișierele statice se servesc DE PE DISC.** Nu există
+poartă între scrierea unui `.js` pe server și producție — nici commit, nici restart. Poarta verde
+apără Python-ul; JS-ul e live din secunda în care îl scriu. **R118**, consemnată.
+
+**Cele trei unelte, pe ecranul atins** (`frontend_test/vizual/nav_ecrane.py` — primul ecran de
+**cabinet** din inventar; toate celelalte sunt de firmă):
+`axe`: **0** reguli / 0 noduri / 0 contrast / 0 fără-etichetă / title 0-0-0 ·
+`mobil`: **0** title cu info unică pierdută, 2 reguli `:hover` și 4 ținte <44px — **toate ale
+învelișului** (`nav-ghid`, `nav-clopot`, `nav-iesire`, `nav-x`), niciuna a ecranului —, overflow-x **nu** ·
+`baseline`: **STABIL, 0.0000%** self-diff.
+
+**Și o măsurătoare pe care era să n-o fac.** Prima rulare `--compare` a dat SCHIMBAT pe toate cele 14
+ecrane vechi — dar baseline-urile erau vechi de **2 commituri** pe `static/`, deci cifra nu spunea a
+cui e vina. Am izolat: `git stash` pe `static/`, referințe refăcute pe codul din HEAD, `stash pop`,
+comparație. **Diferența e a mea și e benignă:** desktopul rămâne în DOM sub fereastră (dovadă
+independentă: scanul mobil a numărat **14** `.cab-card` cu fereastra deschisă), capturile sunt
+`full_page`, iar cardul nou deplasează layoutul cu ~3%. *O cifră care nu separă contribuția ta de
+deriva dinainte nu e o măsurătoare.*
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **506 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.

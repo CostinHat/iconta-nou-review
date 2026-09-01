@@ -55,10 +55,36 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   probeaza cele patru cai ale functiei PURE `compara_d390_vs_d300`; a cincea traieste un nivel mai sus
   si n-avea gard. Efectul e chiar tacerea numita in antetul modulului: *„supervizorul ar fi sarit-o
   TACUT, adica exact felul de tacere care arata ca un raspuns"*.
-- ultim: **R115 INCHISA** — taria atribuita, criteriul devenit camp gardat, si gardul golit de
-  chiar raspunsul lui, reparat (`e7eb38ee` + tura curenta)
-- urmator: axa orizontala are contract complet si domeniu; ce urmeaza NU mai e constructie, ci
-  **subiect** — R40, EXTERNA. NEINCEPUT
+- ultim: **R115 INCHISA** (`d217e16c` + `7b1a7197`)
+- ultim: **SUPERVIZORUL E LEGAT** — declansare pe slotul de 08:00 + `GET /supervizor` + ecran
+  propriu, cu poarta vizuala trecuta. Iesit din `test_module_nelegate.PIN`.
+- urmator: **R118** (fisierele statice n-au poarta intre scriere si productie) ramane CONSEMNATA,
+  nelucrata. NEINCEPUT
+- fir INCHIS: **SUPERVIZORUL S-A LEGAT.** Costin a dat cele doua lucruri ramase (01.09):
+  *declansare* = „extinde cronul de 08:00 care exista. Plus rulare la cerere. Nu construi al doilea
+  mecanism" · *iesire* = „constatarile deschise pe firmele lui, cu temei, in ecran propriu.
+  Clopotelul ramane rosu agregat, nu o notificare pe constatare". R40 o face EL, prin interfata —
+  **nu se simuleaza cu o sonda**. IN LUCRU
+- pasi:
+  1. **MASURAT INAINTE DE A CONSTRUI, si a schimbat pasul:** clopotelul e **deja** cablat. O
+     constatare orizontala rosie face `verifica_d390` sa intoarca `stare="rosu"`
+     (`control_incrucisat.py`, agregarea de la finalul functiei), iar `alerte_control_fiscal.
+     verificatori_rosii` il duce in clopotel **agregat pe firma**, prin `text_alerta`. Deci partea
+     „rosu agregat, nu o notificare pe constatare" **nu cere cod** — cere sa NU ating nimic acolo.
+     *Se scrie ca sa nu construiasca altcineva mecanismul care exista.*
+  2. `core/notificari_scadenta.py::_main` — al doilea bloc IZOLAT si PROTEJAT, pe acelasi slot de
+     08:00, exact tiparul blocului `alerte_control_fiscal` de deasupra: cheama
+     `supervizor.ruleaza_portofoliu` si tipareste rezumatul, numind firmele NEVERIFICATE. Fara
+     linie noua in crontab, fara modul-cron propriu.
+  3. Garda structurala pe „nu al doilea mecanism": `core/supervizor.py` NU e punct de intrare de
+     cron (fara `__main__`, fara `cron.ruleaza`), iar declansarea lui e chemata din slotul existent.
+  4. `GET /supervizor` — rularea la cerere, pe firmele CABINETULUI apelantului (nu pe portofoliu:
+     domeniul supervizorului ramane tot portofoliul, dar ce vede un om e al lui). Constatarile
+     **deschise** = cele pe care rularea curenta le produce; fara persistenta noua, ca `/control-fiscal`.
+  5. Ecran propriu, cu temeiul pe fiecare constatare + firmele NEVERIFICATE numite. Inregistrat in
+     harta ecranelor. Poarta vizuala pe ecranul atins (axe/mobil/baseline), cu
+     `versioneaza_assets --scrie` INAINTEA lui `interactiune_scan`.
+  6. Registre + poarta + publicare.
 - pasi:
   1. `core/control_incrucisat.py` — blocul orizontal din `verifica_d390` (azi liniile 1087-1112) se
      EXTRAGE intr-o singura functie `_orizontal_d390_vs_d300`, invelita o singura data de

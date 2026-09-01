@@ -3,7 +3,7 @@
 // Nivel 2: click pe firma -> corpul verdictului, randat de control_verdict.js (renderer UNIC, DS cap.20).
 
 import { api, esc } from "../api.js?v=c20d0584e2";  /* esc_nc27 */
-import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=ddd1606ae8";  // renderer unic al verdictului (DS cap.20)
+import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=f019079e5a";  // renderer unic al verdictului (DS cap.20)
 
 
 export async function randeazaControl(corp, nav, tidAuto) {

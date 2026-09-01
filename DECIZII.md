@@ -13447,3 +13447,19 @@ pereche nouă care citește `declaratii_depuse_curente.randuri` ar răspunde tot
 un al doilea gri, nu o confruntare. **Blocajul real e R40**, deschisă de 133 de commituri, și e
 **EXTERN prin construcție**: condiția ei cere o primă depunere reală prin coadă, făcută de un om care
 folosește aplicația. *Dacă o fac eu cu o sondă, măsurarea absenței o stinge — clasa e deja numită.*
+
+**(46) „Constatări deschise" = ce produce rularea CURENTĂ. Fără tabel nou, fără ciclu de viață**
+*(Costin, 01.09.2026)*. Ecranul și cronul recalculează, ca `/control-fiscal`. **Și regula generală,
+care valorează mai mult decât cazul:** *„Ciclul de viață devine necesar când se construiește stratul
+asistentului și urmărirea performanței — acolo contează ce a rămas netratat. **Nu construi contractul
+înainte să existe consumatorul.**"* Am ridicat presupunerea cât era ieftină, și a fost confirmată.
+
+**(47) Perechea orizontală NU confruntă două surse independente, și se scrie în temei.** Prima
+depunere reală a arătat-o: `R1_1` al D300 se derivă din **aceleași** facturi IC ca baza D390
+(`core/d300.py:403`). Ce prinde comparația e **deriva** dintre ce s-a depus atunci și evidența de
+acum — nu o eroare comună ambelor motoare. *Verdele ei e o afirmație mai slabă decât părea, și acum
+o spune singură.* Textul care pretindea că rândurile sunt „manual-only" era fals; scos (prag 1).
+
+**(48) Declanșatorul stă pe slotul de 08:00 care există, iar ruta la cerere cheamă ACEEAȘI funcție.**
+Nu există două definiții ale confruntării. Ce diferă între cele două chemări e **domeniul**, și el se
+declară în răspuns: cronul rulează pe portofoliu (19), ruta pe firmele apelantului (14).

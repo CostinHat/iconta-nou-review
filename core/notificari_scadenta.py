@@ -151,6 +151,41 @@ def _main():
     except Exception as e:
         print("  ESEC alerte control fiscal: %s" % e)
 
+    # [supervizor] DECLANSATORUL PROPRIU al confruntarii incrucisate (Costin, 01.09.2026:
+    # „extinde cronul de 08:00 care exista. Plus rulare la cerere. Nu construi al doilea mecanism").
+    #
+    # ASTA E TOT CE-I TREBUIA CA SA AIBA DECLANSATOR. Pana azi confruntarea se intampla agatata de
+    # actul depunerii, deci mostenea momentul, domeniul si populatia actului; acum ruleaza pe
+    # PORTOFOLIU, zilnic, fara sa astepte ca cineva sa depuna ceva.
+    #
+    # CE NU FACE, si e cerut explicit: nu impinge nimic in clopotel. **Clopotelul e deja cablat, prin
+    # constructie** - o constatare orizontala ROSIE face `verifica_d390` sa intoarca `stare="rosu"`,
+    # iar `alerte_control_fiscal.verificatori_rosii` il duce mai departe AGREGAT PE FIRMA. Deci
+    # „clopotelul ramane rosu agregat, nu o notificare pe constatare" se respecta NEATINGAND nimic
+    # acolo. Un push de aici ar fi fost chiar al doilea mecanism.
+    #
+    # Ce aduce in plus rularea asta, si nu se vede de nicaieri altundeva: **acoperirea proprie** -
+    # cate firme au fost efectiv verificate si cate NU, cu numele si cauza. O firma pe care axa nu
+    # ruleaza deloc arata, in orice alt loc, identic cu una curata.
+    try:
+        from core import supervizor as _sv
+        from core.common import azi_ro as _azi_ro
+        # [fus] perioada evaluata = zi RO, ca in `alerte_control_fiscal.ruleaza` — robust la OS TZ.
+        _azi = _azi_ro()
+        an, luna = _azi.year, _azi.month
+        _r = _sv.ruleaza_portofoliu(an, luna)
+        _z = _r["rezumat"]
+        print("Supervizor (%04d-%02d): constatari=%d pe %d firme · fara subiect=%d · NEVERIFICATE=%d "
+              "din %d · de confirmat=%d"
+              % (an, luna, _z["constatari_total"], _z[_sv.CONSTATARI], _z[_sv.FARA_SUBIECT],
+                 _z[_sv.NEVERIFICAT], _z["firme_in_domeniu"], _z["de_confirmat"]))
+        for _f in _r["firme"]:
+            if _f["rezultat"] == _sv.NEVERIFICAT:
+                print("  NEVERIFICATA %s (%s): %s"
+                      % (_f["schema"], _f["nume"], _f["neverificat"]["eroare"]))
+    except Exception as e:
+        print("  ESEC supervizor: %s" % e)
+
 
 if __name__ == "__main__":
     from core import cron
