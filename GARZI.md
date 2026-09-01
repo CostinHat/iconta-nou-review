@@ -6888,11 +6888,43 @@ paranteză după nume, iar `main.py` le pasează ca **referință** (`_incrucisa
 Refăcută cu AST: **13 referite din afară, 9 interne** — toate cele 9 chemate din modul, niciuna
 moartă. *A patra oară azi când o sondă a mea numără forma în loc de efect.*
 
+## 01.09.2026 (5) — Supervizorul: axa orizontală, cu două tării
+
+**Gaura măsurată în tura trecută:** din tot ce confruntă aplicația, **o singură** pereche e
+orizontală (declarație contra declarație) — `compara_d390_vs_d300`. Restul e vertical: fiecare
+declarație față de propria sursă. *Nouă declarații verificate fiecare pe verticala ei nu produc
+nicio afirmație despre coerența dintre ele.*
+
+**Ce s-a construit.** `core/supervizor.py` — locul unde stau perechile orizontale, cu:
+
+  - **cele două tării** ale lui Costin, ca nomenclator ÎNCHIS (`EURISTICA` / `CERTA`);
+  - **tabelul de tipuri**, care e **date, nu regulă**: tăria se atribuie pe tip, de Costin. Un tip
+    necunoscut **ridică**; un tip cunoscut dar neatribuit **se vede și nu produce niciun efect**.
+    *Propunerea mea stă în `propus`/`motiv_propunere` și n-are cum să devină regulă prin trecerea
+    timpului* — **R115**;
+  - **amprenta pe CIFRE, nu pe proză.** O reformulare nu invalidează o confirmare; o cifră schimbată
+    o invalidează. Fără asta, „confirmare explicită" ar fi devenit o bifă permanentă;
+  - `public.supervizor_confirmari`, cu **amprenta în cheia primară** și `motiv` NOT NULL — *„iar
+    confirmarea rămâne scrisă"*;
+  - culegere **după eticheta de tip**, nu după modul: orice funcție poate emite o constatare
+    orizontală dacă o ștampilează cu un tip înregistrat. Perechile devin o mulțime de date.
+
+**Ce NU face, și e scris în modul:** nu blochează nimic (nici certele — ele cer o confirmare, pe care
+poarta de depunere o citește) · nu inventează identități fiscale (azi există **una**; restul se
+adaugă când au temei, nu ca să pară plin) · nu compară recalculat cu recalculat pretinzând că e
+„declarat".
+
+**O măsurătoare care a schimbat designul:** din **55** de depuneri, doar **1** are rânduri
+persistate. Am crezut întâi că perechea orizontală e moartă. Nu e: calea **actuală** persistă
+rândurile (F163v2, `coada_api`), iar cele 54 sunt istorie dinainte. Deci perechea răspunde azi onest
+*„n-am ce compara"*, și devine vie pe măsură ce se depune prin aplicație. *Diferența dintre „stricat"
+și „gol" se vede doar citind calea de scriere, nu numărând rândurile.*
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**505 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**506 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 488
+### `core/` — 489
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7351,6 +7383,7 @@ moartă. *A patra oară azi când o sondă a mea numără forma în loc de efect
 - `core/test_stergere_salariat_completa.py` — GARD (D5, 20.08.2026): stergerea unui salariat nu lasa jumatate din inregistrare in urma.
 - `core/test_stocuri.py` — —
 - `core/test_stocuri_cv.py` — —
+- `core/test_supervizor.py` — GARD [01.09.2026]: supervizorul — cele două tării, și confirmarea care rămâne scrisă.
 - `core/test_temei_structurat.py` — Temei fiscal STRUCTURAT (act/nr/an/art/alin/lit/data_in/data_out/url) + garda de EXPIRARE.
 - `core/test_temei_termene.py` — GARD (R4, 20.08.2026 — refăcut 21.08): fiecare termen de depunere își poartă actul, ca DATE.
 - `core/test_temeiuri.py` — Gardul temeiurilor (PASUL 4): impune forma canonica de citare a REGULILOR de validator din

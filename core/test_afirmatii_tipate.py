@@ -28,7 +28,14 @@ from core import scan_afirmatii as s
 #   importurile de rând -> prin `migrare_api.respinge`, cu regulă din nomenclator ÎNCHIS
 # Ce a rămas la importuri sunt rezultate de import (`{denumire, motiv}` pe rândurile VALIDE), nu
 # respingeri — se numără mai departe fiindcă poartă cheia `motiv`.
+# [01.09.2026] `core/supervizor.py`: 1. NU e o afirmație despre datele firmei — e o
+# ÎNREGISTRARE citită înapoi dintr-un jurnal (`supervizor.confirmari()` întoarce cine a confirmat o
+# constatare, când, și cu ce motiv). Se numără aici din același motiv ca rezultatele de import de
+# mai jos: poartă cheia `motiv`. `afirmatii.FELURI` e un nomenclator ÎNCHIS despre ce afirmă
+# aplicația *despre datele firmei*; un act al unui om nu are fel acolo. Dacă apare vreodată un fel
+# `consemnare`, intrarea asta se mută la el și clichetul coboară.
 BASELINE = {
+    "core/supervizor.py": 1,
     "core/raportari_ai.py": 3,
     "core/articole_import_api.py": 2,
     "main.py": 2,

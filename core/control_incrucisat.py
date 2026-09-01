@@ -920,7 +920,28 @@ D390_D300_PERECHI = (
 )
 
 
+#: Tipul de constatare al SINGUREI perechi orizontale care exista azi (declaratie contra
+#: declaratie, nu declaratie contra propriei surse). Masurat 01.09.2026: din tot ce confrunta
+#: aplicatia, asta e singura pereche orizontala. `core/supervizor.py` o culege dupa eticheta asta.
+TIP_D390_VS_D300 = "D390_VS_D300_IC"
+
+
+def _stampileaza(constatari, tip):
+    """Pune `tip_constatare` pe fiecare constatare. INVELIS, nu editare pe fiecare `return`: functia
+    de mai jos are patru cai de iesire, iar una ratata ar fi lasat o constatare fara tip — iar
+    supervizorul ar fi sarit-o TACUT, adica exact felul de tacere care arata ca un raspuns."""
+    for c in constatari:
+        if isinstance(c, dict):
+            c["tip_constatare"] = tip
+    return constatari
+
+
 def compara_d390_vs_d300(baze, gasit, randuri, perioada=None):
+    """Invelis: cheama comparatia si stampileaza tipul. Corpul e in `_compara_d390_vs_d300`."""
+    return _stampileaza(_compara_d390_vs_d300(baze, gasit, randuri, perioada), TIP_D390_VS_D300)
+
+
+def _compara_d390_vs_d300(baze, gasit, randuri, perioada=None):
     """PURA. baze = {"L": int, "A": int} (bazele IC din D390, recalculate pe ACEEAȘI perioadă ca D300
     depus). gasit = există D300 depus (bool). randuri = dict-ul `randuri` persistat al D300 depus (sau
     None = depus fără rânduri). perioada = eticheta perioadei evaluate (ex. "06/2026", "trimestrul
@@ -1084,11 +1105,11 @@ def verifica_d390(conn, schema, an, luna):
                 baze_d["A"] += int(rez_d.get("A", 0))
             constatari += compara_d390_vs_d300(baze_d, True, randuri_d, perioada=eticheta_d)
         except Exception as e:
-            constatari.append(_gri_liber(
+            constatari += _stampileaza([_gri_liber(
                 "d390", "D390 vs D300 depus, perioada %s" % eticheta_d,
                 "Declarație-vs-declarație: baza D390 se recalculează pe perioada D300 depus; recalcularea a eșuat.",
                 "NU pot recalcula D390 pe perioada depusă (%s) pentru comparație (%s)." % (eticheta_d, e),
-                an, luna))
+                an, luna)], TIP_D390_VS_D300)
     if any(c["stare"] == "rosu" for c in constatari):
         stare = "rosu"
     elif any(c["stare"] == "gri" for c in constatari):

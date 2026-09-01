@@ -7186,3 +7186,25 @@ declarație față de propria sursă. Orizontal, declarație contra declarație,
 Două corecturi ale propriilor sonde, în aceeași tură: una cerea o paranteză după numele funcției și
 rata callback-urile pasate ca referință; cealaltă pierdea 54 din 500 de secțiuni prin ciocnire de
 chei. Concluzia n-a mișcat; cifrele, da.
+
+### 01.09.2026, partea a noua — supervizorul, construit pe axa orizontală
+
+Costin a cerut construcția, cu o corectură la temă: constatările au **două tării**. Euristice —
+semnalează, nu opresc niciodată. Certe — nepotrivire aritmetică; nu blochează, dar cer confirmare
+explicită înainte de depunere, iar confirmarea rămâne scrisă. Împărțirea pe tării e a lui, pe tipuri;
+supervizorul n-o deduce.
+
+Am construit motorul: nomenclator închis de tării, tabel de tipuri cu cele două surse ale fiecărei
+identități, amprentă pe cifre, jurnal de confirmări cu motiv obligatoriu, și culegere după eticheta
+de tip — ca perechile să crească date, nu cod. Perechea orizontală care exista a primit eticheta
+printr-un înveliș, nu prin editarea fiecărei căi de retur: are patru ieșiri, iar una ratată ar fi
+lăsat o constatare fără tip, sărită tăcut.
+
+N-am atribuit nicio tărie. Puteam, din definiția dată — dar ea spune „între ce se declară și ce e în
+evidență", iar axa supervizorului e declarație contra declarație. Tabelul așteaptă ca date, iar
+mecanismul e probat pe un tip sintetic, ca în ziua atribuirii să nu fie prima oară când e verificat.
+**R115.**
+
+O măsurătoare a schimbat designul pe parcurs: din 55 de depuneri, doar una are rânduri persistate. Am
+crezut întâi că perechea orizontală e moartă. Calea actuală le persistă; cele 54 sunt istorie. Deci
+perechea răspunde azi onest „n-am ce compara" și devine vie pe măsură ce se depune prin aplicație.

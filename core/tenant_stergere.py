@@ -75,6 +75,10 @@ TABELE_TENANT = (
     "schimbari_email",
     "solicitari_client",
     "spv_token",
+    # [01.09.2026] Confirmarile constatarilor certe ale supervizorului. SE STERG: sunt decizii ale
+    # contabilului DESPRE datele firmei, iar fara firma n-au obiect. Nu intra in `NU_SE_STERG` ca
+    # `firme_scoase` — acela e chiar urma stergerii; astea sunt evidenta curenta a firmei.
+    "supervizor_confirmari",
     "urme_portal",
     "user_tenants",
 )

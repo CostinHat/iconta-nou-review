@@ -106,7 +106,7 @@ scrisesem regula care o interzice (`METODA §10.16`). *O regulă scrisă nu țin
 | cifra | ce e |
 |---|---|
 | **69** | rânduri care trimit la o firmă inexistentă |
-| **13** | tabele din `public` cu `tenant_id`, numărate |
+| **14** | tabele din `public` cu `tenant_id`, numărate |
 
 <!-- CIFRE-DATE:STOP -->
 
@@ -283,7 +283,7 @@ ale Design System, **5** sunt acoperite. Nu invalidează porțile; le încadreaz
 
 ## AL PATRULEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
-- **restanțe deschise: 47** (din care ale etapei E1: **23**), derivat cu `scripts/raport_b.py`.
+- **restanțe deschise: 48** (din care ale etapei E1: **23**), derivat cu `scripts/raport_b.py`.
   **Nu se scrie de mână** — rândul ăsta a fost invalidat o dată.
 - **deschise în ultimele două zile**: R92 (etichete de stare) · R94–R96 (din 1b) · R97 (clasa „ruta
   livrează, ecranul tace", **remăsurată azi: 41 de câmpuri pe 15 rute**, de la 54 pe 16) · R98
@@ -339,7 +339,7 @@ pretinde că e de acum. Gardat de `core/test_clichete_generate.py`; regenerare:
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **61** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **781** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **783** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
@@ -602,7 +602,19 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 2. **UMBRA INTERDICȚIEI 77 E ÎNCHISĂ DEFINITIV** (Costin, 31.08, `DECIZII.md` 15): populația nu
    se auditează, nu devine restanță, **nu se mai deschide ca temă**. Ce continuă e derivarea cifrei,
    nu munca pe ea. *Nu propune o campanie pe ea; nu e „nu acum", e niciodată.*
-3. **SUPERVIZORUL e temă de arhitectură pentru FINAL**, scrisă în `PLAN_LUCRU.md` la „Direcții de
+3. **SUPERVIZORUL — CONSTRUIT 01.09.2026** (`core/supervizor.py`), la comanda lui Costin, după
+   ce axa corpus-instrument s-a închis. Umple gaura măsurată: din tot ce confruntă aplicația, o
+   **singură** pereche era orizontală (declarație contra declarație); restul e vertical.
+   **Constatările au două tării** *(Costin)*: **euristice** — semnalează, nu opresc niciodată — și
+   **certe** — nepotrivire aritmetică; nu blochează, dar cer **confirmare explicită** înainte de
+   depunere, iar confirmarea **rămâne scrisă** (`public.supervizor_confirmari`, cu **amprenta pe
+   cifre** în cheia primară și `motiv` NOT NULL).
+   **Împărțirea pe tării e a lui Costin, pe tipuri — supervizorul n-o deduce.** Tabelul `TIPURI` o
+   așteaptă ca date: un tip fără tărie **se vede și nu produce niciun efect**. **R115.**
+   *Mecanismul e probat pe un tip sintetic cu tărie atribuită, ca în ziua atribuirii să nu fie prima
+   oară când e verificat.*
+
+3b. **Ce a rămas din tema veche de arhitectură:**, scrisă în `PLAN_LUCRU.md` la „Direcții de
    produs, nedatate": *verificarea încrucișată devine funcționalitate distinctă a aplicației, care
    rulează pe cont propriu, nu la depunere.* **Nu e restanță** — n-are contor, n-are condiție de
    deblocare. Trei alegeri rămân ale lui Costin și sunt scrise acolo ca nedecise: ce declanșează o

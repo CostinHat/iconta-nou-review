@@ -435,9 +435,19 @@ aplicației, lângă „cererea unui om" și „jobul programat" — una care ar
 al cărei rezultat e o **afirmație despre datele firmei**, cu atributele ei (`DESIGN_SYSTEM` cap.25),
 nu un mesaj. Cine o construiește începe de la întrebarea *ce nu poate spune verificarea asta*.
 
-**Ce NU e decis, și rămâne al lui Costin:** ce declanșează o rulare · ce vede contabilul din ea și
-unde · dacă o constatare poate deveni vreodată blocantă. *Nu se presupune niciunul dintre cele trei;
-tema se scrie aici ca să nu se piardă, nu ca să fie începută.*
+**ÎNCEPUTĂ 01.09.2026**, la comanda lui Costin. `core/supervizor.py` — axa **orizontală**
+(declarație contra declarație), cu cele două tării.
+
+**Ce NU mai e nedecis:** *dacă o constatare poate deveni vreodată blocantă* — **nu**, niciodată.
+Constatările au două tării *(Costin, 01.09)*: **euristice**, care „semnalează, nu opresc niciodată",
+și **certe** — „nepotrivire aritmetică între ce se declară și ce e în evidență" —, care „nu blochează,
+dar cer confirmare explicită înainte de depunere, iar confirmarea rămâne scrisă". Supervizorul nu e a
+doua poartă.
+
+**Ce rămâne al lui Costin:** ce declanșează o rulare · ce vede contabilul din ea și unde ·
+**împărțirea pe tării, pe tipuri de constatare** — *„o dau eu … supervizorul nu o deduce singur"*.
+Tabelul `TIPURI` din `core/supervizor.py` o așteaptă ca **date**: un tip fără tărie atribuită se
+vede, dar nu produce niciun efect. **R115.**
 
 **Import portofoliu, asistat de AI.** Recunoașterea structurii fișierului se face **o dată**, cu AI; rezultatul se sedimentează ca **amprentă de fișier** (set de anteturi, ordine, separator zecimal, unde începe tabelul), iar exporturile următoare cu aceeași amprentă intră **determinist, fără interpretare**. Amprenta e cheia, nu numele aplicației — același program are versiuni care exportă diferit. Potrivirea e **exactă sau inexistentă**: „aproape ca X" se tratează ca structură nouă. Proba aritmetică (balanța închide pe fiecare cont și pe total) rămâne **obligatorie și la amprentele deja cunoscute** — recunoașterea sare peste interpretare, nu peste verificare. Corecțiile contabilului la mapare se întorc în amprentă.
 

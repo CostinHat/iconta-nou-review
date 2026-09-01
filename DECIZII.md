@@ -13373,3 +13373,21 @@ regulă, fiindcă nu exista una care să ceară justificarea.*
 *suprapunerea* listelor. Măsurătoarea a dat inversul: nu se dublează munca, se ratează — 90% din ce
 atinge checklistul de browser nu apare în backlog, 89% din backlog n-are nicio verificare de browser.
 *Am raportat ce a ieșit, nu ce s-a cerut să iasă.*
+
+## 01.09.2026 (6) — Supervizorul: ce s-a decis, și ce n-am decis eu
+
+**(37) Constatările au două tării, și niciuna nu blochează** *(Costin)*. Euristice: semnalează, nu
+opresc niciodată. Certe: nepotrivire aritmetică; nu blochează, dar cer **confirmare explicită**
+înainte de depunere, iar confirmarea **rămâne scrisă**. *Asta închide a treia întrebare nedecisă din
+tema de arhitectură: o constatare nu devine blocantă niciodată.*
+
+**(38) Împărțirea pe tării e a lui Costin, pe tipuri — și de-aia tabelul e gol, nu plin cu presupuneri.**
+Puteam atribui tăria singur, din definiția dată. N-am făcut-o, fiindcă definiția lui spune *„între ce
+se declară și ce e în evidență"*, iar axa supervizorului e **declarație contra declarație**: ambele
+părți declarate. Un implicit ar fi fost ori tăcere pe o nepotrivire certă, ori confirmări cerute pe
+ceva nedecis. Tabelul așteaptă ca **date**, iar mecanismul e probat pe un tip **sintetic** — ca în
+ziua atribuirii să nu fie prima oară când e verificat.
+
+**(39) Confirmarea se dă pe CIFRE, nu pe tip.** Amprenta intră în cheia primară a jurnalului. Fără
+ea, „am confirmat o dată" ar fi însemnat „pentru totdeauna", iar cerința „confirmare explicită" ar fi
+devenit o bifă la prima folosire. *O cifră schimbată invalidează confirmarea; o frază rescrisă, nu.*

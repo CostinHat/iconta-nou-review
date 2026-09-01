@@ -2437,6 +2437,39 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
 - **rezolvată pe commit**: —
 - **unde ajunge efectul**: un calcul care citește ceasul nu mai e o funcție de aceleași intrări: aceeași lună, recalculată în două zile diferite, dă două rezultate. Spre deosebire de 2, defectul e ÎN motor, deci nu se repară scoțând un default din registru
 
+### R115 — Tăria constatărilor supervizorului nu e atribuită, deci nimic nu cere confirmare
+
+- **felul**: ORDINE
+- **cine deblochează**: DECIZIE
+- **unde intră**: E4 · supervizorul · **PRAG 2**
+- **cine decide**: **Costin**. Împărțirea pe tării e explicit a lui, deci NU intră sub regula „deciziile care nu mută direcția sunt ale mele” — e chiar contractul supervizorului.
+- **ce blochează**: stratul de **efect** al supervizorului. Motorul rulează, produce constatări
+  orizontale și le arată — dar niciuna nu cere confirmare înainte de depunere, fiindcă tăria e a lui
+  Costin și n-a fost dată încă: *„Împărțirea pe tării o dau eu, pe tipuri de constatare.
+  Supervizorul nu o deduce singur."*
+- **de ce nu se poate presupune**: definiția dată pentru CERTE e *„nepotrivire aritmetică între ce se
+  declară și ce e în evidență"*. Axa supervizorului e **declarație contra declarație** — deci ambele
+  părți sunt declarate, iar definiția n-o acoperă literal. *Un implicit aici ar fi ori tăcere pe o
+  nepotrivire certă, ori confirmări cerute pe ceva ce nimeni n-a decis.*
+- **ce e deja construit și nu depinde de răspuns**: tabelul de tipuri cu cele două surse ale fiecărei
+  identități · amprenta pe **cifre** (o confirmare acoperă nepotrivirea văzută atunci, nu tipul pe
+  vecie) · jurnalul `public.supervizor_confirmari`, cu `motiv` NOT NULL · mecanismul probat pe un tip
+  **sintetic** cu tărie atribuită, ca în ziua atribuirii să nu fie prima oară când e verificat.
+- **planul**: **NEACOPERIT**, și am citit unde ar fi trebuit să fie. `PLAN_LUCRU.md`, secțiunea
+  „Supervizorul inversează dependența”, enumeră exact trei lucruri nedecise: *ce declanșează o
+  rulare · ce vede contabilul din ea și unde · dacă o constatare poate deveni vreodată blocantă*.
+  Al treilea a primit răspuns pe 01.09 (**nu**, niciodată), dar **împărțirea pe tării nu e
+  niciunul dintre cele trei** — e o distincție nouă, adusă de Costin odată cu comanda de
+  construcție. `PLAN_ARHITECTURA.md` și `DESIGN_SYSTEM` cap.25 vorbesc despre constatare ca
+  **obiect cu atribute**, nu despre tăria ei. Deci planul nu răspunde, iar întrebarea e reală,
+  nu o recitire ratată.
+- **condiția de deblocare**: `TIPURI["D390_VS_D300_IC"]["tarie"]` primește `EURISTICA` sau `CERTA`,
+  cu `confirmat=True`. Un singur tip azi; regula rămâne pentru fiecare tip nou.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `1fa8f88`
+- **rezolvată pe commit**: —
+
 ### R112 — Ianuarie 2026 stă pe un act care nu era în vigoare
 
 - **felul**: SURSĂ

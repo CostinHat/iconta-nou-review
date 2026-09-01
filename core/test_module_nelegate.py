@@ -23,6 +23,18 @@ from core import scan_module_nelegate as scan
 
 # Fiecare intrare poartă DE CE e aici. O intrare fără motiv ar face clichetul o listă de tolerat.
 PIN = {
+    "core/supervizor.py":
+        "CONSTRUIT 01.09.2026, NELEGAT INTENTIONAT. Cele doua lucruri care l-ar lega — CE DECLANSEAZA "
+        "o rulare si CE VEDE contabilul din ea — sunt scrise in PLAN_LUCRU ca fiind ale lui Costin, "
+        "nedecise. A-l cabla acum ar insemna sa le decid eu. Al treilea strat, EFECTUL (o constatare "
+        "certa cere confirmare inainte de depunere), asteapta impartirea pe tarii — R115. Modulul e "
+        "complet si probat: 13 teste, mutatie pe trei directii. *Un producator fara livrare, declarat "
+        "(METODA §20) — nu cod mort: are gard, are contract, si are trei conditii scrise de deblocare.*",
+    "core/migrare_supervizor_confirmari.py":
+        "MIGRARE, ca `core/migrare_alerte_control_emise.py`: sursa de adevar a unei scheme din `public`, "
+        "aplicata punctual (nu exista rulator automat de migrari in repo). Nu are apelant fiindca nu "
+        "trebuie sa aiba unul: DDL-ul se aplica o data, iar dupa aia tabelul exista. Aplicata pe "
+        "productie 01.09.2026, idempotent (CREATE TABLE IF NOT EXISTS), verificata cu `verifica()`.",
     "core/nomenclatoare.py":
         "REGISTRU DE ANCORE, si NU TREBUIE sa aiba apelant din productie. Tine, separat, ce enumera "
         "NORMA si ce accepta VALIDATORUL, ca sa poata fi comparate cu ce e in generatoare (d390/d301/"
