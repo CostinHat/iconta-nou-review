@@ -2469,10 +2469,28 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   nu o recitire ratată.
 - **condiția de deblocare**: `TIPURI["D390_VS_D300_IC"]["tarie"]` primește `EURISTICA` sau `CERTA`,
   cu `confirmat=True`. Un singur tip azi; regula rămâne pentru fiecare tip nou.
+- **cum s-a rezolvat** *(01.09.2026)*: **Costin a atribuit `EURISTICA`, confirmat** — și, mai
+  important decât valoarea, a dat **criteriul general**, verbatim: *„Tăria se dă după dacă diferența
+  admite o explicație legitimă, nu după cine sunt cele două părți. Certă = orice nepotrivire e
+  eroare. Axa orizontală nu devine certă prin faptul că ambele părți sunt declarate."* Aplicat pe
+  tipul ăsta: explicațiile legitime sunt numite în chiar temeiul comparației — decalaj de
+  exigibilitate (art. 284 Cod fiscal), regularizări, rotunjire —, deci nu orice nepotrivire e eroare.
+- **ce a arătat răspunsul despre întrebare**: **propunerea mea era CERTA, și era greșită — dar nu din
+  lipsă de informație.** Întrebarea era pusă pe axa greșită (*cine sunt părțile*), iar răspunsul la
+  întrebarea corectă era deja scris în `core/control_incrucisat.py:1002`, în același fișier, la o
+  sută de linii distanță. *Clasa nu e „n-am căutat destul" — e „am căutat răspunsul la altă
+  întrebare".*
+- **ce s-a construit ca să nu rămână lecție**: criteriul nu stă în proză, ci e **câmp obligatoriu** —
+  `motiv_tarie` —, gardat de `core/test_supervizor.py::test_o_TARIE_ATRIBUITA_poarta_motivul_ei_scris`.
+  Un tip nou nu poate primi o tărie fără să scrie cum s-a aplicat criteriul **pe el**; analogia cu
+  vecinul din tabel e chiar mecanismul greșelii de mai sus. Plus
+  `::test_perechea_reala_e_EURISTICA_deci_nu_cere_NICIODATA_confirmare`, pe tipul REAL, nu pe cel
+  sintetic. **Efect: niciun tip nu mai așteaptă tăria, iar o EURISTICĂ nu cere confirmare niciodată —
+  deci nimic nu atinge depunerea, ceea ce e chiar contractul.**
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `1fa8f88`
-- **rezolvată pe commit**: —
+- **rezolvată pe commit**: `d217e16`
 
 ### R116 — Cronul de alerte numără firmele DUPĂ succes, deci una care ridică nu apare nicăieri
 
@@ -2506,6 +2524,41 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
 - **rezolvată pe commit**: —
 - **unde ajunge efectul**: o linie de log care spune că portofoliul are mai puține firme decât are.
   *Astăzi nu ajunge la un contabil; în ziua în care cifra urcă pe un ecran, ajunge.*
+
+### R117 — Un gard al cărui subiect e o mulțime de lucruri NEREZOLVATE se golește când ultimul se rezolvă
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E4 · supervizorul (clasă generalizată) · interdicția **19** · **PRAG 3**
+- **ce blochează**: nimic azi — instanța găsită e reparată. Ce rămâne deschis e **clasa**, și e
+  nemăsurată: nu se știe câte alte gărzi din suită parcurg o mulțime care se poate goli.
+- **instanța, măsurată** *(01.09.2026)*:
+  `core/test_supervizor.py::test_un_tip_NEATRIBUIT_nu_cere_confirmare_si_nu_tace` parcurgea
+  `supervizor.tipuri_neatribuite()`. Cât timp singurul tip n-avea tărie, bucla avea ce parcurge. **La
+  închiderea lui R115 mulțimea a devenit vidă**, iar un `for` pe o mulțime goală trece. *Gardul a fost
+  corect toată viața lui; l-a golit o schimbare care nu l-a atins.*
+- **calibrare, în AMÂNDOUĂ direcțiile** *(nu e o bănuială)*: cu mutația care strecoară implicitul
+  (`cere_confirmare` întoarce `True` pe tărie neatribuită), **forma VECHE a testului TRECE** —
+  `1 passed` —, iar forma nouă **cade** — `3 failed`. Reparat cu un tip **sintetic neatribuit**
+  înregistrat în probă.
+- **de ce NU se lucrează acum**: e din familia **instrument/igienă**, iar axa aia e **oprită**
+  (`DECIZII.md` 33): *restanțele noi din familia asta se consemnează, nu se lucrează.* Un scaner care
+  ar căuta clasa în toată suita e chiar felul de instrument pe care decizia îl exclude azi.
+- **ce nu vede măsurătoarea**: cât de mare e clasa. **80** de fișiere din `core/` poartă marcajul
+  `anti-vacuu`, dar marcajul e **convenție scrisă de mână**, nu instrument — deci nu se poate deriva
+  câte gărzi au subiect care se poate goli, și cu atât mai puțin câte s-au golit deja.
+- **condiția de deblocare**: axa instrument/igienă se redeschide **prin decizie**, ȘI clasa capătă un
+  instrument care numește gărzile al căror subiect e o mulțime derivată dintr-o stare care se poate
+  goli (tipare: `neatribuite`, `deschise`, `rămase`, `fără`), fără aserțiune de nevidare. Se închide
+  când clichetul e măsurat și plafonat, nu când instanța asta e reparată — **ea e deja reparată**.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `d217e16`
+- **rezolvată pe commit**: —
+- **unde ajunge efectul**: nicăieri, la un contabil. Efectul e asupra **încrederii în poarta verde**:
+  o gardă golită raportează verde despre o regulă pe care n-o mai verifică, iar poarta o numără ca
+  trecută. *Exact interdicția 19 — o gardă care raportează favorabil pe zero rânduri —, dar ajunsă
+  acolo prin trecerea timpului, nu prin construcție.*
 
 ### R112 — Ianuarie 2026 stă pe un act care nu era în vigoare
 
