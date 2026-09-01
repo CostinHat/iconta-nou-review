@@ -7093,3 +7093,27 @@ același orizont.
 **un** prag; subiectul ar fi purtat o cifră care nu descrie nimic. Proba s-a mutat pe rând — unde
 pragul chiar diferă — și cere să se vadă și **sursa** lui, ca cine citește să deosebească o valoare
 strâmtată de una lăsată pe podea.
+
+### 01.09.2026, partea a cincea — R110: actul adus de la emitent
+
+Costin a corectat o îngustare a mea: raportasem că nicio formă oficială nu poartă textul, dar
+căutasem **doar pe portalul legislativ**. Criteriul e sursa emitentului la adresă stabilă și
+amprentabilă — INS sau Monitorul Oficial. INS își publică ordinul pe portalul propriu Intrastat, ca
+scan al paginii din MO Partea I nr. 1022/5.XI.2025. Adus, amprentat pe fișier și pe text, confruntat
+pe cinci probe de conținut cerute **înainte** de scriere. Gazda nu putea autentifica nimic — adresa e
+HTTP, iar `insse.ro` servește un lanț de certificate incomplet chiar și față de magazinul `certifi` —
+așa că verificarea s-a mutat pe conținut, fără `-k`.
+
+Actul a spus și ceva ce registrul nu spunea: **art. 6, intră în vigoare la 1 februarie 2026**, iar
+art. 5 abrogă atunci ordinul precedent. Cheia din registru rămâne 01.01.2026, fiindcă art. 1 aprobă
+pragul pentru *anul de referință* 2026 și art. 3 îl aplică la cumulatul de la începutul anului — dar
+`data_in` devine 02-01. Două date diferite, amândouă adevărate, în câmpuri diferite. Pentru ianuarie
+2026 rămâne un temei care nu era în vigoare: **R112**.
+
+Iar măsurătoarea făcută ca să nu fabric o clasificare falsă a scos ceva mai mare. Ca să numesc
+articolul, am verificat întâi ce ar face axa frecvenței cu el: `NECUNOSCUT`, deci sigur. Controlul pe
+toate cele 26 de temeiuri cu articol a arătat însă că **cotele de TVA primesc STABIL** dintr-un act
+modificator care nu poate purta istoric de consolidare, când același articol în Codul fiscal arată
+opt marcaje. Zero alerte pierdute — podeaua ține —, dar câștigul lui R109 e anulat exact unde
+consecința e cea mai mare. **R111**, cu cele două cauze numite mecanic, una dintre ele o convenție
+care s-a despărțit în tăcere pe jumătatea care nu fusese mutată într-un singur loc.

@@ -13289,3 +13289,27 @@ de schemă.** Trei artefacte se produceau pe GET, iar un GET n-are voie să scri
 
 **4. METODA §24** — verdele fals care vine din faptul că jumătate din reparație nu rulează.
 Cerut de Costin ca formă proprie: *„nu e «verde pe zero» și nu e «gardă care citește proză»"*.
+
+## 01.09.2026 (2) — Trei decizii: unde e „sursa", ce autentifică un document, și de ce n-am scris un tipar
+
+**(25) „Sursa emitentului" nu înseamnă „portalul".** Raportasem R110 ca nefăcut fiindcă nu găsisem
+actul **pe portalul legislativ**. Costin: *„nu te limita la portal. Criteriul e sursa emitentului, la
+adresă stabilă, amprentabilă: site-ul INS sau Monitorul Oficial se califică. «Neamprentat e mai rău
+decât lipsa» rămâne; «doar portalul» nu decurgea din asta."* Îngustasem un criteriu de **calitate a
+sursei** într-un criteriu de **canal**, și am raportat lipsa ca pe o imposibilitate. Regula, scrisă:
+*când o restanță de sursă spune „nu există", întrebarea următoare e „pe câte căi am căutat", nu „ce
+mai rămâne de făcut".*
+
+**(26) Un document se autentifică prin conținut când gazda nu poate.** Adresa care poartă textul e
+HTTP, iar `insse.ro` servește un lanț de certificate incomplet — `openssl` dă `num=21`, și cu
+magazinul `certifi`, nu doar cu cel de sistem. **N-am folosit `-k`.** În loc să slăbesc verificarea
+transportului, am mutat verificarea pe **conținut**: scriptul de aducere cere cinci probe (antet
+Monitor Oficial, emitent, ambele praguri, numărul actului) și **refuză să scrie orice** dacă lipsește
+una. Un fișier care nu s-a dovedit nu intră în corpus, exact ca la extragerea goală (R20).
+
+**(27) Un tipar calibrat pe unicul exemplar care l-a cerut nu dovedește nimic.** Garda de identitate
+a cerut clichetul 121 → 123. Tentația era să învăț tiparul așezarea Monitorului Oficial — s-ar fi
+făcut verde. Am măsurat întâi **clasa**: un singur fișier cu antet de MO în tot corpusul, al meu.
+Un tipar scris pe el ar fi fost calibrare pozitivă pe eșantion de unu. Clichetul urcă, dar **cu cele
+două fișiere numite în comentariu** și cu motivul mecanic — fiindcă un clichet urcat fără nume e
+exact excepția pe care o știe un singur raport.

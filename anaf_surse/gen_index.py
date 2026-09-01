@@ -10,10 +10,16 @@ from core.common import COTE
 #   forma_la_data     = forma la o data fixa (forma initiala / HG punctual / ordin) -> contine valoarea
 #                       de la acea data chiar daca exista valori mai noi in alte acte.
 TIP_FORMA = {
-    # ADUS 01.09.2026. Pagina servita de portal e un CIOT (5.416 caractere) si nu poarta pragul —
-    # de-aia temeiul lui `plafon_intrastat` e declarat neconfruntabil, R110. Forma e totusi cea „la
-    # zi" a actului: nu exista o forma anterioara adusa, iar ordinul nu e consolidat.
+    # ADUS 01.09.2026 de pe portal. Pagina e un CIOT (5.416 caractere) si NU poarta pragul. Ramane
+    # in corpus ca PROBA a acestui fapt — de-aia n-a fost stearsa cand a venit forma buna.
     "ordin_1604_2025_intrastat.html": "consolidat_la_zi",
+    # ADUS 01.09.2026 DE LA EMITENT (R110 inchisa): INS isi publica ordinul pe portalul propriu
+    # Intrastat, ca scan al paginii din MO Partea I nr. 1022/5.XI.2025. `.txt` e forma pe care o
+    # citeste `scan_citate` (un `.pdf` deschis ca text n-ar potrivi nimic); `.pdf` e octetul adus.
+    # forma_la_data, nu consolidat_la_zi: un ordin anual NU se consolideaza — se INLOCUIESTE de
+    # ordinul anului urmator. Deci forma asta poarta pragul lui 2026 si atat.
+    "ordin_1604_2025_intrastat_mo.pdf": "forma_la_data",
+    "ordin_1604_2025_intrastat_mo.txt": "forma_la_data",
     "opanaf_3562_2024.html": "consolidat_la_zi",
     "legea_160_2026.html": "consolidat_la_zi",
     "legea_161_2026.html": "consolidat_la_zi",

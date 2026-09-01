@@ -52,7 +52,18 @@ NR = r"[0-9][0-9.]*"
 # fișiere cu nume de act, **130 au titlu verificabil (52%)** și 121 nu — 39 `.pdf` fără frate
 # `.txt`, 57 `.txt` de extras, 25 `.html` care sunt structuri sau note, nu acte cu antet.
 # Clichet: nu poate CREȘTE. Dacă scade, se coboară — altfel acoperirea reală se pierde.
-CLICHET_FARA_TITLU = 121
+#
+# 121 → 123 la 01.09.2026 (R110), și cele două se NUMESC, fiindcă un clichet urcat fără nume e o
+# excepție cunoscută de un singur raport: `ordin_1604_2025_intrastat_mo.pdf` și fratele lui `.txt`.
+# MOTIVUL, mecanic: fișierele poartă forma **Monitorului Oficial**, unde titlul din antet e fără
+# număr („ORDIN privind pragurile valorice Intrastat…"), iar numărul și data stau la PICIOR
+# („Nr. 1.604." · „București, 27 octombrie 2025."). Tiparul de aici cere `ORDIN nr. N din <data>`,
+# forma portalului — deci nu ratează un act neidentificabil, ci o AȘEZARE pe care n-o citește.
+# NU am scris un tipar pentru forma MO, și motivul e măsurat: în tot corpusul există **un singur**
+# fișier cu antet de Monitor Oficial — al meu. Un tipar calibrat pe unicul exemplar care l-a cerut
+# n-ar dovedi nimic despre acoperire (METODA §22). Rămâne clasă declarată, de reparat când există
+# pe ce o măsura.
+CLICHET_FARA_TITLU = 123
 
 
 def _text(cale):

@@ -36,6 +36,14 @@ MODIFICARI = {
     ("OUG 156/2024", "LXVI"): datetime.date(2025, 1, 10),
     ("Legea 141/2025", "291"): None,
     ("Legea 201/2025", "I"): None,
+    # CITIT LA SURSĂ 01.09.2026, dar NU de instrument — de mine, actul întreg (2.899 de caractere,
+    # șase articole). Art. 1 nu poartă niciun marcaj: e un ordin nou, publicat 05.11.2025, nemodificat.
+    # INSTRUMENTUL NU CONFIRMĂ, și dezacordul se scrie aici în loc să fie neted: `vigoare_articol.py`
+    # răspunde `REFUZ … 0 titluri de articol`, fiindcă `_TITLURI_NUMARATE` cere cuvântul „Articolul",
+    # iar Monitorul Oficial scrie „Art. 1. —". Deci ORICE formă de MO e ciot prin construcție, pentru
+    # toate articolele ei. Refuzul e în direcția sigură (nu inventează un „STABIL"), dar motivul pe
+    # care îl dă e fals — v. R111.
+    ("Ordin 1604/2025", "1"): None,
 }
 
 # Un `Temei` care citează un act MODIFICATOR plus un număr de articol al Codului fiscal se citește ca

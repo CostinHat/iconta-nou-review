@@ -50,7 +50,22 @@ from core import scan_pereche_act_articol as S  # noqa: E402
 CLICHET_NEGASIT = 0
 #: Ce a rămas după convenție: **2**, amândouă `OUG 156/2024 art. LXVI` — articol care CHIAR e al
 #: ordonanței, într-un document adus ca ciot. Problemă de **corpus**, nu de temei: **R107**.
-CLICHET_CIOT = 2
+#:
+#: **2 → 3 la 01.09.2026, și a treia e de ALT FEL — de-aia se scrie, în loc să crească un număr.**
+#: `Ordin 1604/2025 art. 1` citează un document care **NU e un ciot**: e actul întreg, șase articole,
+#: adus de la emitent ca scan al paginii din Monitorul Oficial. Îl declară ciot **instrumentul**:
+#: `articol_in_act._TITLURI_NUMARATE` cere cuvântul „Articolul", iar Monitorul Oficial scrie
+#: „Art. 1. —". Deci **orice formă de MO e ciot prin construcție**, pentru toate articolele ei.
+#: Cauza e **R111**, nu R107 — una e corpus adus parțial, cealaltă e o formă pe care instrumentul
+#: n-o citește. Verdictul e în direcția sigură (refuză, nu inventează un STABIL), motivul e fals.
+#:
+#: **N-am reparat tiparul în commitul ăsta, cu motivul:** `titluri()` decide starea CIOT pentru
+#: **tot** corpusul, iar starea aia hrănește `reverificare`, care hrănește raportul lunar. E o
+#: schimbare de contract, nu o linie — se face în tura lui R111, cu volumul de alerte măsurat
+#: înainte și după, ca la R109. Iar tiparul are o direcție periculoasă proprie: numărând „Art." prea
+#: larg, o trimitere în proză ar deveni titlu, iar un document ar trece din CIOT în GĂSIT — adică
+#: din refuz în răspuns fals.
+CLICHET_CIOT = 3
 #: Pragul de JOS pe confirmate: dacă scade, ceva a dispărut din registru sau instrumentul s-a rupt.
 #: 15 → **24** după ce instrumentul a învățat convenția — fără ca vreun temei să se schimbe.
 PRAG_CONFIRMATE = 24

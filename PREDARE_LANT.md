@@ -172,7 +172,21 @@ Criteriul lui **E2** numește exact două lucruri care lipsesc:
    de 12 luni: **0 → 0 azi, 0 → 3 de la o lună** (dividende, micro, impozit pe venit), **nicio alertă
    pierdută la niciun punct**. Podeaua globală se păstrează, iar cele 4 cote fără prag calculabil
    **rămân în pază** cu `prag_sursa = "global (prag necunoscut)"` — dacă ar fi ieșit, s-ar fi
-   reconfirmat niciodată. **R110 deschisă**: pragul Intrastat e în registru, dar actul e ciot.
+   reconfirmat niciodată.
+   **R110 — ACTUL ADUS DE LA EMITENT, 01.09**: „doar portalul" era o îngustare a mea; criteriul e
+   sursa emitentului la adresă stabilă și amprentabilă. INS își publică ordinul pe portalul propriu
+   Intrastat, ca scan al paginii din **MO Partea I nr. 1022/5.XI.2025**. Adus, amprentat pe fișier și
+   pe text, confruntat pe cinci probe de conținut cerute **înainte** de scriere; `verbatim 10 → 11`.
+   Gazda nu autentifică nimic (adresă HTTP, `insse.ro` cu lanț de certificate incomplet chiar și față
+   de `certifi`) — verificarea s-a mutat pe **conținut**, fără `-k`.
+   **DOUĂ RESTANȚE NOI, amândouă ieșite din aducere, nu din ea:**
+   - **R111** *(prag 2)* — axa frecvenței citește marcaje de consolidare într-un document care nu le
+     poate purta și răspunde **STABIL**. Cele **4** temeiuri ale cotelor de TVA iau STABIL din actul
+     modificator, când același articol în Codul fiscal arată **8 marcaje = VOLATIL**. **Zero alerte
+     pierdute** (podeaua ține), dar câștigul lui R109 e anulat unde consecința e cea mai mare.
+   - **R112** *(prag 4)* — art. 6 al ordinului spune că intră în vigoare **01.02.2026**, iar art. 5
+     abrogă atunci Ordinul INS 2353/2024, neadus. Pentru ianuarie 2026 temeiul e al unui act care nu
+     era în vigoare. *Nu e o cifră greșită — e un temei.*
 1. **categoria de reverificare (interdicția 55) — CONSTRUITĂ, 31.08.** `core/reverificare.py`, două
    axe mecanice × tabelul 3×3. Pe cele 34 de temeiuri: **24 clasificate, 10 NECUNOSCUT declarat**;
    **9 mai strict, 0 mai larg** față de pragul global de 6 luni. `INFORMATIV` e declarat **vid**, cu
@@ -244,7 +258,7 @@ ale Design System, **5** sunt acoperite. Nu invalidează porțile; le încadreaz
 
 ## AL PATRULEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
-- **restanțe deschise: 44** (din care ale etapei E1: **24**), derivat cu `scripts/raport_b.py`.
+- **restanțe deschise: 47** (din care ale etapei E1: **23**), derivat cu `scripts/raport_b.py`.
   **Nu se scrie de mână** — rândul ăsta a fost invalidat o dată.
 - **deschise în ultimele două zile**: R92 (etichete de stare) · R94–R96 (din 1b) · R97 (clasa „ruta
   livrează, ecranul tace", **remăsurată azi: 41 de câmpuri pe 15 rute**, de la 54 pe 16) · R98
@@ -253,7 +267,7 @@ ale Design System, **5** sunt acoperite. Nu invalidează porțile; le încadreaz
   întreagă**, și **R105** — deschisă și închisă în aceeași zi.
 - **decizii care blochează: niciuna.**
 - **locuri de verificare**: **221 scrise / 0 goale din 221 (100%)**.
-- **interdicții, din 76**: MĂSURATE **21** · PARȚIAL **16** · NEMĂSURABILE **1** · NEÎNCEPUTE **38**.
+- **interdicții, din 77**: MĂSURATE **22** · PARȚIAL **16** · NEMĂSURABILE **5** · NEÎNCEPUTE **34**.
 - **clusterele topologice**: `core.agenda.urmator_cluster()` → **`(None, 0, 0)`**; secvența e epuizată
   din 04.08.2026 — **nu există „următorul programat"**.
 - **cele mai vechi restanțe deschise**: R1, R3, R4, R5, R6, R7 — familia „încrederea în corpus".

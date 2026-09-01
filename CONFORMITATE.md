@@ -2299,6 +2299,86 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
 - **reluări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `3c9fb2d`
+- **01.09.2026 — CONDIȚIA E ÎNDEPLINITĂ ÎN ARBORE; se închide formal pe commitul următor, cu
+  hash-ul real (Capcana 2: o restanță nu se marchează rezolvată pe un commit care nu există încă).**
+  *„Doar portalul" era o îngustare a mea, nu o consecință a lui „neamprentat e mai rău decât lipsa"*
+  (Costin, 01.09). Criteriul e **sursa emitentului, la adresă stabilă și amprentabilă**. INS își
+  publică ordinul pe portalul propriu Intrastat, ca **scan al paginii din Monitorul Oficial Partea I
+  nr. 1022/5.XI.2025** — `intrastat.ro/doc/OPINS_PRAGURI_1604_2026.pdf`, adus și amprentat pe fișier
+  (`93562d59…`) și pe text (`bf1faac9…`). `scan_citate` dă acum `verbatim=True` pentru
+  `plafon_intrastat`; clichetul de citări verbatim urcă **10 → 11**.
+  - **Ce spune actul, peste ce știam:** art. 5 abrogă Ordinul INS 2353/2024, iar **art. 6: intră în
+    vigoare la 1 februarie 2026** — nu 1 ianuarie. Cheia din registru rămâne 01.01.2026 (art. 1
+    aprobă pragul pentru *anul de referință* 2026, iar art. 3 îl aplică la cumulatul de la începutul
+    anului), dar `Temei.data_in` devine **02-01**, adevărul actului. Cele două date sunt diferite și
+    amândouă adevărate — de-aia stau în câmpuri diferite. Consecința: **R112**.
+  - **Gazda nu autentifică, conținutul da.** Adresa e HTTP, iar `insse.ro` servește un lanț de
+    certificate incomplet: `openssl` dă `num=21 unable to verify the first certificate`, **și cu
+    magazinul `certifi`**, nu doar cu cel de sistem. N-am ocolit verificarea cu `-k`. Documentul se
+    confruntă pe conținut — cinci probe cerute înainte de scriere (antet MO, emitent, cele două
+    praguri, numărul), iar scriptul refuză să scrie ceva dacă vreuna lipsește.
+- **rezolvată pe commit**: —
+
+### R111 — Frecvența citește marcaje într-un document care nu le poate purta, și răspunde STABIL
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · faza 2 · familia „încrederea în instrument" (76, METODA §22) · **PRAG 2**
+- **ce blochează**: câștigul lui **R109** exact pe valorile cu cea mai mare consecință. Măsurat
+  01.09.2026 pe cele **26** de temeiuri cu articol: **4** stau pe `Legea 141/2025 art. 291` — cotele
+  de TVA — și primesc **STABIL** (0 marcaje), fiindcă documentul citit e **actul modificator**, care
+  nu poartă istoric de consolidare. **Același articol**, citit în forma consolidată a Codului fiscal,
+  arată **8 marcaje = VOLATIL**. Direcția greșelii e cea largă: *verificat mai rar*.
+- **două cauze, amândouă mecanice, amândouă găsite în aceeași tură**:
+  1. `document_tinta` trimite art. 291 la actul modificator. Convenția e scrisă
+     `art in ART_DE_COD_FISCAL or (art == "291" and "227" in nr)` — 97, 28 și 282 se rezolvă
+     **necondiționat**, 291 e singurul legat de numărul actului care îl citează. *Iar clauza lui 291
+     e scrisă în **două** fișiere* (`scan_pereche_act_articol.cheie_articol` și
+     `test_vigoare_articole_registru._cheie`), sub comentariul care spune că mulțimea a fost mutată
+     într-un singur loc **tocmai** ca o convenție să nu se despartă în tăcere. S-a despărțit oricum,
+     pe partea care n-a fost mutată.
+  2. `articol_in_act._TITLURI_NUMARATE` cere cuvântul „Articolul"; Monitorul Oficial scrie
+     „Art. N. —". Deci **orice formă de MO e ciot prin construcție**, pentru toate articolele ei.
+     Aici refuzul e în direcția sigură — nu inventează un STABIL —, dar **motivul pe care îl dă e
+     fals**: spune „ciot, v. R107", când documentul e complet, doar altfel așezat.
+- **ce a mișcat deja un clichet**: `CLICHET_CIOT` **2 → 3** (`core/test_pereche_act_articol.py`).
+  A treia pereche e de **alt fel** decât primele două: `Ordin 1604/2025 art. 1` citează actul
+  **întreg**, nu un ciot — îl declară ciot instrumentul, din cauza (2) de mai sus. Deosebirea e
+  scrisă lângă clichet, fiindcă un număr care crește fără să spună de ce face corpusul să pară mai
+  rău decât e. *R107 = corpus adus parțial · R111 = formă pe care instrumentul n-o citește.*
+- **ce NU blochează, măsurat**: **zero alerte pierdute**, pe toate cele 13 puncte de orizont.
+  Podeaua globală ține (`STABIL/DEPUS` = 6 = podeaua; `STABIL/CALCULAT` = 12 → ignorat, cu motivul
+  scris pe rând). Invariantul lui Costin — *„nicio cotă nu se reconfirmă mai rar decât azi"* — **nu**
+  e încălcat. Ce se pierde e câștigul, nu podeaua. De-aia e PRAG 2, nu PRAG 3.
+- **condiția de deblocare**: (a) clasificatorul deosebește *„document care nu poate purta marcaje"*
+  de *„articol nemodificat"* și răspunde `NECUNOSCUT` cu motivul propriu — `TIP_FORMA` din
+  `gen_index.py` declară deja deosebirea (`consolidat_la_zi` vs `forma_la_data`) și e întreținută;
+  (b) art. 291 se rezolvă la CF ca celelalte trei; (c) clauza trăiește într-un singur loc. Se închide
+  când `Legea 141/2025 art. 291` dă **VOLATIL**, cu volumul de alerte măsurat înainte și după.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `0a12a31`
+- **rezolvată pe commit**: —
+
+### R112 — Ianuarie 2026 stă pe un act care nu era în vigoare
+
+- **felul**: SURSĂ
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · faza 2 · familia „încrederea în corpus" (R1, R4, R5, R6, R107) · **PRAG 4**
+- **ce blochează**: **temeiul**, nu valoarea. Pentru o dată din ianuarie 2026, `cota("plafon_intrastat")`
+  întoarce 1.000.000 lei cu temeiul Ordinului 1604/2025 — care, prin art. 6 al lui, **nu era încă în
+  vigoare**. Actul în vigoare atunci era Ordinul INS 2353/2024 (MO 1101/04.11.2024), abrogat de art. 5
+  la 01.02.2026 și **neadus în corpus**.
+- **ce NU e**: nu e o cifră greșită. Surse secundare spun că pragurile lui 2025 erau tot 1.000.000,
+  deci valoarea ar fi continuă — dar **nu le-am confruntat la sursă**, și de-aia e restanță, nu
+  observație. *Un temei fals-verificabil e mai rău decât unul verificabil-fals.*
+- **condiția de deblocare**: Ordinul INS 2353/2024 adus și amprentat. Dacă poartă tot 1.000.000,
+  registrul primește o a doua tuplă cu cheia 01.01.2026 și temeiul lui, iar cea de acum urcă la
+  01.02.2026. Dacă poartă altceva, e o cifră de reparat, nu un temei.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `0a12a31`
+- **rezolvată pe commit**: —
 - **măsurat la**: 2026-09-01 · **pe commit**: `3c9fb2d`
 - **cifra**: **1** valoare fiscală în registru cu act adus dar neconfruntabil. Pagina servită de
   portal pentru id=303985 are **5.416 caractere** și nu conține pragul.

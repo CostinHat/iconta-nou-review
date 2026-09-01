@@ -23,7 +23,7 @@ import pytest
 from core import scan_citate
 
 # Instalat 21.08.2026. Se RIDICĂ pe măsură ce citările devin verificabile. Nu se coboară.
-VERBATIM_BASELINE = 10
+VERBATIM_BASELINE = 11
 
 
 @pytest.fixture(scope="module")

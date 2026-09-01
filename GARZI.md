@@ -6736,6 +6736,31 @@ regula în loc s-o chem — exact tiparul care a produs R106.* Măsurătoarea co
 prag — subiectul ar fi purtat o cifră care nu descrie nimic. Proba s-a mutat **pe rând**, unde pragul
 chiar diferă, și cere să se vadă și **sursa** lui.
 
+## 01.09.2026 — R110: actul adus de la emitent, și ce a ieșit la iveală aducându-l
+
+**Ce s-a schimbat.** `plafon_intrastat` avea temei cu act existent dar **neconfruntabil** — pagina
+servită de portal e un ciot de 5.416 caractere fără prag. Criteriul corectat de Costin — *sursa
+emitentului, la adresă stabilă, amprentabilă; „doar portalul" nu decurgea din „neamprentat e mai rău
+decât lipsa"* — a deschis calea către portalul propriu al INS, unde ordinul stă ca **scan al paginii
+din MO Partea I nr. 1022/5.XI.2025**. Adus, amprentat pe fișier și pe text, confruntat pe **cinci
+probe de conținut cerute înainte de scriere**. `scan_citate`: **verbatim 10 → 11**; clichetul urcat.
+
+**Ce a ieșit la iveală, și e mai mare decât R110.** Ca să numesc articolul (`art="1"`, adevărat —
+pragul e la art. 1), am măsurat întâi ce ar face axa frecvenței cu el. Răspunsul a fost `NECUNOSCUT`,
+deci sigur — dar măsurătoarea de control, pe toate cele 26 de temeiuri cu articol, a arătat altceva:
+**cele 4 temeiuri ale cotelor de TVA primesc STABIL dintr-un act modificator care nu poate purta
+istoric de consolidare**, în timp ce același articol în Codul fiscal arată 8 marcaje = VOLATIL.
+Direcția e cea largă. **Zero alerte pierdute** — podeaua ține —, dar câștigul lui R109 e anulat exact
+acolo unde consecința e cea mai mare. **R111**, cu cele două cauze mecanice numite.
+
+**Ce n-am reparat, cu motivul.** Garda de identitate a actelor a cerut clichetul 121 → 123: fișierele
+poartă **așezarea Monitorului Oficial** (titlu fără număr în antet, numărul la picior), pe care
+tiparul ei n-o citește. N-am scris un tipar pentru forma MO fiindcă am măsurat clasa: în tot corpusul
+există **un singur** fișier cu antet de Monitor Oficial — al meu. *Un tipar calibrat pe unicul
+exemplar care l-a cerut nu dovedește nimic despre acoperire.* Clichetul a urcat cu **cele două
+fișiere numite în comentariu** — un clichet urcat fără nume e chiar excepția cunoscută de un singur
+raport.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **502 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
