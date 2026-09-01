@@ -7143,3 +7143,23 @@ Volumul, pe 13 puncte: 3 → 7 la o lună, zero pierdute. Cele patru în plus nu
 volatile și înainte, mascate de un `STABIL` venit din actul modificator. Cauza a doua, forma
 Monitorului Oficial pe care instrumentele de articol n-o citesc, s-a despărțit în **R113**: 8 acte
 de corpus nevăzute, și 2 care ar câștiga titluri false dintr-un tipar scris în grabă.
+
+### 01.09.2026, partea a șaptea — interdicția 3, măsurată; și cum se alege un pas
+
+Costin m-a corectat pe felul alegerii, a doua oară: candidatul venea din vecinătate, nu din
+instrument. Pasul se citește din `scan_ramas.py`, iar criteriul rămâne *ce poate produce o cifră
+validă și falsă*.
+
+Din cele 114 rânduri, patru dintre cele mai bune potriviri sunt NEÎNCEPUTE cu populația nescrisă,
+deci alegerea nu se putea face din registru — trebuia măsurată. Am măsurat, și primul favorit s-a
+micșorat sub ochii mei: de la „68 de apeluri de producție" la **4**, din care 2 reale. De trei ori
+am numărat forma în loc de efect — numai apeluri pe nume, numai argumente cu cuvânt-cheie, un tipar
+de nume prea larg. A treia oară am prins-o citind sursa, unde se vedea limpede că apelurile *dau*
+data, pozițional.
+
+Interdicția 3 a trecut din NEÎNCEPUTĂ în MĂSURATĂ, cu două populații deosebite: 26 de funcții care
+cad pe „azi" — generatoare latente — și 4 apeluri care chiar omit data. Una dintre cele două defecte
+s-a reparat aici: nota de contract special primește data notei, pe care ruta o avea deja și n-o
+trimitea. Cealaltă a devenit **R114**, fiindcă repararea ei schimbă ce afișează ecranul Intrastat:
+pentru 2025 pragul nu se poate ști, iar răspunsul onest e un necunoscut declarat, nu o cifră. *Așa,
+R112 capătă un consumator — lipsa ordinului din 2024 încetează să fie teoretică.*

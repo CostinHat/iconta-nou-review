@@ -2413,6 +2413,30 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
 - **deschisă pe commit**: `ac2dfa0`
 - **rezolvată pe commit**: —
 
+### R114 — Ecranul Intrastat compară fluxurile unui an ales cu pragul de AZI
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · faza 2 · familia „cifra validă și falsă" (interdicția 3) · **PRAG 3**
+- **ce blochează**: corectitudinea a ce se **arată**. `analiza_flux(valori_lunare, prag=None)`
+  primește `{lună: sumă}` — **n-are anul deloc**, deci nici nu poate ști pe ce perioadă lucrează —
+  și cade pe `prag_intrastat()` = pragul de azi. `main.py:9307` are `an` chiar în domeniu: îl
+  folosește în `WHERE EXTRACT(YEAR FROM data_emitere) = %s`, dar nu-l trimite mai departe. *Ceri
+  2025, primești pragul lui 2026.*
+- **de ce e tură proprie, nu o linie**: reparația onestă nu e „dă anul". Pentru 2025 registrul
+  **nu are** prag (prima intrare e 01.01.2026 — v. **R112**, ordinul precedent neadus), deci
+  `cota` ridică `PerioadaIndisponibila`. Răspunsul corect al ecranului devine **un necunoscut
+  declarat**, nu o cifră — adică o schimbare de verdict afișat, cu poartă vizuală.
+  *R114 dă lui R112 un consumator: azi lipsa actului din 2024 e teoretică, după reparație se vede.*
+- **condiția de deblocare**: `analiza_flux` primește anul; pentru un an fără prag cunoscut ecranul
+  spune că nu se poate ști, cu temeiul; `CLICHET_OMISIUNI` coboară **1 → 0**; poarta vizuală trecută
+  pe desktop și mobil.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `d439391`
+- **rezolvată pe commit**: —
+- **unde ajunge efectul**: un calcul care citește ceasul nu mai e o funcție de aceleași intrări: aceeași lună, recalculată în două zile diferite, dă două rezultate. Spre deosebire de 2, defectul e ÎN motor, deci nu se repară scoțând un default din registru
+
 ### R112 — Ianuarie 2026 stă pe un act care nu era în vigoare
 
 - **felul**: SURSĂ
@@ -6536,15 +6560,43 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 
 ## 3 — Un calcul fiscal care citește data curentă
 
-- **stare**: NEÎNCEPUTĂ
-- **măsurat la**: —
-- **pe commit**: —
-- **cifra**: — (nemăsurată)
-- **instanțe**: — (nemăsurate)
-- **calibrare**: — (nu s-a rulat nicio măsurătoare, deci niciun caz cunoscut n-a fost găsit sau ratat)
-- **ce nu vede**: — (nu există încă instrument, deci nu i se pot declara limitele)
-- **unde ajunge efectul**: un calcul care citește ceasul nu mai e o funcție de aceleași intrări: aceeași lună, recalculată în două zile diferite, dă două rezultate. Spre deosebire de 2, defectul e ÎN motor, deci nu se repară scoțând un default din registru
-
+- **stare**: MĂSURATĂ
+- **măsurat la**: 2026-09-01
+- **pe commit**: `d439391`
+- **cifra**: **26** funcții care cad pe data curentă · **4** apeluri de producție care omit data (2 declarate, 2 defecte) · contra-cifra, care dă scara: **88** de apeluri de producție care DAU data. *Două populații, fiindcă sunt două lucruri diferite.*
+  **A. funcții care CAD pe data curentă: 26** (`la_data or date.today()`, cu parametru de dată în
+  semnătură). Fiecare e un generator **latent**: primul apelant care uită data îl declanșează.
+  **B. apeluri de producție care OMIT data: 4** — din care **2 declarate** (nu sunt calcule fiscale
+  sau „azi" e data corectă) și **2 defecte reale**. Contra-cifra, care dă scara: **88 de apeluri de
+  producție DAU data**, plus 238 din teste. *Clasa reală e mică; ce lipsea era instrumentul.*
+- **instanțe**: `contracte_speciale.nota` → `calcul_zilier` fără data notei — **REPARATĂ în acest
+  commit**: ruta avea deja `corp["data"]` (o folosea pentru „luna deschisă") și n-o trimitea mai
+  departe. · `intrastat.analiza_flux` → `prag_intrastat()` — **rămâne, ca R114**: repararea schimbă
+  ce **afișează** ecranul, deci cere poartă vizuală și tură proprie.
+- **calibrare**: **GĂSIT** — cazul cunoscut dinainte, `contracte_speciale.nota` → `calcul_zilier` fără dată, a fost **găsit de instrument**, nu pus în el; la fel `intrastat.analiza_flux`. **RATAT**: niciunul cunoscut azi, iar limita e scrisă la „ce nu vede” (`main.py` nu e parcurs). Restul calibrării e **pe modul MEU de eșec, nu pe cel al codului** — am măsurat clasa greșit de **trei
+  ori** într-o singură alegere, toate în aceeași direcție (numărând **forma**, nu **efectul**, exact
+  limita declarată la interdicția 14):
+  1. numai apeluri pe **nume**, nu pe atribut → *„1 apel de `cota` în tot `core/`"*;
+  2. „omis" = fără **cuvânt-cheie**, deci cele **310** care dau data **pozițional** au intrat în clasă
+     → *„68 de apeluri de producție"*;
+  3. tipar de nume prea larg → o funcție de **email** clasată ca fiscală, prinsă abia la citirea sursei.
+  Fiecare are probă proprie în `core/test_data_curenta.py`, iar a treia e declarată în `EXCEPTII` cu
+  motivul. **Mutație, trei direcții, toate omoară teste** — inclusiv oarba-la-atribut, după ce prima
+  formă a calibrării s-a dovedit prea slabă ca s-o prindă (nu izola proprietatea).
+- **ce nu vede**: numai `core/` — **`main.py` nu e parcurs**, deci un apel de acolo care omite data
+  nu se vede · nu urmărește valoarea: un `la_data=None` **explicit** apare ca „dă data", deși efectul
+  e identic cu omiterea (direcția permisivă, scrisă) · nu spune dacă „azi" e greșit pentru un apel
+  anume — spune că **nimeni n-a ales** data; alegerea rămâne a omului, iar răspunsul lui stă în
+  `EXCEPTII`, cu motivul.
+- **unde ajunge efectul**: pe **cele două instanțe măsurate**, nu în general.
+  `contracte_speciale.nota` produce **liniile unei note contabile** (641/621 = 421, 421 = 4315/4316/
+  444/5311) — deci varianta de formulă aleasă după „azi" intră în **jurnal**, de acolo în balanță și
+  în **D112** (zilierii se declară acolo), iar nota poartă data ei, nu data rulării. `analiza_flux`
+  alimentează **verdictul afișat pe ecranul Intrastat**: statusul `sub_prag|atenție|depășit` și luna
+  depășirii — adică o afirmație despre o **obligație de declarare la INS**, calculată pe pragul
+  altui an. *Prima ajunge într-o declarație depusă; a doua, într-o afirmație arătată contabilului.
+  Cele 26 de funcții latente n-au încă unde ajunge — de-aia sunt latente, și de-aia stau la clichet,
+  nu la instanțe.*
 ## 4 — O regulă fiscală implementată în stratul de prezentare
 
 - **stare**: MĂSURATĂ

@@ -87,20 +87,30 @@ def remuneratie_minima_zilier(salariu_minim, ore=8, ore_luna=Decimal("165.33")):
     orar = (sm / Decimal(str(ore_luna))).quantize(B, rounding=ROUND_HALF_UP)
     return {"orar_minim": orar, "zi_minima": (orar * ore).quantize(B)}
 
-def nota(brut, fel="zilier", sursa="casa"):
-    """Nota completa: cheltuiala + retineri + plata net."""
+def nota(brut, fel="zilier", sursa="casa", la_data=None):
+    """Nota completa: cheltuiala + retineri + plata net.
+
+    `la_data` = DATA NOTEI. Fara ea, `calcul_zilier` cadea pe `date.today()`, deci o nota inregistrata
+    azi pentru o luna trecuta primea varianta de formula de AZI — o cifra valida si falsa (interdictia
+    **3**). Ruta care cheama functia avea deja data in cerere (`corp["data"]`, folosita pentru
+    „luna deschisa") si n-o trimitea mai departe.
+
+    Variabila locala s-a redenumit `rez`: se numea `c` si umbrea aliasul modulului `common`, deci
+    normalizarea datei n-ar fi avut de unde sa fie chemata.
+    """
+    _ld = c._ca_data(la_data) if la_data else None
     if fel == "zilier":
-        c = calcul_zilier(brut)
+        rez = calcul_zilier(brut, _ld)
         cont_ch = "641"
     elif fel in ("cenzor", "mandat"):
-        c = calcul_mandat(brut)
+        rez = calcul_mandat(brut)   # fara varianta datata azi; cand va avea una, primeste `_ld`
         cont_ch = "621"
     else:
         raise ValueError("fel: zilier|cenzor|mandat")
     cont_bani = "5311" if sursa == "casa" else "5121"
-    linii = [(cont_ch, "421", c["brut"]), ("421", "4315", c["cas"])]
-    if c["cass"] > 0:
-        linii.append(("421", "4316", c["cass"]))
-    linii.append(("421", "444", c["impozit"]))
-    linii.append(("421", cont_bani, c["net"]))
-    return {"linii": linii, **c}
+    linii = [(cont_ch, "421", rez["brut"]), ("421", "4315", rez["cas"])]
+    if rez["cass"] > 0:
+        linii.append(("421", "4316", rez["cass"]))
+    linii.append(("421", "444", rez["impozit"]))
+    linii.append(("421", cont_bani, rez["net"]))
+    return {"linii": linii, **rez}

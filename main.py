@@ -10263,7 +10263,7 @@ def nota_contract_special(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
         _cere_luna_deschisa(conn, schema, corp.get("data"))
         try:
             r = _cs.nota(corp["brut"], corp.get("fel", "zilier"),
-                         corp.get("sursa", "casa"))
+                         corp.get("sursa", "casa"), la_data=corp.get("data"))
         except (ValueError, KeyError) as e:
             raise HTTPException(422, str(e))
         fel = corp.get("fel", "zilier")

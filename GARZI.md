@@ -6790,11 +6790,33 @@ prima măsurătoare a clasei. Își normalizează acum singură intrarea.
 **Cauza 2 s-a despărțit în R113**, cu cifra ei: **8** acte de corpus sunt CIOT doar fiindcă poartă
 așezarea Monitorului Oficial, și **2** ar câștiga titluri false dintr-un tipar prea larg.
 
+## 01.09.2026 (3) — Interdicția 3, măsurată: cine alege data unui calcul fiscal
+
+**Pasul a fost ales din `scan_ramas.py`, pe criteriu, nu din vecinătate** — a doua oară când Costin
+mă corectează pe asta. Criteriul: *ce poate produce o cifră validă și falsă.* Interdicția 3 e cea
+mai literală potrivire din cele 114 rânduri, și era **NEÎNCEPUTĂ**: fără instrument, deci fără cifră.
+
+**Două populații, fiindcă sunt două lucruri diferite.** **26** de funcții cad pe `date.today()` când
+apelantul nu dă data — generatoare latente. **4** apeluri de producție chiar omit data, din care
+**2** declarate cu motiv și **2** defecte. Contra-cifra dă scara: **88** de apeluri de producție dau
+data. *Clasa e mică; ce lipsea era instrumentul.*
+
+**Am măsurat-o greșit de trei ori înainte s-o măsor bine**, toate în aceeași direcție — numărând
+forma, nu efectul. „1 apel" (numai pe nume, nu pe atribut) · „68 de apeluri" (poziționalele socotite
+drept omisiuni) · o funcție de email clasată ca fiscală. Fiecare are acum probă proprie. Iar prima
+formă a probei pentru atribut **era prea slabă** — trecea și cu sonda oarbă, fiindcă nu izola
+proprietatea; mutația a arătat-o, și a fost ascuțită.
+
+**Reparat aici:** `contracte_speciale.nota` primește data notei. Ruta o avea deja în cerere și o
+folosea pentru „luna deschisă", dar n-o trimitea mai departe. **Rămâne R114:** ecranul Intrastat
+compară fluxurile anului cerut cu pragul de azi — reparația schimbă ce se afișează, fiindcă pentru
+2025 pragul nu se poate ști (R112), deci cere poartă vizuală.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**503 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**505 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 486
+### `core/` — 488
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -6803,6 +6825,7 @@ așezarea Monitorului Oficial, și **2** ar câștiga titluri false dintr-un tip
 - `core/scan_citate.py` — SCANNER de CITĂRI VERIFICABILE: `text_citat` chiar există în documentul citat? (21.08.2026)
 - `core/scan_conflicte_sursa.py` — core/scan_conflicte_sursa.py — INTERDICȚIA 58, partea nemăsurată: conflictele NEÎNREGISTRATE.
 - `core/scan_constante.py` — SCANNER de constante fiscale NESURSATE din codul de PRODUCTIE (20.08.2026).
+- `core/scan_data_curenta.py` — INTERDICȚIA 3 — «Un calcul fiscal care citește data curentă», măsurată.
 - `core/scan_ecran_reguli.py` — Instrumentul celor două reguli de ecran scrise pe 28.08.2026 — E1 (două nume distincte) și
 - `core/scan_garzi.py` — I1 — instrumentul pentru interdictiile 18 (garda isi ia dovada din proza) si 19 (garda raporteaza
 - `core/scan_garzi_culegere.py` — Rafinarea sub-instrumentului B.
@@ -7038,6 +7061,7 @@ așezarea Monitorului Oficial, și **2** ar câștiga titluri false dintr-un tip
 - `core/test_d710_sume_negative.py` — GARD TURA 3 — D710 B4: sume negative in obligatia manuala. PE HEAD (8b74ccb) o suma negativa era emisa
 - `core/test_d710_t1_cui.py` — GARD TURA 3 — D710 T1: checksum CUI al firmei validat PRE-DUK in erori_generare (sursa canonica
 - `core/test_d710_t9_parsare.py` — GARD TURA 3 — D710 T9: parsarea obligatiei MANUALE (contabil) ridica ValueError CLAR (camp + valoare)
+- `core/test_data_curenta.py` — GARD [01.09.2026, interdicția 3]: un calcul fiscal nu citește data curentă în tăcere.
 - `core/test_date_firma_alege_placeholder.py` — core/test_date_firma_alege_placeholder.py — GARD (jumatatea frontend a defectului „default fabricat"
 - `core/test_datorie.py` — REGISTRUL DE DATORIE — ce e amanat, ca test care ruleaza.
 - `core/test_declarant_oblig.py` — core/test_declarant_oblig.py — GARD: declarantul (nume + functie) e OBLIGATORIU in profil - se cere

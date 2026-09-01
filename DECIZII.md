@@ -13338,3 +13338,19 @@ desparte în tăcere"*. S-a despărțit oricum: mutasem **mulțimea**, nu **regu
 clauza lui `291` a rămas scrisă de două ori. Lecția e mai ascuțită decât cea de acum două zile: *nu
 muta datele și lasă logica duplicată — mută apelul.* Gardul de acum compară cele două căi pe fiecare
 temei din registru, deci o a treia despărțire cade la prima nepotrivire.
+
+## 01.09.2026 (4) — Alegerea pasului: din instrument, pe criteriu
+
+**(31) Candidatul din vecinătate nu e un candidat.** Alesesem R111 fiindcă tocmai îl găsisem, nu
+fiindcă ar fi câștigat pe criteriu. Costin: *„E a doua oară când candidatul vine prin apropiere;
+dacă tot R112 sau R113 câștigă, câștigă pe criteriu, nu pe adiacență."* Regula, scrisă: **pasul
+următor se citește din `scan_ramas.py`, iar candidații se MĂSOARĂ înainte de a fi comparați.**
+Măsurându-i, primul favorit (#3, prin apelurile de `cota`) s-a dovedit de 4 instanțe, nu de 68 —
+adică exact invers decât credeam când l-am propus. *Fără măsurătoare aș fi deschis o campanie pe o
+cifră greșită, a doua oară în aceeași zi.*
+
+**(32) O interdicție NEÎNCEPUTĂ se măsoară înainte să se repare.** Din cele 114 rânduri, patru dintre
+cele mai bune potriviri cu criteriul (#3, #33, #67, #70) sunt NEÎNCEPUTE cu populația nescrisă — deci
+alegerea între ele **nu se putea face din registru**. Prima muncă pe oricare dintre ele nu e o
+reparație, e o cifră. Am făcut asta: interdicția 3 a trecut în **MĂSURATĂ**, cu ambele populații,
+contra-cifra, limitele și calibrarea; reparațiile vin după, ordonate de ce arată cifra.

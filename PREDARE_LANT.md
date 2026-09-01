@@ -198,6 +198,20 @@ Criteriul lui **E2** numește exact două lucruri care lipsesc:
      fiindcă poartă așezarea Monitorului Oficial („Art. N. —" în loc de „Articolul N"), iar un tipar
      prea larg ar muta **2** fișiere din refuz în **răspuns fals**. *Azi doar un act poartă un temei,
      dar clasa crește cu fiecare act adus de la MO — și de ieri știm că aia e calea care merge.*
+
+3. **INTERDICȚIA 3 — MĂSURATĂ 01.09**, prima dintre cele NEÎNCEPUTE care primește instrument.
+   *Pasul a fost ales din `scan_ramas.py`, pe criteriul „ce poate produce o cifră validă și falsă",
+   după ce Costin m-a corectat a doua oară că îl luam din vecinătate.* Două populații deosebite:
+   **26** de funcții care cad pe `date.today()` când apelantul nu dă data (generatoare **latente**)
+   și **4** apeluri de producție care chiar omit data — 2 declarate cu motiv, 2 defecte. Contra-cifra
+   dă scara: **88** de apeluri de producție DAU data. *Clasa e mică; ce lipsea era instrumentul.*
+   **Am măsurat-o greșit de trei ori înainte s-o măsor bine**, toate numărând FORMA în loc de EFECT —
+   fiecare greșeală are acum probă în `core/test_data_curenta.py`.
+   - **reparat**: `contracte_speciale.nota` primește data notei; ruta o avea deja în cerere.
+   - **R114** *(prag 3)* — ecranul Intrastat compară fluxurile anului cerut cu pragul de **azi**.
+     Reparația schimbă ce se **afișează**: pentru 2025 pragul nu se poate ști (**R112**), deci
+     răspunsul onest e un necunoscut declarat, nu o cifră. Poartă vizuală, tură proprie.
+     *Îi dă lui R112 un consumator — lipsa ordinului din 2024 încetează să fie teoretică.*
 1. **categoria de reverificare (interdicția 55) — CONSTRUITĂ, 31.08.** `core/reverificare.py`, două
    axe mecanice × tabelul 3×3. Pe cele 34 de temeiuri: **24 clasificate, 10 NECUNOSCUT declarat**;
    **9 mai strict, 0 mai larg** față de pragul global de 6 luni. `INFORMATIV` e declarat **vid**, cu
@@ -269,7 +283,7 @@ ale Design System, **5** sunt acoperite. Nu invalidează porțile; le încadreaz
 
 ## AL PATRULEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
-- **restanțe deschise: 46** (din care ale etapei E1: **23**), derivat cu `scripts/raport_b.py`.
+- **restanțe deschise: 47** (din care ale etapei E1: **23**), derivat cu `scripts/raport_b.py`.
   **Nu se scrie de mână** — rândul ăsta a fost invalidat o dată.
 - **deschise în ultimele două zile**: R92 (etichete de stare) · R94–R96 (din 1b) · R97 (clasa „ruta
   livrează, ecranul tace", **remăsurată azi: 41 de câmpuri pe 15 rute**, de la 54 pe 16) · R98
@@ -278,7 +292,7 @@ ale Design System, **5** sunt acoperite. Nu invalidează porțile; le încadreaz
   întreagă**, și **R105** — deschisă și închisă în aceeași zi.
 - **decizii care blochează: niciuna.**
 - **locuri de verificare**: **221 scrise / 0 goale din 221 (100%)**.
-- **interdicții, din 77**: MĂSURATE **22** · PARȚIAL **16** · NEMĂSURABILE **5** · NEÎNCEPUTE **34**.
+- **interdicții, din 77**: MĂSURATE **23** · PARȚIAL **16** · NEMĂSURABILE **5** · NEÎNCEPUTE **33**.
 - **clusterele topologice**: `core.agenda.urmator_cluster()` → **`(None, 0, 0)`**; secvența e epuizată
   din 04.08.2026 — **nu există „următorul programat"**.
 - **cele mai vechi restanțe deschise**: R1, R3, R4, R5, R6, R7 — familia „încrederea în corpus".
