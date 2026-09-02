@@ -2763,6 +2763,114 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   trecută. *Exact interdicția 19 — o gardă care raportează favorabil pe zero rânduri —, dar ajunsă
   acolo prin trecerea timpului, nu prin construcție.*
 
+### R123 — Trei din cele cinci comparații orizontale n-au gardul „citește ce scrie generatorul"
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E4 · supervizorul · perechile orizontale · **PRAG 2**
+- **ce blochează**: nimic azi — toate cinci au fost probate pe portofoliu în tura asta, și toate
+  cinci au dat roșu pe date construite. Ce rămâne deschis e **clasa**: patru din cele cinci se
+  calibrează pe `randuri` **scrise de mână în test**, cu chei pe care generatorul le-ar putea să
+  nu scrie. Doar D101↔D100 are gardul care cere `randuri` de la generatorul real.
+- **instanța, măsurată** *(02.09.2026)*: perechea **D101 rd.50 ↔ Σ D100** era calibrată în amândouă
+  direcțiile și totuși oarbă. `d100.build_xml` emitea `suma_plata="3000"`, iar obligația persistată
+  prin `coada_api.randuri_din_res` avea **doar** `suma_dat` — `suma_plata` trăia în formatarea
+  XML-ului, nu ca **câmp** al dataclass-ului, iar `dataclasses.asdict` vede numai câmpuri. Perechea
+  aduna **0** pe orice depunere făcută prin aplicație. **R125**, reparată.
+- **calibrare**: `core/test_supervizor.py::test_perechea_D100_citeste_CHEIA_PE_CARE_GENERATORUL_O_SCRIE`
+  — cere `randuri` de la generator, prin exact funcția care le persistă, cu mutația în aceeași
+  funcție (cheia ștearsă → perechea vede 0). Celelalte patru comparații n-au echivalentul.
+- **ce nu vede măsurătoarea, și de ce nu scriu o cifră**: câte chei citește fiecare pereche din
+  `randuri` **nu se poate deriva** azi fără un scan pe AST care să lege dicționarul citit de
+  generatorul care l-a produs — iar o listă obținută prin căutarea literalilor `.get("...")` ar
+  număra și cheile citite din alte dicționare. *O cifră cu zgomot nemăsurat pusă aici ar deveni la
+  prima recitire „N chei nepăzite" — METODA §22.*
+- **condiția de deblocare**: fiecare din cele patru comparații rămase
+  (`D390_VS_D300_IC`, `D101_VS_CONT_691`, `D300_VS_D394_TAXARE_INVERSA`, `EFACTURA_VS_D394`) are un
+  gard care își ia `randuri` de la generatorul real, prin `coada_api.randuri_din_res`, și cade la
+  un câmp scos sau redenumit. Se închide când un câmp scos deliberat din `d300.Rezultat` **pică**.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `e82fbf72`
+- **rezolvată pe commit**: —
+- **unde ajunge efectul**: la contabil, printr-o constatare care numește o divergență ce nu există,
+  sau tace peste una care există. Instanța reparată făcea chiar asta: compara rândul 50 cu zero și
+  raporta „D100 depuse însumează 0,00 lei" despre trei declarații depuse care însumau 15.200.
+
+### R124 — Cheltuiala cu impozitul pe profit rămânea nededusă, iar D101 nu spunea nimic
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E4 · perechile orizontale (găsită construind scenariul) · **PRAG 1**
+- **ce blochează**: blocase **cifra declarată**. Contul 691 e un cont 6xx: intră în P2 și scade
+  rezultatul. CF art.25 alin.(4) lit.a) îl declară **nedeductibil**, iar formularul are rândul lui —
+  rd.23, verificat verbatim în `anaf_surse/opanaf_206_2025_d101.txt` l.212. Generatorul nu-l adăuga
+  înapoi (ajustările fiscale sunt ale contabilului) și **nu spunea nimic**.
+- **instanța, măsurată** *(02.09.2026, `tenant_005`, anul 2025)*: cu nota de impozit de **15.200 lei**
+  validată în evidență, același D101 a coborât de la **15.200** la **12.768 lei** — **2.432 lei sub
+  impozitul datorat**, în tăcere. *Direcția contează: omisiunea SUBEVALUEAZĂ impozitul.*
+- **cum s-a reparat, și de ce așa**: **semnal, nu completare automată.** Cât din soldul lui 691
+  merge la rd.23 e o decizie fiscală (la membrii unui grup impozitul trece prin 694; regularizările
+  pot fi de alt an). Rezerva legală (P13) se derivă automat fiindcă omisiunea ei **supra**-declară —
+  acolo implicitul e în favoarea corectitudinii; aici nu e. *Un implicit minte în amândouă
+  direcțiile; diferența e cine plătește minciuna.*
+- **calibrare, în AMÂNDOUĂ direcțiile**: `core/test_d101_impozit_nededus.py`, 3 teste — fără notă pe
+  691 nu se semnalează nimic (altfel ar fi zgomot pe orice D101), cu rd.23 completat semnalul tace
+  (altfel n-ar putea fi stins prin acțiunea cerută), iar efectul se asertează pe **cifră** (`P48`
+  scade), nu pe formularea mesajului.
+- **ce nu vede măsurătoarea**: dacă mai există alte cheltuieli nedeductibile derivabile din balanță
+  pe care generatorul le trece la fel de tăcut. N-am măsurat clasa — instanța asta a ieșit dintr-un
+  scenariu construit pentru altceva.
+- **condiția de deblocare**: ÎNDEPLINITĂ — D101 generat pe o firmă cu rulaj debitor pe 691 și rd.23
+  gol poartă un avertisment care numește suma, temeiul și rândul, iar avertismentul **tace** când
+  rd.23 e completat. Probat în amândouă direcțiile pe schemă efemeră
+  (`core/test_d101_impozit_nededus.py`) și pe portofoliu (`tenant_005`, 2025).
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `e82fbf72`
+- **rezolvată pe commit**: `e82fbf72`
+- **unde ajunge efectul**: la contabilul care a înregistrat nota de impozit înainte de a genera
+  D101 — primea o declarație cu impozit mai mic decât cel datorat, fără niciun semn. La un control,
+  diferența e a lui.
+
+### R125 — „Suma de plată" a obligației D100 trăia doar în XML, nu în rândurile persistate
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E4 · supervizorul · perechile orizontale · **PRAG 1**
+- **ce blochează**: blocase **perechea CERTĂ D101 rd.50 ↔ Σ D100**, adică singura comparație care
+  poate cere o confirmare scrisă înainte de depunere. `Obligatie` n-avea câmpul `suma_plata`;
+  `build_xml` îl emitea derivându-l din `suma_dat`, iar `randuri_din_res` (care serializează
+  dataclass-ul) nu-l scria. Perechea citea exact cheia aia.
+- **instanța, măsurată** *(02.09.2026, pe calea reală)*: un D100 de **3.000 lei** emite
+  `suma_plata="3000"` în XML și persista o obligație cu cheile
+  `cod_bugetar, cod_oblig, cota, nr_evid, scadenta, suma_dat` — fără `suma_plata`. Perechea aduna
+  **0**: `P50` se compara cu zero pe **orice** depunere făcută prin aplicație. *O cifră validă și
+  falsă: roșu cu cifra din dreapta greșită, sau tăcere când `P50` era 0.*
+- **de ce nu ieșise din teste**: `core/test_supervizor.py` își fabrica `randuri` cu cheia
+  `suma_plata` scrisă de mână. **Testul și codul erau scrise pe aceeași presupunere.** Regula 3 de
+  conducere a lucrului (`PLAN_LUCRU.md`, Costin 02.09.2026) s-a scris din instanța asta, iar prima
+  ei aplicare a scos-o în primul pas.
+- **cum s-a reparat**: `suma_plata` devine **câmp** al obligației, completat în `calcul_d100` din
+  aceeași valoare, iar `build_xml` îl **emite din câmp** — o singură sursă, tiparul lui
+  `total_plata_a`. XML-ul emis rămâne identic caracter cu caracter.
+- **calibrare**: `core/test_supervizor.py::test_perechea_D100_citeste_CHEIA_PE_CARE_GENERATORUL_O_SCRIE`,
+  cu mutația în aceeași funcție. **Proba pe portofoliu** (`tenant_005`, 2025): trei D100 depuse prin
+  aplicație însumează **15.200 lei**, iar perechea îi vede — înainte de reparație ar fi văzut 0.
+- **ce nu vede măsurătoarea**: dacă mai există câmpuri emise în XML fără să fie câmpuri de rezultat,
+  pe celelalte declarații. **R123** e clasa.
+- **condiția de deblocare**: ÎNDEPLINITĂ — `randuri_din_res` pe un D100 real conține `suma_plata`,
+  iar `_plati_anticipate_din_d100` citește din el aceeași cifră pe care XML-ul o declară. Probat
+  mecanic (gard cu mutație în aceeași funcție) **și** pe portofoliu: cele trei D100 depuse pe
+  `tenant_005` / 2025 însumează 15.200 lei, nu 0.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `e82fbf72`
+- **rezolvată pe commit**: `e82fbf72`
+- **unde ajunge efectul**: la contabilul care depune. Poarta confirmării ar fi cerut o confirmare
+  scrisă peste o divergență inventată — „D100 depuse însumează 0,00 lei" despre trei declarații
+  care însumau 15.200 —, iar o confirmare dată peste o cifră falsă e mai rea decât lipsa ei.
+
 ### R112 — Ianuarie 2026 stă pe un act care nu era în vigoare
 
 - **felul**: SURSĂ

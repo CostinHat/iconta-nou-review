@@ -455,7 +455,7 @@ vede, dar nu produce niciun efect. **R115.**
 
 ---
 
-## Două reguli de conducere a lucrului *(Costin, 01.09.2026)*
+## Patru reguli de conducere a lucrului *(Costin, 01–02.09.2026)*
 
 **1. Deciziile care nu mută direcția sunt ale mele, nu urcă la arhitect.** O alegere între două
 implementări care duc în același loc, ordinea a două reparații din aceeași familie, forma unui gard,
@@ -474,3 +474,61 @@ folosește.* Un gard nou, un clichet coborât, o interdicție măsurată — toa
 asta, dar trebuie **scrisă**, nu subînțeleasă. *Motivul, măsurat:* o axă întreagă (corpus-instrument
 și igienă) a produs zile de lucru fără nimic vizibil pentru un contabil, iar restanțele au crescut
 mai repede decât se închideau.
+
+**3. O pereche sau o gardă nouă se probează pe PORTOFOLIU, nu doar în teste** *(Costin, 02.09.2026,
+verbatim)*: *„orice pereche sau gardă nouă se probează pe portofoliu, nu doar în teste. Datele care
+lipsesc le construiești tu — invalide întâi, apoi valide — ca scenariu declarat. Nu-mi ceri mie să
+produc condiția; o ceri doar dacă e o apăsare de buton pe care numai un om o poate face."*
+
+**Ce cere, ca act, în ordinea în care se face:**
+
+| pas | ce înseamnă |
+|---|---|
+| **datele lipsă le construiesc EU** | nu se așteaptă o depunere reală, nu se cere lui Costin să producă starea. Firmele portofoliului sunt de test; datele intră **prin lanțul aplicației** (generator → validator → coadă → depunere), nu prin rânduri scrise de mână |
+| **invalide ÎNTÂI** | starea în care garda trebuie să spună **nu**. Dacă nu spune, garda e falsă, nu datele |
+| **apoi VALIDE** | starea în care trebuie să spună **da**. O gardă care nu poate spune da e o constantă, nu o măsurătoare — §22 din `METODA_VERIFICARE.md`, dus de la unitate la portofoliu |
+| **scenariu DECLARAT** | firma, perioada, cifrele și **de ce nu se potrivesc** se scriu, ca altcineva să poată reface sau desface starea. Un rând de date fără scenariu scris devine, peste o lună, „date reale ciudate" |
+| **omului i se cere DOAR apăsarea** | tot ce se poate face din cod se face din cod. Ce rămâne al lui e strict actul pe care numai un om îl poate face: apăsarea unui buton, o decizie, o autorizare |
+
+**DE CE E O REGULĂ, și nu o bună practică — instanța care a produs-o, măsurată în chiar tura în
+care regula s-a scris.** Perechea **D101 rd.50 ↔ Σ D100** era calibrată *în amândouă direcțiile*
+(verde pe cazul coincident, roșu pe cel divergent) și totuși **oarbă**: testele își fabricau singure
+rândurile depuse, cu cheia `suma_plata`, iar generatorul **nu o scria**. `d100.build_xml` emitea
+`suma_plata="3000"` în XML, dar obligația persistată în `declaratii_depuse.randuri` avea doar
+`suma_dat` — fiindcă `suma_plata` trăia în formatarea XML-ului, nu ca **câmp** al dataclass-ului,
+iar `dataclasses.asdict` vede numai câmpuri. Deci pe **orice** depunere făcută prin aplicație
+perechea aduna **0** și compara rândul 50 cu zero: *o cifră validă și falsă*, care n-ar fi ieșit
+niciodată dintr-un test, fiindcă testul și codul citit greșit erau scrise pe aceeași presupunere.
+**Prima probă pe portofoliu a scos-o în primul pas.**
+
+*Regula generalizează [[calibrare-cu-efectul-nu-cu-numele]] cu un nivel mai sus: o calibrare pe
+subiect fabricat dovedește că funcția e corectă pe intrarea pe care i-o dai tu, nu că intrarea aia e
+cea pe care o produce aplicația.* **Gardul mecanic derivat**, ca regula să nu rămână doar scrisă:
+`core/test_supervizor.py::test_perechea_D100_citeste_CHEIA_PE_CARE_GENERATORUL_O_SCRIE` — cere
+`randuri` de la generator, prin exact funcția care le persistă, și cade la orice câmp scos sau
+redenumit. Celelalte trei perechi n-au încă gardul echivalent: **R123**.
+
+**4. POARTA SCURTĂ — perimetrul se DERIVĂ, nu se alege** *(Costin, 02.09.2026, verbatim)*:
+
+> *„Poarta scurtă: se rulează construcția atinsă și tot ce depinde de ea, derivat din dependențele
+> reale din cod, nu ales de la caz la caz. Poarta completă rămâne obligatorie înainte de publicare
+> și înainte de `/clear`. Dacă derivarea nu poate stabili cu certitudine perimetrul, se rulează tot
+> și se spune de ce — un perimetru ghicit e mai rău decât o poartă lungă."*
+
+| | |
+|---|---|
+| **când se poate scurta** | în timpul turei, între reparații, pe un arbore care **nu se publică încă** |
+| **ce intră în perimetru** | construcția atinsă **plus închiderea tranzitivă a celor care o importă** — citită din cod (graful de import + apelanții), nu din memorie și nu din numele fișierelor |
+| **când NU se poate scurta** | **înainte de publicare** (commit + push + restart) și **înainte de `/clear`**. Acolo poarta e cea completă, fără excepție |
+| **când derivarea nu e sigură** | se rulează **tot**, și se scrie **de ce** derivarea n-a putut închide perimetrul. *Un perimetru ghicit e mai rău decât o poartă lungă*: o poartă lungă costă minute, un perimetru ghicit dă verde despre ce n-a rulat |
+
+**DE CE contează cifra.** Poarta completă durează **~21 de minute** (măsurat pe zece rulări,
+01–02.09: 1223s…1256s), iar o tură cu două commituri costă ~42 de minute doar în porți. Regula nu
+schimbă ce se garantează la publicare — mută doar bucla scurtă din timpul lucrului.
+
+**CE FACE IMPOSIBIL, și e chiar motivul formei ei.** Un perimetru **ales** e ales de cine tocmai a
+scris modificarea, adică de singurul care nu poate ști ce n-a văzut. Tiparul e deja măsurat de două
+ori în registru: garda care se uită exact unde codul e corect
+([[gard-care-nu-se-verifica-pe-sine]]) și calibrarea pe subiect fabricat (regula 3, mai sus). *Un
+perimetru derivat poate fi greșit; unul ales e greșit exact acolo unde autorul e orb.* De-aia
+alternativa la nesiguranță e **tot**, nu **mai puțin**.

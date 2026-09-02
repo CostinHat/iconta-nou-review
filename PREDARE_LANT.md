@@ -6,7 +6,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 - **ultima rescriere**: **2026-09-02**. **Rescriere COMPLETĂ**, cerută de Costin. Precedenta completă
   a fost pe 01.09; între ele, **cinci parțiale**.
-- **pe commit**: `7e4977b6` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care o
+- **pe commit**: `e82fbf72` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care o
   poartă, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e arborele care devine
   commitul următor; numele de aici e al celui **precedent**, prin construcție, nu din uitare.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
@@ -19,6 +19,12 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
   invalidate** (se poartă, nu se deleagă) · **capcanele de procedură** · **operaționalul**. Astea sunt
   registru câștigat: o rescriere care le-ar fi „împrospătat" ar fi șters exact ce nu se poate
   reconstrui. *Restul e narațiune și s-a rescris.*
+- **CE S-A SCHIMBAT DE LA RESCRIEREA COMPLETĂ DE AZI-DIMINEAȚĂ** *(tura a doua, 02.09)*: cele
+  **cinci** comparații orizontale au fost **probate pe portofoliul viu**, fiecare pe date construite
+  prin lanțul aplicației, și **fiecare a dat roșu cel puțin o dată**. Documentul de dimineață spunea
+  că toate patru perechile sunt „corecte și calibrate" și că niciuna n-a avut subiect. **Prima
+  jumătate era falsă** — v. tabelul cifrelor invalidate —, iar a doua nu mai e adevărată.
+  `de_confirmat` nu mai e 0.
 - **vechime măsurată, nu estimată**: **0 commituri** de la ultima atingere a fișierului.
 - **gardat**: `scripts/githooks/pre-commit` avertizează peste 10 commituri;
   `core/test_predare_proaspata.py` nu lasă avertismentul să dispară tăcut;
@@ -148,22 +154,29 @@ un roșu al orbirii mele.*
 
 ```
 CONSTATARI 16 · FARA_SUBIECT 0 · NEVERIFICAT 3   (suma = 19 = domeniul)
-constatari_total 92 · de_confirmat 0
+constatari_total 92 · de_confirmat 1
 
-D101_VS_CONT_691                 19   gri 19
-D101_VS_D100_PLATI_ANTICIPATE    19   gri 19
-D300_VS_D394_TAXARE_INVERSA      19   gri 19
-EFACTURA_VS_D394                 19   gri 19
-D390_VS_D300_IC                  16   gri 15 · VERDE 1
+D101_VS_CONT_691                 19   gri 18 · VERDE 1
+D101_VS_D100_PLATI_ANTICIPATE    19   gri 18 · ROSU 1
+D300_VS_D394_TAXARE_INVERSA      19   gri 18 · VERDE 1
+EFACTURA_VS_D394                 19   gri 18 · VERDE 1
+D390_VS_D300_IC                  16   gri 14 · VERDE 2
 ```
 
-**Un singur verde în tot portofoliul**, pe firma pe care Costin a depus un D300 (`tenant_017`,
-08/2026) — și e chiar verdele **slab**, cel care spune că două motoare sunt de acord. *Restul e gri
-onest: „n-am ce compara".* Cele **trei NEVERIFICATE** sunt firme pe care D390 nu se poate calcula
-(profil incomplet), numite pe ecran cu cauza.
+**Șase constatări cu conținut, pe trei firme** — `tenant_004` (trei verzi), `tenant_005` (un roșu +
+un verde), `tenant_017` (un verde). *Restul e gri onest: „n-am ce compara".* Cele **trei
+NEVERIFICATE** sunt firme pe care D390 nu se poate calcula (profil incomplet), numite pe ecran cu
+cauza.
 
-**Cifra care contează pentru cine continuă: `de_confirmat = 0`.** Nimic nu blochează nicio depunere,
-și nu va bloca până când o constatare CERTĂ nu iese roșie.
+**Cifra care contează pentru cine continuă: `de_confirmat = 1`.** Constatarea CERTĂ roșie e pe
+`tenant_005`, anul 2025: **D101 rd.50 = 12.000 lei, iar cele trei D100 depuse însumează 15.200**.
+Amprenta ei: `09441a61b26c5ce555929ad4a890518f`. Poarta confirmării o cere la **orice** depunere pe
+firma aia — elementul **8052** (D300 trim 3/2026, `la_senior`, verdict valid) e pus în coadă exact
+ca s-o întâlnească.
+
+**NU E O DEPUNERE REALĂ CARE A IEȘIT ROȘU — E UN SCENARIU CONSTRUIT, DECLARAT.** Datele sunt scrise
+de mine pe firme de test, pe calea aplicației, ca să se poată apăsa poarta. Regula care cere asta:
+`PLAN_LUCRU.md`, regula 3 de conducere a lucrului.
 
 ### Suprafața lui, concret — ce chemi și ce primești
 
@@ -206,10 +219,25 @@ de cod — e folosire.** Pașii, verificați la sursă pe 01.09:
 - **luna din jurnal**: pentru trimestriale e **luna finală a trimestrului** (`_trim * 3`), nu numărul
   trimestrului — `coada_api.marcheaza_depusa`.
 
-### CE I-AR TREBUI FIECĂREI PERECHI CA SĂ DEA PRIMUL EI ROȘU
+### PRIMUL ROȘU AL FIECĂREIA — DAT, ȘI MĂSURAT *(02.09.2026, tura a doua)*
 
-*Toate patru sunt corecte și calibrate; niciuna n-a avut încă subiect. Ce urmează nu e o listă de
-lucruri de programat — e ce trebuie să se întâmple ÎN APLICAȚIE.*
+**Lista de mai jos nu mai e o listă de așteptări: fiecare rând s-a întâmplat.** Datele au fost
+construite de mine, pe firme de test, **prin lanțul aplicației** (generator → DUK → coadă →
+depunere), invalide întâi și valide după — regula 3 din `PLAN_LUCRU.md`.
+
+| comparația | firma · perioada | ROȘU (invalid) | VERDE (valid) |
+|---|---|---|---|
+| **D101 rd.50 ↔ Σ D100** | `tenant_005` · 2025 | rd.50 = 12.000 vs Σ 15.200 | rectificativă cu rd.50 = 15.200 |
+| **D101 rd.48 ↔ cont 691** | `tenant_005` · 2025 | 15.200 declarat vs 0 în 691 | notă validată pe 691 = 15.200 |
+| **D390 ↔ D300 depus** | `tenant_004` · 08/2026 | D390 A = 12.000 vs D300 depus 0 | rectificativă D300, R5_1 = 12.000 |
+| **D300 rd.12 ↔ D394 lit. C** | `tenant_004` · 08/2026 | D300 0 vs D394 8.000 | rectificativă D300, rd.12 = 8.000 |
+| **e-Factura ↔ D394** | `tenant_004` · 08/2026 | 1 din 1 transmisă, nedeclarată | rectificativă D394 o include |
+
+**STAREA LĂSATĂ, deliberat:** patru din cinci sunt **verzi**; singura lăsată **roșie** e
+D101 rd.50, fiindcă poarta confirmării are nevoie de un subiect viu ca să poată fi apăsată.
+
+*Ce urmează e textul de dimineață, păstrat fiindcă descrie ce ar face perechile vii din FOLOSIRE,
+nu din construcție — și aia încă n-a venit.*
 
 - **D390 ↔ D300 depus** — un D300 depus prin coadă, pe o firmă cu operațiuni intracomunitare, în
   care rândul `R1_1` **nu** se potrivește cu baza recalculată a D390. Azi rândul se derivă automat
@@ -259,9 +287,15 @@ partenerului și poate conține orice caracter ai alege ca separator.
   generat, unde se recalculează la fiecare rulare.
 - **Restanțele consemnate-și-nelucrate ale axei oprite** sunt numite în tabelul de restanțe de mai
   jos, cu condiția fiecăreia.
-- **Cele două reguli de conducere a lucrului** (`PLAN_LUCRU`, 01.09): deciziile care nu mută direcția
-  sunt ale mele, nu urcă la arhitect · **o tură care nu schimbă nimic pentru un contabil cere
-  justificare SCRISĂ** în `§2` al raportului.
+- **Cele PATRU reguli de conducere a lucrului** (`PLAN_LUCRU`, 01–02.09): deciziile care nu mută
+  direcția sunt ale mele, nu urcă la arhitect · **o tură care nu schimbă nimic pentru un contabil
+  cere justificare SCRISĂ** în `§2` al raportului · **3.** o pereche sau o gardă nouă **se probează
+  pe portofoliu**, nu doar în teste, pe date construite de mine — invalide întâi, apoi valide, ca
+  scenariu declarat; omului i se cere doar apăsarea pe care numai el o poate face · **4.** poarta
+  **scurtă** rulează construcția atinsă și tot ce depinde de ea, **derivat** din import-uri
+  (`scripts/perimetru.py`), nu ales de la caz la caz; poarta completă rămâne obligatorie **înainte
+  de publicare și înainte de `/clear`**, iar când derivarea nu poate închide perimetrul se rulează
+  **tot** și se spune de ce.
 
 ---
 
@@ -415,6 +449,8 @@ acum un nume și patru instanțe într-o zi.*
 
 ---
 | **„coada are 3 elemente, toate în `la_senior`" · „calea n-a fost folosită niciodată"** | R40, purtată în registru și **citată de mine în raportul din 01.09 fără remăsurare** | **2 elemente, dintre care unul** în `la_senior`. Iar calea **fusese folosită din 24.08.2026**, când Costin depusese un d301 (`coada 2411`, `tenant_006`) — chiar singurul rând cu `randuri` din bază. *Am citat o restanță din registru ca pe un fapt curent. Registrul e sursa a ce s-a măsurat ATUNCI, nu a ce e adevărat ACUM* |
+| **„toate patru perechile sunt corecte și calibrate"** | rescrierea completă a predării, 02.09 dimineața, și antetul lui `core/supervizor.py` | **falsă pentru una din cinci.** `D101 rd.50 ↔ Σ D100` era calibrată în amândouă direcțiile și **oarbă**: testele își fabricau `randuri` cu cheia `suma_plata`, pe care generatorul **nu o scria** (trăia doar în formatarea XML-ului). Pe orice depunere făcută prin aplicație perechea aduna **0**. **R125.** *„Calibrat" descria relația dintre test și funcție, nu dintre funcție și aplicație — iar propoziția nu spunea care.* |
+| **„R1_1 / R5_1 sunt MANUAL-ONLY (le introduce contabilul la generare)"** | antetul secțiunii F163 din `core/control_incrucisat.py`, din naștere | **fals, și contrazis de funcția de dedesubt**, al cărei mesaj scrie că rândul „se derivă AUTOMAT din facturile cu partener din UE". Măsurat pe `tenant_004`: o achiziție IC de 12.000 lei a produs `R5_1 = 12000` în rectificativă, fără nicio intrare manuală. *A doua instanță în două zile a aceleiași clase — un text fals despre rândurile IC.* |
 | **„D394 nu-și expune facturile, deci perechea cere o schimbare mare de generator"** | R119, la deschidere, 02.09 | **schimbarea e mică**, și am aflat-o abia măsurând: toate cele **cinci** căi de acumulare trec printr-un singur `_adauga`, care ținea deja un dicționar paralel curățat la aceleași ștergeri. *„Cere schimbare de generator" era adevărat; „e mare" era o presupunere pe care n-o măsurasem* |
 
 ---
@@ -443,9 +479,11 @@ acum un nume și patru instanțe într-o zi.*
   cărui `except` **nu re-ridică** — dacă supervizorul crapă, depunerea trece, cu eșecul logat. Iar
   când chiar sunt constatări neconfirmate, răspunsul **numește calea de trecere în corpul lui**.
   Gardat pe AST, cu mutație probată.
-- **Perechea D101 nu se poate calibra pe date reale** — n-a existat nicio depunere D101 cu rânduri.
-  Calibrarea e pe subiect **fabricat**, pe schemă efemeră. *„Reparat pe clasă" și „probat pe instanță"
-  nu sunt același lucru.*
+- **Perechea D101 E calibrată acum pe portofoliu** *(02.09, tura a doua)* — patru depuneri D101 și
+  trei D100 pe `tenant_005`, toate prin lanțul aplicației. Propoziția de dimineață — *„nu se poate
+  calibra pe date reale"* — era adevărată atunci și e falsă acum. **Ce a scos calibrarea aia:
+  R125.** *„Reparat pe clasă" și „probat pe instanță" chiar nu sunt același lucru — iar de data asta
+  a doua l-a contrazis pe primul.*
 
 ### despre ce s-a oprit
 
