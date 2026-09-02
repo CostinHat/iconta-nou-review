@@ -7280,9 +7280,9 @@ aplicată înainte ca paralela să existe.*
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**508 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**509 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 491
+### `core/` — 492
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7656,6 +7656,7 @@ aplicată înainte ca paralela să existe.*
 - `core/test_pastila_gri.py` — GARD (20.08.2026): griul nu se falsifică niciodată în verde.
 - `core/test_patru_ochi_efectiv.py` — core/test_patru_ochi_efectiv.py — GARD: patru-ochi = politica x aplicabilitate, aceeasi in UI si in enforcement.
 - `core/test_pereche_act_articol.py` — GARD [31.08.2026, faza 2]: un temei nu numește un act care nu conține articolul lui.
+- `core/test_perechi_citesc_generatorul.py` — GARD [R123, 02.09.2026]: fiecare pereche orizontala citeste CHEIA PE CARE GENERATORUL O SCRIE.
 - `core/test_perimetru.py` — GARD [02.09.2026]: perimetrul portii SCURTE se DERIVA, si stie cand nu poate.
 - `core/test_perimetru_calculat.py` — #11 — §5 CALCULAT (meta-gardul). Din registrul de fatete (MODEL_AUDIT_TENANT.md, F1..F9)
 - `core/test_perimetru_firma_declarat.py` — core/test_perimetru_firma_declarat.py — GARD: perimetrul declarat al unei firme nu poate ramane

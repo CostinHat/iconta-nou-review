@@ -320,13 +320,11 @@ async function actioneaza(c, act, firme, corp, nav) {
       obligatoriu: true,
       buton: "Depune, cu motivul de mai sus",
       butonClasa: "val-trece",
-      onConfirm: async (motiv) => {
+      onConfirm: async (motiv, corpDialog) => {
         if (c.stare === "la_senior") {
           await api.post(`/coada/${c.id}/aproba`, { motiv_trecere: motiv });
         }
-        await api.post(`/coada/${c.id}/depune`, { motiv_trecere: motiv });
-        nav.inapoi();
-        randeazaValidat(corp, nav);
+        await depuneCuPoarta(nav, c, corpDialog, corp, firme, perDecl, { motiv_trecere: motiv });
       },
     });
     return;
@@ -339,26 +337,14 @@ async function actioneaza(c, act, firme, corp, nav) {
       obligatoriu: false,
       buton: "Confirmă depunerea",
       butonClasa: "val-depune",
-      onConfirm: async (spv) => {
+      onConfirm: async (spv, corpDialog) => {
         // Cu patru-ochi OFF, un item încă „la_senior" se aprobă automat înainte de depunere
         // (aceeași auto-aprobare pe care backendul o permite când patru-ochi e oprit).
         if (c.stare === "la_senior") {
           await api.post(`/coada/${c.id}/aproba`, {});
         }
-        try {
-          await api.post(`/coada/${c.id}/depune`, spv ? { spv_index: spv } : {});
-        } catch (e) {
-          const d = e && e.detaliu;
-          // [R126] NU e o eroare de arătat: e pasul următor al aceluiași act, iar serverul a trimis
-          // tot ce trebuie ca să-l putem oferi. Orice ALT refuz merge mai departe la dialog.
-          if (e && e.cod === 409 && d && d.cod === "CONSTATARI_NECONFIRMATE" && (d.constatari || []).length) {
-            pasConfirmariConstatari(nav, c, spv, d, firme, corp, perDecl);
-            return;
-          }
-          throw e;
-        }
-        nav.inapoi();
-        randeazaValidat(corp, nav);
+        await depuneCuPoarta(nav, c, corpDialog, corp, firme, perDecl,
+                             spv ? { spv_index: spv } : {});
       },
     });
     return;
@@ -372,6 +358,58 @@ async function actioneaza(c, act, firme, corp, nav) {
   }
 }
 
+// [R82/instanță, 02.09.2026 — DECIZIA lui Costin, varianta (a)] CONFIRMAREA UNUI ACT DE DEPUNERE.
+//
+// Verbatim: *„același buton nu poate să se încheie vizibil pe un drum și tăcut pe celălalt, iar
+// drumul tăcut e cel obișnuit. Tăcerea ajunge să însemne «s-a făcut», și atunci ziua în care nu s-a
+// făcut arată la fel."*
+//
+// UNA SINGURĂ, deliberat: o a doua casetă pentru drumul „simplu" ar fi divergit de prima la prima
+// schimbare, iar ce s-ar fi pierdut e chiar partea care contează — ENTITATEA și CONSECINȚA (DS
+// cap.27 / E2). Aici se numesc amândouă, plus ce s-a confirmat, când e cazul.
+//
+// `n` = câte constatări certe s-au confirmat odată cu depunerea; `0` = drumul obișnuit.
+function casetaDepusa(fc, nav, corpLista, c, firme, perDecl, n) {
+  const desprConf = n
+    ? ` ${n === 1 ? "O constatare certă a fost confirmată" : n + " constatări certe au fost confirmate"}`
+      + " în scris, cu numele tău și cu motivul. Confirmarea acoperă cifrele de acum: dacă se schimbă,"
+      + " se cere din nou."
+    : "";
+  fc.innerHTML = `
+    <div class="caseta-info">
+      <div class="ci-mesaj">
+        <b>${esc((c.tip || "").toUpperCase())} · ${esc(perDecl)} · ${esc(numeFirma(firme, c.tenant_id))}</b>
+        — depusă.${desprConf}
+      </div>
+    </div>
+    <div class="dlg-actiuni">
+      <button type="button" class="val-btn val-depune" id="val-conf-gata">Înapoi la coadă</button>
+    </div>`;
+  fc.querySelector("#val-conf-gata").addEventListener("click", () => {
+    nav.inapoi();
+    randeazaValidat(corpLista, nav);
+  });
+}
+
+// [R126] DEPUNEREA, cu poarta confirmării pe drum. Un singur loc pentru amândouă butoanele care
+// depun („Confirmă depunerea" și „Depune, cu motivul de mai sus"): altfel unul dintre ele ar fi
+// rămas fără tratarea lui 409, iar contabilul ar fi primit un mesaj brut în loc de pasul următor.
+async function depuneCuPoarta(nav, c, corpDialog, corpLista, firme, perDecl, corpCerere) {
+  try {
+    await api.post(`/coada/${c.id}/depune`, corpCerere);
+  } catch (e) {
+    const d = e && e.detaliu;
+    // NU e o eroare de arătat: e pasul următor al aceluiași act, iar serverul a trimis tot ce
+    // trebuie ca să-l putem oferi. Orice ALT refuz merge mai departe la dialog.
+    if (e && e.cod === 409 && d && d.cod === "CONSTATARI_NECONFIRMATE" && (d.constatari || []).length) {
+      pasConfirmariConstatari(nav, c, corpCerere, d, firme, corpLista, perDecl);
+      return;
+    }
+    throw e;
+  }
+  casetaDepusa(corpDialog, nav, corpLista, c, firme, perDecl, 0);
+}
+
 // [R126] PASUL DE CONFIRMARE — constatările CERTE, în față, cu un motiv per constatare.
 //
 // De ce `nav.mergi` și nu o fereastră nouă: confirmarea e **un pas al depunerii**, nu un act
@@ -382,7 +420,7 @@ async function actioneaza(c, act, firme, corp, nav) {
 // cele întoarse de server, cu **randarea unică** (`control_verdict.randA`) — aceeași anatomie
 // (semn + mesaj + TEMEI + remediu) ca pe ecranul Supervizorului și pe cel de control fiscal. O a
 // doua randare ar diverge, iar temeiul e primul care s-ar pierde.
-function pasConfirmariConstatari(nav, c, spv, detaliu, firme, corpLista, perDecl) {
+function pasConfirmariConstatari(nav, c, corpBaza, detaliu, firme, corpLista, perDecl) {
   const cs = detaliu.constatari || [];
   nav.mergi("Constatări de confirmat", (fc) => {
     fc.innerHTML = `
@@ -426,37 +464,21 @@ function pasConfirmariConstatari(nav, c, spv, detaliu, firme, corpLista, perDecl
       try {
         // Amprenta se trimite ÎNAPOI cum a venit — nu se recompune aici. Vezi antetul modulului.
         const confirmari = cs.map((x, i) => ({ amprenta: x.amprenta, motiv: campuri[i].value.trim() }));
-        const corpCerere = { confirmari };
-        if (spv) corpCerere.spv_index = spv;
-        await api.post(`/coada/${c.id}/depune`, corpCerere);
+        // Corpul cererii dintâi se DUCE MAI DEPARTE (index SPV, sau motivul trecerii peste verdict):
+        // a doua cerere e aceeași depunere, nu una nouă. Fără asta, indexul SPV tastat la primul pas
+        // s-ar fi pierdut tăcut la confirmare.
+        await api.post(`/coada/${c.id}/depune`, Object.assign({}, corpBaza, { confirmari }));
       } catch (e) {
         btn.disabled = false;
         er.textContent = (e && e.mesaj) || "Nu am putut depune. Încearcă din nou.";
         return;
       }
-      // [DS cap.27 / E2] Actul se incheie cu o confirmare VIZIBILA care numeste ENTITATEA si
-      // CONSECINTA, chiar in pasul in care s-a petrecut. Demontarea ferestrei nu e confirmare:
-      // „a disparut" arata identic cu „a reusit" si cu „s-a rupt ceva".
-      //
+      // [DS cap.27 / E2] Aceeasi caseta ca pe drumul fara constatari — v. `casetaDepusa`.
       // DE CE AICI si nu in lista: prima forma scria mesajul in zona de mesaje a listei, dupa
       // `nav.inapoi()`. Proba pe ecran l-a gasit GOL — inchiderea ferestrei re-randeaza ecranul de
       // dedesubt, iar re-randarea suprascrie mesajul. *Un mesaj care pierde o cursa cu re-randarea
       // e mai rau decat niciunul: codul spune ca arata ceva, si nu arata.*
-      fc.innerHTML = `
-        <div class="caseta-info">
-          <div class="ci-mesaj">
-            <b>${esc((c.tip || "").toUpperCase())} · ${esc(perDecl)} · ${esc(numeFirma(firme, c.tenant_id))}</b>
-            — depusă. ${cs.length === 1 ? "O constatare certă a fost confirmată" : cs.length + " constatări certe au fost confirmate"}
-            în scris, cu numele tău și cu motivul. Confirmarea acoperă cifrele de acum: dacă se schimbă, se cere din nou.
-          </div>
-        </div>
-        <div class="dlg-actiuni">
-          <button type="button" class="val-btn val-depune" id="val-conf-gata">Înapoi la coadă</button>
-        </div>`;
-      fc.querySelector("#val-conf-gata").addEventListener("click", () => {
-        nav.inapoi();
-        randeazaValidat(corpLista, nav);
-      });
+      casetaDepusa(fc, nav, corpLista, c, firme, perDecl, cs.length);
     });
   });
 }
@@ -486,7 +508,10 @@ function dialogInput(nav, opt) {
       const btn = corp.querySelector("#dlg-ok");
       btn.disabled = true;
       try {
-        await opt.onConfirm(val);
+        // Al doilea argument e CORPUL dialogului: actul care reuseste isi scrie confirmarea CHIAR
+        // AICI, in pasul in care s-a petrecut. Fara el, singura incheiere posibila era demontarea
+        // ferestrei — iar „a disparut" arata identic cu „a reusit" si cu „s-a rupt ceva".
+        await opt.onConfirm(val, corp);
       } catch (e) {
         btn.disabled = false;
         er.textContent = (e && e.mesaj) || "Eroare. Încearcă din nou.";

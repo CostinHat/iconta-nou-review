@@ -2763,6 +2763,51 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   trecută. *Exact interdicția 19 — o gardă care raportează favorabil pe zero rânduri —, dar ajunsă
   acolo prin trecerea timpului, nu prin construcție.*
 
+### R127 — Depunerea se încheia VIZIBIL pe un drum și TĂCUT pe celălalt, cu același buton
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E4 · supervizorul · stratul de efect · familia **R82** · **PRAG 1**
+- **ce blochează**: **încheierea actului de depunere.** Construind R126, drumul cu constatări a
+  primit o confirmare vizibilă (DS cap.27 / E2). Drumul obișnuit — depunere **fără** constatări —
+  a rămas să se încheie prin **demontarea ferestrei**. Același buton, „Confirmă depunerea", se
+  încheia vizibil într-un caz și tăcut în celălalt.
+- **decizia lui Costin, 02.09.2026, varianta (a)**, verbatim: *„depunerea fără constatări se încheie
+  cu aceeași casetă de confirmare, în pasul dialogului. Același buton nu poate să se încheie vizibil
+  pe un drum și tăcut pe celălalt, iar drumul tăcut e cel obișnuit. Tăcerea ajunge să însemne «s-a
+  făcut», și atunci ziua în care nu s-a făcut arată la fel."* Și limita, tot a lui: *„restul
+  familiei R82 rămâne deschisă. Se închide instanța asta, fiindcă piesa e deja construită."*
+- **cum s-a reparat**: **o singură** casetă (`casetaDepusa`), folosită de amândouă drumurile — o a
+  doua ar fi divergit de prima la prima schimbare, iar ce s-ar fi pierdut e chiar partea care
+  contează: **entitatea** (firmă · declarație · perioadă) și **consecința** („depusă", plus ce s-a
+  confirmat, când e cazul). `dialogInput` își dă acum **corpul** apelantului, ca actul care reușește
+  să-și poată scrie confirmarea chiar în pasul în care s-a petrecut.
+- **ce s-a reparat pe deasupra, fiindcă altfel se năștea aceeași clasă un nivel mai jos**: cele
+  **două** butoane care depun („Confirmă depunerea" și „Depune, cu motivul de mai sus") trec acum
+  prin **același** loc (`depuneCuPoarta`). Al doilea n-avea deloc tratarea lui `409`, deci pe el
+  contabilul ar fi primit mesajul brut în locul pasului de confirmare. Iar corpul primei cereri
+  (indexul SPV, sau motivul trecerii peste verdict) **se duce mai departe** la retrimitere: a doua
+  cerere e aceeași depunere, nu una nouă. *Fără asta, indexul SPV tastat la primul pas s-ar fi
+  pierdut tăcut la confirmare.*
+- **calibrare, pe ECRAN** (`frontend_test/proba_r126_confirmare.py`, legul nou): depunere **fără**
+  constatări pe `ALFA MICRO` → **0** pași de constatări, iar caseta spune
+  *„D300 · august 2026 · ALFA MICRO SRL — depusă."*. Gardul cere **trei** lucruri deodată: că
+  mesajul există, că **numește firma**, și că **NU** vorbește despre constatări confirmate când n-a
+  fost niciuna — a treia fiindcă o casetă comună e tocmai locul unde s-ar strecura o propoziție
+  adevărată pe un drum și falsă pe celălalt. **Captură**: `r126_8_depunere_simpla.png`.
+- **ce nu vede măsurătoarea**: restul familiei R82 — celelalte acte de nivel firmă care se termină
+  în tăcere. **Rămân deschise prin decizia lui Costin**, nu din uitare; aici s-a închis instanța
+  atinsă, fiindcă piesa era deja construită.
+- **condiția de deblocare**: depunerea, pe **amândouă** drumurile, se încheie cu aceeași casetă,
+  care numește entitatea și consecința — probat pe ecran, nu doar în cod.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `0b494dfd`
+- **rezolvată pe commit**: —
+- **unde ajunge efectul**: la contabilul care depune zilnic. *Tăcerea ajunge să însemne „s-a făcut",
+  și atunci ziua în care nu s-a făcut arată la fel* — iar depunerea e actul cel mai puțin reversibil
+  din aplicație (`depusa` n-are nicio ieșire în tabelul tranzițiilor).
+
 ### R126 — Poarta confirmării cere o confirmare pe care ECRANUL nu are prin ce s-o dea
 
 - **felul**: ARTEFACT

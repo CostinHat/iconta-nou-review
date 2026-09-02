@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-"""PROBA R126 — confirmarea constatarilor CERTE se da IN dialogul depunerii, pe ECRAN.
+"""PROBA R126 + R82/instanta — depunerea se incheie VIZIBIL, pe amandoua drumurile.
 
 DECIZIA lui Costin (02.09.2026), varianta (a): *„confirmarea sta unde se ia decizia, cu depunerea
 oprita si constatarea in fata."* Proba parcurge traseul REAL, pe portofoliu, si il masoara in
@@ -237,6 +237,32 @@ try:
                             is_mobile=True, has_touch=True)
         mob.add_init_script(INIT)
         mp = mob.new_page()
+        # ── DRUMUL FARA CONSTATARI [R82/instanta, decizia lui Costin 02.09] ──────────────────
+        # *„acelasi buton nu poate sa se incheie vizibil pe un drum si tacut pe celalalt, iar
+        # drumul tacut e cel obisnuit."* Firma asta (ALFA MICRO) n-are D101 depus, deci perechile
+        # raspund GRI, nu rosu — poarta nu cere nimic si depunerea trece direct.
+        r3 = api("/coada", "POST", {"tenant_id": 8396, "tip": "d300", "an": 2026, "luna": 8}, TOK)
+        assert r3.get("ok") or r3.get("_http") == 409, "n-am putut pregati depunerea simpla: %r" % r3
+        deschide_coada(pg)
+        subs = pg.eval_on_selector_all(".val-sub", "els=>els.map(e=>e.innerText)")
+        i_alfa = next(i for i, s in enumerate(subs) if "ALFA MICRO" in (s or ""))
+        pg.query_selector_all(".val-depune")[i_alfa].click()
+        pg.wait_for_selector("#dlg-input", timeout=10000)
+        pg.click("#dlg-ok")
+        pg.wait_for_selector(".caseta-info .ci-mesaj", timeout=25000)
+        simplu = pg.eval_on_selector(".caseta-info .ci-mesaj", "e=>e.innerText.strip()"
+                                     if False else "e=>e.innerText.trim()")
+        fara_pas = len(pg.query_selector_all(".val-conf-item"))
+        print("DEPUNERE SIMPLA -> confirmare=%r · constatari pe drum=%d" % (simplu[:120], fara_pas))
+        sc(pg, "r126_8_depunere_simpla.png")
+        assert fara_pas == 0, "drumul simplu n-ar fi trebuit sa aiba pas de constatari"
+        assert simplu and "depus" in simplu.lower(),             "depunerea FARA constatari s-a incheiat in tacere: %r" % simplu
+        assert "ALFA MICRO" in simplu, "confirmarea nu numeste firma: %r" % simplu
+        assert "confirmat" not in simplu.lower(),             "caseta vorbeste despre constatari confirmate desi n-a fost niciuna: %r" % simplu
+        assert pg.query_selector("#val-conf-gata"), "confirmarea n-are iesire"
+        pg.click("#val-conf-gata")
+        pg.wait_for_selector(".val-card, .stare-goala", timeout=25000)
+
         # acelasi motiv ca la start: legul de desktop tocmai a confirmat cifrele, iar amprenta nu
         # s-a schimbat — fara reset, poarta n-ar mai avea ce cere pe telefon.
         reset_confirmari("inainte de mobil")
@@ -259,6 +285,7 @@ finally:
         api("/eu/patru-ochi", "POST", {"activ": True}, TOK)
         print("patru-ochi restaurat la ACTIV")
 
-print("PROBA R126 OK: refuzul cu motive goale marcheaza campurile si nu depune; "
-      "cu motivele scrise depune si confirmarile raman scrise; axe curat; mobil fara revarsare.")
+print("PROBA R126 OK: refuzul cu motive goale marcheaza campurile si nu depune; cu motivele scrise "
+      "depune si confirmarile raman scrise; depunerea FARA constatari se incheie cu aceeasi caseta, "
+      "fara sa vorbeasca despre confirmari; axe curat; mobil fara revarsare.")
 print("RULAT LA:", datetime.datetime.now().isoformat(timespec="seconds"))
