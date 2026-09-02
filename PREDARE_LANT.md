@@ -6,7 +6,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 - **ultima rescriere**: **2026-09-02**. **Rescriere COMPLETĂ**, cerută de Costin. Precedenta completă
   a fost pe 01.09; între ele, **cinci parțiale**.
-- **pe commit**: `e82fbf72` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care o
+- **pe commit**: `4023e1ca` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care o
   poartă, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e arborele care devine
   commitul următor; numele de aici e al celui **precedent**, prin construcție, nu din uitare.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
@@ -199,6 +199,29 @@ buton, vizibil pe un drum și tăcut pe celălalt.* Costin a închis instanța (
 limita: *„restul familiei R82 rămâne deschisă."* Acum e **o singură** casetă pentru amândouă
 drumurile, iar cele **două** butoane care depun trec prin același loc — al doilea („Depune, cu
 motivul de mai sus") n-avea deloc tratarea lui 409.
+
+**CONSTRUCȚIA INTERNĂ E ÎNCHISĂ** *(Costin, 02.09, scris ca STARE în `PLAN_LUCRU.md`)*. R118 a
+fost ultima temă internă. Familia R82 rămâne **parcată**, backlogul A3 **neînceput**, R116 și R117
+**consemnate**. *Ce urmează nu e construcție, e ieșirea la un cabinet-pilot* — și aia nu e temă pe
+care o sesiune nouă s-o poată deschide singură. Ce rămâne permis fără să întrebe: un **prag 1** găsit
+apăsând. **Citește secțiunea din plan înainte de a-ți alege următorul lucru.**
+
+**R118, ÎNCHISĂ: ce se servește nu mai e ce e în lucru.** `/static` se montează din
+`../iconta_publicat/static`, scris din **HEAD** de `post-commit`, **înainte** de restart. Publicarea
+are poarta ei — `node --check` pe fiecare `.js` —, deci nici calea de dezvoltare (`--din-arbore`) nu
+poate duce mai departe un modul care nu se parsează. **Consecință pentru cine lucrează:** o editare
+de JS **nu mai e live**; se publică deliberat (`./venv/bin/python scripts/publica_static.py
+--din-arbore`) înainte de orice probă pe ecran. *Costul e o comandă; ce cumpără e că un desktop nu
+se mai poate opri pentru că cineva salva un fișier.*
+
+**ȘI CE A SCOS PRIMA APĂSARE REALĂ — R128 și R129.** Costin a apăsat pe elementul 8052, iar din
+`uvicorn.log` a ieșit ordinea: `aproba` 200 → `depune` 409 → `aproba` 409. Înlănțuirea trăia în
+**client**, poarta trăiește în `depune` — deci aprobarea trecea și poarta cădea **după** ea, lăsând
+elementul `aprobata`, stare din care nu se mai poate **respinge**. *Un refuz care spune „nu blochez"
+și totuși mută starea într-un sens fără întoarcere.* **R128, reparată**: se trimite un act, serverul
+aprobă după poartă. **R129, deschisă**: pasul construit în aceeași zi nu s-a deschis pe ecranul lui
+fiindcă fila lui rulează `validat.js?v=e771e38cc0` — modulele commitului `9b3bf419`. *Nu era un
+defect al codului nou; era codul nou care nu ajunsese la el.*
 
 **PEREChILE AU ACUM GARDUL CLASEI LOR — R123 închisă.**
 `core/test_perechi_citesc_generatorul.py`: fiecare comparație își ia `randuri` de la **generatorul

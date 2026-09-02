@@ -2749,9 +2749,9 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   **browser → browser**: o filă deschisă de mult rulează în continuare modulele încărcate atunci,
   oricâte publicări ar trece. **R129**, deschisă azi, măsurată pe chiar incidentul de la 8052.
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `7a66fd4`
-- **rezolvată pe commit**: —
+- **rezolvată pe commit**: `4023e1ca`
 - **unde ajunge efectul**: ecranul contabilului, direct și complet — nu o cifră greșită, ci un desktop
   care nu se randează deloc. *E singura clasă din registru care ajunge la om fără să treacă prin
   nicio poartă.*
@@ -2826,9 +2826,9 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
 - **condiția de deblocare**: un refuz al porții nu schimbă starea elementului, iar a doua apăsare se
   comportă ca prima — probat pe ecran. **ÎNDEPLINITĂ.**
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `31d4e47d`
-- **rezolvată pe commit**: —
+- **rezolvată pe commit**: `4023e1ca`
 - **unde ajunge efectul**: la contabilul care depune. *Un refuz care spune „nu blochez" și totuși
   mută starea într-un sens fără întoarcere e mai rău decât un blocaj declarat.*
 
