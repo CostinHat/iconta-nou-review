@@ -2179,3 +2179,143 @@ def _orizontal_d300_vs_d394(conn, schema):
                                      "reflectă evidența. Corecția se face prin rectificativă, și o "
                                      "confirmă omul.",
                           "facturi": []})]
+
+
+# ============================================================
+#  e-FACTURA ↔ D394 — SINGURA PERECHE PE SURSE CU ADEVĂRAT INDEPENDENTE (02.09.2026)
+#
+#  **De ce e altfel decât celelalte patru** *(Costin)*: „e singura pereche care confruntă surse
+#  independente: ce a plecat la ANAF prin e-Factura față de ce s-a declarat în D394. **Verdele ei ar
+#  însemna ceva**, spre deosebire de cele patru existente."
+#
+#  Stânga e **fapt de transmisie** — o recipisă de la ANAF (`efactura_trimiteri.stare='ok'`, mediu
+#  `prod`). Dreapta e **ce a declarat generatorul** (`facturi_incluse`, expus de `d394` din R119).
+#  Niciuna nu se derivă din cealaltă: una spune „a plecat", cealaltă „am declarat-o".
+#
+#  **NU SE REIMPLEMENTEAZĂ ELIGIBILITATEA** *(cerut explicit)*: cine decide ce intră în D394 rămâne
+#  generatorul; aici se citește doar ce a spus el. *Două motoare care se despart în tăcere e chiar
+#  clasa care produce cifra validă și falsă.*
+# ============================================================
+
+TIP_EFACTURA_VS_D394 = "EFACTURA_VS_D394"
+
+#: Cate facturi se ENUMERA intr-o constatare. Nu e o valoare fiscala, e un plafon de citibilitate.
+#: **Cifra `nedeclarate` ramane INTREAGA** — se plafoneaza doar lista, ca o constatare cu mii de
+#: id-uri sa nu devina necitibila. *Un plafon tacut ar fi fost chiar o cifra valida si falsa: aici
+#: numarul spune adevarul, iar lista spune ca e o lista.*
+LIMITE_FACTURI_ENUMERATE = 50
+
+
+def _facturi_transmise(conn, schema, data_de, data_pana):
+    """Id-urile facturilor cu transmisie ACCEPTATĂ de ANAF, emise în fereastră.
+
+    `stare='ok'` = recipisa ANAF a confirmat; `mediu='prod'` = trimitere reală, nu validare pe TEST.
+    Amândouă contează: o trimitere pe „test" n-a plecat nicăieri."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT to_regclass(%s)", (schema + ".efactura_trimiteri",))
+        if not cur.fetchone()[0]:
+            return None                     # tabela nu există pe schema asta -> nu pot ști
+        cur.execute(f"""
+            SELECT DISTINCT t.factura_id
+              FROM {schema}.efactura_trimiteri t
+              JOIN {schema}.facturi f ON f.id = t.factura_id
+             WHERE t.stare = 'ok' AND t.mediu = 'prod'
+               AND f.data_emitere >= %s AND f.data_emitere < %s
+        """, (data_de, data_pana))
+        return {r[0] for r in cur.fetchall()}
+
+
+def _d394_depus_recent_cu_facturi(conn, schema):
+    """(an, luna, randuri) pentru cel mai recent D394 depus care ȘI-A EXPUS facturile.
+
+    Depunerile de dinainte de R119 n-au cheia `facturi_incluse` — și absența ei **nu** înseamnă
+    „nicio factură", înseamnă „nu pot ști"."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT id FROM public.tenants WHERE schema_name = %s", (schema,))
+        row = cur.fetchone()
+        if not row:
+            return None
+        cur.execute("SELECT an, luna, randuri FROM public.declaratii_depuse_curente "
+                    "WHERE tenant_id = %s AND tip = 'd394' AND randuri IS NOT NULL "
+                    "  AND randuri ? 'facturi_incluse' "
+                    "ORDER BY an DESC, luna DESC LIMIT 1", (row[0],))
+        r = cur.fetchone()
+    return (r[0], r[1], r[2]) if r else None
+
+
+def orizontal_efactura_vs_d394(conn, schema):
+    """ÎNVELIȘ: o singură ieșire, ștampilată o dată."""
+    return _stampileaza(_orizontal_efactura_vs_d394(conn, schema), TIP_EFACTURA_VS_D394)
+
+
+def _orizontal_efactura_vs_d394(conn, schema):
+    rec = _d394_depus_recent_cu_facturi(conn, schema)
+    if rec is None:
+        return [_absenta_libera(
+            "d394", "e-Factura vs D394",
+            ("Confruntare între ce a plecat la ANAF prin e-Factura și ce s-a declarat în D394 — "
+             "singura pereche pe surse independente. Niciun D394 depus prin aplicație care să-și "
+             "expună facturile incluse -> comparația devine posibilă de la prima depunere de după "
+             "R119. GRI, nu roșu."),
+            "Niciun D394 depus care să-și expună facturile — nu pot confrunta.",
+            "declarațiile D394 depuse prin aplicație, cu facturile incluse expuse")]
+
+    an, luna, randuri = rec
+    eticheta = "e-Factura vs D394 — %02d/%d" % (luna, an)
+    temei = (
+        "Ce a plecat efectiv la ANAF prin e-Factura (recipisă acceptată, mediu prod) față de ce a "
+        "declarat D394 că a inclus (`facturi_incluse`, expus de generator — R119). SURSE "
+        "INDEPENDENTE: una spune «a plecat», cealaltă «am declarat-o»; niciuna nu se derivă din "
+        "cealaltă. Eligibilitatea NU se recalculează aici — cine decide ce intră în D394 rămâne "
+        "generatorul. O factură transmisă și nedeclarată poate avea totuși o explicație legitimă "
+        "(exclusă de generator cu avertisment: cotă nedeclarabilă, partener fără CUI valid, "
+        "achiziție intracomunitară care merge în D390), de-aia e semnal, nu verdict.")
+
+    manuale = int((randuri or {}).get("manuale_fara_factura") or 0)
+    if manuale:
+        return [_gri_liber(
+            "d394", eticheta,
+            temei + " Declarația conține %d operațiuni fără factură în spate (manuale)." % manuale,
+            "Nu pot confrunta: D394 depus pe %02d/%d are %d operațiuni manuale, fără factură în "
+            "spate. O factură transmisă ar putea fi acoperită de una dintre ele, iar eu n-aș avea "
+            "cum să știu — deci un «transmisă și nedeclarată» ar fi al vederii mele."
+            % (luna, an, manuale), an, luna)]
+
+    with conn.cursor() as cur:
+        cur.execute(f"SELECT tip_decont FROM {schema}.firma_profil WHERE id = 1")
+        row = cur.fetchone()
+    _luni, data_de, data_pana, _fer = _fereastra_tva(row[0] if row else None, an, luna)
+    transmise = _facturi_transmise(conn, schema, data_de, data_pana)
+    if transmise is None:
+        return [_gri_liber(
+            "d394", eticheta,
+            temei + " Evidența trimiterilor e-Factura nu există pe schema firmei.",
+            "Nu pot confrunta: firma n-are evidența trimiterilor e-Factura, deci nu pot ști ce a "
+            "plecat la ANAF.", an, luna)]
+
+    declarate = set()
+    for ids in ((randuri or {}).get("facturi_incluse") or {}).values():
+        declarate.update(ids or [])
+    lipsa = sorted(transmise - declarate)
+    baza = {"eticheta": eticheta, "transmise": len(transmise), "declarate_din_facturi": len(declarate),
+            "nedeclarate": len(lipsa),
+            "facturi_nedeclarate": lipsa[:LIMITE_FACTURI_ENUMERATE],
+            "an": an, "luna": luna}
+    if not transmise:
+        return []                           # nimic transmis in fereastra: tacut, fara subiect
+    if not lipsa:
+        return [dict(baza, stare="verde", temei=temei, remediu=None,
+                     mesaj="%s: toate cele %d facturi transmise la ANAF prin e-Factura apar și în "
+                           "D394 depus." % (eticheta, len(transmise)))]
+    return [dict(baza, stare="rosu", temei=temei,
+                 mesaj="%s: %d din %d facturi transmise la ANAF prin e-Factura NU apar în D394 "
+                       "depus." % (eticheta, len(lipsa), len(transmise)),
+                 remediu={"fel": "sugerat",
+                          "cauza": "Facturi cu recipisă acceptată de la ANAF care nu se regăsesc "
+                                   "printre cele incluse în D394 depus pe %02d/%d: %s."
+                                   % (luna, an, ", ".join(str(i) for i in lipsa[:LIMITE_FACTURI_ENUMERATE])),
+                          "actiune": "Verifică avertismentele declarației: generatorul spune când "
+                                     "exclude o factură (cotă nedeclarabilă, CUI invalid, achiziție "
+                                     "intracomunitară). Dacă nu e exclusă motivat, D394 se "
+                                     "rectifică. Corecția o confirmă omul.",
+                          "facturi": [str(i) for i in lipsa[:LIMITE_FACTURI_ENUMERATE]]})]

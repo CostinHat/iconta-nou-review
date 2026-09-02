@@ -7200,6 +7200,42 @@ iar garda asertează pe câmp, nu pe formulare — o gardă pe text ar fi păzit
 când se aplică tiparul (`_d300_depus_recent`, `_d101_depus_recent`, acum `_perioada_cu_ambele`):
 ancorarea pe luna curentă ar fi făcut perechea gri prin construcție.
 
+### R119 — e-Factura ↔ D394, singura pereche pe surse cu adevărat independente (02.09.2026)
+
+**Costin:** *„e singura pereche care confruntă surse independente: ce a plecat la ANAF prin
+e-Factura față de ce s-a declarat în D394. **Verdele ei ar însemna ceva**, spre deosebire de cele
+patru existente."* Și constrângerea: *„Blocajul se ridică prin generator, nu pe lângă el … Nu
+reimplementa regulile de eligibilitate — două motoare care se despart în tăcere e chiar clasa care
+produce cifra validă și falsă."*
+
+**BLOCAJUL S-A RIDICAT PRIN GENERATOR, ȘI A FOST IEFTIN.** Măsurat înainte de a atinge ceva: toate
+cele **cinci** căi de acumulare din `d394.calcul_d394` trec prin **`_adauga`**, care întreține deja
+un dicționar paralel (`categorii`) pe aceeași cheie și îl curăță la aceleași `del op1[k]`. Deci
+expunerea e **încă un dicționar paralel**, nu o a doua implementare. *Am spus asta înainte de a
+începe, fiindcă mi s-a cerut să mă opresc dacă e mai mare decât pare — nu era.*
+
+`Rezultat` capătă **`facturi_incluse`** (cheia operațiunii → id-uri de facturi) și
+**`manuale_fara_factura`**. `f.id` era deja selectat în SQL și se pierdea în `pull`, la construcția
+dicționarului trimis la calcul.
+
+**GARDA CARE APĂRĂ CHIAR CONSTRÂNGEREA LUI:**
+`::test_ELIGIBILITATEA_ramane_a_generatorului_nu_se_reimplementeaza` — o factură pe care generatorul
+o **exclude** nu poate apărea printre cele incluse. Proba folosește deliberat o excludere care trece
+prin **`del op1[k]`** (achiziție cu taxare inversă fără categorie art. 331), nu una oprită de un
+filtru dinainte — altfel n-ar prinde mutația care contează. **Mutație probată (RED):** scos
+`incluse.pop(k, None)` → o factură exclusă apare ca declarată.
+
+**CELELALTE GĂRZI (4):** `::test_o_factura_TRANSMISA_si_NEDECLARATA_da_ROSU_si_o_NUMESTE` (și o
+**numește**, altfel e un reproș fără adresă) · `::test_toate_transmise_si_declarate_da_VERDE_si_verdele_ASTA_inseamna_ceva`
+(constatarea **nu** poartă `verde_slab` — a-l slăbi ar șterge exact diferența pentru care perechea a
+fost cerută) · `::test_o_trimitere_pe_TEST_sau_NEACCEPTATA_nu_conteaza_ca_plecata` ·
+`::test_operatiunile_MANUALE_dau_GRI_nu_rosu`. **Mutații probate (RED):** trimiterile pe `test`
+socotite plecate · operațiunile manuale ignorate.
+
+**A PATRA APLICARE A REGULII „unde nu poți stabili că vezi tot, spui gri", și prima fără s-o cer:**
+o operațiune **manuală** (bon, borderou) n-are factură în spate, deci o factură transmisă ar putea fi
+acoperită de ea fără ca eu să pot ști. Perechea spune **gri** și numește câte sunt.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **506 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.

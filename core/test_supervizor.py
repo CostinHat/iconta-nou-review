@@ -322,6 +322,9 @@ def test_a_cincea_cale_FARA_NICIO_DEPUNERE_e_stampilata_si_supervizorul_o_VEDE()
     deriva = [c for c in vazute if c["tip_constatare"] == _ci.TIP_D300_VS_D394_TI]
     assert len(deriva) == 1, "[anti-vacuu] perechea de deriva n-a produs nimic"
     assert deriva[0]["tarie"] == S.EURISTICA and deriva[0]["stare"] == "gri"
+    ef = [c for c in vazute if c["tip_constatare"] == _ci.TIP_EFACTURA_VS_D394]
+    assert len(ef) == 1, "[anti-vacuu] perechea e-Factura n-a produs nimic"
+    assert ef[0]["tarie"] == S.EURISTICA and ef[0]["stare"] == "gri"
     # NICIUNA nu cere confirmare: euristicele niciodata, certele doar pe rosu.
     assert all(c["cere_confirmare"] is False for c in vazute)
 
@@ -395,6 +398,7 @@ def _cu_plan(monkeypatch):
     # portofoliului, nu perechile — deci se tac explicit, nu se lasă să ridice din altă cauză
     monkeypatch.setattr(_ci, "orizontal_d101", lambda conn, schema, an: [])
     monkeypatch.setattr(_ci, "orizontal_d300_vs_d394", lambda conn, schema: [])
+    monkeypatch.setattr(_ci, "orizontal_efactura_vs_d394", lambda conn, schema: [])
 
 
 def test_TOATE_CELE_TREI_rezultate_apar_si_SUMA_lor_e_domeniul(monkeypatch):
@@ -482,6 +486,7 @@ def test_campul_ORIZONTAL_RULAT_lipsa_RIDICA_nu_cade_pe_implicit(monkeypatch):
                         lambda conn, schema, an, luna: {"constatari": []})
     monkeypatch.setattr(_ci, "orizontal_d101", lambda conn, schema, an: [])
     monkeypatch.setattr(_ci, "orizontal_d300_vs_d394", lambda conn, schema: [])
+    monkeypatch.setattr(_ci, "orizontal_efactura_vs_d394", lambda conn, schema: [])
     with pytest.raises(ValueError):
         S._culege_firma(object(), "s", 2026, 8)
 
@@ -934,3 +939,148 @@ def test_serializarea_unui_D394_cu_operatiuni_NU_MAI_RIDICA():
         "întreba ce tip de operațiune e" % cheie)
     # separatorul nu e o convenție fragilă: denumirea partenerului conține chiar `|`
     assert _json.loads(cheie)[4] == "Partener | cu bara"
+
+
+# ── 11. e-FACTURA ↔ D394 — singura pereche pe surse INDEPENDENTE (R119, 02.09.2026) ────────────
+# Costin: *„e singura pereche care confruntă surse independente: ce a plecat la ANAF prin e-Factura
+# față de ce s-a declarat în D394. Verdele ei ar însemna ceva, spre deosebire de cele patru
+# existente."* Și constrângerea, tot a lui: *„Nu reimplementa regulile de eligibilitate — două
+# motoare care se despart în tăcere e chiar clasa care produce cifra validă și falsă."*
+
+
+def _pune_d394_cu_facturi(cur, tid, an, luna, incluse, manuale=0):
+    # fixtura-sintetica-ok: anul e parametru, toti apelantii dau 2099, tenant_id sintetic.
+    cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, "
+                "nr_depunere) VALUES (%s, %s, %s, 'd394', '<x/>', %s, 1)",
+                (tid, an, luna, _E.Json({"an": an, "luna": luna,
+                                         "facturi_incluse": incluse,
+                                         "manuale_fara_factura": manuale})))
+
+
+def _factura_trimisa(cur, schema, data, stare="ok", mediu="prod"):
+    """Inserează o factură emisă + trimiterea ei, și întoarce id-ul DAT DE BAZĂ.
+
+    `facturi.id` e `GENERATED ALWAYS`, deci nu se poate alege din test. Bine că e așa: id-urile
+    scrise de mână ar fi fost o convenție care se sparge la prima schemă cu alt contor."""
+    cur.execute("INSERT INTO %s.facturi (numar, directie, data_emitere, total, tva) "
+                "VALUES (%%s, 'emisa', %%s, 119, 19) RETURNING id" % schema,
+                ("FP-" + str(data).replace("-", "") + "-" + stare + "-" + mediu, data))
+    fid = cur.fetchone()[0]
+    cur.execute("INSERT INTO %s.efactura_trimiteri (factura_id, mediu, stare, xml_sha256) "
+                "VALUES (%%s, %%s, %%s, %%s)" % schema,
+                (fid, mediu, stare, "0" * 64))
+    return fid
+
+
+def test_o_factura_TRANSMISA_si_NEDECLARATA_da_ROSU_si_o_NUMESTE():
+    """**Miezul lui R119.** O factură care a plecat la ANAF și nu apare în D394 e expunere reală —
+    iar constatarea trebuie să spună CARE, altfel e un reproș fără adresă."""
+    conn = _conn()
+    f2 = None
+    try:
+        with conn.cursor() as cur:
+            tid = _schema_efemera(cur, "ztest_sv_ef_a")
+            cur.execute("UPDATE ztest_sv_ef_a.firma_profil SET tip_decont='L' WHERE id=1")
+            f1 = _factura_trimisa(cur, "ztest_sv_ef_a", "2099-06-10")
+            f2 = _factura_trimisa(cur, "ztest_sv_ef_a", "2099-06-11")
+            # D394 a inclus DOAR prima
+            _pune_d394_cu_facturi(cur, tid, 2099, 6, {'["L", 1, 21, "RO1", "X"]': [f1]})
+            cur.execute("SET LOCAL search_path TO ztest_sv_ef_a, public")
+            cs = _ci.orizontal_efactura_vs_d394(conn, "ztest_sv_ef_a")
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+    assert len(cs) == 1, "[anti-vacuu] perechea n-a produs nimic"
+    assert cs[0]["stare"] == "rosu", cs[0]["mesaj"]
+    assert cs[0]["nedeclarate"] == 1 and cs[0]["facturi_nedeclarate"] == [f2], (
+        "constatarea nu NUMEȘTE factura lipsă — ar fi un reproș fără adresă")
+    assert str(f2) in (cs[0]["remediu"]["facturi"] or [])
+
+
+def test_toate_transmise_si_declarate_da_VERDE_si_verdele_ASTA_inseamna_ceva():
+    """Spre deosebire de celelalte patru perechi, verdele de aici NU e slab: cele două laturi nu se
+    derivă una din cealaltă. De-aia constatarea **nu** poartă `verde_slab`."""
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            tid = _schema_efemera(cur, "ztest_sv_ef_b")
+            cur.execute("UPDATE ztest_sv_ef_b.firma_profil SET tip_decont='L' WHERE id=1")
+            f1 = _factura_trimisa(cur, "ztest_sv_ef_b", "2099-06-10")
+            _pune_d394_cu_facturi(cur, tid, 2099, 6, {'["L", 1, 21, "RO1", "X"]': [f1]})
+            cur.execute("SET LOCAL search_path TO ztest_sv_ef_b, public")
+            cs = _ci.orizontal_efactura_vs_d394(conn, "ztest_sv_ef_b")
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+    assert len(cs) == 1 and cs[0]["stare"] == "verde", cs[0]
+    assert "verde_slab" not in cs[0], (
+        "verdele ăsta a fost marcat slab — dar el chiar afirmă ceva, fiindcă laturile sunt "
+        "independente; a-l slăbi ar șterge exact diferența pentru care perechea a fost cerută")
+
+
+def test_o_trimitere_pe_TEST_sau_NEACCEPTATA_nu_conteaza_ca_plecata():
+    """`mediu='test'` n-a plecat nicăieri, iar o stare care nu e `ok` n-are recipisă. Dacă ar
+    conta, perechea ar acuza firma pentru facturi care n-au ajuns niciodată la ANAF."""
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            tid = _schema_efemera(cur, "ztest_sv_ef_c")
+            cur.execute("UPDATE ztest_sv_ef_c.firma_profil SET tip_decont='L' WHERE id=1")
+            _factura_trimisa(cur, "ztest_sv_ef_c", "2099-06-10", mediu="test")
+            _factura_trimisa(cur, "ztest_sv_ef_c", "2099-06-10", stare="nok")
+            _pune_d394_cu_facturi(cur, tid, 2099, 6, {})
+            cur.execute("SET LOCAL search_path TO ztest_sv_ef_c, public")
+            cs = _ci.orizontal_efactura_vs_d394(conn, "ztest_sv_ef_c")
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+    assert cs == [], (
+        "o trimitere pe TEST sau neacceptată a fost socotită «plecată la ANAF»: %s"
+        % [c.get("mesaj") for c in cs])
+
+
+def test_operatiunile_MANUALE_dau_GRI_nu_rosu():
+    """Regula lui Costin: *unde nu poți stabili că vezi tot, spui gri*. O operațiune manuală n-are
+    factură în spate, deci o factură transmisă ar putea fi acoperită de ea fără să pot ști."""
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            tid = _schema_efemera(cur, "ztest_sv_ef_d")
+            cur.execute("UPDATE ztest_sv_ef_d.firma_profil SET tip_decont='L' WHERE id=1")
+            _factura_trimisa(cur, "ztest_sv_ef_d", "2099-06-10")
+            _pune_d394_cu_facturi(cur, tid, 2099, 6, {}, manuale=2)
+            cur.execute("SET LOCAL search_path TO ztest_sv_ef_d, public")
+            cs = _ci.orizontal_efactura_vs_d394(conn, "ztest_sv_ef_d")
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+    assert len(cs) == 1 and cs[0]["stare"] == "gri", (
+        "o factură transmisă a fost declarată nedeclarată, deși există operațiuni manuale care ar "
+        "putea s-o acopere — roșul ar fi al vederii mele")
+
+
+def test_ELIGIBILITATEA_ramane_a_generatorului_nu_se_reimplementeaza():
+    """**Constrângerea pe care Costin a numit-o explicit.** `facturi_incluse` se umple din ACELEAȘI
+    apeluri care compun declarația, deci o factură pe care generatorul o EXCLUDE nu poate apărea
+    printre cele incluse. Dacă cineva ar reimplementa eligibilitatea în altă parte, cele două s-ar
+    despărți **în tăcere** — chiar clasa care produce cifra validă și falsă."""
+    from core import d394 as _d394
+    from core.common import Perioada
+    prof = {"cui": "14399840", "nume": "PROBA", "platitor_tva": True,
+            "declarant_nume": "P", "declarant_prenume": "I", "declarant_functie": "ADMIN"}
+    facturi = [
+        # intra: livrare catre partener RO cu CUI, cota 21
+        {"cui": "14399840", "nume": "Client SRL", "directie": "emisa", "taxare_inversa": False,
+         "platitor_tva": True, "cota": 21, "baza": 1000, "tva": 210, "nrFact": 1, "factura_id": 11},
+        # NU intra, si e IMPORTANT ca excluderea trece prin `del op1[k]`, nu printr-un filtru de
+        # dinainte: achizitie cu taxare inversa FARA categorie art.331 -> op11 n-are cod -> operatiunea
+        # se sterge din declaratie. Asta e calea pe care dictionarul paralel TREBUIE curatat.
+        {"cui": "14399840", "nume": "Furnizor SRL", "directie": "primita", "taxare_inversa": True,
+         "platitor_tva": True, "cota": 21, "baza": 500, "tva": 105, "nrFact": 1, "factura_id": 12,
+         "categorie_331": None},
+    ]
+    res = _d394.calcul_d394(prof, Perioada(2099, luna=6),
+                            {"facturi": facturi, "serii": {}, "nr_facturi": 1}, None)
+    toate = set()
+    for v in res.facturi_incluse.values():
+        toate.update(v)
+    assert 11 in toate, "[anti-vacuu] factura eligibilă n-a fost înregistrată ca inclusă"
+    assert 12 not in toate, (
+        "o factură pe care generatorul a EXCLUS-O apare printre cele incluse — confruntarea ar "
+        "afirma că s-a declarat ceva ce nu s-a declarat")

@@ -170,6 +170,28 @@ TIPURI = {
             "ambele laturi se derivă din aceleași facturi — temeiul o spune, nu o lasă pe seama "
             "cititorului.*",
     },
+    "EFACTURA_VS_D394": {
+        "axa": "ORIZONTALA",
+        "ce": "Facturile transmise efectiv la ANAF prin e-Factura (recipisă acceptată, mediu prod), "
+              "față de facturile pe care D394 DEPUS declară că le-a inclus.",
+        "identitate": "orice factură cu transmisie e-Factura acceptată, emisă în fereastra "
+                      "declarației, apare printre facturile incluse în D394 depus pe acea perioadă",
+        "sursa_stanga": "{schema}.efactura_trimiteri, stare='ok' și mediu='prod' (fapt de transmisie)",
+        "sursa_dreapta": "public.declaratii_depuse_curente, tip d394, randuri.facturi_incluse "
+                         "(expus de generator — R119)",
+        "tarie": EURISTICA,
+        "confirmat": True,
+        "motiv_tarie":
+            "EURISTICA — **Costin, 02.09.2026**: *«e singura pereche care confruntă surse "
+            "independente: ce a plecat la ANAF prin e-Factura față de ce s-a declarat în D394. "
+            "Verdele ei ar însemna ceva, spre deosebire de cele patru existente.»* Aplicând "
+            "criteriul: diferența **admite explicații legitime** — generatorul exclude motivat "
+            "facturi (cotă nedeclarabilă, CUI invalid, achiziție intracomunitară care merge în "
+            "D390), iar excluderea apare în avertismentele declarației. Deci semnalează, nu "
+            "acuză. *Dar spre deosebire de celelalte patru, VERDELE ei chiar afirmă ceva: cele "
+            "două laturi nu se derivă una din cealaltă — una spune «a plecat», cealaltă «am "
+            "declarat-o».*",
+    },
 }
 
 
@@ -250,6 +272,9 @@ def _culege_firma(conn, schema, an, luna):
     # [02.09.2026] Verificarea de DERIVA intre D300 si D394 depuse. Isi alege singura perioada
     # (cea mai recenta cu ambele depuse, cu randuri), deci nu primeste `an`/`luna`.
     brute = brute + _ci.orizontal_d300_vs_d394(conn, schema)
+    # [R119, 02.09.2026] singura pereche pe surse cu adevarat independente: ce a plecat la ANAF
+    # prin e-Factura fata de ce a declarat D394 ca a inclus. Isi alege singura perioada.
+    brute = brute + _ci.orizontal_efactura_vs_d394(conn, schema)
 
     out = []
     for c in brute:

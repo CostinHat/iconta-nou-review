@@ -474,6 +474,17 @@ acum un nume și patru instanțe într-o zi.*
   nu mai compară când nu vede tot anul: dacă lipsește un trimestru (lunile **3, 6, 9**, citite la
   sursă din `d100_struct_anaf.txt`), spune gri și **numește trimestrul**. Regula stă lângă criteriul
   de atribuire, în antetul `core/supervizor.py`.
+- **R119 E ÎNCHISĂ** *(02.09, tura a patra)* — **singura pereche pe surse cu adevărat independente**:
+  ce a plecat la ANAF prin e-Factura (recipisă acceptată, `mediu='prod'`) față de ce declară D394 că
+  a inclus. **Verdele ei afirmă ceva**, spre deosebire de celelalte patru, iar constatarea NU poartă
+  `verde_slab` — o gardă apără asta.
+- **Blocajul s-a ridicat PRIN generator, și a fost ieftin — măsurat înainte, nu după.** Toate cele
+  cinci căi de acumulare din `calcul_d394` trec printr-un singur `_adauga`, care ținea deja un
+  dicționar paralel curățat la aceleași ștergeri. `Rezultat` capătă `facturi_incluse` și
+  `manuale_fara_factura`. *`f.id` era deja selectat în SQL și se pierdea trei rânduri mai jos.*
+- **Eligibilitatea rămâne a generatorului**, cerut explicit: `facturi_incluse` se umple din ACELEAȘI
+  apeluri care compun declarația. Gardă cu mutație probată — și mutată deliberat pe o excludere care
+  trece prin `del op1[k]`, fiindcă prima formă ar fi trecut oricum.
 - **R120 E ÎNCHISĂ** *(02.09, tura a treia)*: Costin mi-a răsturnat decizia — *„motivul e roșul, nu
   verdele"* — și perechea **D300 ↔ D394** e construită, **EURISTICĂ**, ca verificare de **derivă**
   între două depuneri. Verdele ei rămâne slab, iar constatarea o declară ca **fapt** (`verde_slab`),

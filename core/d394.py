@@ -396,6 +396,14 @@ class Rezultat:
     informatii: dict = field(default_factory=dict)
     total_plata_a: int = 0
     op_efectuate: int = 0
+    # [R119, 02.09.2026] Ce facturi a inclus declaratia, pe cheia operatiunii. Exista ca sa se poata
+    # confrunta cu ce s-a transmis prin e-Factura FARA a reimplementa eligibilitatea: cine decide ce
+    # intra ramane generatorul, iar cine confrunta doar citeste.
+    facturi_incluse: dict = field(default_factory=dict)
+    # Cate operatiuni din declaratie NU au factura in spate (manuale: bonuri, borderouri). Se expune
+    # fiindca fara ea confruntarea n-ar sti ca nu vede tot — v. regula "unde nu poti stabili ca vezi
+    # tot, spui gri".
+    manuale_fara_factura: int = 0
     avertismente: list = field(default_factory=list)
 
 
@@ -411,11 +419,15 @@ def calcul_d394(prof, perioada, date, manual=None):
     intracom = 0
     op1 = {}
     categorii = {}     # cheie op1 -> {categorii art.331} pentru op11
+    # [R119, 02.09.2026] cheie op1 -> {id-uri de facturi}. Se curata la aceleasi `del op1[k]` ca
+    # `categorii`: o operatiune scoasa din declaratie isi ia si facturile cu ea, deci nimeni nu poate
+    # crede ca o factura a intrat cand de fapt a fost exclusa.
+    incluse = {}
     avert = []
     nefacturabile = 0
     excluse_N = []   # (nume, cui, baza) operatiuni N excluse - decizie Costin 04.08 (approach b)
 
-    def _adauga(tip, tp, cota, cuiP, denP, nrFact, baza, tva, cat=None):
+    def _adauga(tip, tp, cota, cuiP, denP, nrFact, baza, tva, cat=None, fid=None):
         # [V_cota0 10.08.2026] R217.2 (validator, PROBAT pe date populate + DUK): tip in
         # (LS,AS,N,V) => cota TREBUIE sa fie 0. V (livrare cu taxare inversa) nu declara TVA
         # (reverse charge la beneficiar); cota bunului sta in op11/detaliu (bazaLivV la
@@ -426,6 +438,11 @@ def calcul_d394(prof, perioada, date, manual=None):
         k = (tip, tp, (0 if tip == "V" else int(cota)), cuiP or "", (denP or "")[:200])
         if cat:
             categorii.setdefault(k, set()).add(cat)
+        # [R119] Ce factura a produs randul. Pe aceeasi cheie ca `categorii`, deci se curata prin
+        # aceleasi `del op1[k]` — o operatiune scoasa din declaratie isi ia si facturile cu ea.
+        # O factura multi-cota apare pe mai multe chei: `set` dedupe.
+        if fid is not None:
+            incluse.setdefault(k, set()).add(fid)
         c = op1.setdefault(k, [0, Decimal(0), Decimal(0)])
         c[0] += int(nrFact)
         c[1] += _d(baza)
@@ -461,7 +478,8 @@ def calcul_d394(prof, perioada, date, manual=None):
             # detaliu(nrN/valN). codPR = CONTINUT DECLARAT, dar reutilizeaza categoria art.331 EXISTENTA pe factura.
             # Fara categorie -> N nu poate fi declarat valid -> ramane EXCLUS cu avertisment (contabilul o adauga).
             if codpr_N_din_categorie(f.get("categorie_331")):
-                _adauga("N", P_NEINREG, 0, cui, f.get("nume"), f.get("nrFact", 1), f.get("baza"), 0, f.get("categorie_331"))
+                _adauga("N", P_NEINREG, 0, cui, f.get("nume"), f.get("nrFact", 1), f.get("baza"), 0,
+                        f.get("categorie_331"), fid=f.get("factura_id"))
             else:
                 excluse_N.append((f.get("nume"), f.get("cui"), f.get("baza")))
             continue
@@ -487,7 +505,7 @@ def calcul_d394(prof, perioada, date, manual=None):
                 nefacturabile += 1
                 continue
         _adauga(tip, tp, cota, cui, f.get("nume"), f.get("nrFact", 1), f.get("baza"), f.get("tva"),
-                f.get("categorie_331"))
+                f.get("categorie_331"), fid=f.get("factura_id"))
 
     for op in ops:
         if op.get("tip") not in TIPURI:
@@ -568,6 +586,7 @@ def calcul_d394(prof, perioada, date, manual=None):
                     "operatiune)." % (denP or "?", cuiP))
                 del op1[k]
                 categorii.pop(k, None)
+                incluse.pop(k, None)
                 continue
         cod, _bun, motiv = _op11_cod(k, categorii)
         if cod is None:
@@ -580,6 +599,7 @@ def calcul_d394(prof, perioada, date, manual=None):
                 "valid." % (tip, _ident, motiv, _regula))
             del op1[k]
             categorii.pop(k, None)
+            incluse.pop(k, None)
 
     # rezumat1: unic pe (tip_partener, cota), CALCULAT din op1 (pct. 38-40).
     # ATENTIE: setul de atribute e ASIMETRIC si e cel din validatorul v5, nu unul
@@ -745,9 +765,17 @@ def calcul_d394(prof, perioada, date, manual=None):
 
     rez2_int = {c: {k: (int(v) if k.startswith("nrFacturi") else _int(v))
                     for k, v in r.items()} for c, r in rez2.items()}
+    # [R119] Ce facturi au intrat efectiv in declaratie, pe cheia operatiunii. Sortate, ca
+    # rezultatul sa fie determinist (aceleasi intrari -> acelasi obiect, deci si aceeasi amprenta).
+    incluse_int = {k: sorted(v) for k, v in incluse.items()}
+    # Operatiunile MANUALE n-au factura in spate (bonuri, borderouri, art.331 pe cod). Cine
+    # confrunta cu e-Factura trebuie sa STIE cate sunt: fara cifra asta, o factura acoperita de o
+    # operatiune manuala ar aparea ca "transmisa si nedeclarata", adica un rosu fals.
+    manuale_fara_factura = sum(1 for k, v in op1.items() if k not in incluse)
     res = Rezultat(an=an, luna=luna, prof=prof, op1=op1_int, rezumat1=rez1_int,
                    rezumat2=rez2_int, op11=op11, detaliu=detaliu, serii=serii,
-                   informatii=inf, total_plata_a=total_plata, op_efectuate=op_efectuate)
+                   informatii=inf, total_plata_a=total_plata, op_efectuate=op_efectuate,
+                   facturi_incluse=incluse_int, manuale_fara_factura=manuale_fara_factura)
     res.avertismente = avert
     if intracom:
         res.avertismente.append(
@@ -989,7 +1017,10 @@ def pull(conn, schema, perioada):
         nume = ((r["c_nume"] if emisa else None) or r["tert_nume"] or r["c_nume"] or "")
         comun = {"cui": cui, "nume": nume, "directie": r["directie"],
                  "taxare_inversa": bool(r["ti"]), "categorie_331": r["categorie_331"],
-                 "platitor_tva": r["tert_platitor_tva"]}
+                 "platitor_tva": r["tert_platitor_tva"],
+                 # [R119, 02.09.2026] id-ul facturii traverseaza pana la rezultat, ca declaratia
+                 # sa poata SPUNE ce a inclus. Era selectat in SQL si se pierdea chiar aici.
+                 "factura_id": r["id"]}
         pe_cota = {}
         for l in (r["linii"] or []):
             if l.get("cota") is None or l.get("baza") is None:

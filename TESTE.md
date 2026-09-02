@@ -67,8 +67,9 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   deci numerele de rand se citesc din cod/XSD, nu din memorie (masurat: azi R9=21%, R10=11%).
 - ultim: **R120 INCHISA** — perechea D300<->D394 construita ca verificare de DERIVA, EURISTICA,
   plus un PRAG 1 reparat pe drum (D394 cu operatiuni nu putea intra in coada)
-- urmator: **R119** (D394 nu-si expune facturile) si **R121** (P300 fara acces programatic) raman
-  deschise, cu conditiile lor. NEINCEPUT
+- ultim: **R119 INCHISA** — D394 isi expune facturile incluse, iar perechea e-Factura <-> D394 e
+  construita: singura pe surse cu adevarat independente
+- urmator: **R121** (P300 fara acces programatic) ramane deschisa, EXTERNA. NEINCEPUT
 - pasi:
   1. **VERDICTELE LA SURSA — facute inainte de orice cod:**
      · **D101 <-> D100: CONFIRMAT VERBATIM.** `anaf_surse/opanaf_206_2025_d101.txt:875` — *„Randul 50

@@ -13514,3 +13514,16 @@ găsit construind perechea: un D394 cu operațiuni nu putea fi trimis în coadă
 componenta a cincea a cheii e **denumirea partenerului**, care poate conține orice caracter ales ca
 separator. Cu JSON, cheia rămâne reversibilă. *Gardul probează chiar cazul rău: un partener al cărui
 nume conține `|`.*
+
+**(55) D394 ÎȘI EXPUNE FACTURILE INCLUSE — blocajul lui R119 s-a ridicat PRIN generator.**
+*(Costin, 02.09.2026: „blocajul se ridică prin generator, nu pe lângă el … nu reimplementa regulile
+de eligibilitate".)* `Rezultat` capătă `facturi_incluse` și `manuale_fara_factura`. **Cine decide ce
+intră în D394 rămâne generatorul**; cine confruntă doar citește. Costul a fost mic și l-am măsurat
+înainte: toate cele cinci căi de acumulare trec prin `_adauga`, care ținea deja un dicționar paralel
+curățat la aceleași ștergeri — deci expunerea e încă unul, nu o a doua implementare.
+
+**(56) Perechea e-Factura ↔ D394 e singura al cărei VERDE afirmă ceva.** Celelalte patru compară
+aceeași realitate calculată de două motoare; aici stânga e un **fapt de transmisie** (recipisă ANAF)
+și dreapta e **ce a declarat generatorul**. De-aia constatarea verde **nu** poartă `verde_slab` — iar
+o gardă o apără, fiindcă a marca și verdele ăsta ca slab ar șterge exact diferența pentru care
+perechea a fost cerută.

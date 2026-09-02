@@ -1172,7 +1172,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 **Scrie in:** `declaratii_coada` (INSERT/UPDATE) · `declaratii_depuse` (DELETE/INSERT) · `migrare_status` (INSERT) · `supervizor_confirmari` (INSERT)
 
-**Stari puse:** `aprobata`, `depusa`, `descarcata`, `respinsa`
+**Stari puse:** `aprobata`, `depusa`, `descarcata`, `ok`, `respinsa`
 
 **Firme care il pot exercita azi: 7** — `tenant_003`, `tenant_005`, `tenant_006`, `tenant_013`, `tenant_014`, `tenant_015`, `tenant_016`
 

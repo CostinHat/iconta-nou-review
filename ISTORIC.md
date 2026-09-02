@@ -7511,3 +7511,40 @@ conține `|`.
 perechea avea nevoie de latura dreaptă, iar prima întrebare a fost *„se poate citi?"* — nu
 *„presupun că da"*. Trei ture la rând, construcția a scos defecte pe care nicio măsurătoare
 existentă nu le vedea.
+
+
+---
+
+## 02.09.2026, tura a patra — perechea al cărei verde înseamnă ceva
+
+**Costin a numit ordinea și motivul:** R119 înaintea lui R121, fiindcă *„e singura pereche care
+confruntă surse independente … verdele ei ar însemna ceva, spre deosebire de cele patru existente."*
+
+**Mi-a dat și un punct de oprire, pe care l-am folosit ca punct de măsurare:** *„dacă expunerea se
+dovedește mai mare decât pare, spune și oprește-te acolo; nu o ocoli."* Am măsurat înainte să ating
+ceva. Toate cele **cinci** căi de acumulare din `calcul_d394` trec prin **un singur** `_adauga`, care
+întreținea deja un dicționar paralel pe aceeași cheie, curățat la aceleași `del op1[k]`. Deci
+expunerea era încă un dicționar paralel — **nu era mai mare decât părea**, și am spus-o înainte de a
+începe, nu după.
+
+**`f.id` era deja acolo.** Se selecta în SQL și se pierdea la construcția dicționarului din `pull`,
+cu trei rânduri mai jos. Nimic nu-l ceruse până azi.
+
+**Constrângerea lui a fost partea cea mai utilă a comenzii:** *„nu reimplementa regulile de
+eligibilitate — două motoare care se despart în tăcere e chiar clasa care produce cifra validă și
+falsă."* De-aia `facturi_incluse` se umple **din aceleași apeluri** care compun declarația și se
+curăță la aceleași ștergeri: cine decide ce intră rămâne generatorul.
+
+**Și garda care apără asta a trebuit mutată, ca să însemne ceva.** Prima formă proba o excludere
+oprită de un filtru **dinainte** de acumulare — deci trecea oricum, chiar dacă cineva ar fi scos
+curățarea. Mutată pe o excludere care trece prin `del op1[k]` (achiziție cu taxare inversă fără
+categorie art. 331). Abia atunci mutația „scoate `incluse.pop`" o face roșie. *O gardă care nu poate
+cădea nu apără nimic.*
+
+**Verdele ăsta chiar afirmă ceva**, și e prima oară în tot șirul: stânga e o recipisă de la ANAF,
+dreapta e ce a declarat generatorul. Constatarea **nu** poartă `verde_slab`, iar o gardă o apără —
+a-l marca slab ar șterge exact diferența pentru care perechea a fost cerută.
+
+**A patra aplicare a regulii „unde nu poți stabili că vezi tot, spui gri", și prima fără s-o cer.**
+O operațiune manuală n-are factură în spate, deci o factură transmisă ar putea fi acoperită de ea
+fără să pot ști. Perechea spune gri și numește câte sunt.
