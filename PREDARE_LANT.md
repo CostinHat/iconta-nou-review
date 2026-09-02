@@ -467,9 +467,18 @@ acum un nume și patru instanțe într-o zi.*
   nu „secțiunea C"; maparea rând-cu-rând neverificată) · R121 (P300/e-TVA n-are acces programatic).
 - **O CORECȚIE DE ANCORĂ care merită ținută minte:** latura contabilă a D101 e **contul 691**, NU
   rândul 35 al F20 — acolo `core/bilant.py` adună `691 + 698`, iar 698 e impozit pe **venit**.
-- **CONTRADICȚIA RIDICATĂ, nerezolvată:** pe rd.50, o explicație legitimă rămâne deschisă (un D100
-  depus în afara aplicației), ceea ce prin criteriul lui Costin ar face perechea euristică. Tăria
-  rămâne CERTA — atribuirea e a lui.
+- **CONTRADICȚIA S-A REZOLVAT, și răspunsul e o REGULĂ, nu un verdict pe caz** *(Costin, 02.09)*:
+  *„Tăria descrie IDENTITATEA, nu calitatea datelor noastre. Unde nu poți stabili că vezi tot, spui
+  gri — ca la ciorna pe 691."* Un D100 depus în afara aplicației **nu** e o diferență legitimă între
+  laturi — identitatea din ordin ține oricum; e o **lipsă de vedere**. Perechea rămâne **CERTĂ**, dar
+  nu mai compară când nu vede tot anul: dacă lipsește un trimestru (lunile **3, 6, 9**, citite la
+  sursă din `d100_struct_anaf.txt`), spune gri și **numește trimestrul**. Regula stă lângă criteriul
+  de atribuire, în antetul `core/supervizor.py`.
+- **R120 are verdict, nu doar condiție.** Corespondența cerută s-a stabilit — lit. C **pct. 17**
+  (achiziții cu taxare inversă, art. 331) ↔ D300 **rd.12/rd.25** —, dar perechea **nu se construiește**:
+  `d394` și `d300` citesc **amândouă `FROM facturi`**, cu același flag `taxare_inversa`. Ar fi a patra
+  pereche pe aceeași realitate calculată de două motoare. *Corespondența rămâne scrisă, ca să nu fie
+  re-dedusă dacă Costin o vrea ca verificare de derivă.*
 - **Cele două perechi noi sunt CALIBRATE PE CAZ FABRICAT**, fiindcă portofoliul viu n-are nicio
   depunere D101 cu rânduri. *Verde și roșu, amândouă probate; fără asta ar fi fost două funcții care
   n-au spus niciodată nu.*

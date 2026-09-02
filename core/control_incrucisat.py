@@ -1740,6 +1740,17 @@ def reconciliaza_declaratii(conn, schema, an, luna):
 #: e altă taxă, iar amestecul ei ar produce divergență falsă pe firmele cu trecere micro->profit.
 COD_OBLIG_PROFIT = frozenset(("102", "103", "105"))
 
+#: Perioadele de raportare D100 pe care le are un an întreg, pentru obligațiile de impozit pe
+#: profit. **Citite la sursă, nu presupuse:** `core/d100.py` (care citează `d100_struct_anaf.txt`)
+#: spune că pentru codurile 102/103/105 luna 12 e „luna de sfârșit de an fiscal" cu scadență proprie
+#: (25.12), iar **restul sunt trimestrele I/II/III** — adică lunile 3, 6 și 9.
+#:
+#: **La ce folosesc:** ca să pot spune dacă VĂD tot anul. Dacă lipsește un trimestru, nu știu dacă
+#: n-a fost datorat sau dacă s-a depus pe altă cale — iar în cazul ăsta perechea **nu are voie să
+#: acuze**. *Regula, dată de Costin: tăria descrie identitatea, nu calitatea datelor noastre; unde
+#: nu poți stabili că vezi tot, spui gri.*
+PERIODICITATE_D100_TRIMESTRE = (3, 6, 9)
+
 #: Contul în care se înregistrează impozitul pe profit. **OMFP 1802/2014, verbatim:**
 #: „691. Cheltuieli cu impozitul pe profit". NU se folosește rândul 35 al F20 — acolo
 #: `core/bilant.py` pune `691 + 698`, iar 698 e, tot verbatim, „Cheltuieli cu impozitul pe venit
@@ -1912,6 +1923,19 @@ def _pereche_p50(conn, schema, an, p50, d_grup):
             "nu pot confrunta. Absența depunerii prin aplicație NU dovedește că n-a fost depusă."
             % (_lei(p50), an), an, 12)]
     suma, cu, fara = _plati_anticipate_din_d100(dep)
+    vazute = {l for (_a, l, r) in dep if r}
+    lipsa = [l for l in PERIODICITATE_D100_TRIMESTRE if l not in vazute]
+    if lipsa and not fara:
+        # LIPSA DE VIZIBILITATE, nu divergență. Un trimestru pe care aplicația nu l-a văzut poate
+        # să nu fi fost datorat, sau să fi fost depus pe altă cale — nu pot deosebi. Deci nu acuz.
+        return [_gri_liber(
+            "d101", eticheta,
+            temei + " Trimestre fără depunere D100 văzută de aplicație: %s."
+            % ", ".join("trim %d" % (l // 3) for l in lipsa),
+            "Nu pot confrunta: nu văd depunerea D100 pe %s din %d. Un trimestru pe care aplicația "
+            "nu l-a văzut poate să nu fi fost datorat, sau să fi fost depus pe altă cale — iar "
+            "diferența ar fi atunci a măsurătorii mele, nu a declarației."
+            % (", ".join("trimestrul %d" % (l // 3) for l in lipsa), an), an, 12)]
     if fara:
         return [_gri_liber(
             "d101", eticheta,

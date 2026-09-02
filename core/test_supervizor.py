@@ -627,12 +627,14 @@ def test_pereche_D101_vs_D100_COINCID_da_verde_si_DIVERG_da_rosu():
             tid = _schema_efemera(cur, "ztest_sv_d101a")
             # fixtura-sintetica-ok: tenant_id sintetic, in rollback
             _pune_d101(cur, tid, 2099, {"P48": 10000, "P50": 3000})
+            # TOATE cele trei trimestre — altfel perechea spune, pe drept, ca nu vede tot anul
             _pune_d100(cur, tid, 2099, 3, 1000)
-            _pune_d100(cur, tid, 2099, 6, 2000)
+            _pune_d100(cur, tid, 2099, 6, 1500)
+            _pune_d100(cur, tid, 2099, 9, 500)
             cur.execute("SET LOCAL search_path TO ztest_sv_d101a, public")
             coincid = _perechi(conn, "ztest_sv_d101a", _ci.TIP_D101_VS_D100)
-            # acum stricam o singura latura: mai adaugam un trimestru -> suma devine 3500
-            _pune_d100(cur, tid, 2099, 9, 500)
+            # acum stricam o singura latura: inca o depunere pe luna 12 -> suma devine 3500
+            _pune_d100(cur, tid, 2099, 12, 500)
             diverg = _perechi(conn, "ztest_sv_d101a", _ci.TIP_D101_VS_D100)
     finally:
         conn.rollback(); _db.pool().putconn(conn)
@@ -737,6 +739,7 @@ def test_o_depunere_D100_FARA_randuri_nu_se_numara_ca_ZERO():
             tid = _schema_efemera(cur, "ztest_sv_d101e")
             _pune_d101(cur, tid, 2099, {"P48": 0, "P50": 3000})
             _pune_d100(cur, tid, 2099, 3, 3000)
+            _pune_d100(cur, tid, 2099, 9, 0)
             cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, "
                         "randuri, nr_depunere) VALUES (%s, 2099, 6, 'd100', '<x/>', NULL, 1)", (tid,))
             cur.execute("SET LOCAL search_path TO ztest_sv_d101e, public")
@@ -757,7 +760,9 @@ def test_perechile_anuale_NU_se_ancoreaza_pe_anul_CURENT():
         with conn.cursor() as cur:
             tid = _schema_efemera(cur, "ztest_sv_d101f")
             _pune_d101(cur, tid, 2099, {"P48": 0, "P50": 3000})
-            _pune_d100(cur, tid, 2099, 3, 3000)
+            _pune_d100(cur, tid, 2099, 3, 1000)
+            _pune_d100(cur, tid, 2099, 6, 1000)
+            _pune_d100(cur, tid, 2099, 9, 1000)
             cur.execute("SET LOCAL search_path TO ztest_sv_d101f, public")
             # se cere anul 2026 (curent), dar depunerea e pe 2099 -> trebuie evaluat 2099
             cs = _perechi(conn, "ztest_sv_d101f", _ci.TIP_D101_VS_D100)
@@ -766,3 +771,31 @@ def test_perechile_anuale_NU_se_ancoreaza_pe_anul_CURENT():
     assert len(cs) == 1 and cs[0]["stare"] == "verde", (
         "perechea s-a ancorat pe anul cerut, nu pe anul ultimei depuneri — ar fi gri pe vecie")
     assert "2099" in cs[0]["eticheta"]
+
+
+def test_un_TRIMESTRU_NEVAZUT_da_GRI_nu_ROSU():
+    """**Regula lui Costin, 02.09.2026, verbatim:** *„Tăria descrie identitatea, nu calitatea
+    datelor noastre. Unde nu poți stabili că vezi tot, spui gri."*
+
+    Un D100 depus în afara aplicației nu e o diferență legitimă între laturi — identitatea din ordin
+    ține oricum. E o **lipsă de vizibilitate** pe latura dreaptă. Deci perechea rămâne CERTĂ, dar nu
+    are voie să acuze: spune gri și numește trimestrul pe care nu-l vede.
+
+    *Fără regula asta, perechea ar fi produs un roșu care e al orbirii mele, nu al declarației — iar
+    o cifră validă și falsă e chiar criteriul pe care se aleg lucrurile de făcut.*"""
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            tid = _schema_efemera(cur, "ztest_sv_d101g")
+            _pune_d101(cur, tid, 2099, {"P48": 0, "P50": 3000})
+            _pune_d100(cur, tid, 2099, 3, 1000)     # lipseste trimestrul II SI III
+            cur.execute("SET LOCAL search_path TO ztest_sv_d101g, public")
+            cs = _perechi(conn, "ztest_sv_d101g", _ci.TIP_D101_VS_D100)
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+    assert len(cs) == 1, "[anti-vacuu] perechea n-a produs nimic — proba n-ar masura nimic"
+    assert cs[0]["stare"] == "gri", (
+        "3.000 declarat fata de 1.000 vazut ar fi dat ROSU — dar doua trimestre nu se vad deloc, "
+        "deci diferenta ar fi a orbirii mele, nu a declaratiei")
+    # si TARIA ramane CERTA: lipsa de vizibilitate nu coboara taria, raspunde cu gri
+    assert S.tarie(_ci.TIP_D101_VS_D100) == S.CERTA

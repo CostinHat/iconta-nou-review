@@ -7131,6 +7131,38 @@ o explicație legitimă."* Am căutat explicațiile legitime pe fiecare pereche:
   eticheta nu. Maparea rând-cu-rand D300 ↔ lit. C **nu e încă verificată**, deci nu se construiește.
   **R120.**
 
+### Tăria descrie IDENTITATEA, nu calitatea datelor noastre (02.09.2026)
+
+**Regula, dată de Costin după prima mea aplicare greșită a criteriului, verbatim:** *„Tăria descrie
+identitatea, nu calitatea datelor noastre. Unde nu poți stabili că vezi tot, spui gri — ca la ciorna
+pe 691."*
+
+**Ce corectează.** Propusesem coborârea perechii D101 rd.50 la euristică, fiindcă un D100 depus în
+afara aplicației ar face suma din dreapta mai mică. Greșit: **identitatea din ordin ține oricum** —
+ce lipsește e **vederea** pe o latură. O lipsă de vizibilitate se răspunde cu **GRI și motivul
+scris**, nu prin coborârea tăriei.
+
+**GARDĂ NOUĂ:** `core/test_supervizor.py::test_un_TRIMESTRU_NEVAZUT_da_GRI_nu_ROSU`. Perechea rd.50
+nu mai compară când nu vede tot anul: perioadele de raportare D100 ale unei obligații de impozit pe
+profit sunt **citite la sursă** (`core/d100.py`, care citează `d100_struct_anaf.txt`: luna 12 e
+„luna de sfârșit de an fiscal" cu scadență proprie, restul sunt trimestrele I/II/III — lunile 3, 6,
+9). Dacă lipsește vreunul, perechea spune gri și **numește trimestrul**. **Mutație probată (RED):**
+scoasă poarta de vizibilitate → 3.000 declarat față de 1.000 văzut devine ROȘU, adică un roșu al
+orbirii mele. *Regula stă acum lângă criteriul de atribuire, în antetul `core/supervizor.py` — e mai
+largă decât restanța care a produs-o.*
+
+### R120, închisă ca verdict: corespondența există, perechea nu intră în brief
+
+**Corespondența s-a stabilit**, din act și din cod: lit. C **pct. 17** (*„baza impozabilă aferentă
+achizițiilor … pentru care se aplică taxarea inversă … art. 331"*) ↔ D300 `R12_1`/`R12_2` (rd.12,
+colectat) și `R25_1`/`R25_2` (rd.25, deductibil), citite din `core/d300.py:386-396`.
+
+**Și tot stabilind-o s-a văzut de ce nu se construiește:** `core/d394.py:969` și `core/d300.py:890`
+citesc **amândouă `FROM facturi`**, cu **același** flag `taxare_inversa`. Deci ar fi a patra pereche
+care confruntă aceeași realitate calculată de două motoare — exact slăbiciunea de la care a pornit
+comanda. *Corespondența rămâne scrisă în R120, ca să nu fie re-dedusă dacă Costin o vrea totuși ca
+verificare de derivă între două depuneri.*
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **506 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.

@@ -23,6 +23,17 @@ blocaje; depunerea **citește** ce a găsit el, în loc să-l cheme.
   > părți. Certă = orice nepotrivire e eroare. Axa orizontală nu devine certă prin faptul că ambele
   > părți sunt declarate."*
 
+**ȘI PARTEA A DOUA A CRITERIULUI, dată la prima lui aplicare greșită (Costin, 02.09.2026, verbatim):**
+
+  > *„Tăria descrie IDENTITATEA, nu calitatea datelor noastre. Unde nu poți stabili că vezi tot,
+  > spui gri — ca la ciorna pe 691."*
+
+**Instanța care a produs-o.** Pe perechea D101 rd.50 ↔ D100 am găsit că un D100 depus **în afara
+aplicației** ar face suma din dreapta mai mică, și am propus coborârea tăriei la euristică. Greșit:
+identitatea din ordin ține oricum — ce lipsește e **vederea** pe o latură. *O lipsă de vizibilitate
+se răspunde cu GRI și motivul scris, nu prin coborârea tăriei.* Cele două perechi de azi o aplică:
+un trimestru nevăzut → gri care numește trimestrul; o notă în ciornă pe 691 → gri care numește nota.
+
 **Criteriul e mai important decât valoarea, și de-aia e scris aici.** Întrebarea pe care i-o pusesem
 — *„axa orizontală intră la certe, sau certele sunt doar declarație-contra-evidență?"* — era pusă pe
 axa greșită: cine sunt părțile nu decide nimic. *Iar răspunsul la întrebarea corectă era deja scris

@@ -7449,3 +7449,33 @@ funcții verzi care n-au spus niciodată nu.*
 **Și o capcană evitată prin precedent, nu prin inspirație:** ancorarea pe anul curent ar fi făcut
 perechile gri pe vecie, fiindcă D101 se depune pentru anul încheiat. E fix capcana pe care perechea
 D390 o rezolvase deja cu `_d300_depus_recent`. Am refolosit tiparul.
+
+
+---
+
+## 02.09.2026, tura a doua — o regulă de tărie, și o pereche care n-a intrat în brief
+
+**Costin a lăsat tăria CERTĂ pe rd.50 și a explicat de ce propunerea mea era greșită:** *„Tăria
+descrie identitatea, nu calitatea datelor noastre. Unde nu poți stabili că vezi tot, spui gri — ca la
+ciorna pe 691."*
+
+**Distincția pe care o ratasem:** un D100 depus în afara aplicației **nu** e o diferență legitimă
+între cele două laturi — identitatea din ordin ține oricum. E o **lipsă de vedere** pe o latură. Eu
+tratasem cele două ca fiind același lucru, fiindcă amândouă produc un roșu nemeritat; dar una se
+repară coborând tăria, cealaltă spunând gri. *Am ales reparația greșită pentru simptomul corect.*
+
+**Aplicată, regula a schimbat codul, nu doar registrul.** Perechea rd.50 nu mai compară când nu vede
+tot anul: perioadele D100 ale unei obligații de impozit pe profit sunt citite la sursă (lunile 3, 6,
+9 pentru trimestrele I–III), iar dacă lipsește vreuna, perechea **numește trimestrul** în loc să
+acuze. Mutația care o probează arată exact ce s-ar fi întâmplat fără ea: 3.000 declarat față de 1.000
+văzut ar fi ieșit **roșu** — un roșu al orbirii mele.
+
+**Apoi, următorul pas din listă: R120.** Am citit lit. C din ordin, toate cele 17 puncte, și am găsit
+corespondența pe care restanța o cerea: **pct. 17** (achiziții cu taxare inversă, art. 331) ↔ D300
+**rd.12 și rd.25**, citite din cod.
+
+**Și tocmai stabilind-o am găsit motivul pentru care nu se construiește.** `core/d394.py` și
+`core/d300.py` citesc **amândouă `FROM facturi`**, cu același flag `taxare_inversa`. Ar fi fost a
+patra pereche care confruntă aceeași realitate calculată de două motoare — exact slăbiciunea de la
+care a pornit comanda lui. *Verdictul e o decizie de a nu construi, nu o imposibilitate; iar
+corespondența rămâne scrisă, ca să nu fie re-dedusă dacă o vrea ca verificare de derivă.*

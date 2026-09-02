@@ -2572,8 +2572,23 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   operațiunile desfășurate cu persoane impozabile înregistrate în scopuri de TVA"*. Ordinul e
   împărțit în **SECȚIUNEA 1** și **SECȚIUNEA a 2-a**, cu litere A–F înăuntru; nu există „secțiunea
   C". *Substanța numită de Costin e exact aceasta; eticheta, nu.*
-- **ce NU s-a confirmat**: corespondența **rând cu rând** dintre rândurile D300 și rezumatul lit. C.
-  Fără ea, perechea ar compara sume alese de mine, nu o identitate scrisă undeva.
+- **[02.09.2026] CORESPONDENȚA S-A STABILIT — și tocmai stabilind-o s-a văzut că perechea nu intră
+  în ce s-a cerut.** Lit. C, **pct. 17**, verbatim: *„valoarea totală a bazei impozabile aferentă
+  achizițiilor de bunuri și serviciilor efectuate pentru care se aplică taxarea inversă și valoarea
+  totală a TVA aferentă acestora … conform art. 331 din Codul fiscal"*. În D300, aceleași operațiuni
+  sunt `R12_1`/`R12_2` (colectat, rd.12) și `R25_1`/`R25_2` (deductibil, rd.25) — citite din cod, nu
+  din memorie (`core/d300.py:386-396`), derivate din *„facturi primite cu flag `taxare_inversa`"*.
+- **DE CE NU S-A CONSTRUIT, deși corespondența există:** **ambele laturi se derivă din aceleași
+  date.** Verificat la sursă: `core/d394.py:969` și `core/d300.py:890` citesc amândouă `FROM facturi`,
+  iar `d394.tip_operatiune` folosește **același** flag `taxare_inversa` ca `d300`. Deci perechea ar
+  confrunta aceeași realitate calculată de două motoare — **exact slăbiciunea perechii D390 de la
+  care a pornit toată linia asta de lucru** (*„perechea de azi nu confruntă surse independente, și tu
+  ai scris de ce"*). Ce ar prinde e **deriva dintre două depuneri**, nu o eroare pe care ambele
+  motoare o fac la fel.
+- **ce rămâne de decis, și e al lui Costin**: dacă vrea totuși perechea **ca verificare de derivă**
+  între două declarații depuse — caz în care corespondența de mai sus e gata scrisă și nu trebuie
+  re-dedusă. *Nu s-a construit fiindcă ar contrazice direcția pe care el a numit-o, nu fiindcă ar fi
+  greu.*
 - **de ce contează aici mai mult decât de obicei**: Costin a avertizat explicit că **D300 a pierdut
   rândurile de 19% și 9% în ianuarie 2026** — verificat în cod: azi `R9 = 21%`, `R10 = 11%`. O
   mapare scrisă din memorie ar fi fost falsă exact pe rândurile care s-au mutat.

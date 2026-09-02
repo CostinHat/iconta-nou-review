@@ -13481,3 +13481,22 @@ ridic.** Pe rd.50, o explicație legitimă rămâne deschisă — un D100 depus 
 intră în suma din dreapta. Prin criteriul lui Costin, asta ar face perechea EURISTICĂ, nu CERTĂ. **N-am
 schimbat tăria** (atribuirea e a lui), am scris-o în `motiv_tarie` și i-o ridic. *Ridicarea
 contradicției rămâne obligatorie chiar când rezoluția implicită e clară.*
+
+**(52) TĂRIA DESCRIE IDENTITATEA, NU CALITATEA DATELOR NOASTRE** *(Costin, 02.09.2026, verbatim)*:
+*„Unde nu poți stabili că vezi tot, spui gri — ca la ciorna pe 691."*
+
+**Corectează o greșeală a mea de la prima aplicare a criteriului.** Propusesem coborârea perechii
+D101 rd.50 la euristică, fiindcă un D100 depus în afara aplicației ar face suma din dreapta mai
+mică. **Răspunsul lui:** aia nu e o diferență legitimă între laturi — identitatea din ordin ține
+oricum —, e o **lipsă de vizibilitate** pe una dintre ele, iar lipsa de vizibilitate se răspunde cu
+GRI și motivul scris.
+
+**Ce s-a construit din regulă, ca să nu rămână proză:** perechea rd.50 nu mai compară când nu vede
+tot anul. Perioadele de raportare D100 ale unei obligații de impozit pe profit sunt citite **la
+sursă** (`core/d100.py`, care citează `d100_struct_anaf.txt`: luna 12 e „luna de sfârșit de an
+fiscal" cu scadență proprie, restul sunt trimestrele I/II/III — adică lunile 3, 6, 9). Dacă lipsește
+vreunul, perechea spune gri și **numește trimestrul**, în loc să acuze o divergență care ar fi a
+orbirii mele. Gardat de `::test_un_TRIMESTRU_NEVAZUT_da_GRI_nu_ROSU`, cu mutație probată.
+
+*Regula e mai largă decât cazul și de-aia stă lângă criteriul de atribuire din antetul
+`core/supervizor.py`, nu doar în restanța care a produs-o.*
