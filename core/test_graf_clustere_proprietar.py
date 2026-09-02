@@ -17,7 +17,14 @@ from core import agenda
 
 # CLICHET: muchiile de la regula nouă, măsurate pe 23.08.2026 (erau 960 cu regula veche).
 # Nu poate CREȘTE fără decizie: o creștere înseamnă ori dependențe noi reale, ori regula slăbită.
-BASELINE_MUCHII = 111
+#
+# 111 -> 112 pe 02.09.2026, RIDICAT CONȘTIENT, cu motivul scris: o dependență REALĂ nouă, nu o
+# slăbire a regulii. `core/d101.py` cheamă acum `core.pdf_util.bani` — formatorul CANONIC de sume —
+# pentru avertismentul „cheltuiala cu impozitul pe profit rămasă nededusă la rd.23" (R124). Muchia e
+# chiar ce cere DESIGN_SYSTEM cap.7: o sumă afișată contabilului trece printr-un singur formator, nu
+# prin `%d lei` scris local. *Alternativa — să nu existe muchia — ar fi însemnat o a doua formatare
+# de bani în cod, adică exact ce numără verificatorul ca BACKEND_UI_BRUT.*
+BASELINE_MUCHII = 112
 
 
 # ────────────────────────────────────────────── calibrarea regulii, pe caz sintetic

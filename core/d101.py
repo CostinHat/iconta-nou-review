@@ -72,6 +72,13 @@ def _esc(v):
     return quoteattr(str(v if v is not None else ""))
 
 
+#: Prefixul avertismentului „cheltuiala cu impozitul ramasa nededusa" (rd.23). E o CONSTANTA a
+#: modulului, nu o bucata de proza repetata in gard: asa aserttiunea se ancoreaza pe ceva ce
+#: modulul DECLARA, iar reformularea mesajului nu strica gardul si nici nu-l face sa treaca degeaba
+#: (METODA §23 — structura, nu text).
+PREFIX_AVERT_691 = "D101 rd.23: "
+
+
 def _i(x):
     return int(Decimal(str(x)).quantize(Decimal("1"), rounding=ROUND_HALF_UP))
 
@@ -513,6 +520,35 @@ def genereaza(conn, schema, perioada, manual=None):
                       rezerva={"capital": r.get("capital", 0),
                                "rezerva_existenta": r.get("rezerva_existenta", 0),
                                "chelt_impozit": r.get("chelt_impozit", 0)})
+    # [02.09.2026, PRAG 1] CHELTUIALA CU IMPOZITUL PE PROFIT RAMASA NEDEDUSA — se SEMNALEAZA.
+    #
+    # Contul 691 („Cheltuieli cu impozitul pe profit", OMFP 1802/2014) e un cont 6xx, deci intra
+    # in P2 si SCADE rezultatul. CF art.25 alin.(4) lit.a) il declara insa NEDEDUCTIBIL, iar
+    # formularul are randul lui: rd.23 „Cheltuieli cu impozitul pe profit/impozitul pe profit la
+    # nivelul impozitului minim" (verificat la sursa, `anaf_surse/opanaf_206_2025_d101.txt`).
+    # Ajustarile fiscale raman ale contabilului — generatorul NU le inventeaza. Dar pana azi nici
+    # nu spunea nimic: D101 iesea cu un impozit MAI MIC decat cel datorat, in tacere.
+    #
+    # **Masurat pe portofoliu, nu dedus** (02.09.2026, `tenant_005`, anul 2025): cu nota de impozit
+    # de 15.200 lei validata in evidenta, acelasi D101 a coborat de la 15.200 la 12.768 lei — 2.432
+    # lei sub cel datorat, fara niciun semn. *Directia conteaza: omisiunea SUBEVALUEAZA impozitul,
+    # adica exact directia care costa la un control.*
+    #
+    # DE CE SEMNAL SI NU COMPLETARE AUTOMATA: cat din soldul lui 691 merge la rd.23 e o decizie
+    # fiscala (la membrii unui grup impozitul trece prin 694, iar regularizarile pot fi de alt an).
+    # Rezerva legala (P13) se deriva automat fiindca omisiunea ei SUPRA-declara — acolo implicitul
+    # e in favoarea corectitudinii. Aici nu e, deci se cere omul. *Un implicit minte in amandoua
+    # directiile; diferenta e cine plateste minciuna.*
+    _imp_691 = _i(r.get("chelt_impozit", 0) or 0)
+    if _imp_691 > 0 and not d_grup and _i(res.P.get("P23", 0)) == 0:
+        from core.pdf_util import bani as _bani   # formatorul CANONIC de sume (DS cap.7)
+        res.avertismente.append(
+            PREFIX_AVERT_691 + "contul 691 are rulaj debitor %s lei pe %d (cheltuiala cu impozitul "
+            "pe profit), iar rândul 23 e 0. Cheltuiala e NEDEDUCTIBILĂ (CF art.25 alin.(4) lit.a) "
+            "și se adaugă înapoi la rd.23 — altfel impozitul declarat e mai mic decât cel datorat. "
+            "Completează rd.23 dacă suma se referă la anul declarat."
+            % (_bani(_imp_691), perioada.an))
+
     # POARTA A DOUA CALE (gard continut, 05.08.2026, pas 5/6): recalcul INDEPENDENT al bazei
     # CONTABILE (P1/P2/P4/P5 din balanta). NU verifica impozabilul (ajustari manuale + golden).
     from core.d101_reconciliere import verifica_reconciliere as _vr101

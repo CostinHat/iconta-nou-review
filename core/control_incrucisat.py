@@ -911,8 +911,16 @@ def compara_d390(baze, ic_facturi, patru_ochi=True):
 #  F163 D-vs-D REAL (deblocat de F198) — A TREIA sursă: D390 vs D300 DEPUS.
 #  Nu înlocuiește compara_d390 (evidența validată rămâne); o completează. Citește randurile
 #  intracom ale D300 EFECTIV DEPUS din public.declaratii_depuse_curente.randuri (persistate la
-#  depunere, F198). R1_1 (livrări IC) / R5_1 (achiziții IC) sunt MANUAL-ONLY (le introduce
-#  contabilul la generare); cheie absentă => 0, dar temeiul spune de ce (contabilul vede CAUZA).
+#  depunere, F198). R1_1 (livrări IC) / R5_1 (achiziții IC) se DERIVĂ din facturile cu partener din
+#  UE (`core/d300.py`) și pot fi completate manual când nu există astfel de facturi; cheie absentă
+#  => 0, dar temeiul spune de ce (contabilul vede CAUZA).
+#
+#  [02.09.2026] Textul de aici spunea, din naștere, „MANUAL-ONLY". **Fals, și contrazis de chiar
+#  funcția de dedesubt**, al cărei mesaj `absent_txt` scrie că rândul „se derivă AUTOMAT din
+#  facturile cu partener din UE". Măsurat pe portofoliu, nu dedus: pe `tenant_004`, o achiziție IC
+#  de 12.000 lei înregistrată după depunere a produs `R5_1 = 12000` în rectificativă, fără nicio
+#  intrare manuală. *A doua instanță a aceleiași clase în două zile — un text fals despre rândurile
+#  IC —, iar prima a fost reparată în altă parte, unde o citea contabilul.*
 # ============================================================
 D390_D300_PERECHI = (
     ("Livrări IC — D390 vs D300 depus", "L", "R1_1"),

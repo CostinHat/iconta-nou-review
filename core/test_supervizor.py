@@ -664,6 +664,54 @@ def test_pereche_D101_vs_D100_COINCID_da_verde_si_DIVERG_da_rosu():
     assert diverg[0]["remediu"]["fel"] == "sugerat"
 
 
+def test_perechea_D100_citeste_CHEIA_PE_CARE_GENERATORUL_O_SCRIE():
+    """**GARDUL CARE LIPSEA (02.09.2026).** Cele doua calibrari de mai sus sunt corecte si totusi
+    oarbe: isi fabrica singure `randuri`, cu o cheie pe care aplicatia **nu o scria**.
+
+    Masurat pe calea reala: `d100.build_xml` emitea `suma_plata="3000"`, iar obligatia persistata
+    prin `coada_api.randuri_din_res` avea doar `suma_dat` — fiindca `suma_plata` traia numai in
+    formatarea XML-ului, nu ca **camp** al dataclass-ului, iar `dataclasses.asdict` vede numai
+    campuri. Deci `_plati_anticipate_din_d100` aduna **0** pe orice depunere facuta prin aplicatie,
+    si compara randul 50 cu zero. *O cifra valida si falsa — criteriul de prioritate al lui Costin.*
+
+    **Ce face gardul asta si nu faceau celelalte:** nu scrie el `randuri`. Le cere
+    GENERATORULUI, prin exact functia care le persista la depunere. Un camp scos din dataclass
+    sau o cheie redenumita pe o latura il fac rosu.
+
+    **Mutatia prin care cade** (probata mai jos, in aceeasi functie): sterge cheia din obligatia
+    serializata si perechea vede 0 — deci verdele de sus nu e vacuu."""
+    from core import coada_api as _ca
+    from core import d100 as _d100
+
+    prof = {"cui": "14399840", "nume": "PROBA D100", "regim_fiscal": "profit"}
+    # fixtura-sintetica-ok: 2099 e anul conventional al fixturilor pe tabele partajate; aici
+    # nu se scrie nimic in baza, dar anul ramane cel declarat, ca sa nu para o perioada reala.
+    res = _d100.calcul_d100(prof, 2099, 3, [{"cod_oblig": "103", "suma_dat": 3000}])
+    randuri = _ca.randuri_din_res(res)
+
+    suma, cu, fara = _ci._plati_anticipate_din_d100([(2099, 3, randuri)])
+    assert cu == 1 and fara == 0, (
+        "[anti-vacuu] obligatia de impozit pe profit nu s-a recunoscut deloc in ce persista "
+        "generatorul — cheile citite: %s" % sorted(randuri["obligatii"][0]))
+    assert suma == 3000, (
+        "perechea vede %s din cele 3.000 lei pe care aceeasi declaratie le emite in XML ca "
+        "suma_plata. Cheile persistate: %s" % (suma, sorted(randuri["obligatii"][0])))
+
+    # ACEEASI cifra pe amandoua laturile declaratiei: ce zice XML-ul == ce se persista.
+    import re as _re
+    din_xml = _re.search(r'suma_plata="(\d+)"', _d100.build_xml(res)).group(1)
+    assert int(din_xml) == int(randuri["obligatii"][0]["suma_plata"]), (
+        "XML-ul declara suma_plata=%s, iar randul persistat %s — doua afirmatii despre aceeasi "
+        "obligatie" % (din_xml, randuri["obligatii"][0]["suma_plata"]))
+
+    # MUTATIA, in aceeasi functie: fara cheia aia, perechea aduna zero si NU spune ca nu stie.
+    ciuntit = {"obligatii": [{k: v for k, v in randuri["obligatii"][0].items()
+                              if k != "suma_plata"}]}
+    suma_m, cu_m, _ = _ci._plati_anticipate_din_d100([(2099, 3, ciuntit)])
+    assert cu_m == 1 and suma_m == 0, (
+        "mutatia nu schimba nimic — atunci aserttiunea de sus n-ar dovedi nimic")
+
+
 def test_pereche_D101_vs_691_COINCID_da_verde_si_DIVERG_da_rosu():
     """Aceeași calibrare pe latura contabilă: nota de impozit se scrie în evidență, nu se fabrică
     în declarație."""

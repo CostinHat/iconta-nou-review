@@ -107,6 +107,21 @@ def _nr_evid(cod_oblig, luna, an, zi_scadenta, luna_scadenta, an_scadenta, tip_o
 class Obligatie:
     cod_oblig: str
     suma_dat: int
+    #: «Suma de plata» a obligatiei — CAMP, nu valoare derivata la emitere.
+    #:
+    #: **De ce e camp (02.09.2026).** Pana azi traia numai in `build_xml`, care emitea
+    #: `suma_plata="%d" % o.suma_dat`. XML-ul o declara, dar `randuri` — dict-ul persistat in
+    #: `public.declaratii_depuse` prin `coada_api.randuri_din_res` — **nu o continea**, fiindca
+    #: `dataclasses.asdict` vede numai campuri. Iar perechea orizontala D101 rd.50 ↔ Σ D100
+    #: (`control_incrucisat._plati_anticipate_din_d100`) citeste exact `suma_plata`: pe orice
+    #: depunere facuta prin aplicatie aduna **0**, deci compara randul 50 cu zero si numeste
+    #: „divergenta" propria ei orbire. *Masurat pe calea reala, nu dedus: un D100 de 3.000 lei
+    #: emite `suma_plata="3000"` in XML si persista o obligatie fara cheia aia.*
+    #:
+    #: Perechea era calibrata in amandoua directiile — dar pe dictionare scrise de mana, cu o cheie
+    #: pe care generatorul n-o scrie. *Un gard care se uita exact unde codul e corect raporteaza
+    #: verde despre o lume pe care n-o vede.*
+    suma_plata: int = 0
     cod_bugetar: str = ""
     scadenta: str = ""
     nr_evid: str = ""
@@ -153,7 +168,7 @@ def calcul_d100(prof, an, luna, obligatii):
             zi_s, luna_s, an_s = int(parti[0]), int(parti[1]), int(parti[2])
         scad_str = "%02d.%02d.%04d" % (zi_s, luna_s, an_s)
         obl.append(Obligatie(
-            cod_oblig=cod, suma_dat=suma, cod_bugetar=cod_bug, scadenta=scad_str,
+            cod_oblig=cod, suma_dat=suma, suma_plata=suma, cod_bugetar=cod_bug, scadenta=scad_str,
             nr_evid=_nr_evid(cod, luna, an, zi_s, luna_s, an_s),
             cota=str(o.get("cota") or "")))
         total += suma
@@ -263,7 +278,7 @@ def build_xml(res):
         # pool-ul clasei (sunt folosite intern, nu scrise in XML).
         linie = ('  <obligatie cod_oblig="%s" scadenta="%s" suma_dat="%d" '
                  'suma_plata="%d" nr_evid="%s"'
-                 % (o.cod_oblig, o.scadenta, o.suma_dat, o.suma_dat, o.nr_evid))
+                 % (o.cod_oblig, o.scadenta, o.suma_dat, o.suma_plata, o.nr_evid))
         if o.cod_bugetar:
             linie += ' cod_bugetar=%s' % _esc(o.cod_bugetar)
         # cota: OBLIGATORIU si NUMAI pt. cod_oblig 121 (micro), valoare "1" (struct D100 poz.17a:

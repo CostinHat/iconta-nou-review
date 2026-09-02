@@ -7280,9 +7280,9 @@ aplicată înainte ca paralela să existe.*
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**506 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**508 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 489
+### `core/` — 491
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7405,6 +7405,7 @@ aplicată înainte ca paralela să existe.*
 - `core/test_d101_cod_obligatie_caen.py` — GARD (TURA 3, 10.08.2026): D101 respinge PRE-DUK cod_obligatie in afara nomenclatorului
 - `core/test_d101_cui_checksum.py` — GARD T1 (LANT legislatie TURA 3, 10.08.2026): D101 valideaza cifra de control a CUI-ului
 - `core/test_d101_imca_ca_precedent.py` — core/test_d101_imca_ca_precedent.py — gard D101 IMCA eligibilitate (C-4 transa 3).
+- `core/test_d101_impozit_nededus.py` — GARD [02.09.2026, PRAG 1]: cheltuiala cu impozitul pe profit ramasa NEDEDUSA se SEMNALEAZA.
 - `core/test_d101_nr_evid_poz12.py` — core/test_d101_nr_evid_poz12.py — gard: nr_evid poz.1-2 = '11' (OPANAF 206/2025).
 - `core/test_d101_reconciliere.py` — core/test_d101_reconciliere.py — gardul A DOUA CALE D101 (05.08.2026, pas 5/6).
 - `core/test_d101_sponsorizare_075.py` — GARD D101 (16.08.2026, campanie rețeta D300, pas 6/8) — sponsorizare: limita 0.75% cifra de afaceri.
@@ -7655,6 +7656,7 @@ aplicată înainte ca paralela să existe.*
 - `core/test_pastila_gri.py` — GARD (20.08.2026): griul nu se falsifică niciodată în verde.
 - `core/test_patru_ochi_efectiv.py` — core/test_patru_ochi_efectiv.py — GARD: patru-ochi = politica x aplicabilitate, aceeasi in UI si in enforcement.
 - `core/test_pereche_act_articol.py` — GARD [31.08.2026, faza 2]: un temei nu numește un act care nu conține articolul lui.
+- `core/test_perimetru.py` — GARD [02.09.2026]: perimetrul portii SCURTE se DERIVA, si stie cand nu poate.
 - `core/test_perimetru_calculat.py` — #11 — §5 CALCULAT (meta-gardul). Din registrul de fatete (MODEL_AUDIT_TENANT.md, F1..F9)
 - `core/test_perimetru_firma_declarat.py` — core/test_perimetru_firma_declarat.py — GARD: perimetrul declarat al unei firme nu poate ramane
 - `core/test_perioada.py` — Perioada confirmata (DESIGN_SYSTEM cap.23): ciclul CONFIRMAT/NECONFIRMAT + blocajul motivat.
