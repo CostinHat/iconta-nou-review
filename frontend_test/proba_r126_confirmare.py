@@ -237,6 +237,38 @@ try:
                             is_mobile=True, has_touch=True)
         mob.add_init_script(INIT)
         mp = mob.new_page()
+        # ── A DOUA APASARE [defect gasit apasand, 02.09] ─────────────────────────────────────
+        # Secventa REALA a lui Costin, masurata in uvicorn.log pe elementul 8052:
+        #   POST /aproba -> 200 · POST /depune -> 409 · (a doua apasare) POST /aproba -> 409
+        # Elementul ramanea `aprobata`, iar a doua apasare murea inainte sa ajunga la depunere.
+        # Acum inlantuirea a iesit din client: se trimite UN act, si aprobarea vine DUPA poarta.
+        reset_confirmari("inainte de a doua apasare")
+        r4 = api("/coada", "POST", {"tenant_id": TENANT, "tip": "d100", "an": AN, "trim": TRIM}, TOK)
+        assert r4.get("ok"), "n-am putut pregati proba celei de-a doua apasari: %r" % r4
+        elem2 = r4["coada_id"]
+
+        def _stare(eid):
+            st = api("/coada", tok=TOK) or {}
+            return next((c["stare"] for c in (st.get("coada") or []) if c["id"] == eid), None)
+
+        for tura in (1, 2):
+            deschide_coada(pg)
+            pg.query_selector_all(".val-depune")[cardul_probei(pg)].click()
+            pg.wait_for_selector("#dlg-input", timeout=10000)
+            pg.click("#dlg-ok")
+            pg.wait_for_selector(".val-conf-item", timeout=20000)
+            n = len(pg.query_selector_all(".val-conf-item"))
+            st = _stare(elem2)
+            print("APASAREA %d -> pasul s-a deschis cu %d constatari · starea elementului: %s"
+                  % (tura, n, st))
+            assert n == 2, "apasarea %d n-a deschis pasul de confirmare" % tura
+            assert st == "la_senior", (
+                "apasarea %d a lasat elementul in %r — un refuz al portii nu are voie sa mute "
+                "starea: din `aprobata` nu se mai poate RESPINGE" % (tura, st))
+            pg.click("#val-conf-renunt")     # abandon, exact ca in secventa reala
+            pg.wait_for_timeout(400)
+        sc(pg, "r126_9_a_doua_apasare.png")
+
         # ── DRUMUL FARA CONSTATARI [R82/instanta, decizia lui Costin 02.09] ──────────────────
         # *„acelasi buton nu poate sa se incheie vizibil pe un drum si tacut pe celalalt, iar
         # drumul tacut e cel obisnuit."* Firma asta (ALFA MICRO) n-are D101 depus, deci perechile
@@ -266,8 +298,11 @@ try:
         # acelasi motiv ca la start: legul de desktop tocmai a confirmat cifrele, iar amprenta nu
         # s-a schimbat — fara reset, poarta n-ar mai avea ce cere pe telefon.
         reset_confirmari("inainte de mobil")
+        # Elementul poate exista deja: legul de mai sus abandoneaza de doua ori, deliberat, iar
+        # `ux_coada_activa` nu lasa o a doua intrare ACTIVA pe aceeasi perioada. Refolosirea e
+        # raspunsul corect — proba mobila are nevoie de un element, nu de unul nou.
         r2 = api("/coada", "POST", {"tenant_id": TENANT, "tip": "d100", "an": AN, "trim": TRIM}, TOK)
-        assert r2.get("ok"), "n-am putut crea al doilea element pentru proba mobila: %r" % r2
+        assert r2.get("ok") or r2.get("_http") == 409,             "n-am putut pregati elementul pentru proba mobila: %r" % r2
         deschide_coada(mp)
         mp.query_selector_all(".val-depune")[cardul_probei(mp)].click()
         mp.wait_for_selector("#dlg-input", timeout=10000)

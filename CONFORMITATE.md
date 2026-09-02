@@ -47,7 +47,7 @@ după a doua oară: „e gardul care nu citește proză și totuși o discipline
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 29.08.2026: garda cere ca fiecare restanță NUMITĂ acolo să fie DESCHISĂ, iar textul le numea pe R54, R53, R58 — dintre care două s-au închis azi. A doua oară când istoricul iese din câmp din același motiv; prima a fost R33, pe 28.08)*: Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
-- **ultima actualizare**: 2026-09-02
+- **ultima actualizare**: 2026-09-03
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
 
 ---
@@ -2720,6 +2720,34 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   publicarea JS trece prin commit), fie există o verificare de sintaxă pe fiecare `.js` **înainte** de
   scriere, nu doar în poartă. Se închide când o eroare de sintaxă introdusă deliberat într-un modul
   importat de `cabinet.js` **nu mai poate ajunge** la un browser fără să treacă o poartă.
+  **ÎNDEPLINITĂ, pe amândouă căile** — condiția cerea „fie una, fie alta"; a doua costa douăzeci de
+  linii, iar clasa merita amândouă.
+- **cum s-a reparat**: `/static` se montează din **`../iconta_publicat/static`**, scris de
+  `scripts/publica_static.py`. Sursa implicită e **HEAD** (`git archive`), iar `post-commit` publică
+  **înainte** de restart — deci un `.js` ajunge la un browser **doar după ce a trecut poarta și a
+  intrat în commit**. Publicarea are poarta ei: **`node --check` pe fiecare `.js`**, deci nici măcar
+  publicarea deliberată din arbore (`--din-arbore`, calea de dezvoltare) nu poate duce mai departe un
+  modul care nu se parsează. Amprenta `.publicat.json` spune **din ce** s-a publicat, **de pe ce
+  commit** și **când** — înainte, „ce se servește" nu era o întrebare care să aibă răspuns.
+- **de ce RIDICĂ în loc să cadă înapoi pe arbore**: un director publicat fără amprentă citibilă e o
+  publicare oprită la jumătate. Alternativa la refuz ar fi servirea arborelui de lucru — adică exact
+  defectul reparat, reapărut tăcut, tocmai când publicarea s-a rupt.
+- **`raportari/` nu se atinge**: aplicația scrie acolo, la rulare, imaginile rapoartelor. Publicarea
+  le **protejează** de ștergere (`rsync --filter='P raportari/***'`); altfel fiecare publicare ar fi
+  șters ce s-a generat între timp.
+- **calibrare — condiția, executată literal** (`frontend_test/proba_r118_static.py`), pe **același
+  modul** și **aceeași clasă de greșeală** ca instanța din 01.09: (1) ce se servește vine din
+  directorul publicat, cu amprentă; (2) după ce arborele e stricat, octeții serviți prin HTTP rămân
+  **identici**; (3) publicarea **refuză** și **numește fișierul**; (4) desktopul se randează în
+  continuare — **14 carduri, 0 erori JS**, cu arborele stricat pe disc. Arborele se reface în
+  `finally` și refacerea se verifică **pe octeți**. **Captură**: `r118_desktop_cu_arborele_stricat.png`.
+- **ce a scos calibrarea, despre ea însăși**: prima formă a mutației era **JS valid** — pusesem `„`
+  *înăuntrul* unui șir normal, ceea ce e doar un caracter oarecare. Instrumentul a răspuns corect
+  (n-avea ce refuza), iar proba a picat pe aserțiunea **ei**. *O mutație care nu mută nimic n-are ce
+  dovedi* — METODA §22, întoarsă asupra propriei probe.
+- **ce NU acoperă, declarat**: separarea apără drumul **disc → browser**. Nu apără drumul
+  **browser → browser**: o filă deschisă de mult rulează în continuare modulele încărcate atunci,
+  oricâte publicări ar trece. **R129**, deschisă azi, măsurată pe chiar incidentul de la 8052.
 - **reluări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `7a66fd4`
@@ -2762,6 +2790,86 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   o gardă golită raportează verde despre o regulă pe care n-o mai verifică, iar poarta o numără ca
   trecută. *Exact interdicția 19 — o gardă care raportează favorabil pe zero rânduri —, dar ajunsă
   acolo prin trecerea timpului, nu prin construcție.*
+
+### R128 — Poarta confirmării cădea DUPĂ aprobare, iar refuzul ei îngusta opțiunile omului
+
+- **felul**: ORDINE
+- **cine deblochează**: INTERN
+- **unde intră**: E4 · supervizorul · stratul de efect · **PRAG 1**
+- **ce blochează**: blocase **depunerea**, din scaunul contabilului. Înlănțuirea „aprobă + depune"
+  trăia în **client**: ecranul chema `POST /aproba`, apoi `POST /depune`. Poarta confirmării trăiește
+  în `depune` — deci aprobarea trecea, și poarta cădea **după** ea.
+- **instanța, MĂSURATĂ ÎN LOG, nu dedusă** *(02.09.2026, elementul 8052, apăsat de Costin)*:
+  ```
+  POST /coada/8052/aproba  -> 200 OK
+  POST /coada/8052/depune  -> 409 Conflict
+  POST /coada/8052/aproba  -> 409 Conflict
+  ```
+  Elementul a rămas `aprobata`. Din starea aia **nu se mai poate RESPINGE** (`respinge` cere
+  `la_senior`), deci un refuz al supervizorului **îngusta opțiunile omului** — iar contractul
+  modulului spune, scris, că *nu blochează niciodată*. Iar o listă care încă îl credea `la_senior`
+  re-chema `aproba` și murea pe *„nu pot aproba din starea «aprobata»"*, fără să ajungă la depunere.
+- **cum s-a reparat**: înlănțuirea a **ieșit din client**. Se trimite **un act**, iar serverul aprobă
+  **după** ce poarta a trecut (`coada_api.auto_aproba_daca_e_cazul`, chemată din `coada_depune`).
+  Un refuz nu mai mișcă nimic: elementul rămâne `la_senior`, respingerea rămâne pe masă, iar a doua
+  apăsare se comportă ca prima. Cu patru-ochi **efectiv**, funcția **refuză** — validarea în doi nu
+  se ocolește de aici.
+- **calibrare**: `core/test_poarta_inainte_de_aprobare.py`, 5 teste — **ordinea în rută**, citită din
+  **AST** (poartă < aprobare < depunere) · **ieșirea prin excepție** de după poartă e înaintea
+  aprobării, altfel poarta s-ar putea chema și ignora · pe un element care nu e `la_senior` aprobarea
+  se **sare explicit** (`sarit: True`, nu un `True` care s-ar citi „am aprobat") · un element
+  inexistent **nu** trece drept sărit. **Pe ecran**, secvența reală reprodusă:
+  `frontend_test/proba_r126_confirmare.py` apasă **de două ori**, cu abandon între ele — de fiecare
+  dată pasul se deschide și elementul rămâne `la_senior`. **Captură**: `r126_9_a_doua_apasare.png`.
+- **ce nu vede măsurătoarea**: dacă mai există alte perechi de rute pe care clientul le înlănțuie,
+  cu o poartă în a doua. N-am măsurat clasa.
+- **condiția de deblocare**: un refuz al porții nu schimbă starea elementului, iar a doua apăsare se
+  comportă ca prima — probat pe ecran. **ÎNDEPLINITĂ.**
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `31d4e47d`
+- **rezolvată pe commit**: —
+- **unde ajunge efectul**: la contabilul care depune. *Un refuz care spune „nu blochez" și totuși
+  mută starea într-un sens fără întoarcere e mai rău decât un blocaj declarat.*
+
+### R129 — O filă deschisă de mult rulează modulele de atunci, oricâte publicări trec
+
+- **felul**: ARTEFACT
+- **cine deblochează**: DECIZIE
+- **unde intră**: E4 · stratul de efect · familia lui **R118** · **PRAG 1**
+- **ce blochează**: **ajungerea reparațiilor la om.** R118 apără drumul **disc → browser**. Nu apără
+  drumul **browser → browser**: o pagină încărcată o dată își ține modulele în memorie, iar aplicația
+  n-are nicio cale prin care să-i spună că s-a publicat o versiune nouă.
+- **instanța, MĂSURATĂ** *(02.09.2026, chiar incidentul de la elementul 8052)*: pasul de confirmare
+  construit în aceeași zi **nu s-a deschis**, iar mesajul de 409 a apărut în linia de eroare a
+  dialogului — exact ca înainte de reparație. Cauza, citită din `uvicorn.log`: fila lui rulează
+  **`validat.js?v=e771e38cc0`** și **`api.js?v=c20d0584e2`** — versiunile din commitul **`9b3bf419`**,
+  cu mult înaintea reparației (`0b494dfd`). Ultima **navigare** de la adresa lui e la linia
+  **535.509** dintr-un log de **631.087**; între ea și apăsare au intrat **șapte** publicări, fiecare
+  cu restart. *Nu era un defect al codului nou — era codul nou care nu ajunsese la el.*
+- **ce NU e**: nu e service worker. `static/sw.js` **nu** păstrează JS/CSS în cache (doar `/` pentru
+  navigarea offline) — verificat la sursă, ca să nu se repare unde nu e cauza.
+- **ce nu vede măsurătoarea**: de câte ori s-a mai întâmplat. Din log se poate reconstitui pentru
+  ziua asta; pentru zilele dinainte, `uvicorn.log` e rotit.
+- **planul**: **NEACOPERIT, și deliberat neatins acum.** `PLAN_LUCRU.md` — secțiunea „STAREA, după
+  R118" (scrisă azi, de Costin) spune că **nu se mai deschide nicio temă internă**, iar un
+  avertisment de versiune nouă e **ecran**: unde stă, cât de insistent e, dacă întrerupe o depunere
+  în curs. Nu e o alegere pe care o pot face singur. `DESIGN_SYSTEM.md` cap.27 (E2) e despre
+  confirmarea unui ACT, nu despre starea aplicației însăși.
+- **condiția de deblocare**: **DECIZIA lui Costin**, la ieșirea către cabinetul-pilot — acolo devine
+  ascuțită, fiindcă un contabil ține aplicația deschisă toată ziua. Variantele, cu ce cere fiecare:
+  (a) aplicația compară periodic o amprentă de versiune cu serverul și **anunță** *„s-a publicat o
+  versiune nouă — reîncarcă"*, fără să întrerupă; (b) reîncărcare **forțată** la schimbarea
+  amprentei, cu riscul de a rupe un formular pe jumătate completat; (c) nimic, și se acceptă că o
+  filă veche rulează cod vechi. Se închide când o publicare nouă devine **vizibilă** într-o filă
+  deschisă de dinaintea ei, fără ca omul să ghicească.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `31d4e47d`
+- **rezolvată pe commit**: —
+- **unde ajunge efectul**: la contabil, sub forma cea mai derutantă cu putință — o reparație despre
+  care i s-a spus că e făcută, și care pe ecranul lui nu există. *Azi a lovit chiar proba porții de
+  confirmare: mecanismul era întreg, iar fila nu-l avea.*
 
 ### R127 — Depunerea se încheia VIZIBIL pe un drum și TĂCUT pe celălalt, cu același buton
 

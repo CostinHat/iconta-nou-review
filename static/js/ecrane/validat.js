@@ -321,9 +321,7 @@ async function actioneaza(c, act, firme, corp, nav) {
       buton: "Depune, cu motivul de mai sus",
       butonClasa: "val-trece",
       onConfirm: async (motiv, corpDialog) => {
-        if (c.stare === "la_senior") {
-          await api.post(`/coada/${c.id}/aproba`, { motiv_trecere: motiv });
-        }
+        // [02.09] NU se mai înlănțuie `aproba` aici: aprobarea e a serverului și vine DUPĂ poartă.
         await depuneCuPoarta(nav, c, corpDialog, corp, firme, perDecl, { motiv_trecere: motiv });
       },
     });
@@ -338,11 +336,13 @@ async function actioneaza(c, act, firme, corp, nav) {
       buton: "Confirmă depunerea",
       butonClasa: "val-depune",
       onConfirm: async (spv, corpDialog) => {
-        // Cu patru-ochi OFF, un item încă „la_senior" se aprobă automat înainte de depunere
-        // (aceeași auto-aprobare pe care backendul o permite când patru-ochi e oprit).
-        if (c.stare === "la_senior") {
-          await api.post(`/coada/${c.id}/aproba`, {});
-        }
+        // [02.09.2026, defect găsit apăsând] ÎNLĂNȚUIREA A IEȘIT DIN CLIENT.
+        // Ecranul chema `aproba` apoi `depune`; poarta confirmării trăiește în `depune`, deci
+        // aprobarea trecea și poarta cădea DUPĂ ea. Elementul rămânea `aprobata` — stare din care
+        // nu se mai poate respinge —, iar o listă care încă îl credea `la_senior` re-chema `aproba`
+        // și murea pe „nu pot aproba din starea «aprobata»", fără să ajungă la depunere.
+        // Măsurat în `uvicorn.log`, pe elementul 8052. Acum se trimite UN act, iar serverul aprobă
+        // după ce poarta a trecut (`coada_api.auto_aproba_daca_e_cazul`).
         await depuneCuPoarta(nav, c, corpDialog, corp, firme, perDecl,
                              spv ? { spv_index: spv } : {});
       },

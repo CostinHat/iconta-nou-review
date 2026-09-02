@@ -70,6 +70,22 @@ else
            "verifica ramura; NU se forteaza din hook - muta backup-ul manual, constient"
 fi
 
+# ---------- 2b. PUBLICAREA STATICULUI (R118) ----------
+# CE SE SERVESTE nu mai e CE E IN LUCRU: /static se monteaza din ../iconta_publicat/static, scris
+# de aici, din HEAD. Deci un .js ajunge la un browser DOAR dupa ce a trecut poarta si a intrat in
+# commit. Publicarea are propria poarta de sintaxa (node --check pe fiecare .js) si REFUZA sa
+# inlocuiasca ce se serveste daca vreunul nu se parseaza.
+#
+# ORDINEA CONTEAZA: publicarea vine INAINTE de restart. Invers, procesul nou ar porni pe statica
+# veche, iar Python-ul si JS-ul ar descrie doua versiuni diferite ale aplicatiei. Esec = sentinela
+# + banner, ca la push-uri; NICIODATA tacut.
+S_PS=".git/PUBLICARE_STATIC_ESUATA"; rm -f "$S_PS"
+if "$PWD/venv/bin/python" scripts/publica_static.py > /tmp/publica_static.log 2>&1; then
+    echo "[post-commit] static publicat: $(tail -1 /tmp/publica_static.log)"
+else
+    banner "static publicat" "$S_PS" "publicarea staticului a esuat: $(tail -1 /tmp/publica_static.log 2>/dev/null)"            "citeste /tmp/publica_static.log (de obicei: un .js care nu se parseaza), repara, apoi: ./venv/bin/python scripts/publica_static.py"
+fi
+
 # ---------- 3. restart NECONDITIONAT: procesul viu preia HEAD dupa ORICE publicare ----------
 # NU se inspecteaza tipul commitului (runtime / docs / CSV / JS). Conditionarea pe tip a produs
 # divergenta RUNNING != HEAD (un commit de docs a lasat procesul pe commitul anterior). Regula

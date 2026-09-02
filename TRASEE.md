@@ -1145,7 +1145,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T01 — Declarația — generare, validare, coadă, aprobare, depunere
 
-**Clasa:** MECANIC · **rute:** 16 (din care schimba date: 8) · **refuzuri explicite:** 41
+**Clasa:** MECANIC · **rute:** 16 (din care schimba date: 8) · **refuzuri explicite:** 42
 
 **Cine:** rol cerut: `admin_firma`, `angajat` · drept fin: `poate_depune`, `poate_valida`. **Rute care schimba date fara nicio verificare de rol: 1 din 8.**
 

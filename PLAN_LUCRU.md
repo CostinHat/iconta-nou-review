@@ -455,6 +455,42 @@ vede, dar nu produce niciun efect. **R115.**
 
 ---
 
+## ⬛ STAREA, DUPĂ R118 — construcția internă se ÎNCHIDE *(Costin, 02.09.2026)*
+
+**Scris aici la cererea lui, ca stare, nu ca notă de raport** — *„ca să nu se reia din vecinătate
+după `/clear`"*. Cine deschide planul după o repornire de context citește asta **înainte** de a-și
+alege următorul lucru din ce e mai la îndemână.
+
+> *„După R118 nu se mai deschide nicio temă internă. Restul familiei R82 rămâne parcată. Backlogul
+> A3 rămâne neînceput. R116 și R117 rămân consemnate. Motivul: supervizorul e construit și probat pe
+> portofoliu, poarta confirmării merge cap-coadă. Ce urmează nu e construcție, e **ieșirea la un
+> cabinet-pilot**."*
+
+**Ce înseamnă, concret, pentru cine continuă:**
+
+| ce | starea |
+|---|---|
+| **R118** | ultima temă internă. Închisă în tura de 02.09 |
+| **familia R82** (acte de nivel firmă care se termină în tăcere) | **PARCATĂ.** Instanța depunerii s-a închis (R127) fiindcă piesa era deja construită; restul **nu se deschide** |
+| **backlogul A3** (#4 matrice de stări · #5 reconciliator · #8 baseline determinist · #9 keyboard-only · #10 linter de consistență) | **NEÎNCEPUT**, și rămâne așa |
+| **R116 · R117** | **CONSEMNATE**, nelucrate. Nu devin temă |
+| **restanțele familiei „încrederea în corpus"** (R1, R3–R7, R107) | în afara axei, ca înainte |
+
+**DE CE E O STARE ȘI NU O PREFERINȚĂ.** Lista de restanțe deschise are **51** de poziții, și fiecare
+poate fi argumentată. Fără propoziția asta, următoarea sesiune ar alege din vecinătate — ce e mai
+aproape de ce tocmai s-a atins —, iar asta seamănă cu progres fără să fie. *Criteriul nu mai e „ce se
+poate repara", e „ce cere ieșirea la un contabil real".*
+
+**CE ÎNSEAMNĂ „CE URMEAZĂ", scris ca să nu fie reinterpretat:** ieșirea la un **cabinet-pilot** nu e
+o temă de construcție pe care s-o pot deschide singur. Ce cere ea — cine e cabinetul, ce date intră,
+ce se promite, ce se măsoară în primele săptămâni — sunt decizii ale lui Costin. *Dacă următoarea
+sesiune găsește ceva de construit „pentru pilot", întreabă întâi; nu deschide.*
+
+**Ce rămâne permis fără să întrebe:** un defect de **prag 1** găsit apăsând — o cifră greșită, un
+blocaj, o afirmație falsă pe ecran — se repară, ca oricând. *Un prag 1 nu e o temă; e o datorie.*
+
+---
+
 ## Patru reguli de conducere a lucrului *(Costin, 01–02.09.2026)*
 
 **1. Deciziile care nu mută direcția sunt ale mele, nu urcă la arhitect.** O alegere între două

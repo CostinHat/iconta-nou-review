@@ -133,7 +133,46 @@ async def _handler_perioada_blocata(request: Request, exc: Exception):
 _APP_PORNIT_LA = __import__("time").time()  # ICRD_SANATATE_SERVER_V1 - uptime proces
 
 # frontend: servit static de pe același origin cu API-ul (fără build step)
-_STATIC_DIR = os.path.join(os.path.dirname(__file__), "static")
+#
+# [R118, 02.09.2026] CE SE SERVEȘTE NU MAI E CE E ÎN LUCRU.
+#
+# Până azi, `_STATIC_DIR` era chiar arborele de lucru: serviciul rulează cu `WorkingDirectory` acolo,
+# deci un `.js` scris pe server era **live în aceeași secundă** — fără commit, fără poartă, fără
+# restart. *Poarta verde apără Python-ul, fiindcă procesul îl încarcă la pornire; JS-ul nu trecea
+# prin ea deloc.* Instanța, măsurată 01.09: o ghilimea românească închisă cu `"` ASCII în
+# `supervizor.js` a oprit **tot desktopul cabinetului** — 15 ecrane —, fiindcă `cabinet.js` importă
+# modulul. Pe producție, pe fișierul viu, fără ca nimic să semnaleze.
+#
+# Acum se servește `../iconta_publicat/static`, scris de `scripts/publica_static.py` (din HEAD, în
+# `post-commit`). Publicarea trece prin `node --check` pe fiecare `.js`, deci nici măcar publicarea
+# deliberată din arbore nu poate duce la un browser un modul care nu se parsează.
+#
+# **DE CE RIDICĂ, în loc să cadă înapoi pe arbore.** Un director publicat fără amprentă citibilă e o
+# publicare oprită la jumătate. Alternativa la refuz ar fi să servim arborele de lucru — adică exact
+# defectul pe care îl reparăm, reapărut tăcut, tocmai când publicarea s-a rupt. *Un implicit minte;
+# ăsta ar minți în direcția în care doare.* Remediul e o comandă, și e scris în mesaj.
+def _alege_static():
+    """`(cale, motiv)` — CE se servește și DE CE. Fără alegere tăcută."""
+    import io as _io
+    import json as _json
+    publicat = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                            "iconta_publicat", "static")
+    if os.path.isdir(publicat):
+        amprenta = os.path.join(publicat, ".publicat.json")
+        try:
+            _a = _json.loads(_io.open(amprenta, encoding="utf-8").read())
+        except Exception as _e:
+            raise RuntimeError(
+                "R118: directorul publicat %s nu are amprentă citibilă (%s). NU se cade înapoi pe "
+                "arborele de lucru — aia e chiar clasa reparată. Republică: "
+                "./venv/bin/python scripts/publica_static.py" % (publicat, _e))
+        return publicat, "publicat (%s%s)" % (
+            _a.get("sursa"), " " + str(_a.get("commit"))[:8] if _a.get("commit") else "")
+    return os.path.join(os.path.dirname(__file__), "static"), "arbore de lucru (nepublicat)"
+
+
+_STATIC_DIR, _STATIC_MOTIV = _alege_static()
+logging.getLogger("iconta").info("[R118] /static servit din %s — %s", _STATIC_DIR, _STATIC_MOTIV)
 if os.path.isdir(_STATIC_DIR):
     # [nocache_static_v1]: browserul revalideaza automat (304), fara ?v= manual
     class _StaticNoCache(StaticFiles):
@@ -3657,6 +3696,17 @@ def coada_depune(coada_id: int, date: DepuneIn = DepuneIn(),
     with db.get_conn() as conn:
         if not _are_permisiune(ctx, "poate_depune"):
             raise HTTPException(status_code=403, detail=FARA_DREPT_DEPUNERE)
+        # [02.09.2026, defect gasit apasand] APROBAREA VINE DUPA POARTA, si e a serverului.
+        # Inlantuirea traia in client (`POST /aproba` apoi `POST /depune`), deci aprobarea trecea si
+        # poarta cadea dupa ea — iar elementul ramanea `aprobata`, stare din care nu se mai poate
+        # RESPINGE. Un refuz al portii ingusta optiunile omului, exact ce contractul interzice.
+        # Masurat in `uvicorn.log` pe elementul 8052; v. `coada_api.auto_aproba_daca_e_cazul`.
+        _ap = coada_api.auto_aproba_daca_e_cazul(
+            conn, coada_id, str(ctx["uid"]), int(ctx["uid"]),
+            motiv_trecere=getattr(date, "motiv_trecere", None))
+        if not _ap.get("ok"):
+            raise HTTPException(409 if _ap.get("cod") in ("CERE_APROBARE", "STARE_GRESITA") else 403,
+                                _ap.get("mesaj") or _ap.get("cod"))
         r = coada_api.marcheaza_depusa(conn, coada_id, date.spv_index, depus_de=str(ctx["uid"]),
                                        depus_de_id=int(ctx["uid"]),
                                        motiv_trecere=getattr(date, "motiv_trecere", None))

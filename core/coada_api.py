@@ -390,6 +390,43 @@ def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None, motiv_trecere=None):
     return {"ok": True, "stare": "aprobata"}
 
 
+def auto_aproba_daca_e_cazul(conn, coada_id, aprobat_de, aprobat_de_id=None, motiv_trecere=None):
+    """`la_senior` -> `aprobata`, **numai** cand patru-ochi nu e efectiv. Altfel nu atinge nimic.
+
+    **DE CE EXISTA (02.09.2026, defect gasit apasand).** Inlantuirea „aproba + depune" traia in
+    CLIENT: ecranul chema `POST /aproba`, apoi `POST /depune`. Poarta confirmarii traieste in
+    `depune` — deci aproba trecea, si poarta cadea **dupa**. Masurat in `uvicorn.log`:
+
+        POST /coada/8052/aproba  -> 200 OK
+        POST /coada/8052/depune  -> 409          (constatare CERTA neconfirmata)
+        POST /coada/8052/aproba  -> 409          (a doua apasare: "nu pot aproba din starea 'aprobata'")
+
+    **Ce lasa in urma un refuz al portii, in forma veche:** elementul ramane `aprobata`. Din starea
+    aia **nu se mai poate RESPINGE** (`respinge` cere `la_senior`), deci refuzul portii ingusta
+    optiunile omului — iar contractul spune, scris, ca supervizorul *nu blocheaza niciodata*. Si un
+    client care si-a pastrat starea veche re-cheama `aproba` si moare inainte sa ajunga la `depune`.
+
+    **Acum aprobarea e a serverului, si vine DUPA poarta.** Un refuz nu mai misca nimic: elementul
+    ramane `la_senior`, respingerea ramane pe masa, iar a doua apasare se comporta ca prima.
+
+    Intoarce `{"ok": True, "sarit": True}` cand n-avea ce aproba — un „n-am facut nimic" explicit,
+    nu un `True` care se citeste ca „am aprobat"."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT stare, cabinet_id FROM public.declaratii_coada WHERE id = %s", (coada_id,))
+        r = cur.fetchone()
+    if r is None:
+        return {"ok": False, "cod": "INEXISTENT"}
+    stare, cabinet_id = r[0], r[1]
+    if stare != "la_senior":
+        return {"ok": True, "sarit": True, "stare": stare}
+    if patru_ochi_stare(conn, cabinet_id)["efectiv"]:
+        # Validarea in doi NU se ocoleste de aici: cand e efectiva, aprobarea e actul altcuiva.
+        return {"ok": False, "cod": "CERE_APROBARE",
+                "mesaj": "declarația e încă la validare: cu patru-ochi activ, o aprobă un coleg "
+                         "înainte de depunere"}
+    return aproba(conn, coada_id, aprobat_de, aprobat_de_id, motiv_trecere)
+
+
 def respinge(conn, coada_id, respins_de, motiv, respins_de_id=None):
     """la_senior -> respinsa + motiv. Refuză dacă starea nu permite."""
     # [motiv_obligatoriu_v1] respingerea fără motiv lasă contabilul fără explicație
