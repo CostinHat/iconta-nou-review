@@ -51,6 +51,24 @@ def calcul_hash(payload):
     return hashlib.sha256(s.encode("utf-8")).hexdigest()
 
 
+def _chei_serializabile(x):
+    """Recursiv: cheile care nu sunt `str` devin JSON (listă pentru tuplu, valoare altfel).
+
+    De ce nu `str(cheie)`: `str(("C", 1))` dă `"('C', 1)"` — un text din care componentele nu se mai
+    pot scoate fără să parsezi Python. Cu `json.dumps` cheia rămâne **citibilă înapoi**, iar cine
+    confruntă două declarații poate întreba „ce tip de operațiune e" fără ghicit."""
+    if isinstance(x, dict):
+        out = {}
+        for k, v in x.items():
+            if not isinstance(k, str):
+                k = json.dumps(list(k) if isinstance(k, tuple) else k, default=str)
+            out[k] = _chei_serializabile(v)
+        return out
+    if isinstance(x, (list, tuple)):
+        return [_chei_serializabile(v) for v in x]
+    return x
+
+
 def randuri_din_res(res):
     """[F163v2] Serializează `res` (dataclass) -> dict JSON-safe (Decimal->str via default=str)
     pentru payload/jsonb (persistare în public.declaratii_depuse.randuri). PURĂ.
@@ -67,11 +85,22 @@ def randuri_din_res(res):
     `randuri` NULL — nu se completează retroactiv, fiindcă n-ar fi ce s-a depus, ci ce s-ar depune
     azi.
 
+    **[02.09.2026] CHEILE TUPLU — un D394 cu operațiuni nu putea fi trimis în coadă deloc.**
+    `Rezultat`-ul D394 ține `op1`, `rezumat1` și `detaliu` cu **chei tuplu**
+    (`(tip, tip_partener, cota, cuiP, denP)`), iar `json.dumps` ridică pe orice cheie care nu e
+    `str/int/float/bool/None`. Apelul din `main.py` (`POST /coada`) e negardat, deci cererea ieșea
+    **500** — și se aprindea exact pe firmele care aveau ce declara, fiindcă pe `op1` gol
+    serializarea trecea. *Un defect care tace pe firmele goale și lovește pe cele reale.*
+
+    **Cheia tuplu devine un JSON de listă**, nu un șir lipit cu separator: componentele includ
+    denumirea partenerului, iar orice separator ales ar putea apărea în ea. Așa cheia rămâne
+    **reversibilă** (`json.loads(cheie)` întoarce componentele) și nu se poate ciocni.
+
     Ce rămâne adevărat din textul vechi: funcția e PURĂ, iar ce nu e dataclass -> None."""
     import dataclasses
     if not dataclasses.is_dataclass(res):
         return None
-    return json.loads(json.dumps(dataclasses.asdict(res), default=str))
+    return json.loads(json.dumps(_chei_serializabile(dataclasses.asdict(res)), default=str))
 
 
 # ============================================================

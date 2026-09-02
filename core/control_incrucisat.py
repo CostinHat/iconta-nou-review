@@ -2035,3 +2035,147 @@ def _pereche_691(conn, schema, an, p48, d_grup):
                                      "anului, și dacă impozitul micro (cont 698) n-a fost "
                                      "înregistrat din greșeală în 691. Corecția o confirmă omul.",
                           "facturi": []})]
+
+
+# ============================================================
+#  D300 ↔ D394 — VERIFICARE DE DERIVĂ ÎNTRE DOUĂ DEPUNERI (02.09.2026, la comanda lui Costin)
+#
+#  **MOTIVUL E ROȘUL, NU VERDELE** *(el, verbatim)*: „două declarații depuse care nu se potrivesc
+#  între ele e expunere reală la ANAF, iar corelația e una dintre cele pe care ANAF le rulează".
+#
+#  **CE PRINDE:** intervalul dintre cele două depuneri — facturile se pot schimba între ele — plus
+#  intervenția manuală în una din ele (D300 acceptă rânduri `manual`).
+#
+#  **CE NU PRINDE, și temeiul o spune, ca la D390:** o eroare pe care ambele motoare o fac la fel.
+#  `core/d394.py` și `core/d300.py` citesc **amândouă `FROM facturi`**, cu **același** flag
+#  `taxare_inversa`. Deci VERDELE e slab: înseamnă „cele două depuneri sunt de acord", nu „declarația
+#  se potrivește cu realitatea".
+# ============================================================
+
+TIP_D300_VS_D394_TI = "D300_VS_D394_TAXARE_INVERSA"
+
+#: Tipul de operațiune D394 pentru ACHIZIȚII cu taxare inversă (art. 331 CF). Nomenclator, din
+#: `d394.tip_operatiune`: pe direcția „primită", `taxare_inversa` -> "C", altfel "A".
+TIP_OP_D394_ACHIZITIE_TAXARE_INVERSA = "C"
+
+
+def _baza_taxare_inversa_d394(randuri):
+    """PURĂ. Σ bazei operațiunilor de tip „C" din `op1` — achizițiile cu taxare inversă.
+
+    **Cheile lui `op1` sunt tupluri serializate ca JSON** (v. `coada_api._chei_serializabile`), deci
+    se citesc înapoi cu `json.loads`, nu prin despicare pe separator: componenta a cincea e
+    denumirea partenerului, iar orice separator ales ar putea apărea în ea.
+
+    Întoarce `(baza, n_operatiuni, chei_necitibile)`. A treia cifră NU se ascunde: o cheie pe care
+    n-o pot citi înseamnă că **nu văd tot**, iar atunci perechea nu are voie să afirme (regula lui
+    Costin: tăria descrie identitatea, nu vederea noastră)."""
+    import json as _json
+    op1 = (randuri or {}).get("op1") or {}
+    baza = Decimal("0")
+    n = 0
+    necitibile = 0
+    for cheie, val in op1.items():
+        try:
+            comp = _json.loads(cheie)
+            tip = comp[0]
+        except Exception:
+            necitibile += 1
+            continue
+        if tip != TIP_OP_D394_ACHIZITIE_TAXARE_INVERSA:
+            continue
+        try:
+            baza += _d(val[1])
+            n += 1
+        except Exception:
+            necitibile += 1
+    return baza, n, necitibile
+
+
+def _perioada_cu_ambele(conn, schema):
+    """Cea mai recentă perioadă în care s-au depus prin aplicație AMÂNDOUĂ, cu rânduri persistate.
+
+    **De ce nu luna curentă**: aceeași capcană ca la D390 și la D101 — declarațiile se depun în luna
+    următoare, deci o pereche ancorată pe luna curentă e gri prin construcție."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT id FROM public.tenants WHERE schema_name = %s", (schema,))
+        row = cur.fetchone()
+        if not row:
+            return None
+        cur.execute("""
+            SELECT d3.an, d3.luna, d3.randuri, d9.randuri
+            FROM public.declaratii_depuse_curente d3
+            JOIN public.declaratii_depuse_curente d9
+              ON d9.tenant_id = d3.tenant_id AND d9.an = d3.an AND d9.luna = d3.luna
+             AND d9.tip = 'd394'
+            WHERE d3.tenant_id = %s AND d3.tip = 'd300'
+              AND d3.randuri IS NOT NULL AND d9.randuri IS NOT NULL
+            ORDER BY d3.an DESC, d3.luna DESC LIMIT 1""", (row[0],))
+        r = cur.fetchone()
+    return (r[0], r[1], r[2], r[3]) if r else None
+
+
+def orizontal_d300_vs_d394(conn, schema):
+    """ÎNVELIȘ: o singură ieșire, ștampilată o dată — tiparul din `orizontal_d390_vs_d300`."""
+    return _stampileaza(_orizontal_d300_vs_d394(conn, schema), TIP_D300_VS_D394_TI)
+
+
+def _orizontal_d300_vs_d394(conn, schema):
+    """CORPUL. D300 rd.12 (bază, taxare inversă primită) față de D394 lit. C, achizițiile de tip «C»."""
+    per = _perioada_cu_ambele(conn, schema)
+    if per is None:
+        return [_absenta_libera(
+            "d394", "D300 vs D394 (taxare inversă)",
+            ("Verificare de DERIVĂ între două declarații DEPUSE, pe aceeași perioadă. Nu există nicio "
+             "perioadă în care D300 și D394 să fie amândouă depuse prin aplicație cu rânduri "
+             "persistate -> comparația devine posibilă după prima astfel de pereche. GRI, nu roșu."),
+            "Nu există o perioadă cu ambele declarații depuse prin aplicație — nu pot compara.",
+            "perechile D300+D394 depuse prin aplicație, cu rânduri persistate")]
+
+    an, luna, r300, r394 = per
+    eticheta = "D300 rd.12 vs D394 taxare inversă — %02d/%d" % (luna, an)
+    temei = (
+        "Verificare de DERIVĂ între două declarații DEPUSE pe aceeași perioadă. D394 lit. C pct. 17 "
+        "(OPANAF 2194/2025): «valoarea totală a bazei impozabile aferentă achizițiilor … pentru care "
+        "se aplică taxarea inversă … conform art. 331 din Codul fiscal», față de D300 rd.12 (bază "
+        "colectată din taxare inversă primită). ATENȚIE la ce înseamnă VERDELE aici: cele două "
+        "declarații se derivă din ACELEAȘI facturi (`d300` și `d394` citesc amândouă `facturi`, cu "
+        "același indicator de taxare inversă), deci coincidența înseamnă «cele două depuneri sunt de "
+        "acord», NU «declarația se potrivește cu realitatea». Ce prinde comparația e intervalul "
+        "dintre cele două depuneri — facturile se pot schimba între ele — și intervenția manuală în "
+        "una dintre ele. Corelația e una dintre cele pe care ANAF le rulează.")
+
+    baza394, n_op, necitibile = _baza_taxare_inversa_d394(r394)
+    if necitibile:
+        return [_gri_liber(
+            "d394", eticheta,
+            temei + " %d chei din `op1` n-au putut fi citite." % necitibile,
+            "Nu pot compara: %d operațiuni din D394 depus au chei pe care nu le pot citi, deci nu "
+            "văd toată latura. O comparație pe o parte din operațiuni ar numi divergență propria "
+            "mea vedere incompletă." % necitibile, an, luna)]
+
+    baza300 = _d(((r300 or {}).get("R") or {}).get("R12_1") or 0)
+    if baza300 == 0 and baza394 == 0:
+        return []                       # niciuna n-are taxare inversă: tăcut, fără subiect
+    dif = baza300 - baza394
+    baza = {"eticheta": eticheta, "declarat_d300": int(baza300), "declarat_d394": int(baza394),
+            "diferenta": int(dif), "operatiuni_d394": n_op, "an": an, "luna": luna,
+            # STRUCTURAL, nu doar in proza: cine randeaza poate spune ca verdele e slab fara sa
+            # citeasca mesajul, iar o garda poate asertata pe fapt, nu pe formulare (METODA §23).
+            "verde_slab": True}
+    if abs(dif) <= TOLERANTA:
+        return [dict(baza, stare="verde", temei=temei, remediu=None,
+                     mesaj="%s: cele două declarații depuse coincid (%s). Coincidența spune că "
+                           "depunerile sunt de acord între ele, nu că se potrivesc cu evidența."
+                           % (eticheta, _lei(baza300)))]
+    return [dict(baza, stare="rosu", temei=temei,
+                 mesaj="%s: D300 depus declară %s, D394 depus declară %s (diferență %s)."
+                       % (eticheta, _lei(baza300), _lei(baza394), _lei(dif)),
+                 remediu={"fel": "sugerat",
+                          "cauza": "Două declarații depuse la ANAF pentru %02d/%d nu se potrivesc "
+                                   "între ele pe taxarea inversă. Cauzele obișnuite: facturile s-au "
+                                   "schimbat între cele două depuneri, sau o valoare a fost "
+                                   "introdusă manual într-una dintre ele." % (luna, an),
+                          "actiune": "Compară cele două depuneri pe perioada asta și stabilește care "
+                                     "reflectă evidența. Corecția se face prin rectificativă, și o "
+                                     "confirmă omul.",
+                          "facturi": []})]

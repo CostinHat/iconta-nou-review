@@ -313,10 +313,15 @@ def test_a_cincea_cale_FARA_NICIO_DEPUNERE_e_stampilata_si_supervizorul_o_VEDE()
     assert all(c["tarie"] == S.EURISTICA for c in vazute_d390)
     # [02.09.2026] Firma de proba n-are D101 depus, deci perechile ANUALE ies ca ABSENTA (gri).
     # Sunt CERTE, dar o certa cere confirmare doar pe ROSU — o absenta nu e o nepotrivire.
-    anuale = [c for c in vazute if c["tip_constatare"] != _ci.TIP_D390_VS_D300]
+    anuale = [c for c in vazute if c["tip_constatare"].startswith("D101_")]
     assert anuale, "[anti-vacuu] perechile anuale n-au produs nimic — proba nu le-ar acoperi"
     assert all(c["tarie"] == S.CERTA for c in anuale)
     assert all(c["stare"] == "gri" for c in anuale)
+    # [02.09.2026] verificarea de DERIVA D300<->D394: firma de proba n-are nicio perioada cu
+    # ambele depuse, deci iese ca ABSENTA. E EURISTICA, deci nu cere confirmare niciodata.
+    deriva = [c for c in vazute if c["tip_constatare"] == _ci.TIP_D300_VS_D394_TI]
+    assert len(deriva) == 1, "[anti-vacuu] perechea de deriva n-a produs nimic"
+    assert deriva[0]["tarie"] == S.EURISTICA and deriva[0]["stare"] == "gri"
     # NICIUNA nu cere confirmare: euristicele niciodata, certele doar pe rosu.
     assert all(c["cere_confirmare"] is False for c in vazute)
 
@@ -389,6 +394,7 @@ def _cu_plan(monkeypatch):
     # perechile ANUALE ale D101 cer o conexiune reală; probele astea măsoară parcurgerea
     # portofoliului, nu perechile — deci se tac explicit, nu se lasă să ridice din altă cauză
     monkeypatch.setattr(_ci, "orizontal_d101", lambda conn, schema, an: [])
+    monkeypatch.setattr(_ci, "orizontal_d300_vs_d394", lambda conn, schema: [])
 
 
 def test_TOATE_CELE_TREI_rezultate_apar_si_SUMA_lor_e_domeniul(monkeypatch):
@@ -475,6 +481,7 @@ def test_campul_ORIZONTAL_RULAT_lipsa_RIDICA_nu_cade_pe_implicit(monkeypatch):
     monkeypatch.setattr(_ci, "verifica_d390",
                         lambda conn, schema, an, luna: {"constatari": []})
     monkeypatch.setattr(_ci, "orizontal_d101", lambda conn, schema, an: [])
+    monkeypatch.setattr(_ci, "orizontal_d300_vs_d394", lambda conn, schema: [])
     with pytest.raises(ValueError):
         S._culege_firma(object(), "s", 2026, 8)
 
@@ -799,3 +806,131 @@ def test_un_TRIMESTRU_NEVAZUT_da_GRI_nu_ROSU():
         "deci diferenta ar fi a orbirii mele, nu a declaratiei")
     # si TARIA ramane CERTA: lipsa de vizibilitate nu coboara taria, raspunde cu gri
     assert S.tarie(_ci.TIP_D101_VS_D100) == S.CERTA
+
+
+# ── 10. D300 ↔ D394, VERIFICARE DE DERIVĂ (02.09.2026) ─────────────────────────────────────────
+# Costin: *„motivul e roșul, nu verdele: două declarații depuse care nu se potrivesc între ele e
+# expunere reală la ANAF, iar corelația e una dintre cele pe care ANAF le rulează."* Deci proba
+# principală e că perechea **poate spune roșu** — verdele ei e slab prin construcție.
+import json as _json   # noqa: E402
+
+
+def _pune_d300(cur, tid, an, luna, baza_ti):
+    # fixtura-sintetica-ok: anul e parametru, toti apelantii dau 2099, tenant_id sintetic.
+    cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, "
+                "nr_depunere) VALUES (%s, %s, %s, 'd300', '<x/>', %s, 1)",
+                (tid, an, luna, _E.Json({"an": an, "luna": luna, "R": {"R12_1": baza_ti}})))
+
+
+def _pune_d394(cur, tid, an, luna, op1):
+    # fixtura-sintetica-ok: anul e parametru, toti apelantii dau 2099, tenant_id sintetic.
+    cur.execute("INSERT INTO public.declaratii_depuse (tenant_id, an, luna, tip, xml, randuri, "
+                "nr_depunere) VALUES (%s, %s, %s, 'd394', '<x/>', %s, 1)",
+                (tid, an, luna, _E.Json({"an": an, "luna": luna, "op1": op1})))
+
+
+def _op1(tip, baza, cui="RO123", den="Partener SRL", cota=21, tp=1, nr=1):
+    """Cheia lui `op1` e un TUPLU serializat ca JSON — v. `coada_api._chei_serializabile`."""
+    return {_json.dumps([tip, tp, cota, cui, den]): [nr, baza, 0]}
+
+
+def test_deriva_D300_D394_COINCID_da_verde_SLAB_si_DIVERG_da_ROSU():
+    """**Proba care contează e roșul.** Verdele e slab prin construcție (ambele laturi vin din
+    aceleași facturi), iar temeiul trebuie s-o spună — se asertează și asta, fiindcă un verde citit
+    ca «am verificat la sursă» e mai rău decât niciun verde."""
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            tid = _schema_efemera(cur, "ztest_sv_d394a")
+            _pune_d300(cur, tid, 2099, 6, 5000)
+            _pune_d394(cur, tid, 2099, 6, _op1("C", 5000))
+            cur.execute("SET LOCAL search_path TO ztest_sv_d394a, public")
+            coincid = _ci.orizontal_d300_vs_d394(conn, "ztest_sv_d394a")
+            # perioada mai NOUA, cu divergenta -> perechea se muta pe ea
+            _pune_d300(cur, tid, 2099, 9, 5000)
+            _pune_d394(cur, tid, 2099, 9, _op1("C", 4200))
+            diverg = _ci.orizontal_d300_vs_d394(conn, "ztest_sv_d394a")
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+
+    assert len(coincid) == 1, "[anti-vacuu] perechea n-a produs nimic pe cazul coincident"
+    assert coincid[0]["stare"] == "verde", coincid[0]["mesaj"]
+    assert coincid[0]["verde_slab"] is True, (
+        "verdele nu-și declară slăbiciunea ca FAPT — ar fi citit ca «am verificat la sursă», iar o "
+        "gardă pe formulare ar păzi textul, nu proprietatea")
+
+    assert len(diverg) == 1
+    assert diverg[0]["stare"] == "rosu", (
+        "5.000 față de 4.200 pe două declarații DEPUSE și perechea nu spune roșu — dar exact roșul "
+        "e motivul pentru care există")
+    assert diverg[0]["diferenta"] == 800
+    assert diverg[0]["remediu"]["fel"] == "sugerat"
+    assert (diverg[0]["an"], diverg[0]["luna"]) == (2099, 9), (
+        "perechea n-a luat perioada cea mai recentă cu ambele depuse")
+
+
+def test_deriva_numara_DOAR_achizitiile_cu_taxare_inversa():
+    """Tipul «C» e achiziția cu taxare inversă. O livrare («V») sau o achiziție normală («A») în
+    aceeași perioadă n-au ce căuta în sumă — altfel perechea ar acuza o divergență pe care chiar ea
+    a fabricat-o."""
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            tid = _schema_efemera(cur, "ztest_sv_d394b")
+            op1 = {}
+            op1.update(_op1("C", 5000, cui="RO1"))
+            op1.update(_op1("A", 9000, cui="RO2"))     # achizitie NORMALA — nu intra
+            op1.update(_op1("V", 7000, cui="RO3"))     # livrare cu taxare inversa — nu intra
+            _pune_d300(cur, tid, 2099, 6, 5000)
+            _pune_d394(cur, tid, 2099, 6, op1)
+            cur.execute("SET LOCAL search_path TO ztest_sv_d394b, public")
+            cs = _ci.orizontal_d300_vs_d394(conn, "ztest_sv_d394b")
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+    assert len(cs) == 1
+    assert cs[0]["declarat_d394"] == 5000, (
+        "suma a inclus si operatiuni care nu sunt achizitii cu taxare inversa: %s" % cs[0])
+    assert cs[0]["stare"] == "verde"
+
+
+def test_o_cheie_op1_NECITIBILA_da_GRI_nu_divergenta():
+    """Regula lui Costin: *unde nu poți stabili că vezi tot, spui gri*. O cheie pe care n-o pot citi
+    înseamnă operațiuni pe care nu le văd — iar o sumă parțială ar numi divergență propria mea
+    vedere incompletă."""
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            tid = _schema_efemera(cur, "ztest_sv_d394c")
+            op1 = {"cheie care nu e JSON": [1, 5000, 0]}
+            _pune_d300(cur, tid, 2099, 6, 5000)
+            _pune_d394(cur, tid, 2099, 6, op1)
+            cur.execute("SET LOCAL search_path TO ztest_sv_d394c, public")
+            cs = _ci.orizontal_d300_vs_d394(conn, "ztest_sv_d394c")
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+    assert len(cs) == 1 and cs[0]["stare"] == "gri", (
+        "o cheie necitibilă a fost trecută cu vederea, iar perechea a tras o concluzie din propria "
+        "ei orbire")
+
+
+def test_serializarea_unui_D394_cu_operatiuni_NU_MAI_RIDICA():
+    """PRAG 1, reparat: `randuri_din_res` ridica `TypeError` pe cheile TUPLU ale D394, iar apelul din
+    `POST /coada` e negardat — deci un D394 **cu operațiuni** nu putea fi trimis în coadă deloc.
+    Se aprindea exact pe firmele care aveau ce declara: pe `op1` gol serializarea trecea."""
+    import dataclasses
+    from core import coada_api as _ca
+
+    @dataclasses.dataclass
+    class _R:
+        an: int = 2099
+        op1: dict = dataclasses.field(default_factory=dict)
+
+    r = _R(op1={("C", 1, 21, "RO1", "Partener | cu bara"): [1, 5000, 0]})
+    out = _ca.randuri_din_res(r)
+    assert out is not None, "serializarea a picat — D394 n-ar putea intra în coadă"
+    (cheie,) = list(out["op1"])
+    assert _json.loads(cheie)[0] == "C", (
+        "cheia nu se mai poate citi înapoi: %r — cine confruntă două declarații n-ar putea "
+        "întreba ce tip de operațiune e" % cheie)
+    # separatorul nu e o convenție fragilă: denumirea partenerului conține chiar `|`
+    assert _json.loads(cheie)[4] == "Partener | cu bara"

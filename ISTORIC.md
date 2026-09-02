@@ -7479,3 +7479,35 @@ corespondența pe care restanța o cerea: **pct. 17** (achiziții cu taxare inve
 patra pereche care confruntă aceeași realitate calculată de două motoare — exact slăbiciunea de la
 care a pornit comanda lui. *Verdictul e o decizie de a nu construi, nu o imposibilitate; iar
 corespondența rămâne scrisă, ca să nu fie re-dedusă dacă o vrea ca verificare de derivă.*
+
+
+---
+
+## 02.09.2026, tura a treia — perechea de derivă, și un blocaj găsit sub ea
+
+**Costin mi-a răsturnat decizia, și pe drept.** Refuzasem să construiesc D300 ↔ D394 fiindcă ambele
+laturi se derivă din aceleași facturi. El: *„motivul e roșul, nu verdele: două declarații depuse care
+nu se potrivesc între ele e expunere reală la ANAF, iar corelația e una dintre cele pe care ANAF le
+rulează."*
+
+**Judecasem perechea după verdele ei; el o judecă după roșu.** Un verde slab nu face perechea
+inutilă — face doar verdele slab. Ce prinde e intervalul dintre cele două depuneri, când facturile se
+pot schimba, și intervenția manuală într-una din ele. *Verdele rămâne slab, iar temeiul o spune —
+și, de data asta, o spune și ca **fapt**: constatarea poartă `verde_slab=True`, ca o gardă să poată
+asertata pe proprietate, nu pe formulare.*
+
+**ȘI SUB PEREECHE ERA UN BLOCAJ, pe care nu-l căuta nimeni.** Ca să citesc latura D394 am întrebat
+dacă rezultatul ei se poate persista. Nu se putea: `Rezultat`-ul D394 are **chei tuplu**, iar
+`json.dumps` ridică pe ele. Apelul din `POST /coada` e **negardat** — deci **un D394 cu operațiuni
+nu putea fi trimis în coadă deloc**, 500. Și se aprindea exact pe firmele care aveau ce declara: pe
+`op1` gol serializarea trecea.
+
+**Un defect care tace pe firmele goale și lovește pe cele reale.** Reparat ca prag 1. Cheile devin
+JSON de listă, nu șir lipit cu separator — a cincea componentă e denumirea partenerului, iar orice
+separator ales ar putea apărea în ea. Gardul probează chiar cazul rău: un partener al cărui nume
+conține `|`.
+
+**Ce merită ținut minte din tura asta:** blocajul n-a fost găsit căutându-l. A ieșit fiindcă
+perechea avea nevoie de latura dreaptă, iar prima întrebare a fost *„se poate citi?"* — nu
+*„presupun că da"*. Trei ture la rând, construcția a scos defecte pe care nicio măsurătoare
+existentă nu le vedea.

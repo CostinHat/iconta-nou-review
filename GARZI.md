@@ -7163,6 +7163,43 @@ care confruntă aceeași realitate calculată de două motoare — exact slăbic
 comanda. *Corespondența rămâne scrisă în R120, ca să nu fie re-dedusă dacă Costin o vrea totuși ca
 verificare de derivă între două depuneri.*
 
+### D300 ↔ D394 ca verificare de DERIVĂ — și un PRAG 1 găsit pe drum (02.09.2026)
+
+**Costin a decis să se construiască, EURISTICĂ, cu motivul scris de el:** *„motivul e roșul, nu
+verdele: două declarații depuse care nu se potrivesc între ele e expunere reală la ANAF, iar
+corelația e una dintre cele pe care ANAF le rulează."* Ce prinde: **intervalul dintre cele două
+depuneri**, când facturile se pot schimba, plus **intervenția manuală** într-una din ele.
+
+**PRAG 1, GĂSIT ÎNCERCÂND SĂ CONSTRUIESC PERECHEA: un D394 cu operațiuni nu putea fi trimis în
+coadă deloc.** `coada_api.randuri_din_res` face `json.dumps(dataclasses.asdict(res))`, iar
+`Rezultat`-ul D394 are **chei TUPLU** în `op1`/`rezumat1`/`detaliu`. `json.dumps` ridică
+`TypeError: keys must be str … not tuple`, iar apelul din `main.py:3446` (`POST /coada`) e
+**negardat** — deci cererea ieșea **500**. *Se aprindea exact pe firmele care aveau ce declara: pe
+`op1` gol serializarea trecea.* Măsurat pe `tenant_017`, 08/2026, înainte de reparație.
+
+**Reparat**: cheile tuplu devin **JSON de listă**, nu șir lipit cu separator — componenta a cincea e
+denumirea partenerului, iar orice separator ales ar putea apărea în ea. Așa cheia rămâne
+**reversibilă**, iar cine confruntă două declarații poate întreba „ce tip de operațiune e" fără să
+ghicească. Gardat de `::test_serializarea_unui_D394_cu_operatiuni_NU_MAI_RIDICA`, care probează chiar
+cazul rău: un partener al cărui nume **conține** `|`.
+
+**GĂRZI NOI (4), calibrate pe caz fabricat:**
+`::test_deriva_D300_D394_COINCID_da_verde_SLAB_si_DIVERG_da_ROSU` (ambele direcții; **proba care
+contează e roșul**) · `::test_deriva_numara_DOAR_achizitiile_cu_taxare_inversa` (o livrare «V» sau o
+achiziție normală «A» n-au ce căuta în sumă) · `::test_o_cheie_op1_NECITIBILA_da_GRI_nu_divergenta` ·
+`::test_serializarea_unui_D394_cu_operatiuni_NU_MAI_RIDICA`.
+**Mutații probate (RED), patru direcții:** filtrul pe tip scos · cheia necitibilă ignorată ·
+verdele fără declarația de slăbiciune · serializatorul întors la forma care ridică.
+
+**VERDELE ÎȘI DECLARĂ SLĂBICIUNEA CA FAPT, nu doar în proză.** Constatarea poartă `verde_slab=True`,
+iar garda asertează pe câmp, nu pe formulare — o gardă pe text ar fi păzit fraza, nu proprietatea
+(METODA §23). Temeiul spune, ca la D390, că ambele laturi se derivă din aceleași facturi: coincidența
+înseamnă *„cele două depuneri sunt de acord"*, nu *„declarația se potrivește cu realitatea"*.
+
+**Perioada se alege singură** — cea mai recentă în care AMÂNDOUĂ sunt depuse cu rânduri. A treia oară
+când se aplică tiparul (`_d300_depus_recent`, `_d101_depus_recent`, acum `_perioada_cu_ambele`):
+ancorarea pe luna curentă ar fi făcut perechea gri prin construcție.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **506 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.

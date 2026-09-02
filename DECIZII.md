@@ -13500,3 +13500,17 @@ orbirii mele. Gardat de `::test_un_TRIMESTRU_NEVAZUT_da_GRI_nu_ROSU`, cu mutați
 
 *Regula e mai largă decât cazul și de-aia stă lângă criteriul de atribuire din antetul
 `core/supervizor.py`, nu doar în restanța care a produs-o.*
+
+**(53) D300 ↔ D394 SE CONSTRUIEȘTE, ca verificare de DERIVĂ, EURISTICĂ** *(Costin, 02.09.2026)*.
+Motivul, al lui, verbatim: *„motivul e roșul, nu verdele: două declarații depuse care nu se
+potrivesc între ele e expunere reală la ANAF, iar corelația e una dintre cele pe care ANAF le
+rulează."* **Răstoarnă decizia mea de a nu o construi** (DECIZII 50), și pe drept: eu judecasem
+perechea după verdele ei, el o judecă după roșu. *Verdele rămâne slab, iar temeiul o spune — ca la
+D390. R120 se închide.*
+
+**(54) Cheile TUPLU se serializează ca JSON de listă, nu ca șir lipit.** Reparația unui **prag 1**
+găsit construind perechea: un D394 cu operațiuni nu putea fi trimis în coadă deloc (`TypeError` pe
+`json.dumps`, apel negardat în `POST /coada`). Separatorul lipit ar fi fost o convenție fragilă —
+componenta a cincea a cheii e **denumirea partenerului**, care poate conține orice caracter ales ca
+separator. Cu JSON, cheia rămâne reversibilă. *Gardul probează chiar cazul rău: un partener al cărui
+nume conține `|`.*

@@ -474,7 +474,14 @@ acum un nume și patru instanțe într-o zi.*
   nu mai compară când nu vede tot anul: dacă lipsește un trimestru (lunile **3, 6, 9**, citite la
   sursă din `d100_struct_anaf.txt`), spune gri și **numește trimestrul**. Regula stă lângă criteriul
   de atribuire, în antetul `core/supervizor.py`.
-- **R120 are verdict, nu doar condiție.** Corespondența cerută s-a stabilit — lit. C **pct. 17**
+- **R120 E ÎNCHISĂ** *(02.09, tura a treia)*: Costin mi-a răsturnat decizia — *„motivul e roșul, nu
+  verdele"* — și perechea **D300 ↔ D394** e construită, **EURISTICĂ**, ca verificare de **derivă**
+  între două depuneri. Verdele ei rămâne slab, iar constatarea o declară ca **fapt** (`verde_slab`),
+  nu doar în proză.
+- **SUB EA ERA UN PRAG 1, pe care nu-l căuta nimeni:** un **D394 cu operațiuni nu putea fi trimis în
+  coadă deloc** — `randuri_din_res` ridica `TypeError` pe cheile tuplu, iar apelul din `POST /coada`
+  e negardat. *Tăcea pe firmele goale și lovea pe cele reale.* Reparat.
+- **Istoricul verdictului, păstrat:** Corespondența cerută s-a stabilit — lit. C **pct. 17**
   (achiziții cu taxare inversă, art. 331) ↔ D300 **rd.12/rd.25** —, dar perechea **nu se construiește**:
   `d394` și `d300` citesc **amândouă `FROM facturi`**, cu același flag `taxare_inversa`. Ar fi a patra
   pereche pe aceeași realitate calculată de două motoare. *Corespondența rămâne scrisă, ca să nu fie

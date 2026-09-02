@@ -65,8 +65,10 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   fiecare cu identitatea VERIFICATA LA SURSA inainte de constructie; ce nu se confirma se consemneaza
   RESPINS, cu motivul. Avertisment respectat: D300 a pierdut randurile de 19% si 9% in ianuarie 2026,
   deci numerele de rand se citesc din cod/XSD, nu din memorie (masurat: azi R9=21%, R10=11%).
-- ultim: cele doua perechi CERTE, construite si calibrate; trei verdicte de respingere
-- urmator: R119 / R120 / R121, fiecare cu conditia ei scrisa. NEINCEPUT
+- ultim: **R120 INCHISA** — perechea D300<->D394 construita ca verificare de DERIVA, EURISTICA,
+  plus un PRAG 1 reparat pe drum (D394 cu operatiuni nu putea intra in coada)
+- urmator: **R119** (D394 nu-si expune facturile) si **R121** (P300 fara acces programatic) raman
+  deschise, cu conditiile lor. NEINCEPUT
 - pasi:
   1. **VERDICTELE LA SURSA — facute inainte de orice cod:**
      · **D101 <-> D100: CONFIRMAT VERBATIM.** `anaf_surse/opanaf_206_2025_d101.txt:875` — *„Randul 50

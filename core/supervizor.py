@@ -150,6 +150,26 @@ TIPURI = {
             "după asta chiar nu admite explicație legitimă. *Contul e 691, nu rândul 35 al F20: "
             "acolo `core/bilant.py` adună 691 cu 698, iar 698 e impozit pe VENIT — altă taxă.*",
     },
+    "D300_VS_D394_TAXARE_INVERSA": {
+        "axa": "ORIZONTALA",
+        "ce": "Baza achizițiilor cu taxare inversă (art. 331) din D394 DEPUS, față de rândul 12 "
+              "(bază colectată din taxare inversă primită) al D300 DEPUS, pe aceeași perioadă.",
+        "identitate": "D300 depus rd.12 bază == D394 depus lit. C pct. 17 bază (achiziții cu "
+                      "taxare inversă, art. 331 CF) — OPANAF 2194/2025",
+        "sursa_stanga": "public.declaratii_depuse_curente, tip d300, randuri.R.R12_1",
+        "sursa_dreapta": "public.declaratii_depuse_curente, tip d394, randuri.op1, operațiuni de tip «C»",
+        "tarie": EURISTICA,
+        "confirmat": True,
+        "motiv_tarie":
+            "EURISTICA — **Costin, 02.09.2026**, cu motivul scris de el: *«motivul e roșul, nu "
+            "verdele: două declarații depuse care nu se potrivesc între ele e expunere reală la "
+            "ANAF, iar corelația e una dintre cele pe care ANAF le rulează»*. Aplicând criteriul: "
+            "**diferența ADMITE explicații legitime** — intervalul dintre cele două depuneri, în "
+            "care facturile se pot schimba, și intervenția manuală într-una dintre ele. Deci nu e "
+            "certă: semnalează, nu cere confirmare. *Și VERDELE ei e slab, ca la D390, fiindcă "
+            "ambele laturi se derivă din aceleași facturi — temeiul o spune, nu o lasă pe seama "
+            "cititorului.*",
+    },
 }
 
 
@@ -227,6 +247,9 @@ def _culege_firma(conn, schema, an, luna):
     # `verifica_d390` a rupt contractul, nu se mai face muncă, se ridică. Se culeg separat fiindcă
     # au altă perioadă: `verifica_d390` e pe fereastra TVA, identitatea D101 e pe AN.
     brute = brute + _ci.orizontal_d101(conn, schema, an)
+    # [02.09.2026] Verificarea de DERIVA intre D300 si D394 depuse. Isi alege singura perioada
+    # (cea mai recenta cu ambele depuse, cu randuri), deci nu primeste `an`/`luna`.
+    brute = brute + _ci.orizontal_d300_vs_d394(conn, schema)
 
     out = []
     for c in brute:
