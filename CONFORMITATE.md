@@ -2657,6 +2657,45 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   pereche care ar compara declarația cu o sursă din AFARA aplicației — deci și cea mai valoroasă
   dacă devine posibilă.*
 
+### R122 — O absență la nivel de FUNCȚIE e invizibilă gărzii care lucrează la nivel de MODUL
+
+- **felul**: VERIFICARE
+- **cine deblochează**: INTERN
+- **unde intră**: E4 · supervizorul (clasă generalizată) · interdicția **19** · **PRAG 3**
+- **ce blochează**: nimic azi — instanța găsită e reparată, cu gardă proprie. Ce rămâne deschis e
+  **clasa**: o funcție publică poate sta scrisă, testată și verde fără ca nimic din producție s-o
+  cheme, iar `core/test_module_nelegate.py` **nu o poate vedea** — el întreabă dacă *modulul* e
+  chemat, nu dacă *funcția* e. Un modul chemat prin o singură funcție îi ascunde pe toate celelalte.
+- **instanța, măsurată** *(02.09.2026)*: `supervizor.neconfirmate()` — funcția care răspunde la
+  „ce constatări CERTE n-au confirmare scrisă" — a stat **trei ture** fără niciun apelant de
+  producție. `test_module_nelegate` era verde tot timpul, pe drept: modulul `core/supervizor.py`
+  **era** chemat, prin `ruleaza_portofoliu`, din cronul de 08:00 și din rută. *Stratul de efect al
+  supervizorului exista întreg și nu era legat de nimic — iar poarta verde n-avea cum s-o spună.*
+- **calibrare**: instanța e închisă de `core/test_supervizor.py::test_EFECTUL_nu_poate_ramane_
+  NELEGAT_fara_sa_semnaleze`, cu mutație probată în ambele direcții (apelantul scos din `main.py` →
+  RED; apelant care cheamă o carcasă → prins de gardul anti-vacuu de lângă ea). Dar garda aceea
+  păzește **o singură funcție**, numită în ea. Clasa n-are instrument.
+- **ce nu vede măsurătoarea, și de ce nu scriu o cifră**: un scan naiv (funcții publice din `core/`
+  fără apelant în afara modulului lor) dă **439 din 1012**. **Cifra aia nu e o măsurătoare.** Prima
+  poziție verificată din ea — `calcul_d104` — e chemată legitim, din `genereaza()`, în chiar modulul
+  ei: e treaptă a contractului `dXXX`, nu orfană. Deci instrumentul greșește **în direcția
+  falsului pozitiv** din prima probă, iar direcția cealaltă (dispecerat dinamic, `getattr`) nici
+  măcar n-a fost eliminată. *O cifră cu zgomot nemăsurat pusă în registru ar fi devenit „439 de
+  funcții moarte" la prima recitire — METODA §22: un instrument care greșește în ambele direcții
+  n-are niciun plafon.*
+- **condiția de deblocare**: există un instrument care deosebește **treapta internă a unui contract**
+  (chemată din propriul modul de o funcție care ea însăși are apelant) de **funcția cu adevărat
+  nelegată**, cu zgomotul numărat pe un eșantion de 30 înainte de a raporta un total (METODA §22).
+  Se închide când o funcție publică nouă, lăsată deliberat fără apelant, pică — și când `calcul_d104`
+  **nu** apare în listă.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `fccaa89`
+- **rezolvată pe commit**: —
+- **unde ajunge efectul**: la contabil, prin lucruri care par construite și nu se întâmplă. Instanța
+  de azi era chiar asta: dacă o constatare CERTĂ ieșea roșie ieri, nimic n-ar fi cerut confirmarea —
+  iar registrele scriau că stratul există.
+
 ### R118 — Fișierele statice se servesc DE PE DISC: nicio poartă între scriere și producție
 
 - **felul**: VERIFICARE
