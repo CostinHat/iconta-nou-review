@@ -7548,3 +7548,74 @@ a-l marca slab ar șterge exact diferența pentru care perechea a fost cerută.
 **A patra aplicare a regulii „unde nu poți stabili că vezi tot, spui gri", și prima fără s-o cer.**
 O operațiune manuală n-are factură în spate, deci o factură transmisă ar putea fi acoperită de ea
 fără să pot ști. Perechea spune gri și numește câte sunt.
+
+
+---
+
+# ÎNCHIDEREA ZILEI — 02.09.2026
+
+**Verdictul cerut, dat direct: ziua A SCHIMBAT trei lucruri pentru un contabil.** Nu e una dintre
+zilele „nimic vizibil, dar am construit temelie" — și de-aia o scriu cu instanțele, nu cu adjective.
+
+## Ce s-a schimbat pentru un contabil
+
+1. **Are un ecran nou: „Supervizor".** Vede confruntarea dintre declarații pe firmele lui, cu
+   **temeiul** fiecărei constatări, și cu firmele pe care verificarea **n-a rulat** numite separat, cu
+   cauza. Până azi confruntarea se întâmpla agățată de actul depunerii; acum are declanșator propriu
+   (slotul de 08:00) și rulare la cerere.
+
+2. **Nu mai citește o afirmație falsă.** Verdictul de control îi spunea că rândurile intracomunitare
+   ale D300 sunt „manual-only, le introduce contabilul". Fals: `R1_1` se **derivă automat** din
+   facturile emise către UE, iar introducerea manuală peste el e refuzată ca dublă numărare. Prag 1,
+   scos. *Găsit fiindcă Costin a depus un D300 spunând că lasă rândurile IC goale — și nu erau.*
+
+3. **Poate trimite un D394 în coadă.** Până azi, un D394 **cu operațiuni** ieșea **500**: rezultatul
+   are chei tuplu, `json.dumps` ridica, iar apelul din `POST /coada` e negardat. Tăcea pe firmele
+   goale și lovea exact pe cele care aveau ce declara. *Găsit fiindcă perechea e-Factura avea nevoie
+   să citească latura D394 — nu căutându-l.*
+
+## Ce NU s-a schimbat, și e cinstit spus
+
+**Cele patru perechi orizontale noi nu confruntă încă nimic.** Măsurat la închiderea zilei: 92 de
+constatări pe 19 firme, din care **un singur verde** — și acela e verdele **slab**. Restul e gri
+onest: *„n-am ce compara"*. Motivul nu e în cod, e în folosire: aproape nimic n-a fost depus prin
+aplicație cu rânduri persistate.
+
+**Și stratul de efect nu e cablat.** `supervizor.neconfirmate()` n-are niciun apelant de producție,
+deci în ziua în care o constatare CERTĂ iese roșie, nimic nu va cere confirmarea scrisă. Nu blochează
+azi — devine fals în chiar ziua în care apare primul roșu.
+
+## Ce am stricat, și se scrie
+
+**Pentru o fereastră de timp pe care nu o pot reconstitui, desktopul cabinetului nu se randa deloc,
+pe producție.** O ghilimea românească închisă cu `"` ASCII a rupt `supervizor.js`, iar `cabinet.js`
+îl importă — deci toate cele 15 ecrane au picat. Prins de poarta verde vizuală, nu de suită.
+
+**Și dedesubt era ceva mai mare decât greșeala:** `static/` se servește **de pe disc**. Între un `.js`
+scris pe server și producție **nu există nicio poartă** — nici commit, nici restart. Poarta verde
+apără Python-ul fiindcă procesul îl încarcă la pornire; JS-ul e live din secunda în care îl scriu.
+**R118**, deschisă.
+
+## Ce a condus ziua
+
+Patru comenzi ale lui Costin, fiecare corectând nu un rezultat, ci un **criteriu** de-al meu:
+
+- *„Tăria descrie identitatea, nu calitatea datelor noastre"* — tratasem o lipsă de vedere ca pe o
+  proprietate a identității. Regula a produs patru reparații de cod în aceeași zi.
+- *„Motivul e roșul, nu verdele"* — judecasem o pereche după ce spune când e verde. Mi-a răsturnat
+  decizia de a n-o construi, și pe drept.
+- *„Blocajul se ridică prin generator, nu pe lângă el"* — cu punctul de oprire scris: *dacă e mai
+  mare decât pare, spune și oprește-te*. L-am folosit ca punct de măsurare; n-a fost mai mare.
+- *„Verifică fiecare identitate la sursă"* — din cinci perechi propuse, patru s-au construit; a cincea
+  e respinsă cu motivul, iar una dintre ancorele pe care le numise nu mai există sub numele acela.
+
+## Cifrele zilei
+
+**Nouă commituri**, toate publicate four-way. Suita: **3928 → 3959** teste. Restanțe deschise:
+**48 → 50** (patru închise: R40, R115, R119, R120; șase deschise: R116–R121). Poarta a respins de
+**zece** ori, **niciun fals pozitiv** — și cele mai multe respingeri au cerut *înregistrare*, nu
+reparație. Toate au fost gărzi scrise de mine mai demult, care nu știau ce vine.
+
+*Ce merită dus mai departe din ziua asta: de trei ori, defectele n-au fost găsite căutându-le — au
+ieșit fiindcă altceva avea nevoie să citească ceva, iar prima întrebare a fost „se poate citi?", nu
+„presupun că da".*
