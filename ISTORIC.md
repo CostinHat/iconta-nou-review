@@ -7581,9 +7581,15 @@ constatări pe 19 firme, din care **un singur verde** — și acela e verdele **
 onest: *„n-am ce compara"*. Motivul nu e în cod, e în folosire: aproape nimic n-a fost depus prin
 aplicație cu rânduri persistate.
 
-**Și stratul de efect nu e cablat.** `supervizor.neconfirmate()` n-are niciun apelant de producție,
-deci în ziua în care o constatare CERTĂ iese roșie, nimic nu va cere confirmarea scrisă. Nu blochează
-azi — devine fals în chiar ziua în care apare primul roșu.
+**~~Și stratul de efect nu e cablat.~~ CABLAT, în aceeași zi** *(commit `fccaa89`, după comanda lui
+Costin din seara zilei)*. Rândul de mai sus a fost scris la închiderea zilei și a rămas adevărat
+**patru ore**: `supervizor.neconfirmate()` n-avea apelant de producție, deci în ziua în care o
+constatare CERTĂ ieșea roșie nimic n-ar fi cerut confirmarea scrisă. Acum o cere `poarta_confirmarii`,
+pe `POST /coada/{id}/depune`, iar confirmarea rămâne scrisă cu *cine · când · peste ce*.
+
+*Îl las tăiat, nu șters.* Propoziția a fost adevărată când am scris-o, iar felul în care a încetat să
+fie e chiar lucrul de reținut: **absența nu se vedea de nicăieri**. `test_module_nelegate` era verde,
+fiindcă modulul ERA chemat — gaura trăia la nivel de FUNCȚIE. Generalizată în **R122**.
 
 ## Ce am stricat, și se scrie
 
