@@ -2541,10 +2541,30 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   lipsește e dreapta: `core/d394.py` **nu întoarce id-urile facturilor** pe care le-a inclus — join
   intern, rezultat fără ele. Deci nu e „compară două ieșiri", e **clasa R105** (D112: motorul nu-și
   poate desface cifra).
-- **de ce NU s-a construit**: singura cale ar fi fost să **recalculez** eu ce facturi ar fi trebuit
-  să intre în D394 și să compar cu transmiterile — adică să scriu a doua implementare a regulilor
-  D394, lângă generator. *Două definiții ale aceleiași propoziții diverg; iar cea de-a doua ar fi
-  fost a mea, nu a legii.*
+- **cum s-a rezolvat** *(02.09.2026)*: **blocajul s-a ridicat PRIN generator**, cum a cerut Costin —
+  *„nu reimplementa regulile de eligibilitate; două motoare care se despart în tăcere e chiar clasa
+  care produce cifra validă și falsă"*. `d394.Rezultat` capătă **`facturi_incluse`** (cheia
+  operațiunii → id-uri) și **`manuale_fara_factura`**; se umplu din **aceleași apeluri** care compun
+  declarația (`_adauga`, punct unic de trecere) și se curăță la **aceleași** `del op1[k]`.
+- **costul, măsurat ÎNAINTE de a atinge ceva** *(Costin ceruse să mă opresc dacă e mai mare decât
+  pare)*: toate cele **cinci** căi de acumulare trec printr-un singur `_adauga`, care întreținea deja
+  un dicționar paralel (`categorii`) pe aceeași cheie, curățat la aceleași ștergeri. Deci expunerea e
+  **încă un dicționar paralel**, nu o a doua implementare. *`f.id` era deja selectat în SQL și se
+  pierdea trei rânduri mai jos, la construcția dicționarului din `pull`.*
+- **perechea construită**: `EFACTURA_VS_D394`, **EURISTICA** — `efactura_trimiteri` cu `stare='ok'`
+  și `mediu='prod'` față de `facturi_incluse` ale D394 depus, pe aceeași fereastră. **Singura
+  pereche al cărei VERDE afirmă ceva**: stânga e o recipisă de la ANAF, dreapta e ce a declarat
+  generatorul — niciuna nu se derivă din cealaltă. Constatarea verde **nu** poartă `verde_slab`, iar
+  o gardă apără asta.
+- **garda care apără chiar constrângerea**:
+  `test_ELIGIBILITATEA_ramane_a_generatorului_nu_se_reimplementeaza`. Proba folosește deliberat o
+  excludere care trece prin `del op1[k]` (achiziție cu taxare inversă fără categorie art. 331), nu
+  una oprită de un filtru dinainte — **prima formă ar fi trecut oricum**, chiar dacă cineva scotea
+  curățarea. *O gardă care nu poate cădea nu apără nimic.*
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `0746d52`
+- **rezolvată pe commit**: `6e6ad9b`
 - **condiția de deblocare**: `d394.calcul_d394` întoarce, pe obiectul de rezultat, id-urile
   facturilor incluse (ca `d100.obligatii` sau `d300.R`). Se închide când perechea poate numi o
   factură transmisă prin e-Factura care nu apare în D394 **fără** ca supervizorul să recalculeze
