@@ -848,6 +848,18 @@ html, body {
 .dlg-anuleaza:hover { background: #e2e6ec; }
 .val-btn:disabled { opacity: .6; cursor: default; }
 
+/* [R126] Pasul de confirmare a constatarilor CERTE, in dialogul depunerii. Fiecare constatare e un
+   bloc de sine statator: anatomia ei (randata de control_verdict.randA) + campul de motiv care ii
+   apartine. Fara separare vizuala, doua constatari si doua campuri ar arata ca o lista de patru
+   lucruri, iar omul n-ar sti care motiv acopera ce. */
+.val-conf-item {
+  border: 1px solid #e4e7ec; border-radius: 10px;
+  padding: 10px 12px; margin-bottom: 12px; background: var(--alb);
+}
+.val-conf-item .cf-incr-rand { border-bottom: none; padding-top: 0; }
+.val-conf-item .dlg-eticheta { margin-top: 4px; }
+.val-conf-item .dlg-input { width: 100%; box-sizing: border-box; }
+
 
 /* === ASISTENTI === */
 .asi-sumar {

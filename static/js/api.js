@@ -43,6 +43,22 @@ function _erisCampuri(date) {
   return null;
 }
 
+// [R126, 02.09.2026] DETALIUL STRUCTURAT al unui refuz ajunge la ecran, nu doar fraza lui.
+//
+// Instanta care a cerut-o: `POST /coada/{id}/depune` raspunde 409 cu un `detail` care poarta codul
+// de aplicatie, CONSTATARILE si calea de trecere — *„retrimite cu `confirmari`: [{amprenta,
+// motiv}]"*. Stratul asta pastra doar `mesaj`, deci ecranul putea CITI calea, dar n-avea de unde
+// s-o ia ca sa i-o ofere omului: un refuz care numeste o iesire pe care ecranul n-o poate deschide.
+//
+// GENERIC, deliberat: nu stie nimic despre coada sau despre supervizor. Orice ruta care raspunde cu
+// un `detail` obiect il gaseste aici. *Un caz special pentru o singura ruta ar fi fost al doilea
+// contract de eroare, iar al doilea se invecheste.*
+// Ce NU trece: `detail` sir (mesajul e deja in `mesaj`) sau lista (aia e `erori_campuri`).
+function _detaliuStructurat(date) {
+  const d = date && date.detail;
+  return (d && typeof d === "object" && !Array.isArray(d)) ? d : null;
+}
+
 function _mesajEroare(status, date) {
   const _d = date && date.detail;
   if (_d && typeof _d === "object") return _d.mesaj || "eroare";  // [G10] detail structurat {mesaj, erori_campuri}
@@ -74,7 +90,8 @@ async function _cere(metoda, cale, corp) {
   try { date = await r.json(); } catch { date = null; }
 
   if (!r.ok) {
-    const eroare = { cod: r.status, mesaj: _mesajEroare(r.status, date), erori_campuri: _erisCampuri(date) };
+    const eroare = { cod: r.status, mesaj: _mesajEroare(r.status, date), erori_campuri: _erisCampuri(date),
+                     detaliu: _detaliuStructurat(date) };   // [R126] refuzul structurat, nu doar fraza
     _refuzNevazut(eroare, metoda);   // [refuz_vazut_v1]
     throw eroare;
   }
@@ -157,7 +174,8 @@ async function _cereForm(cale, formData) {
   let date = null;
   try { date = await r.json(); } catch { date = null; }
   if (!r.ok) {
-    const eroare = { cod: r.status, mesaj: _mesajEroare(r.status, date), erori_campuri: _erisCampuri(date) };
+    const eroare = { cod: r.status, mesaj: _mesajEroare(r.status, date), erori_campuri: _erisCampuri(date),
+                     detaliu: _detaliuStructurat(date) };   // [R126] refuzul structurat, nu doar fraza
     _refuzNevazut(eroare, "POST");   // [refuz_vazut_v1] cereForm e mereu POST
     throw eroare;
   }

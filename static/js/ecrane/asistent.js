@@ -2,12 +2,12 @@
 // minus exclusivele cabinetului. Bara 3 = doar motivational (pozitiv).
 // Sursa unica: identitatea/permisiunile din sesiune.user(); cifrele din /eu/calitate.
 
-import { api, ICOANE, CULORI_CARD } from "../api.js?v=c20d0584e2";
+import { api, ICOANE, CULORI_CARD } from "../api.js?v=5b2978a5b9";
 import { semaforCard } from "./semafor.js?v=df9fe94900";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { randeazaControl } from "./control.js?v=d09ca9ab5a";
 import { randeazaTermene } from "./termene.js?v=e315c3005b";
-import { randeazaValidat } from "./validat.js?v=e771e38cc0";
+import { randeazaValidat } from "./validat.js?v=b605e0eb04";
 import { randeazaListaFirme } from "./firme.js?v=c1b6d93768";
 import { randeazaRecomanda } from "./recomanda.js?v=4dcc56e1ec"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=f800de9e77"; // [p34_raporteaza]

@@ -2788,7 +2788,43 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   că ți-a dat o soluție.*
 - **ce nu vede măsurătoarea**: dacă mai există alte răspunsuri de server care numesc o cale de
   trecere pe care ecranul n-o implementează. N-am măsurat clasa.
-- **planul**: **NEACOPERIT.** Citit: `PLAN_LUCRU.md` — secțiunea supervizorului spune ce rămâne al
+- **DECIZIA, primită 02.09.2026 — varianta (a)**, verbatim: *„confirmarea se dă în dialogul
+  «Confirmă depunerea», la 409, cu constatările listate și motiv per constatare. Confirmarea stă
+  unde se ia decizia, cu depunerea oprită și constatarea în față. De pe ecranul Supervizorului s-ar
+  putea confirma cu ore înainte, rupt de actul căruia îi dă drumul, iar sub termen unul din două
+  ecrane se sare."*
+- **cum s-a construit**: `POST /coada/{id}/depune` răspunde 409 → **nu se arată ca eroare**, ci
+  devine **pasul următor al aceluiași act** (`nav.mergi`, în aceeași fereastră, cu drum înapoi).
+  Fiecare constatare se randează cu **randorul unic** (`control_verdict.randA`) — aceeași anatomie
+  (semn · mesaj · **temei** · remediu) ca pe ecranul Supervizorului —, sub ea un câmp de motiv cu
+  etichetă legată (`for`/`id`). Motivul e **obligatoriu pe fiecare**: câmpurile goale se marchează
+  cu `eroareCamp` și nu se trimite nimic. Amprenta se trimite **înapoi cum a venit**, niciodată
+  recompusă pe client — ea leagă confirmarea de cifrele văzute atunci.
+  **Stratul de transport a trebuit lărgit**: `api.js` păstra doar `mesaj` din refuz și arunca
+  `detail`-ul structurat, deci ecranul putea CITI calea de trecere, dar n-avea de unde s-o ia.
+  Acum orice refuz cu `detail` obiect îl poartă ca `eroare.detaliu` — generic, nu un caz special.
+- **calibrare, ÎN AMÂNDOUĂ DIRECȚIILE, pe ECRAN și pe portofoliu**
+  (`frontend_test/proba_r126_confirmare.py`, subiect construit pe `tenant_014`, cabinetul de test):
+  **NU** — cu motivele goale ecranul refuză, marchează **2 din 2** câmpuri (`camp-invalid` +
+  mesaj pe câmp), pasul rămâne deschis, iar elementul **rămâne `aprobata`**, nedepus.
+  **DA** — cu motivele scrise, depunerea trece și `public.supervizor_confirmari` primește **două
+  rânduri**, cu autorul (`6504`), amprenta și motivul. `axe` pe pas: **contrast 0 · etichete 0 ·
+  alte 0**; nicio țintă de atingere sub 24px; pe Pixel 5 `body.scrollWidth = 393` (fără revărsare).
+  **Capturi**: `r126_3_pas_confirmare.png` (pasul cu cele două constatări și câmpurile de motiv) ·
+  `r126_4_gol_refuzat.png` (refuzul, cu câmpurile marcate) · `r126_6_confirmat_depus.png`
+  (confirmarea vizibilă a actului) · `r126_7_mobil.png` (Pixel 5).
+- **ce a scos privitul capturii, și n-ar fi ieșit din aserțiuni**: exemplul din câmp numea *„rândul
+  50"* **sub amândouă** constatările — fals pe cea cu contul 691. Făcut generic. *O aserțiune pe
+  prezența câmpului trecea verde peste asta.*
+- **ce a scos proba, despre prima mea formă**: confirmarea reușitei o scrisesem în zona de mesaje a
+  **listei**, după `nav.inapoi()`. Proba a găsit-o **goală**: închiderea ferestrei re-randează
+  ecranul de dedesubt, iar re-randarea o șterge. Mutată în **pasul** în care s-a petrecut actul.
+  *Un mesaj de reușită care pierde o cursă cu re-randarea e mai rău decât niciunul — codul spune
+  că arată ceva, și nu arată.*
+- **ce NU s-a făcut, declarat**: depunerea **fără** constatări se încheie mai departe prin
+  demontarea ferestrei, fără confirmare vizibilă. E din familia **R82**, e dinainte, și n-am
+  lărgit-o aici.
+- **planul**: **NEACOPERIT la deschidere.** Citit: `PLAN_LUCRU.md` — secțiunea supervizorului spune ce rămâne al
   lui Costin (*„ce declanșează o rulare · ce vede contabilul din ea și unde · împărțirea pe tării"*),
   deci **unde** vede contabilul constatarea e explicit al lui, dar textul nu ajunge până la controlul
   de confirmare, fiindcă la scrierea lui stratul de efect nu exista. `DESIGN_SYSTEM.md` cap.27 (E2)

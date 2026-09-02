@@ -1,6 +1,6 @@
 // [operatiuni] Ecran generic "Operatiuni speciale" - condus de configuratie.
 // O operatiune noua = o intrare in REGISTRU (titlu, ruta, campuri), zero cod nou de ecran.
-import { api, esc, arataMesaj, semnAjutor } from "../api.js?v=c20d0584e2";
+import { api, esc, arataMesaj, semnAjutor } from "../api.js?v=5b2978a5b9";
 // [ajutor_contextual] mapare cheie operatiune -> ID functionalitate (semnul "?" dinamic)
 const _OP_AJUTOR = { avans:"F009", bacsis:"F010", leasing:"F056", asociati:"F039",
   credit:"F024", chirie:"F020", decont:"F040", contract_special:"F021", reevaluare:"F074",

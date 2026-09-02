@@ -13,7 +13,23 @@
 // (ascuns vizual + blocat în backend) — DOAR când patru-ochi e activ.
 // Perioada afișată = perioada DECLARATĂ (an/lună/trim din payload); scadența = termen, etichetată separat.
 // Dialogurile (motiv respingere / index SPV) folosesc ferestre modale proprii (nav.deschide).
-import { api, dataRo, esc } from "../api.js?v=c20d0584e2";
+//
+// [R126, 02.09.2026 — DECIZIA lui Costin, varianta (a)] CONFIRMAREA CONSTATARILOR CERTE STA AICI,
+// pe drumul depunerii, nu pe ecranul Supervizorului. Motivul, verbatim: *„confirmarea stă unde se
+// ia decizia, cu depunerea oprită și constatarea în față. De pe ecranul Supervizorului s-ar putea
+// confirma cu ore înainte, rupt de actul căruia îi dă drumul, iar sub termen unul din două ecrane
+// se sare."*
+//
+// CUM: `POST /coada/{id}/depune` raspunde **409** cu `detail.cod = CONSTATARI_NECONFIRMATE` si cu
+// constatarile intregi. Raspunsul ala NU e o eroare de aratat — e **pasul urmator al aceluiasi
+// act**, deci se randeaza ca pas pe traseu (`nav.mergi`), in aceeasi fereastra, cu drum inapoi.
+// Omul scrie un motiv per constatare, iar cererea se retrimite cu `confirmari: [{amprenta, motiv}]`.
+//
+// AMPRENTA se trimite inapoi asa cum a venit, niciodata recompusa aici: ea leaga confirmarea de
+// CIFRELE vazute atunci (`supervizor.amprenta`). O confirmare recompusa pe client ar putea acoperi
+// alta constatare decat cea citita — chiar clasa pe care amprenta o apara.
+import { api, dataRo, esc, eroareCamp } from "../api.js?v=5b2978a5b9";
+import { randA as randConstatare } from "./control_verdict.js?v=f019079e5a";
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 
 function numeFirma(firme, tid) {
@@ -329,7 +345,18 @@ async function actioneaza(c, act, firme, corp, nav) {
         if (c.stare === "la_senior") {
           await api.post(`/coada/${c.id}/aproba`, {});
         }
-        await api.post(`/coada/${c.id}/depune`, spv ? { spv_index: spv } : {});
+        try {
+          await api.post(`/coada/${c.id}/depune`, spv ? { spv_index: spv } : {});
+        } catch (e) {
+          const d = e && e.detaliu;
+          // [R126] NU e o eroare de arătat: e pasul următor al aceluiași act, iar serverul a trimis
+          // tot ce trebuie ca să-l putem oferi. Orice ALT refuz merge mai departe la dialog.
+          if (e && e.cod === 409 && d && d.cod === "CONSTATARI_NECONFIRMATE" && (d.constatari || []).length) {
+            pasConfirmariConstatari(nav, c, spv, d, firme, corp, perDecl);
+            return;
+          }
+          throw e;
+        }
         nav.inapoi();
         randeazaValidat(corp, nav);
       },
@@ -343,6 +370,95 @@ async function actioneaza(c, act, firme, corp, nav) {
   } catch (e) {
     if (eroare) eroare.textContent = (e && e.mesaj) || "Eroare la aprobare.";
   }
+}
+
+// [R126] PASUL DE CONFIRMARE — constatările CERTE, în față, cu un motiv per constatare.
+//
+// De ce `nav.mergi` și nu o fereastră nouă: confirmarea e **un pas al depunerii**, nu un act
+// separat. Pasul păstrează drumul înapoi (la indexul SPV) și firul de pesmet, deci omul poate
+// renunța fără să piardă ce scrisese la pasul dinainte.
+//
+// CE NU FACE, declarat: nu decide nimic despre constatări și nu le filtrează. Le arată pe toate
+// cele întoarse de server, cu **randarea unică** (`control_verdict.randA`) — aceeași anatomie
+// (semn + mesaj + TEMEI + remediu) ca pe ecranul Supervizorului și pe cel de control fiscal. O a
+// doua randare ar diverge, iar temeiul e primul care s-ar pierde.
+function pasConfirmariConstatari(nav, c, spv, detaliu, firme, corpLista, perDecl) {
+  const cs = detaliu.constatari || [];
+  nav.mergi("Constatări de confirmat", (fc) => {
+    fc.innerHTML = `
+      <div class="caseta-atentie">
+        <div class="ca-mesaj">${esc(detaliu.mesaj || "")}</div>
+      </div>
+      <p class="mig-intro">${esc((c.tip || "").toUpperCase())} · ${esc(perDecl)} · ${esc(numeFirma(firme, c.tenant_id))}</p>
+      ${cs.map((x, i) => `
+        <div class="val-conf-item">
+          ${randConstatare(x)}
+          <label class="dlg-eticheta" for="val-conf-${i}">De ce depui peste constatarea asta? Motivul rămâne scris, cu numele tău.</label>
+          <input class="camp-input dlg-input val-conf-motiv" id="val-conf-${i}" type="text"
+                 placeholder="ex: se corectează prin rectificativă; termenul de depunere e azi"
+                 autocomplete="off">
+        </div>`).join("")}
+      <div class="dlg-eroare" id="val-conf-eroare"></div>
+      <div class="dlg-actiuni">
+        <button type="button" class="buton-secundar val-btn" id="val-conf-renunt">Renunță</button>
+        <button type="button" class="val-btn val-depune" id="val-conf-ok">Confirmă și depune</button>
+      </div>`;
+    const er = fc.querySelector("#val-conf-eroare");
+    const btn = fc.querySelector("#val-conf-ok");
+    fc.querySelector("#val-conf-renunt").addEventListener("click", () => nav.inapoiPas());
+    btn.addEventListener("click", async () => {
+      const campuri = Array.from(fc.querySelectorAll(".val-conf-motiv"));
+      er.textContent = "";
+      campuri.forEach((inp) => { inp.classList.remove("camp-invalid"); inp.removeAttribute("aria-invalid"); });
+      // Motivul e OBLIGATORIU pe FIECARE: o confirmare fără motiv e o bifă, iar o bifă nu se poate
+      // citi peste șase luni (`supervizor.scrie_confirmare` o refuză oricum — dar refuzul de acolo
+      // ar veni după ce omul a apăsat, fără să spună care câmp).
+      const goale = campuri.filter((inp) => !inp.value.trim());
+      if (goale.length) {
+        goale.forEach((inp) => eroareCamp(fc, inp.id, "Scrie motivul."));
+        er.textContent = goale.length === 1
+          ? "O constatare n-are motiv scris."
+          : `${goale.length} constatări n-au motiv scris.`;
+        goale[0].focus();
+        return;
+      }
+      btn.disabled = true;
+      try {
+        // Amprenta se trimite ÎNAPOI cum a venit — nu se recompune aici. Vezi antetul modulului.
+        const confirmari = cs.map((x, i) => ({ amprenta: x.amprenta, motiv: campuri[i].value.trim() }));
+        const corpCerere = { confirmari };
+        if (spv) corpCerere.spv_index = spv;
+        await api.post(`/coada/${c.id}/depune`, corpCerere);
+      } catch (e) {
+        btn.disabled = false;
+        er.textContent = (e && e.mesaj) || "Nu am putut depune. Încearcă din nou.";
+        return;
+      }
+      // [DS cap.27 / E2] Actul se incheie cu o confirmare VIZIBILA care numeste ENTITATEA si
+      // CONSECINTA, chiar in pasul in care s-a petrecut. Demontarea ferestrei nu e confirmare:
+      // „a disparut" arata identic cu „a reusit" si cu „s-a rupt ceva".
+      //
+      // DE CE AICI si nu in lista: prima forma scria mesajul in zona de mesaje a listei, dupa
+      // `nav.inapoi()`. Proba pe ecran l-a gasit GOL — inchiderea ferestrei re-randeaza ecranul de
+      // dedesubt, iar re-randarea suprascrie mesajul. *Un mesaj care pierde o cursa cu re-randarea
+      // e mai rau decat niciunul: codul spune ca arata ceva, si nu arata.*
+      fc.innerHTML = `
+        <div class="caseta-info">
+          <div class="ci-mesaj">
+            <b>${esc((c.tip || "").toUpperCase())} · ${esc(perDecl)} · ${esc(numeFirma(firme, c.tenant_id))}</b>
+            — depusă. ${cs.length === 1 ? "O constatare certă a fost confirmată" : cs.length + " constatări certe au fost confirmate"}
+            în scris, cu numele tău și cu motivul. Confirmarea acoperă cifrele de acum: dacă se schimbă, se cere din nou.
+          </div>
+        </div>
+        <div class="dlg-actiuni">
+          <button type="button" class="val-btn val-depune" id="val-conf-gata">Înapoi la coadă</button>
+        </div>`;
+      fc.querySelector("#val-conf-gata").addEventListener("click", () => {
+        nav.inapoi();
+        randeazaValidat(corpLista, nav);
+      });
+    });
+  });
 }
 
 // dialog modal cu un input (foloseste fereastra standard nav.deschide)
