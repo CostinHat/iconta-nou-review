@@ -2841,14 +2841,20 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   ecrane; (c) amândouă. *Alegerea e a lui: e așezare de ecran, iar verificatorul nu prinde așezarea.*
   Se închide când o depunere pe `tenant_005` se poate duce până la capăt **fără nicio comandă în
   afara ecranului**, iar `public.supervizor_confirmari` primește rândul cu motivul scris.
+- **condiția de deblocare, ÎNDEPLINITĂ**, cu o deosebire declarată: proba de ecran s-a făcut pe
+  `tenant_014`, nu pe `tenant_005` — contul cu care rulează probele e admin_firma pe cabinetul de
+  **test 4163**, deci ecranul cozii nu-i arată firmele cabinetului 1968. *Elementul lui Costin
+  (8052) a rămas neatins, deliberat: proba nu-l poate nici vedea.* Mecanismul e același pentru
+  amândouă — poarta citește `firma_si_perioada` din element, nu firma probei.
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `cf2ecee9`
-- **rezolvată pe commit**: —
-- **unde ajunge efectul**: la contabilul care depune. Azi, pe firma și perioada cu o constatare
-  CERTĂ roșie, depunerea **nu se poate duce la capăt din aplicație** — deși contractul modulului
-  spune, scris, că supervizorul nu blochează niciodată. *Contractul e respectat în backend și
-  contrazis pe ecran.*
+- **rezolvată pe commit**: `0b494dfd`
+- **unde ajunge efectul**: la contabilul care depune. Până azi, pe firma și perioada cu o constatare
+  CERTĂ roșie, depunerea **nu se putea duce la capăt din aplicație** — deși contractul modulului
+  spune, scris, că supervizorul nu blochează niciodată. *Contractul era respectat în backend și
+  contrazis pe ecran.* Acum contabilul citește constatarea, scrie de ce depune peste ea, și trece —
+  iar motivul rămâne scris, cu numele lui.
 
 ### R123 — Trei din cele cinci comparații orizontale n-au gardul „citește ce scrie generatorul"
 
