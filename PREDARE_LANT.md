@@ -178,6 +178,13 @@ ca s-o întâlnească.
 de mine pe firme de test, pe calea aplicației, ca să se poată apăsa poarta. Regula care cere asta:
 `PLAN_LUCRU.md`, regula 3 de conducere a lucrului.
 
+**ȘI CE A SCOS PRIMA APĂSARE, ÎNAINTE DE A FI APĂSATĂ: R126.** Poarta răspunde **409** cu calea de
+trecere scrisă în corp — *„retrimite cu `confirmari`: [{amprenta, motiv}]"* —, dar **ecranul n-are
+prin ce s-o dea**: `confirmari` și `amprenta` au **0 apariții** în tot `static/js/`. Contabilul
+citește mesajul în linia de eroare a dialogului și se oprește acolo. *Contractul „nu blochează
+niciodată" e respectat în backend și contrazis pe ecran.* Forma controlului e o decizie de așezare,
+deci a lui Costin.
+
 ### Suprafața lui, concret — ce chemi și ce primești
 
 ```

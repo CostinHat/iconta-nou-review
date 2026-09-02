@@ -2763,6 +2763,57 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   trecută. *Exact interdicția 19 — o gardă care raportează favorabil pe zero rânduri —, dar ajunsă
   acolo prin trecerea timpului, nu prin construcție.*
 
+### R126 — Poarta confirmării cere o confirmare pe care ECRANUL nu are prin ce s-o dea
+
+- **felul**: ARTEFACT
+- **cine deblochează**: DECIZIE
+- **unde intră**: E4 · supervizorul · stratul de efect · **PRAG 1**
+- **ce blochează**: **capătul uman al porții confirmării.** Backendul e întreg:
+  `POST /coada/{id}/depune` cheamă `supervizor.poarta_confirmarii`, iar la o constatare CERTĂ roșie
+  neconfirmată răspunde **409** cu `cod=CONSTATARI_NECONFIRMATE`, cu constatările și cu calea de
+  trecere scrisă în corp: *„Retrimite cererea cu `confirmari`: [{amprenta, motiv}]"*. **Ecranul nu
+  poate face asta.** Contabilul vede mesajul în linia de eroare a dialogului „Confirmă depunerea"
+  (`dialogInput` prinde excepția și afișează `e.mesaj`) — și **se oprește acolo**.
+- **instanța, măsurată** *(02.09.2026, pe portofoliul viu)*: pe `tenant_005`, elementul de coadă
+  **8052** (D300 trim 3/2026, verdict valid, gata de depus) întâlnește constatarea CERTĂ roșie
+  `D101_VS_D100_PLATI_ANTICIPATE`, amprenta `09441a61b26c5ce555929ad4a890518f`. Reprodus prin exact
+  blocul rutei: răspunsul e 409, cu o singură constatare. **Căutat mecanic în tot `static/js/`:
+  `confirmari` — 0 apariții; `amprenta` — 0 apariții.** Ecranul supervizorului
+  (`static/js/ecrane/supervizor.js`) **arată** constatările, dar n-are niciun control care să scrie
+  o confirmare.
+- **de ce e PRAG 1, deși nimic nu e stricat în backend**: mesajul **numește o cale pe care ecranul
+  n-o oferă**. Din perspectiva omului asta e un refuz fără ieșire — chiar clasa interdicției 47 —,
+  iar faptul că ieșirea există prin API n-o face accesibilă contabilului. *Un refuz care spune
+  „confirmă și continuă" fără să dea cu ce, e mai rău decât unul care spune doar „nu": primul pare
+  că ți-a dat o soluție.*
+- **ce nu vede măsurătoarea**: dacă mai există alte răspunsuri de server care numesc o cale de
+  trecere pe care ecranul n-o implementează. N-am măsurat clasa.
+- **planul**: **NEACOPERIT.** Citit: `PLAN_LUCRU.md` — secțiunea supervizorului spune ce rămâne al
+  lui Costin (*„ce declanșează o rulare · ce vede contabilul din ea și unde · împărțirea pe tării"*),
+  deci **unde** vede contabilul constatarea e explicit al lui, dar textul nu ajunge până la controlul
+  de confirmare, fiindcă la scrierea lui stratul de efect nu exista. `DESIGN_SYSTEM.md` cap.27 (E2)
+  cere ca un act cu efect să se încheie cu o **confirmare vizibilă** — e despre confirmarea
+  REZULTATULUI unui act, nu despre a colecta o confirmare scrisă PESTE o constatare, deci nu
+  răspunde. `PLAN_ARHITECTURA.md` nu descrie ecranul de coadă. *Ce lipsește din plan e chiar
+  întrebarea: unde stă actul de confirmare — pe drumul depunerii, sau pe ecranul care arată
+  constatările.*
+- **condiția de deblocare**: **DECIZIA lui Costin despre FORMA controlului**, apoi construcția lui.
+  Variantele, cu ce cere fiecare: (a) dialogul de depunere, la 409, listează constatările și cere un
+  motiv per constatare, apoi retrimite cu `confirmari` — cel mai scurt drum, dar încarcă un dialog
+  care azi cere doar indexul SPV; (b) confirmarea se dă de pe **ecranul Supervizorului**, pe
+  constatare, înainte de depunere — mai curat ca așezare, dar înseamnă că omul trece prin două
+  ecrane; (c) amândouă. *Alegerea e a lui: e așezare de ecran, iar verificatorul nu prinde așezarea.*
+  Se închide când o depunere pe `tenant_005` se poate duce până la capăt **fără nicio comandă în
+  afara ecranului**, iar `public.supervizor_confirmari` primește rândul cu motivul scris.
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `cf2ecee9`
+- **rezolvată pe commit**: —
+- **unde ajunge efectul**: la contabilul care depune. Azi, pe firma și perioada cu o constatare
+  CERTĂ roșie, depunerea **nu se poate duce la capăt din aplicație** — deși contractul modulului
+  spune, scris, că supervizorul nu blochează niciodată. *Contractul e respectat în backend și
+  contrazis pe ecran.*
+
 ### R123 — Trei din cele cinci comparații orizontale n-au gardul „citește ce scrie generatorul"
 
 - **felul**: VERIFICARE
