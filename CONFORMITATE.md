@@ -2585,20 +2585,32 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   care a pornit toată linia asta de lucru** (*„perechea de azi nu confruntă surse independente, și tu
   ai scris de ce"*). Ce ar prinde e **deriva dintre două depuneri**, nu o eroare pe care ambele
   motoare o fac la fel.
-- **ce rămâne de decis, și e al lui Costin**: dacă vrea totuși perechea **ca verificare de derivă**
-  între două declarații depuse — caz în care corespondența de mai sus e gata scrisă și nu trebuie
-  re-dedusă. *Nu s-a construit fiindcă ar contrazice direcția pe care el a numit-o, nu fiindcă ar fi
-  greu.*
+- **[02.09.2026] S-A DECIS: SE CONSTRUIEȘTE, ca verificare de DERIVĂ, EURISTICĂ.** Costin, verbatim:
+  *„motivul e roșul, nu verdele: două declarații depuse care nu se potrivesc între ele e expunere
+  reală la ANAF, iar corelația e una dintre cele pe care ANAF le rulează."* **Mi-a răsturnat decizia,
+  și pe drept:** eu judecasem perechea după verdele ei, el o judecă după roșu. *Un verde slab nu face
+  perechea inutilă — face doar verdele slab.* Tipul `D300_VS_D394_TAXARE_INVERSA`.
+- **ce prinde, scris ca să nu se citească mai mult decât e**: intervalul dintre cele două depuneri,
+  în care facturile se pot schimba, plus intervenția manuală într-una din ele (D300 acceptă rânduri
+  `manual`). **NU** prinde o eroare pe care ambele motoare o fac la fel — iar constatarea verde
+  poartă `verde_slab=True` **ca fapt**, nu doar în proză, ca o gardă să poată aserta pe proprietate,
+  nu pe formulare.
+- **ce a scos construcția, și e mai mare decât perechea**: încercând să citesc latura D394 am
+  descoperit că **rezultatul ei nu se putea persista deloc** — chei TUPLU în `op1`, iar `json.dumps`
+  ridică pe ele; apelul din `POST /coada` e negardat, deci **un D394 cu operațiuni ieșea 500 și nu
+  putea fi trimis în coadă**. Prag 1, reparat în același commit. *Tăcea pe firmele goale și lovea pe
+  cele reale.*
 - **de ce contează aici mai mult decât de obicei**: Costin a avertizat explicit că **D300 a pierdut
   rândurile de 19% și 9% în ianuarie 2026** — verificat în cod: azi `R9 = 21%`, `R10 = 11%`. O
   mapare scrisă din memorie ar fi fost falsă exact pe rândurile care s-au mutat.
 - **condiția de deblocare**: se citește partea din `opanaf_2194_2025_d394.txt` care descrie ce
   intră în lit. C, și se scrie corespondența cu rândurile D300 **numite din cod/XSD**, nu din
-  memorie. Se închide când identitatea se poate cita, ca la D101 rd.50.
+  memorie. Se închide când identitatea se poate cita, ca la D101 rd.50. **ÎNDEPLINITĂ** — lit. C
+  pct. 17 ↔ D300 `R12_1`, citite din act și din cod.
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `0746d52`
-- **rezolvată pe commit**: —
+- **rezolvată pe commit**: `e5ab0ca`
 - **unde ajunge efectul**: nicăieri azi. *Restanța e despre o confruntare care lipsește, nu despre o
   afirmație greșită.*
 
