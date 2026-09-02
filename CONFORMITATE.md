@@ -2799,11 +2799,11 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   în tăcere. **Rămân deschise prin decizia lui Costin**, nu din uitare; aici s-a închis instanța
   atinsă, fiindcă piesa era deja construită.
 - **condiția de deblocare**: depunerea, pe **amândouă** drumurile, se încheie cu aceeași casetă,
-  care numește entitatea și consecința — probat pe ecran, nu doar în cod.
+  care numește entitatea și consecința — probat pe ecran, nu doar în cod. **ÎNDEPLINITĂ.**
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `0b494dfd`
-- **rezolvată pe commit**: —
+- **rezolvată pe commit**: `84905232`
 - **unde ajunge efectul**: la contabilul care depune zilnic. *Tăcerea ajunge să însemne „s-a făcut",
   și atunci ziua în care nu s-a făcut arată la fel* — iar depunerea e actul cel mai puțin reversibil
   din aplicație (`depusa` n-are nicio ieșire în tabelul tranzițiilor).
@@ -2927,10 +2927,22 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   (`D390_VS_D300_IC`, `D101_VS_CONT_691`, `D300_VS_D394_TAXARE_INVERSA`, `EFACTURA_VS_D394`) are un
   gard care își ia `randuri` de la generatorul real, prin `coada_api.randuri_din_res`, și cade la
   un câmp scos sau redenumit. Se închide când un câmp scos deliberat din `d300.Rezultat` **pică**.
+  **ÎNDEPLINITĂ**, cu o precizare pe care o datorez condiției scrise de mine:
+  `core/test_perechi_citesc_generatorul.py`, 5 teste. Cele patru comparații își iau `randuri` de la
+  generator (`d300.genereaza` · `d394.genereaza` · `d101.genereaza`) pe o schemă efemeră cu cele
+  patru feluri de factură de care are nevoie fiecare, iar fiecare test poartă **mutația în aceeași
+  funcție**: cheia ștearsă schimbă răspunsul cititorului.
+  **Partea literală a condiției — «un câmp scos din `d300.Rezultat»** — se aplică doar acolo unde
+  conceptul **chiar e un câmp**: `facturi_incluse` și `manuale_fara_factura` (R119) sunt câmpuri, și
+  un al cincilea test le cere din `dataclasses.fields`. Dar `R1_1`, `R5_1`, `R12_1` și `P48` sunt
+  **chei într-un dicționar calculat** (`Rezultat.R`, `RezultatD101.P`), nu câmpuri — pentru ele
+  gardul e pe **cheile produse**, ceea ce e mai aproape de defect: R125 n-a fost un câmp scos, a
+  fost un câmp **care n-a existat niciodată**. *Condiția o scrisesem eu, și era prea îngustă pentru
+  propria ei clasă; o corectez aici în loc s-o declar îndeplinită pe jumătate.*
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `e82fbf72`
-- **rezolvată pe commit**: —
+- **rezolvată pe commit**: `84905232`
 - **unde ajunge efectul**: la contabil, printr-o constatare care numește o divergență ce nu există,
   sau tace peste una care există. Instanța reparată făcea chiar asta: compara rândul 50 cu zero și
   raporta „D100 depuse însumează 0,00 lei" despre trei declarații depuse care însumau 15.200.

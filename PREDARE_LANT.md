@@ -193,6 +193,18 @@ arunca `detail`-ul structurat. Acum orice refuz cu `detail` obiect îl poartă c
 deci **orice** rută care numește o cale de trecere o poate și oferi. *Clasa era mai mare decât
 instanța: un refuz care numește o ieșire pe care ecranul n-o poate deschide.*
 
+**ȘI CE A SCOS REPARAȚIA, LA RÂNDUL EI — R127.** Drumul cu constatări căpătase confirmare vizibilă;
+drumul **obișnuit**, fără constatări, rămăsese să se încheie prin demontarea ferestrei. *Același
+buton, vizibil pe un drum și tăcut pe celălalt.* Costin a închis instanța (varianta a) și a pus
+limita: *„restul familiei R82 rămâne deschisă."* Acum e **o singură** casetă pentru amândouă
+drumurile, iar cele **două** butoane care depun trec prin același loc — al doilea („Depune, cu
+motivul de mai sus") n-avea deloc tratarea lui 409.
+
+**PEREChILE AU ACUM GARDUL CLASEI LOR — R123 închisă.**
+`core/test_perechi_citesc_generatorul.py`: fiecare comparație își ia `randuri` de la **generatorul
+real**, prin exact funcția care le persistă la depunere, nu dintr-un dicționar scris de mână. *Asta
+e clasa din care a ieșit R125, și singurul fel de gard care ar fi prins-o.*
+
 ### Suprafața lui, concret — ce chemi și ce primești
 
 ```
