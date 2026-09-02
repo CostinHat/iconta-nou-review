@@ -1046,6 +1046,10 @@ class RespingeIn(BaseModel):
 class DepuneIn(BaseModel):
     motiv_trecere: Optional[str] = None  # [R41] trecere explicită peste verdict lipsă/stătut/cu erori
     spv_index: Optional[str] = None
+    # [supervizor, 02.09.2026] Confirmările constatărilor CERTE de pe firma și perioada care se
+    # depune: `[{amprenta, motiv}]`. Amprenta leagă confirmarea de o nepotrivire ANUME — o cifră
+    # schimbată o invalidează, o reformulare nu.
+    confirmari: Optional[list] = None
 
 
 # ============================================================
@@ -3607,6 +3611,49 @@ def coada_respinge(coada_id: int, date: RespingeIn,
 # Validarea (`aproba`/`respinge`) rămâne la asistent: aia se poate reface.
 def coada_depune(coada_id: int, date: DepuneIn = DepuneIn(),
                  ctx=Depends(cere_rol("admin_firma"))):
+    # [supervizor, EFECT — Costin, 02.09.2026] „O constatare CERTĂ pe firma și perioada care se
+    # depune cere confirmare explicită înainte de depunere, iar confirmarea rămâne scrisă: cine,
+    # când, peste ce constatare. NU BLOCHEAZĂ NICIODATĂ."
+    #
+    # DE CE E TOT ÎNTR-UN `try` CARE ÎNGHITE: dacă supervizorul însuși crapă (schemă ruptă, profil
+    # incomplet, orice), depunerea TREBUIE să treacă. Altfel motorul care „nu blochează niciodată" ar
+    # deveni exact poarta pe care contractul lui o interzice — și ar bloca prin AVARIE, felul cel mai
+    # prost, fiindcă n-ar fi nici măcar o decizie. Eșecul se loghează, nu se ascunde.
+    _ramase = []
+    try:
+        with db.get_conn() as _cp:
+            _fp = coada_api.firma_si_perioada(_cp, coada_id)
+        if _fp:
+            _tid, _an_d, _luna_d = _fp
+            with db.get_conn() as _cp:
+                _schema_d = auth_api.schema_tenant(_cp, ctx["uid"], _tid)
+            if _schema_d:
+                with db.get_conn(_schema_d) as _cs:
+                    _ramase = supervizor.poarta_confirmarii(
+                        _cs, _schema_d, _tid, _an_d, _luna_d,
+                        confirmari=date.confirmari, confirmat_de=str(ctx["uid"]),
+                        confirmat_de_id=int(ctx["uid"]))
+    except Exception as _e:
+        import logging
+        logging.getLogger("iconta").warning(
+            "poarta confirmarii supervizorului a esuat pe coada %s: %s — depunerea CONTINUA "
+            "(supervizorul nu blocheaza niciodata)", coada_id, _e)
+        _ramase = []
+    if _ramase:
+        # NU e un blocaj: e o cerere de confirmare, cu calea de trecere numită în chiar răspunsul
+        # ăsta (trimite `confirmari` cu amprenta și motivul). Interdicția 47 — un refuz fără cale
+        # de ieșire pentru om.
+        raise HTTPException(409, {
+            "cod": "CONSTATARI_NECONFIRMATE",
+            "mesaj": ("%d constatare/constatări certe pe firma și perioada asta cer o confirmare "
+                      "scrisă înainte de depunere. Depunerea NU e blocată: confirmă-le, cu motiv, "
+                      "și continuă." % len(_ramase)),
+            # constatarile se trimit AȘA CUM SUNT: sunt deja afirmații tipate, produse de
+            # `control_incrucisat`. Reîmpachetarea lor aici ar fi fost o a doua afirmație, netipată
+            # — și cine o citea n-ar fi știut care e cea adevărată.
+            "constatari": _ramase,
+            "actiune": "Retrimite cererea cu `confirmari`: [{amprenta, motiv}] pentru fiecare.",
+        })
     with db.get_conn() as conn:
         if not _are_permisiune(ctx, "poate_depune"):
             raise HTTPException(status_code=403, detail=FARA_DREPT_DEPUNERE)

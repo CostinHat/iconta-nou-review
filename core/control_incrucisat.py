@@ -1760,6 +1760,11 @@ PERIODICITATE_D100_TRIMESTRE = (3, 6, 9)
 #: deci numerotarea F20 n-ar fi un temei, ci o presupunere.
 CONT_IMPOZIT_PROFIT = "691"
 
+#: Luna sub care se tine in jurnal o declaratie ANUALA. Nu e o valoare fiscala, e o conventie de
+#: STOCARE — aceeasi cu cea din `coada_api.perioada_din_payload` («anual -> 12»). Numele o declara
+#: ca periodicitate, ca sa nu fie citita ca prag.
+PERIODICITATE_JURNAL_ANUAL = 12
+
 TIP_D101_VS_D100 = "D101_VS_D100_PLATI_ANTICIPATE"
 TIP_D101_VS_691 = "D101_VS_CONT_691"
 
@@ -1945,7 +1950,8 @@ def _pereche_p50(conn, schema, an, p50, d_grup):
             % (fara, len(dep), an), an, 12)]
     dif = p50 - suma
     baza = {"eticheta": eticheta, "declarat_d101": int(p50), "declarat_d100": int(suma),
-            "diferenta": int(dif), "nr_d100": cu}
+            "diferenta": int(dif), "nr_d100": cu, "an": an,
+            "luna": PERIODICITATE_JURNAL_ANUAL}
     if p50 == 0 and suma == 0:
         return []
     if abs(dif) <= TOLERANTA:
@@ -2018,7 +2024,7 @@ def _pereche_691(conn, schema, an, p48, d_grup):
             "CIORNA pe 691 pe %d. Diferenta se poate inchide la validarea lor — deci nu e o eroare "
             "constatata, e o verificare care asteapta." % (_lei(p48), _lei(contabil), an), an, 12)]
     baza = {"eticheta": eticheta, "declarat_d101": int(p48), "inregistrat_691": int(contabil),
-            "diferenta": int(dif)}
+            "diferenta": int(dif), "an": an, "luna": PERIODICITATE_JURNAL_ANUAL}
     if p48 == 0 and contabil == 0:
         return []
     if abs(dif) <= TOLERANTA:

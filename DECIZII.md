@@ -13527,3 +13527,20 @@ aceeași realitate calculată de două motoare; aici stânga e un **fapt de tran
 și dreapta e **ce a declarat generatorul**. De-aia constatarea verde **nu** poartă `verde_slab` — iar
 o gardă o apără, fiindcă a marca și verdele ăsta ca slab ar șterge exact diferența pentru care
 perechea a fost cerută.
+
+**(57) STRATUL DE EFECT E CABLAT: o CERTĂ neconfirmată cere confirmare la depunere** *(Costin,
+02.09.2026)*. Confirmarea rămâne scrisă cu **cine · când · peste ce constatare** (amprenta e în cheia
+primară). **Euristicele nu cer nimic.** Cablat în `POST /coada/{id}/depune`, înainte de
+`marcheaza_depusa`.
+
+**„Nu blochează niciodată" s-a citit până la capăt:** nici prin AVARIE. Apelul stă într-un `try` al
+cărui `except` nu re-ridică — dacă supervizorul crapă, depunerea trece. *Un motor care „nu blochează"
+dar cade peste calea depunerii ar bloca în felul cel mai prost: fără ca nimeni s-o fi decis.* Iar
+refuzul-până-la-confirmare **își numește calea de trecere în corpul răspunsului** — altfel ar fi fost
+interdicția 47, un blocaj fără ieșire pentru om.
+
+**(58) O gardă la nivel de FUNCȚIE, fiindcă cea de MODUL nu putea vedea gaura.** `neconfirmate()` a
+stat fără apelant de producție și nimic n-a semnalat-o: `test_module_nelegate` verifică module, iar
+modulul era chemat prin altă funcție. *Clasa e declarată chiar în antetul acelui gard („CE NU
+ACOPERĂ: nivelul funcție") — azi a costat un strat întreg de contract, nelegat, timp de trei ture.*
+Garda nouă cade dacă apelul dispare din `main.py`, cu mutație probată.

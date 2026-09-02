@@ -69,6 +69,9 @@ Gardă: `core/test_infra_vizuala.py` (infra nu poate dispărea — Regula 6). Po
   plus un PRAG 1 reparat pe drum (D394 cu operatiuni nu putea intra in coada)
 - ultim: **R119 INCHISA** — D394 isi expune facturile incluse, iar perechea e-Factura <-> D394 e
   construita: singura pe surse cu adevarat independente
+- ultim: **STRATUL DE EFECT, CABLAT** — o CERTA neconfirmata cere confirmare la depunere,
+  confirmarea ramane scrisa (cine/cand/peste ce), euristicele nu cer nimic, si o garda cade daca
+  apelantul dispare
 - urmator: **R121** (P300 fara acces programatic) ramane deschisa, EXTERNA. NEINCEPUT
 - pasi:
   1. **VERDICTELE LA SURSA — facute inainte de orice cod:**

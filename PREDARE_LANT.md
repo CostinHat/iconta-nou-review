@@ -307,8 +307,8 @@ de ieșire **2** înseamnă „nu s-a putut verifica tot". Stare: `PASS 18 · FA
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **61** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **785** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **77u** | **786** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->
@@ -433,13 +433,16 @@ acum un nume și patru instanțe într-o zi.*
   gardă asertează pe câmp — o gardă pe formulare ar fi păzit textul, nu proprietatea.
 - **Nicio constatare nu cere azi confirmare.** Euristicele nu cer niciodată; certele cer doar pe roșu,
   iar roșu nu există încă. `public.supervizor_confirmari` e gol.
-- **ȘI, MAI IMPORTANT: STRATUL DE EFECT NU E CABLAT.** `supervizor.neconfirmate()` — funcția pe care
-  ar trebui s-o citească **poarta de depunere** — n-are **niciun apelant de producție**; la fel
-  `scrie_confirmare()`. Verificat: singurele trimiteri sunt din modulul însuși și din teste. Deci în
-  ziua în care o constatare CERTĂ iese roșie, **nimic nu va cere confirmarea scrisă** — cerința lui
-  Costin de la 01.09 („cer confirmare explicită înainte de depunere, iar confirmarea rămâne scrisă")
-  e implementată ca **mecanism**, dar nu e legată la actul depunerii. *Nu blochează nimic azi,
-  fiindcă nu există roșu; devine fals în chiar ziua în care apare unul.*
+- **STRATUL DE EFECT E CABLAT** *(02.09, ultima tură a zilei)*. `supervizor.poarta_confirmarii()` e
+  chemată din `POST /coada/{id}/depune`, ÎNAINTE de `marcheaza_depusa`: o constatare **CERTĂ** pe
+  firma și perioada care se depune cere o **confirmare scrisă** (cine · când · **peste ce
+  constatare**, prin amprentă), iar euristicele nu cer nimic. *Gaura de dinainte — `neconfirmate()`
+  fără niciun apelant — a stat trei ture nevăzută, fiindcă `test_module_nelegate` lucrează la nivel
+  de MODUL, iar modulul era chemat prin altă funcție.*
+- **„Nu blochează niciodată" e citit până la capăt: nici prin AVARIE.** Apelul stă într-un `try` al
+  cărui `except` **nu re-ridică** — dacă supervizorul crapă, depunerea trece, cu eșecul logat. Iar
+  când chiar sunt constatări neconfirmate, răspunsul **numește calea de trecere în corpul lui**.
+  Gardat pe AST, cu mutație probată.
 - **Perechea D101 nu se poate calibra pe date reale** — n-a existat nicio depunere D101 cu rânduri.
   Calibrarea e pe subiect **fabricat**, pe schemă efemeră. *„Reparat pe clasă" și „probat pe instanță"
   nu sunt același lucru.*

@@ -18,6 +18,7 @@
 `_stampileaza` din `control_incrucisat` ar uita o cale de retur, (5) cade — iar supervizorul ar sări
 constatarea **tăcut**, care e chiar felul de tăcere care arată ca un răspuns.
 """
+import io
 import os
 import sys
 
@@ -782,7 +783,8 @@ def test_perechile_anuale_NU_se_ancoreaza_pe_anul_CURENT():
         conn.rollback(); _db.pool().putconn(conn)
     assert len(cs) == 1 and cs[0]["stare"] == "verde", (
         "perechea s-a ancorat pe anul cerut, nu pe anul ultimei depuneri — ar fi gri pe vecie")
-    assert "2099" in cs[0]["eticheta"]
+    assert cs[0]["an"] == 2099, (
+        "perechea n-a evaluat anul ultimei depuneri — asertat pe CÂMP, nu pe eticheta afișată")
 
 
 def test_un_TRIMESTRU_NEVAZUT_da_GRI_nu_ROSU():
@@ -1084,3 +1086,181 @@ def test_ELIGIBILITATEA_ramane_a_generatorului_nu_se_reimplementeaza():
     assert 12 not in toate, (
         "o factură pe care generatorul a EXCLUS-O apare printre cele incluse — confruntarea ar "
         "afirma că s-a declarat ceva ce nu s-a declarat")
+
+
+# ── 12. EFECTUL: o CERTĂ cere confirmare înainte de depunere (02.09.2026) ──────────────────────
+# Costin: *„O constatare CERTĂ pe firma și perioada care se depune cere confirmare explicită înainte
+# de depunere, iar confirmarea rămâne scrisă: cine, când, peste ce constatare. Nu blochează
+# niciodată."* Și, tot el: *„o gardă trebuie să cadă dacă apelantul dispare — `neconfirmate()` fără
+# apelant e chiar starea de azi, și n-a semnalat-o nimic."*
+import glob as _glob   # noqa: E402
+
+
+def _apelanti_productie(nume):
+    """Fișierele de PRODUCȚIE care cheamă funcția dată. Exclude modulul care o definește, testele și
+    `scripts/` — aceeași convenție ca `test_module_nelegate` (Costin, 29.08: măsurarea unei absențe
+    nu are voie s-o stingă)."""
+    gasit = []
+    for cale in _glob.glob(os.path.join(_RAD, "**", "*.py"), recursive=True):
+        parti = os.path.relpath(cale, _RAD).split(os.sep)
+        rel = "/".join(parti)
+        # filtrul lucreaza pe COMPONENTE de cale, nu pe cautare de sir intr-un sir: un `in` aici ar
+        # fi tot o ancora pe text, iar clichetul 50 il numara — pe drept, fiindca `"/test_" in x`
+        # se potriveste si pe un director numit `contest_ceva`.
+        if (parti[0] in ("venv", "scripts", "frontend_test")
+                or parti[-1].startswith("test_")
+                or rel == "core/supervizor.py"):
+            continue
+        try:
+            arb = ast.parse(io.open(cale, encoding="utf-8").read())
+        except Exception:
+            continue
+        for n in ast.walk(arb):
+            if isinstance(n, ast.Call):
+                f = n.func
+                if (isinstance(f, ast.Attribute) and f.attr == nume) or \
+                   (isinstance(f, ast.Name) and f.id == nume):
+                    gasit.append(rel)
+                    break
+    return sorted(set(gasit))
+
+
+def test_EFECTUL_nu_poate_ramane_NELEGAT_fara_sa_semnaleze():
+    """**Gardul cerut de Costin, și motivul lui e chiar starea de ieri.** `neconfirmate()` a stat
+    fără niciun apelant de producție, iar nimic n-a semnalat-o: `test_module_nelegate` lucrează la
+    nivel de MODUL — iar modulul ERA chemat, prin `ruleaza_portofoliu`. Absența se vedea doar la
+    nivel de FUNCȚIE, unde nimeni nu se uita.
+
+    *Dacă mâine cineva scoate apelul din calea depunerii, garda asta cade — și aia e tot ce se cere
+    de la ea.*"""
+    apelanti = _apelanti_productie("poarta_confirmarii")
+    assert apelanti, (
+        "`poarta_confirmarii` n-are niciun apelant de producție — efectul constatărilor CERTE e "
+        "din nou doar un mecanism, nelegat la actul depunerii")
+    assert any(a == "main.py" for a in apelanti), (
+        "efectul nu mai e chemat din `main.py`, deci nu mai stă pe calea depunerii: %s" % apelanti)
+
+
+def test_poarta_confirmarii_chiar_foloseste_cele_doua_functii_ale_efectului():
+    """[anti-vacuu pe gardul de mai sus] Un apelant care cheamă `poarta_confirmarii` fără ca ea să
+    citească `neconfirmate` și să scrie prin `scrie_confirmare` ar trece gardul și n-ar face nimic."""
+    arb = ast.parse(_sursa("core/supervizor.py"))
+    poarta = [n for n in ast.walk(arb)
+              if isinstance(n, ast.FunctionDef) and n.name == "poarta_confirmarii"]
+    assert len(poarta) == 1
+    chemate = {n.func.id for n in ast.walk(poarta[0])
+               if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)}
+    for f in ("neconfirmate", "scrie_confirmare"):
+        assert f in chemate, "poarta confirmării nu cheamă %r — efectul e o carcasă" % f
+
+
+def test_supervizorul_care_CRAPA_nu_opreste_depunerea():
+    """*„Nu blochează niciodată"* — inclusiv prin AVARIE. Dacă poarta confirmării ridică, depunerea
+    trebuie să continue: altfel motorul care nu blochează ar deveni exact poarta pe care contractul
+    lui o interzice, și ar bloca în felul cel mai prost — fără ca nimeni s-o fi decis.
+
+    Structural, pe AST: apelul din `main.py` stă într-un `try` al cărui `except` **nu re-ridică**."""
+    arb = ast.parse(_sursa("main.py"))
+    tries = [n for n in ast.walk(arb) if isinstance(n, ast.Try)
+             and any(isinstance(c, ast.Call) and getattr(c.func, "attr", None) == "poarta_confirmarii"
+                     for c in ast.walk(n))]
+    assert tries, "apelul porții confirmării nu e într-un `try` — o avarie a supervizorului ar opri depunerea"
+    for t in tries:
+        assert t.handlers, "`try` fără `except`"
+        for h in t.handlers:
+            assert not [x for x in ast.walk(h) if isinstance(x, ast.Raise)], (
+                "handlerul re-ridică — o avarie a supervizorului ar opri depunerea")
+
+
+def _cu_producatori(monkeypatch, constatari):
+    for nume, val in (("verifica_d390", {"orizontal_rulat": True, "constatari": constatari}),):
+        monkeypatch.setattr(_ci, nume, lambda conn, schema, an, luna, _v=val: _v)
+    monkeypatch.setattr(_ci, "orizontal_d101", lambda conn, schema, an: [])
+    monkeypatch.setattr(_ci, "orizontal_d300_vs_d394", lambda conn, schema: [])
+    monkeypatch.setattr(_ci, "orizontal_efactura_vs_d394", lambda conn, schema: [])
+
+
+def test_o_CERTA_ROSIE_cere_confirmare_iar_confirmarea_RAMANE_SCRISA(monkeypatch):
+    """Cele trei lucruri cerute, în ordine: **cere** · **nu blochează** (poarta întoarce ce lipsește,
+    nu un refuz) · **rămâne scrisă**, cu *cine*, *când* și *peste ce constatare*."""
+    tip = _cu_tip_sintetic(S.CERTA, True)
+    S.TIPURI[tip]["motiv_tarie"] = "probă"
+    c = dict(_C, tip_constatare=tip, stare="rosu")
+    _cu_producatori(monkeypatch, [c])
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("INSERT INTO public.tenants (schema_name, nume) "
+                        "VALUES ('ztest_sv_efect', 'PROBA EFECT') RETURNING id")
+            tid = cur.fetchone()[0]
+
+            ramase = S.poarta_confirmarii(conn, "ztest_sv_efect", tid, 2099, 6)
+            assert len(ramase) == 1, "constatarea CERTĂ roșie nu cere confirmare"
+            amp = ramase[0]["amprenta"]
+
+            # cu confirmarea dată, poarta nu mai are ce cere
+            ramase2 = S.poarta_confirmarii(
+                conn, "ztest_sv_efect", tid, 2099, 6,
+                confirmari=[{"amprenta": amp, "motiv": "verificat cu contabilul, e regularizare"}],
+                confirmat_de="7", confirmat_de_id=7)
+            assert ramase2 == [], "confirmarea dată n-a stins cererea"
+
+            cur.execute("SELECT tip_constatare, amprenta, confirmat_de, confirmat_de_id, motiv, "
+                        "confirmat_la FROM public.supervizor_confirmari WHERE tenant_id=%s", (tid,))
+            randuri = cur.fetchall()
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+        del S.TIPURI[tip]
+
+    assert len(randuri) == 1, "confirmarea nu s-a scris"
+    t_, a_, cine_, cine_id_, motiv_, cand_ = randuri[0]
+    assert a_ == amp, "confirmarea s-a scris peste ALTĂ constatare decât cea văzută"
+    assert cine_ == "7" and cine_id_ == 7      # CINE
+    assert cand_ is not None                    # CÂND
+    assert t_ == tip and motiv_                 # PESTE CE, și cu motiv
+
+
+def test_o_EURISTICA_nu_cere_NIMIC_la_depunere(monkeypatch):
+    """*„Cele euristice nu cer nimic; rămân doar vizibile."* Inclusiv pe roșu."""
+    tip = _cu_tip_sintetic(S.EURISTICA, True)
+    S.TIPURI[tip]["motiv_tarie"] = "probă"
+    _cu_producatori(monkeypatch, [dict(_C, tip_constatare=tip, stare="rosu")])
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("INSERT INTO public.tenants (schema_name, nume) "
+                        "VALUES ('ztest_sv_efect2', 'PROBA EFECT 2') RETURNING id")
+            tid = cur.fetchone()[0]
+            ramase = S.poarta_confirmarii(conn, "ztest_sv_efect2", tid, 2099, 6)
+            cur.execute("SELECT count(*) FROM public.supervizor_confirmari WHERE tenant_id=%s", (tid,))
+            scrise = cur.fetchone()[0]
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+        del S.TIPURI[tip]
+    assert ramase == [], "o EURISTICĂ a cerut confirmare — «semnalează, nu opresc niciodată»"
+    assert scrise == 0
+
+
+def test_o_confirmare_pe_ALTA_amprenta_nu_stinge_cererea(monkeypatch):
+    """Amprenta e cheia: o confirmare dată peste altă nepotrivire decât cea văzută **nu** se scrie și
+    **nu** stinge nimic. Altfel „confirmare explicită" ar fi devenit o bifă care nimerește oriunde."""
+    tip = _cu_tip_sintetic(S.CERTA, True)
+    S.TIPURI[tip]["motiv_tarie"] = "probă"
+    _cu_producatori(monkeypatch, [dict(_C, tip_constatare=tip, stare="rosu")])
+    conn = _conn()
+    try:
+        with conn.cursor() as cur:
+            cur.execute("INSERT INTO public.tenants (schema_name, nume) "
+                        "VALUES ('ztest_sv_efect3', 'PROBA EFECT 3') RETURNING id")
+            tid = cur.fetchone()[0]
+            ramase = S.poarta_confirmarii(
+                conn, "ztest_sv_efect3", tid, 2099, 6,
+                confirmari=[{"amprenta": "amprenta care nu exista", "motiv": "orice"}],
+                confirmat_de="7", confirmat_de_id=7)
+            cur.execute("SELECT count(*) FROM public.supervizor_confirmari WHERE tenant_id=%s", (tid,))
+            scrise = cur.fetchone()[0]
+    finally:
+        conn.rollback(); _db.pool().putconn(conn)
+        del S.TIPURI[tip]
+    assert len(ramase) == 1, "o confirmare pe altă amprentă a stins cererea"
+    assert scrise == 0, "s-a scris o confirmare peste o constatare care nu există"

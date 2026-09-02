@@ -7236,6 +7236,48 @@ socotite plecate · operațiunile manuale ignorate.
 o operațiune **manuală** (bon, borderou) n-are factură în spate, deci o factură transmisă ar putea fi
 acoperită de ea fără ca eu să pot ști. Perechea spune **gri** și numește câte sunt.
 
+### STRATUL DE EFECT, cablat — și gardul care cade dacă apelantul dispare (02.09.2026)
+
+**Costin:** *„O constatare CERTĂ pe firma și perioada care se depune cere confirmare explicită
+înainte de depunere, iar confirmarea rămâne scrisă: cine, când, peste ce constatare. **Nu blochează
+niciodată**. Cele EURISTICE nu cer nimic; rămân doar vizibile. **O gardă trebuie să cadă dacă
+apelantul dispare** — `neconfirmate()` fără apelant e chiar starea de azi, și n-a semnalat-o nimic."*
+
+**CE S-A CONSTRUIT.** `supervizor.poarta_confirmarii()` — scrie confirmările primite (fiecare peste o
+constatare ANUME, prin **amprentă**) și întoarce **ce a rămas neconfirmat**. Nu ridică, nu refuză,
+nu întoarce niciun blocaj: **cine cheamă decide**. Chemată din `main.py`, pe calea
+`POST /coada/{id}/depune`, ÎNAINTE de `marcheaza_depusa`.
+
+**„NU BLOCHEAZĂ NICIODATĂ" — INCLUSIV PRIN AVARIE.** Apelul stă într-un `try` al cărui `except`
+**nu re-ridică**: dacă supervizorul crapă (schemă ruptă, profil incomplet), depunerea **continuă**, cu
+eșecul logat. *Altfel motorul care „nu blochează" ar fi devenit exact poarta pe care contractul lui o
+interzice — și ar fi blocat prin avarie, felul cel mai prost, fiindcă n-ar fi fost nici măcar o
+decizie.* Iar când chiar există constatări neconfirmate, răspunsul **numește calea de trecere în
+chiar corpul lui** (interdicția 47: un refuz fără ieșire pentru om).
+
+**GARDA CERUTĂ, și de ce n-a existat până azi:**
+`::test_EFECTUL_nu_poate_ramane_NELEGAT_fara_sa_semnaleze` — `poarta_confirmarii` trebuie să aibă
+apelant de **producție**, și anume în `main.py`. **Starea de ieri era chiar gaura pe care o închide:**
+`neconfirmate()` a stat fără niciun apelant, iar `test_module_nelegate` n-a semnalat-o fiindcă
+lucrează la nivel de **MODUL** — iar modulul ERA chemat, prin `ruleaza_portofoliu`. *Absența trăia la
+nivel de FUNCȚIE, unde nu se uita nimeni.* Anti-vacuu peste ea:
+`::test_poarta_confirmarii_chiar_foloseste_cele_doua_functii_ale_efectului` — un apelant care cheamă
+o carcasă ar fi trecut gardul.
+
+**CELELALTE GĂRZI (4):**
+`::test_supervizorul_care_CRAPA_nu_opreste_depunerea` (AST: `except` fără `raise`) ·
+`::test_o_CERTA_ROSIE_cere_confirmare_iar_confirmarea_RAMANE_SCRISA` (probează **cine · când · peste
+ce**, pe rândul scris) · `::test_o_EURISTICA_nu_cere_NIMIC_la_depunere` (inclusiv pe roșu) ·
+`::test_o_confirmare_pe_ALTA_amprenta_nu_stinge_cererea`.
+
+**Mutații probate (RED), trei direcții:** **apelantul dispare** din `main.py` → cad două gărzi ·
+`except` re-ridică → avaria ar opri depunerea · amprenta ignorată → o confirmare ar nimeri oriunde.
+
+**PERIOADA A DEVENIT SURSĂ UNICĂ ÎNAINTE SĂ APARĂ PARALELA.** Derivarea `(an, luna)` trăia doar în
+`marcheaza_depusa`; poarta confirmării avea nevoie de ea **înainte** de depunere. În loc de a doua
+derivare, `coada_api.perioada_din_payload()` + `firma_si_perioada()`. *Regula „nu construi paralel",
+aplicată înainte ca paralela să existe.*
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
 **506 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.

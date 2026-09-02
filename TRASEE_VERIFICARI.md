@@ -47,7 +47,7 @@ lipsa in `core/test_trasee.py`, nu suprascrie nimic.
 
 *garda `cere_rol` · rol:admin_firma*
 
-*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) — prin `coada_api`*
+*ce face: poate atinge, prin modul (PLAFON, nemasurat pe ruta): declaratii_coada (INSERT/UPDATE) · declaratii_depuse (INSERT) · supervizor_confirmari (INSERT) — prin `coada_api`, `supervizor`*
 
 - [x] ruta refuză o declarație fără verdict de validare păstrat, sau cu verdict pe altă amprentă decât fișierul curent
 - se scrie în `declaratii_depuse`: tip, perioadă, momentul, autorul autorizării, amprenta fișierului, indexul de la autoritate dacă există

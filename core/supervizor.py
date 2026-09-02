@@ -476,6 +476,39 @@ def confirmari(conn, tenant_id, an, luna):
                 for t, a, cd, cl, m in cur.fetchall()}
 
 
+def poarta_confirmarii(conn, schema, tenant_id, an, luna,
+                       confirmari=None, confirmat_de=None, confirmat_de_id=None):
+    """**EFECTUL constatărilor CERTE, la depunere** *(Costin, 02.09.2026)*.
+
+    *„O constatare CERTĂ pe firma și perioada care se depune cere confirmare explicită înainte de
+    depunere, iar confirmarea rămâne scrisă: cine, când, peste ce constatare. **Nu blochează
+    niciodată**."*
+
+    **CE FACE:** scrie confirmările primite (fiecare peste o constatare ANUME, prin amprentă), apoi
+    întoarce **ce a rămas neconfirmat**. Nu ridică, nu refuză, nu întoarce niciun blocaj: **cine
+    cheamă decide**. Lista goală = nimic de confirmat.
+
+    **CE NU FACE, și e chiar contractul modulului:** nu oprește nimic. Un blocaj, în vocabularul
+    aplicației, e unul **fără cale de trecere pentru om** (interdicția 47). Aici calea e mereu
+    deschisă: se confirmă și se merge mai departe, iar confirmarea rămâne scrisă.
+
+    **EURISTICELE NU AJUNG AICI.** `cere_confirmare()` e adevărat doar pentru `CERTA` **confirmată**
+    și doar pe `stare == "rosu"` — deci o euristică rămâne vizibilă pe ecran și atât.
+
+    `confirmari`: `[{amprenta, motiv}]`. O confirmare fără amprentă potrivită **nu se scrie** — ar fi
+    o bifă pe altceva decât s-a văzut.
+    """
+    date = {(c.get("amprenta") or ""): (c.get("motiv") or "") for c in (confirmari or [])}
+    ramase = []
+    for c in neconfirmate(conn, schema, tenant_id, an, luna):
+        motiv = date.get(c["amprenta"])
+        if motiv and str(motiv).strip():
+            scrie_confirmare(conn, tenant_id, an, luna, c, confirmat_de, confirmat_de_id, motiv)
+        else:
+            ramase.append(c)
+    return ramase
+
+
 def neconfirmate(conn, schema, tenant_id, an, luna):
     """Constatările CERTE care cer confirmare și **încă n-au una potrivită pe amprentă**.
 

@@ -413,6 +413,38 @@ def respinge(conn, coada_id, respins_de, motiv, respins_de_id=None):
 # ============================================================
 #  DEPUNERE — DB (aprobata -> depusa + jurnal declaratii_depuse)
 # ============================================================
+def perioada_din_payload(payload):
+    """`(an, luna)` pentru jurnal: lunar -> luna; trimestrial -> **luna finală a trimestrului**;
+    anual -> 12.
+
+    **SURSĂ UNICĂ, din 02.09.2026.** Derivarea asta trăia doar în `marcheaza_depusa`. De când poarta
+    confirmării trebuie să știe *pe ce perioadă se depune* ÎNAINTE de depunere, ar fi existat două
+    locuri care răspund la aceeași întrebare — iar al doilea se învechește. *Regula „nu construi
+    paralel", aplicată înainte ca paralela să apară.*"""
+    p = payload or {}
+    an = p.get("_an")
+    if p.get("_luna"):
+        luna = p["_luna"]
+    elif p.get("_trim"):
+        luna = p["_trim"] * 3
+    else:
+        luna = 12
+    return an, luna
+
+
+def firma_si_perioada(conn, coada_id):
+    """`(tenant_id, an, luna)` pentru un element din coadă, sau `None` dacă nu există.
+
+    Ce citește poarta confirmării ca să știe **pe ce firmă și pe ce perioadă** se depune — exact
+    întrebarea pusă de Costin (02.09): *„o constatare CERTĂ pe firma și perioada care se depune"*."""
+    with conn.cursor() as cur:
+        cur.execute("SELECT tenant_id, payload FROM public.declaratii_coada WHERE id = %s",
+                    (coada_id,))
+        r = cur.fetchone()
+    if not r:
+        return None
+    an, luna = perioada_din_payload(r[1])
+    return r[0], an, luna
 def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=None,
                      motiv_trecere=None):
     """
@@ -435,14 +467,7 @@ def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=
         if refuz:
             return refuz
         p = r["payload"] or {}
-        an = p.get("_an")
-        # luna pt jurnal: lunar->luna; trimestrial->luna finală trim; anual->12
-        if p.get("_luna"):
-            luna = p["_luna"]
-        elif p.get("_trim"):
-            luna = p["_trim"] * 3
-        else:
-            luna = 12
+        an, luna = perioada_din_payload(p)
         cur.execute(
             "UPDATE public.declaratii_coada SET stare='depusa', depus_la=now(), "
             "spv_index=%s, depus_de=%s, depus_de_id=%s WHERE id=%s",
