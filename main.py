@@ -40,6 +40,37 @@ from core.mesaje import (mesaj_din_cod, FARA_CABINET, EMAIL_INVALID, EMAIL_EXIST
                          FARA_DREPT_VALIDARE, FARA_DREPT_DEPUNERE, FARA_ACCES_TENANT,
                          COD_FARA_ACCES_TENANT,
                          FARA_ACCES_RAPORTARE, FARA_ACCES)
+from core.common import nomenclator_cerut
+
+
+def _cere_perioada(an=None, luna=None, exercitiu=None, camp_an="an"):
+    """Refuza o perioada care nu exista, INAINTE de a cauta date pentru ea.
+
+    [lotul 3, 04.09.2026] Masurat pe sase rute: `luna=13` pe `GET /jurnal` dadea `500`; pe
+    `GET /balanta`, pe calea de API si pe `registru-inventar/propunere` dadea `200` cu rezultat
+    gol; iar `GET /documente/balanta?luna=0` **genera un PDF** — un document oficial pentru o luna
+    care nu exista. Cel mai rau era `balanta`, care adauga si o afirmatie: `"stare":
+    "nimic_de_verificat"`. *„Nu exista date pentru luna asta" si „luna asta nu exista" nu sunt
+    acelasi lucru, iar a doua nu se repara cautand mai bine.*"""
+    if luna is not None and not (1 <= luna <= 12):
+        raise HTTPException(422, "luna invalidă: %r (aștept 1-12)" % (luna,))
+    if an is not None and not (1990 <= an <= 2100):
+        raise HTTPException(422, "%s invalid: %r (aștept 1990-2100)" % (camp_an, an))
+    if exercitiu is not None and not (1990 <= exercitiu <= 2100):
+        raise HTTPException(422, "exercițiu invalid: %r (aștept 1990-2100)" % (exercitiu,))
+
+
+def _mesaj_intrare(e):
+    """Mesajul unui refuz de intrare, cand exceptia poate fi si `KeyError`.
+
+    [lotul 3, 04.09.2026] `except (ValueError, KeyError) as e: HTTPException(422, str(e))` apare in
+    37 de locuri, iar pe ramura `KeyError` `str(e)` e **numele campului intre ghilimele simple**:
+    contabilul primea `{"detail": "'brut'"}`. Cod intern ca mesaj — aceeasi clasa scoasa din coada
+    in lotul 1, gasita aici pe alta cale. Se traduce o data, in locul comun."""
+    if isinstance(e, KeyError):
+        return ("Lipsește câmpul `%s` din cererea trimisă. Operațiunea nu se poate consemna fără "
+                "el." % (e.args[0] if e.args else "?"))
+    return str(e)
 
 # template SQL pentru schema unui tenant nou (generat din tenant_001)
 TENANT_TEMPLATE_PATH = os.environ.get(
@@ -1048,6 +1079,7 @@ class EmitereIn(BaseModel):
     data_scadenta: Optional[str] = None
     moneda: str = "RON"
     curs_manual: Optional[float] = None
+    data_curs_manual: Optional[str] = None  # [R130] data la care cursul manual a fost comunicat
     pleaca_marfa: Optional[bool] = None  # [punte_stoc_v1] F172 poarta: DA descarca gestiunea, NU doar fiscal
     tert_tara: str = "RO"               # [B1 D300] cod ISO 2 litere partener (emise IC/export)
     tip_operatiune: str = "normal"      # [B1 D300] normal|avans|regularizare_avans (avans exigibil la emitere)
@@ -2017,6 +2049,16 @@ def tenant_plan_conturi_adauga(tenant_id: int, date: PlanContIn,
     denumire = (date.denumire or "").strip()
     if not simbol or not denumire:
         raise HTTPException(422, "Completează atât simbolul, cât și denumirea contului.")
+    # [lotul 3, 04.09.2026] `simbol="ABC"` intra in plan si de acolo putea ajunge pe o nota, intr-o
+    # balanta si intr-o declaratie. Criteriul e DERIVAT din nomenclatorul propriu: planul general
+    # seed-uit la crearea firmei are peste 700 de conturi, toate incepand cu o cifra de clasa.
+    if not simbol[0].isdigit() or simbol[0] == "0":
+        raise HTTPException(422, "Simbolul contului începe cu cifra clasei (1-9), ca toate "
+                                 "conturile din planul general — am primit %r. Dacă e un analitic, "
+                                 "scrie-l după contul sintetic (de exemplu 4111.01)." % simbol)
+    if not all(c.isdigit() or c in "._-/" for c in simbol):
+        raise HTTPException(422, "Simbolul contului se scrie din cifre, cu separator pentru "
+                                 "analitic (`.`, `_`, `-`, `/`) — am primit %r." % simbol)
     with db.get_conn(schema) as conn:
         with conn.cursor() as cur:
             # Regula 4 + 14.4: un simbol care exista deja NU se suprascrie tacut (ar redenumi un cont OMFP
@@ -3139,7 +3181,11 @@ def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_rol("admin_f
                 tert_cui=date.tert_cui, tert_adresa=date.tert_adresa, data_emitere=date.data_emitere,
                 data_scadenta=date.data_scadenta, moneda=date.moneda,
                 platitor_tva=platitor, curs_manual=date.curs_manual, tip=date.tip,
-                tert_tara=date.tert_tara, tip_operatiune=date.tip_operatiune)
+                tert_tara=date.tert_tara, tip_operatiune=date.tip_operatiune,
+                data_curs_manual=date.data_curs_manual,
+                # [R130] „consemnat cine și când" — autorul vine din context, nu din corp: cine
+                # trimite cererea nu poate scrie în locul altcuiva cine a ales cursul.
+                curs_manual_de="utilizator %s" % ctx["uid"])
         except facturi_api.LiniiIncomplete as e:
             raise HTTPException(422, {"cod": "LINII_INCOMPLETE",
                 "mesaj": "Completează liniile: " + "; ".join(x["eticheta"] for x in e.campuri),
@@ -3156,6 +3202,10 @@ def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_rol("admin_f
     # 409 cu „reincearca / manual" ii promitea contabilului ca mai tarziu ar merge.
     if isinstance(r, dict) and r.get("ok") is False and r.get("cod") == "MONEDA_NECOTATA":
         raise HTTPException(422, detail=r)
+    # [R130] Cursul e mai vechi decat pragul: emiterea AUTOMATA se opreste, facturarea NU. `409`,
+    # cu iesirea numita in corp (curs manual + data lui) — un refuz fara iesire ar fi interdictia 47.
+    if isinstance(r, dict) and r.get("ok") is False and r.get("cod") == "CURS_PREA_VECHI":
+        raise HTTPException(409, detail=r)
     # curs BNR indisponibil -> 409 cu detaliile pt frontend (Reincearca / Manual)
     if isinstance(r, dict) and r.get("ok") is False and r.get("cod") == "CURS_INDISPONIBIL":
         raise HTTPException(409, detail=r)
@@ -4736,6 +4786,7 @@ def tenant_jurnal(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet))
     se DERIVA aici, la citire - nicio cale de scriere nu se atinge. Ce nu se poate deriva
     ramane null: `note_fara_document` spune cate sunt, ca absenta sa fie numarata, nu ascunsa.
     """
+    _cere_perioada(an, luna)
     from core import jurnal_api as _j
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
@@ -5474,10 +5525,9 @@ def firma_verificari(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabine
     # adică o INTRARE GREȘITĂ îmbrăcată în NECUNOAȘTERE. Sunt două lucruri diferite: una se
     # corectează tastând altceva, cealaltă e un risc rămas neacoperit. Confuzia le ascunde pe
     # amândouă (și producea „trimestrul 5/2026").
-    if luna < 1 or luna > 12:
-        raise HTTPException(422, "luna invalidă: %d (aștept 1-12)" % luna)
-    if an < 2020 or an > 2100:
-        raise HTTPException(422, "an invalid: %d (aștept 2020-2100)" % an)
+    # [lotul 3, 04.09.2026] Aceeasi verificare traia scrisa de mana aici si lipsea din alte sase
+    # rute. Acum toate sapte cheama acelasi ajutor: o singura sursa, si urmatoarea ruta o mosteneste.
+    _cere_perioada(an, luna)
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
     if not schema:
@@ -5807,6 +5857,7 @@ def cabinet_balanta_date(tenant_id: int, an: int, luna: int, ctx=Depends(cere_ca
     Inchiderea vine ODATA cu randurile, si ca obiect, nu ca propozitie: pe o balanta goala starea e
     `nimic_de_verificat`, nu `se_inchide`.
     """
+    _cere_perioada(an, luna)
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -5884,6 +5935,9 @@ def registru_inventar_citeste(tenant_id: int, exercitiu: int,
     from core import registru_inventar as _ri
     if momentul not in _ri.MOMENTE:
         raise HTTPException(404, "moment necunoscut: %r" % momentul)
+    # [lotul 3] `exercitiu=1900` intorcea un registru gol — cu temeiul legal citat langa el, ca si
+    # cum ar fi fost un raspuns despre un exercitiu care exista.
+    _cere_perioada(exercitiu=exercitiu)
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -5905,6 +5959,9 @@ def registru_inventar_propunere(tenant_id: int, an: int, luna: int = 12,
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
+    # [lotul 3] `luna=13` intorcea `{"an": 2026, "luna": 13, "randuri": []}` — adica repeta luna
+    # imposibila inapoi, ca si cum ar fi o perioada goala.
+    _cere_perioada(an, luna)
     with db.get_conn(schema) as conn:  # balanta foloseste nume necalificate -> search_path pe tenant
         return {"an": an, "luna": luna, "randuri": _ri.solduri_de_pornire(conn, schema, an, luna)}
 
@@ -5992,6 +6049,7 @@ def registre_art321_adauga(tenant_id: int, fel: str, corp: dict = Body(...),
 
 @app.get("/tenants/{tenant_id}/documente/balanta")
 def cabinet_documente_balanta(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    _cere_perioada(an, luna)
     from fastapi.responses import Response
     with db.get_conn() as conn:  # [search_path_tenant_v1] schema + detalii pe conn public
         schema = auth_api.schema_tenant_citire(conn, ctx["uid"], tenant_id)
@@ -6096,6 +6154,7 @@ def apiv1_kpi(tenant_id: int, an: Optional[int] = None, luna: Optional[int] = No
 
 @app.get("/api/v1/firme/{tenant_id}/balanta")  # api_public_v1
 def apiv1_balanta(tenant_id: int, an: int, luna: int, actx=Depends(cere_api_key)):
+    _cere_perioada(an, luna)
     schema = _api_schema(actx, tenant_id)
     with db.get_conn() as conn:
         return {"balanta": documente_api.balanta(conn, schema, an, luna)}
@@ -6196,6 +6255,10 @@ def apiv1_factura_emite(tenant_id: int, corp: dict = Body(...), actx=Depends(cer
                 platitor_tva=_platitor_tva_firma(conn),
                 status=corp.get("status", "de_preluat"),
                 curs_manual=corp.get("curs_manual"),
+                data_curs_manual=corp.get("data_curs_manual"),   # [R130] data cursului manual
+                # [R130] Pe calea de API „cine" e CHEIA cabinetului, nu un utilizator — se scrie ca
+                # atare. Un `integer` de utilizator ar fi trebuit sa inventeze unul.
+                curs_manual_de="cheie API a cabinetului %s" % actx["firm"],
                 tip=_tip,
             )
         except facturi_api.LiniiIncomplete as e:
@@ -6215,6 +6278,8 @@ def apiv1_factura_emite(tenant_id: int, corp: dict = Body(...), actx=Depends(cer
                 corp.get("data_emitere") or _dt_api.today().isoformat())
     if not r.get("ok", True) and r.get("cod") == "MONEDA_NECOTATA":
         raise HTTPException(422, r.get("mesaj"))      # [lot 2] aceeasi deosebire ca in ecran
+    if not r.get("ok", True) and r.get("cod") == "CURS_PREA_VECHI":
+        raise HTTPException(409, detail=r)            # [R130] acelasi refuz cu iesire ca in ecran
     if not r.get("ok", True) and r.get("cod") == "CURS_INDISPONIBIL":
         raise HTTPException(422, r.get("mesaj"))
     return r
@@ -8377,7 +8442,7 @@ def vanzare_marja(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabin
         try:
             r = _m.vanzare_marja(corp["pret_vanzare"], corp["pret_cumparare"], _common.cota_ceruta(corp))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                             VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
@@ -8446,7 +8511,7 @@ def vanzare_marja_turism(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
                 rasp = {"regim": regim, "baza": str(r["baza"]), "tva": str(r["tva"]),
                         "total": str(r["total"])}
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                             VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
@@ -8487,7 +8552,7 @@ def vanzare_aur_investitii(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
             if suma <= 0:
                 raise ValueError("suma invalida")
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         mentiune = "taxare inversa (art. 331 al. 2 lit. h)" if regim == "taxare_inversa" \
                    else "scutit (art. 313 al. 3)"
         descr = (corp.get("descriere") or "Livrare aur investitii") + " - " + mentiune \
@@ -8522,7 +8587,7 @@ def achizitie_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
             # cont si UNDE se creeaza. Doua verificari suprapuse ar fi doua locuri.
             cont = _cv.cere_cont(conn, schema, corp.get("cont_cheltuiala"), "cont_cheltuiala")
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or "Achizitie agricultor regim special (art. 315^1)") \
                 + ((" - " + corp["agricultor"]) if corp.get("agricultor") else "")
         with conn.cursor() as cur:
@@ -8564,7 +8629,7 @@ def vanzare_agricultor(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
         try:
             r = _m.compensatie(corp["pret"])
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or "Livrare produse agricole") \
                 + " - regim special agricultori (art. 315^1), compensatie 8%"
         with conn.cursor() as cur:
@@ -8612,6 +8677,14 @@ def cabinet_fisa_cont(tenant_id: int, an: int, cont: Optional[str] = None,
         fisa = None
         if cont:
             try:
+                # [lotul 3, 04.09.2026] `cont=9999` intorcea o FISA — cu `temei_completitudine`
+                # scris despre contul 9999, cu sold zero si zero randuri. Adica un artefact
+                # contabil, cu temei citat, despre un cont care nu exista in planul firmei.
+                # Aceeasi aplicatie il refuza explicit la `POST /jurnal` („contul 9999 nu exista
+                # in planul de conturi al firmei"): stia raspunsul, dar nu si aici. *Un formular
+                # gol despre un cont inexistent nu e o fisa goala — e o afirmatie ca acel cont
+                # exista si n-are miscare.* `cere_cont` ridica `ValueError`, deci intra in `try`.
+                _cv.cere_cont(conn, schema, cont, "cont")
                 fisa = _fc.pentru_json(_fc.fisa_cont(conn, schema, cont, an, luna))
             except ValueError as e:
                 raise HTTPException(422, str(e))
@@ -8794,7 +8867,7 @@ def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
                          la_data=_date.fromisoformat(corp["data_certificat"])
                                  if corp.get("data_certificat") else None)
     except (ValueError, KeyError) as e:
-        raise HTTPException(422, str(e))
+        raise HTTPException(422, _mesaj_intrare(e))
     r["luni_in_baza"] = nr_luni
     r["venituri_baza"] = str(venituri)
     r["zile_baza"] = int(zile)
@@ -9237,7 +9310,7 @@ def achizitie_taxare_inversa(tenant_id: int, corp: dict = Body(...),
                 raise ValueError("numar factura furnizor obligatoriu")
             furnizor_nume = str(corp.get("furnizor_nume") or "").strip()
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or "Achizitie") + " - " + mentiune
         with conn.cursor() as cur:
             cur.execute(f"SET LOCAL search_path TO {schema}")   # creeaza_factura foloseste INSERT necalificat
@@ -9309,7 +9382,7 @@ def achizitie_ic(tenant_id: int, corp: dict = Body(...),
             furnizor_nume = str(corp.get("furnizor_nume") or "").strip()
             data_fg = corp.get("data_faptului_generator") or None
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         tip = "servicii IC primite (art. 278(2))" if corp.get("tip") == "servicii"               else "achizitie intracomunitara bunuri (art. 268)"
         descr = (corp.get("descriere") or "AIC") + f" - {tip}, taxare inversa 4426=4427"
         with conn.cursor() as cur:
@@ -9363,7 +9436,7 @@ def achizitie_neinregistrat(tenant_id: int, corp: dict = Body(...),
             if categorie and not _d394.codpr_N_din_categorie(categorie):
                 raise ValueError("categorie N invalida (nomenclator lit.D CODPR_N): %s" % categorie)
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or "Achizitie de la neinregistrat") + " - " + furnizor_nume
         with conn.cursor() as cur:
             cur.execute(f"SET LOCAL search_path TO {schema}")
@@ -9420,7 +9493,7 @@ def vanzare_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
             if val <= 0:
                 raise ValueError("valoare invalidă")
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or "Vanzare IC") + " - " + ment +                 f" [{v['nume']}]"
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
@@ -9461,7 +9534,7 @@ def import_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
             cont = _cv.cere_cont(conn, schema, corp.get("cont_destinatie"), "cont_destinatie")  # [R54]
             val = Decimal(str(corp["valoare_vamala"]))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         mod_txt = {"decont": "TVA in decont (certificat art. 326(4), 4426=4427)",
                    "vama": "TVA platita in vama (deducere pe DVI art. 299(1)c)",
                    "cost": "neplatitor - TVA in cost"}[r["mod_tva"]]
@@ -9512,7 +9585,7 @@ def export_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
                                        _cv.cere_cont(conn, schema, corp.get("cont_venit"), "cont_venit", "707"),
                                        "cont_venit")
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or "Export") + f" ({corp['tara_client']}) - " + ment
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
@@ -9579,7 +9652,7 @@ def nota_tva_incasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
         try:
             tva = _ti.tva_din_incasare(corp["suma_incasata"], _common.cota_ceruta(corp))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         debit, credit = ("4428", "4427") if sens == "incasare" else ("4426", "4428")
         desc = corp.get("descriere") or (
             "TVA la incasare - exigibilitate la " + ("incasare (art. 282)" if sens == "incasare" else "plata furnizor"))
@@ -9614,7 +9687,7 @@ def decontare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_ca
                                     _cv.cere_cont(conn, schema, corp.get("cont_tert"), "cont_tert"),
                                    _cv.cere_cont(conn, schema, corp.get("cont_banca"), "cont_banca", "5124"))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         d = r["diferenta"]
         descr = (corp.get("descriere") or "Decontare valuta") +                 f" {corp['valoare_valuta']} {corp.get('moneda','EUR')} curs {curs_dec}" +                 (f", dif. {d['sens']} {bani(d['diferenta'], 'lei')} ({d['cont']})" if d["cont"] else "")
         with conn.cursor() as cur:
@@ -9652,7 +9725,7 @@ def reevaluare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
             if not solduri:
                 raise ValueError("solduri gol")
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         linii, detalii = [], []
         try:
             for s in solduri:
@@ -9665,7 +9738,7 @@ def reevaluare_valuta(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
                                     "diferenta": str(r["diferenta"]["diferenta"]),
                                     "cont_rezultat": r["diferenta"]["cont"]})
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         if not linii:
             _d = _date.fromisoformat(str(corp["data"])[:10])
             return dict(_af.afirmatie(
@@ -9718,9 +9791,9 @@ def nota_leasing(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabine
                                               _cv.cere_cont(conn, schema, corp.get("cont_cheltuiala"), "cont_cheltuiala", "612"))
                 d0 = "Rata leasing operational (612=401)"
             else:
-                raise ValueError("tip: primire|rata|reziduala|operational")
+                raise ValueError(nomenclator_cerut("tip", "primire|rata|reziduala|operational"))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 1802 pct. 212-217"
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
@@ -9769,9 +9842,9 @@ def nota_credit(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
                                       corp.get("actiune", "inregistrare"))
                 d0 = f"Garantie {corp.get('fel','primita')} extracontabil 801x"
             else:
-                raise ValueError("operatie: primire|dobanda|plata|restanta|garantie")
+                raise ValueError(nomenclator_cerut("operatie", "primire|dobanda|plata|restanta|garantie"))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 1802"
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
@@ -9799,7 +9872,13 @@ def nota_avans(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
         _cere_luna_deschisa(conn, schema, corp.get("data"))
         op = corp.get("operatie")
         dest = corp.get("destinatie", "stocuri")
+        _OPERATII_AVANS = ("avans_platit", "regularizare_platit", "avans_incasat",
+                           "regularizare_incasat")
         try:
+            # [lotul 3] ORDINEA e reparatia: cota se cerea INAINTE de a se uita la operatie, deci
+            # cine uita felul operatiunii — sau il scria gresit — afla despre cotă. Felul intai.
+            if op not in _OPERATII_AVANS:
+                raise ValueError(nomenclator_cerut("operatie", _OPERATII_AVANS))
             cota = _common.cota_ceruta(corp)
             if op == "avans_platit":
                 r = _av.nota_avans_platit(corp["suma"], cota, dest)
@@ -9813,11 +9892,10 @@ def nota_avans(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
             elif op == "regularizare_incasat":
                 r = _av.nota_regularizare_avans_incasat(corp["suma"], cota)
                 d0 = "Regularizare avans client la factura finala"
-            else:
-                raise ValueError("operatie: avans_platit|regularizare_platit|"
-                                 "avans_incasat|regularizare_incasat")
+            else:                       # nu se poate ajunge aici: `op` e verificat mai sus
+                raise ValueError(nomenclator_cerut("operatie", _OPERATII_AVANS))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - art. 282(2)b CF"
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
@@ -9964,7 +10042,7 @@ def reevaluare_imobilizare(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
                         inregistrare_id=None, mesaj="nicio diferență de reevaluat",
                         data=str(_d) if _d else None, **extra)
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
                             VALUES (%s,%s,'facturi','ciorna') RETURNING id""",
@@ -10011,9 +10089,9 @@ def nota_provizion_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
                 info = {"deductibil": False}
                 d0 = f"Ajustare depreciere stocuri ({act}) - nedeductibil fiscal"
             else:
-                raise ValueError("fel: creanta|provizion|stoc")
+                raise ValueError(nomenclator_cerut("fel", "creanta|provizion|stoc"))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - art. 26 CF / OMFP 1802"
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
@@ -10053,9 +10131,9 @@ def nota_productie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
                                      _common.cota_ceruta(corp), corp.get("coef_348"))
                 d0 = "Vanzare produse finite 4111=701+4427, descarcare 711=345"
             else:
-                raise ValueError("operatie: obtinere|pic|vanzare")
+                raise ValueError(nomenclator_cerut("operatie", "obtinere|pic|vanzare"))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 1802"
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
@@ -10100,9 +10178,9 @@ def nota_obiect_inventar(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
                 r = _oi.nota_scoatere_uz(corp["valoare"])
                 d0 = "Scoatere din uz OI: C8035 (proces-verbal)"
             else:
-                raise ValueError("operatie: achizitie|dare_folosinta|scoatere")
+                raise ValueError(nomenclator_cerut("operatie", "achizitie|dare_folosinta|scoatere"))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 1802 / OUG 8/2026"
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
@@ -10150,9 +10228,9 @@ def nota_asociati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabin
                                               corp.get("dobanda", 0))
                 d0 = f"Imprumut asociat 4551 ({corp.get('fel','primire')})"
             else:
-                raise ValueError("operatie: dividend|regularizare|imprumut")
+                raise ValueError(nomenclator_cerut("operatie", "dividend|regularizare|imprumut"))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0)
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
@@ -10191,7 +10269,7 @@ def nota_sponsorizare_ep(tenant_id: int, corp: dict = Body(...), ctx=Depends(cer
                 info = {k: (str(v) if not isinstance(v, str) else v)
                         for k, v in c.items()}
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or "Sponsorizare (6582, nedeductibil, "
                  "credit fiscal art. 25(4)i)")
         with conn.cursor() as cur:
@@ -10235,9 +10313,9 @@ def nota_subventie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
                 info = {"procent_subventionat": r["procent_subventionat"]}
                 d0 = "Reluare subventie investitii 4751=7584 (proportional cu amortizarea)"
             else:
-                raise ValueError("fel: exploatare|investitii|reluare")
+                raise ValueError(nomenclator_cerut("fel", "exploatare|investitii|reluare"))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 1802 pct. 392-402"
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
@@ -10293,9 +10371,9 @@ def nota_chirie(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
                     note.append(("Refacturare utilitati 4111=708 (aceeasi cota)",
                                  r["emitere"]))
             else:
-                raise ValueError("fel: comodat|chirie_platita|chirie_incasata|refacturare")
+                raise ValueError(nomenclator_cerut("fel", "comodat|chirie_platita|chirie_incasata|refacturare"))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         ids = []
         with conn.cursor() as cur:
             for d0, linii in note:
@@ -10346,9 +10424,9 @@ def nota_decont_deplasare(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
                         "diferenta": str(r["diferenta"])}
                 d0 = "Decont deplasare 625=542 (ordin de deplasare + justificative)"
             else:
-                raise ValueError("fel: avans|decont|plafon")
+                raise ValueError(nomenclator_cerut("fel", "avans|decont|plafon"))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - art. 76(2)k CF / HG 714/2018"
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
@@ -10386,9 +10464,9 @@ def nota_bacsis(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
                 info = {"impozit": str(r["impozit"]), "net": str(r["net"])}
                 d0 = "Distribuire bacsis salariati (impozit 10% retinut, 462=446)"
             else:
-                raise ValueError("fel: incasare|distribuire")
+                raise ValueError(nomenclator_cerut("fel", "incasare|distribuire"))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - Legea 376/2022"
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
@@ -10439,9 +10517,9 @@ def nota_sgr(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
                 r = _sg.nota_virare_garantii(corp["suma"], corp.get("catre", "furnizor"))
                 d0 = "SGR: virare garantii incasate catre amonte 462"
             else:
-                raise ValueError("operatie: achizitie|vanzare|restituire|autofactura|virare")
+                raise ValueError(nomenclator_cerut("operatie", "achizitie|vanzare|restituire|autofactura|virare"))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - HG 1074/2021"
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
@@ -10474,7 +10552,7 @@ def nota_perisabilitati(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere
                            _cv.cere_cont(conn, schema, corp.get("cont_stoc"), "cont_stoc", "371"),
                            bool(corp.get("degradare_dovedita_distrusa")))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or
                  f"Perisabilitati: limita {r['limita']}, deductibil {r['deductibil']}, "
                  f"nedeductibil {r['nedeductibil']} (PV inventariere)")[:200]
@@ -10509,7 +10587,7 @@ def nota_contract_special(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
             r = _cs.nota(corp["brut"], corp.get("fel", "zilier"),
                          corp.get("sursa", "casa"), la_data=corp.get("data"))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         fel = corp.get("fel", "zilier")
         descr = (corp.get("descriere") or
                  f"Remuneratie {fel} brut {corp['brut']} (net {r['net']})") +                 (" - L52/2011" if fel == "zilier" else " - art. 76(2)g/i CF")
@@ -10632,9 +10710,9 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
                                            _cv.cere_cont(conn, schema, corp.get("cont_amortizare"), "cont_amortizare", "2813"))
                     d0 = "Casare mijloc fix (PV comisie)"
             else:
-                raise ValueError("operatie: plus|plus_mf|minus|casare")
+                raise ValueError(nomenclator_cerut("operatie", "plus|plus_mf|minus|casare"))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 2861/2009"
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
@@ -10696,9 +10774,9 @@ def nota_lichidare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabi
                         "net_asociat": str(r["net_asociat"]), "cota": r["cota"]}
                 d0 = "Partaj lichidare: capital neimpozabil + castig cu impozit dividend"
             else:
-                raise ValueError("operatie: vanzare_activ|partaj")
+                raise ValueError(nomenclator_cerut("operatie", "vanzare_activ|partaj"))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or d0) + " - OMFP 897/2015"
         with conn.cursor() as cur:
             cur.execute(f"""INSERT INTO {schema}.inregistrari (data, descriere, sursa, status)
@@ -10737,7 +10815,7 @@ def nota_ong(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)):
             r = _on.nota_venit(corp["suma"], corp.get("fel", "cotizatie"),
                                corp.get("sursa", "casa"))
         except (ValueError, KeyError) as e:
-            raise HTTPException(422, str(e))
+            raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or
                  f"Venit AFSP {corp.get('fel', 'cotizatie')} pe {r['cont_venit']}") +                 " - OMFP 3103/2017"
         with conn.cursor() as cur:

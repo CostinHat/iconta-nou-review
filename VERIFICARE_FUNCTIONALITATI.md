@@ -226,3 +226,87 @@ firmă care e subiect de măsurătoare.
 - două dintre reparații poartă **temei verificat la sursă în tura asta**: cotele de TVA prin
   registrul `common.COTE` (art. 291 Cod fiscal) și numerotarea secvențială prin
   `anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt`, pct. 24, citit verbatim.
+
+---
+
+## LOT 3 — T05, nota contabilă (53 de probe INVALIDE pe 32 de unități)
+
+*Unitățile `#59` și `#62` din T05 nu sunt aici: sunt rute fără câmpuri de completat, ieșite din
+perimetrul etapei 1. Rămân **32 din 34**.*
+
+**Cum s-a probat o suprafață atât de largă.** Nouăsprezece dintre cele 32 sunt note speciale —
+`POST /tenants/{id}/nota-<fel>` —, toate cu aceeași formă: corp liber cu `data` plus un discriminator
+(`operatie` sau `fel`), toate trecând prin același `_cere_luna_deschisa`. Proba de bază e aceeași
+pentru toate nouăsprezece, tocmai fiindcă **un defect în punctul comun se vede numai probându-le pe
+toate**; patru dintre ele au primit și probe de adâncime (dată invalidă, discriminator inexistent,
+sumă negativă). Restul de 13 unități — balanțe, jurnal, fișă de cont, registru-inventar, plan de
+conturi — au fost probate una câte una.
+
+**Ce s-a lăsat în urmă:** nimic. Verificat după ultima trecere: `facturi` 3, `inregistrari` 4,
+`plan_conturi` 185, `api_chei` 0 — exact starea de dinainte. Prima trecere lăsase **o notă** (`#58`)
+și **un cont „ABC" în planul firmei** (`#83`), amândouă produse de probe care AU TRECUT; s-au șters
+din bază și se spune aici că s-au șters.
+
+| # | funcționalitate | ecran / rută | câmp | ce s-a introdus | ce a făcut aplicația | mesajul verbatim | temei legal | reparat | rezultat după reparație |
+|---|---|---|---|---|---|---|---|---|---|
+| 57 | Registrul-jurnal, pe lună | `GET /tenants/{id}/jurnal` | `luna` | invalid: `13` | **A CĂZUT** — `500` | `Internal Server Error` | — | **DA** — `_cere_perioada`, ajutor comun pentru toate cele șapte rute care primesc o perioadă | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 57 | Registrul-jurnal, pe lună | `GET /tenants/{id}/jurnal` | `an` | invalid: `1900` | **TĂCERE** — `200`, jurnal gol. „Nu s-a înregistrat nimic în 1900" arăta identic cu „1900 nu e un an de lucru" | `{"note":[],"total_debit":0.0,"total_credit":0.0,"note_fara_document":0}` | — | **DA** — același ajutor | `422` · `{"detail":"an invalid: 1900 (aștept 1990-2100)"}` |
+| 54 | Balanța ca date | `GET /tenants/{id}/balanta` | `luna` | invalid: `13` | **TĂCERE CU AFIRMAȚIE** — `200`, balanță goală, **și** `"stare":"nimic_de_verificat"` cu trei perechi „închise". O lună care nu există primea un verdict de echilibru | `{"randuri":[],"totaluri":{…},"inchidere":{"stare":"nimic_de_verificat","perechi":[{"ce":"sold initial",…"inchisa":true},…]}}` *(tăiat)* | — | **DA** | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 55 | Balanța ca document | `GET /tenants/{id}/documente/balanta` | `luna` | invalid: `0` | **A GENERAT UN PDF** — `200`, `%PDF-1.4`. Un document contabil, tipăribil, pentru luna zero | *(corpul e un PDF)* | — | **DA** | `422` · `{"detail":"luna invalidă: 0 (aștept 1-12)"}` |
+| 53 | Balanța, prin API | `GET /api/v1/firme/{id}/balanta` | `luna` | invalid: `13` | **TĂCERE** — `200` `{"balanta":[]}` | `{"balanta":[]}` | — | **DA** — aceeași gardă și pe calea integratorului | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 84 | Registrul-inventar | `GET /tenants/{id}/registru-inventar` | `exercitiu` | invalid: `1900` | **TĂCERE CU TEMEI CITAT** — `200`, registru gol, cu `temei_obligatie: "Lege 82/1991 art.20"` și `temei: "OMFP 2634/2015…"` lângă el. Un artefact legal despre un exercițiu inexistent | `{"fel":"fapt","tip":"registru_inventar","motiv":"Registrul-inventar (cod 14-1-2), tinut potrivit art. 20 din Legea 82/1991",…"an":1900,…}` *(tăiat)* | — | **DA** | `422` · `{"detail":"exercițiu invalid: 1900 (aștept 1990-2100)"}` |
+| 86 | Propunerea pentru registrul-inventar | `GET /tenants/{id}/registru-inventar/propunere` | `luna` | invalid: `13` | **TĂCERE** — `200`, și **repeta luna 13 înapoi**, ca și cum ar fi o perioadă goală | `{"an":2026,"luna":13,"randuri":[]}` | — | **DA** | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 56 | Fișa de cont (Cartea mare) | `GET /tenants/{id}/fisa-cont` | `cont` | invalid: `9999` | **AFIRMAȚIE DESPRE UN CONT INEXISTENT** — `200`, cu fișă, sold zero, și un `temei_completitudine` scris **despre contul 9999**. Aceeași aplicație îl refuză explicit la `POST /jurnal` (*„contul 9999 nu exista in planul de conturi al firmei"*): știa răspunsul, dar nu și aici | `{"an":2026,…"fisa":{"motiv":"Fisa de cont pentru operatiuni diverse (cod 14-6-22), contul 9999","temei_completitudine":"toate liniile din `inregistrari_linii` care ating contul 9999…","sold_final":0.0,…}}` *(tăiat)* | — | **DA** — `cont_valid.cere_cont`, aceeași funcție care păzește nota; ridică `ValueError`, deci intră în `try`-ul existent | `422` · refuzul cu contul cerut și conturile apropiate din planul firmei |
+| 63–81 | **Cele nouăsprezece note speciale** | `POST /tenants/{id}/nota-<fel>` | discriminatorul | lipsă: `{}` | **ENUMERARE FĂRĂ VERB, în 13 rute și 11 module** — spune ce se acceptă, dar nu că lipsește ceva, nici de ce câmpul n-are valoare implicită | `{"detail":"operatie: dividend|regularizare|imprumut"}` · `{"detail":"fel: incasare|distribuire"}` · `{"detail":"tip: primire|rata|reziduala|operational"}` … | — | **DA** — `common.nomenclator_cerut`, un singur mesaj, **31 de locuri rescrise mecanic** | `422` · `{"detail":"Câmpul \`operatie\` lipsește sau nu e una dintre valorile pe care le cunoaște operațiunea: dividend, regularizare, imprumut. Nu are valoare implicită — felul operațiunii se consemnează, nu se ghicește."}` |
+| 67 · 74 · 75 · 63 | Note speciale, alt drum | `POST /tenants/{id}/nota-<fel>` | un câmp obligatoriu | lipsă | **COD INTERN CA MESAJ** — `str(KeyError)`, adică numele câmpului între ghilimele simple. Aceeași clasă scoasă din coadă în lotul 1, găsită aici pe altă cale | `{"detail":"'brut'"}` · `{"detail":"'suma'"}` · `{"detail":"'valoare_intrari'"}` | — | **DA** — `_mesaj_intrare`, în locul comun: **35 de locuri** cu `except (ValueError, KeyError) → str(e)` | `422` · `{"detail":"Lipsește câmpul \`brut\` din cererea trimisă. Operațiunea nu se poate consemna fără el."}` |
+| 64 | Nota de avans | `POST /tenants/{id}/nota-avans` | `operatie` | lipsă, și invalid | **NUMEA ALT CÂMP** — toate trei probele (corp gol, operație inexistentă, sumă negativă) primeau mesajul despre **cotă**, fiindcă `cota_ceruta` rula înaintea dispecerului. **A treia instanță a clasei**, după lotul 1 („trimestru invalid: None") și lotul 2 (`cere_cod_partener`) | `{"detail":"cotă TVA obligatorie: operațiunea trebuie să declare explicit cota…"}` | — | **DA** — felul operațiunii se verifică primul | `422` · `{"detail":"Câmpul \`operatie\` lipsește sau nu e una dintre valorile pe care le cunoaște operațiunea: avans_platit, regularizare_platit, avans_incasat, regularizare_incasat…"}` |
+| 83 | Adăugarea unui cont în plan | `POST /tenants/{id}/plan-conturi` | `simbol` | invalid: `ABC` | **ACCEPTAT** — `200`, iar contul „ABC" **a intrat în planul firmei**. De acolo putea ajunge pe o notă, într-o balanță și într-o declarație | `{"ok":true,"simbol":"ABC"}` | criteriu **derivat din nomenclatorul propriu**, nu dintr-un act: planul general seed-uit are peste 700 de conturi, toate începând cu o cifră de clasă | **DA** — simbolul începe cu 1-9 și se scrie din cifre, cu separator de analitic | `422` · `{"detail":"Simbolul contului începe cu cifra clasei (1-9), ca toate conturile din planul general — am primit 'ABC'. Dacă e un analitic, scrie-l după contul sintetic (de exemplu 4111.01)."}` |
+| 58 | Nota nouă în registrul-jurnal | `POST /tenants/{id}/jurnal` | `data`, `linii`, conturile | patru probe | `400` de fiecare dată, **cu temei structurat** — cea mai bună formă întâlnită în toată campania | `{"detail":{"fel":"neconformitate","tip":"nota_contabila","motiv":"linia 1 are suma -100: o inregistrare consemneaza o operatiune efectuata, deci suma ei e strict pozitiva","regula":"Lege 82/1991 art.6 alin.(1)","camp":"suma","linia":1,…}}` | Lege 82/1991 art.6 alin.(1) | nu — e chiar forma cerută: câmpul, linia, ce e greșit, și temeiul | neschimbat |
+| 60 · 61 | Editarea și dezlegarea unei note | `PUT /jurnal/{id}` · `POST /jurnal/{id}/dezleaga` | `nota_id` | invalid: `999999` | `404` / `422`, corecte; dezlegarea cere motivul, cu de ce | `{"detail":"notă inexistentă"}` · `{"detail":{"tip":"MOTIV_OBLIGATORIU","motiv":"Scrie motivul dezlegării: actul repară o potrivire greșită, iar peste șase luni urma fără motiv…"}}` | — | nu | neschimbat |
+| 85 · 82 | Înscrierea în registrul-inventar · căutarea în plan | `POST /registru-inventar` · `GET /plan-conturi` | corp gol · `q` gol | | `400` cu câmpul numit · `200` cu tot planul (căutare fără filtru — corect) | `{"detail":{"mesaj":"Nu am înscris rândul: lipsește exercițiul financiar.","erori_campuri":[{"camp":"exercitiu","mesaj":"cerut, nu poate lipsi"}]}}` | — | nu | neschimbat |
+
+### O schimbare de comportament, declarată pentru că n-a fost cerută
+
+`GET /firme/{id}/verificari` accepta anii **2020–2100**, prin verificarea scrisă de mână acolo în
+lotul 1. Ajutorul comun cere **1990–2100**, iar ruta a trecut pe el. *Pragul 2020 n-avea motiv scris,
+iar registrele contabile pot privi ani mai vechi; consecvența între cele șapte rute valorează mai
+mult decât un prag ales fără temei.* Dacă 2020 era voit, se pune înapoi ca parametru.
+
+### Defectele PROBEI, nu ale aplicației — trei, toate consemnate
+
+1. **„Notă dezechilibrată" e imposibilă prin construcție.** Schema ține debit, credit și suma pe
+   **aceeași linie**, deci o notă nu poate fi dezechilibrată — clasă deja consemnată pe 31.08, și
+   uitată de mine aici. Ce trimiteam era un câmp `suma_totala` care nu există în contractul rutei
+   (`descriere`, `data`, `linii`), deci a fost ignorat, pe drept. Proba s-a înlocuit cu întrebarea
+   care are sens: o notă **fără linii**.
+2. **`POST /plan-conturi` probat pe câmpul greșit** — trimiteam `cont`, câmpul se numește `simbol`,
+   iar răspunsul „simbol — lipsește" era corect. Corectat; abia atunci s-a văzut defectul real.
+3. **Probele de „sumă negativă" erau oarbe pe trei din patru note.** Trimiteau discriminatorul
+   `dividend` la toate patru, deci pe `avans`, `bacsis` și `credit` se opreau la discriminator.
+   Corectate cu valoarea validă a fiecărei note. *A doua oară în două loturi când o probă măsoară
+   altă întrebare decât cea scrisă în eticheta ei.*
+
+### Ce a rămas nereparat din lotul ăsta, și de ce
+
+1. **Mesajul `nomenclator_cerut` nu spune ce s-a primit.** Înlocuirea celor 31 de locuri s-a făcut
+   **mecanic**, iar numele variabilei care poartă valoarea diferă de la un modul la altul (`op`,
+   `fel`, `tip`, `moment`, `actiune`); a le lega pe toate ar fi cerut rescrierea fiecărui apel cu
+   mâna, cu riscul de a lega greșit unul. Câmpul și așteptarea sunt în mesaj; valoarea trimisă e în
+   cererea omului.
+2. **Proba de „sumă negativă" pe `nota-asociati` măsoară un câmp lipsă, nu o sumă.** Nota de dividend
+   cere `brut`, nu `suma`; răspunsul („Lipsește câmpul `brut`") e corect, dar întrebarea despre
+   semnul sumei rămâne neprobată acolo. Se reia la o trecere cu date valide.
+
+### Cifre
+
+- probe INVALIDE rulate: **53**, pe **32 de unități** · defecte găsite: **11** · reparate: **11** ·
+  reprobate: **11**, toate schimbate.
+- distribuția răspunsurilor la ultima trecere: **41 × 422 · 10 × 400 · 1 × 404 · 1 × 200** (căutarea
+  în planul de conturi fără filtru — corect) · **0 × 500**. Înainte: **1 × 500** și **9 × 200**,
+  dintre care două scriau în baza de date.
+- clase de defect: **perioadă imposibilă acceptată sau căzută** (7 probe, 6 rute) · **afirmație
+  despre un cont inexistent** (1) · **refuz telegrafic** (13 probe, 31 de locuri rescrise) · **cod
+  intern ca mesaj** (4 probe, 35 de locuri) · **mesaj care numește alt câmp** (3 probe, 1 cauză) ·
+  **valoare fără formă acceptată în nomenclator** (1).
+- **cea mai bună formă de refuz din toată campania** e tot în lotul ăsta: `POST /jurnal` răspunde cu
+  `fel`, `tip`, `motiv`, `regula`, `camp`, `linia` și temeiul — *Lege 82/1991 art.6 alin.(1)*.

@@ -20,6 +20,7 @@ nu se ocroteste nimic.
 
     ./venv/bin/python frontend_test/proba_verificare_functionalitati.py T01
     ./venv/bin/python frontend_test/proba_verificare_functionalitati.py T02
+    ./venv/bin/python frontend_test/proba_verificare_functionalitati.py T05
 """
 import json
 import os
@@ -282,6 +283,115 @@ def probe_T02(cheie=None):
     return p
 
 
+#: Cele nouasprezece note SPECIALE, cu numarul lor din LISTA_FUNCTIONALITATI.md. Toate au aceeasi
+#: forma — `POST /tenants/{id}/nota-<fel>`, corp liber cu `data` + un discriminator (`operatie` sau
+#: `fel`) — si trec toate prin `_cere_luna_deschisa(conn, schema, corp.get("data"))`. De-aia proba
+#: de baza e aceeasi pentru toate: daca ceva se rupe in punctul comun, se rupe in nouasprezece
+#: locuri deodata, si asta se vede numai probandu-le pe toate.
+NOTE_SPECIALE = [
+    (63, "asociati"), (64, "avans"), (65, "bacsis"), (66, "chirie"),
+    (67, "contract-special"), (68, "credit"), (69, "decont-deplasare"),
+    (70, "inventariere"), (71, "leasing"), (72, "lichidare"), (73, "obiect-inventar"),
+    (74, "ong"), (75, "perisabilitati"), (76, "productie"), (77, "provizion"),
+    (78, "sgr"), (79, "sponsorizare"), (80, "subventie"), (81, "tva-incasare"),
+]
+
+
+def probe_T05():
+    """LOTUL 3 — T05, nota contabila. Cele 32 de unitati ale traseului aflate in perimetrul
+    etapei 1 (din 34: `#59` si `#62` sunt rute fara campuri de completat).
+
+    **Ce se lasa in urma, declarat:** probele sunt REFUZURI asteptate. Singurele care ar putea
+    scrie sunt `#58` (nota noua) si cele nouasprezece `nota-*`; toate primesc intrari incomplete
+    sau imposibile, deci n-ar trebui sa ajunga la `INSERT`. Daca vreuna TRECE, faptul ala e chiar
+    rezultatul probei — se scrie, si se sterge ce a ramas."""
+    F = FIRMA
+    p = [
+        # ── citirile cu an/luna ──────────────────────────────────────────────
+        (54, "GET /balanta — luna 13", "GET",
+         "/tenants/%d/balanta?an=2026&luna=13" % F, None, "luna=13"),
+        (54, "GET /balanta — an ca text", "GET",
+         "/tenants/%d/balanta?an=anul-trecut&luna=1" % F, None, "an=anul-trecut"),
+        (55, "GET /documente/balanta — luna 0", "GET",
+         "/tenants/%d/documente/balanta?an=2026&luna=0" % F, None, "luna=0"),
+        (57, "GET /jurnal — luna 13", "GET",
+         "/tenants/%d/jurnal?an=2026&luna=13" % F, None, "luna=13"),
+        (57, "GET /jurnal — an 1900", "GET",
+         "/tenants/%d/jurnal?an=1900&luna=1" % F, None, "an=1900"),
+        (56, "GET /fisa-cont — cont inexistent in plan", "GET",
+         "/tenants/%d/fisa-cont?an=2026&cont=9999" % F, None, "cont=9999"),
+        (56, "GET /fisa-cont — an lipsa", "GET", "/tenants/%d/fisa-cont?cont=411" % F, None,
+         "parametrul an absent"),
+        # ── registrul-inventar ───────────────────────────────────────────────
+        (84, "GET /registru-inventar — exercitiu 1900", "GET",
+         "/tenants/%d/registru-inventar?exercitiu=1900" % F, None, "exercitiu=1900"),
+        (86, "GET /registru-inventar/propunere — luna 13", "GET",
+         "/tenants/%d/registru-inventar/propunere?an=2026&luna=13" % F, None, "luna=13"),
+        (85, "POST /registru-inventar — corp gol", "POST",
+         "/tenants/%d/registru-inventar" % F, {}, "corp JSON gol"),
+        # ── planul de conturi ────────────────────────────────────────────────
+        (82, "GET /plan-conturi — cautare cu sir gol", "GET",
+         "/tenants/%d/plan-conturi?q=" % F, None, "q= (sir gol)"),
+        (83, "POST /plan-conturi — corp gol", "POST", "/tenants/%d/plan-conturi" % F, {},
+         "corp JSON gol"),
+        (83, "POST /plan-conturi — simbol care nu e numar de cont", "POST",
+         "/tenants/%d/plan-conturi" % F, {"simbol": "ABC", "denumire": "Proba"}, "simbol=ABC"),
+        # ── nota din registrul-jurnal ────────────────────────────────────────
+        (58, "POST /jurnal — corp gol", "POST", "/tenants/%d/jurnal" % F, {}, "corp JSON gol"),
+        # NU „nota dezechilibrata": schema tine debit, credit si suma pe aceeasi linie, deci o
+        # nota nu POATE fi dezechilibrata. Intrebarea care are sens e alta — o nota fara linii.
+        (58, "POST /jurnal — nota fara nicio linie", "POST", "/tenants/%d/jurnal" % F,
+         {"data": "2026-09-04", "descriere": "proba", "linii": []}, "linii=[]"),
+        (58, "POST /jurnal — cont inexistent in plan", "POST", "/tenants/%d/jurnal" % F,
+         {"data": "2026-09-04", "descriere": "proba",
+          "linii": [{"debit": "9999", "credit": "4111", "suma": 100}]}, "debit=9999"),
+        (58, "POST /jurnal — data inexistenta in calendar", "POST", "/tenants/%d/jurnal" % F,
+         {"data": "2026-02-31", "descriere": "proba",
+          "linii": [{"debit": "5121", "credit": "4111", "suma": 100}]},
+         "data=2026-02-31 (31 februarie)"),
+        (58, "POST /jurnal — suma negativa", "POST", "/tenants/%d/jurnal" % F,
+         {"data": "2026-09-04", "descriere": "proba",
+          "linii": [{"debit": "5121", "credit": "4111", "suma": -100}]}, "suma=-100"),
+        (60, "PUT /jurnal/{id} — nota inexistenta", "PUT",
+         "/tenants/%d/jurnal/%d" % (F, INEXISTENT), {"data": "2026-09-04", "descriere": "x",
+                                                     "linii": []}, "nota_id=999999"),
+        (61, "POST /jurnal/{id}/dezleaga — nota inexistenta", "POST",
+         "/tenants/%d/jurnal/%d/dezleaga" % (F, INEXISTENT), {}, "nota_id=999999"),
+    ]
+    # ── cele nouasprezece note speciale: acelasi punct comun, probat pe toate ─
+    for nr, fel in NOTE_SPECIALE:
+        p.append((nr, "POST /nota-%s — corp gol" % fel, "POST",
+                  "/tenants/%d/nota-%s" % (F, fel), {}, "corp JSON gol"))
+    # ── si patru dintre ele, probate pe adancime ─────────────────────────────
+    # Valoarea discriminatorului trebuie sa fie VALIDA pentru nota probata, altfel proba de
+    # „suma negativa" nu ajunge la suma: se opreste la discriminator si masoara alta intrebare.
+    # (Prima forma trimitea `dividend` la toate patru — oarba pe trei din ele.)
+    for nr, fel, disc, valid in ((63, "asociati", "operatie", "dividend"),
+                                 (64, "avans", "operatie", "avans_incasat"),
+                                 (65, "bacsis", "fel", "incasare"),
+                                 (68, "credit", "operatie", "primire")):
+        p.append((nr, "POST /nota-%s — data ca text" % fel, "POST",
+                  "/tenants/%d/nota-%s" % (F, fel),
+                  {"data": "ieri", disc: valid, "suma": 100, "cota": 21},
+                  "data=\"ieri\""))
+        p.append((nr, "POST /nota-%s — %s inexistent" % (fel, disc), "POST",
+                  "/tenants/%d/nota-%s" % (F, fel),
+                  {"data": "2026-09-04", disc: "ceva-ce-nu-exista", "suma": 100},
+                  "%s=ceva-ce-nu-exista" % disc))
+        p.append((nr, "POST /nota-%s — suma negativa" % fel, "POST",
+                  "/tenants/%d/nota-%s" % (F, fel),
+                  {"data": "2026-09-04", disc: valid, "suma": -500, "cota": 21},
+                  "suma=-500 (cu %s valid)" % disc),)
+    # ── calea de API: balanta ────────────────────────────────────────────────
+    p += [
+        (53, "GET /api/v1/.../balanta — luna 13", "GET",
+         "/api/v1/firme/%d/balanta?an=2026&luna=13" % F, None, "luna=13"),
+        (53, "GET /api/v1/.../balanta — fara an si luna", "GET",
+         "/api/v1/firme/%d/balanta" % F, None, "parametrii an si luna absenti"),
+    ]
+    return p
+
+
 #: Probele care merg pe calea de API publica: cheie in loc de token. Numele lor spune singur ce
 #: cheie primesc — `fara cheie` niciuna, `cheie inventata` una care nu exista, restul cea reala.
 CU_CHEIE_API = "/api/v1/"
@@ -299,7 +409,7 @@ def _tipar(nr, eticheta, introdus, cod, corp):
     print("    corp: %s" % corp[:1500])
 
 
-def _ruleaza_T02(tok):
+def _ruleaza_cu_cheie(lot, tok):
     """LOTUL 2. Doua lucruri in plus fata de bucla obisnuita, amandoua pentru ca proba sa nu lase
     portofoliul schimbat (capcana 9): numerotarea firmei se citeste inainte si se pune la loc in
     `finally`, iar cheia de API se creeaza si se sterge tot aici. Cheia se face prin LANTUL
@@ -313,7 +423,7 @@ def _ruleaza_T02(tok):
     print("CHEIE DE API emisa pentru proba: id=%s prefix=%s" % (cheie["id"], cheie["prefix"]))
     out = []
     try:
-        for nr, eticheta, metoda, cale, payload, introdus in probe_T02():
+        for nr, eticheta, metoda, cale, payload, introdus in {"T02": probe_T02, "T05": probe_T05}[lot]():
             antete, t = None, tok
             if CU_CHEIE_API in cale:
                 t = None
@@ -367,8 +477,8 @@ def _sterge_cheia(kid):
 def ruleaza(lot):
     tok = token(EMAIL)
     tok_client = token(EMAIL_CLIENT)
-    if lot == "T02":
-        return _ruleaza_T02(tok)
+    if lot in ("T02", "T05"):
+        return _ruleaza_cu_cheie(lot, tok)
     probe = {"T01": probe_T01, "IMPORT-GOL": probe_import_gol}[lot]()
     out = []
     for nr, eticheta, metoda, cale, payload, introdus in probe:

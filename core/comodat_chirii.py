@@ -15,6 +15,7 @@ comisionar, prestare in nume propriu) + practica ANAF.
   practica simpla: primire % (605 + 4426) = 401 pentru partea proprie,
   461 = 401 partea de refacturat; emitere 4111 = 708 + 4427."""
 from decimal import Decimal, ROUND_HALF_UP
+from core.common import nomenclator_cerut
 
 B = Decimal("0.01")
 
@@ -33,7 +34,7 @@ def nota_comodat(valoare, moment="primire"):
         return {"linii": [("8038", "891", v)]}
     if moment == "restituire":
         return {"linii": [("891", "8038", v)]}
-    raise ValueError("moment: primire|restituire")
+    raise ValueError(nomenclator_cerut("moment", "primire|restituire"))
 
 def nota_chirie_platita(chirie, cota_tva=None, proprietar="pj"):
     """PJ: 612=401+4426; PF: 612=462 fara TVA (PF declara prin Declaratia Unica)."""

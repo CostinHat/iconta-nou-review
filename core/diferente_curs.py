@@ -8,6 +8,7 @@ Reguli de semn:
 - CREANTA (4111, 461...) sau DISPONIBIL (5124): curs creste -> castig 765;
 - DATORIE (401, 462...): curs creste -> pierdere 665."""
 from decimal import Decimal, ROUND_HALF_UP
+from core.common import nomenclator_cerut
 
 B = Decimal("0.01")
 
@@ -21,7 +22,7 @@ def diferenta(valoare_valuta, curs_initial, curs_final, tip):
     if v <= 0 or c1 <= 0 or c2 <= 0:
         raise ValueError("Una sau mai multe valori sunt invalide. Verifică sumele și cantitățile introduse.")
     if tip not in ("creanta", "disponibil", "datorie"):
-        raise ValueError("tip: creanta|disponibil|datorie")
+        raise ValueError(nomenclator_cerut("tip", "creanta|disponibil|datorie"))
     dif = (v * (c2 - c1)).quantize(B, rounding=ROUND_HALF_UP)
     if dif == 0:
         return {"diferenta": Decimal("0.00"), "cont": None, "sens": None}

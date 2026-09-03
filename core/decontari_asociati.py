@@ -11,6 +11,7 @@ distribuiri incepand cu 01.01.2026 (Legea 141/2025; 10% anterior).
   dobanda 666=4551 + impozit 10% pe venitul din dobanda PF retinut 4551=446."""
 from decimal import Decimal, ROUND_HALF_UP
 from datetime import date
+from core.common import nomenclator_cerut
 
 B = Decimal("0.01")
 
@@ -82,4 +83,4 @@ def nota_imprumut_asociat(suma, operatie="primire", dobanda=0,
                 linii.append(("4551", "446", imp))
             linii.append(("4551", "5121", d - imp))
         return {"linii": linii}
-    raise ValueError("operatie: primire|restituire")
+    raise ValueError(nomenclator_cerut("operatie", "primire|restituire"))

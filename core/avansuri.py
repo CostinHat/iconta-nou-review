@@ -9,6 +9,7 @@ OMFP 1802/2014 + art. 282 al. 2 lit. b CF (TVA exigibila la incasarea avansului)
 - avans INCASAT de la client (factura de avans): 4111 = % (419 + 4427);
   incasare 5121=4111; regularizare: inversare (419 = 4111, 4427 = 4111)."""
 from decimal import Decimal, ROUND_HALF_UP
+from core.common import nomenclator_cerut
 
 B = Decimal("0.01")
 CONT_AVANS = {"stocuri": "4091", "servicii": "4092",
@@ -28,7 +29,7 @@ def nota_avans_platit(suma_fara_tva, cota=None, destinatie="stocuri"):
     if s <= 0:
         raise ValueError("Suma trebuie să fie un număr pozitiv.")
     if destinatie not in CONT_AVANS:
-        raise ValueError("destinatie: " + "|".join(CONT_AVANS))
+        raise ValueError(nomenclator_cerut("destinatie", CONT_AVANS))
     tva = _tva(s, cota)
     linii = [(CONT_AVANS[destinatie], "401", s)]
     if tva > 0:
@@ -44,7 +45,7 @@ def nota_regularizare_avans_platit(suma_fara_tva, cota=None, destinatie="stocuri
     if s <= 0:
         raise ValueError("Suma trebuie să fie un număr pozitiv.")
     if destinatie not in CONT_AVANS:
-        raise ValueError("destinatie: " + "|".join(CONT_AVANS))
+        raise ValueError(nomenclator_cerut("destinatie", CONT_AVANS))
     tva = _tva(s, cota)
     linii = [("401", CONT_AVANS[destinatie], s)]
     if tva > 0:

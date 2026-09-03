@@ -10,6 +10,7 @@ OMFP 1802/2014 sect. 4.10 + art. 26 Cod fiscal:
   (1511 litigii, 1513 dezafectare, 1514 restructurare, 1518 altele) nedeductibile;
 - ajustari stocuri: 6814=39x, reluare 39x=7814 - nedeductibile fiscal."""
 from decimal import Decimal, ROUND_HALF_UP
+from core.common import nomenclator_cerut
 
 B = Decimal("0.01")
 PROVIZIOANE = {"litigii": "1511", "garantii": "1512", "dezafectare": "1513",
@@ -40,7 +41,7 @@ def nota_ajustare_creanta(suma, actiune="constituire"):
         return {"linii": [("6814", "491", s)]}
     if actiune == "reluare":
         return {"linii": [("491", "7814", s)]}
-    raise ValueError("actiune: constituire|reluare")
+    raise ValueError(nomenclator_cerut("actiune", "constituire|reluare"))
 
 def nota_provizion(suma, tip="garantii", actiune="constituire"):
     """6812=151x / 151x=7812. Deductibil fiscal doar tip=garantii."""
@@ -48,14 +49,14 @@ def nota_provizion(suma, tip="garantii", actiune="constituire"):
     if s <= 0:
         raise ValueError("Suma trebuie să fie un număr pozitiv.")
     if tip not in PROVIZIOANE:
-        raise ValueError("tip: " + "|".join(PROVIZIOANE))
+        raise ValueError(nomenclator_cerut("tip", PROVIZIOANE))
     cont = PROVIZIOANE[tip]
     deductibil = (tip == "garantii")
     if actiune == "constituire":
         return {"linii": [("6812", cont, s)], "deductibil": deductibil}
     if actiune == "reluare":
         return {"linii": [(cont, "7812", s)], "deductibil": deductibil}
-    raise ValueError("actiune: constituire|reluare")
+    raise ValueError(nomenclator_cerut("actiune", "constituire|reluare"))
 
 def nota_ajustare_stoc(suma, cont_ajustare="397", actiune="constituire"):
     """6814=39x / 39x=7814 - nedeductibil fiscal (nu figureaza in art. 26)."""
@@ -68,4 +69,4 @@ def nota_ajustare_stoc(suma, cont_ajustare="397", actiune="constituire"):
         return {"linii": [("6814", str(cont_ajustare), s)], "deductibil": False}
     if actiune == "reluare":
         return {"linii": [(str(cont_ajustare), "7814", s)], "deductibil": False}
-    raise ValueError("actiune: constituire|reluare")
+    raise ValueError(nomenclator_cerut("actiune", "constituire|reluare"))

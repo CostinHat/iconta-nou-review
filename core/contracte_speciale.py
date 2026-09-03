@@ -12,6 +12,7 @@ venituri asimilate salariilor).
 from decimal import Decimal, ROUND_HALF_UP
 
 from core import common as c
+from core.common import nomenclator_cerut
 
 B = Decimal("0.01")
 
@@ -106,7 +107,7 @@ def nota(brut, fel="zilier", sursa="casa", la_data=None):
         rez = calcul_mandat(brut)   # fara varianta datata azi; cand va avea una, primeste `_ld`
         cont_ch = "621"
     else:
-        raise ValueError("fel: zilier|cenzor|mandat")
+        raise ValueError(nomenclator_cerut("fel", "zilier|cenzor|mandat"))
     cont_bani = "5311" if sursa == "casa" else "5121"
     linii = [(cont_ch, "421", rez["brut"]), ("421", "4315", rez["cas"])]
     if rez["cass"] > 0:

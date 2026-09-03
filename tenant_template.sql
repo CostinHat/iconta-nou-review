@@ -2463,6 +2463,10 @@ ALTER TABLE TENANT_PLACEHOLDER.firma_profil ADD COLUMN IF NOT EXISTS inreg_art31
 -- Nullable: linie fara cont -> contabilizarea decide (cont_venit_implicit / legacy 707). Mirror in core/migrare_cont_venit_linie.py.
 ALTER TABLE TENANT_PLACEHOLDER.factura_linii ADD COLUMN IF NOT EXISTS cont_venit text;
 
+-- [R130, 04.09.2026] cine si cand a introdus cursul de mana; v. core/migrare_curs_manual_urma.py
+ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS curs_manual_de text;
+ALTER TABLE TENANT_PLACEHOLDER.facturi ADD COLUMN IF NOT EXISTS curs_manual_la timestamptz;
+
 -- [14-1-2] Registrul-inventar, al doilea registru obligatoriu (Legea 82/1991 art. 20).
 -- Continutul: OMFP 2634/2015 Anexa 2 — sase coloane. `valoare_inventar` e NOT NULL si nu are
 -- default: completata implicit din `valoare_contabila`, ar produce un registru fara nicio

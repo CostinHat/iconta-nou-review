@@ -14,6 +14,7 @@ dubla + art. 15 alin. 2-3 CF).
   finele anului; 10% din veniturile neimpozabile); excedentul = impozit
   pe profit 16% (D101)."""
 from decimal import Decimal, ROUND_HALF_UP
+from core.common import nomenclator_cerut
 
 B = Decimal("0.01")
 CONT_VENIT = {"cotizatie": "731", "contributie": "731", "donatie": "733",
@@ -31,7 +32,7 @@ def nota_venit(suma, fel="cotizatie", sursa="casa"):
         raise ValueError("Suma trebuie să fie un număr pozitiv.")
     cont = CONT_VENIT.get(fel)
     if not cont:
-        raise ValueError("fel: " + "|".join(CONT_VENIT))
+        raise ValueError(nomenclator_cerut("fel", CONT_VENIT))
     bani = "5311" if sursa == "casa" else "5121"
     return {"linii": [(bani, cont, s)], "cont_venit": cont}
 

@@ -10,6 +10,7 @@ functiunea conturilor 162/168/519/801).
 - garantii NUMAI extracontabil: acordate D8011, primite D8021 (contrapartida
   tehnica 891); la eliberare se crediteaza."""
 from decimal import Decimal, ROUND_HALF_UP
+from core.common import nomenclator_cerut
 
 B = Decimal("0.01")
 CONTURI = {"lung": {"credit": "1621", "dobanda": "1682", "restant": "1622"},
@@ -21,7 +22,7 @@ def _d(x):
 
 def _tip(tip):
     if tip not in CONTURI:
-        raise ValueError("tip: lung|scurt")
+        raise ValueError(nomenclator_cerut("tip", "lung|scurt"))
     return CONTURI[tip]
 
 def nota_primire(suma, tip="lung", cont_banca="5121"):
@@ -68,10 +69,10 @@ def nota_garantie(suma, fel="primita", actiune="inregistrare"):
     if s <= 0:
         raise ValueError("Suma trebuie să fie un număr pozitiv.")
     if fel not in ("primita", "acordata"):
-        raise ValueError("fel: primita|acordata")
+        raise ValueError(nomenclator_cerut("fel", "primita|acordata"))
     cont = "8021" if fel == "primita" else "8011"
     if actiune == "inregistrare":
         return {"linii": [(cont, "891", s)]}
     if actiune == "eliberare":
         return {"linii": [("891", cont, s)]}
-    raise ValueError("actiune: inregistrare|eliberare")
+    raise ValueError(nomenclator_cerut("actiune", "inregistrare|eliberare"))

@@ -3,6 +3,46 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 04.09.2026 (26) — Un curs vechi nu se refuză și nu se folosește tăcut: se arată, până la un prag
+
+**Costin, verbatim**, ca răspuns la R130: *„Vechimea cursului: pragul e 5 zile calendaristice —
+acoperă un weekend prelungit cu sărbători legale; peste atât nu mai e pauză de publicare, e flux
+rupt. Sub prag: se folosește, dar cursul și data lui apar pe factură și în răspunsul rutei. Nu se mai
+tace niciodată. Peste prag: emiterea automată se oprește, iar contabilul poate introduce cursul de
+mână, cu data lui, consemnat cine și când. Nu se blochează facturarea — un flux stricat la BNR n-are
+voie să oprească un cabinet în ziua scadenței, dar nici să calculeze TVA cu un curs de două luni fără
+ca cineva să afle."*
+
+**Forma deciziei contează mai mult decât cifra.** Ea desparte trei lucruri pe care aplicația le
+amestecase într-unul singur:
+
+1. **normal** — cursul e proaspăt: se folosește, **și se arată** (data lui iese acum și din rută, nu
+   doar în PDF);
+2. **întârziere plauzibilă** (≤ 5 zile) — tot se folosește, tot se arată; nu e o excepție, e o zi de
+   weekend prelungit;
+3. **flux rupt** (> 5 zile) — emiterea **automată** se oprește, dar **facturarea nu**: refuzul își
+   numește ieșirea, iar omul poate pune cursul de mână, cu data lui, semnat.
+
+*Niciuna dintre cele trei nu e „blochează" și niciuna nu e „merge mai departe în tăcere" — iar
+aplicația le avea pe amândouă, în locuri diferite.*
+
+**Ce a schimbat asta în cod, dincolo de prag:** cursul manual **poartă acum data lui**. Până azi
+primea data facturii, deci documentul spunea „curs din 4 septembrie" despre o cifră luată din altă
+zi. Și poartă **autorul** — text, nu `integer`, fiindcă sunt două căi și nu se poate preface că-s
+una: din ecran e un utilizator, prin API e o cheie de cabinet.
+
+**Cifra nu e sursată cu `Temei`, și se spune de ce.** Nu există act care s-o ceară: legea (art. 290
+alin. 2 CF) spune să se folosească *ultimul curs comunicat*, nu cât de vechi poate fi acela. Pragul
+alege cât de departe de „ultimul comunicat" mai acceptăm să mergem **în tăcere** — e o decizie de
+produs, cu autorul și data ei scrise lângă valoare.
+
+**Și adresa, tot de la Costin:** *„Fluxul BNR s-a mutat pe curs.bnr.ro. […] Verifică la sursă înainte
+de a cabla, inclusiv dacă există varianta pe 10 zile."* Verificat, de pe server: toate patru căile
+răspund `200`, iar varianta pe 10 zile există (10 zile **bancare**). Verificarea a scos și **a doua
+schimbare**, pe care adresa n-o arăta: namespace-ul XML a trecut de la `http://` la
+`https://www.bnr.ro/xsd`, iar pe conținutul nou parserul întorcea **zero zile**. *Dacă aș fi cablat
+numai gazda, aș fi „reparat" fluxul și aș fi raportat verde despre un drum care tot nu aducea nimic.*
+
 ## 03.09.2026 (25) — Cele trei decizii ale campaniei de probare, date odată, cu motivul lor
 
 Costin le-a dat pe toate trei într-o singură comandă, verbatim, **ca să nu se mai repete la fiecare

@@ -10,6 +10,7 @@ inventarului permanent, cost standard cu diferente pe 348).
   la cost standard + repartizarea diferentelor: coeficient 348 aplicat la
   iesiri -> 711 = 348 (nefavorabile) / 348 = 711 (favorabile)."""
 from decimal import Decimal, ROUND_HALF_UP
+from core.common import nomenclator_cerut
 
 B = Decimal("0.01")
 
@@ -45,7 +46,7 @@ def nota_productie_in_curs(suma, moment="constatare"):
         return {"linii": [("331", "711", s)]}
     if moment == "reluare":
         return {"linii": [("711", "331", s)]}
-    raise ValueError("moment: constatare|reluare")
+    raise ValueError(nomenclator_cerut("moment", "constatare|reluare"))
 
 def coeficient_348(sold_initial_348, rulaj_348, sold_initial_345, intrari_345):
     """K = (Si348 + Rulaj348) / (Si345 + Intrari345). Semnul lui 348 se

@@ -9,11 +9,21 @@ REGULA LEGALA (verificata la sursa, art. 290 alin.2 Cod fiscal + Norme HG 1/2016
   Cursul se fixeaza la emitere si NU se mai recalculeaza (nici la incasare, nici la regularizare).
   Art. 319: TVA colectata trebuie exprimata SI in lei pe factura, chiar daca restul e in valuta.
 
-SURSA OFICIALA BNR (pentru programatori):
-  - ultimele 10 zile: https://www.bnr.ro/nbrfxrates10days.xml
-  - arhiva anuala:     https://www.bnr.ro/files/xml/years/nbrfxratesYYYY.xml
-  - cursul zilei:      https://www.bnr.ro/nbrfxrates.xml
-  XML namespace http://www.bnr.ro/xsd; Body/Cube[@date]/Rate[@currency, @multiplier?].
+SURSA OFICIALA BNR — MUTATA pe `curs.bnr.ro` (verificat la sursa 04.09.2026, de pe server):
+  - ultimele 10 zile: https://curs.bnr.ro/nbrfxrates10days.xml   (200, 10 zile BANCARE)
+  - arhiva anuala:     https://curs.bnr.ro/files/xml/years/nbrfxratesYYYY.xml  (200)
+  - cursul zilei:      https://curs.bnr.ro/nbrfxrates.xml        (200)
+  - schema:            https://curs.bnr.ro/xsd/nbrfxrates.xsd    (200)
+  Body/Cube[@date]/Rate[@currency, @multiplier?].
+
+  **CE S-A MUTAT, si de ce nu era destul sa schimb gazda** (R130, masurat 03-04.09.2026):
+  `www.bnr.ro/nbrfxrates10days.xml` raspunde `302` catre pagina de start (`HEAD` da `404`), iar
+  ultima zi ajunsa in cache era **10.07.2026** — deci preluarea mergea si s-a oprit in tacere.
+  Dar a doua schimbare era invizibila din URL: **namespace-ul XML a trecut de la `http://` la
+  `https://www.bnr.ro/xsd`**. Masurat: pe continutul nou, `parse_xml` intorcea **0 zile** — adica
+  exact felul de esec pe care campania il vaneaza, un gol care arata ca un raspuns. De-aia
+  namespace-ul nu se mai PRESUPUNE: se **citeste din radacina**, iar un document a carui radacina
+  nu e `DataSet` sau care n-are `Body` ridica `FormatNecunoscut`, in loc sa intoarca `{}`.
   Unele valute au multiplier=100 (HUF, JPY, KRW, ...) => curs real = valoare / multiplier.
   OrigCurrency=RON. BNR blocheaza IP-urile cu trafic repetat -> stocare locala obligatorie.
 
@@ -29,13 +39,49 @@ from datetime import date, datetime, timedelta
 from decimal import Decimal, ROUND_HALF_UP
 import xml.etree.ElementTree as ET
 
-BNR_NS = "{http://www.bnr.ro/xsd}"
-URL_10ZILE = "https://www.bnr.ro/nbrfxrates10days.xml"
-URL_AN = "https://www.bnr.ro/files/xml/years/nbrfxrates{an}.xml"
+#: PRAGUL DE VECHIME al unui curs, in zile CALENDARISTICE, intre data cursului si data facturii.
+#: **Decizie de produs, nu norma fiscala** — Costin, 04.09.2026, verbatim: *„pragul e 5 zile
+#: calendaristice — acopera un weekend prelungit cu sarbatori legale; peste atat nu mai e pauza de
+#: publicare, e flux rupt."* Nu e sursat cu `Temei` fiindca nu exista act care sa-l ceara: legea
+#: (art. 290 alin.2 CF) spune sa se foloseasca *ultimul curs comunicat*, nu cat de vechi poate fi.
+#: Cifra alege cat de departe de „ultimul comunicat" mai acceptam sa mergem in tacere.
+PRAG_VECHIME_ZILE = 5
+
+URL_10ZILE = "https://curs.bnr.ro/nbrfxrates10days.xml"
+URL_AN = "https://curs.bnr.ro/files/xml/years/nbrfxrates{an}.xml"
 
 
 class CursIndisponibil(Exception):
     """BNR inaccesibil / cursul nu a putut fi preluat. Frontend: reincearca sau manual."""
+
+
+class CursPreaVechi(ValueError):
+    """Cursul cel mai recent pe care BNR il are pentru data ceruta e mai vechi decat pragul.
+
+    **NU e subclasa de `CursIndisponibil`**, deliberat: cele doua stari cer raspunsuri diferite, iar
+    un `except CursIndisponibil` care ar inghiti-o i-ar da mesajul gresit („reincearca"). E subclasa
+    de `ValueError`, deci apelantii care traduc deja `ValueError` in `422` (decontarea valutara,
+    reevaluarea soldurilor) raspund omului, nu cu `500`.
+
+    Poarta cursul GASIT, nu doar refuzul: contabilul care introduce cursul de mana trebuie sa vada
+    de la ce porneste."""
+    def __init__(self, moneda, data_curs, curs, vechime_zile, prag_zile):
+        self.moneda, self.data_curs, self.curs = moneda, data_curs, curs
+        self.vechime_zile, self.prag_zile = vechime_zile, prag_zile
+        super().__init__(
+            "Cel mai recent curs BNR pentru %s la data cerută e din %s — mai vechi cu %d zile decât "
+            "pragul de %d. Peste atât nu mai e pauză de publicare, e flux întrerupt, iar TVA-ul în "
+            "lei s-ar calcula cu o cifră care nu mai e a zilei. Cursul găsit: %s."
+            % (moneda, data_curs.isoformat(), vechime_zile, prag_zile, curs))
+
+
+class FormatNecunoscut(ValueError):
+    """XML-ul adus nu e cel asteptat de la BNR — radacina nu e `DataSet`, sau n-are `Body`.
+
+    **De ce ridica in loc sa intoarca `{}`** (R130, 04.09.2026): pana azi, un document cu alta
+    forma dadea o harta goala, iar apelantul o citea ca „BNR n-are cursul" — adica o schimbare de
+    format arata identic cu o zi fara cotatie. Chiar asta s-a intamplat: namespace-ul a trecut la
+    `https://`, iar aplicatia a raportat luni intregi „cursul nu e disponibil momentan"."""
 
 
 class MonedaNecotata(CursIndisponibil):
@@ -66,17 +112,25 @@ def parse_xml(continut: str) -> dict:
     Multiplier tratat: curs real = valoare / multiplier (HUF/JPY/... cotate la 100).
     """
     root = ET.fromstring(continut)
-    body = root.find(f"{BNR_NS}Body")
+    # Namespace-ul se ia din RADACINA, nu dintr-o constanta: BNR l-a schimbat din `http://` in
+    # `https://www.bnr.ro/xsd` odata cu mutarea pe `curs.bnr.ro`, iar o constanta scrisa de mana
+    # ar fi trebuit sa afle asta de la cineva. Forma se verifica, insa: un document care nu e
+    # `DataSet` cu `Body` nu e un flux BNR, si se spune.
+    ns = root.tag[:root.tag.index("}") + 1] if root.tag.startswith("{") else ""
+    if not root.tag.endswith("DataSet"):
+        raise FormatNecunoscut("radacina XML-ului nu e `DataSet`, ci %r — nu e un flux BNR"
+                               % (root.tag,))
+    body = root.find(f"{ns}Body")
     if body is None:
-        return {}
+        raise FormatNecunoscut("XML-ul BNR n-are `Body` (namespace citit: %r)" % (ns or "fara",))
     rezultat = {}
-    for cube in body.findall(f"{BNR_NS}Cube"):
+    for cube in body.findall(f"{ns}Cube"):
         d_txt = cube.get("date")
         if not d_txt:
             continue
         d = datetime.strptime(d_txt, "%Y-%m-%d").date()
         cursuri = {}
-        for rate in cube.findall(f"{BNR_NS}Rate"):
+        for rate in cube.findall(f"{ns}Rate"):
             mon = rate.get("currency")
             val_txt = (rate.text or "").strip()
             if not mon or not val_txt:
@@ -153,34 +207,54 @@ def _din_cache(conn, moneda: str, data_ref: date):
     return None, None
 
 
-def _salveaza_cache(conn, harta: dict):
-    """Salveaza toate cursurile din harta in cache (idempotent, ON CONFLICT DO NOTHING)."""
-    with conn.cursor() as cur:
-        for d, cursuri in harta.items():
-            for mon, c in cursuri.items():
-                cur.execute(
-                    "INSERT INTO public.curs_bnr_zilnic (data, moneda, curs) VALUES (%s,%s,%s) "
-                    "ON CONFLICT (data, moneda) DO NOTHING",
-                    (d, mon, c))
-    conn.commit()
+def _salveaza_cache(harta: dict):
+    """Salveaza cursurile in cache (idempotent), pe o CONEXIUNE PROPRIE.
+
+    **DE CE NU PE CONEXIUNEA APELANTULUI** (gasit apasand, 04.09.2026). Pana azi primea `conn` si
+    facea `conn.commit()` pe el. Apelantul lui e `curs_pentru`, chemat din mijlocul emiterii unei
+    facturi — deci commitul asta comitea FACTURA, in mijlocul actului. Consecinta, probata: un
+    refuz de curs (`CURS_PREA_VECHI`) facea `rollback()` care nu mai avea ce anula, iar in baza
+    ramanea o factura numerotata si contata, fara curs si fara TVA in lei.
+
+    Cache-ul traieste in `public` si e o preocupare a APLICATIEI, nu a facturii; se scrie separat,
+    ca sa se pastreze si cand actul care l-a declansat esueaza — altfel fiecare incercare ar
+    re-descarca de la BNR, care blocheaza IP-urile cu trafic repetat."""
+    from core import db as _db
+    with _db.get_conn() as c2:
+        with c2.cursor() as cur:
+            for d, cursuri in harta.items():
+                for mon, c in cursuri.items():
+                    cur.execute(
+                        "INSERT INTO public.curs_bnr_zilnic (data, moneda, curs) VALUES (%s,%s,%s) "
+                        "ON CONFLICT (data, moneda) DO NOTHING",
+                        (d, mon, c))
+        c2.commit()
 
 
-def curs_pentru(conn, moneda: str, data_factura: date):
+def curs_pentru(conn, moneda: str, data_factura: date, prag_zile: int = PRAG_VECHIME_ZILE):
     """
     Intoarce (curs: Decimal, data_curs: date, sursa: str) pentru factura in valuta.
       1. RON -> (1, data_factura, "ron")
-      2. cache-first (public.curs_bnr_zilnic)
-      3. daca lipseste: descarca XML BNR (10zile pt recent, arhiva anuala pt vechi),
-         salveaza in cache, re-cauta.
-      4. daca tot lipseste / retea pica -> ridica CursIndisponibil.
+      2. cache-first, **dar numai daca ce e in cache e in interiorul pragului**
+      3. altfel: descarca XML BNR (10zile pt recent, arhiva anuala pt vechi), salveaza, re-cauta
+      4. daca cel mai bun curs gasit e tot peste prag -> `CursPreaVechi`, cu cursul in ea
+      5. daca nu exista niciunul -> `MonedaNecotata` / `CursIndisponibil`
+
+    **DE CE CACHE-FIRST NU MAI E NECONDITIONAT** (R130, masurat 04.09.2026). Cu fluxul BNR mutat
+    si nereparat, cache-ul se oprise la 10.07.2026 — iar `curs_pentru` gasea acolo un curs cu
+    `data <= data_factura` si il intorcea, **fara sa mai incerce reteaua niciodata**. Probat pe EUR
+    pentru 04.09: intorcea cursul din 10.07, vechime **56 de zile**, cu `sursa="bnr"`, ca si cum ar
+    fi fost al zilei. Un cache care raspunde MEREU face inutila orice reparatie a sursei: chiar dupa
+    ce am cablat gazda noua, drumul nu trecea pe-acolo. *Cache-ul e o scurtatura, nu o sursa — iar o
+    scurtatura care nu se uita la vechime e o sursa care minte.*
     """
     moneda = moneda.upper()
     if moneda == "RON":
         return Decimal("1"), data_factura, "ron"
 
-    # 2) cache
+    # 2) cache, dar numai daca e destul de proaspat pentru data ceruta
     c, dc = _din_cache(conn, moneda, data_factura)
-    if c is not None:
+    if c is not None and (data_factura - dc).days <= prag_zile:
         return c, dc, "bnr"
 
     # 3) descarca + salveaza + re-cauta
@@ -200,15 +274,26 @@ def curs_pentru(conn, moneda: str, data_factura: date):
             xml = _descarca(url)
             harta = parse_xml(xml)
             if harta:
-                _salveaza_cache(conn, harta)
+                # Bucla DOAR aduce si salveaza. Nu intoarce cursul: pana la calibrare o facea, si
+                # asa sarea peste pragul de vechime de mai jos — un prag aplicat pe un singur drum
+                # din doua nu e un prag. Decizia se ia intr-un singur loc, dupa bucla.
+                _salveaza_cache(harta)
                 for _zi in harta.values():
                     cotate.update(_zi)
-                c, dc = curs_din_harta(harta, moneda, data_factura)
-                if c is not None:
-                    return c, dc, "bnr"
+                if curs_din_harta(harta, moneda, data_factura)[0] is not None:
+                    break
         except Exception as e:  # retea, timeout, IP blocat, parse
             ultima_eroare = e
             continue
+
+    # Reteaua s-a incercat; recitesc cache-ul, care poate a fost tocmai imbogatit de ea. Daca ce
+    # iese e in interiorul pragului, e un raspuns; daca e mai vechi, e un refuz care POARTA cursul.
+    c, dc = _din_cache(conn, moneda, data_factura)
+    if c is not None:
+        vechime = (data_factura - dc).days
+        if vechime <= prag_zile:
+            return c, dc, "bnr"
+        raise CursPreaVechi(moneda, dc, c, vechime, prag_zile)
 
     # Am citit cel putin o harta BNR, si moneda nu e in NICIUNA: nu e o indisponibilitate, e o
     # moneda care nu exista in nomenclatorul BNR. Daca n-am citit nicio harta (`cotate` gol),

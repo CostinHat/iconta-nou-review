@@ -14,6 +14,7 @@ Surse: art. 25(4)i CF + Legea 32/1994 + Ordinul ANAF 3562/2024 (D177).
 from decimal import Decimal, ROUND_HALF_UP
 
 from core import common as c
+from core.common import nomenclator_cerut
 
 B = Decimal("0.01")
 
@@ -111,5 +112,5 @@ def nota_sponsorizare(suma, mod="contract"):
         raise ValueError("Suma trebuie să fie un număr pozitiv.")
     cont = {"contract": "401", "plata": "5121"}.get(mod)
     if not cont:
-        raise ValueError("mod: contract|plata")
+        raise ValueError(nomenclator_cerut("mod", "contract|plata"))
     return {"linii": [("6582", cont, s)]}

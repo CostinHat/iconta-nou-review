@@ -10,6 +10,7 @@
 - restituire subventie: exploatare 741/658 = 5121 (dupa caz),
   investitii 4751 = 5121 pentru partea nerestituita inca la venituri."""
 from decimal import Decimal, ROUND_HALF_UP
+from core.common import nomenclator_cerut
 
 B = Decimal("0.01")
 
@@ -25,7 +26,7 @@ def nota_subventie_exploatare(suma, moment="drept", cont_venit="741"):
         return {"linii": [("445", str(cont_venit), s)]}
     if moment == "incasare":
         return {"linii": [("5121", "445", s)]}
-    raise ValueError("moment: drept|incasare")
+    raise ValueError(nomenclator_cerut("moment", "drept|incasare"))
 
 def nota_subventie_investitii(suma, moment="drept"):
     """drept: 445=4751; incasare: 5121=445."""
@@ -36,7 +37,7 @@ def nota_subventie_investitii(suma, moment="drept"):
         return {"linii": [("445", "4751", s)]}
     if moment == "incasare":
         return {"linii": [("5121", "445", s)]}
-    raise ValueError("moment: drept|incasare")
+    raise ValueError(nomenclator_cerut("moment", "drept|incasare"))
 
 def reluare_lunara_investitii(valoare_activ, subventie, amortizare_lunara):
     """4751 = 7584 proportional: amortizare x (subventie / valoare activ)."""

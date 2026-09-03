@@ -569,7 +569,8 @@ def _potriveste_linii(conn, linii, platitor_tva=True):
 def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, tert_adresa=None,
                   data_emitere=None, data_scadenta=None, moneda="RON",
                   platitor_tva=True, status="de_preluat", curs_manual=None, tip="factura",
-                  tert_tara="RO", tip_operatiune="normal", tert_pf=False):
+                  tert_tara="RO", tip_operatiune="normal", tert_pf=False,
+                  data_curs_manual=None, curs_manual_de=None):
     """
     Emite o factura noua (directie=emisa):
       - potriveste cota pe liniile fara cota (nomenclator/AI)
@@ -629,14 +630,46 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
     else:
         _d = _dt.date.today()
 
+    _urma_manual = None            # (cine, cand) — se scrie numai pe calea manuala
     if (moneda or "RON").upper() == "RON":
         _curs, _dcurs, _sursa = 1, _d, "ron"
     elif curs_manual is not None:
-        _curs, _dcurs, _sursa = float(curs_manual), _d, "manual"
+        # [R130, decizia lui Costin 04.09.2026] Cursul de mână vine cu DATA LUI, nu cu data
+        # facturii. Până azi `data_curs` primea data facturii — adică documentul spunea „curs din
+        # 4 septembrie" despre o cifră pe care contabilul o luase din altă zi. Iar „consemnat cine
+        # și când" cere un autor: fără el, „manual" e o stare, nu un act.
+        _dcm = _data_ceruta("data cursului", data_curs_manual)
+        if _dcm is None:
+            raise ValueError(
+                "Cursul introdus manual are nevoie de data la care a fost comunicat. Fără ea, "
+                "factura ar spune că e cursul zilei de emitere, ceea ce nu se știe.")
+        if _dcm > _d:
+            raise ValueError(
+                "Data cursului (%s) e după data facturii (%s). Se folosește ultimul curs comunicat "
+                "PÂNĂ la data facturii — unul de după ea n-avea cum să fie cunoscut atunci."
+                % (_dcm.isoformat(), _d.isoformat()))
+        if not (curs_manual_de or "").strip():
+            raise ValueError(
+                "Cursul introdus manual se consemnează cu autorul lui. Fără el, peste șase luni "
+                "nimeni nu poate spune cine a ales cifra cu care s-a calculat TVA-ul.")
+        _curs, _dcurs, _sursa = float(curs_manual), _dcm, "manual"
+        _urma_manual = (curs_manual_de.strip(), _dt.datetime.now(_dt.timezone.utc))
     else:
         try:
             _c, _dc, _s = curs_bnr.curs_pentru(conn, moneda, _d)
             _curs, _dcurs, _sursa = float(_c), _dc, _s
+        except curs_bnr.CursPreaVechi as _pv:
+            # Emiterea AUTOMATĂ se oprește — dar facturarea nu se blochează: refuzul își numește
+            # ieșirea, iar cursul găsit merge cu el, ca omul să vadă de la ce pornește.
+            conn.rollback()
+            return {"ok": False, "cod": "CURS_PREA_VECHI", "moneda": moneda,
+                    "data": _d.isoformat(), "data_curs_gasit": _pv.data_curs.isoformat(),
+                    "curs_gasit": str(_pv.curs), "vechime_zile": _pv.vechime_zile,
+                    "prag_zile": _pv.prag_zile, "mesaj": str(_pv),
+                    "iesire": {"camp": "curs_manual",
+                               "cere": ["curs_manual", "data_curs_manual"],
+                               "cum": "Introdu cursul de mână, cu data la care a fost comunicat. "
+                                      "Se consemnează cine l-a introdus și când."}}
         except curs_bnr.MonedaNecotata as _mn:
             # Moneda nu exista: nu e o intarziere, deci nu se ofera nici „reincearca", nici
             # „curs manual" — al doilea ar baga factura in contabilitate pe o moneda inventata.
@@ -655,13 +688,23 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
     with conn.cursor() as cur:
         cur.execute(
             "UPDATE facturi SET curs_bnr=%s, tva_lei=%s, total_lei=%s, "
-            "data_curs=%s, curs_sursa=%s WHERE id=%s",
-            (_curs, _tva_lei, _total_lei, _dcurs, _sursa, _fid))
+            "data_curs=%s, curs_sursa=%s, curs_manual_de=%s, curs_manual_la=%s WHERE id=%s",
+            (_curs, _tva_lei, _total_lei, _dcurs, _sursa,
+             _urma_manual[0] if _urma_manual else None,
+             _urma_manual[1] if _urma_manual else None, _fid))
 
     r["curs_bnr"] = _curs
     r["tva_lei"] = _tva_lei
     r["total_lei"] = _total_lei
     r["curs_sursa"] = _sursa
+    # [R130] Data cursului și cât e de vechi ies din rută, nu doar în PDF. *„Sub prag: se
+    # folosește, dar cursul și data lui apar pe factură ȘI în răspunsul rutei. Nu se mai tace
+    # niciodată."* (Costin, 04.09.2026)
+    r["data_curs"] = _dcurs.isoformat() if hasattr(_dcurs, "isoformat") else _dcurs
+    r["curs_vechime_zile"] = (_d - _dcurs).days if hasattr(_dcurs, "isoformat") else None
+    if _urma_manual:
+        r["curs_manual_de"] = _urma_manual[0]
+        r["curs_manual_la"] = _urma_manual[1].isoformat()
     r["numar"] = numar
     r["serie"] = serie
     return r

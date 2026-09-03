@@ -319,6 +319,25 @@ def ok():
     return {"ok": True}
 
 
+def nomenclator_cerut(camp, optiuni):
+    """Mesajul de refuz cand un camp discriminator lipseste sau nu e din nomenclatorul lui.
+
+    **DE CE EXISTA** (lotul 3 al campaniei, 04.09.2026). Treisprezece rute si unsprezece module
+    refuzau cu `"operatie: dividend|regularizare|imprumut"` — o enumerare fara verb. Ea spune ce se
+    accepta, dar nu spune ca ceva LIPSESTE, nici de ce campul nu poate avea o valoare implicita.
+    Un contabil care primeste asta nu stie daca a gresit valoarea sau a uitat campul.
+
+    **CE NU SPUNE, declarat:** ce s-a primit. Inlocuirea celor peste douazeci de locuri s-a facut
+    MECANIC, iar numele variabilei care poarta valoarea difera de la un modul la altul (`op`, `fel`,
+    `tip`, `moment`, `actiune`); a le lega pe toate ar fi cerut rescrierea fiecarui apel cu mana,
+    cu riscul de a lega gresit unul. Valoarea trimisa e in cererea omului, iar campul si asteptarea
+    sunt aici."""
+    lista = optiuni if isinstance(optiuni, str) else "|".join(optiuni)
+    return ("Câmpul `%s` lipsește sau nu e una dintre valorile pe care le cunoaște operațiunea: "
+            "%s. Nu are valoare implicită — felul operațiunii se consemnează, nu se ghicește."
+            % (camp, ", ".join(x for x in lista.split("|") if x)))
+
+
 def cota_ceruta(corp):
     """Cota TVA dintr-un corp de cerere API, OBLIGATORIE — regula bazei nule.
 
