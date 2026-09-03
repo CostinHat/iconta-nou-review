@@ -50,22 +50,76 @@ def test_un_modul_fara_niciun_dependent_nu_umfla_perimetrul():
         "instrumentul nu deriva nimic, doar returneaza tot" % (len(teste_d100), len(toate)))
 
 
+# ── regula 5: o tura fara executabile ruleaza doar garzile de registre si documente ────────────
+def test_o_tura_DOAR_DE_DOCUMENTE_deriva_garzile_de_registre():
+    """Regula 5 (Costin, 03.09.2026): *„o tura care nu atinge niciun fisier executabil (.py, .js)
+    ruleaza doar garzile de registre si documente, nu suita completa. Se stabileste din ce s-a
+    modificat fata de HEAD, nu prin judecata."*
+
+    Perimetrul se DERIVA — un test intra daca numeste el insusi un document urmarit de git, sau
+    daca importa un scaner din `scripts/` care il numeste. Aici se cere ca derivarea sa prinda
+    garzile de registru pe care le-am platit una cate una."""
+    teste, incerte = P.perimetru(["PREDARE_LANT.md", "CONFORMITATE.md"])
+    assert not incerte, "o tura doar de documente n-ar trebui sa lase perimetrul deschis: %s" % incerte
+    ceruti = {"core/test_conformitate.py", "core/test_predare_cifre.py",
+              "core/test_predare_proaspata.py", "core/test_clichete_generate.py",
+              "core/test_capturi_numite.py", "core/test_trasee.py",
+              "core/test_garzi_inventar.py", "core/test_agenda.py",
+              "core/test_lista3.py"}
+    assert set(teste) >= ceruti, (
+        "garzi de registru care NU intra in perimetrul de documente: %s" % sorted(ceruti - set(teste)))
+
+
+def test_perimetrul_de_documente_e_mai_mic_decat_suita():
+    """Directia opusa. O derivare prea generoasa n-ar scurta nimic — doar ar imbraca «ruleaza tot»
+    in alt nume. *Prima forma propaga tranzitiv prin tot graful si intorcea 357 din 578; masurat,
+    nu banuit.*"""
+    teste, _ = P.perimetru(["PREDARE_LANT.md"])
+    toate = [f for f in P._fisiere_py() if os.path.basename(f).startswith("test_")]
+    assert len(teste) < len(toate) // 2, (
+        "perimetrul de documente are %d din %d teste — peste jumatate de suita nu mai e o derivare"
+        % (len(teste), len(toate)))
+
+
+def test_UN_SINGUR_executabil_atins_readuce_poarta_de_azi():
+    """*„Daca s-a atins macar un fisier executabil, poarta ramane cum e azi."* Se stabileste din
+    EXTENSIE, nu prin judecata: un `.md` alaturi de un `.py` NU mai da perimetrul de documente."""
+    assert P.executabile_atinse(["PREDARE_LANT.md", "GARZI.md"]) == []
+    assert P.executabile_atinse(["PREDARE_LANT.md", "core/d100.py"]) == ["core/d100.py"]
+    assert P.executabile_atinse(["static/js/versiune.js"]) == ["static/js/versiune.js"]
+
+    doar_doc, _ = P.perimetru(["PREDARE_LANT.md"])
+    mixt, incerte = P.perimetru(["PREDARE_LANT.md", "core/d100.py"])
+    assert incerte, (
+        "un `.md` atins ALATURI de cod trebuie sa lase perimetrul deschis — graful de import nu "
+        "vede cine citeste registrul, iar acolo alternativa e poarta completa")
+    assert set(mixt) != set(doar_doc), "cazul mixt a intors acelasi perimetru ca cel de documente"
+
+
 def test_ce_graful_de_import_NU_vede_cere_poarta_COMPLETA():
-    """Un registru `.md` e citit de garzi care NU-l importa; `main.py` e citit de scanere de rute.
-    Pe clasele astea derivarea trebuie sa REFUZE, nu sa intoarca un perimetru mic si linistitor."""
-    for atins in ("PLAN_LUCRU.md", "main.py", "conftest.py"):
-        _teste, incerte = P.perimetru([atins])
+    """Pe clasele pe care graful de import nu le vede, derivarea trebuie sa REFUZE, nu sa intoarca
+    un perimetru mic si linistitor.
+
+    **[03.09.2026] Cazul `.md` SINGUR a iesit de aici, prin regula 5 a lui Costin** — o tura care nu
+    atinge niciun executabil are un perimetru care se poate inchide: garzile de documente. Ce ramane
+    nederivabil e cazul **MIXT** (un registru atins alaturi de cod: graful nu spune ce cod mai
+    depinde de registru) si fisierele care schimba rularea intregii suite. *Gardul s-a mutat pe
+    regula noua, nu s-a slabit: acum cere refuz exact acolo unde intrebarea chiar ramane deschisa.*
+    """
+    for atins in (["PLAN_LUCRU.md", "core/d100.py"], ["main.py"], ["conftest.py"]):
+        _teste, incerte = P.perimetru(atins)
         assert incerte, (
             "%s a produs un perimetru DERIVAT, fara nicio incertitudine — dar graful de import "
             "nu vede cine il citeste, deci verdele ar fi despre ce n-a rulat" % atins)
-        assert any(atins in m for m in incerte), (
+        assert any(any(a in m for a in atins) for m in incerte), (
             "incertitudinea nu numeste fisierul care a produs-o: %s" % incerte)
 
 
 def test_motivul_incertitudinii_e_SCRIS_nu_doar_semnalat():
     """«se ruleaza tot SI SE SPUNE DE CE». Un refuz fara motiv scris devine, la a treia oara, o
     superstitie: se ruleaza tot fiindca «asa face instrumentul»."""
-    _teste, incerte = P.perimetru(["CONFORMITATE.md"])
+    # Cazul MIXT: registru + cod. `.md` singur are perimetru inchis din 03.09 (regula 5).
+    _teste, incerte = P.perimetru(["CONFORMITATE.md", "core/d100.py"])
     assert incerte and all(" — " in m and len(m.split(" — ")[1].strip()) > 20 for m in incerte), (
         "incertitudinile n-au motiv scris: %s" % incerte)
 

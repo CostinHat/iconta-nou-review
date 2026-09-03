@@ -19,6 +19,17 @@ expresii regulate —, apoi intoarce fisierele de test din inchidere. Nimic nu e
 Cand atinge ceva din clasele astea, instrumentul **refuza sa scurteze** si spune de ce. Refuzul e
 raspunsul corect: alternativa la nesiguranta e *tot*, nu *mai putin*.
 
+**A DOUA FORMA A PERIMETRULUI (regula 5, Costin 03.09.2026)**: *„o tura care nu atinge niciun
+fisier executabil (.py, .js) ruleaza doar garzile de registre si documente, nu suita completa. Se
+stabileste din ce s-a modificat fata de HEAD, nu prin judecata."*
+
+Pana azi, orice `.md` atins facea instrumentul sa REFUZE sa scurteze — corect, fiindca graful de
+import nu vede cine citeste un registru. Dar cand se ating **NUMAI** documente, perimetrul chiar se
+poate inchide: sunt garzile care **citesc fisiere**, iar alea se pot deriva la fel de mecanic —
+`perimetru_documente()`, care cauta in AST-ul fiecarui test numele documentelor urmarite de git,
+direct sau printr-un modul importat. *Nu e o lista scrisa de mana: o gardă noua peste un registru
+nou intra singura.*
+
 **CE NU INLOCUIESTE.** Poarta completa ramane obligatorie inainte de publicare si inainte de
 `/clear`. Instrumentul asta e pentru bucla scurta din timpul turei.
 
@@ -143,12 +154,121 @@ def atinse_din_git():
     return sorted(x for x in out if x.split("/", 1)[0] not in SARITE)
 
 
+#: Ce inseamna „fisier executabil" — cele doua feluri de cod care se EXECUTA in aplicatie.
+#: Costin le-a numit explicit; nu se deduc si nu se largesc tacit.
+EXT_EXECUTABILE = (".py", ".js")
+
+
+#: Fisierele de PROVENIENTA ale corpusului — registre si ele, dar nu `.md` si nu in radacina.
+#: Sunt numite explicit fiindca sunt singurele doua care ies din criteriul structural de mai jos.
+REGISTRE_IN_PLUS = ("anaf_surse/INDEX.json", "anaf_surse/PROVENIENTA.json")
+
+
+def _documente_urmarite():
+    """REGISTRELE: fisierele `.md` din **radacina** repo-ului, plus cele doua JSON-uri de provenienta.
+
+    **DE CE ASA DE INGUST — masurat, si prima forma era gresita cu un ordin de marime.** Prima
+    definitie era „orice fisier urmarit de git care nu e executabil": includea sabloane
+    (`tenant_template.sql`) si actele din `anaf_surse/`, pe care le numeste orice test fiscal intr-un
+    temei. Perimetrul iesea **137 de fisiere / 1.314 teste / 976 s (16 min)** — fata de 22 de minute
+    ale portii complete, adica o scurtare de un sfert, pentru un instrument care promitea altceva.
+    Cu registrele propriu-zise: **25 de fisiere / 253 teste / 396 s (6 min 36 s)**.
+
+    *Deosebirea nu e de prag, e de INTELES: un test care CITEAZA un act din corpus intr-un temei nu
+    e o garda de registru. Un test care deschide `CONFORMITATE.md` e.* Criteriul e structural —
+    `.md` in radacina —, nu o lista scrisa de mana: un registru nou intra singur.
+    """
+    out = set(REGISTRE_IN_PLUS)
+    try:
+        r = subprocess.run(["git", "ls-files"], cwd=RAD, capture_output=True, text=True, timeout=60)
+    except Exception:
+        return set()
+    for cale in r.stdout.splitlines():
+        cale = cale.strip()
+        if cale.endswith(".md") and "/" not in cale:
+            out.add(cale)
+    return out | {os.path.basename(x) for x in out}
+
+
+def _siruri(cale):
+    """Literalii de tip sir dintr-un fisier .py, cititi cu `ast`. Un nume de document aparut intr-un
+    COMENTARIU nu conteaza — de-aia nu se cauta cu expresii regulate."""
+    import warnings
+    try:
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", SyntaxWarning)
+            arbore = ast.parse(io.open(os.path.join(RAD, cale), encoding="utf-8").read())
+    except (SyntaxError, UnicodeDecodeError, OSError):
+        return set()
+    return {n.value for n in ast.walk(arbore) if isinstance(n, ast.Constant)
+            and isinstance(n.value, str)}
+
+
+def perimetru_documente():
+    """Garzile care CITESC documente — derivate, nu enumerate.
+
+    Un test intra daca **el insusi** numeste un document urmarit de git, sau daca importa un
+    **scaner din `scripts/`** care il numeste. A doua parte conteaza: garzile de registru trec des
+    printr-un scaner (`scan_ramas` citeste `GARZI.md`, `scan_trasee` citeste `TRASEE.md`), iar
+    testul lor nu pomeneste niciodata numele fisierului.
+
+    **DE CE UN SINGUR NIVEL, si numai prin `scripts/` — masurat, nu ales.** Prima forma propaga
+    tranzitiv prin tot graful de import si intorcea **357 din 578** de teste: aproape orice test
+    importa, la cateva niveluri, un modul care numeste un fisier (`tenant_template.sql`, un act din
+    `anaf_surse/`). Un perimetru care ia trei sferturi din suita nu deriva nimic, doar imbraca
+    „ruleaza tot" in alt nume. Cu un nivel prin scanere: **137**, si cele doua care se adauga fata
+    de forma directa sunt exact cele asteptate — `test_lista3` si `test_ramas`, amandoua garzi de
+    registru care deleaga scanerului.
+
+    **Ce NU acopera, declarat:** o garda care ar construi numele documentului din bucati
+    (`"CONFORM" + "ITATE.md"`), sau una care ajunge la registru prin doua module de `core/`. N-am
+    intalnit niciuna; daca apare, perimetrul o rateaza in tacere — de-aia forma asta se foloseste
+    DOAR cand nu s-a atins niciun executabil, unde alternativa (poarta completa) e la o comanda."""
+    documente = _documente_urmarite()
+    if not documente:
+        return []
+    fisiere = sorted(_fisiere_py())
+    direct = {c: bool(_siruri(c) & documente) for c in fisiere}
+    cale_din_modul = {}
+    for c in fisiere:
+        m = _module_din_cale(c)
+        if m:
+            cale_din_modul[m] = c
+
+    def citeste_documente(cale):
+        if direct.get(cale):
+            return True
+        for m in importurile(cale):
+            c2 = cale_din_modul.get(m)
+            if c2 and c2.startswith("scripts/") and direct.get(c2):
+                return True
+        return False
+
+    return sorted(c for c in fisiere
+                  if os.path.basename(c).startswith("test_") and citeste_documente(c))
+
+
+def executabile_atinse(atinse):
+    """Care dintre fisierele atinse sunt EXECUTABILE. Se stabileste din extensie, nu prin judecata."""
+    return sorted(a for a in atinse if a.endswith(EXT_EXECUTABILE))
+
+
 def perimetru(atinse):
     """`(teste, incerte)`.
 
     `teste` = fisierele de test din inchiderea tranzitiva a celor care importa modulele atinse,
     PLUS testele atinse ele insele. `incerte` = motivele pentru care derivarea NU poate inchide
     perimetrul; daca lista nu e goala, raspunsul corect e **poarta completa**."""
+    # [regula 5] Daca NU s-a atins niciun executabil, perimetrul e cel al garzilor de documente —
+    # si se poate inchide, spre deosebire de cazul mixt, unde un `.md` atins alaturi de cod lasa
+    # deschisa intrebarea „ce cod mai depinde de el".
+    if atinse and not executabile_atinse(atinse):
+        teste = perimetru_documente()
+        if teste:
+            return teste, []
+        return [], ["nu s-a atins niciun executabil, dar derivarea garzilor de documente n-a "
+                    "intors nimic — se ruleaza tot"]
+
     inv = graf_invers()
     incerte = []
     seminte = set()

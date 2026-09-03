@@ -491,7 +491,7 @@ blocaj, o afirmație falsă pe ecran — se repară, ca oricând. *Un prag 1 nu 
 
 ---
 
-## Patru reguli de conducere a lucrului *(Costin, 01–02.09.2026)*
+## Cinci reguli de conducere a lucrului *(Costin, 01–03.09.2026)*
 
 **1. Deciziile care nu mută direcția sunt ale mele, nu urcă la arhitect.** O alegere între două
 implementări care duc în același loc, ordinea a două reparații din aceeași familie, forma unui gard,
@@ -568,3 +568,42 @@ ori în registru: garda care se uită exact unde codul e corect
 ([[gard-care-nu-se-verifica-pe-sine]]) și calibrarea pe subiect fabricat (regula 3, mai sus). *Un
 perimetru derivat poate fi greșit; unul ales e greșit exact acolo unde autorul e orb.* De-aia
 alternativa la nesiguranță e **tot**, nu **mai puțin**.
+
+**5. O TURĂ FĂRĂ FIȘIERE EXECUTABILE RULEAZĂ DOAR GĂRZILE DE REGISTRE ȘI DOCUMENTE**
+*(Costin, 03.09.2026, verbatim)*:
+
+> *„O tură care nu atinge niciun fișier executabil (`.py`, `.js`) rulează doar gărzile de registre și
+> documente, nu suita completă. Se stabilește din ce s-a modificat față de HEAD, nu prin judecată.
+> Dacă s-a atins măcar un fișier executabil, poarta rămâne cum e azi. Poarta completă rămâne
+> obligatorie înainte de publicare și înainte de `/clear`."*
+
+| | |
+|---|---|
+| **cum se stabilește** | din `git diff --name-only HEAD` + netracked, pe **extensie**. `scripts/perimetru.py` o face; **nu se judecă** „păi ăsta e doar un registru" |
+| **ce se rulează atunci** | gărzile de **registru** — derivate, nu enumerate: un test intră dacă numește el însuși un **registru** (`.md` din rădăcina repo-ului, plus cele două JSON-uri de proveniență), sau dacă importă un scaner din `scripts/` care îl numește |
+| **când NU se aplică** | dacă s-a atins **măcar un** `.py` sau `.js`. Un registru atins **alături de cod** lasă întrebarea deschisă — graful de import nu spune ce cod mai depinde de registru —, iar acolo se rulează tot |
+| **când NU se aplică, oricum** | **înainte de publicare** și **înainte de `/clear`**. Acolo poarta e cea completă, ca la regula 4 |
+
+**Cifra care o justifică, MĂSURATĂ:** poarta completă durează **~22 de minute** (1.310 s). Perimetrul
+de registre e **25 de fișiere / 253 de teste** și rulează în **396 s — 6 minute și 36 de secunde**.
+O tură de registre — și sunt multe: fiecare închidere de restanță, fiecare rescriere de predare —
+costa 22 de minute ca să afle dacă un antet are data de azi.
+
+**CE A CERUT REGULA, ca să nu fie o intenție — și cum m-am înșelat de două ori până la cifra bună.**
+Perimetrul trebuia **derivat**, nu scris ca listă.
+- **Prima formă** propaga tranzitiv prin tot graful de import: **357 din 578** de teste. Aproape
+  orice test ajunge, la câteva niveluri, la un modul care numește un fișier. *Un perimetru care ia
+  trei sferturi din suită nu derivă nimic; îmbracă „rulează tot" în alt nume.*
+- **A doua** număra ca „document" orice fișier urmărit de git care nu e executabil — deci și
+  șabloanele, și actele din `anaf_surse/` pe care le citează orice test fiscal într-un temei:
+  **137 de fișiere / 1.314 teste / 976 s**. Scurtare de un sfert, pentru un instrument care promitea
+  altceva. **Scrisesem în regula asta „~1,5 minute" — o estimare, nu o măsurătoare; am aflat că e
+  falsă cronometrând-o.**
+- **Forma care ține:** „document" înseamnă **REGISTRU** — un `.md` din **rădăcina** repo-ului, plus
+  cele două JSON-uri de proveniență. *Deosebirea nu e de prag, e de înțeles: un test care CITEAZĂ un
+  act din corpus într-un temei nu e o gardă de registru; unul care deschide `CONFORMITATE.md` e.*
+  Criteriul rămâne structural, deci un registru nou intră singur.
+
+**CE NU VEDE, declarat:** o gardă care ar construi numele registrului din bucăți, sau una care ajunge
+la el prin două module de `core/`. N-am întâlnit niciuna — dar de-aia forma asta se folosește
+**doar** când nu s-a atins niciun executabil, unde alternativa (poarta completă) e la o comandă.

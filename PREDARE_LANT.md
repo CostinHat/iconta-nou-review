@@ -155,12 +155,25 @@ cum a venit. Confirmarea rămâne scrisă în `public.supervizor_confirmari`, cu
 Înlănțuirea „aprobă + depune" trăia în client, deci un refuz lăsa elementul `aprobata` — stare din
 care nu se mai poate **respinge**. Acum se trimite **un act**, iar serverul aprobă după poartă.
 
-### CE TE AȘTEAPTĂ NEAPĂSAT
+### S-A APĂSAT. Nimic din supervizor nu mai e nedovedit *(03.09.2026, 07:43)*
 
-**Elementul `8052`** — `tenant_005` „Constructii Profit Trim SRL", D300 trim 3/2026, stare
-`aprobata`, verdict proaspăt. Poarta întoarce **409** cu `D101_VS_D100_PLATI_ANTICIPATE`, amprenta
-`09441a61b26c5ce555929ad4a890518f`: *rândul 50 = 12.000 lei, iar cele trei D100 depuse însumează
-15.200*. `public.supervizor_confirmari` e **gol** — nimeni n-a confirmat nimic în numele nimănui.
+Costin a trecut poarta **prin interfață, cap-coadă**, pe elementul `8052` (`tenant_005`, D300 trim
+3/2026): pasul s-a deschis cu constatarea și temeiul, **motivul gol a fost refuzat**, iar cu motiv
+scris depunerea a trecut. **Verificat în date, nu luat pe cuvânt:**
+
+```
+declaratii_coada 8052   -> stare 'depusa', depus_de_id 1968, depus_la 07:43:27
+supervizor_confirmari   -> 1 rând: tenant 4840 · 09/2026 · D101_VS_D100_PLATI_ANTICIPATE
+                           amprenta 09441a61b26c5ce555929ad4a890518f · de 1968
+                           motiv: „probă supervizor — se corectează prin rectificativă"
+declaratii_depuse       -> d300 2026/9, cu `randuri` NENUL
+```
+
+**`depus_la` și `confirmat_la` sunt aceeași secundă** — confirmarea și depunerea sunt un singur act,
+nu două care se pot despărți.
+
+*Ce rămâne adevărat: populația e construită, nu trăită. Ce nu mai e adevărat: că mecanismul e
+nedovedit. **A fost apăsat de un om, prin ecran.***
 
 ---
 ## AL PATRULEA: CE S-A SCHIMBAT ÎN BUCLA DE LUCRU — citește înainte de prima probă
@@ -330,6 +343,7 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 
 ---
 | **„elementul 8052 e blocat definitiv, nu se mai poate depune din aplicație"** | diagnosticul de la prima apăsare reală, 02.09 | **blocat pe ECRAN, nu în date.** Măsurat: `poate_tranzitiona('aprobata','depune')` e `True`, iar lista mono randează și elementele `aprobata`. Blocajul era al FILEI — `c.stare` rămăsese `la_senior` în memoria listei, deci a doua apăsare re-chema `aproba`. *Din scaunul omului, fundătură; în date, nu — iar deosebirea schimbă reparația* |
+| **„perimetrul de documente rulează în ~1,5 minute"** | regula 5, prima ei formă scrisă, 03.09 | **976 s — 16 minute.** Scrisesem o **estimare** acolo unde regula cerea o măsurătoare, iar cronometrarea a dat un ordin de mărime diferit. Cauza: numărasem ca „document" orice fișier neexecutabil urmărit de git, deci și actele din `anaf_surse/` pe care le citează orice test fiscal într-un temei — **137 de fișiere, 1.314 teste**. Cu registrele propriu-zise (`.md` din rădăcină): **25 de fișiere, 253 de teste, 396 s**. *A treia oară în trei zile când o cifră scrisă fără cronometru s-a dovedit falsă; de data asta am prins-o eu, măsurând înainte de a o raporta* |
 | **„R118 a stricat producția azi"** | comanda din 02.09 care a deschis tema | **nu s-a putut reconstitui.** Instanța documentată a clasei e cea din **01.09** (desktopul oprit, 15 ecrane). Pentru 02.09 logurile nu pot arăta o cădere de JS — o eroare de sintaxă nu ajunge niciodată la server. Ce **se poate** măsura e expunerea: `static/js` a fost rescris de zeci de ori în ziua aia, fiecare scriere live în aceeași secundă. *Clasa era reală și decizia a rămas bună; cifra „azi" nu se poate confrunta cu nimic* |
 
 ---
@@ -459,5 +473,7 @@ a ce e adevărat **acum**.
 5. **Cifrele nu se scriu în predare.** Blocurile sunt generate; „unde suntem" se derivă cu
    `scripts/raport_b.py`.
 6. **Elementul `8052` te așteaptă neapăsat** — v. „ce te așteaptă neapăsat", mai sus.
-7. **Cele patru reguli de conducere a lucrului** sunt în `PLAN_LUCRU.md`; regula 3 (proba pe
-   portofoliu) și regula 4 (poarta scurtă, cu `scripts/perimetru.py`) sunt cele mai noi.
+7. **Cele CINCI reguli de conducere a lucrului** sunt în `PLAN_LUCRU.md`. Cele mai noi: **3** (proba
+   pe portofoliu), **4** (poarta scurtă, perimetru derivat) și **5** (o tură fără `.py`/`.js`
+   rulează doar gărzile de registru — **25 de fișiere, 6 min 36 s**, față de 22 de minute).
+   Instrumentul amândurora: `scripts/perimetru.py`.
