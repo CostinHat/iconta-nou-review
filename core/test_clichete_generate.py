@@ -269,9 +269,27 @@ def test_SCUTIREA_e_una_singura_si_chiar_exista():
         "secțiunea scutită %r apare de %d ori — o scutire care se multiplică nu mai e o scutire"
         % (_SECTIUNE_SCUTITA, doc.count(_SECTIUNE_SCUTITA)))
     taiat = len(doc) - len(_proza(doc))
-    assert 0 < taiat < len(doc) // 3, (
-        "tăierea a scos %d din %d caractere — scutirea a înghițit prea mult din document"
-        % (taiat, len(doc)))
+    assert taiat > 0, "tăierea n-a scos nimic — scutirea nu mai potrivește secțiunea"
+
+    # [03.09.2026] CE VERIFICĂ ACUM, și de ce s-a schimbat criteriul.
+    #
+    # Forma dinainte cerea ca tăierea să fie sub **o treime** din document. Proxy rezonabil, dar
+    # măsura raportul greșit: tabelul cifrelor invalidate **doar crește** — regula scrisă acolo e că
+    # se POARTĂ, nu se șterge —, în timp ce restul predării se **rescrie** și se scurtează la fiecare
+    # rescriere completă. Deci proporția era condamnată să crească până pică, fără ca nimic să fie în
+    # neregulă. *S-a întâmplat la rescrierea din 03.09: 17.222 din 39.879 de caractere, adică 43%,
+    # pe un document corect.*
+    #
+    # Ce voia proxy-ul să apere e altceva: **ca sub titlul ăla să nu se mute proză**, lărgind tăcut
+    # scutirea. Aia se verifică direct — secțiunea tăiată trebuie să fie, covârșitor, TABEL.
+    inceput = doc.find(_SECTIUNE_SCUTITA)
+    sectiune = doc[inceput:inceput + taiat]
+    linii = [x.strip() for x in sectiune.splitlines() if x.strip()]
+    randuri = [x for x in linii if x.startswith("|")]
+    assert len(linii) >= 5, "secțiunea scutită e prea mică pentru a fi tabelul: %d linii" % len(linii)
+    assert len(randuri) >= len(linii) * 0.7, (
+        "doar %d din %d linii ale secțiunii scutite sunt rânduri de tabel — s-a mutat proză sub "
+        "titlul scutit, iar scutirea s-ar lărgi tăcut" % (len(randuri), len(linii)))
 
 
 def test_CALIBRARE_o_cifra_in_afara_scutirii_e_tot_prinsa():
