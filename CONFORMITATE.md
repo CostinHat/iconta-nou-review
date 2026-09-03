@@ -571,38 +571,50 @@ s-au și închis în aceeași zi) · **deschise acum 18**. **Intrări − ieșir
 închidere: se mișcă. Iar mișcarea e de un fel anume — restanțele noi vin din **măsurători care au
 scos ce nu se știa**, nu din defecte noi.
 
-### Capturile de referință vizuală — proprietar declarat (30.08.2026)
+### Capturile de referință vizuală — INTRATE 30.08.2026, SCOASE 03.09.2026
 
-*Scris fiindcă `core/test_capturi_numite.py` îl cere, iar cerința e corectă: pe 30.08 am versionat 14
-imagini fără să le numesc nicăieri. **Gardul le-a prins la prima poartă.** METODA §27: o captură fără
-proprietar în registru e, prin construcție, suspectă.*
+*Secțiunea rămâne, deși obiectul ei nu mai există: ea e singurul loc unde e scris **de ce** au intrat,
+iar decizia care le-a scos se citește numai pe fondul ăsta. Ștearsă, ar arăta ca și cum n-ar fi fost.*
 
-**Ce sunt:** cele 14 **baseline-uri** ale comparației vizuale între versiuni
-(`frontend_test/vizual/baseline_scan.py`). **Nu sunt probe** — nu dovedesc nicio restanță; sunt
-*referința* față de care se măsoară dacă un ecran s-a schimbat neintenționat.
+**Ce erau:** cele **15 baseline-uri** ale comparației vizuale între versiuni
+(`frontend_test/vizual/baseline_scan.py`), câte unul pentru fiecare ecran din
+`nav_ecrane.ECRANE`. **Nu erau probe** — nu dovedeau nicio restanță; erau *referința* față de care se
+măsura dacă un ecran s-a schimbat neintenționat.
 
-**De ce sunt în repo, din 30.08.2026** — decizia lui Costin, care **inversează** pe cea din 26.08
-(*„referințe locale, regenerabile"*): **„un baseline neversionat nu e baseline, e ultima
-măsurătoare."** Instanța care a produs inversarea e în `GARZI.md`, la constatarea despre ecranul
-`banca`: o constatare deschisă a rămas fără obiect fiindcă unealta care o măsura și-a **șters propria
-referință** la regenerare. `.gitignore` avea deja `!baseline/` scris din 26.08 — intenția era
-corectă, doar neexecutată; *`.gitignore` permite, nu adaugă*.
+**De ce au intrat, pe 30.08** — decizia lui Costin, care **inversa** pe cea din 26.08 (*„referințe
+locale, regenerabile"*): **„un baseline neversionat nu e baseline, e ultima măsurătoare."** Instanța
+care a produs inversarea e în `GARZI.md`, la constatarea despre ecranul `banca`: o constatare deschisă
+a rămas fără obiect fiindcă unealta care o măsura și-a **șters propria referință** la regenerare.
 
-**Prețul, declarat:** fiecare rulare a modului implicit rescrie toate cele 14 și produce un diff de
-~2,8 MB.
+**Prețul, declarat atunci:** fiecare rulare a modului implicit rescria toate cele 15 și producea un
+diff de ~2,8 MB.
 
-**Cele 15, pe nume:** `banca.png` · `casa.png` · `centrecost.png` · `declaratii.png` ·
-`etransport.png` · `import_mijloace_fixe.png` · `plan_conturi.png` · `rapoarte.png` ·
-`registratura.png` · `solduri_parteneri.png` · `stat_plata.png` · `stocuri.png` ·
-`supervizor.png` · `vector_fiscal.png` · `verificari.png`.
+**DE CE AU IEȘIT, pe 03.09.2026 — decizia de arhitectură a lui Costin, verbatim:**
 
-*[01.09.2026] Al 15-lea, `supervizor.png`, a intrat odată cu ecranul supervizorului — **primul ecran
-de CABINET** din inventarul vizual; toate celelalte sunt de firmă. Lista nu se scrie de mână: se
-confruntă cu `nav_ecrane.ECRANE`, iar gardul `test_capturi_numite` a cerut singur numele, la
-commitul care aducea captura.*
+> *„Un baseline vizual e o probă care îmbătrânește prin construcție — se strică la orice schimbare
+> legitimă, iar atunci se regenerează ca să treacă și devine formalitate. Ce se păstrează sunt
+> regulile, care nu îmbătrânesc: contrast minim, nicio revărsare la 393 px, elementele principale
+> vizibile fără derulare. Alea au prins lucruri reale; capturile n-au prins nimic."*
 
-*Ecranele sunt cele din `frontend_test/vizual/nav_ecrane.ECRANE` — deci lista de mai sus se poate
-confrunta cu inventarul de ecrane, nu e o enumerare scrisă din memorie.*
+**Cele două decizii nu se contrazic — a doua o cuprinde pe prima.** Cea din 30.08 răspundea la
+întrebarea *„unde stă referința?"* și avea dreptate: neversionată, nu e referință. Cea din 03.09
+răspunde la alta, mai de sus: *„merită să existe o referință?"* — și arată că **nu**, fiindcă
+mecanismul are un mod de eșec care îl golește de sens fără să se strice nimic. *Prețul de 2,8 MB,
+scris mai sus ca inconvenient, era de fapt simptomul: un gard care se repară prin rescrierea propriei
+referințe nu mai măsoară ce pretinde.*
+
+**Ce s-a scos, cu totul:** `baseline_scan.py`, directorul `baseline/` cu cele 15 capturi, rapoartele
+și artefactele lui. **Ce a rămas:** regulile, fiecare cu unealta ei — v. `METODA_VERIFICARE.md` §27,
+gardat în **ambele** direcții de `core/test_infra_vizuala.py` (uneltele de regulă trebuie să existe ·
+`baseline_scan.py` și `baseline/` **nu au voie să reapară**).
+
+**Ce NU s-a atins:** cele **30 de capturi-PROBĂ** rămase în index sub `frontend_test/` (`aa_*`,
+`po_*`, `r118_*`, `r126_*`, `r129_*`, `w_*`, plus **excepția pinată** de pe 20.08). Ele nu erau
+baseline-uri, ci urme ale unor stări care nu mai există — v. AA4 mai jos, și distincția din §27.
+*Fiecare e numită în registrul ăsta; gardul `test_capturi_numite` citește din index, deci le păzește
+mai departe pe ele, nu pe cele scoase.* **Alegerea e a mea și se poate răsturna:** comanda spunea
+*„cele 217 capturi .png — se șterg"*, iar 217 e chiar numărul celor **neurmărite**; pe astea le-am
+ținut fiindcă nu sunt regenerabile. Dacă intenția era *toate*, se spune și ies.
 
 ### R1 — Câte alte acte din corpus sunt PARȚIALE
 
@@ -4627,7 +4639,9 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
   alea erau **baseline-uri** — referințe locale, regenerabile cu `baseline_scan.py`, care cresc la
   fiecare recapturare. Astea sunt **probe ale unei stări care nu mai există** (firma de test e
   ștearsă, cabinetul și userul la fel), deci nu se pot regenera: nu sunt cost permanent, sunt singura
-  urmă. *(Regula, scrisă ulterior: `METODA_VERIFICARE.md` §27.)*
+  urmă. *(Regula, scrisă ulterior: `METODA_VERIFICARE.md` §27.)* **[03.09.2026] Distincția
+  asta le-a salvat și la a doua decizie:** când mecanismul de baseline a fost scos cu totul,
+  capturile astea au rămas — tocmai fiindcă **nu se pot reface rulând un instrument**.
 - **fiecare captură, cu ce arată** *(corectat 28.08.2026: prima formă a rândului de mai sus le
   pomenea printr-un **glob** — `frontend_test/aa_*.png`, `w_*.png`. Un glob e o mențiune pentru un om
   și **nimic** pentru un instrument, iar peste o lună nici omul nu mai știe care erau. Găsit de

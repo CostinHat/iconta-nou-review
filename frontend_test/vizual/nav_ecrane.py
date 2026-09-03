@@ -9,7 +9,7 @@ Sursa navigarii:
   - #fa-salariati -> ecranSalariati, care randeaza "Stat de plata" (firme.js:499, h2.pf-titlu)
   - #fa-declaratii -> declaratiiPerFirma (firme.js:307)
 
-Le foloseste axe_scan.py, mobil_scan.py, baseline_scan.py -> UN SINGUR loc de adevar
+Le foloseste axe_scan.py, mobil_scan.py, interactiune_scan.py -> UN SINGUR loc de adevar
 pentru "ce inseamna ecranul X".
 """
 from w_auth import BAZA, deschide_firma  # noqa: F401  (INIT aplicat de deschide_firma via context)

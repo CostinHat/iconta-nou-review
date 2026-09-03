@@ -2979,6 +2979,11 @@ Loturi 1-2 din campania "repara TOT pe clasa" (2509330->e090166). Detalii + ce r
   Gard core/test_infra_vizuala.py (4 teste): pica daca lipseste vreo unealta, axe.min.js (trunchiat sub
   100KB), vreun baseline, sau un ecran din nav_ecrane.ECRANE. Face imposibila disparitia TACUTA a
   infrastructurii vizuale (Regula 6). Probat: cele 4 teste in suita (2251 passed, c83f152).
+  **[03.09.2026] A TREIA UNEALTA A FOST SCOASA**: baseline_scan.py + baseline/ (15 capturi) ies din
+  repo prin decizie de arhitectura — un baseline imbatraneste prin constructie, iar regenerarea lui
+  ca sa treaca il face formalitate. Locul lui in garda il ia interactiune_scan.py, iar garda cere
+  acum si directia opusa: mecanismul NU are voie sa reapara. Motivul intreg: METODA_VERIFICARE.md
+  §27; registrul: CONFORMITATE.md, sectiunea capturilor de referinta.
 
 - **VERDICT CONTROL FISCAL — DIACRITICE + FARA NUME INTERN** [17.08.2026, audit vizual tenant_004]:
   gard core/test_control_fiscal_diacritice.py (2 teste) — mesajele de verdict (neclar/neaplic/datorate) din
@@ -7278,11 +7283,70 @@ ce**, pe rândul scris) · `::test_o_EURISTICA_nu_cere_NIMIC_la_depunere` (inclu
 derivare, `coada_api.perioada_din_payload()` + `firma_si_perioada()`. *Regula „nu construi paralel",
 aplicată înainte ca paralela să existe.*
 
+## 03.09.2026 — Garda care ține §27 să nu rămână o intenție, și două gărzi pe care curățenia le-a doborât
+
+**Cerută de Costin în chiar tura în care §27 s-a rescris**, verbatim: *„Adaugă la curățenie: o gardă
+care refuză introducerea de fișiere imagine ca probă vizuală. **Fără ea, §27 rescris rămâne o intenție
+și capturile revin la prima tură de interfață.** Capturile pentru diagnostic, în timpul unei ture,
+rămân permise — dar nu se salvează și nu devin bază de comparație."*
+
+`core/test_fara_probe_imagine.py` — **7 teste**. Granița pe care o trage nu e *„ce e o probă"*, care e
+o judecată, ci **„intră în index?"**, care e mecanic:
+
+| ce | verdict |
+|---|---|
+| capturi făcute **în timpul** turei, ca să te uiți la ele | **permis** — așa s-au găsit defectele zilelor astea |
+| aceleași capturi **salvate în repo** | **refuzat** — mulțimea imaginilor din index e pinată: 30 de probe + 5 de produs + 2 date încărcate |
+| cod care compară două imagini | **refuzat** — pe **import**, structural (AST), nu pe numele funcției |
+
+**Clichet în AMÂNDOUĂ direcțiile** (METODA §22): una nouă pică, dar și una **dispărută** pică, cerând
+să fie scoasă din listă. *Un clichet care păstrează morții devine, în câteva luni, o afirmație despre
+o lume pe care n-o mai vede.*
+
+**Interdicția pe mecanism e pe IMPORT, nu pe nume.** `PIL` / `pixelmatch` / `imagehash` / `cv2` /
+`skimage` în Python, citite din AST; `toHaveScreenshot` / `toMatchImageSnapshot` în JS, citite ca
+text — *motivul scris lângă gardă, cum cere METODA §23: n-avem parser de JS în suită, iar riscul e
+mic fiindcă sunt nume de API, nu cuvinte de proză.* Măsurat azi: **0** ocurențe în tot repo-ul.
+
+**RED-PROOF PE MECANISMUL REAL, nu pe o listă fabricată** (regula 3, „se probează pe portofoliu"):
+am creat o captură, am făcut `git add -f`, garda a devenit roșie cu mesajul ei — apoi am scos-o.
+*Calibrarea pe listă fabricată e și ea acolo, în amândouă direcțiile, dar singură n-ar fi dovedit că
+garda vede indexul adevărat.*
+
+**Și ce a prins poarta, la prima încercare de commit:** una din aserțiunile de calibrare ale gărzii
+noi era ea însăși ancorată pe text — `assert "…/proba_noua.png" in gasite - ADMISE` —, iar clichetul
+**50** a urcat 1221 → 1222. *Ironia e utilă, nu amuzantă: o gardă scrisă ca să apere o regulă
+structurală a intrat în repo cu o aserțiune pe apartenență.* Rescrisă pe **egalitate de mulțimi**, care
+prinde și direcția opusă (un filtru prea lacom, care ar lua și un `.py` drept imagine) — clichetul a
+coborât înapoi la **1221**, fără să fie ridicat. *Un clichet ridicat „doar cu unul" e felul obișnuit în
+care o interdicție devine o statistică.*
+
+---
+
+**ȘI DOUĂ GĂRZI CARE AU PICAT PENTRU CĂ LUMEA S-A SCHIMBAT — amândouă aveau dreptate.**
+
+- **`test_metoda_vie::test_fisierele_numite_de_metoda_exista`** cerea ca fiecare cale citată în
+  METODA să existe pe disc. §27 rescris **numește**, pe drept, unealta scoasă. *Un document de metodă
+  trebuie să poată scrie și ce a scos — altfel deciziile de arhitectură n-au unde trăi.* Reparat cu
+  un **bloc declarat**, `CAI-SCOASE`, pentru care gardul cere **exact opusul**: căile din el trebuie
+  să **lipsească**. Dacă `baseline_scan.py` reapare, blocul devine roșu. *Structural (delimitatori),
+  nu textual — nu se caută cuvântul „scos" prin proză, ceea ce §23 interzice.*
+- **`test_perimetru::test_ce_s_a_modificat_fata_de_HEAD_nu_include_fisierele_NEURMARITE`** avea un
+  anti-vacuu care cerea `assert nt` — adică **se sprijinea pe sediment**: cele 299 de fișiere
+  neurmărite pe care arborele le purta permanent. În ziua în care arborele s-a curățat, aserțiunea a
+  picat. *Un anti-vacuu care depinde de dezordinea din jur măsoară dezordinea, nu instrumentul.*
+  Acum testul **își produce singur** condiția: creează un fișier neurmărit, verifică amândouă
+  direcțiile, îl șterge.
+
+*Ce merită dus mai departe: curățarea unui arbore a doborât două gărzi, și niciuna nu era falsă. O
+gardă poate fi corectă și totuși legată de o stare pe care n-a declarat-o — aici, „există dezordine"
+și „metoda numește doar lucruri vii".*
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**511 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**512 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 494
+### `core/` — 495
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7569,6 +7633,7 @@ aplicată înainte ca paralela să existe.*
 - `core/test_export_winmentor.py` — Teste F187 — export WinMENTOR. Verificare contra spec-ului OFICIAL (Facturi clienti.pdf Rev.1.2 +
 - `core/test_facturi_recurente_randuri_dinamice.py` — GARD cap.24 — randuri dinamice facturi RECURENTE (sablon), re-rulate IN POARTA prin chromium headless.
 - `core/test_faptul_bate_vectorul.py` — GARD (21.08.2026): FAPTUL BATE VECTORUL în selectorul de declarații, iar „lună închisă" nu mai
+- `core/test_fara_probe_imagine.py` — GARDĂ (03.09.2026): **un fișier imagine nu mai intră în repo ca probă vizuală**, și **niciun cod
 - `core/test_fereastra_focusabila.py` — [a11y WCAG 2.1.1 / Regula 14] GARD: corpul modal .fereastra-corp e focusabil din tastatura.
 - `core/test_fieldmark.py` — [Regula 13 + Regula 6] GARDA: marcajul vizual al campului cu eroare de validare (Regula 14 pct.4).
 - `core/test_firma_profil_api.py` — Teste pure pentru helper-ele F180 (regim TVA vs ANAF) din firma_profil_api.

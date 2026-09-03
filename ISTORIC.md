@@ -7722,3 +7722,117 @@ zi). Poarta a respins **o dată**, patru teste, **toate de înregistrare** — b
 **575 s** — față de **~1.310 s** ai porții complete. *Se scrie ca interval fiindcă a doua rulare a
 dat cu 45% mai mult pe aceeași mulțime; mașina e partajată, iar o singură cronometrare ar fi devenit
 încă un fapt fals — a doua oară în aceeași zi.*
+
+---
+
+## 03.09.2026, tura a doua — Arborele a ajuns gol, iar un mecanism de gardă a fost scos fiindcă nu prinsese niciodată nimic
+
+**Pentru un contabil, ziua asta n-a schimbat nimic.** Nicio cifră, niciun ecran, niciun refuz nou.
+Se scrie ca atare, fiindcă alternativa e să sune ca o zi de lucru livrat.
+
+## Ce s-a curățat, pe categorii numărate
+
+Tura dinainte se încheiase cu o **constatare**, nu cu o reparație: arborele purta permanent **299**
+de fișiere neurmărite, iar din cauza lor instrumentul de perimetru refuza să scurteze poarta la
+fiecare tură. Comanda lui Costin: *„Curăță arborele acum, complet … la final `git status` trebuie să
+fie gol."*
+
+| ce | câte | ce s-a făcut |
+|---|---|---|
+| capturi `.png` neurmărite | **217** | șterse |
+| probe `.py` din `frontend_test/` | **55** | șterse — *sediment din sesiuni vechi; ce merita păstrat s-ar fi comis atunci* |
+| `.md` și `.csv` de lucru, fără cititor | **9** | șterse |
+| liste `LOT_1..7_VERIFICARI.md` | **7** | **comise** — sunt CITITE de `scripts/masoara_suprapunerea.py` |
+| `venv/` | — | intrat în `.gitignore` |
+| directoare rămase goale | 4 | scoase |
+
+**De ce cele șapte `LOT_*` nu s-au șters, deși erau tot fișiere de lucru:** `GARZI.md` declară o cifră
+drept *recalculabilă* rulând `masoara_suprapunerea.py`, iar scriptul le citește din rădăcină. Fără
+ele, cifra ar fi rămas adevărată și **nereproductibilă** — adică, după propria noastră regulă, o
+amintire, nu o măsurătoare. *Scriptul, în schimb, n-are niciun apelant automat: e o unealtă manuală.
+O spun ca să nu pară că garda le ține.*
+
+## Decizia zilei: comparația pixel cu pixel iese cu totul
+
+Costin, verbatim: *„Un baseline vizual e o probă care îmbătrânește prin construcție — se strică la
+orice schimbare legitimă, iar atunci se regenerează ca să treacă și devine formalitate. Ce se
+păstrează sunt regulile, care nu îmbătrânesc … Alea au prins lucruri reale; capturile n-au prins
+nimic."*
+
+Au ieșit din repo `frontend_test/vizual/baseline_scan.py` și cele **15** capturi de referință.
+
+**Ce face decizia asta neobișnuită: răstoarnă una luată acum patru zile, și amândouă erau corecte pe
+întrebarea lor.** Pe 30.08 baseline-urile intraseră în git fiindcă *„un baseline neversionat nu e
+baseline, e ultima măsurătoare"* — răspuns la *unde stă referința*. Azi întrebarea a fost mai de sus:
+*merită să existe referința?* Iar prețul scris atunci ca inconvenient (**2,8 MB** de diff la fiecare
+regenerare) era de fapt simptomul: **un gard care se repară prin rescrierea propriei referințe nu mai
+măsoară ce pretinde.**
+
+**Ce a rămas — regulile, fiecare cu unealta ei:** contrast/etichete/landmarks (`axe_scan`), revărsare
+la 393 px și ținte de atingere (`mobil_scan`), comportament la apăsare și text lung
+(`interactiune_scan`). *Verificarea, pe fapte: contrastul 3,82 al pastilei de versiune, revărsarea la
+393 px a barei de sus și țintele sub 24 px au fost prinse — toate trei — de gărzile de regulă, în
+ultimele trei săptămâni. Comparația de capturi n-a prins niciuna, fiindcă fiecare a apărut **odată
+cu** captura de referință. Asta e proba, nu preferința.*
+
+`core/test_infra_vizuala.py` a fost rescris și **cere acum și direcția opusă**: `baseline_scan.py` și
+`baseline/` **nu au voie să reapară**. *Fără aserțiunea aia, cineva — eu, peste o lună — ar reface
+mecanismul fiindcă „lipsește ceva din infra vizuală"; motivul pentru care a fost scos nu trăiește în
+cod, ci într-o decizie.* Motivul întreg: `METODA_VERIFICARE.md` **§27**, rescris cu totul.
+
+## Ce am ținut de capul meu, și se poate răsturna
+
+Cele **30 de capturi comise** din `frontend_test/` (`aa_*`, `po_*`, `r118_*`, `r126_*`, `r129_*`,
+`w_*`, plus excepția pinată de pe 20.08) **au rămas**. Comanda spunea *„cele 217 capturi `.png` — se
+șterg"*, iar 217 e chiar numărul celor **neurmărite**; astea sunt altceva — probe ale unor stări care
+nu mai există (firma ștearsă, cabinetul dus), deci **nu se pot reface rulând un instrument**. E
+distincția din §27, singura care le-a ținut. *Dacă intenția era „toate", se spune și ies.*
+
+## Cifrele turei
+
+Un commit. `git status`: **299 de fișiere neurmărite → 0**. Din index au ieșit **16** fișiere
+(`baseline_scan.py` + 15 capturi), au intrat **7**. Șapte documente normative atinse
+(`METODA_VERIFICARE.md` §27 rescris · `CONFORMITATE.md` · `CLAUDE.md` · `GARZI.md` · `TESTE.md` ·
+`MODEL_AUDIT_TENANT.md` · README-ul uneltelor vizuale) — **toate trimiterile vii la mecanismul scos**
+au fost urmărite și rescrise, nu doar fișierul șters. *Trimiterile din jurnal — `ISTORIC`, intrările
+datate din `GARZI` — s-au lăsat cum erau: sunt istorie, iar rescrisă ar fi minciună.*
+
+## Și partea a doua a comenzii, venită după ce §27 era scris
+
+Costin, în timpul turei: *„Adaugă la curățenie: o gardă care refuză introducerea de fișiere imagine ca
+probă vizuală. **Fără ea, §27 rescris rămâne o intenție și capturile revin la prima tură de
+interfață.** Capturile pentru diagnostic, în timpul unei ture, rămân permise — dar nu se salvează și
+nu devin bază de comparație."*
+
+`core/test_fara_probe_imagine.py`, **7 teste**. Ce face cerința să se poată cabla e că **granița nu e
+„ce e o probă"**, care ar fi rămas o judecată, ci **„intră în index?"** — care e mecanic. Capturile de
+diagnostic rămân, deci, exact ce erau: se fac, te uiți la ele, nu se salvează. Mulțimea imaginilor din
+index e **pinată** — 30 de probe, 5 de produs, 2 date încărcate — cu clichet în **amândouă**
+direcțiile. A doua interdicție e pe **mecanism**: niciun cod nu compară două imagini, citit din
+**import**, pe AST. Măsurat: **0** ocurențe azi.
+
+**RED-proof pe mecanismul real, nu pe o listă fabricată:** captură creată → `git add -f` → garda a
+devenit roșie cu mesajul ei → scoasă. *Calibrarea pe listă fabricată e și ea acolo, dar singură n-ar
+fi dovedit că garda vede indexul adevărat — chiar greșeala pe care regula 3 a fost scrisă s-o prindă.*
+
+**Poarta a respins prima încercare de commit, și avea dreptate pe ceva ce n-aș fi văzut singur:** una
+din aserțiunile de calibrare ale gărzii noi era **ea însăși ancorată pe text**, iar clichetul 50 a
+urcat 1221 → 1222. *O gardă scrisă ca să apere o regulă structurală a intrat în repo cu o aserțiune pe
+apartenență.* Rescrisă pe egalitate de mulțimi — care prinde și direcția opusă, un filtru prea lacom —
+clichetul a coborât înapoi la 1221, **fără să fie ridicat**. *Un clichet ridicat „doar cu unul" e felul
+obișnuit în care o interdicție devine o statistică.*
+
+## Ce a găsit poarta completă, și de ce merită scris
+
+**Două gărzi au picat, și niciuna nu era falsă.** `test_metoda_vie` cerea ca fiecare cale citată în
+metodă să existe pe disc — iar §27 rescris **numește**, pe drept, unealta scoasă. *O metodă trebuie să
+poată scrie și ce a scos, altfel deciziile de arhitectură n-au unde trăi.* Reparat cu un bloc declarat
+`CAI-SCOASE`, pentru care gardul cere **exact opusul**: căile din el trebuie să lipsească.
+
+`test_perimetru` avea un anti-vacuu care cerea *„există măcar un fișier neurmărit"* — adică se
+sprijinea pe **chiar sedimentul** curățat azi. *Un anti-vacuu care depinde de dezordinea din jur
+măsoară dezordinea, nu instrumentul.* Acum își produce singur condiția.
+
+*Asta e observația care merită dusă mai departe: o gardă poate fi corectă și totuși legată de o stare
+pe care n-a declarat-o. Aici, cele două stări nedeclarate erau „există dezordine în arbore" și „metoda
+numește numai lucruri vii".*

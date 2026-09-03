@@ -617,6 +617,19 @@ la el prin două module de `core/`. N-am întâlnit niciuna — dar de-aia forma
 **refuzat** să scurteze, iar eu i-am dat fișierele pe linia de comandă ca să obțin răspunsul pe care
 îl voiam. *Aia e chiar ocolirea pe care regula o interzice.* Cauza refuzului era reală și se putea
 repara: socoteam „cod atins" și fișierele **neurmărite**, iar arborele poartă permanent **299** —
-**217 `.png`** (capturi de probă, ținute deliberat afară din repo, `METODA_VERIFICARE.md` §27),
-**58 `.py`** (55 de probe din `frontend_test/`, 3 ale lui `ruff` din `venv/` — care nu e în
-`.gitignore`), 10 `.md` și 6 `.csv` de lucru. **Reparat instrumentul, nu regula.**
+**217 `.png`** (capturi de probă), **58 `.py`** (55 de probe din `frontend_test/`, 3 ale lui `ruff`
+din `venv/` — care nu era în `.gitignore`), 10 `.md` și 6 `.csv` de lucru. **Reparat instrumentul, nu
+regula.**
+
+**ȘI A DOUA JUMĂTATE A REPARAȚIEI — arborele, curățat *(Costin, 03.09.2026)*.** Instrumentul reparat
+face regula aplicabilă, dar cele 299 de fișiere rămâneau o stare pe care nimeni n-o hotărâse. Comanda:
+*„Curăță arborele acum, complet … la final `git status` trebuie să fie gol."* Executat: **299 → 0**.
+Au fost șterse 217 capturi, 55 de probe `.py` și 9 fișiere de lucru; `venv/` a intrat în `.gitignore`;
+cele 7 liste `LOT_*_VERIFICARI.md` s-au **comis**, fiindcă un script urmărit le citește, iar `GARZI.md`
+declară o cifră drept recalculabilă prin el.
+
+*Ce se schimbă practic, de aici înainte:* `git ls-files --others` întoarce **gol**, deci un fișier
+neurmărit nou e de acum **un semnal**, nu zgomot de fond. **Restul de 299 nu era normal — era
+sediment**: probe scrise ca să răspundă la o întrebare, lăsate acolo după ce întrebarea primise
+răspuns. *Dacă merita păstrată, o probă s-ar fi comis atunci; una păstrată „pentru mai târziu" e o
+copie fără proprietar, care peste o lună nu se mai poate deosebi de una care mai contează.*

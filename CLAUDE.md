@@ -699,7 +699,7 @@ Executorul commite LOCAL si continua cu clusterul urmator FARA sa se opreasca; i
 
 11. **POARTA VERDE VIZUALA (17.08.2026, ceruta de Costin).** Daca tura a ATINS vreun ecran (reparat,
    construit, probat orice ajunge pe un ecran), poarta verde NU e completa pana cand cele TREI unelte
-   vizuale (frontend_test/vizual: `axe_scan` / `mobil_scan` / `baseline_scan`) nu au fost rulate pe
+   vizuale (frontend_test/vizual: `axe_scan` / `mobil_scan` / `interactiune_scan`) nu au fost rulate pe
    ecranele atinse in tura respectiva, iar rezultatele lor (CU CIFRE) nu sunt in raport la §3 (PROBA).
    E obligatie de EXECUTOR — cer app viu + browser + auth, deci NU se cableaza in pre-commit (ca
    restartul, pct.10). O tura care NU a atins niciun ecran e SCUTITA, dar o DECLARA explicit in raport

@@ -1,8 +1,8 @@
-# capturile de referinta ale uneltelor vizuale (decizia lui Costin, 26.08.2026)
-# Un baseline vizual e o referinta LOCALA, nu un artefact partajat: doua statii cu randari
-# usor diferite ar produce diferente care nu sunt regresii. Iar ~2 MB de PNG care cresc la
-# fiecare recapturare sunt cost permanent pentru ceva regenerabil cu `baseline_scan.py`.
-# Starea de dinainte era cea mai proasta dintre cele trei: 5 urmarite din 14.
+# [03.09.2026] Comparatia pixel cu pixel a fost SCOASA cu totul (METODA_VERIFICARE.md §27):
+# un baseline vizual imbatraneste prin constructie — se strica la orice schimbare legitima, iar
+# atunci se regenereaza ca sa treaca si devine formalitate. Regula, nu asemanarea, e ce se pastreaza.
+# Randul de mai jos ramane ca a doua incuietoare: garda `core/test_fara_probe_imagine.py` refuza
+# imaginile noi in index, iar asta le opreste sa se adune macar pe disc, in vechiul lor loc.
 frontend_test/vizual/baseline/
 
 # backup-uri de la patch-uri (nu versionam - git e istoricul acum)
@@ -63,3 +63,6 @@ venv/lib/python3.12/site-packages/pyee-*.dist-info/
 # Jurnalul portii (23.08.2026): urma respingerilor, ca sa se poata raspunde la
 # "a prins vreodata garda X o regresie reala?". NU se versioneaza - e o urma locala.
 .poarta_jurnal.log
+
+# venv-ul nu e al nostru: dependentele nu se versioneaza. [03.09.2026]
+venv/

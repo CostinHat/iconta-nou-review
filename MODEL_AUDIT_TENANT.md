@@ -76,7 +76,7 @@ consecință are (care declarație se blochează).
 
 **Întrebarea:** ecranul e citibil și utilizabil, pe desktop și pe telefon? **Sonde:** `frontend_test/vizual/` —
 `axe_scan.py` (contrast, etichete, title-only), `scan_region_all.py` (landmarks/region), `mobil_scan.py` (Pixel5:
-țintă atingere <24px AA 2.5.8, hover-pierdut pe touch, revărsare orizontală), `baseline_scan.py --compare` (diff
+țintă atingere <24px AA 2.5.8, hover-pierdut pe touch, revărsare orizontală), `interactiune_scan.py` (comportament la apăsare; diff
 pixel). **Verdict:** contrast=0, region=0, ținte <24px=0, fără info livrată exclusiv prin hover/title, fără
 revărsare. Captura **privită**, nu doar selectorul trecut.
 

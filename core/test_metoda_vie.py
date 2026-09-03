@@ -30,9 +30,39 @@ def test_documentul_exista_si_nu_s_a_golit():
     assert len(t) > 4000, "metoda s-a golit (%d octeți) — a fost trunchiată?" % len(t)
 
 
+_SCOASE_START = "<!-- CAI-SCOASE:START"
+_SCOASE_STOP = "<!-- CAI-SCOASE:STOP"
+
+
+def _cai_scoase():
+    """Căile pe care metoda le numește ca **scoase**, dintr-un bloc DECLARAT, nu ghicite din proză.
+
+    [03.09.2026] O metodă trebuie să poată scrie și de ce a scos un instrument — altfel deciziile de
+    arhitectură n-ar avea unde să trăiască. Blocul e structural (delimitatori), nu textual: nu se
+    caută cuvântul „scos" prin paragrafe, cum ar cere §23 să NU se facă."""
+    t = _text()
+    if _SCOASE_START not in t or _SCOASE_STOP not in t:
+        return set()
+    bloc = t[t.index(_SCOASE_START):t.index(_SCOASE_STOP)]
+    return set(re.findall(r"`((?:core|frontend_test|static|scripts)/[\w/]+\.(?:py|js))`", bloc))
+
+
+def test_caile_declarate_SCOASE_chiar_lipsesc():
+    """Direcția opusă, și e chiar rostul blocului: dacă un instrument declarat scos REAPARE, metoda
+    minte în celălalt sens — iar minciuna aia e mai greu de văzut decât o cale ruptă."""
+    scoase = _cai_scoase()
+    reaparute = sorted(c for c in scoase if os.path.exists(os.path.join(_RAD, c)))
+    assert not reaparute, (
+        "METODA_VERIFICARE.md le declară SCOASE, dar există pe disc:\n  " + "\n  ".join(reaparute)
+        + "\n\nOri s-a schimbat decizia (atunci se schimbă metoda ÎNTÂI, acolo unde e scris de ce), "
+          "ori cineva a refăcut un mecanism scos deliberat.")
+
+
 def test_fisierele_numite_de_metoda_exista():
-    """Miezul. Căile citate cu backtick în document trebuie să existe pe disc."""
-    cai = sorted(set(re.findall(r"`((?:core|frontend_test|static)/[\w/]+\.(?:py|js))`", _text())))
+    """Miezul. Căile citate cu backtick în document trebuie să existe pe disc — afară de cele
+    declarate SCOASE în blocul `CAI-SCOASE`, care sunt cerute exact invers, mai sus."""
+    cai = sorted(set(re.findall(r"`((?:core|frontend_test|static)/[\w/]+\.(?:py|js))`", _text()))
+                 - _cai_scoase())
     lipsa = [c for c in cai if not os.path.exists(os.path.join(_RAD, c))]
     assert not lipsa, (
         "METODA_VERIFICARE.md numește fișiere care nu există:\n  " + "\n  ".join(lipsa)

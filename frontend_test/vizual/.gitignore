@@ -10,4 +10,5 @@ diff_*.png
 __pycache__/
 
 # SE versionează (referință pentru comparație): baseline/*.png, axe.min.js, cele 3 unelte, nav_ecrane.py
-!baseline/
+# Baseline-urile au fost SCOASE (03.09.2026, decizia lui Costin): un baseline vizual imbatraneste
+# prin constructie. Ce se pastreaza sunt REGULILE — v. METODA_VERIFICARE.md §27.

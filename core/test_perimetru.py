@@ -65,9 +65,26 @@ def test_ce_s_a_modificat_fata_de_HEAD_nu_include_fisierele_NEURMARITE():
     nt = set(P.netracked())
     assert not (atinse & nt), (
         "`atinse_din_git` socoteste ca modificate fisiere NEURMARITE: %s" % sorted(atinse & nt)[:5])
-    # anti-vacuu: daca n-ar exista niciun fisier neurmarit, aserttiunea de sus n-ar dovedi nimic
-    assert nt, ("[anti-vacuu] nu exista niciun fisier neurmarit in arbore, deci nu se poate proba "
-                "ca sunt tinute afara din perimetru")
+
+    # [03.09.2026] Anti-vacuu care isi PRODUCE conditia. Forma dinainte cerea `assert nt` — adica se
+    # sprijinea pe SEDIMENT: cele ~299 de fisiere neurmarite pe care arborele le purta permanent. In
+    # ziua in care arborele s-a curatat (git status gol), aserttiunea a picat — pe drept, dar dintr-un
+    # motiv care n-avea legatura cu proprietatea probata. *Un anti-vacuu care depinde de dezordinea
+    # din jur masoara dezordinea, nu instrumentul.* Acum testul isi face singur fisierul neurmarit.
+    proba = os.path.join(P.RAD, "_proba_neurmarit_%d.txt" % os.getpid())
+    try:
+        with open(proba, "w", encoding="utf-8") as f:
+            f.write("fisier de calibrare, sters imediat\n")
+        nume = os.path.basename(proba)
+        nt2 = set(P.netracked())
+        assert nume in nt2, (
+            "[anti-vacuu] un fisier neurmarit proaspat creat NU apare in `netracked()` — "
+            "instrumentul nu vede lumea despre care raporteaza (e ignorat de .gitignore?)")
+        assert nume not in set(P.atinse_din_git()), (
+            "un fisier NEURMARIT si NESTAGIAT a intrat in «ce s-a modificat fata de HEAD»")
+    finally:
+        if os.path.exists(proba):
+            os.unlink(proba)
 
 
 # ── regula 5: o tura fara executabile ruleaza doar garzile de registre si documente ────────────

@@ -749,51 +749,92 @@ aserțiune nu e o modificare, e o speranță.*
 
 ---
 
-## §27 — DOUĂ FELURI DE CAPTURI DE ECRAN, ȘI NUMAI UNUL INTRĂ ÎN REPO
+## §27 — VERIFICAREA VIZUALĂ SE FACE PE **REGULI**, NU PE ASEMĂNARE CU O CAPTURĂ
 
-O captură de ecran nu e un fel de artefact, sunt **două**, iar diferența dintre ele decide dacă intră
-în istoric sau nu. Confuzia lor a produs, în două zile, și o decizie de a le scoate pe toate, și o
-excepție ad-hoc de la ea.
+**DECIZIA DE ARHITECTURĂ (Costin, 03.09.2026), verbatim:**
 
-**CAPTURA-BASELINE** — o fotografie a ecranului **așa cum arată acum**, ținută ca referință pentru
-comparații viitoare. E **regenerabilă**: `frontend_test/vizual/baseline_scan.py` o reface oricând,
-fiindcă starea pe care o descrie e starea curentă a aplicației. **NU intră în repo** (decizia lui
-Costin, 26.08.2026, scrisă în `.gitignore`): *„un baseline vizual e o referință LOCALĂ, nu un
-artefact partajat: două stații cu randări ușor diferite ar produce diferențe care nu sunt regresii.
-Iar ~2 MB de PNG care cresc la fiecare recapturare sunt cost permanent pentru ceva regenerabil."*
+> *„Un baseline vizual e o probă care îmbătrânește prin construcție — se strică la orice schimbare
+> legitimă, iar atunci se regenerează ca să treacă și devine formalitate. Ce se păstrează sunt
+> regulile, care nu îmbătrânesc: contrast minim, nicio revărsare la 393 px, elementele principale
+> vizibile fără derulare. Alea au prins lucruri reale; capturile n-au prins nimic."*
 
-**CAPTURA-PROBĂ** — dovada că un lucru s-a întâmplat **o dată**, pe o stare care **nu mai există**.
-Firma de test e ștearsă, cabinetul și userul la fel, divergența nu se mai poate reproduce fără să
-refaci tot montajul. Nu e regenerabilă, deci nu e cost permanent: e **singura urmă**. **Intră în
-repo, selectiv**, și se **numește în `CONFORMITATE.md`, la restanța pe care o probează** — altfel e
-un fișier binar fără proprietar, iar peste o lună nimeni nu mai știe ce arată.
+**CE S-A SCOS, cu totul:** `frontend_test/vizual/baseline_scan.py`, directorul `baseline/` cu cele
+15 capturi de referință, rapoartele lui, și artefactele comparației (`b1_*`, `b2_*`, `cur_*`).
+Împreună cu ele au ieșit din arbore **217** capturi neurmărite, adunate în săptămâni.
 
-**TESTUL, într-o întrebare:** *pot să o refac rulând un instrument?* Dacă da, e baseline și rămâne
-afară. Dacă nu, e probă și intră, cu trimitere la restanță.
+**DE CE E O DECIZIE, nu o curățenie.** Comparația pixel cu pixel are un mod de eșec care o
+golește de sens **fără să se strice nimic**: orice schimbare legitimă de ecran o face roșie, iar
+singurul răspuns practic e să regenerezi referința. După a doua regenerare, gardul nu mai
+răspunde la întrebarea *„s-a stricat ceva?"*, ci la *„am regenerat de curând?"*. **Un gard care se
+repară prin ștergerea propriei referințe nu e un gard.** *Contrastul aceleiași clase: gărzile de
+regulă de mai jos au prins, în trei săptămâni, lucruri reale — contrast 3,82 pe o pastilă nouă,
+revărsare la 393 px pe bara de sus, ținte de atingere sub 24 px. Comparația de capturi n-a prins
+niciuna dintre ele, fiindcă toate au apărut **odată cu** captura de referință.*
 
-**CE NU SE FACE, decis 28.08.2026:** nu se adaugă capturi retroactiv. Regula se aplică **de-acum
-înainte**; cele 234 de artefacte vizuale neurmărite din `frontend_test/` rămân unde sunt. O regulă
-nouă aplicată în urmă ar produce un commit de sute de fișiere pe care nimeni nu le-a cerut, și ar
-transforma o distincție utilă într-o campanie.
+**CE SE PĂSTREAZĂ — regulile, fiecare cu unealta ei.** Nu îmbătrânesc: nu descriu o stare, descriu
+o constrângere.
 
-**LIMITA, declarată:** distincția e o **judecată**, nu un criteriu mecanic. Nimic nu împiedică pe
-cineva să numească „probă" o captură pe care ar fi putut-o regenera. Ce o ține onestă e obligația de
-a o lega de o restanță: o captură fără proprietar în registru e, prin construcție, suspectă.
+| regula | unde se verifică |
+|---|---|
+| contrast minim, etichete, landmarks (WCAG AA) | `frontend_test/vizual/axe_scan.py` + `axe.min.js` vandorizat |
+| **nicio revărsare orizontală la 393 px**, ținte de atingere ≥24 px, ce dispare pe touch | `frontend_test/vizual/mobil_scan.py` |
+| **elementele principale vizibile fără derulare**; comportamentul la apăsare; text lung fără rupere | `frontend_test/vizual/interactiune_scan.py`, cuplat mecanic de `core/test_acoperire_vizuala.py` |
 
-**ȘI DE AZI E GARDATĂ, fiindcă „suspectă" nu se autoverifică** (`core/test_capturi_numite.py`, HH):
-fiecare `.png` **comis** sub `frontend_test/` trebuie să aibă **numele de fișier** scris în
-`CONFORMITATE.md`. Se citește din **index**, nu de pe disc — o captură abia pusă în stage e prinsă la
-commitul care o aduce, nu la următorul.
+**Gardat**: `core/test_infra_vizuala.py` cere **uneltele de regulă** — și, în direcția opusă, cere ca
+`baseline_scan.py` și `baseline/` **să nu reapară**. *Fără a doua aserțiune, cineva ar putea reface
+mecanismul peste o lună fiindcă „lipsește ceva din infra vizuală", iar motivul pentru care a fost
+scos nu trăiește în cod, ci aici.*
 
-**Prima rulare a găsit 16 din 17 capturi comise fără proprietar** — adică regula era încălcată **de
-propriul ei autor, în ziua în care a scris-o**. Două clase, tratate diferit:
-- **opt de ieri**, pomenite printr-un **glob** (`frontend_test/aa_*.png`). Un glob e o mențiune
-  pentru un om și **nimic** pentru un instrument, iar peste o lună nici omul nu mai știe care erau.
-  **Reparate**: fiecare are acum un rând cu numele ei și cu ce arată.
-- **opt de pe 20.08**, dinainte ca regula să existe (`po_*.png`, patru-ochi). **Excepție declarată**,
-  într-o listă pinată în gardă, care **nu are voie să crească**. A le numi acum ar însemna să scriu,
-  opt zile mai târziu, ce probează fiecare — exact **repovestirea** refuzată la `GARZI.md`. Iar
-  decizia lui Costin a fost explicită: *„nu adăuga alte capturi retroactiv."*
+---
+
+**CE RĂMÂNE ADEVĂRAT DESPRE CAPTURI: cele care nu se pot reface.**
+
+O captură care **dovedește că un lucru s-a întâmplat o dată**, pe o stare care **nu mai există**
+(firma ștearsă, cabinetul dus, divergența nereproductibilă fără tot montajul) **nu e regenerabilă** —
+e singura urmă. Aia **intră în repo, selectiv**, și se **numește în `CONFORMITATE.md`, la restanța pe
+care o probează**. Altfel e un fișier binar fără proprietar, iar peste o lună nimeni nu mai știe ce
+arată.
+
+**TESTUL, într-o întrebare:** *pot să o refac rulând un instrument?* Dacă **da**, nu intră — și de
+azi nici nu se mai ține pe disc. Dacă **nu**, e probă și intră, cu trimitere la restanță.
+
+**GARDAT**, fiindcă „suspectă" nu se autoverifică (`core/test_capturi_numite.py`): fiecare `.png`
+**comis** sub `frontend_test/` trebuie să aibă numele scris în `CONFORMITATE.md`. Se citește din
+**index**, nu de pe disc — o captură abia pusă în stage e prinsă la commitul care o aduce.
+
+**LIMITA, declarată:** distincția rămâne o **judecată**, nu un criteriu mecanic. Ce o ține onestă e
+obligația de a lega captura de o restanță.
+
+**Excepția pinată** — opt capturi de pe 20.08, dinainte ca regula să existe — **nu are voie să
+crească**. A le numi retroactiv ar însemna să scriu, zile mai târziu, ce probează fiecare: exact
+repovestirea refuzată la `GARZI.md`.
+
+**ȘI GARDA CARE FACE DIN §27 O REGULĂ, nu o intenție** *(Costin, 03.09.2026, verbatim)*: *„Adaugă la
+curățenie: o gardă care refuză introducerea de fișiere imagine ca probă vizuală. Fără ea, §27 rescris
+rămâne o intenție și capturile revin la prima tură de interfață. Capturile pentru diagnostic, în
+timpul unei ture, rămân permise — dar nu se salvează și nu devin bază de comparație."*
+
+`core/test_fara_probe_imagine.py` — două interdicții și o graniță:
+
+| ce | verdict |
+|---|---|
+| capturi făcute **în timpul** turei, ca să te uiți la ele | **permis** — așa se găsesc defecte apăsând |
+| aceleași capturi **salvate în repo** | **refuzat** — mulțimea imaginilor din index e pinată |
+| cod care compară două imagini | **refuzat** — pe **import**, structural, nu pe numele funcției |
+
+*Granița nu e „ce e o probă", care e o judecată, ci **„intră în index?"**, care e mecanic.* Clichetul
+merge în **amândouă** direcțiile: una nouă pică, dar și una **dispărută** pică, cerând să fie scoasă
+din listă.
+
+<!-- CAI-SCOASE:START (căi pe care metoda le NUMEȘTE, dar care NU mai există; gardul le cere ABSENTE) -->
+- `frontend_test/vizual/baseline_scan.py` — scos 03.09.2026 prin decizia din §27
+<!-- CAI-SCOASE:STOP -->
+
+*Blocul de mai sus există fiindcă `core/test_metoda_vie.py` cere ca fiecare cale numită de metodă să
+existe pe disc — pe drept, altfel metoda ar descrie instrumente dispărute. Dar o metodă trebuie să
+poată numi și ce a **scos**, altfel n-ar putea scrie niciodată de ce. Blocul e o declarație
+structurală, nu o excepție tăcută: gardul cere pentru căile din el **exact opusul** — să nu existe.
+Dacă `baseline_scan.py` reapare, blocul devine roșu.*
 
 ## 11. O POZIȚIE se atribuie după CE PRODUCE modulul, nu după cum se numește
 
