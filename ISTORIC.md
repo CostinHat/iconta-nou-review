@@ -7625,3 +7625,85 @@ reparație. Toate au fost gărzi scrise de mine mai demult, care nu știau ce vi
 *Ce merită dus mai departe din ziua asta: de trei ori, defectele n-au fost găsite căutându-le — au
 ieșit fiindcă altceva avea nevoie să citească ceva, iar prima întrebare a fost „se poate citi?", nu
 „presupun că da".*
+
+---
+
+## 03.09.2026 — Ziua în care poarta a fost apăsată de un om, iar ce se servește s-a despărțit de ce e în lucru
+
+**Ziua A schimbat lucruri pentru un contabil** — și e prima în care afirmația nu se sprijină pe o
+probă scrisă de mine: Costin a trecut poarta confirmării **prin interfață**, cap-coadă.
+
+## Ce s-a schimbat pentru un contabil
+
+**1. O depunere oprită de supervizor nu se mai poate împotmoli.** Până azi, ecranul înlănțuia
+`POST /aproba` + `POST /depune`, iar poarta confirmării trăiește în al doilea. Deci **aprobarea
+trecea și poarta cădea după ea**: declarația rămânea `aprobata`, stare din care **nu se mai poate
+respinge**, iar o a doua apăsare murea pe *„nu pot aproba din starea «aprobata»"* fără să ajungă la
+depunere. Un refuz care spune „nu blochez" și totuși îngustează opțiunile omului. **Măsurat în
+`uvicorn.log`, nu dedus** — `aproba 200 · depune 409 · aproba 409` —, pe chiar apăsarea lui Costin.
+Reparat: se trimite **un act**, iar serverul aprobă **după** poartă. **R128.**
+
+**2. O filă lăsată deschisă află că s-a publicat o versiune nouă.** Aplicația compară amprenta
+publicării la 5 minute și la revenirea în filă, și **anunță** — o pastilă în bara de stare. **Nu
+reîncarcă singură**: probat pe ecran că un index SPV tastat rămâne și dialogul rămâne deschis.
+Instanța care a cerut-o e din aceeași zi: pasul de confirmare construit dimineața „nu s-a deschis"
+la Costin, fiindcă fila lui rula modulele commitului `9b3bf419`, cu **șapte publicări** în urmă.
+*Nu era un defect al codului nou; era codul nou care nu ajunsese la el.* **R129.**
+
+**3. Un `.js` scris pe server nu mai ajunge la browser fără să treacă poarta.** `/static` se servește
+dintr-un director publicat din HEAD, iar publicarea refuză orice `.js` care nu se parsează. Efectul
+pentru contabil e indirect dar măsurat pe 01.09: o ghilimea greșită oprise **tot desktopul**, 15
+ecrane. **R118**, ultima temă internă.
+
+## Ce NU s-a schimbat, și e cinstit spus
+
+- **Nicio cifră fiscală, niciun calcul de declarație, nicio regulă de calcul.** Ziua a fost despre
+  drumul dintre cod și ecran, nu despre ce scrie în declarații.
+- **Populația supervizorului e tot construită de mine.** Ce s-a schimbat e că **mecanismul** nu mai e
+  nedovedit: a fost apăsat de un om, prin ecran. Datele pe care le confruntă rămân ale mele.
+- **Cele 50 de restanțe deschise n-au scăzut prin muncă** — au scăzut cu una fiindcă R118 s-a închis,
+  iar două s-au deschis și închis în aceeași zi.
+
+## Ce am stricat, și se scrie
+
+- **Am servit câteva minute un `supervizor.js` cu o linie de gunoi.** Prima formă a probei R118
+  publica din arbore ca să testeze refuzul; mutația mea era **JS valid**, deci publicarea a reușit și
+  a înlocuit ce se servea. Proba n-avea republicare în `finally`. Reparat: se reface și se
+  **verifică pe octeți**.
+- **Am scris „~1,5 minute" într-o regulă, ca estimare.** Măsurat: **976 s**. Perimetrul regulii 5 a
+  fost corect abia la **a treia** definiție — „document" nu înseamnă orice fișier neexecutabil, ci
+  **registru** (`.md` din rădăcină). *Am prins-o cronometrând, înainte de a o raporta.*
+- **Am pus anunțul de versiune într-un loc care nu încăpea.** Argumentul era bun (bara de sus se
+  randează pentru toate rolurile); măsurătoarea l-a bătut — pe Pixel 5 bara e la limită *chiar fără*
+  anunț, iar cu el trecea la 424. Mutat în bara de stare, cu limita declarată: la rolul `client` nu
+  se vede.
+- **Prima derivare a perimetrului lua trei sferturi din suită.** Un perimetru care ia 357 din 578 de
+  teste nu derivă nimic; îmbracă „rulează tot" în alt nume.
+
+## Ce a condus ziua
+
+Patru comenzi ale lui Costin, iar trei dintre ele au **închis** ceva, nu au deschis:
+
+- *„R118, și numai ea. A trecut din alegere în incident recurent."* — tema a fost numită, cu marginea
+  ei. Am făcut **amândouă** căile pe care condiția lui R118 le cerea „fie una, fie alta".
+- *„Nu repara pe ghicite. Măsoară întâi ordinea reală."* — la defectul găsit apăsând. Măsurătoarea a
+  scos și cauza celui de-al doilea simptom, pe care aș fi pus-o altundeva: fila veche.
+- *„Nu se mai deschide nicio temă internă … ce urmează e ieșirea la un cabinet-pilot."* — scris în
+  `PLAN_LUCRU.md` **ca stare**, la cererea lui, ca să nu se reia din vecinătate după un `/clear`.
+- *„O tură care nu atinge niciun executabil rulează doar gărzile de registre."* — regula 5, cu
+  cerința care contează: *se stabilește din ce s-a modificat, nu prin judecată*.
+
+*Ce merită dus mai departe: cele două defecte reale ale zilei n-au ieșit dintr-o căutare. Au ieșit
+fiindcă un om a apăsat un buton — iar al doilea nici măcar nu era în cod.*
+
+## Cifrele zilei
+
+**Șapte commituri**, toate publicate four-way; ultimul poartă rândurile astea. Suita: **3979 → 3992**
+de teste. Restanțe deschise: **51 → 50** (R118 închisă; R128 și R129 deschise și închise în aceeași
+zi). Poarta a respins **o dată**, patru teste, **toate de înregistrare** — blocuri generate
+învechite; alte două respingeri le-am prins eu, rulând gărzile de registru înainte de commit.
+
+**Perimetrul regulii 5, cronometrat de două ori**: 25 de fișiere / 253 de teste, **396 s** și
+**575 s** — față de **~1.310 s** ai porții complete. *Se scrie ca interval fiindcă a doua rulare a
+dat cu 45% mai mult pe aceeași mulțime; mașina e partajată, iar o singură cronometrare ar fi devenit
+încă un fapt fals — a doua oară în aceeași zi.*

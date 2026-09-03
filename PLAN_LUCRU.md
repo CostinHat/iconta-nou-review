@@ -584,8 +584,11 @@ alternativa la nesiguranță e **tot**, nu **mai puțin**.
 | **când NU se aplică** | dacă s-a atins **măcar un** `.py` sau `.js`. Un registru atins **alături de cod** lasă întrebarea deschisă — graful de import nu spune ce cod mai depinde de registru —, iar acolo se rulează tot |
 | **când NU se aplică, oricum** | **înainte de publicare** și **înainte de `/clear`**. Acolo poarta e cea completă, ca la regula 4 |
 
-**Cifra care o justifică, MĂSURATĂ:** poarta completă durează **~22 de minute** (1.310 s). Perimetrul
-de registre e **25 de fișiere / 253 de teste** și rulează în **396 s — 6 minute și 36 de secunde**.
+**Cifra care o justifică, MĂSURATĂ pe DOUĂ rulări:** poarta completă durează **~22 de minute**
+(1.300–1.350 s). Perimetrul de registre e **25 de fișiere / 253 de teste** și rulează în
+**396–575 s (6,5–9,5 minute)**. *Se scrie ca interval, nu ca cifră: prima rulare a dat 396 s, a doua
+575 s pe aceeași mulțime de teste — mașina e partajată, iar o singură cronometrare ar fi devenit
+încă un fapt fals.*
 O tură de registre — și sunt multe: fiecare închidere de restanță, fiecare rescriere de predare —
 costa 22 de minute ca să afle dacă un antet are data de azi.
 
