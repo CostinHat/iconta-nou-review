@@ -24,6 +24,28 @@ if [ -x "$RUFF" ]; then
 else
     echo "[pre-commit] ATENTIE: ruff neinstalat in venv - poarta undefined-name (F821/F822/F823) SARITA. Ruleaza: ./venv/bin/pip install ruff"
 fi
+# ── OCOLIREA DE CURATENIE (03.09.2026, ceruta de Costin) ──────────────────
+# „Operatiunile de curatenie — stergeri de fisiere, .gitignore, mutari — nu ruleaza teste deloc.
+#  Nu exista cale prin care ele sa strice o declaratie."  (PLAN_LUCRU.md, regula 7 de conducere)
+#
+# CINE DECIDE: `scripts/curatenie.py`, din INDEX — NU eticheta din mesaj. Aici mesajul inca nu
+# exista (v. nota din jurnalul portii, mai jos: cu `git commit -F`, COMMIT_EDITMSG poarta mesajul
+# commitului PRECEDENT), deci o poarta care s-ar deschide cu o eticheta n-ar avea ce citi.
+# Eticheta `# doar-curatenie:` ramane obligatorie, si o cere `commit-msg`: ea e MARTURIA ca poarta
+# a fost sarita. O poarta sarita in tacere n-ar lasa nicio urma in istorie.
+#
+# Instrumentul deschide numai daca TOATE tin: stergeri / mutari identice / .gitignore, niciun `.py`
+# sau `.js`, niciun registru, si nimic din ce dispare nu e numit in ce se comite. Orice esec al lui
+# inseamna „nu e curatenie" — fail closed.
+#
+# CE SE SARE: pytest si verificatorul (cele ~22 de minute). CE A RULAT DEJA: `ruff`. Nu se ruleaza
+# nici avertismentul de vechime a predarii — un commit de curatenie nu e o tura de lucru.
+if "$PY" scripts/curatenie.py > /tmp/precommit_curatenie.log 2>&1; then
+    sed 's/^/[pre-commit] /' /tmp/precommit_curatenie.log
+    echo "[pre-commit] OK - COMMIT NUMAI DE CURATENIE: pytest si verificatorul NU se ruleaza."
+    echo "[pre-commit]   Mesajul TREBUIE sa poarte '# doar-curatenie: <motiv>' - o cere commit-msg."
+    exit 0
+fi
 echo "[pre-commit] pytest (suita intreaga, ~32s)..."
 "$PY" -m pytest -q > /tmp/precommit_pytest.log 2>&1
 RC=$?

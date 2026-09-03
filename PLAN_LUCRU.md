@@ -491,7 +491,7 @@ blocaj, o afirmație falsă pe ecran — se repară, ca oricând. *Un prag 1 nu 
 
 ---
 
-## Cinci reguli de conducere a lucrului *(Costin, 01–03.09.2026)*
+## Opt reguli de conducere a lucrului *(Costin, 01–03.09.2026)*
 
 **1. Deciziile care nu mută direcția sunt ale mele, nu urcă la arhitect.** O alegere între două
 implementări care duc în același loc, ordinea a două reparații din aceeași familie, forma unui gard,
@@ -633,3 +633,85 @@ neurmărit nou e de acum **un semnal**, nu zgomot de fond. **Restul de 299 nu er
 sediment**: probe scrise ca să răspundă la o întrebare, lăsate acolo după ce întrebarea primise
 răspuns. *Dacă merita păstrată, o probă s-ar fi comis atunci; una păstrată „pentru mai târziu" e o
 copie fără proprietar, care peste o lună nu se mai poate deosebi de una care mai contează.*
+
+
+**6. NU SE RULEAZĂ TOATĂ SUITA PENTRU ORICE** *(Costin, 03.09.2026, verbatim)*:
+
+> *„Nu se rulează toată suita pentru orice. Suita completă are un singur rost: să prindă ce n-ai
+> atins și nu poți anticipa — și are sens doar înainte de publicare. La orice altceva se rulează ce
+> ține de ce s-a atins."*
+
+Regula 4 spune **cum** se derivă perimetrul scurt, regula 5 **ce** se rulează când nu s-a atins
+niciun executabil. Asta spune **când are voie să apară suita întreagă**.
+
+| | |
+|---|---|
+| **rostul suitei complete** | să prindă **ce n-ai atins și nu poți anticipa**. Despre ce ai atins răspunde perimetrul — mai repede, și cu aceeași putere |
+| **unde are sens** | **înainte de publicare**. Pe repo-ul ăsta publicarea *e* commitul (`post-commit` publică singur, după poarta verde), deci suita completă înseamnă exact hook-ul `pre-commit`: **o dată** |
+| **în rest** | ce ține de ce s-a atins, derivat cu `scripts/perimetru.py` — nu ales, nu judecat |
+
+**Ce NU schimbă:** nimic din ce garantează poarta. Suita completă rulează la fel de des ca înainte —
+o dată per commit. Se taie rulările **dinaintea** ei, nu ea.
+
+---
+
+**7. OPERAȚIUNILE DE CURĂȚENIE NU RULEAZĂ TESTE DELOC** *(Costin, 03.09.2026, verbatim)*:
+
+> *„Operațiunile de curățenie — ștergeri de fișiere, `.gitignore`, mutări — nu rulează teste deloc.
+> Nu există cale prin care ele să strice o declarație."*
+
+Și condiția, din aceeași comandă:
+
+> *„Eticheta e ignorată dacă commitul atinge vreun fișier executabil sau vreun registru. Se aplică
+> doar la ștergeri, `.gitignore` și mutări. Altfel devine cheia care deschide tot."*
+
+| | |
+|---|---|
+| **cum se cere** | eticheta `# doar-curatenie: <motiv>` în mesajul de commit — același tipar ca `# upsert-ok:` și `# multe-fisiere-ok:` |
+| **cine DECIDE** | **indexul**, prin `scripts/curatenie.py`. Nu eticheta. Vezi mai jos de ce nu se putea altfel |
+| **ce se sare** | `pytest` și verificatorul — cele ~22 de minute |
+| **ce rămâne** | `ruff` (secunde, și e plasa pe nume nedefinite), plus toate porțile din `commit-msg` |
+| **ce se întâmplă dacă eticheta minte** | commitul e **respins** de `commit-msg`. Suita a rulat oricum — deci eticheta n-a *deschis* nimic, exact ca în condiție —, dar afirmația falsă nu rămâne în istorie |
+
+**DE CE DECIDE INDEXUL, ȘI NU ETICHETA — nu e o alegere de stil, e ordinea hook-urilor.** La
+`pre-commit`, mesajul commitului **încă nu există**: cu `git commit -F`, `.git/COMMIT_EDITMSG`
+poartă mesajul commitului **precedent** — dovedit pe 23.08.2026, scris în chiar antetul hook-ului.
+Deci o poartă care s-ar deschide cu o etichetă n-ar avea ce citi. *„Ignorată" din condiție devine
+astfel o proprietate a construcției, nu o verificare care ar putea fi ocolită.* Ce rămâne etichetei
+e **mărturia**: o poartă sărită în tăcere n-ar lăsa nicio urmă în istorie, iar `commit-msg` respinge
+și cazul invers — poartă sărită, mesaj care tace.
+
+**CELE TREI CONDIȚII, toate obligatorii.** *A treia nu era în comandă; o adaug, și spun de ce.*
+
+| | |
+|---|---|
+| **formă** | fiecare intrare din index e ștergere (`D`), mutare **identică** (`R100`), sau modificare de `.gitignore`. O mutare cu conținut schimbat se descompune în `D`+`A` și cade aici |
+| **clasă** | nicio cale atinsă nu e **executabil** (`.py`, `.js`) sau **registru** (`.md` din rădăcină + cele două JSON-uri de proveniență). Amândouă definițiile sunt **împrumutate de la `scripts/perimetru.py`**, nu rescrise: a doua definiție a aceluiași lucru e începutul unei divergențe tăcute |
+| **referință** *(în plus față de comandă)* | niciun nume șters sau mutat nu e **numit în ce se comite**. Un `.xsd`, o fixtură `.json`, o captură citată într-un registru nu sunt nici executabile, nici registre — dar dacă o gardă le deschide, ștergerea lor e o **modificare de cod prin absență**, iar suita cade la commitul următor, în brațele altcuiva. *Fără condiția asta, ocolirea chiar ar fi putut strica o declarație — adică exact ce spune comanda că nu se poate.* |
+
+**FAIL CLOSED.** Orice eșec — git care nu răspunde, index necitibil, căutare care crapă — înseamnă
+*nu e curățenie*, deci poartă completă. Și căutarea de referință greșește deliberat spre **refuz**
+(un nume scurt care e sub-șir în altul refuză ocolirea): un refuz costă 22 de minute, o trecere
+greșită costă o suită roșie pe capul următorului.
+
+**GARDAT:** `scripts/curatenie.py` (instrumentul) + `core/test_curatenie.py` (10 teste, calibrate în
+**amândouă** direcțiile — și pe patru mutații: scoasă verificarea de executabil, de registru, de
+referință, și descablat hook-ul; fiecare omoară exact testul care o păzește). *Ce nu acoperă,
+declarat:* ramura din `commit-msg` care cere eticheta când poarta chiar a fost sărită nu se poate
+exercita din suită — dacă indexul ar fi numai-curățenie, suita n-ar rula deloc.
+
+---
+
+**8. NU SE RULEAZĂ SUITA „ÎN AVANS, CA SĂ NU INTRI ORB ÎN POARTĂ"** *(Costin, 03.09.2026,
+verbatim)*:
+
+> *„Nu se rulează suita «în avans, ca să nu intri orb în poartă». E aceeași suită de două ori. Dacă
+> poarta respinge, se repară și se rulează o dată."*
+
+**Poarta *este* rularea.** O rulare preventivă nu adaugă nicio informație pe care poarta n-ar da-o
+douăzeci de minute mai târziu — plătește doar dreptul de a nu fi surprins.
+
+**CIFRA CARE A PRODUS CELE TREI REGULI, măsurată pe 03.09.2026:** dintr-o tură de **ștergere** de
+**75 de minute, 66 au fost porți** — trei rulări a câte 22 de minute, dintre care **una preventivă**.
+Aceeași tură, sub regulile 6–8: **zero minute de poartă**, fiindcă ștergerile nu ating nimic ce se
+execută.

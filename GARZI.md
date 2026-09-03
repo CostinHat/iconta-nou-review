@@ -7342,11 +7342,57 @@ care o interdicție devine o statistică.*
 gardă poate fi corectă și totuși legată de o stare pe care n-a declarat-o — aici, „există dezordine"
 și „metoda numește doar lucruri vii".*
 
+### Ocolirea de curățenie — poarta se sare din INDEX, nu din etichetă (03.09.2026)
+
+**Costin:** *„Adaugă în hook o cale de ocolire pentru commituri numai-curățenie: eticheta
+`# doar-curatenie:` în mesaj, ca escape-ul existent. **Condiție:** eticheta e ignorată dacă commitul
+atinge vreun fișier executabil sau vreun registru. Se aplică doar la ștergeri, `.gitignore` și
+mutări. **Altfel devine cheia care deschide tot.**"*
+
+**CE S-A CONSTRUIT.** `scripts/curatenie.py` — răspunde, din **index**, dacă un commit e numai
+curățenie. `pre-commit` îl întreabă și, pe „da", sare `pytest` și verificatorul (cele ~22 de minute);
+`commit-msg` cere eticheta când poarta a fost sărită, **și o respinge când nu i se aplică**.
+
+**DE CE DECIDE INDEXUL ȘI NU ETICHETA — nu e o alegere de stil, e ordinea hook-urilor.** La
+`pre-commit` mesajul **încă nu există**: cu `git commit -F`, `.git/COMMIT_EDITMSG` poartă mesajul
+commitului **precedent** (dovedit 23.08.2026, scris în antetul hook-ului). O poartă care s-ar
+deschide cu o etichetă n-ar avea ce citi. *Așa, „ignorată" din condiție e o proprietate a
+construcției, nu o verificare care ar putea fi ocolită.* Etichetei îi rămâne **mărturia**: o poartă
+sărită în tăcere n-ar lăsa nicio urmă în istorie.
+
+**CELE TREI CONDIȚII.** *Formă:* numai `D`, `R100` (mutare identică) și `.gitignore`. *Clasă:* niciun
+`.py`/`.js`, niciun registru — amândouă definițiile **împrumutate prin referință** de la
+`scripts/perimetru.py`, ca să nu existe a doua definiție care diverge tăcut. *Referință (în plus față
+de comandă, și e cea care contează):* niciun nume șters sau mutat nu e **numit în ce se comite** — un
+`.xsd`, o fixtură, o captură citată într-un registru nu sunt nici executabile, nici registre, dar
+dacă o gardă le deschide, ștergerea lor e o **modificare de cod prin absență**. *Fără ea, ocolirea
+chiar ar fi putut strica o declarație.* Orice eșec al instrumentului înseamnă „nu e curățenie" —
+**fail closed** —, iar căutarea de referință greșește deliberat spre refuz.
+
+**GARDA:** `core/test_curatenie.py`, 10 teste, în **amândouă** direcțiile (METODA §22): o curățenie
+adevărată **trece** — altfel instrumentul ar putea răspunde mereu „nu" și n-ar scurta niciodată
+nimic —, iar fiecare dintre cele patru feluri de a nu fi curățenie **refuză**, numind fișierul care a
+produs refuzul. Anti-vacuu pe căutarea de referințe: un nume care chiar e citat e găsit, unul
+inventat nu — o căutare care întoarce mereu vid ar declara „curățenie" pe orice ștergere.
+*Prima formă a picat la poartă, și pe drept:* numele „inexistent" era scris ca **literal** chiar în
+testul care îl declara inexistent, iar după stagiere `git grep --cached` l-a găsit acolo. Acum se
+construiește la rulare. **Un gard care se caută pe sine raportează despre o lume care îl conține.**
+
+**Mutații probate (RED), patru direcții:** scoasă verificarea de **executabil** · de **registru** ·
+de **referință** · **descablat** hook-ul `pre-commit`. Fiecare omoară exact testul care o păzește,
+niciuna nu omoară altceva.
+
+**CE NU ACOPERĂ, declarat:** ramura din `commit-msg` care cere eticheta când poarta **chiar** a fost
+sărită nu se poate exercita din suită — dacă indexul ar fi numai-curățenie, suita n-ar rula deloc.
+Și un nume construit din bucăți (`"cap" + "turi.png"`) scapă căutării de referință.
+
+**Regula pe care o cablează:** `PLAN_LUCRU.md`, regula 7 de conducere a lucrului.
+
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**512 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**513 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 495
+### `core/` — 496
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7456,6 +7502,7 @@ gardă poate fi corectă și totuși legată de o stare pe care n-a declarat-o �
 - `core/test_cota_fara_default_fallback.py` — GARD (R29): o cotă de TVA absentă nu se completează singură, în niciun limbaj și în nicio formă.
 - `core/test_cron.py` — Teste core/cron.py — ambalajul joburilor de fundal.
 - `core/test_cui_cnp_test_valid.py` — [Date de test — CUI/CNP verificate] GARD: un CUI/CNP folosit ca date de test VALIDE (`cui=`/`cnp="..."`)
+- `core/test_curatenie.py` — GARD [03.09.2026]: ocolirea de curatenie se deschide din INDEX, si numai pentru curatenie.
 - `core/test_d100.py` — Teste gardian pentru D100 - modulul a fost REFACUT complet 16.07.2026.
 - `core/test_d100_cota.py` — d100: rata default micro(1%)/profit(16%) vine din cota (impozit_micro/impozit_profit), NU din literalul
 - `core/test_d100_cui_checksum.py` — Gard T1 (CATALOG_INVALIDITATE.md, D100 #7/#11/#19): CUI-ul firmei trebuie validat de app

@@ -70,6 +70,40 @@ if [ -n "$NORMATIVE" ]; then
     fi
 fi
 
+# ───────────────────────────────────────────────────────────────────────────────
+# Poarta: O POARTA SARITA SE SPUNE IN MESAJ, IAR ETICHETA NU DESCHIDE ALTCEVA (03.09.2026).
+#
+# Cerut de Costin: „Adauga in hook o cale de ocolire pentru commituri numai-curatenie: eticheta
+# `# doar-curatenie:` in mesaj. Conditie: eticheta e ignorata daca commitul atinge vreun fisier
+# executabil sau vreun registru. Se aplica doar la stergeri, .gitignore si mutari. Altfel devine
+# cheia care deschide tot."
+#
+# CINE DECIDE, si de ce nu eticheta: `scripts/curatenie.py`, din INDEX. La `pre-commit` mesajul
+# inca nu exista, deci eticheta n-ar PUTEA sari poarta nici daca am vrea — „ignorata" din conditie
+# e, aici, o proprietate a constructiei, nu o verificare. Ce ramane etichetei e MARTURIA.
+#
+# Cele doua respingeri sunt simetrice:
+#   • poarta sarita, eticheta absenta   → commitul ar minti prin omisiune;
+#   • eticheta prezenta, dar nu e curatenie → ar minti prin afirmatie. Suita a rulat oricum, deci
+#     nimic nu s-a deschis; dar afirmatia falsa nu ramane in istorie.
+ROOT=$(git rev-parse --show-toplevel) || exit 1
+PY="$ROOT/venv/bin/python"
+[ -x "$PY" ] || PY=python3
+if "$PY" "$ROOT/scripts/curatenie.py" --tacut 2>/dev/null; then CURATENIE=1; else CURATENIE=0; fi
+if grep -qE '^# doar-curatenie:.{10,}' "$MSG"; then ETICHETA=1; else ETICHETA=0; fi
+if [ "$CURATENIE" = 1 ] && [ "$ETICHETA" = 0 ]; then
+    echo "[commit-msg] RESPINS: poarta a fost SARITA (commit numai de curatenie), iar mesajul n-o spune."
+    "$PY" "$ROOT/scripts/curatenie.py" | sed 's/^/    /'
+    echo "[commit-msg] Scrie in mesaj: '# doar-curatenie: <ce s-a curatat si de ce>' (minim 10 caractere)."
+    exit 1
+fi
+if [ "$CURATENIE" = 0 ] && [ "$ETICHETA" = 1 ]; then
+    echo "[commit-msg] RESPINS: mesajul poarta '# doar-curatenie:', dar commitul NU e numai curatenie."
+    "$PY" "$ROOT/scripts/curatenie.py" | sed 's/^/    /'
+    echo "[commit-msg] Poarta completa a rulat oricum - eticheta n-a deschis nimic. Scoate-o din mesaj."
+    exit 1
+fi
+
 # ─────────────────────────────────────────────────────────────────────────────
 # Poarta: MESAJUL NU POARTA OCTETI DE CONTROL (28.08.2026).
 #
