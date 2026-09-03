@@ -50,6 +50,26 @@ def test_un_modul_fara_niciun_dependent_nu_umfla_perimetrul():
         "instrumentul nu deriva nimic, doar returneaza tot" % (len(teste_d100), len(toate)))
 
 
+def test_ce_s_a_modificat_fata_de_HEAD_nu_include_fisierele_NEURMARITE():
+    """*„Se stabileste din ce s-a MODIFICAT fata de HEAD"* — adica `git diff HEAD`, care acopera
+    fisierele urmarite schimbate SI adaugirile puse in index. Un fisier neurmarit si nestagiat nu
+    face parte din ce se publica: pytest nu-l culege (probele se numesc `proba_*`), iar un test nou
+    intra aici de indata ce e stagiat.
+
+    **DE CE E UN GARD, nu o preferinta.** Forma dinainte adauga si neurmaritele, iar arborele asta
+    poarta permanent ~299 — deci instrumentul REFUZA sa scurteze la fiecare tura, si regula 5 devenea
+    inaplicabila. *Iar cand un instrument refuza mereu, tentatia e sa-l ocolesti — s-a si intamplat,
+    o data, si Costin a oprit-o: „nu-l suprascrie cu judecata ta."* Gardul asta face ca refuzul sa
+    ramana informativ."""
+    atinse = set(P.atinse_din_git())
+    nt = set(P.netracked())
+    assert not (atinse & nt), (
+        "`atinse_din_git` socoteste ca modificate fisiere NEURMARITE: %s" % sorted(atinse & nt)[:5])
+    # anti-vacuu: daca n-ar exista niciun fisier neurmarit, aserttiunea de sus n-ar dovedi nimic
+    assert nt, ("[anti-vacuu] nu exista niciun fisier neurmarit in arbore, deci nu se poate proba "
+                "ca sunt tinute afara din perimetru")
+
+
 # ── regula 5: o tura fara executabile ruleaza doar garzile de registre si documente ────────────
 def test_o_tura_DOAR_DE_DOCUMENTE_deriva_garzile_de_registre():
     """Regula 5 (Costin, 03.09.2026): *„o tura care nu atinge niciun fisier executabil (.py, .js)

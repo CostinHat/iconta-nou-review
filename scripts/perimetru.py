@@ -139,19 +139,50 @@ def graf_invers():
 
 
 def atinse_din_git():
-    """Fisierele schimbate fata de HEAD, plus cele netracked. Ce spune git, nu ce-mi amintesc eu."""
-    out = set()
-    for cmd in (["git", "diff", "--name-only", "HEAD"],
-                ["git", "ls-files", "--others", "--exclude-standard"]):
-        try:
-            r = subprocess.run(cmd, cwd=RAD, capture_output=True, text=True, timeout=60)
-        except Exception:
-            continue
-        out.update(x.strip() for x in r.stdout.splitlines() if x.strip())
-    # `venv/` apare la `--others` (nu e in .gitignore) si ar umple lista de ATINSE cu mii de
-    # fisiere ale dependentelor. Nu e o alegere de perimetru: e granita repo-ului. Se DECLARA,
-    # ca nimeni sa nu creada ca instrumentul a sarit ceva scris de noi.
+    """**CE S-A MODIFICAT FATA DE HEAD** — exact `git diff --name-only HEAD`, nimic altceva.
+
+    **[03.09.2026] Forma dinainte adauga si fisierele NETRACKED, si asta facea regula 5 inaplicabila
+    pe arborele asta.** Masurat: `git status` arata permanent **299** de fisiere neurmarite — **217
+    `.png`** (capturi de proba; `METODA_VERIFICARE.md` §27 le tine deliberat afara din repo), **58
+    `.py`** (din care **55** probe din `frontend_test/`, plus 3 ale lui `ruff` din `venv/`), 10 `.md`
+    si 6 `.csv` de lucru. Instrumentul le socotea „cod atins", deci **refuza sa scurteze la fiecare
+    tura**, oricat de mica.
+
+    **De ce forma noua e corecta, nu doar comoda.** *„Modificat fata de HEAD"* e chiar comanda:
+    `git diff HEAD` acopera fisierele urmarite care s-au schimbat **si** adaugirile puse in index —
+    adica exact ce va intra in commit. Un fisier neurmarit si nestagiat **nu face parte din ce se
+    publica**: pytest nu-l culege (probele se numesc `proba_*`, nu `test_*`), iar daca cineva scrie
+    un test nou, el apare aici **de indata ce il stagiaza**. *Riscul pe care il acopera vechea forma
+    — un test nou nevazut — dispare la `git add`, adica inainte de orice commit.*
+
+    **Ce NU se face:** nu se ocoleste refuzul instrumentului dandu-i argumente pe linia de comanda.
+    Costin, 03.09: *„nu-l suprascrie cu judecata ta — o exceptie luata o data face regula o
+    formalitate."* Daca instrumentul spune ca nu poate scurta, se ruleaza tot."""
+    try:
+        r = subprocess.run(["git", "diff", "--name-only", "HEAD"], cwd=RAD,
+                           capture_output=True, text=True, timeout=60)
+    except Exception:
+        return []
+    if r.returncode != 0:
+        return []
+    out = {x.strip() for x in r.stdout.splitlines() if x.strip()}
     return sorted(x for x in out if x.split("/", 1)[0] not in SARITE)
+
+
+def netracked():
+    """Fisierele neurmarite si nestagiate — NU intra in perimetru, dar se RAPORTEAZA.
+
+    Tacerea despre ele ar fi la fel de rea ca socotirea lor: cine citeste iesirea trebuie sa stie
+    ca exista o mulțime de fisiere pe care instrumentul nu le-a privit, si cat de mare e."""
+    try:
+        r = subprocess.run(["git", "ls-files", "--others", "--exclude-standard"], cwd=RAD,
+                           capture_output=True, text=True, timeout=60)
+    except Exception:
+        return []
+    if r.returncode != 0:
+        return []
+    return sorted(x.strip() for x in r.stdout.splitlines()
+                  if x.strip() and x.split("/", 1)[0] not in SARITE)
 
 
 #: Ce inseamna „fisier executabil" — cele doua feluri de cod care se EXECUTA in aplicatie.
@@ -315,9 +346,19 @@ def main(argv):
     if doar_pytest:
         print(" ".join(teste) if not incerte else "")
         return 0 if not incerte else 2
+    if not atinse:
+        print("ATINSE: niciunul — arborele e curat fata de HEAD. Nimic de rulat.")
+        _nt = netracked()
+        if _nt:
+            print("(%d fisiere neurmarite si nestagiate, NEPRIVITE de instrument — v. `netracked()`)"
+                  % len(_nt))
+        return 0
     print("ATINSE (%d):" % len(atinse))
     for a in atinse:
         print("   ", a)
+    _nt = netracked()
+    if _nt:
+        print("(plus %d fisiere neurmarite si nestagiate, care NU intra in perimetru)" % len(_nt))
     if incerte:
         print("\nPERIMETRUL NU SE POATE INCHIDE — se ruleaza POARTA COMPLETA. Motive:")
         for m in incerte:

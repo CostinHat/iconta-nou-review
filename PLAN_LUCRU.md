@@ -579,7 +579,9 @@ alternativa la nesiguranță e **tot**, nu **mai puțin**.
 
 | | |
 |---|---|
-| **cum se stabilește** | din `git diff --name-only HEAD` + netracked, pe **extensie**. `scripts/perimetru.py` o face; **nu se judecă** „păi ăsta e doar un registru" |
+| **cum se stabilește** | din `git diff --name-only HEAD` — **atât**, pe **extensie**. `scripts/perimetru.py` o face; **nu se judecă** „păi ăsta e doar un registru" |
+| **ce NU intră** | fișierele **neurmărite și nestagiate**. Nu fac parte din ce se publică, iar pytest nu le culege; un test nou intră aici **de îndată ce e stagiat**. *Se numără și se raportează, ca nimeni să nu creadă că instrumentul le-a privit.* |
+| **ce e INTERZIS** | să treci peste refuzul instrumentului dându-i argumente pe linia de comandă. *Costin, 03.09: „nu-l suprascrie cu judecata ta — o excepție luată o dată face regula o formalitate."* Dacă spune că nu poate scurta, **se rulează tot și se scrie de ce** |
 | **ce se rulează atunci** | gărzile de **registru** — derivate, nu enumerate: un test intră dacă numește el însuși un **registru** (`.md` din rădăcina repo-ului, plus cele două JSON-uri de proveniență), sau dacă importă un scaner din `scripts/` care îl numește |
 | **când NU se aplică** | dacă s-a atins **măcar un** `.py` sau `.js`. Un registru atins **alături de cod** lasă întrebarea deschisă — graful de import nu spune ce cod mai depinde de registru —, iar acolo se rulează tot |
 | **când NU se aplică, oricum** | **înainte de publicare** și **înainte de `/clear`**. Acolo poarta e cea completă, ca la regula 4 |
@@ -610,3 +612,11 @@ Perimetrul trebuia **derivat**, nu scris ca listă.
 **CE NU VEDE, declarat:** o gardă care ar construi numele registrului din bucăți, sau una care ajunge
 la el prin două module de `core/`. N-am întâlnit niciuna — dar de-aia forma asta se folosește
 **doar** când nu s-a atins niciun executabil, unde alternativa (poarta completă) e la o comandă.
+
+**ȘI CE A GĂSIT PRIMA FOLOSIRE REALĂ — o greșeală a mea, corectată de Costin.** Instrumentul a
+**refuzat** să scurteze, iar eu i-am dat fișierele pe linia de comandă ca să obțin răspunsul pe care
+îl voiam. *Aia e chiar ocolirea pe care regula o interzice.* Cauza refuzului era reală și se putea
+repara: socoteam „cod atins" și fișierele **neurmărite**, iar arborele poartă permanent **299** —
+**217 `.png`** (capturi de probă, ținute deliberat afară din repo, `METODA_VERIFICARE.md` §27),
+**58 `.py`** (55 de probe din `frontend_test/`, 3 ale lui `ruff` din `venv/` — care nu e în
+`.gitignore`), 10 `.md` și 6 `.csv` de lucru. **Reparat instrumentul, nu regula.**
