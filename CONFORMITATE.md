@@ -2856,13 +2856,46 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
   avertisment de versiune nouă e **ecran**: unde stă, cât de insistent e, dacă întrerupe o depunere
   în curs. Nu e o alegere pe care o pot face singur. `DESIGN_SYSTEM.md` cap.27 (E2) e despre
   confirmarea unui ACT, nu despre starea aplicației însăși.
-- **condiția de deblocare**: **DECIZIA lui Costin**, la ieșirea către cabinetul-pilot — acolo devine
-  ascuțită, fiindcă un contabil ține aplicația deschisă toată ziua. Variantele, cu ce cere fiecare:
-  (a) aplicația compară periodic o amprentă de versiune cu serverul și **anunță** *„s-a publicat o
-  versiune nouă — reîncarcă"*, fără să întrerupă; (b) reîncărcare **forțată** la schimbarea
-  amprentei, cu riscul de a rupe un formular pe jumătate completat; (c) nimic, și se acceptă că o
-  filă veche rulează cod vechi. Se închide când o publicare nouă devine **vizibilă** într-o filă
-  deschisă de dinaintea ei, fără ca omul să ghicească.
+- **DECIZIA, primită 03.09.2026 — varianta (a)**, verbatim: *„aplicația compară periodic amprenta
+  de versiune și anunță, fără să întrerupă. Nu forța reîncărcarea — un formular pe jumătate
+  completat pierdut e mai rău decât defectul."* Motivul, tot al lui: *„la pilot, un contabil ține
+  fila deschisă toată ziua. Ar rula cod vechi după fiecare publicare și ar raporta defecte deja
+  reparate, iar noi am căuta cauze în cod curat."*
+- **cum s-a construit**: `static/js/versiune.js` citește **amprenta care există deja** —
+  `/static/.publicat.json`, scrisă de `publica_static.py` la R118. *Nu se construiește a doua sursă
+  pentru aceeași întrebare.* Compară la **5 minute** și la **revenirea în filă** (momentul în care
+  omul se uită oricum la ecran). La diferență, **așază un nod** în bara de stare, ca **chiriaș**
+  (DS cap.25) — nu re-randează nimic. Anunțul e o pastilă discretă, „Versiune nouă · reîncarcă", cu
+  titlu care spune că **nu se pierde nimic până la reîncărcare**. Apăsarea lui reîncarcă: omul
+  alege momentul, nu aplicația. **O verificare eșuată nu înseamnă versiune nouă** — rețeaua pică,
+  serverul repornește; un anunț pe eroare ar învăța omul să-l ignore.
+- **unde stă, și de ce NU unde am pus-o întâi**: prima formă declara un **loc nou** în bara albastră
+  de sus, cu argumentul că aia se randează pentru **toate** rolurile (bara de stare lipsește la rolul
+  `client`). **Măsurătoarea l-a bătut**: pe Pixel 5 bara de sus e la limită *chiar fără* anunț —
+  `body.scrollWidth = 393` exact —, iar cu el trecea la **424**, revărsare orizontală. Un chiriaș nu
+  își ia spațiu care nu e al lui, deci locul nou s-a retras și nomenclatorul a rămas închis.
+  **Limita rămasă, declarată**: la rolul `client` anunțul **nu se vede**. *Argumentul era bun;
+  măsurătoarea l-a bătut, și scriu amândouă.*
+- **calibrare, pe ECRAN** (`frontend_test/proba_r129_versiune.py`), în ordinea în care contează:
+  (1) înainte de publicare **nu există** niciun anunț — altfel „apare mereu" ar trece drept „a
+  detectat"; (2) după o publicare nouă, anunțul **apare**; (3) **formularul pe jumătate completat
+  supraviețuiește** — indexul SPV tastat rămâne `PROBA-R129-4417`, dialogul rămâne deschis, iar
+  marcajul pus pe `window` înainte **e încă acolo**, deci pagina nu s-a reîncărcat; (4) anunțul are
+  **ieșire** — apăsat, reîncarcă. *A treia e chiar decizia: fără ea, un anunț care reîncarcă singur
+  ar trece toate celelalte trei.* Plus: cât timp o fereastră modală e deschisă, anunțul **se vede
+  dar nu se poate apăsa** — nu e o scăpare, e „nu întrerupe" dus până la capăt. `axe` pe antet:
+  **contrast 0 · etichete 0**; ținta de atingere **28px**; Pixel 5 **393**, fără revărsare.
+  **Capturi**: `r129_anunt_fara_intrerupere.png` (anunțul în bara de stare, cu dialogul deschis și
+  textul tastat neatins) · `r129_mobil.png` (Pixel 5, bara fără revărsare).
+- **ce a scos calibrarea**: prima formă a pastilei avea contrast **3,82** (alb pe albastru-deschis),
+  sub 4,5:1 cerut de AA — *un fundal translucid ALB luminează bara și strică exact ce trebuia să
+  evidențieze.* Prins de `axe`, nu de ochi.
+- **gardat mecanic**: `core/test_versiune_publicata.py`, 5 teste — poarta de sintaxă a publicării în
+  **amândouă** direcțiile · amprenta poartă cheile pe care le citește ecranul (fără ele anunțul n-ar
+  apărea **niciodată**, tăcut) · **o singură** reîncărcare în tot modulul, și aia în ascultătorul de
+  apăsare · modulul nu re-randează coaja și nu-și caută singur noduri în DOM.
+- **condiția de deblocare**: o publicare nouă devine **vizibilă** într-o filă deschisă de dinaintea
+  ei, fără ca omul să ghicească — și **fără** să piardă ce avea pe ecran. **ÎNDEPLINITĂ.**
 - **reluări**: 0
 - **stare**: DESCHISĂ
 - **deschisă pe commit**: `31d4e47d`

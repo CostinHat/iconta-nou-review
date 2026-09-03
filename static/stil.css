@@ -848,6 +848,21 @@ html, body {
 .dlg-anuleaza:hover { background: #e2e6ec; }
 .val-btn:disabled { opacity: .6; cursor: default; }
 
+/* [R129] Anuntul de versiune noua, in bara albastra de sus. Discret prin constructie: nu ocupa loc
+   pana nu exista, nu misca nimic din jur (bara e flex, iar anuntul intra inaintea butoanelor), si
+   NU intrerupe. Punctul verde e singurul accent — rosul ramane rezervat atentionarilor (DS cap.2). */
+.versiune-noua {
+  display: inline-flex; align-items: center; gap: 7px;
+  height: 28px; padding: 0 11px; margin-right: 6px;
+  border: 1px solid #b9c2cf; border-radius: 999px;
+  background: #eef4fd; color: #1f3a5f;
+  font-size: var(--text-mic); font-weight: 600; cursor: pointer;
+}
+.versiune-noua-text { font-weight: 600; }
+.versiune-noua:hover { background: #e2ecfb; }
+.versiune-noua-punct { width: 7px; height: 7px; border-radius: 50%; background: #6fe0a6; flex: none; }
+@media (max-width: 560px) { .versiune-noua-text { display: none; } .versiune-noua { padding: 0 9px; } }
+
 /* [R126] Pasul de confirmare a constatarilor CERTE, in dialogul depunerii. Fiecare constatare e un
    bloc de sine statator: anatomia ei (randata de control_verdict.randA) + campul de motiv care ii
    apartine. Fara separare vizuala, doua constatari si doua campuri ar arata ca o lista de patru

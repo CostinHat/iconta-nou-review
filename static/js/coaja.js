@@ -59,6 +59,12 @@ export function scoate(nume, id) {
 }
 
 // Numele locurilor — nomenclator INCHIS, ca sa nu apara „locuri" inventate prin siruri ad-hoc.
+//
+// [R129, 03.09.2026] Anuntul de versiune noua e al DOILEA chirias al barii de stare. Prima forma il
+// pusese intr-un loc nou, in bara albastra de sus, cu argumentul ca aia se randeaza pentru toate
+// rolurile. **Masuratoarea l-a batut**: pe Pixel 5 bara de sus e la limita chiar fara anunt
+// (`body.scrollWidth = 393` exact), iar cu el trece la 424 — revarsare orizontala. Un chirias nu-si
+// ia spatiu care nu e al lui, deci locul nou s-a retras si nomenclatorul a ramas inchis.
 export const LOCURI = {
   BARA_DE_STARE: "bara-de-stare",
 };

@@ -11,7 +11,8 @@
 import { sesiune } from "./sesiune.js?v=5d142951c9";
 import { esc } from "./api.js?v=5b2978a5b9";  // esc canonic (cap.10): strip-html data-lossy inlocuit
 import { deschideAnsamblu } from "./ecrane/ansamblu.js?v=534adc8486";  // [bun_venit_v1] "?" general (ansamblu)
-import * as _coaja from "./coaja.js?v=d189568eb7";  // [DS cap.25] contractul proprietar<->chirias
+import * as _coaja from "./coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
+import * as _versiune from "./versiune.js?v=bdc8b2ed53";      // [R129] anunta o publicare noua, fara sa intrerupa
 
 // [p21_bara_lant] contextul barei 1 ca LANT, citit din sesiune.user() (sursa unica)
 function _functieAsistent(u) {
@@ -109,6 +110,9 @@ export function creeazaNavigator(radacina, desktopRandator) {
       // [DS cap.25, 21.08.2026] Proprietarul isi DECLARA locul inchiriabil. Chiriasii (ecrane) cer
       // loc prin `coaja.pune(...)`, nu si-l iau cu `document.querySelector(".subbara")`.
       _coaja.inregistreazaLoc(_coaja.LOCURI.BARA_DE_STARE, subbara);
+      // [R129] Al doilea chirias al barii: daca s-a gasit deja o versiune noua, anuntul revine
+      // dupa re-randarea cojii (care sterge locurile si le declara din nou).
+      _versiune.aseaza();
     }
     // [p25_bara3] bara 3 motivationala — doar asistent (angajat)
     if (u.rol === "angajat") {
@@ -283,6 +287,10 @@ export function creeazaNavigator(radacina, desktopRandator) {
   };
 
   randeazaDesktop();
+  // [R129, 03.09.2026] Urmarirea versiunii publicate porneste O DATA, la construirea cojii.
+  // NU re-randeaza nimic la detectie: aseaza un nod in locul declarat mai sus. *O re-randare ar fi
+  // pierdut exact formularul pe jumatate completat pe care decizia lui Costin il apara.*
+  _versiune.porneste();
   // [clopot_routing] expune nav-ul curent pentru routing-ul notificarilor din clopotel.
   // Handler-ul clopotelului (functie de modul, in afara acestui closure) il citea deja prin
   // window._navGlobal, dar nu era atribuit nicaieri -> routing mort. Aici se realizeaza pattern-ul.

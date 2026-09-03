@@ -7280,9 +7280,9 @@ aplicată înainte ca paralela să existe.*
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**510 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**511 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 493
+### `core/` — 494
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7773,6 +7773,7 @@ aplicată înainte ca paralela să existe.*
 - `core/test_verificator_izolare.py` — GARDĂ PESTE VERIFICATOR: analizorul lui de izolare clasifică corect rute known-good / known-bad.
 - `core/test_versionare_assets.py` — core/test_versionare_assets.py -- GARD pentru disciplina ?v= (versionare asseturi front-end).
 - `core/test_versionare_formule.py` — Versionarea formulelor pe la_data (PAS 1 tipar). Cotele sunt period-aware (cota); formulele devin
+- `core/test_versiune_publicata.py` — GARD [R118 + R129, 03.09.2026]: poarta de sintaxa a publicarii, si anuntul care NU intrerupe.
 - `core/test_vigoare_articole_registru.py` — GARDĂ pentru interdicția 50 — confirmarea unei valori e ULTERIOARĂ ultimei modificări a articolului.
 - `core/test_vigoare_punct.py` — Garda instrumentului de vigoare PE PUNCT (`scripts/vigoare_punct.py`, R2).
 - `core/test_woocommerce.py` — —
