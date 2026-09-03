@@ -6,7 +6,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 - **ultima rescriere**: **2026-09-02**. **Rescriere COMPLETĂ**, cerută de Costin. Precedenta completă
   a fost pe 01.09; între ele, **cinci parțiale**.
-- **pe commit**: `4023e1ca` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care o
+- **pe commit**: `3a4d9d0e` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care o
   poartă, fiindcă blocul de cifre trebuie să intre ODATĂ cu ea. Ce descrie e arborele care devine
   commitul următor; numele de aici e al celui **precedent**, prin construcție, nu din uitare.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
@@ -219,9 +219,18 @@ se mai poate opri pentru că cineva salva un fișier.*
 **client**, poarta trăiește în `depune` — deci aprobarea trecea și poarta cădea **după** ea, lăsând
 elementul `aprobata`, stare din care nu se mai poate **respinge**. *Un refuz care spune „nu blochez"
 și totuși mută starea într-un sens fără întoarcere.* **R128, reparată**: se trimite un act, serverul
-aprobă după poartă. **R129, deschisă**: pasul construit în aceeași zi nu s-a deschis pe ecranul lui
-fiindcă fila lui rulează `validat.js?v=e771e38cc0` — modulele commitului `9b3bf419`. *Nu era un
-defect al codului nou; era codul nou care nu ajunsese la el.*
+aprobă după poartă. **R129, deschisă și închisă a doua zi**: pasul construit în aceeași zi nu s-a deschis pe ecranul
+lui fiindcă fila lui rula `validat.js?v=e771e38cc0` — modulele commitului `9b3bf419`. *Nu era un
+defect al codului nou; era codul nou care nu ajunsese la el.* **Reparat pe decizia lui (varianta
+a):** aplicația compară amprenta publicării la 5 minute și la revenirea în filă, iar la diferență
+**anunță** — o pastilă în bara de stare, „Versiune nouă · reîncarcă". **Nu reîncarcă singură**:
+probat pe ecran că un index SPV tastat rămâne, dialogul rămâne deschis, iar pagina nu se
+reîncarcă. *Reîncărcarea e apăsarea omului, la momentul lui.* Limita, declarată: la rolul `client`
+bara de stare nu există, deci anunțul nu se vede acolo.
+
+**CE ÎNSEAMNĂ ASTA PENTRU CINE CONTINUĂ:** de acum, o filă lăsată deschisă **află** că s-a publicat.
+Dacă cineva raportează un defect care „era reparat", prima întrebare nu mai e „ce versiune ai" —
+aplicația i-o spune singură.
 
 **PEREChILE AU ACUM GARDUL CLASEI LOR — R123 închisă.**
 `core/test_perechi_citesc_generatorul.py`: fiecare comparație își ia `randuri` de la **generatorul

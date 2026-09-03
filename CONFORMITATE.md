@@ -2897,9 +2897,9 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
 - **condiția de deblocare**: o publicare nouă devine **vizibilă** într-o filă deschisă de dinaintea
   ei, fără ca omul să ghicească — și **fără** să piardă ce avea pe ecran. **ÎNDEPLINITĂ.**
 - **reluări**: 0
-- **stare**: DESCHISĂ
+- **stare**: REZOLVATĂ
 - **deschisă pe commit**: `31d4e47d`
-- **rezolvată pe commit**: —
+- **rezolvată pe commit**: `3a4d9d0e`
 - **unde ajunge efectul**: la contabil, sub forma cea mai derutantă cu putință — o reparație despre
   care i s-a spus că e făcută, și care pe ecranul lui nu există. *Azi a lovit chiar proba porții de
   confirmare: mecanismul era întreg, iar fila nu-l avea.*
