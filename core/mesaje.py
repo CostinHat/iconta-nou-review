@@ -129,5 +129,15 @@ FARA_DREPT_DEPUNERE = "Nu ai dreptul de a depune declarații. Cere-i administrat
 # corect, cu „inexistent sau fără acces" — două mesaje pentru aceeași stare, unul fals.
 FARA_ACCES_TENANT = ("Firma nu există în portofoliu sau nu ți-e atribuită. Dacă există și "
                      "ar trebui să lucrezi pe ea, cere-i administratorului cabinetului să ți-o atribuie.")
+# [decizia 1, Costin 03.09.2026] CODUL STA LANGA MESAJ, nu pe rută. Patru rute foloseau mesajul
+# ăsta, trei cu `403` și una cu `404`, pentru exact aceeași stare — iar `POST /coada`, care are
+# mesajul lui, răspundea `404` de la început. Costin: *„404 pe amândouă. Mesajul «nu există în
+# portofoliu sau nu ți-e atribuită» e același în ambele cazuri, deci nu divulgă nimic — 404 nu
+# pierde protecția lui 403, dar scapă de refuzul care spune «n-ai drepturi» când firma nu e
+# acolo."* Fiindcă mesajul nu deosebește „nu există" de „nu ți-e atribuită", `404` nu spune mai
+# mult decât `403`: cine întreabă află același lucru din amândouă. Constanta există ca alegerea
+# să nu se mai poată face per-rută: o a doua rută care ar vrea alt cod ar trebui s-o scrie ea, la
+# vedere.
+COD_FARA_ACCES_TENANT = 404
 FARA_ACCES_RAPORTARE = "Nu ai acces la această raportare."
 FARA_ACCES = "Nu ai acces la această resursă."

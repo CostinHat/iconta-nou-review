@@ -112,6 +112,16 @@ def seteaza_optin(conn, activ):
 def seteaza_supapa(conn, factura_id, stop=False, amanata_pana=None):
     """Supapa per factura: stop (nu notifica) + amana pana la data X (None = fara amanare).
     UI trimite starea dorita completa."""
+    # [probare invalid lot 2, 03.09.2026] `amanata_pana="maine"` mergea neatinsa in `UPDATE`,
+    # iar driverul o refuza — contabilul primea `500 Internal Server Error`. Se verifica aici,
+    # unde se poate spune CARE camp si CE s-a asteptat.
+    if amanata_pana:
+        import datetime as _d
+        try:
+            _d.date.fromisoformat(str(amanata_pana).strip())
+        except ValueError:
+            raise ValueError("data amânării: %r nu e o dată din calendar. Aștept forma "
+                             "AAAA-LL-ZZ." % (amanata_pana,))
     with conn.cursor() as cur:
         cur.execute("UPDATE facturi SET notificare_stop=%s, notificare_amanata_pana=%s "
                     "WHERE id=%s AND directie='emisa'", (bool(stop), amanata_pana or None, factura_id))

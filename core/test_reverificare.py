@@ -58,7 +58,13 @@ DISTRIBUTIE = {
     # ARTICOL — Ordinul INS 1604/2025 a fost adus, dar pagina servita e un ciot care nu poarta
     # textul —, deci frecventa nu se poate citi. *NECUNOSCUT declarat, cu motivul: exact forma
     # ceruta. O valoare intrata in registru nu devine automat clasificabila, si nu se preface ca e.*
-    ("NECUNOSCUT", "NECUNOSCUT"): 12,
+    # 12 -> 13 la 03.09.2026: temeiul numerotarii secventiale (OMFP 2634/2015 anexa 1 pct. 24),
+    # intrat cu lotul 2 al campaniei. Acelasi tipar ca randul de deasupra: actul e adus intreg si
+    # pasajul citit verbatim, dar anexa numeroteaza PUNCTE, nu articole, deci `articol_in_act` nu-i
+    # poate citi marcajele si frecventa nu se poate stabili. *NECUNOSCUT declarat, cu motivul —
+    # nicio valoare fiscala nu s-a schimbat, s-a adaugat una despre care instrumentul nu poate
+    # afirma cat de des se schimba.*
+    ("NECUNOSCUT", "NECUNOSCUT"): 13,
 }
 
 _AZI = datetime.date(2026, 8, 31)

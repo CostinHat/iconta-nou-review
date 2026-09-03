@@ -38,6 +38,7 @@ from core.mesaje import (mesaj_din_cod, FARA_CABINET, EMAIL_INVALID, EMAIL_EXIST
                               MESAJ_EMAIL_TOKEN_INVALID, MESAJ_EMAIL_DE_CONFIRMAT,
                          ROL_INSUFICIENT, DOAR_ADMIN_ICONTA, DOAR_ADMIN_CABINET, DOAR_PATRON,
                          FARA_DREPT_VALIDARE, FARA_DREPT_DEPUNERE, FARA_ACCES_TENANT,
+                         COD_FARA_ACCES_TENANT,
                          FARA_ACCES_RAPORTARE, FARA_ACCES)
 
 # template SQL pentru schema unui tenant nou (generat din tenant_001)
@@ -2937,8 +2938,12 @@ def scadentar_supapa(tenant_id: int, factura_id: int, date: SupapaScadentarIn,
     """F131: supapa per factura - nu notifica (stop) / amana pana la data X."""
     from core import scadentar as _sc
     schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        r = _sc.seteaza_supapa(conn, factura_id, stop=date.stop, amanata_pana=date.amanata_pana)
+    try:
+        with db.get_conn(schema) as conn:
+            r = _sc.seteaza_supapa(conn, factura_id, stop=date.stop,
+                                   amanata_pana=date.amanata_pana)
+    except ValueError as e:   # [lot 2] data amanarii invalida: mesaj, nu 500
+        raise HTTPException(422, str(e))
     if not r.get("ok"):
         raise HTTPException(404, "factură inexistentă")
     return r
@@ -3147,6 +3152,10 @@ def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_rol("admin_f
             from datetime import date as _dt_date  # fix F821: datetime neimportat in scope (date = param Pydantic)
             r["descarcare"] = _cv.descarca_factura(conn, schema, r["factura_id"],
                                                    date.data_emitere or _dt_date.today().isoformat())
+    # [lot 2] moneda inexistenta e o INTRARE gresita (422), nu un conflict temporar (409):
+    # 409 cu „reincearca / manual" ii promitea contabilului ca mai tarziu ar merge.
+    if isinstance(r, dict) and r.get("ok") is False and r.get("cod") == "MONEDA_NECOTATA":
+        raise HTTPException(422, detail=r)
     # curs BNR indisponibil -> 409 cu detaliile pt frontend (Reincearca / Manual)
     if isinstance(r, dict) and r.get("ok") is False and r.get("cod") == "CURS_INDISPONIBIL":
         raise HTTPException(409, detail=r)
@@ -3237,8 +3246,12 @@ def facturi_lista(tenant_id: int, an: Optional[int] = None,
                   limit: Optional[int] = None, offset: int = 0,
                   ctx=Depends(cere_context)):
     schema = _schema_sau_404(ctx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return {"facturi": facturi_api.lista_facturi(conn, an, luna, directie, limit=limit, offset=offset)}
+    try:
+        with db.get_conn(schema) as conn:
+            return {"facturi": facturi_api.lista_facturi(conn, an, luna, directie,
+                                                         limit=limit, offset=offset)}
+    except ValueError as e:   # [lot 2] filtru invalid: mesaj, nu 500 si nu lista goala tacuta
+        raise HTTPException(422, str(e))
 
 
 @app.post("/tenants/{tenant_id}/facturi")
@@ -3812,7 +3825,7 @@ def _pachet_schema(ctx, tenant_id):
     with db.get_conn() as c:
         schema = auth_api.schema_tenant(c, ctx["uid"], tenant_id)
     if not schema:
-        raise HTTPException(403, FARA_ACCES_TENANT)
+        raise HTTPException(COD_FARA_ACCES_TENANT, FARA_ACCES_TENANT)
     return schema
 
 @app.get("/pachete/{tenant_id}/rezumat")
@@ -3941,7 +3954,7 @@ def declaratie_valideaza(tip: str, date: DeclaratieIn,
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
     if not schema:
-        raise HTTPException(403, FARA_ACCES_TENANT)
+        raise HTTPException(COD_FARA_ACCES_TENANT, FARA_ACCES_TENANT)
     try:
         with db.get_conn(schema) as conn:
             xml, res = declaratii_api.genereaza(conn, schema, tip, body)
@@ -3979,7 +3992,7 @@ def declaratie_genereaza(tip: str, date: DeclaratieIn,
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
     if not schema:
-        raise HTTPException(403, FARA_ACCES_TENANT)
+        raise HTTPException(COD_FARA_ACCES_TENANT, FARA_ACCES_TENANT)
     # 2) pe schema tenantului (SET LOCAL search_path în get_conn, PgBouncer-safe):
     #    modulul rulează pe conexiunea deja poziționată, NU mai setează el search_path
     try:
@@ -6016,7 +6029,11 @@ def _api_schema(actx, tenant_id):
                        WHERE id=%s AND accounting_firm_id=%s""", (tenant_id, actx["firm"]))
         r = cur.fetchone()
     if not r:
-        raise HTTPException(404, "firmă inexistentă")
+        # [probare invalid lot 2, 03.09.2026] Spunea „firmă inexistentă" și pentru o firmă care
+        # EXISTĂ, dar e a altui cabinet — aceeași afirmație falsă scoasă din `FARA_ACCES_TENANT`
+        # în lotul 1. Forma de acum nu deosebește cele două stări, deci nici nu divulgă care e.
+        raise HTTPException(404, "Firma nu există sau nu e în portofoliul cabinetului căruia îi "
+                                 "aparține cheia de API folosită.")
     return r[0]
 
 
@@ -6056,8 +6073,11 @@ def apiv1_firme(actx=Depends(cere_api_key)):
 def apiv1_facturi(tenant_id: int, an: Optional[int] = None, luna: Optional[int] = None,
                   actx=Depends(cere_api_key)):
     schema = _api_schema(actx, tenant_id)
-    with db.get_conn(schema) as conn:
-        return {"facturi": facturi_api.lista_facturi(conn, an, luna, None)}
+    try:
+        with db.get_conn(schema) as conn:
+            return {"facturi": facturi_api.lista_facturi(conn, an, luna, None)}
+    except ValueError as e:   # [lot 2] acelasi refuz ca in ecran, nu un 500 catre integrator
+        raise HTTPException(422, str(e))
 
 
 @app.get("/api/v1/firme/{tenant_id}/kpi")  # api_public_v1
@@ -6159,21 +6179,32 @@ def apiv1_factura_emite(tenant_id: int, corp: dict = Body(...), actx=Depends(cer
             "valori": {"true": "marfa pleacă acum — se descarcă gestiunea în aceeași tranzacție",
                        "false": "marfa nu pleacă acum — factura e doar fiscală, stocul rămâne"}})
     with db.get_conn(schema) as conn:
-        r = facturi_api.emite_factura(
-            conn,
-            linii=corp.get("linii"),
-            client_id=corp.get("client_id"),
-            tert_nume=corp.get("tert_nume"),
-            tert_cui=corp.get("tert_cui"),
-            tert_adresa=corp.get("tert_adresa"),
-            data_emitere=corp.get("data_emitere"),
-            data_scadenta=corp.get("data_scadenta"),
-            moneda=corp.get("moneda", "RON"),
-            platitor_tva=_platitor_tva_firma(conn),
-            status=corp.get("status", "de_preluat"),
-            curs_manual=corp.get("curs_manual"),
-            tip=_tip,
-        )
+        # [lot 2, 03.09.2026] Ruta din ecran traducea de mult `ValueError` in `422`; asta nu —
+        # deci `linii=[]` sau un cod de partener lipsa ieseau catre integrator ca
+        # `500 Internal Server Error`, adica fara nicio vorba despre ce lipseste.
+        try:
+            r = facturi_api.emite_factura(
+                conn,
+                linii=corp.get("linii"),
+                client_id=corp.get("client_id"),
+                tert_nume=corp.get("tert_nume"),
+                tert_cui=corp.get("tert_cui"),
+                tert_adresa=corp.get("tert_adresa"),
+                data_emitere=corp.get("data_emitere"),
+                data_scadenta=corp.get("data_scadenta"),
+                moneda=corp.get("moneda", "RON"),
+                platitor_tva=_platitor_tva_firma(conn),
+                status=corp.get("status", "de_preluat"),
+                curs_manual=corp.get("curs_manual"),
+                tip=_tip,
+            )
+        except facturi_api.LiniiIncomplete as e:
+            raise HTTPException(422, {"cod": "LINII_INCOMPLETE",
+                                      "mesaj": "Completează liniile: "
+                                               + "; ".join(x["eticheta"] for x in e.campuri),
+                                      "campuri": e.campuri})
+        except ValueError as e:
+            raise HTTPException(422, str(e))
         # [R57] Acelasi efect ca in ecran: descarcarea se face DOAR la raspuns afirmativ si in
         # ACEEASI tranzactie cu emiterea (atomic), nu intr-un al doilea apel al integratorului.
         if _poarta_ceruta and _pleaca is True and isinstance(r, dict) and r.get("factura_id"):
@@ -6182,6 +6213,8 @@ def apiv1_factura_emite(tenant_id: int, corp: dict = Body(...), actx=Depends(cer
             r["descarcare"] = _cv_api.descarca_factura(
                 conn, schema, r["factura_id"],
                 corp.get("data_emitere") or _dt_api.today().isoformat())
+    if not r.get("ok", True) and r.get("cod") == "MONEDA_NECOTATA":
+        raise HTTPException(422, r.get("mesaj"))      # [lot 2] aceeasi deosebire ca in ecran
     if not r.get("ok", True) and r.get("cod") == "CURS_INDISPONIBIL":
         raise HTTPException(422, r.get("mesaj"))
     return r
@@ -7653,7 +7686,7 @@ def concedii_coduri(tenant_id: int, la_data: Optional[str] = None, ctx=Depends(c
     # test_izolare_structurala, nu de mine.
     with db.get_conn() as conn:
         if not auth_api.schema_tenant(conn, ctx["uid"], tenant_id):
-            raise HTTPException(404, FARA_ACCES_TENANT)
+            raise HTTPException(COD_FARA_ACCES_TENANT, FARA_ACCES_TENANT)
     d = None
     if la_data:
         try:

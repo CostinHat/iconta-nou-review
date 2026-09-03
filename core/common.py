@@ -707,6 +707,67 @@ def cota(nume, la_data=None, strict=True):
     raise PerioadaIndisponibila(nume, la_data, intrari[-1][0])
 
 
+#: NUMEROTAREA SECVENȚIALĂ a documentelor financiar-contabile. Verificat la sursă 03.09.2026,
+#: în corpus, nu din memorie: `anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt`, pct. 24 —
+#: textul citat mai jos e verbatim de acolo. Stă AICI, cu celelalte temeiuri, nu în modulul care îl
+#: citează: `core/facturi_api.py` refuză în 17 locuri fără temei, iar norma 77 cere ca un modul care
+#: începe să citeze legea să nu aibă niciunul. *Cifra e scrisă, nu ascunsă — v. CONFORMITATE.md §77.*
+NUMEROTARE_SECVENTIALA = Temei(
+    "OMFP", 2634, 2015, art="anexa 1", lit="pct. 24",
+    verificat_la="2026-09-03", de_cine="Code/Costin", nivel_sursa="MO",
+    url="anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt",
+    text_citat="fiecare document va avea un număr de ordine sau o serie, după caz, număr sau "
+               "serie ce trebuie să fie secvențial(ă), stabilit(ă) de entitate")
+
+#: CHEILE din `COTE` care sunt cote de TVA. Nu e o a doua listă de valori — sunt numai numele
+#: intrărilor; valoarea și temeiul vin din registrul de mai sus, cu perioada cu tot. O listă de
+#: valori scrisă aici ar fi exact `cote_valide()`, ștearsă pe 20.08.2026 fiindcă, fiind oarbă la
+#: perioadă, respingea cota corectă a unei facturi din trecut (`core/test_granite_cota.py`).
+_CHEI_COTE_TVA = ("tva_standard", "tva_redusa", "tva_redusa_9", "tva_redusa_5")
+
+
+def cote_tva_in_vigoare(la_data):
+    """Cotele de TVA (în PROCENTE) pe care legea le cunoștea la data dată, plus temeiurile lor.
+
+    Întoarce `(cote, temeiuri)`. **`cote is None` înseamnă „nu se poate ști", nu „niciuna"**:
+    pentru o dată dinaintea primei valori din registru, `cota()` ridică `PerioadaIndisponibila`
+    pe fiecare cheie, iar un apelant care ar citi mulțimea vidă ca pe un răspuns ar respinge
+    ORICE cotă pe o factură veche. Deosebirea e chiar clasa pe care lotul 1 a scos-o din
+    `firma_verificari`: *„e invalid" nu e același lucru cu „n-am putut verifica"*.
+
+    Cele patru chei se cer separat fiindcă au istorii diferite: în era 19% coexistau 9% și 5%,
+    comasate în 11% de la 01.08.2025. Pentru 2026 mulțimea iese {0, 11, 21}; pentru 2024,
+    {0, 5, 9, 19} — fără ca vreo cifră să fie scrisă aici.
+
+    **`la_data` e OBLIGATORIU, și n-a fost din prima.** Prima formă avea `la_data=None → today()`,
+    iar `core/test_data_curenta.py` a respins-o: o funcție fiscală care cade pe data curentă e un
+    generator latent de cifră validă și falsă — primul apelant care uită data o declanșează. Aici
+    ar fi fost chiar cotele unei facturi din trecut, verificate contra legii de azi."""
+    cote, temeiuri = set(), []
+    for nume in _CHEI_COTE_TVA:
+        try:
+            valoare, temei = cota(nume, la_data, strict=True)
+        except ValueError:      # PerioadaIndisponibila e subclasa: cheia n-are valoare atunci
+            if nume == "tva_standard":
+                # PRINS LA CALIBRARE (03.09.2026), si era o supra-respingere, nu o scapare:
+                # pentru 01.06.2016 registrul dadea {0, 5, 9} — fara cota standard, care atunci
+                # era 20% si nu e in registru (prima intrare e 19% din 2017). O factura corecta
+                # de-atunci ar fi fost refuzata. Daca lipseste chiar cota STANDARD, tabloul
+                # perioadei e INCOMPLET, nu gol: se raspunde „nu pot sti".
+                return None, []
+            continue
+        cote.add(Decimal(valoare) * 100)
+        temeiuri.append(temei)
+    if not cote:
+        return None, []
+    # 0 = scutit, sau firmă neplătitoare. Nu vine din registrul de cote fiindcă nu e o cotă
+    # stabilită de o normă, ci absența taxei; `common.cota_ceruta` o tratează deja ca VALOARE
+    # validă, nu ca absență, iar `creeaza_factura` cere cota explicit tocmai ca 0 să se poată
+    # deosebi de „n-a completat nimeni".
+    cote.add(Decimal(0))
+    return cote, temeiuri
+
+
 def salariu_minim_luna(la_data=None, strict=True):
     """CF art.77 alin.(3) teza finala: cand in cursul ACELEIASI luni se utilizeaza mai multe valori ale
     salariului minim brut pe tara, se ia in calcul valoarea CEA MAI MICA (acelasi principiu la plafonul de

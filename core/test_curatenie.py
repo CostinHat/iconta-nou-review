@@ -105,6 +105,25 @@ def test_definitiile_sunt_IMPRUMUTATE_de_la_perimetru_nu_rescrise():
     assert C.registre() == P._documente_urmarite()
 
 
+def test_REGISTRUL_CAMPANIEI_e_registru_pentru_ocolire():
+    """[decizia 3, Costin 03.09.2026] *„«Registru» = `.md` din radacina + cele doua JSON de
+    provenienta + registrul campaniei."*
+
+    Cele doua registre ale campaniei de verificare sunt deja registre — dar prin ACCIDENTUL
+    locatiei: sunt `.md` in radacina. Daca maine se muta intr-un `campanie/`, ies din
+    definitie in tacere, iar o ocolire de curatenie le-ar putea sterge fara sa ruleze nimic.
+    Decizia le numeste explicit, deci gardul le cere explicit — pe MULTIME, nu pe text.
+
+    Anti-vacuu in cealalta directie: un `.md` din afara radacinii NU e registru (asa spune si
+    antetul lui `curatenie.py`), deci multimea nu e „tot"."""
+    reg = C.registre()
+    for r in ("LISTA_FUNCTIONALITATI.md", "VERIFICARE_FUNCTIONALITATI.md"):
+        assert r in reg, "registrul campaniei a iesit din definitia de registru: %s" % r
+        motive = C.clasifica([("D", r, "")], reg, set())
+        assert motive, "stergerea lui %s ar fi trecut ca «curatenie»" % r
+    assert "ghid/oricare.md" not in reg and "oricare.md" not in reg
+
+
 def test_cautarea_de_referinte_VEDE_lumea_despre_care_raporteaza():
     """[anti-vacuu, in amandoua directiile] O cautare care intoarce mereu multimea vida ar declara
     „curatenie" pe orice stergere; una care intoarce mereu tot n-ar deschide niciodata. Se cere,

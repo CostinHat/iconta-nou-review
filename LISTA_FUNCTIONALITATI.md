@@ -49,22 +49,22 @@
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 20 | apiv1 facturi | `GET /api/v1/firme/{tenant_id}/facturi` · `cere_api_key` | citire / afisare — `apiv1_facturi()` | da | neprobat |
-| 21 | apiv1 factura emite | `POST /api/v1/firme/{tenant_id}/facturi` · `cere_api_key` | creare sau executie — `apiv1_factura_emite()` | da | neprobat |
-| 22 | facturi lista | `GET /tenants/{tenant_id}/facturi` · `cere_context` | citire / afisare — `facturi_lista()` | da | neprobat |
-| 23 | factura creeaza | `POST /tenants/{tenant_id}/facturi` · rol `admin_firma` | creare sau executie — `factura_creeaza()` | da | neprobat |
+| 20 | apiv1 facturi | `GET /api/v1/firme/{tenant_id}/facturi` · `cere_api_key` | citire / afisare — `apiv1_facturi()` | da | probat invalid 03.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 2 |
+| 21 | apiv1 factura emite | `POST /api/v1/firme/{tenant_id}/facturi` · `cere_api_key` | creare sau executie — `apiv1_factura_emite()` | da | probat invalid 03.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 2 |
+| 22 | facturi lista | `GET /tenants/{tenant_id}/facturi` · `cere_context` | citire / afisare — `facturi_lista()` | da | probat invalid 03.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 2 |
+| 23 | factura creeaza | `POST /tenants/{tenant_id}/facturi` · rol `admin_firma` | creare sau executie — `factura_creeaza()` | da | probat invalid 03.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 2 |
 | 24 | fr lista | `GET /tenants/{tenant_id}/facturi-recurente` · `cere_context` | citire / afisare — `fr_lista()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 25 | fr adauga | `POST /tenants/{tenant_id}/facturi-recurente` · `cere_context` | creare sau executie — `fr_adauga()` | nu | neprobat |
+| 25 | fr adauga | `POST /tenants/{tenant_id}/facturi-recurente` · `cere_context` | creare sau executie — `fr_adauga()` | nu | probat invalid 03.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 2 |
 | 26 | fr sterge | `DELETE /tenants/{tenant_id}/facturi-recurente/{sid}` · `cere_context` | stergere — `fr_sterge()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 27 | fr comuta | `PUT /tenants/{tenant_id}/facturi-recurente/{sid}` · `cere_context` | modificare — `fr_comuta()` | nu | neprobat |
-| 28 | facturi emite | `POST /tenants/{tenant_id}/facturi/emite` · rol `admin_firma` | creare sau executie — `facturi_emite()` | da | neprobat |
+| 27 | fr comuta | `PUT /tenants/{tenant_id}/facturi-recurente/{sid}` · `cere_context` | modificare — `fr_comuta()` | nu | probat invalid 03.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 2 |
+| 28 | facturi emite | `POST /tenants/{tenant_id}/facturi/emite` · rol `admin_firma` | creare sau executie — `facturi_emite()` | da | probat invalid 03.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 2 |
 | 29 | facturi numerotare get | `GET /tenants/{tenant_id}/facturi/numerotare` · `cere_context` | citire / afisare — `facturi_numerotare_get()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 30 | facturi numerotare set | `PUT /tenants/{tenant_id}/facturi/numerotare` · rol `admin_firma` | modificare — `facturi_numerotare_set()` | da | neprobat |
-| 31 | factura detalii | `GET /tenants/{tenant_id}/facturi/{factura_id:int}` · `cere_context` | citire / afisare — `factura_detalii()` | da | neprobat |
+| 30 | facturi numerotare set | `PUT /tenants/{tenant_id}/facturi/numerotare` · rol `admin_firma` | modificare — `facturi_numerotare_set()` | da | probat invalid 03.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 2 |
+| 31 | factura detalii | `GET /tenants/{tenant_id}/facturi/{factura_id:int}` · `cere_context` | citire / afisare — `factura_detalii()` | da | probat invalid 03.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 2 |
 | 32 | [EEE2] Refuzul e EXPLICAT, nu o eroare de bază: `409`, cu numărul notei și cu ieșirea numită (storno) | `DELETE /tenants/{tenant_id}/facturi/{factura_id}` · rol `admin_firma` | stergere — `factura_sterge()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 33 | RUTA MANUALĂ de contare — **a doua cale, declarată** (R87, decizia lui Costin 29.08.2026, varianta (ii)+(iii) din AAA4) | `POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza` · `cere_cabinet` | creare sau executie — `factura_contabilizeaza()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 34 | factura email | `POST /tenants/{tenant_id}/facturi/{factura_id}/email` · rol `admin_firma` | creare sau executie — `factura_email()` | da | neprobat |
-| 35 | F131: supapa per factura | `PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare` · rol `admin_firma` | modificare — `scadentar_supapa()` | da | neprobat |
+| 34 | factura email | `POST /tenants/{tenant_id}/facturi/{factura_id}/email` · rol `admin_firma` | creare sau executie — `factura_email()` | da | probat invalid 03.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 2 |
+| 35 | F131: supapa per factura | `PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare` · rol `admin_firma` | modificare — `scadentar_supapa()` | da | probat invalid 03.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 2 |
 | 36 | factura pdf ruta | `GET /tenants/{tenant_id}/facturi/{factura_id}/pdf` · `cere_context` | citire / afisare — `factura_pdf_ruta()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 37 | RECUNOAȘTEREA unei facturi EMISE venite prin import — actul care îi scrie nota | `POST /tenants/{tenant_id}/facturi/{factura_id}/recunoaste` · rol `admin_firma` | creare sau executie — `factura_recunoaste()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 38 | facturi storno | `POST /tenants/{tenant_id}/facturi/{factura_id}/storno` · rol `admin_firma` | creare sau executie — `facturi_storno()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |

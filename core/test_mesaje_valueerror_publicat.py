@@ -36,7 +36,7 @@ _DIAC = set("ăâîșțĂÂÎȘȚşţŞŢ")
 _BASELINE_DIACRITICE = {
     "core/avansuri.py": 2, "core/bacsis.py": 2, "core/bilant_api.py": 2, "core/clienti_api.py": 1,
     "core/comodat_chirii.py": 4, "core/contracte_speciale.py": 1, "core/credite.py": 2,
-    "core/d406_active.py": 2, "core/decontari_asociati.py": 1, "core/facturi_api.py": 3,
+    "core/d406_active.py": 2, "core/decontari_asociati.py": 1, "core/facturi_api.py": 2,
     "core/gdpr_cerere.py": 2, "core/gdpr_sterge.py": 3, "core/import_export.py": 4,
     "core/intracomunitar.py": 6, "core/inventariere.py": 5, "core/migrare_api.py": 1,
     "core/ong.py": 1, "core/plata_salarii.py": 2, "core/productie.py": 2, "core/provizioane.py": 5,

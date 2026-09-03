@@ -65,7 +65,15 @@ CLICHET_NEGASIT = 0
 #: înainte și după, ca la R109. Iar tiparul are o direcție periculoasă proprie: numărând „Art." prea
 #: larg, o trimitere în proză ar deveni titlu, iar un document ar trece din CIOT în GĂSIT — adică
 #: din refuz în răspuns fals.
-CLICHET_CIOT = 3
+#: **3 → 4 la 03.09.2026, si a patra e din ACEEASI cauza ca a treia, nu una noua.**
+#: `OMFP 2634/2015 anexa 1 pct. 24` — temeiul numerotarii secventiale a documentelor, adaugat in
+#: lotul 2 al campaniei. Documentul e adus INTREG si pasajul a fost citit verbatim din el
+#: (`anaf_surse/omfp_2634_2015_anexa1_norme_generale.txt`), dar actul **nu are „Articolul"**: anexa
+#: lui numeroteaza PUNCTE. `articol_in_act._TITLURI_NUMARATE` cauta titluri de articol, deci nu
+#: gaseste nimic si declara CIOT. *Aceeasi clasa ca `Ordin 1604/2025` — o forma pe care
+#: instrumentul n-o citeste (R111) —, nu corpus adus partial (R107).* Verdictul ramane in directia
+#: sigura: refuza, nu inventeaza un STABIL.
+CLICHET_CIOT = 4
 #: Pragul de JOS pe confirmate: dacă scade, ceva a dispărut din registru sau instrumentul s-a rupt.
 #: 15 → **24** după ce instrumentul a învățat convenția — fără ca vreun temei să se schimbe.
 PRAG_CONFIRMATE = 24

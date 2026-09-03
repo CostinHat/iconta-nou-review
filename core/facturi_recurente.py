@@ -24,10 +24,22 @@ def lista(conn, schema):
 def adauga(conn, schema, corp):
     linii = corp.get("linii") or []
     if not linii:
-        return {"eroare": "cel puțin o linie"}
+        return {"eroare": "Șablonul trebuie să aibă cel puțin o linie de facturat "
+                          "(denumire, cantitate, preț). Fără ele, factura lunară "
+                          "n-ar avea ce emite.",
+                "erori_campuri": [{"camp": "fr-linii",
+                                   "mesaj": "cel puțin o linie"}]}
     if not (corp.get("tert_nume") or corp.get("client_id")):
         return {"eroare": "beneficiar obligatoriu"}
-    zi = int(corp.get("zi_emitere") or 1)
+    # [probare invalid lot 2, 03.09.2026] `zi_emitere="prima"` cadea in `int()` si iesea `500`.
+    # Un camp completat cu litere e o greseala de tastare, nu o cadere de sistem.
+    _zi = corp.get("zi_emitere")
+    try:
+        zi = int(_zi) if _zi not in (None, "") else 1
+    except (TypeError, ValueError):
+        return {"eroare": "Ziua emiterii: %r nu e un număr. Aștept o zi între 1 și 28." % (_zi,),
+                "erori_campuri": [{"camp": "fr-zi_emitere",
+                                   "mesaj": "aștept un număr între 1 și 28"}]}
     if not 1 <= zi <= 28:
         return {"eroare": "Ziua emiterii trebuie să fie între 1 și 28."}
     # [cap.24 regula 2] validare per-linie AUTORITARA: un rand incomplet se raporteaza langa campul lui
@@ -53,7 +65,8 @@ def comuta(conn, schema, sablon_id, activ):
         cur.execute(f"UPDATE {schema}.facturi_recurente SET activ=%s WHERE id=%s RETURNING id",
                     (activ, sablon_id))
         if not cur.fetchone():
-            return {"eroare": "sablon inexistent"}
+            return {"eroare": "Șablonul de factură recurentă cu id %s nu există "
+                              "(a fost șters, sau id-ul e greșit)." % (sablon_id,)}
     conn.commit()
     return {"id": sablon_id, "activ": activ}
 
@@ -62,7 +75,8 @@ def sterge(conn, schema, sablon_id):
     with conn.cursor() as cur:
         cur.execute(f"DELETE FROM {schema}.facturi_recurente WHERE id=%s RETURNING id", (sablon_id,))
         if not cur.fetchone():
-            return {"eroare": "sablon inexistent"}
+            return {"eroare": "Șablonul de factură recurentă cu id %s nu există "
+                              "(a fost șters, sau id-ul e greșit)." % (sablon_id,)}
     conn.commit()
     return {"sters": sablon_id}
 

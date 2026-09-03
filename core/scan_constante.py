@@ -311,6 +311,14 @@ def _este_precizie(h):
     if v in ("0.01", "0.001", "0.005", "0.1", "0.5") and (
             "quantize" in t or re.search(r"^_?[A-Z0-9_]{1,6}\s*=\s*Decimal", t)):
         return True
+    # [03.09.2026] BAZA unei cuantizari zecimale, scrisa ca putere: `Decimal(10) ** -zecimale`.
+    # Criteriul e STRUCTURAL — zece ridicat la un exponent NEGATIV e o pozitie zecimala, oricare ar
+    # fi exponentul —, nu o a doua valoare adaugata la enumerarea de mai sus. Masurat inainte de a
+    # scrie regula: O SINGURA instanta in tot repo-ul (`core/curs_bnr.py:109`), deci nu deschide
+    # nimic altceva. Aparuta fiindca modulul a intrat in clasa masurata abia acum, cand un mesaj
+    # nou i-a ridicat densitatea de vocabular fiscal — constanta era acolo de la inceput.
+    if v == "10" and re.search(r"Decimal\(\s*10\s*\)\s*\*\*\s*-", t):
+        return True
     if "chr(" in t:
         return True
     return bool(re.search(r"_RANG_STARE|_ORDINE|_PRIORIT", h["ctx"]))

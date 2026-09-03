@@ -52,6 +52,15 @@ def conn():
                 cur.execute(_tp.parametrizeaza_template(
                     open("tenant_template.sql", encoding="utf-8").read(), SCHEMA))
                 cur.execute("SET search_path TO %s, public" % SCHEMA)
+                # [03.09.2026] Template-ul CREEAZĂ `firma_profil`, dar rândul îl pune
+                # `tenant_provisioning` la înființarea firmei — măsurat: **19 din 19** firme reale
+                # au rând. Fără el, `numerotare()` întoarce 1 la fiecare chemare, iar `UPDATE
+                # firma_profil` nu prinde niciun rând: **fiecare factură emisă primește numărul
+                # „1"**. Testul trecea fiindcă nimeni nu se uita la numere; a ieșit la iveală când
+                # `creeaza_factura` a început să refuze un număr deja folosit. *Fixtura măsura o
+                # firmă care nu există în portofoliu.*
+                cur.execute("INSERT INTO firma_profil (id, nume, cui, urmator_numar_factura) "
+                            "VALUES (1, %s, %s, 1)", ("FIRMA TEST INCHIDERE SRL", "14399840"))
             yield c
         finally:
             c.rollback()

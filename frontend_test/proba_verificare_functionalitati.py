@@ -19,6 +19,7 @@ Numele incepe cu `proba_`, deci pytest nu o culege.
 nu se ocroteste nimic.
 
     ./venv/bin/python frontend_test/proba_verificare_functionalitati.py T01
+    ./venv/bin/python frontend_test/proba_verificare_functionalitati.py T02
 """
 import json
 import os
@@ -56,7 +57,8 @@ def token(email):
     return auth_api.emite_token(dict(u)) if u else None
 
 
-def cere(metoda, cale, payload=None, tok=None, brut=None, tip_continut=None):
+def cere(metoda, cale, payload=None, tok=None, brut=None, tip_continut=None,
+         antete=None):
     """(cod, corp_verbatim). Nimic nu se prelucreaza: corpul se intoarce ca text, exact."""
     h = {}
     date = None
@@ -68,6 +70,8 @@ def cere(metoda, cale, payload=None, tok=None, brut=None, tip_continut=None):
         h["Content-Type"] = "application/json"
     if tok:
         h["Authorization"] = "Bearer " + tok
+    if antete:
+        h.update(antete)
     req = urllib.request.Request(BAZA + cale, date, h, method=metoda)
     try:
         r = urllib.request.urlopen(req, timeout=120)
@@ -154,13 +158,217 @@ def probe_import_gol():
     ]
 
 
+def probe_T02(cheie=None):
+    """LOTUL 2 — T02, factura emisa. Cele 11 unitati ale traseului aflate in perimetrul etapei 1:
+    #20, #21 (calea de API, cu cheie), #22, #23, #25, #27, #28, #30, #31, #34, #35.
+
+    **Ce se lasa in urma, declarat** (capcana 9 din predare): singurele probe care POT scrie sunt
+    cele de pe `#30` (numerotarea) si `#35` (supapa). Numerotarea se citeste inainte si se pune la
+    loc dupa, de `ruleaza()`; supapa se probeaza numai pe o factura INEXISTENTA, deci `UPDATE`-ul
+    nu prinde niciun rand. Restul sunt refuzuri asteptate; daca vreunul TRECE, faptul ala e chiar
+    rezultatul probei si se scrie ca atare."""
+    F = FIRMA
+    linie_ok = {"descriere": "consultanta", "cantitate": 1, "pret_unitar": 100, "cota_tva": 21}
+    p = [
+        # ── #22 lista facturilor ────────────────────────────────────────────
+        (22, "GET /facturi — luna 13", "GET", "/tenants/%d/facturi?an=2026&luna=13" % F, None,
+         "an=2026&luna=13"),
+        (22, "GET /facturi — directie inexistenta", "GET",
+         "/tenants/%d/facturi?directie=lateral" % F, None, "directie=lateral"),
+        (22, "GET /facturi — limit negativ", "GET", "/tenants/%d/facturi?limit=-5" % F, None,
+         "limit=-5"),
+        (22, "GET /facturi — an ca text", "GET", "/tenants/%d/facturi?an=anul-trecut" % F, None,
+         "an=anul-trecut"),
+        # ── #23 crearea unei facturi ────────────────────────────────────────
+        (23, "POST /facturi — corp gol", "POST", "/tenants/%d/facturi" % F, {}, "corp JSON gol"),
+        (23, "POST /facturi — fara nicio linie", "POST", "/tenants/%d/facturi" % F,
+         {"numar": "PROBA-1", "data_emitere": "2026-09-03", "directie": "emisa", "linii": []},
+         "linii=[]"),
+        (23, "POST /facturi — directie inexistenta", "POST", "/tenants/%d/facturi" % F,
+         {"numar": "PROBA-2", "data_emitere": "2026-09-03", "directie": "lateral",
+          "linii": [linie_ok], "tert_nume": "Proba SRL", "tert_cui": "RO1234567897"},
+         "directie=lateral"),
+        (23, "POST /facturi — data inexistenta in calendar", "POST", "/tenants/%d/facturi" % F,
+         {"numar": "PROBA-3", "data_emitere": "2026-02-31", "directie": "emisa",
+          "linii": [linie_ok], "tert_nume": "Proba SRL", "tert_cui": "RO1234567897"},
+         "data_emitere=2026-02-31 (31 februarie)"),
+        (23, "POST /facturi — cota de TVA inexistenta", "POST", "/tenants/%d/facturi" % F,
+         {"numar": "PROBA-4", "data_emitere": "2026-09-03", "directie": "emisa",
+          "linii": [dict(linie_ok, cota_tva=99)], "tert_nume": "Proba SRL",
+          "tert_cui": "RO1234567897"}, "cota_tva=99"),
+        (23, "POST /facturi — numar deja folosit", "POST", "/tenants/%d/facturi" % F,
+         {"numar": "CMT149", "data_emitere": "2026-09-03", "directie": "emisa",
+          "linii": [linie_ok], "tert_nume": "Proba SRL", "tert_cui": "RO1234567897"},
+         "numar=CMT149 (exista deja pe factura 3)"),
+        # ── #25 sablonul de factura recurenta ───────────────────────────────
+        (25, "POST /facturi-recurente — corp gol", "POST",
+         "/tenants/%d/facturi-recurente" % F, {}, "corp JSON gol"),
+        (25, "POST /facturi-recurente — ziua 45", "POST", "/tenants/%d/facturi-recurente" % F,
+         {"linii": [linie_ok], "tert_nume": "Proba SRL", "zi_emitere": 45}, "zi_emitere=45"),
+        (25, "POST /facturi-recurente — ziua ca text", "POST",
+         "/tenants/%d/facturi-recurente" % F,
+         {"linii": [linie_ok], "tert_nume": "Proba SRL", "zi_emitere": "prima"},
+         "zi_emitere=\"prima\""),
+        # ── #27 comutarea sablonului ────────────────────────────────────────
+        (27, "PUT /facturi-recurente/{sid} — fara activ", "PUT",
+         "/tenants/%d/facturi-recurente/1" % F, {}, "parametrul activ absent"),
+        (27, "PUT /facturi-recurente/{sid} — activ ca text", "PUT",
+         "/tenants/%d/facturi-recurente/1?activ=poate" % F, {}, "activ=poate"),
+        (27, "PUT /facturi-recurente/{sid} — sablon inexistent", "PUT",
+         "/tenants/%d/facturi-recurente/%d?activ=true" % (F, INEXISTENT), {}, "sid=999999"),
+        # ── #28 emiterea ────────────────────────────────────────────────────
+        (28, "POST /facturi/emite — corp gol", "POST", "/tenants/%d/facturi/emite" % F, {},
+         "corp JSON gol"),
+        (28, "POST /facturi/emite — fara beneficiar", "POST", "/tenants/%d/facturi/emite" % F,
+         {"linii": [linie_ok], "tert_nume": ""}, "tert_nume=\"\""),
+        (28, "POST /facturi/emite — fara nicio linie", "POST", "/tenants/%d/facturi/emite" % F,
+         {"linii": [], "tert_nume": "Proba SRL"}, "linii=[]"),
+        (28, "POST /facturi/emite — cantitate negativa", "POST",
+         "/tenants/%d/facturi/emite" % F,
+         {"linii": [dict(linie_ok, cantitate=-5)], "tert_nume": "Proba SRL"}, "cantitate=-5"),
+        # `tert_cui` e completat DELIBERAT: fara el proba se oprea la codul de partener si
+        # nu ajungea niciodata la moneda — masurasem alta intrebare decat cea scrisa.
+        (28, "POST /facturi/emite — moneda inexistenta", "POST",
+         "/tenants/%d/facturi/emite" % F,
+         {"linii": [linie_ok], "tert_nume": "Proba SRL", "tert_cui": "RO1234567897",
+          "moneda": "XYZ"}, "moneda=XYZ (cu cod de partener completat)"),
+        # ── #30 seria si numarul ────────────────────────────────────────────
+        (30, "PUT /facturi/numerotare — corp gol", "PUT",
+         "/tenants/%d/facturi/numerotare" % F, {}, "corp JSON gol (nimic de setat)"),
+        (30, "PUT /facturi/numerotare — numar de start negativ", "PUT",
+         "/tenants/%d/facturi/numerotare" % F, {"numar_start": -5}, "numar_start=-5"),
+        (30, "PUT /facturi/numerotare — numar de start deja folosit", "PUT",
+         "/tenants/%d/facturi/numerotare" % F, {"numar_start": 100},
+         "numar_start=100 (seria a ajuns la 149; ar produce numere duplicate)"),
+        (30, "PUT /facturi/numerotare — serie goala", "PUT",
+         "/tenants/%d/facturi/numerotare" % F, {"serie": "   "}, "serie=\"   \""),
+        # ── #31 detaliile unei facturi ──────────────────────────────────────
+        (31, "GET /facturi/{id} — factura inexistenta", "GET",
+         "/tenants/%d/facturi/%d" % (F, INEXISTENT), None, "factura_id=999999"),
+        # ── #34 trimiterea pe email ─────────────────────────────────────────
+        (34, "POST /facturi/{id}/email — adresa fara @", "POST",
+         "/tenants/%d/facturi/3/email" % F, {"email": "nu-e-o-adresa"}, "email=nu-e-o-adresa"),
+        (34, "POST /facturi/{id}/email — factura inexistenta", "POST",
+         "/tenants/%d/facturi/%d/email" % (F, INEXISTENT), {"email": "test@exemplu.test"},
+         "factura_id=999999, adresa valida"),
+        # ── #35 supapa de notificare ────────────────────────────────────────
+        (35, "PUT /facturi/{id}/notificare — factura inexistenta", "PUT",
+         "/tenants/%d/facturi/%d/notificare" % (F, INEXISTENT), {"stop": True},
+         "factura_id=999999"),
+        (35, "PUT /facturi/{id}/notificare — data amanarii ca text", "PUT",
+         "/tenants/%d/facturi/%d/notificare" % (F, INEXISTENT),
+         {"stop": False, "amanata_pana": "maine"}, "amanata_pana=\"maine\""),
+    ]
+    # ── #20 si #21: calea de API, cu cheie. Fara cheie nu se poate ajunge la ruta.
+    p += [
+        (20, "GET /api/v1/.../facturi — fara cheie", "GET",
+         "/api/v1/firme/%d/facturi" % F, None, "antetul X-Api-Key absent"),
+        (20, "GET /api/v1/.../facturi — cheie inventata", "GET",
+         "/api/v1/firme/%d/facturi" % F, None, "X-Api-Key=cheie-inventata"),
+        (20, "GET /api/v1/.../facturi — luna 13", "GET",
+         "/api/v1/firme/%d/facturi?an=2026&luna=13" % F, None, "an=2026&luna=13"),
+        (20, "GET /api/v1/.../facturi — firma altui cabinet", "GET",
+         "/api/v1/firme/%d/facturi" % FIRMA_ALTUI_CABINET, None,
+         "tenant_id=34061 (alt cabinet)"),
+        (21, "POST /api/v1/.../facturi — corp gol", "POST",
+         "/api/v1/firme/%d/facturi" % F, {}, "corp JSON gol"),
+        (21, "POST /api/v1/.../facturi — fara nicio linie", "POST",
+         "/api/v1/firme/%d/facturi" % F, {"tert_nume": "Proba SRL", "linii": []}, "linii=[]"),
+        (21, "POST /api/v1/.../facturi — cota de TVA inexistenta", "POST",
+         "/api/v1/firme/%d/facturi" % F,
+         {"tert_nume": "Proba SRL", "tert_cui": "RO1234567897",
+          "linii": [dict(linie_ok, cota_tva=99)]}, "cota_tva=99"),
+    ]
+    return p
+
+
+#: Probele care merg pe calea de API publica: cheie in loc de token. Numele lor spune singur ce
+#: cheie primesc — `fara cheie` niciuna, `cheie inventata` una care nu exista, restul cea reala.
+CU_CHEIE_API = "/api/v1/"
+
+
 FARA_TOKEN = {"GET /control-fiscal — fara token", "GET /supervizor — fara token"}
 CU_CLIENT = {"GET /termene — cu rol CLIENT"}
+
+
+def _tipar(nr, eticheta, introdus, cod, corp):
+    print("=" * 100)
+    print("#%s  %s" % (nr, eticheta))
+    print("    introdus: %s" % introdus)
+    print("    HTTP %s" % cod)
+    print("    corp: %s" % corp[:1500])
+
+
+def _ruleaza_T02(tok):
+    """LOTUL 2. Doua lucruri in plus fata de bucla obisnuita, amandoua pentru ca proba sa nu lase
+    portofoliul schimbat (capcana 9): numerotarea firmei se citeste inainte si se pune la loc in
+    `finally`, iar cheia de API se creeaza si se sterge tot aici. Cheia se face prin LANTUL
+    APLICATIEI (`POST /cabinet/api-chei`), nu cu un INSERT — regula 3."""
+    _c, numerotare_initiala = cere("GET", "/tenants/%d/facturi/numerotare" % FIRMA, None, tok)
+    print("NUMEROTAREA DINAINTE (se pune la loc in finally): HTTP %s %s" % (_c, numerotare_initiala))
+    cod, corp = cere("POST", "/cabinet/api-chei", {"nume": "proba lot 2"}, tok)
+    if cod != 200:
+        raise SystemExit("nu s-a putut emite cheia de API: HTTP %s %s" % (cod, corp))
+    cheie = json.loads(corp)
+    print("CHEIE DE API emisa pentru proba: id=%s prefix=%s" % (cheie["id"], cheie["prefix"]))
+    out = []
+    try:
+        for nr, eticheta, metoda, cale, payload, introdus in probe_T02():
+            antete, t = None, tok
+            if CU_CHEIE_API in cale:
+                t = None
+                if "fara cheie" in eticheta:
+                    antete = None
+                elif "cheie inventata" in eticheta:
+                    antete = {"X-Api-Key": "ick_cheie-care-nu-exista"}
+                else:
+                    antete = {"X-Api-Key": cheie["cheie"]}
+            cod, corp = cere(metoda, cale, payload, t, antete=antete)
+            out.append({"nr": nr, "eticheta": eticheta, "metoda": metoda, "cale": cale,
+                        "introdus": introdus, "cod": cod, "corp": corp})
+            _tipar(nr, eticheta, introdus, cod, corp)
+    finally:
+        print("=" * 100)
+        try:
+            # Cheile sunt cele pe care le INTOARCE ruta (`serie`, `urmator_numar`), nu numele
+            # coloanelor din `firma_profil`. Prima forma le confunda, trimitea doua `None`,
+            # primea „nimic de setat" — si lasa firma cu seria stearsa de o proba.
+            n0 = json.loads(numerotare_initiala)
+            cod, corp = cere("PUT", "/tenants/%d/facturi/numerotare" % FIRMA,
+                             {"serie": n0.get("serie"),
+                              "numar_start": n0.get("urmator_numar")}, tok)
+            print("NUMEROTAREA PUSA LA LOC: HTTP %s %s" % (cod, corp))
+            _c, acum = cere("GET", "/tenants/%d/facturi/numerotare" % FIRMA, None, tok)
+            print("NUMEROTAREA DE ACUM:     HTTP %s %s" % (_c, acum))
+            # Nu „am trimis PUT-ul", ci „starea e cea de dinainte". Un `finally` care raporteaza
+            # ca a incercat, nu ca a reusit, e cum s-a pierdut seria la prima trecere.
+            if json.loads(acum) != n0:
+                print("ATENTIE: numerotarea NU e cea de dinainte. Era %s, e %s." % (n0, acum))
+        except Exception as ex:
+            print("NUMEROTAREA N-A PUTUT FI PUSA LA LOC: %r — se reface cu mana" % (ex,))
+        cod, corp = cere("DELETE", "/cabinet/api-chei/%d" % cheie["id"], None, tok)
+        print("CHEIA REVOCATA: HTTP %s %s" % (cod, corp))
+        _sterge_cheia(cheie["id"])
+    return out
+
+
+def _sterge_cheia(kid):
+    """Revocarea lasa randul in `public.api_chei` (`activ=false`). Portofoliul avea ZERO chei
+    inainte de proba si ramane cu zero: randul se sterge, si se spune ca s-a sters."""
+    from core import db
+    with db.get_conn() as conn:
+        with conn.cursor() as cur:
+            cur.execute("DELETE FROM public.api_chei WHERE id=%s", (kid,))
+            n = cur.rowcount
+        conn.commit()
+    print("RANDUL CHEII STERS din public.api_chei: %d" % n)
 
 
 def ruleaza(lot):
     tok = token(EMAIL)
     tok_client = token(EMAIL_CLIENT)
+    if lot == "T02":
+        return _ruleaza_T02(tok)
     probe = {"T01": probe_T01, "IMPORT-GOL": probe_import_gol}[lot]()
     out = []
     for nr, eticheta, metoda, cale, payload, introdus in probe:
@@ -172,11 +380,7 @@ def ruleaza(lot):
         cod, corp = cere(metoda, cale, payload, t)
         out.append({"nr": nr, "eticheta": eticheta, "metoda": metoda, "cale": cale,
                     "introdus": introdus, "cod": cod, "corp": corp})
-        print("=" * 100)
-        print("#%s  %s" % (nr, eticheta))
-        print("    introdus: %s" % introdus)
-        print("    HTTP %s" % cod)
-        print("    corp: %s" % corp[:1500])
+        _tipar(nr, eticheta, introdus, cod, corp)
     if lot != "T01":
         return out
     # upload-ul, separat: cere multipart

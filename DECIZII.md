@@ -3,6 +3,44 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 03.09.2026 (25) — Cele trei decizii ale campaniei de probare, date odată, cu motivul lor
+
+Costin le-a dat pe toate trei într-o singură comandă, verbatim, **ca să nu se mai repete la fiecare
+tură**: *„Trei decizii, ca să nu le mai aștepți."* Erau deschise de două ture (`403`/`404`) și
+respectiv o tură (eticheta, registrul).
+
+**(1) `404` pe amândouă, la firmă inexistentă.** *„Mesajul «nu există în portofoliu sau nu ți-e
+atribuită» e același în ambele cazuri, deci nu divulgă nimic — `404` nu pierde protecția lui `403`,
+dar scapă de refuzul care spune «n-ai drepturi» când firma nu e acolo."*
+
+Argumentul e **despre mesaj, nu despre cod**: `403` apăra ceva doar cât timp răspunsul deosebea
+„firma nu există" de „nu ți-e atribuită". De când mesajul nu le mai deosebește — reparat în lotul 1
+al campaniei, fiindcă vechea formă trimitea omul să ceară o atribuire imposibilă —, `403` nu mai
+ascundea nimic; ascundea doar de la cine avea dreptate.
+
+**Cum s-a aplicat: codul a fost mutat lângă mesaj, nu schimbat în trei locuri.** Patru rute foloseau
+`FARA_ACCES_TENANT`, **trei cu `403` și una cu `404`** — chiar clasa pe care decizia o închide. Acum
+folosesc `mesaje.COD_FARA_ACCES_TENANT`, deci alegerea nu se mai poate face pe rută: o rută care ar
+vrea alt cod ar trebui să-l scrie ea, la vedere. *Măsurat înainte: restul clasei — „tenant inexistent
+sau fără acces" — răspundea deja `404` în peste treizeci de locuri, deci decizia aliniază minoritatea
+la majoritate, nu invers.*
+
+**(2) Respingerea etichetei false rămâne strictă.** *„O etichetă care doar avertizează tot sare
+poarta."* Formularea din comanda inițială era „ignorată"; `commit-msg` fusese făcut mai strict —
+respinge commitul — iar întrebarea era dacă se slăbește. Nu se slăbește. **Nimic de schimbat în cod**:
+verificat, `commit-msg` respinge deja. Ce se schimbă e că decizia e scrisă, deci a treia oară nu se
+mai redeschide.
+
+**(3) „Registru" = `.md` din rădăcină + cele două JSON de proveniență + registrul campaniei.**
+
+Măsurat: `LISTA_FUNCTIONALITATI.md` și `VERIFICARE_FUNCTIONALITATI.md` **sunt deja** registre — dar
+prin **accidentul locației**, fiindcă sunt `.md` în rădăcină. Dacă mâine s-ar muta într-un
+`campanie/`, ar ieși din definiție în tăcere, iar o ocolire de curățenie le-ar putea șterge fără să
+ruleze nimic. Decizia le numește explicit, deci gardul le cere explicit — `core/test_curatenie.py`,
+pe **mulțime**, nu pe text, cu anti-vacuu în cealaltă direcție (un `.md` din afara rădăcinii NU e
+registru). *N-am adăugat o listă scrisă de mână în `perimetru.py`: criteriul structural rămâne
+criteriu, iar decizia se leagă de el printr-o aserțiune, nu printr-o excepție.*
+
 ## 01.09.2026 (24) — O clasă care sună prudent poate fi ușa din dos a încălcării
 
 **Instanța, din R109.** Regula lui Costin era: *„nicio cotă nu se reconfirmă mai rar decât azi."*

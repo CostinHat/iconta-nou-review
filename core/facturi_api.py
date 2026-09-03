@@ -12,6 +12,9 @@ Convenție (confirmată din d300._segmente: baza = total - tva):
 from __future__ import annotations
 from decimal import Decimal, ROUND_HALF_UP
 
+from core.common import (NUMEROTARE_SECVENTIALA,
+                         cote_tva_in_vigoare as _cote_tva_in_vigoare)
+
 REGULI = "2026.1"
 MODUL = "facturi_api"
 
@@ -23,6 +26,55 @@ class LiniiIncomplete(ValueError):
     def __init__(self, campuri):
         self.campuri = campuri
         super().__init__("Linii incomplete: " + "; ".join(x["eticheta"] for x in campuri))
+
+
+#: Direcțiile posibile ale unei facturi. Erau scrise de două ori — o dată ca refuz în
+#: `creeaza_factura` și o dată deloc în `lista_facturi`, care tăcea pe orice altă valoare și
+#: întorcea lista goală. O singură sursă: filtrul respinge exact ce respinge și crearea.
+DIRECTII = ("emisa", "primita")
+
+
+def _data_ceruta(camp, valoare):
+    """Data unui câmp, ca `date`, sau `ValueError` care spune CARE câmp și CE s-a primit.
+
+    Până azi `data_emitere` mergea neatinsă până în `INSERT`, iar Postgres refuza `2026-02-31`
+    cu o eroare de driver — contabilul primea `500 Internal Server Error`, adică nimic. O zi
+    care nu există în calendar e o greșeală de tastare, nu o cădere de sistem."""
+    import datetime as _d
+    if valoare is None or valoare == "":
+        return None
+    if isinstance(valoare, _d.date):
+        return valoare
+    try:
+        return _d.date.fromisoformat(str(valoare).strip())
+    except ValueError:
+        raise ValueError("%s: %r nu e o dată din calendar. Aștept forma AAAA-LL-ZZ, cu o zi care "
+                         "există în luna aia." % (camp, valoare))
+
+
+def _cota_necunoscuta(linii, la_data):
+    """Prima linie a cărei cotă de TVA nu exista în lege la data facturii, ca `(linie, cota,
+    cote_permise, temeiuri)`; `None` dacă toate se recunosc SAU dacă nu se poate ști.
+
+    **Nu confunda „e invalidă" cu „n-am putut verifica"**: dacă registrul de cote nu acoperă
+    perioada facturii, `cote_tva_in_vigoare` întoarce `None`, iar aici nu se refuză nimic. Un
+    refuz pe necunoaștere ar bloca introducerea unei facturi vechi corecte."""
+    if la_data is None:
+        return None   # fara data facturii nu se poate sti ce cote erau atunci — deci nu se refuza
+    permise, temeiuri = _cote_tva_in_vigoare(la_data)
+    if permise is None:
+        return None
+    for l in linii:
+        c = l.get("cota_tva")
+        if c is None:
+            continue
+        try:
+            v = Decimal(str(c))
+        except Exception:
+            v = None
+        if v is None or v not in permise:
+            return l, c, permise, temeiuri
+    return None
 
 
 def linii_campuri_lipsa(linii, prefix="em-l"):
@@ -121,8 +173,34 @@ def creeaza_factura(conn, numar, data_emitere, directie, linii,
             raise ValueError("Linia %r nu are cotă de TVA. Completează cota pe linie — 0 (scutit) "
                              "e o valoare validă, dar absența nu se poate ghici."
                              % (_l.get("descriere") or "",))
-    if directie not in ("emisa", "primita"):
+    if directie not in DIRECTII:
         raise ValueError("Direcția facturii trebuie să fie 'emisă' sau 'primită'.")
+    # [probare invalid lot 2, 03.09.2026] Cele trei refuzuri de mai jos au înlocuit, în ordine:
+    # un `500` pe o dată inexistentă în calendar, o factură cu cota de TVA 99% acceptată ȘI
+    # contabilizată (4427 = 99 lei), și un al doilea document cu un număr deja folosit.
+    _d_emitere = _data_ceruta("data emiterii", data_emitere)
+    _data_ceruta("data scadenței", data_scadenta)
+    _rea = _cota_necunoscuta(linii, _d_emitere)
+    if _rea is not None and (directie == "emisa" or (tert_tara or "RO").strip().upper() == "RO"):
+        # Numai pe ce ține de legea română: pe o factură PRIMITĂ dintr-un alt stat, cota lui e
+        # legitimă și n-avem de unde ști lista lui. Limita e declarată, nu ascunsă.
+        _l, _c, _permise, _temeiuri = _rea
+        raise ValueError(
+            "Linia %r are cota de TVA %s%%, care nu există în legea română la data facturii (%s). "
+            "Cotele de atunci: %s. Temei: %s."
+            % (_l.get("descriere") or "", _c, _d_emitere.isoformat() if _d_emitere else "azi",
+               ", ".join("%s%%" % _f for _f in sorted(_permise)),
+               "; ".join(sorted({str(_t) for _t in _temeiuri}))))
+    if directie == "emisa" and numar:
+        with conn.cursor() as _cur:
+            _cur.execute("SELECT id FROM facturi WHERE numar=%s AND directie='emisa' LIMIT 1",
+                         (numar,))
+            _existent = _cur.fetchone()
+        if _existent:
+            raise ValueError(
+                "Numărul %s e deja pe factura #%s. Două documente emise cu același număr rup "
+                "secvența cerută de %s. Dacă documentul dinainte e greșit, se stornează — nu se "
+                "reia numărul." % (numar, _existent[0], NUMEROTARE_SECVENTIALA))
     # [B1 D300] campuri de clasificare/temporizare. tip_operatiune distinge avansul (exigibil la
     # emitere, art.282 alin.2 lit.b); furnizor_tva_incasare doar pe PRIMITE (deducere amanata la
     # plata, art.297 alin.2). Fara default tacit peste o valoare invalida -> refuz cu mesaj clar.
@@ -222,6 +300,23 @@ def lista_facturi(conn, an=None, luna=None, directie=None, limit=None, offset=0)
     """Lista facturilor (antet), filtrabilă pe an/lună/direcție. limit=None -> tot istoricul
     (folosit intern de alte module: verificatoare, D390 etc.); UI foloseste limit pentru paginare."""
     import psycopg2.extras as _E
+    # [probare invalid lot 2, 03.09.2026] Trei feluri de a nu răspunde, toate reparate aici:
+    # `luna=13` construia intervalul „2026-13-01 … 2026-14-01" și pica în driver (`500`);
+    # `limit=-5` ajungea în `LIMIT -5`, refuzat de Postgres (`500`); iar `directie=lateral`
+    # întorcea `200` cu listă goală — „nu există facturi așa" arăta identic cu „direcția asta
+    # nu există", exact clasa scoasă din `GET /coada` în lotul 1.
+    if luna is not None and not (1 <= luna <= 12):
+        raise ValueError("luna invalidă: %r (aștept 1-12)" % (luna,))
+    if an is not None and not (1990 <= an <= 2100):
+        raise ValueError("an invalid: %r (aștept 1990-2100)" % (an,))
+    if directie is not None and directie not in DIRECTII:
+        raise ValueError("direcție necunoscută: %r (direcțiile facturii: %s)"
+                         % (directie, ", ".join(DIRECTII)))
+    if limit is not None and limit < 0:
+        raise ValueError("limit invalid: %r (aștept un număr pozitiv, sau nimic pentru tot)"
+                         % (limit,))
+    if offset is not None and offset < 0:
+        raise ValueError("offset invalid: %r (aștept un număr pozitiv sau 0)" % (offset,))
     cond, val = [], []
     if an is not None and luna is not None:
         inceput = "%04d-%02d-01" % (an, luna)
@@ -380,13 +475,43 @@ def numerotare(conn):
 def seteaza_numerotare(conn, serie=None, numar_start=None):
     """Configureaza seria + numarul de start (continuitate cu istoricul).
     Se apeleaza o data; dupa, numarul se auto-incrementeaza la emitere."""
+    # [probare invalid lot 2, 03.09.2026] Trei valori treceau cu `200 {"ok": true}`:
+    # `serie="   "` ștergea seria firmei în tăcere (`strip() or None`), `numar_start=-5` intra
+    # ca atare, iar `numar_start=100` dădea contorul înapoi peste numere deja emise — următoarea
+    # factură ar fi purtat un număr existent. Probat: după el, emiterea prin API a produs
+    # documentul „100", fără serie.
+    with conn.cursor() as _cur:
+        _cur.execute("SELECT serie_factura, urmator_numar_factura FROM firma_profil LIMIT 1")
+        _acum = _cur.fetchone() or (None, None)
     seturi, val = [], []
     if serie is not None:
-        seturi.append("serie_factura = %s"); val.append(serie.strip() or None)
+        if not str(serie).strip():
+            return {"ok": False, "mesaj": "Seria e goală (numai spații). Nu se poate ghici dacă "
+                                          "ai vrut s-o ștergi sau ai greșit tastarea, iar seria "
+                                          "firmei e pe documentele deja emise."}
+        seturi.append("serie_factura = %s"); val.append(serie.strip())
     if numar_start is not None:
-        seturi.append("urmator_numar_factura = %s"); val.append(int(numar_start))
+        try:
+            _n = int(numar_start)
+        except (TypeError, ValueError):
+            return {"ok": False, "mesaj": "Numărul de start: %r nu e un număr întreg." % (numar_start,)}
+        if _n < 1:
+            return {"ok": False, "mesaj": "Numărul de start trebuie să fie cel puțin 1; am primit "
+                                          "%s. Numerotarea documentelor pornește de la 1, nu de la "
+                                          "zero sau de la un număr negativ (%s)."
+                                          % (_n, NUMEROTARE_SECVENTIALA)}
+        _urm = _acum[1]
+        if _urm is not None and _n < _urm:
+            return {"ok": False, "mesaj": "Numărul de start %s e sub cel la care a ajuns seria "
+                                          "(%s). Dat înapoi, următoarea factură ar primi un număr "
+                                          "deja emis, iar secvența cerută de %s s-ar rupe. Un "
+                                          "număr mai mare sau egal se acceptă."
+                                          % (_n, _urm, NUMEROTARE_SECVENTIALA)}
+        seturi.append("urmator_numar_factura = %s"); val.append(_n)
     if not seturi:
-        return {"ok": False, "mesaj": "nimic de setat"}
+        return {"ok": False, "mesaj": "Nu ai trimis nici seria, nici numărul de "
+                                      "start, deci n-am ce schimba în numerotarea "
+                                      "facturilor."}
     seturi.append("numerotare_configurata = true")  # numerotare_configurata_v1
     with conn.cursor() as cur:
         cur.execute("UPDATE firma_profil SET " + ", ".join(seturi), val)
@@ -452,13 +577,17 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
       - salveaza + incrementeaza contorul
     Intoarce {ok, factura_id, numar, serie, total, tva}.
     """
-    cere_cod_partener(tert_cui, tert_pf, tert_nume)
+    # [probare invalid lot 2, 03.09.2026] ORDINEA e reparația: codul de partener se cerea
+    # ÎNAINTE de a se uita la linii, deci cine trimitea `linii=[]`, o cantitate negativă sau o
+    # monedă inexistentă primea, toți trei, mesajul despre codul fiscal al partenerului — un
+    # refuz care numește alt câmp. Aceeași clasă ca „trimestru invalid: None" din lotul 1.
     import datetime
     if not linii:
-        raise ValueError("factura trebuie sa aiba cel putin o linie")
+        raise ValueError("Factura trebuie să aibă cel puțin o linie.")
     _lipsa = linii_campuri_lipsa(linii)   # [cap.24 3b] validare per-linie field-keyed (autoritatea)
     if _lipsa:
         raise LiniiIncomplete(_lipsa)
+    cere_cod_partener(tert_cui, tert_pf, tert_nume)
     data_emitere = data_emitere or datetime.date.today().isoformat()
 
     linii = _potriveste_linii(conn, linii, platitor_tva=platitor_tva)
@@ -508,6 +637,12 @@ def emite_factura(conn, linii, client_id=None, tert_nume=None, tert_cui=None, te
         try:
             _c, _dc, _s = curs_bnr.curs_pentru(conn, moneda, _d)
             _curs, _dcurs, _sursa = float(_c), _dc, _s
+        except curs_bnr.MonedaNecotata as _mn:
+            # Moneda nu exista: nu e o intarziere, deci nu se ofera nici „reincearca", nici
+            # „curs manual" — al doilea ar baga factura in contabilitate pe o moneda inventata.
+            conn.rollback()
+            return {"ok": False, "cod": "MONEDA_NECOTATA", "moneda": moneda,
+                    "data": _d.isoformat(), "mesaj": str(_mn)}
         except curs_bnr.CursIndisponibil:
             # nu emit factura in valuta fara curs valid; anulez inseratul si semnalez frontend-ului
             conn.rollback()

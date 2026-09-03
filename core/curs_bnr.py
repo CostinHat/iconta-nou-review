@@ -38,6 +38,24 @@ class CursIndisponibil(Exception):
     """BNR inaccesibil / cursul nu a putut fi preluat. Frontend: reincearca sau manual."""
 
 
+class MonedaNecotata(CursIndisponibil):
+    """[probare invalid lot 2, 03.09.2026] Cursul lipseste fiindca MONEDA nu e cotata de BNR, nu
+    fiindca reteaua a picat. Doua stari diferite care aveau acelasi raspuns — „nu e disponibil
+    MOMENTAN" —, iar diferenta nu e de nuanta: pe prima, „reincearca mai tarziu" nu se va
+    intampla niciodata, iar „introdu cursul manual" ar baga in contabilitate o factura intr-o
+    moneda inexistenta. Subclasa, deci `except CursIndisponibil` de dinainte ramane valabil."""
+    def __init__(self, moneda, cotate=()):
+        self.moneda = moneda
+        self.cotate = tuple(sorted(cotate))
+        super().__init__(
+            "Moneda %r nu e cotată de BNR, deci factura nu se poate exprima în lei. "
+            "Verifică simbolul (trei litere, ex. EUR, USD). %s"
+            % (moneda,
+               ("Monedele din ultimul nomenclator citit de la BNR: "
+                + ", ".join(self.cotate) + ".") if self.cotate
+               else "Lista monedelor cotate n-a putut fi citită acum."))
+
+
 # ============================================================
 #  PUR — parsare XML BNR -> {data(date): {moneda: Decimal}}
 # ============================================================
@@ -102,6 +120,26 @@ def _descarca(url: str) -> str:
         return r.read().decode("utf-8")
 
 
+def _monede_din_cache(conn):
+    """Monedele pe care BNR le-a cotat vreodata, dupa cache-ul local.
+
+    **DE CE nu doar din XML-ul proaspat** (masurat 03.09.2026): fluxul public al BNR nu mai
+    raspunde de pe serverul asta — `nbrfxrates10days.xml` da `302` catre pagina de start, iar
+    ultima zi din cache e 10.07.2026. Fara asta, deosebirea „moneda nu exista" / „cursul nu se
+    poate lua acum" ar fi ramas scrisa in cod si moarta in fapt.
+
+    **LIMITA, declarata:** o moneda pe care BNR ar incepe s-o coteze DUPA ce cache-ul s-a oprit
+    ar fi luata drept necotata. Nu se pierde nimic prin asta — cursul ei tot n-ar putea fi luat,
+    deci factura tot n-ar putea fi emisa; se schimba numai MOTIVUL scris in refuz, iar mesajul
+    listeaza monedele cunoscute, deci omul vede singur pe ce se sprijina raspunsul."""
+    try:
+        with conn.cursor() as cur:
+            cur.execute("SELECT DISTINCT moneda FROM public.curs_bnr_zilnic")
+            return {r[0] for r in cur.fetchall() if r[0]}
+    except Exception:
+        return set()
+
+
 def _din_cache(conn, moneda: str, data_ref: date):
     """Cauta in public.curs_bnr_zilnic cel mai recent curs cu data <= data_ref."""
     with conn.cursor() as cur:
@@ -156,18 +194,28 @@ def curs_pentru(conn, moneda: str, data_factura: date):
         urls.append(URL_10ZILE)  # fallback
 
     ultima_eroare = None
+    cotate = set()          # ce monede a cotat BNR in hartile pe care CHIAR le-am citit
     for url in urls:
         try:
             xml = _descarca(url)
             harta = parse_xml(xml)
             if harta:
                 _salveaza_cache(conn, harta)
+                for _zi in harta.values():
+                    cotate.update(_zi)
                 c, dc = curs_din_harta(harta, moneda, data_factura)
                 if c is not None:
                     return c, dc, "bnr"
         except Exception as e:  # retea, timeout, IP blocat, parse
             ultima_eroare = e
             continue
+
+    # Am citit cel putin o harta BNR, si moneda nu e in NICIUNA: nu e o indisponibilitate, e o
+    # moneda care nu exista in nomenclatorul BNR. Daca n-am citit nicio harta (`cotate` gol),
+    # chiar nu se poate sti — si atunci raspunsul ramane cel de jos.
+    cotate |= _monede_din_cache(conn)
+    if cotate and moneda not in cotate:
+        raise MonedaNecotata(moneda, cotate)
 
     raise CursIndisponibil(
         f"Cursul BNR pentru {moneda} la data {data_factura} nu e disponibil momentan."
