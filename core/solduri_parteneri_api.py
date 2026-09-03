@@ -222,6 +222,15 @@ def importa(conn, randuri, data_referinta=None):
     """Inlocuieste partenerii (DELETE + INSERT). Intoarce {randuri, total_debit, total_credit}.
     Ridica ValueError daca vreun rand nu poate intra in evidenta (vezi verifica_randuri).
     Refuzul e PRIMA POARTA: nimic nu se scrie dintr-un import cu randuri invalide."""
+    # [probare invalid, 03.09.2026 — aceeasi clasa ca importul de istoric] UN IMPORT GOL
+    # STERGEA TOT, IN TACERE. Lista vida trecea de verificare (n-are ce respinge), ajungea la
+    # `DELETE FROM solduri_parteneri` de mai jos, si raspundea ca un import reusit cu zero randuri. Un fisier gol,
+    # unul cu numai antet (`extrage` intoarce [] pe el), sau un apel de API cu lista goala — toate
+    # ajungeau acolo. *Un import care nu aduce nimic n-are voie sa stearga ce era acolo.*
+    if not randuri:
+        raise ValueError("nu ai trimis niciun rând. Importul ar fi șters soldurile inițiale ale "
+                         "partenerilor și n-ar fi pus nimic în loc. Dacă chiar vrei să le "
+                         "golești, e altă operațiune.")
     erori, _bune = verifica_randuri(randuri)
     if erori:
         det = "; ".join("rand %s: %s" % (e["rand"], e["mesaj"]) for e in erori[:6])

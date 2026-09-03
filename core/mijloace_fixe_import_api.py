@@ -213,6 +213,15 @@ def verifica_randuri(randuri):
 def importa(conn, randuri):
     """DELETE + INSERT per firma. Intoarce {importati}.
     Ridica ValueError daca randurile nu pot intra (vezi verifica_randuri)."""
+    # [probare invalid, 03.09.2026 — aceeasi clasa ca importul de istoric] UN IMPORT GOL
+    # STERGEA TOT, IN TACERE. Lista vida trecea de verificare (n-are ce respinge), ajungea la
+    # `DELETE FROM mijloace_fixe` de mai jos, si raspundea ca un import reusit cu zero randuri. Un fisier gol,
+    # unul cu numai antet (`extrage` intoarce [] pe el), sau un apel de API cu lista goala — toate
+    # ajungeau acolo. *Un import care nu aduce nimic n-are voie sa stearga ce era acolo.*
+    if not randuri:
+        raise ValueError("nu ai trimis niciun rând. Importul ar fi șters registrul mijloacelor "
+                         "fixe al firmei — cel pe care stă amortizarea — și n-ar fi pus nimic "
+                         "în loc. Dacă chiar vrei să golești registrul, e altă operațiune.")
     er = verifica_randuri(randuri)
     if er:
         raise ValueError("%d rânduri nu pot intra: %s. Mijloacele fixe intră în "

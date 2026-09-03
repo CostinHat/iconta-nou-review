@@ -122,6 +122,12 @@ DOAR_ADMIN_CABINET = "Acțiune rezervată administratorului cabinetului. Cere-i 
 DOAR_PATRON = "Acțiune rezervată patronului cabinetului. Cere-i lui să o facă."
 FARA_DREPT_VALIDARE = "Nu ai dreptul de a valida declarații. Cere-i administratorului cabinetului să ți-l acorde."
 FARA_DREPT_DEPUNERE = "Nu ai dreptul de a depune declarații. Cere-i administratorului cabinetului să ți-l acorde."
-FARA_ACCES_TENANT = "Nu ai acces la această firmă. Cere-i administratorului cabinetului să ți-o atribuie."
+# [probare invalid, 03.09.2026] Forma dinainte — „Nu ai acces la această firmă. Cere-i
+# administratorului cabinetului să ți-o atribuie." — AFIRMA o cauză pe care ruta nu o poate
+# ști: pe un `tenant_id` inexistent (999999) spunea că firma există și că e o chestiune de
+# drepturi, și trimitea omul să ceară o atribuire imposibilă. `POST /coada` răspundea deja
+# corect, cu „inexistent sau fără acces" — două mesaje pentru aceeași stare, unul fals.
+FARA_ACCES_TENANT = ("Firma nu există în portofoliu sau nu ți-e atribuită. Dacă există și "
+                     "ar trebui să lucrezi pe ea, cere-i administratorului cabinetului să ți-o atribuie.")
 FARA_ACCES_RAPORTARE = "Nu ai acces la această raportare."
 FARA_ACCES = "Nu ai acces la această resursă."

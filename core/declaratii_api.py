@@ -374,14 +374,34 @@ def valideaza_cerere(tip, body, per_efectiv=None):
     if not isinstance(an, int) or an < 2020 or an > 2100:
         erori.append("an invalid: %r (aștept întreg 2020-2100)" % (an,))
 
+    # [probare invalid, 03.09.2026] O valoare TRIMISĂ și greșită se spune pe numele ei, chiar
+    # dacă periodicitatea firmei n-o cere. Instanța: pe o firmă cu TVA trimestrial, `luna=13`
+    # producea „trimestru invalid: None (aștept 1-4)" — un refuz care numește ALT câmp decât
+    # cel greșit, iar omul caută trimestrul pe care nu l-a scris.
+    luna_trimisa, trim_trimis = body.get("luna"), body.get("trim")
+    if luna_trimisa is not None and (not isinstance(luna_trimisa, int)
+                                     or luna_trimisa < 1 or luna_trimisa > 12):
+        erori.append("luna invalidă: %r (aștept 1-12)" % (luna_trimisa,))
+    if trim_trimis is not None and (not isinstance(trim_trimis, int)
+                                    or trim_trimis < 1 or trim_trimis > 4):
+        erori.append("trimestru invalid: %r (aștept 1-4)" % (trim_trimis,))
+
     if per == "lunar":
         luna = body.get("luna")
         if not isinstance(luna, int) or luna < 1 or luna > 12:
-            erori.append("luna invalidă: %r (aștept 1-12)" % (luna,))
+            if luna is None and isinstance(trim_trimis, int):
+                erori.append("declarația %s se depune LUNAR pentru firma asta: trimite luna "
+                             "(1-12), nu trimestrul" % tip)
+            elif luna_trimisa is None:
+                erori.append("luna invalidă: %r (aștept 1-12)" % (luna,))
     elif per == "trimestrial":
         trim = body.get("trim")
         if not isinstance(trim, int) or trim < 1 or trim > 4:
-            erori.append("trimestru invalid: %r (aștept 1-4)" % (trim,))
+            if trim is None and luna_trimisa is not None:
+                erori.append("firma depune %s TRIMESTRIAL: trimite trimestrul (1-4), nu luna"
+                             % tip)
+            elif trim_trimis is None:
+                erori.append("trimestru invalid: %r (aștept 1-4)" % (trim,))
     # 'anual' nu cere nimic în plus față de an
 
     # d177 (redirectionare impozit profit -> ONG/cult, MANUALA anuala): cere manual.beneficiari. Mesaj de

@@ -28,22 +28,22 @@
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 4 | coada lista | `GET /coada` · `cere_cabinet` | citire / afisare — `coada_lista()` | da | neprobat |
-| 5 | coada adauga | `POST /coada` · rol `admin_firma/angajat` | creare sau executie — `coada_adauga()` | da | neprobat |
-| 6 | coada aproba | `POST /coada/{coada_id}/aproba` · rol `admin_firma/angajat` | creare sau executie — `coada_aproba()` | da | neprobat |
-| 7 | [patru-ochi] Continutul unui element din coada pentru VIZUALIZARE inainte de aprobare: declaratia (avertismente/note), … | `GET /coada/{coada_id}/continut` · `cere_cabinet` | citire / afisare — `coada_continut()` | da | neprobat |
-| 8 | coada depune | `POST /coada/{coada_id}/depune` · rol `admin_firma` | creare sau executie — `coada_depune()` | da | neprobat |
-| 9 | coada respinge | `POST /coada/{coada_id}/respinge` · rol `admin_firma/angajat` | creare sau executie — `coada_respinge()` | da | neprobat |
-| 10 | Semafor pentru toate firmele cabinetului + sumar (verde/galben/rosu). | `GET /control-fiscal` · `cere_cabinet` | citire / afisare — `control_fiscal_portofoliu()` | nu | neprobat |
-| 11 | Detaliu conformare pentru o firma: lista lipsa + de urmarit + constatari contabile. | `GET /control-fiscal/{tenant_id}` · `cere_cabinet` | citire / afisare — `control_fiscal_detaliu()` | nu | neprobat |
-| 12 | declaratii tipuri | `GET /declaratii/tipuri` · `cere_cabinet` | citire / afisare — `declaratii_tipuri()` | da | neprobat |
-| 13 | declaratie genereaza | `POST /declaratii/{tip}` · rol `admin_firma/angajat` | creare sau executie — `declaratie_genereaza()` | da | neprobat |
-| 14 | Genereaza declaratia si o trece prin validatorul OFICIAL ANAF (DUKIntegrator) | `POST /declaratii/{tip}/valideaza` · rol `admin_firma/angajat` | creare sau executie — `declaratie_valideaza()` | da | neprobat |
-| 15 | firma verificari | `GET /firme/{tenant_id}/verificari` · `cere_cabinet` | citire / afisare — `firma_verificari()` | nu | neprobat |
-| 16 | SUPERVIZORUL, rulat LA CERERE pe firmele utilizatorului curent | `GET /supervizor` · `cere_cabinet` | citire / afisare — `supervizor_la_cerere()` | nu | neprobat |
-| 17 | istoric import salveaza | `POST /tenants/{tenant_id}/istoric-declaratii-import` · rol `admin_firma` | creare sau executie — `istoric_import_salveaza()` | da | neprobat |
-| 18 | istoric import incarca | `POST /tenants/{tenant_id}/istoric-declaratii-import/incarca` · `cere_cabinet` | creare sau executie — `istoric_import_incarca()` | da | neprobat |
-| 19 | Scadente viitoare grupate pe data + tip, cu numarul de firme. | `GET /termene` · `cere_cabinet` | citire / afisare — `termene_portofoliu()` | da | neprobat |
+| 4 | coada lista | `GET /coada` · `cere_cabinet` | citire / afisare — `coada_lista()` | da | probat invalid 03.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 1 |
+| 5 | coada adauga | `POST /coada` · rol `admin_firma/angajat` | creare sau executie — `coada_adauga()` | da | probat invalid 03.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 1 |
+| 6 | coada aproba | `POST /coada/{coada_id}/aproba` · rol `admin_firma/angajat` | creare sau executie — `coada_aproba()` | da | probat invalid 03.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 1 |
+| 7 | [patru-ochi] Continutul unui element din coada pentru VIZUALIZARE inainte de aprobare: declaratia (avertismente/note), … | `GET /coada/{coada_id}/continut` · `cere_cabinet` | citire / afisare — `coada_continut()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 8 | coada depune | `POST /coada/{coada_id}/depune` · rol `admin_firma` | creare sau executie — `coada_depune()` | da | probat invalid 03.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 1 |
+| 9 | coada respinge | `POST /coada/{coada_id}/respinge` · rol `admin_firma/angajat` | creare sau executie — `coada_respinge()` | da | probat invalid 03.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 1 |
+| 10 | Semafor pentru toate firmele cabinetului + sumar (verde/galben/rosu). | `GET /control-fiscal` · `cere_cabinet` | citire / afisare — `control_fiscal_portofoliu()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 11 | Detaliu conformare pentru o firma: lista lipsa + de urmarit + constatari contabile. | `GET /control-fiscal/{tenant_id}` · `cere_cabinet` | citire / afisare — `control_fiscal_detaliu()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 12 | declaratii tipuri | `GET /declaratii/tipuri` · `cere_cabinet` | citire / afisare — `declaratii_tipuri()` | da | probat invalid 03.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 1 |
+| 13 | declaratie genereaza | `POST /declaratii/{tip}` · rol `admin_firma/angajat` | creare sau executie — `declaratie_genereaza()` | da | probat invalid 03.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 1 |
+| 14 | Genereaza declaratia si o trece prin validatorul OFICIAL ANAF (DUKIntegrator) | `POST /declaratii/{tip}/valideaza` · rol `admin_firma/angajat` | creare sau executie — `declaratie_valideaza()` | da | probat invalid 03.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 1 |
+| 15 | firma verificari | `GET /firme/{tenant_id}/verificari` · `cere_cabinet` | citire / afisare — `firma_verificari()` | nu | probat invalid 03.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 1 |
+| 16 | SUPERVIZORUL, rulat LA CERERE pe firmele utilizatorului curent | `GET /supervizor` · `cere_cabinet` | citire / afisare — `supervizor_la_cerere()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 17 | istoric import salveaza | `POST /tenants/{tenant_id}/istoric-declaratii-import` · rol `admin_firma` | creare sau executie — `istoric_import_salveaza()` | da | probat invalid 03.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 1 |
+| 18 | istoric import incarca | `POST /tenants/{tenant_id}/istoric-declaratii-import/incarca` · `cere_cabinet` | creare sau executie — `istoric_import_incarca()` | da | probat invalid 03.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 1 |
+| 19 | Scadente viitoare grupate pe data + tip, cu numarul de firme. | `GET /termene` · `cere_cabinet` | citire / afisare — `termene_portofoliu()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T02 — Factura emisă — creare, contabilizare, ieșiri (20)
 
@@ -53,22 +53,22 @@
 | 21 | apiv1 factura emite | `POST /api/v1/firme/{tenant_id}/facturi` · `cere_api_key` | creare sau executie — `apiv1_factura_emite()` | da | neprobat |
 | 22 | facturi lista | `GET /tenants/{tenant_id}/facturi` · `cere_context` | citire / afisare — `facturi_lista()` | da | neprobat |
 | 23 | factura creeaza | `POST /tenants/{tenant_id}/facturi` · rol `admin_firma` | creare sau executie — `factura_creeaza()` | da | neprobat |
-| 24 | fr lista | `GET /tenants/{tenant_id}/facturi-recurente` · `cere_context` | citire / afisare — `fr_lista()` | nu | neprobat |
+| 24 | fr lista | `GET /tenants/{tenant_id}/facturi-recurente` · `cere_context` | citire / afisare — `fr_lista()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 25 | fr adauga | `POST /tenants/{tenant_id}/facturi-recurente` · `cere_context` | creare sau executie — `fr_adauga()` | nu | neprobat |
-| 26 | fr sterge | `DELETE /tenants/{tenant_id}/facturi-recurente/{sid}` · `cere_context` | stergere — `fr_sterge()` | nu | neprobat |
+| 26 | fr sterge | `DELETE /tenants/{tenant_id}/facturi-recurente/{sid}` · `cere_context` | stergere — `fr_sterge()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 27 | fr comuta | `PUT /tenants/{tenant_id}/facturi-recurente/{sid}` · `cere_context` | modificare — `fr_comuta()` | nu | neprobat |
 | 28 | facturi emite | `POST /tenants/{tenant_id}/facturi/emite` · rol `admin_firma` | creare sau executie — `facturi_emite()` | da | neprobat |
-| 29 | facturi numerotare get | `GET /tenants/{tenant_id}/facturi/numerotare` · `cere_context` | citire / afisare — `facturi_numerotare_get()` | da | neprobat |
+| 29 | facturi numerotare get | `GET /tenants/{tenant_id}/facturi/numerotare` · `cere_context` | citire / afisare — `facturi_numerotare_get()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 30 | facturi numerotare set | `PUT /tenants/{tenant_id}/facturi/numerotare` · rol `admin_firma` | modificare — `facturi_numerotare_set()` | da | neprobat |
 | 31 | factura detalii | `GET /tenants/{tenant_id}/facturi/{factura_id:int}` · `cere_context` | citire / afisare — `factura_detalii()` | da | neprobat |
-| 32 | [EEE2] Refuzul e EXPLICAT, nu o eroare de bază: `409`, cu numărul notei și cu ieșirea numită (storno) | `DELETE /tenants/{tenant_id}/facturi/{factura_id}` · rol `admin_firma` | stergere — `factura_sterge()` | da | neprobat |
-| 33 | RUTA MANUALĂ de contare — **a doua cale, declarată** (R87, decizia lui Costin 29.08.2026, varianta (ii)+(iii) din AAA4) | `POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza` · `cere_cabinet` | creare sau executie — `factura_contabilizeaza()` | nu | neprobat |
+| 32 | [EEE2] Refuzul e EXPLICAT, nu o eroare de bază: `409`, cu numărul notei și cu ieșirea numită (storno) | `DELETE /tenants/{tenant_id}/facturi/{factura_id}` · rol `admin_firma` | stergere — `factura_sterge()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 33 | RUTA MANUALĂ de contare — **a doua cale, declarată** (R87, decizia lui Costin 29.08.2026, varianta (ii)+(iii) din AAA4) | `POST /tenants/{tenant_id}/facturi/{factura_id}/contabilizeaza` · `cere_cabinet` | creare sau executie — `factura_contabilizeaza()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 34 | factura email | `POST /tenants/{tenant_id}/facturi/{factura_id}/email` · rol `admin_firma` | creare sau executie — `factura_email()` | da | neprobat |
 | 35 | F131: supapa per factura | `PUT /tenants/{tenant_id}/facturi/{factura_id}/notificare` · rol `admin_firma` | modificare — `scadentar_supapa()` | da | neprobat |
-| 36 | factura pdf ruta | `GET /tenants/{tenant_id}/facturi/{factura_id}/pdf` · `cere_context` | citire / afisare — `factura_pdf_ruta()` | da | neprobat |
-| 37 | RECUNOAȘTEREA unei facturi EMISE venite prin import — actul care îi scrie nota | `POST /tenants/{tenant_id}/facturi/{factura_id}/recunoaste` · rol `admin_firma` | creare sau executie — `factura_recunoaste()` | da | neprobat |
-| 38 | facturi storno | `POST /tenants/{tenant_id}/facturi/{factura_id}/storno` · rol `admin_firma` | creare sau executie — `facturi_storno()` | da | neprobat |
-| 39 | Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal). | `POST /tenants/{tenant_id}/facturi/{factura_id}/transforma` · rol `admin_firma` | creare sau executie — `proforma_transforma()` | da | neprobat |
+| 36 | factura pdf ruta | `GET /tenants/{tenant_id}/facturi/{factura_id}/pdf` · `cere_context` | citire / afisare — `factura_pdf_ruta()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 37 | RECUNOAȘTEREA unei facturi EMISE venite prin import — actul care îi scrie nota | `POST /tenants/{tenant_id}/facturi/{factura_id}/recunoaste` · rol `admin_firma` | creare sau executie — `factura_recunoaste()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 38 | facturi storno | `POST /tenants/{tenant_id}/facturi/{factura_id}/storno` · rol `admin_firma` | creare sau executie — `facturi_storno()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 39 | Transforma proforma/aviz in factura fiscala (numerotare noua, nota se genereaza normal). | `POST /tenants/{tenant_id}/facturi/{factura_id}/transforma` · rol `admin_firma` | creare sau executie — `proforma_transforma()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T03 — Statul de plată și fluturașul (8)
 
@@ -91,7 +91,7 @@
 | 49 | Codurile de indemnizatie pentru ecran, cu procentul VALABIL LA DATA certificatului | `GET /tenants/{tenant_id}/concedii/coduri` · `cere_cabinet` | citire / afisare — `concedii_coduri()` | nu | neprobat |
 | 50 | cm lista | `GET /tenants/{tenant_id}/salariati/{salariat_id}/concedii` · `cere_cabinet` | citire / afisare — `cm_lista()` | da | neprobat |
 | 51 | cm salveaza | `POST /tenants/{tenant_id}/salariati/{salariat_id}/concedii` · rol `admin_firma/angajat` | creare sau executie — `cm_salveaza()` | da | neprobat |
-| 52 | cm sterge | `DELETE /tenants/{tenant_id}/salariati/{salariat_id}/concedii/{cm_id}` · rol `admin_firma/angajat` | stergere — `cm_sterge()` | da | neprobat |
+| 52 | cm sterge | `DELETE /tenants/{tenant_id}/salariati/{salariat_id}/concedii/{cm_id}` · rol `admin_firma/angajat` | stergere — `cm_sterge()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T05 — Nota contabilă — de la document la registrul-jurnal (34)
 
@@ -103,10 +103,10 @@
 | 56 | [lista 3, 30.08.2026] CARTEA MARE (14-1-3), prin inlocuitorul ei legal | `GET /tenants/{tenant_id}/fisa-cont` · `cere_cabinet` | citire / afisare — `cabinet_fisa_cont()` | nu | neprobat |
 | 57 | Registrul-jurnal (OMFP 2634/2015, cod 14-1-1), pe luna ceruta | `GET /tenants/{tenant_id}/jurnal` · `cere_cabinet` | citire / afisare — `tenant_jurnal()` | da | neprobat |
 | 58 | jurnal creeaza | `POST /tenants/{tenant_id}/jurnal` · `cere_cabinet` | creare sau executie — `jurnal_creeaza()` | da | neprobat |
-| 59 | jurnal sterge | `DELETE /tenants/{tenant_id}/jurnal/{nota_id}` · `cere_cabinet` | stergere — `jurnal_sterge()` | da | neprobat |
+| 59 | jurnal sterge | `DELETE /tenants/{tenant_id}/jurnal/{nota_id}` · `cere_cabinet` | stergere — `jurnal_sterge()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 60 | jurnal editeaza | `PUT /tenants/{tenant_id}/jurnal/{nota_id}` · `cere_cabinet` | modificare — `jurnal_editeaza()` | da | neprobat |
 | 61 | RUPE legătura notă↔factură, cu URMĂ | `POST /tenants/{tenant_id}/jurnal/{nota_id}/dezleaga` · rol `admin_firma` | creare sau executie — `jurnal_dezleaga()` | nu | neprobat |
-| 62 | jurnal valideaza | `POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza` · rol `admin_firma` | creare sau executie — `jurnal_valideaza()` | da | neprobat |
+| 62 | jurnal valideaza | `POST /tenants/{tenant_id}/jurnal/{nota_id}/valideaza` · rol `admin_firma` | creare sau executie — `jurnal_valideaza()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 63 | corp: {data, operatie dividend/regularizare/imprumut, descriere?, + dividend{brut, interimar?, cu_plata?}; regularizare… | `POST /tenants/{tenant_id}/nota-asociati` · `cere_cabinet` | creare sau executie — `nota_asociati()` | da | neprobat |
 | 64 | corp: {data, operatie avans_platit/regularizare_platit/avans_incasat/ regularizare_incasat, suma (fara TVA), cota?, des… | `POST /tenants/{tenant_id}/nota-avans` · `cere_cabinet` | creare sau executie — `nota_avans()` | da | neprobat |
 | 65 | corp: {data, fel incasare/distribuire, suma, sursa card/numerar (incasare) / banca/casa (distribuire), descriere?} | `POST /tenants/{tenant_id}/nota-bacsis` · `cere_cabinet` | creare sau executie — `nota_bacsis()` | da | neprobat |
@@ -136,13 +136,13 @@
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 87 | Facturi primite din SPV de VALIDAT (four-eyes): ciorne parsate + cont sugerat | `GET /tenants/{tenant_id}/facturi-primite` · `cere_context` | citire / afisare — `facturi_primite_lista()` | nu | neprobat |
+| 87 | Facturi primite din SPV de VALIDAT (four-eyes): ciorne parsate + cont sugerat | `GET /tenants/{tenant_id}/facturi-primite` · `cere_context` | citire / afisare — `facturi_primite_lista()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 88 | Respinge o factura primita: status=respinsa + motiv | `POST /tenants/{tenant_id}/facturi-primite/{primita_id}/respinge` · `cere_context` | creare sau executie — `factura_primita_respinge()` | nu | neprobat |
 | 89 | FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) + leaga factura_id + status=… | `POST /tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza` · rol `admin_firma` | creare sau executie — `factura_primita_valideaza()` | da | neprobat |
-| 90 | XML-ul brut arhivat (la click, nu in fata). | `GET /tenants/{tenant_id}/facturi-primite/{primita_id}/xml` · `cere_context` | citire / afisare — `factura_primita_xml()` | nu | neprobat |
-| 91 | Trimite o factura emisa in SPV (F126/F160) | `POST /tenants/{tenant_id}/facturi/{factura_id}/trimite-spv` · rol `admin_firma` | creare sau executie — `factura_trimite_spv()` | da | neprobat |
+| 90 | XML-ul brut arhivat (la click, nu in fata). | `GET /tenants/{tenant_id}/facturi-primite/{primita_id}/xml` · `cere_context` | citire / afisare — `factura_primita_xml()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 91 | Trimite o factura emisa in SPV (F126/F160) | `POST /tenants/{tenant_id}/facturi/{factura_id}/trimite-spv` · rol `admin_firma` | creare sau executie — `factura_trimite_spv()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 92 | Upload XML/ZIP e-Factura | `POST /tenants/{tenant_id}/import-efactura` · `cere_cabinet` | creare sau executie — `import_efactura()` | nu | neprobat |
-| 93 | Starea SPV cea mai recenta per factura (pentru semaforul butonului) | `GET /tenants/{tenant_id}/trimiteri-spv` · `cere_context` | citire / afisare — `facturi_trimiteri_spv()` | nu | neprobat |
+| 93 | Starea SPV cea mai recenta per factura (pentru semaforul butonului) | `GET /tenants/{tenant_id}/trimiteri-spv` · `cere_context` | citire / afisare — `facturi_trimiteri_spv()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T07 — Extrasul bancar și potrivirea (7)
 
@@ -150,11 +150,11 @@
 |---|---|---|---|---|---|
 | 94 | banca parse extras | `POST /tenants/{tenant_id}/banca/parse-extras` · `cere_cabinet` | creare sau executie — `banca_parse_extras()` | nu | neprobat |
 | 95 | banca rec lista | `GET /tenants/{tenant_id}/banca/reconciliere` · `cere_cabinet` | citire / afisare — `banca_rec_lista()` | da | neprobat |
-| 96 | banca rec facturi | `GET /tenants/{tenant_id}/banca/reconciliere/facturi-deschise` · `cere_cabinet` | citire / afisare — `banca_rec_facturi()` | da | neprobat |
+| 96 | banca rec facturi | `GET /tenants/{tenant_id}/banca/reconciliere/facturi-deschise` · `cere_cabinet` | citire / afisare — `banca_rec_facturi()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 97 | banca rec import | `POST /tenants/{tenant_id}/banca/reconciliere/import` · `cere_cabinet` | creare sau executie — `banca_rec_import()` | da | neprobat |
 | 98 | banca rec conteaza | `POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/conteaza` · `cere_cabinet` | creare sau executie — `banca_rec_conteaza()` | da | neprobat |
-| 99 | banca rec ignora | `POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/ignora` · `cere_cabinet` | creare sau executie — `banca_rec_ignora()` | nu | neprobat |
-| 100 | banca rec reactiveaza | `POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/reactiveaza` · `cere_cabinet` | creare sau executie — `banca_rec_reactiveaza()` | nu | neprobat |
+| 99 | banca rec ignora | `POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/ignora` · `cere_cabinet` | creare sau executie — `banca_rec_ignora()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 100 | banca rec reactiveaza | `POST /tenants/{tenant_id}/banca/reconciliere/{linie_id}/reactiveaza` · `cere_cabinet` | creare sau executie — `banca_rec_reactiveaza()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T08 — NIR și recepția (2)
 
@@ -168,7 +168,7 @@
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
 | 103 | casa adauga | `POST /tenants/{tenant_id}/casa/operatiuni` · `cere_cabinet` | creare sau executie — `casa_adauga()` | da | neprobat |
-| 104 | casa sterge | `DELETE /tenants/{tenant_id}/casa/operatiuni/{op_id}` · `cere_cabinet` | stergere — `casa_sterge()` | da | neprobat |
+| 104 | casa sterge | `DELETE /tenants/{tenant_id}/casa/operatiuni/{op_id}` · `cere_cabinet` | stergere — `casa_sterge()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 105 | casa registru | `GET /tenants/{tenant_id}/casa/registru` · `cere_cabinet` | citire / afisare — `casa_registru()` | da | neprobat |
 
 ### T10 — Inventarierea (5)
@@ -177,9 +177,9 @@
 |---|---|---|---|---|---|
 | 106 | Sectiunea Assets SAF-T pentru anul dat (D406 anual | `GET /tenants/{tenant_id}/d406-active` · `cere_cabinet` | citire / afisare — `d406_active_xml()` | da | neprobat |
 | 107 | Sectiunea PhysicalStock SAF-T pe perioada (D406 la cerere ANAF) | `GET /tenants/{tenant_id}/d406-stocuri` · `cere_cabinet` | citire / afisare — `d406_stocuri_xml()` | da | neprobat |
-| 108 | rip inventar | `GET /tenants/{tenant_id}/rip/inventar/{an}` · `cere_cabinet` | citire / afisare — `rip_inventar()` | nu | neprobat |
+| 108 | rip inventar | `GET /tenants/{tenant_id}/rip/inventar/{an}` · `cere_cabinet` | citire / afisare — `rip_inventar()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 109 | cv inventar | `POST /tenants/{tenant_id}/stocuri/inventar` · `cere_cabinet` | creare sau executie — `cv_inventar()` | da | neprobat |
-| 110 | Compara soldul contabil (solduri_initiale + note validate) pe fiecare cont de stoc folosit in articole cu valoarea insu… | `GET /tenants/{tenant_id}/verificare-stocuri` · `cere_cabinet` | citire / afisare — `verificare_stocuri()` | nu | neprobat |
+| 110 | Compara soldul contabil (solduri_initiale + note validate) pe fiecare cont de stoc folosit in articole cu valoarea insu… | `GET /tenants/{tenant_id}/verificare-stocuri` · `cere_cabinet` | citire / afisare — `verificare_stocuri()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T11 — Închiderea lunii (7)
 
@@ -189,7 +189,7 @@
 | 112 | [cap.23] Declara luna INCHISA pe facturi: evidenta ei devine autoritativa, iar semaforul se poate sprijini pe ea cand s… | `POST /tenants/{tenant_id}/facturi/perioada/confirma` · rol `admin_firma` | creare sau executie — `tenant_facturi_perioada_confirma()` | nu | neprobat |
 | 113 | [cap.23] Redeschide luna (o corectie de facturi cere redeschiderea) | `POST /tenants/{tenant_id}/facturi/perioada/redeschide` · rol `admin_firma` | creare sau executie — `tenant_facturi_perioada_redeschide()` | nu | neprobat |
 | 114 | perioada deblocheaza | `DELETE /tenants/{tenant_id}/perioade-blocate` · rol `admin_firma` | stergere — `perioada_deblocheaza()` | nu | neprobat |
-| 115 | perioade blocate lista | `GET /tenants/{tenant_id}/perioade-blocate` · `cere_cabinet` | citire / afisare — `perioade_blocate_lista()` | nu | neprobat |
+| 115 | perioade blocate lista | `GET /tenants/{tenant_id}/perioade-blocate` · `cere_cabinet` | citire / afisare — `perioade_blocate_lista()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 116 | perioada blocheaza | `POST /tenants/{tenant_id}/perioade-blocate` · rol `admin_firma` | creare sau executie — `perioada_blocheaza()` | nu | neprobat |
 | 117 | perioade istoric | `GET /tenants/{tenant_id}/perioade-blocate/istoric` · `cere_cabinet` | citire / afisare — `perioade_istoric()` | nu | neprobat |
 
@@ -207,49 +207,49 @@
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 123 | Lista firmelor cabinetului cu status vector (completat sau nu). | `GET /migrare/vector` · `cere_cabinet` | citire / afisare — `migrare_vector_status()` | da | neprobat |
-| 124 | firma profil get | `GET /tenants/{tenant_id}/firma-profil` · `cere_context` | citire / afisare — `firma_profil_get()` | da | neprobat |
-| 125 | firma profil date | `GET /tenants/{tenant_id}/firma-profil/date` · `cere_context` | citire / afisare — `firma_profil_date()` | da | neprobat |
+| 123 | Lista firmelor cabinetului cu status vector (completat sau nu). | `GET /migrare/vector` · `cere_cabinet` | citire / afisare — `migrare_vector_status()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 124 | firma profil get | `GET /tenants/{tenant_id}/firma-profil` · `cere_context` | citire / afisare — `firma_profil_get()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 125 | firma profil date | `GET /tenants/{tenant_id}/firma-profil/date` · `cere_context` | citire / afisare — `firma_profil_date()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 126 | firma profil date salveaza | `POST /tenants/{tenant_id}/firma-profil/date` · `cere_cabinet` | creare sau executie — `firma_profil_date_salveaza()` | da | neprobat |
 | 127 | firma profil model | `POST /tenants/{tenant_id}/firma-profil/model` · `cere_context` | creare sau executie — `firma_profil_model()` | da | neprobat |
 | 128 | firma profil regim tva | `POST /tenants/{tenant_id}/firma-profil/regim-tva` · rol `admin_firma` | creare sau executie — `firma_profil_regim_tva()` | da | neprobat |
-| 129 | vector citeste | `GET /tenants/{tenant_id}/vector` · `cere_cabinet` | citire / afisare — `vector_citeste()` | da | neprobat |
+| 129 | vector citeste | `GET /tenants/{tenant_id}/vector` · `cere_cabinet` | citire / afisare — `vector_citeste()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 130 | vector salveaza | `POST /tenants/{tenant_id}/vector` · rol `admin_firma` | creare sau executie — `vector_salveaza()` | da | neprobat |
 
 ### T14 — Preluarea unei firme (32)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 131 | F183: audit de PRELUARE firma — coerenta INTERNA a pachetului preluat de la contabilul anterior (balanta echilibrata, d… | `POST /control-fiscal/{tenant_id}/audit-preluare` · rol `admin_firma` | creare sau executie — `control_fiscal_audit_preluare()` | nu | neprobat |
-| 132 | migrare asociati status | `GET /migrare/asociati` · `cere_cabinet` | citire / afisare — `migrare_asociati_status()` | da | neprobat |
+| 131 | F183: audit de PRELUARE firma — coerenta INTERNA a pachetului preluat de la contabilul anterior (balanta echilibrata, d… | `POST /control-fiscal/{tenant_id}/audit-preluare` · rol `admin_firma` | creare sau executie — `control_fiscal_audit_preluare()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 132 | migrare asociati status | `GET /migrare/asociati` · `cere_cabinet` | citire / afisare — `migrare_asociati_status()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 133 | Primește un CSV/XLSX, extrage CUI-urile și le validează la ANAF. | `POST /migrare/fisier` · `cere_cabinet` | creare sau executie — `migrare_fisier()` | nu | neprobat |
 | 134 | Creează câte un tenant pentru fiecare firmă selectată | `POST /migrare/importa` · rol `admin_firma` | creare sau executie — `migrare_importa()` | da | neprobat |
 | 135 | Primește un fișier (.csv/.xlsx), extrage CUI-urile și le validează la ANAF. | `POST /migrare/incarca` · `cere_cabinet` | creare sau executie — `migrare_incarca()` | nu | neprobat |
-| 136 | migrare istoric status | `GET /migrare/istoric-declaratii` · `cere_cabinet` | citire / afisare — `migrare_istoric_status()` | da | neprobat |
-| 137 | migrare mijloace status | `GET /migrare/mijloace-fixe` · `cere_cabinet` | citire / afisare — `migrare_mijloace_status()` | nu | neprobat |
-| 138 | Lista firmelor cabinetului cu status parteneri (are/n-are, cati parteneri). | `GET /migrare/parteneri` · `cere_cabinet` | citire / afisare — `migrare_parteneri_status()` | nu | neprobat |
-| 139 | migrare plan conturi status | `GET /migrare/plan-conturi` · `cere_cabinet` | citire / afisare — `migrare_plan_conturi_status()` | nu | neprobat |
-| 140 | Lista firmelor cabinetului cu status salariati (are/n-are, cati). | `GET /migrare/salariati` · `cere_cabinet` | citire / afisare — `migrare_salariati_status()` | da | neprobat |
-| 141 | Lista firmelor cabinetului cu status solduri (are/n-are, câte conturi). | `GET /migrare/solduri` · `cere_cabinet` | citire / afisare — `migrare_solduri_status()` | da | neprobat |
-| 142 | Starea fiecărui strat de migrare + reminderul (straturi în lucru). | `GET /migrare/status` · `cere_cabinet` | citire / afisare — `migrare_status_citeste()` | nu | neprobat |
+| 136 | migrare istoric status | `GET /migrare/istoric-declaratii` · `cere_cabinet` | citire / afisare — `migrare_istoric_status()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 137 | migrare mijloace status | `GET /migrare/mijloace-fixe` · `cere_cabinet` | citire / afisare — `migrare_mijloace_status()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 138 | Lista firmelor cabinetului cu status parteneri (are/n-are, cati parteneri). | `GET /migrare/parteneri` · `cere_cabinet` | citire / afisare — `migrare_parteneri_status()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 139 | migrare plan conturi status | `GET /migrare/plan-conturi` · `cere_cabinet` | citire / afisare — `migrare_plan_conturi_status()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 140 | Lista firmelor cabinetului cu status salariati (are/n-are, cati). | `GET /migrare/salariati` · `cere_cabinet` | citire / afisare — `migrare_salariati_status()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 141 | Lista firmelor cabinetului cu status solduri (are/n-are, câte conturi). | `GET /migrare/solduri` · `cere_cabinet` | citire / afisare — `migrare_solduri_status()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 142 | Starea fiecărui strat de migrare + reminderul (straturi în lucru). | `GET /migrare/status` · `cere_cabinet` | citire / afisare — `migrare_status_citeste()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 143 | Marchează un strat 'gata' sau 'in_lucru' (cu notă obligatorie la in_lucru). | `POST /migrare/status` · rol `admin_firma` | creare sau executie — `migrare_status_seteaza()` | nu | neprobat |
 | 144 | [p_pfa_rip 20.07] Straturile de migrare aplicabile unui regim (srl/pfa) | `GET /migrare/straturi` · `cere_cabinet` | citire / afisare — `migrare_straturi_aplicabile()` | nu | neprobat |
 | 145 | Verifică o listă de CUI-uri la ANAF; întoarce denumirea + status. | `POST /migrare/valideaza` · `cere_cabinet` | creare sau executie — `migrare_valideaza()` | nu | neprobat |
 | 146 | articole import salveaza | `POST /tenants/{tenant_id}/articole-import` · rol `admin_firma` | creare sau executie — `articole_import_salveaza()` | nu | neprobat |
 | 147 | articole import incarca | `POST /tenants/{tenant_id}/articole-import/incarca` · `cere_cabinet` | creare sau executie — `articole_import_incarca()` | nu | neprobat |
-| 148 | asociati import salveaza | `POST /tenants/{tenant_id}/asociati-import` · rol `admin_firma` | creare sau executie — `asociati_import_salveaza()` | da | neprobat |
+| 148 | asociati import salveaza | `POST /tenants/{tenant_id}/asociati-import` · rol `admin_firma` | creare sau executie — `asociati_import_salveaza()` | da | probat invalid 03.09.2026 — **golea la intrare vidă, reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 1b |
 | 149 | asociati import incarca | `POST /tenants/{tenant_id}/asociati-import/incarca` · `cere_cabinet` | creare sau executie — `asociati_import_incarca()` | da | neprobat |
-| 150 | mijloace import salveaza | `POST /tenants/{tenant_id}/mijloace-fixe-import` · rol `admin_firma` | creare sau executie — `mijloace_import_salveaza()` | nu | neprobat |
+| 150 | mijloace import salveaza | `POST /tenants/{tenant_id}/mijloace-fixe-import` · rol `admin_firma` | creare sau executie — `mijloace_import_salveaza()` | nu | probat invalid 03.09.2026 — **golea la intrare vidă, reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 1b |
 | 151 | mijloace import incarca | `POST /tenants/{tenant_id}/mijloace-fixe-import/incarca` · `cere_cabinet` | creare sau executie — `mijloace_import_incarca()` | nu | neprobat |
-| 152 | Rezumatul partenerilor salvati pentru o firma. | `GET /tenants/{tenant_id}/parteneri` · `cere_cabinet` | citire / afisare — `parteneri_rezumat()` | nu | neprobat |
-| 153 | Salveaza soldurile partenerilor unei firme (inlocuieste ce era). | `POST /tenants/{tenant_id}/parteneri` · rol `admin_firma` | creare sau executie — `parteneri_salveaza()` | nu | neprobat |
+| 152 | Rezumatul partenerilor salvati pentru o firma. | `GET /tenants/{tenant_id}/parteneri` · `cere_cabinet` | citire / afisare — `parteneri_rezumat()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 153 | Salveaza soldurile partenerilor unei firme (inlocuieste ce era). | `POST /tenants/{tenant_id}/parteneri` · rol `admin_firma` | creare sau executie — `parteneri_salveaza()` | nu | probat invalid 03.09.2026 — **golea la intrare vidă, reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 1b |
 | 154 | Parseaza fisierul de parteneri si intoarce preview + verificare coerenta vs balanta. | `POST /tenants/{tenant_id}/parteneri/incarca` · `cere_cabinet` | creare sau executie — `parteneri_incarca()` | nu | neprobat |
 | 155 | retete import salveaza | `POST /tenants/{tenant_id}/retete-import` · rol `admin_firma` | creare sau executie — `retete_import_salveaza()` | nu | neprobat |
 | 156 | retete import incarca | `POST /tenants/{tenant_id}/retete-import/incarca` · `cere_cabinet` | creare sau executie — `retete_import_incarca()` | nu | neprobat |
 | 157 | Import registru incasari-plati la preluarea unui PFA | `POST /tenants/{tenant_id}/rip-import/incarca` · rol `admin_firma` | creare sau executie — `rip_import_incarca()` | nu | neprobat |
 | 158 | Importa salariatii cu CNP valid (upsert pe CNP) | `POST /tenants/{tenant_id}/salariati-import` · rol `admin_firma` | creare sau executie — `salariati_import_salveaza()` | da | neprobat |
 | 159 | Parseaza exportul de salariati si intoarce preview cu validare CNP (nu salveaza). | `POST /tenants/{tenant_id}/salariati-import/incarca` · `cere_cabinet` | creare sau executie — `salariati_import_incarca()` | da | neprobat |
-| 160 | Rezumatul soldurilor salvate pentru o firmă. | `GET /tenants/{tenant_id}/solduri` · `cere_cabinet` | citire / afisare — `solduri_rezumat()` | da | neprobat |
+| 160 | Rezumatul soldurilor salvate pentru o firmă. | `GET /tenants/{tenant_id}/solduri` · `cere_cabinet` | citire / afisare — `solduri_rezumat()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 161 | Salvează soldurile inițiale ale unei firme (înlocuiește ce era). | `POST /tenants/{tenant_id}/solduri` · rol `admin_firma` | creare sau executie — `solduri_salveaza()` | da | neprobat |
 | 162 | Parsează o balanță și întoarce preview (nu salvează). | `POST /tenants/{tenant_id}/solduri/incarca` · `cere_cabinet` | creare sau executie — `solduri_incarca()` | da | neprobat |
 
@@ -257,20 +257,20 @@
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 163 | contracte marcaje | `GET /contracte/marcaje` · `cere_cabinet` | citire / afisare — `contracte_marcaje()` | nu | neprobat |
+| 163 | contracte marcaje | `GET /contracte/marcaje` · `cere_cabinet` | citire / afisare — `contracte_marcaje()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 164 | [F137] Cauta in nomenclatorul COR national dupa cod (prefix) sau denumire (substring, diacritic-insensitiv) | `GET /cor` · `cere_context` | citire / afisare — `cor_cauta()` | nu | neprobat |
 | 165 | contracte genereaza | `POST /tenants/{tenant_id}/contracte/genereaza` · rol `admin_firma` | creare sau executie — `contracte_genereaza()` | nu | neprobat |
-| 166 | contracte sabloane lista | `GET /tenants/{tenant_id}/contracte/sabloane` · `cere_cabinet` | citire / afisare — `contracte_sabloane_lista()` | nu | neprobat |
+| 166 | contracte sabloane lista | `GET /tenants/{tenant_id}/contracte/sabloane` · `cere_cabinet` | citire / afisare — `contracte_sabloane_lista()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 167 | contracte sabloane salveaza | `POST /tenants/{tenant_id}/contracte/sabloane` · `cere_cabinet` | creare sau executie — `contracte_sabloane_salveaza()` | nu | neprobat |
-| 168 | contracte sabloane sterge | `DELETE /tenants/{tenant_id}/contracte/sabloane/{sid}` · `cere_cabinet` | stergere — `contracte_sabloane_sterge()` | nu | neprobat |
+| 168 | contracte sabloane sterge | `DELETE /tenants/{tenant_id}/contracte/sabloane/{sid}` · `cere_cabinet` | stergere — `contracte_sabloane_sterge()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 169 | tenant prapastie salariu | `POST /tenants/{tenant_id}/prapastie-salariu` · `cere_cabinet` | creare sau executie — `tenant_prapastie_salariu()` | nu | neprobat |
 | 170 | corp: {username, parola, mediu test/prod} | `POST /tenants/{tenant_id}/reges-config` · rol `admin_firma` | creare sau executie — `reges_config()` | nu | neprobat |
-| 171 | Citeste+consuma un mesaj din coada REGES; salveaza referintele in reges_mesaje. | `POST /tenants/{tenant_id}/reges-poll` · rol `admin_firma` | creare sau executie — `reges_poll()` | nu | neprobat |
+| 171 | Citeste+consuma un mesaj din coada REGES; salveaza referintele in reges_mesaje. | `POST /tenants/{tenant_id}/reges-poll` · rol `admin_firma` | creare sau executie — `reges_poll()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 172 | corp: {salariat_id, adresa, contract {numar, data_contract, data_inceput, salariu, cor, ...}?} | `POST /tenants/{tenant_id}/reges-trimite-salariat` · rol `admin_firma` | creare sau executie — `reges_trimite_salariat()` | nu | neprobat |
 | 173 | salariati lista | `GET /tenants/{tenant_id}/salariati` · `cere_cabinet` | citire / afisare — `salariati_lista()` | da | neprobat |
 | 174 | salariat creeaza | `POST /tenants/{tenant_id}/salariati` · rol `admin_firma/angajat` | creare sau executie — `salariat_creeaza()` | da | neprobat |
-| 175 | salariat sterge | `DELETE /tenants/{tenant_id}/salariati/{salariat_id}` · rol `admin_firma/angajat` | stergere — `salariat_sterge()` | da | neprobat |
-| 176 | salariat detalii | `GET /tenants/{tenant_id}/salariati/{salariat_id}` · `cere_cabinet` | citire / afisare — `salariat_detalii()` | da | neprobat |
+| 175 | salariat sterge | `DELETE /tenants/{tenant_id}/salariati/{salariat_id}` · rol `admin_firma/angajat` | stergere — `salariat_sterge()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 176 | salariat detalii | `GET /tenants/{tenant_id}/salariati/{salariat_id}` · `cere_cabinet` | citire / afisare — `salariat_detalii()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 177 | salariat actualizeaza | `PUT /tenants/{tenant_id}/salariati/{salariat_id}` · rol `admin_firma/angajat` | modificare — `salariat_actualizeaza()` | da | neprobat |
 | 178 | F136: adeverinta de salariat (art | `POST /tenants/{tenant_id}/salariati/{salariat_id}/adeverinta` · rol `admin_firma` | creare sau executie — `tenant_adeverinta()` | nu | neprobat |
 | 179 | [F133 Faza 2a] beneficiu one-off pe luna (vacanta/cadou/cultural) | `PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar` · rol `admin_firma/angajat` | modificare — `salariat_beneficiu_lunar()` | da | neprobat |
@@ -295,18 +295,18 @@
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 186 | Pagina mock: confirma plata (pana la integrarea provider real). | `GET /public/plata/{ref}` · fără gardă | citire / afisare — `plata_pagina()` | nu | neprobat |
-| 187 | plata confirma | `POST /public/plata/{ref}/confirma` · fără gardă | creare sau executie — `plata_confirma()` | da | neprobat |
+| 186 | Pagina mock: confirma plata (pana la integrarea provider real). | `GET /public/plata/{ref}` · fără gardă | citire / afisare — `plata_pagina()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 187 | plata confirma | `POST /public/plata/{ref}/confirma` · fără gardă | creare sau executie — `plata_confirma()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 188 | chitante lista | `GET /tenants/{tenant_id}/chitante` · `cere_context` | citire / afisare — `chitante_lista()` | nu | neprobat |
 | 189 | Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar: numerotare pe serie per firma + operatiune in … | `POST /tenants/{tenant_id}/chitante` · rol `admin_firma` | creare sau executie — `chitanta_emite()` | da | neprobat |
-| 190 | chitanta pdf | `GET /tenants/{tenant_id}/chitante/{chitanta_id}/pdf` · rol `admin_firma` | citire / afisare — `chitanta_pdf()` | nu | neprobat |
-| 191 | factura link plata | `POST /tenants/{tenant_id}/facturi/{factura_id}/link-plata` · rol `admin_firma` | creare sau executie — `factura_link_plata()` | da | neprobat |
+| 190 | chitanta pdf | `GET /tenants/{tenant_id}/chitante/{chitanta_id}/pdf` · rol `admin_firma` | citire / afisare — `chitanta_pdf()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 191 | factura link plata | `POST /tenants/{tenant_id}/facturi/{factura_id}/link-plata` · rol `admin_firma` | creare sau executie — `factura_link_plata()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T19 — Scadențarul și notificările de scadență (2)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 192 | F131: scadentarul facturilor emise neincasate (restante/scade curand/in termen) + fisa client agregata | `GET /tenants/{tenant_id}/scadentar` · `cere_context` | citire / afisare — `scadentar_get()` | da | neprobat |
+| 192 | F131: scadentarul facturilor emise neincasate (restante/scade curand/in termen) + fisa client agregata | `GET /tenants/{tenant_id}/scadentar` · `cere_context` | citire / afisare — `scadentar_get()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 193 | F131: activeaza/dezactiveaza notificarile email de scadenta pt firma (default OFF). | `PUT /tenants/{tenant_id}/scadentar/opt-in` · rol `admin_firma` | modificare — `scadentar_optin()` | da | neprobat |
 
 ### T20 — Mișcarea de stoc — intrare, ieșire, transfer, reclasificare (12)
@@ -314,11 +314,11 @@
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
 | 194 | cv analitica | `GET /tenants/{tenant_id}/stocuri/analitica` · `cere_cabinet` | citire / afisare — `cv_analitica()` | da | neprobat |
-| 195 | cv articole | `GET /tenants/{tenant_id}/stocuri/articole` · `cere_cabinet` | citire / afisare — `cv_articole()` | da | neprobat |
+| 195 | cv articole | `GET /tenants/{tenant_id}/stocuri/articole` · `cere_cabinet` | citire / afisare — `cv_articole()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 196 | cv barcode set | `POST /tenants/{tenant_id}/stocuri/articole/{articol_id}/barcode` · `cere_cabinet` | creare sau executie — `cv_barcode_set()` | da | neprobat |
-| 197 | cv fisa | `GET /tenants/{tenant_id}/stocuri/articole/{articol_id}/fisa` · `cere_cabinet` | citire / afisare — `cv_fisa()` | da | neprobat |
+| 197 | cv fisa | `GET /tenants/{tenant_id}/stocuri/articole/{articol_id}/fisa` · `cere_cabinet` | citire / afisare — `cv_fisa()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 198 | cv nivel minim | `POST /tenants/{tenant_id}/stocuri/articole/{articol_id}/nivel-minim` · `cere_cabinet` | creare sau executie — `cv_nivel_minim()` | da | neprobat |
-| 199 | cv barcode gaseste | `GET /tenants/{tenant_id}/stocuri/barcode/{cod}` · `cere_cabinet` | citire / afisare — `cv_barcode_gaseste()` | da | neprobat |
+| 199 | cv barcode gaseste | `GET /tenants/{tenant_id}/stocuri/barcode/{cod}` · `cere_cabinet` | citire / afisare — `cv_barcode_gaseste()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 200 | stocuri descarcare | `POST /tenants/{tenant_id}/stocuri/descarcare` · `cere_cabinet` | creare sau executie — `stocuri_descarcare()` | da | neprobat |
 | 201 | cv iesire | `POST /tenants/{tenant_id}/stocuri/iesire` · `cere_cabinet` | creare sau executie — `cv_iesire()` | da | neprobat |
 | 202 | cv intrare | `POST /tenants/{tenant_id}/stocuri/intrare` · `cere_cabinet` | creare sau executie — `cv_intrare()` | da | neprobat |
@@ -330,22 +330,22 @@
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 206 | produse lista | `GET /tenants/{tenant_id}/produse` · `cere_context` | citire / afisare — `produse_lista()` | nu | neprobat |
+| 206 | produse lista | `GET /tenants/{tenant_id}/produse` · `cere_context` | citire / afisare — `produse_lista()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 207 | produse creeaza | `POST /tenants/{tenant_id}/produse` · `cere_cabinet` | creare sau executie — `produse_creeaza()` | nu | neprobat |
 | 208 | produse potriveste | `POST /tenants/{tenant_id}/produse/potriveste` · `cere_context` | creare sau executie — `produse_potriveste()` | nu | neprobat |
-| 209 | produse sterge | `DELETE /tenants/{tenant_id}/produse/{produs_id}` · `cere_cabinet` | stergere — `produse_sterge()` | nu | neprobat |
+| 209 | produse sterge | `DELETE /tenants/{tenant_id}/produse/{produs_id}` · `cere_cabinet` | stergere — `produse_sterge()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 210 | produse actualizeaza | `PUT /tenants/{tenant_id}/produse/{produs_id}` · `cere_cabinet` | modificare — `produse_actualizeaza()` | nu | neprobat |
-| 211 | retete lista | `GET /tenants/{tenant_id}/retete` · `cere_cabinet` | citire / afisare — `retete_lista()` | da | neprobat |
+| 211 | retete lista | `GET /tenants/{tenant_id}/retete` · `cere_cabinet` | citire / afisare — `retete_lista()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 212 | retete salveaza | `POST /tenants/{tenant_id}/retete` · `cere_cabinet` | creare sau executie — `retete_salveaza()` | da | neprobat |
 | 213 | retete descarca | `POST /tenants/{tenant_id}/retete/descarca` · `cere_cabinet` | creare sau executie — `retete_descarca()` | da | neprobat |
-| 214 | retete sterge | `DELETE /tenants/{tenant_id}/retete/{reteta_id}` · `cere_cabinet` | stergere — `retete_sterge()` | da | neprobat |
+| 214 | retete sterge | `DELETE /tenants/{tenant_id}/retete/{reteta_id}` · `cere_cabinet` | stergere — `retete_sterge()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T22 — Mijlocul fix și amortizarea (3)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
 | 215 | Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ. | `POST /tenants/{tenant_id}/amortizare` · rol `admin_firma` | creare sau executie — `tenant_amortizare()` | da | neprobat |
-| 216 | [ecran_mf_v1 14.08.2026; amortizare pe metoda 16.08.2026] Registrul mijloacelor fixe ale firmei: valoare, amortizat la … | `GET /tenants/{tenant_id}/mijloace-fixe` · `cere_cabinet` | citire / afisare — `tenant_mijloace_fixe()` | da | neprobat |
+| 216 | [ecran_mf_v1 14.08.2026; amortizare pe metoda 16.08.2026] Registrul mijloacelor fixe ale firmei: valoare, amortizat la … | `GET /tenants/{tenant_id}/mijloace-fixe` · `cere_cabinet` | citire / afisare — `tenant_mijloace_fixe()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 217 | corp: {data, operatie reevaluare/surplus, + reevaluare{mijloc_fix_id, valoare_justa, sold_105_activ?, pierdere_655_ante… | `POST /tenants/{tenant_id}/reevaluare-imobilizare` · `cere_cabinet` | creare sau executie — `reevaluare_imobilizare()` | da | neprobat |
 
 ### T23 — Bonul de la client — portalul și decontul (9)
@@ -356,10 +356,10 @@
 | 219 | Clientul reface poza -> draftul (status='extras') si pozele lui se sterg. | `DELETE /portal/bon/{bon_id}` · `cere_context` | stergere — `portal_bon_sterge()` | nu | neprobat |
 | 220 | Clientul confirma ca poza e intreaga si lizibila -> bonul intra la contabil. | `POST /portal/bon/{bon_id}/confirma` · `cere_context` | creare sau executie — `portal_bon_confirma()` | nu | neprobat |
 | 221 | portal bon imagine | `GET /portal/bon/{bon_id}/imagine/{n}` · `cere_context` | citire / afisare — `portal_bon_imagine()` | nu | neprobat |
-| 222 | bonuri de verificat | `GET /tenants/{tenant_id}/bonuri/de-verificat` · `cere_cabinet` | citire / afisare — `bonuri_de_verificat()` | nu | neprobat |
+| 222 | bonuri de verificat | `GET /tenants/{tenant_id}/bonuri/de-verificat` · `cere_cabinet` | citire / afisare — `bonuri_de_verificat()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 223 | bon aproba | `POST /tenants/{tenant_id}/bonuri/{bon_id}/aproba` · rol `admin_firma` | creare sau executie — `bon_aproba()` | da | neprobat |
-| 224 | Pentru o chitanta: facturile PRIMITE, neplatite, care ar putea fi stinse de ea | `GET /tenants/{tenant_id}/bonuri/{bon_id}/facturi-candidate` · `cere_cabinet` | citire / afisare — `bon_facturi_candidate()` | nu | neprobat |
-| 225 | cabinet bon imagine | `GET /tenants/{tenant_id}/bonuri/{bon_id}/imagine/{n}` · rol `admin_firma` | citire / afisare — `cabinet_bon_imagine()` | nu | neprobat |
+| 224 | Pentru o chitanta: facturile PRIMITE, neplatite, care ar putea fi stinse de ea | `GET /tenants/{tenant_id}/bonuri/{bon_id}/facturi-candidate` · `cere_cabinet` | citire / afisare — `bon_facturi_candidate()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 225 | cabinet bon imagine | `GET /tenants/{tenant_id}/bonuri/{bon_id}/imagine/{n}` · rol `admin_firma` | citire / afisare — `cabinet_bon_imagine()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 226 | Chitanta certificata de contabil: plata furnizor prin Registrul de casa (casa_api.adauga -> 401=5311 ciorna + operatiun… | `POST /tenants/{tenant_id}/bonuri/{bon_id}/stinge` · rol `admin_firma` | creare sau executie — `chitanta_stinge()` | da | neprobat |
 
 ### T24 — Bonul fiscal și raportul Z (AMEF, horeca) (2)
@@ -373,9 +373,9 @@
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 229 | wc config get | `GET /tenants/{tenant_id}/woocommerce/config` · `cere_context` | citire / afisare — `wc_config_get()` | nu | neprobat |
+| 229 | wc config get | `GET /tenants/{tenant_id}/woocommerce/config` · `cere_context` | citire / afisare — `wc_config_get()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 230 | wc config | `PUT /tenants/{tenant_id}/woocommerce/config` · rol `admin_firma` | modificare — `wc_config()` | da | neprobat |
-| 231 | wc sinc | `POST /tenants/{tenant_id}/woocommerce/sincronizeaza` · rol `admin_firma` | creare sau executie — `wc_sinc()` | da | neprobat |
+| 231 | wc sinc | `POST /tenants/{tenant_id}/woocommerce/sincronizeaza` · rol `admin_firma` | creare sau executie — `wc_sinc()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T26 — Registratura (2)
 
@@ -390,13 +390,13 @@
 |---|---|---|---|---|---|
 | 234 | etransport xml | `POST /tenants/{tenant_id}/etransport-xml` · `cere_cabinet` | creare sau executie — `etransport_xml()` | nu | neprobat |
 | 235 | Trimite notificarea UIT in SPV (F121): genereaza XML + trimite() cu PORTI in ordine (garda de timp -> idempotency -> va… | `POST /tenants/{tenant_id}/etransport/trimite` · rol `admin_firma` | creare sau executie — `etransport_trimite()` | nu | neprobat |
-| 236 | UIT-uri trimise + semafor de TIMP (valabilitate UIT) SEPARAT de semaforul de trimitere | `GET /tenants/{tenant_id}/etransport/trimiteri` · `cere_context` | citire / afisare — `etransport_trimiteri_lista()` | nu | neprobat |
+| 236 | UIT-uri trimise + semafor de TIMP (valabilitate UIT) SEPARAT de semaforul de trimitere | `GET /tenants/{tenant_id}/etransport/trimiteri` · `cere_context` | citire / afisare — `etransport_trimiteri_lista()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T28 — Operațiunile intracomunitare, VIES și Intrastat (12)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 237 | public verifica cui | `GET /public/verifica-cui/{cui}` · fără gardă | citire / afisare — `public_verifica_cui()` | nu | neprobat |
+| 237 | public verifica cui | `GET /public/verifica-cui/{cui}` · fără gardă | citire / afisare — `public_verifica_cui()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 238 | AIC bunuri/servicii primite (art | `POST /tenants/{tenant_id}/achizitie-ic` · rol `admin_firma` | creare sau executie — `achizitie_ic()` | da | neprobat |
 | 239 | Operatiunile auto-derivate (cu tipul curent) + liniile manuale, pt ecranul de clasificare. | `GET /tenants/{tenant_id}/d390-clasificare` · `cere_cabinet` | citire / afisare — `d390_clasificare_stare()` | da | neprobat |
 | 240 | Adauga linie pur manuala: {an, luna, tip, tara, cod, den, baza}. | `POST /tenants/{tenant_id}/d390-clasificare/manual` · `cere_cabinet` | creare sau executie — `d390_manual_adauga()` | da | neprobat |
@@ -406,7 +406,7 @@
 | 244 | [lista 3, 30.08.2026] Cele doua registre cerute de art | `GET /tenants/{tenant_id}/registre-art321/{fel}` · `cere_cabinet` | citire / afisare — `registre_art321_citeste()` | nu | neprobat |
 | 245 | Inscrie un rand | `POST /tenants/{tenant_id}/registre-art321/{fel}` · `cere_cabinet` | creare sau executie — `registre_art321_adauga()` | nu | neprobat |
 | 246 | LIC bunuri (art | `POST /tenants/{tenant_id}/vanzare-ic` · `cere_cabinet` | creare sau executie — `vanzare_ic()` | da | neprobat |
-| 247 | verifica cui | `GET /tenants/{tenant_id}/verifica-cui/{cui}` · `cere_context` | citire / afisare — `verifica_cui()` | nu | neprobat |
+| 247 | verifica cui | `GET /tenants/{tenant_id}/verifica-cui/{cui}` · `cere_context` | citire / afisare — `verifica_cui()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 248 | Verifica un cod TVA UE in VIES (API oficial CE). | `GET /tenants/{tenant_id}/verifica-vies` · `cere_context` | citire / afisare — `verifica_vies_ep()` | nu | neprobat |
 
 ### T29 — Regimurile speciale de TVA — marjă, aur, agricultori, taxare inversă (11)
@@ -438,7 +438,7 @@
 |---|---|---|---|---|---|
 | 262 | Randurile manuale ale perioadei + randurile inca disponibile de adaugat (allow-list minus auto-derivate minus deja intr… | `GET /tenants/{tenant_id}/d300-manual` · `cere_cabinet` | citire / afisare — `d300_manual_lista()` | da | neprobat |
 | 263 | Adauga/actualizeaza un rand manual D300: {an, luna, rand, baza, tva, descriere}. | `POST /tenants/{tenant_id}/d300-manual` · `cere_cabinet` | creare sau executie — `d300_manual_adauga()` | da | neprobat |
-| 264 | d300 manual sterge | `DELETE /tenants/{tenant_id}/d300-manual/{rid}` · `cere_cabinet` | stergere — `d300_manual_sterge()` | da | neprobat |
+| 264 | d300 manual sterge | `DELETE /tenants/{tenant_id}/d300-manual/{rid}` · `cere_cabinet` | stergere — `d300_manual_sterge()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 265 | Operatiunile lunii + nomenclatoare (tipuri, valute, cote period-aware) pt ecranul D301. | `GET /tenants/{tenant_id}/d301-operatiuni` · `cere_cabinet` | citire / afisare — `d301_operatiuni_lista()` | da | neprobat |
 | 266 | Adauga o operatiune: {an, luna, tip, nr_doc, data_doc, val_valuta, tip_valuta, curs, cota}. | `POST /tenants/{tenant_id}/d301-operatiuni` · `cere_cabinet` | creare sau executie — `d301_operatiuni_adauga()` | da | neprobat |
 | 267 | d301 operatiuni sterge | `DELETE /tenants/{tenant_id}/d301-operatiuni/{op_id}` · `cere_cabinet` | stergere — `d301_operatiuni_sterge()` | da | neprobat |
@@ -453,8 +453,8 @@
 | 271 | rip import banca | `POST /tenants/{tenant_id}/rip/import-banca` · `cere_cabinet` | creare sau executie — `rip_import_banca()` | nu | neprobat |
 | 272 | rip import casa | `POST /tenants/{tenant_id}/rip/import-casa` · `cere_cabinet` | creare sau executie — `rip_import_casa()` | nu | neprobat |
 | 273 | rip adauga | `POST /tenants/{tenant_id}/rip/operatiuni` · `cere_cabinet` | creare sau executie — `rip_adauga()` | nu | neprobat |
-| 274 | rip sterge | `DELETE /tenants/{tenant_id}/rip/operatiuni/{op_id}` · `cere_cabinet` | stergere — `rip_sterge()` | nu | neprobat |
-| 275 | rip valideaza | `PUT /tenants/{tenant_id}/rip/operatiuni/{op_id}/valideaza` · `cere_cabinet` | modificare — `rip_valideaza()` | nu | neprobat |
+| 274 | rip sterge | `DELETE /tenants/{tenant_id}/rip/operatiuni/{op_id}` · `cere_cabinet` | stergere — `rip_sterge()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 275 | rip valideaza | `PUT /tenants/{tenant_id}/rip/operatiuni/{op_id}/valideaza` · `cere_cabinet` | modificare — `rip_valideaza()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 276 | rip lista | `GET /tenants/{tenant_id}/rip/registru` · `cere_cabinet` | citire / afisare — `rip_lista()` | nu | neprobat |
 
 ### T33 — Exportul contabil (SAGA, WinMentor) (3)
@@ -463,13 +463,13 @@
 |---|---|---|---|---|---|
 | 277 | export saga luna | `POST /tenants/{tenant_id}/facturi/export-saga` · rol `admin_firma` | creare sau executie — `export_saga_luna()` | nu | neprobat |
 | 278 | Export WinMENTOR: Facturi.txt + Articole.txt (Windows-1250) co-locate intr-un zip | `POST /tenants/{tenant_id}/facturi/export-winmentor` · rol `admin_firma` | creare sau executie — `export_winmentor_luna()` | nu | neprobat |
-| 279 | export saga factura | `GET /tenants/{tenant_id}/facturi/{factura_id}/export-saga` · `cere_context` | citire / afisare — `export_saga_factura()` | nu | neprobat |
+| 279 | export saga factura | `GET /tenants/{tenant_id}/facturi/{factura_id}/export-saga` · `cere_context` | citire / afisare — `export_saga_factura()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T34 — Rapoartele comerciale, centrele de cost și rapoartele salvate (14)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 280 | Prezentarea de ansamblu a aplicatiei (semnul "?" GENERAL din bara de stare + pagina de bun-venit) | `GET /ansamblu` · `cere_context` | citire / afisare — `ansamblu_aplicatie()` | nu | neprobat |
+| 280 | Prezentarea de ansamblu a aplicatiei (semnul "?" GENERAL din bara de stare + pagina de bun-venit) | `GET /ansamblu` · `cere_context` | citire / afisare — `ansamblu_aplicatie()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 281 | apiv1 kpi | `GET /api/v1/firme/{tenant_id}/kpi` · `cere_api_key` | citire / afisare — `apiv1_kpi()` | nu | neprobat |
 | 282 | cabinet consolidare | `GET /cabinet/consolidare` · `cere_cabinet` | citire / afisare — `cabinet_consolidare()` | nu | neprobat |
 | 283 | centre cost lista | `GET /tenants/{tenant_id}/centre-cost` · `cere_cabinet` | citire / afisare — `centre_cost_lista()` | nu | neprobat |
@@ -482,7 +482,7 @@
 | 290 | rapoarte comerciale fisa | `GET /tenants/{tenant_id}/rapoarte-comerciale/fisa` · `cere_cabinet` | citire / afisare — `rapoarte_comerciale_fisa()` | nu | neprobat |
 | 291 | rapoarte salvate lista | `GET /tenants/{tenant_id}/rapoarte-salvate` · `cere_cabinet` | citire / afisare — `rapoarte_salvate_lista()` | nu | neprobat |
 | 292 | rapoarte salvate creeaza | `POST /tenants/{tenant_id}/rapoarte-salvate` · `cere_cabinet` | creare sau executie — `rapoarte_salvate_creeaza()` | nu | neprobat |
-| 293 | rapoarte salvate sterge | `DELETE /tenants/{tenant_id}/rapoarte-salvate/{vid}` · `cere_cabinet` | stergere — `rapoarte_salvate_sterge()` | nu | neprobat |
+| 293 | rapoarte salvate sterge | `DELETE /tenants/{tenant_id}/rapoarte-salvate/{vid}` · `cere_cabinet` | stergere — `rapoarte_salvate_sterge()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T35 — Pachetul lunar către client și solicitările lui (38)
 
@@ -505,7 +505,7 @@
 | 308 | portal documente luni | `GET /portal/documente/luni` · `cere_client` | citire / afisare — `portal_documente_luni()` | nu | neprobat |
 | 309 | portal facturi | `GET /portal/facturi` · `cere_client` | citire / afisare — `portal_facturi()` | da | neprobat |
 | 310 | portal firma | `GET /portal/firma` · `cere_client` | citire / afisare — `portal_firma()` | nu | neprobat |
-| 311 | portal firme | `GET /portal/firme` · `cere_client` | citire / afisare — `portal_firme()` | nu | neprobat |
+| 311 | portal firme | `GET /portal/firme` · `cere_client` | citire / afisare — `portal_firme()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 312 | portal kpi | `GET /portal/kpi` · `cere_client` | citire / afisare — `portal_kpi()` | nu | neprobat |
 | 313 | portal povesti | `GET /portal/povesti` · `cere_client` | citire / afisare — `portal_povesti()` | nu | neprobat |
 | 314 | portal recomanda | `POST /portal/recomanda` · `cere_client` | creare sau executie — `portal_recomanda()` | nu | neprobat |
@@ -514,99 +514,99 @@
 | 317 | portal solicitari trimite | `POST /portal/solicitari` · `cere_client` | creare sau executie — `portal_solicitari_trimite()` | nu | neprobat |
 | 318 | portal solicitari contor | `GET /portal/solicitari/contor` · `cere_client` | citire / afisare — `portal_solicitari_contor()` | nu | neprobat |
 | 319 | [R62 (1)] Confirmarea schimbarii de adresa | `POST /public/confirma-email` · fără gardă | creare sau executie — `portal_confirma_email()` | nu | neprobat |
-| 320 | Emite un token de PREVIZUALIZARE (read-only, tab-local) pentru portalul clientului firmei | `POST /tenants/{tenant_id}/acces-portal` · rol `admin_firma/angajat/verificat-în-corp` | creare sau executie — `acces_portal_preview()` | nu | neprobat |
-| 321 | client acces lista | `GET /tenants/{tenant_id}/client-acces` · rol `admin_firma/angajat` | citire / afisare — `client_acces_lista()` | nu | neprobat |
+| 320 | Emite un token de PREVIZUALIZARE (read-only, tab-local) pentru portalul clientului firmei | `POST /tenants/{tenant_id}/acces-portal` · rol `admin_firma/angajat/verificat-în-corp` | creare sau executie — `acces_portal_preview()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 321 | client acces lista | `GET /tenants/{tenant_id}/client-acces` · rol `admin_firma/angajat` | citire / afisare — `client_acces_lista()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 322 | client acces creeaza | `POST /tenants/{tenant_id}/client-acces` · rol `admin_firma/verificat-în-corp` | creare sau executie — `client_acces_creeaza()` | da | neprobat |
-| 323 | client acces revoca | `DELETE /tenants/{tenant_id}/client-acces/{user_id}` · rol `admin_firma` | stergere — `client_acces_revoca()` | nu | neprobat |
+| 323 | client acces revoca | `DELETE /tenants/{tenant_id}/client-acces/{user_id}` · rol `admin_firma` | stergere — `client_acces_revoca()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 324 | clienti lista | `GET /tenants/{tenant_id}/clienti` · `cere_cabinet` | citire / afisare — `clienti_lista()` | da | neprobat |
 | 325 | client creeaza | `POST /tenants/{tenant_id}/clienti` · rol `admin_firma/angajat` | creare sau executie — `client_creeaza()` | da | neprobat |
-| 326 | client sterge | `DELETE /tenants/{tenant_id}/clienti/{client_id}` · rol `admin_firma/angajat` | stergere — `client_sterge()` | da | neprobat |
-| 327 | client detalii | `GET /tenants/{tenant_id}/clienti/{client_id}` · `cere_cabinet` | citire / afisare — `client_detalii()` | da | neprobat |
+| 326 | client sterge | `DELETE /tenants/{tenant_id}/clienti/{client_id}` · rol `admin_firma/angajat` | stergere — `client_sterge()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 327 | client detalii | `GET /tenants/{tenant_id}/clienti/{client_id}` · `cere_cabinet` | citire / afisare — `client_detalii()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 328 | client actualizeaza | `PUT /tenants/{tenant_id}/clienti/{client_id}` · rol `admin_firma/angajat` | modificare — `client_actualizeaza()` | da | neprobat |
-| 329 | cabinet solicitari lista | `GET /tenants/{tenant_id}/solicitari` · `cere_context` | citire / afisare — `cabinet_solicitari_lista()` | nu | neprobat |
+| 329 | cabinet solicitari lista | `GET /tenants/{tenant_id}/solicitari` · `cere_context` | citire / afisare — `cabinet_solicitari_lista()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 330 | cabinet solicitari raspunde | `POST /tenants/{tenant_id}/solicitari` · rol `admin_firma` | creare sau executie — `cabinet_solicitari_raspunde()` | nu | neprobat |
-| 331 | [R62 (3)] Urma se poate CITI | `GET /tenants/{tenant_id}/urme-portal` · `cere_cabinet` | citire / afisare — `cabinet_urme_portal()` | nu | neprobat |
+| 331 | [R62 (3)] Urma se poate CITI | `GET /tenants/{tenant_id}/urme-portal` · `cere_cabinet` | citire / afisare — `cabinet_urme_portal()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T36 — Ciclul de viață al firmei — creare, identitate, dezactivare, scoatere (9)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 332 | [R72] Urma firmelor scoase din portofoliu — CITITĂ, nu doar scrisă | `GET /firme-scoase` · `cere_cabinet` | citire / afisare — `firme_scoase()` | nu | neprobat |
+| 332 | [R72] Urma firmelor scoase din portofoliu — CITITĂ, nu doar scrisă | `GET /firme-scoase` · `cere_cabinet` | citire / afisare — `firme_scoase()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 333 | `inactive=true` cuprinde ȘI firmele dezactivate — altfel o firmă dezactivată ar ieși din listă fără nicio cale de întoa… | `GET /tenants` · `cere_cabinet` | citire / afisare — `tenants()` | nu | neprobat |
 | 334 | tenant creeaza | `POST /tenants` · rol `admin_firma` | creare sau executie — `tenant_creeaza()` | da | neprobat |
 | 335 | [R72] Scoate din portofoliu o firmă FĂRĂ evidență | `DELETE /tenants/{tenant_id}` · rol `admin_firma` | stergere — `tenant_scoate()` | da | neprobat |
-| 336 | tenant detalii | `GET /tenants/{tenant_id}` · `cere_cabinet` | citire / afisare — `tenant_detalii()` | da | neprobat |
+| 336 | tenant detalii | `GET /tenants/{tenant_id}` · `cere_cabinet` | citire / afisare — `tenant_detalii()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 337 | tenant actualizeaza | `PUT /tenants/{tenant_id}` · rol `admin_firma` | modificare — `tenant_actualizeaza()` | da | neprobat |
 | 338 | [R72] Dezactivează / reactivează firma | `POST /tenants/{tenant_id}/activare` · rol `admin_firma` | creare sau executie — `tenant_activare()` | da | neprobat |
 | 339 | [R77] Alegerea între denumirea din aplicație și cea de la ANAF | `POST /tenants/{tenant_id}/nume-ales` · rol `admin_firma` | creare sau executie — `tenant_nume_ales()` | da | neprobat |
-| 340 | [R72] Ce se întâmplă dacă firma se scoate: are evidență sau nu, și ce anume s-a găsit | `GET /tenants/{tenant_id}/scoatere` · `cere_cabinet` | citire / afisare — `tenant_scoatere_previzualizare()` | da | neprobat |
+| 340 | [R72] Ce se întâmplă dacă firma se scoate: are evidență sau nu, și ce anume s-a găsit | `GET /tenants/{tenant_id}/scoatere` · `cere_cabinet` | citire / afisare — `tenant_scoatere_previzualizare()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### S-ADM — suprafata ne-documentara: administrarea furnizorului (12)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
 | 341 | admin activitate cabinet | `GET /admin/activitate/cabinet/{firm_id}` · rol `verificat-în-corp` | citire / afisare — `admin_activitate_cabinet()` | nu | neprobat |
-| 342 | admin activitate cabinete | `GET /admin/activitate/cabinete` · rol `verificat-în-corp` | citire / afisare — `admin_activitate_cabinete()` | nu | neprobat |
-| 343 | admin alerte fiscale | `GET /admin/alerte-fiscale` · rol `superadmin` | citire / afisare — `admin_alerte_fiscale()` | nu | neprobat |
-| 344 | admin alerta tratata | `POST /admin/alerte-fiscale/{aid}/tratat` · rol `superadmin` | creare sau executie — `admin_alerta_tratata()` | nu | neprobat |
+| 342 | admin activitate cabinete | `GET /admin/activitate/cabinete` · rol `verificat-în-corp` | citire / afisare — `admin_activitate_cabinete()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 343 | admin alerte fiscale | `GET /admin/alerte-fiscale` · rol `superadmin` | citire / afisare — `admin_alerte_fiscale()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 344 | admin alerta tratata | `POST /admin/alerte-fiscale/{aid}/tratat` · rol `superadmin` | creare sau executie — `admin_alerta_tratata()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 345 | Cifre agregate din public.eveniment_public: pe eveniment, pe zi, pe pagina de provenienta | `GET /admin/analytics` · rol `superadmin` | citire / afisare — `admin_analytics()` | nu | neprobat |
 | 346 | admin anunt creeaza | `POST /admin/anunturi` · rol `superadmin` | creare sau executie — `admin_anunt_creeaza()` | nu | neprobat |
-| 347 | admin cabinet reactiveaza | `POST /admin/cabinete/{firm_id}/reactiveaza` · rol `verificat-în-corp` | creare sau executie — `admin_cabinet_reactiveaza()` | da | neprobat |
-| 348 | admin cabinet suspenda | `POST /admin/cabinete/{firm_id}/suspenda` · rol `verificat-în-corp` | creare sau executie — `admin_cabinet_suspenda()` | da | neprobat |
-| 349 | admin sanatate | `GET /admin/sanatate` · rol `verificat-în-corp` | citire / afisare — `admin_sanatate()` | nu | neprobat |
+| 347 | admin cabinet reactiveaza | `POST /admin/cabinete/{firm_id}/reactiveaza` · rol `verificat-în-corp` | creare sau executie — `admin_cabinet_reactiveaza()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 348 | admin cabinet suspenda | `POST /admin/cabinete/{firm_id}/suspenda` · rol `verificat-în-corp` | creare sau executie — `admin_cabinet_suspenda()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 349 | admin sanatate | `GET /admin/sanatate` · rol `verificat-în-corp` | citire / afisare — `admin_sanatate()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 350 | admin sanatate istoric | `GET /admin/sanatate/istoric` · rol `verificat-în-corp` | citire / afisare — `admin_sanatate_istoric()` | nu | neprobat |
-| 351 | admin sanatate test alerta | `POST /admin/sanatate/test-alerta` · rol `verificat-în-corp` | creare sau executie — `admin_sanatate_test_alerta()` | nu | neprobat |
-| 352 | Detector "running == HEAD" (superadmin): commitul cu care a pornit procesul viu (stampilat in memorie la startup) vs HE… | `GET /admin/versiune` · rol `superadmin` | citire / afisare — `admin_versiune()` | nu | neprobat |
+| 351 | admin sanatate test alerta | `POST /admin/sanatate/test-alerta` · rol `verificat-în-corp` | creare sau executie — `admin_sanatate_test_alerta()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 352 | Detector "running == HEAD" (superadmin): commitul cu care a pornit procesul viu (stampilat in memorie la startup) vs HE… | `GET /admin/versiune` · rol `superadmin` | citire / afisare — `admin_versiune()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### S-CAB — suprafata ne-documentara: cabinetul și echipa (21)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 353 | asistenti lista | `GET /asistenti` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_lista()` | da | neprobat |
+| 353 | asistenti lista | `GET /asistenti` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_lista()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 354 | asistent creeaza | `POST /asistenti` · rol `admin_firma` | creare sau executie — `asistent_creeaza()` | nu | neprobat |
 | 355 | asistenti centralizator | `GET /asistenti/echipa/centralizator` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_centralizator()` | da | neprobat |
 | 356 | asistenti erori | `GET /asistenti/echipa/erori` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_erori()` | da | neprobat |
 | 357 | asistenti jurnal | `GET /asistenti/echipa/jurnal` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_jurnal()` | da | neprobat |
 | 358 | asistenti semafor | `GET /asistenti/echipa/semafor` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_semafor()` | da | neprobat |
-| 359 | asistenti detalii | `GET /asistenti/{uid}` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_detalii()` | da | neprobat |
-| 360 | asistenti activitate | `GET /asistenti/{uid}/activitate` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_activitate()` | da | neprobat |
+| 359 | asistenti detalii | `GET /asistenti/{uid}` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_detalii()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 360 | asistenti activitate | `GET /asistenti/{uid}/activitate` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_activitate()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 361 | asistenti calitate | `GET /asistenti/{uid}/calitate` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_calitate()` | da | neprobat |
-| 362 | asistenti dezactiveaza | `POST /asistenti/{uid}/dezactiveaza` · rol `admin_firma(ajutor)` | creare sau executie — `asistenti_dezactiveaza()` | da | neprobat |
-| 363 | asistenti finalizeaza firme | `POST /asistenti/{uid}/finalizeaza-firme` · rol `admin_firma(ajutor)` | creare sau executie — `asistenti_finalizeaza_firme()` | da | neprobat |
-| 364 | asistenti elimina | `DELETE /asistenti/{uid}/firme/{tid}` · rol `admin_firma(ajutor)` | stergere — `asistenti_elimina()` | da | neprobat |
-| 365 | asistenti atribuie | `POST /asistenti/{uid}/firme/{tid}` · rol `admin_firma(ajutor)` | creare sau executie — `asistenti_atribuie()` | da | neprobat |
+| 362 | asistenti dezactiveaza | `POST /asistenti/{uid}/dezactiveaza` · rol `admin_firma(ajutor)` | creare sau executie — `asistenti_dezactiveaza()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 363 | asistenti finalizeaza firme | `POST /asistenti/{uid}/finalizeaza-firme` · rol `admin_firma(ajutor)` | creare sau executie — `asistenti_finalizeaza_firme()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 364 | asistenti elimina | `DELETE /asistenti/{uid}/firme/{tid}` · rol `admin_firma(ajutor)` | stergere — `asistenti_elimina()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 365 | asistenti atribuie | `POST /asistenti/{uid}/firme/{tid}` · rol `admin_firma(ajutor)` | creare sau executie — `asistenti_atribuie()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 366 | asistenti permisiuni | `POST /asistenti/{uid}/permisiuni` · rol `admin_firma(ajutor)` | creare sau executie — `asistenti_permisiuni()` | da | neprobat |
-| 367 | asistenti reactiveaza | `POST /asistenti/{uid}/reactiveaza` · rol `admin_firma(ajutor)` | creare sau executie — `asistenti_reactiveaza()` | da | neprobat |
-| 368 | api chei lista | `GET /cabinet/api-chei` · rol `admin_firma` | citire / afisare — `api_chei_lista()` | nu | neprobat |
+| 367 | asistenti reactiveaza | `POST /asistenti/{uid}/reactiveaza` · rol `admin_firma(ajutor)` | creare sau executie — `asistenti_reactiveaza()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 368 | api chei lista | `GET /cabinet/api-chei` · rol `admin_firma` | citire / afisare — `api_chei_lista()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 369 | api cheie creeaza | `POST /cabinet/api-chei` · rol `admin_firma` | creare sau executie — `api_cheie_creeaza()` | nu | neprobat |
-| 370 | api cheie revoca | `DELETE /cabinet/api-chei/{kid}` · rol `admin_firma` | stergere — `api_cheie_revoca()` | nu | neprobat |
-| 371 | capacitate panou | `GET /capacitate` · rol `admin_firma` | citire / afisare — `capacitate_panou()` | nu | neprobat |
-| 372 | tipare panou | `GET /tipare` · rol `admin_firma` | citire / afisare — `tipare_panou()` | nu | neprobat |
-| 373 | tipare ai panou | `GET /tipare/ai` · rol `admin_firma` | citire / afisare — `tipare_ai_panou()` | nu | neprobat |
+| 370 | api cheie revoca | `DELETE /cabinet/api-chei/{kid}` · rol `admin_firma` | stergere — `api_cheie_revoca()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 371 | capacitate panou | `GET /capacitate` · rol `admin_firma` | citire / afisare — `capacitate_panou()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 372 | tipare panou | `GET /tipare` · rol `admin_firma` | citire / afisare — `tipare_panou()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 373 | tipare ai panou | `GET /tipare/ai` · rol `admin_firma` | citire / afisare — `tipare_ai_panou()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### S-CHE — suprafata ne-documentara: cheia de integrare (1)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 374 | apiv1 firme | `GET /api/v1/firme` · `cere_api_key` | citire / afisare — `apiv1_firme()` | nu | neprobat |
+| 374 | apiv1 firme | `GET /api/v1/firme` · `cere_api_key` | citire / afisare — `apiv1_firme()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### S-CON — suprafata ne-documentara: contul actorului (15)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 375 | Marcheaza prezentarea de bun-venit ca vazuta (o data, la prima logare). | `POST /cont/bun-venit-vazut` · `cere_context` | creare sau executie — `cont_bun_venit_vazut()` | nu | neprobat |
-| 376 | eu anunturi | `GET /eu/anunturi` · `cere_cabinet` | citire / afisare — `eu_anunturi()` | nu | neprobat |
-| 377 | eu anunt confirma | `POST /eu/anunturi/{aid}/confirma` · `cere_cabinet` | creare sau executie — `eu_anunt_confirma()` | nu | neprobat |
-| 378 | eu cabinet get | `GET /eu/cabinet` · `cere_cabinet` | citire / afisare — `eu_cabinet_get()` | nu | neprobat |
+| 375 | Marcheaza prezentarea de bun-venit ca vazuta (o data, la prima logare). | `POST /cont/bun-venit-vazut` · `cere_context` | creare sau executie — `cont_bun_venit_vazut()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 376 | eu anunturi | `GET /eu/anunturi` · `cere_cabinet` | citire / afisare — `eu_anunturi()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 377 | eu anunt confirma | `POST /eu/anunturi/{aid}/confirma` · `cere_cabinet` | creare sau executie — `eu_anunt_confirma()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 378 | eu cabinet get | `GET /eu/cabinet` · `cere_cabinet` | citire / afisare — `eu_cabinet_get()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 379 | eu cabinet set | `POST /eu/cabinet` · rol `verificat-în-corp` | creare sau executie — `eu_cabinet_set()` | nu | neprobat |
 | 380 | Self-view: propria calitate (nivel, semafor, rata, tipare) | `GET /eu/calitate` · `cere_cabinet` | citire / afisare — `eu_calitate()` | da | neprobat |
-| 381 | eu competente get | `GET /eu/competente` · `cere_cabinet` | citire / afisare — `eu_competente_get()` | da | neprobat |
+| 381 | eu competente get | `GET /eu/competente` · `cere_cabinet` | citire / afisare — `eu_competente_get()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 382 | eu competente set | `POST /eu/competente` · `cere_cabinet` | creare sau executie — `eu_competente_set()` | da | neprobat |
-| 383 | eu educatie | `GET /eu/educatie` · rol `verificat-în-corp` | citire / afisare — `eu_educatie()` | da | neprobat |
-| 384 | eu educatie vazut | `POST /eu/educatie/patru-ochi/vazut` · rol `verificat-în-corp` | creare sau executie — `eu_educatie_vazut()` | da | neprobat |
-| 385 | [po_efectiv_v1] {activ, posibil, efectiv} din SURSA UNICA folosita si de enforcement (core.coada_api.patru_ochi_stare) | `GET /eu/patru-ochi` · `cere_cabinet` | citire / afisare — `eu_patru_ochi_stare()` | da | neprobat |
+| 383 | eu educatie | `GET /eu/educatie` · rol `verificat-în-corp` | citire / afisare — `eu_educatie()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 384 | eu educatie vazut | `POST /eu/educatie/patru-ochi/vazut` · rol `verificat-în-corp` | creare sau executie — `eu_educatie_vazut()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 385 | [po_efectiv_v1] {activ, posibil, efectiv} din SURSA UNICA folosita si de enforcement (core.coada_api.patru_ochi_stare) | `GET /eu/patru-ochi` · `cere_cabinet` | citire / afisare — `eu_patru_ochi_stare()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 386 | eu patru ochi | `POST /eu/patru-ochi` · rol `verificat-în-corp` | creare sau executie — `eu_patru_ochi()` | da | neprobat |
-| 387 | Permisiunile actorului curent | `GET /eu/permisiuni` · rol `verificat-în-corp` | citire / afisare — `eu_permisiuni()` | nu | neprobat |
+| 387 | Permisiunile actorului curent | `GET /eu/permisiuni` · rol `verificat-în-corp` | citire / afisare — `eu_permisiuni()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 388 | eu profil | `POST /eu/profil` · `cere_cabinet` | creare sau executie — `eu_profil()` | nu | neprobat |
 | 389 | eu schimba parola | `POST /eu/schimba-parola` · `cere_cabinet` | creare sau executie — `eu_schimba_parola()` | nu | neprobat |
 
@@ -617,12 +617,12 @@
 | 390 | login | `POST /auth/login` · fără gardă | creare sau executie — `login()` | nu | neprobat |
 | 391 | register | `POST /auth/register` · fără gardă | creare sau executie — `register()` | da | neprobat |
 | 392 | activare cont | `POST /public/activare` · fără gardă | creare sau executie — `activare_cont()` | nu | neprobat |
-| 393 | public config | `GET /public/config` · fără gardă | citire / afisare — `public_config()` | nu | neprobat |
+| 393 | public config | `GET /public/config` · fără gardă | citire / afisare — `public_config()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 394 | Trimite link de logare fara parola | `POST /public/magic-link` · fără gardă | creare sau executie — `magic_link_cere()` | nu | neprobat |
 | 395 | magic login | `POST /public/magic-login` · fără gardă | creare sau executie — `magic_login()` | nu | neprobat |
 | 396 | reset parola cere | `POST /public/reset-parola/cere` · fără gardă | creare sau executie — `reset_parola_cere()` | nu | neprobat |
 | 397 | reset parola seteaza | `POST /public/reset-parola/seteaza` · fără gardă | creare sau executie — `reset_parola_seteaza()` | nu | neprobat |
-| 398 | public termeni | `GET /public/termeni` · fără gardă | citire / afisare — `public_termeni()` | nu | neprobat |
+| 398 | public termeni | `GET /public/termeni` · fără gardă | citire / afisare — `public_termeni()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### S-GDP — suprafata ne-documentara: GDPR (4)
 
@@ -631,47 +631,47 @@
 | 399 | gdpr cerere stergere | `POST /gdpr/cerere-stergere` · rol `admin_firma` | creare sau executie — `gdpr_cerere_stergere()` | nu | neprobat |
 | 400 | gdpr export cabinet | `GET /gdpr/export-cabinet` · rol `admin_firma/verificat-în-corp` | citire / afisare — `gdpr_export_cabinet()` | nu | neprobat |
 | 401 | gdpr sterge executa | `POST /gdpr/sterge-cabinet/{cabinet_id}/executa` · rol `superadmin` | creare sau executie — `gdpr_sterge_executa()` | da | neprobat |
-| 402 | gdpr sterge previzualizare | `POST /gdpr/sterge-cabinet/{cabinet_id}/previzualizare` · rol `superadmin` | creare sau executie — `gdpr_sterge_previzualizare()` | da | neprobat |
+| 402 | gdpr sterge previzualizare | `POST /gdpr/sterge-cabinet/{cabinet_id}/previzualizare` · rol `superadmin` | creare sau executie — `gdpr_sterge_previzualizare()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### S-NOT — suprafata ne-documentara: notificări (5)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
 | 403 | notificari lista | `GET /notificari` · `cere_cabinet` | citire / afisare — `notificari_lista()` | nu | neprobat |
-| 404 | notificari citit toate | `POST /notificari/citit` · `cere_cabinet` | creare sau executie — `notificari_citit_toate()` | nu | neprobat |
-| 405 | notificari contor | `GET /notificari/contor` · `cere_cabinet` | citire / afisare — `notificari_contor()` | nu | neprobat |
-| 406 | notificari sumar | `GET /notificari/sumar` · `cere_cabinet` | citire / afisare — `notificari_sumar()` | nu | neprobat |
-| 407 | notificari citit una | `POST /notificari/{nid}/citit` · `cere_cabinet` | creare sau executie — `notificari_citit_una()` | nu | neprobat |
+| 404 | notificari citit toate | `POST /notificari/citit` · `cere_cabinet` | creare sau executie — `notificari_citit_toate()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 405 | notificari contor | `GET /notificari/contor` · `cere_cabinet` | citire / afisare — `notificari_contor()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 406 | notificari sumar | `GET /notificari/sumar` · `cere_cabinet` | citire / afisare — `notificari_sumar()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 407 | notificari citit una | `POST /notificari/{nid}/citit` · `cere_cabinet` | creare sau executie — `notificari_citit_una()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### S-PAG — suprafata ne-documentara: pagini publice (6)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 408 | index | `GET /` · fără gardă | citire / afisare — `index()` | nu | neprobat |
-| 409 | favicon | `GET /favicon.ico` · fără gardă | citire / afisare — `favicon()` | nu | neprobat |
-| 410 | Index-ul ghidurilor: legat din subsol, ca paginile sa nu existe doar in sitemap | `GET /ghid` · fără gardă | citire / afisare — `public_ghid_index()` | nu | neprobat |
-| 411 | Pagina publica de ghid (DS cap.22) | `GET /ghid/{slug}` · fără gardă | citire / afisare — `public_ghid()` | nu | neprobat |
-| 412 | public robots | `GET /robots.txt` · fără gardă | citire / afisare — `public_robots()` | nu | neprobat |
-| 413 | Sitemap generat din aceleasi surse ca index-ul (CSV + fisiere) | `GET /sitemap.xml` · fără gardă | citire / afisare — `public_sitemap()` | nu | neprobat |
+| 408 | index | `GET /` · fără gardă | citire / afisare — `index()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 409 | favicon | `GET /favicon.ico` · fără gardă | citire / afisare — `favicon()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 410 | Index-ul ghidurilor: legat din subsol, ca paginile sa nu existe doar in sitemap | `GET /ghid` · fără gardă | citire / afisare — `public_ghid_index()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 411 | Pagina publica de ghid (DS cap.22) | `GET /ghid/{slug}` · fără gardă | citire / afisare — `public_ghid()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 412 | public robots | `GET /robots.txt` · fără gardă | citire / afisare — `public_robots()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 413 | Sitemap generat din aceleasi surse ca index-ul (CSV + fisiere) | `GET /sitemap.xml` · fără gardă | citire / afisare — `public_sitemap()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### S-SUP — suprafata ne-documentara: suport și telemetrie (14)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 414 | Ajutor contextual pentru contabil (semnul "?" din UI) | `GET /ajutor/{fid}` · fără gardă | citire / afisare — `ajutor_contextual()` | nu | neprobat |
+| 414 | Ajutor contextual pentru contabil (semnul "?" din UI) | `GET /ajutor/{fid}` · fără gardă | citire / afisare — `ajutor_contextual()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 415 | Inregistrare eveniment public de interes (deschidere modal, click Intra in cont, vizita ghid) | `POST /api/eveniment-public` · fără gardă | creare sau executie — `eveniment_public()` | nu | neprobat |
 | 416 | raportari creeaza | `POST /raportari` · `cere_cabinet` | creare sau executie — `raportari_creeaza()` | nu | neprobat |
-| 417 | raportari admin | `GET /raportari/admin` · rol `verificat-în-corp` | citire / afisare — `raportari_admin()` | nu | neprobat |
-| 418 | raportari contor | `GET /raportari/contor` · `cere_cabinet` | citire / afisare — `raportari_contor()` | nu | neprobat |
-| 419 | raportari mele | `GET /raportari/eu` · `cere_cabinet` | citire / afisare — `raportari_mele()` | nu | neprobat |
+| 417 | raportari admin | `GET /raportari/admin` · rol `verificat-în-corp` | citire / afisare — `raportari_admin()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 418 | raportari contor | `GET /raportari/contor` · `cere_cabinet` | citire / afisare — `raportari_contor()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 419 | raportari mele | `GET /raportari/eu` · `cere_cabinet` | citire / afisare — `raportari_mele()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 420 | raportari imagine | `POST /raportari/mesaj/{mid}/imagine` · rol `verificat-în-corp` | creare sau executie — `raportari_imagine()` | nu | neprobat |
-| 421 | raportari fir | `GET /raportari/{rid}` · rol `verificat-în-corp` | citire / afisare — `raportari_fir()` | nu | neprobat |
-| 422 | raportari citit | `POST /raportari/{rid}/citit` · rol `verificat-în-corp` | creare sau executie — `raportari_citit()` | nu | neprobat |
+| 421 | raportari fir | `GET /raportari/{rid}` · rol `verificat-în-corp` | citire / afisare — `raportari_fir()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
+| 422 | raportari citit | `POST /raportari/{rid}/citit` · rol `verificat-în-corp` | creare sau executie — `raportari_citit()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 423 | raportari mesaj | `POST /raportari/{rid}/mesaj` · rol `verificat-în-corp` | creare sau executie — `raportari_mesaj()` | nu | neprobat |
 | 424 | raportari pentru admin | `POST /raportari/{rid}/pentru-admin` · rol `verificat-în-corp` | creare sau executie — `raportari_pentru_admin()` | nu | neprobat |
 | 425 | raportari stare | `POST /raportari/{rid}/stare` · rol `superadmin` | creare sau executie — `raportari_stare()` | nu | neprobat |
 | 426 | trimite recomandari | `POST /recomanda` · `cere_cabinet` | creare sau executie — `trimite_recomandari()` | nu | neprobat |
-| 427 | recomanda preview | `GET /recomanda/preview` · `cere_cabinet` | citire / afisare — `recomanda_preview()` | nu | neprobat |
+| 427 | recomanda preview | `GET /recomanda/preview` · `cere_cabinet` | citire / afisare — `recomanda_preview()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ## B. Ecrane — 75
 
@@ -763,20 +763,20 @@
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 503 | Jobul `alerta_acces` — supravegheat, prag 2 h | `core/alerta_acces.py` (fundal) | rulare periodică | nu | neprobat |
-| 504 | Jobul `audit_retentie` — supravegheat, prag 50 h | `core/audit_retentie.py` (fundal) | rulare periodică | nu | neprobat |
-| 505 | Jobul `expirare_cote` — supravegheat, prag 800 h | `core/expirare_cote.py` (fundal) | rulare periodică | nu | neprobat |
-| 506 | Jobul `facturi_recurente` — supravegheat, prag 50 h | `core/facturi_recurente.py` (fundal) | rulare periodică | da | neprobat |
-| 507 | Jobul `monitor_fiscal` — supravegheat, prag 50 h | `core/monitor_fiscal.py` (fundal) | rulare periodică | nu | neprobat |
-| 508 | Jobul `notificari_scadenta` — supravegheat, prag 50 h | `core/notificari_scadenta.py` (fundal) | rulare periodică | nu | neprobat |
-| 509 | Jobul `sinteza_zilnica` — supravegheat, prag 96 h | `core/sinteza_zilnica.py` (fundal) | rulare periodică | nu | neprobat |
-| 510 | Jobul `sonda_web` — supravegheat, prag 2 h | `core/sonda_web.py` (fundal) | rulare periodică | nu | neprobat |
-| 511 | Jobul `spv_poll` — supravegheat, prag 2 h | `core/spv_poll.py` (fundal) | rulare periodică | da | neprobat |
-| 512 | Jobul `spv_receive` — supravegheat, prag 2 h | `core/spv_receive.py` (fundal) | rulare periodică | da | neprobat |
-| 513 | Jobul `spv_refresh` — supravegheat, prag 50 h | `core/spv_refresh.py` (fundal) | rulare periodică | nu | neprobat |
-| 514 | Jobul `woocommerce` — supravegheat, prag 50 h | `core/woocommerce.py` (fundal) | rulare periodică | da | neprobat |
-| 515 | Jobul `cron` — NESUPRAVEGHEAT — heartbeat-ul insusi - cere deadman EXTERN | `core/cron.py` (fundal) | rulare periodică | nu | neprobat |
-| 516 | Jobul `iconta-backup` — NESUPRAVEGHEAT — shell, nu modul; alerteaza singur (iconta-backup.sh) | `core/iconta-backup.py` (fundal) | rulare periodică | ? | neprobat |
+| 503 | Jobul `alerta_acces` — supravegheat, prag 2 h | `core/alerta_acces.py` (fundal) | rulare periodică | nu | în afara perimetrului etapei 1 — job de fundal: nu primește nimic de la un om |
+| 504 | Jobul `audit_retentie` — supravegheat, prag 50 h | `core/audit_retentie.py` (fundal) | rulare periodică | nu | în afara perimetrului etapei 1 — job de fundal: nu primește nimic de la un om |
+| 505 | Jobul `expirare_cote` — supravegheat, prag 800 h | `core/expirare_cote.py` (fundal) | rulare periodică | nu | în afara perimetrului etapei 1 — job de fundal: nu primește nimic de la un om |
+| 506 | Jobul `facturi_recurente` — supravegheat, prag 50 h | `core/facturi_recurente.py` (fundal) | rulare periodică | da | în afara perimetrului etapei 1 — job de fundal: nu primește nimic de la un om |
+| 507 | Jobul `monitor_fiscal` — supravegheat, prag 50 h | `core/monitor_fiscal.py` (fundal) | rulare periodică | nu | în afara perimetrului etapei 1 — job de fundal: nu primește nimic de la un om |
+| 508 | Jobul `notificari_scadenta` — supravegheat, prag 50 h | `core/notificari_scadenta.py` (fundal) | rulare periodică | nu | în afara perimetrului etapei 1 — job de fundal: nu primește nimic de la un om |
+| 509 | Jobul `sinteza_zilnica` — supravegheat, prag 96 h | `core/sinteza_zilnica.py` (fundal) | rulare periodică | nu | în afara perimetrului etapei 1 — job de fundal: nu primește nimic de la un om |
+| 510 | Jobul `sonda_web` — supravegheat, prag 2 h | `core/sonda_web.py` (fundal) | rulare periodică | nu | în afara perimetrului etapei 1 — job de fundal: nu primește nimic de la un om |
+| 511 | Jobul `spv_poll` — supravegheat, prag 2 h | `core/spv_poll.py` (fundal) | rulare periodică | da | în afara perimetrului etapei 1 — job de fundal: nu primește nimic de la un om |
+| 512 | Jobul `spv_receive` — supravegheat, prag 2 h | `core/spv_receive.py` (fundal) | rulare periodică | da | în afara perimetrului etapei 1 — job de fundal: nu primește nimic de la un om |
+| 513 | Jobul `spv_refresh` — supravegheat, prag 50 h | `core/spv_refresh.py` (fundal) | rulare periodică | nu | în afara perimetrului etapei 1 — job de fundal: nu primește nimic de la un om |
+| 514 | Jobul `woocommerce` — supravegheat, prag 50 h | `core/woocommerce.py` (fundal) | rulare periodică | da | în afara perimetrului etapei 1 — job de fundal: nu primește nimic de la un om |
+| 515 | Jobul `cron` — NESUPRAVEGHEAT — heartbeat-ul insusi - cere deadman EXTERN | `core/cron.py` (fundal) | rulare periodică | nu | în afara perimetrului etapei 1 — job de fundal: nu primește nimic de la un om |
+| 516 | Jobul `iconta-backup` — NESUPRAVEGHEAT — shell, nu modul; alerteaza singur (iconta-backup.sh) | `core/iconta-backup.py` (fundal) | rulare periodică | ? | în afara perimetrului etapei 1 — job de fundal: nu primește nimic de la un om |
 
 ## D. Instrumente din `scripts/` — 37
 
@@ -784,43 +784,43 @@
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 517 | CONTAREA ISTORICULUI — R89, blocul JJJ (29.08.2026) | `scripts/contare_istorica.py` | rulare din linia de comandă | nu | neprobat |
-| 518 | scripts/curatenie.py — CE E UN COMMIT DE CURATENIE, derivat din INDEX, nu declarat | `scripts/curatenie.py` | rulare din linia de comandă | nu | neprobat |
-| 519 | FUZIUNEA ADRESELOR unei persoane — R63, blocul QQQ (29.08.2026) | `scripts/fuziune_adrese.py` | rulare din linia de comandă | nu | neprobat |
-| 520 | Inlocuire de text intr-un document, care AFIRMA ca a gasit potrivirea | `scripts/inlocuieste.py` | rulare din linia de comandă | nu | neprobat |
-| 521 | MĂSURĂTOARE (01.09.2026): cât se suprapun listele pe care le urmez | `scripts/masoara_suprapunerea.py` | rulare din linia de comandă | nu | neprobat |
-| 522 | scripts/perimetru.py — PERIMETRUL PORTII SCURTE, derivat din cod | `scripts/perimetru.py` | rulare din linia de comandă | nu | neprobat |
-| 523 | Unealta de aducere din legislatie.just.ro (Portalul Legislativ) | `scripts/portal_legislativ.py` | rulare din linia de comandă | nu | neprobat |
-| 524 | PROBA PE DATE REALE a lanțului facturii — DDD, EEE, FFF, GGG | `scripts/proba_contare_reala.py` | rulare din linia de comandă | nu | neprobat |
-| 525 | PROBA că un eșec de trimitere a emailului LASĂ URMĂ — R73, blocul TTT3 (29.08.2026) | `scripts/proba_esec_email.py` | rulare din linia de comandă | nu | neprobat |
-| 526 | EXECUȚIA celor 18 rânduri de verificare din `TRASEE_VERIFICARI.md` — dezlegarea și recunoașterea | `scripts/proba_verificari_trasee.py` | rulare din linia de comandă | nu | neprobat |
-| 527 | scripts/publica_static.py — CE SE SERVESTE nu mai e CE E IN LUCRU | `scripts/publica_static.py` | rulare din linia de comandă | nu | neprobat |
-| 528 | SECȚIUNEA B a raportului („UNDE SUNTEM"), DERIVATĂ din `CONFORMITATE.md` | `scripts/raport_b.py` | rulare din linia de comandă | nu | neprobat |
-| 529 | CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026 | `scripts/scan_1b_regimuri.py` | rulare din linia de comandă | nu | neprobat |
-| 530 | SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026 | `scripts/scan_1c_verificabil.py` | rulare din linia de comandă | nu | neprobat |
-| 531 | Pentru cate rute e ORB PRIN CONSTRUCTIE detectorul de apelanti din R70 | `scripts/scan_ancore_rute.py` | rulare din linia de comandă | nu | neprobat |
-| 532 | FAZA 4, axa D despicata: „odata cu fixul" ascunde DOUA lucruri, iar „singura" ascunde alte doua | `scripts/scan_axa_garzi.py` | rulare din linia de comandă | nu | neprobat |
-| 533 | scripts/scan_contract_ecran.py — contractul ECRAN ↔ RUTĂ, măsurat | `scripts/scan_contract_ecran.py` | rulare din linia de comandă | nu | neprobat |
-| 534 | RAZA VERIFICATORULUI: fiecare regulă din DESIGN_SYSTEM.md, față în față cu ce verifică el — 30.08.2026 | `scripts/scan_ds_verificator.py` | rulare din linia de comandă | nu | neprobat |
-| 535 | scripts/scan_functionalitati.py — LISTA FUNCTIONALITATILOR, derivata din cod | `scripts/scan_functionalitati.py` | rulare din linia de comandă | nu | neprobat |
-| 536 | Inventarul gărzilor, DERIVAT din cod — blocul generat din `GARZI.md` | `scripts/scan_garzi_inventar.py` | rulare din linia de comandă | nu | neprobat |
-| 537 | scripts/scan_instrumente.py - FAZA 4: pe ce instrument sta fiecare garda, si a fost calibrat | `scripts/scan_instrumente.py` | rulare din linia de comandă | nu | neprobat |
-| 538 | scripts/scan_lista3.py — lista 3, DERIVATA din registru, nu numarata cu mana | `scripts/scan_lista3.py` | rulare din linia de comandă | nu | neprobat |
-| 539 | FAZA 4, pasul 5: mutatia care probeaza garda e REPRODUCTIBILA azi? O garda se dovedeste printr-un RED-proof: strici cod… | `scripts/scan_mutatie_garzi.py` | rulare din linia de comandă | nu | neprobat |
-| 540 | Cifrele despre DATE din `PREDARE_LANT.md`, interogate din bază — blocul generat | `scripts/scan_predare_cifre.py` | rulare din linia de comandă | nu | neprobat |
-| 541 | CÂT DE MARE E CLASA „RUTA LIVREAZĂ, ECRANUL TACE" — măsurarea lui R97, 29.08.2026 | `scripts/scan_r97_livrat_tacut.py` | rulare din linia de comandă | nu | neprobat |
-| 542 | scripts/scan_ramas.py — CE A RAMAS DE FACUT, derivat din fisiere, cu sursa pe fiecare rand | `scripts/scan_ramas.py` | rulare din linia de comandă | nu | neprobat |
-| 543 | scripts/scan_refuzuri.py — CE POARTA un refuz al aplicatiei, si ce nu poarta | `scripts/scan_refuzuri.py` | rulare din linia de comandă | nu | neprobat |
-| 544 | CÂTE REGIMURI FISCALE EXERCITĂ PORTOFOLIUL — prima operațiune din E1 (1a), 29.08.2026 | `scripts/scan_regimuri.py` | rulare din linia de comandă | nu | neprobat |
-| 545 | CLASIFICAREA rutelor fără apelant — R70, blocul SSS (29.08.2026) | `scripts/scan_rute_clasificate.py` | rulare din linia de comandă | nu | neprobat |
-| 546 | scripts/scan_trasee.py — INVENTARUL TRASEELOR, calculat, nu ținut minte | `scripts/scan_trasee.py` | rulare din linia de comandă | nu | neprobat |
-| 547 | Seed D406 pentru tenant_013 (ALFA) — date de TEST cu structura si validitate REALE, apte de proba DUK | `scripts/seed_alfa_d406.py` | rulare din linia de comandă | nu | neprobat |
-| 548 | SONDA CCC — cate facturi DECLARABILE nu au nicio nota contabila, cu TVA-ul lor, pe firme si luni | `scripts/sonda_facturi_necontate.py` | rulare din linia de comandă | nu | neprobat |
-| 549 | SONDA BBB — gaura mecanismului de idempotenta: note care ating conturi de factura, FARA sa poarte `factura_id` | `scripts/sonda_note_fara_factura_id.py` | rulare din linia de comandă | nu | neprobat |
-| 550 | SONDA R34 — nota de salarii vs D112 declarat, pe cele 40 de perechi (firma x luna) | `scripts/sonda_r34.py` | rulare din linia de comandă | nu | neprobat |
-| 551 | SONDA R35 — verdicte TVA care ies VERZI peste un necunoscut pe care il au in mana | `scripts/sonda_r35.py` | rulare din linia de comandă | nu | neprobat |
-| 552 | VERIFICAREA VIGORII PE ARTICOL (Partea 0, pasul 2) — la sursa externa sau din corpus | `scripts/vigoare_articol.py` | rulare din linia de comandă | nu | neprobat |
-| 553 | scripts/vigoare_punct.py — vigoarea PE PUNCT, pentru actele structurate pe puncte (R2) | `scripts/vigoare_punct.py` | rulare din linia de comandă | nu | neprobat |
+| 517 | CONTAREA ISTORICULUI — R89, blocul JJJ (29.08.2026) | `scripts/contare_istorica.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 518 | scripts/curatenie.py — CE E UN COMMIT DE CURATENIE, derivat din INDEX, nu declarat | `scripts/curatenie.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 519 | FUZIUNEA ADRESELOR unei persoane — R63, blocul QQQ (29.08.2026) | `scripts/fuziune_adrese.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 520 | Inlocuire de text intr-un document, care AFIRMA ca a gasit potrivirea | `scripts/inlocuieste.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 521 | MĂSURĂTOARE (01.09.2026): cât se suprapun listele pe care le urmez | `scripts/masoara_suprapunerea.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 522 | scripts/perimetru.py — PERIMETRUL PORTII SCURTE, derivat din cod | `scripts/perimetru.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 523 | Unealta de aducere din legislatie.just.ro (Portalul Legislativ) | `scripts/portal_legislativ.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 524 | PROBA PE DATE REALE a lanțului facturii — DDD, EEE, FFF, GGG | `scripts/proba_contare_reala.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 525 | PROBA că un eșec de trimitere a emailului LASĂ URMĂ — R73, blocul TTT3 (29.08.2026) | `scripts/proba_esec_email.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 526 | EXECUȚIA celor 18 rânduri de verificare din `TRASEE_VERIFICARI.md` — dezlegarea și recunoașterea | `scripts/proba_verificari_trasee.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 527 | scripts/publica_static.py — CE SE SERVESTE nu mai e CE E IN LUCRU | `scripts/publica_static.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 528 | SECȚIUNEA B a raportului („UNDE SUNTEM"), DERIVATĂ din `CONFORMITATE.md` | `scripts/raport_b.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 529 | CE PRODUCE APLICAȚIA PE FIECARE REGIM REAL — pasul 1b, 29.08.2026 | `scripts/scan_1b_regimuri.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 530 | SE POATE VERIFICA CE IESE? — pasul 1c, 29.08.2026 | `scripts/scan_1c_verificabil.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 531 | Pentru cate rute e ORB PRIN CONSTRUCTIE detectorul de apelanti din R70 | `scripts/scan_ancore_rute.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 532 | FAZA 4, axa D despicata: „odata cu fixul" ascunde DOUA lucruri, iar „singura" ascunde alte doua | `scripts/scan_axa_garzi.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 533 | scripts/scan_contract_ecran.py — contractul ECRAN ↔ RUTĂ, măsurat | `scripts/scan_contract_ecran.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 534 | RAZA VERIFICATORULUI: fiecare regulă din DESIGN_SYSTEM.md, față în față cu ce verifică el — 30.08.2026 | `scripts/scan_ds_verificator.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 535 | scripts/scan_functionalitati.py — LISTA FUNCTIONALITATILOR, derivata din cod | `scripts/scan_functionalitati.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 536 | Inventarul gărzilor, DERIVAT din cod — blocul generat din `GARZI.md` | `scripts/scan_garzi_inventar.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 537 | scripts/scan_instrumente.py - FAZA 4: pe ce instrument sta fiecare garda, si a fost calibrat | `scripts/scan_instrumente.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 538 | scripts/scan_lista3.py — lista 3, DERIVATA din registru, nu numarata cu mana | `scripts/scan_lista3.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 539 | FAZA 4, pasul 5: mutatia care probeaza garda e REPRODUCTIBILA azi? O garda se dovedeste printr-un RED-proof: strici cod… | `scripts/scan_mutatie_garzi.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 540 | Cifrele despre DATE din `PREDARE_LANT.md`, interogate din bază — blocul generat | `scripts/scan_predare_cifre.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 541 | CÂT DE MARE E CLASA „RUTA LIVREAZĂ, ECRANUL TACE" — măsurarea lui R97, 29.08.2026 | `scripts/scan_r97_livrat_tacut.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 542 | scripts/scan_ramas.py — CE A RAMAS DE FACUT, derivat din fisiere, cu sursa pe fiecare rand | `scripts/scan_ramas.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 543 | scripts/scan_refuzuri.py — CE POARTA un refuz al aplicatiei, si ce nu poarta | `scripts/scan_refuzuri.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 544 | CÂTE REGIMURI FISCALE EXERCITĂ PORTOFOLIUL — prima operațiune din E1 (1a), 29.08.2026 | `scripts/scan_regimuri.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 545 | CLASIFICAREA rutelor fără apelant — R70, blocul SSS (29.08.2026) | `scripts/scan_rute_clasificate.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 546 | scripts/scan_trasee.py — INVENTARUL TRASEELOR, calculat, nu ținut minte | `scripts/scan_trasee.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 547 | Seed D406 pentru tenant_013 (ALFA) — date de TEST cu structura si validitate REALE, apte de proba DUK | `scripts/seed_alfa_d406.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 548 | SONDA CCC — cate facturi DECLARABILE nu au nicio nota contabila, cu TVA-ul lor, pe firme si luni | `scripts/sonda_facturi_necontate.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 549 | SONDA BBB — gaura mecanismului de idempotenta: note care ating conturi de factura, FARA sa poarte `factura_id` | `scripts/sonda_note_fara_factura_id.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 550 | SONDA R34 — nota de salarii vs D112 declarat, pe cele 40 de perechi (firma x luna) | `scripts/sonda_r34.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 551 | SONDA R35 — verdicte TVA care ies VERZI peste un necunoscut pe care il au in mana | `scripts/sonda_r35.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 552 | VERIFICAREA VIGORII PE ARTICOL (Partea 0, pasul 2) — la sursa externa sau din corpus | `scripts/vigoare_articol.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
+| 553 | scripts/vigoare_punct.py — vigoarea PE PUNCT, pentru actele structurate pe puncte (R2) | `scripts/vigoare_punct.py` | rulare din linia de comandă | nu | în afara perimetrului etapei 1 — instrument din `scripts/`: nu-l atinge un contabil |
 
 ---
 

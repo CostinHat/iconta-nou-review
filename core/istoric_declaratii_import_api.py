@@ -193,11 +193,27 @@ def verifica_randuri(randuri, azi=None):
 def importa(conn, tenant_id, randuri):
     """DELETE doar randurile de migrare ale firmei + INSERT. NU atinge sursa='iconta'.
     Ridica ValueError daca randurile nu pot intra (vezi verifica_randuri)."""
+    # [probare invalid, 03.09.2026] UN IMPORT GOL STERGEA ISTORICUL, IN TACERE.
+    # `randuri=[]` trecea de verificare (n-are ce respinge), ajungea la DELETE-ul de mai jos, care
+    # sterge TOATE randurile de migrare ale firmei, nu insera nimic, si raspundea `200 {"importati": 0}`.
+    # Adica exact forma cea mai rea: o pierdere de date raportata ca succes. Un fisier gol, o coloana
+    # necitita, un filtru care n-a potrivit nimic — oricare din ele ajungea aici.
+    # Istoricul declaratiilor depuse sta la baza termenelor si a controlului fiscal.
+    if not randuri:
+        raise ValueError("nu ai trimis niciun rând. Importul ar fi șters istoricul de declarații "
+                         "încărcat până acum pentru firma asta și n-ar fi pus nimic în loc. "
+                         "Dacă chiar vrei să golești istoricul importat, e altă operațiune.")
     er = verifica_randuri(randuri)
     if er:
-        raise ValueError("%d rânduri nu pot intra: %s. Istoricul declarațiilor stă la "
+        # [probare invalid, 03.09.2026] Se numără RÂNDURILE, nu erorile: un singur rând gol
+        # produce două erori, iar mesajul spunea „2 rânduri nu pot intra" despre un rând. O
+        # cifră falsă într-un refuz e mai rea decât un refuz sec — omul caută al doilea rând.
+        _nr = len({x["rand"] for x in er})
+        raise ValueError("%s nu %s intra: %s. Istoricul declarațiilor stă la "
                          "baza termenelor și a controlului fiscal."
-                         % (len(er), "; ".join("rand %s: %s" % (x["rand"], x["mesaj"]) for x in er[:6])))
+                         % ("Un rând" if _nr == 1 else "%d rânduri" % _nr,
+                            "poate" if _nr == 1 else "pot",
+                            "; ".join("rand %s: %s" % (x["rand"], x["mesaj"]) for x in er[:6])))
     with conn.cursor() as cur:
         cur.execute("DELETE FROM public.declaratii_depuse WHERE tenant_id=%s AND sursa='migrare'",
                     (tenant_id,))

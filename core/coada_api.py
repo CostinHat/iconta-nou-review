@@ -26,6 +26,10 @@ TRANZITII = {
     "depune": ("aprobata", "depusa"),
 }
 
+#: Stările pe care le poate avea un element din coadă — DERIVATE din tabela de mai sus, ca să
+#: nu existe o a doua listă care rămâne în urmă. Filtrul din `GET /coada` se verifică pe ele.
+STARI = tuple(sorted({s for t in TRANZITII.values() for s in t}))
+
 
 # ============================================================
 #  TRANZIȚII DE STARE — PURE
@@ -361,7 +365,8 @@ def aproba(conn, coada_id, aprobat_de, aprobat_de_id=None, motiv_trecere=None):
             (coada_id,))
         r = cur.fetchone()
         if r is None:
-            return {"ok": False, "cod": "INEXISTENT"}
+            return {"ok": False, "cod": "INEXISTENT",
+                    "mesaj": "declarația nu mai e în coadă (id %s): a fost ștearsă, depusă de altcineva, sau id-ul e greșit" % (coada_id,)}
         st, creat_de, creat_de_id, _cabinet_id = r[0], r[1], r[2], r[3]  # [p54_4ochi]
         if not poate_tranzitiona(st, "aproba"):
             return {"ok": False, "cod": "STARE_GRESITA",
@@ -415,7 +420,8 @@ def auto_aproba_daca_e_cazul(conn, coada_id, aprobat_de, aprobat_de_id=None, mot
         cur.execute("SELECT stare, cabinet_id FROM public.declaratii_coada WHERE id = %s", (coada_id,))
         r = cur.fetchone()
     if r is None:
-        return {"ok": False, "cod": "INEXISTENT"}
+        return {"ok": False, "cod": "INEXISTENT",
+                "mesaj": "declarația nu mai e în coadă (id %s): a fost ștearsă, depusă de altcineva, sau id-ul e greșit" % (coada_id,)}
     stare, cabinet_id = r[0], r[1]
     if stare != "la_senior":
         return {"ok": True, "sarit": True, "stare": stare}
@@ -436,7 +442,8 @@ def respinge(conn, coada_id, respins_de, motiv, respins_de_id=None):
     with conn.cursor() as cur:
         st = _stare_curenta(cur, coada_id)
         if st is None:
-            return {"ok": False, "cod": "INEXISTENT"}
+            return {"ok": False, "cod": "INEXISTENT",
+                    "mesaj": "declarația nu mai e în coadă (id %s): a fost ștearsă, depusă de altcineva, sau id-ul e greșit" % (coada_id,)}
         if not poate_tranzitiona(st, "respinge"):
             return {"ok": False, "cod": "STARE_GRESITA",
                     "mesaj": "nu pot respinge din starea '%s'" % st}
@@ -494,7 +501,8 @@ def marcheaza_depusa(conn, coada_id, spv_index=None, depus_de=None, depus_de_id=
                     "WHERE id = %s", (coada_id,))
         r = cur.fetchone()
         if not r:
-            return {"ok": False, "cod": "INEXISTENT"}
+            return {"ok": False, "cod": "INEXISTENT",
+                    "mesaj": "declarația nu mai e în coadă (id %s): a fost ștearsă, depusă de altcineva, sau id-ul e greșit" % (coada_id,)}
         if not poate_tranzitiona(r["stare"], "depune"):
             return {"ok": False, "cod": "STARE_GRESITA",
                     "mesaj": "nu pot depune din starea '%s'" % r["stare"]}

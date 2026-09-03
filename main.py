@@ -130,6 +130,63 @@ async def _handler_perioada_blocata(request: Request, exc: Exception):
     logging.getLogger("iconta").exception("Eroare 500 la %s %s", request.method, request.url.path)
     raise exc
 
+# [probare invalid, 03.09.2026] REFUZUL DE VALIDARE, PE ÎNȚELESUL UNUI CONTABIL.
+#
+# Ce vedea omul până azi, pe un câmp lipsă sau greșit, era răspunsul brut al bibliotecii:
+#   {"detail":[{"type":"missing","loc":["body","tenant_id"],"msg":"Field required","input":{}}]}
+# Numește câmpul — dar în engleză, în formă de structură, și fără să spună CE să facă. Măsurat pe
+# lotul T01: patru din douăzeci și una de probe invalide răspundeau așa.
+#
+# CE NU SE SCHIMBĂ, deliberat: forma răspunsului rămâne cea pe care ecranul o știe deja citi —
+# `detail = {mesaj, erori_campuri:[{camp, mesaj}]}`, contractul din `static/js/api.js`. Deci nu e o
+# formă nouă inventată aici, e cea existentă, aplicată și refuzurilor de validare.
+from fastapi.exceptions import RequestValidationError as _RVE
+
+
+def _camp_omenesc(loc):
+    """`["body","randuri",0,"an"]` -> `randuri[0].an`. Prefixele tehnice (body/query/path) cad."""
+    parti = []
+    for x in loc:
+        if x in ("body", "query", "path", "header", "cookie"):
+            continue
+        parti.append("[%d]" % x if isinstance(x, int) else ("." + str(x) if parti else str(x)))
+    return "".join(parti) or "corpul cererii"
+
+
+def _motiv_omenesc(e):
+    t = str(e.get("type", ""))
+    intrare = e.get("input", None)
+    if t == "missing":
+        return "lipsește"
+    if t.startswith("int_"):
+        return "aștept un număr întreg, am primit %r" % (intrare,)
+    if t.startswith("float_") or t.startswith("decimal_"):
+        return "aștept un număr, am primit %r" % (intrare,)
+    if t.startswith("bool_"):
+        return "aștept da/nu, am primit %r" % (intrare,)
+    if t.startswith("date_") or t.startswith("datetime_"):
+        return "aștept o dată (AAAA-LL-ZZ), am primit %r" % (intrare,)
+    if t in ("list_type", "dict_type", "model_attributes_type"):
+        return "forma trimisă nu e cea așteptată (am primit %r)" % (intrare,)
+    if t == "string_type":
+        return "aștept text, am primit %r" % (intrare,)
+    return "%s (am primit %r)" % (e.get("msg", "valoare invalidă"), intrare)
+
+
+@app.exception_handler(_RVE)
+async def _handler_validare_camp(request: Request, exc: _RVE):
+    from fastapi.responses import JSONResponse as _JR
+    campuri = []
+    for e in exc.errors():
+        campuri.append({"camp": _camp_omenesc(e.get("loc", [])), "mesaj": _motiv_omenesc(e)})
+    if len(campuri) == 1:
+        rezumat = "Cererea nu poate fi acceptată: %s — %s." % (campuri[0]["camp"], campuri[0]["mesaj"])
+    else:
+        rezumat = ("Cererea nu poate fi acceptată, %d câmpuri: %s."
+                   % (len(campuri), "; ".join("%s — %s" % (c["camp"], c["mesaj"]) for c in campuri)))
+    return _JR(status_code=422, content={"detail": {"mesaj": rezumat, "erori_campuri": campuri}})
+
+
 _APP_PORNIT_LA = __import__("time").time()  # ICRD_SANATATE_SERVER_V1 - uptime proces
 
 # frontend: servit static de pe același origin cu API-ul (fără build step)
@@ -3557,6 +3614,11 @@ def coada_adauga(date: CoadaIn, ctx=Depends(cere_rol("admin_firma", "angajat")))
 
 @app.get("/coada")
 def coada_lista(stare: Optional[str] = None, ctx=Depends(cere_cabinet)):
+    # [probare invalid, 03.09.2026] Un filtru de stare necunoscut întorcea `200 {"coada": []}` —
+    # adică TĂCERE: „nu există nimic în starea asta" arată identic cu „starea asta nu există".
+    if stare is not None and stare not in coada_api.STARI:
+        raise HTTPException(422, "stare necunoscută: %r (stările cozii: %s)"
+                            % (stare, ", ".join(coada_api.STARI)))
     with db.get_conn() as conn:
         return {"coada": coada_api.lista_coada(conn, ctx["firm"], stare)}
 
@@ -3705,8 +3767,13 @@ def coada_depune(coada_id: int, date: DepuneIn = DepuneIn(),
             conn, coada_id, str(ctx["uid"]), int(ctx["uid"]),
             motiv_trecere=getattr(date, "motiv_trecere", None))
         if not _ap.get("ok"):
-            raise HTTPException(409 if _ap.get("cod") in ("CERE_APROBARE", "STARE_GRESITA") else 403,
-                                _ap.get("mesaj") or _ap.get("cod"))
+            # [probare invalid, 03.09.2026] `INEXISTENT` cădea pe 403 — „n-ai voie" în loc de
+            # „nu există". Aceeași cerere pe `/aproba` răspundea 404: două coduri pentru
+            # aceeași stare.
+            _c = _ap.get("cod")
+            raise HTTPException(409 if _c in ("CERE_APROBARE", "STARE_GRESITA") else
+                                (404 if _c == "INEXISTENT" else 403),
+                                _ap.get("mesaj") or _c)
         r = coada_api.marcheaza_depusa(conn, coada_id, date.spv_index, depus_de=str(ctx["uid"]),
                                        depus_de_id=int(ctx["uid"]),
                                        motiv_trecere=getattr(date, "motiv_trecere", None))
@@ -5390,6 +5457,14 @@ def _verificari_contabile(schema, an, luna):
 
 @app.get("/firme/{tenant_id}/verificari")
 def firma_verificari(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    # [probare invalid, 03.09.2026] `luna=13` întorcea 200 cu stare „gri" și „NU pot verifica" —
+    # adică o INTRARE GREȘITĂ îmbrăcată în NECUNOAȘTERE. Sunt două lucruri diferite: una se
+    # corectează tastând altceva, cealaltă e un risc rămas neacoperit. Confuzia le ascunde pe
+    # amândouă (și producea „trimestrul 5/2026").
+    if luna < 1 or luna > 12:
+        raise HTTPException(422, "luna invalidă: %d (aștept 1-12)" % luna)
+    if an < 2020 or an > 2100:
+        raise HTTPException(422, "an invalid: %d (aștept 2020-2100)" % an)
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
     if not schema:

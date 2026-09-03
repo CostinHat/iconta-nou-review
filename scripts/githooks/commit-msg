@@ -34,7 +34,7 @@ fi
 #
 # Escape MOTIVAT, ca la celelalte: `# fara-consemnare-ok: <de ce nu are loc>`
 SEMNAL='NEREPARAT|nereparat|nu se repara acum|nu se repară acum|ramane deschis|rămâne deschis|RAMANE DESCHIS|RĂMÂNE DESCHIS|de privit|merita a doua privire|merită a doua privire|am observat|STOP nemiscat|STOP nemișcat'
-LOC='#[ ]?[0-9]{1,2}|R[0-9]{1,2}|interdictia [0-9]|interdicția [0-9]|CONFORMITATE.md|fara-consemnare-ok'
+LOC='#[ ]?[0-9]{1,2}|R[0-9]{1,2}|interdictia [0-9]|interdicția [0-9]|CONFORMITATE.md|VERIFICARE_FUNCTIONALITATI.md|fara-consemnare-ok'
 if grep -qE "$SEMNAL" "$MSG"; then
     if ! grep -qE "$LOC" "$MSG"; then
         echo "[commit-msg] RESPINS: mesajul semnaleaza un defect lasat nereparat, dar nu spune UNDE e consemnat."
