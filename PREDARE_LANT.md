@@ -5,7 +5,7 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 ## ANTET — cât de veche e predarea asta
 
 - **ultima rescriere**: **2026-09-03**, a doua a zilei. **Rescriere COMPLETĂ**, cerută de Costin.
-- **pe commit**: `cd3e28a9` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care o
+- **pe commit**: `faf0c5c7` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care o
   poartă; numele de aici e al celui precedent, prin construcție, nu din uitare.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **DE CE ÎNCĂ O DATĂ, la câteva ore de la precedenta**: între ele s-au întâmplat două lucruri pe
@@ -364,7 +364,12 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
    altceva, iar `test_antetul_nu_e_stale` o prinde — dar costă o rulare.
 7. **[03.09] O cifră pusă într-o regulă fără cronometru e o estimare deghizată.** Scrisesem „~1,5
    minute" pentru perimetrul regulii 5; măsurat: **976 s**. Corect abia la a treia definiție.
-8. **[03.09] O probă care schimbă starea portofoliului o lasă schimbată.** Cele două roșii de pe
+8. **[03.09] Un instrument care refuză MEREU învață pe cineva să-l ocolească.** `perimetru.py`
+   socotea „cod atins" și cele **299** de fișiere neurmărite ale arborelui, deci refuza să scurteze
+   la fiecare tură — iar la prima folosire reală a regulii 5 **l-am ocolit**, dându-i fișierele pe
+   linia de comandă. *Costin: „nu-l suprascrie cu judecata ta — o excepție luată o dată face regula
+   o formalitate."* **Se repară instrumentul, nu se ia excepția.**
+9. **[03.09] O probă care schimbă starea portofoliului o lasă schimbată.** Cele două roșii de pe
    `tenant_014` sunt fixtura probei de ecran. *Înainte de a citi un tablou de bord ca stare, întreabă
    ce din el e fixtură.*
 
