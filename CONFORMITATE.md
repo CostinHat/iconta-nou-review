@@ -47,7 +47,7 @@ după a doua oară: „e gardul care nu citește proză și totuși o discipline
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 29.08.2026: garda cere ca fiecare restanță NUMITĂ acolo să fie DESCHISĂ, iar textul le numea pe R54, R53, R58 — dintre care două s-au închis azi. A doua oară când istoricul iese din câmp din același motiv; prima a fost R33, pe 28.08)*: Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
-- **ultima actualizare**: 2026-09-03
+- **ultima actualizare**: 2026-09-04
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
 
 ---
@@ -2915,6 +2915,42 @@ despre raza **lui**; iar o ancoră care apare într-un **comentariu** nu conteaz
 - **unde ajunge efectul**: la contabil, sub forma cea mai derutantă cu putință — o reparație despre
   care i s-a spus că e făcută, și care pe ecranul lui nu există. *Azi a lovit chiar proba porții de
   confirmare: mecanismul era întreg, iar fila nu-l avea.*
+
+### R130 — Fluxul public de cursuri al BNR nu mai răspunde, iar cursul vechi se folosește tăcut
+
+- **felul**: VERIFICARE
+- **cine deblochează**: EXTERN
+- **unde intră**: E2 · factura în valută · **PRAG 1**
+- **ce blochează**: emiterea oricărei facturi în altă monedă decât RON, dacă moneda nu e în cache-ul
+  local; iar pentru monedele care SUNT în cache, blochează ceva mai rău decât o eroare — cursul se ia
+  fără o vorbă din **cea mai recentă zi de dinaintea datei facturii**, adică dintr-o zi veche de
+  aproape două luni. TVA-ul în lei (art. 290/319 Cod fiscal) se calculează cu el.
+- **ce s-a măsurat** *(03.09.2026, de pe server)*: `https://www.bnr.ro/nbrfxrates10days.xml` →
+  **`302`** către `https://www.bnr.ro/` (pagina de start, `text/html`, 119.971 octeți); `HEAD` pe
+  aceeași adresă → **`404`**. La fel `nbrfxrates.xml` și `files/xml/years/nbrfxrates2026.xml` (302),
+  și `bnr.ro` fără `www` (301). În pagina de start descărcată **nu apare niciun link `.xml`**. În
+  `public.curs_bnr_zilnic`: **4.773 de rânduri, 37 de monede, 05.01.2026 … 10.07.2026** — deci
+  preluarea funcționa și s-a oprit; ultima zi adusă e 10.07.2026.
+- **condiția de deblocare**: trebuie adresa oficială curentă a fluxului de cursuri de schimb al BNR (sau condițiile de acces la el), de la BNR, pentru că lipsa ei blochează preluarea cursului zilei — iar fără curs, facturile în valută se calculează cu unul vechi de aproape două luni.
+  Detaliat: cererea e către BNR — noua adresă a fișierului XML, ori regimul de acces dacă a fost
+  restrâns. Se închide când o preluare reușită aduce cotația zilei curente. *Nu se ghicește o adresă:
+  o adresă presupusă care întoarce `404` arată identic cu una blocată, iar aplicația ar continua să
+  spună „nu e disponibil momentan".*
+- **ce s-a reparat totuși, în aplicație** *(nu închide restanța)*: „moneda nu e cotată de BNR" nu se
+  mai confundă cu „cursul nu se poate lua acum" — `curs_bnr.MonedaNecotata`, cu nomenclatorul luat
+  din cache. Găsit apăsând, în lotul 2 al campaniei: `moneda=XYZ` primea `409` *„Cursul BNR nu e
+  disponibil momentan."*, iar „momentan" îl trimitea pe contabil ori să reîncerce ceva ce nu va
+  reuși niciodată, ori — mai rău — să introducă un **curs manual** pentru o monedă inexistentă.
+- **ce NU s-a reparat, și de ce nu**: folosirea tăcută a cursului vechi. O reparație aici ar cere o
+  decizie de produs — până la câte zile vechime e acceptabil un curs, și ce se întâmplă peste ea
+  (refuz? avertisment pe factură?). *E decizia lui Costin, nu una tehnică.*
+- **reluări**: 0
+- **stare**: DESCHISĂ
+- **deschisă pe commit**: `c63b3ff3`
+- **rezolvată pe commit**: —
+- **unde ajunge efectul**: TVA-ul în lei al facturilor în valută se calculează cu un curs care nu e
+  al zilei, fără ca nimic să spună asta — nici pe ecran, nici în răspunsul rutei. *Diferența intră în
+  D300 și în balanță ca și cum ar fi cursul corect.*
 
 ### R127 — Depunerea se încheia VIZIBIL pe un drum și TĂCUT pe celălalt, cu același buton
 

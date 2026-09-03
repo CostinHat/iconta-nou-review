@@ -4,18 +4,20 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-03**, **a treia a zilei** — actualizare, nu rescriere: s-a
-  adăugat starea campaniei de verificare și s-a corectat secțiunea care spunea că nu se deschide
-  nicio temă. *Restul documentului e cel de la a doua rescriere și rămâne valabil.*
-- **pe commit**: `a8d9337e` — ultimul commit intrat. *Predarea se scrie ÎNAINTE de commitul care o
-  poartă; numele de aici e al celui precedent, prin construcție, nu din uitare.*
+- **ultima rescriere**: **2026-09-04**, **prima a zilei** — scrisă în noaptea de 03 spre 04.09, la
+  capătul lotului 2. Actualizare, nu rescriere: lotul 2 al campaniei, cele trei decizii primite de la
+  Costin, și o restanță EXTERNĂ nouă. *Restul documentului e cel de la a doua rescriere din 03.09 și
+  rămâne valabil.* **Ziua s-a schimbat sub tură** — capcana 6 —, iar commitul registrului a așteptat
+  miezul nopții: cu antetul pe 03.09 și commitul pe 04.09, poarta ar fi căzut la tura următoare.
+- **pe commit**: `c63b3ff3` — commitul de lucru al lotului 2. *Predarea se scrie ÎNAINTE
+  de commitul care o poartă; numele de aici e al celui precedent, prin construcție, nu din uitare.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
-- **DE CE ÎNCĂ O DATĂ, la câteva ore de la precedenta**: între ele s-au întâmplat două lucruri pe
-  care documentul de dimineață le contrazicea. **(1)** Costin a trecut poarta confirmării prin
-  interfață — secțiunea „ce te așteaptă neapăsat" devenise **falsă**. **(2)** A intrat **regula 5**,
-  care schimbă ce rulează o tură. Iar cifrele portofoliului **s-au mișcat sub document**:
-  `de_confirmat` nu mai e 1, e **3**. *O predare care poartă trei afirmații false despre starea
-  curentă e mai rea decât una veche care se declară veche.*
+- **DE CE ÎNCĂ O DATĂ**: trei afirmații ale documentului de acum câteva ore au devenit false.
+  **(1)** „Cele trei decizii care așteaptă un răspuns" — toate trei **au primit răspuns**, într-o
+  singură comandă. **(2)** Cifrele campaniei s-au mișcat: **25 de unități probate**, nu 14. **(3)**
+  „prag 1: niciuna deschisă" — s-a deschis una, găsită apăsând: fluxul de cursuri al BNR nu mai
+  răspunde (**R130**, EXTERNĂ). *O predare care poartă trei afirmații false despre starea curentă e
+  mai rea decât una veche care se declară veche.*
 - **CE S-A PĂSTRAT VERBATIM, și de ce**: cele două blocuri **generate** · **tabelul cifrelor
   invalidate** · **tabelul „ce cere poarta"**. Sunt registru câștigat, iar retranscrierea lor cu
   mâna e chiar clasa pe care tabelul cifrelor invalidate o consemnează de cinci ori.
@@ -52,9 +54,9 @@ verde nu e proba — el confirmă forma; o cifră în rândul greșit trece la f
 | **populația derivată** | **553 de unități** — `LISTA_FUNCTIONALITATI.md`, generat cu `scripts/scan_functionalitati.py`. 427 de rute · 75 de ecrane · 14 joburi · 37 de instrumente |
 | **perimetrul etapei 1** | **364** — numai suprafața prin care **un om introduce date**: cele 75 de ecrane + **289 de rute cu câmpuri de completat**. Tăiat de Costin pe 03.09, fiindcă 553 depășea pragul de la care comanda cerea oprire |
 | **ce a ieșit, marcat în listă cu motivul** | **189** = 138 de rute fără câmpuri de completat · 14 joburi de fundal (nu primesc nimic de la un om) · 37 de instrumente din `scripts/` (nu le atinge un contabil) |
-| **probate** | **14** (lotul 1 = T01, drumul declarației, 11 unități · lotul 1b = 3 căi de import) |
-| **RĂMASE DE PROBAT** | **350** |
-| **defecte** | găsite **11**, reparate **11**, reprobate **11** |
+| **probate** | **25** (lotul 1 = T01, drumul declarației, 11 unități · lotul 1b = 3 căi de import · **lotul 2 = T02, factura emisă, 11 unități**) |
+| **RĂMASE DE PROBAT** | **339** |
+| **defecte** | găsite **30**, reparate **30**, reprobate **30** *(lotul 1: 11 · lotul 2: 19)* |
 
 ### Unde stau rezultatele — două fișiere, două roluri
 
@@ -65,7 +67,10 @@ verde nu e proba — el confirmă forma; o cifră în rândul greșit trece la f
   după reparație**, ce s-a introdus, ce s-a reparat. Aici stă și secțiunea **„ce a rămas nereparat,
   și de ce"** — locul recunoscut de garda din `commit-msg` (al patrulea, adăugat pe 03.09).
 - **`frontend_test/proba_verificare_functionalitati.py`** — hamul. Cereri reale, token emis
-  server-side, corpul răspunsului **neatins**. Loturi: `T01`, `IMPORT-GOL`. Subiect: cabinetul
+  server-side, corpul răspunsului **neatins**. Loturi: `T01`, `IMPORT-GOL`, **`T02`**. Lotul `T02`
+  își emite singur cheia de API (prin `POST /cabinet/api-chei`, nu printr-un `INSERT`), o revocă și
+  îi șterge rândul, și **pune numerotarea firmei la loc în `finally`, verificând starea, nu că a
+  trimis cererea**. Subiect: cabinetul
   **1968**, utilizator `patron@prisma-cont.test`, firma **4838 `Comert Micro TVA SRL`** — plătitor
   de TVA cu **perioadă fiscală trimestrială**, ceea ce contează pentru trei dintre probe.
 
@@ -74,34 +79,49 @@ repornirea nu e a mea. Se ridică o instanță proaspătă — `./venv/bin/uvico
 cu `db.env` și `api_keys.env` încărcate — se probează cu `PROBA_BAZA=http://127.0.0.1:8011`, și **se
 oprește după**.
 
-### CELE TREI DECIZII CARE AȘTEAPTĂ UN RĂSPUNS
+### CELE TREI DECIZII AU PRIMIT RĂSPUNS *(Costin, 03.09.2026 — toate trei într-o comandă)*
 
-Sunt ale lui Costin, niciuna nu blochează probarea, toate se vor repeta dacă rămân nedate:
+Scrise pe larg, cu argumentul fiecăreia, în `DECIZII.md` **(25)**. Pe scurt, și ce s-a schimbat:
 
-1. **`403` sau `404` pe o firmă inexistentă?** `/declaratii/{tip}` răspunde `403`, `/coada` răspunde
-   `404`, pentru aceeași stare. `403` = „nu divulg dacă firma există"; `404` = „nu există". Atinge
-   zeci de rute și testele lor — de-aia n-am ales-o singur. *Cerută prima oară în tura 1.*
-2. **Eticheta `# doar-curatenie:` falsă se RESPINGE sau doar se ignoră?** Am făcut-o mai strictă
-   decât formularea lui („ignorată"): `commit-msg` respinge commitul, ca să nu rămână o afirmație
-   falsă în istorie. Se poate slăbi la avertisment, sau scoate. *Tura 2.*
-3. **Ce înseamnă „registru" pentru ocolirea de curățenie?** Azi: `.md` din **rădăcina** repo-ului +
-   cele două JSON-uri de proveniență (definiția împrumutată de la `scripts/perimetru.py`). Un `.md`
-   din `ghid/` sau `_arhiva_briefuri/` **nu** e registru, deci se poate șterge prin ocolire. *Tura 2.*
+1. **`404` pe amândouă**, la firmă inexistentă. *„Mesajul e același în ambele cazuri, deci nu
+   divulgă nimic."* Aplicat **mutând codul lângă mesaj** (`mesaje.COD_FARA_ACCES_TENANT`), nu
+   schimbându-l în trei locuri: patru rute foloseau mesajul, trei cu `403` și una cu `404` — chiar
+   clasa pe care decizia o închide. Restul clasei răspundea deja `404` în peste treizeci de locuri.
+2. **Eticheta `# doar-curatenie:` falsă rămâne RESPINSĂ.** *„O etichetă care doar avertizează tot
+   sare poarta."* Nimic de schimbat în cod — `commit-msg` respinge deja; ce s-a schimbat e că
+   decizia e **scrisă**, deci nu se mai redeschide.
+3. **„Registru" include registrul campaniei.** Măsurat: cele două `.md` ale campaniei **erau deja**
+   registre, dar prin accidentul locației. Legate acum de o aserțiune în `core/test_curatenie.py`,
+   pe mulțime, cu anti-vacuu.
 
-### Trei lucruri NEREPARATE din lotul 1, cu motivul — nu sunt restanțe, sunt scrise în registru
+### Ce a rămas NEREPARAT din loturile 1 și 2, cu motivul — nu sunt restanțe, sunt scrise în registru
 
-1. **Temeiul legal al periodicității TVA nu e citat.** Mesajul *„firma depune d300 TRIMESTRIAL"*
-   aplică o regulă fiscală, iar comanda cere temei acolo unde se aplică una. N-am pus niciun articol
-   fiindcă **nu l-am verificat la sursă**, iar un temei citat din memorie intră în corpus ca fapt.
-2. **`403` vs `404`** — v. decizia 1 de mai sus.
-3. **`rand 2` pentru primul rând trimis prin API** — numerotarea pornește de la 2 fiindcă drumul
-   normal e un fișier cu antet, unde „rândul 2" e prima linie de date.
+1. **Temeiul legal al periodicității TVA nu e citat** *(lot 1)*. Mesajul *„firma depune d300
+   TRIMESTRIAL"* aplică o regulă fiscală, iar comanda cere temei acolo unde se aplică una. N-am pus
+   niciun articol fiindcă **nu l-am verificat la sursă**, iar un temei citat din memorie intră în
+   corpus ca fapt. *Rămâne pentru lotul declarațiilor.*
+2. **`rand 2` pentru primul rând trimis prin API** *(lot 1)* — numerotarea pornește de la 2 fiindcă
+   drumul normal e un fișier cu antet, unde „rândul 2" e prima linie de date.
+3. **„factură inexistentă" nu poartă id-ul** *(lot 2)* — apare în șapte locuri din `main.py`, e
+   adevărat și numește obiectul; îmbunătățirea e transversală, nu un defect al lotului.
+4. **`POST /api/v1/.../facturi` cu corp gol numește un singur câmp**, pe când ruta din ecran le
+   enumeră pe toate *(lot 2)*. Nu e fals; e o alegere de ordine pe calea integratorului.
+5. **`core/facturi_api.py` refuză în 19 locuri fără temei** *(lot 2, măsurat azi)* — sunt în
+   **umbră**, unde erau și înainte. Primul `Temei` construit în modul le-ar muta în datoria normei
+   77, care sare de la 0 la **17**; de-aia temeiul numerotării stă în `core/common.py`, cu celelalte.
+   *Cifra e scrisă ca mutarea să nu treacă drept dispariție.*
+6. **Garda de diacritice nu vede un `raise ValueError("…")` direct** *(lot 2)* — două mesaje afișate
+   fără diacritice au trecut prin poartă. Consemnat, nu lărgit: lărgirea unei gărzi e o temă.
+
+*Cel de-al doilea punct al listei de dinainte — `403` vs `404` — **s-a închis**: e decizia 1.*
 
 ### Ce se face mai departe, când vine comanda
 
-Lotul următor de probare **invalid**, pe bucăți, cu raport după fiecare — așa a cerut-o. Probarea cu
-**date valide** (lanțul complet până la rândul corect din declarație) **n-a început pentru niciun
-lot**: e partea scumpă a temei și n-a fost comandată încă.
+**Lotul 3**, tot pe invalide, pe bucăți, cu raport după fiecare — așa a cerut-o. Candidatul firesc,
+după drumul declarației (T01) și factura emisă (T02), e **T05 — nota contabilă**, 34 de unități, cea
+mai mare suprafață de introducere de date rămasă. Probarea cu **date valide** (lanțul complet până la
+rândul corect din declarație) **n-a început pentru niciun lot**: e partea scumpă a temei și n-a fost
+comandată încă.
 
 ---
 ## DAR RESTUL LISTEI INTERNE NU SE DESCHIDE
@@ -284,7 +304,7 @@ completă, fără excepție.**
 ---
 ## AL CINCILEA: CE E ADEVĂRAT DESPRE STAREA CODULUI
 
-- **restanțe deschise: 50** (din care ale etapei E1: **22**), derivat cu `scripts/raport_b.py`.
+- **restanțe deschise: 51** (din care ale etapei E1: **22**), derivat cu `scripts/raport_b.py`.
   **Nu se scrie de mână** — rândul ăsta a fost invalidat o dată.
 - **interdicții, din 77**: MĂSURATE **23** · PARȚIAL **16** · NEMĂSURABILE **5** · NEÎNCEPUTE **33**.
 - **locuri de verificare**: **221 scrise / 0 goale din 221 (100%)**.
@@ -295,7 +315,7 @@ completă, fără excepție.**
 ---
 ## STAREA LA PREDARE
 
-**3992 teste trec** · 11 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
+**4012 teste trec** · 11 skip · 14 xfail · ruff OK · verificator **TOTAL 0** ·
 rute **424 = ACCEPTAT 383 + GRI 7 + ROSU 0 + EXCLUS 34** · site **200** · four-way se închide la
 `post-commit`, care publică pe `origin/main` și pe `backup/lant-<ziua curentă>`, **publică statica din
 HEAD**, și **restartează necondiționat** procesul viu.
@@ -319,19 +339,25 @@ ora commitului*.
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **61** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **794** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **814** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->
 
-**POARTA DUREAZĂ ~22 DE MINUTE** — măsurat pe rulările din 02–03.09: **1.300 s … 1.350 s**. *(Scrise
+**POARTA DUREAZĂ ~23 DE MINUTE** — măsurat pe rulările din 02–03.09: **1.300 s … 1.410 s**. *(Scrise
 cu separator de mii nu din stil: `test_cifra_131_e_marcata_invalidata` se uită la prima apariție a
 șirului „131", iar „1316s" o furniza înaintea tabelului.)*
 
-**AZI POARTA A RESPINS O DATĂ**, patru teste, **toate de înregistrare** (blocuri generate
-învechite). Alte două respingeri le-am prins **eu**, rulând gărzile de registru înainte de commit —
-exact ce face regula 5 ieftin.
+**AZI POARTA A RESPINS DE TREI ORI**, și niciuna pentru o cifră stricată: **(1)** dimineață, în
+**altă tură**, patru teste de înregistrare (blocuri generate învechite) · **(2)** pe lotul 2,
+clichetul refuzurilor — `facturi_api` începuse să citeze legea, iar norma 77 cere zero refuzuri fără
+temei de la un modul care intră în clasă · **(3)** tot pe lotul 2, două clichete despre temeiuri,
+amândouă mișcate de UN SINGUR temei nou (`CLICHET_CIOT` 3→4, distribuția de reverificare NECUNOSCUT
+12→13). *Amândouă respingerile lotului 2 mi-au arătat ceva ce nu știam — a doua, că un act a cărui
+anexă numerotează PUNCTE, nu articole, e „ciot" pentru instrumentele de articol: a patra instanță a
+lui R111.* Alte opt teste le-am prins **eu**, rulând suita înainte de commit — exact ce face ieftin
+regula 5, dar pe suita întreagă, fiindcă lotul atinsese cod.
 
 **Cifrele de aici se copiază din IEȘIREA PORȚII, nu din predarea de dinainte.**
 
@@ -340,9 +366,10 @@ exact ce face regula 5 ieftin.
 
 | | |
 |---|---|
-| **prag 1** | **niciuna deschisă.** *Șase s-au reparat pe 02–03.09, toate găsite apăsând sau construind: R124, R125, R126, R127, R128, R129.* |
+| **prag 1** | **una deschisă: R130**, și e **EXTERNĂ** — fluxul public de cursuri al BNR nu mai răspunde (măsurat: `302` către pagina de start; ultima zi în cache, **10.07.2026**). Facturile în valută iau tăcut cel mai recent curs de dinaintea datei, adică unul vechi de aproape două luni. *Ce ținea de aplicație s-a reparat în lotul 2 — „moneda nu e cotată" nu se mai confundă cu „cursul nu se poate lua acum"; ce rămâne cere adresa oficială, de la BNR.* Cele șase de dinainte s-au reparat pe 02–03.09: R124…R129 |
 | **decizii** | **niciuna deschisă.** Toate cele cinci cerute în ultimele două zile au primit răspuns în aceeași zi |
 | **R121** | singura pereche respinsă rămasă: P300 / RO e-TVA n-are acces programatic. **EXTERNĂ** |
+| **R130** | **nouă, 03.09.2026** — fluxul public de cursuri al BNR nu mai răspunde; facturile în valută iau tăcut un curs vechi de aproape două luni. **EXTERNĂ**, și **PRAG 1** |
 | **R116 · R117** | deschise, **consemnate și nelucrate**, prin decizia din 03.09 |
 | **familia R82** | **PARCATĂ.** Instanța depunerii s-a închis (R127); restul **nu se deschide** |
 | **familia „încrederea în corpus"** | R1, R3–R7, R107 — cele mai vechi, **în afara axei** |
@@ -416,6 +443,8 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 ---
 | **„elementul 8052 e blocat definitiv, nu se mai poate depune din aplicație"** | diagnosticul de la prima apăsare reală, 02.09 | **blocat pe ECRAN, nu în date.** Măsurat: `poate_tranzitiona('aprobata','depune')` e `True`, iar lista mono randează și elementele `aprobata`. Blocajul era al FILEI — `c.stare` rămăsese `la_senior` în memoria listei, deci a doua apăsare re-chema `aproba`. *Din scaunul omului, fundătură; în date, nu — iar deosebirea schimbă reparația* |
 | **„perimetrul de documente rulează în ~1,5 minute"** | regula 5, prima ei formă scrisă, 03.09 | **976 s — 16 minute.** Scrisesem o **estimare** acolo unde regula cerea o măsurătoare, iar cronometrarea a dat un ordin de mărime diferit. Cauza: numărasem ca „document" orice fișier neexecutabil urmărit de git, deci și actele din `anaf_surse/` pe care le citează orice test fiscal într-un temei — **137 de fișiere, 1.314 teste**. Cu registrele propriu-zise (`.md` din rădăcină): **25 de fișiere, 253 de teste, 396–575 s** (două cronometrări). *A treia oară în trei zile când o cifră scrisă fără cronometru s-a dovedit falsă; de data asta am prins-o eu, măsurând înainte de a o raporta* |
+| **„numerotarea firmei a fost pusă la loc"** | tipărit de hamul campaniei la prima trecere a lotului 2, 03.09 | **nu fusese.** `finally` citea alte chei decât cele întoarse de rută (`serie_factura` / `urmator_numar_factura`, numele coloanelor, în loc de `serie` / `urmator_numar`), trimitea două `None`, primea „nimic de setat" — **și tipărea că a reușit**. Firma a rămas fără serie și cu contorul la 101, iar starea asta a fost citită ca „proba n-a schimbat nimic". *Un `finally` care raportează că a ÎNCERCAT, nu că a REUȘIT, e cea mai bună ascunzătoare pentru o schimbare de stare: apare exact acolo unde te uiți ca să te liniștești.* Reparat: verifică acum starea, nu cererea |
+| **„`moneda=XYZ` primește un mesaj despre alt câmp"** | prima trecere a lotului 2, 03.09 | **proba era oarbă.** Trimitea `tert_nume` fără `tert_cui`, deci emiterea se oprea — legitim — la codul de partener, iar răspunsul notat era la ALTĂ întrebare. Cu codul completat, proba a ajuns la monedă și a scos un defect pe care prima formă nu-l putea vedea: „nu e disponibil **momentan**" pentru o monedă care nu există. *A doua instanță a clasei „sonda era oarbă", după cea din 31.08 — și, ca atunci, ieșirea instrumentului părea un rezultat, nu o ratare* |
 | **„R118 a stricat producția azi"** | comanda din 02.09 care a deschis tema | **nu s-a putut reconstitui.** Instanța documentată a clasei e cea din **01.09** (desktopul oprit, 15 ecrane). Pentru 02.09 logurile nu pot arăta o cădere de JS — o eroare de sintaxă nu ajunge niciodată la server. Ce **se poate** măsura e expunerea: `static/js` a fost rescris de zeci de ori în ziua aia, fiecare scriere live în aceeași secundă. *Clasa era reală și decizia a rămas bună; cifra „azi" nu se poate confrunta cu nimic* |
 
 ---
@@ -455,6 +484,14 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 9. **[03.09] O probă care schimbă starea portofoliului o lasă schimbată.** Cele două roșii de pe
    `tenant_014` sunt fixtura probei de ecran. *Înainte de a citi un tablou de bord ca stare, întreabă
    ce din el e fixtură.*
+10. **[03.09] Un `finally` care raportează că a ÎNCERCAT nu spune că a REUȘIT.** Refacerea
+    numerotării din hamul lotului 2 tipărea „pus la loc" după o cerere pe care serverul o refuzase.
+    *Curățenia de după o probă se afirmă comparând STAREA cu cea de dinainte, nu constatând că
+    s-a trimis cererea.* Acum `finally` recitește și, la nepotrivire, o strigă.
+11. **[03.09] O probă care se oprește mai devreme decât crede măsoară altă întrebare.** `moneda=XYZ`
+    n-a ajuns niciodată la monedă: se oprea la codul de partener, un câmp pe care eu nu-l
+    completasem. *Când răspunsul unei probe vorbește despre alt câmp decât cel probat, prima ipoteză
+    e că proba e oarbă — nu că aplicația confundă câmpurile.*
 
 ---
 ## OPERAȚIONAL — ce se rupe repetat
@@ -519,6 +556,17 @@ o respingere costă 22 de minute, perimetrul de registru costă 7–10.*
 9. **[03.09] Un prag pe o mărime care crește prin regulă nu e un clichet, e un ceas cu alarmă.**
    Garda scutirii cerea ca tabelul cifrelor invalidate să fie sub o treime din predare — dar tabelul
    doar crește, iar predarea se rescrie și se scurtează. Proxy-ul s-a înlocuit cu proprietatea.
+
+10. **[03.09] Calibrarea prinde și supra-respingerea, dacă o ceri în ambele direcții.**
+    `cote_tva_in_vigoare` dădea, pentru 01.06.2016, mulțimea `{0, 5, 9}` — fără cota standard, care
+    atunci era 20% și nu e în registru. O factură corectă de-atunci ar fi fost **refuzată**. Prins
+    cerându-i patru date, nu una. *Repararea nu e „adaugă 20%": dacă lipsește chiar cota standard,
+    tabloul perioadei e INCOMPLET, nu gol — iar răspunsul corect e „nu pot ști", nu o listă mai
+    scurtă.* Aceeași deosebire ca la `firma_verificari` în lotul 1.
+11. **[03.09] O reparație scrisă poate fi inertă în fapt.** Deosebirea „moneda nu e cotată" /
+    „cursul nu se poate lua acum" citea nomenclatorul din XML-ul BNR proaspăt — iar BNR nu mai
+    răspunde, deci lista ieșea goală și refuzul rămânea cel vechi. *Reprobarea a arătat-o; citirea
+    codului n-ar fi arătat-o.* Nomenclatorul se ia acum din cache, cu limita scrisă lângă el.
 
 **Și una despre registre:** o restanță din `CONFORMITATE.md` e sursa a ce s-a măsurat **atunci**, nu
 a ce e adevărat **acum**.
