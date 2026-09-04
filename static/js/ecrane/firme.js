@@ -1,10 +1,10 @@
 // firme.js — lista de firme a cabinetului (parte din desktop, NU fereastră).
 // Click pe o firmă -> aceea se deschide central (fereastra firmei + "În lucru").
 
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=5b2978a5b9";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, bani, esc, CULORI_CARD, pct, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide, cereBlob } from "../api.js?v=1dccbc985b";  /* msg_conventie_fe_v1 + generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { fluxConcediu } from "./flux_concediu.js?v=ec0eaa8e7b";  /* cm_flux_v1 */
-import { randeazaFacturi } from "./facturi_ecran.js?v=cc67d99e4b";
+import { randeazaFacturi } from "./facturi_ecran.js?v=45745f39a0";
 import { ecranRip } from "./rip_ecran.js?v=e1b8bf534a";
 import { ecranOperatiuni } from "./operatiuni_ecran.js?v=7019abe613";
 import { ecranEtransport } from "./etransport_ecran.js?v=0dca1ea392";
@@ -1082,17 +1082,9 @@ function formularAdeverinta(corp, nav, t, sid, nume, an, luna) {
     };
     const btn = corp.querySelector("#ad-gen"); btn.disabled = true; btn.textContent = "Se generează…";
     try {
-      const r = await fetch(`/tenants/${t.id}/salariati/${sid}/adeverinta`, {
-        method: "POST",
-        headers: { "Authorization": "Bearer " + sesiune.token(), "Content-Type": "application/json" },
-        body: JSON.stringify(body),
-      });
-      if (!r.ok) throw new Error("pdf " + r.status);
-      const url = URL.createObjectURL(await r.blob());
-      window.open(url, "_blank");
-      setTimeout(() => URL.revokeObjectURL(url), 60000);
+      await deschide(`/tenants/${t.id}/salariati/${sid}/adeverinta`, { metoda: "POST", corp: body });
       arataMesaj(msg, "Adeverință generată.", "ok");
-    } catch { arataMesaj(msg, "Nu am putut genera adeverința.", "eroare"); }
+    } catch (e) { arataMesaj(msg, (e && (e.mesaj || e.message)) || "eroare", "eroare"); }   // [R131]
     finally { btn.disabled = false; btn.textContent = "Generează PDF"; }
   });
 }
@@ -1271,16 +1263,9 @@ async function ecranSalariati(corp, nav, t) {
       corp.querySelector("#plata-descarca").addEventListener("click", async () => {
         try {
           // [R45] POST: producerea fisierului care pleaca la banca e un act, si se pastreaza.
-          const resp = await fetch(`/tenants/${t.id}/plata-salarii-fisier?an=${an}&luna=${luna}`, {
-            method: "POST",
-            headers: { "Authorization": "Bearer " + sesiune.token() } });
-          if (!resp.ok) throw new Error();
-          const blob = await resp.blob();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url; a.download = `plata_salarii_${an}_${String(luna).padStart(2,"0")}.xml`; a.click();
-          URL.revokeObjectURL(url);
-        } catch { arataMesaj(zonaPlata, "Nu am putut descărca fișierul.", "eroare"); }
+          await descarca(`/tenants/${t.id}/plata-salarii-fisier?an=${an}&luna=${luna}`,
+                         `plata_salarii_${an}_${String(luna).padStart(2,"0")}.xml`, { metoda: "POST" });
+        } catch (e) { arataMesaj(zonaPlata, (e && (e.mesaj || e.message)) || "eroare", "eroare"); }   // [R131]
       });
     });
     const zonaReges = corp.querySelector("#sp-reges-zona");
@@ -1584,18 +1569,11 @@ async function ecranSalariati(corp, nav, t) {
     corp.querySelectorAll("[data-flut]").forEach((b) => {
       b.addEventListener("click", async () => {
         try {
-          const resp = await fetch(`/tenants/${t.id}/fluturas/${b.dataset.flut}?an=${an}&luna=${luna}`, {
-            headers: { "Authorization": "Bearer " + sesiune.token() }
-          });
-          if (!resp.ok) throw new Error();
-          const blob = await resp.blob();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url; a.download = `fluturas_${an}_${String(luna).padStart(2,"0")}.pdf`; a.click();
-          URL.revokeObjectURL(url);
-        } catch {
+          await descarca(`/tenants/${t.id}/fluturas/${b.dataset.flut}?an=${an}&luna=${luna}`,
+                         `fluturas_${an}_${String(luna).padStart(2,"0")}.pdf`);
+        } catch (e) {
           b.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
-          b.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:8px">Nu am putut genera fluturașul.</span>');
+          b.insertAdjacentHTML("afterend", `<span class="msg-eroare" style="margin-left:8px">${esc((e && (e.mesaj || e.message)) || "eroare")}</span>`);   // [R131]
         }
       });
     });
@@ -3054,16 +3032,12 @@ async function ecranBanca(corp, nav, t) {
     const fd = new FormData();
     fd.append("fisier", f);
     try {
-      const resp = await fetch(`/tenants/${t.id}/banca/reconciliere/import`, {
-        method: "POST",
-        headers: { "Authorization": "Bearer " + sesiune.token() },
-        body: fd,
-      });
-      if (!resp.ok) throw new Error("eroare " + resp.status);
-      const r = await resp.json();
+      // [R131] prin `api.postForm`, care e deja instrumentat: refuzul serverului (format
+      // necunoscut, fisier ilizibil) ajunge la om cu motivul lui, nu ca „Nu am putut citi".
+      const r = await api.postForm(`/tenants/${t.id}/banca/reconciliere/import`, fd);
       zonaMesaj.innerHTML = `<p class="pf-intro"><b>${(r.linii || []).length}</b> linii importate și potrivite.</p>`;
       incarca();
-    } catch { arataMesaj(zonaMesaj, "Nu am putut citi extrasul.", "eroare"); }
+    } catch (e) { arataMesaj(zonaMesaj, (e && (e.mesaj || e.message)) || "eroare", "eroare"); }
     ev.target.value = "";
   });
 
@@ -3712,9 +3686,7 @@ async function ecranBonuri(corp, nav, t) {
   const curata = () => { urlsPoze.forEach((u) => URL.revokeObjectURL(u)); urlsPoze = []; };
 
   async function pozaUrl(bonId, n) {
-    const resp = await fetch(`/tenants/${t.id}/bonuri/${bonId}/imagine/${n}`,
-      { headers: { Authorization: "Bearer " + sesiune.token() } });
-    if (!resp.ok) throw new Error("imagine " + resp.status);
+    const resp = await cereBlob(`/tenants/${t.id}/bonuri/${bonId}/imagine/${n}`);   // [R131]
     // CSP nginx: img-src 'self' data: (fara blob:) -> data:URL prin FileReader, nu createObjectURL.
     const blob = await resp.blob();
     const u = await new Promise((rez, resp2) => {
@@ -4029,13 +4001,8 @@ async function ecranBalanta(corp, nav, t) {
     corp.querySelector("#b-pdf").addEventListener("click", async () => {
       const zona = corp.querySelector("#b-mesaj");
       try {
-        const resp = await fetch(`/tenants/${t.id}/documente/balanta?an=${an}&luna=${luna}`, {
-          headers: { Authorization: "Bearer " + sesiune.token() } });
-        if (!resp.ok) throw new Error("eroare " + resp.status);
-        const url = URL.createObjectURL(await resp.blob());
-        const a = document.createElement("a");
-        a.href = url; a.download = `balanta_${an}_${String(luna).padStart(2, "0")}.pdf`; a.click();
-        URL.revokeObjectURL(url);
+        await descarca(`/tenants/${t.id}/documente/balanta?an=${an}&luna=${luna}`,
+                       `balanta_${an}_${String(luna).padStart(2, "0")}.pdf`);
         zona.innerHTML = `<p class="pf-intro">Balanta descarcata.</p>`;
       } catch (e) { arataMesaj(zona, e.mesaj || e.message || "eroare", "eroare"); }
     });
@@ -4376,16 +4343,9 @@ async function ecranContracte(corp, nav, t) {
     corp.querySelector("#c-gen").addEventListener("click", async () => {
       const msg = corp.querySelector("#c-genmsg"); msg.textContent = "";
       try {
-        const resp = await fetch(`/tenants/${t.id}/contracte/genereaza`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json", Authorization: "Bearer " + sesiune.token() },
-          body: JSON.stringify({ sablon_id: sablon.id, client_id: corp.querySelector("#c-client").value || null }),
-        });
-        if (!resp.ok) throw new Error("eroare " + resp.status);
-        const url = URL.createObjectURL(await resp.blob());
-        const a = document.createElement("a");
-        a.href = url; a.download = `contract_${sablon.nume.replace(/[^a-z0-9]+/gi, "_")}.pdf`; a.click();
-        URL.revokeObjectURL(url);
+        await descarca(`/tenants/${t.id}/contracte/genereaza`,
+                       `contract_${sablon.nume.replace(/[^a-z0-9]+/gi, "_")}.pdf`,
+                       { metoda: "POST", corp: { sablon_id: sablon.id, client_id: corp.querySelector("#c-client").value || null } });
       } catch (e) { msg.textContent = e.mesaj || e.message || "eroare"; }
     });
   }

@@ -2,7 +2,7 @@
 // Scrii denumirea -> AI potriveste cota TVA din regula oficiala (preview live) ->
 // vezi cota + justificarea -> salvezi. Cota se poate corecta manual.
 // Apelare: randeazaProduse(corp, nav, tenantId, { inapoi })
-import { api, arataMesaj, confirmaCaseta, esc, bani } from "../api.js?v=5b2978a5b9";  /* cap6_catch_v1b + investigatie_identitate_v1 */
+import { api, arataMesaj, confirmaCaseta, esc, bani } from "../api.js?v=1dccbc985b";  /* cap6_catch_v1b + investigatie_identitate_v1 */
 
 const SVG_BACK = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>';
 

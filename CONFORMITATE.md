@@ -8575,3 +8575,133 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 - **ce nu vede**: „calibrare negativă" se recunoaște ca aserțiune sub `not` / `not in` cu literal. Un instrument calibrat negativ prin altă formă — o fixtură known-bad, un golden care trebuie să difere — nu se numără. Iar domeniul măsurătorii a fost `core/` și `scripts/`: instrumentele din rădăcină au intrat abia la cererea din 23.08.
 - **unde ajunge efectul**: un instrument necalibrat pe modul lui de eșec produce cifre care se citesc ca măsurători și sunt opinii. Efectul nu e o cifră greșită într-un raport — e că **toate măsurătorile care stau pe el moștenesc orbirea**, iar direcția tăcută (ratează, nu inventează) nu aprinde nimic. `graf_temei` a arătat 12 consumatori ai salariului minim în loc de 83, timp de 22 de zile, fără ca vreun test să pice
 
+
+### R131 — Cele 13 descărcări de fișier înlocuiau motivul serverului cu propriul lor număr
+
+- **felul**: VERIFICARE
+- **cine deblochează**: EU
+- **unde intră**: stratul de prezentare · orice ecran care descarcă un fișier
+- **ce blochează**: diagnosticarea din afară. Serverul refuza corect și își numea motivul; omul
+  citea un număr sau o frază fixă, iar la două locuri **„Eroare — reîncearcă"** — un sfat care nu
+  poate reuși niciodată, fiindcă factura tot nu există la a doua apăsare. *Consecința nu e
+  neplăcerea, e că nimeni nu poate spune ce s-a întâmplat.*
+- **ce s-a măsurat** *(04.09.2026, `core/scan_descarcare_muta.py`)*: din **31** de apeluri `fetch`
+  directe din `static/js/`, **14** nu citeau corpul răspunsului pe drumul de eșec, iar **toate 13
+  descărcările de fișier** aveau literalmente aceeași formă —
+  `if (!r.ok) throw new Error("eroare " + r.status)`. A patrusprezecea era importul extrasului
+  bancar, care avea `api.postForm` la îndemână și nu-l folosea.
+- **de ce ocoleau stratul comun**: un răspuns binar (PDF, XML, ZIP, imagine) nu poate trece prin
+  `api.get`, care face `r.json()`. Deci ocoleau și `_refuzNevazut` (`refuz_vazut_v1`, 27.08.2026),
+  bannerul care din 27 august garantează că un refuz la scriere nu rămâne nevăzut. *Excepția tehnică
+  a devenit o gaură în garanție.*
+- **reparația, UNA**: `cereBlob` / `descarca` / `deschide` în `api.js` — același loc care citește
+  `detail`, construiește eroarea structurată (`cod`, `mesaj`, `erori_campuri`, `detaliu`) și pune
+  bannerul. Nu treisprezece reparații, formular cu formular.
+- **decizia din reparație, scrisă**: bannerul se pune **și pe `GET`**. Excepția „GET-urile tac" din
+  `_refuzNevazut` există pentru badge-uri și contoare care se încarcă singure; o descărcare pe care
+  omul a cerut-o **apăsând un buton** nu e o citire de fundal, iar dacă fișierul nu vine, tăcerea e
+  chiar defectul. De asta se trimite `"DESCARCARE"`, nu metoda HTTP.
+- **calibrare**: instrumentul e pus să greșească în ambele direcții (METODA §22) —
+  `core/test_descarcare_muta.py`, 8 teste din care **6 de calibrare**: două forme mute injectate
+  trebuie găsite, două forme bune (una cu citirea corpului, una în lanț `.then`) nu trebuie acuzate,
+  iar una verifică **propriul mod de eșec** al instrumentului: dacă blocul unui `fetch` s-ar întinde
+  peste apelul următor, `.json()` de la primul ar „acoperi" tăcerea celui de-al doilea.
+  Prima variantă chiar greșea: punea forma din `app.js` în categoria „fără ramură de eșec".
+- **probat pe viu** *(`frontend_test/proba_r131_descarcare_muta.py`, browser real, cod publicat)*:
+  refuzul ajunge verbatim (`factură inexistentă`, cod `404`), bannerul are **311×70 px pe ecran**,
+  `role="alert"`, spune motivul, **nu se dublează** când ecranul l-a arătat deja, iar `deschide()`
+  se poartă la fel.
+- **clichet**: `MUTE = 0`. Un `fetch` nou care înghite motivul pică. Două fișiere sunt exceptate cu
+  motivul scris deasupra listei: `api.js` (el e reparația) și `versiune.js` (singura cerere către un
+  **fișier static**, fără `detail` și necerută de om).
+- **unde ajunge efectul**: pe orice ecran care scoate un document — factură, chitanță, adeverință,
+  fluturaș, balanță, contract, arhiva GDPR, fișierul SEPA care pleacă la bancă. Refuzul care
+  ajungea până la marginea aplicației și se oprea acolo ajunge acum la om, cu cuvintele serverului.
+
+### R132 — Infrastructura de testare vizuală rula de nouă zile pe bytecode fără sursă
+
+- **felul**: VERIFICARE
+- **cine deblochează**: EU
+- **unde intră**: `frontend_test/` · toate scanurile vizuale gardate
+- **ce blochează**: nimic — până la prima curățenie. Și atunci, tot.
+- **ce s-a măsurat** *(04.09.2026)*: `frontend_test/w_auth.py` — tokenul mințit și navigarea la
+  firma `tenant_003`, de care atârnă `interactiune_scan`, `axe_scan`, `mobil_scan` și `nav_ecrane` —
+  **nu exista pe disc**. `git log` îl arată scos din urmărire pe **26.08**, odată cu `b87dad49`
+  („Scoate din urmărire cele 234 de artefacte măturate din greșeală în `5cc3c5e`"), dar a fost și
+  **șters**. Rămăsese doar `__pycache__/w_auth.cpython-312.pyc`, 4.605 octeți, datat 26 aug 13:30.
+  **24 de fișiere** îl importau.
+- **de ce n-a devenit nimic roșu**: Python încarcă un `.pyc` fără să-i ceară sursa. Scanurile
+  mergeau, gărzile lor treceau, `test_acoperire_vizuala` era verde. *Un
+  `find -name __pycache__ -delete` — curățenia obișnuită, cea care e chiar regulă în casă
+  (`mutatie-curata-pycache`) — ar fi oprit tăcut toată infrastructura vizuală, iar cauza ar fi fost
+  de negăsit: fișierul care lipsea nu era numit nicăieri.*
+- **de ce n-a văzut-o garda care există pentru exact asta**: `core/test_infra_vizuala.py` cerea
+  fișiere **dintr-o listă scrisă de mână**, iar `w_auth` nu era în ea și nici măcar în același
+  director (`frontend_test/`, nu `frontend_test/vizual/`). *O listă scrisă de mine vede exact ce
+  mi-am amintit să scriu.*
+- **reparația**: sursa **reconstruită din bytecode** (dezasamblare funcție cu funcție: `BAZA`,
+  `INIT`, `new_page`, `deschide_firma`, `shot`, `txt`, plus dicționarul de utilizator cu cele 12
+  chei), verificată rulând scanurile pe ea. Garda **derivă** acum ce trebuie să existe din chiar
+  `import`-urile uneltelor, cu `ast` — nu dintr-o listă.
+- **calibrare, pe viu**: `w_auth.py` mutat → garda cade numind modulul și cele patru unelte care-l
+  cer; pus la loc → trece. Plus un test anti-vacuu: dacă parserul n-ar găsi importurile, testul de
+  sus ar trece despre nimic.
+- **unde ajunge efectul**: pe tot ce se sprijină pe scanurile vizuale — contrastul, revărsarea la
+  393 px, țintele de atingere, comportamentul la apăsare. Nu era stricat; era **nesprijinit**, și
+  ar fi căzut la prima mătură.
+
+### R133 — Două instrumente de măsură citeau JS-ul printr-un cititor care orbea la o linie cu trei ghilimele
+
+- **felul**: VERIFICARE
+- **cine deblochează**: EU
+- **unde intră**: instrumentele de măsură · `core/scan_refuz_tacut.py` (27.08) ·
+  `core/test_aritmetica_in_prezentare.py` (24.08)
+- **ce blochează**: nimic din aplicație — și tocmai de-aia e greu de văzut. Blochează **încrederea
+  în două clichete**, și prin ele în orice afirmație care stă pe ele.
+- **cum a ieșit la iveală**: poarta lotului 10 a respins cu *„scrieri NOI care pot refuza fără să
+  spună motivul: 18 > 16"*. Prima citire a mesajului e „lotul a stricat două ecrane". Măsurat pe
+  un worktree detașat la `277e4300`, cu cititorul reparat: **18 și acolo**. Lotul n-a adăugat
+  nimic — a **mutat o linie de cod**, iar orbirea s-a mutat odată cu ea.
+- **cauza**: `_curata_sir` nu oprea un șir `'` sau `"` la capătul rândului, deși gramatica JS o
+  cere. Sora ei din **același fișier** — `_sfarsit_sir` — avea regula scrisă, cu comentariu cu tot.
+  Asimetrie din naștere. Declanșatorul e o singură linie cu **trei** ghilimele:
+  `cd.match(/filename="([^"]+)"/)`; a treia deschidea un „șir" care înghițea tot până la
+  următoarea ghilimea din **fișier**.
+- **ce s-a măsurat** *(04.09.2026, pe worktree detașat la `277e4300` — aceleași fișiere, doi
+  cititori)*:
+
+  | | cititorul vechi | cititorul reparat |
+  |---|---|---|
+  | scrieri care refuză fără să spună motivul | **16** | **18** |
+  | citiri tăcute (badge-uri, contoare) | 71 | 74 |
+  | `catch`-uri care arată ceva | 242 | 253 |
+  | aritmetică pe nume neutre | **2** | **1** |
+
+  Suprafața oarbă, tot pe `277e4300`: `ecrane/facturi_ecran.js` de la rândul **530** încolo (639
+  de rânduri, 312 scurgeri) și `api.js` de la **397** (59 de rânduri). În arborele lotului 10,
+  aceeași linie mutată în `api.js` orbea **315 rânduri** de acolo.
+- **de ce n-a aprins nimic, nouă zile**: amândouă cifrele sunt clichete, deci plafoane. Orbirea a
+  **coborât** unul (16 în loc de 18 — clichetul părea ținut) și a **urcat** celălalt (2 în loc de
+  1 — clichetul părea o măsurătoare, iar a doua instanță era o ACUZAȚIE FALSĂ: „aritmetica" erau
+  chiar barele expresiei regulate din `.match(/…/)`, iar „cota" era 10-le din `slice(0, 10)`).
+  *Un instrument care greșește în AMÂNDOUĂ direcțiile n-are **niciun** plafon* —
+  `METODA_VERIFICARE.md` §22.
+- **reparația, UNA**: cititorul e acum unul singur, `core/cititor_js.py`, iar cele două copii sunt
+  scoase. Două schimbări de fond: un șir simplu se oprește la capătul rândului, iar **expresiile
+  regulate se albesc ca text** — fără asta, un `/\d{2}/` strică numărătoarea acoladelor și un
+  `/(19|21)/` arată ca o cotă cu aritmetică.
+- **calibrare**: `core/test_cititor_js.py`, **16 teste**, în amândouă direcțiile — trei pe direcția
+  „ratează cod" (linia care a născut orbirea, expresia regulată cu ghilimele, acoladele dintr-un
+  cuantificator) și **șase** pe direcția „acuză pe nedrept" (cinci feluri de împărțire care NU
+  trebuie luate drept expresie regulată, plus `/` care nu se închide pe rând). Plus proprietatea
+  care nu poate îmbătrâni: pe **tot** corpusul `static/js`, acoladele și parantezele textului citit
+  trebuie să rămână în echilibru. **Mutație dovedită**: cu cititorul de dinainte, `api.js` iese
+  `{42 }41` — garda cade numind fișierul.
+- **ce rămâne adevărat despre cele 18**: niciuna nu e un refuz înghițit. Cele două care „au apărut"
+  sunt instanțe ale modurilor de eșec **declarate** ale instrumentului — una cheamă o funcție
+  proprie care afișează (`plaseazaErori`, modul 1), cealaltă e o căutare de fundal la tastare
+  (`produse/potriveste`, modul 3: un `POST` folosit ca citire).
+- **unde ajunge efectul**: pe orice cifră măsurată pe JS printr-unul din cele două instrumente, de
+  la 24.08 și 27.08 încoace. Iar clasa e mai largă decât cele două instrumente: **un cititor comun
+  copiat e un defect copiat** — încă o instanță a gardului care nu se
+  verifică pe sine, și prima în care cauza e COPIA, nu logica.

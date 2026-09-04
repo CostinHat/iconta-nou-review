@@ -5222,6 +5222,8 @@ def tenant_plata_salarii_fisier(tenant_id: int, an: int, luna: int,
                                 ctx=Depends(cere_rol("admin_firma"))):
     """[F134] Fisierul SEPA/ISO 20022 pain.001.001.03 de plata a salariilor NET pe card (download).
     [R45] Se pastreaza: continut, moment, autor, amprenta, numar de exemplar."""
+    _cere_perioada(an, luna)   # [lotul 10] `luna=13` raspundea „month must be in 1..12" — mesajul
+                               # bibliotecii, in engleza, ajuns pana la contabil.
     from fastapi.responses import Response
     from core import plata_salarii as _ps
     from core import artefacte as _art
@@ -6163,6 +6165,9 @@ def cabinet_documente_balanta(tenant_id: int, an: int, luna: int, ctx=Depends(ce
 
 @app.get("/portal/documente/balanta")
 def portal_documente_balanta(an: int, luna: int, tenant_id: Optional[int] = None, ctx=Depends(cere_client)):
+    # [lotul 10] Acelasi document, doua cai: cea de cabinet refuza `luna=13` de la lotul 3, cea de
+    # portal tiparea PDF-ul. *Ce stie aplicatia intr-un loc nu poate sa nu stie in altul.*
+    _cere_perioada(an, luna)
     from fastapi.responses import Response
     t = _tenant_client(ctx, tenant_id)
     with db.get_conn() as conn:

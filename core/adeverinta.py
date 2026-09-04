@@ -35,8 +35,6 @@ def date_auto(conn, schema, salariat_id, an, luna):
     """Datele care se completeaza AUTOMAT din DB. None daca salariatul nu exista."""
     from core import salariu_istoric as _si
     _brut = 0.0
-    from core import firma_profil_api as _fpa
-    _fpa.cere_administrator(conn, "Adeverința")   # [R66 (c)]
     with conn.cursor() as cur:
         cur.execute("SELECT nume, cui, adresa, patron_nume, declarant_nume, "
                     "declarant_functie FROM firma_profil WHERE id = 1")
@@ -50,6 +48,12 @@ def date_auto(conn, schema, salariat_id, an, luna):
             _brut = float(_si.salariu_la(cur, None, salariat_id, date(an, luna, 1)) or 0)  # [2b] salariul lunii din istoric
     if not s:
         return None
+    # [lotul 10] Precondiția firmei se cere DUPA ce se stie ca subiectul exista. Inainte, un
+    # salariat inexistent primea *„lipseste numele administratorului. Completeaza-l in Date
+    # firma"* — un drum de reparat care nu duce nicaieri: si dupa ce-l completezi, salariatul
+    # tot nu exista. Ordinea intrebarilor E raspunsul.
+    from core import firma_profil_api as _fpa
+    _fpa.cere_administrator(conn, "Adeverința")   # [R66 (c)]
     brut = _brut
     calc = salarizare.calcul_salariu(brut, persoane=s[6] or 0, la_data=date(an, luna, 1),
                                      norma_intreaga=not s[5], venit_brut_total=brut,

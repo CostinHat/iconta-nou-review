@@ -1,8 +1,8 @@
 // portal.js  // [p93_facturi] — desktopul clientului (rol 'client'), READ-ONLY.
 // Landing: panou status ANAF (semafor + scadente) sus + carduri de navigatie.
-import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor } from "../api.js?v=5b2978a5b9";  /* generalizare_zi_v1 */
+import { api, dataRo, arataMesaj, confirmaCaseta, deschideLupa, esc, bani, baniRotund, CULORI_CARD, semnAjutor, descarca } from "../api.js?v=1dccbc985b";  /* generalizare_zi_v1 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
-import { randeazaFacturi } from "./facturi_ecran.js?v=cc67d99e4b";  // [p116_facturi_modul]
+import { randeazaFacturi } from "./facturi_ecran.js?v=45745f39a0";  // [p116_facturi_modul]
 
 const SVG = (d, c) => `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="${c}" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 
@@ -494,16 +494,11 @@ async function ecranDocumente(corp, nav) {
       b.addEventListener("click", async () => {
         const [an, ll] = b.dataset.bal.split("-");
         try {
-          const resp = await fetch(`/portal/documente/balanta?an=${an}&luna=${parseInt(ll)}`, {
-            headers: { "Authorization": "Bearer " + sesiune.token() }
-          });
-          if (!resp.ok) throw new Error("eroare " + resp.status);
-          const blob = await resp.blob();
-          const url = URL.createObjectURL(blob);
-          const a = document.createElement("a");
-          a.href = url; a.download = `balanta_${an}_${ll}.pdf`; a.click();
-          URL.revokeObjectURL(url);
-        } catch { b.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove()); b.insertAdjacentHTML("afterend", '<span class="msg-eroare" style="margin-left:10px">Nu am putut genera documentul.</span>'); }
+          await descarca(`/portal/documente/balanta?an=${an}&luna=${parseInt(ll)}`, `balanta_${an}_${ll}.pdf`);
+        } catch (e) {
+          b.parentElement.querySelectorAll(".msg-eroare").forEach((x) => x.remove());
+          b.insertAdjacentHTML("afterend", `<span class="msg-eroare" style="margin-left:10px">${esc((e && (e.mesaj || e.message)) || "eroare")}</span>`);   // [R131]
+        }
       });
     });
   }

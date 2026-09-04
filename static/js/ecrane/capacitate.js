@@ -2,7 +2,7 @@
 // Trei sectiuni: 1) cabinet (cat e de facut vs ritm), 2) pe asistent
 // (incarcare per procesator), 3) timp mediu pe tip de declaratie.
 // Regula 4: control/comparatii doar la cabinet, niciodata la asistent.
-import { api, esc } from "../api.js?v=5b2978a5b9";
+import { api, esc } from "../api.js?v=1dccbc985b";
 import { randeazaAsistenti } from "./asistenti.js?v=3749bc9e55";
 
 function celulaCifra(valoare, eticheta, accent) {

@@ -3,7 +3,7 @@
 //   meniu (Istoric / Emite / Model factura) + istoric + emitere.
 //   Detalii / Storno / Model se adauga in pasii urmatori.
 // Apelare: randeazaFacturi(corp, nav, tenantId, { inapoi, titluInapoi })
-import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor } from "../api.js?v=5b2978a5b9";  /* esc_nc27 */
+import { api, dataRo, arataMesaj, confirmaCaseta, esc, bani, eroareCamp, curataEroriCamp, semnAjutor, descarca, deschide } from "../api.js?v=1dccbc985b";  /* esc_nc27 */
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import { randeazaEmitere } from "./emitere_ecran.js?v=ef1e8e0687";
 
@@ -247,13 +247,8 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
       const zona = corp.querySelector("#fac-saga-zona");
       try {
         // [R45] POST: exportul e un act — se pastreaza ce s-a exportat si cand.
-        const resp = await fetch(`/tenants/${tenantId}/facturi/export-saga?an=${an}&luna=${luna}`, { method: "POST", headers: { Authorization: "Bearer " + sesiune.token() } });
-        if (resp.status === 404) { arataMesaj(zona, "Nicio factură emisă în luna aceasta.", "info"); return; }
-        if (!resp.ok) throw new Error("eroare " + resp.status);
-        const url = URL.createObjectURL(await resp.blob());
-        const a = document.createElement("a");
-        a.href = url; a.download = `export_saga_${an}_${String(luna).padStart(2, "0")}.zip`; a.click();
-        URL.revokeObjectURL(url);
+        await descarca(`/tenants/${tenantId}/facturi/export-saga?an=${an}&luna=${luna}`,
+                       `export_saga_${an}_${String(luna).padStart(2, "0")}.zip`, { metoda: "POST" });
         arataMesaj(zona, "Arhivă SAGA descărcată (un XML per factură). În SAGA: Diverse → Import date din fișiere generate.", "ok");
       } catch (e) { arataMesaj(zona, (e && (e.mesaj || e.message)) || "eroare", "eroare"); }
     });
@@ -263,13 +258,8 @@ async function istoricFacturi(corp, nav, tenantId, opt) {
       const _t = btn.textContent; btn.disabled = true; btn.textContent = "Se generează…";  // cap.1 feedback async
       try {
         // [R45] POST, acelasi motiv ca la SAGA.
-        const resp = await fetch(`/tenants/${tenantId}/facturi/export-winmentor?an=${an}&luna=${luna}`, { method: "POST", headers: { Authorization: "Bearer " + sesiune.token() } });
-        if (resp.status === 404) { arataMesaj(zona, "Nicio factură emisă în luna aceasta.", "info"); return; }
-        if (!resp.ok) throw new Error("eroare " + resp.status);
-        const url = URL.createObjectURL(await resp.blob());
-        const a = document.createElement("a");
-        a.href = url; a.download = `export_winmentor_${an}_${String(luna).padStart(2, "0")}.zip`; a.click();
-        URL.revokeObjectURL(url);
+        await descarca(`/tenants/${tenantId}/facturi/export-winmentor?an=${an}&luna=${luna}`,
+                       `export_winmentor_${an}_${String(luna).padStart(2, "0")}.zip`, { metoda: "POST" });
         arataMesaj(zona, "Arhivă WinMentor descărcată (Facturi.txt + Articole.txt). În WinMentor: MENTOR → INTERNE → Import date din alte aplicații → Facturi ieșire.", "ok");
       } catch (e) { arataMesaj(zona, (e && (e.mesaj || e.message)) || "eroare", "eroare"); }
       finally { btn.disabled = false; btn.textContent = _t; }
@@ -524,14 +514,7 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
   if (bSaga) bSaga.addEventListener("click", async () => {
     const zona = corp.querySelector("#fd-saga-zona");
     try {
-      const resp = await fetch(`/tenants/${tenantId}/facturi/${facturaId}/export-saga`, { headers: { Authorization: "Bearer " + sesiune.token() } });
-      if (!resp.ok) throw new Error("eroare " + resp.status);
-      const cd = resp.headers.get("Content-Disposition") || "";
-      const m = cd.match(/filename="([^"]+)"/);
-      const url = URL.createObjectURL(await resp.blob());
-      const a = document.createElement("a");
-      a.href = url; a.download = m ? m[1] : "factura_saga.xml"; a.click();
-      URL.revokeObjectURL(url);
+      await descarca(`/tenants/${tenantId}/facturi/${facturaId}/export-saga`, "factura_saga.xml");
       arataMesaj(zona, "XML SAGA descărcat. În SAGA: Diverse → Import date din fișiere generate.", "ok");
     } catch (e) { arataMesaj(zona, (e && (e.mesaj || e.message)) || "eroare", "eroare"); }
   });
@@ -608,13 +591,12 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       <span><button class="btn-link" data-chpdf="${c.id}">PDF chitan\u021b\u0103</button></span></div>`).join("");
     zonaChit.querySelectorAll("[data-chpdf]").forEach((b) => b.addEventListener("click", async () => {
       try {
-        const r = await fetch(`/tenants/${tenantId}/chitante/${b.dataset.chpdf}/pdf`,
-          { headers: { "Authorization": "Bearer " + sesiune.token() } });
-        if (!r.ok) throw new Error("pdf " + r.status);
-        const url = URL.createObjectURL(await r.blob());
-        window.open(url, "_blank");
-        setTimeout(() => URL.revokeObjectURL(url), 60000);
-      } catch { b.textContent = "Eroare \u2014 re\u00eencearc\u0103"; }
+        await deschide(`/tenants/${tenantId}/chitante/${b.dataset.chpdf}/pdf`);
+      } catch (e) {
+        // [R131] motivul serverului, nu „reincearca": la o chitanta inexistenta a doua apasare
+        // da acelasi raspuns, iar sfatul trimite omul intr-un cerc.
+        arataMesaj(b.parentElement, (e && (e.mesaj || e.message)) || "eroare", "eroare");
+      }
     }));
     return incasat;
   }
@@ -660,17 +642,10 @@ async function detaliiFactura(corp, nav, tenantId, facturaId, opt) {
       const txtVechi = btnPdf.textContent;
       btnPdf.disabled = true; btnPdf.textContent = "Se genereaz\u0103\u2026";
       try {
-        const r = await fetch(`/tenants/${tenantId}/facturi/${facturaId}/pdf`, {
-          headers: { "Authorization": "Bearer " + sesiune.token() },
-        });
-        if (!r.ok) throw new Error("pdf " + r.status);
-        const blob = await r.blob();
-        const url = URL.createObjectURL(blob);
-        window.open(url, "_blank");
-        setTimeout(() => URL.revokeObjectURL(url), 60000);
-      } catch {
-        btnPdf.textContent = "Eroare \u2014 re\u00eencearc\u0103";
-        setTimeout(() => { btnPdf.textContent = txtVechi; }, 2000);
+        await deschide(`/tenants/${tenantId}/facturi/${facturaId}/pdf`);
+      } catch (e) {
+        arataMesaj(btnPdf.parentElement, (e && (e.mesaj || e.message)) || "eroare", "eroare");   // [R131]
+        btnPdf.textContent = txtVechi;
       } finally {
         btnPdf.disabled = false;
         if (btnPdf.textContent === "Se genereaz\u0103\u2026") btnPdf.textContent = txtVechi;

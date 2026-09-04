@@ -1,0 +1,170 @@
+{
+ "schema": "tenant_003",
+ "schimbari": {
+  "centre_cost": [
+   0,
+   1
+  ],
+  "rapoarte_salvate": [
+   0,
+   1
+  ]
+ },
+ "scrieri": [
+  [
+   "rapoarte",
+   "Salvează varianta curentă",
+   {
+    "rapoarte_salvate": [
+     0,
+     1
+    ]
+   }
+  ],
+  [
+   "centrecost",
+   "Adaugă",
+   {
+    "centre_cost": [
+     0,
+     1
+    ]
+   }
+  ]
+ ],
+ "ecrane": {
+  "supervizor": {
+   "campuri_umplute": 0,
+   "butoane": []
+  },
+  "import_mijloace_fixe": {
+   "campuri_umplute": 0,
+   "butoane": []
+  },
+  "vector_fiscal": {
+   "campuri_umplute": 0,
+   "butoane": [
+    {
+     "buton": "Salvează vectorul",
+     "text_nou": true,
+     "delta_text": " SRL · CUI 95141537 ✕ Import date Vector fiscal salvat. Alege ce vrei să aduci pentru această firmă. Vector fiscal TVA, regim, intracomunitar Solduri inițiale Balanța de deschidere Solduri parteneri 4",
+     "a_scris": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "plan_conturi": {
+   "campuri_umplute": 3,
+   "butoane": [
+    {
+     "buton": "Adaugă cont",
+     "text_nou": true,
+     "delta_text": "adaugă un cont nou. Niciun cont găsit cu acest termen. Adaugă cont nou * Simbolul contului începe cu cifra clasei (1-9), ca toate conturile din planul general — am primit '«»@#$%'. Dacă e un analitic,",
+     "a_scris": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "solduri_parteneri": {
+   "campuri_umplute": 0,
+   "butoane": []
+  },
+  "stat_plata": {
+   "campuri_umplute": 0,
+   "butoane": []
+  },
+  "declaratii": {
+   "campuri_umplute": 0,
+   "butoane": []
+  },
+  "stocuri": {
+   "campuri_umplute": 22,
+   "butoane": [
+    {
+     "buton": "Salvează NIR (note ciorne)",
+     "text_nou": true,
+     "delta_text": "rcă gestiunea lunii Completează articolele: Articolul 1: cantitate; Articolul 1: pret achizitie + NIR nou NIR nou NIR: număr · dată · furnizor · CUI Articole: denumire · cantitate · preț achiziție · p",
+     "a_scris": null,
+     "verdict": "a vorbit"
+    },
+    {
+     "buton": "Salvează nivelul minim",
+     "text_nou": true,
+     "delta_text": "rcă gestiunea lunii Alege întâi articolul din listă. + NIR nou NIR nou NIR: număr · dată · furnizor · CUI Articole: denumire · cantitate · preț achiziție · preț raft (cu TVA) · cotă TVA alege 21% 11% ",
+     "a_scris": null,
+     "verdict": "a vorbit"
+    },
+    {
+     "buton": "Salvează rețeta",
+     "text_nou": true,
+     "delta_text": "rcă gestiunea lunii Adaugă cel puțin un ingredient. + NIR nou NIR nou NIR: număr · dată · furnizor · CUI Articole: denumire · cantitate · preț achiziție · preț raft (cu TVA) · cotă TVA alege 21% 11% ×",
+     "a_scris": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "registratura": {
+   "campuri_umplute": 3,
+   "butoane": []
+  },
+  "banca": {
+   "campuri_umplute": 0,
+   "butoane": []
+  },
+  "rapoarte": {
+   "campuri_umplute": 1,
+   "butoane": [
+    {
+     "buton": "Salvează varianta curentă",
+     "text_nou": true,
+     "delta_text": "L Variantele firmei «»@#$% anul 2026 · creată de Elena Dobrescu Încarcă Șterge Salvează varianta curentă",
+     "a_scris": {
+      "rapoarte_salvate": [
+       0,
+       1
+      ]
+     },
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "etransport": {
+   "campuri_umplute": 23,
+   "butoane": [
+    {
+     "buton": "Doar generează XML (manual)",
+     "text_nou": true,
+     "delta_text": "e marfă* Cantitate* Bun 1: Cantitate UM* Gr. netă (kg)* Bun 1: Greutate netă Gr. brută (kg)* Bun 1: Greutate brută Valoare fără TVA* Bun 1: Valoare fără TVA × Șterge bunul 1 + Bun Partener comercial C",
+     "a_scris": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "centrecost": {
+   "campuri_umplute": 4,
+   "butoane": [
+    {
+     "buton": "Adaugă",
+     "text_nou": true,
+     "delta_text": "la note noi. Adaugă «»@#$% activ Dezactivează REALIZAT PE CENTRE Din notele validate: cheltuieli (clasa 6) și venituri (clasa 7) pe fiecare centru, în perioada aleasă. – Vezi realizat BUGETE ȘI VARIAN",
+     "a_scris": {
+      "centre_cost": [
+       0,
+       1
+      ]
+     },
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "casa": {
+   "campuri_umplute": 5,
+   "butoane": []
+  },
+  "verificari": {
+   "campuri_umplute": 0,
+   "butoane": []
+  }
+ },
+ "erori_js": []
+}

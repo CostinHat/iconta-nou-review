@@ -2,15 +2,15 @@
 // Bandă de salut + 9 carduri pastel (grilă 3×3), fiecare cu sinteza lui.
 // Click pe card -> deschide fereastra/funcția corespunzătoare.
 
-import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj } from "../api.js?v=5b2978a5b9";  /* esc_nc27 */
+import { api, confirmaCaseta, esc, dataRo, baniRotund, ICOANE, CULORI_CARD, arataMesaj } from "../api.js?v=1dccbc985b";  /* esc_nc27 */
 import { semaforCard as _semaforCard } from "./semafor.js?v=df9fe94900";  // [p87_asistent]
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 import * as _coaja from "../coaja.js?v=2776271008";  // [DS cap.25] contractul proprietar<->chirias
-import { randeazaListaFirme } from "./firme.js?v=c1b6d93768";
+import { randeazaListaFirme } from "./firme.js?v=472c63e663";
 import { randeazaMigrare } from "./migrare.js?v=05a5b55996";
 import { randeazaControl } from "./control.js?v=d09ca9ab5a";
 import { randeazaActivitateCabinet } from "./activitate_cabinet.js?v=70bc686f76"; // [p17_activitate]
-import { randeazaSetari } from "./setari.js?v=d3e3cec16d"; // [p28_setari]
+import { randeazaSetari } from "./setari.js?v=f4a7f55d61"; // [p28_setari]
 import { randeazaRecomanda } from "./recomanda.js?v=4dcc56e1ec"; // [p31_recomanda]
 import { randeazaRaporteaza } from "./raporteaza.js?v=f800de9e77"; // [p34_raporteaza]
 import { randeazaPachete } from "./pachete.js?v=8c32cbb767"; // [p63_pachete]

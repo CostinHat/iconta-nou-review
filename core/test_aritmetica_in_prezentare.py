@@ -136,129 +136,23 @@ _ARIT = _re.compile(r"[*/]|\bMath\.round\b")
 _FISCAL = _re.compile(r"(?i)\b\w*(tva|cota|baza|impozit|cas|cass|net|brut|deduc|plafon|"
                       r"acciz|contrib|taxa|scutit)\w*")
 
-# Cele doua sunt aritmetica pe DATE calendaristice, nu fiscala:
-#   api.js            — `slice(0, 10)` peste o potrivire de data
+# Ramane UNA, aritmetica pe DATE calendaristice, nu fiscala:
 #   facturi_ecran.js  — `Date.now() + 30 * 864e5`
-NUME_NEUTRE_CLICHET = 2
+#
+# COBORAT 2→1 pe 04.09.2026, si nu fiindca s-a reparat ceva in ecrane: a doua instanta
+# (`api.js`, `slice(0, 10)` peste o potrivire de data) era o ACUZATIE FALSA a cititorului
+# vechi — „aritmetica" erau barele expresiei regulate din `.match(/…/)`, iar „cota" era
+# 10-le din `slice`. Cititorul reparat albeste expresiile regulate, deci instanta dispare.
+# Masurat in amandoua felurile pe acelasi commit `277e4300`: cititor vechi 2, reparat 1.
+NUME_NEUTRE_CLICHET = 1
 
 
-def _sfarsit_sir(src, i, n):
-    """Indexul de DUPĂ șirul care începe la `i`. Tratează `${…}` din template literals."""
-    q = src[i]
-    j = i + 1
-    while j < n:
-        c = src[j]
-        if c == "\\":
-            j += 2
-            continue
-        if q == "`" and src[j:j + 2] == "${":
-            j = _sfarsit_expresie(src, j + 2, n)
-            continue
-        if c == q:
-            return j + 1
-        if q != "`" and c == "\n":     # un șir simplu nu trece de capătul rândului
-            return j
-        j += 1
-    return n
-
-
-def _sfarsit_expresie(src, i, n):
-    """Din interiorul unui `${`, indexul de după acolada care îl închide. Sare peste șiruri."""
-    adanc, j = 1, i
-    while j < n:
-        c = src[j]
-        if c in "\"'`":
-            j = _sfarsit_sir(src, j, n)
-            continue
-        if c == "{":
-            adanc += 1
-        elif c == "}":
-            adanc -= 1
-            if adanc == 0:
-                return j + 1
-        j += 1
-    return n
-
-
-def _albeste(bucata, out):
-    for ch in bucata:
-        out.append("\n" if ch == "\n" else " ")
-
-
-def _curata_sir(src, i, n, out):
-    """Albește textul unui șir, dar PĂSTREAZĂ ce e între `${` și `}` — acolo e cod.
-
-    A doua parte e cea care contează: dacă interpolarea ar fi albită, o cotă scrisă în
-    `` `TVA: ${suma * 21 / 100}` `` ar trece nevăzută, iar gardul ar fi liniștit degeaba.
-    Propria calibrare a prins prima variantă, care făcea exact asta.
-    """
-    q = src[i]
-    out.append(" ")                       # ghilimeaua de deschidere
-    j = i + 1
-    while j < n:
-        c = src[j]
-        if c == "\\":
-            _albeste(src[j:j + 2], out)
-            j += 2
-            continue
-        if q == "`" and src[j:j + 2] == "${":
-            out.append("  ")
-            k = _sfarsit_expresie(src, j + 2, n)
-            _curata(src, j + 2, k - 1, out)   # interiorul e COD, se curăță recursiv
-            out.append(" ")                   # acolada de închidere
-            j = k
-            continue
-        if c == q:
-            out.append(" ")
-            return j + 1
-        out.append("\n" if c == "\n" else " ")
-        j += 1
-    return n
-
-
-def _curata(src, i, n, out):
-    """Scoate comentariile și textul șirurilor din `src[i:n]`, caracter cu caracter."""
-    while i < n:
-        c, d = src[i], src[i:i + 2]
-        if d == "//":
-            j = src.find("\n", i)
-            j = n if j < 0 or j > n else j
-            _albeste(src[i:j], out)
-            i = j
-        elif d == "/*":
-            j = src.find("*/", i + 2)
-            j = n if j < 0 or j + 2 > n else j + 2
-            _albeste(src[i:j], out)
-            i = j
-        elif c in "\"'`":
-            i = _curata_sir(src, i, n, out)
-        else:
-            out.append(c)
-            i += 1
-    return i
-
-
-def _fara_comentarii_si_siruri(src):
-    """Scoate comentariile SI textul sirurilor, PASTRAND newline-urile si LUNGIMEA.
-
-    Prima forma a acestei functii, 24.08.2026, colapsa liniile — deci raporta numere de linie
-    ale ALTOR linii. De-aia exista aserttiunea de mai jos.
-
-    REPARATĂ de două ori pe 27.08.2026, și amândouă merită scrise:
-      1. nu știa de `${…}`: primul backtick **interior** al unui template imbricat închidea
-         șirul, iar de acolo încolo cititorul era **defazat** — ce era text trecea drept cod și
-         invers. **Greșea în amândouă direcțiile**, deci clichetul „2" nu era o măsurătoare, era
-         o coincidență de sincronizare. Găsit nu de un instrument, ci de poarta făcută roșie de
-         un ecran nou.
-      2. prima reparație albea și **interiorul** interpolării — adică exact codul. O cotă scrisă
-         în `` `${suma * 21 / 100}` `` ar fi trecut nevăzută. Prinsă de calibrarea scrisă în
-         aceeași tură, pe direcția «ratează».
-    """
-    out = []
-    _curata(src, 0, len(src), out)
-    rez = "".join(out)
-    assert len(rez) == len(src), "cititorul a schimbat lungimea — numerele de linie ar sări"
-    return rez
+# Cititorul e COMUN din 04.09.2026 (`core/cititor_js.py`). Copia care traia aici purta
+# acelasi defect ca sora ei din `scan_refuz_tacut.py`: un sir `'` sau `"` neinchis pe
+# randul lui albea tot pana la urmatoarea ghilimea din fisier. Din cauza lui, clichetul
+# de mai sus a numarat pe `api.js:366` o „aritmetica" care erau chiar barele unei
+# EXPRESII REGULATE: `full.slice(0, 10).match(/^(\\d{4})-(\\d{2})-(\\d{2})$/)`.
+from core.cititor_js import fara_siruri as _fara_comentarii_si_siruri
 
 
 def _aritmetica_pe_nume_neutre():

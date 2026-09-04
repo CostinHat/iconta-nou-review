@@ -75,3 +75,70 @@ def test_cele_cinci_ecrane_declarate():
     sursa = io.open(os.path.join(VIZ, "nav_ecrane.py"), encoding="utf-8").read()
     for ecran in ECRANE:
         assert '"%s"' % ecran in sursa, "ecranul %s nu mai e în nav_ecrane.ECRANE" % ecran
+
+
+# ── [LOTUL 10, 04.09.2026] Dependentele uneltelor, derivate — nu inca o lista ────────────────
+#
+# INSTANTA. `frontend_test/w_auth.py` — tokenul mintuit si navigarea la firma, de care atarna
+# TOATA infrastructura de aici — a fost sters de pe disc pe 26.08, odata cu `b87dad49` („Scoate
+# din urmarire cele 234 de artefacte maturate din greseala"). Timp de noua zile **24 de fisiere**,
+# printre ele toate cele patru unelte de mai sus, s-au importat dintr-un `.pyc` de 4,6 KB ramas in
+# `__pycache__`. Nimic n-a devenit rosu: Python incarca bytecode fara sa-i ceara sursa. Un
+# `find -name __pycache__ -delete` — curatenia obisnuita — ar fi oprit tacut tot.
+#
+# Garda de deasupra n-a vazut-o fiindca cerea fisiere DINTR-O LISTA, iar `w_auth` nu era in ea si
+# nici macar in acelasi director. *O lista scrisa de mine vede exact ce mi-am amintit sa scriu.*
+# Asta deriva ce trebuie sa existe din chiar `import`-urile uneltelor: ce cheama o unealta trebuie
+# sa se poata citi.
+import ast
+
+#: Module care vin din afara (stdlib sau instalate) — nu se cauta ca fisier in repo.
+_DIN_AFARA = {"os", "sys", "io", "json", "re", "glob", "time", "math", "subprocess", "hashlib",
+              "datetime", "collections", "urllib", "traceback", "pathlib", "shutil", "tempfile",
+              "playwright", "pytest", "psycopg2", "PIL", "requests"}
+
+#: Unde poate trai o sursa importata de o unealta vizuala.
+_CAI = [os.path.join(RADACINA, "frontend_test", "vizual"),
+        os.path.join(RADACINA, "frontend_test"),
+        RADACINA]
+
+
+def _importuri(cale):
+    """Numele de modul de nivel inalt importate de fisier."""
+    arbore = ast.parse(io.open(cale, encoding="utf-8").read())
+    nume = set()
+    for n in ast.walk(arbore):
+        if isinstance(n, ast.Import):
+            nume |= {a.name.split(".")[0] for a in n.names}
+        elif isinstance(n, ast.ImportFrom) and n.module and n.level == 0:
+            nume.add(n.module.split(".")[0])
+    return nume
+
+
+def test_dependentele_uneltelor_exista_ca_sursa():
+    lipsa = []
+    for unealta in UNELTE:
+        cale = os.path.join(VIZ, unealta)
+        for modul in sorted(_importuri(cale)):
+            if modul in _DIN_AFARA:
+                continue
+            if any(os.path.isfile(os.path.join(c, modul + ".py")) for c in _CAI):
+                continue
+            if os.path.isdir(os.path.join(RADACINA, modul)):   # pachet al repo-ului (`core`)
+                continue
+            lipsa.append("%s importa `%s`, care n-are sursa nicaieri" % (unealta, modul))
+    assert not lipsa, (
+        "unelte vizuale care se sprijina pe module fara sursa:\n  " + "\n  ".join(lipsa)
+        + "\n\nDaca modulul mai exista doar ca `.pyc` in `__pycache__`, uneltele merg pana la "
+          "prima curatenie, si se opresc apoi fara ca nimic sa devina rosu.")
+
+
+def test_garda_asta_chiar_are_ce_verifica():
+    """Anti-vacuu: daca `_importuri` n-ar gasi nimic, testul de sus ar trece despre nimic."""
+    total = set()
+    for unealta in UNELTE:
+        total |= _importuri(os.path.join(VIZ, unealta))
+    assert "w_auth" in total, (
+        "niciuna dintre unelte nu mai importa `w_auth` — ori s-a schimbat arhitectura (si atunci "
+        "se scrie aici de ce), ori garda se uita in fisierele gresite")
+    assert len(total) >= 6, "prea putine importuri gasite (%d) — parserul nu vede fisierele" % len(total)

@@ -155,6 +155,68 @@ function _refuzNevazut(eroare, metoda) {
   }, _REFUZ_ASTEPTARE_MS);
 }
 
+// ── [R131, 04.09.2026] O DESCARCARE care esueaza spune DE CE ────────────────────────────
+// Un raspuns binar (PDF, XML, ZIP, imagine) nu poate trece prin `api.get` — deci cele 13 locuri
+// care descarca un fisier chemau `fetch` direct, si ocoleau si `_refuzNevazut`. MASURAT
+// (`core/scan_descarcare_muta.py`, 04.09.2026): **toate 13** aveau aceeasi forma —
+// `if (!r.ok) throw new Error("eroare " + r.status)`. Adica aruncau motivul serverului si puneau
+// in locul lui propriul numar. Serverul spunea *„chitanta inexistenta"*; omul citea *„eroare
+// 404"*, iar la doua locuri *„Eroare — reincearca"* — un sfat care nu poate reusi niciodata,
+// fiindca factura tot nu exista la a doua apasare.
+//
+// Reparatia e UNA, aici, nu treisprezece — acelasi tipar ca `refuz_vazut_v1`.
+//
+// DE CE trece prin `_refuzNevazut` desi multe sunt `GET`: o descarcare pe care omul a cerut-o
+// APASAND un buton nu e o citire de fundal. Exceptia „GET-urile tac" din `_refuzNevazut` exista
+// pentru badge-uri si contoare care se incarca singure; aici omul asteapta un fisier, iar daca
+// nu vine, tacerea e chiar defectul. De asta se trimite `"DESCARCARE"`, nu metoda HTTP.
+export async function cereBlob(cale, optiuni = {}) {
+  const metoda = optiuni.metoda || "GET";
+  const antete = {};
+  const token = sesiune.token();
+  if (token) antete["Authorization"] = "Bearer " + token;
+  let corp;
+  if (optiuni.formData !== undefined) corp = optiuni.formData;   // multipart: boundary automat
+  else if (optiuni.corp !== undefined) { antete["Content-Type"] = "application/json"; corp = JSON.stringify(optiuni.corp); }
+  const r = await fetch(cale, { method: metoda, headers: antete, body: corp });
+  if (r.status === 401 && token) {   // acelasi tratament ca in `_cere`
+    sesiune.iesi();
+    throw { cod: 401, mesaj: "sesiune expirată, autentifică-te din nou" };
+  }
+  if (!r.ok) {
+    let date = null;
+    try { date = JSON.parse(await r.text()); } catch { date = null; }   // corpul e JSON chiar cand raspunsul „bun" ar fi fost binar
+    const eroare = { cod: r.status, mesaj: _mesajEroare(r.status, date), erori_campuri: _erisCampuri(date),
+                     detaliu: _detaliuStructurat(date) };
+    _refuzNevazut(eroare, "DESCARCARE");
+    throw eroare;
+  }
+  return r;   // raspunsul intreg: apelantul are nevoie si de `Content-Disposition`, nu doar de blob
+}
+
+// `descarca(cale, numeFisier, optiuni)` — cazul obisnuit: ia fisierul si il salveaza pe disc.
+// Numele din `Content-Disposition` bate `numeFisier` cand serverul il trimite (el stie seria si
+// numarul; ecranul le-ar ghici).
+export async function descarca(cale, numeFisier, optiuni = {}) {
+  const r = await cereBlob(cale, optiuni);
+  const cd = r.headers.get("Content-Disposition") || "";
+  const m = cd.match(/filename="([^"]+)"/);
+  const url = URL.createObjectURL(await r.blob());
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = m ? m[1] : numeFisier;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
+// `deschide(cale, optiuni)` — fisierul se arata, nu se salveaza (PDF intr-un tab nou).
+export async function deschide(cale, optiuni = {}) {
+  const r = await cereBlob(cale, optiuni);
+  const url = URL.createObjectURL(await r.blob());
+  window.open(url, "_blank");
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
+}
+
 async function cereForm(cale, formData) {
   const deblocheaza = blocheazaButon("POST");
   try {

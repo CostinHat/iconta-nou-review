@@ -7390,9 +7390,9 @@ sărită nu se poate exercita din suită — dacă indexul ar fi numai-curățen
 
 <!-- INVENTAR-GARZI:START (generat de scripts/scan_garzi_inventar.py --md) -->
 
-**514 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
+**517 gărzi și instrumente.** Afirmația e prima frază a docstringului fiecăruia — ce spune garda despre ea însăși, nu ce cred eu despre ea. Un `—` înseamnă că fișierul n-are docstring de modul, iar lipsa se vede în loc să se piardă.
 
-### `core/` — 496
+### `core/` — 499
 
 - `core/scan_afirmatii.py` — core/scan_afirmatii.py — cate AFIRMATII despre datele firmei sunt inca netipate? (P8, 21.08.2026)
 - `core/scan_ancore.py` — SCANNER de ANCORE: un gard care caută un șir într-un fișier sursă îl găsește în COD, sau doar în
@@ -7402,6 +7402,7 @@ sărită nu se poate exercita din suită — dacă indexul ar fi numai-curățen
 - `core/scan_conflicte_sursa.py` — core/scan_conflicte_sursa.py — INTERDICȚIA 58, partea nemăsurată: conflictele NEÎNREGISTRATE.
 - `core/scan_constante.py` — SCANNER de constante fiscale NESURSATE din codul de PRODUCTIE (20.08.2026).
 - `core/scan_data_curenta.py` — INTERDICȚIA 3 — «Un calcul fiscal care citește data curentă», măsurată.
+- `core/scan_descarcare_muta.py` — [R131, 04.09.2026] INSTRUMENT: un `fetch` direct care ARUNCA motivul serverului.
 - `core/scan_ecran_reguli.py` — Instrumentul celor două reguli de ecran scrise pe 28.08.2026 — E1 (două nume distincte) și
 - `core/scan_garzi.py` — I1 — instrumentul pentru interdictiile 18 (garda isi ia dovada din proza) si 19 (garda raporteaza
 - `core/scan_garzi_culegere.py` — Rafinarea sub-instrumentului B.
@@ -7468,6 +7469,7 @@ sărită nu se poate exercita din suită — dacă indexul ar fi numai-curățen
 - `core/test_cauza_precisa_business.py` — GARD cauza_precisa: cand un verificator din control_incrucisat prinde o eroare de BUSINESS
 - `core/test_chei_duplicate.py` — GARDĂ: o cheie care apare de două ori în același dicționar e o intrare MOARTĂ. (21.08.2026)
 - `core/test_citate_verbatim.py` — CLICHET CARE CREȘTE (21.08.2026): numărul de citări verificabile mecanic nu mai scade.
+- `core/test_cititor_js.py` — GARD [04.09.2026]: cititorul comun de JS nu poate orbi tacut peste cod real.
 - `core/test_clasificator_alerte.py` — CLICHET: eticheta unei alerte e o PREDICȚIE confruntabilă, iar greșelile ei nu mai pot crește.
 - `core/test_clichete_generate.py` — GARD [31.08.2026]: tabelul clichetelor vii din predare se RECALCULEAZĂ, nu se citează.
 - `core/test_cm_episod.py` — GARD CM-episod: indemnizatia CM se calculeaza pe EPISOD, nu pe certificat izolat (OUG 158/2005
@@ -7655,6 +7657,7 @@ sărită nu se poate exercita din suită — dacă indexul ar fi numai-curățen
 - `core/test_deducere_generalizare.py` — GARD Fix 3 (Task 2 D112): GENERALIZAREA clasei fix 1 (deducere necablata) la CEILALTI apelanti de productie
 - `core/test_dependenti_act.py` — GARDĂ pentru interdicția 61 — lista dependenților unui articol, generabilă la cerere.
 - `core/test_depunere_contrazice.py` — GARD R6 (21.08.2026): o depunere care contrazice un „nu se datorează" nu mai e invizibilă.
+- `core/test_descarcare_muta.py` — [R131, 04.09.2026] GARD: o descarcare care esueaza spune DE CE.
 - `core/test_diacritice_afisate.py` — core/test_diacritice_afisate.py — GARD DE DIACRITICE PE TEXTUL AFIȘAT (#4, criteriul lui Costin).
 - `core/test_dialog_nativ_frontend.py` — GARD (09.08.2026): dialoguri native alert()/prompt()/confirm() INTERZISE in TOT frontendul (DS cap.5:
 - `core/test_document_fara_administrator.py` — GARD [R66 (c), 26.08.2026]: un document care tipărește numele administratorului nu se produce

@@ -69,11 +69,30 @@ def test_hookul_nu_e_gol():
     assert len(h) > 2000 and "verificator_conformitate.py" in h
 
 
+# Se cauta CIFRA 131, nu sirul „131": `R131`, `r131` si `test_cifra_131_…` sunt NUME, si au
+# ajuns in predare pe 04.09.2026 odata cu restanta R131. Garda de dinainte se uita la PRIMA
+# aparitie a sirului, deci a cazut pe un nume — clasa „aserttiune ancorata pe text"
+# (METODA_VERIFICARE §23, clichetul 50). Acum se uita la TOATE aparitiile cifrei, nu la prima:
+# e si mai stransa decat era, nu mai larga.
+_CIFRA_131 = re.compile(r"(?<![\w.\-])131(?![\w.\-])")
+
+
 def test_cifra_131_e_marcata_invalidata_nu_corectata():
     """Regula ceruta: o cifra ai carei termeni nu se mai pot reconstitui se
     INVALIDEAZA, nu se corecteaza. Predarea veche o purta ca pe o cifra buna."""
     t = _text(PREDARE)
-    assert "131" in t, "predarea nu mai pomeneste cifra 131 — daca a fost scoasa, scoate si testul"
-    fereastra = t[max(0, t.index("131") - 200):t.index("131") + 600]
-    assert "INVALIDAT" in fereastra.upper(), \
-        "cifra 131 apare in predare fara sa fie marcata invalidata"
+    poz = [m.start() for m in _CIFRA_131.finditer(t)]
+    assert poz, "predarea nu mai pomeneste cifra 131 — daca a fost scoasa, scoate si testul"
+    rele = [p for p in poz
+            if "INVALIDAT" not in t[max(0, p - 200):p + 600].upper()]
+    assert not rele, (
+        "cifra 131 apare in predare fara sa fie marcata invalidata, in %d loc(uri):\n  %s"
+        % (len(rele), "\n  ".join(repr(t[max(0, p - 90):p + 90]) for p in rele)))
+
+
+def test_CALIBRARE_garda_cifrei_131_nu_confunda_un_NUME_cu_cifra():
+    """Directia «acuza pe nedrept», pe chiar greseala care a cazut pe 04.09: un nume care
+    contine 131 nu e cifra 131. Si directia opusa: cifra goala TREBUIE gasita."""
+    assert _CIFRA_131.findall("restanta R131, proba_r131.py, test_cifra_131_e_marcata") == []
+    assert _CIFRA_131.findall("clichetul era 131 atunci") == ["131"]
+    assert _CIFRA_131.findall("1310 si 2131 si 13.1") == []

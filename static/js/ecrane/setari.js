@@ -1,5 +1,5 @@
 // setari.js — Ecran Setari cont: meniu cu sectiuni; fiecare se deschide doar la selectie.
-import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor } from "../api.js?v=5b2978a5b9";
+import { api, esc, confirmaCaseta, arataMesaj, dataRo, semnAjutor, descarca } from "../api.js?v=1dccbc985b";
 import { sesiune } from "../sesiune.js?v=5d142951c9";
 
 export async function randeazaSetari(corp, nav) {
@@ -218,14 +218,9 @@ export async function randeazaSetari(corp, nav) {
       btnEx.disabled = true; btnEx.textContent = "Se pregătește arhiva…";
       arataMesaj(msg, "Se generează arhiva. Poate dura până la un minut pentru cabinete mari.", "info");
       try {
-        const resp = await fetch("/gdpr/export-cabinet", { headers: { Authorization: "Bearer " + sesiune.token() } });
-        if (!resp.ok) throw new Error("eroare " + resp.status);
-        const url = URL.createObjectURL(await resp.blob());
-        const a = document.createElement("a");
-        a.href = url; a.download = "export-cabinet.zip"; a.click();
-        URL.revokeObjectURL(url);
+        await descarca("/gdpr/export-cabinet", "export-cabinet.zip");
         arataMesaj(msg, "Arhivă descărcată. Verifică folderul de descărcări.", "ok");
-      } catch (e) { arataMesaj(msg, "Nu am putut genera arhiva. Încearcă din nou.", "eroare"); }
+      } catch (e) { arataMesaj(msg, (e && (e.mesaj || e.message)) || "eroare", "eroare"); }   // [R131]
       btnEx.disabled = false; btnEx.textContent = txt;
     });
 

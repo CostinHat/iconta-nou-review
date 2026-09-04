@@ -7,7 +7,8 @@ ajunge la om. Iar consecința nu e neplăcerea. E că nu se poate diagnostica ni
 
 MĂSURAT ÎNTÂI, cum a cerut — `core/scan_refuz_tacut.py`, 27.08.2026: din **243** de `catch`-uri
 peste un apel `api.*`, **227 arată ceva** și **16 sunt SCRIERI care pot refuza fără să spună
-motivul**. Prima măsurătoare dăduse 25; citite una câte una, nouă foloseau `insertAdjacentHTML`,
+motivul**. *(Cifrele astea sunt de la măsurătoarea din 27.08 și au fost făcute cu un cititor
+orb; cele vii sunt clichetele de mai jos, remăsurate pe 04.09 — 18 și 74.)* Prima măsurătoare dăduse 25; citite una câte una, nouă foloseau `insertAdjacentHTML`,
 pe care detectorul nu-l știa. **Calibrat pe instanțe reale înainte de a scrie cifra** — o cifră
 umflată e la fel de rea ca una mică.
 
@@ -18,12 +19,12 @@ sau altfel e recunoscut la fel, fără să fie modificat.
 
 CE FACE IMPOSIBIL:
   1. creșterea clasei: o scriere nouă care înghite refuzul fără să-l arate;
-  2. dispariția plasei din `api.js` — fără ea, cele 16 redevin mute;
-  3. întinderea plasei peste citiri: cele **70** de citiri tăcute (badge-uri, contoare) rămân
+  2. dispariția plasei din `api.js` — fără ea, cele 18 redevin mute;
+  3. întinderea plasei peste citiri: cele **74** de citiri tăcute (badge-uri, contoare) rămân
      tăcute **deliberat** — un badge care eșuează n-are voie să întrerupă omul.
 
 CE NU FACE, declarat: **nu spune că mesajul e bun**, doar că ajunge. Și **nu scade clasa** — cele
-16 rămân mute la locul lor; plasa le prinde, dar un mesaj lângă buton e mai bun decât un banner.
+18 rămân mute la locul lor; plasa le prinde, dar un mesaj lângă buton e mai bun decât un banner.
 Clichetul e ca să nu crească, nu ca să fie declarată rezolvată.
 """
 import io
@@ -33,9 +34,17 @@ from core import scan_refuz_tacut as scan
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-# Măsurat 27.08.2026, după calibrarea pe instanțe reale.
-_SCRIERI_MUTE = 16
-_CITIRI_MUTE = 70
+# Măsurat 27.08.2026, după calibrarea pe instanțe reale. **REMĂSURAT 04.09.2026**, după ce
+# cititorul comun a fost reparat (`core/cititor_js.py`): 16 → **18** și 70 → **74**.
+# Urcarea NU e o regresie — e orbirea corectată. Măsurat în amândouă felurile pe ACELAȘI
+# commit `277e4300`: cu cititorul vechi 16, cu cel reparat 18. Cele două care lipseau
+# stăteau în `ecrane/facturi_ecran.js`, într-o parte a fișierului pe care cititorul o
+# albea din randul 530 încolo. Amândouă sunt instanțe ale modurilor de eșec DECLARATE ale
+# instrumentului, nu refuzuri înghițite: una cheamă o funcție proprie care afișează
+# (`plaseazaErori`, modul 1), cealaltă e o căutare de fundal la tastare (`produse/
+# potriveste`, modul 3 — `POST` folosit ca citire).
+_SCRIERI_MUTE = 18
+_CITIRI_MUTE = 74
 
 
 def test_ANTI_VACUU_instrumentul_chiar_vede_ecranele():
@@ -69,7 +78,7 @@ def test_citirile_mute_raman_declarate_nu_uitate():
 
 
 def test_plasa_din_api_js_exista():
-    """Fără ea, cele 16 redevin mute. Se caută marcajul funcției, nu un comentariu."""
+    """Fără ea, cele 18 redevin mute. Se caută marcajul funcției, nu un comentariu."""
     src = io.open(os.path.join(_RAD, "static", "js", "api.js"), encoding="utf-8").read()
     assert src.count("function _refuzNevazut(") == 1, (
         "`_refuzNevazut` a dispărut din `api.js` — refuzurile înghițite nu mai ajung la om")

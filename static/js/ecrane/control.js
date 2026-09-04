@@ -2,7 +2,7 @@
 // Nivel 1: lista firmelor cu pastila colorata (verde/galben/rosu).
 // Nivel 2: click pe firma -> corpul verdictului, randat de control_verdict.js (renderer UNIC, DS cap.20).
 
-import { api, esc } from "../api.js?v=5b2978a5b9";  /* esc_nc27 */
+import { api, esc } from "../api.js?v=1dccbc985b";  /* esc_nc27 */
 import { CULORI, etichetaStare, randeazaCorpVerdict, legaVerdict } from "./control_verdict.js?v=f019079e5a";  // renderer unic al verdictului (DS cap.20)
 
 

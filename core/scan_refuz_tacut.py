@@ -9,7 +9,7 @@ dacă **corpul lui arată ceva omului**. „Arată" = una din căile canonice de
 (`arataMesaj`, `eroareCamp`, `arataEroare`, `confirmaCaseta`), o scriere în `innerHTML`/
 `textContent`, sau o re-aruncare (`throw`) — care mută răspunderea mai sus.
 
-CELE PATRU MODURI DE EȘEC ALE ACESTUI INSTRUMENT, scrise înainte de prima măsurătoare
+CELE CINCI MODURI DE EȘEC ALE ACESTUI INSTRUMENT, scrise înainte de prima măsurătoare
 (interdicția 76):
   1. **nu execută JS.** Un `catch` care cheamă o funcție proprie care afișează (`arata(e)`) e
      numărat drept MUT. Deci cifra „mute" e un **plafon superior**.
@@ -19,12 +19,20 @@ CELE PATRU MODURI DE EȘEC ALE ACESTUI INSTRUMENT, scrise înainte de prima măs
   3. **nu știe dacă apelul e declanșat de om.** Deosebește după METODĂ (scriere vs citire),
      ceea ce e un proxy: un `GET` cerut de om la apăsarea unui buton e tratat ca citire.
   4. **nu vede refuzurile care nu trec prin `api.*`** (`fetch` direct). Numărate separat.
+  5. **[04.09.2026] statea pe un cititor orb.** Reparat si mutat in `core/cititor_js.py`;
+     remasurat pe acelasi commit `277e4300`, cifra a urcat de la 16 la 18 — orbire, nu
+     regresie. Vezi `core/test_cititor_js.py`.
 
 CE NU MĂSOARĂ, declarat: dacă mesajul afișat e BUN. Doar dacă există vreunul.
 """
 import io
 import os
 import re
+
+# Cititorul de JS e COMUN din 04.09.2026. Pana atunci traia in DOUA copii — aici si in
+# `core/test_aritmetica_in_prezentare.py` — si amandoua purtau acelasi defect: un sir
+# `'` sau `"` neinchis pe randul lui albea tot pana la urmatoarea ghilimea din FISIER.
+from core.cititor_js import fara_siruri
 
 _RAD = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 _JS = os.path.join(_RAD, "static", "js")
@@ -38,102 +46,6 @@ _FETCH = re.compile(r"(?<![\w.])fetch\s*\(")
 _ARATA = re.compile(r"\b(arataMesaj|eroareCamp|arataEroare|confirmaCaseta|alert)\s*\(|"
                     r"\.insertAdjacent(HTML|Text)\s*\(|"
                     r"\.(innerHTML|textContent|innerText)\s*=|\bthrow\b")
-
-
-# ── cititorul de siruri/comentarii (acelasi algoritm ca test_aritmetica_in_prezentare) ──
-def _sfarsit_sir(src, i, n):
-    q = src[i]
-    j = i + 1
-    while j < n:
-        c = src[j]
-        if c == "\\":
-            j += 2
-            continue
-        if q == "`" and src[j:j + 2] == "${":
-            j = _sfarsit_expresie(src, j + 2, n)
-            continue
-        if c == q:
-            return j + 1
-        if q != "`" and c == "\n":
-            return j
-        j += 1
-    return n
-
-
-def _sfarsit_expresie(src, i, n):
-    adanc, j = 1, i
-    while j < n:
-        c = src[j]
-        if c in "\"'`":
-            j = _sfarsit_sir(src, j, n)
-            continue
-        if c == "{":
-            adanc += 1
-        elif c == "}":
-            adanc -= 1
-            if adanc == 0:
-                return j + 1
-        j += 1
-    return n
-
-
-def _albeste(bucata, out):
-    for ch in bucata:
-        out.append("\n" if ch == "\n" else " ")
-
-
-def _curata_sir(src, i, n, out):
-    q = src[i]
-    out.append(" ")
-    j = i + 1
-    while j < n:
-        c = src[j]
-        if c == "\\":
-            _albeste(src[j:j + 2], out)
-            j += 2
-            continue
-        if q == "`" and src[j:j + 2] == "${":
-            out.append("  ")
-            k = _sfarsit_expresie(src, j + 2, n)
-            _curata(src, j + 2, k - 1, out)
-            out.append(" ")
-            j = k
-            continue
-        if c == q:
-            out.append(" ")
-            return j + 1
-        out.append("\n" if c == "\n" else " ")
-        j += 1
-    return n
-
-
-def _curata(src, i, n, out):
-    while i < n:
-        c, d = src[i], src[i:i + 2]
-        if d == "//":
-            j = src.find("\n", i)
-            j = n if j < 0 or j > n else j
-            _albeste(src[i:j], out)
-            i = j
-        elif d == "/*":
-            j = src.find("*/", i + 2)
-            j = n if j < 0 or j + 2 > n else j + 2
-            _albeste(src[i:j], out)
-            i = j
-        elif c in "\"'`":
-            i = _curata_sir(src, i, n, out)
-        else:
-            out.append(c)
-            i += 1
-    return i
-
-
-def fara_siruri(src):
-    out = []
-    _curata(src, 0, len(src), out)
-    rez = "".join(out)
-    assert len(rez) == len(src), "cititorul a schimbat lungimea"
-    return rez
 
 
 # ── potrivirea blocurilor ───────────────────────────────────────────────────

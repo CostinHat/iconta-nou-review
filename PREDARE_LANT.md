@@ -4,12 +4,11 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-04**, **a opta a zilei** — scrisă în noaptea de 03 spre 04.09, la
-  capătul lotului 2. Actualizare, nu rescriere: lotul 2 al campaniei, cele trei decizii primite de la
-  Costin, și o restanță EXTERNĂ nouă. *Restul documentului e cel de la a doua rescriere din 03.09 și
-  rămâne valabil.* **Ziua s-a schimbat sub tură** — capcana 6 —, iar commitul registrului a așteptat
-  miezul nopții: cu antetul pe 03.09 și commitul pe 04.09, poarta ar fi căzut la tura următoare.
-- **pe commit**: `fabf2c09` — ultimul commit intrat. *Predarea se scrie ÎNAINTE
+- **ultima rescriere**: **2026-09-04**, **a noua a zilei** — actualizare la capătul **lotului 10**,
+  nu rescriere: cifrele campaniei, cele două unelte de ecran, ce rămâne de construit pentru lotul 11,
+  și **R133** — orbirea cititorului de JS, scoasă la iveală de poarta care a respins lotul 10.
+  *Restul documentului e cel de la a doua rescriere din 03.09 și rămâne valabil.*
+- **pe commit**: `277e4300` — ultimul commit intrat (lotul 9). *Predarea se scrie ÎNAINTE
   de commitul care o poartă; numele de aici e al celui precedent, prin construcție, nu din uitare.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **DE CE ÎNCĂ O DATĂ**: trei afirmații ale documentului de acum câteva ore au devenit false.
@@ -21,7 +20,10 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 - **CE S-A PĂSTRAT VERBATIM, și de ce**: cele două blocuri **generate** · **tabelul cifrelor
   invalidate** · **tabelul „ce cere poarta"**. Sunt registru câștigat, iar retranscrierea lor cu
   mâna e chiar clasa pe care tabelul cifrelor invalidate o consemnează de cinci ori.
-- **TOATE CIFRELE DE MAI JOS SUNT REMĂSURATE ÎN TURA ASTA**, nu copiate din documentul dinainte.
+- **CE E REMĂSURAT ÎN TURA ASTA**: cifrele campaniei · cele două clichete ale cititorului de JS
+  (R133) · blocurile generate, pe care poarta le compară caracter cu caracter. *Restul — numărul
+  de teste, restanțele, interdicțiile — e de la rescrierea din 03.09 și poartă data ei. Nu se
+  copiază ca fiind de azi: exact clasa pe care tabelul cifrelor invalidate o consemnează de cinci ori.*
 - **vechime măsurată, nu estimată**: **0 commituri** de la ultima atingere a fișierului.
 
 ---
@@ -54,9 +56,9 @@ verde nu e proba — el confirmă forma; o cifră în rândul greșit trece la f
 | **populația derivată** | **553 de unități** — `LISTA_FUNCTIONALITATI.md`, generat cu `scripts/scan_functionalitati.py`. 427 de rute · 75 de ecrane · 14 joburi · 37 de instrumente |
 | **perimetrul etapei 1** | **364** — numai suprafața prin care **un om introduce date**: cele 75 de ecrane + **289 de rute cu câmpuri de completat**. Tăiat de Costin pe 03.09, fiindcă 553 depășea pragul de la care comanda cerea oprire |
 | **ce a ieșit, marcat în listă cu motivul** | **189** = 138 de rute fără câmpuri de completat · 14 joburi de fundal (nu primesc nimic de la un om) · 37 de instrumente din `scripts/` (nu le atinge un contabil) |
-| **probate** | **289** (loturile 1–8, plus **lotul 9 = cele 72 de rute rămase**) |
-| **RĂMASE DE PROBAT** | **75 — toate ECRANE** |
-| **defecte** | găsite **121**, reparate **121**, reprobate **121** *(loturile 1–8: 108 · lot 9: 13)* |
+| **probate** | **306** (loturile 1–8 · lotul 9 = cele 72 de rute rămase · **lotul 10 = 17 ecrane**) |
+| **RĂMASE DE PROBAT** | **58 — toate ECRANE** |
+| **defecte** | găsite **126**, reparate **126**, reprobate **126** *(loturile 1–8: 108 · lot 9: 13 · lot 10: 5)* |
 
 ### Unde stau rezultatele — două fișiere, două roluri
 
@@ -126,15 +128,33 @@ dacă apare ceva ce contrazice o decizie luată."*).
 într-unul singur, nu unul-două. Ținta e cât încape într-o sesiune fără `/clear`… O singură poartă și
 o singură scriere de registre pe lot, la sfârșit."*). Lotul 6 a avut **opt trasee și 45 de unități**.
 
-**TOATE CELE 289 DE RUTE DIN PERIMETRU SUNT PROBATE.** Au mai rămas **75 de unități, și toate
+**TOATE CELE 289 DE RUTE DIN PERIMETRU SUNT PROBATE.** Au mai rămas **58 de unități, și toate
 sunt ECRANE** — `static/js/ecrane/*`, listate în T36.
 
-**Ele cer altă unealtă.** Un ecran nu se probează cu o cerere HTTP: proba lui e *ce vede și ce poate
-apăsa un om*, deci Playwright — infrastructura există deja
-(`frontend_test/vizual/`, `interactiune_scan.py`, `test_acoperire_vizuala.py`). Întrebarea campaniei
-rămâne aceeași — *vorbește aplicația când primește date greșite?* —, dar pe ecran ea are altă formă:
-**mesajul serverului ajunge la om, lângă câmpul greșit, sau se pierde pe drum?** Cele 121 de refuzuri
-reparate până acum sunt exact ce trebuie să se vadă acolo.
+**Lotul 10 a deschis drumul lor**, cu două unelte noi:
+  * `frontend_test/proba_r131_descarcare_muta.py` — browser real, cod publicat: refuzul serverului
+    ajunge verbatim, bannerul are arie pe ecran, `role="alert"`, și nu se dublează.
+  * `frontend_test/vizual/proba_ecrane_lot10.py` — complementara lui `interactiune_scan`, care sare
+    deliberat butoanele destructive: asta le apasă, cu formularul umplut cu date imposibile.
+    Verdictele sunt **trei**, nu două: *a vorbit* · *a scris* · *TACE*. Măsoară pe **text nou
+    vizibil**, nu pe clasele din convenție, și numără starea **tuturor celor 52 de tabele** ale
+    schemei înainte și după fiecare apăsare.
+
+**CE A RĂMAS, și e o alegere de făcut, nu o scăpare.** Din cele 15 ecrane parcurse, **9 n-au avut
+niciun câmp deschis** (`campuri=0`): formularul lor cere un pas înainte — alegerea unei luni, a unui
+partener, deschiderea unei ferestre. Sonda le-a parcurs, dar n-a avut ce completa. Cele **58 rămase**
+cer, pentru fiecare, **o cale de navigare scrisă de mână** (`nav_ecrane.ECRANE` are doar 15 din 32
+de ecrane `fa-*`, restul sunt ecrane de cabinet/admin/portal). *Aia e construcția lotului 11, și e o
+construcție de navigare, nu de probare.*
+
+Întrebarea campaniei rămâne aceeași — *vorbește aplicația când primește date greșite?* —, dar pe
+ecran ea are altă formă: **mesajul serverului ajunge la om, lângă câmpul greșit, sau se pierde pe
+drum?** Cele 126 de refuzuri reparate până acum sunt exact ce trebuie să se vadă acolo.
+
+**Un lucru pe care lotul 10 l-a găsit și nu e despre ecrane:** `frontend_test/w_auth.py` nu exista
+pe disc din 26.08 — toată infrastructura vizuală se importa dintr-un `.pyc` rămas în `__pycache__`
+(R132). E reconstruit, iar `core/test_infra_vizuala.py` derivă acum dependențele din `import`-uri,
+nu dintr-o listă. *Înainte de orice lot vizual, asta trebuia să fie adevărat.*
 
 **LOTURILE SE ÎNLĂNȚUIE ÎN ACEEAȘI TURĂ** (`DECIZII.md` 30, Costin 04.09.2026): raportul de lot nu
 mai încheie tura. Oprirea are **trei** cazuri, și numai ele: *o cerință reală de pus · ceva ce
@@ -359,7 +379,7 @@ ora commitului*.
 |---|---|---|---|
 | **77** | **62** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
 | **77u** | **865** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
-| **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
+| **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
 <!-- CLICHETE-VII:STOP -->
@@ -465,6 +485,7 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 | **„numerotarea firmei a fost pusă la loc"** | tipărit de hamul campaniei la prima trecere a lotului 2, 03.09 | **nu fusese.** `finally` citea alte chei decât cele întoarse de rută (`serie_factura` / `urmator_numar_factura`, numele coloanelor, în loc de `serie` / `urmator_numar`), trimitea două `None`, primea „nimic de setat" — **și tipărea că a reușit**. Firma a rămas fără serie și cu contorul la 101, iar starea asta a fost citită ca „proba n-a schimbat nimic". *Un `finally` care raportează că a ÎNCERCAT, nu că a REUȘIT, e cea mai bună ascunzătoare pentru o schimbare de stare: apare exact acolo unde te uiți ca să te liniștești.* Reparat: verifică acum starea, nu cererea |
 | **„`moneda=XYZ` primește un mesaj despre alt câmp"** | prima trecere a lotului 2, 03.09 | **proba era oarbă.** Trimitea `tert_nume` fără `tert_cui`, deci emiterea se oprea — legitim — la codul de partener, iar răspunsul notat era la ALTĂ întrebare. Cu codul completat, proba a ajuns la monedă și a scos un defect pe care prima formă nu-l putea vedea: „nu e disponibil **momentan**" pentru o monedă care nu există. *A doua instanță a clasei „sonda era oarbă", după cea din 31.08 — și, ca atunci, ieșirea instrumentului părea un rezultat, nu o ratare* |
 | **„R118 a stricat producția azi"** | comanda din 02.09 care a deschis tema | **nu s-a putut reconstitui.** Instanța documentată a clasei e cea din **01.09** (desktopul oprit, 15 ecrane). Pentru 02.09 logurile nu pot arăta o cădere de JS — o eroare de sintaxă nu ajunge niciodată la server. Ce **se poate** măsura e expunerea: `static/js` a fost rescris de zeci de ori în ziua aia, fiecare scriere live în aceeași secundă. *Clasa era reală și decizia a rămas bună; cifra „azi" nu se poate confrunta cu nimic* |
+| **16** (scrieri care refuză fără motiv) și **2** (aritmetică pe nume neutre) | clichetele din `test_refuz_tacut` (27.08) și `test_aritmetica_in_prezentare` (24.08) | **18** și **1**, remăsurate pe ACELAȘI commit cu cititorul de JS reparat — **R133**. Amândouă stăteau pe un cititor care albea sute de rânduri la o linie cu trei ghilimele; unul ieșea prea MIC, celălalt prea MARE. *A doua instanță în care aceeași greșeală mișcă două cifre în direcții OPUSE — semnul că instrumentul n-are **niciun** plafon (METODA §22). Prima a fost cititorul defazat din 27.08, în chiar unul din cele două fișiere.* |
 
 ---
 ## CE NU E ADEVĂRAT DESPRE STAREA ASTA, ȘI SE SPUNE

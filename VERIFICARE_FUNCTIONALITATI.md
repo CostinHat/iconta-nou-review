@@ -702,3 +702,145 @@ normal — n-au parametri obligatorii. `#337` `PUT /tenants/{id}` cu corp gol sp
   utilizatorului de probă — poarta de rol ține, și se vede.
 - *Lotul ăsta n-a avut nicio cădere `500`. A avut, în schimb, **două cereri goale care au schimbat
   starea** — iar asta e mai greu de văzut decât o cădere: `200` arată ca un succes.*
+
+---
+
+## LOT 10 — ECRANUL: refuzul serverului ajunge la om, sau se pierde pe drum?
+
+Primul lot care nu se probează cu cereri HTTP. Cele 75 de unități rămase din T36 sunt **ecrane**,
+iar întrebarea campaniei are pe ele altă formă: *serverul a răspuns bine — dar ce citește omul?*
+
+**Ce s-a lăsat în urmă:** nimic. Sonda de ecran a scris de două ori un centru de cost și un raport
+salvat, ambele numite `«»@#$%`; **amândouă șterse**, verificat `centre_cost` 0 și
+`rapoarte_salvate` 0. Toate celelalte 50 de tabele ale schemei, neatinse.
+
+### Defectul de clasă: cele 13 descărcări care aruncau motivul serverului
+
+Un răspuns binar (PDF, XML, ZIP, imagine) nu poate trece prin `api.get`, deci ecranele care
+descarcă un fișier chemau `fetch` direct — și ocoleau `_refuzNevazut`, bannerul care din 27.08
+garantează că un refuz la scriere nu rămâne nevăzut. **Măsurat cu `core/scan_descarcare_muta.py`:
+toate 13 aveau aceeași formă** — `if (!r.ok) throw new Error("eroare " + r.status)`.
+
+| ce spunea serverul | ce citea omul |
+|---|---|
+| `chitanță inexistentă` | **„Eroare — reîncearcă"** |
+| `factură inexistentă` | **„Eroare — reîncearcă"** |
+| `sablon inexistent` | „eroare 404" |
+| `luna invalidă: 13 (aștept 1-12)` | „Nu am putut genera fluturașul." |
+| `nicio factură emisă în luna aleasă` | „eroare 404" |
+
+Cele două *„Eroare — reîncearcă"* sunt cel mai rău caz: **un sfat care nu poate reuși niciodată**,
+fiindcă factura tot nu există la a doua apăsare. Omul apasă din nou, și din nou.
+
+**Reparația e UNA, în `api.js`** — `cereBlob` / `descarca` / `deschide` —, nu treisprezece,
+formular cu formular. Aceeași formă ca `refuz_vazut_v1`. Un `fetch` direct care descarcă un fișier
+trece acum prin același loc care citește `detail` și pune bannerul. *Un GET pe care omul l-a cerut
+apăsând un buton nu e o citire de fundal: excepția „GET-urile tac" e pentru contoare și badge-uri,
+nu pentru un fișier care nu vine.*
+
+A patrusprezecea instanță — importul extrasului bancar — a intrat pe `api.postForm`, care era deja
+instrumentat.
+
+### Cele trei defecte de SERVER, găsite probând aceleași căi
+
+| # | rută | ce era | ce e acum |
+|---|---|---|---|
+| 456 | `POST /salariati/{id}/adeverinta` | pentru un salariat **inexistent** răspundea *„lipsește numele administratorului. Completează-l în Date firmă"*. Precondiția firmei se cerea **înaintea** căutării subiectului — un drum de reparat care nu duce nicăieri: și după ce-l completezi, salariatul tot nu există | `404 salariat inexistent`. *Ordinea întrebărilor E răspunsul.* |
+| 456 | `POST /plata-salarii-fisier` cu `luna=13` | **`422 "month must be in 1..12"`** — mesajul bibliotecii, în engleză, ajuns până la contabil. Aceeași clasă cu `str(KeyError)` din lotul 8 | `422 luna invalidă: 13 (aștept 1-12)` |
+| 487 | `GET /portal/documente/balanta` cu `luna=13` | **`200` cu PDF-ul tipărit** pentru luna 13. Calea de cabinet (`/tenants/{id}/documente/balanta`) o refuză din lotul 3; calea de portal, care produce **același document** pentru client, n-a aflat niciodată | `422`. **A opta instanță** a clasei „aplicația știe într-un loc și nu știe în altul" |
+
+### Infrastructura vizuală trăia pe bytecode
+
+`frontend_test/w_auth.py` — tokenul mințit și navigarea la firmă, de care atârnă `interactiune_scan`,
+`axe_scan`, `mobil_scan` și `nav_ecrane` — **fusese șters de pe disc pe 26.08**, odată cu `b87dad49`
+(„Scoate din urmărire cele 234 de artefacte măturate din greșeală"). Timp de nouă zile, **24 de
+fișiere** s-au importat dintr-un `.pyc` de 4,6 KB rămas în `__pycache__`. Nimic n-a devenit roșu:
+Python încarcă bytecode fără să-i ceară sursa. *Un `find -name __pycache__ -delete` — curățenia
+obișnuită, cea care e chiar regulă în casă — ar fi oprit tăcut toată infrastructura vizuală.*
+
+Sursa e **reconstruită din bytecode** (dezasamblare, funcție cu funcție) și verificată rulând
+scanurile. `core/test_infra_vizuala.py` cerea fișiere **dintr-o listă**, iar `w_auth` nu era în ea
+și nici măcar în același director; acum **derivă** ce trebuie să existe din chiar `import`-urile
+uneltelor. Calibrat pe viu: mutat `w_auth.py`, garda cade numind modulul; pus la loc, trece.
+
+### Ce a răspuns bine, și merită scris
+
+Cele **8 butoane de scriere** apăsate cu formularul umplut cu date imposibile (`«»@#$%`,
+`-99999999`, `1899-02-30`) — **toate 8 vorbesc**, zero tăceri. Cele mai bune sunt cele care
+colectează *toate* câmpurile lipsă odată și marchează fiecare cu `aria-invalid`, nu doar pe primul:
+vectorul fiscal și planul de conturi. Iar planul de conturi răspunde la un simbol imposibil cu
+*„Simbolul contului începe cu cifra clasei (1-9), ca toate conturile din planul general — am primit
+'«»@#$%'"* — numește regula, clasa și ce a primit.
+
+### Instrumentul a greșit în ambele direcții, și de două ori
+
+1. **Prima variantă a scanului** clasa forma din `app.js` (`.then((r) => r.json().then(...))`) drept
+   „fără ramură de eșec", deși tratează refuzul corect. *Un instrument care pune un caz bun într-o
+   categorie greșită minte și când nu acuză pe nedrept.*
+2. **Prima variantă a sondei de ecran** căuta semnele refuzului după clasele din convenție
+   (`.msg-eroare`, `[role=alert]`) și a raportat **„TACE" despre patru butoane**. Trei minciuni în
+   una: `migrare.js` își scrie eroarea într-un `.mig-eroare` (clasă proprie — instrumentul care
+   caută convenția nu vede ecranele care n-o urmează), iar alte două **nu tăceau, ci reușeau** —
+   scriseseră în baza de date. Sonda măsoară acum **text nou vizibil**, nu clase, și numără starea
+   tuturor celor 52 de tabele înainte și după fiecare apăsare. Verdictele sunt trei, nu două:
+   **a vorbit** · **a scris** · **TACE**. *O sondă „de citire" scrie până n-o dovedești.*
+
+### Cifre
+
+- probe INVALIDE rulate: **13** pe rute de descărcare · **8** pe butoane de ecran, în **15 ecrane**
+  parcurse · **1** probă pe viu în browser (5 aserțiuni) · defecte găsite: **5** · reparate: **5** ·
+  reprobate: **5**.
+- clasa mare: **14 locuri** care aruncau motivul serverului → **0**, măsurat de
+  `core/scan_descarcare_muta.py`; 15 cereri directe tratează acum refuzul, 1 excepție declarată
+  (telemetria `keepalive`), 1 fișier exceptat cu motiv (`versiune.js`, cerere către un fișier static).
+- pe ecran: **8 butoane probate, 8 vorbesc, 0 tac, 0 scrieri rămase, 0 erori JS**.
+- gărzi noi: `core/test_descarcare_muta.py` (8 teste, din care **6 de calibrare** — două forme mute
+  injectate, două forme bune care nu trebuie acuzate, una pe propriul mod de eșec) +
+  `core/test_infra_vizuala.py` (2 teste noi, unul anti-vacuu).
+- `_cere_perioada` are acum **patruzeci și doi** de apelanți.
+- *Lotul ăsta n-a găsit nicio cădere `500`. A găsit, în schimb, un strat întreg care înlocuia
+  răspunsul serverului cu al lui — și o infrastructură de testare care mergea fiindcă nimeni nu
+  ștersese încă un director temporar.*
+
+### Ce a scos POARTA lotului 10, și nu era despre ecrane
+
+Poarta a respins de opt ori, și una singură merită scrisă aici: *„scrieri NOI care pot refuza fără
+să spună motivul: **18 > 16**"*, cu două intrări noi în `ecrane/facturi_ecran.js`. Citit ca atare,
+lotul stricase două ecrane.
+
+**Măsurat înainte de reparat, pe un worktree detașat la `277e4300`** — commitul de dinaintea
+lotului, deci fără nicio schimbare a lotului în el —, cu cititorul reparat: **18 și acolo**. Lotul
+n-a adăugat nicio scriere mută. A **mutat o linie de cod** din `facturi_ecran.js` în `api.js` —
+`cd.match(/filename="([^"]+)"/)`, chiar reparația R131 —, iar odată cu ea s-a mutat **orbirea
+instrumentului**: a treia ghilimea deschidea un „șir" care înghițea sute de rânduri.
+
+Cele două clichete care stau pe cititorul acela se mișcaseră în **direcții opuse** în aceeași zi:
+unul prea mic (16 în loc de 18), celălalt prea mare (2 în loc de 1). *Asta e semnul, și e scris în
+METODA §22: un instrument care greșește în amândouă direcțiile n-are niciun plafon.* Reparația și
+cifrele, la **R133**.
+
+*Nu e o lecție despre ecrane. E despre ce se întâmplă când mesajul unei porți respinse se citește
+ca diagnostic: „18 > 16" spune că sunt 18, nu că lotul a făcut două.*
+
+### Ce a rămas nereparat din lotul ăsta, și de ce
+
+1. **Cele 18 scrieri care refuză fără să spună motivul rămân mute la locul lor.** Plasa din
+   `api.js` le prinde pe toate — un refuz nu rămâne nevăzut —, dar un mesaj lângă butonul apăsat
+   e mai bun decât un banner. Clichetul e ca să nu **crească**, nu ca să fie declarată rezolvată;
+   asta scrie în `core/test_refuz_tacut.py` din 27.08 și nu s-a schimbat. *Ce s-a schimbat azi e
+   doar cifra: 16 era greșită, 18 e măsurată.*
+2. **Două din cele 18 nu sunt defecte deloc, și nu se pot deosebi automat.** Una cheamă o funcție
+   proprie care afișează (`plaseazaErori`), cealaltă e o căutare de fundal la tastare — un `POST`
+   folosit ca citire. Sunt exact modurile de eșec 1 și 3 pe care instrumentul și le declară în
+   antet: nu execută JS, și deosebește citirea de scriere după **metodă**. *Ca să se poată
+   deosebi, instrumentul ar trebui să știe ce face funcția chemată — adică să fie un alt
+   instrument.*
+3. **Cele 9 ecrane parcurse cu `campuri=0` n-au fost probate cu adevărat.** Formularul lor cere un
+   pas înainte — alegerea unei luni, a unui partener, deschiderea unei ferestre. Sonda le-a
+   parcurs și n-a avut ce completa, deci „a tăcut" nu se poate afirma despre ele. *Cer o cale de
+   navigare scrisă de mână, și aia e construcția lotului 11.*
+4. **Cititorul nou nu recunoaște o expresie regulată scrisă imediat după `}`** (`if(x){}/re/`).
+   `}` nu e în mulțimea de dinaintea unui regex fiindcă `{…}` e și obiect, iar `obj/2` e împărțire.
+   Direcția ratării e cea sigură — expresia rămâne vizibilă ca și cod, nu dispare cod real —, și e
+   scrisă ca modul de eșec 1 în `core/cititor_js.py`. *Zero instanțe în corpusul de azi; se
+   consemnează fiindcă e o alegere, nu o scăpare.*
