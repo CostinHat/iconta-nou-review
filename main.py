@@ -840,6 +840,14 @@ def gdpr_export_cabinet(cabinet_id: Optional[int] = None, ctx=Depends(cere_rol("
         if not cab:
             raise HTTPException(422, "Alegeți cabinetul (obligatoriu pentru superadmin).")
     else:
+        # [lotul 9] `cabinet_id` era IGNORAT tacut pentru cine nu e superadmin: cereai exportul
+        # cabinetului X si primeai, cu `200`, arhiva cabinetului TAU. Nu e o scurgere — dar pe o
+        # rutà GDPR, „am exportat" despre alt cabinet decat cel cerut e cea mai proasta forma de
+        # tacere: arhiva pleaca mai departe cu numele gresit in minte.
+        if cabinet_id is not None and cabinet_id != ctx.get("firm"):
+            raise HTTPException(403, "Poți exporta numai cabinetul tău. Cererea a numit "
+                                     "cabinetul %s, iar al tău e %s — arhiva n-a fost produsă."
+                                     % (cabinet_id, ctx.get("firm")))
         cab = ctx.get("firm")
     if not cab:
         raise HTTPException(400, FARA_CABINET)
@@ -3463,6 +3471,13 @@ def client_actualizeaza(tenant_id: int, client_id: int, date: ClientEdit,
                         ctx=Depends(cere_rol("admin_firma", "angajat"))):
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
+        # [lotul 9] Un client INEXISTENT primea `200 {"ok": false}` — un refuz deghizat in raspuns,
+        # fara motiv si fara cod. „N-am putut actualiza" si „clientul asta nu exista" nu sunt
+        # acelasi lucru, iar primul nu spune nimic.
+        with conn.cursor() as cur:
+            cur.execute("SELECT 1 FROM clienti WHERE id=%s", (client_id,))
+            if not cur.fetchone():
+                raise HTTPException(404, "client inexistent")
         return clienti_api.actualizeaza_client(conn, client_id, **date.model_dump())
 
 
@@ -3941,6 +3956,7 @@ def _pachet_schema(ctx, tenant_id):
 
 @app.get("/pachete/{tenant_id}/rezumat")
 def pachet_rezumat(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    _cere_perioada(an, luna)
     schema = _pachet_schema(ctx, tenant_id)
     with db.get_conn(schema) as cs, db.get_conn() as cp:
         return _pachete.rezumat_luna(cs, cp, tenant_id, an, luna)
@@ -3953,6 +3969,7 @@ def pachet_genereaza(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabine
 
 @app.get("/pachete/{tenant_id}/poveste")
 def pachet_poveste_get(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    _cere_perioada(an, luna)
     _pachet_schema(ctx, tenant_id)
     with db.get_conn() as cp:
         return _pachete.get_poveste(cp, tenant_id, an, luna)
@@ -3976,6 +3993,7 @@ def _nume_tenant(conn, tenant_id):
 # [R42] „iese către un om" — pe `status=aprobat` pleacă raportul lunar la client.
 def pachet_poveste_set(tenant_id: int, an: int, luna: int, date: PachetTextIn,
                        ctx=Depends(cere_rol("admin_firma"))):
+    _cere_perioada(an, luna)
     _pachet_schema(ctx, tenant_id)
     with db.get_conn() as cp:
         r = _pachete.salveaza_poveste(cp, tenant_id, an, luna, date.text, status=date.status or "ciorna")
@@ -3997,6 +4015,7 @@ def pachet_poveste_set(tenant_id: int, an: int, luna: int, date: PachetTextIn,
 
 @app.get("/pachete/{tenant_id}/preview")
 def pachet_preview(tenant_id: int, an: int, luna: int, text: str = "", ctx=Depends(cere_cabinet)):
+    _cere_perioada(an, luna)
     # preview = ACELASI _html ca trimiterea (corp + semnatura din DB). text vine din editor,
     # deci reflecta ciorna needitata, nu doar ce e salvat in pachet_povestea.
     schema = _pachet_schema(ctx, tenant_id)
@@ -6179,8 +6198,16 @@ def _api_schema(actx, tenant_id):
 @app.post("/cabinet/api-chei")  # api_public_v1
 def api_cheie_creeaza(corp: dict = Body(default={}), ctx=Depends(cere_rol("admin_firma"))):
     from core import api_public as _ap
+    # [lotul 9] Corpul gol crea o cheie **fara nume** — iar cheia se arata O SINGURA DATA, la
+    # creare. Una fara nume nu se mai poate recunoaste in lista ca s-o revoci: ramane activa, si
+    # nimeni nu stie ce deschide.
+    _nume = str((corp or {}).get("nume") or "").strip()
+    if not _nume:
+        raise HTTPException(422, "Cheia de API are nevoie de un nume. Ea se arată o singură dată, "
+                                 "la creare; una fără nume nu se mai poate recunoaște în listă ca "
+                                 "s-o revoci.")
     with db.get_conn() as conn:
-        return _ap.genereaza(conn, ctx["firm"], (corp or {}).get("nume"))
+        return _ap.genereaza(conn, ctx["firm"], _nume)
 
 
 @app.get("/cabinet/api-chei")  # api_public_v1
@@ -6814,6 +6841,9 @@ def asistenti_finalizeaza_firme(uid: int, ctx=Depends(cere_cabinet)):
 # [patch9_semafor_rute]
 @app.get("/asistenti/echipa/semafor")
 def asistenti_semafor(zile: int = 30, ctx=Depends(cere_cabinet)):
+    if zile < 1:
+        raise HTTPException(422, "Numărul de zile privite înapoi trebuie să fie cel puțin 1 — "
+                                 "am primit %d." % zile)
     cabinet_id = _cer_admin_cabinet(ctx)
     with db.get_conn() as conn:
         return _asist.semafor_echipa(conn, cabinet_id, zile)
@@ -6821,6 +6851,9 @@ def asistenti_semafor(zile: int = 30, ctx=Depends(cere_cabinet)):
 
 @app.get("/asistenti/echipa/erori")
 def asistenti_erori(zile: int = 30, ctx=Depends(cere_cabinet)):
+    if zile < 1:
+        raise HTTPException(422, "Numărul de zile privite înapoi trebuie să fie cel puțin 1 — "
+                                 "am primit %d." % zile)
     cabinet_id = _cer_admin_cabinet(ctx)
     with db.get_conn() as conn:
         return _asist.erori_echipa(conn, cabinet_id, zile)
@@ -6829,6 +6862,12 @@ def asistenti_erori(zile: int = 30, ctx=Depends(cere_cabinet)):
 @app.get("/asistenti/echipa/centralizator")
 def asistenti_centralizator(de: Optional[str] = None, pana: Optional[str] = None,
                             ctx=Depends(cere_cabinet)):
+    # [lotul 9] Intervalul INVERSAT intorcea un raport gol, si il repeta inapoi in
+    # raspuns. A cincea instanta a clasei „un interval are o ordine".
+    if de and pana and str(pana) < str(de):
+        raise HTTPException(422, "Sfârșitul intervalului (%s) e înaintea începutului "
+                                 "(%s). Raportul se cere pe un interval, iar intervalul "
+                                 "are o ordine." % (pana, de))
     cabinet_id = _cer_admin_cabinet(ctx)
     with db.get_conn() as conn:
         return _asist.centralizator(conn, cabinet_id, de=de, pana=pana)
@@ -6837,6 +6876,12 @@ def asistenti_centralizator(de: Optional[str] = None, pana: Optional[str] = None
 @app.get("/asistenti/echipa/jurnal")
 def asistenti_jurnal(de: Optional[str] = None, pana: Optional[str] = None,
                      limit: int = 200, ctx=Depends(cere_cabinet)):
+    # [lotul 9] Intervalul INVERSAT intorcea un raport gol, si il repeta inapoi in
+    # raspuns. A cincea instanta a clasei „un interval are o ordine".
+    if de and pana and str(pana) < str(de):
+        raise HTTPException(422, "Sfârșitul intervalului (%s) e înaintea începutului "
+                                 "(%s). Raportul se cere pe un interval, iar intervalul "
+                                 "are o ordine." % (pana, de))
     cabinet_id = _cer_admin_cabinet(ctx)
     with db.get_conn() as conn:
         return _asist.jurnal(conn, cabinet_id, de=de, pana=pana, limit=limit)
@@ -6869,6 +6914,12 @@ def asistenti_activitate(uid: int, ctx=Depends(cere_cabinet)):
 def eu_calitate(de: Optional[str] = None, pana: Optional[str] = None,
                 ctx=Depends(cere_cabinet)):
     """Self-view: propria calitate (nivel, semafor, rata, tipare). uid din token."""
+    # [lotul 9] Intervalul INVERSAT intorcea un raport gol, si il repeta inapoi in
+    # raspuns. A cincea instanta a clasei „un interval are o ordine".
+    if de and pana and str(pana) < str(de):
+        raise HTTPException(422, "Sfârșitul intervalului (%s) e înaintea începutului "
+                                 "(%s). Raportul se cere pe un interval, iar intervalul "
+                                 "are o ordine." % (pana, de))
     with db.get_conn() as conn:
         r = _asist.calitate(conn, ctx["firm"], ctx["uid"], de=de, pana=pana)
         if not r.get("ok"):
@@ -6891,9 +6942,14 @@ class ProfilIn(BaseModel):
 
 # [p47_compet]
 class CompetenteIn(BaseModel):
-    poate_pregati: bool = False
-    poate_valida: bool = False
-    poate_depune: bool = False
+    # [lotul 9, 04.09.2026] Cele trei aveau implicit `False`, deci un corp GOL insemna „scoate-mi
+    # toate drepturile" — si chiar asta s-a intamplat la proba: patronul 1968, care depusese o
+    # declaratie prin interfata cu o zi inainte, a ramas fara `poate_depune`. *Absenta unui camp nu
+    # e un raspuns; un drept nu se pierde din tacere.* Fara implicit: cine seteaza competentele le
+    # declara pe toate trei, iar cine nu trimite nimic primeste un refuz, nu o golire.
+    poate_pregati: bool
+    poate_valida: bool
+    poate_depune: bool
 
 # [p50_edu]
 @app.get("/eu/educatie")

@@ -1975,7 +1975,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T35 — Pachetul lunar către client și solicitările lui
 
-**Clasa:** MECANIC · **rute:** 38 (din care schimba date: 16) · **refuzuri explicite:** 59
+**Clasa:** MECANIC · **rute:** 38 (din care schimba date: 16) · **refuzuri explicite:** 60
 
 **Cine:** rol cerut: `admin_firma`, `angajat`, `verificat-în-corp`. **Rute care schimba date fara nicio verificare de rol: 5 din 16.**
 

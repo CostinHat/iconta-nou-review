@@ -488,43 +488,43 @@
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 294 | pachet genereaza | `POST /pachete/{tenant_id}/genereaza` · `cere_cabinet` | creare sau executie — `pachet_genereaza()` | nu | neprobat |
-| 295 | pachet poveste get | `GET /pachete/{tenant_id}/poveste` · `cere_cabinet` | citire / afisare — `pachet_poveste_get()` | nu | neprobat |
-| 296 | pachet poveste set | `POST /pachete/{tenant_id}/poveste` · rol `admin_firma` | creare sau executie — `pachet_poveste_set()` | nu | neprobat |
-| 297 | pachet preview | `GET /pachete/{tenant_id}/preview` · `cere_cabinet` | citire / afisare — `pachet_preview()` | nu | neprobat |
-| 298 | pachet rezumat | `GET /pachete/{tenant_id}/rezumat` · `cere_cabinet` | citire / afisare — `pachet_rezumat()` | nu | neprobat |
-| 299 | pachet trimite | `POST /pachete/{tenant_id}/trimite` · rol `admin_firma` | creare sau executie — `pachet_trimite()` | nu | neprobat |
-| 300 | portal acasa | `GET /portal/acasa` · `cere_client` | citire / afisare — `portal_acasa()` | nu | neprobat |
-| 301 | portal acces cont | `GET /portal/acces-cont` · `cere_client` | citire / afisare — `portal_acces_cont()` | nu | neprobat |
-| 302 | portal adauga acces | `POST /portal/acces-cont/acces` · rol `verificat-în-corp` | creare sau executie — `portal_adauga_acces()` | nu | neprobat |
-| 303 | portal revoca acces | `DELETE /portal/acces-cont/acces/{user_id}` · `cere_client` | stergere — `portal_revoca_acces()` | nu | neprobat |
-| 304 | portal schimba email | `PUT /portal/acces-cont/email` · `cere_client` | modificare — `portal_schimba_email()` | nu | neprobat |
-| 305 | portal cashflow | `GET /portal/cashflow` · `cere_client` | citire / afisare — `portal_cashflow()` | nu | neprobat |
-| 306 | portal declaratii | `GET /portal/declaratii` · `cere_client` | citire / afisare — `portal_declaratii()` | nu | neprobat |
-| 307 | portal documente balanta | `GET /portal/documente/balanta` · `cere_client` | citire / afisare — `portal_documente_balanta()` | nu | neprobat |
-| 308 | portal documente luni | `GET /portal/documente/luni` · `cere_client` | citire / afisare — `portal_documente_luni()` | nu | neprobat |
-| 309 | portal facturi | `GET /portal/facturi` · `cere_client` | citire / afisare — `portal_facturi()` | da | neprobat |
-| 310 | portal firma | `GET /portal/firma` · `cere_client` | citire / afisare — `portal_firma()` | nu | neprobat |
+| 294 | pachet genereaza | `POST /pachete/{tenant_id}/genereaza` · `cere_cabinet` | creare sau executie — `pachet_genereaza()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 295 | pachet poveste get | `GET /pachete/{tenant_id}/poveste` · `cere_cabinet` | citire / afisare — `pachet_poveste_get()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 296 | pachet poveste set | `POST /pachete/{tenant_id}/poveste` · rol `admin_firma` | creare sau executie — `pachet_poveste_set()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 297 | pachet preview | `GET /pachete/{tenant_id}/preview` · `cere_cabinet` | citire / afisare — `pachet_preview()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 298 | pachet rezumat | `GET /pachete/{tenant_id}/rezumat` · `cere_cabinet` | citire / afisare — `pachet_rezumat()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 299 | pachet trimite | `POST /pachete/{tenant_id}/trimite` · rol `admin_firma` | creare sau executie — `pachet_trimite()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 300 | portal acasa | `GET /portal/acasa` · `cere_client` | citire / afisare — `portal_acasa()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 301 | portal acces cont | `GET /portal/acces-cont` · `cere_client` | citire / afisare — `portal_acces_cont()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 302 | portal adauga acces | `POST /portal/acces-cont/acces` · rol `verificat-în-corp` | creare sau executie — `portal_adauga_acces()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 303 | portal revoca acces | `DELETE /portal/acces-cont/acces/{user_id}` · `cere_client` | stergere — `portal_revoca_acces()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 304 | portal schimba email | `PUT /portal/acces-cont/email` · `cere_client` | modificare — `portal_schimba_email()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 305 | portal cashflow | `GET /portal/cashflow` · `cere_client` | citire / afisare — `portal_cashflow()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 306 | portal declaratii | `GET /portal/declaratii` · `cere_client` | citire / afisare — `portal_declaratii()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 307 | portal documente balanta | `GET /portal/documente/balanta` · `cere_client` | citire / afisare — `portal_documente_balanta()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 308 | portal documente luni | `GET /portal/documente/luni` · `cere_client` | citire / afisare — `portal_documente_luni()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 309 | portal facturi | `GET /portal/facturi` · `cere_client` | citire / afisare — `portal_facturi()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 310 | portal firma | `GET /portal/firma` · `cere_client` | citire / afisare — `portal_firma()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 311 | portal firme | `GET /portal/firme` · `cere_client` | citire / afisare — `portal_firme()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 312 | portal kpi | `GET /portal/kpi` · `cere_client` | citire / afisare — `portal_kpi()` | nu | neprobat |
-| 313 | portal povesti | `GET /portal/povesti` · `cere_client` | citire / afisare — `portal_povesti()` | nu | neprobat |
-| 314 | portal recomanda | `POST /portal/recomanda` · `cere_client` | creare sau executie — `portal_recomanda()` | nu | neprobat |
-| 315 | portal recomanda preview | `GET /portal/recomanda/preview` · `cere_client` | citire / afisare — `portal_recomanda_preview()` | nu | neprobat |
-| 316 | portal solicitari lista | `GET /portal/solicitari` · `cere_client` | citire / afisare — `portal_solicitari_lista()` | nu | neprobat |
-| 317 | portal solicitari trimite | `POST /portal/solicitari` · `cere_client` | creare sau executie — `portal_solicitari_trimite()` | nu | neprobat |
-| 318 | portal solicitari contor | `GET /portal/solicitari/contor` · `cere_client` | citire / afisare — `portal_solicitari_contor()` | nu | neprobat |
-| 319 | [R62 (1)] Confirmarea schimbarii de adresa | `POST /public/confirma-email` · fără gardă | creare sau executie — `portal_confirma_email()` | nu | neprobat |
+| 312 | portal kpi | `GET /portal/kpi` · `cere_client` | citire / afisare — `portal_kpi()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 313 | portal povesti | `GET /portal/povesti` · `cere_client` | citire / afisare — `portal_povesti()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 314 | portal recomanda | `POST /portal/recomanda` · `cere_client` | creare sau executie — `portal_recomanda()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 315 | portal recomanda preview | `GET /portal/recomanda/preview` · `cere_client` | citire / afisare — `portal_recomanda_preview()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 316 | portal solicitari lista | `GET /portal/solicitari` · `cere_client` | citire / afisare — `portal_solicitari_lista()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 317 | portal solicitari trimite | `POST /portal/solicitari` · `cere_client` | creare sau executie — `portal_solicitari_trimite()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 318 | portal solicitari contor | `GET /portal/solicitari/contor` · `cere_client` | citire / afisare — `portal_solicitari_contor()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 319 | [R62 (1)] Confirmarea schimbarii de adresa | `POST /public/confirma-email` · fără gardă | creare sau executie — `portal_confirma_email()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 320 | Emite un token de PREVIZUALIZARE (read-only, tab-local) pentru portalul clientului firmei | `POST /tenants/{tenant_id}/acces-portal` · rol `admin_firma/angajat/verificat-în-corp` | creare sau executie — `acces_portal_preview()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 321 | client acces lista | `GET /tenants/{tenant_id}/client-acces` · rol `admin_firma/angajat` | citire / afisare — `client_acces_lista()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 322 | client acces creeaza | `POST /tenants/{tenant_id}/client-acces` · rol `admin_firma/verificat-în-corp` | creare sau executie — `client_acces_creeaza()` | da | neprobat |
+| 322 | client acces creeaza | `POST /tenants/{tenant_id}/client-acces` · rol `admin_firma/verificat-în-corp` | creare sau executie — `client_acces_creeaza()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 323 | client acces revoca | `DELETE /tenants/{tenant_id}/client-acces/{user_id}` · rol `admin_firma` | stergere — `client_acces_revoca()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 324 | clienti lista | `GET /tenants/{tenant_id}/clienti` · `cere_cabinet` | citire / afisare — `clienti_lista()` | da | neprobat |
-| 325 | client creeaza | `POST /tenants/{tenant_id}/clienti` · rol `admin_firma/angajat` | creare sau executie — `client_creeaza()` | da | neprobat |
+| 324 | clienti lista | `GET /tenants/{tenant_id}/clienti` · `cere_cabinet` | citire / afisare — `clienti_lista()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 325 | client creeaza | `POST /tenants/{tenant_id}/clienti` · rol `admin_firma/angajat` | creare sau executie — `client_creeaza()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 326 | client sterge | `DELETE /tenants/{tenant_id}/clienti/{client_id}` · rol `admin_firma/angajat` | stergere — `client_sterge()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 327 | client detalii | `GET /tenants/{tenant_id}/clienti/{client_id}` · `cere_cabinet` | citire / afisare — `client_detalii()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 328 | client actualizeaza | `PUT /tenants/{tenant_id}/clienti/{client_id}` · rol `admin_firma/angajat` | modificare — `client_actualizeaza()` | da | neprobat |
+| 328 | client actualizeaza | `PUT /tenants/{tenant_id}/clienti/{client_id}` · rol `admin_firma/angajat` | modificare — `client_actualizeaza()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 329 | cabinet solicitari lista | `GET /tenants/{tenant_id}/solicitari` · `cere_context` | citire / afisare — `cabinet_solicitari_lista()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 330 | cabinet solicitari raspunde | `POST /tenants/{tenant_id}/solicitari` · rol `admin_firma` | creare sau executie — `cabinet_solicitari_raspunde()` | nu | neprobat |
+| 330 | cabinet solicitari raspunde | `POST /tenants/{tenant_id}/solicitari` · rol `admin_firma` | creare sau executie — `cabinet_solicitari_raspunde()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 331 | [R62 (3)] Urma se poate CITI | `GET /tenants/{tenant_id}/urme-portal` · `cere_cabinet` | citire / afisare — `cabinet_urme_portal()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T36 — Ciclul de viață al firmei — creare, identitate, dezactivare, scoatere (9)
@@ -532,29 +532,29 @@
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
 | 332 | [R72] Urma firmelor scoase din portofoliu — CITITĂ, nu doar scrisă | `GET /firme-scoase` · `cere_cabinet` | citire / afisare — `firme_scoase()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 333 | `inactive=true` cuprinde ȘI firmele dezactivate — altfel o firmă dezactivată ar ieși din listă fără nicio cale de întoa… | `GET /tenants` · `cere_cabinet` | citire / afisare — `tenants()` | nu | neprobat |
-| 334 | tenant creeaza | `POST /tenants` · rol `admin_firma` | creare sau executie — `tenant_creeaza()` | da | neprobat |
-| 335 | [R72] Scoate din portofoliu o firmă FĂRĂ evidență | `DELETE /tenants/{tenant_id}` · rol `admin_firma` | stergere — `tenant_scoate()` | da | neprobat |
+| 333 | `inactive=true` cuprinde ȘI firmele dezactivate — altfel o firmă dezactivată ar ieși din listă fără nicio cale de întoa… | `GET /tenants` · `cere_cabinet` | citire / afisare — `tenants()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 334 | tenant creeaza | `POST /tenants` · rol `admin_firma` | creare sau executie — `tenant_creeaza()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 335 | [R72] Scoate din portofoliu o firmă FĂRĂ evidență | `DELETE /tenants/{tenant_id}` · rol `admin_firma` | stergere — `tenant_scoate()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 336 | tenant detalii | `GET /tenants/{tenant_id}` · `cere_cabinet` | citire / afisare — `tenant_detalii()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 337 | tenant actualizeaza | `PUT /tenants/{tenant_id}` · rol `admin_firma` | modificare — `tenant_actualizeaza()` | da | neprobat |
-| 338 | [R72] Dezactivează / reactivează firma | `POST /tenants/{tenant_id}/activare` · rol `admin_firma` | creare sau executie — `tenant_activare()` | da | neprobat |
-| 339 | [R77] Alegerea între denumirea din aplicație și cea de la ANAF | `POST /tenants/{tenant_id}/nume-ales` · rol `admin_firma` | creare sau executie — `tenant_nume_ales()` | da | neprobat |
+| 337 | tenant actualizeaza | `PUT /tenants/{tenant_id}` · rol `admin_firma` | modificare — `tenant_actualizeaza()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 338 | [R72] Dezactivează / reactivează firma | `POST /tenants/{tenant_id}/activare` · rol `admin_firma` | creare sau executie — `tenant_activare()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 339 | [R77] Alegerea între denumirea din aplicație și cea de la ANAF | `POST /tenants/{tenant_id}/nume-ales` · rol `admin_firma` | creare sau executie — `tenant_nume_ales()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 340 | [R72] Ce se întâmplă dacă firma se scoate: are evidență sau nu, și ce anume s-a găsit | `GET /tenants/{tenant_id}/scoatere` · `cere_cabinet` | citire / afisare — `tenant_scoatere_previzualizare()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### S-ADM — suprafata ne-documentara: administrarea furnizorului (12)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 341 | admin activitate cabinet | `GET /admin/activitate/cabinet/{firm_id}` · rol `verificat-în-corp` | citire / afisare — `admin_activitate_cabinet()` | nu | neprobat |
+| 341 | admin activitate cabinet | `GET /admin/activitate/cabinet/{firm_id}` · rol `verificat-în-corp` | citire / afisare — `admin_activitate_cabinet()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 342 | admin activitate cabinete | `GET /admin/activitate/cabinete` · rol `verificat-în-corp` | citire / afisare — `admin_activitate_cabinete()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 343 | admin alerte fiscale | `GET /admin/alerte-fiscale` · rol `superadmin` | citire / afisare — `admin_alerte_fiscale()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 344 | admin alerta tratata | `POST /admin/alerte-fiscale/{aid}/tratat` · rol `superadmin` | creare sau executie — `admin_alerta_tratata()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 345 | Cifre agregate din public.eveniment_public: pe eveniment, pe zi, pe pagina de provenienta | `GET /admin/analytics` · rol `superadmin` | citire / afisare — `admin_analytics()` | nu | neprobat |
-| 346 | admin anunt creeaza | `POST /admin/anunturi` · rol `superadmin` | creare sau executie — `admin_anunt_creeaza()` | nu | neprobat |
+| 345 | Cifre agregate din public.eveniment_public: pe eveniment, pe zi, pe pagina de provenienta | `GET /admin/analytics` · rol `superadmin` | citire / afisare — `admin_analytics()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 346 | admin anunt creeaza | `POST /admin/anunturi` · rol `superadmin` | creare sau executie — `admin_anunt_creeaza()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 347 | admin cabinet reactiveaza | `POST /admin/cabinete/{firm_id}/reactiveaza` · rol `verificat-în-corp` | creare sau executie — `admin_cabinet_reactiveaza()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 348 | admin cabinet suspenda | `POST /admin/cabinete/{firm_id}/suspenda` · rol `verificat-în-corp` | creare sau executie — `admin_cabinet_suspenda()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 349 | admin sanatate | `GET /admin/sanatate` · rol `verificat-în-corp` | citire / afisare — `admin_sanatate()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 350 | admin sanatate istoric | `GET /admin/sanatate/istoric` · rol `verificat-în-corp` | citire / afisare — `admin_sanatate_istoric()` | nu | neprobat |
+| 350 | admin sanatate istoric | `GET /admin/sanatate/istoric` · rol `verificat-în-corp` | citire / afisare — `admin_sanatate_istoric()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 351 | admin sanatate test alerta | `POST /admin/sanatate/test-alerta` · rol `verificat-în-corp` | creare sau executie — `admin_sanatate_test_alerta()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 352 | Detector "running == HEAD" (superadmin): commitul cu care a pornit procesul viu (stampilat in memorie la startup) vs HE… | `GET /admin/versiune` · rol `superadmin` | citire / afisare — `admin_versiune()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
@@ -563,22 +563,22 @@
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
 | 353 | asistenti lista | `GET /asistenti` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_lista()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 354 | asistent creeaza | `POST /asistenti` · rol `admin_firma` | creare sau executie — `asistent_creeaza()` | nu | neprobat |
-| 355 | asistenti centralizator | `GET /asistenti/echipa/centralizator` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_centralizator()` | da | neprobat |
-| 356 | asistenti erori | `GET /asistenti/echipa/erori` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_erori()` | da | neprobat |
-| 357 | asistenti jurnal | `GET /asistenti/echipa/jurnal` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_jurnal()` | da | neprobat |
-| 358 | asistenti semafor | `GET /asistenti/echipa/semafor` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_semafor()` | da | neprobat |
+| 354 | asistent creeaza | `POST /asistenti` · rol `admin_firma` | creare sau executie — `asistent_creeaza()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 355 | asistenti centralizator | `GET /asistenti/echipa/centralizator` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_centralizator()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 356 | asistenti erori | `GET /asistenti/echipa/erori` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_erori()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 357 | asistenti jurnal | `GET /asistenti/echipa/jurnal` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_jurnal()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 358 | asistenti semafor | `GET /asistenti/echipa/semafor` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_semafor()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 359 | asistenti detalii | `GET /asistenti/{uid}` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_detalii()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 360 | asistenti activitate | `GET /asistenti/{uid}/activitate` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_activitate()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 361 | asistenti calitate | `GET /asistenti/{uid}/calitate` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_calitate()` | da | neprobat |
+| 361 | asistenti calitate | `GET /asistenti/{uid}/calitate` · rol `admin_firma(ajutor)` | citire / afisare — `asistenti_calitate()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 362 | asistenti dezactiveaza | `POST /asistenti/{uid}/dezactiveaza` · rol `admin_firma(ajutor)` | creare sau executie — `asistenti_dezactiveaza()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 363 | asistenti finalizeaza firme | `POST /asistenti/{uid}/finalizeaza-firme` · rol `admin_firma(ajutor)` | creare sau executie — `asistenti_finalizeaza_firme()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 364 | asistenti elimina | `DELETE /asistenti/{uid}/firme/{tid}` · rol `admin_firma(ajutor)` | stergere — `asistenti_elimina()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 365 | asistenti atribuie | `POST /asistenti/{uid}/firme/{tid}` · rol `admin_firma(ajutor)` | creare sau executie — `asistenti_atribuie()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 366 | asistenti permisiuni | `POST /asistenti/{uid}/permisiuni` · rol `admin_firma(ajutor)` | creare sau executie — `asistenti_permisiuni()` | da | neprobat |
+| 366 | asistenti permisiuni | `POST /asistenti/{uid}/permisiuni` · rol `admin_firma(ajutor)` | creare sau executie — `asistenti_permisiuni()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 367 | asistenti reactiveaza | `POST /asistenti/{uid}/reactiveaza` · rol `admin_firma(ajutor)` | creare sau executie — `asistenti_reactiveaza()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 368 | api chei lista | `GET /cabinet/api-chei` · rol `admin_firma` | citire / afisare — `api_chei_lista()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 369 | api cheie creeaza | `POST /cabinet/api-chei` · rol `admin_firma` | creare sau executie — `api_cheie_creeaza()` | nu | neprobat |
+| 369 | api cheie creeaza | `POST /cabinet/api-chei` · rol `admin_firma` | creare sau executie — `api_cheie_creeaza()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 370 | api cheie revoca | `DELETE /cabinet/api-chei/{kid}` · rol `admin_firma` | stergere — `api_cheie_revoca()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 371 | capacitate panou | `GET /capacitate` · rol `admin_firma` | citire / afisare — `capacitate_panou()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 372 | tipare panou | `GET /tipare` · rol `admin_firma` | citire / afisare — `tipare_panou()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
@@ -598,46 +598,46 @@
 | 376 | eu anunturi | `GET /eu/anunturi` · `cere_cabinet` | citire / afisare — `eu_anunturi()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 377 | eu anunt confirma | `POST /eu/anunturi/{aid}/confirma` · `cere_cabinet` | creare sau executie — `eu_anunt_confirma()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 378 | eu cabinet get | `GET /eu/cabinet` · `cere_cabinet` | citire / afisare — `eu_cabinet_get()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 379 | eu cabinet set | `POST /eu/cabinet` · rol `verificat-în-corp` | creare sau executie — `eu_cabinet_set()` | nu | neprobat |
-| 380 | Self-view: propria calitate (nivel, semafor, rata, tipare) | `GET /eu/calitate` · `cere_cabinet` | citire / afisare — `eu_calitate()` | da | neprobat |
+| 379 | eu cabinet set | `POST /eu/cabinet` · rol `verificat-în-corp` | creare sau executie — `eu_cabinet_set()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 380 | Self-view: propria calitate (nivel, semafor, rata, tipare) | `GET /eu/calitate` · `cere_cabinet` | citire / afisare — `eu_calitate()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 381 | eu competente get | `GET /eu/competente` · `cere_cabinet` | citire / afisare — `eu_competente_get()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 382 | eu competente set | `POST /eu/competente` · `cere_cabinet` | creare sau executie — `eu_competente_set()` | da | neprobat |
+| 382 | eu competente set | `POST /eu/competente` · `cere_cabinet` | creare sau executie — `eu_competente_set()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 383 | eu educatie | `GET /eu/educatie` · rol `verificat-în-corp` | citire / afisare — `eu_educatie()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 384 | eu educatie vazut | `POST /eu/educatie/patru-ochi/vazut` · rol `verificat-în-corp` | creare sau executie — `eu_educatie_vazut()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 385 | [po_efectiv_v1] {activ, posibil, efectiv} din SURSA UNICA folosita si de enforcement (core.coada_api.patru_ochi_stare) | `GET /eu/patru-ochi` · `cere_cabinet` | citire / afisare — `eu_patru_ochi_stare()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 386 | eu patru ochi | `POST /eu/patru-ochi` · rol `verificat-în-corp` | creare sau executie — `eu_patru_ochi()` | da | neprobat |
+| 386 | eu patru ochi | `POST /eu/patru-ochi` · rol `verificat-în-corp` | creare sau executie — `eu_patru_ochi()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 387 | Permisiunile actorului curent | `GET /eu/permisiuni` · rol `verificat-în-corp` | citire / afisare — `eu_permisiuni()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 388 | eu profil | `POST /eu/profil` · `cere_cabinet` | creare sau executie — `eu_profil()` | nu | neprobat |
-| 389 | eu schimba parola | `POST /eu/schimba-parola` · `cere_cabinet` | creare sau executie — `eu_schimba_parola()` | nu | neprobat |
+| 388 | eu profil | `POST /eu/profil` · `cere_cabinet` | creare sau executie — `eu_profil()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 389 | eu schimba parola | `POST /eu/schimba-parola` · `cere_cabinet` | creare sau executie — `eu_schimba_parola()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 
 ### S-CON — suprafata ne-documentara: cont și acces (9)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 390 | login | `POST /auth/login` · fără gardă | creare sau executie — `login()` | nu | neprobat |
-| 391 | register | `POST /auth/register` · fără gardă | creare sau executie — `register()` | da | neprobat |
-| 392 | activare cont | `POST /public/activare` · fără gardă | creare sau executie — `activare_cont()` | nu | neprobat |
+| 390 | login | `POST /auth/login` · fără gardă | creare sau executie — `login()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 391 | register | `POST /auth/register` · fără gardă | creare sau executie — `register()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 392 | activare cont | `POST /public/activare` · fără gardă | creare sau executie — `activare_cont()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 393 | public config | `GET /public/config` · fără gardă | citire / afisare — `public_config()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 394 | Trimite link de logare fara parola | `POST /public/magic-link` · fără gardă | creare sau executie — `magic_link_cere()` | nu | neprobat |
-| 395 | magic login | `POST /public/magic-login` · fără gardă | creare sau executie — `magic_login()` | nu | neprobat |
-| 396 | reset parola cere | `POST /public/reset-parola/cere` · fără gardă | creare sau executie — `reset_parola_cere()` | nu | neprobat |
-| 397 | reset parola seteaza | `POST /public/reset-parola/seteaza` · fără gardă | creare sau executie — `reset_parola_seteaza()` | nu | neprobat |
+| 394 | Trimite link de logare fara parola | `POST /public/magic-link` · fără gardă | creare sau executie — `magic_link_cere()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 395 | magic login | `POST /public/magic-login` · fără gardă | creare sau executie — `magic_login()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 396 | reset parola cere | `POST /public/reset-parola/cere` · fără gardă | creare sau executie — `reset_parola_cere()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 397 | reset parola seteaza | `POST /public/reset-parola/seteaza` · fără gardă | creare sau executie — `reset_parola_seteaza()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 398 | public termeni | `GET /public/termeni` · fără gardă | citire / afisare — `public_termeni()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### S-GDP — suprafata ne-documentara: GDPR (4)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 399 | gdpr cerere stergere | `POST /gdpr/cerere-stergere` · rol `admin_firma` | creare sau executie — `gdpr_cerere_stergere()` | nu | neprobat |
-| 400 | gdpr export cabinet | `GET /gdpr/export-cabinet` · rol `admin_firma/verificat-în-corp` | citire / afisare — `gdpr_export_cabinet()` | nu | neprobat |
-| 401 | gdpr sterge executa | `POST /gdpr/sterge-cabinet/{cabinet_id}/executa` · rol `superadmin` | creare sau executie — `gdpr_sterge_executa()` | da | neprobat |
+| 399 | gdpr cerere stergere | `POST /gdpr/cerere-stergere` · rol `admin_firma` | creare sau executie — `gdpr_cerere_stergere()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 400 | gdpr export cabinet | `GET /gdpr/export-cabinet` · rol `admin_firma/verificat-în-corp` | citire / afisare — `gdpr_export_cabinet()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 401 | gdpr sterge executa | `POST /gdpr/sterge-cabinet/{cabinet_id}/executa` · rol `superadmin` | creare sau executie — `gdpr_sterge_executa()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 402 | gdpr sterge previzualizare | `POST /gdpr/sterge-cabinet/{cabinet_id}/previzualizare` · rol `superadmin` | creare sau executie — `gdpr_sterge_previzualizare()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### S-NOT — suprafata ne-documentara: notificări (5)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 403 | notificari lista | `GET /notificari` · `cere_cabinet` | citire / afisare — `notificari_lista()` | nu | neprobat |
+| 403 | notificari lista | `GET /notificari` · `cere_cabinet` | citire / afisare — `notificari_lista()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 404 | notificari citit toate | `POST /notificari/citit` · `cere_cabinet` | creare sau executie — `notificari_citit_toate()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 405 | notificari contor | `GET /notificari/contor` · `cere_cabinet` | citire / afisare — `notificari_contor()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 406 | notificari sumar | `GET /notificari/sumar` · `cere_cabinet` | citire / afisare — `notificari_sumar()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
@@ -659,18 +659,18 @@
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
 | 414 | Ajutor contextual pentru contabil (semnul "?" din UI) | `GET /ajutor/{fid}` · fără gardă | citire / afisare — `ajutor_contextual()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 415 | Inregistrare eveniment public de interes (deschidere modal, click Intra in cont, vizita ghid) | `POST /api/eveniment-public` · fără gardă | creare sau executie — `eveniment_public()` | nu | neprobat |
-| 416 | raportari creeaza | `POST /raportari` · `cere_cabinet` | creare sau executie — `raportari_creeaza()` | nu | neprobat |
+| 415 | Inregistrare eveniment public de interes (deschidere modal, click Intra in cont, vizita ghid) | `POST /api/eveniment-public` · fără gardă | creare sau executie — `eveniment_public()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 416 | raportari creeaza | `POST /raportari` · `cere_cabinet` | creare sau executie — `raportari_creeaza()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 417 | raportari admin | `GET /raportari/admin` · rol `verificat-în-corp` | citire / afisare — `raportari_admin()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 418 | raportari contor | `GET /raportari/contor` · `cere_cabinet` | citire / afisare — `raportari_contor()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 419 | raportari mele | `GET /raportari/eu` · `cere_cabinet` | citire / afisare — `raportari_mele()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 420 | raportari imagine | `POST /raportari/mesaj/{mid}/imagine` · rol `verificat-în-corp` | creare sau executie — `raportari_imagine()` | nu | neprobat |
+| 420 | raportari imagine | `POST /raportari/mesaj/{mid}/imagine` · rol `verificat-în-corp` | creare sau executie — `raportari_imagine()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 421 | raportari fir | `GET /raportari/{rid}` · rol `verificat-în-corp` | citire / afisare — `raportari_fir()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 422 | raportari citit | `POST /raportari/{rid}/citit` · rol `verificat-în-corp` | creare sau executie — `raportari_citit()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 423 | raportari mesaj | `POST /raportari/{rid}/mesaj` · rol `verificat-în-corp` | creare sau executie — `raportari_mesaj()` | nu | neprobat |
-| 424 | raportari pentru admin | `POST /raportari/{rid}/pentru-admin` · rol `verificat-în-corp` | creare sau executie — `raportari_pentru_admin()` | nu | neprobat |
-| 425 | raportari stare | `POST /raportari/{rid}/stare` · rol `superadmin` | creare sau executie — `raportari_stare()` | nu | neprobat |
-| 426 | trimite recomandari | `POST /recomanda` · `cere_cabinet` | creare sau executie — `trimite_recomandari()` | nu | neprobat |
+| 423 | raportari mesaj | `POST /raportari/{rid}/mesaj` · rol `verificat-în-corp` | creare sau executie — `raportari_mesaj()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 424 | raportari pentru admin | `POST /raportari/{rid}/pentru-admin` · rol `verificat-în-corp` | creare sau executie — `raportari_pentru_admin()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 425 | raportari stare | `POST /raportari/{rid}/stare` · rol `superadmin` | creare sau executie — `raportari_stare()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
+| 426 | trimite recomandari | `POST /recomanda` · `cere_cabinet` | creare sau executie — `trimite_recomandari()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 9 |
 | 427 | recomanda preview | `GET /recomanda/preview` · `cere_cabinet` | citire / afisare — `recomanda_preview()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ## B. Ecrane — 75

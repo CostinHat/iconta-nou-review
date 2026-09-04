@@ -644,3 +644,61 @@ abia după corectare.**
   despre un serviciu extern** (1) · **tăcere pe perioadă** (5) · **interval inversat** (1).
 - `_cere_perioada` are acum **treizeci și șapte** de apelanți. *Fiecare lot îl găsește într-un loc
   nou — iar asta e chiar măsura clasei: nu era o scăpare, era o lipsă de sistem.*
+
+---
+
+## LOT 9 — pachetul lunar și ciclul de viață al firmei (72 de probe INVALIDE pe 72 de rute)
+
+T35 (pachetul lunar către client, 30) + **rutele** din T36 (ciclul de viață al firmei, 42).
+**Cele 75 de ECRANE din T36 nu sunt aici**: nu se probează cu cereri HTTP, ci prin Playwright — altă
+unealtă, deci alt lot.
+
+**Două excluderi DELIBERATE, declarate înainte de probare:** `DELETE /tenants/{id}` și
+`POST /gdpr/sterge-cabinet/{id}/executa` s-au probat **numai pe `999999`**. Sunt cele mai
+distructive două acte ale aplicației; pe un id real, o probă care „trece" ar șterge o firmă sau un
+cabinet întreg. *Nu se probează cu date valide ce nu se poate reface.*
+
+### Două cereri GOALE care au produs efecte reale
+
+| # | rută | ce a făcut | reparat |
+|---|---|---|---|
+| 382 | `POST /eu/competente` | **A SCOS TOATE DREPTURILE.** `CompetenteIn` avea toate cele trei câmpuri cu implicit `False`, deci un corp gol însemna *„scoate-mi tot"*. Probat, și s-a întâmplat: patronul **1968** — cel care depusese o declarație prin interfață cu o zi înainte — a rămas fără `poate_depune`. **Refăcut cu mâna** | **DA** — câmpurile n-au implicit: cine setează competențe le declară pe toate trei, iar cine nu trimite nimic primește un refuz, nu o golire |
+| 369 | `POST /cabinet/api-chei` | **A CREAT O CHEIE FĂRĂ NUME**, rămasă activă. Cheia se arată **o singură dată**, la creare; una fără nume nu se mai poate recunoaște în listă ca s-o revoci. **Ștearsă** | **DA** — numele e obligatoriu, cu motivul scris în refuz |
+
+*Amândouă sunt aceeași clasă ca `woocommerce/config` din lotul 7 și ca importurile din lotul 1b:
+**o cerere fără conținut nu e o cerere de golire**.*
+
+### Restul
+
+| clasă | unde | ce era | ce e acum |
+|---|---|---|---|
+| **perioadă imposibilă** | `#295` `#297` `#298` pachetul lunar, cu `luna=13` | `200` — iar `#297` **genera HTML-ul pachetului** pentru luna 13 | `422`; gardat și `#296` (scrierea poveștii), care n-a fost probat dar are aceeași semnătură |
+| **număr de zile negativ** | `#356` erori · `#358` semafor, cu `zile=-5` | `200`, iar `#356` repeta `"zile": -5` înapoi | `422` |
+| **interval inversat** | `#355` centralizator · `#357` jurnal · `#380` calitate | `200` cu raport gol, **și cu intervalul inversat repetat înapoi** în răspuns. **A cincea, a șasea și a șaptea instanță** a clasei, după SAF-T (lot 6), zilele lucrătoare (lot 7), rapoartele comerciale și centrele de cost (lot 8) | `422` |
+| **refuz deghizat în răspuns** | `#328` `PUT /clienti/999999` | `200` · `{"ok": false}` — fără motiv, fără cod. *„N-am putut actualiza" și „clientul ăsta nu există" nu sunt același lucru* | `404 client inexistent` |
+| **parametru ignorat tăcut, pe o rută GDPR** | `#400` `GET /gdpr/export-cabinet?cabinet_id=X` | `200` cu **arhiva cabinetului TĂU**, oricare ar fi fost `cabinet_id`. Nu e o scurgere — dar pe o rută GDPR, „am exportat" despre alt cabinet decât cel cerut e cea mai proastă formă de tăcere: *arhiva pleacă mai departe cu numele greșit în minte* | `403`, cu ambele numere în mesaj |
+
+### Ce a răspuns `200` și **nu** e defect
+
+Cele **12 citiri de portal** (`#300`–`#318`), probate cu rol `client` și fără parametri, răspund
+normal — n-au parametri obligatorii. `#337` `PUT /tenants/{id}` cu corp gol spune
+`{"ok":true,"neschimbat":true}` — *declară că n-a schimbat nimic*, ceea ce e chiar forma bună.
+`#324` cu căutare goală întoarce lista goală.
+
+### Probele oarbe — a cincea oară, aceeași clasă
+
+Șase probe trimiteau parametri **care nu există în semnătura rutei** (`#355`, `#357`, `#380` au
+`de`/`pana`, nu an/lună; `#358` are `zile`; `#400` are `cabinet_id`; `#403` are `doar_necitite`;
+`#333` are `inactive`). FastAPI lasă parametrii necunoscuți să treacă fără să se plângă nimeni.
+**Patru dintre defectele reale ale lotului au ieșit la iveală numai după corectare.**
+
+### Cifre
+
+- probe INVALIDE rulate: **72**, pe **72 de rute**, în **două trasee** · defecte găsite: **13** ·
+  reparate: **13** · reprobate: **13**.
+- distribuția la ultima trecere: **40 × 422 · 14 × 403 · 3 × 404 · 1 × 400 · 14 × 200** (12 citiri
+  de portal + două explicate mai sus) · **0 × 500**. Înainte: **28 × 200**.
+- **cele 14 × `403`** sunt rutele de administrare (`/admin/*`, `/asistenti/*`, `/gdpr/*`) refuzate
+  utilizatorului de probă — poarta de rol ține, și se vede.
+- *Lotul ăsta n-a avut nicio cădere `500`. A avut, în schimb, **două cereri goale care au schimbat
+  starea** — iar asta e mai greu de văzut decât o cădere: `200` arată ca un succes.*

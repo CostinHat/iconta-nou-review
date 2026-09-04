@@ -286,6 +286,101 @@ def probe_T02(cheie=None):
     return p
 
 
+#: LOTUL 9 — cai care primesc un corp. **Doua excluderi DELIBERATE, si se spun:**
+#:   * `DELETE /tenants/{id}` si `POST /gdpr/sterge-cabinet/{id}/executa` se probeaza NUMAI pe
+#:     `999999`. Sunt cele mai distructive doua acte ale aplicatiei; pe un id real, o proba care
+#:     „trece" ar sterge o firma sau un cabinet intreg. *Nu se probeaza cu date valide ce nu se
+#:     poate reface.*
+#:   * `POST /pachete/{id}/trimite` si cele doua rute de recomandare TRIMIT EMAILURI. Se probeaza
+#:     numai cu corp gol — daca refuzul cade inainte de trimitere, proba e curata; daca nu cade,
+#:     asta E rezultatul si se scrie.
+_CORP_GOL_L9 = [
+    (294, "POST", "/pachete/%d/genereaza"), (296, "POST", "/pachete/%d/poveste"),
+    (299, "POST", "/pachete/%d/trimite"), (302, "POST", "/portal/acces-cont/acces"),
+    (304, "PUT", "/portal/acces-cont/email"), (314, "POST", "/portal/recomanda"),
+    (317, "POST", "/portal/solicitari"), (319, "POST", "/public/confirma-email"),
+    (322, "POST", "/tenants/%d/client-acces"), (325, "POST", "/tenants/%d/clienti"),
+    (330, "POST", "/tenants/%d/solicitari"), (334, "POST", "/tenants"),
+    (337, "PUT", "/tenants/%d"), (338, "POST", "/tenants/%d/activare"),
+    (339, "POST", "/tenants/%d/nume-ales"), (346, "POST", "/admin/anunturi"),
+    (354, "POST", "/asistenti"), (369, "POST", "/cabinet/api-chei"),
+    (379, "POST", "/eu/cabinet"), (382, "POST", "/eu/competente"),
+    (386, "POST", "/eu/patru-ochi"), (388, "POST", "/eu/profil"),
+    (389, "POST", "/eu/schimba-parola"), (390, "POST", "/auth/login"),
+    (391, "POST", "/auth/register"), (392, "POST", "/public/activare"),
+    (394, "POST", "/public/magic-link"), (395, "POST", "/public/magic-login"),
+    (396, "POST", "/public/reset-parola/cere"), (397, "POST", "/public/reset-parola/seteaza"),
+    (399, "POST", "/gdpr/cerere-stergere"), (415, "POST", "/api/eveniment-public"),
+    (416, "POST", "/raportari"), (426, "POST", "/recomanda"),
+]
+
+#: Subiecte inexistente — inclusiv cele doua acte distructive, NUMAI pe `999999`.
+_INEXISTENT_L9 = [
+    (303, "DELETE", "/portal/acces-cont/acces/999999", None),
+    (328, "PUT", "/tenants/%d/clienti/999999", {"nume": "X"}),
+    (335, "DELETE", "/tenants/999999", None),
+    (341, "GET", "/admin/activitate/cabinet/999999", None),
+    (361, "GET", "/asistenti/999999/calitate", None),
+    (366, "POST", "/asistenti/999999/permisiuni", {}),
+    (401, "POST", "/gdpr/sterge-cabinet/999999/executa", {}),
+    (420, "POST", "/raportari/mesaj/999999/imagine", {}),
+    (423, "POST", "/raportari/999999/mesaj", {}),
+    (424, "POST", "/raportari/999999/pentru-admin", {}),
+    (425, "POST", "/raportari/999999/stare", {}),
+]
+
+#: Citiri, cu si fara perioada.
+#: CORECTAT dupa prima trecere — sase probe trimiteau parametri care nu exista in semnatura.
+#: Al cincilea lot cu aceeasi clasa: FastAPI lasa parametrii necunoscuti sa treaca, deci proba
+#: masoara o intrebare pe care ruta n-o pune. Se probeaza NUMAI parametrii pe care ruta ii are.
+_CITIRI_L9 = [
+    (295, "/pachete/%d/poveste?an=2026&luna=13", "luna=13"),
+    (297, "/pachete/%d/preview?an=2026&luna=13", "luna=13"),
+    (298, "/pachete/%d/rezumat?an=2026&luna=13", "luna=13"),
+    (307, "/portal/documente/balanta?an=2026&luna=13", "luna=13"),
+    (345, "/admin/analytics?zile=-5", "zile=-5"),
+    (350, "/admin/sanatate/istoric?zile=-5", "zile=-5"),
+    (355, "/asistenti/echipa/centralizator?de=2026-09-30&pana=2026-09-01", "pana < de"),
+    (356, "/asistenti/echipa/erori?zile=-5", "zile=-5"),
+    (357, "/asistenti/echipa/jurnal?de=2026-09-30&pana=2026-09-01", "pana < de"),
+    (358, "/asistenti/echipa/semafor?zile=-5", "zile=-5"),
+    (380, "/eu/calitate?de=2026-09-30&pana=2026-09-01", "pana < de"),
+    (400, "/gdpr/export-cabinet?cabinet_id=999999", "cabinet_id=999999"),
+    (403, "/notificari?doar_necitite=poate", "doar_necitite=poate"),
+    (324, "/tenants/%d/clienti?q=", "q= (sir gol)"),
+    (333, "/tenants?inactive=poate", "inactive=poate"),
+]
+
+#: Citirile de PORTAL — cer rol client.
+_PORTAL_L9 = [
+    (300, "/portal/acasa"), (301, "/portal/acces-cont"), (305, "/portal/cashflow"),
+    (306, "/portal/declaratii"), (308, "/portal/documente/luni"), (309, "/portal/facturi"),
+    (310, "/portal/firma"), (312, "/portal/kpi"), (313, "/portal/povesti"),
+    (315, "/portal/recomanda/preview"), (316, "/portal/solicitari"),
+    (318, "/portal/solicitari/contor"),
+]
+
+
+def probe_LOT9():
+    """LOTUL 9 — T35 + rutele din T36. **Cele 75 de ECRANE din T36 nu sunt aici**: ele nu se
+    probeaza cu cereri HTTP, ci prin Playwright, si cer alta unealta — deci alt lot."""
+    F = FIRMA
+    p = []
+    for nr, met, cale in _CORP_GOL_L9:
+        c = (cale % F) if "%d" in cale else cale
+        p.append((nr, "%s %s — corp gol" % (met, c.split("/")[-1]), met, c, {}, "corp JSON gol"))
+    for nr, met, cale, corp in _INEXISTENT_L9:
+        c = (cale % F) if "%d" in cale else cale
+        p.append((nr, "%s %s — subiect inexistent" % (met, c.split("/")[-1] or c.split("/")[-2]),
+                  met, c, corp, "id=999999"))
+    for nr, cale, ce in _CITIRI_L9:
+        c = (cale % F) if "%d" in cale else cale
+        p.append((nr, "GET %s — %s" % (c.split("?")[0].split("/")[-1], ce), "GET", c, None, ce))
+    for nr, cale in _PORTAL_L9:
+        p.append((nr, "GET %s · CLIENT" % cale, "GET", cale, None, "rol client, fara parametri"))
+    return p
+
+
 #: LOTUL 8 — corpul gol, pe toate caile care primesc unul. Aceeasi proba de deschidere ca la lotul
 #: 7, unde din 28 de cai sase au cazut cu `500`.
 _CORP_GOL_L8 = [
@@ -1146,9 +1241,10 @@ def _ruleaza_cu_cheie(lot, tok, tok_client=None):
                           "T07T09T10": probe_T07T09T10,
                           "LOT6": probe_LOT6,
                           "LOT7": probe_LOT7,
-                          "LOT8": probe_LOT8}[lot]():
+                          "LOT8": probe_LOT8,
+                          "LOT9": probe_LOT9}[lot]():
             antete, t = None, tok
-            if eticheta in CU_CLIENT:
+            if eticheta.endswith("· CLIENT") or eticheta in CU_CLIENT:
                 t = tok_client
             elif CU_CHEIE_API in cale:
                 t = None
@@ -1209,7 +1305,7 @@ def _sterge_cheia(kid):
 def ruleaza(lot):
     tok = token(EMAIL)
     tok_client = token(EMAIL_CLIENT)
-    if lot in ("T02", "T05", "T03T04", "ACHIZITII", "T07T09T10", "LOT6", "LOT7", "LOT8"):
+    if lot in ("T02", "T05", "T03T04", "ACHIZITII", "T07T09T10", "LOT6", "LOT7", "LOT8", "LOT9"):
         return _ruleaza_cu_cheie(lot, tok, tok_client)
     probe = {"T01": probe_T01, "IMPORT-GOL": probe_import_gol}[lot]()
     out = []
