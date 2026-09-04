@@ -74,23 +74,23 @@
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 40 | tenant fluturas | `GET /tenants/{tenant_id}/fluturas/{salariat_id}` · rol `admin_firma` | citire / afisare — `tenant_fluturas()` | nu | neprobat |
-| 41 | Scrie nota ciorna a statului de plata | `POST /tenants/{tenant_id}/salarii-contare` · `cere_cabinet` | creare sau executie — `salarii_contare_scrie()` | da | neprobat |
-| 42 | Nota pe care ar scrie-o statul de plata + divergentele fata de D112, cu ambele cifre. | `POST /tenants/{tenant_id}/salarii-contare/propunere` · `cere_cabinet` | creare sau executie — `salarii_contare_propunere()` | nu | neprobat |
-| 43 | tenant stat plata | `GET /tenants/{tenant_id}/stat-plata` · `cere_cabinet` | citire / afisare — `tenant_stat_plata()` | nu | neprobat |
-| 44 | corp: {salariat_id, an, luna} | `POST /tenants/{tenant_id}/stat-plata/corectie` · `cere_cabinet` | creare sau executie — `tenant_stat_corectie()` | nu | neprobat |
-| 45 | Exemplarele emise + contradictiile DERIVATE (emis vs recalcul de acum) | `GET /tenants/{tenant_id}/stat-plata/emis` · `cere_cabinet` | citire / afisare — `tenant_stat_emis()` | nu | neprobat |
-| 46 | corp: {an, luna} | `POST /tenants/{tenant_id}/stat-plata/emite` · rol `admin_firma` | creare sau executie — `tenant_stat_emite()` | nu | neprobat |
-| 47 | corp: {exemplar_id, motiv} | `POST /tenants/{tenant_id}/stat-plata/motiv` · `cere_cabinet` | creare sau executie — `tenant_stat_motiv()` | nu | neprobat |
+| 40 | tenant fluturas | `GET /tenants/{tenant_id}/fluturas/{salariat_id}` · rol `admin_firma` | citire / afisare — `tenant_fluturas()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 4 |
+| 41 | Scrie nota ciorna a statului de plata | `POST /tenants/{tenant_id}/salarii-contare` · `cere_cabinet` | creare sau executie — `salarii_contare_scrie()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 4 |
+| 42 | Nota pe care ar scrie-o statul de plata + divergentele fata de D112, cu ambele cifre. | `POST /tenants/{tenant_id}/salarii-contare/propunere` · `cere_cabinet` | creare sau executie — `salarii_contare_propunere()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 4 |
+| 43 | tenant stat plata | `GET /tenants/{tenant_id}/stat-plata` · `cere_cabinet` | citire / afisare — `tenant_stat_plata()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 4 |
+| 44 | corp: {salariat_id, an, luna} | `POST /tenants/{tenant_id}/stat-plata/corectie` · `cere_cabinet` | creare sau executie — `tenant_stat_corectie()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 4 |
+| 45 | Exemplarele emise + contradictiile DERIVATE (emis vs recalcul de acum) | `GET /tenants/{tenant_id}/stat-plata/emis` · `cere_cabinet` | citire / afisare — `tenant_stat_emis()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 4 |
+| 46 | corp: {an, luna} | `POST /tenants/{tenant_id}/stat-plata/emite` · rol `admin_firma` | creare sau executie — `tenant_stat_emite()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 4 |
+| 47 | corp: {exemplar_id, motiv} | `POST /tenants/{tenant_id}/stat-plata/motiv` · `cere_cabinet` | creare sau executie — `tenant_stat_motiv()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 4 |
 
 ### T04 — Concediul medical (5)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 48 | corp: {salariat_id, an, luna (luna certificatului), zile_lucratoare_cm, cod?, zile_episod?, prima_zi_din_episod?, spita… | `POST /tenants/{tenant_id}/calcul-cm` · `cere_cabinet` | creare sau executie — `calcul_cm_endpoint()` | nu | neprobat |
-| 49 | Codurile de indemnizatie pentru ecran, cu procentul VALABIL LA DATA certificatului | `GET /tenants/{tenant_id}/concedii/coduri` · `cere_cabinet` | citire / afisare — `concedii_coduri()` | nu | neprobat |
-| 50 | cm lista | `GET /tenants/{tenant_id}/salariati/{salariat_id}/concedii` · `cere_cabinet` | citire / afisare — `cm_lista()` | da | neprobat |
-| 51 | cm salveaza | `POST /tenants/{tenant_id}/salariati/{salariat_id}/concedii` · rol `admin_firma/angajat` | creare sau executie — `cm_salveaza()` | da | neprobat |
+| 48 | corp: {salariat_id, an, luna (luna certificatului), zile_lucratoare_cm, cod?, zile_episod?, prima_zi_din_episod?, spita… | `POST /tenants/{tenant_id}/calcul-cm` · `cere_cabinet` | creare sau executie — `calcul_cm_endpoint()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 4 |
+| 49 | Codurile de indemnizatie pentru ecran, cu procentul VALABIL LA DATA certificatului | `GET /tenants/{tenant_id}/concedii/coduri` · `cere_cabinet` | citire / afisare — `concedii_coduri()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 4 |
+| 50 | cm lista | `GET /tenants/{tenant_id}/salariati/{salariat_id}/concedii` · `cere_cabinet` | citire / afisare — `cm_lista()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 4 |
+| 51 | cm salveaza | `POST /tenants/{tenant_id}/salariati/{salariat_id}/concedii` · rol `admin_firma/angajat` | creare sau executie — `cm_salveaza()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 4 |
 | 52 | cm sterge | `DELETE /tenants/{tenant_id}/salariati/{salariat_id}/concedii/{cm_id}` · rol `admin_firma/angajat` | stergere — `cm_sterge()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T05 — Nota contabilă — de la document la registrul-jurnal (34)

@@ -485,8 +485,18 @@ def procent_cm(cod, zile_episod, procent_accident=100, la_data=None):
     (carantina 07=100%); art.25(1) (maternitate 08=85%); art.30(1) (ingrijire copil 09=85%). nivel_sursa:
     REDARE. Versionata in timp: o schimbare de scara -> varianta datata noua, nu 'if data' in corp."""
     from datetime import date as _dt
+    from core import nomenclator_cm as _ncm
+    # [lotul 4, 04.09.2026] Codul se confrunta cu NOMENCLATORUL inainte de a alege formula. Pana
+    # azi, `cod="99"` sau `cod="ABC"` cadeau pe `return Decimal("0.75")` — plasa scrisa pentru
+    # codurile 13/15 si celelalte cinci din nomenclator — si primeau o cota fiscala pe care n-o
+    # ceruse nicio norma. *Un cod care nu exista nu e „restul", e o intrare gresita.*
+    _c = _ncm.normalizeaza(cod) if cod not in (None, "") else "01"
+    if _c not in _ncm.CODURI:
+        raise ValueError(
+            "Codul de indemnizație %r nu există în nomenclatorul concediilor medicale. "
+            "Codurile cunoscute: %s." % (cod, ", ".join(sorted(_ncm.CODURI))))
     fn, _ = c.alege_varianta(_VARIANTE_PROCENT_CM, la_data or _dt.today())
-    return fn(cod, zile_episod, procent_accident)
+    return fn(_c, zile_episod, procent_accident)
 
 
 def _calcul_cm_cod10_2018(baza_lunara, venit_realizat):

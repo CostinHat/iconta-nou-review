@@ -426,6 +426,30 @@ def salveaza_concediu(conn, salariat_id, date):
     # [G9] Data de sfarsit e OBLIGATORIE (asterisc UI real): un CM fara sfarsit = perioada corupta in D112.
     if not (date.get("data_sfarsit") or None):
         raise ValueError("Data de sfarsit a concediului medical e obligatorie (perioada CM = inceput->sfarsit; intra in D112).")
+    # [lotul 4, 04.09.2026] ORDINEA. Pana azi, un cod inexistent, o data care nu e in calendar si un
+    # sfarsit inaintea inceputului primeau, toate trei, mesajul despre VENITURILE PE 6 LUNI — fiindca
+    # verificarea bazei de calcul rula inaintea formei campurilor. A patra instanta a clasei „refuzul
+    # numeste alt camp", dupa loturile 1, 2 si 3. Forma intai: ce a tastat omul, apoi ce lipseste din
+    # dosarul firmei.
+    from core import nomenclator_cm as _ncm
+    if _ncm.normalizeaza(cod) not in _ncm.CODURI:
+        raise ValueError("Codul de indemnizație %r nu există în nomenclatorul concediilor medicale. "
+                         "Codurile cunoscute: %s." % (date.get("cod"), ", ".join(sorted(_ncm.CODURI))))
+    _dati = {}
+    for _camp in ("data_inceput", "data_sfarsit", "data_acordare"):
+        _v = date.get(_camp)
+        if not _v:
+            continue
+        try:
+            _dati[_camp] = _dtmod.date.fromisoformat(str(_v)[:10])
+        except ValueError:
+            raise ValueError("%s: %r nu e o dată din calendar. Aștept forma AAAA-LL-ZZ, cu o zi "
+                             "care există în luna aia." % (_camp.replace("_", " "), _v))
+    if ("data_inceput" in _dati and "data_sfarsit" in _dati
+            and _dati["data_sfarsit"] < _dati["data_inceput"]):
+        raise ValueError("Concediul se sfârșește (%s) înaintea zilei în care începe (%s). "
+                         "Verifică cele două date de pe certificat."
+                         % (_dati["data_sfarsit"].isoformat(), _dati["data_inceput"].isoformat()))
     # Validare: baza de calcul trebuie sa fie reala (altfel brut 0 dar net pozitiv = imposibil)
     if _dec_pos(ven6) <= 0:
         raise ValueError("Veniturile brute pe 6 luni lipsesc sau sunt 0 - completeaza baza de calcul din statele de plata.")

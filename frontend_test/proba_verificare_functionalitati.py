@@ -21,6 +21,7 @@ nu se ocroteste nimic.
     ./venv/bin/python frontend_test/proba_verificare_functionalitati.py T01
     ./venv/bin/python frontend_test/proba_verificare_functionalitati.py T02
     ./venv/bin/python frontend_test/proba_verificare_functionalitati.py T05
+    ./venv/bin/python frontend_test/proba_verificare_functionalitati.py T03T04
 """
 import json
 import os
@@ -283,6 +284,116 @@ def probe_T02(cheie=None):
     return p
 
 
+#: Un salariat care EXISTA in firma de proba (`tenant_003` are doi: 1 si 3). Probele care vor sa
+#: ajunga dincolo de „salariatul nu exista" trebuie sa-l foloseasca pe asta — altfel se opresc mai
+#: devreme decat scrie in eticheta lor, cum s-a intamplat de doua ori in loturile 2 si 3.
+SALARIAT = 1
+
+
+def probe_T03T04():
+    """LOTUL 4 — T03 (statul de plata, 8 unitati) + T04 (concediul medical, 5 unitati). Doisprezece
+    din treisprezece sunt in perimetrul etapei 1; `#52` (stergerea unui concediu) e ruta fara
+    campuri de completat.
+
+    **Ce se lasa in urma, declarat:** patru dintre unitati SCRIU — `#41` scrie nota ciorna a
+    statului, `#44` o corectie, `#46` emite exemplarul, `#51` salveaza un concediu. Toate primesc
+    intrari incomplete sau imposibile, deci n-ar trebui sa ajunga la `INSERT`; daca vreuna trece,
+    faptul ala e rezultatul probei si se sterge dupa."""
+    F, S = FIRMA, SALARIAT
+    return [
+        # ── #40 fluturasul ───────────────────────────────────────────────────
+        (40, "GET /fluturas — luna 13", "GET",
+         "/tenants/%d/fluturas/%d?an=2026&luna=13" % (F, S), None, "luna=13"),
+        (40, "GET /fluturas — salariat inexistent", "GET",
+         "/tenants/%d/fluturas/%d?an=2026&luna=8" % (F, INEXISTENT), None, "salariat_id=999999"),
+        # ── #41 nota ciorna a statului ───────────────────────────────────────
+        (41, "POST /salarii-contare — luna 13", "POST",
+         "/tenants/%d/salarii-contare?an=2026&luna=13" % F, {}, "luna=13"),
+        (41, "POST /salarii-contare — an 1900", "POST",
+         "/tenants/%d/salarii-contare?an=1900&luna=1" % F, {}, "an=1900"),
+        # ── #42 propunerea de nota ───────────────────────────────────────────
+        (42, "POST /salarii-contare/propunere — luna 0", "POST",
+         "/tenants/%d/salarii-contare/propunere?an=2026&luna=0" % F, {}, "luna=0"),
+        # ── #43 statul de plata ──────────────────────────────────────────────
+        (43, "GET /stat-plata — luna 13", "GET",
+         "/tenants/%d/stat-plata?an=2026&luna=13" % F, None, "luna=13"),
+        (43, "GET /stat-plata — an ca text", "GET",
+         "/tenants/%d/stat-plata?an=anul-trecut&luna=1" % F, None, "an=anul-trecut"),
+        # ── #44 corectia pe stat ─────────────────────────────────────────────
+        (44, "POST /stat-plata/corectie — corp gol", "POST",
+         "/tenants/%d/stat-plata/corectie" % F, {}, "corp JSON gol"),
+        (44, "POST /stat-plata/corectie — salariat inexistent", "POST",
+         "/tenants/%d/stat-plata/corectie" % F,
+         {"salariat_id": INEXISTENT, "an": 2026, "luna": 8}, "salariat_id=999999"),
+        (44, "POST /stat-plata/corectie — luna 13", "POST",
+         "/tenants/%d/stat-plata/corectie" % F, {"salariat_id": S, "an": 2026, "luna": 13},
+         "luna=13"),
+        # ── #45 exemplarele emise ────────────────────────────────────────────
+        (45, "GET /stat-plata/emis — luna 13", "GET",
+         "/tenants/%d/stat-plata/emis?an=2026&luna=13" % F, None, "luna=13"),
+        # ── #46 emiterea statului ────────────────────────────────────────────
+        (46, "POST /stat-plata/emite — corp gol", "POST",
+         "/tenants/%d/stat-plata/emite" % F, {}, "corp JSON gol"),
+        (46, "POST /stat-plata/emite — luna 13", "POST",
+         "/tenants/%d/stat-plata/emite" % F, {"an": 2026, "luna": 13}, "luna=13"),
+        # ── #47 motivul unui exemplar ────────────────────────────────────────
+        (47, "POST /stat-plata/motiv — corp gol", "POST",
+         "/tenants/%d/stat-plata/motiv" % F, {}, "corp JSON gol"),
+        (47, "POST /stat-plata/motiv — motiv gol", "POST",
+         "/tenants/%d/stat-plata/motiv" % F, {"exemplar_id": INEXISTENT, "motiv": ""},
+         "motiv=\"\" (sir gol)"),
+        (47, "POST /stat-plata/motiv — exemplar inexistent", "POST",
+         "/tenants/%d/stat-plata/motiv" % F, {"exemplar_id": INEXISTENT, "motiv": "proba"},
+         "exemplar_id=999999"),
+        # ── #48 calculul indemnizatiei de concediu medical ───────────────────
+        (48, "POST /calcul-cm — corp gol", "POST", "/tenants/%d/calcul-cm" % F, {},
+         "corp JSON gol"),
+        (48, "POST /calcul-cm — cod de indemnizatie inexistent", "POST",
+         "/tenants/%d/calcul-cm" % F,
+         {"salariat_id": S, "an": 2026, "luna": 8, "zile_lucratoare_cm": 5, "cod": "99"},
+         "cod=99"),
+        (48, "POST /calcul-cm — zile negative", "POST", "/tenants/%d/calcul-cm" % F,
+         {"salariat_id": S, "an": 2026, "luna": 8, "zile_lucratoare_cm": -5, "cod": "01"},
+         "zile_lucratoare_cm=-5"),
+        (48, "POST /calcul-cm — luna 13", "POST", "/tenants/%d/calcul-cm" % F,
+         {"salariat_id": S, "an": 2026, "luna": 13, "zile_lucratoare_cm": 5, "cod": "01"},
+         "luna=13"),
+        (48, "POST /calcul-cm — salariat inexistent", "POST", "/tenants/%d/calcul-cm" % F,
+         {"salariat_id": INEXISTENT, "an": 2026, "luna": 8, "zile_lucratoare_cm": 5, "cod": "01"},
+         "salariat_id=999999"),
+        # ── #49 codurile de indemnizatie ─────────────────────────────────────
+        (49, "GET /concedii/coduri — data ca text", "GET",
+         "/tenants/%d/concedii/coduri?la_data=ieri" % F, None, "la_data=ieri"),
+        (49, "GET /concedii/coduri — data inexistenta in calendar", "GET",
+         "/tenants/%d/concedii/coduri?la_data=2026-02-31" % F, None, "la_data=2026-02-31"),
+        # ── #50 lista concediilor ────────────────────────────────────────────
+        (50, "GET /concedii — salariat inexistent", "GET",
+         "/tenants/%d/salariati/%d/concedii?an=2026" % (F, INEXISTENT), None,
+         "salariat_id=999999"),
+        (50, "GET /concedii — an 1900", "GET",
+         "/tenants/%d/salariati/%d/concedii?an=1900" % (F, S), None, "an=1900"),
+        # ── #51 salvarea unui concediu ───────────────────────────────────────
+        (51, "POST /concedii — corp gol", "POST",
+         "/tenants/%d/salariati/%d/concedii" % (F, S), {}, "corp JSON gol"),
+        (51, "POST /concedii — cod inexistent", "POST",
+         "/tenants/%d/salariati/%d/concedii" % (F, S),
+         {"cod": "99", "data_inceput": "2026-08-03", "data_sfarsit": "2026-08-07", "zile": 5},
+         "cod=99"),
+        (51, "POST /concedii — sfarsit inaintea inceputului", "POST",
+         "/tenants/%d/salariati/%d/concedii" % (F, S),
+         {"cod": "01", "data_inceput": "2026-08-07", "data_sfarsit": "2026-08-03", "zile": 5},
+         "data_sfarsit < data_inceput"),
+        (51, "POST /concedii — data inexistenta in calendar", "POST",
+         "/tenants/%d/salariati/%d/concedii" % (F, S),
+         {"cod": "01", "data_inceput": "2026-02-31", "data_sfarsit": "2026-03-02", "zile": 3},
+         "data_inceput=2026-02-31"),
+        (51, "POST /concedii — salariat inexistent", "POST",
+         "/tenants/%d/salariati/%d/concedii" % (F, INEXISTENT),
+         {"cod": "01", "data_inceput": "2026-08-03", "data_sfarsit": "2026-08-07", "zile": 5},
+         "salariat_id=999999"),
+    ]
+
+
 #: Cele nouasprezece note SPECIALE, cu numarul lor din LISTA_FUNCTIONALITATI.md. Toate au aceeasi
 #: forma — `POST /tenants/{id}/nota-<fel>`, corp liber cu `data` + un discriminator (`operatie` sau
 #: `fel`) — si trec toate prin `_cere_luna_deschisa(conn, schema, corp.get("data"))`. De-aia proba
@@ -423,7 +534,7 @@ def _ruleaza_cu_cheie(lot, tok):
     print("CHEIE DE API emisa pentru proba: id=%s prefix=%s" % (cheie["id"], cheie["prefix"]))
     out = []
     try:
-        for nr, eticheta, metoda, cale, payload, introdus in {"T02": probe_T02, "T05": probe_T05}[lot]():
+        for nr, eticheta, metoda, cale, payload, introdus in {"T02": probe_T02, "T05": probe_T05, "T03T04": probe_T03T04}[lot]():
             antete, t = None, tok
             if CU_CHEIE_API in cale:
                 t = None
@@ -477,7 +588,7 @@ def _sterge_cheia(kid):
 def ruleaza(lot):
     tok = token(EMAIL)
     tok_client = token(EMAIL_CLIENT)
-    if lot in ("T02", "T05"):
+    if lot in ("T02", "T05", "T03T04"):
         return _ruleaza_cu_cheie(lot, tok)
     probe = {"T01": probe_T01, "IMPORT-GOL": probe_import_gol}[lot]()
     out = []

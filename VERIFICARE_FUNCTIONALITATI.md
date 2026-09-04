@@ -288,11 +288,13 @@ mult decât un prag ales fără temei.* Dacă 2020 era voit, se pune înapoi ca 
 
 ### Ce a rămas nereparat din lotul ăsta, și de ce
 
-1. **Mesajul `nomenclator_cerut` nu spune ce s-a primit.** Înlocuirea celor 31 de locuri s-a făcut
-   **mecanic**, iar numele variabilei care poartă valoarea diferă de la un modul la altul (`op`,
-   `fel`, `tip`, `moment`, `actiune`); a le lega pe toate ar fi cerut rescrierea fiecărui apel cu
-   mâna, cu riscul de a lega greșit unul. Câmpul și așteptarea sunt în mesaj; valoarea trimisă e în
-   cererea omului.
+1. **Mesajul `nomenclator_cerut` nu spune ce s-a primit — și RĂMÂNE așa, prin decizie.**
+   Înlocuirea celor 31 de locuri s-a făcut **mecanic**, iar numele variabilei care poartă valoarea
+   diferă de la un modul la altul (`op`, `fel`, `tip`, `moment`, `actiune`); a le lega pe toate ar
+   cere rescrierea fiecărui apel cu mâna. **Costin, 04.09.2026:** *„Mesajul numește câmpul și
+   valorile acceptate — atât e nevoie ca să corectezi. Repetarea valorii trimise e o îmbunătățire
+   mică, iar 31 de locuri cu nume diferite de variabilă înseamnă risc real de a lega greșit unul.
+   Consemnează, nu lucra la ea."* — `DECIZII.md` (27). *Nu e o restanță; e o limită decisă.*
 2. **Proba de „sumă negativă" pe `nota-asociati` măsoară un câmp lipsă, nu o sumă.** Nota de dividend
    cere `brut`, nu `suma`; răspunsul („Lipsește câmpul `brut`") e corect, dar întrebarea despre
    semnul sumei rămâne neprobată acolo. Se reia la o trecere cu date valide.
@@ -310,3 +312,54 @@ mult decât un prag ales fără temei.* Dacă 2020 era voit, se pune înapoi ca 
   **valoare fără formă acceptată în nomenclator** (1).
 - **cea mai bună formă de refuz din toată campania** e tot în lotul ăsta: `POST /jurnal` răspunde cu
   `fel`, `tip`, `motiv`, `regula`, `camp`, `linia` și temeiul — *Lege 82/1991 art.6 alin.(1)*.
+
+---
+
+## LOT 4 — T03 + T04, statul de plată și concediul medical (30 de probe INVALIDE pe 12 unități)
+
+*Unitatea `#52` (ștergerea unui concediu) nu e aici: rută fără câmpuri de completat. Rămân **12 din
+13** — opt din T03, patru din T04.*
+
+**Lotul ăsta a scos cel mai grav defect al campaniei**, și nu e o cădere: e o **cifră fiscală
+calculată pe o intrare imposibilă**. `POST /calcul-cm` cu `cod=99` — un cod care nu există în
+nomenclatorul concediilor medicale — răspundea `200`, cu `"procent": 75.0` și `"brut": 714.0`.
+Aceeași cifră o primea și `cod="ABC"`. *Indemnizația aia intră în statul de plată, în D112 și în
+decontul cu CNAS.*
+
+**Ce s-a lăsat în urmă:** nimic. Patru dintre unități scriu (`#41` nota ciornă, `#44` corecția,
+`#46` emiterea, `#51` concediul); toate au fost refuzate. Verificat după: `facturi` 3,
+`inregistrari` 4, `plan_conturi` 185, `state_plata` 2 (din 19–21.08, preexistente),
+`concedii_medicale` 0, `salariati` 2.
+
+| # | funcționalitate | ecran / rută | câmp | ce s-a introdus | ce a făcut aplicația | mesajul verbatim | temei legal | reparat | rezultat după reparație |
+|---|---|---|---|---|---|---|---|---|---|
+| 48 | Calculul indemnizației de CM | `POST /tenants/{id}/calcul-cm` | `cod` | invalid: `99` | **COTĂ FISCALĂ INVENTATĂ** — `200`, cu `procent 75%` și indemnizație calculată. Cauza, la sursă: `_procent_cm_l141_2025` se termină cu `return Decimal("0.75")  # 13, 15, rest`. „Restul" înseamnă, pentru nomenclator, șapte coduri reale — și, pentru orice altceva, o cifră pe care n-o cere nicio normă. E chiar interdicția **fără default fiscal tăcut**, pe cea mai scumpă cale | `{"baza":30000.0,"media_zilnica":238.1,"procent":75.0,"zile_platite":4,"brut":714.0,…}` *(tăiat)* | nomenclatorul `core/nomenclator_cm.CODURI` — 20 de coduri, fiecare cu temeiul lui | **DA** — codul se confruntă cu nomenclatorul **în dispecer**, deci amândouă variantele datate ale formulei sunt apărate deodată, iar cele șapte coduri reale rămân la 75% | `422` · `{"detail":"Codul de indemnizație '99' nu există în nomenclatorul concediilor medicale. Codurile cunoscute: 01, 02, …, 91, 92."}` |
+| 48 | Calculul indemnizației de CM | `POST /tenants/{id}/calcul-cm` | `luna` | invalid: `13` | **INDEMNIZAȚIE PENTRU O LUNĂ CARE NU EXISTĂ** — `200`, `brut 454.0`, și cu **altă bază** (26.625 în loc de 30.000): luna 13 mutase fereastra de 6 luni | `{"baza":26625.0,"media_zilnica":206.4,"procent":55.0,"zile_platite":4,"brut":454.0,…}` *(tăiat)* | — | **DA** — `_cere_perioada`, același ajutor ca la lotul 3 | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 48 | Calculul indemnizației de CM | `POST /tenants/{id}/calcul-cm` | `zile_lucratoare_cm` | invalid: `-5` | **ACCEPTAT TĂCUT** — `200`, `zile_platite 0`, `brut 0`. Rezultatul e zero, dar nimeni nu spune că intrarea era imposibilă | `{"baza":30000.0,…"zile_platite":0,"brut":0.0,…}` *(tăiat)* | — | **DA** | `422` · `{"detail":"Zilele de concediu medical nu pot fi negative (am primit -5). Se numără zilele lucrătoare acoperite de certificat."}` |
+| 48 | Calculul indemnizației de CM | `POST /tenants/{id}/calcul-cm` | tot corpul | lipsă: `{}` | **A CĂZUT** — `500`. `int(corp["an"])` era **în afara** try-ului care traduce `KeyError` | `Internal Server Error` | — | **DA** — aceeași reparație, un singur bloc de parsare | `422` · `{"detail":"Lipsește câmpul \`an\` din cererea trimisă. Operațiunea nu se poate consemna fără el."}` |
+| 40 | Fluturașul de salariu | `GET /tenants/{id}/fluturas/{sid}` | `luna` | invalid: `13` | **A CĂZUT** — `500` | `Internal Server Error` | — | **DA** | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 41 | Nota ciornă a statului | `POST /tenants/{id}/salarii-contare` | `luna` | invalid: `13` | **A CĂZUT** — `500` | `Internal Server Error` | — | **DA** | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 43 | Statul de plată | `GET /tenants/{id}/stat-plata` | `luna` | invalid: `13` | **A CĂZUT** — `500` | `Internal Server Error` | — | **DA** | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 45 | Exemplarele emise | `GET /tenants/{id}/stat-plata/emis` | `luna` | invalid: `13` | **A CĂZUT** — `500` | `Internal Server Error` | — | **DA** | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 42 | Propunerea de notă | `POST /tenants/{id}/salarii-contare/propunere` | `luna` | invalid: `0` | **MESAJ ÎN ENGLEZĂ, DIN BIBLIOTECĂ** — `422` cu textul lui `datetime`. Cod intern ca mesaj, pe altă cale decât `str(KeyError)` din lotul 3 | `{"detail":"month must be in 1..12"}` | — | **DA** — garda de perioadă răspunde înainte ca luna să ajungă la bibliotecă | `422` · `{"detail":"luna invalidă: 0 (aștept 1-12)"}` |
+| 50 | Lista concediilor unui salariat | `GET /tenants/{id}/salariati/{sid}/concedii` | `salariat_id` | invalid: `999999` | **TĂCERE, ȘI INCONSECVENȚĂ** — `200` `{"concedii":[]}`. „Salariatul n-are concedii" arăta identic cu „salariatul nu există" — iar `GET /fluturas`, pe **același id inexistent**, răspunde `404 salariat inexistent`. Aplicația știa deosebirea într-un loc și n-o făcea în celălalt | `{"concedii":[]}` | — | **DA** — aceeași verificare ca la fluturaș | `404` · `{"detail":"salariat inexistent"}` |
+| 50 | Lista concediilor unui salariat | `GET /tenants/{id}/salariati/{sid}/concedii` | `an` | invalid: `1900` | **TĂCERE** — `200`, listă goală | `{"concedii":[]}` | — | **DA** | `422` · `{"detail":"an invalid: 1900 (aștept 1990-2100)"}` |
+| 51 | Salvarea unui concediu | `POST /tenants/{id}/salariati/{sid}/concedii` | `cod`, datele | trei probe: cod `99` · sfârșit înaintea începutului · `data_inceput=2026-02-31` | **NUMEA ALT CÂMP** — toate trei primeau mesajul despre **veniturile pe 6 luni**, fiindcă verificarea bazei de calcul rula înaintea formei câmpurilor. **A patra instanță a clasei**, după loturile 1, 2 și 3 | `{"detail":"Veniturile brute pe 6 luni lipsesc sau sunt 0 - completeaza baza de calcul din statele de plata."}` | — | **DA** — forma întâi: codul contra nomenclatorului, datele contra calendarului, sfârșitul după început; apoi ce lipsește din dosarul firmei | `422` · trei mesaje distincte, fiecare despre câmpul lui: codul necunoscut · *„Concediul se sfârșește (2026-08-03) înaintea zilei în care începe (2026-08-07)."* · *„data inceput: '2026-02-31' nu e o dată din calendar."* |
+| 51 | Salvarea unui concediu | `POST /tenants/{id}/salariati/{sid}/concedii` | `salariat_id` | invalid: `999999` | Mesajul despre venituri — **nu e fals** (veniturile chiar lipsesc, fiindcă omul nu e în firmă), dar nu numește starea reală, și trimite contabilul să completeze statele de plată ale cuiva inexistent | `{"detail":"Veniturile brute pe 6 luni lipsesc sau sunt 0 …"}` | — | **DA** — a treia rută despre același salariat, acum cu același răspuns ca celelalte două | `404` · `{"detail":"salariat inexistent"}` |
+| 44 | Corecția pe stat | `POST /tenants/{id}/stat-plata/corectie` | corp gol · `salariat_id` · `luna` | trei probe | `422` / `409` / `422`, toate corecte, cu propoziții întregi | `{"detail":"lipsesc an și luna"}` · `{"detail":"salariatul 999999 nu are stat emis pe 2026-08 — nu există ce corecta"}` · `{"detail":"luna trebuie să fie între 1 și 12"}` | — | nu | neschimbat |
+| 46 · 47 | Emiterea statului · motivul unui exemplar | `POST /stat-plata/emite` · `POST /stat-plata/motiv` | corp gol · motiv gol · exemplar inexistent | | `422` de fiecare dată, cu **de ce** contează câmpul | `{"detail":"motivul nu poate fi gol: o contradicție se asumă cu o rațiune scrisă"}` · `{"detail":"exemplarul 999999 nu există — nu are ce să asume nimeni"}` | — | nu — e forma cerută | neschimbat |
+| 41 · 49 | Nota ciornă, pe an vechi · codurile de indemnizație | `POST /salarii-contare` · `GET /concedii/coduri` | `an=1900` · `la_data` invalidă | | `422` motivate — primul prin chiar mecanismul `PerioadaIndisponibila` | `{"detail":"PERIOADA_BLOCATA: 1900-01-01 nu poate fi calculată: valoarea 'salariu_minim' nu e definită înainte de 2025-01-01 (nu a fost verificată la sursă…)"}` · `{"detail":"Data trebuie să fie în formatul AAAA-LL-ZZ."}` | — | nu | neschimbat |
+
+### Cifre
+
+- probe INVALIDE rulate: **30**, pe **12 unități** · defecte găsite: **10** · reparate: **10** ·
+  reprobate: **10**, toate schimbate. Cele 10 s-au arătat pe **16 probe**.
+- distribuția răspunsurilor la ultima trecere: **26 × 422 · 3 × 404 · 1 × 409** · **0 × 500** ·
+  **0 × 200**. Înainte: **5 × 500** și **5 × 200**.
+- clase de defect: **cădere `500`** (5 probe, 5 rute) · **cotă fiscală inventată pentru un cod
+  inexistent** (1) · **cifră calculată pe o lună imposibilă** (1) · **valoare negativă acceptată
+  tăcut** (1) · **tăcere pe un subiect inexistent** (2 probe, 1 rută) · **mesaj care numește alt
+  câmp** (4 probe, 1 cauză) · **mesaj de bibliotecă, în engleză** (1).
+- **niciun defect al probei** în lotul ăsta — spre deosebire de loturile 2 și 3. Ce s-a schimbat:
+  am pus în ham un `SALARIAT` care **există în firma de probă**, tocmai fiindcă de două ori la rând
+  probele se opriseră mai devreme decât scria în eticheta lor.

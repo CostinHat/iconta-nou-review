@@ -3,6 +3,33 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 04.09.2026 (27) — Trei răspunsuri scurte, dintre care unul spune „nu lucra la asta"
+
+**Costin, verbatim**, la cele trei cerințe ale raportului precedent:
+
+**(1) Lotul 4: T03+T04 confirmat.** Statul de plată și concediul medical. *A fost alegerea cu cel
+mai mare randament de până acum: 10 defecte pe 12 unități, între care singura **cotă fiscală
+inventată** găsită în toată campania.*
+
+**(2) Pragul de an rămâne 1990.** *„Cel de 2020 n-avea temei scris; consecvența între cele șapte
+rute valorează mai mult decât o limită aleasă la întâmplare."*
+
+Lărgirea o făcusem eu, ca efect al unificării, și o declarasem ca schimbare de comportament necerută.
+Răspunsul o confirmă **cu motivul**: o limită fără temei nu e o apărare, e o preferință; iar șapte
+rute care răspund la fel despre aceeași întrebare valorează mai mult decât una care răspunde altfel
+fără să spună de ce. *Regula care iese: când o valoare aleasă la întâmplare intră în conflict cu
+consecvența, cedează valoarea — dar numai după ce s-a verificat că într-adevăr n-are temei scris.*
+
+**(3) `nomenclator_cerut` rămâne cum e.** *„Mesajul numește câmpul și valorile acceptate — atât e
+nevoie ca să corectezi. Repetarea valorii trimise e o îmbunătățire mică, iar 31 de locuri cu nume
+diferite de variabilă înseamnă risc real de a lega greșit unul. Consemnează, nu lucra la ea."*
+
+**Ce e nou aici e forma răspunsului, nu conținutul lui.** Nu e „nu acum" — e o **decizie de a nu
+face**, cu raportul dintre câștig și risc numit: îmbunătățire mică față de risc real pe 31 de locuri.
+*O cerință închisă așa nu se mai redeschide la fiecare tură, cum s-ar întâmpla cu o amânare fără
+condiție.* Rămâne scrisă în `VERIFICARE_FUNCTIONALITATI.md`, la lotul 3, ca limită **decisă**, nu ca
+limită asumată de mine.
+
 ## 04.09.2026 (26) — Un curs vechi nu se refuză și nu se folosește tăcut: se arată, până la un prag
 
 **Costin, verbatim**, ca răspuns la R130: *„Vechimea cursului: pragul e 5 zile calendaristice —

@@ -45,6 +45,13 @@ from scripts import scan_refuzuri as s
 #: Măsurat 31.08.2026. Clichet PE FIȘIER, nu global: un fișier nou cu 40 de refuzuri fără temei ar
 #: urca un plafon global cu unu. Un fișier care nu e aici are voie cu ZERO.
 #:
+#: **61 → 62 (04.09.2026), prima CREȘTERE, și se scrie de ce.** Lotul 4 al campaniei a scos un
+#: default fiscal tăcut: un cod de indemnizație inexistent primea 75%. Refuzul care îl închide stă
+#: în `salarizare.py` — modul care citează legea — dar e un refuz de **FORMĂ**: codul nu e în
+#: nomenclator. Sursa nomenclatorului nu e o normă cu articol, ci **Nomenclatorul 9 din structura
+#: oficială D112**, iar norma asta spune ea însăși că un temei legal n-are ce căuta pe un refuz de
+#: formă. *Creșterea se înregistrează, nu se ascunde punând un articol care nu i se potrivește.*
+#:
 #: **64 → 61 (31.08.2026), prima coborâre.** Cele trei refuzuri de nomenclator din
 #: `registre_art321.py` (2) și `registru_inventar.py` (1) au primit temeiul care ÎNCHIDE
 #: nomenclatorul — `TEMEI_FELURI` și `TEMEI_MOMENTE`, altele decât cele care spun ce *conține*
@@ -54,7 +61,7 @@ BASELINE = {
     "core/contracte_speciale.py": 5,
     "core/d406.py": 6,
     "core/deconturi.py": 4,
-    "core/salarizare.py": 3,
+    "core/salarizare.py": 4,
     "core/scadente.py": 2,
     "core/sponsorizari.py": 3,
     "core/stocuri.py": 9,

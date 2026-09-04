@@ -4,12 +4,12 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-04**, **a doua a zilei** — scrisă în noaptea de 03 spre 04.09, la
+- **ultima rescriere**: **2026-09-04**, **a treia a zilei** — scrisă în noaptea de 03 spre 04.09, la
   capătul lotului 2. Actualizare, nu rescriere: lotul 2 al campaniei, cele trei decizii primite de la
   Costin, și o restanță EXTERNĂ nouă. *Restul documentului e cel de la a doua rescriere din 03.09 și
   rămâne valabil.* **Ziua s-a schimbat sub tură** — capcana 6 —, iar commitul registrului a așteptat
   miezul nopții: cu antetul pe 03.09 și commitul pe 04.09, poarta ar fi căzut la tura următoare.
-- **pe commit**: `afed67b0` — commitul de lucru al lotului 3. *Predarea se scrie ÎNAINTE
+- **pe commit**: `9d7ad378` — ultimul commit intrat. *Predarea se scrie ÎNAINTE
   de commitul care o poartă; numele de aici e al celui precedent, prin construcție, nu din uitare.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **DE CE ÎNCĂ O DATĂ**: trei afirmații ale documentului de acum câteva ore au devenit false.
@@ -54,9 +54,9 @@ verde nu e proba — el confirmă forma; o cifră în rândul greșit trece la f
 | **populația derivată** | **553 de unități** — `LISTA_FUNCTIONALITATI.md`, generat cu `scripts/scan_functionalitati.py`. 427 de rute · 75 de ecrane · 14 joburi · 37 de instrumente |
 | **perimetrul etapei 1** | **364** — numai suprafața prin care **un om introduce date**: cele 75 de ecrane + **289 de rute cu câmpuri de completat**. Tăiat de Costin pe 03.09, fiindcă 553 depășea pragul de la care comanda cerea oprire |
 | **ce a ieșit, marcat în listă cu motivul** | **189** = 138 de rute fără câmpuri de completat · 14 joburi de fundal (nu primesc nimic de la un om) · 37 de instrumente din `scripts/` (nu le atinge un contabil) |
-| **probate** | **57** (lotul 1 = T01, 11 unități · lotul 1b = 3 căi de import · lotul 2 = T02, factura emisă, 11 unități · **lotul 3 = T05, nota contabilă, 32 de unități**) |
-| **RĂMASE DE PROBAT** | **307** |
-| **defecte** | găsite **41**, reparate **41**, reprobate **41** *(lotul 1: 11 · lotul 2: 19 · lotul 3: 11)* |
+| **probate** | **69** (lot 1 = T01, 11 · lot 1b = 3 căi de import · lot 2 = T02, factura emisă, 11 · lot 3 = T05, nota contabilă, 32 · **lot 4 = T03+T04, salarii și concediu medical, 12**) |
+| **RĂMASE DE PROBAT** | **295** |
+| **defecte** | găsite **51**, reparate **51**, reprobate **51** *(lot 1: 11 · lot 2: 19 · lot 3: 11 · lot 4: 10)* |
 
 ### Unde stau rezultatele — două fișiere, două roluri
 
@@ -67,7 +67,7 @@ verde nu e proba — el confirmă forma; o cifră în rândul greșit trece la f
   după reparație**, ce s-a introdus, ce s-a reparat. Aici stă și secțiunea **„ce a rămas nereparat,
   și de ce"** — locul recunoscut de garda din `commit-msg` (al patrulea, adăugat pe 03.09).
 - **`frontend_test/proba_verificare_functionalitati.py`** — hamul. Cereri reale, token emis
-  server-side, corpul răspunsului **neatins**. Loturi: `T01`, `IMPORT-GOL`, `T02`, **`T05`**. Lotul `T02`
+  server-side, corpul răspunsului **neatins**. Loturi: `T01`, `IMPORT-GOL`, `T02`, `T05`, **`T03T04`**. Lotul `T02`
   își emite singur cheia de API (prin `POST /cabinet/api-chei`, nu printr-un `INSERT`), o revocă și
   îi șterge rândul, și **pune numerotarea firmei la loc în `finally`, verificând starea, nu că a
   trimis cererea**. Subiect: cabinetul
@@ -117,9 +117,8 @@ Scrise pe larg, cu argumentul fiecăreia, în `DECIZII.md` **(25)**. Pe scurt, �
 
 ### Ce se face mai departe, când vine comanda
 
-**Lotul 4**, tot pe invalide, pe bucăți, cu raport după fiecare. T01, T02 și T05 sunt făcute; au
-rămas **307** de unități, iar cea mai mare suprafață următoare e **T03/T04 — salariile și concediul
-medical** (13 unități) sau **T06+**. *Alegerea traseului a fost, de fiecare dată, a lui Costin.*
+**Lotul 5**, tot pe invalide, pe bucăți, cu raport după fiecare. T01, T02, T05, T03 și T04 sunt
+făcute; au rămas **295** de unități. *Alegerea traseului a fost, de fiecare dată, a lui Costin.*
 Probarea cu **date valide** (lanțul complet până la rândul corect din declarație) **n-a început
 pentru niciun lot**: e partea scumpă a temei și n-a fost comandată încă.
 
@@ -338,8 +337,8 @@ ora commitului*.
 
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
-| **77** | **61** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **824** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77** | **62** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
+| **77u** | **829** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1221** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 
@@ -498,7 +497,11 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
     care fluxul a mers din nou, un refuz de curs a lăsat în bază o factură numerotată și contată,
     fără curs și fără TVA în lei. *Înainte de a repara o cale moartă, întreabă ce se schimbă pe ea
     când învie.*
-13. **[04.09] O gardă nouă trebuie probată pe TOATE drumurile care ajung la ea.** Pragul de vechime
+13. **[04.09] „Restul" dintr-un dispecer fiscal e o cifră inventată.** `_procent_cm_l141_2025` se
+    termina cu `return Decimal("0.75")  # 13, 15, rest`. Pentru codurile din nomenclator, „restul"
+    înseamnă șapte coduri reale; pentru orice altceva, o cotă pe care n-o cere nicio normă. `cod=99`
+    primea 75%. *Un dispecer care are o ramură finală fără nume trebuie întrebat ce ajunge pe ea.*
+14. **[04.09] O gardă nouă trebuie probată pe TOATE drumurile care ajung la ea.** Pragul de vechime
     se aplica doar pe drumul din cache; bucla de rețea returna înainte de el. Prins cerând
     instrumentului să REFUZE (`prag_zile=0`), nu cerându-i să accepte.
 14. **[03.09] O probă care se oprește mai devreme decât crede măsoară altă întrebare.** `moneda=XYZ`
@@ -585,7 +588,12 @@ o respingere costă 22 de minute, perimetrul de registru costă 7–10.*
     cerută înainte de cablare a confirmat-o — și a scos o a doua schimbare pe care adresa n-o
     arăta: **namespace-ul XML**. Pe conținutul nou, parserul întorcea zero zile. *Cablând numai ce
     mi s-a spus, aș fi „reparat" fluxul și aș fi raportat verde despre un drum gol.*
-13. **[04.09] Un instrument care întoarce „gol" acolo unde ar trebui să spună „nu recunosc" ascunde
+14. **[04.09] Aceeași aplicație poate ști un răspuns într-un loc și să nu-l aibă în altul.** `GET
+    /fluturas` răspundea `404 salariat inexistent`; `GET /concedii`, pe **același id**, întorcea
+    `200 {"concedii": []}`. La fel: `POST /jurnal` refuza contul 9999 ca fiind în afara planului,
+    iar `GET /fisa-cont` îi făcea fișă. *Când o rută tace despre ceva, întreabă dacă sora ei o
+    spune — de patru ori din patru, răspunsul exista deja în casă.*
+15. **[04.09] Un instrument care întoarce „gol" acolo unde ar trebui să spună „nu recunosc" ascunde
     schimbări de format.** `parse_xml` întorcea `{}` pentru orice XML necunoscut; luni în șir asta
     s-a citit ca „BNR n-are cursul". Acum ridică `FormatNecunoscut`.
 

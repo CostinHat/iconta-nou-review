@@ -3528,7 +3528,16 @@ def salariat_sterge(tenant_id: int, salariat_id: int,
 @app.get("/tenants/{tenant_id}/salariati/{salariat_id}/concedii")  # cm_lista_v1
 def cm_lista(tenant_id: int, salariat_id: int, an: int = None, ctx=Depends(cere_cabinet)):
     schema = _schema_sau_404(ctx, tenant_id)
+    # [lotul 4] `salariat_id=999999` intorcea `{"concedii": []}` — „salariatul asta n-are concedii"
+    # arata identic cu „salariatul asta nu exista". Iar `GET /fluturas`, pe ACELASI id inexistent,
+    # raspunde `404 salariat inexistent`: aplicatia stia deosebirea intr-un loc si n-o facea in
+    # celalalt. `an=1900` intorcea la fel, gol.
+    _cere_perioada(an=an)
     with db.get_conn(schema) as conn:
+        with conn.cursor() as cur:
+            cur.execute("SELECT 1 FROM salariati WHERE id=%s", (salariat_id,))
+            if not cur.fetchone():
+                raise HTTPException(404, "salariat inexistent")
         return {"concedii": salariati_api.lista_concedii(conn, salariat_id, an)}
 
 
@@ -3538,6 +3547,10 @@ def cm_salveaza(tenant_id: int, salariat_id: int, corp: dict = Body(...),
     schema = _schema_sau_404(ctx, tenant_id)
     try:
         with db.get_conn(schema) as conn:
+            with conn.cursor() as cur:
+                cur.execute("SELECT 1 FROM salariati WHERE id=%s", (salariat_id,))
+                if not cur.fetchone():
+                    raise HTTPException(404, "salariat inexistent")
             return salariati_api.salveaza_concediu(conn, salariat_id, corp)
     except (ValueError, ZeroDivisionError) as e:
         raise HTTPException(422, str(e))
@@ -4452,6 +4465,7 @@ STARE_CIORNA = "ciorna"
 # care o respecta e cealalta: un GET n-are voie sa scrie (interdictia 6). Aici nu scrie nimeni.
 def salarii_contare_propunere(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     """Nota pe care ar scrie-o statul de plata + divergentele fata de D112, cu ambele cifre."""
+    _cere_perioada(an, luna)
     from core import salarii_contare as _sc
     schema = _schema_cabinet_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
@@ -4476,6 +4490,7 @@ def salarii_contare_propunere(tenant_id: int, an: int, luna: int, ctx=Depends(ce
 def salarii_contare_scrie(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     """Scrie nota ciorna a statului de plata. Idempotent pe `document_ref` (interdictia 8:
     schema nu lasa un al doilea exemplar)."""
+    _cere_perioada(an, luna)
     from datetime import date as _date
     from core import salarii_contare as _sc
     schema = _schema_cabinet_sau_404(ctx, tenant_id)
@@ -4981,6 +4996,7 @@ async def banca_parse_extras(tenant_id: int, fisier: UploadFile = File(...), ctx
     return {"tranzactii": tranzactii, "nr": len(tranzactii)}
 @app.get("/tenants/{tenant_id}/stat-plata")
 def tenant_stat_plata(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    _cere_perioada(an, luna)
     from core import stat_plata_api as _sp
     with db.get_conn() as conn:  # [search_path_tenant_v1] schema pe conn public
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -5009,6 +5025,7 @@ def tenant_fluturas(tenant_id: int, salariat_id: int, an: int, luna: int,
                     ctx=Depends(cere_rol("admin_firma"))):
     from fastapi.responses import Response
     from core import stat_plata_api as _sp
+    _cere_perioada(an, luna)
     with db.get_conn() as conn:  # [search_path_tenant_v1] schema + nume firma pe conn public
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
@@ -5064,6 +5081,7 @@ def tenant_stat_emite(tenant_id: int, corp: dict = Body(...),
 @app.get("/tenants/{tenant_id}/stat-plata/emis")
 def tenant_stat_emis(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
     """Exemplarele emise + contradictiile DERIVATE (emis vs recalcul de acum). Nu scrie nimic."""
+    _cere_perioada(an, luna)
     from core import stat_plata_emis as _spe
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
@@ -8839,8 +8857,23 @@ def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
-    an, luna = int(corp["an"]), int(corp["luna"])
-    sal_id = int(corp["salariat_id"])
+    # [lotul 4, 04.09.2026] Trei defecte, toate aici. `{}` cadea cu `KeyError` NEPRINS (`500`);
+    # `luna=13` mergea pana la capat si intorcea o indemnizatie calculata — cu alta baza, fiindca
+    # fereastra de 6 luni se muta —, iar `zile_lucratoare_cm=-5` trecea tacut, cu `brut 0`. *O
+    # indemnizatie de concediu medical calculata pe o luna care nu exista e o cifra care intra in
+    # stat, in D112 si in decontul cu CNAS.*
+    try:
+        an, luna = int(corp["an"]), int(corp["luna"])
+        sal_id = int(corp["salariat_id"])
+        zile_cm = int(corp["zile_lucratoare_cm"])
+    except (KeyError, TypeError, ValueError) as e:
+        raise HTTPException(422, _mesaj_intrare(e) if isinstance(e, KeyError) else
+                            "Anul, luna, salariatul și zilele de concediu medical se așteaptă ca "
+                            "numere întregi: %s" % e)
+    _cere_perioada(an, luna)
+    if zile_cm < 0:
+        raise HTTPException(422, "Zilele de concediu medical nu pot fi negative (am primit %d). "
+                                 "Se numără zilele lucrătoare acoperite de certificat." % zile_cm)
     # [baza_cm 22.08.2026, DECIS DE COSTIN: EMIS] Baza vine din statele EMISE; lunile neemise se
     # recalculeaza, dar se NUMARA separat si se spun in `temei`.
     #
@@ -8859,7 +8892,7 @@ def calcul_cm_endpoint(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_
         raise HTTPException(422, "Nu pot calcula media: salariatul nu are nicio lună lucrată în cele "
                                  "6 luni dinaintea certificatului. Verifică data angajării și pontajul.")
     try:
-        r = _s.calcul_cm(venituri, zile, int(corp["zile_lucratoare_cm"]),
+        r = _s.calcul_cm(venituri, zile, zile_cm,
                          cod=corp.get("cod", "01"),
                          zile_episod=corp.get("zile_episod"),
                          prima_zi_din_episod=corp.get("prima_zi_din_episod", True),
