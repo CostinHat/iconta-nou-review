@@ -438,7 +438,24 @@ def test_verificarea_LASA_o_data_din_luna_deschisa(conn):
         cur.execute("INSERT INTO %s.perioade_blocate (an, luna) VALUES (2026, 3)" % SCHEMA_PROBA)
     m._cere_luna_deschisa(conn, SCHEMA_PROBA, "2026-04-01")   # luna următoare: deschisă
     m._cere_luna_deschisa(conn, SCHEMA_PROBA, "2026-02-28")   # luna dinainte: deschisă
-    m._cere_luna_deschisa(conn, SCHEMA_PROBA, None)           # fără dată: nu se afirmă nimic
+
+
+@pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")
+def test_fara_data_poarta_REFUZA_nu_lasa_sa_treaca(conn):
+    """[R146, 05.09.2026] Linia care lipsește de mai sus era `_cere_luna_deschisa(conn, SCHEMA, None)`,
+    cu motivul scris în comentariu: *„fără dată: nu se afirmă nimic"*. Exact asta s-a răsturnat prin
+    decizie (`DECIZII.md` 33): data operațiunii decide ce cote și ce plafoane sunt legale, deci o
+    operațiune fără dată **nu e una despre care nu se afirmă nimic — e una care nu se poate verifica
+    deloc**.
+
+    Măsurat înainte de schimbare: 19 rute treceau de poartă și cădeau apoi cu `KeyError: 'data'` la
+    `INSERT`, adică `500`. Poarta vedea absența și o lăsa să treacă spre o cădere."""
+    m = importlib.import_module("main")
+    with pytest.raises(Exception) as e:
+        m._cere_luna_deschisa(conn, SCHEMA_PROBA, None)
+    assert getattr(e.value, "status_code", None) == 422, (
+        "o dată lipsă trebuie refuzată cu 422, nu lăsată să treacă: %r" % e.value)
+    assert "dat" in str(getattr(e.value, "detail", "")).lower()
 
 
 @pytest.mark.skipif(not _db_ok(), reason="DB indisponibil")

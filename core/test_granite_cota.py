@@ -26,15 +26,46 @@ def test_cota_none_explicit_ridica():
         cota_ceruta({"cota": None})
 
 
+# [R146, 05.09.2026] Cele doua teste de mai jos chemau `cota_ceruta` FARA data. Contractul s-a
+# schimbat prin decizie (`DECIZII.md` 33): *cota se valideaza fata de perioada in care a fost in
+# vigoare, iar data operatiunii decide ce cote sunt legale*. Deci fara data nu exista legalitate de
+# verificat, si functia refuza.
+#
+# Proprietatile pe care le apara testele NU s-au schimbat — 0 e valoare valida, nu absenta; o cota
+# prezenta se intoarce ca atare — deci se pastreaza intocmai, doar ca pe o data. *O garda nu se
+# slabeste ca sa treaca o schimbare; se rescrie pe contractul nou, cu aceleasi proprietati.*
+_D = "2026-09-01"   # data pe care se verifica; in 2026 cotele legale sunt {0, 11, 21}
+
+
 def test_cota_zero_scutit_e_valoare_valida_nu_absenta():
     """0 = scutit/neplatitor TVA: cota valida, NU absenta -> se intoarce 0, nu se ridica,
     nu se transforma in 21. (regula bazei nule distinge None de 0)."""
-    assert cota_ceruta({"cota": 0}) == 0
+    assert cota_ceruta({"cota": 0, "data": _D}) == 0
 
 
 def test_cota_prezenta_se_intoarce_ca_atare():
-    assert cota_ceruta({"cota": 11}) == 11
-    assert cota_ceruta({"cota": 21}) == 21
+    assert cota_ceruta({"cota": 11, "data": _D}) == 11
+    assert cota_ceruta({"cota": 21, "data": _D}) == 21
+
+
+def test_fara_data_cota_NU_se_poate_verifica_deci_se_refuza():
+    """[R146] Proprietatea NOUA, si motivul ei: `cote_tva_in_vigoare` are nevoie de o data ca sa
+    spuna ce era legal atunci. Fara ea, verificarea nu e „mai slaba" — e imposibila. Pana azi se
+    trecea mai departe cerand doar ca valoarea sa existe, adica exact cand verificarea devenea
+    imposibila se renunta la ea."""
+    with pytest.raises(ValueError) as e:
+        cota_ceruta({"cota": 21})
+    assert "dat" in str(e.value).lower(), "refuzul trebuie sa spuna ca lipseste DATA"
+
+
+def test_cota_din_ALTA_perioada_se_refuza_pe_data_de_azi():
+    """[R146] Inima deciziei: *„o cota istorica pe o factura din perioada ei e corecta; aceeasi cota
+    pe o factura de azi e o cifra valida si falsa care sub-declara"*. 19% a fost cota standard pana
+    la 31.07.2025; pe o operatiune din 2026 nu mai e legala."""
+    assert cota_ceruta({"cota": 19, "data": "2024-06-01"}) == 19
+    with pytest.raises(ValueError) as e:
+        cota_ceruta({"cota": 19, "data": _D})
+    assert "291" in str(e.value), "refuzul trebuie sa citeze temeiul"
 
 
 # ── TEMA B: emitere — cota NEDETERMINATA (AI picat) blocheaza, nu ghiceste 21 ──

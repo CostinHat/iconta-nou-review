@@ -52,7 +52,7 @@
    "sel": 0,
    "buton": "Generează nota (ciornă)",
    "verdict": "a vorbit",
-   "mesaj": "mijloc fix inexistent/inactiv",
+   "mesaj": "Mijlocul fix ales nu există în registrul firmei sau a fost casat. Alege-l din listă.",
    "a_scris": null
   },
   {
@@ -97,7 +97,7 @@
    "sel": 0,
    "buton": "Generează nota (ciornă)",
    "verdict": "a vorbit",
-   "mesaj": "suma incasata trebuie sa fie pozitiva",
+   "mesaj": "Suma încasată trebuie să fie mai mare decât zero: din ea se extrage TVA-ul exigibil, prin suta mărită.",
    "a_scris": null
   },
   {
@@ -178,7 +178,7 @@
    "sel": 0,
    "buton": "Generează nota (ciornă)",
    "verdict": "a vorbit",
-   "mesaj": "tara '' nu este stat membru UE (VIES)",
+   "mesaj": "Codul de TVA al partenerului lipsește. El începe cu prefixul de țară (RO, DE, FR…), care spune în ce stat e înregistrat.",
    "a_scris": null
   },
   {
@@ -196,7 +196,7 @@
    "sel": 0,
    "buton": "Generează nota (ciornă)",
    "verdict": "a vorbit",
-   "mesaj": "valoare invalidă",
+   "mesaj": "Valoarea operațiunii trebuie să fie un număr mai mare decât zero.",
    "a_scris": null
   },
   {
@@ -214,7 +214,7 @@
    "sel": 0,
    "buton": "Generează nota (ciornă)",
    "verdict": "a vorbit",
-   "mesaj": "nicio varianta de formula valabila la 1899-01-01",
+   "mesaj": "Pentru data 1899-01-01 nu există nicio regulă de calcul cunoscută de aplicație. Verifică data operațiunii: cel mai des e o dată din afara perioadelor pentru care regula e scrisă.",
    "a_scris": null
   },
   {
@@ -223,7 +223,7 @@
    "sel": 0,
    "buton": "Generează nota (ciornă)",
    "verdict": "a vorbit",
-   "mesaj": "bacsis invalid",
+   "mesaj": "Bacșișul încasat trebuie să fie o sumă mai mare decât zero. Dacă nu s-a încasat bacșiș, operațiunea nu se înregistrează.",
    "a_scris": null
   },
   {
@@ -247,10 +247,10 @@
   {
    "op": "Chirii / comodat / refacturări",
    "camp": 4,
-   "sel": 0,
+   "sel": 1,
    "buton": "Generează nota (ciornă)",
    "verdict": "a vorbit",
-   "mesaj": "Lipsește câmpul `valoare` din cererea trimisă. Operațiunea nu se poate consemna fără el.",
+   "mesaj": "Valoarea introdusă e invalidă (trebuie un număr pozitiv).",
    "a_scris": null
   },
   {

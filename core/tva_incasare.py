@@ -11,7 +11,10 @@ def tva_din_incasare(suma_incasata, cota):
     s = Decimal(str(suma_incasata))
     c = Decimal(str(cota))
     if s <= 0:
-        raise ValueError("suma incasata trebuie sa fie pozitiva")
+        # [R147] Suma încasată e baza din care se extrage TVA-ul exigibil prin suta mărită;
+        # o sumă nulă sau negativă n-are din ce extrage.
+        raise ValueError("Suma încasată trebuie să fie mai mare decât zero: din ea se "
+                         "extrage TVA-ul exigibil, prin suta mărită.")
     return (s * c / (100 + c)).quantize(Decimal("0.01"), rounding=ROUND_HALF_UP)
 
 def tva_exigibil_alocari(alocari):

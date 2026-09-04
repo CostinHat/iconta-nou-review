@@ -3,6 +3,66 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 05.09.2026 (33) — Trei răspunsuri, dintre care unul e o regulă de arhitectură: legalitatea se citește pe PERIOADĂ, nu pe o listă
+
+**(1) Cele șase mesaje se repară în aceeași tură, nu într-o trecere separată.**
+*Costin, verbatim:* „Cele șase mesaje se repară acum, în aceeași tură cu lotul 14. **Sunt
+localizate; o trecere separată ar însemna reintrat în șase module pentru ceva ce ai deja în mână.**"
+
+**Criteriul, general:** costul unei reparații nu e mărimea ei, e **reintrarea în context**. Șase
+mesaje deja localizate se repară acum; șase mesaje de căutat sunt altă tură. *Regula se aplică
+înainte, nu după: dacă știu unde e, se face.* — R147.
+
+**(2) Verdictul se dă prin CITIREA ȘABLONULUI, cu un criteriu scris.**
+*Costin, verbatim:* „Cele 19 ecrane primesc verdict prin citire, nu prin instrument. **Criteriul: un
+ecran n-are suprafață de intrare dacă șablonul lui nu conține niciun câmp editabil în afara
+filtrelor.** Dacă DOM-ul e gol pentru că firma n-are date, e **stare de date** — se marchează așa, cu
+ce spune ecranul, nu «fără defect». **Cele două nu se confundă.**"
+
+**De ce criteriul e pe ȘABLON și nu pe DOM — și a fost imediat pus la încercare.** Aplicat, a
+răsturnat propria mea grupare: din cele 19, **13** n-au niciun câmp în șablon (verdict), **2** au
+numai filtre (verdict) — dar **5** au **formular real**, pe care sonda nu-l atinsese niciodată. Cel
+mai clar: `fa-regfiscal` colectează `rf-venit_brut` și `rf-cheltuieli_deductibile` — **sume fiscale**,
+nu filtre. *Le clasificasem drept „numai filtre" dintr-o citire a DOM-ului; criteriul pe șablon le-a
+scos la iveală.*
+
+**(3) DECIZIE DE ARHITECTURĂ — legalitatea unei cifre se citește pe PERIOADĂ.**
+*Costin, verbatim:* „**Cota de TVA se validează față de perioada în care cota a fost în vigoare, nu
+față de o listă de cote acceptate.** Data operațiunii decide ce cote sunt legale — sau
+**exigibilitatea**, unde diferă. **O cotă istorică pe o factură din perioada ei e corectă; aceeași
+cotă pe o factură de azi e o cifră validă și falsă care sub-declară.** Aceeași regulă pentru praguri
+și plafoane."
+
+**Ce e nou în ea, față de ce știa casa.** Regula despre valori fiscale spunea până acum *„o valoare
+fiscală se citează din registru, cu temei"* — adică **de unde vine** cifra. Asta adaugă **când e
+validă**: aceeași cifră e corectă sau falsă după data operațiunii. Iar clasa greșelii pe care o
+închide nu e „cifră inventată", ci una mai greu de văzut: **cifră validă, dar din altă perioadă** —
+care trece orice verificare de formă și sub-declară.
+
+**Ce s-a măsurat înainte de a repara** *(cerut explicit: „spune-mi în câte locuri era")*:
+
+| ce | cifra |
+|---|---|
+| locuri care validează o cotă de TVA | **17** |
+| dintre ele, care compară cu o **listă fixă de valori** | **0** |
+| dintre ele, care compară cu **perioada** (`cote_tva_in_vigoare(data)`) | **17** |
+| funcții de prag/plafon cu parametru de perioadă | **9** |
+
+**Deci regula era deja implementată acolo unde se validează.** Gaura era **exact la marginea ei**:
+`cota_ceruta` avea scrisă o limită — *„un corp fără `data` nu se poate verifica … se cere să existe,
+atât"* —, adică **fix când verificarea devenea imposibilă, se renunța la ea**. Iar poarta comună de
+lună avea `if not data: return`. Consecința, măsurată: **19 rute** cădeau apoi cu `500` la scriere
+(`KeyError: 'data'`), deci contabilul citea „eroare 500" în loc să afle că lipsește data.
+
+**Reparat în DOUĂ locuri** (R146), pe temeiul deciziei: dacă data decide legalitatea, **fără dată nu
+există legalitate de verificat** — deci se refuză, nu se trece mai departe. Verificat: coloana „fără
+dată" a trecut de la **19 × `500`** la **33 × refuz cu mesaj**.
+
+**Ce RĂMÂNE deschis din decizie, și se spune:** partea despre **exigibilitate** („sau exigibilitatea,
+unde diferă") nu e verificată. La TVA la încasare (art. 282), cota se aplică la data exigibilității,
+nu a facturii — iar `cota_ceruta` citește `corp["data"]`, fără să întrebe care dintre cele două e.
+Nu s-a atins: cere o citire a fiecărei rute care are ambele date, adică o măsurătoare separată.
+
 ## 04.09.2026 (32) — Patru răspunsuri: garda de LOC, cele 14 rute, portofoliul fictiv, și cota necunoscută
 
 **(1) Garda de LOC se construiește — excepție DECLARATĂ de la „fără gărzi noi".**

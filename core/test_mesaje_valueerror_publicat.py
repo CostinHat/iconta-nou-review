@@ -34,7 +34,11 @@ _DIAC = set("ăâîșțĂÂÎȘȚşţŞŢ")
 
 # Datoria de diacritice a canalului la 20.08.2026 (burn-down). Scade pe măsură ce rescrii.
 _BASELINE_DIACRITICE = {
-    "core/bacsis.py": 2, "core/bilant_api.py": 2, "core/clienti_api.py": 1,
+    # [R147, 05.09.2026] `core/bacsis.py` A IESIT din baseline: 2 -> 0. Cele doua mesaje erau
+    # `"bacsis invalid"`, acelasi text in doua locuri cu intelesuri diferite (bacsis incasat vs
+    # bacsis BRUT de distribuit). Rescrise deosebit, cu diacritice. La fel `core/tva_incasare.py`:
+    # 1 -> 0. Amandoua au iesit la iveala proband cele 32 de operatiuni speciale.
+    "core/bilant_api.py": 2, "core/clienti_api.py": 1,
     "core/comodat_chirii.py": 3, "core/d406_active.py": 2, "core/facturi_api.py": 2,
     "core/gdpr_cerere.py": 2, "core/gdpr_sterge.py": 3, "core/import_export.py": 3,
     "core/intracomunitar.py": 5, "core/inventariere.py": 5, "core/migrare_api.py": 1,
@@ -45,8 +49,7 @@ _BASELINE_DIACRITICE = {
     # Reparatia lui R134 (refuzurile rutei nu mai ies `500`) a PUBLICAT patru mesaje care
     # pana atunci nu ajungeau la nimeni, iar doua erau scrise fara diacritice. Rescrise in
     # AMANDOUA locurile in care traiau — creare si actualizare —, nu doar pe calea noua.
-    "core/tva_agricultori.py": 1, "core/tva_aur.py": 2,
-    "core/tva_incasare.py": 1, "core/tva_marja_turism.py": 3,
+    "core/tva_agricultori.py": 1, "core/tva_aur.py": 2, "core/tva_marja_turism.py": 3,
 }
 
 

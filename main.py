@@ -4686,9 +4686,26 @@ def _cere_luna_deschisa(conn, schema, data):
 
     `_cere_perioada_deschisa` de mai jos păzea editarea, ștergerea și validarea unei note care
     EXISTĂ. Crearea intra pe altă ușă și nu era păzită: o notă nouă datată într-o lună închisă e
-    tot o modificare a perioadei închise."""
+    tot o modificare a perioadei închise.
+
+    [R146, 05.09.2026] O DATĂ LIPSĂ NU MAI TRECE TĂCUT. Până azi linia era `if not data: return` —
+    adică „nu știu în ce perioadă suntem" se rotunjea la „e în regulă". Consecința nu era teoretică:
+    **19 rute** ajungeau apoi la `INSERT ... VALUES (corp["data"], …)` și cădeau cu `KeyError` →
+    **`500`**. Contabilul citea „eroare 500" în loc să afle că lipsește data.
+
+    Dar motivul adevărat e mai adânc decât cele 19 căderi, și e o decizie de arhitectură a lui
+    Costin (05.09.2026): *„cota de TVA se validează față de perioada în care cota a fost în vigoare,
+    nu față de o listă de cote acceptate. Data operațiunii decide ce cote sunt legale. Aceeași
+    regulă pentru praguri și plafoane."* Dacă data decide ce e legal, **o operațiune fără dată nu
+    poate fi verificată de nimic** — nici cota, nici plafonul, nici perioada închisă. Absența ei nu e
+    o lipsă de informație secundară: e imposibilitatea de a ști dacă înregistrarea e legală.
+
+    Din cele 41 de locuri care cheamă poarta asta, **35** îi dau `corp.get("data")` — un câmp pe care
+    ruta îl cere oricum mai jos; celelalte 6 îi dau o dată deja stabilită."""
     if not data:
-        return
+        raise HTTPException(422, "Data operațiunii e obligatorie: de ea depind cota de TVA "
+                                 "aplicabilă, plafoanele în vigoare și perioada contabilă. "
+                                 "Fără ea, înregistrarea nu se poate verifica.")
     # [31.08.2026] Data se VALIDEAZĂ înainte de a fi întrebată despre perioadă. Fără asta,
     # `_perioada_blocata` primea „10.03.2025" brut, driverul de bază ridica, iar cererea ieșea 500 —
     # o defecțiune în locul unui refuz, exact înainte ca producătorul (care are refuzul scris, cu
@@ -9686,7 +9703,9 @@ def achizitie_neinregistrat(tenant_id: int, corp: dict = Body(...),
                 raise ValueError("nume furnizor obligatoriu (persoana fizica - apare in denP si in avertisment)")
             val = Decimal(str(corp["valoare"]))
             if val <= 0:
-                raise ValueError("valoare invalidă")
+                # [R147] „valoare invalidă" nu spunea nici care valoare, nici ce se aștepta.
+                raise ValueError("Valoarea operațiunii trebuie să fie un număr mai mare "
+                                 "decât zero.")
             cont = _cv.cere_cont(conn, schema, corp.get("cont_cheltuiala"), "cont_cheltuiala")  # [R54]
             numar = str(corp.get("numar") or "").strip() or ("BORDEROU-" + str(corp["data"]))
             categorie = str(corp.get("categorie") or "").strip() or None
@@ -9757,7 +9776,9 @@ def vanzare_ic(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
                 cont_venit = _cv.cere_cont(conn, schema, cont_venit, "cont_venit")
             val = Decimal(str(corp["valoare"]))
             if val <= 0:
-                raise ValueError("valoare invalidă")
+                # [R147] „valoare invalidă" nu spunea nici care valoare, nici ce se aștepta.
+                raise ValueError("Valoarea operațiunii trebuie să fie un număr mai mare "
+                                 "decât zero.")
         except (ValueError, KeyError) as e:
             raise HTTPException(422, _mesaj_intrare(e))
         descr = (corp.get("descriere") or "Vanzare IC") + " - " + ment +                 f" [{v['nume']}]"
@@ -9851,7 +9872,9 @@ def export_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
                                             bool(corp.get("dovada_export")))
             val = Decimal(str(corp["valoare"]))
             if val <= 0:
-                raise ValueError("valoare invalidă")
+                # [R147] „valoare invalidă" nu spunea nici care valoare, nici ce se aștepta.
+                raise ValueError("Valoarea operațiunii trebuie să fie un număr mai mare "
+                                 "decât zero.")
             # [R54] confruntarea cu planul firmei stă ÎN try: refuzul e un mesaj pentru om
             # (422), nu o defecțiune (500). Era după `except`, deci ar fi ieșit 500.
             cont_venit = _cv.cere_cont(conn, schema,
@@ -10229,7 +10252,9 @@ def achizitie_necorporala(tenant_id: int, corp: dict = Body(...),
         try:
             val = Decimal(str(corp["valoare"]))
             if val <= 0:
-                raise ValueError("valoare invalidă")
+                # [R147] „valoare invalidă" nu spunea nici care valoare, nici ce se aștepta.
+                raise ValueError("Valoarea operațiunii trebuie să fie un număr mai mare "
+                                 "decât zero.")
             cota = _common.cota_ceruta(corp)
             tva = (val * Decimal(str(cota)) / 100).quantize(Decimal("0.01"))
             furnizor_cui = str(corp.get("furnizor_cui") or "").strip().upper().replace(" ", "")
@@ -10303,7 +10328,9 @@ def reevaluare_imobilizare(tenant_id: int, corp: dict = Body(...), ctx=Depends(c
                                 (corp["mijloc_fix_id"],))
                     mf = cur.fetchone()
                 if not mf:
-                    raise HTTPException(404, "mijloc fix inexistent/inactiv")
+                    # [R147] „inexistent/inactiv" lasa omul sa ghiceasca pe care din doua.
+                    raise HTTPException(404, "Mijlocul fix ales nu există în registrul "
+                                             "firmei sau a fost casat. Alege-l din listă.")
                 den, ci, ca, val, rez, dnf, pif, met = mf
                 ref = _date.fromisoformat(corp["data"])
                 from core import d406_active as _d406
@@ -10978,7 +11005,9 @@ def nota_inventariere(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_c
                                         WHERE id=%s AND activ=true""", (mf_id,))
                         mf = cur.fetchone()
                     if not mf:
-                        raise HTTPException(404, "mijloc fix inexistent/inactiv")
+                        # [R147] „inexistent/inactiv" lăsa omul să ghicească pe care din două.
+                        raise HTTPException(404, "Mijlocul fix ales nu există în registrul "
+                                                 "firmei sau a fost casat. Alege-l din listă.")
                     den, ci, ca, val, rez, dnf, pif, met = mf
                     ref = _date.fromisoformat(corp["data"])
                     from core import d406_active as _d406

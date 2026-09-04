@@ -1216,3 +1216,69 @@ valori.
 - defecte găsite: **2** · reparate: **2** · reprobate: **2**.
 - instrumentul propriu, corectat de **două** ori în timpul lotului: navigarea pe nume, și santinela
   de dată care nu ateriza.
+
+### După lotul 13 — cele trei răspunsuri ale lui Costin, aplicate
+
+**(1) Cele șase mesaje, reparate (R147).** Toate șase reprobate pe ecran, în context:
+*„Suma încasată trebuie să fie mai mare decât zero: din ea se extrage TVA-ul exigibil, prin suta
+mărită."* · *„Bacșișul încasat trebuie să fie o sumă mai mare decât zero…"* · *„Mijlocul fix ales nu
+există în registrul firmei sau a fost casat. Alege-l din listă."* · *„Codul de TVA al partenerului
+lipsește. El începe cu prefixul de țară (RO, DE, FR…)…"* · *„Pentru data 1899-01-01 nu există nicio
+regulă de calcul cunoscută de aplicație…"* · *„Valoarea operațiunii trebuie să fie un număr mai mare
+decât zero."*
+
+Două lucruri ies din reparație și merită scrise:
+
+- **`bacsis invalid` era în DOUĂ locuri, cu același text și înțelesuri diferite** — la încasare e
+  bacșișul primit, la distribuire e cel BRUT, din care se reține impozitul. Deosebite, nu copiate.
+- **`valoare invalidă` era în PATRU locuri.** Am reparat toate patru, nu doar pe cel găsit apăsând —
+  lecția lui R144: *a repara doar instanța lasă trei uși deschise pe același hol.*
+- Și o greșeală a mea, prinsă de `ruff`: un `str.replace` cu șablonul de 20 de spații a lovit și
+  înăuntrul liniei de 24, stricând indentarea. **Capcana 1 din predare, pe pielea mea** — un
+  `replace` fără aserțiune nu e o modificare, e o speranță.
+
+**(2) Verdictul celor 19, prin citirea șablonului — și criteriul a răsturnat propria mea grupare.**
+
+| ce arată șablonul | câte | ce înseamnă |
+|---|---|---|
+| niciun `<input>`/`<textarea>`/`<select>` | **13** | **fără suprafață de intrare** — verdict |
+| numai câmpuri de filtru | **2** | filtrele aleg ce se afișează, nu se înregistrează — verdict |
+| câmpuri care NU sunt filtre | **5** | **au formular real** — verdictul NU se aplică |
+
+Cele cinci: `fa-bilant` (`bl-tip`) · `fa-marja` (`jm-tip`) · `fa-regfiscal` (**`rf-venit_brut`,
+`rf-cheltuieli_deductibile`** — sume fiscale!) · `fa-reginventar` (`ri-moment`, `ri-cauza`,
+`ri-data_inventariere`, plus un câmp pe fiecare rând) · `fa-registre321` (`r3-fel`, plus pe rând).
+
+*Le clasificasem drept „numai filtre" citind DOM-ul. Criteriul cerut — pe ȘABLON — le-a scos la
+iveală. Exact deosebirea pe care decizia o cere: „0 câmpuri în DOM" nu e același lucru cu „n-are
+câmpuri".*
+
+**(3) Cota față de perioadă — măsurat, apoi reparat la margine (R146).**
+
+Măsurat înainte: **17** locuri validează o cotă · **0** compară cu o listă fixă de valori · **17**
+compară cu perioada, prin `cote_tva_in_vigoare(data)` · **9** funcții de prag/plafon au parametru de
+perioadă. **Regula era deja implementată acolo unde se validează.**
+
+Gaura era la marginea ei, și era scrisă în cod ca limită acceptată: `cota_ceruta` spunea *„un corp
+fără `data` nu se poate verifica … se cere să existe, atât"*, iar poarta comună de lună avea
+`if not data: return`. **Fix când verificarea devenea imposibilă, se renunța la ea.** Măsurat: **19
+rute** cădeau apoi cu `500` (`KeyError: 'data'`) la scriere.
+
+Reparat în două locuri. Verificat: coloana „fără dată" a trecut de la **19 × `500`** la **33 ×
+refuz cu mesaj**.
+
+### Ce a rămas nereparat
+
+1. **Exigibilitatea.** Decizia spune *„data operațiunii decide — sau exigibilitatea, unde diferă"*.
+   La TVA la încasare (art. 282) cota se aplică la data exigibilității, nu a facturii, iar
+   `cota_ceruta` citește `corp["data"]` fără să întrebe care dintre cele două e. Nu s-a atins: cere
+   o citire a fiecărei rute care are ambele date.
+2. **`categorie_marime.prag(categorie, criteriu)`** n-are parametru de perioadă, iar pragurile de
+   mărime se schimbă prin lege. E chiar subiectul restanței **R3**, deschisă; nu se deschide aici.
+3. **Cele 5 ecrane cu formular real** așteaptă probarea. Nu sunt „rămase" în același sens ca înainte:
+   acum se știe ce e în ele.
+
+### Cifre
+
+**334 probate · 30 rămase** din 364 — 25 de ecrane + 5 rute de rol. Cele 15 verdicte n-au fost
+probe: sunt citiri, pe criteriul scris.

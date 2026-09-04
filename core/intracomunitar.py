@@ -24,7 +24,14 @@ def desparte_cod_tva(cod):
     if tara == "GR":
         tara = "EL"
     if tara not in TARI_UE:
-        raise ValueError(f"tara '{tara}' nu este stat membru UE (VIES)")
+        # [R147] Forma veche tipărea `tara '' nu este...` când codul lipsea — arăta o valoare
+        # goală în loc să spună că lipsește codul. Cele două cazuri se deosebesc.
+        if not tara:
+            raise ValueError("Codul de TVA al partenerului lipsește. El începe cu prefixul "
+                             "de țară (RO, DE, FR…), care spune în ce stat e înregistrat.")
+        raise ValueError("Prefixul '%s' nu e al unui stat membru UE, deci codul nu se poate "
+                         "verifica în VIES. O livrare intracomunitară cere un partener "
+                         "înregistrat într-un stat membru." % tara)
     if not nr:
         raise ValueError("numar TVA lipsa dupa codul de tara")
     return tara, nr

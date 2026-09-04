@@ -59,8 +59,8 @@ verde nu e proba — el confirmă forma; o cifră în rândul greșit trece la f
 | **populația derivată** | **553 de unități** — `LISTA_FUNCTIONALITATI.md`, generat cu `scripts/scan_functionalitati.py`. 427 de rute · 75 de ecrane · 14 joburi · 37 de instrumente |
 | **perimetrul etapei 1** | **364** — numai suprafața prin care **un om introduce date**: cele 75 de ecrane + **289 de rute cu câmpuri de completat**. Tăiat de Costin pe 03.09, fiindcă 553 depășea pragul de la care comanda cerea oprire |
 | **ce a ieșit, marcat în listă cu motivul** | **189** = 138 de rute fără câmpuri de completat · 14 joburi de fundal (nu primesc nimic de la un om) · 37 de instrumente din `scripts/` (nu le atinge un contabil) |
-| **probate** | **319** (loturile 1–8 · lotul 9 · lotul 10 = 17 ecrane · lotul 11 = 6 · lotul 12 = 12 minus **5** mutate înapoi la `neprobat` · **lotul 13 = 2**, dar acele două rânduri poartă **32 de formulare** probate) |
-| **RĂMASE DE PROBAT** | **45** — 40 de ECRANE + **5 rute** pe care lotul 9 le-a marcat „fără defect” pe temeiul unui `403` de ROL, deci n-au ajuns la verificările lor proprii (`DECIZII.md` 32; se reprobează în lotul 14). Niciunul nu mai e „neatins": fiecare rând poartă motivul lui — fără câmp în DOM (afișare pură), formular la doi pași de deschizător, sau buton care iese din aplicație |
+| **probate** | **334** — lotul 13 a adăugat 2 unități care poartă **32 de formulare**, iar cele 15 verdicte prin citirea șablonului (`DECIZII.md` 33) au închis restul |
+| **RĂMASE DE PROBAT** | **30** — 25 de ECRANE + **5 rute** de rol (lotul 14). Dintre ecrane, **5** au ieșit la iveală abia la citirea șablonului: aveau formular real, nu filtre |
 | **defecte** | găsite **132**, reparate **132**, reprobate **132** *(loturile 1–8: 108 · lot 9: 13 · lot 10: 5 · lot 11: 3 · **lot 12: 3**)* |
 | **cum se numără** | **mecanic**, parcurgând coloana «stare probare» din `LISTA_FUNCTIONALITATI.md`. Cifrele de dinainte (312/52) erau scrise de mână și **greșite cu două fiecare** |
 
@@ -425,7 +425,7 @@ ora commitului*.
 | cod | acum | ce se numără | instrument |
 |---|---|---|---|
 | **77** | **62** | refuzuri fără temei în module care citează legea | `scripts/scan_refuzuri.datorie()` |
-| **77u** | **867** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
+| **77u** | **869** | UMBRA: refuzuri în module care nu citează legea (nedeplafonat) | `scripts/scan_refuzuri.umbra()` |
 | **50** | **1222** | aserțiuni ancorate pe text, nu pe structură | `core/scan_garzi_pe_text.pe_fel()` |
 | **R80** | **7** | rute despre care detectorul de apelanți nu poate afirma nimic | `scripts/scan_ancore_rute.verdicte()` |
 

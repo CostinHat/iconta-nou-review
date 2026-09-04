@@ -19,7 +19,9 @@ def nota_incasare(bacsis, sursa="card"):
     """La bonul fiscal: 461=462 + incasare 5121 (card) / 5311 (numerar) = 461."""
     b = _d(bacsis)
     if b <= 0:
-        raise ValueError("bacsis invalid")
+        # [R147] „bacsis invalid" nu spunea nici care câmp, nici ce e greșit cu el.
+        raise ValueError("Bacșișul încasat trebuie să fie o sumă mai mare decât zero. "
+                         "Dacă nu s-a încasat bacșiș, operațiunea nu se înregistrează.")
     cont = "5121" if sursa == "card" else "5311"
     return {"linii": [("461", "462", b), (cont, "461", b)]}
 
@@ -27,7 +29,10 @@ def nota_distribuire(bacsis_brut, sursa="banca"):
     """Retinere impozit 10% (462=446) + plata net catre salariati (462=5121/5311)."""
     b = _d(bacsis_brut)
     if b <= 0:
-        raise ValueError("bacsis invalid")
+        # [R147] Aici e bacșișul BRUT, din care se reține impozitul — alt înțeles decât la
+        # încasare, deci alt mesaj.
+        raise ValueError("Bacșișul brut de distribuit trebuie să fie o sumă mai mare decât "
+                         "zero: din el se reține impozitul înainte de plata către salariați.")
     imp = (b * COTA_IMPOZIT / 100).quantize(B, rounding=ROUND_HALF_UP)
     net = b - imp
     cont = "5121" if sursa == "banca" else "5311"

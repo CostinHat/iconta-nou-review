@@ -383,9 +383,24 @@ def cota_ceruta(corp):
     # trec pe-aici. Data se ia DIN CORP (`data` e numele uniform la rutele de nota si de achizitie),
     # deci nu se schimba niciun apelant.
     #
-    # **LIMITA, declarata:** un corp fara `data` nu se poate verifica — cotele legii depind de
-    # perioada —, si atunci se pastreaza comportamentul de dinainte: se cere sa existe, atat.
+    # **LIMITA RIDICATA [R146, 05.09.2026].** Pana azi scria aici: „un corp fara `data` nu se poate
+    # verifica — cotele legii depind de perioada —, si atunci se pastreaza comportamentul de dinainte:
+    # se cere sa existe, atat." Adica, exact cand verificarea era imposibila, se renunta la ea.
+    #
+    # Decizia lui Costin (05.09.2026) taie chiar aici: *„cota se valideaza fata de PERIOADA in care a
+    # fost in vigoare, nu fata de o lista de cote acceptate. Data operatiunii decide ce cote sunt
+    # legale. O cota istorica pe o factura din perioada ei e corecta; aceeasi cota pe o factura de azi
+    # e o cifra valida si falsa care sub-declara."* Daca data decide legalitatea, atunci **fara data
+    # nu exista legalitate de verificat** — deci nu se trece mai departe, se refuza.
+    #
+    # *Masurat inainte de a schimba: toate cele 17 locuri care valideaza o cota o compara deja cu
+    # perioada, prin `cote_tva_in_vigoare(data)`. Nicaieri nu se compara cu o lista fixa de valori.
+    # Singura gaura era asta: absenta datei, care oprea verificarea in loc s-o refuze.*
     _d = corp.get("data")
+    if not _d:
+        raise ValueError("Data operațiunii e obligatorie pentru a verifica cota de TVA: cotele "
+                         "legale se schimbă în timp (art. 291 Cod fiscal), iar fără dată nu se "
+                         "poate ști care erau în vigoare.")
     if _d:
         try:
             _dd = _d if hasattr(_d, "year") else date.fromisoformat(str(_d)[:10])
@@ -868,7 +883,11 @@ def alege_varianta(variante, la_data=None):
     for din, fn, temei in sorted(variante, key=lambda r: _ca_data(r[0]), reverse=True):
         if la_data >= _ca_data(din):
             return fn, temei
-    raise ValueError("nicio varianta de formula valabila la %s" % la_data)
+    # [R147] Mesajul vechi era pentru cine scrie codul. Pentru contabil faptul e altul: la data
+    # aceea aplicația nu cunoaște regula de calcul — nu că a greșit el ceva.
+    raise ValueError("Pentru data %s nu există nicio regulă de calcul cunoscută de aplicație. "
+                     "Verifică data operațiunii: cel mai des e o dată din afara perioadelor "
+                     "pentru care regula e scrisă." % la_data)
 
 
 def _adauga_luni(d, luni):

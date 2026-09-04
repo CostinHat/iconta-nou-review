@@ -41,7 +41,8 @@ def seteaza(conn, schema, salariat_id, an, luna, tip, valoare, eveniment="", nr_
     try:
         v = Decimal(str(valoare or 0))
     except Exception:
-        return {"eroare": "valoare invalidă"}
+        # [R147] Nu spunea care valoare, nici ce se aștepta de la ea.
+        return {"eroare": "Valoarea beneficiului trebuie să fie un număr mai mare decât zero."}
     if v < 0:
         return {"eroare": "valoarea nu poate fi negativă"}
     if tip == "cresa" and v > 0:

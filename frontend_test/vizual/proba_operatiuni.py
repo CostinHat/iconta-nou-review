@@ -144,7 +144,10 @@ with sync_playwright() as p:
     pg = ctx.new_page()
     erori = []
     pg.on("pageerror", lambda e: erori.append(str(e)))
-    deschide = dict(nav_ecrane.ECRANE_CAMPANIE)["operatiuni"]
+    # Ecranul poate sta in oricare din liste — s-a mutat in `ECRANE` cand lotul i-a atins JS-ul
+    # (R143). Unealta nu trebuie sa stie in care: cauta in toate, ca sa nu cada la urmatoarea mutare.
+    _toate = dict(list(nav_ecrane.ECRANE) + list(nav_ecrane.ECRANE_CAMPANIE))
+    deschide = _toate["operatiuni"]
 
     deschide(pg)
     pg.wait_for_timeout(1400)
