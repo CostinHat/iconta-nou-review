@@ -1530,7 +1530,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T15 — Salariatul — angajare, contract, adeverință, REGES
 
-**Clasa:** MANUAL · **rute:** 17 (din care schimba date: 12) · **refuzuri explicite:** 43
+**Clasa:** MANUAL · **rute:** 17 (din care schimba date: 12) · **refuzuri explicite:** 45
 
 **Cine:** rol cerut: `admin_firma`, `angajat`. **Rute care schimba date fara nicio verificare de rol: 3 din 12.**
 
@@ -1564,7 +1564,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T16 — Pontajul
 
-**Clasa:** MECANIC · **rute:** 4 (din care schimba date: 2) · **refuzuri explicite:** 5
+**Clasa:** MECANIC · **rute:** 4 (din care schimba date: 2) · **refuzuri explicite:** 7
 
 **Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 1 din 2.**
 
@@ -1640,7 +1640,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T20 — Mișcarea de stoc — intrare, ieșire, transfer, reclasificare
 
-**Clasa:** MECANIC · **rute:** 12 (din care schimba date: 7) · **refuzuri explicite:** 28
+**Clasa:** MECANIC · **rute:** 12 (din care schimba date: 7) · **refuzuri explicite:** 33
 
 **Cine:** nicio verificare de rol pe tot traseul — orice utilizator autentificat al cabinetului. **7 din 7 rute care schimba date.**
 
@@ -1752,7 +1752,7 @@ editeaza cu mana: o corectura se face in inventar si se regenereaza.*
 
 ### T25 — Comanda din magazinul online (WooCommerce)
 
-**Clasa:** MANUAL · **rute:** 3 (din care schimba date: 2) · **refuzuri explicite:** 1
+**Clasa:** MANUAL · **rute:** 3 (din care schimba date: 2) · **refuzuri explicite:** 2
 
 **Cine:** rol cerut: `admin_firma`. **Rute care schimba date fara nicio verificare de rol: 0 din 2.**
 

@@ -540,3 +540,64 @@ Reprobarea a scos trei căderi noi, toate ale mele: refuzul importului de artico
   singură abatere" a intrat în ham la lotul 5.
 - `_cere_perioada`, ajutorul scris în lotul 3 pentru **patru** rute, are acum **cincisprezece**
   apelanți. *Fiecare lot îl găsește într-un loc nou.*
+
+---
+
+## LOT 7 — TREISPREZECE trasee (61 de probe INVALIDE pe 49 de unități)
+
+T15 salariatul · T16 pontajul · T17 plata salariilor · T18 chitanța · T19 scadențarul · T20 mișcarea
+de stoc · T21 rețeta și producția · T22 mijlocul fix · T23 bonul de la client · T24 bonul fiscal ·
+T25 magazinul online · T26 registratura · T27 e-Transport.
+
+**Proba de deschidere a fost corpul gol, pe toate cele 28 de căi care primesc unul.** E cea mai
+ieftină probă și cea care scoate contractul la iveală: *ce răspunde o rută când nu primește nimic
+arată ce consideră ea obligatoriu — iar acolo unde răspunde `200`, întrebarea e ce a făcut fără să i
+se ceară.* Din cele 28, **șase au căzut cu `500`** și **una a oprit un canal**.
+
+**Ce s-a lăsat în urmă:** nimic. Verificat: `facturi` 3, `inregistrari` 4, `salariati` 2,
+`articole` 9, `produse` 0, `chitante` 0; `firma_profil.cui` = `95141537`, `wc_url` și `wc_ck` = NULL
+(cum erau).
+
+| # | rută | ce s-a introdus | ce a făcut aplicația | reparat |
+|---|---|---|---|---|
+| 170 · 201 · 202 · 204 · 205 · 213 | `reges-config` · `stocuri/iesire` · `stocuri/intrare` · `stocuri/reclasificare` · `stocuri/transfer` · `retete/descarca` | corp gol | **A CĂZUT** — `500` de șase ori. `corp["x"]` cu `KeyError` neprins | **DA** — refuzul iese acum ca mesaj, prin ajutorul comun din lotul 3 |
+| 180 | `POST /pontaj/confirma` | `luna=13` | **A CĂZUT** — `500` | **DA** — `_cere_perioada` |
+| 215 | `POST /amortizare` | `luna=13` | **A CĂZUT** — `500`, **și ruta asta scrie nota direct ca `validata`**, deci o lună imposibilă ar fi ajuns în evidență, nu într-o ciornă | **DA** |
+| 177 | `PUT /salariati/{id}` | `salariat_id=999999` | **`200` · `{"ok":true}`** — „am actualizat" despre cineva care nu e în firmă. **A treia oară** în campanie când o rută despre un salariat nu verifică dacă el există (lotul 4: concediile, de două ori) | **DA** — `404 salariat inexistent`, ca celelalte trei rute |
+| 230 | `PUT /woocommerce/config` | corp gol | **A OPRIT CANALUL, TĂCUT** — scria `NULL` în `wc_url`, `wc_ck`, `wc_cs` și răspundea `{"ok":true}`. Chiar comentariul de deasupra o spune: *„cu ele pline canalul e pornit, golite îl oprește"*. **Aceeași clasă ca importurile din lotul 1b**: o operațiune de înlocuire care primește un set vid nu are voie să execute partea de ștergere | **DA** — oprirea rămâne posibilă, dar **cerută**, nu dedusă din tăcere |
+| 183 | `GET /util/zile-lucratoare` | `end < start` | **`200` · `{"zile": 0}`** — o cifră, adică un răspuns. Iar cifra asta intră în **auto-calculul indemnizației de concediu medical** (OUG 158/2005 art. 10): *„0 zile lucrătoare" și „intervalul e scris invers" nu sunt același lucru* | **DA** |
+| 232 | `GET /registratura` | `an=1900` | `200` cu registru gol | **DA** — `_cere_perioada` |
+| 203 | `GET /stocuri/locatii` | `articol_id=999999` | `200` · `{"locatii":[]}` — „articolul nu e nicăieri" arăta identic cu „articolul nu există" | **DA** — `404`, ca la salariat (lot 4) și la cont (lot 3) |
+
+### Ce a răspuns bine, și merită scris
+
+Cele mai bune refuzuri din lot n-au avut nevoie de reparație: **e-Transport** (`#234`, `#235`)
+răspunde cu `{"cod":"CAMPURI_LIPSA","mesaj":"Câmpuri obligatorii lipsă (schema eTransport): Tip
+operațiune; Cel puțin un bun…"}` — numește schema, câmpurile și ce lipsește; **reevaluarea**
+(`#217`) spune *„mijloc fix inexistent/inactiv"*; **rețetele** (`#212`) — *„Denumirea rețetei e
+obligatorie."*
+
+### Defectele PROBEI — patru grupuri, și trei feluri diferite de a fi oarbă
+
+1. **Parametri care nu există în semnătură.** `#188` (chitanțe), `#194` (analitică) și `#173`
+   (salariați) nu *ignoră* `luna` — **n-o primesc deloc**; FastAPI lasă parametrii necunoscuți să
+   treacă. Probele mele măsurau o întrebare pe care rutele n-o puseseră niciodată.
+2. **Locul greșit al parametrului.** `#215` cere `an`/`luna` ca **parametri de adresă**, nu în corp;
+   prima formă îi trimitea în corp și primea „an lipsește". *Abia după corectare a ieșit `500`-ul.*
+3. **Rolul greșit.** `#219`–`#221` sunt rute de **portal** și cer rol `client`; cu tokenul de cabinet
+   se opreau la poarta de contexte („Alegeți firma"), nu la bonul inexistent.
+
+*A patra oară în campanie când probele măsoară altceva decât scrie în eticheta lor — dar de data asta
+fiecare fel a fost prins la prima reprobare, iar două dintre defectele reale ale lotului (`#215`,
+`#230`) s-au văzut **numai** după corectare.*
+
+### Cifre
+
+- probe INVALIDE rulate: **61**, pe **49 de unități**, în **treisprezece trasee** · defecte găsite:
+  **13** · reparate: **13** · reprobate: **13**, toate schimbate.
+- distribuția la ultima trecere: **41 × 422 · 11 × 404 · 5 × 400 · 2 × 200** (căutări în COR fără
+  rezultate — corect) · **0 × 500**. Înainte: **7 × 500** și **10 × 200**.
+- **opt din cele treisprezece defecte au fost căderi `500`** — cea mai mare proporție din campanie,
+  și toate pe **corpul gol**. *La 28 de căi probate cu aceeași intrare, șase au căzut: nu e un
+  accident, e o clasă — rutele care citesc `corp["camp"]` fără să treacă prin nicio validare.*
+- `_cere_perioada` are acum **optsprezece** apelanți.

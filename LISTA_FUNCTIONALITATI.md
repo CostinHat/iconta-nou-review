@@ -258,38 +258,38 @@
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
 | 163 | contracte marcaje | `GET /contracte/marcaje` · `cere_cabinet` | citire / afisare — `contracte_marcaje()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 164 | [F137] Cauta in nomenclatorul COR national dupa cod (prefix) sau denumire (substring, diacritic-insensitiv) | `GET /cor` · `cere_context` | citire / afisare — `cor_cauta()` | nu | neprobat |
-| 165 | contracte genereaza | `POST /tenants/{tenant_id}/contracte/genereaza` · rol `admin_firma` | creare sau executie — `contracte_genereaza()` | nu | neprobat |
+| 164 | [F137] Cauta in nomenclatorul COR national dupa cod (prefix) sau denumire (substring, diacritic-insensitiv) | `GET /cor` · `cere_context` | citire / afisare — `cor_cauta()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 165 | contracte genereaza | `POST /tenants/{tenant_id}/contracte/genereaza` · rol `admin_firma` | creare sau executie — `contracte_genereaza()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 | 166 | contracte sabloane lista | `GET /tenants/{tenant_id}/contracte/sabloane` · `cere_cabinet` | citire / afisare — `contracte_sabloane_lista()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 167 | contracte sabloane salveaza | `POST /tenants/{tenant_id}/contracte/sabloane` · `cere_cabinet` | creare sau executie — `contracte_sabloane_salveaza()` | nu | neprobat |
+| 167 | contracte sabloane salveaza | `POST /tenants/{tenant_id}/contracte/sabloane` · `cere_cabinet` | creare sau executie — `contracte_sabloane_salveaza()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 | 168 | contracte sabloane sterge | `DELETE /tenants/{tenant_id}/contracte/sabloane/{sid}` · `cere_cabinet` | stergere — `contracte_sabloane_sterge()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 169 | tenant prapastie salariu | `POST /tenants/{tenant_id}/prapastie-salariu` · `cere_cabinet` | creare sau executie — `tenant_prapastie_salariu()` | nu | neprobat |
-| 170 | corp: {username, parola, mediu test/prod} | `POST /tenants/{tenant_id}/reges-config` · rol `admin_firma` | creare sau executie — `reges_config()` | nu | neprobat |
+| 169 | tenant prapastie salariu | `POST /tenants/{tenant_id}/prapastie-salariu` · `cere_cabinet` | creare sau executie — `tenant_prapastie_salariu()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 170 | corp: {username, parola, mediu test/prod} | `POST /tenants/{tenant_id}/reges-config` · rol `admin_firma` | creare sau executie — `reges_config()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 | 171 | Citeste+consuma un mesaj din coada REGES; salveaza referintele in reges_mesaje. | `POST /tenants/{tenant_id}/reges-poll` · rol `admin_firma` | creare sau executie — `reges_poll()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 172 | corp: {salariat_id, adresa, contract {numar, data_contract, data_inceput, salariu, cor, ...}?} | `POST /tenants/{tenant_id}/reges-trimite-salariat` · rol `admin_firma` | creare sau executie — `reges_trimite_salariat()` | nu | neprobat |
-| 173 | salariati lista | `GET /tenants/{tenant_id}/salariati` · `cere_cabinet` | citire / afisare — `salariati_lista()` | da | neprobat |
-| 174 | salariat creeaza | `POST /tenants/{tenant_id}/salariati` · rol `admin_firma/angajat` | creare sau executie — `salariat_creeaza()` | da | neprobat |
+| 172 | corp: {salariat_id, adresa, contract {numar, data_contract, data_inceput, salariu, cor, ...}?} | `POST /tenants/{tenant_id}/reges-trimite-salariat` · rol `admin_firma` | creare sau executie — `reges_trimite_salariat()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 173 | salariati lista | `GET /tenants/{tenant_id}/salariati` · `cere_cabinet` | citire / afisare — `salariati_lista()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 174 | salariat creeaza | `POST /tenants/{tenant_id}/salariati` · rol `admin_firma/angajat` | creare sau executie — `salariat_creeaza()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 | 175 | salariat sterge | `DELETE /tenants/{tenant_id}/salariati/{salariat_id}` · rol `admin_firma/angajat` | stergere — `salariat_sterge()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 176 | salariat detalii | `GET /tenants/{tenant_id}/salariati/{salariat_id}` · `cere_cabinet` | citire / afisare — `salariat_detalii()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 177 | salariat actualizeaza | `PUT /tenants/{tenant_id}/salariati/{salariat_id}` · rol `admin_firma/angajat` | modificare — `salariat_actualizeaza()` | da | neprobat |
-| 178 | F136: adeverinta de salariat (art | `POST /tenants/{tenant_id}/salariati/{salariat_id}/adeverinta` · rol `admin_firma` | creare sau executie — `tenant_adeverinta()` | nu | neprobat |
-| 179 | [F133 Faza 2a] beneficiu one-off pe luna (vacanta/cadou/cultural) | `PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar` · rol `admin_firma/angajat` | modificare — `salariat_beneficiu_lunar()` | da | neprobat |
+| 177 | salariat actualizeaza | `PUT /tenants/{tenant_id}/salariati/{salariat_id}` · rol `admin_firma/angajat` | modificare — `salariat_actualizeaza()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 178 | F136: adeverinta de salariat (art | `POST /tenants/{tenant_id}/salariati/{salariat_id}/adeverinta` · rol `admin_firma` | creare sau executie — `tenant_adeverinta()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 179 | [F133 Faza 2a] beneficiu one-off pe luna (vacanta/cadou/cultural) | `PUT /tenants/{tenant_id}/salariati/{salariat_id}/beneficiu-lunar` · rol `admin_firma/angajat` | modificare — `salariat_beneficiu_lunar()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 
 ### T16 — Pontajul (4)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 180 | [cap.23] Confirma pontajul lunii -> devine AUTORITATIV pentru salarizare (tichete pe zile efectiv lucrate) | `POST /tenants/{tenant_id}/pontaj/confirma` · rol `admin_firma` | creare sau executie — `tenant_pontaj_confirma()` | nu | neprobat |
-| 181 | F135: grila lunara de pontaj (informativ) | `GET /tenants/{tenant_id}/salariati/{salariat_id}/pontaj` · `cere_context` | citire / afisare — `tenant_pontaj_get()` | da | neprobat |
-| 182 | F135: seteaza starea unei zile (stare goala/prezent = sterge exceptia). | `PUT /tenants/{tenant_id}/salariati/{salariat_id}/pontaj` · `cere_context` | modificare — `tenant_pontaj_set()` | da | neprobat |
-| 183 | Zile lucratoare (L-V, fara sarbatori legale) intre doua date - auto-calcul CM (OUG 158/2005 art.10) | `GET /util/zile-lucratoare` · `cere_context` | citire / afisare — `util_zile_lucratoare()` | nu | neprobat |
+| 180 | [cap.23] Confirma pontajul lunii -> devine AUTORITATIV pentru salarizare (tichete pe zile efectiv lucrate) | `POST /tenants/{tenant_id}/pontaj/confirma` · rol `admin_firma` | creare sau executie — `tenant_pontaj_confirma()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 181 | F135: grila lunara de pontaj (informativ) | `GET /tenants/{tenant_id}/salariati/{salariat_id}/pontaj` · `cere_context` | citire / afisare — `tenant_pontaj_get()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 182 | F135: seteaza starea unei zile (stare goala/prezent = sterge exceptia). | `PUT /tenants/{tenant_id}/salariati/{salariat_id}/pontaj` · `cere_context` | modificare — `tenant_pontaj_set()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 183 | Zile lucratoare (L-V, fara sarbatori legale) intre doua date - auto-calcul CM (OUG 158/2005 art.10) | `GET /util/zile-lucratoare` · `cere_context` | citire / afisare — `util_zile_lucratoare()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 
 ### T17 — Plata salariilor — fișierul către bancă (2)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 184 | [F134] Fisierul SEPA/ISO 20022 pain.001.001.03 de plata a salariilor NET pe card (download) | `POST /tenants/{tenant_id}/plata-salarii-fisier` · rol `admin_firma` | creare sau executie — `tenant_plata_salarii_fisier()` | nu | neprobat |
-| 185 | [F134] Sumar inainte de generarea fisierului SEPA: cate plati, total, cine e exclus (fara IBAN). | `GET /tenants/{tenant_id}/plata-salarii-preview` · `cere_cabinet` | citire / afisare — `tenant_plata_salarii_preview()` | nu | neprobat |
+| 184 | [F134] Fisierul SEPA/ISO 20022 pain.001.001.03 de plata a salariilor NET pe card (download) | `POST /tenants/{tenant_id}/plata-salarii-fisier` · rol `admin_firma` | creare sau executie — `tenant_plata_salarii_fisier()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 185 | [F134] Sumar inainte de generarea fisierului SEPA: cate plati, total, cine e exclus (fara IBAN). | `GET /tenants/{tenant_id}/plata-salarii-preview` · `cere_cabinet` | citire / afisare — `tenant_plata_salarii_preview()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 
 ### T18 — Chitanța și încasarea (6)
 
@@ -297,8 +297,8 @@
 |---|---|---|---|---|---|
 | 186 | Pagina mock: confirma plata (pana la integrarea provider real). | `GET /public/plata/{ref}` · fără gardă | citire / afisare — `plata_pagina()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 187 | plata confirma | `POST /public/plata/{ref}/confirma` · fără gardă | creare sau executie — `plata_confirma()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 188 | chitante lista | `GET /tenants/{tenant_id}/chitante` · `cere_context` | citire / afisare — `chitante_lista()` | nu | neprobat |
-| 189 | Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar: numerotare pe serie per firma + operatiune in … | `POST /tenants/{tenant_id}/chitante` · rol `admin_firma` | creare sau executie — `chitanta_emite()` | da | neprobat |
+| 188 | chitante lista | `GET /tenants/{tenant_id}/chitante` · `cere_context` | citire / afisare — `chitante_lista()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 189 | Emite chitanta (cod 14-4-1, Ordin 2634/2015) pentru incasare in numerar: numerotare pe serie per firma + operatiune in … | `POST /tenants/{tenant_id}/chitante` · rol `admin_firma` | creare sau executie — `chitanta_emite()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 | 190 | chitanta pdf | `GET /tenants/{tenant_id}/chitante/{chitanta_id}/pdf` · rol `admin_firma` | citire / afisare — `chitanta_pdf()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 191 | factura link plata | `POST /tenants/{tenant_id}/facturi/{factura_id}/link-plata` · rol `admin_firma` | creare sau executie — `factura_link_plata()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
@@ -307,89 +307,89 @@
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
 | 192 | F131: scadentarul facturilor emise neincasate (restante/scade curand/in termen) + fisa client agregata | `GET /tenants/{tenant_id}/scadentar` · `cere_context` | citire / afisare — `scadentar_get()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 193 | F131: activeaza/dezactiveaza notificarile email de scadenta pt firma (default OFF). | `PUT /tenants/{tenant_id}/scadentar/opt-in` · rol `admin_firma` | modificare — `scadentar_optin()` | da | neprobat |
+| 193 | F131: activeaza/dezactiveaza notificarile email de scadenta pt firma (default OFF). | `PUT /tenants/{tenant_id}/scadentar/opt-in` · rol `admin_firma` | modificare — `scadentar_optin()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 
 ### T20 — Mișcarea de stoc — intrare, ieșire, transfer, reclasificare (12)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 194 | cv analitica | `GET /tenants/{tenant_id}/stocuri/analitica` · `cere_cabinet` | citire / afisare — `cv_analitica()` | da | neprobat |
+| 194 | cv analitica | `GET /tenants/{tenant_id}/stocuri/analitica` · `cere_cabinet` | citire / afisare — `cv_analitica()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 | 195 | cv articole | `GET /tenants/{tenant_id}/stocuri/articole` · `cere_cabinet` | citire / afisare — `cv_articole()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 196 | cv barcode set | `POST /tenants/{tenant_id}/stocuri/articole/{articol_id}/barcode` · `cere_cabinet` | creare sau executie — `cv_barcode_set()` | da | neprobat |
+| 196 | cv barcode set | `POST /tenants/{tenant_id}/stocuri/articole/{articol_id}/barcode` · `cere_cabinet` | creare sau executie — `cv_barcode_set()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 | 197 | cv fisa | `GET /tenants/{tenant_id}/stocuri/articole/{articol_id}/fisa` · `cere_cabinet` | citire / afisare — `cv_fisa()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 198 | cv nivel minim | `POST /tenants/{tenant_id}/stocuri/articole/{articol_id}/nivel-minim` · `cere_cabinet` | creare sau executie — `cv_nivel_minim()` | da | neprobat |
+| 198 | cv nivel minim | `POST /tenants/{tenant_id}/stocuri/articole/{articol_id}/nivel-minim` · `cere_cabinet` | creare sau executie — `cv_nivel_minim()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 | 199 | cv barcode gaseste | `GET /tenants/{tenant_id}/stocuri/barcode/{cod}` · `cere_cabinet` | citire / afisare — `cv_barcode_gaseste()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 200 | stocuri descarcare | `POST /tenants/{tenant_id}/stocuri/descarcare` · `cere_cabinet` | creare sau executie — `stocuri_descarcare()` | da | neprobat |
-| 201 | cv iesire | `POST /tenants/{tenant_id}/stocuri/iesire` · `cere_cabinet` | creare sau executie — `cv_iesire()` | da | neprobat |
-| 202 | cv intrare | `POST /tenants/{tenant_id}/stocuri/intrare` · `cere_cabinet` | creare sau executie — `cv_intrare()` | da | neprobat |
-| 203 | cv locatii | `GET /tenants/{tenant_id}/stocuri/locatii` · `cere_cabinet` | citire / afisare — `cv_locatii()` | da | neprobat |
-| 204 | cv reclasificare | `POST /tenants/{tenant_id}/stocuri/reclasificare` · `cere_cabinet` | creare sau executie — `cv_reclasificare()` | da | neprobat |
-| 205 | cv transfer | `POST /tenants/{tenant_id}/stocuri/transfer` · `cere_cabinet` | creare sau executie — `cv_transfer()` | da | neprobat |
+| 200 | stocuri descarcare | `POST /tenants/{tenant_id}/stocuri/descarcare` · `cere_cabinet` | creare sau executie — `stocuri_descarcare()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 201 | cv iesire | `POST /tenants/{tenant_id}/stocuri/iesire` · `cere_cabinet` | creare sau executie — `cv_iesire()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 202 | cv intrare | `POST /tenants/{tenant_id}/stocuri/intrare` · `cere_cabinet` | creare sau executie — `cv_intrare()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 203 | cv locatii | `GET /tenants/{tenant_id}/stocuri/locatii` · `cere_cabinet` | citire / afisare — `cv_locatii()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 204 | cv reclasificare | `POST /tenants/{tenant_id}/stocuri/reclasificare` · `cere_cabinet` | creare sau executie — `cv_reclasificare()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 205 | cv transfer | `POST /tenants/{tenant_id}/stocuri/transfer` · `cere_cabinet` | creare sau executie — `cv_transfer()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 
 ### T21 — Rețeta și producția (9)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
 | 206 | produse lista | `GET /tenants/{tenant_id}/produse` · `cere_context` | citire / afisare — `produse_lista()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 207 | produse creeaza | `POST /tenants/{tenant_id}/produse` · `cere_cabinet` | creare sau executie — `produse_creeaza()` | nu | neprobat |
-| 208 | produse potriveste | `POST /tenants/{tenant_id}/produse/potriveste` · `cere_context` | creare sau executie — `produse_potriveste()` | nu | neprobat |
+| 207 | produse creeaza | `POST /tenants/{tenant_id}/produse` · `cere_cabinet` | creare sau executie — `produse_creeaza()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 208 | produse potriveste | `POST /tenants/{tenant_id}/produse/potriveste` · `cere_context` | creare sau executie — `produse_potriveste()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 | 209 | produse sterge | `DELETE /tenants/{tenant_id}/produse/{produs_id}` · `cere_cabinet` | stergere — `produse_sterge()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 210 | produse actualizeaza | `PUT /tenants/{tenant_id}/produse/{produs_id}` · `cere_cabinet` | modificare — `produse_actualizeaza()` | nu | neprobat |
+| 210 | produse actualizeaza | `PUT /tenants/{tenant_id}/produse/{produs_id}` · `cere_cabinet` | modificare — `produse_actualizeaza()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 | 211 | retete lista | `GET /tenants/{tenant_id}/retete` · `cere_cabinet` | citire / afisare — `retete_lista()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 212 | retete salveaza | `POST /tenants/{tenant_id}/retete` · `cere_cabinet` | creare sau executie — `retete_salveaza()` | da | neprobat |
-| 213 | retete descarca | `POST /tenants/{tenant_id}/retete/descarca` · `cere_cabinet` | creare sau executie — `retete_descarca()` | da | neprobat |
+| 212 | retete salveaza | `POST /tenants/{tenant_id}/retete` · `cere_cabinet` | creare sau executie — `retete_salveaza()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 213 | retete descarca | `POST /tenants/{tenant_id}/retete/descarca` · `cere_cabinet` | creare sau executie — `retete_descarca()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 | 214 | retete sterge | `DELETE /tenants/{tenant_id}/retete/{reteta_id}` · `cere_cabinet` | stergere — `retete_sterge()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T22 — Mijlocul fix și amortizarea (3)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 215 | Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ. | `POST /tenants/{tenant_id}/amortizare` · rol `admin_firma` | creare sau executie — `tenant_amortizare()` | da | neprobat |
+| 215 | Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ. | `POST /tenants/{tenant_id}/amortizare` · rol `admin_firma` | creare sau executie — `tenant_amortizare()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 | 216 | [ecran_mf_v1 14.08.2026; amortizare pe metoda 16.08.2026] Registrul mijloacelor fixe ale firmei: valoare, amortizat la … | `GET /tenants/{tenant_id}/mijloace-fixe` · `cere_cabinet` | citire / afisare — `tenant_mijloace_fixe()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 217 | corp: {data, operatie reevaluare/surplus, + reevaluare{mijloc_fix_id, valoare_justa, sold_105_activ?, pierdere_655_ante… | `POST /tenants/{tenant_id}/reevaluare-imobilizare` · `cere_cabinet` | creare sau executie — `reevaluare_imobilizare()` | da | neprobat |
+| 217 | corp: {data, operatie reevaluare/surplus, + reevaluare{mijloc_fix_id, valoare_justa, sold_105_activ?, pierdere_655_ante… | `POST /tenants/{tenant_id}/reevaluare-imobilizare` · `cere_cabinet` | creare sau executie — `reevaluare_imobilizare()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 
 ### T23 — Bonul de la client — portalul și decontul (9)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 218 | Extrage datele bonului cu AI si salveaza ca DRAFT (status='extras') + pozele pe disc | `POST /portal/bon` · `cere_context` | creare sau executie — `portal_bon()` | nu | neprobat |
-| 219 | Clientul reface poza -> draftul (status='extras') si pozele lui se sterg. | `DELETE /portal/bon/{bon_id}` · `cere_context` | stergere — `portal_bon_sterge()` | nu | neprobat |
-| 220 | Clientul confirma ca poza e intreaga si lizibila -> bonul intra la contabil. | `POST /portal/bon/{bon_id}/confirma` · `cere_context` | creare sau executie — `portal_bon_confirma()` | nu | neprobat |
-| 221 | portal bon imagine | `GET /portal/bon/{bon_id}/imagine/{n}` · `cere_context` | citire / afisare — `portal_bon_imagine()` | nu | neprobat |
+| 218 | Extrage datele bonului cu AI si salveaza ca DRAFT (status='extras') + pozele pe disc | `POST /portal/bon` · `cere_context` | creare sau executie — `portal_bon()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 219 | Clientul reface poza -> draftul (status='extras') si pozele lui se sterg. | `DELETE /portal/bon/{bon_id}` · `cere_context` | stergere — `portal_bon_sterge()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 220 | Clientul confirma ca poza e intreaga si lizibila -> bonul intra la contabil. | `POST /portal/bon/{bon_id}/confirma` · `cere_context` | creare sau executie — `portal_bon_confirma()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 221 | portal bon imagine | `GET /portal/bon/{bon_id}/imagine/{n}` · `cere_context` | citire / afisare — `portal_bon_imagine()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 | 222 | bonuri de verificat | `GET /tenants/{tenant_id}/bonuri/de-verificat` · `cere_cabinet` | citire / afisare — `bonuri_de_verificat()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 223 | bon aproba | `POST /tenants/{tenant_id}/bonuri/{bon_id}/aproba` · rol `admin_firma` | creare sau executie — `bon_aproba()` | da | neprobat |
+| 223 | bon aproba | `POST /tenants/{tenant_id}/bonuri/{bon_id}/aproba` · rol `admin_firma` | creare sau executie — `bon_aproba()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 | 224 | Pentru o chitanta: facturile PRIMITE, neplatite, care ar putea fi stinse de ea | `GET /tenants/{tenant_id}/bonuri/{bon_id}/facturi-candidate` · `cere_cabinet` | citire / afisare — `bon_facturi_candidate()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 225 | cabinet bon imagine | `GET /tenants/{tenant_id}/bonuri/{bon_id}/imagine/{n}` · rol `admin_firma` | citire / afisare — `cabinet_bon_imagine()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 226 | Chitanta certificata de contabil: plata furnizor prin Registrul de casa (casa_api.adauga -> 401=5311 ciorna + operatiun… | `POST /tenants/{tenant_id}/bonuri/{bon_id}/stinge` · rol `admin_firma` | creare sau executie — `chitanta_stinge()` | da | neprobat |
+| 226 | Chitanta certificata de contabil: plata furnizor prin Registrul de casa (casa_api.adauga -> 401=5311 ciorna + operatiun… | `POST /tenants/{tenant_id}/bonuri/{bon_id}/stinge` · rol `admin_firma` | creare sau executie — `chitanta_stinge()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 
 ### T24 — Bonul fiscal și raportul Z (AMEF, horeca) (2)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 227 | Upload p7b/XML AMEF (OPANAF 146/2018 II.7) -> nota Raport Z CIORNA | `POST /tenants/{tenant_id}/horeca/import-amef` · `cere_cabinet` | creare sau executie — `horeca_import_amef()` | da | neprobat |
-| 228 | horeca raport z | `POST /tenants/{tenant_id}/horeca/raport-z` · rol `admin_firma` | creare sau executie — `horeca_raport_z()` | da | neprobat |
+| 227 | Upload p7b/XML AMEF (OPANAF 146/2018 II.7) -> nota Raport Z CIORNA | `POST /tenants/{tenant_id}/horeca/import-amef` · `cere_cabinet` | creare sau executie — `horeca_import_amef()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 228 | horeca raport z | `POST /tenants/{tenant_id}/horeca/raport-z` · rol `admin_firma` | creare sau executie — `horeca_raport_z()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 
 ### T25 — Comanda din magazinul online (WooCommerce) (3)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
 | 229 | wc config get | `GET /tenants/{tenant_id}/woocommerce/config` · `cere_context` | citire / afisare — `wc_config_get()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 230 | wc config | `PUT /tenants/{tenant_id}/woocommerce/config` · rol `admin_firma` | modificare — `wc_config()` | da | neprobat |
+| 230 | wc config | `PUT /tenants/{tenant_id}/woocommerce/config` · rol `admin_firma` | modificare — `wc_config()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 | 231 | wc sinc | `POST /tenants/{tenant_id}/woocommerce/sincronizeaza` · rol `admin_firma` | creare sau executie — `wc_sinc()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T26 — Registratura (2)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 232 | registratura lista | `GET /tenants/{tenant_id}/registratura` · `cere_cabinet` | citire / afisare — `registratura_lista()` | nu | neprobat |
-| 233 | registratura creeaza | `POST /tenants/{tenant_id}/registratura` · `cere_cabinet` | creare sau executie — `registratura_creeaza()` | nu | neprobat |
+| 232 | registratura lista | `GET /tenants/{tenant_id}/registratura` · `cere_cabinet` | citire / afisare — `registratura_lista()` | nu | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 233 | registratura creeaza | `POST /tenants/{tenant_id}/registratura` · `cere_cabinet` | creare sau executie — `registratura_creeaza()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 
 ### T27 — e-Transport (3)
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 234 | etransport xml | `POST /tenants/{tenant_id}/etransport-xml` · `cere_cabinet` | creare sau executie — `etransport_xml()` | nu | neprobat |
-| 235 | Trimite notificarea UIT in SPV (F121): genereaza XML + trimite() cu PORTI in ordine (garda de timp -> idempotency -> va… | `POST /tenants/{tenant_id}/etransport/trimite` · rol `admin_firma` | creare sau executie — `etransport_trimite()` | nu | neprobat |
+| 234 | etransport xml | `POST /tenants/{tenant_id}/etransport-xml` · `cere_cabinet` | creare sau executie — `etransport_xml()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
+| 235 | Trimite notificarea UIT in SPV (F121): genereaza XML + trimite() cu PORTI in ordine (garda de timp -> idempotency -> va… | `POST /tenants/{tenant_id}/etransport/trimite` · rol `admin_firma` | creare sau executie — `etransport_trimite()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 7 |
 | 236 | UIT-uri trimise + semafor de TIMP (valabilitate UIT) SEPARAT de semaforul de trimitere | `GET /tenants/{tenant_id}/etransport/trimiteri` · `cere_context` | citire / afisare — `etransport_trimiteri_lista()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T28 — Operațiunile intracomunitare, VIES și Intrastat (12)

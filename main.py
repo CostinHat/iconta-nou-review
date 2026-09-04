@@ -3019,7 +3019,19 @@ def util_zile_lucratoare(start: str, end: str, ctx=Depends(cere_context)):
     from core import scadente as _scad
     from datetime import date as _d
     try:
-        return {"zile": _scad.zile_lucratoare_interval(_d.fromisoformat(start), _d.fromisoformat(end))}
+        _s, _e = _d.fromisoformat(start), _d.fromisoformat(end)
+    except ValueError:
+        raise HTTPException(422, "Datele de început și de sfârșit se scriu ca AAAA-LL-ZZ, cu zile "
+                                 "care există în calendar — am primit %r și %r." % (start, end))
+    # [lotul 7] Un interval INVERSAT intorcea `{"zile": 0}` — o cifra, adica un raspuns. Iar cifra
+    # asta intra in calculul indemnizatiei de concediu medical (auto-calcul CM, OUG 158/2005
+    # art.10): „0 zile lucratoare" si „intervalul e scris invers" nu sunt acelasi lucru.
+    if _e < _s:
+        raise HTTPException(422, "Sfârșitul intervalului (%s) e înaintea începutului (%s). "
+                                 "Zilele lucrătoare se numără pe un interval, iar intervalul are "
+                                 "o ordine." % (end, start))
+    try:
+        return {"zile": _scad.zile_lucratoare_interval(_s, _e)}
     except ValueError as ex:
         raise HTTPException(422, str(ex))
 
@@ -3508,6 +3520,13 @@ def salariat_actualizeaza(tenant_id: int, salariat_id: int, date: SalariatEdit,
     golite = [k for k, v in trimise.items() if v is None]
     try:
         with db.get_conn(schema) as conn:
+            # [lotul 7, 04.09.2026] `PUT /salariati/999999` raspundea `200 {"ok": true}` — „am
+            # actualizat" despre cineva care nu e in firma. A TREIA oara in campanie cand o ruta
+            # despre un salariat nu verifica daca el exista (lotul 4: concediile, de doua ori).
+            with conn.cursor() as cur:
+                cur.execute("SELECT 1 FROM salariati WHERE id=%s", (salariat_id,))
+                if not cur.fetchone():
+                    raise HTTPException(404, "salariat inexistent")
             return salariati_api.actualizeaza_salariat(conn, salariat_id,
                                                        _golite=golite, **date.model_dump())
     except ValueError as e:
@@ -4561,6 +4580,7 @@ def salarii_contare_scrie(tenant_id: int, an: int, luna: int, ctx=Depends(cere_c
 def tenant_amortizare(tenant_id: int, an: int, luna: int,
                       ctx=Depends(cere_rol("admin_firma"))):
     """Genereaza nota de amortizare lunara: 6811 = cont_amortizare, per MF activ."""
+    _cere_perioada(an, luna)   # [lotul 7] `luna=13` dadea `500`, pe o ruta care scrie EVIDENTA
     from datetime import date as _date
     from decimal import Decimal as D
     with db.get_conn() as conn:
@@ -5466,6 +5486,7 @@ def tenant_facturi_perioada_redeschide(tenant_id: int, date: ConfirmaPontajIn,
 def tenant_pontaj_confirma(tenant_id: int, date: ConfirmaPontajIn, ctx=Depends(cere_rol("admin_firma"))):
     """[cap.23] Confirma pontajul lunii -> devine AUTORITATIV pentru salarizare (tichete pe zile efectiv
     lucrate). Rol admin_firma. Idempotent (re-confirmarea reimprospateaza)."""
+    _cere_perioada(date.an, date.luna)   # [lotul 7] `luna=13` dadea `500`
     from core import perioada as _per
     schema = _schema_sau_404(ctx, tenant_id)
     with db.get_conn(schema) as conn:
@@ -6370,6 +6391,17 @@ def wc_config_get(tenant_id: int, ctx=Depends(cere_context)):
 # cheile canalului: cu ele pline canalul e pornit, golite îl oprește.
 def wc_config(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_rol("admin_firma"))):
     schema = _schema_sau_404(ctx, tenant_id)
+    # [lotul 7, 04.09.2026] Un corp GOL scria `NULL` in toate trei cheile — adica **oprea canalul**,
+    # tacut, si raspundea `{"ok": true}`. Chiar comentariul de deasupra o spune: „cu ele pline
+    # canalul e pornit, golite il opreste". Aceeasi clasa ca importurile din lotul 1b: *o
+    # operatiune de inlocuire care primeste un set vid nu are voie sa execute partea de stergere.*
+    # Oprirea ramane posibila — dar ceruta, nu dedusa din tacere.
+    _campuri = [k for k in ("url", "ck", "cs") if k in (corp or {})]
+    if not _campuri:
+        raise HTTPException(422, "N-ai trimis niciun câmp. Cererea asta ar fi golit adresa "
+                                 "magazinului și cheile lui, adică ar fi oprit canalul "
+                                 "WooCommerce — dacă asta vrei, trimite explicit `url`, `ck` și "
+                                 "`cs` goale.")
     with db.get_conn() as conn, conn.cursor() as cur:
         cur.execute(f"""UPDATE {schema}.firma_profil
                         SET wc_url=%s, wc_ck=%s, wc_cs=%s""",
@@ -7322,6 +7354,7 @@ def rapoarte_salvate_sterge(tenant_id: int, vid: int, ctx=Depends(cere_cabinet))
 # --- registratura documente (F146: registru unic intrare-iesire) ---
 @app.get("/tenants/{tenant_id}/registratura")
 def registratura_lista(tenant_id: int, an: int = None, ctx=Depends(cere_cabinet)):
+    _cere_perioada(an=an)   # [lotul 7] `an=1900` intorcea un registru gol, ca si cum ar exista
     from core import registratura_api as _reg
     import datetime as _dt
     an = an or _dt.date.today().year
@@ -7926,7 +7959,10 @@ def cv_intrare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet)
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
-        rez = _s.intrare(conn, schema, corp)
+        try:
+            rez = _s.intrare(conn, schema, corp)
+        except (ValueError, KeyError) as e:   # [lotul 7] corp gol dadea `500`
+            raise HTTPException(422, _mesaj_intrare(e))
     if rez.get("eroare"):
         raise HTTPException(400, rez["eroare"])
     return rez
@@ -7938,7 +7974,10 @@ def cv_iesire(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet))
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
-        rez = _s.iesire(conn, schema, corp)
+        try:
+            rez = _s.iesire(conn, schema, corp)
+        except (ValueError, KeyError) as e:   # [lotul 7] corp gol dadea `500`
+            raise HTTPException(422, _mesaj_intrare(e))
     if rez is None:
         raise HTTPException(404, "articol inexistent")
     if rez.get("eroare"):
@@ -7964,6 +8003,14 @@ def cv_locatii(tenant_id: int, articol_id: int = None, ctx=Depends(cere_cabinet)
     from core import stocuri_cv_api as _s
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
+        # [lotul 7] Un articol care NU EXISTA intorcea `{"locatii": []}` — „articolul asta nu e
+        # nicaieri" arata identic cu „articolul asta nu exista". Aceeasi clasa ca salariatul din
+        # lotul 4 si contul din lotul 3.
+        if articol_id is not None and schema:
+            with db.get_conn(schema) as _c2, _c2.cursor() as _cur:
+                _cur.execute("SELECT 1 FROM articole WHERE id=%s", (articol_id,))
+                if not _cur.fetchone():
+                    raise HTTPException(404, "articol inexistent")
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         return {"locatii": _s.stoc_pe_locatii(conn, schema, articol_id)}
@@ -7976,7 +8023,10 @@ def cv_transfer(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cabinet
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
-        rez = _s.transfer(conn, schema, corp)
+        try:
+            rez = _s.transfer(conn, schema, corp)
+        except (ValueError, KeyError) as e:   # [lotul 7] corp gol dadea `500`
+            raise HTTPException(422, _mesaj_intrare(e))
     if rez is None:
         raise HTTPException(404, "articol inexistent")
     if rez.get("eroare"):
@@ -7991,7 +8041,10 @@ def cv_reclasificare(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_ca
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
-        rez = _s.reclasificare(conn, schema, corp)
+        try:
+            rez = _s.reclasificare(conn, schema, corp)
+        except (ValueError, KeyError) as e:   # [lotul 7] corp gol dadea `500`
+            raise HTTPException(422, _mesaj_intrare(e))
     if rez is None:
         raise HTTPException(404, "articol inexistent")
     if rez.get("eroare"):
@@ -8244,8 +8297,8 @@ def retete_descarca(tenant_id: int, corp: dict = Body(...), ctx=Depends(cere_cab
             raise HTTPException(404, "tenant inexistent sau fără acces")
         try:
             return _r.descarca(conn, schema, corp)
-        except ValueError as e:
-            raise HTTPException(400, str(e))
+        except (ValueError, KeyError) as e:      # [lotul 7] corp gol dadea `500`
+            raise HTTPException(422, _mesaj_intrare(e))
 
 
 @app.get("/tenants/{tenant_id}/verificare-stocuri")
@@ -9273,6 +9326,11 @@ def reges_config(tenant_id: int, corp: dict = Body(...),
             raise HTTPException(404, "tenant inexistent sau fără acces")
         if corp.get("mediu", "test") not in ("test", "prod"):
             raise HTTPException(422, nomenclator_cerut("mediu", "test|prod"))
+        # [lotul 7] Corpul gol cadea mai jos, pe `corp["username"]`, cu `KeyError` neprins.
+        for _c, _et in (("username", "utilizatorul REGES"), ("parola", "parola REGES")):
+            if not str(corp.get(_c) or "").strip():
+                raise HTTPException(422, "Lipsește %s. Fără el, trimiterile către REGES nu se pot "
+                                         "autentifica." % _et)
         with conn.cursor() as cur:
             # upsert-ok: salvare credentiale REGES per tenant - update intentionat al aceleiasi chei (tenant_id)
             cur.execute("""INSERT INTO public.reges_chei (tenant_id, username, parola, mediu)

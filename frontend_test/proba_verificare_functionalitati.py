@@ -286,6 +286,152 @@ def probe_T02(cheie=None):
     return p
 
 
+#: LOTUL 7 — corpul gol, pe toate caile care primesc unul. E proba cea mai ieftina si cea care
+#: scoate contractul la iveala: ce raspunde o ruta cand nu i se da nimic spune ce considera ea
+#: obligatoriu. (nr, metoda, cale, are_tenant)
+_CORP_GOL_L7 = [
+    (165, "POST", "/tenants/%d/contracte/genereaza", True),
+    (167, "POST", "/tenants/%d/contracte/sabloane", True),
+    (169, "POST", "/tenants/%d/prapastie-salariu", True),
+    (170, "POST", "/tenants/%d/reges-config", True),
+    (172, "POST", "/tenants/%d/reges-trimite-salariat", True),
+    (174, "POST", "/tenants/%d/salariati", True),
+    (180, "POST", "/tenants/%d/pontaj/confirma", True),
+    (184, "POST", "/tenants/%d/plata-salarii-fisier", True),
+    (189, "POST", "/tenants/%d/chitante", True),
+    (193, "PUT", "/tenants/%d/scadentar/opt-in", True),
+    (200, "POST", "/tenants/%d/stocuri/descarcare", True),
+    (201, "POST", "/tenants/%d/stocuri/iesire", True),
+    (202, "POST", "/tenants/%d/stocuri/intrare", True),
+    (204, "POST", "/tenants/%d/stocuri/reclasificare", True),
+    (205, "POST", "/tenants/%d/stocuri/transfer", True),
+    (207, "POST", "/tenants/%d/produse", True),
+    (208, "POST", "/tenants/%d/produse/potriveste", True),
+    (212, "POST", "/tenants/%d/retete", True),
+    (213, "POST", "/tenants/%d/retete/descarca", True),
+    (215, "POST", "/tenants/%d/amortizare", True),
+    (217, "POST", "/tenants/%d/reevaluare-imobilizare", True),
+    (227, "POST", "/tenants/%d/horeca/import-amef", True),
+    (228, "POST", "/tenants/%d/horeca/raport-z", True),
+    (230, "PUT", "/tenants/%d/woocommerce/config", True),
+    (233, "POST", "/tenants/%d/registratura", True),
+    (234, "POST", "/tenants/%d/etransport-xml", True),
+    (235, "POST", "/tenants/%d/etransport/trimite", True),
+    (218, "POST", "/portal/bon", False),
+]
+
+#: Subiecte inexistente: acelasi `999999` pe fiecare cale care are un id in ea.
+_INEXISTENT_L7 = [
+    (177, "PUT", "/tenants/%d/salariati/999999", {"nume": "X"}),
+    (178, "POST", "/tenants/%d/salariati/999999/adeverinta", {}),
+    (179, "PUT", "/tenants/%d/salariati/999999/beneficiu-lunar", {"suma": 100}),
+    (181, "GET", "/tenants/%d/salariati/999999/pontaj?an=2026&luna=8", None),
+    (182, "PUT", "/tenants/%d/salariati/999999/pontaj", {"an": 2026, "luna": 8, "zile": []}),
+    (196, "POST", "/tenants/%d/stocuri/articole/999999/barcode", {"barcode": "123"}),
+    (198, "POST", "/tenants/%d/stocuri/articole/999999/nivel-minim", {"nivel_minim": 5}),
+    (210, "PUT", "/tenants/%d/produse/999999", {"denumire": "X"}),
+    (223, "POST", "/tenants/%d/bonuri/999999/aproba", {}),
+    (226, "POST", "/tenants/%d/bonuri/999999/stinge", {}),
+]
+
+#: Perioade imposibile, pe rutele de citire ale lotului.
+#: CORECTAT dupa prima trecere: `#188` (chitante), `#194` (analitica) si `#173` (salariati) NU au
+#: parametrii `an`/`luna` in semnatura — FastAPI lasa parametrii necunoscuti sa treaca, iar proba
+#: masurase o intrebare pe care ruta n-o pusese niciodata. A patra proba oarba a campaniei. Raman
+#: cele care CHIAR primesc o perioada.
+_PERIOADA_L7 = [
+    (185, "/tenants/%d/plata-salarii-preview", True),
+    (232, "/tenants/%d/registratura", False),
+]
+
+
+def probe_LOT7():
+    """LOTUL 7 — T15…T27, 49 de unitati in treisprezece trasee.
+
+    **Corpul gol e proba de deschidere, nu una slaba:** ce raspunde o ruta cand nu primeste nimic
+    arata ce considera ea obligatoriu — iar acolo unde raspunde `200`, intrebarea e daca a facut
+    ceva fara sa i se ceara."""
+    F = FIRMA
+    p = []
+    for nr, met, cale, cu_tenant in _CORP_GOL_L7:
+        p.append((nr, "%s %s — corp gol" % (met, cale.split("/")[-1]), met,
+                  (cale % F) if cu_tenant else cale, {}, "corp JSON gol"))
+    for nr, met, cale, corp in _INEXISTENT_L7:
+        p.append((nr, "%s %s — subiect inexistent" % (met, cale.split("/")[-1].split("?")[0]),
+                  met, cale % F, corp, "id=999999"))
+    for nr, cale, are_luna in _PERIOADA_L7:
+        if are_luna:
+            p.append((nr, "GET %s — luna 13" % cale.split("/")[-1], "GET",
+                      (cale % F) + "?an=2026&luna=13", None, "luna=13"))
+        else:
+            p.append((nr, "GET %s — an 1900" % cale.split("/")[-1], "GET",
+                      (cale % F) + "?an=1900", None, "an=1900"))
+    p += [
+        # ── T15 salariatul ───────────────────────────────────────────────────
+        (164, "GET /cor — cautare cu sir gol", "GET", "/cor?q=", None, "q= (sir gol)"),
+        (164, "GET /cor — cod COR inexistent", "GET", "/cor?q=999999", None, "q=999999"),
+        # `#173` n-are `an` in semnatura; se probeaza filtrul pe care il ARE.
+        (173, "GET /salariati — filtru `activ` care nu e da/nu", "GET",
+         "/tenants/%d/salariati?activ=poate" % F, None, "activ=poate"),
+        (174, "POST /salariati — CNP care nu trece cifra de control", "POST",
+         "/tenants/%d/salariati" % F,
+         {"nume": "Proba", "cnp": "1234567890123", "data_angajare": "2026-09-01",
+          "salariu_brut": 5000}, "cnp=1234567890123 (cifra de control gresita)"),
+        (174, "POST /salariati — salariu negativ", "POST", "/tenants/%d/salariati" % F,
+         {"nume": "Proba", "cnp": "1850715410012", "data_angajare": "2026-09-01",
+          "salariu_brut": -5000}, "salariu_brut=-5000"),
+        # ── T16 pontajul ─────────────────────────────────────────────────────
+        (183, "GET /util/zile-lucratoare — sfarsit inaintea inceputului", "GET",
+         "/util/zile-lucratoare?start=2026-09-30&end=2026-09-01", None, "end < start"),
+        (183, "GET /util/zile-lucratoare — date inexistente in calendar", "GET",
+         "/util/zile-lucratoare?start=2026-02-31&end=2026-03-02", None, "start=2026-02-31"),
+        (180, "POST /pontaj/confirma — luna 13", "POST", "/tenants/%d/pontaj/confirma" % F,
+         {"an": 2026, "luna": 13}, "luna=13"),
+        # ── T18 chitanta ─────────────────────────────────────────────────────
+        (189, "POST /chitante — suma negativa", "POST", "/tenants/%d/chitante" % F,
+         {"data": "2026-09-04", "suma": -100, "client": "Proba SRL"}, "suma=-100"),
+        # ── T20 stocul ───────────────────────────────────────────────────────
+        (202, "POST /stocuri/intrare — cantitate negativa", "POST",
+         "/tenants/%d/stocuri/intrare" % F,
+         {"data": "2026-09-04", "articol_id": 1, "cantitate": -5, "pret_unitar": 10},
+         "cantitate=-5"),
+        (201, "POST /stocuri/iesire — cantitate negativa", "POST",
+         "/tenants/%d/stocuri/iesire" % F,
+         {"data": "2026-09-04", "articol_id": 1, "cantitate": -5}, "cantitate=-5"),
+        (205, "POST /stocuri/transfer — aceeasi locatie la plecare si la sosire", "POST",
+         "/tenants/%d/stocuri/transfer" % F,
+         {"data": "2026-09-04", "articol_id": 1, "cantitate": 1, "din": "DEP", "in": "DEP"},
+         "din == in"),
+        (203, "GET /stocuri/locatii — articol inexistent", "GET",
+         "/tenants/%d/stocuri/locatii?articol_id=999999" % F, None, "articol_id=999999"),
+        # ── T22 amortizarea ──────────────────────────────────────────────────
+        # `#215` cere `an`/`luna` ca PARAMETRI, nu in corp: prima forma le trimitea in corp si
+        # primea „an lipsește; luna lipsește" — proba masura alta intrebare.
+        (215, "POST /amortizare — luna 13", "POST",
+         "/tenants/%d/amortizare?an=2026&luna=13" % F, {}, "luna=13"),
+        (217, "POST /reevaluare-imobilizare — valoare negativa", "POST",
+         "/tenants/%d/reevaluare-imobilizare" % F,
+         {"data": "2026-09-04", "mijloc_fix_id": 1, "valoare_noua": -1000},
+         "valoare_noua=-1000"),
+        # ── T23 bonul de la client ───────────────────────────────────────────
+        # Cele trei rute de PORTAL cer rol CLIENT; cu tokenul de cabinet raspundeau „Alegeți
+        # firma", adica se opreau la poarta de contexte, nu la bonul inexistent. Se probeaza cu
+        # tokenul potrivit (v. `CU_CLIENT`).
+        (219, "DELETE /portal/bon/{id} — bon inexistent · CLIENT", "DELETE",
+         "/portal/bon/999999", None, "bon_id=999999"),
+        (220, "POST /portal/bon/{id}/confirma — bon inexistent · CLIENT", "POST",
+         "/portal/bon/999999/confirma", {}, "bon_id=999999"),
+        (221, "GET /portal/bon/{id}/imagine/{n} — bon inexistent · CLIENT", "GET",
+         "/portal/bon/999999/imagine/1", None, "bon_id=999999"),
+        # ── T27 e-Transport ──────────────────────────────────────────────────
+        (234, "POST /etransport-xml — cod de operatiune inexistent", "POST",
+         "/tenants/%d/etransport-xml" % F,
+         {"cod_operatiune": "ceva-ce-nu-exista", "data": "2026-09-04"},
+         "cod_operatiune=ceva-ce-nu-exista"),
+    ]
+    return p
+
+
 #: Rutele care primesc o PERIOADA: (nr, cale-sablon, are_luna).
 _PERIOADA = [
     (105, "/tenants/%d/casa/registru", True),
@@ -849,7 +995,10 @@ CU_CHEIE_API = "/api/v1/"
 
 
 FARA_TOKEN = {"GET /control-fiscal — fara token", "GET /supervizor — fara token"}
-CU_CLIENT = {"GET /termene — cu rol CLIENT"}
+CU_CLIENT = {"GET /termene — cu rol CLIENT",
+             "DELETE /portal/bon/{id} — bon inexistent · CLIENT",
+             "POST /portal/bon/{id}/confirma — bon inexistent · CLIENT",
+             "GET /portal/bon/{id}/imagine/{n} — bon inexistent · CLIENT"}
 
 
 def _tipar(nr, eticheta, introdus, cod, corp):
@@ -860,7 +1009,7 @@ def _tipar(nr, eticheta, introdus, cod, corp):
     print("    corp: %s" % corp[:1500])
 
 
-def _ruleaza_cu_cheie(lot, tok):
+def _ruleaza_cu_cheie(lot, tok, tok_client=None):
     """LOTUL 2. Doua lucruri in plus fata de bucla obisnuita, amandoua pentru ca proba sa nu lase
     portofoliul schimbat (capcana 9): numerotarea firmei se citeste inainte si se pune la loc in
     `finally`, iar cheia de API se creeaza si se sterge tot aici. Cheia se face prin LANTUL
@@ -877,9 +1026,12 @@ def _ruleaza_cu_cheie(lot, tok):
         for nr, eticheta, metoda, cale, payload, introdus in {"T02": probe_T02, "T05": probe_T05, "T03T04": probe_T03T04,
                           "ACHIZITII": probe_ACHIZITII,
                           "T07T09T10": probe_T07T09T10,
-                          "LOT6": probe_LOT6}[lot]():
+                          "LOT6": probe_LOT6,
+                          "LOT7": probe_LOT7}[lot]():
             antete, t = None, tok
-            if CU_CHEIE_API in cale:
+            if eticheta in CU_CLIENT:
+                t = tok_client
+            elif CU_CHEIE_API in cale:
                 t = None
                 if "fara cheie" in eticheta:
                     antete = None
@@ -938,8 +1090,8 @@ def _sterge_cheia(kid):
 def ruleaza(lot):
     tok = token(EMAIL)
     tok_client = token(EMAIL_CLIENT)
-    if lot in ("T02", "T05", "T03T04", "ACHIZITII", "T07T09T10", "LOT6"):
-        return _ruleaza_cu_cheie(lot, tok)
+    if lot in ("T02", "T05", "T03T04", "ACHIZITII", "T07T09T10", "LOT6", "LOT7"):
+        return _ruleaza_cu_cheie(lot, tok, tok_client)
     probe = {"T01": probe_T01, "IMPORT-GOL": probe_import_gol}[lot]()
     out = []
     for nr, eticheta, metoda, cale, payload, introdus in probe:
