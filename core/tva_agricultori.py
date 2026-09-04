@@ -15,7 +15,8 @@ def compensatie(pret_fara_taxa, procent=8):
     p = Decimal(str(pret_fara_taxa))
     pr = Decimal(str(procent))
     if p <= 0 or pr < 0:
-        raise ValueError("pret/procent invalid")
+        raise ValueError("Prețul achiziției și procentul de compensare trebuie să fie numere "
+                         "pozitive — o achiziție consemnează o operațiune efectuată.")
     c = (p * pr / 100).quantize(B, rounding=ROUND_HALF_UP)
     return {"pret": p.quantize(B), "compensatie": c, "total": (p + c).quantize(B)}
 

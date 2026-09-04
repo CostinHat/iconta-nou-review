@@ -31,7 +31,8 @@ def calcul_import(valoare_vamala, procent_taxa_vamala=0, accize=0, accesorii=0,
         raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     vv = _d(valoare_vamala)
     if vv <= 0:
-        raise ValueError("valoare vamala invalida")
+        raise ValueError("Valoarea în vamă trebuie să fie un număr pozitiv — ea e baza pe care "
+                         "se calculează taxa vamală, accizele și TVA-ul la import.")
     tv = (vv * _d(procent_taxa_vamala) / 100).quantize(B, rounding=ROUND_HALF_UP)
     baza = baza_tva_import(vv, tv, accize, accesorii)
     tva = (baza * _d(cota_tva) / 100).quantize(B, rounding=ROUND_HALF_UP)

@@ -46,7 +46,9 @@ def tva_taxare_inversa(baza, cota=None):
         raise ValueError("Cota de TVA nu s-a dat. Nu se folosește o valoare implicită: o cotă scrisă în cod se rupe tăcut de lege la prima schimbare, iar o operațiune veche are altă cotă decât una de azi. Declară cota operațiunii.")
     b = Decimal(str(baza))
     if b <= 0:
-        raise ValueError("baza invalida")
+        raise ValueError("Valoarea achiziției trebuie să fie un număr pozitiv — o achiziție "
+                         "consemnează o operațiune efectuată. Pentru o corecție în minus se face "
+                         "o stornare, nu o valoare negativă.")
     return (b * Decimal(str(cota)) / 100).quantize(B, rounding=ROUND_HALF_UP)
 
 def valideaza_lic(cod_tva_client, cod_valid_vies, are_dovada_transport):

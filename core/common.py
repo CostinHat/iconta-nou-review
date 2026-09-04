@@ -352,6 +352,33 @@ def cota_ceruta(corp):
     if c is None:
         raise ValueError("cotă TVA obligatorie: operațiunea trebuie să declare explicit cota "
                          "(o operațiune fără cotă e intrare incompletă, nu cotă standard)")
+    # [lotul 5, 04.09.2026] Pana azi se cerea doar sa EXISTE. Probat: `POST /achizitie-ic` cu
+    # `cota=99` intorcea `200` si scria in evidenta TVA 990 la o baza de 1000 — o cota inventata,
+    # cu taxare inversa, care intra in D300 si in D390. Aceeasi gaura pe cele 35 de operatiuni care
+    # trec pe-aici. Data se ia DIN CORP (`data` e numele uniform la rutele de nota si de achizitie),
+    # deci nu se schimba niciun apelant.
+    #
+    # **LIMITA, declarata:** un corp fara `data` nu se poate verifica — cotele legii depind de
+    # perioada —, si atunci se pastreaza comportamentul de dinainte: se cere sa existe, atat.
+    _d = corp.get("data")
+    if _d:
+        try:
+            _dd = _d if hasattr(_d, "year") else date.fromisoformat(str(_d)[:10])
+        except (ValueError, TypeError):
+            return c            # data invalida se refuza in alta parte, cu mesajul ei
+        _permise, _temeiuri = cote_tva_in_vigoare(_dd)
+        if _permise is not None:
+            try:
+                _v = Decimal(str(c))
+            except Exception:
+                _v = None
+            if _v is None or _v not in _permise:
+                raise ValueError(
+                    "Cota de TVA %s%% nu există în legea română (art. 291 Cod fiscal) la data "
+                    "operațiunii (%s). Cotele "
+                    "de atunci: %s. Temei: %s."
+                    % (c, _dd.isoformat(), ", ".join("%s%%" % x for x in sorted(_permise)),
+                       "; ".join(sorted({str(t) for t in _temeiuri}))))
     return c
 
 

@@ -22,6 +22,7 @@ nu se ocroteste nimic.
     ./venv/bin/python frontend_test/proba_verificare_functionalitati.py T02
     ./venv/bin/python frontend_test/proba_verificare_functionalitati.py T05
     ./venv/bin/python frontend_test/proba_verificare_functionalitati.py T03T04
+    ./venv/bin/python frontend_test/proba_verificare_functionalitati.py ACHIZITII
 """
 import json
 import os
@@ -284,6 +285,136 @@ def probe_T02(cheie=None):
     return p
 
 
+def probe_ACHIZITII():
+    """LOTUL 5 — facturile PRIMITE si achizitiile. **Nu e un traseu, e o suprafata**: cerand-o,
+    Costin a scris *„oricare i-ar fi numarul"*, iar cautarea in inventar a aratat de ce — nu exista
+    un traseu cu numele asta. Ce exista e suprafata prin care intra TVA-ul DEDUCTIBIL, imprastiata
+    in patru trasee:
+
+      * **T06** — factura primita prin e-Factura: `#88` respinge, `#89` valideaza, `#92` import
+      * **T08** — receptia: `#101` lista NIR, `#102` NIR nou
+      * **T28** — achizitia intracomunitara: `#238`
+      * **T29** — regimurile speciale pe achizitii: `#249` agricultor, `#250` necorporala,
+        `#251` de la neinregistrat, `#252` taxare inversa, `#254` import extracomunitar
+
+    Unsprezece unitati. Se adauga o **a doua trecere** pe `#23` (`POST /facturi`), pe directia
+    PRIMITA — probata in lotul 2 numai pe emisa —, fiindca ea e chiar poarta prin care o factura de
+    achizitie ajunge in evidenta. Nu se numara ca unitate noua; se scrie ca a doua trecere.
+
+    **Ce se lasa in urma:** toate probele sunt intrari incomplete sau imposibile. Daca vreuna trece,
+    se sterge si se spune."""
+    F = FIRMA
+    linie_ok = {"descriere": "marfa", "cantitate": 1, "pret_unitar": 100, "cota_tva": 21}
+    # NIR-ul are ALTE nume de camp decat factura: `denumire` si `pret_achizitie`. Prima forma a
+    # probelor trimitea numele de la factura, deci se oprea la „completeaza articolele" si nu
+    # ajungea niciodata la data, la cantitate sau la cota.
+    art_ok = {"denumire": "marfa", "cantitate": 1, "pret_achizitie": 100, "cota_tva": 21}
+    # Corpuri de baza VALIDE; fiecare proba schimba UN singur camp.
+    ic_ok = {"data": "2026-09-04", "valoare": 1000, "cont_destinatie": "371", "tip": "bunuri",
+             "cota": 21, "cod_tva_furnizor": "DE123456789", "numar": "F-IC-1"}
+    ti_ok = {"data": "2026-09-04", "categorie": "cereale", "valoare": 1000,
+             "cont_destinatie": "371", "cota": 21, "furnizor_cui": "RO1234567897"}
+    ext_ok = {"data": "2026-09-04", "valoare_vamala": 1000, "cota": 21,
+              "cont_destinatie": "371"}
+    p = [
+        # ── #88 · #89 factura primita prin e-Factura ─────────────────────────
+        (88, "POST /facturi-primite/{id}/respinge — element inexistent", "POST",
+         "/tenants/%d/facturi-primite/%d/respinge" % (F, INEXISTENT), {"motiv": "proba"},
+         "primita_id=999999"),
+        (88, "POST /facturi-primite/{id}/respinge — motiv gol", "POST",
+         "/tenants/%d/facturi-primite/%d/respinge" % (F, INEXISTENT), {"motiv": ""},
+         "motiv=\"\" (sir gol)"),
+        (89, "POST /facturi-primite/{id}/valideaza — element inexistent", "POST",
+         "/tenants/%d/facturi-primite/%d/valideaza" % (F, INEXISTENT), {},
+         "primita_id=999999"),
+        # ── #101 · #102 receptia ─────────────────────────────────────────────
+        (101, "GET /stocuri/nir — luna 13", "GET",
+         "/tenants/%d/stocuri/nir?an=2026&luna=13" % F, None, "luna=13"),
+        (101, "GET /stocuri/nir — an 1900", "GET",
+         "/tenants/%d/stocuri/nir?an=1900&luna=1" % F, None, "an=1900"),
+        (102, "POST /stocuri/nir — corp gol", "POST", "/tenants/%d/stocuri/nir" % F, {},
+         "corp JSON gol"),
+        (102, "POST /stocuri/nir — data inexistenta in calendar", "POST",
+         "/tenants/%d/stocuri/nir" % F,
+         {"data": "2026-02-31", "furnizor": "Proba SRL", "cota": 21, "linii": [art_ok]},
+         "data=2026-02-31 (31 februarie)"),
+        (102, "POST /stocuri/nir — cantitate negativa", "POST", "/tenants/%d/stocuri/nir" % F,
+         {"data": "2026-09-04", "furnizor": "Proba SRL",
+          "linii": [dict(art_ok, cantitate=-5)]}, "cantitate=-5"),
+        (102, "POST /stocuri/nir — cota de TVA inexistenta", "POST",
+         "/tenants/%d/stocuri/nir" % F,
+         {"data": "2026-09-04", "furnizor": "Proba SRL", "cota": 99,
+          "linii": [dict(art_ok, cota_tva=99)]}, "cota_tva=99 (si cota=99 pe nota)"),
+        # ── #238 achizitia intracomunitara ───────────────────────────────────
+        (238, "POST /achizitie-ic — corp gol", "POST", "/tenants/%d/achizitie-ic" % F, {},
+         "corp JSON gol"),
+        (238, "POST /achizitie-ic — data ca text", "POST", "/tenants/%d/achizitie-ic" % F,
+         dict(ic_ok, data="ieri"), "data=\"ieri\""),
+        (238, "POST /achizitie-ic — valoare negativa", "POST", "/tenants/%d/achizitie-ic" % F,
+         dict(ic_ok, valoare=-1000), "valoare=-1000"),
+        (238, "POST /achizitie-ic — tip inexistent", "POST", "/tenants/%d/achizitie-ic" % F,
+         dict(ic_ok, tip="altceva"), "tip=altceva"),
+        (238, "POST /achizitie-ic — cota de TVA inexistenta", "POST",
+         "/tenants/%d/achizitie-ic" % F,
+         dict(ic_ok, cota=99), "cota=99"),
+        (238, "POST /achizitie-ic — cont inexistent in plan", "POST",
+         "/tenants/%d/achizitie-ic" % F,
+         dict(ic_ok, cont_destinatie="9999"), "cont_destinatie=9999"),
+        # ── #249 achizitia de la agricultor ──────────────────────────────────
+        (249, "POST /achizitie-agricultor — corp gol", "POST",
+         "/tenants/%d/achizitie-agricultor" % F, {}, "corp JSON gol"),
+        (249, "POST /achizitie-agricultor — valoare negativa", "POST",
+         "/tenants/%d/achizitie-agricultor" % F,
+         {"data": "2026-09-04", "valoare": -500, "cont_cheltuiala": "601",
+          "agricultor_in_registru": True}, "valoare=-500"),
+        # ── #250 achizitia necorporala ───────────────────────────────────────
+        (250, "POST /achizitie-necorporala — corp gol", "POST",
+         "/tenants/%d/achizitie-necorporala" % F, {}, "corp JSON gol"),
+        (250, "POST /achizitie-necorporala — tip inexistent", "POST",
+         "/tenants/%d/achizitie-necorporala" % F,
+         {"data": "2026-09-04", "denumire": "Proba", "valoare": 1000, "tip": "altceva"},
+         "tip=altceva"),
+        # ── #251 achizitia de la neinregistrat ───────────────────────────────
+        (251, "POST /achizitie-neinregistrat — corp gol", "POST",
+         "/tenants/%d/achizitie-neinregistrat" % F, {}, "corp JSON gol"),
+        (251, "POST /achizitie-neinregistrat — furnizor gol", "POST",
+         "/tenants/%d/achizitie-neinregistrat" % F,
+         {"data": "2026-09-04", "furnizor_nume": "", "valoare": 500, "cont_cheltuiala": "601"},
+         "furnizor_nume=\"\""),
+        # ── #252 taxarea inversa ─────────────────────────────────────────────
+        (252, "POST /achizitie-taxare-inversa — corp gol", "POST",
+         "/tenants/%d/achizitie-taxare-inversa" % F, {}, "corp JSON gol"),
+        (252, "POST /achizitie-taxare-inversa — categorie inexistenta", "POST",
+         "/tenants/%d/achizitie-taxare-inversa" % F,
+         dict(ti_ok, categorie="ceva-ce-nu-exista"), "categorie=ceva-ce-nu-exista"),
+        (252, "POST /achizitie-taxare-inversa — cota inexistenta", "POST",
+         "/tenants/%d/achizitie-taxare-inversa" % F,
+         dict(ti_ok, cota=99), "cota=99"),
+        # ── #254 importul extracomunitar ─────────────────────────────────────
+        (254, "POST /import-extracomunitar — corp gol", "POST",
+         "/tenants/%d/import-extracomunitar" % F, {}, "corp JSON gol"),
+        (254, "POST /import-extracomunitar — valoare vamala negativa", "POST",
+         "/tenants/%d/import-extracomunitar" % F,
+         dict(ext_ok, valoare_vamala=-1000), "valoare_vamala=-1000"),
+        (254, "POST /import-extracomunitar — procent de taxa vamala absurd", "POST",
+         "/tenants/%d/import-extracomunitar" % F,
+         dict(ext_ok, procent_taxa_vamala=500), "procent_taxa_vamala=500"),
+        # ── #23, A DOUA TRECERE: aceeasi ruta, directia PRIMITA ──────────────
+        (23, "POST /facturi (PRIMITA) — cota de TVA inexistenta", "POST",
+         "/tenants/%d/facturi" % F,
+         {"numar": "F-PROBA-1", "data_emitere": "2026-09-04", "directie": "primita",
+          "linii": [dict(linie_ok, cota_tva=99)], "tert_nume": "Furnizor SRL",
+          "tert_cui": "RO1234567897", "tert_tara": "RO"},
+         "cota_tva=99, directie=primita, tert_tara=RO"),
+        (23, "POST /facturi (PRIMITA) — data inexistenta in calendar", "POST",
+         "/tenants/%d/facturi" % F,
+         {"numar": "F-PROBA-2", "data_emitere": "2026-02-31", "directie": "primita",
+          "linii": [linie_ok], "tert_nume": "Furnizor SRL", "tert_cui": "RO1234567897"},
+         "data_emitere=2026-02-31, directie=primita"),
+    ]
+    return p
+
+
 #: Un salariat care EXISTA in firma de proba (`tenant_003` are doi: 1 si 3). Probele care vor sa
 #: ajunga dincolo de „salariatul nu exista" trebuie sa-l foloseasca pe asta — altfel se opresc mai
 #: devreme decat scrie in eticheta lor, cum s-a intamplat de doua ori in loturile 2 si 3.
@@ -534,7 +665,8 @@ def _ruleaza_cu_cheie(lot, tok):
     print("CHEIE DE API emisa pentru proba: id=%s prefix=%s" % (cheie["id"], cheie["prefix"]))
     out = []
     try:
-        for nr, eticheta, metoda, cale, payload, introdus in {"T02": probe_T02, "T05": probe_T05, "T03T04": probe_T03T04}[lot]():
+        for nr, eticheta, metoda, cale, payload, introdus in {"T02": probe_T02, "T05": probe_T05, "T03T04": probe_T03T04,
+                          "ACHIZITII": probe_ACHIZITII}[lot]():
             antete, t = None, tok
             if CU_CHEIE_API in cale:
                 t = None
@@ -588,7 +720,7 @@ def _sterge_cheia(kid):
 def ruleaza(lot):
     tok = token(EMAIL)
     tok_client = token(EMAIL_CLIENT)
-    if lot in ("T02", "T05", "T03T04"):
+    if lot in ("T02", "T05", "T03T04", "ACHIZITII"):
         return _ruleaza_cu_cheie(lot, tok)
     probe = {"T01": probe_T01, "IMPORT-GOL": probe_import_gol}[lot]()
     out = []

@@ -7818,6 +7818,7 @@ def casa_sterge(tenant_id: int, op_id: int, ctx=Depends(cere_cabinet)):
 # --- stocuri global-valorica ---
 @app.get("/tenants/{tenant_id}/stocuri/nir")
 def stocuri_lista(tenant_id: int, an: int, luna: int, ctx=Depends(cere_cabinet)):
+    _cere_perioada(an, luna)   # [lotul 5] `luna=13` dadea `500`, `an=1900` dadea `200 {"nir": []}`
     from core import stocuri_api as _s
     with db.get_conn() as conn:
         schema = auth_api.schema_tenant(conn, ctx["uid"], tenant_id)
@@ -9211,7 +9212,7 @@ def reges_config(tenant_id: int, corp: dict = Body(...),
         if not schema:
             raise HTTPException(404, "tenant inexistent sau fără acces")
         if corp.get("mediu", "test") not in ("test", "prod"):
-            raise HTTPException(422, "mediu: test|prod")
+            raise HTTPException(422, nomenclator_cerut("mediu", "test|prod"))
         with conn.cursor() as cur:
             # upsert-ok: salvare credentiale REGES per tenant - update intentionat al aceleiasi chei (tenant_id)
             cur.execute("""INSERT INTO public.reges_chei (tenant_id, username, parola, mediu)
@@ -9414,6 +9415,12 @@ def achizitie_ic(tenant_id: int, corp: dict = Body(...),
                 raise ValueError("numar factura furnizor obligatoriu")
             furnizor_nume = str(corp.get("furnizor_nume") or "").strip()
             data_fg = corp.get("data_faptului_generator") or None
+            # [lotul 5, 04.09.2026] `tip` se citea cu un `if ... == "servicii" else bunuri`: orice
+            # altceva — inclusiv o valoare gresita — devenea BUNURI, tacut. Probat cu
+            # `tip="altceva"`: `200`, si achizitia a intrat in evidenta ca bunuri. Nu e o nuanta:
+            # tipul decide incadrarea in D390 (bunuri vs servicii) si temeiul citat pe nota.
+            if corp.get("tip") not in ("bunuri", "servicii"):
+                raise ValueError(nomenclator_cerut("tip", "bunuri|servicii"))
         except (ValueError, KeyError) as e:
             raise HTTPException(422, _mesaj_intrare(e))
         tip = "servicii IC primite (art. 278(2))" if corp.get("tip") == "servicii"               else "achizitie intracomunitara bunuri (art. 268)"
@@ -9559,6 +9566,13 @@ def import_extracomunitar(tenant_id: int, corp: dict = Body(...), ctx=Depends(ce
             rand = cur.fetchone()
             platitor = bool(rand[0]) if rand else True
         try:
+            # [lotul 5] `procent_taxa_vamala=500` trecea: taxa vamala 5.000 la o valoare
+            # vamala de 1.000, baza TVA 6.000. Un procent e o parte dintr-un intreg.
+            _ptv = corp.get("procent_taxa_vamala", 0) or 0
+            if not (0 <= float(_ptv) <= 100):
+                raise ValueError("Procentul taxei vamale e între 0 și 100 — am primit %s. Taxa "
+                                 "vamală e o parte din valoarea în vamă, nu un multiplu al ei."
+                                 % (_ptv,))
             r = _ie.calcul_import(corp["valoare_vamala"],
                                   corp.get("procent_taxa_vamala", 0),
                                   corp.get("accize", 0), corp.get("accesorii", 0),
@@ -9964,7 +9978,7 @@ def achizitie_necorporala(tenant_id: int, corp: dict = Body(...),
         _cere_luna_deschisa(conn, schema, corp.get("data"))
         tip = corp.get("tip")
         if tip not in TIPURI:
-            raise HTTPException(422, "tip: " + "|".join(TIPURI))
+            raise HTTPException(422, nomenclator_cerut("tip", TIPURI))
         cont_imo, cont_am, dnf_regula = TIPURI[tip]
         dnf = corp.get("dnf_luni")
         if tip == "software":

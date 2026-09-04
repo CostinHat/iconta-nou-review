@@ -137,11 +137,11 @@
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
 | 87 | Facturi primite din SPV de VALIDAT (four-eyes): ciorne parsate + cont sugerat | `GET /tenants/{tenant_id}/facturi-primite` · `cere_context` | citire / afisare — `facturi_primite_lista()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 88 | Respinge o factura primita: status=respinsa + motiv | `POST /tenants/{tenant_id}/facturi-primite/{primita_id}/respinge` · `cere_context` | creare sau executie — `factura_primita_respinge()` | nu | neprobat |
-| 89 | FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) + leaga factura_id + status=… | `POST /tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza` · rol `admin_firma` | creare sau executie — `factura_primita_valideaza()` | da | neprobat |
+| 88 | Respinge o factura primita: status=respinsa + motiv | `POST /tenants/{tenant_id}/facturi-primite/{primita_id}/respinge` · `cere_context` | creare sau executie — `factura_primita_respinge()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 5 |
+| 89 | FOUR-EYES: omul valideaza ciorna importata de cron -> creeaza cheltuiala (factura primita) + leaga factura_id + status=… | `POST /tenants/{tenant_id}/facturi-primite/{primita_id}/valideaza` · rol `admin_firma` | creare sau executie — `factura_primita_valideaza()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 5 |
 | 90 | XML-ul brut arhivat (la click, nu in fata). | `GET /tenants/{tenant_id}/facturi-primite/{primita_id}/xml` · `cere_context` | citire / afisare — `factura_primita_xml()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 | 91 | Trimite o factura emisa in SPV (F126/F160) | `POST /tenants/{tenant_id}/facturi/{factura_id}/trimite-spv` · rol `admin_firma` | creare sau executie — `factura_trimite_spv()` | da | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 92 | Upload XML/ZIP e-Factura | `POST /tenants/{tenant_id}/import-efactura` · `cere_cabinet` | creare sau executie — `import_efactura()` | nu | neprobat |
+| 92 | Upload XML/ZIP e-Factura | `POST /tenants/{tenant_id}/import-efactura` · `cere_cabinet` | creare sau executie — `import_efactura()` | nu | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 5 |
 | 93 | Starea SPV cea mai recenta per factura (pentru semaforul butonului) | `GET /tenants/{tenant_id}/trimiteri-spv` · `cere_context` | citire / afisare — `facturi_trimiteri_spv()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
 
 ### T07 — Extrasul bancar și potrivirea (7)
@@ -160,8 +160,8 @@
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 101 | stocuri lista | `GET /tenants/{tenant_id}/stocuri/nir` · `cere_cabinet` | citire / afisare — `stocuri_lista()` | da | neprobat |
-| 102 | stocuri adauga | `POST /tenants/{tenant_id}/stocuri/nir` · `cere_cabinet` | creare sau executie — `stocuri_adauga()` | da | neprobat |
+| 101 | stocuri lista | `GET /tenants/{tenant_id}/stocuri/nir` · `cere_cabinet` | citire / afisare — `stocuri_lista()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 5 |
+| 102 | stocuri adauga | `POST /tenants/{tenant_id}/stocuri/nir` · `cere_cabinet` | creare sau executie — `stocuri_adauga()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 5 |
 
 ### T09 — Casa și registrul de casă (3)
 
@@ -397,7 +397,7 @@
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
 | 237 | public verifica cui | `GET /public/verifica-cui/{cui}` · fără gardă | citire / afisare — `public_verifica_cui()` | nu | în afara perimetrului etapei 1 — rută fără câmpuri de completat: nimeni nu poate tasta nimic greșit în ea |
-| 238 | AIC bunuri/servicii primite (art | `POST /tenants/{tenant_id}/achizitie-ic` · rol `admin_firma` | creare sau executie — `achizitie_ic()` | da | neprobat |
+| 238 | AIC bunuri/servicii primite (art | `POST /tenants/{tenant_id}/achizitie-ic` · rol `admin_firma` | creare sau executie — `achizitie_ic()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 5 |
 | 239 | Operatiunile auto-derivate (cu tipul curent) + liniile manuale, pt ecranul de clasificare. | `GET /tenants/{tenant_id}/d390-clasificare` · `cere_cabinet` | citire / afisare — `d390_clasificare_stare()` | da | neprobat |
 | 240 | Adauga linie pur manuala: {an, luna, tip, tara, cod, den, baza}. | `POST /tenants/{tenant_id}/d390-clasificare/manual` · `cere_cabinet` | creare sau executie — `d390_manual_adauga()` | da | neprobat |
 | 241 | d390 manual sterge | `DELETE /tenants/{tenant_id}/d390-clasificare/manual/{mid}` · `cere_cabinet` | stergere — `d390_manual_sterge()` | da | neprobat |
@@ -413,12 +413,12 @@
 
 | nr | funcționalitate | ecran sau rută | acțiune | declarație | stare probare |
 |---|---|---|---|---|---|
-| 249 | corp: {data, valoare (fara taxa), cont_cheltuiala, agricultor_in_registru, agricultor?, descriere?} | `POST /tenants/{tenant_id}/achizitie-agricultor` · `cere_cabinet` | creare sau executie — `achizitie_agricultor()` | da | neprobat |
-| 250 | corp: {data, denumire, valoare (fara TVA), tip software/licenta/brevet/ dezvoltare/constituire, dnf_luni?, cota?, cod?} | `POST /tenants/{tenant_id}/achizitie-necorporala` · rol `admin_firma` | creare sau executie — `achizitie_necorporala()` | da | neprobat |
-| 251 | Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2) | `POST /tenants/{tenant_id}/achizitie-neinregistrat` · rol `admin_firma` | creare sau executie — `achizitie_neinregistrat()` | da | neprobat |
-| 252 | corp: {data, categorie, valoare (fara TVA), cont_destinatie, cota?, furnizor_platitor_tva, descriere?} | `POST /tenants/{tenant_id}/achizitie-taxare-inversa` · rol `admin_firma` | creare sau executie — `achizitie_taxare_inversa()` | da | neprobat |
+| 249 | corp: {data, valoare (fara taxa), cont_cheltuiala, agricultor_in_registru, agricultor?, descriere?} | `POST /tenants/{tenant_id}/achizitie-agricultor` · `cere_cabinet` | creare sau executie — `achizitie_agricultor()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 5 |
+| 250 | corp: {data, denumire, valoare (fara TVA), tip software/licenta/brevet/ dezvoltare/constituire, dnf_luni?, cota?, cod?} | `POST /tenants/{tenant_id}/achizitie-necorporala` · rol `admin_firma` | creare sau executie — `achizitie_necorporala()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 5 |
+| 251 | Achizitie de la persoana fizica NEINREGISTRATA in scop TVA -> op N in D394 (pct.216 tip_partener=2) | `POST /tenants/{tenant_id}/achizitie-neinregistrat` · rol `admin_firma` | creare sau executie — `achizitie_neinregistrat()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 5 |
+| 252 | corp: {data, categorie, valoare (fara TVA), cont_destinatie, cota?, furnizor_platitor_tva, descriere?} | `POST /tenants/{tenant_id}/achizitie-taxare-inversa` · rol `admin_firma` | creare sau executie — `achizitie_taxare_inversa()` | da | probat invalid 04.09.2026 — fără defect, v. `VERIFICARE_FUNCTIONALITATI.md` lot 5 |
 | 253 | corp: {data, valoare, tara_client, dovada_export, cont_venit?, descriere?} | `POST /tenants/{tenant_id}/export-extracomunitar` · `cere_cabinet` | creare sau executie — `export_extracomunitar()` | da | neprobat |
-| 254 | corp: {data, valoare_vamala (RON), procent_taxa_vamala?, accize?, accesorii?, cota?, certificat_amanare?, cont_destinat… | `POST /tenants/{tenant_id}/import-extracomunitar` · `cere_cabinet` | creare sau executie — `import_extracomunitar()` | da | neprobat |
+| 254 | corp: {data, valoare_vamala (RON), procent_taxa_vamala?, accize?, accesorii?, cota?, certificat_amanare?, cont_destinat… | `POST /tenants/{tenant_id}/import-extracomunitar` · `cere_cabinet` | creare sau executie — `import_extracomunitar()` | da | probat invalid 04.09.2026 — **defect găsit și reparat**, v. `VERIFICARE_FUNCTIONALITATI.md` lot 5 |
 | 255 | tip: secondhand/turism; luna: YYYY-MM | `GET /tenants/{tenant_id}/jurnal-marja` · `cere_cabinet` | citire / afisare — `jurnal_marja()` | nu | neprobat |
 | 256 | corp: {data, pret (fara taxa), descriere?} | `POST /tenants/{tenant_id}/vanzare-agricultor` · `cere_cabinet` | creare sau executie — `vanzare_agricultor()` | da | neprobat |
 | 257 | corp: {data, tip lingou/plancheta/moneda, puritate, an_emisie?, pret_unitar?, valoare_aur?, suma, optiune_taxare?, cali… | `POST /tenants/{tenant_id}/vanzare-aur-investitii` · `cere_cabinet` | creare sau executie — `vanzare_aur_investitii()` | da | neprobat |

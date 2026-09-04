@@ -3,6 +3,26 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 04.09.2026 (28) — Campania nu-și mai cere permisiunea la fiecare lot
+
+**Costin, verbatim:** *„Nu mai întreba care traseu urmează. Le iei în ordinea din listă, unul după
+altul, până termini cele 295 de unități rămase din perimetru. Raportezi la sfârșitul fiecărui lot,
+dar nu aștepți răspuns ca să continui. Te oprești doar dacă apare ceva ce contrazice o decizie
+luată."*
+
+**Ce se schimbă, și de ce contează.** Până azi, fiecare lot se termina cu o cerință — *„care traseu
+urmează?"* —, iar tura următoare începea cu răspunsul la ea. De cinci ori la rând răspunsul a fost
+un nume de traseu, adică o decizie care nu cerea o decizie: ordinea din listă era oricum acolo.
+*O cerință care primește de cinci ori același fel de răspuns nu e o decizie de produs, e o
+formalitate — iar o formalitate repetată face lista de cerințe mai greu de citit exact acolo unde ea
+trebuie citită.*
+
+**Ce RĂMÂNE o oprire**, prin chiar formularea lui: *ceva ce contradice o decizie luată*. Nu „ceva
+greu", nu „ceva mare" — o **contradicție** cu ce s-a hotărât deja. Restul se repară și se raportează.
+
+**Ce nu se schimbă:** raportul după fiecare lot, în forma din `SABLON_RAPORT.md`. Se schimbă doar ce
+se așteaptă după el — nimic.
+
 ## 04.09.2026 (27) — Trei răspunsuri scurte, dintre care unul spune „nu lucra la asta"
 
 **Costin, verbatim**, la cele trei cerințe ale raportului precedent:

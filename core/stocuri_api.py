@@ -48,6 +48,14 @@ def adauga_nir(conn, schema, nir):
     Calculează prin motor, persistă NIR + linii, creează notele ciorne.
     [cap.24 regula 2] validare per-linie AUTORITARA: un articol incomplet se raporteaza langa campul lui
     (nir-l{i}-..), nu il filtreaza tacit frontendul."""
+    # [lotul 5, 04.09.2026] Un NIR FARA articole nu e o receptie. Pana azi, `{}` trecea de
+    # verificarea per-linie (n-avea ce verifica) si cadea mai jos pe `nir["linii"]`, iar contabilul
+    # primea `{"detail": "'linii'"}` — numele campului intre ghilimele simple.
+    if not (nir.get("linii") or []):
+        return {"eroare": "Nota de recepție n-are niciun articol. O recepție consemnează ce a "
+                          "intrat efectiv în gestiune — fără articole n-ar avea ce înregistra, "
+                          "nici ce trece în jurnalul de cumpărări.",
+                "erori_campuri": [{"camp": "nir-linii", "mesaj": "cel puțin un articol"}]}
     lipsa = _nir_campuri_lipsa(nir.get("linii") or [])
     if lipsa:
         return {"eroare": "Completează articolele: " + "; ".join(x["eticheta"] for x in lipsa),

@@ -363,3 +363,78 @@ decontul cu CNAS.*
 - **niciun defect al probei** în lotul ăsta — spre deosebire de loturile 2 și 3. Ce s-a schimbat:
   am pus în ham un `SALARIAT` care **există în firma de probă**, tocmai fiindcă de două ori la rând
   probele se opriseră mai devreme decât scria în eticheta lor.
+
+---
+
+## LOT 5 — facturile PRIMITE și achizițiile (29 de probe INVALIDE pe 11 unități)
+
+**Nu e un traseu, e o suprafață — și asta s-a aflat căutând.** Comanda spunea *„traseul facturilor
+primite și al achizițiilor, **oricare i-ar fi numărul**"*, cu alternativa *„dacă traseul nu există ca
+atare sau e deja acoperit, ia banca și casa"*. Căutat în inventar: **nu există** un traseu cu numele
+ăsta. Ce există e suprafața prin care intră **TVA-ul deductibil**, împrăștiată în patru trasee:
+
+| trasee | unități |
+|---|---|
+| **T06** — factura primită prin e-Factura | `#88` respinge · `#89` validează · `#92` import |
+| **T08** — recepția | `#101` lista NIR · `#102` NIR nou |
+| **T28** — achiziția intracomunitară | `#238` |
+| **T29** — regimurile speciale pe achiziții | `#249` agricultor · `#250` necorporală · `#251` de la neînregistrat · `#252` taxare inversă · `#254` import extracomunitar |
+
+**Unsprezece unități.** N-am trecut la bancă și casă: alternativa era pentru cazul în care suprafața
+nu există sau e acoperită — ea există și era neprobată. S-a adăugat o **a doua trecere** pe `#23`
+(`POST /facturi`), pe direcția **primită** — probată în lotul 2 numai pe emisă —, fiindcă ea e chiar
+poarta prin care o factură de achiziție ajunge în evidență. *Nu se numără ca unitate nouă.*
+
+**Ce s-a lăsat în urmă:** nimic. Trei probe **au trecut** la a doua trecere și au scris în evidență
+(înregistrările 29, 30, 31 și facturile 22, 23); s-au șters din bază după reparație. Verificat la
+final: `facturi` 3, `inregistrari` 4.
+
+| # | funcționalitate | ecran / rută | câmp | ce s-a introdus | ce a făcut aplicația | mesajul verbatim | temei legal | reparat | rezultat după reparație |
+|---|---|---|---|---|---|---|---|---|---|
+| 238 | Achiziția intracomunitară | `POST /tenants/{id}/achizitie-ic` | `cota` | invalid: `99` | **COTĂ INVENTATĂ, ÎN EVIDENȚĂ** — `200`, `"tva":"990.00"` la o bază de 1.000, cu taxare inversă. Intră în **D300** și în **D390**. `common.cota_ceruta` cerea doar ca **să existe** o cotă, nu ca ea să fie una din lege — iar prin funcția aia trec **35 de operațiuni** | `{"inregistrare_id":30,"factura_id":23,"valoare":"1000","tva":"990.00"}` | art. 291 Cod fiscal, prin registrul `common.COTE` | **DA** — `cota_ceruta` verifică acum și apartenența, la **data operațiunii**, luată din corp (`data` e numele uniform). Zero apelanți modificați, 35 de operațiuni apărate deodată | `422` · `{"detail":"Cota de TVA 99% nu există în legea română la data operațiunii (2026-09-04). Cotele de atunci: 0%, 11.00%, 21.00%. Temei: Legea 141/2025 art.291 alin.(1); …"}` |
+| 238 | Achiziția intracomunitară | `POST /tenants/{id}/achizitie-ic` | `tip` | invalid: `altceva` | **ÎNCADRARE TĂCUTĂ** — `200`, achiziția a intrat ca **bunuri**. Codul era `"servicii" if corp.get("tip") == "servicii" else bunuri`: orice altă valoare devenea bunuri. *Tipul decide încadrarea în D390 și temeiul citat pe notă* | `{"inregistrare_id":29,"factura_id":22,"valoare":"1000","tva":"210.00"}` | — | **DA** | `422` · `{"detail":"Câmpul \`tip\` lipsește sau nu e una dintre valorile pe care le cunoaște operațiunea: bunuri, servicii…"}` |
+| 254 | Importul extracomunitar | `POST /tenants/{id}/import-extracomunitar` | `procent_taxa_vamala` | invalid: `500` | **PROCENT DE 500% ACCEPTAT** — `200`: taxă vamală **5.000** la o valoare în vamă de **1.000**, bază TVA 6.000, TVA 1.260 | `{"inregistrare_id":31,"taxa_vamala":"5000.00","baza_tva":"6000.00","tva":"1260.00","mod_tva":"vama"}` | — | **DA** | `422` · `{"detail":"Procentul taxei vamale e între 0 și 100 — am primit 500. Taxa vamală e o parte din valoarea în vamă, nu un multiplu al ei."}` |
+| 101 | Lista notelor de recepție | `GET /tenants/{id}/stocuri/nir` | `luna` | invalid: `13` | **A CĂZUT** — `500` | `Internal Server Error` | — | **DA** — `_cere_perioada`, al optulea apelant al aceluiași ajutor | `422` · `{"detail":"luna invalidă: 13 (aștept 1-12)"}` |
+| 101 | Lista notelor de recepție | `GET /tenants/{id}/stocuri/nir` | `an` | invalid: `1900` | **TĂCERE** — `200` `{"nir":[]}` | `{"nir":[]}` | — | **DA** | `422` · `{"detail":"an invalid: 1900 (aștept 1990-2100)"}` |
+| 102 | Nota de recepție | `POST /tenants/{id}/stocuri/nir` | tot corpul | lipsă: `{}` | **COD INTERN CA MESAJ** — `str(KeyError)`. A scăpat reparației din lotul 3 fiindcă ruta NIR nu folosește `except (ValueError, KeyError)`, ci contractul `{"eroare", "erori_campuri"}` | `{"detail":"'linii'"}` | — | **DA** — un NIR fără articole se refuză explicit, cu ce n-ar avea ce înregistra | `422` · `{"detail":{"mesaj":"Nota de recepție n-are niciun articol. O recepție consemnează ce a intrat efectiv în gestiune — fără articole n-ar avea ce înregistra, nici ce trece în jurnalul de cumpărări.","erori_campuri":[{"camp":"nir-linii",…}]}}` |
+| 250 | Achiziția necorporală | `POST /tenants/{id}/achizitie-necorporala` | `tip` | lipsă, și invalid | **ENUMERARE FĂRĂ VERB** — a scăpat reparației din lotul 3 fiindcă e `HTTPException`, nu `ValueError`; regexul de atunci căuta numai `ValueError` | `{"detail":"tip: software|licenta|brevet|dezvoltare|constituire"}` | — | **DA** — `nomenclator_cerut`, plus a doua instanță găsită cu aceeași căutare (`"mediu: test|prod"`) | `422` · `{"detail":"Câmpul \`tip\` lipsește sau nu e una dintre valorile pe care le cunoaște operațiunea: software, licenta, brevet, dezvoltare, constituire…"}` |
+| 238 | Achiziția intracomunitară | `POST /tenants/{id}/achizitie-ic` | `valoare` | invalid: `-1000` | **NUME CARE NU E AL CERERII** — „baza" nu e un câmp al corpului trimis | `{"detail":"baza invalida"}` | — | **DA** | `422` · `{"detail":"Valoarea achiziției trebuie să fie un număr pozitiv — o achiziție consemnează o operațiune efectuată. Pentru o corecție în minus se face o stornare, nu o valoare negativă."}` |
+| 249 | Achiziția de la agricultor | `POST /tenants/{id}/achizitie-agricultor` | `valoare` | invalid: `-500` | **IDEM** — „pret/procent" nu sunt câmpuri ale cererii | `{"detail":"pret/procent invalid"}` | — | **DA** | `422` · `{"detail":"Prețul achiziției și procentul de compensare trebuie să fie numere pozitive — o achiziție consemnează o operațiune efectuată."}` |
+| 254 | Importul extracomunitar | `POST /tenants/{id}/import-extracomunitar` | `valoare_vamala` | invalid: `-1000` | **IDEM** | `{"detail":"valoare vamala invalida"}` | — | **DA** | `422` · `{"detail":"Valoarea în vamă trebuie să fie un număr pozitiv — ea e baza pe care se calculează taxa vamală, accizele și TVA-ul la import."}` |
+| 88 · 89 | Factura primită — respingere și validare | `POST /facturi-primite/{id}/respinge` · `/valideaza` | `primita_id`, `motiv` | `999999` · motiv gol | `404` / `422`, corecte | `{"detail":"factură primită inexistentă"}` · `{"detail":"motivul respingerii e obligatoriu"}` | — | nu | neschimbat |
+| 251 · 252 | De la neînregistrat · taxarea inversă | `POST /achizitie-neinregistrat` · `/achizitie-taxare-inversa` | furnizor · categorie | gol · inexistentă | `422`, cu **de ce** contează câmpul, și cu nomenclatorul întreg | `{"detail":"nume furnizor obligatoriu (persoana fizica - apare in denP si in avertisment)"}` · `{"detail":"categorie necunoscuta (deseuri\|masa_lemnoasa\|cereale\|…)"}` | — | nu | neschimbat |
+| 23 | Crearea unei facturi — **a doua trecere, direcția PRIMITĂ** | `POST /tenants/{id}/facturi` | `cota_tva`, `data_emitere` | `99` · `2026-02-31` | `422` de fiecare dată — **reparațiile din lotul 2 țin și pe direcția primită**, inclusiv condiția scrisă atunci: cota se verifică pe primite doar când `tert_tara=RO` | `{"detail":"Linia 'marfa' are cota de TVA 99.0%, care nu există în legea română la data facturii (2026-09-04)…"}` | art. 291 Cod fiscal | nu | neschimbat |
+
+### Defectele PROBEI — patru grupuri, și de data asta era o clasă, nu un accident
+
+Rutele de achiziție cer mai multe câmpuri obligatorii, iar prima formă a probelor trimitea corpuri
+**incomplete**: se opreau la primul câmp lipsă și măsurau altă întrebare decât cea din eticheta lor.
+`#102` folosea numele de câmp de la **factură** (`descriere`, `pret_unitar`) în loc de cele ale
+**NIR-ului** (`denumire`, `pret_achizitie`); `#238` n-avea `cod_tva_furnizor`; `#252` n-avea CUI-ul
+furnizorului; `#254` n-avea cota. **Abia după corectare au ieșit la iveală cele trei defecte grave de
+mai sus** — până atunci, toate trei arătau ca niște refuzuri cuminți.
+
+**Regula hamului, scrisă acum ca regulă:** *corp de bază **valid**, minus o singură abatere — cea
+probată.* E a treia oară în campanie când o probă măsoară altceva decât scrie în eticheta ei (lotul
+2: monedă; lotul 3: sumă negativă; lotul 5: patru grupuri deodată).
+
+### Ce a rămas nereprobat, și de ce
+
+**Data și cota per linie pe `POST /stocuri/nir`.** După trei încercări, proba tot nu ajunge acolo:
+NIR-ul cere o cotă și la nivel de notă, nu doar pe linie, iar refuzul care vine (*„Cota de TVA nu s-a
+dat. Nu se folosește o valoare implicită…"*) e **corect și motivat** — dar despre alt câmp decât cel
+probat. M-am oprit după a treia rundă: ruta nu cade și nu tace, iar întrebarea rămâne deschisă pentru
+o trecere cu date valide. *Se scrie ce s-a măsurat, nu ce am vrut să măsor.*
+
+### Cifre
+
+- probe INVALIDE rulate: **29**, pe **11 unități** (plus 2 pe a doua trecere a lui `#23`) · defecte
+  găsite: **10** · reparate: **10** · reprobate: **10**, toate schimbate.
+- distribuția la ultima trecere: **26 × 422 · 2 × 404 · 1 × 400** · **0 × 500** · **0 × 200**.
+  Înainte: **1 × 500** și **1 × 200**; iar după corectarea probelor oarbe, **3 × 200** în plus —
+  toate trei scriind în evidență.
+- clase de defect: **cifră fiscală pe intrare imposibilă** (3: cotă inventată · încadrare tăcută ·
+  procent de 500%) · **cădere `500`** (1) · **tăcere** (1) · **cod intern ca mesaj** (1) · **refuz
+  telegrafic** (2 locuri, `HTTPException`) · **nume care nu e al cererii** (3).
+- **cea mai largă reparație a campaniei**: `common.cota_ceruta` verifică acum cota la data
+  operațiunii — **35 de operațiuni** apărate deodată, fără niciun apelant modificat.
