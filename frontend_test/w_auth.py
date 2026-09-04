@@ -16,7 +16,12 @@ from playwright.sync_api import sync_playwright  # noqa: F401  (reexportat: prob
 
 from core import db, auth_api
 
-BAZA = "http://127.0.0.1:8010"
+# [LOTUL 11, 04.09.2026] Adresa se poate schimba din afara. Regula casei spune ca reprobarea
+# NU se face pe productie — procesul viu tine codul vechi pana la repornire, iar repornirea
+# nu e a mea —, deci se ridica o instanta proaspata pe alt port. Pana azi asta era imposibil
+# pentru orice unealta vizuala: adresa era scrisa in cod. Numele variabilei e cel pe care il
+# foloseste deja hamul campaniei (`PROBA_BAZA`), ca sa fie una singura, nu doua.
+BAZA = os.environ.get("PROBA_BAZA", "http://127.0.0.1:8010")
 OUT = os.path.dirname(os.path.abspath(__file__))
 
 

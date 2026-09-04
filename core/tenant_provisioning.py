@@ -169,13 +169,19 @@ def provision_tenant(conn, nume, cui, accounting_firm_id, user_id, sql_template,
     # ulterioare (RegistrationNumber D406/D394 etc. cer CUI valid). Algoritmul e obiectiv
     # (lege), nu depinde de disponibilitatea ANAF.
     if not cui_valid(cui):
-        raise ValueError("CUI invalid: cifra de control nu corespunde (%r)" % cui)
+        raise ValueError(
+            "CUI-ul %r nu e valid: cifra de control nu corespunde. Un cod fiscal "
+            "greșit nu se oprește aici — îl respinge ANAF, la prima declarație "
+            "depusă." % cui)
     # cui_unic_v1: un CUI o singura data per cabinet
     with conn.cursor() as _c:
         _c.execute("SELECT id FROM public.tenants WHERE cui=%s AND accounting_firm_id=%s",
                    (str(cui), accounting_firm_id))
         if _c.fetchone():
-            raise ValueError("Firma cu acest CUI exista deja in portofoliu")
+            raise ValueError(
+                "Ai deja în portofoliu o firmă cu codul fiscal %s. Două firme nu pot "
+                "avea același cod fiscal — verifică dacă nu e chiar cea pe care o "
+                "cauți." % cui)
     # nume_unic_v1: si denumirea, o singura data per cabinet (vezi `cere_nume_unic`)
     cere_nume_unic(conn, nume, accounting_firm_id)
     """
@@ -310,6 +316,34 @@ def detalii_tenant(conn, tenant_id):
 ALEGERI_NUME = ("aplicatie", "anaf")
 
 
+def cere_denumire_scriibila(nume):
+    """Denumirea, curatata; ridica `ValueError` daca nu poate fi denumirea unei firme.
+
+    PURA — nu atinge baza. De-aia poate fi probata pe o mana de valori, in amandoua directiile
+    (`core/test_simetrie_denumire.py`), fara sa ridice o schema.
+
+    [LOTUL 11, 04.09.2026] „Goala" nu era destul. Masurat apasand, pe ecranul «Date firma»:
+    `«»@#$%` a trecut, si s-a scris in AMANDOUA locurile. De acolo denumirea pleaca pe `den` din
+    D394 si pe antetul facturii tiparite — deci un sir fara nicio litera nu e o scapare de stil, e
+    o identitate fiscala falsa, trimisa la ANAF.
+
+    Poarta sta in scriitorul UNIC, nu in ecran: ruta se poate chema si din afara ecranului, iar o
+    regula care se poate ocoli nu e o regula — aceeasi propozitie ca la portile de CUI (27.08).
+
+    CE NU FACE, declarat: nu verifica daca denumirea e cea REALA a firmei (aia se confrunta cu
+    ANAF, si e alta poarta), si nu impune o forma juridica in nume. Cere doar sa fie un NUME.
+    """
+    nume = (nume or "").strip()
+    if not nume:
+        raise ValueError("denumirea firmei nu poate fi goală")
+    if not any(ch.isalpha() for ch in nume):
+        raise ValueError(
+            "Denumirea firmei trebuie să conțină cel puțin o literă — am primit %r. Ea pleacă "
+            "mai departe pe declarații (câmpul `den` din D394) și pe antetul facturii, deci nu "
+            "poate fi doar semne." % nume)
+    return nume
+
+
 def scrie_denumirea(conn, tenant_id, nume, verifica_unicitatea=True):
     """[R81, DECIS 28.08.2026 — SIMETRIE DE SCRIERE] Denumirea unei firme se scrie în **amândouă**
     locurile, în **aceeași tranzacție**, cu **aceeași valoare**.
@@ -340,9 +374,7 @@ def scrie_denumirea(conn, tenant_id, nume, verifica_unicitatea=True):
     if not r:
         raise ValueError("firmă inexistentă")
     schema_name, cabinet = r
-    nume = (nume or "").strip()
-    if not nume:
-        raise ValueError("denumirea firmei nu poate fi goală")
+    nume = cere_denumire_scriibila(nume)
     if verifica_unicitatea:
         cere_nume_unic(conn, nume, cabinet, exclude_id=tenant_id)
     with conn.cursor() as cur:
@@ -446,13 +478,19 @@ def actualizeaza_tenant(conn, tenant_id, nume=None, cui=None, user_id=None):
     cabinet, nume_anaf = r
     if cui is not None:
         if not cui_valid(cui):
-            raise ValueError("CUI invalid: cifra de control nu corespunde (%r)" % cui)
+            raise ValueError(
+                "CUI-ul %r nu e valid: cifra de control nu corespunde. Un cod fiscal "
+                "greșit nu se oprește aici — îl respinge ANAF, la prima declarație "
+                "depusă." % cui)
         with conn.cursor() as cur:
             cur.execute("SELECT id FROM public.tenants "
                         "WHERE cui = %s AND accounting_firm_id = %s AND id <> %s",
                         (str(cui), cabinet, tenant_id))
             if cur.fetchone():
-                raise ValueError("Firma cu acest CUI exista deja in portofoliu")
+                raise ValueError(
+                    "Ai deja în portofoliu o firmă cu codul fiscal %s. Două firme nu pot "
+                    "avea același cod fiscal — verifică dacă nu e chiar cea pe care o "
+                    "cauți." % cui)
     if nume is None and cui is None:
         return {"ok": True, "neschimbat": True}
     # [R81/O1, 28.08.2026] Denumirea trece prin scriitorul UNIC — `public.tenants.nume` și

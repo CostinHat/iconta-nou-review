@@ -41,7 +41,11 @@ _BASELINE_DIACRITICE = {
     "core/plata_salarii.py": 2, "core/productie.py": 1, "core/provizioane.py": 1,
     "core/reset_parola.py": 1, "core/retete_api.py": 3, "core/salariati_api.py": 10,
     "core/subventii.py": 1, "core/taxare_inversa.py": 4,
-    "core/tenant_provisioning.py": 2, "core/tva_agricultori.py": 1, "core/tva_aur.py": 2,
+    # [LOTUL 11, 04.09.2026] `core/tenant_provisioning.py` A IESIT din baseline: 2 -> 0.
+    # Reparatia lui R134 (refuzurile rutei nu mai ies `500`) a PUBLICAT patru mesaje care
+    # pana atunci nu ajungeau la nimeni, iar doua erau scrise fara diacritice. Rescrise in
+    # AMANDOUA locurile in care traiau — creare si actualizare —, nu doar pe calea noua.
+    "core/tva_agricultori.py": 1, "core/tva_aur.py": 2,
     "core/tva_incasare.py": 1, "core/tva_marja_turism.py": 3,
 }
 

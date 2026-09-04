@@ -844,3 +844,72 @@ ca diagnostic: „18 > 16" spune că sunt 18, nu că lotul a făcut două.*
    Direcția ratării e cea sigură — expresia rămâne vizibilă ca și cod, nu dispare cod real —, și e
    scrisă ca modul de eșec 1 în `core/cititor_js.py`. *Zero instanțe în corpusul de azi; se
    consemnează fiindcă e o alegere, nu o scăpare.*
+
+---
+
+## LOT 11 — cele 21 de ecrane de firmă rămase, și formularul care se deschide abia după o apăsare
+
+Lotul 10 a parcurs 15 ecrane și a raportat, pentru **nouă** din ele, `campuri=0`. Citit repede, asta
+înseamnă „ecran parcurs". Nu însemna: formularul lor trăiește într-o **fereastră** care se deschide
+după o apăsare — «+ Salariat nou», «+ Notă nouă», «+ Șablon nou» —, iar sonda ajungea pe ecran și
+n-avea ce completa. *Un `campuri=0` era un ecran NEPROBAT purtând numele unuia probat.*
+
+**Ce s-a construit:** navigare pentru cele 21 de ecrane `fa-*` care nu erau în nicio listă
+(`nav_ecrane.ECRANE_CAMPANIE`), și un pas de **deschidere** în sondă: dacă nu se găsește niciun câmp,
+se caută un deschizător, se apasă, și se recontrolează. Ce s-a deschis se scrie în artefact
+(`deschis_cu`) — ca să nu se confunde niciodată un ecran care n-are formular cu unul al cărui
+formular n-a fost găsit.
+
+**Măsurat, cap la cap:** 36 de ecrane parcurse (15 + 21) · **16 butoane apăsate** pe formulare umplute
+cu date imposibile · **15 au vorbit** · **1 a cerut un fișier** · **0 TAC**. Butoanele au crescut de la
+8 la 16, iar `stat_plata` a trecut de la `campuri=0` la **14 câmpuri**, prin deschizător.
+
+### Ce a scos ecranul «Date firmă» — trei defecte, pe același drum
+
+| # | ce era | ce e acum |
+|---|---|---|
+| **R134** | `PUT /tenants/{id}` răspundea **`500 Internal Server Error`** la ORICE refuz. Porțile puse pe 27.08 (cifra de control a CUI-ului, unicitatea) refuză ridicând `ValueError`, iar ruta nu-l prindea. Mesajele scrise cu grijă n-au ajuns niciodată la un contabil | `422`, cu motivul întreg |
+| **R135** | aceeași rută accepta **`«»@#$%` ca denumire de firmă** și o scria în amândouă locurile. De acolo pleacă pe `den` din D394 și pe antetul facturii | refuz, din scriitorul UNIC, deci fără cale de ocolire |
+| **R136** | ecranul trimitea **trei scrieri înlănțuite**, cu redenumirea PRIMA. Măsurat în `audit_log`: `PUT /tenants/4838` `200`, apoi `POST /firma-profil/date` `422` — refuz pe ecran, firmă redenumită în date | se scrie întâi ce poate fi refuzat; iar dacă denumirea cade după, mesajul o spune pe litere |
+
+*Al doilea nu se putea vedea cât timp exista primul: cu orice refuz ieșind `500`, nimeni n-ar fi
+deosebit „poarta lipsește" de „poarta a căzut".*
+
+### Ce a scos SONDA despre ea însăși (R137)
+
+Sonda declara starea schemei ca `count(*)` pe fiecare tabel. Un ecran de **date** nu inserează —
+**modifică**. Deci, când a redenumit firma, sonda a raportat *„SCHIMBĂRI DE STARE: niciuna"*. S-a
+văzut abia indirect: următoarele 14 ecrane au dat „navigare eșuată", fiindcă navigarea caută firma
+**după nume**, iar numele nu mai era al ei. Numele vechi s-a refăcut citindu-l din D394-urile
+**depuse**, nu din memorie.
+
+Reparat pe trei direcții: starea e acum `count/amprentă` · verdictele sunt **patru**, al patrulea
+fiind *„a cerut un fișier"* (butonul care deschide selectorul de fișiere **nu tăcea**) · iar
+curățenia de după probă e o unealtă cu **granița scrisă** — un `INSERT` se desface, un `UPDATE` nu,
+și acolo instrumentul refuză în loc să șteargă date reale.
+
+### Cele trei acceptări care NU sunt defecte
+
+`rapoarte_salvate`, `centre_cost` și `contracte_sabloane` au primit `«»@#$%` și l-au **scris**, cu
+mesaj de reușită. Sunt corecte: toate trei sunt **nume libere alese de contabil** — o variantă de
+raport, un centru de cost, un șablon de contract. Nu pleacă în nicio declarație. *Un instrument care
+ar refuza aici ar fi mai rău decât unul care acceptă.* Rândurile au fost șterse după probă, verificat.
+
+### Ce a rămas nereparat din lotul ăsta, și de ce
+
+1. **`fa-rip` n-a fost probat: cardul nu se randează pe firma campaniei.** `Comert Micro TVA SRL` e
+   SRL, iar Registrul de Inventar și Plăți e al partidei simple. Sonda a raportat „navigare eșuată",
+   nu „fără defect". *Decizia lui Costin (`DECIZII.md` 31): lotul 12 rulează și pe o firmă de partidă
+   simplă, și numai pe ce nu se randează acum.* **Punctul orb e FIRMA, nu ecranul.**
+2. **Opt ecrane au formular, dar niciun buton de salvare**: `acces`, `bilant`, `fisacont`, `marja`,
+   `regfiscal`, `reginventar`, `registre321`, `solicitari`. Câmpurile lor sunt **filtre** (lună, an,
+   cont), nu date de înregistrat — n-au ce refuza. Sunt scrise „parcurse", nu „probate": deosebirea e
+   chiar ce a costat lotul 10 nouă ecrane.
+3. **Paisprezece ecrane au `campuri=0` și după deschizător.** Formularul lor cere **doi** pași
+   (alege luna → deschide fereastra), iar sonda încearcă cel mult trei deschizătoare, fiecare de un
+   singur pas. Declarat ca mod de eșec în antetul sondei.
+4. **R136 e îngustată, nu închisă.** Dacă redenumirea — acum ultima — cade după ce profilul și
+   vectorul au trecut, ele rămân salvate. Un singur act ar cere o rută care unește trei căi cu
+   **roluri diferite** și un apel ANAF live: o construcție, nu o reparație de lot.
+5. **Sonda umple numai ce e în `.fereastra`.** Un formular randat inline, în corpul ecranului, nu e
+   completat — și atunci `campuri=0` rămâne onest: „n-am avut ce completa", nu „nu refuză".

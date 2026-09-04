@@ -1,0 +1,422 @@
+{
+ "set": "tot",
+ "schema": "tenant_003",
+ "schimbari": {
+  "centre_cost": [
+   "0/-",
+   "1/f199b519"
+  ],
+  "contracte_sabloane": [
+   "0/-",
+   "1/13a07868"
+  ],
+  "rapoarte_salvate": [
+   "0/-",
+   "1/6005eb90"
+  ]
+ },
+ "scrieri": [
+  [
+   "rapoarte",
+   "Salvează varianta curentă",
+   {
+    "rapoarte_salvate": [
+     "0/-",
+     "1/6005eb90"
+    ]
+   }
+  ],
+  [
+   "centrecost",
+   "Adaugă",
+   {
+    "centre_cost": [
+     "0/-",
+     "1/f199b519"
+    ]
+   }
+  ],
+  [
+   "contracte",
+   "Salvează",
+   {
+    "contracte_sabloane": [
+     "0/-",
+     "1/13a07868"
+    ]
+   }
+  ]
+ ],
+ "ecrane": {
+  "supervizor": {
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "import_mijloace_fixe": {
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "vector_fiscal": {
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Salvează vectorul",
+     "text_nou": true,
+     "delta_text": " SRL · CUI 95141537 ✕ Import date Vector fiscal salvat. Alege ce vrei să aduci pentru această firmă. Vector fiscal TVA, regim, intracomunitar Solduri inițiale Balanța de deschidere Solduri parteneri 4",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "plan_conturi": {
+   "campuri_umplute": 3,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Adaugă cont",
+     "text_nou": true,
+     "delta_text": "adaugă un cont nou. Niciun cont găsit cu acest termen. Adaugă cont nou * Simbolul contului începe cu cifra clasei (1-9), ca toate conturile din planul general — am primit '«»@#$%'. Dacă e un analitic,",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "solduri_parteneri": {
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "stat_plata": {
+   "campuri_umplute": 14,
+   "deschis_cu": "+ Salariat nou",
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Salvează",
+     "text_nou": true,
+     "delta_text": "ială) Salariu brut* Salariul brut este obligatoriu și trebuie să fie mai mare ca 0. Persoane în întreținere Data nașterii (pentru deducerea tinerilor sub 26 de ani) Copii ≤ 18 ani înscriși în învățămâ",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "declaratii": {
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "stocuri": {
+   "campuri_umplute": 22,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Salvează NIR (note ciorne)",
+     "text_nou": true,
+     "delta_text": "rcă gestiunea lunii Completează articolele: Articolul 1: cantitate; Articolul 1: pret achizitie + NIR nou NIR nou NIR: număr · dată · furnizor · CUI Articole: denumire · cantitate · preț achiziție · p",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "verdict": "a vorbit"
+    },
+    {
+     "buton": "Salvează nivelul minim",
+     "text_nou": true,
+     "delta_text": "rcă gestiunea lunii Alege întâi articolul din listă. + NIR nou NIR nou NIR: număr · dată · furnizor · CUI Articole: denumire · cantitate · preț achiziție · preț raft (cu TVA) · cotă TVA alege 21% 11% ",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "verdict": "a vorbit"
+    },
+    {
+     "buton": "Salvează rețeta",
+     "text_nou": true,
+     "delta_text": "rcă gestiunea lunii Adaugă cel puțin un ingredient. + NIR nou NIR nou NIR: număr · dată · furnizor · CUI Articole: denumire · cantitate · preț achiziție · preț raft (cu TVA) · cotă TVA alege 21% 11% ×",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "registratura": {
+   "campuri_umplute": 3,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "banca": {
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "rapoarte": {
+   "campuri_umplute": 1,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Salvează varianta curentă",
+     "text_nou": true,
+     "delta_text": "L Variantele firmei «»@#$% anul 2026 · creată de Elena Dobrescu Încarcă Șterge Salvează varianta curentă",
+     "a_scris": {
+      "rapoarte_salvate": [
+       "0/-",
+       "1/6005eb90"
+      ]
+     },
+     "a_cerut_fisier": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "etransport": {
+   "campuri_umplute": 23,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Doar generează XML (manual)",
+     "text_nou": true,
+     "delta_text": "e marfă* Cantitate* Bun 1: Cantitate UM* Gr. netă (kg)* Bun 1: Greutate netă Gr. brută (kg)* Bun 1: Greutate brută Valoare fără TVA* Bun 1: Valoare fără TVA × Șterge bunul 1 + Bun Partener comercial C",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "centrecost": {
+   "campuri_umplute": 4,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Adaugă",
+     "text_nou": true,
+     "delta_text": "la note noi. Adaugă «»@#$% activ Dezactivează REALIZAT PE CENTRE Din notele validate: cheltuieli (clasa 6) și venituri (clasa 7) pe fiecare centru, în perioada aleasă. – Vezi realizat BUGETE ȘI VARIAN",
+     "a_scris": {
+      "centre_cost": [
+       "0/-",
+       "1/f199b519"
+      ]
+     },
+     "a_cerut_fisier": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "casa": {
+   "campuri_umplute": 5,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "verificari": {
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "acces": {
+   "campuri_umplute": 2,
+   "deschis_cu": "Invită client nou",
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "balanta": {
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "bilant": {
+   "campuri_umplute": 1,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "bonuri": {
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Adaugă document (pozează / încarcă)",
+     "text_nou": false,
+     "delta_text": "ază, aici certifici.",
+     "a_scris": null,
+     "a_cerut_fisier": true,
+     "verdict": "a cerut un fisier"
+    }
+   ]
+  },
+  "contracte": {
+   "campuri_umplute": 2,
+   "deschis_cu": "+ Șablon nou",
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Salvează",
+     "text_nou": true,
+     "delta_text": "RL · CUI 95141537 ✕ Contracte Șabloane proprii cu marcaje {{...}}; generarea completează datele partenerului și scoate PDF. Șablon salvat. + Șablon nou «»@#$% Generează Editează Șterge",
+     "a_scris": {
+      "contracte_sabloane": [
+       "0/-",
+       "1/13a07868"
+      ]
+     },
+     "a_cerut_fisier": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "control": {
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "datefirma": {
+   "campuri_umplute": 17,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Salvează",
+     "text_nou": true,
+     "delta_text": " activități diverse CUI-ul «»@#$% nu e valid (lipsa). CUI-ul firmei intră în fiecare declarație depusă — unul greșit nu se oprește aici, îl respinge ANAF, după depunere. Salvează",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "facturi": {
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "fisacont": {
+   "campuri_umplute": 1,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "jurnal": {
+   "campuri_umplute": 4,
+   "deschis_cu": "+ Notă nouă",
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Generează amortizarea",
+     "text_nou": true,
+     "delta_text": "uă Blochează luna? Nimic de amortizat. Notă nouă · 01.09.2026 Descriere Linii: cont debit = cont credit · sumă = — centru — «»@#$% − + linie Salvează Renunță Nr. crt. 5 · 04.09.2026 · Vanzare regim ma",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "verdict": "a vorbit"
+    },
+    {
+     "buton": "Salvează",
+     "text_nou": true,
+     "delta_text": "ouă Blochează luna? linia 1: contul «»@#$% nu exista in planul de conturi al firmei. Se adauga in Plan de conturi (Import date › Plan de conturi), sau se corecteaza aici — o nota cu un cont inexistent",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "magazin": {
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "marja": {
+   "campuri_umplute": 1,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "mijloace": {
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "operatiuni": {
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "produse": {
+   "campuri_umplute": 1,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "+ Adaugă produs",
+     "text_nou": true,
+     "delta_text": "ți corecta oricând. Denumire produs sau serviciu* Preț · unitate de măsură · cotă TVA cotă (auto) 21% 11% scutit / fără TVA (art. 292) Salvează Renunță Niciun produs încă. Adaugă primul produs — cota ",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "raportz": {
+   "campuri_umplute": 7,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Generează notă",
+     "text_nou": true,
+     "delta_text": "ucuri) Numerar Card totalul pe cote trebuie să fie pozitiv Generează notă",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "regfiscal": {
+   "campuri_umplute": 1,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "reginventar": {
+   "campuri_umplute": 1,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "registre321": {
+   "campuri_umplute": 13,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "rip": {
+   "eroare_navigare": "Page.click: Timeout 30000ms exceeded.\nCall log:\n  - waiting for locator(\"#fa-rip\")\n"
+  },
+  "solicitari": {
+   "campuri_umplute": 1,
+   "deschis_cu": null,
+   "scris_la_deschidere": null,
+   "butoane": []
+  }
+ },
+ "erori_js": []
+}

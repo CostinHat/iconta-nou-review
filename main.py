@@ -1848,8 +1848,19 @@ def tenant_actualizeaza(tenant_id: int, date: TenantEdit,
             raise HTTPException(404, "tenant inexistent sau fără acces")
         # [R77] `ctx["uid"]` nu e decorativ: o redenumire care se departeaza de denumirea de la
         # ANAF se consemneaza ca alegere deliberata, iar o alegere fara autor nu e o alegere.
-        r = tenant_provisioning.actualizeaza_tenant(conn, tenant_id, date.nume, date.cui,
-                                                    user_id=ctx["uid"])
+        #
+        # [LOTUL 11, 04.09.2026] `try` NU e decorativ nici el. Toate portile puse aici pe 27.08 —
+        # cifra de control a CUI-ului, unicitatea CUI-ului, unicitatea denumirii — refuza ridicand
+        # `ValueError`, iar ruta nu-l prindea: fiecare refuz iesea **500 Internal Server Error**.
+        # Masurat apasand: `PUT /tenants/4838 {"cui": "123"}` -> 500. Mesajele scrise cu grija
+        # („CUI invalid: cifra de control nu corespunde") n-au ajuns niciodata la un contabil.
+        # *O poarta al carei refuz arata ca o cadere invata pe cineva ca aplicatia e stricata, nu
+        # ca datele sunt gresite.*
+        try:
+            r = tenant_provisioning.actualizeaza_tenant(conn, tenant_id, date.nume, date.cui,
+                                                        user_id=ctx["uid"])
+        except ValueError as e:
+            raise HTTPException(422, str(e))
     return r
 
 

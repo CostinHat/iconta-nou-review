@@ -3,6 +3,36 @@
 **De ce am facut asa.** Pentru CE s-a facut si CAND -> ISTORIC.md. Pentru ce urmeaza -> DE_FACUT.md.
 Pentru norma UI -> DESIGN_SYSTEM.md. Pentru cod -> git.
 
+## 04.09.2026 (31) — Două răspunsuri: granița inventarului vizual, și firma pe care rulează campania
+
+**(1) Ecranele campaniei rămân în `ECRANE_CAMPANIE`, nu intră în inventarul porții vizuale.**
+*Costin, verbatim:* „**Regula pe care ai scris-o e granița corectă: un ecran al cărui JS se atinge
+trece în `ECRANE`.** Motivul: mutarea ar transforma campania «vorbește aplicația?» într-una de
+accesibilitate, în mijlocul ei."
+
+**Ce confirmă, măsurat.** Fiecare nume din `nav_ecrane.ECRANE` e cerut de
+`test_acoperire_vizuala.test_toate_ecranele_scanate` în artefactul vizual, iar `test_fara_violari`
+cade pe orice violare axe (desktop **și** mobil), țintă de atingere sub 24px, revărsare la 393px sau
+eroare de consolă. A muta acolo cele 21 de ecrane de firmă ale lotului 11 ar fi însemnat, **prin
+construcție**, o campanie de accesibilitate — nu una despre ce spune aplicația când primește date
+greșite. *Două întrebări, două costuri; nu se decid una prin cealaltă.*
+
+**Ce NU slăbește:** locul de adevăr rămâne unul singur, `frontend_test/vizual/nav_ecrane.py`. Ce se
+declară e la ce răspunde fiecare listă. Iar poarta verde vizuală rămâne neatinsă: **un ecran al cărui
+JS se ATINGE trece în `ECRANE`, cu cele trei unelte rulate pe el.**
+
+**(2) Lotul 12 rulează și pe o firmă de partidă simplă — dar numai pe ce nu se randează acum.**
+*Costin, verbatim:* „**Varianta (a).** Punctul orb e firma, nu ecranul — altfel ecranele de regim
+rămân nedeprobate definitiv. **Probezi doar ce nu se randează pe firma curentă, nu tot.**"
+
+**Instanța care a cerut decizia:** ecranul `fa-rip` (Registrul de Inventar și Plăți — partidă simplă)
+n-a putut fi probat în lotul 11 fiindcă **cardul nu se randează** pe `Comert Micro TVA SRL`, care e
+SRL. Sonda a raportat cinstit „navigare eșuată", nu „fără defect".
+
+**A doua jumătate a răspunsului e o limită de cost, și e la fel de importantă ca prima:** pe firma a
+doua se probează **numai** ecranele care lipsesc pe prima. O rulare completă pe a doua firmă ar
+dubla lotul fără să răspundă la nimic nou — restul ecranelor au aceleași formulare.
+
 ## 04.09.2026 (30) — Raportul de lot nu mai încheie tura; și poarta E rularea
 
 **Costin, verbatim, două corecții deodată:**

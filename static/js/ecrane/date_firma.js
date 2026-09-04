@@ -292,18 +292,40 @@ export async function randeazaDateFirma(corp, nav, tenantId, opt = {}) {
     }
     btn.disabled = true;
     btn.textContent = "Se salveaz\u0103\u2026";
+    let pas = 0;
     try {
+      // [LOTUL 11, 04.09.2026] ORDINEA E REPARAȚIA. Până azi redenumirea pleca PRIMA: dacă
+      // datele erau apoi refuzate, omul citea „Nu am putut salva" pe un ecran în care firma
+      // TOCMAI fusese redenumită. Măsurat apăsând, cu formularul umplut cu semne:
+      // `PUT /tenants/4838` → 200, `POST /firma-profil/date` → 422. Refuz pe ecran, denumire
+      // schimbată în bBază, în două tabele, si de acolo pe `den` din D394.
+      // Aceeași clasă ca R128 („poarta cădea DUPĂ aprobare"), a doua instanță: un act care se
+      // refuză nu are voie să lase în urmă jumătate din el. Se scrie întâi ce poate fi refuzat,
+      // și abia la urmă ce schimbă IDENTITATEA firmei.
+      await api.post(`/tenants/${tenantId}/firma-profil/date`, date);
+      await api.post(`/tenants/${tenantId}/vector`, vf);
+      pas = 2;
       // [R77] Denumirea din portofoliu stă în alt tabel, deci e alt apel — dar o singură
       // apăsare pentru om. Se trimite DOAR dacă s-a schimbat: un `PUT` la fiecare salvare ar
       // consemna o „alegere" pe care nimeni n-a făcut-o.
       if (numePortofoliu !== ((t && t.nume) || "")) {
         await api.put(`/tenants/${tenantId}`, { nume: numePortofoliu });
       }
-      await api.post(`/tenants/${tenantId}/firma-profil/date`, date);
-      await api.post(`/tenants/${tenantId}/vector`, vf);
       await randeazaDateFirma(corp, nav, tenantId, opt);
       arataMesaj(corp.querySelector("#df-msg"), "Datele firmei au fost salvate.", "ok");
     } catch (e) {
+      // [LOTUL 11] Mesajul spune CE a apucat să intre. `pas === 2` = profilul și vectorul sunt
+      // înregistrate și a căzut DOAR redenumirea — acolo „Nu am putut salva" ar fi o afirmație
+      // falsă despre date. *Actul rămâne cu confirmarea lui vizibilă pe calea de reușită (DS
+      // cap.27): un `try` propriu pentru redenumire ar fi mutat confirmarea din blocul actului.*
+      if (pas === 2) {
+        await randeazaDateFirma(corp, nav, tenantId, opt);
+        arataMesaj(corp.querySelector("#df-msg"),
+          "Restul datelor s-au salvat, dar DENUMIREA nu: "
+          + ((e && e.mesaj) || "a fost refuzată")
+          + " Ecranul de mai jos arată ce e înregistrat acum.", "eroare");
+        return;
+      }
       btn.disabled = false;
       btn.textContent = "Salveaz\u0103";
       arataMesaj(msg, (e && e.mesaj) || "Nu am putut salva.", "eroare");

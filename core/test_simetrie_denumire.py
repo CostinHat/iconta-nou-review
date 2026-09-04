@@ -214,3 +214,80 @@ def test_ANTI_VACUU_scanul_chiar_vede_codul():
     an = s.analizeaza()
     assert len(an) >= 10, "scanul vede doar %d instrucțiuni — s-a rupt calea" % len(an)
     assert len(s.fisiere_productie()) >= 20
+
+
+# ─────────────────────────────────────────────────────────────────────────────
+# [LOTUL 11, 04.09.2026] CE POATE FI O DENUMIRE, si ce se intampla cand nu e.
+#
+# Doua defecte gasite APASAND, pe ecranul «Date firma», cu formularul umplut cu semne:
+#   1. `PUT /tenants/{id}` a acceptat `«»@#$%` si a scris-o in amandoua locurile. De acolo pleaca
+#      pe `den` din D394 si pe antetul facturii.
+#   2. TOATE refuzurile rutei ieseau **500 Internal Server Error**: portile puse pe 27.08 (cifra de
+#      control a CUI-ului, unicitatea) ridica `ValueError`, iar ruta nu-l prindea. Mesajele scrise
+#      cu grija n-au ajuns niciodata la un contabil.
+# Al doilea il face pe primul invizibil: o poarta al carei refuz arata ca o cadere nu invata pe
+# nimeni nimic despre date.
+from core.tenant_provisioning import cere_denumire_scriibila  # noqa: E402
+import pytest  # noqa: E402
+
+
+@pytest.mark.parametrize("nume", [
+    "Comert Micro TVA SRL", "Distributie Profit IC SRL", "Ana & Co S.R.L.",
+    "Întreprindere Individuală Popescu", "A1 Serv", "  Firma Test  ",
+])
+def test_o_denumire_ADEVARATA_trece(nume):
+    """Directia «refuza pe nedrept». Ampersand, puncte, cifre, diacritice — toate sunt denumiri
+    reale de firma si niciuna nu are voie sa fie oprita."""
+    assert cere_denumire_scriibila(nume) == nume.strip()
+
+
+@pytest.mark.parametrize("nume", ["«»@#$%", "", "   ", None, "---", "123", "!!!", "  .  "])
+def test_ce_NU_e_o_denumire_e_refuzat(nume):
+    """Directia «lasa sa treaca». `123` e refuzat deliberat: un cod nu e o denumire, iar `den`
+    din D394 nu e un camp numeric."""
+    with pytest.raises(ValueError):
+        cere_denumire_scriibila(nume)
+
+
+def test_scriitorul_unic_TRECE_prin_verificare():
+    """STRUCTURAL, nu pe text: `scrie_denumirea` chiar cheama functia, deci poarta nu se poate
+    ocoli prin scriitorul unic. Daca apelul dispare, testul cade."""
+    arb = ast.parse(io.open(os.path.join(_RAD, "core", "tenant_provisioning.py"),
+                            encoding="utf-8").read())
+    fn = [n for n in ast.walk(arb)
+          if isinstance(n, ast.FunctionDef) and n.name == "scrie_denumirea"]
+    assert len(fn) == 1, "scrie_denumirea nu mai e o singura functie"
+    apeluri = [n.func.id for n in ast.walk(fn[0])
+               if isinstance(n, ast.Call) and isinstance(n.func, ast.Name)]
+    assert apeluri.count("cere_denumire_scriibila") == 1, (
+        "scriitorul unic nu mai trece prin verificarea denumirii: %s" % apeluri)
+
+
+def _prinde_valueerror(h):
+    """`except ValueError` sau `except (ValueError, ...)`, citit din ARBORE."""
+    ty = h.type
+    tipuri = ty.elts if isinstance(ty, ast.Tuple) else ([ty] if ty is not None else [])
+    return any(isinstance(x, ast.Name) and x.id == "ValueError" for x in tipuri)
+
+
+def test_ruta_PUT_tenants_PRINDE_refuzul_si_nu_da_500():
+    """STRUCTURAL: in corpul rutei `tenant_actualizeaza`, apelul catre `actualizeaza_tenant` std
+    intr-un `try` al carui `except` prinde `ValueError`. Masurat inainte de reparatie:
+    `PUT /tenants/4838 {"cui": "123"}` -> **500**. Mutatia care face gardul rosu: scoate `try`-ul."""
+    arb = ast.parse(io.open(os.path.join(_RAD, "main.py"), encoding="utf-8").read())
+    fn = [n for n in ast.walk(arb)
+          if isinstance(n, ast.FunctionDef) and n.name == "tenant_actualizeaza"]
+    assert len(fn) == 1, "ruta PUT /tenants/{id} nu mai e o singura functie"
+    incercari = [n for n in ast.walk(fn[0]) if isinstance(n, ast.Try)]
+    bune = 0
+    for tr in incercari:
+        cheama = any(isinstance(c, ast.Call) and isinstance(c.func, ast.Attribute)
+                     and c.func.attr == "actualizeaza_tenant" for c in ast.walk(tr))
+        # Pe NODUL de tip, nu pe textul lui `ast.dump`: un tipar pe text ar trece si peste un
+        # `except SomeValueErrorish` si peste un comentariu (METODA_VERIFICARE §23).
+        prinde = any(_prinde_valueerror(h) for h in tr.handlers)
+        if cheama and prinde:
+            bune += 1
+    assert bune == 1, (
+        "refuzurile lui `actualizeaza_tenant` nu mai sunt prinse in ruta — ies 500, iar mesajele "
+        "scrise nu ajung la om (%d blocuri `try` potrivite)" % bune)

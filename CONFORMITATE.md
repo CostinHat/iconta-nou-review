@@ -8705,3 +8705,119 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
   la 24.08 și 27.08 încoace. Iar clasa e mai largă decât cele două instrumente: **un cititor comun
   copiat e un defect copiat** — încă o instanță a gardului care nu se
   verifică pe sine, și prima în care cauza e COPIA, nu logica.
+
+### R134 — Toate porțile lui `PUT /tenants/{id}` refuzau cu `500`, deci mesajele lor n-au ajuns niciodată la un om
+
+- **felul**: ARTEFACT
+- **cine deblochează**: EU
+- **unde intră**: E2 · identitatea firmei · **PRAG 1**
+- **ce blochează**: diagnosticarea, și încrederea. Pe 27.08 ruta a primit **toate** porțile de la
+  creare — cifra de control a CUI-ului, unicitatea CUI-ului, unicitatea denumirii —, iar motivul de
+  atunci a fost scris în registru: *„o regulă care se poate ocoli nu e o regulă"*. Porțile chiar
+  există și chiar refuză. Doar că refuză ridicând `ValueError`, iar ruta nu-l prindea: fiecare refuz
+  ieșea `500 Internal Server Error`.
+- **ce s-a măsurat** *(04.09.2026, cerere reală cu token emis server-side)*:
+  `PUT /tenants/4838 {"cui": "123"}` → **`500 Internal Server Error`**; la fel `{"cui":"95141530"}`
+  (cifră de control greșită). Mesajul scris în cod — *„CUI invalid: cifra de control nu
+  corespunde"* — nu apare nicăieri în răspuns.
+- **de ce n-a prins-o campania până acum**: lotul 9 a probat ruta cu **corp gol**, iar corpul gol
+  e chiar singura intrare care NU trece prin porți (`nume is None and cui is None` → `{"ok": True,
+  "neschimbat": True}`). *O probă cu corp gol măsoară ruta pe drumul pe care ea nu face nimic.*
+- **reparația**: `try/except ValueError → HTTPException(422, str(e))` în rută. Refuzurile ajung
+  întregi, în forma pe care ecranul o știe citi.
+- **reprobat** *(instanță proaspătă pe `:8011`, cod nou)*: `{"cui": "123"}` → **`422`**
+  *„CUI invalid: cifra de control nu corespunde ('123')"*. Starea firmei, verificată în bază după
+  toate cele trei refuzuri: **neatinsă**.
+- **gardă**: `core/test_simetrie_denumire.py::test_ruta_PUT_tenants_PRINDE_refuzul_si_nu_da_500` —
+  **structurală** (AST pe `main.py`), nu pe text: cere un `try` care cheamă `actualizeaza_tenant` și
+  al cărui `except` prinde `ValueError`. **Mutație dovedită**: scos `try`-ul → 1 → **0**.
+- **unde ajunge efectul**: pe fiecare poartă de identitate a firmei. O poartă al cărei refuz arată
+  ca o cădere nu învață pe nimeni nimic despre date — învață că aplicația e stricată.
+
+### R135 — O denumire de firmă fără nicio literă trecea, și pleca pe `den` în D394
+
+- **felul**: ARTEFACT
+- **cine deblochează**: EU
+- **unde intră**: E2 · identitatea firmei · **PRAG 1**
+- **ce blochează**: adevărul a ceea ce se depune. Denumirea firmei e o **identitate fiscală**: pleacă
+  pe `den` din D394, pe antetul facturii tipărite, în contracte și adeverințe.
+- **ce s-a măsurat** *(04.09.2026, apăsând pe ecranul «Date firmă» cu formularul umplut cu semne)*:
+  `PUT /tenants/4838 {"nume": "«»@#$%"}` → **`200`**, iar denumirea s-a scris în **amândouă**
+  locurile (`public.tenants.nume` și `tenant_003.firma_profil.nume`) — simetria din R81 a
+  funcționat perfect, și a propagat perfect o denumire care nu e o denumire.
+  *Numele vechi s-a refăcut citindu-l de la sursă — `denP` pentru CUI 95141537 în D394-urile
+  DEPUSE, confirmat de textul unei notificări —, nu din memorie.*
+- **de ce n-a oprit-o nimic**: singura verificare era „nu poate fi goală". `«»@#$%` nu e gol.
+- **reparația**: `cere_denumire_scriibila()` — funcție **pură**, chemată din scriitorul UNIC
+  (`scrie_denumirea`), deci poarta nu se poate ocoli prin nicio cale de redenumire.
+- **calibrare, în amândouă direcțiile**: 6 denumiri reale trebuie să treacă (ampersand, puncte,
+  cifre în nume, diacritice, spații la capete) · 8 șiruri care nu sunt denumiri trebuie refuzate
+  (inclusiv `123` — un cod nu e o denumire, iar `den` din D394 nu e un câmp numeric).
+- **gardă**: `test_scriitorul_unic_TRECE_prin_verificare`, **structurală** (AST): apelul trebuie să
+  existe în `scrie_denumirea`. **Mutație dovedită**: scos apelul → 1 → **0**.
+- **ce NU face, declarat**: nu verifică dacă denumirea e cea **reală** a firmei — aia e confruntarea
+  cu ANAF, și e altă poartă (R81). Cere doar să fie un nume.
+- **unde ajunge efectul**: pe orice document care poartă denumirea firmei. R134 îl făcea invizibil:
+  cât timp orice refuz ieșea `500`, nimeni n-ar fi deosebit „poarta lipsește" de „poarta a căzut".
+
+### R136 — Ecranul «Date firmă» trimitea redenumirea ÎNAINTEA a ceea ce putea fi refuzat
+
+- **felul**: ARTEFACT
+- **cine deblochează**: EU
+- **unde intră**: E2 · `static/js/ecrane/date_firma.js` · **PRAG 1**
+- **ce blochează**: potrivirea dintre ce citește omul și ce e în date. O apăsare pe «Salvează»
+  trimitea **trei** scrieri înlănțuite în client: redenumirea, datele de profil, vectorul fiscal.
+  Prima trecea, a doua era refuzată — iar omul citea *„Nu am putut salva"* pe un ecran în care firma
+  **tocmai fusese redenumită**, în două tabele.
+- **ce s-a măsurat** *(04.09.2026, din `public.audit_log`, cererile probei)*:
+  `POST /tenants/4838/contracte/sabloane` `200` · **`PUT /tenants/4838` `200`** ·
+  `POST /tenants/4838/firma-profil/date` **`422`**, în aceeași secundă. Refuz pe ecran, redenumire
+  în date.
+- **clasa, și a câta oară**: aceeași cu **R128** — *„poarta cădea DUPĂ aprobare, iar înlănțuirea
+  trăia în client"*. A doua instanță, alt ecran. *Un act care se refuză n-are voie să lase în urmă
+  jumătate din el.*
+- **reparația**: **ordinea**. Se scrie întâi ce poate fi refuzat (profilul, vectorul) și abia la
+  urmă ce schimbă **identitatea** firmei. Iar dacă redenumirea e refuzată după ce restul a trecut,
+  mesajul o spune pe litere — *„Restul datelor s-au salvat, dar DENUMIREA nu: …"* —, nu „nu am putut
+  salva", care ar fi, acolo, o afirmație falsă despre date.
+- **reprobat** *(browser real, instanță proaspătă `:8011`, cod publicat)*: același formular umplut
+  cu semne → ecranul **vorbește** (*„CUI-ul «»@#$% nu e valid (lipsă). CUI-ul firmei intră în fiecare
+  declarație depusă…"*) și **nu se schimbă nimic în bază** — amprenta tuturor celor 52 de tabele ale
+  schemei, identică înainte și după.
+- **ce RĂMÂNE, declarat**: clasa nu e închisă, e **îngustată**. Dacă ultima cerere (redenumirea)
+  cade după ce primele două au trecut, profilul și vectorul rămân salvate. Un singur act ar cere o
+  rută care unește trei căi cu **roluri diferite** (`cere_cabinet` vs `admin_firma`) și un apel ANAF
+  live — o construcție, nu o reparație de lot. Ce s-a obținut: partea care se poate refuza nu mai
+  lasă în urmă schimbarea de identitate, iar restul e **spus**.
+
+### R137 — Sonda de ecran număra rânduri, deci era oarbă exact la felul de scriere pe care îl face un ecran de date
+
+- **felul**: VERIFICARE
+- **cine deblochează**: EU
+- **unde intră**: instrumentele de măsură · `frontend_test/vizual/proba_ecrane_formular.py`
+- **ce blochează**: adevărul propoziției „proba n-a schimbat nimic".
+- **ce s-a măsurat** *(04.09.2026)*: sonda declara starea schemei ca `count(*)` pe fiecare din cele
+  52 de tabele. La prima rulare pe ecranele de firmă a apăsat «Salvează» pe «Date firmă» și
+  serverul a **redenumit firma** — două `UPDATE`-uri. Numărul de rânduri n-a mișcat. Raportul
+  sondei: *„SCHIMBARI DE STARE, cap la cap: niciuna"*.
+  *Consecința s-a văzut imediat și în altă parte: următoarele 14 ecrane au dat «navigare eșuată»,
+  fiindcă navigarea caută firma DUPĂ NUME, iar numele nu mai era al ei.*
+- **cauza, scrisă ca să se recunoască**: `count(*)` măsoară inserările și ștergerile. Un ecran de
+  **date** nu inserează — modifică. *Instrumentul era orb fix pe clasa de ecrane pe care tocmai
+  începuse să le probeze.*
+- **reparația**: starea unui tabel e acum `count/amprentă` —
+  `md5(string_agg(md5(rand::text) ORDER BY …))`. O modificare a oricărei coloane a oricărui rând
+  schimbă amprenta.
+- **al doilea lucru, din aceeași clasă**: verdictul **`TACE`** era dat și butonului «Adaugă document
+  (pozează / încarcă)» de pe ecranul bonurilor — care nu tace: cheamă `input[type=file].click()`,
+  adică deschide selectorul de fișiere al sistemului, pe care sonda nu-l vede. *Un instrument care
+  nu poate vedea un răspuns n-are voie să-l numească tăcere.* Verdictele sunt acum **patru**: a
+  vorbit · a scris · **a cerut un fișier** · TACE. Ascultat prin evenimentul `filechooser`, nu
+  ghicit după textul butonului.
+- **al treilea**: curățenia de după probă era de mână. Acum e o unealtă —
+  `frontend_test/vizual/curata_proba_ecrane.py` —, **cu granița ei scrisă**: un `INSERT` se poate
+  desface, un `UPDATE` nu. Pe un rând preexistent instrumentul **refuză** și numește tabelul și
+  coloana, în loc să șteargă date reale.
+- **unde ajunge efectul**: pe fiecare propoziție de forma „proba n-a lăsat nimic în urmă", de la
+  lotul 10 încoace. Cea din lotul 10 rămâne adevărată — verificată acum și cu amprentă —, dar era
+  adevărată **din noroc**: acele ecrane inserau.

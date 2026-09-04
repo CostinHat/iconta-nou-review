@@ -79,6 +79,16 @@ def ecran_casa(pg): _ecran_shell(pg, "fa-casa")
 # pe care se randeaza verdictul de echilibru. Poarta verde vizuala (CLAUDE.md 2.3 pct.11) cere
 # uneltele pe ECRANELE ATINSE — iar un ecran care nu e in lista nu poate fi atins de ele, deci
 # regula trecea vid. Se asteapta randarea listei, nu doar un timeout.
+# [LOTUL 11, 04.09.2026] «Date firma» a trecut din `ECRANE_CAMPANIE` in inventarul portii
+# vizuale, prin chiar regula scrisa mai jos: lotul i-a ATINS JS-ul (R136 — ordinea celor trei
+# scrieri). Un ecran atins primeste cele trei unelte pe el; unul doar probat, nu.
+def ecran_datefirma(pg):
+    deschide_firma(pg)
+    pg.click("#fa-datefirma")
+    pg.wait_for_selector("#df-salveaza, .ecran-nota", timeout=14000)
+    pg.wait_for_timeout(1200)
+
+
 def ecran_verificari(pg):
     deschide_firma(pg)
     pg.click("#fa-verificari")
@@ -115,4 +125,45 @@ ECRANE = [
     ("centrecost", ecran_centrecost),
     ("casa", ecran_casa),
     ("verificari", ecran_verificari),
+    ("datefirma", ecran_datefirma),
 ]
+
+
+# ── LOTUL 11 (04.09.2026): cele 21 de ecrane de firma ramase ─────────────────
+# DE CE O A DOUA LISTA, si nu `ECRANE` marita — masurat, nu presupus. Fiecare nume din `ECRANE` e
+# cerut de `test_acoperire_vizuala.test_toate_ecranele_scanate` in artefactul vizual, iar
+# `test_fara_violari` cade pe orice violare axe (desktop SI mobil), tinta de atingere sub 24px,
+# revarsare la 393px sau eroare de consola. A muta cele 21 de mai jos in `ECRANE` ar fi, prin
+# constructie, o campanie de ACCESIBILITATE — nu campania „vorbeste aplicatia cand primeste date
+# gresite?". Sunt doua intrebari, cu doua costuri, si nu se decid una prin cealalta.
+#
+# CE RAMANE ADEVARAT: locul de adevar e tot UNUL — fisierul asta. Ce se declara e la ce raspunde
+# fiecare lista. Iar regula portii verzi vizuale nu se schimba: **un ecran al carui JS se ATINGE
+# trece in `ECRANE`, cu cele trei unelte rulate pe el.** Lista de mai jos e pentru ecranele pe care
+# campania le PROBEAZA fara sa le atinga.
+#
+# Navigarea lor e aceeasi — deschide firma, apasa cardul —, deci se genereaza, nu se scrie de 21
+# de ori. Un ecran care cere mai mult de o apasare primeste functie proprie, ca `_import_strat`.
+_FA_CAMPANIE = [
+    "fa-acces", "fa-balanta", "fa-bilant", "fa-bonuri", "fa-contracte", "fa-control",
+    "fa-facturi", "fa-fisacont", "fa-jurnal", "fa-magazin", "fa-marja",
+    "fa-mijloace", "fa-operatiuni", "fa-produse", "fa-raportz", "fa-regfiscal",
+    "fa-reginventar", "fa-registre321", "fa-rip", "fa-solicitari",
+]
+
+
+def _fa_card(fid):
+    """Inchide `fid` pe functie, nu pe variabila de bucla — altfel toate cele 21 ar deschide
+    ultimul ecran, si raportul ar arata 21 de ecrane parcurse cu un singur ecran probat."""
+    def f(pg):
+        _ecran_shell(pg, fid)
+    f.__name__ = "ecran_" + fid.replace("-", "_")
+    return f
+
+
+ECRANE_CAMPANIE = [(fid[3:].replace("-", "_"), _fa_card(fid)) for fid in _FA_CAMPANIE]
+
+# ANTI-VACUU, aici si nu intr-un test: daca cele doua liste s-ar suprapune, un ecran ar fi parcurs
+# de doua ori si ar parea acoperit de doua instrumente cand e acoperit de unul.
+assert not (set(n for n, _ in ECRANE) & set(n for n, _ in ECRANE_CAMPANIE)), \
+    "acelasi ecran in amandoua listele"
