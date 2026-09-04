@@ -47,7 +47,7 @@ după a doua oară: „e gardul care nu citește proză și totuși o discipline
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 29.08.2026: garda cere ca fiecare restanță NUMITĂ acolo să fie DESCHISĂ, iar textul le numea pe R54, R53, R58 — dintre care două s-au închis azi. A doua oară când istoricul iese din câmp din același motiv; prima a fost R33, pe 28.08)*: Toate cele patru cerute pe 26.08.2026 au primit răspuns și sunt aplicate: **R54** (contul se REFUZĂ, nu se semnalează), **poarta de coadă** (mutată la intrare), **baseline-urile** (nu se urmăresc în git), **R43** (verificată, rămâne prag 2 — blocată EXTERN pe chei de procesator). Deschise fără să blocheze: **R53** și **R58** *(numai partea amânată de Costin — echilibrul și orfanii ca posibile condiții de închidere)*. Cele trei restanțe de rol și de poartă decise ieri sunt marcate REZOLVATE; **starea lor se citește din registru, nu din antet** — antetul nu poartă stări care se pot confrunta cu un câmp.
 - **istoricul întrebării, păstrat** *(scos din câmpul de mai sus pe 28.08.2026: gardul îl citește pe linie și cere ca fiecare restanță numită acolo să fie DESCHISĂ, iar textul ăsta o numește pe R33 — adevărat când a fost scris, fals de azi. Se mută, nu se șterge)*: *(Text de dinainte, păstrat fiindcă e istoricul întrebării: „una — R54, DESCHISĂ**: contul contabil venit din corpul cererii e normalizat (nu mai poate fi alb), dar **nu e confruntat cu planul de conturi** — se refuză cererea, sau se semnalează și se scrie? Atinge cele **12 câmpuri de cont în text liber** din ecranul de operațiuni. **R33 nu mai blochează: DECISĂ și APLICATĂ 26.08.2026, varianta b′′** (`echilibru_perioada` se leagă lângă cea existentă, `BALANTA_INEGALA` iese fiindcă e tautologică, ambele se arată ca un singur „Echilibru”). Istoricul întrebării — schimbată de două ori, fiindcă premisa „logică paralelă” era falsă — rămâne în R33, fiindcă e chiar lecția.
 - **avertisment la cifre**: **Transferul retrospectiv 3a e FĂCUT (23.08.2026)**, deci avertismentul de dinainte nu se mai aplică în bloc: din cele douăsprezece, nouă au trecut (una MĂSURATĂ, opt PARȚIAL). Rămân **trei** care scriu NEÎNCEPUTĂ deși §3a le dădea ca măsurate — **7, 8, 12** — și rămân **prin regulă, nu din uitare**: pentru ele nu există cifră pe domeniu, ci proză despre instanțe, iar *ce nu se reconstituie onest rămâne NEÎNCEPUTĂ*.
-- **ultima actualizare**: 2026-09-04
+- **ultima actualizare**: 2026-09-05
 - **cel mai vechi commit din registru**: `ffbcb74` (22.08.2026) — cifrele mai vechi de-atât descriu un cod care s-a mișcat de sub ele. Se compară cu HEAD la fiecare citire; garda verifică doar că e chiar cel mai vechi dintre `pe commit`-urile de mai jos.
 
 ---
@@ -6292,6 +6292,88 @@ vreodată o factură se contează manual pe ele, sonda n-o vede.*
   (`DELETE /tenants/{}/jurnal/{}`), iar starea s-a recitit din bază — nu s-a presupus.
 - **unde ajunge efectul**: pe patru feluri de notă contabilă care, până azi, nu se puteau face din
   interfață deloc. *Nu se știe de când: câmpul `suma` e în forma inițială a ecranului.*
+
+### R146 — Fix acolo unde verificarea devenea imposibilă, se renunța la ea: o operațiune fără dată trecea
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `core/common.cota_ceruta` · `main.py::_cere_luna_deschisa` · **PRAG 1**
+- **ce blochează**: verificarea legalității unei cifre fiscale. Data operațiunii decide ce cote și ce
+  plafoane erau în vigoare; fără ea nu există legalitate de verificat.
+- **condiția de deblocare**: se închide când o operațiune fără dată e **refuzată cu mesaj**, nu lăsată
+  să treacă spre o cădere — și pe poarta cotei, și pe poarta de lună.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `f67eebe5`
+- **rezolvată pe commit**: `bc2d8b10`
+- **decizia care a cerut-o** *(Costin, 05.09.2026, `DECIZII.md` 33)*: *„Cota de TVA se validează față
+  de perioada în care cota a fost în vigoare, nu față de o listă de cote acceptate. Data operațiunii
+  decide ce cote sunt legale — sau exigibilitatea, unde diferă. **O cotă istorică pe o factură din
+  perioada ei e corectă; aceeași cotă pe o factură de azi e o cifră validă și falsă care
+  sub-declară.** Aceeași regulă pentru praguri și plafoane."*
+- **ce s-a măsurat ÎNAINTE de a repara** *(cerut explicit: „spune-mi în câte locuri era")*: **17**
+  locuri validează o cotă de TVA · **0** compară cu o listă fixă de valori · **17** compară cu
+  **perioada**, prin `cote_tva_in_vigoare(data)` · **9** funcții de prag/plafon au parametru de
+  perioadă. *Regula era deja implementată acolo unde se validează. Ce lipsea era marginea ei.*
+- **gaura, și era SCRISĂ în cod ca limită acceptată**: `cota_ceruta` avea *„un corp fără `data` nu se
+  poate verifica — cotele legii depind de perioada —, si atunci se pastreaza comportamentul de
+  dinainte: se cere sa existe, atat"*, iar `_cere_luna_deschisa` avea `if not data: return`.
+  **Exact când verificarea devenea imposibilă, se renunța la ea.**
+- **consecința, măsurată**: **19 rute** treceau de poartă și cădeau apoi cu `KeyError: 'data'` la
+  `INSERT` → **`500`**. Contabilul citea *„eroare 500"* în loc să afle că lipsește data. *Poarta
+  vedea absența și o lăsa să treacă spre o cădere.*
+- **reparația**: în două locuri, pe temeiul deciziei. Din cele 41 de apeluri ale porții de lună,
+  **35** îi dau `corp.get("data")` — un câmp pe care ruta îl cere oricum mai jos.
+- **verificat după**: coloana „fără dată" a probei a trecut de la **19 × `500`** la **33 × refuz cu
+  mesaj**.
+- **gărzile care afirmau contractul VECHI, actualizate — nu slăbite**: `test_granite_cota` chema
+  `cota_ceruta({"cota": 11})` fără dată; `test_r42_criteriu` avea `_cere_luna_deschisa(conn, S, None)`
+  cu comentariul *„fără dată: nu se afirmă nimic"* — chiar propoziția pe care decizia o răstoarnă.
+  Proprietățile lor rămân (0 e valoare validă, nu absență; o cotă prezentă se întoarce ca atare),
+  plus **două noi**: fără dată se refuză, iar **cota istorică pe perioada ei trece (19% în 2024) în
+  timp ce aceeași cotă azi e refuzată cu temeiul citat**. *Aia din urmă e inima deciziei, și n-avea
+  gardă.*
+- **ce RĂMÂNE, declarat**: **exigibilitatea.** Decizia spune *„sau exigibilitatea, unde diferă"*. La
+  TVA la încasare (art. 282) cota se aplică la data exigibilității, nu a facturii, iar `cota_ceruta`
+  citește `corp["data"]` fără să întrebe care dintre cele două e. Cere o citire a fiecărei rute cu
+  ambele date — măsurătoare separată, neîncepută. La fel, `categorie_marime.prag(categorie, criteriu)`
+  n-are parametru de perioadă, dar e chiar subiectul restanței **R3**, deschisă.
+
+### R147 — Șase refuzuri care vorbeau limba programatorului, dintre care unul în patru locuri
+
+- **felul**: ARTEFACT
+- **cine deblochează**: INTERN
+- **unde intră**: E2 · `core/tva_incasare.py` · `core/bacsis.py` · `core/intracomunitar.py` ·
+  `core/common.py` · `core/beneficii_api.py` · `main.py`
+- **ce blochează**: criteriul campaniei — un refuz spune **care câmp**, **ce e greșit**, **în
+  termenii contabilului**. Cele șase îl treceau pe primul, pe jumătate pe al doilea, pe al treilea
+  deloc.
+- **condiția de deblocare**: se închide când fiecare din cele șase spune ce e greșit, în română
+  întreagă, și e reprobat pe ecran.
+- **reluări**: 0
+- **stare**: REZOLVATĂ
+- **deschisă pe commit**: `f67eebe5`
+- **rezolvată pe commit**: `bc2d8b10`
+- **de ce ACUM și nu într-o trecere separată** *(Costin, 05.09.2026)*: *„Sunt localizate; o trecere
+  separată ar însemna reintrat în șase module pentru ceva ce ai deja în mână."* — **costul unei
+  reparații nu e mărimea ei, e reintrarea în context.**
+- **ce s-a măsurat**, cele șase, verbatim: *„suma incasata trebuie sa fie pozitiva"* · *„bacsis
+  invalid"* · *„mijloc fix inexistent/inactiv"* · *„valoare invalidă"* (fără să spună care) ·
+  *„tara '' nu este stat membru UE (VIES)"* · *„nicio varianta de formula valabila la 1899-01-01"*.
+- **două lucruri au ieșit din reparație, și niciunul nu era în cerere**:
+  · **`bacsis invalid` era în DOUĂ locuri**, cu același text și înțelesuri diferite — la încasare e
+    bacșișul primit, la distribuire e cel BRUT, din care se reține impozitul. Deosebite, nu copiate.
+  · **`valoare invalidă` era în PATRU locuri.** Reparate toate patru, nu doar cel găsit apăsând —
+    lecția lui R144: *a repara doar instanța lasă trei uși deschise pe același hol.*
+  · Și mesajul pentru țara VIES s-a **despărțit în două**: cod lipsă vs prefix necunoscut. Forma
+    veche tipărea `tara '' nu este...`, adică arăta o valoare goală în loc să spună că lipsește codul.
+- **o greșeală a mea, prinsă de `ruff`**: un `str.replace` cu șablonul de 20 de spații a lovit și
+  înăuntrul liniei de 24 și a stricat indentarea. **Capcana 1 din predare, pe pielea mea** — *un
+  `replace` fără aserțiune nu e o modificare, e o speranță.*
+- **reprobat**: toate șase, pe ecran, în contextul celor 32 de operațiuni speciale.
+- **efect pe clichet**: baseline-ul de diacritice a **coborât** — `core/bacsis.py` 2 → 0 și
+  `core/tva_incasare.py` 1 → 0, amândouă ieșite din listă. Clichetul de umbră a **urcat** 867 → 869,
+  fiindcă refuzul VIES s-a despărțit în două. Amândouă regenerate din ieșirea instrumentelor.
 
 ## E1 — SETUL COMPLET (faza 1 din PLAN_INVESTIGATII.md)
 
