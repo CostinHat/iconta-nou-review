@@ -6451,8 +6451,8 @@ stare, cu ce lipsește. Măsurătoare, nu construcție.» Măsurat pe cele 19 fi
 
 | rândul | ce cere ca să se poată delimita | măsurat acum | distanța |
 |---|---|---|---|
-| **Note explicative** (forma REDUSĂ) | categoria de mărime a entității. **Scutirea microentităților e PARȚIALĂ**, nu totală: pct. 576 alin. (2) le cere pct. 468 lit. a), d), e) și pct. 491 alin. (2) lit. c) | **2 din 19** firme se pot încadra | producătorul — categoria nu mai blochează |
-| **categoria de mărime / R3** | două exerciții consecutive **cu rulaje de clasă 6/7** (pct. 13 alin. (2)-(3)) | **2 din 19** firme le au | **zero** — se poate încadra pe 2 firme, exercițiul precedent fiind CONSTRUIT în exercițiul de intrare din 31.08 |
+| **Note explicative** (forma REDUSĂ) | categoria de mărime a entității. **Scutirea microentităților e PARȚIALĂ**, nu totală: pct. 576 alin. (2) le cere pct. 468 lit. a), d), e) și pct. 491 alin. (2) lit. c) | **2 din 20** firme se pot încadra | producătorul — categoria nu mai blochează |
+| **categoria de mărime / R3** | două exerciții consecutive **cu rulaje de clasă 6/7** (pct. 13 alin. (2)-(3)) | **2 din 20** firme le au | **zero** — se poate încadra pe 2 firme, exercițiul precedent fiind CONSTRUIT în exercițiul de intrare din 31.08 |
 
 *Tabelul de mai sus e **GENERAT** cu `scripts/scan_lista3.proba_md()`, măsurat pe firmele reale, și comparat caracter cu caracter de `core/test_lista3.py`. Scris de mână, a purtat o zi un calificativ căzut — «niciuna n-are două exerciții consecutive», adevărat doar cu **«cu rulaje»**, care lipsea. Nu numărul era greșit, ci ce anume număra.*
 
@@ -8821,3 +8821,98 @@ rămâne — dar guvernează **un sfert** din gărzi, nu toate.
 - **unde ajunge efectul**: pe fiecare propoziție de forma „proba n-a lăsat nimic în urmă", de la
   lotul 10 încoace. Cea din lotul 10 rămâne adevărată — verificată acum și cu amprentă —, dar era
   adevărată **din noroc**: acele ecrane inserau.
+
+### R138 — Un `@` nu e o adresă de email: patru rute creau un cont sau trimiteau un email pe orice șir care conținea unul
+
+- **felul**: ARTEFACT
+- **cine deblochează**: EU
+- **unde intră**: E2 · identitatea utilizatorului · **PRAG 1**
+- **ce blochează**: cine intră în aplicație. Ruta `/asistenti` **inserează un `angajat`** în
+  `public.users` și îi trimite linkul de activare; `/tenants/{id}/acces-client`,
+  `/portal/acces-cont/email` și `/portal/acces-cont/acces` dau sau mută accesul unui client.
+- **ce s-a măsurat** *(04.09.2026, apăsând «Trimite invitația» pe ecranul «Asistenți», cu formularul
+  umplut cu `«»@#$%`)*: șirul **conține** un `@`, deci singura verificare a rutei —
+  `if "@" not in email` — nu cădea. `POST /asistenti` ar fi făcut `INSERT` în `public.users` cu
+  emailul `«»@#$%`, rol `angajat`, cabinet 1968, și ar fi chemat `trimite_email_html` pe el.
+- **clasa, măsurată în întregime, nu doar instanța**: din **cele șase** locuri care refuză cu
+  `EMAIL_INVALID`, **unul singur** verifica formatul (`POST /auth/register`, prin `_EMAIL_RE`),
+  **patru** se mulțumeau cu `"@" not in email`, iar al șaselea (`/facturi/{id}/email`) cerea și un
+  punct, undeva. *Aceeași aplicație știa răspunsul într-un loc și nu-l avea în altul — instanța a
+  patra a clasei în două zile.*
+- **reparația**: faptul „ce e o adresă de email" trece în `core/common.email_valid()`, **un singur
+  loc**. Regexul nu e nou și nu s-a inventat aici: e chiar cel care trăia în `main.py`
+  (`[email_valid_v1]`) și, copiat, în `core/notificari_scadenta.py`. Ce s-a schimbat e că acum e
+  **unul**, iar cele cinci locuri slabe îl cheamă.
+- **calibrare, în amândouă direcțiile**: refuză `«»@#$%`, `a@b`, `a b@c.ro`, `""`, `None` · acceptă
+  `nume@exemplu.ro`, `x@y.z`. *O calibrare care doar dovedește că refuză nu spune nimic despre
+  supra-refuz — iar aici supra-refuzul ar bloca invitarea unui asistent real.*
+- **reprobat** *(browser real, instanță proaspătă `:8011`, apăsând chiar butonul)*: ecranul
+  «Asistenți» răspunde **„Adresă de email invalidă. Verifică formatul (exemplu: nume@exemplu.ro)."**
+  — și nu se scrie nimic: amprenta tuturor tabelelor, identică înainte și după.
+- **ce NU afirmă, declarat**: că adresa **există**. Verifică forma, nu destinatarul — de-aia numele
+  e `email_valid`, nu `email_bun`, și de-aia eșecul trimiterii rămâne tratat separat (R73).
+- **unde ajunge efectul**: pe fiecare cont creat prin invitație și pe fiecare acces de portal dat
+  vreodată. *Butonul nu se putea apăsa în probă decât DUPĂ reparație: înainte de ea, apăsarea ar fi
+  produs chiar contul și emailul pe care le descrie defectul.*
+
+### R139 — Refuzul de pe linia facturii spunea CARE câmp, nu CE e greșit — iar cuvântul pe care îl folosea era fals
+
+- **felul**: ARTEFACT
+- **cine deblochează**: EU
+- **unde intră**: E2 · `core/facturi_api.linii_campuri_lipsa` · **PRAG 1**
+- **ce blochează**: înțelesul refuzului pentru cine îl citește. Cerința campaniei are trei părți —
+  **care câmp**, **ce e greșit**, **în termenii contabilului**. Mesajul le dădea pe prima, pe a doua
+  deloc, iar pe a treia o contrazicea.
+- **ce s-a măsurat** *(04.09.2026, pe ecranul «Emite factură» cu formularul umplut cu semne și
+  cantitate `-99999999`)*: serverul răspunde `422` cu
+  `campuri: [{camp: "em-l0-cantitate", eticheta: "Linia 1: cantitate"}]` — **fără `mesaj` per
+  câmp**. `api.js:41` normalizează `campuri` la `{camp, mesaj: x.mesaj || x.eticheta}`, deci
+  **eticheta devine mesajul**: lângă caseta cantității, care conținea `-99999999`, contabilul citea
+  *„Linia 1: cantitate"* — numele câmpului pe care tocmai se uita.
+- **al doilea lucru, mai grav decât primul**: rezumatul de deasupra spunea *„**Completează** liniile:
+  …"* despre un câmp care **era completat**. Ce era greșit nu era absența, ci semnul. *Un refuz care
+  numește altă problemă decât cea reală trimite omul să caute unde nu e nimic.*
+- **reparația**: fiecare câmp își poartă **motivul**, iar cele trei cauze se deosebesc fiindcă au
+  remedii diferite — gol · nu e număr · negativ. Funcția e sursa unică pentru amândoi apelanții
+  (emitere `em-l` și facturi-recurente `fr-l`), deci reparația nu se face de două ori.
+- **calibrare, în amândouă direcțiile**: `-99999999` → *„Cantitatea e negativă (-99999999). Pe o
+  factură de emis cantitatea trebuie să fie mai mare decât zero; pentru o stornare se emite o
+  factură de corecție."* · `0` → *„Cantitatea lipsește…"* · `"abc"` → *„Cantitatea nu e un
+  număr…"* · o linie **validă** → listă goală, adică niciun refuz nou.
+- **reprobat** *(instanță proaspătă `:8011`, cererea reală către rută)*: mesajul per câmp ajunge
+  acum lângă caseta lui, iar rezumatul spune *„Liniile facturii nu sunt bune: Linia 1: cantitate —
+  Cantitatea e negativă…"*.
+- **unde ajunge efectul**: pe emitere și pe facturile recurente — singurele două căi prin care o
+  linie de factură se introduce de mână.
+
+### R140 — Registrul de încasări și plăți refuza în limba programatorului, și nimeni nu-l putea deschide ca să vadă
+
+- **felul**: ARTEFACT
+- **cine deblochează**: EU
+- **unde intră**: E2 · `core/rip_api._valideaza` · partidă simplă · **PRAG 1**
+- **ce blochează**: singura cale de refuz a partidei simple. `_valideaza` e poarta pentru fiecare
+  operațiune din Registrul-jurnal de încasări și plăți (OMFP 170/2015) și pentru fișa D212.
+- **cum s-a găsit, și de ce nu se putea găsi până azi**: cardul `#fa-rip` se randează **numai** la
+  `regim_contabil == "simpla"`, iar regimul se derivă din `tip_firma`. Măsurat înainte de a construi
+  ceva: **toate cele 19 firme din bază erau `srl`**. Ecranul nu era neprobat — era **imposibil de
+  deschis**, și toată ramura de partidă simplă cu el. *Punctul orb e FIRMA, nu ecranul.*
+- **ce s-a măsurat** *(04.09.2026, pe firma de partidă simplă creată prin `POST /tenants` cu
+  `tip_firma: "pfa"`)*: opt refuzuri, dintre care `suma trebuie să fie > 0`,
+  `metoda invalida (numerar/banca)`, `tip invalid` și
+  `pentru valuta != RON: suma_valuta si curs_valutar obligatorii`. Un `!=` și două nume de coloană
+  într-o propoziție adresată unui contabil; **șapte din opt** și fără diacritice.
+- **reparația**: cele opt mesaje, rescrise pentru cine le citește; categoriile se **enumeră** în
+  mesaj (ca la `casa_api`), fiindcă un refuz care spune „categorie invalidă" îl lasă pe om să
+  ghicească ce e valid.
+- **ce s-a păstrat deliberat**: temeiul de la explicație (OMFP 170/2015) e singurul care era acolo și
+  singurul care rămâne. **Nu s-a adăugat niciun temei nou** — un temei citat din memorie intră în
+  corpus ca fapt. Măsurat înainte și după: clichetele refuzurilor **n-au mișcat**.
+- **calibrare, în amândouă direcțiile**: toate cele opt refuzuri probate pe cazul lor · o operațiune
+  **validă** întoarce `None`, deci reparația n-a introdus niciun refuz nou.
+- **reprobat** *(browser real, `:8011`, ecranul «Încasări/plăți» al firmei de partidă simplă)*:
+  «Adaugă (ciornă)» pe formular invalid → *„Suma trebuie să fie mai mare decât zero. O corecție se
+  face printr-o operațiune de sens contrar, nu printr-o sumă negativă."* Nimic scris în bază.
+- **ce RĂMÂNE, declarat**: același șir `"suma trebuie să fie > 0"` mai trăiește în `core/casa_api.py`
+  și în `main.py` (chitanța). **Nu s-au atins**: sunt pe calea partidei duble, deja probată în alte
+  loturi, iar rescrierea lor fără a le reproba ar fi o schimbare nemăsurată. *Se consemnează ca să nu
+  treacă drept dispărute.*

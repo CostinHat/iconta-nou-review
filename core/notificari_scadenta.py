@@ -17,15 +17,12 @@ Reguli (agreate cu Costin 17.07.2026):
     prag), ca public.alerte_emise la F103. `stare` inregistreaza si esecurile
     (fara_reply_to / fara_email_client) - se raporteaza, nu se reincearca pragul.
 """
-import re
-from core import db
+from core import common, db
 
 PRAGURI = [-3, 1, 7]
-_EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
-
-
-def email_valid(e):
-    return bool(e) and bool(_EMAIL_RE.match(str(e).strip()))
+# [R138] Copia regexului s-a scos: faptul e in `core/common`. Numele ramane exportat, fiindca
+# modulul il foloseste in bucla de trimitere si e citat in gardile lui.
+email_valid = common.email_valid
 
 
 def prag_curent(scadenta, azi, deja_trimise, praguri=PRAGURI):

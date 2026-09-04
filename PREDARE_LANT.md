@@ -4,11 +4,12 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 
 ## ANTET — cât de veche e predarea asta
 
-- **ultima rescriere**: **2026-09-04**, **a zecea a zilei** — actualizare la capătul **lotului 11**,
-  nu rescriere: cifrele campaniei, cele 21 de ecrane de firmă nou navigabile, cele trei defecte de pe
-  «Date firmă» (**R134·R135·R136**), și **R137** — sonda care număra rânduri, deci era oarbă la
-  modificări. *Restul documentului e cel de la a doua rescriere din 03.09 și rămâne valabil.*
-- **pe commit**: `ba7305b4` — ultimul commit intrat (lotul 10). *Predarea se scrie ÎNAINTE
+- **ultima rescriere**: **2026-09-04**, **a unsprezecea a zilei** — actualizare la capătul
+  **lotului 12**, nu rescriere: cifrele campaniei (REMĂSURATE, și trei dintre ele erau greșite),
+  cele 22 de ecrane de cabinet/admin nou navigabile, **prima firmă de partidă simplă din bază**, și
+  cele trei defecte **R138·R139·R140**. *Restul documentului e cel de la a doua rescriere din 03.09
+  și rămâne valabil.*
+- **pe commit**: `77ae38be` — ultimul commit intrat (lotul 11). *Predarea se scrie ÎNAINTE
   de commitul care o poartă; numele de aici e al celui precedent, prin construcție, nu din uitare.*
 - **cine o rescrie și când**: **se rescrie ÎNAINTE de fiecare oprire.**
 - **DE CE ÎNCĂ O DATĂ**: trei afirmații ale documentului de acum câteva ore au devenit false.
@@ -20,8 +21,10 @@ Citeste CLAUDE.md §2.2 (structura raportului) si §2.3 (lant, siguranta, limba 
 - **CE S-A PĂSTRAT VERBATIM, și de ce**: cele două blocuri **generate** · **tabelul cifrelor
   invalidate** · **tabelul „ce cere poarta"**. Sunt registru câștigat, iar retranscrierea lor cu
   mâna e chiar clasa pe care tabelul cifrelor invalidate o consemnează de cinci ori.
-- **CE E REMĂSURAT ÎN TURA ASTA**: cifrele campaniei · cele două clichete ale cititorului de JS
-  (R133) · blocurile generate, pe care poarta le compară caracter cu caracter. *Restul — numărul
+- **CE E REMĂSURAT ÎN TURA ASTA**: cifrele campaniei — **mecanic, dintr-un parcurs al
+  `LISTA_FUNCTIONALITATI.md`**, iar TREI dintre ele erau greșite (v. tabelul cifrelor invalidate) ·
+  cardurile care se randează pe partidă simplă față de dublă · blocurile generate, pe care poarta le
+  compară caracter cu caracter. *Restul — numărul
   de teste, restanțele, interdicțiile — e de la rescrierea din 03.09 și poartă data ei. Nu se
   copiază ca fiind de azi: exact clasa pe care tabelul cifrelor invalidate o consemnează de cinci ori.*
 - **vechime măsurată, nu estimată**: **0 commituri** de la ultima atingere a fișierului.
@@ -56,9 +59,10 @@ verde nu e proba — el confirmă forma; o cifră în rândul greșit trece la f
 | **populația derivată** | **553 de unități** — `LISTA_FUNCTIONALITATI.md`, generat cu `scripts/scan_functionalitati.py`. 427 de rute · 75 de ecrane · 14 joburi · 37 de instrumente |
 | **perimetrul etapei 1** | **364** — numai suprafața prin care **un om introduce date**: cele 75 de ecrane + **289 de rute cu câmpuri de completat**. Tăiat de Costin pe 03.09, fiindcă 553 depășea pragul de la care comanda cerea oprire |
 | **ce a ieșit, marcat în listă cu motivul** | **189** = 138 de rute fără câmpuri de completat · 14 joburi de fundal (nu primesc nimic de la un om) · 37 de instrumente din `scripts/` (nu le atinge un contabil) |
-| **probate** | **312** (loturile 1–8 · lotul 9 = cele 72 de rute rămase · lotul 10 = 17 ecrane · **lotul 11 = 6**) |
-| **RĂMASE DE PROBAT** | **52 — toate ECRANE**, din care 34 sunt ecrane de cabinet/admin/portal (unități la nivel de FIȘIER, `#462`–`#501`) |
-| **defecte** | găsite **129**, reparate **129**, reprobate **129** *(loturile 1–8: 108 · lot 9: 13 · lot 10: 5 · lot 11: 3)* |
+| **probate** | **322** (loturile 1–8 · lotul 9 = cele 72 de rute rămase · lotul 10 = 17 ecrane · lotul 11 = 6 · **lotul 12 = 12**) |
+| **RĂMASE DE PROBAT** | **42 — toate ECRANE.** Niciunul nu mai e „neatins": fiecare rând poartă motivul lui — fără câmp în DOM (afișare pură), formular la doi pași de deschizător, sau buton care iese din aplicație |
+| **defecte** | găsite **132**, reparate **132**, reprobate **132** *(loturile 1–8: 108 · lot 9: 13 · lot 10: 5 · lot 11: 3 · **lot 12: 3**)* |
+| **cum se numără** | **mecanic**, parcurgând coloana «stare probare» din `LISTA_FUNCTIONALITATI.md`. Cifrele de dinainte (312/52) erau scrise de mână și **greșite cu două fiecare** |
 
 ### Unde stau rezultatele — două fișiere, două roluri
 
@@ -144,11 +148,34 @@ acceptă `«»@#$%` ca denumire de firmă (**R135**), iar ecranul trimitea reden
 putea fi refuzat, deci firma rămânea redenumită sub un mesaj de eșec (**R136**, a doua instanță a
 lui R128). *Denumirea pleacă pe `den` din D394.*
 
-**LOTUL 12, ce e:** cele 34 de unități la nivel de FIȘIER (`#462`–`#501`) — ecrane de cabinet, admin
-și portal, care **nu** se deschid cu `deschide_firma` + `#fa-*` —, plus **o a doua firmă**: Costin a
-hotărât (`DECIZII.md` 31) că lotul 12 rulează și pe o firmă de **partidă simplă**, dar **numai pe ce
-nu se randează** pe firma curentă. Instanța: `fa-rip` n-a putut fi probat fiindcă e al partidei
-simple, iar firma campaniei e SRL. *Punctul orb e FIRMA, nu ecranul.*
+**LOTUL 12 A FOST FĂCUT.** Cele **33** de unități la nivel de FIȘIER (`#462`–`#501` — nu 34, v.
+tabelul cifrelor invalidate) plus firma de partidă simplă cerută de `DECIZII.md` 31. Ce a rămas din
+el, pe scurt — pe larg în `VERIFICARE_FUNCTIONALITATI.md`:
+
+- **A trebuit construită întâi sesiunea multi-rol.** `w_auth` construia dicționarul `iconta_user` de
+  mână, cu **trei câmpuri inventate**; pe `admin_firma` se nimereau adevărate, pe `client` sunt false
+  prin construcție. Acum vine din `auth_api.sesiune_pentru_user` — calea aplicației la magic-link.
+- **Prima firmă de partidă simplă din istoria bazei.** Măsurat: **toate cele 19 firme erau `srl`**,
+  deci `#fa-rip` nu era un ecran neprobat, era unul pe care **nimeni nu-l putuse deschide vreodată**.
+  Creată prin `POST /tenants` cu `tip_firma: "pfa"`, la cabinetul de test. Măsurat pe ea: `#fa-rip` e
+  **singurul** card exclusiv partidei simple (31 carduri pe dublă · 22 pe simplă · 21 comune) — deci
+  „doar ce nu se randează pe firma curentă" înseamnă, cu cifra în față, exact un ecran.
+- **Trei defecte.** **R138**: `«»@#$%` conține un `@`, iar patru rute verificau doar atât — una dintre
+  ele creează un cont de `angajat` și trimite emailul. Din cele **șase** locuri care refuză cu
+  `EMAIL_INVALID`, **unul singur** verifica formatul, iar regexul corect trăia deja în casă, în două
+  copii. **R139**: refuzul de pe linia facturii punea lângă câmp chiar **eticheta** câmpului, iar
+  rezumatul spunea *„Completează"* despre un câmp completat. **R140**: cele opt refuzuri ale
+  registrului de partidă simplă vorbeau limba programatorului.
+- **Instrumentul a fost reparat în direcția OPUSĂ celei din lotul 10.** Atunci se repara
+  sub-numărarea; acum s-a găsit supra-numărarea — din șase „a vorbit", **trei** erau text nou care nu
+  răspundea la nimic. Deosebirea se face **structural** (câte câmpuri mai poartă valoarea-santinelă),
+  nu pe text. *Același instrument greșea în amândouă direcțiile, deci n-avea niciun plafon — §22.*
+
+**LOTUL 13, ce rămâne:** cele **42** de ecrane cu `neprobat`, fiecare cu motivul scris pe rândul lui.
+Ele NU sunt un rest omogen: **21** n-au niciun câmp în DOM (afișare pură — probabil „fără suprafață
+de intrare", de confirmat), **14** au formularul la doi pași de deschizător (sonda face un pas), **3**
+au buton care iese din aplicație (email / furnizor AI), iar **`asistent.js` n-are cont viu** —
+singurul `angajat` din bază e inactiv. *Trei feluri de „rămas", cu trei costuri diferite.*
 
 **Lotul 10 a deschis drumul lor**, cu două unelte noi:
   * `frontend_test/proba_r131_descarcare_muta.py` — browser real, cod publicat: refuzul serverului
@@ -224,10 +251,10 @@ predare**. *O regulă scrisă nu ține fără control mecanic.*
 
 | cifra | ce e |
 |---|---|
-| **19** | firme în portofoliu |
-| **19** | din care active |
+| **20** | firme în portofoliu |
+| **20** | din care active |
 | **15** | la cabinete reale |
-| **4** | la cabinete de test |
+| **5** | la cabinete de test |
 | **0** | perechi de firme cu același nume în același cabinet |
 
 **Cabinete**
@@ -253,9 +280,9 @@ predare**. *O regulă scrisă nu ține fără control mecanic.*
 |---|---|
 | **4** | rânduri în `public.firme_scoase` |
 | **3** | nume de schemă distincte în ele |
-| **19** | scheme `tenant_NNN` în bază |
-| **47** | contorul `tenant_schema_seq` |
-| **46** | maximul istoric de nume de schemă |
+| **20** | scheme `tenant_NNN` în bază |
+| **48** | contorul `tenant_schema_seq` |
+| **48** | maximul istoric de nume de schemă |
 
 **Clasificatorul de alerte**
 
@@ -506,6 +533,7 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
 | **„`moneda=XYZ` primește un mesaj despre alt câmp"** | prima trecere a lotului 2, 03.09 | **proba era oarbă.** Trimitea `tert_nume` fără `tert_cui`, deci emiterea se oprea — legitim — la codul de partener, iar răspunsul notat era la ALTĂ întrebare. Cu codul completat, proba a ajuns la monedă și a scos un defect pe care prima formă nu-l putea vedea: „nu e disponibil **momentan**" pentru o monedă care nu există. *A doua instanță a clasei „sonda era oarbă", după cea din 31.08 — și, ca atunci, ieșirea instrumentului părea un rezultat, nu o ratare* |
 | **„R118 a stricat producția azi"** | comanda din 02.09 care a deschis tema | **nu s-a putut reconstitui.** Instanța documentată a clasei e cea din **01.09** (desktopul oprit, 15 ecrane). Pentru 02.09 logurile nu pot arăta o cădere de JS — o eroare de sintaxă nu ajunge niciodată la server. Ce **se poate** măsura e expunerea: `static/js` a fost rescris de zeci de ori în ziua aia, fiecare scriere live în aceeași secundă. *Clasa era reală și decizia a rămas bună; cifra „azi" nu se poate confrunta cu nimic* |
 | **16** (scrieri care refuză fără motiv) și **2** (aritmetică pe nume neutre) | clichetele din `test_refuz_tacut` (27.08) și `test_aritmetica_in_prezentare` (24.08) | **18** și **1**, remăsurate pe ACELAȘI commit cu cititorul de JS reparat — **R133**. Amândouă stăteau pe un cititor care albea sute de rânduri la o linie cu trei ghilimele; unul ieșea prea MIC, celălalt prea MARE. *A doua instanță în care aceeași greșeală mișcă două cifre în direcții OPUSE — semnul că instrumentul n-are **niciun** plafon (METODA §22). Prima a fost cititorul defazat din 27.08, în chiar unul din cele două fișiere.* |
+| **„312 probate · 52 rămase · 34 la nivel de fișier"** | predarea din 04.09, la capătul lotului 11 | **310 · 54 · 33**, numărate mecanic parcurgând coloana «stare probare» din `LISTA_FUNCTIONALITATI.md`. Toate trei erau scrise de mână, iar toate trei erau greșite **cu două**, respectiv **cu una** — în direcții care se anulau reciproc în total, deci suma `probate + rămase = 364` ieșea corectă și nimic nu părea stricat. *O cifră care se verifică doar prin totalul ei nu e verificată: două greșeli de sens contrar arată exact ca zero greșeli.* Rândul „cum se numără" din tabelul campaniei spune acum de unde se ia |
 | **„proba de ecran n-a schimbat nimic"** | raportul sondei din lotul 10, și prima rulare a lotului 11 | **falsă ca metodă, adevărată din noroc.** Sonda declara starea schemei ca `count(*)` pe cele 52 de tabele — deci vedea inserările și era **oarbă la modificări**. La prima rulare pe ecranele de firmă a redenumit firma în două tabele și a raportat SCHIMBARI-DE-STARE-niciuna. Pentru lotul 10 propoziția rămâne adevărată (verificată acum cu amprentă), dar era adevărată fiindcă acele ecrane **inserau**. **R137**; starea e acum `count/amprentă`. |
 
 ---
@@ -596,7 +624,13 @@ fiindcă sunt generate. Tabelul rămâne pentru cele despre **cod** și **proces
   face pe producție" era **imposibil** de respectat pentru orice probă cu browser.
 - **După fiecare rulare a sondei de ecran**: `frontend_test/vizual/curata_proba_ecrane.py`. Un `INSERT`
   se desface; un `UPDATE` **nu** — acolo unealta refuză și numește tabelul.
-- **Trei blocuri generate cer regenerare**: `TRASEE.md`, `GARZI.md`, **`PREDARE_LANT.md`**.
+- **PATRU blocuri generate cer regenerare**, nu trei: `TRASEE_VERIFICARI.md` (antetele de
+  traseu, din `scan_trasee.antet_traseu`) · `GARZI.md` (`scan_garzi_inventar.py --md`) ·
+  `PREDARE_LANT.md` (`scan_predare_cifre.py --md` + `scan_ramas.py --clichete-md`) · și
+  **`CONFORMITATE.md`** — tabelul de probă al listei 3, din `scan_lista3.proba_md()`.
+  *Al patrulea lipsea din lista asta, și a picat poarta lotului 12: adăugarea unei firme a
+  mutat „2 din 19” în „2 din 20”. O listă de blocuri generate care se scrie de mână e ea
+  însăși un bloc care îmbătrânește tăcut.*
 
 ---
 ## CE CERE POARTA CÂND ADAUGI CEVA NOU

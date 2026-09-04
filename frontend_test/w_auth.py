@@ -8,6 +8,24 @@ greseala"), iar de atunci **24 de fisiere** — printre ele `interactiune_scan`,
 bytecode de 4,6 KB. Nimic nu era rosu: Python incarca `.pyc`-ul fara sa-i ceara sursa. *Un
 `find -name __pycache__ -delete` — curatenia obisnuita — ar fi oprit tacut tot ce se sprijina
 aici.* Vezi `core/test_infra_vizuala.py`, care de acum cere SURSA, nu doar importul.
+
+[LOTUL 12, 04.09.2026] DOUA SCHIMBARI, amandoua cerute de aceeasi masuratoare.
+
+**(1) Sesiunea nu se mai construieste de mana.** Pana azi `_utilizator()` cladea dictionarul
+`iconta_user` camp cu camp, si TREI dintre campuri erau INVENTATE: `nume_tenant: None`,
+`tenant_are_cabinet: False`, `bun_venit_vazut: True`. Pe rolul `admin_firma` cele trei se
+nimereau adevarate, deci nimic n-a cazut vreodata. Pe rolul `client` sunt FALSE prin
+constructie — `navigator.contextBara` randeaza chiar `nume_tenant` in bara —, deci prima proba
+de portal ar fi masurat o bara goala si ar fi numit-o defect de ecran. Acum sesiunea vine din
+`auth_api.sesiune_pentru_user`, adica exact functia pe care o cheama aplicatia la magic-link:
+aceleasi campuri, acelasi SELECT, aceeasi verificare de `activ`. *O sonda care isi fabrica
+singura intrarea dovedeste ca ecranul merge pe intrarea pe care i-o dai TU — R125.*
+
+**(2) Firma nu mai e scrisa in cod.** `deschide_firma` avea „Comert Micro TVA" hardcodat, deci
+orice unealta vizuala vedea numai starile pe care le produc datele acelei firme. Instanta care
+a fortat schimbarea: `#fa-rip` NU se randeaza pe ea — cardul e al partidei simple, iar firma
+campaniei e SRL —, deci ecranul RIP era nu „fara defect", ci NEATINS. *Punctul orb e FIRMA, nu
+ecranul.* Numele ramane implicit acelasi, ca cele 24 de importuri sa nu se schimbe.
 """
 import json
 import os
@@ -24,10 +42,28 @@ from core import db, auth_api
 BAZA = os.environ.get("PROBA_BAZA", "http://127.0.0.1:8010")
 OUT = os.path.dirname(os.path.abspath(__file__))
 
+# Subiectul implicit al infrastructurii vizuale, de la nasterea ei. Numit, nu presarat prin cod.
+EMAIL_IMPLICIT = "patron@prisma-cont.test"
+FIRMA_IMPLICITA = "Comert Micro TVA"
 
-def _utilizator():
-    """Tokenul se MINTUIESTE local (nu prin `/auth/login`): probele vizuale nu masoara
-    autentificarea, iar o parola in fisier ar fi al doilea loc in care traieste un secret."""
+
+class ContInactiv(Exception):
+    """Ridicata cand `sesiune_pentru_user` refuza — cont inexistent, inactiv, cabinet suspendat.
+
+    DE CE O EXCEPTIE si nu un `return None`: un `None` s-ar fi scurs in `json.dumps` si ar fi
+    produs un `sessionStorage` cu `null`, adica un ecran de login. Proba ar fi raportat „ecranul
+    nu randeaza nimic" despre un CONT, nu despre un ecran. Masurat azi: din cele 14 conturi ale
+    bazei, **4 sunt inactive** — printre ele singurul `angajat`, deci desktopul asistentului nu
+    are subiect viu. Un refuz care numeste motivul se citeste; unul care randeaza login, nu.
+    """
+
+
+def _sesiune(email):
+    """Token + user pentru un email, pe calea aplicatiei (`auth_api.sesiune_pentru_user`).
+
+    Nu prin `/auth/login`: probele vizuale nu masoara autentificarea, iar o parola in fisier ar
+    fi al doilea loc in care traieste un secret. Dar nici prin dictionar scris de mana — v.
+    antetul, schimbarea (1)."""
     import psycopg2.extras as E
     try:
         db.init_pool()
@@ -35,40 +71,42 @@ def _utilizator():
         pass
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=E.RealDictCursor) as cur:
-            cur.execute("SELECT u.*, af.nume AS nume_firma FROM public.users u "
-                        "LEFT JOIN public.accounting_firms af ON af.id=u.accounting_firm_id "
-                        "WHERE u.email=%s", ("patron@prisma-cont.test",))
+            cur.execute("SELECT id FROM public.users WHERE email=%s", (email,))
             u = cur.fetchone()
+        if not u:
+            conn.rollback()
+            raise ContInactiv("nu exista niciun cont cu emailul %r" % email)
+        s = auth_api.sesiune_pentru_user(conn, u["id"])
         conn.rollback()
-    tok = auth_api.emite_token(dict(u))
-    user = {
-        "id": u.get("id"), "rol": u.get("rol"), "nume": u.get("nume"),
-        "prenume": u.get("prenume"), "firm": u.get("accounting_firm_id"),
-        "nume_firma": u.get("nume_firma"), "nume_tenant": None,
-        "tenant_are_cabinet": False,
-        "poate_pregati": bool(u.get("poate_pregati")),
-        "poate_valida": bool(u.get("poate_valida")),
-        "poate_depune": bool(u.get("poate_depune")),
-        "bun_venit_vazut": True,
-    }
-    return tok, user
+    if not s or not s.get("ok"):
+        raise ContInactiv("%s: %s (%s)" % (email, (s or {}).get("mesaj", "refuz fara mesaj"),
+                                           (s or {}).get("cod", "fara cod")))
+    return s["token"], s["user"]
 
 
-_tok, _USER = _utilizator()
+def init_pentru(email):
+    """Scriptul de initializare a sesiunii pentru un anume cont — se da lui `add_init_script`.
 
-INIT = ("sessionStorage.setItem('iconta_token'," + json.dumps(_tok) + ");"
-        "sessionStorage.setItem('iconta_user'," + json.dumps(json.dumps(_USER)) + ");")
+    Fiecare ROL cere propriul context de browser: `app.js` alege desktopul din `sesiune.rol()`
+    la pornire, deci un token schimbat in aceeasi fila nu schimba desktopul."""
+    tok, user = _sesiune(email)
+    return ("sessionStorage.setItem('iconta_token'," + json.dumps(tok) + ");"
+            "sessionStorage.setItem('iconta_user'," + json.dumps(json.dumps(user)) + ");")
 
 
-def new_page(pw):
+# Compatibilitate cu cele 24 de importuri: `INIT` ramane sesiunea patronului de cabinet.
+INIT = init_pentru(EMAIL_IMPLICIT)
+
+
+def new_page(pw, email=EMAIL_IMPLICIT):
     b = pw.chromium.launch(headless=True)
     ctx = b.new_context(viewport={"width": 1200, "height": 1800})
-    ctx.add_init_script(INIT)
+    ctx.add_init_script(INIT if email == EMAIL_IMPLICIT else init_pentru(email))
     return b, ctx.new_page()
 
 
-def deschide_firma(pg):
-    """Cabinet -> Firme -> Firme existente -> „Comert Micro TVA" (tenant_003)."""
+def deschide_firma(pg, nume=FIRMA_IMPLICITA):
+    """Cabinet -> Firme -> Firme existente -> firma cu numele dat (implicit: tenant_003)."""
     pg.goto(BAZA + "/", wait_until="domcontentloaded")
     pg.wait_for_selector(".cab-card", timeout=15000)
     pg.wait_for_timeout(300)
@@ -77,7 +115,7 @@ def deschide_firma(pg):
     pg.get_by_text("Firme existente", exact=False).first.click(timeout=8000)
     pg.wait_for_selector("button.firme-rand", timeout=10000)
     pg.wait_for_timeout(300)
-    pg.get_by_text("Comert Micro TVA", exact=False).first.click(timeout=8000)
+    pg.get_by_text(nume, exact=False).first.click(timeout=8000)
     pg.wait_for_selector("#fa-import, #fa-datefirma", timeout=12000)
     pg.wait_for_timeout(400)
 

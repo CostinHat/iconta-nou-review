@@ -18,25 +18,66 @@ def _fara_decimal(x):
     return str(x) if isinstance(x, Decimal) or hasattr(x, "isoformat") else x
 
 
+# [R140, 04.09.2026] CELE OPT REFUZURI ALE REGISTRULUI, REscrise pentru cine le citeste.
+#
+# CUM S-AU GASIT: deschizand, pentru prima oara, ecranul «Incasari/plati». Cardul `#fa-rip` se
+# randeaza numai la `regim_contabil == "simpla"`, iar masurat pe 04.09 **toate cele 19 firme din
+# baza erau `srl`** — deci singura cale de refuz a partidei simple n-o citise niciodata nimeni.
+#
+# CE ERA GRESIT, si nu e o chestiune de stil: mesajele vorbeau limba codului, nu a contabilului —
+# `suma trebuie sa fie > 0`, `metoda invalida (numerar/banca)`, `pentru valuta != RON: suma_valuta
+# si curs_valutar obligatorii`. Un `!=` si doua nume de coloana intr-o propozitie catre un om.
+# Sapte din opt erau si fara diacritice. Comanda campaniei cere trei lucruri de la un refuz — CARE
+# camp, CE e gresit, IN TERMENII CONTABILULUI —; acestea il dadeau pe primul, pe jumatate pe al
+# doilea, si pe al treilea deloc.
+#
+# CE S-A PASTRAT: temeiul de la explicatie (OMFP 170/2015) e singurul care era acolo si e singurul
+# care ramane. **Nu s-a adaugat niciun temei nou** — un temei citat din memorie intra in corpus ca
+# fapt, iar clichetul 77 se misca pe temeiuri, nu pe cuvinte. Unde regula e a produsului si nu a
+# legii, mesajul spune ce cere REGISTRUL, fara sa invoce un articol.
+#
+# Categoriile se ENUMERA in mesaj, ca la `casa_api`: un refuz care spune „categorie invalida" il
+# lasa pe om sa ghiceasca ce e valid.
+_CAT_RO = {
+    "activitate": "încasare din activitate", "aport": "aport numerar/bancă",
+    "credit": "credit sau împrumut primit", "subventie": "subvenție sau fonduri",
+    "alte_incasari": "alte încasări",
+    "cheltuiala_deductibila": "cheltuială deductibilă",
+    "cheltuiala_limitata": "cheltuială cu deductibilitate limitată",
+    "cheltuiala_nedeductibila": "cheltuială nedeductibilă",
+    "aport_retragere": "retragere de aport", "rambursare_credit": "rambursare de credit",
+}
+
+
+def _lista_cat(cats):
+    """Categoriile, scrise cum apar pe ecran, nu cum se numesc coloanele."""
+    return ", ".join(sorted(_CAT_RO.get(c, c) for c in cats))
+
+
 def _valideaza(op):
     tip, cat = op.get("tip"), op.get("categorie")
     if tip not in ("incasare", "plata"):
-        return "tip invalid"
+        return "Spune dacă operațiunea e o încasare sau o plată."
     if op.get("metoda") not in ("numerar", "banca"):
-        return "metoda invalida (numerar/banca)"
+        return "Spune cum s-a făcut operațiunea: în numerar sau prin bancă."
     if Decimal(str(op.get("suma", 0))) <= 0:
-        return "suma trebuie să fie > 0"
+        return ("Suma trebuie să fie mai mare decât zero. O corecție se face printr-o operațiune "
+                "de sens contrar, nu printr-o sumă negativă.")
     if not (op.get("data_operatiune") or "").strip():
-        return "data operatiunii este obligatorie"
+        return "Data operațiunii e obligatorie: registrul se ține în ordinea zilelor."
     if not (op.get("explicatie") or "").strip():
-        return "explicatia este obligatorie (OMFP 170/2015)"
+        return ("Explicația e obligatorie: fără ea operațiunea nu se poate justifica în registru "
+                "(OMFP 170/2015).")
     cats = CATEGORII_INCASARE if tip == "incasare" else CATEGORII_PLATA
     if cat not in cats:
-        return f"categorie invalida pentru {tip}"
+        return ("Categoria aleasă nu e una dintre cele pe care le are o %s. Alege dintre: %s."
+                % ("încasare" if tip == "incasare" else "plată", _lista_cat(cats)))
     if tip == "plata" and cat.startswith("cheltuiala") and not op.get("deductibilitate"):
-        return "deductibilitate obligatorie pentru cheltuieli"
+        return ("La o cheltuială trebuie spus cât se deduce. Fără asta, cheltuiala nu poate intra "
+                "în calculul venitului net.")
     if op.get("valuta", "RON") != "RON" and (not op.get("suma_valuta") or not op.get("curs_valutar")):
-        return "pentru valuta != RON: suma_valuta si curs_valutar obligatorii"
+        return ("La o operațiune în altă monedă decât leul sunt obligatorii și suma în valută, și "
+                "cursul la care s-a transformat în lei.")
     return None
 
 

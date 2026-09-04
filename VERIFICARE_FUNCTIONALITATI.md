@@ -913,3 +913,154 @@ ar refuza aici ar fi mai rău decât unul care acceptă.* Rândurile au fost șt
    **roluri diferite** și un apel ANAF live: o construcție, nu o reparație de lot.
 5. **Sonda umple numai ce e în `.fereastra`.** Un formular randat inline, în corpul ecranului, nu e
    completat — și atunci `campuri=0` rămâne onest: „n-am avut ce completa", nu „nu refuză".
+
+---
+
+## LOT 12 — ecranele care nu sunt ale unei firme, și prima firmă de partidă simplă
+
+Cele 33 de unități rămase la nivel de FIȘIER (`#462`–`#501`) sunt de altă natură decât tot ce a fost
+până acum: trăiesc pe **desktopul unui rol** — cabinet, admin — și nu se ajunge la ele prin nicio
+firmă. Plus o a doua firmă, cerută de `DECIZII.md` 31.
+
+### Ce a trebuit construit înainte de a putea proba ceva
+
+1. **`w_auth` emite sesiune pentru orice rol, pe calea aplicației.** Până azi construia dicționarul
+   `iconta_user` câmp cu câmp, și **trei** câmpuri erau inventate: `nume_tenant: None`,
+   `tenant_are_cabinet: False`, `bun_venit_vazut: True`. Pe `admin_firma` se nimereau adevărate, deci
+   nimic n-a căzut vreodată. Măsurat pe rolul `client`: adevărul e `nume_tenant: "ALFA MICRO SRL"`,
+   `tenant_are_cabinet: true` — iar `navigator.contextBara` randează chiar `nume_tenant` în bară.
+   *O sondă care își fabrică singură intrarea dovedește că ecranul merge pe intrarea pe care i-o dai
+   TU (R125).* Acum sesiunea vine din `auth_api.sesiune_pentru_user`, funcția pe care o cheamă
+   aplicația la magic-link: același `SELECT`, aceleași câmpuri, aceeași verificare de `activ`.
+2. **Un context de browser per ROL.** `app.js` alege desktopul din `sesiune.rol()` **la pornire**,
+   deci rolul nu e un parametru al navigării: e o proprietate a filei.
+3. **Navigare scrisă pentru 22 de ecrane** (`nav_ecrane.ECRANE_CABINET`), cu contul lângă fiecare.
+   *Aserțiunea anti-vacuu a listelor a prins, la prima rulare, o coliziune reală: `fa-control`
+   (ecranul UNEI firme, #436) și cardul de portofoliu «Control fiscal» (#474) purtau același nume
+   scurt — două ecrane diferite care ar fi apărut ca unul.*
+4. **Firma nu mai e scrisă în cod.** `deschide_firma` avea „Comert Micro TVA" hardcodat, deci orice
+   unealtă vizuală vedea numai stările pe care le produc datele acelei firme.
+
+### Prima firmă de partidă simplă din bază
+
+**Măsurat înainte de a construi ceva: toate cele 19 firme erau `srl`.** Cardul `#fa-rip` se randează
+numai la `regim_contabil == "simpla"` — deci nu era un ecran neprobat, era un ecran pe care nimeni
+nu-l putuse deschide vreodată, și toată ramura de partidă simplă cu el.
+
+Firma s-a făcut **prin lanțul aplicației** — `POST /tenants` cu `tip_firma: "pfa"` —, nu printr-un
+`INSERT`, la cabinetul declarat de TEST (4163) ca să nu miște numărătoarea firmelor reale, cu CUI
+care trece cifra de control ANAF (verificat cu trei validatoare din corpus).
+
+Măsurat pe ea, cardurile: **31 pe partidă dublă · 22 pe partidă simplă · 21 comune**. Singurul card
+exclusiv partidei simple e **`#fa-rip`** — deci „doar ce nu se randează pe firma curentă" înseamnă,
+măsurat, exact un ecran. Ce **dispare** la partida simplă sunt zece carduri deja parcurse pe dublă
+(`balanta`, `bilant`, `centrecost`, `fisacont`, `jurnal`, `marja`, `mijloace`, `operatiuni`,
+`reginventar`, `stocuri`).
+
+### Cele trei defecte, toate găsite apăsând
+
+| | ce era | unde ajungea |
+|---|---|---|
+| **R138** | `«»@#$%` **conține** un `@`, iar patru rute verificau doar `"@" not in email` | `POST /asistenti` ar fi făcut `INSERT` în `public.users` cu emailul `«»@#$%`, rol `angajat`, **și ar fi trimis emailul de activare** |
+| **R139** | refuzul de pe linia facturii punea lângă câmp chiar **eticheta** câmpului, iar rezumatul spunea *„Completează"* despre un câmp completat | emitere + facturi recurente |
+| **R140** | cele opt refuzuri ale registrului de partidă simplă vorbeau limba programatorului (`suma trebuie să fie > 0`, `valuta != RON: suma_valuta si curs_valutar`); șapte din opt fără diacritice | singura cale de refuz a partidei simple |
+
+**R138 e cel care contează cel mai mult, și motivul e o măsurătoare, nu impresia:** din **cele șase**
+locuri care refuză cu `EMAIL_INVALID`, **unul singur** verifica formatul. Patru se mulțumeau cu un
+`@` — și toate patru **creează un cont** sau **dau un acces**. Regexul corect trăia deja în
+`main.py`, și copiat în `notificari_scadenta.py`. *Aceeași aplicație știa răspunsul într-un loc și
+nu-l avea în altul.*
+
+*Butonul care a găsit R138 nu se putea apăsa înainte de reparație: apăsarea lui ar fi produs chiar
+contul și emailul pe care le descrie defectul. S-a citit întâi ruta, s-a reparat, apoi s-a apăsat.*
+
+### Ce a măsurat sonda, cap la cap
+
+23 de ecrane parcurse, pe **trei conturi** · **0 navigări eșuate** · **8 butoane apăsate** (7 pe
+formular umplut) · **5 au vorbit** · **1 a cerut un fișier** · **0 TAC** · **0 scrieri** — amprenta
+tuturor celor **103** tabele ale celor două scheme, identică înainte și după.
+
+### Instrumentul a fost reparat în timpul lotului, și în direcția OPUSĂ celei de data trecută
+
+Lotul 10 a reparat **sub-numărarea**: „a vorbit" se măsoară pe text nou vizibil, nu pe clasele din
+convenție. Lotul 12 a găsit **supra-numărarea**: din șase „a vorbit" la prima rulare, **trei** erau
+text nou care nu răspundea la nimic — o fereastră care s-a închis, o navigare către alt ecran, un
+buton care a mai adăugat o linie de formular. *Același instrument greșea în amândouă direcțiile,
+deci n-avea **niciun** plafon (METODA §22).*
+
+Deosebirea nu se poate face pe text, și nu se face pe text: se numără câmpurile care mai poartă
+**valoarea-santinelă** pe care am scris-o eu, înainte și după apăsare. Dacă formularul umplut nu mai
+e acolo și nimic nu s-a scris, butonul nu mi-a răspuns — m-a dus în altă parte. Verdictele noi:
+**a plecat de pe formular** · **a crescut formularul** · **sărit: e deschizătorul**.
+
+Calibrat în amândouă direcțiile pe date reale: cele trei false „a vorbit" s-au reclasificat, iar cele
+două adevărate (`flux_concediu`, `admin_anunturi`) **au rămas** „a vorbit".
+
+### Trei granițe ale sondei, mutate — fiecare fiindcă ar fi produs o afirmație falsă
+
+- **Câmpurile nu se mai caută doar în `.fereastra`.** Un desktop de rol nu e o fereastră: acolo
+  `campuri=0` n-ar fi însemnat „n-are formular", ci „n-am știut unde să mă uit". Domeniul ales se
+  scrie în artefact.
+- **Selecturile se aleg, și sunt declarate ca VALIDE.** Într-un `<select>` nu se poate tasta
+  `«»@#$%`. Alegerea e **pasul care deschide formularul**, nu obiectul probei.
+- **Starea se măsoară pe TOATE schemele atinse.** Ecranul RIP trăiește pe altă schemă; o sondă care
+  numără `tenant_003` în timp ce apasă pe `tenant_048` ar fi raportat „n-a scris nimic" despre
+  scrieri pe care nu le vede. *A treia instanță a clasei „sonda era oarbă" — și singura prinsă
+  ÎNAINTE de a raporta.* Curățenia de după probă a fost lărgită la fel: un „STARE CURATĂ" despre o
+  schemă neprivită e chiar gardul care nu se verifică pe sine.
+
+### Două butoane pe care instrumentul le-a oprit, și de ce contează
+
+- **«Generează cu AI» / «Generează analiză AI»** — verificat la sursă: `/tipare/ai` cheamă
+  `core.ai_client`, iar `/pachete/{}/genereaza` trece prin `genereaza_poveste`. **Ies din
+  aplicație**, contra cost, exact ca `depune`/`trimite`. Oprite pe același temei, nu pe altul.
+- **«Trimite alertă de test»** (Sănătate server) — ar fi trimis o alertă REALĂ prin Brevo. Oprit de
+  regula existentă, și bine că era acolo.
+
+Iar unul a fost **deblocat**, cu ruta citită și numită: «Trimite» de pe ecranul de anunțuri face un
+`INSERT` în `public.anunturi_cabinet` (main.py:676) și atât. *Lista `OPRITE` decide după NUME, iar
+numele nu spune unde ajunge acțiunea — fără excepție, singurul formular din `admin.js` ar fi rămas
+neprobat, iar raportul ar fi spus „fără defect" despre un ecran pe care nu l-am apăsat.* Excepția se
+cere pe textul ÎNTREG, nu pe bucată: „trimite" ca substring ar fi deblocat și «Trimite invitația»,
+care chiar pleacă prin email.
+
+### Cifre
+
+- unități mutate din `neprobat`: **12** (8 probate prin apăsare · 4 verificate prin citire).
+  Campania: **322 probate · 42 rămase** din 364.
+- defecte găsite: **3** · reparate: **3** · reprobate: **3**.
+- clichetele refuzurilor, măsurate înainte și după R140: **n-au mișcat**.
+
+### Ce a rămas nereparat din lotul ăsta, și de ce
+
+1. **`TVA 0,00 RON` se afișează pe ecranul de emitere când cota nu se știe.** `recalc()` face
+   `l.cota_tva || 0`, deci o cotă necunoscută devine zero, iar «Total» ajunge egal cu «Bază» pe o
+   firmă plătitoare de TVA. Arată ca interdicția 32 (*un necunoscut nu se rotunjește la „știu că
+   nu"*) — **dar nu e**: garda R29 declară explicit în afara domeniului ei „defaultul pe ZERO
+   (`cota or 0`) — altă clasă, legitimă în aritmetică, **18 instanțe reale**". A repara aici ar
+   însemna deschiderea acelei clase, adică o **temă**, nu o reparație de prag 1. *Se consemnează cu
+   măsurătoarea, ca să nu fie regăsită ca nouă.*
+2. **`«Emite factură»` deschide întâi poarta de stoc** («Pleacă marfa acum?»), deci apăsarea din
+   sondă se oprește acolo. Refuzul propriu-zis a fost probat pe rută și în probă țintită, nu prin
+   sondă. *Un răspuns care vorbește despre alt lucru decât cel probat nu se notează ca răspuns la
+   proba mea.*
+3. **`asistent.js` (#470) n-are subiect viu.** Desktopul asistentului cere rolul `angajat`, iar
+   singurul cont cu rolul ăsta din bază e **inactiv** — `sesiune_pentru_user` îl refuză. Nu e „fără
+   defect", e un ecran fără cont. Se probează după reactivarea lui **prin calea aplicației**
+   (`/asistenti/{id}/reactiveaza`), nu printr-un `UPDATE`.
+4. **Trei formulare n-au putut fi apăsate fără să iasă ceva real din aplicație**: `recomanda`
+   («Trimite invitația» = email), `raporteaza` («Trimite sesizarea» = email), `pachete` («Generează
+   cu AI» = furnizor extern). Câmpurile lor s-au umplut; butonul nu s-a apăsat. Declarat, nu ascuns
+   într-un „fără defect".
+5. **Cele 14 rute marcate `403` în lotul 9 rămân „fără defect" pe temeiul unui refuz de ROL, nu al
+   verificărilor lor proprii.** Lotul 9 o scrie corect (*„poarta de rol ține, și se vede"*), dar
+   rândurile din listă spun doar „fără defect". `POST /asistenti` era una dintre ele — și avea R138.
+   *O rută refuzată de poarta de rol n-a ajuns la gărzile ei; ce s-a măsurat acolo e poarta, nu ruta.*
+   Nu se corectează în lotul ăsta: sunt 14 rânduri de reprobat cu un token de rol potrivit, adică un
+   lot, nu o notă.
+6. **`"suma trebuie să fie > 0"` mai trăiește în `core/casa_api.py` și în `main.py`** (chitanța).
+   Sunt pe calea partidei duble, deja probată în alte loturi; rescrierea lor fără reprobare ar fi o
+   schimbare nemăsurată.
+7. **Douăzeci și unu de ecrane rămân `neprobat — parcurs`**, cu motivul scris pe fiecare rând: fără
+   niciun câmp în DOM (afișare pură), sau cu formularul la doi pași de deschizător. *Un `campuri=0`
+   nu e „fără defect".*

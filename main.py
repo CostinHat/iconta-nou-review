@@ -1192,7 +1192,9 @@ class DepuneIn(BaseModel):
 # ============================================================
 #  AUTH
 # ============================================================
-_EMAIL_RE = _re_audit.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")  # [email_valid_v1]
+# [R138] Faptul „ce e o adresa de email" traieste in `core/common`, nu aici. Numele vechi
+# ramane, ca sa nu se schimbe apelantul, dar nu mai poarta el definitia.
+_email_valid = _common.email_valid  # [email_valid_v1] [R138]
 _login_fail = {}  # [login_lockout_v1] esecuri per CONT (email); per-IP e la nginx (iconta_auth 5r/m)
 def _login_blocat(email):
     import time as _t
@@ -1234,7 +1236,7 @@ def register(date: RegisterIn):
         raise HTTPException(400, "Trebuie să accepți Termenii și condițiile pentru a crea contul.")
     if not _nucleu.parola_ok(date.parola):  # [parola_min_v1] aceeasi cerinta ca activare/reset/schimbare
         raise HTTPException(400, _nucleu.PAROLA_MESAJ)
-    if not _EMAIL_RE.match((date.email or "").strip()):  # [email_valid_v1] email obligatoriu + format valid
+    if not _email_valid(date.email):  # [email_valid_v1] email obligatoriu + format valid
         raise HTTPException(400, EMAIL_INVALID)
     with db.get_conn() as conn:
         r = auth_api.inregistreaza_cabinet(
@@ -1526,7 +1528,7 @@ def client_acces_lista(tenant_id: int, ctx=Depends(cere_rol("admin_firma", "anga
 def client_acces_creeaza(tenant_id: int, date: ClientAccesIn,
                          ctx=Depends(cere_rol("admin_firma"))):
     email = (date.email or "").strip().lower()
-    if "@" not in email:
+    if not _email_valid(email):  # [R138] forma, nu doar prezenta unui @
         raise HTTPException(400, EMAIL_INVALID)
     import secrets
     parola_temp = secrets.token_urlsafe(9)
@@ -3156,7 +3158,7 @@ def factura_email(tenant_id: int, factura_id: int, date: EmailFacturaIn,
                   ctx=Depends(cere_rol("admin_firma"))):
     schema = _schema_sau_404(ctx, tenant_id)
     email = (date.email or "").strip()
-    if "@" not in email or "." not in email:
+    if not _email_valid(email):  # [R138] acelasi criteriu ca peste tot, nu unul propriu
         raise HTTPException(422, EMAIL_INVALID)
     with db.get_conn(schema) as conn:
         f = facturi_api.detalii_factura(conn, factura_id)
@@ -3247,8 +3249,12 @@ def facturi_emite(tenant_id: int, date: EmitereIn, ctx=Depends(cere_rol("admin_f
                 # trimite cererea nu poate scrie în locul altcuiva cine a ales cursul.
                 curs_manual_de="utilizator %s" % ctx["uid"])
         except facturi_api.LiniiIncomplete as e:
+            # [R139] Rezumatul poarta MOTIVELE, nu doar numele campurilor, si nu mai spune
+            # „Completează" despre un camp care e completat gresit. Mesajele per camp ajung tot
+            # langa casetele lor (api.js:41 -> eroareCamp); asta e doar rezumatul de deasupra.
             raise HTTPException(422, {"cod": "LINII_INCOMPLETE",
-                "mesaj": "Completează liniile: " + "; ".join(x["eticheta"] for x in e.campuri),
+                "mesaj": "Liniile facturii nu sunt bune: " + "; ".join(
+                    "%s — %s" % (x["eticheta"], x.get("mesaj") or "") for x in e.campuri),
                 "campuri": e.campuri})
         except ValueError as e:
             raise HTTPException(422, str(e))
@@ -4335,7 +4341,7 @@ def cabinet_urme_portal(tenant_id: int, ctx=Depends(cere_cabinet)):
 def portal_schimba_email(date: SchimbaEmailIn, ctx=Depends(cere_client)):
     t = _tenant_client(ctx, date.tenant_id)
     email_nou = date.email.strip().lower()
-    if "@" not in email_nou:
+    if not _email_valid(email_nou):  # [R138]
         raise HTTPException(400, EMAIL_INVALID)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
@@ -4380,7 +4386,7 @@ def portal_schimba_email(date: SchimbaEmailIn, ctx=Depends(cere_client)):
 def portal_adauga_acces(date: AdaugaAccesIn, ctx=Depends(cere_client)):
     t = _tenant_client(ctx, date.tenant_id)
     email = date.email.strip().lower()
-    if "@" not in email:
+    if not _email_valid(email):  # [R138]
         raise HTTPException(400, EMAIL_INVALID)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:
@@ -6759,7 +6765,7 @@ def asistent_creeaza(date: AsistentNouIn, ctx=Depends(cere_rol("admin_firma"))):
     from core import nucleu as _nucleu
     import secrets as _sec
     email = date.email.strip().lower()
-    if "@" not in email:
+    if not _email_valid(email):  # [R138] altfel `«»@#$%` devine un cont de `angajat`
         raise HTTPException(422, EMAIL_INVALID)
     with db.get_conn() as conn:
         with conn.cursor(cursor_factory=_E_audit.RealDictCursor) as cur:

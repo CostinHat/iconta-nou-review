@@ -77,23 +77,57 @@ def _cota_necunoscuta(linii, la_data):
     return None
 
 
+def _numar_ro(v):
+    """Numarul in forma romaneasca (virgula zecimala), fara zecimale inutile — ca sa nu apara
+    „-99999999.0" intr-un mesaj citit de un om."""
+    s = ("%.3f" % v).rstrip("0").rstrip(".")
+    return s.replace(".", ",")
+
+
 def linii_campuri_lipsa(linii, prefix="em-l"):
-    """Campuri obligatorii per linie goale -> [{camp, eticheta}]. Obligatorii: denumire (nevida) + cantitate>0
-    (aceleasi criterii pe care frontendul le filtra tacit inainte). id camp = {prefix}{i}-{camp}, i = pozitia in
-    lista. prefix parametrizat ca acelasi contract sa serveasca emitere (em-l) + facturi-recurente (fr-l)
-    FARA a duplica criteriile (o singura sursa de adevar, cap.24 regula 4)."""
+    """Campuri obligatorii per linie -> [{camp, eticheta, mesaj}]. Obligatorii: denumire (nevida) +
+    cantitate > 0. id camp = {prefix}{i}-{camp}, i = pozitia in lista. prefix parametrizat ca acelasi
+    contract sa serveasca emitere (em-l) + facturi-recurente (fr-l) FARA a duplica criteriile (o
+    singura sursa de adevar, cap.24 regula 4).
+
+    [R139, 04.09.2026] FIECARE CAMP ISI POARTA MOTIVUL. Pana azi functia intorcea doar `eticheta`
+    („Linia 1: cantitate"), iar `api.js` o foloseste ca mesaj cand nu primeste unul
+    (`x.mesaj || x.eticheta`, api.js:41). Consecinta, masurata apasand: langa caseta cantitatii,
+    care CONTINEA `-99999999`, contabilul citea „Linia 1: cantitate" — numele campului pe care
+    tocmai se uita, si nimic despre ce e gresit cu el. Iar rezumatul de deasupra spunea
+    „**Completeaza** liniile", desi campul era completat: aplicatia numea alta problema decat cea
+    reala. *Un refuz care spune CARE camp, dar nu CE e gresit, indeplineste jumatate din cerinta
+    campaniei — si jumatatea care lipseste e chiar cea care il ajuta pe om.*
+
+    Cele doua cauze se DEOSEBESC, fiindca au remedii diferite: un camp gol se completeaza, o
+    cantitate negativa se corecteaza. Numele functiei ramane `..._lipsa` — asa o cheama cei doi
+    apelanti si cele patru garzi ale ei —, dar ce intoarce nu mai e „ce lipseste", ci „ce nu e bun".
+    """
     lipsa = []
     for i, l in enumerate(linii):
         n = i + 1
         d = l.get("descriere")
         if d is None or str(d).strip() == "":
-            lipsa.append({"camp": "%s%d-descriere" % (prefix, i), "eticheta": "Linia %d: denumire" % n})
+            lipsa.append({"camp": "%s%d-descriere" % (prefix, i),
+                          "eticheta": "Linia %d: denumire" % n,
+                          "mesaj": "Denumirea liniei e obligatorie pe factură. Scrie ce se facturează."})
+        brut = l.get("cantitate")
         try:
-            ok = float(l.get("cantitate") or 0) > 0
+            val = float(brut or 0)
         except (TypeError, ValueError):
-            ok = False
-        if not ok:
-            lipsa.append({"camp": "%s%d-cantitate" % (prefix, i), "eticheta": "Linia %d: cantitate" % n})
+            val = None
+        if val is None:
+            m = "Cantitatea nu e un număr. Scrie o cantitate mai mare decât zero."
+        elif val == 0:
+            m = "Cantitatea lipsește. Scrie o cantitate mai mare decât zero."
+        elif val < 0:
+            m = ("Cantitatea e negativă (%s). Pe o factură de emis cantitatea trebuie să fie mai mare "
+                 "decât zero; pentru o stornare se emite o factură de corecție." % _numar_ro(val))
+        else:
+            m = None
+        if m:
+            lipsa.append({"camp": "%s%d-cantitate" % (prefix, i),
+                          "eticheta": "Linia %d: cantitate" % n, "mesaj": m})
     return lipsa
 
 

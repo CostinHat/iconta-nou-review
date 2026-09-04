@@ -14,6 +14,7 @@ Reguli de dependență (graf aciclic, fără interferențe între module):
 """
 from __future__ import annotations
 import os
+import re
 from collections import defaultdict
 from dataclasses import dataclass
 from datetime import date
@@ -146,6 +147,30 @@ def cfg_secret(cheie):
             "secret obligatoriu absent din env: %s — refuz să semnez/verific cu cheie goală "
             "(ar face tokenurile forjabile). Setează %s în env." % (cheie, cheie))
     return v
+
+
+# ── [R138, 04.09.2026] CE E O ADRESA DE EMAIL ────────────────────────────────
+# Masurat, nu presupus: din cele SASE locuri care refuza cu `EMAIL_INVALID`, unul singur verifica
+# formatul (`POST /auth/register`, prin regexul de mai jos). Patru se multumeau cu `"@" not in email`
+# — iar toate patru CREEAZA UN CONT sau TRIMIT UN EMAIL: `/asistenti` (insereaza un `angajat` si
+# trimite invitatia), `/tenants/{}/acces-client`, `/portal/acces-cont/email`, `/portal/acces-cont/acces`.
+# Al saselea (`/facturi/{}/email`) cerea si un punct, undeva.
+#
+# Gasit apasand: sonda de ecran a umplut formularul «Adauga asistent» cu `«»@#$%` — care CONTINE un
+# `@` —, deci refuzul n-ar fi cazut si aplicatia ar fi facut un cont de utilizator cu numele ala.
+#
+# Regexul nu e nou si nu l-am inventat aici: e cel care traia deja in `main.py` (`[email_valid_v1]`)
+# si, copiat, in `core/notificari_scadenta.py`. Ce s-a schimbat e ca acum e UNUL. *Aceeasi aplicatie
+# stia raspunsul intr-un loc si nu-l avea in altul — a patra instanta a clasei in doua zile.*
+#
+# CE NU AFIRMA: ca adresa EXISTA. Verifica forma, nu destinatarul — de-aia numele e `email_valid`,
+# nu `email_bun`, si de-aia esecul trimiterii ramane tratat separat (R73).
+_EMAIL_RE = re.compile(r"^[^@\s]+@[^@\s]+\.[^@\s]+$")
+
+
+def email_valid(e):
+    """True daca `e` are FORMA unei adrese de email. Nu spune ca adresa exista."""
+    return bool(e) and bool(_EMAIL_RE.match(str(e).strip()))
 
 
 def azi_ro(acum=None):

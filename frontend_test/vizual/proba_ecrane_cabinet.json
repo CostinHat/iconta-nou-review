@@ -1,0 +1,307 @@
+{
+ "set": "cabinet",
+ "scheme": [
+  "tenant_003",
+  "tenant_048"
+ ],
+ "schimbari": {},
+ "scrieri": [],
+ "ecrane": {
+  "cabinet_desktop": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "pagina",
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "activitate_cabinet": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "tipare": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "asistenti": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 2,
+   "deschis_cu": "Adaugă asistent",
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Adaugă asistent",
+     "verdict": "sarit: e deschizatorul"
+    }
+   ]
+  },
+  "capacitate": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Adaugă asistenți",
+     "text_nou": true,
+     "delta_text": "i asistență tehnică ← Capacitate ✕ Asistenți Asistenții cabinetului: roluri, permisiuni și firmele pe care le lucrează. Tu decizi cine poate pregăti, valida și depune declarații. 2 asistenți · 1 activ",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "0->0",
+     "campuri": "0->0",
+     "fara_date": true,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "control_portofoliu": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "control_verdict": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "pachete": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 2,
+   "deschis_cu": null,
+   "selectii": 1,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "raporteaza": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 1,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Adaugă captură",
+     "text_nou": false,
+     "delta_text": "nicio sesizare încă.",
+     "a_scris": null,
+     "a_cerut_fisier": true,
+     "santinele": "1->1",
+     "campuri": "1->1",
+     "fara_date": null,
+     "verdict": "a cerut un fisier"
+    }
+   ]
+  },
+  "recomanda": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 1,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "termene": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "validat": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "ansamblu": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "navigator_clopot": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "pagina",
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "emitere": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 6,
+   "deschis_cu": null,
+   "selectii": 1,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "+ Adaugă linie",
+     "text_nou": true,
+     "delta_text": "D111S · stoc 12.000 — × — fără articol (serviciu) — Agrafe birou 28mm · stoc 150.000 Bandă adezivă 48mm · stoc 90.000 Caiet dictando 80 file · stoc 250.000 Calculator birou Casio · stoc 8.000 Cerneală",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "6->6",
+     "campuri": "6->9",
+     "fara_date": null,
+     "verdict": "a crescut formularul"
+    },
+    {
+     "buton": "Emite factură",
+     "text_nou": true,
+     "delta_text": " Pleacă marfa acum? 1 articol de pe factură se descarcă din gestiune dacă marfa pleacă fizic azi. Dacă e avans, livrare ulterioară sau serviciu, alege „Nu, doar factură\". Da, pleacă marfa Nu, doar fac",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "6->6",
+     "campuri": "6->6",
+     "fara_date": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "flux_concediu": {
+   "cont": "patron@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 9,
+   "deschis_cu": "+ Certificat nou",
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Calculează și salvează",
+     "text_nou": true,
+     "delta_text": "dării Data început* Completează data de început a concediului. Data sfârșit * Completează data de sfârșit a concediului. Zile lucrătoare CM* Zilele lucrătoare CM trebuie să fie cel puțin 1. Episod de ",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "6->6",
+     "campuri": "9->9",
+     "fara_date": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "admin_desktop": {
+   "cont": "admin@prisma-cont.test",
+   "domeniu": "pagina",
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "admin_anunturi": {
+   "cont": "admin@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 2,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Trimite",
+     "text_nou": true,
+     "delta_text": " Alege întâi destinatarii (Cabinete).",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "1->1",
+     "campuri": "2->2",
+     "fara_date": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  },
+  "admin_raportari": {
+   "cont": "admin@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "admin_activitate": {
+   "cont": "admin@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 1,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "admin_analytics": {
+   "cont": "admin@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "admin_sanatate": {
+   "cont": "admin@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 0,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": []
+  },
+  "rip_pfa": {
+   "cont": "fir-intrare@prisma-cont.test",
+   "domeniu": "fereastra",
+   "campuri_umplute": 4,
+   "deschis_cu": null,
+   "selectii": 0,
+   "scris_la_deschidere": null,
+   "butoane": [
+    {
+     "buton": "Adaugă (ciornă)",
+     "text_nou": true,
+     "delta_text": "2 Registru-inventar Suma trebuie să fie mai mare decât zero. O corecție se face printr-o operațiune de sens contrar, nu printr-o sumă negativă. + Operațiune nouă Operațiune nouă Data* Tip Încasare Pla",
+     "a_scris": null,
+     "a_cerut_fisier": null,
+     "santinele": "3->3",
+     "campuri": "4->4",
+     "fara_date": null,
+     "verdict": "a vorbit"
+    }
+   ]
+  }
+ },
+ "erori_js": []
+}
